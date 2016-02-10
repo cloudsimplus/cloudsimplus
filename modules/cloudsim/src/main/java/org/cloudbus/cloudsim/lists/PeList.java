@@ -125,7 +125,7 @@ public class PeList {
 	 */
 	public static <T extends Pe> Pe getFreePe(List<T> peList) {
 		for (Pe pe : peList) {
-			if (pe.getStatus() == Pe.FREE) {
+			if (pe.getStatus() == Pe.Status.FREE) {
 				return pe;
 			}
 		}
@@ -143,7 +143,7 @@ public class PeList {
 	public static <T extends Pe> int getNumberOfFreePes(List<T> peList) {
 		int cnt = 0;
 		for (Pe pe : peList) {
-			if (pe.getStatus() == Pe.FREE) {
+			if (pe.getStatus() == Pe.Status.FREE) {
 				cnt++;
 			}
 		}
@@ -153,7 +153,8 @@ public class PeList {
 	/**
 	 * Sets a PE status.
 	 * 
-	 * @param status the PE status, either <tt>Pe.FREE</tt> or <tt>Pe.BUSY</tt>
+         * @param <T> the generic type
+	 * @param status the new PE status
 	 * @param id the id of the PE to be set
 	 * @param peList the PE list
 	 * @return <tt>true</tt> if the PE status has been changed, <tt>false</tt> otherwise (PE id might
@@ -161,7 +162,7 @@ public class PeList {
 	 * @pre peID >= 0
 	 * @post $none
 	 */
-	public static <T extends Pe> boolean setPeStatus(List<T> peList, int id, int status) {
+	public static <T extends Pe> boolean setPeStatus(List<T> peList, int id, Pe.Status status) {
 		Pe pe = getById(peList, id);
 		if (pe != null) {
 			pe.setStatus(status);
@@ -173,6 +174,7 @@ public class PeList {
 	/**
 	 * Gets the number of <tt>BUSY</tt> PEs.
 	 * 
+         * @param <T> the generic type
 	 * @param peList the PE list
 	 * @return number of busy PEs
 	 * @pre $none
@@ -181,7 +183,7 @@ public class PeList {
 	public static <T extends Pe> int getNumberOfBusyPes(List<T> peList) {
 		int cnt = 0;
 		for (Pe pe : peList) {
-			if (pe.getStatus() == Pe.BUSY) {
+			if (pe.getStatus() == Pe.Status.BUSY) {
 				cnt++;
 			}
 		}
@@ -220,6 +222,7 @@ public class PeList {
 	/**
 	 * Sets the status of PEs of a host to FAILED or FREE.
 	 * 
+         * @param <T> the generic type
 	 * @param peList the host's PE list to be set as failed or free
 	 * @param failed true if the host's PEs have to be set as FAILED, false
          * if they have to be set as FREE.
@@ -228,9 +231,9 @@ public class PeList {
 		// a loop to set the status of all the PEs in this machine
 		for (Pe pe : peList) {
 			if (failed) {
-				pe.setStatus(Pe.FAILED);
+				pe.setStatus(Pe.Status.FAILED);
 			} else {
-				pe.setStatus(Pe.FREE);
+				pe.setStatus(Pe.Status.FREE);
 			}
 		}
 	}

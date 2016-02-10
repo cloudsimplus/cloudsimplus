@@ -32,6 +32,43 @@ public class Cloudlet {
    */  
   public static final int NOT_ASSIGNED = -1;
 
+    /**
+     * Gets the cost of each byte of bandwidth (bw) consumed.
+     * @return the cost per bw
+     */
+    public double getCostPerBw() {
+        return costPerBw;
+    }
+
+    /**
+     * Sets {@link #getCostPerBw() the cost of each byte of bandwidth (bw)} consumed.
+     * @param costPerBw the new cost per bw to set
+     */
+    private void setCostPerBw(double costPerBw) {
+        this.costPerBw = costPerBw;
+    }
+
+    /**
+     * The total bandwidth (bw) cost for transferring the cloudlet by the
+     * network, according to the {@link #cloudletFileSize}.
+     * 
+     * @return the accumulated bw cost
+     */
+    public double getAccumulatedBwCost() {
+        return accumulatedBwCost;
+    }
+
+    /**
+     * Sets the {@link #getAccumulatedBwCost() accumulated bw cost}.
+     * @param accumulatedBwCost the accumulated bw cost to set
+     */
+    private void setAccumulatedBwCost(double accumulatedBwCost) {
+        this.accumulatedBwCost = accumulatedBwCost;
+    }
+
+  /**
+   * Status of Cloudlets
+   */
   public enum Status {
         /**
          * The Cloudlet has been created and added to the CloudletList object.
@@ -77,79 +114,34 @@ public class Cloudlet {
         FAILED_RESOURCE_UNAVAILABLE
     }    
 
-    /**
-     * The cloudlet ID.
-     */
+    /** @see #getCloudletId() */
     private final int cloudletId;
 
-    /**
-     * The User or Broker ID that is the owner of the Cloudlet. 
-     * It is advisable that broker set this ID with its
-     * own ID, so that CloudResource returns to it after the execution.
-	 *
-     */
+    /** @see #getUserId() */
     private int userId;
 
-    /**
-     * The execution length of this Cloudlet (Unit: in Million Instructions
-     * (MI)). According to this length and the power of the processor (in
-     * Million Instruction Per Second - MIPS) where the cloudlet will be run,
-     * the cloudlet will take a given time to finish processing. For instance,
-     * for a cloudlet of 10000 MI running on a processor of 2000 MIPS, the
-     * cloudlet will spend 5 seconds using the processor in order to be
-     * completed (that may be uninterrupted or not, depending on the scheduling
-     * policy).
-     *
-     * @see #setNumberOfPes(int)
-     *
-     */
+    /** @see #getCloudletLength() */
     private long cloudletLength;
 
-    /**
-     * The input file size of this Cloudlet before execution (unit: in byte).
-     * This size has to be considered the program + input data sizes.
-     */
+    /** @see #getCloudletFileSize() */
     private final long cloudletFileSize;
 
-    /**
-     * The output file size of this Cloudlet after execution (unit: in byte).
-     *
-     * @todo See
-     * <a href="https://groups.google.com/forum/#!topic/cloudsim/MyZ7OnrXuuI">this
-     * discussion</a>
-     */
+    /** @see #getCloudletOutputSize() */
     private final long cloudletOutputSize;
 
-    /**
-     * The number of Processing Elements (PEs) required to execute this cloudlet
-     * (job).
-     *
-     * @see #setNumberOfPes(int)
-     */
+    /** @see #getNumberOfPes() */
     private int numberOfPes;
 
-    /**
-     * The execution status of this Cloudlet.
-     */
+    /** @see #getStatus() */
     private Status status;
 
-    /**
-     * The execution start time of this Cloudlet. With new functionalities, such
-     * as CANCEL, PAUSED and RESUMED, this attribute only stores the latest
-     * execution time. Previous execution time are ignored.
-     */
+    /** @see #getExecStartTime() */
     private double execStartTime;
 
-    /**
-     * The time where this Cloudlet completes.
-     */
+    /** @see #getFinishTime() */
     private double finishTime;
 
-    /**
-     * The ID of a reservation made for this cloudlet.
-     *
-     * @todo This attribute doesn't appear to be used
-     */
+    /** @see #getReservationId() */
     private int reservationId = NOT_ASSIGNED;
 
     /**
@@ -161,7 +153,7 @@ public class Cloudlet {
     /**
      * Stores the operating system line separator.
      */
-    private String newline;
+    private final String newline;
 
     /**
      * The cloudlet transaction history.
@@ -182,62 +174,36 @@ public class Cloudlet {
      */
     private int index;
 
-    /**
-     * The classType or priority of this Cloudlet for scheduling on a resource.
-     */
+    /** @see #getClassType() */
     private int classType;
 
-    /**
-     * The Type of Service (ToS) of IPv4 for sending Cloudlet over the network.
-     */
-    private int netToS;
+    /** @see #getNetServiceLevel() */
+    private int netServiceLevel;
 
     /**
      * The format of decimal numbers.
      */
     private DecimalFormat num;
 
-    /**
-     * The id of the vm that is planned to execute the cloudlet.
-     */
+    /** @see #getVmId() */
     protected int vmId;
 
-    /**
-     * The cost of each byte of bandwidth (bw) consumed.
-     */
-    protected double costPerBw;
+    /** @see #getCostPerBw() */
+    private double costPerBw;
 
-    /**
-     * The total bandwidth (bw) cost for transferring the cloudlet by the
-     * network, according to the {@link #cloudletFileSize}.
-     */
-    protected double accumulatedBwCost;
+    /** @see #getAccumulatedBwCost()  */
+    private double accumulatedBwCost;
 
-    // Utilization
-    /**
-     * The utilization model that defines how the cloudlet will use the VM's
-     * CPU.
-     */
+    /** @see #getUtilizationModelCpu() */
     private UtilizationModel utilizationModelCpu;
 
-    /**
-     * The utilization model that defines how the cloudlet will use the VM's
-     * RAM.
-     */
+    /** @see #getUtilizationModelRam() */
     private UtilizationModel utilizationModelRam;
 
-    /**
-     * The utilization model that defines how the cloudlet will use the VM's
-     * bandwidth (bw).
-     */
+    /** @see #getUtilizationModelBw() */
     private UtilizationModel utilizationModelBw;
 
-    // Data cloudlet
-    /**
-     * The required files to be used by the cloudlet (if any). The time to
-     * transfer these files by the network is considered when placing the
-     * cloudlet inside a given VM
-     */
+    /** @see #getRequiredFiles() */
     private List<String> requiredFiles = null;
 
     /**
@@ -414,14 +380,15 @@ public class Cloudlet {
             final UtilizationModel utilizationModelBw,
             final boolean record) {
         num = new DecimalFormat("#0.00#"); 
+        newline = System.getProperty("line.separator");
         userId = NOT_ASSIGNED;          // to be set by a Broker or user
         status = Status.CREATED;
         this.cloudletId = cloudletId;
         numberOfPes = pesNumber;
         execStartTime = 0.0;
-        finishTime = NOT_ASSIGNED;    // meaning this Cloudlet hasn't finished yet
+        setFinishTime(NOT_ASSIGNED);    // meaning this Cloudlet hasn't finished yet
         classType = 0;
-        netToS = 0;
+        netServiceLevel = 0;
 
         // Cloudlet length, Input and Output size should be at least 1 byte.
         this.cloudletLength = Math.max(1, cloudletLength);
@@ -436,8 +403,8 @@ public class Cloudlet {
         this.record = record;
 
         vmId = NOT_ASSIGNED;
-        accumulatedBwCost = 0.0;
-        costPerBw = 0.0;
+        setAccumulatedBwCost(0.0);
+        setCostPerBw(0.0);
 
         requiredFiles = new LinkedList<String>();
 
@@ -494,26 +461,27 @@ public class Cloudlet {
     // ////////////////////// End of Internal Class //////////////////////////
     
     /**
-     * Sets the id of the reservation made for this cloudlet.
+     * Sets the {@link #getReservationId() id of the reservation} made for this cloudlet.
      *
-     * @param resId the reservation ID
+     * @param reservationId the reservation ID
      * @return <tt>true</tt> if the ID has successfully been set or
      * <tt>false</tt> otherwise.
      */
-    public boolean setReservationId(final int resId) {
-        if (resId <= 0) {
+    public boolean setReservationId(final int reservationId) {
+        if (reservationId <= 0) {
             return false;
         }
-        reservationId = resId;
+        this.reservationId = reservationId;
         return true;
     }
 
     /**
-     * Gets the reservation ID that owns this Cloudlet.
+     * Gets the ID of a reservation made for this cloudlet.
      *
      * @return a reservation ID
      * @pre $none
      * @post $none
+     * @todo This attribute doesn't appear to be used
      */
     public int getReservationId() {
         return reservationId;
@@ -531,12 +499,9 @@ public class Cloudlet {
     }
     
     /**
-     * Sets the length or size (in MI) of this Cloudlet to be executed in a
-     * CloudResource. It has to be the length for each individual Pe,
-     * <tt>not</tt> the total length (the sum of length to be executed by each
-     * Pe).
+     * Sets the {@link #getCloudletLength() length (in MI)}  of this Cloudlet.
      *
-     * @param cloudletLength the length or size (in MI) of this Cloudlet to be
+     * @param cloudletLength the length (in MI) of this Cloudlet to be
      * executed in a CloudResource
      * @return <tt>true</tt> if the cloudletLength is valid, <tt>false</tt> otherwise
      *
@@ -554,22 +519,17 @@ public class Cloudlet {
     }
 
     /**
-     * Sets the network service level (ToS) for sending this cloudlet over a
+     * Sets the {@link #getNetServiceLevel() Type of Service (ToS)} for sending this cloudlet over a
      * network.
      *
-     * @param netServiceLevel determines the type of service (ToS) this cloudlet
-     * receives in the network (applicable to selected PacketScheduler class
-     * only)
+     * @param netServiceLevel the new type of service (ToS) of this cloudlet
      * @return <code>true</code> if the netServiceLevel is valid, false otherwise.
      * @pre netServiceLevel >= 0
      * @post $none
-     *
-     * @todo The name of the setter is inconsistent with the attribute name,
-     * what might be misinterpreted by other developers.
      */
     public boolean setNetServiceLevel(final int netServiceLevel) {
         if (netServiceLevel > 0) {
-            netToS = netServiceLevel;
+            this.netServiceLevel = netServiceLevel;
             return true;
         }
 
@@ -577,17 +537,16 @@ public class Cloudlet {
     }
 
     /**
-     * Gets the network service level (ToS) for sending this cloudlet over a
-     * network.
+     * Gets the Type of Service (ToS) of IPv4 for sending Cloudlet over the network.
+     * It is the ToS this cloudlet receives in the network 
+     * (applicable to selected PacketScheduler class only).
      *
      * @return the network service level
      * @pre $none
      * @post $none
-     * @todo The name of the getter is inconsistent with the attribute name,
-     * what might be misinterpreted by other developers.
      */
     public int getNetServiceLevel() {
-        return netToS;
+        return netServiceLevel;
     }
 
     /**
@@ -611,8 +570,8 @@ public class Cloudlet {
     }
 
     /**
-     * Sets the classType or priority of this Cloudlet for scheduling on a
-     * resource.
+     * Sets the {@link #getClassType() classType or priority} of this Cloudlet for scheduling on a
+     * Datacenter.
      *
      * @param classType classType of this Cloudlet
      * @return <tt>true</tt> if it is classType is valid, <tt>false</tt> otherwise
@@ -630,8 +589,7 @@ public class Cloudlet {
     }
 
     /**
-     * Gets the classtype or priority of this Cloudlet for scheduling on a
-     * resource.
+     * Gets the classType or priority of this Cloudlet for scheduling on a Datacenter.
      *
      * @return classtype of this cloudlet
      * @pre $none
@@ -642,12 +600,12 @@ public class Cloudlet {
     }
 
     /**
-     * Sets the number of PEs required to run this Cloudlet. <br>
-     * NOTE: The Cloudlet length is computed only for 1 Pe for simplicity. <br>
+     * Sets the {@link #getNumberOfPes() number of PEs} required to run this Cloudlet. <br/>
+     * NOTE: The Cloudlet length is computed only for 1 PE for simplicity. <br/>
      * For example, consider a Cloudlet that has a length of 500 MI and requires
-     * 2 PEs. This means each Pe will execute 500 MI of this Cloudlet.
+     * 2 PEs. This means each PE will execute 500 MI of this Cloudlet.
      *
-     * @param numberOfPes number of Pe
+     * @param numberOfPes number of PEs
      * @return <tt>true</tt> if it is numberOfPes is valid, <tt>false</tt> otherwise
      *
      * @pre numPE > 0
@@ -662,7 +620,7 @@ public class Cloudlet {
     }
 
     /**
-     * Gets the number of PEs required to run this Cloudlet.
+     * Gets the number of Processing Elements (PEs) required to execute this cloudlet.
      *
      * @return number of PEs
      *
@@ -753,10 +711,7 @@ public class Cloudlet {
     }
 
     /**
-     * Sets the user or owner ID of this Cloudlet. It is <tt>VERY</tt> important
-     * to set the user ID, otherwise this Cloudlet will not be executed in a
-     * CloudResource.
-     *
+     * Sets the {@link #getUserId() user ID}.
      * @param userId the new user ID
      * @pre id >= 0
      * @post $none
@@ -767,7 +722,9 @@ public class Cloudlet {
     }
 
     /**
-     * Gets the ID of the user or owner of this Cloudlet.
+     * Gets the ID of the User or Broker that is the owner of the Cloudlet. 
+     * It is advisable that broker set this ID with its
+     * own ID, so that CloudResource returns to it after the execution.
      *
      * @return the user ID or <tt>{@link #NOT_ASSIGNED}</tt> if the user ID has not been set before
      * @pre $none
@@ -791,8 +748,8 @@ public class Cloudlet {
     }
 
     /**
-     * Gets the input file size of this Cloudlet <tt>BEFORE</tt> submitting to a
-     * CloudResource.
+     * Gets the input file size of this Cloudlet before execution (unit: in byte).
+     * This size has to be considered the program + input data sizes.
      *
      * @return the input file size of this Cloudlet
      * @pre $none
@@ -803,8 +760,11 @@ public class Cloudlet {
     }
 
     /**
-     * Gets the output size of this Cloudlet <tt>AFTER</tt> submitting and
-     * executing to a CloudResource.
+     * Gets the output file size of this Cloudlet after execution (unit: in byte).
+     *
+     * @todo See
+     * <a href="https://groups.google.com/forum/#!topic/cloudsim/MyZ7OnrXuuI">this
+     * discussion</a>
      *
      * @return the Cloudlet output file size
      * @pre $none
@@ -894,7 +854,7 @@ public class Cloudlet {
     }
 
     /**
-     * Sets the execution start time of this Cloudlet inside a Datacenter.
+     * Sets the {@link #getExecStartTime() latest execution start time} of this Cloudlet.
      * <br/>
      * <b>NOTE:</b> With new functionalities, such as being able to cancel / to
      * pause / to resume this Cloudlet, the execution start time only holds the
@@ -905,12 +865,14 @@ public class Cloudlet {
      * @post $none
      */
     public void setExecStartTime(final double clockTime) {
-        execStartTime = clockTime;
+        this.execStartTime = clockTime;
         write("Sets the execution start time to %s", num.format(clockTime));
     }
 
     /**
-     * Gets the latest execution start time.
+     * Gets the latest execution start time of this Cloudlet. With new functionalities, such
+     * as CANCEL, PAUSED and RESUMED, this attribute only stores the latest
+     * execution time. Previous execution time are ignored.
      *
      * @return the latest execution start time
      * @pre $none
@@ -953,29 +915,37 @@ public class Cloudlet {
     }
 
     /**
-     * Sets the execution status code of this Cloudlet.
+     * Sets the {@link #getStatus() execution status} of this Cloudlet.
      *
-     * @param newStatus the status code of this Cloudlet
+     * @param newStatus the status of this Cloudlet
      * @return true if the cloudlet status was changed,
      * i.e, if the newStatus is different from the current status; false otherwise
      * @post $none
      */
     public boolean setCloudletStatus(final Status newStatus) {
         // if the new status is same as current one, then ignore the rest
-        if (status == newStatus) {
+        if (this.status == newStatus) {
             return false;
         }
 
         if (newStatus == Status.SUCCESS) {
-            finishTime = CloudSim.clock();
+            setFinishTime(CloudSim.clock());
         }
 
         write("Sets Cloudlet status from %s to %s",
               getCloudletStatusString(),
               Cloudlet.getCloudletStatusString(newStatus));
 
-        status = newStatus;
+        this.status = newStatus;
         return true;
+    }
+
+    /**
+     * Sets the {@link #getFinishTime() finish time} of this cloudlet in the latest Datacenter.
+     * @param finishTime the finish time
+     */
+    private void setFinishTime(final double finishTime) {
+        this.finishTime = finishTime;
     }
 
     /**
@@ -1017,11 +987,19 @@ public class Cloudlet {
     }
 
     /**
-     * Gets the length of this Cloudlet.
+     * Gets the execution length of this Cloudlet (Unit: in Million Instructions
+     * (MI)). According to this length and the power of the processor (in
+     * Million Instruction Per Second - MIPS) where the cloudlet will be run,
+     * the cloudlet will take a given time to finish processing. For instance,
+     * for a cloudlet of 10000 MI running on a processor of 2000 MIPS, the
+     * cloudlet will spend 5 seconds using the processor in order to be
+     * completed (that may be uninterrupted or not, depending on the scheduling
+     * policy).
      *
      * @return the length of this Cloudlet
      * @pre $none
      * @post $result >= 0.0
+     * @see #getNumberOfPes() 
      */
     public long getCloudletLength() {
         return cloudletLength;
@@ -1237,7 +1215,7 @@ public class Cloudlet {
     }
 
     /**
-     * Gets the finish time of this Cloudlet in the last Datacenter.
+     * Gets the time when this Cloudlet has completed executing in the latest Datacenter.
      *
      * @return the finish or completion time of this Cloudlet; or <tt>-1</tt> if
      * not finished yet.
@@ -1259,9 +1237,8 @@ public class Cloudlet {
             return;
         }
 
-        if (num == null || history == null) { 
+        if (history == null) { 
             // Creates the transaction history of this Cloudlet
-            newline = System.getProperty("line.separator");
             history = new StringBuffer(1000);
             history.append("Time below denotes the simulation time.");
             history.append(System.getProperty("line.separator"));
@@ -1296,9 +1273,9 @@ public class Cloudlet {
     }
 
     /**
-     * Gets the status of the Cloudlet.
+     * Gets the execution status of this Cloudlet.
      *
-     * @return status of the Cloudlet
+     * @return the Cloudlet status
      * @pre $none
      * @post $none
      *
@@ -1308,9 +1285,8 @@ public class Cloudlet {
     }
 
     /**
-     * Gets the ID of this Cloudlet.
-     *
-     * @return Cloudlet Id
+     * The ID of this Cloudlet.
+     * @return the cloudlet ID
      * @pre $none
      * @post $none
      */
@@ -1319,9 +1295,9 @@ public class Cloudlet {
     }
 
     /**
-     * Gets the ID of the VM that will run this Cloudlet.
+     * Gets the id of the VM that is planned to execute the cloudlet.
      *
-     * @return VM Id, {@link #NOT_ASSIGNED} if the Cloudlet was not assigned to a VM yet
+     * @return the VM Id, or {@link #NOT_ASSIGNED} if the Cloudlet was not assigned to a VM yet
      * @pre $none
      * @post $none
      */
@@ -1330,7 +1306,7 @@ public class Cloudlet {
     }
 
     /**
-     * Sets the ID of the VM that will run this Cloudlet.
+     * Sets the {@link #getVmId() id of the VM} that is planned to execute the cloudlet.
      *
      * @param vmId the vm id
      * @pre id >= 0
@@ -1371,8 +1347,8 @@ public class Cloudlet {
      */
     public void setResourceParameter(final int resourceID, final double costPerCPU, final double costPerBw) {
         setResourceParameter(resourceID, costPerCPU);
-        this.costPerBw = costPerBw;
-        accumulatedBwCost = costPerBw * getCloudletFileSize();
+        this.setCostPerBw(costPerBw);
+        setAccumulatedBwCost(costPerBw * getCloudletFileSize());
     }
 
     /**
@@ -1389,14 +1365,16 @@ public class Cloudlet {
         // double cost = getProcessingCost();
         double cost = 0;
         // ...plus input data transfer cost...
-        cost += accumulatedBwCost;
+        cost += getAccumulatedBwCost();
         // ...plus output cost
-        cost += costPerBw * getCloudletOutputSize();
+        cost += getCostPerBw() * getCloudletOutputSize();
         return cost;
     }
 
     /**
-     * Gets the required files.
+     * Gets the list of required files to be used by the cloudlet (if any). The time to
+     * transfer these files by the network is considered when placing the
+     * cloudlet inside a given VM
      *
      * @return the required files
      */
@@ -1405,9 +1383,9 @@ public class Cloudlet {
     }
 
     /**
-     * Sets the required files.
+     * Sets the list of {@link #getRequiredFiles() required files}.
      *
-     * @param requiredFiles the new required files
+     * @param requiredFiles the new list of required files
      */
     protected final void setRequiredFiles(final List<String> requiredFiles) {
         if(requiredFiles == null)
@@ -1470,16 +1448,16 @@ public class Cloudlet {
     }
 
     /**
-     * Gets the utilization model of cpu.
+     * Gets the utilization model that defines how the cloudlet will use the VM's CPU.
      *
-     * @return the utilization model cpu
+     * @return the utilization model of cpu
      */
     public UtilizationModel getUtilizationModelCpu() {
         return utilizationModelCpu;
     }
 
     /**
-     * Sets the utilization model of cpu.
+     * Sets the {@link #getUtilizationModelCpu() utilization model of cpu}.
      *
      * @param utilizationModelCpu the new utilization model of cpu
      */
@@ -1490,7 +1468,7 @@ public class Cloudlet {
     }
 
     /**
-     * Gets the utilization model of ram.
+     * Gets the utilization model that defines how the cloudlet will use the VM's RAM.
      *
      * @return the utilization model of ram
      */
@@ -1499,7 +1477,7 @@ public class Cloudlet {
     }
 
     /**
-     * Sets the utilization model of ram.
+     * Sets the {@link #getUtilizationModelRam() utilization model of ram}.
      *
      * @param utilizationModelRam the new utilization model of ram
      */
@@ -1510,7 +1488,8 @@ public class Cloudlet {
     }
 
     /**
-     * Gets the utilization model of bw.
+     * Gets the utilization model that defines how the cloudlet will use the VM's
+     * bandwidth (bw).
      *
      * @return the utilization model of bw
      */
@@ -1519,7 +1498,7 @@ public class Cloudlet {
     }
 
     /**
-     * Sets the utilization model of bw.
+     * Sets the {@link #getUtilizationModelBw() utilization model of bw}.
      *
      * @param utilizationModelBw the new utilization model of bw
      */

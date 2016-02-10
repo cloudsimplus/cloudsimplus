@@ -109,9 +109,14 @@ public abstract class RamProvisioner {
 	 * Sets the ram capacity.
 	 * 
 	 * @param ram the ram to set
+         * @return true if ram > 0, false otherwise
 	 */
-	protected void setRam(int ram) {
-		this.ram = ram;
+	protected final boolean setRam(int ram) {
+            if(ram <= 0)
+                return false;
+            
+            this.ram = ram;
+            return true;
 	}
 
 	/**
@@ -142,9 +147,16 @@ public abstract class RamProvisioner {
 	 * Sets the available ram.
 	 * 
 	 * @param availableRam the availableRam to set
+         * @return true if availableRam >= 0, false otherwise
 	 */
-	protected void setAvailableRam(int availableRam) {
-		this.availableRam = availableRam;
+	protected final boolean setAvailableRam(int availableRam) {
+            if(availableRam < 0)
+                return false;
+            if(availableRam > ram)
+                availableRam = ram;
+            
+            this.availableRam = availableRam;
+            return true;
 	}
 
 }

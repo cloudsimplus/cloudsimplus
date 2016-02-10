@@ -369,7 +369,7 @@ public class DatacenterCharacteristics {
 	/**
 	 * Sets the particular Pe status on a PM.
 	 * 
-	 * @param status Pe status, either <tt>Pe.FREE</tt> or <tt>Pe.BUSY</tt>
+	 * @param status the new Pe status
 	 * @param hostId Machine ID
 	 * @param peId Pe id
 	 * @return otherwise (Machine id or Pe id might not be exist)
@@ -377,7 +377,7 @@ public class DatacenterCharacteristics {
 	 * @pre peID >= 0
 	 * @post $none
 	 */
-	public boolean setPeStatus(int status, int hostId, int peId) {
+	public boolean setPeStatus(Pe.Status status, int hostId, int peId) {
 		return HostList.setPeStatus(getHostList(), status, hostId, peId);
 	}
 

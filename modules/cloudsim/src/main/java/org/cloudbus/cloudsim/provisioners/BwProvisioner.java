@@ -110,9 +110,14 @@ public abstract class BwProvisioner {
 	 * Sets the bw capacity.
 	 * 
 	 * @param bw the new bw capacity
+         * @return true if bw > 0, false otherwise
 	 */
-	protected void setBw(long bw) {
-		this.bw = bw;
+	protected final boolean setBw(long bw) {
+            if(bw <= 0)
+                return false;
+            
+            this.bw = bw;
+            return true;
 	}
 
 	/**
@@ -143,9 +148,16 @@ public abstract class BwProvisioner {
 	 * Sets the available bw.
 	 * 
 	 * @param availableBw the new available bw
+         * @return true if availableBw >= 0, false otherwise
 	 */
-	protected void setAvailableBw(long availableBw) {
-		this.availableBw = availableBw;
+	protected final boolean setAvailableBw(long availableBw) {
+            if(availableBw < 0)
+                return false;
+            if(availableBw > bw)
+                availableBw = bw;
+            
+            this.availableBw = availableBw;
+            return true;
 	}
 
 }

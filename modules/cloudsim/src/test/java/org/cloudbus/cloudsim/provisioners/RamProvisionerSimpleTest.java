@@ -13,6 +13,7 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
 import org.cloudbus.cloudsim.Vm;
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -22,95 +23,126 @@ import org.junit.Test;
  */
 public class RamProvisionerSimpleTest {
 
-	private static final int RAM = 1000;
+    private static final int RAM = 1000;
 
-	private RamProvisionerSimple ramProvisioner;
+    private RamProvisioner ramProvisioner;
 
-	@Before
-	public void setUp() throws Exception {
-		ramProvisioner = new RamProvisionerSimple(RAM);
-	}
+    @Before
+    public void setUp() throws Exception {
+            ramProvisioner = createRamProvisioner();
+    }
 
-	@Test
-	public void testGetRam() {
-		assertEquals(RAM, ramProvisioner.getRam());
-	}
+    private RamProvisioner createRamProvisioner() {
+        return new RamProvisionerSimple(RAM);
+    }
 
-	@Test
-	public void testGetAvailableRam() {
-		assertEquals(RAM, ramProvisioner.getAvailableRam());
-	}
+    @Test
+    public void testGetRam() {
+            assertEquals(RAM, ramProvisioner.getRam());
+    }
 
-	@Test
-	public void testAllocateRamForVm() {
-		Vm vm1 = new Vm(0, 0, 0, 0, RAM / 2, 0, 0, "", null);
-		Vm vm2 = new Vm(1, 0, 0, 0, RAM, 0, 0, "", null);
+    @Test
+    public void testGetAvailableRam() {
+            assertEquals(RAM, ramProvisioner.getAvailableRam());
+    }
 
-		assertTrue(ramProvisioner.isSuitableForVm(vm1, RAM / 2));
-		assertTrue(ramProvisioner.allocateRamForVm(vm1, RAM / 2));
-		assertEquals(RAM / 2, ramProvisioner.getAvailableRam());
+    @Test
+    public void testSetAvailableRam() {
+        RamProvisioner p = createRamProvisioner();
+        assertEquals(p.getRam(), p.getAvailableRam());
+        Assert.assertTrue(p.setAvailableRam(0));
+        Assert.assertFalse(p.setAvailableRam(-1));
+        
+        final int availableRam = p.getRam()/2;
+        Assert.assertTrue(p.setAvailableRam(availableRam));
+        assertEquals(availableRam, p.getAvailableRam());
+        
+        //available RAM will not be greater than the ram capacity
+        Assert.assertTrue(p.setAvailableRam(p.getRam()*2));
+        assertEquals(RAM, p.getAvailableRam());
+    }
 
-		assertFalse(ramProvisioner.isSuitableForVm(vm2, RAM));
-		assertFalse(ramProvisioner.allocateRamForVm(vm2, RAM));
-		assertEquals(RAM / 2, ramProvisioner.getAvailableRam());
+    @Test
+    public void testGetUsedRam() {
+        RamProvisioner p = createRamProvisioner();
+        assertEquals(p.getRam(), p.getAvailableRam());
+        assertEquals(0, p.getUsedRam());
 
-		assertTrue(ramProvisioner.isSuitableForVm(vm2, RAM / 4));
-		assertTrue(ramProvisioner.allocateRamForVm(vm2, RAM / 4));
-		assertEquals(RAM * 1 / 4, ramProvisioner.getAvailableRam());
+        final int availableRam = p.getRam()/2;
+        p.setAvailableRam(availableRam);
+        assertEquals(availableRam, p.getUsedRam());
+    }
 
-		assertTrue(ramProvisioner.isSuitableForVm(vm2, RAM / 2));
-		assertTrue(ramProvisioner.allocateRamForVm(vm2, RAM / 2));
-		assertEquals(0, ramProvisioner.getAvailableRam());
-	}
+    @Test
+    public void testAllocateRamForVm() {
+            Vm vm1 = new Vm(0, 0, 0, 0, RAM / 2, 0, 0, "", null);
+            Vm vm2 = new Vm(1, 0, 0, 0, RAM, 0, 0, "", null);
 
-	@Test
-	public void testGetAllocatedRamForVm() {
-		Vm vm1 = new Vm(0, 0, 0, 0, RAM / 2, 0, 0, "", null);
-		Vm vm2 = new Vm(1, 0, 0, 0, RAM, 0, 0, "", null);
+            assertTrue(ramProvisioner.isSuitableForVm(vm1, RAM / 2));
+            assertTrue(ramProvisioner.allocateRamForVm(vm1, RAM / 2));
+            assertEquals(RAM / 2, ramProvisioner.getAvailableRam());
 
-		assertTrue(ramProvisioner.isSuitableForVm(vm1, RAM / 2));
-		assertTrue(ramProvisioner.allocateRamForVm(vm1, RAM / 2));
-		assertEquals(RAM / 2, ramProvisioner.getAllocatedRamForVm(vm1));
+            assertFalse(ramProvisioner.isSuitableForVm(vm2, RAM));
+            assertFalse(ramProvisioner.allocateRamForVm(vm2, RAM));
+            assertEquals(RAM / 2, ramProvisioner.getAvailableRam());
 
-		assertFalse(ramProvisioner.isSuitableForVm(vm2, RAM));
-		assertFalse(ramProvisioner.allocateRamForVm(vm2, RAM));
-		assertEquals(0, ramProvisioner.getAllocatedRamForVm(vm2));
+            assertTrue(ramProvisioner.isSuitableForVm(vm2, RAM / 4));
+            assertTrue(ramProvisioner.allocateRamForVm(vm2, RAM / 4));
+            assertEquals(RAM * 1 / 4, ramProvisioner.getAvailableRam());
 
-		assertTrue(ramProvisioner.isSuitableForVm(vm2, RAM / 4));
-		assertTrue(ramProvisioner.allocateRamForVm(vm2, RAM / 4));
-		assertEquals(RAM / 4, ramProvisioner.getAllocatedRamForVm(vm2));
+            assertTrue(ramProvisioner.isSuitableForVm(vm2, RAM / 2));
+            assertTrue(ramProvisioner.allocateRamForVm(vm2, RAM / 2));
+            assertEquals(0, ramProvisioner.getAvailableRam());
+    }
 
-		assertTrue(ramProvisioner.isSuitableForVm(vm2, RAM / 2));
-		assertTrue(ramProvisioner.allocateRamForVm(vm2, RAM / 2));
-		assertEquals(RAM / 2, ramProvisioner.getAllocatedRamForVm(vm2));
-	}
+    @Test
+    public void testGetAllocatedRamForVm() {
+            Vm vm1 = new Vm(0, 0, 0, 0, RAM / 2, 0, 0, "", null);
+            Vm vm2 = new Vm(1, 0, 0, 0, RAM, 0, 0, "", null);
 
-	@Test
-	public void testDeallocateBwForVm() {
-		Vm vm1 = new Vm(0, 0, 0, 0, RAM / 2, 0, 0, "", null);
-		Vm vm2 = new Vm(1, 0, 0, 0, RAM / 2, 0, 0, "", null);
+            assertTrue(ramProvisioner.isSuitableForVm(vm1, RAM / 2));
+            assertTrue(ramProvisioner.allocateRamForVm(vm1, RAM / 2));
+            assertEquals(RAM / 2, ramProvisioner.getAllocatedRamForVm(vm1));
 
-		assertEquals(0, vm1.getCurrentAllocatedRam());
-		assertEquals(0, vm2.getCurrentAllocatedRam());
+            assertFalse(ramProvisioner.isSuitableForVm(vm2, RAM));
+            assertFalse(ramProvisioner.allocateRamForVm(vm2, RAM));
+            assertEquals(0, ramProvisioner.getAllocatedRamForVm(vm2));
 
-		assertTrue(ramProvisioner.isSuitableForVm(vm1, RAM / 2));
-		assertTrue(ramProvisioner.allocateRamForVm(vm1, RAM / 2));
-		assertEquals(RAM / 2, ramProvisioner.getAvailableRam());
+            assertTrue(ramProvisioner.isSuitableForVm(vm2, RAM / 4));
+            assertTrue(ramProvisioner.allocateRamForVm(vm2, RAM / 4));
+            assertEquals(RAM / 4, ramProvisioner.getAllocatedRamForVm(vm2));
 
-		ramProvisioner.deallocateRamForVm(vm1);
-		assertEquals(RAM, ramProvisioner.getAvailableRam());
+            assertTrue(ramProvisioner.isSuitableForVm(vm2, RAM / 2));
+            assertTrue(ramProvisioner.allocateRamForVm(vm2, RAM / 2));
+            assertEquals(RAM / 2, ramProvisioner.getAllocatedRamForVm(vm2));
+    }
 
-		assertTrue(ramProvisioner.isSuitableForVm(vm1, RAM / 2));
-		assertTrue(ramProvisioner.allocateRamForVm(vm1, RAM / 2));
-		assertTrue(ramProvisioner.isSuitableForVm(vm2, RAM / 2));
-		assertTrue(ramProvisioner.allocateRamForVm(vm2, RAM / 2));
-		assertEquals(0, ramProvisioner.getAvailableRam());
+    @Test
+    public void testDeallocateBwForVm() {
+            Vm vm1 = new Vm(0, 0, 0, 0, RAM / 2, 0, 0, "", null);
+            Vm vm2 = new Vm(1, 0, 0, 0, RAM / 2, 0, 0, "", null);
 
-		ramProvisioner.deallocateRamForVm(vm1);
-		ramProvisioner.deallocateRamForVm(vm2);
-		assertEquals(RAM, ramProvisioner.getAvailableRam());
-		assertEquals(0, vm1.getCurrentAllocatedRam());
-		assertEquals(0, vm2.getCurrentAllocatedRam());
-	}
+            assertEquals(0, vm1.getCurrentAllocatedRam());
+            assertEquals(0, vm2.getCurrentAllocatedRam());
+
+            assertTrue(ramProvisioner.isSuitableForVm(vm1, RAM / 2));
+            assertTrue(ramProvisioner.allocateRamForVm(vm1, RAM / 2));
+            assertEquals(RAM / 2, ramProvisioner.getAvailableRam());
+
+            ramProvisioner.deallocateRamForVm(vm1);
+            assertEquals(RAM, ramProvisioner.getAvailableRam());
+
+            assertTrue(ramProvisioner.isSuitableForVm(vm1, RAM / 2));
+            assertTrue(ramProvisioner.allocateRamForVm(vm1, RAM / 2));
+            assertTrue(ramProvisioner.isSuitableForVm(vm2, RAM / 2));
+            assertTrue(ramProvisioner.allocateRamForVm(vm2, RAM / 2));
+            assertEquals(0, ramProvisioner.getAvailableRam());
+
+            ramProvisioner.deallocateRamForVm(vm1);
+            ramProvisioner.deallocateRamForVm(vm2);
+            assertEquals(RAM, ramProvisioner.getAvailableRam());
+            assertEquals(0, vm1.getCurrentAllocatedRam());
+            assertEquals(0, vm2.getCurrentAllocatedRam());
+    }
 
 }

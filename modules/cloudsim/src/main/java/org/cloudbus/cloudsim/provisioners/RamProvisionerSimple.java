@@ -110,7 +110,7 @@ public class RamProvisionerSimple extends RamProvisioner {
 	 * 
 	 * @param ramTable the ram map
 	 */
-	protected void setRamTable(Map<String, Integer> ramTable) {
+	protected final void setRamTable(Map<String, Integer> ramTable) {
 		this.ramTable = ramTable;
 	}
 

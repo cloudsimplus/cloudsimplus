@@ -57,44 +57,44 @@ public class PeListTest {
 	public void testSetPeStatus() {
 		assertEquals(2, PeList.getNumberOfFreePes(peList));
 		assertEquals(0, PeList.getNumberOfBusyPes(peList));
-		assertTrue(PeList.setPeStatus(peList, 0, Pe.BUSY));
-		assertEquals(Pe.BUSY, PeList.getById(peList, 0).getStatus());
+		assertTrue(PeList.setPeStatus(peList, 0, Pe.Status.BUSY));
+		assertEquals(Pe.Status.BUSY, PeList.getById(peList, 0).getStatus());
 		assertEquals(1, PeList.getNumberOfFreePes(peList));
 		assertEquals(1, PeList.getNumberOfBusyPes(peList));
-		assertTrue(PeList.setPeStatus(peList, 1, Pe.BUSY));
-		assertEquals(Pe.BUSY, PeList.getById(peList, 1).getStatus());
+		assertTrue(PeList.setPeStatus(peList, 1, Pe.Status.BUSY));
+		assertEquals(Pe.Status.BUSY, PeList.getById(peList, 1).getStatus());
 		assertEquals(0, PeList.getNumberOfFreePes(peList));
 		assertEquals(2, PeList.getNumberOfBusyPes(peList));
-		assertFalse(PeList.setPeStatus(peList, 2, Pe.BUSY));
+		assertFalse(PeList.setPeStatus(peList, 2, Pe.Status.BUSY));
 		assertEquals(0, PeList.getNumberOfFreePes(peList));
 		assertEquals(2, PeList.getNumberOfBusyPes(peList));
 	}
 
 	@Test
 	public void testSetStatusFailed() {
-		assertEquals(Pe.FREE, PeList.getById(peList, 0).getStatus());
-		assertEquals(Pe.FREE, PeList.getById(peList, 1).getStatus());
+		assertEquals(Pe.Status.FREE, PeList.getById(peList, 0).getStatus());
+		assertEquals(Pe.Status.FREE, PeList.getById(peList, 1).getStatus());
 		PeList.setStatusFailed(peList, true);
-		assertEquals(Pe.FAILED, PeList.getById(peList, 0).getStatus());
-		assertEquals(Pe.FAILED, PeList.getById(peList, 1).getStatus());
+		assertEquals(Pe.Status.FAILED, PeList.getById(peList, 0).getStatus());
+		assertEquals(Pe.Status.FAILED, PeList.getById(peList, 1).getStatus());
 		PeList.setStatusFailed(peList, false);
-		assertEquals(Pe.FREE, PeList.getById(peList, 0).getStatus());
-		assertEquals(Pe.FREE, PeList.getById(peList, 1).getStatus());
+		assertEquals(Pe.Status.FREE, PeList.getById(peList, 0).getStatus());
+		assertEquals(Pe.Status.FREE, PeList.getById(peList, 1).getStatus());
 
 		PeList.setStatusFailed(peList, "test", 0, true);
-		assertEquals(Pe.FAILED, PeList.getById(peList, 0).getStatus());
-		assertEquals(Pe.FAILED, PeList.getById(peList, 1).getStatus());
+		assertEquals(Pe.Status.FAILED, PeList.getById(peList, 0).getStatus());
+		assertEquals(Pe.Status.FAILED, PeList.getById(peList, 1).getStatus());
 		PeList.setStatusFailed(peList, "test", 0, false);
-		assertEquals(Pe.FREE, PeList.getById(peList, 0).getStatus());
-		assertEquals(Pe.FREE, PeList.getById(peList, 1).getStatus());
+		assertEquals(Pe.Status.FREE, PeList.getById(peList, 0).getStatus());
+		assertEquals(Pe.Status.FREE, PeList.getById(peList, 1).getStatus());
 	}
 
 	@Test
 	public void testFreePe() {
 		assertSame(peList.get(0), PeList.getFreePe(peList));
-		PeList.setPeStatus(peList, 0, Pe.BUSY);
+		PeList.setPeStatus(peList, 0, Pe.Status.BUSY);
 		assertSame(peList.get(1), PeList.getFreePe(peList));
-		PeList.setPeStatus(peList, 1, Pe.BUSY);
+		PeList.setPeStatus(peList, 1, Pe.Status.BUSY);
 		assertNull(PeList.getFreePe(peList));
 	}
 

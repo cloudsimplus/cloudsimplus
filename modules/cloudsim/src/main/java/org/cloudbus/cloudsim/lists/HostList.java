@@ -11,6 +11,7 @@ package org.cloudbus.cloudsim.lists;
 import java.util.List;
 
 import org.cloudbus.cloudsim.Host;
+import org.cloudbus.cloudsim.Pe;
 
 /**
  * HostList is a collection of operations on lists of hosts (PMs).
@@ -128,7 +129,7 @@ public class HostList {
 	 * 
 	 * @param <T> the generic type
 	 * @param hostList the list of existing hosts
-	 * @param status the PE status, either <tt>Pe.FREE</tt> or <tt>Pe.BUSY</tt>
+	 * @param status the new PE status
 	 * @param hostId the host id
 	 * @param peId the id of the PE to set the status
 	 * @return <tt>true</tt> if the PE status has changed, <tt>false</tt> otherwise (host id or
@@ -137,7 +138,7 @@ public class HostList {
 	 * @pre peId >= 0
 	 * @post $none
 	 */
-	public static <T extends Host> boolean setPeStatus(List<T> hostList, int status, int hostId, int peId) {
+	public static <T extends Host> boolean setPeStatus(List<T> hostList, Pe.Status status, int hostId, int peId) {
 		T host = getById(hostList, hostId);
 		if (host == null) {
 			return false;

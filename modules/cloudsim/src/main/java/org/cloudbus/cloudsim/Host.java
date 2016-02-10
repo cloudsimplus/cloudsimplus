@@ -593,13 +593,13 @@ public class Host {
 	 * Sets the particular Pe status on the host.
 	 * 
 	 * @param peId the pe id
-	 * @param status Pe status, either <tt>Pe.FREE</tt> or <tt>Pe.BUSY</tt>
+	 * @param status the new Pe status
 	 * @return <tt>true</tt> if the Pe status has changed, <tt>false</tt> otherwise (Pe id might not
 	 *         be exist)
 	 * @pre peID >= 0
 	 * @post $none
 	 */
-	public boolean setPeStatus(int peId, int status) {
+	public boolean setPeStatus(int peId, Pe.Status status) {
 		return PeList.setPeStatus(getPeList(), peId, status);
 	}
 

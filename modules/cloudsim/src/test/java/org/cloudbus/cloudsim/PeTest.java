@@ -8,10 +8,13 @@
 
 package org.cloudbus.cloudsim;
 
+import junit.framework.Assert;
+import org.cloudbus.cloudsim.provisioners.PeProvisioner;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertSame;
 
 import org.cloudbus.cloudsim.provisioners.PeProvisionerSimple;
+import org.junit.Before;
 import org.junit.Test;
 
 /**
@@ -21,18 +24,32 @@ import org.junit.Test;
 public class PeTest {
 
 	private static final double MIPS = 1000;
+        private PeProvisionerSimple peProvisioner;
+        
+	@Before
+	public void setUp() throws Exception {
+            peProvisioner = new PeProvisionerSimple(MIPS);
+	}
+        
+        private Pe createPe(){
+            peProvisioner = new PeProvisionerSimple(MIPS);            
+            return new Pe(0, peProvisioner);
+        }
 
-	@Test
+        private Pe createPe(PeProvisioner peProvisioner){
+            return new Pe(0, peProvisioner);
+        }
+
+        @Test
 	public void testGetPeProvisioner() {
-		PeProvisionerSimple peProvisioner = new PeProvisionerSimple(MIPS);
-		Pe pe = new Pe(0, peProvisioner);
+                Pe pe = createPe();
 		assertSame(peProvisioner, pe.getPeProvisioner());
 		assertEquals(MIPS, pe.getPeProvisioner().getAvailableMips(), 0);
 	}
 
 	@Test
 	public void testSetId() {
-		Pe pe = new Pe(0, null);
+		Pe pe = createPe();
 		assertEquals(0, pe.getId());
 		pe.setId(1);
 		assertEquals(1, pe.getId());
@@ -40,8 +57,7 @@ public class PeTest {
 
 	@Test
 	public void testSetMips() {
-		PeProvisionerSimple peProvisioner = new PeProvisionerSimple(MIPS);
-		Pe pe = new Pe(0, peProvisioner);
+		Pe pe = createPe();
 		assertEquals(MIPS, pe.getMips(), 0);
 		pe.setMips(MIPS / 2);
 		assertEquals(MIPS / 2, pe.getMips(), 0);
@@ -49,14 +65,30 @@ public class PeTest {
 
 	@Test
 	public void testSetStatus() {
-		Pe pe = new Pe(0, null);
-		assertEquals(Pe.FREE, pe.getStatus());
-		pe.setStatusBusy();
-		assertEquals(Pe.BUSY, pe.getStatus());
-		pe.setStatusFailed();
-		assertEquals(Pe.FAILED, pe.getStatus());
-		pe.setStatusFree();
-		assertEquals(Pe.FREE, pe.getStatus());
+		Pe pe = createPe();
+		assertEquals(Pe.Status.FREE, pe.getStatus());
+		pe.setStatus(Pe.Status.BUSY);
+		assertEquals(Pe.Status.BUSY, pe.getStatus());
+		pe.setStatus(Pe.Status.FAILED);
+		assertEquals(Pe.Status.FAILED, pe.getStatus());
+		pe.setStatus(Pe.Status.FREE);
+		assertEquals(Pe.Status.FREE, pe.getStatus());
 	}
 
+	@Test
+	public void testSetPeProvisioner() {
+            try{
+		createPe(null);
+                Assert.fail("An exception has to be thrown when setting a null peProvisioner");
+            } catch(Exception e){
+            }
+		
+            try{
+		Pe pe = createPe();
+                pe.setPeProvisioner(null);
+                Assert.fail("An exception has to be thrown when setting a null peProvisioner");
+            } catch(Exception e){
+            }
+            
+	}
 }

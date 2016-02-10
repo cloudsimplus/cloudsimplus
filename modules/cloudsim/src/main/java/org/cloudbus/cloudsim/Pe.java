@@ -15,40 +15,41 @@ import org.cloudbus.cloudsim.provisioners.PeProvisioner;
  * defined in terms of Millions Instructions Per Second (MIPS) rating.<br/>
  * <b>ASSUMPTION:</b> All PEs under the same Machine have the same MIPS rating.
  * @todo This assumption is not being assured on different class (where other TODOs where introduced)
- * @todo Pe statuses have to be defined using an enum
  * 
  * @author Manzur Murshed
  * @author Rajkumar Buyya
  * @since CloudSim Toolkit 1.0
  */
 public class Pe {
+        /**
+         * Status of PEs.
+         */
+	public enum Status {
+            /** Denotes PE is FREE for allocation. */
+            FREE,
+            /** Denotes PE is allocated and hence busy processing some Cloudlet. */
+            BUSY,
+            /**
+             * Denotes PE is failed and hence it can't process any Cloudlet at this moment. 
+             * This PE is failed because it belongs to a machine which is also failed.
+             */
+            FAILED
+        }
 
-	/** Denotes Pe is FREE for allocation. */
-	public static final int FREE = 1;
-
-	/** Denotes Pe is allocated and hence busy processing some Cloudlet. */
-	public static final int BUSY = 2;
-
-	/**
-	 * Denotes Pe is failed and hence it can't process any Cloudlet at this moment. This Pe is
-	 * failed because it belongs to a machine which is also failed.
-	 */
-	public static final int FAILED = 3;
-
-	/** The Pe id. */
+	/** @see #getId()  */
 	private int id;
 
-	/** The status of Pe: FREE, BUSY, FAILED: . */
-	private int status;
+	/** @see #getStatus()  */
+	private Status status;
 
-	/** The pe provisioner. */
+	/** @see #getPeProvisioner() */
 	private PeProvisioner peProvisioner;
 
 	/**
-	 * Instantiates a new Pe object.
+	 * Instantiates a new PE object.
 	 * 
-	 * @param id the Pe ID
-	 * @param peProvisioner the pe provisioner
+	 * @param id the PE ID
+	 * @param peProvisioner the PE provisioner
 	 * @pre id >= 0
 	 * @pre peProvisioner != null
 	 * @post $none
@@ -58,36 +59,37 @@ public class Pe {
 		setPeProvisioner(peProvisioner);
 
 		// when created it should be set to FREE, i.e. available for use.
-		status = FREE;
+		setStatus(Status.FREE);
 	}
 
 	/**
-	 * Sets the id.
+	 * Sets the {@link #getId()}.
 	 * 
-	 * @param id the new id
+	 * @param id the new PE id
 	 */
-	protected void setId(int id) {
+	protected final void setId(int id) {
 		this.id = id;
 	}
 
 	/**
-	 * Gets the id.
+	 * Gets the PE id.
 	 * 
-	 * @return the id
+	 * @return the PE id
 	 */
 	public int getId() {
 		return id;
 	}
 
 	/**
-	 * Sets the MIPS Rating of this Pe.
+	 * Sets the MIPS Rating of this PE.
 	 * 
 	 * @param d the mips
+         * @return true if MIPS > 0, false otherwise
 	 * @pre mips >= 0
 	 * @post $none
 	 */
-	public void setMips(double d) {
-		getPeProvisioner().setMips(d);
+	public boolean setMips(double d) {
+            return getPeProvisioner().setMips(d);
 	}
 
 	/**
@@ -102,72 +104,44 @@ public class Pe {
 	}
 
 	/**
-	 * Gets the status of this Pe.
+	 * Gets the status of the PE.
 	 * 
-	 * @return the status of this Pe
+	 * @return the PE status
 	 * @pre $none
 	 * @post $none
 	 */
-	public int getStatus() {
+	public Status getStatus() {
 		return status;
 	}
 
 	/**
-	 * Sets Pe status to free, meaning it is available for processing. This should be used by SPACE
-	 * shared hostList only.
+	 * Sets the {@link #getStatus() status} of the PE.
 	 * 
+	 * @param status the new PE status
 	 * @pre $none
 	 * @post $none
 	 */
-	public void setStatusFree() {
-		setStatus(FREE);
-	}
-
-	/**
-	 * Sets Pe status to busy, meaning it is already executing Cloudlets. This should be used by
-	 * SPACE shared hostList only.
-	 * 
-	 * @pre $none
-	 * @post $none
-	 */
-	public void setStatusBusy() {
-		setStatus(BUSY);
-	}
-
-	/**
-	 * Sets this Pe to FAILED.
-	 * 
-	 * @pre $none
-	 * @post $none
-	 */
-	public void setStatusFailed() {
-		setStatus(FAILED);
-	}
-
-	/**
-	 * Sets Pe status to either <tt>Pe.FREE</tt> or <tt>Pe.BUSY</tt>
-	 * 
-	 * @param status Pe status, <tt>true</tt> if it is FREE, <tt>false</tt> if BUSY.
-	 * @pre $none
-	 * @post $none
-	 */
-	public void setStatus(int status) {
+	public final void setStatus(Status status) {
 		this.status = status;
 	}
 
 	/**
-	 * Sets the pe provisioner.
+	 * Sets the {@link #getPeProvisioner()} that manages the allocation
+         * of this physical PE to virtual machines.
 	 * 
-	 * @param peProvisioner the new pe provisioner
+	 * @param peProvisioner the new PE provisioner
 	 */
-	protected void setPeProvisioner(PeProvisioner peProvisioner) {
-		this.peProvisioner = peProvisioner;
+	protected final void setPeProvisioner(PeProvisioner peProvisioner) {
+            if(peProvisioner == null)
+                throw new IllegalArgumentException("The peProvisioner of a Pe cannot be null");
+            this.peProvisioner = peProvisioner;
 	}
 
 	/**
-	 * Gets the Pe provisioner.
+	 * Gets the PE provisioner that manages the allocation
+         * of this physical PE to virtual machines.
 	 * 
-	 * @return the Pe provisioner
+	 * @return the PE provisioner
 	 */
 	public PeProvisioner getPeProvisioner() {
 		return peProvisioner;

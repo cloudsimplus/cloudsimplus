@@ -12,9 +12,9 @@ import org.cloudbus.cloudsim.Cloudlet.Status;
 import org.cloudbus.cloudsim.core.CloudSim;
 
 /**
- * CloudSim ResCloudlet represents a Cloudlet submitted to CloudResource for processing. This class
- * keeps track the time for all activities in the CloudResource for a specific Cloudlet. Before a
- * Cloudlet exits the CloudResource, it is RECOMMENDED to call this method
+ * CloudSim ResCloudlet represents a Cloudlet submitted to Datacenter for processing. This class
+ * keeps track the time for all activities in the Datacenter for a specific Cloudlet. Before a
+ * Cloudlet exits the Datacenter, it is RECOMMENDED to call this method
  * {@link #finalizeCloudlet()}.
  * <p/>
  * It contains a Cloudlet object along with its arrival time and the ID of the machine and the Pe
@@ -341,12 +341,12 @@ public class ResCloudlet {
 	}
 
 	/**
-	 * Sets this Cloudlet's execution parameters. These parameters are set by the CloudResource
+	 * Sets this Cloudlet's execution parameters. These parameters are set by the Datacenter
 	 * before departure or sending back to the original Cloudlet's owner.
 	 * 
-	 * @param wallClockTime the time of this Cloudlet resides in a CloudResource (from arrival time
+	 * @param wallClockTime the time of this Cloudlet resides in a Datacenter (from arrival time
 	 *            until departure time).
-	 * @param actualCPUTime the total execution time of this Cloudlet in a CloudResource.
+	 * @param actualCPUTime the total execution time of this Cloudlet in a Datacenter.
 	 * @pre wallClockTime >= 0.0
 	 * @pre actualCPUTime >= 0.0
 	 * @post $none
@@ -448,12 +448,12 @@ public class ResCloudlet {
 	}
 
 	/**
-	 * Finalizes all relevant information before <tt>exiting</tt> the CloudResource entity. This
+	 * Finalizes all relevant information before <tt>exiting</tt> the Datacenter entity. This
 	 * method sets the final data of:
 	 * <ul>
-	 * <li>wall clock time, i.e. the time of this Cloudlet resides in a CloudResource (from arrival
+	 * <li>wall clock time, i.e. the time of this Cloudlet resides in a Datacenter (from arrival
 	 * time until departure time).
-	 * <li>actual CPU time, i.e. the total execution time of this Cloudlet in a CloudResource.
+	 * <li>actual CPU time, i.e. the total execution time of this Cloudlet in a Datacenter.
 	 * <li>Cloudlet's finished time so far
 	 * </ul>
 	 * 

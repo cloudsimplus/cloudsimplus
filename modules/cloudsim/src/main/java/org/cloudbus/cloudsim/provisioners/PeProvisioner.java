@@ -158,16 +158,21 @@ public abstract class PeProvisioner {
 	 * @return the MIPS
 	 */
 	public double getMips() {
-		return mips;
+            return mips;
 	}
 
 	/**
 	 * Sets the MIPS.
 	 * 
 	 * @param mips the MIPS to set
+         * @return true if MIPS > 0, false otherwise
 	 */
-	public void setMips(double mips) {
-		this.mips = mips;
+	public final boolean setMips(double mips) {
+            if(mips <= 0)
+                return false;
+            
+            this.mips = mips;
+            return true;
 	}
 
 	/**
@@ -186,9 +191,16 @@ public abstract class PeProvisioner {
 	 * Sets the available MIPS in the PE.
 	 * 
 	 * @param availableMips the availableMips to set
+         * @return true if availableMips >= 0, false otherwise
 	 */
-	protected void setAvailableMips(double availableMips) {
-		this.availableMips = availableMips;
+	protected final boolean setAvailableMips(double availableMips) {
+            if(availableMips < 0)
+                return false;
+            if(availableMips > mips)
+                availableMips = mips;
+            
+            this.availableMips = availableMips;
+            return true;
 	}
 
 	/**

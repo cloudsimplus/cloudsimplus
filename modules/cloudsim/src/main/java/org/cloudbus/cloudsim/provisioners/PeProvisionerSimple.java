@@ -18,7 +18,7 @@ import org.cloudbus.cloudsim.Vm;
 /**
  * PeProvisionerSimple is an extension of {@link PeProvisioner} which uses a best-effort policy to
  * allocate virtual PEs to VMs: 
- * if there is available mips on the physical PE, it allocates to a virtual PE; otherwise, it fails. 
+ * if there is available MIPS on the physical PE, it allocates to a virtual PE; otherwise, it fails. 
  * Each host's PE has to have its own instance of a PeProvisioner.
  * 
  * @author Anton Beloglazov
