@@ -15,15 +15,22 @@ import java.util.List;
 import org.cloudbus.cloudsim.core.CloudSim;
 
 /**
- * Cloudlet is an extension to the cloudlet. It stores, despite all the
+ * Cloudlet represents a application/job/task to be executed by a {@link Vm}
+ * on behalf of a given user. It stores, despite all the
  * information encapsulated in the Cloudlet, the ID of the VM running it.
  *
  * @author Rodrigo N. Calheiros
  * @author Anton Beloglazov
  * @since CloudSim Toolkit 1.0
- * @todo The documentation is wrong. Cloudlet isn't extending any class.
+ * @see DatacenterBroker
  */
 public class Cloudlet {
+  /**
+   * Value to indicate that the cloudlet was not reserved before.
+   * @see #reservationId
+   */  
+  public static final int NOT_RESERVED = -1;
+
   public enum Status {
         /**
          * The Cloudlet has been created and added to the CloudletList object.
@@ -75,7 +82,8 @@ public class Cloudlet {
     private final int cloudletId;
 
     /**
-     * The User or Broker ID. It is advisable that broker set this ID with its
+     * The User or Broker ID that is the owner of the Cloudlet. 
+     * It is advisable that broker set this ID with its
      * own ID, so that CloudResource returns to it after the execution.
 	 *
      */
@@ -112,7 +120,7 @@ public class Cloudlet {
     private final long cloudletOutputSize;
 
     /**
-     * The number of Processing Elements (Pe) required to execute this cloudlet
+     * The number of Processing Elements (PEs) required to execute this cloudlet
      * (job).
      *
      * @see #setNumberOfPes(int)
@@ -121,8 +129,6 @@ public class Cloudlet {
 
     /**
      * The execution status of this Cloudlet.
-     *
-     * @todo It would be an enum, to avoid using int constants.
      */
     private Status status;
 
@@ -432,7 +438,7 @@ public class Cloudlet {
         this.cloudletFileSize = Math.max(1, cloudletFileSize);
         this.cloudletOutputSize = Math.max(1, cloudletOutputSize);
 
-		// Normally, a Cloudlet is only executed on a resource without being
+	// Normally, a Cloudlet is only executed on a resource without being
         // migrated to others. Hence, to reduce memory consumption, set the
         // size of this ArrayList to be less than the default one.
         resList = new ArrayList<Resource>(2);
@@ -450,7 +456,7 @@ public class Cloudlet {
         setUtilizationModelBw(utilizationModelBw);
     }
 
-	// ////////////////////// INTERNAL CLASS ///////////////////////////////////
+    // ////////////////////// INTERNAL CLASS ///////////////////////////////////
     /**
      * Internal class that keeps track of Cloudlet's movement in different
      * CloudResources. Each time a cloudlet is run on a given VM, the cloudlet's
@@ -493,10 +499,10 @@ public class Cloudlet {
          * a CloudResource name.
          */
         public String resourceName = null;
-
     }
 
-	// ////////////////////// End of Internal Class //////////////////////////
+    // ////////////////////// End of Internal Class //////////////////////////
+    
     /**
      * Sets the id of the reservation made for this cloudlet.
      *
@@ -526,16 +532,14 @@ public class Cloudlet {
     /**
      * Checks whether this Cloudlet is submitted by reserving or not.
      *
-     * @return <tt>true</tt> if this Cloudlet has reserved before,
+     * @return <tt>true</tt> if this Cloudlet was reserved before,
+     * i.e, its {@link #reservationId} is not equals to {@link #NOT_RESERVED}; 
      * <tt>false</tt> otherwise
      */
     public boolean hasReserved() {
-        if (reservationId == -1) {
-            return false;
-        }
-        return true;
+        return reservationId != NOT_RESERVED;
     }
-
+    
     /**
      * Sets the length or size (in MI) of this Cloudlet to be executed in a
      * CloudResource. It has to be the length for each individual Pe,
@@ -574,13 +578,12 @@ public class Cloudlet {
      * what might be misinterpreted by other developers.
      */
     public boolean setNetServiceLevel(final int netServiceLevel) {
-        boolean success = false;
         if (netServiceLevel > 0) {
             netToS = netServiceLevel;
-            success = true;
+            return true;
         }
 
-        return success;
+        return false;
     }
 
     /**
@@ -601,7 +604,9 @@ public class Cloudlet {
      * Gets the time the cloudlet had to wait before start executing on a
      * resource.
      *
-     * @return the waiting time
+     * @return the waiting time when the cloudlet waited 
+     * to execute; or 0 if there wasn't any waiting time
+     * or the cloudlet hasn't started to execute.
      * @pre $none
      * @post $none
      */
@@ -626,13 +631,12 @@ public class Cloudlet {
      * @post $none
      */
     public boolean setClassType(final int classType) {
-        boolean success = false;
         if (classType > 0) {
             this.classType = classType;
-            success = true;
+            return true;
         }
 
-        return success;
+        return false;
     }
 
     /**
@@ -689,14 +693,10 @@ public class Cloudlet {
      * @post $result != null
      */
     public String getCloudletHistory() {
-        String msg = null;
-        if (history == null) {
-            msg = "No history is recorded for Cloudlet #" + cloudletId;
-        } else {
-            msg = history.toString();
-        }
-
-        return msg;
+        if (history == null) 
+            return "No history is recorded for Cloudlet #" + cloudletId;
+        
+        return history.toString();
     }
 
     /**
@@ -710,6 +710,9 @@ public class Cloudlet {
      * @post $result >= 0.0
      */
     public long getCloudletFinishedSoFar() {
+        /*@todo @author manoelcampos: If -1 indicates that the cloudlet was not
+        executed yet, the return should be 0
+        not the total cloudlet length.*/
         if (index == -1) {
             return cloudletLength;
         }
@@ -1497,7 +1500,7 @@ public class Cloudlet {
      *
      * @param utilizationModelCpu the new utilization model of cpu
      */
-    public void setUtilizationModelCpu(final UtilizationModel utilizationModelCpu) {
+    public final void setUtilizationModelCpu(final UtilizationModel utilizationModelCpu) {
         this.utilizationModelCpu = utilizationModelCpu;
     }
 
@@ -1515,7 +1518,7 @@ public class Cloudlet {
      *
      * @param utilizationModelRam the new utilization model of ram
      */
-    public void setUtilizationModelRam(final UtilizationModel utilizationModelRam) {
+    public final void setUtilizationModelRam(final UtilizationModel utilizationModelRam) {
         this.utilizationModelRam = utilizationModelRam;
     }
 
@@ -1533,7 +1536,7 @@ public class Cloudlet {
      *
      * @param utilizationModelBw the new utilization model of bw
      */
-    public void setUtilizationModelBw(final UtilizationModel utilizationModelBw) {
+    public final void setUtilizationModelBw(final UtilizationModel utilizationModelBw) {
         this.utilizationModelBw = utilizationModelBw;
     }
 

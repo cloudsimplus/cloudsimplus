@@ -215,7 +215,7 @@ public class ResCloudlet {
 		totalCompletionTime = 0.0;
 		startExecTime = 0.0;
 
-		// In case a Cloudlet has been executed partially by some other grid
+		// In case a Cloudlet has been executed partially by some other cloud
 		// hostList.
 		cloudletFinishedSoFar = cloudlet.getCloudletFinishedSoFar() * Consts.MILLION;
 	}

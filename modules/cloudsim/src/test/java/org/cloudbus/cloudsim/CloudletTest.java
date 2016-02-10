@@ -15,6 +15,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertSame;
 
 import java.util.LinkedList;
+import org.junit.Assert;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -56,40 +57,88 @@ public class CloudletTest {
 		assertSame(utilizationModelRam, cloudlet.getUtilizationModelRam());
 		assertSame(utilizationModelBw, cloudlet.getUtilizationModelBw());
 	}
+        
+	@Test
+	public void testSetNetServiceLevel() {
+            final int invalid0 = 0;
+            Assert.assertFalse(
+                    "Cloudlet.setNetServiceLevel should return false", 
+                    cloudlet.setNetServiceLevel(invalid0));
+
+            final int invalidNegative = -1;
+            Assert.assertFalse(
+                    "Cloudlet.setNetServiceLevel should return false", 
+                    cloudlet.setNetServiceLevel(invalidNegative));
+
+            final int valid = 1;
+            Assert.assertTrue(
+                    "Cloudlet.setNetServiceLevel should return true", 
+                    cloudlet.setNetServiceLevel(valid));
+        }
+        
+	
 
 	@Test
+	public void testSetClassType() {
+            final int invalid0 = 0;
+            Assert.assertFalse(
+                    "Cloudlet.setClassType should return false", 
+                    cloudlet.setClassType(invalid0));
+
+            final int invalidNegative = -1;
+            Assert.assertFalse(
+                    "Cloudlet.setClassType should return false", 
+                    cloudlet.setClassType(invalidNegative));
+
+            final int valid = 1;
+            Assert.assertTrue(
+                    "Cloudlet.setClassType should return true", 
+                    cloudlet.setClassType(valid));
+        }
+
+        @Test
+	public void testHasReserved() {
+            cloudlet.setReservationId(Cloudlet.NOT_RESERVED);
+            Assert.assertFalse("Cloudlet.hasReserved should be false", cloudlet.hasReserved());
+
+            final int reservationId = 1;
+            cloudlet.setReservationId(reservationId);
+            Assert.assertTrue("Cloudlet.hasReserved should be true", cloudlet.hasReserved());
+        }
+        
+	@Test
 	public void testGetCloudletStatusString() {
-            Cloudlet cloudlet = new Cloudlet(0, 0, 0, 0, 0, null, null, null);
+            Cloudlet c = new Cloudlet(0, 0, 0, 0, 0, null, null, null);
             
-            cloudlet.setCloudletStatus(Cloudlet.Status.CREATED);
-            assertEquals("CREATED", cloudlet.getCloudletStatusString());
+            c.setCloudletStatus(Cloudlet.Status.CREATED);
+            assertEquals("CREATED", c.getCloudletStatusString());
 
-            cloudlet.setCloudletStatus(Cloudlet.Status.READY);
-            assertEquals("READY", cloudlet.getCloudletStatusString());
+            c.setCloudletStatus(Cloudlet.Status.READY);
+            assertEquals("READY", c.getCloudletStatusString());
 
-            cloudlet.setCloudletStatus(Cloudlet.Status.INEXEC);
-            assertEquals("INEXEC", cloudlet.getCloudletStatusString());
+            c.setCloudletStatus(Cloudlet.Status.INEXEC);
+            assertEquals("INEXEC", c.getCloudletStatusString());
 
-            cloudlet.setCloudletStatus(Cloudlet.Status.SUCCESS);
-            assertEquals("SUCCESS", cloudlet.getCloudletStatusString());
+            c.setCloudletStatus(Cloudlet.Status.SUCCESS);
+            assertEquals("SUCCESS", c.getCloudletStatusString());
 
-            cloudlet.setCloudletStatus(Cloudlet.Status.QUEUED);
-            assertEquals("QUEUED", cloudlet.getCloudletStatusString());
+            c.setCloudletStatus(Cloudlet.Status.QUEUED);
+            assertEquals("QUEUED", c.getCloudletStatusString());
 
-            cloudlet.setCloudletStatus(Cloudlet.Status.FAILED);
-            assertEquals("FAILED", cloudlet.getCloudletStatusString());
+            c.setCloudletStatus(Cloudlet.Status.FAILED);
+            assertEquals("FAILED", c.getCloudletStatusString());
 
-            cloudlet.setCloudletStatus(Cloudlet.Status.CANCELED);
-            assertEquals("CANCELED", cloudlet.getCloudletStatusString());
+            c.setCloudletStatus(Cloudlet.Status.CANCELED);
+            assertEquals("CANCELED", c.getCloudletStatusString());
 
-            cloudlet.setCloudletStatus(Cloudlet.Status.PAUSED);
-            assertEquals("PAUSED", cloudlet.getCloudletStatusString());
+            c.setCloudletStatus(Cloudlet.Status.PAUSED);
+            assertEquals("PAUSED", c.getCloudletStatusString());
 
-            cloudlet.setCloudletStatus(Cloudlet.Status.RESUMED);
-            assertEquals("RESUMED", cloudlet.getCloudletStatusString());
+            c.setCloudletStatus(Cloudlet.Status.RESUMED);
+            assertEquals("RESUMED", c.getCloudletStatusString());
 
-            cloudlet.setCloudletStatus(Cloudlet.Status.FAILED_RESOURCE_UNAVAILABLE);
-            assertEquals("FAILED_RESOURCE_UNAVAILABLE", cloudlet.getCloudletStatusString());
+            c.setCloudletStatus(Cloudlet.Status.FAILED_RESOURCE_UNAVAILABLE);
+            assertEquals("FAILED_RESOURCE_UNAVAILABLE", c.getCloudletStatusString());
 	}
 
         @Test
