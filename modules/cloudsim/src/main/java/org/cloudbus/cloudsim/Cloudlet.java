@@ -486,7 +486,7 @@ public class Cloudlet {
         public double costPerSec = 0.0;
 
         /**
-         * Cloudlet's length finished so far.
+         * Cloudlet's length finished so far (in MI).
          */
         public long finishedSoFar = 0;
 
@@ -701,7 +701,7 @@ public class Cloudlet {
 
     /**
      * Gets the length of this Cloudlet that has been executed so far from the
-     * latest CloudResource. This method is useful when trying to move this
+     * latest CloudResource (in MI). This method is useful when trying to move this
      * Cloudlet into different CloudResources or to cancel it.
      *
      * @return the length of a partially executed Cloudlet or the full Cloudlet
@@ -710,19 +710,12 @@ public class Cloudlet {
      * @post $result >= 0.0
      */
     public long getCloudletFinishedSoFar() {
-        /*@todo @author manoelcampos: If -1 indicates that the cloudlet was not
-        executed yet, the return should be 0
-        not the total cloudlet length.*/
         if (index == -1) {
-            return cloudletLength;
+            return 0;
         }
 
         final long finish = resList.get(index).finishedSoFar;
-        if (finish > cloudletLength) {
-            return cloudletLength;
-        }
-
-        return finish;
+        return Math.min(finish, cloudletLength);
     }
 
     /**
@@ -738,15 +731,10 @@ public class Cloudlet {
             return false;
         }
 
-        boolean completed = false;
-
-        // if result is 0 or -ve then this Cloudlet has finished
-        final long finish = resList.get(index).finishedSoFar;
-        final long result = cloudletLength - finish;
-        if (result <= 0.0) {
-            completed = true;
-        }
-        return completed;
+        final long finishedMI = resList.get(index).finishedSoFar;
+        final long remainingMI = cloudletLength - finishedMI;
+        
+        return remainingMI <= 0.0;
     }
 
     /**

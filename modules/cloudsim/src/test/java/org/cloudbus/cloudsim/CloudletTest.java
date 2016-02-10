@@ -76,7 +76,39 @@ public class CloudletTest {
                     cloudlet.setNetServiceLevel(valid));
         }
         
-	
+	@Test
+	public void testGetCloudletFinishedSoFar() {
+            final long length = 1000;
+            Cloudlet c = new Cloudlet(0, length, 1, 0, 0, null, null, null);
+            
+            assertEquals(0, c.getCloudletFinishedSoFar());
+            
+            final int resourceId = 1, cost = 1;
+            c.setResourceParameter(resourceId, cost);
+            final long finishedSoFar = length/10;
+            c.setCloudletFinishedSoFar(finishedSoFar);
+            assertEquals(finishedSoFar, c.getCloudletFinishedSoFar());
+            
+            c.setCloudletFinishedSoFar(length);
+            assertEquals(length, c.getCloudletFinishedSoFar());
+        }
+        
+	@Test
+	public void testIsFinished() {
+            final long length = 1000;
+            Cloudlet c = new Cloudlet(0, length, 1, 0, 0, null, null, null);
+            
+            Assert.assertFalse(c.isFinished());
+            
+            final int resourceId = 1, cost = 1;
+            c.setResourceParameter(resourceId, cost);
+            final long finishedSoFar = length/10;
+            c.setCloudletFinishedSoFar(finishedSoFar);
+            Assert.assertFalse(c.isFinished());
+            
+            c.setCloudletFinishedSoFar(length);
+            Assert.assertTrue(c.isFinished());
+        }        
 
 	@Test
 	public void testSetClassType() {
