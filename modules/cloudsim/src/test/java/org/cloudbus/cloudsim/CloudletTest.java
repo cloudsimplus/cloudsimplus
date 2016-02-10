@@ -76,9 +76,64 @@ public class CloudletTest {
                     cloudlet.setNetServiceLevel(valid));
         }
         
-	@Test
+        private Cloudlet createCloudlet(){
+            final UtilizationModel cpuRamAndBwUtilizationModel = new UtilizationModelFull();
+            return createCloudlet(cpuRamAndBwUtilizationModel);
+        }
+        
+        private Cloudlet createCloudlet(UtilizationModel cpuRamAndBwUtilizationModel){
+            return new Cloudlet(0, 1000, 1, 0, 0, 
+                    cpuRamAndBwUtilizationModel, 
+                    cpuRamAndBwUtilizationModel, 
+                    cpuRamAndBwUtilizationModel
+            );
+        }
+
+        private Cloudlet createCloudlet(UtilizationModel utilizationModelCPU,
+                UtilizationModel utilizationModelRAM,
+                UtilizationModel utilizationModelBW){
+            return new Cloudlet(0, 1000, 1, 0, 0, 
+                    utilizationModelCPU, 
+                    utilizationModelRAM, 
+                    utilizationModelBW
+            );
+        }
+
+        @Test
+	public void testUtilizationModels() {
+            try{
+                createCloudlet(null);
+                Assert.fail("An exception must be thrown for trying to set a null utilization model");
+            }catch (Exception e){
+            } 
+
+            Cloudlet c = createCloudlet();
+            Assert.assertNotNull(c.getUtilizationModelCpu());
+            Assert.assertNotNull(c.getUtilizationModelRam());
+            Assert.assertNotNull(c.getUtilizationModelBw());
+            
+            try{
+                c.setUtilizationModelCpu(null);
+                Assert.fail("An exception must be thrown for trying to set a null CPU utilization model");
+            }catch (Exception e){
+            } 
+
+            try{
+                c.setUtilizationModelRam(null);
+                Assert.fail("An exception must be thrown for trying to set a null RAM utilization model");
+            }catch (Exception e){
+            } 
+
+            try{
+                c.setUtilizationModelBw(null);
+                Assert.fail("An exception must be thrown for trying to set a null BW utilization model");
+            }catch (Exception e){
+            } 
+        }
+        
+        @Test
 	public void testSetSubmissionTime() {
-            Cloudlet c = new Cloudlet(0, 1000, 1, 0, 0, null, null, null);
+            Cloudlet c = createCloudlet();
             
             //Cloudlet has not assigned to a datacenter yet
             Assert.assertFalse(c.setSubmissionTime(1));
@@ -92,7 +147,7 @@ public class CloudletTest {
         
 	@Test
 	public void testSetExecParam() {
-            Cloudlet c = new Cloudlet(0, 1000, 1, 0, 0, null, null, null);
+            Cloudlet c = createCloudlet();
             
             //Cloudlet has not assigned to a datacenter yet
             Assert.assertFalse(c.setExecParam(1, 2));
@@ -106,7 +161,7 @@ public class CloudletTest {
         
 	@Test
 	public void testSetCloudletStatus() {
-            Cloudlet c = new Cloudlet(0, 1000, 1, 0, 0, null, null, null);
+            Cloudlet c = createCloudlet();
             c.setCloudletStatus(Cloudlet.Status.CREATED);
             //The status is the same of the current cloudlet status (the request has not effect)
             Assert.assertFalse(c.setCloudletStatus(Cloudlet.Status.CREATED));
@@ -122,10 +177,51 @@ public class CloudletTest {
             Assert.assertFalse(c.setCloudletStatus(newStatus));
         }
 
+	@Test
+	public void testAddRequiredFile() {
+            Cloudlet c = createCloudlet();
+            final String files[] = {"file1.txt", "file2.txt"};
+            for(String file: files){
+                Assert.assertTrue("Method file should be added", 
+                        c.addRequiredFile(file));  //file doesn't previously added
+                Assert.assertFalse("Method file shouldn't be added", 
+                        c.addRequiredFile(file)); //file already added
+            }
+        }
+
+	@Test
+	public void testDeleteRequiredFile() {
+            Cloudlet c = createCloudlet();
+            final String files[] = {"file1.txt", "file2.txt", "file3.txt"};
+            for(String file: files){
+                 c.addRequiredFile(file);  
+            }
+            
+            Assert.assertFalse(c.deleteRequiredFile("file-inexistent.txt"));
+            for(String file: files){
+                 Assert.assertTrue(c.deleteRequiredFile(file));
+                 Assert.assertFalse(c.deleteRequiredFile(file)); //already deleted
+            }
+        }
+
+	@Test
+	public void testRequiredFiles() {
+            Cloudlet c = createCloudlet();
+            final String files[] = {"file1.txt", "file2.txt", "file3.txt"};
+            c.setRequiredFiles(null); //internally it has to creates a new instance
+            Assert.assertNotNull(c.getRequiredFiles());   
+            
+            for(String file: files){
+                 c.addRequiredFile(file);  
+            }
+            
+            Assert.assertTrue(c.requiresFiles()); //it has required files
+        }
+
         @Test
 	public void testGetCloudletFinishedSoFar() {
             final long length = 1000;
-            Cloudlet c = new Cloudlet(0, length, 1, 0, 0, null, null, null);
+            Cloudlet c = createCloudlet();
             
             assertEquals(0, c.getCloudletFinishedSoFar());
             
@@ -142,7 +238,7 @@ public class CloudletTest {
 	@Test
 	public void testIsFinished() {
             final long length = 1000;
-            Cloudlet c = new Cloudlet(0, length, 1, 0, 0, null, null, null);
+            Cloudlet c = createCloudlet();
             
             Assert.assertFalse(c.isFinished());
             
@@ -186,7 +282,7 @@ public class CloudletTest {
         
 	@Test
 	public void testGetCloudletStatusString() {
-            Cloudlet c = new Cloudlet(0, 0, 0, 0, 0, null, null, null);
+            Cloudlet c = createCloudlet();
             
             c.setCloudletStatus(Cloudlet.Status.CREATED);
             assertEquals("CREATED", c.getCloudletStatusString());

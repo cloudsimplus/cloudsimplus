@@ -282,10 +282,6 @@ public class Cloudlet {
                 utilizationModelRam,
                 utilizationModelBw,
                 false);
-        vmId = NOT_ASSIGNED;        
-        accumulatedBwCost = 0;
-        costPerBw = 0;
-        requiredFiles = new LinkedList<String>();
     }
 
     /**
@@ -333,11 +329,8 @@ public class Cloudlet {
                 utilizationModelRam,
                 utilizationModelBw,
                 record);
-        vmId = NOT_ASSIGNED;
-        accumulatedBwCost = 0.0;
-        costPerBw = 0.0;
 
-        requiredFiles = fileList;
+        setRequiredFiles(fileList);
     }
 
     /**
@@ -384,11 +377,7 @@ public class Cloudlet {
                 utilizationModelRam,
                 utilizationModelBw,
                 false);
-        vmId = NOT_ASSIGNED;
-        accumulatedBwCost = 0.0;
-        costPerBw = 0.0;
-
-        requiredFiles = fileList;
+        setRequiredFiles(fileList);
     }
 
     /**
@@ -538,7 +527,7 @@ public class Cloudlet {
      * <tt>false</tt> otherwise
      */
     public boolean hasReserved() {
-        return reservationId != NOT_ASSIGNED;
+        return reservationId > NOT_ASSIGNED;
     }
     
     /**
@@ -549,7 +538,7 @@ public class Cloudlet {
      *
      * @param cloudletLength the length or size (in MI) of this Cloudlet to be
      * executed in a CloudResource
-     * @return <tt>true</tt> if it is successful, <tt>false</tt> otherwise
+     * @return <tt>true</tt> if the cloudletLength is valid, <tt>false</tt> otherwise
      *
      * @see #getCloudletTotalLength() }
      * @pre cloudletLength > 0
@@ -571,7 +560,7 @@ public class Cloudlet {
      * @param netServiceLevel determines the type of service (ToS) this cloudlet
      * receives in the network (applicable to selected PacketScheduler class
      * only)
-     * @return <code>true</code> if successful.
+     * @return <code>true</code> if the netServiceLevel is valid, false otherwise.
      * @pre netServiceLevel >= 0
      * @post $none
      *
@@ -626,7 +615,7 @@ public class Cloudlet {
      * resource.
      *
      * @param classType classType of this Cloudlet
-     * @return <tt>true</tt> if it is successful, <tt>false</tt> otherwise
+     * @return <tt>true</tt> if it is classType is valid, <tt>false</tt> otherwise
      *
      * @pre classType > 0
      * @post $none
@@ -659,7 +648,7 @@ public class Cloudlet {
      * 2 PEs. This means each Pe will execute 500 MI of this Cloudlet.
      *
      * @param numberOfPes number of Pe
-     * @return <tt>true</tt> if it is successful, <tt>false</tt> otherwise
+     * @return <tt>true</tt> if it is numberOfPes is valid, <tt>false</tt> otherwise
      *
      * @pre numPE > 0
      * @post $none
@@ -705,7 +694,7 @@ public class Cloudlet {
      * latest CloudResource (in MI). This method is useful when trying to move this
      * Cloudlet into different CloudResources or to cancel it.
      *
-     * @return the length of a partially executed Cloudlet or the full Cloudlet
+     * @return the length of a partially executed Cloudlet, or the full Cloudlet
      * length if it is completed
      * @pre $none
      * @post $result >= 0.0
@@ -744,14 +733,15 @@ public class Cloudlet {
      * cancel or to move this Cloudlet into different CloudResources.
      *
      * @param length length of this Cloudlet
-     * @return true if the length is valid as thus was set
+     * @return true if the length is valid and the cloudlet already has assigned
+     * to a Datacenter, false otherwise
      * @see gridsim.AllocPolicy
      * @see gridsim.ResCloudlet
      * @pre length >= 0.0
      * @post $none
      */
     public boolean setCloudletFinishedSoFar(final long length) {
-        if (length < 0.0 || index < 0) {
+        if (length < 0.0 || index <= NOT_ASSIGNED) {
             return false;
         }
 
@@ -871,7 +861,7 @@ public class Cloudlet {
      *
      * @param clockTime the submission time
      * @return true if the submission time is valid and 
-     * the cloudlet already was assigned to a datacenter for execution
+     * the cloudlet has already being assigned to a datacenter for execution
      * @pre clockTime >= 0.0
      * @post $none
      */
@@ -891,7 +881,8 @@ public class Cloudlet {
      * Gets the submission (arrival) time of this Cloudlet from the latest
      * CloudResource.
      *
-     * @return the submission time or <tt>0.0</tt> if none
+     * @return the submission time or <tt>0.0</tt> if 
+     * the cloudlet has never being assigned to a datacenter
      * @pre $none
      * @post $result >= 0.0
      */
@@ -903,7 +894,7 @@ public class Cloudlet {
     }
 
     /**
-     * Sets the execution start time of this Cloudlet inside a CloudResource.
+     * Sets the execution start time of this Cloudlet inside a Datacenter.
      * <br/>
      * <b>NOTE:</b> With new functionalities, such as being able to cancel / to
      * pause / to resume this Cloudlet, the execution start time only holds the
@@ -939,7 +930,7 @@ public class Cloudlet {
      * @param actualTime the total execution time of this Cloudlet in a
      * Datacenter.
      * @return true if the submission time is valid and 
-     * the cloudlet already was assigned to a datacenter for execution
+     * the cloudlet has already being assigned to a datacenter for execution
      * @see Resource#wallClockTime
      * @see Resource#actualCPUTime
      *
@@ -966,7 +957,7 @@ public class Cloudlet {
      *
      * @param newStatus the status code of this Cloudlet
      * @return true if the cloudlet status was changed,
-     * i.e, if the newStatus is different from the current status
+     * i.e, if the newStatus is different from the current status; false otherwise
      * @post $none
      */
     public boolean setCloudletStatus(final Status newStatus) {
@@ -1087,7 +1078,7 @@ public class Cloudlet {
     }
 
     /**
-     * Gets all the Datacenter names that executed this Cloudlet.
+     * Gets the names of all Datacenters that executed this Cloudlet.
      *
      * @return an array of Datacenter names where the Cloudlet has being executed
      * @pre $none
@@ -1105,7 +1096,7 @@ public class Cloudlet {
     }
 
     /**
-     * Gets all the Datacenter IDs that executed this Cloudlet.
+     * Gets the IDs of all Datacenters that executed this Cloudlet.
      *
      * @return an array of Datacenter IDs where the Cloudlet has being executed
      * @pre $none
@@ -1160,7 +1151,7 @@ public class Cloudlet {
 
     /**
      * Gets the length of this Cloudlet that has been executed so far in a given
-     * Datacenter ID. This method is useful when trying to move this Cloudlet
+     * Datacenter. This method is useful when trying to move this Cloudlet
      * into different CloudResources or to cancel it.
      *
      * @param resId the Datacenter entity ID
@@ -1178,8 +1169,7 @@ public class Cloudlet {
     }
 
     /**
-     * Gets the submission (arrival) time of this Cloudlet in the given
-     * Datacenter ID.
+     * Gets the submission (arrival) time of this Cloudlet in the given Datacenter.
      *
      * @param resId the Datacenter entity ID
      * @return the submission time or 0 if the Cloudlet has never being executed in the given Datacenter
@@ -1195,7 +1185,7 @@ public class Cloudlet {
     }
 
     /**
-     * Gets the time of this Cloudlet resides in a given Datacenter ID (from
+     * Gets the time of this Cloudlet resides in a given Datacenter (from
      * arrival time until departure time).
      *
      * @param resId a Datacenter entity ID
@@ -1269,23 +1259,23 @@ public class Cloudlet {
             return;
         }
 
-        if (num == null || history == null) { // Creates the history or
-            // transactions of this Cloudlet
+        if (num == null || history == null) { 
+            // Creates the transaction history of this Cloudlet
             newline = System.getProperty("line.separator");
             history = new StringBuffer(1000);
             history.append("Time below denotes the simulation time.");
             history.append(System.getProperty("line.separator"));
-            history.append("Time (sec)       Description Cloudlet #" + cloudletId);
+            history.append("Time (sec)       Description Cloudlet #").append(cloudletId);
             history.append(System.getProperty("line.separator"));
             history.append("------------------------------------------");
             history.append(System.getProperty("line.separator"));
             history.append(num.format(CloudSim.clock()));
-            history.append("   Creates Cloudlet ID #" + cloudletId);
+            history.append("   Creates Cloudlet ID #").append(cloudletId);
             history.append(System.getProperty("line.separator"));
         }
 
         history.append(num.format(CloudSim.clock()));
-        history.append("   " + str + newline);
+        history.append("   ").append(str).append(newline);
     }
     
     
@@ -1419,63 +1409,50 @@ public class Cloudlet {
      *
      * @param requiredFiles the new required files
      */
-    protected void setRequiredFiles(final List<String> requiredFiles) {
-        this.requiredFiles = requiredFiles;
+    protected final void setRequiredFiles(final List<String> requiredFiles) {
+        if(requiredFiles == null)
+            this.requiredFiles = new LinkedList<String>();
+        else this.requiredFiles = requiredFiles;
     }
 
     /**
      * Adds the required filename to the list.
      *
      * @param fileName the required filename
-     * @return <tt>true</tt> if succesful, <tt>false</tt> otherwise
+     * @return <tt>true</tt> if the file was added (it didn't exist in the 
+     * list of required files), <tt>false</tt> otherwise (it did already exist)
      */
     public boolean addRequiredFile(final String fileName) {
-        // if the list is empty
-        if (getRequiredFiles() == null) {
-            setRequiredFiles(new LinkedList<String>());
-        }
-
-        // then check whether filename already exists or not
-        boolean result = false;
+        //check whether filename already exists or not
         for (int i = 0; i < getRequiredFiles().size(); i++) {
             final String temp = getRequiredFiles().get(i);
             if (temp.equals(fileName)) {
-                result = true;
-                break;
+                return false;
             }
         }
 
-        if (!result) {
-            getRequiredFiles().add(fileName);
-        }
-
-        return result;
+        getRequiredFiles().add(fileName);
+        return true;
     }
 
     /**
      * Deletes the given filename from the list.
      *
      * @param filename the given filename to be deleted
-     * @return <tt>true</tt> if succesful, <tt>false</tt> otherwise
+     * @return <tt>true</tt> if the file was found and removed, <tt>false</tt> 
+     * if not found
      */
     public boolean deleteRequiredFile(final String filename) {
-        boolean result = false;
-        if (getRequiredFiles() == null) {
-            return result;
-        }
-
         for (int i = 0; i < getRequiredFiles().size(); i++) {
             final String temp = getRequiredFiles().get(i);
 
             if (temp.equals(filename)) {
                 getRequiredFiles().remove(i);
-                result = true;
-
-                break;
+                return true;
             }
         }
 
-        return result;
+        return false;
     }
 
     /**
@@ -1507,6 +1484,8 @@ public class Cloudlet {
      * @param utilizationModelCpu the new utilization model of cpu
      */
     public final void setUtilizationModelCpu(final UtilizationModel utilizationModelCpu) {
+        if(utilizationModelCpu == null)
+            throw new IllegalArgumentException("The CPU utilization model cannot be null");
         this.utilizationModelCpu = utilizationModelCpu;
     }
 
@@ -1525,6 +1504,8 @@ public class Cloudlet {
      * @param utilizationModelRam the new utilization model of ram
      */
     public final void setUtilizationModelRam(final UtilizationModel utilizationModelRam) {
+        if(utilizationModelRam == null)
+            throw new IllegalArgumentException("The RAM utilization model cannot be null");
         this.utilizationModelRam = utilizationModelRam;
     }
 
@@ -1543,6 +1524,8 @@ public class Cloudlet {
      * @param utilizationModelBw the new utilization model of bw
      */
     public final void setUtilizationModelBw(final UtilizationModel utilizationModelBw) {
+        if(utilizationModelBw == null)
+            throw new IllegalArgumentException("The BW utilization model cannot be null");
         this.utilizationModelBw = utilizationModelBw;
     }
 
