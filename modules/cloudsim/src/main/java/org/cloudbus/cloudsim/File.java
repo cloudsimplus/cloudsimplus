@@ -240,7 +240,7 @@ public class File {
 	/**
 	 * Sets the last update time of this file (in seconds). <br/>
 	 * NOTE: This time is relative to the start time. Preferably use
-	 * {@link gridsim.CloudSim#clock()} method.
+	 * {@link org.cloudbus.cloudsim.core.CloudSim#clock()} method.
 	 * 
 	 * @param time the last update time (in seconds)
 	 * @return <tt>true</tt> if successful, <tt>false</tt> otherwise

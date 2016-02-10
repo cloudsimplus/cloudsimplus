@@ -8,6 +8,7 @@
 
 package org.cloudbus.cloudsim;
 
+import org.cloudbus.cloudsim.Cloudlet.Status;
 import org.cloudbus.cloudsim.core.CloudSim;
 
 /**
@@ -83,7 +84,7 @@ public class ResCloudlet {
 
 	/**
 	 * Allocates a new ResCloudlet object upon the arrival of a Cloudlet object. The arriving time
-	 * is determined by {@link gridsim.CloudSim#clock()}.
+	 * is determined by {@link org.cloudbus.cloudsim.core.CloudSim#clock()}.
 	 * 
 	 * @param cloudlet a cloudlet object
 	 * @see gridsim.CloudSim#clock()
@@ -104,7 +105,7 @@ public class ResCloudlet {
 	/**
 	 * Allocates a new ResCloudlet object upon the arrival of a Cloudlet object. Use this
 	 * constructor to store reserved Cloudlets, i.e. Cloudlets that done reservation before. The
-	 * arriving time is determined by {@link gridsim.CloudSim#clock()}.
+	 * arriving time is determined by {@link org.cloudbus.cloudsim.core.CloudSim#clock()}.
 	 * 
 	 * @param cloudlet a cloudlet object
 	 * @param startTime a reservation start time. Can also be interpreted as starting time to
@@ -282,9 +283,9 @@ public class ResCloudlet {
 	 * @pre status >= 0
 	 * @post $none
 	 */
-	public boolean setCloudletStatus(int status) {
+	public boolean setCloudletStatus(Status status) {
 		// gets Cloudlet's previous status
-		int prevStatus = cloudlet.getCloudletStatus();
+		Status prevStatus = cloudlet.getStatus();
 
 		// if the status of a Cloudlet is the same as last time, then ignore
 		if (prevStatus == status) {
@@ -299,9 +300,9 @@ public class ResCloudlet {
 			cloudlet.setCloudletStatus(status);
 
 			// if a previous Cloudlet status is INEXEC
-			if (prevStatus == Cloudlet.INEXEC) {
+			if (prevStatus == Status.INEXEC) {
 				// and current status is either CANCELED, PAUSED or SUCCESS
-				if (status == Cloudlet.CANCELED || status == Cloudlet.PAUSED || status == Cloudlet.SUCCESS) {
+				if (status == Status.CANCELED || status == Status.PAUSED || status == Status.SUCCESS) {
 					// then update the Cloudlet completion time
 					totalCompletionTime += (clock - startExecTime);
 					index = 0;
@@ -309,14 +310,14 @@ public class ResCloudlet {
 				}
 			}
 
-			if (prevStatus == Cloudlet.RESUMED && status == Cloudlet.SUCCESS) {
+			if (prevStatus == Status.RESUMED && status == Status.SUCCESS) {
 				// then update the Cloudlet completion time
 				totalCompletionTime += (clock - startExecTime);
 				return true;
 			}
 
 			// if a Cloudlet is now in execution
-			if (status == Cloudlet.INEXEC || (prevStatus == Cloudlet.PAUSED && status == Cloudlet.RESUMED)) {
+			if (status == Status.INEXEC || (prevStatus == Status.PAUSED && status == Status.RESUMED)) {
 				startExecTime = clock;
 				cloudlet.setExecStartTime(startExecTime);
 			}
@@ -466,7 +467,7 @@ public class ResCloudlet {
 
 		long finished = 0;
 		//if (cloudlet.getCloudletTotalLength() * Consts.MILLION < cloudletFinishedSoFar) {
-		if (cloudlet.getCloudletStatus()==Cloudlet.SUCCESS) {
+		if (cloudlet.getStatus()==Status.SUCCESS) {
 			finished = cloudlet.getCloudletLength();
 		} else {
 			finished = cloudletFinishedSoFar / Consts.MILLION;
@@ -546,8 +547,8 @@ public class ResCloudlet {
 	 * @pre $none
 	 * @post $none
 	 */
-	public int getCloudletStatus() {
-		return cloudlet.getCloudletStatus();
+	public Status getCloudletStatus() {
+		return cloudlet.getStatus();
 	}
 
 	/**

@@ -39,7 +39,7 @@ public class TestExample {
 	 */
 	public static void main(String[] args) {
 
-		Log.printLine("Starting CloudSimExample1...");
+		Log.printLine("Starting TestExample...");
 
 		try {
 			int num_user = 1; // number of cloud users
@@ -78,7 +78,7 @@ public class TestExample {
 					+ NetDatacenterBroker.cachedcloudlet + " Data transfered "
 					+ NetworkConstants.totaldatatransfer);
 
-			Log.printLine("CloudSimExample1 finished!");
+			Log.printLine("TestExample finished!");
 		} catch (Exception e) {
 			e.printStackTrace();
 			Log.printLine("Unwanted errors happen");
@@ -270,7 +270,7 @@ public class TestExample {
 			cloudlet = list.get(i);
 			Log.print(indent + cloudlet.getCloudletId() + indent + indent);
 
-			if (cloudlet.getCloudletStatus() == Cloudlet.SUCCESS) {
+			if (cloudlet.getStatus() == Cloudlet.Status.SUCCESS) {
 				Log.print("SUCCESS");
 				Log.printLine(indent + indent + cloudlet.getResourceId() + indent + indent + indent
 						+ cloudlet.getVmId() + indent + indent + dft.format(cloudlet.getActualCPUTime())

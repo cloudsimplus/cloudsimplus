@@ -361,7 +361,7 @@ public class InfoPacket implements Packet {
 	 * This method should be called by routers and other entities when the InfoPacket reaches them
 	 * along with the current simulation time.
 	 * 
-	 * @param time current simulation time, use {@link gridsim.CloudSim#clock()} to obtain this
+	 * @param time current simulation time, use {@link org.cloudbus.cloudsim.core.CloudSim#clock()} to obtain this
 	 * @pre time >= 0
 	 * @post $none
          * 
@@ -383,7 +383,7 @@ public class InfoPacket implements Packet {
 	 * This method should be called by routers and other entities when the InfoPacket is leaving
 	 * them. It should also supply the current simulation time.
 	 * 
-	 * @param time current simulation time, use {@link gridsim.CloudSim#clock()} to obtain this
+	 * @param time current simulation time, use {@link org.cloudbus.cloudsim.core.CloudSim#clock()} to obtain this
 	 * @pre time >= 0
 	 * @post $none
 	 */

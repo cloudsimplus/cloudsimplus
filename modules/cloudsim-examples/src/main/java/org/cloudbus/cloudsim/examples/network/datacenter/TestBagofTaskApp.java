@@ -1,15 +1,17 @@
 package org.cloudbus.cloudsim.examples.network.datacenter;
 
 /**
- * BagofTaskApp is an example of AppCloudlet having three noncommunicating tasks. 
+ * BagofTaskApp is an example of AppCloudlet having three non-communicating tasks. 
  * 
- * 
- * Please refer to following publication for more details:
- * 
- * Saurabh Kumar Garg and Rajkumar Buyya, NetworkCloudSim: Modelling Parallel
- * Applications in Cloud Simulations, Proceedings of the 4th IEEE/ACM
- * International Conference on Utility and Cloud Computing (UCC 2011, IEEE CS
- * Press, USA), Melbourne, Australia, December 5-7, 2011.
+ * <br/>Please refer to following publication for more details:<br/>
+ * <ul>
+ * <li>
+ * <a href="http://dx.doi.org/10.1109/UCC.2011.24">
+ * Saurabh Kumar Garg and Rajkumar Buyya, NetworkCloudSim: Modelling Parallel Applications in Cloud
+ * Simulations, Proceedings of the 4th IEEE/ACM International Conference on Utility and Cloud
+ * Computing (UCC 2011, IEEE CS Press, USA), Melbourne, Australia, December 5-7, 2011.
+ * </a>
+ * </ul>
  *
  * 
  * @author Saurabh Kumar Garg
@@ -26,12 +28,32 @@ import org.cloudbus.cloudsim.network.datacenter.NetworkCloudlet;
 import org.cloudbus.cloudsim.network.datacenter.NetworkConstants;
 import org.cloudbus.cloudsim.network.datacenter.TaskStage;
 
+/**
+ * See the todo in the class documentation.
+ * 
+ * @todo This class appear to be only for tests.
+ * It has some strange code. See the TODOs inside it.
+ * It in fact is not being used and should be deleted.
+ * 
+ */
 public class TestBagofTaskApp extends AppCloudlet {
 
 	public TestBagofTaskApp(int type, int appID, double deadline, 	int numbervm, int userId) {
 		super(type, appID, deadline, numbervm,userId);
 		
+                /*@todo There is something strange here. This getter isn't
+                in fact a getter. It computes a value basd on the execTime,
+                that is strange too (how can be seen in the todo below).
+                Further, the given parameter is being ignored, so, it shound't
+                exist.*/
 		this.numbervm=this.getnumvm();
+                
+                /*@todo There is something strange here.
+                The attribute is exeTime but the getter is getExecTime (see: exec not exe).
+                The getter always returns 100, not the value stored
+                in the attribute, that is not used anywhere. There is no getter in the
+                super class.
+                */
 		this.exeTime=getExecTime()/this.numbervm;
 	}
 	

@@ -733,7 +733,7 @@ public class Helper {
 			cloudlet = list.get(i);
 			Log.print(indent + cloudlet.getCloudletId());
 
-			if (cloudlet.getCloudletStatus() == Cloudlet.SUCCESS) {
+			if (cloudlet.getStatus() == Cloudlet.Status.SUCCESS) {
 				Log.printLine(indent + "SUCCESS" + indent + indent + cloudlet.getResourceId() + indent
 						+ cloudlet.getVmId() + indent + dft.format(cloudlet.getActualCPUTime()) + indent
 						+ dft.format(cloudlet.getExecStartTime()) + indent + indent

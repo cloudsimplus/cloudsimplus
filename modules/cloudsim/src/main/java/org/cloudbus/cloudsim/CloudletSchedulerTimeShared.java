@@ -149,7 +149,7 @@ public class CloudletSchedulerTimeShared extends CloudletScheduler {
 			if (rcl.getRemainingCloudletLength() == 0) {
 				cloudletFinish(rcl);
 			} else {
-				rcl.setCloudletStatus(Cloudlet.CANCELED);
+				rcl.setCloudletStatus(Cloudlet.Status.CANCELED);
 			}
 			return rcl.getCloudlet();
 		}
@@ -160,7 +160,7 @@ public class CloudletSchedulerTimeShared extends CloudletScheduler {
 		for (ResCloudlet rcl : getCloudletPausedList()) {
 			if (rcl.getCloudletId() == cloudletId) {
 				found = true;
-				rcl.setCloudletStatus(Cloudlet.CANCELED);
+				rcl.setCloudletStatus(Cloudlet.Status.CANCELED);
 				break;
 			}
 			position++;
@@ -192,7 +192,7 @@ public class CloudletSchedulerTimeShared extends CloudletScheduler {
 			if (rcl.getRemainingCloudletLength() == 0) {
 				cloudletFinish(rcl);
 			} else {
-				rcl.setCloudletStatus(Cloudlet.PAUSED);
+				rcl.setCloudletStatus(Cloudlet.Status.PAUSED);
 				getCloudletPausedList().add(rcl);
 			}
 			return true;
@@ -202,7 +202,7 @@ public class CloudletSchedulerTimeShared extends CloudletScheduler {
 
 	@Override
 	public void cloudletFinish(ResCloudlet rcl) {
-		rcl.setCloudletStatus(Cloudlet.SUCCESS);
+		rcl.setCloudletStatus(Cloudlet.Status.SUCCESS);
 		rcl.finalizeCloudlet();
 		getCloudletFinishedList().add(rcl);
 	}
@@ -223,7 +223,7 @@ public class CloudletSchedulerTimeShared extends CloudletScheduler {
 
 		if (found) {
 			ResCloudlet rgl = getCloudletPausedList().remove(position);
-			rgl.setCloudletStatus(Cloudlet.INEXEC);
+			rgl.setCloudletStatus(Cloudlet.Status.INEXEC);
 			getCloudletExecList().add(rgl);
 
 			// calculate the expected time for cloudlet completion
@@ -242,7 +242,7 @@ public class CloudletSchedulerTimeShared extends CloudletScheduler {
 	@Override
 	public double cloudletSubmit(Cloudlet cloudlet, double fileTransferTime) {
 		ResCloudlet rcl = new ResCloudlet(cloudlet);
-		rcl.setCloudletStatus(Cloudlet.INEXEC);
+		rcl.setCloudletStatus(Cloudlet.Status.INEXEC);
 		for (int i = 0; i < cloudlet.getNumberOfPes(); i++) {
 			rcl.setMachineAndPeId(0, i);
 		}
@@ -267,12 +267,12 @@ public class CloudletSchedulerTimeShared extends CloudletScheduler {
 	public int getCloudletStatus(int cloudletId) {
 		for (ResCloudlet rcl : getCloudletExecList()) {
 			if (rcl.getCloudletId() == cloudletId) {
-				return rcl.getCloudletStatus();
+				return rcl.getCloudletStatus().ordinal();
 			}
 		}
 		for (ResCloudlet rcl : getCloudletPausedList()) {
 			if (rcl.getCloudletId() == cloudletId) {
-				return rcl.getCloudletStatus();
+				return rcl.getCloudletStatus().ordinal();
 			}
 		}
 		return -1;

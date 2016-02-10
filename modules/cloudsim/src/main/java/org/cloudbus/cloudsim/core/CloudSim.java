@@ -106,7 +106,7 @@ public class CloudSim {
 	 * <p>
 	 * 
 	 * @param numUser the number of User Entities created. This parameters indicates that
-	 *            {@link gridsim.CloudSimShutdown} first waits for all user entities's
+	 *            {@link org.cloudbus.cloudsim.core.CloudSimShutdown} first waits for all user entities's
 	 *            END_OF_SIMULATION signal before issuing terminate signal to other entities
 	 * @param cal starting time for this simulation. If it is <tt>null</tt>, then the time will be
 	 *            taken from <tt>Calendar.getInstance()</tt>
@@ -145,7 +145,7 @@ public class CloudSim {
 	 * <p>
 	 * 
 	 * @param numUser the number of User Entities created. This parameters indicates that
-	 *            {@link gridsim.CloudSimShutdown} first waits for all user entities's
+	 *            {@link org.cloudbus.cloudsim.core.CloudSimShutdown} first waits for all user entities's
 	 *            END_OF_SIMULATION signal before issuing terminate signal to other entities
 	 * @param cal starting time for this simulation. If it is <tt>null</tt>, then the time will be
 	 *            taken from <tt>Calendar.getInstance()</tt>

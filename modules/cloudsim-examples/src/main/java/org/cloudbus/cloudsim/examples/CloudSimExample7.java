@@ -311,7 +311,7 @@ public class CloudSimExample7 {
 			cloudlet = list.get(i);
 			Log.print(indent + cloudlet.getCloudletId() + indent + indent);
 
-			if (cloudlet.getCloudletStatus() == Cloudlet.SUCCESS){
+			if (cloudlet.getStatus() == Cloudlet.Status.SUCCESS){
 				Log.print("SUCCESS");
 
 				Log.printLine( indent + indent + cloudlet.getResourceId() + indent + indent + indent + cloudlet.getVmId() +

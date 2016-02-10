@@ -219,8 +219,13 @@ public abstract class RunnerAbstract {
 	 * 
 	 * @param vmAllocationPolicyName the vm allocation policy name
 	 * @param vmSelectionPolicyName the vm selection policy name
-	 * @param parameterName the parameter name
+	 * @param parameterName a double value to be passed to the specific
+         * PowerVmSelectionPolicy being created, which the meaning depends
+         * on that policy.
 	 * @return the vm allocation policy
+         * 
+         * @todo It does not make sense the use of this parameterName as String.
+         * It is always being converted to Double.
 	 */
 	protected VmAllocationPolicy getVmAllocationPolicy(
 			String vmAllocationPolicyName,

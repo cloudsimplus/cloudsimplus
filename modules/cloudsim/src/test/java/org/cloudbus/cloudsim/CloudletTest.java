@@ -58,6 +58,41 @@ public class CloudletTest {
 	}
 
 	@Test
+	public void testGetCloudletStatusString() {
+            Cloudlet cloudlet = new Cloudlet(0, 0, 0, 0, 0, null, null, null);
+            
+            cloudlet.setCloudletStatus(Cloudlet.Status.CREATED);
+            assertEquals("CREATED", cloudlet.getCloudletStatusString());
+
+            cloudlet.setCloudletStatus(Cloudlet.Status.READY);
+            assertEquals("READY", cloudlet.getCloudletStatusString());
+
+            cloudlet.setCloudletStatus(Cloudlet.Status.INEXEC);
+            assertEquals("INEXEC", cloudlet.getCloudletStatusString());
+
+            cloudlet.setCloudletStatus(Cloudlet.Status.SUCCESS);
+            assertEquals("SUCCESS", cloudlet.getCloudletStatusString());
+
+            cloudlet.setCloudletStatus(Cloudlet.Status.QUEUED);
+            assertEquals("QUEUED", cloudlet.getCloudletStatusString());
+
+            cloudlet.setCloudletStatus(Cloudlet.Status.FAILED);
+            assertEquals("FAILED", cloudlet.getCloudletStatusString());
+
+            cloudlet.setCloudletStatus(Cloudlet.Status.CANCELED);
+            assertEquals("CANCELED", cloudlet.getCloudletStatusString());
+
+            cloudlet.setCloudletStatus(Cloudlet.Status.PAUSED);
+            assertEquals("PAUSED", cloudlet.getCloudletStatusString());
+
+            cloudlet.setCloudletStatus(Cloudlet.Status.RESUMED);
+            assertEquals("RESUMED", cloudlet.getCloudletStatusString());
+
+            cloudlet.setCloudletStatus(Cloudlet.Status.FAILED_RESOURCE_UNAVAILABLE);
+            assertEquals("FAILED_RESOURCE_UNAVAILABLE", cloudlet.getCloudletStatusString());
+	}
+
+        @Test
 	public void testGetUtilizationOfCpu() {
 		assertEquals(utilizationModelCpu.getUtilization(0), cloudlet.getUtilizationOfCpu(0), 0);
 	}
