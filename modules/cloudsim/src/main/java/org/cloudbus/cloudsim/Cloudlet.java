@@ -24,12 +24,13 @@ import org.cloudbus.cloudsim.core.CloudSim;
  * @since CloudSim Toolkit 1.0
  * @see DatacenterBroker
  */
-public class Cloudlet {
+public class Cloudlet {    
   /**
-   * Value to indicate that the cloudlet was not reserved before.
+   * Value to indicate that a given cloudlet resource was not assigned yet,
+   * such as a user or a VM to run the cloudlet.
    * @see #reservationId
    */  
-  public static final int NOT_RESERVED = -1;
+  public static final int NOT_ASSIGNED = -1;
 
   public enum Status {
         /**
@@ -149,7 +150,7 @@ public class Cloudlet {
      *
      * @todo This attribute doesn't appear to be used
      */
-    private int reservationId = -1;
+    private int reservationId = NOT_ASSIGNED;
 
     /**
      * Indicates if transaction history records for this Cloudlet is to be
@@ -168,8 +169,8 @@ public class Cloudlet {
     private StringBuffer history;
 
     /**
-     * The list of every resource where the cloudlet has been executed. In case
-     * it starts and finishes executing in a single cloud resource, without
+     * The list of every {@link Datacenter} where the cloudlet has been executed. In case
+     * it starts and finishes executing in a single datacenter, without
      * being migrated, this list will have only one item.
      */
     private final List<Resource> resList;
@@ -177,8 +178,7 @@ public class Cloudlet {
     /**
      * The index of the last resource where the cloudlet was executed. If the
      * cloudlet is migrated during its execution, this index is updated. The
-     * value -1 indicates the cloudlet has not been executed
-         yet.
+     * value {@link #NOT_ASSIGNED} indicates the cloudlet has not been executed yet.
      */
     private int index;
 
@@ -282,7 +282,7 @@ public class Cloudlet {
                 utilizationModelRam,
                 utilizationModelBw,
                 false);
-        vmId = -1;        
+        vmId = NOT_ASSIGNED;        
         accumulatedBwCost = 0;
         costPerBw = 0;
         requiredFiles = new LinkedList<String>();
@@ -333,7 +333,7 @@ public class Cloudlet {
                 utilizationModelRam,
                 utilizationModelBw,
                 record);
-        vmId = -1;
+        vmId = NOT_ASSIGNED;
         accumulatedBwCost = 0.0;
         costPerBw = 0.0;
 
@@ -384,7 +384,7 @@ public class Cloudlet {
                 utilizationModelRam,
                 utilizationModelBw,
                 false);
-        vmId = -1;
+        vmId = NOT_ASSIGNED;
         accumulatedBwCost = 0.0;
         costPerBw = 0.0;
 
@@ -424,12 +424,13 @@ public class Cloudlet {
             final UtilizationModel utilizationModelRam,
             final UtilizationModel utilizationModelBw,
             final boolean record) {
-        userId = -1;          // to be set by a Broker or user
+        num = new DecimalFormat("#0.00#"); 
+        userId = NOT_ASSIGNED;          // to be set by a Broker or user
         status = Status.CREATED;
         this.cloudletId = cloudletId;
         numberOfPes = pesNumber;
         execStartTime = 0.0;
-        finishTime = -1.0;    // meaning this Cloudlet hasn't finished yet
+        finishTime = NOT_ASSIGNED;    // meaning this Cloudlet hasn't finished yet
         classType = 0;
         netToS = 0;
 
@@ -442,10 +443,10 @@ public class Cloudlet {
         // migrated to others. Hence, to reduce memory consumption, set the
         // size of this ArrayList to be less than the default one.
         resList = new ArrayList<Resource>(2);
-        index = -1;
+        index = NOT_ASSIGNED;
         this.record = record;
 
-        vmId = -1;
+        vmId = NOT_ASSIGNED;
         accumulatedBwCost = 0.0;
         costPerBw = 0.0;
 
@@ -459,29 +460,29 @@ public class Cloudlet {
     // ////////////////////// INTERNAL CLASS ///////////////////////////////////
     /**
      * Internal class that keeps track of Cloudlet's movement in different
-     * CloudResources. Each time a cloudlet is run on a given VM, the cloudlet's
-     * execution history on each VM is registered at {@link Cloudlet#resList}
+     * {@link Datacenter Datacenters}. Each time a cloudlet is run on a given Datacenter, the cloudlet's
+     * execution history on each Datacenter is registered at {@link Cloudlet#resList}
      */
     private static class Resource {
 
         /**
-         * Cloudlet's submission (arrival) time to a CloudResource.
+         * Cloudlet's submission (arrival) time to a Datacenter.
          */
         public double submissionTime = 0.0;
 
         /**
-         * The time this Cloudlet resides in a CloudResource (from arrival time
+         * The time this Cloudlet resides in a Datacenter (from arrival time
          * until departure time, that may include waiting time).
          */
         public double wallClockTime = 0.0;
 
         /**
-         * The total time the Cloudlet spent being executed in a CloudResource.
+         * The total time the Cloudlet spent being executed in a Datacenter.
          */
         public double actualCPUTime = 0.0;
 
         /**
-         * Cost per second a CloudResource charge to execute this Cloudlet.
+         * Cost per second a Datacenter charge to execute this Cloudlet.
          */
         public double costPerSec = 0.0;
 
@@ -491,14 +492,14 @@ public class Cloudlet {
         public long finishedSoFar = 0;
 
         /**
-         * a CloudResource id.
+         * a Datacenter id.
          */
-        public int resourceId = -1;
+        public int resourceId = NOT_ASSIGNED;
 
         /**
-         * a CloudResource name.
+         * The Datacenter name.
          */
-        public String resourceName = null;
+        public String resourceName = "";
     }
 
     // ////////////////////// End of Internal Class //////////////////////////
@@ -533,11 +534,11 @@ public class Cloudlet {
      * Checks whether this Cloudlet is submitted by reserving or not.
      *
      * @return <tt>true</tt> if this Cloudlet was reserved before,
-     * i.e, its {@link #reservationId} is not equals to {@link #NOT_RESERVED}; 
+     * i.e, its {@link #reservationId} is not equals to {@link #NOT_ASSIGNED}; 
      * <tt>false</tt> otherwise
      */
     public boolean hasReserved() {
-        return reservationId != NOT_RESERVED;
+        return reservationId != NOT_ASSIGNED;
     }
     
     /**
@@ -611,7 +612,7 @@ public class Cloudlet {
      * @post $none
      */
     public double getWaitingTime() {
-        if (index == -1) {
+        if (index == NOT_ASSIGNED) {
             return 0;
         }
 
@@ -710,7 +711,7 @@ public class Cloudlet {
      * @post $result >= 0.0
      */
     public long getCloudletFinishedSoFar() {
-        if (index == -1) {
+        if (index == NOT_ASSIGNED) {
             return 0;
         }
 
@@ -727,7 +728,7 @@ public class Cloudlet {
      * @post $none
      */
     public boolean isFinished() {
-        if (index == -1) {
+        if (index == NOT_ASSIGNED) {
             return false;
         }
 
@@ -743,23 +744,22 @@ public class Cloudlet {
      * cancel or to move this Cloudlet into different CloudResources.
      *
      * @param length length of this Cloudlet
+     * @return true if the length is valid as thus was set
      * @see gridsim.AllocPolicy
      * @see gridsim.ResCloudlet
      * @pre length >= 0.0
      * @post $none
      */
-    public void setCloudletFinishedSoFar(final long length) {
-        // if length is -ve then ignore
+    public boolean setCloudletFinishedSoFar(final long length) {
         if (length < 0.0 || index < 0) {
-            return;
+            return false;
         }
 
         final Resource res = resList.get(index);
         res.finishedSoFar = length;
 
-        if (record) {
-            write("Sets the length's finished so far to " + length);
-        }
+        write("Sets the length's finished so far to %d", length);
+        return true;
     }
 
     /**
@@ -767,38 +767,35 @@ public class Cloudlet {
      * to set the user ID, otherwise this Cloudlet will not be executed in a
      * CloudResource.
      *
-     * @param id the user ID
+     * @param userId the new user ID
      * @pre id >= 0
      * @post $none
      */
-    public void setUserId(final int id) {
-        userId = id;
-        if (record) {
-            write("Assigns the Cloudlet to " + CloudSim.getEntityName(id) + " (ID #" + id + ")");
-        }
+    public void setUserId(final int userId) {
+        this.userId = userId;
+        write("Assigns the Cloudlet to %s (ID #%d)", CloudSim.getEntityName(userId), userId);
     }
 
     /**
-     * Gets the user or owner ID of this Cloudlet.
+     * Gets the ID of the user or owner of this Cloudlet.
      *
-     * @return the user ID or <tt>-1</tt> if the user ID has not been set before
+     * @return the user ID or <tt>{@link #NOT_ASSIGNED}</tt> if the user ID has not been set before
      * @pre $none
-     * @post $result >= -1
      */
     public int getUserId() {
         return userId;
     }
 
     /**
-     * Gets the latest resource ID that processes this Cloudlet.
+     * Gets the ID of the latest {@link Datacenter} that has processed this Cloudlet.
      *
-     * @return the resource ID or <tt>-1</tt> if none
+     * @return the Datacenter ID or <tt>{@link #NOT_ASSIGNED}</tt> if the Cloudlet
+     * has not being processed yet.
      * @pre $none
-     * @post $result >= -1
      */
     public int getResourceId() {
-        if (index == -1) {
-            return -1;
+        if (index == NOT_ASSIGNED) {
+            return NOT_ASSIGNED;
         }
         return resList.get(index).resourceId;
     }
@@ -828,19 +825,20 @@ public class Cloudlet {
     }
 
     /**
-     * Sets the resource parameters for which the Cloudlet is going to be
+     * Sets the parameters of the Datacenter where the Cloudlet is going to be
      * executed. From the second time this method is called, every call make the
-     * cloudlet to be migrated to the indicated resource.<br>
+     * cloudlet to be migrated to the indicated Datacenter.<br>
      *
      * NOTE: This method <tt>should</tt> be called only by a resource entity,
      * not the user or owner of this Cloudlet.
      *
-     * @param resourceID the CloudResource ID
-     * @param cost the cost running this CloudResource per second
+     * @param resourceID the id of Datacenter where the cloudlet will be executed
+     * @param cost the cost per second of running the cloudlet on the given Datacenter 
      *
      * @pre resourceID >= 0
      * @pre cost > 0.0
      * @post $none
+     * @todo the method may have a better name, such as assignCloudletToDatacenter
      */
     public void setResourceParameter(final int resourceID, final double cost) {
         final Resource res = new Resource();
@@ -848,40 +846,45 @@ public class Cloudlet {
         res.costPerSec = cost;
         res.resourceName = CloudSim.getEntityName(resourceID);
 
-        // add into a list if moving to a new grid resource
+        // add into a list if moving to a new cloud datacenter
         resList.add(res);
 
-        if (index == -1 && record) {
-            write("Allocates this Cloudlet to " + res.resourceName + " (ID #" + resourceID
-                    + ") with cost = $" + cost + "/sec");
-        } else if (record) {
-            final int id = resList.get(index).resourceId;
-            final String name = resList.get(index).resourceName;
-            write("Moves Cloudlet from " + name + " (ID #" + id + ") to " + res.resourceName + " (ID #"
-                    + resourceID + ") with cost = $" + cost + "/sec");
+        if(record){
+            if (index == NOT_ASSIGNED) {
+                write(
+                    "Allocates this Cloudlet to %s (ID #%d) with cost = $%s/sec",
+                    res.resourceName,  resourceID, num.format(cost));
+            } else {
+                final int id = resList.get(index).resourceId;
+                final String name = resList.get(index).resourceName;
+                write(
+                    "Moves Cloudlet from %s (ID #%d) to %s (ID #%d) with cost = $%s/sec",
+                    name, id, res.resourceName, resourceID, num.format(cost));
+            }
         }
 
-        index++;  // initially, index = -1
+        index++;  
     }
 
     /**
      * Sets the submission (arrival) time of this Cloudlet into a CloudResource.
      *
      * @param clockTime the submission time
+     * @return true if the submission time is valid and 
+     * the cloudlet already was assigned to a datacenter for execution
      * @pre clockTime >= 0.0
      * @post $none
      */
-    public void setSubmissionTime(final double clockTime) {
-        if (clockTime < 0.0 || index < 0) {
-            return;
+    public boolean setSubmissionTime(final double clockTime) {
+        if (clockTime < 0.0 || index <= NOT_ASSIGNED) {
+            return false;
         }
 
         final Resource res = resList.get(index);
         res.submissionTime = clockTime;
 
-        if (record) {
-            write("Sets the submission time to " + num.format(clockTime));
-        }
+        write("Sets the submission time to %s", num.format(clockTime));
+        return true;
     }
 
     /**
@@ -893,7 +896,7 @@ public class Cloudlet {
      * @post $result >= 0.0
      */
     public double getSubmissionTime() {
-        if (index == -1) {
+        if (index == NOT_ASSIGNED) {
             return 0.0;
         }
         return resList.get(index).submissionTime;
@@ -912,9 +915,7 @@ public class Cloudlet {
      */
     public void setExecStartTime(final double clockTime) {
         execStartTime = clockTime;
-        if (record) {
-            write("Sets the execution start time to " + num.format(clockTime));
-        }
+        write("Sets the execution start time to %s", num.format(clockTime));
     }
 
     /**
@@ -930,14 +931,15 @@ public class Cloudlet {
 
     /**
      * Sets the Cloudlet's execution parameters. These parameters are set by the
-     * CloudResource before departure or sending back to the original Cloudlet's
+     * Datacenter before departure or sending back to the original Cloudlet's
      * owner.
      *
-     * @param wallTime the time of this Cloudlet resides in a CloudResource
+     * @param wallTime the time of this Cloudlet resides in a Datacenter
      * (from arrival time until departure time).
      * @param actualTime the total execution time of this Cloudlet in a
-     * CloudResource.
-     *
+     * Datacenter.
+     * @return true if the submission time is valid and 
+     * the cloudlet already was assigned to a datacenter for execution
      * @see Resource#wallClockTime
      * @see Resource#actualCPUTime
      *
@@ -945,43 +947,44 @@ public class Cloudlet {
      * @pre actualTime >= 0.0
      * @post $none
      */
-    public void setExecParam(final double wallTime, final double actualTime) {
-        if (wallTime < 0.0 || actualTime < 0.0 || index < 0) {
-            return;
+    public boolean setExecParam(final double wallTime, final double actualTime) {
+        if (wallTime < 0.0 || actualTime < 0.0 || index <= NOT_ASSIGNED) {
+            return false;
         }
 
         final Resource res = resList.get(index);
         res.wallClockTime = wallTime;
         res.actualCPUTime = actualTime;
 
-        if (record) {
-            write("Sets the wall clock time to " + num.format(wallTime) + " and the actual CPU time to "
-                    + num.format(actualTime));
-        }
+        write("Sets the wall clock time to %s and the actual CPU time to %s",
+              num.format(wallTime), num.format(actualTime));
+        return true;
     }
 
     /**
      * Sets the execution status code of this Cloudlet.
      *
      * @param newStatus the status code of this Cloudlet
+     * @return true if the cloudlet status was changed,
+     * i.e, if the newStatus is different from the current status
      * @post $none
      */
-    public void setCloudletStatus(final Status newStatus) {
+    public boolean setCloudletStatus(final Status newStatus) {
         // if the new status is same as current one, then ignore the rest
         if (status == newStatus) {
-            return;
+            return false;
         }
 
         if (newStatus == Status.SUCCESS) {
             finishTime = CloudSim.clock();
         }
 
-        status = newStatus;
+        write("Sets Cloudlet status from %s to %s",
+              getCloudletStatusString(),
+              Cloudlet.getCloudletStatusString(newStatus));
 
-        if (record) {
-            write("Sets Cloudlet status from " + getCloudletStatusString() + " to "
-                    + Cloudlet.getStatusString(newStatus));
-        }
+        status = newStatus;
+        return true;
     }
 
     /**
@@ -1006,7 +1009,7 @@ public class Cloudlet {
      * @post $none
      */
     public String getCloudletStatusString() {
-        return Cloudlet.getStatusString(status);
+        return Cloudlet.getCloudletStatusString(status);
     }
 
     /**
@@ -1018,7 +1021,7 @@ public class Cloudlet {
      * @pre $none
      * @post $none
      */
-    public static String getStatusString(Status status) {
+    public static String getCloudletStatusString(Status status) {
         return status.name();
     }
 
@@ -1034,7 +1037,7 @@ public class Cloudlet {
     }
 
     /**
-     * Gets the total length (across all PEs) of this Cloudlet. It considers the
+     * Gets the total length (across all PEs) of this Cloudlet (in MI). It considers the
      * {@link #cloudletLength} of the cloudlet to be executed in each Pe and the
      * {@link #numberOfPes}.<br/>
      *
@@ -1043,7 +1046,7 @@ public class Cloudlet {
      * entire cloudlet has a total length of 40000 MI.
      *
      *
-     * @return the total length of this Cloudlet
+     * @return the total length of this Cloudlet (in MI)
      *
      * @see #setCloudletLength(long)
      * @pre $none
@@ -1054,84 +1057,78 @@ public class Cloudlet {
     }
 
     /**
-     * Gets the cost/sec of running the Cloudlet in the latest CloudResource.
+     * Gets the cost/sec of running the Cloudlet in the latest Datacenter.
      *
      * @return the cost associated with running this Cloudlet or <tt>0.0</tt> if
-     * none
+     * was not assigned to any Datacenter yet
      * @pre $none
      * @post $result >= 0.0
      */
     public double getCostPerSec() {
-        if (index == -1) {
+        if (index == NOT_ASSIGNED) {
             return 0.0;
         }
         return resList.get(index).costPerSec;
     }
 
     /**
-     * Gets the time of this Cloudlet resides in the latest CloudResource (from
+     * Gets the time of this Cloudlet resides in the latest Datacenter (from
      * arrival time until departure time).
      *
-     * @return the time of this Cloudlet resides in a CloudResource
+     * @return the time of this Cloudlet resides in the latest Datacenter
      * @pre $none
      * @post $result >= 0.0
      */
     public double getWallClockTime() {
-        if (index == -1) {
+        if (index == NOT_ASSIGNED) {
             return 0.0;
         }
         return resList.get(index).wallClockTime;
     }
 
     /**
-     * Gets all the CloudResource names that executed this Cloudlet.
+     * Gets all the Datacenter names that executed this Cloudlet.
      *
-     * @return an array of CloudResource names or <tt>null</tt> if it has none
+     * @return an array of Datacenter names where the Cloudlet has being executed
      * @pre $none
      * @post $none
      */
     public String[] getAllResourceName() {
-        final int size = resList.size();
-        String[] data = null;
+        String[] data = new String[resList.size()];
 
-        if (size > 0) {
-            data = new String[size];
-            for (int i = 0; i < size; i++) {
-                data[i] = resList.get(i).resourceName;
-            }
+        int i = 0;
+        for (Resource res: resList) {
+            data[i++] = res.resourceName;
         }
 
         return data;
     }
 
     /**
-     * Gets all the CloudResource IDs that executed this Cloudlet.
+     * Gets all the Datacenter IDs that executed this Cloudlet.
      *
-     * @return an array of CloudResource IDs or <tt>null</tt> if it has none
+     * @return an array of Datacenter IDs where the Cloudlet has being executed
      * @pre $none
      * @post $none
      */
-    public int[] getAllResourceId() {
-        final int size = resList.size();
-        int[] data = null;
+    public Integer[] getAllResourceId() {
+        Integer[] data = new Integer[resList.size()];
 
-        if (size > 0) {
-            data = new int[size];
-            for (int i = 0; i < size; i++) {
-                data[i] = resList.get(i).resourceId;
-            }
+        int i = 0;
+        for (Resource res: resList) {
+            data[i++] = res.resourceId;
         }
 
         return data;
     }
 
     /**
-     * Gets the total execution time of this Cloudlet in a given CloudResource
+     * Gets the total execution time of this Cloudlet in a given Datacenter
      * ID.
      *
-     * @param resId a CloudResource entity ID
-     * @return the total execution time of this Cloudlet in a CloudResource or
-     * <tt>0.0</tt> if not found
+     * @param resId the Datacenter entity ID
+     * @return the total execution time of this Cloudlet in the given Datacenter 
+     * or 0 if the Cloudlet was not executed there
      * @pre resId >= 0
      * @post $result >= 0.0
      */
@@ -1144,10 +1141,11 @@ public class Cloudlet {
     }
 
     /**
-     * Gets the cost running this Cloudlet in a given CloudResource ID.
+     * Gets the cost running this Cloudlet in a given Datacenter ID.
      *
-     * @param resId a CloudResource entity ID
-     * @return the cost associated with running this Cloudlet or <tt>0.0</tt> if
+     * @param resId the Datacenter entity ID
+     * @return the cost associated with running this Cloudlet in the given Datacenter 
+     * or 0 if the Cloudlet was not executed there
      * not found
      * @pre resId >= 0
      * @post $result >= 0.0
@@ -1162,12 +1160,12 @@ public class Cloudlet {
 
     /**
      * Gets the length of this Cloudlet that has been executed so far in a given
-     * CloudResource ID. This method is useful when trying to move this Cloudlet
+     * Datacenter ID. This method is useful when trying to move this Cloudlet
      * into different CloudResources or to cancel it.
      *
-     * @param resId a CloudResource entity ID
-     * @return the length of a partially executed Cloudlet or the full Cloudlet
-     * length if it is completed or <tt>0.0</tt> if not found
+     * @param resId the Datacenter entity ID
+     * @return the length of a partially executed Cloudlet; the full Cloudlet
+     * length if it is completed; or 0 if the Cloudlet has never being executed in the given Datacenter
      * @pre resId >= 0
      * @post $result >= 0.0
      */
@@ -1181,10 +1179,10 @@ public class Cloudlet {
 
     /**
      * Gets the submission (arrival) time of this Cloudlet in the given
-     * CloudResource ID.
+     * Datacenter ID.
      *
-     * @param resId a CloudResource entity ID
-     * @return the submission time or <tt>0.0</tt> if not found
+     * @param resId the Datacenter entity ID
+     * @return the submission time or 0 if the Cloudlet has never being executed in the given Datacenter
      * @pre resId >= 0
      * @post $result >= 0.0
      */
@@ -1197,12 +1195,12 @@ public class Cloudlet {
     }
 
     /**
-     * Gets the time of this Cloudlet resides in a given CloudResource ID (from
+     * Gets the time of this Cloudlet resides in a given Datacenter ID (from
      * arrival time until departure time).
      *
-     * @param resId a CloudResource entity ID
-     * @return the time of this Cloudlet resides in the CloudResource or
-     * <tt>0.0</tt> if not found
+     * @param resId a Datacenter entity ID
+     * @return the time of this Cloudlet resides in the Datacenter 
+     * or 0 if the Cloudlet has never being executed there
      * @pre resId >= 0
      * @post $result >= 0.0
      */
@@ -1215,10 +1213,10 @@ public class Cloudlet {
     }
 
     /**
-     * Gets the CloudResource name based on its ID.
+     * Gets the name of a Datacenter where the cloudlet has executed.
      *
-     * @param resId a CloudResource entity ID
-     * @return the CloudResource name or <tt>null</tt> if not found
+     * @param resId the Datacenter entity ID
+     * @return the Datacenter name or "" if the Cloudlet has never being executed in the given Datacenter
      * @pre resId >= 0
      * @post $none
      */
@@ -1227,16 +1225,19 @@ public class Cloudlet {
         if (resource != null) {
             return resource.resourceName;
         }
-        return null;
+        return "";
     }
 
     /**
-     * Gets the resource by id.
+     * Gets information about the cloudlet execution on a given Datacenter.
      *
-     * @param resourceId the resource id
-     * @return the resource by id
+     * @param resourceId the Datacenter entity ID
+     * @return the Cloudlet execution information on the given datacenter
+     * or null if the Cloudlet has never being executed there
+     * @pre resId >= 0
+     * @post $none
      */
-    public Resource getResourceById(final int resourceId) {
+    private Resource getResourceById(final int resourceId) {
         for (Resource resource : resList) {
             if (resource.resourceId == resourceId) {
                 return resource;
@@ -1246,20 +1247,18 @@ public class Cloudlet {
     }
 
     /**
-     * Gets the finish time of this Cloudlet in a CloudResource.
+     * Gets the finish time of this Cloudlet in the last Datacenter.
      *
-     * @return the finish or completion time of this Cloudlet or <tt>-1</tt> if
+     * @return the finish or completion time of this Cloudlet; or <tt>-1</tt> if
      * not finished yet.
      * @pre $none
-     * @post $result >= -1
      */
     public double getFinishTime() {
         return finishTime;
     }
 
-	// //////////////////////// PROTECTED METHODS //////////////////////////////
     /**
-     * Writes this particular history transaction of this Cloudlet into a log.
+     * Writes a particular history transaction of this Cloudlet into a log.
      *
      * @param str a history transaction of this Cloudlet
      * @pre str != null
@@ -1273,7 +1272,6 @@ public class Cloudlet {
         if (num == null || history == null) { // Creates the history or
             // transactions of this Cloudlet
             newline = System.getProperty("line.separator");
-            num = new DecimalFormat("#0.00#"); // with 3 decimal spaces
             history = new StringBuffer(1000);
             history.append("Time below denotes the simulation time.");
             history.append(System.getProperty("line.separator"));
@@ -1288,6 +1286,23 @@ public class Cloudlet {
 
         history.append(num.format(CloudSim.clock()));
         history.append("   " + str + newline);
+    }
+    
+    
+    /**
+     * Writes a formatted particular history transaction of this Cloudlet into a log.
+     *
+     * @param format the format of the Cloudlet's history transaction, according
+     * to the format parameter of {@link String#format(java.lang.String, java.lang.Object...)}
+     * @param args The list of values to be shown in the history,
+     * that are referenced by the format.
+     * @pre format != null
+     * @post $none
+     * @see #write(java.lang.String) 
+     */
+    protected void write(final String format, Object... args) {
+        final String str = String.format(format, args);
+        write(str);
     }
 
     /**
@@ -1316,7 +1331,7 @@ public class Cloudlet {
     /**
      * Gets the ID of the VM that will run this Cloudlet.
      *
-     * @return VM Id, -1 if the Cloudlet was not assigned to a VM
+     * @return VM Id, {@link #NOT_ASSIGNED} if the Cloudlet was not assigned to a VM yet
      * @pre $none
      * @post $none
      */
@@ -1336,25 +1351,29 @@ public class Cloudlet {
     }
 
     /**
-     * Returns the execution time of the Cloudlet.
+     * Returns the total execution time of the Cloudlet.
      *
-     * @return time in which the Cloudlet was running
+     * @return time in which the Cloudlet was running 
+     * or {@link #NOT_ASSIGNED} if it hasn't finished yet
      * @pre $none
      * @post $none
      */
     public double getActualCPUTime() {
+        if(getFinishTime() == NOT_ASSIGNED)
+            return NOT_ASSIGNED;
+        
         return getFinishTime() - getExecStartTime();
     }
 
     /**
-     * Sets the resource parameters for which this Cloudlet is going to be
+     * Sets the parameters of the Datacenter where the Cloudlet is going to be
      * executed. <br>
      * NOTE: This method <tt>should</tt> be called only by a resource entity,
      * not the user or owner of this Cloudlet.
      *
-     * @param resourceID the CloudResource ID
-     * @param costPerCPU the cost per second of running this Cloudlet
-     * @param costPerBw the cost per byte of data transfer to the Datacenter
+     * @param resourceID the id of Datacenter where the cloudlet will be executed
+     * @param costPerCPU the cost per second of running this Cloudlet on the Datacenter
+     * @param costPerBw the cost per byte of data transfer of the Datacenter
      *
      * @pre resourceID >= 0
      * @pre cost > 0.0
@@ -1376,7 +1395,7 @@ public class Cloudlet {
      * @post $result >= 0.0
      */
     public double getProcessingCost() {
-		// cloudlet cost: execution cost...
+        // cloudlet cost: execution cost...
         // double cost = getProcessingCost();
         double cost = 0;
         // ...plus input data transfer cost...
@@ -1386,7 +1405,6 @@ public class Cloudlet {
         return cost;
     }
 
-	// Data cloudlet
     /**
      * Gets the required files.
      *

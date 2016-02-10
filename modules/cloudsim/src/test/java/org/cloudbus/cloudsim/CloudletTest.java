@@ -77,6 +77,52 @@ public class CloudletTest {
         }
         
 	@Test
+	public void testSetSubmissionTime() {
+            Cloudlet c = new Cloudlet(0, 1000, 1, 0, 0, null, null, null);
+            
+            //Cloudlet has not assigned to a datacenter yet
+            Assert.assertFalse(c.setSubmissionTime(1));
+            
+            //Assign cloudlet to a datacenter
+            final int resourceId = 1, cost = 1;
+            c.setResourceParameter(resourceId, cost);
+            
+            Assert.assertTrue(c.setSubmissionTime(1));
+        }
+        
+	@Test
+	public void testSetExecParam() {
+            Cloudlet c = new Cloudlet(0, 1000, 1, 0, 0, null, null, null);
+            
+            //Cloudlet has not assigned to a datacenter yet
+            Assert.assertFalse(c.setExecParam(1, 2));
+            
+            //Assign cloudlet to a datacenter
+            final int resourceId = 1, cost = 1;
+            c.setResourceParameter(resourceId, cost);
+            
+            Assert.assertTrue(c.setExecParam(1, 2));
+        }
+        
+	@Test
+	public void testSetCloudletStatus() {
+            Cloudlet c = new Cloudlet(0, 1000, 1, 0, 0, null, null, null);
+            c.setCloudletStatus(Cloudlet.Status.CREATED);
+            //The status is the same of the current cloudlet status (the request has not effect)
+            Assert.assertFalse(c.setCloudletStatus(Cloudlet.Status.CREATED));
+            
+            //Actually changing to a new status
+            Assert.assertTrue(c.setCloudletStatus(Cloudlet.Status.QUEUED));
+            
+            final Cloudlet.Status newStatus = Cloudlet.Status.CANCELED;
+            Assert.assertTrue(c.setCloudletStatus(newStatus));
+            assertEquals(newStatus, c.getStatus());
+            
+            //Trying to change to the same current status (the request has not effect)
+            Assert.assertFalse(c.setCloudletStatus(newStatus));
+        }
+
+        @Test
 	public void testGetCloudletFinishedSoFar() {
             final long length = 1000;
             Cloudlet c = new Cloudlet(0, length, 1, 0, 0, null, null, null);
@@ -130,7 +176,7 @@ public class CloudletTest {
 
         @Test
 	public void testHasReserved() {
-            cloudlet.setReservationId(Cloudlet.NOT_RESERVED);
+            cloudlet.setReservationId(Cloudlet.NOT_ASSIGNED);
             Assert.assertFalse("Cloudlet.hasReserved should be false", cloudlet.hasReserved());
 
             final int reservationId = 1;
