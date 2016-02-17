@@ -14,8 +14,7 @@ import java.util.List;
 
 import org.cloudbus.cloudsim.core.CloudSim;
 import org.cloudbus.cloudsim.lists.PeList;
-import org.cloudbus.cloudsim.provisioners.BwProvisioner;
-import org.cloudbus.cloudsim.provisioners.RamProvisioner;
+import org.cloudbus.cloudsim.provisioners.ResourceProvisioner;
 
 /**
  * A host supporting dynamic workloads and performance degradation.
@@ -32,7 +31,7 @@ public class HostDynamicWorkload extends Host {
 	private double previousUtilizationMips;
 
 	/** The host utilization state history. */
-	private final List<HostStateHistoryEntry> stateHistory = new LinkedList<HostStateHistoryEntry>();
+	private final List<HostStateHistoryEntry> stateHistory = new LinkedList<>();
 
 	/**
 	 * Instantiates a new host.
@@ -46,8 +45,8 @@ public class HostDynamicWorkload extends Host {
 	 */
 	public HostDynamicWorkload(
 			int id,
-			RamProvisioner ramProvisioner,
-			BwProvisioner bwProvisioner,
+			ResourceProvisioner<Integer> ramProvisioner,
+			ResourceProvisioner<Long> bwProvisioner,
 			long storage,
 			List<? extends Pe> peList,
 			VmScheduler vmScheduler) {
@@ -141,7 +140,7 @@ public class HostDynamicWorkload extends Host {
 	 * @return the completed vms
 	 */
 	public List<Vm> getCompletedVms() {
-		List<Vm> vmsToRemove = new ArrayList<Vm>();
+		List<Vm> vmsToRemove = new ArrayList<>();
 		for (Vm vm : getVmList()) {
 			if (vm.isInMigration()) {
 				continue;
@@ -177,8 +176,8 @@ public class HostDynamicWorkload extends Host {
 	 * 
 	 * @return the utilization of memory
 	 */
-	public double getUtilizationOfRam() {
-		return getRamProvisioner().getUsedRam();
+	public int getUtilizationOfRam() {
+		return getRamProvisioner().getTotalAllocatedResource();
 	}
 
 	/**
@@ -186,8 +185,8 @@ public class HostDynamicWorkload extends Host {
 	 * 
 	 * @return the utilization of bw
 	 */
-	public double getUtilizationOfBw() {
-		return getBwProvisioner().getUsedBw();
+	public long getUtilizationOfBw() {
+            return getBwProvisioner().getTotalAllocatedResource();
 	}
 
 	/**
@@ -241,7 +240,7 @@ public class HostDynamicWorkload extends Host {
 	 * 
 	 * @param utilizationMips the new utilization mips
 	 */
-	protected void setUtilizationMips(double utilizationMips) {
+	protected final void setUtilizationMips(double utilizationMips) {
 		this.utilizationMips = utilizationMips;
 	}
 
@@ -259,7 +258,7 @@ public class HostDynamicWorkload extends Host {
 	 * 
 	 * @param previousUtilizationMips the new previous utilization of CPU in mips
 	 */
-	protected void setPreviousUtilizationMips(double previousUtilizationMips) {
+	protected final void setPreviousUtilizationMips(double previousUtilizationMips) {
 		this.previousUtilizationMips = previousUtilizationMips;
 	}
 

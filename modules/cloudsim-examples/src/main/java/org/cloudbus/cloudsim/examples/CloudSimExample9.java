@@ -23,16 +23,17 @@ import org.cloudbus.cloudsim.Host;
 import org.cloudbus.cloudsim.HostDynamicWorkload;
 import org.cloudbus.cloudsim.Log;
 import org.cloudbus.cloudsim.Pe;
-import org.cloudbus.cloudsim.Storage;
 import org.cloudbus.cloudsim.UtilizationModel;
 import org.cloudbus.cloudsim.UtilizationModelFull;
 import org.cloudbus.cloudsim.Vm;
 import org.cloudbus.cloudsim.VmAllocationPolicySimple;
 import org.cloudbus.cloudsim.VmSchedulerTimeShared;
 import org.cloudbus.cloudsim.core.CloudSim;
-import org.cloudbus.cloudsim.provisioners.BwProvisionerSimple;
 import org.cloudbus.cloudsim.provisioners.PeProvisionerSimple;
-import org.cloudbus.cloudsim.provisioners.RamProvisionerSimple;
+import org.cloudbus.cloudsim.provisioners.ResourceProvisionerSimple;
+import org.cloudbus.cloudsim.resources.Bandwidth;
+import org.cloudbus.cloudsim.resources.FileStorage;
+import org.cloudbus.cloudsim.resources.Ram;
 
 /**
  * A simple example showing how to create a datacenter with two hosts and run
@@ -85,7 +86,7 @@ public class CloudSimExample9 {
             int brokerId = broker.getId();
 
             //Fourth step: Create one virtual machine
-            vmlist = new ArrayList<Vm>();
+            vmlist = new ArrayList<>();
 
             //VM description
             int vmid = 0;
@@ -111,7 +112,7 @@ public class CloudSimExample9 {
             broker.submitVmList(vmlist);
 
             //Fifth step: Create two Cloudlets
-            cloudletList = new ArrayList<Cloudlet>();
+            cloudletList = new ArrayList<>();
 
             //Cloudlet properties
             int id = 0;
@@ -184,8 +185,8 @@ public class CloudSimExample9 {
                     numberOfUsageHistoryEntries++;
                     Log.printConcatLine(
                             " Time: ", clock,
-                            " Host: ", host.getId(),
-                            " CPU Utilization (MIPS): ", hostCpuUsage);
+                            "\tHost: ", host.getId(),
+                            "\t\tCPU Utilization (MIPS): ", hostCpuUsage);
                 }
             }
             Log.printLine("--------------------------------------------------");
@@ -220,7 +221,7 @@ public class CloudSimExample9 {
 
 		// 2. A Machine contains one or more PEs or CPUs/Cores.
         // In this example, it will have only one core.
-        List<Pe> peList = new ArrayList<Pe>();
+        List<Pe> peList = new ArrayList<>();
 
         int mips = 1000;
 
@@ -231,13 +232,12 @@ public class CloudSimExample9 {
         int hostId = 0;
         int ram = 2048; //host memory (MB)
         long storage = 1000000; //host storage
-        int bw = 10000;
+        long bw = 10000;
 
-        hostList.add(
-                new HostDynamicWorkload(
+        hostList.add(new HostDynamicWorkload(
                         hostId,
-                        new RamProvisionerSimple(ram),
-                        new BwProvisionerSimple(bw),
+                        new ResourceProvisionerSimple(new Ram(ram)),
+                        new ResourceProvisionerSimple(new Bandwidth(bw)),
                         storage,
                         peList,
                         new VmSchedulerTimeShared(peList)
@@ -245,17 +245,16 @@ public class CloudSimExample9 {
         ); // This is our first machine
 
         //create another machine in the Data center
-        List<Pe> peList2 = new ArrayList<Pe>();
+        List<Pe> peList2 = new ArrayList<>();
 
         peList2.add(new Pe(0, new PeProvisionerSimple(mips)));
 
         hostId++;
 
-        hostList.add(
-                new HostDynamicWorkload(
+        hostList.add(new HostDynamicWorkload(
                         hostId,
-                        new RamProvisionerSimple(ram),
-                        new BwProvisionerSimple(bw),
+                        new ResourceProvisionerSimple(new Ram(ram)),
+                        new ResourceProvisionerSimple(new Bandwidth(bw)),
                         storage,
                         peList2,
                         new VmSchedulerTimeShared(peList2)
@@ -274,7 +273,7 @@ public class CloudSimExample9 {
         double costPerMem = 0.05;		// the cost of using memory in this resource
         double costPerStorage = 0.001;	// the cost of using storage in this resource
         double costPerBw = 0.0;			// the cost of using bw in this resource
-        LinkedList<Storage> storageList = new LinkedList<Storage>();	//we are not adding SAN devices by now
+        LinkedList<FileStorage> storageList = new LinkedList<>();	//we are not adding SAN devices by now
 
         DatacenterCharacteristics characteristics = new DatacenterCharacteristics(
                 arch, os, vmm, hostList, time_zone, cost, costPerMem, costPerStorage, costPerBw);

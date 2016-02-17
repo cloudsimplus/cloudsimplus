@@ -14,13 +14,13 @@ import java.util.Map;
 import org.cloudbus.cloudsim.Datacenter;
 import org.cloudbus.cloudsim.DatacenterCharacteristics;
 import org.cloudbus.cloudsim.Log;
-import org.cloudbus.cloudsim.Storage;
 import org.cloudbus.cloudsim.Vm;
 import org.cloudbus.cloudsim.VmAllocationPolicy;
 import org.cloudbus.cloudsim.core.CloudSim;
 import org.cloudbus.cloudsim.core.CloudSimTags;
 import org.cloudbus.cloudsim.core.SimEvent;
 import org.cloudbus.cloudsim.core.predicates.PredicateType;
+import org.cloudbus.cloudsim.resources.FileStorage;
 
 /**
  * PowerDatacenter is a class that enables simulation of power-aware data centers.
@@ -66,7 +66,7 @@ public class PowerDatacenter extends Datacenter {
 			String name,
 			DatacenterCharacteristics characteristics,
 			VmAllocationPolicy vmAllocationPolicy,
-			List<Storage> storageList,
+			List<FileStorage> storageList,
 			double schedulingInterval) throws Exception {
 		super(name, characteristics, vmAllocationPolicy, storageList, schedulingInterval);
 
@@ -275,7 +275,7 @@ public class PowerDatacenter extends Datacenter {
 	 * 
 	 * @param power the new power
 	 */
-	protected void setPower(double power) {
+	protected final void setPower(double power) {
 		this.power = power;
 	}
 
@@ -309,7 +309,7 @@ public class PowerDatacenter extends Datacenter {
 	 * 
 	 * @param disableMigrations true to disable migrations; false to enable
 	 */
-	public void setDisableMigrations(boolean disableMigrations) {
+	public final void setDisableMigrations(boolean disableMigrations) {
 		this.disableMigrations = disableMigrations;
 	}
 
@@ -327,7 +327,7 @@ public class PowerDatacenter extends Datacenter {
 	 * 
 	 * @param cloudletSubmitted the new cloudlet submited
 	 */
-	protected void setCloudletSubmitted(double cloudletSubmitted) {
+	protected final void setCloudletSubmitted(double cloudletSubmitted) {
 		this.cloudletSubmitted = cloudletSubmitted;
 	}
 
@@ -345,7 +345,7 @@ public class PowerDatacenter extends Datacenter {
 	 * 
 	 * @param migrationCount the new migration count
 	 */
-	protected void setMigrationCount(int migrationCount) {
+	protected final void setMigrationCount(int migrationCount) {
 		this.migrationCount = migrationCount;
 	}
 

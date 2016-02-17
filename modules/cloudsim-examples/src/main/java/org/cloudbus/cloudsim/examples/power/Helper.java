@@ -22,7 +22,6 @@ import org.cloudbus.cloudsim.HostDynamicWorkload;
 import org.cloudbus.cloudsim.HostStateHistoryEntry;
 import org.cloudbus.cloudsim.Log;
 import org.cloudbus.cloudsim.Pe;
-import org.cloudbus.cloudsim.Storage;
 import org.cloudbus.cloudsim.Vm;
 import org.cloudbus.cloudsim.VmAllocationPolicy;
 import org.cloudbus.cloudsim.VmSchedulerTimeSharedOverSubscription;
@@ -33,9 +32,11 @@ import org.cloudbus.cloudsim.power.PowerHost;
 import org.cloudbus.cloudsim.power.PowerHostUtilizationHistory;
 import org.cloudbus.cloudsim.power.PowerVm;
 import org.cloudbus.cloudsim.power.PowerVmAllocationPolicyMigrationAbstract;
-import org.cloudbus.cloudsim.provisioners.BwProvisionerSimple;
 import org.cloudbus.cloudsim.provisioners.PeProvisionerSimple;
-import org.cloudbus.cloudsim.provisioners.RamProvisionerSimple;
+import org.cloudbus.cloudsim.provisioners.ResourceProvisionerSimple;
+import org.cloudbus.cloudsim.resources.Bandwidth;
+import org.cloudbus.cloudsim.resources.FileStorage;
+import org.cloudbus.cloudsim.resources.Ram;
 import org.cloudbus.cloudsim.util.MathUtil;
 
 /**
@@ -89,25 +90,25 @@ public class Helper {
 	 * @return the list< power host>
 	 */
 	public static List<PowerHost> createHostList(int hostsNumber) {
-		List<PowerHost> hostList = new ArrayList<PowerHost>();
-		for (int i = 0; i < hostsNumber; i++) {
-			int hostType = i % Constants.HOST_TYPES;
+            List<PowerHost> hostList = new ArrayList<>();
+            for (int i = 0; i < hostsNumber; i++) {
+                int hostType = i % Constants.HOST_TYPES;
 
-			List<Pe> peList = new ArrayList<Pe>();
-			for (int j = 0; j < Constants.HOST_PES[hostType]; j++) {
-				peList.add(new Pe(j, new PeProvisionerSimple(Constants.HOST_MIPS[hostType])));
-			}
+                List<Pe> peList = new ArrayList<>();
+                for (int j = 0; j < Constants.HOST_PES[hostType]; j++) {
+                        peList.add(new Pe(j, new PeProvisionerSimple(Constants.HOST_MIPS[hostType])));
+                }
 
-			hostList.add(new PowerHostUtilizationHistory(
-					i,
-					new RamProvisionerSimple(Constants.HOST_RAM[hostType]),
-					new BwProvisionerSimple(Constants.HOST_BW),
-					Constants.HOST_STORAGE,
-					peList,
-					new VmSchedulerTimeSharedOverSubscription(peList),
-					Constants.HOST_POWER[hostType]));
-		}
-		return hostList;
+                hostList.add(new PowerHostUtilizationHistory(
+                    i,
+                    new ResourceProvisionerSimple(new Ram(Constants.HOST_RAM[hostType])),
+                    new ResourceProvisionerSimple(new Bandwidth(Constants.HOST_BW)),
+                    Constants.HOST_STORAGE,
+                    peList,
+                    new VmSchedulerTimeSharedOverSubscription(peList),
+                    Constants.HOST_POWER[hostType]));
+            }
+            return hostList;
 	}
 
 	/**
@@ -175,7 +176,7 @@ public class Helper {
 					name,
 					characteristics,
 					vmAllocationPolicy,
-					new LinkedList<Storage>(),
+					new LinkedList<FileStorage>(),
 					Constants.SCHEDULING_INTERVAL);
 		} catch (Exception e) {
 			e.printStackTrace();

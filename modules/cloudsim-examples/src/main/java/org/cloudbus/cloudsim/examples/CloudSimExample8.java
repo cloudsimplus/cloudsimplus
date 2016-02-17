@@ -24,7 +24,7 @@ import org.cloudbus.cloudsim.DatacenterCharacteristics;
 import org.cloudbus.cloudsim.Host;
 import org.cloudbus.cloudsim.Log;
 import org.cloudbus.cloudsim.Pe;
-import org.cloudbus.cloudsim.Storage;
+import org.cloudbus.cloudsim.resources.FileStorage;
 import org.cloudbus.cloudsim.UtilizationModel;
 import org.cloudbus.cloudsim.UtilizationModelFull;
 import org.cloudbus.cloudsim.Vm;
@@ -33,14 +33,15 @@ import org.cloudbus.cloudsim.VmSchedulerTimeShared;
 import org.cloudbus.cloudsim.core.CloudSim;
 import org.cloudbus.cloudsim.core.SimEntity;
 import org.cloudbus.cloudsim.core.SimEvent;
-import org.cloudbus.cloudsim.provisioners.BwProvisionerSimple;
 import org.cloudbus.cloudsim.provisioners.PeProvisionerSimple;
-import org.cloudbus.cloudsim.provisioners.RamProvisionerSimple;
+import org.cloudbus.cloudsim.provisioners.ResourceProvisionerSimple;
+import org.cloudbus.cloudsim.resources.Bandwidth;
+import org.cloudbus.cloudsim.resources.Ram;
 
 /**
  * An example showing how to create simulation entities
  * (a DatacenterBroker in this example) in run-time using
- * a globar manager entity (GlobalBroker).
+ * a global manager entity (GlobalBroker).
  */
 public class CloudSimExample8 {
 
@@ -187,13 +188,12 @@ public class CloudSimExample8 {
 		int hostId=0;
 		int ram = 16384; //host memory (MB)
 		long storage = 1000000; //host storage
-		int bw = 10000;
+		long bw = 10000;
 
-		hostList.add(
-    			new Host(
+		hostList.add(new Host(
     				hostId,
-    				new RamProvisionerSimple(ram),
-    				new BwProvisionerSimple(bw),
+                                new ResourceProvisionerSimple(new Ram(ram)),
+                                new ResourceProvisionerSimple(new Bandwidth(bw)),
     				storage,
     				peList1,
     				new VmSchedulerTimeShared(peList1)
@@ -202,11 +202,10 @@ public class CloudSimExample8 {
 
 		hostId++;
 
-		hostList.add(
-    			new Host(
+		hostList.add(new Host(
     				hostId,
-    				new RamProvisionerSimple(ram),
-    				new BwProvisionerSimple(bw),
+                                new ResourceProvisionerSimple(new Ram(ram)),
+                                new ResourceProvisionerSimple(new Bandwidth(bw)),
     				storage,
     				peList2,
     				new VmSchedulerTimeShared(peList2)
@@ -225,7 +224,7 @@ public class CloudSimExample8 {
 		double costPerMem = 0.05;		// the cost of using memory in this resource
 		double costPerStorage = 0.1;	// the cost of using storage in this resource
 		double costPerBw = 0.1;			// the cost of using bw in this resource
-		LinkedList<Storage> storageList = new LinkedList<Storage>();	//we are not adding SAN devices by now
+		LinkedList<FileStorage> storageList = new LinkedList<>();	//we are not adding SAN devices by now
 
 		DatacenterCharacteristics characteristics = new DatacenterCharacteristics(
                 arch, os, vmm, hostList, time_zone, cost, costPerMem, costPerStorage, costPerBw);

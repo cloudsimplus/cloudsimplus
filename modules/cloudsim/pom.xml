@@ -64,7 +64,16 @@
 				</tags>
 			</configuration>
 		</plugin>
-	</plugins>
+  	 <plugin>
+  	  <groupId>org.apache.maven.plugins</groupId>
+  	  <artifactId>maven-compiler-plugin</artifactId>
+  	  <version>2.3.2</version>
+  	  <configuration>
+  	   <source>1.7</source>
+  	   <target>1.7</target>
+  	  </configuration>
+  	 </plugin>
+  	</plugins>
   </build>
     <dependencies>
         <dependency>
@@ -96,6 +105,17 @@
 		<artifactId>maven-surefire-report-plugin</artifactId>
 		<version>2.11</version>
 	  </plugin>
+          <plugin>
+            <!-- 
+             Plugin for code coverage, enabling
+             generation of reports on IDE to see percentage
+             of the project's code that is being covered by unit tests. 
+            -->
+            <groupId>org.codehaus.mojo</groupId>
+            <artifactId>cobertura-maven-plugin</artifactId>
+            <version>2.6</version>
+          </plugin>
+          
 	</plugins>
   </reporting>	
   

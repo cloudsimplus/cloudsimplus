@@ -24,21 +24,22 @@ import org.cloudbus.cloudsim.Host;
 import org.cloudbus.cloudsim.Log;
 import org.cloudbus.cloudsim.NetworkTopology;
 import org.cloudbus.cloudsim.Pe;
-import org.cloudbus.cloudsim.Storage;
+import org.cloudbus.cloudsim.resources.FileStorage;
 import org.cloudbus.cloudsim.UtilizationModel;
 import org.cloudbus.cloudsim.UtilizationModelFull;
 import org.cloudbus.cloudsim.Vm;
 import org.cloudbus.cloudsim.VmAllocationPolicySimple;
 import org.cloudbus.cloudsim.VmSchedulerSpaceShared;
 import org.cloudbus.cloudsim.core.CloudSim;
-import org.cloudbus.cloudsim.provisioners.BwProvisionerSimple;
 import org.cloudbus.cloudsim.provisioners.PeProvisionerSimple;
-import org.cloudbus.cloudsim.provisioners.RamProvisionerSimple;
+import org.cloudbus.cloudsim.provisioners.ResourceProvisionerSimple;
+import org.cloudbus.cloudsim.resources.Bandwidth;
+import org.cloudbus.cloudsim.resources.Ram;
 
 /**
  * A simple example showing how to create
- * two datacenters with one host each and
- * run cloudlets of two users with network
+ * 2 datacenters with 1 host each and
+ * run cloudlets of 2 users with network
  * topology on them.
  */
 public class NetworkExample3 {
@@ -197,16 +198,15 @@ public class NetworkExample3 {
 		int hostId=0;
 		int ram = 2048; //host memory (MB)
 		long storage = 1000000; //host storage
-		int bw = 10000;
+		long bw = 10000;
 
 
 		//in this example, the VMAllocatonPolicy in use is SpaceShared. It means that only one VM
 		//is allowed to run on each Pe. As each Host has only one Pe, only one VM can run on each Host.
-		hostList.add(
-				new Host(
+		hostList.add(new Host(
 					hostId,
-					new RamProvisionerSimple(ram),
-					new BwProvisionerSimple(bw),
+                                        new ResourceProvisionerSimple(new Ram(ram)),
+                                        new ResourceProvisionerSimple(new Bandwidth(bw)),
 					storage,
 					peList,
 					new VmSchedulerSpaceShared(peList)
@@ -225,7 +225,7 @@ public class NetworkExample3 {
 		double costPerMem = 0.05;		// the cost of using memory in this resource
 		double costPerStorage = 0.001;	// the cost of using storage in this resource
 		double costPerBw = 0.0;			// the cost of using bw in this resource
-		LinkedList<Storage> storageList = new LinkedList<Storage>();	//we are not adding SAN devices by now
+		LinkedList<FileStorage> storageList = new LinkedList<>();	//we are not adding SAN devices by now
 
 		DatacenterCharacteristics characteristics = new DatacenterCharacteristics(
 				arch, os, vmm, hostList, time_zone, cost, costPerMem,

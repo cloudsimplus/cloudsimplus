@@ -13,10 +13,10 @@ import static org.junit.Assert.assertTrue;
 
 import java.util.ArrayList;
 import java.util.List;
-
-import org.cloudbus.cloudsim.provisioners.BwProvisionerSimple;
 import org.cloudbus.cloudsim.provisioners.PeProvisionerSimple;
-import org.cloudbus.cloudsim.provisioners.RamProvisionerSimple;
+import org.cloudbus.cloudsim.resources.Bandwidth;
+import org.cloudbus.cloudsim.provisioners.ResourceProvisionerSimple;
+import org.cloudbus.cloudsim.resources.Ram;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -26,72 +26,79 @@ import org.junit.Test;
  */
 public class HostDynamicWorkloadTest {
 
-	private static final int ID = 0;
-	private static final long STORAGE = Consts.MILLION;
-	private static final int RAM = 1024;
-	private static final int BW = 10000;
-	private static final double MIPS = 1000;
+    private static final int ID = 0;
+    private static final long STORAGE = Consts.MILLION;
+    private static final int RAM = 1024;
+    private static final long BW = 10000;
+    private static final double MIPS = 1000;
 
-	private HostDynamicWorkload host;
-	private List<Pe> peList;
+    private HostDynamicWorkload host;
+    private List<Pe> peList;
 
-	@Before
-	public void setUp() throws Exception {
-		peList = new ArrayList<Pe>();
-		peList.add(new Pe(0, new PeProvisionerSimple(MIPS)));
-		peList.add(new Pe(1, new PeProvisionerSimple(MIPS)));
+    @Before
+    public void setUp() throws Exception {
+            peList = new ArrayList<>();
+            peList.add(new Pe(0, new PeProvisionerSimple(MIPS)));
+            peList.add(new Pe(1, new PeProvisionerSimple(MIPS)));
+            host = new HostDynamicWorkload (
+                    ID,
+                    new ResourceProvisionerSimple<>(new Ram(RAM)),
+                    new ResourceProvisionerSimple<>(new Bandwidth(BW)),
+                    STORAGE,
+                    peList,
+                    new VmSchedulerTimeShared(peList)
+            );
+    }
 
-		host = new HostDynamicWorkload (
-			ID,
-			new RamProvisionerSimple(RAM),
-			new BwProvisionerSimple(BW),
-			STORAGE,
-			peList,
-			new VmSchedulerTimeShared(peList)
-		);
-	}
+    @Test
+    public void testGetMaxUtilizationOneVm() {
+            Vm vm0 = VmTest.createVmWithOnePeAndHalfMips(0);
 
-	@Test
-	public void testGetUtilizationOfCPU() {
-		assertEquals(0, host.getUtilizationOfCpu(), 0);
-	}
+            assertTrue(peList.get(0).getPeProvisioner().allocateMipsForVm(vm0, MIPS / 3));
+            assertEquals((MIPS / 3) / MIPS, host.getMaxUtilization(), 0.001);
+    }
 
-	@Test
-	public void testGetUtilizationOfCPUMips() {
-		assertEquals(0, host.getUtilizationOfCpuMips(), 0);
-	}
+    @Test
+    public void testGetMaxUtilization() {
+            Vm vm0 = VmTest.createVmWithOnePeAndHalfMips(0);
+            Vm vm1 = VmTest.createVmWithOnePeAndHalfMips(1);
 
-	@Test
-	public void testGetUtilizationOfRam() {
-		assertEquals(0, host.getUtilizationOfRam(), 0);
-	}
+            assertTrue(peList.get(0).getPeProvisioner().allocateMipsForVm(vm0, MIPS / 3));
+            assertTrue(peList.get(1).getPeProvisioner().allocateMipsForVm(vm1, MIPS / 5));
 
-	@Test
-	public void testGetUtilizationOfBW() {
-		assertEquals(0, host.getUtilizationOfBw(), 0);
-	}
+            assertEquals((MIPS / 3) / MIPS, host.getMaxUtilization(), 0.001);
+    }
 
-	@Test
-	public void testGetMaxUtilization() {
-		Vm vm0 = new Vm(0, 0, MIPS / 2, 1, 0, 0, 0, "", null);
-		Vm vm1 = new Vm(1, 0, MIPS / 2, 1, 0, 0, 0, "", null);
+    @Test
+    public void testGetUtilizationOfCPU() {
+            assertEquals(0.0, host.getUtilizationOfCpu(), 0);
+    }
 
-		assertTrue(peList.get(0).getPeProvisioner().allocateMipsForVm(vm0, MIPS / 3));
-		assertTrue(peList.get(1).getPeProvisioner().allocateMipsForVm(vm1, MIPS / 5));
+    @Test
+    public void testGetUtilizationOfCPUMips() {
+            assertEquals(0.0, host.getUtilizationOfCpuMips(), 0);
+    }
 
-		assertEquals((MIPS / 3) / MIPS, host.getMaxUtilization(), 0.001);
-	}
+    @Test
+    public void testGetUtilizationOfRam() {
+            assertEquals(0, host.getUtilizationOfRam());
+    }
 
-	@Test
-	public void testGetMaxUtilizationAmongVmsPes() {
-		Vm vm0 = new Vm(0, 0, MIPS / 2, 1, 0, 0, 0, "", null);
-		Vm vm1 = new Vm(1, 0, MIPS / 2, 1, 0, 0, 0, "", null);
+    @Test
+    public void testGetUtilizationOfBW() {
+            final long usedBw = host.getUtilizationOfBw();
+            assertEquals(0L, usedBw);
+    }
 
-		assertTrue(peList.get(0).getPeProvisioner().allocateMipsForVm(vm0, MIPS / 3));
-		assertTrue(peList.get(1).getPeProvisioner().allocateMipsForVm(vm1, MIPS / 5));
+    @Test
+    public void testGetMaxUtilizationAmongVmsPes() {
+            Vm vm0 = VmTest.createVmWithOnePeAndHalfMips(0);
+            Vm vm1 = VmTest.createVmWithOnePeAndHalfMips(1);
 
-		assertEquals((MIPS / 3) / MIPS, host.getMaxUtilizationAmongVmsPes(vm0), 0.001);
-		assertEquals((MIPS / 5) / MIPS, host.getMaxUtilizationAmongVmsPes(vm1), 0.001);
-	}
+            assertTrue(peList.get(0).getPeProvisioner().allocateMipsForVm(vm0, MIPS / 3));
+            assertTrue(peList.get(1).getPeProvisioner().allocateMipsForVm(vm1, MIPS / 5));
 
+            assertEquals((MIPS / 3) / MIPS, host.getMaxUtilizationAmongVmsPes(vm0), 0.001);
+            assertEquals((MIPS / 5) / MIPS, host.getMaxUtilizationAmongVmsPes(vm1), 0.001);
+    }
 }

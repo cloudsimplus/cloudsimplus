@@ -32,40 +32,6 @@ public class Cloudlet {
    */  
   public static final int NOT_ASSIGNED = -1;
 
-    /**
-     * Gets the cost of each byte of bandwidth (bw) consumed.
-     * @return the cost per bw
-     */
-    public double getCostPerBw() {
-        return costPerBw;
-    }
-
-    /**
-     * Sets {@link #getCostPerBw() the cost of each byte of bandwidth (bw)} consumed.
-     * @param costPerBw the new cost per bw to set
-     */
-    private void setCostPerBw(double costPerBw) {
-        this.costPerBw = costPerBw;
-    }
-
-    /**
-     * The total bandwidth (bw) cost for transferring the cloudlet by the
-     * network, according to the {@link #cloudletFileSize}.
-     * 
-     * @return the accumulated bw cost
-     */
-    public double getAccumulatedBwCost() {
-        return accumulatedBwCost;
-    }
-
-    /**
-     * Sets the {@link #getAccumulatedBwCost() accumulated bw cost}.
-     * @param accumulatedBwCost the accumulated bw cost to set
-     */
-    private void setAccumulatedBwCost(double accumulatedBwCost) {
-        this.accumulatedBwCost = accumulatedBwCost;
-    }
-
   /**
    * Status of Cloudlets
    */
@@ -213,7 +179,7 @@ public class Cloudlet {
      *
      * @param cloudletId the unique ID of this Cloudlet
      * @param cloudletLength the length or size (in MI) of this cloudlet to be
-     * executed in a PowerDatacenter
+     * executed in a Datacenter
      * @param cloudletFileSize the file size (in byte) of this cloudlet
      * <tt>BEFORE</tt> submitting to a Datacenter
      * @param cloudletOutputSize the file size (in byte) of this cloudlet
@@ -352,11 +318,11 @@ public class Cloudlet {
      *
      * @param cloudletId the unique ID of this cloudlet
      * @param cloudletLength the length or size (in MI) of this cloudlet to be
-     * executed in a PowerDatacenter
+     * executed in a Datacenter
      * @param cloudletFileSize the file size (in byte) of this cloudlet
      * <tt>BEFORE</tt> submitting to a PowerDatacenter
      * @param cloudletOutputSize the file size (in byte) of this cloudlet
-     * <tt>AFTER</tt> finish executing by a PowerDatacenter
+     * <tt>AFTER</tt> finish executing by a Datacenter
      * @param record record the history of this object or not
      * @param pesNumber the pes number
      * @param utilizationModelCpu the utilization model of cpu
@@ -398,7 +364,7 @@ public class Cloudlet {
 	// Normally, a Cloudlet is only executed on a resource without being
         // migrated to others. Hence, to reduce memory consumption, set the
         // size of this ArrayList to be less than the default one.
-        resList = new ArrayList<Resource>(2);
+        resList = new ArrayList<>(2);
         index = NOT_ASSIGNED;
         this.record = record;
 
@@ -406,7 +372,7 @@ public class Cloudlet {
         setAccumulatedBwCost(0.0);
         setCostPerBw(0.0);
 
-        requiredFiles = new LinkedList<String>();
+        requiredFiles = new LinkedList<>();
 
         setUtilizationModelCpu(utilizationModelCpu);
         setUtilizationModelRam(utilizationModelRam);
@@ -620,12 +586,14 @@ public class Cloudlet {
     }
 
     /**
-     * Gets the number of Processing Elements (PEs) required to execute this cloudlet.
+     * Gets the number of Processing Elements (PEs) from the VM, that is 
+     * required to execute this cloudlet.
      *
      * @return number of PEs
      *
      * @pre $none
      * @post $none
+     * @see #getCloudletTotalLength() 
      */
     public int getNumberOfPes() {
         return numberOfPes;
@@ -842,7 +810,7 @@ public class Cloudlet {
      * CloudResource.
      *
      * @return the submission time or <tt>0.0</tt> if 
-     * the cloudlet has never being assigned to a datacenter
+     * the cloudlet has never been assigned to a datacenter
      * @pre $none
      * @post $result >= 0.0
      */
@@ -988,7 +956,7 @@ public class Cloudlet {
 
     /**
      * Gets the execution length of this Cloudlet (Unit: in Million Instructions
-     * (MI)). According to this length and the power of the processor (in
+     * (MI)). According to this length and the power of the VM processor (in
      * Million Instruction Per Second - MIPS) where the cloudlet will be run,
      * the cloudlet will take a given time to finish processing. For instance,
      * for a cloudlet of 10000 MI running on a processor of 2000 MIPS, the
@@ -1000,6 +968,7 @@ public class Cloudlet {
      * @pre $none
      * @post $result >= 0.0
      * @see #getNumberOfPes() 
+     * @see #getCloudletTotalLength() 
      */
     public long getCloudletLength() {
         return cloudletLength;
@@ -1007,7 +976,7 @@ public class Cloudlet {
 
     /**
      * Gets the total length (across all PEs) of this Cloudlet (in MI). It considers the
-     * {@link #cloudletLength} of the cloudlet to be executed in each Pe and the
+     * {@link #cloudletLength} of the cloudlet will be executed in each Pe defined by
      * {@link #numberOfPes}.<br/>
      *
      * For example, setting the cloudletLenght as 10000 MI and
@@ -1134,7 +1103,7 @@ public class Cloudlet {
      *
      * @param resId the Datacenter entity ID
      * @return the length of a partially executed Cloudlet; the full Cloudlet
-     * length if it is completed; or 0 if the Cloudlet has never being executed in the given Datacenter
+     * length if it is completed; or 0 if the Cloudlet has never been executed in the given Datacenter
      * @pre resId >= 0
      * @post $result >= 0.0
      */
@@ -1150,7 +1119,7 @@ public class Cloudlet {
      * Gets the submission (arrival) time of this Cloudlet in the given Datacenter.
      *
      * @param resId the Datacenter entity ID
-     * @return the submission time or 0 if the Cloudlet has never being executed in the given Datacenter
+     * @return the submission time or 0 if the Cloudlet has never been executed in the given Datacenter
      * @pre resId >= 0
      * @post $result >= 0.0
      */
@@ -1168,7 +1137,7 @@ public class Cloudlet {
      *
      * @param resId a Datacenter entity ID
      * @return the time of this Cloudlet resides in the Datacenter 
-     * or 0 if the Cloudlet has never being executed there
+     * or 0 if the Cloudlet has never been executed there
      * @pre resId >= 0
      * @post $result >= 0.0
      */
@@ -1184,7 +1153,7 @@ public class Cloudlet {
      * Gets the name of a Datacenter where the cloudlet has executed.
      *
      * @param resId the Datacenter entity ID
-     * @return the Datacenter name or "" if the Cloudlet has never being executed in the given Datacenter
+     * @return the Datacenter name or "" if the Cloudlet has never been executed in the given Datacenter
      * @pre resId >= 0
      * @post $none
      */
@@ -1201,7 +1170,7 @@ public class Cloudlet {
      *
      * @param resourceId the Datacenter entity ID
      * @return the Cloudlet execution information on the given datacenter
-     * or null if the Cloudlet has never being executed there
+     * or null if the Cloudlet has never been executed there
      * @pre resId >= 0
      * @post $none
      */
@@ -1538,4 +1507,37 @@ public class Cloudlet {
         return getUtilizationModelBw().getUtilization(time);
     }
 
+    /**
+     * Gets the cost of each byte of bandwidth (bw) consumed.
+     * @return the cost per bw
+     */
+    public double getCostPerBw() {
+        return costPerBw;
+    }
+
+    /**
+     * Sets {@link #getCostPerBw() the cost of each byte of bandwidth (bw)} consumed.
+     * @param costPerBw the new cost per bw to set
+     */
+    private void setCostPerBw(double costPerBw) {
+        this.costPerBw = costPerBw;
+    }
+
+    /**
+     * The total bandwidth (bw) cost for transferring the cloudlet by the
+     * network, according to the {@link #cloudletFileSize}.
+     * 
+     * @return the accumulated bw cost
+     */
+    public double getAccumulatedBwCost() {
+        return accumulatedBwCost;
+    }
+
+    /**
+     * Sets the {@link #getAccumulatedBwCost() accumulated bw cost}.
+     * @param accumulatedBwCost the accumulated bw cost to set
+     */
+    private void setAccumulatedBwCost(double accumulatedBwCost) {
+        this.accumulatedBwCost = accumulatedBwCost;
+    }    
 }

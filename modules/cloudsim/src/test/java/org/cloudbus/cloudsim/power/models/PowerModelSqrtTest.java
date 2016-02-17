@@ -53,8 +53,6 @@ public class PowerModelSqrtTest {
 		assertEquals(MAX_POWER * STATIC_POWER_PERCENT + (MAX_POWER - MAX_POWER * STATIC_POWER_PERCENT) / Math.sqrt(100) * Math.sqrt(0.5 * 100), powerModel.getPower(0.5), 0);
 	}
 
-	@Test
-	@Ignore
 	public void testPrintPower() {
 		for (int i = 0; i <= 100; i++) {
 			Log.print(String.format("%d;%.2f\n", i, powerModel.getPower((double) i / 100)));

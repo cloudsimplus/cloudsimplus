@@ -12,7 +12,7 @@ import org.cloudbus.cloudsim.DatacenterCharacteristics;
 import org.cloudbus.cloudsim.Host;
 import org.cloudbus.cloudsim.Log;
 import org.cloudbus.cloudsim.Pe;
-import org.cloudbus.cloudsim.Storage;
+import org.cloudbus.cloudsim.resources.FileStorage;
 import org.cloudbus.cloudsim.VmSchedulerTimeShared;
 import org.cloudbus.cloudsim.core.CloudSim;
 import org.cloudbus.cloudsim.network.datacenter.EdgeSwitch;
@@ -22,9 +22,10 @@ import org.cloudbus.cloudsim.network.datacenter.NetworkDatacenter;
 import org.cloudbus.cloudsim.network.datacenter.NetworkHost;
 import org.cloudbus.cloudsim.network.datacenter.NetworkVm;
 import org.cloudbus.cloudsim.network.datacenter.NetworkVmAllocationPolicy;
-import org.cloudbus.cloudsim.provisioners.BwProvisionerSimple;
 import org.cloudbus.cloudsim.provisioners.PeProvisionerSimple;
-import org.cloudbus.cloudsim.provisioners.RamProvisionerSimple;
+import org.cloudbus.cloudsim.provisioners.ResourceProvisionerSimple;
+import org.cloudbus.cloudsim.resources.Bandwidth;
+import org.cloudbus.cloudsim.resources.Ram;
 
 public class TestExample {
 
@@ -115,13 +116,13 @@ public class TestExample {
 		// of machines
 		int ram = 2048; // host memory (MB)
 		long storage = 1000000; // host storage
-		int bw = 10000;
+		long bw = 10000;
 		for (int i = 0; i < NetworkConstants.EdgeSwitchPort * NetworkConstants.AggSwitchPort
 				* NetworkConstants.RootSwitchPort; i++) {
 			// 2. A Machine contains one or more PEs or CPUs/Cores.
 			// In this example, it will have only one core.
 			// 3. Create PEs and add these into an object of PowerPeList.
-			List<Pe> peList = new ArrayList<Pe>();
+			List<Pe> peList = new ArrayList<>();
 			peList.add(new Pe(0, new PeProvisionerSimple(mips))); // need to
 			// store
 			// PowerPe
@@ -175,8 +176,8 @@ public class TestExample {
 			// the list of machines
 			hostList.add(new NetworkHost(
 					i,
-					new RamProvisionerSimple(ram),
-					new BwProvisionerSimple(bw),
+                                        new ResourceProvisionerSimple(new Ram(ram)),
+                                        new ResourceProvisionerSimple(new Bandwidth(bw)),
 					storage,
 					peList,
 					new VmSchedulerTimeShared(peList))); // This is our machine
@@ -195,7 +196,7 @@ public class TestExample {
 		double costPerStorage = 0.001; // the cost of using storage in this
 		// resource
 		double costPerBw = 0.0; // the cost of using bw in this resource
-		LinkedList<Storage> storageList = new LinkedList<Storage>(); // we are
+		LinkedList<FileStorage> storageList = new LinkedList<>(); // we are
 		// not
 		// adding
 		// SAN

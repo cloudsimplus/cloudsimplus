@@ -13,12 +13,12 @@ import java.util.Map;
 
 import org.cloudbus.cloudsim.DatacenterCharacteristics;
 import org.cloudbus.cloudsim.Log;
-import org.cloudbus.cloudsim.Storage;
 import org.cloudbus.cloudsim.Vm;
 import org.cloudbus.cloudsim.VmAllocationPolicy;
 import org.cloudbus.cloudsim.core.CloudSim;
 import org.cloudbus.cloudsim.core.CloudSimTags;
 import org.cloudbus.cloudsim.core.predicates.PredicateType;
+import org.cloudbus.cloudsim.resources.FileStorage;
 
 /**
  * PowerDatacenterNonPowerAware is a class that represents a <b>non-power</b> aware data center in the
@@ -54,7 +54,7 @@ public class PowerDatacenterNonPowerAware extends PowerDatacenter {
 			String name,
 			DatacenterCharacteristics characteristics,
 			VmAllocationPolicy vmAllocationPolicy,
-			List<Storage> storageList,
+			List<FileStorage> storageList,
 			double schedulingInterval) throws Exception {
 		super(name, characteristics, vmAllocationPolicy, storageList, schedulingInterval);
 	}

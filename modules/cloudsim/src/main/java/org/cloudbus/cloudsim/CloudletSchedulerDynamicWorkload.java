@@ -246,7 +246,7 @@ public class CloudletSchedulerDynamicWorkload extends CloudletSchedulerTimeShare
 	 * 
 	 * @param mips the new total mips
 	 */
-	public void setTotalMips(double mips) {
+	public final void setTotalMips(double mips) {
 		totalMips = mips;
 	}
 
@@ -264,7 +264,7 @@ public class CloudletSchedulerDynamicWorkload extends CloudletSchedulerTimeShare
 	 * 
 	 * @param pesNumber the new pes number
 	 */
-	public void setNumberOfPes(int pesNumber) {
+	public final void setNumberOfPes(int pesNumber) {
 		numberOfPes = pesNumber;
 	}
 
@@ -273,7 +273,7 @@ public class CloudletSchedulerDynamicWorkload extends CloudletSchedulerTimeShare
 	 * 
 	 * @return the pes number
 	 */
-	public int getNumberOfPes() {
+	public final int getNumberOfPes() {
 		return numberOfPes;
 	}
 
@@ -282,7 +282,7 @@ public class CloudletSchedulerDynamicWorkload extends CloudletSchedulerTimeShare
 	 * 
 	 * @param mips the new mips
 	 */
-	public void setMips(double mips) {
+	public final void setMips(double mips) {
 		this.mips = mips;
 	}
 
@@ -291,7 +291,7 @@ public class CloudletSchedulerDynamicWorkload extends CloudletSchedulerTimeShare
 	 * 
 	 * @return the mips
 	 */
-	public double getMips() {
+	public final double getMips() {
 		return mips;
 	}
 
@@ -300,7 +300,7 @@ public class CloudletSchedulerDynamicWorkload extends CloudletSchedulerTimeShare
 	 * 
 	 * @param underAllocatedMips the under allocated mips
 	 */
-	public void setUnderAllocatedMips(Map<String, Double> underAllocatedMips) {
+	public final void setUnderAllocatedMips(Map<String, Double> underAllocatedMips) {
 		this.underAllocatedMips = underAllocatedMips;
 	}
 
@@ -327,7 +327,7 @@ public class CloudletSchedulerDynamicWorkload extends CloudletSchedulerTimeShare
 	 * 
 	 * @param cachePreviousTime the new cache previous time
 	 */
-	protected void setCachePreviousTime(double cachePreviousTime) {
+	protected final void setCachePreviousTime(double cachePreviousTime) {
 		this.cachePreviousTime = cachePreviousTime;
 	}
 

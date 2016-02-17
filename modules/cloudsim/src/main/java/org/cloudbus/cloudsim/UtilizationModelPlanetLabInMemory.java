@@ -14,7 +14,8 @@ public class UtilizationModelPlanetLabInMemory implements UtilizationModel {
 	/** The scheduling interval. */
 	private double schedulingInterval;
 
-	/** The data (5 min * 288 = 24 hours). */
+	/** The resource utilization data for an entire day,
+         * in intervals of 5 minutes (5 min * 288 = 24 hours). */
 	private final double[] data; 
 	
 	/**
@@ -28,15 +29,15 @@ public class UtilizationModelPlanetLabInMemory implements UtilizationModel {
 	public UtilizationModelPlanetLabInMemory(String inputPath, double schedulingInterval)
 			throws NumberFormatException,
 			IOException {
-		data = new double[289];
-		setSchedulingInterval(schedulingInterval);
-		BufferedReader input = new BufferedReader(new FileReader(inputPath));
-		int n = data.length;
-		for (int i = 0; i < n - 1; i++) {
-			data[i] = Integer.valueOf(input.readLine()) / 100.0;
-		}
-		data[n - 1] = data[n - 2];
-		input.close();
+            data = new double[289];
+            setSchedulingInterval(schedulingInterval);
+            try (BufferedReader input = new BufferedReader(new FileReader(inputPath))) {
+                int n = data.length;
+                for (int i = 0; i < n - 1; i++) {
+                    data[i] = Integer.valueOf(input.readLine()) / 100.0;
+                }
+                data[n - 1] = data[n - 2];
+            }
 	}
 	
 	/**
@@ -51,15 +52,15 @@ public class UtilizationModelPlanetLabInMemory implements UtilizationModel {
 	public UtilizationModelPlanetLabInMemory(String inputPath, double schedulingInterval, int dataSamples)
 			throws NumberFormatException,
 			IOException {
-		setSchedulingInterval(schedulingInterval);
-		data = new double[dataSamples];
-		BufferedReader input = new BufferedReader(new FileReader(inputPath));
-		int n = data.length;
-		for (int i = 0; i < n - 1; i++) {
-			data[i] = Integer.valueOf(input.readLine()) / 100.0;
-		}
-		data[n - 1] = data[n - 2];
-		input.close();
+            setSchedulingInterval(schedulingInterval);
+            data = new double[dataSamples];
+            try (BufferedReader input = new BufferedReader(new FileReader(inputPath))) {
+                int n = data.length;
+                for (int i = 0; i < n - 1; i++) {
+                    data[i] = Integer.valueOf(input.readLine()) / 100.0;
+                }
+                data[n - 1] = data[n - 2];
+            }
 	}
 
 	@Override
@@ -82,7 +83,7 @@ public class UtilizationModelPlanetLabInMemory implements UtilizationModel {
 	 * 
 	 * @param schedulingInterval the new scheduling interval
 	 */
-	public void setSchedulingInterval(double schedulingInterval) {
+	public final void setSchedulingInterval(double schedulingInterval) {
 		this.schedulingInterval = schedulingInterval;
 	}
 

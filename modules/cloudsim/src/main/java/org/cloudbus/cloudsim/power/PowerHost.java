@@ -14,8 +14,7 @@ import org.cloudbus.cloudsim.HostDynamicWorkload;
 import org.cloudbus.cloudsim.Pe;
 import org.cloudbus.cloudsim.VmScheduler;
 import org.cloudbus.cloudsim.power.models.PowerModel;
-import org.cloudbus.cloudsim.provisioners.BwProvisioner;
-import org.cloudbus.cloudsim.provisioners.RamProvisioner;
+import org.cloudbus.cloudsim.provisioners.ResourceProvisioner;
 
 /**
  * PowerHost class enables simulation of power-aware hosts.
@@ -47,11 +46,12 @@ public class PowerHost extends HostDynamicWorkload {
 	 * @param storage the storage capacity
 	 * @param peList the host's PEs list
 	 * @param vmScheduler the VM scheduler
+         * @param powerModel the model of power consumption
 	 */
 	public PowerHost(
 			int id,
-			RamProvisioner ramProvisioner,
-			BwProvisioner bwProvisioner,
+			ResourceProvisioner<Integer> ramProvisioner,
+			ResourceProvisioner<Long> bwProvisioner,
 			long storage,
 			List<? extends Pe> peList,
 			VmScheduler vmScheduler,
@@ -125,7 +125,7 @@ public class PowerHost extends HostDynamicWorkload {
 	 * 
 	 * @param powerModel the new power model
 	 */
-	protected void setPowerModel(PowerModel powerModel) {
+	protected final void setPowerModel(PowerModel powerModel) {
 		this.powerModel = powerModel;
 	}
 

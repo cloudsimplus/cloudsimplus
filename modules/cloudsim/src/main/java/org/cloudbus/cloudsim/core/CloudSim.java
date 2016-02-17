@@ -28,7 +28,7 @@ import org.cloudbus.cloudsim.core.predicates.PredicateNone;
  * network model used by CloudSim, a topology file written in BRITE format is used to describe the
  * network. Later, nodes in such file are mapped to CloudSim entities. Delay calculated from the
  * BRITE model are added to the messages send through CloudSim. Messages using the old model are
- * converted to the apropriate methods with the correct parameters.
+ * converted to the appropriate methods with the correct parameters.
  * 
  * @author Rodrigo N. Calheiros
  * @author Anton Beloglazov

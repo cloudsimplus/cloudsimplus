@@ -19,12 +19,12 @@ import org.cloudbus.cloudsim.Datacenter;
 import org.cloudbus.cloudsim.DatacenterCharacteristics;
 import org.cloudbus.cloudsim.Host;
 import org.cloudbus.cloudsim.Log;
-import org.cloudbus.cloudsim.Storage;
 import org.cloudbus.cloudsim.Vm;
 import org.cloudbus.cloudsim.VmAllocationPolicy;
 import org.cloudbus.cloudsim.core.CloudSim;
 import org.cloudbus.cloudsim.core.CloudSimTags;
 import org.cloudbus.cloudsim.core.SimEvent;
+import org.cloudbus.cloudsim.resources.FileStorage;
 
 /**
  * NetworkDatacenter class is a {@link Datacenter} whose hostList are virtualized and networked. It contains
@@ -56,7 +56,7 @@ public class NetworkDatacenter extends Datacenter {
          * A map between VMs and Switches, where each key
          * is a VM id and the corresponding value is the id of the switch where the VM is connected to.
          */
-	public Map<Integer, Integer> VmToSwitchid = new HashMap<Integer, Integer>();
+	public Map<Integer, Integer> VmToSwitchid = new HashMap<>();
 
         /**
          * A map between hosts and Switches, where each key
@@ -102,13 +102,13 @@ public class NetworkDatacenter extends Datacenter {
 			String name,
 			DatacenterCharacteristics characteristics,
 			VmAllocationPolicy vmAllocationPolicy,
-			List<Storage> storageList,
+			List<FileStorage> storageList,
 			double schedulingInterval) throws Exception {
 		super(name, characteristics, vmAllocationPolicy, storageList, schedulingInterval);
-		VmToSwitchid = new HashMap<Integer, Integer>();
-		HostToSwitchid = new HashMap<Integer, Integer>();
-		VmtoHostlist = new HashMap<Integer, Integer>();
-		Switchlist = new HashMap<Integer, Switch>();
+		VmToSwitchid = new HashMap<>();
+		HostToSwitchid = new HashMap<>();
+		VmtoHostlist = new HashMap<>();
+		Switchlist = new HashMap<>();
 	}
 
 	/**
@@ -119,7 +119,7 @@ public class NetworkDatacenter extends Datacenter {
          * and each value it the switch itself.
 	 */
 	public Map<Integer, Switch> getEdgeSwitch() {
-		Map<Integer, Switch> edgeswitch = new HashMap<Integer, Switch>();
+		Map<Integer, Switch> edgeswitch = new HashMap<>();
 		for (Entry<Integer, Switch> es : Switchlist.entrySet()) {
 			if (es.getValue().level == NetworkConstants.EDGE_LEVEL) {
 				edgeswitch.put(es.getKey(), es.getValue());

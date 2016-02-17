@@ -15,6 +15,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.cloudbus.cloudsim.Vm;
+import org.cloudbus.cloudsim.VmTest;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -24,53 +25,56 @@ import org.junit.Test;
  */
 public class VmListTest {
 
-	private List<Vm> vmList;
+    private List<Vm> vmList;
 
-	@Before
-	public void setUp() throws Exception {
-		vmList = new ArrayList<Vm>();
-	}
+    @Before
+    public void setUp() throws Exception {
+        vmList = new ArrayList<>();
+    }
 
-	@Test
-	public void testGetVMbyID() {
-		assertNull(VmList.getById(vmList, 0));
-		assertNull(VmList.getById(vmList, 1));
-		assertNull(VmList.getById(vmList, 2));
+    @Test
+    public void testGetVMbyID() {
+        assertNull(VmList.getById(vmList, 0));
+        assertNull(VmList.getById(vmList, 1));
+        assertNull(VmList.getById(vmList, 2));
 
-		Vm vm1 = new Vm(0, 0, 0, 1, 0, 0, 0, "", null);
-		Vm vm2 = new Vm(1, 0, 0, 1, 0, 0, 0, "", null);
-		Vm vm3 = new Vm(2, 0, 0, 2, 0, 0, 0, "", null);
+        Vm vm1 = VmTest.createVmWithSpecificNumberOfPEs(0, 1);
+        Vm vm2 = VmTest.createVmWithSpecificNumberOfPEs(1, 1);
+        Vm vm3 = VmTest.createVmWithSpecificNumberOfPEs(2, 2);
 
-		vmList.add(vm1);
-		vmList.add(vm2);
-		vmList.add(vm3);
+        vmList.add(vm1);
+        vmList.add(vm2);
+        vmList.add(vm3);
 
-		assertSame(vm1, VmList.getById(vmList, 0));
-		assertSame(vm2, VmList.getById(vmList, 1));
-		assertSame(vm3, VmList.getById(vmList, 2));
-	}
+        assertSame(vm1, VmList.getById(vmList, 0));
+        assertSame(vm2, VmList.getById(vmList, 1));
+        assertSame(vm3, VmList.getById(vmList, 2));
+    }
 
-	@Test
-	public void testGetVMByIdAndUserId() {
-		assertNull(VmList.getByIdAndUserId(vmList, 0, 0));
-		assertNull(VmList.getByIdAndUserId(vmList, 1, 0));
-		assertNull(VmList.getByIdAndUserId(vmList, 0, 1));
-		assertNull(VmList.getByIdAndUserId(vmList, 1, 1));
+    @Test
+    public void testGetVMByIdAndUserId() {
+        assertNull(VmList.getByIdAndUserId(vmList, 0, 0));
+        assertNull(VmList.getByIdAndUserId(vmList, 1, 0));
+        assertNull(VmList.getByIdAndUserId(vmList, 0, 1));
+        assertNull(VmList.getByIdAndUserId(vmList, 1, 1));
 
-		Vm vm1 = new Vm(0, 0, 0, 1, 0, 0, 0, "", null);
-		Vm vm2 = new Vm(1, 0, 0, 1, 0, 0, 0, "", null);
-		Vm vm3 = new Vm(0, 1, 0, 2, 0, 0, 0, "", null);
-		Vm vm4 = new Vm(1, 1, 0, 2, 0, 0, 0, "", null);
+        final int user0 = 0;
+        Vm vm1 = VmTest.createVmWithSpecificNumberOfPEsForSpecificUser(0, user0, 1);
+        Vm vm2 = VmTest.createVmWithSpecificNumberOfPEsForSpecificUser(1, user0, 1);
+        
+        final int user1 = 1;
+        Vm vm3 = VmTest.createVmWithSpecificNumberOfPEsForSpecificUser(0, user1, 1);
+        Vm vm4 = VmTest.createVmWithSpecificNumberOfPEsForSpecificUser(1, user1, 2);
 
-		vmList.add(vm1);
-		vmList.add(vm2);
-		vmList.add(vm3);
-		vmList.add(vm4);
+        vmList.add(vm1);
+        vmList.add(vm2);
+        vmList.add(vm3);
+        vmList.add(vm4);
 
-		assertSame(vm1, VmList.getByIdAndUserId(vmList, 0, 0));
-		assertSame(vm2, VmList.getByIdAndUserId(vmList, 1, 0));
-		assertSame(vm3, VmList.getByIdAndUserId(vmList, 0, 1));
-		assertSame(vm4, VmList.getByIdAndUserId(vmList, 1, 1));
-	}
+        assertSame(vm1, VmList.getByIdAndUserId(vmList, 0, 0));
+        assertSame(vm2, VmList.getByIdAndUserId(vmList, 1, 0));
+        assertSame(vm3, VmList.getByIdAndUserId(vmList, 0, 1));
+        assertSame(vm4, VmList.getByIdAndUserId(vmList, 1, 1));
+    }
 
 }

@@ -19,6 +19,7 @@ import java.util.List;
 
 import org.cloudbus.cloudsim.Pe;
 import org.cloudbus.cloudsim.Vm;
+import org.cloudbus.cloudsim.VmTest;
 import org.cloudbus.cloudsim.provisioners.PeProvisionerSimple;
 import org.junit.Before;
 import org.junit.Test;
@@ -29,96 +30,95 @@ import org.junit.Test;
  */
 public class PeListTest {
 
-	private static final double MIPS = 1000;
+    private static final double MIPS = 1000;
+    private List<Pe> peList;
 
-	private List<Pe> peList;
+    @Before
+    public void setUp() throws Exception {
+        peList = new ArrayList<>();
 
-	@Before
-	public void setUp() throws Exception {
-		peList = new ArrayList<Pe>();
+        peList.add(new Pe(0, new PeProvisionerSimple(MIPS)));
+        peList.add(new Pe(1, new PeProvisionerSimple(MIPS)));
+    }
 
-		peList.add(new Pe(0, new PeProvisionerSimple(MIPS)));
-		peList.add(new Pe(1, new PeProvisionerSimple(MIPS)));
-	}
+    @Test
+    public void testGetMips() {
+        assertEquals(MIPS, PeList.getMips(peList, 0), 0);
+        assertEquals(MIPS, PeList.getMips(peList, 1), 0);
+        assertEquals(-1, PeList.getMips(peList, 2));
+    }
 
-	@Test
-	public void testGetMips() {
-		assertEquals(MIPS, PeList.getMips(peList, 0), 0);
-		assertEquals(MIPS, PeList.getMips(peList, 1), 0);
-		assertEquals(-1, PeList.getMips(peList, 2));
-	}
+    @Test
+    public void testGetTotalMips() {
+        assertEquals(MIPS * peList.size(), PeList.getTotalMips(peList), 0);
+    }
 
-	@Test
-	public void testGetTotalMips() {
-		assertEquals(MIPS * peList.size(), PeList.getTotalMips(peList), 0);
-	}
+    @Test
+    public void testSetPeStatus() {
+        assertEquals(2, PeList.getNumberOfFreePes(peList));
+        assertEquals(0, PeList.getNumberOfBusyPes(peList));
+        assertTrue(PeList.setPeStatus(peList, 0, Pe.Status.BUSY));
+        assertEquals(Pe.Status.BUSY, PeList.getById(peList, 0).getStatus());
+        assertEquals(1, PeList.getNumberOfFreePes(peList));
+        assertEquals(1, PeList.getNumberOfBusyPes(peList));
+        assertTrue(PeList.setPeStatus(peList, 1, Pe.Status.BUSY));
+        assertEquals(Pe.Status.BUSY, PeList.getById(peList, 1).getStatus());
+        assertEquals(0, PeList.getNumberOfFreePes(peList));
+        assertEquals(2, PeList.getNumberOfBusyPes(peList));
+        assertFalse(PeList.setPeStatus(peList, 2, Pe.Status.BUSY));
+        assertEquals(0, PeList.getNumberOfFreePes(peList));
+        assertEquals(2, PeList.getNumberOfBusyPes(peList));
+    }
 
-	@Test
-	public void testSetPeStatus() {
-		assertEquals(2, PeList.getNumberOfFreePes(peList));
-		assertEquals(0, PeList.getNumberOfBusyPes(peList));
-		assertTrue(PeList.setPeStatus(peList, 0, Pe.Status.BUSY));
-		assertEquals(Pe.Status.BUSY, PeList.getById(peList, 0).getStatus());
-		assertEquals(1, PeList.getNumberOfFreePes(peList));
-		assertEquals(1, PeList.getNumberOfBusyPes(peList));
-		assertTrue(PeList.setPeStatus(peList, 1, Pe.Status.BUSY));
-		assertEquals(Pe.Status.BUSY, PeList.getById(peList, 1).getStatus());
-		assertEquals(0, PeList.getNumberOfFreePes(peList));
-		assertEquals(2, PeList.getNumberOfBusyPes(peList));
-		assertFalse(PeList.setPeStatus(peList, 2, Pe.Status.BUSY));
-		assertEquals(0, PeList.getNumberOfFreePes(peList));
-		assertEquals(2, PeList.getNumberOfBusyPes(peList));
-	}
+    @Test
+    public void testSetStatusFailed() {
+        assertEquals(Pe.Status.FREE, PeList.getById(peList, 0).getStatus());
+        assertEquals(Pe.Status.FREE, PeList.getById(peList, 1).getStatus());
+        PeList.setStatusFailed(peList, true);
+        assertEquals(Pe.Status.FAILED, PeList.getById(peList, 0).getStatus());
+        assertEquals(Pe.Status.FAILED, PeList.getById(peList, 1).getStatus());
+        PeList.setStatusFailed(peList, false);
+        assertEquals(Pe.Status.FREE, PeList.getById(peList, 0).getStatus());
+        assertEquals(Pe.Status.FREE, PeList.getById(peList, 1).getStatus());
 
-	@Test
-	public void testSetStatusFailed() {
-		assertEquals(Pe.Status.FREE, PeList.getById(peList, 0).getStatus());
-		assertEquals(Pe.Status.FREE, PeList.getById(peList, 1).getStatus());
-		PeList.setStatusFailed(peList, true);
-		assertEquals(Pe.Status.FAILED, PeList.getById(peList, 0).getStatus());
-		assertEquals(Pe.Status.FAILED, PeList.getById(peList, 1).getStatus());
-		PeList.setStatusFailed(peList, false);
-		assertEquals(Pe.Status.FREE, PeList.getById(peList, 0).getStatus());
-		assertEquals(Pe.Status.FREE, PeList.getById(peList, 1).getStatus());
+        PeList.setStatusFailed(peList, "test", 0, true);
+        assertEquals(Pe.Status.FAILED, PeList.getById(peList, 0).getStatus());
+        assertEquals(Pe.Status.FAILED, PeList.getById(peList, 1).getStatus());
+        PeList.setStatusFailed(peList, "test", 0, false);
+        assertEquals(Pe.Status.FREE, PeList.getById(peList, 0).getStatus());
+        assertEquals(Pe.Status.FREE, PeList.getById(peList, 1).getStatus());
+    }
 
-		PeList.setStatusFailed(peList, "test", 0, true);
-		assertEquals(Pe.Status.FAILED, PeList.getById(peList, 0).getStatus());
-		assertEquals(Pe.Status.FAILED, PeList.getById(peList, 1).getStatus());
-		PeList.setStatusFailed(peList, "test", 0, false);
-		assertEquals(Pe.Status.FREE, PeList.getById(peList, 0).getStatus());
-		assertEquals(Pe.Status.FREE, PeList.getById(peList, 1).getStatus());
-	}
+    @Test
+    public void testFreePe() {
+        assertSame(peList.get(0), PeList.getFreePe(peList));
+        PeList.setPeStatus(peList, 0, Pe.Status.BUSY);
+        assertSame(peList.get(1), PeList.getFreePe(peList));
+        PeList.setPeStatus(peList, 1, Pe.Status.BUSY);
+        assertNull(PeList.getFreePe(peList));
+    }
 
-	@Test
-	public void testFreePe() {
-		assertSame(peList.get(0), PeList.getFreePe(peList));
-		PeList.setPeStatus(peList, 0, Pe.Status.BUSY);
-		assertSame(peList.get(1), PeList.getFreePe(peList));
-		PeList.setPeStatus(peList, 1, Pe.Status.BUSY);
-		assertNull(PeList.getFreePe(peList));
-	}
+    @Test
+    public void testGetMaxUtilization() {
+        Vm vm0 = VmTest.createVmWithSpecificMipsAndNumberOfPEs(0, MIPS / 2, 1);
+        Vm vm1 = VmTest.createVmWithSpecificMipsAndNumberOfPEs(1, MIPS / 2, 1);
 
-	@Test
-	public void testGetMaxUtilization() {
-		Vm vm0 = new Vm(0, 0, MIPS / 2, 1, 0, 0, 0, "", null);
-		Vm vm1 = new Vm(1, 0, MIPS / 2, 1, 0, 0, 0, "", null);
+        assertTrue(peList.get(0).getPeProvisioner().allocateMipsForVm(vm0, MIPS / 3));
+        assertTrue(peList.get(1).getPeProvisioner().allocateMipsForVm(vm1, MIPS / 5));
 
-		assertTrue(peList.get(0).getPeProvisioner().allocateMipsForVm(vm0, MIPS / 3));
-		assertTrue(peList.get(1).getPeProvisioner().allocateMipsForVm(vm1, MIPS / 5));
+        assertEquals((MIPS / 3) / MIPS, PeList.getMaxUtilization(peList), 0.001);
+    }
 
-		assertEquals((MIPS / 3) / MIPS, PeList.getMaxUtilization(peList), 0.001);
-	}
+    @Test
+    public void testGetMaxUtilizationAmongVmsPes() {
+        Vm vm0 = VmTest.createVmWithSpecificMipsAndNumberOfPEs(0, MIPS / 2, 1);
+        Vm vm1 = VmTest.createVmWithSpecificMipsAndNumberOfPEs(1, MIPS / 2, 1);
 
-	@Test
-	public void testGetMaxUtilizationAmongVmsPes() {
-		Vm vm0 = new Vm(0, 0, MIPS / 2, 1, 0, 0, 0, "", null);
-		Vm vm1 = new Vm(1, 0, MIPS / 2, 1, 0, 0, 0, "", null);
+        assertTrue(peList.get(0).getPeProvisioner().allocateMipsForVm(vm0, MIPS / 3));
+        assertTrue(peList.get(1).getPeProvisioner().allocateMipsForVm(vm1, MIPS / 5));
 
-		assertTrue(peList.get(0).getPeProvisioner().allocateMipsForVm(vm0, MIPS / 3));
-		assertTrue(peList.get(1).getPeProvisioner().allocateMipsForVm(vm1, MIPS / 5));
-
-		assertEquals((MIPS / 3) / MIPS, PeList.getMaxUtilizationAmongVmsPes(peList, vm0), 0.001);
-		assertEquals((MIPS / 5) / MIPS, PeList.getMaxUtilizationAmongVmsPes(peList, vm1), 0.001);
-	}
+        assertEquals((MIPS / 3) / MIPS, PeList.getMaxUtilizationAmongVmsPes(peList, vm0), 0.001);
+        assertEquals((MIPS / 5) / MIPS, PeList.getMaxUtilizationAmongVmsPes(peList, vm1), 0.001);
+    }
 
 }

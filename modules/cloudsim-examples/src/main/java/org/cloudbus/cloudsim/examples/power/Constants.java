@@ -44,17 +44,29 @@ public class Constants {
 	public final static int VM_BW		= 100000; // 100 Mbit/s
 	public final static int VM_SIZE		= 2500; // 2.5 GB
 
-	/*
-	 * Host types:
-	 *   HP ProLiant ML110 G4 (1 x [Xeon 3040 1860 MHz, 2 cores], 4GB)
-	 *   HP ProLiant ML110 G5 (1 x [Xeon 3075 2660 MHz, 2 cores], 4GB)
-	 *   We increase the memory size to enable over-subscription (x4)
+	/**
+         * Defines the number of host configurations statically given
+         * in the arrays {@link #HOST_MIPS}, {@link #HOST_PES} and
+         * {@link #HOST_RAM}. <p/>
+         * 
+	 * The values of this constants currently define 2 Host Types:
+         * <ul>
+	 *   <li>HP ProLiant ML110 G4 (1 x [Xeon 3040 1860 MHz, 2 cores], 4GB)</li>
+	 *   <li>HP ProLiant ML110 G5 (1 x [Xeon 3075 2660 MHz, 2 cores], 4GB)</li>
+         * </ul>
+	 *   
+         * We increase the memory size to enable over-subscription (x4)
 	 */
 	public final static int HOST_TYPES	 = 2;
+        
+        /** The PEs capacity of each host defined by {@link #HOST_TYPES}. */
 	public final static int[] HOST_MIPS	 = { 1860, 2660 };
+        /** The number of PEs of each host defined by {@link #HOST_TYPES}. */
 	public final static int[] HOST_PES	 = { 2, 2 };
+        /** The RAM capacity of each host defined by {@link #HOST_TYPES}. */
 	public final static int[] HOST_RAM	 = { 4096, 4096 };
-	public final static int HOST_BW		 = 1000000; // 1 Gbit/s
+        
+	public final static long HOST_BW	 = 1000000; // 1 Gbit/s
 	public final static int HOST_STORAGE = 1000000; // 1 GB
 
 	public final static PowerModel[] HOST_POWER = {

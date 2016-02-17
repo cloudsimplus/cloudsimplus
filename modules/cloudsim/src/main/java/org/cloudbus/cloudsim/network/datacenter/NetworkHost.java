@@ -20,8 +20,7 @@ import org.cloudbus.cloudsim.core.CloudSim;
 import org.cloudbus.cloudsim.core.CloudSimTags;
 import org.cloudbus.cloudsim.lists.PeList;
 import org.cloudbus.cloudsim.lists.VmList;
-import org.cloudbus.cloudsim.provisioners.BwProvisioner;
-import org.cloudbus.cloudsim.provisioners.RamProvisioner;
+import org.cloudbus.cloudsim.provisioners.ResourceProvisioner;
 
 /**
  * NetworkHost class extends {@link Host} to support simulation of networked datacenters. It executes
@@ -72,7 +71,7 @@ public class NetworkHost extends Host {
 	/** Time when last job will finish on CPU1. 
          * @todo it is not being used.
          **/
-	public List<Double> CPUfinTimeCPU = new ArrayList<Double>();
+	public List<Double> CPUfinTimeCPU = new ArrayList<>();
 
 	/** 
          * @todo it is not being used.
@@ -81,16 +80,16 @@ public class NetworkHost extends Host {
 
 	public NetworkHost(
 			int id,
-			RamProvisioner ramProvisioner,
-			BwProvisioner bwProvisioner,
+			ResourceProvisioner<Integer> ramProvisioner,
+			ResourceProvisioner<Long> bwProvisioner,
 			long storage,
 			List<? extends Pe> peList,
 			VmScheduler vmScheduler) {
 		super(id, ramProvisioner, bwProvisioner, storage, peList, vmScheduler);
 
-		packetrecieved = new ArrayList<NetworkPacket>();
-		packetTosendGlobal = new ArrayList<NetworkPacket>();
-		packetTosendLocal = new ArrayList<NetworkPacket>();
+		packetrecieved = new ArrayList<>();
+		packetTosendGlobal = new ArrayList<>();
+		packetTosendLocal = new ArrayList<>();
 
 	}
 

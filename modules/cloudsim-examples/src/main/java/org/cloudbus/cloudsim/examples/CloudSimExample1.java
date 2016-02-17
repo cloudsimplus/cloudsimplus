@@ -23,19 +23,20 @@ import org.cloudbus.cloudsim.DatacenterCharacteristics;
 import org.cloudbus.cloudsim.Host;
 import org.cloudbus.cloudsim.Log;
 import org.cloudbus.cloudsim.Pe;
-import org.cloudbus.cloudsim.Storage;
+import org.cloudbus.cloudsim.resources.FileStorage;
 import org.cloudbus.cloudsim.UtilizationModel;
 import org.cloudbus.cloudsim.UtilizationModelFull;
 import org.cloudbus.cloudsim.Vm;
 import org.cloudbus.cloudsim.VmAllocationPolicySimple;
 import org.cloudbus.cloudsim.VmSchedulerTimeShared;
 import org.cloudbus.cloudsim.core.CloudSim;
-import org.cloudbus.cloudsim.provisioners.BwProvisionerSimple;
 import org.cloudbus.cloudsim.provisioners.PeProvisionerSimple;
-import org.cloudbus.cloudsim.provisioners.RamProvisionerSimple;
+import org.cloudbus.cloudsim.resources.Bandwidth;
+import org.cloudbus.cloudsim.provisioners.ResourceProvisionerSimple;
+import org.cloudbus.cloudsim.resources.Ram;
 
 /**
- * A simple example showing how to create a data center with one host and run one cloudlet on it.
+ * A simple example showing how to create a data center with 1 host and run 1 cloudlet on it.
  */
 public class CloudSimExample1 {
 	/** The cloudlet list. */
@@ -110,7 +111,7 @@ public class CloudSimExample1 {
 			broker.submitVmList(vmlist);
 
 			// Fifth step: Create one Cloudlet
-			cloudletList = new ArrayList<Cloudlet>();
+			cloudletList = new ArrayList<>();
 
 			// Cloudlet properties
 			int id = 0;
@@ -176,13 +177,12 @@ public class CloudSimExample1 {
 		int hostId = 0;
 		int ram = 2048; // host memory (MB)
 		long storage = 1000000; // host storage
-		int bw = 10000;
+		long bw = 10000;
 
-		hostList.add(
-			new Host(
+		hostList.add(new Host(
 				hostId,
-				new RamProvisionerSimple(ram),
-				new BwProvisionerSimple(bw),
+				new ResourceProvisionerSimple<>(new Ram(ram)),
+				new ResourceProvisionerSimple<>(new Bandwidth(bw)),
 				storage,
 				peList,
 				new VmSchedulerTimeShared(peList)
@@ -202,7 +202,7 @@ public class CloudSimExample1 {
 		double costPerStorage = 0.001; // the cost of using storage in this
 										// resource
 		double costPerBw = 0.0; // the cost of using bw in this resource
-		LinkedList<Storage> storageList = new LinkedList<Storage>(); // we are not adding SAN
+		LinkedList<FileStorage> storageList = new LinkedList<>(); // we are not adding SAN
 													// devices by now
 
 		DatacenterCharacteristics characteristics = new DatacenterCharacteristics(
