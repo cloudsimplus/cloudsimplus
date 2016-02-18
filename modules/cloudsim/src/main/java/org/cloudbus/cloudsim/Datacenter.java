@@ -1110,7 +1110,7 @@ public class Datacenter extends SimEntity {
     }
 
     /**
-     * Gets the VM allocation policy.
+     * Gets the policy to be used by the datacenter to allocate VMs into hosts.
      * 
      * @return the VM allocation policy
      * @see VmAllocationPolicy
@@ -1120,7 +1120,7 @@ public class Datacenter extends SimEntity {
     }
 
     /**
-     * Sets the vm allocation policy.
+     * Sets the policy to be used by the datacenter to allocate VMs into hosts.
      * 
      * @param vmAllocationPolicy the new vm allocation policy
      */
