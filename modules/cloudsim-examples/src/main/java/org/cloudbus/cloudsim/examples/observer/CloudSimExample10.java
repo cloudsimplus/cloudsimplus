@@ -33,40 +33,52 @@ import org.cloudbus.cloudsim.provisioners.PeProvisionerSimple;
 import org.cloudbus.cloudsim.provisioners.RamProvisionerSimple;
 
 /**
- * A simple example showing how to create a data center with 1 host and run 1
- * cloudlet on it. This example class implements the Observer pattern
- * in order to be notified when a Vm is allocated to a
- * given host.<p/>
+ * This example class implements the Observer pattern
+ * in order to be notified at the exact time when a Host is allocated or deallocated to
+ * each VM. It creates 2 users (brokers) and 1 VM for each one. All VMs have
+ * the same capacity.
+ * Each VM receives 1 cloudlet with different length (in MI).
+ * 
+ * <p/>
+ * 
+ * <b>NOTE:</b> The CloudSim log was disabled, so internal messages will be output.
+ * See Log.disable() instruction here.<p/>
  * 
  * Example based on {@link org.cloudbus.cloudsim.examples.CloudSimExample1}
  * 
  * @author Manoel Campos da Silva Filho
  * @see VmAllocationPolicySimpleObservable
  */
-public class CloudSimExample10 implements HostToVmAllocationObserver {
+public final class CloudSimExample10 implements VmAllocationPolicySimpleObserver {
+    public static final int HOST_MIPS_BY_PE = 2000;
+    public static final int  HOST_RAM = 2048; // (MB)
+    public static final long HOST_STORAGE = 1000000; 
+    public static final int  HOST_BW = 10000;
+
+    public static final int  VM_MIPS = 1000;
+    public static final long VM_SIZE = 10000; // image size (MB)
+    public static final int  VM_RAM = 512; // vm memory (MB)
+    public static final long VM_RW = 1000;
+    public static final int  VM_PES = 1; // number of cpus
 
     /**
-     * The cloudlet list.
+     * Lenght for cloudlets to be created. The number of elements of this array
+     * defines the number of cloudlets to be created.
      */
-    private List<Cloudlet> cloudletList;
+    public static final long CLOUDLET_LENGTH[] = {10000, 500000};
+    public static final long CLOUDLET_FILESIZE = 300;
+    public static final long CLOUDLET_OUTPUTSIZE = 300;
     
-    /**
-     * The vmlist.
-     */
-    private List<Vm> vmlist;
-
-    /**
-     * Creates main() to run this example.
-     *
-     * @param args the args
-     */
     public static void main(String[] args) {
-        new CloudSimExample10();
+        new CloudSimExample10(true);
     }
 
-    public CloudSimExample10() {
+    public CloudSimExample10(final boolean disableLog) {
         Log.printLine("Starting CloudSimExample10...");
-        
+        if(disableLog){
+            Log.printLine("Internal CloudSim log was disabled as requested");
+            Log.disable();
+        }
         try {
             // First step: Initialize the CloudSim package. It should be called before creating any entities.
             int num_user = 1; // number of cloud users
@@ -80,55 +92,20 @@ public class CloudSimExample10 implements HostToVmAllocationObserver {
             // list one of them to run a CloudSim simulation
             Datacenter datacenter0 = createDatacenter("Datacenter_0");
 
+            final int numbefOfCloudlets = CLOUDLET_LENGTH.length;
+
             // Third step: Create Broker
-            DatacenterBroker broker = createBroker();
-            int brokerId = broker.getId();
+            List<DatacenterBroker> brokers = new ArrayList<DatacenterBroker>(numbefOfCloudlets);
+            for(int i = 0; i < numbefOfCloudlets; i++) {
+                brokers.add(createBroker("broker"+i));
+            }
 
-            // Fourth step: Create one virtual machine
-            vmlist = new ArrayList<Vm>();
+            // Fourth step: Create virtual machines
+            createOneVmForEachBrokerAndSubmitThem(brokers);
 
-            // VM description
-            int vmid = 0;
-            int mips = 1000;
-            long size = 10000; // image size (MB)
-            int ram = 512; // vm memory (MB)
-            long bw = 1000;
-            int pesNumber = 1; // number of cpus
-            String vmm = "Xen"; // VMM name
-
-            // create VM
-            Vm vm = new Vm(
-                        vmid, brokerId, mips, pesNumber, ram, bw, size, vmm, 
-                        new CloudletSchedulerTimeShared());
-
-            // add the VM to the vmList
-            vmlist.add(vm);
-
-            // submit vm list to the broker
-            broker.submitVmList(vmlist);
-
-            // Fifth step: Create one Cloudlet
-            cloudletList = new ArrayList<Cloudlet>();
-
-            // Cloudlet properties
-            int id = 0;
-            long length = 400000;
-            long fileSize = 300;
-            long outputSize = 300;
-            UtilizationModel utilizationModel = new UtilizationModelFull();
-
-            Cloudlet cloudlet
-                    = new Cloudlet(id, length, pesNumber, fileSize,
-                            outputSize, utilizationModel, utilizationModel,
-                            utilizationModel);
-            cloudlet.setUserId(brokerId);
-            cloudlet.setVmId(vmid);
-
-            // add the cloudlet to the list
-            cloudletList.add(cloudlet);
-
-            // submit cloudlet list to the broker
-            broker.submitCloudletList(cloudletList);
+            // Fifth step: Create Cloudlets
+            for(int i = 0; i < brokers.size(); i++)            
+                createCloudletsAndSubmitToBroker(1, i, CLOUDLET_LENGTH[i], brokers.get(i));
 
             // Sixth step: Starts the simulation
             CloudSim.startSimulation();
@@ -136,14 +113,51 @@ public class CloudSimExample10 implements HostToVmAllocationObserver {
             CloudSim.stopSimulation();
 
             //Final step: Print results when simulation is over
-            List<Cloudlet> newList = broker.getCloudletReceivedList();
-            printCloudletList(newList);
+            for(int i = 0; i < brokers.size(); i++){
+                List<Cloudlet> cloudletList = brokers.get(i).getCloudletReceivedList();
+                printCloudletList(cloudletList);
+            }
 
+            Log.enable();
             Log.printLine("CloudSimExample10 finished!");
         } catch (Exception e) {
             e.printStackTrace();
             Log.printLine("Unwanted errors happen");
         }
+    }
+
+    public void createCloudletsAndSubmitToBroker(
+            final int numbefOfCloudlets, final int vmId, 
+            final long cloudletLength, DatacenterBroker broker) {
+        List<Cloudlet> cloudletList = new ArrayList<Cloudlet>(numbefOfCloudlets);
+        for(int i = 0; i < numbefOfCloudlets; i++){
+            Cloudlet cloudlet = createCloudlet(i, vmId, broker.getId(), cloudletLength);
+            cloudletList.add(cloudlet);
+        }
+        
+        broker.submitCloudletList(cloudletList);
+    }
+
+    public Cloudlet createCloudlet(int cloudletId, int vmId, int brokerId, long length) {
+        UtilizationModel utilizationModel = new UtilizationModelFull();
+        Cloudlet cloudlet
+                = new Cloudlet(cloudletId, length, VM_PES, CLOUDLET_FILESIZE,
+                        CLOUDLET_OUTPUTSIZE, utilizationModel, utilizationModel,
+                        utilizationModel);
+        cloudlet.setUserId(brokerId);
+        cloudlet.setVmId(vmId);
+        return cloudlet;
+    }
+
+    public static void createOneVmForEachBrokerAndSubmitThem(List<DatacenterBroker> brokers) {        
+        for(int i = 0; i < brokers.size(); i++){
+            List<Vm> list = new ArrayList<Vm>(1);
+            DatacenterBroker broker = brokers.get(i);
+            list.add(new Vm(
+                    i, broker.getId(), VM_MIPS, VM_PES, VM_RAM, VM_RW, VM_SIZE, "Xen",
+                    new CloudletSchedulerTimeShared()));
+            broker.submitVmList(list);
+        }        
     }
 
     /**
@@ -158,34 +172,30 @@ public class CloudSimExample10 implements HostToVmAllocationObserver {
         // our machine
         List<Host> hostList = new ArrayList<Host>();
 
-        // 2. A Machine contains one or more PEs or CPUs/Cores.
-        // In this example, it will have only one core.
-        List<Pe> peList = new ArrayList<Pe>();
+        // 4. Create Host with its id and list of PEs and add them to the list of machines
+        final int numberOfPEs = 1;
+        hostList.add(createHost(0, numberOfPEs)); 
 
-        int mips = 1000;
+        DatacenterCharacteristics characteristics = createDatacenterCharacteristics(hostList); 
 
-        // 3. Create PEs and add these into a list.
-        peList.add(new Pe(0, new PeProvisionerSimple(mips))); // need to store Pe id and MIPS Rating
-        peList.add(new Pe(1, new PeProvisionerSimple(mips)));
+        // we are not adding SAN devices by now
+        LinkedList<Storage> storageList = new LinkedList<Storage>(); 
+        
+        // 6. Finally, we need to create a Datacenter object.
+        Datacenter datacenter = null;
+        try {
+            datacenter = 
+                new Datacenter(name, characteristics, 
+                    new VmAllocationPolicySimpleObservable(this, hostList), 
+                    storageList, 0);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
 
-        // 4. Create Host with its id and list of PEs and add them to the list
-        // of machines
-        int hostId = 0;
-        int ram = 2048; // host memory (MB)
-        long storage = 1000000; // host storage
-        int bw = 10000;
+        return datacenter;
+    }
 
-        hostList.add(
-            new Host(
-                hostId,
-                new RamProvisionerSimple(ram),
-                new BwProvisionerSimple(bw),
-                storage,
-                peList,
-                new VmSchedulerTimeShared(peList)
-            )
-        ); 
-
+    public DatacenterCharacteristics createDatacenterCharacteristics(List<Host> hostList) {
         // 5. Create a DatacenterCharacteristics object that stores the
         // properties of a data center: architecture, OS, list of
         // Machines, allocation policy: time- or space-shared, time zone
@@ -199,25 +209,29 @@ public class CloudSimExample10 implements HostToVmAllocationObserver {
         double costPerStorage = 0.001; // the cost of using storage in this
         // resource
         double costPerBw = 0.0; // the cost of using bw in this resource
-        LinkedList<Storage> storageList = new LinkedList<Storage>(); // we are not adding SAN
-        // devices by now
-
         DatacenterCharacteristics characteristics = new DatacenterCharacteristics(
                 arch, os, vmm, hostList, time_zone, cost, costPerMem,
                 costPerStorage, costPerBw);
+        return characteristics;
+    }
 
-        // 6. Finally, we need to create a PowerDatacenter object.
-        Datacenter datacenter = null;
-        try {
-            datacenter = 
-                new Datacenter(name, characteristics, 
-                    new VmAllocationPolicySimpleObservable(this, hostList), 
-                    storageList, 0);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+    public static Host createHost(int hostId, int numberOfPes) {
+        // 2. A Machine contains one or more PEs or CPUs/Cores.
+        // In this example, it will have only one core.
+        List<Pe> peList = new ArrayList<Pe>();
 
-        return datacenter;
+        // 3. Create PEs and add these into a list.
+        for(int i = 0; i < numberOfPes; i++)
+            peList.add(new Pe(i, new PeProvisionerSimple(HOST_MIPS_BY_PE)));
+
+        return new Host(
+                hostId,
+                new RamProvisionerSimple(HOST_RAM),
+                new BwProvisionerSimple(HOST_BW),
+                HOST_STORAGE,
+                peList,
+                new VmSchedulerTimeShared(peList)
+        );
     }
 
     // We strongly encourage users to develop their own broker policies, to
@@ -228,13 +242,12 @@ public class CloudSimExample10 implements HostToVmAllocationObserver {
      *
      * @return the datacenter broker
      */
-    private DatacenterBroker createBroker() {
+    private DatacenterBroker createBroker(final String name) {
         DatacenterBroker broker = null;
         try {
-            broker = new DatacenterBroker("Broker");
+            broker = new DatacenterBroker(name);
         } catch (Exception e) {
-            e.printStackTrace();
-            return null;
+            throw new RuntimeException(e);
         }
         return broker;
     }
@@ -275,8 +288,34 @@ public class CloudSimExample10 implements HostToVmAllocationObserver {
     }
 
     @Override
-    public void notify(Vm vm, Host host) {
-        Log.printConcatLine("\t# Host ", host.getId(), " allocated to the Vm ", vm.getId());
-        Log.printConcatLine("\t# Host MIPS capacity: ", host.getTotalMips(), " available mips: ", host.getAvailableMips());
+    public void notifyAllocationOfHostToVm(double clock , Vm vm, Host host) {
+        final String msg = String.format(
+            " #Host %1d  allocated to  Vm %1d of User %1d at time %4.0f - Host MIPS: %4d available mips: %4.0f", 
+            host.getId(), vm.getId(), vm.getUserId(), clock, 
+            host.getTotalMips(), host.getAvailableMips());
+
+        printLogMessageAndCheckIfLogWasDisabled(msg);
+    }
+
+    @Override
+    public void notifyDeallocationOfHostForVm(double clock, int vmId, int userId, Host host) {
+        final String msg = String.format(
+            " #Host %1d dallocated for Vm %1d of User %1d at time %4.0f - Host MIPS: %4d available mips: %4.0f", 
+            host.getId(), vmId, userId, clock, 
+            host.getTotalMips(), host.getAvailableMips());
+
+        printLogMessageAndCheckIfLogWasDisabled(msg);
+    }
+
+    public void printLogMessageAndCheckIfLogWasDisabled(final String msg) {
+        final boolean wasDisabled = Log.isDisabled();
+        try{
+            if(wasDisabled)
+                Log.enable();
+            Log.printLine(msg);
+        } finally {
+            if(wasDisabled)
+            Log.disable();
+        }
     }
 }
