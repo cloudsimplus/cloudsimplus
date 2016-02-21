@@ -62,7 +62,7 @@ public final class CloudSimExample10 implements VmAllocationPolicySimpleObserver
     public static final int  VM_PES = 1; // number of cpus
 
     /**
-     * Lenght for cloudlets to be created. The number of elements of this array
+     * Length for cloudlets to be created. The number of elements of this array
      * defines the number of cloudlets to be created.
      */
     public static final long CLOUDLET_LENGTH[] = {10000, 500000};
@@ -290,7 +290,7 @@ public final class CloudSimExample10 implements VmAllocationPolicySimpleObserver
     @Override
     public void notifyAllocationOfHostToVm(double clock , Vm vm, Host host) {
         final String msg = String.format(
-            " #Host %1d  allocated to  Vm %1d of User %1d at time %4.0f - Host MIPS: %4d available mips: %4.0f", 
+            " #Host %1d  allocated to  Vm %1d of User %1d at time %4.0fs - Host MIPS: %4d available mips: %4.0f", 
             host.getId(), vm.getId(), vm.getUserId(), clock, 
             host.getTotalMips(), host.getAvailableMips());
 
@@ -300,7 +300,7 @@ public final class CloudSimExample10 implements VmAllocationPolicySimpleObserver
     @Override
     public void notifyDeallocationOfHostForVm(double clock, int vmId, int userId, Host host) {
         final String msg = String.format(
-            " #Host %1d dallocated for Vm %1d of User %1d at time %4.0f - Host MIPS: %4d available mips: %4.0f", 
+            " #Host %1d dallocated for Vm %1d of User %1d at time %4.0fs - Host MIPS: %4d available mips: %4.0f", 
             host.getId(), vmId, userId, clock, 
             host.getTotalMips(), host.getAvailableMips());
 
