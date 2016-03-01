@@ -190,8 +190,10 @@ public class Vm {
 
     /**
      * Gets the current requested total mips.
+     * It is the sum of MIPS capacity requested for every VM's Pe.
      * 
      * @return the current requested total mips
+     * @see #getCurrentRequestedMips() 
      */
     public double getCurrentRequestedTotalMips() {
             double totalRequestedMips = 0;
@@ -251,11 +253,22 @@ public class Vm {
     }
 
     /**
-     * Get total CPU utilization of all cloudlets running on this VM at the given time (in MIPS).
+     * Gets the total CPU utilization of all cloudlets running on this VM at the given time (in MIPS).
      * 
      * @param time the time
      * @return total cpu utilization in MIPS
      * @see #getTotalUtilizationOfCpu(double) 
+     * 
+     * @todo @author manoelcampos Lets consider the UtilizationModelFull for CPU which defines that
+     * a cloudlet will use the entire CPU allocated to it all the time, for all 
+     * of its PEs. So, lets say that the Vm has 2 PEs of 1000 MIPS, that represents
+     * a total of 2000 MIPS capacity.
+     * and there is a Cloudlet that is using all these 2 PEs capacity.
+     * I think this method is supposed to return 2000, indicating
+     * that the entire VM MIPS capacity is being used.
+     * However, it will return only 1000.
+     * It has to be included some test cases do try figure out if 
+     * the method is returning what it is supposed to return or not.
      */
     public double getTotalUtilizationOfCpuMips(double time) {
         return getTotalUtilizationOfCpu(time) * getMips();
@@ -330,7 +343,8 @@ public class Vm {
     }
 
     /**
-     * Gets the MIPS capacity of each VM's PE.
+     * Gets the individual MIPS capacity of any VM's PE,
+     * considering that all PEs have the same capacity.
      * 
      * @return the mips
      */
@@ -339,9 +353,10 @@ public class Vm {
     }
 
     /**
-     * Sets the MIPS capacity of each VM's PE.
+     * Sets the individual MIPS capacity of any VM's PE,
+     * considering that all PEs have the same capacity.
      * 
-     * @param mips the new mips
+     * @param mips the new mips for every VM's PE
      */
     protected final void setMips(double mips) {
             this.mips = mips;
@@ -571,10 +586,12 @@ public class Vm {
     }
 
     /**
-     * Gets the current allocated MIPS for each VM's PE.
+     * Gets the current allocated MIPS for each VM's {@link Pe}.
+     * This list represents the amount of MIPS in each VM's Pe that is
+     * available to be allocated for VM's Cloudlets.
      * 
      * @return the current allocated MIPS
-     * @TODO replace returning the field by a call to {@link CloudletScheduler#getCurrentMipsShare()}
+     * @TODO The method doesn't appear to be used.
      */
     public List<Double> getCurrentAllocatedMips() {
         return currentAllocatedMips;
@@ -584,6 +601,7 @@ public class Vm {
      * Sets the current allocated MIPS for each VM's PE.
      * 
      * @param currentAllocatedMips the new current allocated mips
+     * @todo The method doesn't appear to be used.
      */
     public final void setCurrentAllocatedMips(List<Double> currentAllocatedMips) {
         this.currentAllocatedMips = currentAllocatedMips;

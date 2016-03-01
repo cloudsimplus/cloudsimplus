@@ -54,7 +54,7 @@ public class VmSchedulerSpaceShared extends VmScheduler {
 			return false;
 		}
 
-		List<Pe> selectedPes = new ArrayList<Pe>();
+		List<Pe> selectedPes = new ArrayList<>();
 		Iterator<Pe> peIterator = getFreePes().iterator();
 		Pe pe = peIterator.next();
 		double totalMips = 0;

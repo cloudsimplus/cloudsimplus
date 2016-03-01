@@ -77,8 +77,22 @@ public abstract class VmScheduler {
 	 * @param vm the vm
 	 * @param mipsShare the list of MIPS share to be allocated to a VM
 	 * @return $true if this policy allows a new VM in the host, $false otherwise
+         * 
 	 * @pre $none
 	 * @post $none
+         * 
+         * @todo @author manoelcampos All implementing classes don't consider the
+         * situation when a Vm already has allocated MIPS and the method is called
+         * again. In this case, what is supposed to do? Increase the current
+         * allocation or change it? I think that the obvious action is to 
+         * change the allocation, however, the implementations aren't working
+         * to deal this situation. For that, they have to use some
+         * method such as {@link org.cloudbus.cloudsim.resources.Resource#isSuitable(java.lang.Number)}
+         * to first check if the difference from the current allocated mips and the
+         * requested one is available. Currently the implementations
+         * wrongly check if the total requested mips is available, while
+         * only the difference has to be checked.
+         * It has to be added some tests to check this issue.
 	 */
 	public abstract boolean allocatePesForVm(Vm vm, List<Double> mipsShare);
 
@@ -193,7 +207,7 @@ public abstract class VmScheduler {
          * 
 	 */
 	@SuppressWarnings("unchecked")
-	public <T extends Pe> List<T> getPeList() {
+	public final <T extends Pe> List<T> getPeList() {
 		return (List<T>) peList;
 	}
 
@@ -203,7 +217,7 @@ public abstract class VmScheduler {
 	 * @param <T> the generic type
 	 * @param peList the pe list
 	 */
-	protected <T extends Pe> void setPeList(List<T> peList) {
+	protected final <T extends Pe> void setPeList(List<T> peList) {
 		this.peList = peList;
 	}
 
@@ -221,7 +235,7 @@ public abstract class VmScheduler {
 	 * 
 	 * @param mipsMap the mips map
 	 */
-	protected void setMipsMap(Map<String, List<Double>> mipsMap) {
+	protected final void setMipsMap(Map<String, List<Double>> mipsMap) {
 		this.mipsMap = mipsMap;
 	}
 
@@ -239,7 +253,7 @@ public abstract class VmScheduler {
 	 * 
 	 * @param availableMips the new free mips
 	 */
-	protected void setAvailableMips(double availableMips) {
+	protected final void setAvailableMips(double availableMips) {
 		this.availableMips = availableMips;
 	}
 
@@ -257,7 +271,7 @@ public abstract class VmScheduler {
 	 * 
 	 * @param vmsInMigration the new vms migrating out
 	 */
-	protected void setVmsMigratingOut(List<String> vmsInMigration) {
+	protected final void setVmsMigratingOut(List<String> vmsInMigration) {
 		vmsMigratingOut = vmsInMigration;
 	}
 
@@ -275,7 +289,7 @@ public abstract class VmScheduler {
 	 * 
 	 * @param vmsMigratingIn the new vms migrating in
 	 */
-	protected void setVmsMigratingIn(List<String> vmsMigratingIn) {
+	protected final void setVmsMigratingIn(List<String> vmsMigratingIn) {
 		this.vmsMigratingIn = vmsMigratingIn;
 	}
 
@@ -293,7 +307,7 @@ public abstract class VmScheduler {
 	 * 
 	 * @param peMap the pe map
 	 */
-	protected void setPeMap(Map<String, List<Pe>> peMap) {
+	protected final void setPeMap(Map<String, List<Pe>> peMap) {
 		this.peMap = peMap;
 	}
 

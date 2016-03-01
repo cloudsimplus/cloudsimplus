@@ -280,9 +280,6 @@ public class CloudletSchedulerTimeShared extends CloudletScheduler {
 
 	@Override
 	public double getTotalUtilizationOfCpu(double time) {
-                /*
-                 * @todo 
-                 */
 		double totalUtilization = 0;
 		for (ResCloudlet gl : getCloudletExecList()) {
 			totalUtilization += gl.getCloudlet().getUtilizationOfCpu(time);
@@ -315,7 +312,13 @@ public class CloudletSchedulerTimeShared extends CloudletScheduler {
 		return rgl.getCloudlet();
 	}
 
-	@Override
+	/**
+         * @todo If the method always return a empty list (that is created locally),
+         * it doesn't make sense to exist. See other implementations
+         * such as {@link CloudletSchedulerSpaceShared#getCurrentRequestedMips()}
+         * @return 
+         */
+        @Override
 	public List<Double> getCurrentRequestedMips() {
 		List<Double> mipsShare = new ArrayList<Double>();
 		return mipsShare;

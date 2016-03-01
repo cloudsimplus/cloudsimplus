@@ -409,7 +409,14 @@ public class CloudletSchedulerSpaceShared extends CloudletScheduler {
 		return cl;
 	}
 
-	@Override
+	/**
+         * @todo The method is just returning a copy of {@link #getCurrentMipsShare()}
+         * return. As the {@link #getCurrentMipsShare()} method is public,
+         * it doesn't make sense to have another method that return the same
+         * value. It just causes confusion.
+         * @return 
+         */
+        @Override
 	public List<Double> getCurrentRequestedMips() {
 		List<Double> mipsShare = new ArrayList<Double>();
 		if (getCurrentMipsShare() != null) {

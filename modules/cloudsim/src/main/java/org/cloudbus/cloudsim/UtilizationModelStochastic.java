@@ -79,7 +79,7 @@ public class UtilizationModelStochastic implements UtilizationModel {
 	 * 
 	 * @param history the history
 	 */
-	protected void setHistory(Map<Double, Double> history) {
+	protected final void setHistory(Map<Double, Double> history) {
 		this.history = history;
 	}
 
@@ -115,7 +115,7 @@ public class UtilizationModelStochastic implements UtilizationModel {
 	 * 
 	 * @param randomGenerator the new random generator
 	 */
-	public void setRandomGenerator(Random randomGenerator) {
+	public final void setRandomGenerator(Random randomGenerator) {
 		this.randomGenerator = randomGenerator;
 	}
 

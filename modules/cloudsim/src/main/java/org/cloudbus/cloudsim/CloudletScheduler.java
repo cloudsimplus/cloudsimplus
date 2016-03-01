@@ -10,6 +10,7 @@ package org.cloudbus.cloudsim;
 
 import java.util.ArrayList;
 import java.util.List;
+import org.cloudbus.cloudsim.core.CloudSim;
 import org.cloudbus.cloudsim.network.datacenter.NetworkCloudletSpaceSharedScheduler;
 
 
@@ -26,25 +27,25 @@ import org.cloudbus.cloudsim.network.datacenter.NetworkCloudletSpaceSharedSchedu
  */
 public abstract class CloudletScheduler {
 
-    /** The previous time. */
+    /** @see #getPreviousTime()  */
     private double previousTime;
 
-    /** The list of current mips share available for the VM using the scheduler. */
+    /** @see #getCurrentMipsShare()   */
     private List<Double> currentMipsShare;
 
-    /** The list of cloudlet waiting to be executed on the VM. */
+    /** @see #getCloudletWaitingList()  */
     protected List<? extends ResCloudlet> cloudletWaitingList;
 
-    /** The list of cloudlets being executed on the VM. */
+    /** @see #getCloudletExecList()  */
     protected List<? extends ResCloudlet> cloudletExecList;
 
-    /** The list of paused cloudlets. */
+    /** @see #getCloudletPausedList()  */
     protected List<? extends ResCloudlet> cloudletPausedList;
 
-    /** The list of finished cloudlets. */
+    /** @see #getCloudletFinishedList()  */
     protected List<? extends ResCloudlet> cloudletFinishedList;
 
-    /** The list of failed cloudlets. */
+    /** @see #getCloudletFailedList()   */
     protected List<? extends ResCloudlet> cloudletFailedList;
 
     /**
@@ -249,7 +250,8 @@ public abstract class CloudletScheduler {
     public abstract double getCurrentRequestedUtilizationOfBw();
 
     /**
-     * Gets the previous time.
+     * Gets the previous time when the scheduler updated the processing of
+     * cloudlets it is managing.
      * 
      * @return the previous time
      */
@@ -258,7 +260,8 @@ public abstract class CloudletScheduler {
     }
 
     /**
-     * Sets the previous time.
+     * Sets the previous time when the scheduler updated the processing of
+     * cloudlets it is managing.
      * 
      * @param previousTime the new previous time
      */
@@ -267,36 +270,41 @@ public abstract class CloudletScheduler {
     }
 
     /**
-     * Sets the current mips share.
+     * Sets the list of current mips share available for the VM using the scheduler.
      * 
      * @param currentMipsShare the new current mips share
+     * @see #getCurrentMipsShare() 
      */
     protected void setCurrentMipsShare(List<Double> currentMipsShare) {
             this.currentMipsShare = currentMipsShare;
     }
 
     /**
-     * Gets the current mips share.
+     * Gets the list of current mips capacity from the VM that will be
+     * made available to the scheduler. This mips share will be allocated
+     * to Cloudlets as requested.
      * 
-     * @return the current mips share
+     * @return the current mips share list, where each item represents
+     * the MIPS capacity of a {@link Pe}. that is available to the scheduler.
+     * 
      */
     public List<Double> getCurrentMipsShare() {
-            return currentMipsShare;
+        return currentMipsShare;
     }
 
     /**
-     * Gets the cloudlet waiting list.
+     * Gets the list of cloudlet waiting to be executed on the VM.
      * 
      * @param <T> the generic type
      * @return the cloudlet waiting list
      */
     @SuppressWarnings("unchecked")
-    public <T extends ResCloudlet> List<T> getCloudletWaitingList() {
-            return (List<T>) cloudletWaitingList;
+    public <T extends ResCloudlet> List<T> getCloudletWaitingList() {            
+        return (List<T>) cloudletWaitingList;
     }
 
     /**
-     * Cloudlet waiting list.
+     * Sets the list of cloudlet waiting to be executed on the VM.
      * 
      * @param <T> the generic type
      * @param cloudletWaitingList the cloudlet waiting list
@@ -306,7 +314,7 @@ public abstract class CloudletScheduler {
     }
 
     /**
-     * Gets the cloudlet exec list.
+     * Gets the list of cloudlets being executed on the VM.
      * 
      * @param <T> the generic type
      * @return the cloudlet exec list
@@ -317,7 +325,7 @@ public abstract class CloudletScheduler {
     }
 
     /**
-     * Sets the cloudlet exec list.
+     * Sets the list of cloudlets being executed on the VM.
      * 
      * @param <T> the generic type
      * @param cloudletExecList the new cloudlet exec list
@@ -327,7 +335,7 @@ public abstract class CloudletScheduler {
     }
 
     /**
-     * Gets the cloudlet paused list.
+     * Gets the list of paused cloudlets.
      * 
      * @param <T> the generic type
      * @return the cloudlet paused list
@@ -338,7 +346,7 @@ public abstract class CloudletScheduler {
     }
 
     /**
-     * Sets the cloudlet paused list.
+     * Sets the list of paused cloudlets.
      * 
      * @param <T> the generic type
      * @param cloudletPausedList the new cloudlet paused list
@@ -348,7 +356,7 @@ public abstract class CloudletScheduler {
     }
 
     /**
-     * Gets the cloudlet finished list.
+     * Gets the list of finished cloudlets.
      * 
      * @param <T> the generic type
      * @return the cloudlet finished list
@@ -359,7 +367,7 @@ public abstract class CloudletScheduler {
     }
 
     /**
-     * Sets the cloudlet finished list.
+     * Sets the list of finished cloudlets.
      * 
      * @param <T> the generic type
      * @param cloudletFinishedList the new cloudlet finished list
@@ -369,7 +377,7 @@ public abstract class CloudletScheduler {
     }
 
     /**
-     * Gets the cloudlet failed list.
+     * Gets the list of failed cloudlets.
      * 
      * @param <T> the generic type
      * @return the cloudlet failed list.
@@ -380,7 +388,7 @@ public abstract class CloudletScheduler {
     }
 
     /**
-     * Sets the cloudlet failed list.
+     * Sets the list of failed cloudlets.
      * 
      * @param <T> the generic type
      * @param cloudletFailedList the new cloudlet failed list.

@@ -79,16 +79,16 @@ public class VmSchedulerTimeShared extends VmScheduler {
 		double totalRequestedMips = 0;
 		double peMips = getPeCapacity();
 		for (Double mips : mipsShareRequested) {
-			// each virtual PE of a VM must require not more than the capacity of a physical PE
-			if (mips > peMips) {
-				return false;
-			}
-			totalRequestedMips += mips;
+                    // each virtual PE of a VM must require not more than the capacity of a physical PE
+                    if (mips > peMips) {
+                        return false;
+                    }
+                    totalRequestedMips += mips;
 		}
 
 		// This scheduler does not allow over-subscription
 		if (getAvailableMips() < totalRequestedMips) {
-			return false;
+                    return false;
 		}
 
 		getMipsMapRequested().put(vmUid, mipsShareRequested);
@@ -99,7 +99,7 @@ public class VmSchedulerTimeShared extends VmScheduler {
 			totalRequestedMips *= 0.1;
 		}
 
-		List<Double> mipsShareAllocated = new ArrayList<Double>();
+		List<Double> mipsShareAllocated = new ArrayList<>();
 		for (Double mipsRequested : mipsShareRequested) {
 			if (getVmsMigratingOut().contains(vmUid)) {
 				// performance degradation due to migration = 10% MIPS
