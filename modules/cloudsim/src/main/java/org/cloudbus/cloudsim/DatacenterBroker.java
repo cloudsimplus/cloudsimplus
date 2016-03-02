@@ -141,9 +141,18 @@ public class DatacenterBroker extends SimEntity {
 	 * @pre cloudletId > 0
 	 * @pre id > 0
 	 * @post $none
+         * @todo @author manoelcampos This method would receive a Cloudlet object
+         * because it is just setting the vmId cloudlet attribute.
+         * When the method is called prior to call {@link DatacenterBroker#submitCloudletList(java.util.List)},
+         * it tries to locate the cloudlet in the submitted list
+         * and, when it doesn't exist yet, it is thrown a NullPointerException.
+         * At leat, an overloaded version of the method would be created
+         * and this one would try to find the cloudlet and, when
+         * it is not found, thrown an specific exception
+         * asking if the cloudlet already was submitted.
 	 */
 	public void bindCloudletToVm(int cloudletId, int vmId) {
-		CloudletList.getById(getCloudletList(), cloudletId).setVmId(vmId);
+            CloudletList.getById(getCloudletList(), cloudletId).setVmId(vmId);
 	}
 
 	@Override
@@ -349,7 +358,7 @@ public class DatacenterBroker extends SimEntity {
 	 */
 	protected void submitCloudlets() {
 		int vmIndex = 0;
-		List<Cloudlet> successfullySubmitted = new ArrayList<Cloudlet>();
+		List<Cloudlet> successfullySubmitted = new ArrayList<>();
 		for (Cloudlet cloudlet : getCloudletList()) {
 			Vm vm;
 			// if user didn't bind this cloudlet and it has not been executed yet

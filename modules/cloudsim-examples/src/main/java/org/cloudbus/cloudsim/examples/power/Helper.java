@@ -329,9 +329,9 @@ public class Helper {
 			data.append(String.format("%.10f", slaDegradationDueToMigration) + delimeter);
 			data.append(String.format("%.10f", slaOverall) + delimeter);
 			data.append(String.format("%.10f", slaAverage) + delimeter);
-			// data.append(String.format("%.5f", slaTimePerVmWithMigration) + delimeter);
-			// data.append(String.format("%.5f", slaTimePerVmWithoutMigration) + delimeter);
-			// data.append(String.format("%.5f", slaTimePerHost) + delimeter);
+			// data.append(String.printFormatted("%.5f", slaTimePerVmWithMigration) + delimeter);
+			// data.append(String.printFormatted("%.5f", slaTimePerVmWithoutMigration) + delimeter);
+			// data.append(String.printFormatted("%.5f", slaTimePerHost) + delimeter);
 			data.append(String.format("%d", numberOfHostShutdowns) + delimeter);
 			data.append(String.format("%.2f", meanTimeBeforeHostShutdown) + delimeter);
 			data.append(String.format("%.2f", stDevTimeBeforeHostShutdown) + delimeter);
@@ -396,11 +396,11 @@ public class Helper {
 			Log.printLine(String.format("SLA time per active host: %.2f%%", slaTimePerActiveHost * 100));
 			Log.printLine(String.format("Overall SLA violation: %.2f%%", slaOverall * 100));
 			Log.printLine(String.format("Average SLA violation: %.2f%%", slaAverage * 100));
-			// Log.printLine(String.format("SLA time per VM with migration: %.2f%%",
+			// Log.printLine(String.printFormatted("SLA time per VM with migration: %.2f%%",
 			// slaTimePerVmWithMigration * 100));
-			// Log.printLine(String.format("SLA time per VM without migration: %.2f%%",
+			// Log.printLine(String.printFormatted("SLA time per VM without migration: %.2f%%",
 			// slaTimePerVmWithoutMigration * 100));
-			// Log.printLine(String.format("SLA time per host: %.2f%%", slaTimePerHost * 100));
+			// Log.printLine(String.printFormatted("SLA time per host: %.2f%%", slaTimePerHost * 100));
 			Log.printLine(String.format("Number of host shutdowns: %d", numberOfHostShutdowns));
 			Log.printLine(String.format(
 					"Mean time before a host shutdown: %.2f sec",
@@ -761,17 +761,17 @@ public class Helper {
 				continue;
 			}
 			for (Double time : vmAllocationPolicy.getTimeHistory().get(host.getId())) {
-				Log.format("%.2f, ", time);
+				Log.printFormatted("%.2f, ", time);
 			}
 			Log.printLine();
 
 			for (Double utilization : vmAllocationPolicy.getUtilizationHistory().get(host.getId())) {
-				Log.format("%.2f, ", utilization);
+				Log.printFormatted("%.2f, ", utilization);
 			}
 			Log.printLine();
 
 			for (Double metric : vmAllocationPolicy.getMetricHistory().get(host.getId())) {
-				Log.format("%.2f, ", metric);
+				Log.printFormatted("%.2f, ", metric);
 			}
 			Log.printLine();
 		}

@@ -237,7 +237,7 @@ public class NetworkVmAllocationPolicy extends VmAllocationPolicy {
 			getUsedPes().put(vm.getUid(), requiredPes);
 			getFreePes().set(idx, getFreePes().get(idx) - requiredPes);
 
-			Log.formatLine(
+			Log.printFormattedLine(
 					"%.2f: VM #" + vm.getId() + " has been allocated to the host #" + host.getId(),
 					CloudSim.clock());
 			return true;

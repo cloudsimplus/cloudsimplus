@@ -102,13 +102,13 @@ public class PowerDatacenter extends Datacenter {
 						PowerHost oldHost = (PowerHost) vm.getHost();
 
 						if (oldHost == null) {
-							Log.formatLine(
+							Log.printFormattedLine(
 									"%.2f: Migration of VM #%d to Host #%d is started",
 									currentTime,
 									vm.getId(),
 									targetHost.getId());
 						} else {
-							Log.formatLine(
+							Log.printFormattedLine(
 									"%.2f: Migration of VM #%d from Host #%d to Host #%d is started",
 									currentTime,
 									vm.getId(),
@@ -173,7 +173,7 @@ public class PowerDatacenter extends Datacenter {
 		double timeFrameDatacenterEnergy = 0.0;
 
 		Log.printLine("\n\n--------------------------------------------------------------\n\n");
-		Log.formatLine("New resource usage for the time frame starting at %.2f:", currentTime);
+		Log.printFormattedLine("New resource usage for the time frame starting at %.2f:", currentTime);
 
 		for (PowerHost host : this.<PowerHost> getHostList()) {
 			Log.printLine();
@@ -183,7 +183,7 @@ public class PowerDatacenter extends Datacenter {
 				minTime = time;
 			}
 
-			Log.formatLine(
+			Log.printFormattedLine(
 					"%.2f: [Host #%d] utilization is %.2f%%",
 					currentTime,
 					host.getId(),
@@ -191,7 +191,7 @@ public class PowerDatacenter extends Datacenter {
 		}
 
 		if (timeDiff > 0) {
-			Log.formatLine(
+			Log.printFormattedLine(
 					"\nEnergy consumption for the last time frame from %.2f to %.2f:",
 					getLastProcessTime(),
 					currentTime);
@@ -206,21 +206,21 @@ public class PowerDatacenter extends Datacenter {
 				timeFrameDatacenterEnergy += timeFrameHostEnergy;
 
 				Log.printLine();
-				Log.formatLine(
+				Log.printFormattedLine(
 						"%.2f: [Host #%d] utilization at %.2f was %.2f%%, now is %.2f%%",
 						currentTime,
 						host.getId(),
 						getLastProcessTime(),
 						previousUtilizationOfCpu * 100,
 						utilizationOfCpu * 100);
-				Log.formatLine(
+				Log.printFormattedLine(
 						"%.2f: [Host #%d] energy is %.2f W*sec",
 						currentTime,
 						host.getId(),
 						timeFrameHostEnergy);
 			}
 
-			Log.formatLine(
+			Log.printFormattedLine(
 					"\n%.2f: Data center's energy is %.2f W*sec\n",
 					currentTime,
 					timeFrameDatacenterEnergy);

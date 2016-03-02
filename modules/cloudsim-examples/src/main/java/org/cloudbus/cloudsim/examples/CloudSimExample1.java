@@ -9,7 +9,8 @@ package org.cloudbus.cloudsim.examples;
  * Copyright (c) 2009, The University of Melbourne, Australia
  */
 
-import java.text.DecimalFormat;
+import org.cloudbus.cloudsim.examples.util.ResultsHelper;
+import org.cloudbus.cloudsim.util.TextTableBuilder;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.LinkedList;
@@ -39,240 +40,206 @@ import org.cloudbus.cloudsim.resources.Ram;
  * A simple example showing how to create a data center with 1 host and run 1 cloudlet on it.
  */
 public class CloudSimExample1 {
-	/** The cloudlet list. */
-	private static List<Cloudlet> cloudletList;
-	/** The vmlist. */
-	private static List<Vm> vmlist;
+    /** The cloudlet list. */
+    private static List<Cloudlet> cloudletList;
 
-	/**
-	 * Creates main() to run this example.
-	 *
-	 * @param args the args
-	 */
-	@SuppressWarnings("unused")
-	public static void main(String[] args) {
-		Log.printLine("Starting CloudSimExample1...");
+    /** The vmlist. */
+    private static List<Vm> vmlist;
 
-		try {
-			// First step: Initialize the CloudSim package. It should be called before creating any entities.
-			int num_user = 1; // number of cloud users
-			Calendar calendar = Calendar.getInstance(); // Calendar whose fields have been initialized with the current date and time.
- 			boolean trace_flag = false; // trace events
+    /**
+     * Creates main() to run this example.
+     *
+     * @param args the args
+     */
+    @SuppressWarnings("unused")
+    public static void main(String[] args) {
+            Log.printFormattedLine("Starting %s ...", CloudSimExample1.class.getSimpleName());
 
-			/* Comment Start - Dinesh Bhagwat 
-			 * Initialize the CloudSim library. 
-			 * init() invokes initCommonVariable() which in turn calls initialize() (all these 3 methods are defined in CloudSim.java).
-			 * initialize() creates two collections - an ArrayList of SimEntity Objects (named entities which denote the simulation entities) and 
-			 * a LinkedHashMap (named entitiesByName which denote the LinkedHashMap of the same simulation entities), with name of every SimEntity as the key.
-			 * initialize() creates two queues - a Queue of SimEvents (future) and another Queue of SimEvents (deferred). 
-			 * initialize() creates a HashMap of of Predicates (with integers as keys) - these predicates are used to select a particular event from the deferred queue. 
-			 * initialize() sets the simulation clock to 0 and running (a boolean flag) to false.
-			 * Once initialize() returns (note that we are in method initCommonVariable() now), a CloudSimShutDown (which is derived from SimEntity) instance is created 
-			 * (with numuser as 1, its name as CloudSimShutDown, id as -1, and state as RUNNABLE). Then this new entity is added to the simulation 
-			 * While being added to the simulation, its id changes to 0 (from the earlier -1). The two collections - entities and entitiesByName are updated with this SimEntity.
-			 * the shutdownId (whose default value was -1) is 0    
-			 * Once initCommonVariable() returns (note that we are in method init() now), a CloudInformationService (which is also derived from SimEntity) instance is created 
-			 * (with its name as CloudInformatinService, id as -1, and state as RUNNABLE). Then this new entity is also added to the simulation. 
-			 * While being added to the simulation, the id of the SimEntitiy is changed to 1 (which is the next id) from its earlier value of -1. 
-			 * The two collections - entities and entitiesByName are updated with this SimEntity.
-			 * the cisId(whose default value is -1) is 1
-			 * Comment End - Dinesh Bhagwat 
-			 */
-			CloudSim.init(num_user, calendar, trace_flag);
+            try {
+                    // First step: Initialize the CloudSim package. It should be called before creating any entities.
+                    int num_user = 1; // number of cloud users
+                    Calendar calendar = Calendar.getInstance(); // Calendar whose fields have been initialized with the current date and time.
+                    boolean trace_flag = false; // trace events
 
-			// Second step: Create Datacenters
-			// Datacenters are the resource providers in CloudSim. We need at
-			// list one of them to run a CloudSim simulation
-			Datacenter datacenter0 = createDatacenter("Datacenter_0");
+                    /* Comment Start - Dinesh Bhagwat 
+                     * Initialize the CloudSim library. 
+                     * init() invokes initCommonVariable() which in turn calls initialize() (all these 3 methods are defined in CloudSim.java).
+                     * initialize() creates two collections - an ArrayList of SimEntity Objects (named entities which denote the simulation entities) and 
+                     * a LinkedHashMap (named entitiesByName which denote the LinkedHashMap of the same simulation entities), with name of every SimEntity as the key.
+                     * initialize() creates two queues - a Queue of SimEvents (future) and another Queue of SimEvents (deferred). 
+                     * initialize() creates a HashMap of of Predicates (with integers as keys) - these predicates are used to select a particular event from the deferred queue. 
+                     * initialize() sets the simulation clock to 0 and running (a boolean flag) to false.
+                     * Once initialize() returns (note that we are in method initCommonVariable() now), a CloudSimShutDown (which is derived from SimEntity) instance is created 
+                     * (with numuser as 1, its name as CloudSimShutDown, id as -1, and state as RUNNABLE). Then this new entity is added to the simulation 
+                     * While being added to the simulation, its id changes to 0 (from the earlier -1). The two collections - entities and entitiesByName are updated with this SimEntity.
+                     * the shutdownId (whose default value was -1) is 0    
+                     * Once initCommonVariable() returns (note that we are in method init() now), a CloudInformationService (which is also derived from SimEntity) instance is created 
+                     * (with its name as CloudInformatinService, id as -1, and state as RUNNABLE). Then this new entity is also added to the simulation. 
+                     * While being added to the simulation, the id of the SimEntitiy is changed to 1 (which is the next id) from its earlier value of -1. 
+                     * The two collections - entities and entitiesByName are updated with this SimEntity.
+                     * the cisId(whose default value is -1) is 1
+                     * Comment End - Dinesh Bhagwat 
+                     */
+                    CloudSim.init(num_user, calendar, trace_flag);
 
-			// Third step: Create Broker
-			DatacenterBroker broker = createBroker();
-			int brokerId = broker.getId();
+                    // Second step: Create Datacenters
+                    // Datacenters are the resource providers in CloudSim. We need at
+                    // list one of them to run a CloudSim simulation
+                    Datacenter datacenter0 = createDatacenter("Datacenter_0");
 
-			// Fourth step: Create one virtual machine
-			vmlist = new ArrayList<Vm>();
+                    // Third step: Create Broker
+                    DatacenterBroker broker = createBroker();
+                    int brokerId = broker.getId();
 
-			// VM description
-			int vmid = 0;
-			int mips = 1000;
-			long size = 10000; // image size (MB)
-			int ram = 512; // vm memory (MB)
-			long bw = 1000;
-			int pesNumber = 1; // number of cpus
-			String vmm = "Xen"; // VMM name
+                    // Fourth step: Create one virtual machine
+                    vmlist = new ArrayList<Vm>();
 
-			// create VM
-			Vm vm = new Vm(
-                                vmid, brokerId, mips, pesNumber, ram, bw, size, 
-                                vmm, new CloudletSchedulerTimeShared());
+                    // VM description
+                    int vmid = 0;
+                    int mips = 1000;
+                    long size = 10000; // image size (MB)
+                    int ram = 512; // vm memory (MB)
+                    long bw = 1000;
+                    int pesNumber = 1; // number of cpus
+                    String vmm = "Xen"; // VMM name
 
-			// add the VM to the vmList
-			vmlist.add(vm);
+                    // create VM
+                    Vm vm = new Vm(
+                            vmid, brokerId, mips, pesNumber, ram, bw, size, 
+                            vmm, new CloudletSchedulerTimeShared());
 
-			// submit vm list to the broker
-			broker.submitVmList(vmlist);
+                    // add the VM to the vmList
+                    vmlist.add(vm);
 
-			// Fifth step: Create one Cloudlet
-			cloudletList = new ArrayList<>();
+                    // submit vm list to the broker
+                    broker.submitVmList(vmlist);
 
-			// Cloudlet properties
-			int id = 0;
-			long length = 400000;
-			long fileSize = 300;
-			long outputSize = 300;
-			UtilizationModel utilizationModel = new UtilizationModelFull();
+                    // Fifth step: Create one Cloudlet
+                    cloudletList = new ArrayList<>();
 
-			Cloudlet cloudlet = 
-                                new Cloudlet(id, length, pesNumber, fileSize, 
-                                        outputSize, utilizationModel, utilizationModel, 
-                                        utilizationModel);
-			cloudlet.setUserId(brokerId);
-			cloudlet.setVmId(vmid);
+                    // Cloudlet properties
+                    int id = 0;
+                    long length = 400000;
+                    long fileSize = 300;
+                    long outputSize = 300;
+                    UtilizationModel utilizationModel = new UtilizationModelFull();
 
-			// add the cloudlet to the list
-			cloudletList.add(cloudlet);
+                    Cloudlet cloudlet = 
+                            new Cloudlet(id, length, pesNumber, fileSize, 
+                                    outputSize, utilizationModel, utilizationModel, 
+                                    utilizationModel);
+                    cloudlet.setUserId(brokerId);
+                    cloudlet.setVmId(vmid);
 
-			// submit cloudlet list to the broker
-			broker.submitCloudletList(cloudletList);
+                    // add the cloudlet to the list
+                    cloudletList.add(cloudlet);
 
-			// Sixth step: Starts the simulation
-			CloudSim.startSimulation();
+                    // submit cloudlet list to the broker
+                    broker.submitCloudletList(cloudletList);
 
-			CloudSim.stopSimulation();
+                    // Sixth step: Starts the simulation
+                    CloudSim.startSimulation();
 
-			//Final step: Print results when simulation is over
-			List<Cloudlet> newList = broker.getCloudletReceivedList();
-			printCloudletList(newList);
+                    CloudSim.stopSimulation();
 
-			Log.printLine("CloudSimExample1 finished!");
-		} catch (Exception e) {
-			e.printStackTrace();
-			Log.printLine("Unwanted errors happen");
-		}
-	}
+                    //Final step: Print results when simulation is over
+                    List<Cloudlet> newList = broker.getCloudletReceivedList();
+                    ResultsHelper.print(new TextTableBuilder(), newList);
+                    Log.printFormattedLine("%s finished!", CloudSimExample1.class.getSimpleName());
+            } catch (Exception e) {
+                    e.printStackTrace();
+                    Log.printLine("Unwanted errors happen");
+            }
+    }
 
-	/**
-	 * Creates the datacenter.
-	 *
-	 * @param name the name
-	 *
-	 * @return the datacenter
-	 */
-	private static Datacenter createDatacenter(String name) {
+    /**
+     * Creates the datacenter.
+     *
+     * @param name the name
+     *
+     * @return the datacenter
+     */
+    private static Datacenter createDatacenter(String name) {
 
-		// Here are the steps needed to create a PowerDatacenter:
-		// 1. We need to create a list to store
-		// our machine
-		List<Host> hostList = new ArrayList<Host>();
+            // Here are the steps needed to create a PowerDatacenter:
+            // 1. We need to create a list to store
+            // our machine
+            List<Host> hostList = new ArrayList<Host>();
 
-		// 2. A Machine contains one or more PEs or CPUs/Cores.
-		// In this example, it will have only one core.
-		List<Pe> peList = new ArrayList<Pe>();
+            // 2. A Machine contains one or more PEs or CPUs/Cores.
+            // In this example, it will have only one core.
+            List<Pe> peList = new ArrayList<Pe>();
 
-		int mips = 1000;
+            int mips = 1000;
 
-		// 3. Create PEs and add these into a list.
-		peList.add(new Pe(0, new PeProvisionerSimple(mips))); // need to store Pe id and MIPS Rating
+            // 3. Create PEs and add these into a list.
+            peList.add(new Pe(0, new PeProvisionerSimple(mips))); // need to store Pe id and MIPS Rating
 
-		// 4. Create Host with its id and list of PEs and add them to the list
-		// of machines
-		int hostId = 0;
-		int ram = 2048; // host memory (MB)
-		long storage = 1000000; // host storage
-		long bw = 10000;
+            // 4. Create Host with its id and list of PEs and add them to the list
+            // of machines
+            int hostId = 0;
+            int ram = 2048; // host memory (MB)
+            long storage = 1000000; // host storage
+            long bw = 10000;
 
-		hostList.add(new Host(
-				hostId,
-				new ResourceProvisionerSimple<>(new Ram(ram)),
-				new ResourceProvisionerSimple<>(new Bandwidth(bw)),
-				storage,
-				peList,
-				new VmSchedulerTimeShared(peList)
-			)
-		); // This is our machine
+            hostList.add(new Host(
+                            hostId,
+                            new ResourceProvisionerSimple<>(new Ram(ram)),
+                            new ResourceProvisionerSimple<>(new Bandwidth(bw)),
+                            storage,
+                            peList,
+                            new VmSchedulerTimeShared(peList)
+                    )
+            ); // This is our machine
 
-		// 5. Create a DatacenterCharacteristics object that stores the
-		// properties of a data center: architecture, OS, list of
-		// Machines, allocation policy: time- or space-shared, time zone
-		// and its price (G$/Pe time unit).
-		String arch = "x86"; // system architecture
-		String os = "Linux"; // operating system
-		String vmm = "Xen";
-		double time_zone = 10.0; // time zone this resource located
-		double cost = 3.0; // the cost of using processing in this resource
-		double costPerMem = 0.05; // the cost of using memory in this resource
-		double costPerStorage = 0.001; // the cost of using storage in this
-										// resource
-		double costPerBw = 0.0; // the cost of using bw in this resource
-		LinkedList<FileStorage> storageList = new LinkedList<>(); // we are not adding SAN
-													// devices by now
+            // 5. Create a DatacenterCharacteristics object that stores the
+            // properties of a data center: architecture, OS, list of
+            // Machines, allocation policy: time- or space-shared, time zone
+            // and its price (G$/Pe time unit).
+            String arch = "x86"; // system architecture
+            String os = "Linux"; // operating system
+            String vmm = "Xen";
+            double time_zone = 10.0; // time zone this resource located
+            double cost = 3.0; // the cost of using processing in this resource
+            double costPerMem = 0.05; // the cost of using memory in this resource
+            double costPerStorage = 0.001; // the cost of using storage in this
+                                                                            // resource
+            double costPerBw = 0.0; // the cost of using bw in this resource
+            LinkedList<FileStorage> storageList = new LinkedList<>(); // we are not adding SAN
+                                                                                                    // devices by now
 
-		DatacenterCharacteristics characteristics = new DatacenterCharacteristics(
-				arch, os, vmm, hostList, time_zone, cost, costPerMem,
-				costPerStorage, costPerBw);
+            DatacenterCharacteristics characteristics = new DatacenterCharacteristics(
+                            arch, os, vmm, hostList, time_zone, cost, costPerMem,
+                            costPerStorage, costPerBw);
 
-		// 6. Finally, we need to create a PowerDatacenter object.
-		Datacenter datacenter = null;
-		try {
-			datacenter = new Datacenter(name, characteristics, new VmAllocationPolicySimple(hostList), storageList, 0);
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
+            // 6. Finally, we need to create a PowerDatacenter object.
+            Datacenter datacenter = null;
+            try {
+                    datacenter = new Datacenter(name, characteristics, new VmAllocationPolicySimple(hostList), storageList, 0);
+            } catch (Exception e) {
+                    e.printStackTrace();
+            }
 
-		return datacenter;
-	}
+            return datacenter;
+    }
 
-	// We strongly encourage users to develop their own broker policies, to
-	// submit vms and cloudlets according
-	// to the specific rules of the simulated scenario
-	/**
-	 * Creates the broker.
-	 *
-	 * @return the datacenter broker
-	 */
-	private static DatacenterBroker createBroker() {
-		DatacenterBroker broker = null;
-		try {
-			broker = new DatacenterBroker("Broker");
-		} catch (Exception e) {
-			e.printStackTrace();
-			return null;
-		}
-		return broker;
-	}
+    // We strongly encourage users to develop their own broker policies, to
+    // submit vms and cloudlets according
+    // to the specific rules of the simulated scenario
+    /**
+     * Creates the broker.
+     *
+     * @return the datacenter broker
+     */
+    private static DatacenterBroker createBroker() {
+            DatacenterBroker broker = null;
+            try {
+                    broker = new DatacenterBroker("Broker");
+            } catch (Exception e) {
+                    e.printStackTrace();
+                    return null;
+            }
+            return broker;
+    }
 
-	/**
-	 * Prints the Cloudlet objects.
-	 *
-	 * @param list list of Cloudlets
-	 */
-	private static void printCloudletList(List<Cloudlet> list) {
-		int size = list.size();
-		Cloudlet cloudlet;
-
-		String indent = "    ";
-		Log.printLine();
-		Log.printLine("========== OUTPUT ==========");
-		Log.printLine("Cloudlet ID" + indent + "STATUS" + indent
-				+ "Data center ID" + indent + "VM ID" + indent + "Time" + indent
-				+ "Start Time" + indent + "Finish Time");
-
-		DecimalFormat dft = new DecimalFormat("###.##");
-		for (int i = 0; i < size; i++) {
-			cloudlet = list.get(i);
-			Log.print(indent + cloudlet.getCloudletId() + indent + indent);
-
-			if (cloudlet.getStatus() == Cloudlet.Status.SUCCESS) {
-				Log.print("SUCCESS");
-
-				Log.printLine(indent + indent + cloudlet.getResourceId()
-						+ indent + indent + indent + cloudlet.getVmId()
-						+ indent + indent
-						+ dft.format(cloudlet.getActualCPUTime()) + indent
-						+ indent + dft.format(cloudlet.getExecStartTime())
-						+ indent + indent
-						+ dft.format(cloudlet.getFinishTime()));
-			}
-		}
-	}
 }

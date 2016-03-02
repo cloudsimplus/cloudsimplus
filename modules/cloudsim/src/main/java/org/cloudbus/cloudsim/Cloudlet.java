@@ -23,6 +23,24 @@ import org.cloudbus.cloudsim.core.CloudSim;
  * @author Anton Beloglazov
  * @since CloudSim Toolkit 1.0
  * @see DatacenterBroker
+ * 
+ * 
+ * @todo @author manoelcampos Create a submissionDelay attribute (with default value 0)
+ * to define a delay to submit cloudlets to be executed.
+ * By this way, the {@link DatacenterBroker#submitCloudlets()} could
+ * set the given delay when submit each cloudlet. That feature
+ * will allow to simulate dynamic arrival of cloudlets. All the cloudlets
+ * will have to be instantiated prior to start the simulation, as it is
+ * already required. However, it will be created into a VM just after the specified delay.
+ * This proposal has to be assessed because in fact, the number of submitted cloudlets
+ * will be set as the total of cloudlets (instantly submitted or not).
+ * To best scenario should be to only submit the cloudlet when the delay
+ * has expired. Maybe it would be created a new event to be processed
+ * in the {@link DatacenterBroker#processEvent(org.cloudbus.cloudsim.core.SimEvent) }
+ * to just create cloudlets in the existing created Vms.
+ * 
+ * @todo @author manoelcampos The cloudlet class doesn't specify RAM requirements,
+ * just CPU. 
  */
 public class Cloudlet {    
   /**
@@ -1540,4 +1558,5 @@ public class Cloudlet {
     private void setAccumulatedBwCost(double accumulatedBwCost) {
         this.accumulatedBwCost = accumulatedBwCost;
     }    
+    
 }

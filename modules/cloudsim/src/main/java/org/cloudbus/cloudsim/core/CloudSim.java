@@ -24,11 +24,11 @@ import org.cloudbus.cloudsim.core.predicates.PredicateNone;
 
 /**
  * This class extends the CloudSimCore to enable network simulation in CloudSim. Also, it disables
- * all the network models from CloudSim, to provide a simpler simulation of networking. In the
- * network model used by CloudSim, a topology file written in BRITE format is used to describe the
- * network. Later, nodes in such file are mapped to CloudSim entities. Delay calculated from the
- * BRITE model are added to the messages send through CloudSim. Messages using the old model are
- * converted to the appropriate methods with the correct parameters.
+ all the network models from CloudSim, to provide a simpler simulation of networking. In the
+ network model used by CloudSim, a topology file written in BRITE printFormatted is used to describe the
+ network. Later, nodes in such file are mapped to CloudSim entities. Delay calculated from the
+ BRITE model are added to the messages send through CloudSim. Messages using the old model are
+ converted to the appropriate methods with the correct parameters.
  * 
  * @author Rodrigo N. Calheiros
  * @author Anton Beloglazov

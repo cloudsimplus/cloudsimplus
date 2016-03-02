@@ -128,24 +128,24 @@ public class Log {
 	
 	
 	/**
-	 * Prints a string formated as in String.format().
+	 * Prints a string formated as in String.printFormatted().
 	 * 
-	 * @param format the format
+	 * @param format the printFormatted
 	 * @param args the args
 	 */
-	public static void format(String format, Object... args) {
+	public static void printFormatted(String format, Object... args) {
 		if (!isDisabled()) {
 			print(String.format(format, args));
 		}
 	}
 
 	/**
-	 * Prints a string formated as in String.format(), followed by a new line.
+	 * Prints a string formated as in String.printFormatted(), followed by a new line.
 	 * 
-	 * @param format the format
+	 * @param format the printFormatted
 	 * @param args the args
 	 */
-	public static void formatLine(String format, Object... args) {
+	public static void printFormattedLine(String format, Object... args) {
 		if (!isDisabled()) {
 			printLine(String.format(format, args));
 		}

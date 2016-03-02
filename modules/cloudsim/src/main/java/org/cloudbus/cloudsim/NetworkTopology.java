@@ -20,7 +20,7 @@ import org.cloudbus.cloudsim.network.TopologicalLink;
 import org.cloudbus.cloudsim.network.TopologicalNode;
 
 /**
- * Implements the network layer in CloudSim. It reads a file in the <a href="http://www.cs.bu.edu/brite/user_manual/node29.html">BRITE format</a>,
+ * Implements the network layer in CloudSim. It reads a file in the <a href="http://www.cs.bu.edu/brite/user_manual/node29.html">BRITE printFormatted</a>,
  * the <a href="http://www.cs.bu.edu/brite/">Boston university Representative Topology gEnerator</a>, and
  * generates a topological network from it. Information of this network is used to simulate latency
  * in network traffic of CloudSim.
@@ -71,7 +71,7 @@ public class NetworkTopology {
 
 	/**
 	 * Creates the network topology if the file exists and can be successfully parsed. File is
-	 * written in the BRITE format and contains topological information on simulation entities.
+ written in the BRITE printFormatted and contains topological information on simulation entities.
 	 * 
 	 * @param fileName name of the BRITE file
 	 * @pre fileName != null

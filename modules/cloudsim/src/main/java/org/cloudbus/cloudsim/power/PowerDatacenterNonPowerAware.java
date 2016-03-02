@@ -76,7 +76,7 @@ public class PowerDatacenterNonPowerAware extends PowerDatacenter {
 			Log.printLine("\n");
 
 			for (PowerHost host : this.<PowerHost> getHostList()) {
-				Log.formatLine("%.2f: Host #%d", CloudSim.clock(), host.getId());
+				Log.printFormattedLine("%.2f: Host #%d", CloudSim.clock(), host.getId());
 
 				double hostPower = 0.0;
 
@@ -87,24 +87,24 @@ public class PowerDatacenterNonPowerAware extends PowerDatacenter {
 					e.printStackTrace();
 				}
 
-				Log.formatLine(
+				Log.printFormattedLine(
 						"%.2f: Host #%d utilization is %.2f%%",
 						CloudSim.clock(),
 						host.getId(),
 						host.getUtilizationOfCpu() * 100);
-				Log.formatLine(
+				Log.printFormattedLine(
 						"%.2f: Host #%d energy is %.2f W*sec",
 						CloudSim.clock(),
 						host.getId(),
 						hostPower);
 			}
 
-			Log.formatLine("\n%.2f: Consumed energy is %.2f W*sec\n", CloudSim.clock(), timeframePower);
+			Log.printFormattedLine("\n%.2f: Consumed energy is %.2f W*sec\n", CloudSim.clock(), timeframePower);
 
 			Log.printLine("\n\n--------------------------------------------------------------\n\n");
 
 			for (PowerHost host : this.<PowerHost> getHostList()) {
-				Log.formatLine("\n%.2f: Host #%d", CloudSim.clock(), host.getId());
+				Log.printFormattedLine("\n%.2f: Host #%d", CloudSim.clock(), host.getId());
 
 				double time = host.updateVmsProcessing(currentTime); // inform VMs to update
 																		// processing
@@ -139,13 +139,13 @@ public class PowerDatacenterNonPowerAware extends PowerDatacenter {
 						PowerHost oldHost = (PowerHost) vm.getHost();
 
 						if (oldHost == null) {
-							Log.formatLine(
+							Log.printFormattedLine(
 									"%.2f: Migration of VM #%d to Host #%d is started",
 									CloudSim.clock(),
 									vm.getId(),
 									targetHost.getId());
 						} else {
-							Log.formatLine(
+							Log.printFormattedLine(
 									"%.2f: Migration of VM #%d from Host #%d to Host #%d is started",
 									CloudSim.clock(),
 									vm.getId(),

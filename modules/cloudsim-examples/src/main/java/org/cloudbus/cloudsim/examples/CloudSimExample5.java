@@ -9,7 +9,6 @@
 
 package org.cloudbus.cloudsim.examples;
 
-import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.LinkedList;
@@ -30,6 +29,8 @@ import org.cloudbus.cloudsim.Vm;
 import org.cloudbus.cloudsim.VmAllocationPolicySimple;
 import org.cloudbus.cloudsim.VmSchedulerSpaceShared;
 import org.cloudbus.cloudsim.core.CloudSim;
+import org.cloudbus.cloudsim.examples.util.ResultsHelper;
+import org.cloudbus.cloudsim.util.TextTableBuilder;
 import org.cloudbus.cloudsim.provisioners.PeProvisionerSimple;
 import org.cloudbus.cloudsim.provisioners.ResourceProvisionerSimple;
 import org.cloudbus.cloudsim.resources.Bandwidth;
@@ -55,9 +56,7 @@ public class CloudSimExample5 {
 	 * Creates main() to run this example
 	 */
 	public static void main(String[] args) {
-
-		Log.printLine("Starting CloudSimExample5...");
-
+                Log.printFormattedLine("Starting %s...", CloudSimExample5.class.getSimpleName());
 		try {
 			// First step: Initialize the CloudSim package. It should be called
 			// before creating any entities.
@@ -143,13 +142,9 @@ public class CloudSimExample5 {
 
 			CloudSim.stopSimulation();
 
-			Log.print("=============> User "+brokerId1+"    ");
-			printCloudletList(newList1);
-
-			Log.print("=============> User "+brokerId2+"    ");
-			printCloudletList(newList2);
-
-			Log.printLine("CloudSimExample5 finished!");
+			ResultsHelper.print(new TextTableBuilder("User "+brokerId1), newList1);
+                        ResultsHelper.print(new TextTableBuilder("User "+brokerId2), newList2);
+                        Log.printFormattedLine("%s finished!", CloudSimExample5.class.getSimpleName());
 		}
 		catch (Exception e) {
 			e.printStackTrace();
@@ -233,35 +228,5 @@ public class CloudSimExample5 {
 			return null;
 		}
 		return broker;
-	}
-
-	/**
-	 * Prints the Cloudlet objects
-	 * @param list  list of Cloudlets
-	 */
-	private static void printCloudletList(List<Cloudlet> list) {
-		int size = list.size();
-		Cloudlet cloudlet;
-
-		String indent = "    ";
-		Log.printLine();
-		Log.printLine("========== OUTPUT ==========");
-		Log.printLine("Cloudlet ID" + indent + "STATUS" + indent +
-				"Data center ID" + indent + "VM ID" + indent + "Time" + indent + "Start Time" + indent + "Finish Time");
-
-		DecimalFormat dft = new DecimalFormat("###.##");
-		for (int i = 0; i < size; i++) {
-			cloudlet = list.get(i);
-			Log.print(indent + cloudlet.getCloudletId() + indent + indent);
-
-			if (cloudlet.getStatus() == Cloudlet.Status.SUCCESS){
-				Log.print("SUCCESS");
-
-				Log.printLine( indent + indent + cloudlet.getResourceId() + indent + indent + indent + cloudlet.getVmId() +
-						indent + indent + dft.format(cloudlet.getActualCPUTime()) + indent + indent + dft.format(cloudlet.getExecStartTime())+
-						indent + indent + dft.format(cloudlet.getFinishTime()));
-			}
-		}
-
 	}
 }

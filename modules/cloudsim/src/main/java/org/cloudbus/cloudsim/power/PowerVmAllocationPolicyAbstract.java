@@ -57,17 +57,17 @@ public abstract class PowerVmAllocationPolicyAbstract extends VmAllocationPolicy
 	@Override
 	public boolean allocateHostForVm(Vm vm, Host host) {
 		if (host == null) {
-			Log.formatLine("%.2f: No suitable host found for VM #" + vm.getId() + "\n", CloudSim.clock());
+			Log.printFormattedLine("%.2f: No suitable host found for VM #" + vm.getId() + "\n", CloudSim.clock());
 			return false;
 		}
 		if (host.vmCreate(vm)) { // if vm has been succesfully created in the host
 			getVmTable().put(vm.getUid(), host);
-			Log.formatLine(
+			Log.printFormattedLine(
 					"%.2f: VM #" + vm.getId() + " has been allocated to the host #" + host.getId(),
 					CloudSim.clock());
 			return true;
 		}
-		Log.formatLine(
+		Log.printFormattedLine(
 				"%.2f: Creation of VM #" + vm.getId() + " on the host #" + host.getId() + " failed\n",
 				CloudSim.clock());
 		return false;

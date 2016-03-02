@@ -76,19 +76,19 @@ public class LogTest {
 
 	@Test
 	public void testFormat() throws IOException {
-		Log.format("test %s test", "test");
+		Log.printFormatted("test %s test", "test");
 		assertEquals("test test test", OUTPUT.toString());
 		OUTPUT.reset();
 
-		Log.format("%d", 123);
+		Log.printFormatted("%d", 123);
 		assertEquals("123", OUTPUT.toString());
 		OUTPUT.reset();
 
-		Log.format("%d", 123L);
+		Log.printFormatted("%d", 123L);
 		assertEquals("123", OUTPUT.toString());
 		OUTPUT.reset();
 
-		Log.format("%.2f", 123.01);
+		Log.printFormatted("%.2f", 123.01);
 		assertEquals("123"+dfs.getDecimalSeparator()+"01", OUTPUT.toString());
 		OUTPUT.reset();
 	}
@@ -96,19 +96,19 @@ public class LogTest {
 	@Test
 	public void testFormatLine() throws IOException {
                 OUTPUT.reset();
-		Log.formatLine("test %s test", "test");
+		Log.printFormattedLine("test %s test", "test");
 		assertEquals("test test test" + LINE_SEPARATOR, OUTPUT.toString());
 		OUTPUT.reset();
 
-		Log.formatLine("%d", 123);
+		Log.printFormattedLine("%d", 123);
 		assertEquals("123" + LINE_SEPARATOR, OUTPUT.toString());
 		OUTPUT.reset();
 
-		Log.formatLine("%d", 123L);
+		Log.printFormattedLine("%d", 123L);
 		assertEquals("123" + LINE_SEPARATOR, OUTPUT.toString());
 		OUTPUT.reset();
 
-		Log.formatLine("%.2f", 123.01);
+		Log.printFormattedLine("%.2f", 123.01);
 		assertEquals("123"+dfs.getDecimalSeparator()+"01" + LINE_SEPARATOR, OUTPUT.toString());
 		OUTPUT.reset();
 	}
@@ -126,11 +126,11 @@ public class LogTest {
 		assertEquals("test test" + LINE_SEPARATOR, OUTPUT.toString());
 		OUTPUT.reset();
 
-		Log.format("test %s test", "test");
+		Log.printFormatted("test %s test", "test");
 		assertEquals("test test test", OUTPUT.toString());
 		OUTPUT.reset();
 
-		Log.formatLine("test %s test", "test");
+		Log.printFormattedLine("test %s test", "test");
 		assertEquals("test test test" + LINE_SEPARATOR, OUTPUT.toString());
 		OUTPUT.reset();
 
@@ -146,11 +146,11 @@ public class LogTest {
 		assertEquals("", OUTPUT.toString());
 		OUTPUT.reset();
 
-		Log.format("test %s test", "test");
+		Log.printFormatted("test %s test", "test");
 		assertEquals("", OUTPUT.toString());
 		OUTPUT.reset();
 
-		Log.formatLine("test %s test", "test");
+		Log.printFormattedLine("test %s test", "test");
 		assertEquals("", OUTPUT.toString());
 		OUTPUT.reset();
 
@@ -166,11 +166,11 @@ public class LogTest {
 		assertEquals("test test" + LINE_SEPARATOR, OUTPUT.toString());
 		OUTPUT.reset();
 
-		Log.format("test %s test", "test");
+		Log.printFormatted("test %s test", "test");
 		assertEquals("test test test", OUTPUT.toString());
 		OUTPUT.reset();
 
-		Log.formatLine("test %s test", "test");
+		Log.printFormattedLine("test %s test", "test");
 		assertEquals("test test test" + LINE_SEPARATOR, OUTPUT.toString());
 		OUTPUT.reset();
 	}

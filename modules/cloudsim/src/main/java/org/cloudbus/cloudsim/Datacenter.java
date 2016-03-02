@@ -556,7 +556,7 @@ public class Datacenter extends SimEntity {
             sendNow(ev.getSource(), CloudSimTags.VM_CREATE_ACK, data);
         }
 
-        Log.formatLine(
+        Log.printFormattedLine(
                 "%.2f: Migration of VM #%d to Host #%d is completed",
                 CloudSim.clock(), vm.getId(), host.getId());
         vm.setInMigration(false);
