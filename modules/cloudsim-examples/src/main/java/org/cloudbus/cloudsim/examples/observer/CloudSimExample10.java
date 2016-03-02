@@ -8,7 +8,6 @@ package org.cloudbus.cloudsim.examples.observer;
  *
  * Copyright (c) 2009, The University of Melbourne, Australia
  */
-import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.LinkedList;
@@ -22,15 +21,18 @@ import org.cloudbus.cloudsim.DatacenterCharacteristics;
 import org.cloudbus.cloudsim.Host;
 import org.cloudbus.cloudsim.Log;
 import org.cloudbus.cloudsim.Pe;
-import org.cloudbus.cloudsim.Storage;
 import org.cloudbus.cloudsim.UtilizationModel;
 import org.cloudbus.cloudsim.UtilizationModelFull;
 import org.cloudbus.cloudsim.Vm;
 import org.cloudbus.cloudsim.VmSchedulerTimeShared;
 import org.cloudbus.cloudsim.core.CloudSim;
-import org.cloudbus.cloudsim.provisioners.BwProvisionerSimple;
+import org.cloudbus.cloudsim.examples.util.ResultsHelper;
 import org.cloudbus.cloudsim.provisioners.PeProvisionerSimple;
-import org.cloudbus.cloudsim.provisioners.RamProvisionerSimple;
+import org.cloudbus.cloudsim.provisioners.ResourceProvisionerSimple;
+import org.cloudbus.cloudsim.resources.Bandwidth;
+import org.cloudbus.cloudsim.resources.FileStorage;
+import org.cloudbus.cloudsim.resources.Ram;
+import org.cloudbus.cloudsim.util.TextTableBuilder;
 
 /**
  * This example class implements the Observer pattern
@@ -53,7 +55,7 @@ public final class CloudSimExample10 implements VmAllocationPolicySimpleObserver
     public static final int HOST_MIPS_BY_PE = 2000;
     public static final int  HOST_RAM = 2048; // (MB)
     public static final long HOST_STORAGE = 1000000; 
-    public static final int  HOST_BW = 10000;
+    public static final long  HOST_BW = 10000;
 
     public static final int  VM_MIPS = 1000;
     public static final long VM_SIZE = 10000; // image size (MB)
@@ -74,7 +76,7 @@ public final class CloudSimExample10 implements VmAllocationPolicySimpleObserver
     }
 
     public CloudSimExample10(final boolean disableLog) {
-        Log.printLine("Starting CloudSimExample10...");
+        Log.printFormattedLine("Starting %s...", CloudSimExample10.class.getSimpleName());
         if(disableLog){
             Log.printLine("Internal CloudSim log was disabled as requested");
             Log.disable();
@@ -83,9 +85,8 @@ public final class CloudSimExample10 implements VmAllocationPolicySimpleObserver
             // First step: Initialize the CloudSim package. It should be called before creating any entities.
             int num_user = 1; // number of cloud users
             Calendar calendar = Calendar.getInstance(); // Calendar whose fields have been initialized with the current date and time.
-            boolean trace_flag = false; // trace events
 
-            CloudSim.init(num_user, calendar, trace_flag);
+            CloudSim.init(num_user, calendar, disableLog);
             
             // Second step: Create Datacenters
             // Datacenters are the resource providers in CloudSim. We need at
@@ -112,14 +113,14 @@ public final class CloudSimExample10 implements VmAllocationPolicySimpleObserver
 
             CloudSim.stopSimulation();
 
+            Log.enable();
             //Final step: Print results when simulation is over
             for(int i = 0; i < brokers.size(); i++){
                 List<Cloudlet> cloudletList = brokers.get(i).getCloudletReceivedList();
-                printCloudletList(cloudletList);
+                ResultsHelper.print(new TextTableBuilder("Broker " + brokers.get(i).getId()), cloudletList);
             }
-
-            Log.enable();
-            Log.printLine("CloudSimExample10 finished!");
+           
+            Log.printFormattedLine("%s finished!", CloudSimExample10.class.getSimpleName());
         } catch (Exception e) {
             e.printStackTrace();
             Log.printLine("Unwanted errors happen");
@@ -170,7 +171,7 @@ public final class CloudSimExample10 implements VmAllocationPolicySimpleObserver
         // Here are the steps needed to create a PowerDatacenter:
         // 1. We need to create a list to store
         // our machine
-        List<Host> hostList = new ArrayList<Host>();
+        List<Host> hostList = new ArrayList<>();
 
         // 4. Create Host with its id and list of PEs and add them to the list of machines
         final int numberOfPEs = 1;
@@ -179,7 +180,7 @@ public final class CloudSimExample10 implements VmAllocationPolicySimpleObserver
         DatacenterCharacteristics characteristics = createDatacenterCharacteristics(hostList); 
 
         // we are not adding SAN devices by now
-        LinkedList<Storage> storageList = new LinkedList<Storage>(); 
+        LinkedList<FileStorage> storageList = new LinkedList<>(); 
         
         // 6. Finally, we need to create a Datacenter object.
         Datacenter datacenter = null;
@@ -218,7 +219,7 @@ public final class CloudSimExample10 implements VmAllocationPolicySimpleObserver
     public static Host createHost(int hostId, int numberOfPes) {
         // 2. A Machine contains one or more PEs or CPUs/Cores.
         // In this example, it will have only one core.
-        List<Pe> peList = new ArrayList<Pe>();
+        List<Pe> peList = new ArrayList<>();
 
         // 3. Create PEs and add these into a list.
         for(int i = 0; i < numberOfPes; i++)
@@ -226,8 +227,8 @@ public final class CloudSimExample10 implements VmAllocationPolicySimpleObserver
 
         return new Host(
                 hostId,
-                new RamProvisionerSimple(HOST_RAM),
-                new BwProvisionerSimple(HOST_BW),
+                new ResourceProvisionerSimple(new Ram(HOST_RAM)),
+                new ResourceProvisionerSimple(new Bandwidth(HOST_BW)),
                 HOST_STORAGE,
                 peList,
                 new VmSchedulerTimeShared(peList)
@@ -250,41 +251,6 @@ public final class CloudSimExample10 implements VmAllocationPolicySimpleObserver
             throw new RuntimeException(e);
         }
         return broker;
-    }
-
-    /**
-     * Prints the Cloudlet objects.
-     *
-     * @param list list of Cloudlets
-     */
-    private void printCloudletList(List<Cloudlet> list) {
-        int size = list.size();
-        Cloudlet cloudlet;
-
-        String indent = "    ";
-        Log.printLine();
-        Log.printLine("========== OUTPUT ==========");
-        Log.printLine("Cloudlet ID" + indent + "STATUS" + indent
-                + "Data center ID" + indent + "VM ID" + indent + "Time" + indent
-                + "Start Time" + indent + "Finish Time");
-
-        DecimalFormat dft = new DecimalFormat("###.##");
-        for (int i = 0; i < size; i++) {
-            cloudlet = list.get(i);
-            Log.print(indent + cloudlet.getCloudletId() + indent + indent);
-
-            if (cloudlet.getCloudletStatus() == Cloudlet.SUCCESS) {
-                Log.print("SUCCESS");
-
-                Log.printLine(indent + indent + cloudlet.getResourceId()
-                        + indent + indent + indent + cloudlet.getVmId()
-                        + indent + indent
-                        + dft.format(cloudlet.getActualCPUTime()) + indent
-                        + indent + dft.format(cloudlet.getExecStartTime())
-                        + indent + indent
-                        + dft.format(cloudlet.getFinishTime()));
-            }
-        }
     }
 
     @Override
