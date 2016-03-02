@@ -197,7 +197,7 @@ public class CloudSim {
 			return clock;
 		} catch (IllegalArgumentException e) {
 			e.printStackTrace();
-			throw new NullPointerException("CloudSim.startCloudSimulation() :"
+			throw new RuntimeException("CloudSim.startCloudSimulation() :"
 					+ " Error - you haven't initialized CloudSim.");
 		}
 	}
