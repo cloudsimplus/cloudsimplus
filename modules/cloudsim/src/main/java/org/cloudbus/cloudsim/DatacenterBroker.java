@@ -19,6 +19,7 @@ import org.cloudbus.cloudsim.core.CloudSimTags;
 import org.cloudbus.cloudsim.core.SimEntity;
 import org.cloudbus.cloudsim.core.SimEvent;
 import org.cloudbus.cloudsim.lists.CloudletList;
+import org.cloudbus.cloudsim.lists.HostList;
 import org.cloudbus.cloudsim.lists.VmList;
 
 /**
@@ -79,11 +80,11 @@ public class DatacenterBroker extends SimEntity {
 	 * Created a new DatacenterBroker object.
 	 * 
 	 * @param name name to be associated with this entity (as required by {@link SimEntity} class)
-	 * @throws Exception the exception
+	 * @throws IllegalArgumentException when the entity name is invalid
 	 * @pre name != null
 	 * @post $none
 	 */
-	public DatacenterBroker(String name) throws Exception {
+	public DatacenterBroker(String name) {
 		super(name);
 
 		setVmList(new ArrayList<Vm>());
@@ -241,6 +242,10 @@ public class DatacenterBroker extends SimEntity {
 					" has been created in Datacenter #", datacenterId, ", Host #",
 					VmList.getById(getVmsCreatedList(), vmId).getHost().getId());
 		} else {
+                        Vm vm = VmList.getById(getVmList(), vmId);
+                        if(vm != null)
+                            vm.getOnVmCreationFailureListener()
+                                .update(CloudSim.clock(), vm, datacenterId);
 			Log.printConcatLine(CloudSim.clock(), ": ", getName(), ": Creation of VM #", vmId,
 					" failed in Datacenter #", datacenterId);
 		}
@@ -433,6 +438,7 @@ public class DatacenterBroker extends SimEntity {
 	 * 
 	 * @param <T> the generic type
 	 * @return the vm list
+         * @todo It is the list of submitted VMs, so, the name would be changed
 	 */
 	@SuppressWarnings("unchecked")
 	public <T extends Vm> List<T> getVmList() {
@@ -445,7 +451,7 @@ public class DatacenterBroker extends SimEntity {
 	 * @param <T> the generic type
 	 * @param vmList the new vm list
 	 */
-	protected <T extends Vm> void setVmList(List<T> vmList) {
+	protected final <T extends Vm> void setVmList(List<T> vmList) {
 		this.vmList = vmList;
 	}
 
@@ -466,7 +472,7 @@ public class DatacenterBroker extends SimEntity {
 	 * @param <T> the generic type
 	 * @param cloudletList the new cloudlet list
 	 */
-	protected <T extends Cloudlet> void setCloudletList(List<T> cloudletList) {
+	protected final <T extends Cloudlet> void setCloudletList(List<T> cloudletList) {
 		this.cloudletList = cloudletList;
 	}
 
@@ -487,7 +493,7 @@ public class DatacenterBroker extends SimEntity {
 	 * @param <T> the generic type
 	 * @param cloudletSubmittedList the new cloudlet submitted list
 	 */
-	protected <T extends Cloudlet> void setCloudletSubmittedList(List<T> cloudletSubmittedList) {
+	protected final <T extends Cloudlet> void setCloudletSubmittedList(List<T> cloudletSubmittedList) {
 		this.cloudletSubmittedList = cloudletSubmittedList;
 	}
 
@@ -508,7 +514,7 @@ public class DatacenterBroker extends SimEntity {
 	 * @param <T> the generic type
 	 * @param cloudletReceivedList the new cloudlet received list
 	 */
-	protected <T extends Cloudlet> void setCloudletReceivedList(List<T> cloudletReceivedList) {
+	protected final <T extends Cloudlet> void setCloudletReceivedList(List<T> cloudletReceivedList) {
 		this.cloudletReceivedList = cloudletReceivedList;
 	}
 
@@ -529,7 +535,7 @@ public class DatacenterBroker extends SimEntity {
 	 * @param <T> the generic type
 	 * @param vmsCreatedList the vms created list
 	 */
-	protected <T extends Vm> void setVmsCreatedList(List<T> vmsCreatedList) {
+	protected final <T extends Vm> void setVmsCreatedList(List<T> vmsCreatedList) {
 		this.vmsCreatedList = vmsCreatedList;
 	}
 
@@ -547,7 +553,7 @@ public class DatacenterBroker extends SimEntity {
 	 * 
 	 * @param vmsRequested the new vms requested
 	 */
-	protected void setVmsRequested(int vmsRequested) {
+	protected final void setVmsRequested(int vmsRequested) {
 		this.vmsRequested = vmsRequested;
 	}
 
@@ -565,7 +571,7 @@ public class DatacenterBroker extends SimEntity {
 	 * 
 	 * @param vmsAcks the new vms acks
 	 */
-	protected void setVmsAcks(int vmsAcks) {
+	protected final void setVmsAcks(int vmsAcks) {
 		this.vmsAcks = vmsAcks;
 	}
 
@@ -591,7 +597,7 @@ public class DatacenterBroker extends SimEntity {
 	 * 
 	 * @param vmsDestroyed the new vms destroyed
 	 */
-	protected void setVmsDestroyed(int vmsDestroyed) {
+	protected final void setVmsDestroyed(int vmsDestroyed) {
 		this.vmsDestroyed = vmsDestroyed;
 	}
 
@@ -609,7 +615,7 @@ public class DatacenterBroker extends SimEntity {
 	 * 
 	 * @param datacenterIdsList the new datacenter ids list
 	 */
-	protected void setDatacenterIdsList(List<Integer> datacenterIdsList) {
+	protected final void setDatacenterIdsList(List<Integer> datacenterIdsList) {
 		this.datacenterIdsList = datacenterIdsList;
 	}
 
@@ -627,7 +633,7 @@ public class DatacenterBroker extends SimEntity {
 	 * 
 	 * @param vmsToDatacentersMap the vms to datacenters map
 	 */
-	protected void setVmsToDatacentersMap(Map<Integer, Integer> vmsToDatacentersMap) {
+	protected final void setVmsToDatacentersMap(Map<Integer, Integer> vmsToDatacentersMap) {
 		this.vmsToDatacentersMap = vmsToDatacentersMap;
 	}
 
@@ -645,7 +651,7 @@ public class DatacenterBroker extends SimEntity {
 	 * 
 	 * @param datacenterCharacteristicsList the datacenter characteristics list
 	 */
-	protected void setDatacenterCharacteristicsList(
+	protected final void setDatacenterCharacteristicsList(
 			Map<Integer, DatacenterCharacteristics> datacenterCharacteristicsList) {
 		this.datacenterCharacteristicsList = datacenterCharacteristicsList;
 	}
@@ -664,7 +670,7 @@ public class DatacenterBroker extends SimEntity {
 	 * 
 	 * @param datacenterRequestedIdsList the new datacenter requested ids list
 	 */
-	protected void setDatacenterRequestedIdsList(List<Integer> datacenterRequestedIdsList) {
+	protected final void setDatacenterRequestedIdsList(List<Integer> datacenterRequestedIdsList) {
 		this.datacenterRequestedIdsList = datacenterRequestedIdsList;
 	}
 

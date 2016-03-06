@@ -13,7 +13,7 @@ import org.cloudbus.cloudsim.Pe;
 import org.cloudbus.cloudsim.resources.FileStorage;
 import org.cloudbus.cloudsim.VmSchedulerTimeShared;
 import org.cloudbus.cloudsim.core.CloudSim;
-import org.cloudbus.cloudsim.examples.util.ResultsHelper;
+import org.cloudbus.cloudsim.util.TableBuilderHelper;
 import org.cloudbus.cloudsim.util.TextTableBuilder;
 import org.cloudbus.cloudsim.network.datacenter.EdgeSwitch;
 import org.cloudbus.cloudsim.network.datacenter.NetDatacenterBroker;
@@ -72,7 +72,7 @@ public class TestExample {
 
                     // Final step: Print results when simulation is over
                     List<Cloudlet> newList = broker.getCloudletReceivedList();
-                    ResultsHelper.print(new TextTableBuilder(), newList);
+                    TableBuilderHelper.print(new TextTableBuilder(), newList);
                     Log.printFormattedLine("%s finished!", TestExample.class.getSimpleName());
                     System.out.println("numberofcloudlet " + newList.size() + " Cached "
                                     + NetDatacenterBroker.cachedcloudlet + " Data transfered "

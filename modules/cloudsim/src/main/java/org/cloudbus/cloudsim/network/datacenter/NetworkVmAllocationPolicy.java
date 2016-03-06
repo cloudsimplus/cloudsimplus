@@ -30,10 +30,6 @@ import org.cloudbus.cloudsim.core.CloudSim;
  */
 public class NetworkVmAllocationPolicy extends VmAllocationPolicy {
 
-	/** The vm map where each key is a VM id and
-         * each value is the host where the VM is placed. */
-	private Map<String, Host> vmTable;
-
 	/** The used PEs map, where each key is a VM id
          * and each value is the number of required PEs the VM is using. */
 	private Map<String, Integer> usedPes;
@@ -164,24 +160,6 @@ public class NetworkVmAllocationPolicy extends VmAllocationPolicy {
 	@Override
 	public Host getHost(int vmId, int userId) {
 		return getVmTable().get(Vm.getUid(userId, vmId));
-	}
-
-	/**
-	 * Gets the vm table.
-	 * 
-	 * @return the vm table
-	 */
-	public Map<String, Host> getVmTable() {
-		return vmTable;
-	}
-
-	/**
-	 * Sets the vm table.
-	 * 
-	 * @param vmTable the vm table
-	 */
-	protected void setVmTable(Map<String, Host> vmTable) {
-		this.vmTable = vmTable;
 	}
 
 	/**

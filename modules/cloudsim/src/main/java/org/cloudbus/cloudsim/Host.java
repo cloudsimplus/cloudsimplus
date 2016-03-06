@@ -628,4 +628,10 @@ public class Host {
     protected RawStorage getStorage() {
         return storage;
     }
+
+    @Override
+    public String toString() {
+        return String.valueOf(this.id);
+    }
+ 
 }

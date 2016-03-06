@@ -1,6 +1,5 @@
-package org.cloudbus.cloudsim.examples.util;
+package org.cloudbus.cloudsim.util;
 
-import org.cloudbus.cloudsim.util.TableBuilder;
 import java.util.List;
 import org.cloudbus.cloudsim.Cloudlet;
 
@@ -9,7 +8,7 @@ import org.cloudbus.cloudsim.Cloudlet;
  * 
  * @author Manoel Campos da Silva Filho
  */
-public final class ResultsHelper {
+public final class TableBuilderHelper {
     public static void print(final TableBuilder printer, final List<Cloudlet> list){
         if(printer.getTitle().isEmpty()){
             printer.setTitle("OUTPUT");
@@ -22,9 +21,9 @@ public final class ResultsHelper {
             .addColumn("VmID")
             .addColumn("CloudletLen")
             .addColumn("CloudletPEs")
-            .addColumn("ExecTime",  "%d")
             .addColumn("StartTime",  "%d")
-            .addColumn("FinishTime", "%d");
+            .addColumn("FinishTime", "%d")
+            .addColumn("ExecTime",  "%.0f");
         for (Cloudlet cloudlet: list) {
             List<Object> row = printer.newRow();
             row.add(cloudlet.getCloudletId());
@@ -33,12 +32,11 @@ public final class ResultsHelper {
             row.add(cloudlet.getVmId());
             row.add(cloudlet.getCloudletLength());
             row.add(cloudlet.getNumberOfPes());
-            row.add((int)cloudlet.getActualCPUTime());
             row.add((int)cloudlet.getExecStartTime());
             row.add((int)cloudlet.getFinishTime());
+            row.add(cloudlet.getActualCPUTime());
         }
         
         printer.print();
-
     }
 }

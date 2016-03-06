@@ -30,7 +30,7 @@ import org.cloudbus.cloudsim.Vm;
 import org.cloudbus.cloudsim.VmAllocationPolicySimple;
 import org.cloudbus.cloudsim.VmSchedulerTimeShared;
 import org.cloudbus.cloudsim.core.CloudSim;
-import org.cloudbus.cloudsim.examples.util.ResultsHelper;
+import org.cloudbus.cloudsim.util.TableBuilderHelper;
 import org.cloudbus.cloudsim.util.TextTableBuilder;
 import org.cloudbus.cloudsim.provisioners.PeProvisionerSimple;
 import org.cloudbus.cloudsim.provisioners.ResourceProvisionerSimple;
@@ -182,7 +182,7 @@ public class CloudSimExample7 {
 
                     CloudSim.stopSimulation();
 
-                    ResultsHelper.print(new TextTableBuilder(), newList);
+                    TableBuilderHelper.print(new TextTableBuilder(), newList);
                     Log.printFormattedLine("%s finished!", CloudSimExample7.class.getSimpleName());
             }
             catch (Exception e)

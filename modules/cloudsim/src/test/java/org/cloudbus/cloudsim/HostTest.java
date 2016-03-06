@@ -29,7 +29,6 @@ import org.junit.Test;
  * @since CloudSim Toolkit 2.0
  */
 public class HostTest {
-
     private static final int ID = 0;
     private static final long STORAGE = Consts.MILLION;
     private static final long HALF_STORAGE = STORAGE/2;

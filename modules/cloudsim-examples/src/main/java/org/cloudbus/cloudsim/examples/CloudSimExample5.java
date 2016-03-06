@@ -29,7 +29,7 @@ import org.cloudbus.cloudsim.Vm;
 import org.cloudbus.cloudsim.VmAllocationPolicySimple;
 import org.cloudbus.cloudsim.VmSchedulerSpaceShared;
 import org.cloudbus.cloudsim.core.CloudSim;
-import org.cloudbus.cloudsim.examples.util.ResultsHelper;
+import org.cloudbus.cloudsim.util.TableBuilderHelper;
 import org.cloudbus.cloudsim.util.TextTableBuilder;
 import org.cloudbus.cloudsim.provisioners.PeProvisionerSimple;
 import org.cloudbus.cloudsim.provisioners.ResourceProvisionerSimple;
@@ -54,6 +54,7 @@ public class CloudSimExample5 {
 
 	/**
 	 * Creates main() to run this example
+         * @param args
 	 */
 	public static void main(String[] args) {
                 Log.printFormattedLine("Starting %s...", CloudSimExample5.class.getSimpleName());
@@ -142,8 +143,8 @@ public class CloudSimExample5 {
 
 			CloudSim.stopSimulation();
 
-			ResultsHelper.print(new TextTableBuilder("User "+brokerId1), newList1);
-                        ResultsHelper.print(new TextTableBuilder("User "+brokerId2), newList2);
+			TableBuilderHelper.print(new TextTableBuilder("User "+brokerId1), newList1);
+                        TableBuilderHelper.print(new TextTableBuilder("User "+brokerId2), newList2);
                         Log.printFormattedLine("%s finished!", CloudSimExample5.class.getSimpleName());
 		}
 		catch (Exception e) {

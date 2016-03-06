@@ -18,9 +18,10 @@ import org.cloudbus.cloudsim.lists.PeList;
 import org.cloudbus.cloudsim.provisioners.PeProvisioner;
 
 /**
- * VmSchedulerTimeShared is a Virtual Machine Monitor (VMM) allocation policy that allocates one or more PEs 
- * from a PM to a VM, and allows sharing of PEs by multiple VMs. This class also implements 10% performance degradation due
- * to VM migration. This scheduler does not support over-subscription.
+ * VmSchedulerTimeShared is a Virtual Machine Monitor (VMM) allocation policy 
+ * that allocates one or more PEs from a PM to a VM, and allows sharing of PEs by multiple VMs. 
+ * This class also implements 10% performance degradation due to VM migration. 
+ * This scheduler does not support over-subscription.<p/>
  * 
  * Each host has to use is own instance of a VmScheduler
  * that will so schedule the allocation of host's PEs for VMs running on it.

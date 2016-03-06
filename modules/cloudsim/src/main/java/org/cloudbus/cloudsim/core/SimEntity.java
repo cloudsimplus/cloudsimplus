@@ -50,9 +50,10 @@ public abstract class SimEntity implements Cloneable {
 	 * Creates a new entity.
 	 * 
 	 * @param name the name to be associated with the entity
+	 * @throws IllegalArgumentException when the entity name is invalid
 	 */
 	public SimEntity(String name) {
-		if (name.indexOf(" ") != -1) {
+		if (name.contains(" ")) {
 			throw new IllegalArgumentException("Entity names can't contain spaces.");
 		}
 		this.name = name;

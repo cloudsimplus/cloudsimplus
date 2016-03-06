@@ -66,7 +66,7 @@ public class Datacenter extends SimEntity {
      * @param storageList a List of storage elements, for data simulation
      * @param vmAllocationPolicy the policy to be used to allocate VMs into hosts
      * @param schedulingInterval the scheduling delay to process each datacenter received event
-     * @throws Exception when one of the following scenarios occur:
+     * @throws IllegalArgumentException when one of the following scenarios occur:
      *  <ul>
      *    <li>creating this entity before initializing CloudSim package
      *    <li>this entity name is <tt>null</tt> or empty
@@ -84,12 +84,12 @@ public class Datacenter extends SimEntity {
                 DatacenterCharacteristics characteristics,
                 VmAllocationPolicy vmAllocationPolicy,
                 List<FileStorage> storageList,
-                double schedulingInterval) throws Exception {
+                double schedulingInterval) {
         super(name);
         
         // If this resource doesn't have any PEs then no useful at all
         if (characteristics.getNumberOfPes() == 0) {
-            throw new Exception(super.getName()
+            throw new IllegalArgumentException(super.getName()
                 + " : Error - this entity has no PEs. Therefore, can't process any Cloudlets.");
         }
 

@@ -1,80 +1,151 @@
 <?xml version="1.0"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-  <modelVersion>4.0.0</modelVersion>
-  <parent>
-    <artifactId>modules</artifactId>
-    <groupId>org.cloudbus.cloudsim</groupId>
-    <version>3.1-SNAPSHOT</version>
-  </parent>
+    <modelVersion>4.0.0</modelVersion>
+    <parent>
+        <artifactId>modules</artifactId>
+        <groupId>org.cloudbus.cloudsim</groupId>
+        <version>3.1-SNAPSHOT</version>
+    </parent>
   
-  <artifactId>cloudsim</artifactId>
-  <name>cloudsim</name>
+    <artifactId>cloudsim</artifactId>
+    <name>cloudsim</name>
 
-<!-- Switch OFF the docling in Java 8 -->  
-	<profiles>
-		<profile>
-			<id>doclint-java8-disable</id>
-			<activation>
-				<jdk>[1.8,)</jdk>
-			</activation>
-			<build>
-				<plugins>
-					<plugin>
-						<groupId>org.apache.maven.plugins</groupId>
-						<artifactId>maven-javadoc-plugin</artifactId>
-						<configuration>
-							<additionalparam>-Xdoclint:none</additionalparam>
-						</configuration>
-					</plugin>
-				</plugins>
-			</build>
-		</profile>
-	</profiles>
-<!-- ===================================== -->
+    <profiles>
+        <!-- The profiles 'default' and 'integration-tests' are specified to allow 
+        using the maven-surefire-plugin instead of the maven-failsafe-plugin to run 
+        Integration/Functional tests. By this way, it is possible to see the  
+        Integration/Functional tests results directly at the NetBeans JUnit graphical 
+        test results interface. 
+        -->
+        
+        <profile>
+            <!-- This is the default profile that runs just the Unit Tests,
+            ignoring the Integration/Functional tests.
+            -->
+            <id>default</id>
+            <activation>
+                <property>
+                    <!-- Active the profile only if there is NOT a property
+                    called integration-tests
+                    (properties are passed as -Dname_of_property=value parameter to mvn command)  -->
+                    <name>!integration-tests</name>
+                </property>
+            </activation>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-surefire-plugin</artifactId>
+                        <!-- There is some problem with the version 2.19.1 or
+                        with Netbeans 8.0.2 that the JUnit GUI is not shown
+                        at the IDE-->
+                        <version>2.11</version>
+                        <configuration>
+                            <excludes>
+                                <exclude>**/IntegrationTests/*.java</exclude>
+                            </excludes>
+                        </configuration>
+                    </plugin>                                     
+                </plugins>
+            </build>
+        </profile>
+        
+        <profile>
+            <!-- 
+            This is the profile that runs all the Unit and Integration/Functional Tests.
+            At NetBeans, you can right click on the project root, select
+            Custom >> integration-tests (that is configured in the nbactions.xml).
+            To run at other IDE's, you can see the maven parameters in the
+            nbactions.xml file.
+            -->
+            <id>integration-tests</id>
+            <activation>
+                <property>
+                    <!-- Active the profile only if there is a property
+                    called integration-tests with value true
+                    (properties are passed as -Dname_of_property=value parameter to mvn command) -->
+                    <name>integration-tests</name>
+                    <value>true</value>
+                </property>
+            </activation>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-surefire-plugin</artifactId>
+                        <!-- There is some problem with the version 2.19.1 or
+                        with Netbeans 8.0.2 that the JUnit GUI is not shown
+                        at the IDE-->
+                        <version>2.11</version>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>        
+        
+        <!-- Switch OFF the docling in Java 8 -->  
+        <profile>
+            <id>doclint-java8-disable</id>
+            <activation>
+                <jdk>[1.8,)</jdk>
+            </activation>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-javadoc-plugin</artifactId>
+                        <configuration>
+                            <additionalparam>-Xdoclint:none</additionalparam>
+                        </configuration>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+    </profiles>
+    <!-- ===================================== -->
   
-  <build>
-  	<plugins>
-  		<plugin>
-  			<groupId>org.apache.maven.plugins</groupId>
-  			<artifactId>maven-javadoc-plugin</artifactId>
-  			<version>2.8</version>
-  			<executions>
-  				<execution>
-  					<id>docs</id>
-  					<phase>prepare-package</phase>
-  					<goals>
-  						<goal>jar</goal>
-  					</goals>
-  				</execution>
-  			</executions>
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-javadoc-plugin</artifactId>
+                <version>2.8</version>
+                <executions>
+                    <execution>
+                        <id>docs</id>
+                        <phase>prepare-package</phase>
+                        <goals>
+                            <goal>jar</goal>
+                        </goals>
+                    </execution>
+                </executions>
             
-			<configuration>
-				<!-- failOnError>false</failOnError -->
-				<tags>
-					<tag>
-						<name>pre</name>
-						<placement>a</placement>
-						<head>Precondition:</head>
-					</tag>
-					<tag>
-						<name>post</name>
-						<placement>a</placement>
-						<head>Postcondition:</head>
-					</tag>
-				</tags>
-			</configuration>
-		</plugin>
-  	 <plugin>
-  	  <groupId>org.apache.maven.plugins</groupId>
-  	  <artifactId>maven-compiler-plugin</artifactId>
-  	  <version>2.3.2</version>
-  	  <configuration>
-  	   <source>1.7</source>
-  	   <target>1.7</target>
-  	  </configuration>
-  	 </plugin>
-  	</plugins>
-  </build>
+                <configuration>
+                    <!-- <failOnError>false</failOnError> -->
+                    <tags>
+                        <tag>
+                            <name>pre</name>
+                            <placement>a</placement>
+                            <head>Precondition:</head>
+                        </tag>
+                        <tag>
+                            <name>post</name>
+                            <placement>a</placement>
+                            <head>Postcondition:</head>
+                        </tag>
+                    </tags>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>2.3.2</version>
+                <configuration>
+                    <source>1.7</source>
+                    <target>1.7</target>
+                </configuration>
+            </plugin>  
+        </plugins>
+    </build>
     <dependencies>
         <dependency>
             <groupId>org.apache.commons</groupId>
@@ -84,39 +155,38 @@
         </dependency>
     </dependencies>
     <reporting>
-	<plugins>
-	  <plugin>
-		<groupId>org.apache.maven.plugins</groupId>
-		<artifactId>maven-javadoc-plugin</artifactId>
-		<version>2.8</version>
-	  </plugin>
-	  <plugin>
-		<groupId>org.apache.maven.plugins</groupId>
-		<artifactId>maven-jxr-plugin</artifactId>
-		<version>2.3</version>
-	  </plugin>
-	  <plugin>
-		<groupId>org.sonatype.maven.plugin</groupId>
-		<artifactId>emma-maven-plugin</artifactId>
-		<version>1.2</version>
-	  </plugin>
-	  <plugin>
-		<groupId>org.apache.maven.plugins</groupId>
-		<artifactId>maven-surefire-report-plugin</artifactId>
-		<version>2.11</version>
-	  </plugin>
-          <plugin>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-javadoc-plugin</artifactId>
+                <version>2.8</version>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-jxr-plugin</artifactId>
+                <version>2.3</version>
+            </plugin>
+            <plugin>
+                <groupId>org.sonatype.maven.plugin</groupId>
+                <artifactId>emma-maven-plugin</artifactId>
+                <version>1.2</version>
+            </plugin>
             <!-- 
              Plugin for code coverage, enabling
              generation of reports on IDE to see percentage
              of the project's code that is being covered by unit tests. 
             -->
-            <groupId>org.codehaus.mojo</groupId>
-            <artifactId>cobertura-maven-plugin</artifactId>
-            <version>2.6</version>
-          </plugin>
-          
-	</plugins>
-  </reporting>	
-  
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>cobertura-maven-plugin</artifactId>
+                <version>2.6</version>
+            </plugin>
+            
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-surefire-report-plugin</artifactId>
+                <version>2.11</version>                
+            </plugin>
+        </plugins>
+    </reporting>	
 </project>

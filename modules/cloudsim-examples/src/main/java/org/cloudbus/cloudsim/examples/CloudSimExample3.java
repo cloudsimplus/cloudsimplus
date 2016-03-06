@@ -29,7 +29,7 @@ import org.cloudbus.cloudsim.Vm;
 import org.cloudbus.cloudsim.VmAllocationPolicySimple;
 import org.cloudbus.cloudsim.VmSchedulerTimeShared;
 import org.cloudbus.cloudsim.core.CloudSim;
-import org.cloudbus.cloudsim.examples.util.ResultsHelper;
+import org.cloudbus.cloudsim.util.TableBuilderHelper;
 import org.cloudbus.cloudsim.util.TextTableBuilder;
 import org.cloudbus.cloudsim.provisioners.PeProvisionerSimple;
 import org.cloudbus.cloudsim.provisioners.ResourceProvisionerSimple;
@@ -55,6 +55,7 @@ public class CloudSimExample3 {
 
     /**
      * Creates main() to run this example
+     * @param args
      */
     public static void main(String[] args) {
             Log.printFormattedLine("Starting %s..", CloudSimExample3.class.getSimpleName());
@@ -79,10 +80,10 @@ public class CloudSimExample3 {
                     int brokerId = broker.getId();
 
                     //Fourth step: Create one virtual machine
-                    vmlist = new ArrayList<Vm>();
+                    vmlist = new ArrayList<>();
 
                     //VM description
-                    int vmid = 0;
+                    int vmid = -1;
                     int mips = 250;
                     long size = 10000; //image size (MB)
                     int ram = 2048; //vm memory (MB)
@@ -91,11 +92,14 @@ public class CloudSimExample3 {
                     String vmm = "Xen"; //VMM name
 
                     //create two VMs
-                    Vm vm1 = new Vm(vmid, brokerId, mips, pesNumber, ram, bw, size, vmm, new CloudletSchedulerTimeShared());
+                    Vm vm1 = new Vm(
+                        ++vmid, brokerId, mips, pesNumber, ram, bw, size, vmm, 
+                        new CloudletSchedulerTimeShared());
 
                     //the second VM will have twice the priority of VM1 and so will receive twice CPU time
-                    vmid++;
-                    Vm vm2 = new Vm(vmid, brokerId, mips * 2, pesNumber, ram, bw, size, vmm, new CloudletSchedulerTimeShared());
+                    Vm vm2 = new Vm(
+                        ++vmid, brokerId, mips * 2, pesNumber, ram, bw, size, vmm, 
+                        new CloudletSchedulerTimeShared());
 
                     //add the VMs to the vmList
                     vmlist.add(vm1);
@@ -106,20 +110,19 @@ public class CloudSimExample3 {
 
 
                     //Fifth step: Create two Cloudlets
-                    cloudletList = new ArrayList<Cloudlet>();
+                    cloudletList = new ArrayList<>();
 
                     //Cloudlet properties
-                    int id = 0;
+                    int id = -1;
                     long length = 40000;
                     long fileSize = 300;
                     long outputSize = 300;
                     UtilizationModel utilizationModel = new UtilizationModelFull();
 
-                    Cloudlet cloudlet1 = new Cloudlet(id, length, pesNumber, fileSize, outputSize, utilizationModel, utilizationModel, utilizationModel);
+                    Cloudlet cloudlet1 = new Cloudlet(++id, length, pesNumber, fileSize, outputSize, utilizationModel, utilizationModel, utilizationModel);
                     cloudlet1.setUserId(brokerId);
 
-                    id++;
-                    Cloudlet cloudlet2 = new Cloudlet(id, length, pesNumber, fileSize, outputSize, utilizationModel, utilizationModel, utilizationModel);
+                    Cloudlet cloudlet2 = new Cloudlet(++id, length, pesNumber, fileSize, outputSize, utilizationModel, utilizationModel, utilizationModel);
                     cloudlet2.setUserId(brokerId);
 
                     //add the cloudlets to the list
@@ -144,7 +147,7 @@ public class CloudSimExample3 {
 
                     CloudSim.stopSimulation();
 
-                    ResultsHelper.print(new TextTableBuilder(), newList);
+                    TableBuilderHelper.print(new TextTableBuilder(), newList);
                     Log.printFormattedLine("%s finished!", CloudSimExample3.class.getSimpleName());
             }
             catch (Exception e) {

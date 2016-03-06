@@ -28,7 +28,7 @@ import org.cloudbus.cloudsim.Vm;
 import org.cloudbus.cloudsim.VmAllocationPolicySimple;
 import org.cloudbus.cloudsim.VmSchedulerTimeShared;
 import org.cloudbus.cloudsim.core.CloudSim;
-import org.cloudbus.cloudsim.examples.util.ResultsHelper;
+import org.cloudbus.cloudsim.util.TableBuilderHelper;
 import org.cloudbus.cloudsim.util.TextTableBuilder;
 import org.cloudbus.cloudsim.provisioners.PeProvisionerSimple;
 import org.cloudbus.cloudsim.provisioners.ResourceProvisionerSimple;
@@ -159,7 +159,7 @@ public class CloudSimExample9 {
              * When it is used Host objects, the results below are shown 
              * normally, however the Host usage history isn't.
              */
-            ResultsHelper.print(new TextTableBuilder(), newList);
+            TableBuilderHelper.print(new TextTableBuilder(), newList);
             Log.printFormattedLine("%s finished!", CloudSimExample9.class.getSimpleName());
         } catch (Exception e) {
             e.printStackTrace();

@@ -207,18 +207,18 @@ public class CloudSim {
 	 * any of the user defined entities <b>explicitly</b> want to terminate simulation during
 	 * execution.
 	 * 
-	 * @throws NullPointerException This happens when creating this entity before initialising
+	 * @throws RuntimeException This happens when creating this entity before initialising
 	 *             CloudSim package or this entity name is <tt>null</tt> or empty
 	 * @see gridsim.CloudSim#init(int, Calendar, boolean)
 	 * @see Simulation#runStop()
 	 * @pre $none
 	 * @post $none
 	 */
-	public static void stopSimulation() throws NullPointerException {
+	public static void stopSimulation() throws RuntimeException {
 		try {
 			runStop();
 		} catch (IllegalArgumentException e) {
-			throw new NullPointerException("CloudSim.stopCloudSimulation() : "
+			throw new RuntimeException("CloudSim.stopCloudSimulation() : "
 					+ "Error - can't stop Cloud Simulation.");
 		}
 	}

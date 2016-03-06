@@ -12,6 +12,7 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import org.cloudbus.cloudsim.listeners.EventListener;
 import org.cloudbus.cloudsim.resources.Resource;
 import org.cloudbus.cloudsim.resources.Bandwidth;
 import org.cloudbus.cloudsim.resources.Ram;
@@ -84,6 +85,15 @@ public class Vm {
      * The VM's Bandwidth (BW) resource, containing information about capacity and allocation.
      */
     private final Bandwidth bw;
+    
+    /** @see #getOnHostAllocationListener() */
+    private EventListener<Vm, Host> onHostAllocationListener = EventListener.NULL;
+
+    /** @see #getOnHostDeallocationListener()  */
+    private EventListener<Vm, Host> onHostDeallocationListener = EventListener.NULL;
+    
+    /** @see #getOnVmCreationFailureListener() ()  */
+    private EventListener<Vm, Integer> onVmCreationFailureListener = EventListener.NULL;
 
     /**
      * Creates a new Vm object.
@@ -681,6 +691,90 @@ public class Vm {
         Resource<T> getResource(Class<R> resourceClass){
             //reference: http://stackoverflow.com/questions/2284949/how-do-i-declare-a-member-with-multiple-generic-types-that-have-non-trivial-rela
             return (Resource<T>)resources.get(resourceClass);
+    }
+
+    /**
+     * Sets the listener object that will be notified when a {@link Host}
+     * is allocated to the Vm, that is, when the Vm is placed into a given Host.
+     * The listener receives the placed Vm and the Host where it is placed.
+     * 
+     * @param onHostAllocationListener the onHostAllocationListener to set
+     */
+    public void setOnHostAllocationListener(EventListener<Vm, Host> onHostAllocationListener) {
+        if(onHostAllocationListener == null)
+            this.onHostAllocationListener = EventListener.NULL;
+        else this.onHostAllocationListener = onHostAllocationListener;
+    }
+
+    /**
+     * Sets the listener object that will be notified when a {@link Host}
+     * is deallocated to the Vm, that is, when the Vm is moved/removed from the Host
+     * is was placed.
+     * The listener receives the moved/removed Vm and the Host where it was placed.
+     * 
+     * @param onHostDeallocationListener the onHostDeallocationListener to set
+     */
+    public void setOnHostDeallocationListener(EventListener<Vm, Host> onHostDeallocationListener) {
+        if(onHostDeallocationListener == null)
+            this.onHostDeallocationListener = EventListener.NULL;
+        else this.onHostDeallocationListener = onHostDeallocationListener;
+    }
+
+   /**
+     * Gets the listener object that will be notified when a {@link Host}
+     * is allocated to the Vm, that is, when the Vm is placed into a given Host.
+     * The listener receives the placed Vm and the Host where it is placed.
+     * 
+     * @return the onHostAllocationListener
+     */
+    public EventListener<Vm, Host> getOnHostAllocationListener() {
+        return onHostAllocationListener;
+    }
+
+    /**
+     * Gets the listener object that will be notified when a {@link Host}
+     * is deallocated to the Vm, that is, when the Vm is moved/removed from the Host
+     * is was placed.
+     * The listener receives the moved/removed Vm and the Host where it was placed.
+     * 
+     * @return the onHostDeallocationListener
+     */
+    public EventListener<Vm, Host> getOnHostDeallocationListener() {
+        return onHostDeallocationListener;
+    }
+
+    @Override
+    public String toString() {
+        return this.uid;
+    }
+
+    /**
+     * Gets the listener object that will be notified when a Vm fail 
+     * in being placed for lack of a {@link Host} in the {@link Datacenter} with enough resources.
+     * The listener receives the Vm and the id of the datacenter
+     * where it was tried to place the Vm.
+     * 
+     * @return the onVmCreationFailureListener
+     * @todo the DatacenterBroker class has to be changed in order to 
+     * allow pass the Datacenter object to the listener, instead
+     * of the id
+     */
+    public EventListener<Vm, Integer> getOnVmCreationFailureListener() {
+        return onVmCreationFailureListener;
+    }
+
+    /**
+     * Sets the listener object that will be notified when a Vm fail 
+     * in being placed for lack of a {@link Host} in the {@link Datacenter} with enough resources.
+     * The listener receives the Vm and the id of the datacenter
+     * where it was tried to place the Vm.
+     * 
+     * @param onVmCreationFailureListener the onVmCreationFailureListener to set
+     */
+    public void setOnVmCreationFailureListener(EventListener<Vm, Integer> onVmCreationFailureListener) {
+        if(onVmCreationFailureListener == null)
+            this.onVmCreationFailureListener = EventListener.NULL;
+        else this.onVmCreationFailureListener = onVmCreationFailureListener;
     }
 
 }

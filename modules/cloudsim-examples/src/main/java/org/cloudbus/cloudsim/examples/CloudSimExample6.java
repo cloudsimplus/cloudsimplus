@@ -30,7 +30,7 @@ import org.cloudbus.cloudsim.Vm;
 import org.cloudbus.cloudsim.VmAllocationPolicySimple;
 import org.cloudbus.cloudsim.VmSchedulerTimeShared;
 import org.cloudbus.cloudsim.core.CloudSim;
-import org.cloudbus.cloudsim.examples.util.ResultsHelper;
+import org.cloudbus.cloudsim.util.TableBuilderHelper;
 import org.cloudbus.cloudsim.util.TextTableBuilder;
 import org.cloudbus.cloudsim.provisioners.PeProvisionerSimple;
 import org.cloudbus.cloudsim.provisioners.ResourceProvisionerSimple;
@@ -38,8 +38,7 @@ import org.cloudbus.cloudsim.resources.Bandwidth;
 import org.cloudbus.cloudsim.resources.Ram;
 
 /**
- * An example showing how to create
- * scalable simulations.
+ * An example showing how to create scalable simulations.
  */
 public class CloudSimExample6 {
 
@@ -100,7 +99,6 @@ public class CloudSimExample6 {
             return list;
     }
 
-
     ////////////////////////// STATIC METHODS ///////////////////////
 
     /**
@@ -144,7 +142,7 @@ public class CloudSimExample6 {
 
                     CloudSim.stopSimulation();
 
-                    ResultsHelper.print(new TextTableBuilder(), newList);
+                    TableBuilderHelper.print(new TextTableBuilder(), newList);
                     Log.printFormattedLine("%s finished!", CloudSimExample6.class.getSimpleName());
 
             }

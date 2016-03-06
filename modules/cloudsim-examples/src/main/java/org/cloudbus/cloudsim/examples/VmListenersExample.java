@@ -31,15 +31,26 @@ import org.cloudbus.cloudsim.Vm;
 import org.cloudbus.cloudsim.VmAllocationPolicySimple;
 import org.cloudbus.cloudsim.VmSchedulerTimeShared;
 import org.cloudbus.cloudsim.core.CloudSim;
+import org.cloudbus.cloudsim.listeners.EventListener;
 import org.cloudbus.cloudsim.provisioners.PeProvisionerSimple;
 import org.cloudbus.cloudsim.resources.Bandwidth;
 import org.cloudbus.cloudsim.provisioners.ResourceProvisionerSimple;
 import org.cloudbus.cloudsim.resources.Ram;
 
 /**
- * A simple example showing how to create a data center with 1 host and run 1 cloudlet on it.
+ * A simple example showing how to create a data center with 1 host and run 1 cloudlet on it,
+ * and receive notifications when a Host is allocated or deallocated to each Vm.
+ * The example uses the new Vm listeners to gets these notifications
+ * while the simulation is running.
+ * 
+ * @see Vm#setOnHostAllocationListener(org.cloudbus.cloudsim.listeners.EventListener) 
+ * @see Vm#setOnHostDeallocationListener(org.cloudbus.cloudsim.listeners.EventListener) 
+ * @see Vm#setOnVmCreationFailureListener(org.cloudbus.cloudsim.listeners.EventListener) 
+ * @see EventListener
+ * 
+ * @author Manoel Campos da Silva Filho
  */
-public class CloudSimExample1 {
+public class VmListenersExample {
     /** The cloudlet list. */
     private static List<Cloudlet> cloudletList;
 
@@ -53,7 +64,7 @@ public class CloudSimExample1 {
      */
     @SuppressWarnings("unused")
     public static void main(String[] args) {
-            Log.printFormattedLine("Starting %s ...", CloudSimExample1.class.getSimpleName());
+            Log.printFormattedLine("Starting %s ...", VmListenersExample.class.getSimpleName());
 
             try {
                     // First step: Initialize the CloudSim package. It should be called before creating any entities.
@@ -92,7 +103,7 @@ public class CloudSimExample1 {
                     int brokerId = broker.getId();
 
                     // Fourth step: Create one virtual machine
-                    vmlist = new ArrayList<Vm>();
+                    vmlist = new ArrayList<>();
 
                     // VM description
                     int vmid = 0;
@@ -107,6 +118,25 @@ public class CloudSimExample1 {
                     Vm vm = new Vm(
                             vmid, brokerId, mips, pesNumber, ram, bw, size, 
                             vmm, new CloudletSchedulerTimeShared());
+                    
+                    // set the listeners to intercept allocation and deallocation of a Host to the Vm
+                    vm.setOnHostAllocationListener(new EventListener<Vm, Host>() {
+                        @Override
+                        public void update(double time, Vm vm, Host host) {
+                            Log.printFormattedLine(
+                                    "\n\t#EventListener: Host %d allocated to Vm %d at time %.2f\n", 
+                                    host.getId(), vm.getId(), time);
+                        }
+                    });
+
+                    vm.setOnHostDeallocationListener(new EventListener<Vm, Host>() {
+                        @Override
+                        public void update(double time, Vm vm, Host host) {
+                            Log.printFormattedLine(
+                                    "\n\t#EventListener: Vm %d moved/removed from Host %d at time %.2f\n", 
+                                    vm.getId(), host.getId(), time);
+                        }
+                    });
 
                     // add the VM to the vmList
                     vmlist.add(vm);
@@ -145,7 +175,7 @@ public class CloudSimExample1 {
                     //Final step: Print results when simulation is over
                     List<Cloudlet> newList = broker.getCloudletReceivedList();
                     TableBuilderHelper.print(new TextTableBuilder(), newList);
-                    Log.printFormattedLine("%s finished!", CloudSimExample1.class.getSimpleName());
+                    Log.printFormattedLine("%s finished!", VmListenersExample.class.getSimpleName());
             } catch (Exception e) {
                     e.printStackTrace();
                     Log.printLine("Unwanted errors happen");
