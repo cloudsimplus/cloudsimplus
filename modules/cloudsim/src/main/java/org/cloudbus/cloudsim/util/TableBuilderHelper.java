@@ -35,6 +35,7 @@ public final class TableBuilderHelper {
             row.add((int)cloudlet.getExecStartTime());
             row.add((int)cloudlet.getFinishTime());
             row.add(cloudlet.getActualCPUTime());
+           
         }
         
         printer.print();

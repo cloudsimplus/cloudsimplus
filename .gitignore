@@ -1,3 +1,5 @@
 /modules/cloudsim/target/
 /modules/cloudsim-examples/target/
 /documentation/target/
+.DS_Store
+/distribution/target/
