@@ -119,7 +119,7 @@ public class NetworkExample1 {
                     NetworkTopology.buildNetworkTopology("topology.brite");
 
                     //maps CloudSim entities to BRITE entities
-                    //PowerDatacenter will correspond to BRITE node 0
+                    //Datacenter will correspond to BRITE node 0
                     int briteNode=0;
                     NetworkTopology.mapNode(datacenter0.getId(),briteNode);
 
@@ -147,7 +147,7 @@ public class NetworkExample1 {
 
     private static Datacenter createDatacenter(String name){
 
-            // Here are the steps needed to create a PowerDatacenter:
+            // Here are the steps needed to create a Datacenter:
             // 1. We need to create a list to store
             //    our machine
             List<Host> hostList = new ArrayList<Host>();
@@ -196,7 +196,7 @@ public class NetworkExample1 {
                             costPerStorage, costPerBw);
 
 
-            // 6. Finally, we need to create a PowerDatacenter object.
+            // 6. Finally, we need to create a Datacenter object.
             Datacenter datacenter = null;
             try {
                     datacenter = new Datacenter(name, characteristics, new VmAllocationPolicySimple(hostList), storageList, 0);

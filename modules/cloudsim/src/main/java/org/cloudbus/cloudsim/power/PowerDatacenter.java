@@ -39,7 +39,6 @@ import org.cloudbus.cloudsim.resources.FileStorage;
  * @since CloudSim Toolkit 2.0
  */
 public class PowerDatacenter extends Datacenter {
-
 	/** The datacenter consumed power. */
 	private double power;
 

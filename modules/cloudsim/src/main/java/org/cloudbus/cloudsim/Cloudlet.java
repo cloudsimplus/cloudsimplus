@@ -38,6 +38,9 @@ import org.cloudbus.cloudsim.core.CloudSim;
  * has expired. Maybe it would be created a new event to be processed
  * in the {@link DatacenterBroker#processEvent(org.cloudbus.cloudsim.core.SimEvent) }
  * to just create cloudlets in the existing created Vms.
+ * See these links: 
+ * {@link https://groups.google.com/forum/#!searchin/cloudsim/cloudlet$20dynamic$20arrival/cloudsim/Enp93U5X7ik/7DcnMRi0i6AJ}
+ * {@link https://groups.google.com/forum/#!searchin/cloudsim/cloudlet$20dynamic/cloudsim/dcgACMYHEAE/DDkzlI15wuwJ}
  * 
  * @todo @author manoelcampos The cloudlet class doesn't specify RAM requirements,
  * just CPU. 

@@ -52,7 +52,7 @@ public class CloudSimExample7 {
 
     private static List<Vm> createVM(int userId, int vms, int idShift) {
             //Creates a container to store VMs. This list is passed to the broker later
-            LinkedList<Vm> list = new LinkedList<Vm>();
+            LinkedList<Vm> list = new LinkedList<>();
 
             //VM Parameters
             long size = 10000; //image size (MB)
@@ -76,7 +76,7 @@ public class CloudSimExample7 {
 
     private static List<Cloudlet> createCloudlet(int userId, int cloudlets, int idShift){
             // Creates a container to store Cloudlets
-            LinkedList<Cloudlet> list = new LinkedList<Cloudlet>();
+            LinkedList<Cloudlet> list = new LinkedList<>();
 
             //cloudlet parameters
             long length = 40000;
@@ -97,11 +97,10 @@ public class CloudSimExample7 {
             return list;
     }
 
-
-    ////////////////////////// STATIC METHODS ///////////////////////
-
     /**
-     * Creates main() to run this example
+     * Starts the example.
+     * 
+     * @param args
      */
     public static void main(String[] args) {
             Log.printFormattedLine("Starting %s...", CloudSimExample7.class.getSimpleName());
@@ -134,7 +133,7 @@ public class CloudSimExample7 {
                     broker.submitCloudletList(cloudletList);
 
                     // A thread that will create a new broker at 200 clock time
-                    Runnable monitor = new Runnable() {
+                    Thread monitorThread = new Thread() {
                             @Override
                             public void run() {
                                     CloudSim.pauseSimulation(200);
@@ -171,7 +170,7 @@ public class CloudSimExample7 {
                             }
                     };
 
-                    new Thread(monitor).start();
+                    monitorThread.start();
                     Thread.sleep(1000);
 
                     // Fifth step: Starts the simulation

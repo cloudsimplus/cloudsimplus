@@ -42,7 +42,7 @@ import org.cloudbus.cloudsim.resources.Ram;
 /**
  * An example showing how to create simulation entities
  * (a DatacenterBroker in this example) in run-time using
- * a global manager entity (GlobalBroker).
+ * a {@link GlobalBroker global entity manager}.
  */
 public class CloudSimExample8 {
 
@@ -54,7 +54,7 @@ public class CloudSimExample8 {
 
     private static List<Vm> createVM(int userId, int vms, int idShift) {
             //Creates a container to store VMs. This list is passed to the broker later
-            LinkedList<Vm> list = new LinkedList<Vm>();
+            LinkedList<Vm> list = new LinkedList<>();
 
             //VM Parameters
             long size = 10000; //image size (MB)
@@ -78,7 +78,7 @@ public class CloudSimExample8 {
 
     private static List<Cloudlet> createCloudlet(int userId, int cloudlets, int idShift){
             // Creates a container to store Cloudlets
-            LinkedList<Cloudlet> list = new LinkedList<Cloudlet>();
+            LinkedList<Cloudlet> list = new LinkedList<>();
 
             //cloudlet parameters
             long length = 40000;
@@ -103,7 +103,9 @@ public class CloudSimExample8 {
     ////////////////////////// STATIC METHODS ///////////////////////
 
     /**
-     * Creates main() to run this example
+     * Executes the example.
+     * 
+     * @param args
      */
     public static void main(String[] args) {
             Log.printFormattedLine("Starting %s...", CloudSimExample8.class.getSimpleName());
@@ -158,15 +160,15 @@ public class CloudSimExample8 {
 
     private static Datacenter createDatacenter(String name){
 
-            // Here are the steps needed to create a PowerDatacenter:
+            // Here are the steps needed to create a Datacenter:
             // 1. We need to create a list to store one or more
             //    Machines
-            List<Host> hostList = new ArrayList<Host>();
+            List<Host> hostList = new ArrayList<>();
 
             // 2. A Machine contains one or more PEs or CPUs/Cores. Therefore, should
             //    create a list to store these PEs before creating
             //    a Machine.
-            List<Pe> peList1 = new ArrayList<Pe>();
+            List<Pe> peList1 = new ArrayList<>();
 
             int mips = 1000;
 
@@ -178,7 +180,7 @@ public class CloudSimExample8 {
             peList1.add(new Pe(3, new PeProvisionerSimple(mips)));
 
             //Another list, for a dual-core machine
-            List<Pe> peList2 = new ArrayList<Pe>();
+            List<Pe> peList2 = new ArrayList<>();
 
             peList2.add(new Pe(0, new PeProvisionerSimple(mips)));
             peList2.add(new Pe(1, new PeProvisionerSimple(mips)));
@@ -229,7 +231,7 @@ public class CloudSimExample8 {
             arch, os, vmm, hostList, time_zone, cost, costPerMem, costPerStorage, costPerBw);
 
 
-            // 6. Finally, we need to create a PowerDatacenter object.
+            // 6. Finally, we need to create a Datacenter object.
             Datacenter datacenter = null;
             try {
                     datacenter = new Datacenter(name, characteristics, new VmAllocationPolicySimple(hostList), storageList, 0);

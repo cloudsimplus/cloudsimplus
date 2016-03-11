@@ -95,7 +95,7 @@ public class TestExample {
      */
     private static NetworkDatacenter createDatacenter(String name) {
 
-            // Here are the steps needed to create a PowerDatacenter:
+            // Here are the steps needed to create a Datacenter:
             // 1. We need to create a list to store
             // our machine
 

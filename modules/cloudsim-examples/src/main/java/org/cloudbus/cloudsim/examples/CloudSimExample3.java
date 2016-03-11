@@ -158,7 +158,7 @@ public class CloudSimExample3 {
 
     private static Datacenter createDatacenter(String name){
 
-            // Here are the steps needed to create a PowerDatacenter:
+            // Here are the steps needed to create a Datacenter:
             // 1. We need to create a list to store
             //    our machine
             List<Host> hostList = new ArrayList<Host>();
@@ -224,7 +224,7 @@ public class CloudSimExample3 {
             DatacenterCharacteristics characteristics = new DatacenterCharacteristics(
             arch, os, vmm, hostList, time_zone, cost, costPerMem, costPerStorage, costPerBw);
 
-            // 6. Finally, we need to create a PowerDatacenter object.
+            // 6. Finally, we need to create a Datacenter object.
             Datacenter datacenter = null;
             try {
                     datacenter = new Datacenter(name, characteristics, new VmAllocationPolicySimple(hostList), storageList, 0);

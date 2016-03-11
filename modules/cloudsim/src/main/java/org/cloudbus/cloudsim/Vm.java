@@ -26,6 +26,13 @@ import org.cloudbus.cloudsim.resources.RawStorage;
  * @author Rodrigo N. Calheiros
  * @author Anton Beloglazov
  * @since CloudSim Toolkit 1.0
+ * 
+ * @todo @author manoelcampos Instead of having the methods getRam, getUsedRam, getAvailableRam
+ * (and the same for other resources), it would be returned
+ * the Resource object for each different kind of resource,
+ * in order to allow the user to get the resource capacity,
+ * used and available capacity without defining a specific method
+ * for each one.
  */
 public class Vm {
     /** @see #getId()  */
