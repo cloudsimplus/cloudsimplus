@@ -57,7 +57,9 @@ public class PlanetLabHelper {
 						outputSize,
 						new UtilizationModelPlanetLabInMemory(
 								files[i].getAbsolutePath(),
-								Constants.SCHEDULING_INTERVAL), utilizationModelNull, utilizationModelNull);
+								Constants.SCHEDULING_INTERVAL), 
+                                                                utilizationModelNull, 
+                                                                utilizationModelNull);
 			} catch (Exception e) {
 				e.printStackTrace();
 				System.exit(0);
