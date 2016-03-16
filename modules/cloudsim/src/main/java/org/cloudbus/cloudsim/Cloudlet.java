@@ -43,7 +43,13 @@ import org.cloudbus.cloudsim.core.CloudSim;
  * {@link https://groups.google.com/forum/#!searchin/cloudsim/cloudlet$20dynamic/cloudsim/dcgACMYHEAE/DDkzlI15wuwJ}
  * 
  * @todo @author manoelcampos The cloudlet class doesn't specify RAM requirements,
- * just CPU. 
+ * just CPU. See {@link https://groups.google.com/d/msg/cloudsim/FAldVBoRyq8/Ijkv1Ti9CgAJ}
+ * 
+ * @todo @author manoelcampos Cloudlets doesn't have a priority attribute
+ * to define which of them will be executed first.
+ * For instance, considering a VM with just one PE
+ * and several cloudlets, the execution order of cloudlets can be defined by
+ * their priorities.
  */
 public class Cloudlet {    
   /**
