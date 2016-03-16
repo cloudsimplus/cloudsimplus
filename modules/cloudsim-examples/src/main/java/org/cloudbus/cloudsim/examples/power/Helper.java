@@ -133,7 +133,6 @@ public class Helper {
 	 * @param datacenterClass the datacenter class
 	 * @param hostList the host list
 	 * @param vmAllocationPolicy the vm allocation policy
-	 * @param simulationLength
 	 * 
 	 * @return the power datacenter
 	 * 
@@ -237,6 +236,7 @@ public class Helper {
 	 * Prints the results.
 	 * 
 	 * @param datacenter the datacenter
+         * @param vms
 	 * @param lastClock the last clock
 	 * @param experimentName the experiment name
 	 * @param outputInCsv the output in csv
