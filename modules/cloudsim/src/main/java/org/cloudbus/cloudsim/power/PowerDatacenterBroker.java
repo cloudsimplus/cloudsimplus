@@ -8,13 +8,13 @@
 
 package org.cloudbus.cloudsim.power;
 
-import org.cloudbus.cloudsim.DatacenterBroker;
+import org.cloudbus.cloudsim.DatacenterBrokerSimple;
 import org.cloudbus.cloudsim.core.CloudSim;
 import org.cloudbus.cloudsim.core.CloudSimTags;
 import org.cloudbus.cloudsim.core.SimEvent;
 
 /**
- * A power-aware {@link DatacenterBroker}.
+ * A power-aware {@link DatacenterBrokerSimple}.
  * 
  * <br/>If you are using any algorithms, policies or workload included in the power package please cite
  * the following paper:<br/>
@@ -29,7 +29,7 @@ import org.cloudbus.cloudsim.core.SimEvent;
  * @author Anton Beloglazov
  * @since CloudSim Toolkit 2.0
  */
-public class PowerDatacenterBroker extends DatacenterBroker {
+public class PowerDatacenterBroker extends DatacenterBrokerSimple {
 
 	/**
 	 * Instantiates a new PowerDatacenterBroker.

@@ -37,7 +37,7 @@ public class VmTest {
     private static final long SIZE = 1000;
     private static final String VMM = "Xen";
     private CloudletSchedulerDynamicWorkload vmScheduler;
-    private Vm vm;
+    private VmSimple vm;
 
     @Before
     public void setUp() throws Exception {
@@ -50,7 +50,7 @@ public class VmTest {
      * @param vmId the id of the VM
      * @return 
      */
-    public static Vm createVmWithOnePeAndHalfMips(final int vmId) {
+    public static VmSimple createVmWithOnePeAndHalfMips(final int vmId) {
         return VmTest.createVm(vmId, MIPS / 2, 1, RAM, BW, SIZE, null);
     }
 
@@ -59,7 +59,7 @@ public class VmTest {
      * @param vmId the id of the VM
      * @return 
      */
-    public static Vm createVmWithOnePeAndTotalMips(final int vmId) {
+    public static VmSimple createVmWithOnePeAndTotalMips(final int vmId) {
         return VmTest.createVm(vmId, MIPS, 1, RAM, BW, SIZE, null);
     }
 
@@ -71,9 +71,9 @@ public class VmTest {
      * @param numberOfPes
      * @return 
      */
-    public static Vm createVmWithSpecificMipsAndNumberOfPEs(final int vmId, 
+    public static VmSimple createVmWithSpecificMipsAndNumberOfPEs(final int vmId, 
             final double mips, final int numberOfPes) {
-        return new Vm(vmId, 0, mips, numberOfPes, RAM, BW, SIZE, "", null);
+        return new VmSimple(vmId, 0, mips, numberOfPes, RAM, BW, SIZE, "", null);
     }
 
     /**
@@ -83,8 +83,8 @@ public class VmTest {
      * @param numberOfPes
      * @return 
      */
-    public static Vm createVmWithSpecificNumberOfPEs(final int vmId, final int numberOfPes) {
-        return new Vm(vmId, 0, MIPS, numberOfPes, RAM, BW, SIZE, "", null);
+    public static VmSimple createVmWithSpecificNumberOfPEs(final int vmId, final int numberOfPes) {
+        return new VmSimple(vmId, 0, MIPS, numberOfPes, RAM, BW, SIZE, "", null);
     }
 
     /**
@@ -98,11 +98,11 @@ public class VmTest {
      * @param scheduler the cloudlet scheduler
      * @return 
      */
-    public static Vm createVm(final int vmId, 
+    public static VmSimple createVm(final int vmId, 
             final double mips, final int numberOfPes, 
             final int ram, final long bw, final long storage,
-            final CloudletScheduler scheduler) {
-        return new Vm(vmId, 0, mips, numberOfPes, ram, bw, storage, "", scheduler);
+            final CloudletSchedulerAbstract scheduler) {
+        return new VmSimple(vmId, 0, mips, numberOfPes, ram, bw, storage, "", scheduler);
     }
     
     /**
@@ -113,9 +113,9 @@ public class VmTest {
      * @param numberOfPes
      * @return 
      */
-    public static Vm createVmWithSpecificNumberOfPEsForSpecificUser(
+    public static VmSimple createVmWithSpecificNumberOfPEsForSpecificUser(
             final int vmId, final int userId, final int numberOfPes) {
-        return new Vm(vmId, userId, MIPS, numberOfPes, RAM, BW, SIZE, "", null);
+        return new VmSimple(vmId, userId, MIPS, numberOfPes, RAM, BW, SIZE, "", null);
     }
 
     @Test
@@ -157,7 +157,7 @@ public class VmTest {
     @Test
     public void testGetHost() {
             assertEquals(null, vm.getHost());
-            Host host = HostTest.createHost(0, 1);
+            HostSimple host = HostTest.createHost(0, 1);
             vm.setHost(host);
             assertEquals(host, vm.getHost());
     }
@@ -231,8 +231,8 @@ public class VmTest {
 
     @Test
     public void testGetCurrentRequestedMips() {
-            CloudletScheduler cloudletScheduler = createMock(CloudletScheduler.class);
-            Vm vm = createVmWithDefaultConfiguration(cloudletScheduler);
+            CloudletSchedulerAbstract cloudletScheduler = createMock(CloudletSchedulerAbstract.class);
+            VmSimple vm = createVmWithDefaultConfiguration(cloudletScheduler);
             vm.setBeingInstantiated(false);
 
             List<Double> expectedCurrentMips = new ArrayList<>();
@@ -253,14 +253,14 @@ public class VmTest {
      * @param cloudletScheduler
      * @return 
      */
-    public static Vm createVmWithDefaultConfiguration(CloudletScheduler cloudletScheduler) {
-        return new Vm(ID, USER_ID, MIPS, PES_NUMBER, RAM, BW, SIZE, VMM, cloudletScheduler);
+    public static VmSimple createVmWithDefaultConfiguration(CloudletSchedulerAbstract cloudletScheduler) {
+        return new VmSimple(ID, USER_ID, MIPS, PES_NUMBER, RAM, BW, SIZE, VMM, cloudletScheduler);
     }
 
     @Test
     public void testGetCurrentRequestedTotalMips() {
-        CloudletScheduler cloudletScheduler = createMock(CloudletScheduler.class);
-        Vm vm = createVmWithDefaultConfiguration(cloudletScheduler);
+        CloudletSchedulerAbstract cloudletScheduler = createMock(CloudletSchedulerAbstract.class);
+        VmSimple vm = createVmWithDefaultConfiguration(cloudletScheduler);
 
         ArrayList<Double> currentMips = new ArrayList<>();
         currentMips.add(MIPS);

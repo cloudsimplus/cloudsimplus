@@ -9,9 +9,11 @@
 package org.cloudbus.cloudsim.lists;
 
 import java.util.List;
+import org.cloudbus.cloudsim.Host;
 
 import org.cloudbus.cloudsim.Host;
 import org.cloudbus.cloudsim.Pe;
+import org.cloudbus.cloudsim.PeSimple;
 
 /**
  * HostList is a collection of operations on lists of hosts (PMs).
@@ -95,28 +97,26 @@ public class HostList {
 	/**
 	 * Gets the first host with free PEs.
 	 * 
-	 * @param <T> the generic type
 	 * @param hostList the list of existing hosts
 	 * @return a Host object or <tt>null</tt> if not found
 	 * @pre $none
 	 * @post $none
 	 */
-	public static <T extends Host> T getHostWithFreePe(List<T> hostList) {
+	public static Host getHostWithFreePe(List<Host> hostList) {
 		return getHostWithFreePe(hostList, 1);
 	}
 
 	/**
 	 * Gets the first Host with a specified number of free PEs.
 	 * 
-	 * @param <T> the generic type
 	 * @param hostList the list of existing hosts
 	 * @param pesNumber the pes number
 	 * @return a Host object or <tt>null</tt> if not found
 	 * @pre $none
 	 * @post $none
 	 */
-	public static <T extends Host> T getHostWithFreePe(List<T> hostList, int pesNumber) {
-		for (T host : hostList) {
+	public static Host getHostWithFreePe(List<Host> hostList, int pesNumber) {
+		for (Host host : hostList) {
 			if (PeList.getNumberOfFreePes(host.getPeList()) >= pesNumber) {
 				return host;
 			}
@@ -127,7 +127,6 @@ public class HostList {
 	/**
 	 * Sets the status of a particular PE on a given Host.
 	 * 
-	 * @param <T> the generic type
 	 * @param hostList the list of existing hosts
 	 * @param status the new PE status
 	 * @param hostId the host id
@@ -138,8 +137,8 @@ public class HostList {
 	 * @pre peId >= 0
 	 * @post $none
 	 */
-	public static <T extends Host> boolean setPeStatus(List<T> hostList, Pe.Status status, int hostId, int peId) {
-		T host = getById(hostList, hostId);
+	public static boolean setPeStatus(List<Host> hostList, Pe.Status status, int hostId, int peId) {
+		Host host = getById(hostList, hostId);
 		if (host == null) {
 			return false;
 		}

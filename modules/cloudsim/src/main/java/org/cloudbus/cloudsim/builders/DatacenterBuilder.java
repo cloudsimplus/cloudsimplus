@@ -4,13 +4,14 @@ import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 import org.cloudbus.cloudsim.Datacenter;
+import org.cloudbus.cloudsim.DatacenterSimple;
 import org.cloudbus.cloudsim.DatacenterCharacteristics;
 import org.cloudbus.cloudsim.Host;
 import org.cloudbus.cloudsim.VmAllocationPolicySimple;
 import org.cloudbus.cloudsim.resources.FileStorage;
 
 /**
- * A Builder class to createDatacenter {@link Datacenter} objects.
+ * A Builder class to createDatacenter {@link DatacenterSimple} objects.
  * 
  * @author Manoel Campos da Silva Filho
  */
@@ -38,6 +39,12 @@ public class DatacenterBuilder extends Builder {
         return datacenters;
     }
 
+    public Datacenter get(final int index) {
+        if(index >= 0 && index < datacenters.size())
+            return datacenters.get(index);
+        return Datacenter.NULL;
+    }
+
     public DatacenterBuilder createDatacenter(final List<Host> hosts) {
         if (hosts == null || hosts.isEmpty()) {
             throw new RuntimeException("The hosts parameter has to have at least 1 host.");
@@ -52,7 +59,7 @@ public class DatacenterBuilder extends Builder {
                         defaultCostPerBwByte);
         String name = String.format(DATACENTER_NAME_FORMAT, numberOfCreatedDatacenters++);
         Datacenter datacenter = 
-                new Datacenter(name, characteristics, 
+                new DatacenterSimple(name, characteristics, 
                         new VmAllocationPolicySimple(hosts), 
                         storageList, 0);
         this.datacenters.add(datacenter);

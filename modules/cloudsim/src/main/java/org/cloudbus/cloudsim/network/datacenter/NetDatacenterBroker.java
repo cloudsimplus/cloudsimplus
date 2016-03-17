@@ -13,11 +13,13 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-
 import org.cloudbus.cloudsim.Cloudlet;
+
+import org.cloudbus.cloudsim.CloudletSimple;
 import org.cloudbus.cloudsim.DatacenterCharacteristics;
 import org.cloudbus.cloudsim.Log;
 import org.cloudbus.cloudsim.Vm;
+import org.cloudbus.cloudsim.VmSimple;
 import org.cloudbus.cloudsim.core.CloudSim;
 import org.cloudbus.cloudsim.core.CloudSimTags;
 import org.cloudbus.cloudsim.core.SimEntity;
@@ -42,10 +44,10 @@ public class NetDatacenterBroker extends SimEntity {
 	// TODO: remove unnecessary variables
 
 	/** The list of submitted VMs. */
-	private List<? extends Vm> vmList;
+	private List<? extends NetworkVm> vmList;
 
 	/** The list of created VMs. */
-	private List<? extends Vm> vmsCreatedList;
+	private List<? extends NetworkVm> vmsCreatedList;
 
 	/** The list of submitted {@link NetworkCloudlet NetworkCloudlets}. */
 	private List<? extends NetworkCloudlet> cloudletList;
@@ -58,14 +60,14 @@ public class NetDatacenterBroker extends SimEntity {
          */
 	private final Map<Integer, Integer> appCloudletRecieved;
 
-	/** The list of submitted {@link Cloudlet Cloudlets}.
+	/** *  The list of submitted {@link Cloudlet Cloudlets}.
          */
-	private List<? extends Cloudlet> cloudletSubmittedList;
+	private List<? extends CloudletSimple> cloudletSubmittedList;
 
-	/** The list of received {@link Cloudlet Cloudlets}.
+	/** *  The list of received {@link Cloudlet Cloudlets}.
          * @todo attribute appears to be redundant with {@link #cloudletSubmittedList}
          */
-	private List<? extends Cloudlet> cloudletReceivedList;
+	private List<? extends CloudletSimple> cloudletReceivedList;
 
 	/** The number of submitted cloudlets. */
 	private int cloudletsSubmitted;
@@ -118,8 +120,8 @@ public class NetDatacenterBroker extends SimEntity {
 		setVmsCreatedList(new ArrayList<NetworkVm>());
 		setCloudletList(new ArrayList<NetworkCloudlet>());
 		setAppCloudletList(new ArrayList<AppCloudlet>());
-		setCloudletSubmittedList(new ArrayList<Cloudlet>());
-		setCloudletReceivedList(new ArrayList<Cloudlet>());
+		setCloudletSubmittedList(new ArrayList<CloudletSimple>());
+		setCloudletReceivedList(new ArrayList<CloudletSimple>());
 		appCloudletRecieved = new HashMap<Integer, Integer>();
 
 		cloudletsSubmitted = 0;
@@ -143,7 +145,7 @@ public class NetDatacenterBroker extends SimEntity {
 	 * @pre list !=null
 	 * @post $none
 	 */
-	public void submitVmList(List<? extends Vm> list) {
+	public void submitVmList(List<? extends NetworkVm> list) {
 		getVmList().addAll(list);
 	}
 
@@ -262,7 +264,7 @@ public class NetDatacenterBroker extends SimEntity {
 	 * @post $none
 	 */
 	protected void processCloudletReturn(SimEvent ev) {
-		Cloudlet cloudlet = (Cloudlet) ev.getData();
+		Cloudlet cloudlet = (CloudletSimple) ev.getData();
 		getCloudletReceivedList().add(cloudlet);
 		cloudletsSubmitted--;
 		// all cloudlets executed
@@ -393,20 +395,16 @@ public class NetDatacenterBroker extends SimEntity {
 
 			// create VM
 			NetworkVm vm = new NetworkVm(
-					vmid,
-					getId(),
-					mips,
-					pesNumber,
-					ram,
-					bw,
-					size,
-					vmm,
+					vmid, getId(), mips, pesNumber,
+					ram, bw, size, vmm,
 					new NetworkCloudletSpaceSharedScheduler());
 			linkDC.processVmCreateNetwork(vm);
 			// add the VM to the vmList
 			getVmList().add(vm);
 			getVmsToDatacentersMap().put(vmid, datacenterId);
-			getVmsCreatedList().add(VmList.getById(getVmList(), vmid));
+                        
+                        NetworkVm foundVm = VmList.getById(getVmList(), vmid);
+			getVmsCreatedList().add(foundVm);
 		}
 	}
 
@@ -456,7 +454,7 @@ public class NetDatacenterBroker extends SimEntity {
 	 * @return the vm list
 	 */
 	@SuppressWarnings("unchecked")
-	public <T extends Vm> List<T> getVmList() {
+	public <T extends NetworkVm> List<T> getVmList() {
 		return (List<T>) vmList;
 	}
 
@@ -466,7 +464,7 @@ public class NetDatacenterBroker extends SimEntity {
 	 * @param <T> the generic type
 	 * @param vmList the new vm list
 	 */
-	protected <T extends Vm> void setVmList(List<T> vmList) {
+	protected <T extends NetworkVm> void setVmList(List<T> vmList) {
 		this.vmList = vmList;
 	}
 
@@ -517,7 +515,7 @@ public class NetDatacenterBroker extends SimEntity {
 	 * @param <T> the generic type
 	 * @param cloudletSubmittedList the new cloudlet submitted list
 	 */
-	protected <T extends Cloudlet> void setCloudletSubmittedList(List<T> cloudletSubmittedList) {
+	protected <T extends CloudletSimple> void setCloudletSubmittedList(List<T> cloudletSubmittedList) {
 		this.cloudletSubmittedList = cloudletSubmittedList;
 	}
 
@@ -538,7 +536,7 @@ public class NetDatacenterBroker extends SimEntity {
 	 * @param <T> the generic type
 	 * @param cloudletReceivedList the new cloudlet received list
 	 */
-	protected <T extends Cloudlet> void setCloudletReceivedList(List<T> cloudletReceivedList) {
+	protected <T extends CloudletSimple> void setCloudletReceivedList(List<T> cloudletReceivedList) {
 		this.cloudletReceivedList = cloudletReceivedList;
 	}
 
@@ -549,7 +547,7 @@ public class NetDatacenterBroker extends SimEntity {
 	 * @return the vm list
 	 */
 	@SuppressWarnings("unchecked")
-	public <T extends Vm> List<T> getVmsCreatedList() {
+	public <T extends NetworkVm> List<T> getVmsCreatedList() {
 		return (List<T>) vmsCreatedList;
 	}
 
@@ -559,7 +557,7 @@ public class NetDatacenterBroker extends SimEntity {
 	 * @param <T> the generic type
 	 * @param vmsCreatedList the vms created list
 	 */
-	protected <T extends Vm> void setVmsCreatedList(List<T> vmsCreatedList) {
+	protected <T extends NetworkVm> void setVmsCreatedList(List<T> vmsCreatedList) {
 		this.vmsCreatedList = vmsCreatedList;
 	}
 

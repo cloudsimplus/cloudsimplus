@@ -13,6 +13,7 @@ import java.util.List;
 
 import org.apache.commons.math3.linear.Array2DRowRealMatrix;
 import org.cloudbus.cloudsim.Vm;
+import org.cloudbus.cloudsim.VmSimple;
 import org.cloudbus.cloudsim.util.MathUtil;
 
 /**
@@ -49,7 +50,7 @@ public class PowerVmSelectionPolicyMaximumCorrelation extends PowerVmSelectionPo
 	}
 
 	@Override
-	public Vm getVmToMigrate(final PowerHost host) {
+	public Vm getVmToMigrate(final PowerHostSimple host) {
 		List<PowerVm> migratableVms = getMigratableVms(host);
 		if (migratableVms.isEmpty()) {
 			return null;
@@ -158,7 +159,7 @@ public class PowerVmSelectionPolicyMaximumCorrelation extends PowerVmSelectionPo
 	 * 
 	 * @param fallbackPolicy the new fallback policy
 	 */
-	public void setFallbackPolicy(final PowerVmSelectionPolicy fallbackPolicy) {
+	public final void setFallbackPolicy(final PowerVmSelectionPolicy fallbackPolicy) {
 		this.fallbackPolicy = fallbackPolicy;
 	}
 

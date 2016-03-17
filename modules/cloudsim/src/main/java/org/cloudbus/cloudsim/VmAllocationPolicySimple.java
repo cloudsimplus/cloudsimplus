@@ -15,15 +15,15 @@ import java.util.Map;
 import org.cloudbus.cloudsim.core.CloudSim;
 
 /**
- * VmAllocationPolicySimple is an VmAllocationPolicy that chooses, as the host
- * for a VM, the host with less PEs in use. It is therefore a Worst Fit policy,
+ * VmAllocationPolicySimple is an VmAllocationPolicyAbstract that chooses, as the host
+ for a VM, the host with less PEs in use. It is therefore a Worst Fit policy,
  * allocating VMs into the host with most available PE.
  *
  * @author Rodrigo N. Calheiros
  * @author Anton Beloglazov
  * @since CloudSim Toolkit 1.0
  */
-public class VmAllocationPolicySimple extends VmAllocationPolicy {
+public class VmAllocationPolicySimple extends VmAllocationPolicyAbstract {
 
     /** @see #getUsedPes() */
     private Map<String, Integer> usedPes;
@@ -38,7 +38,7 @@ public class VmAllocationPolicySimple extends VmAllocationPolicy {
      * @pre $none
      * @post $none
      */
-    public VmAllocationPolicySimple(List<? extends Host> list) {
+    public VmAllocationPolicySimple(List<Host> list) {
         super(list);
 
         setFreePes(new ArrayList<Integer>());
@@ -119,7 +119,7 @@ public class VmAllocationPolicySimple extends VmAllocationPolicy {
 
     @Override
     public Host getHost(int vmId, int userId) {
-        return getVmTable().get(Vm.getUid(userId, vmId));
+        return getVmTable().get(VmSimple.getUid(userId, vmId));
     }
 
     /**

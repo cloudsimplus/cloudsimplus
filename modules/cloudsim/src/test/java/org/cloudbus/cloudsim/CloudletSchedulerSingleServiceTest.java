@@ -58,7 +58,7 @@ public class CloudletSchedulerSingleServiceTest {
 	@Test
 	public void testGetUnderAllocatedMips() {
 		UtilizationModelStochastic utilizationModel = new UtilizationModelStochastic();
-		Cloudlet cloudlet = new Cloudlet(0, CLOUDLET_LENGTH, PES_NUMBER, CLOUDLET_FILE_SIZE, CLOUDLET_OUTPUT_SIZE,
+		CloudletSimple cloudlet = new CloudletSimple(0, CLOUDLET_LENGTH, PES_NUMBER, CLOUDLET_FILE_SIZE, CLOUDLET_OUTPUT_SIZE,
 				utilizationModel, utilizationModel, utilizationModel);
 		ResCloudlet rcl = new ResCloudlet(cloudlet);
 
@@ -77,7 +77,7 @@ public class CloudletSchedulerSingleServiceTest {
 	@Test
 	public void testGetCurrentRequestedMips() {
 		UtilizationModelStochastic utilizationModel = new UtilizationModelStochastic();
-		Cloudlet cloudlet = new Cloudlet(0, CLOUDLET_LENGTH, PES_NUMBER, CLOUDLET_FILE_SIZE, CLOUDLET_OUTPUT_SIZE,
+		CloudletSimple cloudlet = new CloudletSimple(0, CLOUDLET_LENGTH, PES_NUMBER, CLOUDLET_FILE_SIZE, CLOUDLET_OUTPUT_SIZE,
 				utilizationModel, utilizationModel, utilizationModel);
 		cloudlet.setResourceParameter(0, 0, 0);
 
@@ -104,7 +104,7 @@ public class CloudletSchedulerSingleServiceTest {
 	@Test
 	public void testGetTotalUtilization() {
 		UtilizationModelStochastic utilizationModel = new UtilizationModelStochastic();
-		Cloudlet cloudlet = new Cloudlet(0, CLOUDLET_LENGTH, PES_NUMBER, CLOUDLET_FILE_SIZE, CLOUDLET_OUTPUT_SIZE,
+		CloudletSimple cloudlet = new CloudletSimple(0, CLOUDLET_LENGTH, PES_NUMBER, CLOUDLET_FILE_SIZE, CLOUDLET_OUTPUT_SIZE,
 				utilizationModel, utilizationModel, utilizationModel);
 		cloudlet.setResourceParameter(0, 0, 0);
 
@@ -127,7 +127,7 @@ public class CloudletSchedulerSingleServiceTest {
 	@Test
 	public void testCloudletFinish() {
 		UtilizationModelStochastic utilizationModel = new UtilizationModelStochastic();
-		Cloudlet cloudlet = new Cloudlet(0, CLOUDLET_LENGTH, PES_NUMBER, CLOUDLET_FILE_SIZE, CLOUDLET_OUTPUT_SIZE,
+		CloudletSimple cloudlet = new CloudletSimple(0, CLOUDLET_LENGTH, PES_NUMBER, CLOUDLET_FILE_SIZE, CLOUDLET_OUTPUT_SIZE,
 				utilizationModel, utilizationModel, utilizationModel);
 		cloudlet.setResourceParameter(0, 0, 0);
 
@@ -139,7 +139,7 @@ public class CloudletSchedulerSingleServiceTest {
 		vmScheduler.cloudletSubmit(cloudlet, 0);
 		vmScheduler.cloudletFinish(new ResCloudlet(cloudlet));
 
-		assertEquals(Cloudlet.Status.SUCCESS.ordinal(), vmScheduler.getCloudletStatus(0));
+		assertEquals(CloudletSimple.Status.SUCCESS.ordinal(), vmScheduler.getCloudletStatus(0));
 		assertTrue(vmScheduler.isFinishedCloudlets());
 		assertSame(cloudlet, vmScheduler.getNextFinishedCloudlet());
 	}
@@ -157,7 +157,7 @@ public class CloudletSchedulerSingleServiceTest {
 	@Test
 	public void testGetTotalCurrentMipsForCloudlet() {
 		UtilizationModelStochastic utilizationModel = new UtilizationModelStochastic();
-		Cloudlet cloudlet = new Cloudlet(0, CLOUDLET_LENGTH, PES_NUMBER, CLOUDLET_FILE_SIZE, CLOUDLET_OUTPUT_SIZE,
+		CloudletSimple cloudlet = new CloudletSimple(0, CLOUDLET_LENGTH, PES_NUMBER, CLOUDLET_FILE_SIZE, CLOUDLET_OUTPUT_SIZE,
 				utilizationModel, utilizationModel, utilizationModel);
 		cloudlet.setResourceParameter(0, 0, 0);
 		ResCloudlet rgl = new ResCloudlet(cloudlet);
@@ -194,7 +194,7 @@ public class CloudletSchedulerSingleServiceTest {
 	}
 
 	public void testGetEstimatedFinishTime(UtilizationModel utilizationModel) {
-		Cloudlet cloudlet = new Cloudlet(0, CLOUDLET_LENGTH, PES_NUMBER, CLOUDLET_FILE_SIZE, CLOUDLET_OUTPUT_SIZE,
+		CloudletSimple cloudlet = new CloudletSimple(0, CLOUDLET_LENGTH, PES_NUMBER, CLOUDLET_FILE_SIZE, CLOUDLET_OUTPUT_SIZE,
 				utilizationModel, utilizationModel, utilizationModel);
 		cloudlet.setResourceParameter(0, 0, 0);
 		ResCloudlet rgl = new ResCloudlet(cloudlet);
@@ -243,7 +243,7 @@ public class CloudletSchedulerSingleServiceTest {
 	}
 
 	public void testCloudletSubmit(UtilizationModel utilizationModel) {
-		Cloudlet cloudlet = new Cloudlet(0, CLOUDLET_LENGTH, PES_NUMBER, CLOUDLET_FILE_SIZE, CLOUDLET_OUTPUT_SIZE,
+		CloudletSimple cloudlet = new CloudletSimple(0, CLOUDLET_LENGTH, PES_NUMBER, CLOUDLET_FILE_SIZE, CLOUDLET_OUTPUT_SIZE,
 				utilizationModel, utilizationModel, utilizationModel);
 		cloudlet.setResourceParameter(0, 0, 0);
 
@@ -327,7 +327,7 @@ public class CloudletSchedulerSingleServiceTest {
 	}
 
 	public void testUpdateVmProcessing(UtilizationModel utilizationModel) {
-		Cloudlet cloudlet = new Cloudlet(0, CLOUDLET_LENGTH, PES_NUMBER, CLOUDLET_FILE_SIZE, CLOUDLET_OUTPUT_SIZE,
+		CloudletSimple cloudlet = new CloudletSimple(0, CLOUDLET_LENGTH, PES_NUMBER, CLOUDLET_FILE_SIZE, CLOUDLET_OUTPUT_SIZE,
 				utilizationModel, utilizationModel, utilizationModel);
 		cloudlet.setResourceParameter(0, 0, 0);
 

@@ -104,10 +104,10 @@ public class UtilizationModelStochastic implements UtilizationModel {
 	 */
 	@SuppressWarnings("unchecked")
 	public void loadHistory(String filename) throws Exception {
-		FileInputStream fis = new FileInputStream(filename);
-		ObjectInputStream ois = new ObjectInputStream(fis);
-		setHistory((Map<Double, Double>) ois.readObject());
-		ois.close();
+            FileInputStream fis = new FileInputStream(filename);
+            try (ObjectInputStream ois = new ObjectInputStream(fis)) {
+                setHistory((Map<Double, Double>) ois.readObject());
+            }
 	}
 
 	/**

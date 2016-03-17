@@ -11,8 +11,8 @@ package org.cloudbus.cloudsim.power;
 import java.util.LinkedList;
 import java.util.List;
 
-import org.cloudbus.cloudsim.CloudletScheduler;
-import org.cloudbus.cloudsim.Vm;
+import org.cloudbus.cloudsim.CloudletSchedulerAbstract;
+import org.cloudbus.cloudsim.VmSimple;
 import org.cloudbus.cloudsim.core.CloudSim;
 import org.cloudbus.cloudsim.util.MathUtil;
 
@@ -33,7 +33,7 @@ import org.cloudbus.cloudsim.util.MathUtil;
  * @author Anton Beloglazov
  * @since CloudSim Toolkit 2.0
  */
-public class PowerVm extends Vm {
+public class PowerVm extends VmSimple {
 
 	/** The Constant HISTORY_LENGTH. */
 	public static final int HISTORY_LENGTH = 30;
@@ -73,7 +73,7 @@ public class PowerVm extends Vm {
 			final long size,
 			final int priority,
 			final String vmm,
-			final CloudletScheduler cloudletScheduler,
+			final CloudletSchedulerAbstract cloudletScheduler,
 			final double schedulingInterval) {
 		super(id, userId, mips, pesNumber, ram, bw, size, vmm, cloudletScheduler);
 		setSchedulingInterval(schedulingInterval);

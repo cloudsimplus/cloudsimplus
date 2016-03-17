@@ -31,7 +31,7 @@ public class PeList {
 	 * @pre id >= 0
 	 * @post $none
 	 */
-	public static <T extends Pe> Pe getById(List<T> peList, int id) {
+	public static Pe getById(List<Pe> peList, int id) {
                 /*@todo such kind of search would be made using a HashMap
                 (to avoid always iterating over the list),
                 where the key is the id of the object and the value the object
@@ -53,7 +53,7 @@ public class PeList {
 	 * @pre id >= 0
 	 * @post $none
 	 */
-	public static <T extends Pe> int getMips(List<T> peList, int id) {
+	public static int getMips(List<Pe> peList, int id) {
 		Pe pe = getById(peList, id);
 		if (pe != null) {
 			return pe.getMips();
@@ -69,7 +69,7 @@ public class PeList {
 	 * @pre $none
 	 * @post $none
 	 */
-	public static <T extends Pe> int getTotalMips(List<T> peList) {
+	public static int getTotalMips(List<Pe> peList) {
 		int totalMips = 0;
 		for (Pe pe : peList) {
 			totalMips += pe.getMips();
@@ -101,7 +101,7 @@ public class PeList {
 	 * @param peList the pe list
 	 * @return the max utilization percentage
 	 */
-	public static <T extends Pe> double getMaxUtilizationAmongVmsPes(List<T> peList, Vm vm) {
+    	public static double getMaxUtilizationAmongVmsPes(List<Pe> peList, Vm vm) {
 		double maxUtilization = 0;
 		for (Pe pe : peList) {
 			if (pe.getPeProvisioner().getAllocatedMipsForVm(vm) == null) {
@@ -153,7 +153,6 @@ public class PeList {
 	/**
 	 * Sets a PE status.
 	 * 
-         * @param <T> the generic type
 	 * @param status the new PE status
 	 * @param id the id of the PE to be set
 	 * @param peList the PE list
@@ -162,7 +161,7 @@ public class PeList {
 	 * @pre peID >= 0
 	 * @post $none
 	 */
-	public static <T extends Pe> boolean setPeStatus(List<T> peList, int id, Pe.Status status) {
+	public static boolean setPeStatus(List<Pe> peList, int id, Pe.Status status) {
 		Pe pe = getById(peList, id);
 		if (pe != null) {
 			pe.setStatus(status);

@@ -4,12 +4,12 @@ import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import org.cloudbus.cloudsim.Consts;
 import org.cloudbus.cloudsim.Host;
+import org.cloudbus.cloudsim.HostSimple;
 import org.cloudbus.cloudsim.Pe;
-import org.cloudbus.cloudsim.VmScheduler;
+import org.cloudbus.cloudsim.PeSimple;
+import org.cloudbus.cloudsim.VmSchedulerAbstract;
 import org.cloudbus.cloudsim.VmSchedulerTimeShared;
 import org.cloudbus.cloudsim.provisioners.ResourceProvisionerSimple;
 import org.cloudbus.cloudsim.resources.Bandwidth;
@@ -26,7 +26,7 @@ public class HostBuilder extends Builder {
     private long   defaultBw = 10000;
     private long   defaultStorage = Consts.MILLION;
     private int    defaultRam = 1024;
-    private Class<? extends VmScheduler> defaultVmSchedulerClass = VmSchedulerTimeShared.class;
+    private Class<? extends VmSchedulerAbstract> defaultVmSchedulerClass = VmSchedulerTimeShared.class;
     
     private int numberOfCreatedHosts;
     private final List<Host> hosts;
@@ -47,10 +47,10 @@ public class HostBuilder extends Builder {
             Constructor cons =
                     defaultVmSchedulerClass.getConstructor(new Class[]{List.class});
 
-            final Host host = new Host(id,
+            final Host host = new HostSimple(id,
                     new ResourceProvisionerSimple<>(new Ram(defaultRam)),
                     new ResourceProvisionerSimple<>(new Bandwidth(defaultBw)),
-                    defaultStorage, peList, (VmScheduler) cons.newInstance(peList));
+                    defaultStorage, peList, (VmSchedulerAbstract) cons.newInstance(peList));
             hosts.add(host);
             return host;
         } catch (NoSuchMethodException | SecurityException ex) {
@@ -118,11 +118,11 @@ public class HostBuilder extends Builder {
         return this;
     }
 
-    public Class<? extends VmScheduler> getDefaultVmSchedulerClass() {
+    public Class<? extends VmSchedulerAbstract> getDefaultVmSchedulerClass() {
         return defaultVmSchedulerClass;
     }
 
-    public HostBuilder setDefaultVmSchedulerClass(Class<? extends VmScheduler> defaultVmSchedulerClass) {
+    public HostBuilder setDefaultVmSchedulerClass(Class<? extends VmSchedulerAbstract> defaultVmSchedulerClass) {
         this.defaultVmSchedulerClass = defaultVmSchedulerClass;
         return this;
     }

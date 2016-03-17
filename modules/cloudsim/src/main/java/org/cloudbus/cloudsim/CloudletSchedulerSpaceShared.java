@@ -25,7 +25,7 @@ import org.cloudbus.cloudsim.core.CloudSim;
  * @author Anton Beloglazov
  * @since CloudSim Toolkit 1.0
  */
-public class CloudletSchedulerSpaceShared extends CloudletScheduler {
+public class CloudletSchedulerSpaceShared extends CloudletSchedulerAbstract {
 	/** The number of PEs currently available for the VM using the scheduler,
          * according to the mips share provided to it by
          * {@link #updateVmProcessing(double, java.util.List)} method. */

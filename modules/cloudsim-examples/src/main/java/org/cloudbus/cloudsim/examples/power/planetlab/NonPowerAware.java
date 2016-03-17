@@ -3,8 +3,8 @@ package org.cloudbus.cloudsim.examples.power.planetlab;
 import java.io.IOException;
 import java.util.Calendar;
 import java.util.List;
-
 import org.cloudbus.cloudsim.Cloudlet;
+
 import org.cloudbus.cloudsim.DatacenterBroker;
 import org.cloudbus.cloudsim.Log;
 import org.cloudbus.cloudsim.Vm;
@@ -13,6 +13,7 @@ import org.cloudbus.cloudsim.examples.power.Constants;
 import org.cloudbus.cloudsim.examples.power.Helper;
 import org.cloudbus.cloudsim.power.PowerDatacenterNonPowerAware;
 import org.cloudbus.cloudsim.power.PowerHost;
+import org.cloudbus.cloudsim.power.PowerHostSimple;
 import org.cloudbus.cloudsim.power.PowerVmAllocationPolicySimple;
 
 /**

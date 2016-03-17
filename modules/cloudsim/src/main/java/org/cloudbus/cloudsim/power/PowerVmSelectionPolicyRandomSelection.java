@@ -10,8 +10,9 @@ package org.cloudbus.cloudsim.power;
 
 import java.util.List;
 import java.util.Random;
-
 import org.cloudbus.cloudsim.Vm;
+
+import org.cloudbus.cloudsim.VmSimple;
 
 /**
  * A VM selection policy that randomly select VMs to migrate from a host.
@@ -31,7 +32,7 @@ import org.cloudbus.cloudsim.Vm;
  */
 public class PowerVmSelectionPolicyRandomSelection extends PowerVmSelectionPolicy {
 	@Override
-	public Vm getVmToMigrate(PowerHost host) {
+	public Vm getVmToMigrate(PowerHostSimple host) {
 		List<PowerVm> migratableVms = getMigratableVms(host);
 		if (migratableVms.isEmpty()) {
 			return null;

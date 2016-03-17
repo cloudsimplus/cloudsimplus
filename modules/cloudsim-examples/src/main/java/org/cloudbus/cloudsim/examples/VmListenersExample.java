@@ -15,19 +15,24 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.LinkedList;
 import java.util.List;
-
 import org.cloudbus.cloudsim.Cloudlet;
+import org.cloudbus.cloudsim.CloudletSimple;
 import org.cloudbus.cloudsim.CloudletSchedulerTimeShared;
 import org.cloudbus.cloudsim.Datacenter;
+import org.cloudbus.cloudsim.DatacenterSimple;
 import org.cloudbus.cloudsim.DatacenterBroker;
+import org.cloudbus.cloudsim.DatacenterBrokerSimple;
 import org.cloudbus.cloudsim.DatacenterCharacteristics;
 import org.cloudbus.cloudsim.Host;
+import org.cloudbus.cloudsim.HostSimple;
 import org.cloudbus.cloudsim.Log;
 import org.cloudbus.cloudsim.Pe;
+import org.cloudbus.cloudsim.PeSimple;
 import org.cloudbus.cloudsim.resources.FileStorage;
 import org.cloudbus.cloudsim.UtilizationModel;
 import org.cloudbus.cloudsim.UtilizationModelFull;
 import org.cloudbus.cloudsim.Vm;
+import org.cloudbus.cloudsim.VmSimple;
 import org.cloudbus.cloudsim.VmAllocationPolicySimple;
 import org.cloudbus.cloudsim.VmSchedulerTimeShared;
 import org.cloudbus.cloudsim.core.CloudSim;
@@ -39,9 +44,9 @@ import org.cloudbus.cloudsim.resources.Ram;
 
 /**
  * A simple example showing how to create a data center with 1 host and run 1 cloudlet on it,
- * and receive notifications when a Host is allocated or deallocated to each Vm.
+ and receive notifications when a Host is allocated or deallocated to each VmSimple.
  * The example uses the new Vm listeners to gets these notifications
- * while the simulation is running.
+ while the simulation is running.
  * 
  * @see Vm#setOnHostAllocationListener(org.cloudbus.cloudsim.listeners.EventListener) 
  * @see Vm#setOnHostDeallocationListener(org.cloudbus.cloudsim.listeners.EventListener) 
@@ -115,11 +120,11 @@ public class VmListenersExample {
                     String vmm = "Xen"; // VMM name
 
                     // create VM
-                    Vm vm = new Vm(
+                    Vm vm = new VmSimple(
                             vmid, brokerId, mips, pesNumber, ram, bw, size, 
                             vmm, new CloudletSchedulerTimeShared());
                     
-                    // set the listeners to intercept allocation and deallocation of a Host to the Vm
+                    // set the listeners to intercept allocation and deallocation of a Host to the VmSimple
                     vm.setOnHostAllocationListener(new EventListener<Vm, Host>() {
                         @Override
                         public void update(double time, Vm vm, Host host) {
@@ -155,7 +160,7 @@ public class VmListenersExample {
                     UtilizationModel utilizationModel = new UtilizationModelFull();
 
                     Cloudlet cloudlet = 
-                            new Cloudlet(id, length, pesNumber, fileSize, 
+                            new CloudletSimple(id, length, pesNumber, fileSize, 
                                     outputSize, utilizationModel, utilizationModel, 
                                     utilizationModel);
                     cloudlet.setUserId(brokerId);
@@ -191,19 +196,19 @@ public class VmListenersExample {
      */
     private static Datacenter createDatacenter(String name) {
 
-            // Here are the steps needed to create a Datacenter:
+            // Here are the steps needed to create a DatacenterSimple:
             // 1. We need to create a list to store
             // our machine
-            List<Host> hostList = new ArrayList<Host>();
+            List<Host> hostList = new ArrayList<>();
 
             // 2. A Machine contains one or more PEs or CPUs/Cores.
             // In this example, it will have only one core.
-            List<Pe> peList = new ArrayList<Pe>();
+            List<Pe> peList = new ArrayList<>();
 
             int mips = 1000;
 
             // 3. Create PEs and add these into a list.
-            peList.add(new Pe(0, new PeProvisionerSimple(mips))); // need to store Pe id and MIPS Rating
+            peList.add(new PeSimple(0, new PeProvisionerSimple(mips))); // need to store Pe id and MIPS Rating
 
             // 4. Create Host with its id and list of PEs and add them to the list
             // of machines
@@ -212,7 +217,7 @@ public class VmListenersExample {
             long storage = 1000000; // host storage
             long bw = 10000;
 
-            hostList.add(new Host(
+            hostList.add(new HostSimple(
                             hostId,
                             new ResourceProvisionerSimple<>(new Ram(ram)),
                             new ResourceProvisionerSimple<>(new Bandwidth(bw)),
@@ -242,10 +247,10 @@ public class VmListenersExample {
                             arch, os, vmm, hostList, time_zone, cost, costPerMem,
                             costPerStorage, costPerBw);
 
-            // 6. Finally, we need to create a Datacenter object.
+            // 6. Finally, we need to create a DatacenterSimple object.
             Datacenter datacenter = null;
             try {
-                    datacenter = new Datacenter(name, characteristics, new VmAllocationPolicySimple(hostList), storageList, 0);
+                    datacenter = new DatacenterSimple(name, characteristics, new VmAllocationPolicySimple(hostList), storageList, 0);
             } catch (Exception e) {
                     e.printStackTrace();
             }
@@ -264,7 +269,7 @@ public class VmListenersExample {
     private static DatacenterBroker createBroker() {
             DatacenterBroker broker = null;
             try {
-                    broker = new DatacenterBroker("Broker");
+                    broker = new DatacenterBrokerSimple("Broker");
             } catch (Exception e) {
                     e.printStackTrace();
                     return null;

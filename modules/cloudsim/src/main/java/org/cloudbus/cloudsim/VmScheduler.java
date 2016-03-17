@@ -1,314 +1,163 @@
-/*
- * Title: CloudSim Toolkit Description: CloudSim (Cloud Simulation) Toolkit for Modeling and
- * Simulation of Clouds Licence: GPL - http://www.gnu.org/copyleft/gpl.html
- * 
- * Copyright (c) 2009-2012, The University of Melbourne, Australia
- */
-
 package org.cloudbus.cloudsim;
 
-import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
-import org.cloudbus.cloudsim.lists.PeList;
-
 /**
- * VmScheduler is an abstract class that represents the policy used by a Virtual Machine Monitor (VMM) 
- * to share processing power of a PM among VMs running in a host. 
- * 
- * Each host has to use is own instance of a VmScheduler
- * that will so schedule the allocation of host's PEs for VMs running on it.
- * 
- * @author Rodrigo N. Calheiros
- * @author Anton Beloglazov
- * @since CloudSim Toolkit 1.0
+ * An interface to be implemented by VmScheduler objects in order to provide
+ * basic features of schedulers that allocate host's PEs for VMs running on it.
+ * It also implements the Null Object Design
+ * Pattern in order to start avoiding {@link NullPointerException} 
+ * when using the {@link VmScheduler#NULL} object instead
+ * of attributing {@code null} to {@link VmScheduler} variables.
+ * @author Manoel Campos da Silva Filho
  */
-public abstract class VmScheduler {
+public interface VmScheduler {
+    /**
+     * Requests the allocation of PEs for a VM.
+     *
+     * @param vm the vm
+     * @param mipsShare the list of MIPS share to be allocated to a VM
+     * @return $true if this policy allows a new VM in the host, $false
+     * otherwise
+     *
+     * @pre $none
+     * @post $none
+     *
+     * @todo @author manoelcampos All implementing classes don't consider the
+     * situation when a Vm already has allocated MIPS and the method is
+     * called again. In this case, what is supposed to do? Increase the current
+     * allocation or change it? I think that the obvious action is to change the
+     * allocation, however, the implementations aren't working to deal this
+     * situation. For that, they have to use some method such as
+     * {@link org.cloudbus.cloudsim.resources.Resource#isSuitable(java.lang.Number)}
+     * to first check if the difference from the current allocated mips and the
+     * requested one is available. Currently the implementations wrongly check
+     * if the total requested mips is available, while only the difference has
+     * to be checked. It has to be added some tests to check this issue.
+     */
+    boolean allocatePesForVm(Vm vm, List<Double> mipsShare);
 
-	/** The PEs of the host where the scheduler is associated. */
-	private List<? extends Pe> peList;
+    /**
+     * Releases PEs allocated to all the VMs of the host the VmSchedulerAbstract
+     * is associated to. After that, all PEs will be available to be used on
+     * demand for requesting VMs.
+     *
+     * @pre $none
+     * @post $none
+     */
+    void deallocatePesForAllVms();
 
-	/** The map of VMs to PEs, where each key is a VM id and each value is 
-         * a list of PEs allocated to that VM. */
-	private Map<String, List<Pe>> peMap;
+    /**
+     * Releases PEs allocated to a VM. After that, the PEs may be used on demand
+     * by other VMs.
+     *
+     * @param vm the vm
+     * @pre $none
+     * @post $none
+     */
+    void deallocatePesForVm(Vm vm);
 
-	/** The map of VMs to MIPS, were each key is a VM id and each value is 
-         * the currently allocated MIPS from the respective PE to that VM. 
-         * The PEs where the MIPS capacity is get are defined
-         * in the {@link #peMap}.
-         * 
-         * @todo subclasses such as {@link VmSchedulerTimeShared} have an 
-         * {@link VmSchedulerTimeShared#mipsMapRequested} attribute that
-         * may be confused with this one. So, the name of this one
-         * may be changed to something such as allocatedMipsMap
-         */
-	private Map<String, List<Double>> mipsMap;
+    /**
+     * Returns the MIPS share of each host's Pe that is allocated to a given VM.
+     *
+     * @param vm the vm
+     * @return an array containing the amount of MIPS of each pe that is
+     * available to the VM
+     * @pre $none
+     * @post $none
+     */
+    List<Double> getAllocatedMipsForVm(Vm vm);
 
-	/** The total available MIPS that can be allocated on demand for VMs. */
-	private double availableMips;
+    /**
+     * Gets the free mips.
+     *
+     * @return the free mips
+     */
+    double getAvailableMips();
 
-	/** The VMs migrating in the host (arriving). It is the list of VM ids */
-	private List<String> vmsMigratingIn;
+    /**
+     * Returns maximum available MIPS among all the host's PEs.
+     *
+     * @return max mips
+     */
+    double getMaxAvailableMips();
 
-	/** The VMs migrating out the host (departing). It is the list of VM ids */
-	private List<String> vmsMigratingOut;
+    /**
+     * Returns PE capacity in MIPS.
+     *
+     * @return mips
+     * @todo It considers that all PEs have the same capacity, what has been
+     * shown doesn't be assured. The peList received by the VmScheduler can be
+     * heterogeneous PEs.
+     */
+    double getPeCapacity();
 
-	/**
-	 * Creates a new VmScheduler.
-	 * 
-	 * @param pelist the list of PEs of the host where the VmScheduler is associated to.
-	 * @pre peList != $null
-	 * @post $none
-	 */
-	public VmScheduler(List<? extends Pe> pelist) {
-		setPeList(pelist);
-		setPeMap(new HashMap<String, List<Pe>>());
-		setMipsMap(new HashMap<String, List<Double>>());
-		setAvailableMips(PeList.getTotalMips(getPeList()));
-		setVmsMigratingIn(new ArrayList<String>());
-		setVmsMigratingOut(new ArrayList<String>());
-	}
+    /**
+     * Gets the pe list.
+     *
+     * @param <T> the generic type
+     * @return the pe list
+     * @todo The warning have to be checked
+     *
+     */
+    <T extends Pe> List<T> getPeList();
 
-	/**
-	 * Requests the allocation of PEs for a VM.
-	 * 
-	 * @param vm the vm
-	 * @param mipsShare the list of MIPS share to be allocated to a VM
-	 * @return $true if this policy allows a new VM in the host, $false otherwise
-         * 
-	 * @pre $none
-	 * @post $none
-         * 
-         * @todo @author manoelcampos All implementing classes don't consider the
-         * situation when a Vm already has allocated MIPS and the method is called
-         * again. In this case, what is supposed to do? Increase the current
-         * allocation or change it? I think that the obvious action is to 
-         * change the allocation, however, the implementations aren't working
-         * to deal this situation. For that, they have to use some
-         * method such as {@link org.cloudbus.cloudsim.resources.Resource#isSuitable(java.lang.Number)}
-         * to first check if the difference from the current allocated mips and the
-         * requested one is available. Currently the implementations
-         * wrongly check if the total requested mips is available, while
-         * only the difference has to be checked.
-         * It has to be added some tests to check this issue.
-	 */
-	public abstract boolean allocatePesForVm(Vm vm, List<Double> mipsShare);
+    /**
+     * Gets the pe map.
+     *
+     * @return the pe map
+     */
+    Map<String, List<Pe>> getPeMap();
 
-	/**
-	 * Releases PEs allocated to a VM. After that, the PEs may be used
-         * on demand by other VMs.
-	 * 
-	 * @param vm the vm
-	 * @pre $none
-	 * @post $none
-	 */
-	public abstract void deallocatePesForVm(Vm vm);
+    /**
+     * Gets the pes allocated for a vm.
+     *
+     * @param vm the vm
+     * @return the pes allocated for the given vm
+     */
+    List<Pe> getPesAllocatedForVM(Vm vm);
 
-	/**
-	 * Releases PEs allocated to all the VMs of the host the VmScheduler is associated to.
-         * After that, all PEs will be available to be used on demand for requesting VMs.
-	 * 
-	 * @pre $none
-	 * @post $none
-	 */
-	public void deallocatePesForAllVms() {
-		getMipsMap().clear();
-		setAvailableMips(PeList.getTotalMips(getPeList()));
-		for (Pe pe : getPeList()) {
-			pe.getPeProvisioner().deallocateMipsForAllVms();
-		}
-	}
+    /**
+     * Gets the total allocated MIPS for a VM along all its allocated PEs.
+     *
+     * @param vm the vm
+     * @return the total allocated mips for the vm
+     */
+    double getTotalAllocatedMipsForVm(Vm vm);
 
-	/**
-	 * Gets the pes allocated for a vm.
-	 * 
-	 * @param vm the vm
-	 * @return the pes allocated for the given vm
-	 */
-	public List<Pe> getPesAllocatedForVM(Vm vm) {
-		return getPeMap().get(vm.getUid());
-	}
+    /**
+     * Gets the vms migrating in.
+     *
+     * @return the vms migrating in
+     */
+    List<String> getVmsMigratingIn();
 
-	/**
-	 * Returns the MIPS share of each host's Pe that is allocated to a given VM.
-	 * 
-	 * @param vm the vm
-	 * @return an array containing the amount of MIPS of each pe that is available to the VM
-	 * @pre $none
-	 * @post $none
-	 */
-	public List<Double> getAllocatedMipsForVm(Vm vm) {
-		return getMipsMap().get(vm.getUid());
-	}
+    /**
+     * Gets the vms migrating out.
+     *
+     * @return the vms in migration
+     */
+    List<String> getVmsMigratingOut();
 
-	/**
-	 * Gets the total allocated MIPS for a VM along all its allocated PEs.
-	 * 
-	 * @param vm the vm
-	 * @return the total allocated mips for the vm
-	 */
-	public double getTotalAllocatedMipsForVm(Vm vm) {
-		double allocated = 0;
-		List<Double> mipsMap = getAllocatedMipsForVm(vm);
-		if (mipsMap != null) {
-			for (double mips : mipsMap) {
-				allocated += mips;
-			}
-		}
-		return allocated;
-	}
-
-	/**
-	 * Returns maximum available MIPS among all the host's PEs.
-	 * 
-	 * @return max mips
-	 */
-	public double getMaxAvailableMips() {
-		if (getPeList() == null) {
-			Log.printLine("Pe list is empty");
-			return 0;
-		}
-
-		double max = 0.0;
-		for (Pe pe : getPeList()) {
-			double tmp = pe.getPeProvisioner().getAvailableMips();
-			if (tmp > max) {
-				max = tmp;
-			}
-		}
-
-		return max;
-	}
-
-	/**
-	 * Returns PE capacity in MIPS.
-	 * 
-	 * @return mips
-         * @todo It considers that all PEs have the same capacity,
-         * what has been shown doesn't be assured. The peList
-         * received by the VmScheduler can be heterogeneous PEs.
-	 */
-	public double getPeCapacity() {
-		if (getPeList() == null) {
-			Log.printLine("Pe list is empty");
-			return 0;
-		}
-		return getPeList().get(0).getMips();
-	}
-
-	/**
-	 * Gets the pe list.
-	 * 
-	 * @param <T> the generic type
-	 * @return the pe list
-         * @todo The warning have to be checked 
-         * 
-	 */
-	@SuppressWarnings("unchecked")
-	public final <T extends Pe> List<T> getPeList() {
-		return (List<T>) peList;
-	}
-
-	/**
-	 * Sets the pe list.
-	 * 
-	 * @param <T> the generic type
-	 * @param peList the pe list
-	 */
-	protected final <T extends Pe> void setPeList(List<T> peList) {
-		this.peList = peList;
-	}
-
-	/**
-	 * Gets the mips map.
-	 * 
-	 * @return the mips map
-	 */
-	protected Map<String, List<Double>> getMipsMap() {
-		return mipsMap;
-	}
-
-	/**
-	 * Sets the mips map.
-	 * 
-	 * @param mipsMap the mips map
-	 */
-	protected final void setMipsMap(Map<String, List<Double>> mipsMap) {
-		this.mipsMap = mipsMap;
-	}
-
-	/**
-	 * Gets the free mips.
-	 * 
-	 * @return the free mips
-	 */
-	public double getAvailableMips() {
-		return availableMips;
-	}
-
-	/**
-	 * Sets the free mips.
-	 * 
-	 * @param availableMips the new free mips
-	 */
-	protected final void setAvailableMips(double availableMips) {
-		this.availableMips = availableMips;
-	}
-
-	/**
-	 * Gets the vms migrating out.
-	 * 
-	 * @return the vms in migration
-	 */
-	public List<String> getVmsMigratingOut() {
-		return vmsMigratingOut;
-	}
-
-	/**
-	 * Sets the vms migrating out.
-	 * 
-	 * @param vmsInMigration the new vms migrating out
-	 */
-	protected final void setVmsMigratingOut(List<String> vmsInMigration) {
-		vmsMigratingOut = vmsInMigration;
-	}
-
-	/**
-	 * Gets the vms migrating in.
-	 * 
-	 * @return the vms migrating in
-	 */
-	public List<String> getVmsMigratingIn() {
-		return vmsMigratingIn;
-	}
-
-	/**
-	 * Sets the vms migrating in.
-	 * 
-	 * @param vmsMigratingIn the new vms migrating in
-	 */
-	protected final void setVmsMigratingIn(List<String> vmsMigratingIn) {
-		this.vmsMigratingIn = vmsMigratingIn;
-	}
-
-	/**
-	 * Gets the pe map.
-	 * 
-	 * @return the pe map
-	 */
-	public Map<String, List<Pe>> getPeMap() {
-		return peMap;
-	}
-
-	/**
-	 * Sets the pe map.
-	 * 
-	 * @param peMap the pe map
-	 */
-	protected final void setPeMap(Map<String, List<Pe>> peMap) {
-		this.peMap = peMap;
-	}
-
+    /**
+     * A property that implements the Null Object Design Pattern for {@link VmScheduler}
+     * objects.
+     */
+    public static final VmScheduler NULL = new VmScheduler(){
+        @Override public boolean allocatePesForVm(Vm vm, List<Double> mipsShare) { return false; }
+        @Override public void deallocatePesForAllVms() {}
+        @Override public void deallocatePesForVm(Vm vm) {}
+        @Override public List<Double> getAllocatedMipsForVm(Vm vm) { return Collections.emptyList(); }
+        @Override public double getAvailableMips() { return 0.0; }
+        @Override public double getMaxAvailableMips() { return 0.0; }
+        @Override public double getPeCapacity() { return 0.0; }
+        @Override public <T extends Pe> List<T> getPeList() { return Collections.emptyList(); }
+        @Override public Map<String, List<Pe>> getPeMap() { return Collections.emptyMap(); }
+        @Override public List<Pe> getPesAllocatedForVM(Vm vm) { return Collections.emptyList(); }
+        @Override public double getTotalAllocatedMipsForVm(Vm vm) { return 0.0; }
+        @Override public List<String> getVmsMigratingIn() { return Collections.emptyList(); }
+        @Override public List<String> getVmsMigratingOut() { return Collections.emptyList(); }
+    };
 }

@@ -11,7 +11,7 @@ package org.cloudbus.cloudsim.network.datacenter;
 import java.util.ArrayList;
 import java.util.Map;
 
-import org.cloudbus.cloudsim.Cloudlet;
+import org.cloudbus.cloudsim.CloudletSimple;
 import org.cloudbus.cloudsim.UtilizationModel;
 
 /**
@@ -34,7 +34,7 @@ import org.cloudbus.cloudsim.UtilizationModel;
  * @todo The different cloudlet classes should have a class hierarchy, by means
  * of a super class and/or interface.
  */
-public class NetworkCloudlet extends Cloudlet implements Comparable<Object> {
+public class NetworkCloudlet extends CloudletSimple implements Comparable<Object> {
         /** Time when cloudlet will be submitted. */
 	public double submittime; 
 

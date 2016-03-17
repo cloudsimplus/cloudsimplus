@@ -14,7 +14,7 @@ import java.util.Map;
 import org.cloudbus.cloudsim.DatacenterCharacteristics;
 import org.cloudbus.cloudsim.Log;
 import org.cloudbus.cloudsim.Vm;
-import org.cloudbus.cloudsim.VmAllocationPolicy;
+import org.cloudbus.cloudsim.VmAllocationPolicyAbstract;
 import org.cloudbus.cloudsim.core.CloudSim;
 import org.cloudbus.cloudsim.core.CloudSimTags;
 import org.cloudbus.cloudsim.core.predicates.PredicateType;
@@ -53,7 +53,7 @@ public class PowerDatacenterNonPowerAware extends PowerDatacenter {
 	public PowerDatacenterNonPowerAware(
 			String name,
 			DatacenterCharacteristics characteristics,
-			VmAllocationPolicy vmAllocationPolicy,
+			VmAllocationPolicyAbstract vmAllocationPolicy,
 			List<FileStorage> storageList,
 			double schedulingInterval) throws Exception {
 		super(name, characteristics, vmAllocationPolicy, storageList, schedulingInterval);
@@ -75,7 +75,7 @@ public class PowerDatacenterNonPowerAware extends PowerDatacenter {
 
 			Log.printLine("\n");
 
-			for (PowerHost host : this.<PowerHost> getHostList()) {
+			for (PowerHostSimple host : this.<PowerHostSimple> getHostList()) {
 				Log.printFormattedLine("%.2f: Host #%d", CloudSim.clock(), host.getId());
 
 				double hostPower = 0.0;
@@ -103,7 +103,7 @@ public class PowerDatacenterNonPowerAware extends PowerDatacenter {
 
 			Log.printLine("\n\n--------------------------------------------------------------\n\n");
 
-			for (PowerHost host : this.<PowerHost> getHostList()) {
+			for (PowerHostSimple host : this.<PowerHostSimple> getHostList()) {
 				Log.printFormattedLine("\n%.2f: Host #%d", CloudSim.clock(), host.getId());
 
 				double time = host.updateVmsProcessing(currentTime); // inform VMs to update
@@ -118,7 +118,7 @@ public class PowerDatacenterNonPowerAware extends PowerDatacenter {
 			checkCloudletCompletion();
 
 			/** Remove completed VMs **/
-			for (PowerHost host : this.<PowerHost> getHostList()) {
+			for (PowerHostSimple host : this.<PowerHostSimple> getHostList()) {
 				for (Vm vm : host.getCompletedVms()) {
 					getVmAllocationPolicy().deallocateHostForVm(vm);
 					getVmList().remove(vm);
@@ -135,8 +135,8 @@ public class PowerDatacenterNonPowerAware extends PowerDatacenter {
 				if (migrationMap != null) {
 					for (Map<String, Object> migrate : migrationMap) {
 						Vm vm = (Vm) migrate.get("vm");
-						PowerHost targetHost = (PowerHost) migrate.get("host");
-						PowerHost oldHost = (PowerHost) vm.getHost();
+						PowerHostSimple targetHost = (PowerHostSimple) migrate.get("host");
+						PowerHostSimple oldHost = (PowerHostSimple) vm.getHost();
 
 						if (oldHost == null) {
 							Log.printFormattedLine(

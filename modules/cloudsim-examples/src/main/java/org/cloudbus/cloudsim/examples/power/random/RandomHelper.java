@@ -5,10 +5,11 @@ package org.cloudbus.cloudsim.examples.power.random;
 
 import java.util.ArrayList;
 import java.util.List;
-
 import org.cloudbus.cloudsim.Cloudlet;
+
+import org.cloudbus.cloudsim.CloudletSimple;
 import org.cloudbus.cloudsim.UtilizationModel;
-import org.cloudbus.cloudsim.UtilizationModelNull;
+import org.cloudbus.cloudsim.UtilizationModelZero;
 import org.cloudbus.cloudsim.UtilizationModelStochastic;
 import org.cloudbus.cloudsim.examples.power.Constants;
 
@@ -42,12 +43,12 @@ public class RandomHelper {
 		long fileSize = 300;
 		long outputSize = 300;
 		long seed = RandomConstants.CLOUDLET_UTILIZATION_SEED;
-		UtilizationModel utilizationModelNull = new UtilizationModelNull();
+		UtilizationModel utilizationModelNull = new UtilizationModelZero();
 
 		for (int i = 0; i < cloudletsNumber; i++) {
-			Cloudlet cloudlet = null;
+			CloudletSimple cloudlet = null;
 			if (seed == -1) {
-				cloudlet = new Cloudlet(
+				cloudlet = new CloudletSimple(
 						i,
 						Constants.CLOUDLET_LENGTH,
 						Constants.CLOUDLET_PES,
@@ -57,7 +58,7 @@ public class RandomHelper {
 						utilizationModelNull,
 						utilizationModelNull);
 			} else {
-				cloudlet = new Cloudlet(
+				cloudlet = new CloudletSimple(
 						i,
 						Constants.CLOUDLET_LENGTH,
 						Constants.CLOUDLET_PES,

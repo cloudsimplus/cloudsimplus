@@ -31,25 +31,25 @@ public class PeTest {
             peProvisioner = new PeProvisionerSimple(MIPS);
 	}
         
-        private Pe createPe(){
+        private PeSimple createPe(){
             peProvisioner = new PeProvisionerSimple(MIPS);            
-            return new Pe(0, peProvisioner);
+            return new PeSimple(0, peProvisioner);
         }
 
-        private Pe createPe(PeProvisioner peProvisioner){
-            return new Pe(0, peProvisioner);
+        private PeSimple createPe(PeProvisioner peProvisioner){
+            return new PeSimple(0, peProvisioner);
         }
 
         @Test
 	public void testGetPeProvisioner() {
-                Pe pe = createPe();
+                PeSimple pe = createPe();
 		assertSame(peProvisioner, pe.getPeProvisioner());
 		assertEquals(MIPS, pe.getPeProvisioner().getAvailableMips(), 0);
 	}
 
 	@Test
 	public void testSetId() {
-		Pe pe = createPe();
+		PeSimple pe = createPe();
 		assertEquals(0, pe.getId());
 		pe.setId(1);
 		assertEquals(1, pe.getId());
@@ -57,7 +57,7 @@ public class PeTest {
 
 	@Test
 	public void testSetMips() {
-		Pe pe = createPe();
+		PeSimple pe = createPe();
 		assertEquals(MIPS, pe.getMips(), 0);
 		pe.setMips(MIPS / 2);
 		assertEquals(MIPS / 2, pe.getMips(), 0);
@@ -65,14 +65,14 @@ public class PeTest {
 
 	@Test
 	public void testSetStatus() {
-		Pe pe = createPe();
-		assertEquals(Pe.Status.FREE, pe.getStatus());
-		pe.setStatus(Pe.Status.BUSY);
-		assertEquals(Pe.Status.BUSY, pe.getStatus());
-		pe.setStatus(Pe.Status.FAILED);
-		assertEquals(Pe.Status.FAILED, pe.getStatus());
-		pe.setStatus(Pe.Status.FREE);
-		assertEquals(Pe.Status.FREE, pe.getStatus());
+		PeSimple pe = createPe();
+		assertEquals(PeSimple.Status.FREE, pe.getStatus());
+		pe.setStatus(PeSimple.Status.BUSY);
+		assertEquals(PeSimple.Status.BUSY, pe.getStatus());
+		pe.setStatus(PeSimple.Status.FAILED);
+		assertEquals(PeSimple.Status.FAILED, pe.getStatus());
+		pe.setStatus(PeSimple.Status.FREE);
+		assertEquals(PeSimple.Status.FREE, pe.getStatus());
 	}
 
 	@Test
@@ -84,7 +84,7 @@ public class PeTest {
             }
 		
             try{
-		Pe pe = createPe();
+		PeSimple pe = createPe();
                 pe.setPeProvisioner(null);
                 Assert.fail("An exception has to be thrown when setting a null peProvisioner");
             } catch(Exception e){

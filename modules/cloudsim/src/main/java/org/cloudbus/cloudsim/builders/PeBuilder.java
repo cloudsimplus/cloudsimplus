@@ -4,14 +4,13 @@ import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import org.cloudbus.cloudsim.Pe;
+import org.cloudbus.cloudsim.PeSimple;
 import org.cloudbus.cloudsim.provisioners.PeProvisioner;
 import org.cloudbus.cloudsim.provisioners.PeProvisionerSimple;
 
 /**
- * A Builder class to create {@link Pe} objects.
+ * A Builder class to create {@link PeSimple} objects.
  * 
  * @author Manoel Campos da Silva Filho
  */
@@ -25,7 +24,7 @@ public class PeBuilder extends Builder {
             Constructor cons =
                     defaultProvisionerClass.getConstructor(new Class[]{double.class});
             for (int i = 0; i < amount; i++) {
-                peList.add(new Pe(i, (PeProvisioner) cons.newInstance(mipsOfEachPe)));
+                peList.add(new PeSimple(i, (PeProvisioner) cons.newInstance(mipsOfEachPe)));
             }
             return peList;
         } catch (NoSuchMethodException | SecurityException ex) {

@@ -10,11 +10,11 @@ package org.cloudbus.cloudsim.network.datacenter;
 
 import java.util.ArrayList;
 
-import org.cloudbus.cloudsim.CloudletScheduler;
-import org.cloudbus.cloudsim.Vm;
+import org.cloudbus.cloudsim.CloudletSchedulerAbstract;
+import org.cloudbus.cloudsim.VmSimple;
 
 /**
- * NetworkVm class extends {@link Vm} to support simulation of networked datacenters. 
+ * NetworkVm class extends {@link VmSimple} to support simulation of networked datacenters. 
  * It executes actions related to management of packets (sent and received).
  * 
  * <br/>Please refer to following publication for more details:<br/>
@@ -31,7 +31,7 @@ import org.cloudbus.cloudsim.Vm;
  * @since CloudSim Toolkit 3.0
  * @todo Attributes should be private
  */
-public class NetworkVm extends Vm implements Comparable<Object> {
+public class NetworkVm extends VmSimple implements Comparable<Object> {
         /**
          * List of {@link NetworkCloudlet} of the VM.
          */
@@ -71,10 +71,10 @@ public class NetworkVm extends Vm implements Comparable<Object> {
 			long bw,
 			long size,
 			String vmm,
-			CloudletScheduler cloudletScheduler) {
+			CloudletSchedulerAbstract cloudletScheduler) {
 		super(id, userId, mips, pesNumber, ram, bw, size, vmm, cloudletScheduler);
 
-		cloudletlist = new ArrayList<NetworkCloudlet>();
+		cloudletlist = new ArrayList<>();
 	}
 
 	public boolean isFree() {

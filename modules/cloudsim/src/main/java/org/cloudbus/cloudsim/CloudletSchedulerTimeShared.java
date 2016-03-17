@@ -22,7 +22,7 @@ import org.cloudbus.cloudsim.core.CloudSim;
  * @author Anton Beloglazov
  * @since CloudSim Toolkit 1.0
  */
-public class CloudletSchedulerTimeShared extends CloudletScheduler {
+public class CloudletSchedulerTimeShared extends CloudletSchedulerAbstract {
 
     /**
      * The number of PEs currently available for the VM using the scheduler,

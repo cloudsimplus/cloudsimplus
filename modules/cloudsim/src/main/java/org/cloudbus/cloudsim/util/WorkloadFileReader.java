@@ -16,11 +16,13 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.Enumeration;
+import java.util.List;
 import java.util.zip.GZIPInputStream;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
-
 import org.cloudbus.cloudsim.Cloudlet;
+
+import org.cloudbus.cloudsim.CloudletSimple;
 import org.cloudbus.cloudsim.UtilizationModel;
 import org.cloudbus.cloudsim.UtilizationModelFull;
 
@@ -188,9 +190,9 @@ public class WorkloadFileReader implements WorkloadModel {
      * @see #file
      */
     @Override
-    public ArrayList<Cloudlet> generateWorkload() {
+    public List<Cloudlet> generateWorkload() {
             if (jobs == null) {
-                    jobs = new ArrayList<Cloudlet>();
+                    jobs = new ArrayList<>();
 
                     // create a temp array
                     fieldArray = new String[MAX_FIELD];
@@ -336,7 +338,7 @@ public class WorkloadFileReader implements WorkloadModel {
             // create the cloudlet
             final int len = runTime * rating;
             UtilizationModel utilizationModel = new UtilizationModelFull();
-            final Cloudlet wgl = new Cloudlet(
+            final Cloudlet wgl = new CloudletSimple(
                             id,
                             len,
                             numProc,

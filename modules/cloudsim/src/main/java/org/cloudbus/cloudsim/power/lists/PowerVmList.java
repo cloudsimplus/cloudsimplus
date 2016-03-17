@@ -46,6 +46,7 @@ public class PowerVmList extends VmList {
 	/**
 	 * Sort a given list of VMs by cpu utilization.
 	 * 
+         * @param <T> The generic type
 	 * @param vmList the vm list to be sorted
 	 */
 	public static <T extends Vm> void sortByCpuUtilization(List<T> vmList) {

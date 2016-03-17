@@ -16,11 +16,12 @@ import java.util.Map;
 import org.cloudbus.cloudsim.Host;
 import org.cloudbus.cloudsim.Log;
 import org.cloudbus.cloudsim.Vm;
-import org.cloudbus.cloudsim.VmAllocationPolicy;
+import org.cloudbus.cloudsim.VmAllocationPolicyAbstract;
+import org.cloudbus.cloudsim.VmSimple;
 import org.cloudbus.cloudsim.core.CloudSim;
 
 /**
- * NetworkVmAllocationPolicy is an {@link VmAllocationPolicy} that chooses, 
+ * NetworkVmAllocationPolicy is an {@link VmAllocationPolicyAbstract} that chooses, 
  * as the host for a VM, the host with less PEs in use.
  * 
  * @author Rodrigo N. Calheiros
@@ -28,7 +29,7 @@ import org.cloudbus.cloudsim.core.CloudSim;
  * @author Saurabh Kumar Garg
  * @since CloudSim Toolkit 1.0
  */
-public class NetworkVmAllocationPolicy extends VmAllocationPolicy {
+public class NetworkVmAllocationPolicy extends VmAllocationPolicyAbstract {
 
 	/** The used PEs map, where each key is a VM id
          * and each value is the number of required PEs the VM is using. */
@@ -45,7 +46,7 @@ public class NetworkVmAllocationPolicy extends VmAllocationPolicy {
 	 * @pre $none
 	 * @post $none
 	 */
-	public NetworkVmAllocationPolicy(List<? extends Host> list) {
+	public NetworkVmAllocationPolicy(List<Host> list) {
 		super(list);
 
 		setFreePes(new ArrayList<Integer>());
@@ -70,11 +71,10 @@ public class NetworkVmAllocationPolicy extends VmAllocationPolicy {
 	 */
 	@Override
 	public boolean allocateHostForVm(Vm vm) {
-
 		int requiredPes = vm.getNumberOfPes();
 		boolean result = false;
 		int tries = 0;
-		List<Integer> freePesTmp = new ArrayList<Integer>();
+		List<Integer> freePesTmp = new ArrayList<>();
 		for (Integer freePes : getFreePes()) {
 			freePesTmp.add(freePes);
 		}
@@ -92,7 +92,7 @@ public class NetworkVmAllocationPolicy extends VmAllocationPolicy {
 					}
 				}
 
-				NetworkHost host = this.<NetworkHost> getHostList().get(idx);
+				Host host = this.getHostList().get(idx);
 				result = host.vmCreate(vm);
 
 				if (result) { // if vm were succesfully created in the host
@@ -159,7 +159,7 @@ public class NetworkVmAllocationPolicy extends VmAllocationPolicy {
 
 	@Override
 	public Host getHost(int vmId, int userId) {
-		return getVmTable().get(Vm.getUid(userId, vmId));
+		return getVmTable().get(VmSimple.getUid(userId, vmId));
 	}
 
 	/**
@@ -185,7 +185,7 @@ public class NetworkVmAllocationPolicy extends VmAllocationPolicy {
 	 * 
 	 * @return the free pes
 	 */
-	protected List<Integer> getFreePes() {
+	protected final List<Integer> getFreePes() {
 		return freePes;
 	}
 
@@ -194,7 +194,7 @@ public class NetworkVmAllocationPolicy extends VmAllocationPolicy {
 	 * 
 	 * @param freePes the new free pes
 	 */
-	protected void setFreePes(List<Integer> freePes) {
+	protected final void setFreePes(List<Integer> freePes) {
 		this.freePes = freePes;
 	}
 

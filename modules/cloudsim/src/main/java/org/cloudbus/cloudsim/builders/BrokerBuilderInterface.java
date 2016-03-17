@@ -1,15 +1,16 @@
 package org.cloudbus.cloudsim.builders;
 
 import java.util.List;
-import org.cloudbus.cloudsim.DatacenterBroker;
+import org.cloudbus.cloudsim.DatacenterBrokerSimple;
 
 /**
- * An interface to classes that build {@link DatacenterBroker} objects.
+ * An interface to classes that build {@link DatacenterBrokerSimple} objects.
  * 
  * @author Manoel Campos da Silva Filho
  */
 public interface BrokerBuilderInterface {
     BrokerBuilderDecorator createBroker();
-    DatacenterBroker findBroker(final int id) throws RuntimeException;
-    List<DatacenterBroker> getBrokers();    
+    DatacenterBrokerSimple findBroker(final int id) throws RuntimeException;
+    List<DatacenterBrokerSimple> getBrokers();  
+    DatacenterBrokerSimple get(final int index);
 }

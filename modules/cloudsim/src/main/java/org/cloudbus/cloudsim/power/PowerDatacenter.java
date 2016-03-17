@@ -11,11 +11,11 @@ package org.cloudbus.cloudsim.power;
 import java.util.List;
 import java.util.Map;
 
-import org.cloudbus.cloudsim.Datacenter;
+import org.cloudbus.cloudsim.DatacenterSimple;
 import org.cloudbus.cloudsim.DatacenterCharacteristics;
 import org.cloudbus.cloudsim.Log;
 import org.cloudbus.cloudsim.Vm;
-import org.cloudbus.cloudsim.VmAllocationPolicy;
+import org.cloudbus.cloudsim.VmAllocationPolicyAbstract;
 import org.cloudbus.cloudsim.core.CloudSim;
 import org.cloudbus.cloudsim.core.CloudSimTags;
 import org.cloudbus.cloudsim.core.SimEvent;
@@ -38,7 +38,7 @@ import org.cloudbus.cloudsim.resources.FileStorage;
  * @author Anton Beloglazov
  * @since CloudSim Toolkit 2.0
  */
-public class PowerDatacenter extends Datacenter {
+public class PowerDatacenter extends DatacenterSimple {
 	/** The datacenter consumed power. */
 	private double power;
 
@@ -64,7 +64,7 @@ public class PowerDatacenter extends Datacenter {
 	public PowerDatacenter(
 			String name,
 			DatacenterCharacteristics characteristics,
-			VmAllocationPolicy vmAllocationPolicy,
+			VmAllocationPolicyAbstract vmAllocationPolicy,
 			List<FileStorage> storageList,
 			double schedulingInterval) throws Exception {
 		super(name, characteristics, vmAllocationPolicy, storageList, schedulingInterval);
@@ -97,8 +97,8 @@ public class PowerDatacenter extends Datacenter {
 				if (migrationMap != null) {
 					for (Map<String, Object> migrate : migrationMap) {
 						Vm vm = (Vm) migrate.get("vm");
-						PowerHost targetHost = (PowerHost) migrate.get("host");
-						PowerHost oldHost = (PowerHost) vm.getHost();
+						PowerHostSimple targetHost = (PowerHostSimple) migrate.get("host");
+						PowerHostSimple oldHost = (PowerHostSimple) vm.getHost();
 
 						if (oldHost == null) {
 							Log.printFormattedLine(
@@ -174,7 +174,7 @@ public class PowerDatacenter extends Datacenter {
 		Log.printLine("\n\n--------------------------------------------------------------\n\n");
 		Log.printFormattedLine("New resource usage for the time frame starting at %.2f:", currentTime);
 
-		for (PowerHost host : this.<PowerHost> getHostList()) {
+		for (PowerHostSimple host : this.<PowerHostSimple> getHostList()) {
 			Log.printLine();
 
 			double time = host.updateVmsProcessing(currentTime); // inform VMs to update processing
@@ -195,7 +195,7 @@ public class PowerDatacenter extends Datacenter {
 					getLastProcessTime(),
 					currentTime);
 
-			for (PowerHost host : this.<PowerHost> getHostList()) {
+			for (PowerHostSimple host : this.<PowerHostSimple>getHostList()) {
 				double previousUtilizationOfCpu = host.getPreviousUtilizationOfCpu();
 				double utilizationOfCpu = host.getUtilizationOfCpu();
 				double timeFrameHostEnergy = host.getEnergyLinearInterpolation(
@@ -230,7 +230,7 @@ public class PowerDatacenter extends Datacenter {
 		checkCloudletCompletion();
 
 		/** Remove completed VMs **/
-		for (PowerHost host : this.<PowerHost> getHostList()) {
+		for (PowerHostSimple host : this.<PowerHostSimple> getHostList()) {
 			for (Vm vm : host.getCompletedVms()) {
 				getVmAllocationPolicy().deallocateHostForVm(vm);
 				getVmList().remove(vm);

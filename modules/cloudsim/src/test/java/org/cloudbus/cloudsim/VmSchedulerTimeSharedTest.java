@@ -31,21 +31,21 @@ public class VmSchedulerTimeSharedTest {
 
     private List<Pe> peList;
 
-    private Vm vm1;
+    private VmSimple vm1;
 
-    private Vm vm2;
+    private VmSimple vm2;
 
-    // private Vm vm3;
+    // private VmSimple vm3;
 
     @Before
     public void setUp() throws Exception {
         peList = new ArrayList<>();
-        peList.add(new Pe(0, new PeProvisionerSimple(MIPS)));
-        peList.add(new Pe(1, new PeProvisionerSimple(MIPS)));
+        peList.add(new PeSimple(0, new PeProvisionerSimple(MIPS)));
+        peList.add(new PeSimple(1, new PeProvisionerSimple(MIPS)));
         vmScheduler = new VmSchedulerTimeShared(peList);
-        vm1 = VmTest.createVmWithSpecificMipsAndNumberOfPEs(0, MIPS / 4, 1);
+        vm1 = VmTest.createVmWithSpecificMipsAndNumberOfPEs(0, MIPS / 4, 2);
         vm2 = VmTest.createVmWithSpecificMipsAndNumberOfPEs(1, MIPS / 2, 2);
-        // vm3 = new Vm(2, 0, MIPS, 2, 0, 0, 0, 0, "", null);
+        // vm3 = new VmSimple(2, 0, MIPS, 2, 0, 0, 0, 0, "", null);
     }
 
     @Test

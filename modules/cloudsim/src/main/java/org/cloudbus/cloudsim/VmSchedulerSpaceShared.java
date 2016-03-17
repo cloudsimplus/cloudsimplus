@@ -26,7 +26,7 @@ import java.util.Map;
  * @author Anton Beloglazov
  * @since CloudSim Toolkit 1.0
  */
-public class VmSchedulerSpaceShared extends VmScheduler {
+public class VmSchedulerSpaceShared extends VmSchedulerAbstract {
 
 	/** A map between each VM and its allocated PEs, where the key is a VM ID and
          * the value a list of PEs allocated to VM. */
@@ -40,7 +40,7 @@ public class VmSchedulerSpaceShared extends VmScheduler {
 	 * 
 	 * @param pelist the pelist
 	 */
-	public VmSchedulerSpaceShared(List<? extends Pe> pelist) {
+	public VmSchedulerSpaceShared(List<Pe> pelist) {
 		super(pelist);
 		setPeAllocationMap(new HashMap<String, List<Pe>>());
 		setFreePes(new ArrayList<Pe>());
@@ -99,7 +99,7 @@ public class VmSchedulerSpaceShared extends VmScheduler {
 	 * 
 	 * @param peAllocationMap the pe allocation map
 	 */
-	protected void setPeAllocationMap(Map<String, List<Pe>> peAllocationMap) {
+	protected final void setPeAllocationMap(Map<String, List<Pe>> peAllocationMap) {
 		this.peAllocationMap = peAllocationMap;
 	}
 
@@ -117,7 +117,7 @@ public class VmSchedulerSpaceShared extends VmScheduler {
 	 * 
 	 * @param freePes the new free pes list
 	 */
-	protected void setFreePes(List<Pe> freePes) {
+	protected final void setFreePes(List<Pe> freePes) {
 		this.freePes = freePes;
 	}
 
@@ -126,7 +126,7 @@ public class VmSchedulerSpaceShared extends VmScheduler {
 	 * 
 	 * @return the free pes list
 	 */
-	protected List<Pe> getFreePes() {
+	protected final List<Pe> getFreePes() {
 		return freePes;
 	}
 

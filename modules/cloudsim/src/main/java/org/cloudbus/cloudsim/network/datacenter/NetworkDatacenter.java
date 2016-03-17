@@ -13,26 +13,27 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
-import org.cloudbus.cloudsim.Cloudlet;
-import org.cloudbus.cloudsim.CloudletScheduler;
-import org.cloudbus.cloudsim.Datacenter;
+import org.cloudbus.cloudsim.CloudletSimple;
+import org.cloudbus.cloudsim.DatacenterSimple;
 import org.cloudbus.cloudsim.DatacenterCharacteristics;
 import org.cloudbus.cloudsim.Host;
 import org.cloudbus.cloudsim.Log;
 import org.cloudbus.cloudsim.Vm;
-import org.cloudbus.cloudsim.VmAllocationPolicy;
+import org.cloudbus.cloudsim.VmAllocationPolicyAbstract;
+import org.cloudbus.cloudsim.Cloudlet;
+import org.cloudbus.cloudsim.CloudletScheduler;
 import org.cloudbus.cloudsim.core.CloudSim;
 import org.cloudbus.cloudsim.core.CloudSimTags;
 import org.cloudbus.cloudsim.core.SimEvent;
 import org.cloudbus.cloudsim.resources.FileStorage;
 
 /**
- * NetworkDatacenter class is a {@link Datacenter} whose hostList are virtualized and networked. It contains
- * all the information about internal network. For example, which VM is connected to what switch etc. It
- * deals with processing of VM queries (i.e., handling of VMs) instead of processing
- * Cloudlet-related queries. So, even though an AllocPolicy will be instantiated (in the init()
- * method of the superclass, it will not be used, as processing of cloudlets are handled by the
- * CloudletScheduler and processing of VirtualMachines are handled by the VmAllocationPolicy.
+ * NetworkDatacenter class is a {@link DatacenterSimple} whose hostList are virtualized and networked. It contains
+ all the information about internal network. For example, which VM is connected to what switch etc. It
+ deals with processing of VM queries (i.e., handling of VMs) instead of processing
+ Cloudlet-related queries. So, even though an AllocPolicy will be instantiated (in the init()
+ method of the superclass, it will not be used, as processing of cloudlets are handled by the
+ CloudletScheduler and processing of VirtualMachines are handled by the VmAllocationPolicyAbstract.
  * 
  * @todo If an AllocPolicy is not being used, why it is being created. Perhaps 
  * a better class hierarchy should be created, introducing some abstract class
@@ -51,7 +52,7 @@ import org.cloudbus.cloudsim.resources.FileStorage;
  * @author Saurabh Kumar Garg
  * @since CloudSim Toolkit 3.0
  */
-public class NetworkDatacenter extends Datacenter {
+public class NetworkDatacenter extends DatacenterSimple {
         /**
          * A map between VMs and Switches, where each key
          * is a VM id and the corresponding value is the id of the switch where the VM is connected to.
@@ -101,7 +102,7 @@ public class NetworkDatacenter extends Datacenter {
 	public NetworkDatacenter(
 			String name,
 			DatacenterCharacteristics characteristics,
-			VmAllocationPolicy vmAllocationPolicy,
+			VmAllocationPolicyAbstract vmAllocationPolicy,
 			List<FileStorage> storageList,
 			double schedulingInterval) throws Exception {
 		super(name, characteristics, vmAllocationPolicy, storageList, schedulingInterval);

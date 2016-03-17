@@ -31,7 +31,7 @@ public class VmSchedulerTimeSharedOverSubscription extends VmSchedulerTimeShared
 	 * 
 	 * @param pelist the list of PEs of the host where the VmScheduler is associated to.
 	 */
-	public VmSchedulerTimeSharedOverSubscription(List<? extends Pe> pelist) {
+	public VmSchedulerTimeSharedOverSubscription(List<Pe> pelist) {
 		super(pelist);
 	}
 

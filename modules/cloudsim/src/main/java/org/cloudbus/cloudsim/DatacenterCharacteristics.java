@@ -449,7 +449,7 @@ public class DatacenterCharacteristics {
 	 * @pre costPerMem >= 0
 	 * @post $none
 	 */
-	public void setCostPerMem(double costPerMem) {
+	public final void setCostPerMem(double costPerMem) {
 		this.costPerMem = costPerMem;
 	}
 
@@ -469,7 +469,7 @@ public class DatacenterCharacteristics {
 	 * @pre costPerStorage >= 0
 	 * @post $none
 	 */
-	public void setCostPerStorage(double costPerStorage) {
+	public final void setCostPerStorage(double costPerStorage) {
 		this.costPerStorage = costPerStorage;
 	}
 
@@ -489,7 +489,7 @@ public class DatacenterCharacteristics {
 	 * @pre costPerBw >= 0
 	 * @post $none
 	 */
-	public void setCostPerBw(double costPerBw) {
+	public final void setCostPerBw(double costPerBw) {
 		this.costPerBw = costPerBw;
 	}
 
@@ -516,7 +516,7 @@ public class DatacenterCharacteristics {
 	 * 
 	 * @param id the new id
 	 */
-	protected void setId(int id) {
+	protected final void setId(int id) {
 		this.id = id;
 	}
 
@@ -534,7 +534,7 @@ public class DatacenterCharacteristics {
 	 * 
 	 * @param architecture the new architecture
 	 */
-	protected void setArchitecture(String architecture) {
+	protected final void setArchitecture(String architecture) {
 		this.architecture = architecture;
 	}
 
@@ -552,18 +552,17 @@ public class DatacenterCharacteristics {
 	 * 
 	 * @param os the new Operating System (OS)
 	 */
-	protected void setOs(String os) {
+	protected final void setOs(String os) {
 		this.os = os;
 	}
 
 	/**
 	 * Gets the host list.
 	 * 
-	 * @param <T> the generic type
+         * @param <T> The generic type
 	 * @return the host list
          * @todo check this warning below
 	 */
-	@SuppressWarnings("unchecked")
 	public <T extends Host> List<T> getHostList() {
 		return (List<T>) hostList;
 	}
@@ -571,11 +570,10 @@ public class DatacenterCharacteristics {
 	/**
 	 * Sets the host list.
 	 * 
-	 * @param <T> the generic type
 	 * @param hostList the new host list
 	 */
-	protected <T extends Host> void setHostList(List<T> hostList) {
-		this.hostList = hostList;
+	protected final void setHostList(List<? extends Host> hostList) {
+            this.hostList = hostList;
 	}
 
 	/**
@@ -592,7 +590,7 @@ public class DatacenterCharacteristics {
 	 * 
 	 * @param timeZone the new time zone
 	 */
-	protected void setTimeZone(double timeZone) {
+	protected final void setTimeZone(double timeZone) {
 		this.timeZone = timeZone;
 	}
 
@@ -610,7 +608,7 @@ public class DatacenterCharacteristics {
 	 * 
 	 * @param costPerSecond the new cost per second
 	 */
-	protected void setCostPerSecond(double costPerSecond) {
+	protected final void setCostPerSecond(double costPerSecond) {
 		this.costPerSecond = costPerSecond;
 	}
 
@@ -628,7 +626,7 @@ public class DatacenterCharacteristics {
 	 * 
 	 * @param allocationPolicy the new allocation policy
 	 */
-	protected void setAllocationPolicy(int allocationPolicy) {
+	protected final void setAllocationPolicy(int allocationPolicy) {
 		this.allocationPolicy = allocationPolicy;
 	}
 
@@ -637,7 +635,7 @@ public class DatacenterCharacteristics {
 	 * 
 	 * @param vmm the new vmm
 	 */
-	protected void setVmm(String vmm) {
+	protected final void setVmm(String vmm) {
 		this.vmm = vmm;
 	}
 }

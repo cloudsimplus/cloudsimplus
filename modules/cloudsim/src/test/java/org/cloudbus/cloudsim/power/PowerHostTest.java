@@ -14,9 +14,8 @@ import static org.junit.Assert.fail;
 import java.util.ArrayList;
 import java.util.List;
 import org.cloudbus.cloudsim.Consts;
-import org.cloudbus.cloudsim.Host;
-
 import org.cloudbus.cloudsim.Pe;
+import org.cloudbus.cloudsim.PeSimple;
 import org.cloudbus.cloudsim.VmSchedulerTimeShared;
 import org.cloudbus.cloudsim.power.models.PowerModelLinear;
 import org.cloudbus.cloudsim.provisioners.PeProvisionerSimple;
@@ -41,14 +40,14 @@ public class PowerHostTest {
     private static final long STORAGE = Consts.MILLION;
     
 
-    private PowerHost host;
+    private PowerHostSimple host;
 
-    public static PowerHost createPowerHost(final int hostId, final int numberOfPes) {
+    public static PowerHostSimple createPowerHost(final int hostId, final int numberOfPes) {
         final List<Pe> peList = new ArrayList<>(numberOfPes);
         for(int i = 0; i < numberOfPes; i++)
-            peList.add(new Pe(i, new PeProvisionerSimple(MIPS)));
+            peList.add(new PeSimple(i, new PeProvisionerSimple(MIPS)));
         
-        return new PowerHost(hostId, 
+        return new PowerHostSimple(hostId, 
                 new ResourceProvisionerSimple<>(new Ram(RAM)), 
                 new ResourceProvisionerSimple<>(new Bandwidth(BW)), 
                 STORAGE, peList, new VmSchedulerTimeShared(peList),

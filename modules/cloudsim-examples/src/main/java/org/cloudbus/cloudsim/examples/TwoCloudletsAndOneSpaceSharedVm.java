@@ -14,19 +14,24 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.LinkedList;
 import java.util.List;
-
 import org.cloudbus.cloudsim.Cloudlet;
+import org.cloudbus.cloudsim.CloudletSimple;
 import org.cloudbus.cloudsim.CloudletSchedulerSpaceShared;
 import org.cloudbus.cloudsim.Datacenter;
+import org.cloudbus.cloudsim.DatacenterSimple;
 import org.cloudbus.cloudsim.DatacenterBroker;
+import org.cloudbus.cloudsim.DatacenterBrokerSimple;
 import org.cloudbus.cloudsim.DatacenterCharacteristics;
 import org.cloudbus.cloudsim.Host;
+import org.cloudbus.cloudsim.HostSimple;
 import org.cloudbus.cloudsim.Log;
 import org.cloudbus.cloudsim.Pe;
+import org.cloudbus.cloudsim.PeSimple;
 import org.cloudbus.cloudsim.resources.FileStorage;
 import org.cloudbus.cloudsim.UtilizationModel;
 import org.cloudbus.cloudsim.UtilizationModelFull;
 import org.cloudbus.cloudsim.Vm;
+import org.cloudbus.cloudsim.VmSimple;
 import org.cloudbus.cloudsim.VmAllocationPolicySimple;
 import org.cloudbus.cloudsim.VmSchedulerTimeShared;
 import org.cloudbus.cloudsim.core.CloudSim;
@@ -100,7 +105,7 @@ public class TwoCloudletsAndOneSpaceSharedVm {
             int pesNumber = 1; // number of cpus
             String vmm = "Xen"; // VMM name
 
-            Vm vm = new Vm(
+            Vm vm = new VmSimple(
                     vmid, brokerId, mips, pesNumber, ram, bw, size,
                     vmm, new CloudletSchedulerSpaceShared());
             vmlist.add(vm);
@@ -119,14 +124,14 @@ public class TwoCloudletsAndOneSpaceSharedVm {
             UtilizationModel utilizationModel = new UtilizationModelFull();
 
             Cloudlet cloudlet1
-                    = new Cloudlet(id, length, pesNumber, fileSize,
+                    = new CloudletSimple(id, length, pesNumber, fileSize,
                             outputSize, utilizationModel, utilizationModel,
                             utilizationModel);
             cloudlet1.setUserId(brokerId);
             cloudlet1.setVmId(vmid);
             cloudletList.add(cloudlet1);
             
-            Cloudlet cloudlet2 = new Cloudlet(id, length, pesNumber, fileSize,
+            Cloudlet cloudlet2 = new CloudletSimple(id, length, pesNumber, fileSize,
                             outputSize, utilizationModel, utilizationModel,
                             utilizationModel);
             cloudlet2.setUserId(brokerId);
@@ -155,12 +160,11 @@ public class TwoCloudletsAndOneSpaceSharedVm {
      * Creates the datacenter.
      *
      * @param name the name
-     *
      * @return the datacenter
      */
     private static Datacenter createDatacenter(String name) {
 
-            // Here are the steps needed to create a Datacenter:
+            // Here are the steps needed to create a DatacenterSimple:
         // 1. We need to create a list to store
         // our machine
         List<Host> hostList = new ArrayList<>();
@@ -172,16 +176,16 @@ public class TwoCloudletsAndOneSpaceSharedVm {
         int mips = 1000;
 
         // 3. Create PEs and add these into a list.
-        peList.add(new Pe(0, new PeProvisionerSimple(mips))); // need to store Pe id and MIPS Rating
+        peList.add(new PeSimple(0, new PeProvisionerSimple(mips))); // need to store Pe id and MIPS Rating
 
-            // 4. Create Host with its id and list of PEs and add them to the list
+            // 4. Create HostSimple with its id and list of PEs and add them to the list
         // of machines
         int hostId = 0;
         int ram = 2048; // host memory (MB)
         long storage = 1000000; // host storage
         long bw = 10000;
 
-        hostList.add(new Host(
+        hostList.add(new HostSimple(
                     hostId,
                     new ResourceProvisionerSimple<>(new Ram(ram)),
                     new ResourceProvisionerSimple<>(new Bandwidth(bw)),
@@ -211,10 +215,10 @@ public class TwoCloudletsAndOneSpaceSharedVm {
                 arch, os, vmm, hostList, time_zone, cost, costPerMem,
                 costPerStorage, costPerBw);
 
-        // 6. Finally, we need to create a Datacenter object.
+        // 6. Finally, we need to create a DatacenterSimple object.
         Datacenter datacenter = null;
         try {
-            datacenter = new Datacenter(name, characteristics, new VmAllocationPolicySimple(hostList), storageList, 0);
+            datacenter = new DatacenterSimple(name, characteristics, new VmAllocationPolicySimple(hostList), storageList, 0);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -232,7 +236,7 @@ public class TwoCloudletsAndOneSpaceSharedVm {
      */
     private static DatacenterBroker createBroker() {
         try {
-            return new DatacenterBroker("Broker");
+            return new DatacenterBrokerSimple("Broker");
         } catch (Exception e) {
             e.printStackTrace();
         }

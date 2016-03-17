@@ -22,15 +22,15 @@ import org.cloudbus.cloudsim.provisioners.PeProvisioner;
  * that allocates one or more PEs from a PM to a VM, and allows sharing of PEs by multiple VMs. 
  * This class also implements 10% performance degradation due to VM migration. 
  * This scheduler does not support over-subscription.<p/>
- * 
- * Each host has to use is own instance of a VmScheduler
- * that will so schedule the allocation of host's PEs for VMs running on it.
+ 
+ Each host has to use is own instance of a VmSchedulerAbstract
+ that will so schedule the allocation of host's PEs for VMs running on it.
  * 
  * @author Rodrigo N. Calheiros
  * @author Anton Beloglazov
  * @since CloudSim Toolkit 1.0
  */
-public class VmSchedulerTimeShared extends VmScheduler {
+public class VmSchedulerTimeShared extends VmSchedulerAbstract {
 
 	/** The map of requested mips, where each key is a VM
          * and each value is a list of MIPS requested by that VM. 
@@ -43,9 +43,9 @@ public class VmSchedulerTimeShared extends VmScheduler {
 	/**
 	 * Instantiates a new vm time-shared scheduler.
 	 * 
-	 * @param pelist the list of PEs of the host where the VmScheduler is associated to.
+	 * @param pelist the list of PEs of the host where the VmSchedulerAbstract is associated to.
 	 */
-	public VmSchedulerTimeShared(List<? extends Pe> pelist) {
+	public VmSchedulerTimeShared(List<Pe> pelist) {
 		super(pelist);
 		setMipsMapRequested(new HashMap<String, List<Double>>());
 	}
@@ -239,7 +239,7 @@ public class VmSchedulerTimeShared extends VmScheduler {
 	 * 
 	 * @param mipsMapRequested the mips map requested
 	 */
-	protected void setMipsMapRequested(Map<String, List<Double>> mipsMapRequested) {
+	protected final void setMipsMapRequested(Map<String, List<Double>> mipsMapRequested) {
 		this.mipsMapRequested = mipsMapRequested;
 	}
 

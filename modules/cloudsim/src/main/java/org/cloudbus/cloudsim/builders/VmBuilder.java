@@ -2,11 +2,12 @@ package org.cloudbus.cloudsim.builders;
 
 import java.util.ArrayList;
 import java.util.List;
-import org.cloudbus.cloudsim.CloudletScheduler;
+import org.cloudbus.cloudsim.CloudletSchedulerAbstract;
 import org.cloudbus.cloudsim.CloudletSchedulerSpaceShared;
-import org.cloudbus.cloudsim.DatacenterBroker;
+import org.cloudbus.cloudsim.DatacenterBrokerSimple;
 import org.cloudbus.cloudsim.Host;
 import org.cloudbus.cloudsim.Vm;
+import org.cloudbus.cloudsim.VmSimple;
 import org.cloudbus.cloudsim.listeners.EventListener;
 
 /**
@@ -15,19 +16,19 @@ import org.cloudbus.cloudsim.listeners.EventListener;
  * @author Manoel Campos da Silva Filho
  */
 public class VmBuilder {
-    private Class<? extends CloudletScheduler> defaultCloudletSchedulerClass = CloudletSchedulerSpaceShared.class;    
+    private Class<? extends CloudletSchedulerAbstract> defaultCloudletSchedulerClass = CloudletSchedulerSpaceShared.class;    
     private long defaultSize = 10000;
     private int  defaultRAM = 512;
     private int  defaultMIPS = 1000;
     private long defaulBw = 1000;
     private int  defaultPEs = 1;
     private int numberOfCreatedVms;
-    private final DatacenterBroker broker;
+    private final DatacenterBrokerSimple broker;
     private EventListener<Vm, Host> defaultOnHostAllocationListener;
     private EventListener<Vm, Host> defaultOnHostDeallocationListener;
     private EventListener<Vm, Integer> defaultOnVmCreationFailureListener;
 
-    public VmBuilder(final DatacenterBroker broker) {
+    public VmBuilder(final DatacenterBrokerSimple broker) {
         if(broker == null)
            throw new RuntimeException("The broker parameter cannot be null."); 
         
@@ -77,7 +78,7 @@ public class VmBuilder {
         final List<Vm> vms = new ArrayList<>();
         for (int i = 0; i < amount; i++) {
             try {
-                Vm vm = new Vm(numberOfCreatedVms++, 
+                Vm vm = new VmSimple(numberOfCreatedVms++, 
                         broker.getId(), defaultMIPS, defaultPEs, defaultRAM, defaulBw, 
                         defaultSize, DatacenterBuilder.VMM, 
                         defaultCloudletSchedulerClass.newInstance());
@@ -131,12 +132,12 @@ public class VmBuilder {
         return defaultPEs;
     }
 
-    public Class<? extends CloudletScheduler> getDefaultCloudletSchedulerClass() {
+    public Class<? extends CloudletSchedulerAbstract> getDefaultCloudletSchedulerClass() {
         return defaultCloudletSchedulerClass;
     }
 
     public VmBuilder setDefaultCloudletScheduler(
-            Class<? extends CloudletScheduler> defaultCloudletScheduler) {
+            Class<? extends CloudletSchedulerAbstract> defaultCloudletScheduler) {
         this.defaultCloudletSchedulerClass = defaultCloudletScheduler;
         return this;
     }

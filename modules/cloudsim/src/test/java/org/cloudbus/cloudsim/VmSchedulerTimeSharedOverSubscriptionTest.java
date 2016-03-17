@@ -34,8 +34,8 @@ public class VmSchedulerTimeSharedOverSubscriptionTest {
     @Before
     public void setUp() throws Exception {
         peList = new ArrayList<>();
-        peList.add(new Pe(0, new PeProvisionerSimple(MIPS)));
-        peList.add(new Pe(1, new PeProvisionerSimple(MIPS)));
+        peList.add(new PeSimple(0, new PeProvisionerSimple(MIPS)));
+        peList.add(new PeSimple(1, new PeProvisionerSimple(MIPS)));
         vmScheduler = new VmSchedulerTimeSharedOverSubscription(peList);
         vm1 = VmTest.createVmWithSpecificMipsAndNumberOfPEs(0, MIPS / 4, 1);
         vm2 = VmTest.createVmWithSpecificMipsAndNumberOfPEs(1, MIPS / 2, 2);
@@ -156,8 +156,8 @@ public class VmSchedulerTimeSharedOverSubscriptionTest {
     @Test
     public void testAllocatePesForVmShortageEqualsToAllocatedMips() {
         List<Pe> peList = new ArrayList<>();
-        peList.add(new Pe(0, new PeProvisionerSimple(3500)));
-        VmScheduler vmScheduler = new VmSchedulerTimeSharedOverSubscription(peList);
+        peList.add(new PeSimple(0, new PeProvisionerSimple(3500)));
+        VmSchedulerAbstract vmScheduler = new VmSchedulerTimeSharedOverSubscription(peList);
         Vm vm1 = VmTest.createVmWithSpecificMipsAndNumberOfPEs(0, 170, 1);
         Vm vm2 = VmTest.createVmWithSpecificMipsAndNumberOfPEs(1, 2000, 1);
         Vm vm3 = VmTest.createVmWithSpecificMipsAndNumberOfPEs(2, 10, 1);
@@ -200,11 +200,11 @@ public class VmSchedulerTimeSharedOverSubscriptionTest {
     @Test
     public void testAllocatePesForSameSizedVmsOversubscribed() {
         List<Pe> peList = new ArrayList<>();
-        peList.add(new Pe(0, new PeProvisionerSimple(1000)));
-        VmScheduler vmScheduler = new VmSchedulerTimeSharedOverSubscription(peList);
-        Vm vm1 = VmTest.createVmWithSpecificMipsAndNumberOfPEs(0, 1500, 1);
-        Vm vm2 = VmTest.createVmWithSpecificMipsAndNumberOfPEs(1, 1000, 1);
-        Vm vm3 = VmTest.createVmWithSpecificMipsAndNumberOfPEs(2, 1000, 1);
+        peList.add(new PeSimple(0, new PeProvisionerSimple(1000)));
+        VmSchedulerAbstract vmScheduler = new VmSchedulerTimeSharedOverSubscription(peList);
+        VmSimple vm1 = VmTest.createVmWithSpecificMipsAndNumberOfPEs(0, 1500, 1);
+        VmSimple vm2 = VmTest.createVmWithSpecificMipsAndNumberOfPEs(1, 1000, 1);
+        VmSimple vm3 = VmTest.createVmWithSpecificMipsAndNumberOfPEs(2, 1000, 1);
 
         List<Double> mipsShare1 = new ArrayList<>();
         mipsShare1.add(1500.0);

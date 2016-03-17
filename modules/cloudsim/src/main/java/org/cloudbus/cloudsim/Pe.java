@@ -1,27 +1,21 @@
-/*
- * Title:        CloudSim Toolkit
- * Description:  CloudSim (Cloud Simulation) Toolkit for Modeling and Simulation of Clouds
- * Licence:      GPL - http://www.gnu.org/copyleft/gpl.html
- *
- * Copyright (c) 2009-2012, The University of Melbourne, Australia
- */
-
 package org.cloudbus.cloudsim;
 
 import org.cloudbus.cloudsim.provisioners.PeProvisioner;
+import org.cloudbus.cloudsim.provisioners.PeProvisionerSimple;
 
 /**
- * Pe (Processing Element) class represents a CPU core of a physical machine (PM), 
- * defined in terms of Millions Instructions Per Second (MIPS) rating.<p/>
+ * A interface to be implemented by each class that provides
+ * the basic features of a virtual or physical Processing Element (PE)
+ * of a PM or VM. Each Pe represents a  virtual or physical processor core.<p/>
  * 
- * <b>ASSUMPTION:</b> All PEs under the same Machine have the same MIPS rating.
- * @todo This assumption is not being assured on different class (where other TODOs where introduced)
+ * It also implements the Null Object
+ * Design Pattern in order to start avoiding {@link NullPointerException} when
+ * using the {@link Pe#NULL} object instead of attributing {@code null} to
+ * {@link Pe} variables.
  * 
- * @author Manzur Murshed
- * @author Rajkumar Buyya
- * @since CloudSim Toolkit 1.0
+ * @author Manoel Campos da Silva Filho
  */
-public class Pe {
+public interface Pe {
     /**
      * Status of PEs.
      */
@@ -36,116 +30,69 @@ public class Pe {
          */
         FAILED
     }
-
-    /** @see #getId()  */
-    private int id;
-
-    /** @see #getStatus()  */
-    private Status status;
-
-    /** @see #getPeProvisioner() */
-    private PeProvisioner peProvisioner;
-
-    /**
-     * Instantiates a new PE object.
-     * 
-     * @param id the PE ID
-     * @param peProvisioner the PE provisioner
-     * @pre id >= 0
-     * @pre peProvisioner != null
-     * @post $none
-     */
-    public Pe(int id, PeProvisioner peProvisioner) {
-        setId(id);
-        setPeProvisioner(peProvisioner);
-
-        // when created it should be set to FREE, i.e. available for use.
-        setStatus(Status.FREE);
-    }
-
-    /**
-     * Sets the {@link #getId()}.
-     * 
-     * @param id the new PE id
-     */
-    protected final void setId(int id) {
-        this.id = id;
-    }
-
+    
     /**
      * Gets the PE id.
-     * 
+     *
      * @return the PE id
      */
-    public int getId() {
-        return id;
-    }
+    int getId();
+
+    /**
+     * Gets the MIPS Rating of this Pe.
+     *
+     * @return the MIPS Rating
+     * @pre $none
+     * @post $result >= 0
+     */
+    int getMips();
+
+    /**
+     * Gets the PE provisioner that manages the allocation
+     * of this physical PE to virtual machines.
+     *
+     * @return the PE provisioner
+     */
+    PeProvisioner getPeProvisioner();
+
+    /**
+     * Gets the status of the PE.
+     *
+     * @return the PE status
+     * @pre $none
+     * @post $none
+     */
+    Status getStatus();
 
     /**
      * Sets the MIPS Rating of this PE.
-     * 
+     *
      * @param d the mips
      * @return true if MIPS > 0, false otherwise
      * @pre mips >= 0
      * @post $none
      */
-    public boolean setMips(double d) {
-        return getPeProvisioner().setMips(d);
-    }
-
-    /**
-     * Gets the MIPS Rating of this Pe.
-     * 
-     * @return the MIPS Rating
-     * @pre $none
-     * @post $result >= 0
-     */
-    public int getMips() {
-        return (int) getPeProvisioner().getMips();
-    }
-
-    /**
-     * Gets the status of the PE.
-     * 
-     * @return the PE status
-     * @pre $none
-     * @post $none
-     */
-    public Status getStatus() {
-        return status;
-    }
+    boolean setMips(double d);
 
     /**
      * Sets the {@link #getStatus() status} of the PE.
-     * 
+     *
      * @param status the new PE status
      * @pre $none
      * @post $none
      */
-    public final void setStatus(Status status) {
-        this.status = status;
-    }
-
+    void setStatus(Status status);
+    
     /**
-     * Sets the {@link #getPeProvisioner()} that manages the allocation
-     * of this physical PE to virtual machines.
-     * 
-     * @param peProvisioner the new PE provisioner
+     * A property that implements the Null Object Design Pattern for {@link Pe}
+     * objects.
      */
-    protected final void setPeProvisioner(PeProvisioner peProvisioner) {
-        if(peProvisioner == null)
-            throw new IllegalArgumentException("The peProvisioner of a Pe cannot be null");
-        this.peProvisioner = peProvisioner;
-    }
-
-    /**
-     * Gets the PE provisioner that manages the allocation
-     * of this physical PE to virtual machines.
-     * 
-     * @return the PE provisioner
-     */
-    public PeProvisioner getPeProvisioner() {
-        return peProvisioner;
-    }
-
+    public static final Pe NULL = new Pe(){
+        @Override public int getId(){ return 0; }
+        @Override public int getMips() { return 0; }
+        @Override public PeProvisioner getPeProvisioner() { return new PeProvisionerSimple(0); }
+        @Override public Status getStatus() { return Status.FAILED; }
+        @Override public boolean setMips(double d){ return false; }
+        @Override public void setStatus(Status status) {}
+    };
 }

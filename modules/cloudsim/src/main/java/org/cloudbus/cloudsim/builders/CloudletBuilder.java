@@ -3,7 +3,8 @@ package org.cloudbus.cloudsim.builders;
 import java.util.ArrayList;
 import java.util.List;
 import org.cloudbus.cloudsim.Cloudlet;
-import org.cloudbus.cloudsim.DatacenterBroker;
+import org.cloudbus.cloudsim.CloudletSimple;
+import org.cloudbus.cloudsim.DatacenterBrokerSimple;
 import org.cloudbus.cloudsim.UtilizationModel;
 import org.cloudbus.cloudsim.UtilizationModelFull;
 
@@ -22,9 +23,9 @@ public class CloudletBuilder extends Builder {
     private int numberOfCreatedCloudlets;
     
     private final BrokerBuilderDecorator brokerBuilder;
-    private final DatacenterBroker broker;
+    private final DatacenterBrokerSimple broker;
 
-    public CloudletBuilder(final BrokerBuilderDecorator brokerBuilder, final DatacenterBroker broker) {
+    public CloudletBuilder(final BrokerBuilderDecorator brokerBuilder, final DatacenterBrokerSimple broker) {
         if(brokerBuilder == null)
            throw new RuntimeException("The brokerBuilder parameter cannot be null."); 
         if(broker == null)
@@ -89,7 +90,7 @@ public class CloudletBuilder extends Builder {
         UtilizationModel utilizationModel = new UtilizationModelFull();
         for (int i = 0; i < amount; i++) {
             Cloudlet cloudlet =
-                    new Cloudlet(
+                    new CloudletSimple(
                             numberOfCreatedCloudlets++, defaultLength, 
                             defaultPEs, defaultFileSize, 
                             defaultOutputSize, 

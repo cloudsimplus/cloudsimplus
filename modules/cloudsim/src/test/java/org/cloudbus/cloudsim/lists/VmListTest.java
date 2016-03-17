@@ -13,8 +13,9 @@ import static org.junit.Assert.assertSame;
 
 import java.util.ArrayList;
 import java.util.List;
-
 import org.cloudbus.cloudsim.Vm;
+
+import org.cloudbus.cloudsim.VmSimple;
 import org.cloudbus.cloudsim.VmTest;
 import org.junit.Before;
 import org.junit.Test;
@@ -39,8 +40,8 @@ public class VmListTest {
         assertNull(VmList.getById(vmList, 2));
 
         Vm vm1 = VmTest.createVmWithSpecificNumberOfPEs(0, 1);
-        Vm vm2 = VmTest.createVmWithSpecificNumberOfPEs(1, 1);
-        Vm vm3 = VmTest.createVmWithSpecificNumberOfPEs(2, 2);
+        Vm vm2 = VmTest.createVmWithSpecificNumberOfPEs(1, 2);
+        VmSimple vm3 = VmTest.createVmWithSpecificNumberOfPEs(2, 2);
 
         vmList.add(vm1);
         vmList.add(vm2);
@@ -59,12 +60,12 @@ public class VmListTest {
         assertNull(VmList.getByIdAndUserId(vmList, 1, 1));
 
         final int user0 = 0;
-        Vm vm1 = VmTest.createVmWithSpecificNumberOfPEsForSpecificUser(0, user0, 1);
-        Vm vm2 = VmTest.createVmWithSpecificNumberOfPEsForSpecificUser(1, user0, 1);
+        VmSimple vm1 = VmTest.createVmWithSpecificNumberOfPEs(user0, 1);
+        VmSimple vm2 = VmTest.createVmWithSpecificNumberOfPEsForSpecificUser(1, user0, 1);
         
-        final int user1 = 1;
-        Vm vm3 = VmTest.createVmWithSpecificNumberOfPEsForSpecificUser(0, user1, 1);
-        Vm vm4 = VmTest.createVmWithSpecificNumberOfPEsForSpecificUser(1, user1, 2);
+        int user1 = 1;
+        VmSimple vm3 = VmTest.createVmWithSpecificNumberOfPEsForSpecificUser(0, user1, 1);
+        VmSimple vm4 = VmTest.createVmWithSpecificNumberOfPEsForSpecificUser(1, user1, 2);
 
         vmList.add(vm1);
         vmList.add(vm2);

@@ -4,10 +4,11 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.List;
-
 import org.cloudbus.cloudsim.Cloudlet;
+
+import org.cloudbus.cloudsim.CloudletSimple;
 import org.cloudbus.cloudsim.UtilizationModel;
-import org.cloudbus.cloudsim.UtilizationModelNull;
+import org.cloudbus.cloudsim.UtilizationModelZero;
 import org.cloudbus.cloudsim.UtilizationModelPlanetLabInMemory;
 import org.cloudbus.cloudsim.examples.power.Constants;
 
@@ -37,19 +38,19 @@ public class PlanetLabHelper {
 	 */
 	public static List<Cloudlet> createCloudletListPlanetLab(int brokerId, String inputFolderName)
 			throws FileNotFoundException {
-		List<Cloudlet> list = new ArrayList<Cloudlet>();
+		List<Cloudlet> list = new ArrayList<>();
 
 		long fileSize = 300;
 		long outputSize = 300;
-		UtilizationModel utilizationModelNull = new UtilizationModelNull();
+		UtilizationModel utilizationModelNull = new UtilizationModelZero();
 
 		File inputFolder = new File(inputFolderName);
 		File[] files = inputFolder.listFiles();
 
 		for (int i = 0; i < files.length; i++) {
-			Cloudlet cloudlet = null;
+			CloudletSimple cloudlet = null;
 			try {
-				cloudlet = new Cloudlet(
+				cloudlet = new CloudletSimple(
 						i,
 						Constants.CLOUDLET_LENGTH,
 						Constants.CLOUDLET_PES,

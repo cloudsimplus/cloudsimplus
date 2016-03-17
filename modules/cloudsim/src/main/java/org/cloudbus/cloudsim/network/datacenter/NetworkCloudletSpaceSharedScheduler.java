@@ -15,8 +15,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.cloudbus.cloudsim.Cloudlet;
-import org.cloudbus.cloudsim.Cloudlet.Status;
-import org.cloudbus.cloudsim.CloudletScheduler;
+import org.cloudbus.cloudsim.CloudletSchedulerAbstract;
 import org.cloudbus.cloudsim.ResCloudlet;
 import org.cloudbus.cloudsim.core.CloudSim;
 import org.cloudbus.cloudsim.core.CloudSimTags;
@@ -36,7 +35,7 @@ import org.cloudbus.cloudsim.core.CloudSimTags;
  * @since CloudSim Toolkit 3.0
  * @todo Attributes should be private
  */
-public class NetworkCloudletSpaceSharedScheduler extends CloudletScheduler {
+public class NetworkCloudletSpaceSharedScheduler extends CloudletSchedulerAbstract {
 	/** The current CPUs. */
 	protected int currentCpus;
 

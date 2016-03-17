@@ -37,14 +37,14 @@ public class HostTest {
     private static final long BW = 10000;
     private static final double MIPS = 1000;
     
-    private Host host;
+    private HostSimple host;
 
-    public static Host createHost(final int hostId, final int numberOfPes) {
+    public static HostSimple createHost(final int hostId, final int numberOfPes) {
         final List<Pe> peList = new ArrayList<>(numberOfPes);
         for(int i = 0; i < numberOfPes; i++)
-            peList.add(new Pe(i, new PeProvisionerSimple(MIPS)));
+            peList.add(new PeSimple(i, new PeProvisionerSimple(MIPS)));
         
-        return new Host(hostId, 
+        return new HostSimple(hostId, 
                 new ResourceProvisionerSimple<>(new Ram(RAM)), 
                 new ResourceProvisionerSimple<>(new Bandwidth(BW)), 
                 STORAGE, peList, new VmSchedulerTimeShared(peList));
@@ -57,8 +57,8 @@ public class HostTest {
 
     @Test
     public void testIsSuitableForVm() {
-            Vm vm0 = VmTest.createVm(0, MIPS, 2, RAM, BW, HALF_STORAGE, new CloudletSchedulerDynamicWorkload(MIPS, 2));
-            Vm vm1 = VmTest.createVm(1, MIPS * 2, 1, RAM * 2, BW * 2, HALF_STORAGE, new CloudletSchedulerDynamicWorkload(MIPS * 2, 2));
+            VmSimple vm0 = VmTest.createVm(0, MIPS, 2, RAM, BW, HALF_STORAGE, new CloudletSchedulerDynamicWorkload(MIPS, 2));
+            VmSimple vm1 = VmTest.createVm(1, MIPS * 2, 1, RAM * 2, BW * 2, HALF_STORAGE, new CloudletSchedulerDynamicWorkload(MIPS * 2, 2));
 
             assertTrue(host.isSuitableForVm(vm0));
             assertFalse(host.isSuitableForVm(vm1));
@@ -66,10 +66,10 @@ public class HostTest {
 
     @Test
     public void testVmCreate() {
-            Vm vm0 = VmTest.createVm(0, MIPS / 2, 1, RAM / 2, BW / 2, A_QUARTER_STORAGE, new CloudletSchedulerDynamicWorkload(MIPS / 2, 1));
-            Vm vm1 = VmTest.createVm(1, MIPS, 1, RAM, BW, A_QUARTER_STORAGE, new CloudletSchedulerDynamicWorkload(MIPS, 1));
-            Vm vm2 = VmTest.createVm(2, MIPS * 2, 1, RAM, BW, A_QUARTER_STORAGE, new CloudletSchedulerDynamicWorkload(MIPS * 2, 1));
-            Vm vm3 = VmTest.createVm(3, MIPS / 2, 2, RAM / 2, BW / 2, A_QUARTER_STORAGE, new CloudletSchedulerDynamicWorkload(MIPS / 2, 2));
+            VmSimple vm0 = VmTest.createVm(0, MIPS / 2, 1, RAM / 2, BW / 2, A_QUARTER_STORAGE, new CloudletSchedulerDynamicWorkload(MIPS / 2, 1));
+            VmSimple vm1 = VmTest.createVm(1, MIPS, 1, RAM, BW, A_QUARTER_STORAGE, new CloudletSchedulerDynamicWorkload(MIPS, 1));
+            VmSimple vm2 = VmTest.createVm(2, MIPS * 2, 1, RAM, BW, A_QUARTER_STORAGE, new CloudletSchedulerDynamicWorkload(MIPS * 2, 1));
+            VmSimple vm3 = VmTest.createVm(3, MIPS / 2, 2, RAM / 2, BW / 2, A_QUARTER_STORAGE, new CloudletSchedulerDynamicWorkload(MIPS / 2, 2));
 
             assertTrue(host.vmCreate(vm0));
             assertFalse(host.vmCreate(vm1));
@@ -79,7 +79,7 @@ public class HostTest {
 
     @Test
     public void testVmDestroy() {
-            Vm vm = VmTest.createVm(0, MIPS, 1, RAM / 2, BW / 2, STORAGE, new CloudletSchedulerDynamicWorkload(MIPS, 1));
+            VmSimple vm = VmTest.createVm(0, MIPS, 1, RAM / 2, BW / 2, STORAGE, new CloudletSchedulerDynamicWorkload(MIPS, 1));
 
             assertTrue(host.vmCreate(vm));
             assertSame(vm, host.getVm(0, 0));
@@ -93,8 +93,8 @@ public class HostTest {
 
     @Test
     public void testVmDestroyAll() {
-            Vm vm0 = VmTest.createVm(0, MIPS, 1, RAM / 2, BW / 2, HALF_STORAGE, new CloudletSchedulerDynamicWorkload(MIPS, 1));
-            Vm vm1 = VmTest.createVm(1, MIPS, 1, RAM / 2, BW / 2, HALF_STORAGE, new CloudletSchedulerDynamicWorkload(MIPS, 1));
+            VmSimple vm0 = VmTest.createVm(0, MIPS, 1, RAM / 2, BW / 2, HALF_STORAGE, new CloudletSchedulerDynamicWorkload(MIPS, 1));
+            VmSimple vm1 = VmTest.createVm(1, MIPS, 1, RAM / 2, BW / 2, HALF_STORAGE, new CloudletSchedulerDynamicWorkload(MIPS, 1));
 
             assertTrue(host.vmCreate(vm0));
             assertSame(vm0, host.getVm(0, 0));
