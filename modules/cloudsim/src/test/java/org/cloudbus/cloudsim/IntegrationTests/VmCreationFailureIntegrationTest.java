@@ -200,6 +200,9 @@ public class VmCreationFailureIntegrationTest {
                 };
 
         final List<Cloudlet> cloudletList = broker.getCloudletReceivedList();
+        assertEquals(
+                "The number of finished cloudlets was not as expected", 
+                cloudletList.size(), expectedResults.length);
         int i = -1;
         for (Cloudlet cloudlet : cloudletList) {
             expectedResults[++i].setCloudlet(cloudlet);
