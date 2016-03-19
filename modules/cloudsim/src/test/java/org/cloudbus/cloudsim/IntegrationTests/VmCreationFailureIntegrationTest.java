@@ -98,32 +98,6 @@ public class VmCreationFailureIntegrationTest {
             assertThatGivenVmWasRemovedFromGivenHostAtTheExpectedTime(host, vm, time);
         }
     };
-    
-    /**
-     * A {@link EventListener} that will be notified every time a Cloudlet 
-     * finishes its execution in a given VM. 
-     * It tries to assert that each cloudlet has finished 
-     * at the expected time.
-     */
-    private final EventListener<Cloudlet, Vm> onCloudletFinishEventListener = new EventListener<Cloudlet, Vm>() {
-        @Override
-        public void update(double time, Cloudlet cloudlet, Vm vm) {
-            double expectedCloudletsFinishTime[] = new double[]{10, 20};
-            Log.printFormattedLine(
-                "- Cloudlet %d finished executing into Vm %d at time %3.0f", 
-                cloudlet.getCloudletId(), vm.getId(), time);
-            
-            final int id = cloudlet.getCloudletId();
-            if(id < 0 || id >= expectedCloudletsFinishTime.length){
-                fail(String.format(
-                    "It wasn't defined an expected finish time for cloudlet %d", id));
-            }
-                
-            final String msg = String.format(
-                    "Cloudlet %d not finished at the expected time", id);
-            assertEquals(msg, expectedCloudletsFinishTime[id], time, 0.2);
-        }
-    };
 
     public void assertThatGivenVmWasRemovedFromGivenHostAtTheExpectedTime(Host host, Vm vm, double time) {
         if (scenario.getFirstHostOfFirstDatacenter().equals(host) && scenario.getFirstVmOfTheFirstBroker().equals(vm)) {
@@ -194,7 +168,6 @@ public class VmCreationFailureIntegrationTest {
         brokerBuilder.getCloudletBuilderForTheCreatedBroker()
                 .setDefaultLength(10000)
                 .setDefaultPEs(1)
-                .setDefaultOnCloudletFinishEventListener(onCloudletFinishEventListener)
                 .createAndSubmitCloudlets(2);
     }
 
