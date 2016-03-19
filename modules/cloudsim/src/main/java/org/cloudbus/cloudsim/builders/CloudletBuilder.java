@@ -7,6 +7,8 @@ import org.cloudbus.cloudsim.CloudletSimple;
 import org.cloudbus.cloudsim.DatacenterBrokerSimple;
 import org.cloudbus.cloudsim.UtilizationModel;
 import org.cloudbus.cloudsim.UtilizationModelFull;
+import org.cloudbus.cloudsim.Vm;
+import org.cloudbus.cloudsim.listeners.EventListener;
 
 /**
  * A Builder class to create {@link Cloudlet} objects.
@@ -24,6 +26,8 @@ public class CloudletBuilder extends Builder {
     
     private final BrokerBuilderDecorator brokerBuilder;
     private final DatacenterBrokerSimple broker;
+    
+    private EventListener<Cloudlet, Vm> defaultOnCloudletFinishEventListener = EventListener.NULL;
 
     public CloudletBuilder(final BrokerBuilderDecorator brokerBuilder, final DatacenterBrokerSimple broker) {
         if(brokerBuilder == null)
@@ -96,6 +100,7 @@ public class CloudletBuilder extends Builder {
                             defaultOutputSize, 
                             utilizationModel, utilizationModel, utilizationModel);
             cloudlet.setUserId(broker.getId());
+            cloudlet.setOnCloudletFinishEventListener(defaultOnCloudletFinishEventListener);
             cloudlets.add(cloudlet);
         }
         broker.submitCloudletList(cloudlets);
@@ -104,5 +109,14 @@ public class CloudletBuilder extends Builder {
 
     public BrokerBuilderDecorator getBrokerBuilder() {
         return brokerBuilder;
+    }
+
+    public EventListener<Cloudlet, Vm> getDefaultOnCloudletFinishEventListener() {
+        return defaultOnCloudletFinishEventListener;
+    }
+
+    public CloudletBuilder setDefaultOnCloudletFinishEventListener(EventListener<Cloudlet, Vm> defaultOnCloudletFinishEventListener) {
+        this.defaultOnCloudletFinishEventListener = defaultOnCloudletFinishEventListener;
+        return this;
     }
 }

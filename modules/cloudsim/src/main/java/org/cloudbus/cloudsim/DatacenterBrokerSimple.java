@@ -313,17 +313,22 @@ public class DatacenterBrokerSimple extends SimEntity implements DatacenterBroke
     }
 
     /**
-     * Process a cloudlet return event.
+     * Processes the end of execution of a given cloudlet inside
+     * a Vm.
      *
-     * @param ev a SimEvent object
+     * @param ev The cloudlet that has just finished to execute
      * @pre ev != $null
      * @post $none
      */
     protected void processCloudletReturn(SimEvent ev) {
         Cloudlet cloudlet = (CloudletSimple) ev.getData();
         getCloudletReceivedList().add(cloudlet);
-        Log.printConcatLine(CloudSim.clock(), ": ", getName(), ": Cloudlet ", cloudlet.getCloudletId(),
-                " received");
+        cloudlet.getOnCloudletFinishEventListener().update(
+                CloudSim.clock(), cloudlet, 
+                VmList.getById(vmList, cloudlet.getVmId()));
+        Log.printConcatLine(
+                CloudSim.clock(), ": ", getName(), ": Cloudlet ", 
+                cloudlet.getCloudletId(), " received");
         cloudletsSubmitted--;
         if (getCloudletList().isEmpty() && cloudletsSubmitted == 0) { // all cloudlets executed
             Log.printConcatLine(CloudSim.clock(), ": ", getName(), ": All Cloudlets executed. Finishing...");

@@ -2,6 +2,7 @@ package org.cloudbus.cloudsim;
 
 import java.util.Collections;
 import java.util.List;
+import org.cloudbus.cloudsim.listeners.EventListener;
 
 /**
  * An interface to be implemented by each class that provides basic 
@@ -743,6 +744,23 @@ public interface Cloudlet {
      * @post $none
      */
     void setVmId(final int vmId);
+    
+    /**
+     * Gets the listener object that will be notified when a cloudlet finishes 
+     * its execution at a given {@link Vm}. The listener receives the Cloudlet and the 
+     * Vm where it was running.
+     *
+     * @return the onCloudletFinishEventListener
+     */
+    EventListener<Cloudlet, Vm> getOnCloudletFinishEventListener();
+    
+    /**
+     * Sets the listener object that will be notified when a cloudlet finishes 
+     * its execution at a given {@link Vm}. The listener receives the Cloudlet and the 
+     * Vm where it was running.
+     * @param onCloudletFinishEventListener 
+     */
+    void setOnCloudletFinishEventListener(EventListener<Cloudlet, Vm> onCloudletFinishEventListener);
  
     /**
      * A property that implements the Null Object Design Pattern for {@link Cloudlet}
@@ -816,5 +834,7 @@ public interface Cloudlet {
       @Override public void setUtilizationModelCpu(UtilizationModel utilizationModelCpu) {}
       @Override public void setUtilizationModelRam(UtilizationModel utilizationModelRam) {}
       @Override public void setVmId(int vmId) {}
+      @Override public EventListener<Cloudlet, Vm> getOnCloudletFinishEventListener() { return EventListener.NULL;}
+      @Override public void setOnCloudletFinishEventListener(EventListener<Cloudlet, Vm> onCloudletFinishEventListener) {}
   };
 }

@@ -41,6 +41,8 @@ public class VmList {
      * HashMap<UserID, List<VmIDs>>. The third concern is, that changing the
      * class of these lists may have a potential effect on the entire project
      * and in the creation of simulations that has to be priorly assessed.
+     * @todo @author manoelcampos It may be return {@link Vm#NULL} attribute 
+     * instead of null.
      */
     public static <T extends Vm> T getById(List<T> vmList, int id) {
         for (T vm : vmList) {

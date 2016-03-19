@@ -48,14 +48,11 @@ import static org.junit.Assert.*;
  * <i><b>NOTE</b>:See the profile section in the pom.xml for details of how to
  * run all tests, including Functional/Integration Tests in this package.</i>
  *
- * @see
- * Vm#setOnHostAllocationListener(org.cloudbus.cloudsim.listeners.EventListener)
- * @see
- * Vm#setOnHostDeallocationListener(org.cloudbus.cloudsim.listeners.EventListener)
- * @see
- * Vm#setOnVmCreationFailureListener(org.cloudbus.cloudsim.listeners.EventListener)
- * @see
- * CloudSim#setEventProcessingListener(org.cloudbus.cloudsim.listeners.EventListener)
+ * @see Vm#setOnHostAllocationListener(org.cloudbus.cloudsim.listeners.EventListener)
+ * @see Vm#setOnHostDeallocationListener(org.cloudbus.cloudsim.listeners.EventListener)
+ * @see Vm#setOnVmCreationFailureListener(org.cloudbus.cloudsim.listeners.EventListener)
+ * @see CloudSim#setEventProcessingListener(org.cloudbus.cloudsim.listeners.EventListener)
+ * @see Cloudlet#setOnCloudletFinishEventListener(org.cloudbus.cloudsim.listeners.EventListener) 
  *
  * @author Manoel Campos da Silva Filho
  */
@@ -99,6 +96,32 @@ public class VmCreationFailureIntegrationTest {
                     "# Vm %s moved/removed from Host %s at time %3.0f",
                     vm.getId(), host.getId(), time);
             assertThatGivenVmWasRemovedFromGivenHostAtTheExpectedTime(host, vm, time);
+        }
+    };
+    
+    /**
+     * A {@link EventListener} that will be notified every time a Cloudlet 
+     * finishes its execution in a given VM. 
+     * It tries to assert that each cloudlet has finished 
+     * at the expected time.
+     */
+    private final EventListener<Cloudlet, Vm> onCloudletFinishEventListener = new EventListener<Cloudlet, Vm>() {
+        @Override
+        public void update(double time, Cloudlet cloudlet, Vm vm) {
+            double expectedCloudletsFinishTime[] = new double[]{10, 20};
+            Log.printFormattedLine(
+                "- Cloudlet %d finished executing into Vm %d at time %3.0f", 
+                cloudlet.getCloudletId(), vm.getId(), time);
+            
+            final int id = cloudlet.getCloudletId();
+            if(id < 0 || id >= expectedCloudletsFinishTime.length){
+                fail(String.format(
+                    "It wasn't defined an expected finish time for cloudlet %d", id));
+            }
+                
+            final String msg = String.format(
+                    "Cloudlet %d not finished at the expected time", id);
+            assertEquals(msg, expectedCloudletsFinishTime[id], time, 0.2);
         }
     };
 
@@ -171,6 +194,7 @@ public class VmCreationFailureIntegrationTest {
         brokerBuilder.getCloudletBuilderForTheCreatedBroker()
                 .setDefaultLength(10000)
                 .setDefaultPEs(1)
+                .setDefaultOnCloudletFinishEventListener(onCloudletFinishEventListener)
                 .createAndSubmitCloudlets(2);
     }
 

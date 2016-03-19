@@ -13,6 +13,7 @@ import java.util.LinkedList;
 import java.util.List;
 
 import org.cloudbus.cloudsim.core.CloudSim;
+import org.cloudbus.cloudsim.listeners.EventListener;
 
 /**
  * Cloudlet implements the basic features of an application/job/task to be executed by a {@link Vm}
@@ -143,6 +144,9 @@ public class CloudletSimple implements Cloudlet {
 
     /** @see #getRequiredFiles() */
     private List<String> requiredFiles = null;
+    
+    /**@see #getOnCloudletFinishEventListener() */
+    private EventListener<Cloudlet, Vm> onCloudletFinishEventListener = EventListener.NULL;
 
     /**
      * Allocates a new Cloudlet object. The Cloudlet length, input and output
@@ -349,6 +353,18 @@ public class CloudletSimple implements Cloudlet {
         setUtilizationModelCpu(utilizationModelCpu);
         setUtilizationModelRam(utilizationModelRam);
         setUtilizationModelBw(utilizationModelBw);
+    }
+
+    @Override
+    public EventListener<Cloudlet, Vm> getOnCloudletFinishEventListener() {
+        return onCloudletFinishEventListener;
+    }
+
+    @Override
+    public void setOnCloudletFinishEventListener(EventListener<Cloudlet, Vm> onCloudletFinishEventListener) {
+        if(onCloudletFinishEventListener == null)
+            onCloudletFinishEventListener = EventListener.NULL;
+        this.onCloudletFinishEventListener = onCloudletFinishEventListener;
     }
 
     // ////////////////////// INTERNAL CLASS ///////////////////////////////////
@@ -1380,7 +1396,7 @@ public class CloudletSimple implements Cloudlet {
      */
     protected final void setRequiredFiles(final List<String> requiredFiles) {
         if(requiredFiles == null)
-            this.requiredFiles = new LinkedList<String>();
+            this.requiredFiles = new LinkedList<>();
         else this.requiredFiles = requiredFiles;
     }
 
