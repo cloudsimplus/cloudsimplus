@@ -178,14 +178,12 @@ public interface Vm {
     /**
      * Gets the listener object that will be notified when a Vm fail in
      * being placed for lack of a {@link Host} in the {@link Datacenter}
-     * with enough resources. The listener receives the Vm and the id of
-     * the datacenter where it was tried to place the Vm.
+     * with enough resources. The listener receives the Vm and the 
+     * datacenter where it was tried to place the Vm.
      *
      * @return the onVmCreationFailureListener
-     * @todo the DatacenterBroker class has to be changed in order to allow pass
-     * the Datacenter object to the listener, instead of the id
      */
-    EventListener<Vm, Integer> getOnVmCreationFailureListener();
+    EventListener<Vm, Datacenter> getOnVmCreationFailureListener();
 
     /**
      * Gets the RAM capacity.
@@ -360,12 +358,12 @@ public interface Vm {
     /**
      * Sets the listener object that will be notified when a Vm fail in
      * being placed for lack of a {@link Host} in the {@link Datacenter}
-     * with enough resources. The listener receives the Vm and the id of
+     * with enough resources. The listener receives the Vm and 
      * the datacenter where it was tried to place the Vm.
      *
      * @param onVmCreationFailureListener the onVmCreationFailureListener to set
      */
-    void setOnVmCreationFailureListener(EventListener<Vm, Integer> onVmCreationFailureListener);
+    void setOnVmCreationFailureListener(EventListener<Vm, Datacenter> onVmCreationFailureListener);
 
     /**
      * Sets RAM capacity.
@@ -433,7 +431,7 @@ public interface Vm {
         @Override public int getNumberOfPes() { return 0; }
         @Override public EventListener<Vm, Host> getOnHostAllocationListener() { return EventListener.NULL; }
         @Override public EventListener<Vm, Host> getOnHostDeallocationListener() { return EventListener.NULL; }
-        @Override public EventListener<Vm, Integer> getOnVmCreationFailureListener() { return EventListener.NULL; }
+        @Override public EventListener<Vm, Datacenter> getOnVmCreationFailureListener() { return EventListener.NULL; }
         @Override public int getRam() { return 0; }
         @Override public long getSize(){ return 0L; }
         @Override public List<VmStateHistoryEntry> getStateHistory() { return Collections.emptyList(); }
@@ -453,7 +451,7 @@ public interface Vm {
         @Override public void setInMigration(boolean inMigration) {}
         @Override public void setOnHostAllocationListener(EventListener<Vm, Host> onHostAllocationListener) {}
         @Override public void setOnHostDeallocationListener(EventListener<Vm, Host> onHostDeallocationListener) {}
-        @Override public void setOnVmCreationFailureListener(EventListener<Vm, Integer> onVmCreationFailureListener) {}
+        @Override public void setOnVmCreationFailureListener(EventListener<Vm, Datacenter> onVmCreationFailureListener) {}
         @Override public boolean setRam(int ramCapacity) { return false; }
         @Override public boolean setSize(long size){ return false; }
         @Override public void setUid(String uid) {}

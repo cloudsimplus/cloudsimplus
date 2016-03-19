@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import org.cloudbus.cloudsim.CloudletSchedulerAbstract;
 import org.cloudbus.cloudsim.CloudletSchedulerSpaceShared;
+import org.cloudbus.cloudsim.Datacenter;
 import org.cloudbus.cloudsim.DatacenterBrokerSimple;
 import org.cloudbus.cloudsim.Host;
 import org.cloudbus.cloudsim.Vm;
@@ -26,7 +27,7 @@ public class VmBuilder {
     private final DatacenterBrokerSimple broker;
     private EventListener<Vm, Host> defaultOnHostAllocationListener;
     private EventListener<Vm, Host> defaultOnHostDeallocationListener;
-    private EventListener<Vm, Integer> defaultOnVmCreationFailureListener;
+    private EventListener<Vm, Datacenter> defaultOnVmCreationFailureListener;
 
     public VmBuilder(final DatacenterBrokerSimple broker) {
         if(broker == null)
@@ -69,7 +70,7 @@ public class VmBuilder {
         return this;
     }
 
-    public VmBuilder setOnVmCreationFilatureListenerForAllVms(final EventListener<Vm, Integer> onVmCreationFailureListener) {
+    public VmBuilder setOnVmCreationFilatureListenerForAllVms(final EventListener<Vm, Datacenter> onVmCreationFailureListener) {
         this.defaultOnVmCreationFailureListener = onVmCreationFailureListener;
         return this;
     }

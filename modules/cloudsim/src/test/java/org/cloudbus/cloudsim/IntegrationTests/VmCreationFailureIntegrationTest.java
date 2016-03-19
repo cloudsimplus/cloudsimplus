@@ -6,6 +6,7 @@ import java.util.Calendar;
 import java.util.List;
 import org.cloudbus.cloudsim.Cloudlet;
 import org.cloudbus.cloudsim.CloudletSchedulerSpaceShared;
+import org.cloudbus.cloudsim.Datacenter;
 import org.cloudbus.cloudsim.DatacenterBrokerSimple;
 import org.cloudbus.cloudsim.Host;
 import org.cloudbus.cloudsim.Log;
@@ -107,10 +108,10 @@ public class VmCreationFailureIntegrationTest {
         }
     }
 
-    private final UpdatesCountEventListener<Vm, Integer> onVmCreationFailureListener = new UpdatesCountEventListener<Vm, Integer>() {
+    private final UpdatesCountEventListener<Vm, Datacenter> onVmCreationFailureListener = new UpdatesCountEventListener<Vm, Datacenter>() {
         @Override
-        public void update(double time, Vm vm, Integer datacenterId) {
-            super.update(time, vm, datacenterId);
+        public void update(double time, Vm vm, Datacenter datacenter) {
+            super.update(time, vm, datacenter);
             final int expectedVmId = 1;
 
             String msg = String.format(

@@ -100,7 +100,7 @@ public class DatacenterBrokerSimple extends SimEntity implements DatacenterBroke
      * each value is its characteristics..
      */
     protected Map<Integer, DatacenterCharacteristics> datacenterCharacteristicsList;
-
+    
     /**
      * Created a new DatacenterBroker object.
      *
@@ -272,9 +272,13 @@ public class DatacenterBrokerSimple extends SimEntity implements DatacenterBroke
                     VmList.getById(getVmsCreatedList(), vmId).getHost().getId());
         } else {
             Vm vm = VmList.getById(getVmList(), vmId);
+            
             if (vm != null) {
+                
                 vm.getOnVmCreationFailureListener()
-                        .update(CloudSim.clock(), vm, datacenterId);
+                        .update(CloudSim.clock(), vm, 
+                                datacenterCharacteristicsList
+                                        .get(datacenterId).getDatacenter());
             }
             Log.printConcatLine(CloudSim.clock(), ": ", getName(), ": Creation of VM #", vmId,
                     " failed in Datacenter #", datacenterId);
@@ -321,7 +325,7 @@ public class DatacenterBrokerSimple extends SimEntity implements DatacenterBroke
         Log.printConcatLine(CloudSim.clock(), ": ", getName(), ": Cloudlet ", cloudlet.getCloudletId(),
                 " received");
         cloudletsSubmitted--;
-        if (getCloudletList().size() == 0 && cloudletsSubmitted == 0) { // all cloudlets executed
+        if (getCloudletList().isEmpty() && cloudletsSubmitted == 0) { // all cloudlets executed
             Log.printConcatLine(CloudSim.clock(), ": ", getName(), ": All Cloudlets executed. Finishing...");
             clearDatacenters();
             finishExecution();

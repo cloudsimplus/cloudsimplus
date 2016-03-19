@@ -41,7 +41,7 @@ public class CloudSim {
     /**
      * The CloudSim current version.
      */
-    private static final String CLOUDSIM_VERSION_STRING = "3.5";
+    private static final String CLOUDSIM_VERSION_STRING = "4.0";
 
     /**
      * The id of CIS entity.

@@ -1108,6 +1108,7 @@ public class DatacenterSimple extends SimEntity implements Datacenter {
      * @param characteristics the new datacenter characteristics
      */
     protected final void setCharacteristics(DatacenterCharacteristics characteristics) {
+        characteristics.setDatacenter(this);
         this.characteristics = characteristics;
     }
 

@@ -10,7 +10,6 @@ package org.cloudbus.cloudsim.power;
 
 import java.util.List;
 
-import org.cloudbus.cloudsim.Host;
 import org.cloudbus.cloudsim.Log;
 import org.cloudbus.cloudsim.Vm;
 import org.cloudbus.cloudsim.util.MathUtil;
@@ -62,7 +61,7 @@ public class PowerVmAllocationPolicyMigrationInterQuartileRange extends
 	 * @param hostList the host list
 	 * @param vmSelectionPolicy the vm selection policy
 	 * @param safetyParameter the safety parameter
-     * @param fallbackVmAllocationPolicy
+         * @param fallbackVmAllocationPolicy
 	 * @param utilizationThreshold the utilization threshold
 	 */
 	public PowerVmAllocationPolicyMigrationInterQuartileRange(
