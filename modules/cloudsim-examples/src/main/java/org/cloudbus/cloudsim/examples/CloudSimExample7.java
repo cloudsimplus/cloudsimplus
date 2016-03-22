@@ -276,6 +276,7 @@ class ThreadMonitor extends Thread {
     @Override
     public void run() {
         CloudSim.pauseSimulation(200);
+            
         while (true) {
             if (CloudSim.isPaused()) {
                 break;

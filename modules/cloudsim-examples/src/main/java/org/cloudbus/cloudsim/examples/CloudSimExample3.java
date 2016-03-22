@@ -227,13 +227,19 @@ public class CloudSimExample3 {
             double costPerBw = 0.0;			// the cost of using bw in this resource
             LinkedList<FileStorage> storageList = new LinkedList<>();	//we are not adding SAN devices by now
 
-            DatacenterCharacteristics characteristics = new DatacenterCharacteristics(
-            arch, os, vmm, hostList, time_zone, cost, costPerMem, costPerStorage, costPerBw);
+            DatacenterCharacteristics characteristics = 
+                    new DatacenterCharacteristics(
+                    arch, os, vmm, hostList, time_zone, cost, 
+                    costPerMem, costPerStorage, costPerBw);
 
             // 6. Finally, we need to create a DatacenterSimple object.
             DatacenterSimple datacenter = null;
             try {
-                    datacenter = new DatacenterSimple(name, characteristics, new VmAllocationPolicySimple(hostList), storageList, 0);
+                    datacenter = 
+                            new DatacenterSimple(
+                                    name, characteristics, 
+                                    new VmAllocationPolicySimple(hostList), 
+                                    storageList, 0);
             } catch (Exception e) {
                     e.printStackTrace();
             }

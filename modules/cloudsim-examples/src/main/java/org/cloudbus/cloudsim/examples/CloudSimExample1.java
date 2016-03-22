@@ -221,7 +221,9 @@ public class CloudSimExample1 {
             // 6. Finally, we need to create a DatacenterSimple object.
             DatacenterSimple datacenter = null;
             try {
-                    datacenter = new DatacenterSimple(name, characteristics, new VmAllocationPolicySimple(hostList), storageList, 0);
+                    datacenter = new DatacenterSimple(
+                            name, characteristics, 
+                            new VmAllocationPolicySimple(hostList), storageList, 0);
             } catch (Exception e) {
                     e.printStackTrace();
             }
