@@ -8,13 +8,12 @@ import java.util.List;
 
 import org.cloudbus.cloudsim.DatacenterBroker;
 import org.cloudbus.cloudsim.Log;
-import org.cloudbus.cloudsim.AbstractVmAllocationPolicy;
 import org.cloudbus.cloudsim.Cloudlet;
 import org.cloudbus.cloudsim.Vm;
+import org.cloudbus.cloudsim.VmAllocationPolicy;
 import org.cloudbus.cloudsim.core.CloudSim;
 import org.cloudbus.cloudsim.power.PowerDatacenter;
 import org.cloudbus.cloudsim.power.PowerHost;
-import org.cloudbus.cloudsim.power.PowerHostSimple;
 import org.cloudbus.cloudsim.power.PowerVmAllocationPolicyMigrationAbstract;
 import org.cloudbus.cloudsim.power.PowerVmAllocationPolicyMigrationInterQuartileRange;
 import org.cloudbus.cloudsim.power.PowerVmAllocationPolicyMigrationLocalRegression;
@@ -155,7 +154,7 @@ public abstract class RunnerAbstract {
 	 * @param outputFolder the output folder
 	 * @param vmAllocationPolicy the vm allocation policy
 	 */
-	protected void start(String experimentName, String outputFolder, AbstractVmAllocationPolicy vmAllocationPolicy) {
+	protected void start(String experimentName, String outputFolder, VmAllocationPolicy vmAllocationPolicy) {
 		System.out.println("Starting " + experimentName);
 
 		try {
@@ -228,11 +227,11 @@ public abstract class RunnerAbstract {
          * @todo It does not make sense the use of this parameterName as String.
          * It is always being converted to Double.
 	 */
-	protected AbstractVmAllocationPolicy getVmAllocationPolicy(
+	protected VmAllocationPolicy getVmAllocationPolicy(
 			String vmAllocationPolicyName,
 			String vmSelectionPolicyName,
 			String parameterName) {
-		AbstractVmAllocationPolicy vmAllocationPolicy = null;
+		VmAllocationPolicy vmAllocationPolicy = null;
 		PowerVmSelectionPolicy vmSelectionPolicy = null;
 		if (!vmSelectionPolicyName.isEmpty()) {
 			vmSelectionPolicy = getVmSelectionPolicy(vmSelectionPolicyName);

@@ -14,7 +14,6 @@ import java.util.Scanner;
 
 import org.cloudbus.cloudsim.CloudletSimple;
 import org.cloudbus.cloudsim.CloudletSchedulerDynamicWorkload;
-import org.cloudbus.cloudsim.DatacenterSimple;
 import org.cloudbus.cloudsim.DatacenterBroker;
 import org.cloudbus.cloudsim.DatacenterCharacteristics;
 import org.cloudbus.cloudsim.HostSimple;
@@ -22,17 +21,15 @@ import org.cloudbus.cloudsim.HostDynamicWorkloadSimple;
 import org.cloudbus.cloudsim.HostStateHistoryEntry;
 import org.cloudbus.cloudsim.Log;
 import org.cloudbus.cloudsim.PeSimple;
-import org.cloudbus.cloudsim.VmSimple;
-import org.cloudbus.cloudsim.AbstractVmAllocationPolicy;
 import org.cloudbus.cloudsim.Datacenter;
 import org.cloudbus.cloudsim.Pe;
 import org.cloudbus.cloudsim.Vm;
+import org.cloudbus.cloudsim.VmAllocationPolicy;
 import org.cloudbus.cloudsim.VmSchedulerTimeSharedOverSubscription;
 import org.cloudbus.cloudsim.VmStateHistoryEntry;
 import org.cloudbus.cloudsim.power.PowerDatacenter;
 import org.cloudbus.cloudsim.power.PowerDatacenterBroker;
 import org.cloudbus.cloudsim.power.PowerHost;
-import org.cloudbus.cloudsim.power.PowerHostSimple;
 import org.cloudbus.cloudsim.power.PowerHostUtilizationHistory;
 import org.cloudbus.cloudsim.power.PowerVm;
 import org.cloudbus.cloudsim.power.PowerVmAllocationPolicyMigrationAbstract;
@@ -147,7 +144,7 @@ public class Helper {
 			String name,
 			Class<? extends Datacenter> datacenterClass,
 			List<PowerHost> hostList,
-			AbstractVmAllocationPolicy vmAllocationPolicy) throws Exception {
+			VmAllocationPolicy vmAllocationPolicy) throws Exception {
 		String arch = "x86"; // system architecture
 		String os = "Linux"; // operating system
 		String vmm = "Xen";
@@ -173,7 +170,7 @@ public class Helper {
 			datacenter = 
                                 datacenterClass.getConstructor(String.class,
 					DatacenterCharacteristics.class,
-					AbstractVmAllocationPolicy.class,
+					VmAllocationPolicy.class,
 					List.class, Double.class)
                                 .newInstance(
 					name,
