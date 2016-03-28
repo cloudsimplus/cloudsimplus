@@ -144,7 +144,6 @@ public abstract class PowerVmAllocationPolicyMigrationAbstract extends PowerVmAl
 		restoreAllocation();
 
 		getExecutionTimeHistoryTotal().add(ExecutionTimeMeasurer.end("optimizeAllocationTotal"));
-
 		return migrationMap;
 	}
 
@@ -189,14 +188,14 @@ public abstract class PowerVmAllocationPolicyMigrationAbstract extends PowerVmAl
 
 			List<? extends Vm> vmsToMigrateFromUnderUtilizedHost = getVmsToMigrateFromUnderUtilizedHost(underUtilizedHost);
 			if (vmsToMigrateFromUnderUtilizedHost.isEmpty()) {
-				continue;
+                            continue;
 			}
 
-			Log.print("Reallocation of VMs from the under-utilized host: ");
 			if (!Log.isDisabled()) {
-				for (Vm vm : vmsToMigrateFromUnderUtilizedHost) {
-					Log.print(vm.getId() + " ");
-				}
+                            Log.print("Reallocation of VMs from the under-utilized host: ");
+                            for (Vm vm : vmsToMigrateFromUnderUtilizedHost) {
+                                Log.print(vm.getId() + " ");
+                            }
 			}
 			Log.printLine();
 
@@ -219,7 +218,7 @@ public abstract class PowerVmAllocationPolicyMigrationAbstract extends PowerVmAl
 	 * @param overUtilizedHosts the over utilized hosts
 	 */
 	protected void printOverUtilizedHosts(List<PowerHostUtilizationHistory> overUtilizedHosts) {
-		if (!Log.isDisabled()) {
+		if (!Log.isDisabled() && !overUtilizedHosts.isEmpty()) {
 			Log.printLine("Over-utilized hosts:");
 			for (PowerHostUtilizationHistory host : overUtilizedHosts) {
 				Log.printConcatLine("Host #", host.getId());
@@ -512,7 +511,7 @@ public abstract class PowerVmAllocationPolicyMigrationAbstract extends PowerVmAl
 	}
 
 	/**
-	 * Updates the list of maps between a VM and the host where it is place.
+	 * Updates the list of maps between a VM and the host where it is placed.
          * @see #savedAllocation
 	 */
 	protected void saveAllocation() {
