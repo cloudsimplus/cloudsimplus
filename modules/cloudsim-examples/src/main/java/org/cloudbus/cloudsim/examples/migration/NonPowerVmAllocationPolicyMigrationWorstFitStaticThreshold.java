@@ -14,6 +14,7 @@ import java.util.Set;
 import org.cloudbus.cloudsim.Host;
 import org.cloudbus.cloudsim.Vm;
 import org.cloudbus.cloudsim.power.PowerHost;
+import org.cloudbus.cloudsim.power.PowerHostSimple;
 import org.cloudbus.cloudsim.power.PowerVmAllocationPolicyMigrationStaticThreshold;
 import org.cloudbus.cloudsim.power.PowerVmSelectionPolicy;
 
@@ -32,7 +33,7 @@ public class NonPowerVmAllocationPolicyMigrationWorstFitStaticThreshold extends 
     private double underUtilizationThreshold = 0.35;
     
     public NonPowerVmAllocationPolicyMigrationWorstFitStaticThreshold(
-            List<? extends Host> hostList,
+            List<PowerHost> hostList,
             PowerVmSelectionPolicy vmSelectionPolicy,
             double utilizationThreshold) {
         super(hostList, vmSelectionPolicy, utilizationThreshold);
@@ -48,7 +49,7 @@ public class NonPowerVmAllocationPolicyMigrationWorstFitStaticThreshold extends 
      */
     @Override
     public <T extends Host> List<T> getHostList() {
-        final List<PowerHost> list = super.getHostList();
+        final List<PowerHostSimple> list = super.<PowerHostSimple>getHostList();
         list.sort(new PowerHostComparator());
         return (List<T>) list;
     }
@@ -64,8 +65,8 @@ public class NonPowerVmAllocationPolicyMigrationWorstFitStaticThreshold extends 
      * any suitable one.
      */
     @Override
-    public PowerHost findHostForVm(Vm vm, Set<? extends Host> excludedHosts) {
-        for (PowerHost host : this.<PowerHost>getHostList()) {
+    public PowerHostSimple findHostForVm(Vm vm, Set<? extends Host> excludedHosts) {
+        for (PowerHostSimple host : this.<PowerHostSimple>getHostList()) {
             if (!excludedHosts.contains(host) && host.isSuitableForVm(vm)
                     && !isHostOverUtilizedAfterAllocation(host, vm)) {
                 //Log.printConcatLine("\t#Host ", host.getId()," vm.getCurrentRequestedTotalMips: ", vm.getCurrentRequestedTotalMips()," host.getTotalMips: ", host.getTotalMips());
@@ -82,10 +83,10 @@ public class NonPowerVmAllocationPolicyMigrationWorstFitStaticThreshold extends 
      * @return the first under utilized host or null if there isn't any one
      */
     @Override
-    protected PowerHost getUnderUtilizedHost(Set<? extends Host> excludedHosts) {
+    protected PowerHostSimple getUnderUtilizedHost(Set<? extends Host> excludedHosts) {
         double minUtilization = 1;
-        PowerHost underUtilizedHost = null;
-        for (PowerHost host : this.<PowerHost>getHostList()) {
+        PowerHostSimple underUtilizedHost = null;
+        for (PowerHostSimple host : this.<PowerHostSimple>getHostList()) {
             if (excludedHosts.contains(host)) {
                 continue;
             }
@@ -129,7 +130,7 @@ public class NonPowerVmAllocationPolicyMigrationWorstFitStaticThreshold extends 
      * @see PowerHostComparator#compare(org.cloudbus.cloudsim.power.PowerHost,
      * org.cloudbus.cloudsim.power.PowerHost)
      */
-    class PowerHostComparator implements Comparator<PowerHost> {
+    class PowerHostComparator implements Comparator<PowerHostSimple> {
         public PowerHostComparator() {}
 
         /**
@@ -143,7 +144,7 @@ public class NonPowerVmAllocationPolicyMigrationWorstFitStaticThreshold extends 
          * @return {@inheritDoc }
          */
         @Override
-        public int compare(PowerHost host1, PowerHost host2) {
+        public int compare(PowerHostSimple host1, PowerHostSimple host2) {
             return Double.compare(getUtilizationOfCpuMips(host1), getUtilizationOfCpuMips(host2)); 
         }
     }

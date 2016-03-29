@@ -16,14 +16,17 @@ import java.util.List;
 
 import org.cloudbus.cloudsim.Cloudlet;
 import org.cloudbus.cloudsim.CloudletSchedulerDynamicWorkload;
+import org.cloudbus.cloudsim.CloudletSimple;
 import org.cloudbus.cloudsim.Datacenter;
 import org.cloudbus.cloudsim.DatacenterBroker;
+import org.cloudbus.cloudsim.DatacenterBrokerSimple;
 import org.cloudbus.cloudsim.DatacenterCharacteristics;
 import org.cloudbus.cloudsim.Log;
 import org.cloudbus.cloudsim.Pe;
-import org.cloudbus.cloudsim.Storage;
+import org.cloudbus.cloudsim.PeSimple;
 import org.cloudbus.cloudsim.UtilizationModel;
 import org.cloudbus.cloudsim.UtilizationModelFull;
+import org.cloudbus.cloudsim.Vm;
 import org.cloudbus.cloudsim.VmSchedulerSpaceShared;
 import org.cloudbus.cloudsim.VmSchedulerTimeShared;
 import org.cloudbus.cloudsim.core.CloudSim;
@@ -33,12 +36,14 @@ import org.cloudbus.cloudsim.power.PowerHostUtilizationHistory;
 import org.cloudbus.cloudsim.power.PowerVm;
 import org.cloudbus.cloudsim.power.PowerVmSelectionPolicyMinimumUtilization;
 import org.cloudbus.cloudsim.power.models.PowerModelLinear;
-import org.cloudbus.cloudsim.provisioners.BwProvisionerSimple;
 import org.cloudbus.cloudsim.provisioners.PeProvisionerSimple;
-import org.cloudbus.cloudsim.provisioners.RamProvisionerSimple;
+import org.cloudbus.cloudsim.provisioners.ResourceProvisionerSimple;
+import org.cloudbus.cloudsim.resources.Bandwidth;
+import org.cloudbus.cloudsim.resources.FileStorage;
+import org.cloudbus.cloudsim.resources.Ram;
 
 /**
- * A example showing how to initially create 1 datacenter with 3 hosts, 
+ * An example showing how to create 1 datacenter with 3 hosts, 
  * 1 VM by host and 1 cloudlet by VM and perform VM migration based on 
  * a custom VmAllocationPolicy that migrates VMs based on
  * {@link NonPowerVmAllocationPolicyMigrationWorstFitStaticThreshold 
@@ -80,7 +85,7 @@ public class MigrationExample1 {
     private static final int    HOST_NUMBER_OF_PES = 2;
     private static final int    HOST_RAM = 500000; //host memory (MB)
     private static final long   HOST_STORAGE = 1000000; //host storage
-    private static final int    HOST_BW = 100000000;
+    private static final long   HOST_BW = 100000000L;
     
     /**
      * The percentage of host CPU usage that trigger VM migration
@@ -98,6 +103,7 @@ public class MigrationExample1 {
     private static final long   CLOUDLET_LENGHT = 20000;
     private static final long   CLOUDLET_FILESIZE = 300;
     private static final long   CLOUDLET_OUTPUTSIZE = 300;
+    
     /**
      * The percentage of CPU that a cloudlet will use when
      * it starts executing (in scale from 0 to 1, where 1 is 100%).
@@ -119,18 +125,12 @@ public class MigrationExample1 {
     private static final int   NUMBER_OF_VMS_TO_CREATE = NUMBER_OF_HOSTS_TO_CREATE + 1;
     private static final int   NUMBER_OF_CLOUDLETS_TO_CREATE_BY_VM = 1;
     
-    private static final List<PowerVm> vmlist = new ArrayList<PowerVm>();
+    private static final List<Vm> vmlist = new ArrayList<>();
             
     /**
      * Starts the example.
      *
      * @param args
-     * @todo When there is just one active host and it is overutilized,
-     * the method {@link PowerVmAllocationPolicyMigrationBestFitStaticThreshold#getUnderUtilizedHost(java.util.Set) 
-     * takes this host as under used because it is the one with lower
-     * CPU usage, but in fact, it is the only active one, so
-     * it doesn't make sense to mark it as under used.
-     * And this issue cause the NullPointerException stated in other TODO here.}
      */
     public static void main(String[] args) {
         Log.printConcatLine("Starting ", MigrationExample1.class.getSimpleName(), "...");
@@ -174,7 +174,7 @@ public class MigrationExample1 {
         }
         
         //Create one last cloudlet which CPU usage increases dynamically
-        PowerVm lastVm = vmlist.get(vmlist.size()-1);
+        Vm lastVm = vmlist.get(vmlist.size()-1);
         createAndSubmitCloudletsWithDynamicCpuUtilization(0.2, 1, lastVm, broker);
     }
     
@@ -208,7 +208,7 @@ public class MigrationExample1 {
     public static List<Cloudlet> createAndSubmitCloudlets(
             double cloudletInitialCpuUtilizationPercentage,
             double maxCloudletCpuUtilizationPercentage,
-            PowerVm hostingVm,
+            Vm hostingVm,
             DatacenterBroker broker,
             boolean progressiveCpuUsage) {
         final List<Cloudlet> list = new ArrayList<Cloudlet>(NUMBER_OF_CLOUDLETS_TO_CREATE_BY_VM);
@@ -232,7 +232,7 @@ public class MigrationExample1 {
             cpuUtilizationModel.setMaxResourceUsagePercentage(maxCloudletCpuUtilizationPercentage);
             
             Cloudlet c = 
-                new Cloudlet(
+                new CloudletSimple(
                     cloudletId, CLOUDLET_LENGHT, VM_PES_NUM, 
                     CLOUDLET_FILESIZE, CLOUDLET_OUTPUTSIZE, 
                     cpuUtilizationModel, utilizationModelFull, utilizationModelFull);
@@ -251,7 +251,7 @@ public class MigrationExample1 {
     public static List<Cloudlet> createAndSubmitCloudletsWithDynamicCpuUtilization (
             double initialCloudletCpuUtilizationPercentage,
             double maxCloudletCpuUtilizationPercentage,
-            PowerVm hostingVm,
+            Vm hostingVm,
             DatacenterBroker broker) {
         return createAndSubmitCloudlets(
                 initialCloudletCpuUtilizationPercentage, 
@@ -260,7 +260,7 @@ public class MigrationExample1 {
     
     public static List<Cloudlet> createAndSubmitCloudletsWithStaticCpuUtilization(
             double initialCloudletCpuUtilizationPercentage,
-            PowerVm hostingVm,
+            Vm hostingVm,
             DatacenterBroker broker) {
         return createAndSubmitCloudlets(
                 initialCloudletCpuUtilizationPercentage, 
@@ -269,14 +269,14 @@ public class MigrationExample1 {
     }
 
     private static Datacenter createDatacenter(String name) {
-        ArrayList<PowerHostUtilizationHistory> hostList = new ArrayList<PowerHostUtilizationHistory>();
+        ArrayList<PowerHost> hostList = new ArrayList<>();
         for(int i = 0; i < NUMBER_OF_HOSTS_TO_CREATE; i++){
             hostList.add(createHost(i, HOST_NUMBER_OF_PES, HOST_MIPS_BY_PE));
             Log.printConcatLine("#Created host ", i, " with ", HOST_MIPS_BY_PE, " mips x ", HOST_NUMBER_OF_PES);
         }
         Log.printLine();
         
-        List<Storage> storageList = new LinkedList<Storage>();
+        List<FileStorage> storageList = new LinkedList<>();
         DatacenterCharacteristics characteristics = 
             new DatacenterCharacteristics(
                 DATACENTER_ARCH, DATACENTER_OS, VMM, hostList, DATACENTER_TIMEZONE, 
@@ -320,8 +320,8 @@ public class MigrationExample1 {
             List<Pe> peList = createPeList(numberOfPes, mipsByPe);
             return new PowerHostUtilizationHistory(
                     id,
-                    new RamProvisionerSimple(HOST_RAM),
-                    new BwProvisionerSimple(HOST_BW),
+                    new ResourceProvisionerSimple(new Ram(HOST_RAM)),
+                    new ResourceProvisionerSimple(new Bandwidth(HOST_BW)),
                     HOST_STORAGE, peList,
                     new VmSchedulerTimeShared(peList),
                     new PowerModelLinear(1000, 0.7)
@@ -329,9 +329,9 @@ public class MigrationExample1 {
     }
 
     public static List<Pe> createPeList(int numberOfPEs, double mips) {
-        List<Pe> list = new ArrayList<Pe>(numberOfPEs);
+        List<Pe> list = new ArrayList<>(numberOfPEs);
         for(int i = 0; i < numberOfPEs; i++) {
-            list.add(new Pe(i, new PeProvisionerSimple(mips))); 
+            list.add(new PeSimple(i, new PeProvisionerSimple(mips))); 
         }
         return list;
     }
@@ -340,7 +340,7 @@ public class MigrationExample1 {
     //to the specific rules of the simulated scenario
     private static DatacenterBroker createBroker(int id) {
         try {
-            return new DatacenterBroker("Broker" + id);
+            return new DatacenterBrokerSimple("Broker" + id);
         } catch (Exception e) {
             throw new RuntimeException(
                 "An unexpected error ocurred when trying to create a datacenter broker", e);
@@ -368,7 +368,7 @@ public class MigrationExample1 {
             cloudlet = list.get(i);
             Log.print(indent + cloudlet.getCloudletId() + indent + indent);
 
-            if (cloudlet.getCloudletStatus() == Cloudlet.SUCCESS) {
+            if (cloudlet.getCloudletStatus() == Cloudlet.Status.SUCCESS) {
                 Log.print("SUCCESS");
                 Log.printLine(
                       indent + indent + cloudlet.getResourceId() + 
