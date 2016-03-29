@@ -38,7 +38,7 @@ import org.cloudbus.cloudsim.provisioners.PeProvisionerSimple;
 import org.cloudbus.cloudsim.provisioners.RamProvisionerSimple;
 
 /**
- * A example showing how to initially create 1 datacenter with 3 hosts, 
+ * An example showing how to create 1 datacenter with 3 hosts, 
  * 1 VM by host and 1 cloudlet by VM and perform VM migration based on 
  * a custom VmAllocationPolicy that migrates VMs based on
  * {@link NonPowerVmAllocationPolicyMigrationWorstFitStaticThreshold 
@@ -125,12 +125,6 @@ public class MigrationExample1 {
      * Starts the example.
      *
      * @param args
-     * @todo When there is just one active host and it is overutilized,
-     * the method {@link PowerVmAllocationPolicyMigrationBestFitStaticThreshold#getUnderUtilizedHost(java.util.Set) 
-     * takes this host as under used because it is the one with lower
-     * CPU usage, but in fact, it is the only active one, so
-     * it doesn't make sense to mark it as under used.
-     * And this issue cause the NullPointerException stated in other TODO here.}
      */
     public static void main(String[] args) {
         Log.printConcatLine("Starting ", MigrationExample1.class.getSimpleName(), "...");
