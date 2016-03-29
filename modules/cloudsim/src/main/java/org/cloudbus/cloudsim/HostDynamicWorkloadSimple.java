@@ -77,7 +77,7 @@ public class HostDynamicWorkloadSimple extends HostSimple implements HostDynamic
 			double totalRequestedMips = vm.getCurrentRequestedTotalMips();
 			double totalAllocatedMips = getVmScheduler().getTotalAllocatedMipsForVm(vm);
 
-			if (!Log.isDisabled()) {
+			if (!Log.isDisabled() && vm.getHost() != null) {
 				Log.printFormattedLine(
 						"%.2f: [Host #" + getId() + "] Total allocated MIPS for VM #" + vm.getId()
 								+ " (Host #" + vm.getHost().getId()
