@@ -41,6 +41,8 @@ import org.cloudbus.cloudsim.provisioners.ResourceProvisionerSimple;
 import org.cloudbus.cloudsim.resources.Bandwidth;
 import org.cloudbus.cloudsim.resources.FileStorage;
 import org.cloudbus.cloudsim.resources.Ram;
+import org.cloudbus.cloudsim.util.TableBuilderHelper;
+import org.cloudbus.cloudsim.util.TextTableBuilder;
 
 /**
  * An example showing how to create 1 datacenter with 3 hosts, 
@@ -152,8 +154,7 @@ public class MigrationExample1 {
             CloudSim.startSimulation();
             CloudSim.stopSimulation();
 
-            Log.print("=============> User " + broker.getId() + "    ");
-            printCloudletList(broker.getCloudletReceivedList());
+            TableBuilderHelper.print(new TextTableBuilder(), broker.getCloudletReceivedList());
 
             Log.printConcatLine(MigrationExample1.class.getSimpleName(), " finished!");
         } catch (Exception e) {
@@ -211,7 +212,7 @@ public class MigrationExample1 {
             Vm hostingVm,
             DatacenterBroker broker,
             boolean progressiveCpuUsage) {
-        final List<Cloudlet> list = new ArrayList<Cloudlet>(NUMBER_OF_CLOUDLETS_TO_CREATE_BY_VM);
+        final List<Cloudlet> list = new ArrayList<>(NUMBER_OF_CLOUDLETS_TO_CREATE_BY_VM);
         UtilizationModel utilizationModelFull = new UtilizationModelFull();
         int cloudletId;
         for(int i = 0; i < NUMBER_OF_CLOUDLETS_TO_CREATE_BY_VM; i++){
@@ -344,39 +345,6 @@ public class MigrationExample1 {
         } catch (Exception e) {
             throw new RuntimeException(
                 "An unexpected error ocurred when trying to create a datacenter broker", e);
-        }
-    }
-
-    /**
-     * Prints the Cloudlet objects
-     *
-     * @param list list of Cloudlets
-     */
-    private static void printCloudletList(List<Cloudlet> list) {
-        int size = list.size();
-        Cloudlet cloudlet;
-
-        String indent = "    ";
-        Log.printLine();
-        Log.printLine("========== OUTPUT ==========");
-        Log.printLine("Cloudlet ID" + indent + "STATUS" + indent
-                + "Data center ID" + indent + "VM ID" + indent + 
-                "Time" + indent + "Start Time" + indent + "Finish Time");
-
-        DecimalFormat dft = new DecimalFormat("###.##");
-        for (int i = 0; i < size; i++) {
-            cloudlet = list.get(i);
-            Log.print(indent + cloudlet.getCloudletId() + indent + indent);
-
-            if (cloudlet.getCloudletStatus() == Cloudlet.Status.SUCCESS) {
-                Log.print("SUCCESS");
-                Log.printLine(
-                      indent + indent + cloudlet.getResourceId() + 
-                      indent + indent + indent + cloudlet.getVmId()
-                    + indent + indent + dft.format(cloudlet.getActualCPUTime()) + 
-                      indent + indent + dft.format(cloudlet.getExecStartTime())
-                    + indent + indent + dft.format(cloudlet.getFinishTime()));
-            }
         }
     }
 }
