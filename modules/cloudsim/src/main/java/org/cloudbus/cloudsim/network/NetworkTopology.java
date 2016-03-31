@@ -15,7 +15,8 @@ import java.util.Map;
 import org.cloudbus.cloudsim.Log;
 
 /**
- * Implements the network layer in CloudSim. It reads a file in the <a href="http://www.cs.bu.edu/brite/user_manual/node29.html">BRITE printFormatted</a>,
+ * Implements the network layer in CloudSim. 
+ * It reads a file in the <a href="http://www.cs.bu.edu/brite/user_manual/node29.html">BRITE format</a>,
  * the <a href="http://www.cs.bu.edu/brite/">Boston university Representative Topology gEnerator</a>, and
  * generates a topological network from it. Information of this network is used to simulate latency
  * in network traffic of CloudSim.

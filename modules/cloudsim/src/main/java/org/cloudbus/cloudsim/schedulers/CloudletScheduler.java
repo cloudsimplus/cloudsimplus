@@ -1,5 +1,6 @@
 package org.cloudbus.cloudsim.schedulers;
 
+import java.io.Serializable;
 import java.util.Collections;
 import java.util.List;
 import org.cloudbus.cloudsim.Cloudlet;
@@ -15,7 +16,7 @@ import org.cloudbus.cloudsim.ResCloudlet;
  * 
  * @author Manoel Campos da Silva Filho
  */
-public interface CloudletScheduler {
+public interface CloudletScheduler extends Serializable {
 
     /**
      * Cancels execution of a cloudlet.

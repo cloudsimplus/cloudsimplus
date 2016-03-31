@@ -75,6 +75,7 @@ import org.cloudbus.cloudsim.util.TextTableBuilder;
  * @author Manoel Campos da Silva Filho
  */
 public class MigrationExample1 {
+    private static final int SCHEDULE_TIME_TO_PROCESS_DATACENTER_EVENTS = 5;
     private static final String DATACENTER_ARCH = "x86";      
     private static final String DATACENTER_OS = "Linux";      
     private static final double DATACENTER_TIMEZONE = 10.0;   
@@ -220,13 +221,11 @@ public class MigrationExample1 {
             if(progressiveCpuUsage){
                 cpuUtilizationModel = 
                         new UtilizationModelArithmeticProgression(
-                                cloudletId, 
                                 CLOUDLET_CPU_USAGE_INCREMENT_PER_SECOND, 
                                 cloudletInitialCpuUtilizationPercentage);
             } else {
                 cpuUtilizationModel = 
-                        new UtilizationModelArithmeticProgression(
-                                cloudletId, 0, 
+                        new UtilizationModelArithmeticProgression(0, 
                                 cloudletInitialCpuUtilizationPercentage);
             }
             cpuUtilizationModel.setMaxResourceUsagePercentage(maxCloudletCpuUtilizationPercentage);
@@ -292,7 +291,7 @@ public class MigrationExample1 {
 
             PowerDatacenter dc = new PowerDatacenter(
                         name, characteristics, 
-                        allocationPolicy, storageList, 5);
+                        allocationPolicy, storageList, SCHEDULE_TIME_TO_PROCESS_DATACENTER_EVENTS);
             dc.setDisableMigrations(false);
             return dc;
         } catch (Exception e) {

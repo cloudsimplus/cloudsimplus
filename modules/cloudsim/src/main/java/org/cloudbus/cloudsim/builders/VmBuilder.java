@@ -2,7 +2,7 @@ package org.cloudbus.cloudsim.builders;
 
 import java.util.ArrayList;
 import java.util.List;
-import org.cloudbus.cloudsim.schedulers.CloudletSchedulerAbstract;
+import org.apache.commons.lang3.SerializationUtils;
 import org.cloudbus.cloudsim.schedulers.CloudletSchedulerSpaceShared;
 import org.cloudbus.cloudsim.Datacenter;
 import org.cloudbus.cloudsim.brokers.DatacenterBrokerSimple;
@@ -10,6 +10,7 @@ import org.cloudbus.cloudsim.Host;
 import org.cloudbus.cloudsim.Vm;
 import org.cloudbus.cloudsim.VmSimple;
 import org.cloudbus.cloudsim.listeners.EventListener;
+import org.cloudbus.cloudsim.schedulers.CloudletScheduler;
 
 /**
  * A Builder class to create {@link Vm} objects.
@@ -17,7 +18,7 @@ import org.cloudbus.cloudsim.listeners.EventListener;
  * @author Manoel Campos da Silva Filho
  */
 public class VmBuilder {
-    private Class<? extends CloudletSchedulerAbstract> cloudletSchedulerClass = CloudletSchedulerSpaceShared.class;    
+    private CloudletScheduler cloudletScheduler;    
     private long size = 10000;
     private int  ram = 512;
     private int  mips = 1000;
@@ -28,6 +29,7 @@ public class VmBuilder {
     private EventListener<Vm, Host> onHostAllocationListener;
     private EventListener<Vm, Host> onHostDeallocationListener;
     private EventListener<Vm, Datacenter> onVmCreationFailureListener;
+    private EventListener<Vm, Host> onUpdateVmProcessing;
 
     public VmBuilder(final DatacenterBrokerSimple broker) {
         if(broker == null)
@@ -38,6 +40,8 @@ public class VmBuilder {
         this.onHostAllocationListener = EventListener.NULL;
         this.onHostDeallocationListener = EventListener.NULL;
         this.onVmCreationFailureListener = EventListener.NULL;
+        this.onUpdateVmProcessing = EventListener.NULL;
+        this.cloudletScheduler = new CloudletSchedulerSpaceShared();
     }
     
     public VmBuilder setOnHostDeallocationListener(final EventListener<Vm, Host> onHostDeallocationListener) {
@@ -74,22 +78,23 @@ public class VmBuilder {
         this.onVmCreationFailureListener = onVmCreationFailureListener;
         return this;
     }
+    
+    public VmBuilder createAndSubmitOneVm() {
+        return createAndSubmitVms(1);
+    }
 
     public VmBuilder createAndSubmitVms(final int amount) {
         final List<Vm> vms = new ArrayList<>();
         for (int i = 0; i < amount; i++) {
-            try {
-                Vm vm = new VmSimple(numberOfCreatedVms++, 
-                        broker.getId(), mips, pes, ram, bw, 
-                        size, DatacenterBuilder.VMM, 
-                        cloudletSchedulerClass.newInstance());
-                vm.setOnHostAllocationListener(onHostAllocationListener);
-                vm.setOnHostDeallocationListener(onHostDeallocationListener);
-                vm.setOnVmCreationFailureListener(onVmCreationFailureListener);
-                vms.add(vm);
-            } catch (InstantiationException | IllegalAccessException ex) {
-                throw new RuntimeException("A CloudletScheduler couldn't be instantiated", ex);
-            }
+            Vm vm = new VmSimple(numberOfCreatedVms++, 
+                    broker.getId(), mips, pes, ram, bw, 
+                    size, DatacenterBuilder.VMM, 
+                    SerializationUtils.clone(cloudletScheduler));
+            vm.setOnHostAllocationListener(onHostAllocationListener);
+            vm.setOnHostDeallocationListener(onHostDeallocationListener);
+            vm.setOnVmCreationFailureListener(onVmCreationFailureListener);
+            vm.setOnUpdateVmProcessingListener(onUpdateVmProcessing);
+            vms.add(vm);
         }
         broker.submitVmList(vms);
         return this;
@@ -133,13 +138,24 @@ public class VmBuilder {
         return pes;
     }
 
-    public Class<? extends CloudletSchedulerAbstract> getCloudletSchedulerClass() {
-        return cloudletSchedulerClass;
+    public CloudletScheduler getCloudletSchedulerClass() {
+        return cloudletScheduler;
     }
 
     public VmBuilder setCloudletScheduler(
-            Class<? extends CloudletSchedulerAbstract> defaultCloudletScheduler) {
-        this.cloudletSchedulerClass = defaultCloudletScheduler;
+            CloudletScheduler defaultCloudletScheduler) {
+        this.cloudletScheduler = defaultCloudletScheduler;
+        return this;
+    }
+
+    public EventListener<Vm, Host> getOnUpdateVmProcessing() {
+        return onUpdateVmProcessing;
+    }
+
+    public VmBuilder setOnUpdateVmProcessing(EventListener<Vm, Host> onUpdateVmProcessing) {
+        if(onUpdateVmProcessing != null) {
+            this.onUpdateVmProcessing = onUpdateVmProcessing;
+        }
         return this;
     }
 }

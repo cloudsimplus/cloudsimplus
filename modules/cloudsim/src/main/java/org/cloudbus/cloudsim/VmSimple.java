@@ -6,7 +6,6 @@
  */
 package org.cloudbus.cloudsim;
 
-import org.cloudbus.cloudsim.schedulers.CloudletSchedulerAbstract;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -17,6 +16,7 @@ import org.cloudbus.cloudsim.resources.Resource;
 import org.cloudbus.cloudsim.resources.Bandwidth;
 import org.cloudbus.cloudsim.resources.Ram;
 import org.cloudbus.cloudsim.resources.RawStorage;
+import org.cloudbus.cloudsim.schedulers.CloudletScheduler;
 
 /**
  * Implements the basic features of a Virtual Machine (VM) that runs inside a
@@ -37,14 +37,10 @@ import org.cloudbus.cloudsim.resources.RawStorage;
  */
 public class VmSimple implements Vm {
 
-    /**
-     * @see #getId()
-     */
+    /** @see #getId() */
     private int id;
 
-    /**
-     * @see #getUserId()
-     */
+    /** @see #getUserId() */
     private int userId;
 
     /**
@@ -53,44 +49,28 @@ public class VmSimple implements Vm {
      */
     private String uid;
 
-    /**
-     * @see #getMips()
-     */
+    /** @see #getMips() */
     private double mips;
 
-    /**
-     * @see #getCurrentAllocatedMips()
-     */
+    /** @see #getCurrentAllocatedMips() */
     private List<Double> currentAllocatedMips;
 
-    /**
-     * @see #getNumberOfPes()
-     */
+    /** @see #getNumberOfPes() */
     private int numberOfPes;
 
-    /**
-     * @see #getVmm()
-     */
+    /** @see #getVmm() */
     private String vmm;
 
-    /**
-     * @see #getCloudletScheduler()
-     */
-    private CloudletSchedulerAbstract cloudletScheduler;
+    /** @see #getCloudletScheduler() */
+    private CloudletScheduler cloudletScheduler;
 
-    /**
-     * @see #getHost()
-     */
+    /** @see #getHost() */
     private Host host;
 
-    /**
-     * @see #isInMigration()
-     */
+    /** @see #isInMigration() */
     private boolean inMigration;
 
-    /**
-     * @see #isBeingInstantiated()
-     */
+    /** @see #isBeingInstantiated() */
     private boolean beingInstantiated;
 
     /**
@@ -99,9 +79,7 @@ public class VmSimple implements Vm {
      */
     private final Map<Class<? extends Resource<? extends Number>>, Resource<? extends Number>> resources;
 
-    /**
-     * @see #getStateHistory()
-     */
+    /** @see #getStateHistory() */
     private final List<VmStateHistoryEntry> stateHistory = new LinkedList<>();
 
     /**
@@ -122,20 +100,17 @@ public class VmSimple implements Vm {
      */
     private final Bandwidth bw;
 
-    /**
-     * @see #getOnHostAllocationListener()
-     */
+    /** @see #getOnHostAllocationListener() */
     private EventListener<Vm, Host> onHostAllocationListener = EventListener.NULL;
 
-    /**
-     * @see #getOnHostDeallocationListener()
-     */
+    /** @see #getOnHostDeallocationListener() */
     private EventListener<Vm, Host> onHostDeallocationListener = EventListener.NULL;
 
-    /**
-     * @see #getOnVmCreationFailureListener() ()
-     */
+    /** @see #getOnVmCreationFailureListener() */
     private EventListener<Vm, Datacenter> onVmCreationFailureListener = EventListener.NULL;
+
+    /** @see #getOnUpdateVmProcessingListener() */
+    private EventListener<Vm, Host> onUpdateVmProcessingListener = EventListener.NULL;
 
     /**
      * Creates a new Vm object.
@@ -171,7 +146,7 @@ public class VmSimple implements Vm {
             long bwCapacity,
             long storageCapacity,
             String vmm,
-            CloudletSchedulerAbstract cloudletScheduler) {
+            CloudletScheduler cloudletScheduler) {
         resources = new HashMap<>();
         this.ram = new Ram(ramCapacity);
         this.bw = new Bandwidth(bwCapacity);
@@ -223,7 +198,9 @@ public class VmSimple implements Vm {
     @Override
     public double updateVmProcessing(double currentTime, List<Double> mipsShare) {
         if (mipsShare != null) {
-            return getCloudletScheduler().updateVmProcessing(currentTime, mipsShare);
+            double result = getCloudletScheduler().updateVmProcessing(currentTime, mipsShare);
+            onUpdateVmProcessingListener.update(currentTime, this, host);
+            return result;
         }
         return 0.0;
     }
@@ -583,7 +560,7 @@ public class VmSimple implements Vm {
      * @return the cloudlet scheduler
      */
     @Override
-    public CloudletSchedulerAbstract getCloudletScheduler() {
+    public CloudletScheduler getCloudletScheduler() {
         return cloudletScheduler;
     }
 
@@ -592,7 +569,7 @@ public class VmSimple implements Vm {
      *
      * @param cloudletScheduler the new cloudlet scheduler
      */
-    protected final void setCloudletScheduler(CloudletSchedulerAbstract cloudletScheduler) {
+    protected final void setCloudletScheduler(CloudletScheduler cloudletScheduler) {
         this.cloudletScheduler = cloudletScheduler;
     }
 
@@ -793,11 +770,9 @@ public class VmSimple implements Vm {
      */
     @Override
     public void setOnHostAllocationListener(EventListener<Vm, Host> onHostAllocationListener) {
-        if (onHostAllocationListener == null) {
+        if (onHostAllocationListener == null)
             this.onHostAllocationListener = EventListener.NULL;
-        } else {
-            this.onHostAllocationListener = onHostAllocationListener;
-        }
+        else this.onHostAllocationListener = onHostAllocationListener;
     }
 
     /**
@@ -810,11 +785,9 @@ public class VmSimple implements Vm {
      */
     @Override
     public void setOnHostDeallocationListener(EventListener<Vm, Host> onHostDeallocationListener) {
-        if (onHostDeallocationListener == null) {
+        if (onHostDeallocationListener == null)
             this.onHostDeallocationListener = EventListener.NULL;
-        } else {
-            this.onHostDeallocationListener = onHostDeallocationListener;
-        }
+        else this.onHostDeallocationListener = onHostDeallocationListener;
     }
 
     /**
@@ -870,11 +843,21 @@ public class VmSimple implements Vm {
      */
     @Override
     public void setOnVmCreationFailureListener(EventListener<Vm, Datacenter> onVmCreationFailureListener) {
-        if (onVmCreationFailureListener == null) {
+        if (onVmCreationFailureListener == null) 
             this.onVmCreationFailureListener = EventListener.NULL;
-        } else {
-            this.onVmCreationFailureListener = onVmCreationFailureListener;
-        }
+        else this.onVmCreationFailureListener = onVmCreationFailureListener;
+    }
+
+    @Override
+    public EventListener<Vm, Host> getOnUpdateVmProcessingListener() {
+        return onUpdateVmProcessingListener;
+    }
+
+    @Override
+    public void setOnUpdateVmProcessingListener(EventListener<Vm, Host> onUpdateVmProcessingListener) {
+        if(onUpdateVmProcessingListener == null)
+            this.onUpdateVmProcessingListener = EventListener.NULL;
+        else this.onUpdateVmProcessingListener = onUpdateVmProcessingListener;
     }
 
 }

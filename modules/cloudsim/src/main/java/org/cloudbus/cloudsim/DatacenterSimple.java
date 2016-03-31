@@ -85,7 +85,7 @@ public class DatacenterSimple extends SimEntity implements Datacenter {
      * @param storageList a List of storage elements, for data simulation
      * @param vmAllocationPolicy the policy to be used to allocate VMs into
      * hosts
-     * @param schedulingInterval the scheduling delay to process each datacenter
+     * @param schedulingInterval the scheduling interval to process each datacenter
      * received event
      * @throws IllegalArgumentException when one of the following scenarios
      * occur:
@@ -936,24 +936,56 @@ public class DatacenterSimple extends SimEntity implements Datacenter {
         // R: for term is to allow loop at simulation start. Otherwise, one initial
         // simulation step is skipped and schedulers are not properly initialized
         if (CloudSim.clock() < 0.111 || CloudSim.clock() > getLastProcessTime() + CloudSim.getMinTimeBetweenEvents()) {
-            List<? extends Host> list = getVmAllocationPolicy().getHostList();
-            double smallerTime = Double.MAX_VALUE;
-            // for each host...
-            for (Host host : list) {
-                // inform VMs to update processing
-                double time = host.updateVmsProcessing(CloudSim.clock());
-                // what time do we expect that the next cloudlet will finish?
-                smallerTime = Math.min(time, smallerTime);
-            }
-            // gurantees a minimal interval before scheduling the event
-            if (smallerTime < CloudSim.clock() + CloudSim.getMinTimeBetweenEvents() + 0.01) {
-                smallerTime = CloudSim.clock() + CloudSim.getMinTimeBetweenEvents() + 0.01;
-            }
-            if (smallerTime != Double.MAX_VALUE) {
-                schedule(getId(), (smallerTime - CloudSim.clock()), CloudSimTags.VM_DATACENTER_EVENT);
+            double delay = delayToUpdateCloudletProcessing();
+            if (delay != Double.MAX_VALUE) {
+                schedule(getId(), delay, CloudSimTags.VM_DATACENTER_EVENT);
             }
             setLastProcessTime(CloudSim.clock());
         }
+    }
+
+    /**
+     * Gets the time that one next cloudlet will finish executing
+     * on the list of datacenter's hosts.
+     * 
+     * @return the time that one next cloudlet will finish executing
+     * or {@link Double#MAX_VALUE} if there isn't any cloudlet
+     * running.
+     */
+    public double completionTimeOfNextFinishingCloudlet() {
+        List<? extends Host> list = getVmAllocationPolicy().getHostList();
+        double completionTimeOfNextFinishingCloudlet = Double.MAX_VALUE;
+        // for each host...
+        for (Host host : list) {
+            // inform VMs to update processing
+            double time = host.updateVmsProcessing(CloudSim.clock());
+            // what time do we expect that the next cloudlet will finish?
+            completionTimeOfNextFinishingCloudlet = Math.min(time, completionTimeOfNextFinishingCloudlet);
+        }
+        // gurantees a minimal interval before scheduling the event
+        if (completionTimeOfNextFinishingCloudlet < CloudSim.clock() + CloudSim.getMinTimeBetweenEvents() + 0.01) {
+            completionTimeOfNextFinishingCloudlet = CloudSim.clock() + CloudSim.getMinTimeBetweenEvents() + 0.01;
+        }
+        return completionTimeOfNextFinishingCloudlet;
+    }
+
+    /**
+     * Gets the time to wait before updating the processing of running cloudlets.
+     * 
+     * @return the cloudlet's processing delay or {@link Double#MAX_VALUE} if there
+     * isn't any cloudlet running.
+     * 
+     * @see #updateCloudletProcessing() 
+     */
+    private double delayToUpdateCloudletProcessing() {
+        double completionTimeOfNextFinishingCloudlet = completionTimeOfNextFinishingCloudlet();
+        if(completionTimeOfNextFinishingCloudlet == Double.MAX_VALUE){
+            return completionTimeOfNextFinishingCloudlet;
+        }
+        
+        return getSchedulingInterval() > 0 ? 
+                getSchedulingInterval() : 
+                completionTimeOfNextFinishingCloudlet - CloudSim.clock();
     }
 
     /**
@@ -1214,13 +1246,8 @@ public class DatacenterSimple extends SimEntity implements Datacenter {
         this.vmList = vmList;
     }
 
-    /**
-     * Gets the scheduling delay to process each event received by the
-     * datacenter .
-     *
-     * @return the scheduling interval
-     */
-    protected double getSchedulingInterval() {
+    @Override
+    public double getSchedulingInterval() {
         return schedulingInterval;
     }
 

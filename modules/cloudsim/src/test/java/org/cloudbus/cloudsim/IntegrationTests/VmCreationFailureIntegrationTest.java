@@ -77,7 +77,7 @@ public final class VmCreationFailureIntegrationTest {
      * @param vm
      * @param host
      */
-    public void onHostAllocation(double time, Vm vm, Host host) {
+    private void onHostAllocation(double time, Vm vm, Host host) {
         numberOfHostAllocations++;
         Log.printFormattedLine("# Host %s allocated to Vm %s at time %3.0f",
                 host.getId(), vm.getId(), time);
@@ -96,7 +96,7 @@ public final class VmCreationFailureIntegrationTest {
      * @param vm
      * @param host
      */
-    public void onHostDeallocation(double time, Vm vm, Host host) {
+    private void onHostDeallocation(double time, Vm vm, Host host) {
         numberOfHostDeallocations++;
         Log.printFormattedLine(
                 "# Vm %s moved/removed from Host %s at time %3.0f",
@@ -114,7 +114,7 @@ public final class VmCreationFailureIntegrationTest {
      * @param vm
      * @param datacenter
      */
-    public void onVmCreationFailure(double time, Vm vm, Datacenter datacenter) {
+    private void onVmCreationFailure(double time, Vm vm, Datacenter datacenter) {
         numberOfVmCreationFailures++;
         final int expectedVmId = 1;
 
@@ -131,8 +131,8 @@ public final class VmCreationFailureIntegrationTest {
      * @param cloudsim
      * @param evt
      */
-    public void onEventProcessing(double time, CloudSim cloudsim, SimEvent evt) {
-        Log.printFormattedLine("* Event processed at time %3.0f: %s", time, evt);
+    private void onEventProcessing(double time, CloudSim cloudsim, SimEvent evt) {
+        Log.printFormattedLine("* onEventProcessing at time %3.0f: %s", time, evt);
         switch ((int) time) {
             case 10:
                 assertEquals(200,
@@ -143,6 +143,23 @@ public final class VmCreationFailureIntegrationTest {
                         scenario.getFirstHostOfFirstDatacenter().getAvailableMips(), 0.1);
             break;
         }
+    }
+    
+    
+    /**
+     * Considering there is only one Host and only 1 VM
+     * where its cloudlets use a {@link UtilizationModelFull} for CPU utilization 
+     * model, at any time, the amount of available Host CPU should be the same.
+     * 
+     * @param time
+     * @param vm
+     * @param host 
+     */
+    private void onUpdateVmProcessing(double time, Vm vm, Host host) {
+        Log.printConcatLine(
+            "- onUpdateVmProcessing at time ", time, " - vm: ", 
+            vm.getId(), " host ", host.getId(), " available mips: ", host.getAvailableMips());
+        assertEquals(200, host.getAvailableMips(), 0);
     }
 
     /**
@@ -167,10 +184,11 @@ public final class VmCreationFailureIntegrationTest {
         brokerBuilder.getVmBuilderForTheCreatedBroker()
                 .setRam(512).setBw(1000)
                 .setPes(1).setMips(1000).setSize(10000)
-                .setCloudletScheduler(CloudletSchedulerSpaceShared.class)
+                .setCloudletScheduler(new CloudletSchedulerSpaceShared())
                 .setOnHostAllocationListener((t,v,h) -> onHostAllocation(t,v,h))
                 .setOnHostDeallocationListener((t,v,h) -> onHostDeallocation(t,v,h))
                 .setOnVmCreationFilatureListenerForAllVms((t,v,d) -> onVmCreationFailure(t,v,d))
+                .setOnUpdateVmProcessing((t,v,h) -> onUpdateVmProcessing(t, v, h))
                 /*try to createBroker 2 Vm where there is capacity to only one,
                  thus, just 1 will be created*/
                 .createAndSubmitVms(2);
@@ -183,7 +201,7 @@ public final class VmCreationFailureIntegrationTest {
     }
 
     @Test
-    public void testTwoCloudletInOneVmOneHostAndOneDatacenter() {
+    public void integrationTest() {
         startSimulationAndWaitToStop();
 
         final DatacenterBrokerSimple broker = scenario.getBrokerBuilder().getBrokers().get(0);

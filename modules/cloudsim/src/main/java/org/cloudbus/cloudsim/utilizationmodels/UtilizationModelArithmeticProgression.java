@@ -17,17 +17,7 @@ public class UtilizationModelArithmeticProgression implements UtilizationModel {
     
     /** @see #getInitialUtilization()  */
     private double initialUtilization = 0;
-    
-    /**
-     * The id of the cloudlet using this UtilizationModel instance.
-     */
-    private int cloudletId;
-    
-    /**
-     * The last time the {@link #getUtilization(double) } method was called.
-     */
-    private double previousTime = -1;
-    
+        
     /** @see #getMaxResourceUsagePercentage() */
     private double maxResourceUsagePercentage = 1;
 
@@ -35,11 +25,9 @@ public class UtilizationModelArithmeticProgression implements UtilizationModel {
     }
     
     public UtilizationModelArithmeticProgression(
-            final int cloudletId,
             final double utilizationPercentageIncrementPerSecond) {
         this();
-        this.cloudletId = cloudletId;
-        this.utilizationPercentageIncrementPerSecond = utilizationPercentageIncrementPerSecond;
+        setUtilizationPercentageIncrementPerSecond(utilizationPercentageIncrementPerSecond);
     }
 
     /**
@@ -47,15 +35,13 @@ public class UtilizationModelArithmeticProgression implements UtilizationModel {
      * that sets the {@link #setUtilizationPercentageIncrementPerSecond(double) utilization increment}
      * and the {@link #setInitialUtilization(double) initial utilization}
      * 
-     * @param cloudletId
      * @param utilizationPercentageIncrementPerSecond
      * @param initialUtilization 
      */
     public UtilizationModelArithmeticProgression(
-            final int cloudletId,
             final double utilizationPercentageIncrementPerSecond, 
             final double initialUtilization) {
-        this(cloudletId, utilizationPercentageIncrementPerSecond);
+        this(utilizationPercentageIncrementPerSecond);
         setInitialUtilization(initialUtilization);
     }
 
@@ -67,7 +53,6 @@ public class UtilizationModelArithmeticProgression implements UtilizationModel {
             utilization = 0;
         else if(utilization > maxResourceUsagePercentage)
             utilization = maxResourceUsagePercentage;
-        previousTime = time;
         return utilization;
     }
     /**

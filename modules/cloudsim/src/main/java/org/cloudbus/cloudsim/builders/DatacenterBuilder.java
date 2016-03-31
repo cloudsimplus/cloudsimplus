@@ -25,6 +25,7 @@ public class DatacenterBuilder extends Builder {
     private double costPerCpuSecond = 3.0;
     private double costPerStorage = 0.001;
     private double costPerMem = 0.05;
+    private double schedulingInterval = 1;
     private double timezone = 10;
     
     private final List<Datacenter> datacenters;
@@ -61,7 +62,7 @@ public class DatacenterBuilder extends Builder {
         Datacenter datacenter = 
                 new DatacenterSimple(name, characteristics, 
                         new VmAllocationPolicySimple(hosts), 
-                        storageList, 0);
+                        storageList, schedulingInterval);
         this.datacenters.add(datacenter);
         return this;
     }
@@ -126,6 +127,15 @@ public class DatacenterBuilder extends Builder {
 
     public DatacenterBuilder setTimezone(double defaultTimezone) {
         this.timezone = defaultTimezone;
+        return this;
+    }
+
+    public double getSchedulingInterval() {
+        return schedulingInterval;
+    }
+
+    public DatacenterBuilder setSchedulingInterval(double schedulingInterval) {
+        this.schedulingInterval = schedulingInterval;
         return this;
     }
 }

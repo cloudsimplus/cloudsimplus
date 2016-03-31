@@ -8,8 +8,8 @@ import org.cloudbus.cloudsim.resources.Resource;
 
 /**
  * An interface to be implemented by Vm objects in order to provide the basic
- * functionalities of Virtual Machines. 
- * It also implements the Null Object
+ * features of Virtual Machines. 
+ * It implements the Null Object
  * Design Pattern in order to start avoiding {@link NullPointerException} when
  * using the {@link Vm#NULL} object instead of attributing {@code null} to
  * {@link Vm} variables.
@@ -367,6 +367,24 @@ public interface Vm {
     void setOnVmCreationFailureListener(EventListener<Vm, Datacenter> onVmCreationFailureListener);
 
     /**
+     * Gets the listener object that will be notified every time when 
+     * the processing of a Vm is updated in its {@link Host}.
+     *
+     * @return the onUpdateVmProcessingListener
+     * @see #updateVmProcessing(double, java.util.List) 
+     */
+    EventListener<Vm, Host> getOnUpdateVmProcessingListener();
+
+    /**
+     * Sets the listener object that will be notified every time when 
+     * the processing of a Vm is updated in its {@link Host}.
+     *
+     * @param onUpdateVmProcessingListener the onUpdateVmProcessingListener to set
+     * @see #updateVmProcessing(double, java.util.List) 
+     */
+    void setOnUpdateVmProcessingListener(EventListener<Vm, Host> onUpdateVmProcessingListener);
+    
+    /**
      * Sets RAM capacity.
      *
      * @param ramCapacity new RAM capacity
@@ -458,5 +476,7 @@ public interface Vm {
         @Override public void setUid(String uid) {}
         @Override public double updateVmProcessing(double currentTime, List<Double> mipsShare){ return 0.0; }
         @Override public <T extends Number, R extends Resource<? extends T>> Resource<T> getResource(Class<R> resourceClass) { return Resource.NULL_DOUBLE; }
+        @Override public EventListener<Vm, Host> getOnUpdateVmProcessingListener() { return EventListener.NULL; }
+        @Override public void setOnUpdateVmProcessingListener(EventListener<Vm, Host> onUpdateVmProcessingListener) {}
     };
 }
