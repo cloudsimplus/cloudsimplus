@@ -27,13 +27,13 @@ import static org.junit.Assert.*;
  */
 public final class CheckHostAvailableMips {
     private static final int HOST_MIPS = 1000;
-    private static final int HOST_PES = 4;
-    private static final int NUMBER_OF_VMS = HOST_PES/2;
+    private static final int HOST_PES = 2;
+    private static final int NUMBER_OF_VMS = HOST_PES;
     private static final int VM_MIPS = HOST_MIPS;
-    private static final int VM_PES = HOST_PES/2;
+    private static final int VM_PES = HOST_PES/NUMBER_OF_VMS;
     private static final int CLOUDLET_PES = VM_PES;
     private static final int CLOUDLET_LENGTH = HOST_MIPS*10;
-    private static final int NUMBER_OF_CLOUDLETS = NUMBER_OF_VMS;
+    private static final int NUMBER_OF_CLOUDLETS = 2;
 
     private final SimulationScenarioBuilder scenario;
     private final UtilizationModelArithmeticProgression utilizationModel;
@@ -47,21 +47,20 @@ public final class CheckHostAvailableMips {
      * @param host 
      */
     private void onUpdateVmProcessing(double time, Vm vm, Host host) {
-        final double totalHostMips = HOST_MIPS*HOST_PES;
         final double expectedAvailableHostMips = 
-                totalHostMips -
-                (NUMBER_OF_CLOUDLETS*CLOUDLET_PES*VM_MIPS*utilizationModel.getUtilization(time));
+               HOST_MIPS * HOST_PES * utilizationModel.getUtilization(time);
+        
         Log.printConcatLine(
             "- onUpdateVmProcessing at time ", time, " - vm: ", 
             vm.getId(), " host ", host.getId(), 
             " available mips: ", host.getAvailableMips(), " expected availability: ", expectedAvailableHostMips);
         
         assertEquals("The amount of Host available MIPS was not as expected." +
-            "WARNING: This IT was not accordingly validated to assure that the " +
-            "expected value is correct. The test was left in this status to remember "
-            + "that it has to be tested how UtilizationModels that define dynamic "
-            + "cloudlet CPU utilization affect host CPU availability", 
-                expectedAvailableHostMips, host.getAvailableMips(), 0);
+            "WARNING: It has to be checked if it is really required to use the "
+                + " PowerDatacenter, PowerHostUtilizationHistory, PowerVm"
+                + " and CloudletSchedulerDynamicWorkload to make the host CPU usage"
+                + " to be correctly updated.", 
+                 expectedAvailableHostMips, host.getAvailableMips(), 0);
     }
 
     /**
@@ -88,7 +87,7 @@ public final class CheckHostAvailableMips {
                 .setOnUpdateVmProcessing((t,v,h) -> onUpdateVmProcessing(t, v, h))
                 .createAndSubmitVms(NUMBER_OF_VMS);
 
-        utilizationModel = new UtilizationModelArithmeticProgression(0.1, 0.5);
+        utilizationModel = new UtilizationModelArithmeticProgression(0.0, 0.25);
         brokerBuilder.getCloudletBuilderForTheCreatedBroker()
                 .setLength(CLOUDLET_LENGTH)
                 .setUtilizationModelCpu(utilizationModel)
