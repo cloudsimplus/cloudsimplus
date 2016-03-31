@@ -87,9 +87,9 @@ public class CloudSim {
     private static double minTimeBetweenEvents = 0.1;
 
     /**
-     * @see #getEventProcessingListener()
+     * @see #getOnEventProcessingListener()
      */
-    private static EventListener<CloudSim, SimEvent> eventProcessingListener = EventListener.NULL;
+    private static EventListener<CloudSim, SimEvent> onEventProcessingListener = EventListener.NULL;
     
     /** @see #getInstance() */
     private static final CloudSim cloudSim = new CloudSim();
@@ -835,7 +835,7 @@ public class CloudSim {
             throw new IllegalArgumentException("Past event detected.");
         }
         clock = e.eventTime();
-        eventProcessingListener.update(clock, getInstance(), e);
+        onEventProcessingListener.update(clock, getInstance(), e);
 
         // Ok now process it
         switch (e.getType()) {
@@ -1067,19 +1067,19 @@ public class CloudSim {
      * @return the EventListener.
      * @see #processEvent(org.cloudbus.cloudsim.core.SimEvent) 
      */
-    public static EventListener<CloudSim, SimEvent> getEventProcessingListener() {
-        return eventProcessingListener;
+    public static EventListener<CloudSim, SimEvent> getOnEventProcessingListener() {
+        return onEventProcessingListener;
     }
 
     /**
      * Sets the {@link EventListener} object that will be notified when any event
      * is processed by CloudSim.
      * 
-     * @param eventProcessingListener the event listener to be set
-     * @see #getEventProcessingListener() 
+     * @param onEventProcessingListener the event listener to be set
+     * @see #getOnEventProcessingListener() 
      */
-    public static void setEventProcessingListener(EventListener<CloudSim, SimEvent> eventProcessingListener) {
-        CloudSim.eventProcessingListener = eventProcessingListener;
+    public static void setOnEventProcessingListener(EventListener<CloudSim, SimEvent> onEventProcessingListener) {
+        CloudSim.onEventProcessingListener = onEventProcessingListener;
     }
 
 }

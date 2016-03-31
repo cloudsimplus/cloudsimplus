@@ -15,14 +15,14 @@ import org.cloudbus.cloudsim.provisioners.PeProvisionerSimple;
  * @author Manoel Campos da Silva Filho
  */
 public class PeBuilder extends Builder {
-    private Class<? extends PeProvisioner> defaultProvisionerClass = PeProvisionerSimple.class;
+    private Class<? extends PeProvisioner> provisionerClass = PeProvisionerSimple.class;
 
     public List<Pe> create(final int amount, final double mipsOfEachPe) {
         try {
             validateAmount(amount);
             List<Pe> peList = new ArrayList<>();
             Constructor cons =
-                    defaultProvisionerClass.getConstructor(new Class[]{double.class});
+                    provisionerClass.getConstructor(new Class[]{double.class});
             for (int i = 0; i < amount; i++) {
                 peList.add(new PeSimple(i, (PeProvisioner) cons.newInstance(mipsOfEachPe)));
             }
@@ -34,12 +34,12 @@ public class PeBuilder extends Builder {
         }
     }
 
-    public Class<? extends PeProvisioner> getDefaultProvisionerClass() {
-        return defaultProvisionerClass;
+    public Class<? extends PeProvisioner> getProvisionerClass() {
+        return provisionerClass;
     }
 
-    public PeBuilder setDefaultProvisioner(Class<? extends PeProvisioner> defaultProvisioner) {
-        this.defaultProvisionerClass = defaultProvisioner;
+    public PeBuilder setProvisioner(Class<? extends PeProvisioner> defaultProvisioner) {
+        this.provisionerClass = defaultProvisioner;
         return this;
     }
 }

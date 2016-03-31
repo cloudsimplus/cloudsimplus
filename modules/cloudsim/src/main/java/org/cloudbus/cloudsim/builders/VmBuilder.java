@@ -17,17 +17,17 @@ import org.cloudbus.cloudsim.listeners.EventListener;
  * @author Manoel Campos da Silva Filho
  */
 public class VmBuilder {
-    private Class<? extends CloudletSchedulerAbstract> defaultCloudletSchedulerClass = CloudletSchedulerSpaceShared.class;    
-    private long defaultSize = 10000;
-    private int  defaultRAM = 512;
-    private int  defaultMIPS = 1000;
-    private long defaulBw = 1000;
-    private int  defaultPEs = 1;
+    private Class<? extends CloudletSchedulerAbstract> cloudletSchedulerClass = CloudletSchedulerSpaceShared.class;    
+    private long size = 10000;
+    private int  ram = 512;
+    private int  mips = 1000;
+    private long bw = 1000;
+    private int  pes = 1;
     private int numberOfCreatedVms;
     private final DatacenterBrokerSimple broker;
-    private EventListener<Vm, Host> defaultOnHostAllocationListener;
-    private EventListener<Vm, Host> defaultOnHostDeallocationListener;
-    private EventListener<Vm, Datacenter> defaultOnVmCreationFailureListener;
+    private EventListener<Vm, Host> onHostAllocationListener;
+    private EventListener<Vm, Host> onHostDeallocationListener;
+    private EventListener<Vm, Datacenter> onVmCreationFailureListener;
 
     public VmBuilder(final DatacenterBrokerSimple broker) {
         if(broker == null)
@@ -35,43 +35,43 @@ public class VmBuilder {
         
         this.broker = broker;
         this.numberOfCreatedVms = 0;
-        this.defaultOnHostAllocationListener = EventListener.NULL;
-        this.defaultOnHostDeallocationListener = EventListener.NULL;
-        this.defaultOnVmCreationFailureListener = EventListener.NULL;
+        this.onHostAllocationListener = EventListener.NULL;
+        this.onHostDeallocationListener = EventListener.NULL;
+        this.onVmCreationFailureListener = EventListener.NULL;
     }
     
-    public VmBuilder setDefaultOnHostDeallocationListener(final EventListener<Vm, Host> onHostDeallocationListener) {
-        this.defaultOnHostDeallocationListener = onHostDeallocationListener;
+    public VmBuilder setOnHostDeallocationListener(final EventListener<Vm, Host> onHostDeallocationListener) {
+        this.onHostDeallocationListener = onHostDeallocationListener;
         return this;
     }
 
-    public VmBuilder setDefaultMIPS(int defaultMIPS) {
-        this.defaultMIPS = defaultMIPS;
+    public VmBuilder setMips(int defaultMIPS) {
+        this.mips = defaultMIPS;
         return this;
     }
 
-    public VmBuilder setDefaultBW(long defaultBW) {
-        this.defaulBw = defaultBW;
+    public VmBuilder setBw(long defaultBW) {
+        this.bw = defaultBW;
         return this;
     }
 
-    public VmBuilder setDefaultRAM(int defaultRAM) {
-        this.defaultRAM = defaultRAM;
+    public VmBuilder setRam(int defaultRAM) {
+        this.ram = defaultRAM;
         return this;
     }
 
-    public VmBuilder setDefaultOnHostAllocationListener(final EventListener<Vm, Host> onHostAllocationListener) {
-        this.defaultOnHostAllocationListener  = onHostAllocationListener;
+    public VmBuilder setOnHostAllocationListener(final EventListener<Vm, Host> onHostAllocationListener) {
+        this.onHostAllocationListener  = onHostAllocationListener;
         return this;
     }
 
-    public VmBuilder setDefaultSize(long defaultSize) {
-        this.defaultSize = defaultSize;
+    public VmBuilder setSize(long defaultSize) {
+        this.size = defaultSize;
         return this;
     }
 
     public VmBuilder setOnVmCreationFilatureListenerForAllVms(final EventListener<Vm, Datacenter> onVmCreationFailureListener) {
-        this.defaultOnVmCreationFailureListener = onVmCreationFailureListener;
+        this.onVmCreationFailureListener = onVmCreationFailureListener;
         return this;
     }
 
@@ -80,12 +80,12 @@ public class VmBuilder {
         for (int i = 0; i < amount; i++) {
             try {
                 Vm vm = new VmSimple(numberOfCreatedVms++, 
-                        broker.getId(), defaultMIPS, defaultPEs, defaultRAM, defaulBw, 
-                        defaultSize, DatacenterBuilder.VMM, 
-                        defaultCloudletSchedulerClass.newInstance());
-                vm.setOnHostAllocationListener(defaultOnHostAllocationListener);
-                vm.setOnHostDeallocationListener(defaultOnHostDeallocationListener);
-                vm.setOnVmCreationFailureListener(defaultOnVmCreationFailureListener);
+                        broker.getId(), mips, pes, ram, bw, 
+                        size, DatacenterBuilder.VMM, 
+                        cloudletSchedulerClass.newInstance());
+                vm.setOnHostAllocationListener(onHostAllocationListener);
+                vm.setOnHostDeallocationListener(onHostDeallocationListener);
+                vm.setOnVmCreationFailureListener(onVmCreationFailureListener);
                 vms.add(vm);
             } catch (InstantiationException | IllegalAccessException ex) {
                 throw new RuntimeException("A CloudletScheduler couldn't be instantiated", ex);
@@ -95,12 +95,12 @@ public class VmBuilder {
         return this;
     }
 
-    public long getDefaulBw() {
-        return defaulBw;
+    public long getBw() {
+        return bw;
     }
 
-    public VmBuilder setDefaultPEs(int defaultPEs) {
-        this.defaultPEs = defaultPEs;
+    public VmBuilder setPes(int defaultPEs) {
+        this.pes = defaultPEs;
         return this;
     }
 
@@ -113,33 +113,33 @@ public class VmBuilder {
         return null;
     }
 
-    public long getDefaultSize() {
-        return defaultSize;
+    public long getSize() {
+        return size;
     }
 
     public List<Vm> getVms() {
         return broker.getVmList();
     }
     
-    public int getDefaultRAM() {
-        return defaultRAM;
+    public int getRam() {
+        return ram;
     }
 
-    public int getDefaultMIPS() {
-        return defaultMIPS;
+    public int getMips() {
+        return mips;
     }
 
-    public int getDefaultPEs() {
-        return defaultPEs;
+    public int getPes() {
+        return pes;
     }
 
-    public Class<? extends CloudletSchedulerAbstract> getDefaultCloudletSchedulerClass() {
-        return defaultCloudletSchedulerClass;
+    public Class<? extends CloudletSchedulerAbstract> getCloudletSchedulerClass() {
+        return cloudletSchedulerClass;
     }
 
-    public VmBuilder setDefaultCloudletScheduler(
+    public VmBuilder setCloudletScheduler(
             Class<? extends CloudletSchedulerAbstract> defaultCloudletScheduler) {
-        this.defaultCloudletSchedulerClass = defaultCloudletScheduler;
+        this.cloudletSchedulerClass = defaultCloudletScheduler;
         return this;
     }
 }

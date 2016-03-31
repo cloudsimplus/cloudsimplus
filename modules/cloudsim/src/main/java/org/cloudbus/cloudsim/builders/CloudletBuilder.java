@@ -16,10 +16,13 @@ import org.cloudbus.cloudsim.listeners.EventListener;
  * @author Manoel Campos da Silva Filho
  */
 public class CloudletBuilder extends Builder {
-    private long defaultLength = 10000;
-    private long defaultOutputSize = 300;
-    private long defaultFileSize = 300;
-    private int  defaultPEs = 1;
+    private long length = 10000;
+    private long outputSize = 300;
+    private long fileSize = 300;
+    private int  pes = 1;
+    private UtilizationModel utilizationModelRam;
+    private UtilizationModel utilizationModelCpu;
+    private UtilizationModel utilizationModelBw;
     
     private final List<Cloudlet> cloudlets;
     private int numberOfCreatedCloudlets;
@@ -27,7 +30,7 @@ public class CloudletBuilder extends Builder {
     private final BrokerBuilderDecorator brokerBuilder;
     private final DatacenterBrokerSimple broker;
     
-    private EventListener<Cloudlet, Vm> defaultOnCloudletFinishEventListener = EventListener.NULL;
+    private EventListener<Cloudlet, Vm> onCloudletFinishEventListener = EventListener.NULL;
 
     public CloudletBuilder(final BrokerBuilderDecorator brokerBuilder, final DatacenterBrokerSimple broker) {
         if(brokerBuilder == null)
@@ -35,14 +38,32 @@ public class CloudletBuilder extends Builder {
         if(broker == null)
            throw new RuntimeException("The broker parameter cannot be null."); 
         
-        this.brokerBuilder = brokerBuilder;            
+        this.brokerBuilder = brokerBuilder;   
+        setUtilizationModelCpuRamAndBw(new UtilizationModelFull());
         this.broker = broker;
         this.cloudlets = new ArrayList<>();
         this.numberOfCreatedCloudlets = 0;        
     }
 
-    public CloudletBuilder setDefaultFileSize(long defaultFileSize) {
-        this.defaultFileSize = defaultFileSize;
+    /**
+     * Sets the same utilization model for CPU, RAM and BW.
+     * By this way, at a time t, every one of the 3 resources will use the same percentage
+     * of its capacity.
+     * 
+     * @param utilizationModel the utilization model to set
+     * @return 
+     */
+    public final CloudletBuilder setUtilizationModelCpuRamAndBw(UtilizationModel utilizationModel) {
+        if(utilizationModel != null){
+            this.utilizationModelCpu = utilizationModel;
+            this.utilizationModelRam = utilizationModel;
+            this.utilizationModelBw = utilizationModel;
+        }
+        return this;
+    }
+
+    public CloudletBuilder setFileSize(long defaultFileSize) {
+        this.fileSize = defaultFileSize;
         return this;
     }
 
@@ -50,21 +71,21 @@ public class CloudletBuilder extends Builder {
         return cloudlets;
     }
 
-    public CloudletBuilder setDefaultPEs(int defaultPEs) {
-        this.defaultPEs = defaultPEs;
+    public CloudletBuilder setPEs(int defaultPEs) {
+        this.pes = defaultPEs;
         return this;
     }
 
-    public long getDefaultLength() {
-        return defaultLength;
+    public long getLength() {
+        return length;
     }
 
-    public long getDefaultFileSize() {
-        return defaultFileSize;
+    public long getFileSize() {
+        return fileSize;
     }
 
-    public long getDefaultOutputSize() {
-        return defaultOutputSize;
+    public long getOutputSize() {
+        return outputSize;
     }
 
     public Cloudlet getCloudletById(final int id) {
@@ -76,31 +97,30 @@ public class CloudletBuilder extends Builder {
         return null;
     }
 
-    public CloudletBuilder setDefaultOutputSize(long defaultOutputSize) {
-        this.defaultOutputSize = defaultOutputSize;
+    public CloudletBuilder setOutputSize(long defaultOutputSize) {
+        this.outputSize = defaultOutputSize;
         return this;
     }
 
-    public int getDefaultPEs() {
-        return defaultPEs;
+    public int getPes() {
+        return pes;
     }
 
-    public CloudletBuilder setDefaultLength(long defaultLength) {
-        this.defaultLength = defaultLength;
+    public CloudletBuilder setLength(long defaultLength) {
+        this.length = defaultLength;
         return this;
     }
 
     public CloudletBuilder createAndSubmitCloudlets(final int amount) {
-        UtilizationModel utilizationModel = new UtilizationModelFull();
         for (int i = 0; i < amount; i++) {
             Cloudlet cloudlet =
                     new CloudletSimple(
-                            numberOfCreatedCloudlets++, defaultLength, 
-                            defaultPEs, defaultFileSize, 
-                            defaultOutputSize, 
-                            utilizationModel, utilizationModel, utilizationModel);
+                            numberOfCreatedCloudlets++, length, 
+                            pes, fileSize, 
+                            outputSize, 
+                            utilizationModelCpu, utilizationModelRam, utilizationModelBw);
             cloudlet.setUserId(broker.getId());
-            cloudlet.setOnCloudletFinishEventListener(defaultOnCloudletFinishEventListener);
+            cloudlet.setOnCloudletFinishEventListener(onCloudletFinishEventListener);
             cloudlets.add(cloudlet);
         }
         broker.submitCloudletList(cloudlets);
@@ -111,12 +131,45 @@ public class CloudletBuilder extends Builder {
         return brokerBuilder;
     }
 
-    public EventListener<Cloudlet, Vm> getDefaultOnCloudletFinishEventListener() {
-        return defaultOnCloudletFinishEventListener;
+    public EventListener<Cloudlet, Vm> getOnCloudletFinishEventListener() {
+        return onCloudletFinishEventListener;
     }
 
-    public CloudletBuilder setDefaultOnCloudletFinishEventListener(EventListener<Cloudlet, Vm> defaultOnCloudletFinishEventListener) {
-        this.defaultOnCloudletFinishEventListener = defaultOnCloudletFinishEventListener;
+    public CloudletBuilder setOnCloudletFinishEventListener(EventListener<Cloudlet, Vm> defaultOnCloudletFinishEventListener) {
+        this.onCloudletFinishEventListener = defaultOnCloudletFinishEventListener;
+        return this;
+    }
+
+    public UtilizationModel getUtilizationModelRam() {
+        return utilizationModelRam;
+    }
+
+    public CloudletBuilder setUtilizationModelRam(UtilizationModel utilizationModelRam) {
+        if(utilizationModelRam != null){
+            this.utilizationModelRam = utilizationModelRam;
+        }
+        return this;
+    }
+
+    public UtilizationModel getUtilizationModelCpu() {
+        return utilizationModelCpu;
+    }
+
+    public CloudletBuilder setUtilizationModelCpu(UtilizationModel utilizationModelCpu) {
+        if(utilizationModelCpu != null){
+            this.utilizationModelCpu = utilizationModelCpu;
+        }
+        return this;
+    }
+
+    public UtilizationModel getUtilizationModelBw() {
+        return utilizationModelBw;
+    }
+
+    public CloudletBuilder setUtilizationModelBw(UtilizationModel utilizationModelBw) {
+        if(utilizationModelBw != null){
+            this.utilizationModelBw = utilizationModelBw;
+        }
         return this;
     }
 }

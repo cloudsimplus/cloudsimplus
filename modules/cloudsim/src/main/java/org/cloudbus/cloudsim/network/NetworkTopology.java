@@ -14,12 +14,6 @@ import java.util.Iterator;
 import java.util.Map;
 import org.cloudbus.cloudsim.Log;
 
-import org.cloudbus.cloudsim.network.DelayMatrix_Float;
-import org.cloudbus.cloudsim.network.GraphReaderBrite;
-import org.cloudbus.cloudsim.network.TopologicalGraph;
-import org.cloudbus.cloudsim.network.TopologicalLink;
-import org.cloudbus.cloudsim.network.TopologicalNode;
-
 /**
  * Implements the network layer in CloudSim. It reads a file in the <a href="http://www.cs.bu.edu/brite/user_manual/node29.html">BRITE printFormatted</a>,
  * the <a href="http://www.cs.bu.edu/brite/">Boston university Representative Topology gEnerator</a>, and

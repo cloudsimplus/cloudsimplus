@@ -1,7 +1,5 @@
 package org.cloudbus.cloudsim.utilizationmodels;
 
-import org.cloudbus.cloudsim.utilizationmodels.UtilizationModel;
-
 /**
  * An Cloudlet {@link UtilizationModel} that uses Arithmetic Progression 
  * to increases the utilization of the related resource along the simulation time.
