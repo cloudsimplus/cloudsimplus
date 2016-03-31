@@ -13,8 +13,8 @@ import java.util.List;
 import java.util.Map.Entry;
 
 import org.cloudbus.cloudsim.HostSimple;
-import org.cloudbus.cloudsim.Pe;
-import org.cloudbus.cloudsim.VmScheduler;
+import org.cloudbus.cloudsim.resources.Pe;
+import org.cloudbus.cloudsim.schedulers.VmScheduler;
 import org.cloudbus.cloudsim.Vm;
 import org.cloudbus.cloudsim.core.CloudSim;
 import org.cloudbus.cloudsim.core.CloudSimTags;

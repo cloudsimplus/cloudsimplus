@@ -9,9 +9,7 @@
 package org.cloudbus.cloudsim.resources;
 
 import java.util.List;
-import org.cloudbus.cloudsim.File;
 import org.cloudbus.cloudsim.Log;
-import org.cloudbus.cloudsim.ParameterException;
 
 /**
  * SanStorage represents a Storage Area Network (SAN) composed of a set of 
@@ -57,10 +55,9 @@ public class SanStorage extends HarddriveStorage {
      * @param capacity Storage device capacity
      * @param bandwidth Network bandwidth
      * @param networkLatency Network latency
-     * @throws ParameterException when the name and the capacity are not valid
+     * @throws IllegalArgumentException when the name and the capacity are not valid
      */
-    public SanStorage(final String name, final long capacity, final double bandwidth, final double networkLatency)
-                    throws ParameterException {
+    public SanStorage(final String name, final long capacity, final double bandwidth, final double networkLatency){
         super(name, capacity);
         this.bandwidth = bandwidth;
         this.networkLatency = networkLatency;

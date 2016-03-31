@@ -8,27 +8,27 @@
  */
 package org.cloudbus.cloudsim.examples.migration;
 
-import java.text.DecimalFormat;
+import org.cloudbus.cloudsim.utilizationmodels.UtilizationModelArithmeticProgression;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.LinkedList;
 import java.util.List;
 
 import org.cloudbus.cloudsim.Cloudlet;
-import org.cloudbus.cloudsim.CloudletSchedulerDynamicWorkload;
+import org.cloudbus.cloudsim.schedulers.CloudletSchedulerDynamicWorkload;
 import org.cloudbus.cloudsim.CloudletSimple;
 import org.cloudbus.cloudsim.Datacenter;
-import org.cloudbus.cloudsim.DatacenterBroker;
-import org.cloudbus.cloudsim.DatacenterBrokerSimple;
+import org.cloudbus.cloudsim.brokers.DatacenterBroker;
+import org.cloudbus.cloudsim.brokers.DatacenterBrokerSimple;
 import org.cloudbus.cloudsim.DatacenterCharacteristics;
 import org.cloudbus.cloudsim.Log;
-import org.cloudbus.cloudsim.Pe;
-import org.cloudbus.cloudsim.PeSimple;
-import org.cloudbus.cloudsim.UtilizationModel;
-import org.cloudbus.cloudsim.UtilizationModelFull;
+import org.cloudbus.cloudsim.resources.Pe;
+import org.cloudbus.cloudsim.resources.PeSimple;
+import org.cloudbus.cloudsim.utilizationmodels.UtilizationModel;
+import org.cloudbus.cloudsim.utilizationmodels.UtilizationModelFull;
 import org.cloudbus.cloudsim.Vm;
-import org.cloudbus.cloudsim.VmSchedulerSpaceShared;
-import org.cloudbus.cloudsim.VmSchedulerTimeShared;
+import org.cloudbus.cloudsim.schedulers.VmSchedulerSpaceShared;
+import org.cloudbus.cloudsim.schedulers.VmSchedulerTimeShared;
 import org.cloudbus.cloudsim.core.CloudSim;
 import org.cloudbus.cloudsim.power.PowerDatacenter;
 import org.cloudbus.cloudsim.power.PowerHost;
@@ -173,7 +173,6 @@ public class MigrationExample1 {
                     initialCloudletCpuUtilizationPercentage, vmlist.get(i), broker);
             initialCloudletCpuUtilizationPercentage += 0.15;
         }
-        
         //Create one last cloudlet which CPU usage increases dynamically
         Vm lastVm = vmlist.get(vmlist.size()-1);
         createAndSubmitCloudletsWithDynamicCpuUtilization(0.2, 1, lastVm, broker);

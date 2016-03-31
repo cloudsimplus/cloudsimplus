@@ -1,7 +1,7 @@
 package org.cloudbus.cloudsim.builders;
 
 import java.util.List;
-import org.cloudbus.cloudsim.DatacenterBrokerSimple;
+import org.cloudbus.cloudsim.brokers.DatacenterBrokerSimple;
 
 /**
  * An interface to classes that build {@link DatacenterBrokerSimple} objects.

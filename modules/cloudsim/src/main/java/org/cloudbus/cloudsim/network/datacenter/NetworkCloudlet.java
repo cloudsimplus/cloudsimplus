@@ -12,7 +12,7 @@ import java.util.ArrayList;
 import java.util.Map;
 
 import org.cloudbus.cloudsim.CloudletSimple;
-import org.cloudbus.cloudsim.UtilizationModel;
+import org.cloudbus.cloudsim.utilizationmodels.UtilizationModel;
 
 /**
  * NetworkCloudlet class extends Cloudlet to support simulation of complex applications. Each such

@@ -7,6 +7,7 @@
  */
 package org.cloudbus.cloudsim;
 
+import org.cloudbus.cloudsim.utilizationmodels.UtilizationModel;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.LinkedList;

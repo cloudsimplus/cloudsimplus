@@ -8,7 +8,7 @@
 
 package org.cloudbus.cloudsim.power;
 
-import org.cloudbus.cloudsim.DatacenterBrokerSimple;
+import org.cloudbus.cloudsim.brokers.DatacenterBrokerSimple;
 import org.cloudbus.cloudsim.core.CloudSim;
 import org.cloudbus.cloudsim.core.CloudSimTags;
 import org.cloudbus.cloudsim.core.SimEvent;

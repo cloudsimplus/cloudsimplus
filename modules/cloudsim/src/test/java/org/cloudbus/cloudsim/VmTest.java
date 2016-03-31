@@ -7,6 +7,8 @@
 
 package org.cloudbus.cloudsim;
 
+import org.cloudbus.cloudsim.schedulers.CloudletSchedulerAbstract;
+import org.cloudbus.cloudsim.schedulers.CloudletSchedulerDynamicWorkload;
 import static org.easymock.EasyMock.createMock;
 import static org.easymock.EasyMock.expect;
 import static org.easymock.EasyMock.replay;

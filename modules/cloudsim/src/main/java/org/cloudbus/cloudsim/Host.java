@@ -1,5 +1,7 @@
 package org.cloudbus.cloudsim;
 
+import org.cloudbus.cloudsim.resources.Pe;
+import org.cloudbus.cloudsim.schedulers.VmScheduler;
 import java.util.Collections;
 import java.util.List;
 import org.cloudbus.cloudsim.provisioners.ResourceProvisioner;

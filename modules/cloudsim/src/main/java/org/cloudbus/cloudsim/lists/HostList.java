@@ -10,7 +10,7 @@ package org.cloudbus.cloudsim.lists;
 
 import java.util.List;
 import org.cloudbus.cloudsim.Host;
-import org.cloudbus.cloudsim.Pe;
+import org.cloudbus.cloudsim.resources.Pe;
 
 /**
  * HostList is a collection of operations on lists of hosts (PMs).

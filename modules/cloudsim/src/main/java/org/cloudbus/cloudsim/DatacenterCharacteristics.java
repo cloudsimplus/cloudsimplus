@@ -7,6 +7,7 @@
  */
 package org.cloudbus.cloudsim;
 
+import org.cloudbus.cloudsim.resources.Pe;
 import java.util.List;
 
 import org.cloudbus.cloudsim.core.CloudSim;

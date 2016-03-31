@@ -1,7 +1,6 @@
 package org.cloudbus.cloudsim.resources;
 
 import java.util.List;
-import org.cloudbus.cloudsim.File;
 
 /**
  * An interface which defines the desired functionality of a storage system in a Data Cloud

@@ -11,7 +11,7 @@ package org.cloudbus.cloudsim.power;
 import java.util.LinkedList;
 import java.util.List;
 
-import org.cloudbus.cloudsim.CloudletSchedulerAbstract;
+import org.cloudbus.cloudsim.schedulers.CloudletSchedulerAbstract;
 import org.cloudbus.cloudsim.VmSimple;
 import org.cloudbus.cloudsim.core.CloudSim;
 import org.cloudbus.cloudsim.util.MathUtil;

@@ -7,6 +7,8 @@
 
 package org.cloudbus.cloudsim;
 
+import org.cloudbus.cloudsim.resources.Pe;
+import org.cloudbus.cloudsim.schedulers.VmScheduler;
 import java.util.ArrayList;
 import java.util.List;
 

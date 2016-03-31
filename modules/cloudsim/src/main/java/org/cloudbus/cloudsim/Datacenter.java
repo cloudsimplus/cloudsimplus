@@ -1,5 +1,7 @@
 package org.cloudbus.cloudsim;
 
+import org.cloudbus.cloudsim.resources.File;
+import org.cloudbus.cloudsim.allocationpolicies.VmAllocationPolicy;
 import java.util.Collections;
 import java.util.List;
 

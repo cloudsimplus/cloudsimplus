@@ -2,10 +2,10 @@ package org.cloudbus.cloudsim.builders;
 
 import java.util.ArrayList;
 import java.util.List;
-import org.cloudbus.cloudsim.CloudletSchedulerAbstract;
-import org.cloudbus.cloudsim.CloudletSchedulerSpaceShared;
+import org.cloudbus.cloudsim.schedulers.CloudletSchedulerAbstract;
+import org.cloudbus.cloudsim.schedulers.CloudletSchedulerSpaceShared;
 import org.cloudbus.cloudsim.Datacenter;
-import org.cloudbus.cloudsim.DatacenterBrokerSimple;
+import org.cloudbus.cloudsim.brokers.DatacenterBrokerSimple;
 import org.cloudbus.cloudsim.Host;
 import org.cloudbus.cloudsim.Vm;
 import org.cloudbus.cloudsim.VmSimple;

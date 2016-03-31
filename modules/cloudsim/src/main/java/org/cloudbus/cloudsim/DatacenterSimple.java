@@ -6,6 +6,11 @@
  */
 package org.cloudbus.cloudsim;
 
+import org.cloudbus.cloudsim.network.InfoPacket;
+import org.cloudbus.cloudsim.resources.File;
+import org.cloudbus.cloudsim.allocationpolicies.VmAllocationPolicy;
+import org.cloudbus.cloudsim.allocationpolicies.VmAllocationPolicyAbstract;
+import org.cloudbus.cloudsim.schedulers.CloudletScheduler;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;

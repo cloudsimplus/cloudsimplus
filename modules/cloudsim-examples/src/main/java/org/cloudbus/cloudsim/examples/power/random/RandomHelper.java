@@ -8,9 +8,9 @@ import java.util.List;
 import org.cloudbus.cloudsim.Cloudlet;
 
 import org.cloudbus.cloudsim.CloudletSimple;
-import org.cloudbus.cloudsim.UtilizationModel;
-import org.cloudbus.cloudsim.UtilizationModelZero;
-import org.cloudbus.cloudsim.UtilizationModelStochastic;
+import org.cloudbus.cloudsim.utilizationmodels.UtilizationModel;
+import org.cloudbus.cloudsim.utilizationmodels.UtilizationModelZero;
+import org.cloudbus.cloudsim.utilizationmodels.UtilizationModelStochastic;
 import org.cloudbus.cloudsim.examples.power.Constants;
 
 /**

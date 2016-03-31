@@ -11,6 +11,9 @@ c) 2009-2010, The University of Melbourne, Australia
 
 package org.cloudbus.cloudsim;
 
+import org.cloudbus.cloudsim.utilizationmodels.UtilizationModelFull;
+import org.cloudbus.cloudsim.utilizationmodels.UtilizationModelStochastic;
+import org.cloudbus.cloudsim.utilizationmodels.UtilizationModel;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertSame;
 

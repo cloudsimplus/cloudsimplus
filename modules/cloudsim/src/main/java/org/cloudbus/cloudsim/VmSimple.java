@@ -6,6 +6,7 @@
  */
 package org.cloudbus.cloudsim;
 
+import org.cloudbus.cloudsim.schedulers.CloudletSchedulerAbstract;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedList;

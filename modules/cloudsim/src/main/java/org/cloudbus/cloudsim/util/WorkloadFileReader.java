@@ -23,8 +23,8 @@ import java.util.zip.ZipFile;
 import org.cloudbus.cloudsim.Cloudlet;
 
 import org.cloudbus.cloudsim.CloudletSimple;
-import org.cloudbus.cloudsim.UtilizationModel;
-import org.cloudbus.cloudsim.UtilizationModelFull;
+import org.cloudbus.cloudsim.utilizationmodels.UtilizationModel;
+import org.cloudbus.cloudsim.utilizationmodels.UtilizationModelFull;
 
 /**
  * This class is responsible for reading resource traces from a file and creating a list of jobs

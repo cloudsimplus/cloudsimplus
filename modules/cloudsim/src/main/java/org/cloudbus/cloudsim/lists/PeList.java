@@ -11,7 +11,7 @@ package org.cloudbus.cloudsim.lists;
 import java.util.List;
 
 import org.cloudbus.cloudsim.Log;
-import org.cloudbus.cloudsim.Pe;
+import org.cloudbus.cloudsim.resources.Pe;
 import org.cloudbus.cloudsim.Vm;
 
 /**

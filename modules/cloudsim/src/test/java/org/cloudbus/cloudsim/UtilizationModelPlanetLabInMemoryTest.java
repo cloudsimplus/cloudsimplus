@@ -1,5 +1,6 @@
 package org.cloudbus.cloudsim;
 
+import org.cloudbus.cloudsim.utilizationmodels.UtilizationModelPlanetLabInMemory;
 import static org.junit.Assert.assertEquals;
 
 import org.junit.Before;

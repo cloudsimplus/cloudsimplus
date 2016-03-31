@@ -1,7 +1,7 @@
 package org.cloudbus.cloudsim.power;
 
 import org.cloudbus.cloudsim.Vm;
-import org.cloudbus.cloudsim.VmAllocationPolicy;
+import org.cloudbus.cloudsim.allocationpolicies.VmAllocationPolicy;
 
 /**
  * An interface to be implemented by VM allocation policy for Power-aware VMs.
