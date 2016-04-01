@@ -171,7 +171,7 @@ public abstract class PowerVmAllocationPolicyMigrationAbstract extends PowerVmAl
         List<PowerHostSimple> switchedOffHosts = getSwitchedOffHosts();
 
         // over-utilized hosts + hosts that are selected to migrate VMs to from over-utilized hosts
-        Set<PowerHostSimple> excludedHostsForFindingUnderUtilizedHost = new HashSet<>();
+        Set<Host> excludedHostsForFindingUnderUtilizedHost = new HashSet<>();
         excludedHostsForFindingUnderUtilizedHost.addAll(overUtilizedHosts);
         excludedHostsForFindingUnderUtilizedHost.addAll(switchedOffHosts);
         excludedHostsForFindingUnderUtilizedHost.addAll(
@@ -311,9 +311,9 @@ public abstract class PowerVmAllocationPolicyMigrationAbstract extends PowerVmAl
      * @param migrationMap the migration map
      * @return the list
      */
-    protected List<PowerHostSimple> extractHostListFromMigrationMap(Map<Vm, Host> migrationMap) {
+    protected List<Host> extractHostListFromMigrationMap(Map<Vm, Host> migrationMap) {
         return migrationMap.entrySet().stream()
-                .map(e -> (PowerHostSimple)e.getValue())
+                .map(e -> e.getValue())
                 .collect(Collectors.toList());
     }
 

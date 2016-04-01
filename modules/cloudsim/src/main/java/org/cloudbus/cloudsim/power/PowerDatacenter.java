@@ -109,8 +109,8 @@ public class PowerDatacenter extends DatacenterSimple {
 
                 if (migrationMap != null) {
                     for (Entry<Vm, Host> migrate : migrationMap.entrySet()) {
-                        PowerHostSimple targetHost = (PowerHostSimple) migrate.getValue();
-                        PowerHostSimple oldHost = (PowerHostSimple) migrate.getKey().getHost();
+                        Host targetHost = migrate.getValue();
+                        Host oldHost = migrate.getKey().getHost();
 
                         if (oldHost == null) {
                             Log.printFormattedLine(

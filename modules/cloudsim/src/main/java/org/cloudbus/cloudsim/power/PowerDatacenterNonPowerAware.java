@@ -139,8 +139,8 @@ public class PowerDatacenterNonPowerAware extends PowerDatacenter {
 
                 if (migrationMap != null) {
                     for (Entry<Vm, Host> entry : migrationMap.entrySet()) {
-                        PowerHostSimple targetHost = (PowerHostSimple) entry.getValue();
-                        PowerHostSimple oldHost = (PowerHostSimple) entry.getKey().getHost();
+                        Host targetHost = entry.getValue();
+                        Host oldHost = entry.getKey().getHost();
 
                         if (oldHost == null) {
                             Log.printFormattedLine(
