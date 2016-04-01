@@ -50,7 +50,7 @@ public class PowerVmAllocationPolicySimple extends PowerVmAllocationPolicyAbstra
      * @return
      */
     @Override
-    public List<Map<String, Object>> optimizeAllocation(List<? extends Vm> vmList) {
+    public Map<Vm, Host> optimizeAllocation(List<? extends Vm> vmList) {
         //@todo It is better to return an empty map in order to avoid NullPointerException or extra null checks
         // This policy does not optimize the VM allocation
         return null;

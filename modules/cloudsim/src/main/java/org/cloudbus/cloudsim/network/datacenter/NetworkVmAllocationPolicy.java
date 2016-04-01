@@ -199,7 +199,7 @@ public class NetworkVmAllocationPolicy extends VmAllocationPolicyAbstract {
 	}
 
 	@Override
-	public List<Map<String, Object>> optimizeAllocation(List<? extends Vm> vmList) {
+	public Map<Vm, Host> optimizeAllocation(List<? extends Vm> vmList) {
 		/*@todo Auto-generated method stub.
                 The method is doing nothing.*/
 		return null;

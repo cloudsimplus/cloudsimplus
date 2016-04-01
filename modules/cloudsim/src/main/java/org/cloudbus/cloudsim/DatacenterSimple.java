@@ -540,19 +540,14 @@ public class DatacenterSimple extends SimEntity implements Datacenter {
      * @post $none
      */
     protected void processVmMigrate(SimEvent ev, boolean ack) {
-        Object tmp = ev.getData();
-        if (!(tmp instanceof Map<?, ?>)) {
-            throw new ClassCastException("The data object must be Map<String, Object>");
+        if (!(ev.getData() instanceof Map.Entry<?, ?>)) {
+            throw new ClassCastException("The data object must be Map.Entry<Vm, Host>");
         }
 
-        /* @todo @author manoelcampos See the TODO in 
-         * PowerVmAllocationPolicyMigrationAbstract#savedAllocation.
-         * Search for Map<String, Object> to check where this map is being used.
-         */
-        Map<String, Object> migrate = (HashMap<String, Object>) tmp;
+        Map.Entry<Vm, Host> migrate = (Map.Entry<Vm, Host>) ev.getData();
 
-        Vm vm = (Vm) migrate.get("vm");
-        Host host = (Host) migrate.get("host");
+        Vm vm = migrate.getKey();
+        Host host = migrate.getValue();
 
         getVmAllocationPolicy().deallocateHostForVm(vm);
         host.removeMigratingInVm(vm);

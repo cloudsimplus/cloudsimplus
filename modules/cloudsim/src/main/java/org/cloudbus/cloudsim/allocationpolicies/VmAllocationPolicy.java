@@ -86,13 +86,8 @@ public interface VmAllocationPolicy {
      * host where it has to be placed. The map key is just to identify
      * if the map item is the VM or Host
      *
-     * @todo It returns a list of maps, where each map key is a string and
-     * stores an object. What in fact are the keys and values of this Map?
-     * Neither this class or its subclasses implement the method or have clear
-     * documentation. The only sublcass is the {@link VmAllocationPolicySimple}.
-     *
      */
-    List<Map<String, Object>> optimizeAllocation(List<? extends Vm> vmList);
+    Map<Vm, Host> optimizeAllocation(List<? extends Vm> vmList);
 
     /**
      * A property that implements the Null Object Design Pattern for {@link VmAllocationPolicy}
@@ -105,6 +100,6 @@ public interface VmAllocationPolicy {
         @Override public Host getHost(Vm vm){ return Host.NULL; }
         @Override public Host getHost(int vmId, int userId) { return Host.NULL; }
         @Override public List<Host> getHostList(){ return Collections.emptyList(); }
-        @Override public List<Map<String, Object>> optimizeAllocation(List<? extends Vm> vmList) { return Collections.emptyList(); }
+        @Override public Map<Vm, Host> optimizeAllocation(List<? extends Vm> vmList) { return Collections.emptyMap(); }
     };
 }
