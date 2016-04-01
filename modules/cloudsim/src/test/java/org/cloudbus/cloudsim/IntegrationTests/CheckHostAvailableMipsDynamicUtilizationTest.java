@@ -4,7 +4,6 @@ import java.util.Calendar;
 import org.cloudbus.cloudsim.brokers.DatacenterBrokerSimple;
 import org.cloudbus.cloudsim.Host;
 import org.cloudbus.cloudsim.Log;
-import org.cloudbus.cloudsim.Vm;
 import org.cloudbus.cloudsim.builders.BrokerBuilderDecorator;
 import org.cloudbus.cloudsim.builders.HostBuilder;
 import org.cloudbus.cloudsim.builders.SimulationScenarioBuilder;
@@ -25,7 +24,7 @@ import static org.junit.Assert.*;
  * 
  * @author Manoel Campos da Silva Filho
  */
-public final class CheckHostAvailableMipsDynamicUtilization {
+public final class CheckHostAvailableMipsDynamicUtilizationTest {
     private static final int HOST_MIPS = 1000;
     private static final int HOST_PES = 2;
     private static final int NUMBER_OF_VMS = HOST_PES;
@@ -66,7 +65,7 @@ public final class CheckHostAvailableMipsDynamicUtilization {
      * Default constructor that instantiates and initializes the required
      * objects for the Integration Test.
      */
-    public CheckHostAvailableMipsDynamicUtilization() {
+    public CheckHostAvailableMipsDynamicUtilizationTest() {
         CloudSim.init(1, Calendar.getInstance(), false);
         scenario = new SimulationScenarioBuilder();
         scenario.getDatacenterBuilder().setSchedulingInterval(2).createDatacenter(

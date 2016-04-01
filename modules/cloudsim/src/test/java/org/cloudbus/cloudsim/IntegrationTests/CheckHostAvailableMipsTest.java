@@ -32,7 +32,7 @@ import static org.junit.Assert.*;
  * 
  * @author Manoel Campos da Silva Filho
  */
-public final class CheckHostAvailableMips {
+public final class CheckHostAvailableMipsTest {
     private static final int HOST_MIPS = 1000;
     private static final int HOST_PES = 5;
     private static final int NUMBER_OF_VMS = 2;
@@ -84,7 +84,7 @@ public final class CheckHostAvailableMips {
      * Default constructor that instantiates and initializes the required
      * objects for the Integration Test.
      */
-    public CheckHostAvailableMips() {
+    public CheckHostAvailableMipsTest() {
         CloudSim.init(1, Calendar.getInstance(), false);
         scenario = new SimulationScenarioBuilder();
         scenario.getDatacenterBuilder().setSchedulingInterval(2).createDatacenter(

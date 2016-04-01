@@ -17,7 +17,6 @@
         Integration/Functional tests results directly at the NetBeans JUnit graphical 
         test results interface. 
         -->
-        
         <profile>
             <!-- This is the default profile that runs just the Unit Tests,
             ignoring the Integration/Functional tests.
