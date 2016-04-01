@@ -7,7 +7,7 @@ import org.cloudbus.cloudsim.listeners.EventListener;
 
 /**
  * An interface to be implemented by each class that provides basic 
- * cloudlet features. It also implements the Null Object Design
+ * cloudlet features. The interface implements the Null Object Design
  * Pattern in order to start avoiding {@link NullPointerException} 
  * when using the {@link Cloudlet#NULL} object instead
  * of attributing {@code null} to {@link Cloudlet} variables.

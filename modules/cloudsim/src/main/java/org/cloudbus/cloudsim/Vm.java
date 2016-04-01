@@ -7,9 +7,9 @@ import org.cloudbus.cloudsim.listeners.EventListener;
 import org.cloudbus.cloudsim.resources.Resource;
 
 /**
- * An interface to be implemented by Vm objects in order to provide the basic
- * features of Virtual Machines. 
- * It implements the Null Object
+ * An interface to be implemented by each class that provides basic
+ * features of Virtual Machines (VMs). 
+ * The interface implements the Null Object
  * Design Pattern in order to start avoiding {@link NullPointerException} when
  * using the {@link Vm#NULL} object instead of attributing {@code null} to
  * {@link Vm} variables.

@@ -14,14 +14,14 @@ import org.cloudbus.cloudsim.Vm;
 import org.cloudbus.cloudsim.core.CloudSim;
 
 /**
- * VmAllocationPolicyAbstract is an abstract class that represents the policy
- used by a {@link Datacenter Datacenters} to choose a {@link Host} to allocate
- * a given {@link Vm} into. It supports two-stage commit of reservation of
+ * An abstract class that represents the policy
+ * used by a {@link Datacenter} to choose a {@link Host} to place or migrate
+ * a given {@link Vm}. It supports two-stage commit of reservation of
  * hosts: first, we reserve the host and, once committed by the user, it is
  * effectively allocated to he/she.<p/>
  *
  * Each {@link Datacenter} has to have its own instance of a class that extends
- the VmAllocationPolicyAbstract.
+ * this class.
  *
  * @author Rodrigo N. Calheiros
  * @author Anton Beloglazov

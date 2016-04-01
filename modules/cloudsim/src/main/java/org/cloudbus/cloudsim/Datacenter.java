@@ -6,8 +6,8 @@ import java.util.Collections;
 import java.util.List;
 
 /**
- * An Interface to be implemented by Datacenter objects in order to provide
- * Datacenter functionalities. It also implements the Null Object Design
+ * An interface to be implemented by each class that provides
+ * Datacenter features. The interface implements the Null Object Design
  * Pattern in order to start avoiding {@link NullPointerException} 
  * when using the {@link Datacenter#NULL} object instead
  * of attributing {@code null} to {@link Datacenter} variables.

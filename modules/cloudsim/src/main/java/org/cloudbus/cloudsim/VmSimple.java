@@ -20,9 +20,9 @@ import org.cloudbus.cloudsim.schedulers.CloudletScheduler;
 
 /**
  * Implements the basic features of a Virtual Machine (VM) that runs inside a
- * Host, sharing a Host with other VMs. It processes {@link Cloudlet cloudlets}.
+ * {@link Host} that may be shared among other VMs. It processes {@link Cloudlet cloudlets}.
  * This processing happens according to a policy, defined by the
- * CloudletScheduler. Each VM has a owner (user), which can submit cloudlets to
+ * {@link CloudletScheduler}. Each VM has a owner (user), which can submit cloudlets to
  * the VM to execute them.
  *
  * @author Rodrigo N. Calheiros

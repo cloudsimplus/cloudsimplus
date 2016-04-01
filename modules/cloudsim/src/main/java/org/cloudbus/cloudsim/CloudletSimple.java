@@ -17,8 +17,8 @@ import org.cloudbus.cloudsim.core.CloudSim;
 import org.cloudbus.cloudsim.listeners.EventListener;
 
 /**
- * Cloudlet implements the basic features of an application/job/task to be executed by a {@link Vm}
- * on behalf of a given user. It stores, despite all the
+ * Cloudlet implements the basic features of an application/job/task to be executed 
+ * by a {@link Vm} on behalf of a given user. It stores, despite all the
  * information encapsulated in the Cloudlet, the ID of the VM running it.
  *
  * @author Rodrigo N. Calheiros

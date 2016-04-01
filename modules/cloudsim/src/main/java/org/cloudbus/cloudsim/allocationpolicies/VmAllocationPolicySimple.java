@@ -19,9 +19,9 @@ import org.cloudbus.cloudsim.VmSimple;
 import org.cloudbus.cloudsim.core.CloudSim;
 
 /**
- * VmAllocationPolicySimple is an VmAllocationPolicyAbstract that chooses, as the host
- for a VM, the host with less PEs in use. It is therefore a Worst Fit policy,
- * allocating VMs into the host with most available PE.
+ * A VmAllocationPolicy implementation that chooses, as
+ * the host for a VM, that one with less PEs in use. It is therefore a Worst Fit
+ * policy, allocating VMs into the host with most available PEs.
  *
  * @author Rodrigo N. Calheiros
  * @author Anton Beloglazov
@@ -29,10 +29,14 @@ import org.cloudbus.cloudsim.core.CloudSim;
  */
 public class VmAllocationPolicySimple extends VmAllocationPolicyAbstract {
 
-    /** @see #getUsedPes() */
+    /**
+     * @see #getUsedPes()
+     */
     private Map<String, Integer> usedPes;
 
-    /** @see #getFreePes() */
+    /**
+     * @see #getFreePes()
+     */
     private List<Integer> freePes;
 
     /**
@@ -127,8 +131,8 @@ public class VmAllocationPolicySimple extends VmAllocationPolicyAbstract {
     }
 
     /**
-     * Gets the map between each VM and the number of PEs used. The map key is a VM
-     * UID and the value is the number of used Pes for that VM.
+     * Gets the map between each VM and the number of PEs used. The map key is a
+     * VM UID and the value is the number of used Pes for that VM.
      *
      * @return the used PEs map
      */

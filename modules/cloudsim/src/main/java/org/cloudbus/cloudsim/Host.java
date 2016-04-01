@@ -8,8 +8,8 @@ import org.cloudbus.cloudsim.listeners.EventListener;
 import org.cloudbus.cloudsim.provisioners.ResourceProvisioner;
 
 /**
- * An interface to be implemented by Host objects in order to provide
- * basic Host features. It also implements the Null Object Design
+ * An interface to be implemented by each class that provides
+ * Host features. The interface implements the Null Object Design
  * Pattern in order to start avoiding {@link NullPointerException} 
  * when using the {@link Host#NULL} object instead
  * of attributing {@code null} to {@link Host} variables.

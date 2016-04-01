@@ -9,8 +9,8 @@ import org.cloudbus.cloudsim.Vm;
 
 /**
  * An interface to be implemented by each class that represents a policy used by
- * a {@link Datacenter Datacenters} to choose a {@link Host} to allocate a
- * given {@link Vm} into.
+ * a {@link Datacenter} to choose a {@link Host} to place or migrate a
+ * given {@link Vm}.
  *
  * @author Manoel Campos da Silva Filho
  */
