@@ -1072,6 +1072,9 @@ public class CloudSim {
      * @see #getOnEventProcessingListener() 
      */
     public static void setOnEventProcessingListener(EventListener<CloudSim, SimEvent> onEventProcessingListener) {
+        if(onEventProcessingListener == null)
+            onEventProcessingListener = EventListener.NULL;
+        
         CloudSim.onEventProcessingListener = onEventProcessingListener;
     }
 

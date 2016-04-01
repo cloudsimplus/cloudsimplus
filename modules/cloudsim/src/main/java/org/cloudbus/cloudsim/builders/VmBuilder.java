@@ -29,7 +29,7 @@ public class VmBuilder {
     private EventListener<Vm, Host> onHostAllocationListener;
     private EventListener<Vm, Host> onHostDeallocationListener;
     private EventListener<Vm, Datacenter> onVmCreationFailureListener;
-    private EventListener<Vm, Host> onUpdateVmProcessing;
+    private EventListener<Vm, Host> onUpdateVmProcessingListener;
 
     public VmBuilder(final DatacenterBrokerSimple broker) {
         if(broker == null)
@@ -40,7 +40,7 @@ public class VmBuilder {
         this.onHostAllocationListener = EventListener.NULL;
         this.onHostDeallocationListener = EventListener.NULL;
         this.onVmCreationFailureListener = EventListener.NULL;
-        this.onUpdateVmProcessing = EventListener.NULL;
+        this.onUpdateVmProcessingListener = EventListener.NULL;
         this.cloudletScheduler = new CloudletSchedulerSpaceShared();
     }
     
@@ -93,7 +93,7 @@ public class VmBuilder {
             vm.setOnHostAllocationListener(onHostAllocationListener);
             vm.setOnHostDeallocationListener(onHostDeallocationListener);
             vm.setOnVmCreationFailureListener(onVmCreationFailureListener);
-            vm.setOnUpdateVmProcessingListener(onUpdateVmProcessing);
+            vm.setOnUpdateVmProcessingListener(onUpdateVmProcessingListener);
             vms.add(vm);
         }
         broker.submitVmList(vms);
@@ -148,13 +148,13 @@ public class VmBuilder {
         return this;
     }
 
-    public EventListener<Vm, Host> getOnUpdateVmProcessing() {
-        return onUpdateVmProcessing;
+    public EventListener<Vm, Host> getOnUpdateVmProcessingListener() {
+        return onUpdateVmProcessingListener;
     }
 
-    public VmBuilder setOnUpdateVmProcessing(EventListener<Vm, Host> onUpdateVmProcessing) {
+    public VmBuilder setOnUpdateVmProcessingListener(EventListener<Vm, Host> onUpdateVmProcessing) {
         if(onUpdateVmProcessing != null) {
-            this.onUpdateVmProcessing = onUpdateVmProcessing;
+            this.onUpdateVmProcessingListener = onUpdateVmProcessing;
         }
         return this;
     }

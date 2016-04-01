@@ -4,6 +4,7 @@ import org.cloudbus.cloudsim.resources.Pe;
 import org.cloudbus.cloudsim.schedulers.VmScheduler;
 import java.util.Collections;
 import java.util.List;
+import org.cloudbus.cloudsim.listeners.EventListener;
 import org.cloudbus.cloudsim.provisioners.ResourceProvisioner;
 
 /**
@@ -308,6 +309,32 @@ public interface Host {
     void vmDestroyAll();
     
     /**
+     * Gets the listener object that will be notified every time when 
+     * the host updates the processing of all its {@link Vm VMs}.
+     * When the listener is notified, it receives the host that
+     * has updated its VMs processing and the completion time of one next
+     * finishing cloudlet. This value is the return of the method
+     * {@link #updateVmsProcessing(double)}.
+     *
+     * @return the onUpdateVmsProcessingListener
+     * @see #updateVmsProcessing(double) 
+     */
+    EventListener<Host, Double> getOnUpdateVmsProcessingListener();
+
+    /**
+     * Sets the listener object that will be notified every time when 
+     * the host updates the processing of all its {@link Vm VMs}.
+     * When the listener is notified, it receives the host that
+     * has updated its VMs processing and the completion time of one next
+     * finishing cloudlet. This value is the return of the method
+     * {@link #updateVmsProcessing(double)}.
+     *
+     * @param onUpdateVmsProcessingListener the onUpdateVmsProcessingListener to set
+     * @see #updateVmsProcessing(double) 
+     */
+    void setOnUpdateVmsProcessingListener(EventListener<Host, Double> onUpdateVmsProcessingListener);    
+    
+    /**
      * A property that implements the Null Object Design Pattern for {@link Host}
      * objects.
      */
@@ -346,5 +373,7 @@ public interface Host {
         @Override public boolean vmCreate(Vm vm) { return false; }
         @Override public void vmDestroy(Vm vm) {}
         @Override public void vmDestroyAll() {}
+        @Override public EventListener<Host, Double> getOnUpdateVmsProcessingListener() { return EventListener.NULL; }
+        @Override public void setOnUpdateVmsProcessingListener(EventListener<Host, Double> onUpdateVmsProcessingListener) {}
     };
 }

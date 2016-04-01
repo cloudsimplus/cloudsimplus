@@ -365,6 +365,7 @@ public class CloudletSimple implements Cloudlet {
     public void setOnCloudletFinishEventListener(EventListener<Cloudlet, Vm> onCloudletFinishEventListener) {
         if(onCloudletFinishEventListener == null)
             onCloudletFinishEventListener = EventListener.NULL;
+        
         this.onCloudletFinishEventListener = onCloudletFinishEventListener;
     }
 

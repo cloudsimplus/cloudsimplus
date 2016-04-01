@@ -13,6 +13,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.cloudbus.cloudsim.core.CloudSim;
+import org.cloudbus.cloudsim.listeners.EventListener;
 import org.cloudbus.cloudsim.lists.PeList;
 import org.cloudbus.cloudsim.provisioners.ResourceProvisioner;
 import org.cloudbus.cloudsim.resources.RawStorage;
@@ -59,6 +60,9 @@ public class HostSimple implements Host {
 
     /** @see #getDatacenter()  */
     private Datacenter datacenter;
+    
+    /** @see #getOnUpdateVmsProcessingListener() */
+    private  EventListener<Host, Double> onUpdateVmsProcessingListener;
 
     /**
      * Instantiates a new Host.
@@ -84,6 +88,7 @@ public class HostSimple implements Host {
         setVmScheduler(vmScheduler);
         setPeList(peList);
         setFailed(false);
+        onUpdateVmsProcessingListener = EventListener.NULL;
     }
 
     /**
@@ -103,17 +108,20 @@ public class HostSimple implements Host {
      */
     @Override
     public double updateVmsProcessing(double currentTime) {
-        double smallerTime = Double.MAX_VALUE;
+        double completionTimeOfNextFinishingCloudlet = Double.MAX_VALUE;
 
         for (Vm vm : getVmList()) {
             double time = vm.updateVmProcessing(
                 currentTime, getVmScheduler().getAllocatedMipsForVm(vm));
-            if (time > 0.0 && time < smallerTime) {
-                smallerTime = time;
+            if (time > 0.0 && time < completionTimeOfNextFinishingCloudlet) {
+                completionTimeOfNextFinishingCloudlet = time;
             }
         }
+        
+        onUpdateVmsProcessingListener.update(
+                currentTime, this, completionTimeOfNextFinishingCloudlet);
 
-        return smallerTime;
+        return completionTimeOfNextFinishingCloudlet;
     }
 
     /**
@@ -668,6 +676,19 @@ public class HostSimple implements Host {
     @Override
     public String toString() {
         return String.valueOf(this.id);
+    }
+
+    @Override
+    public EventListener<Host, Double> getOnUpdateVmsProcessingListener() {
+        return onUpdateVmsProcessingListener;
+    }
+
+    @Override
+    public void setOnUpdateVmsProcessingListener(EventListener<Host, Double> onUpdateVmsProcessingListener) {
+        if(onUpdateVmsProcessingListener==null)
+            onUpdateVmsProcessingListener = EventListener.NULL;
+        
+        this.onUpdateVmsProcessingListener = onUpdateVmsProcessingListener;
     }
  
 }

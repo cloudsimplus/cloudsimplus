@@ -7,6 +7,7 @@ import java.util.List;
 import org.cloudbus.cloudsim.Consts;
 import org.cloudbus.cloudsim.Host;
 import org.cloudbus.cloudsim.HostSimple;
+import org.cloudbus.cloudsim.listeners.EventListener;
 import org.cloudbus.cloudsim.resources.Pe;
 import org.cloudbus.cloudsim.schedulers.VmSchedulerAbstract;
 import org.cloudbus.cloudsim.schedulers.VmSchedulerTimeShared;
@@ -26,6 +27,7 @@ public class HostBuilder extends Builder {
     private long   storage = Consts.MILLION;
     private int    ram = 1024;
     private Class<? extends VmSchedulerAbstract> vmSchedulerClass = VmSchedulerTimeShared.class;
+    private EventListener<Host, Double> onUpdateVmsProcessingListener = EventListener.NULL;
     
     private int numberOfCreatedHosts;
     private final List<Host> hosts;
@@ -50,6 +52,7 @@ public class HostBuilder extends Builder {
                     new ResourceProvisionerSimple<>(new Ram(ram)),
                     new ResourceProvisionerSimple<>(new Bandwidth(bw)),
                     storage, peList, (VmSchedulerAbstract) cons.newInstance(peList));
+            host.setOnUpdateVmsProcessingListener(onUpdateVmsProcessingListener);
             hosts.add(host);
             return host;
         } catch (NoSuchMethodException | SecurityException ex) {
@@ -123,6 +126,15 @@ public class HostBuilder extends Builder {
 
     public HostBuilder setVmSchedulerClass(Class<? extends VmSchedulerAbstract> defaultVmSchedulerClass) {
         this.vmSchedulerClass = defaultVmSchedulerClass;
+        return this;
+    }
+
+    public EventListener<Host, Double> getOnUpdateVmsProcessingListener() {
+        return onUpdateVmsProcessingListener;
+    }
+
+    public HostBuilder setOnUpdateVmsProcessingListener(EventListener<Host, Double> onUpdateVmsProcessingListener) {
+        this.onUpdateVmsProcessingListener = onUpdateVmsProcessingListener;
         return this;
     }
 

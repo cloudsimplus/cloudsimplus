@@ -188,7 +188,7 @@ public final class VmCreationFailureIntegrationTest {
                 .setOnHostAllocationListener((t,v,h) -> onHostAllocation(t,v,h))
                 .setOnHostDeallocationListener((t,v,h) -> onHostDeallocation(t,v,h))
                 .setOnVmCreationFilatureListenerForAllVms((t,v,d) -> onVmCreationFailure(t,v,d))
-                .setOnUpdateVmProcessing((t,v,h) -> onUpdateVmProcessing(t, v, h))
+                .setOnUpdateVmProcessingListener((t,v,h) -> onUpdateVmProcessing(t, v, h))
                 /*try to createBroker 2 Vm where there is capacity to only one,
                  thus, just 1 will be created*/
                 .createAndSubmitVms(2);

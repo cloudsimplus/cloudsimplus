@@ -771,8 +771,9 @@ public class VmSimple implements Vm {
     @Override
     public void setOnHostAllocationListener(EventListener<Vm, Host> onHostAllocationListener) {
         if (onHostAllocationListener == null)
-            this.onHostAllocationListener = EventListener.NULL;
-        else this.onHostAllocationListener = onHostAllocationListener;
+            onHostAllocationListener = EventListener.NULL;
+        
+        this.onHostAllocationListener = onHostAllocationListener;
     }
 
     /**
@@ -786,8 +787,9 @@ public class VmSimple implements Vm {
     @Override
     public void setOnHostDeallocationListener(EventListener<Vm, Host> onHostDeallocationListener) {
         if (onHostDeallocationListener == null)
-            this.onHostDeallocationListener = EventListener.NULL;
-        else this.onHostDeallocationListener = onHostDeallocationListener;
+            onHostDeallocationListener = EventListener.NULL;
+        
+        this.onHostDeallocationListener = onHostDeallocationListener;
     }
 
     /**
@@ -844,8 +846,9 @@ public class VmSimple implements Vm {
     @Override
     public void setOnVmCreationFailureListener(EventListener<Vm, Datacenter> onVmCreationFailureListener) {
         if (onVmCreationFailureListener == null) 
-            this.onVmCreationFailureListener = EventListener.NULL;
-        else this.onVmCreationFailureListener = onVmCreationFailureListener;
+            onVmCreationFailureListener = EventListener.NULL;
+        
+        this.onVmCreationFailureListener = onVmCreationFailureListener;
     }
 
     @Override
@@ -856,8 +859,9 @@ public class VmSimple implements Vm {
     @Override
     public void setOnUpdateVmProcessingListener(EventListener<Vm, Host> onUpdateVmProcessingListener) {
         if(onUpdateVmProcessingListener == null)
-            this.onUpdateVmProcessingListener = EventListener.NULL;
-        else this.onUpdateVmProcessingListener = onUpdateVmProcessingListener;
+            onUpdateVmProcessingListener = EventListener.NULL;
+        
+        this.onUpdateVmProcessingListener = onUpdateVmProcessingListener;
     }
 
 }

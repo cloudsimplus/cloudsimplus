@@ -110,8 +110,13 @@ public class CloudletBuilder extends Builder {
         this.length = defaultLength;
         return this;
     }
+    
+    public CloudletBuilder createAndSubmitOneCloudlet() {
+        return createAndSubmitCloudlets(1);
+    }
 
     public CloudletBuilder createAndSubmitCloudlets(final int amount) {
+        List<Cloudlet> localList = new ArrayList<>();
         for (int i = 0; i < amount; i++) {
             Cloudlet cloudlet =
                     new CloudletSimple(
@@ -121,9 +126,10 @@ public class CloudletBuilder extends Builder {
                             utilizationModelCpu, utilizationModelRam, utilizationModelBw);
             cloudlet.setUserId(broker.getId());
             cloudlet.setOnCloudletFinishEventListener(onCloudletFinishEventListener);
-            cloudlets.add(cloudlet);
+            localList.add(cloudlet);
         }
-        broker.submitCloudletList(cloudlets);
+        broker.submitCloudletList(localList);
+        cloudlets.addAll(localList);
         return this;
     }
 
