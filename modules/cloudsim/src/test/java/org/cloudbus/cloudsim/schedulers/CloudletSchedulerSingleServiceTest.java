@@ -145,7 +145,7 @@ public class CloudletSchedulerSingleServiceTest {
 		vmScheduler.cloudletFinish(new ResCloudlet(cloudlet));
 
 		assertEquals(CloudletSimple.Status.SUCCESS.ordinal(), vmScheduler.getCloudletStatus(0));
-		assertTrue(vmScheduler.isFinishedCloudlets());
+		assertTrue(vmScheduler.areThereFinishedCloudlets());
 		assertSame(cloudlet, vmScheduler.getNextFinishedCloudlet());
 	}
 
@@ -368,11 +368,11 @@ public class CloudletSchedulerSingleServiceTest {
 		double actualCompletionTime2 = vmScheduler.updateVmProcessing(1, mipsShare);
 		assertEquals(expectedCompletiontime2, actualCompletionTime2, 0);
 
-		assertFalse(vmScheduler.isFinishedCloudlets());
+		assertFalse(vmScheduler.areThereFinishedCloudlets());
 
 		assertEquals(0, vmScheduler.updateVmProcessing(CLOUDLET_LENGTH, mipsShare), 0);
 
-		assertTrue(vmScheduler.isFinishedCloudlets());
+		assertTrue(vmScheduler.areThereFinishedCloudlets());
 	}
 
 }

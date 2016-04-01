@@ -35,18 +35,14 @@ public class CloudSimShutdown extends SimEntity {
 	 * 
 	 * @param name the name to be associated with this entity (as required by {@link SimEntity} class)
 	 * @param numUser total number of cloud user entities
-	 * @throws Exception when creating this entity before initialising CloudSim package
+	 * @throws IllegalArgumentException when creating this entity before initialising CloudSim package
 	 *             or this entity name is <tt>null</tt> or empty
 	 * @see CloudSim#init(int, java.util.Calendar, boolean) 
 	 * @pre name != null
 	 * @pre numUser >= 0
 	 * @post $none
-         * 
-         * @todo The use of Exception is not recommended. Specific exceptions
-         * would be thrown (such as {@link IllegalArgumentException})
-         * or {@link RuntimeException}
 	 */
-	public CloudSimShutdown(String name, int numUser) throws Exception {
+	public CloudSimShutdown(String name, int numUser) throws IllegalArgumentException {
 		// NOTE: This entity doesn't use any I/O port.
 		// super(name, CloudSimTags.DEFAULT_BAUD_RATE);
 		super(name);

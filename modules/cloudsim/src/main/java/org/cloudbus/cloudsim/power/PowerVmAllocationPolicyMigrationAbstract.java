@@ -20,7 +20,7 @@ import org.cloudbus.cloudsim.HostDynamicWorkloadSimple;
 import org.cloudbus.cloudsim.Log;
 import org.cloudbus.cloudsim.Vm;
 import org.cloudbus.cloudsim.core.CloudSim;
-import org.cloudbus.cloudsim.power.lists.PowerVmList;
+import org.cloudbus.cloudsim.lists.PowerVmList;
 import org.cloudbus.cloudsim.util.ExecutionTimeMeasurer;
 
 /**
@@ -123,13 +123,6 @@ public abstract class PowerVmAllocationPolicyMigrationAbstract extends PowerVmAl
         setVmSelectionPolicy(vmSelectionPolicy);
     }
     
-    /**
-     * Optimize allocation of the VMs according to current utilization.
-     *
-     * @param vmList the vm list
-     *
-     * @return the array list< hash map< string, object>>
-     */
     @Override
     public List<Map<String, Object>> optimizeAllocation(List<? extends Vm> vmList) {
         ExecutionTimeMeasurer.start("optimizeAllocationTotal");
@@ -332,7 +325,10 @@ public abstract class PowerVmAllocationPolicyMigrationAbstract extends PowerVmAl
      * @param vmsToMigrate the list of VMs to migrate
      * @param excludedHosts the list of hosts that aren't selected as
      * destination hosts
-     * @return the new vm placement map
+     * @return the new vm placement list, where each item is a map
+     * where the key is the first item is the VM and the second is the
+     * host where it has to be placed. The map key is just to identify
+     * if the map item is the VM or Host
      */
     protected List<Map<String, Object>> getNewVmPlacement(
             List<Vm> vmsToMigrate,

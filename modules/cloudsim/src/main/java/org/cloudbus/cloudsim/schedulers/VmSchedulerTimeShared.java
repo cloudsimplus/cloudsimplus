@@ -50,7 +50,7 @@ public class VmSchedulerTimeShared extends VmSchedulerAbstract {
 	 */
 	public VmSchedulerTimeShared(List<Pe> pelist) {
 		super(pelist);
-		setMipsMapRequested(new HashMap<String, List<Double>>());
+		setMipsMapRequested(new HashMap<>());
 	}
 
 	@Override

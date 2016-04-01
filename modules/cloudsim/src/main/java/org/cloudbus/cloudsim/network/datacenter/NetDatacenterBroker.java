@@ -338,7 +338,7 @@ public class NetDatacenterBroker extends SimEntity {
 			List<Integer> vmids = new ArrayList<Integer>();
 			int numVms = linkDC.getVmList().size();
 			UniformDistr ufrnd = new UniformDistr(0, numVms, 5);
-			for (int i = 0; i < app.numbervm; i++) {
+			for (int i = 0; i < app.numberOfVMs; i++) {
 
 				int vmid = (int) ufrnd.sample();
 				vmids.add(vmid);
@@ -349,9 +349,9 @@ public class NetDatacenterBroker extends SimEntity {
 				if (!vmids.isEmpty()) {
 
 					app.createCloudletList(vmids);
-					for (int i = 0; i < app.numbervm; i++) {
+					for (int i = 0; i < app.numberOfVMs; i++) {
 						app.clist.get(i).setUserId(getId());
-						appCloudletRecieved.put(app.appID, app.numbervm);
+						appCloudletRecieved.put(app.appID, app.numberOfVMs);
 						this.getCloudletSubmittedList().add(app.clist.get(i));
 						cloudletsSubmitted++;
 

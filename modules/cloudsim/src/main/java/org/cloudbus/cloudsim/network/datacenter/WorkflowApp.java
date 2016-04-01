@@ -36,7 +36,7 @@ public class WorkflowApp extends AppCloudlet {
 	public WorkflowApp(int type, int appID, double deadline, int numbervm, int userId) {
 		super(type, appID, deadline, numbervm, userId);
 		exeTime = 100;
-		this.numbervm = 3;
+		this.numberOfVMs = 3;
 	}
 
         /**

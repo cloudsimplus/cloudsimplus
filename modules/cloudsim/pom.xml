@@ -45,7 +45,15 @@
                                 <exclude>**/IntegrationTests/*.java</exclude>
                             </excludes>
                         </configuration>
-                    </plugin>                                     
+                    </plugin>    
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-javadoc-plugin</artifactId>
+                        <configuration>
+                            <!-- Switch OFF the doclint in Java 8 -->  
+                            <additionalparam>-Xdoclint:none</additionalparam>
+                        </configuration>
+                    </plugin>                                                     
                 </plugins>
             </build>
         </profile>
@@ -82,7 +90,7 @@
                         <groupId>org.apache.maven.plugins</groupId>
                         <artifactId>maven-javadoc-plugin</artifactId>
                         <configuration>
-                            <!-- Switch OFF the docling in Java 8 -->  
+                            <!-- Switch OFF the doclint in Java 8 -->  
                             <additionalparam>-Xdoclint:none</additionalparam>
                         </configuration>
                     </plugin>

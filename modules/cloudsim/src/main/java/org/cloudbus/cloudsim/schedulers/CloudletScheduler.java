@@ -60,7 +60,7 @@ public interface CloudletScheduler extends Serializable {
     /**
      * Receives an cloudlet to be executed in the VM managed by this scheduler.
      *
-     * @param cl the submited cloudlet (@todo it's a strange param name)
+     * @param cl the submitted cloudlet
      * @param fileTransferTime time required to move the required files from the SAN to the VM
      * @return expected finish time of this cloudlet, or 0 if it is in a waiting queue
      * @pre cl != null
@@ -233,9 +233,8 @@ public interface CloudletScheduler extends Serializable {
      * @return $true if there is at least one finished cloudlet; $false otherwise
      * @pre $none
      * @post $none
-     * @todo the method name would be isThereFinishedCloudlets to be clearer
      */
-    boolean isFinishedCloudlets();
+    boolean areThereFinishedCloudlets();
 
     /**
      * Returns one cloudlet to migrate to another vm.
@@ -294,7 +293,7 @@ public interface CloudletScheduler extends Serializable {
         @Override public double getTotalCurrentAvailableMipsForCloudlet(ResCloudlet rcl, List<Double> mipsShare) { return 0.0; }
         @Override public double getTotalCurrentRequestedMipsForCloudlet(ResCloudlet rcl, double time) { return 0.0; }
         @Override public double getTotalUtilizationOfCpu(double time) { return 0.0; }
-        @Override public boolean isFinishedCloudlets() { return false; }
+        @Override public boolean areThereFinishedCloudlets() { return false; }
         @Override public Cloudlet migrateCloudlet() { return Cloudlet.NULL; }
         @Override public int runningCloudlets() { return 0; }
         @Override public double updateVmProcessing(double currentTime, List<Double> mipsShare) { return 0.0; }

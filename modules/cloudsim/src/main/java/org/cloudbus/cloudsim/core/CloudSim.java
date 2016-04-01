@@ -577,10 +577,8 @@ public class CloudSim {
      * should <b>not</b> be called in simulations.
      *
      * @return true if the event queue is empty, false otherwise
-     * @todo If the method shouldn't be called by the user, it should be
-     * protected in any way, such as changing its visibility to package.
      */
-    public static boolean runClockTickAndCheckIfEventQueueIsEmpty() {
+    private static boolean runClockTickAndCheckIfEventQueueIsEmpty() {
         SimEntity ent;
         boolean queue_empty;
 

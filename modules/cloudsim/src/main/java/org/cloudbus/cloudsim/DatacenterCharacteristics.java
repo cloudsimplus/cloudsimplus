@@ -218,14 +218,14 @@ public class DatacenterCharacteristics {
      *
      * @pre $none
      * @post $result >= -1
-     * @todo It considers that all PEs of all PM have the same MIPS capacity,
+     * @todo It considers that all PEs of all PMs have the same MIPS capacity,
      * what is not ensured because it is possible to add PMs of different
      * configurations to a datacenter. Even for the {@link Host} it is possible
      * to add Pe's of different capacities through the {@link Host#peList}
      * attribute.
      */
     public int getMipsOfOnePe() {
-        if (getHostList().size() == 0) {
+        if (getHostList().isEmpty()) {
             return -1;
         }
 
@@ -241,22 +241,20 @@ public class DatacenterCharacteristics {
      * Element (Pe). It is essential to use this method when a datacenter is
      * made up of heterogenous PEs per PMs.
      *
-     * @param id the machine ID
+     * @param hostId the machine ID
      * @param peId the Pe ID
      * @return the MIPS Rating or -1 if no PEs are exists.
      *
      * @pre id >= 0
      * @pre peID >= 0
      * @post $result >= -1
-     *
-     * @todo The id parameter would be renamed to pmId to be clear.
      */
-    public int getMipsOfOnePe(int id, int peId) {
-        if (getHostList().size() == 0) {
+    public int getMipsOfOnePe(int hostId, int peId) {
+        if (getHostList().isEmpty()) {
             return -1;
         }
 
-        return PeList.getMips(HostList.getById(getHostList(), id).getPeList(), peId);
+        return PeList.getMips(HostList.getById(getHostList(), hostId).getPeList(), peId);
     }
 
     /**
@@ -600,7 +598,6 @@ public class DatacenterCharacteristics {
      *
      * @param <T> The generic type
      * @return the host list
-     * @todo check this warning below
      */
     public <T extends Host> List<T> getHostList() {
         return (List<T>) hostList;

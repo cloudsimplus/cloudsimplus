@@ -144,13 +144,11 @@ public class PowerVmAllocationPolicyMigrationMedianAbsoluteDeviation extends
 	 * Sets the safety parameter.
 	 * 
 	 * @param safetyParameter the new safety parameter
-         * @todo It should raise an InvalidArgumentException instead of calling System.exit(0)
 	 */
 	protected final void setSafetyParameter(double safetyParameter) {
 		if (safetyParameter < 0) {
-			Log.printConcatLine("The safety parameter cannot be less than zero. The passed value is: ",
-					safetyParameter);
-			System.exit(0);
+                    throw new IllegalArgumentException(
+                        "The safety parameter cannot be less than zero.");
 		}
 		this.safetyParameter = safetyParameter;
 	}

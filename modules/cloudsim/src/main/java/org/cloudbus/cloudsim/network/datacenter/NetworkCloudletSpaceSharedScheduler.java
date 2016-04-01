@@ -112,7 +112,7 @@ public class NetworkCloudletSpaceSharedScheduler extends CloudletSchedulerAbstra
 					// update the time
 					cl.timespentInStage = Math.round(CloudSim.clock() - cl.timetostartStage);
 					if (cl.timespentInStage >= st.time) {
-						changetonextstage(cl, st);
+						changeToNextStage(cl, st);
 						// change the stage
 					}
 				}
@@ -128,7 +128,7 @@ public class NetworkCloudletSpaceSharedScheduler extends CloudletSchedulerAbstra
 							if (pkt.reciever == cl.getVmId()) {
 								pkt.recievetime = CloudSim.clock();
 								st.time = CloudSim.clock() - pkt.sendtime;
-								changetonextstage(cl, st);
+								changeToNextStage(cl, st);
 								pkttoremove.add(pkt);
 							}
 						}
@@ -220,9 +220,8 @@ public class NetworkCloudletSpaceSharedScheduler extends CloudletSchedulerAbstra
         /**
          * Changes a cloudlet to the next stage.
          * 
-         * @todo It has to be corrected the method name case. Method too long
-         * to understand what is its responsibility.*/
-	private void changetonextstage(NetworkCloudlet cl, TaskStage st) {
+         * @todo  Method too long to understand what is its responsibility.*/
+	private void changeToNextStage(NetworkCloudlet cl, TaskStage st) {
 		cl.timespentInStage = 0;
 		cl.timetostartStage = CloudSim.clock();
 		int currstage = cl.currStagenum;
@@ -526,7 +525,7 @@ public class NetworkCloudletSpaceSharedScheduler extends CloudletSchedulerAbstra
 	}
 
 	@Override
-	public boolean isFinishedCloudlets() {
+	public boolean areThereFinishedCloudlets() {
 		return getCloudletFinishedList().size() > 0;
 	}
 

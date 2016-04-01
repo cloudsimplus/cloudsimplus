@@ -25,19 +25,12 @@ import org.cloudbus.cloudsim.resources.FileStorage;
 
 /**
  * Implements the basic features of a Virtualized Cloud Datacenter. It deals
- with processing of VM queries (i.e., handling of VMs) instead of processing
- Cloudlet-related queries. So, even though an AllocPolicy will be instantiated
- (in the init() method of the superclass, it will not be used, as processing
- of cloudlets are handled by the CloudletScheduler and processing of
- VirtualMachines are handled by the VmAllocationPolicyAbstract.
+ * with processing of VM queries (i.e., handling of VMs) instead of processing
+ * Cloudlet-related queries. 
  *
  * @author Rodrigo N. Calheiros
  * @author Anton Beloglazov
  * @since CloudSim Toolkit 1.0
- *
- * @todo In fact, there isn't the method init() in the super class, as stated in
- * the documentation here. An AllocPolicy isn't being instantiated there. The
- * last phrase of the class documentation appears to be out-of-date or wrong.
  */
 public class DatacenterSimple extends SimEntity implements Datacenter {
 
@@ -85,8 +78,8 @@ public class DatacenterSimple extends SimEntity implements Datacenter {
      * @param storageList a List of storage elements, for data simulation
      * @param vmAllocationPolicy the policy to be used to allocate VMs into
      * hosts
-     * @param schedulingInterval the scheduling interval to process each datacenter
-     * received event
+     * @param schedulingInterval the scheduling interval to process each
+     * datacenter received event
      * @throws IllegalArgumentException when one of the following scenarios
      * occur:
      * <ul>
@@ -752,7 +745,7 @@ public class DatacenterSimple extends SimEntity implements Datacenter {
                 Log.printLine("Therefore, it is not being executed again");
                 Log.printLine();
 
-                        // NOTE: If a Cloudlet has finished, then it won't be processed.
+                // NOTE: If a Cloudlet has finished, then it won't be processed.
                 // So, if ack is required, this method sends back a result.
                 // If ack is not required, this method don't send back a result.
                 // Hence, this might cause CloudSim to be hanged since waiting
@@ -945,12 +938,11 @@ public class DatacenterSimple extends SimEntity implements Datacenter {
     }
 
     /**
-     * Gets the time that one next cloudlet will finish executing
-     * on the list of datacenter's hosts.
-     * 
-     * @return the time that one next cloudlet will finish executing
-     * or {@link Double#MAX_VALUE} if there isn't any cloudlet
-     * running.
+     * Gets the time that one next cloudlet will finish executing on the list of
+     * datacenter's hosts.
+     *
+     * @return the time that one next cloudlet will finish executing or
+     * {@link Double#MAX_VALUE} if there isn't any cloudlet running.
      */
     public double completionTimeOfNextFinishingCloudlet() {
         List<? extends Host> list = getVmAllocationPolicy().getHostList();
@@ -970,22 +962,23 @@ public class DatacenterSimple extends SimEntity implements Datacenter {
     }
 
     /**
-     * Gets the time to wait before updating the processing of running cloudlets.
-     * 
-     * @return the cloudlet's processing delay or {@link Double#MAX_VALUE} if there
-     * isn't any cloudlet running.
-     * 
-     * @see #updateCloudletProcessing() 
+     * Gets the time to wait before updating the processing of running
+     * cloudlets.
+     *
+     * @return the cloudlet's processing delay or {@link Double#MAX_VALUE} if
+     * there isn't any cloudlet running.
+     *
+     * @see #updateCloudletProcessing()
      */
     private double delayToUpdateCloudletProcessing() {
         double completionTimeOfNextFinishingCloudlet = completionTimeOfNextFinishingCloudlet();
-        if(completionTimeOfNextFinishingCloudlet == Double.MAX_VALUE){
+        if (completionTimeOfNextFinishingCloudlet == Double.MAX_VALUE) {
             return completionTimeOfNextFinishingCloudlet;
         }
-        
-        return getSchedulingInterval() > 0 ? 
-                getSchedulingInterval() : 
-                completionTimeOfNextFinishingCloudlet - CloudSim.clock();
+
+        return getSchedulingInterval() > 0
+                ? getSchedulingInterval()
+                : completionTimeOfNextFinishingCloudlet - CloudSim.clock();
     }
 
     /**
@@ -999,7 +992,7 @@ public class DatacenterSimple extends SimEntity implements Datacenter {
         List<? extends Host> list = getVmAllocationPolicy().getHostList();
         for (Host host : list) {
             for (Vm vm : host.getVmList()) {
-                while (vm.getCloudletScheduler().isFinishedCloudlets()) {
+                while (vm.getCloudletScheduler().areThereFinishedCloudlets()) {
                     Cloudlet cl = vm.getCloudletScheduler().getNextFinishedCloudlet();
                     if (cl != null) {
                         sendNow(cl.getUserId(), CloudSimTags.CLOUDLET_RETURN, cl);
@@ -1263,8 +1256,9 @@ public class DatacenterSimple extends SimEntity implements Datacenter {
 
     @Override
     public Host getHost(int index) {
-        if(index >= 0 && index < getHostList().size())
+        if (index >= 0 && index < getHostList().size()) {
             return getHostList().get(index);
+        }
         return Host.NULL;
     }
 

@@ -17,9 +17,6 @@ package org.cloudbus.cloudsim.utilizationmodels;
  *
  * @author Anton Beloglazov
  * @since CloudSim Toolkit 2.0
- * @todo It has to be seen if the utilization models are only for cloudlets. If
- * yes, the name of the interface and implementing classes would include the
- * word "Cloudlet" to make clear their for what kind of entity they are related.
  */
 public interface UtilizationModel {
     /**

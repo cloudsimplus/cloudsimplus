@@ -259,7 +259,7 @@ public class CloudletSchedulerTimeShared extends CloudletSchedulerAbstract {
     }
 
     @Override
-    public boolean isFinishedCloudlets() {
+    public boolean areThereFinishedCloudlets() {
         return getCloudletFinishedList().size() > 0;
     }
 

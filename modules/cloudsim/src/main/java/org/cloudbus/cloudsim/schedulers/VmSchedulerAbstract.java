@@ -188,8 +188,6 @@ public abstract class VmSchedulerAbstract implements VmScheduler {
      * Gets the pe list.
      *
      * @return the pe list
-     * @todo The warning have to be checked
-     *
      */
     @Override
     public final List<Pe> getPeList() {

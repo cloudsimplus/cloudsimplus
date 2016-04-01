@@ -22,10 +22,6 @@ import java.util.Random;
  * 
  * @author Anton Beloglazov
  * @since CloudSim Toolkit 2.0
- * @todo This class is the only one that stores the utilization history and
- * make use of the time attribute at the {@link #getUtilization(double) } method.
- * Check the other classes to implement the same behavior
- * (that can be placed in the super class)
  */
 public class UtilizationModelStochastic implements UtilizationModel {
 

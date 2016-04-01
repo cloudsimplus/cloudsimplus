@@ -6,7 +6,7 @@
  * Copyright (c) 2009-2012, The University of Melbourne, Australia
  */
 
-package org.cloudbus.cloudsim.power.lists;
+package org.cloudbus.cloudsim.lists;
 
 import java.util.Collections;
 import java.util.Comparator;
@@ -14,7 +14,6 @@ import java.util.List;
 
 import org.cloudbus.cloudsim.Vm;
 import org.cloudbus.cloudsim.core.CloudSim;
-import org.cloudbus.cloudsim.lists.VmList;
 
 /**
  * PowerVmList is a collection of operations on lists of power-enabled VMs.
@@ -33,8 +32,7 @@ import org.cloudbus.cloudsim.lists.VmList;
  * 
  * @author Anton Beloglazov
  * @since CloudSim Toolkit 2.0
- * @todo It is a list, so it would be better inside the org.cloudbus.cloudsim.lists package.
- * This class in fact doesn't use a list or PowerVm, but a list of Vm.
+ * @todo This class in fact doesn't use a list or PowerVm, but a list of Vm.
  * The used methods are just of the Vm class, thus doesn't have
  * a reason to create another class. This classes don't either stores lists of VM,
  * they only perform operations on lists given by parameter.

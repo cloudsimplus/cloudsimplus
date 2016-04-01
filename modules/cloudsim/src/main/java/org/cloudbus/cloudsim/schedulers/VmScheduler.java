@@ -101,7 +101,6 @@ public interface VmScheduler {
      *
      * @param <T> the generic type
      * @return the pe list
-     * @todo The warning have to be checked
      *
      */
     <T extends Pe> List<T> getPeList();

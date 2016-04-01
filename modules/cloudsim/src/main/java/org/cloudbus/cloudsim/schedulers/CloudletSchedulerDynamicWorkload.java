@@ -44,9 +44,6 @@ public class CloudletSchedulerDynamicWorkload extends CloudletSchedulerTimeShare
 	/** The number of PEs allocated to the VM using the scheduler. */
 	private int numberOfPes;
 
-	/** The total MIPS considering all PEs. */
-	private double totalMips;
-
 	/** The under allocated MIPS. */
 	private Map<String, Double> underAllocatedMips;
 
@@ -69,13 +66,7 @@ public class CloudletSchedulerDynamicWorkload extends CloudletSchedulerTimeShare
 		super();
 		setMips(mips);
 		setNumberOfPes(numberOfPes);
-                /*@todo There shouldn't be a setter to total mips, considering
-                that it is computed from number of PEs and mips.
-                If the number of pes of mips is set any time after here,
-                the total mips will be wrong. Just the getTotalMips is enough,
-                and it have to compute there the total, instead of storing into an attribute.*/
-		setTotalMips(getNumberOfPes() * getMips());
-		setUnderAllocatedMips(new HashMap<String, Double>());
+		setUnderAllocatedMips(new HashMap<>());
 		setCachePreviousTime(-1);
 	}
 
@@ -245,21 +236,12 @@ public class CloudletSchedulerDynamicWorkload extends CloudletSchedulerTimeShare
 	}
 
 	/**
-	 * Sets the total mips.
+	 * Gets the total mips considering all PEs.
 	 * 
-	 * @param mips the new total mips
-	 */
-	public final void setTotalMips(double mips) {
-		totalMips = mips;
-	}
-
-	/**
-	 * Gets the total mips.
-	 * 
-	 * @return the total mips
+	 * @return the total mips capacity
 	 */
 	public double getTotalMips() {
-		return totalMips;
+            return getNumberOfPes() * getMips();
 	}
 
 	/**

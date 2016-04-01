@@ -3,6 +3,7 @@ package org.cloudbus.cloudsim.allocationpolicies;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import org.cloudbus.cloudsim.Datacenter;
 import org.cloudbus.cloudsim.Host;
 import org.cloudbus.cloudsim.Vm;
 
@@ -80,7 +81,10 @@ public interface VmAllocationPolicy {
      * Optimize allocation of the VMs according to current utilization.
      *
      * @param vmList the vm list
-     * @return the array list< hash map< string, object>>
+     * @return the new vm placement list, where each item is a map
+     * where the key is the first item is the VM and the second is the
+     * host where it has to be placed. The map key is just to identify
+     * if the map item is the VM or Host
      *
      * @todo It returns a list of maps, where each map key is a string and
      * stores an object. What in fact are the keys and values of this Map?

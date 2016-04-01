@@ -118,7 +118,7 @@ public class Switch extends SimEntity {
 
 	/** Something is running on these hosts. 
          * @todo The attribute is only used at the TestExample class. */
-	public SortedMap<Double, List<NetworkHost>> fintimelistHost = new TreeMap<Double, List<NetworkHost>>();
+	public SortedMap<Double, List<NetworkHost>> fintimelistHost = new TreeMap<>();
 
 	/** Something is running on these hosts. 
          * @todo The attribute doesn't appear to be used */
@@ -150,7 +150,7 @@ public class Switch extends SimEntity {
          * A map of VMs connected to this switch.
          * @todo The list doesn't appear to be updated (VMs added to it) anywhere. 
          */
-	public Map<Integer, NetworkVm> Vmlist = new HashMap<Integer, NetworkVm>();
+	public Map<Integer, NetworkVm> Vmlist = new HashMap<>();
 
 	public Switch(String name, int level, NetworkDatacenter dc) {
 		super(name);
@@ -380,11 +380,9 @@ public class Switch extends SimEntity {
          * the {@link #processEvent(org.cloudbus.cloudsim.core.SimEvent)} method.
          * This method should be overridden by subclasses in other to process
          * new defined events.
-         *  
-         * @todo the method should be protected to allow sub classes to override it,
-         * once it does nothing here.
+         * @param ev
          */
-	private void processOtherEvent(SimEvent ev) {
+	protected void processOtherEvent(SimEvent ev) {
 
 	}
 

@@ -377,7 +377,7 @@ public class CloudletSchedulerSpaceShared extends CloudletSchedulerAbstract {
 	}
 
 	@Override
-	public boolean isFinishedCloudlets() {
+	public boolean areThereFinishedCloudlets() {
 		return getCloudletFinishedList().size() > 0;
 	}
 
@@ -400,16 +400,17 @@ public class CloudletSchedulerSpaceShared extends CloudletSchedulerAbstract {
 	 * @return the first running cloudlet
 	 * @pre $none
 	 * @post $none
-         * 
-         * @todo it doesn't check if the list is empty
 	 */
 	@Override
 	public Cloudlet migrateCloudlet() {
-		ResCloudlet rcl = getCloudletExecList().remove(0);
-		rcl.finalizeCloudlet();
-		Cloudlet cl = rcl.getCloudlet();
-		usedPes -= cl.getNumberOfPes();
-		return cl;
+            if(getCloudletExecList().isEmpty())
+                return null;
+            
+            ResCloudlet rcl = getCloudletExecList().remove(0);
+            rcl.finalizeCloudlet();
+            Cloudlet cl = rcl.getCloudlet();
+            usedPes -= cl.getNumberOfPes();
+            return cl;
 	}
 
 	/**

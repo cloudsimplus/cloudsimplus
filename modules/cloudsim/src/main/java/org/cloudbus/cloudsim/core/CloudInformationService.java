@@ -53,20 +53,17 @@ public class CloudInformationService extends SimEntity {
 	 * Instantiates a new CloudInformationService object.
 	 * 
 	 * @param name the name to be associated with this entity (as required by {@link SimEntity} class)
-	 * @throws Exception when creating this entity before initialising CloudSim package
+	 * @throws IllegalArgumentException when creating this entity before initialising CloudSim package
 	 *             or this entity name is <tt>null</tt> or empty
 	 * @pre name != null
 	 * @post $none
          * 
-         * @todo The use of Exception is not recommended. Specific exceptions
-         * would be thrown (such as {@link IllegalArgumentException})
-         * or {@link RuntimeException}
 	 */
-	public CloudInformationService(String name) throws Exception {
+	public CloudInformationService(String name) throws IllegalArgumentException {
 		super(name);
-		resList = new LinkedList<Integer>();
-		arList = new LinkedList<Integer>();
-		gisList = new LinkedList<Integer>();
+		resList = new LinkedList<>();
+		arList = new LinkedList<>();
+		gisList = new LinkedList<>();
 	}
 
         /**
