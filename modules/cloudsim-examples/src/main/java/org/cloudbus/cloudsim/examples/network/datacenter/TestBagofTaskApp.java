@@ -46,7 +46,7 @@ public class TestBagofTaskApp extends AppCloudlet {
         that is strange too (how can be seen in the todo below).
         Further, the given parameter is being ignored, so, it shound't
         exist.*/
-        this.numbervm=this.getnumvm();
+        this.numberOfVMs=this.getnumvm();
 
         /*@todo There is something strange here.
         The attribute is exeTime but the getter is getExecTime (see: exec not exe).
@@ -54,7 +54,7 @@ public class TestBagofTaskApp extends AppCloudlet {
         in the attribute, that is not used anywhere. There is no getter in the
         super class.
         */
-        this.exeTime=getExecTime()/this.numbervm;
+        this.exeTime=getExecTime()/this.numberOfVMs;
     }
 
     @Override
@@ -67,20 +67,20 @@ public class TestBagofTaskApp extends AppCloudlet {
         int pesNumber = NetworkConstants.PES_NUMBER;
         int stgId=0;
         int t=NetworkConstants.currentCloudletId;
-        for(int i=0;i<numbervm;i++){
+        for(int i=0;i<numberOfVMs;i++){
             UtilizationModel utilizationModel = new UtilizationModelFull();
-            NetworkCloudlet cl = new NetworkCloudlet(NetworkConstants.currentCloudletId, executionTime/numbervm, pesNumber, fileSize, outputSize, memory, utilizationModel, utilizationModel, utilizationModel);
+            NetworkCloudlet cl = new NetworkCloudlet(NetworkConstants.currentCloudletId, executionTime/numberOfVMs, pesNumber, fileSize, outputSize, memory, utilizationModel, utilizationModel, utilizationModel);
             NetworkConstants.currentCloudletId++;
             cl.setUserId(userId);
             cl.submittime=CloudSim.clock();
             cl.currStagenum=-1;
             cl.setVmId(vmIdList.get(i));
             //compute and send data to node 0
-            cl.stages.add(new TaskStage(NetworkConstants.EXECUTION, NetworkConstants.COMMUNICATION_LENGTH, executionTime/numbervm, stgId++, memory, vmIdList.get(0),cl.getCloudletId()));
+            cl.stages.add(new TaskStage(NetworkConstants.EXECUTION, NetworkConstants.COMMUNICATION_LENGTH, executionTime/numberOfVMs, stgId++, memory, vmIdList.get(0),cl.getCloudletId()));
 
             //0 has an extra stage of waiting for results; others send
             if (i==0){
-                for(int j=1;j<numbervm;j++)
+                for(int j=1;j<numberOfVMs;j++)
                     cl.stages.add(
                             new TaskStage(NetworkConstants.WAIT_RECV, NetworkConstants.COMMUNICATION_LENGTH, 0, stgId++, memory, vmIdList.get(j),cl.getCloudletId()+j));
             } else {
