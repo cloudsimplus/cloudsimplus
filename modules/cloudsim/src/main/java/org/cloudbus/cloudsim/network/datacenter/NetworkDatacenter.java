@@ -129,7 +129,7 @@ public class NetworkDatacenter extends DatacenterSimple {
     public Map<Integer, Switch> getEdgeSwitch() {
         Map<Integer, Switch> edgeswitch = new HashMap<>();
         for (Entry<Integer, Switch> es : Switchlist.entrySet()) {
-            if (es.getValue().level == NetworkConstants.EDGE_LEVEL) {
+            if (es.getValue().level == NetworkConstants.EDGE_SWITCHES_NUMBER) {
                 edgeswitch.put(es.getKey(), es.getValue());
             }
         }
@@ -149,7 +149,7 @@ public class NetworkDatacenter extends DatacenterSimple {
         boolean result = getVmAllocationPolicy().allocateHostForVm(vm);
 
         if (result) {
-            VmToSwitchid.put(vm.getId(), ((NetworkHost) vm.getHost()).sw.getId());
+            VmToSwitchid.put(vm.getId(), ((NetworkHost) vm.getHost()).getSwitch().getId());
             VmtoHostlist.put(vm.getId(), vm.getHost().getId());
             System.out.println(vm.getId() + " VM is created on " + vm.getHost().getId());
 

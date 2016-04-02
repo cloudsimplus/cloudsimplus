@@ -36,9 +36,10 @@ import org.cloudbus.cloudsim.network.datacenter.TaskStage;
  * It in fact is not being used and should be deleted.
  * 
  */
-public class TestBagofTaskApp extends AppCloudlet {
+public class TestBagOfTasksApp extends AppCloudlet {
 
-    public TestBagofTaskApp(int type, int appID, double deadline, 	int numbervm, int userId) {
+    public TestBagOfTasksApp(int type, int appID, double deadline, 	
+            int numbervm, int userId) {
         super(type, appID, deadline, numbervm,userId);
 
         /*@todo There is something strange here. This getter isn't
@@ -99,14 +100,15 @@ public class TestBagofTaskApp extends AppCloudlet {
         double exetime=getExecTime()/2;//for two vms
         if(this.deadline>exetime)
                 return 2;
-        else if(this.deadline>(exetime/4)) return 4;
+        
+        if(this.deadline>(exetime/4)) 
+            return 4;
 
         return 4;
     }
 
     private int getExecTime() {
         //use exec constraints 
-
         return 100;
     }
 

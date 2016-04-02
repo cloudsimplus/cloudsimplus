@@ -118,20 +118,20 @@ public class Switch extends SimEntity {
 
 	/** Something is running on these hosts. 
          * @todo The attribute is only used at the TestExample class. */
-	public SortedMap<Double, List<NetworkHost>> fintimelistHost = new TreeMap<>();
+	public SortedMap<Double, List<NetworkHost>> finTimeHostMap = new TreeMap<>();
 
 	/** Something is running on these hosts. 
          * @todo The attribute doesn't appear to be used */
-	public SortedMap<Double, List<NetworkVm>> fintimelistVM = new TreeMap<Double, List<NetworkVm>>();
+	public SortedMap<Double, List<NetworkVm>> fintimelistVM = new TreeMap<>();
 
         /**
          * List of  received packets.
          */
-	public ArrayList<NetworkPacket> pktlist = new ArrayList<NetworkPacket>();
+	public List<NetworkPacket> pktlist = new ArrayList<>();
 
 	/** 
          * @todo The attribute doesn't appear to be used */
-	public List<Vm> BagofTaskVm = new ArrayList<Vm>();
+	public List<Vm> BagofTaskVm = new ArrayList<>();
 
         /**
          * The time the switch spends to process a received packet.
@@ -222,7 +222,7 @@ public class Switch extends SimEntity {
 		int recvVMid = hspkt.pkt.reciever;
 		CloudSim.cancelAll(getId(), new PredicateType(CloudSimTags.Network_Event_send));
 		schedule(getId(), latency, CloudSimTags.Network_Event_send);
-		if (level == NetworkConstants.EDGE_LEVEL) {
+		if (level == NetworkConstants.EDGE_SWITCHES_NUMBER) {
 			// packet is to be recieved by host
 			int hostid = dc.VmtoHostlist.get(recvVMid);
 			hspkt.recieverhostid = hostid;
@@ -234,7 +234,7 @@ public class Switch extends SimEntity {
 			pktlist.add(hspkt);
 			return;
 		}
-		if (level == NetworkConstants.Agg_LEVEL) {
+		if (level == NetworkConstants.AGGREGATION_SWITCHES_NUMBER) {
 			// packet is coming from root so need to be sent to edgelevel swich
 			// find the id for edgelevel switch
 			int switchid = dc.VmToSwitchid.get(recvVMid);
@@ -265,7 +265,7 @@ public class Switch extends SimEntity {
 		int recvVMid = hspkt.pkt.reciever;
 		CloudSim.cancelAll(getId(), new PredicateType(CloudSimTags.Network_Event_send));
 		schedule(getId(), switching_delay, CloudSimTags.Network_Event_send);
-		if (level == NetworkConstants.EDGE_LEVEL) {
+		if (level == NetworkConstants.EDGE_SWITCHES_NUMBER) {
 			// packet is recieved from host
 			// packet is to be sent to aggregate level or to another host in the
 			// same level
@@ -296,7 +296,7 @@ public class Switch extends SimEntity {
 			pktlist.add(hspkt);
 			return;
 		}
-		if (level == NetworkConstants.Agg_LEVEL) {
+		if (level == NetworkConstants.AGGREGATION_SWITCHES_NUMBER) {
 			// packet is coming from edge level router so need to be sent to
 			// either root or another edge level swich
 			// find the id for edgelevel switch
@@ -325,7 +325,7 @@ public class Switch extends SimEntity {
 				pktlist.add(hspkt);
 			}
 		}
-		if (level == NetworkConstants.ROOT_LEVEL) {
+		if (level == NetworkConstants.ROOT_SWITCHES_NUMBER) {
 			// get id of edge router
 			int edgeswitchid = dc.VmToSwitchid.get(recvVMid);
 			// search which aggregate switch has it

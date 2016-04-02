@@ -29,7 +29,7 @@ import org.cloudbus.cloudsim.core.CloudSim;
  * @author Saurabh Kumar Garg
  * @since CloudSim Toolkit 1.0
  */
-public class NetworkVmAllocationPolicy extends VmAllocationPolicyAbstract {
+public final class NetworkVmAllocationPolicy extends VmAllocationPolicyAbstract {
 
 	/** The used PEs map, where each key is a VM id
          * and each value is the number of required PEs the VM is using. */
@@ -49,14 +49,11 @@ public class NetworkVmAllocationPolicy extends VmAllocationPolicyAbstract {
 	public NetworkVmAllocationPolicy(List<Host> list) {
 		super(list);
 
-		setFreePes(new ArrayList<Integer>());
-		for (Host host : getHostList()) {
-			getFreePes().add(host.getNumberOfPes());
+		setFreePes(new ArrayList<>());
+                getHostList().forEach(host -> getFreePes().add(host.getNumberOfPes()));
 
-		}
-
-		setVmTable(new HashMap<String, Host>());
-		setUsedPes(new HashMap<String, Integer>());
+		setVmTable(new HashMap<>());
+		setUsedPes(new HashMap<>());
 	}
 
 	/**
@@ -75,8 +72,8 @@ public class NetworkVmAllocationPolicy extends VmAllocationPolicyAbstract {
 		boolean result = false;
 		int tries = 0;
 		List<Integer> freePesTmp = new ArrayList<>();
-		for (Integer freePes : getFreePes()) {
-			freePesTmp.add(freePes);
+		for (Integer freePesNumber : getFreePes()) {
+			freePesTmp.add(freePesNumber);
 		}
 
 		if (!getVmTable().containsKey(vm.getUid())) { // if this vm was not created
