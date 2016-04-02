@@ -252,7 +252,7 @@ public interface CloudletScheduler extends Serializable {
      * @pre $none
      * @post $none
      */
-    int runningCloudlets();
+    int runningCloudletsNumber();
 
     /**
      * Updates the processing of cloudlets running under management of this scheduler.
@@ -295,7 +295,7 @@ public interface CloudletScheduler extends Serializable {
         @Override public double getTotalUtilizationOfCpu(double time) { return 0.0; }
         @Override public boolean areThereFinishedCloudlets() { return false; }
         @Override public Cloudlet migrateCloudlet() { return Cloudlet.NULL; }
-        @Override public int runningCloudlets() { return 0; }
+        @Override public int runningCloudletsNumber() { return 0; }
         @Override public double updateVmProcessing(double currentTime, List<Double> mipsShare) { return 0.0; }
     };
 }

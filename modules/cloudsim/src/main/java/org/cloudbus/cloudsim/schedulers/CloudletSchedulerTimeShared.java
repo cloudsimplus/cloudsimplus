@@ -32,7 +32,7 @@ public class CloudletSchedulerTimeShared extends CloudletSchedulerAbstract {
      * according to the mips share provided to it by
      * {@link #updateVmProcessing(double, java.util.List)} method.
      */
-    protected int currentCPUs;
+    protected long currentCPUs;
 
     /**
      * Creates a new CloudletSchedulerTimeShared object. This method must be
@@ -49,45 +49,101 @@ public class CloudletSchedulerTimeShared extends CloudletSchedulerAbstract {
     @Override
     public double updateVmProcessing(double currentTime, List<Double> mipsShare) {
         setCurrentMipsShare(mipsShare);
-        double timeSpam = currentTime - getPreviousTime();
-
-        for (ResCloudlet rcl : getCloudletExecList()) {
-            rcl.updateCloudletFinishedSoFar((long) 
-                (getCapacity(mipsShare) * timeSpam * rcl.getNumberOfPes() * Consts.MILLION));
-        }
 
         if (getCloudletExecList().isEmpty()) {
             setPreviousTime(currentTime);
             return 0.0;
         }
 
-        // check finished cloudlets
-        double nextEvent = Double.MAX_VALUE;
-        List<ResCloudlet> toRemove = new ArrayList<>();
-        for (ResCloudlet rcl : getCloudletExecList()) {
-            long remainingLength = rcl.getRemainingCloudletLength();
-            if (remainingLength == 0) {// finished: remove from the list
-                toRemove.add(rcl);
-                cloudletFinish(rcl);
-            }
-        }
-        getCloudletExecList().removeAll(toRemove);
+        updateCloudletsProcessing(currentTime, mipsShare);
+        removeFinishedCloudletsFromExecutionList();
+        double nextEvent = 
+                getEstimatedFinishTimeOfSoonerFinishingCloudlet(currentTime, mipsShare);
 
-        // estimate finish time of cloudlets
+        setPreviousTime(currentTime);
+        return nextEvent;
+    }
+
+    /**
+     * Gets the estimated finish time of the cloudlet that is expected to 
+     * finish executing sooner than all other ones that are executing
+     * on the VM using this scheduler.
+     * 
+     * @param currentTime
+     * @param mipsShare
+     * @return 
+     */
+    private double getEstimatedFinishTimeOfSoonerFinishingCloudlet(double currentTime, List<Double> mipsShare) {
+        double nextEvent = Double.MAX_VALUE;
         for (ResCloudlet rcl : getCloudletExecList()) {
-            double estimatedFinishTime = currentTime
-                    + (rcl.getRemainingCloudletLength() / (getCapacity(mipsShare) * rcl.getNumberOfPes()));
-            if (estimatedFinishTime - currentTime < CloudSim.getMinTimeBetweenEvents()) {
-                estimatedFinishTime = currentTime + CloudSim.getMinTimeBetweenEvents();
-            }
+            double estimatedFinishTime = 
+                    getEstimatedFinishTimeOfCloudlet(rcl, currentTime, mipsShare);
 
             if (estimatedFinishTime < nextEvent) {
                 nextEvent = estimatedFinishTime;
             }
         }
-
-        setPreviousTime(currentTime);
         return nextEvent;
+    }
+
+    /**
+     * Gets the estimated time when a given cloudlet is supposed to finish executing.
+     * @param rcl
+     * @param currentTime
+     * @param mipsShare
+     * @return 
+     */
+    private double getEstimatedFinishTimeOfCloudlet(ResCloudlet rcl, double currentTime, List<Double> mipsShare) {
+        double estimatedFinishTime = currentTime
+                + (rcl.getRemainingCloudletLength() / 
+                (getCapacity(mipsShare) * rcl.getNumberOfPes()));
+        if (estimatedFinishTime - currentTime < CloudSim.getMinTimeBetweenEvents()) {
+            estimatedFinishTime = currentTime + CloudSim.getMinTimeBetweenEvents();
+        }
+        return estimatedFinishTime;
+    }
+
+    /**
+     * Removes finished cloudlets from the 
+     * {@link #getCloudletExecList() list of cloudlets to execute}.
+     */
+    private void removeFinishedCloudletsFromExecutionList() {
+        List<ResCloudlet> toRemove = new ArrayList<>();
+        for (ResCloudlet rcl : getCloudletExecList()) {
+            if (rcl.isFinished()) {
+                toRemove.add(rcl);
+                cloudletFinish(rcl);
+            }
+        }
+        getCloudletExecList().removeAll(toRemove);
+    }
+
+    /**
+     * Updates the processing of all cloudlets of the Vm using this scheduler.
+     * @param currentTime current simulation time
+     * @param mipsShare list with MIPS share of each Pe available to the scheduler
+     */
+    private void updateCloudletsProcessing(double currentTime, List<Double> mipsShare) {
+        for (ResCloudlet rcl : getCloudletExecList()) {            
+            long miLength = computeCloudletExecutionLengthForElapsedTime(rcl, currentTime, mipsShare);
+            rcl.updateCloudletFinishedSoFar(miLength);
+        }
+    }
+
+    /**
+     * Computes the length of a given cloudlet (in MI) that has to be executed
+     * since the last time cloudlets processing was updated.
+     * 
+     * @param rcl
+     * @param currentTime current simulation time
+     * @param mipsShare list with MIPS share of each Pe available to the scheduler
+     * @return the executed length of the given cloudlet (in MI)
+     * 
+     * @see #updateCloudletsProcessing(double, java.util.List) 
+     */
+    protected long computeCloudletExecutionLengthForElapsedTime(ResCloudlet rcl, double currentTime, List<Double> mipsShare) {
+        double timeSpam = currentTime - getPreviousTime();
+        return (long)(getCapacity(mipsShare) * timeSpam * rcl.getNumberOfPes() * Consts.MILLION);
     }
 
     /**
@@ -99,32 +155,24 @@ public class CloudletSchedulerTimeShared extends CloudletSchedulerAbstract {
      * @return the capacity of each PE
      */
     protected double getCapacity(List<Double> mipsShare) {
-        double capacity = 0.0;
-        int cpus = 0;
-        for (Double mips : mipsShare) {
-            capacity += mips;
-            if (mips > 0.0) {
-                cpus++;
-            }
-        }
-        currentCPUs = cpus;
-
-        int pesInUse = 0;
-        for (ResCloudlet rcl : getCloudletExecList()) {
-            pesInUse += rcl.getNumberOfPes();
-        }
+        double capacityOfAllPes = mipsShare.stream().reduce(0.0, Double::sum);
+        currentCPUs = mipsShare.stream().filter(mips -> mips > 0).count();
+        int pesInUse = getCloudletExecList().stream().mapToInt(rcl->rcl.getNumberOfPes()).sum();
 
         if (pesInUse > currentCPUs) {
-            capacity /= pesInUse;
-        } else {
-            capacity /= currentCPUs;
-        }
-        return capacity;
+            return capacityOfAllPes / pesInUse;
+        }    
+
+        return capacityOfAllPes / currentCPUs;
     }
 
     @Override
     public Cloudlet cloudletCancel(int cloudletId) {
-        // First, looks in the finished queue
+        /**
+         * @todo @author manoelcampos A lot of loops that could be
+         * replaced by a single method that receives
+         * the list of cloudlets to look at.
+         */
         for (int i = 0; i < getCloudletFinishedList().size(); i++) {
             ResCloudlet rcl = getCloudletFinishedList().get(i);
             if (rcl.getCloudletId() == cloudletId) {
@@ -272,7 +320,7 @@ public class CloudletSchedulerTimeShared extends CloudletSchedulerAbstract {
     }
 
     @Override
-    public int runningCloudlets() {
+    public int runningCloudletsNumber() {
         return getCloudletExecList().size();
     }
 

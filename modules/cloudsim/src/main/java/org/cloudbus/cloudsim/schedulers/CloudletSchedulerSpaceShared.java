@@ -390,7 +390,7 @@ public class CloudletSchedulerSpaceShared extends CloudletSchedulerAbstract {
 	}
 
 	@Override
-	public int runningCloudlets() {
+	public int runningCloudletsNumber() {
 		return getCloudletExecList().size();
 	}
 
