@@ -9,7 +9,9 @@
 package org.cloudbus.cloudsim.network;
 
 /**
- * This class represents an link (edge) from a network graph.
+ * Represents a link (edge) of a network graph
+ * where the network topology was defined 
+ * from a file in <a href="http://www.cs.bu.edu/brite/user_manual/node29.html">BRITE format</a>.
  * 
  * @author Thomas Hohnstein
  * @since CloudSim Toolkit 1.0
@@ -38,7 +40,11 @@ public class TopologicalLink {
 
 	/**
 	 * Creates a new Topological Link.
-	 */
+         * @param srcNode
+         * @param destNode
+         * @param delay
+         * @param bw
+	*/
 	public TopologicalLink(int srcNode, int destNode, float delay, float bw) {
 		// lets initialize all internal attributes
 		linkDelay = delay;

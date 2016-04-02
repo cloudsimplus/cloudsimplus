@@ -11,8 +11,9 @@ package org.cloudbus.cloudsim.lists;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
-
 import org.cloudbus.cloudsim.Cloudlet;
+
+import org.cloudbus.cloudsim.CloudletSimple;
 
 /**
  * CloudletList is a collection of operations on lists of Cloudlets.
@@ -29,12 +30,17 @@ public class CloudletList {
 	 * @param id the Cloudlet id
 	 * @return a Cloudlet with the given ID or $null if not found
 	 */
-	public static <T extends Cloudlet> T getById(List<T> cloudletList, int id) {
-		for (T cloudlet : cloudletList) {
+	public static Cloudlet getById(List<Cloudlet> cloudletList, int id) {
+		for (Cloudlet cloudlet : cloudletList) {
 			if (cloudlet.getCloudletId() == id) {
 				return cloudlet;
 			}
 		}
+                /** @todo @author manoelcampos Should return an empty object 
+                 * instead of null, in order to avoid NullPointerExceptions.
+                 * Check the same for the other lists such as VmList
+                 * and HostList.
+                 */
 		return null;
 	}
 
@@ -45,9 +51,9 @@ public class CloudletList {
 	 * @param id the cloudlet id
 	 * @return the position of the cloudlet with the given id or -1 if not found
 	 */
-	public static <T extends Cloudlet> int getPositionById(List<T> cloudletList, int id) {
+	public static int getPositionById(List<Cloudlet> cloudletList, int id) {
 		int i = 0 ;
-	        for (T cloudlet : cloudletList) {
+	        for (Cloudlet cloudlet : cloudletList) {
 			if (cloudlet.getCloudletId() == id) {
 				return i;
 			}
@@ -59,6 +65,7 @@ public class CloudletList {
 	/**
 	 * Sorts the Cloudlets in a list based on their lengths.
 	 * 
+         * @param <T> The generic type
 	 * @param cloudletList the cloudlet list
 	 * @pre $none
 	 * @post $none

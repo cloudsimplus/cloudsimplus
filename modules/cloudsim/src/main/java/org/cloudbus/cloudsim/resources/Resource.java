@@ -78,4 +78,62 @@ public interface Resource <T extends Number> extends ResourceInformation<T> {
      * @return true, if it is possible to allocate the new total resource; false otherwise
      */
     boolean isSuitable(T newTotalAllocatedResource);    
+    
+    /**
+     * A property that implements the Null Object Design Pattern for 
+     * Resource&lt;Double&gt; objects.
+     */
+    public static final Resource NULL_DOUBLE = new Resource<Double>(){
+        @Override public boolean setCapacity(Double newCapacity){ return false; }
+        @Override public boolean allocateResource(Double amountToAllocate) { return false; }
+        @Override public boolean setAllocatedResource(Double newTotalAllocatedResource) { return false; }
+        @Override public boolean deallocateResource(Double amountToDeallocate) { return false; }
+        @Override public Double deallocateAllResources() { return 0.0; }
+        @Override public boolean isResourceAmountBeingUsed(Double amountToCheck) { return false; }
+        @Override public boolean isSuitable(Double newTotalAllocatedResource) { return false; }
+        @Override public Double getCapacity() { return 0.0; }
+        @Override public Double getAvailableResource() { return 0.0; }
+        @Override public Double getAllocatedResource() { return 0.0; }
+        @Override public boolean isResourceAmountAvailable(Double amountToCheck){ return false; }
+        @Override public boolean isFull() { return false; }
+    };
+    
+    /**
+     * A property that implements the Null Object Design Pattern for 
+     * Resource&lt;Integer&gt; objects.
+     */
+    public static final Resource NULL_INT = new Resource<Integer>(){
+        @Override public boolean setCapacity(Integer newCapacity){ return false; }
+        @Override public boolean allocateResource(Integer amountToAllocate) { return false; }
+        @Override public boolean setAllocatedResource(Integer newTotalAllocatedResource) { return false; }
+        @Override public boolean deallocateResource(Integer amountToDeallocate) { return false; }
+        @Override public Integer deallocateAllResources() { return 0; }
+        @Override public boolean isResourceAmountBeingUsed(Integer amountToCheck) { return false; }
+        @Override public boolean isSuitable(Integer newTotalAllocatedResource) { return false; }
+        @Override public Integer getCapacity() { return 0; }
+        @Override public Integer getAvailableResource() { return 0; }
+        @Override public Integer getAllocatedResource() { return 0; }
+        @Override public boolean isResourceAmountAvailable(Integer amountToCheck){ return false; }
+        @Override public boolean isFull() { return false; }
+    };
+    
+    /**
+     * A property that implements the Null Object Design Pattern for 
+     * Resource&lt;Long&gt; objects.
+     */
+    public static final Resource NULL_LONG = new Resource<Long>(){
+        @Override public boolean setCapacity(Long newCapacity){ return false; }
+        @Override public boolean allocateResource(Long amountToAllocate) { return false; }
+        @Override public boolean setAllocatedResource(Long newTotalAllocatedResource) { return false; }
+        @Override public boolean deallocateResource(Long amountToDeallocate) { return false; }
+        @Override public Long deallocateAllResources() { return 0L; }
+        @Override public boolean isResourceAmountBeingUsed(Long amountToCheck) { return false; }
+        @Override public boolean isSuitable(Long newTotalAllocatedResource) { return false; }
+        @Override public Long getCapacity() { return 0L; }
+        @Override public Long getAvailableResource() { return 0L; }
+        @Override public Long getAllocatedResource() { return 0L; }
+        @Override public boolean isResourceAmountAvailable(Long amountToCheck){ return false; }
+        @Override public boolean isFull() { return false; }
+    };
+    
 }

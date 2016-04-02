@@ -13,21 +13,26 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.LinkedList;
 import java.util.List;
-
 import org.cloudbus.cloudsim.Cloudlet;
-import org.cloudbus.cloudsim.CloudletSchedulerTimeShared;
+import org.cloudbus.cloudsim.CloudletSimple;
+import org.cloudbus.cloudsim.schedulers.CloudletSchedulerTimeShared;
 import org.cloudbus.cloudsim.Datacenter;
-import org.cloudbus.cloudsim.DatacenterBroker;
+import org.cloudbus.cloudsim.DatacenterSimple;
+import org.cloudbus.cloudsim.brokers.DatacenterBroker;
+import org.cloudbus.cloudsim.brokers.DatacenterBrokerSimple;
 import org.cloudbus.cloudsim.DatacenterCharacteristics;
 import org.cloudbus.cloudsim.Host;
+import org.cloudbus.cloudsim.HostSimple;
 import org.cloudbus.cloudsim.Log;
-import org.cloudbus.cloudsim.Pe;
+import org.cloudbus.cloudsim.resources.Pe;
+import org.cloudbus.cloudsim.resources.PeSimple;
 import org.cloudbus.cloudsim.resources.FileStorage;
-import org.cloudbus.cloudsim.UtilizationModel;
-import org.cloudbus.cloudsim.UtilizationModelFull;
+import org.cloudbus.cloudsim.utilizationmodels.UtilizationModel;
+import org.cloudbus.cloudsim.utilizationmodels.UtilizationModelFull;
 import org.cloudbus.cloudsim.Vm;
-import org.cloudbus.cloudsim.VmAllocationPolicySimple;
-import org.cloudbus.cloudsim.VmSchedulerSpaceShared;
+import org.cloudbus.cloudsim.VmSimple;
+import org.cloudbus.cloudsim.allocationpolicies.VmAllocationPolicySimple;
+import org.cloudbus.cloudsim.schedulers.VmSchedulerSpaceShared;
 import org.cloudbus.cloudsim.core.CloudSim;
 import org.cloudbus.cloudsim.util.TableBuilderHelper;
 import org.cloudbus.cloudsim.util.TextTableBuilder;
@@ -52,6 +57,7 @@ public class CloudSimExample4 {
 
     /**
      * Creates main() to run this example
+     * @param args
      */
     public static void main(String[] args) {
             Log.printFormattedLine("Starting %s...", CloudSimExample4.class.getSimpleName());
@@ -77,10 +83,10 @@ public class CloudSimExample4 {
                     int brokerId = broker.getId();
 
                     //Fourth step: Create one virtual machine
-                    vmlist = new ArrayList<Vm>();
+                    vmlist = new ArrayList<>();
 
                     //VM description
-                    int vmid = 0;
+                    int vmid = -1;
                     int mips = 250;
                     long size = 10000; //image size (MB)
                     int ram = 512; //vm memory (MB)
@@ -89,10 +95,8 @@ public class CloudSimExample4 {
                     String vmm = "Xen"; //VMM name
 
                     //create two VMs
-                    Vm vm1 = new Vm(vmid, brokerId, mips, pesNumber, ram, bw, size, vmm, new CloudletSchedulerTimeShared());
-
-                    vmid++;
-                    Vm vm2 = new Vm(vmid, brokerId, mips, pesNumber, ram, bw, size, vmm, new CloudletSchedulerTimeShared());
+                    Vm vm1 = new VmSimple(++vmid, brokerId, mips, pesNumber, ram, bw, size, vmm, new CloudletSchedulerTimeShared());
+                    Vm vm2 = new VmSimple(++vmid, brokerId, mips, pesNumber, ram, bw, size, vmm, new CloudletSchedulerTimeShared());
 
                     //add the VMs to the vmList
                     vmlist.add(vm1);
@@ -103,7 +107,7 @@ public class CloudSimExample4 {
 
 
                     //Fifth step: Create two Cloudlets
-                    cloudletList = new ArrayList<Cloudlet>();
+                    cloudletList = new ArrayList<>();
 
                     //Cloudlet properties
                     int id = 0;
@@ -112,11 +116,11 @@ public class CloudSimExample4 {
                     long outputSize = 300;
                     UtilizationModel utilizationModel = new UtilizationModelFull();
 
-                    Cloudlet cloudlet1 = new Cloudlet(id, length, pesNumber, fileSize, outputSize, utilizationModel, utilizationModel, utilizationModel);
+                    Cloudlet cloudlet1 = new CloudletSimple(id, length, pesNumber, fileSize, outputSize, utilizationModel, utilizationModel, utilizationModel);
                     cloudlet1.setUserId(brokerId);
 
                     id++;
-                    Cloudlet cloudlet2 = new Cloudlet(id, length, pesNumber, fileSize, outputSize, utilizationModel, utilizationModel, utilizationModel);
+                    Cloudlet cloudlet2 = new CloudletSimple(id, length, pesNumber, fileSize, outputSize, utilizationModel, utilizationModel, utilizationModel);
                     cloudlet2.setUserId(brokerId);
 
                     //add the cloudlets to the list
@@ -150,21 +154,21 @@ public class CloudSimExample4 {
             }
     }
 
-    private static Datacenter createDatacenter(String name){
+    private static DatacenterSimple createDatacenter(String name){
 
-            // Here are the steps needed to create a PowerDatacenter:
+            // Here are the steps needed to create a DatacenterSimple:
             // 1. We need to create a list to store
             //    our machine
-            List<Host> hostList = new ArrayList<Host>();
+            List<Host> hostList = new ArrayList<>();
 
             // 2. A Machine contains one or more PEs or CPUs/Cores.
             // In this example, it will have only one core.
-            List<Pe> peList = new ArrayList<Pe>();
+            List<Pe> peList = new ArrayList<>();
 
             int mips = 1000;
 
             // 3. Create PEs and add these into a list.
-            peList.add(new Pe(0, new PeProvisionerSimple(mips))); // need to store Pe id and MIPS Rating
+            peList.add(new PeSimple(0, new PeProvisionerSimple(mips))); // need to store Pe id and MIPS Rating
 
             //4. Create Host with its id and list of PEs and add them to the list of machines
             int hostId=0;
@@ -174,8 +178,8 @@ public class CloudSimExample4 {
 
 
             //in this example, the VMAllocatonPolicy in use is SpaceShared. It means that only one VM
-            //is allowed to run on each Pe. As each Host has only one Pe, only one VM can run on each Host.
-            hostList.add(new Host(
+            //is allowed to run on each Pe. As each Host has only one Pe, only one VM can run on each HostSimple.
+            hostList.add(new HostSimple(
                             hostId,
                             new ResourceProvisionerSimple(new Ram(ram)),
                             new ResourceProvisionerSimple(new Bandwidth(bw)),
@@ -203,10 +207,10 @@ public class CloudSimExample4 {
                     arch, os, vmm, hostList, time_zone, cost, costPerMem, costPerStorage, costPerBw);
 
 
-            // 6. Finally, we need to create a PowerDatacenter object.
-            Datacenter datacenter = null;
+            // 6. Finally, we need to create a DatacenterSimple object.
+            DatacenterSimple datacenter = null;
             try {
-                    datacenter = new Datacenter(name, characteristics, new VmAllocationPolicySimple(hostList), storageList, 0);
+                    datacenter = new DatacenterSimple(name, characteristics, new VmAllocationPolicySimple(hostList), storageList, 0);
             } catch (Exception e) {
                     e.printStackTrace();
             }
@@ -220,7 +224,7 @@ public class CloudSimExample4 {
 
             DatacenterBroker broker = null;
             try {
-                    broker = new DatacenterBroker("Broker");
+                    broker = new DatacenterBrokerSimple("Broker");
             } catch (Exception e) {
                     e.printStackTrace();
                     return null;

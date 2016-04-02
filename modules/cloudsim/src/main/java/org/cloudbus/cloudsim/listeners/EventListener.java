@@ -13,7 +13,9 @@ package org.cloudbus.cloudsim.listeners;
  */
 public interface EventListener<T, D> {
     /**
-     * Get notified when the observed object has changed.
+     * Get notified when the observed object (also called subject of observation) has changed.
+     * This method has to be called by the observed objects to notify
+     * its state change to the observers.
      * 
      * @param time The time the event occurred
      * @param observed The observed object that its state has been changed.

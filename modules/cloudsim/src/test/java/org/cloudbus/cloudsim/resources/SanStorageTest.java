@@ -1,7 +1,6 @@
 package org.cloudbus.cloudsim.resources;
 
 import java.util.List;
-import org.cloudbus.cloudsim.File;
 import org.junit.Test;
 import static org.junit.Assert.*;
 

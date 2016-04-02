@@ -9,8 +9,9 @@
 package org.cloudbus.cloudsim.power;
 
 import java.util.List;
-
 import org.cloudbus.cloudsim.Vm;
+
+import org.cloudbus.cloudsim.VmSimple;
 import org.cloudbus.cloudsim.core.CloudSim;
 
 /**
@@ -32,7 +33,7 @@ import org.cloudbus.cloudsim.core.CloudSim;
  */
 public class PowerVmSelectionPolicyMinimumUtilization extends PowerVmSelectionPolicy {
 	@Override
-	public Vm getVmToMigrate(PowerHost host) {
+	public Vm getVmToMigrate(PowerHostSimple host) {
 		List<PowerVm> migratableVms = getMigratableVms(host);
 		if (migratableVms.isEmpty()) {
 			return null;

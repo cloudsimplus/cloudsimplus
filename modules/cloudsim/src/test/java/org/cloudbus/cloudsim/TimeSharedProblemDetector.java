@@ -9,6 +9,14 @@ package org.cloudbus.cloudsim;
  * Copyright (c) 2009, The University of Melbourne, Australia
  */
 
+import org.cloudbus.cloudsim.resources.Pe;
+import org.cloudbus.cloudsim.resources.PeSimple;
+import org.cloudbus.cloudsim.brokers.DatacenterBrokerSimple;
+import org.cloudbus.cloudsim.allocationpolicies.VmAllocationPolicySimple;
+import org.cloudbus.cloudsim.schedulers.VmSchedulerTimeSharedOverSubscription;
+import org.cloudbus.cloudsim.schedulers.CloudletSchedulerTimeShared;
+import org.cloudbus.cloudsim.utilizationmodels.UtilizationModelFull;
+import org.cloudbus.cloudsim.utilizationmodels.UtilizationModel;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -57,10 +65,10 @@ public class TimeSharedProblemDetector {
 			// Datacenters are the resource providers in CloudSim. We need at
 			// list one of them to run a CloudSim simulation
 			@SuppressWarnings("unused")
-			Datacenter datacenter0 = createDatacenter("Datacenter_0");
+			DatacenterSimple datacenter0 = createDatacenter("Datacenter_0");
 
 			// Third step: Create Broker
-			DatacenterBroker broker = createBroker();
+			DatacenterBrokerSimple broker = createBroker();
 			int brokerId = broker.getId();
 
 			// Fourth step: Create one virtual machine
@@ -76,10 +84,10 @@ public class TimeSharedProblemDetector {
 			String vmm = "Xen"; // VMM name
 
 			// create VM
-			Vm vm = new Vm(vmid, brokerId, mips, pesNumber, ram, bw, size, vmm, new CloudletSchedulerTimeShared());
+			VmSimple vm = new VmSimple(vmid, brokerId, mips, pesNumber, ram, bw, size, vmm, new CloudletSchedulerTimeShared());
 			
-			Vm vm1 = new Vm(1, brokerId, mips, pesNumber, ram, bw, size, vmm, new CloudletSchedulerTimeShared());
-			Vm vm2 = new Vm(2, brokerId, mips, pesNumber, ram, bw, size, vmm, new CloudletSchedulerTimeShared());
+			VmSimple vm1 = new VmSimple(1, brokerId, mips, pesNumber, ram, bw, size, vmm, new CloudletSchedulerTimeShared());
+			VmSimple vm2 = new VmSimple(2, brokerId, mips, pesNumber, ram, bw, size, vmm, new CloudletSchedulerTimeShared());
 
 			// add the VM to the vmList
 			vmlist.add(vm);
@@ -100,15 +108,15 @@ public class TimeSharedProblemDetector {
 			long outputSize = 300;
 			UtilizationModel utilizationModel = new UtilizationModelFull();
 
-			Cloudlet cloudlet = new Cloudlet(id, length, pesNumber, fileSize, outputSize, utilizationModel, utilizationModel, utilizationModel);
+			Cloudlet cloudlet = new CloudletSimple(id, length, pesNumber, fileSize, outputSize, utilizationModel, utilizationModel, utilizationModel);
 			cloudlet.setUserId(brokerId);
 			cloudlet.setVmId(vmid);
 			
-			Cloudlet cloudlet1 = new Cloudlet(1, length, pesNumber, fileSize, outputSize, utilizationModel, utilizationModel, utilizationModel);
+			Cloudlet cloudlet1 = new CloudletSimple(1, length, pesNumber, fileSize, outputSize, utilizationModel, utilizationModel, utilizationModel);
 			cloudlet1.setUserId(brokerId);
 			cloudlet1.setVmId(1);
 			
-			Cloudlet cloudlet2 = new Cloudlet(2, length, pesNumber, fileSize, outputSize, utilizationModel, utilizationModel, utilizationModel);
+			Cloudlet cloudlet2 = new CloudletSimple(2, length, pesNumber, fileSize, outputSize, utilizationModel, utilizationModel, utilizationModel);
 			cloudlet2.setUserId(brokerId);
 			cloudlet2.setVmId(2);
 			
@@ -144,7 +152,7 @@ public class TimeSharedProblemDetector {
 	 *
 	 * @return the datacenter
 	 */
-	private static Datacenter createDatacenter(String name) {
+	private static DatacenterSimple createDatacenter(String name) {
 
 		// Here are the steps needed to create a PowerDatacenter:
 		// 1. We need to create a list to store
@@ -158,7 +166,7 @@ public class TimeSharedProblemDetector {
 		int mips = 1000;
 
 		// 3. Create PEs and add these into a list.
-		peList.add(new Pe(0, new PeProvisionerSimple(mips))); // need to store Pe id and MIPS Rating
+		peList.add(new PeSimple(0, new PeProvisionerSimple(mips))); // need to store Pe id and MIPS Rating
 
 		// 4. Create Host with its id and list of PEs and add them to the list
 		// of machines
@@ -167,7 +175,7 @@ public class TimeSharedProblemDetector {
 		long storage = Consts.MILLION; // host storage
 		long bw = 10000;
 
-		hostList.add(new Host(
+		hostList.add(new HostSimple(
 				hostId,
 				new ResourceProvisionerSimple<>(new Ram(ram)),
 				new ResourceProvisionerSimple<>(new Bandwidth(bw)),
@@ -198,9 +206,9 @@ public class TimeSharedProblemDetector {
 				costPerStorage, costPerBw);
 
 		// 6. Finally, we need to create a PowerDatacenter object.
-		Datacenter datacenter = null;
+		DatacenterSimple datacenter = null;
 		try {
-			datacenter = new Datacenter(name, characteristics, new VmAllocationPolicySimple(hostList), storageList, 0);
+			datacenter = new DatacenterSimple(name, characteristics, new VmAllocationPolicySimple(hostList), storageList, 0);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -216,10 +224,10 @@ public class TimeSharedProblemDetector {
 	 *
 	 * @return the datacenter broker
 	 */
-	private static DatacenterBroker createBroker() {
-		DatacenterBroker broker = null;
+	private static DatacenterBrokerSimple createBroker() {
+		DatacenterBrokerSimple broker = null;
 		try {
-			broker = new DatacenterBroker("Broker");
+			broker = new DatacenterBrokerSimple("Broker");
 		} catch (Exception e) {
 			e.printStackTrace();
 			return null;

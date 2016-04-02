@@ -14,7 +14,8 @@ import java.io.IOException;
 import java.util.StringTokenizer;
 
 /**
- * A file reader for the special BRITE-format. A BRITE file is structured as
+ * A file reader for the special <a href="http://www.cs.bu.edu/brite/user_manual/node29.html">BRITE format</a>. 
+ * A BRITE file is structured as
  * follows:<br/> 
  * <ul>
  * <li>Node-section: NodeID, xpos, ypos, indegree, outdegree, ASid, type(router/AS)

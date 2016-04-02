@@ -14,6 +14,7 @@ import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
 import java.util.ArrayList;
+import org.cloudbus.cloudsim.Vm;
 
 import org.cloudbus.cloudsim.Vm;
 import org.cloudbus.cloudsim.VmTest;
@@ -58,7 +59,7 @@ public class PeProvisionerSimpleTest {
 	@Test
 	public void testAllocateMipsForVm() {
 		Vm vm1 = VmTest.createVmWithSpecificMipsAndNumberOfPEs(0, MIPS / 2, 1);
-		Vm vm2 = VmTest.createVmWithSpecificMipsAndNumberOfPEs(1, MIPS / 2, 1);
+                Vm vm2 = VmTest.createVmWithSpecificMipsAndNumberOfPEs(1, MIPS / 2, 1);
 		Vm vm3 = VmTest.createVmWithSpecificMipsAndNumberOfPEs(2, MIPS / 2, 2);
 
 		assertTrue(peProvisioner.allocateMipsForVm(vm1, MIPS / 2));
@@ -100,7 +101,7 @@ public class PeProvisionerSimpleTest {
 	}
 
 	@Test
-	public void testGetAllocatedMipsForVm() {
+	public void testGetAllocatedMiVmTestm() {
 		Vm vm1 =  VmTest.createVmWithSpecificMipsAndNumberOfPEs(0, MIPS / 2, 1);
 		Vm vm2 =  VmTest.createVmWithSpecificMipsAndNumberOfPEs(1, MIPS / 2, 1);
 		Vm vm3 =  VmTest.createVmWithSpecificMipsAndNumberOfPEs(2, MIPS / 2, 2);

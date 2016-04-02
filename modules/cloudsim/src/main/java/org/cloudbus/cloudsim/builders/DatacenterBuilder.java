@@ -4,13 +4,14 @@ import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 import org.cloudbus.cloudsim.Datacenter;
+import org.cloudbus.cloudsim.DatacenterSimple;
 import org.cloudbus.cloudsim.DatacenterCharacteristics;
 import org.cloudbus.cloudsim.Host;
-import org.cloudbus.cloudsim.VmAllocationPolicySimple;
+import org.cloudbus.cloudsim.allocationpolicies.VmAllocationPolicySimple;
 import org.cloudbus.cloudsim.resources.FileStorage;
 
 /**
- * A Builder class to createDatacenter {@link Datacenter} objects.
+ * A Builder class to createDatacenter {@link DatacenterSimple} objects.
  * 
  * @author Manoel Campos da Silva Filho
  */
@@ -18,13 +19,14 @@ public class DatacenterBuilder extends Builder {
     public static final String DATACENTER_NAME_FORMAT = "Datacenter%d";
 
     public static final String VMM = "Xen"; 
-    private String defaultArchitecture = "x86";
-    private String defaultOperatingSystem = "Linux";
-    private double defaultCostPerBwByte = 0.0;
-    private double defaultCostPerCpuSecond = 3.0;
-    private double defaultCostPerStorage = 0.001;
-    private double defaultCostPerMem = 0.05;
-    private double defaultTimezone = 10;
+    private String architecture = "x86";
+    private String operatingSystem = "Linux";
+    private double costPerBwByte = 0.0;
+    private double costPerCpuSecond = 3.0;
+    private double costPerStorage = 0.001;
+    private double costPerMem = 0.05;
+    private double schedulingInterval = 1;
+    private double timezone = 10;
     
     private final List<Datacenter> datacenters;
     private int numberOfCreatedDatacenters;
@@ -38,6 +40,12 @@ public class DatacenterBuilder extends Builder {
         return datacenters;
     }
 
+    public Datacenter get(final int index) {
+        if(index >= 0 && index < datacenters.size())
+            return datacenters.get(index);
+        return Datacenter.NULL;
+    }
+
     public DatacenterBuilder createDatacenter(final List<Host> hosts) {
         if (hosts == null || hosts.isEmpty()) {
             throw new RuntimeException("The hosts parameter has to have at least 1 host.");
@@ -46,79 +54,88 @@ public class DatacenterBuilder extends Builder {
         LinkedList<FileStorage> storageList = new LinkedList<>();
         DatacenterCharacteristics characteristics = 
                 new DatacenterCharacteristics(
-                        defaultArchitecture, defaultOperatingSystem, VMM, hosts, 
-                        defaultTimezone, defaultCostPerCpuSecond, 
-                        defaultCostPerMem, defaultCostPerStorage, 
-                        defaultCostPerBwByte);
+                        architecture, operatingSystem, VMM, hosts, 
+                        timezone, costPerCpuSecond, 
+                        costPerMem, costPerStorage, 
+                        costPerBwByte);
         String name = String.format(DATACENTER_NAME_FORMAT, numberOfCreatedDatacenters++);
         Datacenter datacenter = 
-                new Datacenter(name, characteristics, 
+                new DatacenterSimple(name, characteristics, 
                         new VmAllocationPolicySimple(hosts), 
-                        storageList, 0);
+                        storageList, schedulingInterval);
         this.datacenters.add(datacenter);
         return this;
     }
 
-    public String getDefaultArchitecture() {
-        return defaultArchitecture;
+    public String getArchitecture() {
+        return architecture;
     }
 
-    public DatacenterBuilder setDefaultArchitecture(String defaultArchitecture) {
-        this.defaultArchitecture = defaultArchitecture;
+    public DatacenterBuilder setArchitecture(String defaultArchitecture) {
+        this.architecture = defaultArchitecture;
         return this;
     }
 
-    public String getDefaultOperatingSystem() {
-        return defaultOperatingSystem;
+    public String getOperatingSystem() {
+        return operatingSystem;
     }
 
-    public DatacenterBuilder setDefaultOperatingSystem(String defaultOperatingSystem) {
-        this.defaultOperatingSystem = defaultOperatingSystem;
+    public DatacenterBuilder setOperatingSystem(String defaultOperatingSystem) {
+        this.operatingSystem = defaultOperatingSystem;
         return this;
     }
 
-    public double getDefaultCostPerBwByte() {
-        return defaultCostPerBwByte;
+    public double getCostPerBwByte() {
+        return costPerBwByte;
     }
 
-    public DatacenterBuilder setDefaultCostPerBwByte(double defaultCostPerBwByte) {
-        this.defaultCostPerBwByte = defaultCostPerBwByte;
+    public DatacenterBuilder setCostPerBwByte(double defaultCostPerBwByte) {
+        this.costPerBwByte = defaultCostPerBwByte;
         return this;
     }
 
-    public double getDefaultCostPerCpuSecond() {
-        return defaultCostPerCpuSecond;
+    public double getCostPerCpuSecond() {
+        return costPerCpuSecond;
     }
 
-    public DatacenterBuilder setDefaultCostPerCpuSecond(double defaultCostPerCpuSecond) {
-        this.defaultCostPerCpuSecond = defaultCostPerCpuSecond;
+    public DatacenterBuilder setCostPerCpuSecond(double defaultCostPerCpuSecond) {
+        this.costPerCpuSecond = defaultCostPerCpuSecond;
         return this;
     }
 
-    public double getDefaultCostPerStorage() {
-        return defaultCostPerStorage;
+    public double getCostPerStorage() {
+        return costPerStorage;
     }
 
-    public DatacenterBuilder setDefaultCostPerStorage(double defaultCostPerStorage) {
-        this.defaultCostPerStorage = defaultCostPerStorage;
+    public DatacenterBuilder setCostPerStorage(double defaultCostPerStorage) {
+        this.costPerStorage = defaultCostPerStorage;
         return this;
     }
 
-    public double getDefaultCostPerMem() {
-        return defaultCostPerMem;
+    public double getCostPerMem() {
+        return costPerMem;
     }
 
-    public DatacenterBuilder setDefaultCostPerMem(double defaultCostPerMem) {
-        this.defaultCostPerMem = defaultCostPerMem;
+    public DatacenterBuilder setCostPerMem(double defaultCostPerMem) {
+        this.costPerMem = defaultCostPerMem;
         return this;
     }
 
-    public double getDefaultTimezone() {
-        return defaultTimezone;
+    public double getTimezone() {
+        return timezone;
     }
 
-    public DatacenterBuilder setDefaultTimezone(double defaultTimezone) {
-        this.defaultTimezone = defaultTimezone;
+    public DatacenterBuilder setTimezone(double defaultTimezone) {
+        this.timezone = defaultTimezone;
+        return this;
+    }
+
+    public double getSchedulingInterval() {
+        return schedulingInterval;
+    }
+
+    public DatacenterBuilder setSchedulingInterval(double schedulingInterval) {
+        this.schedulingInterval = schedulingInterval;
         return this;
     }
 }

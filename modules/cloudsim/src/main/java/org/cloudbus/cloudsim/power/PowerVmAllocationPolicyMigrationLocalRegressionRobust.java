@@ -9,8 +9,6 @@
 package org.cloudbus.cloudsim.power;
 
 import java.util.List;
-
-import org.cloudbus.cloudsim.Host;
 import org.cloudbus.cloudsim.util.MathUtil;
 
 /**
@@ -38,16 +36,17 @@ public class PowerVmAllocationPolicyMigrationLocalRegressionRobust extends
 	 * 
 	 * @param hostList the host list
 	 * @param vmSelectionPolicy the vm selection policy
+         * @param safetyParameter
 	 * @param schedulingInterval the scheduling interval
 	 * @param fallbackVmAllocationPolicy the fallback vm allocation policy
 	 * @param utilizationThreshold the utilization threshold
 	 */
 	public PowerVmAllocationPolicyMigrationLocalRegressionRobust(
-			List<? extends Host> hostList,
+			List<PowerHost> hostList,
 			PowerVmSelectionPolicy vmSelectionPolicy,
 			double safetyParameter,
 			double schedulingInterval,
-			PowerVmAllocationPolicyMigrationAbstract fallbackVmAllocationPolicy,
+			PowerVmAllocationPolicyMigration fallbackVmAllocationPolicy,
 			double utilizationThreshold) {
 		super(
 				hostList,
@@ -63,15 +62,16 @@ public class PowerVmAllocationPolicyMigrationLocalRegressionRobust extends
 	 * 
 	 * @param hostList the host list
 	 * @param vmSelectionPolicy the vm selection policy
+         * @param safetyParameter
 	 * @param schedulingInterval the scheduling interval
 	 * @param fallbackVmAllocationPolicy the fallback vm allocation policy
 	 */
 	public PowerVmAllocationPolicyMigrationLocalRegressionRobust(
-			List<? extends Host> hostList,
+			List<PowerHost> hostList,
 			PowerVmSelectionPolicy vmSelectionPolicy,
 			double safetyParameter,
 			double schedulingInterval,
-			PowerVmAllocationPolicyMigrationAbstract fallbackVmAllocationPolicy) {
+			PowerVmAllocationPolicyMigration fallbackVmAllocationPolicy) {
 		super(hostList, vmSelectionPolicy, safetyParameter, schedulingInterval, fallbackVmAllocationPolicy);
 	}
 

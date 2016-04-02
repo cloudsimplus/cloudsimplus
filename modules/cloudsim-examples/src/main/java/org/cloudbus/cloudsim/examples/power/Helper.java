@@ -12,19 +12,20 @@ import java.util.List;
 import java.util.Map;
 import java.util.Scanner;
 
-import org.cloudbus.cloudsim.Cloudlet;
-import org.cloudbus.cloudsim.CloudletSchedulerDynamicWorkload;
-import org.cloudbus.cloudsim.Datacenter;
-import org.cloudbus.cloudsim.DatacenterBroker;
+import org.cloudbus.cloudsim.CloudletSimple;
+import org.cloudbus.cloudsim.schedulers.CloudletSchedulerDynamicWorkload;
+import org.cloudbus.cloudsim.brokers.DatacenterBroker;
 import org.cloudbus.cloudsim.DatacenterCharacteristics;
-import org.cloudbus.cloudsim.Host;
-import org.cloudbus.cloudsim.HostDynamicWorkload;
+import org.cloudbus.cloudsim.HostSimple;
+import org.cloudbus.cloudsim.HostDynamicWorkloadSimple;
 import org.cloudbus.cloudsim.HostStateHistoryEntry;
 import org.cloudbus.cloudsim.Log;
-import org.cloudbus.cloudsim.Pe;
+import org.cloudbus.cloudsim.resources.PeSimple;
+import org.cloudbus.cloudsim.Datacenter;
+import org.cloudbus.cloudsim.resources.Pe;
 import org.cloudbus.cloudsim.Vm;
-import org.cloudbus.cloudsim.VmAllocationPolicy;
-import org.cloudbus.cloudsim.VmSchedulerTimeSharedOverSubscription;
+import org.cloudbus.cloudsim.allocationpolicies.VmAllocationPolicy;
+import org.cloudbus.cloudsim.schedulers.VmSchedulerTimeSharedOverSubscription;
 import org.cloudbus.cloudsim.VmStateHistoryEntry;
 import org.cloudbus.cloudsim.power.PowerDatacenter;
 import org.cloudbus.cloudsim.power.PowerDatacenterBroker;
@@ -96,7 +97,7 @@ public class Helper {
 
                 List<Pe> peList = new ArrayList<>();
                 for (int j = 0; j < Constants.HOST_PES[hostType]; j++) {
-                        peList.add(new Pe(j, new PeProvisionerSimple(Constants.HOST_MIPS[hostType])));
+                        peList.add(new PeSimple(j, new PeProvisionerSimple(Constants.HOST_MIPS[hostType])));
                 }
 
                 hostList.add(new PowerHostUtilizationHistory(
@@ -134,7 +135,6 @@ public class Helper {
 	 * @param datacenterClass the datacenter class
 	 * @param hostList the host list
 	 * @param vmAllocationPolicy the vm allocation policy
-	 * @param simulationLength
 	 * 
 	 * @return the power datacenter
 	 * 
@@ -167,17 +167,18 @@ public class Helper {
 
 		Datacenter datacenter = null;
 		try {
-			datacenter = datacenterClass.getConstructor(
-					String.class,
+			datacenter = 
+                                datacenterClass.getConstructor(String.class,
 					DatacenterCharacteristics.class,
 					VmAllocationPolicy.class,
-					List.class,
-					Double.TYPE).newInstance(
+					List.class, Double.class)
+                                .newInstance(
 					name,
 					characteristics,
 					vmAllocationPolicy,
 					new LinkedList<FileStorage>(),
-					Constants.SCHEDULING_INTERVAL);
+					Constants.SCHEDULING_INTERVAL
+                                );
 		} catch (Exception e) {
 			e.printStackTrace();
 			System.exit(0);
@@ -192,12 +193,12 @@ public class Helper {
 	 * @param hosts the hosts
 	 * @return the times before host shutdown
 	 */
-	public static List<Double> getTimesBeforeHostShutdown(List<Host> hosts) {
+	public static List<Double> getTimesBeforeHostShutdown(List<HostSimple> hosts) {
 		List<Double> timeBeforeShutdown = new LinkedList<Double>();
-		for (Host host : hosts) {
+		for (HostSimple host : hosts) {
 			boolean previousIsActive = true;
 			double lastTimeSwitchedOn = 0;
-			for (HostStateHistoryEntry entry : ((HostDynamicWorkload) host).getStateHistory()) {
+			for (HostStateHistoryEntry entry : ((HostDynamicWorkloadSimple) host).getStateHistory()) {
 				if (previousIsActive == true && entry.isActive() == false) {
 					timeBeforeShutdown.add(entry.getTime() - lastTimeSwitchedOn);
 				}
@@ -238,6 +239,7 @@ public class Helper {
 	 * Prints the results.
 	 * 
 	 * @param datacenter the datacenter
+         * @param vms
 	 * @param lastClock the last clock
 	 * @param experimentName the experiment name
 	 * @param outputInCsv the output in csv
@@ -251,7 +253,7 @@ public class Helper {
 			boolean outputInCsv,
 			String outputFolder) {
 		Log.enable();
-		List<Host> hosts = datacenter.getHostList();
+		List<HostSimple> hosts = datacenter.getHostList();
 
 		int numberOfHosts = hosts.size();
 		int numberOfVms = vms.size();
@@ -491,12 +493,12 @@ public class Helper {
 	 * @param hosts the hosts
 	 * @return the sla time per active host
 	 */
-	protected static double getSlaTimePerActiveHost(List<Host> hosts) {
+	protected static double getSlaTimePerActiveHost(List<HostSimple> hosts) {
 		double slaViolationTimePerHost = 0;
 		double totalTime = 0;
 
-		for (Host _host : hosts) {
-			HostDynamicWorkload host = (HostDynamicWorkload) _host;
+		for (HostSimple _host : hosts) {
+			HostDynamicWorkloadSimple host = (HostDynamicWorkloadSimple) _host;
 			double previousTime = -1;
 			double previousAllocated = 0;
 			double previousRequested = 0;
@@ -527,12 +529,12 @@ public class Helper {
 	 * @param hosts the hosts
 	 * @return the sla time per host
 	 */
-	protected static double getSlaTimePerHost(List<Host> hosts) {
+	protected static double getSlaTimePerHost(List<HostSimple> hosts) {
 		double slaViolationTimePerHost = 0;
 		double totalTime = 0;
 
-		for (Host _host : hosts) {
-			HostDynamicWorkload host = (HostDynamicWorkload) _host;
+		for (HostSimple _host : hosts) {
+			HostDynamicWorkloadSimple host = (HostDynamicWorkloadSimple) _host;
 			double previousTime = -1;
 			double previousAllocated = 0;
 			double previousRequested = 0;
@@ -562,8 +564,8 @@ public class Helper {
 	 * @return the sla metrics
 	 */
 	protected static Map<String, Double> getSlaMetrics(List<Vm> vms) {
-		Map<String, Double> metrics = new HashMap<String, Double>();
-		List<Double> slaViolation = new LinkedList<Double>();
+		Map<String, Double> metrics = new HashMap<>();
+		List<Double> slaViolation = new LinkedList<>();
 		double totalAllocated = 0;
 		double totalRequested = 0;
 		double totalUnderAllocatedDueToMigration = 0;
@@ -676,12 +678,12 @@ public class Helper {
 	 * @param outputPath the output path
 	 */
 	public static void writeMetricHistory(
-			List<? extends Host> hosts,
+			List<? extends HostSimple> hosts,
 			PowerVmAllocationPolicyMigrationAbstract vmAllocationPolicy,
 			String outputPath) {
-		// for (Host host : hosts) {
+		// for (HostSimple host : hosts) {
 		for (int j = 0; j < 10; j++) {
-			Host host = hosts.get(j);
+			HostSimple host = hosts.get(j);
 
 			if (!vmAllocationPolicy.getTimeHistory().containsKey(host.getId())) {
 				continue;
@@ -719,9 +721,9 @@ public class Helper {
 	 * 
 	 * @param list list of Cloudlets
 	 */
-	public static void printCloudletList(List<Cloudlet> list) {
+	public static void printCloudletList(List<CloudletSimple> list) {
 		int size = list.size();
-		Cloudlet cloudlet;
+		CloudletSimple cloudlet;
 
 		String indent = "\t";
 		Log.printLine();
@@ -734,7 +736,7 @@ public class Helper {
 			cloudlet = list.get(i);
 			Log.print(indent + cloudlet.getCloudletId());
 
-			if (cloudlet.getStatus() == Cloudlet.Status.SUCCESS) {
+			if (cloudlet.getStatus() == CloudletSimple.Status.SUCCESS) {
 				Log.printLine(indent + "SUCCESS" + indent + indent + cloudlet.getResourceId() + indent
 						+ cloudlet.getVmId() + indent + dft.format(cloudlet.getActualCPUTime()) + indent
 						+ dft.format(cloudlet.getExecStartTime()) + indent + indent
@@ -750,10 +752,10 @@ public class Helper {
 	 * @param vmAllocationPolicy the vm allocation policy
 	 */
 	public static void printMetricHistory(
-			List<? extends Host> hosts,
+			List<? extends HostSimple> hosts,
 			PowerVmAllocationPolicyMigrationAbstract vmAllocationPolicy) {
 		for (int i = 0; i < 10; i++) {
-			Host host = hosts.get(i);
+			HostSimple host = hosts.get(i);
 
 			Log.printLine("Host #" + host.getId());
 			Log.printLine("Time:");

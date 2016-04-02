@@ -8,6 +8,7 @@
 
 package org.cloudbus.cloudsim;
 
+import org.cloudbus.cloudsim.utilizationmodels.UtilizationModelStochastic;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNotSame;

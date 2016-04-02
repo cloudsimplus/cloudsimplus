@@ -15,8 +15,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.cloudbus.cloudsim.Cloudlet;
-import org.cloudbus.cloudsim.Cloudlet.Status;
-import org.cloudbus.cloudsim.CloudletScheduler;
+import org.cloudbus.cloudsim.schedulers.CloudletSchedulerAbstract;
 import org.cloudbus.cloudsim.ResCloudlet;
 import org.cloudbus.cloudsim.core.CloudSim;
 import org.cloudbus.cloudsim.core.CloudSimTags;
@@ -36,7 +35,7 @@ import org.cloudbus.cloudsim.core.CloudSimTags;
  * @since CloudSim Toolkit 3.0
  * @todo Attributes should be private
  */
-public class NetworkCloudletSpaceSharedScheduler extends CloudletScheduler {
+public class NetworkCloudletSpaceSharedScheduler extends CloudletSchedulerAbstract {
 	/** The current CPUs. */
 	protected int currentCpus;
 
@@ -113,7 +112,7 @@ public class NetworkCloudletSpaceSharedScheduler extends CloudletScheduler {
 					// update the time
 					cl.timespentInStage = Math.round(CloudSim.clock() - cl.timetostartStage);
 					if (cl.timespentInStage >= st.time) {
-						changetonextstage(cl, st);
+						changeToNextStage(cl, st);
 						// change the stage
 					}
 				}
@@ -129,7 +128,7 @@ public class NetworkCloudletSpaceSharedScheduler extends CloudletScheduler {
 							if (pkt.reciever == cl.getVmId()) {
 								pkt.recievetime = CloudSim.clock();
 								st.time = CloudSim.clock() - pkt.sendtime;
-								changetonextstage(cl, st);
+								changeToNextStage(cl, st);
 								pkttoremove.add(pkt);
 							}
 						}
@@ -221,9 +220,8 @@ public class NetworkCloudletSpaceSharedScheduler extends CloudletScheduler {
         /**
          * Changes a cloudlet to the next stage.
          * 
-         * @todo It has to be corrected the method name case. Method too long
-         * to understand what is its responsibility.*/
-	private void changetonextstage(NetworkCloudlet cl, TaskStage st) {
+         * @todo  Method too long to understand what is its responsibility.*/
+	private void changeToNextStage(NetworkCloudlet cl, TaskStage st) {
 		cl.timespentInStage = 0;
 		cl.timetostartStage = CloudSim.clock();
 		int currstage = cl.currStagenum;
@@ -527,7 +525,7 @@ public class NetworkCloudletSpaceSharedScheduler extends CloudletScheduler {
 	}
 
 	@Override
-	public boolean isFinishedCloudlets() {
+	public boolean areThereFinishedCloudlets() {
 		return getCloudletFinishedList().size() > 0;
 	}
 

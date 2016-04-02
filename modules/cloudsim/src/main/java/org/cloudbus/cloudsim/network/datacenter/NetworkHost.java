@@ -12,10 +12,10 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map.Entry;
 
-import org.cloudbus.cloudsim.Host;
-import org.cloudbus.cloudsim.Pe;
+import org.cloudbus.cloudsim.HostSimple;
+import org.cloudbus.cloudsim.resources.Pe;
+import org.cloudbus.cloudsim.schedulers.VmScheduler;
 import org.cloudbus.cloudsim.Vm;
-import org.cloudbus.cloudsim.VmScheduler;
 import org.cloudbus.cloudsim.core.CloudSim;
 import org.cloudbus.cloudsim.core.CloudSimTags;
 import org.cloudbus.cloudsim.lists.PeList;
@@ -23,7 +23,7 @@ import org.cloudbus.cloudsim.lists.VmList;
 import org.cloudbus.cloudsim.provisioners.ResourceProvisioner;
 
 /**
- * NetworkHost class extends {@link Host} to support simulation of networked datacenters. It executes
+ * NetworkHost class extends {@link HostSimple} to support simulation of networked datacenters. It executes
  * actions related to management of packets (sent and received) other than that of virtual machines
  * (e.g., creation and destruction). A host has a defined policy for provisioning memory and bw, as
  * well as an allocation policy for PE's to virtual machines.
@@ -41,7 +41,7 @@ import org.cloudbus.cloudsim.provisioners.ResourceProvisioner;
  * @author Saurabh Kumar Garg
  * @since CloudSim Toolkit 3.0
  */
-public class NetworkHost extends Host {
+public class NetworkHost extends HostSimple {
 	public List<NetworkPacket> packetTosendLocal;
 
 	public List<NetworkPacket> packetTosendGlobal;
@@ -83,7 +83,7 @@ public class NetworkHost extends Host {
 			ResourceProvisioner<Integer> ramProvisioner,
 			ResourceProvisioner<Long> bwProvisioner,
 			long storage,
-			List<? extends Pe> peList,
+			List<Pe> peList,
 			VmScheduler vmScheduler) {
 		super(id, ramProvisioner, bwProvisioner, storage, peList, vmScheduler);
 

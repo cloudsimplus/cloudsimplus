@@ -13,22 +13,27 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.LinkedList;
 import java.util.List;
-
 import org.cloudbus.cloudsim.Cloudlet;
-import org.cloudbus.cloudsim.CloudletSchedulerTimeShared;
+import org.cloudbus.cloudsim.CloudletSimple;
+import org.cloudbus.cloudsim.schedulers.CloudletSchedulerTimeShared;
 import org.cloudbus.cloudsim.Datacenter;
-import org.cloudbus.cloudsim.DatacenterBroker;
+import org.cloudbus.cloudsim.DatacenterSimple;
+import org.cloudbus.cloudsim.brokers.DatacenterBroker;
+import org.cloudbus.cloudsim.brokers.DatacenterBrokerSimple;
 import org.cloudbus.cloudsim.DatacenterCharacteristics;
 import org.cloudbus.cloudsim.Host;
+import org.cloudbus.cloudsim.HostSimple;
 import org.cloudbus.cloudsim.Log;
-import org.cloudbus.cloudsim.NetworkTopology;
-import org.cloudbus.cloudsim.Pe;
+import org.cloudbus.cloudsim.network.NetworkTopology;
+import org.cloudbus.cloudsim.resources.Pe;
+import org.cloudbus.cloudsim.resources.PeSimple;
 import org.cloudbus.cloudsim.resources.FileStorage;
-import org.cloudbus.cloudsim.UtilizationModel;
-import org.cloudbus.cloudsim.UtilizationModelFull;
+import org.cloudbus.cloudsim.utilizationmodels.UtilizationModel;
+import org.cloudbus.cloudsim.utilizationmodels.UtilizationModelFull;
 import org.cloudbus.cloudsim.Vm;
-import org.cloudbus.cloudsim.VmAllocationPolicySimple;
-import org.cloudbus.cloudsim.VmSchedulerTimeShared;
+import org.cloudbus.cloudsim.VmSimple;
+import org.cloudbus.cloudsim.allocationpolicies.VmAllocationPolicySimple;
+import org.cloudbus.cloudsim.schedulers.VmSchedulerTimeShared;
 import org.cloudbus.cloudsim.core.CloudSim;
 import org.cloudbus.cloudsim.util.TableBuilderHelper;
 import org.cloudbus.cloudsim.util.TextTableBuilder;
@@ -52,6 +57,7 @@ public class NetworkExample1 {
 
     /**
      * Creates main() to run this example
+     * @param args
      */
     public static void main(String[] args) {
             Log.printFormattedLine("Starting %s...", NetworkExample1.class.getSimpleName());
@@ -74,7 +80,7 @@ public class NetworkExample1 {
                     int brokerId = broker.getId();
 
                     //Fourth step: Create one virtual machine
-                    vmlist = new ArrayList<Vm>();
+                    vmlist = new ArrayList<>();
 
                     //VM description
                     int vmid = 0;
@@ -86,7 +92,7 @@ public class NetworkExample1 {
                     String vmm = "Xen"; //VMM name
 
                     //create VM
-                    Vm vm1 = new Vm(vmid, brokerId, mips, pesNumber, ram, bw, size, vmm, new CloudletSchedulerTimeShared());
+                    Vm vm1 = new VmSimple(vmid, brokerId, mips, pesNumber, ram, bw, size, vmm, new CloudletSchedulerTimeShared());
 
                     //add the VM to the vmList
                     vmlist.add(vm1);
@@ -96,7 +102,7 @@ public class NetworkExample1 {
 
 
                     //Fifth step: Create one Cloudlet
-                    cloudletList = new ArrayList<Cloudlet>();
+                    cloudletList = new ArrayList<>();
 
                     //Cloudlet properties
                     int id = 0;
@@ -105,7 +111,7 @@ public class NetworkExample1 {
                     long outputSize = 300;
                     UtilizationModel utilizationModel = new UtilizationModelFull();
 
-                    Cloudlet cloudlet1 = new Cloudlet(id, length, pesNumber, fileSize, outputSize, utilizationModel, utilizationModel, utilizationModel);
+                    Cloudlet cloudlet1 = new CloudletSimple(id, length, pesNumber, fileSize, outputSize, utilizationModel, utilizationModel, utilizationModel);
                     cloudlet1.setUserId(brokerId);
 
                     //add the cloudlet to the list
@@ -119,7 +125,7 @@ public class NetworkExample1 {
                     NetworkTopology.buildNetworkTopology("topology.brite");
 
                     //maps CloudSim entities to BRITE entities
-                    //PowerDatacenter will correspond to BRITE node 0
+                    //Datacenter will correspond to BRITE node 0
                     int briteNode=0;
                     NetworkTopology.mapNode(datacenter0.getId(),briteNode);
 
@@ -147,27 +153,27 @@ public class NetworkExample1 {
 
     private static Datacenter createDatacenter(String name){
 
-            // Here are the steps needed to create a PowerDatacenter:
+            // Here are the steps needed to create a DatacenterSimple:
             // 1. We need to create a list to store
             //    our machine
-            List<Host> hostList = new ArrayList<Host>();
+            List<Host> hostList = new ArrayList<>();
 
             // 2. A Machine contains one or more PEs or CPUs/Cores.
             // In this example, it will have only one core.
-            List<Pe> peList = new ArrayList<Pe>();
+            List<Pe> peList = new ArrayList<>();
 
             int mips = 1000;
 
             // 3. Create PEs and add these into a list.
-            peList.add(new Pe(0, new PeProvisionerSimple(mips))); // need to store Pe id and MIPS Rating
+            peList.add(new PeSimple(0, new PeProvisionerSimple(mips))); // need to store Pe id and MIPS Rating
 
-            //4. Create Host with its id and list of PEs and add them to the list of machines
+            //4. Create HostSimple with its id and list of PEs and add them to the list of machines
             int hostId=0;
             int ram = 2048; //host memory (MB)
             long storage = 1000000; //host storage
             long bw = 10000;
 
-            hostList.add(new Host(
+            hostList.add(new HostSimple(
                                     hostId,
                                     new ResourceProvisionerSimple(new Ram(ram)),
                                     new ResourceProvisionerSimple(new Bandwidth(bw)),
@@ -189,17 +195,17 @@ public class NetworkExample1 {
             double costPerMem = 0.05;		// the cost of using memory in this resource
             double costPerStorage = 0.001;	// the cost of using storage in this resource
             double costPerBw = 0.0;			// the cost of using bw in this resource
-            LinkedList<FileStorage> storageList = new LinkedList<>();	//we are not adding SAN devices by now
+            List<FileStorage> storageList = new LinkedList<>();	//we are not adding SAN devices by now
 
             DatacenterCharacteristics characteristics = new DatacenterCharacteristics(
                             arch, os, vmm, hostList, time_zone, cost, costPerMem,
                             costPerStorage, costPerBw);
 
 
-            // 6. Finally, we need to create a PowerDatacenter object.
+            // 6. Finally, we need to create a DatacenterSimple object.
             Datacenter datacenter = null;
             try {
-                    datacenter = new Datacenter(name, characteristics, new VmAllocationPolicySimple(hostList), storageList, 0);
+                    datacenter = new DatacenterSimple(name, characteristics, new VmAllocationPolicySimple(hostList), storageList, 0);
             } catch (Exception e) {
                     e.printStackTrace();
             }
@@ -213,7 +219,7 @@ public class NetworkExample1 {
 
             DatacenterBroker broker = null;
             try {
-                    broker = new DatacenterBroker("Broker");
+                    broker = new DatacenterBrokerSimple("Broker");
             } catch (Exception e) {
                     e.printStackTrace();
                     return null;

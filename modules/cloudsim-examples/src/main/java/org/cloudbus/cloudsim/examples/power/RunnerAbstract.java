@@ -6,11 +6,11 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.List;
 
-import org.cloudbus.cloudsim.Cloudlet;
-import org.cloudbus.cloudsim.DatacenterBroker;
+import org.cloudbus.cloudsim.brokers.DatacenterBroker;
 import org.cloudbus.cloudsim.Log;
+import org.cloudbus.cloudsim.Cloudlet;
 import org.cloudbus.cloudsim.Vm;
-import org.cloudbus.cloudsim.VmAllocationPolicy;
+import org.cloudbus.cloudsim.allocationpolicies.VmAllocationPolicy;
 import org.cloudbus.cloudsim.core.CloudSim;
 import org.cloudbus.cloudsim.power.PowerDatacenter;
 import org.cloudbus.cloudsim.power.PowerHost;
@@ -256,7 +256,7 @@ public abstract class RunnerAbstract {
 					vmSelectionPolicy,
 					0.7);
 			vmAllocationPolicy = new PowerVmAllocationPolicyMigrationMedianAbsoluteDeviation(
-					hostList,
+					hostList, 
 					vmSelectionPolicy,
 					parameter,
 					fallbackVmSelectionPolicy);
@@ -337,5 +337,7 @@ public abstract class RunnerAbstract {
 	public boolean isEnableOutput() {
 		return enableOutput;
 	}
+
+   
 
 }

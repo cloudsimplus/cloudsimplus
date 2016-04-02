@@ -4,14 +4,17 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.LinkedList;
 import java.util.List;
-
 import org.cloudbus.cloudsim.Cloudlet;
+
+import org.cloudbus.cloudsim.CloudletSimple;
 import org.cloudbus.cloudsim.DatacenterCharacteristics;
 import org.cloudbus.cloudsim.Host;
+import org.cloudbus.cloudsim.HostSimple;
 import org.cloudbus.cloudsim.Log;
-import org.cloudbus.cloudsim.Pe;
+import org.cloudbus.cloudsim.resources.Pe;
+import org.cloudbus.cloudsim.resources.PeSimple;
 import org.cloudbus.cloudsim.resources.FileStorage;
-import org.cloudbus.cloudsim.VmSchedulerTimeShared;
+import org.cloudbus.cloudsim.schedulers.VmSchedulerTimeShared;
 import org.cloudbus.cloudsim.core.CloudSim;
 import org.cloudbus.cloudsim.util.TableBuilderHelper;
 import org.cloudbus.cloudsim.util.TextTableBuilder;
@@ -95,11 +98,11 @@ public class TestExample {
      */
     private static NetworkDatacenter createDatacenter(String name) {
 
-            // Here are the steps needed to create a PowerDatacenter:
+            // Here are the steps needed to create a Datacenter:
             // 1. We need to create a list to store
             // our machine
 
-            List<NetworkHost> hostList = new ArrayList<NetworkHost>();
+            List<Host> hostList = new ArrayList<>();
 
             // 2. A Machine contains one or more PEs or CPUs/Cores.
             // In this example, it will have only one core.
@@ -111,7 +114,7 @@ public class TestExample {
             // peList.add(new Pe(0, new PeProvisionerSimple(mips))); // need to
             // store Pe id and MIPS Rating
 
-            // 4. Create Host with its id and list of PEs and add them to the list
+            // 4. Create HostSimple with its id and list of PEs and add them to the list
             // of machines
             int ram = 2048; // host memory (MB)
             long storage = 1000000; // host storage
@@ -122,49 +125,49 @@ public class TestExample {
                     // In this example, it will have only one core.
                     // 3. Create PEs and add these into an object of PowerPeList.
                     List<Pe> peList = new ArrayList<>();
-                    peList.add(new Pe(0, new PeProvisionerSimple(mips))); // need to
+                    peList.add(new PeSimple(0, new PeProvisionerSimple(mips))); // need to
                     // store
                     // PowerPe
                     // id and
                     // MIPS
                     // Rating
-                    peList.add(new Pe(1, new PeProvisionerSimple(mips))); // need to
+                    peList.add(new PeSimple(1, new PeProvisionerSimple(mips))); // need to
                     // store
                     // PowerPe
                     // id and
                     // MIPS
                     // Rating
-                    peList.add(new Pe(2, new PeProvisionerSimple(mips))); // need to
+                    peList.add(new PeSimple(2, new PeProvisionerSimple(mips))); // need to
                     // store
                     // PowerPe
                     // id and
                     // MIPS
                     // Rating
-                    peList.add(new Pe(3, new PeProvisionerSimple(mips))); // need to
+                    peList.add(new PeSimple(3, new PeProvisionerSimple(mips))); // need to
                     // store
                     // PowerPe
                     // id and
                     // MIPS
                     // Rating
-                    peList.add(new Pe(4, new PeProvisionerSimple(mips))); // need to
+                    peList.add(new PeSimple(4, new PeProvisionerSimple(mips))); // need to
                     // store
                     // PowerPe
                     // id and
                     // MIPS
                     // Rating
-                    peList.add(new Pe(5, new PeProvisionerSimple(mips))); // need to
+                    peList.add(new PeSimple(5, new PeProvisionerSimple(mips))); // need to
                     // store
                     // PowerPe
                     // id and
                     // MIPS
                     // Rating
-                    peList.add(new Pe(6, new PeProvisionerSimple(mips))); // need to
+                    peList.add(new PeSimple(6, new PeProvisionerSimple(mips))); // need to
                     // store
                     // PowerPe
                     // id and
                     // MIPS
                     // Rating
-                    peList.add(new Pe(7, new PeProvisionerSimple(mips))); // need to
+                    peList.add(new PeSimple(7, new PeProvisionerSimple(mips))); // need to
                     // store
                     // PowerPe
                     // id and

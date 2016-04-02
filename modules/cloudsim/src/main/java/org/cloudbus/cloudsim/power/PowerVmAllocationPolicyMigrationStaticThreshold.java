@@ -9,8 +9,6 @@
 package org.cloudbus.cloudsim.power;
 
 import java.util.List;
-
-import org.cloudbus.cloudsim.Host;
 import org.cloudbus.cloudsim.Vm;
 
 /**
@@ -45,7 +43,7 @@ public class PowerVmAllocationPolicyMigrationStaticThreshold extends PowerVmAllo
 	 * @param utilizationThreshold the utilization threshold
 	 */
 	public PowerVmAllocationPolicyMigrationStaticThreshold(
-			List<? extends Host> hostList,
+			List<PowerHost> hostList,
 			PowerVmSelectionPolicy vmSelectionPolicy,
 			double utilizationThreshold) {
 		super(hostList, vmSelectionPolicy);
@@ -59,7 +57,7 @@ public class PowerVmAllocationPolicyMigrationStaticThreshold extends PowerVmAllo
 	 * @return true, if the host is over utilized; false otherwise
 	 */
 	@Override
-	protected boolean isHostOverUtilized(PowerHost host) {
+	public boolean isHostOverUtilized(PowerHostSimple host) {
 		addHistoryEntry(host, getUtilizationThreshold());
 		double totalRequestedMips = 0;
 		for (Vm vm : host.getVmList()) {
@@ -74,7 +72,7 @@ public class PowerVmAllocationPolicyMigrationStaticThreshold extends PowerVmAllo
 	 * 
 	 * @param utilizationThreshold the new utilization threshold
 	 */
-	protected void setUtilizationThreshold(double utilizationThreshold) {
+	protected final void setUtilizationThreshold(double utilizationThreshold) {
 		this.utilizationThreshold = utilizationThreshold;
 	}
 

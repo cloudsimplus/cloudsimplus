@@ -9,6 +9,7 @@
 package org.cloudbus.cloudsim.provisioners;
 
 import org.cloudbus.cloudsim.Vm;
+import org.cloudbus.cloudsim.Vm;
 
 /**
  * An interface that represents the provisioning policy used by a host 
@@ -102,5 +103,52 @@ public interface ResourceProvisioner<T extends Number & Comparable<T>> {
      * 
      * @return the amount of free available resource
      */
-    T getAvailableResource();       
+    T getAvailableResource();    
+    
+    
+    /**
+     * A property that implements the Null Object Design Pattern for 
+     * ResourceProvisioner&lt;Double&gt; objects.
+     */
+    public static final ResourceProvisioner<Double> NULL_DOUBLE = new ResourceProvisioner<Double>(){
+        @Override public boolean allocateResourceForVm(Vm vm, Double newTotalVmResource) { return false; }
+        @Override public Double getAllocatedResourceForVm(Vm vm) { return 0.0; }
+        @Override public Double getTotalAllocatedResource() { return 0.0; }
+        @Override public boolean deallocateResourceForVm(Vm vm) { return false; }
+        @Override public void deallocateResourceForAllVms() {}
+        @Override public boolean isSuitableForVm(Vm vm, Double newVmTotalAllocatedResource) { return false; }
+        @Override public Double getCapacity() { return 0.0; }
+        @Override public Double getAvailableResource() { return 0.0; }
+    };    
+    
+    /**
+     * A property that implements the Null Object Design Pattern for 
+     * ResourceProvisioner&lt;Long&gt; objects.
+     */
+    public static final ResourceProvisioner<Long> NULL_LONG = new ResourceProvisioner<Long>(){
+        @Override public boolean allocateResourceForVm(Vm vm, Long newTotalVmResource) { return false; }
+        @Override public Long getAllocatedResourceForVm(Vm vm) { return 0L; }
+        @Override public Long getTotalAllocatedResource() { return 0L; }
+        @Override public boolean deallocateResourceForVm(Vm vm) { return false; }
+        @Override public void deallocateResourceForAllVms() {}
+        @Override public boolean isSuitableForVm(Vm vm, Long newVmTotalAllocatedResource) { return false; }
+        @Override public Long getCapacity() { return 0L; }
+        @Override public Long getAvailableResource() { return 0L; }
+    };        
+
+    /**
+     * A property that implements the Null Object Design Pattern for 
+     * ResourceProvisioner&lt;Integer&gt; objects.
+     */
+    public static final ResourceProvisioner<Integer> NULL_INT = new ResourceProvisioner<Integer>(){
+        @Override public boolean allocateResourceForVm(Vm vm, Integer newTotalVmResource) { return false; }
+        @Override public Integer getAllocatedResourceForVm(Vm vm) { return 0; }
+        @Override public Integer getTotalAllocatedResource() { return 0; }
+        @Override public boolean deallocateResourceForVm(Vm vm) { return false; }
+        @Override public void deallocateResourceForAllVms() {}
+        @Override public boolean isSuitableForVm(Vm vm, Integer newVmTotalAllocatedResource) { return false; }
+        @Override public Integer getCapacity() { return 0; }
+        @Override public Integer getAvailableResource() { return 0; }
+    };        
+
 }

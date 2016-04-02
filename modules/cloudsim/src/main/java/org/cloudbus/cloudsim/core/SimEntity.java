@@ -9,25 +9,12 @@
 package org.cloudbus.cloudsim.core;
 
 import org.cloudbus.cloudsim.Log;
-import org.cloudbus.cloudsim.NetworkTopology;
+import org.cloudbus.cloudsim.network.NetworkTopology;
 import org.cloudbus.cloudsim.core.predicates.Predicate;
 
 /**
  * This class represents a simulation entity. An entity handles events and can send events to other
- * entities. When this class is extended, there are a few methods that need to be implemented:
- * <ul>
- * <li> {@link #startEntity()} is invoked by the {@link Simulation} class when the simulation is
- * started. This method should be responsible for starting the entity up.
- * <li> {@link #processEvent(SimEvent)} is invoked by the {@link Simulation} class whenever there is
- * an event in the deferred queue, which needs to be processed by the entity.
- * <li> {@link #shutdownEntity()} is invoked by the {@link Simulation} before the simulation
- * finishes. If you want to save data in log files this is the method in which the corresponding
- * code would be placed.
- * </ul>
- * 
- * @todo the list above is redundant once all mentioned methods are abstract.
- * The documentation duplication may lead to have some of them
- * out-of-date and future confusion.
+ * entities.
  * 
  * @author Marcos Dias de Assuncao
  * @since CloudSim Toolkit 1.0

@@ -11,6 +11,9 @@ c) 2009-2010, The University of Melbourne, Australia
 
 package org.cloudbus.cloudsim;
 
+import org.cloudbus.cloudsim.utilizationmodels.UtilizationModelFull;
+import org.cloudbus.cloudsim.utilizationmodels.UtilizationModelStochastic;
+import org.cloudbus.cloudsim.utilizationmodels.UtilizationModel;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertSame;
 
@@ -32,7 +35,7 @@ public class CloudletTest {
 
 	private static final int PES_NUMBER = 2;
 
-	private Cloudlet cloudlet;
+	private CloudletSimple cloudlet;
 	private UtilizationModel utilizationModelCpu;
 	private UtilizationModel utilizationModelRam;
 	private UtilizationModel utilizationModelBw;
@@ -42,7 +45,7 @@ public class CloudletTest {
 		utilizationModelCpu = new UtilizationModelStochastic();
 		utilizationModelRam = new UtilizationModelStochastic();
 		utilizationModelBw = new UtilizationModelStochastic();
-		cloudlet = new Cloudlet(0, CLOUDLET_LENGTH, PES_NUMBER, CLOUDLET_FILE_SIZE, CLOUDLET_OUTPUT_SIZE,
+		cloudlet = new CloudletSimple(0, CLOUDLET_LENGTH, PES_NUMBER, CLOUDLET_FILE_SIZE, CLOUDLET_OUTPUT_SIZE,
 				utilizationModelCpu, utilizationModelRam, utilizationModelBw);
 	}
 
@@ -76,23 +79,23 @@ public class CloudletTest {
                     cloudlet.setNetServiceLevel(valid));
         }
         
-        private Cloudlet createCloudlet(){
+        private CloudletSimple createCloudlet(){
             final UtilizationModel cpuRamAndBwUtilizationModel = new UtilizationModelFull();
             return createCloudlet(cpuRamAndBwUtilizationModel);
         }
         
-        private Cloudlet createCloudlet(UtilizationModel cpuRamAndBwUtilizationModel){
-            return new Cloudlet(0, 1000, 1, 0, 0, 
+        private CloudletSimple createCloudlet(UtilizationModel cpuRamAndBwUtilizationModel){
+            return new CloudletSimple(0, 1000, 1, 0, 0, 
                     cpuRamAndBwUtilizationModel, 
                     cpuRamAndBwUtilizationModel, 
                     cpuRamAndBwUtilizationModel
             );
         }
 
-        private Cloudlet createCloudlet(UtilizationModel utilizationModelCPU,
+        private CloudletSimple createCloudlet(UtilizationModel utilizationModelCPU,
                 UtilizationModel utilizationModelRAM,
                 UtilizationModel utilizationModelBW){
-            return new Cloudlet(0, 1000, 1, 0, 0, 
+            return new CloudletSimple(0, 1000, 1, 0, 0, 
                     utilizationModelCPU, 
                     utilizationModelRAM, 
                     utilizationModelBW
@@ -107,7 +110,7 @@ public class CloudletTest {
             }catch (Exception e){
             } 
 
-            Cloudlet c = createCloudlet();
+            CloudletSimple c = createCloudlet();
             Assert.assertNotNull(c.getUtilizationModelCpu());
             Assert.assertNotNull(c.getUtilizationModelRam());
             Assert.assertNotNull(c.getUtilizationModelBw());
@@ -133,7 +136,7 @@ public class CloudletTest {
         
         @Test
 	public void testSetSubmissionTime() {
-            Cloudlet c = createCloudlet();
+            CloudletSimple c = createCloudlet();
             
             //Cloudlet has not assigned to a datacenter yet
             Assert.assertFalse(c.setSubmissionTime(1));
@@ -147,7 +150,7 @@ public class CloudletTest {
         
 	@Test
 	public void testSetExecParam() {
-            Cloudlet c = createCloudlet();
+            CloudletSimple c = createCloudlet();
             
             //Cloudlet has not assigned to a datacenter yet
             Assert.assertFalse(c.setExecParam(1, 2));
@@ -161,15 +164,15 @@ public class CloudletTest {
         
 	@Test
 	public void testSetCloudletStatus() {
-            Cloudlet c = createCloudlet();
-            c.setCloudletStatus(Cloudlet.Status.CREATED);
+            CloudletSimple c = createCloudlet();
+            c.setCloudletStatus(CloudletSimple.Status.CREATED);
             //The status is the same of the current cloudlet status (the request has not effect)
-            Assert.assertFalse(c.setCloudletStatus(Cloudlet.Status.CREATED));
+            Assert.assertFalse(c.setCloudletStatus(CloudletSimple.Status.CREATED));
             
             //Actually changing to a new status
-            Assert.assertTrue(c.setCloudletStatus(Cloudlet.Status.QUEUED));
+            Assert.assertTrue(c.setCloudletStatus(CloudletSimple.Status.QUEUED));
             
-            final Cloudlet.Status newStatus = Cloudlet.Status.CANCELED;
+            final CloudletSimple.Status newStatus = CloudletSimple.Status.CANCELED;
             Assert.assertTrue(c.setCloudletStatus(newStatus));
             assertEquals(newStatus, c.getStatus());
             
@@ -179,7 +182,7 @@ public class CloudletTest {
 
 	@Test
 	public void testAddRequiredFile() {
-            Cloudlet c = createCloudlet();
+            CloudletSimple c = createCloudlet();
             final String files[] = {"file1.txt", "file2.txt"};
             for(String file: files){
                 Assert.assertTrue("Method file should be added", 
@@ -191,7 +194,7 @@ public class CloudletTest {
 
 	@Test
 	public void testDeleteRequiredFile() {
-            Cloudlet c = createCloudlet();
+            CloudletSimple c = createCloudlet();
             final String files[] = {"file1.txt", "file2.txt", "file3.txt"};
             for(String file: files){
                  c.addRequiredFile(file);  
@@ -206,7 +209,7 @@ public class CloudletTest {
 
 	@Test
 	public void testRequiredFiles() {
-            Cloudlet c = createCloudlet();
+            CloudletSimple c = createCloudlet();
             final String files[] = {"file1.txt", "file2.txt", "file3.txt"};
             c.setRequiredFiles(null); //internally it has to creates a new instance
             Assert.assertNotNull(c.getRequiredFiles());   
@@ -221,7 +224,7 @@ public class CloudletTest {
         @Test
 	public void testGetCloudletFinishedSoFar() {
             final long length = 1000;
-            Cloudlet c = createCloudlet();
+            CloudletSimple c = createCloudlet();
             
             assertEquals(0, c.getCloudletFinishedSoFar());
             
@@ -238,7 +241,7 @@ public class CloudletTest {
 	@Test
 	public void testIsFinished() {
             final long length = 1000;
-            Cloudlet c = createCloudlet();
+            CloudletSimple c = createCloudlet();
             
             Assert.assertFalse(c.isFinished());
             
@@ -272,7 +275,7 @@ public class CloudletTest {
 
         @Test
 	public void testHasReserved() {
-            cloudlet.setReservationId(Cloudlet.NOT_ASSIGNED);
+            cloudlet.setReservationId(CloudletSimple.NOT_ASSIGNED);
             Assert.assertFalse("Cloudlet.hasReserved should be false", cloudlet.hasReserved());
 
             final int reservationId = 1;
@@ -282,36 +285,36 @@ public class CloudletTest {
         
 	@Test
 	public void testGetCloudletStatusString() {
-            Cloudlet c = createCloudlet();
+            CloudletSimple c = createCloudlet();
             
-            c.setCloudletStatus(Cloudlet.Status.CREATED);
+            c.setCloudletStatus(CloudletSimple.Status.CREATED);
             assertEquals("CREATED", c.getCloudletStatusString());
 
-            c.setCloudletStatus(Cloudlet.Status.READY);
+            c.setCloudletStatus(CloudletSimple.Status.READY);
             assertEquals("READY", c.getCloudletStatusString());
 
-            c.setCloudletStatus(Cloudlet.Status.INEXEC);
+            c.setCloudletStatus(CloudletSimple.Status.INEXEC);
             assertEquals("INEXEC", c.getCloudletStatusString());
 
-            c.setCloudletStatus(Cloudlet.Status.SUCCESS);
+            c.setCloudletStatus(CloudletSimple.Status.SUCCESS);
             assertEquals("SUCCESS", c.getCloudletStatusString());
 
-            c.setCloudletStatus(Cloudlet.Status.QUEUED);
+            c.setCloudletStatus(CloudletSimple.Status.QUEUED);
             assertEquals("QUEUED", c.getCloudletStatusString());
 
-            c.setCloudletStatus(Cloudlet.Status.FAILED);
+            c.setCloudletStatus(CloudletSimple.Status.FAILED);
             assertEquals("FAILED", c.getCloudletStatusString());
 
-            c.setCloudletStatus(Cloudlet.Status.CANCELED);
+            c.setCloudletStatus(CloudletSimple.Status.CANCELED);
             assertEquals("CANCELED", c.getCloudletStatusString());
 
-            c.setCloudletStatus(Cloudlet.Status.PAUSED);
+            c.setCloudletStatus(CloudletSimple.Status.PAUSED);
             assertEquals("PAUSED", c.getCloudletStatusString());
 
-            c.setCloudletStatus(Cloudlet.Status.RESUMED);
+            c.setCloudletStatus(CloudletSimple.Status.RESUMED);
             assertEquals("RESUMED", c.getCloudletStatusString());
 
-            c.setCloudletStatus(Cloudlet.Status.FAILED_RESOURCE_UNAVAILABLE);
+            c.setCloudletStatus(CloudletSimple.Status.FAILED_RESOURCE_UNAVAILABLE);
             assertEquals("FAILED_RESOURCE_UNAVAILABLE", c.getCloudletStatusString());
 	}
 
@@ -332,7 +335,7 @@ public class CloudletTest {
 
 	@Test
 	public void testCloudletAlternativeConstructor1() {
-		cloudlet = new Cloudlet(0, CLOUDLET_LENGTH, PES_NUMBER, CLOUDLET_FILE_SIZE, CLOUDLET_OUTPUT_SIZE,
+		cloudlet = new CloudletSimple(0, CLOUDLET_LENGTH, PES_NUMBER, CLOUDLET_FILE_SIZE, CLOUDLET_OUTPUT_SIZE,
 				utilizationModelCpu, utilizationModelRam, utilizationModelBw, true, new LinkedList<String>());
 		testCloudlet();
 		testGetUtilizationOfCpu();
@@ -342,7 +345,7 @@ public class CloudletTest {
 
 	@Test
 	public void testCloudletAlternativeConstructor2() {
-		cloudlet = new Cloudlet(0, CLOUDLET_LENGTH, PES_NUMBER, CLOUDLET_FILE_SIZE, CLOUDLET_OUTPUT_SIZE,
+		cloudlet = new CloudletSimple(0, CLOUDLET_LENGTH, PES_NUMBER, CLOUDLET_FILE_SIZE, CLOUDLET_OUTPUT_SIZE,
 				utilizationModelCpu, utilizationModelRam, utilizationModelBw, new LinkedList<String>());
 		testCloudlet();
 		testGetUtilizationOfCpu();

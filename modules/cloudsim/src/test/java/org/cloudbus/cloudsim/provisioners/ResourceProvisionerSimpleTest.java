@@ -13,7 +13,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
-import org.cloudbus.cloudsim.Vm;
+import org.cloudbus.cloudsim.VmSimple;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -59,7 +59,7 @@ public class ResourceProvisionerSimpleTest {
         assertEquals(p.getCapacity(), p.getAvailableResource());
         assertEquals(ZERO, p.getTotalAllocatedResource());
 
-        Vm vm = createVm(1, CAPACITY);
+        VmSimple vm = createVm(1, CAPACITY);
         final Integer allocatedResource = HALF_CAPACITY;
         p.allocateResourceForVm(vm, allocatedResource);
         assertEquals(allocatedResource, p.getTotalAllocatedResource());
@@ -72,14 +72,14 @@ public class ResourceProvisionerSimpleTest {
      * CPU, RAM, BW, etc.
      * @return 
      */
-    private static Vm createVm(final int vmId, Integer capacity) {
-        return new Vm(vmId, 1, capacity, 1, capacity, capacity, capacity, null, null);
+    private static VmSimple createVm(final int vmId, Integer capacity) {
+        return new VmSimple(vmId, 1, capacity, 1, capacity, capacity, capacity, null, null);
     }
 
     @Test
     public void testAllocateResourceForVm() {
-        Vm vm1 = createVm(0, HALF_CAPACITY);
-        Vm vm2 = createVm(1, CAPACITY);
+        VmSimple vm1 = createVm(0, HALF_CAPACITY);
+        VmSimple vm2 = createVm(1, CAPACITY);
 
         assertTrue(provisioner.isSuitableForVm(vm1, HALF_CAPACITY));
         assertTrue(provisioner.allocateResourceForVm(vm1, HALF_CAPACITY));
@@ -100,8 +100,8 @@ public class ResourceProvisionerSimpleTest {
 
     @Test
     public void testGetAllocatedResourceForVm() {
-        Vm vm1 = createVm(0, HALF_CAPACITY);
-        Vm vm2 = createVm(1, CAPACITY);
+        VmSimple vm1 = createVm(0, HALF_CAPACITY);
+        VmSimple vm2 = createVm(1, CAPACITY);
 
         assertTrue(provisioner.isSuitableForVm(vm1, HALF_CAPACITY));
         assertTrue(provisioner.allocateResourceForVm(vm1, HALF_CAPACITY));
@@ -122,8 +122,8 @@ public class ResourceProvisionerSimpleTest {
 
     @Test
     public void testDeallocateResourceForVm() {
-        Vm vm1 = createVm(0, HALF_CAPACITY);
-        Vm vm2 = createVm(1, HALF_CAPACITY);
+        VmSimple vm1 = createVm(0, HALF_CAPACITY);
+        VmSimple vm2 = createVm(1, HALF_CAPACITY);
 
         assertEquals(0, vm1.getCurrentAllocatedRam());
         assertEquals(0, vm2.getCurrentAllocatedRam());

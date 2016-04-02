@@ -15,7 +15,8 @@ import java.util.Map;
 import org.cloudbus.cloudsim.Host;
 import org.cloudbus.cloudsim.Log;
 import org.cloudbus.cloudsim.Vm;
-import org.cloudbus.cloudsim.VmAllocationPolicy;
+import org.cloudbus.cloudsim.allocationpolicies.VmAllocationPolicyAbstract;
+import org.cloudbus.cloudsim.VmSimple;
 import org.cloudbus.cloudsim.core.CloudSim;
 
 /**
@@ -34,18 +35,18 @@ import org.cloudbus.cloudsim.core.CloudSim;
  * @author Anton Beloglazov
  * @since CloudSim Toolkit 3.0
  */
-public abstract class PowerVmAllocationPolicyAbstract extends VmAllocationPolicy {
+public abstract class PowerVmAllocationPolicyAbstract extends VmAllocationPolicyAbstract implements PowerVmAllocationPolicy {
 
 	/** The map map where each key is a VM id and
          * each value is the host where the VM is placed. */
-	private final Map<String, Host> vmTable = new HashMap<String, Host>();
+	private final Map<String, Host> vmTable = new HashMap<>();
 
 	/**
 	 * Instantiates a new PowerVmAllocationPolicyAbstract.
 	 * 
 	 * @param list the list
 	 */
-	public PowerVmAllocationPolicyAbstract(List<? extends Host> list) {
+	public PowerVmAllocationPolicyAbstract(List<? extends PowerHost> list) {
 		super(list);
 	}
 
@@ -79,8 +80,9 @@ public abstract class PowerVmAllocationPolicyAbstract extends VmAllocationPolicy
 	 * @param vm the vm to find a host for it
 	 * @return the first host found that can host the VM
 	 */
-	public PowerHost findHostForVm(Vm vm) {
-		for (PowerHost host : this.<PowerHost> getHostList()) {
+        @Override
+	public PowerHostSimple findHostForVm(Vm vm) {
+		for (PowerHostSimple host : this.<PowerHostSimple> getHostList()) {
 			if (host.isSuitableForVm(vm)) {
 				return host;
 			}
@@ -103,7 +105,7 @@ public abstract class PowerVmAllocationPolicyAbstract extends VmAllocationPolicy
 
 	@Override
 	public Host getHost(int vmId, int userId) {
-		return getVmTable().get(Vm.getUid(userId, vmId));
+		return getVmTable().get(VmSimple.getUid(userId, vmId));
 	}
 
 	/**
@@ -111,8 +113,8 @@ public abstract class PowerVmAllocationPolicyAbstract extends VmAllocationPolicy
 	 * 
 	 * @return the vm table
 	 */
+        @Override
 	public Map<String, Host> getVmTable() {
 		return vmTable;
 	}
-
 }

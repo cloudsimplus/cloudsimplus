@@ -17,7 +17,6 @@
         Integration/Functional tests results directly at the NetBeans JUnit graphical 
         test results interface. 
         -->
-        
         <profile>
             <!-- This is the default profile that runs just the Unit Tests,
             ignoring the Integration/Functional tests.
@@ -45,7 +44,15 @@
                                 <exclude>**/IntegrationTests/*.java</exclude>
                             </excludes>
                         </configuration>
-                    </plugin>                                     
+                    </plugin>    
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-javadoc-plugin</artifactId>
+                        <configuration>
+                            <!-- Switch OFF the doclint in Java 8 -->  
+                            <additionalparam>-Xdoclint:none</additionalparam>
+                        </configuration>
+                    </plugin>                                                     
                 </plugins>
             </build>
         </profile>
@@ -78,28 +85,18 @@
                         at the IDE-->
                         <version>2.11</version>
                     </plugin>
-                </plugins>
-            </build>
-        </profile>        
-        
-        <!-- Switch OFF the docling in Java 8 -->  
-        <profile>
-            <id>doclint-java8-disable</id>
-            <activation>
-                <jdk>[1.8,)</jdk>
-            </activation>
-            <build>
-                <plugins>
                     <plugin>
                         <groupId>org.apache.maven.plugins</groupId>
                         <artifactId>maven-javadoc-plugin</artifactId>
                         <configuration>
+                            <!-- Switch OFF the doclint in Java 8 -->  
                             <additionalparam>-Xdoclint:none</additionalparam>
                         </configuration>
                     </plugin>
                 </plugins>
             </build>
-        </profile>
+        </profile>        
+        
     </profiles>
     <!-- ===================================== -->
   
@@ -140,8 +137,8 @@
                 <artifactId>maven-compiler-plugin</artifactId>
                 <version>2.3.2</version>
                 <configuration>
-                    <source>1.7</source>
-                    <target>1.7</target>
+                    <source>1.8</source>
+                    <target>1.8</target>
                 </configuration>
             </plugin>  
         </plugins>
@@ -151,6 +148,12 @@
             <groupId>org.apache.commons</groupId>
             <artifactId>commons-math3</artifactId>
             <version>3.4.1</version>
+            <type>jar</type>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-lang3</artifactId>
+            <version>3.3.2</version>
             <type>jar</type>
         </dependency>
     </dependencies>

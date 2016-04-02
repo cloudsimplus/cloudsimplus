@@ -12,21 +12,25 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.LinkedList;
 import java.util.List;
-
 import org.cloudbus.cloudsim.Cloudlet;
-import org.cloudbus.cloudsim.CloudletSchedulerTimeShared;
+import org.cloudbus.cloudsim.CloudletSimple;
+import org.cloudbus.cloudsim.schedulers.CloudletSchedulerTimeShared;
 import org.cloudbus.cloudsim.Datacenter;
-import org.cloudbus.cloudsim.DatacenterBroker;
+import org.cloudbus.cloudsim.DatacenterSimple;
+import org.cloudbus.cloudsim.brokers.DatacenterBroker;
+import org.cloudbus.cloudsim.brokers.DatacenterBrokerSimple;
 import org.cloudbus.cloudsim.DatacenterCharacteristics;
 import org.cloudbus.cloudsim.Host;
-import org.cloudbus.cloudsim.HostDynamicWorkload;
+import org.cloudbus.cloudsim.HostDynamicWorkloadSimple;
 import org.cloudbus.cloudsim.Log;
-import org.cloudbus.cloudsim.Pe;
-import org.cloudbus.cloudsim.UtilizationModel;
-import org.cloudbus.cloudsim.UtilizationModelFull;
+import org.cloudbus.cloudsim.resources.Pe;
+import org.cloudbus.cloudsim.resources.PeSimple;
+import org.cloudbus.cloudsim.utilizationmodels.UtilizationModel;
+import org.cloudbus.cloudsim.utilizationmodels.UtilizationModelFull;
 import org.cloudbus.cloudsim.Vm;
-import org.cloudbus.cloudsim.VmAllocationPolicySimple;
-import org.cloudbus.cloudsim.VmSchedulerTimeShared;
+import org.cloudbus.cloudsim.VmSimple;
+import org.cloudbus.cloudsim.allocationpolicies.VmAllocationPolicySimple;
+import org.cloudbus.cloudsim.schedulers.VmSchedulerTimeShared;
 import org.cloudbus.cloudsim.core.CloudSim;
 import org.cloudbus.cloudsim.util.TableBuilderHelper;
 import org.cloudbus.cloudsim.util.TextTableBuilder;
@@ -99,10 +103,10 @@ public class CloudSimExample9 {
             String vmm = "Xen"; //VMM name
 
             //create two VMs
-            Vm vm1 = new Vm(++vmid, brokerId, mips, pesNumber, ram, bw, size, vmm, new CloudletSchedulerTimeShared());
+            Vm vm1 = new VmSimple(++vmid, brokerId, mips, pesNumber, ram, bw, size, vmm, new CloudletSchedulerTimeShared());
 
             //the second VM will have twice the priority of VM1 and so will receive twice CPU time
-            Vm vm2 = new Vm(++vmid, brokerId, mips * 2, pesNumber, ram, bw, size, vmm, new CloudletSchedulerTimeShared());
+            Vm vm2 = new VmSimple(++vmid, brokerId, mips * 2, pesNumber, ram, bw, size, vmm, new CloudletSchedulerTimeShared());
 
             //add the VMs to the vmList
             vmlist.add(vm1);
@@ -122,12 +126,12 @@ public class CloudSimExample9 {
             UtilizationModel utilizationModel = new UtilizationModelFull();
 
             Cloudlet cloudlet1 = 
-                    new Cloudlet(++id, length, pesNumber, fileSize, outputSize, 
+                    new CloudletSimple(++id, length, pesNumber, fileSize, outputSize, 
                             utilizationModel, utilizationModel, utilizationModel);
             cloudlet1.setUserId(brokerId);
 
             Cloudlet cloudlet2 = 
-                    new Cloudlet(++id, length, pesNumber, fileSize, outputSize, 
+                    new CloudletSimple(++id, length, pesNumber, fileSize, outputSize, 
                             utilizationModel, utilizationModel, utilizationModel);
             cloudlet2.setUserId(brokerId);
 
@@ -218,9 +222,9 @@ public class CloudSimExample9 {
     }
 
     private static Datacenter createDatacenter(String name) {
-        // Here are the steps needed to create a PowerDatacenter:
+        // Here are the steps needed to create a DatacenterSimple:
         // 1. We need to create a list to store our machine
-        List<HostDynamicWorkload> hostList = new ArrayList<>();
+        List<Host> hostList = new ArrayList<>();
 
         // 2. A Machine contains one or more PEs or CPUs/Cores.
         // In this example, it will have only one core.
@@ -229,7 +233,7 @@ public class CloudSimExample9 {
         int mips = 1200;
 
         // 3. Create PEs and add these into a list.
-        peList1.add(new Pe(0, new PeProvisionerSimple(mips))); // need to store Pe id and MIPS Rating
+        peList1.add(new PeSimple(0, new PeProvisionerSimple(mips))); // need to store Pe id and MIPS Rating
 
         //4. Create Hosts with its id and list of PEs and add them to the list of machines
         int hostId = -1;
@@ -237,7 +241,7 @@ public class CloudSimExample9 {
         long storage = 1000000; //host storage
         long bw = 10000;
 
-        hostList.add(new HostDynamicWorkload(
+        hostList.add(new HostDynamicWorkloadSimple(
                         ++hostId,
                         new ResourceProvisionerSimple(new Ram(ram)),
                         new ResourceProvisionerSimple(new Bandwidth(bw)),
@@ -249,9 +253,9 @@ public class CloudSimExample9 {
 
         //create another machine in the Data center
         List<Pe> peList2 = new ArrayList<>();
-        peList2.add(new Pe(0, new PeProvisionerSimple(mips * 2)));
+        peList2.add(new PeSimple(0, new PeProvisionerSimple(mips * 2)));
 
-        hostList.add(new HostDynamicWorkload(
+        hostList.add(new HostDynamicWorkloadSimple(
                         ++hostId,
                         new ResourceProvisionerSimple(new Ram(ram)),
                         new ResourceProvisionerSimple(new Bandwidth(bw)),
@@ -278,10 +282,10 @@ public class CloudSimExample9 {
         DatacenterCharacteristics characteristics = new DatacenterCharacteristics(
                 arch, os, vmm, hostList, time_zone, cost, costPerMem, costPerStorage, costPerBw);
 
-        // 6. Finally, we need to create a PowerDatacenter object.
-        Datacenter datacenter = null;
+        // 6. Finally, we need to create a DatacenterSimple object.
+        DatacenterSimple datacenter = null;
         try {
-            datacenter = new Datacenter(
+            datacenter = new DatacenterSimple(
                     name, characteristics, 
                     new VmAllocationPolicySimple(hostList), storageList, 0);
         } catch (Exception e) {
@@ -296,7 +300,7 @@ public class CloudSimExample9 {
     private static DatacenterBroker createBroker() {
         DatacenterBroker broker = null;
         try {
-            broker = new DatacenterBroker("Broker");
+            broker = new DatacenterBrokerSimple("Broker");
         } catch (Exception e) {
             e.printStackTrace();
             return null;

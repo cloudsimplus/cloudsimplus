@@ -10,7 +10,6 @@ package org.cloudbus.cloudsim.resources;
 
 import java.util.ArrayList;
 import java.util.List;
-import org.cloudbus.cloudsim.File;
 import org.cloudbus.cloudsim.Log;
 
 import org.cloudbus.cloudsim.distributions.ContinuousDistribution;

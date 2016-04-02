@@ -4,13 +4,13 @@ import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import org.cloudbus.cloudsim.Consts;
 import org.cloudbus.cloudsim.Host;
-import org.cloudbus.cloudsim.Pe;
-import org.cloudbus.cloudsim.VmScheduler;
-import org.cloudbus.cloudsim.VmSchedulerTimeShared;
+import org.cloudbus.cloudsim.HostSimple;
+import org.cloudbus.cloudsim.listeners.EventListener;
+import org.cloudbus.cloudsim.resources.Pe;
+import org.cloudbus.cloudsim.schedulers.VmSchedulerAbstract;
+import org.cloudbus.cloudsim.schedulers.VmSchedulerTimeShared;
 import org.cloudbus.cloudsim.provisioners.ResourceProvisionerSimple;
 import org.cloudbus.cloudsim.resources.Bandwidth;
 import org.cloudbus.cloudsim.resources.Ram;
@@ -21,12 +21,13 @@ import org.cloudbus.cloudsim.resources.Ram;
  * @author Manoel Campos da Silva Filho
  */
 public class HostBuilder extends Builder {
-    private double defaultMIPS = 2000;
-    private int    defaultPEs = 1;
-    private long   defaultBw = 10000;
-    private long   defaultStorage = Consts.MILLION;
-    private int    defaultRam = 1024;
-    private Class<? extends VmScheduler> defaultVmSchedulerClass = VmSchedulerTimeShared.class;
+    private double mips = 2000;
+    private int    pes = 1;
+    private long   bw = 10000;
+    private long   storage = Consts.MILLION;
+    private int    ram = 1024;
+    private Class<? extends VmSchedulerAbstract> vmSchedulerClass = VmSchedulerTimeShared.class;
+    private EventListener<Host, Double> onUpdateVmsProcessingListener = EventListener.NULL;
     
     private int numberOfCreatedHosts;
     private final List<Host> hosts;
@@ -43,14 +44,15 @@ public class HostBuilder extends Builder {
     private Host createHost(final int id) {
         try {
             final List<Pe> peList =
-                    new PeBuilder().create(defaultPEs, defaultMIPS);
+                    new PeBuilder().create(pes, mips);
             Constructor cons =
-                    defaultVmSchedulerClass.getConstructor(new Class[]{List.class});
+                    vmSchedulerClass.getConstructor(new Class[]{List.class});
 
-            final Host host = new Host(id,
-                    new ResourceProvisionerSimple<>(new Ram(defaultRam)),
-                    new ResourceProvisionerSimple<>(new Bandwidth(defaultBw)),
-                    defaultStorage, peList, (VmScheduler) cons.newInstance(peList));
+            final Host host = new HostSimple(id,
+                    new ResourceProvisionerSimple<>(new Ram(ram)),
+                    new ResourceProvisionerSimple<>(new Bandwidth(bw)),
+                    storage, peList, (VmSchedulerAbstract) cons.newInstance(peList));
+            host.setOnUpdateVmsProcessingListener(onUpdateVmsProcessingListener);
             hosts.add(host);
             return host;
         } catch (NoSuchMethodException | SecurityException ex) {
@@ -73,57 +75,66 @@ public class HostBuilder extends Builder {
         return this;
     }    
 
-    public double getDefaultMIPS() {
-        return defaultMIPS;
+    public double getMips() {
+        return mips;
     }
 
-    public HostBuilder setDefaultMIPS(double defaultMIPS) {
-        this.defaultMIPS = defaultMIPS;
+    public HostBuilder setMips(double defaultMIPS) {
+        this.mips = defaultMIPS;
         return this;
     }
 
-    public int getDefaultPEs() {
-        return defaultPEs;
+    public int getPes() {
+        return pes;
     }
 
-    public HostBuilder setDefaultPEs(int defaultPEs) {
-        this.defaultPEs = defaultPEs;
+    public HostBuilder setPes(int defaultPEs) {
+        this.pes = defaultPEs;
         return this;
     }
 
-    public long getDefaultBw() {
-        return defaultBw;
+    public long getBw() {
+        return bw;
     }
 
-    public HostBuilder setDefaultBw(long defaultBw) {
-        this.defaultBw = defaultBw;
+    public HostBuilder setBw(long defaultBw) {
+        this.bw = defaultBw;
         return this;
     }
 
-    public long getDefaultStorage() {
-        return defaultStorage;
+    public long getStorage() {
+        return storage;
     }
 
-    public HostBuilder setDefaultStorage(long defaultStorage) {
-        this.defaultStorage = defaultStorage;
+    public HostBuilder setStorage(long defaultStorage) {
+        this.storage = defaultStorage;
         return this;
     }
 
-    public int getDefaultRam() {
-        return defaultRam;
+    public int getRam() {
+        return ram;
     }
 
-    public HostBuilder setDefaultRam(int defaultRam) {
-        this.defaultRam = defaultRam;
+    public HostBuilder setRam(int defaultRam) {
+        this.ram = defaultRam;
         return this;
     }
 
-    public Class<? extends VmScheduler> getDefaultVmSchedulerClass() {
-        return defaultVmSchedulerClass;
+    public Class<? extends VmSchedulerAbstract> getVmSchedulerClass() {
+        return vmSchedulerClass;
     }
 
-    public HostBuilder setDefaultVmSchedulerClass(Class<? extends VmScheduler> defaultVmSchedulerClass) {
-        this.defaultVmSchedulerClass = defaultVmSchedulerClass;
+    public HostBuilder setVmSchedulerClass(Class<? extends VmSchedulerAbstract> defaultVmSchedulerClass) {
+        this.vmSchedulerClass = defaultVmSchedulerClass;
+        return this;
+    }
+
+    public EventListener<Host, Double> getOnUpdateVmsProcessingListener() {
+        return onUpdateVmsProcessingListener;
+    }
+
+    public HostBuilder setOnUpdateVmsProcessingListener(EventListener<Host, Double> onUpdateVmsProcessingListener) {
+        this.onUpdateVmsProcessingListener = onUpdateVmsProcessingListener;
         return this;
     }
 

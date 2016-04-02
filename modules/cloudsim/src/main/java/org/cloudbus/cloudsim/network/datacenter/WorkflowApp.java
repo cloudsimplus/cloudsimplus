@@ -10,8 +10,8 @@ package org.cloudbus.cloudsim.network.datacenter;
 
 import java.util.List;
 
-import org.cloudbus.cloudsim.UtilizationModel;
-import org.cloudbus.cloudsim.UtilizationModelFull;
+import org.cloudbus.cloudsim.utilizationmodels.UtilizationModel;
+import org.cloudbus.cloudsim.utilizationmodels.UtilizationModelFull;
 import org.cloudbus.cloudsim.core.CloudSim;
 
 /**
@@ -36,7 +36,7 @@ public class WorkflowApp extends AppCloudlet {
 	public WorkflowApp(int type, int appID, double deadline, int numbervm, int userId) {
 		super(type, appID, deadline, numbervm, userId);
 		exeTime = 100;
-		this.numbervm = 3;
+		this.numberOfVMs = 3;
 	}
 
         /**

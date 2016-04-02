@@ -41,7 +41,7 @@ public class PeProvisionerSimple extends PeProvisioner {
 	 */
 	public PeProvisionerSimple(double availableMips) {
 		super(availableMips);
-		setPeTable(new HashMap<String, ArrayList<Double>>());
+		setPeTable(new HashMap<String, List<Double>>());
 	}
 
 	@Override
@@ -150,9 +150,8 @@ public class PeProvisionerSimple extends PeProvisioner {
 	 * 
 	 * @param peTable the peTable to set
 	 */
-	@SuppressWarnings("unchecked")
-	protected void setPeTable(Map<String, ? extends List<Double>> peTable) {
-		this.peTable = (Map<String, List<Double>>) peTable;
+	protected final void setPeTable(Map<String, List<Double>> peTable) {
+		this.peTable = peTable;
 	}
 
 }

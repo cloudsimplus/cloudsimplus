@@ -11,8 +11,8 @@ package org.cloudbus.cloudsim.network.datacenter;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.cloudbus.cloudsim.UtilizationModel;
-import org.cloudbus.cloudsim.UtilizationModelFull;
+import org.cloudbus.cloudsim.utilizationmodels.UtilizationModel;
+import org.cloudbus.cloudsim.utilizationmodels.UtilizationModelFull;
 import org.cloudbus.cloudsim.core.CloudSim;
 
 /**
@@ -64,10 +64,8 @@ public class AppCloudlet {
 
         /**
          * Number of VMs the AppCloudlet can use.
-         * @todo the attribute would be renamed to numberOfVMs or something 
-         * like that.
          */
-	public int numbervm;
+	public int numberOfVMs;
 
         /**
          * Id of the AppCloudlet's owner.
@@ -76,7 +74,7 @@ public class AppCloudlet {
 
         /**
          * @todo It would be "execTime". This attribute is very strange.
-         * The the todo in the TestBagofTaskApp class.
+         * See the todo in the TestBagofTaskApp class.
          */
 	public double exeTime;
 
@@ -94,9 +92,9 @@ public class AppCloudlet {
 		this.type = type;
 		this.appID = appID;
 		this.deadline = deadline;
-		this.numbervm = numbervm;
+		this.numberOfVMs = numbervm;
 		this.userId = userId;
-		clist = new ArrayList<NetworkCloudlet>();
+		clist = new ArrayList<>();
 	}
 
 	/**
@@ -111,7 +109,7 @@ public class AppCloudlet {
          * hard-coded values.
 	 */
 	public void createCloudletList(List<Integer> vmIdList) {
-		for (int i = 0; i < numbervm; i++) {
+		for (int i = 0; i < numberOfVMs; i++) {
 			long length = 4;
 			long fileSize = 300;
 			long outputSize = 300;

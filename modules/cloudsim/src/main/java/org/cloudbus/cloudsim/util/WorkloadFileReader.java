@@ -16,13 +16,15 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.Enumeration;
+import java.util.List;
 import java.util.zip.GZIPInputStream;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
-
 import org.cloudbus.cloudsim.Cloudlet;
-import org.cloudbus.cloudsim.UtilizationModel;
-import org.cloudbus.cloudsim.UtilizationModelFull;
+
+import org.cloudbus.cloudsim.CloudletSimple;
+import org.cloudbus.cloudsim.utilizationmodels.UtilizationModel;
+import org.cloudbus.cloudsim.utilizationmodels.UtilizationModelFull;
 
 /**
  * This class is responsible for reading resource traces from a file and creating a list of jobs
@@ -188,9 +190,9 @@ public class WorkloadFileReader implements WorkloadModel {
      * @see #file
      */
     @Override
-    public ArrayList<Cloudlet> generateWorkload() {
+    public List<Cloudlet> generateWorkload() {
             if (jobs == null) {
-                    jobs = new ArrayList<Cloudlet>();
+                    jobs = new ArrayList<>();
 
                     // create a temp array
                     fieldArray = new String[MAX_FIELD];
@@ -336,7 +338,7 @@ public class WorkloadFileReader implements WorkloadModel {
             // create the cloudlet
             final int len = runTime * rating;
             UtilizationModel utilizationModel = new UtilizationModelFull();
-            final Cloudlet wgl = new Cloudlet(
+            final Cloudlet wgl = new CloudletSimple(
                             id,
                             len,
                             numProc,
@@ -350,16 +352,15 @@ public class WorkloadFileReader implements WorkloadModel {
 
     /**
      * Extracts relevant information from a given array of fields,
-     * representing a line from the trace file, and create a cloudlet 
+     * representing a line from the trace file, and creates a cloudlet 
      * using this information.
      * 
      * @param array the array of fields generated from a line of the trace file.
      * @param line the line number
      * @pre array != null
      * @pre line > 0
-     * @todo The name of the method doesn't describe what it in fact does.
      */
-    private void extractField(final String[] array, final int line) {
+    private void createCloudletFromOneTraceFileLine(final String[] array, final int line) {
             try {
                     Integer obj = null;
 
@@ -369,7 +370,7 @@ public class WorkloadFileReader implements WorkloadModel {
                             id = jobs.size() + 1;
                     } else {
                             obj = new Integer(array[JOB_NUM].trim());
-                            id = obj.intValue();
+                            id = obj;
                     }
 
                     // get the submit time
@@ -378,15 +379,15 @@ public class WorkloadFileReader implements WorkloadModel {
 
                     // get the user estimated run time
                     obj = new Integer(array[REQ_RUN_TIME].trim());
-                    final int reqRunTime = obj.intValue();
+                    final int reqRunTime = obj;
 
                     // if the required run time field is ignored, then use
                     // the actual run time
                     obj = new Integer(array[RUN_TIME].trim());
-                    int runTime = obj.intValue();
+                    int runTime = obj;
 
-                    final int userID = new Integer(array[USER_ID].trim()).intValue();
-                    final int groupID = new Integer(array[GROUP_ID].trim()).intValue();
+                    final int userID = new Integer(array[USER_ID].trim());
+                    final int groupID = new Integer(array[GROUP_ID].trim());
 
                     // according to the SWF manual, runtime of 0 is possible due
                     // to rounding down. E.g. runtime is 0.4 seconds -> runtime = 0
@@ -396,13 +397,13 @@ public class WorkloadFileReader implements WorkloadModel {
 
                     // get the number of allocated processors
                     obj = new Integer(array[REQ_NUM_PROC].trim());
-                    int numProc = obj.intValue();
+                    int numProc = obj;
 
                     // if the required num of allocated processors field is ignored
                     // or zero, then use the actual field
                     if (numProc == IRRELEVANT || numProc == 0) {
                             obj = new Integer(array[NUM_PROC].trim());
-                            numProc = obj.intValue();
+                            numProc = obj;
                     }
 
                     // finally, check if the num of PEs required is valid or not
@@ -449,7 +450,7 @@ public class WorkloadFileReader implements WorkloadModel {
             }
 
             if (index == MAX_FIELD) {
-                    extractField(fieldArray, lineNum);
+                    createCloudletFromOneTraceFileLine(fieldArray, lineNum);
             }
     }
 

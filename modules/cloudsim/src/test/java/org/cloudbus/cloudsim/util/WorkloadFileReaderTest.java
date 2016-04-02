@@ -6,7 +6,6 @@ import static org.junit.Assert.assertTrue;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.List;
-
 import org.cloudbus.cloudsim.Cloudlet;
 import org.junit.After;
 import org.junit.AfterClass;

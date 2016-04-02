@@ -243,7 +243,7 @@ public class MathUtil {
 		for (int i = 0; i < n; i++) {
 			x[i] = i + 1;
 		}
-		return createWeigthedLinearRegression(x, y, getTricubeWeigts(n))
+		return createWeigthedLinearRegression(x, y, getTricubeWeights(n))
 				.regress().getParameterEstimates();
 	}
 
@@ -302,13 +302,13 @@ public class MathUtil {
 			x[i] = i + 1;
 		}
 		SimpleRegression tricubeRegression = createWeigthedLinearRegression(x,
-				y, getTricubeWeigts(n));
+				y, getTricubeWeights(n));
 		double[] residuals = new double[n];
 		for (int i = 0; i < n; i++) {
 			residuals[i] = y[i] - tricubeRegression.predict(x[i]);
 		}
 		SimpleRegression tricubeBySquareRegression = createWeigthedLinearRegression(
-				x, y, getTricubeBisquareWeigts(residuals));
+				x, y, getTricubeBisquareWeights(residuals));
 
 		double[] estimates = tricubeBySquareRegression.regress()
 				.getParameterEstimates();
@@ -323,9 +323,8 @@ public class MathUtil {
 	 * 
 	 * @param n the number of weights
 	 * @return an array of tricube weigths with n elements
-         * @todo The word "weight" is misspelled in the method name.
 	 */
-	public static double[] getTricubeWeigts(final int n) {
+	public static double[] getTricubeWeights(final int n) {
 		double[] weights = new double[n];
 		double top = n - 1;
 		double spread = top;
@@ -346,11 +345,10 @@ public class MathUtil {
 	 * 
 	 * @param residuals the residuals array
 	 * @return the tricube bisquare weigths
-         * @todo The word "weight" is misspelled in the method name.
 	 */
-	public static double[] getTricubeBisquareWeigts(final double[] residuals) {
+	public static double[] getTricubeBisquareWeights(final double[] residuals) {
 		int n = residuals.length;
-		double[] weights = getTricubeWeigts(n);
+		double[] weights = getTricubeWeights(n);
 		double[] weights2 = new double[n];
 		double s6 = median(abs(residuals)) * 6;
 		for (int i = 2; i < n; i++) {

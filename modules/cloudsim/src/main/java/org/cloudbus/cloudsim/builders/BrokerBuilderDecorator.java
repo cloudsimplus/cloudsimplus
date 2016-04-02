@@ -1,7 +1,7 @@
 package org.cloudbus.cloudsim.builders;
 
 import java.util.List;
-import org.cloudbus.cloudsim.DatacenterBroker;
+import org.cloudbus.cloudsim.brokers.DatacenterBrokerSimple;
 
 /**
  * A class that implements the Decorator Design Pattern in order to 
@@ -11,7 +11,7 @@ import org.cloudbus.cloudsim.DatacenterBroker;
  * 
  * For instance, the methods {@link #getVmBuilderForTheCreatedBroker()} and
  * {@link #getCloudletBuilderForTheCreatedBroker()} can only be called after
- * some {@link DatacenterBroker} was created by calling
+ * some {@link DatacenterBrokerSimple} was created by calling
  * the method {@link #createBroker()}.<br/>
  * By this way, after the method is called, it returns
  * an instance of this decorator that allow
@@ -23,11 +23,11 @@ import org.cloudbus.cloudsim.DatacenterBroker;
  */
 public class BrokerBuilderDecorator implements BrokerBuilderInterface {
     private final BrokerBuilder builder;
-    private final DatacenterBroker broker;
+    private final DatacenterBrokerSimple broker;
     private final VmBuilder vmBuilder;
     private final CloudletBuilder cloudletBuilder;
 
-    public BrokerBuilderDecorator(final BrokerBuilder builder, final DatacenterBroker broker) {
+    public BrokerBuilderDecorator(final BrokerBuilder builder, final DatacenterBrokerSimple broker) {
         if(builder == null)
            throw new RuntimeException("The builder parameter cannot be null."); 
         if(broker == null)
@@ -45,15 +45,20 @@ public class BrokerBuilderDecorator implements BrokerBuilderInterface {
     }
 
     @Override
-    public DatacenterBroker findBroker(int id) throws RuntimeException {
+    public DatacenterBrokerSimple findBroker(int id) throws RuntimeException {
         return builder.findBroker(id);
     }
 
     @Override
-    public List<DatacenterBroker> getBrokers() {
+    public List<DatacenterBrokerSimple> getBrokers() {
         return builder.getBrokers();
     }
 
+    @Override
+    public DatacenterBrokerSimple get(int index) {
+       return builder.get(index);
+    }
+    
     /**
      * Gets the VM Builder in charge of creating VMs
      * to the {@link #broker} passed to this BrokerBuilderDecorator
@@ -71,4 +76,5 @@ public class BrokerBuilderDecorator implements BrokerBuilderInterface {
     public CloudletBuilder getCloudletBuilderForTheCreatedBroker() {
         return cloudletBuilder;
     }
+
 }
