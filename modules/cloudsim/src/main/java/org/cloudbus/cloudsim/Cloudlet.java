@@ -14,7 +14,7 @@ import org.cloudbus.cloudsim.listeners.EventListener;
  * 
  * @author Manoel Campos da Silva Filho
  */
-public interface Cloudlet {
+public interface Cloudlet extends Identificable {
   /**
    * Status of Cloudlets
    */
@@ -190,14 +190,6 @@ public interface Cloudlet {
      * @post $result != null
      */
     String getCloudletHistory();
-
-    /**
-     * The ID of this Cloudlet.
-     * @return the cloudlet ID
-     * @pre $none
-     * @post $none
-     */
-    int getCloudletId();
 
     /**
      * Gets the execution length of this Cloudlet (Unit: in Million Instructions
@@ -529,7 +521,7 @@ public interface Cloudlet {
     boolean hasReserved();
 
     /**
-     * Checks whether this Cloudlet has finished execution or not.
+     * Checks whether this Cloudlet has finished executing or not.
      *
      * @return <tt>true</tt> if this Cloudlet has finished execution,
      * <tt>false</tt> otherwise
@@ -653,7 +645,6 @@ public interface Cloudlet {
      */
     boolean setNumberOfPes(final int numberOfPes);
 
-    // ////////////////////// End of Internal Class //////////////////////////
     /**
      * Sets the {@link #getReservationId() id of the reservation} made for this cloudlet.
      *
@@ -709,7 +700,7 @@ public interface Cloudlet {
     boolean setSubmissionTime(final double clockTime);
 
     /**
-     * Sets the {@link #getUserId() user ID}.
+     * Sets the user ID.
      * @param userId the new user ID
      * @pre id >= 0
      * @post $none
@@ -783,7 +774,7 @@ public interface Cloudlet {
       @Override public long getCloudletFinishedSoFar() { return 0L; }
       @Override public long getCloudletFinishedSoFar(int resId) { return 0L; }
       @Override public String getCloudletHistory() { return ""; };
-      @Override public int getCloudletId() { return 0; }
+      @Override public int getId() { return 0; }
       @Override public long getCloudletLength() { return 0L; }
       @Override public long getCloudletOutputSize() { return 0L; }
       @Override public Status getCloudletStatus() { return Status.FAILED; }

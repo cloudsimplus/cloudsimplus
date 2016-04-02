@@ -104,39 +104,37 @@ public class PowerDatacenter extends DatacenterSimple {
             double minTime = updateCloudetProcessingWithoutSchedulingFutureEventsForce();
 
             if (!isDisableMigrations()) {
-                Map<Vm, Host> migrationMap = getVmAllocationPolicy().optimizeAllocation(
-                        getVmList());
+                Map<Vm, Host> migrationMap = 
+                        getVmAllocationPolicy().optimizeAllocation(getVmList());
 
-                if (migrationMap != null) {
-                    for (Entry<Vm, Host> migrate : migrationMap.entrySet()) {
-                        Host targetHost = migrate.getValue();
-                        Host oldHost = migrate.getKey().getHost();
+                for (Entry<Vm, Host> migrate : migrationMap.entrySet()) {
+                    Host targetHost = migrate.getValue();
+                    Host oldHost = migrate.getKey().getHost();
 
-                        if (oldHost == null) {
-                            Log.printFormattedLine(
-                                "%.2f: Migration of VM #%d to Host #%d is started",
-                                currentTime, migrate.getKey().getId(), targetHost.getId());
-                        } else {
-                            Log.printFormattedLine(
-                                "%.2f: Migration of VM #%d from Host #%d to Host #%d is started",
-                                currentTime, migrate.getKey().getId(), 
-                                oldHost.getId(), targetHost.getId());
-                        }
-
-                        targetHost.addMigratingInVm(migrate.getKey());
-                        incrementMigrationCount();
-
-                        /**
-                         * VM migration delay = RAM / bandwidth *
-                         */
-						// we use BW / 2 to model BW available for migration purposes, the other
-                        // half of BW is for VM communication
-                        // around 16 seconds for 1024 MB using 1 Gbit/s network
-                        send(
-                            getId(),
-                            migrate.getKey().getRam() / ((double) targetHost.getBw() / (2 * 8000)),
-                            CloudSimTags.VM_MIGRATE, migrate);
+                    if (oldHost == null) {
+                        Log.printFormattedLine(
+                            "%.2f: Migration of VM #%d to Host #%d is started",
+                            currentTime, migrate.getKey().getId(), targetHost.getId());
+                    } else {
+                        Log.printFormattedLine(
+                            "%.2f: Migration of VM #%d from Host #%d to Host #%d is started",
+                            currentTime, migrate.getKey().getId(), 
+                            oldHost.getId(), targetHost.getId());
                     }
+
+                    targetHost.addMigratingInVm(migrate.getKey());
+                    incrementMigrationCount();
+
+                    /**
+                     * VM migration delay = RAM / bandwidth *
+                     */
+                                            // we use BW / 2 to model BW available for migration purposes, the other
+                    // half of BW is for VM communication
+                    // around 16 seconds for 1024 MB using 1 Gbit/s network
+                    send(
+                        getId(),
+                        migrate.getKey().getRam() / ((double) targetHost.getBw() / (2 * 8000)),
+                        CloudSimTags.VM_MIGRATE, migrate);
                 }
             }
 
@@ -237,7 +235,7 @@ public class PowerDatacenter extends DatacenterSimple {
 
         setPower(getPower() + timeFrameDatacenterEnergy);
 
-        checkCloudletCompletion();
+        checkCloudletsCompletionForAllHosts();
 
         /**
          * Remove completed VMs *

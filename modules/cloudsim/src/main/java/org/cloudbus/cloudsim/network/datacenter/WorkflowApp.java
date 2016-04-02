@@ -76,9 +76,9 @@ public class WorkflowApp extends AppCloudlet {
 
         // first stage: big computation
         cl.stages.add(new TaskStage(NetworkConstants.EXECUTION, 0, 1000 * 0.8, 0, memory, vmIdList.get(0), cl
-                .getCloudletId()));
+                .getId()));
         cl.stages.add(new TaskStage(NetworkConstants.WAIT_SEND, 1000, 0, 1, memory, vmIdList.get(2), cl
-                .getCloudletId() + 2));
+                .getId() + 2));
         clist.add(cl);
         i++;
         // Task B
@@ -107,9 +107,9 @@ public class WorkflowApp extends AppCloudlet {
                 0,
                 memory,
                 vmIdList.get(1),
-                clb.getCloudletId()));
+                clb.getId()));
         clb.stages.add(new TaskStage(NetworkConstants.WAIT_SEND, 1000, 0, 1, memory, vmIdList.get(2), clb
-                .getCloudletId() + 1));
+                .getId() + 1));
         clist.add(clb);
         i++;
 
@@ -133,9 +133,9 @@ public class WorkflowApp extends AppCloudlet {
 
         // first stage: big computation
         clc.stages.add(new TaskStage(NetworkConstants.WAIT_RECV, 1000, 0, 0, memory, vmIdList.get(0), cl
-                .getCloudletId()));
+                .getId()));
         clc.stages.add(new TaskStage(NetworkConstants.WAIT_RECV, 1000, 0, 1, memory, vmIdList.get(1), cl
-                .getCloudletId() + 1));
+                .getId() + 1));
         clc.stages.add(new TaskStage(
                 NetworkConstants.EXECUTION,
                 0,
@@ -143,7 +143,7 @@ public class WorkflowApp extends AppCloudlet {
                 1,
                 memory,
                 vmIdList.get(0),
-                clc.getCloudletId()));
+                clc.getId()));
 
         clist.add(clc);
     }

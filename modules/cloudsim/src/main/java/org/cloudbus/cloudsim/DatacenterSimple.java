@@ -32,40 +32,25 @@ import org.cloudbus.cloudsim.resources.FileStorage;
  * @since CloudSim Toolkit 1.0
  */
 public class DatacenterSimple extends SimEntity implements Datacenter {
-
-    /**
-     * @see #getCharacteristics()
-     */
+    /** @see #getCharacteristics() */
     private DatacenterCharacteristics characteristics;
 
-    /**
-     * @see #getRegionalCisName()
-     */
+    /** @see #getRegionalCisName() */
     private String regionalCisName;
 
-    /**
-     * @see #getVmAllocationPolicy()
-     */
+    /** @see #getVmAllocationPolicy() */
     private VmAllocationPolicy vmAllocationPolicy;
 
-    /**
-     * @see #getLastProcessTime()
-     */
+    /** @see #getLastProcessTime() */
     private double lastProcessTime;
 
-    /**
-     * @see #getStorageList()
-     */
+    /** @see #getStorageList() */
     private List<FileStorage> storageList;
 
-    /**
-     * @see #getVmList()
-     */
+    /** @see #getVmList() */
     private List<? extends Vm> vmList;
 
-    /**
-     * @see #getSchedulingInterval()
-     */
+    /** @see #getSchedulingInterval() */
     private double schedulingInterval;
 
     /**
@@ -121,9 +106,7 @@ public class DatacenterSimple extends SimEntity implements Datacenter {
     }
 
     private void assignHostsToCurrentDatacenter() {
-        for (Host host : getCharacteristics().getHostList()) {
-            host.setDatacenter(this);
-        }
+        getCharacteristics().getHostList().forEach(host -> host.setDatacenter(this));
     }
 
     /**
@@ -269,7 +252,7 @@ public class DatacenterSimple extends SimEntity implements Datacenter {
 
             case CloudSimTags.VM_DATACENTER_EVENT:
                 updateCloudletProcessing();
-                checkCloudletCompletion();
+                checkCloudletsCompletionForAllHosts();
                 break;
 
             // other unknown tags are processed by this method
@@ -396,7 +379,7 @@ public class DatacenterSimple extends SimEntity implements Datacenter {
         catch (ClassCastException c) {
             try {
                 Cloudlet cl = (Cloudlet) ev.getData();
-                cloudletId = cl.getCloudletId();
+                cloudletId = cl.getId();
                 userId = cl.getUserId();
 
                 status = getCloudletStatus(vmId, userId, cloudletId);
@@ -552,8 +535,7 @@ public class DatacenterSimple extends SimEntity implements Datacenter {
         host.removeMigratingInVm(vm);
         boolean result = getVmAllocationPolicy().allocateHostForVm(vm, host);
         if (!result) {
-            Log.printLine("[Datacenter.processVmMigrate] VM allocation to the destination host failed");
-            System.exit(0);
+            throw new RuntimeException("[Datacenter.processVmMigrate] VM allocation to the destination host failed");
         }
 
         if (ack) {
@@ -599,7 +581,7 @@ public class DatacenterSimple extends SimEntity implements Datacenter {
         catch (ClassCastException c) {
             try {
                 Cloudlet cl = (Cloudlet) ev.getData();
-                cloudletId = cl.getCloudletId();
+                cloudletId = cl.getId();
                 userId = cl.getUserId();
                 vmId = cl.getVmId();
             } catch (Exception e) {
@@ -617,25 +599,19 @@ public class DatacenterSimple extends SimEntity implements Datacenter {
         switch (type) {
             case CloudSimTags.CLOUDLET_CANCEL:
                 processCloudletCancel(cloudletId, userId, vmId);
-                break;
-
+            break;
             case CloudSimTags.CLOUDLET_PAUSE:
                 processCloudletPause(cloudletId, userId, vmId, false);
-                break;
-
+            break;
             case CloudSimTags.CLOUDLET_PAUSE_ACK:
                 processCloudletPause(cloudletId, userId, vmId, true);
-                break;
-
+            break;
             case CloudSimTags.CLOUDLET_RESUME:
                 processCloudletResume(cloudletId, userId, vmId, false);
-                break;
-
+            break;
             case CloudSimTags.CLOUDLET_RESUME_ACK:
                 processCloudletResume(cloudletId, userId, vmId, true);
-                break;
-            default:
-                break;
+            break;
         }
     }
 
@@ -734,7 +710,7 @@ public class DatacenterSimple extends SimEntity implements Datacenter {
             // checks whether this Cloudlet has finished or not
             if (cl.isFinished()) {
                 String name = CloudSim.getEntityName(cl.getUserId());
-                Log.printConcatLine(getName(), ": Warning - Cloudlet #", cl.getCloudletId(), " owned by ", name,
+                Log.printConcatLine(getName(), ": Warning - Cloudlet #", cl.getId(), " owned by ", name,
                         " is already completed/finished.");
                 Log.printLine("Therefore, it is not being executed again");
                 Log.printLine();
@@ -747,7 +723,7 @@ public class DatacenterSimple extends SimEntity implements Datacenter {
                 if (ack) {
                     int[] data = new int[3];
                     data[0] = getId();
-                    data[1] = cl.getCloudletId();
+                    data[1] = cl.getId();
                     data[2] = CloudSimTags.FALSE;
 
                     // unique tag = operation tag
@@ -785,7 +761,7 @@ public class DatacenterSimple extends SimEntity implements Datacenter {
             if (ack) {
                 int[] data = new int[3];
                 data[0] = getId();
-                data[1] = cl.getCloudletId();
+                data[1] = cl.getId();
                 data[2] = CloudSimTags.TRUE;
 
                 // unique tag = operation tag
@@ -800,7 +776,7 @@ public class DatacenterSimple extends SimEntity implements Datacenter {
             e.printStackTrace();
         }
 
-        checkCloudletCompletion();
+        checkCloudletsCompletionForAllHosts();
     }
 
     /**
@@ -938,7 +914,7 @@ public class DatacenterSimple extends SimEntity implements Datacenter {
      * @return the time that one next cloudlet will finish executing or
      * {@link Double#MAX_VALUE} if there isn't any cloudlet running.
      */
-    public double completionTimeOfNextFinishingCloudlet() {
+    protected double completionTimeOfNextFinishingCloudlet() {
         List<? extends Host> list = getVmAllocationPolicy().getHostList();
         double completionTimeOfNextFinishingCloudlet = Double.MAX_VALUE;
         // for each host...
@@ -964,7 +940,7 @@ public class DatacenterSimple extends SimEntity implements Datacenter {
      *
      * @see #updateCloudletProcessing()
      */
-    private double delayToUpdateCloudletProcessing() {
+    protected double delayToUpdateCloudletProcessing() {
         double completionTimeOfNextFinishingCloudlet = completionTimeOfNextFinishingCloudlet();
         if (completionTimeOfNextFinishingCloudlet == Double.MAX_VALUE) {
             return completionTimeOfNextFinishingCloudlet;
@@ -976,34 +952,30 @@ public class DatacenterSimple extends SimEntity implements Datacenter {
     }
 
     /**
-     * Verifies if some cloudlet inside this DatacenterSimple already finished.
-     * If yes, send it to the User/Broker
+     * Verifies if some cloudlet inside the hosts of this Datacenter have already finished.
+     * If yes, send them to the User/Broker
      *
      * @pre $none
      * @post $none
      */
-    protected void checkCloudletCompletion() {
+    protected void checkCloudletsCompletionForAllHosts() {
         List<? extends Host> list = getVmAllocationPolicy().getHostList();
-        for (Host host : list) {
-            for (Vm vm : host.getVmList()) {
-                while (vm.getCloudletScheduler().areThereFinishedCloudlets()) {
-                    Cloudlet cl = vm.getCloudletScheduler().getNextFinishedCloudlet();
-                    if (cl != null) {
-                        sendNow(cl.getUserId(), CloudSimTags.CLOUDLET_RETURN, cl);
-                    }
-                }
+        list.forEach(host -> checkCloudletsCompletionForGivenHost(host));
+    }
+
+    protected void checkCloudletsCompletionForGivenHost(Host host) {
+        host.getVmList().forEach(vm -> checkCloudletsCompletionForGivenVm(vm));
+    }
+
+    public void checkCloudletsCompletionForGivenVm(Vm vm) {
+        while (vm.getCloudletScheduler().areThereFinishedCloudlets()) {
+            Cloudlet cl = vm.getCloudletScheduler().getNextFinishedCloudlet();
+            if (cl != null) {
+                sendNow(cl.getUserId(), CloudSimTags.CLOUDLET_RETURN, cl);
             }
         }
     }
 
-    /**
-     * Adds a file into the resource's storage before the experiment starts. If
-     * the file is a master file, then it will be registered to the RC when the
-     * experiment begins.
-     *
-     * @param file a DataCloud file
-     * @return a tag number denoting whether this operation is a success or not
-     */
     @Override
     public int addFile(File file) {
         if (file == null) {
@@ -1106,12 +1078,6 @@ public class DatacenterSimple extends SimEntity implements Datacenter {
         registerOtherEntity();
     }
 
-    /**
-     * Gets the host list.
-     *
-     * @param <T> The generic type
-     * @return the host list
-     */
     @Override
     public <T extends Host> List<T> getHostList() {
         return getCharacteristics().getHostList();
@@ -1155,12 +1121,6 @@ public class DatacenterSimple extends SimEntity implements Datacenter {
         this.regionalCisName = regionalCisName;
     }
 
-    /**
-     * Gets the policy to be used by the datacenter to allocate VMs into hosts.
-     *
-     * @return the VM allocation policy
-     * @see VmAllocationPolicyAbstract
-     */
     @Override
     public VmAllocationPolicy getVmAllocationPolicy() {
         return vmAllocationPolicy;
@@ -1211,13 +1171,6 @@ public class DatacenterSimple extends SimEntity implements Datacenter {
         this.storageList = storageList;
     }
 
-    /**
-     * Gets the list of VMs submitted to be ran in some host of this datacenter.
-     *
-     * @param <T> The generic type
-     * @return the vm list
-     */
-    @SuppressWarnings("unchecked")
     @Override
     public <T extends Vm> List<T> getVmList() {
         return (List<T>) vmList;
@@ -1253,7 +1206,7 @@ public class DatacenterSimple extends SimEntity implements Datacenter {
         if (index >= 0 && index < getHostList().size()) {
             return getHostList().get(index);
         }
+        
         return Host.NULL;
     }
-
 }

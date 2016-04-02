@@ -172,7 +172,7 @@ public class NetworkDatacenter extends DatacenterSimple {
             // checks whether this Cloudlet has finished or not
             if (cl.isFinished()) {
                 String name = CloudSim.getEntityName(cl.getUserId());
-                Log.printConcatLine(getName(), ": Warning - Cloudlet #", cl.getCloudletId(), " owned by ", name,
+                Log.printConcatLine(getName(), ": Warning - Cloudlet #", cl.getId(), " owned by ", name,
                         " is already completed/finished.");
                 Log.printLine("Therefore, it is not being executed again");
                 Log.printLine();
@@ -185,7 +185,7 @@ public class NetworkDatacenter extends DatacenterSimple {
                 if (ack) {
                     int[] data = new int[3];
                     data[0] = getId();
-                    data[1] = cl.getCloudletId();
+                    data[1] = cl.getId();
                     data[2] = CloudSimTags.FALSE;
 
                     // unique tag = operation tag
@@ -225,7 +225,7 @@ public class NetworkDatacenter extends DatacenterSimple {
             if (ack) {
                 int[] data = new int[3];
                 data[0] = getId();
-                data[1] = cl.getCloudletId();
+                data[1] = cl.getId();
                 data[2] = CloudSimTags.TRUE;
 
                 // unique tag = operation tag
@@ -240,7 +240,7 @@ public class NetworkDatacenter extends DatacenterSimple {
             e.printStackTrace();
         }
 
-        checkCloudletCompletion();
+        checkCloudletsCompletionForAllHosts();
     }
 
 }

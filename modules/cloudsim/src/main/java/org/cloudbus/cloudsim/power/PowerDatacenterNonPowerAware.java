@@ -118,7 +118,7 @@ public class PowerDatacenterNonPowerAware extends PowerDatacenter {
 
             setPower(getPower() + timeframePower);
 
-            checkCloudletCompletion();
+            checkCloudletsCompletionForAllHosts();
 
             /**
              * Remove completed VMs *
@@ -137,35 +137,33 @@ public class PowerDatacenterNonPowerAware extends PowerDatacenter {
                 Map<Vm, Host> migrationMap
                         = getVmAllocationPolicy().optimizeAllocation(getVmList());
 
-                if (migrationMap != null) {
-                    for (Entry<Vm, Host> entry : migrationMap.entrySet()) {
-                        Host targetHost = entry.getValue();
-                        Host oldHost = entry.getKey().getHost();
+                for (Entry<Vm, Host> entry : migrationMap.entrySet()) {
+                    Host targetHost = entry.getValue();
+                    Host oldHost = entry.getKey().getHost();
 
-                        if (oldHost == null) {
-                            Log.printFormattedLine(
-                                "%.2f: Migration of VM #%d to Host #%d is started",
-                                CloudSim.clock(),
-                                entry.getKey().getId(),
-                                targetHost.getId());
-                        } else {
-                            Log.printFormattedLine(
-                                "%.2f: Migration of VM #%d from Host #%d to Host #%d is started",
-                                CloudSim.clock(),
-                                entry.getKey().getId(),
-                                oldHost.getId(),
-                                targetHost.getId());
-                        }
-
-                        targetHost.addMigratingInVm(entry.getKey());
-                        incrementMigrationCount();
-
-                        /* VM migration delay = RAM / bandwidth + C (C = 10 sec) */
-                        send(
-                            getId(),
-                            entry.getKey().getRam() / ((double) entry.getKey().getBw() / 8000) + 10,
-                            CloudSimTags.VM_MIGRATE, entry);
+                    if (oldHost == null) {
+                        Log.printFormattedLine(
+                            "%.2f: Migration of VM #%d to Host #%d is started",
+                            CloudSim.clock(),
+                            entry.getKey().getId(),
+                            targetHost.getId());
+                    } else {
+                        Log.printFormattedLine(
+                            "%.2f: Migration of VM #%d from Host #%d to Host #%d is started",
+                            CloudSim.clock(),
+                            entry.getKey().getId(),
+                            oldHost.getId(),
+                            targetHost.getId());
                     }
+
+                    targetHost.addMigratingInVm(entry.getKey());
+                    incrementMigrationCount();
+
+                    /* VM migration delay = RAM / bandwidth + C (C = 10 sec) */
+                    send(
+                        getId(),
+                        entry.getKey().getRam() / ((double) entry.getKey().getBw() / 8000) + 10,
+                        CloudSimTags.VM_MIGRATE, entry);
                 }
             }
 

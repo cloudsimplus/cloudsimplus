@@ -9,6 +9,7 @@
 package org.cloudbus.cloudsim.network.datacenter;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -16,13 +17,16 @@ import java.util.Map;
 import org.cloudbus.cloudsim.Host;
 import org.cloudbus.cloudsim.Log;
 import org.cloudbus.cloudsim.Vm;
+import org.cloudbus.cloudsim.allocationpolicies.VmAllocationPolicy;
 import org.cloudbus.cloudsim.allocationpolicies.VmAllocationPolicyAbstract;
 import org.cloudbus.cloudsim.VmSimple;
 import org.cloudbus.cloudsim.core.CloudSim;
 
 /**
- * NetworkVmAllocationPolicy is an {@link VmAllocationPolicyAbstract} that chooses, 
+ * NetworkVmAllocationPolicy is an {@link VmAllocationPolicy} that chooses, 
  * as the host for a VM, the host with less PEs in use.
+ * This policy doesn't perform optimization of VM allocation (placement) 
+ * by means of VM migration.
  * 
  * @author Rodrigo N. Calheiros
  * @author Anton Beloglazov
@@ -56,16 +60,6 @@ public final class NetworkVmAllocationPolicy extends VmAllocationPolicyAbstract 
 		setUsedPes(new HashMap<>());
 	}
 
-	/**
-	 * Allocates the host with less PEs in use for a given VM.
-	 * 
-	 * @param vm {@inheritDoc}
-	 * 
-	 * @return {@inheritDoc}
-	 * 
-	 * @pre $none
-	 * @post $none
-	 */
 	@Override
 	public boolean allocateHostForVm(Vm vm) {
 		int requiredPes = vm.getNumberOfPes();
@@ -195,11 +189,16 @@ public final class NetworkVmAllocationPolicy extends VmAllocationPolicyAbstract 
 		this.freePes = freePes;
 	}
 
+        /**
+         * The method in this VmAllocationPolicy doesn't perform any
+         * VM placement optimization and, in fact, has no effect.
+         * 
+         * @param vmList
+         * @return an empty map to indicate that it never performs optimization
+         */
 	@Override
 	public Map<Vm, Host> optimizeAllocation(List<? extends Vm> vmList) {
-		/*@todo Auto-generated method stub.
-                The method is doing nothing.*/
-		return null;
+            return Collections.EMPTY_MAP;
 	}
 
 	@Override

@@ -26,7 +26,7 @@ public final class TableBuilderHelper {
             .addColumn("ExecTime",  "%.0f");
         for (Cloudlet cloudlet: list) {
             List<Object> row = printer.newRow();
-            row.add(cloudlet.getCloudletId());
+            row.add(cloudlet.getId());
             row.add(cloudlet.getStatus().name());
             row.add(cloudlet.getResourceId());
             row.add(cloudlet.getVmId());

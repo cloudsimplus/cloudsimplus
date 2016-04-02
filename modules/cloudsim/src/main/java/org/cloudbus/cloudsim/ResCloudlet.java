@@ -228,7 +228,7 @@ public class ResCloudlet {
 	 * @post $none
 	 */
 	public int getCloudletId() {
-		return cloudlet.getCloudletId();
+		return cloudlet.getId();
 	}
 
 	/**

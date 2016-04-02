@@ -14,9 +14,7 @@ import java.util.List;
  * 
  * @author Manoel Campos da Silva Filho
  */
-public interface Datacenter {
-    int getId();
-    
+public interface Datacenter extends Identificable {
     /**
      * Adds a file into the resource's storage before the experiment starts.
      * If the file is a master file, then it will be registered to the RC
@@ -72,7 +70,6 @@ public interface Datacenter {
      */
     double getSchedulingInterval();
     
-
     /**
      * A property that implements the Null Object Design Pattern for {@link Datacenter}
      * objects.

@@ -7,8 +7,6 @@
  */
 package org.cloudbus.cloudsim.power;
 
-import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedList;
@@ -492,13 +490,13 @@ public abstract class PowerVmAllocationPolicyMigrationAbstract extends PowerVmAl
     protected void addHistoryEntry(HostDynamicWorkloadSimple host, double metric) {
         int hostId = host.getId();
         if (!getTimeHistory().containsKey(hostId)) {
-            getTimeHistory().put(hostId, new LinkedList<Double>());
+            getTimeHistory().put(hostId, new LinkedList<>());
         }
         if (!getUtilizationHistory().containsKey(hostId)) {
-            getUtilizationHistory().put(hostId, new LinkedList<Double>());
+            getUtilizationHistory().put(hostId, new LinkedList<>());
         }
         if (!getMetricHistory().containsKey(hostId)) {
-            getMetricHistory().put(hostId, new LinkedList<Double>());
+            getMetricHistory().put(hostId, new LinkedList<>());
         }
         if (!getTimeHistory().get(hostId).contains(CloudSim.clock())) {
             getTimeHistory().get(hostId).add(CloudSim.clock());
@@ -560,8 +558,7 @@ public abstract class PowerVmAllocationPolicyMigrationAbstract extends PowerVmAl
         try {
             power = host.getPowerModel().getPower(getMaxUtilizationAfterAllocation(host, vm));
         } catch (Exception e) {
-            e.printStackTrace();
-            System.exit(0);
+            throw new RuntimeException(e);
         }
         return power;
     }

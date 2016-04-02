@@ -8,6 +8,7 @@
 package org.cloudbus.cloudsim.allocationpolicies;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -22,6 +23,8 @@ import org.cloudbus.cloudsim.core.CloudSim;
  * A VmAllocationPolicy implementation that chooses, as
  * the host for a VM, that one with less PEs in use. It is therefore a Worst Fit
  * policy, allocating VMs into the host with most available PEs.
+ * This policy doesn't perform optimization of VM allocation (placement) 
+ * by means of VM migration.
  *
  * @author Rodrigo N. Calheiros
  * @author Anton Beloglazov
@@ -35,9 +38,9 @@ public class VmAllocationPolicySimple extends VmAllocationPolicyAbstract {
     private Map<String, Integer> usedPes;
 
     /**
-     * @see #getFreePes()
+     * @see #getFreePesList()
      */
-    private List<Integer> freePes;
+    private List<Integer> freePesList;
 
     /**
      * Creates a new VmAllocationPolicySimple object.
@@ -49,13 +52,11 @@ public class VmAllocationPolicySimple extends VmAllocationPolicyAbstract {
     public VmAllocationPolicySimple(List<Host> list) {
         super(list);
 
-        setFreePes(new ArrayList<Integer>());
-        for (Host host : getHostList()) {
-            getFreePes().add(host.getNumberOfPes());
-        }
+        setFreePesList(new ArrayList<>());
+        getHostList().forEach(host -> getFreePesList().add(host.getNumberOfPes()));
 
-        setVmTable(new HashMap<String, Host>());
-        setUsedPes(new HashMap<String, Integer>());
+        setVmTable(new HashMap<>());
+        setUsedPes(new HashMap<>());
     }
 
     /**
@@ -72,9 +73,7 @@ public class VmAllocationPolicySimple extends VmAllocationPolicyAbstract {
         boolean result = false;
         int tries = 0;
         List<Integer> freePesTmp = new ArrayList<>();
-        for (Integer numberOfFreePes : getFreePes()) {
-            freePesTmp.add(numberOfFreePes);
-        }
+        getFreePesList().forEach(freePes -> freePesTmp.add(freePes));
 
         if (!getVmTable().containsKey(vm.getUid())) { // if this vm was not created
             do {// we still trying until we find a host or until we try all of them
@@ -95,14 +94,14 @@ public class VmAllocationPolicySimple extends VmAllocationPolicyAbstract {
                 if (result) {
                     mapVmToPm(vm, host);
                     getUsedPes().put(vm.getUid(), requiredPes);
-                    getFreePes().set(idx, getFreePes().get(idx) - requiredPes);
+                    getFreePesList().set(idx, getFreePesList().get(idx) - requiredPes);
                     result = true;
                     break;
                 } else {
                     freePesTmp.set(idx, Integer.MIN_VALUE);
                 }
                 tries++;
-            } while (!result && tries < getFreePes().size());
+            } while (!result && tries < getFreePesList().size());
 
         }
 
@@ -116,7 +115,7 @@ public class VmAllocationPolicySimple extends VmAllocationPolicyAbstract {
         int pes = getUsedPes().remove(vm.getUid());
         if (host != null) {
             host.vmDestroy(vm);
-            getFreePes().set(idx, getFreePes().get(idx) + pes);
+            getFreePesList().set(idx, getFreePesList().get(idx) + pes);
         }
     }
 
@@ -154,38 +153,44 @@ public class VmAllocationPolicySimple extends VmAllocationPolicyAbstract {
      *
      * @return the free PEs list
      */
-    protected final List<Integer> getFreePes() {
-        return freePes;
+    protected final List<Integer> getFreePesList() {
+        return freePesList;
     }
 
     /**
      * Sets the free pes.
      *
-     * @param freePes the new free pes
+     * @param freePesList the new free pes
      */
-    protected final void setFreePes(List<Integer> freePes) {
-        this.freePes = freePes;
+    protected final void setFreePesList(List<Integer> freePesList) {
+        this.freePesList = freePesList;
     }
 
+    /**
+     * The method in this VmAllocationPolicy doesn't perform any
+     * VM placement optimization and, in fact, has no effect.
+     * 
+     * @param vmList
+     * @return an empty map to indicate that it never performs optimization
+     */
     @Override
     public Map<Vm, Host> optimizeAllocation(List<? extends Vm> vmList) {
-        // TODO Auto-generated method stub
-        return null;
+        return Collections.EMPTY_MAP;
     }
 
     @Override
     public boolean allocateHostForVm(Vm vm, Host host) {
-        if (host.vmCreate(vm)) { // if vm has been succesfully created in the host
+        if (host.vmCreate(vm)) {
             mapVmToPm(vm, host);
 
             int requiredPes = vm.getNumberOfPes();
             int idx = getHostList().indexOf(host);
             getUsedPes().put(vm.getUid(), requiredPes);
-            getFreePes().set(idx, getFreePes().get(idx) - requiredPes);
+            getFreePesList().set(idx, getFreePesList().get(idx) - requiredPes);
 
             Log.printFormattedLine(
-                    "%.2f: VM #" + vm.getId() + " has been allocated to the host #" + host.getId(),
-                    CloudSim.clock());
+                    "%.2f: VM #%d has been allocated to the host #%d", 
+                    CloudSim.clock(), vm.getId(), host.getId());
             return true;
         }
 

@@ -116,9 +116,7 @@ public class DatacenterCharacteristics {
      */
     private double costPerBw;
 
-    /**
-     * @see #getDatacenter()
-     */
+    /** @see #getDatacenter() */
     private Datacenter datacenter;
 
     /**
