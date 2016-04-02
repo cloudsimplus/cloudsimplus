@@ -9,26 +9,26 @@ package org.cloudbus.cloudsim;
 
 import org.cloudbus.cloudsim.schedulers.CloudletSchedulerAbstract;
 import org.cloudbus.cloudsim.schedulers.CloudletSchedulerDynamicWorkload;
-import static org.easymock.EasyMock.createMock;
 import static org.easymock.EasyMock.expect;
 import static org.easymock.EasyMock.replay;
 import static org.easymock.EasyMock.verify;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import org.junit.Before;
 import org.junit.Test;
+import static org.easymock.EasyMock.createMock;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
 
 /**
  * @author Anton Beloglazov
  * @since CloudSim Toolkit 2.0
  */
-public class VmTest {
+public class VmSimpleTest {
 
     private static final int ID = 1;
     private static final int USER_ID = 1;
@@ -53,7 +53,7 @@ public class VmTest {
      * @return 
      */
     public static VmSimple createVmWithOnePeAndHalfMips(final int vmId) {
-        return VmTest.createVm(vmId, MIPS / 2, 1, RAM, BW, SIZE, null);
+        return VmSimpleTest.createVm(vmId, MIPS / 2, 1, RAM, BW, SIZE, null);
     }
 
     /**
@@ -62,7 +62,7 @@ public class VmTest {
      * @return 
      */
     public static VmSimple createVmWithOnePeAndTotalMips(final int vmId) {
-        return VmTest.createVm(vmId, MIPS, 1, RAM, BW, SIZE, null);
+        return VmSimpleTest.createVm(vmId, MIPS, 1, RAM, BW, SIZE, null);
     }
 
     /**

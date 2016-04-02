@@ -20,10 +20,15 @@ import org.cloudbus.cloudsim.resources.Pe;
 import org.cloudbus.cloudsim.resources.PeSimple;
 import org.cloudbus.cloudsim.Vm;
 import org.cloudbus.cloudsim.VmSimple;
-import org.cloudbus.cloudsim.VmTest;
+import org.cloudbus.cloudsim.VmSimpleTest;
 import org.cloudbus.cloudsim.provisioners.PeProvisionerSimple;
 import org.junit.Before;
 import org.junit.Test;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertSame;
+import static org.junit.Assert.assertTrue;
 
 /**
  * @author		Anton Beloglazov
@@ -101,8 +106,8 @@ public class PeListTest {
 
     @Test
     public void testGetMaxUtilization() {
-        Vm vm0 = VmTest.createVmWithSpecificMipsAndNumberOfPEs(0, MIPS / 2, 1);
-        Vm vm1 = VmTest.createVmWithSpecificMipsAndNumberOfPEs(1, MIPS / 2, 1);
+        Vm vm0 = VmSimpleTest.createVmWithSpecificMipsAndNumberOfPEs(0, MIPS / 2, 1);
+        Vm vm1 = VmSimpleTest.createVmWithSpecificMipsAndNumberOfPEs(1, MIPS / 2, 1);
 
         assertTrue(peList.get(0).getPeProvisioner().allocateMipsForVm(vm0, MIPS / 3));
         assertTrue(peList.get(1).getPeProvisioner().allocateMipsForVm(vm1, MIPS / 5));
@@ -112,8 +117,8 @@ public class PeListTest {
 
     @Test
     public void testGetMaxUtilizationAmongVmsPes() {
-        Vm vm0 = VmTest.createVmWithSpecificMipsAndNumberOfPEs(0, MIPS / 2, 1);
-        Vm vm1 = VmTest.createVmWithSpecificMipsAndNumberOfPEs(1, MIPS / 2, 1);
+        Vm vm0 = VmSimpleTest.createVmWithSpecificMipsAndNumberOfPEs(0, MIPS / 2, 1);
+        Vm vm1 = VmSimpleTest.createVmWithSpecificMipsAndNumberOfPEs(1, MIPS / 2, 1);
 
         assertTrue(peList.get(0).getPeProvisioner().allocateMipsForVm(vm0, MIPS / 3));
         assertTrue(peList.get(1).getPeProvisioner().allocateMipsForVm(vm1, MIPS / 5));

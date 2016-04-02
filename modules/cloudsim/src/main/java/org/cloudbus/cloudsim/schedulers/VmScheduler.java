@@ -8,7 +8,7 @@ import org.cloudbus.cloudsim.Vm;
 
 /**
  * An interface to be implemented by VmScheduler objects in order to provide
- * basic features of schedulers that allocate host's PEs for VMs running on it.
+ * scheduling algorithms that allocate host's PEs for VMs running on it.
  * It also implements the Null Object Design
  * Pattern in order to start avoiding {@link NullPointerException} 
  * when using the {@link VmScheduler#NULL} object instead

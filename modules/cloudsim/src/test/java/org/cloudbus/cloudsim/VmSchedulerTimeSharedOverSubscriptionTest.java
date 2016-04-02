@@ -22,6 +22,9 @@ import org.cloudbus.cloudsim.lists.PeList;
 import org.cloudbus.cloudsim.provisioners.PeProvisionerSimple;
 import org.junit.Before;
 import org.junit.Test;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertSame;
+import static org.junit.Assert.assertTrue;
 
 /**
  * @author Anton Beloglazov
@@ -41,8 +44,8 @@ public class VmSchedulerTimeSharedOverSubscriptionTest {
         peList.add(new PeSimple(0, new PeProvisionerSimple(MIPS)));
         peList.add(new PeSimple(1, new PeProvisionerSimple(MIPS)));
         vmScheduler = new VmSchedulerTimeSharedOverSubscription(peList);
-        vm1 = VmTest.createVmWithSpecificMipsAndNumberOfPEs(0, MIPS / 4, 1);
-        vm2 = VmTest.createVmWithSpecificMipsAndNumberOfPEs(1, MIPS / 2, 2);
+        vm1 = VmSimpleTest.createVmWithSpecificMipsAndNumberOfPEs(0, MIPS / 4, 1);
+        vm2 = VmSimpleTest.createVmWithSpecificMipsAndNumberOfPEs(1, MIPS / 2, 2);
     }
 
     @Test
@@ -162,10 +165,10 @@ public class VmSchedulerTimeSharedOverSubscriptionTest {
         List<Pe> peList = new ArrayList<>();
         peList.add(new PeSimple(0, new PeProvisionerSimple(3500)));
         VmSchedulerAbstract vmScheduler = new VmSchedulerTimeSharedOverSubscription(peList);
-        Vm vm1 = VmTest.createVmWithSpecificMipsAndNumberOfPEs(0, 170, 1);
-        Vm vm2 = VmTest.createVmWithSpecificMipsAndNumberOfPEs(1, 2000, 1);
-        Vm vm3 = VmTest.createVmWithSpecificMipsAndNumberOfPEs(2, 10, 1);
-        Vm vm4 = VmTest.createVmWithSpecificMipsAndNumberOfPEs(3, 2000, 1);
+        Vm vm1 = VmSimpleTest.createVmWithSpecificMipsAndNumberOfPEs(0, 170, 1);
+        Vm vm2 = VmSimpleTest.createVmWithSpecificMipsAndNumberOfPEs(1, 2000, 1);
+        Vm vm3 = VmSimpleTest.createVmWithSpecificMipsAndNumberOfPEs(2, 10, 1);
+        Vm vm4 = VmSimpleTest.createVmWithSpecificMipsAndNumberOfPEs(3, 2000, 1);
 
         List<Double> mipsShare1 = new ArrayList<>();
         mipsShare1.add(170.0);
@@ -206,9 +209,9 @@ public class VmSchedulerTimeSharedOverSubscriptionTest {
         List<Pe> peList = new ArrayList<>();
         peList.add(new PeSimple(0, new PeProvisionerSimple(1000)));
         VmSchedulerAbstract vmScheduler = new VmSchedulerTimeSharedOverSubscription(peList);
-        VmSimple vm1 = VmTest.createVmWithSpecificMipsAndNumberOfPEs(0, 1500, 1);
-        VmSimple vm2 = VmTest.createVmWithSpecificMipsAndNumberOfPEs(1, 1000, 1);
-        VmSimple vm3 = VmTest.createVmWithSpecificMipsAndNumberOfPEs(2, 1000, 1);
+        VmSimple vm1 = VmSimpleTest.createVmWithSpecificMipsAndNumberOfPEs(0, 1500, 1);
+        VmSimple vm2 = VmSimpleTest.createVmWithSpecificMipsAndNumberOfPEs(1, 1000, 1);
+        VmSimple vm3 = VmSimpleTest.createVmWithSpecificMipsAndNumberOfPEs(2, 1000, 1);
 
         List<Double> mipsShare1 = new ArrayList<>();
         mipsShare1.add(1500.0);

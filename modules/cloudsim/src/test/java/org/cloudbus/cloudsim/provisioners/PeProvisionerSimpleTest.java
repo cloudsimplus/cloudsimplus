@@ -17,9 +17,13 @@ import java.util.ArrayList;
 import org.cloudbus.cloudsim.Vm;
 
 import org.cloudbus.cloudsim.Vm;
-import org.cloudbus.cloudsim.VmTest;
+import org.cloudbus.cloudsim.VmSimpleTest;
 import org.junit.Before;
 import org.junit.Test;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
 
 /**
  * @author		Anton Beloglazov
@@ -58,9 +62,9 @@ public class PeProvisionerSimpleTest {
 
 	@Test
 	public void testAllocateMipsForVm() {
-		Vm vm1 = VmTest.createVmWithSpecificMipsAndNumberOfPEs(0, MIPS / 2, 1);
-                Vm vm2 = VmTest.createVmWithSpecificMipsAndNumberOfPEs(1, MIPS / 2, 1);
-		Vm vm3 = VmTest.createVmWithSpecificMipsAndNumberOfPEs(2, MIPS / 2, 2);
+		Vm vm1 = VmSimpleTest.createVmWithSpecificMipsAndNumberOfPEs(0, MIPS / 2, 1);
+                Vm vm2 = VmSimpleTest.createVmWithSpecificMipsAndNumberOfPEs(1, MIPS / 2, 1);
+		Vm vm3 = VmSimpleTest.createVmWithSpecificMipsAndNumberOfPEs(2, MIPS / 2, 2);
 
 		assertTrue(peProvisioner.allocateMipsForVm(vm1, MIPS / 2));
 		assertEquals(MIPS / 2, peProvisioner.getAvailableMips(), 0);
@@ -102,9 +106,9 @@ public class PeProvisionerSimpleTest {
 
 	@Test
 	public void testGetAllocatedMiVmTestm() {
-		Vm vm1 =  VmTest.createVmWithSpecificMipsAndNumberOfPEs(0, MIPS / 2, 1);
-		Vm vm2 =  VmTest.createVmWithSpecificMipsAndNumberOfPEs(1, MIPS / 2, 1);
-		Vm vm3 =  VmTest.createVmWithSpecificMipsAndNumberOfPEs(2, MIPS / 2, 2);
+		Vm vm1 =  VmSimpleTest.createVmWithSpecificMipsAndNumberOfPEs(0, MIPS / 2, 1);
+		Vm vm2 =  VmSimpleTest.createVmWithSpecificMipsAndNumberOfPEs(1, MIPS / 2, 1);
+		Vm vm3 =  VmSimpleTest.createVmWithSpecificMipsAndNumberOfPEs(2, MIPS / 2, 2);
 
 		assertNull(peProvisioner.getAllocatedMipsForVm(vm1));
 		assertEquals(0, peProvisioner.getAllocatedMipsForVmByVirtualPeId(vm1, 0), 0);
@@ -177,8 +181,8 @@ public class PeProvisionerSimpleTest {
 
 	@Test
 	public void testDeallocateMipsForVM() {
-		Vm vm1 =  VmTest.createVmWithSpecificMipsAndNumberOfPEs(0, MIPS / 2, 1);
-		Vm vm2 =  VmTest.createVmWithSpecificMipsAndNumberOfPEs(1, MIPS / 2, 1);
+		Vm vm1 =  VmSimpleTest.createVmWithSpecificMipsAndNumberOfPEs(0, MIPS / 2, 1);
+		Vm vm2 =  VmSimpleTest.createVmWithSpecificMipsAndNumberOfPEs(1, MIPS / 2, 1);
 
 		peProvisioner.allocateMipsForVm(vm1, MIPS / 2);
 		peProvisioner.allocateMipsForVm(vm2, MIPS / 4);

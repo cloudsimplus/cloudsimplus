@@ -241,7 +241,7 @@ public class MigrationExample1 {
         
         broker.submitCloudletList(list);
         for(Cloudlet c: list) {
-            broker.bindCloudletToVm(c.getCloudletId(), hostingVm.getId());
+            broker.bindCloudletToVm(c.getId(), hostingVm.getId());
         }
         
         return list;

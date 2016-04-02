@@ -77,13 +77,13 @@ public class TestBagOfTasksApp extends AppCloudlet {
             cl.currStagenum=-1;
             cl.setVmId(vmIdList.get(i));
             //compute and send data to node 0
-            cl.stages.add(new TaskStage(NetworkConstants.EXECUTION, NetworkConstants.COMMUNICATION_LENGTH, executionTime/numberOfVMs, stgId++, memory, vmIdList.get(0),cl.getCloudletId()));
+            cl.stages.add(new TaskStage(NetworkConstants.EXECUTION, NetworkConstants.COMMUNICATION_LENGTH, executionTime/numberOfVMs, stgId++, memory, vmIdList.get(0),cl.getId()));
 
             //0 has an extra stage of waiting for results; others send
             if (i==0){
                 for(int j=1;j<numberOfVMs;j++)
                     cl.stages.add(
-                            new TaskStage(NetworkConstants.WAIT_RECV, NetworkConstants.COMMUNICATION_LENGTH, 0, stgId++, memory, vmIdList.get(j),cl.getCloudletId()+j));
+                            new TaskStage(NetworkConstants.WAIT_RECV, NetworkConstants.COMMUNICATION_LENGTH, 0, stgId++, memory, vmIdList.get(j),cl.getId()+j));
             } else {
                 cl.stages.add(new TaskStage(NetworkConstants.WAIT_SEND, NetworkConstants.COMMUNICATION_LENGTH, 0, stgId++, memory, vmIdList.get(0),t));
             }

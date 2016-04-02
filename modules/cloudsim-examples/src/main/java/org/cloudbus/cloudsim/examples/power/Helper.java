@@ -734,7 +734,7 @@ public class Helper {
 		DecimalFormat dft = new DecimalFormat("###.##");
 		for (int i = 0; i < size; i++) {
 			cloudlet = list.get(i);
-			Log.print(indent + cloudlet.getCloudletId());
+			Log.print(indent + cloudlet.getId());
 
 			if (cloudlet.getStatus() == CloudletSimple.Status.SUCCESS) {
 				Log.printLine(indent + "SUCCESS" + indent + indent + cloudlet.getResourceId() + indent

@@ -208,11 +208,7 @@ public class VmSimple implements Vm {
 
     @Override
     public double getCurrentRequestedTotalMips() {
-        double totalRequestedMips = 0;
-        for (double mips : getCurrentRequestedMips()) {
-            totalRequestedMips += mips;
-        }
-        return totalRequestedMips;
+        return getCurrentRequestedMips().stream().reduce(0.0, Double::sum);
     }
 
     @Override

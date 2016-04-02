@@ -10,9 +10,6 @@ package org.cloudbus.cloudsim;
 import org.cloudbus.cloudsim.resources.Pe;
 import org.cloudbus.cloudsim.resources.PeSimple;
 import org.cloudbus.cloudsim.schedulers.VmSchedulerTimeShared;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertSame;
-import static org.junit.Assert.assertTrue;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -21,6 +18,9 @@ import org.cloudbus.cloudsim.lists.PeList;
 import org.cloudbus.cloudsim.provisioners.PeProvisionerSimple;
 import org.junit.Before;
 import org.junit.Test;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertSame;
+import static org.junit.Assert.assertTrue;
 
 /**
  * @author Anton Beloglazov
@@ -46,8 +46,8 @@ public class VmSchedulerTimeSharedTest {
         peList.add(new PeSimple(0, new PeProvisionerSimple(MIPS)));
         peList.add(new PeSimple(1, new PeProvisionerSimple(MIPS)));
         vmScheduler = new VmSchedulerTimeShared(peList);
-        vm1 = VmTest.createVmWithSpecificMipsAndNumberOfPEs(0, MIPS / 4, 2);
-        vm2 = VmTest.createVmWithSpecificMipsAndNumberOfPEs(1, MIPS / 2, 2);
+        vm1 = VmSimpleTest.createVmWithSpecificMipsAndNumberOfPEs(0, MIPS / 4, 2);
+        vm2 = VmSimpleTest.createVmWithSpecificMipsAndNumberOfPEs(1, MIPS / 2, 2);
         // vm3 = new VmSimple(2, 0, MIPS, 2, 0, 0, 0, 0, "", null);
     }
 
