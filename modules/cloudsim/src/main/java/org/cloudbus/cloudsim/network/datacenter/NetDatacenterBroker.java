@@ -220,7 +220,7 @@ public class NetDatacenterBroker extends SimEntity {
                 shutdownEntity();
             break;
             case CloudSimTags.NextCycle:
-                if (NetworkConstants.AUTO_CREATE_VMS_IN_NETDATACENTERBROKER) {
+                if (NetworkConstants.autoCreateVmsInNetDatacenterBroker) {
                     createVmsInDatacenterBase(linkDC.getId());
                 }
             break;
