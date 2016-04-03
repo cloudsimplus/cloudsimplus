@@ -30,6 +30,8 @@ import org.junit.runner.RunWith;
 import org.powermock.api.easymock.PowerMock;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertSame;
 
 /**
  * @author	Anton Beloglazov
@@ -133,13 +135,13 @@ public class CloudletSimpleTest {
     @Test
     public void testGetActualCPUTime() {
         final double submissionTime = 0, execStartTime = 10;
-        final double expectedSimulationClock = 100;
-        final double actualCpuTime = expectedSimulationClock - execStartTime;
+        final double simulationClock = 100;
+        final double actualCpuTime = simulationClock - execStartTime;
         final int datacenterId = 0;
         //This will mock the CloudSim static method calls
         PowerMock.mockStatic(CloudSim.class);
         
-        EasyMock.expect(CloudSim.clock()).andReturn(expectedSimulationClock);
+        EasyMock.expect(CloudSim.clock()).andReturn(simulationClock);
         EasyMock.expect(CloudSim.getEntityName(datacenterId)).andReturn("datacenter"+datacenterId);
         PowerMock.replay(CloudSim.class);
         

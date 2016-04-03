@@ -20,7 +20,7 @@ public interface VmScheduler {
      * Requests the allocation of PEs for a VM.
      *
      * @param vm the vm
-     * @param mipsShare the list of MIPS share to be allocated to a VM
+     * @param mipsShareRequested the list of MIPS share to be allocated to a VM
      * @return $true if this policy allows a new VM in the host, $false
      * otherwise
      *
@@ -39,7 +39,7 @@ public interface VmScheduler {
      * if the total requested mips is available, while only the difference has
      * to be checked. It has to be added some tests to check this issue.
      */
-    boolean allocatePesForVm(Vm vm, List<Double> mipsShare);
+    boolean allocatePesForVm(Vm vm, List<Double> mipsShareRequested);
 
     /**
      * Releases PEs allocated to all the VMs of the host the VmSchedulerAbstract
@@ -154,8 +154,8 @@ public interface VmScheduler {
     
     /**
      * Defines the percentage of Host's CPU usage increase when a 
-     * VM is migrating into it. The value is in scale 
-     * from 0 to 1 (where 1 is 100%).
+     * VM is migrating in or out of the Host. 
+     * The value is in scale from 0 to 1 (where 1 is 100%).
      * 
      * @return the Host's CPU migration overhead percentage.
      */

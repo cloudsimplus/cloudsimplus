@@ -8,6 +8,7 @@
 package org.cloudbus.cloudsim.schedulers;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -53,34 +54,55 @@ public class VmSchedulerSpaceShared extends VmSchedulerAbstract {
     }
 
     @Override
-    public boolean allocatePesForVm(Vm vm, List<Double> mipsShare) {
-        // if there is no enough free PEs, fails
-        if (getFreePesList().size() < mipsShare.size()) {
-            return false;
-        }
+    public boolean isSuitableForVm(Vm vm) {
+        return !getTotalCapacityToBeAllocatedToVm(vm.getCurrentRequestedMips()).isEmpty();
+    }
 
+    /**
+     * Checks if the requested amount of MIPS is available to be allocated to a VM
+     * @param vmRequestedMipsShare a VM's list of requested MIPS
+     * @return the list of PEs that can be allocated to the VM or
+     * an empty list if there isn't enough capacity that can be allocated
+     */
+    protected List<Pe> getTotalCapacityToBeAllocatedToVm(List<Double> vmRequestedMipsShare) {
+        // if there is no enough free PEs, fails
+        if (getFreePesList().size() < vmRequestedMipsShare.size()) {
+            return Collections.EMPTY_LIST;
+        }
+        
         List<Pe> selectedPes = new ArrayList<>();
         Iterator<Pe> peIterator = getFreePesList().iterator();
         Pe pe = peIterator.next();
-        double totalMips = 0;
-        for (Double mips : mipsShare) {
+        for (Double mips : vmRequestedMipsShare) {
             if (mips <= pe.getMips()) {
                 selectedPes.add(pe);
                 if (!peIterator.hasNext()) {
                     break;
                 }
                 pe = peIterator.next();
-                totalMips += mips;
             }
         }
-        if (mipsShare.size() > selectedPes.size()) {
+        
+        if (vmRequestedMipsShare.size() > selectedPes.size()) {
+            return Collections.EMPTY_LIST;
+        }
+        
+        return selectedPes;
+    }
+
+    @Override
+    public boolean allocatePesForVm(Vm vm, List<Double> mipsShareRequested) {
+        List<Pe> selectedPes = getTotalCapacityToBeAllocatedToVm(mipsShareRequested);
+        if(selectedPes.isEmpty()){
             return false;
         }
+        
+        double totalMips = mipsShareRequested.stream().reduce(0.0, Double::sum);
 
         getFreePesList().removeAll(selectedPes);
 
         getPeAllocationMap().put(vm.getUid(), selectedPes);
-        getMipsMap().put(vm.getUid(), mipsShare);
+        getMipsMap().put(vm.getUid(), mipsShareRequested);
         setAvailableMips(getAvailableMips() - totalMips);
         return true;
     }

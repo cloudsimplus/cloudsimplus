@@ -155,16 +155,11 @@ public class HostSimple implements Host {
                         " failed by BW", vm.getId(), getId()));
             }
 
-            if (!getVmScheduler().isSuitableForVm(vm)) {
-                throw new RuntimeException(
-                    String.format(
-                        "[VmScheduler.addMigratingInVm] Allocation of VM #%d to Host #%d" +
-                        " failed by MIPS", vm.getId(),  getId()));
-            }
-            
             getVmScheduler().getVmsMigratingIn().add(vm.getUid());
             vm.setInMigration(true);
             if (!getVmScheduler().allocatePesForVm(vm, vm.getCurrentRequestedMips())) {
+                getVmScheduler().getVmsMigratingIn().remove(vm.getUid());
+                vm.setInMigration(false);
                 throw new RuntimeException(
                     String.format(
                         "[VmScheduler.addMigratingInVm] Allocation of VM #%d to Host #%d" +

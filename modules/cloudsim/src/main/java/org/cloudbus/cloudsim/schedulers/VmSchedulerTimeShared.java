@@ -25,7 +25,7 @@ import org.cloudbus.cloudsim.provisioners.PeProvisioner;
  * by multiple VMs. This class also implements 10% performance degradation due
  * to VM migration. This scheduler does not support over-subscription.<p/>
  *
- Each host has to use is own instance of a VmSchedulerAbstract that will so
+ * Each host has to use is own instance of a VmSchedulerAbstract that will so
  * schedule the allocation of host's PEs for VMs running on it.
  *
  * @author Rodrigo N. Calheiros
@@ -33,6 +33,7 @@ import org.cloudbus.cloudsim.provisioners.PeProvisioner;
  * @since CloudSim Toolkit 1.0
  */
 public class VmSchedulerTimeShared extends VmSchedulerAbstract {
+
     /**
      * The map of requested mips, where each key is a VM and each value is a
      * list of MIPS requested by that VM.
@@ -72,6 +73,38 @@ public class VmSchedulerTimeShared extends VmSchedulerAbstract {
         return result;
     }
 
+    @Override
+    public boolean isSuitableForVm(Vm vm) {
+        return getTotalCapacityToBeAllocatedToVm(vm.getCurrentRequestedMips()) > 0.0;
+    }
+
+    /**
+     * Checks if the requested amount of MIPS is available to be allocated to a
+     * VM
+     *
+     * @param vmRequestedMipsShare a VM's list of requested MIPS
+     * @return the sum of total requested mips if there is enough capacity to be
+     * allocated to the VM, 0 otherwise.
+     */
+    protected double getTotalCapacityToBeAllocatedToVm(List<Double> vmRequestedMipsShare) {
+        double peMips = getPeCapacity();
+        double totalRequestedMips = 0;
+        for (Double mips : vmRequestedMipsShare) {
+            // each virtual PE of a VM must require not more than the capacity of a physical PE
+            if (mips > peMips) {
+                return 0.0;
+            }
+            totalRequestedMips += mips;
+        }
+
+        // This scheduler does not allow over-subscription
+        if (getAvailableMips() < totalRequestedMips || getPeList().size() < vmRequestedMipsShare.size()) {
+            return 0.0;
+        }
+
+        return totalRequestedMips;
+    }
+
     /**
      * Allocate PEs for a vm.
      *
@@ -80,18 +113,8 @@ public class VmSchedulerTimeShared extends VmSchedulerAbstract {
      * @return true, if successful
      */
     protected boolean allocatePesForVm(String vmUid, List<Double> mipsShareRequested) {
-        double totalRequestedMips = 0;
-        double peMips = getPeCapacity();
-        for (Double mips : mipsShareRequested) {
-            // each virtual PE of a VM must require not more than the capacity of a physical PE
-            if (mips > peMips) {
-                return false;
-            }
-            totalRequestedMips += mips;
-        }
-
-        // This scheduler does not allow over-subscription
-        if (getAvailableMips() < totalRequestedMips) {
+        double totalRequestedMips = getTotalCapacityToBeAllocatedToVm(mipsShareRequested);
+        if (totalRequestedMips == 0) {
             return false;
         }
 
@@ -107,10 +130,10 @@ public class VmSchedulerTimeShared extends VmSchedulerAbstract {
         for (Double mipsRequested : mipsShareRequested) {
             if (getVmsMigratingOut().contains(vmUid)) {
                 // performance degradation due to migration = 10% MIPS
-                mipsRequested *= 0.9;
+                mipsRequested *= 1 - getCpuOverheadDueToVmMigration();
             } else if (getVmsMigratingIn().contains(vmUid)) {
                 // the destination host only experience 10% of the migrating VM's MIPS
-                mipsRequested *= 0.1;
+                mipsRequested *= getCpuOverheadDueToVmMigration();
             }
             mipsShareAllocated.add(mipsRequested);
         }
