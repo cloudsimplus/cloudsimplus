@@ -1,4 +1,4 @@
-# CloudSim: A Framework For Modeling And Simulation Of Cloud Computing Infrastructures And Services #
+# CloudSim: A Framework For Modeling And Simulation Of Cloud Computing Infrastructures And Services [![Build Status](https://travis-ci.org/manoelcampos/cloudsim.png?branch=master)](https://travis-ci.org/manoelcampos/cloudsim)
 
 Cloud computing is the leading technology for delivery of reliable, secure, fault-tolerant, sustainable, and scalable computational services.
 
