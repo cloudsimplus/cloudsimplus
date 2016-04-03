@@ -22,12 +22,14 @@ import org.junit.Assert;
 
 import org.junit.Before;
 import org.junit.Test;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertSame;
 
 /**
  * @author		Anton Beloglazov
  * @since		CloudSim Toolkit 2.0
  */
-public class CloudletTest {
+public class CloudletSimpleTest {
 
 	private static final long CLOUDLET_LENGTH = 1000;
 	private static final long CLOUDLET_FILE_SIZE = 300;

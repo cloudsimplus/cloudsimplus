@@ -1,4 +1,4 @@
-# CloudSim: A Framework For Modeling And Simulation Of Cloud Computing Infrastructures And Services [![Build Status](https://travis-ci.org/manoelcampos/cloudsim.png?branch=master)](https://travis-ci.org/manoelcampos/cloudsim)
+# CloudSim: A Framework For Modeling And Simulation Of Cloud Computing Infrastructures And Services [![Build Status](https://travis-ci.org/manoelcampos/cloudsim.png?branch=reduce_code_duplication)](https://travis-ci.org/manoelcampos/cloudsim) [![Coverage Status](https://coveralls.io/repos/github/manoelcampos/cloudsim/badge.svg?branch=reduce_code_duplication)](https://coveralls.io/github/manoelcampos/cloudsim?branch=master)
 
 Cloud computing is the leading technology for delivery of reliable, secure, fault-tolerant, sustainable, and scalable computational services.
 

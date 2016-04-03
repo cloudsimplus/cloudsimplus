@@ -15,6 +15,7 @@ import org.cloudbus.cloudsim.util.TextTableBuilder;
 import org.cloudbus.cloudsim.utilizationmodels.UtilizationModelArithmeticProgression;
 import org.junit.Test;
 import static org.junit.Assert.*;
+import org.junit.Ignore;
 
 /**
  *
@@ -53,11 +54,7 @@ public final class CheckHostAvailableMipsDynamicUtilizationTest {
             "- onUpdateVmProcessing at time ", time, " host ", host.getId(), 
             " available mips: ", host.getAvailableMips(), " expected availability: ", expectedAvailableHostMips);
         
-        assertEquals("The amount of Host available MIPS was not as expected." +
-            "WARNING: It has to be checked if it is really required to use the "
-                + " PowerDatacenter, PowerHostUtilizationHistory, PowerVm"
-                + " and CloudletSchedulerDynamicWorkload to make the host CPU usage"
-                + " to be correctly updated.", 
+        assertEquals("The amount of Host available MIPS was not as expected.", 
                  expectedAvailableHostMips, host.getAvailableMips(), 0);
     }
 
@@ -94,7 +91,10 @@ public final class CheckHostAvailableMipsDynamicUtilizationTest {
                 .createAndSubmitCloudlets(NUMBER_OF_CLOUDLETS);
     }
 
-    @Test
+    @Test @Ignore(value = "WARNING: It has to be checked if it is really required to use the "
+                + " PowerDatacenter, PowerHostUtilizationHistory, PowerVm"
+                + " and CloudletSchedulerDynamicWorkload to make the host CPU usage"
+                + " to be correctly updated.")
     public void integrationTest() {
         startSimulationAndWaitToStop();
 

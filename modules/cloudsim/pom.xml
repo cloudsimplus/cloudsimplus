@@ -10,6 +10,10 @@
     <artifactId>cloudsim</artifactId>
     <name>cloudsim</name>
 
+    <properties>
+        <city>toronto</city>
+    </properties>
+    
     <profiles>
         <!-- The profiles 'default' and 'integration-tests' are specified to allow 
         using the maven-surefire-plugin instead of the maven-failsafe-plugin to run 
@@ -140,7 +144,43 @@
                     <source>1.8</source>
                     <target>1.8</target>
                 </configuration>
-            </plugin>  
+            </plugin>         
+            <!-- 
+             Plugin for code coverage, enabling
+             generation of reports on IDE to see percentage
+             of the project's code that is being covered by unit tests. 
+            -->
+            <plugin>
+                <groupId>org.jacoco</groupId>
+                <artifactId>jacoco-maven-plugin</artifactId>
+                <version>0.7.6.201602180812</version>
+                <executions>
+                    <execution>
+                        <id>prepare-agent</id>
+                        <goals><goal>prepare-agent</goal></goals>
+                    </execution>
+                    <execution>
+                        <id>report</id>
+                        <phase>prepare-package</phase>
+                        <goals><goal>report</goal></goals>
+                    </execution>
+                </executions>
+            </plugin>
+            <!--    Send code coverage reports to http://coveralls.io,
+            in order to show percentage of code coverage in
+            the README file.
+            Your coverall repoToken have to be defined in
+            an environment variable at you machine
+            in order to enable sending the coverage
+            report to the coveralls server.
+            https://github.com/trautonen/coveralls-maven-plugin
+            -->
+            <plugin>
+                <groupId>org.eluder.coveralls</groupId>
+                <artifactId>coveralls-maven-plugin</artifactId>
+                <version>4.1.0</version>
+                <configuration><repoToken>${env.coveralls_repo_token}</repoToken></configuration>
+            </plugin>             
         </plugins>
     </build>
     <dependencies>
@@ -180,17 +220,6 @@
                 <artifactId>emma-maven-plugin</artifactId>
                 <version>1.2</version>
             </plugin>
-            <!-- 
-             Plugin for code coverage, enabling
-             generation of reports on IDE to see percentage
-             of the project's code that is being covered by unit tests. 
-            -->
-            <plugin>
-                <groupId>org.codehaus.mojo</groupId>
-                <artifactId>cobertura-maven-plugin</artifactId>
-                <version>2.6</version>
-            </plugin>
-            
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-surefire-report-plugin</artifactId>

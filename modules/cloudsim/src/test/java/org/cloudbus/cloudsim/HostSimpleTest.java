@@ -32,12 +32,22 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertSame;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertSame;
+import static org.junit.Assert.assertTrue;
 
 /**
  * @author Anton Beloglazov
  * @since CloudSim Toolkit 2.0
  */
-public class HostTest {
+public class HostSimpleTest {
     private static final int ID = 0;
     private static final long STORAGE = Consts.MILLION;
     private static final long HALF_STORAGE = STORAGE/2;
