@@ -553,7 +553,7 @@ public class NetworkCloudletSpaceSharedScheduler extends CloudletSchedulerAbstra
 
 	@Override
 	public List<Double> getCurrentRequestedMips() {
-		List<Double> mipsShare = new ArrayList<Double>();
+		List<Double> mipsShare = new ArrayList<>();
 		if (getCurrentMipsShare() != null) {
 			for (Double mips : getCurrentMipsShare()) {
 				mipsShare.add(mips);

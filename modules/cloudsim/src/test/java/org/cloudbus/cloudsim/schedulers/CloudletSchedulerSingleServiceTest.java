@@ -167,13 +167,14 @@ public class CloudletSchedulerSingleServiceTest {
 		cloudlet.setResourceParameter(0, 0, 0);
 		ResCloudlet rgl = new ResCloudlet(cloudlet);
 
-		List<Double> mipsShare = new ArrayList<Double>();
+		List<Double> mipsShare = new ArrayList<>();
 		mipsShare.add(MIPS / 4);
 		mipsShare.add(MIPS / 4);
 		mipsShare.add(MIPS / 4);
 		mipsShare.add(MIPS / 4);
 
-		assertEquals(MIPS / 4.0 * PES_NUMBER, vmScheduler.getTotalCurrentAvailableMipsForCloudlet(rgl, mipsShare), 0);
+		assertEquals(MIPS / 4.0 * PES_NUMBER, 
+                    vmScheduler.getTotalCurrentAvailableMipsForCloudlet(rgl, mipsShare), 0);
 	}
 
 	@Test
