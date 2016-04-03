@@ -64,6 +64,13 @@ public interface Host extends Identificable {
     double getAvailableMips();
 
     /**
+     * Gets the total free storage available at the host.
+     *
+     * @return the free storage
+     */
+    long getAvailableStorage();
+
+    /**
      * Gets the host bw capacity.
      *
      * @return the host bw capacity
@@ -370,5 +377,6 @@ public interface Host extends Identificable {
         @Override public void vmDestroyAll() {}
         @Override public EventListener<Host, Double> getOnUpdateVmsProcessingListener() { return EventListener.NULL; }
         @Override public void setOnUpdateVmsProcessingListener(EventListener<Host, Double> onUpdateVmsProcessingListener) {}
+        @Override public long getAvailableStorage() { return 0L; }
     };
 }

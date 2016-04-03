@@ -78,6 +78,16 @@ public interface VmScheduler {
      * @return the free mips
      */
     double getAvailableMips();
+    
+    /**
+     * Checks if the PM using this scheduler has enough MIPS capacity
+     * to host a given VM.
+     * 
+     * @param vm the vm to check if there is enough available resource on the PM to host it
+     * 
+     * @return true, if it is possible to allocate the the VM into the host; false otherwise
+     */
+    boolean isSuitableForVm(Vm vm);    
 
     /**
      * Returns maximum available MIPS among all the host's PEs.
@@ -141,6 +151,15 @@ public interface VmScheduler {
      * @return the vms in migration
      */
     List<String> getVmsMigratingOut();
+    
+    /**
+     * Defines the percentage of Host's CPU usage increase when a 
+     * VM is migrating into it. The value is in scale 
+     * from 0 to 1 (where 1 is 100%).
+     * 
+     * @return the Host's CPU migration overhead percentage.
+     */
+    double getCpuOverheadDueToVmMigration();
 
     /**
      * A property that implements the Null Object Design Pattern for {@link VmScheduler}
@@ -160,5 +179,7 @@ public interface VmScheduler {
         @Override public double getTotalAllocatedMipsForVm(Vm vm) { return 0.0; }
         @Override public List<String> getVmsMigratingIn() { return Collections.emptyList(); }
         @Override public List<String> getVmsMigratingOut() { return Collections.emptyList(); }
+        @Override public boolean isSuitableForVm(Vm vm) { return false; }
+        @Override public double getCpuOverheadDueToVmMigration() { return 0.0; }
     };
 }

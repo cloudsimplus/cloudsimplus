@@ -736,8 +736,8 @@ public class DatacenterSimple extends SimEntity implements Datacenter {
                 return;
             }
 
-            // process this Cloudlet to this CloudResource
-            cl.setResourceParameter(
+            // process this Cloudlet to this Datacenter
+            cl.assignCloudletToDatacenter(
                     getId(), getCharacteristics().getCostPerSecond(),
                     getCharacteristics().getCostPerBw());
 

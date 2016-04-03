@@ -53,7 +53,7 @@ import org.cloudbus.cloudsim.listeners.EventListener;
  * and several cloudlets, the execution order of cloudlets can be defined by
  * their priorities.
  */
-public class CloudletSimple implements Cloudlet {
+public class CloudletSimple implements Cloudlet {    
     /** @see #getId() */
     private final int id;
 
@@ -105,10 +105,10 @@ public class CloudletSimple implements Cloudlet {
      * it starts and finishes executing in a single datacenter, without
      * being migrated, this list will have only one item.
      */
-    private final List<Resource> resList;
+    private final List<DatacenterInfo> datacenterInfoList;
 
     /**
-     * The index of the last resource where the cloudlet was executed. If the
+     * The index of the last Datacenter where the cloudlet was executed. If the
      * cloudlet is migrated during its execution, this index is updated. The
      * value {@link #NOT_ASSIGNED} indicates the cloudlet has not been executed yet.
      */
@@ -341,7 +341,7 @@ public class CloudletSimple implements Cloudlet {
 	// Normally, a Cloudlet is only executed on a resource without being
         // migrated to others. Hence, to reduce memory consumption, set the
         // size of this ArrayList to be less than the default one.
-        resList = new ArrayList<>(2);
+        datacenterInfoList = new ArrayList<>(2);
         index = NOT_ASSIGNED;
         this.record = record;
 
@@ -420,7 +420,7 @@ public class CloudletSimple implements Cloudlet {
         }
 
         // use the latest resource submission time
-        final double subTime = resList.get(index).submissionTime;
+        final double subTime = datacenterInfoList.get(index).submissionTime;
         return execStartTime - subTime;
     }
 
@@ -456,7 +456,7 @@ public class CloudletSimple implements Cloudlet {
     @Override
     public String getCloudletHistory() {
         if (history == null) 
-            return "No history is recorded for Cloudlet #" + id;
+            return String.format(NO_HISTORY_IS_RECORDED_FOR_CLOUDLET, id);
         
         return history.toString();
     }
@@ -467,7 +467,7 @@ public class CloudletSimple implements Cloudlet {
             return 0;
         }
 
-        final long finish = resList.get(index).finishedSoFar;
+        final long finish = datacenterInfoList.get(index).finishedSoFar;
         return Math.min(finish, cloudletLength);
     }
 
@@ -477,7 +477,7 @@ public class CloudletSimple implements Cloudlet {
             return false;
         }
 
-        final long finishedMI = resList.get(index).finishedSoFar;
+        final long finishedMI = datacenterInfoList.get(index).finishedSoFar;
         final long remainingMI = cloudletLength - finishedMI;
         
         return remainingMI <= 0.0;
@@ -489,7 +489,7 @@ public class CloudletSimple implements Cloudlet {
             return false;
         }
 
-        final Resource res = resList.get(index);
+        final DatacenterInfo res = datacenterInfoList.get(index);
         res.finishedSoFar = length;
 
         write("Sets the length's finished so far to %d", length);
@@ -508,11 +508,11 @@ public class CloudletSimple implements Cloudlet {
     }
 
     @Override
-    public int getResourceId() {
+    public int getDatacenterId() {
         if (index == NOT_ASSIGNED) {
             return NOT_ASSIGNED;
         }
-        return resList.get(index).resourceId;
+        return datacenterInfoList.get(index).datacenterId;
     }
 
     @Override
@@ -537,31 +537,39 @@ public class CloudletSimple implements Cloudlet {
     }
 
     @Override
-    public void setResourceParameter(final int resourceID, final double cost) {
-        final Resource res = new Resource();
-        res.resourceId = resourceID;
-        res.costPerSec = cost;
-        res.resourceName = CloudSim.getEntityName(resourceID);
+    public void assignCloudletToDatacenter(
+            final int datacenterId, final double costPerCpuSec, final double costPerByteOfBw) {
+        assignCloudletToDatacenter(datacenterId, costPerCpuSec);
+        this.setCostPerBw(costPerByteOfBw);
+        setAccumulatedBwCost(costPerByteOfBw * getCloudletFileSize());
+    }
+
+    @Override
+    public void assignCloudletToDatacenter(final int datacenterId, final double costPerCpuSec) {
+        final DatacenterInfo datacenter = new DatacenterInfo();
+        datacenter.datacenterId = datacenterId;
+        datacenter.costPerSec = costPerCpuSec;
+        datacenter.name = CloudSim.getEntityName(datacenterId);
 
         // add into a list if moving to a new cloud datacenter
-        resList.add(res);
+        datacenterInfoList.add(datacenter);
 
         if(record){
             if (index == NOT_ASSIGNED) {
                 write(
                     "Allocates this Cloudlet to %s (ID #%d) with cost = $%s/sec",
-                    res.resourceName,  resourceID, num.format(cost));
+                    datacenter.name,  datacenterId, num.format(costPerCpuSec));
             } else {
-                final int id = resList.get(index).resourceId;
-                final String name = resList.get(index).resourceName;
+                final int id = datacenterInfoList.get(index).datacenterId;
+                final String name = datacenterInfoList.get(index).name;
                 write(
                     "Moves Cloudlet from %s (ID #%d) to %s (ID #%d) with cost = $%s/sec",
-                    name, id, res.resourceName, resourceID, num.format(cost));
+                    name, id, datacenter.name, datacenterId, num.format(costPerCpuSec));
             }
         }
 
         index++;  
-    }
+    }    
 
     @Override
     public boolean setSubmissionTime(final double clockTime) {
@@ -569,7 +577,7 @@ public class CloudletSimple implements Cloudlet {
             return false;
         }
 
-        final Resource res = resList.get(index);
+        final DatacenterInfo res = datacenterInfoList.get(index);
         res.submissionTime = clockTime;
 
         write("Sets the submission time to %s", num.format(clockTime));
@@ -581,7 +589,7 @@ public class CloudletSimple implements Cloudlet {
         if (index == NOT_ASSIGNED) {
             return 0.0;
         }
-        return resList.get(index).submissionTime;
+        return datacenterInfoList.get(index).submissionTime;
     }
 
     @Override
@@ -596,14 +604,14 @@ public class CloudletSimple implements Cloudlet {
     }
 
     @Override
-    public boolean setExecParam(final double wallTime, final double actualTime) {
+    public boolean setWallClockTime(final double wallTime, final double actualTime) {
         if (wallTime < 0.0 || actualTime < 0.0 || index <= NOT_ASSIGNED) {
             return false;
         }
 
-        final Resource res = resList.get(index);
-        res.wallClockTime = wallTime;
-        res.actualCPUTime = actualTime;
+        final DatacenterInfo datacenter = datacenterInfoList.get(index);
+        datacenter.wallClockTime = wallTime;
+        datacenter.actualCPUTime = actualTime;
 
         write("Sets the wall clock time to %s and the actual CPU time to %s",
               num.format(wallTime), num.format(actualTime));
@@ -675,53 +683,53 @@ public class CloudletSimple implements Cloudlet {
         if (index == NOT_ASSIGNED) {
             return 0.0;
         }
-        return resList.get(index).costPerSec;
+        return datacenterInfoList.get(index).costPerSec;
     }
 
     @Override
-    public double getWallClockTime() {
+    public double getWallClockTimeInLastExecutedDatacenter() {
         if (index == NOT_ASSIGNED) {
             return 0.0;
         }
-        return resList.get(index).wallClockTime;
+        return datacenterInfoList.get(index).wallClockTime;
     }
 
     @Override
-    public String[] getAllResourceName() {
-        String[] data = new String[resList.size()];
+    public String[] getNamesOfAllExecutedDatacenters() {
+        String[] data = new String[datacenterInfoList.size()];
 
         int i = 0;
-        for (Resource res: resList) {
-            data[i++] = res.resourceName;
+        for (DatacenterInfo res: datacenterInfoList) {
+            data[i++] = res.name;
         }
 
         return data;
     }
 
     @Override
-    public Integer[] getAllResourceId() {
-        Integer[] data = new Integer[resList.size()];
+    public Integer[] getDatacenterIdArray() {
+        Integer[] datacenters = new Integer[datacenterInfoList.size()];
 
         int i = 0;
-        for (Resource res: resList) {
-            data[i++] = res.resourceId;
+        for (DatacenterInfo datacenter: datacenterInfoList) {
+            datacenters[i++] = datacenter.datacenterId;
         }
 
-        return data;
+        return datacenters;
     }
 
     @Override
-    public double getActualCPUTime(final int resId) {
-        Resource resource = getResourceById(resId);
-        if (resource != null) {
-            return resource.actualCPUTime;
+    public double getActualCPUTime(final int datacenterId) {
+        DatacenterInfo datacenter = getDatacenterById(datacenterId);
+        if (datacenter != null) {
+            return datacenter.actualCPUTime;
         }
         return 0.0;
     }
 
     @Override
-    public double getCostPerSec(final int resId) {
-        Resource resource = getResourceById(resId);
+    public double getCostPerSec(final int datacenterId) {
+        DatacenterInfo resource = getDatacenterById(datacenterId);
         if (resource != null) {
             return resource.costPerSec;
         }
@@ -729,37 +737,37 @@ public class CloudletSimple implements Cloudlet {
     }
 
     @Override
-    public long getCloudletFinishedSoFar(final int resId) {
-        Resource resource = getResourceById(resId);
-        if (resource != null) {
-            return resource.finishedSoFar;
+    public long getCloudletFinishedSoFar(final int datacenterId) {
+        DatacenterInfo datacenter = getDatacenterById(datacenterId);
+        if (datacenter != null) {
+            return datacenter.finishedSoFar;
         }
         return 0;
     }
 
     @Override
-    public double getSubmissionTime(final int resId) {
-        Resource resource = getResourceById(resId);
-        if (resource != null) {
-            return resource.submissionTime;
+    public double getSubmissionTime(final int datacenterId) {
+        DatacenterInfo datacenter = getDatacenterById(datacenterId);
+        if (datacenter != null) {
+            return datacenter.submissionTime;
         }
         return 0.0;
     }
 
     @Override
-    public double getWallClockTime(final int resId) {
-        Resource resource = getResourceById(resId);
-        if (resource != null) {
-            return resource.wallClockTime;
+    public double getWallClockTime(final int datacenterId) {
+        DatacenterInfo datacenter = getDatacenterById(datacenterId);
+        if (datacenter != null) {
+            return datacenter.wallClockTime;
         }
         return 0.0;
     }
 
     @Override
-    public String getResourceName(final int resId) {
-        Resource resource = getResourceById(resId);
-        if (resource != null) {
-            return resource.resourceName;
+    public String getDatacenterName(final int datacenterId) {
+        DatacenterInfo datacenter = getDatacenterById(datacenterId);
+        if (datacenter != null) {
+            return datacenter.name;
         }
         return "";
     }
@@ -767,16 +775,16 @@ public class CloudletSimple implements Cloudlet {
     /**
      * Gets information about the cloudlet execution on a given Datacenter.
      *
-     * @param resourceId the Datacenter entity ID
+     * @param datacenterId the Datacenter entity ID
      * @return the Cloudlet execution information on the given datacenter
      * or null if the Cloudlet has never been executed there
-     * @pre resId >= 0
+     * @pre datacenterId >= 0
      * @post $none
      */
-    private Resource getResourceById(final int resourceId) {
-        for (Resource resource : resList) {
-            if (resource.resourceId == resourceId) {
-                return resource;
+    private DatacenterInfo getDatacenterById(final int datacenterId) {
+        for (DatacenterInfo datacenter : datacenterInfoList) {
+            if (datacenter.datacenterId == datacenterId) {
+                return datacenter;
             }
         }
         return null;
@@ -863,20 +871,22 @@ public class CloudletSimple implements Cloudlet {
     }
 
     @Override
-    public void setResourceParameter(final int resourceID, final double costPerCPU, final double costPerBw) {
-        setResourceParameter(resourceID, costPerCPU);
-        this.setCostPerBw(costPerBw);
-        setAccumulatedBwCost(costPerBw * getCloudletFileSize());
-    }
-
-    @Override
     public double getProcessingCost() {
+        /**
+         * @todo @author manoelcampos It is not computing the processing
+         * cost, that depends on cloudlet length and the
+         * CloudletScheduler that the VM will use to execute the cloudlet.
+         * Thus, it may be more complex to estimate that value.
+         */
+        
         // cloudlet cost: execution cost...
         // double cost = getProcessingCost();
         double cost = 0;
-        // ...plus input data transfer cost...
+        
+        // ... plus input data transfer cost...
         cost += getAccumulatedBwCost();
-        // ...plus output cost
+        
+        // ... plus output cost
         cost += getCostPerBw() * getCloudletOutputSize();
         return cost;
     }
@@ -1017,7 +1027,7 @@ public class CloudletSimple implements Cloudlet {
      * {@link Datacenter Datacenters}. Each time a cloudlet is run on a given Datacenter, the cloudlet's
      * execution history on each Datacenter is registered at {@link Cloudlet#resList}
      */
-    private static class Resource {
+    private static class DatacenterInfo {
         /**
          * Cloudlet's submission (arrival) time to a Datacenter.
          */
@@ -1047,11 +1057,11 @@ public class CloudletSimple implements Cloudlet {
         /**
          * a Datacenter id.
          */
-        public int resourceId = NOT_ASSIGNED;
+        public int datacenterId = NOT_ASSIGNED;
 
         /**
          * The Datacenter name.
          */
-        public String resourceName = "";
+        public String name = "";
     }
 }

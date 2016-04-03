@@ -295,4 +295,10 @@ public abstract class VmSchedulerAbstract implements VmScheduler {
         this.peMap = peMap;
     }
 
+    @Override
+    public boolean isSuitableForVm(Vm vm) {
+        return peList.stream().mapToDouble(pe -> pe.getMips()).sum() >=
+               vm.getCurrentRequestedMips().stream().reduce(0.0, Double::sum);
+    }
+
 }

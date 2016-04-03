@@ -15,6 +15,8 @@ import org.cloudbus.cloudsim.listeners.EventListener;
  * @author Manoel Campos da Silva Filho
  */
 public interface Cloudlet extends Identificable {
+  public static final String NO_HISTORY_IS_RECORDED_FOR_CLOUDLET = "No history is recorded for Cloudlet #%d";
+  
   /**
    * Status of Cloudlets
    */
@@ -100,13 +102,13 @@ public interface Cloudlet extends Identificable {
      * Gets the total execution time of this Cloudlet in a given Datacenter
      * ID.
      *
-     * @param resId the Datacenter entity ID
+     * @param datacenterId the Datacenter entity ID
      * @return the total execution time of this Cloudlet in the given Datacenter
      * or 0 if the Cloudlet was not executed there
      * @pre resId >= 0
      * @post $result >= 0.0
      */
-    double getActualCPUTime(final int resId);
+    double getActualCPUTime(final int datacenterId);
 
     /**
      * Returns the total execution time of the Cloudlet.
@@ -125,7 +127,7 @@ public interface Cloudlet extends Identificable {
      * @pre $none
      * @post $none
      */
-    Integer[] getAllResourceId();
+    Integer[] getDatacenterIdArray();
 
     /**
      * Gets the names of all Datacenters that executed this Cloudlet.
@@ -134,7 +136,7 @@ public interface Cloudlet extends Identificable {
      * @pre $none
      * @post $none
      */
-    String[] getAllResourceName();
+    String[] getNamesOfAllExecutedDatacenters();
 
     /**
      * Gets the classType or priority of this Cloudlet for scheduling on a Datacenter.
@@ -172,13 +174,13 @@ public interface Cloudlet extends Identificable {
      * Datacenter. This method is useful when trying to move this Cloudlet
      * into different CloudResources or to cancel it.
      *
-     * @param resId the Datacenter entity ID
+     * @param datacenterId the Datacenter entity ID
      * @return the length of a partially executed Cloudlet; the full Cloudlet
      * length if it is completed; or 0 if the Cloudlet has never been executed in the given Datacenter
      * @pre resId >= 0
      * @post $result >= 0.0
      */
-    long getCloudletFinishedSoFar(final int resId);
+    long getCloudletFinishedSoFar(final int datacenterId);
 
     /**
      * Gets the transaction history of this Cloudlet. The layout of this history
@@ -280,14 +282,14 @@ public interface Cloudlet extends Identificable {
     /**
      * Gets the cost running this Cloudlet in a given Datacenter ID.
      *
-     * @param resId the Datacenter entity ID
+     * @param datacenterId the Datacenter entity ID
      * @return the cost associated with running this Cloudlet in the given Datacenter
      * or 0 if the Cloudlet was not executed there
      * not found
-     * @pre resId >= 0
+     * @pre datacenterId >= 0
      * @post $result >= 0.0
      */
-    double getCostPerSec(final int resId);
+    double getCostPerSec(final int datacenterId);
 
     /**
      * Gets the latest execution start time of this Cloudlet. With new functionalities, such
@@ -333,7 +335,7 @@ public interface Cloudlet extends Identificable {
     int getNumberOfPes();
 
     /**
-     * Gets the total cost of processing or executing this Cloudlet
+     * Gets the total cost of processing or executing this Cloudlet.
      * <tt>Processing Cost = input data transfer + processing cost + output
      * transfer cost</tt> .
      *
@@ -369,17 +371,17 @@ public interface Cloudlet extends Identificable {
      * has not being processed yet.
      * @pre $none
      */
-    int getResourceId();
+    int getDatacenterId();
 
     /**
      * Gets the name of a Datacenter where the cloudlet has executed.
      *
-     * @param resId the Datacenter entity ID
+     * @param datacenterId the Datacenter entity ID
      * @return the Datacenter name or "" if the Cloudlet has never been executed in the given Datacenter
-     * @pre resId >= 0
+     * @pre datacenterId >= 0
      * @post $none
      */
-    String getResourceName(final int resId);
+    String getDatacenterName(final int datacenterId);
 
     /**
      * Gets the execution status of this Cloudlet.
@@ -405,12 +407,12 @@ public interface Cloudlet extends Identificable {
     /**
      * Gets the submission (arrival) time of this Cloudlet in the given Datacenter.
      *
-     * @param resId the Datacenter entity ID
+     * @param datacenterId the Datacenter entity ID
      * @return the submission time or 0 if the Cloudlet has never been executed in the given Datacenter
-     * @pre resId >= 0
+     * @pre datacenterId >= 0
      * @post $result >= 0.0
      */
-    double getSubmissionTime(final int resId);
+    double getSubmissionTime(final int datacenterId);
 
     /**
      * Gets the ID of the User or Broker that is the owner of the Cloudlet.
@@ -497,19 +499,19 @@ public interface Cloudlet extends Identificable {
      * @pre $none
      * @post $result >= 0.0
      */
-    double getWallClockTime();
+    double getWallClockTimeInLastExecutedDatacenter();
 
     /**
      * Gets the time of this Cloudlet resides in a given Datacenter (from
      * arrival time until departure time).
      *
-     * @param resId a Datacenter entity ID
+     * @param datacenterId a Datacenter entity ID
      * @return the time of this Cloudlet resides in the Datacenter
      * or 0 if the Cloudlet has never been executed there
-     * @pre resId >= 0
+     * @pre datacenterId >= 0
      * @post $result >= 0.0
      */
-    double getWallClockTime(final int resId);
+    double getWallClockTime(final int datacenterId);
 
     /**
      * Checks whether this Cloudlet is submitted by reserving or not.
@@ -588,9 +590,12 @@ public interface Cloudlet extends Identificable {
     boolean setCloudletStatus(final Status newStatus);
 
     /**
-     * Sets the Cloudlet's execution parameters. These parameters are set by the
-     * Datacenter before departure or sending back to the original Cloudlet's
-     * owner.
+     * Sets the wall clock time the cloudlet spent
+     * executing on the current Datacenter.
+     * The wall clock time is the total time the Cloudlet resides in a Datacenter 
+     * (from arrival time until departure time, that may include waiting time). 
+     * This value is set by the Datacenter before departure or sending back to 
+     * the original Cloudlet's owner.
      *
      * @param wallTime the time of this Cloudlet resides in a Datacenter
      * (from arrival time until departure time).
@@ -605,7 +610,7 @@ public interface Cloudlet extends Identificable {
      * @pre actualTime >= 0.0
      * @post $none
      */
-    boolean setExecParam(final double wallTime, final double actualTime);
+    boolean setWallClockTime(final double wallTime, final double actualTime);
 
     /**
      * Sets the {@link #getExecStartTime() latest execution start time} of this Cloudlet.
@@ -662,15 +667,14 @@ public interface Cloudlet extends Identificable {
      * NOTE: This method <tt>should</tt> be called only by a resource entity,
      * not the user or owner of this Cloudlet.
      *
-     * @param resourceID the id of Datacenter where the cloudlet will be executed
-     * @param cost the cost per second of running the cloudlet on the given Datacenter
+     * @param datacenterId the id of Datacenter where the cloudlet will be executed
+     * @param costPerCpuSec the cost per second of running the cloudlet on the given Datacenter
      *
      * @pre resourceID >= 0
      * @pre cost > 0.0
      * @post $none
-     * @todo the method may have a better name, such as assignCloudletToDatacenter
      */
-    void setResourceParameter(final int resourceID, final double cost);
+    void assignCloudletToDatacenter(final int datacenterId, final double costPerCpuSec);
 
     /**
      * Sets the parameters of the Datacenter where the Cloudlet is going to be
@@ -678,15 +682,16 @@ public interface Cloudlet extends Identificable {
      * NOTE: This method <tt>should</tt> be called only by a resource entity,
      * not the user or owner of this Cloudlet.
      *
-     * @param resourceID the id of Datacenter where the cloudlet will be executed
-     * @param costPerCPU the cost per second of running this Cloudlet on the Datacenter
-     * @param costPerBw the cost per byte of data transfer of the Datacenter
+     * @param datacenterId the id of Datacenter where the cloudlet will be executed
+     * @param costPerCpuSec the cost per second of running this Cloudlet on the Datacenter
+     * @param costPerByteOfBw the cost per byte of data transfer of the Datacenter
      *
      * @pre resourceID >= 0
      * @pre cost > 0.0
      * @post $none
      */
-    void setResourceParameter(final int resourceID, final double costPerCPU, final double costPerBw);
+    void assignCloudletToDatacenter(
+            final int datacenterId, final double costPerCpuSec, final double costPerByteOfBw);
 
     /**
      * Sets the submission (arrival) time of this Cloudlet into a CloudResource.
@@ -765,14 +770,14 @@ public interface Cloudlet extends Identificable {
       @Override public boolean addRequiredFile(String fileName) { return false; }
       @Override public boolean deleteRequiredFile(String filename) { return false; }
       @Override public double getAccumulatedBwCost() { return 0.0; }
-      @Override public double getActualCPUTime(int resId) { return 0.0; }
+      @Override public double getActualCPUTime(int datacenterId) { return 0.0; }
       @Override public double getActualCPUTime() { return 0.0; }
-      @Override public Integer[] getAllResourceId() { return emptyIntegerArray; }
-      @Override public String[] getAllResourceName() { return emptyStringArray; }
+      @Override public Integer[] getDatacenterIdArray() { return emptyIntegerArray; }
+      @Override public String[] getNamesOfAllExecutedDatacenters() { return emptyStringArray; }
       @Override public int getClassType() { return 0; }
       @Override public long getCloudletFileSize() { return 0L; }
       @Override public long getCloudletFinishedSoFar() { return 0L; }
-      @Override public long getCloudletFinishedSoFar(int resId) { return 0L; }
+      @Override public long getCloudletFinishedSoFar(int datacenterId) { return 0L; }
       @Override public String getCloudletHistory() { return ""; };
       @Override public int getId() { return 0; }
       @Override public long getCloudletLength() { return 0L; }
@@ -782,7 +787,7 @@ public interface Cloudlet extends Identificable {
       @Override public long getCloudletTotalLength() { return 0L; }
       @Override public double getCostPerBw(){ return 0.0; }
       @Override public double getCostPerSec(){ return 0.0; }
-      @Override public double getCostPerSec(int resId) { return 0.0; }
+      @Override public double getCostPerSec(int datacenterId) { return 0.0; }
       @Override public double getExecStartTime(){ return 0.0; }
       @Override public double getFinishTime(){ return 0.0; }
       @Override public int getNetServiceLevel(){ return 0; }
@@ -790,11 +795,11 @@ public interface Cloudlet extends Identificable {
       @Override public double getProcessingCost(){ return 0.0; }
       @Override public List<String> getRequiredFiles() { return Collections.emptyList();}
       @Override public int getReservationId() { return 0; }
-      @Override public int getResourceId() { return 0; }
-      @Override public String getResourceName(int resId) { return ""; }
+      @Override public int getDatacenterId() { return 0; }
+      @Override public String getDatacenterName(int datacenterId) { return ""; }
       @Override public Status getStatus() { return getCloudletStatus(); }
       @Override public double getSubmissionTime() { return 0.0; }
-      @Override public double getSubmissionTime(int resId) { return 0.0; }
+      @Override public double getSubmissionTime(int datacenterId) { return 0.0; }
       @Override public int getUserId() { return 0; }
       @Override public UtilizationModel getUtilizationModelBw() { return UtilizationModel.NULL; }
       @Override public UtilizationModel getUtilizationModelCpu() { return UtilizationModel.NULL; }
@@ -804,8 +809,8 @@ public interface Cloudlet extends Identificable {
       @Override public double getUtilizationOfRam(double time) { return 0.0; }
       @Override public int getVmId() { return 0; }
       @Override public double getWaitingTime() { return 0.0; }
-      @Override public double getWallClockTime() { return 0.0; }
-      @Override public double getWallClockTime(int resId) { return 0.0; }
+      @Override public double getWallClockTimeInLastExecutedDatacenter() { return 0.0; }
+      @Override public double getWallClockTime(int datacenterId) { return 0.0; }
       @Override public boolean hasReserved() { return false; }
       @Override public boolean isFinished() { return false; }
       @Override public boolean requiresFiles() { return false; }
@@ -813,13 +818,13 @@ public interface Cloudlet extends Identificable {
       @Override public boolean setCloudletFinishedSoFar(long length) { return false; }
       @Override public boolean setCloudletLength(long cloudletLength) { return false; }
       @Override public boolean setCloudletStatus(Status newStatus) { return false; }
-      @Override public boolean setExecParam(double wallTime, double actualTime) { return false; }
+      @Override public boolean setWallClockTime(double wallTime, double actualTime) { return false; }
       @Override public void setExecStartTime(double clockTime) {}
       @Override public boolean setNetServiceLevel(int netServiceLevel) { return false; }
       @Override public boolean setNumberOfPes(int numberOfPes) { return false; }
       @Override public boolean setReservationId(int reservationId) { return false; }
-      @Override public void setResourceParameter(int resourceID, double cost) {}
-      @Override public void setResourceParameter(int resourceID, double costPerCPU, double costPerBw) {}
+      @Override public void assignCloudletToDatacenter(int resourceID, double cost) {}
+      @Override public void assignCloudletToDatacenter(int resourceID, double costPerCPU, double costPerBw) {}
       @Override public boolean setSubmissionTime(double clockTime) { return false; }
       @Override public void setUserId(int userId) {}
       @Override public void setUtilizationModelBw(UtilizationModel utilizationModelBw) {}

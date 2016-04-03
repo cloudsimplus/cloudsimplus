@@ -245,7 +245,7 @@ public final class VmCreationFailureIntegrationTest {
         assertEquals(results.getExpectedFinishTime(), results.getCloudlet().getFinishTime(), 0.2);
         assertEquals(0, results.getCloudlet().getVmId(), 0);
         assertEquals("Cloudlet wasn't executed at the expected Datacenter",
-                2, results.getCloudlet().getResourceId(), 0);
+                2, results.getCloudlet().getDatacenterId(), 0);
         assertEquals(Cloudlet.Status.SUCCESS, results.getCloudlet().getStatus());
     }
 

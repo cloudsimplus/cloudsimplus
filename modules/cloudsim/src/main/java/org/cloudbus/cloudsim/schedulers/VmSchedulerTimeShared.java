@@ -33,7 +33,6 @@ import org.cloudbus.cloudsim.provisioners.PeProvisioner;
  * @since CloudSim Toolkit 1.0
  */
 public class VmSchedulerTimeShared extends VmSchedulerAbstract {
-
     /**
      * The map of requested mips, where each key is a VM and each value is a
      * list of MIPS requested by that VM.
@@ -100,8 +99,8 @@ public class VmSchedulerTimeShared extends VmSchedulerAbstract {
         setPesInUse(getPesInUse() + mipsShareRequested.size());
 
         if (getVmsMigratingIn().contains(vmUid)) {
-            // the destination host only experience 10% of the migrating VM's MIPS
-            totalRequestedMips *= 0.1;
+            // the destination host experience a percentage of CPU overhead due to migrating VM
+            totalRequestedMips *= getCpuOverheadDueToVmMigration();
         }
 
         List<Double> mipsShareAllocated = new ArrayList<>();
@@ -243,6 +242,11 @@ public class VmSchedulerTimeShared extends VmSchedulerAbstract {
      */
     protected final void setMipsMapRequested(Map<String, List<Double>> mipsMapRequested) {
         this.mipsMapRequested = mipsMapRequested;
+    }
+
+    @Override
+    public double getCpuOverheadDueToVmMigration() {
+        return 0.1;
     }
 
 }

@@ -352,7 +352,7 @@ public class ResCloudlet {
 	 * @post $none
 	 */
 	public void setExecParam(double wallClockTime, double actualCPUTime) {
-		cloudlet.setExecParam(wallClockTime, actualCPUTime);
+		cloudlet.setWallClockTime(wallClockTime, actualCPUTime);
 	}
 
 	/**
@@ -471,7 +471,7 @@ public class ResCloudlet {
 	public void finalizeCloudlet() {
 		// Sets the wall clock time and actual CPU time
 		double wallClockTime = CloudSim.clock() - arrivalTime;
-		cloudlet.setExecParam(wallClockTime, totalCompletionTime);
+		cloudlet.setWallClockTime(wallClockTime, totalCompletionTime);
 
 		long finished = 0;
 		//if (cloudlet.getCloudletTotalLength() * Consts.MILLION < cloudletFinishedSoFar) {

@@ -198,8 +198,8 @@ public class NetworkDatacenter extends DatacenterSimple {
                 return;
             }
 
-            // process this Cloudlet to this CloudResource
-            cl.setResourceParameter(getId(), getCharacteristics().getCostPerSecond(), getCharacteristics()
+            // process this Cloudlet to this Datacenter
+            cl.assignCloudletToDatacenter(getId(), getCharacteristics().getCostPerSecond(), getCharacteristics()
                     .getCostPerBw());
 
             int userId = cl.getUserId();

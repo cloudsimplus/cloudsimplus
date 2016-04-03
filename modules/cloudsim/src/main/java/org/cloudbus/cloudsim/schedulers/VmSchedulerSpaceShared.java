@@ -135,4 +135,9 @@ public class VmSchedulerSpaceShared extends VmSchedulerAbstract {
         return freePesList;
     }
 
+    @Override
+    public double getCpuOverheadDueToVmMigration() {
+        return 0;
+    }
+
 }

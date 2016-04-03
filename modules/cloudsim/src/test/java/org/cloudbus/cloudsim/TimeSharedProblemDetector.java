@@ -259,7 +259,7 @@ public class TimeSharedProblemDetector {
 			if (cloudlet.getCloudletStatus() == Cloudlet.Status.SUCCESS) {
 				Log.print("SUCCESS");
 
-				Log.printLine(indent + indent + cloudlet.getResourceId()
+				Log.printLine(indent + indent + cloudlet.getDatacenterId()
 						+ indent + indent + indent + cloudlet.getVmId()
 						+ indent + indent
 						+ dft.format(cloudlet.getActualCPUTime()) + indent

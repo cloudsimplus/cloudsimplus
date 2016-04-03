@@ -133,38 +133,47 @@ public class HostSimple implements Host {
 
     @Override
     public void addMigratingInVm(Vm vm) {
-        vm.setInMigration(true);
-
         if (!getVmsMigratingIn().contains(vm)) {
             if (!storage.isResourceAmountAvailable(vm.getSize())) {
-                Log.printConcatLine("[VmScheduler.addMigratingInVm] Allocation of VM #", vm.getId(), " to Host #",
-                        getId(), " failed by storage");
-                System.exit(0);
+                throw new RuntimeException(
+                    String.format(
+                        "[VmScheduler.addMigratingInVm] Allocation of VM #%d to Host #%d" +
+                    " failed by storage", vm.getId(), getId()));
             }
 
             if (!getRamProvisioner().allocateResourceForVm(vm, vm.getCurrentRequestedRam())) {
-                Log.printConcatLine("[VmScheduler.addMigratingInVm] Allocation of VM #", vm.getId(), " to Host #",
-                        getId(), " failed by RAM");
-                System.exit(0);
+                throw new RuntimeException(
+                    String.format(
+                        "[VmScheduler.addMigratingInVm] Allocation of VM #%d to Host #%d" +
+                        " failed by RAM", vm.getId(), getId()));
             }
 
             if (!getBwProvisioner().allocateResourceForVm(vm, vm.getCurrentRequestedBw())) {
-                Log.printLine("[VmScheduler.addMigratingInVm] Allocation of VM #" + vm.getId() + " to Host #"
-                        + getId() + " failed by BW");
-                System.exit(0);
+                throw new RuntimeException(
+                    String.format(
+                        "[VmScheduler.addMigratingInVm] Allocation of VM #%d to Host #%d" +
+                        " failed by BW", vm.getId(), getId()));
             }
 
+            if (!getVmScheduler().isSuitableForVm(vm)) {
+                throw new RuntimeException(
+                    String.format(
+                        "[VmScheduler.addMigratingInVm] Allocation of VM #%d to Host #%d" +
+                        " failed by MIPS", vm.getId(),  getId()));
+            }
+            
             getVmScheduler().getVmsMigratingIn().add(vm.getUid());
+            vm.setInMigration(true);
             if (!getVmScheduler().allocatePesForVm(vm, vm.getCurrentRequestedMips())) {
-                Log.printLine("[VmScheduler.addMigratingInVm] Allocation of VM #" + vm.getId() + " to Host #"
-                        + getId() + " failed by MIPS");
-                System.exit(0);
+                throw new RuntimeException(
+                    String.format(
+                        "[VmScheduler.addMigratingInVm] Allocation of VM #%d to Host #%d" +
+                        " failed by MIPS", vm.getId(),  getId()));
             }
-
+            
             getStorage().allocateResource(vm.getSize());
 
             getVmsMigratingIn().add(vm);
-            getVmList().add(vm);
             updateVmsProcessing(CloudSim.clock());
             vm.getHost().updateVmsProcessing(CloudSim.clock());
         }
@@ -491,5 +500,10 @@ public class HostSimple implements Host {
         }
 
         this.onUpdateVmsProcessingListener = onUpdateVmsProcessingListener;
+    }
+
+    @Override
+    public long getAvailableStorage() {
+        return getStorage().getAvailableResource();
     }
 }
