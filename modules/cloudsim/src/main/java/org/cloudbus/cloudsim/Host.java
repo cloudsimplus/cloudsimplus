@@ -9,14 +9,15 @@ import org.cloudbus.cloudsim.provisioners.ResourceProvisioner;
 
 /**
  * An interface to be implemented by each class that provides
- * Host features. The interface implements the Null Object Design
+ * Physical Machines (Hosts) features. 
+ * The interface implements the Null Object Design
  * Pattern in order to start avoiding {@link NullPointerException} 
  * when using the {@link Host#NULL} object instead
  * of attributing {@code null} to {@link Host} variables.
  * 
  * @author Manoel Campos da Silva Filho
  */
-public interface Host {
+public interface Host extends Identificable {
 
     /**
      * Adds a VM migrating into the current host.
@@ -63,6 +64,13 @@ public interface Host {
     double getAvailableMips();
 
     /**
+     * Gets the total free storage available at the host.
+     *
+     * @return the free storage
+     */
+    long getAvailableStorage();
+
+    /**
      * Gets the host bw capacity.
      *
      * @return the host bw capacity
@@ -84,13 +92,6 @@ public interface Host {
      * @return the data center of the host
      */
     Datacenter getDatacenter();
-
-    /**
-     * Gets the host id.
-     *
-     * @return the host id
-     */
-    int getId();
 
     /**
      * Returns the maximum available MIPS among all the PEs of the host.
@@ -190,10 +191,11 @@ public interface Host {
 
     /**
      * Gets the list of VMs migrating into this host.
-     *
+     * 
+     * @param <T> the generic type
      * @return the vms migrating in
      */
-    List<Vm> getVmsMigratingIn();
+    <T extends Vm> List<T> getVmsMigratingIn();
 
     /**
      * Checks if the host is working properly or has failed.
@@ -375,5 +377,6 @@ public interface Host {
         @Override public void vmDestroyAll() {}
         @Override public EventListener<Host, Double> getOnUpdateVmsProcessingListener() { return EventListener.NULL; }
         @Override public void setOnUpdateVmsProcessingListener(EventListener<Host, Double> onUpdateVmsProcessingListener) {}
+        @Override public long getAvailableStorage() { return 0L; }
     };
 }

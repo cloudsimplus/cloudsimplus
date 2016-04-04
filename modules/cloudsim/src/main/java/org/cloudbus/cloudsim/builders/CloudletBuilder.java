@@ -20,6 +20,11 @@ public class CloudletBuilder extends Builder {
     private long outputSize = 300;
     private long fileSize = 300;
     private int  pes = 1;
+    /**
+     * The id of the VM to be binded to created cloudlets.
+     * If the value is equals to -1, none VMs will be binded to the cloudlets.
+     */
+    private int  vmId = -1;
     private UtilizationModel utilizationModelRam;
     private UtilizationModel utilizationModelCpu;
     private UtilizationModel utilizationModelBw;
@@ -61,6 +66,11 @@ public class CloudletBuilder extends Builder {
         }
         return this;
     }
+    
+    public CloudletBuilder setVmId(int defaultVmId) {
+        this.vmId = defaultVmId;
+        return this;
+    }
 
     public CloudletBuilder setFileSize(long defaultFileSize) {
         this.fileSize = defaultFileSize;
@@ -90,7 +100,7 @@ public class CloudletBuilder extends Builder {
 
     public Cloudlet getCloudletById(final int id) {
         for (Cloudlet cloudlet : broker.getCloudletList()) {
-            if (cloudlet.getCloudletId() == id) {
+            if (cloudlet.getId() == id) {
                 return cloudlet;
             }
         }
@@ -118,9 +128,10 @@ public class CloudletBuilder extends Builder {
     public CloudletBuilder createAndSubmitCloudlets(final int amount) {
         List<Cloudlet> localList = new ArrayList<>();
         for (int i = 0; i < amount; i++) {
+            final int cloudletId = numberOfCreatedCloudlets++;
             Cloudlet cloudlet =
                     new CloudletSimple(
-                            numberOfCreatedCloudlets++, length, 
+                            cloudletId, length, 
                             pes, fileSize, 
                             outputSize, 
                             utilizationModelCpu, utilizationModelRam, utilizationModelBw);
@@ -129,6 +140,9 @@ public class CloudletBuilder extends Builder {
             localList.add(cloudlet);
         }
         broker.submitCloudletList(localList);
+        if(vmId != -1){
+            localList.forEach(c -> broker.bindCloudletToVm(c.getId(), vmId));
+        }
         cloudlets.addAll(localList);
         return this;
     }

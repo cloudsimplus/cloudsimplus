@@ -228,7 +228,7 @@ public class ResCloudlet {
 	 * @post $none
 	 */
 	public int getCloudletId() {
-		return cloudlet.getCloudletId();
+		return cloudlet.getId();
 	}
 
 	/**
@@ -352,7 +352,7 @@ public class ResCloudlet {
 	 * @post $none
 	 */
 	public void setExecParam(double wallClockTime, double actualCPUTime) {
-		cloudlet.setExecParam(wallClockTime, actualCPUTime);
+		cloudlet.setWallClockTime(wallClockTime, actualCPUTime);
 	}
 
 	/**
@@ -446,6 +446,14 @@ public class ResCloudlet {
 
 		return (long) Math.floor(length / Consts.MILLION);
 	}
+        
+        /**
+         * Indicates if the cloudlet has finished executing.
+         * @return true if the cloudlet has finished, false otherwise.
+         */
+        public boolean isFinished(){
+            return getRemainingCloudletLength() == 0;
+        }
 
 	/**
 	 * Finalizes all relevant information before <tt>exiting</tt> the Datacenter entity. This
@@ -463,7 +471,7 @@ public class ResCloudlet {
 	public void finalizeCloudlet() {
 		// Sets the wall clock time and actual CPU time
 		double wallClockTime = CloudSim.clock() - arrivalTime;
-		cloudlet.setExecParam(wallClockTime, totalCompletionTime);
+		cloudlet.setWallClockTime(wallClockTime, totalCompletionTime);
 
 		long finished = 0;
 		//if (cloudlet.getCloudletTotalLength() * Consts.MILLION < cloudletFinishedSoFar) {

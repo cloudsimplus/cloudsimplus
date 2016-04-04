@@ -49,9 +49,9 @@ public class RootSwitch extends Switch {
 		downlinkswitchpktlist = new HashMap<Integer, List<NetworkPacket>>();
 		downlinkswitches = new ArrayList<Switch>();
 
-		downlinkbandwidth = NetworkConstants.BandWidthAggRoot;
-		latency = NetworkConstants.SwitchingDelayRoot;
-		numport = NetworkConstants.RootSwitchPort;
+		downlinkbandwidth = NetworkConstants.RootSwitchDownlinkBW;
+		latency = NetworkConstants.RootSwitchDelay;
+		numport = NetworkConstants.RootSwitchPorts;
 	}
 
 	@Override
@@ -67,7 +67,7 @@ public class RootSwitch extends Switch {
 		CloudSim.cancelAll(getId(), new PredicateType(CloudSimTags.Network_Event_send));
 		schedule(getId(), switching_delay, CloudSimTags.Network_Event_send);
 
-		if (level == NetworkConstants.ROOT_LEVEL) {
+		if (level == NetworkConstants.ROOT_SWITCHES_NUMBER) {
 			// get id of edge router
 			int edgeswitchid = dc.VmToSwitchid.get(recvVMid);
 			// search which aggregate switch has it

@@ -16,7 +16,7 @@ import org.cloudbus.cloudsim.core.CloudSim;
 /**
  * An abstract class that represents the policy
  * used by a {@link Datacenter} to choose a {@link Host} to place or migrate
- * a given {@link Vm}. It supports two-stage commit of reservation of
+ * or migrate a given {@link Vm}. It supports two-stage commit of reservation of
  * hosts: first, we reserve the host and, once committed by the user, it is
  * effectively allocated to he/she.<p/>
  *
@@ -61,13 +61,6 @@ public abstract class VmAllocationPolicyAbstract implements VmAllocationPolicy {
         this.hostList = hostList;
     }
 
-    /**
-     * Gets the list of Hosts available in a {@link Datacenter}, that will be
-     * used by the Allocation Policy to place VMs.
-     *
-     * @param <T> The generic type
-     * @return the host list
-     */
     @Override
     public <T extends Host> List<T> getHostList() {
         return (List<T>) hostList;

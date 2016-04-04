@@ -16,7 +16,7 @@ import org.cloudbus.cloudsim.resources.Resource;
  *
  * @author Manoel Campos da Silva Filho
  */
-public interface Vm {
+public interface Vm extends Identificable {
 
     /**
      * Adds a VM state history entry.
@@ -58,7 +58,6 @@ public interface Vm {
      * allocated for VM's Cloudlets.
      *
      * @return the current allocated MIPS
-     * @TODO The method doesn't appear to be used.
      */
     List<Double> getCurrentAllocatedMips();
 
@@ -74,7 +73,6 @@ public interface Vm {
      *
      * @return the current allocated size
      * @see #getSize()
-     * @todo It has never been used.
      */
     long getCurrentAllocatedSize();
 
@@ -121,13 +119,6 @@ public interface Vm {
      * @return the host
      */
     Host getHost();
-
-    /**
-     * Gets the VM id.
-     *
-     * @return the VM id
-     */
-    int getId();
 
     /**
      * Gets unique string identifier of the VM.
@@ -208,11 +199,6 @@ public interface Vm {
     /**
      * Gets the history of MIPS capacity allocated to the VM.
      *
-     * @todo Instead of using a list, this attribute would be a map, where the
-     * key can be the history time and the value the history itself. By this
-     * way, if one wants to get the history for a given time, he/she doesn't
-     * have to iterate over the entire list to find the desired entry.
-     *
      * @return the state history
      */
     List<VmStateHistoryEntry> getStateHistory();
@@ -234,15 +220,6 @@ public interface Vm {
      * @return total cpu utilization in MIPS
      * @see #getTotalUtilizationOfCpu(double)
      *
-     * @todo @author manoelcampos Lets consider the UtilizationModelFull for CPU
-     * which defines that a cloudlet will use the entire CPU allocated to it all
-     * the time, for all of its PEs. So, lets say that the Vm has 2 PEs of
-     * 1000 MIPS, that represents a total of 2000 MIPS capacity. and there is a
-     * Cloudlet that is using all these 2 PEs capacity. I think this method is
-     * supposed to return 2000, indicating that the entire VM MIPS capacity is
-     * being used. However, it will return only 1000. It has to be included some
-     * test cases do try figure out if the method is returning what it is
-     * supposed to return or not.
      */
     double getTotalUtilizationOfCpuMips(double time);
 
@@ -308,7 +285,6 @@ public interface Vm {
      * Sets the current allocated MIPS for each VM's PE.
      *
      * @param currentAllocatedMips the new current allocated mips
-     * @todo The method doesn't appear to be used.
      */
     void setCurrentAllocatedMips(List<Double> currentAllocatedMips);
 

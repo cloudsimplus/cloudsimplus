@@ -48,10 +48,10 @@ public class AggregateSwitch extends Switch {
 		super(name, level, dc);
 		downlinkswitchpktlist = new HashMap<Integer, List<NetworkPacket>>();
 		uplinkswitchpktlist = new HashMap<Integer, List<NetworkPacket>>();
-		uplinkbandwidth = NetworkConstants.BandWidthAggRoot;
-		downlinkbandwidth = NetworkConstants.BandWidthEdgeAgg;
-		latency = NetworkConstants.SwitchingDelayAgg;
-		numport = NetworkConstants.AggSwitchPort;
+		uplinkbandwidth = NetworkConstants.RootSwitchDownlinkBW;
+		downlinkbandwidth = NetworkConstants.AggregationSwitchDownlinkBW;
+		latency = NetworkConstants.AggregationSwitchDelay;
+		numport = NetworkConstants.AggregationSwitchPorts;
 		uplinkswitches = new ArrayList<Switch>();
 		downlinkswitches = new ArrayList<Switch>();
 	}
@@ -68,7 +68,7 @@ public class AggregateSwitch extends Switch {
 		CloudSim.cancelAll(getId(), new PredicateType(CloudSimTags.Network_Event_send));
 		schedule(getId(), latency, CloudSimTags.Network_Event_send);
 
-		if (level == NetworkConstants.Agg_LEVEL) {
+		if (level == NetworkConstants.AGGREGATION_SWITCHES_NUMBER) {
 			// packet is coming from root so need to be sent to edgelevel swich
 			// find the id for edgelevel switch
 			int switchid = dc.VmToSwitchid.get(recvVMid);
@@ -96,7 +96,7 @@ public class AggregateSwitch extends Switch {
 		CloudSim.cancelAll(getId(), new PredicateType(CloudSimTags.Network_Event_send));
 		schedule(getId(), switching_delay, CloudSimTags.Network_Event_send);
 
-		if (level == NetworkConstants.Agg_LEVEL) {
+		if (level == NetworkConstants.AGGREGATION_SWITCHES_NUMBER) {
 			// packet is coming from edge level router so need to be sent to
 			// either root or another edge level swich
 			// find the id for edgelevel switch

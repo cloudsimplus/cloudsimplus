@@ -184,17 +184,6 @@ public class VmSimple implements Vm {
         resources.put(RawStorage.class, storage);
     }
 
-    /**
-     * Updates the processing of cloudlets running on this VM.
-     *
-     * @param currentTime current simulation time
-     * @param mipsShare list with MIPS share of each Pe available to the
-     * scheduler
-     * @return time predicted completion time of the earliest finishing
-     * cloudlet, or 0 if there is no next events
-     * @pre currentTime >= 0
-     * @post $none
-     */
     @Override
     public double updateVmProcessing(double currentTime, List<Double> mipsShare) {
         if (mipsShare != null) {
@@ -205,11 +194,6 @@ public class VmSimple implements Vm {
         return 0.0;
     }
 
-    /**
-     * Gets the current requested mips.
-     *
-     * @return the current requested mips
-     */
     @Override
     public List<Double> getCurrentRequestedMips() {
         List<Double> currentRequestedMips = getCloudletScheduler().getCurrentRequestedMips();
@@ -222,27 +206,11 @@ public class VmSimple implements Vm {
         return currentRequestedMips;
     }
 
-    /**
-     * Gets the current requested total mips. It is the sum of MIPS capacity
-     * requested for every VM's Pe.
-     *
-     * @return the current requested total mips
-     * @see #getCurrentRequestedMips()
-     */
     @Override
     public double getCurrentRequestedTotalMips() {
-        double totalRequestedMips = 0;
-        for (double mips : getCurrentRequestedMips()) {
-            totalRequestedMips += mips;
-        }
-        return totalRequestedMips;
+        return getCurrentRequestedMips().stream().reduce(0.0, Double::sum);
     }
 
-    /**
-     * Gets the current requested max mips among all virtual PEs.
-     *
-     * @return the current requested max mips
-     */
     @Override
     public double getCurrentRequestedMaxMips() {
         double maxMips = 0;
@@ -254,11 +222,6 @@ public class VmSimple implements Vm {
         return maxMips;
     }
 
-    /**
-     * Gets the current requested bw.
-     *
-     * @return the current requested bw
-     */
     @Override
     public long getCurrentRequestedBw() {
         if (isBeingInstantiated()) {
@@ -267,11 +230,6 @@ public class VmSimple implements Vm {
         return (long) (getCloudletScheduler().getCurrentRequestedUtilizationOfBw() * getBw());
     }
 
-    /**
-     * Gets the current requested ram.
-     *
-     * @return the current requested ram
-     */
     @Override
     public int getCurrentRequestedRam() {
         if (isBeingInstantiated()) {
@@ -280,13 +238,6 @@ public class VmSimple implements Vm {
         return (int) (getCloudletScheduler().getCurrentRequestedUtilizationOfRam() * getRam());
     }
 
-    /**
-     * Gets total CPU utilization percentage of all clouddlets running on this
-     * VM at the given time
-     *
-     * @param time the time
-     * @return total utilization percentage
-     */
     @Override
     public double getTotalUtilizationOfCpu(double time) {
         return getCloudletScheduler().getTotalUtilizationOfCpu(time);
@@ -315,21 +266,11 @@ public class VmSimple implements Vm {
         return getTotalUtilizationOfCpu(time) * getMips();
     }
 
-    /**
-     * Sets the uid.
-     *
-     * @param uid the new uid
-     */
     @Override
     public final void setUid(String uid) {
         this.uid = uid;
     }
 
-    /**
-     * Gets unique string identifier of the VM.
-     *
-     * @return string uid
-     */
     @Override
     public String getUid() {
         return uid;
@@ -346,11 +287,6 @@ public class VmSimple implements Vm {
         return userId + "-" + vmId;
     }
 
-    /**
-     * Gets the VM id.
-     *
-     * @return the VM id
-     */
     @Override
     public int getId() {
         return id;
@@ -376,24 +312,11 @@ public class VmSimple implements Vm {
         this.userId = userId;
     }
 
-    /**
-     * Gets the ID of the owner of the VM.
-     *
-     * @return VM's owner ID
-     * @pre $none
-     * @post $none
-     */
     @Override
     public int getUserId() {
         return userId;
     }
 
-    /**
-     * Gets the individual MIPS capacity of any VM's PE, considering that all
-     * PEs have the same capacity.
-     *
-     * @return the mips
-     */
     @Override
     public double getMips() {
         return mips;
@@ -409,13 +332,6 @@ public class VmSimple implements Vm {
         this.mips = mips;
     }
 
-    /**
-     * Gets the number of PEs required by the VM. Each PE has the capacity
-     * defined in {@link #getMips()}
-     *
-     * @return the number of PEs
-     * @see #getMips()
-     */
     @Override
     public int getNumberOfPes() {
         return numberOfPes;
@@ -430,93 +346,36 @@ public class VmSimple implements Vm {
         this.numberOfPes = numberOfPes;
     }
 
-    /**
-     * Gets the RAM capacity.
-     *
-     * @return the RAM capacity
-     * @pre $none
-     * @post $none
-     */
     @Override
     public int getRam() {
         return ram.getCapacity();
     }
 
-    /**
-     * Sets RAM capacity.
-     *
-     * @param ramCapacity new RAM capacity
-     * @return true if ramCapacity > 0 and ramCapacity >= current allocated
-     * resource, false otherwise
-     * @pre ram > 0
-     * @post $none
-     */
     @Override
     public final boolean setRam(int ramCapacity) {
         return ram.setCapacity(ramCapacity);
     }
 
-    /**
-     * Gets bandwidth capacity.
-     *
-     * @return bandwidth capacity.
-     * @pre $none
-     * @post $none
-     */
     @Override
     public long getBw() {
         return bw.getCapacity();
     }
 
-    /**
-     * Sets the BW capacity
-     *
-     * @param bwCapacity new BW capacity
-     * @return true if bwCapacity > 0 and bwCapacity >= current allocated
-     * resource, false otherwise
-     * @pre bwCapacity > 0
-     * @post $none
-     */
     @Override
     public final boolean setBw(long bwCapacity) {
         return bw.setCapacity(bwCapacity);
     }
 
-    /**
-     * Gets the storage size (capacity) of the VM image (the amount of storage
-     * it will use, at least initially).
-     *
-     * @return amount of storage
-     * @pre $none
-     * @post $none
-     */
     @Override
     public long getSize() {
         return storage.getCapacity();
     }
 
-    /**
-     * Sets the storage size (capacity) of the VM image.
-     *
-     * @param size new storage size
-     * @return true if size > 0 and size >= current allocated resource, false
-     * otherwise
-     * @pre size > 0
-     * @post $none
-     *
-     */
     @Override
     public final boolean setSize(long size) {
         return this.storage.setCapacity(size);
     }
 
-    /**
-     * Gets the Virtual Machine Monitor (VMM) that manages the VM.
-     *
-     * @return VMM
-     * @pre $none
-     * @post $none
-     */
     @Override
     public String getVmm() {
         return vmm;
@@ -531,34 +390,16 @@ public class VmSimple implements Vm {
         this.vmm = vmm;
     }
 
-    /**
-     * Sets the PM that hosts the VM.
-     *
-     * @param host Host to run the VM
-     * @pre host != $null
-     * @post $none
-     */
     @Override
     public void setHost(Host host) {
         this.host = host;
     }
 
-    /**
-     * Gets the PM that hosts the VM.
-     *
-     * @return the host
-     */
     @Override
     public Host getHost() {
         return host;
     }
 
-    /**
-     * Gets the the Cloudlet scheduler the VM uses to schedule cloudlets
-     * execution.
-     *
-     * @return the cloudlet scheduler
-     */
     @Override
     public CloudletScheduler getCloudletScheduler() {
         return cloudletScheduler;
@@ -573,22 +414,11 @@ public class VmSimple implements Vm {
         this.cloudletScheduler = cloudletScheduler;
     }
 
-    /**
-     * Checks if the VM is in migration process.
-     *
-     * @return true, if it is in migration
-     */
     @Override
     public boolean isInMigration() {
         return inMigration;
     }
 
-    /**
-     * Defines if the VM is in migration process.
-     *
-     * @param inMigration true to indicate the VM is in migration, false
-     * otherwise
-     */
     @Override
     public final void setInMigration(boolean inMigration) {
         this.inMigration = inMigration;
@@ -616,41 +446,21 @@ public class VmSimple implements Vm {
         storage.setAllocatedResource(currentAllocatedSize);
     }
 
-    /**
-     * Gets the current allocated ram.
-     *
-     * @return the current allocated ram
-     */
     @Override
     public int getCurrentAllocatedRam() {
         return ram.getAllocatedResource();
     }
 
-    /**
-     * Sets the current allocated ram.
-     *
-     * @param newTotalAllocateddRam the new total allocated ram
-     */
     @Override
     public final void setCurrentAllocatedRam(int newTotalAllocateddRam) {
         ram.setAllocatedResource(newTotalAllocateddRam);
     }
 
-    /**
-     * Gets the current allocated bw.
-     *
-     * @return the current allocated bw
-     */
     @Override
     public long getCurrentAllocatedBw() {
         return bw.getAllocatedResource();
     }
 
-    /**
-     * Sets the current allocated bw.
-     *
-     * @param newTotalAllocateddBw the new total allocated bw
-     */
     @Override
     public final void setCurrentAllocatedBw(long newTotalAllocateddBw) {
         bw.setAllocatedResource(newTotalAllocateddBw);
@@ -680,22 +490,11 @@ public class VmSimple implements Vm {
         this.currentAllocatedMips = currentAllocatedMips;
     }
 
-    /**
-     * Checks if the VM is being instantiated.
-     *
-     * @return true, if is being instantiated; false otherwise
-     */
     @Override
     public boolean isBeingInstantiated() {
         return beingInstantiated;
     }
 
-    /**
-     * Indicates if the VM is being instantiated.
-     *
-     * @param beingInstantiated true to indicate the VM is being instantiated;
-     * false otherwise
-     */
     @Override
     public final void setBeingInstantiated(boolean beingInstantiated) {
         this.beingInstantiated = beingInstantiated;
@@ -716,14 +515,6 @@ public class VmSimple implements Vm {
         return stateHistory;
     }
 
-    /**
-     * Adds a VM state history entry.
-     *
-     * @param time the time
-     * @param allocatedMips the allocated mips
-     * @param requestedMips the requested mips
-     * @param isInMigration the is in migration
-     */
     @Override
     public void addStateHistoryEntry(
             double time,
@@ -761,13 +552,6 @@ public class VmSimple implements Vm {
         return (Resource<T>) resources.get(resourceClass);
     }
 
-    /**
-     * Sets the listener object that will be notified when a {@link Host} is
-     * allocated to the Vm, that is, when the Vm is placed into a given Host.
-     * The listener receives the placed Vm and the Host where it is placed.
-     *
-     * @param onHostAllocationListener the onHostAllocationListener to set
-     */
     @Override
     public void setOnHostAllocationListener(EventListener<Vm, Host> onHostAllocationListener) {
         if (onHostAllocationListener == null)
@@ -776,14 +560,6 @@ public class VmSimple implements Vm {
         this.onHostAllocationListener = onHostAllocationListener;
     }
 
-    /**
-     * Sets the listener object that will be notified when a {@link Host} is
-     * deallocated to the Vm, that is, when the Vm is moved/removed from the
-     * Host is was placed. The listener receives the moved/removed Vm and the
-     * Host where it was placed.
-     *
-     * @param onHostDeallocationListener the onHostDeallocationListener to set
-     */
     @Override
     public void setOnHostDeallocationListener(EventListener<Vm, Host> onHostDeallocationListener) {
         if (onHostDeallocationListener == null)
@@ -792,26 +568,11 @@ public class VmSimple implements Vm {
         this.onHostDeallocationListener = onHostDeallocationListener;
     }
 
-    /**
-     * Gets the listener object that will be notified when a {@link Host} is
-     * allocated to the Vm, that is, when the Vm is placed into a given Host.
-     * The listener receives the placed Vm and the Host where it is placed.
-     *
-     * @return the onHostAllocationListener
-     */
     @Override
     public EventListener<Vm, Host> getOnHostAllocationListener() {
         return onHostAllocationListener;
     }
 
-    /**
-     * Gets the listener object that will be notified when a {@link Host} is
-     * deallocated to the Vm, that is, when the Vm is moved/removed from the
-     * Host is was placed. The listener receives the moved/removed Vm and the
-     * Host where it was placed.
-     *
-     * @return the onHostDeallocationListener
-     */
     @Override
     public EventListener<Vm, Host> getOnHostDeallocationListener() {
         return onHostDeallocationListener;
@@ -822,27 +583,11 @@ public class VmSimple implements Vm {
         return this.uid;
     }
 
-    /**
-     * Gets the listener object that will be notified when a Vm fail in being
-     * placed for lack of a {@link Host} in the {@link Datacenter} with enough
-     * resources. The listener receives the Vm and the datacenter
-     * where it was tried to place the Vm.
-     *
-     * @return the onVmCreationFailureListener
-     */
     @Override
     public EventListener<Vm, Datacenter> getOnVmCreationFailureListener() {
         return onVmCreationFailureListener;
     }
 
-    /**
-     * Sets the listener object that will be notified when a Vm fail in being
-     * placed for lack of a {@link Host} in the {@link Datacenter} with enough
-     * resources. The listener receives the Vm and the datacenter
-     * where it was tried to place the Vm.
-     *
-     * @param onVmCreationFailureListener the onVmCreationFailureListener to set
-     */
     @Override
     public void setOnVmCreationFailureListener(EventListener<Vm, Datacenter> onVmCreationFailureListener) {
         if (onVmCreationFailureListener == null) 
@@ -863,5 +608,4 @@ public class VmSimple implements Vm {
         
         this.onUpdateVmProcessingListener = onUpdateVmProcessingListener;
     }
-
 }

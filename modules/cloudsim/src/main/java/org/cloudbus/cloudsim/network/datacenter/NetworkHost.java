@@ -60,7 +60,7 @@ public class NetworkHost extends HostSimple {
         /** 
          * Edge switch in which the Host is connected. 
          */
-	public Switch sw; 
+	private Switch netSwitch; 
 
         /**
          * @todo What exactly is this bandwidth?
@@ -189,9 +189,9 @@ public class NetworkHost extends HostSimple {
 		double avband = bandwidth / packetTosendGlobal.size();
 		for (NetworkPacket hs : packetTosendGlobal) {
                     double delay = (1000 * hs.pkt.data) / avband;
-                    NetworkConstants.totaldatatransfer += hs.pkt.data;
+                    NetworkConstants.totalDataTransfer += hs.pkt.data;
 
-                    CloudSim.send(getDatacenter().getId(), sw.getId(), delay, CloudSimTags.Network_Event_UP, hs);
+                    CloudSim.send(getDatacenter().getId(), getSwitch().getId(), delay, CloudSimTags.Network_Event_UP, hs);
                     // send to switch with delay
 		}
 		packetTosendGlobal.clear();
@@ -205,5 +205,13 @@ public class NetworkHost extends HostSimple {
 	public double getMaxUtilizationAmongVmsPes(Vm vm) {
 		return PeList.getMaxUtilizationAmongVmsPes(getPeList(), vm);
 	}
+
+    public Switch getSwitch() {
+        return netSwitch;
+    }
+
+    public void setSwitch(Switch sw) {
+        this.netSwitch = sw;
+    }
 
 }

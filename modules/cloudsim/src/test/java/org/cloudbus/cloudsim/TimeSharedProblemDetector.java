@@ -254,12 +254,12 @@ public class TimeSharedProblemDetector {
 		DecimalFormat dft = new DecimalFormat("###.##");
 		for (int i = 0; i < size; i++) {
 			cloudlet = list.get(i);
-			Log.print(indent + cloudlet.getCloudletId() + indent + indent);
+			Log.print(indent + cloudlet.getId() + indent + indent);
 
 			if (cloudlet.getCloudletStatus() == Cloudlet.Status.SUCCESS) {
 				Log.print("SUCCESS");
 
-				Log.printLine(indent + indent + cloudlet.getResourceId()
+				Log.printLine(indent + indent + cloudlet.getDatacenterId()
 						+ indent + indent + indent + cloudlet.getVmId()
 						+ indent + indent
 						+ dft.format(cloudlet.getActualCPUTime()) + indent

@@ -52,10 +52,10 @@ public class EdgeSwitch extends Switch {
 		hostlist = new HashMap<Integer, NetworkHost>();
 		uplinkswitchpktlist = new HashMap<Integer, List<NetworkPacket>>();
 		packetTohost = new HashMap<Integer, List<NetworkPacket>>();
-		uplinkbandwidth = NetworkConstants.BandWidthEdgeAgg;
-		downlinkbandwidth = NetworkConstants.BandWidthEdgeHost;
-		switching_delay = NetworkConstants.SwitchingDelayEdge;
-		numport = NetworkConstants.EdgeSwitchPort;
+		uplinkbandwidth = NetworkConstants.AggregationSwitchDownlinkBW;
+		downlinkbandwidth = NetworkConstants.EdgeSwitchDownlinkBW;
+		switching_delay = NetworkConstants.EdgeSwitchDelay;
+		numport = NetworkConstants.EdgeSwitchPorts;
 		uplinkswitches = new ArrayList<Switch>();
 	}
 

@@ -333,7 +333,7 @@ public class DatacenterBrokerSimple extends SimEntity implements DatacenterBroke
                 VmList.getById(vmList, cloudlet.getVmId()));
         Log.printConcatLine(
                 CloudSim.clock(), ": ", getName(), ": Cloudlet ", 
-                cloudlet.getCloudletId(), " received");
+                cloudlet.getId(), " received");
         cloudletsSubmitted--;
         if (getCloudletList().isEmpty() && cloudletsSubmitted == 0) { // all cloudlets executed
             Log.printConcatLine(CloudSim.clock(), ": ", getName(), ": All Cloudlets executed. Finishing...");
@@ -418,7 +418,7 @@ public class DatacenterBrokerSimple extends SimEntity implements DatacenterBroke
                 if (vm == null) { // vm was not created
                     if (!Log.isDisabled()) {
                         Log.printConcatLine(CloudSim.clock(), ": ", getName(), ": Postponing execution of cloudlet ",
-                                cloudlet.getCloudletId(), ": bount VM not available");
+                                cloudlet.getId(), ": bount VM not available");
                     }
                     continue;
                 }
@@ -426,7 +426,7 @@ public class DatacenterBrokerSimple extends SimEntity implements DatacenterBroke
 
             if (!Log.isDisabled()) {
                 Log.printConcatLine(CloudSim.clock(), ": ", getName(), ": Sending cloudlet ",
-                        cloudlet.getCloudletId(), " to VM #", vm.getId());
+                        cloudlet.getId(), " to VM #", vm.getId());
             }
 
             cloudlet.setVmId(vm.getId());

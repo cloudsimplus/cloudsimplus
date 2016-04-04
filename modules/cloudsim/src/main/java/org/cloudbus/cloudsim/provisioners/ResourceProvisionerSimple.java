@@ -10,7 +10,6 @@ package org.cloudbus.cloudsim.provisioners;
 
 import org.cloudbus.cloudsim.util.Calculator;
 import org.cloudbus.cloudsim.Vm;
-import org.cloudbus.cloudsim.Vm;
 import org.cloudbus.cloudsim.resources.Resource;
 
 /**

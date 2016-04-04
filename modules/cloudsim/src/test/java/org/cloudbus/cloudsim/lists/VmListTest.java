@@ -16,9 +16,15 @@ import java.util.List;
 import org.cloudbus.cloudsim.Vm;
 
 import org.cloudbus.cloudsim.VmSimple;
-import org.cloudbus.cloudsim.VmTest;
+import org.cloudbus.cloudsim.VmSimpleTest;
 import org.junit.Before;
 import org.junit.Test;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertSame;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertSame;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertSame;
 
 /**
  * @author		Anton Beloglazov
@@ -39,9 +45,9 @@ public class VmListTest {
         assertNull(VmList.getById(vmList, 1));
         assertNull(VmList.getById(vmList, 2));
 
-        Vm vm1 = VmTest.createVmWithSpecificNumberOfPEs(0, 1);
-        Vm vm2 = VmTest.createVmWithSpecificNumberOfPEs(1, 2);
-        VmSimple vm3 = VmTest.createVmWithSpecificNumberOfPEs(2, 2);
+        Vm vm1 = VmSimpleTest.createVmWithSpecificNumberOfPEs(0, 1);
+        Vm vm2 = VmSimpleTest.createVmWithSpecificNumberOfPEs(1, 2);
+        VmSimple vm3 = VmSimpleTest.createVmWithSpecificNumberOfPEs(2, 2);
 
         vmList.add(vm1);
         vmList.add(vm2);
@@ -60,12 +66,12 @@ public class VmListTest {
         assertNull(VmList.getByIdAndUserId(vmList, 1, 1));
 
         final int user0 = 0;
-        VmSimple vm1 = VmTest.createVmWithSpecificNumberOfPEs(user0, 1);
-        VmSimple vm2 = VmTest.createVmWithSpecificNumberOfPEsForSpecificUser(1, user0, 1);
+        VmSimple vm1 = VmSimpleTest.createVmWithSpecificNumberOfPEs(user0, 1);
+        VmSimple vm2 = VmSimpleTest.createVmWithSpecificNumberOfPEsForSpecificUser(1, user0, 1);
         
         int user1 = 1;
-        VmSimple vm3 = VmTest.createVmWithSpecificNumberOfPEsForSpecificUser(0, user1, 1);
-        VmSimple vm4 = VmTest.createVmWithSpecificNumberOfPEsForSpecificUser(1, user1, 2);
+        VmSimple vm3 = VmSimpleTest.createVmWithSpecificNumberOfPEsForSpecificUser(0, user1, 1);
+        VmSimple vm4 = VmSimpleTest.createVmWithSpecificNumberOfPEsForSpecificUser(1, user1, 2);
 
         vmList.add(vm1);
         vmList.add(vm2);

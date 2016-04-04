@@ -7,9 +7,11 @@
 package org.cloudbus.cloudsim.schedulers;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.OptionalDouble;
 import org.cloudbus.cloudsim.Log;
 import org.cloudbus.cloudsim.resources.Pe;
 import org.cloudbus.cloudsim.Vm;
@@ -96,9 +98,7 @@ public abstract class VmSchedulerAbstract implements VmScheduler {
     public void deallocatePesForAllVms() {
         getMipsMap().clear();
         setAvailableMips(PeList.getTotalMips(getPeList()));
-        for (Pe pe : getPeList()) {
-            pe.getPeProvisioner().deallocateMipsForAllVms();
-        }
+        getPeList().forEach(pe -> pe.getPeProvisioner().deallocateMipsForAllVms());
     }
 
     /**
@@ -123,7 +123,11 @@ public abstract class VmSchedulerAbstract implements VmScheduler {
      */
     @Override
     public List<Double> getAllocatedMipsForVm(Vm vm) {
-        return getMipsMap().get(vm.getUid());
+        final List<Double> list = getMipsMap().get(vm.getUid());
+        if(list == null)
+            return Collections.EMPTY_LIST;
+        
+        return list;
     }
 
     /**
@@ -134,14 +138,7 @@ public abstract class VmSchedulerAbstract implements VmScheduler {
      */
     @Override
     public double getTotalAllocatedMipsForVm(Vm vm) {
-        double allocated = 0;
-        List<Double> mipsMap = getAllocatedMipsForVm(vm);
-        if (mipsMap != null) {
-            for (double mips : mipsMap) {
-                allocated += mips;
-            }
-        }
-        return allocated;
+        return getAllocatedMipsForVm(vm).stream().reduce(0.0, Double::sum);
     }
 
     /**
@@ -151,20 +148,19 @@ public abstract class VmSchedulerAbstract implements VmScheduler {
      */
     @Override
     public double getMaxAvailableMips() {
-        if (getPeList() == null) {
+        if (getPeList().isEmpty()) {
             Log.printLine("Pe list is empty");
             return 0;
         }
 
-        double max = 0.0;
-        for (Pe pe : getPeList()) {
-            double tmp = pe.getPeProvisioner().getAvailableMips();
-            if (tmp > max) {
-                max = tmp;
-            }
-        }
-
-        return max;
+        OptionalDouble max = 
+                getPeList().stream()
+                        .mapToDouble(pe -> pe.getPeProvisioner().getAvailableMips())
+                        .max();
+        if(max.isPresent())
+            return max.getAsDouble();
+        
+        return 0.0;
     }
 
     /**
@@ -177,7 +173,7 @@ public abstract class VmSchedulerAbstract implements VmScheduler {
      */
     @Override
     public double getPeCapacity() {
-        if (getPeList() == null) {
+        if (getPeList().isEmpty()) {
             Log.printLine("Pe list is empty");
             return 0;
         }
@@ -200,6 +196,8 @@ public abstract class VmSchedulerAbstract implements VmScheduler {
      * @param peList the pe list
      */
     protected final void setPeList(List<Pe> peList) {
+        if(peList == null)
+            peList = new ArrayList<>();
         this.peList = peList;
     }
 
@@ -295,6 +293,5 @@ public abstract class VmSchedulerAbstract implements VmScheduler {
      */
     protected final void setPeMap(Map<String, List<Pe>> peMap) {
         this.peMap = peMap;
-    }
-
+    }    
 }

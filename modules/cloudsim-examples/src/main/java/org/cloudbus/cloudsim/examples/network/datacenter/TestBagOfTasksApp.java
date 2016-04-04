@@ -36,9 +36,10 @@ import org.cloudbus.cloudsim.network.datacenter.TaskStage;
  * It in fact is not being used and should be deleted.
  * 
  */
-public class TestBagofTaskApp extends AppCloudlet {
+public class TestBagOfTasksApp extends AppCloudlet {
 
-    public TestBagofTaskApp(int type, int appID, double deadline, 	int numbervm, int userId) {
+    public TestBagOfTasksApp(int type, int appID, double deadline, 	
+            int numbervm, int userId) {
         super(type, appID, deadline, numbervm,userId);
 
         /*@todo There is something strange here. This getter isn't
@@ -76,13 +77,13 @@ public class TestBagofTaskApp extends AppCloudlet {
             cl.currStagenum=-1;
             cl.setVmId(vmIdList.get(i));
             //compute and send data to node 0
-            cl.stages.add(new TaskStage(NetworkConstants.EXECUTION, NetworkConstants.COMMUNICATION_LENGTH, executionTime/numberOfVMs, stgId++, memory, vmIdList.get(0),cl.getCloudletId()));
+            cl.stages.add(new TaskStage(NetworkConstants.EXECUTION, NetworkConstants.COMMUNICATION_LENGTH, executionTime/numberOfVMs, stgId++, memory, vmIdList.get(0),cl.getId()));
 
             //0 has an extra stage of waiting for results; others send
             if (i==0){
                 for(int j=1;j<numberOfVMs;j++)
                     cl.stages.add(
-                            new TaskStage(NetworkConstants.WAIT_RECV, NetworkConstants.COMMUNICATION_LENGTH, 0, stgId++, memory, vmIdList.get(j),cl.getCloudletId()+j));
+                            new TaskStage(NetworkConstants.WAIT_RECV, NetworkConstants.COMMUNICATION_LENGTH, 0, stgId++, memory, vmIdList.get(j),cl.getId()+j));
             } else {
                 cl.stages.add(new TaskStage(NetworkConstants.WAIT_SEND, NetworkConstants.COMMUNICATION_LENGTH, 0, stgId++, memory, vmIdList.get(0),t));
             }
@@ -99,14 +100,15 @@ public class TestBagofTaskApp extends AppCloudlet {
         double exetime=getExecTime()/2;//for two vms
         if(this.deadline>exetime)
                 return 2;
-        else if(this.deadline>(exetime/4)) return 4;
+        
+        if(this.deadline>(exetime/4)) 
+            return 4;
 
         return 4;
     }
 
     private int getExecTime() {
         //use exec constraints 
-
         return 100;
     }
 

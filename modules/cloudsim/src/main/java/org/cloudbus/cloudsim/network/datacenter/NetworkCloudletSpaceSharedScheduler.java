@@ -238,7 +238,7 @@ public class NetworkCloudletSpaceSharedScheduler extends CloudletSchedulerAbstra
 							cl.stages.get(i).data,
 							CloudSim.clock(),
 							-1,
-							cl.getCloudletId(),
+							cl.getId(),
 							cl.stages.get(i).vpeer);
 					List<HostPacket> pktlist = pkttosend.get(cl.getVmId());
 					if (pktlist == null) {
@@ -538,7 +538,7 @@ public class NetworkCloudletSpaceSharedScheduler extends CloudletSchedulerAbstra
 	}
 
 	@Override
-	public int runningCloudlets() {
+	public int runningCloudletsNumber() {
 		return getCloudletExecList().size();
 	}
 
@@ -553,7 +553,7 @@ public class NetworkCloudletSpaceSharedScheduler extends CloudletSchedulerAbstra
 
 	@Override
 	public List<Double> getCurrentRequestedMips() {
-		List<Double> mipsShare = new ArrayList<Double>();
+		List<Double> mipsShare = new ArrayList<>();
 		if (getCurrentMipsShare() != null) {
 			for (Double mips : getCurrentMipsShare()) {
 				mipsShare.add(mips);

@@ -8,7 +8,7 @@ import org.cloudbus.cloudsim.Vm;
 
 /**
  * An interface to be implemented by VmScheduler objects in order to provide
- * basic features of schedulers that allocate host's PEs for VMs running on it.
+ * scheduling algorithms that allocate host's PEs for VMs running on it.
  * It also implements the Null Object Design
  * Pattern in order to start avoiding {@link NullPointerException} 
  * when using the {@link VmScheduler#NULL} object instead
@@ -20,7 +20,7 @@ public interface VmScheduler {
      * Requests the allocation of PEs for a VM.
      *
      * @param vm the vm
-     * @param mipsShare the list of MIPS share to be allocated to a VM
+     * @param mipsShareRequested the list of MIPS share to be allocated to a VM
      * @return $true if this policy allows a new VM in the host, $false
      * otherwise
      *
@@ -39,7 +39,7 @@ public interface VmScheduler {
      * if the total requested mips is available, while only the difference has
      * to be checked. It has to be added some tests to check this issue.
      */
-    boolean allocatePesForVm(Vm vm, List<Double> mipsShare);
+    boolean allocatePesForVm(Vm vm, List<Double> mipsShareRequested);
 
     /**
      * Releases PEs allocated to all the VMs of the host the VmSchedulerAbstract
@@ -78,6 +78,16 @@ public interface VmScheduler {
      * @return the free mips
      */
     double getAvailableMips();
+    
+    /**
+     * Checks if the PM using this scheduler has enough MIPS capacity
+     * to host a given VM.
+     * 
+     * @param vm the vm to check if there is enough available resource on the PM to host it
+     * 
+     * @return true, if it is possible to allocate the the VM into the host; false otherwise
+     */
+    boolean isSuitableForVm(Vm vm);    
 
     /**
      * Returns maximum available MIPS among all the host's PEs.
@@ -141,6 +151,15 @@ public interface VmScheduler {
      * @return the vms in migration
      */
     List<String> getVmsMigratingOut();
+    
+    /**
+     * Defines the percentage of Host's CPU usage increase when a 
+     * VM is migrating in or out of the Host. 
+     * The value is in scale from 0 to 1 (where 1 is 100%).
+     * 
+     * @return the Host's CPU migration overhead percentage.
+     */
+    double getCpuOverheadDueToVmMigration();
 
     /**
      * A property that implements the Null Object Design Pattern for {@link VmScheduler}
@@ -160,5 +179,7 @@ public interface VmScheduler {
         @Override public double getTotalAllocatedMipsForVm(Vm vm) { return 0.0; }
         @Override public List<String> getVmsMigratingIn() { return Collections.emptyList(); }
         @Override public List<String> getVmsMigratingOut() { return Collections.emptyList(); }
+        @Override public boolean isSuitableForVm(Vm vm) { return false; }
+        @Override public double getCpuOverheadDueToVmMigration() { return 0.0; }
     };
 }

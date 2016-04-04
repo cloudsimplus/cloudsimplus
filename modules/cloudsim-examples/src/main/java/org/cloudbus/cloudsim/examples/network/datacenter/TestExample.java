@@ -29,206 +29,145 @@ import org.cloudbus.cloudsim.resources.Bandwidth;
 import org.cloudbus.cloudsim.resources.Ram;
 
 public class TestExample {
+    private static final String ARCH = "x86"; // system architecture
+    private static final String OS = "Linux"; // operating system
+    private static final String VMM = "Xen";
+    private static final double TIME_ZONE = 10.0; // time zone this resource located
+    private static final double COST = 3.0; // the cost of using processing in this resource
+    private static final double COST_PER_MEM = 0.05; // the cost of using memory in this resource
+    private static final double COST_PER_STORAGE = 0.001; // the cost of using storage in this resource
+    private static final double COST_PER_BW = 0.0; // the cost of using bw in this resource
 
-    /** The vmlist. */
+    /**
+     * The vmlist.
+     */
     private static List<NetworkVm> vmlist;
 
     /**
      * Creates main() to run this example.
-     * 
-     * @param args
-     *            the args
+     *
+     * @param args the args
      */
     public static void main(String[] args) {
-            Log.printFormattedLine("Starting %s...", TestExample.class.getSimpleName());
-            try {
-                    int num_user = 1; // number of cloud users
-                    Calendar calendar = Calendar.getInstance();
-                    boolean trace_flag = false; // mean trace events
+        Log.printFormattedLine("Starting %s...", TestExample.class.getSimpleName());
+        try {
+            int num_user = 1; // number of cloud users
+            Calendar calendar = Calendar.getInstance();
+            boolean trace_flag = false; // mean trace events
 
-                    // Initialize the CloudSim library
-                    CloudSim.init(num_user, calendar, trace_flag);
+            // Initialize the CloudSim library
+            CloudSim.init(num_user, calendar, trace_flag);
+            NetworkConstants.autoCreateVmsInNetDatacenterBroker = true;
 
-                    // Second step: Create Datacenters
-                    // Datacenters are the resource providers in CloudSim. We need at
-                    // list one of them to run a CloudSim simulation
-                    NetworkDatacenter datacenter0 = createDatacenter("Datacenter_0");
+            // Second step: Create Datacenters
+            // Datacenters are the resource providers in CloudSim. We need at
+            // list one of them to run a CloudSim simulation
+            NetworkDatacenter datacenter0 = createDatacenter("Datacenter_0");
 
-                    // Third step: Create Broker
-                    NetDatacenterBroker broker = createBroker();
-                    broker.setLinkDC(datacenter0);
-                    // broker.setLinkDC(datacenter0);
-                    // Fifth step: Create one Cloudlet
+            // Third step: Create Broker
+            NetDatacenterBroker broker = createBroker();
+            broker.setLinkDC(datacenter0);
+            // broker.setLinkDC(datacenter0);
+            
+            vmlist = new ArrayList<>();
 
-                    vmlist = new ArrayList<NetworkVm>();
+            // submit vm list to the broker
+            broker.submitVmList(vmlist);
 
-                    // submit vm list to the broker
+            // Sixth step: Starts the simulation
+            CloudSim.startSimulation();
+            CloudSim.stopSimulation();
 
-                    broker.submitVmList(vmlist);
+            // Final step: Print results when simulation is over
+            List<Cloudlet> newList = broker.getCloudletReceivedList();
+            TableBuilderHelper.print(new TextTableBuilder(), newList);
+            Log.printFormattedLine("%s finished!", TestExample.class.getSimpleName());
+            System.out.println("numberofcloudlet " + newList.size() + " Cached "
+                    + NetDatacenterBroker.cachedcloudlet + " Data transfered "
+                    + NetworkConstants.totalDataTransfer);
 
-                    // Sixth step: Starts the simulation
-                    CloudSim.startSimulation();
-
-                    CloudSim.stopSimulation();
-
-                    // Final step: Print results when simulation is over
-                    List<Cloudlet> newList = broker.getCloudletReceivedList();
-                    TableBuilderHelper.print(new TextTableBuilder(), newList);
-                    Log.printFormattedLine("%s finished!", TestExample.class.getSimpleName());
-                    System.out.println("numberofcloudlet " + newList.size() + " Cached "
-                                    + NetDatacenterBroker.cachedcloudlet + " Data transfered "
-                                    + NetworkConstants.totaldatatransfer);
-
-                    Log.printLine("TestExample finished!");
-            } catch (Exception e) {
-                    e.printStackTrace();
-                    Log.printLine("Unwanted errors happen");
-            }
+            Log.printLine("TestExample finished!");
+        } catch (Exception e) {
+            e.printStackTrace();
+            Log.printLine("Unwanted errors happen");
+        }
     }
 
     /**
      * Creates the datacenter.
-     * 
-     * @param name
-     *            the name
-     * 
+     *
+     * @param name the name
+     *
      * @return the datacenter
      */
     private static NetworkDatacenter createDatacenter(String name) {
+        // Here are the steps needed to create a Datacenter:
+        // 1. We need to create a list to store
+        // our machine
+        List<Host> hostList = new ArrayList<>();
 
-            // Here are the steps needed to create a Datacenter:
-            // 1. We need to create a list to store
-            // our machine
+        // 2. A Machine contains one or more PEs or CPUs/Cores.
+        // In this example, it will have only one core.
+        // List<Pe> peList = new ArrayList<Pe>();
+        int mips = 1;
+        
+        // 4. Create Host with its id and list of PEs and add them to the list
+        // of machines
+        int ram = 2048; // host memory (MB)
+        long storage = 1000000; // host storage
+        long bw = 10000;
+        final int numberOfHosts = 
+                NetworkConstants.EdgeSwitchPorts * 
+                NetworkConstants.AggregationSwitchPorts
+                * NetworkConstants.RootSwitchPorts;
+        
+        for (int i = 0; i < numberOfHosts; i++) {
+            List<Pe> peList = createPEs(8, mips);
+            // 4. Create Host with its id and list of PEs and add them to
+            // the list of machines
+            hostList.add(new NetworkHost(i,
+                new ResourceProvisionerSimple(new Ram(ram)),
+                new ResourceProvisionerSimple(new Bandwidth(bw)),
+                storage, peList,
+                new VmSchedulerTimeShared(peList))); 
+        }
 
-            List<Host> hostList = new ArrayList<>();
+        // 5. Create a DatacenterCharacteristics object that stores the
+        // properties of a data center: architecture, OS, list of
+        // Machines, allocation policy: time- or space-shared, time zone
+        // and its price (G$/Pe time unit).
+        LinkedList<FileStorage> storageList = new LinkedList<>(); 
 
-            // 2. A Machine contains one or more PEs or CPUs/Cores.
-            // In this example, it will have only one core.
-            // List<Pe> peList = new ArrayList<Pe>();
+        DatacenterCharacteristics characteristics = new DatacenterCharacteristics(
+                ARCH, OS, VMM, hostList, TIME_ZONE, COST,
+                COST_PER_MEM, COST_PER_STORAGE, COST_PER_BW);
 
-            int mips = 1;
+        // 6. Finally, we need to create a NetworkDatacenter object.
+        NetworkDatacenter datacenter = null;
+        try {
+            datacenter = new NetworkDatacenter(
+                    name, characteristics, 
+                    new NetworkVmAllocationPolicy(hostList),
+                    storageList, 0);
 
-            // 3. Create PEs and add these into a list.
-            // peList.add(new Pe(0, new PeProvisionerSimple(mips))); // need to
-            // store Pe id and MIPS Rating
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        
+        // Create Internal Datacenter network
+        createNetwork(datacenter);
+        return datacenter;
+    }
 
-            // 4. Create HostSimple with its id and list of PEs and add them to the list
-            // of machines
-            int ram = 2048; // host memory (MB)
-            long storage = 1000000; // host storage
-            long bw = 10000;
-            for (int i = 0; i < NetworkConstants.EdgeSwitchPort * NetworkConstants.AggSwitchPort
-                            * NetworkConstants.RootSwitchPort; i++) {
-                    // 2. A Machine contains one or more PEs or CPUs/Cores.
-                    // In this example, it will have only one core.
-                    // 3. Create PEs and add these into an object of PowerPeList.
-                    List<Pe> peList = new ArrayList<>();
-                    peList.add(new PeSimple(0, new PeProvisionerSimple(mips))); // need to
-                    // store
-                    // PowerPe
-                    // id and
-                    // MIPS
-                    // Rating
-                    peList.add(new PeSimple(1, new PeProvisionerSimple(mips))); // need to
-                    // store
-                    // PowerPe
-                    // id and
-                    // MIPS
-                    // Rating
-                    peList.add(new PeSimple(2, new PeProvisionerSimple(mips))); // need to
-                    // store
-                    // PowerPe
-                    // id and
-                    // MIPS
-                    // Rating
-                    peList.add(new PeSimple(3, new PeProvisionerSimple(mips))); // need to
-                    // store
-                    // PowerPe
-                    // id and
-                    // MIPS
-                    // Rating
-                    peList.add(new PeSimple(4, new PeProvisionerSimple(mips))); // need to
-                    // store
-                    // PowerPe
-                    // id and
-                    // MIPS
-                    // Rating
-                    peList.add(new PeSimple(5, new PeProvisionerSimple(mips))); // need to
-                    // store
-                    // PowerPe
-                    // id and
-                    // MIPS
-                    // Rating
-                    peList.add(new PeSimple(6, new PeProvisionerSimple(mips))); // need to
-                    // store
-                    // PowerPe
-                    // id and
-                    // MIPS
-                    // Rating
-                    peList.add(new PeSimple(7, new PeProvisionerSimple(mips))); // need to
-                    // store
-                    // PowerPe
-                    // id and
-                    // MIPS
-                    // Rating
-
-                    // 4. Create PowerHost with its id and list of PEs and add them to
-                    // the list of machines
-                    hostList.add(new NetworkHost(
-                                    i,
-                                    new ResourceProvisionerSimple(new Ram(ram)),
-                                    new ResourceProvisionerSimple(new Bandwidth(bw)),
-                                    storage,
-                                    peList,
-                                    new VmSchedulerTimeShared(peList))); // This is our machine
-            }
-
-            // 5. Create a DatacenterCharacteristics object that stores the
-            // properties of a data center: architecture, OS, list of
-            // Machines, allocation policy: time- or space-shared, time zone
-            // and its price (G$/Pe time unit).
-            String arch = "x86"; // system architecture
-            String os = "Linux"; // operating system
-            String vmm = "Xen";
-            double time_zone = 10.0; // time zone this resource located
-            double cost = 3.0; // the cost of using processing in this resource
-            double costPerMem = 0.05; // the cost of using memory in this resource
-            double costPerStorage = 0.001; // the cost of using storage in this
-            // resource
-            double costPerBw = 0.0; // the cost of using bw in this resource
-            LinkedList<FileStorage> storageList = new LinkedList<>(); // we are
-            // not
-            // adding
-            // SAN
-            // devices by now
-
-            DatacenterCharacteristics characteristics = new DatacenterCharacteristics(
-                            arch,
-                            os,
-                            vmm,
-                            hostList,
-                            time_zone,
-                            cost,
-                            costPerMem,
-                            costPerStorage,
-                            costPerBw);
-
-            // 6. Finally, we need to create a NetworkDatacenter object.
-            NetworkDatacenter datacenter = null;
-            try {
-                    datacenter = new NetworkDatacenter(
-                                    name,
-                                    characteristics,
-                                    new NetworkVmAllocationPolicy(hostList),
-                                    storageList,
-                                    0);
-
-            } catch (Exception e) {
-                    e.printStackTrace();
-            }
-            // Create Internal Datacenter network
-            CreateNetwork(2, datacenter);
-            return datacenter;
+    public static List<Pe> createPEs(final int numberOfPEs, final int mips) {
+        // 2. A Machine contains one or more PEs or CPUs/Cores.
+        // In this example, it will have only one core.
+        // 3. Create PEs and add these into an object of PowerPeList.
+        List<Pe> peList = new ArrayList<>();
+        for(int i = 0; i < numberOfPEs; i++){
+            peList.add(new PeSimple(i, new PeProvisionerSimple(mips)));
+        }
+        return peList;
     }
 
     // We strongly encourage users to develop their own broker policies, to
@@ -236,48 +175,38 @@ public class TestExample {
     // to the specific rules of the simulated scenario
     /**
      * Creates the broker.
-     * 
+     *
      * @return the datacenter broker
      */
     private static NetDatacenterBroker createBroker() {
-            NetDatacenterBroker broker = null;
-            try {
-                    broker = new NetDatacenterBroker("Broker");
-            } catch (Exception e) {
-                    e.printStackTrace();
-                    return null;
-            }
-            return broker;
+        try {
+            return new NetDatacenterBroker("Broker");
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        } 
     }
 
-    static void CreateNetwork(int numhost, NetworkDatacenter dc) {
+    private static void createNetwork(NetworkDatacenter dc) {
+        EdgeSwitch edgeSwitches[] = new EdgeSwitch[1];
 
-            // Edge Switch
-            EdgeSwitch edgeswitch[] = new EdgeSwitch[1];
+        for (int i = 0; i < edgeSwitches.length; i++) {
+            edgeSwitches[i] = new EdgeSwitch("Edge" + i, NetworkConstants.EDGE_SWITCHES_NUMBER, dc);
+            dc.Switchlist.put(edgeSwitches[i].getId(), edgeSwitches[i]);
+        }
 
-            for (int i = 0; i < 1; i++) {
-                    edgeswitch[i] = new EdgeSwitch("Edge" + i, NetworkConstants.EDGE_LEVEL, dc);
-                    // edgeswitch[i].uplinkswitches.add(null);
-                    dc.Switchlist.put(edgeswitch[i].getId(), edgeswitch[i]);
-                    // aggswitch[(int)
-                    // (i/Constants.AggSwitchPort)].downlinkswitches.add(edgeswitch[i]);
+        for (NetworkHost host : dc.<NetworkHost>getHostList()) {
+            host.bandwidth = NetworkConstants.EdgeSwitchDownlinkBW;
+            int switchNum =  host.getId() / NetworkConstants.EdgeSwitchPorts;
+            edgeSwitches[switchNum].hostlist.put(host.getId(), host);
+            dc.HostToSwitchid.put(host.getId(), edgeSwitches[switchNum].getId());
+            host.setSwitch(edgeSwitches[switchNum]);
+            List<NetworkHost> hostList = host.getSwitch().finTimeHostMap.get(0D);
+            if (hostList == null) {
+                hostList = new ArrayList<>();
+                host.getSwitch().finTimeHostMap.put(0D, hostList);
             }
-
-            for (Host hs : dc.getHostList()) {
-                    NetworkHost hs1 = (NetworkHost) hs;
-                    hs1.bandwidth = NetworkConstants.BandWidthEdgeHost;
-                    int switchnum = (int) (hs.getId() / NetworkConstants.EdgeSwitchPort);
-                    edgeswitch[switchnum].hostlist.put(hs.getId(), hs1);
-                    dc.HostToSwitchid.put(hs.getId(), edgeswitch[switchnum].getId());
-                    hs1.sw = edgeswitch[switchnum];
-                    List<NetworkHost> hslist = hs1.sw.fintimelistHost.get(0D);
-                    if (hslist == null) {
-                            hslist = new ArrayList<NetworkHost>();
-                            hs1.sw.fintimelistHost.put(0D, hslist);
-                    }
-                    hslist.add(hs1);
-
-            }
-
+            hostList.add(host);
+        }
     }
 }

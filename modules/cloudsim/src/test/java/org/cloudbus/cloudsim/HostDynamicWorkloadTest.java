@@ -21,6 +21,8 @@ import org.cloudbus.cloudsim.provisioners.ResourceProvisionerSimple;
 import org.cloudbus.cloudsim.resources.Ram;
 import org.junit.Before;
 import org.junit.Test;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 /**
  * @author	Anton Beloglazov
@@ -54,7 +56,7 @@ public class HostDynamicWorkloadTest {
 
     @Test
     public void testGetMaxUtilizationOneVm() {
-        Vm vm0 = VmTest.createVmWithOnePeAndHalfMips(0);
+        Vm vm0 = VmSimpleTest.createVmWithOnePeAndHalfMips(0);
 
         assertTrue(peList.get(0).getPeProvisioner().allocateMipsForVm(vm0, MIPS / 3));
         assertEquals((MIPS / 3) / MIPS, host.getMaxUtilization(), 0.001);
@@ -62,8 +64,8 @@ public class HostDynamicWorkloadTest {
 
     @Test
     public void testGetMaxUtilization() {
-        Vm vm0 = VmTest.createVmWithOnePeAndHalfMips(0);
-        Vm vm1 = VmTest.createVmWithOnePeAndHalfMips(1);
+        Vm vm0 = VmSimpleTest.createVmWithOnePeAndHalfMips(0);
+        Vm vm1 = VmSimpleTest.createVmWithOnePeAndHalfMips(1);
 
         assertTrue(peList.get(0).getPeProvisioner().allocateMipsForVm(vm0, MIPS / 3));
         assertTrue(peList.get(1).getPeProvisioner().allocateMipsForVm(vm1, MIPS / 5));
@@ -94,8 +96,8 @@ public class HostDynamicWorkloadTest {
 
     @Test
     public void testGetMaxUtilizationAmongVmsPes() {
-        Vm vm0 = VmTest.createVmWithOnePeAndHalfMips(0);
-        Vm vm1 = VmTest.createVmWithOnePeAndHalfMips(1);
+        Vm vm0 = VmSimpleTest.createVmWithOnePeAndHalfMips(0);
+        Vm vm1 = VmSimpleTest.createVmWithOnePeAndHalfMips(1);
 
         assertTrue(peList.get(0).getPeProvisioner().allocateMipsForVm(vm0, MIPS / 3));
         assertTrue(peList.get(1).getPeProvisioner().allocateMipsForVm(vm1, MIPS / 5));

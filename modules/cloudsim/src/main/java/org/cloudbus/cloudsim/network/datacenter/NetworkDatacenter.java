@@ -129,7 +129,7 @@ public class NetworkDatacenter extends DatacenterSimple {
     public Map<Integer, Switch> getEdgeSwitch() {
         Map<Integer, Switch> edgeswitch = new HashMap<>();
         for (Entry<Integer, Switch> es : Switchlist.entrySet()) {
-            if (es.getValue().level == NetworkConstants.EDGE_LEVEL) {
+            if (es.getValue().level == NetworkConstants.EDGE_SWITCHES_NUMBER) {
                 edgeswitch.put(es.getKey(), es.getValue());
             }
         }
@@ -149,7 +149,7 @@ public class NetworkDatacenter extends DatacenterSimple {
         boolean result = getVmAllocationPolicy().allocateHostForVm(vm);
 
         if (result) {
-            VmToSwitchid.put(vm.getId(), ((NetworkHost) vm.getHost()).sw.getId());
+            VmToSwitchid.put(vm.getId(), ((NetworkHost) vm.getHost()).getSwitch().getId());
             VmtoHostlist.put(vm.getId(), vm.getHost().getId());
             System.out.println(vm.getId() + " VM is created on " + vm.getHost().getId());
 
@@ -172,7 +172,7 @@ public class NetworkDatacenter extends DatacenterSimple {
             // checks whether this Cloudlet has finished or not
             if (cl.isFinished()) {
                 String name = CloudSim.getEntityName(cl.getUserId());
-                Log.printConcatLine(getName(), ": Warning - Cloudlet #", cl.getCloudletId(), " owned by ", name,
+                Log.printConcatLine(getName(), ": Warning - Cloudlet #", cl.getId(), " owned by ", name,
                         " is already completed/finished.");
                 Log.printLine("Therefore, it is not being executed again");
                 Log.printLine();
@@ -185,7 +185,7 @@ public class NetworkDatacenter extends DatacenterSimple {
                 if (ack) {
                     int[] data = new int[3];
                     data[0] = getId();
-                    data[1] = cl.getCloudletId();
+                    data[1] = cl.getId();
                     data[2] = CloudSimTags.FALSE;
 
                     // unique tag = operation tag
@@ -198,8 +198,8 @@ public class NetworkDatacenter extends DatacenterSimple {
                 return;
             }
 
-            // process this Cloudlet to this CloudResource
-            cl.setResourceParameter(getId(), getCharacteristics().getCostPerSecond(), getCharacteristics()
+            // process this Cloudlet to this Datacenter
+            cl.assignCloudletToDatacenter(getId(), getCharacteristics().getCostPerSecond(), getCharacteristics()
                     .getCostPerBw());
 
             int userId = cl.getUserId();
@@ -225,7 +225,7 @@ public class NetworkDatacenter extends DatacenterSimple {
             if (ack) {
                 int[] data = new int[3];
                 data[0] = getId();
-                data[1] = cl.getCloudletId();
+                data[1] = cl.getId();
                 data[2] = CloudSimTags.TRUE;
 
                 // unique tag = operation tag
@@ -240,7 +240,7 @@ public class NetworkDatacenter extends DatacenterSimple {
             e.printStackTrace();
         }
 
-        checkCloudletCompletion();
+        checkCloudletsCompletionForAllHosts();
     }
 
 }

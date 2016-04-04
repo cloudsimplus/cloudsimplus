@@ -89,7 +89,7 @@ public class VmBuilder {
             Vm vm = new VmSimple(numberOfCreatedVms++, 
                     broker.getId(), mips, pes, ram, bw, 
                     size, DatacenterBuilder.VMM, 
-                    SerializationUtils.clone(cloudletScheduler));
+                    cloudletScheduler);
             vm.setOnHostAllocationListener(onHostAllocationListener);
             vm.setOnHostDeallocationListener(onHostDeallocationListener);
             vm.setOnVmCreationFailureListener(onVmCreationFailureListener);

@@ -7,6 +7,7 @@
  */
 package org.cloudbus.cloudsim.power;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import org.cloudbus.cloudsim.Host;
@@ -43,17 +44,15 @@ public class PowerVmAllocationPolicySimple extends PowerVmAllocationPolicyAbstra
     }
 
     /**
-     * The method doesn't perform any VM allocation optimization and in fact has
-     * no effect.
-     *
+     * The method in this VmAllocationPolicy doesn't perform any
+     * VM placement optimization and, in fact, has no effect.
+     * 
      * @param vmList
-     * @return
+     * @return an empty map to indicate that it never performs optimization
      */
     @Override
     public Map<Vm, Host> optimizeAllocation(List<? extends Vm> vmList) {
-        //@todo It is better to return an empty map in order to avoid NullPointerException or extra null checks
-        // This policy does not optimize the VM allocation
-        return null;
+        return Collections.EMPTY_MAP;
     }
 
 }

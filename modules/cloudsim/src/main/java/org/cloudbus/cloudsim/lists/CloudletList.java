@@ -32,7 +32,7 @@ public class CloudletList {
 	 */
 	public static Cloudlet getById(List<Cloudlet> cloudletList, int id) {
 		for (Cloudlet cloudlet : cloudletList) {
-			if (cloudlet.getCloudletId() == id) {
+			if (cloudlet.getId() == id) {
 				return cloudlet;
 			}
 		}
@@ -54,7 +54,7 @@ public class CloudletList {
 	public static int getPositionById(List<Cloudlet> cloudletList, int id) {
 		int i = 0 ;
 	        for (Cloudlet cloudlet : cloudletList) {
-			if (cloudlet.getCloudletId() == id) {
+			if (cloudlet.getId() == id) {
 				return i;
 			}
 			i++;
