@@ -12,7 +12,6 @@ import org.cloudbus.cloudsim.Cloudlet;
 import org.cloudbus.cloudsim.ResCloudlet;
 
 import org.cloudbus.cloudsim.core.CloudSim;
-import org.cloudbus.cloudsim.resources.Processor;
 
 /**
  * CloudletSchedulerTimeShared implements a policy of scheduling performed by a

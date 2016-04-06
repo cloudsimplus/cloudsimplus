@@ -219,11 +219,12 @@ public interface CloudletScheduler extends Serializable {
     double getTotalCurrentRequestedMipsForCloudlet(ResCloudlet rcl, double time);
 
     /**
-     * Gets total CPU utilization percentage of all cloudlets, according to CPU UtilizationModel of
-     * each one.
+     * Gets total CPU utilization percentage of all cloudlets, 
+     * according to CPU UtilizationModel of each one (in scale from 0 to 1,
+     * where 1 is 100%).
      *
      * @param time the time to get the current CPU utilization
-     * @return total utilization
+     * @return the total CPU utilization percentage
      */
     double getTotalUtilizationOfCpu(double time);
 

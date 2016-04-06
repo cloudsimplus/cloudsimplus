@@ -1,7 +1,6 @@
 package org.cloudbus.cloudsim.lists;
 
 import java.util.ArrayList;
-import static java.util.Collections.list;
 import java.util.List;
 import java.util.stream.IntStream;
 import org.cloudbus.cloudsim.Consts;
@@ -124,12 +123,12 @@ public class HostListTest {
     @Test
     public void testGetHostWithFreePe_List() {
         System.out.println("getHostWithFreePe");
-        HostSimple expResult = hostSimpleList.get(0);
-        assertEquals(expResult, HostList.getHostWithFreePe(hostSimpleList));
+        HostSimple host0 = hostSimpleList.get(0);
+        assertEquals(host0, HostList.getHostWithFreePe(hostSimpleList));
 
-        expResult.setPeStatus(0, Status.BUSY);
-        expResult = hostSimpleList.get(1);
-        assertEquals(expResult, HostList.getHostWithFreePe(hostSimpleList));        
+        host0.setPeStatus(0, Status.BUSY);
+        HostSimple host1 = hostSimpleList.get(1);
+        assertEquals(host1, HostList.getHostWithFreePe(hostSimpleList));        
     }
 
     @Test
@@ -137,12 +136,12 @@ public class HostListTest {
         System.out.println("getHostWithFreePe");
         final int numberOfFreePes = 4;
         List<HostSimple> list = createHostSimpleList(NUMBER_OF_HOSTS, numberOfFreePes);
-        HostSimple expResult = list.get(0);
-        assertEquals(expResult, HostList.getHostWithFreePe(list, numberOfFreePes));
+        HostSimple host0 = list.get(0);
+        assertEquals(host0, HostList.getHostWithFreePe(list, numberOfFreePes));
         
-        expResult.setPeStatus(0, Status.BUSY);
-        expResult = list.get(1);
-        assertEquals(expResult, HostList.getHostWithFreePe(list, numberOfFreePes));        
+        host0.setPeStatus(0, Status.BUSY);
+        HostSimple host1 = list.get(1);
+        assertEquals(host1, HostList.getHostWithFreePe(list, numberOfFreePes));        
     }
 
     @Test

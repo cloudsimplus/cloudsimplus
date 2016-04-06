@@ -11,7 +11,7 @@ package org.cloudbus.cloudsim.power;
 import java.util.LinkedList;
 import java.util.List;
 
-import org.cloudbus.cloudsim.schedulers.CloudletSchedulerAbstract;
+import org.cloudbus.cloudsim.schedulers.CloudletScheduler;
 import org.cloudbus.cloudsim.VmSimple;
 import org.cloudbus.cloudsim.core.CloudSim;
 import org.cloudbus.cloudsim.util.MathUtil;
@@ -39,7 +39,7 @@ public class PowerVm extends VmSimple {
 	public static final int HISTORY_LENGTH = 30;
 
 	/** The CPU utilization percentage history. */
-	private final List<Double> utilizationHistory = new LinkedList<Double>();
+	private final List<Double> utilizationHistory = new LinkedList<>();
 
 	/** The previous time that cloudlets were processed. */
 	private double previousTime;
@@ -73,7 +73,7 @@ public class PowerVm extends VmSimple {
 			final long size,
 			final int priority,
 			final String vmm,
-			final CloudletSchedulerAbstract cloudletScheduler,
+			final CloudletScheduler cloudletScheduler,
 			final double schedulingInterval) {
 		super(id, userId, mips, pesNumber, ram, bw, size, vmm, cloudletScheduler);
 		setSchedulingInterval(schedulingInterval);
@@ -209,7 +209,7 @@ public class PowerVm extends VmSimple {
 	 * 
 	 * @param schedulingInterval the schedulingInterval to set
 	 */
-	protected void setSchedulingInterval(final double schedulingInterval) {
+	protected final void setSchedulingInterval(final double schedulingInterval) {
 		this.schedulingInterval = schedulingInterval;
 	}
 
