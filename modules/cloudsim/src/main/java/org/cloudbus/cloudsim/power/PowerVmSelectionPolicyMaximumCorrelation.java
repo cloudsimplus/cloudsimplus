@@ -13,7 +13,6 @@ import java.util.List;
 
 import org.apache.commons.math3.linear.Array2DRowRealMatrix;
 import org.cloudbus.cloudsim.Vm;
-import org.cloudbus.cloudsim.VmSimple;
 import org.cloudbus.cloudsim.util.MathUtil;
 
 /**

@@ -100,7 +100,7 @@ public class NetworkCloudlet extends CloudletSimple implements Comparable<Object
 
 		currStagenum = -1;
 		this.memory = memory;
-		stages = new ArrayList<TaskStage>();
+		stages = new ArrayList<>();
 	}
 
 	@Override

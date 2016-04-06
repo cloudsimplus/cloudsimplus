@@ -152,16 +152,18 @@ public interface CloudletScheduler extends Serializable {
     List<Double> getCurrentRequestedMips();
 
     /**
-     * Gets the current requested bw.
+     * Gets the current requested percentage of bw
+     * (in scale from 0 to 1, where 1 is 100%).
      *
-     * @return the current requested bw
+     * @return the current requested bw percentage.
      */
     double getCurrentRequestedUtilizationOfBw();
 
     /**
-     * Gets the current requested ram.
+     * Gets the current requested percentage of ram
+     * (in scale from 0 to 1, where 1 is 100%).
      *
-     * @return the current requested ram
+     * @return the current requested ram percentage.
      */
     double getCurrentRequestedUtilizationOfRam();
 

@@ -350,8 +350,8 @@ public class HarddriveStorage implements FileStorage {
             Log.printConcatLine(name, ".addFile(): Invalid file ", file);
             return result;
         }
-
-        // check the capacity
+ 
+       // check the capacity
         if (!storage.isResourceAmountAvailable((long)file.getSize())) {
             Log.printConcatLine(name, ".addFile(): Warning - not enough space to store ", file.getName());
             return result;
@@ -375,7 +375,7 @@ public class HarddriveStorage implements FileStorage {
     public double addFile(final List<File> list) {
         double result = 0.0;
         if (list == null || list.isEmpty()) {
-            Log.printConcatLine(name, ".addFile(): Warning - list is empty.");
+            Log.printConcatLine(getName(), ".addFile(): Warning - list is empty.");
             return result;
         }
 

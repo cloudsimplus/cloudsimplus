@@ -14,6 +14,8 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
 import org.cloudbus.cloudsim.VmSimple;
+import org.cloudbus.cloudsim.resources.Resource;
+import static org.junit.Assert.fail;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -41,6 +43,19 @@ public class ResourceProvisionerSimpleTest {
      */
     private ResourceProvisionerSimple<Integer> createSimpleProvisioner() {
         return new ResourceProvisionerSimple(new Ram(CAPACITY));
+    }
+
+    private ResourceProvisionerSimple<Integer> createSimpleProvisioner(Resource resource) {
+        return new ResourceProvisionerSimple(resource);
+    }
+
+    @Test
+    public void testCreateProvisioner() {
+        try {
+            createSimpleProvisioner(null);
+            fail("It was expected an exception to be raised when trying to create a provisioner with a null resource");
+        } catch (Exception e) {
+        }
     }
 
     @Test
@@ -77,24 +92,33 @@ public class ResourceProvisionerSimpleTest {
     }
 
     @Test
+    public void testIsSuitableForVm() {
+        VmSimple vm0 = createVm(0, HALF_CAPACITY);
+        assertTrue(provisioner.isSuitableForVm(vm0, QUARTER_OF_CAPACITY));
+        assertTrue(provisioner.isSuitableForVm(vm0, HALF_CAPACITY));
+        assertTrue(provisioner.isSuitableForVm(vm0, CAPACITY));
+        assertFalse(provisioner.isSuitableForVm(vm0, CAPACITY*2));
+    }
+    
+    @Test
     public void testAllocateResourceForVm() {
-        VmSimple vm1 = createVm(0, HALF_CAPACITY);
-        VmSimple vm2 = createVm(1, CAPACITY);
+        VmSimple vm0 = createVm(0, HALF_CAPACITY);
+        VmSimple vm1 = createVm(1, CAPACITY);
+
+        assertTrue(provisioner.isSuitableForVm(vm0, HALF_CAPACITY));
+        assertTrue(provisioner.allocateResourceForVm(vm0, HALF_CAPACITY));
+        assertEquals(HALF_CAPACITY, provisioner.getAvailableResource());
+
+        assertFalse(provisioner.isSuitableForVm(vm1, CAPACITY));
+        assertFalse(provisioner.allocateResourceForVm(vm1, CAPACITY));
+        assertEquals(HALF_CAPACITY, provisioner.getAvailableResource());
+
+        assertTrue(provisioner.isSuitableForVm(vm1, QUARTER_OF_CAPACITY));
+        assertTrue(provisioner.allocateResourceForVm(vm1, QUARTER_OF_CAPACITY));
+        assertEquals(QUARTER_OF_CAPACITY, provisioner.getAvailableResource());
 
         assertTrue(provisioner.isSuitableForVm(vm1, HALF_CAPACITY));
         assertTrue(provisioner.allocateResourceForVm(vm1, HALF_CAPACITY));
-        assertEquals(HALF_CAPACITY, provisioner.getAvailableResource());
-
-        assertFalse(provisioner.isSuitableForVm(vm2, CAPACITY));
-        assertFalse(provisioner.allocateResourceForVm(vm2, CAPACITY));
-        assertEquals(HALF_CAPACITY, provisioner.getAvailableResource());
-
-        assertTrue(provisioner.isSuitableForVm(vm2, QUARTER_OF_CAPACITY));
-        assertTrue(provisioner.allocateResourceForVm(vm2, QUARTER_OF_CAPACITY));
-        assertEquals(QUARTER_OF_CAPACITY, provisioner.getAvailableResource());
-
-        assertTrue(provisioner.isSuitableForVm(vm2, HALF_CAPACITY));
-        assertTrue(provisioner.allocateResourceForVm(vm2, HALF_CAPACITY));
         assertEquals(ZERO, provisioner.getAvailableResource());
     }
 

@@ -12,7 +12,6 @@ import org.cloudbus.cloudsim.resources.Resource;
 import java.util.HashMap;
 import java.util.Map;
 import org.cloudbus.cloudsim.Vm;
-import org.cloudbus.cloudsim.Vm;
 import org.cloudbus.cloudsim.util.Calculator;
 
 /**

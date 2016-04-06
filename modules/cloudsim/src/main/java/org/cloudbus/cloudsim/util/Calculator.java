@@ -86,7 +86,7 @@ public final class Calculator<T extends Number & Comparable<T>> {
         return calculate(a, b, Operation.multiple);
     }
 
-    public T divice(final T a, final T b){
+    public T divide(final T a, final T b){
         return calculate(a, b, Operation.divide);
     }
 
@@ -103,7 +103,7 @@ public final class Calculator<T extends Number & Comparable<T>> {
     }
     
     public T abs(final T a){
-        return convert(a.doubleValue());
+        return convert(Math.abs(a.doubleValue()));
     }
 
     public boolean isNegativeOrZero(final T value) {

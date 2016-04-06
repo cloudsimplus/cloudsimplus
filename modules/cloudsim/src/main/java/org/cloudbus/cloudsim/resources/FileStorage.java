@@ -86,8 +86,8 @@ public interface FileStorage extends ResourceInformation<Long> {
      * also be found using {@link org.cloudbus.cloudsim.File#getTransactionTime()}.
      * 
      * @param file the file to be added
-     * @return the time taken (in seconds) for adding the specified file or zero if the
-     * file is invalid or there isn't available storage space.
+     * @return the time taken (in seconds) for adding the specified file or zero if 
+     * there isn't available storage space.
      */
     double addFile(File file);
 

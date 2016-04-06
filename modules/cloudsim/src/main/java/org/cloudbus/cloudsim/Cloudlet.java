@@ -823,8 +823,8 @@ public interface Cloudlet extends Identificable {
       @Override public boolean setNetServiceLevel(int netServiceLevel) { return false; }
       @Override public boolean setNumberOfPes(int numberOfPes) { return false; }
       @Override public boolean setReservationId(int reservationId) { return false; }
-      @Override public void assignCloudletToDatacenter(int resourceID, double cost) {}
-      @Override public void assignCloudletToDatacenter(int resourceID, double costPerCPU, double costPerBw) {}
+      @Override public void assignCloudletToDatacenter(int datacenterId, double costPerCpuSec) {}
+      @Override public void assignCloudletToDatacenter(int datacenterId, double costPerCpuSec, double costPerByteOfBw) {}
       @Override public boolean setSubmissionTime(double clockTime) { return false; }
       @Override public void setUserId(int userId) {}
       @Override public void setUtilizationModelBw(UtilizationModel utilizationModelBw) {}

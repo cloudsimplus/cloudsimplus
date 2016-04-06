@@ -153,22 +153,22 @@ public class File {
     }
 
     /**
-     * Sets the resource ID that stores this file.
+     * Sets the ID of the datacenter that will store this file.
      * 
-     * @param resourceID a resource ID
+     * @param datacenterId the id of the datacenter where the file will be stored
      * @return <tt>true</tt> if successful, <tt>false</tt> otherwise
      */
-    public boolean setResourceID(int resourceID) {
-            return attribute.setResourceID(resourceID);
+    public boolean setDatacenterId(int datacenterId) {
+            return attribute.setResourceID(datacenterId);
     }
 
     /**
-     * Gets the resource ID that stores this file.
+     * Gets the id of the datacenter that stores this file.
      * 
-     * @return the resource ID
+     * @return the datacenter ID where the file is stored
      */
-    public int getResourceID() {
-            return attribute.getResourceID();
+    public int getDatacenterId() {
+            return attribute.getDatacenterId();
     }
 
     /**
@@ -414,18 +414,10 @@ public class File {
 
     /**
      * Sets the current transaction time (in second) of this file. This transaction time can be
-     * related to the operation of adding, deleting or getting the file on a resource's storage.
+     * related to the operation of adding, deleting or getting the file on a datacenter's storage.
      * 
      * @param time the transaction time (in second)
      * @return <tt>true</tt> if successful, <tt>false</tt> otherwise
-     * @see gridsim.datagrid.storage.Storage#addFile(File)
-     * @see gridsim.datagrid.storage.Storage#addFile(List)
-     * @see gridsim.datagrid.storage.Storage#addReservedFile(File)
-     * @see gridsim.datagrid.storage.Storage#deleteFile(File)
-     * @see gridsim.datagrid.storage.Storage#deleteFile(String)
-     * @see gridsim.datagrid.storage.Storage#deleteFile(String, File)
-     * @see gridsim.datagrid.storage.Storage#getFile(String)
-     * @see gridsim.datagrid.storage.Storage#renameFile(File, String)
      */
     public boolean setTransactionTime(double time) {
             if (time < 0) {

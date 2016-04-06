@@ -86,8 +86,7 @@ public class PowerHostSimple extends HostDynamicWorkloadSimple implements PowerH
         try {
             power = getPowerModel().getPower(utilization);
         } catch (Exception e) {
-            e.printStackTrace();
-            System.exit(0);
+            throw new RuntimeException(e);
         }
         return power;
     }
@@ -103,8 +102,7 @@ public class PowerHostSimple extends HostDynamicWorkloadSimple implements PowerH
         try {
             power = getPowerModel().getPower(1);
         } catch (Exception e) {
-            e.printStackTrace();
-            System.exit(0);
+            throw new RuntimeException(e);
         }
         return power;
     }

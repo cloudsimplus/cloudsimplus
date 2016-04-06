@@ -8,7 +8,6 @@
 
 package org.cloudbus.cloudsim.schedulers;
 
-import org.cloudbus.cloudsim.schedulers.CloudletSchedulerDynamicWorkload;
 import org.cloudbus.cloudsim.utilizationmodels.UtilizationModelStochastic;
 import org.cloudbus.cloudsim.utilizationmodels.UtilizationModel;
 import static org.easymock.EasyMock.createMock;
@@ -337,16 +336,14 @@ public class CloudletSchedulerSingleServiceTest {
 				utilizationModel, utilizationModel, utilizationModel);
 		cloudlet.assignCloudletToDatacenter(0, 0, 0);
 
-		List<Double> mipsShare = new ArrayList<Double>();
+		List<Double> mipsShare = new ArrayList<>();
 		mipsShare.add(MIPS / 4);
 		mipsShare.add(MIPS / 4);
 		mipsShare.add(MIPS / 4);
 		mipsShare.add(MIPS / 4);
 
 		vmScheduler.setCurrentMipsShare(mipsShare);
-
 		vmScheduler.cloudletSubmit(cloudlet);
-
 		double totalCurrentMipsForCloudlet = MIPS / 4 * PES_NUMBER;
 
 		double utilization1 = utilizationModel.getUtilization(0);

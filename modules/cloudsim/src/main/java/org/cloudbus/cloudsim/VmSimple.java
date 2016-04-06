@@ -11,6 +11,7 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import org.cloudbus.cloudsim.listeners.EventListener;
 import org.cloudbus.cloudsim.resources.Resource;
 import org.cloudbus.cloudsim.resources.Bandwidth;
@@ -213,13 +214,8 @@ public class VmSimple implements Vm {
 
     @Override
     public double getCurrentRequestedMaxMips() {
-        double maxMips = 0;
-        for (double mips : getCurrentRequestedMips()) {
-            if (mips > maxMips) {
-                maxMips = mips;
-            }
-        }
-        return maxMips;
+        Optional<Double> result = getCurrentRequestedMips().stream().max(Double::compare);
+        return (result.isPresent() ? result.get() : 0.0);
     }
 
     @Override
@@ -227,6 +223,7 @@ public class VmSimple implements Vm {
         if (isBeingInstantiated()) {
             return getBw();
         }
+        
         return (long) (getCloudletScheduler().getCurrentRequestedUtilizationOfBw() * getBw());
     }
 

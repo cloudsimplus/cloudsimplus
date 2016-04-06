@@ -100,20 +100,6 @@ public class SanStorage extends HarddriveStorage {
     }
 
     @Override
-    public double addFile(final List<File> list) {
-        double result = 0.0;
-        if (list == null || list.isEmpty()) {
-            Log.printConcatLine(getName(), ".addFile(): Warning - list is empty.");
-            return result;
-        }
-
-        for(File file: list) {
-            result += this.addFile(file);    // add each file in the list
-        }
-        return result;
-    }
-
-    @Override
     public double deleteFile(final File file) {
         final double time = super.deleteFile(file);
         return time + getFileTransferTimePlusNetworkLatency(file);

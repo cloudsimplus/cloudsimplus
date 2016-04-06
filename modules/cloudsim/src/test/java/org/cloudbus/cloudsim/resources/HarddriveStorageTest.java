@@ -2,6 +2,7 @@ package org.cloudbus.cloudsim.resources;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.IntStream;
 import org.cloudbus.cloudsim.distributions.ContinuousDistribution;
 import org.cloudbus.cloudsim.distributions.ExponentialDistr;
 import org.junit.Test;
@@ -59,8 +60,8 @@ public class HarddriveStorageTest {
 
     @Test
     public void testGetNumStoredFile1() {
-        HarddriveStorage instance = createHardDrive();
         System.out.println("getNumStoredFile");
+        HarddriveStorage instance = createHardDrive();
         assertEquals(0, instance.getNumStoredFile());
         
         final int totalFiles = 2;
@@ -69,6 +70,23 @@ public class HarddriveStorageTest {
         }
         assertEquals(totalFiles, instance.getNumStoredFile());
     }
+    
+    @Test
+    public void testIsFull() {
+        System.out.println("testIsFull");
+        int numberOfFiles = (int)(CAPACITY/FILE_SIZE);
+        HarddriveStorage instance = createHardDrive(CAPACITY+FILE_SIZE);
+        IntStream.range(0, numberOfFiles).forEach(i -> {
+            instance.addFile(createNumberedFile(i, FILE_SIZE));
+            assertFalse(instance.isFull());
+        });
+        
+        instance.addFile(createNumberedFile(numberOfFiles, FILE_SIZE));
+        assertTrue(instance.isFull());
+        
+    }
+
+    
 
     @Test
     public void testGetNumStoredFile2() {
@@ -79,6 +97,9 @@ public class HarddriveStorageTest {
         final int totalFiles = 4;
         instance.addFile(createFileList(totalFiles, FILE_SIZE));
         assertEquals(totalFiles, instance.getNumStoredFile());
+        
+        final List<File> nullList = null;
+        assertEquals(0, instance.addFile(nullList), 0.0);
     }
 
     /**
@@ -135,6 +156,8 @@ public class HarddriveStorageTest {
         
         //adds the file that the space was previously reserved
         assertTrue(instance.addReservedFile(file)> 0);
+        
+        assertFalse(instance.reserveSpace(FILE_SIZE*10));
     }
     
     /**
@@ -167,6 +190,12 @@ public class HarddriveStorageTest {
             Now, checks the available space to see if remains unchanged.*/
             assertEquals(available, instance.getAvailableResource());
         }
+        
+        //a null file cannot be added
+        assertEquals(0, instance.addReservedFile(null), 0.0);
+        
+        //file larger than the available capacity
+        assertEquals(0, instance.addFile(new File("too-big-file.txt", FILE_SIZE*10)), 0.0);
         
         //accordingly, reserves space previously and then adds the reserved file
         assertTrue(instance.reserveSpace(fileSize));
@@ -390,6 +419,9 @@ public class HarddriveStorageTest {
         for(File file: fileList){
             assertEquals(file, instance.deleteFile(file.getName()));
         }
+        
+        assertEquals(null, instance.deleteFile(""));
+        assertEquals(null, instance.deleteFile("inexistent-file.txt"));
     }
 
     @Test
@@ -401,6 +433,9 @@ public class HarddriveStorageTest {
         for(File file: fileList){
             assertTrue(instance.deleteFile(file)>0);
         }
+        
+        final File nullFile = null;
+        assertEquals(0.0, instance.deleteFile(nullFile), 0.0);
     }
 
     @Test
@@ -414,6 +449,9 @@ public class HarddriveStorageTest {
         }
         
         assertFalse(instance.contains("inexistent-file.txt"));
+        final String nullStr = null;
+        assertFalse(instance.contains(nullStr));
+        assertFalse(instance.contains(""));
     }
 
     @Test
@@ -427,6 +465,8 @@ public class HarddriveStorageTest {
         }
         
         assertFalse(instance.contains(new File("inexistent-file.txt", FILE_SIZE)));
+        final File nullFile = null;
+        assertFalse(instance.contains(nullFile));
     }
 
     @Test
@@ -444,6 +484,14 @@ public class HarddriveStorageTest {
             assertEquals(file, result);
             assertEquals(file.getName(), result.getName());
         }
+        
+        File file1 = new File("file1.txt", 100), file2 = new File("file2.txt", 100);
+        instance.addFile(file1);
+        instance.addFile(file2);
+        assertFalse(instance.renameFile(file1, file2.getName()));
+        
+        File notAddedFile = new File("file3.txt", 100);
+        assertFalse(instance.renameFile(notAddedFile, "new-name.txt"));
     }
 
     @Test

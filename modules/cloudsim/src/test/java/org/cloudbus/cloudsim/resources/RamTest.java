@@ -28,6 +28,16 @@ public class RamTest {
     }
 
     @Test
+    public void testIsFull() {
+        Ram ram = createResource();
+        assertFalse(ram.isFull());
+        ram.allocateResource(HALF_CAPACITY);
+        assertFalse(ram.isFull());
+        ram.allocateResource(HALF_CAPACITY);
+        assertTrue(ram.isFull());        
+    }
+    
+    @Test
     public void testGetAndSetCapacityPriorToAllocateResource() {
         System.out.println("testGetAndSetCapacityPriorToAllocateResource");
         Integer expResult = CAPACITY;
@@ -39,6 +49,11 @@ public class RamTest {
         instance.setCapacity(expResult);
         result = instance.getCapacity();
         assertEquals(expResult, result);        
+        try{
+            instance.setCapacity(null);
+            fail("An exception should be raised when traing to set the resource capacity to null.");
+        }catch(Exception e){
+        }
 
         expResult = DOUBLE_CAPACITY;
         instance.setCapacity(expResult);

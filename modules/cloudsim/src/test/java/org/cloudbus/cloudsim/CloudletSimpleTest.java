@@ -24,8 +24,6 @@ import org.junit.Assert;
 
 import org.junit.Before;
 import org.junit.Test;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertSame;
 import org.junit.runner.RunWith;
 import org.powermock.api.easymock.PowerMock;
 import org.powermock.core.classloader.annotations.PrepareForTest;
@@ -211,7 +209,7 @@ public class CloudletSimpleTest {
 
     @Test
     public void testGetDatacenterId() {
-        Cloudlet cloudlet = createCloudlet();
+        Cloudlet cloudlet = createCloudlet(0, true);
         assertEquals(Cloudlet.NOT_ASSIGNED, cloudlet.getDatacenterId(), 0);
         
         final int datacenterId = 0;
@@ -600,5 +598,5 @@ public class CloudletSimpleTest {
         testGetUtilizationOfRam();
         testGetUtilizationOfBw();
     }
-
+   
 }
