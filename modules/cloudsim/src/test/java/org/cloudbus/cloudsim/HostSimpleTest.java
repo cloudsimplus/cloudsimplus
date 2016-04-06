@@ -46,27 +46,39 @@ public class HostSimpleTest {
 
     private HostSimple host;
 
-    public static HostSimple createHost(final int hostId, final int numberOfPes) {
-        final List<Pe> peList = new ArrayList<>(numberOfPes);
-        for (int i = 0; i < numberOfPes; i++) {
-            peList.add(new PeSimple(i, new PeProvisionerSimple(MIPS)));
-        }
+    public static HostSimple createHostSimple(final int hostId, final int numberOfPes) {
+        return createHostSimple(hostId, numberOfPes, MIPS, RAM, BW, STORAGE);
+    }
+
+    public static HostSimple createHostSimple(
+            final int hostId, final int numberOfPes,
+            final double mips, final int ram, 
+            final long bw, final long storage) {
+        List<Pe> peList = createPes(numberOfPes, mips);
 
         return new HostSimple(hostId,
-                new ResourceProvisionerSimple<>(new Ram(RAM)),
-                new ResourceProvisionerSimple<>(new Bandwidth(BW)),
-                STORAGE, peList, new VmSchedulerTimeShared(peList));
+                new ResourceProvisionerSimple<>(new Ram(ram)),
+                new ResourceProvisionerSimple<>(new Bandwidth(bw)),
+                storage, peList, new VmSchedulerTimeShared(peList));
+    }
+
+    public static final List<Pe> createPes(final int numberOfPes, final double mips) {
+        final List<Pe> peList = new ArrayList<>(numberOfPes);
+        for (int i = 0; i < numberOfPes; i++) {
+            peList.add(new PeSimple(i, new PeProvisionerSimple(mips)));
+        }
+        return peList;
     }
 
     @Before
     public void setUp() throws Exception {
-        host = createHost(ID, 2);
+        host = createHostSimple(ID, 2);
     }
 
     @Test
     public void testAddMigratingInVm() {
         final int numberOfPes = 2;
-        Host host = createHost(0, numberOfPes);
+        Host host = createHostSimple(0, numberOfPes);
         VmSimple vm = VmSimpleTest.createVm(0, MIPS, numberOfPes, RAM, BW, STORAGE, new CloudletSchedulerTimeShared());
         vm.setHost(Host.NULL);
         try {
@@ -119,7 +131,7 @@ public class HostSimpleTest {
     @Test
     public void testRemoveMigratingInVm() {
         final int numberOfPes = 2;
-        Host host = createHost(0, numberOfPes);
+        Host host = createHostSimple(0, numberOfPes);
         VmSimple vm = VmSimpleTest.createVm(0, MIPS, numberOfPes, RAM, BW, STORAGE, new CloudletSchedulerTimeShared());
         vm.setHost(Host.NULL);
         host.addMigratingInVm(vm);
@@ -131,7 +143,7 @@ public class HostSimpleTest {
     @Test
     public void testReallocateMigratingInVms() {
         final int numberOfPes = 1;
-        Host host = createHost(0, numberOfPes);
+        Host host = createHostSimple(0, numberOfPes);
         VmSimple vm = VmSimpleTest.createVm(0, MIPS, numberOfPes, RAM, BW, STORAGE, new CloudletSchedulerTimeShared());
         vm.setHost(Host.NULL);
         vm.setBeingInstantiated(true);
@@ -154,7 +166,7 @@ public class HostSimpleTest {
 
     @Test
     public void testSetOnUpdateVmsProcessingListener() {
-        Host host = createHost(0, 1);
+        Host host = createHostSimple(0, 1);
         host.setOnUpdateVmsProcessingListener(null);
         assertEquals(EventListener.NULL, host.getOnUpdateVmsProcessingListener());
         EventListener<Host, Double> listener = (t,h,nt)->{};

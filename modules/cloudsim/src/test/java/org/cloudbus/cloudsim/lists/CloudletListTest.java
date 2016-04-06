@@ -20,6 +20,15 @@ public class CloudletListTest {
     private static final int CLOUDLET_LENGTH = 1000;
     private static final int CLOUDLET_PES = 1;
     private static final int CLOUDLET_LENGTH_ARRAY[] = {300, 500, 200, 400, 600, 100, 900, 800, 700};
+    private final List<CloudletSimple> simpleCloudletList;
+    private final List<NetworkCloudlet> networkCloudletList;
+
+    public CloudletListTest() {
+        this.simpleCloudletList = createSimpleCloudlets();
+        this.networkCloudletList = createNetworkCloudlets();
+    }
+    
+    
     
     /**
      * Creates the number of cloudlets defined by the length of the cloudletLengths array
@@ -64,49 +73,45 @@ public class CloudletListTest {
     @Test
     public void testGetByIdSimpleCloudlet() {
         System.out.println("getById");
-        List<CloudletSimple> list = createSimpleCloudlets();
         int id = 0;
-        Cloudlet expResult = list.get(0);
-        Cloudlet result = CloudletList.getById(list, id);
+        Cloudlet expResult = simpleCloudletList.get(0);
+        Cloudlet result = CloudletList.getById(simpleCloudletList, id);
         assertEquals(expResult, result);
-        assertEquals(null, CloudletList.getById(list, -1));
-        assertEquals(null, CloudletList.getById(list, NUMBER_OF_CLOUDLETS));
+        assertEquals(null, CloudletList.getById(simpleCloudletList, -1));
+        assertEquals(null, CloudletList.getById(simpleCloudletList, NUMBER_OF_CLOUDLETS));
     }
 
     @Test
     public void testGetByIdNetworkCloudlet() {
         System.out.println("getById");
-        List<NetworkCloudlet> list = createNetworkCloudlets();
         int id = 0;
-        Cloudlet expResult = list.get(0);
-        Cloudlet result = CloudletList.getById(list, id);
+        Cloudlet expResult = networkCloudletList.get(0);
+        Cloudlet result = CloudletList.getById(networkCloudletList, id);
         assertEquals(expResult, result);
-        assertEquals(null, CloudletList.getById(list, -1));
-        assertEquals(null, CloudletList.getById(list, NUMBER_OF_CLOUDLETS));
+        assertEquals(null, CloudletList.getById(networkCloudletList, -1));
+        assertEquals(null, CloudletList.getById(networkCloudletList, NUMBER_OF_CLOUDLETS));
     }
 
     @Test
     public void testGetPositionByIdSimpleCloudlet() {
         System.out.println("getPositionById");
-        List<CloudletSimple> list = createSimpleCloudlets();
         int id = NUMBER_OF_CLOUDLETS-1;
         int expResult = id;
-        int result = CloudletList.getPositionById(list, id);
+        int result = CloudletList.getPositionById(simpleCloudletList, id);
         assertEquals(expResult, result);
-        assertEquals(CloudletList.NOT_FOUND_INDEX, CloudletList.getPositionById(list, -1));
-        assertEquals(CloudletList.NOT_FOUND_INDEX, CloudletList.getPositionById(list, NUMBER_OF_CLOUDLETS));
+        assertEquals(CloudletList.NOT_FOUND_INDEX, CloudletList.getPositionById(simpleCloudletList, -1));
+        assertEquals(CloudletList.NOT_FOUND_INDEX, CloudletList.getPositionById(simpleCloudletList, NUMBER_OF_CLOUDLETS));
     }
 
     @Test
     public void testGetPositionByIdNetworkCloudlet() {
         System.out.println("getPositionById");
-        List<NetworkCloudlet> list = createNetworkCloudlets();
         int id = NUMBER_OF_CLOUDLETS-1;
         int expResult = id;
-        int result = CloudletList.getPositionById(list, id);
+        int result = CloudletList.getPositionById(networkCloudletList, id);
         assertEquals(expResult, result);
-        assertEquals(CloudletList.NOT_FOUND_INDEX, CloudletList.getPositionById(list, -1));
-        assertEquals(CloudletList.NOT_FOUND_INDEX, CloudletList.getPositionById(list, NUMBER_OF_CLOUDLETS));
+        assertEquals(CloudletList.NOT_FOUND_INDEX, CloudletList.getPositionById(networkCloudletList, -1));
+        assertEquals(CloudletList.NOT_FOUND_INDEX, CloudletList.getPositionById(networkCloudletList, NUMBER_OF_CLOUDLETS));
     }
 
     @Test
