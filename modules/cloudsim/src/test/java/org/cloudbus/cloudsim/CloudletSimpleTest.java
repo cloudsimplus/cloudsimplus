@@ -313,20 +313,20 @@ public class CloudletSimpleTest {
         assertEquals(valid, cloudlet.getNetServiceLevel());
     }
 
-    private CloudletSimple createCloudlet() {
+    private static CloudletSimple createCloudlet() {
         return createCloudlet(0);
     }
 
-    private CloudletSimple createCloudlet(final int id) {
+    public static CloudletSimple createCloudlet(final int id) {
         return createCloudlet(id, false);
     }
     
-    private CloudletSimple createCloudlet(final int id, boolean recordLog) {
+    private static CloudletSimple createCloudlet(final int id, boolean recordLog) {
         final UtilizationModel cpuRamAndBwUtilizationModel = new UtilizationModelFull();
         return createCloudlet(id, cpuRamAndBwUtilizationModel, recordLog);
     }
 
-    private CloudletSimple createCloudlet(
+    private static CloudletSimple createCloudlet(
             final int id, 
             UtilizationModel cpuRamAndBwUtilizationModel, boolean recordLog) {
         return createCloudlet(id, cpuRamAndBwUtilizationModel,
@@ -334,7 +334,7 @@ public class CloudletSimpleTest {
                 cpuRamAndBwUtilizationModel, recordLog);
     }
 
-    private CloudletSimple createCloudlet(final int id, UtilizationModel utilizationModelCPU,
+    private static CloudletSimple createCloudlet(final int id, UtilizationModel utilizationModelCPU,
             UtilizationModel utilizationModelRAM,
             UtilizationModel utilizationModelBW,
             boolean recordLog) {

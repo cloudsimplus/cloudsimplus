@@ -75,8 +75,9 @@ public class WorkflowApp extends AppCloudlet {
         cl.setVmId(vmIdList.get(i));
 
         // first stage: big computation
-        cl.stages.add(new TaskStage(NetworkConstants.EXECUTION, 0, 1000 * 0.8, 0, memory, vmIdList.get(0), cl
-                .getId()));
+        cl.stages.add(new 
+            TaskStage(NetworkConstants.EXECUTION, 0, 1000 * 0.8, 0, memory, 
+                    vmIdList.get(0), cl.getId()));
         cl.stages.add(new TaskStage(NetworkConstants.WAIT_SEND, 1000, 0, 1, memory, vmIdList.get(2), cl
                 .getId() + 2));
         clist.add(cl);
