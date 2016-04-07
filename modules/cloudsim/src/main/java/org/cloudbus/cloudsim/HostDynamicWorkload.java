@@ -99,7 +99,4 @@ public interface HostDynamicWorkload extends Host {
      * @return the utilization of memory
      */
     int getUtilizationOfRam();
-
-    double updateVmsProcessing(double currentTime);
-    
 }

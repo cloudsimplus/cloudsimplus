@@ -58,6 +58,9 @@ public abstract class VmAllocationPolicyAbstract implements VmAllocationPolicy {
      * @param hostList the new host list
      */
     protected final void setHostList(List<? extends Host> hostList) {
+        if(hostList == null || hostList.isEmpty())
+            throw new IllegalArgumentException("hostList cannot be null or empty.");
+        
         this.hostList = hostList;
     }
 

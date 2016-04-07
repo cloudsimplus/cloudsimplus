@@ -149,6 +149,5 @@ public interface ResourceProvisioner<T extends Number & Comparable<T>> {
         @Override public boolean isSuitableForVm(Vm vm, Integer newVmTotalAllocatedResource) { return false; }
         @Override public Integer getCapacity() { return 0; }
         @Override public Integer getAvailableResource() { return 0; }
-    };        
-
+    };     
 }

@@ -39,7 +39,7 @@ public class PowerVmAllocationPolicySimple extends PowerVmAllocationPolicyAbstra
      *
      * @param list the list
      */
-    public PowerVmAllocationPolicySimple(List<PowerHost> list) {
+    public PowerVmAllocationPolicySimple(List<? extends PowerHost> list) {
         super(list);
     }
 
