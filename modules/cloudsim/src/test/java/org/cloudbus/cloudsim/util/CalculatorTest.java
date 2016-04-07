@@ -108,7 +108,7 @@ public class CalculatorTest {
     }
 
     @Test
-    public void testMax() {
+    public void testMax_maxAtFirstParam() {
         System.out.println("max");
         assertEquals(12D, new Calculator<>(0D).max(12D, 2D), 0D);
         assertEquals(12F, new Calculator<>(0F).max(12F, 2F), 0F);
@@ -117,118 +117,133 @@ public class CalculatorTest {
 
         short shortRes=12, shortA=12, shortB=2, shortZero=0;
         assertEquals(shortRes, new Calculator<>(shortZero).max(shortA, shortB), shortZero);
-        
+    }
+
+    @Test
+    public void testMax_maxAtSecondParam() {
         byte byteRes=12, byteA=12, byteB=2, byteZero=0;
+        short shortRes=12, shortA=12, shortB=2, shortZero=0;
         assertEquals(byteRes, new Calculator<>(byteZero).max(byteA, byteB), byteZero);
-        
         assertEquals(12D, new Calculator<>(0D).max(2D, 12D), 0D);
         assertEquals(12F, new Calculator<>(0F).max(2F, 12F), 0F);
         assertEquals(12L, new Calculator<>(0L).max(2L, 12L), 0L);
         assertEquals(12, new Calculator<>(0).max(2, 12), 0);
-
         assertEquals(shortRes, new Calculator<>(shortZero).max(shortB, shortA), shortZero);
         assertEquals(byteRes, new Calculator<>(byteZero).max(byteB, byteA), byteZero);        
     }
 
     @Test
-    public void testAbs() {
+    public void testAbs_negativeValues() {
         System.out.println("abs");
         assertEquals(12D, new Calculator<>(0D).abs(-12D), 0D);
         assertEquals(12F, new Calculator<>(0F).abs(-12F), 0F);
         assertEquals(12L, new Calculator<>(0L).abs(-12L), 0L);
         assertEquals(12, new Calculator<>(0).abs(-12), 0);
 
-        assertEquals(12D, new Calculator<>(0D).abs(12D), 0D);
-        assertEquals(12F, new Calculator<>(0F).abs(12F), 0F);
-        assertEquals(12L, new Calculator<>(0L).abs(12L), 0L);
-        assertEquals(12, new Calculator<>(0).abs(12), 0);
-
         short shortRes=12, shortA=-12, shortZero=0;
         assertEquals(shortRes, new Calculator<>(shortZero).abs(shortA), shortZero);
         
         byte byteRes=12, byteA=-12, byteZero=0;
         assertEquals(byteRes, new Calculator<>(byteZero).abs(byteA), byteZero);
-        
-        shortA=12;
-        assertEquals(shortRes, new Calculator<>(shortZero).abs(shortA), shortZero);
-        
-        byteA=12;
-        assertEquals(byteRes, new Calculator<>(byteZero).abs(byteA), byteZero);
-        
     }
 
     @Test
-    public void testIsNegativeOrZero() {
-        System.out.println("isNegativeOrZero");
-        assertTrue(new Calculator<>(0D).isNegativeOrZero(-12D));
-        assertTrue(new Calculator<>(0F).isNegativeOrZero(-12F));
-        assertTrue(new Calculator<>(0L).isNegativeOrZero(-12L));
-        assertTrue(new Calculator<>(0).isNegativeOrZero(-12));
+    public void testAbs_positiveValues() {
+        assertEquals(12D, new Calculator<>(0D).abs(12D), 0D);
+        assertEquals(12F, new Calculator<>(0F).abs(12F), 0F);
+        assertEquals(12L, new Calculator<>(0L).abs(12L), 0L);
+        assertEquals(12, new Calculator<>(0).abs(12), 0);
+
+        short shortRes = 12, shortA=12, shortZero = 0;
+        assertEquals(shortRes, new Calculator<>(shortZero).abs(shortA), shortZero);
         
-        assertTrue(new Calculator<>(0D).isNegativeOrZero(0D));
-        assertTrue(new Calculator<>(0F).isNegativeOrZero(0F));
-        assertTrue(new Calculator<>(0L).isNegativeOrZero(0L));
-        assertTrue(new Calculator<>(0).isNegativeOrZero(0));
+        byte byteRes = 12, byteA=12, byteZero = 0;
+        assertEquals(byteRes, new Calculator<>(byteZero).abs(byteA), byteZero);
+    }
+
+    @Test
+    public void testIsNegativeOrZero_positiveValues() {
+        System.out.println("testIsNegativeOrZero_positiveValues");
         
         assertFalse(new Calculator<>(0D).isNegativeOrZero(1D));
         assertFalse(new Calculator<>(0F).isNegativeOrZero(1F));
         assertFalse(new Calculator<>(0L).isNegativeOrZero(1L));
         assertFalse(new Calculator<>(0).isNegativeOrZero(1));
-
-        short shortA=-12, shortZero=0;
-        assertTrue(new Calculator<>(shortZero).isNegativeOrZero(shortA));
         
-        byte byteA=-12,  byteZero=0;
-        assertTrue(new Calculator<>(byteZero).isNegativeOrZero(byteA));
+        short shortA=1;
+        assertFalse(new Calculator<>(shortA).isNegativeOrZero(shortA));
         
-        shortA=0;
-        assertTrue(new Calculator<>(shortZero).isNegativeOrZero(shortA));
-        
-        byteA=0;
-        assertTrue(new Calculator<>(byteZero).isNegativeOrZero(byteA));
-        
-        shortA=1;
-        assertFalse(new Calculator<>(shortZero).isNegativeOrZero(shortA));
-        
-        byteA=1;
-        assertFalse(new Calculator<>(byteZero).isNegativeOrZero(byteA));
+        byte byteA=1;
+        assertFalse(new Calculator<>(byteA).isNegativeOrZero(byteA));
     }
 
     @Test
-    public void testIsNegative() {
-        System.out.println("isNegative");
-        assertTrue(new Calculator<>(0D).isNegative(-12D));
-        assertTrue(new Calculator<>(0F).isNegative(-12F));
-        assertTrue(new Calculator<>(0L).isNegative(-12L));
-        assertTrue(new Calculator<>(0).isNegative(-12));
+    public void testIsNegativeOrZero_zeroValues() {
+        assertTrue(new Calculator<>(0D).isNegativeOrZero(0D));
+        assertTrue(new Calculator<>(0F).isNegativeOrZero(0F));
+        assertTrue(new Calculator<>(0L).isNegativeOrZero(0L));
+        assertTrue(new Calculator<>(0).isNegativeOrZero(0));
+        byte byteZero = 0;
+        assertTrue(new Calculator<>(byteZero).isNegativeOrZero(byteZero));
+        short shortZero = 0;
+        assertTrue(new Calculator<>(shortZero).isNegativeOrZero(shortZero));
+    }
+
+    @Test
+    public void testIsNegativeOrZero_negativeValues() {
+        assertTrue(new Calculator<>(0D).isNegativeOrZero(-12D));
+        assertTrue(new Calculator<>(0F).isNegativeOrZero(-12F));
+        assertTrue(new Calculator<>(0L).isNegativeOrZero(-12L));
+        assertTrue(new Calculator<>(0).isNegativeOrZero(-12));
         
+        short shortA=-12;
+        assertTrue(new Calculator<>(shortA).isNegativeOrZero(shortA));
+        
+        byte byteA=-12;
+        assertTrue(new Calculator<>(byteA).isNegativeOrZero(byteA));
+        
+    }
+
+    @Test
+    public void testIsNegative_zeroValues() {
+        System.out.println("isNegative");
         assertFalse(new Calculator<>(0D).isNegative(0D));
         assertFalse(new Calculator<>(0F).isNegative(0F));
         assertFalse(new Calculator<>(0L).isNegative(0L));
         assertFalse(new Calculator<>(0).isNegative(0));
         
+        short shortA=0;
+        assertFalse(new Calculator<>(shortA).isNegative(shortA));
+        
+        byte byteA=0;
+        assertFalse(new Calculator<>(byteA).isNegative(byteA));
+        
+    }
+
+    @Test
+    public void testIsNegative_positiveValues() {
         assertFalse(new Calculator<>(0D).isNegative(1D));
         assertFalse(new Calculator<>(0F).isNegative(1F));
         assertFalse(new Calculator<>(0L).isNegative(1L));
         assertFalse(new Calculator<>(0).isNegative(1));
+        short shortA=1;
+        assertFalse(new Calculator<>(shortA).isNegative(shortA));
+        
+        byte byteA=1;
+        assertFalse(new Calculator<>(byteA).isNegative(byteA));
+    }
 
-        short shortA=-12, shortZero=0;
-        assertTrue(new Calculator<>(shortZero).isNegative(shortA));
+    @Test
+    public void testIsNegative_negativeValues() {
+        assertTrue(new Calculator<>(0D).isNegative(-12D));
+        assertTrue(new Calculator<>(0F).isNegative(-12F));
+        assertTrue(new Calculator<>(0L).isNegative(-12L));
+        assertTrue(new Calculator<>(0).isNegative(-12));
+        short shortA=-12;
+        assertTrue(new Calculator<>(shortA).isNegative(shortA));
         
-        byte byteA=-12,  byteZero=0;
-        assertTrue(new Calculator<>(byteZero).isNegative(byteA));
-        
-        shortA=0;
-        assertFalse(new Calculator<>(shortZero).isNegative(shortA));
-        
-        byteA=0;
-        assertFalse(new Calculator<>(byteZero).isNegative(byteA));
-        
-        shortA=1;
-        assertFalse(new Calculator<>(shortZero).isNegative(shortA));
-        
-        byteA=1;
-        assertFalse(new Calculator<>(byteZero).isNegative(byteA));
+        byte byteA=-12;
+        assertTrue(new Calculator<>(byteA).isNegative(byteA));
     }
 
     @Test

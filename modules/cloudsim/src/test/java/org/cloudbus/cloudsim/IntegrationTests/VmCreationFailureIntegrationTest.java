@@ -22,6 +22,7 @@ import org.cloudbus.cloudsim.util.TextTableBuilder;
 import org.cloudbus.cloudsim.utilizationmodels.UtilizationModelFull;
 import org.junit.Test;
 import static org.junit.Assert.*;
+import org.junit.Before;
 
 /**
  *
@@ -66,7 +67,7 @@ public final class VmCreationFailureIntegrationTest {
     /** The number of times a VM failed to be created due to lack of host resources. */
     private int numberOfVmCreationFailures = 0;
 
-    private final SimulationScenarioBuilder scenario;
+    private SimulationScenarioBuilder scenario;
 
     /**
      * A lambda function used by an {@link EventListener} 
@@ -162,11 +163,8 @@ public final class VmCreationFailureIntegrationTest {
         assertEquals(200, host.getAvailableMips(), 0);
     }
 
-    /**
-     * Default constructor that instantiates and initializes the required
-     * objects for the Integration Test.
-     */
-    public VmCreationFailureIntegrationTest() {
+    @Before
+    public void setUp() {
         CloudSim.init(1, Calendar.getInstance(), false);
         CloudSim.setOnEventProcessingListener((t,c,e) -> onEventProcessing(t,c,e));
         scenario = new SimulationScenarioBuilder();

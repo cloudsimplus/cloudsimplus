@@ -1,7 +1,6 @@
 package org.cloudbus.cloudsim;
 
 import java.util.Collections;
-import java.util.List;
 import org.cloudbus.cloudsim.listeners.EventListener;
 import org.cloudbus.cloudsim.provisioners.ResourceProvisioner;
 import org.cloudbus.cloudsim.resources.Pe;

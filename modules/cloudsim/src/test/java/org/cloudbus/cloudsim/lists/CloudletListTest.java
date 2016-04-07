@@ -3,13 +3,13 @@ package org.cloudbus.cloudsim.lists;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.stream.IntStream;
 import org.cloudbus.cloudsim.Cloudlet;
 import org.cloudbus.cloudsim.CloudletSimple;
 import org.cloudbus.cloudsim.network.datacenter.NetworkCloudlet;
 import org.cloudbus.cloudsim.utilizationmodels.UtilizationModel;
 import org.junit.Test;
 import static org.junit.Assert.*;
+import org.junit.Before;
 
 /**
  *
@@ -20,15 +20,14 @@ public class CloudletListTest {
     private static final int CLOUDLET_LENGTH = 1000;
     private static final int CLOUDLET_PES = 1;
     private static final int CLOUDLET_LENGTH_ARRAY[] = {300, 500, 200, 400, 600, 100, 900, 800, 700};
-    private final List<CloudletSimple> simpleCloudletList;
-    private final List<NetworkCloudlet> networkCloudletList;
+    private List<CloudletSimple> simpleCloudletList;
+    private List<NetworkCloudlet> networkCloudletList;
 
-    public CloudletListTest() {
+    @Before
+    public void setUp() {
         this.simpleCloudletList = createSimpleCloudlets();
         this.networkCloudletList = createNetworkCloudlets();
     }
-    
-    
     
     /**
      * Creates the number of cloudlets defined by the length of the cloudletLengths array

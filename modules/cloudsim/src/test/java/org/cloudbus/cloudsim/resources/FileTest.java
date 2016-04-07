@@ -35,30 +35,27 @@ public class FileTest {
                 "An exception should'nt be raised when creating a file with valid name %s and size %d",
                  NAME, SIZE));
         }
-        
-        try {
-            new File("", 100);
-            fail("An exception should be raised when creating a file with empty name");
-        } catch (Exception e) {
-        }
-        
-        try {
-            new File(null, 100);
-            fail("An exception should be raised when creating a file with null name");
-        } catch (Exception e) {
-        }
+                
+    }
 
-        try {
-            new File("file1", 0);
-            fail("An exception should be raised when creating a file zero size");
-        } catch (Exception e) {
-        }
-        
-        try {
-            new File("file1", -1);
-            fail("An exception should be raised when creating a file negative size");
-        } catch (Exception e) {
-        }
+    @Test(expected = IllegalArgumentException.class)
+    public void testCreate_nullName() {
+        new File(null, 100);
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void testCreate_zeroSize() {
+        new File("file1", 0);
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void testCreate_negativeSize() {
+        new File("file1", -1);
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void testCreateFile_emptyName() {
+        new File("", 100);
     }
 
     @Test
@@ -112,7 +109,6 @@ public class FileTest {
         File instance = createFile();
         instance.setName(name);
         assertEquals(name, instance.getName());
-        
     }
 
     @Test
@@ -232,10 +228,8 @@ public class FileTest {
         assertEquals(checksum2, instance.getChecksum(), 0);
 
         assertFalse(instance.setChecksum(-1));
-        assertEquals(checksum2, instance.getChecksum(), 0);
-        
+        assertEquals(checksum2, instance.getChecksum(), 0);   
     }
-
 
     @Test
     public void testSetCost() {
@@ -254,7 +248,6 @@ public class FileTest {
         final double newCost = 20;
         assertTrue(instance.setCost(newCost));
         assertEquals(newCost, instance.getCost(), 0.0);
-        
     }
 
     @Test

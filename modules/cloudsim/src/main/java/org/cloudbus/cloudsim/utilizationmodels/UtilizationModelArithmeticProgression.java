@@ -12,6 +12,11 @@ public class UtilizationModelArithmeticProgression implements UtilizationModel {
      */
     public static final double ONE_PERCENT = 0.1;
     
+    /**
+     * The value that represents 100%, taking a scale from 0 to 1.
+     */
+    public static final double HUNDRED_PERCENT = 1;
+
     /**@see #getUtilizationPercentageIncrementPerSecond() */
     private double utilizationPercentageIncrementPerSecond = ONE_PERCENT;
     
@@ -19,7 +24,7 @@ public class UtilizationModelArithmeticProgression implements UtilizationModel {
     private double initialUtilization = 0;
         
     /** @see #getMaxResourceUsagePercentage() */
-    private double maxResourceUsagePercentage = 1;
+    private double maxResourceUsagePercentage = HUNDRED_PERCENT;
 
     public UtilizationModelArithmeticProgression() {
     }
@@ -82,7 +87,9 @@ public class UtilizationModelArithmeticProgression implements UtilizationModel {
      */
     private void setUtilizationPercentageIncrementPerSecond(double utilizationPercentageIncrementPerSecond) {
         if(utilizationPercentageIncrementPerSecond > 1)
-           throw new RuntimeException("Utilization percenrtage increment cannot be greater than 1 (100%)");
+           throw new IllegalArgumentException("utilizationPercentageIncrementPerSecond cannot be greater than 1 (100%)");
+        if(utilizationPercentageIncrementPerSecond < -1)
+           throw new IllegalArgumentException("utilizationPercentageIncrementPerSecond cannot be lower than -1 (-100%)");
         this.utilizationPercentageIncrementPerSecond = utilizationPercentageIncrementPerSecond;
     }
 
@@ -104,7 +111,7 @@ public class UtilizationModelArithmeticProgression implements UtilizationModel {
      */
     private void setInitialUtilization(double initialUtilization) {
         if(initialUtilization < 0 || initialUtilization > 1)
-           throw new RuntimeException("Initial utilization must to be a percentage value between [0 and 1] (0 to 100%)");
+           throw new IllegalArgumentException("initialUtilization must to be a percentage value between [0 and 1] (0 to 100%)");
         
         this.initialUtilization = initialUtilization;
     }
@@ -119,9 +126,11 @@ public class UtilizationModelArithmeticProgression implements UtilizationModel {
 
     /**
      * Sets the maximum percentage of resource of resource that will be used.
-     * @param maxResourceUsagePercentage the maximum resource usage percentage (in scale from [0 to 1], where 1 is equals 100%)
+     * @param maxResourceUsagePercentage the maximum resource usage percentage (in scale from ]0 to 1], where 1 is equals 100%)
      */
     public void setMaxResourceUsagePercentage(double maxResourceUsagePercentage) {
+        if(maxResourceUsagePercentage <= 0 || maxResourceUsagePercentage > 1)
+           throw new IllegalArgumentException("maxResourceUsagePercentagen must to be a percentage value between ]0 and 1]");
         this.maxResourceUsagePercentage = maxResourceUsagePercentage;
     }    
 }

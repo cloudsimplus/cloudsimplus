@@ -52,6 +52,7 @@ public class ResCloudletList {
      * combination of Cloudlet Id and User Id because each Cloud User might have
      * exactly the same Cloudlet Id.
      *
+     * @param <T>
      * @param cloudletId a Cloudlet Id
      * @param userId an User Id
      * @param list the list of ResCloudlets
@@ -75,6 +76,7 @@ public class ResCloudletList {
     /**
      * Moves a ResCloudlet object from a list to another.
      *
+     * @param <T>
      * @param listFrom the source list
      * @param listTo the destination list
      * @param cloudlet the cloudlet to be moved from the source to the
@@ -96,6 +98,7 @@ public class ResCloudletList {
     /**
      * Gets the position of a ResCloudlet with a given id.
      *
+     * @param <T>
      * @param cloudletList the list of cloudlets.
      * @param id the cloudlet id
      * @return the position of the cloudlet with that id, or -1 if not found.

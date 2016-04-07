@@ -15,7 +15,6 @@ import static org.junit.Assert.assertTrue;
 
 import org.cloudbus.cloudsim.VmSimple;
 import org.cloudbus.cloudsim.resources.Resource;
-import static org.junit.Assert.fail;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -49,13 +48,9 @@ public class ResourceProvisionerSimpleTest {
         return new ResourceProvisionerSimple(resource);
     }
 
-    @Test
-    public void testCreateProvisioner() {
-        try {
-            createSimpleProvisioner(null);
-            fail("It was expected an exception to be raised when trying to create a provisioner with a null resource");
-        } catch (Exception e) {
-        }
+    @Test(expected = IllegalArgumentException.class)
+    public void testCreateProvisioner_null() {
+        createSimpleProvisioner(null);
     }
 
     @Test

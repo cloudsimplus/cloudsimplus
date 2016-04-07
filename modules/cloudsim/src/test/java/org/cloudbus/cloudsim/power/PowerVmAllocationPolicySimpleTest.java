@@ -12,28 +12,26 @@ import static org.junit.Assert.*;
  */
 public class PowerVmAllocationPolicySimpleTest {
     @Test
-    public void testConstructor() {
+    public void testNew() {
         System.out.println("optimizeAllocation");
-        
-        try {
-            new PowerVmAllocationPolicySimple(null);
-            fail("An exception should be raised when trying to create a PowerVmAllocationPolicySimple with null host list");
-        } catch (Exception e) {
-        }
-
-        List<PowerHost> hosts = new ArrayList<>();
-        try {
-            new PowerVmAllocationPolicySimple(hosts);
-            fail("An exception should be raised when trying to create a PowerVmAllocationPolicySimple with empty host list");
-        } catch (Exception e) {
-        }
-        
+        List<PowerHost> hosts = new ArrayList<>();        
         try {
             hosts.add(PowerHost.NULL);
             new PowerVmAllocationPolicySimple(hosts);            
         } catch (Exception e) {
             fail("An exception should not be raised when creating a PowerVmAllocationPolicySimple with non empty host list");
         }
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void testNew_emptyHostList() {
+        List<PowerHost> hosts = new ArrayList<>();
+        new PowerVmAllocationPolicySimple(hosts);
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void testNew_nullHostList() {
+        new PowerVmAllocationPolicySimple(null);
     }
 
     @Test

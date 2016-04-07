@@ -1,7 +1,6 @@
 package org.cloudbus.cloudsim;
 
 import java.util.Collections;
-import java.util.List;
 import org.cloudbus.cloudsim.listeners.EventListener;
 import org.cloudbus.cloudsim.power.PowerHost;
 import org.cloudbus.cloudsim.resources.Resource;
@@ -78,7 +77,7 @@ public class VmTest {
 
         instance.setUid("123");
         assertEquals("", instance.getUid());
-
+        assertEquals(0, instance.getId());
         assertEquals(0, instance.getUserId(), 0);
         assertEquals("", instance.getVmm());
         

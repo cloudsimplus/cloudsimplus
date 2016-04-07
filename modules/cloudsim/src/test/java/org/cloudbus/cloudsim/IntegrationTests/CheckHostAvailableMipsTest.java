@@ -16,6 +16,7 @@ import org.cloudbus.cloudsim.utilizationmodels.UtilizationModel;
 import org.cloudbus.cloudsim.utilizationmodels.UtilizationModelFull;
 import org.junit.Test;
 import static org.junit.Assert.*;
+import org.junit.Before;
 
 /**
  *
@@ -42,8 +43,8 @@ public final class CheckHostAvailableMipsTest {
     private static final int CLOUDLET_LENGTH = HOST_MIPS*10;
     private static final int NUMBER_OF_CLOUDLETS = NUMBER_OF_VMS;
 
-    private final SimulationScenarioBuilder scenario;
-    private final UtilizationModel utilizationModel = new UtilizationModelFull();
+    private SimulationScenarioBuilder scenario;
+    private UtilizationModel utilizationModel;
     
     /**
      * Checks if the amount of available Host CPU is as expected,
@@ -80,12 +81,10 @@ public final class CheckHostAvailableMipsTest {
                 expectedAvailableHostMips, host.getAvailableMips(), 0);
     }
 
-    /**
-     * Default constructor that instantiates and initializes the required
-     * objects for the Integration Test.
-     */
-    public CheckHostAvailableMipsTest() {
+    @Before
+    public void setUp() {
         CloudSim.init(1, Calendar.getInstance(), false);
+        utilizationModel = new UtilizationModelFull();
         scenario = new SimulationScenarioBuilder();
         scenario.getDatacenterBuilder().setSchedulingInterval(2).createDatacenter(
             new HostBuilder()

@@ -3,7 +3,8 @@ package org.cloudbus.cloudsim.util;
 import org.cloudbus.cloudsim.Cloudlet;
 
 /**
- * A data class to store expected results about the execution of a given cloudlet.
+ * A data class to store expected results about the execution of a given cloudlet
+ * during unit test execution.
  * The class is supposed to be used by Unit and Integration/Functional Tests
  * in order to validate the results of a executed cloudlet.
  * 

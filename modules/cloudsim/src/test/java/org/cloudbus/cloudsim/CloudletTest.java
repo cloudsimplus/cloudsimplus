@@ -99,7 +99,6 @@ public class CloudletTest {
         
         Cloudlet.NULL.setUtilizationModelRam(um);
         assertSame(UtilizationModel.NULL, Cloudlet.NULL.getUtilizationModelRam());
-        
     }
     
 }

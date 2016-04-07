@@ -8,13 +8,14 @@ import static org.junit.Assert.*;
  *
  * @author Manoel Campos da Silva Filho
  */
-public class UtilizationModelFullTest {
-    private static final int EXPECTED_UTILIZATION = 1;
+public class UtilizationModelZeroTest {
+    
+    private static final int EXPECTED_UTILIZATION = 0;
     
     @Test
     public void testGetUtilizationForDifferentTimes() {
         System.out.println("getUtilization");
-        UtilizationModelFull instance = new UtilizationModelFull();
+        UtilizationModelZero instance = new UtilizationModelZero();
         String msg = 
             String.format(
                 "For any time (even a randomly defined one), the utilization has to be equals to %d", 

@@ -49,16 +49,17 @@ public class RamTest {
         instance.setCapacity(expResult);
         result = instance.getCapacity();
         assertEquals(expResult, result);        
-        try{
-            instance.setCapacity(null);
-            fail("An exception should be raised when traing to set the resource capacity to null.");
-        }catch(Exception e){
-        }
 
         expResult = DOUBLE_CAPACITY;
         instance.setCapacity(expResult);
         result = instance.getCapacity();
         assertEquals(expResult, result);        
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void testNewRam_nullCapacity() {
+        final Ram instance = createResource();
+        instance.setCapacity(null);
     }
 
     @Test
@@ -214,12 +215,10 @@ public class RamTest {
     public void testCapacityHasBeenSet() {
         System.out.println("capacityHasBeenSet");
         final Ram instance = createResource();
-        boolean result = instance.capacityHasBeenSet();
-        assertTrue(result);
+        assertTrue(instance.capacityHasBeenSet());
         
         instance.setCapacity(DOUBLE_CAPACITY);
-        result = instance.capacityHasBeenSet();
-        assertTrue(result);        
+        assertTrue(instance.capacityHasBeenSet());        
     }
 
     @Test
@@ -252,8 +251,7 @@ public class RamTest {
 
         //Half of the capacity freely available
         availableResource = HALF_CAPACITY;
-        boolean result = instance.setAvailableResource(availableResource);
-        assertTrue(result);
+        assertTrue(instance.setAvailableResource(availableResource));
         assertEquals(availableResource, instance.getAvailableResource());
         assertEquals(availableResource, instance.getAllocatedResource());
         assertFalse(instance.setAvailableResource(-1));
@@ -283,7 +281,6 @@ public class RamTest {
         assertFalse(instance.allocateResource(amountToAllocate));
         result = instance.getAllocatedResource();
         assertEquals(expResult, result);
-        
     }
     
     @Test
@@ -379,7 +376,6 @@ public class RamTest {
         
         assertFalse(instance.sumAvailableResource(amountToSum));
         assertEquals(CAPACITY, instance.getAvailableResource());
-        
     }
 
     @Test

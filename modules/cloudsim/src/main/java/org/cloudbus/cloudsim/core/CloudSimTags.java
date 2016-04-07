@@ -7,8 +7,6 @@
  */
 package org.cloudbus.cloudsim.core;
 
-import org.cloudbus.cloudsim.DatacenterSimple;
-
 /**
  * Contains various static command tags that indicate a type of action that
  * needs to be undertaken by CloudSim entities when they receive or send events.

@@ -15,6 +15,7 @@ import org.cloudbus.cloudsim.util.TextTableBuilder;
 import org.cloudbus.cloudsim.utilizationmodels.UtilizationModelArithmeticProgression;
 import org.junit.Test;
 import static org.junit.Assert.*;
+import org.junit.Before;
 import org.junit.Ignore;
 
 /**
@@ -35,8 +36,8 @@ public final class CheckHostAvailableMipsDynamicUtilizationTest {
     private static final int CLOUDLET_LENGTH = HOST_MIPS*10;
     private static final int NUMBER_OF_CLOUDLETS = 2;
 
-    private final SimulationScenarioBuilder scenario;
-    private final UtilizationModelArithmeticProgression utilizationModel;
+    private SimulationScenarioBuilder scenario;
+    private UtilizationModelArithmeticProgression utilizationModel;
     
     /**
      * Checks if the amount of available Host CPU is as expected,
@@ -58,11 +59,8 @@ public final class CheckHostAvailableMipsDynamicUtilizationTest {
                  expectedAvailableHostMips, host.getAvailableMips(), 0);
     }
 
-    /**
-     * Default constructor that instantiates and initializes the required
-     * objects for the Integration Test.
-     */
-    public CheckHostAvailableMipsDynamicUtilizationTest() {
+    @Before
+    public void setUp() {
         CloudSim.init(1, Calendar.getInstance(), false);
         scenario = new SimulationScenarioBuilder();
         scenario.getDatacenterBuilder().setSchedulingInterval(2).createDatacenter(

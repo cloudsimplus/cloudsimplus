@@ -18,44 +18,29 @@ public class HarddriveStorageTest {
     private static final Long ZERO = 0L;
     private static final int TOTAL_FILES_TO_CREATE = 5;
     
-    /**
-     * Test instantiation of HarddriveStorage.
-     * An exception has to be thrown when trying to use negative or zero capacity
-     * or giving an invalid Hard drive name.
-     * If no exception is raised, the test has to fail.
-     */
-    @Test
-    public void testNewHarddriveStorage() {
-        System.out.println("testNewHarddriveStorage");
-        try{
-            HarddriveStorage instance = new HarddriveStorage(0);
-            fail("The Hard Drive capacity cannote be zero");
-        } catch(Exception e){
-        }
-        
-        try{
-            HarddriveStorage instance = new HarddriveStorage(-1);
-            fail("The Hard Drive capacity cannote be negative");
-        } catch(Exception e){
-        }
-        
-        try{
-            HarddriveStorage instance = new HarddriveStorage(null, CAPACITY);
-            fail("The Hard Drive name cannote be null");
-        } catch(Exception e){
-        }
-        
-        try{
-            HarddriveStorage instance = new HarddriveStorage("", CAPACITY);
-            fail("The Hard Drive name cannote be empty");
-        } catch(Exception e){
-        }
-        
-        try{
-            HarddriveStorage instance = new HarddriveStorage("   ", CAPACITY);
-            fail("The Hard Drive name cannote be empty");
-        } catch(Exception e){
-        }
+    @Test(expected = IllegalArgumentException.class)
+    public void testNewHarddriveStorage_onlyWhiteSpacesName() {
+        new HarddriveStorage("   ", CAPACITY);
+    }        
+
+    @Test(expected = IllegalArgumentException.class)
+    public void testNewHarddriveStorage_emptyName() {
+        new HarddriveStorage("", CAPACITY);
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void testNewHarddriveStorage_nullName() {
+        new HarddriveStorage(null, CAPACITY);
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void testNewHarddriveStorage_negativeSize() {
+        new HarddriveStorage(-1);
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void testNewHarddriveStorage_zeroSize() {
+        new HarddriveStorage(0);
     }
 
     @Test
@@ -82,11 +67,8 @@ public class HarddriveStorageTest {
         });
         
         instance.addFile(createNumberedFile(numberOfFiles, FILE_SIZE));
-        assertTrue(instance.isFull());
-        
+        assertTrue(instance.isFull());   
     }
-
-    
 
     @Test
     public void testGetNumStoredFile2() {
@@ -178,19 +160,6 @@ public class HarddriveStorageTest {
         assertTrue(instance.addFile(file) > 0.0);
         assertEquals(available, instance.getAvailableResource());
         
-        file = createNumberedFile(++fileNumber, fileSize);
-        /*now try to add the file which the space wasn't previously reserved.
-        In this case, an exception has to be thrown*/
-        try{
-            instance.addReservedFile(file);
-            fail("The reserved file was added but its space was not previously reserved.");
-        } catch(Exception e){
-            /*if the exception was thrown, indicates that the file
-            was accordingly not added.
-            Now, checks the available space to see if remains unchanged.*/
-            assertEquals(available, instance.getAvailableResource());
-        }
-        
         //a null file cannot be added
         assertEquals(0, instance.addReservedFile(null), 0.0);
         
@@ -199,8 +168,23 @@ public class HarddriveStorageTest {
         
         //accordingly, reserves space previously and then adds the reserved file
         assertTrue(instance.reserveSpace(fileSize));
+        file = createNumberedFile(++fileNumber, fileSize);
         assertTrue(instance.addReservedFile(file) > 0);
         assertEquals(ZERO, instance.getAvailableResource());
+    }
+
+    @Test
+    public void testAddReservedFile_spaceNotPreReserved() {
+        HarddriveStorage instance = createHardDrive(CAPACITY);
+        try{
+            instance.addReservedFile(new File("file1.txt", 100));
+            fail("The reserved file was added but its space was not previously reserved.");
+        } catch(Exception e){
+            /*if the exception was thrown, indicates that the file
+            was accordingly not added.
+            Now, checks the available space to see if remains unchanged.*/
+            assertEquals(CAPACITY, instance.getAvailableResource());
+        }
     }
     
     /**
@@ -272,14 +256,13 @@ public class HarddriveStorageTest {
         assertEquals(capacity, instance.getAllocatedResource());
     }    
     
+    @Test
     public void testHasPotentialAvailableSpace() {
         System.out.println("hasPotentialAvailableSpace");
-        int fileSize = 0;
+        int fileSize = 100;
         HarddriveStorage instance = createHardDrive();
-        boolean expResult = false;
-        boolean result = instance.hasPotentialAvailableSpace(fileSize);
-        assertEquals(expResult, result);
-        fail("The test case is a prototype.");
+        assertTrue(instance.hasPotentialAvailableSpace(fileSize));
+        assertFalse(instance.hasPotentialAvailableSpace(fileSize*1000));
     }
 
     @Test
@@ -379,11 +362,9 @@ public class HarddriveStorageTest {
         assertFalse(instance.addFile(fileList)>0);
         
         //try to add already existing files, one by one
-        for(File file: fileList)
-            assertFalse(instance.addFile(file)>0);
+        fileList.forEach(f -> assertFalse(instance.addFile(f)>0));
 
-        for(File file: fileList)
-            assertEquals(file, instance.getFile(file.getName()));
+        fileList.forEach(f -> assertEquals(f, instance.getFile(f.getName())));
         
         assertEquals(null, instance.getFile("inexistent-file.txt"));
     }
@@ -405,8 +386,8 @@ public class HarddriveStorageTest {
         HarddriveStorage instance = createHardDrive();
         final List<String> fileNameList = new ArrayList<>();
         List<File> fileList = createListOfFilesAndAddToHardDrive(instance);
-        for(File file: fileList)
-            fileNameList.add(file.getName());
+        
+        fileList.forEach(f -> fileNameList.add(f.getName()));
         assertEquals(fileNameList, instance.getFileNameList());
     }
 
@@ -416,9 +397,7 @@ public class HarddriveStorageTest {
         HarddriveStorage instance = createHardDrive();
         List<File> fileList = createListOfFilesAndAddToHardDrive(instance);
         
-        for(File file: fileList){
-            assertEquals(file, instance.deleteFile(file.getName()));
-        }
+        fileList.forEach(f ->  assertEquals(f, instance.deleteFile(f.getName())));
         
         assertEquals(null, instance.deleteFile(""));
         assertEquals(null, instance.deleteFile("inexistent-file.txt"));
@@ -430,9 +409,7 @@ public class HarddriveStorageTest {
         HarddriveStorage instance = createHardDrive();
         List<File> fileList = createListOfFilesAndAddToHardDrive(instance);
         
-        for(File file: fileList){
-            assertTrue(instance.deleteFile(file)>0);
-        }
+        fileList.forEach(f-> assertTrue(instance.deleteFile(f)>0));
         
         final File nullFile = null;
         assertEquals(0.0, instance.deleteFile(nullFile), 0.0);
@@ -444,9 +421,7 @@ public class HarddriveStorageTest {
         HarddriveStorage instance = createHardDrive();
         List<File> fileList = createListOfFilesAndAddToHardDrive(instance);
         
-        for(File file: fileList){
-            assertTrue(instance.contains(file.getName()));
-        }
+        fileList.forEach(f -> assertTrue(instance.contains(f.getName())));
         
         assertFalse(instance.contains("inexistent-file.txt"));
         final String nullStr = null;
@@ -460,9 +435,7 @@ public class HarddriveStorageTest {
         HarddriveStorage instance = createHardDrive();
         List<File> fileList = createListOfFilesAndAddToHardDrive(instance);
         
-        for(File file: fileList){
-            assertTrue(instance.contains(file));
-        }
+        fileList.forEach(f -> assertTrue(instance.contains(f)));
         
         assertFalse(instance.contains(new File("inexistent-file.txt", FILE_SIZE)));
         final File nullFile = null;

@@ -76,20 +76,15 @@ public class PeTest {
         assertEquals(PeSimple.Status.FREE, pe.getStatus());
     }
 
-    @Test
-    public void testSetPeProvisioner() {
-        try {
-            createPe(null);
-            Assert.fail("An exception has to be thrown when setting a null peProvisioner");
-        } catch (Exception e) {
-        }
+    @Test(expected = IllegalArgumentException.class)
+    public void testSetPeProvisioner_null() {
+        PeSimple pe = createPe();
+        pe.setPeProvisioner(null);
+    }
 
-        try {
-            PeSimple pe = createPe();
-            pe.setPeProvisioner(null);
-            Assert.fail("An exception has to be thrown when setting a null peProvisioner");
-        } catch (Exception e) {
-        }
+    @Test(expected = IllegalArgumentException.class)
+    public void testNewPe_nullPeProvisioner() {
+        createPe(null);
     }
     
     @Test

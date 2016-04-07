@@ -15,6 +15,7 @@ import org.cloudbus.cloudsim.resources.Ram;
 import org.cloudbus.cloudsim.schedulers.VmSchedulerTimeShared;
 import org.junit.Test;
 import static org.junit.Assert.*;
+import org.junit.Before;
 
 /**
  *
@@ -28,10 +29,11 @@ public class HostListTest {
     private static final double MIPS = 1000;
     private static final long STORAGE = Consts.MILLION;
     
-    private final List<HostSimple> hostSimpleList;
-    private final List<NetworkHost> networkHostList;
+    private List<HostSimple> hostSimpleList;
+    private List<NetworkHost> networkHostList;
     
-    public HostListTest() {
+    @Before
+    public void setUp() {
         this.hostSimpleList = createHostSimpleList();
         this.networkHostList = createNetworkHostList();
     }

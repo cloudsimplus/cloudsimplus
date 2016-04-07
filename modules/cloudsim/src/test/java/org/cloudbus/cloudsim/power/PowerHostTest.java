@@ -73,7 +73,7 @@ public class PowerHostTest {
             expectedEnergy = (host.getPowerModel().getPower(0.2) + (host.getPowerModel().getPower(0.9) - host.getPowerModel().getPower(0.2)) / 2) * TIME;
         } catch (Exception e) {
             e.printStackTrace();
-            fail();
+            fail("An exception was not expected to happen.");
         }
         assertEquals(expectedEnergy, host.getEnergyLinearInterpolation(0.2, 0.9, TIME), 0);
     }

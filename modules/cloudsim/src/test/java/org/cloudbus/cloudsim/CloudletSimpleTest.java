@@ -38,9 +38,10 @@ import static org.junit.Assert.assertSame;
 @RunWith(PowerMockRunner.class)
 @PrepareForTest({CloudSim.class}) //to intercept and mock static method calls
 public class CloudletSimpleTest {
+
     private static final long CLOUDLET_LENGTH = 1000;
     private static final long CLOUDLET_FILE_SIZE = 1000;
-    private static final int  CLOUDLET_OUTPUT_SIZE = 1000;
+    private static final int CLOUDLET_OUTPUT_SIZE = 1000;
 
     private static final int PES_NUMBER = 2;
 
@@ -55,7 +56,7 @@ public class CloudletSimpleTest {
         utilizationModelRam = new UtilizationModelStochastic();
         utilizationModelBw = new UtilizationModelStochastic();
         cloudlet = new CloudletSimple(
-                0, CLOUDLET_LENGTH, PES_NUMBER, 
+                0, CLOUDLET_LENGTH, PES_NUMBER,
                 CLOUDLET_FILE_SIZE, CLOUDLET_OUTPUT_SIZE,
                 utilizationModelCpu, utilizationModelRam, utilizationModelBw);
     }
@@ -71,16 +72,17 @@ public class CloudletSimpleTest {
         assertSame(utilizationModelRam, cloudlet.getUtilizationModelRam());
         assertSame(utilizationModelBw, cloudlet.getUtilizationModelBw());
     }
-    
+
     @Test
     public void testSetOnCloudletFinishEventListener() {
         cloudlet.setOnCloudletFinishEventListener(null);
         assertEquals(EventListener.NULL, cloudlet.getOnCloudletFinishEventListener());
-        EventListener<Cloudlet, Vm> listener = (t,c,v)->{};
+        EventListener<Cloudlet, Vm> listener = (t, c, v) -> {
+        };
         cloudlet.setOnCloudletFinishEventListener(listener);
         assertEquals(listener, cloudlet.getOnCloudletFinishEventListener());
     }
-    
+
     @Test
     public void testGetWaitingTime() {
         Cloudlet cloudlet = createCloudlet();
@@ -97,7 +99,7 @@ public class CloudletSimpleTest {
     public void testGetExecStartTime() {
         Cloudlet cloudlet = createCloudlet();
         assertEquals(0, cloudlet.getExecStartTime(), 0);
-        
+
         cloudlet.assignCloudletToDatacenter(0, 0);
         final int submissionTime = 0, execStartTime = 10;
         cloudlet.setSubmissionTime(submissionTime);
@@ -109,7 +111,7 @@ public class CloudletSimpleTest {
     public void testGetSubmissionTime() {
         Cloudlet cloudlet = createCloudlet();
         assertEquals(0, cloudlet.getSubmissionTime(), 0);
-        
+
         cloudlet.assignCloudletToDatacenter(0, 0);
         final int submissionTime = 1;
         cloudlet.setSubmissionTime(submissionTime);
@@ -120,7 +122,7 @@ public class CloudletSimpleTest {
     public void testGetWallClockTime() {
         Cloudlet cloudlet = createCloudlet();
         assertEquals(0, cloudlet.getWallClockTimeInLastExecutedDatacenter(), 0);
-        
+
         cloudlet.assignCloudletToDatacenter(0, 0);
         final int submissionTime = 0, execStartTime = 10;
         cloudlet.setSubmissionTime(submissionTime);
@@ -138,36 +140,36 @@ public class CloudletSimpleTest {
         final int datacenterId = 0;
         //This will mock the CloudSim static method calls
         PowerMock.mockStatic(CloudSim.class);
-        
+
         EasyMock.expect(CloudSim.clock()).andReturn(simulationClock);
-        EasyMock.expect(CloudSim.getEntityName(datacenterId)).andReturn("datacenter"+datacenterId);
+        EasyMock.expect(CloudSim.getEntityName(datacenterId)).andReturn("datacenter" + datacenterId);
         PowerMock.replay(CloudSim.class);
-        
+
         Cloudlet cloudlet = createCloudlet();
         assertEquals(Cloudlet.NOT_ASSIGNED, cloudlet.getActualCPUTime(), 0);
-        
+
         cloudlet.assignCloudletToDatacenter(datacenterId, 0);
         cloudlet.setSubmissionTime(submissionTime);
         cloudlet.setExecStartTime(execStartTime);
         cloudlet.setCloudletStatus(Cloudlet.Status.SUCCESS);
         assertEquals(actualCpuTime, cloudlet.getActualCPUTime(), 0);
-        
+
         PowerMock.verify(CloudSim.class);
     }
-    
+
     @Test
     public void testGetProcessingCost() {
         Cloudlet cloudlet = createCloudlet();
         final double costPerCpuSec = 4, costPerByteOfBw = 2;
-        final double inputTransferCost =  CLOUDLET_FILE_SIZE * costPerByteOfBw;
+        final double inputTransferCost = CLOUDLET_FILE_SIZE * costPerByteOfBw;
         final double outputTransferCost = CLOUDLET_OUTPUT_SIZE * costPerByteOfBw;
-        
+
         /**
-         * @todo @author manoelcampos Actually the cpu cost it not being computed 
-         * by the getProcessingCost() method.
+         * @todo @author manoelcampos Actually the cpu cost it not being
+         * computed by the getProcessingCost() method.
          */
-        final double cpuCost = 0.0; 
-        
+        final double cpuCost = 0.0;
+
         final double totalCost = inputTransferCost + cpuCost + outputTransferCost;
         cloudlet.assignCloudletToDatacenter(0, costPerCpuSec, costPerByteOfBw);
         assertEquals(totalCost, cloudlet.getProcessingCost(), 0);
@@ -188,7 +190,7 @@ public class CloudletSimpleTest {
         assertEquals(expected, cloudlet.getCloudletHistory());
         cloudlet.setUserId(1);
         assertEquals(expected, cloudlet.getCloudletHistory());
-        
+
         cloudlet = createCloudlet(id, true);
         cloudlet.setUserId(1);
         Assert.assertNotSame(expected, cloudlet.getCloudletHistory());
@@ -198,9 +200,9 @@ public class CloudletSimpleTest {
     public void testSetCloudletFinishedSoFar() {
         Cloudlet cloudlet = createCloudlet();
         assertEquals(0, cloudlet.getCloudletFinishedSoFar(), 0);
-        
+
         cloudlet.assignCloudletToDatacenter(0, 0);
-        final long cloudletFinishedSoFar = cloudlet.getCloudletLength()/2;
+        final long cloudletFinishedSoFar = cloudlet.getCloudletLength() / 2;
         Assert.assertTrue(cloudlet.setCloudletFinishedSoFar(cloudletFinishedSoFar));
         assertEquals(cloudletFinishedSoFar, cloudlet.getCloudletFinishedSoFar(), 0);
         Assert.assertFalse(cloudlet.setCloudletFinishedSoFar(-1));
@@ -211,7 +213,7 @@ public class CloudletSimpleTest {
     public void testGetDatacenterId() {
         Cloudlet cloudlet = createCloudlet(0, true);
         assertEquals(Cloudlet.NOT_ASSIGNED, cloudlet.getDatacenterId(), 0);
-        
+
         final int datacenterId = 0;
         cloudlet.assignCloudletToDatacenter(datacenterId, 0);
         assertEquals(datacenterId, cloudlet.getDatacenterId(), 0);
@@ -221,7 +223,7 @@ public class CloudletSimpleTest {
     public void testGetCostPerSec() {
         Cloudlet cloudlet = createCloudlet();
         assertEquals(0, cloudlet.getCostPerSec(), 0);
-        
+
         final double cost = 1;
         cloudlet.assignCloudletToDatacenter(0, cost);
         assertEquals(cost, cloudlet.getCostPerSec(), 0);
@@ -231,11 +233,11 @@ public class CloudletSimpleTest {
     public void testSetReservationId() {
         int expected = -1;
         assertEquals(expected, cloudlet.getReservationId());
-        
+
         expected = 5;
         Assert.assertTrue(cloudlet.setReservationId(expected));
         Assert.assertEquals(expected, cloudlet.getReservationId());
-        
+
         Assert.assertFalse(cloudlet.setReservationId(-1));
         Assert.assertEquals(expected, cloudlet.getReservationId());
     }
@@ -245,7 +247,7 @@ public class CloudletSimpleTest {
         int expected = 1000;
         Assert.assertTrue(cloudlet.setCloudletLength(expected));
         Assert.assertEquals(expected, cloudlet.getCloudletLength());
-        
+
         Assert.assertFalse(cloudlet.setCloudletLength(0));
         Assert.assertEquals(expected, cloudlet.getCloudletLength());
         Assert.assertFalse(cloudlet.setCloudletLength(-1));
@@ -261,23 +263,22 @@ public class CloudletSimpleTest {
         int expected = 2;
         Assert.assertTrue(cloudlet.setNumberOfPes(expected));
         Assert.assertEquals(expected, cloudlet.getNumberOfPes());
-        
+
         Assert.assertFalse(cloudlet.setNumberOfPes(0));
         Assert.assertEquals(expected, cloudlet.getNumberOfPes());
         Assert.assertFalse(cloudlet.setNumberOfPes(-1));
         Assert.assertEquals(expected, cloudlet.getNumberOfPes());
-        
+
         expected = 4;
         Assert.assertTrue(cloudlet.setNumberOfPes(expected));
         Assert.assertEquals(expected, cloudlet.getNumberOfPes());
-        
     }
 
     @Test
-    public void testSetRequiredFiles() {        
+    public void testSetRequiredFiles() {
         cloudlet.setRequiredFiles(null);
         Assert.assertNotNull(cloudlet.getRequiredFiles());
-        
+
         List<String> files = new ArrayList<>();
         files.add("file1.txt");
         cloudlet.setRequiredFiles(files);
@@ -318,14 +319,14 @@ public class CloudletSimpleTest {
     public static CloudletSimple createCloudlet(final int id) {
         return createCloudlet(id, false);
     }
-    
+
     private static CloudletSimple createCloudlet(final int id, boolean recordLog) {
         final UtilizationModel cpuRamAndBwUtilizationModel = new UtilizationModelFull();
         return createCloudlet(id, cpuRamAndBwUtilizationModel, recordLog);
     }
 
     private static CloudletSimple createCloudlet(
-            final int id, 
+            final int id,
             UtilizationModel cpuRamAndBwUtilizationModel, boolean recordLog) {
         return createCloudlet(id, cpuRamAndBwUtilizationModel,
                 cpuRamAndBwUtilizationModel,
@@ -344,35 +345,34 @@ public class CloudletSimpleTest {
     }
 
     @Test
-    public void testUtilizationModels() {
-        try {
-            createCloudlet(0, null, false);
-            Assert.fail("An exception must be thrown for trying to set a null utilization model");
-        } catch (Exception e) {
-        }
-
+    public void testSetUtilizationModels() {
         CloudletSimple c = createCloudlet();
         Assert.assertNotNull(c.getUtilizationModelCpu());
         Assert.assertNotNull(c.getUtilizationModelRam());
         Assert.assertNotNull(c.getUtilizationModelBw());
+    }
 
-        try {
-            c.setUtilizationModelCpu(null);
-            Assert.fail("An exception must be thrown for trying to set a null CPU utilization model");
-        } catch (Exception e) {
-        }
+    @Test(expected = IllegalArgumentException.class)
+    public void testSetUtilizationModelBw_null() {
+        CloudletSimple c = createCloudlet();
+        c.setUtilizationModelBw(null);
+    }
 
-        try {
-            c.setUtilizationModelRam(null);
-            Assert.fail("An exception must be thrown for trying to set a null RAM utilization model");
-        } catch (Exception e) {
-        }
+    @Test(expected = IllegalArgumentException.class)
+    public void testSetUtilizationModelRam_null() {
+        CloudletSimple c = createCloudlet();
+        c.setUtilizationModelRam(null);
+    }
 
-        try {
-            c.setUtilizationModelBw(null);
-            Assert.fail("An exception must be thrown for trying to set a null BW utilization model");
-        } catch (Exception e) {
-        }
+    @Test(expected = IllegalArgumentException.class)
+    public void testSetUtilizationModelCpu_null() {
+        CloudletSimple c = createCloudlet();
+        c.setUtilizationModelCpu(null);
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void testNew_nullUtilizationModel() {
+        createCloudlet(0, null, false);
     }
 
     @Test
@@ -576,11 +576,11 @@ public class CloudletSimpleTest {
 
     @Test
     public void testCloudletAlternativeConstructor1() {
-        cloudlet = 
-            new CloudletSimple(
-                  0, CLOUDLET_LENGTH, PES_NUMBER, CLOUDLET_FILE_SIZE, CLOUDLET_OUTPUT_SIZE,
-                  utilizationModelCpu, utilizationModelRam, utilizationModelBw, 
-                  true, new LinkedList<>());
+        cloudlet
+                = new CloudletSimple(
+                        0, CLOUDLET_LENGTH, PES_NUMBER, CLOUDLET_FILE_SIZE, CLOUDLET_OUTPUT_SIZE,
+                        utilizationModelCpu, utilizationModelRam, utilizationModelBw,
+                        true, new LinkedList<>());
         testCloudlet();
         testGetUtilizationOfCpu();
         testGetUtilizationOfRam();
@@ -591,12 +591,12 @@ public class CloudletSimpleTest {
     public void testCloudletAlternativeConstructor2() {
         cloudlet = new CloudletSimple(
                 0, CLOUDLET_LENGTH, PES_NUMBER, CLOUDLET_FILE_SIZE, CLOUDLET_OUTPUT_SIZE,
-                utilizationModelCpu, utilizationModelRam, utilizationModelBw, 
+                utilizationModelCpu, utilizationModelRam, utilizationModelBw,
                 new LinkedList<>());
         testCloudlet();
         testGetUtilizationOfCpu();
         testGetUtilizationOfRam();
         testGetUtilizationOfBw();
     }
-   
+
 }

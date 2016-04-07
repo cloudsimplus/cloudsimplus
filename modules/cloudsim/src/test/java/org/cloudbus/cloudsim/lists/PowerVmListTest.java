@@ -76,7 +76,6 @@ public class PowerVmListTest {
             assertEquals(msg, i, vm.getId());
             EasyMock.verify(vm.getCloudletScheduler());
         };
-
     }
     
     @Test
@@ -95,8 +94,6 @@ public class PowerVmListTest {
             assertEquals(msg, i, vm.getId());
             EasyMock.verify(vm.getCloudletScheduler());
         };
-
     }
-    
     
 }
