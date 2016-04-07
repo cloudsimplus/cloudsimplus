@@ -19,8 +19,8 @@ public class HostTest {
     @Test
     public void testNullObject() {
         System.out.println("testNullObject");
-        Host instance = Host.NULL;
-        Vm vm = Vm.NULL;
+        final Host instance = Host.NULL;
+        final Vm vm = Vm.NULL;
         
         instance.addMigratingInVm(vm);
         assertTrue(instance.getVmsMigratingIn().isEmpty());
