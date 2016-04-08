@@ -49,8 +49,8 @@ public class NetworkCloudletSpaceSharedScheduler extends CloudletSchedulerAbstra
 	public Map<Integer, List<HostPacket>> pkttosend;
 
         /**
-         * The map of packets received, where each key is a sender VM
-         * and each value is the list of packets sent by that VM.
+         * The map of packets received, where each key is a senderVmId VM
+ and each value is the list of packets sent by that VM.
          */
 	public Map<Integer, List<HostPacket>> pktrecv;
 
@@ -102,16 +102,16 @@ public class NetworkCloudletSpaceSharedScheduler extends CloudletSchedulerAbstra
 			// CHECK WHETHER IT IS WAITING FOR THE PACKET
 			// if packet received change the status of job and update the time.
 			//
-			if ((cl.currStagenum != -1)) {
-				if (cl.currStagenum == NetworkConstants.FINISH) {
+			if ((cl.currentStageNum != -1)) {
+				if (cl.currentStageNum == NetworkConstants.FINISH) {
 					break;
 				}
-				TaskStage st = cl.stages.get(cl.currStagenum);
+				TaskStage st = cl.stages.get(cl.currentStageNum);
 				if (st.type == NetworkConstants.EXECUTION) {
 
 					// update the time
-					cl.timespentInStage = Math.round(CloudSim.clock() - cl.timetostartStage);
-					if (cl.timespentInStage >= st.time) {
+					cl.timeSpentInStage = Math.round(CloudSim.clock() - cl.timeToStartStage);
+					if (cl.timeSpentInStage >= st.time) {
 						changeToNextStage(cl, st);
 						// change the stage
 					}
@@ -125,9 +125,9 @@ public class NetworkCloudletSpaceSharedScheduler extends CloudletSchedulerAbstra
 						if (it.hasNext()) {
 							pkt = it.next();
 							// Asumption packet will not arrive in the same cycle
-							if (pkt.reciever == cl.getVmId()) {
-								pkt.recievetime = CloudSim.clock();
-								st.time = CloudSim.clock() - pkt.sendtime;
+							if (pkt.receiverVmId == cl.getVmId()) {
+								pkt.receiveTime = CloudSim.clock();
+								st.time = CloudSim.clock() - pkt.sendTime;
 								changeToNextStage(cl, st);
 								pkttoremove.add(pkt);
 							}
@@ -139,8 +139,8 @@ public class NetworkCloudletSpaceSharedScheduler extends CloudletSchedulerAbstra
 				}
 
 			} else {
-				cl.currStagenum = 0;
-				cl.timetostartStage = CloudSim.clock();
+				cl.currentStageNum = 0;
+				cl.timeToStartStage = CloudSim.clock();
 
 				if (cl.stages.get(0).type == NetworkConstants.EXECUTION) {
 					NetDatacenterBroker.linkDC.schedule(
@@ -169,7 +169,7 @@ public class NetworkCloudletSpaceSharedScheduler extends CloudletSchedulerAbstra
 		List<ResCloudlet> toRemove = new ArrayList<ResCloudlet>();
 		for (ResCloudlet rcl : getCloudletExecList()) {
 			// rounding issue...
-			if (((NetworkCloudlet) (rcl.getCloudlet())).currStagenum == NetworkConstants.FINISH) {
+			if (((NetworkCloudlet) (rcl.getCloudlet())).currentStageNum == NetworkConstants.FINISH) {
 				// stage is changed and packet to send
 				((NetworkCloudlet) (rcl.getCloudlet())).finishtime = CloudSim.clock();
 				toRemove.add(rcl);
@@ -222,15 +222,15 @@ public class NetworkCloudletSpaceSharedScheduler extends CloudletSchedulerAbstra
          * 
          * @todo  Method too long to understand what is its responsibility.*/
 	private void changeToNextStage(NetworkCloudlet cl, TaskStage st) {
-		cl.timespentInStage = 0;
-		cl.timetostartStage = CloudSim.clock();
-		int currstage = cl.currStagenum;
+		cl.timeSpentInStage = 0;
+		cl.timeToStartStage = CloudSim.clock();
+		int currstage = cl.currentStageNum;
 		if (currstage >= (cl.stages.size() - 1)) {
-			cl.currStagenum = NetworkConstants.FINISH;
+			cl.currentStageNum = NetworkConstants.FINISH;
 		} else {
-			cl.currStagenum = currstage + 1;
+			cl.currentStageNum = currstage + 1;
 			int i = 0;
-			for (i = cl.currStagenum; i < cl.stages.size(); i++) {
+			for (i = cl.currentStageNum; i < cl.stages.size(); i++) {
 				if (cl.stages.get(i).type == NetworkConstants.WAIT_SEND) {
 					HostPacket pkt = new HostPacket(
 							cl.getVmId(),
@@ -257,9 +257,9 @@ public class NetworkCloudletSpaceSharedScheduler extends CloudletSchedulerAbstra
 					0.0001,
 					CloudSimTags.VM_DATACENTER_EVENT);
 			if (i == cl.stages.size()) {
-				cl.currStagenum = NetworkConstants.FINISH;
+				cl.currentStageNum = NetworkConstants.FINISH;
 			} else {
-				cl.currStagenum = i;
+				cl.currentStageNum = i;
 				if (cl.stages.get(i).type == NetworkConstants.EXECUTION) {
 					NetDatacenterBroker.linkDC.schedule(
 							NetDatacenterBroker.linkDC.getId(),

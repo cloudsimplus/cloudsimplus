@@ -202,7 +202,7 @@ public class Switch extends SimEntity {
 	protected void processhostpacket(SimEvent ev) {
 		// Send packet to host
 		NetworkPacket hspkt = (NetworkPacket) ev.getData();
-		NetworkHost hs = hostlist.get(hspkt.recieverhostid);
+		NetworkHost hs = hostlist.get(hspkt.receiverHostId);
 		hs.packetrecieved.add(hspkt);
 	}
 
@@ -219,13 +219,13 @@ public class Switch extends SimEntity {
 		// add packet in the host list
 		// int src=ev.getSource();
 		NetworkPacket hspkt = (NetworkPacket) ev.getData();
-		int recvVMid = hspkt.pkt.reciever;
+		int recvVMid = hspkt.pkt.receiverVmId;
 		CloudSim.cancelAll(getId(), new PredicateType(CloudSimTags.Network_Event_send));
 		schedule(getId(), latency, CloudSimTags.Network_Event_send);
 		if (level == NetworkConstants.EDGE_SWITCHES_NUMBER) {
 			// packet is to be recieved by host
 			int hostid = dc.VmtoHostlist.get(recvVMid);
-			hspkt.recieverhostid = hostid;
+			hspkt.receiverHostId = hostid;
 			List<NetworkPacket> pktlist = packetTohost.get(hostid);
 			if (pktlist == null) {
 				pktlist = new ArrayList<NetworkPacket>();
@@ -262,7 +262,7 @@ public class Switch extends SimEntity {
 		//
 		// int src=ev.getSource();
 		NetworkPacket hspkt = (NetworkPacket) ev.getData();
-		int recvVMid = hspkt.pkt.reciever;
+		int recvVMid = hspkt.pkt.receiverVmId;
 		CloudSim.cancelAll(getId(), new PredicateType(CloudSimTags.Network_Event_send));
 		schedule(getId(), switching_delay, CloudSimTags.Network_Event_send);
 		if (level == NetworkConstants.EDGE_SWITCHES_NUMBER) {
@@ -272,7 +272,7 @@ public class Switch extends SimEntity {
 
 			int hostid = dc.VmtoHostlist.get(recvVMid);
 			NetworkHost hs = hostlist.get(hostid);
-			hspkt.recieverhostid = hostid;
+			hspkt.receiverHostId = hostid;
 			if (hs != null) {
 				// packet to be sent to host connected to the switch
 				List<NetworkPacket> pktlist = packetTohost.get(hostid);
@@ -402,7 +402,7 @@ public class Switch extends SimEntity {
 					Iterator<NetworkPacket> it = hspktlist.iterator();
 					while (it.hasNext()) {
 						NetworkPacket hspkt = it.next();
-						double delay = 1000 * hspkt.pkt.data / avband;
+						double delay = 1000 * hspkt.pkt.dataLength / avband;
 
 						this.send(tosend, delay, CloudSimTags.Network_Event_DOWN, hspkt);
 					}
@@ -419,7 +419,7 @@ public class Switch extends SimEntity {
 					Iterator<NetworkPacket> it = hspktlist.iterator();
 					while (it.hasNext()) {
 						NetworkPacket hspkt = it.next();
-						double delay = 1000 * hspkt.pkt.data / avband;
+						double delay = 1000 * hspkt.pkt.dataLength / avband;
 
 						this.send(tosend, delay, CloudSimTags.Network_Event_UP, hspkt);
 					}
@@ -437,7 +437,7 @@ public class Switch extends SimEntity {
 						NetworkPacket hspkt = it.next();
 						// hspkt.recieverhostid=tosend;
 						// hs.packetrecieved.add(hspkt);
-						this.send(getId(), hspkt.pkt.data / avband, CloudSimTags.Network_Event_Host, hspkt);
+						this.send(getId(), hspkt.pkt.dataLength / avband, CloudSimTags.Network_Event_Host, hspkt);
 					}
 					hspktlist.clear();
 				}

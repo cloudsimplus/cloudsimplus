@@ -131,7 +131,7 @@ public class AppCloudlet {
 			NetworkConstants.currentCloudletId++;
 			cl.setUserId(userId);
 			cl.submittime = CloudSim.clock();
-			cl.currStagenum = -1;
+			cl.currentStageNum = -1;
 			clist.add(cl);
 
 		}

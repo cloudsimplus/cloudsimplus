@@ -68,7 +68,7 @@ public class EdgeSwitch extends Switch {
 		//
 		// int src=ev.getSource();
 		NetworkPacket hspkt = (NetworkPacket) ev.getData();
-		int recvVMid = hspkt.pkt.reciever;
+		int recvVMid = hspkt.pkt.receiverVmId;
 		CloudSim.cancelAll(getId(), new PredicateType(CloudSimTags.Network_Event_send));
 		schedule(getId(), switching_delay, CloudSimTags.Network_Event_send);
 
@@ -77,7 +77,7 @@ public class EdgeSwitch extends Switch {
 
 		int hostid = dc.VmtoHostlist.get(recvVMid);
 		NetworkHost hs = hostlist.get(hostid);
-		hspkt.recieverhostid = hostid;
+		hspkt.receiverHostId = hostid;
 
 		// packet needs to go to a host which is connected directly to switch
 		if (hs != null) {
@@ -121,7 +121,7 @@ public class EdgeSwitch extends Switch {
 					Iterator<NetworkPacket> it = hspktlist.iterator();
 					while (it.hasNext()) {
 						NetworkPacket hspkt = it.next();
-						double delay = 1000 * hspkt.pkt.data / avband;
+						double delay = 1000 * hspkt.pkt.dataLength / avband;
 
 						this.send(tosend, delay, CloudSimTags.Network_Event_UP, hspkt);
 					}
@@ -139,7 +139,7 @@ public class EdgeSwitch extends Switch {
 						NetworkPacket hspkt = it.next();
 						// hspkt.recieverhostid=tosend;
 						// hs.packetrecieved.add(hspkt);
-						this.send(getId(), hspkt.pkt.data / avband, CloudSimTags.Network_Event_Host, hspkt);
+						this.send(getId(), hspkt.pkt.dataLength / avband, CloudSimTags.Network_Event_Host, hspkt);
 					}
 					hspktlist.clear();
 				}

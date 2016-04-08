@@ -67,11 +67,11 @@ public class WorkflowApp extends AppCloudlet {
                 utilizationModel,
                 utilizationModel,
                 utilizationModel);
-        cl.numStage = 2;
+        cl.numberOfStages = 2;
         NetworkConstants.currentCloudletId++;
         cl.setUserId(userId);
         cl.submittime = CloudSim.clock();
-        cl.currStagenum = -1;
+        cl.currentStageNum = -1;
         cl.setVmId(vmIdList.get(i));
 
         // first stage: big computation
@@ -93,11 +93,11 @@ public class WorkflowApp extends AppCloudlet {
                 utilizationModel,
                 utilizationModel,
                 utilizationModel);
-        clb.numStage = 2;
+        clb.numberOfStages = 2;
         NetworkConstants.currentCloudletId++;
         clb.setUserId(userId);
         clb.submittime = CloudSim.clock();
-        clb.currStagenum = -1;
+        clb.currentStageNum = -1;
         clb.setVmId(vmIdList.get(i));
 
         // first stage: big computation
@@ -125,11 +125,11 @@ public class WorkflowApp extends AppCloudlet {
                 utilizationModel,
                 utilizationModel,
                 utilizationModel);
-        clc.numStage = 2;
+        clc.numberOfStages = 2;
         NetworkConstants.currentCloudletId++;
         clc.setUserId(userId);
         clc.submittime = CloudSim.clock();
-        clc.currStagenum = -1;
+        clc.currentStageNum = -1;
         clc.setVmId(vmIdList.get(i));
 
         // first stage: big computation

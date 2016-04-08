@@ -74,7 +74,7 @@ public class TestBagOfTasksApp extends AppCloudlet {
             NetworkConstants.currentCloudletId++;
             cl.setUserId(userId);
             cl.submittime=CloudSim.clock();
-            cl.currStagenum=-1;
+            cl.currentStageNum=-1;
             cl.setVmId(vmIdList.get(i));
             //compute and send data to node 0
             cl.stages.add(new TaskStage(NetworkConstants.EXECUTION, NetworkConstants.COMMUNICATION_LENGTH, executionTime/numberOfVMs, stgId++, memory, vmIdList.get(0),cl.getId()));

@@ -111,16 +111,16 @@ public interface Packet {
 	 * @pre $none
 	 * @post $none
 	 */
-	int getLast();
+	int getLastHop();
 
 	/**
 	 * Sets an entity ID from the last hop that this packet has traversed.
 	 * 
-	 * @param last an entity ID from the last hop
+	 * @param lastHop an entity ID from the last hop
 	 * @pre last > 0
 	 * @post $none
 	 */
-	void setLast(int last);
+	void setLastHop(int lastHop);
 
 	/**
 	 * Gets this packet tag

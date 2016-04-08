@@ -9,6 +9,7 @@
 package org.cloudbus.cloudsim.network.datacenter;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
 import org.cloudbus.cloudsim.CloudletSimple;
@@ -30,13 +31,21 @@ import org.cloudbus.cloudsim.utilizationmodels.UtilizationModel;
  * 
  * @author Saurabh Kumar Garg
  * @since CloudSim Toolkit 1.0
- * @todo Attributes should be private
- * @todo The different cloudlet classes should have a class hierarchy, by means
+ * @todo @author manoelcampos Attributes should be private
+ * @todo @author manoelcampos The different cloudlet classes should have a class hierarchy, by means
  * of a super class and/or interface.
+ * @todo @author manoelcampos The class has a lot of duplicated attributes
+ * that exist in the super class. It has to be assessed if they in fact
+ * store different data. If so, the attributes should have
+ * a different name to avoid the strong confusion with the
+ * super class attributes.
  */
 public class NetworkCloudlet extends CloudletSimple implements Comparable<Object> {
         /** Time when cloudlet will be submitted. */
 	public double submittime; 
+        
+        /** Cloudlet's start time. */
+	public double starttime;
 
         /** Time when cloudlet finishes execution. */
 	public double finishtime; 
@@ -45,18 +54,16 @@ public class NetworkCloudlet extends CloudletSimple implements Comparable<Object
 	public double exetime; 
 
         /** Number of cloudlet's stages . */
-	public double numStage;
+	public double numberOfStages;
 
         /** Current stage of cloudlet execution. */
-	public int currStagenum; 
+	public int currentStageNum; 
 
-        /** Star time of the current stage. 
-         */
-	public double timetostartStage;
+        /** Star time of the current stage. */
+	public double timeToStartStage;
 
-        /** Time spent in the current stage. 
-         */
-	public double timespentInStage; 
+        /** Time spent in the current stage. */
+	public double timeSpentInStage; 
 
         /** 
          * @todo It doesn't appear to be used. 
@@ -64,7 +71,7 @@ public class NetworkCloudlet extends CloudletSimple implements Comparable<Object
 	public Map<Double, HostPacket> timeCommunicate;
 
         /** All stages which cloudlet execution. */
-	public ArrayList<TaskStage> stages; 
+	public List<TaskStage> stages; 
         
         /**
          * Cloudlet's memory.
@@ -72,11 +79,6 @@ public class NetworkCloudlet extends CloudletSimple implements Comparable<Object
          * It doesn't appear to be used.
          */
 	long memory;
-
-        /**
-         * Cloudlet's start time.
-         */
-	public double starttime;
 
 	public NetworkCloudlet(
 			int cloudletId,
@@ -98,14 +100,18 @@ public class NetworkCloudlet extends CloudletSimple implements Comparable<Object
 				utilizationModelRam,
 				utilizationModelBw);
 
-		currStagenum = -1;
+		currentStageNum = -1;
 		this.memory = memory;
 		stages = new ArrayList<>();
 	}
 
 	@Override
 	public int compareTo(Object arg0) {
-		return 0;
+            /**
+             * @todo @author manoelcampos It doesn't make sense to always return 0.
+             * Or implement or remove the method
+             */
+            return 0;
 	}
 
 	public double getSubmittime() {
