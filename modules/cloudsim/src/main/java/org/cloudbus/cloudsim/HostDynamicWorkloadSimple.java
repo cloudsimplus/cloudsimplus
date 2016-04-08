@@ -117,11 +117,12 @@ public class HostDynamicWorkloadSimple extends HostSimple implements HostDynamic
                             + ": %.2f", CloudSim.clock(), totalRequestedMips - totalAllocatedMips);
                 }
 
-                vm.addStateHistoryEntry(
+                VmStateHistoryEntry entry = new VmStateHistoryEntry(
                         currentTime,
                         totalAllocatedMips,
                         totalRequestedMips,
                         (vm.isInMigration() && !getVmsMigratingIn().contains(vm)));
+                vm.addStateHistoryEntry(entry);
 
                 if (vm.isInMigration()) {
                     Log.printFormattedLine(

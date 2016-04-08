@@ -48,6 +48,7 @@ public class VmSimpleTest {
         vmScheduler = new CloudletSchedulerDynamicWorkload(MIPS, PES_NUMBER);
         vm = VmSimpleTest.createVm(vmScheduler);
     }
+    
 
     /**
      * Creates a VM with the 1 PE and half mips capacity defined in
@@ -142,6 +143,11 @@ public class VmSimpleTest {
     }
 
     @Test
+    public void testToString() {
+        assertEquals(vm.getUid(), vm.toString());
+    }
+
+    @Test
     public void testSetMips() {
         vm.setMips(MIPS / 2);
         assertEquals(MIPS / 2, vm.getMips(), 0);
@@ -151,6 +157,46 @@ public class VmSimpleTest {
     public void testSetRam() {
         assertTrue(vm.setRam(RAM / 2));
         assertEquals(RAM / 2, vm.getRam(), 0);
+    }
+    
+    @Test
+    public void testAddStateHistoryEntry_addEntryToEmptyList(){
+        Vm vm = VmSimpleTest.createVm(vmScheduler);
+        double time=0, allocatedMips=1000, requestedMips=100;
+        boolean inMigration = false;
+        assertTrue(vm.getStateHistory().isEmpty());
+        VmStateHistoryEntry entry = 
+                new VmStateHistoryEntry(time, allocatedMips, requestedMips, inMigration);
+        vm.addStateHistoryEntry(entry);
+        assertFalse(vm.getStateHistory().isEmpty());
+    }
+
+    @Test
+    public void testAddStateHistoryEntry_checkAddedEntryValues(){
+        Vm vm = VmSimpleTest.createVm(vmScheduler);
+        VmStateHistoryEntry entry = new VmStateHistoryEntry(0, 1000, 100, false);
+        vm.addStateHistoryEntry(entry);
+        assertEquals(entry, vm.getStateHistory().get(vm.getStateHistory().size()-1));
+    }
+
+    @Test
+    public void testAddStateHistoryEntry_tryToAddEntryWithSameTime(){
+        Vm vm = VmSimpleTest.createVm(vmScheduler);
+        VmStateHistoryEntry entry = new VmStateHistoryEntry(0, 1000, 100, false);
+        vm.addStateHistoryEntry(entry);
+        assertEquals(1, vm.getStateHistory().size());
+        vm.addStateHistoryEntry(entry);
+        assertEquals(1, vm.getStateHistory().size());
+    }
+
+    @Test
+    public void testAddStateHistoryEntry_changeAddedEntry(){
+        Vm vm = VmSimpleTest.createVm(vmScheduler);
+        VmStateHistoryEntry entry = new VmStateHistoryEntry(0, 1000, 100, false);
+        vm.addStateHistoryEntry(entry);
+        entry.setInMigration(true);
+        vm.addStateHistoryEntry(entry);
+        assertEquals(entry, vm.getStateHistory().get(vm.getStateHistory().size()-1));
     }
 
     @Test

@@ -84,6 +84,12 @@ public class HarddriveStorageTest {
         assertEquals(0, instance.addFile(nullList), 0.0);
     }
 
+    @Test
+    public void testGetCapacity() {
+        HarddriveStorage instance = createHardDrive(CAPACITY);
+        assertEquals(CAPACITY, instance.getCapacity());
+    }
+
     /**
      * Creates a list of ficticious numbered File instances
      * @param totalFiles The number of files to be created
@@ -187,6 +193,16 @@ public class HarddriveStorageTest {
         }
     }
     
+    @Test
+    public void testAddReservedFile_tryToAddAlreadAddedReservedFile() {
+        HarddriveStorage instance = createHardDrive(CAPACITY);
+        final File file = new File("file1.txt", 100);
+        instance.reserveSpace(file.getSize());
+        instance.addReservedFile(file);
+        instance.reserveSpace(file.getSize());
+        assertFalse(instance.addReservedFile(file) > 0);
+    }    
+    
     /**
      * Try to add a reserved file which the space was not previously reserved.
      * An exception must be thrown in that case.
@@ -263,6 +279,14 @@ public class HarddriveStorageTest {
         HarddriveStorage instance = createHardDrive();
         assertTrue(instance.hasPotentialAvailableSpace(fileSize));
         assertFalse(instance.hasPotentialAvailableSpace(fileSize*1000));
+    }
+
+    @Test
+    public void testHasPotentialAvailableSpace_invalidValue() {
+        System.out.println("testHasPotentialAvailableSpace_invalidValue");
+        HarddriveStorage instance = createHardDrive();
+        assertFalse(instance.hasPotentialAvailableSpace(0));
+        assertFalse(instance.hasPotentialAvailableSpace(-1));
     }
 
     @Test
@@ -367,6 +391,22 @@ public class HarddriveStorageTest {
         fileList.forEach(f -> assertEquals(f, instance.getFile(f.getName())));
         
         assertEquals(null, instance.getFile("inexistent-file.txt"));
+    }
+
+    @Test
+    public void testGetFileList() {
+        HarddriveStorage instance = createHardDrive();
+        List<File> fileList = createListOfFilesAndAddToHardDrive(instance);
+        instance.addFile(fileList);        
+        assertEquals(fileList, instance.getFileList());
+    }
+
+    @Test
+    public void testGetFile_invalidFile() {
+        HarddriveStorage instance = createHardDrive();
+        assertEquals(null, instance.getFile("   "));
+        assertEquals(null, instance.getFile(""));
+        assertEquals(null, instance.getFile(null));
     }
 
     /**

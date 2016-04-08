@@ -122,4 +122,25 @@ public class VmStateHistoryEntry {
         return isInMigration;
     }
 
+    @Override
+    public boolean equals(Object obj) {
+        if(!(obj instanceof VmStateHistoryEntry))
+            return false;
+        VmStateHistoryEntry entry = (VmStateHistoryEntry)obj;
+        
+        return (entry.time == this.time) &&
+               (entry.isInMigration == this.isInMigration) &&
+               (entry.allocatedMips == this.allocatedMips) &&
+               (entry.requestedMips == this.requestedMips);
+    }
+
+    @Override
+    public int hashCode() {
+        int hash = 7;
+        hash = 89 * hash + (int) (Double.doubleToLongBits(this.time) ^ (Double.doubleToLongBits(this.time) >>> 32));
+        hash = 89 * hash + (int) (Double.doubleToLongBits(this.allocatedMips) ^ (Double.doubleToLongBits(this.allocatedMips) >>> 32));
+        hash = 89 * hash + (int) (Double.doubleToLongBits(this.requestedMips) ^ (Double.doubleToLongBits(this.requestedMips) >>> 32));
+        hash = 89 * hash + (this.isInMigration ? 1 : 0);
+        return hash;
+    }
 }

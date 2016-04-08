@@ -513,24 +513,16 @@ public class VmSimple implements Vm {
     }
 
     @Override
-    public void addStateHistoryEntry(
-            double time,
-            double allocatedMips,
-            double requestedMips,
-            boolean isInMigration) {
-        VmStateHistoryEntry newState = new VmStateHistoryEntry(
-                time,
-                allocatedMips,
-                requestedMips,
-                isInMigration);
+    public void addStateHistoryEntry(VmStateHistoryEntry entry) {
+        
         if (!getStateHistory().isEmpty()) {
             VmStateHistoryEntry previousState = getStateHistory().get(getStateHistory().size() - 1);
-            if (previousState.getTime() == time) {
-                getStateHistory().set(getStateHistory().size() - 1, newState);
+            if (previousState.getTime() == entry.getTime()) {
+                getStateHistory().set(getStateHistory().size() - 1, entry);
                 return;
             }
         }
-        getStateHistory().add(newState);
+        getStateHistory().add(entry);
     }
 
     /**

@@ -17,7 +17,7 @@ public class VmTest {
     public void testNullObject(){
         final Vm instance = Vm.NULL;
         
-        instance.addStateHistoryEntry(0, 0, 0, false);
+        instance.addStateHistoryEntry(null);
         assertTrue(instance.getStateHistory().isEmpty());
 
         assertEquals(CloudletScheduler.NULL, instance.getCloudletScheduler());

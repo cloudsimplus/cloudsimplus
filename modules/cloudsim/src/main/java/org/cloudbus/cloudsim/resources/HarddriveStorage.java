@@ -366,8 +366,8 @@ public class HarddriveStorage implements FileStorage {
             fileNameList.add(file.getName());     // add the name to the name list
             storage.allocateResource((long)file.getSize());    // increment the current HD space
             result = seekTime + transferTime;  // add total time
+            file.setTransactionTime(result);
         }
-        file.setTransactionTime(result);
         return result;
     }
 

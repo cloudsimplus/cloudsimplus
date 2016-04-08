@@ -23,10 +23,6 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertSame;
-import static org.junit.Assert.assertTrue;
 
 /**
  * @author Anton Beloglazov
@@ -106,7 +102,7 @@ public class VmSchedulerTimeSharedTest {
     }
 
     @Test
-    public void testAllocatePesForVmInMigration() {
+    public void testAllocatePes_forVmMigrationIn() {
         vm0.setInMigration(true);
         vm1.setInMigration(true);
 
@@ -142,4 +138,18 @@ public class VmSchedulerTimeSharedTest {
         assertEquals(0, vmScheduler.getTotalAllocatedMipsForVm(vm1), 0);
     }
 
+    @Test
+    public void testAllocatePes_forVmMigrationOut() {
+        vmScheduler = new VmSchedulerTimeShared(peList);
+        final double vmMips = MIPS / 4;
+        Vm vm0 = VmSimpleTest.createVm(0, vmMips, 2);
+        vmScheduler.getVmsMigratingOut().add(vm0.getUid());
+
+        List<Double> mipsShare = new ArrayList<>();
+        mipsShare.add(vmMips);
+
+        vmScheduler.allocatePesForVm(vm0, mipsShare);
+        assertTrue(vmScheduler.getVmsMigratingOut().isEmpty());
+    }
+    
 }

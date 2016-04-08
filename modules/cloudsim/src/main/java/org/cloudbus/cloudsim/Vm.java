@@ -21,12 +21,9 @@ public interface Vm extends Identificable {
     /**
      * Adds a VM state history entry.
      *
-     * @param time the time
-     * @param allocatedMips the allocated mips
-     * @param requestedMips the requested mips
-     * @param isInMigration the is in migration
+     * @param entry the data about the state of the VM at given time
      */
-    void addStateHistoryEntry(double time, double allocatedMips, double requestedMips, boolean isInMigration);
+    void addStateHistoryEntry(VmStateHistoryEntry entry);
 
     /**
      * Gets bandwidth capacity.
@@ -408,7 +405,7 @@ public interface Vm extends Identificable {
      * objects.
      */
     public static final Vm NULL = new Vm() {
-        @Override public void addStateHistoryEntry(double time, double allocatedMips, double requestedMips, boolean isInMigration) {}
+        @Override public void addStateHistoryEntry(VmStateHistoryEntry entry) {}
         @Override public long getBw(){ return 0L; }
         @Override public CloudletScheduler getCloudletScheduler() { return CloudletScheduler.NULL; }
         @Override public long getCurrentAllocatedBw() { return 0L; }
