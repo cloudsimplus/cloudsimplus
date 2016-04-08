@@ -54,10 +54,12 @@ public class UtilizationModelArithmeticProgression implements UtilizationModel {
     public double getUtilization(double time) {
         double utilization = initialUtilization + (utilizationPercentageIncrementPerSecond * time);
         
-        if(utilization < 0)
-            utilization = 0;
-        else if(utilization > maxResourceUsagePercentage)
-            utilization = maxResourceUsagePercentage;
+        if(utilization <= 0)
+            return 0;
+        
+        if(utilization > maxResourceUsagePercentage)
+            return maxResourceUsagePercentage;
+        
         return utilization;
     }
     /**

@@ -49,11 +49,7 @@ public class HostList {
      * @post $result >= 0
      */
     public static <T extends Host> int getNumberOfPes(List<T> hostList) {
-        int numberOfPes = 0;
-        for (T host : hostList) {
-            numberOfPes += host.getPeList().size();
-        }
-        return numberOfPes;
+        return hostList.stream().mapToInt(h -> h.getPeList().size()).sum();
     }
 
     /**
@@ -66,11 +62,7 @@ public class HostList {
      * @post $result >= 0
      */
     public static <T extends Host> int getNumberOfFreePes(List<T> hostList) {
-        int numberOfFreePes = 0;
-        for (T host : hostList) {
-            numberOfFreePes += PeList.getNumberOfFreePes(host.getPeList());
-        }
-        return numberOfFreePes;
+        return hostList.stream().mapToInt(h -> PeList.getNumberOfFreePes(h.getPeList())).sum();
     }
 
     /**

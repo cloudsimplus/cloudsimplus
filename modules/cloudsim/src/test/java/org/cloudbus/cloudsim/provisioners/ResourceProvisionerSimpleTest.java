@@ -93,6 +93,9 @@ public class ResourceProvisionerSimpleTest {
         assertTrue(provisioner.isSuitableForVm(vm0, HALF_CAPACITY));
         assertTrue(provisioner.isSuitableForVm(vm0, CAPACITY));
         assertFalse(provisioner.isSuitableForVm(vm0, CAPACITY*2));
+        
+        provisioner.allocateResourceForVm(vm0, HALF_CAPACITY);
+        assertTrue(provisioner.isSuitableForVm(vm0, QUARTER_OF_CAPACITY));
     }
     
     @Test

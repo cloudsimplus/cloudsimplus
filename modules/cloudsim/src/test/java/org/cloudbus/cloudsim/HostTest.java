@@ -23,14 +23,14 @@ public class HostTest {
         
         instance.addMigratingInVm(vm);
         assertTrue(instance.getVmsMigratingIn().isEmpty());
-        
+        instance.deallocatePesForVm(null);
         assertFalse(instance.allocatePesForVm(vm, Collections.EMPTY_LIST));
         assertTrue(instance.getAllocatedMipsForVm(vm).isEmpty());
         assertEquals(0, instance.getAvailableMips(), 0);
         assertEquals(0, instance.getAvailableStorage(), 0);
      
         assertEquals(0, instance.getBw(), 0);
-        ResourceProvisioner<Long> result = instance.getBwProvisioner();
+        assertEquals(ResourceProvisioner.NULL_LONG, instance.getBwProvisioner());
         assertEquals(0, instance.getMaxAvailableMips(), 0);
         assertEquals(0, instance.getNumberOfFreePes(), 0);
         assertEquals(0, instance.getNumberOfPes(), 0);
@@ -59,6 +59,7 @@ public class HostTest {
         assertFalse(instance.setFailed("", false));
         assertFalse(instance.setFailed(false));
         assertFalse(instance.setPeStatus(0, Pe.Status.FREE));
+        assertEquals(0, instance.getId());
         assertEquals(0, instance.updateVmsProcessing(0), 0);
         assertFalse(instance.vmCreate(vm));
         assertTrue(instance.getVmList().isEmpty());

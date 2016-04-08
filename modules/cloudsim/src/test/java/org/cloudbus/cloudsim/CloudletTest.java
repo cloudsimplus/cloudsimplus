@@ -53,6 +53,7 @@ public class CloudletTest {
         assertEquals(0, Cloudlet.NULL.getUtilizationOfBw(0), 0);
         assertEquals(0, Cloudlet.NULL.getUtilizationOfCpu(0), 0);
         assertEquals(0, Cloudlet.NULL.getUtilizationOfRam(0), 0);
+        Cloudlet.NULL.setVmId(100);
         assertEquals(0, Cloudlet.NULL.getVmId(), 0);
         assertEquals(0, Cloudlet.NULL.getWaitingTime(), 0);
         assertEquals(0, Cloudlet.NULL.getWallClockTimeInLastExecutedDatacenter(), 0);

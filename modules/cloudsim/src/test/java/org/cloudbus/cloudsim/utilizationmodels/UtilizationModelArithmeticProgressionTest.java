@@ -11,7 +11,7 @@ import static org.junit.Assert.*;
 public class UtilizationModelArithmeticProgressionTest {
     
     @Test
-    public void testGetUtilizationDefaultConstructor() {
+    public void testGetUtilization_defaultConstructor() {
         System.out.println("getUtilization");
         final double utilizationPercentageIncrement = 0.1, initialUtilization = 0;
         UtilizationModelArithmeticProgression instance = new UtilizationModelArithmeticProgression();
@@ -19,7 +19,16 @@ public class UtilizationModelArithmeticProgressionTest {
     }
 
     @Test
-    public void testGetUtilizationOneParamConstructor() {
+    public void testGetUtilization_twoParamConstructorDecreasingUtilization() {
+        System.out.println("getUtilization");
+        final double utilizationPercentageIncrement = -0.1, initialUtilization = 0.5;
+        UtilizationModelArithmeticProgression instance = 
+                new UtilizationModelArithmeticProgression(utilizationPercentageIncrement, initialUtilization);
+        checkUtilization(initialUtilization, utilizationPercentageIncrement, instance);
+    }
+
+    @Test
+    public void testGetUtilization_oneParamConstructor() {
         System.out.println("getUtilization");
         final double utilizationPercentageIncrement = 0.2, initialUtilization = 0;
         UtilizationModelArithmeticProgression instance = 
@@ -28,7 +37,7 @@ public class UtilizationModelArithmeticProgressionTest {
     }
 
     @Test
-    public void testGetUtilizationTwoParamConstructor() {
+    public void testGetUtilization_twoParamConstructor() {
         System.out.println("getUtilization");
         final double utilizationPercentageIncrement = 0.2, initialUtilization = 0.5;
         UtilizationModelArithmeticProgression instance = 
@@ -37,7 +46,7 @@ public class UtilizationModelArithmeticProgressionTest {
     }
     
     @Test
-    public void testGetUtilizationTwoParamConstructorAndMaxUtilization() {
+    public void testGetUtilization_twoParamConstructorAndMaxUtilization() {
         System.out.println("getUtilization");
         final double utilizationPercentageIncrement = 0.2, initialUtilization = 0.5;
         final double maxUtilizationPercentage = 0.7;
@@ -74,9 +83,13 @@ public class UtilizationModelArithmeticProgressionTest {
 
     private double computeExpectedUtilization(double time, double initialUtilizationPercentage, 
             double utilizationPercentageIncrement, double maxUtilizationPercentage){
-        double utilizationPercentage = 
+        final double utilizationPercentage = 
                 initialUtilizationPercentage + (time * utilizationPercentageIncrement);
-        return  Math.min(utilizationPercentage, maxUtilizationPercentage);
+        
+        if(utilizationPercentageIncrement >= 0)
+            return  Math.min(utilizationPercentage, maxUtilizationPercentage);
+
+        return Math.max(0, utilizationPercentage);
     }
 
     @Test
