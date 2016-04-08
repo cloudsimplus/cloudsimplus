@@ -12,12 +12,12 @@ public class ResourceTest {
     @Test
     public void testNullObject() {
         System.out.println("testNullObject");
-        checkNullObject(Resource.NULL_DOUBLE);
-        checkNullObject(Resource.NULL_INT);
-        checkNullObject(Resource.NULL_LONG);
+        checkNullObject(ResourceManageable.NULL_DOUBLE);
+        checkNullObject(ResourceManageable.NULL_INT);
+        checkNullObject(ResourceManageable.NULL_LONG);
     }
 
-    private void checkNullObject(Resource instance) {
+    private void checkNullObject(ResourceManageable instance) {
         assertFalse(instance.setCapacity(null));
         assertFalse(instance.allocateResource(null));
         assertFalse(instance.setAllocatedResource(null));

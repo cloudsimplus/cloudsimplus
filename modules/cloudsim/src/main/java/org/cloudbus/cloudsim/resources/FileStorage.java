@@ -16,7 +16,7 @@ import java.util.List;
  * @author Manoel Campos da Silva Filho
  * @since CloudSim Toolkit 3.0.4
  */
-public interface FileStorage extends ResourceInformation<Long> {
+public interface FileStorage extends Resource<Long> {
     /**
      * 
      * @return the name of the storage device

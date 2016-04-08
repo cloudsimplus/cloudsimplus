@@ -13,11 +13,11 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import org.cloudbus.cloudsim.listeners.EventListener;
-import org.cloudbus.cloudsim.resources.Resource;
 import org.cloudbus.cloudsim.resources.Bandwidth;
 import org.cloudbus.cloudsim.resources.Ram;
 import org.cloudbus.cloudsim.resources.RawStorage;
 import org.cloudbus.cloudsim.schedulers.CloudletScheduler;
+import org.cloudbus.cloudsim.resources.ResourceManageable;
 
 /**
  * Implements the basic features of a Virtual Machine (VM) that runs inside a
@@ -31,10 +31,10 @@ import org.cloudbus.cloudsim.schedulers.CloudletScheduler;
  * @since CloudSim Toolkit 1.0
  *
  * @todo @author manoelcampos Instead of having the methods getRam, getUsedRam,
- * getAvailableRam (and the same for other resources), it would be returned the
- * Resource object for each different kind of resource, in order to allow the
- * user to get the resource capacity, used and available capacity without
- * defining a specific method for each one.
+ getAvailableRam (and the same for other resources), it would be returned the
+ ResourceManageable object for each different kind of resource, in order to allow the
+ user to get the resource capacity, used and available capacity without
+ defining a specific method for each one.
  */
 public class VmSimple implements Vm {
 
@@ -78,7 +78,7 @@ public class VmSimple implements Vm {
      * The map of resources the VM has. Each key is the class of a given VM
      * resource and each value is the resource itself.
      */
-    private final Map<Class<? extends Resource<? extends Number>>, Resource<? extends Number>> resources;
+    private final Map<Class<? extends ResourceManageable<? extends Number>>, ResourceManageable<? extends Number>> resources;
 
     /** @see #getStateHistory() */
     private final List<VmStateHistoryEntry> stateHistory = new LinkedList<>();
@@ -543,10 +543,10 @@ public class VmSimple implements Vm {
      * @return
      */
     @Override
-    public <T extends Number, R extends Resource<? extends T>>
-            Resource<T> getResource(Class<R> resourceClass) {
+    public <T extends Number, R extends ResourceManageable<? extends T>>
+            ResourceManageable<T> getResource(Class<R> resourceClass) {
         //reference: http://stackoverflow.com/questions/2284949/how-do-i-declare-a-member-with-multiple-generic-types-that-have-non-trivial-rela
-        return (Resource<T>) resources.get(resourceClass);
+        return (ResourceManageable<T>) resources.get(resourceClass);
     }
 
     @Override

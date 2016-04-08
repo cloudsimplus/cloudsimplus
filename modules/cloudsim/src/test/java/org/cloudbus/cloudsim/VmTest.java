@@ -3,10 +3,10 @@ package org.cloudbus.cloudsim;
 import java.util.Collections;
 import org.cloudbus.cloudsim.listeners.EventListener;
 import org.cloudbus.cloudsim.power.PowerHost;
-import org.cloudbus.cloudsim.resources.Resource;
 import org.cloudbus.cloudsim.schedulers.CloudletScheduler;
 import org.junit.Test;
 import static org.junit.Assert.*;
+import org.cloudbus.cloudsim.resources.ResourceManageable;
 
 /**
  *
@@ -28,7 +28,7 @@ public class VmTest {
         assertEquals(0, instance.getMips(), 0);
         assertEquals(0, instance.getNumberOfPes());
         
-        assertEquals(Resource.NULL_DOUBLE, instance.getResource(null));
+        assertEquals(ResourceManageable.NULL_DOUBLE, instance.getResource(null));
         
         assertEquals(0, instance.getTotalUtilizationOfCpu(0), 0);
         assertEquals(0, instance.getTotalUtilizationOfCpuMips(0), 0);

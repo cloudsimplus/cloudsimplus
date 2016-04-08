@@ -15,7 +15,7 @@ import org.cloudbus.cloudsim.util.Calculator;
  * @param <T> The type of the resource capacity of the provisioner
  * @since CloudSim Toolkit 3.0.4
  */
-public abstract class AbstractResource<T extends Number & Comparable<T>> implements Resource<T>{
+public abstract class AbstractResource<T extends Number & Comparable<T>> implements ResourceManageable<T>{
     /** A calculator for basic math operations over values extending of the Number class. */
     private final Calculator<T> calc;
     

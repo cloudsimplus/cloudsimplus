@@ -7,15 +7,10 @@ import java.util.stream.Collectors;
 /**
  * A Central Unit Processing (CPU) that can have multiple 
  * cores ({@link Pe Processing Elements}).
- * @author Manoel Campos da Silva Filho
  * 
- * @todo Restructure resource related interfaces in order to avoid
- * the code duplication in this class (such as capacity attribute and methods).
- * The {@link Resource} interface is supposed to be the most basic kind
- * of resource and all concrete resources must implement it.
- * Classes such as {@link FileStorage} doesn't implement a Resource.
+ * @author Manoel Campos da Silva Filho
  */
-public class Processor {
+public class Processor implements ResourceCapacity<Double>{
     private double capacity;
     /** @see #getNumberOfPes() */
     private int numberOfPes;
@@ -79,6 +74,7 @@ public class Processor {
      * Gets the individual MIPS capacity of each {@link Pe Processing Elements (cores)}.
      * @return 
      */
+    @Override
     public Double getCapacity() {
         return capacity;
     }

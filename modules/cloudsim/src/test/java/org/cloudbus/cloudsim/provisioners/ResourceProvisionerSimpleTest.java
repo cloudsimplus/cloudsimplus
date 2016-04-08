@@ -14,9 +14,9 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
 import org.cloudbus.cloudsim.VmSimple;
-import org.cloudbus.cloudsim.resources.Resource;
 import org.junit.Before;
 import org.junit.Test;
+import org.cloudbus.cloudsim.resources.ResourceManageable;
 
 /**
  * @author		Anton Beloglazov
@@ -44,7 +44,7 @@ public class ResourceProvisionerSimpleTest {
         return new ResourceProvisionerSimple(new Ram(CAPACITY));
     }
 
-    private ResourceProvisionerSimple<Integer> createSimpleProvisioner(Resource resource) {
+    private ResourceProvisionerSimple<Integer> createSimpleProvisioner(ResourceManageable resource) {
         return new ResourceProvisionerSimple(resource);
     }
 

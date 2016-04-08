@@ -8,11 +8,11 @@
 
 package org.cloudbus.cloudsim.provisioners;
 
-import org.cloudbus.cloudsim.resources.Resource;
 import java.util.HashMap;
 import java.util.Map;
 import org.cloudbus.cloudsim.Vm;
 import org.cloudbus.cloudsim.util.Calculator;
+import org.cloudbus.cloudsim.resources.ResourceManageable;
 
 /**
  * An abstract class that implements the basic features of a provisioning policy used by a host 
@@ -29,14 +29,14 @@ public abstract class AbstractResourceProvisioner<T extends Number & Comparable<
     /**
      * The resource being managed for the provisioner, such as RAM, BW or CPU.
      */
-    private final Resource<T> resource;
+    private final ResourceManageable<T> resource;
     
     /**
      * The class of the resource being managed for the provisioner,
      * such as {@link ResourceCpu}, {@link ResourceRam} or {@link ResourceBandwidth}.
      * @see #resource
      */
-    private final Class<? extends Resource<T>> resourceClass;
+    private final Class<? extends ResourceManageable<T>> resourceClass;
     
     /** The VM resource allocation map, where each key is a VM and each value
      * is the amount of resource allocated to that VM. */
@@ -46,17 +46,17 @@ public abstract class AbstractResourceProvisioner<T extends Number & Comparable<
     private final Calculator<T> calc;    
 
     /**
-     * Creates a new Resource Provisioner.
+     * Creates a new ResourceManageable Provisioner.
      * 
      * @param resource The resource to be managed by the provisioner
      * @post $none
      */
-    public AbstractResourceProvisioner(final Resource<T> resource) {
+    public AbstractResourceProvisioner(final ResourceManageable<T> resource) {
         if(resource == null)
             throw new IllegalArgumentException("Resource cannot be null");
         calc = new Calculator<>(resource.getCapacity());
         this.resource = resource;
-        this.resourceClass = (Class<Resource<T>>)resource.getClass();
+        this.resourceClass = (Class<ResourceManageable<T>>)resource.getClass();
         this.resourceAllocationMap = new HashMap<>();
     }
 
@@ -88,14 +88,14 @@ public abstract class AbstractResourceProvisioner<T extends Number & Comparable<
     /**
      * @return the resource
      */
-    protected Resource<T> getResource() {
+    protected ResourceManageable<T> getResource() {
         return resource;
     }
 
     /**
      * @return the resourceClass
      */
-    protected Class<? extends Resource<T>> getResourceClass() {
+    protected Class<? extends ResourceManageable<T>> getResourceClass() {
         return resourceClass;
     }
 

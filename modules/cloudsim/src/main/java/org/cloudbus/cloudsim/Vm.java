@@ -4,7 +4,7 @@ import org.cloudbus.cloudsim.schedulers.CloudletScheduler;
 import java.util.Collections;
 import java.util.List;
 import org.cloudbus.cloudsim.listeners.EventListener;
-import org.cloudbus.cloudsim.resources.Resource;
+import org.cloudbus.cloudsim.resources.ResourceManageable;
 
 /**
  * An interface to be implemented by each class that provides basic
@@ -144,7 +144,7 @@ public interface Vm extends Identificable {
      */
     int getNumberOfPes();
     
-    <T extends Number, R extends Resource<? extends T>> Resource<T> getResource(Class<R> resourceClass);
+    <T extends Number, R extends ResourceManageable<? extends T>> ResourceManageable<T> getResource(Class<R> resourceClass);
     
 
     /**
@@ -451,7 +451,7 @@ public interface Vm extends Identificable {
         @Override public boolean setSize(long size){ return false; }
         @Override public void setUid(String uid) {}
         @Override public double updateVmProcessing(double currentTime, List<Double> mipsShare){ return 0.0; }
-        @Override public <T extends Number, R extends Resource<? extends T>> Resource<T> getResource(Class<R> resourceClass) { return Resource.NULL_DOUBLE; }
+        @Override public <T extends Number, R extends ResourceManageable<? extends T>> ResourceManageable<T> getResource(Class<R> resourceClass) { return ResourceManageable.NULL_DOUBLE; }
         @Override public EventListener<Vm, Host> getOnUpdateVmProcessingListener() { return EventListener.NULL; }
         @Override public void setOnUpdateVmProcessingListener(EventListener<Vm, Host> onUpdateVmProcessingListener) {}
     };

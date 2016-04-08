@@ -10,7 +10,7 @@ package org.cloudbus.cloudsim.provisioners;
 
 import org.cloudbus.cloudsim.util.Calculator;
 import org.cloudbus.cloudsim.Vm;
-import org.cloudbus.cloudsim.resources.Resource;
+import org.cloudbus.cloudsim.resources.ResourceManageable;
 
 /**
  * ResourceProvisionerSimple is an extension of {@link AbstractResourceProvisioner} 
@@ -30,12 +30,12 @@ public class ResourceProvisionerSimple<T extends Number & Comparable<T>> extends
     private final Calculator<T> calc;
 
     /**
-     * Creates a new Resource Provisioner.
+     * Creates a new ResourceManageable Provisioner.
      * 
      * @param resource The resource to be managed by the provisioner
      * @post $none
      */
-    public ResourceProvisionerSimple(Resource<T> resource) {
+    public ResourceProvisionerSimple(ResourceManageable<T> resource) {
         super(resource);
         calc = new Calculator<>(resource.getCapacity());
     }
