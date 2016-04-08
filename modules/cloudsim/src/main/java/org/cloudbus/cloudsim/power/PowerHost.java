@@ -84,14 +84,14 @@ public interface PowerHost extends HostDynamicWorkload {
         @Override public List<Double> getAllocatedMipsForVm(Vm vm) { return Collections.EMPTY_LIST; }
         @Override public double getAvailableMips() { return 0; }
         @Override public long getAvailableStorage() { return 0L; }
-        @Override public long getBw() { return 0L; }
+        @Override public long getBwCapacity() { return 0L; }
         @Override public ResourceProvisioner<Long> getBwProvisioner() { return ResourceProvisioner.NULL_LONG; }
         @Override public Datacenter getDatacenter() { return Datacenter.NULL; }
         @Override public double getMaxAvailableMips() { return 0; }
         @Override public int getNumberOfFreePes() { return 0; }
         @Override public int getNumberOfPes() { return 0; }
         @Override public List<Pe> getPeList() { return Collections.EMPTY_LIST; }
-        @Override public int getRam() { return 0; }
+        @Override public int getRamCapacity() { return 0; }
         @Override public ResourceProvisioner<Integer> getRamProvisioner() { return ResourceProvisioner.NULL_INT; }
         @Override public long getStorageCapacity() { return 0L; }
         @Override public double getTotalAllocatedMipsForVm(Vm vm) { return 0; }

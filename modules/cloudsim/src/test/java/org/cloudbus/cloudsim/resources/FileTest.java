@@ -25,17 +25,17 @@ public class FileTest {
         return new File(NAME, size);
     }
 
-    @Test
-    public void testCreateFile() {
-        System.out.println("testCreateFile");
-        try {
-            createFile();
-        } catch (Exception e) {
-            fail(String.format(
-                "An exception should'nt be raised when creating a file with valid name %s and size %d",
-                 NAME, SIZE));
-        }
-                
+    @Test(expected = IllegalArgumentException.class)
+    public void testCreateFile_nullFileParameter() {
+        File nullFile = null;
+        new File(nullFile);
+    }
+
+    @Test()
+    public void testCreateFile_FileParameter() {
+        File originalFile = new File("test1.txt", 100);
+        File copyFile = new File(originalFile);
+        assertFalse(copyFile.isMasterCopy());
     }
 
     @Test(expected = IllegalArgumentException.class)

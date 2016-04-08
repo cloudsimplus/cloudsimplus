@@ -338,12 +338,12 @@ public class HostSimple implements Host {
     }
 
     @Override
-    public long getBw() {
+    public long getBwCapacity() {
         return getBwProvisioner().getCapacity();
     }
 
     @Override
-    public int getRam() {
+    public int getRamCapacity() {
         return getRamProvisioner().getCapacity();
     }
 

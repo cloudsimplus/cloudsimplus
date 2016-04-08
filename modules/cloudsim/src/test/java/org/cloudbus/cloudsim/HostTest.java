@@ -29,13 +29,13 @@ public class HostTest {
         assertEquals(0, instance.getAvailableMips(), 0);
         assertEquals(0, instance.getAvailableStorage(), 0);
      
-        assertEquals(0, instance.getBw(), 0);
+        assertEquals(0, instance.getBwCapacity(), 0);
         assertEquals(ResourceProvisioner.NULL_LONG, instance.getBwProvisioner());
         assertEquals(0, instance.getMaxAvailableMips(), 0);
         assertEquals(0, instance.getNumberOfFreePes(), 0);
         assertEquals(0, instance.getNumberOfPes(), 0);
         assertTrue(instance.getPeList().isEmpty());
-        assertEquals(0, instance.getRam(), 0);
+        assertEquals(0, instance.getRamCapacity(), 0);
         assertEquals(ResourceProvisioner.NULL_INT, instance.getRamProvisioner());
         assertEquals(0, instance.getStorageCapacity(), 0);
         assertEquals(0, instance.getTotalAllocatedMipsForVm(vm), 0);

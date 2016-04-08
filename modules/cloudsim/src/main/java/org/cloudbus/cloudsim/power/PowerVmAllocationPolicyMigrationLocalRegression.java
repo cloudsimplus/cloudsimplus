@@ -156,7 +156,7 @@ public class PowerVmAllocationPolicyMigrationLocalRegression extends PowerVmAllo
 				maxRam = ram;
 			}
 		}
-		return maxRam / ((double) host.getBw() / (2 * 8000));
+		return maxRam / ((double) host.getBwCapacity() / (2 * 8000));
 	}
 
 	/**

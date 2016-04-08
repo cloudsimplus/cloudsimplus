@@ -112,26 +112,17 @@ public class UtilizationModelArithmeticProgressionTest {
     @Test
     public void testConstructor_negativeUtilizationPercentageIncrementPerSecond() {
         double expResult = -0.1;
-        try {
-            UtilizationModelArithmeticProgression instance = 
-                    new UtilizationModelArithmeticProgression(expResult);
-            assertEquals(expResult, instance.getUtilizationPercentageIncrementPerSecond(), 0.0);
-        } catch (Exception e) {
-            fail("An exception should not be raised when trying to set a negative utilizationPercentageIncrementPerSecond greater or equal to -1");
-        }
+        UtilizationModelArithmeticProgression instance = 
+                new UtilizationModelArithmeticProgression(expResult);
+        assertEquals(expResult, instance.getUtilizationPercentageIncrementPerSecond(), 0.0);
     }
 
     @Test
     public void testConstructor_zeroUtilizationPercentageIncrementPerSecond() {
         double zero = 0;
-        try {
-            UtilizationModelArithmeticProgression instance = 
-                    new UtilizationModelArithmeticProgression(zero);
-            assertEquals(zero, instance.getUtilizationPercentageIncrementPerSecond(), 0.0);
-        } catch (Exception e) {
-            fail(String.format(
-                    "An exception should not be raised when trying to set an utilizationPercentageIncrementPerSecond equal to %.2f", zero));
-        }
+        UtilizationModelArithmeticProgression instance = 
+                new UtilizationModelArithmeticProgression(zero);
+        assertEquals(zero, instance.getUtilizationPercentageIncrementPerSecond(), 0.0);
     }
 
     @Test(expected = IllegalArgumentException.class)
@@ -160,26 +151,16 @@ public class UtilizationModelArithmeticProgressionTest {
     public void testTwoParamsConstructor_positiveInitialUtilization() {
         UtilizationModelArithmeticProgression instance;
         double expResult = 0.1;
-        try {
-            instance = new UtilizationModelArithmeticProgression(0, expResult);
-            assertEquals(expResult, instance.getInitialUtilization(), 0.0);
-        } catch (Exception e) {
-            fail(String.format(
-               "An exception should not be raised when trying to set an initialUtilization equal to %.2f", expResult));
-        }
+        instance = new UtilizationModelArithmeticProgression(0, expResult);
+        assertEquals(expResult, instance.getInitialUtilization(), 0.0);
     }
 
     @Test
     public void testTwoParamsConstructor_zeroInitialUtilization() {
         UtilizationModelArithmeticProgression instance;
         double expResult = 0;
-        try {
-            instance = new UtilizationModelArithmeticProgression(0, expResult);
-            assertEquals(expResult, instance.getInitialUtilization(), 0.0);
-        } catch (Exception e) {
-            fail(String.format(
-                "An exception should not be raised when trying to set an initialUtilization equal to %.2f", expResult));
-        }
+        instance = new UtilizationModelArithmeticProgression(0, expResult);
+        assertEquals(expResult, instance.getInitialUtilization(), 0.0);
     }
 
     @Test

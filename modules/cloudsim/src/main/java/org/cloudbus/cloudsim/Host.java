@@ -77,7 +77,7 @@ public interface Host extends Identificable {
      * @pre $none
      * @post $result > 0
      */
-    long getBw();
+    long getBwCapacity();
 
     /**
      * Gets the bandwidth(BW) provisioner.
@@ -129,7 +129,7 @@ public interface Host extends Identificable {
      * @pre $none
      * @post $result > 0
      */
-    int getRam();
+    int getRamCapacity();
 
     /**
      * Gets the ram provisioner.
@@ -346,7 +346,7 @@ public interface Host extends Identificable {
         @Override public void deallocatePesForVm(Vm vm) {}
         @Override public List<Double> getAllocatedMipsForVm(Vm vm) { return Collections.emptyList(); }
         @Override public double getAvailableMips() { return 0; }
-        @Override public long getBw() { return 0; }
+        @Override public long getBwCapacity() { return 0; }
         @Override public ResourceProvisioner<Long> getBwProvisioner() { return ResourceProvisioner.NULL_LONG; }
         @Override public Datacenter getDatacenter() { return Datacenter.NULL; }
         @Override public int getId() { return 0; }
@@ -354,7 +354,7 @@ public interface Host extends Identificable {
         @Override public int getNumberOfFreePes() { return 0; }
         @Override public int getNumberOfPes() { return 0; }
         @Override public List<Pe> getPeList() { return Collections.emptyList(); }
-        @Override public int getRam() { return 0; }
+        @Override public int getRamCapacity() { return 0; }
         @Override public ResourceProvisioner<Integer> getRamProvisioner() { return ResourceProvisioner.NULL_INT; }
         @Override public long getStorageCapacity() { return 0L; }
         @Override public double getTotalAllocatedMipsForVm(Vm vm) { return 0.0; }

@@ -8,9 +8,6 @@
 
 package org.cloudbus.cloudsim.resources;
 
-import java.util.List;
-import org.cloudbus.cloudsim.Log;
-
 /**
  * SanStorage represents a Storage Area Network (SAN) composed of a set of 
  * hard disks connected in a LAN.

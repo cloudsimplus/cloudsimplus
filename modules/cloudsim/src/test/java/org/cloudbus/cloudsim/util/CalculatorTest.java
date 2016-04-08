@@ -24,6 +24,16 @@ public class CalculatorTest {
         assertEquals(byteRes, new Calculator<>(byteZero).add(byteA, byteB), byteZero);
     }
 
+    @Test(expected = IllegalArgumentException.class)
+    public void testAdd_nulValue() {
+        new Calculator<>(0D).add(null, null);
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void testIsNegative_nulValue() {
+        new Calculator<>(0D).isNegative(null);
+    }
+
     @Test
     public void testSubtract() {
         System.out.println("subtract");

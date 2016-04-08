@@ -58,6 +58,13 @@ public class SanStorageTest {
     }
 
     @Test
+    public void testNew_namedSanStorage() {
+        final String name = "san1";
+        final SanStorage san = new SanStorage(name, CAPACITY, BW, NETWORK_LATENCY);
+        assertEquals(name, san.getName());
+    }
+
+    @Test
     public void testAddFile_File() {
         System.out.println("addFile");
         SanStorage instance = createSanStorage(BW);

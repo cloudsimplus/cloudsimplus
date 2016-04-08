@@ -52,7 +52,8 @@ public final class Calculator<T extends Number & Comparable<T>> {
         if(type instanceof Byte)
             return (T)(Number)value.byteValue();
         
-        return (T)value;
+        throw new IllegalArgumentException(
+                String.format("Operation over values of the type of %s is not supported", value));
     }
     
     private T calculate(final T a, final T b, final Operation op){
@@ -67,7 +68,7 @@ public final class Calculator<T extends Number & Comparable<T>> {
             case min:      result = Math.min(a.doubleValue(), b.doubleValue()); break;
             case max:      result = Math.max(a.doubleValue(), b.doubleValue()); break;
             default: 
-                throw new RuntimeException(
+                throw new IllegalArgumentException(
                         String.format("Math operation not implemented: %s", op.name()));
         }
         

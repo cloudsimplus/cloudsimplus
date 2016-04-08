@@ -25,6 +25,21 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
+import static org.easymock.EasyMock.createMock;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
+import static org.easymock.EasyMock.createMock;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
+import static org.easymock.EasyMock.createMock;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
 
 /**
  * @author Anton Beloglazov
@@ -117,7 +132,7 @@ public class VmSimpleTest {
     public static VmSimple createVm(final int vmId,
             final double mips, final int numberOfPes,
             final int ram, final long bw, final long storage,
-            final CloudletSchedulerAbstract scheduler) {
+            final CloudletScheduler scheduler) {
         return new VmSimple(vmId, 0, mips, numberOfPes, ram, bw, storage, "", scheduler);
     }
 

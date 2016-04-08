@@ -30,6 +30,12 @@ import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertSame;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertSame;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertSame;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertSame;
 
 /**
  * @author	Anton Beloglazov
@@ -93,6 +99,24 @@ public class CloudletSimpleTest {
         cloudlet.setSubmissionTime(submissionTime);
         cloudlet.setExecStartTime(execStartTime);
         assertEquals(expectedWaitingTime, cloudlet.getWaitingTime(), 0);
+    }
+    
+    @Test
+    public void testAssignCloudletToDataCenter_recodLogEnabledDatacenterNotAssigned() {
+        final int datacenterId = 0;
+        Cloudlet cloudlet = createCloudlet(datacenterId, true);
+        cloudlet.assignCloudletToDatacenter(datacenterId, 0);
+        assertEquals(datacenterId, cloudlet.getDatacenterId());
+    }
+
+    @Test
+    public void testAssignCloudletToDataCenter_recodLogEnabledDatacenterAlreadAssigned() {
+        Cloudlet cloudlet = createCloudlet(0, true);
+        cloudlet.assignCloudletToDatacenter(0, 0);
+
+        final int datacenterId = 1;
+        cloudlet.assignCloudletToDatacenter(datacenterId, 0);
+        assertEquals(datacenterId, cloudlet.getDatacenterId());
     }
 
     @Test

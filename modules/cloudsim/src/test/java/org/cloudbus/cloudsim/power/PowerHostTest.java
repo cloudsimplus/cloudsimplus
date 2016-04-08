@@ -69,12 +69,7 @@ public class PowerHostTest {
     public void testGetEnergy() {
         assertEquals(0, host.getEnergyLinearInterpolation(0, 0, TIME), 0);
         double expectedEnergy = 0;
-        try {
-            expectedEnergy = (host.getPowerModel().getPower(0.2) + (host.getPowerModel().getPower(0.9) - host.getPowerModel().getPower(0.2)) / 2) * TIME;
-        } catch (Exception e) {
-            e.printStackTrace();
-            fail("An exception was not expected to happen.");
-        }
+        expectedEnergy = (host.getPowerModel().getPower(0.2) + (host.getPowerModel().getPower(0.9) - host.getPowerModel().getPower(0.2)) / 2) * TIME;
         assertEquals(expectedEnergy, host.getEnergyLinearInterpolation(0.2, 0.9, TIME), 0);
     }
 
