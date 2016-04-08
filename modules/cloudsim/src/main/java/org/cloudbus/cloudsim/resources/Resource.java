@@ -77,7 +77,7 @@ public interface Resource <T extends Number> extends ResourceInformation<T> {
      * 
      * @return true, if it is possible to allocate the new total resource; false otherwise
      */
-    boolean isSuitable(T newTotalAllocatedResource);    
+    boolean isSuitable(T newTotalAllocatedResource);  
     
     /**
      * A property that implements the Null Object Design Pattern for 

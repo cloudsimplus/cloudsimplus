@@ -47,6 +47,5 @@ public interface ResourceInformation<T extends Number> {
      * 
      * @return <tt>true</tt> if the storage is full, <tt>false</tt> otherwise
      */
-    boolean isFull();            
-        
+    boolean isFull();
 }

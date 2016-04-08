@@ -8,8 +8,15 @@ import java.util.stream.Collectors;
  * A Central Unit Processing (CPU) that can have multiple 
  * cores ({@link Pe Processing Elements}).
  * @author Manoel Campos da Silva Filho
+ * 
+ * @todo Restructure resource related interfaces in order to avoid
+ * the code duplication in this class (such as capacity attribute and methods).
+ * The {@link Resource} interface is supposed to be the most basic kind
+ * of resource and all concrete resources must implement it.
+ * Classes such as {@link FileStorage} doesn't implement a Resource.
  */
-public class Processor extends AbstractResource<Double>{
+public class Processor {
+    private double capacity;
     /** @see #getNumberOfPes() */
     private int numberOfPes;
     
@@ -20,8 +27,8 @@ public class Processor extends AbstractResource<Double>{
      * @param numberOfPes number of {@link Pe Processing Elements (cores)}
      */
     public Processor(Double individualPeCapacity, int numberOfPes) {
-        super(individualPeCapacity);
-        this.numberOfPes = numberOfPes;
+        setCapacity(individualPeCapacity);
+        setNumberOfPes(numberOfPes);
     }
     
     /**
@@ -38,12 +45,10 @@ public class Processor extends AbstractResource<Double>{
         }
 
         mipsList = getNonZeroMipsElements(mipsList);
-        if(mipsList.isEmpty()){
-            throw new IllegalArgumentException("The mipsList cannot be empty or having just elements of zero capacity.");
-        }
         
-        final Double firstItem = mipsList.get(0);
-        if(mipsList.size() > 1){
+        Double firstItem = 0.0;
+        if(!mipsList.isEmpty()){
+            firstItem = mipsList.get(0);
             for(Double mips: mipsList){
                 if(!Objects.equals(mips, firstItem)){
                     throw new IllegalArgumentException(
@@ -74,9 +79,8 @@ public class Processor extends AbstractResource<Double>{
      * Gets the individual MIPS capacity of each {@link Pe Processing Elements (cores)}.
      * @return 
      */
-    @Override
     public Double getCapacity() {
-        return super.getCapacity();
+        return capacity;
     }
 
     /**
@@ -91,7 +95,17 @@ public class Processor extends AbstractResource<Double>{
      * Sets the number of {@link Pe Processing Elements (cores)} of the Processor
      * @param numberOfPes
      */
-    public void setNumberOfPes(int numberOfPes) {
+    public final void setNumberOfPes(int numberOfPes) {
+        if(numberOfPes < 0){
+            throw new IllegalArgumentException("The numberOfPes cannot be negative.");
+        }
         this.numberOfPes = numberOfPes;
+    }
+
+    public final boolean setCapacity(Double newCapacity) {
+        if(newCapacity == null || newCapacity < 0)
+            throw new IllegalArgumentException("Capacity cannot be null or negative");
+        this.capacity = newCapacity;
+        return true;
     }
 }

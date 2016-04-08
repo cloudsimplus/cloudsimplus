@@ -18,7 +18,6 @@ import java.util.List;
  */
 public interface FileStorage extends ResourceInformation<Long> {
     /**
-     * Gets the name of the storage device.
      * 
      * @return the name of the storage device
      */

@@ -104,20 +104,26 @@ public abstract class VmSchedulerAbstract implements VmScheduler {
     /**
      * Gets the pes allocated for a vm.
      *
-     * @param vm the vm
-     * @return the pes allocated for the given vm
+     * @param vm the VM
+     * @return the PEs allocated for the given VM
+     * or an immutable empty list if there aren't allocated PEs
+     * for it
      */
     @Override
     public List<Pe> getPesAllocatedForVM(Vm vm) {
-        return getPeMap().get(vm.getUid());
+        List<Pe> list = getPeMap().get(vm.getUid());
+        if(list == null)
+            return Collections.EMPTY_LIST;
+        return list;
     }
 
     /**
      * Returns the MIPS share of each host's Pe that is allocated to a given VM.
      *
-     * @param vm the vm
-     * @return an array containing the amount of MIPS of each pe that is
-     * available to the VM
+     * @param vm the VM
+     * @return an array containing the amount of MIPS of each PE that is
+     * available to the VM or an immutable empty list if there aren't allocated PEs
+     * for the given VM
      * @pre $none
      * @post $none
      */

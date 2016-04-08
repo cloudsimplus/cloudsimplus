@@ -41,11 +41,12 @@ import org.cloudbus.cloudsim.resources.FileStorage;
 import org.cloudbus.cloudsim.resources.Ram;
 
 /**
- * A simple example showing how to create a datacenter with two hosts and run
- * two cloudlets on it. At the end, it shows the total resource utilization of hosts 
+ * A simple example showing how to create a datacenter with two hosts,
+ * with one Vm in each one, and run 1 cloudlet in each Vm. 
+ * At the end, it shows the total resource utilization of hosts 
  * into a datacenter (considering the usage of their VMs).
  *
- * The cloudlets run in VMs with different MIPS requirements. The cloudlets will
+ * Cloudlets run in VMs with different MIPS requirements. The cloudlets will
  * take different time to complete the execution depending on the requested VM
  * performance.
  * 
@@ -67,6 +68,7 @@ public class CloudSimExample9 {
 
     /**
      * Creates main() to run this example
+     * @param args
      */
     public static void main(String[] args) {
         Log.printFormattedLine("Starting %s...", CloudSimExample9.class.getSimpleName());
