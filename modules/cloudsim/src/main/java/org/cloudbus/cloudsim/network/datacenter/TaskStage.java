@@ -5,64 +5,132 @@
  *
  * Copyright (c) 2009-2012, The University of Melbourne, Australia
  */
-
 package org.cloudbus.cloudsim.network.datacenter;
 
 /**
- * TaskStage represents various stages a {@link NetworkCloudlet} can have during execution. 
- * Four stage types which are possible: {@link NetworkConstants#EXECUTION}, 
- * {@link NetworkConstants#WAIT_SEND}, {@link NetworkConstants#WAIT_RECV}, 
+ * TaskStage represents various stages a {@link NetworkCloudlet} can have during
+ * execution. Four stage types which are possible: {@link NetworkConstants#EXECUTION},
+ * {@link NetworkConstants#WAIT_SEND}, {@link NetworkConstants#WAIT_RECV},
  * {@link NetworkConstants#FINISH}.
- * 
+ *
  * <br/>Please refer to following publication for more details:<br/>
  * <ul>
  * <li>
  * <a href="http://dx.doi.org/10.1109/UCC.2011.24">
- * Saurabh Kumar Garg and Rajkumar Buyya, NetworkCloudSim: Modelling Parallel Applications in Cloud
- * Simulations, Proceedings of the 4th IEEE/ACM International Conference on Utility and Cloud
- * Computing (UCC 2011, IEEE CS Press, USA), Melbourne, Australia, December 5-7, 2011.
+ * Saurabh Kumar Garg and Rajkumar Buyya, NetworkCloudSim: Modelling Parallel
+ * Applications in Cloud Simulations, Proceedings of the 4th IEEE/ACM
+ * International Conference on Utility and Cloud Computing (UCC 2011, IEEE CS
+ * Press, USA), Melbourne, Australia, December 5-7, 2011.
  * </a>
  * </ul>
- * 
+ *
  * @author Saurabh Kumar Garg
  * @since CloudSim Toolkit 1.0
  * @todo Attributes should be defined as private.
+ *
+ * @todo @author manoelcampos It should be used an enum for stage types.
  */
 public class TaskStage {
-	int vpeer;
 
-        /**
-         * The task type, either {@link NetworkConstants#EXECUTION}, 
-         * {@link NetworkConstants#WAIT_SEND} or {@link NetworkConstants#WAIT_RECV}.
-         * @todo It would be used enum instead of int constants.
-         */
-	int type;
+    public static enum Stage {EXECUTION, WAIT_SEND, WAIT_RECV, FINISH}; 
+    
+    /**
+     * The id of the TaskStage.
+     */
+    private int id;
 
-        /**
-         * The data length generated for the task (in bytes).
-        */
-	double data;
+    private int cloudletId;
 
-        /** Execution time for this stage. */
-	double time;
+    /**
+     * The stage of the task.
+     */
+    private Stage stage;
 
-        /** Stage (task) id. */
-	double stageid;
+    /**
+     * The data length generated for the task (in bytes).
+     */
+    private double dataLenght;
 
-        /** Memory used by the task. */
-	long memory;
+    /**
+     * Execution time for this stage.
+     */
+    private double time;
 
-        /** From whom data needed to be received or sent. */
-	int peer;
+    /**
+     * Memory used by the task.
+     */
+    private long memory;
 
-	public TaskStage(int type, double data, double time, double stageid, long memory, int peer, int vpeer) {
-		super();
-		this.type = type;
-		this.data = data;
-		this.time = time;
-		this.stageid = stageid;
-		this.memory = memory;
-		this.peer = peer;
-		this.vpeer = vpeer;
-	}
+    /**
+     * The VM from whom data needed to be received or sent.
+     */
+    private int vmId;
+
+    public TaskStage(int id, Stage stage, double dataLength, double time, 
+            long memory, int vmId, int cloudletId) {
+        super();
+        this.id = id;
+        this.stage = stage;
+        this.dataLenght = dataLength;
+        this.time = time;
+        this.memory = memory;
+        this.vmId = vmId;
+        this.cloudletId = cloudletId;
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
+
+    public int getCloudletId() {
+        return cloudletId;
+    }
+
+    public void setCloudletId(int cloudletId) {
+        this.cloudletId = cloudletId;
+    }
+
+    public Stage getStage() {
+        return stage;
+    }
+
+    public void setStage(Stage stage) {
+        this.stage = stage;
+    }
+
+    public double getDataLenght() {
+        return dataLenght;
+    }
+
+    public void setDataLenght(double dataLenght) {
+        this.dataLenght = dataLenght;
+    }
+
+    public double getTime() {
+        return time;
+    }
+
+    public void setTime(double time) {
+        this.time = time;
+    }
+
+    public long getMemory() {
+        return memory;
+    }
+
+    public void setMemory(long memory) {
+        this.memory = memory;
+    }
+
+    public int getVmId() {
+        return vmId;
+    }
+
+    public void setVmId(int vmId) {
+        this.vmId = vmId;
+    }
 }

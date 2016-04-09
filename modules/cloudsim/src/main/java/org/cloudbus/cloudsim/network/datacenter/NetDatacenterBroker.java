@@ -67,7 +67,7 @@ public class NetDatacenterBroker extends SimEntity {
      *
      * @todo attribute appears to be redundant with {@link #appCloudletList}
      */
-    private final Map<Integer, Integer> appCloudletRecieved;
+    private final Map<Integer, Integer> appCloudletReceived;
 
     /**
      * * The list of submitted {@link Cloudlet Cloudlets}.
@@ -130,7 +130,7 @@ public class NetDatacenterBroker extends SimEntity {
 
     public boolean createVmFlag = true;
 
-    public static int cachedcloudlet = 0;
+    public static int cachedCloudlet = 0;
 
     /**
      * Creates a new DatacenterBroker object.
@@ -151,7 +151,7 @@ public class NetDatacenterBroker extends SimEntity {
         setAppCloudletList(new ArrayList<AppCloudlet>());
         setCloudletSubmittedList(new ArrayList<>());
         setCloudletReceivedList(new ArrayList<>());
-        appCloudletRecieved = new HashMap<>();
+        appCloudletReceived = new HashMap<>();
 
         cloudletsSubmitted = 0;
         setVmsRequested(0);
@@ -205,11 +205,11 @@ public class NetDatacenterBroker extends SimEntity {
         switch (ev.getTag()) {
             // Resource characteristics request
             case CloudSimTags.RESOURCE_CHARACTERISTICS_REQUEST:
-                processResourceCharacteristicsRequest(ev);
+                processDatacenterCharacteristicsRequest(ev);
             break;
             // Resource characteristics answer
             case CloudSimTags.RESOURCE_CHARACTERISTICS:
-                processResourceCharacteristics(ev);
+                processDatacenterCharacteristics(ev);
             break;
             // A finished cloudlet returned
             case CloudSimTags.CLOUDLET_RETURN:
@@ -240,7 +240,7 @@ public class NetDatacenterBroker extends SimEntity {
      * @pre ev != $null
      * @post $none
      */
-    protected void processResourceCharacteristics(SimEvent ev) {
+    protected void processDatacenterCharacteristics(SimEvent ev) {
         DatacenterCharacteristics characteristics = (DatacenterCharacteristics) ev.getData();
         getDatacenterCharacteristicsList().put(characteristics.getId(), characteristics);
 
@@ -258,12 +258,12 @@ public class NetDatacenterBroker extends SimEntity {
      * @pre ev != $null
      * @post $none
      */
-    protected void processResourceCharacteristicsRequest(SimEvent ev) {
+    protected void processDatacenterCharacteristicsRequest(SimEvent ev) {
         setDatacenterIdsList(CloudSim.getCloudResourceList());
         setDatacenterCharacteristicsList(new HashMap<>());
 
-        Log.printConcatLine(CloudSim.clock(), ": ", getName(), ": Cloud Resource List received with ",
-                getDatacenterIdsList().size(), " resource(s)");
+        Log.printConcatLine(CloudSim.clock(), ": ", getName(), ": Cloud Datacenter List received with ",
+                getDatacenterIdsList().size(), " datacenter(s)");
 
         for (Integer datacenterId : getDatacenterIdsList()) {
             sendNow(datacenterId, CloudSimTags.RESOURCE_CHARACTERISTICS, getId());
@@ -349,7 +349,7 @@ public class NetDatacenterBroker extends SimEntity {
         // generate Application execution Requests
         for (int i = 0; i < 100; i++) {
             this.getAppCloudletList().add(
-                    new WorkflowApp(AppCloudlet.APP_Workflow, NetworkConstants.currentAppId, 0, 0, getId()));
+                    new WorkflowApp(AppCloudlet.APP_WORKFLOW, NetworkConstants.currentAppId, 0, 0, getId()));
             NetworkConstants.currentAppId++;
 
         }
@@ -357,32 +357,28 @@ public class NetDatacenterBroker extends SimEntity {
 
         // schedule the application on VMs
         for (AppCloudlet app : this.getAppCloudletList()) {
-
             List<Integer> vmids = new ArrayList<>();
             int numVms = linkDC.getVmList().size();
             UniformDistr ufrnd = new UniformDistr(0, numVms, 5);
             for (int i = 0; i < app.numberOfVMs; i++) {
-
                 int vmid = (int) ufrnd.sample();
                 vmids.add(vmid);
-
             }
 
             if (vmids != null) {
                 if (!vmids.isEmpty()) {
-
                     app.createCloudletList(vmids);
                     for (int i = 0; i < app.numberOfVMs; i++) {
-                        app.clist.get(i).setUserId(getId());
-                        appCloudletRecieved.put(app.appID, app.numberOfVMs);
-                        this.getCloudletSubmittedList().add(app.clist.get(i));
+                        app.networkCloudletList.get(i).setUserId(getId());
+                        appCloudletReceived.put(app.appId, app.numberOfVMs);
+                        this.getCloudletSubmittedList().add(app.networkCloudletList.get(i));
                         cloudletsSubmitted++;
 
                         // Sending cloudlet
                         sendNow(
                                 getVmsToDatacentersMap().get(this.getVmList().get(0).getId()),
                                 CloudSimTags.CLOUDLET_SUBMIT,
-                                app.clist.get(i));
+                                app.networkCloudletList.get(i));
                     }
                     System.out.println("app" + (k++));
                 }

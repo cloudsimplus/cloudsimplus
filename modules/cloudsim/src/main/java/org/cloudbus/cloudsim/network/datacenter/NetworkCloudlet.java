@@ -56,7 +56,8 @@ public class NetworkCloudlet extends CloudletSimple implements Comparable<Object
         /** Number of cloudlet's stages . */
 	public double numberOfStages;
 
-        /** Current stage of cloudlet execution. */
+        /** Current stage of cloudlet execution,
+         * according to the values of the {@link TaskStage#Stage} enum. */
 	public int currentStageNum; 
 
         /** Star time of the current stage. */

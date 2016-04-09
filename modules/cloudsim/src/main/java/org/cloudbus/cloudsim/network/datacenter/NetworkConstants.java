@@ -15,30 +15,22 @@ package org.cloudbus.cloudsim.network.datacenter;
  * exceptions are the {@link TaskStage} types and number of switches by level.
  */
 public class NetworkConstants {
-    /**
-     * Types of {@link TaskStage}
-     *
-     * @todo should be an enum
-     */
-    public static final int EXECUTION = 0;
-    public static final int WAIT_SEND = 1;
-    public static final int WAIT_RECV = 2;
-    public static final int FINISH = -2;
 
     /**
-     * Number of switches at root level.
+     * Layer number of switches at the root level.
+     * @todo @author manoelcampos This level values should be an enum
      */
-    public static final int ROOT_SWITCHES_NUMBER = 0;
+    public static final int ROOT_SWITCH_LEVEL = 0;
     
     /**
-     * Number of switches at aggregation level.
+     * Layer number of switches at the aggregation level.
      */
-    public static final int AGGREGATION_SWITCHES_NUMBER = 1;
+    public static final int AGGREGATION_SWITCH_LEVEL = 1;
     
     /**
-     * Number of switches at edge level.
+     * Layer number of switches at the edge level.
      */
-    public static final int EDGE_SWITCHES_NUMBER = 2;
+    public static final int EDGE_SWITCHES_LEVEL = 2;
 
     public static final int PES_NUMBER = 4;
     public static final int FILE_SIZE = 300;

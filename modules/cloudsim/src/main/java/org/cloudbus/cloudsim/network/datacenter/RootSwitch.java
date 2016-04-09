@@ -5,7 +5,6 @@
  *
  * Copyright (c) 2009-2012, The University of Melbourne, Australia
  */
-
 package org.cloudbus.cloudsim.network.datacenter;
 
 import java.util.ArrayList;
@@ -18,79 +17,80 @@ import org.cloudbus.cloudsim.core.SimEvent;
 import org.cloudbus.cloudsim.core.predicates.PredicateType;
 
 /**
- * This class allows to simulate Root switch which connects Datacenters to external network. 
- * It interacts with other switches in order to exchange packets.
- * 
+ * This class allows to simulate Root switch which connects Datacenters to
+ * external network. It interacts with other switches in order to exchange
+ * packets.
+ *
  * <br/>Please refer to following publication for more details:<br/>
  * <ul>
  * <li>
  * <a href="http://dx.doi.org/10.1109/UCC.2011.24">
- * Saurabh Kumar Garg and Rajkumar Buyya, NetworkCloudSim: Modelling Parallel Applications in Cloud
- * Simulations, Proceedings of the 4th IEEE/ACM International Conference on Utility and Cloud
- * Computing (UCC 2011, IEEE CS Press, USA), Melbourne, Australia, December 5-7, 2011.
+ * Saurabh Kumar Garg and Rajkumar Buyya, NetworkCloudSim: Modelling Parallel
+ * Applications in Cloud Simulations, Proceedings of the 4th IEEE/ACM
+ * International Conference on Utility and Cloud Computing (UCC 2011, IEEE CS
+ * Press, USA), Melbourne, Australia, December 5-7, 2011.
  * </a>
  * </ul>
- * 
+ *
  * @author Saurabh Kumar Garg
  * @since CloudSim Toolkit 3.0
  */
 public class RootSwitch extends Switch {
 
-	/**
-	 * Instantiates a Root Switch specifying what other switches are connected to its downlink
-	 * ports, and corresponding bandwidths.
-	 * 
-	 * @param name Name of the root switch
-	 * @param level At which level the switch is with respect to hosts.
-	 * @param dc The Datacenter where the switch is connected to
-	 */
-	public RootSwitch(String name, int level, NetworkDatacenter dc) {
-		super(name, level, dc);
-		downlinkswitchpktlist = new HashMap<Integer, List<NetworkPacket>>();
-		downlinkswitches = new ArrayList<Switch>();
+    /**
+     * Instantiates a Root Switch specifying what other switches are connected
+     * to its downlink ports, and corresponding bandwidths.
+     *
+     * @param name Name of the root switch
+     * @param level At which level the switch is with respect to hosts.
+     * @param dc The Datacenter where the switch is connected to
+     */
+    public RootSwitch(String name, int level, NetworkDatacenter dc) {
+        super(name, level, dc);
+        downlinkswitchpktlist = new HashMap<>();
+        downlinkSwitches = new ArrayList<>();
 
-		downlinkbandwidth = NetworkConstants.RootSwitchDownlinkBW;
-		latency = NetworkConstants.RootSwitchDelay;
-		numport = NetworkConstants.RootSwitchPorts;
-	}
+        downlinkBandwidth = NetworkConstants.RootSwitchDownlinkBW;
+        latency = NetworkConstants.RootSwitchDelay;
+        numPort = NetworkConstants.RootSwitchPorts;
+    }
 
-	@Override
-	protected void processpacket_up(SimEvent ev) {
+    @Override
+    protected void processPacketUp(SimEvent ev) {
 
-		// packet coming from down level router.
-		// has to send up
-		// check which switch to forward to
-		// add packet in the switch list
+        // packet coming from down level router.
+        // has to send up
+        // check which switch to forward to
+        // add packet in the switch list
+        NetworkPacket hspkt = (NetworkPacket) ev.getData();
+        int recvVMid = hspkt.pkt.receiverVmId;
+        CloudSim.cancelAll(getId(), new PredicateType(CloudSimTags.Network_Event_send));
+        schedule(getId(), switchingDelay, CloudSimTags.Network_Event_send);
 
-		NetworkPacket hspkt = (NetworkPacket) ev.getData();
-		int recvVMid = hspkt.pkt.receiverVmId;
-		CloudSim.cancelAll(getId(), new PredicateType(CloudSimTags.Network_Event_send));
-		schedule(getId(), switching_delay, CloudSimTags.Network_Event_send);
-
-		if (level == NetworkConstants.ROOT_SWITCHES_NUMBER) {
-			// get id of edge router
-			int edgeswitchid = dc.VmToSwitchid.get(recvVMid);
-			// search which aggregate switch has it
-			int aggSwtichid = -1;
-			;
-			for (Switch sw : downlinkswitches) {
-				for (Switch edge : sw.downlinkswitches) {
-					if (edge.getId() == edgeswitchid) {
-						aggSwtichid = sw.getId();
-						break;
-					}
-				}
-			}
-			if (aggSwtichid < 0) {
-				System.out.println(" No destination for this packet");
-			} else {
-				List<NetworkPacket> pktlist = downlinkswitchpktlist.get(aggSwtichid);
-				if (pktlist == null) {
-					pktlist = new ArrayList<NetworkPacket>();
-					downlinkswitchpktlist.put(aggSwtichid, pktlist);
-				}
-				pktlist.add(hspkt);
-			}
-		}
-	}
+        if (level == NetworkConstants.ROOT_SWITCH_LEVEL) {
+            // get id of edge router
+            int edgeSwitchId = dc.vmToSwitchMap.get(recvVMid);
+            // search which aggregate switch has it
+            int aggSwtichid = -1;
+            
+            for (Switch sw : downlinkSwitches) {
+                for (Switch edge : sw.downlinkSwitches) {
+                    if (edge.getId() == edgeSwitchId) {
+                        aggSwtichid = sw.getId();
+                        break;
+                    }
+                }
+            }
+            if (aggSwtichid < 0) {
+                System.out.println(" No destination for this packet");
+            } else {
+                List<NetworkPacket> packetList = downlinkswitchpktlist.get(aggSwtichid);
+                if (packetList == null) {
+                    packetList = new ArrayList<>();
+                    downlinkswitchpktlist.put(aggSwtichid, packetList);
+                }
+                packetList.add(hspkt);
+            }
+        }
+    }
 }

@@ -12,7 +12,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
-import org.cloudbus.cloudsim.CloudletSimple;
 import org.cloudbus.cloudsim.DatacenterSimple;
 import org.cloudbus.cloudsim.DatacenterCharacteristics;
 import org.cloudbus.cloudsim.Host;
@@ -27,16 +26,16 @@ import org.cloudbus.cloudsim.core.SimEvent;
 import org.cloudbus.cloudsim.resources.FileStorage;
 
 /**
- * NetworkDatacenter class is a {@link DatacenterSimple} whose hostList are
+ * NetworkDatacenter class is a {@link Datacenter} whose hostList are
  * virtualized and networked. It contains all the information about internal
  * network. For example, which VM is connected to what switch etc. It deals with
  * processing of VM queries (i.e., handling of VMs) instead of processing
- * Cloudlet-related queries. So, even though an AllocPolicy will be instantiated
+ * Cloudlet-related queries. So, even though an AllocationPolicy will be instantiated
  * (in the init() method of the superclass, it will not be used, as processing
  * of cloudlets are handled by the CloudletScheduler and processing of
- * VirtualMachines are handled by the VmAllocationPolicyAbstract.
+ * Virtual Machines are handled by the VmAllocationPolicy.
  *
- * @todo If an AllocPolicy is not being used, why it is being created. Perhaps a
+ * @todo @author manoelcampos If an AllocationPolicy is not being used, why it is being created. Perhaps a
  * better class hierarchy should be created, introducing some abstract class or
  * interface.
  *
@@ -60,26 +59,26 @@ public class NetworkDatacenter extends DatacenterSimple {
      * A map between VMs and Switches, where each key is a VM id and the
      * corresponding value is the id of the switch where the VM is connected to.
      */
-    public Map<Integer, Integer> VmToSwitchid = new HashMap<>();
+    public Map<Integer, Integer> vmToSwitchMap;
 
     /**
      * A map between hosts and Switches, where each key is a host id and the
      * corresponding value is the id of the switch where the host is connected
      * to.
      */
-    public Map<Integer, Integer> HostToSwitchid;
+    public Map<Integer, Integer> hostToSwitchMap;
 
     /**
      * A map of datacenter switches where each key is a switch id and the
      * corresponding value is the switch itself.
      */
-    public Map<Integer, Switch> Switchlist;
+    public Map<Integer, Switch> switchMap;
 
     /**
      * A map between VMs and Hosts, where each key is a VM id and the
      * corresponding value is the id of the host where the VM is placed.
      */
-    public Map<Integer, Integer> VmtoHostlist;
+    public Map<Integer, Integer> vmToHostMap;
 
     /**
      * Instantiates a new NetworkDatacenter object.
@@ -113,27 +112,27 @@ public class NetworkDatacenter extends DatacenterSimple {
             List<FileStorage> storageList,
             double schedulingInterval) throws Exception {
         super(name, characteristics, vmAllocationPolicy, storageList, schedulingInterval);
-        VmToSwitchid = new HashMap<>();
-        HostToSwitchid = new HashMap<>();
-        VmtoHostlist = new HashMap<>();
-        Switchlist = new HashMap<>();
+        vmToSwitchMap = new HashMap<>();
+        hostToSwitchMap = new HashMap<>();
+        vmToHostMap = new HashMap<>();
+        switchMap = new HashMap<>();
     }
 
     /**
-     * Gets a map of all EdgeSwitches in the Datacenter network. One can design
+     * Gets a map of all Edge Switches in the Datacenter network. One can design
      * similar functions for other type of switches.
      *
-     * @return a EdgeSwitches map, where each key is the switch id and each
+     * @return a EdgeSwitch map, where each key is the switch id and each
      * value it the switch itself.
      */
     public Map<Integer, Switch> getEdgeSwitch() {
-        Map<Integer, Switch> edgeswitch = new HashMap<>();
-        for (Entry<Integer, Switch> es : Switchlist.entrySet()) {
-            if (es.getValue().level == NetworkConstants.EDGE_SWITCHES_NUMBER) {
-                edgeswitch.put(es.getKey(), es.getValue());
+        Map<Integer, Switch> edgeSwitchMap = new HashMap<>();
+        for (Entry<Integer, Switch> es : switchMap.entrySet()) {
+            if (es.getValue().level == NetworkConstants.EDGE_SWITCHES_LEVEL) {
+                edgeSwitchMap.put(es.getKey(), es.getValue());
             }
         }
-        return edgeswitch;
+        return edgeSwitchMap;
 
     }
 
@@ -149,9 +148,9 @@ public class NetworkDatacenter extends DatacenterSimple {
         boolean result = getVmAllocationPolicy().allocateHostForVm(vm);
 
         if (result) {
-            VmToSwitchid.put(vm.getId(), ((NetworkHost) vm.getHost()).getSwitch().getId());
-            VmtoHostlist.put(vm.getId(), vm.getHost().getId());
-            System.out.println(vm.getId() + " VM is created on " + vm.getHost().getId());
+            vmToSwitchMap.put(vm.getId(), ((NetworkHost) vm.getHost()).getSwitch().getId());
+            vmToHostMap.put(vm.getId(), vm.getHost().getId());
+            Log.printLine(vm.getId() + " VM is created on " + vm.getHost().getId());
 
             getVmList().add(vm);
 
@@ -177,7 +176,7 @@ public class NetworkDatacenter extends DatacenterSimple {
                 Log.printLine("Therefore, it is not being executed again");
                 Log.printLine();
 
-				// NOTE: If a Cloudlet has finished, then it won't be processed.
+                // NOTE: If a Cloudlet has finished, then it won't be processed.
                 // So, if ack is required, this method sends back a result.
                 // If ack is not required, this method don't send back a result.
                 // Hence, this might cause CloudSim to be hanged since waiting

@@ -28,7 +28,7 @@ import org.cloudbus.cloudsim.provisioners.ResourceProvisionerSimple;
 import org.cloudbus.cloudsim.resources.Bandwidth;
 import org.cloudbus.cloudsim.resources.Ram;
 
-public class TestExample {
+public class NetworkVmsExample {
     private static final String ARCH = "x86"; // system architecture
     private static final String OS = "Linux"; // operating system
     private static final String VMM = "Xen";
@@ -49,7 +49,7 @@ public class TestExample {
      * @param args the args
      */
     public static void main(String[] args) {
-        Log.printFormattedLine("Starting %s...", TestExample.class.getSimpleName());
+        Log.printFormattedLine("Starting %s...", NetworkVmsExample.class.getSimpleName());
         try {
             int num_user = 1; // number of cloud users
             Calendar calendar = Calendar.getInstance();
@@ -81,9 +81,9 @@ public class TestExample {
             // Final step: Print results when simulation is over
             List<Cloudlet> newList = broker.getCloudletReceivedList();
             TableBuilderHelper.print(new TextTableBuilder(), newList);
-            Log.printFormattedLine("%s finished!", TestExample.class.getSimpleName());
+            Log.printFormattedLine("%s finished!", NetworkVmsExample.class.getSimpleName());
             System.out.println("numberofcloudlet " + newList.size() + " Cached "
-                    + NetDatacenterBroker.cachedcloudlet + " Data transfered "
+                    + NetDatacenterBroker.cachedCloudlet + " Data transfered "
                     + NetworkConstants.totalDataTransfer);
 
             Log.printLine("TestExample finished!");
@@ -118,8 +118,8 @@ public class TestExample {
         long bw = 10000;
         final int numberOfHosts = 
                 NetworkConstants.EdgeSwitchPorts * 
-                NetworkConstants.AggregationSwitchPorts
-                * NetworkConstants.RootSwitchPorts;
+                NetworkConstants.AggregationSwitchPorts *
+                NetworkConstants.RootSwitchPorts;
         
         for (int i = 0; i < numberOfHosts; i++) {
             List<Pe> peList = createPEs(8, mips);
@@ -191,15 +191,17 @@ public class TestExample {
         EdgeSwitch edgeSwitches[] = new EdgeSwitch[1];
 
         for (int i = 0; i < edgeSwitches.length; i++) {
-            edgeSwitches[i] = new EdgeSwitch("Edge" + i, NetworkConstants.EDGE_SWITCHES_NUMBER, dc);
-            dc.Switchlist.put(edgeSwitches[i].getId(), edgeSwitches[i]);
+            edgeSwitches[i] = 
+                    new EdgeSwitch("Edge" + i, 
+                            NetworkConstants.EDGE_SWITCHES_LEVEL, dc);
+            dc.switchMap.put(edgeSwitches[i].getId(), edgeSwitches[i]);
         }
 
         for (NetworkHost host : dc.<NetworkHost>getHostList()) {
             host.bandwidth = NetworkConstants.EdgeSwitchDownlinkBW;
             int switchNum =  host.getId() / NetworkConstants.EdgeSwitchPorts;
             edgeSwitches[switchNum].hostlist.put(host.getId(), host);
-            dc.HostToSwitchid.put(host.getId(), edgeSwitches[switchNum].getId());
+            dc.hostToSwitchMap.put(host.getId(), edgeSwitches[switchNum].getId());
             host.setSwitch(edgeSwitches[switchNum]);
             List<NetworkHost> hostList = host.getSwitch().finTimeHostMap.get(0D);
             if (hostList == null) {
