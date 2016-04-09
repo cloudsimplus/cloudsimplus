@@ -39,23 +39,38 @@ import org.cloudbus.cloudsim.core.predicates.PredicateType;
 public class EdgeSwitch extends Switch {
 
     /**
+     * The downlink bandwidth of EdgeSwitch in Megabits/s.
+     * It also represents the uplink bandwidth of connected hosts.
+     */
+    public static long DownlinkBW = 100 * 1024 * 1024;
+    
+    /**
+     * Number of ports that defines the number of
+     * {@link org.cloudbus.cloudsim.Host} that can be connected to the switch.
+     */
+    public static int Ports = 4;
+    /**
+     * The delay of in milliseconds.
+     */
+    public static double SwitchingDelay = 0.00157;
+
+    /**
      * Instantiates a EdgeSwitch specifying switches that are connected to its
      * downlink and uplink ports, and corresponding bandwidths. In this switch,
      * downlink ports aren't connected to other switch but to hosts.
      *
      * @param name Name of the switch
-     * @param level At which level the switch is with respect to hosts.
      * @param dc The Datacenter where the switch is connected to
      */
-    public EdgeSwitch(String name, int level, NetworkDatacenter dc) {
-        super(name, level, dc);
-        hostlist = new HashMap<>();
+    public EdgeSwitch(String name, NetworkDatacenter dc) {
+        super(name, EDGE_SWITCHES_LEVEL, dc);
+        hostList = new HashMap<>();
         uplinkSwitchPacketList = new HashMap<>();
-        packetTohost = new HashMap<>();
-        uplinkBandwidth = NetworkConstants.AggregationSwitchDownlinkBW;
-        downlinkBandwidth = NetworkConstants.EdgeSwitchDownlinkBW;
-        switchingDelay = NetworkConstants.EdgeSwitchDelay;
-        numPort = NetworkConstants.EdgeSwitchPorts;
+        packetToHost = new HashMap<>();
+        uplinkBandwidth = AggregateSwitch.DownlinkBW;
+        downlinkBandwidth = DownlinkBW;
+        switchingDelay = SwitchingDelay;
+        numPort = Ports;
         uplinkSwitches = new ArrayList<>();
     }
 
@@ -75,16 +90,16 @@ public class EdgeSwitch extends Switch {
         // packet is recieved from host
         // packet is to be sent to aggregate level or to another host in the same level
         int hostid = dc.vmToHostMap.get(recvVMid);
-        NetworkHost hs = hostlist.get(hostid);
+        NetworkHost hs = hostList.get(hostid);
         hspkt.receiverHostId = hostid;
 
         // packet needs to go to a host which is connected directly to switch
         if (hs != null) {
             // packet to be sent to host connected to the switch
-            List<NetworkPacket> pktlist = packetTohost.get(hostid);
+            List<NetworkPacket> pktlist = packetToHost.get(hostid);
             if (pktlist == null) {
                 pktlist = new ArrayList<>();
-                packetTohost.put(hostid, pktlist);
+                packetToHost.put(hostid, pktlist);
             }
             pktlist.add(hspkt);
             return;
@@ -128,8 +143,8 @@ public class EdgeSwitch extends Switch {
                 }
             }
         }
-        if (packetTohost != null) {
-            for (Entry<Integer, List<NetworkPacket>> es : packetTohost.entrySet()) {
+        if (packetToHost != null) {
+            for (Entry<Integer, List<NetworkPacket>> es : packetToHost.entrySet()) {
                 List<NetworkPacket> hspktlist = es.getValue();
                 if (!hspktlist.isEmpty()) {
                     double avband = downlinkBandwidth / hspktlist.size();

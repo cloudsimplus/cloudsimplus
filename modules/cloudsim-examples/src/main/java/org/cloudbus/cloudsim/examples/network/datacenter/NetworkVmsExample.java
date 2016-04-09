@@ -14,6 +14,7 @@ import org.cloudbus.cloudsim.resources.PeSimple;
 import org.cloudbus.cloudsim.resources.FileStorage;
 import org.cloudbus.cloudsim.schedulers.VmSchedulerTimeShared;
 import org.cloudbus.cloudsim.core.CloudSim;
+import org.cloudbus.cloudsim.network.datacenter.AggregateSwitch;
 import org.cloudbus.cloudsim.util.TableBuilderHelper;
 import org.cloudbus.cloudsim.util.TextTableBuilder;
 import org.cloudbus.cloudsim.network.datacenter.EdgeSwitch;
@@ -23,6 +24,7 @@ import org.cloudbus.cloudsim.network.datacenter.NetworkDatacenter;
 import org.cloudbus.cloudsim.network.datacenter.NetworkHost;
 import org.cloudbus.cloudsim.network.datacenter.NetworkVm;
 import org.cloudbus.cloudsim.network.datacenter.NetworkVmAllocationPolicy;
+import org.cloudbus.cloudsim.network.datacenter.RootSwitch;
 import org.cloudbus.cloudsim.provisioners.PeProvisionerSimple;
 import org.cloudbus.cloudsim.provisioners.ResourceProvisionerSimple;
 import org.cloudbus.cloudsim.resources.Bandwidth;
@@ -67,7 +69,6 @@ public class NetworkVmsExample {
             // Third step: Create Broker
             NetDatacenterBroker broker = createBroker();
             broker.setLinkDC(datacenter0);
-            // broker.setLinkDC(datacenter0);
             
             vmlist = new ArrayList<>();
 
@@ -117,9 +118,7 @@ public class NetworkVmsExample {
         long storage = 1000000; // host storage
         long bw = 10000;
         final int numberOfHosts = 
-                NetworkConstants.EdgeSwitchPorts * 
-                NetworkConstants.AggregationSwitchPorts *
-                NetworkConstants.RootSwitchPorts;
+                EdgeSwitch.Ports * AggregateSwitch.Ports * RootSwitch.Ports;
         
         for (int i = 0; i < numberOfHosts; i++) {
             List<Pe> peList = createPEs(8, mips);
@@ -192,15 +191,14 @@ public class NetworkVmsExample {
 
         for (int i = 0; i < edgeSwitches.length; i++) {
             edgeSwitches[i] = 
-                    new EdgeSwitch("Edge" + i, 
-                            NetworkConstants.EDGE_SWITCHES_LEVEL, dc);
+                    new EdgeSwitch("Edge" + i, dc);
             dc.switchMap.put(edgeSwitches[i].getId(), edgeSwitches[i]);
         }
 
         for (NetworkHost host : dc.<NetworkHost>getHostList()) {
-            host.bandwidth = NetworkConstants.EdgeSwitchDownlinkBW;
-            int switchNum =  host.getId() / NetworkConstants.EdgeSwitchPorts;
-            edgeSwitches[switchNum].hostlist.put(host.getId(), host);
+            host.bandwidth = EdgeSwitch.DownlinkBW;
+            int switchNum =  host.getId() / EdgeSwitch.Ports;
+            edgeSwitches[switchNum].hostList.put(host.getId(), host);
             dc.hostToSwitchMap.put(host.getId(), edgeSwitches[switchNum].getId());
             host.setSwitch(edgeSwitches[switchNum]);
             List<NetworkHost> hostList = host.getSwitch().finTimeHostMap.get(0D);

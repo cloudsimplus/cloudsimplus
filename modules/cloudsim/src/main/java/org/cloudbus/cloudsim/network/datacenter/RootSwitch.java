@@ -38,21 +38,35 @@ import org.cloudbus.cloudsim.core.predicates.PredicateType;
 public class RootSwitch extends Switch {
 
     /**
+     * Number of root switch ports that defines the number of
+     * {@link AggregateSwitch} that can be connected to it.
+     */
+    public static int Ports = 1;
+    /**
+     * The delay of RootSwitch in milliseconds.
+     */
+    public static double SwitchingDelay = 0.00285;
+    /**
+     * The downlink bandwidth of RootSwitch in Megabits/s.
+     * It also represents the uplink bandwidth of connected aggregation switches.
+     */
+    public static long DownlinkBW = 40 * 1024 * 1024 * 1024; // 40000 Megabits (40 Gigabits)
+
+    /**
      * Instantiates a Root Switch specifying what other switches are connected
      * to its downlink ports, and corresponding bandwidths.
      *
      * @param name Name of the root switch
-     * @param level At which level the switch is with respect to hosts.
      * @param dc The Datacenter where the switch is connected to
      */
-    public RootSwitch(String name, int level, NetworkDatacenter dc) {
-        super(name, level, dc);
-        downlinkswitchpktlist = new HashMap<>();
+    public RootSwitch(String name, NetworkDatacenter dc) {
+        super(name, ROOT_SWITCHES_LEVEL, dc);
+        downlinkSwitchPacketList = new HashMap<>();
         downlinkSwitches = new ArrayList<>();
 
-        downlinkBandwidth = NetworkConstants.RootSwitchDownlinkBW;
-        latency = NetworkConstants.RootSwitchDelay;
-        numPort = NetworkConstants.RootSwitchPorts;
+        downlinkBandwidth = DownlinkBW;
+        latency = SwitchingDelay;
+        numPort = Ports;
     }
 
     @Override
@@ -67,7 +81,7 @@ public class RootSwitch extends Switch {
         CloudSim.cancelAll(getId(), new PredicateType(CloudSimTags.Network_Event_send));
         schedule(getId(), switchingDelay, CloudSimTags.Network_Event_send);
 
-        if (level == NetworkConstants.ROOT_SWITCH_LEVEL) {
+        if (level == ROOT_SWITCHES_LEVEL) {
             // get id of edge router
             int edgeSwitchId = dc.vmToSwitchMap.get(recvVMid);
             // search which aggregate switch has it
@@ -84,10 +98,10 @@ public class RootSwitch extends Switch {
             if (aggSwtichid < 0) {
                 System.out.println(" No destination for this packet");
             } else {
-                List<NetworkPacket> packetList = downlinkswitchpktlist.get(aggSwtichid);
+                List<NetworkPacket> packetList = downlinkSwitchPacketList.get(aggSwtichid);
                 if (packetList == null) {
                     packetList = new ArrayList<>();
-                    downlinkswitchpktlist.put(aggSwtichid, packetList);
+                    downlinkSwitchPacketList.put(aggSwtichid, packetList);
                 }
                 packetList.add(hspkt);
             }

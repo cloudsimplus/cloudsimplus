@@ -90,17 +90,17 @@ public class NetDatacenterBroker extends SimEntity {
     /**
      * The number of VMs requested.
      */
-    private int vmsRequested;
+    private int numberOfRequestedVms;
 
     /**
      * The acks sent to VMs.
      */
-    private int vmsAcks;
+    private int numberOfAcksSentToVms;
 
     /**
      * The number of VMs destroyed.
      */
-    private int vmsDestroyed;
+    private int numberOfDestroyedVms;
 
     /**
      * The list of datacenter IDs.
@@ -154,9 +154,9 @@ public class NetDatacenterBroker extends SimEntity {
         appCloudletReceived = new HashMap<>();
 
         cloudletsSubmitted = 0;
-        setVmsRequested(0);
-        setVmsAcks(0);
-        setVmsDestroyed(0);
+        setNumberOfRequestedVms(0);
+        setNumberOfAcksSentToVms(0);
+        setNumberOfDestroyedVms(0);
 
         setDatacenterIdsList(new LinkedList<>());
         setDatacenterRequestedIdsList(new ArrayList<>());
@@ -188,8 +188,8 @@ public class NetDatacenterBroker extends SimEntity {
         getCloudletList().addAll(list);
     }
 
-    public static void setLinkDC(NetworkDatacenter alinkDC) {
-        linkDC = alinkDC;
+    public static void setLinkDC(NetworkDatacenter aLinkDC) {
+        linkDC = aLinkDC;
     }
 
     /**
@@ -349,7 +349,8 @@ public class NetDatacenterBroker extends SimEntity {
         // generate Application execution Requests
         for (int i = 0; i < 100; i++) {
             this.getAppCloudletList().add(
-                    new WorkflowApp(AppCloudlet.APP_WORKFLOW, NetworkConstants.currentAppId, 0, 0, getId()));
+                    new WorkflowApp(AppCloudlet.APP_WORKFLOW, 
+                    NetworkConstants.currentAppId, 0, 0, getId()));
             NetworkConstants.currentAppId++;
 
         }
@@ -357,43 +358,40 @@ public class NetDatacenterBroker extends SimEntity {
 
         // schedule the application on VMs
         for (AppCloudlet app : this.getAppCloudletList()) {
-            List<Integer> vmids = new ArrayList<>();
+            List<Integer> vmIds = new ArrayList<>();
             int numVms = linkDC.getVmList().size();
             UniformDistr ufrnd = new UniformDistr(0, numVms, 5);
             for (int i = 0; i < app.numberOfVMs; i++) {
-                int vmid = (int) ufrnd.sample();
-                vmids.add(vmid);
+                int vmId = (int) ufrnd.sample();
+                vmIds.add(vmId);
             }
 
-            if (vmids != null) {
-                if (!vmids.isEmpty()) {
-                    app.createCloudletList(vmids);
-                    for (int i = 0; i < app.numberOfVMs; i++) {
-                        app.networkCloudletList.get(i).setUserId(getId());
-                        appCloudletReceived.put(app.appId, app.numberOfVMs);
-                        this.getCloudletSubmittedList().add(app.networkCloudletList.get(i));
-                        cloudletsSubmitted++;
+            if (!vmIds.isEmpty()) {
+                app.createCloudletList(vmIds);
+                for (int i = 0; i < app.numberOfVMs; i++) {
+                    app.networkCloudletList.get(i).setUserId(getId());
+                    appCloudletReceived.put(app.appId, app.numberOfVMs);
+                    this.getCloudletSubmittedList().add(app.networkCloudletList.get(i));
+                    cloudletsSubmitted++;
 
-                        // Sending cloudlet
-                        sendNow(
-                                getVmsToDatacentersMap().get(this.getVmList().get(0).getId()),
-                                CloudSimTags.CLOUDLET_SUBMIT,
-                                app.networkCloudletList.get(i));
-                    }
-                    System.out.println("app" + (k++));
+                    // Sending cloudlet
+                    sendNow(
+                        getVmsToDatacentersMap().get(this.getVmList().get(0).getId()),
+                        CloudSimTags.CLOUDLET_SUBMIT,
+                        app.networkCloudletList.get(i));
                 }
+                System.out.println("app" + (k++));
             }
-
         }
+        
         setAppCloudletList(new ArrayList<AppCloudlet>());
         if (NetworkConstants.iteration < 10) {
-
             NetworkConstants.iteration++;
             this.schedule(getId(), NetworkConstants.nextTime, CloudSimTags.NextCycle);
         }
 
-        setVmsRequested(requestedVms);
-        setVmsAcks(0);
+        setNumberOfRequestedVms(requestedVms);
+        setNumberOfAcksSentToVms(0);
     }
 
     /**
@@ -586,17 +584,17 @@ public class NetDatacenterBroker extends SimEntity {
      *
      * @return the vms requested
      */
-    protected int getVmsRequested() {
-        return vmsRequested;
+    protected int getNumberOfRequestedVms() {
+        return numberOfRequestedVms;
     }
 
     /**
      * Sets the vms requested.
      *
-     * @param vmsRequested the new vms requested
+     * @param numberOfRequestedVms the new vms requested
      */
-    protected final void setVmsRequested(int vmsRequested) {
-        this.vmsRequested = vmsRequested;
+    protected final void setNumberOfRequestedVms(int numberOfRequestedVms) {
+        this.numberOfRequestedVms = numberOfRequestedVms;
     }
 
     /**
@@ -604,24 +602,24 @@ public class NetDatacenterBroker extends SimEntity {
      *
      * @return the vms acks
      */
-    protected int getVmsAcks() {
-        return vmsAcks;
+    protected int getNumberOfAcksSentToVms() {
+        return numberOfAcksSentToVms;
     }
 
     /**
      * Sets the vms acks.
      *
-     * @param vmsAcks the new vms acks
+     * @param numberOfAcksSentToVms the new vms acks
      */
-    protected final void setVmsAcks(int vmsAcks) {
-        this.vmsAcks = vmsAcks;
+    protected final void setNumberOfAcksSentToVms(int numberOfAcksSentToVms) {
+        this.numberOfAcksSentToVms = numberOfAcksSentToVms;
     }
 
     /**
      * Increment vms acks.
      */
     protected void incrementVmsAcks() {
-        vmsAcks++;
+        numberOfAcksSentToVms++;
     }
 
     /**
@@ -629,17 +627,17 @@ public class NetDatacenterBroker extends SimEntity {
      *
      * @return the vms destroyed
      */
-    protected int getVmsDestroyed() {
-        return vmsDestroyed;
+    protected int getNumberOfDestroyedVms() {
+        return numberOfDestroyedVms;
     }
 
     /**
      * Sets the vms destroyed.
      *
-     * @param vmsDestroyed the new vms destroyed
+     * @param numberOfDestroyedVms the new vms destroyed
      */
-    protected final void setVmsDestroyed(int vmsDestroyed) {
-        this.vmsDestroyed = vmsDestroyed;
+    protected final void setNumberOfDestroyedVms(int numberOfDestroyedVms) {
+        this.numberOfDestroyedVms = numberOfDestroyedVms;
     }
 
     /**

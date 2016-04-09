@@ -30,8 +30,23 @@ import org.cloudbus.cloudsim.lists.VmList;
  *
  * @todo attributes should be private
  */
-public class Switch extends SimEntity {
+public abstract class Switch extends SimEntity {
+    /**
+     * Layer number of switches at the root level.
+     * @todo @author manoelcampos This level values should be an enum
+     */
+    public static final int ROOT_SWITCHES_LEVEL = 0;
 
+    /**
+     * Layer number of switches at the aggregation level.
+     */
+    public static final int AGGREGATE_SWITCHES_LEVEL = 1;
+
+    /**
+     * Layer number of switches at the edge level.
+     */
+    public static final int EDGE_SWITCHES_LEVEL = 2;
+    
     /**
      * The switch id
      */
@@ -47,7 +62,7 @@ public class Switch extends SimEntity {
      *
      * @todo It doesn't appear to be used
      */
-    public int datacenterid;
+    public int datacenterId;
 
     /**
      * Map of packets sent to switches on the uplink, where each key is a switch
@@ -59,13 +74,13 @@ public class Switch extends SimEntity {
      * Map of packets sent to switches on the downlink, where each key is a
      * switch id and the corresponding value is the packets sent to that switch.
      */
-    public Map<Integer, List<NetworkPacket>> downlinkswitchpktlist;
+    public Map<Integer, List<NetworkPacket>> downlinkSwitchPacketList;
 
     /**
      * Map of hosts connected to the switch, where each key is the host ID and
      * the corresponding value is the host itself.
      */
-    public Map<Integer, NetworkHost> hostlist;
+    public Map<Integer, NetworkHost> hostList;
 
     /**
      * List of uplink switches.
@@ -81,7 +96,7 @@ public class Switch extends SimEntity {
      * Map of packets sent to hosts connected in the switch, where each key is a
      * host id and the corresponding value is the packets sent to that host.
      */
-    public Map<Integer, List<NetworkPacket>> packetTohost;
+    public Map<Integer, List<NetworkPacket>> packetToHost;
 
     /**
      * The switch type: edge switch or aggregation switch.
@@ -212,7 +227,7 @@ public class Switch extends SimEntity {
     protected void processHostPacket(SimEvent ev) {
         // Send packet to host
         NetworkPacket hspkt = (NetworkPacket) ev.getData();
-        NetworkHost hs = hostlist.get(hspkt.receiverHostId);
+        NetworkHost hs = hostList.get(hspkt.receiverHostId);
         hs.packetrecieved.add(hspkt);
     }
 
@@ -232,26 +247,26 @@ public class Switch extends SimEntity {
         int recvVMid = hspkt.pkt.receiverVmId;
         CloudSim.cancelAll(getId(), new PredicateType(CloudSimTags.Network_Event_send));
         schedule(getId(), latency, CloudSimTags.Network_Event_send);
-        if (level == NetworkConstants.EDGE_SWITCHES_LEVEL) {
+        if (level == EDGE_SWITCHES_LEVEL) {
             // packet is to be recieved by host
             int hostid = dc.vmToHostMap.get(recvVMid);
             hspkt.receiverHostId = hostid;
-            List<NetworkPacket> pktlist = packetTohost.get(hostid);
+            List<NetworkPacket> pktlist = packetToHost.get(hostid);
             if (pktlist == null) {
                 pktlist = new ArrayList<>();
-                packetTohost.put(hostid, pktlist);
+                packetToHost.put(hostid, pktlist);
             }
             pktlist.add(hspkt);
             return;
         }
-        if (level == NetworkConstants.AGGREGATION_SWITCH_LEVEL) {
+        else if (level == AGGREGATE_SWITCHES_LEVEL) {
             // packet is coming from root so need to be sent to edgelevel swich
             // find the id for edgelevel switch
             int switchid = dc.vmToSwitchMap.get(recvVMid);
-            List<NetworkPacket> pktlist = downlinkswitchpktlist.get(switchid);
+            List<NetworkPacket> pktlist = downlinkSwitchPacketList.get(switchid);
             if (pktlist == null) {
                 pktlist = new ArrayList<>();
-                downlinkswitchpktlist.put(switchid, pktlist);
+                downlinkSwitchPacketList.put(switchid, pktlist);
             }
             pktlist.add(hspkt);
             return;
@@ -275,20 +290,20 @@ public class Switch extends SimEntity {
         int recvVMid = hspkt.pkt.receiverVmId;
         CloudSim.cancelAll(getId(), new PredicateType(CloudSimTags.Network_Event_send));
         schedule(getId(), switchingDelay, CloudSimTags.Network_Event_send);
-        if (level == NetworkConstants.EDGE_SWITCHES_LEVEL) {
+        if (level == EDGE_SWITCHES_LEVEL) {
             // packet is recieved from host
             // packet is to be sent to aggregate level or to another host in the
             // same level
 
             int hostid = dc.vmToHostMap.get(recvVMid);
-            NetworkHost hs = hostlist.get(hostid);
+            NetworkHost hs = hostList.get(hostid);
             hspkt.receiverHostId = hostid;
             if (hs != null) {
                 // packet to be sent to host connected to the switch
-                List<NetworkPacket> pktlist = packetTohost.get(hostid);
+                List<NetworkPacket> pktlist = packetToHost.get(hostid);
                 if (pktlist == null) {
                     pktlist = new ArrayList<>();
-                    packetTohost.put(hostid, pktlist);
+                    packetToHost.put(hostid, pktlist);
                 }
                 pktlist.add(hspkt);
                 return;
@@ -306,7 +321,7 @@ public class Switch extends SimEntity {
             pktlist.add(hspkt);
             return;
         }
-        if (level == NetworkConstants.AGGREGATION_SWITCH_LEVEL) {
+        if (level == AGGREGATE_SWITCHES_LEVEL) {
             // packet is coming from edge level router so need to be sent to
             // either root or another edge level swich
             // find the id for edgelevel switch
@@ -318,10 +333,10 @@ public class Switch extends SimEntity {
                 }
             }
             if (flagtoswtich) {
-                List<NetworkPacket> pktlist = downlinkswitchpktlist.get(switchid);
+                List<NetworkPacket> pktlist = downlinkSwitchPacketList.get(switchid);
                 if (pktlist == null) {
                     pktlist = new ArrayList<>();
-                    downlinkswitchpktlist.put(switchid, pktlist);
+                    downlinkSwitchPacketList.put(switchid, pktlist);
                 }
                 pktlist.add(hspkt);
             } else// send to up
@@ -335,7 +350,7 @@ public class Switch extends SimEntity {
                 pktlist.add(hspkt);
             }
         }
-        if (level == NetworkConstants.ROOT_SWITCH_LEVEL) {
+        if (level == ROOT_SWITCHES_LEVEL) {
             // get id of edge router
             int edgeswitchid = dc.vmToSwitchMap.get(recvVMid);
             // search which aggregate switch has it
@@ -352,10 +367,10 @@ public class Switch extends SimEntity {
             if (aggSwtichid < 0) {
                 System.out.println(" No destination for this packet");
             } else {
-                List<NetworkPacket> pktlist = downlinkswitchpktlist.get(aggSwtichid);
+                List<NetworkPacket> pktlist = downlinkSwitchPacketList.get(aggSwtichid);
                 if (pktlist == null) {
                     pktlist = new ArrayList<>();
-                    downlinkswitchpktlist.put(aggSwtichid, pktlist);
+                    downlinkSwitchPacketList.put(aggSwtichid, pktlist);
                 }
                 pktlist.add(hspkt);
             }
@@ -369,7 +384,7 @@ public class Switch extends SimEntity {
      */
     private void registerHost(SimEvent ev) {
         NetworkHost hs = (NetworkHost) ev.getData();
-        hostlist.put(hs.getId(), hs);
+        hostList.put(hs.getId(), hs);
     }
 
     /**
@@ -403,8 +418,8 @@ public class Switch extends SimEntity {
      */
     protected void processPacketForward(SimEvent ev) {
         // search for the host and packets..send to them
-        if (downlinkswitchpktlist != null) {
-            for (Entry<Integer, List<NetworkPacket>> es : downlinkswitchpktlist.entrySet()) {
+        if (downlinkSwitchPacketList != null) {
+            for (Entry<Integer, List<NetworkPacket>> es : downlinkSwitchPacketList.entrySet()) {
                 int tosend = es.getKey();
                 List<NetworkPacket> hspktlist = es.getValue();
                 if (!hspktlist.isEmpty()) {
@@ -437,8 +452,8 @@ public class Switch extends SimEntity {
                 }
             }
         }
-        if (packetTohost != null) {
-            for (Entry<Integer, List<NetworkPacket>> es : packetTohost.entrySet()) {
+        if (packetToHost != null) {
+            for (Entry<Integer, List<NetworkPacket>> es : packetToHost.entrySet()) {
                 List<NetworkPacket> hspktlist = es.getValue();
                 if (!hspktlist.isEmpty()) {
                     double avband = downlinkBandwidth / hspktlist.size();
@@ -465,7 +480,7 @@ public class Switch extends SimEntity {
      * @return the host of the VM
      */
     protected NetworkHost getHostWithVm(int vmid) {
-        for (Entry<Integer, NetworkHost> es : hostlist.entrySet()) {
+        for (Entry<Integer, NetworkHost> es : hostList.entrySet()) {
             Vm vm = VmList.getById(es.getValue().getVmList(), vmid);
             if (vm != null) {
                 return es.getValue();
@@ -502,7 +517,7 @@ public class Switch extends SimEntity {
      */
     protected List<NetworkHost> getFreeHostList(int numHost) {
         List<NetworkHost> freeHostList = new ArrayList<>();
-        for (Entry<Integer, NetworkHost> et : hostlist.entrySet()) {
+        for (Entry<Integer, NetworkHost> et : hostList.entrySet()) {
             if (et.getValue().getNumberOfFreePes() == et.getValue().getNumberOfPes()) {
                 freeHostList.add(et.getValue());
             }

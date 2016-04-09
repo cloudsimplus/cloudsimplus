@@ -128,7 +128,7 @@ public class NetworkDatacenter extends DatacenterSimple {
     public Map<Integer, Switch> getEdgeSwitch() {
         Map<Integer, Switch> edgeSwitchMap = new HashMap<>();
         for (Entry<Integer, Switch> es : switchMap.entrySet()) {
-            if (es.getValue().level == NetworkConstants.EDGE_SWITCHES_LEVEL) {
+            if (es.getValue().level == Switch.EDGE_SWITCHES_LEVEL) {
                 edgeSwitchMap.put(es.getKey(), es.getValue());
             }
         }
