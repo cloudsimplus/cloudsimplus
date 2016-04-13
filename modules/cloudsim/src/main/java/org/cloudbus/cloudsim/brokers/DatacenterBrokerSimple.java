@@ -13,7 +13,6 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import org.cloudbus.cloudsim.Cloudlet;
-import org.cloudbus.cloudsim.CloudletSimple;
 import org.cloudbus.cloudsim.DatacenterCharacteristics;
 import org.cloudbus.cloudsim.Log;
 import org.cloudbus.cloudsim.Vm;
@@ -144,7 +143,7 @@ public class DatacenterBrokerSimple extends SimEntity implements DatacenterBroke
      * @post $none
      */
     @Override
-    public void submitVmList(List<Vm> list) {
+    public <T extends Vm> void submitVmList(List<T> list) {
         getVmList().addAll(list);
     }
 
@@ -163,7 +162,7 @@ public class DatacenterBrokerSimple extends SimEntity implements DatacenterBroke
      * The method {@link #submitVmList(java.util.List)} may have be checked too.
      */
     @Override
-    public void submitCloudletList(List<Cloudlet> list) {
+    public <T extends Cloudlet> void submitCloudletList(List<T> list) {
         getCloudletList().addAll(list);
     }
 
@@ -260,14 +259,16 @@ public class DatacenterBrokerSimple extends SimEntity implements DatacenterBroke
      * Process the ack received due to a request for VM creation.
      *
      * @param ev a SimEvent object
+     * @return true if the VM was created successfully, false otherwise
      * @pre ev != null
      * @post $none
      */
-    protected void processVmCreate(SimEvent ev) {
+    protected boolean processVmCreate(SimEvent ev) {
         int[] data = (int[]) ev.getData();
         int datacenterId = data[0];
         int vmId = data[1];
         int result = data[2];
+        boolean created = false;
 
         if (result == CloudSimTags.TRUE) {
             getVmsToDatacentersMap().put(vmId, datacenterId);
@@ -275,6 +276,7 @@ public class DatacenterBrokerSimple extends SimEntity implements DatacenterBroke
             Log.printConcatLine(CloudSim.clock(), ": ", getName(), ": VM #", vmId,
                     " has been created in Datacenter #", datacenterId, ", Host #",
                     VmList.getById(getVmsCreatedList(), vmId).getHost().getId());
+            created = true;
         } else {
             Vm vm = VmList.getById(getVmList(), vmId);
             
@@ -301,7 +303,7 @@ public class DatacenterBrokerSimple extends SimEntity implements DatacenterBroke
                 for (int nextDatacenterId : getDatacenterIdsList()) {
                     if (!getDatacenterRequestedIdsList().contains(nextDatacenterId)) {
                         createVmsInDatacenter(nextDatacenterId);
-                        return;
+                        return created;
                     }
                 }
 
@@ -315,6 +317,8 @@ public class DatacenterBrokerSimple extends SimEntity implements DatacenterBroke
                 }
             }
         }
+        
+        return created;
     }
 
     /**
@@ -326,7 +330,7 @@ public class DatacenterBrokerSimple extends SimEntity implements DatacenterBroke
      * @post $none
      */
     protected void processCloudletReturn(SimEvent ev) {
-        Cloudlet cloudlet = (CloudletSimple) ev.getData();
+        Cloudlet cloudlet = (Cloudlet) ev.getData();
         getCloudletReceivedList().add(cloudlet);
         cloudlet.getOnCloudletFinishEventListener().update(
                 CloudSim.clock(), cloudlet, 
@@ -341,12 +345,11 @@ public class DatacenterBrokerSimple extends SimEntity implements DatacenterBroke
             finishExecution();
         } else { // some cloudlets haven't finished yet
             if (getCloudletList().size() > 0 && cloudletsSubmitted == 0) {
-				// all the cloudlets sent finished. It means that some bount
+                // all the cloudlets sent finished. It means that some bount
                 // cloudlet is waiting its VM be created
                 clearDatacenters();
                 createVmsInDatacenter(0);
             }
-
         }
     }
 

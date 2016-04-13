@@ -13,6 +13,7 @@ import java.util.Map;
 
 import org.cloudbus.cloudsim.CloudletSimple;
 import org.cloudbus.cloudsim.utilizationmodels.UtilizationModel;
+import org.cloudbus.cloudsim.network.datacenter.TaskStage.Stage;
 
 /**
  * NetworkCloudlet class extends Cloudlet to support simulation of complex
@@ -32,6 +33,7 @@ import org.cloudbus.cloudsim.utilizationmodels.UtilizationModel;
  *
  * @author Saurabh Kumar Garg
  * @since CloudSim Toolkit 1.0
+ * 
  * @todo @author manoelcampos Attributes should be private
  * @todo @author manoelcampos The different cloudlet classes should have a class
  * hierarchy, by means of a super class and/or interface.
@@ -65,16 +67,16 @@ public class NetworkCloudlet extends CloudletSimple implements Comparable<Object
     /**
      * Number of cloudlet's stages .
      */
-    public double numberOfStages;
+    private double numberOfStages;
 
     /**
      * Current stage of cloudlet execution, according to the values of the
-     * {@link TaskStage#Stage} enum.
+     * {@link Stage} enum.
      */
     public int currentStageNum;
 
     /**
-     * Star time of the current stage.
+     * Start time of the current stage.
      */
     public double timeToStartStage;
 
@@ -91,7 +93,10 @@ public class NetworkCloudlet extends CloudletSimple implements Comparable<Object
     /**
      * All stages which cloudlet execution.
      */
-    public List<TaskStage> stages;
+    private List<TaskStage> stages;
+    
+    /** @see #getAppCloudlet() */
+    private AppCloudlet appCloudlet;
 
     /**
      * Cloudlet's memory.
@@ -136,6 +141,34 @@ public class NetworkCloudlet extends CloudletSimple implements Comparable<Object
 
     public double getSubmittime() {
         return submittime;
+    }
+
+    /**
+     * Gets the {@link AppCloudlet} that owns this NetworkCloudlet.
+     * @return 
+     */
+    public AppCloudlet getAppCloudlet() {
+        return appCloudlet;
+    }
+
+    /**
+     * Set the {@link AppCloudlet} that owns this NetworkCloudlet.
+     * @param appCloudlet
+     */
+    public void setAppCloudlet(AppCloudlet appCloudlet) {
+        this.appCloudlet = appCloudlet;
+    }
+
+    public double getNumberOfStages() {
+        return numberOfStages;
+    }
+
+    public void setNumberOfStages(double numberOfStages) {
+        this.numberOfStages = numberOfStages;
+    }
+
+    public List<TaskStage> getStages() {
+        return stages;
     }
 
 }

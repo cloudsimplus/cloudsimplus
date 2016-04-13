@@ -76,6 +76,7 @@ public interface DatacenterBroker {
     /**
      * This method is used to send to the broker the list of cloudlets.
      *
+     * @param <T>
      * @param list the list
      * @pre list !=null
      * @post $none
@@ -87,16 +88,17 @@ public interface DatacenterBroker {
      * The method {@link #submitVmList(java.util.List)} may have
      * be checked too.
      */
-    void submitCloudletList(List<Cloudlet> list);
+    <T extends Cloudlet> void submitCloudletList(List<T> list);
 
     /**
      * This method is used to send to the broker the list with virtual machines that must be
      * created.
      *
+     * @param <T>
      * @param list the list
      * @pre list !=null
      * @post $none
      */
-    void submitVmList(List<Vm> list);
+    <T extends Vm> void submitVmList(List<T> list);
     
 }

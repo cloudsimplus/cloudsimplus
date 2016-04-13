@@ -39,10 +39,11 @@ public class TaskStage {
      */
     private int id;
 
+    /** @see #getCloudletId() */
     private int cloudletId;
 
     /**
-     * The stage of the task.
+     * The stage that defines the type of task.
      */
     private Stage stage;
 
@@ -61,9 +62,7 @@ public class TaskStage {
      */
     private long memory;
 
-    /**
-     * The VM from whom data needed to be received or sent.
-     */
+    /** @see #getVmId() */
     private int vmId;
 
     public TaskStage(int id, Stage stage, double dataLength, double time, 
@@ -86,6 +85,12 @@ public class TaskStage {
         this.id = id;
     }
 
+    /**
+     * Gets the id of the cloudlet where to send of from which it is expected
+     * to receive some data, according to the {@link #stage} of the Task.
+     * 
+     * @return 
+     */
     public int getCloudletId() {
         return cloudletId;
     }
@@ -126,10 +131,18 @@ public class TaskStage {
         this.memory = memory;
     }
 
+    /**
+     * Gets the id of the sender or receiver VM, according to the {@link #stage} of the Task.
+     * @return 
+     */
     public int getVmId() {
         return vmId;
     }
 
+    /**
+     * Sets the id of the sender or receiver VM, according to the {@link #stage} of the Task.
+     * @param vmId
+     */
     public void setVmId(int vmId) {
         this.vmId = vmId;
     }

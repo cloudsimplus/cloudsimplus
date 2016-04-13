@@ -39,8 +39,8 @@ public class TopologicalGraph {
 	 * Creates an empty graph-object.
 	 */
 	public TopologicalGraph() {
-		linkList = new LinkedList<TopologicalLink>();
-		nodeList = new LinkedList<TopologicalNode>();
+		linkList = new LinkedList<>();
+		nodeList = new LinkedList<>();
 	}
 
 	/**

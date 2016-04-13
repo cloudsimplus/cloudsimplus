@@ -28,7 +28,14 @@ import org.cloudbus.cloudsim.utilizationmodels.UtilizationModelFull;
 
 /**
  * This class is responsible for reading resource traces from a file and creating a list of jobs
- * ({@link Cloudlet Cloudlets}).
+ * ({@link Cloudlet Cloudlets}). By default, it follows the standard workload format from
+ * <a href="http://www.cs.huji.ac.il/labs/parallel/workload/">
+ * The Hebrew University of Jerusalem</a>.
+ * However, you can use other formats by calling the methods below before running the simulation:
+ * <ul>
+ *   <li> {@link #setComment(String)}
+ *   <li> {@link #setField(int, int, int, int, int)}
+ * </ul>
  * <p/>
  * <b>NOTE:</b>
  * <ul>
@@ -39,10 +46,10 @@ import org.cloudbus.cloudsim.utilizationmodels.UtilizationModelFull;
  * <li>If size of the trace file is huge or contains lots of traces, please increase the JVM heap
  * size accordingly by using <tt>java -Xmx</tt> option when running the simulation.
  * <li>The default job file size for sending to and receiving from a resource is
- * {@link gridsim.net.Link#DEFAULT_MTU}. However, you can specify the file size by using
- * {@link #setCloudletFileSize(int)}.
- * <li>A job run time is only for 1 PE <tt>not</tt> the total number of allocated PEs. Therefore, a
- * Cloudlet length is also calculated for 1 PE.<br>
+ * {@link org.cloudbus.cloudsim.DataCloudTags#DEFAULT_MTU}. 
+ * However, you can specify the file size by using {@link #setCloudletFileSize(int)}.
+ * <li>A job run time is only for 1 PE <tt>not</tt> the total number of allocated PEs. 
+ * Therefore, a Cloudlet length is also calculated for 1 PE.<br>
  * For example, job #1 in the trace has a run time of 100 seconds for 2 processors. This means each
  * processor runs job #1 for 100 seconds, if the processors have the same specification.
  * </ul>
@@ -52,15 +59,6 @@ import org.cloudbus.cloudsim.utilizationmodels.UtilizationModelFull;
  * number of MI as specified in the {@link Cloudlet#cloudletLength} attribute.
  * See {@link Cloudlet#setNumberOfPes(int)} method documentation.
  *
- * <p/>
- * By default, this class follows the standard workload format as specified in
- * <a href="http://www.cs.huji.ac.il/labs/parallel/workload/">
- * http://www.cs.huji.ac.il/labs/parallel/workload/</a> <br/>
- * However, you can use other format by calling the methods below before running the simulation:
- * <ul>
- *   <li> {@link #setComment(String)}
- *   <li> {@link #setField(int, int, int, int, int)}
- * </ul>
  * 
  * @author Anthony Sulistio
  * @author Marcos Dias de Assuncao

@@ -35,10 +35,6 @@ import org.cloudbus.cloudsim.resources.FileStorage;
  * of cloudlets are handled by the CloudletScheduler and processing of
  * Virtual Machines are handled by the VmAllocationPolicy.
  *
- * @todo @author manoelcampos If an AllocationPolicy is not being used, why it is being created. Perhaps a
- * better class hierarchy should be created, introducing some abstract class or
- * interface.
- *
  * <br/>Please refer to following publication for more details:<br/>
  * <ul>
  * <li>
@@ -52,6 +48,11 @@ import org.cloudbus.cloudsim.resources.FileStorage;
  *
  * @author Saurabh Kumar Garg
  * @since CloudSim Toolkit 3.0
+ * 
+ * @todo @author manoelcampos If an AllocationPolicy is not being used, why it is being created. Perhaps a
+ * better class hierarchy should be created, introducing some abstract class or
+ * interface.
+ *
  */
 public class NetworkDatacenter extends DatacenterSimple {
 
@@ -144,7 +145,6 @@ public class NetworkDatacenter extends DatacenterSimple {
      * @return true if the VW was created successfully, false otherwise
      */
     public boolean processVmCreateNetwork(Vm vm) {
-
         boolean result = getVmAllocationPolicy().allocateHostForVm(vm);
 
         if (result) {
@@ -154,7 +154,9 @@ public class NetworkDatacenter extends DatacenterSimple {
 
             getVmList().add(vm);
 
-            vm.updateVmProcessing(CloudSim.clock(), getVmAllocationPolicy().getHost(vm).getVmScheduler()
+            vm.updateVmProcessing(
+                    CloudSim.clock(), 
+                    getVmAllocationPolicy().getHost(vm).getVmScheduler()
                     .getAllocatedMipsForVm(vm));
         }
         return result;

@@ -213,6 +213,9 @@ public interface Cloudlet extends Identificable {
 
     /**
      * Gets the output file size of this Cloudlet after execution (unit: in byte).
+     * It is the data produced as result of cloudlet execution
+     * that needs to be transferred thought the network to
+     * simulate sending response data to the user.
      *
      * @todo See
      * <a href="https://groups.google.com/forum/#!topic/cloudsim/MyZ7OnrXuuI">this
