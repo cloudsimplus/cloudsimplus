@@ -185,22 +185,11 @@ public class SwfWorkloadFormatExample1 {
                 = String.format("%s/%s",
                         this.getClass().getClassLoader().getResource("workload/swf").getPath(),
                         WORKLOAD_FILENAME);
-        WorkloadFileReader reader = new WorkloadFileReader(fileName, CLOUDLETS_MIPS);
-        List<Cloudlet> newList = reader.generateWorkload();
-        
-        if(maximumNumberOfCloudletsToCreateFromTheWorkloadFile == -1 ||
-        newList.size() <= maximumNumberOfCloudletsToCreateFromTheWorkloadFile){
-            this.cloudletList = newList;
-        }
-        else {
-            this.cloudletList = new ArrayList<>();
-            /*move to the cloudlet list only the first cloudlets
-            until the limit of the maximumNumberOfCloudletsToCreateFromTheWorkloadFile*/
-            for(int i = 0; i < maximumNumberOfCloudletsToCreateFromTheWorkloadFile; i++){
-                this.cloudletList.add(newList.remove(0));
-            }
-        }
-        
+        WorkloadFileReader reader = 
+                new WorkloadFileReader(fileName, CLOUDLETS_MIPS);
+        reader.setMaxNumberOfLinesToRead(maximumNumberOfCloudletsToCreateFromTheWorkloadFile);
+        this.cloudletList = reader.generateWorkload();
+                
         for (Cloudlet c : this.cloudletList) {
             c.setUserId(broker.getId());
         }

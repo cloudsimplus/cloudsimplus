@@ -465,8 +465,8 @@ public class DatacenterBrokerSimple extends SimEntity implements DatacenterBroke
     }
 
     @Override
-    public List<Vm> getVmList() {
-        return vmList;
+    public <T extends Vm> List<T> getVmList() {
+        return (List<T>)vmList;
     }
 
     @Override
