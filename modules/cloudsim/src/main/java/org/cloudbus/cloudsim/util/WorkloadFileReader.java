@@ -436,14 +436,16 @@ public class WorkloadFileReader implements WorkloadModel {
      *
      * @param line a line from the trace file
      * @param lineNum the line number
+     * @return true if the line was parsed, false otherwise
+     * 
      * @pre line != null
      * @pre lineNum > 0
      * @post $none
      */
-    private void parseValue(final String line, final int lineNum) {
+    private boolean parseValue(final String line, final int lineNum) {
         // skip a comment line
         if (line.startsWith(COMMENT)) {
-            return;
+            return false;
         }
 
         final String[] sp = line.split("\\s+"); // split the fields based on a
@@ -466,6 +468,8 @@ public class WorkloadFileReader implements WorkloadModel {
         if (index == MAX_FIELD) {
             createCloudletFromOneTraceFileLine(fieldArray, lineNum);
         }
+        
+        return true;
     }
 
     /**

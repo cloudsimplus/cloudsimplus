@@ -60,8 +60,13 @@ public class WorkloadFileReaderTest {
                 + "test"
                 + File.separator
                 + fileNameWithoutPath, 1);
+        long milisecs = System.currentTimeMillis();
         List<Cloudlet> cloudletlist = r.generateWorkload();
+        double seconds = (System.currentTimeMillis() - milisecs)/1000.0;
         assertEquals(numberOfJobs, cloudletlist.size());
+        System.out.printf(
+                "Time taken to read the file %s: %.2f seconds\n", 
+                fileNameWithoutPath, seconds);
         
         for (Cloudlet cloudlet : cloudletlist) {
             assertTrue(cloudlet.getCloudletLength() > 0);
