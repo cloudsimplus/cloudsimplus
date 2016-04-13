@@ -1,4 +1,4 @@
-package org.cloudbus.cloudsim;
+package org.cloudbus.cloudsim.core;
 
 /**
  * An interface for objects that have to be identified by an id.

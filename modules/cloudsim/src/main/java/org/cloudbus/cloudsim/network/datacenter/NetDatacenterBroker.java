@@ -117,7 +117,7 @@ public class NetDatacenterBroker extends DatacenterBrokerSimple {
         for (AppCloudlet app : appCloudletList) {
             for (int i = 0; i < app.getNumberOfVmsToUse(); i++) {
                 getAppCloudletReceived().put(app.getId(), app.getNumberOfVmsToUse());
-                getCloudletSubmittedList().add(app.getNetworkCloudletList().get(i));
+                getCloudletList().add(app.getNetworkCloudletList().get(i));
                 cloudletsSubmitted++;
 
                 // Sending cloudlet

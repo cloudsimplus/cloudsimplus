@@ -38,40 +38,36 @@ public interface DatacenterBroker {
     /**
      * Gets the cloudlet list.
      *
+     * @param <T>
      * @return the cloudlet list
      */
-    List<Cloudlet> getCloudletList();
+    <T extends Cloudlet> List<T> getCloudletList();
 
     /**
      * Gets the cloudlet received list.
      *
+     * @param <T>
      * @return the cloudlet received list
      */
-    List<Cloudlet> getCloudletReceivedList();
-
-    /**
-     * Gets the cloudlet submitted list.
-     *
-     * @return the cloudlet submitted list
-     */
-    List<Cloudlet> getCloudletSubmittedList();
+    <T extends Cloudlet> List<T> getCloudletReceivedList();
 
     Vm getVm(final int index);
 
     /**
-     * Gets the vm list.
+     * Gets the list of VMs submitted to the broker.
      *
-     * @return the vm list
-     * @todo It is the list of submitted VMs, so, the name would be changed
+     * @param <T>
+     * @return the list of submitted VMs
      */
-    List<Vm> getVmList();
+    <T extends Vm> List<T> getVmList();
 
     /**
      * Gets the vm list.
      *
+     * @param <T>
      * @return the vm list
      */
-    List<Vm> getVmsCreatedList();
+    <T extends Vm> List<T> getVmsCreatedList();
 
     /**
      * This method is used to send to the broker the list of cloudlets.

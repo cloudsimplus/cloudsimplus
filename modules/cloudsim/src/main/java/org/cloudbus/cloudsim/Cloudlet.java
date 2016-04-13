@@ -1,5 +1,6 @@
 package org.cloudbus.cloudsim;
 
+import org.cloudbus.cloudsim.core.Identificable;
 import org.cloudbus.cloudsim.utilizationmodels.UtilizationModel;
 import java.util.Collections;
 import java.util.List;

@@ -256,7 +256,7 @@ public class FileTest {
         File instance = createFile();
         assertEquals(
                 Calendar.getInstance().getTimeInMillis(), 
-                instance.getCreationTime(), 100);
+                instance.getCreationTime(), 1000);
     }
 
     @Test

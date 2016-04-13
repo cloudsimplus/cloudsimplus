@@ -53,11 +53,6 @@ public class DatacenterBrokerSimple extends SimEntity implements DatacenterBroke
     protected List<Cloudlet> cloudletList;
 
     /**
-     * The list of submitted cloudlets.
-     */
-    protected List<Cloudlet> cloudletSubmittedList;
-
-    /**
      * The list of received cloudlet.
      */
     protected List<Cloudlet> cloudletReceivedList;
@@ -106,10 +101,9 @@ public class DatacenterBrokerSimple extends SimEntity implements DatacenterBroke
     protected Map<Integer, DatacenterCharacteristics> datacenterCharacteristicsList;
     
     /**
-     * Created a new DatacenterBroker object.
+     * Created a new DatacenterBrokerSimple object.
      *
-     * @param name name to be associated with this entity (as required by
-     * {@link SimEntity} class)
+     * @param name name to be associated with this entity
      * @throws IllegalArgumentException when the entity name is invalid
      * @pre name != null
      * @post $none
@@ -117,10 +111,9 @@ public class DatacenterBrokerSimple extends SimEntity implements DatacenterBroke
     public DatacenterBrokerSimple(String name) {
         super(name);
 
-        setVmList(new ArrayList<>());
+        this.vmList = new ArrayList<>();
         setVmsCreatedList(new ArrayList<>());
         setCloudletList(new ArrayList<>());
-        setCloudletSubmittedList(new ArrayList<>());
         setCloudletReceivedList(new ArrayList<>());
 
         cloudletsSubmitted = 0;
@@ -134,14 +127,6 @@ public class DatacenterBrokerSimple extends SimEntity implements DatacenterBroke
         setDatacenterCharacteristicsList(new HashMap<>());
     }
 
-    /**
-     * This method is used to send to the broker the list with virtual machines
-     * that must be created.
-     *
-     * @param list the list
-     * @pre list !=null
-     * @post $none
-     */
     @Override
     public <T extends Vm> void submitVmList(List<T> list) {
         getVmList().addAll(list);
@@ -436,7 +421,6 @@ public class DatacenterBrokerSimple extends SimEntity implements DatacenterBroke
             sendNow(getVmsToDatacentersMap().get(vm.getId()), CloudSimTags.CLOUDLET_SUBMIT, cloudlet);
             cloudletsSubmitted++;
             vmIndex = (vmIndex + 1) % getVmsCreatedList().size();
-            getCloudletSubmittedList().add(cloudlet);
             successfullySubmitted.add(cloudlet);
         }
 
@@ -480,12 +464,6 @@ public class DatacenterBrokerSimple extends SimEntity implements DatacenterBroke
         schedule(getId(), 0, CloudSimTags.RESOURCE_CHARACTERISTICS_REQUEST);
     }
 
-    /**
-     * Gets the vm list.
-     *
-     * @return the vm list
-     * @todo It is the list of submitted VMs, so, the name would be changed
-     */
     @Override
     public List<Vm> getVmList() {
         return vmList;
@@ -499,23 +477,9 @@ public class DatacenterBrokerSimple extends SimEntity implements DatacenterBroke
         return Vm.NULL;
     }
 
-    /**
-     * Sets the vm list.
-     *
-     * @param vmList the new vm list
-     */
-    protected final void setVmList(List<Vm> vmList) {
-        this.vmList = vmList;
-    }
-
-    /**
-     * Gets the cloudlet list.
-     *
-     * @return the cloudlet list
-     */
     @Override
-    public List<Cloudlet> getCloudletList() {
-        return cloudletList;
+    public <T extends Cloudlet> List<T> getCloudletList() {
+        return (List<T>)cloudletList;
     }
 
     /**
@@ -527,33 +491,9 @@ public class DatacenterBrokerSimple extends SimEntity implements DatacenterBroke
         this.cloudletList = cloudletList;
     }
 
-    /**
-     * Gets the cloudlet submitted list.
-     *
-     * @return the cloudlet submitted list
-     */
     @Override
-    public List<Cloudlet> getCloudletSubmittedList() {
-        return cloudletSubmittedList;
-    }
-
-    /**
-     * Sets the cloudlet submitted list.
-     *
-     * @param cloudletSubmittedList the new cloudlet submitted list
-     */
-    protected final void setCloudletSubmittedList(List<Cloudlet> cloudletSubmittedList) {
-        this.cloudletSubmittedList = cloudletSubmittedList;
-    }
-
-    /**
-     * Gets the cloudlet received list.
-     *
-     * @return the cloudlet received list
-     */
-    @Override
-    public List<Cloudlet> getCloudletReceivedList() {
-        return cloudletReceivedList;
+    public <T extends Cloudlet> List<T> getCloudletReceivedList() {
+        return (List<T>)cloudletReceivedList;
     }
 
     /**
@@ -565,18 +505,13 @@ public class DatacenterBrokerSimple extends SimEntity implements DatacenterBroke
         this.cloudletReceivedList = cloudletReceivedList;
     }
 
-    /**
-     * Gets the vm list.
-     *
-     * @return the vm list
-     */
     @Override
-    public List<Vm> getVmsCreatedList() {
-        return vmsCreatedList;
+    public <T extends Vm> List<T> getVmsCreatedList() {
+        return (List<T>)vmsCreatedList;
     }
 
     /**
-     * Sets the vm list.
+     * Sets the vm created list.
      *
      * @param vmsCreatedList the vms created list
      */

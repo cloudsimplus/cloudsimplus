@@ -2,8 +2,8 @@ package org.cloudbus.cloudsim.examples.workload;
 
 import java.util.Comparator;
 import java.util.List;
-import org.cloudbus.cloudsim.DatacenterBroker;
 import org.cloudbus.cloudsim.Vm;
+import org.cloudbus.cloudsim.brokers.DatacenterBrokerSimple;
 
 /**
  * A Broker which requests for creation of VMs inside a datacenter
@@ -12,7 +12,7 @@ import org.cloudbus.cloudsim.Vm;
  * 
  * @author Manoel Campos da Silva Filho
  */
-public class DatacenterBrokerVmsWithMorePesFirst extends DatacenterBroker {
+public class DatacenterBrokerVmsWithMorePesFirst extends DatacenterBrokerSimple {
     
     public DatacenterBrokerVmsWithMorePesFirst(String name) throws Exception {
         super(name);
@@ -32,6 +32,6 @@ public class DatacenterBrokerVmsWithMorePesFirst extends DatacenterBroker {
             }
         }); 
         
-        return super.getVmList();
+        return (List<T>)super.getVmList();
     }    
 }

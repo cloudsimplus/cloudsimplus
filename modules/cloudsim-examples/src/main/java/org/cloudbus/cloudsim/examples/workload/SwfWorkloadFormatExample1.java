@@ -18,21 +18,26 @@ import java.util.Map;
 import java.util.Map.Entry;
 
 import org.cloudbus.cloudsim.Cloudlet;
-import org.cloudbus.cloudsim.CloudletSchedulerSpaceShared;
 import org.cloudbus.cloudsim.Datacenter;
-import org.cloudbus.cloudsim.DatacenterBroker;
 import org.cloudbus.cloudsim.DatacenterCharacteristics;
+import org.cloudbus.cloudsim.DatacenterSimple;
 import org.cloudbus.cloudsim.Host;
+import org.cloudbus.cloudsim.HostSimple;
 import org.cloudbus.cloudsim.Log;
-import org.cloudbus.cloudsim.Pe;
-import org.cloudbus.cloudsim.Storage;
 import org.cloudbus.cloudsim.Vm;
-import org.cloudbus.cloudsim.VmAllocationPolicySimple;
-import org.cloudbus.cloudsim.VmSchedulerTimeShared;
+import org.cloudbus.cloudsim.VmSimple;
+import org.cloudbus.cloudsim.allocationpolicies.VmAllocationPolicySimple;
+import org.cloudbus.cloudsim.brokers.DatacenterBroker;
 import org.cloudbus.cloudsim.core.CloudSim;
-import org.cloudbus.cloudsim.provisioners.BwProvisionerSimple;
 import org.cloudbus.cloudsim.provisioners.PeProvisionerSimple;
-import org.cloudbus.cloudsim.provisioners.RamProvisionerSimple;
+import org.cloudbus.cloudsim.provisioners.ResourceProvisionerSimple;
+import org.cloudbus.cloudsim.resources.Bandwidth;
+import org.cloudbus.cloudsim.resources.FileStorage;
+import org.cloudbus.cloudsim.resources.Pe;
+import org.cloudbus.cloudsim.resources.PeSimple;
+import org.cloudbus.cloudsim.resources.Ram;
+import org.cloudbus.cloudsim.schedulers.CloudletSchedulerSpaceShared;
+import org.cloudbus.cloudsim.schedulers.VmSchedulerTimeShared;
 import org.cloudbus.cloudsim.util.WorkloadFileReader;
 
 /**
@@ -163,7 +168,7 @@ public class SwfWorkloadFormatExample1 {
         int vmId = -1;
         vmlist = new ArrayList<Vm>();
         for (Cloudlet cloudlet : this.cloudletList) {
-            Vm vm = new Vm(
+            Vm vm = new VmSimple(
                         ++vmId, cloudlet.getUserId(), VM_MIPS,
                         cloudlet.getNumberOfPes(),
                         VM_RAM, VM_BW, VM_SIZE, VMM,
@@ -181,14 +186,14 @@ public class SwfWorkloadFormatExample1 {
                         this.getClass().getClassLoader().getResource("workload/swf").getPath(),
                         WORKLOAD_FILENAME);
         WorkloadFileReader reader = new WorkloadFileReader(fileName, CLOUDLETS_MIPS);
-        ArrayList<Cloudlet> newList = reader.generateWorkload();
+        List<Cloudlet> newList = reader.generateWorkload();
         
         if(maximumNumberOfCloudletsToCreateFromTheWorkloadFile == -1 ||
         newList.size() <= maximumNumberOfCloudletsToCreateFromTheWorkloadFile){
             this.cloudletList = newList;
         }
         else {
-            this.cloudletList = new ArrayList<Cloudlet>();
+            this.cloudletList = new ArrayList<>();
             /*move to the cloudlet list only the first cloudlets
             until the limit of the maximumNumberOfCloudletsToCreateFromTheWorkloadFile*/
             for(int i = 0; i < maximumNumberOfCloudletsToCreateFromTheWorkloadFile; i++){
@@ -212,13 +217,13 @@ public class SwfWorkloadFormatExample1 {
      */
     private Datacenter createDatacenterAndHostsBasedOnVmRequirements(String name) throws Exception {
         List<Host> hostList = createHostsAccordingToVmRequirements();
-        List<Storage> storageList = new LinkedList<Storage>();
+        List<FileStorage> storageList = new LinkedList<>();
         DatacenterCharacteristics characteristics = new DatacenterCharacteristics(
                 DATACENTER_ARCH, DATACENTER_HOSTS_OS, VMM, hostList, 
                 DATACENTER_TIMEZONE, DATACENTER_CPU_COST, DATACENTER_MEM_COST,
                 DATACENTER_STORAGE_COST, DATACENTER_BW_COST);
 
-        Datacenter datacenter = new Datacenter(
+        Datacenter datacenter = new DatacenterSimple(
                 name, characteristics, 
                 new VmAllocationPolicySimple(hostList), storageList, 0);
 
@@ -279,14 +284,14 @@ public class SwfWorkloadFormatExample1 {
         final long storage = VM_SIZE * NUMBER_OF_VMS_PER_HOST;
         final long bw = VM_BW * NUMBER_OF_VMS_PER_HOST;
         
-        List<Host> list = new ArrayList<Host>();
+        List<Host> list = new ArrayList<>();
         for(int i = 0; i < numberOfHosts; i++){
             List<Pe> peList = createPeList(numberOfPes, VM_MIPS);
 
-            Host host = new Host(
+            Host host = new HostSimple(
                     lastCreatedHostId++,
-                    new RamProvisionerSimple(ram),
-                    new BwProvisionerSimple(bw),
+                    new ResourceProvisionerSimple(new Ram(ram)),
+                    new ResourceProvisionerSimple(new Bandwidth(bw)),
                     storage, peList,
                     new VmSchedulerTimeShared(peList)
             );
@@ -300,9 +305,9 @@ public class SwfWorkloadFormatExample1 {
     }
 
     private List<Pe> createPeList(int numberOfPes, double mips) {
-        List<Pe> peList = new ArrayList<Pe>();
+        List<Pe> peList = new ArrayList<>();
         for (int i = 0; i < numberOfPes; i++) {
-            peList.add(new Pe(i, new PeProvisionerSimple(mips)));
+            peList.add(new PeSimple(i, new PeProvisionerSimple(mips)));
         }
 
         return peList;
@@ -369,9 +374,9 @@ public class SwfWorkloadFormatExample1 {
                 String.format(
                     "%8d    %8d    %7s    %10d    %8d    %10.0f    %10.0f    %11.0f", 
                     (i+1),
-                    cloudlet.getCloudletId(),
-                    Cloudlet.getStatusString(cloudlet.getStatus()),
-                    cloudlet.getResourceId(), 
+                    cloudlet.getId(),
+                    cloudlet.getStatus().name(),
+                    cloudlet.getDatacenterId(), 
                     cloudlet.getVmId(),
                     cloudlet.getActualCPUTime(),
                     cloudlet.getExecStartTime(),

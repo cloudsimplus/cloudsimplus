@@ -1,5 +1,6 @@
 package org.cloudbus.cloudsim;
 
+import org.cloudbus.cloudsim.core.Nameable;
 import org.cloudbus.cloudsim.resources.File;
 import org.cloudbus.cloudsim.allocationpolicies.VmAllocationPolicy;
 import java.util.Collections;
@@ -14,7 +15,7 @@ import java.util.List;
  * 
  * @author Manoel Campos da Silva Filho
  */
-public interface Datacenter extends Identificable {
+public interface Datacenter extends Nameable {
     /**
      * Adds a file into the resource's storage before the experiment starts.
      * If the file is a master file, then it will be registered to the RC
@@ -77,6 +78,7 @@ public interface Datacenter extends Identificable {
      */
     public static final Datacenter NULL = new Datacenter() {
         @Override public int getId() { return 0; }
+        @Override public String getName() { return ""; }
         @Override public int addFile(File file) { return 0;}
         @Override public List<Host> getHostList() { return Collections.emptyList();}
         @Override public VmAllocationPolicy getVmAllocationPolicy() { return VmAllocationPolicy.NULL; }

@@ -9,7 +9,7 @@ package org.cloudbus.cloudsim.network.datacenter;
 
 import java.util.ArrayList;
 import java.util.List;
-import org.cloudbus.cloudsim.Identificable;
+import org.cloudbus.cloudsim.core.Identificable;
 
 /**
  * AppCloudlet class represents an application that an user submits for execution
