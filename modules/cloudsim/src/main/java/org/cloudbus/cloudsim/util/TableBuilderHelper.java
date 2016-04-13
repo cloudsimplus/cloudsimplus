@@ -9,7 +9,7 @@ import org.cloudbus.cloudsim.Cloudlet;
  * @author Manoel Campos da Silva Filho
  */
 public final class TableBuilderHelper {
-    public static void print(final TableBuilder printer, final List<Cloudlet> list){
+    public static void print(final TableBuilder printer, final List<? extends Cloudlet> list){
         if(printer.getTitle().isEmpty()){
             printer.setTitle("OUTPUT");
         }

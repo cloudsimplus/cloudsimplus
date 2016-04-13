@@ -162,6 +162,7 @@ public class NetDatacenterBroker extends SimEntity {
         setDatacenterRequestedIdsList(new ArrayList<>());
         setVmsToDatacentersMap(new HashMap<>());
         setDatacenterCharacteristicsList(new HashMap<>());
+        
     }
 
     /**
@@ -223,6 +224,8 @@ public class NetDatacenterBroker extends SimEntity {
                 if (NetworkConstants.autoCreateVmsInNetDatacenterBroker) {
                     createVmsInDatacenterBase(linkDC.getId());
                 }
+                else
+                    System.out.println("\t \t \t NAO FAZ NADA!! ");
             break;
             // other unknown tags are processed by this method
             default:
@@ -244,7 +247,7 @@ public class NetDatacenterBroker extends SimEntity {
         DatacenterCharacteristics characteristics = (DatacenterCharacteristics) ev.getData();
         getDatacenterCharacteristicsList().put(characteristics.getId(), characteristics);
 
-        if (getDatacenterCharacteristicsList().size() == getDatacenterIdsList().size()) {
+        if (getDatacenterCharacteristicsList().size() == getDatacenterIdsList().size() && NetworkConstants.autoCreateVmsInNetDatacenterBroker) {
             setDatacenterRequestedIdsList(new ArrayList<>());
             createVmsInDatacenterBase(getDatacenterIdsList().get(0));
         }
@@ -297,7 +300,7 @@ public class NetDatacenterBroker extends SimEntity {
             finishExecution();
         } 
         // some cloudlets haven't finished yet
-        else if (getAppCloudletList().size() > 0 && cloudletsSubmitted == 0) {
+        else if (getAppCloudletList().size() > 0 && cloudletsSubmitted == 0 && NetworkConstants.autoCreateVmsInNetDatacenterBroker) {
             // all the cloudlets sent finished. It means that some bount
             // cloudlet is waiting its VM be created
             clearDatacenters();

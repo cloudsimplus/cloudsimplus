@@ -57,7 +57,7 @@ public class TestExample {
 
             // Initialize the CloudSim library
             CloudSim.init(num_user, calendar, trace_flag);
-            NetworkConstants.autoCreateVmsInNetDatacenterBroker = true;
+        //    NetworkConstants.autoCreateVmsInNetDatacenterBroker = false;
 
             // Second step: Create Datacenters
             // Datacenters are the resource providers in CloudSim. We need at

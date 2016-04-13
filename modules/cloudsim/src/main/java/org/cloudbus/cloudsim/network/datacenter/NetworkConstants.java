@@ -99,7 +99,7 @@ public class NetworkConstants {
 
     public static double seed = 199;
     public static boolean logFlag = false;
-    public static boolean autoCreateVmsInNetDatacenterBroker = true;
+    public static final boolean autoCreateVmsInNetDatacenterBroker = false;
 
     public static int maxVmsPerHost = 2;
     public static int hostPEs = 8;

@@ -170,7 +170,7 @@ public class GraphReaderBrite implements GraphReaderIF {
 		// parse this string-line to read all node-parameters
 		// EdgeID, fromNode, toNode, euclideanLength, linkDelay, linkBandwith, AS_from, AS_to, type
 
-		// int edgeID = 0;
+		//int edgeID = 0;
 		int fromNode = 0;
 		int toNode = 0;
 		// float euclideanLength = 0;
@@ -181,7 +181,7 @@ public class GraphReaderBrite implements GraphReaderIF {
 			String token = tokenizer.nextToken();
 			switch (actualParam) {
 				case 0:	// Log.printLine("edgeID: "+token);
-						// edgeID = Integer.valueOf(token);
+                                        //edgeID = Integer.valueOf(token);
 					break;
 
 				case 1:	// Log.printLine("fromNode: "+token);

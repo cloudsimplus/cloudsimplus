@@ -70,6 +70,7 @@ public interface Datacenter extends Identificable {
      */
     double getSchedulingInterval();
     
+   
     /**
      * A property that implements the Null Object Design Pattern for {@link Datacenter}
      * objects.

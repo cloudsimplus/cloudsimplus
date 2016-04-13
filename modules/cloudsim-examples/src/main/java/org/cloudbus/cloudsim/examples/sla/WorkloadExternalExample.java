@@ -11,21 +11,26 @@ import java.util.Calendar;
 import java.util.LinkedList;
 import java.util.List;
 import org.cloudbus.cloudsim.Cloudlet;
-import org.cloudbus.cloudsim.CloudletSchedulerTimeShared;
+import org.cloudbus.cloudsim.schedulers.CloudletSchedulerTimeShared;
 import org.cloudbus.cloudsim.Datacenter;
-import org.cloudbus.cloudsim.DatacenterBroker;
+import org.cloudbus.cloudsim.brokers.DatacenterBroker;
 import org.cloudbus.cloudsim.DatacenterCharacteristics;
+import org.cloudbus.cloudsim.DatacenterSimple;
 import org.cloudbus.cloudsim.Host;
+import org.cloudbus.cloudsim.HostSimple;
 import org.cloudbus.cloudsim.Log;
-import org.cloudbus.cloudsim.Pe;
+import org.cloudbus.cloudsim.resources.Pe;
 import org.cloudbus.cloudsim.Vm;
-import org.cloudbus.cloudsim.VmAllocationPolicySimple;
-import org.cloudbus.cloudsim.VmSchedulerTimeShared;
+import org.cloudbus.cloudsim.VmSimple;
+import org.cloudbus.cloudsim.allocationpolicies.VmAllocationPolicySimple;
+import org.cloudbus.cloudsim.brokers.DatacenterBrokerSimple;
+import org.cloudbus.cloudsim.schedulers.VmSchedulerTimeShared;
 import org.cloudbus.cloudsim.core.CloudSim;
 import org.cloudbus.cloudsim.provisioners.PeProvisionerSimple;
 import org.cloudbus.cloudsim.provisioners.ResourceProvisionerSimple;
 import org.cloudbus.cloudsim.resources.Bandwidth;
 import org.cloudbus.cloudsim.resources.FileStorage;
+import org.cloudbus.cloudsim.resources.PeSimple;
 import org.cloudbus.cloudsim.resources.Ram;
 import org.cloudbus.cloudsim.util.TableBuilderHelper;
 import org.cloudbus.cloudsim.util.TextTableBuilder;
@@ -80,7 +85,7 @@ public class WorkloadExternalExample {
             String vmm = "Xen"; // VMM name
             
             // create VM
-            Vm vm = new Vm(
+            Vm vm = new VmSimple(
                     vmid, brokerId, mips, pesNumber, ram, bw, size, 
                     vmm, new CloudletSchedulerTimeShared());
 
@@ -137,7 +142,7 @@ public class WorkloadExternalExample {
             int mips = 1000;
 
             // 3. Create PEs and add these into a list.
-            peList.add(new Pe(0, new PeProvisionerSimple(mips))); // need to store Pe id and MIPS Rating
+            peList.add(new PeSimple(0, new PeProvisionerSimple(mips))); // need to store Pe id and MIPS Rating
 
             // 4. Create Host with its id and list of PEs and add them to the list
             // of machines
@@ -146,7 +151,7 @@ public class WorkloadExternalExample {
             long storage = 1000000; // host storage
             long bw = 10000;
 
-            hostList.add(new Host(
+            hostList.add(new HostSimple(
                             hostId,
                             new ResourceProvisionerSimple<>(new Ram(ram)),
                             new ResourceProvisionerSimple<>(new Bandwidth(bw)),
@@ -179,7 +184,7 @@ public class WorkloadExternalExample {
             // 6. Finally, we need to create a PowerDatacenter object.
             Datacenter datacenter = null;
             try {
-                    datacenter = new Datacenter(name, characteristics, new VmAllocationPolicySimple(hostList), storageList, 0);
+                    datacenter = new DatacenterSimple(name, characteristics, new VmAllocationPolicySimple(hostList), storageList, 0);
             } catch (Exception e) {
                     e.printStackTrace();
             }
@@ -195,7 +200,7 @@ public class WorkloadExternalExample {
     private static DatacenterBroker createBroker() {
             DatacenterBroker broker = null;
             try {
-                    broker = new DatacenterBroker("Broker");
+                    broker = new DatacenterBrokerSimple("Broker");
             } catch (Exception e) {
                     e.printStackTrace();
                     return null;

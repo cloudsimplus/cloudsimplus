@@ -10,14 +10,16 @@ package org.cloudbus.cloudsim.examples.network;
 
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
-import org.cloudbus.cloudsim.Cloudlet;
-import org.cloudbus.cloudsim.CloudletSimple;
 import org.cloudbus.cloudsim.DatacenterCharacteristics;
 import org.cloudbus.cloudsim.Host;
 import org.cloudbus.cloudsim.Log;
+import org.cloudbus.cloudsim.Vm;
 import org.cloudbus.cloudsim.core.CloudSim;
+import org.cloudbus.cloudsim.network.NetworkTopology;
+import org.cloudbus.cloudsim.network.TopologicalLink;
 import org.cloudbus.cloudsim.network.datacenter.EdgeSwitch;
 import org.cloudbus.cloudsim.network.datacenter.NetDatacenterBroker;
 import org.cloudbus.cloudsim.network.datacenter.NetworkCloudlet;
@@ -35,6 +37,8 @@ import org.cloudbus.cloudsim.resources.PeSimple;
 import org.cloudbus.cloudsim.resources.Ram;
 import org.cloudbus.cloudsim.schedulers.CloudletSchedulerTimeShared;
 import org.cloudbus.cloudsim.schedulers.VmSchedulerTimeShared;
+import org.cloudbus.cloudsim.util.TableBuilderHelper;
+import org.cloudbus.cloudsim.util.TextTableBuilder;
 import org.cloudbus.cloudsim.utilizationmodels.UtilizationModel;
 import org.cloudbus.cloudsim.utilizationmodels.UtilizationModelFull;
 
@@ -49,12 +53,13 @@ public class NetworkExample5 {
     /**
      * The cloudlet list.
      */
-    private static List<Cloudlet> cloudletList;
+    private static List<NetworkCloudlet> cloudletList;
 
     /**
      * The vmlist.
      */
     private static List<NetworkVm> vmlist;
+    private static int numberOfVms = 10;
 
     private static final String ARCH = "x86"; // system architecture
     private static final String OS = "Linux"; // operating system
@@ -90,33 +95,29 @@ public class NetworkExample5 {
 
         return list;
     }
-
-   /* private static List<NetworkCloudlet> createNetCloudlet(int userId, int cloudlets) {
-        // Creates a container to store Cloudlets
-        List<NetworkCloudlet> list = new LinkedList<>();
-
-        //cloudlet parameters
-        long length = 1000;
-        long fileSize = 300;
-        long outputSize = 300;
-        int pesNumber = 1;
-        UtilizationModel utilizationModel = new UtilizationModelFull();
-
-        NetworkCloudlet[] cloudlet = new NetworkCloudlet[cloudlets];
-
-        for (int i = 0; i < cloudlets; i++) {
-            cloudlet[i] = new NetworkCloudlet(i, cloudletLength, pesNumber, fileSize, outputSize, utilizationModel, utilizationModel, utilizationModel);
-            // setting the owner of these Cloudlets
-            cloudlet[i].setUserId(userId);
-            list.add(cloudlet[i]);
-        }
-
-        return list;
+    
+    private static double TotalCost(NetworkDatacenter nt, NetworkVm vm, NetworkCloudlet cloudlet){
+        
+        double bw = nt.getCharacteristics().getCostPerBw(); // * vm.getBw();
+        double storage = nt.getCharacteristics().getCostPerStorage(); // * vm.getSize();
+        double memory = nt.getCharacteristics().getCostPerMem(); //*  vm.getRam();
+        double cpu = nt.getCharacteristics().getCostPerSecond(); //* vm.getTotalUtilizationOfCpu(5);
+        double mi = nt.getCharacteristics().getCostPerMi();
+        
+        double bwVm = bw * vm.getBw();
+        System.out.println("BW-VM -" + bwVm);
+        
+        double totalcost = bw + storage + memory + cpu + mi;
+       /*
+        System.out.println("\n BW:" + bw + " BW da VM: " + vm.getBw());
+        System.out.println("\n Storage:" + storage + " STORAGE da VM: " + vm.getSize());
+        System.out.println("\n memory:" + memory + " memory da VM: " + vm.getRam());
+        System.out.println("\n cpu:" + cpu + " cpu da VM: " + vm.getTotalUtilizationOfCpu(5));
+        System.out.println("\n MI:" + mi);
+        */
+        return totalcost;        
     }
-*/
-    /**
-     * Creates main() to run this example
-     */
+    
     public static void main(String[] args) {
         Log.printFormattedLine("Starting %s...", NetworkExample5.class.getSimpleName());
         try {
@@ -129,27 +130,78 @@ public class NetworkExample5 {
             // Initialize the CloudSim library
             CloudSim.init(num_user, calendar, trace_flag);
 
-            //Setter autoCreateVmsInNetDatacenterBroker as false
-           // NetworkConstants.autoCreateVmsInNetDatacenterBroker = false;
-
             //Second step: Create Network Datacenter
             NetworkDatacenter datacenter0 = createDatacenter("Datacenter_0");
-            int data = datacenter0.getId();
+            int datacenterId = datacenter0.getId();
             //Third step: Create Network Broker
             NetDatacenterBroker broker = createBroker();
             broker.setLinkDC(datacenter0);
             int brokerId = broker.getId();
 
-            //4 step: Criar Vms
-            vmlist = createNetVM(brokerId, 10);
+            //fourth step: Criar Vms
+            vmlist = createNetVM(brokerId, numberOfVms);
 
             // submit vm list to the broker
             broker.submitVmList(vmlist);
 
+            //fift step: Create cloudlets
+            cloudletList = new LinkedList<>();
+            NetworkCloudlet cl;
+            for (int i = 0; i < numberOfVms; i++) {
+                long length = 4;
+                long fileSize = 300;
+                long outputSize = 300;
+                long memory = 256;
+                int pesNumber = 4;
+                UtilizationModel utilizationModel = new UtilizationModelFull();
+                // HPCCloudlet cl=new HPCCloudlet();
+                cl = new NetworkCloudlet(
+                        NetworkConstants.currentCloudletId,
+                        length,
+                        pesNumber,
+                        fileSize,
+                        outputSize,
+                        memory,
+                        utilizationModel,
+                        utilizationModel,
+                        utilizationModel);
+                // setting the owner of these Cloudlets
+                NetworkConstants.currentCloudletId++;
+                cl.setUserId(brokerId);
+                cl.submittime = CloudSim.clock();
+                cl.currStagenum = -1;
+                cloudletList.add(cl);
+            }
+            broker.submitCloudletList(cloudletList);
+            
+            NetworkTopology.buildNetworkTopology("topology.brite");
+      
+            int briteNode = 0;
+            NetworkTopology.mapNode(datacenterId, briteNode);
+                       
             // Sixth step: Starts the simulation
             CloudSim.startSimulation();
             CloudSim.stopSimulation();
-
+   
+            //show the list of linkList
+            Iterator<TopologicalLink> iterator = NetworkTopology.getTopologycalGraph().getLinkIterator();
+            System.out.println("\n *** Lista de Links  *** \n");
+            while ( iterator.hasNext()) {
+                TopologicalLink link =  iterator.next();
+                System.out.println( "SrcNodeID:" + link.getSrcNodeID() + "\t DstNodeid:" + link.getDestNodeID() + "\t Delay:" + link.getLinkDelay() + "\tBw:" + link.getLinkBw());
+            }
+            
+            //show the cost price
+            //double cost = TotalCost(datacenter0);
+            //System.out.println("\n Total Cost - Customer SLA: " + cost);
+           
+            //Response Time
+            //double rp = cl.getFinishTime() - cl.getSubmissionTime();
+            
+            
+            List<NetworkCloudlet> newList = broker.getCloudletReceivedList();
+            TableBuilderHelper.print(new TextTableBuilder(), newList);
+            Log.printFormattedLine("%s finished!", NetworkExample5.class.getSimpleName());
         } catch (Exception e) {
             e.printStackTrace();
             Log.printLine("Unwanted errors happen");
