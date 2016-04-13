@@ -59,7 +59,7 @@ public class NetworkTopology {
     /**
      * The Topological Graph of the network.
      */
-    protected static TopologicalGraph graph = null;
+    private static TopologicalGraph graph = null;
 
     /**
      * The map between CloudSim entities and BRITE entities. Each key is a
@@ -100,10 +100,10 @@ public class NetworkTopology {
      */
     private static void generateMatrices() {
         // creates the delay matrix
-        delayMatrix = new DelayMatrix_Float(graph, false);
+        delayMatrix = new DelayMatrix_Float(getTopologycalGraph(), false);
 
         // creates the bw matrix
-        bwMatrix = createBwMatrix(graph, false);
+        bwMatrix = createBwMatrix(getTopologycalGraph(), false);
 
         networkEnabled = true;
     }
@@ -125,29 +125,29 @@ public class NetworkTopology {
      */
     public static void addLink(int srcId, int destId, double bw, double lat) {
 
-        if (graph == null) {
+        if (getTopologycalGraph() == null) {
             graph = new TopologicalGraph();
         }
 
         if (map == null) {
-            map = new HashMap<Integer, Integer>();
+            map = new HashMap<>();
         }
 
         // maybe add the nodes
         if (!map.containsKey(srcId)) {
-            graph.addNode(new TopologicalNode(nextIdx));
+            getTopologycalGraph().addNode(new TopologicalNode(nextIdx));
             map.put(srcId, nextIdx);
             nextIdx++;
         }
 
         if (!map.containsKey(destId)) {
-            graph.addNode(new TopologicalNode(nextIdx));
+            getTopologycalGraph().addNode(new TopologicalNode(nextIdx));
             map.put(destId, nextIdx);
             nextIdx++;
         }
 
         // generate a new link
-        graph.addLink(new TopologicalLink(map.get(srcId), map.get(destId), (float) lat, (float) bw));
+        getTopologycalGraph().addLink(new TopologicalLink(map.get(srcId), map.get(destId), (float) lat, (float) bw));
 
         generateMatrices();
 
@@ -273,6 +273,13 @@ public class NetworkTopology {
      */
     public static boolean isNetworkEnabled() {
         return networkEnabled;
+    }
+
+    /**
+     * @return the graph
+     */
+    public static TopologicalGraph getTopologycalGraph() {
+        return graph;
     }
 
 }

@@ -152,7 +152,7 @@ public class CloudSimExample1 {
                     List<Cloudlet> newList = broker.getCloudletReceivedList();
                     TableBuilderHelper.print(new TextTableBuilder(), newList);
                     Log.printFormattedLine("%s finished!", CloudSimExample1.class.getSimpleName());
-            } catch (Exception e) {
+            }catch (Exception e) {
                     e.printStackTrace();
                     Log.printLine("Unwanted errors happen");
             }

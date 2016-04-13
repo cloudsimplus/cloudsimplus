@@ -1088,7 +1088,7 @@ public class DatacenterSimple extends SimEntity implements Datacenter {
      *
      * @return the datacenter characteristics
      */
-    protected final DatacenterCharacteristics getCharacteristics() {
+    public DatacenterCharacteristics getCharacteristics() {
         return characteristics;
     }
 
@@ -1209,4 +1209,6 @@ public class DatacenterSimple extends SimEntity implements Datacenter {
         
         return Host.NULL;
     }
+
+
 }

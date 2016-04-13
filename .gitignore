@@ -2,5 +2,6 @@
 /modules/cloudsim/target/
 /modules/cloudsim-examples/target/
 /documentation/target/
-/target/
 /modules/cloudsim/nbproject/
+/distribution/target/
+/target/
