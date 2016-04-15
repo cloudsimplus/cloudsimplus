@@ -2,7 +2,7 @@
 
 # NOTICE
 
-This is a **non-official proposed CloudSim 4.0** version thas is based on CloudSim 3.0.3 and **IS NOT BACKWARD COMPATIBLE** with such main release (despite simulations using the official version can relatively easy be ported to this new version using some IDE such as NetBeans). CloudSim is divided in some maven projects that are all provided when you download the source code. The [cloudsim-examples](modules/cloudsim) project, that represents the Cloud Simulation API, now requires the JDK 8 and makes intensive use of new Java 8 features such as [Lambda Expressions, Stream and Functional Programming](http://www.oracle.com/webfolder/technetwork/tutorials/obe/java/Lambda-QuickStart/index.html). However, [cloudsim-examples](modules/cloudsim-examples) project were updated just from Java 6 to 7 in order to provide yet simple examples for beginner Java programmers, but less verbose code than Java 6. 
+This is a **unofficial proposed CloudSim 4.0** version thas is based on CloudSim 3.0.3 and **IS NOT BACKWARD COMPATIBLE** with such main release (despite simulations using the official version can relatively easy be ported to this new version using some IDE such as NetBeans). CloudSim is divided in some maven projects that are all provided when you download the source code. The [cloudsim-examples](modules/cloudsim) project, that represents the Cloud Simulation API, now requires the JDK 8 and makes intensive use of new Java 8 features such as [Lambda Expressions, Streams and Functional Programming](http://www.oracle.com/webfolder/technetwork/tutorials/obe/java/Lambda-QuickStart/index.html). However, [cloudsim-examples](modules/cloudsim-examples) project were updated just from Java 6 to 7 in order to provide yet simple examples for beginner Java programmers, but less verbose code than Java 6. 
 
 This proposed 4.0 version is in beta stage yet and is mainly focused on refactorings to reduce code duplication, increase usage of 
 software engeneering standards and recommendations such as [Design Patterns](https://en.wikipedia.org/wiki/Software_design_pattern), [SOLID principles](https://en.wikipedia.com/wiki/SOLID %28object-oriented_design%29) and other ones such as [KISS](https://en.wikipedia.org/wiki/KISS_principle) and [DRY](https://en.wikipedia.org/wiki/Don%27t_repeat_yourself) in order to provide:
@@ -27,7 +27,7 @@ It also includes:
 As this release gets a stable stage, it will be performed a pull request for the official CloudSim repository in order to try make this official.
 Thus, this version is being earlier released to the community in order to get feedback such as suggestions and bug reports.
 
-For more information about the changes and features included in this release, please read the [change log](CHANGELOG.md) file and the [cloudsim-examples](modules/cloudsim-examples) project.
+For more information about the changes and features included in this release, please read the [CHANGELOG](CHANGELOG.md) file and the [cloudsim-examples](modules/cloudsim-examples) project.
 
 # INTRODUCTION
 

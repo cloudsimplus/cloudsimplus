@@ -94,7 +94,6 @@ public class DatacenterSimple extends SimEntity implements Datacenter {
         }
 
         // stores id of this class
-        characteristics.setId(super.getId());
         setCharacteristics(characteristics);
 
         setVmAllocationPolicy(vmAllocationPolicy);
@@ -1083,11 +1082,7 @@ public class DatacenterSimple extends SimEntity implements Datacenter {
         return getCharacteristics().getHostList();
     }
 
-    /**
-     * Gets the datacenter characteristics.
-     *
-     * @return the datacenter characteristics
-     */
+    @Override
     public DatacenterCharacteristics getCharacteristics() {
         return characteristics;
     }

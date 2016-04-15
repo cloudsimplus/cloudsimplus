@@ -6,6 +6,7 @@ import java.util.LinkedList;
 import java.util.List;
 import org.cloudbus.cloudsim.Cloudlet;
 import org.cloudbus.cloudsim.DatacenterCharacteristics;
+import org.cloudbus.cloudsim.DatacenterCharacteristicsSimple;
 import org.cloudbus.cloudsim.Host;
 import org.cloudbus.cloudsim.Log;
 import org.cloudbus.cloudsim.Vm;
@@ -142,7 +143,7 @@ public abstract class NetworkVmsExampleAppCloudletAbstract {
         // Machines, allocation policy: time- or space-shared, time zone
         // and its price (G$/Pe time unit).
         LinkedList<FileStorage> storageList = new LinkedList<>();
-        DatacenterCharacteristics characteristics = new DatacenterCharacteristics(ARCH, OS, VMM, hostList, TIME_ZONE, COST, COST_PER_MEM, COST_PER_STORAGE, COST_PER_BW);
+        DatacenterCharacteristics characteristics = new DatacenterCharacteristicsSimple (ARCH, OS, VMM, hostList, TIME_ZONE, COST, COST_PER_MEM, COST_PER_STORAGE, COST_PER_BW);
         // 6. Finally, we need to create a NetworkDatacenter object.
         try {
             NetworkDatacenter newDatacenter = new NetworkDatacenter(name, characteristics, new NetworkVmAllocationPolicy(hostList), storageList, 0);

@@ -6,6 +6,7 @@ import java.util.List;
 import org.cloudbus.cloudsim.Datacenter;
 import org.cloudbus.cloudsim.DatacenterSimple;
 import org.cloudbus.cloudsim.DatacenterCharacteristics;
+import org.cloudbus.cloudsim.DatacenterCharacteristicsSimple;
 import org.cloudbus.cloudsim.Host;
 import org.cloudbus.cloudsim.allocationpolicies.VmAllocationPolicySimple;
 import org.cloudbus.cloudsim.resources.FileStorage;
@@ -53,7 +54,7 @@ public class DatacenterBuilder extends Builder {
         
         LinkedList<FileStorage> storageList = new LinkedList<>();
         DatacenterCharacteristics characteristics = 
-                new DatacenterCharacteristics(
+                new DatacenterCharacteristicsSimple (
                         architecture, operatingSystem, VMM, hosts, 
                         timezone, costPerCpuSecond, 
                         costPerMem, costPerStorage, 

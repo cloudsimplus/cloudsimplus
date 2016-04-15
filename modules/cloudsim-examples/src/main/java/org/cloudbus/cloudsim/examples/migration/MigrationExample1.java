@@ -21,6 +21,7 @@ import org.cloudbus.cloudsim.Datacenter;
 import org.cloudbus.cloudsim.brokers.DatacenterBroker;
 import org.cloudbus.cloudsim.brokers.DatacenterBrokerSimple;
 import org.cloudbus.cloudsim.DatacenterCharacteristics;
+import org.cloudbus.cloudsim.DatacenterCharacteristicsSimple;
 import org.cloudbus.cloudsim.Log;
 import org.cloudbus.cloudsim.resources.Pe;
 import org.cloudbus.cloudsim.resources.PeSimple;
@@ -277,7 +278,7 @@ public class MigrationExample1 {
         
         List<FileStorage> storageList = new LinkedList<>();
         DatacenterCharacteristics characteristics = 
-            new DatacenterCharacteristics(
+            new DatacenterCharacteristicsSimple (
                 DATACENTER_ARCH, DATACENTER_OS, VMM, hostList, DATACENTER_TIMEZONE, 
                 DATACENTER_COST_PER_CPU, DATACENTER_COST_PER_RAM, 
                 DATACENTER_COST_PER_STORAGE, DATACENTER_COST_PER_BW);

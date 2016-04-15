@@ -209,7 +209,7 @@ public class TimeSharedProblemDetector {
         LinkedList<FileStorage> storageList = new LinkedList<>(); // we are not adding SAN
         // devices by now
 
-        DatacenterCharacteristics characteristics = new DatacenterCharacteristics(
+        DatacenterCharacteristics characteristics = new DatacenterCharacteristicsSimple (
                 arch, os, vmm, hostList, time_zone, cost, costPerMem,
                 costPerStorage, costPerBw);
 

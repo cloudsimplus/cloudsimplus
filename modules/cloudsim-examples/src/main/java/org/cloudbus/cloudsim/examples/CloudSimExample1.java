@@ -24,6 +24,7 @@ import org.cloudbus.cloudsim.DatacenterSimple;
 import org.cloudbus.cloudsim.brokers.DatacenterBroker;
 import org.cloudbus.cloudsim.brokers.DatacenterBrokerSimple;
 import org.cloudbus.cloudsim.DatacenterCharacteristics;
+import org.cloudbus.cloudsim.DatacenterCharacteristicsSimple;
 import org.cloudbus.cloudsim.Host;
 import org.cloudbus.cloudsim.HostSimple;
 import org.cloudbus.cloudsim.Log;
@@ -214,7 +215,7 @@ public class CloudSimExample1 {
             LinkedList<FileStorage> storageList = new LinkedList<>(); // we are not adding SAN
                                                                                                     // devices by now
 
-            DatacenterCharacteristics characteristics = new DatacenterCharacteristics(
+            DatacenterCharacteristics characteristics = new DatacenterCharacteristicsSimple (
                             arch, os, vmm, hostList, time_zone, cost, costPerMem,
                             costPerStorage, costPerBw);
 
