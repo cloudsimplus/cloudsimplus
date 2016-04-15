@@ -11,13 +11,16 @@ software engeneering standards and recommendations such as [Design Patterns](htt
 - division of very long and confuse methods into small, clean and very meaningful ones that usually makes just one thing
 - increased reausability and facility for extension
 - improved class hiearchy 
-- improved and completely updated and clearer documentation
-- new concise and easy to understand examples of features that have lots of questions at the forum, such as dynamic creation of cloudlets based on workload traces, definition of new datacenter broker, VmSchedulers and CloudletSchedulers and VM migration
-- inclusion of Maven Coverage Plugin to starting tracking the percentage of code that is being coverage by unit tests
-- inclusion of public code coverage report using [Coveralls](http://coveralls.io) services
+
+It also includes:
+
 - functional/integration tests using JUnit in order to test how a set of classes works together and even overall simulation scenarios
-- continuous integration using [Travis](http://travis-ci.org) services
-- correction of bugs
+- continuous integration using [Travis](http://travis-ci.org) services (see the badge at the top of this file)
+- inclusion of Maven Coverage Plugin to starting tracking the percentage of code that is being coverage by unit tests
+- inclusion of public code coverage report using [Coveralls](http://coveralls.io) services (see the badge at the top of this file)
+- new concise and easy to understand examples of features that have lots of questions at the Google Groups forum, such as dynamic creation of cloudlets based on workload traces; VM migration; and definition of new DatacenterBroker's, VmScheduler's and CloudletScheduler's 
+- bug fixes
+- improved and completely updated and clearer documentation
 - inclusion of new set of features.
 
 As this release gets a stable stage, it will be performed a pull request for the official CloudSim repository in order to try make this official.
