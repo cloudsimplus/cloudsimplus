@@ -1,4 +1,4 @@
-# CloudSim: A Framework For Modeling And Simulation Of Cloud Computing Infrastructures And Services [![Build Status](https://travis-ci.org/manoelcampos/cloudsim.png?branch=reduce_code_duplication)](https://travis-ci.org/manoelcampos/cloudsim) [![Coverage Status](https://coveralls.io/repos/github/manoelcampos/cloudsim/badge.svg?branch=reduce_code_duplication)](https://coveralls.io/github/manoelcampos/cloudsim?branch=master)
+# CloudSim: A Framework For Modeling And Simulation Of Cloud Computing Infrastructures And Services [![Build Status](https://travis-ci.org/manoelcampos/cloudsim.png?branch=reduce_code_duplication)](https://travis-ci.org/manoelcampos/cloudsim) [![Coverage Status](https://coveralls.io/repos/github/manoelcampos/cloudsim/badge.svg?branch=cloudsim-4)](https://coveralls.io/github/manoelcampos/cloudsim?branch=cloudsim-4)
 
 # NOTICE
 
@@ -17,8 +17,9 @@ It also includes:
 - functional/integration tests using JUnit in order to test how a set of classes works together and even overall simulation scenarios
 - continuous integration using [Travis](http://travis-ci.org) services (see the badge at the top of this file)
 - inclusion of Maven Coverage Plugin to starting tracking the percentage of code that is being coverage by unit tests
-- inclusion of public code coverage report using [Coveralls](http://coveralls.io) services (see the badge at the top of this file)
-- new concise and easy to understand examples of features that have lots of questions at the Google Groups forum, such as dynamic creation of cloudlets based on workload traces; VM migration; and definition of new DatacenterBroker's, VmScheduler's and CloudletScheduler's 
+- inclusion of public code coverage report using [Coveralls](http://coveralls.io) services (see the badge at the top of this file). The code coverage raised from 20% to [![Coverage Status](https://coveralls.io/repos/github/manoelcampos/cloudsim/badge.svg?branch=cloudsim-4)](https://coveralls.io/github/manoelcampos/cloudsim?branch=cloudsim-4)
+- new concise and easy to understand examples of features that have lots of questions at the Google Groups forum, such as dynamic creation of cloudlets based on workload traces; VM migration; and definition of new DatacenterBroker's, VmScheduler's and CloudletScheduler's
+- creation of new packages and reorganization of classes 
 - bug fixes
 - improved and completely updated and clearer documentation
 - inclusion of new set of features.

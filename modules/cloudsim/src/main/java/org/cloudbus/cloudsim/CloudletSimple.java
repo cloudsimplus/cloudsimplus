@@ -743,6 +743,7 @@ public class CloudletSimple implements Cloudlet {
         if (datacenter != null) {
             return datacenter.finishedSoFar;
         }
+        
         return 0;
     }
 
