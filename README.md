@@ -27,7 +27,7 @@ It also includes:
 As this release gets a stable stage, it will be performed a pull request for the official CloudSim repository in order to try make this official.
 Thus, this version is being earlier released to the community in order to get feedback such as suggestions and bug reports.
 
-For more information about the changes and features included in this release, please read the [change log](CHANGES.md) file and the [cloudsim-examples](modules/cloudsim-examples) project.
+For more information about the changes and features included in this release, please read the [change log](CHANGELOG.md) file and the [cloudsim-examples](modules/cloudsim-examples) project.
 
 # INTRODUCTION
 
