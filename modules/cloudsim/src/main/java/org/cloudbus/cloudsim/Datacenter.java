@@ -71,6 +71,12 @@ public interface Datacenter extends Nameable {
      */
     double getSchedulingInterval();
     
+    /**
+     * Gets the datacenter characteristics.
+     *
+     * @return the datacenter characteristics
+     */
+    DatacenterCharacteristics getCharacteristics();
    
     /**
      * A property that implements the Null Object Design Pattern for {@link Datacenter}
@@ -85,5 +91,6 @@ public interface Datacenter extends Nameable {
         @Override public List<Vm> getVmList() { return Collections.emptyList(); }
         @Override public Host getHost(final int index) { return Host.NULL; }
         @Override public double getSchedulingInterval() { return 0; }
+        @Override public DatacenterCharacteristics getCharacteristics() { return DatacenterCharacteristics.NULL; }
     };    
 }

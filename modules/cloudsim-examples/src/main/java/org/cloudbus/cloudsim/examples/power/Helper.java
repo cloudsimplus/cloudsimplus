@@ -22,6 +22,7 @@ import org.cloudbus.cloudsim.HostStateHistoryEntry;
 import org.cloudbus.cloudsim.Log;
 import org.cloudbus.cloudsim.resources.PeSimple;
 import org.cloudbus.cloudsim.Datacenter;
+import org.cloudbus.cloudsim.DatacenterCharacteristicsSimple;
 import org.cloudbus.cloudsim.resources.Pe;
 import org.cloudbus.cloudsim.Vm;
 import org.cloudbus.cloudsim.allocationpolicies.VmAllocationPolicy;
@@ -154,7 +155,7 @@ public class Helper {
 		double costPerStorage = 0.001; // the cost of using storage in this resource
 		double costPerBw = 0.0; // the cost of using bw in this resource
 
-		DatacenterCharacteristics characteristics = new DatacenterCharacteristics(
+		DatacenterCharacteristics characteristics = new DatacenterCharacteristicsSimple (
 				arch,
 				os,
 				vmm,

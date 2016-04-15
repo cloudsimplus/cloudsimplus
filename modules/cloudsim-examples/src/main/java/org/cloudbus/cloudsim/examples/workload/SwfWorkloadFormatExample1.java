@@ -20,6 +20,7 @@ import java.util.Map.Entry;
 import org.cloudbus.cloudsim.Cloudlet;
 import org.cloudbus.cloudsim.Datacenter;
 import org.cloudbus.cloudsim.DatacenterCharacteristics;
+import org.cloudbus.cloudsim.DatacenterCharacteristicsSimple;
 import org.cloudbus.cloudsim.DatacenterSimple;
 import org.cloudbus.cloudsim.Host;
 import org.cloudbus.cloudsim.HostSimple;
@@ -207,7 +208,7 @@ public class SwfWorkloadFormatExample1 {
     private Datacenter createDatacenterAndHostsBasedOnVmRequirements(String name) throws Exception {
         List<Host> hostList = createHostsAccordingToVmRequirements();
         List<FileStorage> storageList = new LinkedList<>();
-        DatacenterCharacteristics characteristics = new DatacenterCharacteristics(
+        DatacenterCharacteristics characteristics = new DatacenterCharacteristicsSimple (
                 DATACENTER_ARCH, DATACENTER_HOSTS_OS, VMM, hostList, 
                 DATACENTER_TIMEZONE, DATACENTER_CPU_COST, DATACENTER_MEM_COST,
                 DATACENTER_STORAGE_COST, DATACENTER_BW_COST);
