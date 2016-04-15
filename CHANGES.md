@@ -8,7 +8,7 @@
 The use of an integer attribute to define the status of the cloudlet inccur more code to validate the attribute.
 It is not transparent to the user what are the acceptable values. Further, passing a integer value out of the
 acceptable range will only raise exception in runtime.
-With the enum these problems were solved. @155fb79124d5d289fe37c97ed61bb2833d557e80
+With the enum these problems were solved. #155fb79124d5d289fe37c97ed61bb2833d557e80
 
 - The method getCloudletFinishedSoFar of CloudletSimple class now returns 0 when the cloudlet hasn't started executing yet,
 instead of returning the cloudlet length. If it hasn't started, the executed length is thus 0. @bfc15b66e565d0c1c0e38dde394a981aee4ec962
