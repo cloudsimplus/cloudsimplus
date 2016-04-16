@@ -1,4 +1,5 @@
-# CloudSim: A Framework For Modeling And Simulation Of Cloud Computing Infrastructures And Services [![Build Status](https://travis-ci.org/manoelcampos/cloudsim.png?branch=reduce_code_duplication)](https://travis-ci.org/manoelcampos/cloudsim) [![Coverage Status](https://coveralls.io/repos/github/manoelcampos/cloudsim/badge.svg?branch=cloudsim-4)](https://coveralls.io/github/manoelcampos/cloudsim?branch=cloudsim-4)
+# CloudSim: A Framework For Modeling And Simulation Of Cloud Computing Infrastructures And Services 
+[![Build Status](https://travis-ci.org/manoelcampos/cloudsim.png?branch=reduce_code_duplication)](https://travis-ci.org/manoelcampos/cloudsim) [![Coverage Status](https://coveralls.io/repos/github/manoelcampos/cloudsim/badge.svg?branch=cloudsim-4)](https://coveralls.io/github/manoelcampos/cloudsim?branch=cloudsim-4) [![LGPL licensed](https://img.shields.io/badge/license-LGPL-blue.svg)](https://github.com/manoelcampos/cloudsim/tree/cloudsim-4/LICENSE)
 
 # NOTICE
 
@@ -7,7 +8,7 @@ This is a **unofficial proposed CloudSim 4.0** version thas is based on CloudSim
 This proposed 4.0 version is in beta stage yet and is mainly focused on refactorings to reduce code duplication, increase usage of 
 software engeneering standards and recommendations such as [Design Patterns](https://en.wikipedia.org/wiki/Software_design_pattern), [SOLID principles](https://en.wikipedia.com/wiki/SOLID %28object-oriented_design%29) and other ones such as [KISS](https://en.wikipedia.org/wiki/KISS_principle) and [DRY](https://en.wikipedia.org/wiki/Don%27t_repeat_yourself) in order to provide:
 - cleaner code that is easier to understand and maintain
-- more meaningful classes and methods names
+- more meaningful classes and method names
 - division of very long and confuse methods into small, clean and very meaningful ones that usually makes just one thing
 - increased reausability and facility for extension
 - improved class hiearchy 
@@ -24,7 +25,7 @@ It also includes:
 - improved and completely updated and clearer documentation
 - inclusion of new set of features.
 
-As this release gets a stable stage, it will be performed a pull request for the official CloudSim repository in order to try make this official.
+As this release gets a stable stage, it will be performed a pull request to the official CloudSim repository in order to try make this official.
 Thus, this version is being earlier released to the community in order to get feedback such as suggestions and bug reports.
 
 For more information about the changes and features included in this release, please read the [CHANGELOG](CHANGELOG.md) file and the [cloudsim-examples](modules/cloudsim-examples) project.
