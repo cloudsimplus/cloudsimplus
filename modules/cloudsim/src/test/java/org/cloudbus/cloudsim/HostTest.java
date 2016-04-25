@@ -2,6 +2,7 @@ package org.cloudbus.cloudsim;
 
 import java.util.Collections;
 import org.cloudbus.cloudsim.listeners.EventListener;
+import org.cloudbus.cloudsim.listeners.HostUpdatesVmsProcessingEventInfo;
 import org.cloudbus.cloudsim.provisioners.ResourceProvisioner;
 import org.cloudbus.cloudsim.resources.Pe;
 import org.cloudbus.cloudsim.schedulers.VmScheduler;
@@ -79,7 +80,7 @@ public class HostTest {
         return dc;
     }
 
-    private EventListener<Host, Double> createMockListener() {
+    private EventListener<HostUpdatesVmsProcessingEventInfo> createMockListener() {
         EventListener l = EasyMock.createMock(EventListener.class);
         EasyMock.replay(l);
         return l;

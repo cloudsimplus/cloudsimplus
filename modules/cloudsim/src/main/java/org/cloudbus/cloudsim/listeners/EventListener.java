@@ -2,36 +2,41 @@ package org.cloudbus.cloudsim.listeners;
 
 /**
  *
- * An interface to define objects that listen to changes in a
- * given {@link Observable} object. By this way, the EventListener gets notified
- when the observed object has its state changed.
- * 
+ * An interface to define observer objects that listen to specific changes in 
+ * the state of a given observable object, also called subject. 
+ * By this way, the EventListener gets notified when
+ * the observed object has its state changed.
+ * The interface was defined allowing the
+ * subject object to have more than one state
+ * to be observable. If the subject directly implements
+ * this interface, it will allow only one kind of
+ * state change to be observable.
+ * If the subject has multiple state changes to be observed,
+ * it can define multiple properties of the EventListener class
+ * to allow this multiple events to be observable.
+ * See interfaces such as {@link org.cloudbus.cloudsim.Vm}
+ * to get an overview of how this interface can be used.
+ *
  * @author Manoel Campos da Silva Filho
- * @param <T> The class of the object being observed
- * @param <D> The class of the information to be given
- * to the listener when the observed object has its state changed.
+ * @param <T> The class of the object containing information to be given to the
+ * listener when the expected event happens.
  */
-public interface EventListener<T, D> {
+public interface EventListener<T extends EventInfo> {
+
     /**
-     * Get notified when the observed object (also called subject of observation) has changed.
-     * This method has to be called by the observed objects to notify
-     * its state change to the observers.
-     * 
-     * @param time The time the event occurred
-     * @param observed The observed object that its state has been changed.
-     * @param data The data about the state of the observed object.
+     * Gets notified when the observed object (also called subject of
+     * observation) has changed. This method has to be called by the observed
+     * objects to notify its state change to the listener.
+     *
+     * @param event The data about the happened event.
      */
-    void update(double time, T observed, D data);
-   
+    void update(T event);
+
     /**
      * A implementation of Null Object pattern that makes nothing (it doesn't
-     * perform any operation on each existing method). 
-     * The pattern is used to avoid NullPointerException's
-     * and checking everywhere if a listener object is not null 
-     * in order to call its methods.
+     * perform any operation on each existing method). The pattern is used to
+     * avoid NullPointerException's and checking everywhere if a listener object
+     * is not null in order to call its methods.
      */
-    public static final EventListener NULL = new EventListener<Object, Object>(){
-        @Override
-        public void update(double time, Object observed, Object data) {}
-    };
+    public static final EventListener NULL = (EventListener<EventInfo>) (EventInfo evt) -> {};
 }

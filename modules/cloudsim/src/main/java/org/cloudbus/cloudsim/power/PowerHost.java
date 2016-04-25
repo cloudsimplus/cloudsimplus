@@ -8,6 +8,7 @@ import org.cloudbus.cloudsim.HostDynamicWorkload;
 import org.cloudbus.cloudsim.HostStateHistoryEntry;
 import org.cloudbus.cloudsim.Vm;
 import org.cloudbus.cloudsim.listeners.EventListener;
+import org.cloudbus.cloudsim.listeners.HostUpdatesVmsProcessingEventInfo;
 import org.cloudbus.cloudsim.power.models.PowerModel;
 import org.cloudbus.cloudsim.provisioners.ResourceProvisioner;
 import org.cloudbus.cloudsim.resources.Pe;
@@ -111,8 +112,8 @@ public interface PowerHost extends HostDynamicWorkload {
         @Override public boolean vmCreate(Vm vm) { return false; }
         @Override public void vmDestroy(Vm vm) {}
         @Override public void vmDestroyAll() {}
-        @Override public EventListener<Host, Double> getOnUpdateVmsProcessingListener() { return EventListener.NULL; }
-        @Override public void setOnUpdateVmsProcessingListener(EventListener<Host, Double> onUpdateVmsProcessingListener) {}
+        @Override public EventListener<HostUpdatesVmsProcessingEventInfo> getOnUpdateVmsProcessingListener() { return EventListener.NULL; }
+        @Override public void setOnUpdateVmsProcessingListener(EventListener<HostUpdatesVmsProcessingEventInfo> onUpdateVmsProcessingListener) {}
         @Override public int getId() { return 0; }
     };
 }

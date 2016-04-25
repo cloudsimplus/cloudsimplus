@@ -38,6 +38,7 @@ import org.cloudbus.cloudsim.allocationpolicies.VmAllocationPolicySimple;
 import org.cloudbus.cloudsim.schedulers.VmSchedulerTimeShared;
 import org.cloudbus.cloudsim.core.CloudSim;
 import org.cloudbus.cloudsim.listeners.EventListener;
+import org.cloudbus.cloudsim.listeners.VmInsideHostEventInfo;
 import org.cloudbus.cloudsim.provisioners.PeProvisionerSimple;
 import org.cloudbus.cloudsim.resources.Bandwidth;
 import org.cloudbus.cloudsim.provisioners.ResourceProvisionerSimple;
@@ -126,21 +127,21 @@ public class VmListenersExample {
                             vmm, new CloudletSchedulerTimeShared());
                     
                     // set the listeners to intercept allocation and deallocation of a Host to the VmSimple
-                    vm.setOnHostAllocationListener(new EventListener<Vm, Host>() {
+                    vm.setOnHostAllocationListener(new EventListener<VmInsideHostEventInfo>() {
                         @Override
-                        public void update(double time, Vm vm, Host host) {
+                        public void update(VmInsideHostEventInfo evt) {
                             Log.printFormattedLine(
                                     "\n\t#EventListener: Host %d allocated to Vm %d at time %.2f\n", 
-                                    host.getId(), vm.getId(), time);
+                                    evt.getHost().getId(), evt.getVm().getId(), evt.getTime());
                         }
                     });
 
-                    vm.setOnHostDeallocationListener(new EventListener<Vm, Host>() {
+                    vm.setOnHostDeallocationListener(new EventListener<VmInsideHostEventInfo>() {
                         @Override
-                        public void update(double time, Vm vm, Host host) {
+                        public void update(VmInsideHostEventInfo evt) {
                             Log.printFormattedLine(
                                     "\n\t#EventListener: Vm %d moved/removed from Host %d at time %.2f\n", 
-                                    vm.getId(), host.getId(), time);
+                                    evt.getVm().getId(), evt.getHost().getId(), evt.getTime());
                         }
                     });
 

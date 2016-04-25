@@ -8,6 +8,7 @@ import org.cloudbus.cloudsim.Consts;
 import org.cloudbus.cloudsim.Host;
 import org.cloudbus.cloudsim.HostSimple;
 import org.cloudbus.cloudsim.listeners.EventListener;
+import org.cloudbus.cloudsim.listeners.HostUpdatesVmsProcessingEventInfo;
 import org.cloudbus.cloudsim.resources.Pe;
 import org.cloudbus.cloudsim.schedulers.VmSchedulerAbstract;
 import org.cloudbus.cloudsim.schedulers.VmSchedulerTimeShared;
@@ -27,7 +28,7 @@ public class HostBuilder extends Builder {
     private long   storage = Consts.MILLION;
     private int    ram = 1024;
     private Class<? extends VmSchedulerAbstract> vmSchedulerClass = VmSchedulerTimeShared.class;
-    private EventListener<Host, Double> onUpdateVmsProcessingListener = EventListener.NULL;
+    private EventListener<HostUpdatesVmsProcessingEventInfo> onUpdateVmsProcessingListener = EventListener.NULL;
     
     private int numberOfCreatedHosts;
     private final List<Host> hosts;
@@ -129,11 +130,11 @@ public class HostBuilder extends Builder {
         return this;
     }
 
-    public EventListener<Host, Double> getOnUpdateVmsProcessingListener() {
+    public EventListener<HostUpdatesVmsProcessingEventInfo> getOnUpdateVmsProcessingListener() {
         return onUpdateVmsProcessingListener;
     }
 
-    public HostBuilder setOnUpdateVmsProcessingListener(EventListener<Host, Double> onUpdateVmsProcessingListener) {
+    public HostBuilder setOnUpdateVmsProcessingListener(EventListener<HostUpdatesVmsProcessingEventInfo> onUpdateVmsProcessingListener) {
         this.onUpdateVmsProcessingListener = onUpdateVmsProcessingListener;
         return this;
     }

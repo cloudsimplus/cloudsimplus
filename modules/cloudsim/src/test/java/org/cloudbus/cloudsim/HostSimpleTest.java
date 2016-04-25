@@ -16,6 +16,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.IntStream;
 import org.cloudbus.cloudsim.listeners.EventListener;
+import org.cloudbus.cloudsim.listeners.HostUpdatesVmsProcessingEventInfo;
 
 import org.cloudbus.cloudsim.provisioners.PeProvisionerSimple;
 import org.cloudbus.cloudsim.resources.Bandwidth;
@@ -28,21 +29,6 @@ import org.easymock.EasyMock;
 import org.junit.Before;
 import org.junit.Test;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertSame;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertSame;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertSame;
-import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNull;
@@ -279,7 +265,7 @@ public class HostSimpleTest {
         Host host = createHostSimple(0, 1);
         host.setOnUpdateVmsProcessingListener(null);
         assertEquals(EventListener.NULL, host.getOnUpdateVmsProcessingListener());
-        EventListener<Host, Double> listener = (t,h,nt)->{};
+        EventListener<HostUpdatesVmsProcessingEventInfo> listener = (evt)->{};
         host.setOnUpdateVmsProcessingListener(listener);
         assertEquals(listener, host.getOnUpdateVmsProcessingListener());
     }

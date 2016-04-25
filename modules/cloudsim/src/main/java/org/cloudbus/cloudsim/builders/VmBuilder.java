@@ -2,14 +2,15 @@ package org.cloudbus.cloudsim.builders;
 
 import java.util.ArrayList;
 import java.util.List;
-import org.apache.commons.lang3.SerializationUtils;
 import org.cloudbus.cloudsim.schedulers.CloudletSchedulerSpaceShared;
 import org.cloudbus.cloudsim.Datacenter;
 import org.cloudbus.cloudsim.brokers.DatacenterBrokerSimple;
 import org.cloudbus.cloudsim.Host;
 import org.cloudbus.cloudsim.Vm;
 import org.cloudbus.cloudsim.VmSimple;
+import org.cloudbus.cloudsim.listeners.VmInsideDatacenterEventInfo;
 import org.cloudbus.cloudsim.listeners.EventListener;
+import org.cloudbus.cloudsim.listeners.VmInsideHostEventInfo;
 import org.cloudbus.cloudsim.schedulers.CloudletScheduler;
 
 /**
@@ -26,10 +27,10 @@ public class VmBuilder {
     private int  pes = 1;
     private int numberOfCreatedVms;
     private final DatacenterBrokerSimple broker;
-    private EventListener<Vm, Host> onHostAllocationListener;
-    private EventListener<Vm, Host> onHostDeallocationListener;
-    private EventListener<Vm, Datacenter> onVmCreationFailureListener;
-    private EventListener<Vm, Host> onUpdateVmProcessingListener;
+    private EventListener<VmInsideHostEventInfo> onHostAllocationListener;
+    private EventListener<VmInsideHostEventInfo> onHostDeallocationListener;
+    private EventListener<VmInsideDatacenterEventInfo> onVmCreationFailureListener;
+    private EventListener<VmInsideHostEventInfo> onUpdateVmProcessingListener;
 
     public VmBuilder(final DatacenterBrokerSimple broker) {
         if(broker == null)
@@ -44,7 +45,7 @@ public class VmBuilder {
         this.cloudletScheduler = new CloudletSchedulerSpaceShared();
     }
     
-    public VmBuilder setOnHostDeallocationListener(final EventListener<Vm, Host> onHostDeallocationListener) {
+    public VmBuilder setOnHostDeallocationListener(final EventListener<VmInsideHostEventInfo> onHostDeallocationListener) {
         this.onHostDeallocationListener = onHostDeallocationListener;
         return this;
     }
@@ -64,7 +65,7 @@ public class VmBuilder {
         return this;
     }
 
-    public VmBuilder setOnHostAllocationListener(final EventListener<Vm, Host> onHostAllocationListener) {
+    public VmBuilder setOnHostAllocationListener(final EventListener<VmInsideHostEventInfo> onHostAllocationListener) {
         this.onHostAllocationListener  = onHostAllocationListener;
         return this;
     }
@@ -74,7 +75,7 @@ public class VmBuilder {
         return this;
     }
 
-    public VmBuilder setOnVmCreationFilatureListenerForAllVms(final EventListener<Vm, Datacenter> onVmCreationFailureListener) {
+    public VmBuilder setOnVmCreationFilatureListenerForAllVms(final EventListener<VmInsideDatacenterEventInfo> onVmCreationFailureListener) {
         this.onVmCreationFailureListener = onVmCreationFailureListener;
         return this;
     }
@@ -148,11 +149,11 @@ public class VmBuilder {
         return this;
     }
 
-    public EventListener<Vm, Host> getOnUpdateVmProcessingListener() {
+    public EventListener<VmInsideHostEventInfo> getOnUpdateVmProcessingListener() {
         return onUpdateVmProcessingListener;
     }
 
-    public VmBuilder setOnUpdateVmProcessingListener(EventListener<Vm, Host> onUpdateVmProcessing) {
+    public VmBuilder setOnUpdateVmProcessingListener(EventListener<VmInsideHostEventInfo> onUpdateVmProcessing) {
         if(onUpdateVmProcessing != null) {
             this.onUpdateVmProcessingListener = onUpdateVmProcessing;
         }

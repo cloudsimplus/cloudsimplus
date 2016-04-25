@@ -13,6 +13,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import org.cloudbus.cloudsim.Cloudlet;
+import org.cloudbus.cloudsim.Datacenter;
 import org.cloudbus.cloudsim.DatacenterCharacteristics;
 import org.cloudbus.cloudsim.Log;
 import org.cloudbus.cloudsim.Vm;
@@ -21,6 +22,8 @@ import org.cloudbus.cloudsim.core.CloudSim;
 import org.cloudbus.cloudsim.core.CloudSimTags;
 import org.cloudbus.cloudsim.core.SimEntity;
 import org.cloudbus.cloudsim.core.SimEvent;
+import org.cloudbus.cloudsim.listeners.CloudletInsideVmEventInfo;
+import org.cloudbus.cloudsim.listeners.VmInsideDatacenterEventInfo;
 import org.cloudbus.cloudsim.lists.CloudletList;
 import org.cloudbus.cloudsim.lists.VmList;
 
@@ -266,11 +269,11 @@ public class DatacenterBrokerSimple extends SimEntity implements DatacenterBroke
             Vm vm = VmList.getById(getVmList(), vmId);
             
             if (vm != null) {
-                
-                vm.getOnVmCreationFailureListener()
-                        .update(CloudSim.clock(), vm, 
-                                datacenterCharacteristicsList
-                                        .get(datacenterId).getDatacenter());
+                Datacenter datacenter = 
+                        datacenterCharacteristicsList.get(datacenterId).getDatacenter();
+                VmInsideDatacenterEventInfo info = 
+                        new VmInsideDatacenterEventInfo(datacenter, vm);
+                vm.getOnVmCreationFailureListener().update(info);
             }
             Log.printConcatLine(CloudSim.clock(), ": ", getName(), ": Creation of VM #", vmId,
                     " failed in Datacenter #", datacenterId);
@@ -317,9 +320,9 @@ public class DatacenterBrokerSimple extends SimEntity implements DatacenterBroke
     protected void processCloudletReturn(SimEvent ev) {
         Cloudlet cloudlet = (Cloudlet) ev.getData();
         getCloudletReceivedList().add(cloudlet);
-        cloudlet.getOnCloudletFinishEventListener().update(
-                CloudSim.clock(), cloudlet, 
-                VmList.getById(vmList, cloudlet.getVmId()));
+        Vm vm = VmList.getById(vmList, cloudlet.getVmId());
+        CloudletInsideVmEventInfo info = new CloudletInsideVmEventInfo(vm, cloudlet);
+        cloudlet.getOnCloudletFinishEventListener().update(info);
         Log.printConcatLine(
                 CloudSim.clock(), ": ", getName(), ": Cloudlet ", 
                 cloudlet.getId(), " received");

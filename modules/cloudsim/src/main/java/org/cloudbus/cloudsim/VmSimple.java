@@ -12,7 +12,9 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import org.cloudbus.cloudsim.listeners.VmInsideDatacenterEventInfo;
 import org.cloudbus.cloudsim.listeners.EventListener;
+import org.cloudbus.cloudsim.listeners.VmInsideHostEventInfo;
 import org.cloudbus.cloudsim.resources.Bandwidth;
 import org.cloudbus.cloudsim.resources.Ram;
 import org.cloudbus.cloudsim.resources.RawStorage;
@@ -102,16 +104,16 @@ public class VmSimple implements Vm {
     private final Bandwidth bw;
 
     /** @see #getOnHostAllocationListener() */
-    private EventListener<Vm, Host> onHostAllocationListener = EventListener.NULL;
+    private EventListener<VmInsideHostEventInfo> onHostAllocationListener = EventListener.NULL;
 
     /** @see #getOnHostDeallocationListener() */
-    private EventListener<Vm, Host> onHostDeallocationListener = EventListener.NULL;
+    private EventListener<VmInsideHostEventInfo> onHostDeallocationListener = EventListener.NULL;
 
     /** @see #getOnVmCreationFailureListener() */
-    private EventListener<Vm, Datacenter> onVmCreationFailureListener = EventListener.NULL;
+    private EventListener<VmInsideDatacenterEventInfo> onVmCreationFailureListener = EventListener.NULL;
 
     /** @see #getOnUpdateVmProcessingListener() */
-    private EventListener<Vm, Host> onUpdateVmProcessingListener = EventListener.NULL;
+    private EventListener<VmInsideHostEventInfo> onUpdateVmProcessingListener = EventListener.NULL;
 
     /**
      * Creates a new Vm object.
@@ -189,7 +191,8 @@ public class VmSimple implements Vm {
     public double updateVmProcessing(double currentTime, List<Double> mipsShare) {
         if (mipsShare != null) {
             double result = getCloudletScheduler().updateVmProcessing(currentTime, mipsShare);
-            onUpdateVmProcessingListener.update(currentTime, this, host);
+            VmInsideHostEventInfo info = new VmInsideHostEventInfo(currentTime, host, this);
+            onUpdateVmProcessingListener.update(info);
             return result;
         }
         return 0.0;
@@ -542,7 +545,7 @@ public class VmSimple implements Vm {
     }
 
     @Override
-    public void setOnHostAllocationListener(EventListener<Vm, Host> onHostAllocationListener) {
+    public void setOnHostAllocationListener(EventListener<VmInsideHostEventInfo> onHostAllocationListener) {
         if (onHostAllocationListener == null)
             onHostAllocationListener = EventListener.NULL;
         
@@ -550,7 +553,7 @@ public class VmSimple implements Vm {
     }
 
     @Override
-    public void setOnHostDeallocationListener(EventListener<Vm, Host> onHostDeallocationListener) {
+    public void setOnHostDeallocationListener(EventListener<VmInsideHostEventInfo> onHostDeallocationListener) {
         if (onHostDeallocationListener == null)
             onHostDeallocationListener = EventListener.NULL;
         
@@ -558,12 +561,12 @@ public class VmSimple implements Vm {
     }
 
     @Override
-    public EventListener<Vm, Host> getOnHostAllocationListener() {
+    public EventListener<VmInsideHostEventInfo> getOnHostAllocationListener() {
         return onHostAllocationListener;
     }
 
     @Override
-    public EventListener<Vm, Host> getOnHostDeallocationListener() {
+    public EventListener<VmInsideHostEventInfo> getOnHostDeallocationListener() {
         return onHostDeallocationListener;
     }
 
@@ -573,12 +576,12 @@ public class VmSimple implements Vm {
     }
 
     @Override
-    public EventListener<Vm, Datacenter> getOnVmCreationFailureListener() {
+    public EventListener<VmInsideDatacenterEventInfo> getOnVmCreationFailureListener() {
         return onVmCreationFailureListener;
     }
 
     @Override
-    public void setOnVmCreationFailureListener(EventListener<Vm, Datacenter> onVmCreationFailureListener) {
+    public void setOnVmCreationFailureListener(EventListener<VmInsideDatacenterEventInfo> onVmCreationFailureListener) {
         if (onVmCreationFailureListener == null) 
             onVmCreationFailureListener = EventListener.NULL;
         
@@ -586,12 +589,12 @@ public class VmSimple implements Vm {
     }
 
     @Override
-    public EventListener<Vm, Host> getOnUpdateVmProcessingListener() {
+    public EventListener<VmInsideHostEventInfo> getOnUpdateVmProcessingListener() {
         return onUpdateVmProcessingListener;
     }
 
     @Override
-    public void setOnUpdateVmProcessingListener(EventListener<Vm, Host> onUpdateVmProcessingListener) {
+    public void setOnUpdateVmProcessingListener(EventListener<VmInsideHostEventInfo> onUpdateVmProcessingListener) {
         if(onUpdateVmProcessingListener == null)
             onUpdateVmProcessingListener = EventListener.NULL;
         

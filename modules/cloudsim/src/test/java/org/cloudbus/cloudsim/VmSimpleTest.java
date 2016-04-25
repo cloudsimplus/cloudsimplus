@@ -14,27 +14,15 @@ import static org.easymock.EasyMock.verify;
 
 import java.util.ArrayList;
 import java.util.List;
+import org.cloudbus.cloudsim.listeners.VmInsideDatacenterEventInfo;
 import org.cloudbus.cloudsim.listeners.EventListener;
+import org.cloudbus.cloudsim.listeners.VmInsideHostEventInfo;
 import org.cloudbus.cloudsim.schedulers.CloudletScheduler;
 import org.cloudbus.cloudsim.schedulers.CloudletSchedulerTimeShared;
 
 import org.junit.Before;
 import org.junit.Test;
-import static org.easymock.EasyMock.createMock;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
-import static org.easymock.EasyMock.createMock;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
-import static org.easymock.EasyMock.createMock;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
+
 import static org.easymock.EasyMock.createMock;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
@@ -224,7 +212,7 @@ public class VmSimpleTest {
     public void testSetOnHostAllocationListener() {
         vm.setOnHostAllocationListener(null);
         assertEquals(EventListener.NULL, vm.getOnHostAllocationListener());
-        EventListener<Vm, Host> listener = (t, v, h) -> {};
+        EventListener<VmInsideHostEventInfo> listener = (evt) -> {};
         vm.setOnHostAllocationListener(listener);
         assertEquals(listener, vm.getOnHostAllocationListener());
     }
@@ -233,7 +221,7 @@ public class VmSimpleTest {
     public void testSetOnHostDeallocationListener() {
         vm.setOnHostDeallocationListener(null);
         assertEquals(EventListener.NULL, vm.getOnHostDeallocationListener());
-        EventListener<Vm, Host> listener = (t, v, h) -> {};
+        EventListener<VmInsideHostEventInfo> listener = (evt) -> {};
         vm.setOnHostDeallocationListener(listener);
         assertEquals(listener, vm.getOnHostDeallocationListener());
     }
@@ -242,7 +230,7 @@ public class VmSimpleTest {
     public void testSetOnVmCreationFailureListener() {
         vm.setOnVmCreationFailureListener(null);
         assertEquals(EventListener.NULL, vm.getOnVmCreationFailureListener());
-        EventListener<Vm, Datacenter> listener = (t, v, d) -> {};
+        EventListener<VmInsideDatacenterEventInfo> listener = (evt) -> {};
         vm.setOnVmCreationFailureListener(listener);
         assertEquals(listener, vm.getOnVmCreationFailureListener());
     }
@@ -251,7 +239,7 @@ public class VmSimpleTest {
     public void testSetOnUpdateVmProcessingListener() {
         vm.setOnUpdateVmProcessingListener(null);
         assertEquals(EventListener.NULL, vm.getOnUpdateVmProcessingListener());
-        EventListener<Vm, Host> listener = (t, v, h) -> {};
+        EventListener<VmInsideHostEventInfo> listener = (evt) -> {};
         vm.setOnUpdateVmProcessingListener(listener);
         assertEquals(listener, vm.getOnUpdateVmProcessingListener());
     }

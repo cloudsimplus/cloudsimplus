@@ -2,12 +2,12 @@ package org.cloudbus.cloudsim.IntegrationTests;
 
 import java.util.Calendar;
 import org.cloudbus.cloudsim.brokers.DatacenterBrokerSimple;
-import org.cloudbus.cloudsim.Host;
 import org.cloudbus.cloudsim.Log;
 import org.cloudbus.cloudsim.builders.BrokerBuilderDecorator;
 import org.cloudbus.cloudsim.builders.HostBuilder;
 import org.cloudbus.cloudsim.builders.SimulationScenarioBuilder;
 import org.cloudbus.cloudsim.core.CloudSim;
+import org.cloudbus.cloudsim.listeners.HostUpdatesVmsProcessingEventInfo;
 import org.cloudbus.cloudsim.schedulers.CloudletSchedulerDynamicWorkload;
 import org.cloudbus.cloudsim.schedulers.VmSchedulerSpaceShared;
 import org.cloudbus.cloudsim.util.TableBuilderHelper;
@@ -43,20 +43,19 @@ public final class CheckHostAvailableMipsDynamicUtilizationTest {
      * Checks if the amount of available Host CPU is as expected,
      * every time a host updates the processing of all its VMs.
      * 
-     * @param time
-     * @param host
-     * @param completionTimeOfNextFinishingCloudlet 
+     * @param evt 
      */
-    private void onUpdateVmsProcessing(double time, Host host, double completionTimeOfNextFinishingCloudlet) {
+    private void onUpdateVmsProcessing(HostUpdatesVmsProcessingEventInfo evt) {
         final double expectedAvailableHostMips = 
-               HOST_MIPS * HOST_PES * utilizationModel.getUtilization(time);
+               HOST_MIPS * HOST_PES * utilizationModel.getUtilization(evt.getTime());
         
         Log.printConcatLine(
-            "- onUpdateVmProcessing at time ", time, " host ", host.getId(), 
-            " available mips: ", host.getAvailableMips(), " expected availability: ", expectedAvailableHostMips);
+            "- onUpdateVmProcessing at time ", evt.getTime(), " host ", evt.getHost().getId(), 
+            " available mips: ", evt.getHost().getAvailableMips(), 
+            " expected availability: ", expectedAvailableHostMips);
         
         assertEquals("The amount of Host available MIPS was not as expected.", 
-                 expectedAvailableHostMips, host.getAvailableMips(), 0);
+                 expectedAvailableHostMips, evt.getHost().getAvailableMips(), 0);
     }
 
     @Before
@@ -68,7 +67,7 @@ public final class CheckHostAvailableMipsDynamicUtilizationTest {
                     .setVmSchedulerClass(VmSchedulerSpaceShared.class)
                     .setRam(4000).setBw(400000)
                     .setPes(HOST_PES).setMips(HOST_MIPS)
-                    .setOnUpdateVmsProcessingListener((t,h,nt) -> onUpdateVmsProcessing(t,h,nt))
+                    .setOnUpdateVmsProcessingListener((evt) -> onUpdateVmsProcessing(evt))
                     .createOneHost()
                     .getHosts()
         );
