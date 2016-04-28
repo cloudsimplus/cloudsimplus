@@ -8,15 +8,10 @@
 package org.cloudbus.cloudsim.network.datacenter;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
-import org.cloudbus.cloudsim.Cloudlet;
 
-import org.cloudbus.cloudsim.CloudletSimple;
 import org.cloudbus.cloudsim.Log;
 import org.cloudbus.cloudsim.brokers.DatacenterBrokerSimple;
-import org.cloudbus.cloudsim.core.CloudSim;
 import org.cloudbus.cloudsim.core.CloudSimTags;
 import org.cloudbus.cloudsim.core.SimEvent;
 import org.cloudbus.cloudsim.lists.VmList;
@@ -24,7 +19,7 @@ import org.cloudbus.cloudsim.lists.VmList;
 /**
  * NetDatacentreBroker represents a broker acting on behalf of Datacenter
  * provider. It hides VM management, as vm creation, submission of cloudlets to
- * these VMs and destruction of VMs. <br/>
+ * these VMs and destruction of VMs. <br>
  * <tt>NOTE</tt>: This class is an example only. It works on behalf of a
  * provider not for users. One has to implement interaction with user broker to
  * this broker.
@@ -37,23 +32,15 @@ import org.cloudbus.cloudsim.lists.VmList;
  */
 public class NetDatacenterBroker extends DatacenterBrokerSimple {
     /**
-     * The list of submitted {@link AppCloudlet AppCloudlets}.
+     * The list of  {@link AppCloudlet AppCloudlets} submitted to the broker that are 
+     * waiting to be created inside some Vm yet.
      */
-    private List<? extends AppCloudlet> appCloudletList;
-
-    /**
-     * The list of submitted {@link AppCloudlet AppCloudlets}.
-     *
-     * @todo attribute appears to be redundant with {@link #appCloudletList}
-     */
-    private final Map<Integer, Integer> appCloudletReceived;
+    private List<? extends AppCloudlet> appCloudletWaitingList;
 
     private NetworkDatacenter networkDatacenter;
 
-    public static int cachedCloudlet = 0;
-
     /**
-     * Creates a new DatacenterBroker object.
+     * Creates a new NetDatacenterBroker object.
      *
      * @param name name to be associated with this entity
      *
@@ -64,86 +51,44 @@ public class NetDatacenterBroker extends DatacenterBrokerSimple {
      */
     public NetDatacenterBroker(String name) throws Exception {
         super(name);
-
         setAppCloudletList(new ArrayList<>());
-        appCloudletReceived = new HashMap<>();
     }
 
-    public void setNetworkDatacenter(NetworkDatacenter aLinkDC) {
-        this.networkDatacenter = aLinkDC;
-    }
-
-    /**
-     * Processes the ack received due to a request for VM creation.
-     *
-     * @param ev a SimEvent object
-     *
-     * @pre ev != null
-     * @post $none
-     */
-    /**
-     * Processes a cloudlet return event.
-     *
-     * @param ev a SimEvent object
-     *
-     * @pre ev != $null
-     * @post $none
-     */
-    @Override
-    protected void processCloudletReturn(SimEvent ev) {
-        Cloudlet cloudlet = (CloudletSimple) ev.getData();
-        getCloudletReceivedList().add(cloudlet);
-        cloudletsSubmitted--;
-        
-        // all cloudlets executed
-        if (getCloudletList().isEmpty() && cloudletsSubmitted==0) {
-            Log.printConcatLine(CloudSim.clock(), ": ", getName(), ": All Cloudlets executed. Finishing...");
-            clearDatacenters();
-            finishExecution();
-        } 
-        // some cloudlets haven't finished yet
-        else if (getAppCloudletList().size() > 0 && cloudletsSubmitted == 0) {
-            // all the cloudlets sent finished. It means that some bount
-            // cloudlet is waiting its VM be created
-            clearDatacenters();
-            createVmsInDatacenter(0);
-        }
+    public void setNetworkDatacenter(NetworkDatacenter networkDatacenter) {
+        this.networkDatacenter = networkDatacenter;
     }
 
     @Override
-    protected void createVmsInDatacenter(int datacenterId) {
-        super.createVmsInDatacenter(datacenterId); 
-        
-        for (AppCloudlet app : appCloudletList) {
+    public boolean hasMoreCloudletsToBeExecuted() {
+        return super.hasMoreCloudletsToBeExecuted() || 
+               (getAppCloudletList().size() > 0 && cloudletsCreated == 0);
+    }
+    
+    @Override
+    protected void createCloudletsInVms() {
+        super.createCloudletsInVms(); 
+
+        for (AppCloudlet app : appCloudletWaitingList) {
             for (int i = 0; i < app.getNumberOfVmsToUse(); i++) {
-                getAppCloudletReceived().put(app.getId(), app.getNumberOfVmsToUse());
-                getCloudletList().add(app.getNetworkCloudletList().get(i));
-                cloudletsSubmitted++;
+                getCloudletsWaitingList().add(app.getNetworkCloudletList().get(i));
+                cloudletsCreated++;
 
-                // Sending cloudlet
                 sendNow(
-                        getVmsToDatacentersMap().get(this.getVmList().get(0).getId()),
+                        getVmsToDatacentersMap().get(this.getVmsCreatedList().get(0).getId()),
                         CloudSimTags.CLOUDLET_SUBMIT,
                         app.getNetworkCloudletList().get(i));
             }
             Log.printFormattedLine("Created AppCloudlet%d", app.getId());
         }
-        
     }
     
-    
-    
-    @Override
-    protected void submitCloudlets() {
-        
-    }
-
     @Override
     protected boolean processVmCreate(SimEvent ev) {
         if(super.processVmCreate(ev)){
             int[] data = (int[]) ev.getData();
+            int datacenterId = data[0];
             int vmId = data[1];
-            getNetworkDatacenter().processVmCreateNetwork(VmList.getById(getVmList(), vmId));
+            getNetworkDatacenter().processVmCreateNetwork(VmList.getById(getVmsWaitingList(), vmId));
             return true;
         }
         
@@ -152,19 +97,15 @@ public class NetDatacenterBroker extends DatacenterBrokerSimple {
 
     @SuppressWarnings("unchecked")
     public <T extends AppCloudlet> List<T> getAppCloudletList() {
-        return (List<T>) appCloudletList;
+        return (List<T>) appCloudletWaitingList;
     }
 
     public final <T extends AppCloudlet> void setAppCloudletList(List<T> appCloudletList) {
-        this.appCloudletList = appCloudletList;
+        this.appCloudletWaitingList = appCloudletList;
     }
 
     public NetworkDatacenter getNetworkDatacenter() {
         return networkDatacenter;
-    }
-
-    public Map<Integer, Integer> getAppCloudletReceived() {
-        return appCloudletReceived;
     }
 
 }

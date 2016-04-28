@@ -525,7 +525,7 @@ public class NetworkCloudletSpaceSharedScheduler extends CloudletSchedulerAbstra
     }
 
     @Override
-    public boolean areThereFinishedCloudlets() {
+    public boolean hasFinishedCloudlets() {
         return getCloudletFinishedList().size() > 0;
     }
 

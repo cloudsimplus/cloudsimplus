@@ -106,7 +106,7 @@ public final class CheckHostAvailableMipsDynamicUtilizationTest {
     }
 
     public void printCloudletsExecutionResults(DatacenterBrokerSimple broker) {
-        TableBuilderHelper.print(new TextTableBuilder(), broker.getCloudletReceivedList());
+        TableBuilderHelper.print(new TextTableBuilder(), broker.getCloudletsFinishedList());
     }
 
 }

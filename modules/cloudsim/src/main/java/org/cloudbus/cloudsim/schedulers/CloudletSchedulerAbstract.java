@@ -213,7 +213,7 @@ public abstract class CloudletSchedulerAbstract implements CloudletScheduler {
     }
 
     @Override
-    public boolean areThereFinishedCloudlets() {
+    public boolean hasFinishedCloudlets() {
         return getCloudletFinishedList().size() > 0;
     }
     

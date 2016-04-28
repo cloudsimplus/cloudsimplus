@@ -41,26 +41,19 @@ import org.cloudbus.cloudsim.core.Identificable;
  * @author Saurabh Kumar Garg
  * @since CloudSim Toolkit 1.0
  *
- * @todo If it is an application/cloudlet, it would extend the Cloudlet class.
- * In the case of Cloudlet class has more attributes and methods than required
+ * @todo @author manoelcampos If it is an application/cloudlet, it would extend the Cloudlet interface.
+ * In the case of such interface has more attributes and methods than required
  * by this class, a common interface would be created.
  *
- * @todo The attributes have to be defined as private.
+ * @todo @author manoelcampos The attributes have to be defined as private.
  */
 public class AppCloudlet implements Identificable {
-    private int id;
+    private final int id;
     
     /**
      * The list of {@link NetworkCloudlet} that this AppCloudlet represents.
      */
     private List<NetworkCloudlet> networkCloudletList;
-
-    /**
-     * This attribute doesn't appear to be used. Only the TestBagOfTaskApp class
-     * is using it and such a class appears to be used only for not documented
-     * test (it is not a unit test).
-     */
-    public double deadline;
 
     /**
      * This attribute doesn't appear to be used.
@@ -72,12 +65,11 @@ public class AppCloudlet implements Identificable {
 
     public double execTime;
 
-    public AppCloudlet(int id, double deadline, int numberOfVmsToUse) {
+    public AppCloudlet(int id, int numberOfVmsToUse) {
         super();
         this.id = id;
-        this.deadline = deadline;
         this.numberOfVmsToUse = numberOfVmsToUse;
-        networkCloudletList = new ArrayList<>();
+        this.networkCloudletList = new ArrayList<>();
     }
 
     /**

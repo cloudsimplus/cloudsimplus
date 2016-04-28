@@ -15,7 +15,7 @@ public interface EventInfo {
     /**
      * A constant that indicates the event time
      * was not set and have to be defined
-     * as the current simulation time.
+     * by the constructor as the current simulation time.
      * 
      * @see org.cloudbus.cloudsim.core.CloudSim#clock() 
      */

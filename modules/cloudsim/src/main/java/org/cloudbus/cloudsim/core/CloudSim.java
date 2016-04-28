@@ -340,22 +340,21 @@ public class CloudSim {
 
     /**
      * Sends a request to Cloud Information Service (CIS) entity to get the list
-     * of all Cloud hostList.
+     * of all Cloud Datacenter IDs.
      *
-     * @return A List containing CloudResource ID (as an Integer object) or if a
+     * @return a List containing Datacenter IDs (as an Integer object) or null if a
      * CIS entity hasn't been created before
      * @pre $none
      * @post $none
      */
-    public static List<Integer> getCloudResourceList() {
+    public static List<Integer> getDatacenterIdsList() {
         if (cis == null) {
             return null;
         }
 
-        return cis.getList();
+        return cis.getDatacenterIdsList();
     }
 
-	// ======== SIMULATION METHODS ===============//
     /**
      * The entities.
      */

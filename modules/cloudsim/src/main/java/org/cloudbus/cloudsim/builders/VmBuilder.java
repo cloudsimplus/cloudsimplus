@@ -111,7 +111,7 @@ public class VmBuilder {
     }
 
     public Vm getVmById(final int id) {
-        for (Vm vm : broker.getVmList()) {
+        for (Vm vm : broker.getVmsWaitingList()) {
             if (vm.getId() == id) {
                 return vm;
             }
@@ -124,7 +124,7 @@ public class VmBuilder {
     }
 
     public List<Vm> getVms() {
-        return broker.getVmList();
+        return broker.getVmsWaitingList();
     }
     
     public int getRam() {

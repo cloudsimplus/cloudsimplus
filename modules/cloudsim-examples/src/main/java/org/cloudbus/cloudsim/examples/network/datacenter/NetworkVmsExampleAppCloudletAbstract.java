@@ -53,13 +53,24 @@ public abstract class NetworkVmsExampleAppCloudletAbstract {
     public static final String OS = "Linux"; // operating system
     public static final String VMM = "Xen";
     public static final double TIME_ZONE = 10.0; // time zone this resource located
-    public static final int HOST_PES = 8;
-    public static final int MAX_VMS_PER_HOST = 2;
+    public static final int    HOST_PES = 8;
+    public static final int    MAX_VMS_PER_HOST = 2;
 
     public static final double COST = 3.0; // the cost of using processing in this resource
     public static final double COST_PER_MEM = 0.05; // the cost of using memory in this resource
     public static final double COST_PER_STORAGE = 0.001; // the cost of using storage in this resource
     public static final double COST_PER_BW = 0.0; // the cost of using bw in this resource
+    
+    public static final int HOST_MIPS = 1;
+    public static final int HOST_RAM = 2048; // host memory (MB)
+    public static final long HOST_STORAGE = 1000000; // host storage
+    public static final long HOST_BW = 10000;
+
+    public static final int  VM_MIPS = 1;
+    public static final long VM_SIZE = 10000; // image size (MB)
+    public static final int  VM_RAM = 512; // vm memory (MB)
+    public static final long VM_BW = 1000;
+    public static final int  VM_PES_NUMBER = HOST_PES / MAX_VMS_PER_HOST;
     
     public static final int NUMBER_OF_APP_CLOUDLETS = 100;
     public static final int NUMBER_OF_VMS_FOR_EACH_APPCLOUDLET = 3;
@@ -73,9 +84,10 @@ public abstract class NetworkVmsExampleAppCloudletAbstract {
     private List<NetworkVm> vmlist;
     private NetworkDatacenter datacenter;
     private NetDatacenterBroker broker;
+    private List<AppCloudlet> appCloudletList;
     
     /**
-     * Creates, starts, stops and show the simulation results.
+     * Creates, starts, stops the simulation and shows results.
      */
     public NetworkVmsExampleAppCloudletAbstract() {
         Log.printFormattedLine("Starting %s...", this.getClass().getSimpleName());
@@ -90,16 +102,18 @@ public abstract class NetworkVmsExampleAppCloudletAbstract {
             this.broker = createBroker();
             this.vmlist = createVMs();
             this.broker.submitVmList(vmlist);
+            this.appCloudletList = createAppCloudlets();
+            //@todo não finalizado ainda
+            //this.broker.submitCloudletList();
             
             CloudSim.startSimulation();
             CloudSim.stopSimulation();
 
             // Final step: Print results when simulation is over
-            List<Cloudlet> newList = broker.getCloudletReceivedList();
+            List<Cloudlet> newList = broker.getCloudletsFinishedList();
             TableBuilderHelper.print(new TextTableBuilder(), newList);
             Log.printFormattedLine("%s finished!", this.getClass().getSimpleName());
-            Log.printFormattedLine("numberofcloudlet " + newList.size() + " Cached "
-                    + NetDatacenterBroker.cachedCloudlet);
+            Log.printFormattedLine("numberofcloudlet " + newList.size());
             for(NetworkHost host: datacenter.<NetworkHost>getHostList()){
                 Log.printFormattedLine("Host %d Data transfered %d",
                         host.getId(), host.getTotalDataTransferBytes());
@@ -118,26 +132,15 @@ public abstract class NetworkVmsExampleAppCloudletAbstract {
      * @return the datacenter
      */
     protected final NetworkDatacenter createDatacenter(String name) {
-        // Here are the steps needed to create a Datacenter:
-        // 1. We need to create a list to store
-        // our machine
         List<Host> hostList = new ArrayList<>();
-        // 2. A Machine contains one or more PEs or CPUs/Cores.
-        // In this example, it will have only one core.
-        // List<Pe> peList = new ArrayList<Pe>();
-        int mips = 1;
-        // 4. Create Host with its id and list of PEs and add them to the list
-        // of machines
-        int ram = 2048; // host memory (MB)
-        long storage = 1000000; // host storage
-        long bw = 10000;
         final int numberOfHosts = EdgeSwitch.Ports * AggregateSwitch.Ports * RootSwitch.Ports;
         for (int i = 0; i < numberOfHosts; i++) {
-            List<Pe> peList = createPEs(HOST_PES, mips);
+            List<Pe> peList = createPEs(HOST_PES, HOST_MIPS);
             // 4. Create Host with its id and list of PEs and add them to
             // the list of machines
-            hostList.add(new NetworkHost(i, new ResourceProvisionerSimple(new Ram(ram)), new ResourceProvisionerSimple(new Bandwidth(bw)), storage, peList, new VmSchedulerTimeShared(peList)));
+            hostList.add(new NetworkHost(i, new ResourceProvisionerSimple(new Ram(HOST_RAM)), new ResourceProvisionerSimple(new Bandwidth(HOST_BW)), HOST_STORAGE, peList, new VmSchedulerTimeShared(peList)));
         }
+
         // 5. Create a DatacenterCharacteristics object that stores the
         // properties of a data center: architecture, OS, list of
         // Machines, allocation policy: time- or space-shared, time zone
@@ -212,16 +215,11 @@ public abstract class NetworkVmsExampleAppCloudletAbstract {
      */
     protected final List<NetworkVm> createVMs() {
         final int numberOfVms = broker.getNetworkDatacenter().getHostList().size() * MAX_VMS_PER_HOST;
-        final int mips = 1;
-        final long size = 10000; // image size (MB)
-        final int ram = 512; // vm memory (MB)
-        final long bw = 1000;
-        final int pesNumber = HOST_PES / MAX_VMS_PER_HOST;
         final List<NetworkVm> vmList = new ArrayList<>();
         for (int i = 0; i < numberOfVms; i++) {
             NetworkVm vm = 
                 new NetworkVm(i, 
-                    broker.getId(), mips, pesNumber, ram, bw, size, VMM, 
+                    broker.getId(), VM_MIPS, VM_PES_NUMBER, VM_RAM, VM_BW, VM_SIZE, VMM, 
                     new NetworkCloudletSpaceSharedScheduler(broker.getNetworkDatacenter()));
             vmList.add(vm);
         }
@@ -264,28 +262,27 @@ public abstract class NetworkVmsExampleAppCloudletAbstract {
     /**
      * Creates a list of {@link AppCloudlet} for the given broker.
      * 
-     * @param broker
      * @return 
      */
-    protected List<AppCloudlet> createAppCloudlets(NetDatacenterBroker broker) {
-        List<AppCloudlet> appCloudletList = new ArrayList<>();
+    protected final List<AppCloudlet> createAppCloudlets() {
+        List<AppCloudlet> list = new ArrayList<>();
         int currentAppCloudletId = 0;
         
         // generate Application execution Requests
         for (int i = 0; i < NUMBER_OF_APP_CLOUDLETS; i++) {
-            appCloudletList.add(
+            list.add(
                     new AppCloudlet(
-                            currentAppCloudletId, 0, 
+                            currentAppCloudletId, 
                             NUMBER_OF_VMS_FOR_EACH_APPCLOUDLET));
             currentAppCloudletId++;
         }
         
-        for (AppCloudlet app : appCloudletList) {
+        for (AppCloudlet app : list) {
             List<Vm> vmList = randomlySelectVmsForAppCloudlet(broker, app);
             app.setNetworkCloudletList(createNetworkCloudlets(app, vmList));
         }
         
-        return appCloudletList;
+        return list;
     }
 
     /**

@@ -30,21 +30,15 @@ import org.cloudbus.cloudsim.Log;
  */
 public class CloudInformationService extends SimEntity {
 
-	/** A list containing the id of all entities that are registered at the 
+	/** A list containing the id of all Datacenters that are registered at the 
          * Cloud Information Service (CIS). 
-         * @todo It is not clear if this list is a list of host id's or datacenter id's.
-         * The previous attribute documentation just said "For all types of hostList".
-         * It can be seen at the method {@link #processEvent(org.cloudbus.cloudsim.core.SimEvent)}
-         * that the list is updated when a CloudSimTags.REGISTER_RESOURCE event
-         * is received. However, only the Datacenter class sends and event
-         * of this type, including its id as parameter.
          * 
          */
-	private final List<Integer> resList;
+	private final List<Integer> datacenterIdsList;
 
 	/** A list containing only the id of entities with Advanced Reservation feature
          * that are registered at the CIS. */
-	private final List<Integer> arList;
+	private final List<Integer> datacenterIdsArList;
 
 	/** List of all regional CIS. */
 	private final List<Integer> gisList;
@@ -61,8 +55,8 @@ public class CloudInformationService extends SimEntity {
 	 */
 	public CloudInformationService(String name) throws IllegalArgumentException {
 		super(name);
-		resList = new LinkedList<>();
-		arList = new LinkedList<>();
+		datacenterIdsList = new LinkedList<>();
+		datacenterIdsArList = new LinkedList<>();
 		gisList = new LinkedList<>();
 	}
 
@@ -86,41 +80,41 @@ public class CloudInformationService extends SimEntity {
 			case CloudSimTags.REQUEST_REGIONAL_GIS:
 
 				// Get ID of an entity that send this event
-				id = ((Integer) ev.getData()).intValue();
+				id = ((Integer) ev.getData());
 
 				// Send the regional GIS list back to sender
 				super.send(id, 0L, ev.getTag(), gisList);
 				break;
 
-			// A resource is requesting to register.
-			case CloudSimTags.REGISTER_RESOURCE:
-				resList.add((Integer) ev.getData());
+			// A datacenter is requesting to register.
+			case CloudSimTags.DATACENTER_REGISTRATION_REQUEST:
+				datacenterIdsList.add((Integer) ev.getData());
 				break;
 
-			// A resource that can support Advance Reservation
-			case CloudSimTags.REGISTER_RESOURCE_AR:
-				resList.add((Integer) ev.getData());
-				arList.add((Integer) ev.getData());
+			// A resource that can support Advanced Reservation
+			case CloudSimTags.DATACENTER_REGISTRATION_REQUEST_AR:
+				datacenterIdsList.add((Integer) ev.getData());
+				datacenterIdsArList.add((Integer) ev.getData());
 				break;
 
-			// A Broker is requesting for a list of all hostList.
-			case CloudSimTags.RESOURCE_LIST:
+			// A Broker is requesting for a list of all datacenters.
+			case CloudSimTags.DATACENTER_LIST:
 
 				// Get ID of an entity that send this event
-				id = ((Integer) ev.getData()).intValue();
+				id = ((Integer) ev.getData());
 
 				// Send the resource list back to the sender
-				super.send(id, 0L, ev.getTag(), resList);
+				super.send(id, 0L, ev.getTag(), datacenterIdsList);
 				break;
 
-			// A Broker is requesting for a list of all hostList.
-			case CloudSimTags.RESOURCE_AR_LIST:
+			// A Broker is requesting for a list of all datacenters that support advanced reservation.
+			case CloudSimTags.DATACENTER_AR_LIST:
 
 				// Get ID of an entity that send this event
-				id = ((Integer) ev.getData()).intValue();
+				id = ((Integer) ev.getData());
 
 				// Send the resource AR list back to the sender
-				super.send(id, 0L, ev.getTag(), arList);
+				super.send(id, 0L, ev.getTag(), datacenterIdsArList);
 				break;
 
 			default:
@@ -135,14 +129,14 @@ public class CloudInformationService extends SimEntity {
 	}
 
 	/**
-	 * Gets the list of all CloudResource IDs, including hostList that support Advance Reservation.
+	 * Gets the list of all Datacenter IDs.
 	 * 
-	 * @return list containing resource IDs. Each ID is represented by an Integer object.
+	 * @return list containing Datacenter IDs
 	 * @pre $none
 	 * @post $none
 	 */
-	public List<Integer> getList() {
-		return resList;
+	public List<Integer> getDatacenterIdsList() {
+		return datacenterIdsList;
 	}
 
 	/**
@@ -153,7 +147,7 @@ public class CloudInformationService extends SimEntity {
 	 * @post $none
 	 */
 	public List<Integer> getAdvReservList() {
-		return arList;
+		return datacenterIdsArList;
 	}
 
 	/**
@@ -187,7 +181,7 @@ public class CloudInformationService extends SimEntity {
 		if (id < 0) {
 			flag = false;
 		} else {
-			flag = checkResource(arList, id);
+			flag = checkResource(datacenterIdsArList, id);
 		}
 
 		return flag;
@@ -206,7 +200,7 @@ public class CloudInformationService extends SimEntity {
 		if (id < 0) {
 			flag = false;
 		} else {
-			flag = checkResource(resList, id);
+			flag = checkResource(datacenterIdsList, id);
 		}
 
 		return flag;
@@ -300,11 +294,11 @@ public class CloudInformationService extends SimEntity {
 	private void notifyAllEntity() {
 		Log.printConcatLine(super.getName(), ": Notify all CloudSim entities for shutting down.");
 
-		signalShutdown(resList);
+		signalShutdown(datacenterIdsList);
 		signalShutdown(gisList);
 
 		// reset the values
-		resList.clear();
+		datacenterIdsList.clear();
 		gisList.clear();
 	}
 

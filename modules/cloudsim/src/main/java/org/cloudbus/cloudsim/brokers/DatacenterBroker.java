@@ -5,8 +5,9 @@ import org.cloudbus.cloudsim.Cloudlet;
 import org.cloudbus.cloudsim.Vm;
 
 /**
- * An interface to be implemented by each class that provides
- * DatacenterBroker features.
+ * DatacentreBroker represents a broker acting on behalf of a user. It hides VM
+ * management, as vm creation, submission of cloudlets to VMs and destruction of
+ * VMs. 
  * 
  * @author Manoel Campos da Silva Filho
  */
@@ -36,53 +37,50 @@ public interface DatacenterBroker {
     void bindCloudletToVm(int cloudletId, int vmId);
 
     /**
-     * Gets the cloudlet list.
+     * Gets the list of cloudlets submmited to the broker that are waiting to be created inside
+     * some Vm yet.
      *
      * @param <T>
-     * @return the cloudlet list
+     * @return the cloudlet waiting list
      */
-    <T extends Cloudlet> List<T> getCloudletList();
+    <T extends Cloudlet> List<T> getCloudletsWaitingList();
 
     /**
-     * Gets the cloudlet received list.
+     * Gets the list of cloudlets that have finished executing.
      *
      * @param <T>
-     * @return the cloudlet received list
+     * @return the list of finished cloudlets
      */
-    <T extends Cloudlet> List<T> getCloudletReceivedList();
+    <T extends Cloudlet> List<T> getCloudletsFinishedList();
 
     Vm getVm(final int index);
 
     /**
-     * Gets the list of VMs submitted to the broker.
+     * Gets the list of VMs submitted to the broker that are waiting to be created inside
+     * some Datacenter yet.
      *
      * @param <T>
-     * @return the list of submitted VMs
+     * @return the list of waiting VMs
      */
-    <T extends Vm> List<T> getVmList();
+    <T extends Vm> List<T> getVmsWaitingList();
 
     /**
-     * Gets the vm list.
+     * Gets the list of VMs created by the broker.
      *
      * @param <T>
-     * @return the vm list
+     * @return the list of created VMs
      */
     <T extends Vm> List<T> getVmsCreatedList();
 
     /**
-     * This method is used to send to the broker the list of cloudlets.
+     * Sends a list of cloudlets to the broker for further 
+     * creation of each one in some Vm.
+     * The cloudlets will be added to the {@link #getCloudletsWaitingList()}.
      *
      * @param <T>
      * @param list the list
      * @pre list !=null
      * @post $none
-     *
-     * @todo The name of the method is confused with the {@link #submitCloudlets()},
-     * that in fact submit cloudlets to VMs. The term "submit" is being used
-     * ambiguously. The method {@link #submitCloudlets()} would be named "sendCloudletsToVMs"
-     *
-     * The method {@link #submitVmList(java.util.List)} may have
-     * be checked too.
      */
     <T extends Cloudlet> void submitCloudletList(List<T> list);
 
@@ -96,5 +94,13 @@ public interface DatacenterBroker {
      * @post $none
      */
     <T extends Vm> void submitVmList(List<T> list);
+    
+    /**
+     * Indicates if there are more cloudlets waiting to 
+     * be executed yet.
+     * 
+     * @return true if there are waiting cloudlets, false otherwise
+     */
+    boolean hasMoreCloudletsToBeExecuted();
     
 }

@@ -127,7 +127,7 @@ public final class CheckHostAvailableMipsTest {
     public void printCloudletsExecutionResults(DatacenterBrokerSimple broker) {
         TableBuilderHelper.print(
                 new TextTableBuilder(broker.getName()), 
-                broker.getCloudletReceivedList());
+                broker.getCloudletsFinishedList());
     }
 
 }

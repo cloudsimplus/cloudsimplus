@@ -19,8 +19,6 @@ public class CloudletTest {
         assertEquals(0, Cloudlet.NULL.getAccumulatedBwCost(), 0);
         assertEquals(0, Cloudlet.NULL.getActualCPUTime(0), 0);
         assertEquals(0, Cloudlet.NULL.getActualCPUTime(), 0);
-        assertEquals(0, Cloudlet.NULL.getDatacenterIdArray().length, 0);
-        assertEquals(0, Cloudlet.NULL.getNamesOfAllExecutedDatacenters().length, 0);
         assertEquals(0, Cloudlet.NULL.getClassType(), 0);
         assertEquals(0, Cloudlet.NULL.getCloudletFileSize(), 0);
         assertEquals(0, Cloudlet.NULL.getCloudletFinishedSoFar(), 0);
@@ -43,7 +41,6 @@ public class CloudletTest {
         assertTrue(Cloudlet.NULL.getRequiredFiles().isEmpty());
         assertEquals(0, Cloudlet.NULL.getReservationId(), 0);
         assertEquals(0, Cloudlet.NULL.getDatacenterId(), 0);
-        assertEquals("", Cloudlet.NULL.getDatacenterName(0));
         assertEquals(0, Cloudlet.NULL.getSubmissionTime(), 0);
         assertEquals(0, Cloudlet.NULL.getSubmissionTime(0), 0);
         assertEquals(0, Cloudlet.NULL.getUserId(), 0);
@@ -62,10 +59,8 @@ public class CloudletTest {
         assertFalse(Cloudlet.NULL.isFinished());
         assertFalse(Cloudlet.NULL.requiresFiles());
         assertFalse(Cloudlet.NULL.setClassType(0));
-        assertFalse(Cloudlet.NULL.setCloudletFinishedSoFar(0));
         assertFalse(Cloudlet.NULL.setCloudletLength(0));
         assertFalse(Cloudlet.NULL.setCloudletStatus(Cloudlet.Status.SUCCESS));
-        assertFalse(Cloudlet.NULL.setWallClockTime(0, 0));
         Cloudlet.NULL.setExecStartTime(100);
         assertEquals(0, Cloudlet.NULL.getExecStartTime(), 0);
         assertFalse(Cloudlet.NULL.setNetServiceLevel(0));
@@ -81,7 +76,6 @@ public class CloudletTest {
         Cloudlet.NULL.setUserId(10);
         assertEquals(0, Cloudlet.NULL.getUserId(), 0);
         
-        Cloudlet.NULL.assignCloudletToDatacenter(1, 1);
         assertEquals(0, Cloudlet.NULL.getDatacenterId(), 0);
         assertEquals(0, Cloudlet.NULL.getCostPerSec(), 0);
         

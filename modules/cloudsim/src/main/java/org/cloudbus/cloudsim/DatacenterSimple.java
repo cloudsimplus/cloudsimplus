@@ -129,7 +129,7 @@ public class DatacenterSimple extends SimEntity implements Datacenter {
 
         switch (ev.getTag()) {
             // Resource characteristics inquiry
-            case CloudSimTags.RESOURCE_CHARACTERISTICS:
+            case CloudSimTags.DATACENTER_CHARACTERISTICS:
                 srcId = ((Integer) ev.getData());
                 sendNow(srcId, ev.getTag(), getCharacteristics());
                 break;
@@ -967,7 +967,7 @@ public class DatacenterSimple extends SimEntity implements Datacenter {
     }
 
     public void checkCloudletsCompletionForGivenVm(Vm vm) {
-        while (vm.getCloudletScheduler().areThereFinishedCloudlets()) {
+        while (vm.getCloudletScheduler().hasFinishedCloudlets()) {
             Cloudlet cl = vm.getCloudletScheduler().getNextFinishedCloudlet();
             if (cl != null) {
                 sendNow(cl.getUserId(), CloudSimTags.CLOUDLET_RETURN, cl);
@@ -1072,7 +1072,7 @@ public class DatacenterSimple extends SimEntity implements Datacenter {
         }
 
         // send the registration to CIS
-        sendNow(gisID, CloudSimTags.REGISTER_RESOURCE, getId());
+        sendNow(gisID, CloudSimTags.DATACENTER_REGISTRATION_REQUEST, getId());
         // Below method is for a child class to override
         registerOtherEntity();
     }
