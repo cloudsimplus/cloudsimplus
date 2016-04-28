@@ -77,23 +77,21 @@ public interface DatacenterBroker {
      * creation of each one in some Vm.
      * The cloudlets will be added to the {@link #getCloudletsWaitingList()}.
      *
-     * @param <T>
      * @param list the list
      * @pre list !=null
      * @post $none
      */
-    <T extends Cloudlet> void submitCloudletList(List<T> list);
+    void submitCloudletList(List<? extends Cloudlet>  list);
 
     /**
      * This method is used to send to the broker the list with virtual machines that must be
      * created.
      *
-     * @param <T>
      * @param list the list
      * @pre list !=null
      * @post $none
      */
-    <T extends Vm> void submitVmList(List<T> list);
+    void submitVmList(List<? extends Vm>  list);
     
     /**
      * Indicates if there are more cloudlets waiting to 

@@ -72,8 +72,8 @@ public abstract class NetworkVmsExampleAppCloudletAbstract {
     public static final long VM_BW = 1000;
     public static final int  VM_PES_NUMBER = HOST_PES / MAX_VMS_PER_HOST;
     
-    public static final int NUMBER_OF_APP_CLOUDLETS = 100;
-    public static final int NUMBER_OF_VMS_FOR_EACH_APPCLOUDLET = 3;
+    public static final int NUMBER_OF_APP_CLOUDLETS = 5;
+    public static final int NUMBER_OF_NETCLOUDLET_FOR_EACH_APPCLOUDLET = 3;
 
     public static final int NETCLOUDLET_PES_NUMBER = 4;
     public static final int NETCLOUDLET_FILE_SIZE = 300;
@@ -103,8 +103,9 @@ public abstract class NetworkVmsExampleAppCloudletAbstract {
             this.vmlist = createVMs();
             this.broker.submitVmList(vmlist);
             this.appCloudletList = createAppCloudlets();
-            //@todo não finalizado ainda
-            //this.broker.submitCloudletList();
+            for(AppCloudlet app: this.appCloudletList){
+                this.broker.submitCloudletList(app.getNetworkCloudletList());
+            }
             
             CloudSim.startSimulation();
             CloudSim.stopSimulation();
@@ -133,12 +134,17 @@ public abstract class NetworkVmsExampleAppCloudletAbstract {
      */
     protected final NetworkDatacenter createDatacenter(String name) {
         List<Host> hostList = new ArrayList<>();
-        final int numberOfHosts = EdgeSwitch.Ports * AggregateSwitch.Ports * RootSwitch.Ports;
+        final int numberOfHosts = EdgeSwitch.PORTS * AggregateSwitch.PORTS * RootSwitch.PORTS;
         for (int i = 0; i < numberOfHosts; i++) {
             List<Pe> peList = createPEs(HOST_PES, HOST_MIPS);
             // 4. Create Host with its id and list of PEs and add them to
             // the list of machines
-            hostList.add(new NetworkHost(i, new ResourceProvisionerSimple(new Ram(HOST_RAM)), new ResourceProvisionerSimple(new Bandwidth(HOST_BW)), HOST_STORAGE, peList, new VmSchedulerTimeShared(peList)));
+            hostList.add(
+                new NetworkHost(i, 
+                    new ResourceProvisionerSimple(new Ram(HOST_RAM)), 
+                    new ResourceProvisionerSimple(new Bandwidth(HOST_BW)), 
+                    HOST_STORAGE, peList, 
+                    new VmSchedulerTimeShared(peList)));
         }
 
         // 5. Create a DatacenterCharacteristics object that stores the
@@ -146,10 +152,17 @@ public abstract class NetworkVmsExampleAppCloudletAbstract {
         // Machines, allocation policy: time- or space-shared, time zone
         // and its price (G$/Pe time unit).
         LinkedList<FileStorage> storageList = new LinkedList<>();
-        DatacenterCharacteristics characteristics = new DatacenterCharacteristicsSimple (ARCH, OS, VMM, hostList, TIME_ZONE, COST, COST_PER_MEM, COST_PER_STORAGE, COST_PER_BW);
+        DatacenterCharacteristics characteristics = 
+                new DatacenterCharacteristicsSimple(
+                        ARCH, OS, VMM, hostList, TIME_ZONE, COST, 
+                        COST_PER_MEM, COST_PER_STORAGE, COST_PER_BW);
         // 6. Finally, we need to create a NetworkDatacenter object.
         try {
-            NetworkDatacenter newDatacenter = new NetworkDatacenter(name, characteristics, new NetworkVmAllocationPolicy(hostList), storageList, 0);
+            NetworkDatacenter newDatacenter = 
+                    new NetworkDatacenter(
+                            name, characteristics, 
+                            new NetworkVmAllocationPolicy(hostList), 
+                            storageList, 0);
             // Create Internal Datacenter network
             createNetwork(newDatacenter);
             return newDatacenter;
@@ -179,7 +192,6 @@ public abstract class NetworkVmsExampleAppCloudletAbstract {
     protected final NetDatacenterBroker createBroker() {
         try {
             NetDatacenterBroker newBroker = new NetDatacenterBroker("Broker");
-            newBroker.setNetworkDatacenter(datacenter);
             return newBroker;
         } catch (Exception e) {
             e.printStackTrace();
@@ -193,18 +205,12 @@ public abstract class NetworkVmsExampleAppCloudletAbstract {
             edgeSwitches[i] = new EdgeSwitch("Edge" + i, datacenter);
             datacenter.switchMap.put(edgeSwitches[i].getId(), edgeSwitches[i]);
         }
+        
         for (NetworkHost host : datacenter.<NetworkHost>getHostList()) {
-            host.bandwidth = EdgeSwitch.DownlinkBW;
-            int switchNum = host.getId() / EdgeSwitch.Ports;
-            edgeSwitches[switchNum].hostList.put(host.getId(), host);
+            int switchNum = host.getId() / edgeSwitches[0].getPorts();
+            edgeSwitches[switchNum].getHostList().put(host.getId(), host);
             datacenter.hostToSwitchMap.put(host.getId(), edgeSwitches[switchNum].getId());
-            host.setSwitch(edgeSwitches[switchNum]);
-            List<NetworkHost> hostList = host.getSwitch().finTimeHostMap.get(0D);
-            if (hostList == null) {
-                hostList = new ArrayList<>();
-                host.getSwitch().finTimeHostMap.put(0D, hostList);
-            }
-            hostList.add(host);
+            host.setEdgeSwitch(edgeSwitches[switchNum]);
         }
     }
 
@@ -214,34 +220,37 @@ public abstract class NetworkVmsExampleAppCloudletAbstract {
      * @return 
      */
     protected final List<NetworkVm> createVMs() {
-        final int numberOfVms = broker.getNetworkDatacenter().getHostList().size() * MAX_VMS_PER_HOST;
+        final int numberOfVms = getDatacenterHostList().size() * MAX_VMS_PER_HOST;
         final List<NetworkVm> vmList = new ArrayList<>();
         for (int i = 0; i < numberOfVms; i++) {
             NetworkVm vm = 
                 new NetworkVm(i, 
                     broker.getId(), VM_MIPS, VM_PES_NUMBER, VM_RAM, VM_BW, VM_SIZE, VMM, 
-                    new NetworkCloudletSpaceSharedScheduler(broker.getNetworkDatacenter()));
+                    new NetworkCloudletSpaceSharedScheduler(datacenter));
             vmList.add(vm);
         }
         return vmList;
     }
 
+    private List<Host> getDatacenterHostList() {
+        return datacenter.getCharacteristics().getHostList();
+    }
+
     /**
      * Randomly select the number of VMs defined by
-     * {@link AppCloudlet#getNumberOfVmsToUse()}, from the list
+     * {@link #NUMBER_OF_NETCLOUDLET_FOR_EACH_APPCLOUDLET}, from the list
      * of created VMs, to be used by the NetworkCloudlets of the given AppCloudlet.
      * 
      * @param broker the broker where to get the existing VM list
-     * @param app The AppCloudlet to select VMs to
      * @return The list of randomly selected VMs
      */
-    protected List<Vm> randomlySelectVmsForAppCloudlet(NetDatacenterBroker broker, AppCloudlet app) {
+    protected List<Vm> randomlySelectVmsForAppCloudlet(NetDatacenterBroker broker) {
         List<Vm> vmList = new ArrayList<>();
-        int numOfExistingVms = broker.getNetworkDatacenter().getVmList().size();
+        int numOfExistingVms = vmlist.size();
         UniformDistr rand = new UniformDistr(0, numOfExistingVms, 5);
-        for (int i = 0; i < app.getNumberOfVmsToUse(); i++) {
+        for (int i = 0; i < NUMBER_OF_NETCLOUDLET_FOR_EACH_APPCLOUDLET; i++) {
             int vmId = (int) rand.sample();
-            Vm vm = VmList.getById(broker.getNetworkDatacenter().getVmList(), vmId);
+            Vm vm = VmList.getById(vmlist, vmId);
             vmList.add(vm);
         }
         return vmList;
@@ -270,15 +279,12 @@ public abstract class NetworkVmsExampleAppCloudletAbstract {
         
         // generate Application execution Requests
         for (int i = 0; i < NUMBER_OF_APP_CLOUDLETS; i++) {
-            list.add(
-                    new AppCloudlet(
-                            currentAppCloudletId, 
-                            NUMBER_OF_VMS_FOR_EACH_APPCLOUDLET));
+            list.add(new AppCloudlet(currentAppCloudletId));
             currentAppCloudletId++;
         }
         
         for (AppCloudlet app : list) {
-            List<Vm> vmList = randomlySelectVmsForAppCloudlet(broker, app);
+            List<Vm> vmList = randomlySelectVmsForAppCloudlet(broker);
             app.setNetworkCloudletList(createNetworkCloudlets(app, vmList));
         }
         

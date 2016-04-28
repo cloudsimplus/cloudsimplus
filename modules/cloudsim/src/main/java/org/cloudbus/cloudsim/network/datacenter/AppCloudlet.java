@@ -60,32 +60,12 @@ public class AppCloudlet implements Identificable {
      */
     public double accuracy;
 
-    /** @see #getNumberOfVmsToUse() () */
-    private int numberOfVmsToUse;
-
     public double execTime;
 
-    public AppCloudlet(int id, int numberOfVmsToUse) {
+    public AppCloudlet(int id) {
         super();
         this.id = id;
-        this.numberOfVmsToUse = numberOfVmsToUse;
         this.networkCloudletList = new ArrayList<>();
-    }
-
-    /**
-     * Gets the number of VMs the AppCloudlet can use.
-     * @return 
-     */    
-    public final int getNumberOfVmsToUse() {
-        return numberOfVmsToUse;
-    }
-
-    /**
-     * Sets the list of VMs the AppCloudlet can use.
-     * @param numberOfVmsToUse
-     */    
-    public final void setNumberOfVmsToUse(int numberOfVmsToUse) {
-        this.numberOfVmsToUse = numberOfVmsToUse;
     }
 
     /**

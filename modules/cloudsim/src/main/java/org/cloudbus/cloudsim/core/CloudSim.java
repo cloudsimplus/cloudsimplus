@@ -9,6 +9,7 @@ package org.cloudbus.cloudsim.core;
 
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
@@ -349,7 +350,7 @@ public class CloudSim {
      */
     public static List<Integer> getDatacenterIdsList() {
         if (cis == null) {
-            return null;
+            return Collections.EMPTY_LIST;
         }
 
         return cis.getDatacenterIdsList();

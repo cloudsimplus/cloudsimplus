@@ -131,12 +131,12 @@ public class DatacenterBrokerSimple extends SimEntity implements DatacenterBroke
     }
 
     @Override
-    public <T extends Vm> void submitVmList(List<T> list) {
+    public void submitVmList(List<? extends Vm> list) {
         getVmsWaitingList().addAll(list);
     }
 
     @Override
-    public <T extends Cloudlet> void submitCloudletList(List<T> list) {
+    public void submitCloudletList(List<? extends Cloudlet> list) {
         getCloudletsWaitingList().addAll(list);
     }
 
@@ -309,9 +309,9 @@ public class DatacenterBrokerSimple extends SimEntity implements DatacenterBroke
 
         notifyCloudletFinishListener(cloudlet);
         
-        Log.printConcatLine(
-                CloudSim.clock(), ": ", getName(), ": Cloudlet ", 
-                cloudlet.getId(), " received");
+        Log.printFormattedLine("%.1f: %s: %s %d received", 
+                CloudSim.clock(), getName(), 
+                cloudlet.getClass().getSimpleName(), cloudlet.getId());
         cloudletsCreated--;
         if (getCloudletsWaitingList().isEmpty() && cloudletsCreated == 0) { // all cloudlets executed
             Log.printConcatLine(CloudSim.clock(), ": ", getName(), ": All Cloudlets executed. Finishing...");

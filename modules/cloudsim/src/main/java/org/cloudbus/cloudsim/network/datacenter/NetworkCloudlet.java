@@ -9,7 +9,6 @@ package org.cloudbus.cloudsim.network.datacenter;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 import org.cloudbus.cloudsim.CloudletSimple;
 import org.cloudbus.cloudsim.utilizationmodels.UtilizationModel;
@@ -20,7 +19,7 @@ import org.cloudbus.cloudsim.network.datacenter.TaskStage.Stage;
  * applications. Each NetworkCloudlet represents a task of the
  * application. Each task consists of several stages.
  *
- * <br/>Please refer to following publication for more details:<br/>
+ * <p>Please refer to following publication for more details:
  * <ul>
  * <li>
  * <a href="http://dx.doi.org/10.1109/UCC.2011.24">
@@ -30,6 +29,7 @@ import org.cloudbus.cloudsim.network.datacenter.TaskStage.Stage;
  * Press, USA), Melbourne, Australia, December 5-7, 2011.
  * </a>
  * </ul>
+ * </p>
  *
  * @author Saurabh Kumar Garg
  * @since CloudSim Toolkit 1.0
@@ -73,27 +73,22 @@ public class NetworkCloudlet extends CloudletSimple implements Comparable<Object
      * Current stage of cloudlet execution, according to the values of the
      * {@link Stage} enum.
      */
-    public int currentStageNum;
+    private int currentStageNum;
 
     /**
      * Start time of the current stage.
      */
-    public double timeToStartStage;
+    private double timeToStartStage;
 
     /**
      * Time spent in the current stage.
      */
-    public double timeSpentInStage;
-
-    /**
-     * @todo It doesn't appear to be used.
-     */
-    public Map<Double, HostPacket> timeCommunicate;
+    private double timeSpentInStage;
 
     /**
      * All stages which cloudlet execution.
      */
-    private List<TaskStage> stages;
+    private final List<TaskStage> stages;
     
     /** @see #getAppCloudlet() */
     private AppCloudlet appCloudlet;
@@ -103,7 +98,7 @@ public class NetworkCloudlet extends CloudletSimple implements Comparable<Object
      *
      * @todo Required, allocated, used memory? It doesn't appear to be used.
      */
-    long memory;
+    private long memory;
 
     public NetworkCloudlet(
             int cloudletId,
@@ -169,6 +164,38 @@ public class NetworkCloudlet extends CloudletSimple implements Comparable<Object
 
     public List<TaskStage> getStages() {
         return stages;
+    }
+
+    public long getMemory() {
+        return memory;
+    }
+
+    public void setMemory(long memory) {
+        this.memory = memory;
+    }
+
+    public int getCurrentStageNum() {
+        return currentStageNum;
+    }
+
+    public void setCurrentStageNum(int currentStageNum) {
+        this.currentStageNum = currentStageNum;
+    }
+
+    public double getTimeToStartStage() {
+        return timeToStartStage;
+    }
+
+    public void setTimeToStartStage(double timeToStartStage) {
+        this.timeToStartStage = timeToStartStage;
+    }
+
+    public double getTimeSpentInStage() {
+        return timeSpentInStage;
+    }
+
+    public void setTimeSpentInStage(double timeSpentInStage) {
+        this.timeSpentInStage = timeSpentInStage;
     }
 
 }

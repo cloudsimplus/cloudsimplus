@@ -44,14 +44,14 @@ public class NetworkVmsExampleBagOfTasksAppCloudlet extends NetworkVmsExampleApp
      */
     @Override
     public List<NetworkCloudlet> createNetworkCloudlets(AppCloudlet app, List<Vm> vmList){
-        List<NetworkCloudlet> networkCloudletList = new ArrayList<>(app.getNumberOfVmsToUse());
+        List<NetworkCloudlet> networkCloudletList = new ArrayList<>(NUMBER_OF_NETCLOUDLET_FOR_EACH_APPCLOUDLET);
         //basically, each task runs the simulation and then data is consolidated in one task
         long memory = 1000;
         long networkCloudletLength = 10000;
         int taskStageId=0;
         int currentCloudletId = -1;
         int t=currentCloudletId;
-        for(int i = 0; i < app.getNumberOfVmsToUse(); i++){
+        for(int i = 0; i < NUMBER_OF_NETCLOUDLET_FOR_EACH_APPCLOUDLET; i++){
             currentCloudletId++;
             UtilizationModel utilizationModel = new UtilizationModelFull();
             NetworkCloudlet netCloudlet = 
@@ -74,7 +74,7 @@ public class NetworkVmsExampleBagOfTasksAppCloudlet extends NetworkVmsExampleApp
 
             //0 has an extra stage of waiting for results; others send
             if (i==0){
-                for(int j=1; j <app.getNumberOfVmsToUse(); j++) {
+                for(int j=1; j < NUMBER_OF_NETCLOUDLET_FOR_EACH_APPCLOUDLET; j++) {
                     netCloudlet.getStages().add(new TaskStage(taskStageId++, TaskStage.Stage.WAIT_RECV, 
                                 NETCLOUDLET_TASK_COMMUNICATION_LENGTH, 0, 
                                 memory, vmList.get(j).getId(), netCloudlet.getId()+j));
