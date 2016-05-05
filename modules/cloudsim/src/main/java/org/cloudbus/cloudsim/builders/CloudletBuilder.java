@@ -100,7 +100,7 @@ public class CloudletBuilder extends Builder {
     }
 
     public Cloudlet getCloudletById(final int id) {
-        for (Cloudlet cloudlet : broker.getCloudletList()) {
+        for (Cloudlet cloudlet : broker.getCloudletsWaitingList()) {
             if (cloudlet.getId() == id) {
                 return cloudlet;
             }

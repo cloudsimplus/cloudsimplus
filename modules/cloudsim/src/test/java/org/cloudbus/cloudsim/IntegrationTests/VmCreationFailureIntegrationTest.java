@@ -214,7 +214,7 @@ public final class VmCreationFailureIntegrationTest {
     }
 
     public void printCloudletsExecutionResults(DatacenterBrokerSimple broker) {
-        TableBuilderHelper.print(new TextTableBuilder(), broker.getCloudletReceivedList());
+        TableBuilderHelper.print(new TextTableBuilder(), broker.getCloudletsFinishedList());
     }
 
     public void assertThatBrokerCloudletsHaveTheExpectedExecutionTimes(DatacenterBrokerSimple broker) {
@@ -225,7 +225,7 @@ public final class VmCreationFailureIntegrationTest {
                     new ExpectedCloudletExecutionResults(10, 10, 20)
                 };
 
-        final List<Cloudlet> cloudletList = broker.getCloudletReceivedList();
+        final List<Cloudlet> cloudletList = broker.getCloudletsFinishedList();
         assertEquals(
                 "The number of finished cloudlets was not as expected", 
                 cloudletList.size(), expectedResults.length);

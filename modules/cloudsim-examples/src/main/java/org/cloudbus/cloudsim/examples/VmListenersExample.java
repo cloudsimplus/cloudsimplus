@@ -180,7 +180,7 @@ public class VmListenersExample {
                     CloudSim.stopSimulation();
 
                     //Final step: Print results when simulation is over
-                    List<Cloudlet> newList = broker.getCloudletReceivedList();
+                    List<Cloudlet> newList = broker.getCloudletsFinishedList();
                     TableBuilderHelper.print(new TextTableBuilder(), newList);
                     Log.printFormattedLine("%s finished!", VmListenersExample.class.getSimpleName());
             } catch (Exception e) {

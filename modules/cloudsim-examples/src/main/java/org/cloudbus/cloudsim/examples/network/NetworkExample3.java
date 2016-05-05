@@ -164,8 +164,8 @@ public class NetworkExample3 {
                     CloudSim.startSimulation();
 
                     // Final step: Print results when simulation is over
-                    List<Cloudlet> newList1 = broker1.getCloudletReceivedList();
-                    List<Cloudlet> newList2 = broker2.getCloudletReceivedList();
+                    List<Cloudlet> newList1 = broker1.getCloudletsFinishedList();
+                    List<Cloudlet> newList2 = broker2.getCloudletsFinishedList();
 
                     CloudSim.stopSimulation();
 

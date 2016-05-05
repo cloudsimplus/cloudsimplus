@@ -237,7 +237,7 @@ public interface CloudletScheduler extends Serializable {
      * @pre $none
      * @post $none
      */
-    boolean areThereFinishedCloudlets();
+    boolean hasFinishedCloudlets();
 
     /**
      * Returns one cloudlet to migrate to another vm.
@@ -296,7 +296,7 @@ public interface CloudletScheduler extends Serializable {
         @Override public double getTotalCurrentAvailableMipsForCloudlet(ResCloudlet rcl, List<Double> mipsShare) { return 0.0; }
         @Override public double getTotalCurrentRequestedMipsForCloudlet(ResCloudlet rcl, double time) { return 0.0; }
         @Override public double getTotalUtilizationOfCpu(double time) { return 0.0; }
-        @Override public boolean areThereFinishedCloudlets() { return false; }
+        @Override public boolean hasFinishedCloudlets() { return false; }
         @Override public Cloudlet migrateCloudlet() { return Cloudlet.NULL; }
         @Override public int runningCloudletsNumber() { return 0; }
         @Override public double updateVmProcessing(double currentTime, List<Double> mipsShare) { return 0.0; }

@@ -24,7 +24,7 @@ public class NetworkCloudletTest {
     
     @Test
     public void testCurrentStageNum() {
-        assertEquals(-1, instance.currentStageNum, 0.0);
+        assertEquals(-1, instance.getCurrentStageNum(), 0.0);
     }
 
     @Test

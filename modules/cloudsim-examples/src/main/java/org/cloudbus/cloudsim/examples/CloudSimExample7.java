@@ -146,7 +146,7 @@ public class CloudSimExample7 {
             CloudSim.startSimulation();
 
             // Final step: Print results when simulation is over
-            List<Cloudlet> newList = broker.getCloudletReceivedList();
+            List<Cloudlet> newList = broker.getCloudletsFinishedList();
 
             CloudSim.stopSimulation();
 
@@ -155,7 +155,7 @@ public class CloudSimExample7 {
                             "\n#Broker " + broker.getName() + " received cloudlets."), 
                     newList);
             if (monitor.getBroker() != null) {
-                newList = monitor.getBroker().getCloudletReceivedList();
+                newList = monitor.getBroker().getCloudletsFinishedList();
                 TableBuilderHelper.print(
                     new TextTableBuilder(
                             "\n#Broker " + monitor.getBroker().getName() + " received cloudlets."), 

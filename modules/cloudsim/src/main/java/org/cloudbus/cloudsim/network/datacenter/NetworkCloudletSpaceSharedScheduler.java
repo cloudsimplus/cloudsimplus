@@ -21,8 +21,11 @@ import org.cloudbus.cloudsim.core.CloudSimTags;
 
 /**
  * NetworkCloudletSchedulerSpaceShared implements a policy of scheduling performed by a
- * virtual machine to run its {@link Cloudlet Cloudlets}. It consider that there
- * will be only one cloudlet per VM. Other cloudlets will be in a waiting list.
+ * virtual machine to run its {@link NetworkCloudlet}'s.
+ * It also schedules the network communication among the cloudlets,
+ * managing the time a cloudlet stays blocked waiting
+ * the response of a network package sent to another cloudlet. 
+ * It consider that there will be only one cloudlet per VM. Other cloudlets will be in a waiting list.
  * We consider that file transfer from cloudlets waiting happens before cloudlet
  * execution. I.e., even though cloudlets must wait for CPU, data transfer
  * happens as soon as cloudlets are submitted.
@@ -32,31 +35,32 @@ import org.cloudbus.cloudsim.core.CloudSimTags;
  * @author Saurabh Kumar Garg
  * @author Saurabh Kumar Garg
  * @since CloudSim Toolkit 3.0
- * @todo Attributes should be private
+ * 
+ * @todo @author manoelcampos Class have a lot of 
+ * duplicated code from the super class.
  */
 public class NetworkCloudletSpaceSharedScheduler extends CloudletSchedulerAbstract {
-
     /**
      * The current CPUs.
      */
-    protected int currentCpus;
+    private int currentCpus;
 
     /**
      * The used PEs.
      */
-    protected int usedPes;
+    private int usedPes;
 
     /**
      * The map of packets to send, where each key is a destination VM and each
      * value is the list of packets to sent to that VM.
      */
-    public Map<Integer, List<HostPacket>> pkttosend;
+    private final Map<Integer, List<HostPacket>> packetsToSend;
 
     /**
      * The map of packets received, where each key is the id of a sender VM and each
      * value is the list of packets sent by that VM.
      */
-    public Map<Integer, List<HostPacket>> pktrecv;
+    private final Map<Integer, List<HostPacket>> packetsReceived;
     
     /**
      * The datacenter where the VM using this scheduler runs.
@@ -80,8 +84,8 @@ public class NetworkCloudletSpaceSharedScheduler extends CloudletSchedulerAbstra
         cloudletFinishedList = new ArrayList<>();
         usedPes = 0;
         currentCpus = 0;
-        pkttosend = new HashMap<>();
-        pktrecv = new HashMap<>();
+        packetsToSend = new HashMap<>();
+        packetsReceived = new HashMap<>();
     }
 
     @Override
@@ -113,26 +117,26 @@ public class NetworkCloudletSpaceSharedScheduler extends CloudletSchedulerAbstra
             // CHECK WHETHER IT IS WAITING FOR THE PACKET
             // if packet received change the status of job and update the time.
             //
-            if ((cl.currentStageNum != -1)) {
-                if (cl.currentStageNum == TaskStage.Stage.FINISH.ordinal()) {
+            if ((cl.getCurrentStageNum() != -1)) {
+                if (cl.getCurrentStageNum() == TaskStage.Stage.FINISH.ordinal()) {
                     break;
                 }
-                TaskStage st = cl.getStages().get(cl.currentStageNum);
+                TaskStage st = cl.getStages().get(cl.getCurrentStageNum());
                 if (st.getStage() == TaskStage.Stage.EXECUTION) {
 
                     // update the time
-                    cl.timeSpentInStage = Math.round(CloudSim.clock() - cl.timeToStartStage);
-                    if (cl.timeSpentInStage >= st.getTime()) {
+                    cl.setTimeSpentInStage(Math.round(CloudSim.clock() - cl.getTimeToStartStage()));
+                    if (cl.getTimeSpentInStage() >= st.getTime()) {
                         changeToNextStage(cl, st);
                         // change the stage
                     }
                 }
                 if (st.getStage() == TaskStage.Stage.WAIT_RECV) {
-                    List<HostPacket> pktlist = pktrecv.get(st.getVmId());
+                    List<HostPacket> pktlist = packetsReceived.get(st.getVmId());
                     List<HostPacket> pkttoremove = new ArrayList<>();
                     if (pktlist != null) {
                         Iterator<HostPacket> it = pktlist.iterator();
-                        HostPacket pkt = null;
+                        HostPacket pkt;
                         if (it.hasNext()) {
                             pkt = it.next();
                             // Asumption packet will not arrive in the same cycle
@@ -150,8 +154,8 @@ public class NetworkCloudletSpaceSharedScheduler extends CloudletSchedulerAbstra
                 }
 
             } else {
-                cl.currentStageNum = 0;
-                cl.timeToStartStage = CloudSim.clock();
+                cl.setCurrentStageNum(0);
+                cl.setTimeToStartStage(CloudSim.clock());
 
                 if (cl.getStages().get(0).getStage() == TaskStage.Stage.EXECUTION) {
                     datacenter.schedule(datacenter.getId(), cl.getStages().get(0).getTime(),
@@ -166,8 +170,8 @@ public class NetworkCloudletSpaceSharedScheduler extends CloudletSchedulerAbstra
 
         }
 
-        if (getCloudletExecList().isEmpty() && getCloudletWaitingList().isEmpty()) { // no
-            // more cloudlets in this scheduler
+        if (getCloudletExecList().isEmpty() && getCloudletWaitingList().isEmpty()) { 
+            // no more cloudlets in this scheduler
             setPreviousTime(currentTime);
             return 0.0;
         }
@@ -177,7 +181,7 @@ public class NetworkCloudletSpaceSharedScheduler extends CloudletSchedulerAbstra
         List<ResCloudlet> toRemove = new ArrayList<>();
         for (ResCloudlet rcl : getCloudletExecList()) {
             // rounding issue...
-            if (((NetworkCloudlet) (rcl.getCloudlet())).currentStageNum == TaskStage.Stage.FINISH.ordinal()) {
+            if (((NetworkCloudlet) (rcl.getCloudlet())).getCurrentStageNum() == TaskStage.Stage.FINISH.ordinal()) {
                 // stage is changed and packet to send
                 ((NetworkCloudlet) (rcl.getCloudlet())).finishtime = CloudSim.clock();
                 toRemove.add(rcl);
@@ -231,27 +235,27 @@ public class NetworkCloudletSpaceSharedScheduler extends CloudletSchedulerAbstra
      * @todo Method too long to understand what is its responsibility.
      */
     private void changeToNextStage(NetworkCloudlet cl, TaskStage st) {
-        cl.timeSpentInStage = 0;
-        cl.timeToStartStage = CloudSim.clock();
-        int currentStage = cl.currentStageNum;
+        cl.setTimeSpentInStage(0);
+        cl.setTimeToStartStage(CloudSim.clock());
+        int currentStage = cl.getCurrentStageNum();
         if (currentStage >= (cl.getStages().size() - 1)) {
-            cl.currentStageNum = TaskStage.Stage.FINISH.ordinal();
+            cl.setCurrentStageNum(TaskStage.Stage.FINISH.ordinal());
         } else {
-            cl.currentStageNum = currentStage + 1;
+            cl.setCurrentStageNum(currentStage + 1);
             int i = 0;
-            for (i = cl.currentStageNum; i < cl.getStages().size(); i++) {
+            for (i = cl.getCurrentStageNum(); i < cl.getStages().size(); i++) {
                 if (cl.getStages().get(i).getStage() == TaskStage.Stage.WAIT_SEND) {
                     HostPacket pkt = new HostPacket(
                             cl.getVmId(), cl.getStages().get(i).getVmId(), 
                             cl.getStages().get(i).getDataLenght(),
                             CloudSim.clock(), -1,
                             cl.getId(), cl.getStages().get(i).getCloudletId());
-                    List<HostPacket> pktlist = pkttosend.get(cl.getVmId());
+                    List<HostPacket> pktlist = packetsToSend.get(cl.getVmId());
                     if (pktlist == null) {
                         pktlist = new ArrayList<>();
                     }
                     pktlist.add(pkt);
-                    pkttosend.put(cl.getVmId(), pktlist);
+                    packetsToSend.put(cl.getVmId(), pktlist);
                 } else {
                     break;
                 }
@@ -260,9 +264,9 @@ public class NetworkCloudletSpaceSharedScheduler extends CloudletSchedulerAbstra
             datacenter.schedule(datacenter.getId(),
                     0.0001, CloudSimTags.VM_DATACENTER_EVENT);
             if (i == cl.getStages().size()) {
-                cl.currentStageNum = TaskStage.Stage.FINISH.ordinal();
+                cl.setCurrentStageNum(TaskStage.Stage.FINISH.ordinal());
             } else {
-                cl.currentStageNum = i;
+                cl.setCurrentStageNum(i);
                 if (cl.getStages().get(i).getStage() == TaskStage.Stage.EXECUTION) {
                     datacenter.schedule(datacenter.getId(),
                         cl.getStages().get(i).getTime(),
@@ -525,7 +529,7 @@ public class NetworkCloudletSpaceSharedScheduler extends CloudletSchedulerAbstra
     }
 
     @Override
-    public boolean areThereFinishedCloudlets() {
+    public boolean hasFinishedCloudlets() {
         return getCloudletFinishedList().size() > 0;
     }
 
@@ -600,6 +604,14 @@ public class NetworkCloudletSpaceSharedScheduler extends CloudletSchedulerAbstra
     public double getCurrentRequestedUtilizationOfRam() {
         //@todo The method doesn't appear to be implemented in fact
         return 0;
+    }
+
+    public Map<Integer, List<HostPacket>> getPacketsToSend() {
+        return packetsToSend;
+    }
+
+    public Map<Integer, List<HostPacket>> getPacketsReceived() {
+        return packetsReceived;
     }
 
 }

@@ -11,6 +11,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.stream.Collectors;
 
 import org.cloudbus.cloudsim.DatacenterSimple;
 import org.cloudbus.cloudsim.DatacenterCharacteristics;
@@ -35,7 +36,7 @@ import org.cloudbus.cloudsim.resources.FileStorage;
  * of cloudlets are handled by the CloudletScheduler and processing of
  * Virtual Machines are handled by the VmAllocationPolicy.
  *
- * <br/>Please refer to following publication for more details:<br/>
+ * <br/>Please refer to following publication for more details:<br>
  * <ul>
  * <li>
  * <a href="http://dx.doi.org/10.1109/UCC.2011.24">
@@ -127,39 +128,22 @@ public class NetworkDatacenter extends DatacenterSimple {
      * value it the switch itself.
      */
     public Map<Integer, Switch> getEdgeSwitch() {
-        Map<Integer, Switch> edgeSwitchMap = new HashMap<>();
-        for (Entry<Integer, Switch> es : switchMap.entrySet()) {
-            if (es.getValue().level == Switch.EDGE_SWITCHES_LEVEL) {
-                edgeSwitchMap.put(es.getKey(), es.getValue());
-            }
-        }
-        return edgeSwitchMap;
-
+        return switchMap.entrySet().stream()
+                .filter(entry -> entry.getValue().getLevel() == EdgeSwitch.LEVEL)
+                .collect(Collectors.toMap(Entry::getKey, Entry::getValue));
     }
 
-    /**
-     * Creates the given VM within the NetworkDatacenter. It can be directly
-     * accessed by Datacenter Broker which manages allocation of Cloudlets.
-     *
-     * @param vm
-     * @return true if the VW was created successfully, false otherwise
-     */
-    public boolean processVmCreateNetwork(Vm vm) {
-        boolean result = getVmAllocationPolicy().allocateHostForVm(vm);
-
-        if (result) {
-            vmToSwitchMap.put(vm.getId(), ((NetworkHost) vm.getHost()).getSwitch().getId());
+    @Override
+    protected boolean processVmCreate(SimEvent ev, boolean ack) {
+        if(super.processVmCreate(ev, ack)){
+            Vm vm = (Vm) ev.getData();
+            vmToSwitchMap.put(vm.getId(), ((NetworkHost) vm.getHost()).getEdgeSwitch().getId());
             vmToHostMap.put(vm.getId(), vm.getHost().getId());
             Log.printLine(vm.getId() + " VM is created on " + vm.getHost().getId());
-
-            getVmList().add(vm);
-
-            vm.updateVmProcessing(
-                    CloudSim.clock(), 
-                    getVmAllocationPolicy().getHost(vm).getVmScheduler()
-                    .getAllocatedMipsForVm(vm));
+            return true;
         }
-        return result;
+        
+        return false;
     }
 
     @Override

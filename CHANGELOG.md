@@ -3,6 +3,7 @@
 Lists the main changes in the project.
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 ## [4.0.0] - 2016-04-15 
 
 ### WARNINGS
@@ -102,6 +103,31 @@ CloudletSchedulerSpaceShared and CloudletSchedulerTimeShared to CloudletSchedule
 	- By this way, now it is easier to extend and test these classes, since a bunch of duplicated code was removed, increasing code reuse.
 
 =======
+=======
+## [4.0.2] - 2016-04-28 
+
+### Changed
+
+- Changed the name of the method getCloudResourceList at CloudSim class to getDatacenterIdsList once it
+  in fact returns only Datacenter IDs and is only used by DatacenterBroker classes.
+- Changed the name of the method getList at CloudInformationService class to getDatacenterIdsList once it
+  in fact returns only Datacenter IDs and is only used by CloudSim class.
+- Changed the name of the protected method submitCloudlets() at DatacenterBrokerSimple class to createCloudletsInVms()
+  because it in fact create each cloudlet into some Vm. The method was changed to avoid confusion with the submitCloudletList too
+  and to conform the name convention used in the createVmInDatacenter method.
+- Changed the name of the method getCloudletList() at the DatacenterBroker interface to  getCloudletsWaitingList()
+  because in fact, this is the list of cloudlets that were submitted and are waiting to be created inside some Vm.
+- Changed the name of the method getVmList() at the DatacenterBroker interface to  getVmsWaitingList()
+  because in fact, this is the list of VMs that were submitted and are waiting to be created inside some Datacenter.
+  The method name was changed to conform the name convention used by the getCloudletsWaitingList method.
+- Changed the name of the method getCloudletReceivedList() at the DatacenterBroker interface to  getCloudletsFinishedList()
+  because in fact, this is the list of cloudlets that have finished executing.
+- Change the name of the method getDatacenterCharacteristicsList at the DatacenterBrokerSimple class to getDatacenterCharacteristicsMap
+  because in fact it is returning a map, not a list. 
+
+
+
+>>>>>>> 2ca97f116bfa890bc85fda8d3bbb6a96309681b9
 ## [4.0.0] - 2016-04-25 
 
 ### WARNINGS

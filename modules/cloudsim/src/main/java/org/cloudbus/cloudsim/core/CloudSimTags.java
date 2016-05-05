@@ -76,37 +76,37 @@ public class CloudSimTags {
     public static final int EXPERIMENT = BASE + 1;
 
     /**
-     * Denotes a cloud resource to be registered. This tag is normally used
-     * between {@link CloudInformationService} and CloudResouce entities.
+     * Denotes a datacenter to be registered. This tag is normally used
+     * between {@link CloudInformationService} and Datacenter entities.
      */
-    public static final int REGISTER_RESOURCE = BASE + 2;
+    public static final int DATACENTER_REGISTRATION_REQUEST = BASE + 2;
 
     /**
-     * Denotes a cloud resource to be registered, that can support advance
+     * Denotes a datacenter to be registered, that can support advanced
      * reservation. This tag is normally used between
-     * {@link CloudInformationService} and CloudResouce entity.
+     * {@link CloudInformationService} and Datacenter entities.
      */
-    public static final int REGISTER_RESOURCE_AR = BASE + 3;
+    public static final int DATACENTER_REGISTRATION_REQUEST_AR = BASE + 3;
 
     /**
-     * Denotes a list of all hostList's, including the ones that can support
-     * advance reservation. This tag is normally used between
-     * {@link CloudInformationService} and CloudSim entity.
+     * Denotes a list of all Datacenter's, including the ones that can support
+     * advanced reservation. This tag is normally used between
+     * {@link CloudInformationService} and CloudSim entities.
      */
-    public static final int RESOURCE_LIST = BASE + 4;
+    public static final int DATACENTER_LIST = BASE + 4;
 
     /**
-     * Denotes a list of hostList's that only support advance reservation. This
+     * Denotes a list of Datacenter's that only support advanced reservation. This
      * tag is normally used between {@link CloudInformationService} and CloudSim
-     * entity.
+     * entities.
      */
-    public static final int RESOURCE_AR_LIST = BASE + 5;
+    public static final int DATACENTER_AR_LIST = BASE + 5;
 
     /**
-     * Denotes cloud resource characteristics information. This tag is normally
+     * Denotes Datacenter characteristics information. This tag is normally
      * used between CloudSim and CloudResource entity.
      */
-    public static final int RESOURCE_CHARACTERISTICS = BASE + 6;
+    public static final int DATACENTER_CHARACTERISTICS = BASE + 6;
 
     /**
      * Denotes cloud resource allocation policy. This tag is normally used
@@ -301,18 +301,17 @@ public class CloudSimTags {
      */
     public static final int VM_BROKER_EVENT = BASE + 42;
 
-    public static final int Network_Event_UP = BASE + 43;
+    public static final int NETWORK_EVENT_UP = BASE + 43;
 
-    public static final int Network_Event_send = BASE + 44;
+    public static final int NETWORK_EVENT_SEND = BASE + 44;
 
-    public static final int RESOURCE_Register = BASE + 45;
+    public static final int NETWORK_HOST_REGISTER = BASE + 45;
 
-    public static final int Network_Event_DOWN = BASE + 46;
+    public static final int NETWORK_EVENT_DOWN = BASE + 46;
 
-    public static final int Network_Event_Host = BASE + 47;
+    public static final int NETWORK_EVENT_HOST = BASE + 47;
 
-    public static final int NextCycle = BASE + 48;
-
+    
     /**
      * Private Constructor.
      */

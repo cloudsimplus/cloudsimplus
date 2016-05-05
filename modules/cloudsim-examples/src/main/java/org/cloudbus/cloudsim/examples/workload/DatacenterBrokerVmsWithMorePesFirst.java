@@ -24,14 +24,14 @@ public class DatacenterBrokerVmsWithMorePesFirst extends DatacenterBrokerSimple 
      * @return the list of submitted VMs
      */
     @Override
-    public <T extends Vm> List<T> getVmList() {
-        super.getVmList().sort(new Comparator<Vm>() {
+    public <T extends Vm> List<T> getVmsWaitingList() {
+        super.getVmsWaitingList().sort(new Comparator<Vm>() {
             @Override
             public int compare(Vm vm1, Vm vm2) {
                 return Integer.compare(vm2.getNumberOfPes(), vm1.getNumberOfPes());
             }
         }); 
         
-        return (List<T>)super.getVmList();
+        return (List<T>)super.getVmsWaitingList();
     }    
 }

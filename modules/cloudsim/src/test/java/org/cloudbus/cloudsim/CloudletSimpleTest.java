@@ -91,7 +91,7 @@ public class CloudletSimpleTest {
 
     @Test
     public void testGetWaitingTime() {
-        Cloudlet cloudlet = createCloudlet();
+        CloudletSimple cloudlet = createCloudlet();
         assertEquals(0, cloudlet.getWaitingTime(), 0);
         cloudlet.assignCloudletToDatacenter(0, 0);
         final int submissionTime = 0, execStartTime = 10;
@@ -104,14 +104,14 @@ public class CloudletSimpleTest {
     @Test
     public void testAssignCloudletToDataCenter_recodLogEnabledDatacenterNotAssigned() {
         final int datacenterId = 0;
-        Cloudlet cloudlet = createCloudlet(datacenterId, true);
+        CloudletSimple cloudlet = createCloudlet(datacenterId, true);
         cloudlet.assignCloudletToDatacenter(datacenterId, 0);
         assertEquals(datacenterId, cloudlet.getDatacenterId());
     }
 
     @Test
     public void testAssignCloudletToDataCenter_recodLogEnabledDatacenterAlreadAssigned() {
-        Cloudlet cloudlet = createCloudlet(0, true);
+        CloudletSimple cloudlet = createCloudlet(0, true);
         cloudlet.assignCloudletToDatacenter(0, 0);
 
         final int datacenterId = 1;
@@ -121,7 +121,7 @@ public class CloudletSimpleTest {
 
     @Test
     public void testGetExecStartTime() {
-        Cloudlet cloudlet = createCloudlet();
+        CloudletSimple cloudlet = createCloudlet();
         assertEquals(0, cloudlet.getExecStartTime(), 0);
 
         cloudlet.assignCloudletToDatacenter(0, 0);
@@ -133,7 +133,7 @@ public class CloudletSimpleTest {
 
     @Test
     public void testGetSubmissionTime() {
-        Cloudlet cloudlet = createCloudlet();
+        CloudletSimple cloudlet = createCloudlet();
         assertEquals(0, cloudlet.getSubmissionTime(), 0);
 
         cloudlet.assignCloudletToDatacenter(0, 0);
@@ -144,7 +144,7 @@ public class CloudletSimpleTest {
 
     @Test
     public void testGetWallClockTime() {
-        Cloudlet cloudlet = createCloudlet();
+        CloudletSimple cloudlet = createCloudlet();
         assertEquals(0, cloudlet.getWallClockTimeInLastExecutedDatacenter(), 0);
 
         cloudlet.assignCloudletToDatacenter(0, 0);
@@ -169,7 +169,7 @@ public class CloudletSimpleTest {
         EasyMock.expect(CloudSim.getEntityName(datacenterId)).andReturn("datacenter" + datacenterId);
         PowerMock.replay(CloudSim.class);
 
-        Cloudlet cloudlet = createCloudlet();
+        CloudletSimple cloudlet = createCloudlet();
         assertEquals(Cloudlet.NOT_ASSIGNED, cloudlet.getActualCPUTime(), 0);
 
         cloudlet.assignCloudletToDatacenter(datacenterId, 0);
@@ -222,7 +222,7 @@ public class CloudletSimpleTest {
 
     @Test
     public void testSetCloudletFinishedSoFar() {
-        Cloudlet cloudlet = createCloudlet();
+        CloudletSimple cloudlet = createCloudlet();
         assertEquals(0, cloudlet.getCloudletFinishedSoFar(), 0);
 
         cloudlet.assignCloudletToDatacenter(0, 0);
@@ -235,7 +235,7 @@ public class CloudletSimpleTest {
 
     @Test
     public void testGetDatacenterId() {
-        Cloudlet cloudlet = createCloudlet(0, true);
+        CloudletSimple cloudlet = createCloudlet(0, true);
         assertEquals(Cloudlet.NOT_ASSIGNED, cloudlet.getDatacenterId(), 0);
 
         final int datacenterId = 0;
@@ -245,7 +245,7 @@ public class CloudletSimpleTest {
 
     @Test
     public void testGetCostPerSec() {
-        Cloudlet cloudlet = createCloudlet();
+        CloudletSimple cloudlet = createCloudlet();
         assertEquals(0, cloudlet.getCostPerSec(), 0);
 
         final double cost = 1;

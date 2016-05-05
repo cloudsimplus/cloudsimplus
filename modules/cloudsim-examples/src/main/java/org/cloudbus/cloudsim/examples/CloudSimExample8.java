@@ -147,8 +147,8 @@ public class CloudSimExample8 {
                     CloudSim.startSimulation();
 
                     // Final step: Print results when simulation is over
-                    List<Cloudlet> newList = broker.getCloudletReceivedList();
-                    newList.addAll(globalBroker.getBroker().getCloudletReceivedList());
+                    List<Cloudlet> newList = broker.getCloudletsFinishedList();
+                    newList.addAll(globalBroker.getBroker().getCloudletsFinishedList());
 
                     CloudSim.stopSimulation();
 

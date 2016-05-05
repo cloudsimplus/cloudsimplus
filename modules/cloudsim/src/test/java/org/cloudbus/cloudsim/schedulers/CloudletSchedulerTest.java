@@ -38,7 +38,7 @@ public class CloudletSchedulerTest {
         assertEquals(0, instance.getTotalCurrentAvailableMipsForCloudlet(null, null), 0);
         assertEquals(0, instance.getTotalCurrentRequestedMipsForCloudlet(null, 0), 0);
         assertEquals(0, instance.getTotalUtilizationOfCpu(0), 0);
-        assertFalse(instance.areThereFinishedCloudlets());
+        assertFalse(instance.hasFinishedCloudlets());
         assertEquals(Cloudlet.NULL, instance.migrateCloudlet());
         assertEquals(0, instance.runningCloudletsNumber());
         assertEquals(0, instance.updateVmProcessing(0, null), 0);

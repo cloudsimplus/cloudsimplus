@@ -91,6 +91,22 @@ public interface Cloudlet extends Identificable {
      * if not found
      */
     boolean deleteRequiredFile(final String filename);
+    
+    /**
+     * Checks whether this cloudlet requires any files or not.
+     *
+     * @return <tt>true</tt> if required, <tt>false</tt> otherwise
+     */
+    boolean requiresFiles();    
+
+    /**
+     * Gets the list of required files to be used by the cloudlet (if any). The time to
+     * transfer these files by the network is considered when placing the
+     * cloudlet inside a given VM
+     *
+     * @return the required files
+     */
+    List<String> getRequiredFiles();
 
     /**
      * The total bandwidth (bw) cost for transferring the cloudlet by the
@@ -121,33 +137,6 @@ public interface Cloudlet extends Identificable {
      * @post $none
      */
     double getActualCPUTime();
-
-    /**
-     * Gets the IDs of all Datacenters that executed this Cloudlet.
-     *
-     * @return an array of Datacenter IDs where the Cloudlet has being executed
-     * @pre $none
-     * @post $none
-     */
-    Integer[] getDatacenterIdArray();
-
-    /**
-     * Gets the names of all Datacenters that executed this Cloudlet.
-     *
-     * @return an array of Datacenter names where the Cloudlet has being executed
-     * @pre $none
-     * @post $none
-     */
-    String[] getNamesOfAllExecutedDatacenters();
-
-    /**
-     * Gets the classType or priority of this Cloudlet for scheduling on a Datacenter.
-     *
-     * @return classtype of this cloudlet
-     * @pre $none
-     * @post $none
-     */
-    int getClassType();
 
     /**
      * Gets the input file size of this Cloudlet before execution (unit: in byte).
@@ -230,6 +219,16 @@ public interface Cloudlet extends Identificable {
     long getCloudletOutputSize();
 
     /**
+     * Gets the execution status of this Cloudlet.
+     *
+     * @return the Cloudlet status
+     * @pre $none
+     * @post $none
+     *
+     */
+    Status getStatus();
+    
+    /**
      * Gets the status code of this Cloudlet.
      *
      * @return the status code of this Cloudlet
@@ -253,7 +252,7 @@ public interface Cloudlet extends Identificable {
     /**
      * Gets the total length (across all PEs) of this Cloudlet (in MI). It considers the
      * {@link #cloudletLength} of the cloudlet will be executed in each Pe defined by
-     * {@link #numberOfPes}.<br/>
+     * {@link #numberOfPes}.<br>
      *
      * For example, setting the cloudletLenght as 10000 MI and
      * {@link #numberOfPes} to 4, each Pe will execute 10000 MI. Thus, the
@@ -296,6 +295,18 @@ public interface Cloudlet extends Identificable {
      */
     double getCostPerSec(final int datacenterId);
 
+
+    /**
+     * Gets the total cost of processing or executing this Cloudlet.
+     * <tt>Processing Cost = input data transfer + processing cost + output
+     * transfer cost</tt> .
+     *
+     * @return the total cost of processing Cloudlet
+     * @pre $none
+     * @post $result >= 0.0
+     */
+    double getProcessingCost();
+    
     /**
      * Gets the latest execution start time of this Cloudlet. With new functionalities, such
      * as CANCEL, PAUSED and RESUMED, this attribute only stores the latest
@@ -315,6 +326,48 @@ public interface Cloudlet extends Identificable {
      * @pre $none
      */
     double getFinishTime();
+
+    /**
+     * Gets the submission (arrival) time of this Cloudlet from the latest
+     * CloudResource.
+     *
+     * @return the submission time or <tt>0.0</tt> if
+     * the cloudlet has never been assigned to a datacenter
+     * @pre $none
+     * @post $result >= 0.0
+     */
+    double getSubmissionTime();
+
+    /**
+     * Gets the submission (arrival) time of this Cloudlet in the given Datacenter.
+     *
+     * @param datacenterId the Datacenter entity ID
+     * @return the submission time or 0 if the Cloudlet has never been executed in the given Datacenter
+     * @pre datacenterId >= 0
+     * @post $result >= 0.0
+     */
+    double getSubmissionTime(final int datacenterId);
+    
+    /**
+     * Gets the classType or priority of this Cloudlet for scheduling on a Datacenter.
+     *
+     * @return classtype of this cloudlet
+     * @pre $none
+     * @post $none
+     */
+    int getClassType();
+    
+    /**
+     * Sets the {@link #getClassType() classType or priority} of this Cloudlet for scheduling on a
+     * Datacenter.
+     *
+     * @param classType classType of this Cloudlet
+     * @return <tt>true</tt> if it is classType is valid, <tt>false</tt> otherwise
+     *
+     * @pre classType > 0
+     * @post $none
+     */
+    boolean setClassType(final int classType);    
 
     /**
      * Gets the Type of Service (ToS) of IPv4 for sending Cloudlet over the network.
@@ -340,26 +393,6 @@ public interface Cloudlet extends Identificable {
     int getNumberOfPes();
 
     /**
-     * Gets the total cost of processing or executing this Cloudlet.
-     * <tt>Processing Cost = input data transfer + processing cost + output
-     * transfer cost</tt> .
-     *
-     * @return the total cost of processing Cloudlet
-     * @pre $none
-     * @post $result >= 0.0
-     */
-    double getProcessingCost();
-
-    /**
-     * Gets the list of required files to be used by the cloudlet (if any). The time to
-     * transfer these files by the network is considered when placing the
-     * cloudlet inside a given VM
-     *
-     * @return the required files
-     */
-    List<String> getRequiredFiles();
-
-    /**
      * Gets the ID of a reservation made for this cloudlet.
      *
      * @return a reservation ID
@@ -377,47 +410,6 @@ public interface Cloudlet extends Identificable {
      * @pre $none
      */
     int getDatacenterId();
-
-    /**
-     * Gets the name of a Datacenter where the cloudlet has executed.
-     *
-     * @param datacenterId the Datacenter entity ID
-     * @return the Datacenter name or "" if the Cloudlet has never been executed in the given Datacenter
-     * @pre datacenterId >= 0
-     * @post $none
-     */
-    String getDatacenterName(final int datacenterId);
-
-    /**
-     * Gets the execution status of this Cloudlet.
-     *
-     * @return the Cloudlet status
-     * @pre $none
-     * @post $none
-     *
-     */
-    Status getStatus();
-
-    /**
-     * Gets the submission (arrival) time of this Cloudlet from the latest
-     * CloudResource.
-     *
-     * @return the submission time or <tt>0.0</tt> if
-     * the cloudlet has never been assigned to a datacenter
-     * @pre $none
-     * @post $result >= 0.0
-     */
-    double getSubmissionTime();
-
-    /**
-     * Gets the submission (arrival) time of this Cloudlet in the given Datacenter.
-     *
-     * @param datacenterId the Datacenter entity ID
-     * @return the submission time or 0 if the Cloudlet has never been executed in the given Datacenter
-     * @pre datacenterId >= 0
-     * @post $result >= 0.0
-     */
-    double getSubmissionTime(final int datacenterId);
 
     /**
      * Gets the ID of the User or Broker that is the owner of the Cloudlet.
@@ -452,26 +444,26 @@ public interface Cloudlet extends Identificable {
     UtilizationModel getUtilizationModelRam();
 
     /**
-     * Gets the utilization percentage of bw.
+     * Gets the utilization percentage of bw at a given time.
      *
      * @param time the time
-     * @return the utilization of bw
+     * @return the utilization percentage of bw
      */
     double getUtilizationOfBw(final double time);
 
     /**
-     * Gets the utilization percentage of cpu.
+     * Gets the utilization percentage of cpu at a given time.
      *
      * @param time the time
-     * @return the utilization of cpu
+     * @return the utilization percentage of cpu
      */
     double getUtilizationOfCpu(final double time);
 
     /**
-     * Gets the utilization percentage of memory.
+     * Gets the utilization percentage of memory at a given time.
      *
      * @param time the time
-     * @return the utilization of memory
+     * @return the utilization percentage of memory
      */
     double getUtilizationOfRam(final double time);
 
@@ -538,40 +530,6 @@ public interface Cloudlet extends Identificable {
     boolean isFinished();
 
     /**
-     * Checks whether this cloudlet requires any files or not.
-     *
-     * @return <tt>true</tt> if required, <tt>false</tt> otherwise
-     */
-    boolean requiresFiles();
-
-    /**
-     * Sets the {@link #getClassType() classType or priority} of this Cloudlet for scheduling on a
-     * Datacenter.
-     *
-     * @param classType classType of this Cloudlet
-     * @return <tt>true</tt> if it is classType is valid, <tt>false</tt> otherwise
-     *
-     * @pre classType > 0
-     * @post $none
-     */
-    boolean setClassType(final int classType);
-
-    /**
-     * Sets the length of this Cloudlet that has been executed so far. This
-     * method is used by ResCloudlet class when an application is decided to
-     * cancel or to move this Cloudlet into different CloudResources.
-     *
-     * @param length length of this Cloudlet
-     * @return true if the length is valid and the cloudlet already has assigned
-     * to a Datacenter, false otherwise
-     * @see gridsim.AllocPolicy
-     * @see gridsim.ResCloudlet
-     * @pre length >= 0.0
-     * @post $none
-     */
-    boolean setCloudletFinishedSoFar(final long length);
-
-    /**
      * Sets the {@link #getCloudletLength() length (in MI)}  of this Cloudlet.
      *
      * @param cloudletLength the length (in MI) of this Cloudlet to be
@@ -595,42 +553,6 @@ public interface Cloudlet extends Identificable {
     boolean setCloudletStatus(final Status newStatus);
 
     /**
-     * Sets the wall clock time the cloudlet spent
-     * executing on the current Datacenter.
-     * The wall clock time is the total time the Cloudlet resides in a Datacenter 
-     * (from arrival time until departure time, that may include waiting time). 
-     * This value is set by the Datacenter before departure or sending back to 
-     * the original Cloudlet's owner.
-     *
-     * @param wallTime the time of this Cloudlet resides in a Datacenter
-     * (from arrival time until departure time).
-     * @param actualTime the total execution time of this Cloudlet in a
-     * Datacenter.
-     * @return true if the submission time is valid and
-     * the cloudlet has already being assigned to a datacenter for execution
-     * @see Resource#wallClockTime
-     * @see Resource#actualCPUTime
-     *
-     * @pre wallTime >= 0.0
-     * @pre actualTime >= 0.0
-     * @post $none
-     */
-    boolean setWallClockTime(final double wallTime, final double actualTime);
-
-    /**
-     * Sets the {@link #getExecStartTime() latest execution start time} of this Cloudlet.
-     * <br/>
-     * <b>NOTE:</b> With new functionalities, such as being able to cancel / to
-     * pause / to resume this Cloudlet, the execution start time only holds the
-     * latest one. Meaning, all previous execution start time are ignored.
-     *
-     * @param clockTime the latest execution start time
-     * @pre clockTime >= 0.0
-     * @post $none
-     */
-    void setExecStartTime(final double clockTime);
-
-    /**
      * Sets the {@link #getNetServiceLevel() Type of Service (ToS)} for sending this cloudlet over a
      * network.
      *
@@ -642,8 +564,8 @@ public interface Cloudlet extends Identificable {
     boolean setNetServiceLevel(final int netServiceLevel);
 
     /**
-     * Sets the {@link #getNumberOfPes() number of PEs} required to run this Cloudlet. <br/>
-     * NOTE: The Cloudlet length is computed only for 1 PE for simplicity. <br/>
+     * Sets the {@link #getNumberOfPes() number of PEs} required to run this Cloudlet. <br>
+     * NOTE: The Cloudlet length is computed only for 1 PE for simplicity. <br>
      * For example, consider a Cloudlet that has a length of 500 MI and requires
      * 2 PEs. This means each PE will execute 500 MI of this Cloudlet.
      *
@@ -666,23 +588,6 @@ public interface Cloudlet extends Identificable {
 
     /**
      * Sets the parameters of the Datacenter where the Cloudlet is going to be
-     * executed. From the second time this method is called, every call make the
-     * cloudlet to be migrated to the indicated Datacenter.<br>
-     *
-     * NOTE: This method <tt>should</tt> be called only by a resource entity,
-     * not the user or owner of this Cloudlet.
-     *
-     * @param datacenterId the id of Datacenter where the cloudlet will be executed
-     * @param costPerCpuSec the cost per second of running the cloudlet on the given Datacenter
-     *
-     * @pre resourceID >= 0
-     * @pre cost > 0.0
-     * @post $none
-     */
-    void assignCloudletToDatacenter(final int datacenterId, final double costPerCpuSec);
-
-    /**
-     * Sets the parameters of the Datacenter where the Cloudlet is going to be
      * executed. <br>
      * NOTE: This method <tt>should</tt> be called only by a resource entity,
      * not the user or owner of this Cloudlet.
@@ -697,17 +602,6 @@ public interface Cloudlet extends Identificable {
      */
     void assignCloudletToDatacenter(
             final int datacenterId, final double costPerCpuSec, final double costPerByteOfBw);
-
-    /**
-     * Sets the submission (arrival) time of this Cloudlet into a CloudResource.
-     *
-     * @param clockTime the submission time
-     * @return true if the submission time is valid and
-     * the cloudlet has already being assigned to a datacenter for execution
-     * @pre clockTime >= 0.0
-     * @post $none
-     */
-    boolean setSubmissionTime(final double clockTime);
 
     /**
      * Sets the user ID.
@@ -748,6 +642,68 @@ public interface Cloudlet extends Identificable {
     void setVmId(final int vmId);
     
     /**
+     * Sets the length of this Cloudlet that has been executed so far. This
+     * method is used by ResCloudlet class when an application is decided to
+     * cancel or to move this Cloudlet into different CloudResources.
+     *
+     * @param length length of this Cloudlet
+     * @return true if the length is valid and the cloudlet already has assigned
+     * to a Datacenter, false otherwise
+     * @see gridsim.AllocPolicy
+     * @see gridsim.ResCloudlet
+     * @pre length >= 0.0
+     * @post $none
+     */
+    boolean setCloudletFinishedSoFar(final long length);
+
+        /**
+     * Sets the wall clock time the cloudlet spent
+     * executing on the current Datacenter.
+     * The wall clock time is the total time the Cloudlet resides in a Datacenter 
+     * (from arrival time until departure time, that may include waiting time). 
+     * This value is set by the Datacenter before departure or sending back to 
+     * the original Cloudlet's owner.
+     *
+     * @param wallTime the time of this Cloudlet resides in a Datacenter
+     * (from arrival time until departure time).
+     * @param actualTime the total execution time of this Cloudlet in a
+     * Datacenter.
+     * @return true if the submission time is valid and
+     * the cloudlet has already being assigned to a datacenter for execution
+     * @see Resource#wallClockTime
+     * @see Resource#actualCPUTime
+     *
+     * @pre wallTime >= 0.0
+     * @pre actualTime >= 0.0
+     * @post $none
+     */
+    boolean setWallClockTime(final double wallTime, final double actualTime);
+    
+    /**
+     * Sets the submission (arrival) time of this Cloudlet into a Datacenter.
+     *
+     * @param clockTime the submission time
+     * @return true if the submission time is valid and
+     * the cloudlet has already being assigned to a datacenter for execution
+     * @pre clockTime >= 0.0
+     * @post $none
+     */
+    boolean setSubmissionTime(final double clockTime);
+
+        /**
+     * Sets the {@link #getExecStartTime() latest execution start time} of this Cloudlet.
+     * <br>
+     * <b>NOTE:</b> With new functionalities, such as being able to cancel / to
+     * pause / to resume this Cloudlet, the execution start time only holds the
+     * latest one. Meaning, all previous execution start time are ignored.
+     *
+     * @param clockTime the latest execution start time
+     * @pre clockTime >= 0.0
+     * @post $none
+     */
+    void setExecStartTime(final double clockTime);
+
+    /**
      * Gets the listener object that will be notified when a cloudlet finishes 
      * its execution at a given {@link Vm}. 
      *
@@ -767,16 +723,11 @@ public interface Cloudlet extends Identificable {
      * objects.
      */
     public static final Cloudlet NULL = new Cloudlet() {
-      private final Integer[] emptyIntegerArray = new Integer[]{};
-      private final String[]  emptyStringArray  = new String[]{};
-      
       @Override public boolean addRequiredFile(String fileName) { return false; }
       @Override public boolean deleteRequiredFile(String filename) { return false; }
       @Override public double getAccumulatedBwCost() { return 0.0; }
       @Override public double getActualCPUTime(int datacenterId) { return 0.0; }
       @Override public double getActualCPUTime() { return 0.0; }
-      @Override public Integer[] getDatacenterIdArray() { return emptyIntegerArray; }
-      @Override public String[] getNamesOfAllExecutedDatacenters() { return emptyStringArray; }
       @Override public int getClassType() { return 0; }
       @Override public long getCloudletFileSize() { return 0L; }
       @Override public long getCloudletFinishedSoFar() { return 0L; }
@@ -799,7 +750,6 @@ public interface Cloudlet extends Identificable {
       @Override public List<String> getRequiredFiles() { return Collections.emptyList();}
       @Override public int getReservationId() { return 0; }
       @Override public int getDatacenterId() { return 0; }
-      @Override public String getDatacenterName(int datacenterId) { return ""; }
       @Override public Status getStatus() { return getCloudletStatus(); }
       @Override public double getSubmissionTime() { return 0.0; }
       @Override public double getSubmissionTime(int datacenterId) { return 0.0; }
@@ -818,17 +768,12 @@ public interface Cloudlet extends Identificable {
       @Override public boolean isFinished() { return false; }
       @Override public boolean requiresFiles() { return false; }
       @Override public boolean setClassType(int classType) { return false; }
-      @Override public boolean setCloudletFinishedSoFar(long length) { return false; }
       @Override public boolean setCloudletLength(long cloudletLength) { return false; }
       @Override public boolean setCloudletStatus(Status newStatus) { return false; }
-      @Override public boolean setWallClockTime(double wallTime, double actualTime) { return false; }
-      @Override public void setExecStartTime(double clockTime) {}
       @Override public boolean setNetServiceLevel(int netServiceLevel) { return false; }
       @Override public boolean setNumberOfPes(int numberOfPes) { return false; }
       @Override public boolean setReservationId(int reservationId) { return false; }
-      @Override public void assignCloudletToDatacenter(int datacenterId, double costPerCpuSec) {}
       @Override public void assignCloudletToDatacenter(int datacenterId, double costPerCpuSec, double costPerByteOfBw) {}
-      @Override public boolean setSubmissionTime(double clockTime) { return false; }
       @Override public void setUserId(int userId) {}
       @Override public void setUtilizationModelBw(UtilizationModel utilizationModelBw) {}
       @Override public void setUtilizationModelCpu(UtilizationModel utilizationModelCpu) {}
@@ -836,5 +781,14 @@ public interface Cloudlet extends Identificable {
       @Override public void setVmId(int vmId) {}
       @Override public EventListener<CloudletInsideVmEventInfo> getOnCloudletFinishEventListener() { return EventListener.NULL;}
       @Override public void setOnCloudletFinishEventListener(EventListener<CloudletInsideVmEventInfo> onCloudletFinishEventListener) {}
+      
+      /**
+       * @todo @author manoelcampos These methods shouldn't be public,
+       * but they are used by ResCloudlet class.
+       */
+      @Override public boolean setCloudletFinishedSoFar(long length) { return false; }
+      @Override public boolean setWallClockTime(double wallTime, double actualTime) { return false; }
+      @Override public boolean setSubmissionTime(double clockTime) { return false; }
+      @Override public void setExecStartTime(double clockTime) { }
   };
 }

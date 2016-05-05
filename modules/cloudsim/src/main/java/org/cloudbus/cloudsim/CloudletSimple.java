@@ -522,17 +522,6 @@ public class CloudletSimple implements Cloudlet {
         return cloudletFileSize;
     }
 
-    /**
-     * Gets the output file size of this Cloudlet after execution (unit: in byte).
-     *
-     * @todo See
-     * <a href="https://groups.google.com/forum/#!topic/cloudsim/MyZ7OnrXuuI">this
-     * discussion</a>
-     *
-     * @return the Cloudlet output file size
-     * @pre $none
-     * @post $result >= 1
-     */
     @Override
     public long getCloudletOutputSize() {
         return cloudletOutputSize;
@@ -546,8 +535,22 @@ public class CloudletSimple implements Cloudlet {
         setAccumulatedBwCost(costPerByteOfBw * getCloudletFileSize());
     }
 
-    @Override
-    public void assignCloudletToDatacenter(final int datacenterId, final double costPerCpuSec) {
+    /**
+     * Sets the parameters of the Datacenter where the Cloudlet is going to be
+     * executed. From the second time this method is called, every call make the
+     * cloudlet to be migrated to the indicated Datacenter.<br>
+     *
+     * NOTE: This method <tt>should</tt> be called only by a resource entity,
+     * not the user or owner of this Cloudlet.
+     *
+     * @param datacenterId the id of Datacenter where the cloudlet will be executed
+     * @param costPerCpuSec the cost per second of running the cloudlet on the given Datacenter
+     *
+     * @pre resourceID >= 0
+     * @pre cost > 0.0
+     * @post $none
+     */
+    protected void assignCloudletToDatacenter(final int datacenterId, final double costPerCpuSec) {
         final DatacenterInfo datacenter = new DatacenterInfo();
         datacenter.datacenterId = datacenterId;
         datacenter.costPerSec = costPerCpuSec;
@@ -572,6 +575,7 @@ public class CloudletSimple implements Cloudlet {
 
         index++;  
     }    
+
 
     @Override
     public boolean setSubmissionTime(final double clockTime) {
@@ -697,32 +701,8 @@ public class CloudletSimple implements Cloudlet {
     }
 
     @Override
-    public String[] getNamesOfAllExecutedDatacenters() {
-        String[] data = new String[datacenterInfoList.size()];
-
-        int i = 0;
-        for (DatacenterInfo res: datacenterInfoList) {
-            data[i++] = res.name;
-        }
-
-        return data;
-    }
-
-    @Override
-    public Integer[] getDatacenterIdArray() {
-        Integer[] datacenters = new Integer[datacenterInfoList.size()];
-
-        int i = 0;
-        for (DatacenterInfo datacenter: datacenterInfoList) {
-            datacenters[i++] = datacenter.datacenterId;
-        }
-
-        return datacenters;
-    }
-
-    @Override
     public double getActualCPUTime(final int datacenterId) {
-        DatacenterInfo datacenter = getDatacenterById(datacenterId);
+        DatacenterInfo datacenter = getDatacenterInfo(datacenterId);
         if (datacenter != null) {
             return datacenter.actualCPUTime;
         }
@@ -731,7 +711,7 @@ public class CloudletSimple implements Cloudlet {
 
     @Override
     public double getCostPerSec(final int datacenterId) {
-        DatacenterInfo resource = getDatacenterById(datacenterId);
+        DatacenterInfo resource = getDatacenterInfo(datacenterId);
         if (resource != null) {
             return resource.costPerSec;
         }
@@ -740,7 +720,7 @@ public class CloudletSimple implements Cloudlet {
 
     @Override
     public long getCloudletFinishedSoFar(final int datacenterId) {
-        DatacenterInfo datacenter = getDatacenterById(datacenterId);
+        DatacenterInfo datacenter = getDatacenterInfo(datacenterId);
         if (datacenter != null) {
             return datacenter.finishedSoFar;
         }
@@ -750,7 +730,7 @@ public class CloudletSimple implements Cloudlet {
 
     @Override
     public double getSubmissionTime(final int datacenterId) {
-        DatacenterInfo datacenter = getDatacenterById(datacenterId);
+        DatacenterInfo datacenter = getDatacenterInfo(datacenterId);
         if (datacenter != null) {
             return datacenter.submissionTime;
         }
@@ -759,20 +739,11 @@ public class CloudletSimple implements Cloudlet {
 
     @Override
     public double getWallClockTime(final int datacenterId) {
-        DatacenterInfo datacenter = getDatacenterById(datacenterId);
+        DatacenterInfo datacenter = getDatacenterInfo(datacenterId);
         if (datacenter != null) {
             return datacenter.wallClockTime;
         }
         return 0.0;
-    }
-
-    @Override
-    public String getDatacenterName(final int datacenterId) {
-        DatacenterInfo datacenter = getDatacenterById(datacenterId);
-        if (datacenter != null) {
-            return datacenter.name;
-        }
-        return "";
     }
 
     /**
@@ -784,7 +755,7 @@ public class CloudletSimple implements Cloudlet {
      * @pre datacenterId >= 0
      * @post $none
      */
-    private DatacenterInfo getDatacenterById(final int datacenterId) {
+    private DatacenterInfo getDatacenterInfo(final int datacenterId) {
         for (DatacenterInfo datacenter : datacenterInfoList) {
             if (datacenter.datacenterId == datacenterId) {
                 return datacenter;

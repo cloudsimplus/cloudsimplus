@@ -156,7 +156,7 @@ public class MigrationExample1 {
             CloudSim.startSimulation();
             CloudSim.stopSimulation();
 
-            TableBuilderHelper.print(new TextTableBuilder(), broker.getCloudletReceivedList());
+            TableBuilderHelper.print(new TextTableBuilder(), broker.getCloudletsFinishedList());
 
             Log.printConcatLine(MigrationExample1.class.getSimpleName(), " finished!");
         } catch (Exception e) {
@@ -312,7 +312,7 @@ public class MigrationExample1 {
      * probably due to lack of CPU for all VMs. It has to be created
      * an IT test to check this problem. 
      * 
-     * @todo @author manoelcampos The method {@link DatacenterBroker#getCloudletReceivedList()}
+     * @todo @author manoelcampos The method {@link DatacenterBroker#getCloudletsFinishedList()}
      * returns an empty list when using  {@link PowerDatacenter}, 
      * {@link PowerHost} and {@link PowerVm}.
      */

@@ -129,7 +129,7 @@ public class DatacenterSimple extends SimEntity implements Datacenter {
 
         switch (ev.getTag()) {
             // Resource characteristics inquiry
-            case CloudSimTags.RESOURCE_CHARACTERISTICS:
+            case CloudSimTags.DATACENTER_CHARACTERISTICS:
                 srcId = ((Integer) ev.getData());
                 sendNow(srcId, ev.getTag(), getCharacteristics());
                 break;
@@ -444,30 +444,26 @@ public class DatacenterSimple extends SimEntity implements Datacenter {
      * @param ev information about the event just happened
      * @param ack indicates if the event's sender expects to receive an
      * acknowledge message when the event finishes to be processed
+     * @return true if a host was allocated to the VM; false otherwise
      *
      * @pre ev != null
      * @post $none
      */
-    protected void processVmCreate(SimEvent ev, boolean ack) {
+    protected boolean processVmCreate(SimEvent ev, boolean ack) {
         Vm vm = (Vm) ev.getData();
 
-        boolean result = getVmAllocationPolicy().allocateHostForVm(vm);
+        boolean hostAllocatedForVm = getVmAllocationPolicy().allocateHostForVm(vm);
 
         if (ack) {
             int[] data = new int[3];
             data[0] = getId();
             data[1] = vm.getId();
-
-            if (result) {
-                data[2] = CloudSimTags.TRUE;
-            } else {
-                data[2] = CloudSimTags.FALSE;
-            }
-            send(vm.getUserId(),
-                    CloudSim.getMinTimeBetweenEvents(), CloudSimTags.VM_CREATE_ACK, data);
+            data[2] = (hostAllocatedForVm ? CloudSimTags.TRUE : CloudSimTags.FALSE);
+            send(vm.getUserId(), CloudSim.getMinTimeBetweenEvents(), 
+                 CloudSimTags.VM_CREATE_ACK, data);
         }
 
-        if (result) {
+        if (hostAllocatedForVm) {
             getVmList().add(vm);
 
             if (vm.isBeingInstantiated()) {
@@ -479,6 +475,8 @@ public class DatacenterSimple extends SimEntity implements Datacenter {
                     .getHost(vm).getVmScheduler()
                     .getAllocatedMipsForVm(vm));
         }
+        
+        return hostAllocatedForVm;
     }
 
     /**
@@ -967,7 +965,7 @@ public class DatacenterSimple extends SimEntity implements Datacenter {
     }
 
     public void checkCloudletsCompletionForGivenVm(Vm vm) {
-        while (vm.getCloudletScheduler().areThereFinishedCloudlets()) {
+        while (vm.getCloudletScheduler().hasFinishedCloudlets()) {
             Cloudlet cl = vm.getCloudletScheduler().getNextFinishedCloudlet();
             if (cl != null) {
                 sendNow(cl.getUserId(), CloudSimTags.CLOUDLET_RETURN, cl);
@@ -1066,13 +1064,13 @@ public class DatacenterSimple extends SimEntity implements Datacenter {
         // this resource should register to regional CIS.
         // However, if not specified, then register to system CIS (the
         // default CloudInformationService) entity.
-        int gisID = CloudSim.getEntityId(regionalCisName);
-        if (gisID == -1) {
-            gisID = CloudSim.getCloudInfoServiceEntityId();
+        int cisID = CloudSim.getEntityId(regionalCisName);
+        if (cisID == -1) {
+            cisID = CloudSim.getCloudInfoServiceEntityId();
         }
 
         // send the registration to CIS
-        sendNow(gisID, CloudSimTags.REGISTER_RESOURCE, getId());
+        sendNow(cisID, CloudSimTags.DATACENTER_REGISTRATION_REQUEST, getId());
         // Below method is for a child class to override
         registerOtherEntity();
     }
