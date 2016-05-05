@@ -4,6 +4,7 @@ import org.cloudbus.cloudsim.core.Identificable;
 import org.cloudbus.cloudsim.utilizationmodels.UtilizationModel;
 import java.util.Collections;
 import java.util.List;
+import org.cloudbus.cloudsim.listeners.CloudletInsideVmEventInfo;
 import org.cloudbus.cloudsim.listeners.EventListener;
 
 /**
@@ -748,20 +749,18 @@ public interface Cloudlet extends Identificable {
     
     /**
      * Gets the listener object that will be notified when a cloudlet finishes 
-     * its execution at a given {@link Vm}. The listener receives the Cloudlet and the 
-     * Vm where it was running.
+     * its execution at a given {@link Vm}. 
      *
      * @return the onCloudletFinishEventListener
      */
-    EventListener<Cloudlet, Vm> getOnCloudletFinishEventListener();
+    EventListener<CloudletInsideVmEventInfo> getOnCloudletFinishEventListener();
     
     /**
      * Sets the listener object that will be notified when a cloudlet finishes 
-     * its execution at a given {@link Vm}. The listener receives the Cloudlet and the 
-     * Vm where it was running.
+     * its execution at a given {@link Vm}. 
      * @param onCloudletFinishEventListener 
      */
-    void setOnCloudletFinishEventListener(EventListener<Cloudlet, Vm> onCloudletFinishEventListener);
+    void setOnCloudletFinishEventListener(EventListener<CloudletInsideVmEventInfo> onCloudletFinishEventListener);
  
     /**
      * A property that implements the Null Object Design Pattern for {@link Cloudlet}
@@ -835,7 +834,7 @@ public interface Cloudlet extends Identificable {
       @Override public void setUtilizationModelCpu(UtilizationModel utilizationModelCpu) {}
       @Override public void setUtilizationModelRam(UtilizationModel utilizationModelRam) {}
       @Override public void setVmId(int vmId) {}
-      @Override public EventListener<Cloudlet, Vm> getOnCloudletFinishEventListener() { return EventListener.NULL;}
-      @Override public void setOnCloudletFinishEventListener(EventListener<Cloudlet, Vm> onCloudletFinishEventListener) {}
+      @Override public EventListener<CloudletInsideVmEventInfo> getOnCloudletFinishEventListener() { return EventListener.NULL;}
+      @Override public void setOnCloudletFinishEventListener(EventListener<CloudletInsideVmEventInfo> onCloudletFinishEventListener) {}
   };
 }

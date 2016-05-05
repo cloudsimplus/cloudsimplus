@@ -14,6 +14,7 @@ import java.util.LinkedList;
 import java.util.List;
 
 import org.cloudbus.cloudsim.core.CloudSim;
+import org.cloudbus.cloudsim.listeners.CloudletInsideVmEventInfo;
 import org.cloudbus.cloudsim.listeners.EventListener;
 
 /**
@@ -148,7 +149,7 @@ public class CloudletSimple implements Cloudlet {
     private List<String> requiredFiles = null;
     
     /**@see #getOnCloudletFinishEventListener() */
-    private EventListener<Cloudlet, Vm> onCloudletFinishEventListener = EventListener.NULL;
+    private EventListener<CloudletInsideVmEventInfo> onCloudletFinishEventListener = EventListener.NULL;
 
     /**
      * Instantiates a new Cloudlet object. The Cloudlet length, input and output
@@ -358,12 +359,12 @@ public class CloudletSimple implements Cloudlet {
     }
 
     @Override
-    public EventListener<Cloudlet, Vm> getOnCloudletFinishEventListener() {
+    public EventListener<CloudletInsideVmEventInfo> getOnCloudletFinishEventListener() {
         return onCloudletFinishEventListener;
     }
 
     @Override
-    public void setOnCloudletFinishEventListener(EventListener<Cloudlet, Vm> onCloudletFinishEventListener) {
+    public void setOnCloudletFinishEventListener(EventListener<CloudletInsideVmEventInfo> onCloudletFinishEventListener) {
         if(onCloudletFinishEventListener == null)
             onCloudletFinishEventListener = EventListener.NULL;
         

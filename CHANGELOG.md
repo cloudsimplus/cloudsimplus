@@ -2,6 +2,7 @@
 
 Lists the main changes in the project.
 
+<<<<<<< HEAD
 ## [4.0.0] - 2016-04-15 
 
 ### WARNINGS
@@ -100,6 +101,131 @@ CloudletSchedulerSpaceShared and CloudletSchedulerTimeShared to CloudletSchedule
 
 	- By this way, now it is easier to extend and test these classes, since a bunch of duplicated code was removed, increasing code reuse.
 
+=======
+## [4.0.0] - 2016-04-25 
+
+### WARNINGS
+
+- This is an **unofficial release** that breaks compatibility with previous CloudSim versions. 
+The change log below presents more details of how to update your simulations after starting to use this release.
+However, all previous existing examples were updated to use this release. Thus, they can be an excelente way
+to get a comprehensive view of changes in how you make your simulations.
+
+- It was changed the requirements of the cloudsim project to Java 8 (the examples remain in Java 7).
+
+
+### Fixed
+
+- The `HarddriveStorage` class had an issue when calling the method `addReservedFile` without priorly reserving space for the file by 
+calling the `reserveSpace` method. Consider the situation where the allocated space is 0. When adding a reserved file of size 50 without 
+reserving the space, the method `addReservedFile` was decreasing the allocated space to -50. After adding the file it increased 
+the allocated space to 0 again. However, the allocated space couldn't be zero once a file (reserved or not) was added. 
+Other issue occurred when reserving a space and adding a file of size different from the reserved. 
+These issues were corrected by introducing the `reservedStorage` attribute to control the reserved space. 
+Several unit tests were included to test the class.
+
+- Corrected the value of the const org.cloudbus.cloudsim.Consts.WEEK that the values was duplicated from the DAY constant.
+
+- Updated the DatacenterSimple class to use the scheduleInterval to define the interval to update cloudlets processing, 
+in the same way as in PowerDatacenter class
+
+- All the implementations of the method VmAllocationPolicy.optimizeAllocation are now returning an empty map instead 
+of null when the method in fact doesn't perform any VM placement optimization. 
+This change was performed to reduce null checks and avoid NullPointerException's.
+
+- The method getCloudletFinishedSoFar of CloudletSimple class now returns 0 when the cloudlet hasn't started executing yet,
+instead of returning the cloudlet length. If it hasn't started, the executed length is thus 0.
+
+- Changed the return value of the VmAllocationPolicy.optimizeAllocation method from List&lt;Map&lt;String, Object&gt;&gt; to Map&lt;Vm, Host&gt;
+	- The return value was completely strange and didn't correctly use generics. 
+    The method return was a List of Maps where the keys were either the strings "vm" or "host". 
+    If the key was the string "vm", it meant the value was a Vm instance. If the key was the string "host", 
+    it meant the value was a Host instance. Thus, each Map represented the relation between a Vm and the Host where it was to be placed.
+    
+    - This design was very confusing, requiring a lot of explanation and several unsafe typecasts. Now the method, 
+    and all related ones that were returning a List&lt;Map&lt;String, Object&gt;&gt;, are returning a Map&lt;Vm, Host&gt; 
+    that doesn't need many explanation. It is the map between a Vm and the Host where it has to be placed.
+    
+    - The method DatacenterSimple.processVmMigrate that expected the ev.getData() to be a Map&lt;String, Object&gt;, 
+    now expects a Map.Entry&lt;Vm, Host&gt;, making to code clearer, less error-prone and reduces typecasts.
+
+
+### Removed 
+
+- The parameters of the method `File.deleteFile(final String fileName, File file)` were not being used as defined in the method documentation. 
+It was supposed to pass the name of the file to be removed and the `file` parameter should return the removed `File` object. 
+By this way, it was supposed to pass a `File` object as parameter and get the deleted `File` into this object. 
+However, Java passes object references by value (not by reference), what means that if the reference to the `file` parameter 
+is changed inside the method, the reference of the original object outside the method is not updated. 
+Such a Java behaviour makes impossible to the method to work as proposed. Therefore, the method was removed.
+
+- Removal of duplicated `fileSize` and `fileName` attributes at `FileAttribute` class. Now `FileAttribute` class has a relationship with `File`.
+
+- Classes `RamProvisioner`, `RamProvisionerSimple`, `BwProvisioner` and `BwProvisionerSimple` were deleted and 
+new classes and interfaces were introduced (PeProvisioner and PeProvisionerSimple are working in progress yet). 
+The new `ResourceProvisionerSimple` class is the only concrete class that you have to use in order to instantiate a provisioner for 
+`Ram`, `Bandwidth` or a `FileStorage` (such as a `HarddriveStorage`) resource object. 
+See more details of what changed in the [items below](#resource-interface).
+
+- Deleted the ParameterException class and changed its use to the unchecked native InvalidArgumentException. 
+Unchecked exceptions doesn't oblige the developer to always insert try ... catch blocks, makes the code clearer and 
+is the default exception used to invalidate given parameters. Lets say that a method "A" throws a checked exception, 
+and it is called by method "B", that is called by method "C". 
+All these methods are required to throws the exception or catch them. Using unchecked exception you just 
+have to place your try...catch at the last method that called method (method "C" in this example), 
+reducing [boilerplate code](https://en.wikipedia.org/wiki/Boilerplate_code).
+
+- The class NetworkConstants was deleted because all of its values were just values used by the network examples. 
+Thus, they were accordingly moved to the classes that they belong. Some constants included in this class were just 
+values to be used by Switch related classes. Placing these constants outside the classes that 
+in fact use them makes the classes design low cohesive. 
+Accordingly, to increase the cohesion, making easy to understand how the elements are related, 
+the constants were moved to the appropriated classes. 
+
+- Classes WorkflowApp and BagOfTasksAppCloudlet were deleted because they were in fact just creating hard-coded VMs and Cloudlets
+and they weren't providing any specific code. In replacement, they were created the NetworkVmsExampleWorkflowAppCloudlet 
+and NetworkVmsExampleBagOfTasksAppCloudlet classes that just instantiate regular AppCloudlet and NetworkCloudlet 
+classes with specific values, in order to provide the desired kind of tasks to be simulated.
+
+- See more details about [network changes below](#network-changes).
+
+
+### Changed
+
+- Throughout documentation update and improvement  
+
+- Updated CloudSimExample7 
+	- Moved the anonymous Thread class to a specific class named MonitorThread, outside the CloudSimExample7 class, but in the same file.
+    - Included the attribute DatacenterBroker broker inside the  MonitorThread class in order to get the broker dynamically created inside the Thread.
+    - Printed the list of cloudlets submitted to the broker created by the MonitorThread.
+
+- Changed the Vm.addStateHistoryEntry method to receive a VmStateHistoryEntry object instead of a
+separated value for each of its attributes, providing a more OO design
+
+- Renamed the methods getBw and getRam to getBwCapacity and getRamCapacity
+
+- Refactored the WorkloadFileReader to completely remove code duplication. Included new test cases for gz, zip and swf workload files.
+
+- All classes that usually have to be extended by CloudSim users in order to provide some specific features for their 
+simulations were moved to new appropriated packages in order to increase class's organization:
+	- Moved all UtilizationModel classes and interfaces to new package org.cloudbus.cloudsim.utilizationmodels
+	- Moved all DatacenterBroker classes and interfaces to new package org.cloudbus.cloudsim.brokers
+	- Moved all CloudletScheduler and VmScheduler classes and interfaces to new package org.cloudbus.cloudsim.schedulers
+	- Moved all VmAllocationPolicy classes and interfaces to new package org.cloudbus.cloudsim.allocationpolicies
+	- Moved classes Packet, InfoPacket and NetworkTopology to the network package
+
+- Moved the duplicated methods updateVmProcessing, getNextFinishedCloudlet, areThereFinishedCloudlets, 
+getTotalUtilizationOfCpu, cloudletCancel, cloudletStatus, cloudletPause, cloudletSubmit(Cloudlet cloudlet) and other ones from
+CloudletSchedulerSpaceShared and CloudletSchedulerTimeShared to CloudletSchedulerAbstract class.
+	- Some of these methods were exactly equal. Other ones such as the updateVmProcessing, cloudletCancel 
+    and cloudletPause at the CloudletSchedulerSpaceShared class were just looking at the list of waiting cloudlets.
+	However, this list can be just empty in the CloudletSchedulerTimeShared class,
+	since all cloudlets will share the processor time (not waiting for a previous cloudlet to completely finishe executing after it can start running).
+	By this way, moving the methods to the super class doesn't change the behaviour of these different schedulers. 
+    Other subclasses in fact completely override methods such as updateVmProcessing.
+
+	- By this way, now it is easier to extend and test these classes, since a bunch of duplicated code was removed, increasing code reuse.
+>>>>>>> b25464b9a18a028b3490c2954ce66ab670be9c15
 
 
 - &lt;a name="network-changes"&gt;&lt;/a&gt;THE MOST CRITICAL UPDATE IN NETWORK RELATED CLASSES
@@ -109,8 +235,13 @@ CloudletSchedulerSpaceShared and CloudletSchedulerTimeShared to CloudletSchedule
     
     - The network related classes such as AppCloudlet, NetworkCloudlet, NetDatacenterBroker had an extremely amount of duplicated code.
     The NetDatacenterBroker was a copy of the original DatacenterBroker class, instead of extending it and overriding
+<<<<<<< HEAD
     the necessary methods. It was noticed that a lot of code in the created class was exactly equal to the DatacenterBroker,
     what shows that such methods should be inherited from the already existing class.
+=======
+    necessary methods. It was noticed that a lot of code in the created class was exactly equal to the DatacenterBroker,
+    which shows that such methods should be inherited from the already existing class.
+>>>>>>> b25464b9a18a028b3490c2954ce66ab670be9c15
     
     - The code that in fact belonged only to the NetDatacenterBroker class was completely repetitive and confuse.
     There were very long methods that should be divided into smaller and specific ones in order to avoid
@@ -121,8 +252,14 @@ CloudletSchedulerSpaceShared and CloudletSchedulerTimeShared to CloudletSchedule
     the simulation. It was clear that the values were defined just to perform the simulations
     presented at the paper ["NetworkCloudSim: Modelling Parallel Applications in Cloud Simulations"](http://dx.doi.org/10.1109/UCC.2011.24). 
     By this way, they aren't useful for other users
+<<<<<<< HEAD
     that desire to create their own simulations. Further, the creation of hard-coded Cloudlets and VMs inside
     the NetDatacenterBroker doesn't make it to be reusable and even violates the [Open/Closed Principle (OCP)](https://en.wikipedia.org/wiki/Open/closed_principle).
+=======
+    which desire to create their own simulations. Further, the creation of hard-coded Cloudlets and VMs inside
+    the NetDatacenterBroker doesn't make it to be reusable and even violates the 
+    [Open/Closed Principle (OCP)](https://en.wikipedia.org/wiki/Open/closed_principle).
+>>>>>>> b25464b9a18a028b3490c2954ce66ab670be9c15
     
     - Once the mentioned paper doesn't provide low level details about how every class's method works (and it is not supposed that
     a paper will present such in deep code details) and that there weren't any unit test for the network related classes,
@@ -147,29 +284,53 @@ By this way, it was paved the way to start applying the "Liskov Substitution Pri
 
 - All the examples were accordingly updated in order to use the new classes. Thus, for all mentioned classes, instead of
 instantiating an object such as `Cloudlet cloudlet = new Cloudlet(required_parameters_here)` you have to use the new corresponding class.
+<<<<<<< HEAD
 In the example, code line of cloud would be `Cloudlet cloudlet = new CloudletSimple(required_parameters_here)`. Realize the the declared variable
 doesn't have to be declared as CloudletSimple, but just as Cloudlet (as previously). This follows the "program to an interface" principle just mentioned.
 However, you can declare and instantiate the object using `CloudletSimple cloudlet = new CloudletSimple(required_parameters_here)`.
 
 - Implementation of the Null Object Design Pattern in order to start avoiding null checks and `NullPointerException` when using the classes just mentioned above.
+=======
+In the example, code line of cloud would be `Cloudlet cloudlet = new CloudletSimple(required_parameters_here)`. Realize that the declared variable
+doesn't have to be declared as CloudletSimple, but just as Cloudlet (as previously). This follows the "program to an interface" principle just mentioned.
+However, you can declare and instantiate the object using `CloudletSimple cloudlet = new CloudletSimple(required_parameters_here)`.
+
+- Implementation of the Null Object Design Pattern in order to start avoiding null checks and `NullPointerException` 
+when using the classes just mentioned above.
+>>>>>>> b25464b9a18a028b3490c2954ce66ab670be9c15
 The `NULL` attributes created are broadly used by classes of the new `org.cloudbus.cloudsim.builders` package in order to avoid `NullPointerException`. 
 This package will be presented in the next sections.
 
 - Each interface that implements the Null Object Design Pattern has a public static final attribute named `NULL`, that implements the interface itself, 
+<<<<<<< HEAD
 returning: zero for all numeric methods; false for all boolean methods; an empty string for all String methods; an empty unmodifiable list for all List methods; 
+=======
+returning: zero for all numeric methods; false for all boolean methods; an empty string for all String methods; 
+an empty unmodifiable list for all List methods; 
+>>>>>>> b25464b9a18a028b3490c2954ce66ab670be9c15
 and an empty unmodifiable Map for all Map methods. Taking the `Vm` interface as example, using the new `NULL` attribute defined on it, 
 instead of returning `null` when a method doesn't find a `Vm`, such a method can return `Vm.NULL`. 
 To verify if a valid `Vm` was returned, you have to use `if(!vm.equals(Vm.NULL))` instead of `if(vm == null)`.
 
 - Created an enum Cloudlet.Status and changed the cloudlet status to that type. 
 The use of an integer attribute to define the status of the cloudlet inccurs more code to validate the attribute.
+<<<<<<< HEAD
 It is not transparent to the user what are the acceptable values. Further, passing a integer value out of the
+=======
+It is not transparent to the user what are the acceptable values. Further, passing an integer value out of the
+>>>>>>> b25464b9a18a028b3490c2954ce66ab670be9c15
 acceptable range will only raise exception in runtime.
 With the enum these problems were solved.
 
 - Created an enum Pe.Status and changed the status of a Pe to that type, avoiding the use of int constants
 
+<<<<<<< HEAD
 - Several refactorings to: reduce code duplication; improve class hierarchy and project’s extensibility; reduce bug probability; clean the code and unit tests in order to improve code readability; correct minor bugs; reduce code duplication of unit tests; include extensive set of unit tests to validate performed changes.
+=======
+- Several refactorings to: reduce code duplication; improve class hierarchy and project’s extensibility; 
+reduce bug probability; clean the code and unit tests in order to improve code readability; correct minor bugs; 
+reduce code duplication of unit tests; include extensive set of unit tests to validate performed changes.
+>>>>>>> b25464b9a18a028b3490c2954ce66ab670be9c15
     - Refactorings in classes such as `HostSimple`, `VmSimple` and provisioners, changing the way that the capacity and allocated resources are stored.    
     - It has been noticed a repetitive set of attributes and methods over several classes. 
     For instance: attributes to store resource capacity and allocation; and methods to get the amount of free available resource 
@@ -211,7 +372,12 @@ With the enum these problems were solved.
         - The `HarddriveStorage` class now implements the `FileStorage` interface.
         - With the new `FileStorage` interface, the public interface of the `DatacenterSimple` class changed. 
         Now, to instantiate a `DatacenterSimple` it has to be passed a `List&lt;FileStorage&gt;` instead of `List&lt;Storage&gt;`.
+<<<<<<< HEAD
         - The classes `HarddriveStorage` and `SanStorage` were moved to the new package `org.cloudbus.cloudsim.resources`, including the `FileStorage` interface.
+=======
+        - The classes `HarddriveStorage` and `SanStorage` were moved to the new package `org.cloudbus.cloudsim.resources`, 
+        including the `FileStorage` interface.
+>>>>>>> b25464b9a18a028b3490c2954ce66ab670be9c15
         - The public interface of the `Datacenter` class and all its subclasses was changed due to renaming the `Storage` interface to FileStorage. 
         Now the constructor of these classes has to receive a `List&lt;FileStorage&gt;` instead of `List&lt;Storage&gt;`.
         - The "double storage" attribute of the `HostSimple` class originally was being decreased every time a new `Vm` was placed at the host, 
@@ -234,7 +400,11 @@ With the enum these problems were solved.
     - Now, when instantiating a `Host`, it doesn’t have to be used a different `ResourceProvisioner` class for each resource such as Ram and Bw
     (at least if you don’t want to). It only has to be passed a different instance of a `ResourceRrovisioner` for each `Host` resource. 
     Instead of each provisioner instance receiving the resource capacity (int, long or double), now each one has to receive an instance of a `Resource`, 
+<<<<<<< HEAD
     that in turn receives the resource capacity. So, the `ResourceProvisioner` interface was changed to receive a `Resource` object, 
+=======
+    which in turn receives the resource capacity. So, the `ResourceProvisioner` interface was changed to receive a `Resource` object, 
+>>>>>>> b25464b9a18a028b3490c2954ce66ab670be9c15
     that will store all information about itself (such as its capacity, the amount of free resource, etc). 
     Below it is shown a example of how to instantiate a `Host`, before and after the performed changes:
         - **Before changes** : `new Host(hostId, new RamProvisionerSimple(ram), new BwProvisionerSimple(bw), new VmSchedulerTimeShared(peList));`
@@ -252,9 +422,18 @@ to their PEs number. By this way, VMs requiring more PEs will be submitted first
 - Inclusion of MigrationExample1 class, a simple simulation example that performs VM migration due to under and over host utilization.  
     - The original examples inside packages org.cloudbus.cloudsim.examples.power.planetlab and
     org.cloudbus.cloudsim.examples.power.random are over complex to allow a novice CloudSim user to understand how to perform VM migration simulations.
+<<<<<<< HEAD
     These examples create too much Hosts, VMs and Cloudlets to enable any reasoning about the obtained results. They don't make clear why, how and when the migrations were performed.
     - The included example implements a Worst Fit VmAllocationPolicy that selects the first host with the most available CPU capacity to host a VM.
     - It was also included a custom UtilizationModel to implement progressive cloudlet CPU usage along the simulation time. The cloudlet CPU usage changes by Arithmetic Progression, allowing to know exactly how it will be along the time. By this way, it is easy to understand simulation results.
+=======
+    These examples create too much Hosts, VMs and Cloudlets to enable any reasoning about the obtained results. 
+    They don't make clear why, how and when the migrations were performed.
+    - The included example implements a Worst Fit VmAllocationPolicy that selects the first host with the most available CPU capacity to host a VM.
+    - It was also included a custom UtilizationModel to implement progressive cloudlet CPU usage along the simulation time. 
+    The cloudlet CPU usage changes by Arithmetic Progression, allowing to know exactly how it will be along the time. 
+    By this way, it is easy to understand simulation results.
+>>>>>>> b25464b9a18a028b3490c2954ce66ab670be9c15
 
 - Added the interface TableBuilder and classes AbstractTableBuilder, TextTableBuilder, CsvTableBuilder and HtmlTableBuilder to the 
 org.cloudbus.cloudsim.util package
@@ -269,6 +448,7 @@ org.cloudbus.cloudsim.util package
     appear misplaced. A new ResultsHelper class was created into the package org.cloudbus.cloudsim.examples.util
     in order to easily print simulation results and to present them in a well formatted table that
     makes results analysis easier.
+<<<<<<< HEAD
 
 - Inclusion of Integration Tests (IT)
     - Configuration of the pom.xml file of the cloudsim project to perform execution of Functional/Integration Tests
@@ -329,6 +509,74 @@ These notifications can be about the change in state of CloudSim entities.
     you just have to set the host attributes first and then, call the `createHosts(int amount).getHosts()` method of the `HostBuilder` class
     in order to create the amount of Hosts you want and get the list of created hosts. 
 
+=======
+
+- Inclusion of Integration Tests (IT)
+    - Configuration of the pom.xml file of the cloudsim project to perform execution of Functional/Integration Tests
+    in order to test entire simulation scenarios instead of just isolated units.
+    With the integration tests, it is safer to perform changes in the code and make sure that
+    changes don't brake anything. For instance, the created Integration Test called `VmCreationFailureIntegrationTest`,
+    verifies if:
+        - a given VM failed to be created due to lack of host resources;
+        - the time a host is allocated or deallocated to a given VM; 
+        - finishing and execution time of different cloudlets using a specific `CloudletScheduler`.
+    - It was used the already included maven-surefire-plugin instead of the maven-failsafe-plugin to run
+    these new tests. By this way, it is possible to see the Integration/Functional tests results directly at the NetBeans JUnit
+    graphical test results interface.
+    - Functional/Integration Tests have to be included in the package `org.cloudbus.cloudsim.IntegrationTests`
+    (as configured in maven profiles inside the pom.xml).
+    - To run all tests at NetBeans, including the Functional/Integration ones, you can right click on the project root,
+    select "Set Configurtion &gt;&gt; integration-test", right click again and select "Custom &gt;&gt; integration-tests" 
+    (that is configured in the nbactions.xml). To run in other IDE's, you can see the maven parameters at the nbactions.xml file.
+    - Included the CheckHostAvailableMips Integration Test. The IT checks if the Host CPU utilization is as expected along the simulation run. 
+
+
+- Inclusion of the interface `EventListener` in order to provide event notification features for user applications running CloudSim simulations.
+These notifications can be about the change in state of CloudSim entities.
+	- The package `org.cloudbus.cloudsim.listeners` was introduced to place the classes and interfaces related to event listeners.
+
+	- First listeners were included in the `Vm` class. The following listeners attributes were introduced to allow CloudSim users
+    to set listeners to receive notifications about Vm state changes:
+	    - `onHostAllocationListener`: gets notified when a Host is allocated to a Vm
+	    - `onHostDeallocationListener`: gets notified when a Host is deallocated to a Vm
+	    - `setOnVmCreationFailureListener:` gets notified when a Vm fail being placed at a Host due to lack of resources
+	- The inclusion of the Vm listeners doesn't change the way VMs are instantiated.
+
+	- The `EventListener` interface implements the Null Object Design Pattern in order to avoid `NullPointerException` when a
+	EventListener is not set. In order to ensure that, listener properties are being initialized with the `Listener.NULL` object.
+
+	- These listeners allow CloudSim users to perform specific tasks when different events happen,
+	    enabling implementation of comprehensive functional and integration tests.
+	    Examples of these new features can be seen in the `VmCreationFailureIntegrationTest` Integration Test class.
+
+	- Introduced a onUpdateVmsProcessingListener on the Host interface in order to notify listeners when a host updates its VMs processing
+
+	- Update the CloudSim class to include the EventListener&lt;SimEvent&gt; eventProcessingListener attribute. It uses the new EventListener 
+    interface to notify observer objects when any event of any kind is processed by CloudSim simulator. See the setEventProcessingListener method 
+    to define a observer object to get notified when any event is processed. The inclusion of the listener doesn't break applications using previous 
+    CloudSim versions.
+
+	- Due to the use of the new eventProcessingListener at the CloudSim class, it was introduced the method getInstance() 
+    that implements the Singleton Design Pattern in order to avoid multiple instances of the CloudSim package. However, 
+    CloudSim continues working through its static method calls.
+
+
+- Inclusion of the package `org.cloudbus.cloudsim.builders` with classes and interfaces that implement the [Builder Design Pattern](https://en.wikipedia.org/wiki/Builder_pattern) 
+	- These classes and interfaces were introduced as an alternative way to help creating CloudSim objects, such as 
+    `Host`, `Datacenter`, `DatacenterBroker`, `Vm` and `Cloudlet`.
+
+	- The creation of these objects requires a lot of parameters and some of them have to be created before other ones
+	(e.g: Hosts have to be created before a `Datacenter`). The constructor of these objects are complex and the creation of multiple objects
+    of the same class is a repetitive task that can lead to code redundancy.
+
+	- The builder classes were introduced to reduce complexity when creating these objects.
+    They help setting values to be used when creating such objects, by providing default values for each object property.
+    Once these values are set, just one method needs to be called to create as many copies of the object as desired.
+    For instance, if you want to create 2 hosts with the same configuration,
+    you just have to set the host attributes first and then, call the `createHosts(int amount).getHosts()` method of the `HostBuilder` class
+    in order to create the amount of Hosts you want and get the list of created hosts. 
+
+>>>>>>> b25464b9a18a028b3490c2954ce66ab670be9c15
 	- The new builders use the Decorator Design Pattern in order to ensure a given object creation flow.
     For instance, VMs and Cloudlets have to be submitted to a given `DatacenterBroker`.
     By this way, just after calling the `createBroker()` method at the `BrokerBuilder` class that is possible to make a chained call to the
@@ -336,7 +584,11 @@ These notifications can be about the change in state of CloudSim entities.
     This method allows the creation of VM and submission to the broker just created.
     For instance, you can't make the call `brokerBuilder.getVmBuilderForTheCreatedBroker().createAndSubmitVms(2)`.
     You have to call `brokerBuilder.createBroker().getVmBuilderForTheCreatedBroker().createAndSubmitVms(2)`
+<<<<<<< HEAD
     that ensure that VMs are created only after creating a broker.
+=======
+    which ensures that VMs are created only after creating a broker.
+>>>>>>> b25464b9a18a028b3490c2954ce66ab670be9c15
 
 	- An entire example of the use of these builders can be seen at the `VmCreationFailureIntegrationTest` Integration Test class.
 	- The builders can be used by Unit and Integration Tests and by CloudSim users that want to create cloud simulations.

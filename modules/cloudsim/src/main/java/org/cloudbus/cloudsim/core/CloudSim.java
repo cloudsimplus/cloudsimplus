@@ -84,7 +84,7 @@ public class CloudSim {
     /**
      * @see #getOnEventProcessingListener()
      */
-    private static EventListener<CloudSim, SimEvent> onEventProcessingListener = EventListener.NULL;
+    private static EventListener<SimEvent> onEventProcessingListener = EventListener.NULL;
     
     /** @see #getInstance() */
     private static final CloudSim cloudSim = new CloudSim();
@@ -828,7 +828,7 @@ public class CloudSim {
             throw new IllegalArgumentException("Past event detected.");
         }
         clock = e.eventTime();
-        onEventProcessingListener.update(clock, getInstance(), e);
+        onEventProcessingListener.update(e);
 
         // Ok now process it
         switch (e.getType()) {
@@ -1051,16 +1051,11 @@ public class CloudSim {
     /**
      * Gets the {@link EventListener} object that will be notified when any event
      * is processed by CloudSim.
-     * The observed object is the 
-     * CloudSim singleton instance, meaning that the simulation is the subject of observation.
-     * The data to be sent to the observer object (that is listening 
-     * to processing of simulation events) is the {@link SimEvent} object
-     * containing the data about the processed event.
      * 
      * @return the EventListener.
      * @see #processEvent(org.cloudbus.cloudsim.core.SimEvent) 
      */
-    public static EventListener<CloudSim, SimEvent> getOnEventProcessingListener() {
+    public static EventListener<SimEvent> getOnEventProcessingListener() {
         return onEventProcessingListener;
     }
 
@@ -1071,7 +1066,7 @@ public class CloudSim {
      * @param onEventProcessingListener the event listener to be set
      * @see #getOnEventProcessingListener() 
      */
-    public static void setOnEventProcessingListener(EventListener<CloudSim, SimEvent> onEventProcessingListener) {
+    public static void setOnEventProcessingListener(EventListener<SimEvent> onEventProcessingListener) {
         if(onEventProcessingListener == null)
             onEventProcessingListener = EventListener.NULL;
         

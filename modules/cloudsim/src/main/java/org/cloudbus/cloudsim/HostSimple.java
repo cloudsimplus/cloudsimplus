@@ -13,6 +13,7 @@ import java.util.List;
 
 import org.cloudbus.cloudsim.core.CloudSim;
 import org.cloudbus.cloudsim.listeners.EventListener;
+import org.cloudbus.cloudsim.listeners.HostUpdatesVmsProcessingEventInfo;
 import org.cloudbus.cloudsim.lists.PeList;
 import org.cloudbus.cloudsim.provisioners.ResourceProvisioner;
 import org.cloudbus.cloudsim.resources.RawStorage;
@@ -84,7 +85,7 @@ public class HostSimple implements Host {
     /**
      * @see #getOnUpdateVmsProcessingListener()
      */
-    private EventListener<Host, Double> onUpdateVmsProcessingListener;
+    private EventListener<HostUpdatesVmsProcessingEventInfo> onUpdateVmsProcessingListener;
 
     /**
      * Instantiates a new Host.
@@ -125,8 +126,10 @@ public class HostSimple implements Host {
             }
         }
 
-        onUpdateVmsProcessingListener.update(
-                currentTime, this, completionTimeOfNextFinishingCloudlet);
+        HostUpdatesVmsProcessingEventInfo info = 
+                new HostUpdatesVmsProcessingEventInfo(currentTime, this);
+        info.setCompletionTimeOfNextFinishingCloudlet(completionTimeOfNextFinishingCloudlet);
+        onUpdateVmsProcessingListener.update(info);
 
         return completionTimeOfNextFinishingCloudlet;
     }
@@ -484,12 +487,12 @@ public class HostSimple implements Host {
     }
 
     @Override
-    public EventListener<Host, Double> getOnUpdateVmsProcessingListener() {
+    public EventListener<HostUpdatesVmsProcessingEventInfo> getOnUpdateVmsProcessingListener() {
         return onUpdateVmsProcessingListener;
     }
 
     @Override
-    public void setOnUpdateVmsProcessingListener(EventListener<Host, Double> onUpdateVmsProcessingListener) {
+    public void setOnUpdateVmsProcessingListener(EventListener<HostUpdatesVmsProcessingEventInfo> onUpdateVmsProcessingListener) {
         if (onUpdateVmsProcessingListener == null) {
             onUpdateVmsProcessingListener = EventListener.NULL;
         }
