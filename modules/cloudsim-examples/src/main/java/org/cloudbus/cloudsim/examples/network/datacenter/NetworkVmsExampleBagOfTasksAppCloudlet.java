@@ -7,7 +7,7 @@ import org.cloudbus.cloudsim.core.CloudSim;
 import org.cloudbus.cloudsim.network.datacenter.AppCloudlet;
 import org.cloudbus.cloudsim.network.datacenter.NetworkCloudlet;
 import org.cloudbus.cloudsim.network.datacenter.NetworkVm;
-import org.cloudbus.cloudsim.network.datacenter.TaskStage;
+import org.cloudbus.cloudsim.network.datacenter.Task;
 import org.cloudbus.cloudsim.utilizationmodels.UtilizationModel;
 import org.cloudbus.cloudsim.utilizationmodels.UtilizationModelFull;
 
@@ -69,20 +69,20 @@ public class NetworkVmsExampleBagOfTasksAppCloudlet extends NetworkVmsExampleApp
             netCloudlet.submittime = CloudSim.clock();
             netCloudlet.setVmId(vmList.get(i).getId());
             //compute and send data to node 0
-            netCloudlet.getStages().add(new TaskStage(taskStageId++, TaskStage.Stage.EXECUTION, 
+            netCloudlet.getTasks().add(new Task(taskStageId++, Task.Stage.EXECUTION, 
                             NETCLOUDLET_TASK_COMMUNICATION_LENGTH,
                             networkCloudletLength,  memory, 
-                            vmList.get(0).getId(),netCloudlet.getId()));
+                            vmList.get(0).getId(), netCloudlet.getId()));
 
             //0 has an extra stage of waiting for results; others send
             if (i==0){
                 for(int j=1; j < NETCLOUDLETS_FOR_EACH_APP; j++) {
-                    netCloudlet.getStages().add(new TaskStage(taskStageId++, TaskStage.Stage.WAIT_RECV, 
+                    netCloudlet.getTasks().add(new Task(taskStageId++, Task.Stage.WAIT_RECV, 
                                 NETCLOUDLET_TASK_COMMUNICATION_LENGTH, 0, 
                                 memory, vmList.get(j).getId(), netCloudlet.getId()+j));
                 }
             } else {
-                netCloudlet.getStages().add(new TaskStage(taskStageId++, TaskStage.Stage.WAIT_SEND, 
+                netCloudlet.getTasks().add(new Task(taskStageId++, Task.Stage.WAIT_SEND, 
                         NETCLOUDLET_TASK_COMMUNICATION_LENGTH, 0, 
                         memory, vmList.get(0).getId(), t));
             }

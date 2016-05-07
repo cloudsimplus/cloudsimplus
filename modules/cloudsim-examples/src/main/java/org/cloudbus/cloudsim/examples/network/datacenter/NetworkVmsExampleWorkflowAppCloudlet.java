@@ -8,8 +8,8 @@ import org.cloudbus.cloudsim.core.CloudSim;
 import org.cloudbus.cloudsim.network.datacenter.AppCloudlet;
 import org.cloudbus.cloudsim.network.datacenter.NetworkCloudlet;
 import org.cloudbus.cloudsim.network.datacenter.NetworkVm;
-import org.cloudbus.cloudsim.network.datacenter.TaskStage;
-import org.cloudbus.cloudsim.network.datacenter.TaskStage.Stage;
+import org.cloudbus.cloudsim.network.datacenter.Task;
+import org.cloudbus.cloudsim.network.datacenter.Task.Stage;
 import org.cloudbus.cloudsim.utilizationmodels.UtilizationModel;
 import org.cloudbus.cloudsim.utilizationmodels.UtilizationModelFull;
 
@@ -85,12 +85,12 @@ public class NetworkVmsExampleWorkflowAppCloudlet extends NetworkVmsExampleAppCl
      * expected to receive data
      */
     private void addSendOrReceiveTask(
-            NetworkCloudlet sourceNetCloudlet, TaskStage.Stage stage,
+            NetworkCloudlet sourceNetCloudlet, Task.Stage stage,
             NetworkCloudlet destinationNetCloudlet) {        
-        TaskStage task = new TaskStage(
-                sourceNetCloudlet.getStages().size(), stage, 100, 0, NETCLOUDLET_RAM,
+        Task task = new Task(
+                sourceNetCloudlet.getTasks().size(), stage, 100, 0, NETCLOUDLET_RAM,
                 sourceNetCloudlet.getVmId(), destinationNetCloudlet.getId());
-        sourceNetCloudlet.getStages().add(task);
+        sourceNetCloudlet.getTasks().add(task);
     }
 
     /**
@@ -108,11 +108,11 @@ public class NetworkVmsExampleWorkflowAppCloudlet extends NetworkVmsExampleAppCl
          * depend on the MIPS of the 
          * PE where the task is being executed.
          */
-        TaskStage stage = new TaskStage(
-                netCloudlet.getStages().size(), 
-                TaskStage.Stage.EXECUTION, 0, 100*0.8, NETCLOUDLET_RAM,
+        Task stage = new Task(
+                netCloudlet.getTasks().size(), 
+                Task.Stage.EXECUTION, 0, netCloudlet.getCloudletLength(), NETCLOUDLET_RAM,
                 vm.getId(), netCloudlet.getId());
-        netCloudlet.getStages().add(stage);
+        netCloudlet.getTasks().add(stage);
     }
 
     /**
@@ -130,7 +130,6 @@ public class NetworkVmsExampleWorkflowAppCloudlet extends NetworkVmsExampleAppCl
                 NETCLOUDLET_FILE_SIZE, NETCLOUDLET_OUTPUT_SIZE, NETCLOUDLET_RAM,
                 utilizationModel, utilizationModel, utilizationModel);
         netCloudlet.setAppCloudlet(appCloudlet);
-        netCloudlet.setNumberOfStages(2);
         netCloudlet.setUserId(getBroker().getId());
         netCloudlet.submittime = CloudSim.clock();
         netCloudlet.setVmId(vm.getId());

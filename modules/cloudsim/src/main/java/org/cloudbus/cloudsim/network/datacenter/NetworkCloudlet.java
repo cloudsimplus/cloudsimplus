@@ -12,14 +12,14 @@ import java.util.List;
 
 import org.cloudbus.cloudsim.CloudletSimple;
 import org.cloudbus.cloudsim.utilizationmodels.UtilizationModel;
-import org.cloudbus.cloudsim.network.datacenter.TaskStage.Stage;
+import org.cloudbus.cloudsim.network.datacenter.Task.Stage;
 
 /**
  * NetworkCloudlet class extends Cloudlet to support simulation of complex
  * applications. Each NetworkCloudlet represents a task of the
- * application. Each task consists of several stages.
- *
- * <p>Please refer to following publication for more details:
+ application. Each task consists of several tasks.
+
+ <p>Please refer to following publication for more details:
  * <ul>
  * <li>
  * <a href="http://dx.doi.org/10.1109/UCC.2011.24">
@@ -60,30 +60,15 @@ public class NetworkCloudlet extends CloudletSimple implements Comparable<Object
     public double exetime;
 
     /**
-     * Number of cloudlet's stages .
-     */
-    private double numberOfStages;
-
-    /**
      * Current stage of cloudlet execution, according to the values of the
      * {@link Stage} enum.
      */
-    private int currentStageNum;
+    private int currentTaskNum;
 
     /**
-     * Start time of the current stage.
+     * All tasks which cloudlet execution.
      */
-    private double timeToStartStage;
-
-    /**
-     * Time spent in the current stage.
-     */
-    private double timeSpentInStage;
-
-    /**
-     * All stages which cloudlet execution.
-     */
-    private final List<TaskStage> stages;
+    private final List<Task> tasks;
     
     /** @see #getAppCloudlet() */
     private AppCloudlet appCloudlet;
@@ -115,9 +100,9 @@ public class NetworkCloudlet extends CloudletSimple implements Comparable<Object
                 utilizationModelRam,
                 utilizationModelBw);
 
-        currentStageNum = -1;
+        currentTaskNum = -1;
         this.memory = memory;
-        stages = new ArrayList<>();
+        tasks = new ArrayList<>();
     }
 
     @Override
@@ -149,18 +134,14 @@ public class NetworkCloudlet extends CloudletSimple implements Comparable<Object
         this.appCloudlet = appCloudlet;
     }
 
-    public double getNumberOfStages() {
-        return numberOfStages;
+    public double getNumberOfTasks() {
+        return tasks.size();
     }
 
-    public void setNumberOfStages(double numberOfStages) {
-        this.numberOfStages = numberOfStages;
+    public List<Task> getTasks() {
+        return tasks;
     }
-
-    public List<TaskStage> getStages() {
-        return stages;
-    }
-
+    
     public long getMemory() {
         return memory;
     }
@@ -169,28 +150,43 @@ public class NetworkCloudlet extends CloudletSimple implements Comparable<Object
         this.memory = memory;
     }
 
-    public int getCurrentStageNum() {
-        return currentStageNum;
+    /**
+     * Gets the current task number.
+     * @return return the current task number
+     * if the cloudlet started executing,
+     * -1 if the cloudlet hasn't started executing
+     * or the number of tasks if all
+     * tasks have finished executing.
+     */
+    public int getCurrentTaskNum() {
+        return currentTaskNum;
     }
 
-    public void setCurrentStageNum(int currentStageNum) {
-        this.currentStageNum = currentStageNum;
+    /**
+     * Sets the current task number and return the respective task.
+     * @param currentTaskNum
+     * @return the current task
+     */
+    public Task setCurrentTaskNum(int currentTaskNum) {
+        this.currentTaskNum = currentTaskNum;
+        return getCurrentTask();
     }
 
-    public double getTimeToStartStage() {
-        return timeToStartStage;
+    /**
+     * Gets the current task.
+     * @return 
+     */
+    protected Task getCurrentTask() {
+        if(currentTaskNum < 0 || currentTaskNum >= tasks.size())
+            return null;
+        
+        return tasks.get(currentTaskNum);
     }
 
-    public void setTimeToStartStage(double timeToStartStage) {
-        this.timeToStartStage = timeToStartStage;
+    @Override
+    public boolean isFinished() {
+        return super.isFinished() && getCurrentTaskNum() >= getNumberOfTasks();
     }
 
-    public double getTimeSpentInStage() {
-        return timeSpentInStage;
-    }
-
-    public void setTimeSpentInStage(double timeSpentInStage) {
-        this.timeSpentInStage = timeSpentInStage;
-    }
-
+    
 }

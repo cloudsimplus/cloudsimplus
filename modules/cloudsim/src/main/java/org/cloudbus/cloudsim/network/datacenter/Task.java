@@ -8,10 +8,8 @@
 package org.cloudbus.cloudsim.network.datacenter;
 
 /**
- * TaskStage represents various stages a {@link NetworkCloudlet} can have during
- * execution. Four stage types which are possible: {@link NetworkConstants#EXECUTION},
- * {@link NetworkConstants#WAIT_SEND}, {@link NetworkConstants#WAIT_RECV},
- * {@link NetworkConstants#FINISH}.
+ * Represents various tasks executed by a {@link NetworkCloudlet} during its
+ * execution.
  *
  * <p>Please refer to following publication for more details:
  * <ul>
@@ -28,7 +26,7 @@ package org.cloudbus.cloudsim.network.datacenter;
  * @author Saurabh Kumar Garg
  * @since CloudSim Toolkit 1.0
  */
-public class TaskStage {
+public class Task {
 
     public static enum Stage {EXECUTION, WAIT_SEND, WAIT_RECV, FINISH}; 
     
@@ -49,11 +47,21 @@ public class TaskStage {
      * The data length generated for the task (in bytes).
      */
     private double dataLenght;
+    
+    /**
+     * @see #getStartTime() 
+     */
+    private double startTime;
 
     /**
      * @see #getExecutionTime() 
      */
     private double executionTime;
+    
+    /**
+     * @see #getTaskExecutionLength() 
+     */
+    private double taskExecutionLength;    
 
     /**
      * Memory used by the task.
@@ -63,20 +71,22 @@ public class TaskStage {
     /** @see #getVmId() */
     private int vmId;
 
-    public TaskStage(int id, Stage stage, double dataLength, 
-            double executionTime, long memory, int vmId, int cloudletId) {
+    public Task(int id, Stage stage, double dataLength, 
+            double taskExecutionLength, long memory, int vmId, int cloudletId) {
         super();
         this.id = id;
         this.stage = stage;
         this.dataLenght = dataLength;
-        this.executionTime = executionTime;
+        this.taskExecutionLength = taskExecutionLength;
+        this.startTime = 0;
+        this.executionTime = 0;
         this.memory = memory;
         this.vmId = vmId;
         this.cloudletId = cloudletId;
     }
 
     /**
-     * Gets the id of the TaskStage.
+     * Gets the id of the Task.
      * @return 
      */
     public int getId() {
@@ -118,14 +128,17 @@ public class TaskStage {
     }
 
     /**
-     * Gets the time the stage spent executing or that it has to 
-     * stay executing.
+     * Gets the time spent to complete the task.
      * @return 
      */
     public double getExecutionTime() {
         return executionTime;
     }
 
+    /**
+     * Sets the time spent to complete the task.
+     * @param executionTime 
+     */
     public void setExecutionTime(double executionTime) {
         this.executionTime = executionTime;
     }
@@ -153,4 +166,46 @@ public class TaskStage {
     public void setVmId(int vmId) {
         this.vmId = vmId;
     }
+    
+    /**
+     * Gets the time the task started executing.
+     * @return 
+     */
+    public double getStartTime() {
+        return startTime;
+    }
+
+    /**
+     * Sets the time the task started executing.
+     * @param startTime 
+     */
+    public void setStartTime(double startTime) {
+        this.startTime = startTime;
+    }
+
+
+    /**
+     * Gets the execution length of the task (in MI),
+     * only used for tasks of the type {@link Stage#EXECUTION}
+     * 
+     * @return 
+     */
+    public double getTaskExecutionLength() {
+        return taskExecutionLength;
+    }
+
+    /**
+     * Sets the execution length of the task (in MI),
+     * only used for tasks of the type {@link Stage#EXECUTION}
+     * 
+     * @param taskExecutionLength 
+     */
+    public void setTaskExecutionLength(double taskExecutionLength) {
+        this.taskExecutionLength = taskExecutionLength;
+    }
+    
+    public boolean isFinished(){
+        return executionTime > 0;
+    }
+    
 }

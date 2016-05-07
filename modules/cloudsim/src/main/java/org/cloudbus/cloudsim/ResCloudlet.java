@@ -489,15 +489,6 @@ public class ResCloudlet {
     }
 
     /**
-     * Indicates if the cloudlet has finished executing.
-     *
-     * @return true if the cloudlet has finished, false otherwise.
-     */
-    public boolean isFinished() {
-        return getRemainingCloudletLength() == 0;
-    }
-
-    /**
      * Finalizes all relevant information before <tt>exiting</tt> the Datacenter
      * entity. This method sets the final data of:
      * <ul>

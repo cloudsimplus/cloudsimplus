@@ -1,6 +1,6 @@
 package org.cloudbus.cloudsim.network.datacenter;
 
-import org.cloudbus.cloudsim.network.datacenter.TaskStage.Stage;
+import org.cloudbus.cloudsim.network.datacenter.Task.Stage;
 import org.junit.Test;
 import static org.junit.Assert.*;
 import org.junit.Before;
@@ -9,19 +9,20 @@ import org.junit.Before;
  *
  * @author Manoel Campos da Silva Filho
  */
-public class TaskStageTest {
+public class TaskTest {
     private static final Stage STAGE = Stage.WAIT_RECV;
     private static final int ID = 1;
     private static final int DATA_LENGTH = 2;
-    private static final int TIME = 3;
+    private static final int EXECUTION_LENGTH = 3;
+    private static final int TIME = 4;
     private static final int MEMORY = 5;
     private static final int VM_ID = 6;
     private static final int CLOUDLET_ID = 7;
-    private TaskStage instance;
+    private Task instance;
     
     @Before
     public void setUp(){
-        instance = new TaskStage(ID, STAGE, DATA_LENGTH, TIME, MEMORY, VM_ID, CLOUDLET_ID);
+        instance = new Task(ID, STAGE, DATA_LENGTH, EXECUTION_LENGTH, MEMORY, VM_ID, CLOUDLET_ID);
     }
     
     @Test
@@ -57,7 +58,7 @@ public class TaskStageTest {
     }
 
     @Test
-    public void testSetTime() {
+    public void testSetExecutionTime() {
         double time = 103;
         assertEquals(TIME, instance.getExecutionTime(), 0);
         instance.setExecutionTime(time);

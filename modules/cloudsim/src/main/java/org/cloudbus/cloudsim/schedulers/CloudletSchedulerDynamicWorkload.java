@@ -93,7 +93,7 @@ public class CloudletSchedulerDynamicWorkload extends CloudletSchedulerTimeShare
             rcl.updateCloudletFinishedSoFar((long) (timeSpan
                     * getTotalCurrentAllocatedMipsForCloudlet(rcl, getPreviousTime()) * Consts.MILLION));
 
-            if (rcl.isFinished()) { // finished: remove from the list
+            if (rcl.getCloudlet().isFinished()) { // finished: remove from the list
                 cloudletsToFinish.add(rcl);
             } else { // not finish: estimate the finish time
                 double estimatedFinishTime = getEstimatedFinishTime(rcl, currentTime);

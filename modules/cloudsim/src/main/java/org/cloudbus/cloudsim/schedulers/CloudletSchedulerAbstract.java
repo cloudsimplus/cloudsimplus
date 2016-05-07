@@ -336,7 +336,7 @@ public abstract class CloudletSchedulerAbstract implements CloudletScheduler {
      * the simulation run.
      */
     private void changeStatusOfCloudlet(ResCloudlet cloudlet, Status currentStatus, Status statusToSet){
-        if((currentStatus == Status.INEXEC || currentStatus == Status.READY) && cloudlet.isFinished())
+        if((currentStatus == Status.INEXEC || currentStatus == Status.READY) && cloudlet.getCloudlet().isFinished())
             cloudletFinish(cloudlet);
         else cloudlet.setCloudletStatus(statusToSet);
 
@@ -435,17 +435,32 @@ public abstract class CloudletSchedulerAbstract implements CloudletScheduler {
      */
     protected int removeFinishedCloudletsFromExecutionList() {
         List<ResCloudlet> toRemove = new ArrayList<>();
-        for (ResCloudlet rcl : getCloudletExecList()) {
-            if (rcl.isFinished()) {
-                rcl.setFinishTime(CloudSim.clock());
+        getCloudletExecList().forEach(rcl -> {
+            if(checkFinishedCloudlet(rcl))
                 toRemove.add(rcl);
-                cloudletFinish(rcl);
-            }
-        }
+        });
         getCloudletExecList().removeAll(toRemove);
         
         return toRemove.size();
     }    
+
+    /**
+     * Checks if a specific finished cloudlet from the 
+     * {@link #getCloudletExecList() list of cloudlets to execute}
+     * has finished.
+     * 
+     * @param rcl the cloudlet to check if has finished
+     * @return true if the cloudlet has finished, false otherwise
+     */
+    protected boolean checkFinishedCloudlet(ResCloudlet rcl) {
+        if (rcl.getCloudlet().isFinished()) {
+            rcl.setFinishTime(CloudSim.clock());
+            cloudletFinish(rcl);
+            return true;
+        }
+        
+        return false;
+    }
     
     /**
      * Gets the estimated finish time of the cloudlet that is expected to 
@@ -498,8 +513,7 @@ public abstract class CloudletSchedulerAbstract implements CloudletScheduler {
         Processor p = Processor.getProcessorFromMipsListRemovingAllZeroMips(mipsShare);
         updateCloudletsProcessing(currentTime, p);
 
-        int finished = removeFinishedCloudletsFromExecutionList();
-
+        final int finished = removeFinishedCloudletsFromExecutionList();
         startNewCloudletsFromWaitingList(finished, p);
 
         double nextEvent = 
