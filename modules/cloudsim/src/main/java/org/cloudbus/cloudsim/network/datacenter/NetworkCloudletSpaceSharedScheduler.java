@@ -18,6 +18,7 @@ import org.cloudbus.cloudsim.schedulers.CloudletSchedulerAbstract;
 import org.cloudbus.cloudsim.ResCloudlet;
 import org.cloudbus.cloudsim.core.CloudSim;
 import org.cloudbus.cloudsim.core.CloudSimTags;
+import org.cloudbus.cloudsim.resources.Processor;
 
 /**
  * NetworkCloudletSchedulerSpaceShared implements a policy of scheduling performed by a
@@ -104,92 +105,24 @@ public class NetworkCloudletSpaceSharedScheduler extends CloudletSchedulerAbstra
         }
         currentCpus = cpus;
         capacity /= cpus; // average capacity of each cpu
+        
 
-        for (ResCloudlet rcl : getCloudletExecList()) { // each machine in the
-            // exec list has the
-            // same amount of cpu
-            NetworkCloudlet cl = (NetworkCloudlet) rcl.getCloudlet();
-
-            // check status
-            // if execution stage
-            // update the cloudlet finishtime
-            // CHECK WHETHER IT IS WAITING FOR THE PACKET
-            // if packet received change the status of job and update the time.
-            //
-            if ((cl.getCurrentStageNum() != -1)) {
-                if (cl.getCurrentStageNum() == TaskStage.Stage.FINISH.ordinal()) {
-                    break;
-                }
-                TaskStage st = cl.getStages().get(cl.getCurrentStageNum());
-                if (st.getStage() == TaskStage.Stage.EXECUTION) {
-
-                    // update the time
-                    cl.setTimeSpentInStage(Math.round(CloudSim.clock() - cl.getTimeToStartStage()));
-                    if (cl.getTimeSpentInStage() >= st.getExecutionTime()) {
-                        changeToNextStage(cl, st);
-                        // change the stage
-                    }
-                }
-                if (st.getStage() == TaskStage.Stage.WAIT_RECV) {
-                    List<HostPacket> pktlist = packetsReceived.get(st.getVmId());
-                    List<HostPacket> pkttoremove = new ArrayList<>();
-                    if (pktlist != null) {
-                        Iterator<HostPacket> it = pktlist.iterator();
-                        HostPacket pkt;
-                        if (it.hasNext()) {
-                            pkt = it.next();
-                            // Asumption packet will not arrive in the same cycle
-                            if (pkt.receiverVmId == cl.getVmId()) {
-                                pkt.receiveTime = CloudSim.clock();
-                                st.setExecutionTime(CloudSim.clock() - pkt.sendTime);
-                                changeToNextStage(cl, st);
-                                pkttoremove.add(pkt);
-                            }
-                        }
-                        pktlist.removeAll(pkttoremove);
-                        // if(pkt!=null)
-                        // else wait for recieving the packet
-                    }
-                }
-            } else {
-                cl.setCurrentStageNum(0);
-                cl.setTimeToStartStage(CloudSim.clock());
-
-                if (cl.getStages().get(0).getStage() == TaskStage.Stage.EXECUTION) {
-                    datacenter.schedule(datacenter.getId(), cl.getStages().get(0).getExecutionTime(),
-                            CloudSimTags.VM_DATACENTER_EVENT);
-                } else {
-                    datacenter.schedule(
-                            datacenter.getId(), 0.0001,
-                            CloudSimTags.VM_DATACENTER_EVENT);
-                    // /sendstage///
-                }
-            }
-        }
-
-        if (getCloudletExecList().isEmpty() && getCloudletWaitingList().isEmpty()) { 
-            // no more cloudlets in this scheduler
-            setPreviousTime(currentTime);
-            return 0.0;
-        }
 
         // update each cloudlet
         int finished = 0;
         List<ResCloudlet> toRemove = new ArrayList<>();
         for (ResCloudlet rcl : getCloudletExecList()) {
-            // rounding issue...
-            if (((NetworkCloudlet) (rcl.getCloudlet())).getCurrentStageNum() == TaskStage.Stage.FINISH.ordinal()) {
-                // stage is changed and packet to send
-                ((NetworkCloudlet) (rcl.getCloudlet())).finishtime = CloudSim.clock();
+            NetworkCloudlet netcl = (NetworkCloudlet)rcl.getCloudlet();
+            if (netcl.getCurrentStageNum() == TaskStage.Stage.FINISH.ordinal()) {
                 toRemove.add(rcl);
                 cloudletFinish(rcl);
                 finished++;
             }
         }
         getCloudletExecList().removeAll(toRemove);
+
         // add all the CloudletExecList in waitingList.
         // sort the waitinglist
-
         // for each finished cloudlet, add a new one from the waiting list
         if (!getCloudletWaitingList().isEmpty()) {
             for (int i = 0; i < finished; i++) {
@@ -226,6 +159,63 @@ public class NetworkCloudletSpaceSharedScheduler extends CloudletSchedulerAbstra
         return nextEvent;
     }
 
+    @Override
+    protected void updateCloudletProcessing(ResCloudlet rcl, double currentTime, Processor p) {
+        // exec list has the same amount of cpu
+        NetworkCloudlet netcl = (NetworkCloudlet) rcl.getCloudlet();
+
+        if (netcl.getCurrentStageNum() == TaskStage.Stage.FINISH.ordinal()) {
+            return;
+        }
+        
+        // check status
+        // if execution stage
+        // update the cloudlet finishtime
+        // CHECK WHETHER IT IS WAITING FOR THE PACKET
+        // if packet received change the status of job and update the time.
+        if ((netcl.getCurrentStageNum() != -1)) {
+            TaskStage st = netcl.getStages().get(netcl.getCurrentStageNum());
+            if (st.getStage() == TaskStage.Stage.EXECUTION) {
+                super.updateCloudletProcessing(rcl, currentTime, p); 
+                netcl.setTimeSpentInStage(Math.round(CloudSim.clock() - netcl.getTimeToStartStage()));
+                if (netcl.getTimeSpentInStage() >= st.getExecutionTime()) {
+                    changeToNextStage(netcl, st);
+                }
+            }
+            else if (st.getStage() == TaskStage.Stage.WAIT_RECV) {
+                List<HostPacket> pktList = packetsReceived.get(st.getVmId());
+                List<HostPacket> pktToRemove = new ArrayList<>();
+                if (pktList != null) {
+                    Iterator<HostPacket> it = pktList.iterator();
+                    if (it.hasNext()) {
+                        HostPacket pkt = it.next();
+                        // Asumption: packet will not arrive in the same cycle
+                        if (pkt.receiverVmId == netcl.getVmId()) {
+                            pkt.receiveTime = CloudSim.clock();
+                            st.setExecutionTime(CloudSim.clock() - pkt.sendTime);
+                            changeToNextStage(netcl, st);
+                            pktToRemove.add(pkt);
+                        }
+                    }
+                    pktList.removeAll(pktToRemove);
+                }
+            }
+        } else {
+            netcl.setCurrentStageNum(0);
+            netcl.setTimeToStartStage(CloudSim.clock());
+
+            if (netcl.getStages().get(0).getStage() == TaskStage.Stage.EXECUTION) {
+                datacenter.schedule(datacenter.getId(), netcl.getStages().get(0).getExecutionTime(),
+                        CloudSimTags.VM_DATACENTER_EVENT);
+            } else {
+                datacenter.schedule(
+                        datacenter.getId(), 0.0001,
+                        CloudSimTags.VM_DATACENTER_EVENT);
+                //send stage
+            }
+        }
+    }
+    
     /**
      * Changes a cloudlet to the next stage.
      *
@@ -256,8 +246,8 @@ public class NetworkCloudletSpaceSharedScheduler extends CloudletSchedulerAbstra
                 } else {
                     break;
                 }
-
             }
+            
             datacenter.schedule(datacenter.getId(),
                     0.0001, CloudSimTags.VM_DATACENTER_EVENT);
             if (i == cl.getStages().size()) {
@@ -432,6 +422,17 @@ public class NetworkCloudletSpaceSharedScheduler extends CloudletSchedulerAbstra
 
                 long size = rcl.getRemainingCloudletLength();
                 size *= rcl.getNumberOfPes();
+                /**
+                 * @todo @author manoelcampos It's very strange
+                 * to change the cloudlet length that is
+                 * defined by the user. And in the documentation
+                 * of the attribute, it is supposed to be the length
+                 * that will be executed in each cloudlet PE,
+                 * not the length sum across all existing PEs,
+                 * as it is being changed here 
+                 * (you can see that the size is being multiplied by the
+                 * number of PEs).
+                 */
                 rcl.getCloudlet().setCloudletLength(size);
 
                 getCloudletWaitingList().add(rcl);

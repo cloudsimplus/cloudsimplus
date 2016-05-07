@@ -88,7 +88,7 @@ public class NetworkVmsExampleWorkflowAppCloudlet extends NetworkVmsExampleAppCl
             NetworkCloudlet sourceNetCloudlet, TaskStage.Stage stage,
             NetworkCloudlet destinationNetCloudlet) {        
         TaskStage task = new TaskStage(
-                sourceNetCloudlet.getStages().size(), stage, 100, 0,  NETCLOUDLET_RAM,
+                sourceNetCloudlet.getStages().size(), stage, 100, 0, NETCLOUDLET_RAM,
                 sourceNetCloudlet.getVmId(), destinationNetCloudlet.getId());
         sourceNetCloudlet.getStages().add(task);
     }
@@ -100,6 +100,14 @@ public class NetworkVmsExampleWorkflowAppCloudlet extends NetworkVmsExampleAppCl
      * @param vm the VM where to send or from which to receive data
      */
     private static void addExecutionTask(NetworkCloudlet netCloudlet, Vm vm) {
+        /**
+         * @todo @author manoelcampos It's strange
+         * to define the time of the execution task.
+         * It would be defined the length instead.
+         * In this case, the execution time will
+         * depend on the MIPS of the 
+         * PE where the task is being executed.
+         */
         TaskStage stage = new TaskStage(
                 netCloudlet.getStages().size(), 
                 TaskStage.Stage.EXECUTION, 0, 100*0.8, NETCLOUDLET_RAM,

@@ -487,6 +487,9 @@ public class CloudletSimple implements Cloudlet {
 
     @Override
     public boolean setCloudletFinishedSoFar(final long length) {
+        if(length > this.cloudletLength)
+            throw new IllegalArgumentException("The length parameter cannot be greater than the cloudletLength attribute.");
+
         if (length < 0.0 || index <= NOT_ASSIGNED) {
             return false;
         }

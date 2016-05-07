@@ -150,8 +150,8 @@ public interface Cloudlet extends Identificable {
 
     /**
      * Gets the length of this Cloudlet that has been executed so far from the
-     * latest CloudResource (in MI). This method is useful when trying to move this
-     * Cloudlet into different CloudResources or to cancel it.
+     * latest Datacenter (in MI). This method is useful when trying to move this
+     * Cloudlet into different Datacenter or to cancel it.
      *
      * @return the length of a partially executed Cloudlet, or the full Cloudlet
      * length if it is completed
@@ -163,7 +163,7 @@ public interface Cloudlet extends Identificable {
     /**
      * Gets the length of this Cloudlet that has been executed so far in a given
      * Datacenter. This method is useful when trying to move this Cloudlet
-     * into different CloudResources or to cancel it.
+     * into different Datacenters or to cancel it.
      *
      * @param datacenterId the Datacenter entity ID
      * @return the length of a partially executed Cloudlet; the full Cloudlet
@@ -186,7 +186,8 @@ public interface Cloudlet extends Identificable {
 
     /**
      * Gets the execution length of this Cloudlet (Unit: in Million Instructions
-     * (MI)). According to this length and the power of the VM processor (in
+     * (MI)) that will be executed in each defined PE. 
+     * According to this length and the power of the VM processor (in
      * Million Instruction Per Second - MIPS) where the cloudlet will be run,
      * the cloudlet will take a given time to finish processing. For instance,
      * for a cloudlet of 10000 MI running on a processor of 2000 MIPS, the
@@ -642,11 +643,11 @@ public interface Cloudlet extends Identificable {
     void setVmId(final int vmId);
     
     /**
-     * Sets the length of this Cloudlet that has been executed so far. This
+     * Sets the length of this Cloudlet that has been executed so far (in MI). This
      * method is used by ResCloudlet class when an application is decided to
-     * cancel or to move this Cloudlet into different CloudResources.
+     * cancel or to move this Cloudlet into different Datacenter.
      *
-     * @param length length of this Cloudlet
+     * @param length executed length of this Cloudlet (in MI)
      * @return true if the length is valid and the cloudlet already has assigned
      * to a Datacenter, false otherwise
      * @see gridsim.AllocPolicy

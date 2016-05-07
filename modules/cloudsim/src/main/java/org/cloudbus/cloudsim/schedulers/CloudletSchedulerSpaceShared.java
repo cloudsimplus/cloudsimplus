@@ -54,54 +54,70 @@ public class CloudletSchedulerSpaceShared extends CloudletSchedulerAbstract {
 
     @Override
     public double cloudletResume(int cloudletId) {
-        ResCloudlet foundRcl = null;
+        ResCloudlet foundRcl = searchForCloudletIntoList(getCloudletPausedList(), cloudletId);
+        if (foundRcl == null) {
+            // not found in the paused list: either it is in in the queue, executing or not exist
+            return 0.0;
+        }
+        
+        getCloudletPausedList().remove(foundRcl);
 
-        // look for the cloudlet in the paused list
-        for (ResCloudlet rcl : getCloudletPausedList()) {
+        // it can go to the exec list
+        if ((getProcessor().getNumberOfPes() - usedPes) >= foundRcl.getNumberOfPes()) {
+            foundRcl.setCloudletStatus(Cloudlet.Status.INEXEC);
+            for (int i = 0; i < foundRcl.getNumberOfPes(); i++) {
+                foundRcl.setMachineAndPeId(0, i);
+            }
+
+            long size = foundRcl.getRemainingCloudletLength();
+            size *= foundRcl.getNumberOfPes();
+            /**
+             * @todo @author manoelcampos It's very strange
+             * to change the cloudlet length that is
+             * defined by the user. And in the documentation
+             * of the attribute, it is supposed to be the length
+             * that will be executed in each cloudlet PE,
+             * not the length sum across all existing PEs,
+             * as it is being changed here 
+             * (you can see that the size is being multiplied by the
+             * number of PEs).
+             */
+            foundRcl.getCloudlet().setCloudletLength(size);
+
+            getCloudletExecList().add(foundRcl);
+            usedPes += foundRcl.getNumberOfPes();
+
+            // calculate the expected time for cloudlet completion
+            long remainingLength = foundRcl.getRemainingCloudletLength();
+            double estimatedFinishTime = CloudSim.clock()
+                    + (remainingLength / (getProcessor().getCapacity() * foundRcl.getNumberOfPes()));
+
+            return estimatedFinishTime;
+        } else {// no enough free PEs: go to the waiting queue
+            foundRcl.setCloudletStatus(Cloudlet.Status.QUEUED);
+
+            long size = foundRcl.getRemainingCloudletLength();
+            size *= foundRcl.getNumberOfPes();
+            foundRcl.getCloudlet().setCloudletLength(size);
+
+            getCloudletWaitingList().add(foundRcl);
+            return 0.0;
+        }
+    }
+
+    /**
+     * Search for a cloudlet into a given list.
+     * @param cloudletList the cloudlet list 
+     * @param cloudletId the id of the cloudlet to search
+     * @return the cloudlet or null if not found
+     */
+    protected ResCloudlet searchForCloudletIntoList(List<ResCloudlet> cloudletList, int cloudletId) {
+        for (ResCloudlet rcl : cloudletList) {
             if (rcl.getCloudletId() == cloudletId) {
-                foundRcl = rcl;
-                break;
+                return rcl;
             }
         }
-
-        if (foundRcl != null) {
-            getCloudletPausedList().remove(foundRcl);
-            
-            // it can go to the exec list
-            if ((getProcessor().getNumberOfPes() - usedPes) >= foundRcl.getNumberOfPes()) {
-                foundRcl.setCloudletStatus(Cloudlet.Status.INEXEC);
-                for (int i = 0; i < foundRcl.getNumberOfPes(); i++) {
-                    foundRcl.setMachineAndPeId(0, i);
-                }
-
-                long size = foundRcl.getRemainingCloudletLength();
-                size *= foundRcl.getNumberOfPes();
-                foundRcl.getCloudlet().setCloudletLength(size);
-
-                getCloudletExecList().add(foundRcl);
-                usedPes += foundRcl.getNumberOfPes();
-
-                // calculate the expected time for cloudlet completion
-                long remainingLength = foundRcl.getRemainingCloudletLength();
-                double estimatedFinishTime = CloudSim.clock()
-                        + (remainingLength / (getProcessor().getCapacity() * foundRcl.getNumberOfPes()));
-
-                return estimatedFinishTime;
-            } else {// no enough free PEs: go to the waiting queue
-                foundRcl.setCloudletStatus(Cloudlet.Status.QUEUED);
-
-                long size = foundRcl.getRemainingCloudletLength();
-                size *= foundRcl.getNumberOfPes();
-                foundRcl.getCloudlet().setCloudletLength(size);
-
-                getCloudletWaitingList().add(foundRcl);
-                return 0.0;
-            }
-
-        }
-
-        // not found in the paused list: either it is in in the queue, executing or not exist
-        return 0.0;
+        return null;
     }
 
     @Override

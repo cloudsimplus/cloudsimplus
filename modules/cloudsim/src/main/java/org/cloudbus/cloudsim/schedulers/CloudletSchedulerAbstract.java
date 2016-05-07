@@ -372,31 +372,47 @@ public abstract class CloudletSchedulerAbstract implements CloudletScheduler {
     }      
     
     /**
-     * Updates the processing of all cloudlets of the Vm using this scheduler.
+     * Updates the processing of all cloudlets 
+     * of the Vm using this scheduler that are in the 
+     * {@link #getCloudletExecList() cloudlet execution list}.
      * @param currentTime current simulation time
-     * @param p a Processor created from a mipsShare list with MIPS share of each Pe available to the scheduler
+     * @param p a Processor created from a mipsShare list with MIPS share of each 
+     * Pe available to the scheduler
      */
     protected void updateCloudletsProcessing(double currentTime, Processor p) {
-        for (ResCloudlet rcl : getCloudletExecList()) {            
-            long miLength = computeCloudletExecutionLengthForElapsedTime(rcl, currentTime, p);
-            rcl.updateCloudletFinishedSoFar(miLength);
-        }
+        getCloudletExecList().forEach(rcl -> updateCloudletProcessing(rcl, currentTime, p));
+    }
+    
+    /**
+     * Updates the processing of a specific cloudlet of the Vm using this scheduler.
+     * @param rcl The cloudlet to be its processing updated
+     * @param currentTime current simulation time
+     * @param p a Processor created from a mipsShare list with MIPS share of each 
+     * Pe available to the scheduler
+     * 
+     * @see #updateCloudletsProcessing(double, org.cloudbus.cloudsim.resources.Processor) 
+     */
+    protected void updateCloudletProcessing(ResCloudlet rcl, double currentTime, Processor p) {
+        long length = cloudletExecutionTotalLengthForElapsedTime(rcl, currentTime, p);
+        rcl.updateCloudletFinishedSoFar(length);
     }
 
     /**
-     * Computes the length of a given cloudlet (in MI) that has to be executed
-     * since the last time cloudlets processing was updated.
+     * Computes the total length of a given cloudlet, in number of Instructions (I), 
+     * that has been executed since the last time cloudlets processing was updated.
+     * This length is considered as the sum of executed length in each
+     * Cloudlet PE.
      * 
      * @param rcl
      * @param currentTime current simulation time
      * @param p a Processor object created from a list with MIPS share of each Pe available to the scheduler
-     * @return the executed length of the given cloudlet (in MI)
+     * @return the executed length of the given cloudlet, in number of Instructions (I)
      * 
      * @see #updateCloudletsProcessing(double, java.util.List) 
      */
-    protected long computeCloudletExecutionLengthForElapsedTime(ResCloudlet rcl, double currentTime, Processor p) {
+    protected long cloudletExecutionTotalLengthForElapsedTime(ResCloudlet rcl, double currentTime, Processor p) {
         double timeSpam = currentTime - getPreviousTime();
-        return (long)(p.getCapacity() * timeSpam * rcl.getNumberOfPes() * Consts.MILLION);
+        return (long)(p.getCapacity() * rcl.getNumberOfPes() * timeSpam * Consts.MILLION);
     }
 
      /**
@@ -421,6 +437,7 @@ public abstract class CloudletSchedulerAbstract implements CloudletScheduler {
         List<ResCloudlet> toRemove = new ArrayList<>();
         for (ResCloudlet rcl : getCloudletExecList()) {
             if (rcl.isFinished()) {
+                rcl.setFinishTime(CloudSim.clock());
                 toRemove.add(rcl);
                 cloudletFinish(rcl);
             }

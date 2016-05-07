@@ -55,11 +55,6 @@ public class NetworkCloudlet extends CloudletSimple implements Comparable<Object
     public double starttime;
 
     /**
-     * Time when cloudlet finishes execution.
-     */
-    public double finishtime;
-
-    /**
      * Execution time for cloudlet.
      */
     public double exetime;

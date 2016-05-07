@@ -24,6 +24,12 @@ import org.cloudbus.cloudsim.core.CloudSim;
  * @author Manzur Murshed
  * @author Rajkumar Buyya
  * @since CloudSim Toolkit 1.0
+ * 
+ * @todo @author manoelcampos This class has some duplicated attributes
+ * from the CloudletSimple class.
+ * It also has some confusing methods that ones
+ * return values in Million Instructions (MI) and other ones
+ * in Instructions (I) that is very confusing.
  */
 public class ResCloudlet {
 
@@ -43,7 +49,7 @@ public class ResCloudlet {
     private double finishedTime;
 
     /**
-     * The length of Cloudlet finished so far.
+     * The length of Cloudlet finished so far in number of Instructions (I).
      */
     private long cloudletFinishedSoFar;
 
@@ -246,8 +252,7 @@ public class ResCloudlet {
         totalCompletionTime = 0.0;
         startExecTime = 0.0;
 
-        // In case a Cloudlet has been executed partially by some other cloud
-        // hostList.
+        //In case a Cloudlet has been executed partially by some other cloud hostList.
         cloudletFinishedSoFar = cloudlet.getCloudletFinishedSoFar() * Consts.MILLION;
     }
 
@@ -465,7 +470,7 @@ public class ResCloudlet {
     }
 
     /**
-     * Gets the remaining cloudlet length that has to be execute yet,
+     * Gets the remaining cloudlet length (in MI) that has to be execute yet,
      * considering the {@link #getCloudletTotalLength()}.
      *
      * @return cloudlet length
@@ -511,26 +516,27 @@ public class ResCloudlet {
         double wallClockTime = CloudSim.clock() - arrivalTime;
         cloudlet.setWallClockTime(wallClockTime, totalCompletionTime);
 
-        long finished = 0;
+        long finishedMI = 0;
         //if (cloudlet.getCloudletTotalLength() * Consts.MILLION < cloudletFinishedSoFar) {
         if (cloudlet.getStatus() == Status.SUCCESS) {
-            finished = cloudlet.getCloudletLength();
+            finishedMI = cloudlet.getCloudletLength();
         } else {
-            finished = cloudletFinishedSoFar / Consts.MILLION;
+            finishedMI = cloudletFinishedSoFar / Consts.MILLION;
         }
 
-        cloudlet.setCloudletFinishedSoFar(finished);
+        cloudlet.setCloudletFinishedSoFar(finishedMI);
     }
 
     /**
      * Updates the length of cloudlet that has already been completed.
      *
-     * @param miLength cloudlet length in Instructions (I)
-     * @pre miLength >= 0.0
+     * @param length cloudlet length to be added 
+     * to the {@link #cloudletFinishedSoFar}, in number of Instructions (I)
+     * @pre length >= 0.0
      * @post $none
      */
-    public void updateCloudletFinishedSoFar(long miLength) {
-        cloudletFinishedSoFar += miLength;
+    public void updateCloudletFinishedSoFar(long length) {
+        cloudletFinishedSoFar += length;
     }
 
     /**

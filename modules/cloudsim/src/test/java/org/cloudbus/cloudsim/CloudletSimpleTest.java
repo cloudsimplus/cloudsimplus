@@ -31,12 +31,6 @@ import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertSame;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertSame;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertSame;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertSame;
 
 /**
  * @author	Anton Beloglazov
@@ -231,6 +225,12 @@ public class CloudletSimpleTest {
         assertEquals(cloudletFinishedSoFar, cloudlet.getCloudletFinishedSoFar(), 0);
         Assert.assertFalse(cloudlet.setCloudletFinishedSoFar(-1));
         assertEquals(cloudletFinishedSoFar, cloudlet.getCloudletFinishedSoFar(), 0);
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void testSetCloudletFinishedSoFar_lengthParamGreaterThanCloudletLength() {
+        CloudletSimple cloudlet = createCloudlet();
+        cloudlet.setCloudletFinishedSoFar(cloudlet.getCloudletLength()+1);
     }
 
     @Test

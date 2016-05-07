@@ -13,7 +13,7 @@ package org.cloudbus.cloudsim.network.datacenter;
  * {@link NetworkConstants#WAIT_SEND}, {@link NetworkConstants#WAIT_RECV},
  * {@link NetworkConstants#FINISH}.
  *
- * <br/>Please refer to following publication for more details:<br/>
+ * <p>Please refer to following publication for more details:
  * <ul>
  * <li>
  * <a href="http://dx.doi.org/10.1109/UCC.2011.24">
@@ -23,10 +23,10 @@ package org.cloudbus.cloudsim.network.datacenter;
  * Press, USA), Melbourne, Australia, December 5-7, 2011.
  * </a>
  * </ul>
+ * </p>
  *
  * @author Saurabh Kumar Garg
  * @since CloudSim Toolkit 1.0
- * @todo Attributes should be defined as private.
  */
 public class TaskStage {
 
@@ -51,7 +51,7 @@ public class TaskStage {
     private double dataLenght;
 
     /**
-     * Execution executionTime for this stage.
+     * @see #getExecutionTime() 
      */
     private double executionTime;
 
@@ -63,8 +63,8 @@ public class TaskStage {
     /** @see #getVmId() */
     private int vmId;
 
-    public TaskStage(int id, Stage stage, double dataLength, double executionTime, 
-            long memory, int vmId, int cloudletId) {
+    public TaskStage(int id, Stage stage, double dataLength, 
+            double executionTime, long memory, int vmId, int cloudletId) {
         super();
         this.id = id;
         this.stage = stage;
@@ -117,6 +117,11 @@ public class TaskStage {
         this.dataLenght = dataLenght;
     }
 
+    /**
+     * Gets the time the stage spent executing or that it has to 
+     * stay executing.
+     * @return 
+     */
     public double getExecutionTime() {
         return executionTime;
     }
