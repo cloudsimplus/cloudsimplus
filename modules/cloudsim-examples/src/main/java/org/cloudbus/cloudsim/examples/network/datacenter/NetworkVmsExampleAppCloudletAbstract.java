@@ -72,8 +72,7 @@ public abstract class NetworkVmsExampleAppCloudletAbstract {
     public static final long VM_BW = 1000;
     public static final int  VM_PES_NUMBER = HOST_PES / MAX_VMS_PER_HOST;
     
-    public static final int NUMBER_OF_APP_CLOUDLETS = 5;
-    public static final int NUMBER_OF_NETCLOUDLET_FOR_EACH_APPCLOUDLET = 3;
+    public static final int NUMBER_OF_APP_CLOUDLETS = 1;
 
     public static final int NETCLOUDLET_PES_NUMBER = 4;
     public static final int NETCLOUDLET_FILE_SIZE = 300;
@@ -242,15 +241,18 @@ public abstract class NetworkVmsExampleAppCloudletAbstract {
      * of created VMs, to be used by the NetworkCloudlets of the given AppCloudlet.
      * 
      * @param broker the broker where to get the existing VM list
+     * @param numberOfVmsToSelect number of VMs to selected from the existing
+     * list of VMs.
      * @return The list of randomly selected VMs
      */
-    protected List<Vm> randomlySelectVmsForAppCloudlet(NetDatacenterBroker broker) {
-        List<Vm> vmList = new ArrayList<>();
+    protected List<NetworkVm> randomlySelectVmsForAppCloudlet(
+            NetDatacenterBroker broker, int numberOfVmsToSelect) {
+        List<NetworkVm> vmList = new ArrayList<>();
         int numOfExistingVms = vmlist.size();
         UniformDistr rand = new UniformDistr(0, numOfExistingVms, 5);
-        for (int i = 0; i < NUMBER_OF_NETCLOUDLET_FOR_EACH_APPCLOUDLET; i++) {
+        for (int i = 0; i < numberOfVmsToSelect; i++) {
             int vmId = (int) rand.sample();
-            Vm vm = VmList.getById(vmlist, vmId);
+            NetworkVm vm = VmList.getById(vmlist, vmId);
             vmList.add(vm);
         }
         return vmList;
@@ -284,8 +286,7 @@ public abstract class NetworkVmsExampleAppCloudletAbstract {
         }
         
         for (AppCloudlet app : list) {
-            List<Vm> vmList = randomlySelectVmsForAppCloudlet(broker);
-            app.setNetworkCloudletList(createNetworkCloudlets(app, vmList));
+            app.setNetworkCloudletList(createNetworkCloudlets(app));
         }
         
         return list;
@@ -295,8 +296,7 @@ public abstract class NetworkVmsExampleAppCloudletAbstract {
      * Creates a list of {@link NetworkCloudlet} that together represents the distributed
      * processes of a given {@link AppCloudlet}.
      * @param app
-     * @param vmList
      * @return 
      */
-    protected abstract List<NetworkCloudlet> createNetworkCloudlets(AppCloudlet app, List<Vm> vmList);
+    protected abstract List<NetworkCloudlet> createNetworkCloudlets(AppCloudlet app);
 }

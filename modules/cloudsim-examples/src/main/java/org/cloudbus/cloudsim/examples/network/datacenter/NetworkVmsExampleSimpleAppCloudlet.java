@@ -6,6 +6,7 @@ import org.cloudbus.cloudsim.Vm;
 import org.cloudbus.cloudsim.core.CloudSim;
 import org.cloudbus.cloudsim.network.datacenter.AppCloudlet;
 import org.cloudbus.cloudsim.network.datacenter.NetworkCloudlet;
+import org.cloudbus.cloudsim.network.datacenter.NetworkVm;
 import org.cloudbus.cloudsim.utilizationmodels.UtilizationModel;
 import org.cloudbus.cloudsim.utilizationmodels.UtilizationModelFull;
 
@@ -39,12 +40,13 @@ public class NetworkVmsExampleSimpleAppCloudlet extends NetworkVmsExampleAppClou
      * A NetworkCloudlet will created and assigned for each VM in the given VM list.
      *
      * @param app
-     * @param selectedVms List of VMs where the NetworkCloudlets will be executed
      * @return the list of created NetworkCloudlets
      */
     @Override
-    public List<NetworkCloudlet> createNetworkCloudlets(AppCloudlet app, List<Vm> selectedVms) {
-        List<NetworkCloudlet> networkCloudletList = new ArrayList<>(selectedVms.size());
+    public List<NetworkCloudlet> createNetworkCloudlets(AppCloudlet app) {
+        final int NETCLOUDLETS_FOR_EACH_APP = 3;
+        List<NetworkVm> selectedVms = randomlySelectVmsForAppCloudlet(getBroker(), NETCLOUDLETS_FOR_EACH_APP);
+        List<NetworkCloudlet> networkCloudletList = new ArrayList<>(NETCLOUDLETS_FOR_EACH_APP);
         int currentNetworkCloudletId = 0;    
         for (Vm vm: selectedVms) {
             long length = 4;

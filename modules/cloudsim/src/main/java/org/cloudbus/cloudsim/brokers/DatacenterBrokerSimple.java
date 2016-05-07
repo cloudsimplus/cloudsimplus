@@ -411,9 +411,11 @@ public class DatacenterBrokerSimple extends SimEntity implements DatacenterBroke
                 continue;
             }
 
-            Log.printConcatLine(CloudSim.clock(), ": ", getName(), 
-                    ": Sending cloudlet ",
-                    cloudlet.getId(), " to VM #", vm.getId());
+            Log.printFormattedLine(
+                    "%.2f: %s: Sending %s %d to VM #%d",
+                    CloudSim.clock(), getName(), 
+                    cloudlet.getClass().getSimpleName(),
+                    cloudlet.getId(), vm.getId());
 
             cloudlet.setVmId(vm.getId());
             sendNow(getVmsToDatacentersMap().get(vm.getId()), CloudSimTags.CLOUDLET_SUBMIT, cloudlet);

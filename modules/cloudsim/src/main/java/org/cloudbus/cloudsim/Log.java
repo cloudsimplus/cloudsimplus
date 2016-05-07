@@ -9,6 +9,7 @@ package org.cloudbus.cloudsim;
 
 import java.io.IOException;
 import java.io.OutputStream;
+import java.lang.management.ManagementFactory;
 
 /**
  * Logger used for performing logging of the simulation process. It provides the
@@ -16,9 +17,23 @@ import java.io.OutputStream;
  *
  * @author Anton Beloglazov
  * @since CloudSim Toolkit 2.0
+ * @todo @author manoelcampos Could be replaced by 
+ * {@link http://logging.apache.org/log4j/2.x/ Apache Log4j}
  */
 public class Log {
-
+    /**
+     * An enum that may be used to define the level (type)
+     * of a log message.
+     */
+    public enum Level {
+        INFO, 
+        
+        /**
+         * A log level for messages that will be shown only when the application
+         * is run in debug mode.
+         */
+        DEBUG};
+    
     /**
      * The Constant LINE_SEPARATOR.
      */
@@ -38,15 +53,27 @@ public class Log {
     /**
      * Buffer to avoid creating new string builder upon every print.
      */
-    private static StringBuilder buffer = new StringBuilder();
-
+    private static final StringBuilder buffer = new StringBuilder();
+    
+    /**
+     * Checks if application is running in debug mode.
+     * "jdwp" is the acronym for "Java Debug Wire Protocol" that
+     * may exists as an application parameter to define
+     * the application is running in debug mode.
+     * 
+     * @see #isDebug() 
+     */
+    private static boolean debug = 
+            ManagementFactory.getRuntimeMXBean().getInputArguments()
+                    .toString().indexOf("jdwp") > 0;
+    
     /**
      * Prints a message.
      *
      * @param message the message
      */
     public static void print(String message) {
-        if (!isDisabled()) {
+        if (isEnabled()) {
             try {
                 getOutput().write(message.getBytes());
             } catch (IOException e) {
@@ -61,9 +88,7 @@ public class Log {
      * @param message the message
      */
     public static void print(Object message) {
-        if (!isDisabled()) {
-            print(String.valueOf(message));
-        }
+        print(String.valueOf(message));
     }
 
     /**
@@ -72,18 +97,14 @@ public class Log {
      * @param message the message
      */
     public static void printLine(String message) {
-        if (!isDisabled()) {
-            print(message + LINE_SEPARATOR);
-        }
+        print(message + LINE_SEPARATOR);
     }
 
     /**
      * Prints an empty line.
      */
     public static void printLine() {
-        if (!isDisabled()) {
-            print(LINE_SEPARATOR);
-        }
+        print(LINE_SEPARATOR);
     }
 
     /**
@@ -92,7 +113,7 @@ public class Log {
      * @param messages the messages to print
      */
     public static void printConcat(Object... messages) {
-        if (!isDisabled()) {
+        if (isEnabled()) {
             buffer.setLength(0); // Clear the buffer		    
             for (int i = 0; i < messages.length; i++) {
                 buffer.append(String.valueOf(messages[i]));
@@ -123,9 +144,7 @@ public class Log {
      * @param message the message
      */
     public static void printLine(Object message) {
-        if (!isDisabled()) {
-            printLine(String.valueOf(message));
-        }
+        printLine(String.valueOf(message));
     }
 
     /**
@@ -135,9 +154,7 @@ public class Log {
      * @param args the args
      */
     public static void printFormatted(String format, Object... args) {
-        if (!isDisabled()) {
-            print(String.format(format, args));
-        }
+        print(String.format(format, args));
     }
 
     /**
@@ -148,8 +165,24 @@ public class Log {
      * @param args the args
      */
     public static void printFormattedLine(String format, Object... args) {
-        if (!isDisabled()) {
-            printLine(String.format(format, args));
+        printLine(String.format(format, args));
+    }
+
+    /**
+     * Prints a string formated as in String.printFormatted(), followed by a new
+     * line, that will be printed only according to 
+     * the specified level
+     *
+     * @param level the level that define the kind of message
+     * @param _class Class that is asking to print a message (where the print method
+     * is being called)
+     * @param format the printFormatted
+     * @param args the args
+     */
+    public static void println(Level level, Class _class, String format, Object... args) {
+        if((level == Level.DEBUG && isDebug()) || (level != Level.DEBUG)){
+            String msg = String.format(format, args);
+            printFormattedLine("%s/%s - %s", level.name(), _class.getSimpleName(), msg);
         }
     }
 
@@ -214,5 +247,10 @@ public class Log {
     public static void enable() {
         setDisabled(false);
     }
+
+    public static boolean isDebug() {
+        return debug;
+    }
+    
 
 }

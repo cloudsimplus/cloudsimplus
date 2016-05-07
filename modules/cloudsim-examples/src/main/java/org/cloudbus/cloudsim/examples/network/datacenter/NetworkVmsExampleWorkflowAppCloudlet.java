@@ -2,10 +2,12 @@ package org.cloudbus.cloudsim.examples.network.datacenter;
 
 import java.util.Arrays;
 import java.util.List;
+import org.cloudbus.cloudsim.Log;
 import org.cloudbus.cloudsim.Vm;
 import org.cloudbus.cloudsim.core.CloudSim;
 import org.cloudbus.cloudsim.network.datacenter.AppCloudlet;
 import org.cloudbus.cloudsim.network.datacenter.NetworkCloudlet;
+import org.cloudbus.cloudsim.network.datacenter.NetworkVm;
 import org.cloudbus.cloudsim.network.datacenter.TaskStage;
 import org.cloudbus.cloudsim.network.datacenter.TaskStage.Stage;
 import org.cloudbus.cloudsim.utilizationmodels.UtilizationModel;
@@ -19,6 +21,10 @@ import org.cloudbus.cloudsim.utilizationmodels.UtilizationModelFull;
  * @author Saurabh Kumar Garg
  * @author Rajkumar Buyya
  * @author Manoel Campos da Silva Filho
+ * 
+ * @todo @author manoelcampos The example isn't working yet.
+ * It freezes after the cloudlets creation.
+ * Maybe the problem is in the NetworkCloudletSpaceSharedScheduler class.
  */
 public class NetworkVmsExampleWorkflowAppCloudlet extends NetworkVmsExampleAppCloudletAbstract {
     public NetworkVmsExampleWorkflowAppCloudlet(){
@@ -39,15 +45,19 @@ public class NetworkVmsExampleWorkflowAppCloudlet extends NetworkVmsExampleAppCl
      * the sub-applications of a Workflow AppCloudlet.
      *
      * @param appCloudlet
-     * @param selectedVms List of VMs where the NetworkCloudlets will be executed
      * @return the list of created NetworkCloudlets
      */
     @Override
     public List<NetworkCloudlet> createNetworkCloudlets(
-            AppCloudlet appCloudlet, List<Vm> selectedVms) {
+            AppCloudlet appCloudlet) {
         NetworkCloudlet networkCloudletList[] = new NetworkCloudlet[3];
+        List<NetworkVm> selectedVms = randomlySelectVmsForAppCloudlet(getBroker(), networkCloudletList.length);
+        
         for(int i = 0; i < networkCloudletList.length; i++){         
             networkCloudletList[i] = createNetworkCloudlet(i, appCloudlet, selectedVms.get(i));
+            Log.printFormattedLine(
+                "Created NetworkCloudlet %d for AppCloudlet %d", 
+                networkCloudletList[i].getId(), appCloudlet.getId());
         }
 
         //Task A (id 0)
@@ -78,7 +88,7 @@ public class NetworkVmsExampleWorkflowAppCloudlet extends NetworkVmsExampleAppCl
             NetworkCloudlet sourceNetCloudlet, TaskStage.Stage stage,
             NetworkCloudlet destinationNetCloudlet) {        
         TaskStage task = new TaskStage(
-                sourceNetCloudlet.getStages().size(), stage, 1000, 0,  NETCLOUDLET_RAM,
+                sourceNetCloudlet.getStages().size(), stage, 100, 0,  NETCLOUDLET_RAM,
                 sourceNetCloudlet.getVmId(), destinationNetCloudlet.getId());
         sourceNetCloudlet.getStages().add(task);
     }
@@ -92,7 +102,7 @@ public class NetworkVmsExampleWorkflowAppCloudlet extends NetworkVmsExampleAppCl
     private static void addExecutionTask(NetworkCloudlet netCloudlet, Vm vm) {
         TaskStage stage = new TaskStage(
                 netCloudlet.getStages().size(), 
-                TaskStage.Stage.EXECUTION, 0, 1000 * 0.8, NETCLOUDLET_RAM,
+                TaskStage.Stage.EXECUTION, 0, 100*0.8, NETCLOUDLET_RAM,
                 vm.getId(), netCloudlet.getId());
         netCloudlet.getStages().add(stage);
     }

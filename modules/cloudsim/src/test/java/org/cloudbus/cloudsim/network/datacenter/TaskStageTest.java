@@ -59,9 +59,9 @@ public class TaskStageTest {
     @Test
     public void testSetTime() {
         double time = 103;
-        assertEquals(TIME, instance.getTime(), 0);
-        instance.setTime(time);
-        assertEquals(time, instance.getTime(), 0);
+        assertEquals(TIME, instance.getExecutionTime(), 0);
+        instance.setExecutionTime(time);
+        assertEquals(time, instance.getExecutionTime(), 0);
     }
 
     @Test

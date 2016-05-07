@@ -6,6 +6,7 @@ import org.cloudbus.cloudsim.Vm;
 import org.cloudbus.cloudsim.core.CloudSim;
 import org.cloudbus.cloudsim.network.datacenter.AppCloudlet;
 import org.cloudbus.cloudsim.network.datacenter.NetworkCloudlet;
+import org.cloudbus.cloudsim.network.datacenter.NetworkVm;
 import org.cloudbus.cloudsim.network.datacenter.TaskStage;
 import org.cloudbus.cloudsim.utilizationmodels.UtilizationModel;
 import org.cloudbus.cloudsim.utilizationmodels.UtilizationModelFull;
@@ -39,19 +40,20 @@ public class NetworkVmsExampleBagOfTasksAppCloudlet extends NetworkVmsExampleApp
      * processes of a Bag of Tasks AppCloudlet.
      *
      * @param app
-     * @param vmList List of VMs where the NetworkCloudlets will be executed
      * @return the list of created NetworkCloudlets
      */
     @Override
-    public List<NetworkCloudlet> createNetworkCloudlets(AppCloudlet app, List<Vm> vmList){
-        List<NetworkCloudlet> networkCloudletList = new ArrayList<>(NUMBER_OF_NETCLOUDLET_FOR_EACH_APPCLOUDLET);
+    public List<NetworkCloudlet> createNetworkCloudlets(AppCloudlet app){
+        final int NETCLOUDLETS_FOR_EACH_APP = 3;
+        List<NetworkCloudlet> networkCloudletList = new ArrayList<>(NETCLOUDLETS_FOR_EACH_APP);
+        List<NetworkVm> vmList = randomlySelectVmsForAppCloudlet(getBroker(), NETCLOUDLETS_FOR_EACH_APP);
         //basically, each task runs the simulation and then data is consolidated in one task
         long memory = 1000;
         long networkCloudletLength = 10000;
         int taskStageId=0;
         int currentCloudletId = -1;
         int t=currentCloudletId;
-        for(int i = 0; i < NUMBER_OF_NETCLOUDLET_FOR_EACH_APPCLOUDLET; i++){
+        for(int i = 0; i < NETCLOUDLETS_FOR_EACH_APP; i++){
             currentCloudletId++;
             UtilizationModel utilizationModel = new UtilizationModelFull();
             NetworkCloudlet netCloudlet = 
@@ -74,7 +76,7 @@ public class NetworkVmsExampleBagOfTasksAppCloudlet extends NetworkVmsExampleApp
 
             //0 has an extra stage of waiting for results; others send
             if (i==0){
-                for(int j=1; j < NUMBER_OF_NETCLOUDLET_FOR_EACH_APPCLOUDLET; j++) {
+                for(int j=1; j < NETCLOUDLETS_FOR_EACH_APP; j++) {
                     netCloudlet.getStages().add(new TaskStage(taskStageId++, TaskStage.Stage.WAIT_RECV, 
                                 NETCLOUDLET_TASK_COMMUNICATION_LENGTH, 0, 
                                 memory, vmList.get(j).getId(), netCloudlet.getId()+j));

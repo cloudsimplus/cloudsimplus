@@ -36,7 +36,7 @@ import org.cloudbus.cloudsim.resources.FileStorage;
  * of cloudlets are handled by the CloudletScheduler and processing of
  * Virtual Machines are handled by the VmAllocationPolicy.
  *
- * <br/>Please refer to following publication for more details:<br>
+ * <p>Please refer to following publication for more details:
  * <ul>
  * <li>
  * <a href="http://dx.doi.org/10.1109/UCC.2011.24">
@@ -46,6 +46,7 @@ import org.cloudbus.cloudsim.resources.FileStorage;
  * Press, USA), Melbourne, Australia, December 5-7, 2011.
  * </a>
  * </ul>
+ * </p>
  *
  * @author Saurabh Kumar Garg
  * @since CloudSim Toolkit 3.0
@@ -157,10 +158,11 @@ public class NetworkDatacenter extends DatacenterSimple {
             // checks whether this Cloudlet has finished or not
             if (cl.isFinished()) {
                 String name = CloudSim.getEntityName(cl.getUserId());
-                Log.printConcatLine(getName(), ": Warning - Cloudlet #", cl.getId(), " owned by ", name,
+                Log.printConcatLine(
+                        getName(), ": Warning - Cloudlet #", 
+                        cl.getId(), " owned by ", name,
                         " is already completed/finished.");
-                Log.printLine("Therefore, it is not being executed again");
-                Log.printLine();
+                Log.printLine("Therefore, it is not being executed again\n");
 
                 // NOTE: If a Cloudlet has finished, then it won't be processed.
                 // So, if ack is required, this method sends back a result.
@@ -184,8 +186,9 @@ public class NetworkDatacenter extends DatacenterSimple {
             }
 
             // process this Cloudlet to this Datacenter
-            cl.assignCloudletToDatacenter(getId(), getCharacteristics().getCostPerSecond(), getCharacteristics()
-                    .getCostPerBw());
+            cl.assignCloudletToDatacenter(
+                    getId(), getCharacteristics().getCostPerSecond(), 
+                    getCharacteristics().getCostPerBw());
 
             int userId = cl.getUserId();
             int vmId = cl.getVmId();

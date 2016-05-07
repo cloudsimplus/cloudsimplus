@@ -27,15 +27,13 @@ package org.cloudbus.cloudsim.network.datacenter;
  * @author Saurabh Kumar Garg
  * @since CloudSim Toolkit 1.0
  * @todo Attributes should be defined as private.
- *
- * @todo @author manoelcampos It should be used an enum for stage types.
  */
 public class TaskStage {
 
     public static enum Stage {EXECUTION, WAIT_SEND, WAIT_RECV, FINISH}; 
     
     /**
-     * The id of the TaskStage.
+     * @see #getId() 
      */
     private int id;
 
@@ -53,9 +51,9 @@ public class TaskStage {
     private double dataLenght;
 
     /**
-     * Execution time for this stage.
+     * Execution executionTime for this stage.
      */
-    private double time;
+    private double executionTime;
 
     /**
      * Memory used by the task.
@@ -65,18 +63,22 @@ public class TaskStage {
     /** @see #getVmId() */
     private int vmId;
 
-    public TaskStage(int id, Stage stage, double dataLength, double time, 
+    public TaskStage(int id, Stage stage, double dataLength, double executionTime, 
             long memory, int vmId, int cloudletId) {
         super();
         this.id = id;
         this.stage = stage;
         this.dataLenght = dataLength;
-        this.time = time;
+        this.executionTime = executionTime;
         this.memory = memory;
         this.vmId = vmId;
         this.cloudletId = cloudletId;
     }
 
+    /**
+     * Gets the id of the TaskStage.
+     * @return 
+     */
     public int getId() {
         return id;
     }
@@ -115,12 +117,12 @@ public class TaskStage {
         this.dataLenght = dataLenght;
     }
 
-    public double getTime() {
-        return time;
+    public double getExecutionTime() {
+        return executionTime;
     }
 
-    public void setTime(double time) {
-        this.time = time;
+    public void setExecutionTime(double executionTime) {
+        this.executionTime = executionTime;
     }
 
     public long getMemory() {

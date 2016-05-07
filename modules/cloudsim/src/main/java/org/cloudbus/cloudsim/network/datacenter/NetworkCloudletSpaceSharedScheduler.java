@@ -108,7 +108,6 @@ public class NetworkCloudletSpaceSharedScheduler extends CloudletSchedulerAbstra
         for (ResCloudlet rcl : getCloudletExecList()) { // each machine in the
             // exec list has the
             // same amount of cpu
-
             NetworkCloudlet cl = (NetworkCloudlet) rcl.getCloudlet();
 
             // check status
@@ -126,7 +125,7 @@ public class NetworkCloudletSpaceSharedScheduler extends CloudletSchedulerAbstra
 
                     // update the time
                     cl.setTimeSpentInStage(Math.round(CloudSim.clock() - cl.getTimeToStartStage()));
-                    if (cl.getTimeSpentInStage() >= st.getTime()) {
+                    if (cl.getTimeSpentInStage() >= st.getExecutionTime()) {
                         changeToNextStage(cl, st);
                         // change the stage
                     }
@@ -142,7 +141,7 @@ public class NetworkCloudletSpaceSharedScheduler extends CloudletSchedulerAbstra
                             // Asumption packet will not arrive in the same cycle
                             if (pkt.receiverVmId == cl.getVmId()) {
                                 pkt.receiveTime = CloudSim.clock();
-                                st.setTime(CloudSim.clock() - pkt.sendTime);
+                                st.setExecutionTime(CloudSim.clock() - pkt.sendTime);
                                 changeToNextStage(cl, st);
                                 pkttoremove.add(pkt);
                             }
@@ -152,13 +151,12 @@ public class NetworkCloudletSpaceSharedScheduler extends CloudletSchedulerAbstra
                         // else wait for recieving the packet
                     }
                 }
-
             } else {
                 cl.setCurrentStageNum(0);
                 cl.setTimeToStartStage(CloudSim.clock());
 
                 if (cl.getStages().get(0).getStage() == TaskStage.Stage.EXECUTION) {
-                    datacenter.schedule(datacenter.getId(), cl.getStages().get(0).getTime(),
+                    datacenter.schedule(datacenter.getId(), cl.getStages().get(0).getExecutionTime(),
                             CloudSimTags.VM_DATACENTER_EVENT);
                 } else {
                     datacenter.schedule(
@@ -167,7 +165,6 @@ public class NetworkCloudletSpaceSharedScheduler extends CloudletSchedulerAbstra
                     // /sendstage///
                 }
             }
-
         }
 
         if (getCloudletExecList().isEmpty() && getCloudletWaitingList().isEmpty()) { 
@@ -269,7 +266,7 @@ public class NetworkCloudletSpaceSharedScheduler extends CloudletSchedulerAbstra
                 cl.setCurrentStageNum(i);
                 if (cl.getStages().get(i).getStage() == TaskStage.Stage.EXECUTION) {
                     datacenter.schedule(datacenter.getId(),
-                        cl.getStages().get(i).getTime(),
+                        cl.getStages().get(i).getExecutionTime(),
                         CloudSimTags.VM_DATACENTER_EVENT);
                 }
             }
