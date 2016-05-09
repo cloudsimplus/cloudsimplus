@@ -60,7 +60,7 @@ public class TaskTest {
     @Test
     public void testSetExecutionTime() {
         double time = 103;
-        assertEquals(TIME, instance.getExecutionTime(), 0);
+        assertEquals(0, instance.getExecutionTime(), 0);
         instance.setExecutionTime(time);
         assertEquals(time, instance.getExecutionTime(), 0);
     }

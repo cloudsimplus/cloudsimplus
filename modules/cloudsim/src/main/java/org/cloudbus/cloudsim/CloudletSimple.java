@@ -488,7 +488,10 @@ public class CloudletSimple implements Cloudlet {
     @Override
     public boolean setCloudletFinishedSoFar(final long length) {
         if(length > this.cloudletLength)
-            throw new IllegalArgumentException("The length parameter cannot be greater than the cloudletLength attribute.");
+            throw new IllegalArgumentException(
+                String.format(
+                    "The length parameter (%d) cannot be greater than the cloudletLength attribute (%d).",
+                    length, this.cloudletLength));
 
         if (length < 0.0 || index <= NOT_ASSIGNED) {
             return false;
@@ -624,6 +627,7 @@ public class CloudletSimple implements Cloudlet {
 
         write("Sets the wall clock time to %s and the actual CPU time to %s",
               num.format(wallTime), num.format(actualTime));
+        
         return true;
     }
 

@@ -3,6 +3,7 @@ package org.cloudbus.cloudsim.IntegrationTests;
 import java.util.Calendar;
 import org.cloudbus.cloudsim.brokers.DatacenterBrokerSimple;
 import org.cloudbus.cloudsim.Log;
+import org.cloudbus.cloudsim.Host;
 import org.cloudbus.cloudsim.builders.BrokerBuilderDecorator;
 import org.cloudbus.cloudsim.builders.HostBuilder;
 import org.cloudbus.cloudsim.builders.SimulationScenarioBuilder;
@@ -40,7 +41,9 @@ public final class CheckHostAvailableMipsDynamicUtilizationTest {
     private UtilizationModelArithmeticProgression utilizationModel;
     
     /**
-     * Checks if the amount of available Host CPU is as expected,
+     * A lambda function used by the {@link Host#setOnUpdateVmsProcessingListener(org.cloudbus.cloudsim.listeners.EventListener)}
+     * that will be called every time a host updates the processing of its VMs.
+     * It checks if the amount of available Host CPU is as expected,
      * every time a host updates the processing of all its VMs.
      * 
      * @param evt 

@@ -1,6 +1,5 @@
 package org.cloudbus.cloudsim.resources;
 
-import java.util.Calendar;
 import org.cloudbus.cloudsim.DataCloudTags;
 import org.junit.Test;
 import static org.junit.Assert.*;
@@ -248,15 +247,6 @@ public class FileTest {
         final double newCost = 20;
         assertTrue(instance.setCost(newCost));
         assertEquals(newCost, instance.getCost(), 0.0);
-    }
-
-    @Test
-    public void testGetCreationTime() {
-        System.out.println("getCreationTime");
-        File instance = createFile();
-        assertEquals(
-                Calendar.getInstance().getTimeInMillis(), 
-                instance.getCreationTime(), 1000);
     }
 
     @Test

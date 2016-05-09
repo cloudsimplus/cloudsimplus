@@ -79,7 +79,6 @@ public class NetworkCloudletSpaceSharedScheduler extends CloudletSchedulerSpaceS
             return;
         }
         
-        Task task = netcl.getCurrentTask();
         if ((netcl.getCurrentTaskNum() == -1)) {
             /**
              * @todo @author manoelcampos
@@ -89,10 +88,10 @@ public class NetworkCloudletSpaceSharedScheduler extends CloudletSchedulerSpaceS
              */
             startExecutionTask(netcl);
         }
-        else if (task.getStage() == Task.Stage.EXECUTION) {
+        else if (netcl.getCurrentTask().getStage() == Task.Stage.EXECUTION) {
             updateExecutionTask(rcl, currentTime, p);
         }
-        else if (task.getStage() == Task.Stage.WAIT_RECV) {
+        else if (netcl.getCurrentTask().getStage() == Task.Stage.WAIT_RECV) {
             updateWaitReceiveTask(netcl);
         }
     }

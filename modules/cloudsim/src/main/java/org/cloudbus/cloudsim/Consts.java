@@ -2,37 +2,36 @@ package org.cloudbus.cloudsim;
 
 /**
  * 
- * Defines common constants, used throughout cloudsim.
+ * Defines common constants, used throughout CloudSim.
  * 
  * @author nikolay.grozev
  * 
  */
-public final class Consts {
+public interface Consts {
 
-    /** Suppreses intantiation. */
-    private Consts() {
-    }
-
-    /** One million. */
-    public static final int MILLION = 1000000;
+    /** One million in absolute value,
+     * usually used to convert to and from
+     * Number of Instructions (I) and  Million Instructions (MI) units. */
+    int MILLION = 1000000;
 
     // ================== Time constants ==================
-    /** One minute time in seconds. */
-    public static final int MINUTE = 60;
+    /** One minute in seconds. */
+    int MINUTE = 60;
     
-    /** One hour time in seconds. */
-    public static final int HOUR = 60 * MINUTE;
+    /** One hour in seconds. */
+    int HOUR = 60 * MINUTE;
     
-    /** One day time in seconds. */
-    public static final int DAY = 24 * HOUR;
+    /** One day in seconds. */
+    int DAY = 24 * HOUR;
     
-    /** One week time in seconds. 
+    /** One week in seconds. 
      */
-    public static final int WEEK = 7 * DAY;
+    int WEEK = 7 * DAY;
 
     // ================== OS constants ==================
     /** Constant for *nix Operating Systems. */
-    public static final String NIX_OS = "Linux/Unix";
+    String NIX_OS = "Linux/Unix";
+    
     /** Constant for Windows Operating Systems. */
-    public static final String WINDOWS = "Windows";
+    String WINDOWS = "Windows";
 }

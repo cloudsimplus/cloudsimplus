@@ -27,8 +27,10 @@ import org.cloudbus.cloudsim.resources.Processor;
  *
  * @author Anton Beloglazov
  * @since CloudSim Toolkit 2.0
- * @todo The name of the class doesn't represent its goal. A clearer name would
+ * @todo @author manoelcampos The name of the class doesn't represent its goal. A clearer name would
  * be CloudletSchedulerSingleService as its Test Suite
+ * @todo @author manoelcampos The class has some duplicated code from the
+ * super class.
  */
 public class CloudletSchedulerDynamicWorkload extends CloudletSchedulerTimeShared {
 
@@ -85,12 +87,11 @@ public class CloudletSchedulerDynamicWorkload extends CloudletSchedulerTimeShare
     public double updateVmProcessing(double currentTime, List<Double> mipsShare) {
         setCurrentMipsShare(mipsShare);
 
-        double timeSpan = currentTime - getPreviousTime();
         double nextEvent = Double.MAX_VALUE;
         List<ResCloudlet> cloudletsToFinish = new ArrayList<>();
 
         for (ResCloudlet rcl : getCloudletExecList()) {
-            rcl.updateCloudletFinishedSoFar((long) (timeSpan
+            rcl.updateCloudletFinishedSoFar((long) (timeSpan(currentTime)
                     * getTotalCurrentAllocatedMipsForCloudlet(rcl, getPreviousTime()) * Consts.MILLION));
 
             if (rcl.getCloudlet().isFinished()) { // finished: remove from the list
@@ -124,11 +125,6 @@ public class CloudletSchedulerDynamicWorkload extends CloudletSchedulerTimeShare
     public double cloudletSubmit(Cloudlet cl, double fileTransferTime) {
         ResCloudlet rcl = new ResCloudlet(cl);
         rcl.setCloudletStatus(Cloudlet.Status.INEXEC);
-
-        for (int i = 0; i < cl.getNumberOfPes(); i++) {
-            rcl.setMachineAndPeId(0, i);
-        }
-
         getCloudletExecList().add(rcl);
         return getEstimatedFinishTime(rcl, getPreviousTime());
     }

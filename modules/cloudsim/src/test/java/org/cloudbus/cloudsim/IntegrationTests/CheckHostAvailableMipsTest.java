@@ -47,7 +47,9 @@ public final class CheckHostAvailableMipsTest {
     private UtilizationModel utilizationModel;
     
     /**
-     * Checks if the amount of available Host CPU is as expected,
+     * A lambda function used by the {@link Host#setOnUpdateVmsProcessingListener(org.cloudbus.cloudsim.listeners.EventListener)}
+     * that will be called every time a host updates the processing of its VMs.
+     * It checks if the amount of available Host CPU is as expected,
      * every time a host updates the processing of all its VMs.
      * 
      * @param evt
@@ -75,7 +77,7 @@ public final class CheckHostAvailableMipsTest {
             " expected availability: ", expectedAvailableHostMips);
         
         assertEquals(
-                String.format("Host available mips at time %.0f is not as expected", time), 
+                String.format("Host available mips at time %.0f", time), 
                 expectedAvailableHostMips, evt.getHost().getAvailableMips(), 0);
     }
 

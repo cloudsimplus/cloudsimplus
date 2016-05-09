@@ -69,10 +69,6 @@ public class CloudletSchedulerTimeShared extends CloudletSchedulerAbstract {
     public double cloudletSubmit(Cloudlet cloudlet, double fileTransferTime) {
         ResCloudlet rcl = new ResCloudlet(cloudlet);
         rcl.setCloudletStatus(Cloudlet.Status.INEXEC);
-        for (int i = 0; i < cloudlet.getNumberOfPes(); i++) {
-            rcl.setMachineAndPeId(0, i);
-        }
-
         getCloudletExecList().add(rcl);
 
         // use the current capacity to estimate the extra amount of

@@ -65,10 +65,6 @@ public class CloudletSchedulerSpaceShared extends CloudletSchedulerAbstract {
         // it can go to the exec list
         if ((getProcessor().getNumberOfPes() - usedPes) >= foundRcl.getNumberOfPes()) {
             foundRcl.setCloudletStatus(Cloudlet.Status.INEXEC);
-            for (int i = 0; i < foundRcl.getNumberOfPes(); i++) {
-                foundRcl.setMachineAndPeId(0, i);
-            }
-
             long size = foundRcl.getRemainingCloudletLength();
             size *= foundRcl.getNumberOfPes();
             /**
@@ -126,9 +122,6 @@ public class CloudletSchedulerSpaceShared extends CloudletSchedulerAbstract {
         if ((getProcessor().getNumberOfPes() - usedPes) >= cloudlet.getNumberOfPes()) {
             ResCloudlet rcl = new ResCloudlet(cloudlet);
             rcl.setCloudletStatus(Cloudlet.Status.INEXEC);
-            for (int i = 0; i < cloudlet.getNumberOfPes(); i++) {
-                rcl.setMachineAndPeId(0, i);
-            }
             getCloudletExecList().add(rcl);
             usedPes += cloudlet.getNumberOfPes();
         } else {// no enough free PEs: go to the waiting queue

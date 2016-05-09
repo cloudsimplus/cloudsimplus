@@ -161,19 +161,6 @@ public interface Cloudlet extends Identificable {
     long getCloudletFinishedSoFar();
 
     /**
-     * Gets the length of this Cloudlet that has been executed so far in a given
-     * Datacenter. This method is useful when trying to move this Cloudlet
-     * into different Datacenters or to cancel it.
-     *
-     * @param datacenterId the Datacenter entity ID
-     * @return the length of a partially executed Cloudlet; the full Cloudlet
-     * length if it is completed; or 0 if the Cloudlet has never been executed in the given Datacenter
-     * @pre resId >= 0
-     * @post $result >= 0.0
-     */
-    long getCloudletFinishedSoFar(final int datacenterId);
-
-    /**
      * Gets the transaction history of this Cloudlet. The layout of this history
      * is in a readable table column with <tt>time</tt> and <tt>description</tt>
      * as headers.
@@ -643,21 +630,36 @@ public interface Cloudlet extends Identificable {
     void setVmId(final int vmId);
     
     /**
-     * Sets the length of this Cloudlet that has been executed so far (in MI). This
-     * method is used by ResCloudlet class when an application is decided to
+     * Sets the length of this Cloudlet that has been executed so far (in MI),
+     * according to the {@link #getCloudletLength()}. 
+     * This method is used by ResCloudlet class when an application is decided to
      * cancel or to move this Cloudlet into different Datacenter.
      *
      * @param length executed length of this Cloudlet (in MI)
      * @return true if the length is valid and the cloudlet already has assigned
      * to a Datacenter, false otherwise
-     * @see gridsim.AllocPolicy
-     * @see gridsim.ResCloudlet
+     * @see ResCloudlet
      * @pre length >= 0.0
      * @post $none
      */
     boolean setCloudletFinishedSoFar(final long length);
+    
+    /**
+     * Gets the length of this Cloudlet that has been executed so far (in MI),
+     * according to the {@link #getCloudletLength()}. 
+     * This method is useful when trying to move this Cloudlet
+     * into different Datacenters or to cancel it.
+     *
+     * @param datacenterId the Datacenter entity ID
+     * @return the length of a partially executed Cloudlet; the full Cloudlet
+     * length if it is completed; or 0 if the Cloudlet has never been executed 
+     * in the given Datacenter
+     * @pre resId >= 0
+     * @post $result >= 0.0
+     */
+    long getCloudletFinishedSoFar(final int datacenterId);    
 
-        /**
+    /**
      * Sets the wall clock time the cloudlet spent
      * executing on the current Datacenter.
      * The wall clock time is the total time the Cloudlet resides in a Datacenter 
@@ -691,7 +693,7 @@ public interface Cloudlet extends Identificable {
      */
     boolean setSubmissionTime(final double clockTime);
 
-        /**
+    /**
      * Sets the {@link #getExecStartTime() latest execution start time} of this Cloudlet.
      * <br>
      * <b>NOTE:</b> With new functionalities, such as being able to cancel / to

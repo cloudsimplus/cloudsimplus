@@ -3,16 +3,24 @@ package org.cloudbus.cloudsim.lists;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.IntStream;
+import org.cloudbus.cloudsim.core.CloudSim;
 import org.cloudbus.cloudsim.power.PowerVm;
 import org.cloudbus.cloudsim.schedulers.CloudletScheduler;
 import org.easymock.EasyMock;
 import org.junit.Test;
 import static org.junit.Assert.*;
+import org.junit.Before;
+import org.junit.runner.RunWith;
+import org.powermock.api.easymock.PowerMock;
+import org.powermock.core.classloader.annotations.PrepareForTest;
+import org.powermock.modules.junit4.PowerMockRunner;
 
 /**
  *
  * @author Manoel Campos da Silva Filho
  */
+@RunWith(PowerMockRunner.class)
+@PrepareForTest({CloudSim.class}) //to intercept and mock static method calls
 public class PowerVmListTest {
     private static final int USER_ID=0;
     private static final double MIPS=1000;
@@ -23,7 +31,14 @@ public class PowerVmListTest {
     private static final String VMM="Xen";
     private static final int NUMBER_OF_VMS = 10;
     private static final int TIME = 0;
-    
+
+    @Before
+    public void setUp(){
+        PowerMock.mockStatic(CloudSim.class);
+        EasyMock.expect(CloudSim.clock()).andReturn(0.0).anyTimes();
+        PowerMock.replay(CloudSim.class);
+    }
+
     private CloudletScheduler[] createCloudletSchedulerMocks(boolean ascendingCpuUtilization) {
         CloudletScheduler list[] = new CloudletScheduler[NUMBER_OF_VMS];
         IntStream.range(0, NUMBER_OF_VMS)
@@ -64,6 +79,7 @@ public class PowerVmListTest {
     public void testSortByCpuUtilizationWithVmsInIncreasingUtilizationOrder() {
         System.out.println("sortByCpuUtilization");
         final List<PowerVm> list = createPowerVmList(true);
+        
         PowerVmList.sortByCpuUtilization(list);
         
         int i = NUMBER_OF_VMS;
@@ -77,7 +93,7 @@ public class PowerVmListTest {
             EasyMock.verify(vm.getCloudletScheduler());
         };
     }
-    
+
     @Test
     public void testSortByCpuUtilizationWithVmsInDecreasingUtilizationOrder() {
         System.out.println("sortByCpuUtilization");

@@ -411,8 +411,20 @@ public abstract class CloudletSchedulerAbstract implements CloudletScheduler {
      * @see #updateCloudletsProcessing(double, java.util.List) 
      */
     protected long cloudletExecutionTotalLengthForElapsedTime(ResCloudlet rcl, double currentTime, Processor p) {
-        double timeSpam = currentTime - getPreviousTime();
-        return (long)(p.getCapacity() * rcl.getNumberOfPes() * timeSpam * Consts.MILLION);
+        return (long)(p.getCapacity() * rcl.getNumberOfPes() * timeSpan(currentTime) * Consts.MILLION);
+    }
+
+    /**
+     * Computes the time span between the current simulation time
+     * and the last time the scheduler updated the processing
+     * of it's managed cloudlets.
+     * The method manages to correct precision issues
+     * of double values math operations.
+     * @param currentTime the current simulation time
+     * @return 
+     */
+    protected double timeSpan(double currentTime) {
+        return Math.floor(currentTime) - Math.floor(getPreviousTime());
     }
 
      /**
@@ -530,9 +542,6 @@ public abstract class CloudletSchedulerAbstract implements CloudletScheduler {
                 for (ResCloudlet rcl : getCloudletWaitingList()) {
                     if ((p.getNumberOfPes() - usedPes) >= rcl.getNumberOfPes()) {
                         rcl.setCloudletStatus(Cloudlet.Status.INEXEC);
-                        for (int k = 0; k < rcl.getNumberOfPes(); k++) {
-                            rcl.setMachineAndPeId(0, i);
-                        }
                         getCloudletExecList().add(rcl);
                         usedPes += rcl.getNumberOfPes();
                         toRemove.add(rcl);

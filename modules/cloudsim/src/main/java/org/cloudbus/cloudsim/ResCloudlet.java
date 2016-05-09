@@ -11,7 +11,7 @@ import org.cloudbus.cloudsim.Cloudlet.Status;
 import org.cloudbus.cloudsim.core.CloudSim;
 
 /**
- * CloudSim ResCloudlet represents a Cloudlet submitted to Datacenter for
+ * CloudSim ResCloudlet represents a Cloudlet submitted to a Datacenter for
  * processing. This class keeps track the time for all activities in the
  * Datacenter for a specific Cloudlet. Before a Cloudlet exits the Datacenter,
  * it is RECOMMENDED to call this method {@link #finalizeCloudlet()}.
@@ -20,6 +20,10 @@ import org.cloudbus.cloudsim.core.CloudSim;
  * machine and the Pe (Processing Element) allocated to it. It acts as a
  * placeholder for maintaining the amount of resource share allocated at various
  * times for simulating any scheduling using internal events.
+ * <p>
+ * As the VM where the Cloudlet is running might migrate to another
+ * Datacenter, each ResCloudlet object represents the data about
+ * execution of the cloudlet when the Vm was in a given Datacenter.
  *
  * @author Manzur Murshed
  * @author Rajkumar Buyya
@@ -39,85 +43,83 @@ public class ResCloudlet {
     private final Cloudlet cloudlet;
 
     /**
-     * The Cloudlet arrival time for the first time.
+     * The time the cloudlet arrived for execution
+     * inside a given Datacenter.
      */
     private double arrivalTime;
 
     /**
-     * The estimation of Cloudlet finished time.
+     * The time when the Cloudlet has finished completely
+     * (not just in a given Datacenter, but finished at all).
+     * If the cloudlet wasn't finished completely yet,
+     * the value is equals to {@link #NOT_FOUND}.
      */
     private double finishedTime;
 
     /**
-     * The length of Cloudlet finished so far in number of Instructions (I).
+     * The total length of Cloudlet finished so far in number of Instructions (I).
+     * The attribute stores past the execution length of the cloudlet
+     * in previous datacenters. Thus, it represents the actual executed
+     * length of the cloudlet (not just the executed length
+     * in the current Datacenter).
+     * It considers the sum of instructions executed in every
+     * PE of the cloudlet.
      */
     private long cloudletFinishedSoFar;
 
     /**
-     * Cloudlet execution start time. This attribute will only hold the latest
+     * Latest cloudlet execution start time in the current Datacenter. 
+     * This attribute will only hold the latest
      * time since a Cloudlet can be canceled, paused or resumed.
      */
     private double startExecTime;
 
     /**
-     * The total time to complete this Cloudlet.
+     * The total time the Cloudlet spent in the last state
+     * at the current Datacenter.
+     * For instance, if the last state was paused and now
+     * the cloudlet was resumed (it is running),
+     * this time represents the time the cloudlet
+     * stayed paused.
      */
     private double totalCompletionTime;
 
-    // The below attributes are only to be used by the SpaceShared policy.
-    /**
-     * The machine id this Cloudlet is assigned to.
-     */
-    private int machineId;
+    /* 
+     * The below attributes are only to be used by the CloudletSchedulerSpaceShared policy.
+     * @todo @manoelcampos If the attributes have to be used only for a
+     * specific scheduler, they shouldn't be here
+     * in order to follow the ISP principle.
+    */
 
     /**
-     * The Pe id this Cloudlet is assigned to.
+     * The number of PEs needed to execute this Cloudlet.
      */
-    private int peId;
-
+    private int pesNumber;
+    
+    // NOTE: Below attributes are related to Advanced Reservation (AR) stuff
     /**
-     * The an array of machine IDs.
-     */
-    private int[] machineArrayId = null;
-
-    /**
-     * The an array of Pe IDs.
-     */
-    private int[] peArrayId = null;
-
-    /**
-     * The index of machine and Pe arrays.
-     */
-    private int index;
-
-    // NOTE: Below attributes are related to AR stuff
-    /**
-     * The Constant NOT_FOUND.
+     * Defines a values for fields that haven't been
+     * initialized yet.
      */
     private static final int NOT_FOUND = -1;
 
     /**
      * The reservation start time.
      */
-    private final long startTime;
+    private final long reservationStartTime;
 
     /**
      * The reservation duration time.
      */
-    private final int duration;
+    private final int reservationDuration;
 
     /**
      * The reservation id.
      */
-    private final int reservId;
+    private final int reservationId;
 
     /**
-     * The num Pe needed to execute this Cloudlet.
-     */
-    private int pesNumber;
-
-    /**
-     * Allocates a new ResCloudlet object upon the arrival of a Cloudlet object.
+     * Instantiates a new ResCloudlet object upon the arrival of a Cloudlet object.
      * The arriving time is determined by
      * {@link org.cloudbus.cloudsim.core.CloudSim#clock()}.
      *
@@ -127,18 +129,11 @@ public class ResCloudlet {
      * @post $none
      */
     public ResCloudlet(Cloudlet cloudlet) {
-        // when a new ResCloudlet is created, then it will automatically set
-        // the submission time and other properties, such as remaining length
-        this.cloudlet = cloudlet;
-        startTime = 0;
-        reservId = NOT_FOUND;
-        duration = 0;
-
-        init();
+        this(cloudlet, 0, 0, NOT_FOUND);
     }
 
     /**
-     * Allocates a new ResCloudlet object upon the arrival of a Cloudlet object.
+     * Instantiates a new ResCloudlet object upon the arrival of a Cloudlet object.
      * Use this constructor to store reserved Cloudlets, i.e. Cloudlets that
      * done reservation before. The arriving time is determined by
      * {@link org.cloudbus.cloudsim.core.CloudSim#clock()}.
@@ -146,9 +141,9 @@ public class ResCloudlet {
      * @param cloudlet a cloudlet object
      * @param startTime a reservation start time. Can also be interpreted as
      * starting time to execute this Cloudlet.
-     * @param duration a reservation duration time. Can also be interpreted as
-     * how long to execute this Cloudlet.
-     * @param reservID a reservation ID that owns this Cloudlet
+     * @param duration a reservation reservationDuration time. Can also be interpreted as
+ how long to execute this Cloudlet.
+     * @param reservId a reservation ID that owns this Cloudlet
      * @see gridsim.CloudSim#clock()
      * @pre cloudlet != null
      * @pre startTime > 0
@@ -156,15 +151,25 @@ public class ResCloudlet {
      * @pre reservID > 0
      * @post $none
      */
-    public ResCloudlet(Cloudlet cloudlet, long startTime, int duration, int reservID) {
+    public ResCloudlet(Cloudlet cloudlet, long startTime, int duration, int reservId) {
         this.cloudlet = cloudlet;
-        this.startTime = startTime;
-        reservId = reservID;
-        this.duration = duration;
+        this.reservationStartTime = startTime;
+        this.reservationDuration = duration;
+        this.reservationId = reservId;
 
-        init();
+        this.pesNumber = cloudlet.getNumberOfPes();
+
+        this.arrivalTime = CloudSim.clock();
+        cloudlet.setSubmissionTime(this.arrivalTime);
+
+        this.finishedTime = NOT_FOUND;  // Cannot finish in this hourly slot.
+        this.totalCompletionTime = 0.0;
+        this.startExecTime = 0.0;
+
+        //In case a Cloudlet has been executed partially by some other cloud hostList.
+        this.cloudletFinishedSoFar = cloudlet.getCloudletFinishedSoFar() * Consts.MILLION;
     }
-
+    
     /**
      * Gets the Cloudlet or reservation start time.
      *
@@ -172,19 +177,19 @@ public class ResCloudlet {
      * @pre $none
      * @post $none
      */
-    public long getStartTime() {
-        return startTime;
+    public long getReservationStartTime() {
+        return reservationStartTime;
     }
 
     /**
-     * Gets the reservation duration time.
+     * Gets the reservation reservationDuration time.
      *
-     * @return reservation duration time
+     * @return reservation reservationDuration time
      * @pre $none
      * @post $none
      */
     public int getDurationTime() {
-        return duration;
+        return reservationDuration;
     }
 
     /**
@@ -206,7 +211,7 @@ public class ResCloudlet {
      * @post $none
      */
     public int getReservationID() {
-        return reservId;
+        return reservationId;
     }
 
     /**
@@ -218,42 +223,11 @@ public class ResCloudlet {
      * @post $none
      */
     public boolean hasReserved() {
-        if (reservId == NOT_FOUND) {
+        if (reservationId == NOT_FOUND) {
             return false;
         }
 
         return true;
-    }
-
-    /**
-     * Initialises all local attributes.
-     *
-     * @pre $none
-     * @post $none
-     */
-    private void init() {
-        // get number of PEs required to run this Cloudlet
-        pesNumber = cloudlet.getNumberOfPes();
-
-        // if more than 1 Pe, then create an array
-        if (pesNumber > 1) {
-            machineArrayId = new int[pesNumber];
-            peArrayId = new int[pesNumber];
-        }
-
-        arrivalTime = CloudSim.clock();
-        cloudlet.setSubmissionTime(arrivalTime);
-
-        // default values
-        finishedTime = NOT_FOUND;  // Cannot finish in this hourly slot.
-        machineId = NOT_FOUND;
-        peId = NOT_FOUND;
-        index = 0;
-        totalCompletionTime = 0.0;
-        startExecTime = 0.0;
-
-        //In case a Cloudlet has been executed partially by some other cloud hostList.
-        cloudletFinishedSoFar = cloudlet.getCloudletFinishedSoFar() * Consts.MILLION;
     }
 
     /**
@@ -342,7 +316,6 @@ public class ResCloudlet {
                 if (status == Status.CANCELED || status == Status.PAUSED || status == Status.SUCCESS) {
                     // then update the Cloudlet completion time
                     totalCompletionTime += (clock - startExecTime);
-                    index = 0;
                     return true;
                 }
             }
@@ -392,81 +365,6 @@ public class ResCloudlet {
      */
     public void setExecParam(double wallClockTime, double actualCPUTime) {
         cloudlet.setWallClockTime(wallClockTime, actualCPUTime);
-    }
-
-    /**
-     * Sets the machine and Pe (Processing Element) ID.
-     *
-     * @param machineId machine ID
-     * @param peId Pe ID
-     * @pre machineID >= 0
-     * @pre peID >= 0
-     * @post $none
-     *
-     * @todo the machineId param and attribute mean a VM or a PM id? Only the
-     * term machine is ambiguous. At
-     * {@link  CloudletSchedulerTimeShared#cloudletSubmit(org.cloudbus.cloudsim.Cloudlet)}
-     * it is stated it is a VM.
-     */
-    public void setMachineAndPeId(int machineId, int peId) {
-        // if this job only requires 1 Pe
-        this.machineId = machineId;
-        this.peId = peId;
-
-        // if this job requires many PEs
-        if (peArrayId != null && pesNumber > 1) {
-            machineArrayId[index] = machineId;
-            peArrayId[index] = peId;
-            index++;
-        }
-    }
-
-    /**
-     * Gets machine ID.
-     *
-     * @return machine ID or <tt>-1</tt> if it is not specified before
-     * @pre $none
-     * @post $result >= -1
-     */
-    public int getMachineId() {
-        return machineId;
-    }
-
-    /**
-     * Gets Pe ID.
-     *
-     * @return Pe ID or <tt>-1</tt> if it is not specified before
-     * @pre $none
-     * @post $result >= -1
-     */
-    public int getPeId() {
-        return peId;
-    }
-
-    /**
-     * Gets a list of Pe IDs. <br>
-     * NOTE: To get the machine IDs corresponding to these Pe IDs, use
-     * {@link #getMachineIdList()}.
-     *
-     * @return an array containing Pe IDs.
-     * @pre $none
-     * @post $none
-     */
-    public int[] getPeIdList() {
-        return peArrayId;
-    }
-
-    /**
-     * Gets a list of Machine IDs. <br>
-     * NOTE: To get the Pe IDs corresponding to these machine IDs, use
-     * {@link #getPeIdList()}.
-     *
-     * @return an array containing Machine IDs.
-     * @pre $none
-     * @post $none
-     */
-    public int[] getMachineIdList() {
-        return machineArrayId;
     }
 
     /**
@@ -527,7 +425,16 @@ public class ResCloudlet {
      * @post $none
      */
     public void updateCloudletFinishedSoFar(long length) {
-        cloudletFinishedSoFar += length;
+        if(length <= 0)
+            return;
+        
+        this.cloudletFinishedSoFar += length;
+        this.cloudletFinishedSoFar = 
+                Math.min(this.cloudletFinishedSoFar, 
+                        cloudlet.getCloudletTotalLength()*Consts.MILLION);
+        
+        double finishedSoFarByPE = cloudletFinishedSoFar  / pesNumber / Consts.MILLION;
+        cloudlet.setCloudletFinishedSoFar((long)finishedSoFarByPE);
     }
 
     /**
