@@ -68,7 +68,7 @@ public class EdgeSwitch extends Switch {
      * @param dc The Datacenter where the switch is connected to
      */
     public EdgeSwitch(String name, NetworkDatacenter dc) {
-        super(name, LEVEL, dc);
+        super(name, dc);
         
         setUplinkBandwidth(AggregateSwitch.DOWNLINK_BW);
         setDownlinkBandwidth(DOWNLINK_BW);

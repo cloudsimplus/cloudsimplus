@@ -17,12 +17,12 @@ import org.cloudbus.cloudsim.listeners.EventListener;
  * @author Manoel Campos da Silva Filho
  */
 public interface Cloudlet extends Identificable {
-  public static final String NO_HISTORY_IS_RECORDED_FOR_CLOUDLET = "No history is recorded for Cloudlet #%d";
+  String NO_HISTORY_IS_RECORDED_FOR_CLOUDLET = "No history is recorded for Cloudlet #%d";
   
   /**
    * Status of Cloudlets
    */
-  public enum Status {
+  enum Status {
         /**
          * The Cloudlet has been created and added to the CloudletList object.
          */
@@ -725,7 +725,7 @@ public interface Cloudlet extends Identificable {
      * A property that implements the Null Object Design Pattern for {@link Cloudlet}
      * objects.
      */
-    public static final Cloudlet NULL = new Cloudlet() {
+    Cloudlet NULL = new Cloudlet() {
       @Override public boolean addRequiredFile(String fileName) { return false; }
       @Override public boolean deleteRequiredFile(String filename) { return false; }
       @Override public double getAccumulatedBwCost() { return 0.0; }

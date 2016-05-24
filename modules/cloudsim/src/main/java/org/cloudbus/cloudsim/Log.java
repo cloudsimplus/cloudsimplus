@@ -176,13 +176,14 @@ public class Log {
      * @param level the level that define the kind of message
      * @param _class Class that is asking to print a message (where the print method
      * is being called)
+     * @param time current simulation time
      * @param format the printFormatted
      * @param args the args
      */
-    public static void println(Level level, Class _class, String format, Object... args) {
+    public static void println(Level level, Class _class, double time, String format, Object... args) {
         if((level == Level.DEBUG && isDebug()) || (level != Level.DEBUG)){
             String msg = String.format(format, args);
-            printFormattedLine("%s/%s - %s", level.name(), _class.getSimpleName(), msg);
+            printFormattedLine("%s/%s\n  time %d - %s", level.name(), _class.getSimpleName(), (long)time, msg);
         }
     }
 

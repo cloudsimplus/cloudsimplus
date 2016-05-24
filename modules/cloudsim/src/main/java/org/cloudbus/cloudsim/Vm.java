@@ -403,7 +403,7 @@ public interface Vm extends Identificable {
      * A property that implements the Null Object Design Pattern for {@link Vm}
      * objects.
      */
-    public static final Vm NULL = new Vm() {
+    Vm NULL = new Vm() {
         @Override public void addStateHistoryEntry(VmStateHistoryEntry entry) {}
         @Override public long getBw(){ return 0L; }
         @Override public CloudletScheduler getCloudletScheduler() { return CloudletScheduler.NULL; }

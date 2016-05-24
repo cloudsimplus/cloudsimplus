@@ -2,12 +2,13 @@ package org.cloudbus.cloudsim.examples.network.datacenter;
 
 import java.util.ArrayList;
 import java.util.List;
-import org.cloudbus.cloudsim.Vm;
 import org.cloudbus.cloudsim.core.CloudSim;
 import org.cloudbus.cloudsim.network.datacenter.AppCloudlet;
+import org.cloudbus.cloudsim.network.datacenter.CloudletSendTask;
+import org.cloudbus.cloudsim.network.datacenter.CloudletExecutionTask;
+import org.cloudbus.cloudsim.network.datacenter.CloudletReceiveTask;
 import org.cloudbus.cloudsim.network.datacenter.NetworkCloudlet;
 import org.cloudbus.cloudsim.network.datacenter.NetworkVm;
-import org.cloudbus.cloudsim.network.datacenter.Task;
 import org.cloudbus.cloudsim.utilizationmodels.UtilizationModel;
 import org.cloudbus.cloudsim.utilizationmodels.UtilizationModelFull;
 
@@ -52,7 +53,6 @@ public class NetworkVmsExampleBagOfTasksAppCloudlet extends NetworkVmsExampleApp
         long networkCloudletLength = 10000;
         int taskStageId=0;
         int currentCloudletId = -1;
-        int t=currentCloudletId;
         for(int i = 0; i < NETCLOUDLETS_FOR_EACH_APP; i++){
             currentCloudletId++;
             UtilizationModel utilizationModel = new UtilizationModelFull();
@@ -69,22 +69,20 @@ public class NetworkVmsExampleBagOfTasksAppCloudlet extends NetworkVmsExampleApp
             netCloudlet.submittime = CloudSim.clock();
             netCloudlet.setVmId(vmList.get(i).getId());
             //compute and send data to node 0
-            netCloudlet.getTasks().add(new Task(taskStageId++, Task.Stage.EXECUTION, 
-                            NETCLOUDLET_TASK_COMMUNICATION_LENGTH,
-                            networkCloudletLength,  memory, 
-                            vmList.get(0).getId(), netCloudlet.getId()));
+            netCloudlet.getTasks().add(
+                    new CloudletExecutionTask(
+                        taskStageId++, memory, netCloudlet, networkCloudletLength));
 
-            //0 has an extra stage of waiting for results; others send
+            //0 has an extra type of waiting for results; others send
             if (i==0){
                 for(int j=1; j < NETCLOUDLETS_FOR_EACH_APP; j++) {
-                    netCloudlet.getTasks().add(new Task(taskStageId++, Task.Stage.WAIT_RECV, 
-                                NETCLOUDLET_TASK_COMMUNICATION_LENGTH, 0, 
-                                memory, vmList.get(j).getId(), netCloudlet.getId()+j));
+                    netCloudlet.getTasks().add(
+                        new CloudletReceiveTask(
+                            taskStageId++, memory, netCloudlet,  vmList.get(j+1).getId()));
                 }
             } else {
-                netCloudlet.getTasks().add(new Task(taskStageId++, Task.Stage.WAIT_SEND, 
-                        NETCLOUDLET_TASK_COMMUNICATION_LENGTH, 0, 
-                        memory, vmList.get(0).getId(), t));
+                netCloudlet.getTasks().add(
+                        new CloudletSendTask(taskStageId++, memory, netCloudlet));
             }
 
             networkCloudletList.add(netCloudlet);    			

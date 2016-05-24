@@ -31,7 +31,7 @@ public interface UtilizationModel {
      * A property that implements the Null Object Design Pattern for {@link UtilizationModel}
      * objects.
      */
-    public static final UtilizationModel NULL = new UtilizationModel() {
+    UtilizationModel NULL = new UtilizationModel() {
         @Override public double getUtilization(double time) { return 0.0; }
     };
 }

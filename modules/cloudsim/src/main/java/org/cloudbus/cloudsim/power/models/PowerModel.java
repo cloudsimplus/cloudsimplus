@@ -17,7 +17,7 @@ package org.cloudbus.cloudsim.power.models;
  * {@link PowerModel} variables.
  * 
  *
- * <br/>If you are using any algorithms, policies or workload included in the
+ * <br>If you are using any algorithms, policies or workload included in the
  * power package please cite the following paper:<br/>
  *
  * <ul>
@@ -52,5 +52,5 @@ public interface PowerModel {
      * A property that implements the Null Object Design Pattern for {@link PowerHost}
      * objects.
      */
-    public static final PowerModel NULL = (utilization) -> 0;
+    PowerModel NULL = (utilization) -> 0;
 }

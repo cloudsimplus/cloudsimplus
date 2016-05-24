@@ -273,7 +273,7 @@ public interface CloudletScheduler extends Serializable {
      * A property that implements the Null Object Design Pattern for {@link CloudletScheduler}
      * objects.
      */
-    public static final CloudletScheduler NULL = new CloudletScheduler() {
+    CloudletScheduler NULL = new CloudletScheduler() {
         @Override public Cloudlet cloudletCancel(int clId) { return Cloudlet.NULL; }
         @Override public void cloudletFinish(ResCloudlet rcl) {}
         @Override public boolean cloudletPause(int clId) { return false; }

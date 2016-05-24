@@ -109,7 +109,7 @@ public abstract class Switch extends SimEntity {
      */
     private final Map<Integer, NetworkVm> vmlist = new HashMap<>();
 
-    public Switch(String name, int level, NetworkDatacenter dc) {
+    public Switch(String name, NetworkDatacenter dc) {
         super(name);
         this.packetList = new ArrayList<>();
         this.hostList = new HashMap<>();

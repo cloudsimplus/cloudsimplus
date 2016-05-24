@@ -137,6 +137,17 @@ public class CloudletSchedulerSpaceShared extends CloudletSchedulerAbstract {
         double extraSize = getProcessor().getCapacity() * fileTransferTime;
         long length = cloudlet.getCloudletLength();
         length += extraSize;
+        
+        /**
+         * @todo @author manoelcampos It is very strange to change
+         * the length of the cloudlet, once it is 
+         * a value defined by the user.
+         * The execution length is one thing, 
+         * the total execution time is other.
+         * The length is being increased to include
+         * the time the cloudlet spend to be transfered
+         * to the datacenter (see comment above)
+         */
         cloudlet.setCloudletLength(length);
         return cloudlet.getCloudletLength() / getProcessor().getCapacity();
     }

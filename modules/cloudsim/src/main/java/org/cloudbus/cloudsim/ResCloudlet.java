@@ -11,8 +11,8 @@ import org.cloudbus.cloudsim.Cloudlet.Status;
 import org.cloudbus.cloudsim.core.CloudSim;
 
 /**
- * CloudSim ResCloudlet represents a Cloudlet submitted to a Datacenter for
- * processing. This class keeps track the time for all activities in the
+ * Represents execution information about a Cloudlet submitted to a Datacenter for
+ * processing. This class keeps track of the time for all activities in the
  * Datacenter for a specific Cloudlet. Before a Cloudlet exits the Datacenter,
  * it is RECOMMENDED to call this method {@link #finalizeCloudlet()}.
  * <p>
@@ -29,11 +29,7 @@ import org.cloudbus.cloudsim.core.CloudSim;
  * @author Rajkumar Buyya
  * @since CloudSim Toolkit 1.0
  * 
- * @todo @author manoelcampos This class has some duplicated attributes
- * from the CloudletSimple class.
- * It also has some confusing methods that ones
- * return values in Million Instructions (MI) and other ones
- * in Instructions (I) that is very confusing.
+ * @todo @author manoelcampos The class would be renamed to CloudletExecutionInfo
  */
 public class ResCloudlet {
 
@@ -310,14 +306,10 @@ public class ResCloudlet {
             // sets Cloudlet's current status
             cloudlet.setCloudletStatus(status);
 
-            // if a previous Cloudlet status is INEXEC
-            if (prevStatus == Status.INEXEC) {
-                // and current status is either CANCELED, PAUSED or SUCCESS
-                if (status == Status.CANCELED || status == Status.PAUSED || status == Status.SUCCESS) {
-                    // then update the Cloudlet completion time
-                    totalCompletionTime += (clock - startExecTime);
-                    return true;
-                }
+            if (prevStatus == Status.INEXEC && isNotRunning(status)) {
+                // then update the Cloudlet completion time
+                totalCompletionTime += (clock - startExecTime);
+                return true;
             }
 
             if (prevStatus == Status.RESUMED && status == Status.SUCCESS) {
@@ -337,6 +329,16 @@ public class ResCloudlet {
         }
 
         return success;
+    }
+
+    /**
+     * Checks if the cloudlet is NOT in a running state.
+     * 
+     * @param status The current cloudlet status
+     * @return true if the cloudlet is NOT running, false if it is.
+     */
+    protected static boolean isNotRunning(Status status) {
+        return status == Status.CANCELED || status == Status.PAUSED || status == Status.SUCCESS;
     }
 
     /**

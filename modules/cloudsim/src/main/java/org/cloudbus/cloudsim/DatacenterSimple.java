@@ -249,7 +249,7 @@ public class DatacenterSimple extends SimEntity implements Datacenter {
                 processDataDelete(ev, true);
                 break;
 
-            case CloudSimTags.VM_DATACENTER_EVENT:
+            case CloudSimTags.VM_UPDATE_CLOUDLET_PROCESSING_EVENT:
                 updateCloudletProcessing();
                 checkCloudletsCompletionForAllHosts();
                 break;
@@ -752,7 +752,7 @@ public class DatacenterSimple extends SimEntity implements Datacenter {
             // if this cloudlet is in the exec queue
             if (estimatedFinishTime > 0.0 && !Double.isInfinite(estimatedFinishTime)) {
                 estimatedFinishTime += fileTransferTime;
-                send(getId(), estimatedFinishTime, CloudSimTags.VM_DATACENTER_EVENT);
+                send(getId(), estimatedFinishTime, CloudSimTags.VM_UPDATE_CLOUDLET_PROCESSING_EVENT);
             }
 
             if (ack) {
@@ -820,7 +820,7 @@ public class DatacenterSimple extends SimEntity implements Datacenter {
         if (eventTime > 0.0) { // if this cloudlet is in the exec queue
             status = true;
             if (eventTime > CloudSim.clock()) {
-                schedule(getId(), eventTime, CloudSimTags.VM_DATACENTER_EVENT);
+                schedule(getId(), eventTime, CloudSimTags.VM_UPDATE_CLOUDLET_PROCESSING_EVENT);
             }
         }
 
@@ -892,16 +892,22 @@ public class DatacenterSimple extends SimEntity implements Datacenter {
      * @post $none
      */
     protected void updateCloudletProcessing() {
+        if (!isTimeToUpdateCloudletsProcessing()) 
+            return;
+        
+        double delay = delayToUpdateCloudletProcessing();
+        if (delay != Double.MAX_VALUE) {
+            schedule(getId(), delay, CloudSimTags.VM_UPDATE_CLOUDLET_PROCESSING_EVENT);
+        }
+        setLastProcessTime(CloudSim.clock());
+    }
+
+    protected boolean isTimeToUpdateCloudletsProcessing() {
         // if some time passed since last processing
         // R: for term is to allow loop at simulation start. Otherwise, one initial
         // simulation step is skipped and schedulers are not properly initialized
-        if (CloudSim.clock() < 0.111 || CloudSim.clock() > getLastProcessTime() + CloudSim.getMinTimeBetweenEvents()) {
-            double delay = delayToUpdateCloudletProcessing();
-            if (delay != Double.MAX_VALUE) {
-                schedule(getId(), delay, CloudSimTags.VM_DATACENTER_EVENT);
-            }
-            setLastProcessTime(CloudSim.clock());
-        }
+        return CloudSim.clock() < 0.111 || 
+               CloudSim.clock() > getLastProcessTime() + CloudSim.getMinTimeBetweenEvents();
     }
 
     /**

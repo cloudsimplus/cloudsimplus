@@ -38,5 +38,5 @@ public interface EventListener<T extends EventInfo> {
      * avoid NullPointerException's and checking everywhere if a listener object
      * is not null in order to call its methods.
      */
-    public static final EventListener NULL = (EventListener<EventInfo>) (EventInfo evt) -> {};
+    EventListener NULL = (EventListener<EventInfo>) (EventInfo evt) -> {};
 }

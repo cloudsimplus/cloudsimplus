@@ -292,9 +292,10 @@ public class CloudSimTags {
     public static final int VM_DATA_DEL_ACK = BASE + 40;
 
     /**
-     * Denotes an internal event generated in a {@link Datacenter}.
+     * Denotes an internal event generated in a {@link Datacenter}
+     * to notify it to update the processing of VM's cloudlets.
      */
-    public static final int VM_DATACENTER_EVENT = BASE + 41;
+    public static final int VM_UPDATE_CLOUDLET_PROCESSING_EVENT = BASE + 41;
 
     /**
      * Denotes an internal event generated in a Broker.

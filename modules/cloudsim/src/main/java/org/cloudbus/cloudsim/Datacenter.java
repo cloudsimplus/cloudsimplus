@@ -82,7 +82,7 @@ public interface Datacenter extends Nameable {
      * A property that implements the Null Object Design Pattern for {@link Datacenter}
      * objects.
      */
-    public static final Datacenter NULL = new Datacenter() {
+    Datacenter NULL = new Datacenter() {
         @Override public int getId() { return 0; }
         @Override public String getName() { return ""; }
         @Override public int addFile(File file) { return 0;}

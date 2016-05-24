@@ -16,29 +16,29 @@ public interface DatacenterCharacteristics extends Identificable {
     /**
      * A resource that supports Advanced Reservation mechanisms.
      */
-    public static final int ADVANCE_RESERVATION = 4;
+    int ADVANCE_RESERVATION = 4;
     
     /**
      * Assuming all PEs in a PM have the same rating. However, each PM has
      * different rating to each other.
      */
-    public static final int OTHER_POLICY_DIFFERENT_RATING = 3;
+    int OTHER_POLICY_DIFFERENT_RATING = 3;
     
     /**
      * Assuming all PEs in all PMs have the same rating.
      */
-    public static final int OTHER_POLICY_SAME_RATING = 2;
+    int OTHER_POLICY_SAME_RATING = 2;
     
     /**
      * Spaced-shared CPU allocation policy using First Come First Serve (FCFS)
      * algorithm.
      */
-    public static final int SPACE_SHARED = 1;
+    int SPACE_SHARED = 1;
     
     /**
      * Time-shared CPU allocation policy using Round-Robin algorithm.
      */
-    public static final int TIME_SHARED = 0;
+    int TIME_SHARED = 0;
 
     /**
      * Get the cost to use bandwidth in the datacenter.
@@ -137,7 +137,7 @@ public interface DatacenterCharacteristics extends Identificable {
      *
      * @return the id
      */
-    int getId();
+    @Override int getId();
 
     /**
      * Gets the total MIPS rating, which is the sum of MIPS rating of all PMs in
@@ -307,7 +307,7 @@ public interface DatacenterCharacteristics extends Identificable {
      * A property that implements the Null Object Design Pattern for {@link Datacenter}
      * objects.
      */
-    public static final DatacenterCharacteristics NULL = new DatacenterCharacteristics() {
+    DatacenterCharacteristics NULL = new DatacenterCharacteristics() {
         @Override public double getCostPerBw() { return 0; }
         @Override public double getCostPerMem() { return 0; }
         @Override public double getCostPerMi() { return 0; }

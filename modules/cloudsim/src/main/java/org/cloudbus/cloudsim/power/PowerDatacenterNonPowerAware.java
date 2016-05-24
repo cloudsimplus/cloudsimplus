@@ -65,8 +65,8 @@ public class PowerDatacenterNonPowerAware extends PowerDatacenter {
     @Override
     protected void updateCloudletProcessing() {
         if (getCloudletSubmitted() == -1 || getCloudletSubmitted() == CloudSim.clock()) {
-            CloudSim.cancelAll(getId(), new PredicateType(CloudSimTags.VM_DATACENTER_EVENT));
-            schedule(getId(), getSchedulingInterval(), CloudSimTags.VM_DATACENTER_EVENT);
+            CloudSim.cancelAll(getId(), new PredicateType(CloudSimTags.VM_UPDATE_CLOUDLET_PROCESSING_EVENT));
+            schedule(getId(), getSchedulingInterval(), CloudSimTags.VM_UPDATE_CLOUDLET_PROCESSING_EVENT);
             return;
         }
         double currentTime = CloudSim.clock();
@@ -169,9 +169,9 @@ public class PowerDatacenterNonPowerAware extends PowerDatacenter {
 
             // schedules an event to the next time
             if (minTime != Double.MAX_VALUE) {
-                CloudSim.cancelAll(getId(), new PredicateType(CloudSimTags.VM_DATACENTER_EVENT));
+                CloudSim.cancelAll(getId(), new PredicateType(CloudSimTags.VM_UPDATE_CLOUDLET_PROCESSING_EVENT));
                 // CloudSim.cancelAll(getId(), CloudSim.SIM_ANY);
-                send(getId(), getSchedulingInterval(), CloudSimTags.VM_DATACENTER_EVENT);
+                send(getId(), getSchedulingInterval(), CloudSimTags.VM_UPDATE_CLOUDLET_PROCESSING_EVENT);
             }
 
             setLastProcessTime(currentTime);

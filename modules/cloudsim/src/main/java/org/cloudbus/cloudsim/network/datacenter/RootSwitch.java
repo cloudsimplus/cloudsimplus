@@ -66,7 +66,7 @@ public class RootSwitch extends Switch {
      * @param dc The Datacenter where the switch is connected to
      */
     public RootSwitch(String name, NetworkDatacenter dc) {
-        super(name, LEVEL, dc);
+        super(name, dc);
         setDownlinkBandwidth(DOWNLINK_BW);
         setSwitchingDelay(SWITCHING_DELAY);
         setPorts(PORTS);

@@ -63,7 +63,7 @@ public class AggregateSwitch extends Switch {
      * @param dc The Datacenter where the switch is connected to
      */
     public AggregateSwitch(String name, NetworkDatacenter dc) {
-        super(name, LEVEL, dc);
+        super(name, dc);
         setUplinkBandwidth(RootSwitch.DOWNLINK_BW);
         setDownlinkBandwidth(DOWNLINK_BW);
         setSwitchingDelay(SWITCHING_DELAY);

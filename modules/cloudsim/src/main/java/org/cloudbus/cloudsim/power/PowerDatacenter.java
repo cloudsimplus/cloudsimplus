@@ -91,8 +91,8 @@ public class PowerDatacenter extends DatacenterSimple {
     @Override
     protected void updateCloudletProcessing() {
         if (getCloudletSubmitted() == -1 || getCloudletSubmitted() == CloudSim.clock()) {
-            CloudSim.cancelAll(getId(), new PredicateType(CloudSimTags.VM_DATACENTER_EVENT));
-            schedule(getId(), getSchedulingInterval(), CloudSimTags.VM_DATACENTER_EVENT);
+            CloudSim.cancelAll(getId(), new PredicateType(CloudSimTags.VM_UPDATE_CLOUDLET_PROCESSING_EVENT));
+            schedule(getId(), getSchedulingInterval(), CloudSimTags.VM_UPDATE_CLOUDLET_PROCESSING_EVENT);
             return;
         }
         double currentTime = CloudSim.clock();
@@ -140,8 +140,8 @@ public class PowerDatacenter extends DatacenterSimple {
 
             // schedules an event to the next time
             if (minTime != Double.MAX_VALUE) {
-                CloudSim.cancelAll(getId(), new PredicateType(CloudSimTags.VM_DATACENTER_EVENT));
-                send(getId(), getSchedulingInterval(), CloudSimTags.VM_DATACENTER_EVENT);
+                CloudSim.cancelAll(getId(), new PredicateType(CloudSimTags.VM_UPDATE_CLOUDLET_PROCESSING_EVENT));
+                send(getId(), getSchedulingInterval(), CloudSimTags.VM_UPDATE_CLOUDLET_PROCESSING_EVENT);
             }
 
             setLastProcessTime(currentTime);

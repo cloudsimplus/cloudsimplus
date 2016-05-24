@@ -53,7 +53,6 @@ public abstract class NetworkVmsExampleAppCloudletAbstract {
     public static final String OS = "Linux"; // operating system
     public static final String VMM = "Xen";
     public static final double TIME_ZONE = 10.0; // time zone this resource located
-    public static final int    HOST_PES = 8;
     public static final int    MAX_VMS_PER_HOST = 2;
 
     public static final double COST = 3.0; // the cost of using processing in this resource
@@ -61,24 +60,27 @@ public abstract class NetworkVmsExampleAppCloudletAbstract {
     public static final double COST_PER_STORAGE = 0.001; // the cost of using storage in this resource
     public static final double COST_PER_BW = 0.0; // the cost of using bw in this resource
     
-    public static final int HOST_MIPS = 1;
-    public static final int HOST_RAM = 2048; // host memory (MB)
+    public static final int  HOST_MIPS = 1000;
+    public static final int  HOST_PES = 8;
+    public static final int  HOST_RAM = 2048; // host memory (MB)
     public static final long HOST_STORAGE = 1000000; // host storage
     public static final long HOST_BW = 10000;
 
-    public static final int  VM_MIPS = 1;
+    public static final int  VM_MIPS = 1000;
     public static final long VM_SIZE = 10000; // image size (MB)
     public static final int  VM_RAM = 512; // vm memory (MB)
     public static final long VM_BW = 1000;
     public static final int  VM_PES_NUMBER = HOST_PES / MAX_VMS_PER_HOST;
     
-    public static final int NUMBER_OF_APP_CLOUDLETS = 1;
+    public static final int  NUMBER_OF_APP_CLOUDLETS = 1;
 
-    public static final int NETCLOUDLET_PES_NUMBER = 4;
-    public static final int NETCLOUDLET_FILE_SIZE = 300;
-    public static final int NETCLOUDLET_OUTPUT_SIZE = 300;
-    public static final int NETCLOUDLET_RAM = 100;
-    public static final int NETCLOUDLET_TASK_COMMUNICATION_LENGTH = 1;
+    public static final int  NETCLOUDLET_PES_NUMBER = VM_PES_NUMBER;
+    public static final int  NETCLOUDLET_EXECUTION_TASK_LENGTH = 4000;
+    public static final int  NETCLOUDLET_PES = 1;
+    public static final int  NETCLOUDLET_FILE_SIZE = 300;
+    public static final int  NETCLOUDLET_OUTPUT_SIZE = 300;
+    public static final long NETCLOUDLET_RAM = 100;
+    public static final int  NETCLOUDLET_TASK_COMMUNICATION_LENGTH = 1;
 
     private List<NetworkVm> vmlist;
     private NetworkDatacenter datacenter;
@@ -161,7 +163,7 @@ public abstract class NetworkVmsExampleAppCloudletAbstract {
                     new NetworkDatacenter(
                             name, characteristics, 
                             new NetworkVmAllocationPolicy(hostList), 
-                            storageList, 0);
+                            storageList, 1);
             // Create Internal Datacenter network
             createNetwork(newDatacenter);
             return newDatacenter;

@@ -8,10 +8,14 @@
 package org.cloudbus.cloudsim.network.datacenter;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
+import org.cloudbus.cloudsim.Log;
 
 import org.cloudbus.cloudsim.schedulers.CloudletSchedulerSpaceShared;
 import org.cloudbus.cloudsim.ResCloudlet;
@@ -40,16 +44,14 @@ import org.cloudbus.cloudsim.resources.Processor;
  */
 public class NetworkCloudletSpaceSharedScheduler extends CloudletSchedulerSpaceShared {
     /**
-     * The map of packets to send, where each key is a destination VM and each
-     * value is the list of packets to sent to that VM.
+     * @see #getPacketsToSendMap() 
      */
-    private final Map<Integer, List<HostPacket>> packetsToSend;
+    private final Map<Integer, List<HostPacket>> packetsToSendMap;
 
     /**
-     * The map of packets received, where each key is the id of a sender VM and each
-     * value is the list of packets sent by that VM.
+     * @see #getPacketsReceivedMap() 
      */
-    private final Map<Integer, List<HostPacket>> packetsReceived;
+    private final Map<Integer, List<HostPacket>> packetsReceivedMap;
     
     /**
      * The datacenter where the VM using this scheduler runs.
@@ -67,151 +69,136 @@ public class NetworkCloudletSpaceSharedScheduler extends CloudletSchedulerSpaceS
     public NetworkCloudletSpaceSharedScheduler(NetworkDatacenter datacenter) {
         super();
         this.datacenter = datacenter;
-        packetsToSend = new HashMap<>();
-        packetsReceived = new HashMap<>();
+        packetsToSendMap = new HashMap<>();
+        packetsReceivedMap = new HashMap<>();
     }
 
     @Override
     protected void updateCloudletProcessing(ResCloudlet rcl, double currentTime, Processor p) {
         NetworkCloudlet netcl = (NetworkCloudlet) rcl.getCloudlet();
 
-        if (netcl.getCurrentTaskNum() >= netcl.getNumberOfTasks()) {
+        if (netcl.isFinished()) {
             return;
         }
         
+        /**
+         * @todo @author manoelcampos It should be used polymorphism to avoid
+         * using these if's to find out the task type.
+         */
         if ((netcl.getCurrentTaskNum() == -1)) {
-            /**
-             * @todo @author manoelcampos
-             * It is assuming the execution state is the first one,
-             * but not necessarily.
-             * This situation has to be checked.
-             */
-            startExecutionTask(netcl);
+            startNextTask(netcl);
         }
-        else if (netcl.getCurrentTask().getStage() == Task.Stage.EXECUTION) {
+        else if (netcl.getCurrentTask() instanceof CloudletExecutionTask) {
+            super.updateCloudletProcessing(rcl, currentTime, p);
             updateExecutionTask(rcl, currentTime, p);
         }
-        else if (netcl.getCurrentTask().getStage() == Task.Stage.WAIT_RECV) {
-            updateWaitReceiveTask(netcl);
+        else if (netcl.getCurrentTask() instanceof CloudletSendTask) {
+            addPacketsToBeSent(netcl);
+        }
+        else if (netcl.getCurrentTask() instanceof CloudletReceiveTask) {
+            //Log.println(Log.Level.DEBUG, getClass(), currentTime, "updateCloudletProcessing - Update NetworkCloudlet %d WAIT_RECV task", netcl.getId());
+            receivePackets(netcl);
         }
     }
 
-    protected void updateWaitReceiveTask(NetworkCloudlet netcl) {
-        Task task = netcl.getCurrentTask();
-        List<HostPacket> pktList = packetsReceived.get(task.getVmId());
-        List<HostPacket> pktToRemove = new ArrayList<>();
-        if (pktList != null) {
-            Iterator<HostPacket> it = pktList.iterator();
-            if (it.hasNext()) {
-                HostPacket pkt = it.next();
-                // Asumption: packet will not arrive in the same cycle
-                if (pkt.receiverVmId == netcl.getVmId()) {
-                    pkt.receiveTime = CloudSim.clock();
-                    task.setExecutionTime(CloudSim.clock() - pkt.sendTime);
-                    changeToNextTask(netcl);
-                    pktToRemove.add(pkt);
-                }
-            }
-            pktList.removeAll(pktToRemove);
+    protected void addPacketsToBeSent(NetworkCloudlet netcl) {
+        CloudletSendTask dataTask = (CloudletSendTask)netcl.getCurrentTask();
+        final List<HostPacket> pktList = getVmPacketsToSendList(netcl);
+        pktList.addAll(dataTask.getPacketsToSend(CloudSim.clock()));
+        dataTask.getPacketsToSend().clear();
+        
+        packetsToSendMap.put(netcl.getVmId(), pktList);
+        startNextTask(netcl);
+    }
+
+    protected List<HostPacket> getVmPacketsToSendList(NetworkCloudlet netcl) {
+        List<HostPacket> pktList = packetsToSendMap.get(netcl.getVmId());
+        if (pktList == null) {
+            pktList = new ArrayList<>();
         }
+        return pktList;
+    }
+
+    protected void receivePackets(NetworkCloudlet netcl) {
+        CloudletReceiveTask task = (CloudletReceiveTask)netcl.getCurrentTask();        
+        
+        final List<HostPacket> pktToRemove = getPacketsSentToGivenTask(task);
+        // Asumption: packet will not arrive in the same cycle
+        pktToRemove.forEach(pkt -> pkt.receiveTime = CloudSim.clock());
+        task.computeExecutionTime(CloudSim.clock());
+
+        getListOfPacketsSentFromVm(task.getSourceVmId()).removeAll(pktToRemove);
+        
+        startNextTask(netcl);
+    }
+
+    protected List<HostPacket> getListOfPacketsSentFromVm(int sourceVmId) {
+        List<HostPacket> list = packetsReceivedMap.get(sourceVmId);
+        if (list == null){
+            list = new ArrayList<>();
+            packetsReceivedMap.put(sourceVmId, list);
+        }
+        
+        return list;
+    }
+
+    /**
+     * Gets the list of packets sent to a given CloudletReceiveTask.
+     * @param task The task that is waiting for packets
+     * @return 
+     */
+    protected List<HostPacket> getPacketsSentToGivenTask(CloudletReceiveTask task) {
+        List<HostPacket> packetsFromExpectedSenderVm = getListOfPacketsSentFromVm(task.getSourceVmId());
+        return packetsFromExpectedSenderVm
+                .stream()
+                .filter(pkt -> pkt.receiverVmId == task.getNetworkCloudlet().getVmId())
+                .collect(Collectors.toList());
     }
 
     protected void updateExecutionTask(ResCloudlet rcl, double currentTime, Processor p) {
-        super.updateCloudletProcessing(rcl, currentTime, p);
-        
         NetworkCloudlet netcl = (NetworkCloudlet)rcl.getCloudlet();
         /**
-         * @todo @author manoelcampos
-         * It has to be checked directly on the
-         * task if it is finished or not,
-         * once in next versions
-         * it would be possible to have
-         * multiple execution tasks in the same
-         * NetworkCloudlet.
+         * @todo @author manoelcampos updates the execution
+         * length of the task, considering the NetworkCloudlet
+         * has only one execution task.
          */
-        if (rcl.getCloudlet().isFinished()) {
-            changeToNextTask(netcl);
-        }
+        CloudletExecutionTask task = (CloudletExecutionTask)netcl.getCurrentTask();
+        task.process(netcl.getCloudletFinishedSoFar());   
+        if (task.isFinished()) {
+            netcl.getCurrentTask().computeExecutionTime(currentTime);
+            startNextTask(netcl);
+        }            
     }
 
-    protected void startExecutionTask(NetworkCloudlet netcl) {
-        Task task;
-        task = netcl.setCurrentTaskNum(0);
-        task.setStartTime(CloudSim.clock());
-        if (task.getStage() == Task.Stage.EXECUTION) {
-            /**
-             * @todo @author manoelcampos
-             * It musn't have to be used
-             * the getExecutionTime to update the task processing.
-             * The execution time in fact is being computed
-             * to show the total time spend in in the task.
-             * The execution of the task has to be updated
-             * at the same way that a CloudletSimple is.
-             */
-            datacenter.schedule(datacenter.getId(), task.getExecutionTime(),
-                    CloudSimTags.VM_DATACENTER_EVENT);
-        } else {
-            datacenter.schedule(
-                    datacenter.getId(), 0.0001,
-                    CloudSimTags.VM_DATACENTER_EVENT);
+    /**
+     * Changes a cloudlet to the next task.
+     */
+    private void startNextTask(NetworkCloudlet cl) {
+        if (!cl.isTheLastTask()) {
+            cl.startNextTask(CloudSim.clock());
+            datacenter.schedule(datacenter.getId(), 0.0001, 
+                    CloudSimTags.VM_UPDATE_CLOUDLET_PROCESSING_EVENT);
         }
     }
     
     /**
-     * Changes a cloudlet to the next stage.
-     *
-     * @todo Method too long to understand what is its responsibility.
+     * Gets the map of packets to send, where each key is the Id of the sending VM and each
+     * value is the list of packets to send.
+     * 
+     * @return 
      */
-    private void changeToNextTask(NetworkCloudlet cl) {
-        Task currTask = cl.getCurrentTask();
-        currTask.setExecutionTime(Math.round(CloudSim.clock() - currTask.getStartTime()));
-
-        int currentTaskNum = cl.getCurrentTaskNum();
-        if (currentTaskNum >= cl.getTasks().size() - 1) {
-            cl.setCurrentTaskNum(cl.getTasks().size());
-        } else {
-            Task nextTask = cl.setCurrentTaskNum(currentTaskNum + 1);
-            nextTask.setStartTime(CloudSim.clock());
-            int i = 0;
-            for (i = cl.getCurrentTaskNum(); i < cl.getTasks().size(); i++) {
-                if (cl.getTasks().get(i).getStage() == Task.Stage.WAIT_SEND) {
-                    HostPacket pkt = new HostPacket(
-                            cl.getVmId(), cl.getTasks().get(i).getVmId(), 
-                            cl.getTasks().get(i).getDataLenght(),
-                            CloudSim.clock(), -1,
-                            cl.getId(), cl.getTasks().get(i).getCloudletId());
-                    List<HostPacket> pktlist = packetsToSend.get(cl.getVmId());
-                    if (pktlist == null) {
-                        pktlist = new ArrayList<>();
-                    }
-                    pktlist.add(pkt);
-                    packetsToSend.put(cl.getVmId(), pktlist);
-                } else {
-                    break;
-                }
-            }
-            
-            datacenter.schedule(datacenter.getId(),
-                    0.0001, CloudSimTags.VM_DATACENTER_EVENT);
-            if (i == cl.getTasks().size()) {
-                cl.setCurrentTaskNum(cl.getTasks().size());
-            } else {
-                cl.setCurrentTaskNum(i);
-                if (cl.getTasks().get(i).getStage() == Task.Stage.EXECUTION) {
-                    datacenter.schedule(datacenter.getId(),
-                        cl.getTasks().get(i).getExecutionTime(),
-                        CloudSimTags.VM_DATACENTER_EVENT);
-                }
-            }
-        }
-    }
-    
-    public Map<Integer, List<HostPacket>> getPacketsToSend() {
-        return packetsToSend;
+    public Map<Integer, List<HostPacket>> getPacketsToSendMap() {
+        return packetsToSendMap;
     }
 
-    public Map<Integer, List<HostPacket>> getPacketsReceived() {
-        return packetsReceived;
+    /**
+     * Gets the map of packets received, where each key is the Id of a sender VM and each
+     * value is the list of packets sent by that VM.
+     * 
+     * @return 
+     */
+    public Map<Integer, List<HostPacket>> getPacketsReceivedMap() {
+        return packetsReceivedMap;
     }
 
 }

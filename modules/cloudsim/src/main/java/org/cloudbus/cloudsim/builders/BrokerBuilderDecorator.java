@@ -4,15 +4,15 @@ import java.util.List;
 import org.cloudbus.cloudsim.brokers.DatacenterBrokerSimple;
 
 /**
- * A class that implements the Decorator Design Pattern in order to 
+ * <p>A class that implements the Decorator Design Pattern in order to 
  * include functionalities in a existing class.
  * It is used to ensure that specific methods are called only after
- * a given method is called.<p/>
+ * a given method is called.</p>
  * 
  * For instance, the methods {@link #getVmBuilderForTheCreatedBroker()} and
  * {@link #getCloudletBuilderForTheCreatedBroker()} can only be called after
  * some {@link DatacenterBrokerSimple} was created by calling
- * the method {@link #createBroker()}.<br/>
+ * the method {@link #createBroker()}.<br>
  * By this way, after the method is called, it returns
  * an instance of this decorator that allow
  * chained call to the specific decorator methods
@@ -23,7 +23,6 @@ import org.cloudbus.cloudsim.brokers.DatacenterBrokerSimple;
  */
 public class BrokerBuilderDecorator implements BrokerBuilderInterface {
     private final BrokerBuilder builder;
-    private final DatacenterBrokerSimple broker;
     private final VmBuilder vmBuilder;
     private final CloudletBuilder cloudletBuilder;
 
@@ -33,7 +32,6 @@ public class BrokerBuilderDecorator implements BrokerBuilderInterface {
         if(broker == null)
            throw new RuntimeException("The broker parameter cannot be null."); 
         this.builder = builder;
-        this.broker = broker;
         
         this.vmBuilder = new VmBuilder(broker);        
         this.cloudletBuilder = new CloudletBuilder(this, broker);        

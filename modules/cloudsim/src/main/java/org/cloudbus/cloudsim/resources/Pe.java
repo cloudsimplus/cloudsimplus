@@ -4,9 +4,9 @@ import org.cloudbus.cloudsim.provisioners.PeProvisioner;
 import org.cloudbus.cloudsim.provisioners.PeProvisionerSimple;
 
 /**
- * A interface to be implemented by each class that provides
+ * <p>A interface to be implemented by each class that provides
  * the basic features of a virtual or physical Processing Element (PE)
- * of a PM or VM. Each Pe represents a  virtual or physical processor core.<p/>
+ * of a PM or VM. Each Pe represents a  virtual or physical processor core.</p>
  * 
  * It also implements the Null Object
  * Design Pattern in order to start avoiding {@link NullPointerException} when
@@ -87,7 +87,7 @@ public interface Pe {
      * A property that implements the Null Object Design Pattern for {@link Pe}
      * objects.
      */
-    public static final Pe NULL = new Pe(){
+    Pe NULL = new Pe(){
         @Override public int getId(){ return 0; }
         @Override public int getMips() { return 0; }
         @Override public PeProvisioner getPeProvisioner() { return new PeProvisionerSimple(0); }

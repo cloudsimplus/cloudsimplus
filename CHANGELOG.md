@@ -2,6 +2,15 @@
 
 Lists the main changes in the project.
 
+### WARNINGS
+
+- This is an **unofficial release** that breaks compatibility with previous CloudSim versions. 
+The change log below presents more details of how to update your simulations after starting to use this release.
+However, all previous existing examples were updated to use this release. Thus, they can be an excelente way
+to get a comprehensive view of changes in how you make your simulations.
+
+- It was changed the requirements of the cloudsim project to Java 8 (the examples remain in Java 7).
+
 ## [4.0.2] - 2016-04-28 
 
 ### Changed
@@ -20,22 +29,21 @@ Lists the main changes in the project.
   The method name was changed to conform the name convention used by the getCloudletsWaitingList method.
 - Changed the name of the method getCloudletReceivedList() at the DatacenterBroker interface to  getCloudletsFinishedList()
   because in fact, this is the list of cloudlets that have finished executing.
-- Change the name of the method getDatacenterCharacteristicsList at the DatacenterBrokerSimple class to getDatacenterCharacteristicsMap
+- Changed the name of the method getDatacenterCharacteristicsList at the DatacenterBrokerSimple class to getDatacenterCharacteristicsMap
   because in fact it is returning a map, not a list. 
+- Renamed the class TaskStage at the package org.cloudbus.cloudsim.network.datacenter to CloudletTask
+  and made it an abstract class. New sub-classes were introduced. See the section "Added" below.
+  Encapsuled and renamed all attributes. 
+  
+### Added
+
+- Created new subclasses CloudletDataTask and CloudletExecutionTask from CloudletTask.
+  The CloudletDataTask can be used to send or receive data, according to it's type attribute
+  (that now is an enum).
 
 
 
 ## [4.0.0] - 2016-04-25 
-
-### WARNINGS
-
-- This is an **unofficial release** that breaks compatibility with previous CloudSim versions. 
-The change log below presents more details of how to update your simulations after starting to use this release.
-However, all previous existing examples were updated to use this release. Thus, they can be an excelente way
-to get a comprehensive view of changes in how you make your simulations.
-
-- It was changed the requirements of the cloudsim project to Java 8 (the examples remain in Java 7).
-
 
 ### Fixed
 
@@ -59,18 +67,18 @@ This change was performed to reduce null checks and avoid NullPointerException's
 - The method getCloudletFinishedSoFar of CloudletSimple class now returns 0 when the cloudlet hasn't started executing yet,
 instead of returning the cloudlet length. If it hasn't started, the executed length is thus 0.
 
-- Changed the return value of the VmAllocationPolicy.optimizeAllocation method from List&lt;Map&lt;String, Object&gt;&gt; to Map&lt;Vm, Host&gt;
+- Changed the return value of the VmAllocationPolicy.optimizeAllocation method from List<Map<String, Object>> to Map<Vm, Host>
 	- The return value was completely strange and didn't correctly use generics. 
     The method return was a List of Maps where the keys were either the strings "vm" or "host". 
     If the key was the string "vm", it meant the value was a Vm instance. If the key was the string "host", 
     it meant the value was a Host instance. Thus, each Map represented the relation between a Vm and the Host where it was to be placed.
     
     - This design was very confusing, requiring a lot of explanation and several unsafe typecasts. Now the method, 
-    and all related ones that were returning a List&lt;Map&lt;String, Object&gt;&gt;, are returning a Map&lt;Vm, Host&gt; 
+    and all related ones that were returning a List<Map<String, Object>>, are returning a Map<Vm, Host> 
     that doesn't need many explanation. It is the map between a Vm and the Host where it has to be placed.
     
-    - The method DatacenterSimple.processVmMigrate that expected the ev.getData() to be a Map&lt;String, Object&gt;, 
-    now expects a Map.Entry&lt;Vm, Host&gt;, making to code clearer, less error-prone and reduces typecasts.
+    - The method DatacenterSimple.processVmMigrate that expected the ev.getData() to be a Map<String, Object>, 
+    now expects a Map.Entry<Vm, Host>, making to code clearer, less error-prone and reduces typecasts.
 
 
 ### Removed 
@@ -150,7 +158,7 @@ CloudletSchedulerSpaceShared and CloudletSchedulerTimeShared to CloudletSchedule
 	- By this way, now it is easier to extend and test these classes, since a bunch of duplicated code was removed, increasing code reuse.
 
 
-- &lt;a name="network-changes"&gt;&lt;/a&gt;THE MOST CRITICAL UPDATE IN NETWORK RELATED CLASSES
+- <a name="network-changes"></a>THE MOST CRITICAL UPDATE IN NETWORK RELATED CLASSES
     
     - The classes related to the examples at the org.cloudbus.cloudsim.network.datacenter package of the
     cloudsim-examples project were almost totally remade.
@@ -186,7 +194,7 @@ CloudletSchedulerSpaceShared and CloudletSchedulerTimeShared to CloudletSchedule
 
 ### Added & Changed
 
-- A complete new set of interfaces was introduced in order to starting providing a more structured class hierarchy and to reduce code duplication. 
+- A complete new set of interfaces was introduced in order to start providing a more structured class hierarchy and to reduce code duplication. 
 The classes `Datacenter`, `DatacenterCharacteristics`, `DatacenterBroker`, `Host`, `PowerHost`, `Pe`, `Vm`, `VmAllocationPolicy`, `VmScheduler`, 
 `Cloudlet` and `CloudletScheduler` (and maybe others) had their names suffixed with the word "Simple", as already has been used in other classes 
 such as `VmAllocationPolicySimple`. Further, they were introduced new interfaces with the same name of the original classes 
@@ -230,7 +238,7 @@ reduce code duplication of unit tests; include extensive set of unit tests to va
     These repetitive codes were found in classes such as VmSimple and provisioners, what made clear the need of a new class with these behaviours and data. 
     Accordingly, a new set of classes was created inside the new package `org.cloudbus.cloudsim.resources`.
 
-    - &lt;a name="resource-interface"&gt;&lt;/a&gt;A `Resource` interface was created, that is used to define resource capacity and allocation for Hosts and VMs. 
+    - <a name="resource-interface"></a>A `Resource` interface was created, that is used to define resource capacity and allocation for Hosts and VMs. 
     It uses generics to identify the type associated with the resource (if `Double`, `Long`, `Integer`, etc). 
     It defines the signature of methods to manage a given resource such as CPU, RAM or BW of VMs and Hosts.
 
@@ -263,11 +271,11 @@ reduce code duplication of unit tests; include extensive set of unit tests to va
         Accordingly, they just use a storage attribute (an instance of the previously mentioned `Resource` interface) to manage this storage data.
         - The `HarddriveStorage` class now implements the `FileStorage` interface.
         - With the new `FileStorage` interface, the public interface of the `DatacenterSimple` class changed. 
-        Now, to instantiate a `DatacenterSimple` it has to be passed a `List&lt;FileStorage&gt;` instead of `List&lt;Storage&gt;`.
+        Now, to instantiate a `DatacenterSimple` it has to be passed a `List<FileStorage>` instead of `List<Storage>`.
         - The classes `HarddriveStorage` and `SanStorage` were moved to the new package `org.cloudbus.cloudsim.resources`, 
         including the `FileStorage` interface.
         - The public interface of the `Datacenter` class and all its subclasses was changed due to renaming the `Storage` interface to FileStorage. 
-        Now the constructor of these classes has to receive a `List&lt;FileStorage&gt;` instead of `List&lt;Storage&gt;`.
+        Now the constructor of these classes has to receive a `List<FileStorage>` instead of `List<Storage>`.
         - The "double storage" attribute of the `HostSimple` class originally was being decreased every time a new `Vm` was placed at the host, 
         instead of managing the current allocated storage (as it is being made for other resources such as `Ram` and `Bandwidth`). 
         Now, the `HostSimple` uses an internal `RawStorage` object to manage the capacity and allocated space instead of just a primitive double attribute. 
@@ -292,7 +300,7 @@ reduce code duplication of unit tests; include extensive set of unit tests to va
     that will store all information about itself (such as its capacity, the amount of free resource, etc). 
     Below it is shown a example of how to instantiate a `Host`, before and after the performed changes:
         - **Before changes** : `new Host(hostId, new RamProvisionerSimple(ram), new BwProvisionerSimple(bw), new VmSchedulerTimeShared(peList));`
-        - **After changes**: `new HostSimple(hostId, new ResourceProvisionerSimple&lt;&gt;(new Ram(ram)), new ResourceProvisionerSimple&lt;&gt;(new Bandwidth(bw)), storage, peList, new VmSchedulerTimeShared(peList);`
+        - **After changes**: `new HostSimple(hostId, new ResourceProvisionerSimple<>(new Ram(ram)), new ResourceProvisionerSimple<>(new Bandwidth(bw)), storage, peList, new VmSchedulerTimeShared(peList);`
 
 
 
@@ -342,7 +350,7 @@ org.cloudbus.cloudsim.util package
     - Functional/Integration Tests have to be included in the package `org.cloudbus.cloudsim.IntegrationTests`
     (as configured in maven profiles inside the pom.xml).
     - To run all tests at NetBeans, including the Functional/Integration ones, you can right click on the project root,
-    select "Set Configurtion &gt;&gt; integration-test", right click again and select "Custom &gt;&gt; integration-tests" 
+    select "Set Configurtion >> integration-test", right click again and select "Custom >> integration-tests" 
     (that is configured in the nbactions.xml). To run in other IDE's, you can see the maven parameters at the nbactions.xml file.
     - Included the CheckHostAvailableMips Integration Test. The IT checks if the Host CPU utilization is as expected along the simulation run. 
 
@@ -367,7 +375,7 @@ These notifications can be about the change in state of CloudSim entities.
 
 	- Introduced a onUpdateVmsProcessingListener on the Host interface in order to notify listeners when a host updates its VMs processing
 
-	- Update the CloudSim class to include the EventListener&lt;SimEvent&gt; eventProcessingListener attribute. It uses the new EventListener 
+	- Update the CloudSim class to include the EventListener<SimEvent> eventProcessingListener attribute. It uses the new EventListener 
     interface to notify observer objects when any event of any kind is processed by CloudSim simulator. See the setEventProcessingListener method 
     to define a observer object to get notified when any event is processed. The inclusion of the listener doesn't break applications using previous 
     CloudSim versions.

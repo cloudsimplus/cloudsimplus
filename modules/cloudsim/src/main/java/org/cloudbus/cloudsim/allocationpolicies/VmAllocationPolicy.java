@@ -93,7 +93,7 @@ public interface VmAllocationPolicy {
      * A property that implements the Null Object Design Pattern for {@link VmAllocationPolicy}
      * objects.
      */
-    public static final VmAllocationPolicy NULL = new VmAllocationPolicy() {
+    VmAllocationPolicy NULL = new VmAllocationPolicy() {
         @Override public boolean allocateHostForVm(Vm vm){ return false; }
         @Override public boolean allocateHostForVm(Vm vm, Host host) { return false; }
         @Override public void deallocateHostForVm(Vm vm){}

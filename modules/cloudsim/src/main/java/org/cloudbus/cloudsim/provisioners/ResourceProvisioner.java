@@ -68,7 +68,7 @@ public interface ResourceProvisioner<T extends Number & Comparable<T>> {
      * @pre $none
      * @post none
      */
-    public abstract boolean deallocateResourceForVm(Vm vm);
+    boolean deallocateResourceForVm(Vm vm);
 
     /**
      * Releases all the allocated amount of the resource used by all VMs.
@@ -109,7 +109,7 @@ public interface ResourceProvisioner<T extends Number & Comparable<T>> {
      * A property that implements the Null Object Design Pattern for 
      * ResourceProvisioner&lt;Double&gt; objects.
      */
-    public static final ResourceProvisioner<Double> NULL_DOUBLE = new ResourceProvisioner<Double>(){
+    ResourceProvisioner<Double> NULL_DOUBLE = new ResourceProvisioner<Double>(){
         @Override public boolean allocateResourceForVm(Vm vm, Double newTotalVmResource) { return false; }
         @Override public Double getAllocatedResourceForVm(Vm vm) { return 0.0; }
         @Override public Double getTotalAllocatedResource() { return 0.0; }
@@ -124,7 +124,7 @@ public interface ResourceProvisioner<T extends Number & Comparable<T>> {
      * A property that implements the Null Object Design Pattern for 
      * ResourceProvisioner&lt;Long&gt; objects.
      */
-    public static final ResourceProvisioner<Long> NULL_LONG = new ResourceProvisioner<Long>(){
+    ResourceProvisioner<Long> NULL_LONG = new ResourceProvisioner<Long>(){
         @Override public boolean allocateResourceForVm(Vm vm, Long newTotalVmResource) { return false; }
         @Override public Long getAllocatedResourceForVm(Vm vm) { return 0L; }
         @Override public Long getTotalAllocatedResource() { return 0L; }
@@ -139,7 +139,7 @@ public interface ResourceProvisioner<T extends Number & Comparable<T>> {
      * A property that implements the Null Object Design Pattern for 
      * ResourceProvisioner&lt;Integer&gt; objects.
      */
-    public static final ResourceProvisioner<Integer> NULL_INT = new ResourceProvisioner<Integer>(){
+    ResourceProvisioner<Integer> NULL_INT = new ResourceProvisioner<Integer>(){
         @Override public boolean allocateResourceForVm(Vm vm, Integer newTotalVmResource) { return false; }
         @Override public Integer getAllocatedResourceForVm(Vm vm) { return 0; }
         @Override public Integer getTotalAllocatedResource() { return 0; }

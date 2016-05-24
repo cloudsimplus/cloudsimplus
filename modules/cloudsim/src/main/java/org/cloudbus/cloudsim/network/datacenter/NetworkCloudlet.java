@@ -12,14 +12,14 @@ import java.util.List;
 
 import org.cloudbus.cloudsim.CloudletSimple;
 import org.cloudbus.cloudsim.utilizationmodels.UtilizationModel;
-import org.cloudbus.cloudsim.network.datacenter.Task.Stage;
 
 /**
  * NetworkCloudlet class extends Cloudlet to support simulation of complex
- * applications. Each NetworkCloudlet represents a task of the
- application. Each task consists of several tasks.
-
- <p>Please refer to following publication for more details:
+ * applications. Each NetworkCloudlet represents a task of the application. 
+ * Each task consists of several tasks.
+ *
+ * <p>
+ * Please refer to following publication for more details:
  * <ul>
  * <li>
  * <a href="http://dx.doi.org/10.1109/UCC.2011.24">
@@ -33,7 +33,7 @@ import org.cloudbus.cloudsim.network.datacenter.Task.Stage;
  *
  * @author Saurabh Kumar Garg
  * @since CloudSim Toolkit 1.0
- * 
+ *
  * @todo @author manoelcampos Attributes should be private
  * @todo @author manoelcampos The different cloudlet classes should have a class
  * hierarchy, by means of a super class and/or interface.
@@ -61,16 +61,18 @@ public class NetworkCloudlet extends CloudletSimple implements Comparable<Object
 
     /**
      * Current stage of cloudlet execution, according to the values of the
-     * {@link Stage} enum.
+     * {@link Type} enum.
      */
     private int currentTaskNum;
 
     /**
      * All tasks which cloudlet execution.
      */
-    private final List<Task> tasks;
-    
-    /** @see #getAppCloudlet() */
+    private final List<CloudletTask> tasks;
+
+    /**
+     * @see #getAppCloudlet()
+     */
     private AppCloudlet appCloudlet;
 
     /**
@@ -81,8 +83,8 @@ public class NetworkCloudlet extends CloudletSimple implements Comparable<Object
     private long memory;
 
     public NetworkCloudlet(
-            int cloudletId,
-            long cloudletLength,
+            int id,
+            final long cloudletLength,
             int pesNumber,
             long cloudletFileSize,
             long cloudletOutputSize,
@@ -91,7 +93,7 @@ public class NetworkCloudlet extends CloudletSimple implements Comparable<Object
             UtilizationModel utilizationModelRam,
             UtilizationModel utilizationModelBw) {
         super(
-                cloudletId,
+                id,
                 cloudletLength,
                 pesNumber,
                 cloudletFileSize,
@@ -104,7 +106,7 @@ public class NetworkCloudlet extends CloudletSimple implements Comparable<Object
         this.memory = memory;
         tasks = new ArrayList<>();
     }
-
+    
     @Override
     public int compareTo(Object arg0) {
         /**
@@ -120,7 +122,8 @@ public class NetworkCloudlet extends CloudletSimple implements Comparable<Object
 
     /**
      * Gets the {@link AppCloudlet} that owns this NetworkCloudlet.
-     * @return 
+     *
+     * @return
      */
     public AppCloudlet getAppCloudlet() {
         return appCloudlet;
@@ -128,6 +131,7 @@ public class NetworkCloudlet extends CloudletSimple implements Comparable<Object
 
     /**
      * Set the {@link AppCloudlet} that owns this NetworkCloudlet.
+     *
      * @param appCloudlet
      */
     public void setAppCloudlet(AppCloudlet appCloudlet) {
@@ -138,10 +142,10 @@ public class NetworkCloudlet extends CloudletSimple implements Comparable<Object
         return tasks.size();
     }
 
-    public List<Task> getTasks() {
+    public List<CloudletTask> getTasks() {
         return tasks;
     }
-    
+
     public long getMemory() {
         return memory;
     }
@@ -152,34 +156,54 @@ public class NetworkCloudlet extends CloudletSimple implements Comparable<Object
 
     /**
      * Gets the current task number.
-     * @return return the current task number
-     * if the cloudlet started executing,
-     * -1 if the cloudlet hasn't started executing
-     * or the number of tasks if all
+     *
+     * @return return the current task number if the cloudlet started executing,
+     * -1 if the cloudlet hasn't started executing or the number of tasks if all
      * tasks have finished executing.
      */
     public int getCurrentTaskNum() {
         return currentTaskNum;
     }
+    
+    /**
+     * Indicates if the NetworkCloudlet is executing 
+     * its last task.
+     * @return 
+     */
+    public boolean isTheLastTask(){
+        return getCurrentTaskNum() >= tasks.size() - 1;
+    }
 
     /**
-     * Sets the current task number and return the respective task.
-     * @param currentTaskNum
-     * @return the current task
+     * Change the current task to the next one, in order
+     * to start executing it.
+     * @param nextTaskStartTime the time that the next task will start
+     * @return the next task or null if there isn't any next task
      */
-    public Task setCurrentTaskNum(int currentTaskNum) {
-        this.currentTaskNum = currentTaskNum;
-        return getCurrentTask();
+    public CloudletTask startNextTask(double nextTaskStartTime){
+        CloudletTask previousTask = getCurrentTask();
+        if(previousTask != null){
+            previousTask.computeExecutionTime(nextTaskStartTime);
+        }
+        
+        this.currentTaskNum++;
+        CloudletTask nextTask = getCurrentTask();
+        if(nextTask != null){
+            nextTask.setStartTime(nextTaskStartTime);
+        }
+        return nextTask;
     }
 
     /**
      * Gets the current task.
-     * @return 
+     *
+     * @return
      */
-    protected Task getCurrentTask() {
-        if(currentTaskNum < 0 || currentTaskNum >= tasks.size())
+    protected CloudletTask getCurrentTask() {
+        if (currentTaskNum < 0 || currentTaskNum >= tasks.size()) {
             return null;
-        
+        }
+
         return tasks.get(currentTaskNum);
     }
 
@@ -188,5 +212,4 @@ public class NetworkCloudlet extends CloudletSimple implements Comparable<Object
         return super.isFinished() && getCurrentTaskNum() >= getNumberOfTasks();
     }
 
-    
 }

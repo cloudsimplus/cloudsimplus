@@ -165,7 +165,7 @@ public interface VmScheduler {
      * A property that implements the Null Object Design Pattern for {@link VmScheduler}
      * objects.
      */
-    public static final VmScheduler NULL = new VmScheduler(){
+    VmScheduler NULL = new VmScheduler(){
         @Override public boolean allocatePesForVm(Vm vm, List<Double> mipsShare) { return false; }
         @Override public void deallocatePesForAllVms() {}
         @Override public void deallocatePesForVm(Vm vm) {}

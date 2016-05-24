@@ -6,10 +6,12 @@ import org.cloudbus.cloudsim.Log;
 import org.cloudbus.cloudsim.Vm;
 import org.cloudbus.cloudsim.core.CloudSim;
 import org.cloudbus.cloudsim.network.datacenter.AppCloudlet;
+import org.cloudbus.cloudsim.network.datacenter.CloudletSendTask;
 import org.cloudbus.cloudsim.network.datacenter.NetworkCloudlet;
 import org.cloudbus.cloudsim.network.datacenter.NetworkVm;
-import org.cloudbus.cloudsim.network.datacenter.Task;
-import org.cloudbus.cloudsim.network.datacenter.Task.Stage;
+import org.cloudbus.cloudsim.network.datacenter.CloudletTask;
+import org.cloudbus.cloudsim.network.datacenter.CloudletExecutionTask;
+import org.cloudbus.cloudsim.network.datacenter.CloudletReceiveTask;
 import org.cloudbus.cloudsim.utilizationmodels.UtilizationModel;
 import org.cloudbus.cloudsim.utilizationmodels.UtilizationModelFull;
 
@@ -60,58 +62,66 @@ public class NetworkVmsExampleWorkflowAppCloudlet extends NetworkVmsExampleAppCl
                 networkCloudletList[i].getId(), appCloudlet.getId());
         }
 
-        //Task A (id 0)
-        addExecutionTask(networkCloudletList[0], selectedVms.get(0));
-        addSendOrReceiveTask(networkCloudletList[0], Stage.WAIT_SEND, networkCloudletList[2]);
+        //Cloudlet 0 Tasks 
+        addExecutionTask(networkCloudletList[0]);
+        addSendTask(networkCloudletList[0], networkCloudletList[2]);
 
-        //Task B (id 1)
-        addExecutionTask(networkCloudletList[1], selectedVms.get(1));
-        addSendOrReceiveTask(networkCloudletList[1], Stage.WAIT_SEND,  networkCloudletList[2]);
+        //Cloudlet 1 Tasks 
+        addExecutionTask(networkCloudletList[1]);
+        addSendTask(networkCloudletList[1], networkCloudletList[2]);
         
-        //Task C (id 2)
-        addSendOrReceiveTask(networkCloudletList[2], Stage.WAIT_RECV, networkCloudletList[0]);
-        addSendOrReceiveTask(networkCloudletList[2], Stage.WAIT_RECV, networkCloudletList[1]);
-        addExecutionTask(networkCloudletList[2], selectedVms.get(0));
+        //Cloudlet 2 Tasks 
+        addReceiveTask(networkCloudletList[2], networkCloudletList[0]);
+        addReceiveTask(networkCloudletList[2], networkCloudletList[1]);
+        addExecutionTask(networkCloudletList[2]);
 
         return Arrays.asList(networkCloudletList);
     }
 
     /**
-     * Adds an send or receive task to list of tasks of the given {@link NetworkCloudlet}.
+     * Adds a send task to list of tasks of the given {@link NetworkCloudlet}.
      * 
-     * @param sourceNetCloudlet the {@link NetworkCloudlet} to add the task
-     * @param stage The stage to set to the created task
-     * @param destinationNetCloudlet the destination where to send or from which is 
+     * @param sourceCloudlet the {@link NetworkCloudlet} to add the task to
+     * @param destinationCloudlet the destination where to send or from which is 
      * expected to receive data
      */
-    private void addSendOrReceiveTask(
-            NetworkCloudlet sourceNetCloudlet, Task.Stage stage,
-            NetworkCloudlet destinationNetCloudlet) {        
-        Task task = new Task(
-                sourceNetCloudlet.getTasks().size(), stage, 100, 0, NETCLOUDLET_RAM,
-                sourceNetCloudlet.getVmId(), destinationNetCloudlet.getId());
-        sourceNetCloudlet.getTasks().add(task);
+    private void addSendTask(
+            NetworkCloudlet sourceCloudlet,
+            NetworkCloudlet destinationCloudlet) {   
+        CloudletSendTask task = new CloudletSendTask(
+                sourceCloudlet.getTasks().size(), NETCLOUDLET_RAM, sourceCloudlet);
+        for(int i = 0; i < 100; i++) {
+            task.addPacket(destinationCloudlet.getVmId(), destinationCloudlet.getId(), 1000);
+        }
+        sourceCloudlet.getTasks().add(task);
+    }
+
+    /**
+     * Adds a receive task to list of tasks of the given {@link NetworkCloudlet}.
+     * 
+     * @param cloudlet the {@link NetworkCloudlet} that the task will belong to
+     * @param sourceCloudlet the cloudlet where it is expected to receive packets from
+     */
+    private void addReceiveTask(NetworkCloudlet cloudlet, NetworkCloudlet sourceCloudlet) {   
+        CloudletTask task = new CloudletReceiveTask(
+                cloudlet.getTasks().size(), NETCLOUDLET_RAM, cloudlet, sourceCloudlet.getVmId());
+        cloudlet.getTasks().add(task);
     }
 
     /**
      * Adds an execution task to list of tasks of the given {@link NetworkCloudlet}.
      * 
      * @param netCloudlet the {@link NetworkCloudlet} to add the task
-     * @param vm the VM where to send or from which to receive data
      */
-    private static void addExecutionTask(NetworkCloudlet netCloudlet, Vm vm) {
+    private static void addExecutionTask(NetworkCloudlet netCloudlet) {
         /**
-         * @todo @author manoelcampos It's strange
-         * to define the time of the execution task.
-         * It would be defined the length instead.
-         * In this case, the execution time will
-         * depend on the MIPS of the 
-         * PE where the task is being executed.
+         * @todo @author manoelcampos It's strange to define the time of the execution task.
+         * It would be defined the length instead. In this case, the execution time will
+         * depend on the MIPS of the PE where the task is being executed.
          */
-        Task stage = new Task(
+        CloudletTask stage = new CloudletExecutionTask(
                 netCloudlet.getTasks().size(), 
-                Task.Stage.EXECUTION, 0, netCloudlet.getCloudletLength(), NETCLOUDLET_RAM,
-                vm.getId(), netCloudlet.getId());
+                NETCLOUDLET_RAM, netCloudlet, netCloudlet.getCloudletLength());
         netCloudlet.getTasks().add(stage);
     }
 
@@ -126,13 +136,14 @@ public class NetworkVmsExampleWorkflowAppCloudlet extends NetworkVmsExampleAppCl
     private NetworkCloudlet createNetworkCloudlet(int networkCloudletId, AppCloudlet appCloudlet, Vm vm) {
         UtilizationModel utilizationModel = new UtilizationModelFull();
         NetworkCloudlet netCloudlet = new NetworkCloudlet(
-                networkCloudletId, 0, 1, 
+                networkCloudletId, NETCLOUDLET_EXECUTION_TASK_LENGTH, NETCLOUDLET_PES, 
                 NETCLOUDLET_FILE_SIZE, NETCLOUDLET_OUTPUT_SIZE, NETCLOUDLET_RAM,
                 utilizationModel, utilizationModel, utilizationModel);
         netCloudlet.setAppCloudlet(appCloudlet);
         netCloudlet.setUserId(getBroker().getId());
         netCloudlet.submittime = CloudSim.clock();
         netCloudlet.setVmId(vm.getId());
+        
         return netCloudlet;
     }
 

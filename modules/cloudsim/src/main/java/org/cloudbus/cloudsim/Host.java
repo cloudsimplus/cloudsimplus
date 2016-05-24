@@ -334,7 +334,7 @@ public interface Host extends Identificable {
      * A property that implements the Null Object Design Pattern for {@link Host}
      * objects.
      */
-    public static final Host NULL = new Host(){
+    Host NULL = new Host(){
         @Override public void addMigratingInVm(Vm vm) {}
         @Override public boolean allocatePesForVm(Vm vm, List<Double> mipsShare) { return false;}
         @Override public void deallocatePesForVm(Vm vm) {}

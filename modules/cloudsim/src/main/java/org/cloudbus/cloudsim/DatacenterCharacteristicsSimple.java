@@ -138,7 +138,7 @@ public class DatacenterCharacteristicsSimple implements DatacenterCharacteristic
         setAllocationPolicy(allocationPolicy);
         setCostPerSecond(costPerSec);
 
-        setTimeZone(0.0);
+        setTimeZone(timeZone);
 
         setVmm(vmm);
         setCostPerMem(costPerMem);

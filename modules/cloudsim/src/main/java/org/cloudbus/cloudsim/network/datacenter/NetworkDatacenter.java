@@ -136,15 +136,14 @@ public class NetworkDatacenter extends DatacenterSimple {
 
     @Override
     protected boolean processVmCreate(SimEvent ev, boolean ack) {
-        if(super.processVmCreate(ev, ack)){
-            Vm vm = (Vm) ev.getData();
-            vmToSwitchMap.put(vm.getId(), ((NetworkHost) vm.getHost()).getEdgeSwitch().getId());
-            vmToHostMap.put(vm.getId(), vm.getHost().getId());
-            Log.printLine(vm.getId() + " VM is created on " + vm.getHost().getId());
-            return true;
-        }
+        if(!super.processVmCreate(ev, ack))
+            return false;
         
-        return false;
+        Vm vm = (Vm) ev.getData();
+        vmToSwitchMap.put(vm.getId(), ((NetworkHost) vm.getHost()).getEdgeSwitch().getId());
+        vmToHostMap.put(vm.getId(), vm.getHost().getId());
+        Log.printLine(vm.getId() + " VM is created on " + vm.getHost().getId());
+        return true;
     }
 
     @Override
@@ -204,10 +203,10 @@ public class NetworkDatacenter extends DatacenterSimple {
             if (estimatedFinishTime > 0.0) { // if this cloudlet is in the exec
                 // time to process the cloudlet
                 estimatedFinishTime += fileTransferTime;
-                send(getId(), estimatedFinishTime, CloudSimTags.VM_DATACENTER_EVENT);
+                send(getId(), estimatedFinishTime, CloudSimTags.VM_UPDATE_CLOUDLET_PROCESSING_EVENT);
 
                 // event to update the stages
-                send(getId(), 0.0001, CloudSimTags.VM_DATACENTER_EVENT);
+                send(getId(), 0.0001, CloudSimTags.VM_UPDATE_CLOUDLET_PROCESSING_EVENT);
             }
 
             if (ack) {

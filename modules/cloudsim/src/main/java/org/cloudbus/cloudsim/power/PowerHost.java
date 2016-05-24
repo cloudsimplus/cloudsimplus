@@ -3,7 +3,6 @@ package org.cloudbus.cloudsim.power;
 import java.util.Collections;
 import java.util.List;
 import org.cloudbus.cloudsim.Datacenter;
-import org.cloudbus.cloudsim.Host;
 import org.cloudbus.cloudsim.HostDynamicWorkload;
 import org.cloudbus.cloudsim.HostStateHistoryEntry;
 import org.cloudbus.cloudsim.Vm;
@@ -61,7 +60,7 @@ public interface PowerHost extends HostDynamicWorkload {
      * A property that implements the Null Object Design Pattern for {@link PowerHost}
      * objects.
      */
-    public static final PowerHost NULL = new PowerHost() {
+    PowerHost NULL = new PowerHost() {
         @Override public double getEnergyLinearInterpolation(double fromUtilization, double toUtilization, double time) { return 0; }
         @Override public double getMaxPower() { return 0; }
         @Override public double getPower() { return 0; }
