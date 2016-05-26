@@ -1,5 +1,5 @@
 # CloudSim: A Framework For Modeling And Simulation Of Cloud Computing Infrastructures And Services 
-[![Build Status](https://img.shields.io/travis/manoelcampos/cloudsim/master.svg)](https://travis-ci.org/manoelcampos/cloudsim) [![Coverage Status](https://coveralls.io/repos/github/manoelcampos/cloudsim/badge.svg?branch=master)](https://coveralls.io/github/manoelcampos/cloudsim?branch=master) [![LGPL licensed](https://img.shields.io/badge/license-LGPL-blue.svg)](LICENSE)
+[![Build Status](https://img.shields.io/travis/manoelcampos/cloudsim/master.svg)](https://travis-ci.org/manoelcampos/cloudsim) [![Coverage Status](https://coveralls.io/repos/github/manoelcampos/cloudsim/badge.svg?branch=master)](https://coveralls.io/github/manoelcampos/cloudsim?branch=master) [![Codacy Badge](https://api.codacy.com/project/badge/Grade/3f132b184d5e475dbbcd356ee84499fc)](https://www.codacy.com/app/manoelcampos/cloudsim?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=manoelcampos/cloudsim&amp;utm_campaign=Badge_Grade) [![LGPL licensed](https://img.shields.io/badge/license-LGPL-blue.svg)](LICENSE)
 
 
 # NOTICE
