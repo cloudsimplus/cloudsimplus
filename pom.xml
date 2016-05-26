@@ -2,27 +2,27 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>org.cloudbus.cloudsim</groupId>
   <artifactId>cloudsim-package</artifactId>
-  <version>4.0</version>
+  <version>5.0</version>
   <packaging>pom</packaging>
   <name>cloudsim-package</name>
   <description>CloudSim: A Framework For Modeling And Simulation Of Cloud Computing Infrastructures And Services</description>
   <url>http://www.cloudbus.org/cloudsim/</url>
-  
+
   <properties>
   	<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
   </properties>
-  
+
   <modules>
   	<module>modules</module>
   	<module>documentation</module>
   	<module>distribution</module>
   </modules>
-  
+
   <organization>
   	<name>The Cloud Computing and Distributed Systems (CLOUDS) Laboratory, The University of Melbourne</name>
   	<url>http://cloudbus.org/</url>
   </organization>
-  
+
   <build>
   	<pluginManagement>
   		<plugins>
@@ -35,10 +35,10 @@
   					<target>1.8</target>
   				</configuration>
   			</plugin>
-            <!-- 
+            <!--
              Plugin for code coverage, enabling
              generation of reports on IDE to see percentage
-             of the project's code that is being covered by unit tests. 
+             of the project's code that is being covered by unit tests.
             -->
             <plugin>
                 <groupId>org.jacoco</groupId>
@@ -70,19 +70,19 @@
                 <artifactId>coveralls-maven-plugin</artifactId>
                 <version>4.1.0</version>
                 <configuration><repoToken>${env.coveralls_repo_token}</repoToken></configuration>
-            </plugin>       			
+            </plugin>
   		</plugins>
   	</pluginManagement>
-  </build>  
-  
+  </build>
+
   <distributionManagement>
 	<repository>
 		<id>localrepo</id>
 		<name>LocalRepository</name>
 		<url>file:///${project.build.directory}/deployment-artifacts</url>
 	</repository>
-  </distributionManagement> 
-  
+  </distributionManagement>
+
   <dependencyManagement>
   	<dependencies>
   		<dependency>
@@ -114,20 +114,20 @@
   			<groupId>junit</groupId>
   			<artifactId>junit</artifactId>
   			<version>4.10</version>
-  			<scope>test</scope>                        
+  			<scope>test</scope>
   		</dependency>
   		<!-- extension for easymock in order to provide mock of static methods -->
 		<dependency>
 			<groupId>org.powermock</groupId>
 			<artifactId>powermock-module-junit4</artifactId>
 			<version>1.6.4</version>
-			<scope>test</scope>    
+			<scope>test</scope>
 		</dependency>
 		<dependency>
 			<groupId>org.powermock</groupId>
 			<artifactId>powermock-api-easymock</artifactId>
 			<version>1.6.4</version>
-			<scope>test</scope>    
+			<scope>test</scope>
 		</dependency>
 		<dependency>
 			<groupId>org.easymock</groupId>
@@ -140,8 +140,8 @@
 			<artifactId>easymockclassextension</artifactId>
 			<version>3.1</version>
 			<scope>test</scope>
-		</dependency>  		  		
+		</dependency>
   	</dependencies>
   </dependencyManagement>
-    
+
 </project>

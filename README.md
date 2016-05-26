@@ -1,25 +1,27 @@
 # CloudSim: A Framework For Modeling And Simulation Of Cloud Computing Infrastructures And Services 
-[![Build Status](https://img.shields.io/travis/manoelcampos/cloudsim/cloudsim-4.svg)](https://travis-ci.org/manoelcampos/cloudsim) [![Coverage Status](https://coveralls.io/repos/github/manoelcampos/cloudsim/badge.svg?branch=cloudsim-4)](https://coveralls.io/github/manoelcampos/cloudsim?branch=cloudsim-4) [![LGPL licensed](https://img.shields.io/badge/license-LGPL-blue.svg)](https://github.com/manoelcampos/cloudsim/tree/cloudsim-4/LICENSE)
+[![Build Status](https://img.shields.io/travis/manoelcampos/cloudsim/master.svg)](https://travis-ci.org/manoelcampos/cloudsim) [![Coverage Status](https://coveralls.io/repos/github/manoelcampos/cloudsim/badge.svg?branch=master)](https://coveralls.io/github/manoelcampos/cloudsim?branch=master) [![LGPL licensed](https://img.shields.io/badge/license-LGPL-blue.svg)](LICENSE)
 
 
 # NOTICE
 
-This is a **unofficial proposed CloudSim 4.0** version thas is based on CloudSim 3.0.3 and **IS NOT BACKWARD COMPATIBLE** with such main release (despite simulations using the official version can relatively easy be ported to this new version using some IDE such as NetBeans). CloudSim is divided in some maven projects that are all provided when you download the source code. The [cloudsim-examples](modules/cloudsim) project, that represents the Cloud Simulation API, now requires the JDK 8 and makes intensive use of new Java 8 features such as [Lambda Expressions, Streams and Functional Programming](http://www.oracle.com/webfolder/technetwork/tutorials/obe/java/Lambda-QuickStart/index.html). However, [cloudsim-examples](modules/cloudsim-examples) project were updated just from Java 6 to 7 aiming to provide yet simple examples for beginner Java programmers, but less verbose code than Java 6. 
+This is a **unofficial proposed CloudSim 5.0** version, developed by Manoel Campos da Silva Filho, thas is based on CloudSim 3.0.3 and **IS NOT BACKWARD COMPATIBLE** with such main release (despite simulations using the official version can be easily ported to this new version using some IDE such as NetBeans). CloudSim is divided in some maven projects that are all provided when you download the source code. The [cloudsim-examples](modules/cloudsim) project, that represents the Cloud Simulation API, now requires the JDK 8 and makes intensive use of new Java 8 features such as [Lambda Expressions, Streams and Functional Programming](http://www.oracle.com/webfolder/technetwork/tutorials/obe/java/Lambda-QuickStart/index.html). However, [cloudsim-examples](modules/cloudsim-examples) project were updated just from Java 6 to 7 aiming to provide yet simple examples for beginner Java programmers, but less verbose code than Java 6. 
 
-This proposed 4.0 version is in beta stage yet and is mainly focused on refactorings to reduce code duplication, increase usage of 
+This proposed 5.0 version is in beta stage yet and is mainly focused on refactorings to reduce code duplication, increase usage of 
 software engeneering standards and recommendations such as [Design Patterns](https://en.wikipedia.org/wiki/Software_design_pattern), [SOLID principles](https://en.wikipedia.com/wiki/SOLID %28object-oriented_design%29) and other ones such as [KISS](https://en.wikipedia.org/wiki/KISS_principle) and [DRY](https://en.wikipedia.org/wiki/Don%27t_repeat_yourself) in order to provide:
-- cleaner code that is easier to understand and maintain
-- more meaningful classes and method names
-- division of very long and confuse methods into small, clean and very meaningful ones that usually makes just one thing
-- increased reausability and facility for extension
-- improved class hiearchy 
+- cleaner code that is easier to understand, maintain and test;
+- more meaningful class and method names to provide clear understanding of the responsiblity of each one;
+- division of very long and confuse methods into small, clean and very meaningful ones that usually makes just one thing;
+- increased reausability and facility for extension, following the Open/Closed Principle (OCP);
+- improved class hierarchy in order to follow the Interface Segregation Principle (ISP);
+- both use of OCP and ISP try to avoid changing base classes to include some new behaviour
+  and the very bad [copy-and-paste anti-pattern](https://sourcemaking.com/antipatterns/cut-and-paste-programming).  
 
 It also includes:
 
 - functional/integration tests using JUnit to test how a set of classes works together and even overall simulation scenarios
 - continuous integration using [Travis](http://travis-ci.org) services (see the badge at the top of this file)
 - inclusion of Maven Coverage Plugin to starting tracking the percentage of code that is being coverage by unit tests
-- inclusion of public code coverage report using [Coveralls](http://coveralls.io) services (see the badge at the top of this file). The code coverage raised from 20% to [![Coverage Status](https://coveralls.io/repos/github/manoelcampos/cloudsim/badge.svg?branch=cloudsim-4)](https://coveralls.io/github/manoelcampos/cloudsim?branch=cloudsim-4)
+- inclusion of public code coverage report using [Coveralls](http://coveralls.io) services (see the badge at the top of this file). The code coverage raised from 20% to [![Coverage Status](https://coveralls.io/repos/github/manoelcampos/cloudsim/badge.svg?branch=master)](https://coveralls.io/github/manoelcampos/cloudsim?branch=master)
 - new concise and easy to understand examples of features that have lots of questions at the Google Groups forum, such as dynamic creation of cloudlets based on workload traces; VM migration; and definition of new DatacenterBroker's, VmScheduler's and CloudletScheduler's
 - creation of new packages and reorganization of classes 
 - bug fixes

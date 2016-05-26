@@ -4,9 +4,9 @@
   <parent>
     <artifactId>modules</artifactId>
     <groupId>org.cloudbus.cloudsim</groupId>
-    <version>4.0</version>
+    <version>5.0</version>
   </parent>
-  
+
   <artifactId>cloudsim-examples</artifactId>
   <name>cloudsim-examples</name>
     <build>
@@ -27,7 +27,7 @@
   		<groupId>${project.groupId}</groupId>
   		<artifactId>cloudsim</artifactId>
   		<version>${project.version}</version>
-  	</dependency>  
+  	</dependency>
   </dependencies>
-    
+
 </project>

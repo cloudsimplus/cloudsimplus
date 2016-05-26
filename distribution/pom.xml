@@ -3,13 +3,13 @@
   <parent>
     <artifactId>cloudsim-package</artifactId>
     <groupId>org.cloudbus.cloudsim</groupId>
-    <version>4.0</version>
+    <version>5.0</version>
   </parent>
   <artifactId>distribution</artifactId>
   <packaging>pom</packaging>
   <name>distribution</name>
- 
-  
+
+
   <build>
     <finalName>cloudsim-${project.version}</finalName>
   	<plugins>
@@ -31,10 +31,10 @@
 				</descriptors>
 				<appendAssemblyId>false</appendAssemblyId>
 			</configuration>
-		</plugin>  	
+		</plugin>
   	</plugins>
   </build>
-  
+
   <dependencies>
   	<dependency>
   		<groupId>${project.groupId}</groupId>
@@ -48,14 +48,14 @@
 		<version>${project.version}</version>
 		<type>jar</type>
 		<classifier>sources</classifier>
-  	</dependency> 	
+  	</dependency>
   	<dependency>
   		<groupId>${project.groupId}</groupId>
 		<artifactId>cloudsim</artifactId>
 		<version>${project.version}</version>
 		<type>jar</type>
 		<classifier>javadoc</classifier>
-  	</dependency>  	  	  	
+  	</dependency>
   	<dependency>
   		<groupId>${project.groupId}</groupId>
 		<artifactId>cloudsim-examples</artifactId>
@@ -68,13 +68,13 @@
 		<version>${project.version}</version>
 		<type>jar</type>
 		<classifier>sources</classifier>
-  	</dependency> 	  	
+  	</dependency>
   	<dependency>
   		<groupId>${project.groupId}</groupId>
 		<artifactId>documentation</artifactId>
 		<version>${project.version}</version>
 		<type>jar</type>
-  	</dependency>   	  	
+  	</dependency>
   </dependencies>
-  
+
 </project>

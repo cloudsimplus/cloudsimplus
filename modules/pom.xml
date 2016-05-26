@@ -3,13 +3,13 @@
   <parent>
     <groupId>org.cloudbus.cloudsim</groupId>
     <artifactId>cloudsim-package</artifactId>
-    <version>4.0</version>
+    <version>5.0</version>
   </parent>
-  
+
   <artifactId>modules</artifactId>
   <packaging>pom</packaging>
   <name>modules</name>
-  
+
   <modules>
     <module>cloudsim</module>
     <module>cloudsim-examples</module>
@@ -43,8 +43,8 @@
         </executions>
       </plugin>
     </plugins>
-  </build>  
-  
+  </build>
+
   <dependencies>
     <dependency>
       <groupId>junit</groupId>
@@ -63,7 +63,7 @@
     <artifactId>commons-math3</artifactId>
     <version>3.3</version>
   </dependency>
-              
+
   </dependencies>
-  
+
 </project>
