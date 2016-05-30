@@ -81,15 +81,14 @@ public class CloudletSchedulerTimeShared extends CloudletSchedulerAbstract {
     }
 
     /**
-     * @todo If the method always return a empty list (that is created locally),
+     * @todo If the method always return an empty list (that is created locally),
      * it doesn't make sense to exist. See other implementations such as
      * {@link CloudletSchedulerSpaceShared#getCurrentRequestedMips()}
      * @return
      */
     @Override
     public List<Double> getCurrentRequestedMips() {
-        List<Double> mipsShare = new ArrayList<>();
-        return mipsShare;
+        return new ArrayList<>();
     }
 
     /**

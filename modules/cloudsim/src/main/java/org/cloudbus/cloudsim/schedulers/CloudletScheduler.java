@@ -9,10 +9,12 @@ import org.cloudbus.cloudsim.ResCloudlet;
 /**
  * An interface to be implemented by each class that provides a policy 
  * of scheduling performed by a virtual machine to run its {@link Cloudlet Cloudlets}.
- * It also implements the Null Object
+ * Each VM has to have its own instance of a CloudletScheduler.
+ * 
+ * <p>It also implements the Null Object
  * Design Pattern in order to start avoiding {@link NullPointerException} when
  * using the {@link CloudletScheduler#NULL} object instead of attributing {@code null} to
- * {@link CloudletScheduler} variables.
+ * {@link CloudletScheduler} variables.</p>
  * 
  * @author Manoel Campos da Silva Filho
  */

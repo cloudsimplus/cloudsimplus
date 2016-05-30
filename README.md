@@ -3,7 +3,7 @@
 
 # Introduction
 
-CloudSim++ is a fork of [CloudSim 3](https://github.com/Cloudslab/cloudsim/tree/20a7a55e537181489fcb9a2d42a3e539db6c0318) that was redesigned primarily to avoid code duplication, to clean code and to ensure compliance with software engineering principles and recomendations, aiming to provide a more extensible, less [coupled](https://en.wikipedia.org/wiki/Coupling_(computer_programming)), more [cohesive](https://en.wikipedia.org/wiki/Cohesion_(computer_science)) cloud simulation tool.  
+CloudSim++ is a fork of [CloudSim 3](https://github.com/Cloudslab/cloudsim/tree/20a7a55e537181489fcb9a2d42a3e539db6c0318) that was reengineered primarily to avoid code duplication for improved [code reuse](https://en.wikipedia.org/wiki/Code_reuse), to clean code and ensure compliance with software engineering principles and recomendations, aiming to provide a more extensible, less [coupled](https://en.wikipedia.org/wiki/Coupling_(computer_programming)), more [cohesive](https://en.wikipedia.org/wiki/Cohesion_(computer_science)) cloud simulation tool.  
 
 It focuses on refactorings to reduce code duplication, increase usage of software engeneering standards and recommendations such as [Design Patterns](https://en.wikipedia.org/wiki/Software_design_pattern), [SOLID principles](https://en.wikipedia.org/wiki/SOLID_(object-oriented_design)) and other ones such as [KISS](https://en.wikipedia.org/wiki/KISS_principle) and [DRY](https://pt.wikipedia.org/wiki/Don't_repeat_yourself).
 
@@ -26,51 +26,60 @@ Firstly, there is a huge amount of changes that makes CloudSim++ **NOT BACKWARD 
 
 Accordingly, the main contributions of CloudSim++ are as follows.
 
-## Improved documentation
+## Improved class hierarchy and code that is easier to understand
 
-- The documentation has been thoroughly reviewed and improved, fixing issues, correcting broken links, updating documentation that didn't reflect methods and class responsibility anymore.
-- Extending the documentation to explain key points of classes or methods.
-- Removing duplicated documentation that just gets out-of-date along the time. Now, subclasses that had documentation copied from the super class, just inherit the documentation of extends it using the javadoc [@inheritdoc](http://docs.oracle.com/javase/6/docs/technotes/tools/solaris/javadoc.html#inheritingcomments) tag.
-- Inclusion of missing documentation
-
-## Improved class hierarchy and code easier to understand
-
-- Classes were moved to new meangnifull packages in order to ease the process of finding a class that represents a given
-  behaviour that you want to use or extend. Some new packages are:
-  	- `org.cloudbus.cloudsim.allocationpolicies` for VmAllocationPolicy classes that define how a PM is selected to host a VM.
-  	- `org.cloudbus.cloudsim.brokers` for DatacenterBroker classes that defines the policies for submission of customer VMs and cloudlets.
-  	- `org.cloudbus.cloudsim.resources` for resources such as CPU and cores (Processor Elements - PEs), RAM, Hard Drive Storage, SAN Storage, etc.
-  	- `org.cloudbus.cloudsim.schedulers` for VmScheduler and CloudletScheduler classes that defines how the execution of cloudlets and VMs are scheduled in the processor.
-  	- `org.cloudbus.cloudsim.utilizationmodels` for UtilizationModel classes that define how a cloudlet uses physical resources.
+- **Classes were moved to new meangnifull packages in order to ease the process of finding a class that represents a given behaviour that you want to use or extend**. Some new packages are:
+  	- [org.cloudbus.cloudsim.allocationpolicies](modules/cloudsim/src/main/java/org/cloudbus/cloudsim/allocationpolicies) for VmAllocationPolicy classes that define how a PM is selected to host a VM.
+  	- [org.cloudbus.cloudsim.brokers](modules/cloudsim/src/main/java/org/cloudbus/cloudsim/brokers) for DatacenterBroker classes that defines the policies for submission of customer VMs and cloudlets.
+  	- [org.cloudbus.cloudsim.resources]((modules/cloudsim/src/main/java/org/cloudbus/cloudsim/resources) for resources such as CPU and cores (Processor Elements - PEs), RAM, Hard Drive Storage, SAN Storage, etc.
+  	- [org.cloudbus.cloudsim.schedulers](modules/cloudsim/src/main/java/org/cloudbus/cloudsim/schedulers) for VmScheduler and CloudletScheduler classes that defines how the execution of cloudlets and VMs are scheduled in the processor.
+  	- [org.cloudbus.cloudsim.utilizationmodels](modules/cloudsim/src/main/java/org/cloudbus/cloudsim/utilizationmodels) for UtilizationModel classes that define how a cloudlet uses physical resources.
+- **More meaningful class and method names to provide clear understanding of the responsiblity of each one**: usually you have to look at classes and their methods to figure out if there is a feature you want to use. Not rarely you have to go through the documentation to understand what is the responsibility of a given class or method. Using more specific and clear names frequently makes you to instantaneously find out what is the method or class you need. It thus relieves you to read the documentation to start coding (*despite it is really important to read the documentation,
+sometimes you don't have time to go through the details*).
 
 ## Reusable and standards conforming code
 
-- more meaningful class and method names to provide clear understanding of the responsiblity of each one;
-- cleaner code that is easier to understand, maintain and test;
-- division of very long and confuse methods into small, clean and very meaningful ones that usually makes just one thing;
-- increased reausability and facility for extension, following the Open/Closed Principle (OCP);
-- improved class hierarchy in order to follow the Interface Segregation Principle (ISP);
-- both use of OCP and ISP try to avoid changing base classes to include some new behaviour
-  and the very bad [copy-and-paste anti-pattern](https://sourcemaking.com/antipatterns/cut-and-paste-programming).  
+- **Cleaner code that is easier to understand, maintain and test**: a cleaner, clear, well organized code that always follows the same code standards and formatting is easier to understand. And talking about an open source project, the best way to understand how the software works and how you can extend it is reading the source code. If is follows the [clean code](http://cleancoder.com) practice, [Design Patterns](https://en.wikipedia.org/wiki/Software_design_pattern) and [SOLID principles](https://en.wikipedia.org/wiki/SOLID_(object-oriented_design)), it will be easier to understand.
+- **Division of very long and confuse methods into small, clean and very meaningful ones that usually makes just one thing**: when using the approach of reading the code to understand how it works, it is very difficult to figure out what is happening into a method with dozens or hundreds lines. And I'm not even talking about the problems to maintain such methods. Thus, little methods with just one responsibility and with meangniful names are easier to maintain. Further, they improve reuse and extension, the most important parts for you that are creating cloud simulations.
+- **Improved class hierarchy in order to follow the [Interface Segregation Principle (ISP)](https://en.wikipedia.org/wiki/Interface_segregation_principle) and increased reausability and facility for extension, following the [Open/Closed Principle (OCP)](https://en.wikipedia.org/wiki/Open/closed_principle)****: the ISP states that ["no client should be forced to depend on methods it does not use"](https://en.wikipedia.org/wiki/Interface_segregation_principle#cite_note-ASD-1) and the OCP states that ["software entities (classes, modules, functions, etc.) should be open for extension, but closed for modification"](https://en.wikipedia.org/wiki/Open/closed_principle#cite_note-1). These principles together impacts directly developers that need to extend some simulator class to implement a desired behaviour (such as a specific CloudletScheduler). The ISP preach that you should have a great number of small classes following the [Single Responsibility Principle (SRP)](https://en.wikipedia.org/wiki/Single_responsibility_principle) instead of a small set of big classes. By this way, if you need to extend a given behaviour, usually you will have to extend a specific and little class, that has less code for you to worry about. By the other hand, the OCP relieves you of changing simulator classes to include a desired behaviour. Thus, it focuses on trying to give you the serenity to change just your code. 
+- **Both use of OCP and ISP to try to avoid changing base classes to include some new behaviour
+  and the bad [copy-and-paste anti-pattern](https://sourcemaking.com/antipatterns/cut-and-paste-programming)**: copy-and-paste is a bad practice that degrades the source code along the time. It makes difficulty to correct bugs when there may be several copies of the problematic code. The duplicated code has to be tested several times, what usually leads to neglecting them. Further, along the time, the number of duplicated just increases. 
 
-## Tests
+## Improved documentation
 
-- functional/integration tests using JUnit to test how a set of classes works together and even overall simulation scenarios
-- continuous integration using [Travis](http://travis-ci.org) services (see the badge at the top of this file)
-- inclusion of Maven Coverage Plugin to starting tracking the percentage of code that is being coverage by unit tests
-- inclusion of public code coverage report using [Coveralls](http://coveralls.io) services (see the badge at the top of this file). The code coverage raised from 20% to [![Coverage Status](https://coveralls.io/repos/github/manoelcampos/cloudsim/badge.svg?branch=master)](https://coveralls.io/github/manoelcampos/cloudsim?branch=master)
-- new concise and easy to understand examples of features that have lots of questions at the Google Groups forum, such as dynamic creation of cloudlets based on workload traces; VM migration; and definition of new DatacenterBroker's, VmScheduler's and CloudletScheduler's
-- creation of new packages and reorganization of classes 
-- bug fixes
-- improved and completely updated and clearer documentation
-- inclusion of new set of features.
+- **Entirely documentation review and update**, improving explanation of classes and method responsibilities, fixing issues, correcting broken links, updating documentation that didn't reflect methods and class's responsibility anymore.
+- **Documentation extension** to make clear key points of classes or methods.
+- **Removal of duplicated documentation** that just gets out-of-date along the time. Now, subclasses that had documentation copied from the super class, just inherit the documentation of extends it using the javadoc [@inheritdoc](http://docs.oracle.com/javase/6/docs/technotes/tools/solaris/javadoc.html#inheritingcomments) tag.
+- **Inclusion of some missing documentation** or documentation that just repeated the name of a method or attribute. For instance "This is the id", doesn't help in anything.
 
-## Update to Java 8 in order to starting using great features such as Lambda Expressions, Streams and Functional Programming
+## Completely new Test Suites
 
-The [cloudsim module](modules/cloudsim), that represents the Cloud Simulation API, now requires the JDK 8 and makes intensive use of new Java 8 
-features. However, [cloudsim-examples](modules/cloudsim-examples) project was updated just from Java 6 to 7 aiming to provide yet simple examples for beginner Java programmers, but less verbose code than Java 6.
+The original CloudSim already has some unit test suites, however, there isn't coverage reports enabled in the project. After enabling these reports, it was realized that just 20% of the code was being covered by unit tests. Tests are really important to try ensuring that the software works as expected and gives more security and peace of mind to refactor the code, perform changes and fix bugs :pray:. 
+After all, a broad code coverage also tries to ensure that you are getting accurate results from your simulations.
 
-The amazing [Lambda Expressions, Streams and Functional Programming](http://www.oracle.com/webfolder/technetwork/tutorials/obe/java/Lambda-QuickStart/index.html) features of Java 8 allows developers to drastically reduce the number of lines to implement basic features such as iteration, filtering,
+Finally, an entire simulation is very complex, integrating several classes that communicate among themselves. Once, unit tests just check
+isolated method calls, integration/functional tests are required to validate entire simulation scenarios.
+This project introduces a set of such tests into the simulator in order to increase simulation accuracy.
+Thus, the contributions in this area are as follows:
+
+- Functional/integration tests using JUnit to test how a set of classes works together and even overall simulation scenarios.
+- Continuous integration using [Travis](http://travis-ci.org) services (see the badge at the top of this file).
+- Inclusion of Maven Coverage Plugin to starting tracking the percentage of code that is being coverage by unit tests.
+- Inclusion of public code coverage report using [Coveralls](http://coveralls.io) services (see the badge at the top of this file). The code coverage raised from 20% to [![Coverage Status](https://coveralls.io/repos/github/manoelcampos/cloudsim/badge.svg?branch=master)](https://coveralls.io/github/manoelcampos/cloudsim?branch=master).
+- Bug fixes.
+
+## New examples
+
+New concise and easy to understand examples of features that have lots of questions at forums were included, such as:
+- [Dynamic creation of cloudlets based on workload traces](modules/cloudsim-examples/src/main/java/org/cloudbus/cloudsim/examples/workload/) - the example dynamically create cloudlets according to the data of a workload trace file. VMs are created to fulfil cloudlets' requirements and, in its turn, Hosts are created to fulfil VMs' requirements. It may not represent a real world use case, but the example can be adapted to developer needs.  
+- [VM migration](/modules/cloudsim-examples/src/main/java/org/cloudbus/cloudsim/examples/migration/) - the example performs VM migrations based on Host utilization threshold. 
+- Implementation of custom DatacenterBroker and VmAllocationPolicy for the given examples.
+
+## Updated to Java 8
+
+The [cloudsim module](modules/cloudsim), that represents the Cloud Simulation API, now requires the JDK 8 and makes intensive use of [Lambda Expressions, Streams and Functional Programming](http://www.oracle.com/webfolder/technetwork/tutorials/obe/java/Lambda-QuickStart/index.html) of the Java 8. However, [cloudsim-examples](modules/cloudsim-examples) project was updated just from Java 6 to 7 aiming to provide yet simple examples for beginner Java programmers, but less verbose code than Java 6.
+
+The amazing Java 8 features allow developers to drastically reduce the number of lines to implement basic features such as iteration, filtering,
 sorting and processing lists, as well as reducing the number of [boilerplate code](https://en.wikipedia.org/wiki/Boilerplate_code) required 
 just to use classes having a single method.
 
@@ -105,7 +114,9 @@ For more information about the changes and features included in this release, pl
 
 I know what you are thinking: it would be better to pull a request to the original CloudSim repository in order to really contribute to the project, benefiting everybody.
 
-Well, I strongly agree with you and in fact I tried that. However, the original CloudSim moved on to a new major release that goes against everything that I propose here, unfortunately.
+Well, I strongly agree with you and in fact I tried that. However, the original CloudSim moved on to a new major release, including a completely new set of classes to provide Container as a Service simulations, before the changes being merged to the official repository. 
+By this way, all the work performed here was not incorporated to allow the new features to be developed using this redesigned version.
+And unfortunately, there are several months of hard work that would need to be replicated in order to merge both projects.
 
 # Cloud Computing Simulations
 
@@ -117,7 +128,7 @@ CloudSim goal is to provide a generalized and extensible simulation framework th
 
 The original CloudSim version is developed in [the Cloud Computing and Distributed Systems (CLOUDS) Laboratory](http://cloudbus.org/), at [the Computer Science and Software Engineering Department](http://www.csse.unimelb.edu.au/) of [the University of Melbourne](http://www.unimelb.edu.au/).
 
-# Main features
+# Main features of the simulator
 
   * support for modeling and simulation of large scale Cloud computing data centers
   * support for modeling and simulation of virtualized server hosts, with customizable policies for provisioning host resources to virtual machines
