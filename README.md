@@ -1,4 +1,4 @@
-# CloudSim++ A CloudSim fork for Modeling and Simulation of Cloud Computing Infrastructures and Services that focuses on highly cohesive and low coupled components
+# CloudSim++ A CloudSim fork for Modeling and Simulation of Cloud Computing Infrastructures and Services with highly cohesive and low coupled components
 [![Build Status](https://img.shields.io/travis/manoelcampos/cloudsim/master.svg)](https://travis-ci.org/manoelcampos/cloudsim) [![Coverage Status](https://coveralls.io/repos/github/manoelcampos/cloudsim/badge.svg?branch=master)](https://coveralls.io/github/manoelcampos/cloudsim?branch=master) [![Codacy Badge](https://api.codacy.com/project/badge/Grade/3f132b184d5e475dbbcd356ee84499fc)](https://www.codacy.com/app/manoelcampos/cloudsim?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=manoelcampos/cloudsim&amp;utm_campaign=Badge_Grade) [![LGPL licensed](https://img.shields.io/badge/license-LGPL-blue.svg)](LICENSE)
 
 # Introduction
@@ -7,8 +7,65 @@ CloudSim++ is a fork of [CloudSim 3](https://github.com/Cloudslab/cloudsim/tree/
 
 It focuses on refactorings to reduce code duplication, increase usage of software engeneering standards and recommendations such as [Design Patterns](https://en.wikipedia.org/wiki/Software_design_pattern), [SOLID principles](https://en.wikipedia.org/wiki/SOLID_(object-oriented_design)) and other ones such as [KISS](https://en.wikipedia.org/wiki/KISS_principle) and [DRY](https://pt.wikipedia.org/wiki/Don't_repeat_yourself).
 
+# How to use CloudSim++
 
-# Why should I care? I just want to use the simulator. :neutral_face:
+CloudSim++ is a Maven project with some modules. The easier way to use the project is relying on some IDE such as NetBeans, Eclipse or IntelliJ IDEA.
+Considering that you have [maven](http://maven.apache.org) and [git](https://git-scm.com) installed on you operating system, below are the steps to start using the project:
+
+- Using a terminal, clone the project to a folder in your computer: `git clone https://github.com/manoelcampos/cloudsim-plus.git`
+- Open/import the project in your IDE:
+    - For [NetBeans](http://netbeans.org), just use the "Open project" menu and select the directory where the project was cloned.
+    - For [Eclipse](http://eclipse.org) or [IntelliJ IDEA](http://jetbrains.com/idea/), you have to import the project selecting the folder where the project was cloned. 
+- Inside the opened/imported project you will have the cloudsim and cloudsim-examples modules under the modules directory. The cloudsim module is where the simulator source code is, that usually you don't have to change, unless you want to contribute to the project. The cloudsim-examples is where you can start.
+- Open the cloudsim-examples module. The most basic examples are in the org.cloudbus.cloudsim.examples package. You can run each one of the classes in this package to get a different example. 
+- If you want to build your own simulations, the easiest way is to create another class inside this module.
+
+# A minimal simulation example
+
+The construction of a scenario to simulate the infrastructure of a Cloud provider is not so minimal. In order to build such a simulation scenario you have to create, at least: 
+- a datacenter with a list of physical machines (Hosts); 
+- a broker that is accountable for submission of VMs and Cloudlets to be executed, on behalf of a given customer, into the cloud infrastructure; 
+- a list of customer's virtual machines (VMs); 
+- and a list of customer's cloudlets (objects that model resource requirements of a given application).
+
+By this way, the main code used to build such a simulation scenario can be as below. This is simply the code of the constructor method. The complete example is available at the cloudsim-examples module [here](modules/cloudsim-examples/src/main/java/org/cloudbus/cloudsim/examples/MinimalExample.java).
+
+```java
+this.vmList = new ArrayList<>();
+this.cloudletList = new ArrayList<>();
+int numberOfCloudUsers = 1; 
+boolean traceEvents = false;
+
+CloudSim.init(numberOfCloudUsers, Calendar.getInstance(), traceEvents);
+
+Datacenter datacenter0 = createDatacenter("Datacenter0");
+
+/*Creates a Broker accountable for submission of VMs and Cloudlets
+on behalf of a given customer.*/
+DatacenterBroker broker0 = new DatacenterBrokerSimple("Broker0");
+
+Vm vm0 = createVm(broker0);
+this.vmList.add(vm0);
+broker0.submitVmList(vmList);
+
+Cloudlet cloudlet0 = createCloudlet(broker0, vm0);
+this.cloudletList.add(cloudlet0);
+broker0.submitCloudletList(cloudletList);
+
+//Starts the simulation and waits all tasks to be executed
+CloudSim.startSimulation();
+
+//Finishes the simulation
+CloudSim.stopSimulation();
+
+/*Prints results when simulation is over
+(you can use your own code here to print what you want from this cloudlet list)*/
+List<Cloudlet> finishedCloudlets = broker0.getCloudletsFinishedList();
+TableBuilderHelper.print(new TextTableBuilder(), finishedCloudlets);
+Log.printFormattedLine("Minimal Example finished!");
+```
+
+# Why should I care about this CloudSim fork? I just want to use the simulator. :neutral_face:
 
 Well, the design of the tool has a direct impact when you need to extend it to include some feature for your simulations. The simulator provides a set of classes such as Vm Schedulers, Cloudlet Schedulers, Vm Allocation Policies, Resource Provisioners, Utilization Models, Power Models and Datacenter Brokers that implement basic algorithms for every one of these  features. For instance, the `VmAllocationPolicySimple` class implements a Worst Fit
 policy that selects the PM wich less processor cores in use to host the VM, and in fact it is the only policy available. 
@@ -19,6 +76,14 @@ Considering that, several software engineering principles aim to ease the task o
 Changing these core classes is a bad practice, once you will not be able to automatically update your  project to new versions of the simulator without losing your changes or struggle to fix merge conficts.  
 
 And as I have seen in the forums that I've attended, many times users have to perform these changes in core classes just to implement some specific features they need. By this way, I think those problems are enough reasons that show the need of a new reengineered version of the simulator.  
+
+# But why another CloudSim fork? :unamused:
+
+I know what you are thinking: it would be better to pull a request to the original CloudSim repository in order to really contribute to the project, benefiting everybody.
+
+Well, I strongly agree with you and in fact I tried that. However, the original CloudSim moved on to a new major release, including a completely new set of classes to provide Container as a Service simulations, before the changes proposed here being merged to the official repository. The huge amount of contributions of CloudSim++ are discussed in the section below. 
+By this way, all the work performed here was not incorporated to allow the new features to be developed using this redesigned version.
+And unfortunately, there are several months of hard work that would need to be replicated in order to merge both projects.
 
 # OK, but I'm just wondering what are the real contributions of CloudSim++ :blush:
 
@@ -109,14 +174,6 @@ This makes the code clearer to understand and less verbose. Further, the new Str
 
 
 For more information about the changes and features included in this release, please read the [CHANGELOG](CHANGELOG.md) file and the [cloudsim-examples](modules/cloudsim-examples) project.
-
-# But why another CloudSim fork? :unamused:
-
-I know what you are thinking: it would be better to pull a request to the original CloudSim repository in order to really contribute to the project, benefiting everybody.
-
-Well, I strongly agree with you and in fact I tried that. However, the original CloudSim moved on to a new major release, including a completely new set of classes to provide Container as a Service simulations, before the changes being merged to the official repository. 
-By this way, all the work performed here was not incorporated to allow the new features to be developed using this redesigned version.
-And unfortunately, there are several months of hard work that would need to be replicated in order to merge both projects.
 
 # Cloud Computing Simulations
 
