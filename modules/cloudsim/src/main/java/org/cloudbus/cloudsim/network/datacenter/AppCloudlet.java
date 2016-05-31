@@ -61,7 +61,8 @@ public class AppCloudlet implements Identificable {
     public double accuracy;
 
     public double execTime;
-
+    
+    
     public AppCloudlet(int id) {
         super();
         this.id = id;

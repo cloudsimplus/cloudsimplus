@@ -13,10 +13,10 @@ import org.cloudbus.cloudsim.utilizationmodels.UtilizationModel;
 import org.cloudbus.cloudsim.utilizationmodels.UtilizationModelFull;
 
 /**
- * An example of a Bag of Tasks {@link AppCloudlet}'s that are composed of 
+ * An example of a Bag of Tasks {@link AppCloudlet}'s that are composed of
  * 3 {@link NetworkCloudlet}, where 2 of them send data to the first created one,
  * that waits to data be received.
- * 
+ *
  * @author Saurabh Kumar Garg
  * @author Rajkumar Buyya
  * @author Manoel Campos da Silva Filho
@@ -35,7 +35,7 @@ public class NetworkVmsExampleBagOfTasksAppCloudlet extends NetworkVmsExampleApp
     public static void main(String[] args) {
         new NetworkVmsExampleBagOfTasksAppCloudlet();
     }
-    
+
     /**
      * Creates a list of NetworkCloudlets that together represents the distributed
      * processes of a Bag of Tasks AppCloudlet.
@@ -56,13 +56,13 @@ public class NetworkVmsExampleBagOfTasksAppCloudlet extends NetworkVmsExampleApp
         for(int i = 0; i < NETCLOUDLETS_FOR_EACH_APP; i++){
             currentCloudletId++;
             UtilizationModel utilizationModel = new UtilizationModelFull();
-            NetworkCloudlet netCloudlet = 
+            NetworkCloudlet netCloudlet =
                     new NetworkCloudlet(
-                            currentCloudletId, 
-                            networkCloudletLength, 
-                            NETCLOUDLET_PES_NUMBER, 
-                            NETCLOUDLET_FILE_SIZE, 
-                            NETCLOUDLET_OUTPUT_SIZE, 
+                            currentCloudletId,
+                            networkCloudletLength,
+                            NETCLOUDLET_PES_NUMBER,
+                            NETCLOUDLET_FILE_SIZE,
+                            NETCLOUDLET_OUTPUT_SIZE,
                             memory, utilizationModel, utilizationModel, utilizationModel);
             netCloudlet.setAppCloudlet(app);
             netCloudlet.setUserId(getBroker().getId());
@@ -85,11 +85,10 @@ public class NetworkVmsExampleBagOfTasksAppCloudlet extends NetworkVmsExampleApp
                         new CloudletSendTask(taskStageId++, memory, netCloudlet));
             }
 
-            networkCloudletList.add(netCloudlet);    			
+            networkCloudletList.add(netCloudlet);
         }
-        
+
         return networkCloudletList;
     }
-
 
 }

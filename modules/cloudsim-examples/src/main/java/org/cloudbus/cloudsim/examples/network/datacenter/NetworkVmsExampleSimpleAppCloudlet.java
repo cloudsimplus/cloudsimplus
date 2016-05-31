@@ -11,10 +11,10 @@ import org.cloudbus.cloudsim.utilizationmodels.UtilizationModel;
 import org.cloudbus.cloudsim.utilizationmodels.UtilizationModelFull;
 
 /**
- * An example of a simple {@link AppCloudlet}'s that are composed of 
- * different {@link NetworkCloudlet} that in fact just process data, running 
+ * An example of a simple {@link AppCloudlet}'s that are composed of
+ * different {@link NetworkCloudlet} that in fact just process data, running
  * like a regular Cloudlet.
- * 
+ *
  * @author Saurabh Kumar Garg
  * @author Rajkumar Buyya
  * @author Manoel Campos da Silva Filho
@@ -33,7 +33,7 @@ public class NetworkVmsExampleSimpleAppCloudlet extends NetworkVmsExampleAppClou
     public static void main(String[] args) {
         new NetworkVmsExampleSimpleAppCloudlet();
     }
-    
+
     /**
      * Creates a list of NetworkCloudlets that together represents the distributed
      * processes of a AppCloudlet.
@@ -47,7 +47,7 @@ public class NetworkVmsExampleSimpleAppCloudlet extends NetworkVmsExampleAppClou
         final int NETCLOUDLETS_FOR_EACH_APP = 3;
         List<NetworkVm> selectedVms = randomlySelectVmsForAppCloudlet(getBroker(), NETCLOUDLETS_FOR_EACH_APP);
         List<NetworkCloudlet> networkCloudletList = new ArrayList<>(NETCLOUDLETS_FOR_EACH_APP);
-        int currentNetworkCloudletId = 0;    
+        int currentNetworkCloudletId = 0;
         for (Vm vm: selectedVms) {
             long length = 4;
             long fileSize = 300;
@@ -66,8 +66,8 @@ public class NetworkVmsExampleSimpleAppCloudlet extends NetworkVmsExampleAppClou
             networkCloudletList.add(netCloudlet);
             currentNetworkCloudletId++;
         }
-        
+
         return networkCloudletList;
     }
-   
+
 }
