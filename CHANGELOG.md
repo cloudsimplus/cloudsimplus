@@ -2,14 +2,6 @@
 
 Lists the main changes in the project.
 
-### WARNINGS
-
-- This is an **unofficial release** that breaks compatibility with previous CloudSim versions. 
-The change log below presents more details of how to update your simulations after starting to use this release.
-However, all previous existing examples were updated to use this release. Thus, they can be an excelente way
-to get a comprehensive view of changes in how you make your simulations.
-
-- It was changed the requirements of the cloudsim project to Java 8 (the examples remain in Java 7).
 
 ## [4.0.2] - 2016-04-28 
 
@@ -122,9 +114,8 @@ classes with specific values, in order to provide the desired kind of tasks to b
 
 
 ### Changed
-
 - Throughout documentation update and improvement  
-
+- It was changed the requirements of the cloudsim project to Java 8 (the examples remain in Java 7).
 - Updated CloudSimExample7 
 	- Moved the anonymous Thread class to a specific class named MonitorThread, outside the CloudSimExample7 class, but in the same file.
     - Included the attribute DatacenterBroker broker inside the  MonitorThread class in order to get the broker dynamically created inside the Thread.
@@ -134,7 +125,6 @@ classes with specific values, in order to provide the desired kind of tasks to b
 separated value for each of its attributes, providing a more OO design
 
 - Renamed the methods getBw and getRam to getBwCapacity and getRamCapacity
-
 - Refactored the WorkloadFileReader to completely remove code duplication. Included new test cases for gz, zip and swf workload files.
 
 - All classes that usually have to be extended by CloudSim users in order to provide some specific features for their 
@@ -154,24 +144,18 @@ CloudletSchedulerSpaceShared and CloudletSchedulerTimeShared to CloudletSchedule
 	since all cloudlets will share the processor time (not waiting for a previous cloudlet to completely finishe executing after it can start running).
 	By this way, moving the methods to the super class doesn't change the behaviour of these different schedulers. 
     Other subclasses in fact completely override methods such as updateVmProcessing.
-
 	- By this way, now it is easier to extend and test these classes, since a bunch of duplicated code was removed, increasing code reuse.
 
-
 - <a name="network-changes"></a>THE MOST CRITICAL UPDATE IN NETWORK RELATED CLASSES
-    
     - The classes related to the examples at the org.cloudbus.cloudsim.network.datacenter package of the
     cloudsim-examples project were almost totally remade.
-    
     - The network related classes such as AppCloudlet, NetworkCloudlet, NetDatacenterBroker had an extremely amount of duplicated code.
     The NetDatacenterBroker was a copy of the original DatacenterBroker class, instead of extending it and overriding
     necessary methods. It was noticed that a lot of code in the created class was exactly equal to the DatacenterBroker,
     which shows that such methods should be inherited from the already existing class.
-    
     - The code that in fact belonged only to the NetDatacenterBroker class was completely repetitive and confuse.
     There were very long methods that should be divided into smaller and specific ones in order to avoid
     code redundancy and make clear what the code does.
-    
     - The class used a lot of hard-coded values for creating objects such as Cloudlets and VMs,
     that doesn't make sense once these values have to be defined by the developer creating
     the simulation. It was clear that the values were defined just to perform the simulations
@@ -180,7 +164,6 @@ CloudletSchedulerSpaceShared and CloudletSchedulerTimeShared to CloudletSchedule
     which desire to create their own simulations. Further, the creation of hard-coded Cloudlets and VMs inside
     the NetDatacenterBroker doesn't make it to be reusable and even violates the 
     [Open/Closed Principle (OCP)](https://en.wikipedia.org/wiki/Open/closed_principle).
-    
     - Once the mentioned paper doesn't provide low level details about how every class's method works (and it is not supposed that
     a paper will present such in deep code details) and that there weren't any unit test for the network related classes,
     it was not even feasible to know if the classes and examples were working correctly.
@@ -188,7 +171,6 @@ CloudletSchedulerSpaceShared and CloudletSchedulerTimeShared to CloudletSchedule
     not providing actual information. In face of that, the best to do was to perform a in-depth refactoring of the classes and examples
     in order to define a actual class hierarchy, eliminate code redundancy and provide short and meaningful methods
     that make clear to understand the code and to just further (unfortunately) introduced test units.
-        
     - Refactoring of Switch classes in order to move constants from NetworkConstants to them, removing unnecessary parameters in their constructors
 
 
@@ -237,29 +219,29 @@ reduce code duplication of unit tests; include extensive set of unit tests to va
     and amount of allocated resource. 
     These repetitive codes were found in classes such as VmSimple and provisioners, what made clear the need of a new class with these behaviours and data. 
     Accordingly, a new set of classes was created inside the new package `org.cloudbus.cloudsim.resources`.
-
+    
     - <a name="resource-interface"></a>A `Resource` interface was created, that is used to define resource capacity and allocation for Hosts and VMs. 
     It uses generics to identify the type associated with the resource (if `Double`, `Long`, `Integer`, etc). 
     It defines the signature of methods to manage a given resource such as CPU, RAM or BW of VMs and Hosts.
-
+    
     - The new `ResourceAbstract` class implements basic behaviours of a `Resource`, managing its capacity, allocated and available amount of resources. 
     New validations were introduced to avoid setting invalid values to the resource, such as negative values or a zero capacity. 
     The class also has a new setter that allows changing the capacity, provided that the new one is greater or equals to the amount of allocated resource. 
     It is also avoided to set an available resource amount greater than the capacity. 
     All methods that try to change the resource capacity or allocated size now returns a boolean to indicate if the operation succeeded or not.
-
+    
     - The method `isSuitablForVm` of provisioner classes previously changed the current allocated VM resource just to check if it was 
     possible to change the total allocated resource to another value. 
     The method was changed to perform the verification, without actually changing the current allocated resource. 
     It only performs the necessary calculations to find out that.  The method in fact was moved to the new `Resource` 
     interface and is just called `isSuitable`.
-        
+    
     - Concrete classes were created for specific resources, namely `Ram` and `Bandwidth` classes 
     (the already existing `HarddriveStorage` and `SanStorage` classes now implement `FileStorage` interface that is presented in the next item). 
     They hide the abstract type of the `Resource` (if `Double`, `Integer`, etc), facilitating the class use and ensuring that the same type 
     is always used for a given resource (`Bandwidth` always use `Long`, `Ram` always use `Integer`, `FileStorage` always use `Long`). 
     It also standardize the type of each resource, avoiding some inconsistencies found throughout the code.
-
+    
     - Several refactoring on classes that controls storage space, in order to remove code duplication, improve class hierarchy and 
     reduce bugs probabilities (once that duplicated code doesn't have to be tested several times in different classes). 
     The major part of duplicated code was related to dealing with storage capacity, used space and available space. 
@@ -292,7 +274,7 @@ reduce code duplication of unit tests; include extensive set of unit tests to va
     For instance, if a `ResourceProvisioner` manages allocation of `Ram` resource, the class uses the getResource method of the 
     `Vm` interface to get the information about the `Ram` object assigned to the VM. 
     Despite these changes, it doesn't change how a Vm is used.
-
+    
     - Now, when instantiating a `Host`, it doesn’t have to be used a different `ResourceProvisioner` class for each resource such as Ram and Bw
     (at least if you don’t want to). It only has to be passed a different instance of a `ResourceRrovisioner` for each `Host` resource. 
     Instead of each provisioner instance receiving the resource capacity (int, long or double), now each one has to receive an instance of a `Resource`, 
@@ -301,8 +283,6 @@ reduce code duplication of unit tests; include extensive set of unit tests to va
     Below it is shown a example of how to instantiate a `Host`, before and after the performed changes:
         - **Before changes** : `new Host(hostId, new RamProvisionerSimple(ram), new BwProvisionerSimple(bw), new VmSchedulerTimeShared(peList));`
         - **After changes**: `new HostSimple(hostId, new ResourceProvisionerSimple<>(new Ram(ram)), new ResourceProvisionerSimple<>(new Bandwidth(bw)), storage, peList, new VmSchedulerTimeShared(peList);`
-
-
 
 ### Added 
 
@@ -411,5 +391,4 @@ These notifications can be about the change in state of CloudSim entities.
 
 	- An entire example of the use of these builders can be seen at the `VmCreationFailureIntegrationTest` Integration Test class.
 	- The builders can be used by Unit and Integration Tests and by CloudSim users that want to create cloud simulations.
-
-
+    
