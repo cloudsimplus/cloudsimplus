@@ -33,7 +33,7 @@ By this way, the main code used to build such a simulation scenario can be as be
 ```java
 this.vmList = new ArrayList<>();
 this.cloudletList = new ArrayList<>();
-int numberOfCloudUsers = 1; 
+int numberOfCloudUsers = 1; //number of cloud customers
 boolean traceEvents = false;
 
 CloudSim.init(numberOfCloudUsers, Calendar.getInstance(), traceEvents);
@@ -41,7 +41,7 @@ CloudSim.init(numberOfCloudUsers, Calendar.getInstance(), traceEvents);
 Datacenter datacenter0 = createDatacenter("Datacenter0");
 
 /*Creates a Broker accountable for submission of VMs and Cloudlets
-on behalf of a given customer.*/
+on behalf of a given cloud user (customer).*/
 DatacenterBroker broker0 = new DatacenterBrokerSimple("Broker0");
 
 Vm vm0 = createVm(broker0);
@@ -206,3 +206,7 @@ The download package contains all the source code, examples, jars, and API html 
   * **Rodrigo N. Calheiros, Rajiv Ranjan, Anton Beloglazov, Cesar A. F. De Rose, and Rajkumar Buyya, [CloudSim: A Toolkit for Modeling and Simulation of Cloud Computing Environments and Evaluation of Resource Provisioning Algorithms](http://www.buyya.com/papers/CloudSim2010.pdf), Software: Practice and Experience (SPE), Volume 41, Number 1, Pages: 23-50, ISSN: 0038-0644, Wiley Press, New York, USA, January, 2011. (Preferred reference for CloudSim)**
   * Bhathiya Wickremasinghe, Rodrigo N. Calheiros, Rajkumar Buyya, [CloudAnalyst: A CloudSim-based Visual Modeller for Analysing Cloud Computing Environments and Applications](http://www.cloudbus.org/papers/CloudAnalyst-AINA2010.pdf), Proceedings of the 24th International Conference on Advanced Information Networking and Applications (AINA 2010), Perth, Australia, April 20-23, 2010.
   * Rajkumar Buyya, Rajiv Ranjan and Rodrigo N. Calheiros, [Modeling and Simulation of Scalable Cloud Computing Environments and the CloudSim Toolkit: Challenges and Opportunities](http://www.cloudbus.org/papers/CloudSim-HPCS2009.pdf), Proceedings of the 7th High Performance Computing and Simulation Conference (HPCS 2009, ISBN: 978-1-4244-4907-1, IEEE Press, New York, USA), Leipzig, Germany, June 21-24, 2009.
+  
+# License
+
+This project is licensed under [GNU Lesser GPLv3](LICENSE), as defined in CloudSim 3 release.

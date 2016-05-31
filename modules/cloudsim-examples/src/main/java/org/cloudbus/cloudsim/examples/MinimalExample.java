@@ -62,7 +62,7 @@ public class MinimalExample {
         try {
             this.vmList = new ArrayList<>();
             this.cloudletList = new ArrayList<>();
-            int numberOfCloudUsers = 1; 
+            int numberOfCloudUsers = 1; //number of cloud customers
             boolean traceEvents = false;
             
             CloudSim.init(numberOfCloudUsers, Calendar.getInstance(), traceEvents);
@@ -70,7 +70,7 @@ public class MinimalExample {
             Datacenter datacenter0 = createDatacenter("Datacenter0");
 
             /*Creates a Broker accountable for submission of VMs and Cloudlets
-            on behalf of a given customer.*/
+            on behalf of a given cloud user (customer).*/
             DatacenterBroker broker0 = new DatacenterBrokerSimple("Broker0");
 
             Vm vm0 = createVm(broker0);
