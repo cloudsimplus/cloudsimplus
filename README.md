@@ -65,7 +65,7 @@ CloudletsTableBuilderHelper.print(new TextTableBuilder(), finishedCloudlets);
 Log.printFormattedLine("Minimal Example finished!");
 ```
 
-# Why should I care about this CloudSim fork? I just want to use the simulator. :neutral_face:
+# Why should I care about this CloudSim fork? I just want to build my simulations. :neutral_face:
 
 Well, the design of the tool has a direct impact when you need to extend it to include some feature for your simulations. The simulator provides a set of classes such as Vm Schedulers, Cloudlet Schedulers, Vm Allocation Policies, Resource Provisioners, Utilization Models, Power Models and Datacenter Brokers that implement basic algorithms for every one of these  features. For instance, the `VmAllocationPolicySimple` class implements a Worst Fit
 policy that selects the PM wich less processor cores in use to host the VM, and in fact it is the only policy available. 
@@ -89,14 +89,24 @@ And unfortunately, there are several months of hard work that would need to be r
 
 Firstly, there is a huge amount of changes that makes CloudSim++ **NOT BACKWARD COMPATIBLE** with original CloudSim. However, to port your CloudSim simulations to CloudSim++ can be relatively easy, as it will be presented further. 
 
-Accordingly, the main contributions of CloudSim++ are as follows.
+Accordingly, the main contributions of CloudSim++ are:
+
+- Improved class hierarchy and code that is easier to understand
+- Reusable and standards conforming code
+- Improved documentation
+- Completely new Test Suites
+- New set of features
+- New examples for old and new features
+- Update to Java 8
+
+All these improvements are described in details in the next sub-sections. 
 
 ## Improved class hierarchy and code that is easier to understand
 
 - **Classes were moved to new meangnifull packages in order to ease the process of finding a class that represents a given behaviour that you want to use or extend**. Some new packages are:
   	- [org.cloudbus.cloudsim.allocationpolicies](modules/cloudsim/src/main/java/org/cloudbus/cloudsim/allocationpolicies) for VmAllocationPolicy classes that define how a PM is selected to host a VM.
   	- [org.cloudbus.cloudsim.brokers](modules/cloudsim/src/main/java/org/cloudbus/cloudsim/brokers) for DatacenterBroker classes that defines the policies for submission of customer VMs and cloudlets.
-  	- [org.cloudbus.cloudsim.resources]((modules/cloudsim/src/main/java/org/cloudbus/cloudsim/resources) for resources such as CPU and cores (Processor Elements - PEs), RAM, Hard Drive Storage, SAN Storage, etc.
+  	- [org.cloudbus.cloudsim.resources](modules/cloudsim/src/main/java/org/cloudbus/cloudsim/resources) for resources such as CPU cores (Processor Elements - PEs), RAM, Hard Drive Storage, SAN Storage, etc.
   	- [org.cloudbus.cloudsim.schedulers](modules/cloudsim/src/main/java/org/cloudbus/cloudsim/schedulers) for VmScheduler and CloudletScheduler classes that defines how the execution of cloudlets and VMs are scheduled in the processor.
   	- [org.cloudbus.cloudsim.utilizationmodels](modules/cloudsim/src/main/java/org/cloudbus/cloudsim/utilizationmodels) for UtilizationModel classes that define how a cloudlet uses physical resources.
 - **More meaningful class and method names to provide clear understanding of the responsiblity of each one**: usually you have to look at classes and their methods to figure out if there is a feature you want to use. Not rarely you have to go through the documentation to understand what is the responsibility of a given class or method. Using more specific and clear names frequently makes you to instantaneously find out what is the method or class you need. It thus relieves you to read the documentation to start coding (*despite it is really important to read the documentation,
@@ -133,7 +143,7 @@ Thus, the contributions in this area are as follows:
 - Inclusion of public code coverage report using [Coveralls](http://coveralls.io) services (see the badge at the top of this file). The code coverage raised from 20% to [![Coverage Status](https://coveralls.io/repos/github/manoelcampos/cloudsim/badge.svg?branch=master)](https://coveralls.io/github/manoelcampos/cloudsim?branch=master).
 - Bug fixes.
 
-## New features
+## New set of features
 
 Some totally new features were introduced in CloudSim++:
 
@@ -153,7 +163,7 @@ New concise and easy to understand examples of features that have lots of questi
 - Implementation of custom DatacenterBroker and VmAllocationPolicy for the given examples.
 - Examples using the new Listener features were included to the package [org.cloudbus.cloudsim.examples.listeners](modules/cloudsim-examples/src/main/java/org/cloudbus/cloudsim/examples/listeners/).
 
-## Updated to Java 8
+## Update to Java 8
 
 The [cloudsim module](modules/cloudsim), that represents the Cloud Simulation API, now requires the JDK 8 and makes intensive use of [Lambda Expressions, Streams and Functional Programming](http://www.oracle.com/webfolder/technetwork/tutorials/obe/java/Lambda-QuickStart/index.html) of the Java 8. However, [cloudsim-examples](modules/cloudsim-examples) project was updated just from Java 6 to 7 aiming to provide yet simple examples for beginner Java programmers, but less verbose code than Java 6.
 
