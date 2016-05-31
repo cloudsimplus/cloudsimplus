@@ -138,7 +138,7 @@ Thus, the contributions in this area are as follows:
 Some totally new features were introduced in CloudSim++:
 
 - **A TableBuilder interface and a set of implementing classes to automate the process of printing simulation results in different formats such as Text (ASCII), CSV and HTML**: the interface and classes are available at the [util](/modules/cloudsim/src/main/java/org/cloudbus/cloudsim/util/) package. To print results of a list of executed cloudlet you can use a single line of code such as `CloudletsTableBuilderHelper.print(new TextTableBuilder(), broker.getCloudletsFinishedList());`. All the perfectly aligned tables that you will see after running the examples uses the TextTableBuilder class.
-- **Listener objects that allow you to be notified when different events happen during your simulation execution**: the interfaces and classes included in the [org.cloudbus.cloudsim.listeners](/modules/cloudsim/src/main/java/org/cloudbus/cloudsim/listeners/) package allow you to keep an eye in your simulation execution and perform additional tasks when a given event happens. These listeners were implemented in some CloudSim++ classes such as:
+- **Listener objects that allow you to be notified when different events happen during your simulation execution**: the interfaces and classes included in the [org.cloudbus.cloudsim.listeners](/modules/cloudsim/src/main/java/org/cloudbus/cloudsim/listeners/) package allow you to keep an eye in your simulation execution and perform additional tasks when a given event happens. These listeners were implemented in some CloudSim++ classes such as below (the next section describes examples of this feature):
     - CloudSim: to notify observers when any event is processed on CloudSim.      
     - Host: to notify observers when VMs processing is updated.
     - Vm: to notify observers when a host is allocated to a VM, a host is deallocated for a VM, the creation of a VM failed. 
@@ -183,18 +183,50 @@ new Thread(() -> {
 }).start();
 ```
 
+The iteration over lists now can be performed easily using the stream API. The example below uses a single line of code to iterate over a list of cloudlets, binding every one to a specific VM.
+
+```java
+cloudletList.forEach(cloudlet -> broker.bindCloudletToVm(cloudlet.getId(), vm.getId()));
+```
+
 This makes the code clearer to understand and less verbose. Further, the new Stream API provides a complete set of features that even increase performance, such as allowing the [parallel processing of lists](http://www.oracle.com/webfolder/technetwork/tutorials/obe/java/Lambda-QuickStart/index.html#section5).
 
 
 For more information about the changes and features included in this release, please read the [CHANGELOG](CHANGELOG.md) file and the [cloudsim-examples](modules/cloudsim-examples) project.
 
-# What are the practical differences from using CloudSim or CloudSim++? How can I update my simulations in order to use CloudSim++?
+# What are the practical differences of using CloudSim++ instead of CloudSim? How can I update my simulations in order to use CloudSim++?
 
-|                               CloudSim                                  |                                     CloudSim++                                |
-| ----------------------------------------------------------------------- | ----------------------------------------------------------------------------- |
-| DatacenterCharacteristics charcs = new DatacenterCharacteristics(...);  | DatacenterCharacteristics charcs = new DatacenterCharacteristicsSimple(...);  |
-| Datacenter datacenter = new Datacenter(...);                            | Datacenter datacenter = new DatacenterSimple(...);                      |
+To update your simulations to use the new CloudSim++ you have to change the way that some objects are instantiated, because 
+there were introduced some new interfaces to follow the "program to an interface, not an implementation" recommendation and also to increase [abstraction](https://en.wikipedia.org/wiki/Abstraction_(software_engineering)). These new interfaces were also crucial to implement the [Null Object Pattern](https://en.wikipedia.org/wiki/Null_Object_pattern) in order to try avoiding NullPointerException's.
 
+By this way, the classes Datacenter, DatacenterCharacteristics, Host, Pe, Vm and Cloudlet were renamed due to the introduction of interfaces with these names. Now all these classes have a suffix *Simple* (as already defined for some previous classes such as PeProvisionerSimple and VmAllocationPolicySimple). For instance, to instantiate a Cloudlet you have to execute a code such as:
+
+ ```java
+CloudletSimple cloudlet = new CloudletSimple(required, parameters, here);
+```   
+
+However, once these interfaces were introduced in order to also enable the creation of different cloudlet classes, the recommendation is to declare your object using the interface, not the class: 
+ 
+ ```java
+Cloudlet cloudlet = new CloudletSimple(required, parameters, here);
+```   
+
+Once the packages were reorganized, you have to adjust them. However, use your IDE to adjust the imports.
+
+Additionally, the interface Storage was renamed to FileStorage and its implementations are SanStorage and HarddriveStorage, that can be used as before.
+Finally, the way you instantiate a host has changed too. There aren't the classes RamProvisionerSimple and BwProvisionerSimple anymore. 
+Now you just have the generic class ResourceProvisionerSimple. And this class doesn't requires a primitive value to define the resource capacity.
+Instead, it requires an object that implements the new Resource interface (such as the Ram and Bandwidth classes). By this way, to instantiate a host you can use a code such as below:
+
+```java
+int ram = 20480;
+long bw = 1000000;
+long storage = 1000000;
+Host host = new HostSimple(id,
+        new ResourceProvisionerSimple<>(new Ram(ram)),
+        new ResourceProvisionerSimple<>(new Bandwidth(bw)),
+        storage, peList, new VmSchedulerTimeShared(peList));
+``` 
 
 # Cloud Computing Simulations
 
