@@ -21,16 +21,17 @@ import org.cloudbus.cloudsim.utilizationmodels.UtilizationModelFull;
  * @author raysaoliveira
  */
 public class NetworkVmsExampleWithMetrics extends NetworkVmsExampleAppCloudletAbstract {
-
+    private List<NetworkVm> vmList;
+    
     public NetworkVmsExampleWithMetrics() {
         super();
         /*
          Total Cost Price
          */
         NetworkDatacenter datacenter = this.getDatacenter();
-        List<NetworkVm> vm = this.getVmlist();
+        vmList = this.getVmlist();
         NetDatacenterBroker broker = this.getBroker();
-        TotalCostPrice(datacenter, vm, broker);
+        TotalCostPrice(datacenter, vmList, broker);
 
         /* 
          AppCloudlet app = this.getAppCloudlet();
@@ -70,9 +71,7 @@ public class NetworkVmsExampleWithMetrics extends NetworkVmsExampleAppCloudletAb
         NetworkVmsExampleWithMetrics networkVmsExampleWithMetrics = new NetworkVmsExampleWithMetrics();
 
     }
-    
-    
-
+   
     private void TotalCostPrice(NetworkDatacenter datacenter, List<NetworkVm> vm, NetDatacenterBroker broker) {
 
         double memoryDataCenterVm, totalCost = 0;
@@ -97,7 +96,7 @@ public class NetworkVmsExampleWithMetrics extends NetworkVmsExampleAppCloudletAb
      } */
 
     @Override
-    protected List<NetworkCloudlet> createNetworkCloudlets(AppCloudlet app, List<NetworkVm> vmList) {
+    protected List<NetworkCloudlet> createNetworkCloudlets(AppCloudlet app) {
         System.out.println("TESTE2");
         List<NetworkCloudlet> networkCloudletList = new ArrayList<>(vmList.size());
         System.out.println("TESTE3");
@@ -123,7 +122,6 @@ public class NetworkVmsExampleWithMetrics extends NetworkVmsExampleAppCloudletAb
         }
 
         return networkCloudletList;
-
     }
 
 }
