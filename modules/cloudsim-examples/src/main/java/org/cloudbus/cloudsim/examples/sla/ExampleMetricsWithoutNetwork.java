@@ -34,7 +34,7 @@ import org.cloudbus.cloudsim.resources.Bandwidth;
 import org.cloudbus.cloudsim.resources.FileStorage;
 import org.cloudbus.cloudsim.resources.PeSimple;
 import org.cloudbus.cloudsim.resources.Ram;
-import org.cloudbus.cloudsim.util.TableBuilderHelper;
+import org.cloudbus.cloudsim.util.CloudletsTableBuilderHelper;
 import org.cloudbus.cloudsim.util.TextTableBuilder;
 import org.cloudbus.cloudsim.utilizationmodels.UtilizationModel;
 import org.cloudbus.cloudsim.utilizationmodels.UtilizationModelFull;
@@ -292,7 +292,7 @@ public class ExampleMetricsWithoutNetwork {
 
         //Final step: Print results when simulation is over
         List<Cloudlet> newList = broker.getCloudletsFinishedList();
-        TableBuilderHelper.print(new TextTableBuilder(), newList);
+        CloudletsTableBuilderHelper.print(new TextTableBuilder(), newList);
 
         Log.printFormattedLine("... finished!");
     }

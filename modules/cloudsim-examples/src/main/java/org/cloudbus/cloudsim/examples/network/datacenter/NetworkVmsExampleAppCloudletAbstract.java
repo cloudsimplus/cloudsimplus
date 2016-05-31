@@ -31,7 +31,7 @@ import org.cloudbus.cloudsim.resources.Pe;
 import org.cloudbus.cloudsim.resources.PeSimple;
 import org.cloudbus.cloudsim.resources.Ram;
 import org.cloudbus.cloudsim.schedulers.VmSchedulerTimeShared;
-import org.cloudbus.cloudsim.util.TableBuilderHelper;
+import org.cloudbus.cloudsim.util.CloudletsTableBuilderHelper;
 import org.cloudbus.cloudsim.util.TextTableBuilder;
 
 /**
@@ -113,7 +113,7 @@ public abstract class NetworkVmsExampleAppCloudletAbstract {
 
             // Final step: Print results when simulation is over
             List<Cloudlet> newList = broker.getCloudletsFinishedList();
-            TableBuilderHelper.print(new TextTableBuilder(), newList);
+            CloudletsTableBuilderHelper.print(new TextTableBuilder(), newList);
             Log.printFormattedLine("%s finished!", this.getClass().getSimpleName());
             Log.printFormattedLine("numberofcloudlet " + newList.size());
             for(NetworkHost host: datacenter.<NetworkHost>getHostList()){

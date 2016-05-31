@@ -42,7 +42,7 @@ import org.cloudbus.cloudsim.provisioners.ResourceProvisionerSimple;
 import org.cloudbus.cloudsim.resources.Bandwidth;
 import org.cloudbus.cloudsim.resources.FileStorage;
 import org.cloudbus.cloudsim.resources.Ram;
-import org.cloudbus.cloudsim.util.TableBuilderHelper;
+import org.cloudbus.cloudsim.util.CloudletsTableBuilderHelper;
 import org.cloudbus.cloudsim.util.TextTableBuilder;
 
 /**
@@ -156,7 +156,7 @@ public class MigrationExample1 {
             CloudSim.startSimulation();
             CloudSim.stopSimulation();
 
-            TableBuilderHelper.print(new TextTableBuilder(), broker.getCloudletsFinishedList());
+            CloudletsTableBuilderHelper.print(new TextTableBuilder(), broker.getCloudletsFinishedList());
 
             Log.printConcatLine(MigrationExample1.class.getSimpleName(), " finished!");
         } catch (Exception e) {

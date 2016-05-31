@@ -11,7 +11,7 @@ import org.cloudbus.cloudsim.core.CloudSim;
 import org.cloudbus.cloudsim.listeners.HostUpdatesVmsProcessingEventInfo;
 import org.cloudbus.cloudsim.schedulers.CloudletSchedulerDynamicWorkload;
 import org.cloudbus.cloudsim.schedulers.VmSchedulerSpaceShared;
-import org.cloudbus.cloudsim.util.TableBuilderHelper;
+import org.cloudbus.cloudsim.util.CloudletsTableBuilderHelper;
 import org.cloudbus.cloudsim.util.TextTableBuilder;
 import org.cloudbus.cloudsim.utilizationmodels.UtilizationModelArithmeticProgression;
 import org.junit.Test;
@@ -109,7 +109,7 @@ public final class CheckHostAvailableMipsDynamicUtilizationTest {
     }
 
     public void printCloudletsExecutionResults(DatacenterBrokerSimple broker) {
-        TableBuilderHelper.print(new TextTableBuilder(), broker.getCloudletsFinishedList());
+        CloudletsTableBuilderHelper.print(new TextTableBuilder(), broker.getCloudletsFinishedList());
     }
 
 }

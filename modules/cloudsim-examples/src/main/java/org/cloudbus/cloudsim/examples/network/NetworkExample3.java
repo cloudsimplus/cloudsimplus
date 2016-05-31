@@ -36,7 +36,7 @@ import org.cloudbus.cloudsim.VmSimple;
 import org.cloudbus.cloudsim.allocationpolicies.VmAllocationPolicySimple;
 import org.cloudbus.cloudsim.schedulers.VmSchedulerSpaceShared;
 import org.cloudbus.cloudsim.core.CloudSim;
-import org.cloudbus.cloudsim.util.TableBuilderHelper;
+import org.cloudbus.cloudsim.util.CloudletsTableBuilderHelper;
 import org.cloudbus.cloudsim.util.TextTableBuilder;
 import org.cloudbus.cloudsim.provisioners.PeProvisionerSimple;
 import org.cloudbus.cloudsim.provisioners.ResourceProvisionerSimple;
@@ -169,8 +169,8 @@ public class NetworkExample3 {
 
                     CloudSim.stopSimulation();
 
-                    TableBuilderHelper.print(new TextTableBuilder("User "+brokerId1), newList1);
-                    TableBuilderHelper.print(new TextTableBuilder("User "+brokerId2), newList2);
+                    CloudletsTableBuilderHelper.print(new TextTableBuilder("User "+brokerId1), newList1);
+                    CloudletsTableBuilderHelper.print(new TextTableBuilder("User "+brokerId2), newList2);
                     Log.printFormattedLine("%s finished!", NetworkExample3.class.getSimpleName());
             }
             catch (Exception e) {

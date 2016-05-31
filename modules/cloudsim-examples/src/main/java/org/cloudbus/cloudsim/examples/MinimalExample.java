@@ -1,6 +1,6 @@
 package org.cloudbus.cloudsim.examples;
 
-import org.cloudbus.cloudsim.util.TableBuilderHelper;
+import org.cloudbus.cloudsim.util.CloudletsTableBuilderHelper;
 import org.cloudbus.cloudsim.util.TextTableBuilder;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -90,7 +90,7 @@ public class MinimalExample {
             /*Prints results when simulation is over
             (you can use your own code here to print what you want from this cloudlet list)*/
             List<Cloudlet> finishedCloudlets = broker0.getCloudletsFinishedList();
-            TableBuilderHelper.print(new TextTableBuilder(), finishedCloudlets);
+            CloudletsTableBuilderHelper.print(new TextTableBuilder(), finishedCloudlets);
             Log.printFormattedLine("Minimal Example finished!");
         } catch (Exception e) {
             Log.printFormattedLine("Unexpected errors happened: %s", e.getMessage());

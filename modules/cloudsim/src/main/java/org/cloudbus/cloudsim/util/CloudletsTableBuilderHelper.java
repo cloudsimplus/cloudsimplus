@@ -4,11 +4,11 @@ import java.util.List;
 import org.cloudbus.cloudsim.Cloudlet;
 
 /**
- * A class to help printing simulation results.
+ * A class to help printing simulation results for a list of cloudlets.
  * 
  * @author Manoel Campos da Silva Filho
  */
-public final class TableBuilderHelper {
+public final class CloudletsTableBuilderHelper {
     public static void print(final TableBuilder printer, final List<? extends Cloudlet> list){
         if(printer.getTitle().isEmpty()){
             printer.setTitle("OUTPUT");

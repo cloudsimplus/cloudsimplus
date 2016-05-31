@@ -8,7 +8,7 @@ package org.cloudbus.cloudsim.examples;
  *
  * Copyright (c) 2009, The University of Melbourne, Australia
  */
-import org.cloudbus.cloudsim.util.TableBuilderHelper;
+import org.cloudbus.cloudsim.util.CloudletsTableBuilderHelper;
 import org.cloudbus.cloudsim.util.TextTableBuilder;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -148,7 +148,7 @@ public class TwoCloudletsAndOneTimeSharedVm {
 
             //Final step: Print results when simulation is over
             List<Cloudlet> newList = broker.getCloudletsFinishedList();
-            TableBuilderHelper.print(new TextTableBuilder(), newList);
+            CloudletsTableBuilderHelper.print(new TextTableBuilder(), newList);
             Log.printFormattedLine("%s finished!", TwoCloudletsAndOneTimeSharedVm.class.getSimpleName());
         } catch (Exception e) {
             e.printStackTrace();

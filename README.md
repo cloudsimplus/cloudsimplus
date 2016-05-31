@@ -61,7 +61,7 @@ CloudSim.stopSimulation();
 /*Prints results when simulation is over
 (you can use your own code here to print what you want from this cloudlet list)*/
 List<Cloudlet> finishedCloudlets = broker0.getCloudletsFinishedList();
-TableBuilderHelper.print(new TextTableBuilder(), finishedCloudlets);
+CloudletsTableBuilderHelper.print(new TextTableBuilder(), finishedCloudlets);
 Log.printFormattedLine("Minimal Example finished!");
 ```
 
@@ -133,12 +133,25 @@ Thus, the contributions in this area are as follows:
 - Inclusion of public code coverage report using [Coveralls](http://coveralls.io) services (see the badge at the top of this file). The code coverage raised from 20% to [![Coverage Status](https://coveralls.io/repos/github/manoelcampos/cloudsim/badge.svg?branch=master)](https://coveralls.io/github/manoelcampos/cloudsim?branch=master).
 - Bug fixes.
 
-## New examples
+## New features
+
+Some totally new features were introduced in CloudSim++:
+
+- **A TableBuilder interface and a set of implementing classes to automate the process of printing simulation results in different formats such as Text (ASCII), CSV and HTML**: the interface and classes are available at the [util](/modules/cloudsim/src/main/java/org/cloudbus/cloudsim/util/) package. To print results of a list of executed cloudlet you can use a single line of code such as `CloudletsTableBuilderHelper.print(new TextTableBuilder(), broker.getCloudletsFinishedList());`. All the perfectly aligned tables that you will see after running the examples uses the TextTableBuilder class.
+- **Listener objects that allow you to be notified when different events happen during your simulation execution**: the interfaces and classes included in the [org.cloudbus.cloudsim.listeners](/modules/cloudsim/src/main/java/org/cloudbus/cloudsim/listeners/) package allow you to keep an eye in your simulation execution and perform additional tasks when a given event happens. These listeners were implemented in some CloudSim++ classes such as:
+    - CloudSim: to notify observers when any event is processed on CloudSim.      
+    - Host: to notify observers when VMs processing is updated.
+    - Vm: to notify observers when a host is allocated to a VM, a host is deallocated for a VM, the creation of a VM failed. 
+    - Cloudlet: to notify observers when a cloudlet finishes executing.
+- **A set of builder classes to automate to process of creating multiple simulation objects such as Datacenters, Hosts, VMs and Cloudlets**: [builder](https://en.wikipedia.org/wiki/Builder_pattern) is a design pattern used to ease the creation of objects. As several simulations require the developer to create multiple instances of a given object with the same attribute values (such as several identical hosts), this starts being a repetitive, time-consuming and boring task. The package [org.cloudbus.cloudsim.builders](/modules/cloudsim/src/main/java/org/cloudbus/cloudsim/builders/) provide a set of classes to enable the automation of this instantiation process. The class [SimulationScenarioBuilder](/modules/cloudsim/src/main/java/org/cloudbus/cloudsim/builders/SimulationScenarioBuilder.java) is the start point to access all the introduced builders. New examples were not included yet, but the [Integration Tests package](modules/cloudsim/src/test/java/org/cloudbus/cloudsim/IntegrationTests/) makes intensive use of this new feature.
+
+## New examples for old and new features
 
 New concise and easy to understand examples of features that have lots of questions at forums were included, such as:
 - [Dynamic creation of cloudlets based on workload traces](modules/cloudsim-examples/src/main/java/org/cloudbus/cloudsim/examples/workload/) - the example dynamically create cloudlets according to the data of a workload trace file. VMs are created to fulfil cloudlets' requirements and, in its turn, Hosts are created to fulfil VMs' requirements. It may not represent a real world use case, but the example can be adapted to developer needs.  
 - [VM migration](/modules/cloudsim-examples/src/main/java/org/cloudbus/cloudsim/examples/migration/) - the example performs VM migrations based on Host utilization threshold. 
 - Implementation of custom DatacenterBroker and VmAllocationPolicy for the given examples.
+- Examples using the new Listener features were included to the package [org.cloudbus.cloudsim.examples.listeners](modules/cloudsim-examples/src/main/java/org/cloudbus/cloudsim/examples/listeners/).
 
 ## Updated to Java 8
 
@@ -174,6 +187,14 @@ This makes the code clearer to understand and less verbose. Further, the new Str
 
 
 For more information about the changes and features included in this release, please read the [CHANGELOG](CHANGELOG.md) file and the [cloudsim-examples](modules/cloudsim-examples) project.
+
+# What are the practical differences from using CloudSim or CloudSim++? How can I update my simulations in order to use CloudSim++?
+
+|                               CloudSim                                  |                                     CloudSim++                                |
+| ----------------------------------------------------------------------- | ----------------------------------------------------------------------------- |
+| DatacenterCharacteristics charcs = new DatacenterCharacteristics(...);  | DatacenterCharacteristics charcs = new DatacenterCharacteristicsSimple(...);  |
+| Datacenter datacenter = new Datacenter(...);                            | Datacenter datacenter = new DatacenterSimple(...);                      |
+
 
 # Cloud Computing Simulations
 

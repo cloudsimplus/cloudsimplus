@@ -16,7 +16,7 @@ import org.cloudbus.cloudsim.core.CloudSim;
 import org.cloudbus.cloudsim.core.SimEvent;
 import org.cloudbus.cloudsim.listeners.VmInsideDatacenterEventInfo;
 import org.cloudbus.cloudsim.listeners.VmInsideHostEventInfo;
-import org.cloudbus.cloudsim.util.TableBuilderHelper;
+import org.cloudbus.cloudsim.util.CloudletsTableBuilderHelper;
 import org.cloudbus.cloudsim.util.TextTableBuilder;
 import org.cloudbus.cloudsim.utilizationmodels.UtilizationModelFull;
 import org.junit.Test;
@@ -215,7 +215,7 @@ public final class VmCreationFailureIntegrationTest {
     }
 
     public void printCloudletsExecutionResults(DatacenterBrokerSimple broker) {
-        TableBuilderHelper.print(new TextTableBuilder(), broker.getCloudletsFinishedList());
+        CloudletsTableBuilderHelper.print(new TextTableBuilder(), broker.getCloudletsFinishedList());
     }
 
     public void assertThatBrokerCloudletsHaveTheExpectedExecutionTimes(DatacenterBrokerSimple broker) {
