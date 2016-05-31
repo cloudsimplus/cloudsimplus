@@ -6,6 +6,7 @@ import org.cloudbus.cloudsim.Vm;
 import org.cloudbus.cloudsim.core.CloudSim;
 import org.cloudbus.cloudsim.network.datacenter.AppCloudlet;
 import org.cloudbus.cloudsim.network.datacenter.NetworkCloudlet;
+import org.cloudbus.cloudsim.network.datacenter.NetworkVm;
 import org.cloudbus.cloudsim.network.datacenter.TaskStage;
 import org.cloudbus.cloudsim.utilizationmodels.UtilizationModel;
 import org.cloudbus.cloudsim.utilizationmodels.UtilizationModelFull;
@@ -43,7 +44,7 @@ public class NetworkVmsExampleBagOfTasksAppCloudlet extends NetworkVmsExampleApp
      * @return the list of created NetworkCloudlets
      */
     @Override
-    public List<NetworkCloudlet> createNetworkCloudlets(AppCloudlet app, List<Vm> vmList){
+    public List<NetworkCloudlet> createNetworkCloudlets(AppCloudlet app, List<NetworkVm> vmList){
         List<NetworkCloudlet> networkCloudletList = new ArrayList<>(NUMBER_OF_NETCLOUDLET_FOR_EACH_APPCLOUDLET);
         //basically, each task runs the simulation and then data is consolidated in one task
         long memory = 1000;
@@ -90,6 +91,8 @@ public class NetworkVmsExampleBagOfTasksAppCloudlet extends NetworkVmsExampleApp
         
         return networkCloudletList;
     }
+
+   
 
 
 }

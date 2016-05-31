@@ -6,6 +6,7 @@ import org.cloudbus.cloudsim.Vm;
 import org.cloudbus.cloudsim.core.CloudSim;
 import org.cloudbus.cloudsim.network.datacenter.AppCloudlet;
 import org.cloudbus.cloudsim.network.datacenter.NetworkCloudlet;
+import org.cloudbus.cloudsim.network.datacenter.NetworkVm;
 import org.cloudbus.cloudsim.network.datacenter.TaskStage;
 import org.cloudbus.cloudsim.network.datacenter.TaskStage.Stage;
 import org.cloudbus.cloudsim.utilizationmodels.UtilizationModel;
@@ -44,7 +45,7 @@ public class NetworkVmsExampleWorkflowAppCloudlet extends NetworkVmsExampleAppCl
      */
     @Override
     public List<NetworkCloudlet> createNetworkCloudlets(
-            AppCloudlet appCloudlet, List<Vm> selectedVms) {
+            AppCloudlet appCloudlet, List<NetworkVm> selectedVms) {
         NetworkCloudlet networkCloudletList[] = new NetworkCloudlet[3];
         for(int i = 0; i < networkCloudletList.length; i++){         
             networkCloudletList[i] = createNetworkCloudlet(i, appCloudlet, selectedVms.get(i));
@@ -89,7 +90,7 @@ public class NetworkVmsExampleWorkflowAppCloudlet extends NetworkVmsExampleAppCl
      * @param netCloudlet the {@link NetworkCloudlet} to add the task
      * @param vm the VM where to send or from which to receive data
      */
-    private static void addExecutionTask(NetworkCloudlet netCloudlet, Vm vm) {
+    private static void addExecutionTask(NetworkCloudlet netCloudlet, NetworkVm vm) {
         TaskStage stage = new TaskStage(
                 netCloudlet.getStages().size(), 
                 TaskStage.Stage.EXECUTION, 0, 1000 * 0.8, NETCLOUDLET_RAM,
@@ -105,7 +106,7 @@ public class NetworkVmsExampleWorkflowAppCloudlet extends NetworkVmsExampleAppCl
      * @param vm the VM that will run the created {@link NetworkCloudlet)
      * @return 
      */
-    private NetworkCloudlet createNetworkCloudlet(int networkCloudletId, AppCloudlet appCloudlet, Vm vm) {
+    private NetworkCloudlet createNetworkCloudlet(int networkCloudletId, AppCloudlet appCloudlet, NetworkVm vm) {
         UtilizationModel utilizationModel = new UtilizationModelFull();
         NetworkCloudlet netCloudlet = new NetworkCloudlet(
                 networkCloudletId, 0, 1, 
@@ -118,5 +119,7 @@ public class NetworkVmsExampleWorkflowAppCloudlet extends NetworkVmsExampleAppCl
         netCloudlet.setVmId(vm.getId());
         return netCloudlet;
     }
+
+   
 
 }

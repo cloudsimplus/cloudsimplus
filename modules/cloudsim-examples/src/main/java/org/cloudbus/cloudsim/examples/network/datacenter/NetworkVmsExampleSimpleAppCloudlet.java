@@ -6,6 +6,7 @@ import org.cloudbus.cloudsim.Vm;
 import org.cloudbus.cloudsim.core.CloudSim;
 import org.cloudbus.cloudsim.network.datacenter.AppCloudlet;
 import org.cloudbus.cloudsim.network.datacenter.NetworkCloudlet;
+import org.cloudbus.cloudsim.network.datacenter.NetworkVm;
 import org.cloudbus.cloudsim.utilizationmodels.UtilizationModel;
 import org.cloudbus.cloudsim.utilizationmodels.UtilizationModelFull;
 
@@ -43,7 +44,7 @@ public class NetworkVmsExampleSimpleAppCloudlet extends NetworkVmsExampleAppClou
      * @return the list of created NetworkCloudlets
      */
     @Override
-    public List<NetworkCloudlet> createNetworkCloudlets(AppCloudlet app, List<Vm> selectedVms) {
+    public List<NetworkCloudlet> createNetworkCloudlets(AppCloudlet app, List<NetworkVm> selectedVms) {
         List<NetworkCloudlet> networkCloudletList = new ArrayList<>(selectedVms.size());
         int currentNetworkCloudletId = 0;    
         for (Vm vm: selectedVms) {
@@ -67,5 +68,7 @@ public class NetworkVmsExampleSimpleAppCloudlet extends NetworkVmsExampleAppClou
         
         return networkCloudletList;
     }
+
+  
    
 }

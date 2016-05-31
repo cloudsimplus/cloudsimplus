@@ -92,6 +92,8 @@ public class NetworkCloudlet extends CloudletSimple implements Comparable<Object
     
     /** @see #getAppCloudlet() */
     private AppCloudlet appCloudlet;
+    
+    private NetworkCloudlet cloudlet;
 
     /**
      * Cloudlet's memory.
@@ -197,5 +199,14 @@ public class NetworkCloudlet extends CloudletSimple implements Comparable<Object
     public void setTimeSpentInStage(double timeSpentInStage) {
         this.timeSpentInStage = timeSpentInStage;
     }
+
+    /**
+     * @return the cloudlet
+     */
+    public NetworkCloudlet getCloudlet() {
+        return cloudlet;
+    }
+
+  
 
 }
