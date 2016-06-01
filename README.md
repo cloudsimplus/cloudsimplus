@@ -5,6 +5,8 @@ CloudSim++ is a fork of [CloudSim 3](https://github.com/Cloudslab/cloudsim/tree/
 
 It focuses on refactorings to reduce code duplication, increase usage of software engeneering standards and recommendations such as [Design Patterns](https://en.wikipedia.org/wiki/Software_design_pattern), [SOLID principles](https://en.wikipedia.org/wiki/SOLID_(object-oriented_design)) and other ones such as [KISS](https://en.wikipedia.org/wiki/KISS_principle) and [DRY](https://pt.wikipedia.org/wiki/Don't_repeat_yourself).
 
+CloudSim++ is developed at the Network and Multimedia Computing Group (NMCG) of the Universidade da Beira Interior and is supported by the Portuguese **Fundação para a Ciência e a Tecnologia (FCT)** and by the **Brazilian foundation Coordenação de Aperfeiçoamento de Pessoal de Nível Superior (CAPES)**.
+
 # How to use CloudSim++
 
 CloudSim++ is a Maven project with some modules. The easier way to use the project is relying on some IDE such as NetBeans, Eclipse or IntelliJ IDEA.
