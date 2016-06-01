@@ -4,8 +4,8 @@ language: java
 #However, the public Travis repositories only search fro dependencies at the Maven Central,
 #ignoring the existing local ones. That causes the build to fail, once CloudSim
 #is not at the Maven Central
-install: mvn install -DskipTests=true -Dmaven.javadoc.skip=true -B -V -pl modules,modules/cloudsim,modules/cloudsim-examples
-script: mvn clean package -pl modules,modules/cloudsim,modules/cloudsim-examples
+install: mvn install -DskipTests=true -Dmaven.javadoc.skip=true -B -V -pl modules,modules/cloudsim-plus,modules/cloudsim-plus-examples
+script: mvn clean package -pl modules,modules/cloudsim-plus,modules/cloudsim-plus-examples
 after_success:
   #https://github.com/trautonen/coveralls-maven-plugin
   - mvn clean test jacoco:report coveralls:report
