@@ -57,13 +57,13 @@
   	</dependency>
   	<dependency>
   		<groupId>${project.groupId}</groupId>
-		<artifactId>cloudsim-examples</artifactId>
+		<artifactId>cloudsim-plus-examples</artifactId>
 		<version>${project.version}</version>
 		<type>jar</type>
   	</dependency>
   	<dependency>
   		<groupId>${project.groupId}</groupId>
-		<artifactId>cloudsim-examples</artifactId>
+		<artifactId>cloudsim-plus-examples</artifactId>
 		<version>${project.version}</version>
 		<type>jar</type>
 		<classifier>sources</classifier>
