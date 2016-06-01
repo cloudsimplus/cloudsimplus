@@ -26,7 +26,7 @@ The construction of a scenario to simulate the infrastructure of a Cloud provide
 - a list of customer's virtual machines (VMs); 
 - and a list of customer's cloudlets (objects that model resource requirements of a given application).
 
-By this way, the main code used to build such a simulation scenario can be as below. This is simply the code of the constructor method. The complete example is available at the cloudsim-examples module [here](modules/cloudsim-examples/src/main/java/org/cloudbus/cloudsim/examples/MinimalExample.java).
+By this way, the main code used to build such a simulation scenario can be as below. This is simply the code of the constructor method. The complete example is available at the cloudsim-examples module [here](modules/cloudsim-plus-examples/src/main/java/org/cloudbus/cloudsim/examples/MinimalExample.java).
 
 ```java
 this.vmList = new ArrayList<>();
@@ -102,11 +102,11 @@ All these improvements are described in details in the next sub-sections.
 ## Improved class hierarchy and code that is easier to understand
 
 - **Classes were moved to new meangnifull packages in order to ease the process of finding a class that represents a given behaviour that you want to use or extend**. Some new packages are:
-  	- [org.cloudbus.cloudsim.allocationpolicies](modules/cloudsim/src/main/java/org/cloudbus/cloudsim/allocationpolicies) for VmAllocationPolicy classes that define how a PM is selected to host a VM.
-  	- [org.cloudbus.cloudsim.brokers](modules/cloudsim/src/main/java/org/cloudbus/cloudsim/brokers) for DatacenterBroker classes that defines the policies for submission of customer VMs and cloudlets.
-  	- [org.cloudbus.cloudsim.resources](modules/cloudsim/src/main/java/org/cloudbus/cloudsim/resources) for resources such as CPU cores (Processor Elements - PEs), RAM, Hard Drive Storage, SAN Storage, etc.
-  	- [org.cloudbus.cloudsim.schedulers](modules/cloudsim/src/main/java/org/cloudbus/cloudsim/schedulers) for VmScheduler and CloudletScheduler classes that defines how the execution of cloudlets and VMs are scheduled in the processor.
-  	- [org.cloudbus.cloudsim.utilizationmodels](modules/cloudsim/src/main/java/org/cloudbus/cloudsim/utilizationmodels) for UtilizationModel classes that define how a cloudlet uses physical resources.
+  	- [org.cloudbus.cloudsim.allocationpolicies](modules/cloudsim-plus/src/main/java/org/cloudbus/cloudsim/allocationpolicies) for VmAllocationPolicy classes that define how a PM is selected to host a VM.
+  	- [org.cloudbus.cloudsim.brokers](modules/cloudsim-plus/src/main/java/org/cloudbus/cloudsim/brokers) for DatacenterBroker classes that defines the policies for submission of customer VMs and cloudlets.
+  	- [org.cloudbus.cloudsim.resources](modules/cloudsim-plus/src/main/java/org/cloudbus/cloudsim/resources) for resources such as CPU cores (Processor Elements - PEs), RAM, Hard Drive Storage, SAN Storage, etc.
+  	- [org.cloudbus.cloudsim.schedulers](modules/cloudsim-plus/src/main/java/org/cloudbus/cloudsim/schedulers) for VmScheduler and CloudletScheduler classes that defines how the execution of cloudlets and VMs are scheduled in the processor.
+  	- [org.cloudbus.cloudsim.utilizationmodels](modules/cloudsim-plus/src/main/java/org/cloudbus/cloudsim/utilizationmodels) for UtilizationModel classes that define how a cloudlet uses physical resources.
 - **More meaningful class and method names to provide clear understanding of the responsiblity of each one**: usually you have to look at classes and their methods to figure out if there is a feature you want to use. Not rarely you have to go through the documentation to understand what is the responsibility of a given class or method. Using more specific and clear names frequently makes you to instantaneously find out what is the method or class you need. It thus relieves you to read the documentation to start coding (*despite it is really important to read the documentation,
 sometimes you don't have time to go through the details*).
 
@@ -138,28 +138,28 @@ Thus, the contributions in this area are as follows:
 - Functional/integration tests using JUnit to test how a set of classes works together and even overall simulation scenarios.
 - Continuous integration using [Travis](http://travis-ci.org) services (see the badge at the top of this file).
 - Inclusion of Maven Coverage Plugin to starting tracking the percentage of code that is being coverage by unit tests.
-- Inclusion of public code coverage report using [Coveralls](http://coveralls.io) services (see the badge at the top of this file). The code coverage raised from 20% to [![Coverage Status](https://coveralls.io/repos/github/manoelcampos/cloudsim/badge.svg?branch=master)](https://coveralls.io/github/manoelcampos/cloudsim?branch=master).
+- Inclusion of public code coverage report using [Coveralls](http://coveralls.io) services (see the badge at the top of this file). The code coverage raised from 20% to [![Coverage Status](https://coveralls.io/repos/github/manoelcampos/cloudsim/badge.svg?branch=master)](https://coveralls.io/github/manoelcampos/cloudsim-plus?branch=master).
 - Bug fixes.
 
 ## New set of features
 
 Some totally new features were introduced in CloudSim++:
 
-- **A TableBuilder interface and a set of implementing classes to automate the process of printing simulation results in different formats such as Text (ASCII), CSV and HTML**: the interface and classes are available at the [util](/modules/cloudsim/src/main/java/org/cloudbus/cloudsim/util/) package. To print results of a list of executed cloudlet you can use a single line of code such as `CloudletsTableBuilderHelper.print(new TextTableBuilder(), broker.getCloudletsFinishedList());`. All the perfectly aligned tables that you will see after running the examples uses the TextTableBuilder class.
-- **Listener objects that allow you to be notified when different events happen during your simulation execution**: the interfaces and classes included in the [org.cloudbus.cloudsim.listeners](/modules/cloudsim/src/main/java/org/cloudbus/cloudsim/listeners/) package allow you to keep an eye in your simulation execution and perform additional tasks when a given event happens. These listeners were implemented in some CloudSim++ classes such as below (the next section describes examples of this feature):
+- **A TableBuilder interface and a set of implementing classes to automate the process of printing simulation results in different formats such as Text (ASCII), CSV and HTML**: the interface and classes are available at the [util](/modules/cloudsim-plus/src/main/java/org/cloudbus/cloudsim/util/) package. To print results of a list of executed cloudlet you can use a single line of code such as `CloudletsTableBuilderHelper.print(new TextTableBuilder(), broker.getCloudletsFinishedList());`. All the perfectly aligned tables that you will see after running the examples uses the TextTableBuilder class.
+- **Listener objects that allow you to be notified when different events happen during your simulation execution**: the interfaces and classes included in the [org.cloudbus.cloudsim.listeners](/modules/cloudsim-plus/src/main/java/org/cloudbus/cloudsim/listeners/) package allow you to keep an eye in your simulation execution and perform additional tasks when a given event happens. These listeners were implemented in some CloudSim++ classes such as below (the next section describes examples of this feature):
     - CloudSim: to notify observers when any event is processed on CloudSim.      
     - Host: to notify observers when VMs processing is updated.
     - Vm: to notify observers when a host is allocated to a VM, a host is deallocated for a VM, the creation of a VM failed. 
     - Cloudlet: to notify observers when a cloudlet finishes executing.
-- **A set of builder classes to automate to process of creating multiple simulation objects such as Datacenters, Hosts, VMs and Cloudlets**: [builder](https://en.wikipedia.org/wiki/Builder_pattern) is a design pattern used to ease the creation of objects. As several simulations require the developer to create multiple instances of a given object with the same attribute values (such as several identical hosts), this starts being a repetitive, time-consuming and boring task. The package [org.cloudbus.cloudsim.builders](/modules/cloudsim/src/main/java/org/cloudbus/cloudsim/builders/) provide a set of classes to enable the automation of this instantiation process. The class [SimulationScenarioBuilder](/modules/cloudsim/src/main/java/org/cloudbus/cloudsim/builders/SimulationScenarioBuilder.java) is the start point to access all the introduced builders. New examples were not included yet, but the [Integration Tests package](modules/cloudsim/src/test/java/org/cloudbus/cloudsim/IntegrationTests/) makes intensive use of this new feature.
+- **A set of builder classes to automate to process of creating multiple simulation objects such as Datacenters, Hosts, VMs and Cloudlets**: [builder](https://en.wikipedia.org/wiki/Builder_pattern) is a design pattern used to ease the creation of objects. As several simulations require the developer to create multiple instances of a given object with the same attribute values (such as several identical hosts), this starts being a repetitive, time-consuming and boring task. The package [org.cloudbus.cloudsim.builders](/modules/cloudsim-plus/src/main/java/org/cloudbus/cloudsim/builders/) provide a set of classes to enable the automation of this instantiation process. The class [SimulationScenarioBuilder](/modules/cloudsim-plus/src/main/java/org/cloudbus/cloudsim/builders/SimulationScenarioBuilder.java) is the start point to access all the introduced builders. New examples were not included yet, but the [Integration Tests package](modules/cloudsim-plus/src/test/java/org/cloudbus/cloudsim/IntegrationTests/) makes intensive use of this new feature.
 
 ## New examples for old and new features
 
 New concise and easy to understand examples of features that have lots of questions at forums were included, such as:
-- [Dynamic creation of cloudlets based on workload traces](modules/cloudsim-examples/src/main/java/org/cloudbus/cloudsim/examples/workload/) - the example dynamically create cloudlets according to the data of a workload trace file. VMs are created to fulfil cloudlets' requirements and, in its turn, Hosts are created to fulfil VMs' requirements. It may not represent a real world use case, but the example can be adapted to developer needs.  
-- [VM migration](/modules/cloudsim-examples/src/main/java/org/cloudbus/cloudsim/examples/migration/) - the example performs VM migrations based on Host utilization threshold. 
+- [Dynamic creation of cloudlets based on workload traces](modules/cloudsim-plus-examples/src/main/java/org/cloudbus/cloudsim/examples/workload/) - the example dynamically create cloudlets according to the data of a workload trace file. VMs are created to fulfil cloudlets' requirements and, in its turn, Hosts are created to fulfil VMs' requirements. It may not represent a real world use case, but the example can be adapted to developer needs.  
+- [VM migration](/modules/cloudsim-plus-examples/src/main/java/org/cloudbus/cloudsim/examples/migration/) - the example performs VM migrations based on Host utilization threshold. 
 - Implementation of custom DatacenterBroker and VmAllocationPolicy for the given examples.
-- Examples using the new Listener features were included to the package [org.cloudbus.cloudsim.examples.listeners](modules/cloudsim-examples/src/main/java/org/cloudbus/cloudsim/examples/listeners/).
+- Examples using the new Listener features were included to the package [org.cloudbus.cloudsim.examples.listeners](modules/cloudsim-plus-examples/src/main/java/org/cloudbus/cloudsim/examples/listeners/).
 
 ## Update to Java 8
 

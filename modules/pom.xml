@@ -1,9 +1,9 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
   <parent>
-    <groupId>org.cloudbus.cloudsim</groupId>
-    <artifactId>cloudsim-package</artifactId>
-    <version>5.0</version>
+    <groupId>org.cloudsimplus</groupId>
+    <artifactId>cloudsim-plus-package</artifactId>
+    <version>1.0</version>
   </parent>
 
   <artifactId>modules</artifactId>
@@ -11,8 +11,8 @@
   <name>modules</name>
 
   <modules>
-    <module>cloudsim</module>
-    <module>cloudsim-examples</module>
+    <module>cloudsim-plus</module>
+    <module>cloudsim-plus-examples</module>
   </modules>
 
   <build>
@@ -63,7 +63,5 @@
     <artifactId>commons-math3</artifactId>
     <version>3.3</version>
   </dependency>
-
   </dependencies>
-
 </project>

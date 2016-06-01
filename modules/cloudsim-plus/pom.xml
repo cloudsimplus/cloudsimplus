@@ -3,15 +3,15 @@
     <modelVersion>4.0.0</modelVersion>
     <parent>
         <artifactId>modules</artifactId>
-        <groupId>org.cloudbus.cloudsim</groupId>
-        <version>5.0</version>
+        <groupId>org.cloudsimplus</groupId>
+        <version>1.0</version>
     </parent>
 
-    <artifactId>cloudsim</artifactId>
-    <name>cloudsim</name>
+    <artifactId>cloudsim-plus</artifactId>
+    <name>cloudsim-plus</name>
 
     <properties>
-        <city>toronto</city>
+        <city>Covilhã, Portugal</city>
     </properties>
 
     <profiles>
@@ -102,7 +102,6 @@
         </profile>
 
     </profiles>
-    <!-- ===================================== -->
 
     <build>
         <plugins>

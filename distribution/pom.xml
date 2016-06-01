@@ -1,17 +1,16 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
   <parent>
-    <artifactId>cloudsim-package</artifactId>
-    <groupId>org.cloudbus.cloudsim</groupId>
-    <version>5.0</version>
+    <artifactId>cloudsim-plus-package</artifactId>
+    <groupId>org.cloudsimplus</groupId>
+    <version>1.0</version>
   </parent>
   <artifactId>distribution</artifactId>
   <packaging>pom</packaging>
   <name>distribution</name>
 
-
   <build>
-    <finalName>cloudsim-${project.version}</finalName>
+    <finalName>cloudsim-plus-${project.version}</finalName>
   	<plugins>
 		<plugin>
 			<groupId>org.apache.maven.plugins</groupId>
@@ -38,20 +37,20 @@
   <dependencies>
   	<dependency>
   		<groupId>${project.groupId}</groupId>
-		<artifactId>cloudsim</artifactId>
+		<artifactId>cloudsim-plus</artifactId>
 		<version>${project.version}</version>
 		<type>jar</type>
   	</dependency>
   	<dependency>
   		<groupId>${project.groupId}</groupId>
-		<artifactId>cloudsim</artifactId>
+		<artifactId>cloudsim-plus</artifactId>
 		<version>${project.version}</version>
 		<type>jar</type>
 		<classifier>sources</classifier>
   	</dependency>
   	<dependency>
   		<groupId>${project.groupId}</groupId>
-		<artifactId>cloudsim</artifactId>
+		<artifactId>cloudsim-plus</artifactId>
 		<version>${project.version}</version>
 		<type>jar</type>
 		<classifier>javadoc</classifier>
@@ -76,5 +75,4 @@
 		<type>jar</type>
   	</dependency>
   </dependencies>
-
 </project>

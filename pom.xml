@@ -1,12 +1,12 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
-  <groupId>org.cloudbus.cloudsim</groupId>
-  <artifactId>cloudsim-package</artifactId>
-  <version>5.0</version>
+  <groupId>org.cloudsimplus</groupId>
+  <artifactId>cloudsim-plus-package</artifactId>
+  <version>1.0</version>
   <packaging>pom</packaging>
-  <name>cloudsim-package</name>
-  <description>CloudSim: A Framework For Modeling And Simulation Of Cloud Computing Infrastructures And Services</description>
-  <url>http://www.cloudbus.org/cloudsim/</url>
+  <name>cloudsim-plus-package</name>
+  <description>CloudSim++ A CloudSim fork for Modeling and Simulation of Cloud Computing Infrastructures and Services that focuses on reusability principles and other ones such as DRY, KISS, SOLID and Design Patterns</description>
+  <url>http://manoelcampos.github.io/cloudsim-plus</url>
 
   <properties>
   	<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -19,8 +19,8 @@
   </modules>
 
   <organization>
-  	<name>The Cloud Computing and Distributed Systems (CLOUDS) Laboratory, The University of Melbourne</name>
-  	<url>http://cloudbus.org/</url>
+  	<name>Network and Multimedia Computing Group (NMCG), Universidade da Beira Interior</name>
+  	<url>https://www.it.pt/MSP-Cv</url>
   </organization>
 
   <build>
@@ -92,12 +92,12 @@
   		</dependency>
   		<dependency>
   			<groupId>${project.groupId}</groupId>
-  			<artifactId>cloudsim</artifactId>
+  			<artifactId>cloudsim-plus</artifactId>
   			<version>${project.version}</version>
   		</dependency>
   		<dependency>
   			<groupId>${project.groupId}</groupId>
-  			<artifactId>cloudsim-examples</artifactId>
+  			<artifactId>cloudsim-plus-examples</artifactId>
   			<version>${project.version}</version>
   		</dependency>
   		<dependency>
@@ -143,5 +143,4 @@
 		</dependency>
   	</dependencies>
   </dependencyManagement>
-
 </project>
