@@ -8,11 +8,43 @@
     </parent>
 
     <artifactId>cloudsim-plus</artifactId>
-    <name>cloudsim-plus</name>
+    <name>CloudSim++ API</name>
+    <description>CloudSim++ A CloudSim fork for Modeling and Simulation of Cloud Computing Infrastructures and Services that focuses on reusability principles and other ones such as DRY, KISS, SOLID and Design Patterns</description>
+    <url>http://cloudsimplus.org</url>
 
-    <properties>
-        <city>Covilhã, Portugal</city>
-    </properties>
+    <organization>
+        <name>Multimedia Signal Processing (MSP), Instituto de Telecomunicações (IT), Universidade da Beira Interior (UBI)</name>
+        <url>https://www.it.pt/MSP-Cv</url>
+        <city>Covilhã, Castelo Branco, Portugal</city>
+    </organization>
+
+    <organization>
+        <name>Instituto Federal de Educação Ciência e Tecnologia do Tocantins (IFTO)</name>
+        <url>https://www.ifto.edu.br</url>
+        <city>Palmas, Tocantins, Brazil</city>
+    </organization>
+
+    <licenses>
+        <license>
+            <name>GNU LESSER GENERAL PUBLIC LICENSE, Version 3</name>
+            <url>http://www.gnu.org/licenses/lgpl-3.0.txt</url>
+        </license>
+    </licenses>
+
+   <developers>
+      <developer>
+        <name>Manoel Campos da Silva Filho</name>
+        <email>manoelcampos@gmail.com</email>
+        <organization>Instituto Federal de Educação Ciência e Tecnologia do Tocantins (IFTO)</organization>
+        <organizationUrl>http://www.ifto.edu.br</organizationUrl>
+      </developer>
+    </developers>
+
+    <scm>
+        <connection>scm:git:git@github.com:manoelcampos/cloudsim-plus.git</connection>
+        <developerConnection>scm:git:git@github.com:manoelcampos/cloudsim-plus.git</developerConnection>
+        <url>git@github.com:manoelcampos/cloudsim-plus.git</url>
+    </scm>
 
     <profiles>
         <!-- The profiles 'default' and 'integration-tests' are specified to allow
@@ -186,6 +218,7 @@
             </plugin>
         </plugins>
     </build>
+
     <dependencies>
         <dependency>
             <groupId>org.apache.commons</groupId>
@@ -216,6 +249,7 @@
             <scope>test</scope>
         </dependency>
     </dependencies>
+
     <reporting>
         <plugins>
             <plugin>

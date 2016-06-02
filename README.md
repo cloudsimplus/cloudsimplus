@@ -1,11 +1,11 @@
 # Introduction
-[![Build Status](https://img.shields.io/travis/manoelcampos/cloudsim-plus/master.svg)](https://travis-ci.org/manoelcampos/cloudsim-plus) [![Coverage Status](https://coveralls.io/repos/github/manoelcampos/cloudsim-plus/badge.svg?branch=master)](https://coveralls.io/github/manoelcampos/cloudsim-plus?branch=master) [![Codacy Badge](https://api.codacy.com/project/badge/Grade/3f132b184d5e475dbbcd356ee84499fc)](https://www.codacy.com/app/manoelcampos/cloudsim-plus?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=manoelcampos/cloudsim-plus&amp;utm_campaign=Badge_Grade) [![LGPL licensed](https://img.shields.io/badge/license-LGPL-blue.svg)](LICENSE)
+[![Build Status](https://img.shields.io/travis/manoelcampos/cloudsim-plus/master.svg)](https://travis-ci.org/manoelcampos/cloudsim-plus) [![Coverage Status](https://coveralls.io/repos/github/manoelcampos/cloudsim-plus/badge.svg?branch=master)](https://coveralls.io/github/manoelcampos/cloudsim-plus?branch=master) [![Codacy Badge](https://api.codacy.com/project/badge/Grade/3f132b184d5e475dbbcd356ee84499fc)](https://www.codacy.com/app/manoelcampos/cloudsim-plus?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=manoelcampos/cloudsim-plus&amp;utm_campaign=Badge_Grade) [![LGPL licensed](https://img.shields.io/badge/license-LGPL-blue.svg)](http://www.gnu.org/licenses/lgpl-3.0.en.html)
 
 CloudSim++ is a fork of [CloudSim 3](https://github.com/Cloudslab/cloudsim/tree/20a7a55e537181489fcb9a2d42a3e539db6c0318) that was reengineered primarily to avoid code duplication for improved [code reuse](https://en.wikipedia.org/wiki/Code_reuse), to clean code and ensure compliance with software engineering principles and recomendations, aiming to provide a more extensible, less [coupled](https://en.wikipedia.org/wiki/Coupling_(computer_programming)), more [cohesive](https://en.wikipedia.org/wiki/Cohesion_(computer_science)) cloud simulation tool.  
 
 It focuses on refactorings to reduce code duplication, increase usage of software engeneering standards and recommendations such as [Design Patterns](https://en.wikipedia.org/wiki/Software_design_pattern), [SOLID principles](https://en.wikipedia.org/wiki/SOLID_(object-oriented_design)) and other ones such as [KISS](https://en.wikipedia.org/wiki/KISS_principle) and [DRY](https://pt.wikipedia.org/wiki/Don't_repeat_yourself).
 
-CloudSim++ is developed at the Network and Multimedia Computing Group (NMCG) of the Universidade da Beira Interior and is supported by the Portuguese **Fundação para a Ciência e a Tecnologia (FCT)** and by the **Brazilian foundation Coordenação de Aperfeiçoamento de Pessoal de Nível Superior (CAPES)**.
+CloudSim++ is developed through a partnership among the [Multimedia Signal Processing (MSP)](http://it.pt/MSP-Cv) of the [Instituto de Telecomunicações (IT)](http://www.it.pt) of Portugal, the [Universidade da Beira Interior (UBI)](http://www.ubi.pt) and the [Instituto Federal de Educação Ciência e Tecnologia do Tocantins (IFTO)](http://www.ifto.edu.br) (Brazil). It is supported by the Portuguese **Fundação para a Ciência e a Tecnologia (FCT)** and by the **Brazilian foundation Coordenação de Aperfeiçoamento de Pessoal de Nível Superior (CAPES)**.
 
 # How to use CloudSim++
 
@@ -272,4 +272,4 @@ The download package contains all the source code, examples, jars, and API html 
   
 # License
 
-This project is licensed under [GNU Lesser GPLv3](LICENSE), as defined in CloudSim 3 release.
+This project is licensed under [GNU Lesser GPLv3](http://www.gnu.org/licenses/lgpl-3.0.en.html), as defined in CloudSim 3 release.

@@ -1,12 +1,48 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
+
   <groupId>org.cloudsimplus</groupId>
   <artifactId>cloudsim-plus-package</artifactId>
   <version>1.0</version>
   <packaging>pom</packaging>
-  <name>cloudsim-plus-package</name>
+
+  <name>CloudSim++ Full Package (API, Examples, Documentation, Sources and Examples)</name>
   <description>CloudSim++ A CloudSim fork for Modeling and Simulation of Cloud Computing Infrastructures and Services that focuses on reusability principles and other ones such as DRY, KISS, SOLID and Design Patterns</description>
-  <url>http://manoelcampos.github.io/cloudsim-plus</url>
+  <url>http://cloudsimplus.org</url>
+
+  <organization>
+  	<name>Multimedia Signal Processing (MSP), Instituto de Telecomunicações (IT), Universidade da Beira Interior (UBI)</name>
+  	<url>https://www.it.pt/MSP-Cv</url>
+    <city>Covilhã, Castelo Branco, Portugal</city>
+  </organization>
+
+  <organization>
+  	<name>Instituto Federal de Educação Ciência e Tecnologia do Tocantins (IFTO)</name>
+  	<url>https://www.ifto.edu.br</url>
+    <city>Palmas, Tocantins, Brazil</city>
+  </organization>
+
+  <licenses>
+      <license>
+          <name>GNU LESSER GENERAL PUBLIC LICENSE, Version 3</name>
+          <url>http://www.gnu.org/licenses/lgpl-3.0.txt</url>
+      </license>
+  </licenses>
+
+ <developers>
+    <developer>
+      <name>Manoel Campos da Silva Filho</name>
+      <email>manoelcampos@gmail.com</email>
+      <organization>Instituto Federal de Educação Ciência e Tecnologia do Tocantins (IFTO)</organization>
+      <organizationUrl>http://www.ifto.edu.br</organizationUrl>
+    </developer>
+  </developers>
+
+  <scm>
+    <connection>scm:git:git@github.com:manoelcampos/cloudsim-plus.git</connection>
+    <developerConnection>scm:git:git@github.com:manoelcampos/cloudsim-plus.git</developerConnection>
+    <url>git@github.com:manoelcampos/cloudsim-plus.git</url>
+  </scm>
 
   <properties>
   	<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -17,11 +53,6 @@
   	<module>documentation</module>
   	<module>distribution</module>
   </modules>
-
-  <organization>
-  	<name>Network and Multimedia Computing Group (NMCG), Universidade da Beira Interior</name>
-  	<url>https://www.it.pt/MSP-Cv</url>
-  </organization>
 
   <build>
   	<pluginManagement>
