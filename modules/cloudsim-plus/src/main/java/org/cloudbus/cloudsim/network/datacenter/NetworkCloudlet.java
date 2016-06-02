@@ -185,9 +185,39 @@ public class NetworkCloudlet extends CloudletSimple implements Comparable<Object
         return tasks.get(currentTaskNum);
     }
 
+    /**
+     * @todo @author manoelcampos The method has to consider
+     * the {@link #getCloudletTotalLength()} was executed and
+     * if it reached the last task.
+     * Currently it is being checked
+     * only the executed length.
+     */
     @Override
     public boolean isFinished() {
-        return super.isFinished() && getCurrentTaskNum() >= getNumberOfTasks();
+        //return super.isFinished() && getCurrentTaskNum() >= getNumberOfTasks();
+        return super.isFinished();
+    }
+
+    /**
+     * {@inheritDoc}
+     * <p>The length of a NetworkCloudlet is the 
+     * length sum of all its {@link CloudletExecutionTask}'s.</p>
+     * @return the length sum of all {@link CloudletExecutionTask}'s
+     * 
+     * @todo @author manoelcampos It is being computed the total
+     * length into the getter because the
+     * code related to the cloudlet length in classes such as
+     * {@link org.cloudbus.cloudsim.schedulers.CloudletSchedulerSpaceShared}
+     * is inappropriately changing this property as a mean to 
+     * control cloudlet states. That issue should be fixed prior to fix this one.
+     */
+    @Override
+    public long getCloudletLength() {
+        this.cloudletLength = getTasks().stream()
+                .filter(t -> t instanceof CloudletExecutionTask)
+                .mapToLong(t -> ((CloudletExecutionTask)t).getLength())
+                .sum();
+        return this.cloudletLength;
     }
 
     @Override
@@ -206,11 +236,26 @@ public class NetworkCloudlet extends CloudletSimple implements Comparable<Object
      * Adds a task to the {@link #getTasks() task list}
      * and links the task to the NetworkCloudlet.
      * 
-     * @param cloudletTask Task to be added
+     * @param task Task to be added
+     * @throws RuntimeException when there isn't enough PEs to add one more execution task
      */
-    public void addTask(CloudletTask cloudletTask) {
-        cloudletTask.setNetworkCloudlet(this);
-        getTasks().add(cloudletTask);
+    public void addTask(CloudletTask task) {
+        if(!isThereEnoughCoresForOneMoreExecutionTask(task))
+            throw new RuntimeException(
+                String.format(
+                    "There isn't enough cores to add a new execution task. The NetworkCloudlet has %d PEs to %d CloudletExecutionTask",
+                     getNumberOfPes(), numberOfExecutionTasks()));
+        
+        task.setNetworkCloudlet(this);
+        getTasks().add(task);
+    }
+
+    protected boolean isThereEnoughCoresForOneMoreExecutionTask(CloudletTask cloudletTask) {
+        return cloudletTask instanceof CloudletExecutionTask && numberOfExecutionTasks() < getNumberOfPes();
+    }
+
+    protected long numberOfExecutionTasks() {
+        return getTasks().stream().filter(t -> t instanceof CloudletExecutionTask).count();
     }
 
 }

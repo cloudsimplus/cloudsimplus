@@ -158,10 +158,14 @@ public class NetworkCloudletSpaceSharedScheduler extends CloudletSchedulerSpaceS
 
     protected void updateExecutionTask(ResCloudlet rcl, double currentTime, Processor p) {
         NetworkCloudlet netcl = (NetworkCloudlet)rcl.getCloudlet();
+        if(!(netcl.getCurrentTask() instanceof CloudletExecutionTask))
+            throw new RuntimeException(
+                "This method has to be called only when the current task of the NetworkCloudlet, inside the given ResCloudlet, is a CloudletExecutionTask");
+        
         /**
-         * @todo @author manoelcampos updates the execution
+         * @todo @author manoelcampos The method updates the execution
          * length of the task, considering the NetworkCloudlet
-         * has only one execution task.
+         * has only 1 execution task.
          */
         CloudletExecutionTask task = (CloudletExecutionTask)netcl.getCurrentTask();
         task.process(netcl.getCloudletFinishedSoFar());   

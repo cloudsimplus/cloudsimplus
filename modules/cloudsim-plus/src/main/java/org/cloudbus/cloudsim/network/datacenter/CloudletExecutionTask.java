@@ -8,7 +8,8 @@
 package org.cloudbus.cloudsim.network.datacenter;
 
 /**
- * Represents a processing task that can be executed by a {@link NetworkCloudlet}.
+ * A processing task that can be executed by a {@link NetworkCloudlet}
+ * in a single {@link org.cloudbus.cloudsim.resources.Pe}.
  *
  * <p>Please refer to following publication for more details:
  * <ul>
@@ -27,8 +28,7 @@ package org.cloudbus.cloudsim.network.datacenter;
  * 
  * @since CloudSim Toolkit 1.0
  * 
- * @todo @author manoelcampos
- * Classes {@link CloudletTask} and {@link org.cloudbus.cloudsim.Cloudlet}
+ * @todo @author manoelcampos Classes {@link CloudletTask} and {@link org.cloudbus.cloudsim.Cloudlet}
  * and {@link org.cloudbus.cloudsim.ResCloudlet} share a common
  * set of attributes that would be defined by a common interface.
  */

@@ -163,7 +163,7 @@ public abstract class NetworkVmsExampleAppCloudletAbstract {
                     new NetworkDatacenter(
                             name, characteristics,
                             new NetworkVmAllocationPolicy(hostList),
-                            storageList, 1);
+                            storageList, 5);
             // Create Internal Datacenter network
             createNetwork(newDatacenter);
             return newDatacenter;

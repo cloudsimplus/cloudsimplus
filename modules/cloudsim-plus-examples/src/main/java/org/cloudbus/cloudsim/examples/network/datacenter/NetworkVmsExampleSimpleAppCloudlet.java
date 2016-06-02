@@ -12,8 +12,10 @@ import org.cloudbus.cloudsim.utilizationmodels.UtilizationModelFull;
 
 /**
  * An example of a simple {@link AppCloudlet}'s that is composed of
- * 3 {@link NetworkCloudlet} that just process data, not performing 
- * network communication, running as a regular {@link org.cloudbus.cloudsim.Cloudlet}.
+ * 3 {@link NetworkCloudlet}'s of 2 {@link CloudletExecutionTask}'s each one.
+ * The cloudlets just process data, not performing network communication, 
+ * running in a similar way of a regular {@link org.cloudbus.cloudsim.Cloudlet}.
+ * The difference is that the processing is splitted among the NetworkCloudlet's tasks.
  *
  * @author Saurabh Kumar Garg
  * @author Rajkumar Buyya
@@ -49,21 +51,23 @@ public class NetworkVmsExampleSimpleAppCloudlet extends NetworkVmsExampleAppClou
         List<NetworkCloudlet> networkCloudletList = new ArrayList<>(NETCLOUDLETS_FOR_EACH_APP);
         int currentNetworkCloudletId = 0;
         for (Vm vm: selectedVms) {
-            long lengthMI = 1000;
+            long networkCloudletLengthMI = 1;
             long fileSize = 300;
             long outputSize = 300;
             long memory = 256;
-            long taskLengthMI = 20000;
+            long taskLengthMI = 15000;
             int pesNumber = 4;
             UtilizationModel utilizationModel = new UtilizationModelFull();
             NetworkCloudlet netCloudlet = new NetworkCloudlet(
                     currentNetworkCloudletId,
-                    lengthMI, pesNumber, fileSize, outputSize, memory,
+                    networkCloudletLengthMI, pesNumber, fileSize, outputSize, memory,
                     utilizationModel, utilizationModel, utilizationModel);
             netCloudlet.setAppCloudlet(app);
             // setting the owner of these Cloudlets
             netCloudlet.setUserId(getBroker().getId());
-            netCloudlet.addTask(new CloudletExecutionTask(0, memory, taskLengthMI));
+            for(int i = 0; i < 2; i++){
+                netCloudlet.addTask(new CloudletExecutionTask(i, memory, taskLengthMI));
+            }
             networkCloudletList.add(netCloudlet);
             currentNetworkCloudletId++;
         }
