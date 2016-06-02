@@ -66,19 +66,18 @@ public class NetworkVmsExampleBagOfTasksAppCloudlet extends NetworkVmsExampleApp
                             memory, utilizationModel, utilizationModel, utilizationModel);
             netCloudlet.setAppCloudlet(app);
             netCloudlet.setUserId(getBroker().getId());
-            netCloudlet.submittime = CloudSim.clock();
             netCloudlet.setVmId(vmList.get(i).getId());
             //compute and send data to node 0
             netCloudlet.getTasks().add(
                     new CloudletExecutionTask(
-                        taskStageId++, memory, netCloudlet, networkCloudletLength));
+                        taskStageId++, memory, networkCloudletLength, netCloudlet));
 
             //0 has an extra type of waiting for results; others send
             if (i==0){
                 for(int j=1; j < NETCLOUDLETS_FOR_EACH_APP; j++) {
                     netCloudlet.getTasks().add(
                         new CloudletReceiveTask(
-                            taskStageId++, memory, netCloudlet,  vmList.get(j+1).getId()));
+                            taskStageId++, memory,  vmList.get(j+1).getId(), netCloudlet));
                 }
             } else {
                 netCloudlet.getTasks().add(

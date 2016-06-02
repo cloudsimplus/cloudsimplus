@@ -469,8 +469,8 @@ public class CloudletSimple implements Cloudlet {
             return 0;
         }
 
-        final long finish = datacenterInfoList.get(index).finishedSoFar;
-        return Math.min(finish, cloudletLength);
+        final long finishedMI = datacenterInfoList.get(index).finishedSoFar;
+        return Math.min(finishedMI, cloudletLength);
     }
 
     @Override

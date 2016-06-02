@@ -9,7 +9,6 @@ package org.cloudbus.cloudsim.network.datacenter;
 
 import java.util.ArrayList;
 import java.util.List;
-import org.cloudbus.cloudsim.Vm;
 
 /**
  * Represents a task executed by a {@link NetworkCloudlet} that 
@@ -48,15 +47,27 @@ public class CloudletReceiveTask extends CloudletTask {
      *
      * @param id task id
      * @param memory memory used by the task
-     * @param networkCloudlet the NetworkCloudlet that the task belongs to
      * @param sourceVm the Vm where it is expected to receive packets from
+     * @param networkCloudlet the NetworkCloudlet that the task belongs to
      */
     public CloudletReceiveTask(int id, long memory, 
-            NetworkCloudlet networkCloudlet,
-            int sourceVm) {
+            int sourceVm, NetworkCloudlet networkCloudlet) {
         super(id, memory, networkCloudlet);
         this.packetsReceived = new ArrayList<>();
         this.sourceVmId = sourceVm;
+    }
+    
+    /**
+     * Creates a new task without assigning it to a {@link NetworkCloudlet}
+     * (that has to be assigned further).    
+     *
+     * @param id task id
+     * @param memory memory used by the task
+     * @param sourceVm the Vm where it is expected to receive packets from
+     * @see #setNetworkCloudlet(org.cloudbus.cloudsim.network.datacenter.NetworkCloudlet) 
+     */
+    public CloudletReceiveTask(int id, long memory, int sourceVm) {
+        this(id, memory, sourceVm, null);
     }
 
     /**

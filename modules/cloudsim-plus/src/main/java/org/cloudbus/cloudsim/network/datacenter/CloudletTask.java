@@ -57,7 +57,7 @@ public abstract class CloudletTask implements Identificable {
     /**
      * @see #getNetworkCloudlet() 
      */
-    private final NetworkCloudlet networkCloudlet;
+    private NetworkCloudlet networkCloudlet;
 
     /**
      * Creates a new task.
@@ -72,6 +72,17 @@ public abstract class CloudletTask implements Identificable {
         this.executionTime = 0;
         this.memory = memory;
         this.networkCloudlet = networkCloudlet;
+    }
+
+    /**
+     * Creates a new task without assigning it to a {@link NetworkCloudlet}
+     * (that has to be assigned further).
+     * @param id task id
+     * @param memory memory used by the task
+     * @see #setNetworkCloudlet(org.cloudbus.cloudsim.network.datacenter.NetworkCloudlet) 
+     */
+    public CloudletTask(int id, long memory) {
+        this(id, memory, null);
     }
 
     /**
@@ -148,5 +159,9 @@ public abstract class CloudletTask implements Identificable {
     public NetworkCloudlet getNetworkCloudlet() {
         return networkCloudlet;
     }    
+
+    public void setNetworkCloudlet(NetworkCloudlet networkCloudlet) {
+        this.networkCloudlet = networkCloudlet;
+    }
     
 }

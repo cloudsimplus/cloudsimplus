@@ -3,7 +3,6 @@ package org.cloudbus.cloudsim.examples.network.datacenter;
 import java.util.Arrays;
 import java.util.List;
 import org.cloudbus.cloudsim.Log;
-import org.cloudbus.cloudsim.Vm;
 import org.cloudbus.cloudsim.core.CloudSim;
 import org.cloudbus.cloudsim.network.datacenter.AppCloudlet;
 import org.cloudbus.cloudsim.network.datacenter.CloudletSendTask;
@@ -104,7 +103,7 @@ public class NetworkVmsExampleWorkflowAppCloudlet extends NetworkVmsExampleAppCl
      */
     private void addReceiveTask(NetworkCloudlet cloudlet, NetworkCloudlet sourceCloudlet) {
         CloudletTask task = new CloudletReceiveTask(
-                cloudlet.getTasks().size(), NETCLOUDLET_RAM, cloudlet, sourceCloudlet.getVmId());
+                cloudlet.getTasks().size(), NETCLOUDLET_RAM, sourceCloudlet.getVmId(), cloudlet);
         cloudlet.getTasks().add(task);
     }
 
@@ -121,7 +120,7 @@ public class NetworkVmsExampleWorkflowAppCloudlet extends NetworkVmsExampleAppCl
          */
         CloudletTask stage = new CloudletExecutionTask(
                 netCloudlet.getTasks().size(),
-                NETCLOUDLET_RAM, netCloudlet, netCloudlet.getCloudletLength());
+                NETCLOUDLET_RAM, netCloudlet.getCloudletLength(), netCloudlet);
         netCloudlet.getTasks().add(stage);
     }
 
@@ -141,7 +140,6 @@ public class NetworkVmsExampleWorkflowAppCloudlet extends NetworkVmsExampleAppCl
                 utilizationModel, utilizationModel, utilizationModel);
         netCloudlet.setAppCloudlet(appCloudlet);
         netCloudlet.setUserId(getBroker().getId());
-        netCloudlet.submittime = CloudSim.clock();
         netCloudlet.setVmId(vm.getId());
 
         return netCloudlet;

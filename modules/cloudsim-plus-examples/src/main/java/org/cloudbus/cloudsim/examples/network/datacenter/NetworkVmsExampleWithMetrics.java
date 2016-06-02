@@ -116,7 +116,6 @@ public class NetworkVmsExampleWithMetrics extends NetworkVmsExampleAppCloudletAb
             netCloudlet.setAppCloudlet(app);
             // setting the owner of these Cloudlets
             netCloudlet.setUserId(getBroker().getId());
-            netCloudlet.submittime = CloudSim.clock();
             networkCloudletList.add(netCloudlet);
             currentNetworkCloudletId++;
         }

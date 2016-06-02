@@ -47,6 +47,18 @@ public class CloudletSendTask extends CloudletTask {
         super(id, memory, networkCloudlet);
         this.packetsToSend = new ArrayList<>();
     }
+    
+    /**
+     * Creates a new task without assigning it to a {@link NetworkCloudlet}
+     * (that has to be assigned further).
+     *
+     * @param id task id
+     * @param memory memory used by the task
+     * @see #setNetworkCloudlet(org.cloudbus.cloudsim.network.datacenter.NetworkCloudlet) 
+     */
+    public CloudletSendTask(int id, long memory) {
+        this(id, memory, null);
+    }
 
     /**
      * Creates and add a packet to the list of packets to be sent.

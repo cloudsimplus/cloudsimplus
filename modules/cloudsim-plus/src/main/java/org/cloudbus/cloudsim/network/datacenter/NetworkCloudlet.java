@@ -34,30 +34,9 @@ import org.cloudbus.cloudsim.utilizationmodels.UtilizationModel;
  * @author Saurabh Kumar Garg
  * @since CloudSim Toolkit 1.0
  *
- * @todo @author manoelcampos Attributes should be private
- * @todo @author manoelcampos The different cloudlet classes should have a class
- * hierarchy, by means of a super class and/or interface.
- * @todo @author manoelcampos The class has a lot of duplicated attributes that
- * exist in the super class. It has to be assessed if they in fact store
- * different data. If so, the attributes should have a different name to avoid
- * the strong confusion with the super class attributes.
+ * @todo @author manoelcampos See how to implement the NULL pattern for this class.
  */
 public class NetworkCloudlet extends CloudletSimple implements Comparable<Object> {
-
-    /**
-     * Time when cloudlet will be submitted.
-     */
-    public double submittime;
-
-    /**
-     * Cloudlet's start time.
-     */
-    public double starttime;
-
-    /**
-     * Execution time for cloudlet.
-     */
-    public double exetime;
 
     /**
      * Current stage of cloudlet execution, according to the values of the
@@ -116,10 +95,6 @@ public class NetworkCloudlet extends CloudletSimple implements Comparable<Object
          * Or implement or remove the method
          */
         return 0;
-    }
-
-    public double getSubmittime() {
-        return submittime;
     }
 
     /**
@@ -214,6 +189,11 @@ public class NetworkCloudlet extends CloudletSimple implements Comparable<Object
         return super.isFinished() && getCurrentTaskNum() >= getNumberOfTasks();
     }
 
+    @Override
+    public boolean setCloudletFinishedSoFar(long length) {
+        return super.setCloudletFinishedSoFar(length); 
+    }
+    
     /**
      * @return the cloudlet
      */
@@ -221,6 +201,15 @@ public class NetworkCloudlet extends CloudletSimple implements Comparable<Object
         return cloudlet;
     }
 
-  
+    /**
+     * Adds a task to the {@link #getTasks() task list}
+     * and links the task to the NetworkCloudlet.
+     * 
+     * @param cloudletTask Task to be added
+     */
+    public void addTask(CloudletTask cloudletTask) {
+        cloudletTask.setNetworkCloudlet(this);
+        getTasks().add(cloudletTask);
+    }
 
 }

@@ -8,13 +8,10 @@
 package org.cloudbus.cloudsim.network.datacenter;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 import org.cloudbus.cloudsim.Log;
 
 import org.cloudbus.cloudsim.schedulers.CloudletSchedulerSpaceShared;
@@ -81,9 +78,13 @@ public class NetworkCloudletSpaceSharedScheduler extends CloudletSchedulerSpaceS
             return;
         }
         
+        Log.println(Log.Level.DEBUG, getClass(), currentTime, 
+            "NetworkCloudlet %d current task: %d", 
+            netcl.getId(), netcl.getCurrentTaskNum());
+        
         /**
          * @todo @author manoelcampos It should be used polymorphism to avoid
-         * using these if's to find out the task type.
+         * using these if's for each task type.
          */
         if ((netcl.getCurrentTaskNum() == -1)) {
             startNextTask(netcl);
