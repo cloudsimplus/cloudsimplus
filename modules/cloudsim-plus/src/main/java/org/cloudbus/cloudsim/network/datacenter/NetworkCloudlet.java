@@ -237,21 +237,10 @@ public class NetworkCloudlet extends CloudletSimple implements Comparable<Object
      * and links the task to the NetworkCloudlet.
      * 
      * @param task Task to be added
-     * @throws RuntimeException when there isn't enough PEs to add one more execution task
      */
     public void addTask(CloudletTask task) {
-        if(!isThereEnoughCoresForOneMoreExecutionTask(task))
-            throw new RuntimeException(
-                String.format(
-                    "There isn't enough cores to add a new execution task. The NetworkCloudlet has %d PEs to %d CloudletExecutionTask",
-                     getNumberOfPes(), numberOfExecutionTasks()));
-        
         task.setNetworkCloudlet(this);
         getTasks().add(task);
-    }
-
-    protected boolean isThereEnoughCoresForOneMoreExecutionTask(CloudletTask cloudletTask) {
-        return cloudletTask instanceof CloudletExecutionTask && numberOfExecutionTasks() < getNumberOfPes();
     }
 
     protected long numberOfExecutionTasks() {

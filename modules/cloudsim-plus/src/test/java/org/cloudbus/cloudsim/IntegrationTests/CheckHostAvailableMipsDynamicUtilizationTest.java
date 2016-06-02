@@ -91,7 +91,7 @@ public final class CheckHostAvailableMipsDynamicUtilizationTest {
                 .createAndSubmitCloudlets(NUMBER_OF_CLOUDLETS);
     }
 
-    @Test @Ignore(value = "WARNING: It has to be checked if it is really required to use the "
+    @Test @Ignore("WARNING: It has to be checked if it is really required to use the "
                 + " PowerDatacenter, PowerHostUtilizationHistory, PowerVm"
                 + " and CloudletSchedulerDynamicWorkload to make the host CPU usage"
                 + " to be correctly updated.")

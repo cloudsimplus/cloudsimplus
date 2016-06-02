@@ -166,6 +166,9 @@ public class NetworkCloudletSpaceSharedScheduler extends CloudletSchedulerSpaceS
          * @todo @author manoelcampos The method updates the execution
          * length of the task, considering the NetworkCloudlet
          * has only 1 execution task.
+         * It has to be checked if the task execution is considering
+         * only one cloudlet PE our all PEs.
+         * Each execution task is supposed to use just one PE.
          */
         CloudletExecutionTask task = (CloudletExecutionTask)netcl.getCurrentTask();
         task.process(netcl.getCloudletFinishedSoFar());   
