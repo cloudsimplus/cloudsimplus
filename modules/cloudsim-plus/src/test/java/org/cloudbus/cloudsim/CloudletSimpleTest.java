@@ -98,14 +98,16 @@ public class CloudletSimpleTest {
     @Test
     public void testAssignCloudletToDataCenter_recodLogEnabledDatacenterNotAssigned() {
         final int datacenterId = 0;
-        CloudletSimple cloudlet = createCloudlet(datacenterId, true);
+        CloudletSimple cloudlet = createCloudlet(datacenterId);
+        cloudlet.setRecordTransactionHistory(true);
         cloudlet.assignCloudletToDatacenter(datacenterId, 0);
         assertEquals(datacenterId, cloudlet.getDatacenterId());
     }
 
     @Test
     public void testAssignCloudletToDataCenter_recodLogEnabledDatacenterAlreadAssigned() {
-        CloudletSimple cloudlet = createCloudlet(0, true);
+        CloudletSimple cloudlet = createCloudlet(0);
+        cloudlet.setRecordTransactionHistory(true);
         cloudlet.assignCloudletToDatacenter(0, 0);
 
         final int datacenterId = 1;
@@ -203,13 +205,14 @@ public class CloudletSimpleTest {
     @Test
     public void testGetCloudletHistory() {
         final int id = 1;
-        Cloudlet cloudlet = createCloudlet(id, false);
+        CloudletSimple cloudlet = createCloudlet(id);
         final String expected = String.format(Cloudlet.NO_HISTORY_IS_RECORDED_FOR_CLOUDLET, id);
         assertEquals(expected, cloudlet.getCloudletHistory());
         cloudlet.setUserId(1);
         assertEquals(expected, cloudlet.getCloudletHistory());
 
-        cloudlet = createCloudlet(id, true);
+        cloudlet = createCloudlet(id);
+        cloudlet.setRecordTransactionHistory(true);
         cloudlet.setUserId(1);
         Assert.assertNotSame(expected, cloudlet.getCloudletHistory());
     }
@@ -235,7 +238,8 @@ public class CloudletSimpleTest {
 
     @Test
     public void testGetDatacenterId() {
-        CloudletSimple cloudlet = createCloudlet(0, true);
+        CloudletSimple cloudlet = createCloudlet(0);
+        cloudlet.setRecordTransactionHistory(true);
         assertEquals(Cloudlet.NOT_ASSIGNED, cloudlet.getDatacenterId(), 0);
 
         final int datacenterId = 0;
@@ -340,32 +344,25 @@ public class CloudletSimpleTest {
         return createCloudlet(0);
     }
 
-    public static CloudletSimple createCloudlet(final int id) {
-        return createCloudlet(id, false);
-    }
-
-    private static CloudletSimple createCloudlet(final int id, boolean recordLog) {
+    private static CloudletSimple createCloudlet(final int id) {
         final UtilizationModel cpuRamAndBwUtilizationModel = new UtilizationModelFull();
-        return createCloudlet(id, cpuRamAndBwUtilizationModel, recordLog);
+        return createCloudlet(id, cpuRamAndBwUtilizationModel);
     }
 
     private static CloudletSimple createCloudlet(
-            final int id,
-            UtilizationModel cpuRamAndBwUtilizationModel, boolean recordLog) {
+            final int id, UtilizationModel cpuRamAndBwUtilizationModel) {
         return createCloudlet(id, cpuRamAndBwUtilizationModel,
                 cpuRamAndBwUtilizationModel,
-                cpuRamAndBwUtilizationModel, recordLog);
+                cpuRamAndBwUtilizationModel);
     }
 
-    private static CloudletSimple createCloudlet(final int id, UtilizationModel utilizationModelCPU,
+    private static CloudletSimple createCloudlet(final int id, 
+            UtilizationModel utilizationModelCPU,
             UtilizationModel utilizationModelRAM,
-            UtilizationModel utilizationModelBW,
-            boolean recordLog) {
+            UtilizationModel utilizationModelBW) {
         return new CloudletSimple(
                 id, CLOUDLET_LENGTH, 1, CLOUDLET_FILE_SIZE, CLOUDLET_OUTPUT_SIZE,
-                utilizationModelCPU, utilizationModelRAM, utilizationModelBW,
-                recordLog
-        );
+                utilizationModelCPU, utilizationModelRAM, utilizationModelBW);
     }
 
     @Test
@@ -396,7 +393,7 @@ public class CloudletSimpleTest {
 
     @Test(expected = IllegalArgumentException.class)
     public void testNew_nullUtilizationModel() {
-        createCloudlet(0, null, false);
+        createCloudlet(0, null);
     }
 
     @Test
@@ -596,31 +593,6 @@ public class CloudletSimpleTest {
     @Test
     public void testGetUtilizationOfBw() {
         assertEquals(utilizationModelBw.getUtilization(0), cloudlet.getUtilizationOfBw(0), 0);
-    }
-
-    @Test
-    public void testCloudletAlternativeConstructor1() {
-        cloudlet
-                = new CloudletSimple(
-                        0, CLOUDLET_LENGTH, PES_NUMBER, CLOUDLET_FILE_SIZE, CLOUDLET_OUTPUT_SIZE,
-                        utilizationModelCpu, utilizationModelRam, utilizationModelBw,
-                        true, new LinkedList<>());
-        testCloudlet();
-        testGetUtilizationOfCpu();
-        testGetUtilizationOfRam();
-        testGetUtilizationOfBw();
-    }
-
-    @Test
-    public void testCloudletAlternativeConstructor2() {
-        cloudlet = new CloudletSimple(
-                0, CLOUDLET_LENGTH, PES_NUMBER, CLOUDLET_FILE_SIZE, CLOUDLET_OUTPUT_SIZE,
-                utilizationModelCpu, utilizationModelRam, utilizationModelBw,
-                new LinkedList<>());
-        testCloudlet();
-        testGetUtilizationOfCpu();
-        testGetUtilizationOfRam();
-        testGetUtilizationOfBw();
     }
 
 }

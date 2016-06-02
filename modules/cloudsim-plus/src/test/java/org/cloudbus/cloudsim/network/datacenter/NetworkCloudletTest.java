@@ -27,14 +27,6 @@ public class NetworkCloudletTest {
         assertEquals(-1, instance.getCurrentTaskNum(), 0.0);
     }
 
-    @Test
-    public void testGetSubmitTime() {
-        assertEquals(0, instance.getSubmittime(), 0.0);
-        final double submitTime = 1;
-        instance.submittime = submitTime;
-        assertEquals(submitTime, instance.getSubmittime(), 0.0);
-    }
-
     private NetworkCloudlet createNetworkCloudlet(int id) {
         return new NetworkCloudlet(
                 id, LENGTH, PES, FILE_SIZE, OUTPUT_SIZE, RAM, 

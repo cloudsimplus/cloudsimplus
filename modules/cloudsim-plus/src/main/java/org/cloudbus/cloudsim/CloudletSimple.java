@@ -87,10 +87,9 @@ public class CloudletSimple implements Cloudlet {
     private int reservationId = NOT_ASSIGNED;
 
     /**
-     * Indicates if transaction history records for this Cloudlet is to be
-     * outputted.
+     * @see #isRecordTransactionHistory() 
      */
-    private final boolean record;
+    private boolean recordTransactionHistory;
 
     /**
      * Stores the operating system line separator.
@@ -146,21 +145,20 @@ public class CloudletSimple implements Cloudlet {
     private UtilizationModel utilizationModelBw;
 
     /** @see #getRequiredFiles() */
-    private List<String> requiredFiles = null;
+    private List<String> requiredFiles;
     
     /**@see #getOnCloudletFinishEventListener() */
     private EventListener<CloudletInsideVmEventInfo> onCloudletFinishEventListener = EventListener.NULL;
 
     /**
      * Instantiates a new Cloudlet object. The Cloudlet length, input and output
-     * file sizes should be greater than or equal to 1. By default this
-     * constructor sets the history of this object.
+     * file sizes should be greater than or equal to 1.
      *
-     * @param cloudletId the unique ID of this Cloudlet
+     * @param cloudletId the unique ID of this cloudlet
      * @param cloudletLength the length or size (in MI) of this cloudlet to be
      * executed in a Datacenter
      * @param cloudletFileSize the file size (in byte) of this cloudlet
-     * <tt>BEFORE</tt> submitting to a Datacenter
+     * <tt>BEFORE</tt> submitting to a PowerDatacenter
      * @param cloudletOutputSize the file size (in byte) of this cloudlet
      * <tt>AFTER</tt> finish executing by a Datacenter
      * @param pesNumber the pes number
@@ -183,147 +181,6 @@ public class CloudletSimple implements Cloudlet {
             final UtilizationModel utilizationModelCpu,
             final UtilizationModel utilizationModelRam,
             final UtilizationModel utilizationModelBw) {
-        this(
-                cloudletId,
-                cloudletLength,
-                pesNumber,
-                cloudletFileSize,
-                cloudletOutputSize,
-                utilizationModelCpu,
-                utilizationModelRam,
-                utilizationModelBw,
-                false);
-    }
-
-    /**
-     * Instantiates a new Cloudlet object. The Cloudlet length, input and output
-     * file sizes should be greater than or equal to 1.
-     *
-     * @param cloudletId the unique ID of this cloudlet
-     * @param cloudletLength the length or size (in MI) of this cloudlet to be
-     * executed in a PowerDatacenter
-     * @param cloudletFileSize the file size (in byte) of this cloudlet
-     * <tt>BEFORE</tt> submitting to a PowerDatacenter
-     * @param cloudletOutputSize the file size (in byte) of this cloudlet
-     * <tt>AFTER</tt> finish executing by a PowerDatacenter
-     * @param record record the history of this object or not
-     * @param fileList list of files required by this cloudlet
-     * @param pesNumber the pes number
-     * @param utilizationModelCpu the utilization model of cpu
-     * @param utilizationModelRam the utilization model of ram
-     * @param utilizationModelBw the utilization model of bw
-     *
-     * @pre cloudletID >= 0
-     * @pre cloudletLength >= 0.0
-     * @pre cloudletFileSize >= 1
-     * @pre cloudletOutputSize >= 1
-     * @post $none
-     */
-    public CloudletSimple(
-            final int cloudletId,
-            final long cloudletLength,
-            final int pesNumber,
-            final long cloudletFileSize,
-            final long cloudletOutputSize,
-            final UtilizationModel utilizationModelCpu,
-            final UtilizationModel utilizationModelRam,
-            final UtilizationModel utilizationModelBw,
-            final boolean record,
-            final List<String> fileList) {
-        this(
-                cloudletId,
-                cloudletLength,
-                pesNumber,
-                cloudletFileSize,
-                cloudletOutputSize,
-                utilizationModelCpu,
-                utilizationModelRam,
-                utilizationModelBw,
-                record);
-
-        setRequiredFiles(fileList);
-    }
-
-    /**
-     * Instantiates a new Cloudlet object. The Cloudlet length, input and output
-     * file sizes should be greater than or equal to 1. By default this
-     * constructor sets the history of this object.
-     *
-     * @param cloudletId the unique ID of this Cloudlet
-     * @param cloudletLength the length or size (in MI) of this cloudlet to be
-     * executed in a PowerDatacenter
-     * @param cloudletFileSize the file size (in byte) of this cloudlet
-     * <tt>BEFORE</tt> submitting to a PowerDatacenter
-     * @param cloudletOutputSize the file size (in byte) of this cloudlet
-     * <tt>AFTER</tt> finish executing by a PowerDatacenter
-     * @param fileList list of files required by this cloudlet
-     * @param pesNumber the pes number
-     * @param utilizationModelCpu the utilization model of cpu
-     * @param utilizationModelRam the utilization model of ram
-     * @param utilizationModelBw the utilization model of bw
-     *
-     * @pre cloudletID >= 0
-     * @pre cloudletLength >= 0.0
-     * @pre cloudletFileSize >= 1
-     * @pre cloudletOutputSize >= 1
-     * @post $none
-     */
-    public CloudletSimple(
-            final int cloudletId,
-            final long cloudletLength,
-            final int pesNumber,
-            final long cloudletFileSize,
-            final long cloudletOutputSize,
-            final UtilizationModel utilizationModelCpu,
-            final UtilizationModel utilizationModelRam,
-            final UtilizationModel utilizationModelBw,
-            final List<String> fileList) {
-        this(
-                cloudletId,
-                cloudletLength,
-                pesNumber,
-                cloudletFileSize,
-                cloudletOutputSize,
-                utilizationModelCpu,
-                utilizationModelRam,
-                utilizationModelBw,
-                false);
-        setRequiredFiles(fileList);
-    }
-
-    /**
-     * Instantiates a new Cloudlet object. The Cloudlet length, input and output
-     * file sizes should be greater than or equal to 1.
-     *
-     * @param cloudletId the unique ID of this cloudlet
-     * @param cloudletLength the length or size (in MI) of this cloudlet to be
-     * executed in a Datacenter
-     * @param cloudletFileSize the file size (in byte) of this cloudlet
-     * <tt>BEFORE</tt> submitting to a PowerDatacenter
-     * @param cloudletOutputSize the file size (in byte) of this cloudlet
-     * <tt>AFTER</tt> finish executing by a Datacenter
-     * @param record record the history of this object or not
-     * @param pesNumber the pes number
-     * @param utilizationModelCpu the utilization model of cpu
-     * @param utilizationModelRam the utilization model of ram
-     * @param utilizationModelBw the utilization model of bw
-     *
-     * @pre cloudletID >= 0
-     * @pre cloudletLength >= 0.0
-     * @pre cloudletFileSize >= 1
-     * @pre cloudletOutputSize >= 1
-     * @post $none
-     */
-    public CloudletSimple(
-            final int cloudletId,
-            final long cloudletLength,
-            final int pesNumber,
-            final long cloudletFileSize,
-            final long cloudletOutputSize,
-            final UtilizationModel utilizationModelCpu,
-            final UtilizationModel utilizationModelRam,
-            final UtilizationModel utilizationModelBw,
-            final boolean record) {
         num = new DecimalFormat("#0.00#"); 
         newline = System.getProperty("line.separator");
         userId = NOT_ASSIGNED;          // to be set by a Broker or user
@@ -345,7 +202,7 @@ public class CloudletSimple implements Cloudlet {
         // size of this ArrayList to be less than the default one.
         datacenterInfoList = new ArrayList<>(2);
         index = NOT_ASSIGNED;
-        this.record = record;
+        this.recordTransactionHistory = false;
 
         vmId = NOT_ASSIGNED;
         setAccumulatedBwCost(0.0);
@@ -565,7 +422,7 @@ public class CloudletSimple implements Cloudlet {
         // add into a list if moving to a new cloud datacenter
         datacenterInfoList.add(datacenter);
 
-        if(record){
+        if(recordTransactionHistory){
             if (index == NOT_ASSIGNED) {
                 write(
                     "Allocates this Cloudlet to %s (ID #%d) with cost = $%s/sec",
@@ -784,7 +641,7 @@ public class CloudletSimple implements Cloudlet {
      * @post $none
      */
     protected void write(final String str) {
-        if (!record) {
+        if (!recordTransactionHistory) {
             return;
         }
 
@@ -882,7 +739,7 @@ public class CloudletSimple implements Cloudlet {
      *
      * @param requiredFiles the new list of required files
      */
-    protected final void setRequiredFiles(final List<String> requiredFiles) {
+    public final void setRequiredFiles(final List<String> requiredFiles) {
         if(requiredFiles == null)
             this.requiredFiles = new LinkedList<>();
         else this.requiredFiles = requiredFiles;
@@ -1002,6 +859,25 @@ public class CloudletSimple implements Cloudlet {
     private void setAccumulatedBwCost(double accumulatedBwCost) {
         this.accumulatedBwCost = accumulatedBwCost;
     }    
+
+    /**
+     * Indicates if Cloudlet transaction history is to be recorded or not.
+     * @see #getCloudletHistory() 
+     * @return 
+     */
+    public boolean isRecordTransactionHistory() {
+        return recordTransactionHistory;
+    }
+
+    /**
+     * Sets the Cloudlet transaction history writing.
+     * 
+     * @param recordTransactionHistory true enables transaction history writing,
+     * false disables.
+     */
+    public void setRecordTransactionHistory(boolean recordTransactionHistory) {
+        this.recordTransactionHistory = recordTransactionHistory;
+    }
 
     /**
      * Internal class that keeps track of Cloudlet's movement in different
