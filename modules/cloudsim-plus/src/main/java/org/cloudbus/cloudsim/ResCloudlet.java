@@ -407,36 +407,36 @@ public class ResCloudlet {
         double wallClockTime = CloudSim.clock() - arrivalTime;
         cloudlet.setWallClockTime(wallClockTime, totalCompletionTime);
 
-        long finishedMI = 0;
+        long finishedLengthAcrossAllPes = 0;
         //if (cloudlet.getCloudletTotalLength() * Consts.MILLION < cloudletFinishedSoFar) {
         if (cloudlet.getStatus() == Status.SUCCESS) {
-            finishedMI = cloudlet.getCloudletLength();
+            finishedLengthAcrossAllPes = cloudlet.getCloudletLength();
         } else {
-            finishedMI = cloudletFinishedSoFar / Consts.MILLION;
+            finishedLengthAcrossAllPes = cloudletFinishedSoFar / Consts.MILLION;
         }
 
-        cloudlet.setCloudletFinishedSoFar(finishedMI);
+        cloudlet.setCloudletFinishedSoFar(finishedLengthAcrossAllPes);
     }
 
     /**
      * Updates the length of cloudlet that has already been completed.
      *
-     * @param length cloudlet length to be added 
-     * to the {@link #cloudletFinishedSoFar}, in number of Instructions (I)
+     * @param numberOfExecutedInstructions amount of instructions just executed, to be
+     * added to the {@link #cloudletFinishedSoFar}, in number of Instructions (I)
      * @pre length >= 0.0
      * @post $none
      */
-    public void updateCloudletFinishedSoFar(long length) {
-        if(length <= 0)
+    public void updateCloudletFinishedSoFar(long numberOfExecutedInstructions) {
+        if(numberOfExecutedInstructions <= 0)
             return;
         
-        this.cloudletFinishedSoFar += length;
+        this.cloudletFinishedSoFar += numberOfExecutedInstructions;
         this.cloudletFinishedSoFar = 
                 Math.min(this.cloudletFinishedSoFar, 
                         cloudlet.getCloudletTotalLength()*Consts.MILLION);
         
-        double finishedSoFarByPE = cloudletFinishedSoFar  / pesNumber / Consts.MILLION;
-        cloudlet.setCloudletFinishedSoFar((long)finishedSoFarByPE);
+        double finishedSoFarByPeMI = cloudletFinishedSoFar  / pesNumber / Consts.MILLION;
+        cloudlet.setCloudletFinishedSoFar((long)finishedSoFarByPeMI);
     }
 
     /**

@@ -393,15 +393,15 @@ public abstract class CloudletSchedulerAbstract implements CloudletScheduler {
      * @see #updateCloudletsProcessing(double, org.cloudbus.cloudsim.resources.Processor) 
      */
     protected void updateCloudletProcessing(ResCloudlet rcl, double currentTime, Processor p) {
-        long length = cloudletExecutionTotalLengthForElapsedTime(rcl, currentTime, p);
-        rcl.updateCloudletFinishedSoFar(length);
+        long numberOfInstructions = cloudletExecutionTotalLengthForElapsedTime(rcl, currentTime, p);
+        rcl.updateCloudletFinishedSoFar(numberOfInstructions);
     }
 
     /**
-     * Computes the total length of a given cloudlet, in number of Instructions (I), 
-     * that has been executed since the last time cloudlets processing was updated.
-     * This length is considered as the sum of executed length in each
-     * Cloudlet PE.
+     * Computes the total length of a given cloudlet (across all PEs), 
+     * in number of Instructions (I), that has been executed since the 
+     * last time cloudlets processing was updated.
+     * This length is considered as the sum of executed length in each Cloudlet PE.
      * 
      * @param rcl
      * @param currentTime current simulation time

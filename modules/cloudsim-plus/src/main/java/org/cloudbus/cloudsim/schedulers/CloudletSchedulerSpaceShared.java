@@ -65,8 +65,8 @@ public class CloudletSchedulerSpaceShared extends CloudletSchedulerAbstract {
         // it can go to the exec list
         if ((getProcessor().getNumberOfPes() - usedPes) >= foundRcl.getNumberOfPes()) {
             foundRcl.setCloudletStatus(Cloudlet.Status.INEXEC);
-            long size = foundRcl.getRemainingCloudletLength();
-            size *= foundRcl.getNumberOfPes();
+            long remainingLenghtAcrossAllPes = foundRcl.getRemainingCloudletLength();
+            remainingLenghtAcrossAllPes *= foundRcl.getNumberOfPes();
             /**
              * @todo @author manoelcampos It's very strange
              * to change the cloudlet length that is
@@ -78,7 +78,7 @@ public class CloudletSchedulerSpaceShared extends CloudletSchedulerAbstract {
              * (you can see that the size is being multiplied by the
              * number of PEs).
              */
-            foundRcl.getCloudlet().setCloudletLength(size);
+            foundRcl.getCloudlet().setCloudletLength(remainingLenghtAcrossAllPes);
 
             getCloudletExecList().add(foundRcl);
             usedPes += foundRcl.getNumberOfPes();
@@ -92,9 +92,9 @@ public class CloudletSchedulerSpaceShared extends CloudletSchedulerAbstract {
         } else {// no enough free PEs: go to the waiting queue
             foundRcl.setCloudletStatus(Cloudlet.Status.QUEUED);
 
-            long size = foundRcl.getRemainingCloudletLength();
-            size *= foundRcl.getNumberOfPes();
-            foundRcl.getCloudlet().setCloudletLength(size);
+            long remainingLengthAcrossPes = foundRcl.getRemainingCloudletLength();
+            remainingLengthAcrossPes *= foundRcl.getNumberOfPes();
+            foundRcl.getCloudlet().setCloudletLength(remainingLengthAcrossPes);
 
             getCloudletWaitingList().add(foundRcl);
             return 0.0;

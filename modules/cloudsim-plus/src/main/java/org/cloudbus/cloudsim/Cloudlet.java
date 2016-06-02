@@ -172,8 +172,9 @@ public interface Cloudlet extends Identificable {
     String getCloudletHistory();
 
     /**
-     * Gets the execution length of this Cloudlet (Unit: in Million Instructions
-     * (MI)) that will be executed in each defined PE. 
+     * Gets the execution length of this Cloudlet (in Million Instructions (MI)) 
+     * that will be executed in each defined PE. 
+     * 
      * According to this length and the power of the VM processor (in
      * Million Instruction Per Second - MIPS) where the cloudlet will be run,
      * the cloudlet will take a given time to finish processing. For instance,
@@ -518,13 +519,15 @@ public interface Cloudlet extends Identificable {
     boolean isFinished();
 
     /**
-     * Sets the {@link #getCloudletLength() length (in MI)}  of this Cloudlet.
+     * Sets the execution length of this Cloudlet (in Million Instructions (MI)) 
+     * that will be executed in each defined PE. 
      *
      * @param cloudletLength the length (in MI) of this Cloudlet to be
      * executed in a CloudResource
      * @return <tt>true</tt> if the cloudletLength is valid, <tt>false</tt> otherwise
      *
-     * @see #getCloudletTotalLength() }
+     * @see #getCloudletTotalLength()
+     * @see #getCloudletLength() 
      * @pre cloudletLength > 0
      * @post $none
      */

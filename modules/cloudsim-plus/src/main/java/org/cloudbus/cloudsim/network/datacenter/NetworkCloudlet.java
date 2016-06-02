@@ -9,6 +9,7 @@ package org.cloudbus.cloudsim.network.datacenter;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.LongStream;
 
 import org.cloudbus.cloudsim.CloudletSimple;
 import org.cloudbus.cloudsim.utilizationmodels.UtilizationModel;

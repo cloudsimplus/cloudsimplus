@@ -140,7 +140,7 @@ Thus, the contributions in this area are as follows:
 - Functional/integration tests using JUnit to test how a set of classes works together and even overall simulation scenarios.
 - Continuous integration using [Travis](http://travis-ci.org) services (see the badge at the top of this file).
 - Inclusion of Maven Coverage Plugin to starting tracking the percentage of code that is being coverage by unit tests.
-- Inclusion of public code coverage report using [Coveralls](http://coveralls.io) services (see the badge at the top of this file). The code coverage raised from 20% to [![Coverage Status](https://coveralls.io/repos/github/manoelcampos/cloudsim/badge.svg?branch=master)](https://coveralls.io/github/manoelcampos/cloudsim-plus?branch=master).
+- Inclusion of public code coverage report using [Coveralls](http://coveralls.io) services (see the badge at the top of this file). The code coverage raised from 20% to [![Coverage Status](https://coveralls.io/repos/github/manoelcampos/cloudsim-plus/badge.svg?branch=master)](https://coveralls.io/github/manoelcampos/cloudsim-plus?branch=master).
 - Bug fixes.
 
 ## New set of features

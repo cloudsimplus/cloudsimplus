@@ -63,7 +63,7 @@ public class CloudletSimple implements Cloudlet {
     private int userId;
 
     /** @see #getCloudletLength() */
-    private long cloudletLength;
+    protected long cloudletLength;
 
     /** @see #getCloudletFileSize() */
     private final long cloudletFileSize;
