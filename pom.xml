@@ -1,177 +1,176 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-  <modelVersion>4.0.0</modelVersion>
+    <modelVersion>4.0.0</modelVersion>
 
-  <groupId>org.cloudsimplus</groupId>
-  <artifactId>cloudsim-plus-package</artifactId>
-  <version>1.0</version>
-  <packaging>pom</packaging>
+    <groupId>org.cloudsimplus</groupId>
+    <artifactId>cloudsim-plus-package</artifactId>
+    <version>1.0</version>
+    <packaging>pom</packaging>
 
-  <name>CloudSim++ Full Package (API, Examples, Documentation, Sources and Examples)</name>
-  <description>CloudSim++ A CloudSim fork for Modeling and Simulation of Cloud Computing Infrastructures and Services that focuses on reusability principles and other ones such as DRY, KISS, SOLID and Design Patterns</description>
-  <url>http://cloudsimplus.org</url>
+    <name>CloudSim++ Main Package: API, Examples, Sources and Docs</name>
+    <description>CloudSim++ A CloudSim fork for Modeling and Simulation of Cloud Computing Infrastructures and Services that focuses on reusability principles and other ones such as DRY, KISS, SOLID and Design Patterns</description>
+    <url>http://cloudsimplus.org</url>
 
-  <organization>
-  	<name>Multimedia Signal Processing (MSP), Instituto de Telecomunicações (IT), Universidade da Beira Interior (UBI)</name>
-  	<url>https://www.it.pt/MSP-Cv</url>
-    <city>Covilhã, Castelo Branco, Portugal</city>
-  </organization>
+    <organization>
+        <name>Multimedia Signal Processing (MSP), Instituto de Telecomunicações (IT), Universidade da Beira Interior (UBI), Instituto Federal de Educação Ciência e Tecnologia do Tocantins (IFTO)</name>
+        <url>http://www.it.pt/MSP-Cv http://www.it.pt http://www.ubi.pt http://www.ifto.edu.br</url>
+    </organization>
 
-  <organization>
-  	<name>Instituto Federal de Educação Ciência e Tecnologia do Tocantins (IFTO)</name>
-  	<url>https://www.ifto.edu.br</url>
-    <city>Palmas, Tocantins, Brazil</city>
-  </organization>
+    <licenses>
+        <license>
+            <name>GNU LESSER GENERAL PUBLIC LICENSE, Version 3</name>
+            <url>http://www.gnu.org/licenses/lgpl-3.0.txt</url>
+        </license>
+    </licenses>
 
-  <licenses>
-      <license>
-          <name>GNU LESSER GENERAL PUBLIC LICENSE, Version 3</name>
-          <url>http://www.gnu.org/licenses/lgpl-3.0.txt</url>
-      </license>
-  </licenses>
+    <developers>
+        <developer>
+            <name>Manoel Campos da Silva Filho</name>
+            <email>manoelcampos@gmail.com</email>
+            <organization>Instituto Federal de Educação Ciência e Tecnologia do Tocantins (IFTO)</organization>
+            <organizationUrl>http://www.ifto.edu.br</organizationUrl>
+        </developer>
+    </developers>
 
- <developers>
-    <developer>
-      <name>Manoel Campos da Silva Filho</name>
-      <email>manoelcampos@gmail.com</email>
-      <organization>Instituto Federal de Educação Ciência e Tecnologia do Tocantins (IFTO)</organization>
-      <organizationUrl>http://www.ifto.edu.br</organizationUrl>
-    </developer>
-  </developers>
+    <scm>
+        <connection>scm:git:git@github.com:manoelcampos/cloudsim-plus.git</connection>
+        <developerConnection>scm:git:git@github.com:manoelcampos/cloudsim-plus.git</developerConnection>
+        <url>git@github.com:manoelcampos/cloudsim-plus.git</url>
+    </scm>
 
-  <scm>
-    <connection>scm:git:git@github.com:manoelcampos/cloudsim-plus.git</connection>
-    <developerConnection>scm:git:git@github.com:manoelcampos/cloudsim-plus.git</developerConnection>
-    <url>git@github.com:manoelcampos/cloudsim-plus.git</url>
-  </scm>
+    <properties>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    </properties>
 
-  <properties>
-  	<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-  </properties>
+    <modules>
+        <module>modules</module>
+        <module>documentation</module>
+        <module>distribution</module>
+    </modules>
 
-  <modules>
-  	<module>modules</module>
-  	<module>documentation</module>
-  	<module>distribution</module>
-  </modules>
+    <build>
+        <pluginManagement>
+            <plugins>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-compiler-plugin</artifactId>
+                    <version>2.3.2</version>
+                    <configuration>
+                        <source>1.8</source>
+                        <target>1.8</target>
+                    </configuration>
+                </plugin>
+                <!--
+                 Plugin for code coverage, enabling
+                 generation of reports on IDE to see percentage
+                 of the project's code that is being covered by unit tests.
+                -->
+                <plugin>
+                    <groupId>org.jacoco</groupId>
+                    <artifactId>jacoco-maven-plugin</artifactId>
+                    <version>0.7.6.201602180812</version>
+                    <executions>
+                        <execution>
+                            <id>prepare-agent</id>
+                            <goals>
+                                <goal>prepare-agent</goal>
+                            </goals>
+                        </execution>
+                        <execution>
+                            <id>report</id>
+                            <phase>prepare-package</phase>
+                            <goals>
+                                <goal>report</goal>
+                            </goals>
+                        </execution>
+                    </executions>
+                </plugin>
+                <!--    Send code coverage reports to http://coveralls.io,
+                in order to show percentage of code coverage in
+                the README file.
+                Your coverall repoToken have to be defined in
+                an environment variable at you machine
+                in order to enable sending the coverage
+                report to the coveralls server.
+                https://github.com/trautonen/coveralls-maven-plugin
+                -->
+                <plugin>
+                    <groupId>org.eluder.coveralls</groupId>
+                    <artifactId>coveralls-maven-plugin</artifactId>
+                    <version>4.1.0</version>
+                    <configuration>
+                        <repoToken>${env.coveralls_repo_token}</repoToken>
+                    </configuration>
+                </plugin>
+            </plugins>
+        </pluginManagement>
+    </build>
 
-  <build>
-  	<pluginManagement>
-  		<plugins>
-  			<plugin>
-  				<groupId>org.apache.maven.plugins</groupId>
-  				<artifactId>maven-compiler-plugin</artifactId>
-  				<version>2.3.2</version>
-  				<configuration>
-  					<source>1.8</source>
-  					<target>1.8</target>
-  				</configuration>
-  			</plugin>
-            <!--
-             Plugin for code coverage, enabling
-             generation of reports on IDE to see percentage
-             of the project's code that is being covered by unit tests.
-            -->
-            <plugin>
-                <groupId>org.jacoco</groupId>
-                <artifactId>jacoco-maven-plugin</artifactId>
-                <version>0.7.6.201602180812</version>
-                <executions>
-                    <execution>
-                        <id>prepare-agent</id>
-                        <goals><goal>prepare-agent</goal></goals>
-                    </execution>
-                    <execution>
-                        <id>report</id>
-                        <phase>prepare-package</phase>
-                        <goals><goal>report</goal></goals>
-                    </execution>
-                </executions>
-            </plugin>
-            <!--    Send code coverage reports to http://coveralls.io,
-            in order to show percentage of code coverage in
-            the README file.
-            Your coverall repoToken have to be defined in
-            an environment variable at you machine
-            in order to enable sending the coverage
-            report to the coveralls server.
-            https://github.com/trautonen/coveralls-maven-plugin
-            -->
-            <plugin>
-                <groupId>org.eluder.coveralls</groupId>
-                <artifactId>coveralls-maven-plugin</artifactId>
-                <version>4.1.0</version>
-                <configuration><repoToken>${env.coveralls_repo_token}</repoToken></configuration>
-            </plugin>
-  		</plugins>
-  	</pluginManagement>
-  </build>
+    <distributionManagement>
+        <repository>
+            <id>localrepo</id>
+            <name>LocalRepository</name>
+            <url>file:///${project.build.directory}/deployment-artifacts</url>
+        </repository>
+    </distributionManagement>
 
-  <distributionManagement>
-	<repository>
-		<id>localrepo</id>
-		<name>LocalRepository</name>
-		<url>file:///${project.build.directory}/deployment-artifacts</url>
-	</repository>
-  </distributionManagement>
-
-  <dependencyManagement>
-  	<dependencies>
-  		<dependency>
-  			<groupId>${project.groupId}</groupId>
-  			<artifactId>modules</artifactId>
-  			<version>${project.version}</version>
-  		</dependency>
-  		<dependency>
-  			<groupId>${project.groupId}</groupId>
-  			<artifactId>cloudsim-plus</artifactId>
-  			<version>${project.version}</version>
-  		</dependency>
-  		<dependency>
-  			<groupId>${project.groupId}</groupId>
-  			<artifactId>cloudsim-plus-examples</artifactId>
-  			<version>${project.version}</version>
-  		</dependency>
-  		<dependency>
-  			<groupId>${project.groupId}</groupId>
-  			<artifactId>documentation</artifactId>
-  			<version>${project.version}</version>
-  		</dependency>
-  		<dependency>
-  			<groupId>${project.groupId}</groupId>
-  			<artifactId>distribution</artifactId>
-  			<version>${project.version}</version>
-  		</dependency>
-  		<dependency>
-  			<groupId>junit</groupId>
-  			<artifactId>junit</artifactId>
-  			<version>4.10</version>
-  			<scope>test</scope>
-  		</dependency>
-  		<!-- extension for easymock in order to provide mock of static methods -->
-		<dependency>
-			<groupId>org.powermock</groupId>
-			<artifactId>powermock-module-junit4</artifactId>
-			<version>1.6.4</version>
-			<scope>test</scope>
-		</dependency>
-		<dependency>
-			<groupId>org.powermock</groupId>
-			<artifactId>powermock-api-easymock</artifactId>
-			<version>1.6.4</version>
-			<scope>test</scope>
-		</dependency>
-		<dependency>
-			<groupId>org.easymock</groupId>
-			<artifactId>easymock</artifactId>
-			<version>3.1</version>
-			<scope>test</scope>
-		</dependency>
-		<dependency>
-			<groupId>org.easymock</groupId>
-			<artifactId>easymockclassextension</artifactId>
-			<version>3.1</version>
-			<scope>test</scope>
-		</dependency>
-  	</dependencies>
-  </dependencyManagement>
+    <dependencyManagement>
+        <dependencies>
+            <dependency>
+                <groupId>${project.groupId}</groupId>
+                <artifactId>cloudsim-plus-modules</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>${project.groupId}</groupId>
+                <artifactId>cloudsim-plus</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>${project.groupId}</groupId>
+                <artifactId>cloudsim-plus-examples</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>${project.groupId}</groupId>
+                <artifactId>documentation</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>${project.groupId}</groupId>
+                <artifactId>distribution</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>junit</groupId>
+                <artifactId>junit</artifactId>
+                <version>4.10</version>
+                <scope>test</scope>
+            </dependency>
+            <!-- extension for easymock in order to provide mock of static methods -->
+            <dependency>
+                <groupId>org.powermock</groupId>
+                <artifactId>powermock-module-junit4</artifactId>
+                <version>1.6.4</version>
+                <scope>test</scope>
+            </dependency>
+            <dependency>
+                <groupId>org.powermock</groupId>
+                <artifactId>powermock-api-easymock</artifactId>
+                <version>1.6.4</version>
+                <scope>test</scope>
+            </dependency>
+            <dependency>
+                <groupId>org.easymock</groupId>
+                <artifactId>easymock</artifactId>
+                <version>3.1</version>
+                <scope>test</scope>
+            </dependency>
+            <dependency>
+                <groupId>org.easymock</groupId>
+                <artifactId>easymockclassextension</artifactId>
+                <version>3.1</version>
+                <scope>test</scope>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
 </project>

@@ -1,14 +1,18 @@
 <?xml version="1.0"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-  <modelVersion>4.0.0</modelVersion>
-  <parent>
-    <artifactId>modules</artifactId>
-    <groupId>org.cloudsimplus</groupId>
-    <version>1.0</version>
-  </parent>
+    <modelVersion>4.0.0</modelVersion>
+    <parent>
+        <artifactId>modules</artifactId>
+        <groupId>org.cloudsimplus</groupId>
+        <version>1.0</version>
+    </parent>
 
-  <artifactId>cloudsim-plus-examples</artifactId>
-  <name>cloudsim-plus-examples</name>
+    <artifactId>cloudsim-plus-examples</artifactId>
+    <name>CloudSim++ Examples</name>
+    <description>
+        Ready-to-run examples of how to use CloudSim++ API.
+        Each Java class with a main method is a different example.
+    </description>
     <build>
         <plugins>
             <plugin>
@@ -23,10 +27,10 @@
         </plugins>
     </build>
     <dependencies>
-  	<dependency>
-  		<groupId>${project.groupId}</groupId>
-  		<artifactId>cloudsim-plus</artifactId>
-  		<version>${project.version}</version>
-  	</dependency>
-  </dependencies>
+        <dependency>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>cloudsim-plus</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+    </dependencies>
 </project>
