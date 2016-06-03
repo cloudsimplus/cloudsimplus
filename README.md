@@ -16,7 +16,6 @@ Considering that you have [git](https://git-scm.com) and [maven](http://maven.ap
 After downloading the project, you have to use a terminal to enter in the project directory. Now, choose one of the ways below to use the project.
 
 ## By means of comnand line (the faster way to see how it works)
-
 There is a  [bash script](script/bootstrap.sh) that you can use to build and run CloudSim++ examples. The script must be run on the project root directory in a Unix-like system such as Linux, FreeBDS and Mac OSX.
 
 To run some example type the command: `sh script/bootstrap.sh ExampleClassName`.
@@ -84,6 +83,12 @@ List<Cloudlet> finishedCloudlets = broker0.getCloudletsFinishedList();
 CloudletsTableBuilderHelper.print(new TextTableBuilder(), finishedCloudlets);
 Log.printFormattedLine("Minimal Example finished!");
 ```
+
+# Documentation
+
+The project documentation originated from CloudSim was entirely updated and extended. 
+You can see the javadoc documentation for classes and their elements directly on your IDE.
+The documentation is also available online at <http://cloudsimplus.org/docs/> 
 
 # Why should I care about this CloudSim fork? I just want to build my simulations. :neutral_face:
 
