@@ -24,7 +24,7 @@ For instance, to run the CloudSimExample1 you can type: `sh script/bootstrap.sh 
 To run an example into a sub-directory, type `sh script/bootstrap.sh sub_directory_name.ExampleClassName`.
 For instance, to run the [workload/SwfWorkloadFormatExample1](modules/cloudsim-plus-examples/src/main/java/org/cloudbus/cloudsim/examples/workload/SwfWorkloadFormatExample1.java) example, type `sh script/bootstrap.sh workload.SwfWorkloadFormatExample1`.
 
-Th script checks if it is required to build the project using maven, that will make sure to download all dependencies. To see what examples are available, just navigate through the [examples directory](modules/cloudsim-plus-examples/src/main/java/org/cloudbus/cloudsim/examples).
+The script checks if it is required to build the project and uses maven in this case, that will make sure to download all dependencies. To see what examples are available, just navigate through the [examples directory](modules/cloudsim-plus-examples/src/main/java/org/cloudbus/cloudsim/examples).
 
 To just build the CloudSim++ and examples packages, execute the script without any parameter.  
  
