@@ -19,10 +19,12 @@ After downloading the project, you have to use a terminal to enter in the projec
 
 There is a  [bash script](script/bootstrap.sh) that you can use to build and run CloudSim++ examples. The script must be run on the project root directory in a Unix-like system such as Linux, FreeBDS and Mac OSX.
 
-To run some example type the command: `sh script/bootstrap.sh full.package.name.ExampleClassName`.
-For instance, to run the CloudSimExample1 you can type: `sh script/bootstrap.sh org.cloudbus.cloudsim.examples.CloudSimExample1`
+To run some example type the command: `sh script/bootstrap.sh ExampleClassName`.
+For instance, to run the CloudSimExample1 you can type: `sh script/bootstrap.sh CloudSimExample1`. 
+To run an example into a sub-directory, type `sh script/bootstrap.sh sub_directory_name.ExampleClassName`.
+For instance, to run the [workload/SwfWorkloadFormatExample1](modules/cloudsim-plus-examples/src/main/java/org/cloudbus/cloudsim/examples/workload/SwfWorkloadFormatExample1.java) example, type `sh script/bootstrap.sh workload.SwfWorkloadFormatExample1`.
 
-This command will check if it is required to build the project first using maven, that will make sure to download all dependencies. To see what examples are available, just navigate through the [examples directory](modules/cloudsim-plus-examples/src/main/java/org/cloudbus/cloudsim/examples).
+Th script checks if it is required to build the project using maven, that will make sure to download all dependencies. To see what examples are available, just navigate through the [examples directory](modules/cloudsim-plus-examples/src/main/java/org/cloudbus/cloudsim/examples).
 
 To just build the CloudSim++ and examples packages, execute the script without any parameter.  
  
