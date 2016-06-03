@@ -8,9 +8,27 @@ It focuses on refactorings to reduce code duplication, increase usage of softwar
 CloudSim++ is developed through a partnership among the [Multimedia Signal Processing (MSP)](http://it.pt/MSP-Cv) of the [Instituto de Telecomunicações (IT)](http://www.it.pt) of Portugal, the [Universidade da Beira Interior (UBI)](http://www.ubi.pt) and the [Instituto Federal de Educação Ciência e Tecnologia do Tocantins (IFTO)](http://www.ifto.edu.br) (Brazil). It is supported by the Portuguese **Fundação para a Ciência e a Tecnologia (FCT)** and by the **Brazilian foundation Coordenação de Aperfeiçoamento de Pessoal de Nível Superior (CAPES)**.
 
 # How to use CloudSim++
-
 CloudSim++ is a Maven project with some modules. The easier way to use the project is relying on some IDE such as NetBeans, Eclipse or IntelliJ IDEA.
-Considering that you have [maven](http://maven.apache.org) and [git](https://git-scm.com) installed on you operating system, below are the steps to start using the project:
+But if you want just take a look of how it works or you are a such terminal guy, the sub-sections below show the instructions.
+
+Considering that you have [git](https://git-scm.com) and [maven](http://maven.apache.org) installed on you operating system, you have to first download the project source by cloning the repositosy using the following command at a terminal `git clone https://github.com/manoelcampos/cloudsim-plus.git` or you can just use the download button at this page. 
+
+After downloading the project, you have to use a terminal to enter in the project directory. Now, choose one of the ways below to use the project.
+
+## By means of comnand line (the faster way to see how it works)
+
+There is a  [bash script](script/bootstrap.sh) that you can use to build and run CloudSim++ examples. The script must be run on the project root directory in a Unix-like system such as Linux, FreeBDS and Mac OSX.
+
+To run some example type the command: `sh script/bootstrap.sh full.package.name.ExampleClassName`.
+For instance, to run the CloudSimExample1 you can type: `sh script/bootstrap.sh org.cloudbus.cloudsim.examples.CloudSimExample1`
+
+This command will check if it is required to build the project first using maven, that will make sure to download all dependencies. To see what examples are available, just navigate through the [examples directory](modules/cloudsim-plus-examples/src/main/java/org/cloudbus/cloudsim/examples).
+
+To just build the CloudSim++ and examples packages, execute the script without any parameter.  
+ 
+## By means of an IDE (the easier way to create your own simulations)
+The easier way to use the project is relying on some IDE such as NetBeans, Eclipse or IntelliJ IDEA.
+Below are the steps to start using the project:
 
 - Using a terminal, clone the project to a folder in your computer: `git clone https://github.com/manoelcampos/cloudsim-plus.git`
 - Open/import the project in your IDE:
