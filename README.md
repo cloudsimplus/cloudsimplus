@@ -274,6 +274,6 @@ The download package contains all the source code, examples, jars, and API html 
 
 This project is licensed under [GNU Lesser GPLv3](http://www.gnu.org/licenses/lgpl-3.0.en.html), as defined in CloudSim 3 release.
 
-# Contribution
+# Contributing
 
 If you desire to contribute to the project, you are welcome. However, make sure to read the [contribution guide](CONTRIBUTING.md) before you start.
