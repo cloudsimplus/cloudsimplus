@@ -133,7 +133,7 @@ public class CloudletSchedulerSpaceShared extends CloudletSchedulerAbstract {
 
         // calculate the expected time for cloudlet completion
         // use the current capacity to estimate the extra amount of
-        // time to file transferring. It must be added to the cloudlet length
+        // time to transfer the cloudlet to the VM. It must be added to the cloudlet length
         double extraSize = getProcessor().getCapacity() * fileTransferTime;
         long length = cloudlet.getCloudletLength();
         length += extraSize;
@@ -146,7 +146,7 @@ public class CloudletSchedulerSpaceShared extends CloudletSchedulerAbstract {
          * the total execution time is other.
          * The length is being increased to include
          * the time the cloudlet spend to be transfered
-         * to the datacenter (see comment above)
+         * to the VM (see comment above)
          */
         cloudlet.setCloudletLength(length);
         return cloudlet.getCloudletLength() / getProcessor().getCapacity();
