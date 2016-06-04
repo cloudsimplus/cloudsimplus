@@ -9,7 +9,7 @@ CloudSim++ is developed through a partnership among the Systems, Security and Im
 
 # How to use CloudSim++
 CloudSim++ is a Maven project with some modules. The easier way to use the project is relying on some IDE such as NetBeans, Eclipse or IntelliJ IDEA.
-But if you want just take a look of how it works or you are a such terminal guy, the sub-sections below show the instructions.
+But if you want just take a look on how it works or you are such a "terminal person", the sub-sections below show the instructions.
 
 Considering that you have [git](https://git-scm.com) and [maven](http://maven.apache.org) installed on you operating system, you have to first download the project source by cloning the repositosy using the following command at a terminal `git clone https://github.com/manoelcampos/cloudsim-plus.git` or you can just use the download button at this page. 
 
