@@ -18,4 +18,4 @@ To report an issue or feature request, you have to provide the information below
 
 ## An example scenario where this feature should be used
 
-## A brief explanaitain of why you think this feature is useful
+## A brief explanation of why you think this feature is useful
