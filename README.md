@@ -88,7 +88,9 @@ Log.printFormattedLine("Minimal Example finished!");
 
 The project documentation originated from CloudSim was entirely updated and extended. 
 You can see the javadoc documentation for classes and their elements directly on your IDE.
-The documentation is also available online at <http://cloudsimplus.org/docs/> 
+
+The documentation is available online at <http://cloudsimplus.org/docs/>.
+There is also a [Wiki page](wiki) with additional information such as a FAQ list.  
 
 # Why should I care about this CloudSim fork? I just want to build my simulations. :neutral_face:
 
