@@ -90,7 +90,7 @@ The project documentation originated from CloudSim was entirely updated and exte
 You can see the javadoc documentation for classes and their elements directly on your IDE.
 
 The documentation is available online at <http://cloudsimplus.org/docs/>.
-There is also a [Wiki page](wiki) with additional information such as a FAQ list.  
+There is also a [Wiki page](https://github.com/manoelcampos/cloudsim-plus/wiki) with additional information such as a FAQ list.  
 
 # Why should I care about this CloudSim fork? I just want to build my simulations. :neutral_face:
 
