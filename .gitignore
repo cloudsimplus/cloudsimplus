@@ -1,7 +1,6 @@
 .DS_Store
-/modules/cloudsim-plus/target/
-/modules/cloudsim-plus-examples/target/
-/documentation/target/
-/modules/cloudsim-plus/nbproject/
+/cloudsim-plus/target/
+/cloudsim-plus-examples/target/
+/cloudsim-plus/nbproject/
 /distribution/target/
 /target/

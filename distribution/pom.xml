@@ -75,11 +75,5 @@
             <type>jar</type>
             <classifier>sources</classifier>
         </dependency>
-        <dependency>
-            <groupId>${project.groupId}</groupId>
-            <artifactId>documentation</artifactId>
-            <version>${project.version}</version>
-            <type>jar</type>
-        </dependency>
     </dependencies>
 </project>
