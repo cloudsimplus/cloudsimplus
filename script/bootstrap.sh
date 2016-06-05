@@ -5,8 +5,8 @@ echo "It also allows you to run any CloudSim++ examples when you give the full n
 echo -e "For instance, to run the CloudSimExample1 you can type: $0 org.cloudbus.cloudsim.examples.CloudSimExample1\n"
 
 VERSION="1.0" 
-CLOUDSIMPLUS="modules/cloudsim-plus/target/cloudsim-plus-$VERSION.jar"
-EXAMPLES="modules/cloudsim-plus-examples/target/cloudsim-plus-examples-$VERSION.jar"
+CLOUDSIMPLUS="cloudsim-plus/target/cloudsim-plus-$VERSION.jar"
+EXAMPLES="cloudsim-plus-examples/target/cloudsim-plus-examples-$VERSION.jar"
 EXAMPLES_ROOT_PACKAGE="org.cloudbus.cloudsim.examples."
 
 if [ "$#" -eq 0 ] || [ ! -e $CLOUDSIMPLUS ] || [ ! -e $EXAMPLES ]; then
