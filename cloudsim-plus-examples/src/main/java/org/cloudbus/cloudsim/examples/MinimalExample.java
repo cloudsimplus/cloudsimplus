@@ -62,7 +62,8 @@ public class MinimalExample {
         try {
             this.vmList = new ArrayList<>();
             this.cloudletList = new ArrayList<>();
-            int numberOfCloudUsers = 1; //number of cloud customers
+            //Number of cloud customers
+            int numberOfCloudUsers = 1; 
             boolean traceEvents = false;
             
             CloudSim.init(numberOfCloudUsers, Calendar.getInstance(), traceEvents);
@@ -77,17 +78,18 @@ public class MinimalExample {
             this.vmList.add(vm0);
             broker0.submitVmList(vmList);
 
+            /*Creates a cloudlet that represents an application to be run inside a VM.*/
             Cloudlet cloudlet0 = createCloudlet(broker0, vm0);
             this.cloudletList.add(cloudlet0);
             broker0.submitCloudletList(cloudletList);
 
-            //Starts the simulation and waits all tasks to be executed
+            /*Starts the simulation and waits all cloudlets to be executed*/
             CloudSim.startSimulation();
             
             //Finishes the simulation
             CloudSim.stopSimulation();
             
-            /*Prints results when simulation is over
+            /*Prints results when the simulation is over
             (you can use your own code here to print what you want from this cloudlet list)*/
             List<Cloudlet> finishedCloudlets = broker0.getCloudletsFinishedList();
             CloudletsTableBuilderHelper.print(new TextTableBuilder(), finishedCloudlets);
