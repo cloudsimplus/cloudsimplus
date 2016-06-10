@@ -413,6 +413,9 @@ public class VmSimple implements Vm {
      * @param cloudletScheduler the new cloudlet scheduler
      */
     protected final void setCloudletScheduler(CloudletScheduler cloudletScheduler) {
+        if(cloudletScheduler == null)
+            cloudletScheduler = CloudletScheduler.NULL;
+        
         cloudletScheduler.setVm(this);
         this.cloudletScheduler = cloudletScheduler;
     }

@@ -49,6 +49,9 @@ public class PowerVmListTest {
                                     expectedCpuUtilizationPercentageForVm(
                                             i, ascendingCpuUtilization))
                             .anyTimes();
+                    list[i].setVm(EasyMock.anyObject());
+                    EasyMock.expectLastCall().once();
+                    
                     EasyMock.replay(list[i]);
                 });
         
@@ -66,13 +69,14 @@ public class PowerVmListTest {
     private List<PowerVm> createPowerVmList(boolean ascendingCpuUtilization) {
         CloudletScheduler cloudletSchedulerList[] = 
                 createCloudletSchedulerMocks(ascendingCpuUtilization);
-        final List<PowerVm> l = new ArrayList<>();
+        
+        final List<PowerVm> list = new ArrayList<>();
         IntStream.range(0, cloudletSchedulerList.length).forEach(
-                i -> l.add(
+                i -> list.add(
                     new PowerVm(i, 
                         USER_ID, MIPS, PES, RAM, BW, STORAGE, 0, 
                         VMM, cloudletSchedulerList[i], 1)));
-        return l;
+        return list;
     }
 
     @Test

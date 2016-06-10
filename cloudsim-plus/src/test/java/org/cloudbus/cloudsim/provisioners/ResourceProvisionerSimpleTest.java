@@ -17,6 +17,7 @@ import org.cloudbus.cloudsim.VmSimple;
 import org.junit.Before;
 import org.junit.Test;
 import org.cloudbus.cloudsim.resources.ResourceManageable;
+import org.cloudbus.cloudsim.schedulers.CloudletScheduler;
 
 /**
  * @author		Anton Beloglazov
@@ -83,7 +84,9 @@ public class ResourceProvisionerSimpleTest {
      * @return 
      */
     private static VmSimple createVm(final int vmId, Integer capacity) {
-        return new VmSimple(vmId, 1, capacity, 1, capacity, capacity, capacity, null, null);
+        return new VmSimple(
+                vmId, 1, capacity, 1, capacity, capacity, 
+                capacity, "", CloudletScheduler.NULL);
     }
 
     @Test
