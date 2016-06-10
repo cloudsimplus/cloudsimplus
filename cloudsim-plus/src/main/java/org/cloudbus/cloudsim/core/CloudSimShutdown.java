@@ -20,7 +20,11 @@ package org.cloudbus.cloudsim.core;
  */
 public class CloudSimShutdown extends SimEntity {
 
-	/** The total number of cloud users. */
+	/** The total number of cloud users. 
+         * @todo how the dynamic creation of brokers impact this attribute
+         * that is also defined in CloudSim class?
+         * How is it in fact used?
+         */
 	private int numUser;
 
 	/**

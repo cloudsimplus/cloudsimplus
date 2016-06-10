@@ -155,7 +155,7 @@ public class CloudSim {
      * @param cal starting time for this simulation. If it is <tt>null</tt>,
      * then the time will be taken from <tt>Calendar.getInstance()</tt>
      * @param traceFlag <tt>true</tt> if CloudSim trace need to be written
-     * @see gridsim.CloudSimShutdown
+     * @see CloudSimShutdown
      * @see CloudInformationService.CloudInformationService
      * @pre numUser >= 0
      * @post $none
@@ -176,6 +176,32 @@ public class CloudSim {
             Log.printLine("CloudSim.init(): The simulation has been terminated due to an unexpected error");
             Log.printLine(e.getMessage());
         }
+    }
+    
+    /**
+     * Initialises CloudSim parameters. This method should be called before
+     * creating any entities.
+     * <p>
+     * Inside this method, it will create the following CloudSim entities:
+     * <ul>
+     * <li>CloudInformationService.
+     * <li>CloudSimShutdown
+     * </ul>
+     * <p>
+     *
+     * @param numUser the number of User Entities created. This parameters
+     * indicates that {@link org.cloudbus.cloudsim.core.CloudSimShutdown} first
+     * waits for all user entities's END_OF_SIMULATION signal before issuing
+     * terminate signal to other entities
+     * @param cal starting time for this simulation. If it is <tt>null</tt>,
+     * then the time will be taken from <tt>Calendar.getInstance()</tt>
+     * @see CloudSimShutdown
+     * @see CloudInformationService.CloudInformationService
+     * @pre numUser >= 0
+     * @post $none
+     */
+    public static void init(int numUser, Calendar cal){
+        init(numUser, cal, false);
     }
 
     /**

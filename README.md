@@ -39,7 +39,6 @@ Accordingly, you can just check the gif below or see the complete instructions i
 
 ![Download and running CloudSim++ Example using NetBeans](https://github.com/manoelcampos/cloudsim-plus/raw/master/cloudsim-plus-netbeans.gif)
 
-You can check a high quality version of this gif [here](https://github.com/manoelcampos/cloudsim-plus/raw/master/cloudsim-plus-netbeans-hq.gif).
 But if you are such a "terminal person", the sub-section below shows the instructions.
 
 ## By means of command line (if you don't like or don't want to use an IDE)
