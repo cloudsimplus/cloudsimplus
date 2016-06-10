@@ -139,25 +139,13 @@ public class DatacenterBrokerSimple extends SimEntity implements DatacenterBroke
     public void submitCloudletList(List<? extends Cloudlet> list) {
         getCloudletsWaitingList().addAll(list);
     }
+    
+    @Override
+    public void submitCloudletList(List<? extends Cloudlet> list, double submissionDelay) {
+        list.forEach(cloudlet -> cloudlet.setSubmissionDelay(submissionDelay));
+        submitCloudletList(list);
+    }    
 
-    /**
-     * Specifies that a given cloudlet must run in a specific virtual machine.
-     *
-     * @param cloudletId ID of the cloudlet being bount to a vm
-     * @param vmId the vm id
-     * @pre cloudletId > 0
-     * @pre id > 0
-     * @post $none
-     * @todo @author manoelcampos This method would receive a Cloudlet object
-     * because it is just setting the vmId cloudlet attribute. When the method
-     * is called prior to call
-     * {@link DatacenterBroker#submitCloudletList(java.util.List)}, it tries to
-     * locate the cloudlet in the submitted list and, when it doesn't exist yet,
-     * it is thrown a NullPointerException. At leat, an overloaded version of
-     * the method would be created and this one would try to find the cloudlet
-     * and, when it is not found, thrown an specific exception asking if the
-     * cloudlet already was submitted.
-     */
     @Override
     public void bindCloudletToVm(int cloudletId, int vmId) {
         CloudletList.getById(getCloudletsWaitingList(), cloudletId).setVmId(vmId);
@@ -418,7 +406,7 @@ public class DatacenterBrokerSimple extends SimEntity implements DatacenterBroke
                     cloudlet.getId(), vm.getId());
 
             cloudlet.setVmId(vm.getId());
-            sendNow(getVmsToDatacentersMap().get(vm.getId()), CloudSimTags.CLOUDLET_SUBMIT, cloudlet);
+            send(getVmsToDatacentersMap().get(vm.getId()), cloudlet.getSubmissionDelay(), CloudSimTags.CLOUDLET_SUBMIT, cloudlet);
             cloudletsCreated++;
             vmIndex = selectNextCreatedVmToHostCloudlet(vmIndex);
             successfullySubmitted.add(cloudlet);

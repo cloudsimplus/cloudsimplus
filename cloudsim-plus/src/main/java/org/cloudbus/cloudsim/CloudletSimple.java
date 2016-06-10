@@ -16,7 +16,6 @@ import java.util.List;
 import org.cloudbus.cloudsim.core.CloudSim;
 import org.cloudbus.cloudsim.listeners.VmToCloudletEventInfo;
 import org.cloudbus.cloudsim.listeners.EventListener;
-import org.cloudbus.cloudsim.lists.VmList;
 
 /**
  * Cloudlet implements the basic features of an application/job/task to be executed 
@@ -27,24 +26,6 @@ import org.cloudbus.cloudsim.lists.VmList;
  * @author Anton Beloglazov
  * @since CloudSim Toolkit 1.0
  * @see DatacenterBroker
- * 
- * 
- * @todo @author manoelcampos Create a submissionDelay attribute (with default value 0)
- * to define a delay to submit cloudlets to be executed.
- * By this way, the {@link DatacenterBroker#submitCloudlets()} could
- * set the given delay when submit each cloudlet. That feature
- * will allow to simulate dynamic arrival of cloudlets. All the cloudlets
- * will have to be instantiated prior to start the simulation, as it is
- * already required. However, it will be created into a VM just after the specified delay.
- * This proposal has to be assessed because in fact, the number of submitted cloudlets
- * will be set as the total of cloudlets (instantly submitted or not).
- * To best scenario should be to only submit the cloudlet when the delay
- * has expired. Maybe it would be created a new event to be processed
- * in the {@link DatacenterBroker#processEvent(org.cloudbus.cloudsim.core.SimEvent) }
- * to just create cloudlets in the existing created Vms.
- * See these links: 
- * {@link https://groups.google.com/forum/#!searchin/cloudsim/cloudlet$20dynamic$20arrival/cloudsim/Enp93U5X7ik/7DcnMRi0i6AJ}
- * {@link https://groups.google.com/forum/#!searchin/cloudsim/cloudlet$20dynamic/cloudsim/dcgACMYHEAE/DDkzlI15wuwJ}
  * 
  * @todo @author manoelcampos The cloudlet class doesn't specify RAM requirements,
  * just CPU. See {@link https://groups.google.com/d/msg/cloudsim/FAldVBoRyq8/Ijkv1Ti9CgAJ}
@@ -153,6 +134,11 @@ public class CloudletSimple implements Cloudlet {
     
     /**@see #getOnUpdateCloudletProcessingListener() () */
     private EventListener<VmToCloudletEventInfo> onUpdateCloudletProcessingListener = EventListener.NULL;
+    
+    /**
+     * @see #getSubmissionDelay() 
+     */
+    private double submissionDelay;
 
     /**
      * Instantiates a new Cloudlet object. The Cloudlet length, input and output
@@ -211,6 +197,7 @@ public class CloudletSimple implements Cloudlet {
         vmId = NOT_ASSIGNED;
         setAccumulatedBwCost(0.0);
         setCostPerBw(0.0);
+        setSubmissionDelay(0.0);
 
         requiredFiles = new LinkedList<>();
 
@@ -891,6 +878,16 @@ public class CloudletSimple implements Cloudlet {
     @Override
     public void setOnUpdateCloudletProcessingListener(EventListener<VmToCloudletEventInfo> onUpdateCloudletProcessingListener) {
         this.onUpdateCloudletProcessingListener = onUpdateCloudletProcessingListener;
+    }
+
+    @Override
+    public double getSubmissionDelay() {
+       return this.submissionDelay;
+    }
+
+    @Override
+    public final void setSubmissionDelay(double submissionDelay) {
+        this.submissionDelay = submissionDelay;
     }
 
     /**

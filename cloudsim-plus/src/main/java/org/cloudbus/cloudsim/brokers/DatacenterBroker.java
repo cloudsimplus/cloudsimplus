@@ -74,17 +74,35 @@ public interface DatacenterBroker {
 
     /**
      * Sends a list of cloudlets to the broker for further 
-     * creation of each one in some Vm.
-     * The cloudlets will be added to the {@link #getCloudletsWaitingList()}.
+     * creation of each one in some Vm, following the submission delay
+     * specified in each cloudlet (if any).
+     * All cloudlets will be added to the {@link #getCloudletsWaitingList()}.
      *
      * @param list the list
      * @pre list !=null
      * @post $none
+     * @see #submitCloudletList(java.util.List, double) 
      */
     void submitCloudletList(List<? extends Cloudlet>  list);
+    
+    /**
+     * Sends a list of cloudlets to the broker that will 
+     * be created into some Vm after a given delay.
+     * All cloudlets will be added to the {@link #getCloudletsWaitingList()},
+     * setting their submission delay to the specified value.
+     *
+     * @param list the list
+     * @param submissionDelay the delay the broker has to include when submitting the Cloudlets
+     * @pre list !=null
+     * @post $none
+     * @see #submitCloudletList(java.util.List) 
+     * @see Cloudlet#getSubmissionDelay() 
+     */
+    void submitCloudletList(List<? extends Cloudlet>  list, double submissionDelay);
+    
 
     /**
-     * This method is used to send to the broker the list with virtual machines that must be
+     * Sends to the broker the list with virtual machines that must be
      * created.
      *
      * @param list the list

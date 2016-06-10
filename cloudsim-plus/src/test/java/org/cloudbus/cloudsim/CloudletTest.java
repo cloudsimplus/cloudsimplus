@@ -76,6 +76,9 @@ public class CloudletTest {
         Cloudlet.NULL.setUserId(10);
         assertEquals(0, Cloudlet.NULL.getUserId(), 0);
         
+        Cloudlet.NULL.setSubmissionDelay(10);
+        assertEquals(0, Cloudlet.NULL.getSubmissionDelay(), 0);
+        
         assertEquals(0, Cloudlet.NULL.getDatacenterId(), 0);
         assertEquals(0, Cloudlet.NULL.getCostPerSec(), 0);
         

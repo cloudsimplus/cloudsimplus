@@ -18,6 +18,7 @@ Lists the main changes in the project.
 - Included new listener onUpdateCloudletProcessingListener for Cloudlet, that gets notified when 
   the execution of the cloudlet inside a Vm is updated. A new example of this feature was introduced in the  
   [listeners](cloudsim-plus-examples/src/main/java/org/cloudbus/cloudsim/examples/listeners/) example package.
+- Delay the submission of cloudlets by a DatacenterBroker, closing the feature request #11
 
 ## [4.0.2] - 2016-04-28 
 

@@ -287,6 +287,8 @@ Some totally new features were introduced in CloudSim++:
   is the start point to access all the introduced builders. 
   New examples were not included yet, but the [Integration Tests package](/cloudsim-plus/src/test/java/org/cloudbus/cloudsim/IntegrationTests/) 
   makes intensive use of such a new feature.
+- **Delay the submission of cloudlets to VM**, simulating the dynamic arrival of cloudlets 
+  inside the Cloud provider infrastructure. See the issue #11 for more details.  
 
 ## New examples for old and new features
 

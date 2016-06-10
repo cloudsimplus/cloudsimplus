@@ -1,5 +1,6 @@
 package org.cloudbus.cloudsim;
 
+import org.cloudbus.cloudsim.brokers.DatacenterBroker;
 import org.cloudbus.cloudsim.core.Identificable;
 import org.cloudbus.cloudsim.utilizationmodels.UtilizationModel;
 import java.util.Collections;
@@ -724,6 +725,24 @@ public interface Cloudlet extends Identificable {
      * @post $none
      */
     void setExecStartTime(final double clockTime);
+    
+    /**
+     * Gets the delay (in seconds) that a {@link DatacenterBroker} has to include
+     * when submitting the Cloudlet, in order that it will be assigned
+     * to a VM only after this delay has expired.
+     * 
+     * @return the submission delay
+     */
+    double getSubmissionDelay();
+    
+    /**
+     * Sets the delay (in seconds) that a {@link DatacenterBroker} has to include
+     * when submitting the Cloudlet, in order that it will be assigned
+     * to a VM only after this delay has expired.
+     * 
+     * @param submissionDelay the new submission delay
+     */
+    void setSubmissionDelay(double submissionDelay);
 
     /**
      * Gets the listener object that will be notified when a cloudlet finishes 
@@ -805,6 +824,8 @@ public interface Cloudlet extends Identificable {
       @Override public void setOnCloudletFinishEventListener(EventListener<VmToCloudletEventInfo> onCloudletFinishEventListener) {}      
       @Override public EventListener<VmToCloudletEventInfo> getOnUpdateCloudletProcessingListener() { return EventListener.NULL; }
       @Override public void setOnUpdateCloudletProcessingListener(EventListener<VmToCloudletEventInfo> onUpdateCloudletProcessingListener) {}
+      @Override public double getSubmissionDelay() { return 0; }
+      @Override public void setSubmissionDelay(double submissionDelay) {}
 
       /**
        * @todo @author manoelcampos These methods shouldn't be public,
