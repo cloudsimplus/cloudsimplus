@@ -35,7 +35,7 @@ import org.cloudbus.cloudsim.VmSimple;
 import org.cloudbus.cloudsim.allocationpolicies.VmAllocationPolicySimple;
 import org.cloudbus.cloudsim.core.CloudSim;
 import org.cloudbus.cloudsim.listeners.EventListener;
-import org.cloudbus.cloudsim.listeners.VmInsideHostEventInfo;
+import org.cloudbus.cloudsim.listeners.HostToVmEventInfo;
 import org.cloudbus.cloudsim.provisioners.PeProvisionerSimple;
 import org.cloudbus.cloudsim.resources.Bandwidth;
 import org.cloudbus.cloudsim.provisioners.ResourceProvisionerSimple;
@@ -102,7 +102,7 @@ public class VmListenersExample3_DynamicVmCreation {
      * a host is deallocated for a VM. The same listener is used for all created VMs.
      * @see #createVmListener() 
      */
-    private EventListener<VmInsideHostEventInfo> onHostDeallocationListener;
+    private EventListener<HostToVmEventInfo> onHostDeallocationListener;
     
     /**
      * Starts the example execution, calling the class constructor\
@@ -156,9 +156,9 @@ public class VmListenersExample3_DynamicVmCreation {
      * @see #createVm(int) 
      */
     private void createVmListener() {
-        this.onHostDeallocationListener = new EventListener<VmInsideHostEventInfo>() {
+        this.onHostDeallocationListener = new EventListener<HostToVmEventInfo>() {
             @Override
-            public void update(VmInsideHostEventInfo evt) {
+            public void update(HostToVmEventInfo evt) {
                 numberOfFinishedVms++;
                 Log.printFormatted(
                         "\t#EventListener: Vm %d finished running all its cloudlets at time %.0f. ",

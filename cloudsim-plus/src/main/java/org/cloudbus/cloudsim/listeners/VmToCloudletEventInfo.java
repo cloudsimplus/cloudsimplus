@@ -5,8 +5,9 @@ import org.cloudbus.cloudsim.Vm;
 
 /**
  * An {@link EventInfo} class that stores data to be passed
- * to {@link EventListener} objects that are registered to be notified
+ * to Cloudlet's {@link EventListener} objects that are registered to be notified
  * about events of a Cloudlet that happened inside a given Vm.
+ * So it represents the data of the notification passed from a Vm to a Cloudlet.
  * 
  * This class can be used 
  * to notify observers, for instance, when a Cloudlet finishes executing .
@@ -14,14 +15,14 @@ import org.cloudbus.cloudsim.Vm;
  * @see Cloudlet#getOnCloudletFinishEventListener() 
  * @author Manoel Campos da Silva Filho
  */
-public class CloudletInsideVmEventInfo extends CloudletEventInfoSimple implements  VmEventInfo {
+public class VmToCloudletEventInfo extends CloudletEventInfoSimple implements  VmEventInfo {
     private Vm vm;
 
-    public CloudletInsideVmEventInfo(Vm vm, Cloudlet cloudlet) {
+    public VmToCloudletEventInfo(Vm vm, Cloudlet cloudlet) {
         this(USE_CURRENT_SIMULATION_TIME, vm, cloudlet);
     }
 
-    public CloudletInsideVmEventInfo(double time, Vm vm, Cloudlet cloudlet) {
+    public VmToCloudletEventInfo(double time, Vm vm, Cloudlet cloudlet) {
         super(time, cloudlet);
         this.vm = vm;
     }

@@ -19,7 +19,7 @@ import java.util.LinkedList;
 import java.util.List;
 import org.cloudbus.cloudsim.core.CloudSim;
 import org.cloudbus.cloudsim.listeners.EventListener;
-import org.cloudbus.cloudsim.listeners.CloudletInsideVmEventInfo;
+import org.cloudbus.cloudsim.listeners.VmToCloudletEventInfo;
 import org.easymock.EasyMock;
 import org.junit.Assert;
 
@@ -78,7 +78,7 @@ public class CloudletSimpleTest {
     public void testSetOnCloudletFinishEventListener() {
         cloudlet.setOnCloudletFinishEventListener(null);
         assertEquals(EventListener.NULL, cloudlet.getOnCloudletFinishEventListener());
-        EventListener<CloudletInsideVmEventInfo> listener = (evt) -> {};
+        EventListener<VmToCloudletEventInfo> listener = (evt) -> {};
         cloudlet.setOnCloudletFinishEventListener(listener);
         assertEquals(listener, cloudlet.getOnCloudletFinishEventListener());
     }

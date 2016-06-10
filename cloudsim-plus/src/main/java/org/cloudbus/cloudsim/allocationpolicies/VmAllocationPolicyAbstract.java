@@ -12,7 +12,7 @@ import java.util.Map;
 import org.cloudbus.cloudsim.Host;
 import org.cloudbus.cloudsim.Vm;
 import org.cloudbus.cloudsim.core.CloudSim;
-import org.cloudbus.cloudsim.listeners.VmInsideHostEventInfo;
+import org.cloudbus.cloudsim.listeners.HostToVmEventInfo;
 
 /**
  * An abstract class that represents the policy
@@ -99,7 +99,7 @@ public abstract class VmAllocationPolicyAbstract implements VmAllocationPolicy {
     protected void mapVmToPm(Vm vm, Host host) {
         // if vm were succesfully created in the host
         getVmTable().put(vm.getUid(), host);
-        VmInsideHostEventInfo info = new VmInsideHostEventInfo(host, vm);
+        HostToVmEventInfo info = new HostToVmEventInfo(host, vm);
         vm.getOnHostAllocationListener().update(info);
     }
 
@@ -113,7 +113,7 @@ public abstract class VmAllocationPolicyAbstract implements VmAllocationPolicy {
      */
     protected Host unmapVmFromPm(Vm vm) {
         final Host host = getVmTable().remove(vm.getUid());
-        VmInsideHostEventInfo info = new VmInsideHostEventInfo(host, vm);
+        HostToVmEventInfo info = new HostToVmEventInfo(host, vm);
         vm.getOnHostDeallocationListener().update(info);
         return host;
     }

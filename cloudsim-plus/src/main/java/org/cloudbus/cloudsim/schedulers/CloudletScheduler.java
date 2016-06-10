@@ -5,6 +5,7 @@ import java.util.Collections;
 import java.util.List;
 import org.cloudbus.cloudsim.Cloudlet;
 import org.cloudbus.cloudsim.ResCloudlet;
+import org.cloudbus.cloudsim.Vm;
 
 /**
  * An interface to be implemented by each class that provides a policy 
@@ -272,6 +273,27 @@ public interface CloudletScheduler extends Serializable {
     double updateVmProcessing(double currentTime, List<Double> mipsShare);
     
     /**
+     * Gets the Vm that uses the scheduler.
+     * @return 
+     */
+    Vm getVm();
+
+    /**
+     * Sets the Vm that will use the scheduler.
+     * @param vm 
+     */
+    void setVm(Vm vm) ;
+    
+    /**
+     * Updates the processing of a specific cloudlet of the Vm using this scheduler.
+     * @param rcl The cloudlet to be its processing updated
+     * @param currentTime current simulation time
+     * 
+     * @see #updateCloudletsProcessing(double, org.cloudbus.cloudsim.resources.Processor) 
+     */
+    void updateCloudletProcessing(ResCloudlet rcl, double currentTime);    
+    
+    /**
      * A property that implements the Null Object Design Pattern for {@link CloudletScheduler}
      * objects.
      */
@@ -302,5 +324,8 @@ public interface CloudletScheduler extends Serializable {
         @Override public Cloudlet migrateCloudlet() { return Cloudlet.NULL; }
         @Override public int runningCloudletsNumber() { return 0; }
         @Override public double updateVmProcessing(double currentTime, List<Double> mipsShare) { return 0.0; }
+        @Override public Vm getVm() { return Vm.NULL; }
+        @Override public void setVm(Vm vm) {}
+        @Override public void updateCloudletProcessing(ResCloudlet rcl, double currentTime) {}
     };
 }

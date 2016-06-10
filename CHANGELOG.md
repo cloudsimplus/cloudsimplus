@@ -6,7 +6,7 @@ Lists the main changes in the project.
 
 ### Added
 
-- [Examples](/cloudsim-plus-examples/src/main/java/org/cloudbus/cloudsim/examples/listeners/) using the new listener features of Vm and Cloudlet classes. 
+- [Examples](cloudsim-plus-examples/src/main/java/org/cloudbus/cloudsim/examples/listeners/) using the new listener features of Vm and Cloudlet classes. 
 - Examples showing how to create listeners objects to be notified when a host is allocated to a VM, when a host is desallocated for a VM
   (that can mean the VM finished executing or was migrated), when the placement of a VM fails due to lack of a suitable host.
 - Examples showing how to reuse the same listener objects to several VMs. 
@@ -14,6 +14,10 @@ Lists the main changes in the project.
   allowing the sequential execution of VMs into a host that just have resources for a VM a time. 
   The use of listeners simplify the dynamic creation of VMs and allows the code to be clear
   and direct, without recurring to threads and sleep tricks. 
+- Converted the relationship between Vm and CloudletScheduler to a bi-directional one (not CloudletScheduler has access to Vm).
+- Included new listener onUpdateCloudletProcessingListener for Cloudlet, that gets notified when 
+  the execution of the cloudlet inside a Vm is updated. A new example of this feature was introduced in the  
+  [listeners](cloudsim-plus-examples/src/main/java/org/cloudbus/cloudsim/examples/listeners/) example package.
 
 ## [4.0.2] - 2016-04-28 
 

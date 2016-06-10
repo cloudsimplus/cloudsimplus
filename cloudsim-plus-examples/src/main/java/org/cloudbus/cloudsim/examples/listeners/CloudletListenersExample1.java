@@ -35,7 +35,7 @@ import org.cloudbus.cloudsim.VmSimple;
 import org.cloudbus.cloudsim.allocationpolicies.VmAllocationPolicySimple;
 import org.cloudbus.cloudsim.schedulers.VmSchedulerTimeShared;
 import org.cloudbus.cloudsim.core.CloudSim;
-import org.cloudbus.cloudsim.listeners.CloudletInsideVmEventInfo;
+import org.cloudbus.cloudsim.listeners.VmToCloudletEventInfo;
 import org.cloudbus.cloudsim.listeners.EventListener;
 import org.cloudbus.cloudsim.provisioners.PeProvisionerSimple;
 import org.cloudbus.cloudsim.resources.Bandwidth;
@@ -89,7 +89,7 @@ public class CloudletListenersExample1 {
      * 
      * @see #createCloudletListener() 
      */
-    private EventListener<CloudletInsideVmEventInfo> onCloudletFinishListener;
+    private EventListener<VmToCloudletEventInfo> onCloudletFinishListener;
     
     /**
      * Starts the example execution, calling the class constructor\
@@ -135,9 +135,9 @@ public class CloudletListenersExample1 {
      * @see #createCloudlet(int, org.cloudbus.cloudsim.Vm, long) 
      */
     private void createCloudletListener() {
-        this.onCloudletFinishListener = new EventListener<CloudletInsideVmEventInfo>() {
+        this.onCloudletFinishListener = new EventListener<VmToCloudletEventInfo>() {
             @Override
-            public void update(CloudletInsideVmEventInfo evt) {
+            public void update(VmToCloudletEventInfo evt) {
                 Log.printFormattedLine(
                         "\n\t#EventListener: Cloudlet %d finished running at Vm %d at time %.2f\n",
                         evt.getCloudlet().getId(), evt.getVm().getId(), evt.getTime());                

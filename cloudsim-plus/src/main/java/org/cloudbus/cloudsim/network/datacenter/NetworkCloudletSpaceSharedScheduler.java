@@ -71,7 +71,7 @@ public class NetworkCloudletSpaceSharedScheduler extends CloudletSchedulerSpaceS
     }
 
     @Override
-    protected void updateCloudletProcessing(ResCloudlet rcl, double currentTime, Processor p) {
+    public void updateCloudletProcessing(ResCloudlet rcl, double currentTime) {
         NetworkCloudlet netcl = (NetworkCloudlet) rcl.getCloudlet();
 
         if (netcl.isFinished()) {
@@ -90,8 +90,8 @@ public class NetworkCloudletSpaceSharedScheduler extends CloudletSchedulerSpaceS
             startNextTask(netcl);
         }
         else if (netcl.getCurrentTask() instanceof CloudletExecutionTask) {
-            super.updateCloudletProcessing(rcl, currentTime, p);
-            updateExecutionTask(rcl, currentTime, p);
+            super.updateCloudletProcessing(rcl, currentTime);
+            updateExecutionTask(rcl, currentTime);
         }
         else if (netcl.getCurrentTask() instanceof CloudletSendTask) {
             addPacketsToBeSent(netcl);
@@ -156,7 +156,7 @@ public class NetworkCloudletSpaceSharedScheduler extends CloudletSchedulerSpaceS
                 .collect(Collectors.toList());
     }
 
-    protected void updateExecutionTask(ResCloudlet rcl, double currentTime, Processor p) {
+    protected void updateExecutionTask(ResCloudlet rcl, double currentTime) {
         NetworkCloudlet netcl = (NetworkCloudlet)rcl.getCloudlet();
         if(!(netcl.getCurrentTask() instanceof CloudletExecutionTask))
             throw new RuntimeException(

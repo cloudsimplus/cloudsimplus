@@ -5,8 +5,9 @@ import org.cloudbus.cloudsim.Vm;
 
 /**
  * An {@link EventInfo} class that stores data to be passed
- * to {@link EventListener} objects that are registered to be notified
+ * to Vm's {@link EventListener} objects that are registered to be notified
  * about events of a Vm that happened inside a given Host.
+ * So it represents the data of the notification passed from a Host to a Vm.
  * 
  * This class can be used 
  * to notify observers when a Host is {@link Vm#getOnHostAllocationListener() allocated} or 
@@ -19,7 +20,7 @@ import org.cloudbus.cloudsim.Vm;
  * @see Vm#getOnUpdateVmProcessingListener() 
  * @author Manoel Campos da Silva Filho
  */
-public class VmInsideHostEventInfo extends VmEventInfoSimple implements HostEventInfo {
+public class HostToVmEventInfo extends VmEventInfoSimple implements HostEventInfo {
     private Host host;
 
     /**
@@ -30,11 +31,11 @@ public class VmInsideHostEventInfo extends VmEventInfoSimple implements HostEven
      * @param vm
      * @see CloudSim#clock() 
      */
-    public VmInsideHostEventInfo(Host host, Vm vm) {
+    public HostToVmEventInfo(Host host, Vm vm) {
         this(USE_CURRENT_SIMULATION_TIME, host, vm);
     }    
     
-    public VmInsideHostEventInfo(double time, Host host, Vm vm) {
+    public HostToVmEventInfo(double time, Host host, Vm vm) {
         super(time, vm);
         setHost(host);
     }

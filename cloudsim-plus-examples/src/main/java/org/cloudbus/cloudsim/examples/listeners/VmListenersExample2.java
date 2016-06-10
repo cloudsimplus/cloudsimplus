@@ -37,7 +37,7 @@ import org.cloudbus.cloudsim.allocationpolicies.VmAllocationPolicySimple;
 import org.cloudbus.cloudsim.schedulers.VmSchedulerTimeShared;
 import org.cloudbus.cloudsim.core.CloudSim;
 import org.cloudbus.cloudsim.listeners.EventListener;
-import org.cloudbus.cloudsim.listeners.VmInsideHostEventInfo;
+import org.cloudbus.cloudsim.listeners.HostToVmEventInfo;
 import org.cloudbus.cloudsim.provisioners.PeProvisionerSimple;
 import org.cloudbus.cloudsim.resources.Bandwidth;
 import org.cloudbus.cloudsim.provisioners.ResourceProvisionerSimple;
@@ -92,14 +92,14 @@ public class VmListenersExample2 {
      * a host is allocated for a VM. The same listener is used for all created VMs.
      * @see #createVmListeners() 
      */
-    private EventListener<VmInsideHostEventInfo> onHostAllocationListener;
+    private EventListener<HostToVmEventInfo> onHostAllocationListener;
     
     /**
      * The listener object that will be created in order to be notified when
      * a host is deallocated for a VM. The same listener is used for all created VMs.
      * @see #createVmListeners() 
      */
-    private EventListener<VmInsideHostEventInfo> onHostDeallocationListener;
+    private EventListener<HostToVmEventInfo> onHostDeallocationListener;
 
     /**
      * Starts the example execution, calling the class constructor\
@@ -163,9 +163,9 @@ public class VmListenersExample2 {
     private void createVmListeners() {
         /*Creates the listener object that will be notified when a host is allocated to a VM.
         All VMs will use this same listener.*/
-        this.onHostAllocationListener = new EventListener<VmInsideHostEventInfo>() {
+        this.onHostAllocationListener = new EventListener<HostToVmEventInfo>() {
             @Override
-            public void update(VmInsideHostEventInfo evt) {
+            public void update(HostToVmEventInfo evt) {
                 Log.printFormattedLine(
                         "\t#EventListener: Host %d allocated to Vm %d at time %.2f",
                         evt.getHost().getId(), evt.getVm().getId(), evt.getTime());
@@ -174,9 +174,9 @@ public class VmListenersExample2 {
         
         /*Creates the listener object that will be notified when a host is deallocated for a VM.
         All VMs will use this same listener.*/
-        this.onHostDeallocationListener = new EventListener<VmInsideHostEventInfo>() {
+        this.onHostDeallocationListener = new EventListener<HostToVmEventInfo>() {
             @Override
-            public void update(VmInsideHostEventInfo evt) {
+            public void update(HostToVmEventInfo evt) {
                 Log.printFormattedLine(
                         "\t#EventListener: Vm %d moved/removed from Host %d at time %.2f",
                         evt.getVm().getId(), evt.getHost().getId(), evt.getTime());

@@ -14,8 +14,9 @@ import java.util.LinkedList;
 import java.util.List;
 
 import org.cloudbus.cloudsim.core.CloudSim;
-import org.cloudbus.cloudsim.listeners.CloudletInsideVmEventInfo;
+import org.cloudbus.cloudsim.listeners.VmToCloudletEventInfo;
 import org.cloudbus.cloudsim.listeners.EventListener;
+import org.cloudbus.cloudsim.lists.VmList;
 
 /**
  * Cloudlet implements the basic features of an application/job/task to be executed 
@@ -126,7 +127,7 @@ public class CloudletSimple implements Cloudlet {
      */
     private DecimalFormat num;
 
-    /** @see #getVmId() */
+    /** @see #getVm() */
     protected int vmId;
 
     /** @see #getCostPerBw() */
@@ -148,7 +149,10 @@ public class CloudletSimple implements Cloudlet {
     private List<String> requiredFiles;
     
     /**@see #getOnCloudletFinishEventListener() */
-    private EventListener<CloudletInsideVmEventInfo> onCloudletFinishEventListener = EventListener.NULL;
+    private EventListener<VmToCloudletEventInfo> onCloudletFinishEventListener = EventListener.NULL;
+    
+    /**@see #getOnUpdateCloudletProcessingListener() () */
+    private EventListener<VmToCloudletEventInfo> onUpdateCloudletProcessingListener = EventListener.NULL;
 
     /**
      * Instantiates a new Cloudlet object. The Cloudlet length, input and output
@@ -216,12 +220,12 @@ public class CloudletSimple implements Cloudlet {
     }
 
     @Override
-    public EventListener<CloudletInsideVmEventInfo> getOnCloudletFinishEventListener() {
+    public EventListener<VmToCloudletEventInfo> getOnCloudletFinishEventListener() {
         return onCloudletFinishEventListener;
     }
 
     @Override
-    public void setOnCloudletFinishEventListener(EventListener<CloudletInsideVmEventInfo> onCloudletFinishEventListener) {
+    public void setOnCloudletFinishEventListener(EventListener<VmToCloudletEventInfo> onCloudletFinishEventListener) {
         if(onCloudletFinishEventListener == null)
             onCloudletFinishEventListener = EventListener.NULL;
         
@@ -356,7 +360,7 @@ public class CloudletSimple implements Cloudlet {
 
         final DatacenterInfo res = datacenterInfoList.get(index);
         res.finishedSoFar = length;
-
+        
         write("Sets the length's finished so far to %d", length);
         return true;
     }
@@ -877,6 +881,16 @@ public class CloudletSimple implements Cloudlet {
      */
     public void setRecordTransactionHistory(boolean recordTransactionHistory) {
         this.recordTransactionHistory = recordTransactionHistory;
+    }
+
+    @Override
+    public EventListener<VmToCloudletEventInfo> getOnUpdateCloudletProcessingListener() {
+        return this.onUpdateCloudletProcessingListener;
+    }
+
+    @Override
+    public void setOnUpdateCloudletProcessingListener(EventListener<VmToCloudletEventInfo> onUpdateCloudletProcessingListener) {
+        this.onUpdateCloudletProcessingListener = onUpdateCloudletProcessingListener;
     }
 
     /**

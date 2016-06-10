@@ -16,7 +16,6 @@ import java.util.LinkedList;
 import java.util.List;
 import org.cloudbus.cloudsim.Cloudlet;
 import org.cloudbus.cloudsim.CloudletSimple;
-import org.cloudbus.cloudsim.schedulers.CloudletSchedulerTimeShared;
 import org.cloudbus.cloudsim.Datacenter;
 import org.cloudbus.cloudsim.DatacenterSimple;
 import org.cloudbus.cloudsim.brokers.DatacenterBroker;
@@ -30,40 +29,35 @@ import org.cloudbus.cloudsim.resources.Pe;
 import org.cloudbus.cloudsim.resources.PeSimple;
 import org.cloudbus.cloudsim.resources.FileStorage;
 import org.cloudbus.cloudsim.utilizationmodels.UtilizationModel;
-import org.cloudbus.cloudsim.utilizationmodels.UtilizationModelFull;
 import org.cloudbus.cloudsim.Vm;
 import org.cloudbus.cloudsim.VmSimple;
 import org.cloudbus.cloudsim.allocationpolicies.VmAllocationPolicySimple;
 import org.cloudbus.cloudsim.schedulers.VmSchedulerTimeShared;
 import org.cloudbus.cloudsim.core.CloudSim;
+import org.cloudbus.cloudsim.listeners.VmToCloudletEventInfo;
 import org.cloudbus.cloudsim.listeners.EventListener;
-import org.cloudbus.cloudsim.listeners.DatacenterToVmEventInfo;
-import org.cloudbus.cloudsim.listeners.HostToVmEventInfo;
 import org.cloudbus.cloudsim.provisioners.PeProvisionerSimple;
 import org.cloudbus.cloudsim.resources.Bandwidth;
 import org.cloudbus.cloudsim.provisioners.ResourceProvisionerSimple;
 import org.cloudbus.cloudsim.resources.Ram;
+import org.cloudbus.cloudsim.schedulers.CloudletSchedulerSpaceShared;
+import org.cloudbus.cloudsim.utilizationmodels.UtilizationModelStochastic;
 
 /**
- * A simple example showing how to create a data center with 1 host and run 1
- * cloudlet on it, and receive notifications when a Host is allocated or
- * deallocated to each Vm. It is also show how to be notified when
- * no suitable host is found to place a VM.
- * 
- * The example uses the new Vm listeners to get these
- * notifications while the simulation is running.
+ * A simple example showing how to create a data center with 1 host and run
+ * 1 cloudlet on it. The example uses the new Cloudlet listeners
+ * to get notified every time a cloudlet has its processing updated
+ * inside a Vm and then, the current cloudlet resource usage is shown.
+ * The example uses the {@link UtilizationModelStochastic} 
+ * to define that the usage of CPU, RAM and Bandwidth is random.
  *
  * @see
- * Vm#setOnHostAllocationListener(org.cloudbus.cloudsim.listeners.EventListener)
- * @see
- * Vm#setOnHostDeallocationListener(org.cloudbus.cloudsim.listeners.EventListener)
- * @see
- * Vm#setOnVmCreationFailureListener(org.cloudbus.cloudsim.listeners.EventListener)
+ * Cloudlet#setOnUpdateCloudletProcessingListener(org.cloudbus.cloudsim.listeners.EventListener) 
  * @see EventListener
  *
  * @author Manoel Campos da Silva Filho
  */
-public class VmListenersExample1 {
+public class CloudletListenersExample2_ResourceUsageAlongTime {
     /**
      * Number of Processor Elements (CPU Cores) of each Host.
      */
@@ -72,8 +66,15 @@ public class VmListenersExample1 {
     /**
      * Number of Processor Elements (CPU Cores) of each VM and cloudlet.
      */
-    private static final int VM_PES_NUMBER = HOST_PES_NUMBER;     
+    private static final int VM_PES_NUMBER = HOST_PES_NUMBER;    
     
+    /**
+     * Number of Cloudlets to create.
+     */
+    private static final int NUMBER_OF_CLOUDLETS = 2; 
+    
+    private static final double DATACENTER_SCHEDULING_INTERVAL = 1;
+
     /**
      * The Virtual Machine Monitor (VMM) used by hosts to manage VMs.
      */
@@ -84,6 +85,14 @@ public class VmListenersExample1 {
     private final List<Cloudlet> cloudletList;
     private final DatacenterBroker broker;
     private final Datacenter datacenter;
+
+    /**
+     * The listener object that will be created in order to be notified when
+     * the processing of a cloudlet inside a Vm is updated. 
+     * 
+     * @see #createCloudletListener() 
+     */
+    private EventListener<VmToCloudletEventInfo> onUpdateCloudletProcessingListener;
     
     /**
      * Starts the example execution, calling the class constructor\
@@ -92,10 +101,10 @@ public class VmListenersExample1 {
      * @param args command line parameters
      */
     public static void main(String[] args) {
-        Log.printFormattedLine("Starting %s ...", VmListenersExample1.class.getSimpleName());
+        Log.printFormattedLine("Starting %s ...", CloudletListenersExample2_ResourceUsageAlongTime.class.getSimpleName());
         try {
-            new VmListenersExample1();
-            Log.printFormattedLine("%s finished!", VmListenersExample1.class.getSimpleName());        
+            new CloudletListenersExample2_ResourceUsageAlongTime();
+            Log.printFormattedLine("%s finished!", CloudletListenersExample2_ResourceUsageAlongTime.class.getSimpleName());        
         } catch (Exception e) {
             Log.printFormattedLine("Unwanted errors happened: %s", e.getMessage());
         }
@@ -104,7 +113,7 @@ public class VmListenersExample1 {
     /**
      * Default constructor that builds and starts the simulation.
      */
-    public VmListenersExample1() {
+    public CloudletListenersExample2_ResourceUsageAlongTime() {
         int numberOfUsers = 1; // number of cloud users/customers (brokers)
         Calendar calendar = Calendar.getInstance();
         CloudSim.init(numberOfUsers, calendar);
@@ -115,10 +124,36 @@ public class VmListenersExample1 {
         this.datacenter = createDatacenter("Datacenter_0");
         this.broker = new DatacenterBrokerSimple("Broker");
 
+        createCloudletListener();
         createAndSubmitVms();
-        createAndSubmitCloudlets();
+        createAndSubmitCloudlets(this.vmList.get(0));
 
         runSimulationAndPrintResults();
+    }
+
+    /**
+     * Creates the listener object that will be notified when a cloudlet 
+     * finishes running into a VM. All cloudlet will use this same listener.
+     * 
+     * @see #createCloudlet(int, org.cloudbus.cloudsim.Vm, long) 
+     */
+    private void createCloudletListener() {
+        this.onUpdateCloudletProcessingListener = new EventListener<VmToCloudletEventInfo>() {
+            @Override
+            public void update(VmToCloudletEventInfo evt) {
+                Cloudlet c = evt.getCloudlet();
+                double cpuUsage = c.getUtilizationModelCpu().getUtilization(evt.getTime())*100;
+                double ramUsage = c.getUtilizationModelRam().getUtilization(evt.getTime())*100;
+                double bwUsage  = c.getUtilizationModelBw().getUtilization(evt.getTime())*100;
+                Log.printFormattedLine(
+                        "\t#EventListener: Time %.0f: Updated Cloudlet %d execution inside Vm %d",
+                        evt.getTime(), c.getId(), evt.getVm().getId()); 
+                Log.printFormattedLine(
+                        "\tCurrent Cloudlet resource usage: CPU %3.0f%%, RAM %3.0f%%, BW %3.0f%%\n", 
+                        cpuUsage,  ramUsage, bwUsage);                
+                
+            }
+        };
     }
 
     private void runSimulationAndPrintResults() {
@@ -130,16 +165,19 @@ public class VmListenersExample1 {
     }
 
     /**
-     * Create cloudlets and submit them to the broker.
+     * Creates cloudlets and submit them to the broker.
+     * @param vm Vm to run the cloudlets to be created
+     * 
+     * @see #createCloudlet(int, org.cloudbus.cloudsim.Vm) 
      */
-    private void createAndSubmitCloudlets() {
-        Cloudlet cloudlet0 = createCloudlet(0, vmList.get(0));
-        this.cloudletList.add(cloudlet0);
-
-        /*This cloudlet will not be run because vm1 will not be placed
-        due to lack of a suitable host.*/
-        Cloudlet cloudlet1 = createCloudlet(1, vmList.get(1));
-        this.cloudletList.add(cloudlet1);
+    private void createAndSubmitCloudlets(Vm vm) {
+        int cloudletId;
+        long length = 10000;
+        for(int i = 0; i < NUMBER_OF_CLOUDLETS; i++){
+            cloudletId = vm.getId() + i;
+            Cloudlet cloudlet = createCloudlet(cloudletId, vm, length);
+            this.cloudletList.add(cloudlet);
+        }
 
         this.broker.submitCloudletList(cloudletList);
     }
@@ -149,40 +187,7 @@ public class VmListenersExample1 {
      */
     private void createAndSubmitVms() {
         Vm vm0 = createVm(0);
-        
-        /*Sets the listener to intercept allocation of a Host to the Vm.*/
-        vm0.setOnHostAllocationListener(new EventListener<HostToVmEventInfo>() {
-            @Override
-            public void update(HostToVmEventInfo evt) {
-                Log.printFormattedLine(
-                        "\n\t#EventListener: Host %d allocated to Vm %d at time %.2f\n",
-                        evt.getHost().getId(), evt.getVm().getId(), evt.getTime());
-            }
-        });
-
-        /*Sets the listener to intercept deallocation of a Host for the Vm.*/
-        vm0.setOnHostDeallocationListener(new EventListener<HostToVmEventInfo>() {
-            @Override
-            public void update(HostToVmEventInfo evt) {
-                Log.printFormattedLine(
-                        "\n\t#EventListener: Vm %d moved/removed from Host %d at time %.2f\n",
-                        evt.getVm().getId(), evt.getHost().getId(), evt.getTime());
-            }
-        });
-        
-        /*This VM will not be place due to lack of a suitable host.*/
-        Vm vm1 = createVm(1);
-        vm1.setOnVmCreationFailureListener(new EventListener<DatacenterToVmEventInfo>() {
-            @Override
-            public void update(DatacenterToVmEventInfo evt) {
-                Log.printFormattedLine(
-                        "\n\t#EventListener: Vm %d could not be placed into any host of Datacenter %d at time %.2f due to lack of a host with enough resources.\n",
-                        evt.getVm().getId(), evt.getDatacenter().getId(), evt.getTime());
-            }
-        });
-
         this.vmList.add(vm0);
-        this.vmList.add(vm1);
         this.broker.submitVmList(vmList);
     }
 
@@ -199,7 +204,7 @@ public class VmListenersExample1 {
         long bw = 1000;
         Vm vm = new VmSimple(
                 id, broker.getId(), mips, VM_PES_NUMBER, ram, bw, size,
-                VMM, new CloudletSchedulerTimeShared());
+                VMM, new CloudletSchedulerSpaceShared());
         return vm;
     }
 
@@ -208,19 +213,28 @@ public class VmListenersExample1 {
      * 
      * @param id Cloudlet id
      * @param vm vm to run the cloudlet
+     * @param length the cloudlet length in number of Million Instructions (MI)
      * @return the created cloudlet
      */
-    private Cloudlet createCloudlet(int id, Vm vm) {
-        long length = 400000;  //in MI (Million Instructions)
+    private Cloudlet createCloudlet(int id, Vm vm, long length) {
         long fileSize = 300;
         long outputSize = 300;
-        UtilizationModel utilizationModel = new UtilizationModelFull();
-        Cloudlet cloudlet
-                = new CloudletSimple(id, length, VM_PES_NUMBER, fileSize,
-                        outputSize, utilizationModel, utilizationModel,
-                        utilizationModel);
+        int pesNumber = 1;
+        
+        /*Define that the utilization of CPU, RAM and Bandwidth is random.*/
+        UtilizationModel cpuUtilizationModel = new UtilizationModelStochastic();
+        UtilizationModel ramUtilizationModel = new UtilizationModelStochastic();
+        UtilizationModel bwUtilizationModel  = new UtilizationModelStochastic();
+        
+        Cloudlet cloudlet = 
+            new CloudletSimple(
+                id, length, pesNumber, fileSize, outputSize, 
+                cpuUtilizationModel, ramUtilizationModel, bwUtilizationModel);
+        
         cloudlet.setUserId(broker.getId());
         cloudlet.setVmId(vm.getId());
+        cloudlet.setOnUpdateCloudletProcessingListener(onUpdateCloudletProcessingListener);
+        
         return cloudlet;
     }
 
@@ -248,7 +262,7 @@ public class VmListenersExample1 {
                 costPerStorage, costPerBw);
 
         return new DatacenterSimple(name, characteristics, 
-                new VmAllocationPolicySimple(hostList), storageList, 0);
+                new VmAllocationPolicySimple(hostList), storageList, DATACENTER_SCHEDULING_INTERVAL);
     }
 
     /**

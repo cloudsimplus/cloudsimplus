@@ -14,7 +14,9 @@ import org.cloudbus.cloudsim.Cloudlet;
 import org.cloudbus.cloudsim.Cloudlet.Status;
 import org.cloudbus.cloudsim.Consts;
 import org.cloudbus.cloudsim.ResCloudlet;
+import org.cloudbus.cloudsim.Vm;
 import org.cloudbus.cloudsim.core.CloudSim;
+import org.cloudbus.cloudsim.listeners.VmToCloudletEventInfo;
 import org.cloudbus.cloudsim.resources.Processor;
 
 /**
@@ -71,6 +73,11 @@ public abstract class CloudletSchedulerAbstract implements CloudletScheduler {
      * @see #getCloudletFailedList()
      */
     protected List<? extends ResCloudlet> cloudletFailedList;
+    
+    /**
+     * @see #getVm() 
+     */
+    private Vm vm;
 
     /**
      * Creates a new CloudletScheduler object. A CloudletScheduler must be
@@ -376,42 +383,36 @@ public abstract class CloudletSchedulerAbstract implements CloudletScheduler {
      * of the Vm using this scheduler that are in the 
      * {@link #getCloudletExecList() cloudlet execution list}.
      * @param currentTime current simulation time
-     * @param p a Processor created from a mipsShare list with MIPS share of each 
-     * Pe available to the scheduler
      */
-    protected void updateCloudletsProcessing(double currentTime, Processor p) {
-        getCloudletExecList().forEach(rcl -> updateCloudletProcessing(rcl, currentTime, p));
+    private void updateCloudletsProcessing(double currentTime) {
+        getCloudletExecList().forEach(rcl -> updateCloudletProcessing(rcl, currentTime));
     }
     
-    /**
-     * Updates the processing of a specific cloudlet of the Vm using this scheduler.
-     * @param rcl The cloudlet to be its processing updated
-     * @param currentTime current simulation time
-     * @param p a Processor created from a mipsShare list with MIPS share of each 
-     * Pe available to the scheduler
-     * 
-     * @see #updateCloudletsProcessing(double, org.cloudbus.cloudsim.resources.Processor) 
-     */
-    protected void updateCloudletProcessing(ResCloudlet rcl, double currentTime, Processor p) {
-        long numberOfInstructions = cloudletExecutionTotalLengthForElapsedTime(rcl, currentTime, p);
+    @Override
+    public void updateCloudletProcessing(ResCloudlet rcl, double currentTime) {
+        long numberOfInstructions = cloudletExecutionTotalLengthForElapsedTime(rcl, currentTime);
         rcl.updateCloudletFinishedSoFar(numberOfInstructions);
+        
+        Cloudlet cloudlet = rcl.getCloudlet();
+        VmToCloudletEventInfo evt = new VmToCloudletEventInfo(currentTime, vm, cloudlet);
+        cloudlet.getOnUpdateCloudletProcessingListener().update(evt);
     }
 
     /**
      * Computes the total length of a given cloudlet (across all PEs), 
      * in number of Instructions (I), that has been executed since the 
-     * last time cloudlets processing was updated.
+     * last time cloudlet processing was updated.
      * This length is considered as the sum of executed length in each Cloudlet PE.
      * 
      * @param rcl
      * @param currentTime current simulation time
-     * @param p a Processor object created from a list with MIPS share of each Pe available to the scheduler
-     * @return the executed length of the given cloudlet, in number of Instructions (I)
+     * @return the total length across all PEs, in number of Instructions (I),
+     * since the last time cloudlet was processed.
      * 
      * @see #updateCloudletsProcessing(double, java.util.List) 
      */
-    protected long cloudletExecutionTotalLengthForElapsedTime(ResCloudlet rcl, double currentTime, Processor p) {
-        return (long)(p.getCapacity() * rcl.getNumberOfPes() * timeSpan(currentTime) * Consts.MILLION);
+    protected long cloudletExecutionTotalLengthForElapsedTime(ResCloudlet rcl, double currentTime) {
+        return (long)(processor.getCapacity() * rcl.getNumberOfPes() * timeSpan(currentTime) * Consts.MILLION);
     }
 
     /**
@@ -480,14 +481,13 @@ public abstract class CloudletSchedulerAbstract implements CloudletScheduler {
      * on the VM using this scheduler.
      * 
      * @param currentTime
-     * @param p
      * @return 
      */
-    protected double getEstimatedFinishTimeOfSoonerFinishingCloudlet(double currentTime, Processor p) {
+    protected double getEstimatedFinishTimeOfSoonerFinishingCloudlet(double currentTime) {
         double nextEvent = Double.MAX_VALUE;
         for (ResCloudlet rcl : getCloudletExecList()) {
             double estimatedFinishTime = 
-                    getEstimatedFinishTimeOfCloudlet(rcl, currentTime, p);
+                    getEstimatedFinishTimeOfCloudlet(rcl, currentTime);
 
             if (estimatedFinishTime < nextEvent) {
                 nextEvent = estimatedFinishTime;
@@ -500,13 +500,12 @@ public abstract class CloudletSchedulerAbstract implements CloudletScheduler {
      * Gets the estimated time when a given cloudlet is supposed to finish executing.
      * @param rcl
      * @param currentTime
-     * @param p
      * @return 
      */
-    protected double getEstimatedFinishTimeOfCloudlet(ResCloudlet rcl, double currentTime, Processor p) {
+    protected double getEstimatedFinishTimeOfCloudlet(ResCloudlet rcl, double currentTime) {
         double estimatedFinishTime = currentTime
                 + (rcl.getRemainingCloudletLength() / 
-                (p.getCapacity() * rcl.getNumberOfPes()));
+                (processor.getCapacity() * rcl.getNumberOfPes()));
         if (estimatedFinishTime - currentTime < CloudSim.getMinTimeBetweenEvents()) {
             estimatedFinishTime = currentTime + CloudSim.getMinTimeBetweenEvents();
         }
@@ -522,25 +521,23 @@ public abstract class CloudletSchedulerAbstract implements CloudletScheduler {
             return 0.0;
         }
 
-        Processor p = Processor.getProcessorFromMipsListRemovingAllZeroMips(mipsShare);
-        updateCloudletsProcessing(currentTime, p);
+        updateCloudletsProcessing(currentTime);
 
         final int finished = removeFinishedCloudletsFromExecutionList();
-        startNewCloudletsFromWaitingList(finished, p);
+        startNewCloudletsFromWaitingList(finished);
 
-        double nextEvent = 
-                getEstimatedFinishTimeOfSoonerFinishingCloudlet(currentTime, p);
+        double nextEvent = getEstimatedFinishTimeOfSoonerFinishingCloudlet(currentTime);
         setPreviousTime(currentTime);
         return nextEvent;
     }
 
-    private void startNewCloudletsFromWaitingList(int numberOfFinishedCloudlets, Processor p) {
+    private void startNewCloudletsFromWaitingList(int numberOfFinishedCloudlets) {
         // for each finished cloudlet, add a new one from the waiting list
         if (!getCloudletWaitingList().isEmpty()) {
             for (int i = 0; i < numberOfFinishedCloudlets; i++) {
                 List<ResCloudlet> toRemove = new ArrayList<>();
                 for (ResCloudlet rcl : getCloudletWaitingList()) {
-                    if ((p.getNumberOfPes() - usedPes) >= rcl.getNumberOfPes()) {
+                    if ((processor.getNumberOfPes() - usedPes) >= rcl.getNumberOfPes()) {
                         rcl.setCloudletStatus(Cloudlet.Status.INEXEC);
                         getCloudletExecList().add(rcl);
                         usedPes += rcl.getNumberOfPes();
@@ -561,5 +558,15 @@ public abstract class CloudletSchedulerAbstract implements CloudletScheduler {
      */
     protected Processor getProcessor() {
         return processor;
+    }
+
+    @Override
+    public Vm getVm() {
+        return vm;
+    }
+
+    @Override
+    public void setVm(Vm vm) {
+        this.vm = vm;
     }
 }

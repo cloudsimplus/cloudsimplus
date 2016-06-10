@@ -22,8 +22,8 @@ import org.cloudbus.cloudsim.core.CloudSim;
 import org.cloudbus.cloudsim.core.CloudSimTags;
 import org.cloudbus.cloudsim.core.SimEntity;
 import org.cloudbus.cloudsim.core.SimEvent;
-import org.cloudbus.cloudsim.listeners.CloudletInsideVmEventInfo;
-import org.cloudbus.cloudsim.listeners.VmInsideDatacenterEventInfo;
+import org.cloudbus.cloudsim.listeners.VmToCloudletEventInfo;
+import org.cloudbus.cloudsim.listeners.DatacenterToVmEventInfo;
 import org.cloudbus.cloudsim.lists.CloudletList;
 import org.cloudbus.cloudsim.lists.VmList;
 
@@ -258,8 +258,8 @@ public class DatacenterBrokerSimple extends SimEntity implements DatacenterBroke
             if (vm != null) {
                 Datacenter datacenter = 
                         datacenterCharacteristicsMap.get(datacenterId).getDatacenter();
-                VmInsideDatacenterEventInfo info = 
-                        new VmInsideDatacenterEventInfo(datacenter, vm);
+                DatacenterToVmEventInfo info = 
+                        new DatacenterToVmEventInfo(datacenter, vm);
                 vm.getOnVmCreationFailureListener().update(info);
             }
             Log.printConcatLine(CloudSim.clock(), ": ", getName(), ": Creation of VM #", vmId,
@@ -332,7 +332,7 @@ public class DatacenterBrokerSimple extends SimEntity implements DatacenterBroke
 
     private void notifyCloudletFinishListener(Cloudlet cloudlet) {
         Vm vm = VmList.getById(vmsWaitingList, cloudlet.getVmId());
-        CloudletInsideVmEventInfo info = new CloudletInsideVmEventInfo(vm, cloudlet);
+        VmToCloudletEventInfo info = new VmToCloudletEventInfo(vm, cloudlet);
         cloudlet.getOnCloudletFinishEventListener().update(info);
     }
 

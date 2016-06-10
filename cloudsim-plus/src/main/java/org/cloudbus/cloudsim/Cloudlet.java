@@ -4,7 +4,7 @@ import org.cloudbus.cloudsim.core.Identificable;
 import org.cloudbus.cloudsim.utilizationmodels.UtilizationModel;
 import java.util.Collections;
 import java.util.List;
-import org.cloudbus.cloudsim.listeners.CloudletInsideVmEventInfo;
+import org.cloudbus.cloudsim.listeners.VmToCloudletEventInfo;
 import org.cloudbus.cloudsim.listeners.EventListener;
 
 /**
@@ -457,9 +457,9 @@ public interface Cloudlet extends Identificable {
     double getUtilizationOfRam(final double time);
 
     /**
-     * Gets the id of the VM that is planned to execute the cloudlet.
+     * Gets the id of Vm that is planned to execute the cloudlet.
      *
-     * @return the VM Id, or {@link #NOT_ASSIGNED} if the Cloudlet was not assigned to a VM yet
+     * @return the VM, or {@link #NOT_ASSIGNED} if the Cloudlet was not assigned to a VM yet
      * @pre $none
      * @post $none
      */
@@ -624,11 +624,9 @@ public interface Cloudlet extends Identificable {
     void setUtilizationModelRam(final UtilizationModel utilizationModelRam);
 
     /**
-     * Sets the {@link #getVmId() id of the VM} that is planned to execute the cloudlet.
+     * Sets the id of {@link Vm} that is planned to execute the cloudlet.
      *
-     * @param vmId the vm id
-     * @pre id >= 0
-     * @post $none
+     * @param vmId the id of vm to run the cloudlet
      */
     void setVmId(final int vmId);
     
@@ -646,6 +644,24 @@ public interface Cloudlet extends Identificable {
      * @post $none
      */
     boolean setCloudletFinishedSoFar(final long length);
+    
+    /**
+     * Gets the listener object that will be notified every time when 
+     * the processing of the Cloudlet is updated in its {@link Vm}.
+     *
+     * @return the onUpdateVmProcessingListener
+     * @see org.cloudbus.cloudsim.schedulers.CloudletScheduler#update
+     */
+    EventListener<VmToCloudletEventInfo> getOnUpdateCloudletProcessingListener();
+    
+    /**
+     * Gets the listener object that will be notified every time when 
+     * the processing of the Cloudlet is updated in its {@link Vm}.
+     *
+     * @param onUpdateCloudletProcessingListener the listener to set
+     * @see #setCloudletFinishedSoFar(long) 
+     */
+    void setOnUpdateCloudletProcessingListener(EventListener<VmToCloudletEventInfo> onUpdateCloudletProcessingListener);
     
     /**
      * Gets the length of this Cloudlet that has been executed so far (in MI),
@@ -715,14 +731,14 @@ public interface Cloudlet extends Identificable {
      *
      * @return the onCloudletFinishEventListener
      */
-    EventListener<CloudletInsideVmEventInfo> getOnCloudletFinishEventListener();
+    EventListener<VmToCloudletEventInfo> getOnCloudletFinishEventListener();
     
     /**
      * Sets the listener object that will be notified when a cloudlet finishes 
      * its execution at a given {@link Vm}. 
      * @param onCloudletFinishEventListener 
      */
-    void setOnCloudletFinishEventListener(EventListener<CloudletInsideVmEventInfo> onCloudletFinishEventListener);
+    void setOnCloudletFinishEventListener(EventListener<VmToCloudletEventInfo> onCloudletFinishEventListener);
  
     /**
      * A property that implements the Null Object Design Pattern for {@link Cloudlet}
@@ -766,7 +782,7 @@ public interface Cloudlet extends Identificable {
       @Override public double getUtilizationOfBw(double time) { return 0.0; }
       @Override public double getUtilizationOfCpu(double time) { return 0.0; }
       @Override public double getUtilizationOfRam(double time) { return 0.0; }
-      @Override public int getVmId() { return 0; }
+      @Override public int getVmId() { return NOT_ASSIGNED; }
       @Override public double getWaitingTime() { return 0.0; }
       @Override public double getWallClockTimeInLastExecutedDatacenter() { return 0.0; }
       @Override public double getWallClockTime(int datacenterId) { return 0.0; }
@@ -785,9 +801,11 @@ public interface Cloudlet extends Identificable {
       @Override public void setUtilizationModelCpu(UtilizationModel utilizationModelCpu) {}
       @Override public void setUtilizationModelRam(UtilizationModel utilizationModelRam) {}
       @Override public void setVmId(int vmId) {}
-      @Override public EventListener<CloudletInsideVmEventInfo> getOnCloudletFinishEventListener() { return EventListener.NULL;}
-      @Override public void setOnCloudletFinishEventListener(EventListener<CloudletInsideVmEventInfo> onCloudletFinishEventListener) {}
-      
+      @Override public EventListener<VmToCloudletEventInfo> getOnCloudletFinishEventListener() { return EventListener.NULL;}
+      @Override public void setOnCloudletFinishEventListener(EventListener<VmToCloudletEventInfo> onCloudletFinishEventListener) {}      
+      @Override public EventListener<VmToCloudletEventInfo> getOnUpdateCloudletProcessingListener() { return EventListener.NULL; }
+      @Override public void setOnUpdateCloudletProcessingListener(EventListener<VmToCloudletEventInfo> onUpdateCloudletProcessingListener) {}
+
       /**
        * @todo @author manoelcampos These methods shouldn't be public,
        * but they are used by ResCloudlet class.

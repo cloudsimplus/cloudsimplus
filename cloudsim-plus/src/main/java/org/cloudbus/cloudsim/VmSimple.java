@@ -12,9 +12,9 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-import org.cloudbus.cloudsim.listeners.VmInsideDatacenterEventInfo;
+import org.cloudbus.cloudsim.listeners.DatacenterToVmEventInfo;
 import org.cloudbus.cloudsim.listeners.EventListener;
-import org.cloudbus.cloudsim.listeners.VmInsideHostEventInfo;
+import org.cloudbus.cloudsim.listeners.HostToVmEventInfo;
 import org.cloudbus.cloudsim.resources.Bandwidth;
 import org.cloudbus.cloudsim.resources.Ram;
 import org.cloudbus.cloudsim.resources.RawStorage;
@@ -104,16 +104,16 @@ public class VmSimple implements Vm {
     private final Bandwidth bw;
 
     /** @see #getOnHostAllocationListener() */
-    private EventListener<VmInsideHostEventInfo> onHostAllocationListener = EventListener.NULL;
+    private EventListener<HostToVmEventInfo> onHostAllocationListener = EventListener.NULL;
 
     /** @see #getOnHostDeallocationListener() */
-    private EventListener<VmInsideHostEventInfo> onHostDeallocationListener = EventListener.NULL;
+    private EventListener<HostToVmEventInfo> onHostDeallocationListener = EventListener.NULL;
 
     /** @see #getOnVmCreationFailureListener() */
-    private EventListener<VmInsideDatacenterEventInfo> onVmCreationFailureListener = EventListener.NULL;
+    private EventListener<DatacenterToVmEventInfo> onVmCreationFailureListener = EventListener.NULL;
 
     /** @see #getOnUpdateVmProcessingListener() */
-    private EventListener<VmInsideHostEventInfo> onUpdateVmProcessingListener = EventListener.NULL;
+    private EventListener<HostToVmEventInfo> onUpdateVmProcessingListener = EventListener.NULL;
 
     /**
      * Creates a new Vm object.
@@ -191,7 +191,7 @@ public class VmSimple implements Vm {
     public double updateVmProcessing(double currentTime, List<Double> mipsShare) {
         if (mipsShare != null) {
             double result = getCloudletScheduler().updateVmProcessing(currentTime, mipsShare);
-            VmInsideHostEventInfo info = new VmInsideHostEventInfo(currentTime, host, this);
+            HostToVmEventInfo info = new HostToVmEventInfo(currentTime, host, this);
             onUpdateVmProcessingListener.update(info);
             //Log.println(Log.Level.DEBUG, getClass(), "updateVmProcessing: next finishing cloudlet time: %.2f", result);
             return result;
@@ -256,7 +256,7 @@ public class VmSimple implements Vm {
      * @todo @author manoelcampos Lets consider the UtilizationModelFull for CPU
      * which defines that a cloudlet will use the entire CPU allocated to it all
      * the time, for all of its PEs. So, lets say that the Vm has 2 PEs of 1000
-     * MIPS, that represents a total of 2000 MIPS capacity. and there is a
+     * MIPS, that represents a total of 2000 MIPS capacity, and there is a
      * Cloudlet that is using all these 2 PEs capacity. I think this method is
      * supposed to return 2000, indicating that the entire VM MIPS capacity is
      * being used. However, it will return only 1000. It has to be included some
@@ -413,6 +413,7 @@ public class VmSimple implements Vm {
      * @param cloudletScheduler the new cloudlet scheduler
      */
     protected final void setCloudletScheduler(CloudletScheduler cloudletScheduler) {
+        cloudletScheduler.setVm(this);
         this.cloudletScheduler = cloudletScheduler;
     }
 
@@ -547,7 +548,7 @@ public class VmSimple implements Vm {
     }
 
     @Override
-    public void setOnHostAllocationListener(EventListener<VmInsideHostEventInfo> onHostAllocationListener) {
+    public void setOnHostAllocationListener(EventListener<HostToVmEventInfo> onHostAllocationListener) {
         if (onHostAllocationListener == null)
             onHostAllocationListener = EventListener.NULL;
         
@@ -555,7 +556,7 @@ public class VmSimple implements Vm {
     }
 
     @Override
-    public void setOnHostDeallocationListener(EventListener<VmInsideHostEventInfo> onHostDeallocationListener) {
+    public void setOnHostDeallocationListener(EventListener<HostToVmEventInfo> onHostDeallocationListener) {
         if (onHostDeallocationListener == null)
             onHostDeallocationListener = EventListener.NULL;
         
@@ -563,12 +564,12 @@ public class VmSimple implements Vm {
     }
 
     @Override
-    public EventListener<VmInsideHostEventInfo> getOnHostAllocationListener() {
+    public EventListener<HostToVmEventInfo> getOnHostAllocationListener() {
         return onHostAllocationListener;
     }
 
     @Override
-    public EventListener<VmInsideHostEventInfo> getOnHostDeallocationListener() {
+    public EventListener<HostToVmEventInfo> getOnHostDeallocationListener() {
         return onHostDeallocationListener;
     }
 
@@ -578,12 +579,12 @@ public class VmSimple implements Vm {
     }
 
     @Override
-    public EventListener<VmInsideDatacenterEventInfo> getOnVmCreationFailureListener() {
+    public EventListener<DatacenterToVmEventInfo> getOnVmCreationFailureListener() {
         return onVmCreationFailureListener;
     }
 
     @Override
-    public void setOnVmCreationFailureListener(EventListener<VmInsideDatacenterEventInfo> onVmCreationFailureListener) {
+    public void setOnVmCreationFailureListener(EventListener<DatacenterToVmEventInfo> onVmCreationFailureListener) {
         if (onVmCreationFailureListener == null) 
             onVmCreationFailureListener = EventListener.NULL;
         
@@ -591,12 +592,12 @@ public class VmSimple implements Vm {
     }
 
     @Override
-    public EventListener<VmInsideHostEventInfo> getOnUpdateVmProcessingListener() {
+    public EventListener<HostToVmEventInfo> getOnUpdateVmProcessingListener() {
         return onUpdateVmProcessingListener;
     }
 
     @Override
-    public void setOnUpdateVmProcessingListener(EventListener<VmInsideHostEventInfo> onUpdateVmProcessingListener) {
+    public void setOnUpdateVmProcessingListener(EventListener<HostToVmEventInfo> onUpdateVmProcessingListener) {
         if(onUpdateVmProcessingListener == null)
             onUpdateVmProcessingListener = EventListener.NULL;
         

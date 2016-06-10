@@ -1192,7 +1192,7 @@ public class DatacenterSimple extends SimEntity implements Datacenter {
 
     /**
      * Sets the scheduling delay to process each event received by the
-     * datacenter .
+     * datacenter (in seconds).
      *
      * @param schedulingInterval the new scheduling interval
      */

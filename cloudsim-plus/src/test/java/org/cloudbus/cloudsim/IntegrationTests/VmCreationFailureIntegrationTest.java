@@ -14,8 +14,8 @@ import org.cloudbus.cloudsim.builders.HostBuilder;
 import org.cloudbus.cloudsim.builders.SimulationScenarioBuilder;
 import org.cloudbus.cloudsim.core.CloudSim;
 import org.cloudbus.cloudsim.core.SimEvent;
-import org.cloudbus.cloudsim.listeners.VmInsideDatacenterEventInfo;
-import org.cloudbus.cloudsim.listeners.VmInsideHostEventInfo;
+import org.cloudbus.cloudsim.listeners.DatacenterToVmEventInfo;
+import org.cloudbus.cloudsim.listeners.HostToVmEventInfo;
 import org.cloudbus.cloudsim.util.CloudletsTableBuilderHelper;
 import org.cloudbus.cloudsim.util.TextTableBuilder;
 import org.cloudbus.cloudsim.utilizationmodels.UtilizationModelFull;
@@ -76,7 +76,7 @@ public final class VmCreationFailureIntegrationTest {
      * 
      * @param evt
      */
-    private void onHostAllocation(VmInsideHostEventInfo evt) {
+    private void onHostAllocation(HostToVmEventInfo evt) {
         numberOfHostAllocations++;
         Log.printFormattedLine("# Host %s allocated to Vm %s at time %3.0f",
                 evt.getHost().getId(), evt.getVm().getId(), evt.getTime());
@@ -96,7 +96,7 @@ public final class VmCreationFailureIntegrationTest {
      * 
      * @param evt
      */
-    private void onHostDeallocation(VmInsideHostEventInfo evt) {
+    private void onHostDeallocation(HostToVmEventInfo evt) {
         numberOfHostDeallocations++;
         Log.printFormattedLine(
                 "# Vm %s moved/removed from Host %s at time %3.0f",
@@ -116,7 +116,7 @@ public final class VmCreationFailureIntegrationTest {
      * 
      * @param evt
      */
-    private void onVmCreationFailure(VmInsideDatacenterEventInfo evt) {
+    private void onVmCreationFailure(DatacenterToVmEventInfo evt) {
         numberOfVmCreationFailures++;
         final int expectedVmId = 1;
 
@@ -155,7 +155,7 @@ public final class VmCreationFailureIntegrationTest {
      * 
      * @param evt
      */
-    private void onUpdateVmProcessing(VmInsideHostEventInfo evt) {
+    private void onUpdateVmProcessing(HostToVmEventInfo evt) {
         Log.printConcatLine(
             "- onUpdateVmProcessing at time ", evt.getTime(), " - vm: ", 
             evt.getVm().getId(), " host ", evt.getHost().getId(), " available mips: ", 
