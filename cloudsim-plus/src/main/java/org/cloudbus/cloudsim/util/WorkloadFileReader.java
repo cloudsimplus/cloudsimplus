@@ -319,7 +319,6 @@ public class WorkloadFileReader implements WorkloadModel {
         return true;
     }
 
-    // ------------------- PRIVATE METHODS -------------------
     /**
      * Creates a Cloudlet with the given information and adds to the list of
      * {@link #jobs}.

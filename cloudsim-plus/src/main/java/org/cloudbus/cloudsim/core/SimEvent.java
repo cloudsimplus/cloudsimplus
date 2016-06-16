@@ -55,7 +55,7 @@ public class SimEvent implements Cloneable, Comparable<SimEvent>, EventInfo {
      * @todo I would be used generics to define the type of the event data. But
      * this modification would incur several changes in the simulator core that
      * has to be assessed first.
-         *
+     *
      */
     private final Object data;
 

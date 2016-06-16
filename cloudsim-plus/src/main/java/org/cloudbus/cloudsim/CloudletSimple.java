@@ -27,10 +27,6 @@ import org.cloudbus.cloudsim.listeners.EventListener;
  * @since CloudSim Toolkit 1.0
  * @see DatacenterBroker
  * 
- * @todo @author manoelcampos The cloudlet class doesn't specify RAM requirements,
- * just CPU. See {@link https://groups.google.com/d/msg/cloudsim/FAldVBoRyq8/Ijkv1Ti9CgAJ}
- * The {@link org.cloudbus.cloudsim.network.datacenter.NetworkCloudlet} has.
- * 
  * @todo @author manoelcampos Cloudlets doesn't have a priority attribute
  * to define which of them will be executed first.
  * For instance, considering a VM with just one PE

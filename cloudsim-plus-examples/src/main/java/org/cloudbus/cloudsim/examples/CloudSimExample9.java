@@ -160,13 +160,8 @@ public class CloudSimExample9 {
 
             showCpuUtilizationForAllHosts(finishTime, datacenter0);
 
-            /**
-             * @todo @manoelcamnpos The results aren't being shown because some
-             * issue at the HostDynamicWorkload class. See the TODO there.
-             * When it is used Host objects, the results below are shown 
-             * normally, however the Host usage history isn't.
-             */
-            CloudletsTableBuilderHelper.print(new TextTableBuilder(), newList);
+            String title = (newList.isEmpty() ? "Finished cloudlet list is empty" : "Executed cloudlets");
+            CloudletsTableBuilderHelper.print(new TextTableBuilder(title), newList);
             Log.printFormattedLine("%s finished!", CloudSimExample9.class.getSimpleName());
         } catch (Exception e) {
             e.printStackTrace();
