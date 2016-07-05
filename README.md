@@ -14,7 +14,7 @@ Accordingly, the current project is a suitable tool to rapidly develop such simu
 
 CloudSim++ is a fork of [CloudSim 3](https://github.com/Cloudslab/cloudsim/tree/20a7a55e537181489fcb9a2d42a3e539db6c0318) 
 that was re-engineered primarily to avoid code duplication for improved [code reusability](https://en.wikipedia.org/wiki/Code_reuse)
-and ensure compliance with software engineering principles and recomendations, aiming to provide a more extensible, 
+and ensure compliance with software engineering principles and recommendations, aiming to provide a more extensible, 
 less [coupled](https://en.wikipedia.org/wiki/Coupling_(computer_programming)), 
 more [cohesive](https://en.wikipedia.org/wiki/Cohesion_(computer_science)) cloud simulation tool.  
 
