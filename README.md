@@ -20,7 +20,7 @@
 |
 <b><a href="#differences">Differences from CloudSim</a></b>
 |
-<b><a href="#general-features">General features</a></b>
+<b><a href="#general-features">General Features</a></b>
 |
 <b><a href="#publications">Publications</a></b>
 |
