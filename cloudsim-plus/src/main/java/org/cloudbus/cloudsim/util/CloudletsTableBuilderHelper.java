@@ -14,18 +14,19 @@ public final class CloudletsTableBuilderHelper {
             printer.setTitle("OUTPUT");
         }
         
-        printer
-            .addColumn("CloudletID")
-            .addColumn("STATUS ")
-            .addColumn("DatacenterID")
-            .addColumn("VmID")
-            .addColumn("CloudletLen")
-            .addColumn("CloudletPEs")
-            .addColumn("StartTime",  "%d")
-            .addColumn("FinishTime", "%d")
-            .addColumn("ExecTime",  "%.0f");
+        printer.addColumn("CloudletID");
+        printer.addColumn("STATUS ");
+        printer.addColumn("DatacenterID");
+        printer.addColumn("VmID");
+        printer.addColumn("CloudletLen").setSubTitle("MI");
+        printer.addColumn("CloudletPEs");
+        printer.addColumn("StartTime").setFormat("%d").setSubTitle("Seconds");
+        printer.addColumn("FinishTime").setFormat("%d").setSubTitle("Seconds");
+        printer.addColumn("ExecTime").setFormat("%.0f").setSubTitle("Seconds");
+        
+        List<Object> row;
         for (Cloudlet cloudlet: list) {
-            List<Object> row = printer.newRow();
+            row = printer.newRow();
             row.add(cloudlet.getId());
             row.add(cloudlet.getStatus().name());
             row.add(cloudlet.getDatacenterId());

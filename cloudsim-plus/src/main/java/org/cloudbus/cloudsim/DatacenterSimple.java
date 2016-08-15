@@ -63,7 +63,7 @@ public class DatacenterSimple extends SimEntity implements Datacenter {
      * @param vmAllocationPolicy the policy to be used to allocate VMs into
      * hosts
      * @param schedulingInterval the scheduling interval to process each
-     * datacenter received event
+     * datacenter received event (in seconds)
      * @throws IllegalArgumentException when one of the following scenarios
      * occur:
      * <ul>

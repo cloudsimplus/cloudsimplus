@@ -689,7 +689,8 @@ public class CloudSim {
      *
      * @param src the src
      * @param dest the dest
-     * @param delay the delay
+     * @param delay How long from the current simulation time the event should
+     * be sent
      * @param tag the tag
      * @param data the data
      */

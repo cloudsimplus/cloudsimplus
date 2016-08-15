@@ -13,27 +13,14 @@ public interface TableBuilder {
      * @return 
      */
     List<Object> newRow();
-
-    /**
-     * Adds a column to the table to be printed, where the column data
-     * will be printed according to a given format.
-     * 
-     * @param columnTitle The title of the column
-     * @param format The format of the column data, following
-     * the patterns defined by {@link String#format(java.lang.String, java.lang.Object...)}
-     * @return The {@link TableBuilder} instance.
-     */
-    TableBuilder addColumn(final String columnTitle, String format);
     
     /**
-     * Adds a column to the table to be printed, where the column data
-     * will be printed without a specific format.
+     * Adds a column to the table to be printed.
      * 
-     * @param columnTitle The title of the column
-     * @return The {@link TableBuilder} instance.
-     * @see #addColumn(java.lang.String, java.lang.String) 
+     * @param columnTitle The title of the column to be added.
+     * @return The created column.
      */
-    TableBuilder addColumn(final String columnTitle);
+    TableColumn addColumn(final String columnTitle);
     
     /**
      * Adds a list of columns to the table to be printed, where the column data
@@ -57,9 +44,16 @@ public interface TableBuilder {
      * @return The TableBuilder instance
      */
     TableBuilder setTitle(final String title);   
+    
+    /**
+     * @return the list of columns of the table
+     */
+    List<TableColumn> getColumns();    
        
     /**
      * Builds and prints the table.
      */
     void print();
+        
+  
 }

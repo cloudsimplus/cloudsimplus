@@ -1,6 +1,5 @@
 package org.cloudbus.cloudsim.util;
 
-import java.util.List;
 import org.cloudbus.cloudsim.Log;
 
 /**
@@ -37,15 +36,6 @@ public class HtmlTableBuilder extends AbstractTableBuilder {
     }
 
     @Override
-    protected void printColumn(List<Object> row, int columnIndex) {
-        Log.printFormatted("%s<td>%s</td>", identLine(columnIndex), getFormatedColumnData(row, columnIndex));
-    }
-
-    public String identLine(int columnIndex) {
-        return columnIndex == 0 ? "    " : "";
-    }
-
-    @Override
     protected void printRowClosing() {
         Log.printLine("\n  </tr>");
     }
@@ -56,7 +46,9 @@ public class HtmlTableBuilder extends AbstractTableBuilder {
     }
 
     @Override
-    protected void printColumnHeader(int columnIndex) {
-        Log.printFormatted("%s<th>%s</th>", identLine(columnIndex), getColumnHeaders().get(columnIndex));
-    }
+    public TableColumn addColumn(String columnTitle) {
+        TableColumn col = new HtmlTableColumn(this, columnTitle);
+        getColumns().add(col);
+        return col;
+    }    
 }

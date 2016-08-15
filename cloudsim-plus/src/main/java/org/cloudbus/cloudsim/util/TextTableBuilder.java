@@ -1,6 +1,5 @@
 package org.cloudbus.cloudsim.util;
 
-import java.util.List;
 import org.cloudbus.cloudsim.Log;
 
 /**
@@ -55,12 +54,6 @@ public class TextTableBuilder extends CsvTableBuilder {
         return String.format(format, str);
     }    
     
-    @Override
-    protected String getFormatedColumnData(final List<Object> row, final int columnIndex){
-        final String format = String.format("%%%ds", getColumnHeaders().get(columnIndex).length());
-        return String.format(format, super.getFormatedColumnData(row, columnIndex));
-    }    
-
     /**
      * Creates a horizontal line with the same width of the table.
      * @return The string containing the horizontal line
@@ -85,20 +78,21 @@ public class TextTableBuilder extends CsvTableBuilder {
      * @return the number of characters of column headers row
      */
     private int getLengthOfColumnHeadersRow(){
-        int length = 0;
-        for(int i = 0; i < getColumnHeaders().size(); i++){
-            length += generateColumn(getColumnHeaders().get(i)).length();
-        }
-        return length;
+        return getColumns().stream().mapToInt(col -> col.generateTitleHeader().length()).sum();
     }
     
     @Override
     public String getLineSeparator() { 
         return "-"; 
     }
-    
+
     @Override
-    public String getColumnSeparator(){ 
-        return "|"; 
+    public TableColumn addColumn(String columnTitle) {
+        TableColumn col = new TextTableColumn(this, columnTitle);
+        getColumns().add(col);
+        return col;
     }
+    
+    
+ 
 }

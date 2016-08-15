@@ -37,14 +37,15 @@ import org.cloudbus.cloudsim.resources.Ram;
 /**
  * A minimal example showing how to create a data center with 1 host and run 1
  * cloudlet on it.
+ * @author Manoel Campos da Silva Filho
  */
 public class MinimalExample {
     private static final String VMM = "Xen"; // Virtual Machine Monitor name
     private List<Cloudlet> cloudletList;
     private List<Vm> vmList;
-    private int cloudletCount = 0;
-    private int vmCount = 0;
-    private int hostCount = 0;
+    private int numberOfCreatedCloudlets = 0;
+    private int numberOfCreatedVms = 0;
+    private int numberOfCreatedHosts = 0;
 
     /**
      * Starts the simulation.
@@ -133,7 +134,7 @@ public class MinimalExample {
         used to allocate each core for requesting VMs.*/
         cpuCoresList.add(new PeSimple(0, new PeProvisionerSimple(mips)));
         
-        return new HostSimple(hostCount++,
+        return new HostSimple(numberOfCreatedHosts++,
                 new ResourceProvisionerSimple<>(new Ram(ram)),
                 new ResourceProvisionerSimple<>(new Bandwidth(bw)),
                 storage, cpuCoresList,
@@ -147,7 +148,7 @@ public class MinimalExample {
         long bw = 1000; // vm bandwidth 
         int pesNumber = 1; // number of CPU cores
         
-        return new VmSimple(vmCount++, 
+        return new VmSimple(numberOfCreatedVms++, 
                 broker.getId(), mips, pesNumber, ram, bw, storage,
                 VMM, new CloudletSchedulerTimeShared());
     }
@@ -164,7 +165,7 @@ public class MinimalExample {
         
         Cloudlet cloudlet
                 = new CloudletSimple(
-                        cloudletCount++, length, numberOfCpuCores, 
+                        numberOfCreatedCloudlets++, length, numberOfCpuCores, 
                         fileSize, outputSize, 
                         utilization, utilization, utilization);
         cloudlet.setUserId(broker.getId());

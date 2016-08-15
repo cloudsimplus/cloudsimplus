@@ -2,6 +2,7 @@ package org.cloudbus.cloudsim.util;
 
 import java.util.ArrayList;
 import java.util.List;
+import org.cloudbus.cloudsim.Log;
 
 /**
  * An abstract base class for implementing table builders.
@@ -9,10 +10,9 @@ import java.util.List;
  * @author Manoel Campos da Silva Filho
  */
 public abstract class AbstractTableBuilder implements TableBuilder {
-    /** @see #getColumnHeaders() */
-    private final List<String> columnHeaders;
-    /** @see #getColumnFormats() */
-    private final List<String> columnFormats;
+    /** @see #getColumns() */
+    private final List<TableColumn> columns;
+    
     /** @see #getTitle() */
     private String title;
     
@@ -28,25 +28,17 @@ public abstract class AbstractTableBuilder implements TableBuilder {
      * @param title Title of the table
      */
     public AbstractTableBuilder(final String title){
-        this.columnHeaders = new ArrayList<>();
-        this.columnFormats = new ArrayList<>();
+        this.columns = new ArrayList<>();
         this.rows = new ArrayList<>();
         setTitle(title);
     }
 
     /**
-     * @return the headers of the table columns
+     * @return the list of columns of the table
      */
-    protected List<String> getColumnHeaders() {
-        return columnHeaders;
-    }
-
-    /**
-     * @return the format to print each column data, following
-     * the formats defined in {@link String#format(java.lang.String, java.lang.Object...)}
-     */
-    protected List<String> getColumnFormats() {
-        return columnFormats;
+    @Override
+    public List<TableColumn> getColumns() {
+        return columns;
     }
 
     @Override
@@ -75,33 +67,19 @@ public abstract class AbstractTableBuilder implements TableBuilder {
         return row;
     }
     
-    @Override
-    public TableBuilder addColumn(final String columnTitle, String format){
-        if(format.trim().isEmpty()){
-            format = "%s";
-        }
-        getColumnHeaders().add(columnTitle);
-        getColumnFormats().add(format);
-        return this;
+    /**
+     * 
+     * @return true if there is at least a column with a subtitle, false if no column
+     * has a subtitle.
+     */
+    private boolean isThereAnySubtitledColumn(){
+        return getColumns().stream().anyMatch(col -> !col.getSubTitle().trim().isEmpty());
     }
-    
-    @Override
-    public TableBuilder addColumn(final String columnTitle){
-        return addColumn(columnTitle, "%s");
-    }
-
-    @Override
-    public TableBuilder addColumnList(final String columnTitles[]){
-        for(String columnTitle: columnTitles){
-            addColumn(columnTitle, "%s");
-        }
-        return this;
-    }    
     
     private void printRow(final List<Object> row) {
         printRowOpenning();
-        for(int i = 0; i < Math.min(getColumnHeaders().size(), row.size()); i++){
-            printColumn(row, i);
+        for(int i = 0; i < Math.min(getColumns().size(), row.size()); i++){
+            Log.print(getColumns().get(i).generateData(row.get(i)));
         }
         printRowClosing();
     }
@@ -115,31 +93,20 @@ public abstract class AbstractTableBuilder implements TableBuilder {
         printTableOpenning();
         printTitle();
         printColumnHeaders();
-        for(List<Object> row: getRows()){
-            printRow(row);
-        }
+        getRows().stream().forEach(row -> printRow(row));
         printTableClosing();
     }     
     
     protected void printColumnHeaders(){
         printRowOpenning();
-        for(int i = 0; i < getColumnHeaders().size(); i++){
-            printColumnHeader(i);
-        }
+        getColumns().forEach(col -> Log.print(col.generateTitleHeader()));
         printRowClosing();
+        if(isThereAnySubtitledColumn()){
+            printRowOpenning();
+            getColumns().forEach(col -> Log.print(col.generateSubtitleHeader()));
+            printRowClosing();
+        }
     }
-    
-    /**
-     * Gets the data of a given column, formatted according to the
-     * {@link #getColumnFormats() format} associated to that column. 
-     * @param row the row to get data of a specific column
-     * @param columnIndex the index of the column
-     * @return a string containing the formatted column
-     * @see #getColumnFormats() 
-     */
-    protected String getFormatedColumnData(final List<Object> row, final int columnIndex){
-        return String.format(getColumnFormats().get(columnIndex), row.get(columnIndex));
-    }        
     
     /**
      * Prints the string to open the table.
@@ -155,20 +122,7 @@ public abstract class AbstractTableBuilder implements TableBuilder {
      * Prints the string that has to precede each printed row.
      */
     protected abstract void printRowOpenning();
-    
-    /**
-     * Prints a given column header, opening and closing the column.
-     * @param columnIndex the index of the column to print the header
-     */
-    protected abstract void printColumnHeader(final int columnIndex);
-    
-    /**
-     * Prints a given column data for a specific row, opening and closing the column.
-     * @param row the row to print a given column data
-     * @param columnIndex the index of the column
-     */
-    protected abstract void printColumn(final List<Object> row, final int columnIndex);
-    
+        
     /**
      * Prints the string to close a row.
      */
@@ -178,4 +132,13 @@ public abstract class AbstractTableBuilder implements TableBuilder {
      * Prints the string to close the table.
      */
     protected abstract void printTableClosing();
+    
+    @Override
+    public TableBuilder addColumnList(String[] columnTitles) {
+        for(String column: columnTitles){
+            addColumn(column);
+        }
+        return this;
+    }
+    
 }
