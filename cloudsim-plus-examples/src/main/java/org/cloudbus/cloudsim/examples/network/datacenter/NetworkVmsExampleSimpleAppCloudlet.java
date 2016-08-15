@@ -5,6 +5,7 @@ import java.util.List;
 import org.cloudbus.cloudsim.Vm;
 import org.cloudbus.cloudsim.network.datacenter.AppCloudlet;
 import org.cloudbus.cloudsim.network.datacenter.CloudletExecutionTask;
+import org.cloudbus.cloudsim.network.datacenter.CloudletTask;
 import org.cloudbus.cloudsim.network.datacenter.NetworkCloudlet;
 import org.cloudbus.cloudsim.network.datacenter.NetworkVm;
 import org.cloudbus.cloudsim.utilizationmodels.UtilizationModel;
@@ -65,8 +66,11 @@ public class NetworkVmsExampleSimpleAppCloudlet extends NetworkVmsExampleAppClou
             netCloudlet.setAppCloudlet(app);
             // setting the owner of these Cloudlets
             netCloudlet.setUserId(getBroker().getId());
+            CloudletTask task;
             for(int i = 0; i < 2; i++){
-                netCloudlet.addTask(new CloudletExecutionTask(i, memory, taskLengthMI));
+                task = new CloudletExecutionTask(i, taskLengthMI);
+                task.setMemory(memory);
+                netCloudlet.addTask(task);
             }
             networkCloudletList.add(netCloudlet);
             currentNetworkCloudletId++;

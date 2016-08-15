@@ -85,8 +85,7 @@ public abstract class NetworkVmsExampleAppCloudletAbstract {
     private NetworkDatacenter datacenter;
     private NetDatacenterBroker broker;
     List<AppCloudlet> appCloudletList;
-    private AppCloudlet appCloudlet;
-
+   
     /**
      * Creates, starts, stops the simulation and shows results.
      */
@@ -281,7 +280,7 @@ public abstract class NetworkVmsExampleAppCloudletAbstract {
         List<AppCloudlet> list = new ArrayList<>();
         int currentAppCloudletId = 0;
 
-        // generate Application execution Requests
+        // Generate Application execution Requests
         for (int i = 0; i < NUMBER_OF_APP_CLOUDLETS; i++) {
             list.add(new AppCloudlet(currentAppCloudletId));
             currentAppCloudletId++;

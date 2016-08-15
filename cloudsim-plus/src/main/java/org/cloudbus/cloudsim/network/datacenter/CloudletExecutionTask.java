@@ -80,26 +80,11 @@ public class CloudletExecutionTask extends CloudletTask {
     /**
      * Creates a new task.
      * @param id task id
-     * @param memory memory used by the task
      * @param executionLength the execution length of the task (in MI)
-     * @param networkCloudlet the NetworkCloudlet that the task belongs to
      */
-    public CloudletExecutionTask(int id, long memory, long executionLength, NetworkCloudlet networkCloudlet) {
-        super(id, memory, networkCloudlet);
+    public CloudletExecutionTask(int id, long executionLength) {
+        super(id);
         this.length = executionLength;
-    }
-
-    /**
-     * Creates a new task without assigning it to a {@link NetworkCloudlet}
-     * (that has to be assigned further).
-     * 
-     * @param id task id
-     * @param memory memory used by the task
-     * @param executionLength the execution length of the task (in MI)
-     * @see #setNetworkCloudlet(org.cloudbus.cloudsim.network.datacenter.NetworkCloudlet) 
-     */
-    public CloudletExecutionTask(int id, long memory, long executionLength) {
-        this(id, memory, executionLength, null);
     }
 
     /**

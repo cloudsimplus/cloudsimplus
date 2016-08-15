@@ -1,17 +1,9 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package org.cloudbus.cloudsim.examples.network.datacenter;
 
 import java.util.ArrayList;
 import java.util.List;
-import org.cloudbus.cloudsim.core.CloudSim;
 import org.cloudbus.cloudsim.network.datacenter.AppCloudlet;
-import org.cloudbus.cloudsim.network.datacenter.NetDatacenterBroker;
 import org.cloudbus.cloudsim.network.datacenter.NetworkCloudlet;
-import org.cloudbus.cloudsim.network.datacenter.NetworkDatacenter;
 import org.cloudbus.cloudsim.network.datacenter.NetworkVm;
 import org.cloudbus.cloudsim.utilizationmodels.UtilizationModel;
 import org.cloudbus.cloudsim.utilizationmodels.UtilizationModelFull;
@@ -21,17 +13,13 @@ import org.cloudbus.cloudsim.utilizationmodels.UtilizationModelFull;
  * @author raysaoliveira
  */
 public class NetworkVmsExampleWithMetrics extends NetworkVmsExampleAppCloudletAbstract {
-    private List<NetworkVm> vmList;
     
     public NetworkVmsExampleWithMetrics() {
         super();
         /*
          Total Cost Price
          */
-        NetworkDatacenter datacenter = this.getDatacenter();
-        vmList = this.getVmlist();
-        NetDatacenterBroker broker = this.getBroker();
-        TotalCostPrice(datacenter, vmList, broker);
+        totalCostPrice();
 
         /* 
          AppCloudlet app = this.getAppCloudlet();
@@ -68,40 +56,37 @@ public class NetworkVmsExampleWithMetrics extends NetworkVmsExampleAppCloudletAb
      */
     public static void main(String[] args) {
         System.out.println("TESTE1");
-        NetworkVmsExampleWithMetrics networkVmsExampleWithMetrics = new NetworkVmsExampleWithMetrics();
-
+        new NetworkVmsExampleWithMetrics();
     }
    
-    private void TotalCostPrice(NetworkDatacenter datacenter, List<NetworkVm> vm, NetDatacenterBroker broker) {
-
+    private void totalCostPrice() {
         double memoryDataCenterVm, totalCost = 0;
         double bwDataCenterVm, miDataCenterVm, storageDataCenterVm;
-        int numberOfVms = datacenter.getCharacteristics().getHostList().size() * MAX_VMS_PER_HOST;
-        for (NetworkVm vms : vm) {
-            memoryDataCenterVm = ((datacenter.getCharacteristics().getCostPerMem()) * vms.getRam() * numberOfVms);
-            bwDataCenterVm = ((datacenter.getCharacteristics().getCostPerBw()) * vms.getBw() * numberOfVms);
-            miDataCenterVm = ((datacenter.getCharacteristics().getCostPerMi()) * vms.getMips() * numberOfVms);
-            storageDataCenterVm = ((datacenter.getCharacteristics().getCostPerStorage()) * vms.getSize() * numberOfVms);
+        int numberOfVms = getDatacenter().getCharacteristics().getHostList().size() * MAX_VMS_PER_HOST;
+        for (NetworkVm vms : getVmlist()) {
+            memoryDataCenterVm = ((getDatacenter().getCharacteristics().getCostPerMem()) * vms.getRam() * numberOfVms);
+            bwDataCenterVm = ((getDatacenter().getCharacteristics().getCostPerBw()) * vms.getBw() * numberOfVms);
+            miDataCenterVm = ((getDatacenter().getCharacteristics().getCostPerMi()) * vms.getMips() * numberOfVms);
+            storageDataCenterVm = ((getDatacenter().getCharacteristics().getCostPerStorage()) * vms.getSize() * numberOfVms);
 
             totalCost = memoryDataCenterVm + bwDataCenterVm + miDataCenterVm + storageDataCenterVm;
         }
         System.out.println("* Total Cost Price ******: " + totalCost);
     }
+    
     /*
-     private void ResponseTimeCloudlet(NetworkCloudlet cloudlet) {
-        
-     double rt = cloudlet.getFinishTime() - cloudlet.getSubmissionTime();
-     System.out.println("***** Tempo de resposta CLOUDLETS - " + rt);
-
+     private void responseTimeCloudlet(NetworkCloudlet cloudlet) {    
+        double rt = cloudlet.getFinishTime() - cloudlet.getSubmissionTime();
+        System.out.println("***** Tempo de resposta CLOUDLETS - " + rt);
      } */
 
     @Override
     protected List<NetworkCloudlet> createNetworkCloudlets(AppCloudlet app) {
         System.out.println("TESTE2");
-        List<NetworkCloudlet> networkCloudletList = new ArrayList<>(vmList.size());
+        List<NetworkCloudlet> networkCloudletList = new ArrayList<>(getVmlist().size());
         System.out.println("TESTE3");
         int currentNetworkCloudletId = 0;
-        for (NetworkVm vm : vmList) {
+        for (NetworkVm vm : getVmlist()) {
             System.out.println("TESTE4");
             long length = 4;
             long fileSize = 300;

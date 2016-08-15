@@ -62,27 +62,13 @@ public abstract class CloudletTask implements Identificable {
     /**
      * Creates a new task.
      * @param id task id
-     * @param memory memory used by the task
-     * @param networkCloudlet the NetworkCloudlet that the task belongs to
      */
-    public CloudletTask(int id, long memory, NetworkCloudlet networkCloudlet) {
+    public CloudletTask(int id) {
         super();
         this.id = id;
         this.startTime = 0;
         this.executionTime = 0;
-        this.memory = memory;
-        this.networkCloudlet = networkCloudlet;
-    }
-
-    /**
-     * Creates a new task without assigning it to a {@link NetworkCloudlet}
-     * (that has to be assigned further).
-     * @param id task id
-     * @param memory memory used by the task
-     * @see #setNetworkCloudlet(org.cloudbus.cloudsim.network.datacenter.NetworkCloudlet) 
-     */
-    public CloudletTask(int id, long memory) {
-        this(id, memory, null);
+        this.memory = 0;
     }
 
     /**

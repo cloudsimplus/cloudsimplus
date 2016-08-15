@@ -40,24 +40,10 @@ public class CloudletSendTask extends CloudletTask {
      * Creates a new task.
      *
      * @param id task id
-     * @param memory memory used by the task
-     * @param networkCloudlet the NetworkCloudlet that the task belongs to
      */
-    public CloudletSendTask(int id, long memory, NetworkCloudlet networkCloudlet) {
-        super(id, memory, networkCloudlet);
+    public CloudletSendTask(int id) {
+        super(id);
         this.packetsToSend = new ArrayList<>();
-    }
-    
-    /**
-     * Creates a new task without assigning it to a {@link NetworkCloudlet}
-     * (that has to be assigned further).
-     *
-     * @param id task id
-     * @param memory memory used by the task
-     * @see #setNetworkCloudlet(org.cloudbus.cloudsim.network.datacenter.NetworkCloudlet) 
-     */
-    public CloudletSendTask(int id, long memory) {
-        this(id, memory, null);
     }
 
     /**
@@ -69,6 +55,8 @@ public class CloudletSendTask extends CloudletTask {
      * @return the created packet
      */
     public HostPacket addPacket(int destinationVmId, int destinationCloudletId, long dataLength) {
+        if(getNetworkCloudlet() == null)
+            throw new RuntimeException("You must assign a NetworkCloudlet to this Task before adding packets.");
         HostPacket packet = new HostPacket(
                 getNetworkCloudlet().getVmId(), destinationVmId,
                 dataLength, -1, -1,
@@ -85,7 +73,6 @@ public class CloudletSendTask extends CloudletTask {
         return packetsToSend;
     }
 
-   
     /**
      * Gets the list of packets to send,
      * updating the sent time to the given time.

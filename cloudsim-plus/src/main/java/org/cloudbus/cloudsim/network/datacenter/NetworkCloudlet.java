@@ -8,6 +8,7 @@
 package org.cloudbus.cloudsim.network.datacenter;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.stream.LongStream;
 
@@ -121,7 +122,7 @@ public class NetworkCloudlet extends CloudletSimple implements Comparable<Object
     }
 
     public List<CloudletTask> getTasks() {
-        return tasks;
+        return Collections.unmodifiableList(tasks);
     }
 
     public long getMemory() {
@@ -237,10 +238,12 @@ public class NetworkCloudlet extends CloudletSimple implements Comparable<Object
      * and links the task to the NetworkCloudlet.
      * 
      * @param task Task to be added
+     * @return the NetworkCloudlet instance
      */
-    public void addTask(CloudletTask task) {
+    public NetworkCloudlet addTask(CloudletTask task) {
         task.setNetworkCloudlet(this);
-        getTasks().add(task);
+        tasks.add(task);
+        return this;
     }
 
     protected long numberOfExecutionTasks() {

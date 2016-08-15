@@ -46,30 +46,14 @@ public class CloudletReceiveTask extends CloudletTask {
      * Creates a new task.
      *
      * @param id task id
-     * @param memory memory used by the task
      * @param sourceVm the Vm where it is expected to receive packets from
-     * @param networkCloudlet the NetworkCloudlet that the task belongs to
      */
-    public CloudletReceiveTask(int id, long memory, 
-            int sourceVm, NetworkCloudlet networkCloudlet) {
-        super(id, memory, networkCloudlet);
+    public CloudletReceiveTask(int id, int sourceVm) {
+        super(id);
         this.packetsReceived = new ArrayList<>();
         this.sourceVmId = sourceVm;
     }
     
-    /**
-     * Creates a new task without assigning it to a {@link NetworkCloudlet}
-     * (that has to be assigned further).    
-     *
-     * @param id task id
-     * @param memory memory used by the task
-     * @param sourceVm the Vm where it is expected to receive packets from
-     * @see #setNetworkCloudlet(org.cloudbus.cloudsim.network.datacenter.NetworkCloudlet) 
-     */
-    public CloudletReceiveTask(int id, long memory, int sourceVm) {
-        this(id, memory, sourceVm, null);
-    }
-
     /**
      * Receives a packet sent from a {@link CloudletSendTask}
      * and add it the the received packet list.

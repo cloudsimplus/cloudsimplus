@@ -86,12 +86,12 @@ public class NetworkVmsExampleWorkflowAppCloudlet extends NetworkVmsExampleAppCl
     private void addSendTask(
             NetworkCloudlet sourceCloudlet,
             NetworkCloudlet destinationCloudlet) {
-        CloudletSendTask task = new CloudletSendTask(
-                sourceCloudlet.getTasks().size(), NETCLOUDLET_RAM, sourceCloudlet);
+        CloudletSendTask task = new CloudletSendTask(sourceCloudlet.getTasks().size());
+        task.setMemory(NETCLOUDLET_RAM);
+        sourceCloudlet.addTask(task);
         for(int i = 0; i < 100; i++) {
             task.addPacket(destinationCloudlet.getVmId(), destinationCloudlet.getId(), 1000);
         }
-        sourceCloudlet.getTasks().add(task);
     }
 
     /**
@@ -102,8 +102,9 @@ public class NetworkVmsExampleWorkflowAppCloudlet extends NetworkVmsExampleAppCl
      */
     private void addReceiveTask(NetworkCloudlet cloudlet, NetworkCloudlet sourceCloudlet) {
         CloudletTask task = new CloudletReceiveTask(
-                cloudlet.getTasks().size(), NETCLOUDLET_RAM, sourceCloudlet.getVmId(), cloudlet);
-        cloudlet.getTasks().add(task);
+                cloudlet.getTasks().size(), sourceCloudlet.getVmId());
+        task.setMemory(NETCLOUDLET_RAM);
+        cloudlet.addTask(task);
     }
 
     /**
@@ -117,10 +118,10 @@ public class NetworkVmsExampleWorkflowAppCloudlet extends NetworkVmsExampleAppCl
          * It would be defined the length instead. In this case, the execution time will
          * depend on the MIPS of the PE where the task is being executed.
          */
-        CloudletTask stage = new CloudletExecutionTask(
-                netCloudlet.getTasks().size(),
-                NETCLOUDLET_RAM, netCloudlet.getCloudletLength(), netCloudlet);
-        netCloudlet.getTasks().add(stage);
+        CloudletTask task = new CloudletExecutionTask(
+                netCloudlet.getTasks().size(), netCloudlet.getCloudletLength());
+        task.setMemory(NETCLOUDLET_RAM);
+        netCloudlet.addTask(task);
     }
 
     /**
