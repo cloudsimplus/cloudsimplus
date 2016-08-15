@@ -483,5 +483,6 @@ This project is licensed under [GNU Lesser GPLv3](http://www.gnu.org/licenses/lg
 # Contributing
 
 If you desire to contribute to the project, you are welcome. However, make sure to read the [contribution guide](CONTRIBUTING.md) before you start.
+If you just want to request a feature, feel to to use the [Issues page](https://github.com/manoelcampos/cloudsim-plus/issues).
 
 <p align="right"><a href="#top">:arrow_up:</a></p>
