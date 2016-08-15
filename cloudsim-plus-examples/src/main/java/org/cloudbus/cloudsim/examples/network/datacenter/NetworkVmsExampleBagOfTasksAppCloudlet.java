@@ -2,7 +2,6 @@ package org.cloudbus.cloudsim.examples.network.datacenter;
 
 import java.util.ArrayList;
 import java.util.List;
-import org.cloudbus.cloudsim.core.CloudSim;
 import org.cloudbus.cloudsim.network.datacenter.AppCloudlet;
 import org.cloudbus.cloudsim.network.datacenter.CloudletSendTask;
 import org.cloudbus.cloudsim.network.datacenter.CloudletExecutionTask;

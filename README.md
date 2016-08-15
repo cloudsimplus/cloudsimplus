@@ -3,7 +3,7 @@
 
 [![Build Status](https://img.shields.io/travis/manoelcampos/cloudsim-plus/master.svg)](https://travis-ci.org/manoelcampos/cloudsim-plus) [![Coverage Status](https://coveralls.io/repos/github/manoelcampos/cloudsim-plus/badge.svg?branch=master)](https://coveralls.io/github/manoelcampos/cloudsim-plus?branch=master) [![Codacy Badge](https://api.codacy.com/project/badge/Grade/3f132b184d5e475dbbcd356ee84499fc)](https://www.codacy.com/app/manoelcampos/cloudsim-plus?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=manoelcampos/cloudsim-plus&amp;utm_campaign=Badge_Grade) [![LGPL licensed](https://img.shields.io/badge/license-LGPL-blue.svg)](http://www.gnu.org/licenses/lgpl-3.0.en.html)
 
-CloudSim++ is a extensible simulation framework that enables modeling, simulation, and experimentation of emerging Cloud computing 
+CloudSim Plus is an extensible simulation framework that enables modeling, simulation, and experimentation of emerging Cloud computing 
 infrastructures and application services, allowing its users to focus on specific system design issues that they want to investigate, 
 without getting concerned about the low level details related to Cloud-based infrastructures and services.
  
@@ -14,7 +14,7 @@ Because utilization of real testbeds limits the experiments to the scale of the 
 the reproduction of results an extremely difficult undertaking, simulation may be used.
 Accordingly, the current project is a suitable tool to rapidly develop such simulation scenarios and run them quickly, in an usual and modest PC. 
 
-CloudSim++ is a fork of [CloudSim 3](https://github.com/Cloudslab/cloudsim/tree/20a7a55e537181489fcb9a2d42a3e539db6c0318) 
+CloudSim Plus is a fork of [CloudSim 3](https://github.com/Cloudslab/cloudsim/tree/20a7a55e537181489fcb9a2d42a3e539db6c0318) 
 that was re-engineered primarily to avoid code duplication for improved [code reusability](https://en.wikipedia.org/wiki/Code_reuse)
 and to ensure compliance with software engineering principles and recommendations, aiming to provide a more extensible, 
 less [coupled](https://en.wikipedia.org/wiki/Coupling_(computer_programming)), 
@@ -26,7 +26,7 @@ such as [Design Patterns](https://en.wikipedia.org/wiki/Software_design_pattern)
 and other ones such as [KISS](https://en.wikipedia.org/wiki/KISS_principle) 
 and [DRY](https://pt.wikipedia.org/wiki/Don't_repeat_yourself).
 
-CloudSim++ is developed through a partnership among the Systems, Security and Image Communication Lab of [Instituto de Telecomunicações (IT, Portugal)](http://www.it.pt), 
+CloudSim Plus is developed through a partnership among the Systems, Security and Image Communication Lab of [Instituto de Telecomunicações (IT, Portugal)](http://www.it.pt), 
 the [Universidade da Beira Interior (UBI, Portugal)](http://www.ubi.pt) and the 
 [Instituto Federal de Educação Ciência e Tecnologia do Tocantins (IFTO, Brazil)](http://www.ifto.edu.br). 
 It is supported by the Portuguese [Fundação para a Ciência e a Tecnologia (FCT)](https://www.fct.pt) 
@@ -35,11 +35,11 @@ and by the [Brazilian foundation Coordenação de Aperfeiçoamento de Pessoal de
 The original CloudSim project is developed in [the Cloud Computing and Distributed Systems (CLOUDS) Laboratory](http://cloudbus.org/), 
 at [the Computer Science and Software Engineering Department](http://www.csse.unimelb.edu.au/) of [the University of Melbourne](http://www.unimelb.edu.au/).
 
-# How to use CloudSim++
-CloudSim++ is a Maven project with some modules. The easier way to use the project is relying on some IDE such as NetBeans, Eclipse or IntelliJ IDEA. 
+# How to use CloudSim Plus
+CloudSim Plus is a Maven project with some modules. The easier way to use the project is relying on some IDE such as NetBeans, Eclipse or IntelliJ IDEA. 
 Accordingly, you can just check the gif below or see the complete instructions in the next sub-sections.
 
-![Download and running CloudSim++ Example using NetBeans](https://github.com/manoelcampos/cloudsim-plus/raw/master/cloudsim-plus-netbeans.gif)
+![Download and running CloudSim Plus Example using NetBeans](https://github.com/manoelcampos/cloudsim-plus/raw/master/cloudsim-plus-netbeans.gif)
 
 There is a high quality video version of this gif available in [YouTube](https://youtu.be/hvFJtvrkCNI).
 
@@ -50,7 +50,7 @@ Considering that you have [git](https://git-scm.com) and [maven](http://maven.ap
 download the project source by cloning the repositosy using the command `git clone https://github.com/manoelcampos/cloudsim-plus.git` 
 at a terminal. 
 
-The project has a [bash script](script/bootstrap.sh) that you can use to build and run CloudSim++ examples. 
+The project has a [bash script](script/bootstrap.sh) that you can use to build and run CloudSim Plus examples. 
 The script must be run on the project root directory in a Unix-like system such as Linux, FreeBDS and Mac OSX.
 
 To run some example type the command: `sh script/bootstrap.sh ExampleClassName`.
@@ -62,7 +62,7 @@ example, type `sh script/bootstrap.sh workload.SwfWorkloadFormatExample1`.
 The script checks if it is required to build the project, using maven in this case, making sure to download all dependencies. 
 To see what examples are available, just navigate through the [examples directory](/cloudsim-plus-examples/src/main/java/org/cloudbus/cloudsim/examples).
 
-To just build the CloudSim++ and examples packages, execute the script without any parameter.  
+To just build the CloudSim Plus and examples packages, execute the script without any parameter.  
  
 ## By means of an IDE (the easier way to just take a look or to create your own simulations)
 The easier way to use the project is relying on some IDE such as [NetBeans](http://netbeans.org), [Eclipse](http://eclipse.org) 
@@ -168,15 +168,15 @@ in order to really contribute to the project, benefiting everybody.
 Well, I strongly agree with you and in fact I tried that. However, the original CloudSim moved on to a new major release, 
 introducing a completely new set of classes to provide Container as a Service (CaaS) simulations, 
 before the changes proposed here being merged to the official repository. 
-The huge amount of contributions of CloudSim++ are discussed in the section below. 
+The huge amount of contributions of CloudSim Plus are discussed in the section below. 
 By this way, all the work performed here was not incorporated to allow this new CaaS module to be developed using this redesigned version.
 And unfortunately, there are several months of hard work that would need to be replicated in order to merge both projects.
 
-# OK, but I'm just wondering what are the real contributions of CloudSim++ :blush:
-Thanks for asking. Firstly, there is a huge amount of changes that make CloudSim++ **NOT BACKWARD COMPATIBLE** with original CloudSim. 
-However, to port your CloudSim simulations to CloudSim++ can be relatively easy, as it will be presented further. 
+# OK, but I'm just wondering what are the real contributions of CloudSim Plus :blush:
+Thanks for asking. Firstly, there is a huge amount of changes that make CloudSim Plus **NOT BACKWARD COMPATIBLE** with original CloudSim. 
+However, to port your CloudSim simulations to CloudSim Plus can be relatively easy, as it will be presented further. 
 
-Accordingly, the main contributions of CloudSim++ are:
+Accordingly, the main contributions of CloudSim Plus are:
 
 - Improved class hierarchy and code that is easier to understand.
 - Reusable and standards-conforming code.
@@ -266,7 +266,7 @@ Thus, the contributions in this area are as follows:
 
 ## New set of features
 
-Some totally new features were introduced in CloudSim++:
+Some totally new features were introduced in CloudSim Plus:
 
 - **A `TableBuilder` interface and a set of implementing classes to automate the process of printing simulation 
   results in different formats such as Text (ASCII), CSV and HTML**: the interface and classes are available
@@ -277,8 +277,8 @@ Some totally new features were introduced in CloudSim++:
 - **Listener objects that allow you to be notified when different events happen during your simulation execution**: 
   interfaces and classes included in the [org.cloudbus.cloudsim.listeners](/cloudsim-plus/src/main/java/org/cloudbus/cloudsim/listeners/) 
   package allow you to keep track of simulation execution and perform additional tasks when a given event happens. 
-  These listeners were implemented for some CloudSim++ classes such as below (the next section describes examples of this feature):
-    - at `CloudSim` class: to notify observers when any event is processed by CloudSim++.      
+  These listeners were implemented for some CloudSim Plus classes such as below (the next section describes examples of this feature):
+    - at `CloudSim` class: to notify observers when any event is processed by CloudSim Plus.      
     - at `Host` class: to notify observers when VMs processing is updated.
     - at `Vm` class: to notify observers when a host is allocated to a VM, a host is deallocated for a VM or the creation of a VM fails. 
     - at `Cloudlet` class: to notify observers when a cloudlet finishes executing.
@@ -311,7 +311,7 @@ New concise and easy to understand examples of features that have lots of questi
 
 ## Update to Java 8
 
-The [CloudSim++ module](/cloudsim-plus), that represents the Cloud Simulation API, now requires the JDK 8 and makes intensive use of 
+The [CloudSim Plus module](/cloudsim-plus), that represents the Cloud Simulation API, now requires the JDK 8 and makes intensive use of 
 [Lambda Expressions, Streams and Functional Programming](http://www.oracle.com/webfolder/technetwork/tutorials/obe/java/Lambda-QuickStart/index.html) 
 of the Java 8. However, [cloudsim-plus-examples](/cloudsim-plus-examples) project was updated just from Java 6 to 7 aiming 
 to provide yet simple examples for beginner Java programmers, but less verbose code than Java 6.
@@ -356,9 +356,9 @@ that even increases performance, such as allowing the
 For more information about the changes and features included in this release, please read the [CHANGELOG](CHANGELOG.md) 
 file and the [cloudsim-plus-examples](/cloudsim-plus-examples) project.
 
-# What are the practical differences of using CloudSim++ instead of CloudSim? How can I update my simulations in order to use CloudSim++?
+# What are the practical differences of using CloudSim Plus instead of CloudSim? How can I update my simulations in order to use CloudSim Plus?
 
-To update your simulations to use the new CloudSim++ you have to change the way that some objects are instantiated, because 
+To update your simulations to use the new CloudSim Plus you have to change the way that some objects are instantiated, because 
 there were introduced some new interfaces to follow the "program to an interface, not an implementation" 
 recommendation and also to increase [abstraction](https://en.wikipedia.org/wiki/Abstraction_(software_engineering)). 
 These new interfaces were also crucial to implement the [Null Object Pattern](https://en.wikipedia.org/wiki/Null_Object_pattern) 
