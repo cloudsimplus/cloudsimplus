@@ -16,11 +16,11 @@
 |
 <b><a href="#why-another-fork">Why another fork?</a></b>
 |
-<b><a href="#contributions">New contributions</a></b>
+<b><a href="#contributions">Main Contributions</a></b>
 |
 <b><a href="#differences">Differences from CloudSim</a></b>
 |
-<b><a href="#main-features">Main features</a></b>
+<b><a href="#general-features">General features</a></b>
 |
 <b><a href="#publications">Publications</a></b>
 |
@@ -450,8 +450,8 @@ Host host = new HostSimple(id,
 
 <p align="right"><a href="#top">:arrow_up:</a></p>
 
-<a id="main-features"></a>
-# Main features of the simulator
+<a id="general-features"></a>
+# General features of the simulator
 
   * Support for modeling and simulation of large scale Cloud computing data centers.
   * Support for modeling and simulation of virtualized server hosts, with customizable policies for provisioning host resources to virtual machines.
