@@ -663,8 +663,8 @@ public class CloudSim {
     /**
      * Used to hold an entity for some time.
      *
-     * @param src the src
-     * @param delay the delay
+     * @param src Id of entity who scheduled the event
+     * @param delay How many seconds after the current time the entity has to be held
      */
     public static void hold(int src, long delay) {
         SimEvent e = new SimEvent(SimEvent.HOLD_DONE, clock + delay, src);
@@ -675,8 +675,8 @@ public class CloudSim {
     /**
      * Used to pause an entity for some time.
      *
-     * @param src the src
-     * @param delay the delay
+     * @param src Id of entity who scheduled the event
+     * @param delay the time period for which the entity will be inactive
      */
     public static void pause(int src, double delay) {
         SimEvent e = new SimEvent(SimEvent.HOLD_DONE, clock + delay, src);
@@ -687,10 +687,9 @@ public class CloudSim {
     /**
      * Used to send an event from one entity to another.
      *
-     * @param src the src
-     * @param dest the dest
-     * @param delay How long from the current simulation time the event should
-     * be sent
+     * @param src Id of entity who scheduled the event.
+     * @param dest Id of entity that the event will be sent to
+     * @param delay How many seconds after the current simulation time the event should be sent
      * @param tag the tag
      * @param data the data
      */
@@ -707,9 +706,9 @@ public class CloudSim {
      * Used to send an event from one entity to another, with priority in the
      * queue.
      *
-     * @param src the src
-     * @param dest the dest
-     * @param delay the delay
+     * @param src Id of entity who scheduled the event.
+     * @param dest Id of entity that the event will be sent to
+     * @param delay How many seconds after the current simulation time the event should be sent
      * @param tag the tag
      * @param data the data
      */
@@ -728,7 +727,7 @@ public class CloudSim {
      * will be passed to the entity. This is done to avoid unnecessary context
      * switches.
      *
-     * @param src the src
+     * @param src Id of entity who scheduled the event.
      * @param p the p
      */
     public static void wait(int src, Predicate p) {
@@ -763,7 +762,7 @@ public class CloudSim {
     /**
      * Selects an event matching a predicate.
      *
-     * @param src the src
+     * @param src Id of entity who scheduled the event.
      * @param p the p
      * @return the sim event
      */
@@ -783,7 +782,7 @@ public class CloudSim {
     /**
      * Find first deferred event matching a predicate.
      *
-     * @param src the src
+     * @param src Id of entity who scheduled the event.
      * @param p the p
      * @return the sim event
      */
@@ -802,7 +801,7 @@ public class CloudSim {
     /**
      * Removes an event from the event queue.
      *
-     * @param src the src
+     * @param src Id of entity who scheduled the event.
      * @param p the p
      * @return the sim event
      */
@@ -825,7 +824,7 @@ public class CloudSim {
      * queue returns true if at least one event has been cancelled; false
      * otherwise.
      *
-     * @param src the src
+     * @param src Id of entity who scheduled the event.
      * @param p the p
      * @return true, if successful
      */

@@ -1,4 +1,6 @@
 # Introduction
+<https://groups.google.com/d/forum/cloudsim-plus>
+
 [![Build Status](https://img.shields.io/travis/manoelcampos/cloudsim-plus/master.svg)](https://travis-ci.org/manoelcampos/cloudsim-plus) [![Coverage Status](https://coveralls.io/repos/github/manoelcampos/cloudsim-plus/badge.svg?branch=master)](https://coveralls.io/github/manoelcampos/cloudsim-plus?branch=master) [![Codacy Badge](https://api.codacy.com/project/badge/Grade/3f132b184d5e475dbbcd356ee84499fc)](https://www.codacy.com/app/manoelcampos/cloudsim-plus?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=manoelcampos/cloudsim-plus&amp;utm_campaign=Badge_Grade) [![LGPL licensed](https://img.shields.io/badge/license-LGPL-blue.svg)](http://www.gnu.org/licenses/lgpl-3.0.en.html)
 
 CloudSim++ is a extensible simulation framework that enables modeling, simulation, and experimentation of emerging Cloud computing 
@@ -14,7 +16,7 @@ Accordingly, the current project is a suitable tool to rapidly develop such simu
 
 CloudSim++ is a fork of [CloudSim 3](https://github.com/Cloudslab/cloudsim/tree/20a7a55e537181489fcb9a2d42a3e539db6c0318) 
 that was re-engineered primarily to avoid code duplication for improved [code reusability](https://en.wikipedia.org/wiki/Code_reuse)
-and ensure compliance with software engineering principles and recommendations, aiming to provide a more extensible, 
+and to ensure compliance with software engineering principles and recommendations, aiming to provide a more extensible, 
 less [coupled](https://en.wikipedia.org/wiki/Coupling_(computer_programming)), 
 more [cohesive](https://en.wikipedia.org/wiki/Cohesion_(computer_science)) cloud simulation tool.  
 
@@ -131,12 +133,14 @@ CloudletsTableBuilderHelper.print(new TextTableBuilder(), finishedCloudlets);
 Log.printFormattedLine("Minimal Example finished!");
 ```
 
-# Documentation
+# Documentation and Help
 The project documentation originated from CloudSim was entirely updated and extended. 
 You can see the javadoc documentation for classes and their elements directly on your IDE.
 
 The documentation is available online at <http://cloudsimplus.org/docs/>.
 There is also a [Wiki page](https://github.com/manoelcampos/cloudsim-plus/wiki) with additional information such as a FAQ list.  
+
+A Google Group forum is also available at <https://groups.google.com/d/forum/cloudsim-plus>
 
 # Why should I care about this CloudSim fork? I just want to build my simulations. :neutral_face:
 Well, the design of the tool has a direct impact when you need to extend it in order to include some feature required for your simulations. 
