@@ -94,7 +94,7 @@ public class NetworkDatacenter extends DatacenterSimple {
      * @param schedulingInterval the scheduling delay to process each datacenter
      * received event
      *
-     * @throws Exception when one of the following scenarios occur:
+     * @throws IllegalArgumentException when one of the following scenarios occur:
      * <ul>
      * <li>creating this entity before initializing CloudSim package
      * <li>this entity name is <tt>null</tt> or empty
@@ -113,7 +113,7 @@ public class NetworkDatacenter extends DatacenterSimple {
             DatacenterCharacteristics characteristics,
             VmAllocationPolicyAbstract vmAllocationPolicy,
             List<FileStorage> storageList,
-            double schedulingInterval) throws Exception {
+            double schedulingInterval) {
         super(name, characteristics, vmAllocationPolicy, storageList, schedulingInterval);
         vmToSwitchMap = new HashMap<>();
         hostToSwitchMap = new HashMap<>();

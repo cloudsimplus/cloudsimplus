@@ -80,11 +80,16 @@ public abstract class NetworkVmsExampleAppCloudletAbstract {
     public static final int  NETCLOUDLET_OUTPUT_SIZE = 300;
     public static final long NETCLOUDLET_RAM = 100;
     public static final int  NETCLOUDLET_TASK_COMMUNICATION_LENGTH = 1;
+    
+    private int currentAppCloudletId = -1;   
 
-    private List<NetworkVm> vmlist;
+    /**
+     * @see #getVmList() 
+     */
+    private List<NetworkVm> vmList;
     private NetworkDatacenter datacenter;
-    private NetDatacenterBroker broker;
-    List<AppCloudlet> appCloudletList;
+    private List<NetDatacenterBroker> brokerList;
+    private List<AppCloudlet> appCloudletList;
    
     /**
      * Creates, starts, stops the simulation and shows results.
@@ -99,30 +104,60 @@ public abstract class NetworkVmsExampleAppCloudletAbstract {
             CloudSim.init(num_user, calendar, trace_flag);
 
             this.datacenter = createDatacenter("Datacenter_0");
-            this.broker = createBroker();
-            this.vmlist = createVMs();
-            this.broker.submitVmList(vmlist);
-            this.appCloudletList = createAppCloudlets();
-            for(AppCloudlet app: this.appCloudletList){
-                this.broker.submitCloudletList(app.getNetworkCloudletList());
+            this.brokerList = createBrokerForEachAppCloudlet();
+            this.appCloudletList = new ArrayList<>();
+            this.vmList = new ArrayList<>();
+                   
+            AppCloudlet app;
+            for(NetDatacenterBroker broker: this.brokerList){
+                this.vmList.addAll(createAndSubmitVMs(broker));
+                app = createAppCloudletAndSubmitToBroker(broker);
+                this.appCloudletList.add(app);    
             }
 
             CloudSim.startSimulation();
             CloudSim.stopSimulation();
 
-            // Final step: Print results when simulation is over
-            List<Cloudlet> newList = broker.getCloudletsFinishedList();
-            CloudletsTableBuilderHelper.print(new TextTableBuilder(), newList);
-            Log.printFormattedLine("%s finished!", this.getClass().getSimpleName());
-            Log.printFormattedLine("numberofcloudlet " + newList.size());
-            for(NetworkHost host: datacenter.<NetworkHost>getHostList()){
-                Log.printFormattedLine("Host %d Data transfered %d",
-                        host.getId(), host.getTotalDataTransferBytes());
-            }
+            showSimulationResults();
         } catch (Exception e) {
             e.printStackTrace();
-            Log.printLine("Unwanted errors happen");
+            Log.printLine("Unexpected errors happened");
         }
+    }
+
+    private void showSimulationResults() {
+        AppCloudlet app;
+        NetDatacenterBroker broker;
+        for(int i = 0; i < NUMBER_OF_APP_CLOUDLETS; i++){
+            broker = brokerList.get(i);
+            app = appCloudletList.get(i);
+            List<Cloudlet> newList = broker.getCloudletsFinishedList();
+            String caption = broker.getName() + " - AppCloudlet " + app.getId();
+            CloudletsTableBuilderHelper.print(new TextTableBuilder(caption), newList);
+            Log.printFormattedLine(
+                "Number of NetworkCloudlets for AppCloudlet %s: %d", app.getId(), newList.size());
+        }
+        
+        for(NetworkHost host: datacenter.<NetworkHost>getHostList()){
+            Log.printFormatted("\nHost %d Data transfered %d",
+                    host.getId(), host.getTotalDataTransferBytes());
+        }
+        
+        Log.printFormattedLine("\n\n%s finished!", this.getClass().getSimpleName());
+    }
+
+    /**
+     * Create a {@link NetDatacenterBroker} for each {@link AppCloudlet}.
+     * 
+     * @return the list of created NetDatacenterBroker
+     */
+    private  List<NetDatacenterBroker> createBrokerForEachAppCloudlet() {
+        List<NetDatacenterBroker> list = new ArrayList<>();
+        for(int i = 0; i < NUMBER_OF_APP_CLOUDLETS; i++){
+            list.add(new NetDatacenterBroker("Broker_"+i));
+        }
+        
+        return list;
     }
 
     /**
@@ -157,20 +192,14 @@ public abstract class NetworkVmsExampleAppCloudletAbstract {
                         ARCH, OS, VMM, hostList, TIME_ZONE, COST,
                         COST_PER_MEM, COST_PER_STORAGE, COST_PER_BW);
         // 6. Finally, we need to create a NetworkDatacenter object.
-        try {
-            NetworkDatacenter newDatacenter =
-                    new NetworkDatacenter(
-                            name, characteristics,
-                            new NetworkVmAllocationPolicy(hostList),
-                            storageList, 5);
-            // Create Internal Datacenter network
-            createNetwork(newDatacenter);
-            return newDatacenter;
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
-        return null;
+        NetworkDatacenter newDatacenter =
+                new NetworkDatacenter(
+                        name, characteristics,
+                        new NetworkVmAllocationPolicy(hostList),
+                        storageList, 5);
+        
+        createNetwork(newDatacenter);
+        return newDatacenter;
     }
 
     public List<Pe> createPEs(final int numberOfPEs, final int mips) {
@@ -183,22 +212,11 @@ public abstract class NetworkVmsExampleAppCloudletAbstract {
         }
         return peList;
     }
-
+    
     /**
-     * Creates the broker.
-     *
-     * @return the datacenter broker
+     * Creates internal Datacenter network.
+     * @param datacenter datacenter where the network will be created
      */
-    protected final NetDatacenterBroker createBroker() {
-        try {
-            NetDatacenterBroker newBroker = new NetDatacenterBroker("Broker");
-            return newBroker;
-        } catch (Exception e) {
-            e.printStackTrace();
-            return null;
-        }
-    }
-
     protected void createNetwork(NetworkDatacenter datacenter) {
         EdgeSwitch[] edgeSwitches = new EdgeSwitch[1];
         for (int i = 0; i < edgeSwitches.length; i++) {
@@ -215,21 +233,25 @@ public abstract class NetworkVmsExampleAppCloudletAbstract {
     }
 
     /**
-     * Creates virtual machines in a datacenter
+     * Creates a list of virtual machines in a datacenter for a given broker
+     * and submit the list to the broker.
      *
-     * @return
+     * @param broker The broker that will own the created VMs
+     * @return the list of created VMs
      */
-    protected final List<NetworkVm> createVMs() {
+    protected final List<NetworkVm> createAndSubmitVMs(NetDatacenterBroker broker) {
         final int numberOfVms = getDatacenterHostList().size() * MAX_VMS_PER_HOST;
-        final List<NetworkVm> vmList = new ArrayList<>();
+        final List<NetworkVm> list = new ArrayList<>();
         for (int i = 0; i < numberOfVms; i++) {
             NetworkVm vm =
                 new NetworkVm(i,
                     broker.getId(), VM_MIPS, VM_PES_NUMBER, VM_RAM, VM_BW, VM_SIZE, VMM,
                     new NetworkCloudletSpaceSharedScheduler(datacenter));
-            vmList.add(vm);
+            list.add(vm);
         }
-        return vmList;
+        
+        broker.submitVmList(list);
+        return list;
     }
 
     private List<Host> getDatacenterHostList() {
@@ -248,57 +270,55 @@ public abstract class NetworkVmsExampleAppCloudletAbstract {
      */
     protected List<NetworkVm> randomlySelectVmsForAppCloudlet(
             NetDatacenterBroker broker, int numberOfVmsToSelect) {
-        List<NetworkVm> vmList = new ArrayList<>();
-        int numOfExistingVms = vmlist.size();
+        List<NetworkVm> list = new ArrayList<>();
+        int numOfExistingVms = this.vmList.size();
         UniformDistr rand = new UniformDistr(0, numOfExistingVms, 5);
         for (int i = 0; i < numberOfVmsToSelect; i++) {
             int vmId = (int) rand.sample();
-            NetworkVm vm = VmList.getById(vmlist, vmId);
-            vmList.add(vm);
+            NetworkVm vm = VmList.getById(this.vmList, vmId);
+            list.add(vm);
         }
-        return vmList;
+        return list;
     }
 
-    public List<NetworkVm> getVmlist() {
-        return vmlist;
+    /**
+     * @return List of VMs of all Brokers.
+     */
+    public List<NetworkVm> getVmList() {
+        return vmList;
     }
 
     public NetworkDatacenter getDatacenter() {
         return datacenter;
     }
 
-    public NetDatacenterBroker getBroker() {
-        return broker;
+    public List<NetDatacenterBroker> getBrokerList() {
+        return brokerList;
     }
 
     /**
-     * Creates a list of {@link AppCloudlet} for the given broker.
+     * Creates an {@link AppCloudlet} with a list of {@link NetworkCloudlet}'s
+     * and submit its NetworkCloudlets to a given Broker.
      *
-     * @return
+     * @param broker the broker to submit the list of NetworkCloudlets of the
+     * AppCloudlet.
+     * @return the created AppCloudlet
      */
-    protected final List<AppCloudlet> createAppCloudlets() {
-        List<AppCloudlet> list = new ArrayList<>();
-        int currentAppCloudletId = 0;
-
-        // Generate Application execution Requests
-        for (int i = 0; i < NUMBER_OF_APP_CLOUDLETS; i++) {
-            list.add(new AppCloudlet(currentAppCloudletId));
-            currentAppCloudletId++;
-        }
-
-        for (AppCloudlet app : list) {
-            app.setNetworkCloudletList(createNetworkCloudlets(app));
-        }
-
-        return list;
+    protected final AppCloudlet createAppCloudletAndSubmitToBroker(NetDatacenterBroker broker) {
+        AppCloudlet app = new AppCloudlet(++currentAppCloudletId);
+        app.setNetworkCloudletList(createNetworkCloudlets(app, broker));
+        broker.submitCloudletList(app.getNetworkCloudletList());
+        return app;
     }
 
     /**
      * Creates a list of {@link NetworkCloudlet} that together represents the distributed
      * processes of a given {@link AppCloudlet}.
-     * @param app
-     * @return
+     * 
+     * @param app The AppCloudlet that the created NetworkCloudlets will belong to.
+     * @param broker broker to associate the NetworkCloudlets
+     * @return the list of create NetworkCloudlets
      */
-    protected abstract List<NetworkCloudlet> createNetworkCloudlets(AppCloudlet app);
+    protected abstract List<NetworkCloudlet> createNetworkCloudlets(AppCloudlet app, NetDatacenterBroker broker);
 
 }

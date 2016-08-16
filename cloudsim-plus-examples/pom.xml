@@ -7,7 +7,7 @@
         <version>1.0</version>
     </parent>
     <artifactId>cloudsim-plus-examples</artifactId>
-    <name>CloudSim++ Examples</name>
+    <name>CloudSim Plus Examples</name>
     <description>
         Ready-to-run examples of how to use CloudSim++ API.
         Each Java class with a main method is a different example.

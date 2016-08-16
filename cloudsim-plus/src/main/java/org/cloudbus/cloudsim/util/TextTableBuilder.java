@@ -49,7 +49,7 @@ public class TextTableBuilder extends CsvTableBuilder {
      * @return The centralized version of the string
      */
     private String getCentralizedString(final String str) {
-        final int identationLength = (getLengthOfColumnHeadersRow() - str.length()) / 2;
+        final int identationLength = getLengthOfColumnHeadersRow() - str.length();
         final String format = String.format("\n%%%ds\n", identationLength);
         return String.format(format, str);
     }    

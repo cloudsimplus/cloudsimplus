@@ -3,6 +3,7 @@ package org.cloudbus.cloudsim.examples.network.datacenter;
 import java.util.ArrayList;
 import java.util.List;
 import org.cloudbus.cloudsim.network.datacenter.AppCloudlet;
+import org.cloudbus.cloudsim.network.datacenter.NetDatacenterBroker;
 import org.cloudbus.cloudsim.network.datacenter.NetworkCloudlet;
 import org.cloudbus.cloudsim.network.datacenter.NetworkVm;
 import org.cloudbus.cloudsim.utilizationmodels.UtilizationModel;
@@ -63,7 +64,7 @@ public class NetworkVmsExampleWithMetrics extends NetworkVmsExampleAppCloudletAb
         double memoryDataCenterVm, totalCost = 0;
         double bwDataCenterVm, miDataCenterVm, storageDataCenterVm;
         int numberOfVms = getDatacenter().getCharacteristics().getHostList().size() * MAX_VMS_PER_HOST;
-        for (NetworkVm vms : getVmlist()) {
+        for (NetworkVm vms : getVmList()) {
             memoryDataCenterVm = ((getDatacenter().getCharacteristics().getCostPerMem()) * vms.getRam() * numberOfVms);
             bwDataCenterVm = ((getDatacenter().getCharacteristics().getCostPerBw()) * vms.getBw() * numberOfVms);
             miDataCenterVm = ((getDatacenter().getCharacteristics().getCostPerMi()) * vms.getMips() * numberOfVms);
@@ -81,12 +82,12 @@ public class NetworkVmsExampleWithMetrics extends NetworkVmsExampleAppCloudletAb
      } */
 
     @Override
-    protected List<NetworkCloudlet> createNetworkCloudlets(AppCloudlet app) {
+    protected List<NetworkCloudlet> createNetworkCloudlets(AppCloudlet app, NetDatacenterBroker broker) {
         System.out.println("TESTE2");
-        List<NetworkCloudlet> networkCloudletList = new ArrayList<>(getVmlist().size());
+        List<NetworkCloudlet> networkCloudletList = new ArrayList<>(getVmList().size());
         System.out.println("TESTE3");
         int currentNetworkCloudletId = 0;
-        for (NetworkVm vm : getVmlist()) {
+        for (NetworkVm vm : getVmList()) {
             System.out.println("TESTE4");
             long length = 4;
             long fileSize = 300;
@@ -100,7 +101,7 @@ public class NetworkVmsExampleWithMetrics extends NetworkVmsExampleAppCloudletAb
                     utilizationModel, utilizationModel, utilizationModel);
             netCloudlet.setAppCloudlet(app);
             // setting the owner of these Cloudlets
-            netCloudlet.setUserId(getBroker().getId());
+            netCloudlet.setUserId(broker.getId());
             networkCloudletList.add(netCloudlet);
             currentNetworkCloudletId++;
         }

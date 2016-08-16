@@ -70,7 +70,7 @@ public class DatacenterSimple extends SimEntity implements Datacenter {
      * <li>creating this entity before initializing CloudSim package
      * <li>this entity name is <tt>null</tt> or empty
      * <li>this entity has <tt>zero</tt> number of PEs (Processing Elements).
-     * <br/>
+     * <br>
      * No PEs mean the Cloudlets can't be processed. A CloudResource must
      * contain one or more Machines. A Machine must contain one or more PEs.
      * </ul>
