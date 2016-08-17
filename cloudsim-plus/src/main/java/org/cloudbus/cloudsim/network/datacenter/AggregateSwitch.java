@@ -76,7 +76,7 @@ public class AggregateSwitch extends Switch {
         super.processPacketDown(ev);
         
         NetworkPacket hspkt = (NetworkPacket) ev.getData();
-        int recvVmId = hspkt.pkt.receiverVmId;
+        int recvVmId = hspkt.getPkt().getReceiverVmId();
         
         // packet is coming from root so need to be sent to edgelevel swich
         // find the id for edgelevel switch
@@ -94,7 +94,7 @@ public class AggregateSwitch extends Switch {
         super.processPacketUp(ev);
         
         NetworkPacket hspkt = (NetworkPacket) ev.getData();
-        int recvVmId = hspkt.pkt.receiverVmId;
+        int recvVmId = hspkt.getPkt().getReceiverVmId();
 
         // packet is coming from edge level router so need to be sent to
         // either root or another edge level swich

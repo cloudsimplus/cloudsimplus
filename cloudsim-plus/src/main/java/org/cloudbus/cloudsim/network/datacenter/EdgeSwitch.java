@@ -80,17 +80,17 @@ public class EdgeSwitch extends Switch {
     protected void processPacketDown(SimEvent ev) {
         super.processPacketDown(ev);
         
-        NetworkPacket hspkt = (NetworkPacket) ev.getData();
-        int recvVmId = hspkt.pkt.receiverVmId;
+        NetworkPacket netPkt = (NetworkPacket) ev.getData();
+        int recvVmId = netPkt.getPkt().getReceiverVmId();
         // packet is to be recieved by host
         int hostid = getDatacenter().vmToHostMap.get(recvVmId);
-        hspkt.receiverHostId = hostid;
+        netPkt.setReceiverHostId(hostid);
         List<NetworkPacket> pktlist = getPacketToHost().get(hostid);
         if (pktlist == null) {
             pktlist = new ArrayList<>();
             getPacketToHost().put(hostid, pktlist);
         }
-        pktlist.add(hspkt);
+        pktlist.add(netPkt);
     }    
 
     @Override
@@ -98,21 +98,21 @@ public class EdgeSwitch extends Switch {
         super.processPacketUp(ev);
         
         NetworkPacket hspkt = (NetworkPacket) ev.getData();
-        int recvVmId = hspkt.pkt.receiverVmId;
+        int recvVmId = hspkt.getPkt().getReceiverVmId();
 
         // packet is recieved from host
         // packet is to be sent to aggregate level or to another host in the same level
-        int hostid = getDatacenter().vmToHostMap.get(recvVmId);
-        NetworkHost hs = getHostList().get(hostid);
-        hspkt.receiverHostId = hostid;
+        int hostId = getDatacenter().vmToHostMap.get(recvVmId);
+        NetworkHost hs = getHostList().get(hostId);
+        hspkt.setReceiverHostId(hostId);
 
         // packet needs to go to a host which is connected directly to switch
         if (hs != null) {
             // packet to be sent to host connected to the switch
-            List<NetworkPacket> pktlist = getPacketToHost().get(hostid);
+            List<NetworkPacket> pktlist = getPacketToHost().get(hostId);
             if (pktlist == null) {
                 pktlist = new ArrayList<>();
-                getPacketToHost().put(hostid, pktlist);
+                getPacketToHost().put(hostId, pktlist);
             }
             pktlist.add(hspkt);
             return;
@@ -145,7 +145,7 @@ public class EdgeSwitch extends Switch {
                     Iterator<NetworkPacket> it = hspktlist.iterator();
                     while (it.hasNext()) {
                         NetworkPacket hspkt = it.next();
-                        double delay = 1000 * hspkt.pkt.dataLength / avband;
+                        double delay = 1000 * hspkt.getPkt().getDataLength() / avband;
 
                         this.send(tosend, delay, CloudSimTags.NETWORK_EVENT_UP, hspkt);
                     }
@@ -163,7 +163,7 @@ public class EdgeSwitch extends Switch {
                         NetworkPacket hspkt = it.next();
                         // hspkt.recieverhostid=tosend;
                         // hs.packetrecieved.add(hspkt);
-                        this.send(getId(), hspkt.pkt.dataLength / avband, CloudSimTags.NETWORK_EVENT_HOST, hspkt);
+                        this.send(getId(), hspkt.getPkt().getDataLength() / avband, CloudSimTags.NETWORK_EVENT_HOST, hspkt);
                     }
                     hspktlist.clear();
                 }

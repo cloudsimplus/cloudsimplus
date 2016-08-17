@@ -18,7 +18,6 @@ import org.cloudbus.cloudsim.schedulers.CloudletSchedulerSpaceShared;
 import org.cloudbus.cloudsim.ResCloudlet;
 import org.cloudbus.cloudsim.core.CloudSim;
 import org.cloudbus.cloudsim.core.CloudSimTags;
-import org.cloudbus.cloudsim.resources.Processor;
 
 /**
  * NetworkCloudletSchedulerSpaceShared implements a policy of scheduling performed by a
@@ -41,14 +40,14 @@ import org.cloudbus.cloudsim.resources.Processor;
  */
 public class NetworkCloudletSpaceSharedScheduler extends CloudletSchedulerSpaceShared {
     /**
-     * @see #getPacketsToSendMap() 
+     * @see #getHostPacketsToSendMap() 
      */
-    private final Map<Integer, List<HostPacket>> packetsToSendMap;
+    private final Map<Integer, List<HostPacket>> hostPacketsToSendMap;
 
     /**
-     * @see #getPacketsReceivedMap() 
+     * @see #getHostPacketsReceivedMap() 
      */
-    private final Map<Integer, List<HostPacket>> packetsReceivedMap;
+    private final Map<Integer, List<HostPacket>> hostPacketsReceivedMap;
     
     /**
      * The datacenter where the VM using this scheduler runs.
@@ -66,8 +65,8 @@ public class NetworkCloudletSpaceSharedScheduler extends CloudletSchedulerSpaceS
     public NetworkCloudletSpaceSharedScheduler(NetworkDatacenter datacenter) {
         super();
         this.datacenter = datacenter;
-        packetsToSendMap = new HashMap<>();
-        packetsReceivedMap = new HashMap<>();
+        hostPacketsToSendMap = new HashMap<>();
+        hostPacketsReceivedMap = new HashMap<>();
     }
 
     @Override
@@ -108,12 +107,12 @@ public class NetworkCloudletSpaceSharedScheduler extends CloudletSchedulerSpaceS
         pktList.addAll(dataTask.getPacketsToSend(CloudSim.clock()));
         dataTask.getPacketsToSend().clear();
         
-        packetsToSendMap.put(netcl.getVmId(), pktList);
+        hostPacketsToSendMap.put(netcl.getVmId(), pktList);
         startNextTask(netcl);
     }
 
     protected List<HostPacket> getVmPacketsToSendList(NetworkCloudlet netcl) {
-        List<HostPacket> pktList = packetsToSendMap.get(netcl.getVmId());
+        List<HostPacket> pktList = hostPacketsToSendMap.get(netcl.getVmId());
         if (pktList == null) {
             pktList = new ArrayList<>();
         }
@@ -125,7 +124,7 @@ public class NetworkCloudletSpaceSharedScheduler extends CloudletSchedulerSpaceS
         
         final List<HostPacket> pktToRemove = getPacketsSentToGivenTask(task);
         // Asumption: packet will not arrive in the same cycle
-        pktToRemove.forEach(pkt -> pkt.receiveTime = CloudSim.clock());
+        pktToRemove.forEach(pkt -> pkt.setReceiveTime(CloudSim.clock()));
         task.computeExecutionTime(CloudSim.clock());
 
         getListOfPacketsSentFromVm(task.getSourceVmId()).removeAll(pktToRemove);
@@ -134,10 +133,10 @@ public class NetworkCloudletSpaceSharedScheduler extends CloudletSchedulerSpaceS
     }
 
     protected List<HostPacket> getListOfPacketsSentFromVm(int sourceVmId) {
-        List<HostPacket> list = packetsReceivedMap.get(sourceVmId);
+        List<HostPacket> list = hostPacketsReceivedMap.get(sourceVmId);
         if (list == null){
             list = new ArrayList<>();
-            packetsReceivedMap.put(sourceVmId, list);
+            hostPacketsReceivedMap.put(sourceVmId, list);
         }
         
         return list;
@@ -152,7 +151,7 @@ public class NetworkCloudletSpaceSharedScheduler extends CloudletSchedulerSpaceS
         List<HostPacket> packetsFromExpectedSenderVm = getListOfPacketsSentFromVm(task.getSourceVmId());
         return packetsFromExpectedSenderVm
                 .stream()
-                .filter(pkt -> pkt.receiverVmId == task.getNetworkCloudlet().getVmId())
+                .filter(pkt -> pkt.getReceiverVmId() == task.getNetworkCloudlet().getVmId())
                 .collect(Collectors.toList());
     }
 
@@ -191,23 +190,23 @@ public class NetworkCloudletSpaceSharedScheduler extends CloudletSchedulerSpaceS
     }
     
     /**
-     * Gets the map of packets to send, where each key is the Id of the sending VM and each
+     * Gets the map of {@link HostPacket}'s to send, where each key is the Id of the sending VM and each
      * value is the list of packets to send.
      * 
      * @return 
      */
-    public Map<Integer, List<HostPacket>> getPacketsToSendMap() {
-        return packetsToSendMap;
+    public Map<Integer, List<HostPacket>> getHostPacketsToSendMap() {
+        return hostPacketsToSendMap;
     }
 
     /**
-     * Gets the map of packets received, where each key is the Id of a sender VM and each
+     * Gets the map of {@link HostPacket}'s received, where each key is the Id of a sender VM and each
      * value is the list of packets sent by that VM.
      * 
      * @return 
      */
-    public Map<Integer, List<HostPacket>> getPacketsReceivedMap() {
-        return packetsReceivedMap;
+    public Map<Integer, List<HostPacket>> getHostPacketsReceivedMap() {
+        return hostPacketsReceivedMap;
     }
 
 }

@@ -88,7 +88,7 @@ public class NetworkVmsExampleWorkflowAppCloudlet extends NetworkVmsExampleAppCl
         task.setMemory(NETCLOUDLET_RAM);
         sourceCloudlet.addTask(task);
         for(int i = 0; i < 100; i++) {
-            task.addPacket(destinationCloudlet.getVmId(), destinationCloudlet.getId(), 1000);
+            task.addPacket(destinationCloudlet, 1000);
         }
     }
 

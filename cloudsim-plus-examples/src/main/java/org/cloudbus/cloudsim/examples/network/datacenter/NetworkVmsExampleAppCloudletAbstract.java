@@ -139,7 +139,7 @@ public abstract class NetworkVmsExampleAppCloudletAbstract {
         }
         
         for(NetworkHost host: datacenter.<NetworkHost>getHostList()){
-            Log.printFormatted("\nHost %d Data transfered %d",
+            Log.printFormatted("\nHost %d data transfered: %d bytes",
                     host.getId(), host.getTotalDataTransferBytes());
         }
         

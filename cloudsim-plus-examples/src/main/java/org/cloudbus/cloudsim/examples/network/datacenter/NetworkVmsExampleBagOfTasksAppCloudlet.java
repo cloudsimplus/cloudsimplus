@@ -37,6 +37,13 @@ public class NetworkVmsExampleBagOfTasksAppCloudlet extends NetworkVmsExampleApp
         new NetworkVmsExampleBagOfTasksAppCloudlet();
     }
 
+    /**
+     * @todo @author manoelcampos It isn't adding packets to send.
+     * See {@link CloudletSendTask#addPacket(int, int, long) }
+     * @param app
+     * @param broker
+     * @return 
+     */
     @Override
     public List<NetworkCloudlet> createNetworkCloudlets(AppCloudlet app, NetDatacenterBroker broker){
         final int NETCLOUDLETS_FOR_EACH_APP = 3;

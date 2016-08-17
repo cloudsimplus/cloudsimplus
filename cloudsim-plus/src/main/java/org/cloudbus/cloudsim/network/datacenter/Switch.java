@@ -166,7 +166,7 @@ public abstract class Switch extends SimEntity {
     protected void processHostPacket(SimEvent ev) {
         // Send packet to host
         NetworkPacket hspkt = (NetworkPacket) ev.getData();
-        NetworkHost hs = hostList.get(hspkt.receiverHostId);
+        NetworkHost hs = hostList.get(hspkt.getReceiverHostId());
         hs.getPacketsReceived().add(hspkt);
     }
 
@@ -199,7 +199,7 @@ public abstract class Switch extends SimEntity {
         //
         // int src=ev.getSource();
         NetworkPacket hspkt = (NetworkPacket) ev.getData();
-        int recvVmId = hspkt.pkt.receiverVmId;
+        int recvVmId = hspkt.getPkt().getReceiverVmId();
         CloudSim.cancelAll(getId(), new PredicateType(CloudSimTags.NETWORK_EVENT_SEND));
         schedule(getId(), switchingDelay, CloudSimTags.NETWORK_EVENT_SEND);
     }
@@ -254,7 +254,7 @@ public abstract class Switch extends SimEntity {
                     Iterator<NetworkPacket> it = hspktlist.iterator();
                     while (it.hasNext()) {
                         NetworkPacket hspkt = it.next();
-                        double delay = 1000 * hspkt.pkt.dataLength / avband;
+                        double delay = 1000 * hspkt.getPkt().getDataLength() / avband;
 
                         this.send(tosend, delay, CloudSimTags.NETWORK_EVENT_DOWN, hspkt);
                     }
@@ -271,7 +271,7 @@ public abstract class Switch extends SimEntity {
                     Iterator<NetworkPacket> it = hspktlist.iterator();
                     while (it.hasNext()) {
                         NetworkPacket hspkt = it.next();
-                        double delay = 1000 * hspkt.pkt.dataLength / avband;
+                        double delay = 1000 * hspkt.getPkt().getDataLength() / avband;
 
                         this.send(tosend, delay, CloudSimTags.NETWORK_EVENT_UP, hspkt);
                     }
@@ -289,7 +289,7 @@ public abstract class Switch extends SimEntity {
                         NetworkPacket hspkt = it.next();
                         // hspkt.recieverhostid=tosend;
                         // hs.packetsReceived.add(hspkt);
-                        this.send(getId(), hspkt.pkt.dataLength / avband, CloudSimTags.NETWORK_EVENT_HOST, hspkt);
+                        this.send(getId(), hspkt.getPkt().getDataLength() / avband, CloudSimTags.NETWORK_EVENT_HOST, hspkt);
                     }
                     hspktlist.clear();
                 }

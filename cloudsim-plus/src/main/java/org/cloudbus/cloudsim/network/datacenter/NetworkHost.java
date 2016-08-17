@@ -67,20 +67,6 @@ public class NetworkHost extends HostSimple {
      */
     public double bandwidth;
 
-    /**
-     * Time when last job will finish on CPU1.
-     *
-     * @todo it is not being used.
-         *
-     */
-    public List<Double> CPUfinTimeCPU = new ArrayList<>();
-
-    /**
-     * @todo it is not being used.
-         *
-     */
-    public double fintime = 0;
-
     public NetworkHost(
             int id,
             ResourceProvisioner<Integer> ramProvisioner,
@@ -102,17 +88,19 @@ public class NetworkHost extends HostSimple {
         // insert in each vm packet recieved
         receivePackets();
         for (Vm vm : getVmList()) {
-            double time = ((NetworkVm) vm).updateVmProcessing(currentTime, getVmScheduler()
-                    .getAllocatedMipsForVm(vm));
+            double time = 
+                    ((NetworkVm) vm).updateVmProcessing(
+                            currentTime, 
+                            getVmScheduler().getAllocatedMipsForVm(vm));
             if (time > 0.0 && time < smallerTime) {
                 smallerTime = time;
             }
         }
+        
         // send the packets to other hosts/VMs
         sendPackets();
 
         return smallerTime;
-
     }
 
     /**
@@ -120,18 +108,18 @@ public class NetworkHost extends HostSimple {
      */
     private void receivePackets() {
         for (NetworkPacket hs : packetsReceived) {
-            hs.pkt.receiveTime = CloudSim.clock();
+            hs.getPkt().setReceiveTime(CloudSim.clock());
 
             // insert the packet in recievedlist of VM
-            Vm vm = VmList.getById(getVmList(), hs.pkt.receiverVmId);
+            Vm vm = VmList.getById(getVmList(), hs.getPkt().getReceiverVmId());
             NetworkCloudletSpaceSharedScheduler sched = ((NetworkCloudletSpaceSharedScheduler) vm.getCloudletScheduler());
-            List<HostPacket> pktlist = sched.getPacketsReceivedMap().get(hs.pkt.senderVmId);
+            List<HostPacket> pktlist = sched.getHostPacketsReceivedMap().get(hs.getPkt().getSenderVmId());
 
             if (pktlist == null) {
                 pktlist = new ArrayList<>();
-                sched.getPacketsReceivedMap().put(hs.pkt.senderVmId, pktlist);
+                sched.getHostPacketsReceivedMap().put(hs.getPkt().getSenderVmId(), pktlist);
             }
-            pktlist.add(hs.pkt);
+            pktlist.add(hs.getPkt());
 
         }
         packetsReceived.clear();
@@ -148,66 +136,72 @@ public class NetworkHost extends HostSimple {
 
         for (NetworkPacket hs : packetToSendLocal) {
             flag = true;
-            hs.sendTime = hs.receiveTime;
-            hs.pkt.receiveTime = CloudSim.clock();
-            // insertthe packet in recievedlist
-            Vm vm = VmList.getById(getVmList(), hs.pkt.receiverVmId);
+            hs.setSendTime(hs.getReceiveTime());
+            hs.getPkt().setReceiveTime(CloudSim.clock());
+            // insert the packet in recievedlist
+            Vm vm = VmList.getById(getVmList(), hs.getPkt().getReceiverVmId());
 
-            List<HostPacket> pktlist = ((NetworkCloudletSpaceSharedScheduler) vm.getCloudletScheduler()).getPacketsReceivedMap()
-                    .get(hs.pkt.senderVmId);
+            List<HostPacket> pktlist = 
+                    ((NetworkCloudletSpaceSharedScheduler) vm.getCloudletScheduler())
+                            .getHostPacketsReceivedMap().get(hs.getPkt().getSenderVmId());
             if (pktlist == null) {
                 pktlist = new ArrayList<>();
-                ((NetworkCloudletSpaceSharedScheduler) vm.getCloudletScheduler()).getPacketsReceivedMap().put(hs.pkt.senderVmId,
-                        pktlist);
+                    ((NetworkCloudletSpaceSharedScheduler) vm.getCloudletScheduler())
+                            .getHostPacketsReceivedMap().put(hs.getPkt().getSenderVmId(), pktlist);
             }
-            pktlist.add(hs.pkt);
+            pktlist.add(hs.getPkt());
         }
+        
         if (flag) {
             for (Vm vm : getVmList()) {
-                vm.updateVmProcessing(CloudSim.clock(), getVmScheduler().getAllocatedMipsForVm(vm));
+                vm.updateVmProcessing(
+                        CloudSim.clock(), getVmScheduler().getAllocatedMipsForVm(vm));
             }
         }
 
-        // Sending packet to other VMs therefore packet is forwarded to a Edge switch
+        // Sending packet to other VMs therefore packet is forwarded to an Edge switch
         packetToSendLocal.clear();
         double avband = bandwidth / packetToSendGlobal.size();
         for (NetworkPacket hs : packetToSendGlobal) {
-            double delay = (1000 * hs.pkt.dataLength) / avband;
-            totalDataTransferBytes += hs.pkt.dataLength;
+            double delay = (1000 * hs.getPkt().getDataLength()) / avband;
+            totalDataTransferBytes += hs.getPkt().getDataLength();
 
-            CloudSim.send(getDatacenter().getId(), getEdgeSwitch().getId(), delay, CloudSimTags.NETWORK_EVENT_UP, hs);
             // send to switch with delay
+            CloudSim.send(
+                    getDatacenter().getId(), getEdgeSwitch().getId(), 
+                    delay, CloudSimTags.NETWORK_EVENT_UP, hs);
         }
         packetToSendGlobal.clear();
     }
 
     /**
      * Sends all lists of packets of a given Vm.
-     * @param vm the VM which the packets will be sent
+     * @param sourceVm the VM from where the packets will be sent
      */
-    protected void sendAllPacketListsOfVm(Vm vm) {
-        NetworkCloudletSpaceSharedScheduler sched = (NetworkCloudletSpaceSharedScheduler) vm.getCloudletScheduler();
-        for (Entry<Integer, List<HostPacket>> es : sched.getPacketsToSendMap().entrySet()) {
-            sendPacketListOfVm(es, vm);
+    protected void sendAllPacketListsOfVm(Vm sourceVm) {
+        NetworkCloudletSpaceSharedScheduler sched = 
+                (NetworkCloudletSpaceSharedScheduler) sourceVm.getCloudletScheduler();
+        for (Entry<Integer, List<HostPacket>> es : sched.getHostPacketsToSendMap().entrySet()) {
+            sendPacketListOfVm(es, sourceVm);
         }
     }
 
     /**
      * Sends all packets of a specific packet list of a given Vm.
-     * @param es The entry set from a packet map
-     * where the key is the sender VM id and the value
-     * is the list of packets to send
-     * @param vm the sender VM
+     * 
+     * @param es The entry set from a packet map where the key is the 
+     * sender VM id and the value is the list of packets to send
+     * @param senderVm the sender VM
      */
-    protected void sendPacketListOfVm(Entry<Integer, List<HostPacket>> es, Vm vm) {
-        List<HostPacket> pktlist = es.getValue();
-        for (HostPacket pkt : pktlist) {
-            NetworkPacket hpkt = new NetworkPacket(getId(), pkt, vm.getId(), pkt.senderVmId);
-            Vm vm2 = VmList.getById(this.getVmList(), hpkt.receiverVmId);
-            if (vm2 != null) {
-                packetToSendLocal.add(hpkt);
+    protected void sendPacketListOfVm(Entry<Integer, List<HostPacket>> es, Vm senderVm) {
+        List<HostPacket> pktList = es.getValue();
+        for (HostPacket hostPkt : pktList) {
+            NetworkPacket networkPkt = new NetworkPacket(getId(), hostPkt);
+            Vm receiverVm = VmList.getById(this.getVmList(), hostPkt.getReceiverVmId());
+            if (receiverVm != null) {
+                packetToSendLocal.add(networkPkt);
             } else {
-                packetToSendGlobal.add(hpkt);
+                packetToSendGlobal.add(networkPkt);
             }
         }
     }

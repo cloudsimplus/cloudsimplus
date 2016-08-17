@@ -102,7 +102,7 @@ public class CloudletSimple implements Cloudlet {
     /**
      * The format of decimal numbers.
      */
-    private DecimalFormat num;
+    private final DecimalFormat num;
 
     /** @see #getVm() */
     protected int vmId;
