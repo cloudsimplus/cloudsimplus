@@ -18,7 +18,7 @@ import org.cloudbus.cloudsim.schedulers.CloudletScheduler;
  * datacenters. It executes actions related to management of packets (sent and
  * received).
  *
- * <br/>Please refer to following publication for more details:<br/>
+ * <br>Please refer to following publication for more details:<br>
  * <ul>
  * <li>
  * <a href="http://dx.doi.org/10.1109/UCC.2011.24">

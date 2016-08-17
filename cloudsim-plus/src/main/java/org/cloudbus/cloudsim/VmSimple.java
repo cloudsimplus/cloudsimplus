@@ -193,7 +193,6 @@ public class VmSimple implements Vm {
             double result = getCloudletScheduler().updateVmProcessing(currentTime, mipsShare);
             HostToVmEventInfo info = new HostToVmEventInfo(currentTime, host, this);
             onUpdateVmProcessingListener.update(info);
-            //Log.println(Log.Level.DEBUG, getClass(), "updateVmProcessing: next finishing cloudlet time: %.2f", result);
             return result;
         }
         

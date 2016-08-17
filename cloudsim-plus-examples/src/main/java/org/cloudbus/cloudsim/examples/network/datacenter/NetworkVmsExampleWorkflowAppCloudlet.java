@@ -58,15 +58,15 @@ public class NetworkVmsExampleWorkflowAppCloudlet extends NetworkVmsExampleAppCl
                 networkCloudletList[i].getId(), appCloudlet.getId());
         }
 
-        //Cloudlet 0 Tasks
+        //NetworkCloudlet 0 Tasks
         addExecutionTask(networkCloudletList[0]);
         addSendTask(networkCloudletList[0], networkCloudletList[2]);
 
-        //Cloudlet 1 Tasks
+        //NetworkCloudlet 1 Tasks
         addExecutionTask(networkCloudletList[1]);
         addSendTask(networkCloudletList[1], networkCloudletList[2]);
 
-        //Cloudlet 2 Tasks
+        //NetworkCloudlet 2 Tasks
         addReceiveTask(networkCloudletList[2], networkCloudletList[0]);
         addReceiveTask(networkCloudletList[2], networkCloudletList[1]);
         addExecutionTask(networkCloudletList[2]);
@@ -84,11 +84,14 @@ public class NetworkVmsExampleWorkflowAppCloudlet extends NetworkVmsExampleAppCl
     private void addSendTask(
             NetworkCloudlet sourceCloudlet,
             NetworkCloudlet destinationCloudlet) {
+        final long PACKET_DATA_LENGTH_IN_BYTES = 1000;
+        final long NUMBER_OF_PACKETS_TO_SEND = 100;
+
         CloudletSendTask task = new CloudletSendTask(sourceCloudlet.getTasks().size());
         task.setMemory(NETCLOUDLET_RAM);
         sourceCloudlet.addTask(task);
-        for(int i = 0; i < 100; i++) {
-            task.addPacket(destinationCloudlet, 1000);
+        for(int i = 0; i < NUMBER_OF_PACKETS_TO_SEND; i++) {
+            task.addPacket(destinationCloudlet, PACKET_DATA_LENGTH_IN_BYTES);
         }
     }
 

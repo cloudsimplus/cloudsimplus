@@ -34,7 +34,7 @@ public class NetworkPacket {
      * Information about the virtual sender and receiver entities of the packet
      * (the sender and receiver Cloudlet and their respective VMs).
      */
-    private HostPacket pkt;
+    private HostPacket hostPacket;
 
     /**
      * Id of the sender host.
@@ -64,7 +64,7 @@ public class NetworkPacket {
      * receiver Cloudlets and their VMs.
      */
     public NetworkPacket(int senderHostId, HostPacket pkt) {
-        this.pkt = pkt;
+        this.hostPacket = pkt;
         this.sendTime = pkt.getSendTime();
         this.senderHostId = senderHostId;
     }
@@ -85,8 +85,8 @@ public class NetworkPacket {
         return receiveTime;
     }
 
-    public HostPacket getPkt() {
-        return pkt;
+    public HostPacket getHostPacket() {
+        return hostPacket;
     }
 
     public void setSendTime(double sendTime) {

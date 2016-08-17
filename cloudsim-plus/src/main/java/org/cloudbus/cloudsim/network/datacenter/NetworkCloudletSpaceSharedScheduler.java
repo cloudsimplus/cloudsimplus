@@ -83,7 +83,7 @@ public class NetworkCloudletSpaceSharedScheduler extends CloudletSchedulerSpaceS
         
         /**
          * @todo @author manoelcampos It should be used polymorphism to avoid
-         * using these if's for each task type.
+         * including these if's for each type of task.
          */
         if ((netcl.getCurrentTaskNum() == -1)) {
             startNextTask(netcl);
@@ -96,7 +96,6 @@ public class NetworkCloudletSpaceSharedScheduler extends CloudletSchedulerSpaceS
             addPacketsToBeSent(netcl);
         }
         else if (netcl.getCurrentTask() instanceof CloudletReceiveTask) {
-            //Log.println(Log.Level.DEBUG, getClass(), currentTime, "updateCloudletProcessing - Update NetworkCloudlet %d WAIT_RECV task", netcl.getId());
             receivePackets(netcl);
         }
     }

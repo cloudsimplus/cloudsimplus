@@ -126,10 +126,10 @@ public class HostSimple implements Host {
             }
         }
 
-        HostUpdatesVmsProcessingEventInfo info = 
+        HostUpdatesVmsProcessingEventInfo eventInfo = 
                 new HostUpdatesVmsProcessingEventInfo(currentTime, this);
-        info.setCompletionTimeOfNextFinishingCloudlet(completionTimeOfNextFinishingCloudlet);
-        onUpdateVmsProcessingListener.update(info);
+        eventInfo.setCompletionTimeOfNextFinishingCloudlet(completionTimeOfNextFinishingCloudlet);
+        onUpdateVmsProcessingListener.update(eventInfo);
 
         return completionTimeOfNextFinishingCloudlet;
     }

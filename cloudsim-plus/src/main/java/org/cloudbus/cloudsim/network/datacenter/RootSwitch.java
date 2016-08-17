@@ -77,7 +77,7 @@ public class RootSwitch extends Switch {
         super.processPacketUp(ev);
         
         NetworkPacket hspkt = (NetworkPacket) ev.getData();
-        int recvVmId = hspkt.getPkt().getReceiverVmId();
+        int recvVmId = hspkt.getHostPacket().getReceiverVmId();
 
         // get id of edge switch
         int edgeSwitchId = getDatacenter().vmToSwitchMap.get(recvVmId);
