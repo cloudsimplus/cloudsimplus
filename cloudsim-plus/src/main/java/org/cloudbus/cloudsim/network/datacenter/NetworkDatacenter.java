@@ -7,6 +7,7 @@
  */
 package org.cloudbus.cloudsim.network.datacenter;
 
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -49,7 +50,7 @@ import org.cloudbus.cloudsim.resources.FileStorage;
  * </p>
  *
  * @author Saurabh Kumar Garg
- * @since CloudSim Toolkit 3.0
+ * @author Manoel Campos da Silva Filho
  * 
  * @todo @author manoelcampos If an AllocationPolicy is not being used, why it is being created. Perhaps a
  * better class hierarchy should be created, introducing some abstract class or
@@ -59,29 +60,24 @@ import org.cloudbus.cloudsim.resources.FileStorage;
 public class NetworkDatacenter extends DatacenterSimple {
 
     /**
-     * A map between VMs and Switches, where each key is a VM id and the
-     * corresponding value is the id of the switch where the VM is connected to.
+     * @see #getVmToSwitchMap() 
      */
-    public Map<Integer, Integer> vmToSwitchMap;
+    private final Map<Integer, Integer> vmToSwitchMap;
 
     /**
-     * A map between hosts and Switches, where each key is a host id and the
-     * corresponding value is the id of the switch where the host is connected
-     * to.
+     * @see #getHostToSwitchMap() 
      */
-    public Map<Integer, Integer> hostToSwitchMap;
+    private final Map<Integer, Integer> hostToSwitchMap;
 
     /**
-     * A map of datacenter switches where each key is a switch id and the
-     * corresponding value is the switch itself.
+     * @see #getSwitchMap() 
      */
-    public Map<Integer, Switch> switchMap;
+    private final Map<Integer, Switch> switchMap;
 
     /**
-     * A map between VMs and Hosts, where each key is a VM id and the
-     * corresponding value is the id of the host where the VM is placed.
+     * @see #getVmToHostMap() 
      */
-    public Map<Integer, Integer> vmToHostMap;
+    private final Map<Integer, Integer> vmToHostMap;
 
     /**
      * Instantiates a new NetworkDatacenter object.
@@ -144,6 +140,14 @@ public class NetworkDatacenter extends DatacenterSimple {
         vmToHostMap.put(vm.getId(), vm.getHost().getId());
         Log.printLine(vm.getId() + " VM is created on " + vm.getHost().getId());
         return true;
+    }
+    
+    /**
+     * Adds a {@link Switch} to the Datacenter.
+     * @param sw the Switch to be added
+     */
+    public void addSwitch(Switch sw){
+        switchMap.put(sw.getId(), sw);
     }
 
     @Override
@@ -228,6 +232,80 @@ public class NetworkDatacenter extends DatacenterSimple {
         }
 
         checkCloudletsCompletionForAllHosts();
+    }
+
+    /**
+     * Gets a map of datacenter switches where each key is a switch id and the
+     * corresponding value is the switch itself.
+     * @return a read-only map of Switches from the Datacenter
+     */
+    public Map<Integer, Switch> getSwitchMap() {
+        return Collections.unmodifiableMap(switchMap);
+    }
+
+    /**
+     * Gets a map between VMs and Switches, where each key is a VM id and the
+     * corresponding value is the id of the switch where the VM is connected to.
+     * 
+     * @return a read-only map of VMs connected to Switches
+     */
+    public Map<Integer, Integer> getVmToSwitchMap() {
+        return Collections.unmodifiableMap(vmToSwitchMap);
+    }
+    
+    /**
+     * Connects a VM to a given Switch.
+     * 
+     * @param vm the VM to be connected
+     * @param sw the Switch to connect the VM to
+     */
+    public void addVmToSwitch(Vm vm, Switch sw){
+        vmToSwitchMap.put(vm.getId(), sw.getId());
+    }
+
+    /**
+     * Gets a map between hosts and Switches, where each key is a host id and the
+     * corresponding value is the id of the switch where the host is connected
+     * to.
+     * 
+     * @return a read-only map of Host connected to Switches
+     */
+    public Map<Integer, Integer> getHostToSwitchMap() {
+        return Collections.unmodifiableMap(hostToSwitchMap);
+    }
+    
+    /**
+     * Connects a host to a given Switch.
+     * 
+     * @param host the host to be connected
+     * @param sw the Switch to connect the host to
+     */
+    public void addHostToSwitch(Host host, Switch sw){
+        hostToSwitchMap.put(host.getId(), sw.getId());
+    }
+
+    /**
+     * Gets a map between VMs and Hosts, where each key is a VM id and the
+     * corresponding value is the id of the host where the VM is placed.
+     * 
+     * @return a read-only map of VMs placed into Hosts
+     * 
+     * @todo @author manoelcampos This mapping doesn't make sense, once the placement of 
+     * VMs into Hosts is dynamic. A VM can be migrated to another host
+     * due to several reasons.
+     */
+    public Map<Integer, Integer> getVmToHostMap() {
+        return Collections.unmodifiableMap(vmToHostMap);
+    }
+    
+    /**
+     * Connects a VM to a given host.
+     * 
+     * @param vm the VM to be connected
+     * @param host the host to connect the VM to
+     */
+    public void addVmToHost(Vm vm, Host host){
+        vmToHostMap.put(vm.getId(), host.getId());
     }
 
 }

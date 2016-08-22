@@ -106,17 +106,6 @@ public class CloudletExecutionTask extends CloudletTask {
     public void setLength(long length) {
         this.length = length;
     }
-    
-    /**
-     * Indicates if the task is finished or not, depending
-     * on the number of MI {@link #getTotalExecutedLenght()  executed so far}.
-     * 
-     * @return true if the task executed all the MI
-     * defined in its execution length, false otherwise
-     */
-    public boolean isFinished(){
-        return totalExecutedLenght == length;
-    }
 
     /**
      * Gets the length of this CloudletTask that has been executed so far (in MI).
@@ -148,6 +137,7 @@ public class CloudletExecutionTask extends CloudletTask {
             return false;
         
         this.totalExecutedLenght = Math.min(totalExecutedLenghtSoFar, length);
+        setFinished(this.totalExecutedLenght == length);
         return true;
     }
 

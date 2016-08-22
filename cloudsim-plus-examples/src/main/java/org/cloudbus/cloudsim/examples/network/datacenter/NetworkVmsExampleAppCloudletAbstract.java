@@ -75,11 +75,9 @@ public abstract class NetworkVmsExampleAppCloudletAbstract {
 
     public static final int  NETCLOUDLET_PES_NUMBER = VM_PES_NUMBER;
     public static final int  NETCLOUDLET_EXECUTION_TASK_LENGTH = 4000;
-    public static final int  NETCLOUDLET_PES = 1;
     public static final int  NETCLOUDLET_FILE_SIZE = 300;
     public static final int  NETCLOUDLET_OUTPUT_SIZE = 300;
     public static final long NETCLOUDLET_RAM = 100;
-    public static final int  NETCLOUDLET_TASK_COMMUNICATION_LENGTH = 1;
     
     private int currentAppCloudletId = -1;   
 
@@ -99,7 +97,7 @@ public abstract class NetworkVmsExampleAppCloudletAbstract {
         try {
             int num_user = 1; // number of cloud users
             Calendar calendar = Calendar.getInstance();
-            boolean trace_flag = false; // mean trace events
+            boolean trace_flag = false;
 
             CloudSim.init(num_user, calendar, trace_flag);
 
@@ -163,7 +161,7 @@ public abstract class NetworkVmsExampleAppCloudletAbstract {
     /**
      * Creates the datacenter.
      *
-     * @param name the name
+     * @param name the datacenter name
      *
      * @return the datacenter
      */
@@ -221,13 +219,13 @@ public abstract class NetworkVmsExampleAppCloudletAbstract {
         EdgeSwitch[] edgeSwitches = new EdgeSwitch[1];
         for (int i = 0; i < edgeSwitches.length; i++) {
             edgeSwitches[i] = new EdgeSwitch("Edge" + i, datacenter);
-            datacenter.switchMap.put(edgeSwitches[i].getId(), edgeSwitches[i]);
+            datacenter.addSwitch(edgeSwitches[i]);
         }
 
         for (NetworkHost host : datacenter.<NetworkHost>getHostList()) {
             int switchNum = host.getId() / edgeSwitches[0].getPorts();
             edgeSwitches[switchNum].getHostList().put(host.getId(), host);
-            datacenter.hostToSwitchMap.put(host.getId(), edgeSwitches[switchNum].getId());
+            datacenter.addHostToSwitch(host, edgeSwitches[switchNum]);
             host.setEdgeSwitch(edgeSwitches[switchNum]);
         }
     }

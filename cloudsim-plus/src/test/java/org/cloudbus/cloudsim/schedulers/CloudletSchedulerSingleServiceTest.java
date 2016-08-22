@@ -376,7 +376,7 @@ public class CloudletSchedulerSingleServiceTest {
 
         assertFalse(cloudletScheduler.hasFinishedCloudlets());
 
-        assertEquals(0, cloudletScheduler.updateVmProcessing(CLOUDLET_LENGTH, mipsShare), 0);
+        assertEquals(Double.MAX_VALUE, cloudletScheduler.updateVmProcessing(CLOUDLET_LENGTH, mipsShare), 0);
 
         assertTrue(cloudletScheduler.hasFinishedCloudlets());
     }

@@ -121,7 +121,7 @@ public class HostSimple implements Host {
         for (Vm vm : getVmList()) {
             double time = vm.updateVmProcessing(
                     currentTime, getVmScheduler().getAllocatedMipsForVm(vm));
-            if (time > 0.0 && time < completionTimeOfNextFinishingCloudlet) {
+            if (time < completionTimeOfNextFinishingCloudlet) {
                 completionTimeOfNextFinishingCloudlet = time;
             }
         }

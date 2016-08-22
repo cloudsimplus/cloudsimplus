@@ -8,9 +8,7 @@
 package org.cloudbus.cloudsim.network.datacenter;
 
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
-import java.util.Map.Entry;
 
 import org.cloudbus.cloudsim.core.CloudSimTags;
 import org.cloudbus.cloudsim.core.SimEvent;
@@ -83,12 +81,12 @@ public class EdgeSwitch extends Switch {
         NetworkPacket netPkt = (NetworkPacket) ev.getData();
         int recvVmId = netPkt.getHostPacket().getReceiverVmId();
         // packet is to be recieved by host
-        int hostid = getDatacenter().vmToHostMap.get(recvVmId);
+        int hostid = getDatacenter().getVmToHostMap().get(recvVmId);
         netPkt.setReceiverHostId(hostid);
-        List<NetworkPacket> pktlist = getPacketToHost().get(hostid);
+        List<NetworkPacket> pktlist = getPacketToHostMap().get(hostid);
         if (pktlist == null) {
             pktlist = new ArrayList<>();
-            getPacketToHost().put(hostid, pktlist);
+            getPacketToHostMap().put(hostid, pktlist);
         }
         pktlist.add(netPkt);
     }    
@@ -97,81 +95,66 @@ public class EdgeSwitch extends Switch {
     protected void processPacketUp(SimEvent ev) {
         super.processPacketUp(ev);
         
-        NetworkPacket hspkt = (NetworkPacket) ev.getData();
-        int recvVmId = hspkt.getHostPacket().getReceiverVmId();
+        NetworkPacket netPkt = (NetworkPacket) ev.getData();
+        int receiverVmId = netPkt.getHostPacket().getReceiverVmId();
 
         // packet is recieved from host
         // packet is to be sent to aggregate level or to another host in the same level
-        int hostId = getDatacenter().vmToHostMap.get(recvVmId);
-        NetworkHost hs = getHostList().get(hostId);
-        hspkt.setReceiverHostId(hostId);
+        int hostId = getDatacenter().getVmToHostMap().get(receiverVmId);
+        NetworkHost host = getHostList().get(hostId);
+        netPkt.setReceiverHostId(hostId);
 
         // packet needs to go to a host which is connected directly to switch
-        if (hs != null) {
-            // packet to be sent to host connected to the switch
-            List<NetworkPacket> pktlist = getPacketToHost().get(hostId);
-            if (pktlist == null) {
-                pktlist = new ArrayList<>();
-                getPacketToHost().put(hostId, pktlist);
-            }
-            pktlist.add(hspkt);
+        if (host != null) {
+            addPacketToBeSentToHost(host.getId(), netPkt);
             return;
         }
         
         // otherwise
         // packet is to be sent to upper switch
-        // @todo ASSUMPTION: EACH EDGE is connected to one aggregate level switch
-        // if there are more than one Aggregate level switch one need to modify the following code
+        /** 
+         * @todo ASSUMPTION: EACH EDGE is connected to one aggregate level switch.
+         * If there are more than one Aggregate level switch, the following code has to be modified.
+        */
         Switch sw = getUplinkSwitches().get(0);
-        List<NetworkPacket> pktlist = getUplinkSwitchPacketList().get(sw.getId());
-        if (pktlist == null) {
-            pktlist = new ArrayList<>();
-            getUplinkSwitchPacketList().put(sw.getId(), pktlist);
-        }
-        pktlist.add(hspkt);
+        addPacketToBeSentToUplinkSwitch(sw.getId(), netPkt);
     }
 
     @Override
     protected void processPacketForward(SimEvent ev) {
-        // search for the host and packets..send to them
+        /**
+         * @todo @author manoelcampos these methods below appear
+         * to have duplicated code from methods with the same name in 
+         * the super class.
+         */
+        forwardPacketsToUplinkSwitches();
+        forwardPacketsToHosts();
+    }
 
-        if (getUplinkSwitchPacketList() != null) {
-            for (Entry<Integer, List<NetworkPacket>> es : getUplinkSwitchPacketList().entrySet()) {
-                int tosend = es.getKey();
-                List<NetworkPacket> hspktlist = es.getValue();
-                if (!hspktlist.isEmpty()) {
-                    // sharing bandwidth between packets
-                    double avband = getUplinkBandwidth() / hspktlist.size();
-                    Iterator<NetworkPacket> it = hspktlist.iterator();
-                    while (it.hasNext()) {
-                        NetworkPacket hspkt = it.next();
-                        double delay = 1000 * hspkt.getHostPacket().getDataLength() / avband;
-
-                        this.send(tosend, delay, CloudSimTags.NETWORK_EVENT_UP, hspkt);
-                    }
-                    hspktlist.clear();
+    private void forwardPacketsToHosts() {
+        if (getPacketToHostMap() != null) {
+            for (Integer hostId : getPacketToHostMap().keySet()) {
+                List<NetworkPacket> packetList = getHostPacketList(hostId);
+                for (NetworkPacket pkt: packetList) {
+                    double delay = networkDelayForPacketTransmission(pkt, getDownlinkBandwidth(), packetList);
+                    this.send(getId(), delay, CloudSimTags.NETWORK_EVENT_HOST, pkt);
                 }
+                packetList.clear();
             }
         }
-        if (getPacketToHost() != null) {
-            for (Entry<Integer, List<NetworkPacket>> es : getPacketToHost().entrySet()) {
-                List<NetworkPacket> hspktlist = es.getValue();
-                if (!hspktlist.isEmpty()) {
-                    double avband = getDownlinkBandwidth() / hspktlist.size();
-                    Iterator<NetworkPacket> it = hspktlist.iterator();
-                    while (it.hasNext()) {
-                        NetworkPacket hspkt = it.next();
-                        // hspkt.recieverhostid=tosend;
-                        // hs.packetrecieved.add(hspkt);
-                        this.send(getId(), hspkt.getHostPacket().getDataLength() / avband, CloudSimTags.NETWORK_EVENT_HOST, hspkt);
-                    }
-                    hspktlist.clear();
+    }
+
+    private void forwardPacketsToUplinkSwitches() {
+        if (getUplinkSwitchPacketMap() != null) {
+            for (Integer destinationSwitchId : getUplinkSwitchPacketMap().keySet()) {
+                List<NetworkPacket> packetList = getUplinkSwitchPacketList(destinationSwitchId);
+                for(NetworkPacket netPkt: packetList) {
+                    double delay = networkDelayForPacketTransmission(netPkt, getUplinkBandwidth(), packetList);
+                    this.send(destinationSwitchId, delay, CloudSimTags.NETWORK_EVENT_UP, netPkt);
                 }
+                packetList.clear();
             }
         }
-
-        // or to switch at next level.
-        // clear the list
     }
 
     @Override

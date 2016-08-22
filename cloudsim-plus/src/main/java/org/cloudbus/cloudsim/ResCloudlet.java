@@ -162,7 +162,7 @@ public class ResCloudlet {
         this.totalCompletionTime = 0.0;
         this.startExecTime = 0.0;
 
-        //In case a Cloudlet has been executed partially by some other cloud hostList.
+        //In case a Cloudlet has been executed partially by some other host
         this.cloudletFinishedSoFar = cloudlet.getCloudletFinishedSoFar() * Consts.MILLION;
     }
     

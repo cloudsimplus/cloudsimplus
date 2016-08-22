@@ -883,8 +883,9 @@ public class DatacenterSimple extends SimEntity implements Datacenter {
     }
 
     /**
-     * Updates processing of each cloudlet running in this DatacenterSimple. It
-     * is necessary because Hosts and VirtualMachines are simple objects, not
+     * Updates processing of each cloudlet running in this DatacenterSimple
+     * and schedules the next processing update. 
+     * It is necessary because Hosts and VMs are simple objects, not
      * entities. So, they don't receive events and updating cloudlets inside
      * them must be called from the outside.
      *
@@ -920,16 +921,16 @@ public class DatacenterSimple extends SimEntity implements Datacenter {
     protected double completionTimeOfNextFinishingCloudlet() {
         List<? extends Host> list = getVmAllocationPolicy().getHostList();
         double completionTimeOfNextFinishingCloudlet = Double.MAX_VALUE;
-        // for each host...
         for (Host host : list) {
             // inform VMs to update processing
             double time = host.updateVmsProcessing(CloudSim.clock());
             // what time do we expect that the next cloudlet will finish?
             completionTimeOfNextFinishingCloudlet = Math.min(time, completionTimeOfNextFinishingCloudlet);
         }
+        
         // gurantees a minimal interval before scheduling the event
-        if (completionTimeOfNextFinishingCloudlet < CloudSim.clock() + CloudSim.getMinTimeBetweenEvents() + 0.01) {
-            completionTimeOfNextFinishingCloudlet = CloudSim.clock() + CloudSim.getMinTimeBetweenEvents() + 0.01;
+        if (completionTimeOfNextFinishingCloudlet < CloudSim.clock()+CloudSim.getMinTimeBetweenEvents()+0.01) {
+            completionTimeOfNextFinishingCloudlet = CloudSim.clock()+CloudSim.getMinTimeBetweenEvents()+0.01;
         }
         return completionTimeOfNextFinishingCloudlet;
     }

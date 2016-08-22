@@ -33,7 +33,7 @@ public abstract class SimEntity implements Cloneable, Nameable {
     /**
      * The buffer for selected incoming events.
      */
-    private SimEvent evbuf;
+    private SimEvent buffer;
 
     /**
      * The entity's current state.
@@ -420,7 +420,7 @@ public abstract class SimEntity implements Cloneable, Nameable {
      * @see #processEvent(org.cloudbus.cloudsim.core.SimEvent)
      */
     public void run() {
-        SimEvent ev = evbuf != null ? evbuf : getNextEvent();
+        SimEvent ev = buffer != null ? buffer : getNextEvent();
 
         while (ev != null) {
             processEvent(ev);
@@ -431,7 +431,7 @@ public abstract class SimEntity implements Cloneable, Nameable {
             ev = getNextEvent();
         }
 
-        evbuf = null;
+        buffer = null;
     }
 
     /**
@@ -479,7 +479,7 @@ public abstract class SimEntity implements Cloneable, Nameable {
      * @return the event buffer
      */
     protected SimEvent getEventBuffer() {
-        return evbuf;
+        return buffer;
     }
 
     // The entity states
@@ -528,7 +528,7 @@ public abstract class SimEntity implements Cloneable, Nameable {
      * @param e the new event buffer
      */
     protected void setEventBuffer(SimEvent e) {
-        evbuf = e;
+        buffer = e;
     }
 
     // --------------- EVENT / MESSAGE SEND WITH NETWORK DELAY METHODS ------------------

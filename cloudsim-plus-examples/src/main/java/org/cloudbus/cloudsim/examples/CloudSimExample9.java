@@ -51,7 +51,7 @@ import org.cloudbus.cloudsim.resources.Ram;
  * take different time to complete the execution depending on the requested VM
  * performance.
  * 
- * Code originated from the {@link CloudSimExample3} class.<br/>
+ * Code originated from the {@link CloudSimExample3} class.<br>
  * 
  * @author <a href="http://manoelcampos.com">Manoel Campos da Silva Filho</a>
  */

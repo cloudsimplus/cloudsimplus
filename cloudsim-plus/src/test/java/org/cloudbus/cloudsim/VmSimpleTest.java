@@ -302,7 +302,7 @@ public class VmSimpleTest {
 
     @Test
     public void testUpdateVmProcessing() {
-        assertEquals(0, vm.updateVmProcessing(0, null), 0);
+        assertEquals(Double.MAX_VALUE, vm.updateVmProcessing(0, null), 0);
         List<Double> mipsShare1 = new ArrayList<>();
         mipsShare1.add(1.0);
         List<Double> mipsShare2 = new ArrayList<>();

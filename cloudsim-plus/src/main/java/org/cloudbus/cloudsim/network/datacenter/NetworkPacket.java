@@ -34,7 +34,7 @@ public class NetworkPacket {
      * Information about the virtual sender and receiver entities of the packet
      * (the sender and receiver Cloudlet and their respective VMs).
      */
-    private HostPacket hostPacket;
+    private final HostPacket hostPacket;
 
     /**
      * Id of the sender host.

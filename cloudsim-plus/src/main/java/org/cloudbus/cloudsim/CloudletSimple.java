@@ -314,7 +314,7 @@ public class CloudletSimple implements Cloudlet {
         }
 
         final long finishedMI = datacenterInfoList.get(index).finishedSoFar;
-        return Math.min(finishedMI, cloudletLength);
+        return Math.min(finishedMI, getCloudletLength());
     }
 
     @Override
@@ -324,18 +324,18 @@ public class CloudletSimple implements Cloudlet {
         }
 
         final long finishedMI = datacenterInfoList.get(index).finishedSoFar;
-        final long remainingMI = cloudletLength - finishedMI;
+        final long remainingMI = getCloudletLength() - finishedMI;
         
         return remainingMI <= 0.0;
     }
 
     @Override
     public boolean setCloudletFinishedSoFar(final long length) {
-        if(length > this.cloudletLength)
+        if(length > this.getCloudletLength())
             throw new IllegalArgumentException(
                 String.format(
                     "The length parameter (%d) cannot be greater than the cloudletLength attribute (%d).",
-                    length, this.cloudletLength));
+                    length, this.getCloudletLength()));
 
         if (length < 0.0 || index <= NOT_ASSIGNED) {
             return false;
@@ -344,14 +344,14 @@ public class CloudletSimple implements Cloudlet {
         final DatacenterInfo res = datacenterInfoList.get(index);
         res.finishedSoFar = length;
         
-        write("Sets the length's finished so far to %d", length);
+        write("Set the length's finished so far to %d", length);
         return true;
     }
 
     @Override
     public void setUserId(final int userId) {
         this.userId = userId;
-        write("Assigns the Cloudlet to %s (ID #%d)", CloudSim.getEntityName(userId), userId);
+        write("Assigned the Cloudlet to %s (ID #%d)", CloudSim.getEntityName(userId), userId);
     }
 
     @Override

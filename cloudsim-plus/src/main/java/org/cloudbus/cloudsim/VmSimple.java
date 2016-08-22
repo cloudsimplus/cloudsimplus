@@ -99,7 +99,7 @@ public class VmSimple implements Vm {
 
     /**
      * The VM's Bandwidth (BW) resource, containing information about capacity
-     * and allocation.
+     * and allocation (in Megabits/s).
      */
     private final Bandwidth bw;
 
@@ -123,7 +123,7 @@ public class VmSimple implements Vm {
      * @param mipsCapacity the mips
      * @param numberOfPes amount of CPUs
      * @param ramCapacity amount of ram
-     * @param bwCapacity amount of bandwidth
+     * @param bwCapacity amount of bandwidth to be allocated to the VM (in Megabits/s)
      * @param storageCapacity The size the VM image (the amount of storage it
      * will use, at least initially).
      * @param vmm virtual machine monitor
@@ -132,10 +132,10 @@ public class VmSimple implements Vm {
      *
      * @pre id >= 0
      * @pre userId >= 0
-     * @pre size > 0
-     * @pre ram > 0
-     * @pre bw > 0
-     * @pre cpus > 0
+     * @pre storageCapacity > 0
+     * @pre ramCapacity > 0
+     * @pre bwCapacity > 0
+     * @pre numberOfPes > 0
      * @pre priority >= 0
      * @pre cloudletScheduler != null
      * @post $none
@@ -196,7 +196,7 @@ public class VmSimple implements Vm {
             return result;
         }
         
-        return 0.0;
+        return Double.MAX_VALUE;
     }
 
     @Override

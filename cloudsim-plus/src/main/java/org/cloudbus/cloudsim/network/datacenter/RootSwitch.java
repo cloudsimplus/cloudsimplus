@@ -7,8 +7,6 @@
  */
 package org.cloudbus.cloudsim.network.datacenter;
 
-import java.util.ArrayList;
-import java.util.List;
 import org.cloudbus.cloudsim.Log;
 
 import org.cloudbus.cloudsim.core.SimEvent;
@@ -76,33 +74,34 @@ public class RootSwitch extends Switch {
     protected void processPacketUp(SimEvent ev) {
         super.processPacketUp(ev);
         
-        NetworkPacket hspkt = (NetworkPacket) ev.getData();
-        int recvVmId = hspkt.getHostPacket().getReceiverVmId();
-
-        // get id of edge switch
-        int edgeSwitchId = getDatacenter().vmToSwitchMap.get(recvVmId);
-        // search which aggregate switch has it
-        int aggSwitchId = -1;
-
-        for (Switch sw : getDownlinkSwitches()) {
-            for (Switch edge : sw.getDownlinkSwitches()) {
-                if (edge.getId() == edgeSwitchId) {
-                    aggSwitchId = sw.getId();
-                    break;
-                }
-            }
-        }
+        NetworkPacket netPkt = (NetworkPacket) ev.getData();
+        int receiverVmId = netPkt.getHostPacket().getReceiverVmId();
+        int edgeSwitchId = getDatacenter().getVmToSwitchMap().get(receiverVmId);
+        int aggSwitchId = findAggregateSwitchConnectedToGivenEdgeSwitch(edgeSwitchId);
         
         if (aggSwitchId < 0) {
             Log.printLine("No destination switch for this packet");
         } else {
-            List<NetworkPacket> packetList = getDownlinkSwitchPacketList().get(aggSwitchId);
-            if (packetList == null) {
-                packetList = new ArrayList<>();
-                getDownlinkSwitchPacketList().put(aggSwitchId, packetList);
-            }
-            packetList.add(hspkt);
+            addPacketToBeSentToDownlinkSwitch(aggSwitchId, netPkt);
         }
+    }
+
+    /**
+     * Finds which aggregate switch is connected to a given edge switch
+     * @param edgeSwitchId the id of the edge switch to find the aggregate switch
+     * that it is connected to
+     * @return the id of the aggregate switch that is connected to the given
+     * edge switch or -1 if not found.
+     */
+    private int findAggregateSwitchConnectedToGivenEdgeSwitch(int edgeSwitchId) {
+        for (Switch aggregateSw : getDownlinkSwitches()) {
+            for (Switch edgeSw : aggregateSw.getDownlinkSwitches()) {
+                if (edgeSw.getId() == edgeSwitchId) {
+                    return aggregateSw.getId();
+                }
+            }
+        }
+        return -1;
     }
 
     @Override

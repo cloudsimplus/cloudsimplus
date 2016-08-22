@@ -393,7 +393,7 @@ public interface Vm extends Identificable {
      * @param mipsShare list with MIPS share of each Pe available to the
      * scheduler
      * @return predicted completion time of the earliest finishing
-     * cloudlet, or 0 if there is no next events
+     * cloudlet, or {@link Double#MAX_VALUE} if there is no next events
      * @pre currentTime >= 0
      * @post $none
      */

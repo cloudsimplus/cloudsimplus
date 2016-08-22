@@ -10,9 +10,10 @@ package org.cloudbus.cloudsim.network.datacenter;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.stream.LongStream;
 
 import org.cloudbus.cloudsim.CloudletSimple;
+import org.cloudbus.cloudsim.Log;
+import org.cloudbus.cloudsim.core.CloudSim;
 import org.cloudbus.cloudsim.utilizationmodels.UtilizationModel;
 
 /**
@@ -121,6 +122,10 @@ public class NetworkCloudlet extends CloudletSimple implements Comparable<Object
         return tasks.size();
     }
 
+    /**
+     * 
+     * @return a read-only list of cloudlet's tasks.
+     */
     public List<CloudletTask> getTasks() {
         return Collections.unmodifiableList(tasks);
     }
@@ -154,19 +159,18 @@ public class NetworkCloudlet extends CloudletSimple implements Comparable<Object
     }
 
     /**
-     * Change the current task to the next one, in order
-     * to start executing it.
+     * Change the current task to the next one in order
+     * to start executing it, if the current task is finished.
+     * 
      * @param nextTaskStartTime the time that the next task will start
-     * @return the next task or null if there isn't any next task
+     * @return the next task or null if there isn't any next one
      */
     public CloudletTask startNextTask(double nextTaskStartTime){
-        CloudletTask previousTask = getCurrentTask();
-        if(previousTask != null){
-            previousTask.computeExecutionTime(nextTaskStartTime);
-        }
-        
-        this.currentTaskNum++;
-        CloudletTask nextTask = getCurrentTask();
+        /**
+         * @todo @author manoelcampos CloudletTask should implement
+         * Null Object Pattern to avoid these null checks.
+         */        
+        CloudletTask nextTask = getNextTask();
         if(nextTask != null){
             nextTask.setStartTime(nextTaskStartTime);
         }
@@ -185,18 +189,26 @@ public class NetworkCloudlet extends CloudletSimple implements Comparable<Object
 
         return tasks.get(currentTaskNum);
     }
-
+    
     /**
-     * @todo @author manoelcampos The method has to consider
-     * the {@link #getCloudletTotalLength()} was executed and
-     * if it reached the last task.
-     * Currently it is being checked
-     * only the executed length.
+     * Gets the next task in the list if the current task is finished.
+     * @return the next task or null if the current task is already the last one
+     * or it is not finished yet.
      */
+    protected CloudletTask getNextTask(){
+        if(getCurrentTask() != null && !getCurrentTask().isFinished())
+            return null;
+        
+        if(this.currentTaskNum <= tasks.size()-1)
+            this.currentTaskNum++;
+        
+        return getCurrentTask();
+    }
+
     @Override
     public boolean isFinished() {
-        //return super.isFinished() && getCurrentTaskNum() >= getNumberOfTasks();
-        return super.isFinished();
+        boolean allTasksFinished = tasks.stream().allMatch(t -> t.isFinished());
+        return super.isFinished() && allTasksFinished;
     }
 
     /**

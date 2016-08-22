@@ -115,7 +115,7 @@ public class CloudletSchedulerDynamicWorkload extends CloudletSchedulerTimeShare
         setPreviousTime(currentTime);
 
         if (getCloudletExecList().isEmpty()) {
-            return 0;
+            return Double.MAX_VALUE;
         }
 
         return nextEvent;

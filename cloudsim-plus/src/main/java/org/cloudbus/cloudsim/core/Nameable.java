@@ -6,6 +6,6 @@ package org.cloudbus.cloudsim.core;
  * 
  * @author Manoel Campos da Silva Filho
  */
-public interface Nameable extends Identificable{
+public interface Nameable extends Identificable {
     String getName();
 }

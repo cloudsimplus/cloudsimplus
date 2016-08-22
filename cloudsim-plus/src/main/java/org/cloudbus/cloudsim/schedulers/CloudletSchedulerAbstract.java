@@ -518,7 +518,7 @@ public abstract class CloudletSchedulerAbstract implements CloudletScheduler {
         // no more cloudlets in this scheduler
         if (getCloudletExecList().isEmpty() && getCloudletWaitingList().isEmpty()) {
             setPreviousTime(currentTime);
-            return 0.0;
+            return Double.MAX_VALUE;
         }
 
         updateCloudletsProcessing(currentTime);
