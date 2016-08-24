@@ -10,4 +10,12 @@ after_success:
   #https://github.com/trautonen/coveralls-maven-plugin
   - mvn clean test jacoco:report coveralls:report
 jdk:
-  - oraclejdk8
+  - oraclejdk8 
+
+test:
+  post:
+    - mvn jacoco:report
+    - curl http://www.jpm4j.org/install/script -k > jpmInstall.sh
+    - sudo sh jpmInstall.sh
+    - sudo jpm install com.codacy:codacy-coverage-reporter:assembly
+    - codacy-coverage-reporter -l Java -r cloudsim-plus/target/site/jacoco/jacoco.xml
