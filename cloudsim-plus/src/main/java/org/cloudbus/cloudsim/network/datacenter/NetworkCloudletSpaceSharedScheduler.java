@@ -16,7 +16,7 @@ import java.util.stream.Collectors;
 import org.cloudbus.cloudsim.Log;
 
 import org.cloudbus.cloudsim.schedulers.CloudletSchedulerSpaceShared;
-import org.cloudbus.cloudsim.ResCloudlet;
+import org.cloudbus.cloudsim.CloudletExecutionInfo;
 import org.cloudbus.cloudsim.core.CloudSim;
 
 /**
@@ -71,7 +71,7 @@ public class NetworkCloudletSpaceSharedScheduler extends CloudletSchedulerSpaceS
     }
 
     @Override
-    public void updateCloudletProcessing(ResCloudlet rcl, double currentTime) {
+    public void updateCloudletProcessing(CloudletExecutionInfo rcl, double currentTime) {
         /**
          * @todo @author manoelcampos 
          * The error of not sending and receiving packets is in this method.
@@ -196,7 +196,7 @@ public class NetworkCloudletSpaceSharedScheduler extends CloudletSchedulerSpaceS
                 .collect(Collectors.toList());
     }
 
-    protected void updateExecutionTask(ResCloudlet rcl, double currentTime) {
+    protected void updateExecutionTask(CloudletExecutionInfo rcl, double currentTime) {
         NetworkCloudlet netcl = (NetworkCloudlet)rcl.getCloudlet();
         if(!(netcl.getCurrentTask() instanceof CloudletExecutionTask))
             throw new RuntimeException(

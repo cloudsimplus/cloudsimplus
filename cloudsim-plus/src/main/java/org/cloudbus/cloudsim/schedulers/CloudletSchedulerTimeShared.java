@@ -9,7 +9,7 @@ package org.cloudbus.cloudsim.schedulers;
 import java.util.ArrayList;
 import java.util.List;
 import org.cloudbus.cloudsim.Cloudlet;
-import org.cloudbus.cloudsim.ResCloudlet;
+import org.cloudbus.cloudsim.CloudletExecutionInfo;
 
 import org.cloudbus.cloudsim.core.CloudSim;
 
@@ -45,7 +45,7 @@ public class CloudletSchedulerTimeShared extends CloudletSchedulerAbstract {
     @Override
     public double cloudletResume(int cloudletId) {
         for (int i = 0; i < getCloudletPausedList().size(); i++) {
-            ResCloudlet rcl = getCloudletPausedList().get(i);
+            CloudletExecutionInfo rcl = getCloudletPausedList().get(i);
             if (rcl.getCloudletId() == cloudletId) {
                 getCloudletPausedList().remove(rcl);
                 rcl.setCloudletStatus(Cloudlet.Status.INEXEC);
@@ -67,7 +67,7 @@ public class CloudletSchedulerTimeShared extends CloudletSchedulerAbstract {
 
     @Override
     public double cloudletSubmit(Cloudlet cloudlet, double fileTransferTime) {
-        ResCloudlet rcl = new ResCloudlet(cloudlet);
+        CloudletExecutionInfo rcl = new CloudletExecutionInfo(cloudlet);
         rcl.setCloudletStatus(Cloudlet.Status.INEXEC);
         getCloudletExecList().add(rcl);
 
@@ -103,18 +103,18 @@ public class CloudletSchedulerTimeShared extends CloudletSchedulerAbstract {
      * @return {@inheritDoc}
      */
     @Override
-    public double getTotalCurrentAvailableMipsForCloudlet(ResCloudlet rcl, List<Double> mipsShare) {
+    public double getTotalCurrentAvailableMipsForCloudlet(CloudletExecutionInfo rcl, List<Double> mipsShare) {
         return getProcessor().getCapacity();
     }
 
     @Override
-    public double getTotalCurrentAllocatedMipsForCloudlet(ResCloudlet rcl, double time) {
+    public double getTotalCurrentAllocatedMipsForCloudlet(CloudletExecutionInfo rcl, double time) {
         //@todo The method is not implemented, in fact
         return 0.0;
     }
 
     @Override
-    public double getTotalCurrentRequestedMipsForCloudlet(ResCloudlet rcl, double time) {
+    public double getTotalCurrentRequestedMipsForCloudlet(CloudletExecutionInfo rcl, double time) {
         //@todo The method is not implemented, in fact
         // TODO Auto-generated method stub
         return 0.0;

@@ -21,17 +21,15 @@ import org.cloudbus.cloudsim.core.CloudSim;
  * placeholder for maintaining the amount of resource share allocated at various
  * times for simulating any scheduling using internal events.
  * <p>
- * As the VM where the Cloudlet is running might migrate to another
- * Datacenter, each ResCloudlet object represents the data about
- * execution of the cloudlet when the Vm was in a given Datacenter.
+ As the VM where the Cloudlet is running might migrate to another
+ Datacenter, each CloudletExecutionInfo object represents the data about
+ execution of the cloudlet when the Vm was in a given Datacenter.
  *
  * @author Manzur Murshed
  * @author Rajkumar Buyya
  * @since CloudSim Toolkit 1.0
- * 
- * @todo @author manoelcampos The class would be renamed to CloudletExecutionInfo
  */
-public class ResCloudlet {
+public class CloudletExecutionInfo {
 
     /**
      * The Cloudlet object.
@@ -124,7 +122,7 @@ public class ResCloudlet {
      * @pre cloudlet != null
      * @post $none
      */
-    public ResCloudlet(Cloudlet cloudlet) {
+    public CloudletExecutionInfo(Cloudlet cloudlet) {
         this(cloudlet, 0, 0, NOT_FOUND);
     }
 
@@ -147,7 +145,7 @@ public class ResCloudlet {
      * @pre reservID > 0
      * @post $none
      */
-    public ResCloudlet(Cloudlet cloudlet, long startTime, int duration, int reservationId) {
+    public CloudletExecutionInfo(Cloudlet cloudlet, long startTime, int duration, int reservationId) {
         this.cloudlet = cloudlet;
         this.reservationStartTime = startTime;
         this.reservationDuration = duration;

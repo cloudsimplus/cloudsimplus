@@ -10,7 +10,7 @@ package org.cloudbus.cloudsim.schedulers;
 import java.util.ArrayList;
 import java.util.List;
 import org.cloudbus.cloudsim.Cloudlet;
-import org.cloudbus.cloudsim.ResCloudlet;
+import org.cloudbus.cloudsim.CloudletExecutionInfo;
 
 import org.cloudbus.cloudsim.core.CloudSim;
 import org.cloudbus.cloudsim.resources.Processor;
@@ -47,14 +47,14 @@ public class CloudletSchedulerSpaceShared extends CloudletSchedulerAbstract {
     }
 
     @Override
-    public void cloudletFinish(ResCloudlet rcl) {
+    public void cloudletFinish(CloudletExecutionInfo rcl) {
         super.cloudletFinish(rcl);
         usedPes -= rcl.getNumberOfPes();
     }
 
     @Override
     public double cloudletResume(int cloudletId) {
-        ResCloudlet foundRcl = searchForCloudletIntoList(getCloudletPausedList(), cloudletId);
+        CloudletExecutionInfo foundRcl = searchForCloudletIntoList(getCloudletPausedList(), cloudletId);
         if (foundRcl == null) {
             // not found in the paused list: either it is in in the queue, executing or not exist
             return 0.0;
@@ -107,8 +107,8 @@ public class CloudletSchedulerSpaceShared extends CloudletSchedulerAbstract {
      * @param cloudletId the id of the cloudlet to search
      * @return the cloudlet or null if not found
      */
-    protected ResCloudlet searchForCloudletIntoList(List<ResCloudlet> cloudletList, int cloudletId) {
-        for (ResCloudlet rcl : cloudletList) {
+    protected CloudletExecutionInfo searchForCloudletIntoList(List<CloudletExecutionInfo> cloudletList, int cloudletId) {
+        for (CloudletExecutionInfo rcl : cloudletList) {
             if (rcl.getCloudletId() == cloudletId) {
                 return rcl;
             }
@@ -120,12 +120,12 @@ public class CloudletSchedulerSpaceShared extends CloudletSchedulerAbstract {
     public double cloudletSubmit(Cloudlet cloudlet, double fileTransferTime) {
         // it can go to the exec list
         if ((getProcessor().getNumberOfPes() - usedPes) >= cloudlet.getNumberOfPes()) {
-            ResCloudlet rcl = new ResCloudlet(cloudlet);
+            CloudletExecutionInfo rcl = new CloudletExecutionInfo(cloudlet);
             rcl.setCloudletStatus(Cloudlet.Status.INEXEC);
             getCloudletExecList().add(rcl);
             usedPes += cloudlet.getNumberOfPes();
         } else {// no enough free PEs: go to the waiting queue
-            ResCloudlet rcl = new ResCloudlet(cloudlet);
+            CloudletExecutionInfo rcl = new CloudletExecutionInfo(cloudlet);
             rcl.setCloudletStatus(Cloudlet.Status.QUEUED);
             getCloudletWaitingList().add(rcl);
             return 0.0;
@@ -182,21 +182,21 @@ public class CloudletSchedulerSpaceShared extends CloudletSchedulerAbstract {
     }
 
     @Override
-    public double getTotalCurrentAvailableMipsForCloudlet(ResCloudlet rcl, List<Double> mipsShare) {
+    public double getTotalCurrentAvailableMipsForCloudlet(CloudletExecutionInfo rcl, List<Double> mipsShare) {
         /*@todo The param rcl is not being used.*/
         Processor p = Processor.getProcessorFromMipsListRemovingAllZeroMips(mipsShare);
         return p.getCapacity();
     }
 
     @Override
-    public double getTotalCurrentAllocatedMipsForCloudlet(ResCloudlet rcl, double time) {
+    public double getTotalCurrentAllocatedMipsForCloudlet(CloudletExecutionInfo rcl, double time) {
         //@todo the method isn't in fact implemented
         // TODO Auto-generated method stub
         return 0.0;
     }
 
     @Override
-    public double getTotalCurrentRequestedMipsForCloudlet(ResCloudlet rcl, double time) {
+    public double getTotalCurrentRequestedMipsForCloudlet(CloudletExecutionInfo rcl, double time) {
         //@todo the method isn't in fact implemented
         // TODO Auto-generated method stub
         return 0.0;
