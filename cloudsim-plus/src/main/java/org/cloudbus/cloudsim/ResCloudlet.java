@@ -137,9 +137,9 @@ public class ResCloudlet {
      * @param cloudlet a cloudlet object
      * @param startTime a reservation start time. Can also be interpreted as
      * starting time to execute this Cloudlet.
-     * @param duration a reservation reservationDuration time. Can also be interpreted as
- how long to execute this Cloudlet.
-     * @param reservId a reservation ID that owns this Cloudlet
+     * @param duration a reservation reservationDuration time. 
+     * Can also be interpreted as how long to execute this Cloudlet.
+     * @param reservationId a reservation ID that owns this Cloudlet
      * @see gridsim.CloudSim#clock()
      * @pre cloudlet != null
      * @pre startTime > 0
@@ -147,17 +147,13 @@ public class ResCloudlet {
      * @pre reservID > 0
      * @post $none
      */
-    public ResCloudlet(Cloudlet cloudlet, long startTime, int duration, int reservId) {
+    public ResCloudlet(Cloudlet cloudlet, long startTime, int duration, int reservationId) {
         this.cloudlet = cloudlet;
         this.reservationStartTime = startTime;
         this.reservationDuration = duration;
-        this.reservationId = reservId;
-
+        this.reservationId = reservationId;
         this.pesNumber = cloudlet.getNumberOfPes();
-
-        this.arrivalTime = CloudSim.clock();
-        cloudlet.setSubmissionTime(this.arrivalTime);
-
+        this.arrivalTime = cloudlet.registerArrivalOfCloudletIntoDatacenter();
         this.finishedTime = NOT_FOUND;  // Cannot finish in this hourly slot.
         this.totalCompletionTime = 0.0;
         this.startExecTime = 0.0;
@@ -219,11 +215,7 @@ public class ResCloudlet {
      * @post $none
      */
     public boolean hasReserved() {
-        if (reservationId == NOT_FOUND) {
-            return false;
-        }
-
-        return true;
+        return (reservationId != NOT_FOUND);
     }
 
     /**

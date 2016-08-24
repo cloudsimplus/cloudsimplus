@@ -228,6 +228,16 @@ public interface Cloudlet extends Identificable {
      */
     @Deprecated
     Status getCloudletStatus();
+    
+    /**
+     * Register the arrival time of this Cloudlet into a Datacenter to the
+     * current simulation time and returns this time.
+     *
+     * @return the arrived time set or {@link #NOT_ASSIGNED} if the cloudlet is not assigned to a datacenter
+     * @pre cloudlet is already assigned to a datacenter
+     * @post $none
+     */
+    double registerArrivalOfCloudletIntoDatacenter();
 
     /**
      * Gets the string representation of the current Cloudlet status code.
@@ -318,15 +328,15 @@ public interface Cloudlet extends Identificable {
     double getFinishTime();
 
     /**
-     * Gets the submission (arrival) time of this Cloudlet from the latest
-     * CloudResource.
+     * Gets the arrival time of this Cloudlet from the latest
+     * Datacenter where it has executed.
      *
-     * @return the submission time or <tt>0.0</tt> if
+     * @return the arrival time or {@link #NOT_ASSIGNED} if
      * the cloudlet has never been assigned to a datacenter
      * @pre $none
      * @post $result >= 0.0
      */
-    double getSubmissionTime();
+    double getDatacenterArrivalTime();
 
     /**
      * Gets the submission (arrival) time of this Cloudlet in the given Datacenter.
@@ -703,16 +713,12 @@ public interface Cloudlet extends Identificable {
     boolean setWallClockTime(final double wallTime, final double actualTime);
     
     /**
-     * Sets the submission (arrival) time of this Cloudlet into a Datacenter.
-     *
-     * @param clockTime the submission time
-     * @return true if the submission time is valid and
-     * the cloudlet has already being assigned to a datacenter for execution
-     * @pre clockTime >= 0.0
-     * @post $none
+     * 
+     * @return true if the cloudlet has even been assigned to a datacenter
+     * in order to run, false otherwise.
      */
-    boolean setSubmissionTime(final double clockTime);
-
+    boolean isAssignedToDatacenter();
+    
     /**
      * Sets the {@link #getExecStartTime() latest execution start time} of this Cloudlet.
      * <br>
@@ -740,7 +746,9 @@ public interface Cloudlet extends Identificable {
      * when submitting the Cloudlet, in order that it will be assigned
      * to a VM only after this delay has expired.
      * 
-     * @param submissionDelay the new submission delay
+     * @param submissionDelay the amount of seconds from the current simulation
+     * time that the cloudlet will wait to be submitted to be created and 
+     * assigned to a VM
      */
     void setSubmissionDelay(double submissionDelay);
 
@@ -792,7 +800,7 @@ public interface Cloudlet extends Identificable {
       @Override public int getReservationId() { return 0; }
       @Override public int getDatacenterId() { return 0; }
       @Override public Status getStatus() { return getCloudletStatus(); }
-      @Override public double getSubmissionTime() { return 0.0; }
+      @Override public double getDatacenterArrivalTime() { return 0.0; }
       @Override public double getSubmissionTime(int datacenterId) { return 0.0; }
       @Override public int getUserId() { return 0; }
       @Override public UtilizationModel getUtilizationModelBw() { return UtilizationModel.NULL; }
@@ -833,7 +841,8 @@ public interface Cloudlet extends Identificable {
        */
       @Override public boolean setCloudletFinishedSoFar(long length) { return false; }
       @Override public boolean setWallClockTime(double wallTime, double actualTime) { return false; }
-      @Override public boolean setSubmissionTime(double clockTime) { return false; }
-      @Override public void setExecStartTime(double clockTime) { }
+      @Override public void setExecStartTime(double clockTime) {}
+      @Override public boolean isAssignedToDatacenter() { return false; }
+      @Override public double registerArrivalOfCloudletIntoDatacenter() { return -1; }
   };
 }

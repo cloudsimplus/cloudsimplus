@@ -77,7 +77,7 @@ public class NetworkVmsExampleWithMetrics extends NetworkVmsExampleAppCloudletAb
     
     /*
      private void responseTimeCloudlet(NetworkCloudlet cloudlet) {    
-        double rt = cloudlet.getFinishTime() - cloudlet.getSubmissionTime();
+        double rt = cloudlet.getFinishTime() - cloudlet.getDatacenterArrivalTime();
         System.out.println("***** Tempo de resposta CLOUDLETS - " + rt);
      } */
 

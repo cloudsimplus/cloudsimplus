@@ -151,7 +151,7 @@ public class ExampleMetricsWithoutNetwork {
 
         double responseTime = 0;
         for (Cloudlet cloudlets : cloudlet) {
-            responseTime = cloudlets.getFinishTime() - cloudlets.getSubmissionTime();
+            responseTime = cloudlets.getFinishTime() - cloudlets.getDatacenterArrivalTime();
         }
         return responseTime;
 
