@@ -27,8 +27,6 @@
 <b><a href="#license">License</a></b>
 |
 <b><a href="#contributing">Contribution Guide</a></b>
-
-
 </p>
 
 # Overview
