@@ -65,7 +65,7 @@ public abstract class AbstractCloudlet implements Cloudlet {
     /**
      * Internal class that keeps track of Cloudlet's movement in different
      * {@link Datacenter Datacenters}. Each time a cloudlet is run on a given Datacenter, the cloudlet's
-     * execution history on each Datacenter is registered at {@link Cloudlet#resList}
+     * execution history on each Datacenter is registered at {@link Cloudlet#executionInDatacenterInfoList}
      */
     protected static class ExecutionInDatacenterInfo {
         /**

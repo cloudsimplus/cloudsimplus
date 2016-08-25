@@ -4,3 +4,8 @@
 /cloudsim-plus/nbproject/
 /distribution/target/
 /target/
+
+#Ignore IntelliJ IDEA project files
+*.iml
+*.ipr
+*.iws

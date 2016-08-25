@@ -208,22 +208,6 @@
                     </execution>
                 </executions>
             </plugin>
-            <!--    Send code coverage reports to http://coveralls.io,
-            in order to show percentage of code coverage in
-            the README file.
-            Your coverall repoToken have to be defined in
-            an environment variable at you machine
-            in order to enable sending the coverage
-            report to the coveralls server.
-            https://github.com/trautonen/coveralls-maven-plugin
-            -->
-            <plugin>
-                <groupId>org.eluder.coveralls</groupId>
-                <artifactId>coveralls-maven-plugin</artifactId>
-                <configuration>
-                    <repoToken>${env.coveralls_repo_token}</repoToken>
-                </configuration>
-            </plugin>
         </plugins>
     </build>
 
