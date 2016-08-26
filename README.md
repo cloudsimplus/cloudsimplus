@@ -46,9 +46,9 @@ CloudSim Plus is a fork of [CloudSim 3](https://github.com/Cloudslab/cloudsim/tr
 that was re-engineered primarily to avoid code duplication for improved [code reusability](https://en.wikipedia.org/wiki/Code_reuse)
 and to ensure compliance with software engineering principles and recommendations, aiming to provide a more extensible, 
 less [coupled](https://en.wikipedia.org/wiki/Coupling_(computer_programming)), 
-more [cohesive](https://en.wikipedia.org/wiki/Cohesion_(computer_science)) cloud simulation tool.  
+more [cohesive](https://en.wikipedia.org/wiki/Cohesion_(computer_science)) cloud simulation framework.  
 
-It focuses on usage of software engeneering standards and recommendations 
+It focuses on usage of software engineering standards and recommendations 
 such as [Design Patterns](https://en.wikipedia.org/wiki/Software_design_pattern), 
 [SOLID principles](https://en.wikipedia.org/wiki/SOLID_(object-oriented_design)) 
 and other ones such as [KISS](https://en.wikipedia.org/wiki/KISS_principle) 

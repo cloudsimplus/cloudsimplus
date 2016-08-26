@@ -6,6 +6,7 @@
 /target/
 
 #Ignore IntelliJ IDEA project files
+.idea/
 *.iml
 *.ipr
 *.iws
