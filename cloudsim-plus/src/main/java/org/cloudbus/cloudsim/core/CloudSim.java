@@ -16,6 +16,7 @@ import java.util.LinkedHashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import org.cloudbus.cloudsim.Log;
 import org.cloudbus.cloudsim.core.predicates.Predicate;
@@ -606,9 +607,7 @@ public class CloudSim {
      * method execution, false otherwise
      */
     private static boolean runClockTickAndCheckThatEventQueueIsEmpty() {
-        entities.stream()
-                .filter(ent -> ent.getState() == SimEntity.RUNNABLE)
-                .forEach(ent -> ent.run());
+        executeRunnableEntities();
 
         // If there are more future events, then deal with them
         boolean queueWasEmpty = future.isEmpty();
@@ -652,6 +651,21 @@ public class CloudSim {
         }
 
         return queueWasEmpty;
+    }
+
+    /**
+     * Gets the list of entities that are in {@link SimEntity#RUNNABLE}
+     * and execute them.
+     */
+    private static void executeRunnableEntities() {
+        List<SimEntity> runableEntities = entities.stream()
+                .filter(ent -> ent.getState() == SimEntity.RUNNABLE)
+                .collect(Collectors.toList());
+        
+        //dont use stream because the entities are being changed
+        for(SimEntity ent: runableEntities) {
+            ent.run();
+        }
     }
 
     /**
