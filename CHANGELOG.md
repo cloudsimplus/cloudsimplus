@@ -2,28 +2,47 @@
 
 Lists the main changes in the project.
 
-## [4.0.3] - 2016-06-10 
+## [1.0.4] - 2016-08-28
 
 ### Added
-
-- [Examples](cloudsim-plus-examples/src/main/java/org/cloudbus/cloudsim/examples/listeners/) using the new listener features of Vm and Cloudlet classes. 
-- Examples showing how to create listeners objects to be notified when a host is allocated to a VM, when a host is desallocated for a VM
-  (that can mean the VM finished executing or was migrated), when the placement of a VM fails due to lack of a suitable host.
-- Examples showing how to reuse the same listener objects to several VMs. 
-- Example showing how to dynamically create a new VM when another one finishes executing,
-  allowing the sequential execution of VMs into a host that just have resources for a VM a time. 
-  The use of listeners simplify the dynamic creation of VMs and allows the code to be clear
-  and direct, without recurring to threads and sleep tricks. 
-- Converted the relationship between Vm and CloudletScheduler to a bi-directional one (not CloudletScheduler has access to Vm).
-- Included new listener onUpdateCloudletProcessingListener for Cloudlet, that gets notified when 
-  the execution of the cloudlet inside a Vm is updated. A new example of this feature was introduced in the  
-  [listeners](cloudsim-plus-examples/src/main/java/org/cloudbus/cloudsim/examples/listeners/) example package.
-- Delay the submission of cloudlets by a DatacenterBroker, closing the feature request #11
-
-## [4.0.2] - 2016-04-28 
+- A new feature of subtitle columns was added to the TableBuilder interface in order to allow adding a subtitle row below the title row of a table.
+  The CloudletsTableBuilderHelper class uses this new feature to make the examples to show the unit of some data presented in the simulation results table.
+  By this way, the presented data will be clearer, mainly for new users.
+- Included an AbstractCloudlet class that is the base class for Cloudlet implementations.
 
 ### Changed
+- Finished re-engineering of network.datacenter package, making it now re-usable,
+  without hard-coded values defined inside core classes.
+- Renamed the ResCloudlet class to CloudletExecutionInfo, giving a clear and helpful name 
+- Renamed the internal Cloudlet's Resource class to ExecutionInDatacenterInfo, giving a clear and helpful name 
+- Renamed and changed the setSubmissionTime(double clockTime) of the Cloudlet interface
+  to registerArrivalOfCloudletIntoDatacenter that now doesn't accept any parameter and
+  sets the current simulation time as the cloudlet arrival time at the datacenter.
+  The name of the method was causing confusion, because it in fact doesn't represent
+  the submission time, but the time that the cloudlet arrived at a datacenter.
+- The getter getSubmissionTime was renamed to getDatacenterArrivalTime. Both methods now
+  return Cloudlet.NOT_ASSIGNED when the cloudlet hasn't been assigned to a datacenter yet.
 
+## [1.0.3] - 2016-06-10 
+
+### Added
+- [Examples](cloudsim-plus-examples/src/main/java/org/cloudbus/cloudsim/examples/listeners/) using the new listener features of Vm and Cloudlet classes. 
+- Examples showing how to create listeners objects to be notified when: a host is allocated to a VM; a host is desallocated for a VM
+  (that can mean the VM finished executing or was migrated); the placement of a VM fails due to lack of a suitable host.
+- Examples showing how to reuse the same listener objects to several VMs. 
+- Example showing how to dynamically create a VM when another one finishes executing, simulating dynamic VM arrival.
+  It allows the sequential execution of VMs into a host that just have resources for a VM a time. 
+  The use of listeners simplify the dynamic creation of VMs and allows the code to be clear
+  and direct, without recurring to threads and sleep tricks. 
+- Converted the relationship between Vm and CloudletScheduler to a bi-directional one (now CloudletScheduler has access to Vm).
+- Included new listener `onUpdateCloudletProcessingListener` for Cloudlet, that gets notified when 
+  the execution of the Cloudlet inside a Vm is updated. A new example of this feature was introduced in the  
+  [listeners](cloudsim-plus-examples/src/main/java/org/cloudbus/cloudsim/examples/listeners/) example package.
+- Allowed to delay the submission of cloudlets by a `DatacenterBroker`, simulating the dynamic arrival of Cloudlets (closes the feature request #11)
+
+## [1.0.2] - 2016-04-28 
+
+### Changed
 - Changed the name of the method getCloudResourceList at CloudSim class to getDatacenterIdsList once it
   in fact returns only Datacenter IDs and is only used by DatacenterBroker classes.
 - Changed the name of the method getList at CloudInformationService class to getDatacenterIdsList once it
@@ -45,17 +64,14 @@ Lists the main changes in the project.
   Encapsuled and renamed all attributes. 
   
 ### Added
-
 - Created new subclasses CloudletDataTask and CloudletExecutionTask from CloudletTask.
   The CloudletDataTask can be used to send or receive data, according to it's type attribute
   (that now is an enum).
 
 
-
-## [4.0.0] - 2016-04-25 
+## [1.0.0] - 2016-04-25 
 
 ### Fixed
-
 - The `HarddriveStorage` class had an issue when calling the method `addReservedFile` without priorly reserving space for the file by 
 calling the `reserveSpace` method. Consider the situation where the allocated space is 0. When adding a reserved file of size 50 without 
 reserving the space, the method `addReservedFile` was decreasing the allocated space to -50. After adding the file it increased 
@@ -91,7 +107,6 @@ instead of returning the cloudlet length. If it hasn't started, the executed len
 
 
 ### Removed 
-
 - The parameters of the method `File.deleteFile(final String fileName, File file)` were not being used as defined in the method documentation. 
 It was supposed to pass the name of the file to be removed and the `file` parameter should return the removed `File` object. 
 By this way, it was supposed to pass a `File` object as parameter and get the deleted `File` into this object. 
@@ -192,7 +207,6 @@ CloudletSchedulerSpaceShared and CloudletSchedulerTimeShared to CloudletSchedule
 
 
 ### Added & Changed
-
 - A complete new set of interfaces was introduced in order to start providing a more structured class hierarchy and to reduce code duplication. 
 The classes `Datacenter`, `DatacenterCharacteristics`, `DatacenterBroker`, `Host`, `PowerHost`, `Pe`, `Vm`, `VmAllocationPolicy`, `VmScheduler`, 
 `Cloudlet` and `CloudletScheduler` (and maybe others) had their names suffixed with the word "Simple", as already has been used in other classes 
@@ -302,7 +316,6 @@ reduce code duplication of unit tests; include extensive set of unit tests to va
         - **After changes**: `new HostSimple(hostId, new ResourceProvisionerSimple<>(new Ram(ram)), new ResourceProvisionerSimple<>(new Bandwidth(bw)), storage, peList, new VmSchedulerTimeShared(peList);`
 
 ### Added 
-
 - Added the SwfWorkloadFormatExample1 example that shows how to use the WorkloadFileReader to create cloudlets from a trace file in the
 [Standard Workload Format from the Hebrew University of Jerusalem](http://www.cs.huji.ac.il/labs/parallel/workload/).
 The example uses a new DatacenterBroker class created to allow submission of VMs to a datacenter, ordering VMs descendingly, according
