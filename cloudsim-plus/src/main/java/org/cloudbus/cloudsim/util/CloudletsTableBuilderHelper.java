@@ -54,7 +54,7 @@ public class CloudletsTableBuilderHelper {
         printer.addColumn("DC").setSubTitle("ID");
         printer.addColumn("VM").setSubTitle("ID");
         printer.addColumn("CloudletLen").setSubTitle("MI");
-        printer.addColumn("CloudletPEs");
+        printer.addColumn("CloudletPEs").setSubTitle("CPU cores");
         printer.addColumn("StartTime").setFormat("%d").setSubTitle("Seconds");
         printer.addColumn("FinishTime").setFormat("%d").setSubTitle("Seconds");
         printer.addColumn("ExecTime").setFormat("%.0f").setSubTitle("Seconds");
