@@ -1,39 +1,38 @@
-package org.cloudbus.cloudsim.examples.sla;
-
 /*
  * To change this license header, choose License Headers in Project Properties.
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
+package org.cloudbus.cloudsim.examples.sla;
+
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.LinkedList;
 import java.util.List;
 import org.cloudbus.cloudsim.Cloudlet;
 import org.cloudbus.cloudsim.CloudletSimple;
-import org.cloudbus.cloudsim.schedulers.CloudletSchedulerTimeShared;
 import org.cloudbus.cloudsim.Datacenter;
-import org.cloudbus.cloudsim.brokers.DatacenterBroker;
 import org.cloudbus.cloudsim.DatacenterCharacteristics;
 import org.cloudbus.cloudsim.DatacenterCharacteristicsSimple;
 import org.cloudbus.cloudsim.DatacenterSimple;
 import org.cloudbus.cloudsim.Host;
 import org.cloudbus.cloudsim.HostSimple;
 import org.cloudbus.cloudsim.Log;
-import org.cloudbus.cloudsim.resources.Pe;
 import org.cloudbus.cloudsim.Vm;
 import org.cloudbus.cloudsim.VmSimple;
 import org.cloudbus.cloudsim.allocationpolicies.VmAllocationPolicySimple;
+import org.cloudbus.cloudsim.brokers.DatacenterBroker;
 import org.cloudbus.cloudsim.brokers.DatacenterBrokerSimple;
-import org.cloudbus.cloudsim.schedulers.VmSchedulerTimeShared;
 import org.cloudbus.cloudsim.core.CloudSim;
-import org.cloudbus.cloudsim.examples.network.datacenter.VmCost;
 import org.cloudbus.cloudsim.provisioners.PeProvisionerSimple;
 import org.cloudbus.cloudsim.provisioners.ResourceProvisionerSimple;
 import org.cloudbus.cloudsim.resources.Bandwidth;
 import org.cloudbus.cloudsim.resources.FileStorage;
+import org.cloudbus.cloudsim.resources.Pe;
 import org.cloudbus.cloudsim.resources.PeSimple;
 import org.cloudbus.cloudsim.resources.Ram;
+import org.cloudbus.cloudsim.schedulers.CloudletSchedulerTimeShared;
+import org.cloudbus.cloudsim.schedulers.VmSchedulerTimeShared;
 import org.cloudbus.cloudsim.util.CloudletsTableBuilderHelper;
 import org.cloudbus.cloudsim.util.TextTableBuilder;
 import org.cloudbus.cloudsim.utilizationmodels.UtilizationModel;
@@ -41,9 +40,9 @@ import org.cloudbus.cloudsim.utilizationmodels.UtilizationModelFull;
 
 /**
  *
- * @author RaysaOliveira
+ * @author raysaoliveira
  */
-public class ExampleMetricsWithoutNetwork {
+public class ExampleCreateCloudletRandomly {
 
     /**
      * The cloudlet list.
@@ -56,14 +55,22 @@ public class ExampleMetricsWithoutNetwork {
     private List<Vm> vmlist;
 
     /**
-     * The vmCost list
+     * Number of simulations to run.
      */
-    private List<VmCost> vmCost;
+    private static final int NUMBER_OF_SIMULATIONS = 1000;
 
     /**
-     * The totalCosts list
+     * Time length of each simulation in minutes.
      */
-    private List<VmCost> totalCost;
+    private static final int SIMULATION_TIME_LENGHT = 25;
+
+    /**
+     * Average number of customers that arrives per minute. The value of 0.4
+     * customers per minute means that 1 customer will arrive at every 2.5
+     * minutes. It means that 1 minute / 0.4 customer per minute = 1 customer at
+     * every 2.5 minutes. This is the interarrival time (in average).
+     */
+    private static final double MEAN_CUSTOMERS_ARRIVAL_PER_MINUTE = 0.4;
 
     /**
      * Create Vms
@@ -123,113 +130,19 @@ public class ExampleMetricsWithoutNetwork {
         }
         return list;
     }
-    
-    /**
-     * Calculate the cost price of resources
-     * 
-     * @param datacenter
-     * @param vmCost
-     * @param totalCost
-     * @return 
-     */
-   /* private List<VmCost> totalCost(Datacenter datacenter, List<VmCost> vmCost, List<VmCost> totalCost) {
-        for (VmCost vm : vmCost) {
-    //        totalCost = vm.costBw() + vm.costMemory() + vm.costProcessing() + vm.costStorage();
-        }
 
-        return totalCost;
-    }*/
-
-    /**
-     * *
-     * Give the response time of cloudlets
-     *
-     * @param cloudlet
-     * @return responseTime
-     */
-    private double responseTimeCloudlet(List<Cloudlet> cloudlet) {
-
-        double responseTime = 0;
-        for (Cloudlet cloudlets : cloudlet) {
-            responseTime = cloudlets.getFinishTime() - cloudlets.getSubmissionTime();
-        }
-        return responseTime;
-
-    }
-
-    /**
-     * *
-     * Give the cpu utilization
-     *
-     * @param cloudlet
-     * @return cpuUtilization
-     */
-    private double cpuUtilization(List<Cloudlet> cloudlet) {
-        double cpuTime = 0;
-        for (Cloudlet cloudlets : cloudlet) {
-            cpuTime += cloudlets.getActualCPUTime();
-        }
-        return cpuTime;
-    }
-
-    /**
-     * *
-     * Give utilization resources (BW, CPU, RAM) in percentage
-     *
-     * @param cloudlet
-     * @return utilizationResources
-     */
-    public double utilizationResources(List<Cloudlet> cloudlet, double time) {
-        double utilizationResources = 0, bw, cpu, ram;
-        for (Cloudlet cloudlets : cloudlet) {
-            bw = cloudlets.getUtilizationOfBw(time);
-            cpu = cloudlets.getUtilizationOfCpu(time);
-            ram = cloudlets.getUtilizationOfRam(time);
-            utilizationResources += bw + cpu + ram;
-
-        }
-        //  System.out.println("** tamanho cloudlet: " + cloudlet.size());
-        return utilizationResources;
-    }
-
-    /**
-     * *
-     * Give the wait time
-     *
-     * @param cloudlet list of cloudlets
-     * @return the waitTime
-     */
-    public double waitTime(List<Cloudlet> cloudlet) {
-        double waitTime = 0;
-        for (Cloudlet cloudlets : cloudlet) {
-            waitTime += cloudlets.getWaitingTime();
-        }
-        return waitTime;
-    }
-
-    /*
-     public static double throughput() {
-     //pegar o dowlink BW do edge, pois as Vms estao conectadas nele
-     return 1;
-     }
-     */
-    /**
-     * Creates main() to run this example.
-     *
-     * @param args the args
-     */
     public static void main(String[] args) {
         Log.printFormattedLine(" Starting... ");
         try {
-            new ExampleMetricsWithoutNetwork();
+            new ExampleCreateCloudletRandomly();
         } catch (Exception e) {
             e.printStackTrace();
             Log.printLine("Unwanted errors happen");
         }
     }
 
-    public ExampleMetricsWithoutNetwork() {
-        // First step: Initialize the CloudSim package. It should be called before creating any entities.
+    public ExampleCreateCloudletRandomly() {
+
         int num_user = 1; // number of cloud users
         Calendar calendar = Calendar.getInstance(); // Calendar whose fields have been initialized with the current date and time.
         boolean trace_flag = false; // trace events
@@ -248,47 +161,35 @@ public class ExampleMetricsWithoutNetwork {
         // submit vm list to the broker
         broker.submitVmList(vmlist);
 
-        /* Fifth step: Read Cloudlets from workload external file in the swf format
-         WorkloadFileReader workloadFileReader = new WorkloadFileReader("src/main/java/org/cloudbus/cloudsim/examples/sla/UniLu-Gaia-2014-2.swf", 1);
-         cloudletList = workloadFileReader.generateWorkload().subList(0, 1000);
-         for (Cloudlet cloudlet : cloudletList) {
-         cloudlet.setUserId(brokerId);
-         } */
-        cloudletList = createCloudlet(brokerId, 40);
+        List<Cloudlet> list = new LinkedList<>();
+        //cloudlet parameters
+        long length = 1000;
+        long fileSize = 300;
+        long outputSize = 300;
+        int pesNumber = 1;
+        UtilizationModel utilizationModel = new UtilizationModelFull();
+        Cloudlet cloudlet = null;
+        //poisson
 
-        // submit cloudlet list to the broker
+        int customersArrivedInAllSimulations = 0;
+        PoissonProcess poisson = null;
+
+        for (int i = 0; i < NUMBER_OF_SIMULATIONS; i++) {
+            long seed = System.currentTimeMillis();
+            poisson = new PoissonProcess(MEAN_CUSTOMERS_ARRIVAL_PER_MINUTE, seed);
+            System.out.printf("Simulation number %d\n", i);
+            customersArrivedInAllSimulations += runSimulation(poisson, false);
+            cloudlet.setSubmissionDelay(CloudSim.clock());
+            cloudletList.add(cloudlet);
+        }
+        
+        double mean = customersArrivedInAllSimulations/(double)NUMBER_OF_SIMULATIONS;
+        System.out.printf("\nArrived cloudlets average after %d simulations: %.2f\n", NUMBER_OF_SIMULATIONS, mean);
+
         broker.submitCloudletList(cloudletList);
 
-        // Sixth step: Starts the simulation
         CloudSim.startSimulation();
         CloudSim.stopSimulation();
-        System.out.println("______________________________________________________");
-        System.out.println("\n\t\t - System Métrics - \n ");
-
-        //totalCost
-        List<VmCost> totalCost = new LinkedList<>();
-        for (Vm vm : vmlist) {
-            VmCost vmCost = new VmCost(vm);
-            totalCost.add(vmCost);
-        }
-        //List<VmCost> totalCostFunction = totalCost(datacenter0, vmCost, totalCost);
-        //System.out.printf("\n\t** Total Cost Price: %.2f %n", totalCostFunction);
-
-        //responseTime
-        double responseT = responseTimeCloudlet(cloudletList);
-        System.out.printf("\t** Response Time of Cloudlets - %.2f %n", responseT);
-
-        double cpuTime = cpuUtilization(cloudletList);
-        System.out.printf("\t** Time CPU %% - %.2f %n ", (cpuTime*100)/100);
-
-        double time = CloudSim.clock();
-        double utilizationresources = utilizationResources(cloudletList, time);
-        System.out.printf("\t** Utilization Resources %%  (Bw-CPU-Ram) - %.2f %n", utilizationresources / 100);
-
-        double waitTime = waitTime(cloudletList);
-        System.out.printf("\t** Wait Time - %.2f %n", waitTime);
-
-        System.out.println("______________________________________________________");
 
         //Final step: Print results when simulation is over
         List<Cloudlet> newList = broker.getCloudletsFinishedList();
@@ -297,13 +198,6 @@ public class ExampleMetricsWithoutNetwork {
         Log.printFormattedLine("... finished!");
     }
 
-    /**
-     * Creates the datacenter.
-     *
-     * @param name the name
-     *
-     * @return the datacenter
-     */
     private static Datacenter createDatacenter(String name) {
 
         // Here are the steps needed to create a PowerDatacenter:
@@ -383,4 +277,32 @@ public class ExampleMetricsWithoutNetwork {
         }
         return broker;
     }
+
+    /**
+     * Simulates the arrival of customers for a given time period.
+     *
+     * @param poisson the PoissonProcess object that will compute the customer
+     * arrivals probabilities
+     * @param showCustomerArrivals if the arrival of each customer has to be
+     * shown
+     * @return the number of arrived customers
+     */
+    private static int runSimulation(PoissonProcess poisson, boolean showCustomerArrivals) {
+        int totalArrivedCustomers = 0;
+
+        /*We want to check the probability of 1 customer to arrive at each
+         single minute. The default k value is 1, so we dont need to set it.*/
+        for (int minute = 0; minute < SIMULATION_TIME_LENGHT; minute++) {
+            if (poisson.haveKEventsHappened()) {
+                totalArrivedCustomers += poisson.getK();
+                if (showCustomerArrivals) {
+                    System.out.printf(
+                            "%d customers arrived at minute %d\n",
+                            poisson.getK(), minute, poisson.probabilityToArriveNextKEvents());
+                }
+            }
+        }
+        return totalArrivedCustomers;
+    }
+
 }
