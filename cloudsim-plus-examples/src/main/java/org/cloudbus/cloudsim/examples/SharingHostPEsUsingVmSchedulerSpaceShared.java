@@ -53,9 +53,9 @@ import org.cloudbus.cloudsim.resources.Ram;
  * of 2 VMs fails.
  * 
  * <ul>
- *  <li>R. N. Calheiros, R. Ranjan, C. A. F. De Rose, and R. Buyya, 
+ *  <li><a href="http://arxiv.org/abs/0903.2525">R. N. Calheiros, R. Ranjan, C. A. F. De Rose, and R. Buyya, 
  * “CloudSim: A Novel Framework for Modeling and Simulation of Cloud Computing 
- * Infrastructures and Services,” arXiv preprint arXiv:0903.2525. arXiv, p. 9, 2009.</li>
+ * Infrastructures and Services,” arXiv preprint arXiv:0903.2525. arXiv, p. 9, 2009</a>.</li>
  * </ul>
  * 
  * 

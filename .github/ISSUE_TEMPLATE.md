@@ -2,7 +2,8 @@ To report an issue or feature request, you have to provide the information below
 
 # WHEN REPORTING AN ISSUE:
 
-## Actual behavior and expected behavior
+## Actual behavior 
+## Expected behavior
 
 ## If the issue is related to a specific method, provide a test case that fails in order to show the problem
 
