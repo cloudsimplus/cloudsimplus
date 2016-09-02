@@ -8,11 +8,16 @@
 package org.cloudbus.cloudsim.network.datacenter;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
+import org.cloudbus.cloudsim.Log;
+import org.cloudbus.cloudsim.core.CloudSim;
 
 /**
- * Represents a task executed by a {@link NetworkCloudlet} that 
+ * A task executed by a {@link NetworkCloudlet} that 
  * receives data from a {@link CloudletSendTask}.
+ * Each receiver task expects to receive packets 
+ * from just one VM.
  *
  * <p>
  * Please refer to following publication for more details:
@@ -31,11 +36,42 @@ import java.util.List;
  * @author Manoel Campos da Silva Filho
  *
  * @since CloudSim Toolkit 1.0
+ * 
+ * @todo @author manoelcampos For how long will the task be waiting for packets?
+ * The sender task has a defined amount of packets to send, but
+ * the receiver doesn't have to know how many packets to wait for.
+ * Considering a real distributed app such as a web app, the sender can be 
+ * a browser and the receiver a web server. In this case,
+ * the web server runs indefinitely. However, the simulation
+ * has to have a time interval. For instance, it may be simulated
+ * the operation of this distributed app for 24 hours.
+ * By this way, the receiver task could have a specific amount
+ * of time to run. In the web app scenario, the web server just 
+ * keep running, waiting for any client to send packets to it,
+ * but it is not required that a client do that. The web app
+ * may not be accessed during this time.
+ * By other hand, the client may send packets to the server
+ * and require a response. It will so wait for this response
+ * and has to have a timeout period so that the client can
+ * skip waiting to receive an answer and move to the next task
+ * or finish.
+ * 
+ * Each task has to have a status (such as the Cloudlet itself)
+ * to define if it was executed successfully or not.
+ * For instance, a receive ask that is waiting to receive
+ * a list of packets can be configured to finish
+ * after a given timeout without receiving the expected packets.
+ * 
+ * How is the network delay being computed?
  *
  */
 public class CloudletReceiveTask extends CloudletTask {
-
     private final List<HostPacket> packetsReceived;
+    
+    /**
+     * @see #getNumberOfExpectedPacketsToReceive() 
+     */
+    private long numberOfExpectedPacketsToReceive;
 
     /**
      * @see #getSourceVmId() 
@@ -46,30 +82,14 @@ public class CloudletReceiveTask extends CloudletTask {
      * Creates a new task.
      *
      * @param id task id
-     * @param memory memory used by the task
      * @param sourceVm the Vm where it is expected to receive packets from
-     * @param networkCloudlet the NetworkCloudlet that the task belongs to
      */
-    public CloudletReceiveTask(int id, long memory, 
-            int sourceVm, NetworkCloudlet networkCloudlet) {
-        super(id, memory, networkCloudlet);
+    public CloudletReceiveTask(int id, int sourceVm) {
+        super(id);
         this.packetsReceived = new ArrayList<>();
         this.sourceVmId = sourceVm;
     }
     
-    /**
-     * Creates a new task without assigning it to a {@link NetworkCloudlet}
-     * (that has to be assigned further).    
-     *
-     * @param id task id
-     * @param memory memory used by the task
-     * @param sourceVm the Vm where it is expected to receive packets from
-     * @see #setNetworkCloudlet(org.cloudbus.cloudsim.network.datacenter.NetworkCloudlet) 
-     */
-    public CloudletReceiveTask(int id, long memory, int sourceVm) {
-        this(id, memory, sourceVm, null);
-    }
-
     /**
      * Receives a packet sent from a {@link CloudletSendTask}
      * and add it the the received packet list.
@@ -77,15 +97,18 @@ public class CloudletReceiveTask extends CloudletTask {
      * @param packet the packet received
      */
     public void receivePacket(HostPacket packet) {
+        packet.setReceiveTime(CloudSim.clock());
         this.packetsReceived.add(packet);
+        boolean finished = this.packetsReceived.size() >= numberOfExpectedPacketsToReceive;
+        setFinished(finished);
     }
 
     /**
-     * Gets the list of packet received.
-     * @return the received packet or null if none packet was received yet
+     * Gets the list of packets received.
+     * @return a read-only received packet list
      */
     public List<HostPacket> getPacketsReceived() {
-        return packetsReceived;
+        return Collections.unmodifiableList(packetsReceived);
     }
 
     /**
@@ -94,6 +117,20 @@ public class CloudletReceiveTask extends CloudletTask {
      */
     public int getSourceVmId() {
         return sourceVmId;
+    }
+
+    /**
+     * The number of packets that are expected to be received.
+     * After this number of packets is received, the task
+     * is marked as finished.
+     * @return 
+     */
+    public long getNumberOfExpectedPacketsToReceive() {
+        return numberOfExpectedPacketsToReceive;
+    }
+
+    public void setNumberOfExpectedPacketsToReceive(long numberOfExpectedPacketsToReceive) {
+        this.numberOfExpectedPacketsToReceive = numberOfExpectedPacketsToReceive;
     }
 
 }

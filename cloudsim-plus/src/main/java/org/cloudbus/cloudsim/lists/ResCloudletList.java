@@ -9,7 +9,7 @@ package org.cloudbus.cloudsim.lists;
 
 import java.util.List;
 
-import org.cloudbus.cloudsim.ResCloudlet;
+import org.cloudbus.cloudsim.CloudletExecutionInfo;
 
 /**
  * ResCloudletList is a collection of operations on lists of ResCloudlets.
@@ -20,14 +20,14 @@ import org.cloudbus.cloudsim.ResCloudlet;
 public class ResCloudletList {
 
     /**
-     * Gets a {@link ResCloudlet} with a given id and owned by a given user.
+     * Gets a {@link CloudletExecutionInfo} with a given id and owned by a given user.
      * This method needs a combination of Cloudlet Id and User Id because each
      * Cloud User might have exactly the same Cloudlet Id.
      *
      * @param <T>
      * @param cloudletId a Cloudlet Id
      * @param userId an User Id
-     * @param list the list of ResCloudlet
+     * @param list the list of CloudletExecutionInfo
      * @return a Cloudlet or null if not found
      * @pre cloudletId >= 0
      * @pre userId >= 0
@@ -35,7 +35,7 @@ public class ResCloudletList {
      *
      * @todo The second phrase of the class documentation is not clear.
      */
-    public static <T extends ResCloudlet> ResCloudlet getByIdAndUserId(
+    public static <T extends CloudletExecutionInfo> CloudletExecutionInfo getByIdAndUserId(
             List<T> list,
             int cloudletId,
             int userId) {
@@ -48,7 +48,7 @@ public class ResCloudletList {
     }
 
     /**
-     * Finds the index of a ResCloudlet inside a list. This method needs a
+     * Finds the index of a CloudletExecutionInfo inside a list. This method needs a
      * combination of Cloudlet Id and User Id because each Cloud User might have
      * exactly the same Cloudlet Id.
      *
@@ -62,7 +62,7 @@ public class ResCloudletList {
      * @pre userId >= 0
      * @post $none
      */
-    public static <T extends ResCloudlet> int indexOf(List<T> list, int cloudletId, int userId) {
+    public static <T extends CloudletExecutionInfo> int indexOf(List<T> list, int cloudletId, int userId) {
         int i = 0;
         for (T rcl : list) {
             if (rcl.getCloudletId() == cloudletId && rcl.getUserId() == userId) {
@@ -74,7 +74,7 @@ public class ResCloudletList {
     }
 
     /**
-     * Moves a ResCloudlet object from a list to another.
+     * Moves a CloudletExecutionInfo object from a list to another.
      *
      * @param <T>
      * @param listFrom the source list
@@ -87,7 +87,7 @@ public class ResCloudletList {
      * @pre list != null
      * @post $result == true || $result == false
      */
-    public static <T extends ResCloudlet> boolean move(List<T> listFrom, List<T> listTo, T cloudlet) {
+    public static <T extends CloudletExecutionInfo> boolean move(List<T> listFrom, List<T> listTo, T cloudlet) {
         if (listFrom.remove(cloudlet)) {
             listTo.add(cloudlet);
             return true;
@@ -96,14 +96,14 @@ public class ResCloudletList {
     }
 
     /**
-     * Gets the position of a ResCloudlet with a given id.
+     * Gets the position of a CloudletExecutionInfo with a given id.
      *
      * @param <T>
      * @param cloudletList the list of cloudlets.
      * @param id the cloudlet id
      * @return the position of the cloudlet with that id, or -1 if not found.
      */
-    public static <T extends ResCloudlet> int getPositionById(List<T> cloudletList, int id) {
+    public static <T extends CloudletExecutionInfo> int getPositionById(List<T> cloudletList, int id) {
         int i = 0;
         for (T cloudlet : cloudletList) {
             if (cloudlet.getCloudletId() == id) {

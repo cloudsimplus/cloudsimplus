@@ -16,6 +16,7 @@ import java.util.LinkedHashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import org.cloudbus.cloudsim.Log;
 import org.cloudbus.cloudsim.core.predicates.Predicate;
@@ -247,17 +248,17 @@ public class CloudSim {
      * been setup and added.
      *
      * @return the last clock time
-     * @throws NullPointerException This happens when creating this entity
+     * @throws RuntimeException when creating this entity
      * before initialising CloudSim package or this entity name is <tt>null</tt>
      * or empty.
      * @see gridsim.CloudSim#init(int, Calendar, boolean)
      * @pre $none
      * @post $none
      */
-    public static double startSimulation() throws NullPointerException {
+    public static double startSimulation() throws RuntimeException {
         Log.printConcatLine("Starting CloudSim version ", CLOUDSIM_VERSION_STRING);
         try {
-            double clock = run();
+            double lastSimulationTime = run();
 
             // reset all static variables
             cisId = -1;
@@ -266,7 +267,7 @@ public class CloudSim {
             calendar = null;
             traceFlag = false;
 
-            return clock;
+            return lastSimulationTime;
         } catch (IllegalArgumentException e) {
             e.printStackTrace();
             throw new RuntimeException("CloudSim.startCloudSimulation() :"
@@ -275,15 +276,15 @@ public class CloudSim {
     }
 
     /**
-     * Stops Cloud Simulation (based on {@link Simulation#runStop()}). This
+     * Stops Cloud Simulation (based on {@link #runStop()}). This
      * should be only called if any of the user defined entities
      * <b>explicitly</b> want to terminate simulation during execution.
      *
      * @throws RuntimeException This happens when creating this entity before
      * initialising CloudSim package or this entity name is <tt>null</tt> or
      * empty
-     * @see gridsim.CloudSim#init(int, Calendar, boolean)
-     * @see Simulation#runStop()
+     * @see #init(int, Calendar, boolean)
+     * @see #runStop() 
      * @pre $none
      * @post $none
      */
@@ -599,57 +600,72 @@ public class CloudSim {
     }
 
     /**
-     * Internal method used to run one tick of the simulation. This method
-     * should <b>not</b> be called in simulations.
+     * Run one tick of the simulation, processing and removing the 
+     * events the the {@link #future future event queue}.
      *
-     * @return true if the event queue is empty, false otherwise
+     * @return true if the event queue was empty at the beginning of the
+     * method execution, false otherwise
      */
-    private static boolean runClockTickAndCheckIfEventQueueIsEmpty() {
-        SimEntity ent;
-        boolean queue_empty;
+    private static boolean runClockTickAndCheckThatEventQueueIsEmpty() {
+        executeRunnableEntities();
 
-        int entities_size = entities.size();
-
-        for (int i = 0; i < entities_size; i++) {
-            ent = entities.get(i);
-            if (ent.getState() == SimEntity.RUNNABLE) {
-                ent.run();
-            }
-        }
-
-        // If there are more future events then deal with them
-        if (future.size() > 0) {
-            List<SimEvent> toRemove = new ArrayList<SimEvent>();
+        // If there are more future events, then deal with them
+        boolean queueWasEmpty = future.isEmpty();
+        if (!queueWasEmpty) {
+            List<SimEvent> toRemove = new ArrayList<>();
+            /**
+             * @todo @author manoelcampos Instead of getting an iterator
+             * to just get and remove the first element,
+             * it would be used the new future.first() method
+             * to do that. It has to be included a test case first to refactor this.
+             */
             Iterator<SimEvent> fit = future.iterator();
-            queue_empty = false;
-            SimEvent first = fit.next();
-            processEvent(first);
-            future.remove(first);
+            SimEvent firstEvent = fit.next();
+            processEvent(firstEvent);
+            future.remove(firstEvent);
 
             fit = future.iterator();
 
+            /**
+             * @todo @author manoelcampos
+             * It can be created a new method for this while.
+             * The comment gives a tip for the method name.
+             */
             // Check if next events are at same time...
-            boolean trymore = fit.hasNext();
-            while (trymore) {
-                SimEvent next = fit.next();
-                if (next.eventTime() == first.eventTime()) {
-                    processEvent(next);
-                    toRemove.add(next);
-                    trymore = fit.hasNext();
+            boolean checkNextEvent = fit.hasNext();
+            while (checkNextEvent) {
+                SimEvent nextEvent = fit.next();
+                if (nextEvent.eventTime() == firstEvent.eventTime()) {
+                    processEvent(nextEvent);
+                    toRemove.add(nextEvent);
+                    checkNextEvent = fit.hasNext();
                 } else {
-                    trymore = false;
+                    checkNextEvent = false;
                 }
             }
 
             future.removeAll(toRemove);
-
         } else {
-            queue_empty = true;
             running = false;
             printMessage("Simulation: No more future events");
         }
 
-        return queue_empty;
+        return queueWasEmpty;
+    }
+
+    /**
+     * Gets the list of entities that are in {@link SimEntity#RUNNABLE}
+     * and execute them.
+     */
+    private static void executeRunnableEntities() {
+        List<SimEntity> runableEntities = entities.stream()
+                .filter(ent -> ent.getState() == SimEntity.RUNNABLE)
+                .collect(Collectors.toList());
+        
+        //dont use stream because the entities are being changed
+        for(SimEntity ent: runableEntities) {
+            ent.run();
+        }
     }
 
     /**
@@ -663,8 +679,8 @@ public class CloudSim {
     /**
      * Used to hold an entity for some time.
      *
-     * @param src the src
-     * @param delay the delay
+     * @param src Id of entity who scheduled the event
+     * @param delay How many seconds after the current time the entity has to be held
      */
     public static void hold(int src, long delay) {
         SimEvent e = new SimEvent(SimEvent.HOLD_DONE, clock + delay, src);
@@ -675,8 +691,8 @@ public class CloudSim {
     /**
      * Used to pause an entity for some time.
      *
-     * @param src the src
-     * @param delay the delay
+     * @param src Id of entity who scheduled the event
+     * @param delay the time period for which the entity will be inactive
      */
     public static void pause(int src, double delay) {
         SimEvent e = new SimEvent(SimEvent.HOLD_DONE, clock + delay, src);
@@ -687,9 +703,9 @@ public class CloudSim {
     /**
      * Used to send an event from one entity to another.
      *
-     * @param src the src
-     * @param dest the dest
-     * @param delay the delay
+     * @param src Id of entity who scheduled the event.
+     * @param dest Id of entity that the event will be sent to
+     * @param delay How many seconds after the current simulation time the event should be sent
      * @param tag the tag
      * @param data the data
      */
@@ -706,9 +722,9 @@ public class CloudSim {
      * Used to send an event from one entity to another, with priority in the
      * queue.
      *
-     * @param src the src
-     * @param dest the dest
-     * @param delay the delay
+     * @param src Id of entity who scheduled the event.
+     * @param dest Id of entity that the event will be sent to
+     * @param delay How many seconds after the current simulation time the event should be sent
      * @param tag the tag
      * @param data the data
      */
@@ -727,7 +743,7 @@ public class CloudSim {
      * will be passed to the entity. This is done to avoid unnecessary context
      * switches.
      *
-     * @param src the src
+     * @param src Id of entity who scheduled the event.
      * @param p the p
      */
     public static void wait(int src, Predicate p) {
@@ -762,7 +778,7 @@ public class CloudSim {
     /**
      * Selects an event matching a predicate.
      *
-     * @param src the src
+     * @param src Id of entity who scheduled the event.
      * @param p the p
      * @return the sim event
      */
@@ -782,7 +798,7 @@ public class CloudSim {
     /**
      * Find first deferred event matching a predicate.
      *
-     * @param src the src
+     * @param src Id of entity who scheduled the event.
      * @param p the p
      * @return the sim event
      */
@@ -801,7 +817,7 @@ public class CloudSim {
     /**
      * Removes an event from the event queue.
      *
-     * @param src the src
+     * @param src Id of entity who scheduled the event.
      * @param p the p
      * @return the sim event
      */
@@ -824,7 +840,7 @@ public class CloudSim {
      * queue returns true if at least one event has been cancelled; false
      * otherwise.
      *
-     * @param src the src
+     * @param src Id of entity who scheduled the event.
      * @param p the p
      * @return true, if successful
      */
@@ -971,17 +987,19 @@ public class CloudSim {
     }
 
     /**
-     * Start the simulation running. This should be called after all the
+     * Starts the simulation execution. This should be called after all the
      * entities have been setup and added, and their ports linked.
+     * The method blocks until the simulation is ended.
      *
      * @return the last clock value
      */
-    public static double run() {
+    private static double run() {
         if (!running) {
             runStart();
         }
+        
         while (true) {
-            if (runClockTickAndCheckIfEventQueueIsEmpty() || abruptTerminate) {
+            if (runClockTickAndCheckThatEventQueueIsEmpty() || abruptTerminate) {
                 break;
             }
 
@@ -1008,12 +1026,12 @@ public class CloudSim {
             }
         }
 
-        double clock = clock();
+        double lastSimulationTime = clock();
 
         finishSimulation();
         runStop();
 
-        return clock;
+        return lastSimulationTime;
     }
 
     /**

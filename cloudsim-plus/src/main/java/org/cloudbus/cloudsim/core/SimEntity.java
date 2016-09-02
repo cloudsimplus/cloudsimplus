@@ -33,7 +33,7 @@ public abstract class SimEntity implements Cloneable, Nameable {
     /**
      * The buffer for selected incoming events.
      */
-    private SimEvent evbuf;
+    private SimEvent buffer;
 
     /**
      * The entity's current state.
@@ -82,8 +82,7 @@ public abstract class SimEntity implements Cloneable, Nameable {
      * tag <code>9999</code> is reserved.
      *
      * @param dest The unique id number of the destination entity
-     * @param delay How long from the current simulation time the event should
-     * be sent
+     * @param delay How many seconds after the current simulation time the event should be sent
      * @param tag An user-defined number representing the type of event.
      * @param data The data to be sent with the event.
      */
@@ -99,8 +98,7 @@ public abstract class SimEntity implements Cloneable, Nameable {
      * Note that the tag <code>9999</code> is reserved.
      *
      * @param dest The unique id number of the destination entity
-     * @param delay How long from the current simulation time the event should
-     * be sent
+     * @param delay How many seconds after the current simulation time the event should be sent
      * @param tag An user-defined number representing the type of event.
      */
     public void schedule(int dest, double delay, int tag) {
@@ -112,8 +110,7 @@ public abstract class SimEntity implements Cloneable, Nameable {
      * data. Note that the tag <code>9999</code> is reserved.
      *
      * @param dest The name of the port to send the event through
-     * @param delay How long from the current simulation time the event should
-     * be sent
+     * @param delay How many seconds after the current simulation time the event should be sent
      * @param tag An user-defined number representing the type of event.
      * @param data The data to be sent with the event.
      */
@@ -126,8 +123,7 @@ public abstract class SimEntity implements Cloneable, Nameable {
      * <b>no</b> data. Note that the tag <code>9999</code> is reserved.
      *
      * @param dest The name of the port to send the event through
-     * @param delay How long from the current simulation time the event should
-     * be sent
+     * @param delay How many seconds after the current simulation time the event should be sent
      * @param tag An user-defined number representing the type of event.
      */
     public void schedule(String dest, double delay, int tag) {
@@ -186,8 +182,7 @@ public abstract class SimEntity implements Cloneable, Nameable {
      * Note that the tag <code>9999</code> is reserved.
      *
      * @param dest The unique id number of the destination entity
-     * @param delay How long from the current simulation time the event should
-     * be sent
+     * @param delay How many seconds after the current simulation time the event should be sent
      * @param tag An user-defined number representing the type of event.
      * @param data The data to be sent with the event.
      */
@@ -203,8 +198,7 @@ public abstract class SimEntity implements Cloneable, Nameable {
      * <b>no</b> data. Note that the tag <code>9999</code> is reserved.
      *
      * @param dest The unique id number of the destination entity
-     * @param delay How long from the current simulation time the event should
-     * be sent
+     * @param delay How many seconds after the current simulation time the event should be sent
      * @param tag An user-defined number representing the type of event.
      */
     public void scheduleFirst(int dest, double delay, int tag) {
@@ -216,8 +210,7 @@ public abstract class SimEntity implements Cloneable, Nameable {
      * name, with data. Note that the tag <code>9999</code> is reserved.
      *
      * @param dest The name of the port to send the event through
-     * @param delay How long from the current simulation time the event should
-     * be sent
+     * @param delay How many seconds after the current simulation time the event should be sent
      * @param tag An user-defined number representing the type of event.
      * @param data The data to be sent with the event.
      */
@@ -231,8 +224,7 @@ public abstract class SimEntity implements Cloneable, Nameable {
      * data. Note that the tag <code>9999</code> is reserved.
      *
      * @param dest The name of the port to send the event through
-     * @param delay How long from the current simulation time the event should
-     * be sent
+     * @param delay How many seconds after the current simulation time the event should be sent
      * @param tag An user-defined number representing the type of event.
      */
     public void scheduleFirst(String dest, double delay, int tag) {
@@ -428,7 +420,7 @@ public abstract class SimEntity implements Cloneable, Nameable {
      * @see #processEvent(org.cloudbus.cloudsim.core.SimEvent)
      */
     public void run() {
-        SimEvent ev = evbuf != null ? evbuf : getNextEvent();
+        SimEvent ev = buffer != null ? buffer : getNextEvent();
 
         while (ev != null) {
             processEvent(ev);
@@ -439,7 +431,7 @@ public abstract class SimEntity implements Cloneable, Nameable {
             ev = getNextEvent();
         }
 
-        evbuf = null;
+        buffer = null;
     }
 
     /**
@@ -487,7 +479,7 @@ public abstract class SimEntity implements Cloneable, Nameable {
      * @return the event buffer
      */
     protected SimEvent getEventBuffer() {
-        return evbuf;
+        return buffer;
     }
 
     // The entity states
@@ -536,7 +528,7 @@ public abstract class SimEntity implements Cloneable, Nameable {
      * @param e the new event buffer
      */
     protected void setEventBuffer(SimEvent e) {
-        evbuf = e;
+        buffer = e;
     }
 
     // --------------- EVENT / MESSAGE SEND WITH NETWORK DELAY METHODS ------------------
@@ -546,8 +538,8 @@ public abstract class SimEntity implements Cloneable, Nameable {
      * type.
      *
      * @param entityId the id number of the destination entity
-     * @param delay how long from the current simulation time the event should
-     * be sent. If delay is a negative number, then it will be changed to 0
+     * @param delay How many seconds after the current simulation time the event should be sent. 
+     * If delay is a negative number, then it will be changed to 0
      * @param cloudSimTag an user-defined number representing the type of an
      * event/message
      * @param data A reference to data to be sent with the event
@@ -589,8 +581,8 @@ public abstract class SimEntity implements Cloneable, Nameable {
      * type.
      *
      * @param entityId the id number of the destination entity
-     * @param delay how long from the current simulation time the event should
-     * be sent. If delay is a negative number, then it will be changed to 0
+     * @param delay How many seconds after the current simulation time the event should be sent. 
+     * If delay is a negative number, then it will be changed to 0
      * @param cloudSimTag an user-defined number representing the type of an
      * event/message
      * @pre entityID > 0
@@ -607,8 +599,8 @@ public abstract class SimEntity implements Cloneable, Nameable {
      * type.
      *
      * @param entityName the name of the destination entity
-     * @param delay how long from the current simulation time the event should
-     * be sent. If delay is a negative number, then it will be changed to 0
+     * @param delay How many seconds after the current simulation time the event should be sent. 
+     * If delay is a negative number, then it will be changed to 0
      * @param cloudSimTag an user-defined number representing the type of an
      * event/message
      * @param data A reference to data to be sent with the event
@@ -627,8 +619,8 @@ public abstract class SimEntity implements Cloneable, Nameable {
      * type.
      *
      * @param entityName the name of the destination entity
-     * @param delay how long from the current simulation time the event should
-     * be sent. If delay is a negative number, then it will be changed to 0
+     * @param delay How many seconds after the current simulation time the event should be sent. 
+     * If delay is a negative number, then it will be changed to 0
      * @param cloudSimTag an user-defined number representing the type of an
      * event/message
      * @pre entityName != null

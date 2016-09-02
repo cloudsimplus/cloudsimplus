@@ -4,7 +4,7 @@ import java.io.Serializable;
 import java.util.Collections;
 import java.util.List;
 import org.cloudbus.cloudsim.Cloudlet;
-import org.cloudbus.cloudsim.ResCloudlet;
+import org.cloudbus.cloudsim.CloudletExecutionInfo;
 import org.cloudbus.cloudsim.Vm;
 
 /**
@@ -38,7 +38,7 @@ public interface CloudletScheduler extends Serializable {
      * @pre rcl != $null
      * @post $none
      */
-    void cloudletFinish(ResCloudlet rcl);
+    void cloudletFinish(CloudletExecutionInfo rcl);
 
     /**
      * Pauses execution of a cloudlet.
@@ -88,7 +88,7 @@ public interface CloudletScheduler extends Serializable {
      * @return the cloudlet exec list
      */
     @SuppressWarnings(value = "unchecked")
-    <T extends ResCloudlet> List<T> getCloudletExecList();
+    <T extends CloudletExecutionInfo> List<T> getCloudletExecList();
 
     /**
      * Gets the list of failed cloudlets.
@@ -97,7 +97,7 @@ public interface CloudletScheduler extends Serializable {
      * @return the cloudlet failed list.
      */
     @SuppressWarnings(value = "unchecked")
-    <T extends ResCloudlet> List<T> getCloudletFailedList();
+    <T extends CloudletExecutionInfo> List<T> getCloudletFailedList();
 
     /**
      * Gets the list of finished cloudlets.
@@ -106,7 +106,7 @@ public interface CloudletScheduler extends Serializable {
      * @return the cloudlet finished list
      */
     @SuppressWarnings(value = "unchecked")
-    <T extends ResCloudlet> List<T> getCloudletFinishedList();
+    <T extends CloudletExecutionInfo> List<T> getCloudletFinishedList();
 
     /**
      * Gets the list of paused cloudlets.
@@ -115,7 +115,7 @@ public interface CloudletScheduler extends Serializable {
      * @return the cloudlet paused list
      */
     @SuppressWarnings(value = "unchecked")
-    <T extends ResCloudlet> List<T> getCloudletPausedList();
+    <T extends CloudletExecutionInfo> List<T> getCloudletPausedList();
 
     /**
      * Gets the status of a cloudlet.
@@ -134,7 +134,7 @@ public interface CloudletScheduler extends Serializable {
      * @return the cloudlet waiting list
      */
     @SuppressWarnings(value = "unchecked")
-    <T extends ResCloudlet> List<T> getCloudletWaitingList();
+    <T extends CloudletExecutionInfo> List<T> getCloudletWaitingList();
 
     /**
      * Gets the list of current mips capacity from the VM that will be
@@ -194,7 +194,7 @@ public interface CloudletScheduler extends Serializable {
      * @param time the time
      * @return the total current allocated mips for cloudlet
      */
-    double getTotalCurrentAllocatedMipsForCloudlet(ResCloudlet rcl, double time);
+    double getTotalCurrentAllocatedMipsForCloudlet(CloudletExecutionInfo rcl, double time);
 
     /**
      * Gets the total current available mips for the Cloudlet.
@@ -212,7 +212,7 @@ public interface CloudletScheduler extends Serializable {
      * in other classes such as {@link CloudletSchedulerDynamicWorkload} it returns
      * the MIPS' sum of all PEs.
      */
-    double getTotalCurrentAvailableMipsForCloudlet(ResCloudlet rcl, List<Double> mipsShare);
+    double getTotalCurrentAvailableMipsForCloudlet(CloudletExecutionInfo rcl, List<Double> mipsShare);
 
     /**
      * Gets the total current requested mips for a given cloudlet.
@@ -221,7 +221,7 @@ public interface CloudletScheduler extends Serializable {
      * @param time the time
      * @return the total current requested mips for the given cloudlet
      */
-    double getTotalCurrentRequestedMipsForCloudlet(ResCloudlet rcl, double time);
+    double getTotalCurrentRequestedMipsForCloudlet(CloudletExecutionInfo rcl, double time);
 
     /**
      * Gets total CPU utilization percentage of all cloudlets, 
@@ -266,7 +266,7 @@ public interface CloudletScheduler extends Serializable {
      * @param currentTime current simulation time
      * @param mipsShare list with MIPS share of each Pe available to the scheduler
      * @return the predicted completion time of the earliest finishing cloudlet,
-     * or 0 if there is no next events
+     * or {@link Double#MAX_VALUE} if there is no next events
      * @pre currentTime >= 0
      * @post $none
      */
@@ -291,7 +291,7 @@ public interface CloudletScheduler extends Serializable {
      * 
      * @see #updateCloudletsProcessing(double, org.cloudbus.cloudsim.resources.Processor) 
      */
-    void updateCloudletProcessing(ResCloudlet rcl, double currentTime);    
+    void updateCloudletProcessing(CloudletExecutionInfo rcl, double currentTime);    
     
     /**
      * A property that implements the Null Object Design Pattern for {@link CloudletScheduler}
@@ -299,26 +299,26 @@ public interface CloudletScheduler extends Serializable {
      */
     CloudletScheduler NULL = new CloudletScheduler() {
         @Override public Cloudlet cloudletCancel(int clId) { return Cloudlet.NULL; }
-        @Override public void cloudletFinish(ResCloudlet rcl) {}
+        @Override public void cloudletFinish(CloudletExecutionInfo rcl) {}
         @Override public boolean cloudletPause(int clId) { return false; }
         @Override public double cloudletResume(int clId) { return 0.0; }
         @Override public double cloudletSubmit(Cloudlet cl, double fileTransferTime){ return 0.0; }
         @Override public double cloudletSubmit(Cloudlet cl) { return 0.0; }
-        @Override public <T extends ResCloudlet> List<T> getCloudletExecList() { return Collections.emptyList(); }
-        @Override public <T extends ResCloudlet> List<T> getCloudletFailedList() { return Collections.emptyList(); }
-        @Override public <T extends ResCloudlet> List<T> getCloudletFinishedList() { return Collections.emptyList(); }
-        @Override public <T extends ResCloudlet> List<T> getCloudletPausedList() { return Collections.emptyList(); }
+        @Override public <T extends CloudletExecutionInfo> List<T> getCloudletExecList() { return Collections.emptyList(); }
+        @Override public <T extends CloudletExecutionInfo> List<T> getCloudletFailedList() { return Collections.emptyList(); }
+        @Override public <T extends CloudletExecutionInfo> List<T> getCloudletFinishedList() { return Collections.emptyList(); }
+        @Override public <T extends CloudletExecutionInfo> List<T> getCloudletPausedList() { return Collections.emptyList(); }
         @Override public int getCloudletStatus(int clId) { return 0; }
-        @Override public <T extends ResCloudlet> List<T> getCloudletWaitingList() { return Collections.emptyList(); }
+        @Override public <T extends CloudletExecutionInfo> List<T> getCloudletWaitingList() { return Collections.emptyList(); }
         @Override public List<Double> getCurrentMipsShare() { return Collections.emptyList(); }
         @Override public List<Double> getCurrentRequestedMips() { return Collections.emptyList(); }
         @Override public double getCurrentRequestedUtilizationOfBw() { return 0.0; }
         @Override public double getCurrentRequestedUtilizationOfRam() { return 0.0; }
         @Override public Cloudlet getNextFinishedCloudlet() { return Cloudlet.NULL; }
         @Override public double getPreviousTime() { return 0.0; }
-        @Override public double getTotalCurrentAllocatedMipsForCloudlet(ResCloudlet rcl, double time) { return 0.0; }
-        @Override public double getTotalCurrentAvailableMipsForCloudlet(ResCloudlet rcl, List<Double> mipsShare) { return 0.0; }
-        @Override public double getTotalCurrentRequestedMipsForCloudlet(ResCloudlet rcl, double time) { return 0.0; }
+        @Override public double getTotalCurrentAllocatedMipsForCloudlet(CloudletExecutionInfo rcl, double time) { return 0.0; }
+        @Override public double getTotalCurrentAvailableMipsForCloudlet(CloudletExecutionInfo rcl, List<Double> mipsShare) { return 0.0; }
+        @Override public double getTotalCurrentRequestedMipsForCloudlet(CloudletExecutionInfo rcl, double time) { return 0.0; }
         @Override public double getTotalUtilizationOfCpu(double time) { return 0.0; }
         @Override public boolean hasFinishedCloudlets() { return false; }
         @Override public Cloudlet migrateCloudlet() { return Cloudlet.NULL; }
@@ -326,6 +326,6 @@ public interface CloudletScheduler extends Serializable {
         @Override public double updateVmProcessing(double currentTime, List<Double> mipsShare) { return 0.0; }
         @Override public Vm getVm() { return Vm.NULL; }
         @Override public void setVm(Vm vm) {}
-        @Override public void updateCloudletProcessing(ResCloudlet rcl, double currentTime) {}
+        @Override public void updateCloudletProcessing(CloudletExecutionInfo rcl, double currentTime) {}
     };
 }

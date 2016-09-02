@@ -7,10 +7,10 @@
     </parent>
     <artifactId>distribution</artifactId>
     <packaging>pom</packaging>
-    <name>CloudSim++ Distribution Package</name>
+    <name>CloudSim Plus Distribution Package</name>
     <description>
         A package for distribution purpuse that contains:
-        - CloudSim++ API that you can use to build your cloud simulation scenarios;
+        - CloudSim Plus API that you can use to build your cloud simulation scenarios;
         - Documentation in javadoc format;
         - Several examples of how to build cloud simulations;
         - Source code.

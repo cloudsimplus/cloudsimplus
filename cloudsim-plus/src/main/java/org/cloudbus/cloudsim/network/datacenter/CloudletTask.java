@@ -7,6 +7,7 @@
  */
 package org.cloudbus.cloudsim.network.datacenter;
 
+import org.cloudbus.cloudsim.core.CloudSim;
 import org.cloudbus.cloudsim.core.Identificable;
 
 /**
@@ -32,8 +33,9 @@ import org.cloudbus.cloudsim.core.Identificable;
  * and {@link org.cloudbus.cloudsim.ResCloudlet} share a common
  * set of attributes that would be defined by a common interface.
  */
-public abstract class CloudletTask implements Identificable {
-    
+public abstract class CloudletTask implements Identificable {    
+    private boolean finished = false;
+
     /**
      * @see #getId() 
      */
@@ -45,9 +47,9 @@ public abstract class CloudletTask implements Identificable {
     private double startTime;
 
     /**
-     * @see #getExecutionTime() 
+     * @see #getFinishTime() 
      */
-    private double executionTime;
+    private double finishTime;
     
     /**
      * @see #getMemory() 
@@ -62,27 +64,13 @@ public abstract class CloudletTask implements Identificable {
     /**
      * Creates a new task.
      * @param id task id
-     * @param memory memory used by the task
-     * @param networkCloudlet the NetworkCloudlet that the task belongs to
      */
-    public CloudletTask(int id, long memory, NetworkCloudlet networkCloudlet) {
+    public CloudletTask(int id) {
         super();
         this.id = id;
-        this.startTime = 0;
-        this.executionTime = 0;
-        this.memory = memory;
-        this.networkCloudlet = networkCloudlet;
-    }
-
-    /**
-     * Creates a new task without assigning it to a {@link NetworkCloudlet}
-     * (that has to be assigned further).
-     * @param id task id
-     * @param memory memory used by the task
-     * @see #setNetworkCloudlet(org.cloudbus.cloudsim.network.datacenter.NetworkCloudlet) 
-     */
-    public CloudletTask(int id, long memory) {
-        this(id, memory, null);
+        this.startTime = -1;
+        this.finishTime = -1;
+        this.memory = 0;
     }
 
     /**
@@ -103,24 +91,6 @@ public abstract class CloudletTask implements Identificable {
     }
 
     /**
-     * Gets the time spent to complete the task.
-     * @return 
-     */
-    public double getExecutionTime() {
-        return executionTime;
-    }
-
-    /**
-     * Computes and sets the time spent to complete the task.
-     * @param currentSimulationTime the current simulation time
-     * @return the computed execution time
-     */
-    public double computeExecutionTime(double currentSimulationTime) {
-        this.executionTime = currentSimulationTime - getStartTime();
-        return this.executionTime;
-    }
-
-    /**
      * Gets the memory amount used by the task.
      * @return 
      */
@@ -137,8 +107,8 @@ public abstract class CloudletTask implements Identificable {
     }
 
     /**
-     * Gets the time the task started executing.
-     * @return 
+     *
+     * @return the time the task started executing, or -1 if not started yet.
      */
     public double getStartTime() {
         return startTime;
@@ -162,6 +132,48 @@ public abstract class CloudletTask implements Identificable {
 
     public void setNetworkCloudlet(NetworkCloudlet networkCloudlet) {
         this.networkCloudlet = networkCloudlet;
+    }
+    
+    /**
+     * Indicates if the task is finished or not.
+     * 
+     * @return true if the task has finished
+     */
+    public boolean isFinished(){
+        return finished;
+    }
+    
+    /**
+     * Sets the task as finished or not
+     * @param finished true to set the task as finished, false otherwise
+     * @throws RuntimeException when the task is already finished and you try to set it as unfinished
+     */
+    protected void setFinished(boolean finished){
+        if(this.finished && !finished)
+            throw new RuntimeException("The task is already finished. You cannot set it as unfinished.");
+        
+        //If the task was not finished before and try to set it to finished,
+        //stores the finishTime
+        if(!this.finished && finished)
+            finishTime = CloudSim.clock();
+        
+        this.finished = finished;
+    }
+    
+    /**
+     * 
+     * @return the time the task spent executing, or -1 if not finished yet
+     */
+    public double getExecutionTime(){
+        return (finished ? finishTime - startTime : -1);
+    }
+
+    /**
+     * 
+     * @return the time the task finished or -1 if not finished yet.
+     */
+    public double getFinishTime() {
+        return finishTime;
     }
     
 }

@@ -21,17 +21,15 @@ import org.cloudbus.cloudsim.core.CloudSim;
  * placeholder for maintaining the amount of resource share allocated at various
  * times for simulating any scheduling using internal events.
  * <p>
- * As the VM where the Cloudlet is running might migrate to another
- * Datacenter, each ResCloudlet object represents the data about
- * execution of the cloudlet when the Vm was in a given Datacenter.
+ As the VM where the Cloudlet is running might migrate to another
+ Datacenter, each CloudletExecutionInfo object represents the data about
+ execution of the cloudlet when the Vm was in a given Datacenter.
  *
  * @author Manzur Murshed
  * @author Rajkumar Buyya
  * @since CloudSim Toolkit 1.0
- * 
- * @todo @author manoelcampos The class would be renamed to CloudletExecutionInfo
  */
-public class ResCloudlet {
+public class CloudletExecutionInfo {
 
     /**
      * The Cloudlet object.
@@ -124,7 +122,7 @@ public class ResCloudlet {
      * @pre cloudlet != null
      * @post $none
      */
-    public ResCloudlet(Cloudlet cloudlet) {
+    public CloudletExecutionInfo(Cloudlet cloudlet) {
         this(cloudlet, 0, 0, NOT_FOUND);
     }
 
@@ -137,9 +135,9 @@ public class ResCloudlet {
      * @param cloudlet a cloudlet object
      * @param startTime a reservation start time. Can also be interpreted as
      * starting time to execute this Cloudlet.
-     * @param duration a reservation reservationDuration time. Can also be interpreted as
- how long to execute this Cloudlet.
-     * @param reservId a reservation ID that owns this Cloudlet
+     * @param duration a reservation reservationDuration time. 
+     * Can also be interpreted as how long to execute this Cloudlet.
+     * @param reservationId a reservation ID that owns this Cloudlet
      * @see gridsim.CloudSim#clock()
      * @pre cloudlet != null
      * @pre startTime > 0
@@ -147,22 +145,18 @@ public class ResCloudlet {
      * @pre reservID > 0
      * @post $none
      */
-    public ResCloudlet(Cloudlet cloudlet, long startTime, int duration, int reservId) {
+    public CloudletExecutionInfo(Cloudlet cloudlet, long startTime, int duration, int reservationId) {
         this.cloudlet = cloudlet;
         this.reservationStartTime = startTime;
         this.reservationDuration = duration;
-        this.reservationId = reservId;
-
+        this.reservationId = reservationId;
         this.pesNumber = cloudlet.getNumberOfPes();
-
-        this.arrivalTime = CloudSim.clock();
-        cloudlet.setSubmissionTime(this.arrivalTime);
-
+        this.arrivalTime = cloudlet.registerArrivalOfCloudletIntoDatacenter();
         this.finishedTime = NOT_FOUND;  // Cannot finish in this hourly slot.
         this.totalCompletionTime = 0.0;
         this.startExecTime = 0.0;
 
-        //In case a Cloudlet has been executed partially by some other cloud hostList.
+        //In case a Cloudlet has been executed partially by some other host
         this.cloudletFinishedSoFar = cloudlet.getCloudletFinishedSoFar() * Consts.MILLION;
     }
     
@@ -219,11 +213,7 @@ public class ResCloudlet {
      * @post $none
      */
     public boolean hasReserved() {
-        if (reservationId == NOT_FOUND) {
-            return false;
-        }
-
-        return true;
+        return (reservationId != NOT_FOUND);
     }
 
     /**

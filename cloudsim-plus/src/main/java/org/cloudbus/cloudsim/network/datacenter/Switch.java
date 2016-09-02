@@ -8,8 +8,8 @@
 package org.cloudbus.cloudsim.network.datacenter;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -31,6 +31,10 @@ import org.cloudbus.cloudsim.lists.VmList;
  * 
  */
 public abstract class Switch extends SimEntity {
+    /**
+     * The value of 1 Kilobyte in bytes.
+     */
+    public static final int KILOBYTE = 1024;
 
     /**
      * The id of the datacenter where the switch is connected to.
@@ -41,15 +45,15 @@ public abstract class Switch extends SimEntity {
 
     /**
      * Map of packets sent to switches on the uplink, where each key is a switch
-     * id and the corresponding value is the packets sent to that switch.
+     * id and the corresponding value is the list of packets to sent to that switch.
      */
-    private final Map<Integer, List<NetworkPacket>> uplinkSwitchPacketList;
+    private final Map<Integer, List<NetworkPacket>> uplinkSwitchPacketMap;
 
     /**
      * Map of packets sent to switches on the downlink, where each key is a
-     * switch id and the corresponding value is the packets sent to that switch.
+     * switch id and the corresponding value is the list of packets to sent to that switch.
      */
-    private final Map<Integer, List<NetworkPacket>> downlinkSwitchPacketList;
+    private final Map<Integer, List<NetworkPacket>> downlinkSwitchPacketMap;
 
     /**
      * Map of hosts connected to the switch, where each key is the host ID and
@@ -69,17 +73,17 @@ public abstract class Switch extends SimEntity {
 
     /**
      * Map of packets sent to hosts connected in the switch, where each key is a
-     * host id and the corresponding value is the packets sent to that host.
+     * host id and the corresponding value is the list of packets to sent to that host.
      */
-    private final Map<Integer, List<NetworkPacket>> packetToHost;
+    private final Map<Integer, List<NetworkPacket>> packetToHostMap;
 
     /**
-     * Bandwitdh of uplink.
+     * @see #getUplinkBandwidth() 
      */
     private double uplinkBandwidth;
 
     /**
-     * Bandwitdh of downlink.
+     * @see #getDownlinkBandwidth() 
      */
     private double downlinkBandwidth;
 
@@ -96,26 +100,17 @@ public abstract class Switch extends SimEntity {
     private final List<NetworkPacket> packetList;
 
     /**
-     * The latency time the switch spends to process a received packet. This time is
-     * considered constant no matter how many packets the switch have to
-     * process.
+     * @see #getSwitchingDelay() 
      */
     private double switchingDelay;
-
-    /**
-     * A map of VMs connected to this switch.
-     *
-     * @todo The list doesn't appear to be updated (VMs added to it) anywhere.
-     */
-    private final Map<Integer, NetworkVm> vmlist = new HashMap<>();
 
     public Switch(String name, NetworkDatacenter dc) {
         super(name);
         this.packetList = new ArrayList<>();
         this.hostList = new HashMap<>();
-        this.packetToHost = new HashMap<>();
-        this.uplinkSwitchPacketList = new HashMap<>();
-        this.downlinkSwitchPacketList = new HashMap<>();
+        this.packetToHostMap = new HashMap<>();
+        this.uplinkSwitchPacketMap = new HashMap<>();
+        this.downlinkSwitchPacketMap = new HashMap<>();
         this.downlinkSwitches = new ArrayList<>();
         this.uplinkSwitches = new ArrayList<>();        
         this.datacenter = dc;
@@ -129,7 +124,6 @@ public abstract class Switch extends SimEntity {
 
     @Override
     public void processEvent(SimEvent ev) {
-        // Log.printLine(CloudSim.clock()+"[Broker]: event received:"+ev.getTag());
         switch (ev.getTag()) {
             // Resource characteristics request
             case CloudSimTags.NETWORK_EVENT_UP:
@@ -165,9 +159,9 @@ public abstract class Switch extends SimEntity {
      */
     protected void processHostPacket(SimEvent ev) {
         // Send packet to host
-        NetworkPacket hspkt = (NetworkPacket) ev.getData();
-        NetworkHost hs = hostList.get(hspkt.receiverHostId);
-        hs.getPacketsReceived().add(hspkt);
+        NetworkPacket netPkt = (NetworkPacket) ev.getData();
+        NetworkHost host = hostList.get(netPkt.getReceiverHostId());
+        host.addReceivedNetworkPacket(netPkt);
     }
 
     /**
@@ -199,7 +193,7 @@ public abstract class Switch extends SimEntity {
         //
         // int src=ev.getSource();
         NetworkPacket hspkt = (NetworkPacket) ev.getData();
-        int recvVmId = hspkt.pkt.receiverVmId;
+        int recvVmId = hspkt.getHostPacket().getReceiverVmId();
         CloudSim.cancelAll(getId(), new PredicateType(CloudSimTags.NETWORK_EVENT_SEND));
         schedule(getId(), switchingDelay, CloudSimTags.NETWORK_EVENT_SEND);
     }
@@ -244,60 +238,115 @@ public abstract class Switch extends SimEntity {
      * @param ev Event/packet to process
      */
     protected void processPacketForward(SimEvent ev) {
-        // search for the host and packets..send to them
-        if (downlinkSwitchPacketList != null) {
-            for (Entry<Integer, List<NetworkPacket>> es : downlinkSwitchPacketList.entrySet()) {
-                int tosend = es.getKey();
-                List<NetworkPacket> hspktlist = es.getValue();
-                if (!hspktlist.isEmpty()) {
-                    double avband = downlinkBandwidth / hspktlist.size();
-                    Iterator<NetworkPacket> it = hspktlist.iterator();
-                    while (it.hasNext()) {
-                        NetworkPacket hspkt = it.next();
-                        double delay = 1000 * hspkt.pkt.dataLength / avband;
+        forwardPacketsToDownlinkSwitches();
+        forwardPacketsToUplinkSwitches();
+        forwardPacketsToHosts();
+    }
 
-                        this.send(tosend, delay, CloudSimTags.NETWORK_EVENT_DOWN, hspkt);
-                    }
-                    hspktlist.clear();
+    /**
+     * Gets the list of packets to be sent to each Host
+     * and forward them.
+     * @see #packetToHostMap
+     */
+    private void forwardPacketsToHosts() {
+        if (packetToHostMap != null) {
+            for (Entry<Integer, List<NetworkPacket>> es : packetToHostMap.entrySet()) {
+                List<NetworkPacket> netPktList = es.getValue();
+                for(NetworkPacket netPkt: netPktList) {
+                    double delay = networkDelayForPacketTransmission(netPkt, downlinkBandwidth, netPktList);
+                    this.send(getId(), delay, CloudSimTags.NETWORK_EVENT_HOST, netPkt);
                 }
+                netPktList.clear();
             }
         }
-        if (uplinkSwitchPacketList != null) {
-            for (Entry<Integer, List<NetworkPacket>> es : uplinkSwitchPacketList.entrySet()) {
-                int tosend = es.getKey();
-                List<NetworkPacket> hspktlist = es.getValue();
-                if (!hspktlist.isEmpty()) {
-                    double avband = uplinkBandwidth / hspktlist.size();
-                    Iterator<NetworkPacket> it = hspktlist.iterator();
-                    while (it.hasNext()) {
-                        NetworkPacket hspkt = it.next();
-                        double delay = 1000 * hspkt.pkt.dataLength / avband;
+    }
 
-                        this.send(tosend, delay, CloudSimTags.NETWORK_EVENT_UP, hspkt);
-                    }
-                    hspktlist.clear();
+    /**
+     * Gets the list of packets to be sent to each Uplink Switch
+     * and forward them.
+     * @see #uplinkSwitchPacketMap
+     */
+    private void forwardPacketsToUplinkSwitches() {
+        if (uplinkSwitchPacketMap != null) {
+            for (Entry<Integer, List<NetworkPacket>> es : uplinkSwitchPacketMap.entrySet()) {
+                int destinationSwitchId = es.getKey();
+                List<NetworkPacket> netPktList = es.getValue();
+                for(NetworkPacket netPkt: netPktList) {
+                    double delay = networkDelayForPacketTransmission(netPkt, uplinkBandwidth, netPktList);
+                    this.send(destinationSwitchId, delay, CloudSimTags.NETWORK_EVENT_UP, netPkt);
                 }
+                netPktList.clear();
             }
         }
-        if (packetToHost != null) {
-            for (Entry<Integer, List<NetworkPacket>> es : packetToHost.entrySet()) {
-                List<NetworkPacket> hspktlist = es.getValue();
-                if (!hspktlist.isEmpty()) {
-                    double avband = downlinkBandwidth / hspktlist.size();
-                    Iterator<NetworkPacket> it = hspktlist.iterator();
-                    while (it.hasNext()) {
-                        NetworkPacket hspkt = it.next();
-                        // hspkt.recieverhostid=tosend;
-                        // hs.packetsReceived.add(hspkt);
-                        this.send(getId(), hspkt.pkt.dataLength / avband, CloudSimTags.NETWORK_EVENT_HOST, hspkt);
-                    }
-                    hspktlist.clear();
+    }
+
+    /**
+     * Gets the list of packets to be sent to each Downlink Switch
+     * and forward them.
+     * @see #downlinkSwitchPacketMap
+     */
+    private void forwardPacketsToDownlinkSwitches() {
+        if (downlinkSwitchPacketMap != null) {
+            for (Entry<Integer, List<NetworkPacket>> es : downlinkSwitchPacketMap.entrySet()) {
+                int destinationSwitchId = es.getKey();
+                List<NetworkPacket> netPktList = es.getValue();
+                for (NetworkPacket netPkt: netPktList) {
+                    double delay = networkDelayForPacketTransmission(netPkt, downlinkBandwidth, netPktList);
+                    this.send(destinationSwitchId, delay, CloudSimTags.NETWORK_EVENT_DOWN, netPkt);
                 }
+                netPktList.clear();
             }
         }
+    }
 
-        // or to switch at next level.
-        // clear the list
+    /**
+     * Computes the network delay to send a packet through the network.
+     * 
+     * @param netPkt the packet to be sent
+     * @param bwCapacity the total bandwidth capacity (in Megabits/s)
+     * @param netPktList the list of packets waiting to be sent
+     * @return the expected time to transfer the packet through the network (in seconds)
+     */
+    protected double networkDelayForPacketTransmission(NetworkPacket netPkt, double bwCapacity, List<NetworkPacket> netPktList) {
+        return bytesToMegabits(netPkt.getHostPacket().getDataLength()) / 
+                      getAvailableBwForEachPacket(bwCapacity, netPktList);
+    }
+    
+    public static final double bytesToMegabits(double bytes){
+        return bytesToBits(bytesToMegabytes(bytes));
+    }
+
+    public static final double bytesToMegabytes(double bytes){
+        return bytes / KILOBYTE / KILOBYTE;
+    }
+    
+    /**
+     * Converts any value in bytes to bits,
+     * doesn't matter if the unit is Kilobytes (KB), Megabytes (MB), Gigabytes (GB), etc.
+     * 
+     * @param bytes the value in byte (KB, MB, GB , etc)
+     * @return the value in bits, following the same unit
+     * of the input param. For instance, if it is given
+     * a value in Megabytes it will be converted to Megabits,
+     * if in Gigabytes it will be converted to Gigabits.
+     */
+    public static final double bytesToBits(double bytes){
+        return bytes * 8;
+    }
+    
+    /**
+     * Considering a list of packets to be sent,
+     * gets the amount of available bandwidth for each packet,
+     * assuming that the bandwidth is shared equally among 
+     * all packets, disregarding the packet size.
+     * 
+     * @param bwCapacity the total bandwidth capacity to be shared among 
+     * the packets to be sent (in Megabits/s)
+     * @param netPktList list of packets to be sent 
+     * @return the available bandwidth for each packet in the list of packets to send (in Megabits/s)
+     */
+    private double getAvailableBwForEachPacket(double bwCapacity, List<NetworkPacket> netPktList) {
+        return (netPktList.isEmpty() ? bwCapacity : bwCapacity / netPktList.size());
     }
 
     /**
@@ -321,6 +370,10 @@ public abstract class Switch extends SimEntity {
         Log.printConcatLine(getName(), " is shutting down...");
     }
 
+    /**
+     * 
+     * @return Bandwitdh of uplink (in Megabits/s).
+     */
     public double getUplinkBandwidth() {
         return uplinkBandwidth;
     }
@@ -329,6 +382,10 @@ public abstract class Switch extends SimEntity {
         this.uplinkBandwidth = uplinkBandwidth;
     }
 
+    /**
+     * 
+     * @return Bandwitdh of downlink (in Megabits/s).
+     */
     public double getDownlinkBandwidth() {
         return downlinkBandwidth;
     }
@@ -349,6 +406,12 @@ public abstract class Switch extends SimEntity {
         this.ports = ports;
     }
 
+    /**
+     * 
+     * @return the latency time the switch spends to process a received packet. This time is
+     * considered constant no matter how many packets the switch have to
+     * process (in seconds).
+     */
     public double getSwitchingDelay() {
         return switchingDelay;
     }
@@ -373,20 +436,81 @@ public abstract class Switch extends SimEntity {
         return hostList;
     }
 
-    public Map<Integer, List<NetworkPacket>> getPacketToHost() {
-        return packetToHost;
+    /**
+     * 
+     * @return a read-only map of hosts and the list of packets
+     * to be sent to each one.
+     */
+    public Map<Integer, List<NetworkPacket>> getPacketToHostMap() {
+        return Collections.unmodifiableMap(packetToHostMap);
     }
-
+    
     public List<Switch> getDownlinkSwitches() {
         return downlinkSwitches;
     }
 
-    public Map<Integer, List<NetworkPacket>> getUplinkSwitchPacketList() {
-        return uplinkSwitchPacketList;
+    /**
+     * Gets the list of packets to be sent to a downlink switch.
+     * @param downlinkSwitchId the id of the switch to get the list of packets to send
+     * @return the list of packets to be sent to the given switch.
+     */
+    public List<NetworkPacket> getDownlinkSwitchPacketList(int downlinkSwitchId) {
+        return getListOfPackets(downlinkSwitchPacketMap, downlinkSwitchId);
+    }
+    
+    /**
+     * Gets the list of packets to be sent to an uplink switch.
+     * @param uplinkSwitchId the id of the switch to get the list of packets to send
+     * @return the list of packets to be sent to the given switch.
+     */
+    public List<NetworkPacket> getUplinkSwitchPacketList(int uplinkSwitchId) {
+        return getListOfPackets(uplinkSwitchPacketMap, uplinkSwitchId);
+    }
+    
+    /**
+     * Gets the list of packets to be sent to a host.
+     * @param hostId the id of the host to get the list of packets to send
+     * @return the list of packets to be sent to the given host.
+     */
+    public List<NetworkPacket> getHostPacketList(int hostId) {
+        return getListOfPackets(packetToHostMap, hostId);
     }
 
-    public Map<Integer, List<NetworkPacket>> getDownlinkSwitchPacketList() {
-        return downlinkSwitchPacketList;
+    /**
+     * Gets a list of packets from a given map of packet lists.
+     * @param map map where to get the list of packets
+     * @param key the map entry key where the list has to be got
+     * @return the list of packets from the map entry with the given key
+     */
+    private List<NetworkPacket> getListOfPackets(Map<Integer, List<NetworkPacket>> map, int key) {
+        List<NetworkPacket> list = map.get(key);
+        if(list == null){
+            list = new ArrayList<>();
+            map.put(key, list);
+        }
+        
+        return list;
+    }    
+    
+    /**
+     * 
+     * @return a read-only map of the uplink Switches and list of packets
+     * to be sent to each one.
+     */
+    public Map<Integer, List<NetworkPacket>> getUplinkSwitchPacketMap(){
+        return Collections.unmodifiableMap(uplinkSwitchPacketMap);
+    }
+    
+    public void addPacketToBeSentToDownlinkSwitch(int downlinkSwitchId, NetworkPacket packet){
+        getDownlinkSwitchPacketList(downlinkSwitchId).add(packet);
+    }
+
+    public void addPacketToBeSentToUplinkSwitch(int uplinkSwitchId, NetworkPacket packet){
+        getUplinkSwitchPacketList(uplinkSwitchId).add(packet);
+    }
+
+    public void addPacketToBeSentToHost(int hostId, NetworkPacket packet){
+        getHostPacketList(hostId).add(packet);
     }
 
     public NetworkDatacenter getDatacenter() {
@@ -409,4 +533,5 @@ public abstract class Switch extends SimEntity {
      * @return the switch network level
      */
     public abstract int getLevel();
+    
 }

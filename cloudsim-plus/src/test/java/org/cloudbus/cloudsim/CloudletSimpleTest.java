@@ -15,7 +15,6 @@ import org.cloudbus.cloudsim.utilizationmodels.UtilizationModelFull;
 import org.cloudbus.cloudsim.utilizationmodels.UtilizationModelStochastic;
 import org.cloudbus.cloudsim.utilizationmodels.UtilizationModel;
 
-import java.util.LinkedList;
 import java.util.List;
 import org.cloudbus.cloudsim.core.CloudSim;
 import org.cloudbus.cloudsim.listeners.EventListener;
@@ -85,14 +84,27 @@ public class CloudletSimpleTest {
 
     @Test
     public void testGetWaitingTime() {
+        final double arrivalTime = 0.0, execStartTime = 10.0;
+        final int datacenterId = 0;
+        mockCloudSimClockAndGetEntityNameMethods(arrivalTime, datacenterId);
+        
         CloudletSimple cloudlet = createCloudlet();
         assertEquals(0, cloudlet.getWaitingTime(), 0);
-        cloudlet.assignCloudletToDatacenter(0, 0);
-        final int submissionTime = 0, execStartTime = 10;
-        final int expectedWaitingTime = execStartTime - submissionTime;
-        cloudlet.setSubmissionTime(submissionTime);
+        cloudlet.assignCloudletToDatacenter(datacenterId, 0);
+        final double expectedWaitingTime = execStartTime - arrivalTime;
+        cloudlet.registerArrivalOfCloudletIntoDatacenter();
         cloudlet.setExecStartTime(execStartTime);
         assertEquals(expectedWaitingTime, cloudlet.getWaitingTime(), 0);
+    }
+
+    private void mockCloudSimClockAndGetEntityNameMethods(final double arrivalTime, final int datacenterId) {
+        mockCloudSimClockAndGetEntityNameMethodsWithoutReplay(arrivalTime, datacenterId);
+        PowerMock.replay(CloudSim.class);
+    }
+    
+    private void mockCloudSimClockAndGetEntityNameMethodsWithoutReplay(final double arrivalTime, final int datacenterId) {
+        mockCloudSimClockWithoutCallingReplay(arrivalTime);
+        EasyMock.expect(CloudSim.getEntityName(datacenterId)).andReturn("datacenter" + datacenterId);        
     }
     
     @Test
@@ -122,20 +134,23 @@ public class CloudletSimpleTest {
 
         cloudlet.assignCloudletToDatacenter(0, 0);
         final int submissionTime = 0, execStartTime = 10;
-        cloudlet.setSubmissionTime(submissionTime);
+        cloudlet.registerArrivalOfCloudletIntoDatacenter();
         cloudlet.setExecStartTime(execStartTime);
         assertEquals(execStartTime, cloudlet.getExecStartTime(), 0);
     }
 
     @Test
-    public void testGetSubmissionTime() {
-        CloudletSimple cloudlet = createCloudlet();
-        assertEquals(0, cloudlet.getSubmissionTime(), 0);
+    public void testGetDatacenterArrivalTime() {
+        final double submissionTime = 1;
+        final int datacenterId = 0;
+        mockCloudSimClockAndGetEntityNameMethods(submissionTime, datacenterId);
 
-        cloudlet.assignCloudletToDatacenter(0, 0);
-        final int submissionTime = 1;
-        cloudlet.setSubmissionTime(submissionTime);
-        assertEquals(submissionTime, cloudlet.getSubmissionTime(), 0);
+        CloudletSimple cloudlet = createCloudlet();
+        assertEquals(Cloudlet.NOT_ASSIGNED, cloudlet.getDatacenterArrivalTime(), 0);
+
+        cloudlet.assignCloudletToDatacenter(datacenterId, 0);
+        cloudlet.registerArrivalOfCloudletIntoDatacenter();
+        assertEquals(submissionTime, cloudlet.getDatacenterArrivalTime(), 0);
     }
 
     @Test
@@ -144,12 +159,24 @@ public class CloudletSimpleTest {
         assertEquals(0, cloudlet.getWallClockTimeInLastExecutedDatacenter(), 0);
 
         cloudlet.assignCloudletToDatacenter(0, 0);
-        final int submissionTime = 0, execStartTime = 10;
-        cloudlet.setSubmissionTime(submissionTime);
+        final double arrivalTime = 0.0, execStartTime = 10.0;
+        mockCloudSimClock(arrivalTime);
+
+        cloudlet.registerArrivalOfCloudletIntoDatacenter();
         cloudlet.setExecStartTime(execStartTime);
-        final int wallClockTime = execStartTime + 20;
+        final double wallClockTime = execStartTime + 20.0;
         cloudlet.setWallClockTime(wallClockTime, wallClockTime);
         assertEquals(wallClockTime, cloudlet.getWallClockTimeInLastExecutedDatacenter(), 0);
+    }
+
+    private void mockCloudSimClock(final double arrivalTime) {
+        mockCloudSimClockWithoutCallingReplay(arrivalTime);
+        PowerMock.replay(CloudSim.class);
+    }
+
+    private void mockCloudSimClockWithoutCallingReplay(final double arrivalTime) {
+        PowerMock.mockStatic(CloudSim.class);
+        EasyMock.expect(CloudSim.clock()).andReturn(arrivalTime);
     }
 
     @Test
@@ -159,17 +186,15 @@ public class CloudletSimpleTest {
         final double actualCpuTime = simulationClock - execStartTime;
         final int datacenterId = 0;
         //This will mock the CloudSim static method calls
-        PowerMock.mockStatic(CloudSim.class);
-
+        mockCloudSimClockAndGetEntityNameMethodsWithoutReplay(submissionTime, datacenterId);
         EasyMock.expect(CloudSim.clock()).andReturn(simulationClock);
-        EasyMock.expect(CloudSim.getEntityName(datacenterId)).andReturn("datacenter" + datacenterId);
         PowerMock.replay(CloudSim.class);
 
         CloudletSimple cloudlet = createCloudlet();
         assertEquals(Cloudlet.NOT_ASSIGNED, cloudlet.getActualCPUTime(), 0);
 
         cloudlet.assignCloudletToDatacenter(datacenterId, 0);
-        cloudlet.setSubmissionTime(submissionTime);
+        cloudlet.registerArrivalOfCloudletIntoDatacenter();
         cloudlet.setExecStartTime(execStartTime);
         cloudlet.setCloudletStatus(Cloudlet.Status.SUCCESS);
         assertEquals(actualCpuTime, cloudlet.getActualCPUTime(), 0);
@@ -394,20 +419,6 @@ public class CloudletSimpleTest {
     @Test(expected = IllegalArgumentException.class)
     public void testNew_nullUtilizationModel() {
         createCloudlet(0, null);
-    }
-
-    @Test
-    public void testSetSubmissionTime() {
-        CloudletSimple c = createCloudlet();
-
-        //Cloudlet has not assigned to a datacenter yet
-        Assert.assertFalse(c.setSubmissionTime(1));
-
-        //Assign cloudlet to a datacenter
-        final int resourceId = 1, cost = 1;
-        c.assignCloudletToDatacenter(resourceId, cost);
-
-        Assert.assertTrue(c.setSubmissionTime(1));
     }
 
     @Test

@@ -7,12 +7,14 @@
  */
 package org.cloudbus.cloudsim.network.datacenter;
 
+import org.cloudbus.cloudsim.Cloudlet;
+
 /**
- * HostPacket represents the packet that travels through the virtual network
+ * HostPacket represents a packet that travels through the virtual network
  * within a Host. It contains information about cloudlets which are
  * communicating.
  *
- * <br/>Please refer to following publication for more details:<br/>
+ * <br>Please refer to following publication for more details:<br>
  * <ul>
  * <li>
  * <a href="http://dx.doi.org/10.1109/UCC.2011.24">
@@ -24,61 +26,127 @@ package org.cloudbus.cloudsim.network.datacenter;
  * </ul>
  *
  * @author Saurabh Kumar Garg
+ * @author Manoel Campos da Silva Filho
  * @since CloudSim Toolkit 1.0
- * @todo Attributes should be private
  */
 public class HostPacket {
 
     /**
-     * Id of the sender VM.
+     * @see #getSenderVmId() 
      */
-    int senderVmId;
+    private final int senderVmId;
 
     /**
-     * Id of the receiver VM.
+     * @see #getReceiverVmId() 
      */
-    int receiverVmId;
+    private final int receiverVmId;
 
     /**
-     * Id of the sender cloudlet.
+     * @see #getSenderCloudlet()   
      */
-    int senderCloudletId;
+    private final Cloudlet senderCloudlet;
 
     /**
-     * Id of the receiver cloudlet.
+     * @see #getReceiverCloudlet() 
      */
-    int receiverCloudletId;
+    private final Cloudlet receiverCloudlet;
 
     /**
-     * The length of the data being sent (in bytes).
+     * @see #getDataLength() 
      */
-    double dataLength;
+    private final double dataLength;
 
     /**
      * The time the packet was sent.
      */
-    double sendTime;
+    private double sendTime;
 
     /**
      * The time the packet was received.
      */
-    double receiveTime;
+    private double receiveTime;
 
+    /**
+     * Creates a packet to be sent to to a VM inside the 
+     * Host of the sender VM.
+     * 
+     * @param senderVmId id of the VM sending the packet
+     * @param receiverVmId id of the VM that has to receive the packet
+     * @param dataLength data length of the packet
+     * @param senderCloudlet cloudlet sending the packet
+     * @param receiverCloudlet cloudlet that has to receive the packet
+     */
     public HostPacket(
             int senderVmId,
             int receiverVmId,
             double dataLength,
-            double sendTime,
-            double receiveTime,
-            int senderCloudletId,
-            int receiverCloudletId) {
+            Cloudlet senderCloudlet,
+            Cloudlet receiverCloudlet) {
         super();
         this.senderVmId = senderVmId;
         this.receiverVmId = receiverVmId;
         this.dataLength = dataLength;
+        this.receiverCloudlet = receiverCloudlet;
+        this.senderCloudlet = senderCloudlet;
+    }
+
+    public double getSendTime() {
+        return sendTime;
+    }
+
+    public void setSendTime(double sendTime) {
         this.sendTime = sendTime;
+    }
+
+    public double getReceiveTime() {
+        return receiveTime;
+    }
+
+    public void setReceiveTime(double receiveTime) {
         this.receiveTime = receiveTime;
-        this.receiverCloudletId = receiverCloudletId;
-        this.senderCloudletId = senderCloudletId;
+    }
+
+    /**
+     * 
+     * @return id of the VM sending the packet.
+     * This is the VM where the {@link #getSenderCloudlet() sending cloudlet}
+     * is running.
+     */
+    public int getSenderVmId() {
+        return senderVmId;
+    }
+
+    /**
+     * 
+     * @return id of the VM that has to receive the packet.
+     * This is the VM whwere th {@link #getReceiverCloudlet() receiver cloudlet}
+     * is running.
+     */
+    public int getReceiverVmId() {
+        return receiverVmId;
+    }
+
+    /**
+     * 
+     * @return the cloudlet sending the packet.
+     */
+    public Cloudlet getSenderCloudlet() {
+        return senderCloudlet;
+    }
+    
+    /**
+     * @return the cloudlet that has to receive the packet.
+     */
+    public Cloudlet getReceiverCloudlet() {
+        return receiverCloudlet;
+    }
+
+    /**
+     * 
+     * @return the length of the data being sent,
+     * that represents the size of the packet's payload (in bytes).
+     */
+    public double getDataLength() {
+        return dataLength;
     }
 }

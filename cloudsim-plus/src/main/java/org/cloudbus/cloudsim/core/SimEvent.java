@@ -91,7 +91,6 @@ public class SimEvent implements Cloneable, Comparable<SimEvent>, EventInfo {
         data = null;
     }
 
-    // ------------------- PACKAGE LEVEL METHODS --------------------------
     SimEvent(int evtype, double time, int src, int dest, int tag, Object edata) {
         etype = evtype;
         this.time = time;
@@ -123,7 +122,6 @@ public class SimEvent implements Cloneable, Comparable<SimEvent>, EventInfo {
         endWaitingTime = end_waiting_time;
     }
 
-    // ------------------- PUBLIC METHODS --------------------------        
     @Override
     public String toString() {
         return "Event tag = " + tag + " source = " + CloudSim.getEntity(entSrc).getName() + " destination = "
@@ -252,6 +250,7 @@ public class SimEvent implements Cloneable, Comparable<SimEvent>, EventInfo {
         entDst = d;
     }
 
+    @Override
     public double getTime() {
         return time;
     }

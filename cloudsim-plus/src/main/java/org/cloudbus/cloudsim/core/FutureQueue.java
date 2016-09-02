@@ -10,6 +10,7 @@ package org.cloudbus.cloudsim.core;
 
 import java.util.Collection;
 import java.util.Iterator;
+import java.util.NoSuchElementException;
 import java.util.SortedSet;
 import java.util.TreeSet;
 
@@ -72,6 +73,14 @@ public class FutureQueue {
 	public int size() {
 		return sortedSet.size();
 	}
+        
+        /**
+         * Checks if the queue is empty.
+         * @return true if the queue is empty, false otherwise
+         */
+        public boolean isEmpty(){
+            return sortedSet.isEmpty();
+        }
 
 	/**
 	 * Removes the event from the queue.
@@ -80,8 +89,17 @@ public class FutureQueue {
 	 * @return true, if successful
 	 */
 	public boolean remove(SimEvent event) {
-		return sortedSet.remove(event);
+            return sortedSet.remove(event);
 	}
+        
+        /**
+         * Gets the first element of the queue.
+         * @return the first element
+         * @throws NoSuchElementException when the queue is empty
+         */
+        public SimEvent first() throws NoSuchElementException {
+            return sortedSet.first();
+        }
 
 	/**
 	 * Removes all the events from the queue.

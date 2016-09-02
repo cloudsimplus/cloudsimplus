@@ -7,9 +7,6 @@
  */
 package org.cloudbus.cloudsim.network.datacenter;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import org.cloudbus.cloudsim.core.SimEvent;
 
 /**
@@ -75,55 +72,43 @@ public class AggregateSwitch extends Switch {
     protected void processPacketDown(SimEvent ev) {
         super.processPacketDown(ev);
         
-        NetworkPacket hspkt = (NetworkPacket) ev.getData();
-        int recvVmId = hspkt.pkt.receiverVmId;
+        NetworkPacket netPkt = (NetworkPacket) ev.getData();
+        int receiverVmId = netPkt.getHostPacket().getReceiverVmId();
         
         // packet is coming from root so need to be sent to edgelevel swich
         // find the id for edgelevel switch
-        int switchid = getDatacenter().vmToSwitchMap.get(recvVmId);
-        List<NetworkPacket> packetList = getDownlinkSwitchPacketList().get(switchid);
-        if (packetList == null) {
-            packetList = new ArrayList<>();
-            getDownlinkSwitchPacketList().put(switchid, packetList);
-        }
-        packetList.add(hspkt);
+        int switchId = getDatacenter().getVmToSwitchMap().get(receiverVmId);
+        addPacketToBeSentToDownlinkSwitch(switchId, netPkt);
     }
 
     @Override
     protected void processPacketUp(SimEvent ev) {
         super.processPacketUp(ev);
         
-        NetworkPacket hspkt = (NetworkPacket) ev.getData();
-        int recvVmId = hspkt.pkt.receiverVmId;
+        NetworkPacket netPkt = (NetworkPacket) ev.getData();
+        int receiverVmId = netPkt.getHostPacket().getReceiverVmId();
 
         // packet is coming from edge level router so need to be sent to
         // either root or another edge level swich
-        // find the id for edgelevel switch
-        int switchid = getDatacenter().vmToSwitchMap.get(recvVmId);
-        boolean flagtoswtich = false;
-        for (Switch sw : getDownlinkSwitches()) {
-            if (switchid == sw.getId()) {
-                flagtoswtich = true;
-                break;
-            }
-        }
-        
-        if (flagtoswtich) {
-            List<NetworkPacket> pktlist = getDownlinkSwitchPacketList().get(switchid);
-            if (pktlist == null) {
-                pktlist = new ArrayList<>();
-                getDownlinkSwitchPacketList().put(switchid, pktlist);
-            }
-            pktlist.add(hspkt);
+        // find the id for edge level switch
+        int edgeSwitchId = getDatacenter().getVmToSwitchMap().get(receiverVmId);
+        if (findEdgeSwitch(edgeSwitchId)) {
+            addPacketToBeSentToDownlinkSwitch(edgeSwitchId, netPkt);
         } else { // send to up
             Switch sw = getUplinkSwitches().get(0);
-            List<NetworkPacket> pktlist = getUplinkSwitchPacketList().get(sw.getId());
-            if (pktlist == null) {
-                pktlist = new ArrayList<>();
-                getUplinkSwitchPacketList().put(sw.getId(), pktlist);
-            }
-            pktlist.add(hspkt);
+            addPacketToBeSentToUplinkSwitch(sw.getId(), netPkt);
         }
+    }
+
+    /**
+     * Checks if the Aggregate switch is connected to a given Edge switch.
+     * @param edgeSwitchId the id of the edge switch to check if the aggregate switch
+     * is connected to
+     * @return true if the edge switch was found, false othersise
+     */
+    private boolean findEdgeSwitch(int edgeSwitchId) {
+        return getDownlinkSwitches().stream()
+                    .anyMatch(edgeSw -> edgeSw.getId() == edgeSwitchId);
     }
 
     @Override

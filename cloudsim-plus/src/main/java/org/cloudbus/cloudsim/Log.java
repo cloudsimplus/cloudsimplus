@@ -27,6 +27,7 @@ public class Log {
      */
     public enum Level {
         INFO, 
+        ERROR,
         
         /**
          * A log level for messages that will be shown only when the application
@@ -183,7 +184,7 @@ public class Log {
     public static void println(Level level, Class _class, double time, String format, Object... args) {
         if((level == Level.DEBUG && isDebug()) || (level != Level.DEBUG)){
             String msg = String.format(format, args);
-            printFormattedLine("%s/%s\n  time %d - %s", level.name(), _class.getSimpleName(), (long)time, msg);
+            printFormattedLine("Time %d %s/%s\n   %s", (long)time, level.name(), _class.getSimpleName(), msg);
         }
     }
 

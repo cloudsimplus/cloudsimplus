@@ -12,7 +12,7 @@ import java.util.List;
 import java.util.Map;
 import org.cloudbus.cloudsim.Cloudlet;
 import org.cloudbus.cloudsim.Consts;
-import org.cloudbus.cloudsim.ResCloudlet;
+import org.cloudbus.cloudsim.CloudletExecutionInfo;
 
 import org.cloudbus.cloudsim.core.CloudSim;
 import org.cloudbus.cloudsim.resources.Processor;
@@ -88,9 +88,9 @@ public class CloudletSchedulerDynamicWorkload extends CloudletSchedulerTimeShare
         setCurrentMipsShare(mipsShare);
 
         double nextEvent = Double.MAX_VALUE;
-        List<ResCloudlet> cloudletsToFinish = new ArrayList<>();
+        List<CloudletExecutionInfo> cloudletsToFinish = new ArrayList<>();
 
-        for (ResCloudlet rcl : getCloudletExecList()) {
+        for (CloudletExecutionInfo rcl : getCloudletExecList()) {
             rcl.updateCloudletFinishedSoFar((long) (timeSpan(currentTime)
                     * getTotalCurrentAllocatedMipsForCloudlet(rcl, getPreviousTime()) * Consts.MILLION));
 
@@ -107,7 +107,7 @@ public class CloudletSchedulerDynamicWorkload extends CloudletSchedulerTimeShare
             }
         }
 
-        for (ResCloudlet rgl : cloudletsToFinish) {
+        for (CloudletExecutionInfo rgl : cloudletsToFinish) {
             getCloudletExecList().remove(rgl);
             cloudletFinish(rgl);
         }
@@ -115,7 +115,7 @@ public class CloudletSchedulerDynamicWorkload extends CloudletSchedulerTimeShare
         setPreviousTime(currentTime);
 
         if (getCloudletExecList().isEmpty()) {
-            return 0;
+            return Double.MAX_VALUE;
         }
 
         return nextEvent;
@@ -123,7 +123,7 @@ public class CloudletSchedulerDynamicWorkload extends CloudletSchedulerTimeShare
 
     @Override
     public double cloudletSubmit(Cloudlet cl, double fileTransferTime) {
-        ResCloudlet rcl = new ResCloudlet(cl);
+        CloudletExecutionInfo rcl = new CloudletExecutionInfo(cl);
         rcl.setCloudletStatus(Cloudlet.Status.INEXEC);
         getCloudletExecList().add(rcl);
         return getEstimatedFinishTime(rcl, getPreviousTime());
@@ -136,7 +136,7 @@ public class CloudletSchedulerDynamicWorkload extends CloudletSchedulerTimeShare
      * @param time the time
      * @return the estimated finish time
      */
-    public double getEstimatedFinishTime(ResCloudlet rcl, double time) {
+    public double getEstimatedFinishTime(CloudletExecutionInfo rcl, double time) {
         return time + 
                ((rcl.getRemainingCloudletLength()) / 
                 getTotalCurrentAllocatedMipsForCloudlet(rcl, time));
@@ -162,12 +162,12 @@ public class CloudletSchedulerDynamicWorkload extends CloudletSchedulerTimeShare
     }
 
     @Override
-    public double getTotalCurrentRequestedMipsForCloudlet(ResCloudlet rcl, double time) {
+    public double getTotalCurrentRequestedMipsForCloudlet(CloudletExecutionInfo rcl, double time) {
         return rcl.getCloudlet().getUtilizationOfCpu(time) * getTotalMips();
     }
 
     @Override
-    public double getTotalCurrentAvailableMipsForCloudlet(ResCloudlet rcl, List<Double> mipsShare) {
+    public double getTotalCurrentAvailableMipsForCloudlet(CloudletExecutionInfo rcl, List<Double> mipsShare) {
         double totalCurrentMips = 0.0;
         if (mipsShare != null) {
             int neededPEs = rcl.getNumberOfPes();
@@ -183,7 +183,7 @@ public class CloudletSchedulerDynamicWorkload extends CloudletSchedulerTimeShare
     }
 
     @Override
-    public double getTotalCurrentAllocatedMipsForCloudlet(ResCloudlet rcl, double time) {
+    public double getTotalCurrentAllocatedMipsForCloudlet(CloudletExecutionInfo rcl, double time) {
         double totalCurrentRequestedMips = getTotalCurrentRequestedMipsForCloudlet(rcl, time);
         double totalCurrentAvailableMips = getTotalCurrentAvailableMipsForCloudlet(rcl, getCurrentMipsShare());
         if (totalCurrentRequestedMips > totalCurrentAvailableMips) {
@@ -200,7 +200,7 @@ public class CloudletSchedulerDynamicWorkload extends CloudletSchedulerTimeShare
      * @todo It is not clear the goal of this method. The related test case
      * doesn't make it clear too. The method doesn't appear to be used anywhere.
      */
-    public void updateUnderAllocatedMipsForCloudlet(ResCloudlet rcl, double mips) {
+    public void updateUnderAllocatedMipsForCloudlet(CloudletExecutionInfo rcl, double mips) {
         if (getUnderAllocatedMips().containsKey(rcl.getUid())) {
             mips += getUnderAllocatedMips().get(rcl.getUid());
         }

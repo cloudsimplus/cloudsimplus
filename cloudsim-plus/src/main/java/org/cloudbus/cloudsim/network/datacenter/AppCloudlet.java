@@ -12,7 +12,7 @@ import java.util.List;
 import org.cloudbus.cloudsim.core.Identificable;
 
 /**
- * AppCloudlet class represents an application that an user submits for execution
+ * Represents an application that an user submits for execution
  * within a datacenter and is consisted of several {@link NetworkCloudlet NetworkCloudlets}.
  * An AppCloudlet can represent, for instance: 
  * <ul>
@@ -27,7 +27,7 @@ import org.cloudbus.cloudsim.core.Identificable;
  * </li>
  * </ul>
  *
- * <br/>Please refer to following publication for more details:<br/>
+ * <br>Please refer to following publication for more details:<br>
  * <ul>
  * <li>
  * <a href="http://dx.doi.org/10.1109/UCC.2011.24">
@@ -37,9 +37,14 @@ import org.cloudbus.cloudsim.core.Identificable;
  * Press, USA), Melbourne, Australia, December 5-7, 2011.
  * </a>
  * </ul>
+ * 
  *
  * @author Saurabh Kumar Garg
- * @since CloudSim Toolkit 1.0
+ * 
+ * @todo @author manoelcampos The class doesn't do anything. It just
+ * serves as a recipient for a list of NetworkCloudlets.
+ * It doesn't have business rules, it is just a data object for this single list.
+ * It is in fact currently useless. 
  *
  */
 public class AppCloudlet implements Identificable {

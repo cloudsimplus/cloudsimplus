@@ -2,11 +2,12 @@ package org.cloudbus.cloudsim.examples.network.datacenter;
 
 import java.util.ArrayList;
 import java.util.List;
-import org.cloudbus.cloudsim.core.CloudSim;
 import org.cloudbus.cloudsim.network.datacenter.AppCloudlet;
 import org.cloudbus.cloudsim.network.datacenter.CloudletSendTask;
 import org.cloudbus.cloudsim.network.datacenter.CloudletExecutionTask;
 import org.cloudbus.cloudsim.network.datacenter.CloudletReceiveTask;
+import org.cloudbus.cloudsim.network.datacenter.CloudletTask;
+import org.cloudbus.cloudsim.network.datacenter.NetDatacenterBroker;
 import org.cloudbus.cloudsim.network.datacenter.NetworkCloudlet;
 import org.cloudbus.cloudsim.network.datacenter.NetworkVm;
 import org.cloudbus.cloudsim.utilizationmodels.UtilizationModel;
@@ -37,17 +38,18 @@ public class NetworkVmsExampleBagOfTasksAppCloudlet extends NetworkVmsExampleApp
     }
 
     /**
-     * Creates a list of NetworkCloudlets that together represents the distributed
-     * processes of a Bag of Tasks AppCloudlet.
-     *
+     * @todo @author manoelcampos It isn't adding packets to send.
+     * See {@link CloudletSendTask#addPacket(int, int, long) }
      * @param app
-     * @return the list of created NetworkCloudlets
+     * @param broker
+     * @return 
      */
     @Override
-    public List<NetworkCloudlet> createNetworkCloudlets(AppCloudlet app){
+    public List<NetworkCloudlet> createNetworkCloudlets(AppCloudlet app, NetDatacenterBroker broker){
         final int NETCLOUDLETS_FOR_EACH_APP = 3;
-        List<NetworkCloudlet> networkCloudletList = new ArrayList<>(NETCLOUDLETS_FOR_EACH_APP);
-        List<NetworkVm> vmList = randomlySelectVmsForAppCloudlet(getBroker(), NETCLOUDLETS_FOR_EACH_APP);
+        List<NetworkCloudlet> networkCloudletList = new ArrayList<>(NETCLOUDLETS_FOR_EACH_APP+1);
+        List<NetworkVm> selectedVms = 
+             randomlySelectVmsForAppCloudlet(broker, NETCLOUDLETS_FOR_EACH_APP+1);
         //basically, each task runs the simulation and then data is consolidated in one task
         long memory = 1000;
         long networkCloudletLength = 10000;
@@ -65,23 +67,26 @@ public class NetworkVmsExampleBagOfTasksAppCloudlet extends NetworkVmsExampleApp
                             NETCLOUDLET_OUTPUT_SIZE,
                             memory, utilizationModel, utilizationModel, utilizationModel);
             netCloudlet.setAppCloudlet(app);
-            netCloudlet.setUserId(getBroker().getId());
-            netCloudlet.setVmId(vmList.get(i).getId());
+            netCloudlet.setUserId(broker.getId());
+            netCloudlet.setVmId(selectedVms.get(i).getId());
+            
             //compute and send data to node 0
-            netCloudlet.getTasks().add(
-                    new CloudletExecutionTask(
-                        taskStageId++, memory, networkCloudletLength, netCloudlet));
+            CloudletTask task;
+            task = new CloudletExecutionTask(taskStageId++, networkCloudletLength);
+            task.setMemory(memory);
+            netCloudlet.addTask(task);
 
-            //0 has an extra type of waiting for results; others send
+            //NetworkCloudlet 0 wait data from other cloudlets, while the other cloudlets send data
             if (i==0){
                 for(int j=1; j < NETCLOUDLETS_FOR_EACH_APP; j++) {
-                    netCloudlet.getTasks().add(
-                        new CloudletReceiveTask(
-                            taskStageId++, memory,  vmList.get(j+1).getId(), netCloudlet));
+                    task = new CloudletReceiveTask(taskStageId++, selectedVms.get(j+1).getId());
+                    task.setMemory(memory);
+                    netCloudlet.addTask(task);
                 }
             } else {
-                netCloudlet.getTasks().add(
-                        new CloudletSendTask(taskStageId++, memory, netCloudlet));
+                task = new CloudletSendTask(taskStageId++);
+                task.setMemory(memory);
+                netCloudlet.addTask(task);
             }
 
             networkCloudletList.add(netCloudlet);

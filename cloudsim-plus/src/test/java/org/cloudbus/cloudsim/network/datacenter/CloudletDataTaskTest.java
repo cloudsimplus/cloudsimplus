@@ -15,7 +15,7 @@ public class CloudletDataTaskTest {
     
     @Before
     public void setUp(){
-        instance = new CloudletSendTask(ID, MEMORY, null);
+        instance = new CloudletSendTask(ID);
     }
     
     @Test
@@ -27,17 +27,8 @@ public class CloudletDataTaskTest {
     }
 
     @Test
-    public void testSetExecutionTime() {
-        double time = 103;
-        assertEquals(0, instance.getExecutionTime(), 0);
-        instance.computeExecutionTime(time);
-        assertEquals(time, instance.getExecutionTime(), 0);
-    }
-
-    @Test
     public void testSetMemory() {
         long memory = 105L;
-        assertEquals(MEMORY, instance.getMemory());
         instance.setMemory(memory);
         assertEquals(memory, instance.getMemory());
     }

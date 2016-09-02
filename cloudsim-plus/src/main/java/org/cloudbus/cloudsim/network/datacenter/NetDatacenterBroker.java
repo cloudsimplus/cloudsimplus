@@ -40,12 +40,12 @@ public class NetDatacenterBroker extends DatacenterBrokerSimple {
      *
      * @param name name to be associated with this entity
      *
-     * @throws Exception the exception
+     * @throws IllegalArgumentException when the entity name is invalid
      *
      * @pre name != null
      * @post $none
      */
-    public NetDatacenterBroker(String name) throws Exception {
+    public NetDatacenterBroker(String name) {
         super(name);
         setAppCloudletList(new ArrayList<>());
     }

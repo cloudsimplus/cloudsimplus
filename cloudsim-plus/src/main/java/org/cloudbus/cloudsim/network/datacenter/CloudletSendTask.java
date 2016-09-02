@@ -8,7 +8,9 @@
 package org.cloudbus.cloudsim.network.datacenter;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
+import org.cloudbus.cloudsim.Cloudlet;
 
 /**
  * Represents a task executed by a {@link NetworkCloudlet} that sends data to a
@@ -40,62 +42,62 @@ public class CloudletSendTask extends CloudletTask {
      * Creates a new task.
      *
      * @param id task id
-     * @param memory memory used by the task
-     * @param networkCloudlet the NetworkCloudlet that the task belongs to
      */
-    public CloudletSendTask(int id, long memory, NetworkCloudlet networkCloudlet) {
-        super(id, memory, networkCloudlet);
+    public CloudletSendTask(int id) {
+        super(id);
         this.packetsToSend = new ArrayList<>();
-    }
-    
-    /**
-     * Creates a new task without assigning it to a {@link NetworkCloudlet}
-     * (that has to be assigned further).
-     *
-     * @param id task id
-     * @param memory memory used by the task
-     * @see #setNetworkCloudlet(org.cloudbus.cloudsim.network.datacenter.NetworkCloudlet) 
-     */
-    public CloudletSendTask(int id, long memory) {
-        this(id, memory, null);
     }
 
     /**
-     * Creates and add a packet to the list of packets to be sent.
+     * Creates and add a packet to the list of packets to be sent to a 
+     * {@link Cloudlet} that is inside a specific VM.
      *
-     * @param destinationVmId the Id of the destination VM to send data
-     * @param destinationCloudletId the Id of the destination cloudlet to send packets
+     * @param destinationCloudlet destination cloudlet to send packets to
      * @param dataLength the number of data bytes of the packet to create
      * @return the created packet
+     * @throws RuntimeException when a NetworkCloudlet was not assigned to the Task
+     * @throws IllegalArgumentException when the source or destination Cloudlet doesn't have an assigned VM
      */
-    public HostPacket addPacket(int destinationVmId, int destinationCloudletId, long dataLength) {
+    public HostPacket addPacket(Cloudlet destinationCloudlet, long dataLength) {
+        if(getNetworkCloudlet() == null)
+            throw new RuntimeException("You must assign a NetworkCloudlet to this Task before adding packets.");
+        if(getNetworkCloudlet().getVmId() == Cloudlet.NOT_ASSIGNED)
+            throw new IllegalArgumentException("The source Cloudlet has to have an assigned VM.");
+        if(destinationCloudlet.getVmId() == Cloudlet.NOT_ASSIGNED)
+            throw new IllegalArgumentException("The destination Cloudlet has to have an assigned VM.");
+        
         HostPacket packet = new HostPacket(
-                getNetworkCloudlet().getVmId(), destinationVmId,
-                dataLength, -1, -1,
-                getId(), destinationCloudletId);
+                getNetworkCloudlet().getVmId(), destinationCloudlet.getVmId(),
+                dataLength, getNetworkCloudlet(), destinationCloudlet);
         packetsToSend.add(packet);
         return packet;
     }
 
     /**
-     * Gets the list of packets to send
-     * @return 
+     * @return a read-only list of packets to send
      */
     public List<HostPacket> getPacketsToSend() {
-        return packetsToSend;
+        return Collections.unmodifiableList(packetsToSend);
     }
 
-   
     /**
      * Gets the list of packets to send,
-     * updating the sent time to the given time.
+     * updating the send time to the given time
+     * and clearing the list of packets, marking the 
+     * task as finished.
+     * 
      * @param sendTime the send time to update all packets in the list
      * @return the packet list with the send time
      * updated to the given time
      */
     public List<HostPacket> getPacketsToSend(double sendTime) {
-        packetsToSend.forEach(pkt ->  pkt.sendTime = sendTime);        
+        packetsToSend.forEach(pkt ->  pkt.setSendTime(sendTime));  
+        
+        if(isFinished())
+            packetsToSend.clear();
+        else setFinished(true);
+        
         return packetsToSend;
     }
-
+   
 }
