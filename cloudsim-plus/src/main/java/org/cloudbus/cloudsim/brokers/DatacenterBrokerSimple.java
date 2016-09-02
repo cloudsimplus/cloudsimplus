@@ -28,11 +28,11 @@ import org.cloudbus.cloudsim.lists.CloudletList;
 import org.cloudbus.cloudsim.lists.VmList;
 
 /**
- * 
+ *
  * <p>DatacentreBroker represents a broker acting on behalf of a user. It hides VM
  * management, as vm creation, submission of cloudlets to VMs and destruction of
  * VMs.</p>
- * 
+ *
  * <p><b>This is a simple implementation that try to host the user's VM's
  * at the first datacenter found. If there isn't capacity in that one,
  * it will try the other ones.</b></p>
@@ -44,22 +44,22 @@ import org.cloudbus.cloudsim.lists.VmList;
 public class DatacenterBrokerSimple extends SimEntity implements DatacenterBroker {
 
     /**
-     * @see #getVmsWaitingList() 
+     * @see #getVmsWaitingList()
      */
     protected List<Vm> vmsWaitingList;
 
     /**
-     * @see #getVmsCreatedList() 
+     * @see #getVmsCreatedList()
      */
     protected List<Vm> vmsCreatedList;
 
     /**
-     * @see #getCloudletsWaitingList() 
+     * @see #getCloudletsWaitingList()
      */
     protected List<Cloudlet> cloudletsWaitingList;
 
     /**
-     * @see #getCloudletsFinishedList() 
+     * @see #getCloudletsFinishedList()
      */
     protected List<Cloudlet> cloudletsFinishedList;
 
@@ -69,40 +69,40 @@ public class DatacenterBrokerSimple extends SimEntity implements DatacenterBroke
     protected int cloudletsCreated;
 
     /**
-     * @see #getVmCreationRequests() 
+     * @see #getVmCreationRequests()
      */
     protected int vmCreationRequests;
 
     /**
-     *@see #getVmCreationAcks() 
+     *@see #getVmCreationAcks()
      */
     protected int vmCreationAcks;
 
     /**
-     * @see #getVmsDestroyed() 
+     * @see #getVmsDestroyed()
      */
     protected int vmsDestroyed;
 
     /**
-     * @see #getDatacenterIdsList() 
+     * @see #getDatacenterIdsList()
      */
     protected List<Integer> datacenterIdsList;
 
     /**
-     * @see #getDatacenterRequestedIdsList() 
+     * @see #getDatacenterRequestedIdsList()
      */
     protected List<Integer> datacenterRequestedIdsList;
 
     /**
-     * @see #getVmsToDatacentersMap() 
+     * @see #getVmsToDatacentersMap()
      */
     protected Map<Integer, Integer> vmsToDatacentersMap;
 
     /**
-     * @see #getDatacenterCharacteristicsMap() 
+     * @see #getDatacenterCharacteristicsMap()
      */
     protected Map<Integer, DatacenterCharacteristics> datacenterCharacteristicsMap;
-    
+
     /**
      * Created a new DatacenterBrokerSimple object.
      *
@@ -139,12 +139,12 @@ public class DatacenterBrokerSimple extends SimEntity implements DatacenterBroke
     public void submitCloudletList(List<? extends Cloudlet> list) {
         getCloudletsWaitingList().addAll(list);
     }
-    
+
     @Override
     public void submitCloudletList(List<? extends Cloudlet> list, double submissionDelay) {
         list.forEach(cloudlet -> cloudlet.setSubmissionDelay(submissionDelay));
         submitCloudletList(list);
-    }    
+    }
 
     @Override
     public void bindCloudletToVm(int cloudletId, int vmId) {
@@ -242,11 +242,11 @@ public class DatacenterBrokerSimple extends SimEntity implements DatacenterBroke
             created = true;
         } else {
             Vm vm = VmList.getById(getVmsWaitingList(), vmId);
-            
+
             if (vm != null) {
-                Datacenter datacenter = 
+                Datacenter datacenter =
                         datacenterCharacteristicsMap.get(datacenterId).getDatacenter();
-                DatacenterToVmEventInfo info = 
+                DatacenterToVmEventInfo info =
                         new DatacenterToVmEventInfo(datacenter, vm);
                 vm.getOnVmCreationFailureListener().update(info);
             }
@@ -280,7 +280,7 @@ public class DatacenterBrokerSimple extends SimEntity implements DatacenterBroke
                 }
             }
         }
-        
+
         return created;
     }
 
@@ -296,9 +296,9 @@ public class DatacenterBrokerSimple extends SimEntity implements DatacenterBroke
         getCloudletsFinishedList().add(cloudlet);
 
         notifyCloudletFinishListener(cloudlet);
-        
-        Log.printFormattedLine("%.1f: %s: %s %d received", 
-                CloudSim.clock(), getName(), 
+
+        Log.printFormattedLine("%.1f: %s: %s %d received",
+                CloudSim.clock(), getName(),
                 cloudlet.getClass().getSimpleName(), cloudlet.getId());
         cloudletsCreated--;
         if (getCloudletsWaitingList().isEmpty() && cloudletsCreated == 0) { // all cloudlets executed
@@ -306,7 +306,7 @@ public class DatacenterBrokerSimple extends SimEntity implements DatacenterBroke
             clearDatacenters();
             finishExecution();
         } else if (hasMoreCloudletsToBeExecuted()) {
-            // All the cloudlets sent have finished. It means that some bound    
+            // All the cloudlets sent have finished. It means that some bound
             // cloudlet is waiting its VM to be created
             clearDatacenters();
             createVmsInDatacenter(0);
@@ -358,7 +358,7 @@ public class DatacenterBrokerSimple extends SimEntity implements DatacenterBroke
         String datacenterName = CloudSim.getEntityName(datacenterId);
         for (Vm vm : getVmsWaitingList()) {
             if (!getVmsToDatacentersMap().containsKey(vm.getId())) {
-                Log.printLine(CloudSim.clock() + ": " + getName() + 
+                Log.printLine(CloudSim.clock() + ": " + getName() +
                         ": Trying to Create VM #" + vm.getId()
                         + " in " + datacenterName);
                 sendNow(datacenterId, CloudSimTags.VM_CREATE_ACK, vm);
@@ -372,7 +372,7 @@ public class DatacenterBrokerSimple extends SimEntity implements DatacenterBroke
     }
 
     /**
-     * Try to create each submitted cloudlet inside a created VMs.
+     * Try to create each submitted cloudlet inside a created VM.
      * If there isn't available VMs to host all cloudlets,
      * the creation of some ones will be postponed.
      *
@@ -391,9 +391,9 @@ public class DatacenterBrokerSimple extends SimEntity implements DatacenterBroke
             } else { // submit to the specific vm
                 vm = VmList.getById(getVmsCreatedList(), cloudlet.getVmId());
             }
-            
+
             if (vm == null) { // vm was not created
-                Log.printConcatLine(CloudSim.clock(), ": ", getName(), 
+                Log.printConcatLine(CloudSim.clock(), ": ", getName(),
                         ": Postponing execution of cloudlet ",
                         cloudlet.getId(), ": bound VM not available");
                 continue;
@@ -401,7 +401,7 @@ public class DatacenterBrokerSimple extends SimEntity implements DatacenterBroke
 
             Log.printFormattedLine(
                     "%.2f: %s: Sending %s %d to VM #%d",
-                    CloudSim.clock(), getName(), 
+                    CloudSim.clock(), getName(),
                     cloudlet.getClass().getSimpleName(),
                     cloudlet.getId(), vm.getId());
 
@@ -422,7 +422,7 @@ public class DatacenterBrokerSimple extends SimEntity implements DatacenterBroke
      * The method deals the list of created VMs as a circular list,
      * by this way, after it selects the last Vm, the next
      * Vm will be the first one.
-     * 
+     *
      * @param currentSelectedVm
      * @return the index of the selected Vm
      */

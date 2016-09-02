@@ -7,17 +7,18 @@ import org.cloudbus.cloudsim.Vm;
 /**
  * DatacentreBroker represents a broker acting on behalf of a user. It hides VM
  * management, as vm creation, submission of cloudlets to VMs and destruction of
- * VMs. 
- * 
+ * VMs.
+ *
  * @author Manoel Campos da Silva Filho
  */
 public interface DatacenterBroker {
     int getId();
-    
+
     String getName();
 
     /**
-     * Specifies that a given cloudlet must run in a specific virtual machine.
+     * Specifies that an already submitted cloudlet, that is in the {@link #getCloudletsWaitingList() waiting list},
+     * must run in a specific virtual machine.
      *
      * @param cloudletId ID of the cloudlet being bount to a vm
      * @param vmId the vm id
@@ -73,7 +74,7 @@ public interface DatacenterBroker {
     <T extends Vm> List<T> getVmsCreatedList();
 
     /**
-     * Sends a list of cloudlets to the broker for further 
+     * Sends a list of cloudlets to the broker for further
      * creation of each one in some Vm, following the submission delay
      * specified in each cloudlet (if any).
      * All cloudlets will be added to the {@link #getCloudletsWaitingList()}.
@@ -81,12 +82,12 @@ public interface DatacenterBroker {
      * @param list the list
      * @pre list !=null
      * @post $none
-     * @see #submitCloudletList(java.util.List, double) 
+     * @see #submitCloudletList(java.util.List, double)
      */
     void submitCloudletList(List<? extends Cloudlet>  list);
-    
+
     /**
-     * Sends a list of cloudlets to the broker that will 
+     * Sends a list of cloudlets to the broker that will
      * be created into some Vm after a given delay.
      * All cloudlets will be added to the {@link #getCloudletsWaitingList()},
      * setting their submission delay to the specified value.
@@ -95,11 +96,11 @@ public interface DatacenterBroker {
      * @param submissionDelay the delay the broker has to include when submitting the Cloudlets
      * @pre list !=null
      * @post $none
-     * @see #submitCloudletList(java.util.List) 
-     * @see Cloudlet#getSubmissionDelay() 
+     * @see #submitCloudletList(java.util.List)
+     * @see Cloudlet#getSubmissionDelay()
      */
     void submitCloudletList(List<? extends Cloudlet>  list, double submissionDelay);
-    
+
 
     /**
      * Sends to the broker the list with virtual machines that must be
@@ -110,13 +111,13 @@ public interface DatacenterBroker {
      * @post $none
      */
     void submitVmList(List<? extends Vm>  list);
-    
+
     /**
-     * Indicates if there are more cloudlets waiting to 
+     * Indicates if there are more cloudlets waiting to
      * be executed yet.
-     * 
+     *
      * @return true if there are waiting cloudlets, false otherwise
      */
     boolean hasMoreCloudletsToBeExecuted();
-    
+
 }

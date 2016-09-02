@@ -35,15 +35,55 @@ import org.cloudbus.cloudsim.provisioners.ResourceProvisionerSimple;
 import org.cloudbus.cloudsim.resources.Ram;
 
 /**
- * A minimal example showing how to create a data center with 1 host and run 1
- * cloudlet on it.
+ * An example showing how to create 1 host and place multiple VMs at the same 
+ * {@link Pe Processor Element (CPU core)} of it, 
+ * using a VmSchedulerTimeShared policy at the Host.
+ * 
+ * It number of VMs to be created will be the double of the Host PEs number.
+ * For each Host PE, two VMs requiring half the MIPS capacity of the PE will be 
+ * created. Each VM will have just one cloudlet that will use
+ * all VM PEs and MIPS capacity.
+ * 
+ * Thus, considering that each cloudlet has a length of 10000 MI and
+ * each VM has a PE of 1000 MIPS, the cloudlet will spend 10 seconds to finish.
+ * However, as each Host PE will be shared between two VMs using a time shared
+ * scheduler, the cloudlet will spend the double of the time to finish,
+ * as can be seen in the simulation results after running the example.
+ * 
  * @author Manoel Campos da Silva Filho
  */
-public class MinimalExample {
+public class MultipleVmsUsingSameHostPe {
     /**
-     * Virtual Machine Monitor name.
+     * Capacity of each CPU core (in Million Instructions per Second).
      */
-    private static final String VMM = "Xen"; 
+    private static final double HOST_MIPS = 1000;
+    /**
+     * Number of processor elements (CPU cores) of each host.
+     */
+    private static final int HOST_PES_NUM = 2;
+    
+    /**
+     * The total MIPS capacity across all the Host PEs.
+     */
+    private static final double HOST_TOTAL_MIPS_CAPACITY = HOST_MIPS*HOST_PES_NUM;
+    
+    /**
+     * The length of each created cloudlet in Million Instructions (MI).
+     */
+    private static final long CLOUDLET_LENGTH = 10000;
+    
+    /**
+     * Number of VMs to create.
+     */
+    private static final int NUMBER_OF_VMS = HOST_PES_NUM*2;
+
+    private static final double VM_MIPS = HOST_TOTAL_MIPS_CAPACITY/NUMBER_OF_VMS;
+    
+    
+    /**
+     *  Virtual Machine Monitor name.
+     */
+    private static final String VMM = "Xen";
     private List<Cloudlet> cloudletList;
     private List<Vm> vmList;
     private int numberOfCreatedCloudlets = 0;
@@ -55,14 +95,14 @@ public class MinimalExample {
      * @param args 
      */
     public static void main(String[] args) {
-        new MinimalExample();
+        new MultipleVmsUsingSameHostPe();
     }
 
     /**
      * Default constructor where the simulation is built.
      */
-    public MinimalExample() {
-        Log.printLine("Starting Minimal Example ...");
+    public MultipleVmsUsingSameHostPe() {
+        Log.printLine("Starting MultipleVmsUsingSameHostPe Example ...");
         try {
             this.vmList = new ArrayList<>();
             this.cloudletList = new ArrayList<>();
@@ -78,14 +118,7 @@ public class MinimalExample {
             on behalf of a given cloud user (customer).*/
             DatacenterBroker broker0 = new DatacenterBrokerSimple("Broker0");
 
-            Vm vm0 = createVm(broker0);
-            this.vmList.add(vm0);
-            broker0.submitVmList(vmList);
-
-            /*Creates a cloudlet that represents an application to be run inside a VM.*/
-            Cloudlet cloudlet0 = createCloudlet(broker0, vm0);
-            this.cloudletList.add(cloudlet0);
-            broker0.submitCloudletList(cloudletList);
+            createAndSubmitVmsAndCloudlets(broker0);
 
             /*Starts the simulation and waits all cloudlets to be executed*/
             CloudSim.startSimulation();
@@ -97,10 +130,24 @@ public class MinimalExample {
             (you can use your own code here to print what you want from this cloudlet list)*/
             List<Cloudlet> finishedCloudlets = broker0.getCloudletsFinishedList();
             CloudletsTableBuilderHelper.print(new TextTableBuilder(), finishedCloudlets);
-            Log.printLine("Minimal Example finished!");
+            Log.printLine("MultipleVmsUsingSameHostPe Example finished!");
         } catch (Exception e) {
             Log.printFormattedLine("Unexpected errors happened: %s", e.getMessage());
         }
+    }
+
+    private void createAndSubmitVmsAndCloudlets(DatacenterBroker broker0) {
+        for(int i = 0; i < NUMBER_OF_VMS; i++){
+            Vm vm = createVm(broker0, VM_MIPS, 1);
+            this.vmList.add(vm);
+            
+            /*Creates a cloudlet that represents an application to be run inside a VM.*/
+            Cloudlet cloudlet = createCloudlet(broker0, vm);
+            this.cloudletList.add(cloudlet);
+        }
+        
+        broker0.submitVmList(vmList);
+        broker0.submitCloudletList(cloudletList);
     }
 
     private DatacenterSimple createDatacenter(String name) {
@@ -127,7 +174,6 @@ public class MinimalExample {
     }    
 
     private Host createHost() {
-        int  mips = 1000; // capacity of each CPU core (in Million Instructions per Second)
         int  ram = 2048; // host memory (MB)
         long storage = 1000000; // host storage
         long bw = 10000;
@@ -135,7 +181,9 @@ public class MinimalExample {
         List<Pe> cpuCoresList = new ArrayList<>();
         /*Creates the Host's CPU cores and defines the provisioner
         used to allocate each core for requesting VMs.*/
-        cpuCoresList.add(new PeSimple(0, new PeProvisionerSimple(mips)));
+        for(int i = 0; i < HOST_PES_NUM; i++){
+            cpuCoresList.add(new PeSimple(i, new PeProvisionerSimple(HOST_MIPS)));
+        }
         
         return new HostSimple(numberOfCreatedHosts++,
                 new ResourceProvisionerSimple<>(new Ram(ram)),
@@ -144,12 +192,10 @@ public class MinimalExample {
                 new VmSchedulerTimeShared(cpuCoresList));
     }
 
-    private Vm createVm(DatacenterBroker broker) {
-        double mips = 1000;
-        long   storage = 10000; // vm image size (MB)
-        int    ram = 512; // vm memory (MB)
-        long   bw = 1000; // vm bandwidth 
-        int    pesNumber = 1; // number of CPU cores
+    private Vm createVm(DatacenterBroker broker, double mips, int pesNumber) {
+        long storage = 10000; // vm image size (MB)
+        int  ram = 512; // vm memory (MB)
+        long bw = 1000; // vm bandwidth 
         
         return new VmSimple(numberOfCreatedVms++, 
                 broker.getId(), mips, pesNumber, ram, bw, storage,
@@ -157,7 +203,6 @@ public class MinimalExample {
     }
 
     private Cloudlet createCloudlet(DatacenterBroker broker, Vm vm) {
-        long length = 400000; //in Million Structions (MI)
         long fileSize = 300; //Size (in bytes) before execution
         long outputSize = 300; //Size (in bytes) after execution
         int  numberOfCpuCores = vm.getNumberOfPes(); //cloudlet will use all the VM's CPU cores
@@ -168,7 +213,7 @@ public class MinimalExample {
         
         Cloudlet cloudlet
                 = new CloudletSimple(
-                        numberOfCreatedCloudlets++, length, numberOfCpuCores, 
+                        numberOfCreatedCloudlets++, CLOUDLET_LENGTH, numberOfCpuCores, 
                         fileSize, outputSize, 
                         utilization, utilization, utilization);
         cloudlet.setUserId(broker.getId());

@@ -128,11 +128,11 @@ public class CloudletSimple extends AbstractCloudlet {
      *
      * @param cloudletId the unique ID of this cloudlet
      * @param cloudletLength the length or size (in MI) of this cloudlet to be
-     * executed in a Datacenter
+     * executed in a VM
      * @param cloudletFileSize the file size (in byte) of this cloudlet
-     * <tt>BEFORE</tt> submitting to a PowerDatacenter
+     * <tt>BEFORE</tt> submitting to a Datacenter
      * @param cloudletOutputSize the file size (in byte) of this cloudlet
-     * <tt>AFTER</tt> finish executing by a Datacenter
+     * <tt>AFTER</tt> finish executing by a VM
      * @param pesNumber the pes number
      * @param utilizationModelCpu the utilization model of cpu
      * @param utilizationModelRam the utilization model of ram
