@@ -214,7 +214,7 @@ public class CloudletSchedulerDynamicWorkload extends CloudletSchedulerTimeShare
      * @return the total current mips
      */
     public double getTotalCurrentMips() {
-        Processor p = Processor.getProcessorFromMipsListRemovingAllZeroMips(getCurrentMipsShare());
+        Processor p = Processor.fromMipsList(getCurrentMipsShare());
         return p.getTotalMipsCapacity();
     }
 

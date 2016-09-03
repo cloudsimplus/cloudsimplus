@@ -46,17 +46,17 @@ import org.cloudbus.cloudsim.util.CloudletsTableBuilderHelper;
 import org.cloudbus.cloudsim.util.TextTableBuilder;
 
 /**
- * An example showing how to create 1 datacenter with 3 hosts, 
+ * <p>An example showing how to create 1 datacenter with 3 hosts, 
  * 1 VM by host and 1 cloudlet by VM and perform VM migration based on 
  * a custom VmAllocationPolicy that migrates VMs based on
  * {@link NonPowerVmAllocationPolicyMigrationWorstFitStaticThreshold 
- * static host CPU utilization threshold}. <p/>
+ * static host CPU utilization threshold}. </p>
  * 
- * The created {@link NonPowerVmAllocationPolicyMigrationWorstFitStaticThreshold policy}
+ * <p>The created {@link NonPowerVmAllocationPolicyMigrationWorstFitStaticThreshold policy}
  * allows the definition of static under and over CPU utilization thresholds to 
  * enable VM migration. 
  * The example uses a custom UtilizationModel to define CPU usage of cloudlets that 
- * {@link UtilizationModelArithmeticProgression increases along the simulation time}.<p/> 
+ * {@link UtilizationModelArithmeticProgression increases along the simulation time}.</p> 
  * 
  * It is used a lot of constants to create simulation objects such as
  * {@link  PowerDatacenter}, {@link  PowerHost} and {@link  PowerVm}.
