@@ -1,6 +1,7 @@
 package org.cloudbus.cloudsim.builders;
 
 import java.util.List;
+import org.cloudbus.cloudsim.brokers.DatacenterBroker;
 import org.cloudbus.cloudsim.brokers.DatacenterBrokerSimple;
 
 /**
@@ -25,6 +26,7 @@ public class BrokerBuilderDecorator implements BrokerBuilderInterface {
     private final BrokerBuilder builder;
     private final VmBuilder vmBuilder;
     private final CloudletBuilder cloudletBuilder;
+    private final DatacenterBroker broker;
 
     public BrokerBuilderDecorator(final BrokerBuilder builder, final DatacenterBrokerSimple broker) {
         if(builder == null)
@@ -32,6 +34,7 @@ public class BrokerBuilderDecorator implements BrokerBuilderInterface {
         if(broker == null)
            throw new RuntimeException("The broker parameter cannot be null."); 
         this.builder = builder;
+        this.broker = broker;
         
         this.vmBuilder = new VmBuilder(broker);        
         this.cloudletBuilder = new CloudletBuilder(this, broker);        
@@ -73,6 +76,10 @@ public class BrokerBuilderDecorator implements BrokerBuilderInterface {
      */
     public CloudletBuilder getCloudletBuilderForTheCreatedBroker() {
         return cloudletBuilder;
+    }
+
+    public DatacenterBroker getBroker() {
+        return broker;
     }
 
 }

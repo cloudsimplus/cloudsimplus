@@ -8,6 +8,7 @@ import org.cloudbus.cloudsim.schedulers.CloudletSchedulerSpaceShared;
 import org.cloudbus.cloudsim.brokers.DatacenterBrokerSimple;
 import org.cloudbus.cloudsim.Log;
 import org.cloudbus.cloudsim.Vm;
+import org.cloudbus.cloudsim.brokers.DatacenterBroker;
 import org.cloudbus.cloudsim.schedulers.VmSchedulerTimeShared;
 import org.cloudbus.cloudsim.builders.BrokerBuilderDecorator;
 import org.cloudbus.cloudsim.builders.HostBuilder;
@@ -202,7 +203,7 @@ public final class VmCreationFailureIntegrationTest {
     public void integrationTest() {
         startSimulationAndWaitToStop();
 
-        final DatacenterBrokerSimple broker = scenario.getBrokerBuilder().getBrokers().get(0);
+        DatacenterBroker broker = scenario.getBrokerBuilder().getBrokers().get(0);
         assertThatBrokerCloudletsHaveTheExpectedExecutionTimes(broker);
         assertThatListenersWereCalledTheExpectedAmountOfTimes();
 
@@ -214,11 +215,11 @@ public final class VmCreationFailureIntegrationTest {
         CloudSim.stopSimulation();
     }
 
-    public void printCloudletsExecutionResults(DatacenterBrokerSimple broker) {
+    public void printCloudletsExecutionResults(DatacenterBroker broker) {
         CloudletsTableBuilderHelper.print(new TextTableBuilder(), broker.getCloudletsFinishedList());
     }
 
-    public void assertThatBrokerCloudletsHaveTheExpectedExecutionTimes(DatacenterBrokerSimple broker) {
+    public void assertThatBrokerCloudletsHaveTheExpectedExecutionTimes(DatacenterBroker broker) {
         /*The array of expected results for each broker cloudlet*/
         final ExpectedCloudletExecutionResults expectedResults[]
                 = new ExpectedCloudletExecutionResults[]{

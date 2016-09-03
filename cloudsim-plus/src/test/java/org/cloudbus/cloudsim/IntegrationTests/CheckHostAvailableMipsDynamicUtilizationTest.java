@@ -1,9 +1,9 @@
 package org.cloudbus.cloudsim.IntegrationTests;
 
 import java.util.Calendar;
-import org.cloudbus.cloudsim.brokers.DatacenterBrokerSimple;
 import org.cloudbus.cloudsim.Log;
 import org.cloudbus.cloudsim.Host;
+import org.cloudbus.cloudsim.brokers.DatacenterBroker;
 import org.cloudbus.cloudsim.builders.BrokerBuilderDecorator;
 import org.cloudbus.cloudsim.builders.HostBuilder;
 import org.cloudbus.cloudsim.builders.SimulationScenarioBuilder;
@@ -21,7 +21,7 @@ import org.junit.Ignore;
 
 /**
  *
- * An Integration Test (IT) running a simulation scenario with 1 PM with 2 VMs
+ * An Integration Test (IT) running a simulation scenario with 1 PM, 2 VMs
  * and 2 cloudlets in each VM. It checks if the amount of available
  * CPU of the host is as expected along the simulation time.
  * 
@@ -97,9 +97,7 @@ public final class CheckHostAvailableMipsDynamicUtilizationTest {
                 + " to be correctly updated.")
     public void integrationTest() {
         startSimulationAndWaitToStop();
-
-        final DatacenterBrokerSimple broker = scenario.getBrokerBuilder().getBrokers().get(0);
-
+        DatacenterBroker broker = scenario.getBrokerBuilder().getBrokers().get(0);
         printCloudletsExecutionResults(broker);
     }
 
@@ -108,7 +106,7 @@ public final class CheckHostAvailableMipsDynamicUtilizationTest {
         CloudSim.stopSimulation();
     }
 
-    public void printCloudletsExecutionResults(DatacenterBrokerSimple broker) {
+    public void printCloudletsExecutionResults(DatacenterBroker broker) {
         CloudletsTableBuilderHelper.print(new TextTableBuilder(), broker.getCloudletsFinishedList());
     }
 

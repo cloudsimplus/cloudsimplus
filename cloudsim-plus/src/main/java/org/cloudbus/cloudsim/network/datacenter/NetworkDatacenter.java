@@ -19,8 +19,8 @@ import org.cloudbus.cloudsim.DatacenterCharacteristics;
 import org.cloudbus.cloudsim.Host;
 import org.cloudbus.cloudsim.Log;
 import org.cloudbus.cloudsim.Vm;
-import org.cloudbus.cloudsim.allocationpolicies.VmAllocationPolicyAbstract;
 import org.cloudbus.cloudsim.Cloudlet;
+import org.cloudbus.cloudsim.allocationpolicies.VmAllocationPolicy;
 import org.cloudbus.cloudsim.schedulers.CloudletScheduler;
 import org.cloudbus.cloudsim.core.CloudSim;
 import org.cloudbus.cloudsim.core.CloudSimTags;
@@ -107,7 +107,7 @@ public class NetworkDatacenter extends DatacenterSimple {
     public NetworkDatacenter(
             String name,
             DatacenterCharacteristics characteristics,
-            VmAllocationPolicyAbstract vmAllocationPolicy,
+            VmAllocationPolicy vmAllocationPolicy,
             List<FileStorage> storageList,
             double schedulingInterval) {
         super(name, characteristics, vmAllocationPolicy, storageList, schedulingInterval);

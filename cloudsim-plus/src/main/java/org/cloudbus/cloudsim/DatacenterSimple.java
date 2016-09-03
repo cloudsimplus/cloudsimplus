@@ -9,7 +9,6 @@ package org.cloudbus.cloudsim;
 import org.cloudbus.cloudsim.network.InfoPacket;
 import org.cloudbus.cloudsim.resources.File;
 import org.cloudbus.cloudsim.allocationpolicies.VmAllocationPolicy;
-import org.cloudbus.cloudsim.allocationpolicies.VmAllocationPolicyAbstract;
 import org.cloudbus.cloudsim.schedulers.CloudletScheduler;
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -82,12 +81,12 @@ public class DatacenterSimple extends SimEntity implements Datacenter {
     public DatacenterSimple(
             String name,
             DatacenterCharacteristics characteristics,
-            VmAllocationPolicyAbstract vmAllocationPolicy,
+            VmAllocationPolicy vmAllocationPolicy,
             List<FileStorage> storageList,
             double schedulingInterval) {
         super(name);
 
-        // If this resource doesn't have any PEs then no useful at all
+        // If this resource doesn't have any PEs then it isn't useful at all
         if (characteristics.getNumberOfPes() == 0) {
             throw new IllegalArgumentException(super.getName()
                     + " : Error - this entity has no PEs. Therefore, can't process any Cloudlets.");
@@ -1131,7 +1130,7 @@ public class DatacenterSimple extends SimEntity implements Datacenter {
      *
      * @param vmAllocationPolicy the new vm allocation policy
      */
-    protected final void setVmAllocationPolicy(VmAllocationPolicyAbstract vmAllocationPolicy) {
+    protected final void setVmAllocationPolicy(VmAllocationPolicy vmAllocationPolicy) {
         this.vmAllocationPolicy = vmAllocationPolicy;
     }
 

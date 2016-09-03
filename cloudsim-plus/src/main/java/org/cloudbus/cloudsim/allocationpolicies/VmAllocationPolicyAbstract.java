@@ -11,7 +11,6 @@ import java.util.List;
 import java.util.Map;
 import org.cloudbus.cloudsim.Host;
 import org.cloudbus.cloudsim.Vm;
-import org.cloudbus.cloudsim.core.CloudSim;
 import org.cloudbus.cloudsim.listeners.HostToVmEventInfo;
 
 /**
@@ -19,10 +18,10 @@ import org.cloudbus.cloudsim.listeners.HostToVmEventInfo;
  * used by a {@link Datacenter} to choose a {@link Host} to place or migrate
  * or migrate a given {@link Vm}. It supports two-stage commit of reservation of
  * hosts: first, we reserve the host and, once committed by the user, it is
- * effectively allocated to he/she.<p/>
+ * effectively allocated to he/she.
  *
- * Each {@link Datacenter} has to have its own instance of a class that extends
- * this class.
+ * <p>Each {@link Datacenter} has to have its own instance of a class that extends
+ * this class.</p>
  *
  * @author Rodrigo N. Calheiros
  * @author Anton Beloglazov

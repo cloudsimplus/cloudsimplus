@@ -18,6 +18,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+import org.cloudbus.cloudsim.brokers.DatacenterBroker;
 import org.cloudbus.cloudsim.Log;
 import org.cloudbus.cloudsim.core.predicates.Predicate;
 import org.cloudbus.cloudsim.core.predicates.PredicateAny;
@@ -112,7 +113,7 @@ public class CloudSim {
      *
      * @param _calendar the _calendar
      * @param _traceFlag the _trace flag
-     * @param numUser number of users
+     * @param numUser number of {@link DatacenterBroker} created
      * @throws Exception This happens when creating this entity before
      * initialising CloudSim package or this entity name is <tt>null</tt> or
      * empty
@@ -149,7 +150,7 @@ public class CloudSim {
      * </ul>
      * <p>
      *
-     * @param numUser the number of User Entities created. This parameters
+     * @param numUser the number of {@link DatacenterBroker} created. This parameters
      * indicates that {@link org.cloudbus.cloudsim.core.CloudSimShutdown} first
      * waits for all user entities's END_OF_SIMULATION signal before issuing
      * terminate signal to other entities
@@ -190,7 +191,7 @@ public class CloudSim {
      * </ul>
      * <p>
      *
-     * @param numUser the number of User Entities created. This parameters
+     * @param numUser the number of {@link DatacenterBroker} created. This parameters
      * indicates that {@link org.cloudbus.cloudsim.core.CloudSimShutdown} first
      * waits for all user entities's END_OF_SIMULATION signal before issuing
      * terminate signal to other entities
@@ -216,7 +217,7 @@ public class CloudSim {
      * </ul>
      * <p>
      *
-     * @param numUser the number of User Entities created. This parameters
+     * @param numUser the number of {@link DatacenterBroker} created. This parameters
      * indicates that {@link org.cloudbus.cloudsim.core.CloudSimShutdown} first
      * waits for all user entities's END_OF_SIMULATION signal before issuing
      * terminate signal to other entities

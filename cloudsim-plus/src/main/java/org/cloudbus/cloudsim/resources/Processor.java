@@ -12,6 +12,7 @@ import java.util.stream.Collectors;
  */
 public class Processor implements ResourceCapacity<Double>{
     private double capacity;
+    
     /** @see #getNumberOfPes() */
     private int numberOfPes;
     
@@ -44,13 +45,12 @@ public class Processor implements ResourceCapacity<Double>{
         Double firstItem = 0.0;
         if(!mipsList.isEmpty()){
             firstItem = mipsList.get(0);
-            for(Double mips: mipsList){
-                if(!Objects.equals(mips, firstItem)){
-                    throw new IllegalArgumentException(
-                        String.format(
-                            "Mips %.2f is different from the other ones in the mipsShare list: %.2f", 
-                            mips, firstItem));
-                }
+            
+            if(mipsList.stream().distinct().count() > 1){
+                throw new IllegalArgumentException(
+                    String.format(
+                        "mipsShare list doesn't have all elements with %.2f MIPS", 
+                        firstItem));
             }
         }
 

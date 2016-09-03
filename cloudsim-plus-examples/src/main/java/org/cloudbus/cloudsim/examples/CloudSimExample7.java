@@ -104,14 +104,15 @@ public class CloudSimExample7 {
     }
 
     /**
-     * Creates main() to run this example
+     * Runs the example.
+     *
      * @param args
      */
     public static void main(String[] args) {
         Log.printLine("Starting CloudSimExample7...");
 
         try {
-			// First step: Initialize the CloudSim package. It should be called
+            // First step: Initialize the CloudSim package. It should be called
             // before creating any entities.
             int num_user = 2;   // number of grid users
             Calendar calendar = Calendar.getInstance();
@@ -120,7 +121,7 @@ public class CloudSimExample7 {
             // Initialize the CloudSim library
             CloudSim.init(num_user, calendar, trace_flag);
 
-			// Second step: Create Datacenters
+            // Second step: Create Datacenters
             //Datacenters are the resource providers in CloudSim. We need at list one of them to run a CloudSim simulation
             @SuppressWarnings("unused")
             Datacenter datacenter0 = createDatacenter("Datacenter_0");
@@ -152,14 +153,14 @@ public class CloudSimExample7 {
 
             CloudletsTableBuilderHelper.print(
                     new TextTableBuilder(
-                            "\n#Broker " + broker.getName() + " received cloudlets."), 
+                            "\n#Broker " + broker.getName() + " received cloudlets."),
                     newList);
             if (monitor.getBroker() != null) {
                 newList = monitor.getBroker().getCloudletsFinishedList();
                 CloudletsTableBuilderHelper.print(
-                    new TextTableBuilder(
-                            "\n#Broker " + monitor.getBroker().getName() + " received cloudlets."), 
-                    newList);
+                        new TextTableBuilder(
+                                "\n#Broker " + monitor.getBroker().getName() + " received cloudlets."),
+                        newList);
             }
 
             Log.printLine("CloudSimExample7 finished!");
@@ -171,21 +172,21 @@ public class CloudSimExample7 {
 
     private static Datacenter createDatacenter(String name) {
 
-		// Here are the steps needed to create a PowerDatacenter:
+        // Here are the steps needed to create a PowerDatacenter:
         // 1. We need to create a list to store one or more
         //    Machines
         List<Host> hostList = new ArrayList<>();
 
-		// 2. A Machine contains one or more PEs or CPUs/Cores. Therefore, should
+        // 2. A Machine contains one or more PEs or CPUs/Cores. Therefore, should
         //    create a list to store these PEs before creating
         //    a Machine.
         List<Pe> peList1 = new ArrayList<>();
 
         int mips = 1000;
 
-		// 3. Create PEs and add these into the list.
+        // 3. Create PEs and add these into the list.
         //for a quad-core machine, a list of 4 PEs is required:
-        peList1.add(new PeSimple(0, new PeProvisionerSimple(mips))); // need to store Pe id and MIPS Rating
+        peList1.add(new PeSimple(0, new PeProvisionerSimple(mips))); 
         peList1.add(new PeSimple(1, new PeProvisionerSimple(mips)));
         peList1.add(new PeSimple(2, new PeProvisionerSimple(mips)));
         peList1.add(new PeSimple(3, new PeProvisionerSimple(mips)));
@@ -203,26 +204,24 @@ public class CloudSimExample7 {
         long bw = 10000;
 
         hostList.add(new HostSimple(
-                        ++hostId,
-                        new ResourceProvisionerSimple(new Ram(ram)),
-                        new ResourceProvisionerSimple(new Bandwidth(bw)),
-                        storage,
-                        peList1,
-                        new VmSchedulerTimeShared(peList1)
-                )
-        ); // This is our first machine
+            ++hostId,
+            new ResourceProvisionerSimple(new Ram(ram)),
+            new ResourceProvisionerSimple(new Bandwidth(bw)),
+            storage,
+            peList1,
+            new VmSchedulerTimeShared(peList1)
+        )); // This is our first machine
 
         hostList.add(new HostSimple(
-                        ++hostId,
-                        new ResourceProvisionerSimple(new Ram(ram)),
-                        new ResourceProvisionerSimple(new Bandwidth(bw)),
-                        storage,
-                        peList2,
-                        new VmSchedulerTimeShared(peList2)
-                )
-        ); // Second machine
+            ++hostId,
+            new ResourceProvisionerSimple(new Ram(ram)),
+            new ResourceProvisionerSimple(new Bandwidth(bw)),
+            storage,
+            peList2,
+            new VmSchedulerTimeShared(peList2)
+        )); // Second machine
 
-		// 5. Create a DatacenterCharacteristics object that stores the
+        // 5. Create a DatacenterCharacteristics object that stores the
         //    properties of a data center: architecture, OS, list of
         //    Machines, allocation policy: time- or space-shared, time zone
         //    and its price (G$/Pe time unit).
@@ -236,31 +235,17 @@ public class CloudSimExample7 {
         double costPerBw = 0.1;			// the cost of using bw in this resource
         List<FileStorage> storageList = new LinkedList<>();	//we are not adding SAN devices by now
 
-        DatacenterCharacteristics characteristics = new DatacenterCharacteristicsSimple (
+        DatacenterCharacteristics characteristics = new DatacenterCharacteristicsSimple(
                 arch, os, vmm, hostList, time_zone, cost, costPerMem, costPerStorage, costPerBw);
 
         // 6. Finally, we need to create a PowerDatacenter object.
-        Datacenter datacenter = null;
-        try {
-            datacenter = new DatacenterSimple(name, characteristics, new VmAllocationPolicySimple(hostList), storageList, 0);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
-        return datacenter;
+        return new DatacenterSimple(name, characteristics, new VmAllocationPolicySimple(hostList), storageList, 0);
     }
 
-	//We strongly encourage users to develop their own broker policies, to submit vms and cloudlets according
+    //We strongly encourage users to develop their own broker policies, to submit vms and cloudlets according
     //to the specific rules of the simulated scenario
     static DatacenterBroker createBroker(String name) {
-        DatacenterBroker broker = null;
-        try {
-            broker = new DatacenterBrokerSimple(name);
-        } catch (Exception e) {
-            e.printStackTrace();
-            return null;
-        }
-        return broker;
+        return new DatacenterBrokerSimple(name);
     }
 }
 
@@ -268,7 +253,6 @@ public class CloudSimExample7 {
  * A thread that will create a new broker at 200 clock time.
  */
 class ThreadMonitor extends Thread {
-
     /**
      * The DatacenterBroker created inside the thread.
      */
@@ -277,7 +261,7 @@ class ThreadMonitor extends Thread {
     @Override
     public void run() {
         CloudSim.pauseSimulation(200);
-            
+
         while (true) {
             if (CloudSim.isPaused()) {
                 break;
@@ -302,7 +286,7 @@ class ThreadMonitor extends Thread {
         //Create VMs and Cloudlets and send them to broker
         //creating 5 vms
         List<Vm> vmlist = CloudSimExample7.createVM(broker.getId(), 5, 100);
-        
+
         //creating 5 cloudlets
         List<Cloudlet> cloudletList = CloudSimExample7.createCloudlet(broker.getId(), 5, 100);
 
