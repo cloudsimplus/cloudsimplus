@@ -24,7 +24,7 @@ public class VmList {
      * @param <T>
      * @param id ID of required VM
      * @param vmList list of existing VMs
-     * @return a Vm with the given ID or $null if not found
+     * @return a Vm with the given ID or {@link Vm#NULL} if not found
      * @pre $none
      * @post $none
      *
@@ -36,11 +36,9 @@ public class VmList {
      * concern could be dealt by ensuring that all VMs have different ID (in
      * fact, I don't know if VM id uniqueness is a CloudSim requirement) and
      * creating a map by VM id. The second concern could be dealt by creating a
-     * HashMap<UserID, List<VmIDs>>. The third concern is, that changing the
+     * Map<UserID, List<VmIDs>>. The third concern is, that changing the
      * class of these lists may have a potential effect on the entire project
      * and in the creation of simulations that has to be priorly assessed.
-     * @todo @author manoelcampos It may be return {@link Vm#NULL} attribute 
-     * instead of null.
      */
     public static <T extends Vm> T getById(List<T> vmList, int id) {
         for (T vm : vmList) {
@@ -48,7 +46,7 @@ public class VmList {
                 return vm;
             }
         }
-        return null;
+        return (T)Vm.NULL;
     }
 
     /**

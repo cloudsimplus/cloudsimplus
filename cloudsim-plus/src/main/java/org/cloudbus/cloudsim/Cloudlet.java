@@ -475,7 +475,17 @@ public interface Cloudlet extends Identificable {
      * @post $none
      */
     int getVmId();
-
+    
+    /**
+     * Indicates if the Cloudlet is bounded to a specific Vm,
+     * meaning that the {@link DatacenterBroker} doesn't have to
+     * select a VM for it. In this case, the Cloudlet was already
+     * bounded to a specific VM and must run on it.
+     * 
+     * @return true if the Cloudlet is bounded to a specific VM, false otherwise
+     */
+    boolean isBoundedToVm();
+    
     /**
      * Gets the time the cloudlet had to wait before start executing on a
      * resource.
@@ -844,5 +854,6 @@ public interface Cloudlet extends Identificable {
       @Override public void setExecStartTime(double clockTime) {}
       @Override public boolean isAssignedToDatacenter() { return false; }
       @Override public double registerArrivalOfCloudletIntoDatacenter() { return -1; }
+      @Override public boolean isBoundedToVm() { return false; }
   };
 }

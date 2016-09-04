@@ -6,7 +6,7 @@ import org.cloudbus.cloudsim.Vm;
 
 /**
  * DatacentreBroker represents a broker acting on behalf of a cloud customer. 
- * It hides VM management, as vm creation, submission of cloudlets to VMs 
+ * It hides VM management such as vm creation, submission of cloudlets to VMs 
  * and destruction of VMs.
  *
  * @author Manoel Campos da Silva Filho
@@ -119,5 +119,14 @@ public interface DatacenterBroker {
      * @return true if there are waiting cloudlets, false otherwise
      */
     boolean hasMoreCloudletsToBeExecuted();
+    
+    /**
+     * Defines the policy to select a VM to host a given cloudlet.
+     * 
+     * @param cloudlet the cloudlet that needs a VM to be placed into
+     * @return the selected Vm for the cloudlet or {@link Vm#NULL} if
+     * no suitable VM was found
+     */
+    Vm selectVmForCloudlet(Cloudlet cloudlet);
 
 }

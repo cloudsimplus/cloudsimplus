@@ -29,19 +29,22 @@ import org.cloudbus.cloudsim.lists.VmList;
 
 /**
  * 
- * <p>DatacentreBroker represents a broker acting on behalf of a user. It hides VM
- * management, as vm creation, submission of cloudlets to VMs and destruction of
- * VMs.</p>
- *
- * <p><b>This is a simple implementation that try to host the customer's VM's
+ * <p><b>A simple implementation of {@link DatacenterBroker} that try to host customer's VMs
  * at the first datacenter found. If there isn't capacity in that one,
  * it will try the other ones.</b></p>
+ * The selection of VMs for each cloudlet is is based on a Round-Robin policy,
+ * cyclically selecting the next VM from the broker VM list for each requesting
+ * cloudlet.
  *
  * @author Rodrigo N. Calheiros
  * @author Anton Beloglazov
  * @since CloudSim Toolkit 1.0
  */
 public class DatacenterBrokerSimple extends SimEntity implements DatacenterBroker {
+    /**
+     * The latest VM selected to run a cloudlet.
+     */
+    private Vm lastSelectedVm = Vm.NULL;
 
     /**
      * @see #getVmsWaitingList()
@@ -235,15 +238,20 @@ public class DatacenterBrokerSimple extends SimEntity implements DatacenterBroke
 
         if (result == CloudSimTags.TRUE) {
             getVmsToDatacentersMap().put(vmId, datacenterId);
-            getVmsCreatedList().add(VmList.getById(getVmsWaitingList(), vmId));
-            Log.printConcatLine(CloudSim.clock(), ": ", getName(), ": VM #", vmId,
-                    " has been created in Datacenter #", datacenterId, ", Host #",
-                    VmList.getById(getVmsCreatedList(), vmId).getHost().getId());
-            created = true;
+            
+            Vm vm = VmList.getById(getVmsWaitingList(), vmId);
+            created = vm != Vm.NULL;
+            if(created){
+                getVmsCreatedList().add(vm);
+                Log.printConcatLine(CloudSim.clock(), ": ", getName(), ": VM #", vmId,
+                        " has been created in Datacenter #", datacenterId, ", Host #",
+                        VmList.getById(getVmsCreatedList(), vmId).getHost().getId());
+            } else Log.printFormattedLine(
+                "The request to create Vm %d was not processed because the Vm was not found in the waiting list.", 
+                vmId);
         } else {
             Vm vm = VmList.getById(getVmsWaitingList(), vmId);
-
-            if (vm != null) {
+            if (vm != Vm.NULL) {
                 Datacenter datacenter =
                         datacenterCharacteristicsMap.get(datacenterId).getDatacenter();
                 DatacenterToVmEventInfo info =
@@ -381,21 +389,14 @@ public class DatacenterBrokerSimple extends SimEntity implements DatacenterBroke
      * @see #submitCloudletList(java.util.List)
      */
     protected void createCloudletsInVms() {
-        int vmIndex = 0;
         List<Cloudlet> successfullySubmitted = new ArrayList<>();
         for (Cloudlet cloudlet : getCloudletsWaitingList()) {
-            Vm vm;
-            // if user didn't bind this cloudlet and it has not been executed yet
-            if (cloudlet.getVmId() == -1) {
-                vm = getVmsCreatedList().get(vmIndex);
-            } else { // submit to the specific vm
-                vm = VmList.getById(getVmsCreatedList(), cloudlet.getVmId());
-            }
+            lastSelectedVm = selectVmForCloudlet(cloudlet);
 
-            if (vm == null) { // vm was not created
+            if (lastSelectedVm == Vm.NULL) { // vm was not created
                 Log.printConcatLine(CloudSim.clock(), ": ", getName(),
                         ": Postponing execution of cloudlet ",
-                        cloudlet.getId(), ": bound VM not available");
+                        cloudlet.getId(), ": bounded VM not available");
                 continue;
             }
 
@@ -403,31 +404,56 @@ public class DatacenterBrokerSimple extends SimEntity implements DatacenterBroke
                     "%.2f: %s: Sending %s %d to VM #%d",
                     CloudSim.clock(), getName(),
                     cloudlet.getClass().getSimpleName(),
-                    cloudlet.getId(), vm.getId());
+                    cloudlet.getId(), lastSelectedVm.getId());
 
-            cloudlet.setVmId(vm.getId());
-            send(getVmsToDatacentersMap().get(vm.getId()), cloudlet.getSubmissionDelay(), CloudSimTags.CLOUDLET_SUBMIT, cloudlet);
+            cloudlet.setVmId(lastSelectedVm.getId());
+            send(getVmsToDatacentersMap().get(
+                    lastSelectedVm.getId()), cloudlet.getSubmissionDelay(), 
+                    CloudSimTags.CLOUDLET_SUBMIT, cloudlet);
             cloudletsCreated++;
-            vmIndex = selectNextCreatedVmToHostCloudlet(vmIndex);
             successfullySubmitted.add(cloudlet);
         }
 
         // remove created cloudlets from waiting list
         getCloudletsWaitingList().removeAll(successfullySubmitted);
+        
+        /*sets the last selected VM to null so that the next
+        time cloudlets are requested to be created, the VM selection will
+        restarting from the first VM.*/
+        lastSelectedVm = Vm.NULL;
     }
 
     /**
-     * Gets the index of the next Vm in the {@link #getVmsCreatedList()}
-     * from the current selected Vm.
-     * The method deals the list of created VMs as a circular list,
-     * by this way, after it selects the last Vm, the next
-     * Vm will be the first one.
-     *
-     * @param currentSelectedVm
-     * @return the index of the selected Vm
+     * {@inheritDoc}
+     * 
+     * <br>This method applies a Round-Robin policy to cyclically select
+     * the next Vm from the broker Vm list.
+     * 
+     * @param cloudlet {@inheritDoc}
+     * @return  {@inheritDoc}
      */
-    protected int selectNextCreatedVmToHostCloudlet(int currentSelectedVm) {
-        return (currentSelectedVm + 1) % getVmsCreatedList().size();
+    @Override
+    public Vm selectVmForCloudlet(Cloudlet cloudlet) {
+        if (cloudlet.isBoundedToVm()) {
+            // submit to the specific vm
+            return VmList.getById(getVmsCreatedList(), cloudlet.getVmId());
+        } 
+
+        //if user didn't bind this cloudlet and it has not been executed yet
+        return getVmFromCreatedList(getNextVmIndex());
+    }
+
+    /**
+     * Gets the index of next VM in the broker's created VM list.
+     * If not VM was selected yet, selects the first one,
+     * otherwise, cyclically selects the next VM.
+     * 
+     * @return the index of the next VM to bind a cloudlet to
+     */
+    private int getNextVmIndex() {
+        int vmIndex = getVmsCreatedList().indexOf(lastSelectedVm);
+        vmIndex = (vmIndex == -1 ? 0 : (vmIndex + 1) % getVmsCreatedList().size());
+        return vmIndex;
     }
 
     /**
@@ -492,6 +518,18 @@ public class DatacenterBrokerSimple extends SimEntity implements DatacenterBroke
     @Override
     public <T extends Vm> List<T> getVmsCreatedList() {
         return (List<T>)vmsCreatedList;
+    }
+    
+    /**
+     * Gets a Vm at a given index from the {@link #getVmsCreatedList() list of created VMs}.
+     * 
+     * @param vmIndex the index where a VM has to be got from the created VM list
+     * @return the VM at the given index or {@link Vm#NULL} if the index is invalid
+     */
+    private Vm getVmFromCreatedList(int vmIndex){
+        return (vmIndex >= 0 && vmIndex < vmsCreatedList.size() ? 
+                vmsCreatedList.get(vmIndex): 
+                Vm.NULL);
     }
 
     /**

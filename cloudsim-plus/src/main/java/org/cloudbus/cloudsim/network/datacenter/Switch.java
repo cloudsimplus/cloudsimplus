@@ -358,7 +358,7 @@ public abstract class Switch extends SimEntity {
     protected NetworkHost getHostWithVm(int vmid) {
         for (Entry<Integer, NetworkHost> es : hostList.entrySet()) {
             Vm vm = VmList.getById(es.getValue().getVmList(), vmid);
-            if (vm != null) {
+            if (vm != Vm.NULL) {
                 return es.getValue();
             }
         }

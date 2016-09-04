@@ -854,4 +854,9 @@ public class CloudletSimple extends AbstractCloudlet {
     public final void setSubmissionDelay(double submissionDelay) {
         this.submissionDelay = submissionDelay;
     }
+
+    @Override
+    public boolean isBoundedToVm() {
+        return vmId != Cloudlet.NOT_ASSIGNED;
+    }
 }
