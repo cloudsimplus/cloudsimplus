@@ -29,15 +29,15 @@ public class SimulationScenarioBuilder {
         return datacenterBuilder.get(datacenterIndex).getHost(hostIndex);
     }
     
-    public Vm getVmOfThetBroker(final int vmIndex, final int brokerIndex) {
-        return brokerBuilder.get(brokerIndex).getVm(vmIndex);
+    public Vm getVmFromBroker(final int vmIndex, final int brokerIndex) {
+        return brokerBuilder.get(brokerIndex).getWaitingVm(vmIndex);
     }
 
-    public Vm getFirstVmOfTheFirstBroker() {
-        return getVmOfThetBroker(0, 0);
+    public Vm getFirstVmFromFirstBroker() {
+        return getVmFromBroker(0, 0);
     }
     
-    public Host getFirstHostOfFirstDatacenter(){
+    public Host getFirstHostFromFirstDatacenter(){
         return getHostOfDatacenter(0,0);
     }
     

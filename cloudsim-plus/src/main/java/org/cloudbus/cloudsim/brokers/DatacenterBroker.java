@@ -54,7 +54,7 @@ public interface DatacenterBroker {
      */
     <T extends Cloudlet> List<T> getCloudletsFinishedList();
 
-    Vm getVm(final int index);
+    Vm getWaitingVm(final int index);
 
     /**
      * Gets the list of VMs submitted to the broker that are waiting to be created inside
@@ -121,12 +121,35 @@ public interface DatacenterBroker {
     boolean hasMoreCloudletsToBeExecuted();
     
     /**
-     * Defines the policy to select a VM to host a given cloudlet.
+     * Defines the policy to select a VM to host a given cloudlet
+     * that is waiting to be created.
      * 
      * @param cloudlet the cloudlet that needs a VM to be placed into
      * @return the selected Vm for the cloudlet or {@link Vm#NULL} if
      * no suitable VM was found
      */
-    Vm selectVmForCloudlet(Cloudlet cloudlet);
+    Vm selectVmForWaitingCloudlet(Cloudlet cloudlet);
+    
+    /**
+     * Defines the policy to select a Datacenter to host a VM
+     * that is waiting to be created.
+     * 
+     * @return id of the Datacenter selected to request the creating
+     * of waiting VMs or -1 if no suitable Datacenter was found
+     */
+    int selectDatacenterForWaitingVms();
+
+    /**
+     * Defines the policy to select a Datacenter to host a VM when 
+     * all VM creation requests were received but not all VMs could be created.
+     * In this case, a different datacenter has to be selected to request
+     * the creation of the remaining VMs in the waiting list.
+     * 
+     * @return id of the Datacenter selected to try creating
+     * the remaining VMs or -1 if no suitable Datacenter was found
+     * 
+     * @see #selectDatacenterForWaitingVms() 
+     */
+    int selectFallbackDatacenterForWaitingVms();
 
 }

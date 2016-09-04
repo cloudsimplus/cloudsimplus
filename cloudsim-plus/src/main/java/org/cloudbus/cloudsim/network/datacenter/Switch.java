@@ -119,7 +119,7 @@ public abstract class Switch extends SimEntity {
     @Override
     public void startEntity() {
         Log.printConcatLine(getName(), " is starting...");
-        schedule(getId(), 0, CloudSimTags.RESOURCE_CHARACTERISTICS_REQUEST);
+        schedule(getId(), 0, CloudSimTags.DATACENTER_CHARACTERISTICS_REQUEST);
     }
 
     @Override

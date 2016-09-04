@@ -436,9 +436,9 @@ public class DatacenterSimple extends SimEntity implements Datacenter {
     }
 
     /**
-     * Process the event for an User/Broker who wants to create a VM in this
-     * DatacenterSimple. This DatacenterSimple will then send the status back to
-     * the User/Broker.
+     * Process the event for a Broker which wants to create a VM in this
+     * Datacenter. This Datacenter will then send the status back to
+     * the Broker.
      *
      * @param ev information about the event just happened
      * @param ack indicates if the event's sender expects to receive an

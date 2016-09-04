@@ -162,7 +162,7 @@ public class CloudSimTags {
      * Denotes request for cloud resource characteristics information. This tag
      * is normally used between CloudSim and CloudResource entity.
      */
-    public static final int RESOURCE_CHARACTERISTICS_REQUEST = BASE + 15;
+    public static final int DATACENTER_CHARACTERISTICS_REQUEST = BASE + 15;
 
     /**
      * This tag is used by an entity to send ping requests.

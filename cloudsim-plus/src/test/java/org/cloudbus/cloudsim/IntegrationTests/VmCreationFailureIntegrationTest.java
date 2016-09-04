@@ -81,8 +81,8 @@ public final class VmCreationFailureIntegrationTest {
         numberOfHostAllocations++;
         Log.printFormattedLine("# Host %s allocated to Vm %s at time %3.0f",
                 evt.getHost().getId(), evt.getVm().getId(), evt.getTime());
-        if (scenario.getFirstHostOfFirstDatacenter().equals(evt.getHost())
-                && scenario.getFirstVmOfTheFirstBroker().equals(evt.getVm())) {
+        if (scenario.getFirstHostFromFirstDatacenter().equals(evt.getHost())
+                && scenario.getFirstVmFromFirstBroker().equals(evt.getVm())) {
             assertEquals(
                 "Host wasn't allocated to Vm at the expected time", 
                 0, evt.getTime(), 0.2);
@@ -102,8 +102,8 @@ public final class VmCreationFailureIntegrationTest {
         Log.printFormattedLine(
                 "# Vm %s moved/removed from Host %s at time %3.0f",
                 evt.getVm().getId(), evt.getHost().getId(), evt.getTime());
-        if (scenario.getFirstHostOfFirstDatacenter().equals(evt.getHost()) && 
-            scenario.getFirstVmOfTheFirstBroker().equals(evt.getVm())) {
+        if (scenario.getFirstHostFromFirstDatacenter().equals(evt.getHost()) && 
+            scenario.getFirstVmFromFirstBroker().equals(evt.getVm())) {
             assertEquals(
                     "Vm wasn't removed from the Host at the expected time", 
                     20, evt.getTime(), 0.2);
@@ -137,11 +137,11 @@ public final class VmCreationFailureIntegrationTest {
         switch ((int) evt.getTime()) {
             case 10:
                 assertEquals(200,
-                        scenario.getFirstHostOfFirstDatacenter().getAvailableMips(), 0.1);
+                        scenario.getFirstHostFromFirstDatacenter().getAvailableMips(), 0.1);
             break;
             case 20:
                 assertEquals(200,
-                        scenario.getFirstHostOfFirstDatacenter().getAvailableMips(), 0.1);
+                        scenario.getFirstHostFromFirstDatacenter().getAvailableMips(), 0.1);
             break;
         }
     }
