@@ -2,7 +2,19 @@
 
 Lists the main changes in the project.
 
-## [1.0.4] - 2016-08-28
+## [v0.8-beta.1] - 2016-09-04
+
+### Changed & Added
+- Completey refactored `DatacenterBroker` classes and interface. The `DatacenterBrokerSimple` class had methods with several 
+  lines of code performing several different tasks that were very confusing. Method names were completely difficult to understand.
+  These classes and interfaces were refactored in order to provide methods that have just one goal. 
+- A new `DatacenterBrokerAbstract` class was introduced as the base implementation for `DatacenterBroker`s. Such an interface 
+ now enables real extensibility, providing methods to allow defining specific policies for: 
+ selection of `Vm`s to host `Cloudlet`s; selection of `Datacenter`s to host `Vm`s;
+ and fallback policies to select a different `Datacenter` for `Vm`s when the previous selected one fails to host the requested `Vm`s.
+- Now, implementations such as `DatacenterBrokerSimple` are very reduced and completely clear.
+
+## [v0.7-beta] - 2016-08-28
 
 ### Added
 - A new feature of subtitle columns was added to the TableBuilder interface in order to allow adding a subtitle row below the title row of a table.
@@ -23,7 +35,7 @@ Lists the main changes in the project.
 - The getter getSubmissionTime was renamed to getDatacenterArrivalTime. Both methods now
   return Cloudlet.NOT_ASSIGNED when the cloudlet hasn't been assigned to a datacenter yet.
 
-## [1.0.3] - 2016-06-10 
+## [v0.6-beta] - 2016-06-10 
 
 ### Added
 - [Examples](cloudsim-plus-examples/src/main/java/org/cloudbus/cloudsim/examples/listeners/) using the new listener features of Vm and Cloudlet classes. 
@@ -40,7 +52,7 @@ Lists the main changes in the project.
   [listeners](cloudsim-plus-examples/src/main/java/org/cloudbus/cloudsim/examples/listeners/) example package.
 - Allowed to delay the submission of cloudlets by a `DatacenterBroker`, simulating the dynamic arrival of Cloudlets (closes the feature request #11)
 
-## [1.0.2] - 2016-04-28 
+## [v0.5-beta] - 2016-04-28 
 
 ### Changed
 - Changed the name of the method getCloudResourceList at CloudSim class to getDatacenterIdsList once it
@@ -69,7 +81,7 @@ Lists the main changes in the project.
   (that now is an enum).
 
 
-## [1.0.0] - 2016-04-25 
+## [v0.4-beta] - 2016-04-25 
 
 ### Fixed
 - The `HarddriveStorage` class had an issue when calling the method `addReservedFile` without priorly reserving space for the file by 

@@ -41,7 +41,7 @@ public class DatacenterBrokerSimple extends DatacenterBrokerAbstract {
 
     /**
      * {@inheritDoc}
-     * <br> It always select the first datacenter from the datacenter list.
+     * <br>It always selects the first datacenter from the datacenter list.
      * 
      * @return {@inheritDoc}
      */
