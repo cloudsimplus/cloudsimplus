@@ -26,7 +26,7 @@ import org.cloudbus.cloudsim.lists.VmList;
  */
 public abstract class DatacenterBrokerAbstract extends SimEntity implements DatacenterBroker {
     /**
-     * The latest VM selected to run a cloudlet.
+     * @see #getLastSelectedVm() 
      */
     private Vm lastSelectedVm = Vm.NULL;
     
@@ -206,13 +206,15 @@ public abstract class DatacenterBrokerAbstract extends SimEntity implements Data
         int vmId = data[1];
         int result = data[2];
         boolean vmCreatedAndLocated = false;
+        vmCreationAcks++;
+
         //if the VM was sucessfully created in the requested Datacenter
         if (result == CloudSimTags.TRUE) {
             vmCreatedAndLocated = processSuccessVmCreationInDatacenter(vmId, datacenterId);
         } else {
             processFailedVmCreationInDatacenter(vmId, datacenterId);
         }
-        vmCreationAcks++;
+        
         // all the requested VMs have been created
         if (getVmsCreatedList().size() == getVmsWaitingList().size() - getVmsDestroyed()) {
             requestDatacentersToCreateWaitingCloudlets();
@@ -305,12 +307,12 @@ public abstract class DatacenterBrokerAbstract extends SimEntity implements Data
         if (getCloudletsWaitingList().isEmpty() && cloudletsCreated == 0) {
             // all cloudlets executed
             Log.printConcatLine(CloudSim.clock(), ": ", getName(), ": All Cloudlets executed. Finishing...");
-            clearDatacenters();
+            destroyVms();
             finishExecution();
         } else if (hasMoreCloudletsToBeExecuted()) {
             /* All the cloudlets sent have finished. It means that some bounded
             cloudlet are waiting their VMs to be created*/
-            clearDatacenters();
+            destroyVms();
             requestDatacenterToCreateWaitingVms(selectDatacenterForWaitingVms());
         }
     }
@@ -373,7 +375,7 @@ public abstract class DatacenterBrokerAbstract extends SimEntity implements Data
      * Request Datacenters to create the Cloudlets in the
      * {@link #getCloudletsWaitingList() Cloudlets waiting list}.
      *
-     * If there isn't available VMs to host all cloudlets,
+     * If there aren't available VMs to host all cloudlets,
      * the creation of some ones will be postponed.
      *
      * @pre $none
@@ -386,14 +388,15 @@ public abstract class DatacenterBrokerAbstract extends SimEntity implements Data
         List<Cloudlet> successfullySubmitted = new ArrayList<>();
         for (Cloudlet cloudlet : getCloudletsWaitingList()) {
             lastSelectedVm = selectVmForWaitingCloudlet(cloudlet);
-            if (lastSelectedVm == Vm.NULL) {
+            if (getLastSelectedVm() == Vm.NULL) {
                 // vm was not created
                 Log.printConcatLine(CloudSim.clock(), ": ", getName(), ": Postponing execution of cloudlet ", cloudlet.getId(), ": bounded VM not available");
                 continue;
             }
-            Log.printFormattedLine("%.2f: %s: Sending %s %d to VM #%d", CloudSim.clock(), getName(), cloudlet.getClass().getSimpleName(), cloudlet.getId(), lastSelectedVm.getId());
-            cloudlet.setVmId(lastSelectedVm.getId());
-            send(getVmsToDatacentersMap().get(lastSelectedVm.getId()), cloudlet.getSubmissionDelay(), CloudSimTags.CLOUDLET_SUBMIT, cloudlet);
+            Log.printFormattedLine("%.2f: %s: Sending %s %d to VM #%d", CloudSim.clock(), getName(), cloudlet.getClass().getSimpleName(), cloudlet.getId(), getLastSelectedVm().getId());
+            cloudlet.setVmId(getLastSelectedVm().getId());
+            send(getVmsToDatacentersMap().get(getLastSelectedVm().getId()), 
+                    cloudlet.getSubmissionDelay(), CloudSimTags.CLOUDLET_SUBMIT, cloudlet);
             cloudletsCreated++;
             successfullySubmitted.add(cloudlet);
         }
@@ -406,25 +409,12 @@ public abstract class DatacenterBrokerAbstract extends SimEntity implements Data
     }
 
     /**
-     * Gets the index of next VM in the broker's created VM list.
-     * If not VM was selected yet, selects the first one,
-     * otherwise, cyclically selects the next VM.
-     *
-     * @return the index of the next VM to bind a cloudlet to
-     */
-    protected int getNextVmIndex() {
-        int vmIndex = getVmsCreatedList().indexOf(lastSelectedVm);
-        vmIndex = (vmIndex == -1 ? 0 : (vmIndex + 1) % getVmsCreatedList().size());
-        return vmIndex;
-    }
-
-    /**
-     * Destroy all virtual machines running in datacenters.
+     * Destroy all created broker's VMs.
      *
      * @pre $none
      * @post $none
      */
-    protected void clearDatacenters() {
+    protected void destroyVms() {
         for (Vm vm : getVmsCreatedList()) {
             Log.printConcatLine(CloudSim.clock(), ": " + getName(), ": Destroying VM #", vm.getId());
             sendNow(getVmsToDatacentersMap().get(vm.getId()), CloudSimTags.VM_DESTROY, vm);
@@ -566,6 +556,14 @@ public abstract class DatacenterBrokerAbstract extends SimEntity implements Data
      */
     protected List<Integer> getDatacenterRequestedIdsList() {
         return datacenterRequestedIdsList;
+    }
+
+    /**
+     * 
+     * @return latest VM selected to run a cloudlet.
+     */
+    protected Vm getLastSelectedVm() {
+        return lastSelectedVm;
     }
     
 }

@@ -7,7 +7,6 @@ import org.cloudbus.cloudsim.CloudletSimple;
 import org.cloudbus.cloudsim.brokers.DatacenterBrokerSimple;
 import org.cloudbus.cloudsim.utilizationmodels.UtilizationModel;
 import org.cloudbus.cloudsim.utilizationmodels.UtilizationModelFull;
-import org.cloudbus.cloudsim.Vm;
 import org.cloudbus.cloudsim.listeners.EventListener;
 import org.cloudbus.cloudsim.listeners.VmToCloudletEventInfo;
 
@@ -125,8 +124,13 @@ public class CloudletBuilder extends Builder {
     public CloudletBuilder createAndSubmitOneCloudlet() {
         return createAndSubmitCloudlets(1);
     }
+    
+    public CloudletBuilder createCloudlets(final int amount) {
+        createCloudletsInternal(amount);
+        return this;
+    }
 
-    public CloudletBuilder createAndSubmitCloudlets(final int amount) {
+    private List<Cloudlet> createCloudletsInternal(final int amount) {
         List<Cloudlet> localList = new ArrayList<>();
         for (int i = 0; i < amount; i++) {
             final int cloudletId = numberOfCreatedCloudlets++;
@@ -140,11 +144,25 @@ public class CloudletBuilder extends Builder {
             cloudlet.setOnCloudletFinishEventListener(onCloudletFinishEventListener);
             localList.add(cloudlet);
         }
+        cloudlets.addAll(localList);
+        return localList;
+    }
+    
+    public CloudletBuilder createAndSubmitCloudlets(final int amount) {
+        List<Cloudlet> localList = createCloudletsInternal(amount);
         broker.submitCloudletList(localList);
         if(vmId != -1){
             localList.forEach(c -> broker.bindCloudletToVm(c.getId(), vmId));
         }
-        cloudlets.addAll(localList);
+        return this;
+    }
+    
+    /**
+     * Submits the list of created cloudlets to the latest created broker.
+     * @return the CloudletBuilder instance
+     */
+    public CloudletBuilder submitCloudlets(){
+        broker.submitCloudletList(cloudlets);
         return this;
     }
 

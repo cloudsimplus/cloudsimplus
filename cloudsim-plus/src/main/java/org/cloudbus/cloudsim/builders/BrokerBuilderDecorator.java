@@ -10,15 +10,15 @@ import org.cloudbus.cloudsim.brokers.DatacenterBrokerSimple;
  * It is used to ensure that specific methods are called only after
  * a given method is called.</p>
  * 
- * For instance, the methods {@link #getVmBuilderForTheCreatedBroker()} and
- * {@link #getCloudletBuilderForTheCreatedBroker()} can only be called after
+ * For instance, the methods {@link #getVmBuilder()} and
+ * {@link #getCloudletBuilder()} can only be called after
  * some {@link DatacenterBrokerSimple} was created by calling
  * the method {@link #createBroker()}.<br>
  * By this way, after the method is called, it returns
  * an instance of this decorator that allow
  * chained call to the specific decorator methods
  * as the following example:
- * <ul><li>{@link #createBroker() createBroker()}.{@link #getVmBuilderForTheCreatedBroker() getVmBuilderForTheCreatedBroker()}</li></ul>
+ * <ul><li>{@link #createBroker() createBroker()}.{@link #getVmBuilder() getVmBuilder()}</li></ul>
  * 
  * @author Manoel Campos da Silva Filho
  */
@@ -61,23 +61,24 @@ public class BrokerBuilderDecorator implements BrokerBuilderInterface {
     }
     
     /**
-     * Gets the VM Builder in charge of creating VMs
-     * to the {@link #broker} passed to this BrokerBuilderDecorator
-     * @return 
+     * @return the VmBuilder in charge of creating VMs
+     * to the latest DatacenterBroker created by this BrokerBuilder
      */
-    public VmBuilder getVmBuilderForTheCreatedBroker() {
+    public VmBuilder getVmBuilder() {
         return vmBuilder;
     }
 
     /**
-     * Gets the Cloudlet Builder in charge of creating Cloudlets
-     * to the {@link #broker} passed to this BrokerBuilderDecorator
-     * @return 
+     * @return the CloudletBuilder in charge of creating Cloudlets
+     * to the latest DatacenterBroker created by this BrokerBuilder
      */
-    public CloudletBuilder getCloudletBuilderForTheCreatedBroker() {
+    public CloudletBuilder getCloudletBuilder() {
         return cloudletBuilder;
     }
 
+    /**
+     * @return the latest created broker
+     */
     public DatacenterBroker getBroker() {
         return broker;
     }

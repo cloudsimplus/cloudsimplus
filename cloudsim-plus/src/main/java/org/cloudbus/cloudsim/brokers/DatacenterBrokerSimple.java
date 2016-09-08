@@ -86,5 +86,17 @@ public class DatacenterBrokerSimple extends DatacenterBrokerAbstract {
         //if user didn't bind this cloudlet and it has not been executed yet
         return getVmFromCreatedList(getNextVmIndex());
     }
+    
+    /**
+     * Gets the index of next VM in the broker's created VM list.
+     * If not VM was selected yet, selects the first one,
+     * otherwise, cyclically selects the next VM.
+     *
+     * @return the index of the next VM to bind a cloudlet to
+     */
+    protected int getNextVmIndex() {
+        int vmIndex = getVmsCreatedList().indexOf(getLastSelectedVm());
+        return (vmIndex == -1 ? 0 : (vmIndex + 1) % getVmsCreatedList().size());
+    }    
 
 }

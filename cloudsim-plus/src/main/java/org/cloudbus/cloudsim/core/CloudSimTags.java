@@ -175,25 +175,25 @@ public class CloudSimTags {
     public static final int INFOPKT_RETURN = NETBASE + 6;
 
     /**
-     * Denotes the return of a Cloudlet back to sender. This tag is normally
-     * used by CloudResource entity.
+     * Denotes the return of a finished Cloudlet back to the sender. 
+     * This tag is normally used by Datacenter entity.
      */
     public static final int CLOUDLET_RETURN = BASE + 20;
 
     /**
      * Denotes the submission of a Cloudlet. This tag is normally used between
-     * CloudSim User and CloudResource entity.
+     * CloudSim User and Datacenter entity.
      */
     public static final int CLOUDLET_SUBMIT = BASE + 21;
 
     /**
      * Denotes the submission of a Cloudlet with an acknowledgement. This tag is
-     * normally used between CloudSim User and CloudResource entity.
+     * normally used between CloudSim User and Datacenter entity.
      */
     public static final int CLOUDLET_SUBMIT_ACK = BASE + 22;
 
     /**
-     * Cancels a Cloudlet submitted in the CloudResource entity.
+     * Cancels a Cloudlet submitted in the Datacenter entity.
      */
     public static final int CLOUDLET_CANCEL = BASE + 23;
 
@@ -203,34 +203,34 @@ public class CloudSimTags {
     public static final int CLOUDLET_STATUS = BASE + 24;
 
     /**
-     * Pauses a Cloudlet submitted in the CloudResource entity.
+     * Pauses a Cloudlet submitted in the Datacenter entity.
      */
     public static final int CLOUDLET_PAUSE = BASE + 25;
 
     /**
-     * Pauses a Cloudlet submitted in the CloudResource entity with an
+     * Pauses a Cloudlet submitted in the Datacenter entity with an
      * acknowledgement.
      */
     public static final int CLOUDLET_PAUSE_ACK = BASE + 26;
 
     /**
-     * Resumes a Cloudlet submitted in the CloudResource entity.
+     * Resumes a Cloudlet submitted in the Datacenter entity.
      */
     public static final int CLOUDLET_RESUME = BASE + 27;
 
     /**
-     * Resumes a Cloudlet submitted in the CloudResource entity with an
+     * Resumes a Cloudlet submitted in the Datacenter entity with an
      * acknowledgement.
      */
     public static final int CLOUDLET_RESUME_ACK = BASE + 28;
 
     /**
-     * Moves a Cloudlet to another CloudResource entity.
+     * Moves a Cloudlet to another Datacenter entity.
      */
     public static final int CLOUDLET_MOVE = BASE + 29;
 
     /**
-     * Moves a Cloudlet to another CloudResource entity with an acknowledgement.
+     * Moves a Cloudlet to another Datacenter entity with an acknowledgement.
      */
     public static final int CLOUDLET_MOVE_ACK = BASE + 30;
 

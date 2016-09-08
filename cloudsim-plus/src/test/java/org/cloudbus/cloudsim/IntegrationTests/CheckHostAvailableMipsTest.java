@@ -100,14 +100,14 @@ public final class CheckHostAvailableMipsTest {
         //create VMs and cloudlets for different brokers
         for(int i = 0; i < NUMBER_OF_VMS; i++){
             BrokerBuilderDecorator brokerBuilder = scenario.getBrokerBuilder().createBroker();
-            brokerBuilder.getVmBuilderForTheCreatedBroker()
+            brokerBuilder.getVmBuilder()
                     .setRam(1000).setBw(100000)
                     .setPes(VM_PES).setMips(VM_MIPS).setSize(50000)
                     .setCloudletScheduler(new CloudletSchedulerDynamicWorkload(VM_MIPS,VM_PES))
                     .createAndSubmitOneVm();
 
             final long cloudletLength = (i == 0 ? CLOUDLET_LENGTH : CLOUDLET_LENGTH/2);
-            brokerBuilder.getCloudletBuilderForTheCreatedBroker()
+            brokerBuilder.getCloudletBuilder()
                     .setLength(cloudletLength)
                     .setUtilizationModelCpu(utilizationModel)
                     .setPEs(CLOUDLET_PES)

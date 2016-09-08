@@ -180,7 +180,7 @@ public final class VmCreationFailureIntegrationTest {
 
         BrokerBuilderDecorator brokerBuilder = scenario.getBrokerBuilder().createBroker();
 
-        brokerBuilder.getVmBuilderForTheCreatedBroker()
+        brokerBuilder.getVmBuilder()
                 .setRam(512).setBw(1000)
                 .setPes(1).setMips(1000).setSize(10000)
                 .setCloudletScheduler(new CloudletSchedulerSpaceShared())
@@ -192,7 +192,7 @@ public final class VmCreationFailureIntegrationTest {
                  thus, 1 will fail being created*/
                 .createAndSubmitVms(2);
 
-        brokerBuilder.getCloudletBuilderForTheCreatedBroker()
+        brokerBuilder.getCloudletBuilder()
                 .setLength(10000)
                 .setUtilizationModelCpuRamAndBw(new UtilizationModelFull())
                 .setPEs(1)

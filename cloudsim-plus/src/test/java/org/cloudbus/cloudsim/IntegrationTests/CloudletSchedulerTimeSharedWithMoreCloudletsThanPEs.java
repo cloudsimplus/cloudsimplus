@@ -58,13 +58,13 @@ public final class CloudletSchedulerTimeSharedWithMoreCloudletsThanPEs {
 
         BrokerBuilderDecorator brokerBuilder = scenario.getBrokerBuilder().createBroker();
         broker = brokerBuilder.getBroker();
-        brokerBuilder.getVmBuilderForTheCreatedBroker()
+        brokerBuilder.getVmBuilder()
             .setRam(1000).setBw(100000)
             .setPes(VM_PES).setMips(VM_MIPS).setSize(50000)
             .setCloudletScheduler(new CloudletSchedulerTimeShared())
             .createAndSubmitVms(NUMBER_OF_VMS);
 
-        brokerBuilder.getCloudletBuilderForTheCreatedBroker()
+        brokerBuilder.getCloudletBuilder()
             .setLength(CLOUDLET_LENGTH)
             .setUtilizationModelCpu(utilizationModel)
             .setPEs(CLOUDLET_PES)

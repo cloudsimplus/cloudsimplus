@@ -77,14 +77,14 @@ public final class CheckHostAvailableMipsDynamicUtilizationTest {
 
         BrokerBuilderDecorator brokerBuilder = scenario.getBrokerBuilder().createBroker();
 
-        brokerBuilder.getVmBuilderForTheCreatedBroker()
+        brokerBuilder.getVmBuilder()
                 .setRam(1000).setBw(100000)
                 .setPes(VM_PES).setMips(VM_MIPS).setSize(50000)
                 .setCloudletScheduler(new CloudletSchedulerDynamicWorkload(VM_MIPS,VM_PES))
                 .createAndSubmitVms(NUMBER_OF_VMS);
 
         utilizationModel = new UtilizationModelArithmeticProgression(0.0, 0.25);
-        brokerBuilder.getCloudletBuilderForTheCreatedBroker()
+        brokerBuilder.getCloudletBuilder()
                 .setLength(CLOUDLET_LENGTH)
                 .setUtilizationModelCpu(utilizationModel)
                 .setPEs(CLOUDLET_PES)
