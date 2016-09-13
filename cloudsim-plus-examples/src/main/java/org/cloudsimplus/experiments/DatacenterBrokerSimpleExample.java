@@ -5,7 +5,6 @@ import java.util.List;
 import java.util.Locale;
 import org.cloudbus.cloudsim.Cloudlet;
 import org.cloudbus.cloudsim.builders.BrokerBuilderDecorator;
-import org.cloudbus.cloudsim.builders.CloudletBuilder;
 import org.cloudbus.cloudsim.builders.HostBuilder;
 import org.cloudbus.cloudsim.builders.SimulationScenarioBuilder;
 import org.cloudbus.cloudsim.core.CloudSim;
@@ -18,7 +17,7 @@ import org.cloudbus.cloudsim.util.TextTableBuilder;
  *
  * @author Manoel Campos da Silva Filho
  */
-public class DynamicCloudletArrival {
+public class DatacenterBrokerSimpleExample {
     private final SimulationScenarioBuilder scenario;
     private static final int HOST_PES = 4;
     private static final double HOST_MIPS = 1000;
@@ -28,7 +27,7 @@ public class DynamicCloudletArrival {
     private static final int CLOUDLET_PES = (int)Math.ceil(VM_PES/(double)CLOUDLETS_NUMBER);
     private static final long CLOUDLET_LENGTH = (long)VM_MIPS*10;
     
-    public DynamicCloudletArrival() {
+    public DatacenterBrokerSimpleExample() {
         CloudSim.init(1, Calendar.getInstance(Locale.getDefault()), true);
         scenario = new SimulationScenarioBuilder();
         scenario.getDatacenterBuilder()
@@ -47,16 +46,10 @@ public class DynamicCloudletArrival {
             .setCloudletScheduler(new CloudletSchedulerTimeShared())
             .createAndSubmitOneVm();
         
-        CloudletBuilder cloudletBuilder = brokerBuilder.getCloudletBuilder()
+        brokerBuilder.getCloudletBuilder()
             .setPEs(CLOUDLET_PES)
             .setLength(CLOUDLET_LENGTH)
-            .createCloudlets(CLOUDLETS_NUMBER);
-        
-        int i = -5;
-        for(Cloudlet c: cloudletBuilder.getCloudlets()){
-            c.setSubmissionDelay(i+=5);
-        }
-        cloudletBuilder.submitCloudlets();
+            .createAndSubmitCloudlets(CLOUDLETS_NUMBER);
         
         CloudSim.startSimulation();
         CloudSim.stopSimulation();
@@ -65,7 +58,7 @@ public class DynamicCloudletArrival {
     }
     
     public static void main(String[] args) {
-        new DynamicCloudletArrival();
+        new DatacenterBrokerSimpleExample();
     }
     
 }
