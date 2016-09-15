@@ -175,12 +175,16 @@ public class CloudletToVmMappingSolutionTest {
         final int NUMBER_OF_CLOUDLETS = 3;
         final int PES = 2;
         CloudletToVmMappingSolution instance = 
-                createSolutionWithOneVmForEachCloudlet(NUMBER_OF_CLOUDLETS, PES);
+                createSolutionWithOneVmForEachCloudlet(NUMBER_OF_CLOUDLETS, PES, PES/2);
         HeuristicSolution o = 
-                createSolutionWithOneVmForEachCloudlet(NUMBER_OF_CLOUDLETS, PES*2);
+                createSolutionWithOneVmForEachCloudlet(NUMBER_OF_CLOUDLETS, PES);
         int expResult = -1;
         int result = instance.compareTo(o);
-        assertEquals(expResult, result);
+        assertEquals(
+            String.format(
+                "The instance was expected to be lower than the compared object. Instance fitness: %.2f Compared object fitness: %.2f",
+                instance.getFitness(), o.getFitness()), 
+            expResult, result);
     }
 
     @Test(expected = UnsupportedOperationException.class)
