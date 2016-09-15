@@ -1,6 +1,21 @@
 # Change Log
 
 Lists the main changes in the project.
+## [v0.8-beta.2] - 2016-09-15
+
+### Added
+- Introduction of classes and interfaces to allow implementation of heuristics such as [Tabu Search](http://en.wikipedia.org/wiki/Tabu_search), 
+  [Simulated Annealing](http://en.wikipedia.org/wiki/Simulated_annealing) , 
+  [Ant Colony Systems](http://en.wikipedia.org/wiki/Ant_colony_optimization_algorithms) and so on.
+- Introduction of new package `org.cloudsimplus.heuristics` with classes and interfaces that are the base for implementation
+  of heuristics. The `Heuristic` is the base interface and classes such as the `SimulatedAnnealing` one implements it.
+  It is an abstract class to be extended in order to provide a simulated annealing implementation for specific problems
+  such as mapping of Cloudlets to Vm's.
+- A first implementation of a Simulated Annealing heuristic to find a suboptimal mapping between Cloudlets and Vm's
+  is provided by class `CloudletToVmMappingSimulatedAnnealing`.
+- The new `DatacenterBrokerHeuristic` extends the `DatacenterBrokerSimple` and receives a heuristic implementation
+  to find a suboptimal mapping between submitted Cloudlets and Vm's.
+- New examples for these features were included in the package `org.cloudsimplus.experiments` of the examples project.
 
 ## [v0.8-beta.1] - 2016-09-04
 
