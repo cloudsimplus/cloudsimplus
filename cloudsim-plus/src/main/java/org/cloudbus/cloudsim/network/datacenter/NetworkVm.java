@@ -9,6 +9,7 @@ package org.cloudbus.cloudsim.network.datacenter;
 
 import java.util.ArrayList;
 import java.util.List;
+import org.cloudbus.cloudsim.Vm;
 
 import org.cloudbus.cloudsim.VmSimple;
 import org.cloudbus.cloudsim.schedulers.CloudletScheduler;
@@ -33,7 +34,7 @@ import org.cloudbus.cloudsim.schedulers.CloudletScheduler;
  * @since CloudSim Toolkit 3.0
  * @todo Attributes should be private
  */
-public class NetworkVm extends VmSimple implements Comparable<Object> {
+public class NetworkVm extends VmSimple {
 
     /**
      * List of {@link NetworkCloudlet} of the VM.
@@ -78,14 +79,7 @@ public class NetworkVm extends VmSimple implements Comparable<Object> {
     }
 
     @Override
-    public int compareTo(Object arg0) {
-        NetworkVm hs = (NetworkVm) arg0;
-        if (hs.finishTime > finishTime) {
-            return -1;
-        }
-        if (hs.finishTime < finishTime) {
-            return 1;
-        }
-        return 0;
+    public int compareTo(Vm o) {
+        return Double.compare(this.finishTime, ((NetworkVm) o).finishTime);
     }
 }

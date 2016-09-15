@@ -17,7 +17,7 @@ import org.cloudbus.cloudsim.listeners.EventListener;
  * 
  * @author Manoel Campos da Silva Filho
  */
-public interface Cloudlet extends Identificable {
+public interface Cloudlet extends Identificable, Comparable<Cloudlet> {
   String NO_HISTORY_IS_RECORDED_FOR_CLOUDLET = "No history is recorded for Cloudlet #%d";
   
   /**
@@ -412,9 +412,7 @@ public interface Cloudlet extends Identificable {
     int getDatacenterId();
 
     /**
-     * Gets the ID of the User or Broker that is the owner of the Cloudlet.
-     * It is advisable that broker set this ID with its
-     * own ID, so that CloudResource returns to it after the execution.
+     * Gets the user Id, that represents the broker the cloudlet belongs to.
      *
      * @return the user ID or <tt>{@link #NOT_ASSIGNED}</tt> if the user ID has not been set before
      * @pre $none
@@ -616,7 +614,8 @@ public interface Cloudlet extends Identificable {
             final int datacenterId, final double costPerCpuSec, final double costPerByteOfBw);
 
     /**
-     * Sets the user ID.
+     * Sets the user Id, that represents the broker the cloudlet belongs to.
+     * 
      * @param userId the new user ID
      * @pre id >= 0
      * @post $none
@@ -855,5 +854,6 @@ public interface Cloudlet extends Identificable {
       @Override public boolean isAssignedToDatacenter() { return false; }
       @Override public double registerArrivalOfCloudletIntoDatacenter() { return -1; }
       @Override public boolean isBoundedToVm() { return false; }
+      @Override public int compareTo(Cloudlet o) { return 0; }
   };
 }

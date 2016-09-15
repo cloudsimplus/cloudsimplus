@@ -859,4 +859,24 @@ public class CloudletSimple extends AbstractCloudlet {
     public boolean isBoundedToVm() {
         return vmId != Cloudlet.NOT_ASSIGNED;
     }
+
+    @Override
+    public String toString() {
+        return String.format("Cloudlet %d of User %d", id, userId);
+    }
+
+    /**
+     * <p>Compares this Cloudlet with another one, considering
+     * the {@link #getCloudletTotalLength() total length of the Cloudlets's}.</p>
+     * 
+     * @param o the Vm to be compared to
+     * @return {@inheritDoc }
+     * @see #getCloudletTotalLength() 
+     */
+    @Override
+    public int compareTo(Cloudlet o) {
+        return Long.compare(this.getCloudletTotalLength(), o.getCloudletTotalLength());
+    }
+    
+    
 }

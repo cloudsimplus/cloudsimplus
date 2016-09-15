@@ -219,7 +219,7 @@ public class VmSimple implements Vm {
     @Override
     public double getCurrentRequestedMaxMips() {
         Optional<Double> result = getCurrentRequestedMips().stream().max(Double::compare);
-        return (result.isPresent() ? result.get() : 0.0);
+        return result.orElse(0.0);
     }
 
     @Override
@@ -604,5 +604,23 @@ public class VmSimple implements Vm {
             onUpdateVmProcessingListener = EventListener.NULL;
         
         this.onUpdateVmProcessingListener = onUpdateVmProcessingListener;
+    }
+
+    /**
+     * <p>Compares this Vm with another one, considering
+     * the {@link #getTotalMipsCapacity() total MIPS capacity of the Vm's}.</p>
+     * 
+     * @param o the Vm to be compared to
+     * @return {@inheritDoc }
+     * @see #getTotalMipsCapacity() 
+     */
+    @Override
+    public int compareTo(Vm o) {
+        return Double.compare(this.getTotalMipsCapacity(), o.getTotalMipsCapacity());
+    }
+
+    @Override
+    public double getTotalMipsCapacity() {
+        return getMips() * getNumberOfPes();
     }
 }

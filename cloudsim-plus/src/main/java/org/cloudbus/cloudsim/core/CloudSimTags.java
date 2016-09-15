@@ -159,8 +159,8 @@ public class CloudSimTags {
     public static final int REQUEST_REGIONAL_GIS = BASE + 14;
 
     /**
-     * Denotes request for cloud resource characteristics information. This tag
-     * is normally used between CloudSim and CloudResource entity.
+     * Denotes request for datacenter characteristics information. This tag
+     * is normally used between CloudSim and Datacenter entity.
      */
     public static final int DATACENTER_CHARACTERISTICS_REQUEST = BASE + 15;
 

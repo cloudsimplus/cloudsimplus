@@ -44,8 +44,17 @@ public class DatacenterBuilder extends Builder {
     public Datacenter get(final int index) {
         if(index >= 0 && index < datacenters.size())
             return datacenters.get(index);
+        
         return Datacenter.NULL;
     }
+    
+    public Host getHostOfDatacenter(final int hostIndex, final int datacenterIndex){
+        return get(datacenterIndex).getHost(hostIndex);
+    }    
+    
+    public Host getFirstHostFromFirstDatacenter(){
+        return getHostOfDatacenter(0,0);
+    }    
 
     public DatacenterBuilder createDatacenter(final List<Host> hosts) {
         if (hosts == null || hosts.isEmpty()) {

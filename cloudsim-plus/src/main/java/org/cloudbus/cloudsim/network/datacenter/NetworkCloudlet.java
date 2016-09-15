@@ -10,10 +10,9 @@ package org.cloudbus.cloudsim.network.datacenter;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import org.cloudbus.cloudsim.Cloudlet;
 
 import org.cloudbus.cloudsim.CloudletSimple;
-import org.cloudbus.cloudsim.Log;
-import org.cloudbus.cloudsim.core.CloudSim;
 import org.cloudbus.cloudsim.utilizationmodels.UtilizationModel;
 
 /**
@@ -39,7 +38,7 @@ import org.cloudbus.cloudsim.utilizationmodels.UtilizationModel;
  *
  * @todo @author manoelcampos See how to implement the NULL pattern for this class.
  */
-public class NetworkCloudlet extends CloudletSimple implements Comparable<Object> {
+public class NetworkCloudlet extends CloudletSimple {
 
     /**
      * Current stage of cloudlet execution, according to the values of the
@@ -91,15 +90,6 @@ public class NetworkCloudlet extends CloudletSimple implements Comparable<Object
         tasks = new ArrayList<>();
     }
     
-    @Override
-    public int compareTo(Object arg0) {
-        /**
-         * @todo @author manoelcampos It doesn't make sense to always return 0.
-         * Or implement or remove the method
-         */
-        return 0;
-    }
-
     /**
      * Gets the {@link AppCloudlet} that owns this NetworkCloudlet.
      *

@@ -24,6 +24,7 @@ import org.cloudbus.cloudsim.lists.VmList;
  *
  * @author Rodrigo N. Calheiros
  * @author Anton Beloglazov
+ * @author Manoel Campos da Silva Filho
  * @since CloudSim Toolkit 1.0
  */
 public class DatacenterBrokerSimple extends DatacenterBrokerAbstract {

@@ -370,8 +370,8 @@ public class CloudletSimpleTest {
     }
 
     private static CloudletSimple createCloudlet(final int id) {
-        final UtilizationModel cpuRamAndBwUtilizationModel = new UtilizationModelFull();
-        return createCloudlet(id, cpuRamAndBwUtilizationModel);
+        final UtilizationModel utilizationModel = new UtilizationModelFull();
+        return createCloudlet(id, utilizationModel);
     }
 
     private static CloudletSimple createCloudlet(
@@ -385,9 +385,25 @@ public class CloudletSimpleTest {
             UtilizationModel utilizationModelCPU,
             UtilizationModel utilizationModelRAM,
             UtilizationModel utilizationModelBW) {
+        return createCloudlet(
+                id, utilizationModelCPU, utilizationModelRAM, utilizationModelBW,
+                CLOUDLET_LENGTH, 1);
+    }
+
+    private static CloudletSimple createCloudlet(final int id, 
+            UtilizationModel utilizationModelCPU,
+            UtilizationModel utilizationModelRAM,
+            UtilizationModel utilizationModelBW,
+            long length, int numberOfPes) {
         return new CloudletSimple(
-                id, CLOUDLET_LENGTH, 1, CLOUDLET_FILE_SIZE, CLOUDLET_OUTPUT_SIZE,
+                id, length, numberOfPes, CLOUDLET_FILE_SIZE, CLOUDLET_OUTPUT_SIZE,
                 utilizationModelCPU, utilizationModelRAM, utilizationModelBW);
+    }
+
+    public static CloudletSimple createCloudlet(
+            final int id, long length, int numberOfPes) {
+        final UtilizationModel utilizationModel = new UtilizationModelFull();
+        return createCloudlet(id, utilizationModel, utilizationModel, utilizationModel, length, numberOfPes);
     }
 
     @Test

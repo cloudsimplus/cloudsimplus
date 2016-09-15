@@ -192,7 +192,7 @@ public abstract class DatacenterBrokerAbstract extends SimEntity implements Data
     }
 
     /**
-     * Process the ack received from a Datacenter to a broker request for
+     * Process the ack received from a Datacenter to a broker's request for
      * creation of a Vm in that Datacenter.
      *
      * @param ev a SimEvent object
@@ -221,6 +221,7 @@ public abstract class DatacenterBrokerAbstract extends SimEntity implements Data
         } else if (getVmCreationRequests() == getVmCreationAcks()) {
             requestCreationOfWaitingVmsToNextDatacenter();
         }
+        
         return vmCreatedAndLocated;
     }
 
@@ -349,7 +350,11 @@ public abstract class DatacenterBrokerAbstract extends SimEntity implements Data
     }
 
     /**
-     * Request a datacenter to create the VM in the {@link #getVmsWaitingList() VM waiting list}.
+     * <p>Request a datacenter to create the VM in the 
+     * {@link #getVmsWaitingList() VM waiting list}.</p>
+     * 
+     * <p>This method is called after the list of available Datacenters
+     * is received.</p>
      *
      * @param datacenterId id of the datacenter to request the VMs creation
      * @pre $none
@@ -372,12 +377,14 @@ public abstract class DatacenterBrokerAbstract extends SimEntity implements Data
     }
 
     /**
-     * Request Datacenters to create the Cloudlets in the
+     * <p>Request Datacenters to create the Cloudlets in the
      * {@link #getCloudletsWaitingList() Cloudlets waiting list}.
-     *
      * If there aren't available VMs to host all cloudlets,
-     * the creation of some ones will be postponed.
-     *
+     * the creation of some ones will be postponed.</p>
+     * 
+     * <p>This method is called after all submitted VMs are created
+     * in some Datacenter.</p>
+     * 
      * @pre $none
      * @post $none
      * @see #submitCloudletList(java.util.List)
@@ -394,7 +401,7 @@ public abstract class DatacenterBrokerAbstract extends SimEntity implements Data
                 continue;
             }
             Log.printFormattedLine("%.2f: %s: Sending %s %d to VM #%d", CloudSim.clock(), getName(), cloudlet.getClass().getSimpleName(), cloudlet.getId(), getLastSelectedVm().getId());
-            cloudlet.setVmId(getLastSelectedVm().getId());
+            cloudlet.setVmId(lastSelectedVm.getId());
             send(getVmsToDatacentersMap().get(getLastSelectedVm().getId()), 
                     cloudlet.getSubmissionDelay(), CloudSimTags.CLOUDLET_SUBMIT, cloudlet);
             cloudletsCreated++;
