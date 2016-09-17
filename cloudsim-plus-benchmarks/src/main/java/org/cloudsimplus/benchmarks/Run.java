@@ -17,6 +17,7 @@ import org.openjdk.jmh.runner.options.VerboseMode;
  * 
  * @author Manoel Campos da Silva Filho
  * @see <a href="http://tutorials.jenkov.com/java-performance/jmh.html">JMH - Java Microbenchmark Harness Tutorial</a>
+ * @see <a href="http://java-performance.info/jmh/">Java Performance: JMH</a>
  */
 public class Run {
     /**

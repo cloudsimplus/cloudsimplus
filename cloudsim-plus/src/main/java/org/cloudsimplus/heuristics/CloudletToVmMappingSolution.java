@@ -11,11 +11,6 @@ import static java.util.stream.Collectors.groupingBy;
 
 import org.cloudbus.cloudsim.Cloudlet;
 import org.cloudbus.cloudsim.Vm;
-import static java.util.stream.Collectors.groupingBy;
-import static java.util.stream.Collectors.groupingBy;
-import static java.util.stream.Collectors.groupingBy;
-import static java.util.stream.Collectors.groupingBy;
-import static java.util.stream.Collectors.groupingBy;
 
 /**
  * A possible solution for mapping a set of Cloudlets to a set of Vm's.
@@ -227,7 +222,15 @@ public class CloudletToVmMappingSolution implements HeuristicSolution<Map<Cloudl
     
     @Override
     public int compareTo(HeuristicSolution o) {
-        return Double.compare(this.getFitness(), o.getFitness()); 
+        double diff = this.getFitness() - o.getFitness();
+        /*
+        Precision Issue: checks the absolute difference between the two values
+        in order to avoid that solutions with little decimal difference be 
+        considered different one of the other.*/
+        if(Math.abs(diff) <= 0.01)
+            return 0;
+        
+        return (diff < 0 ? -1 : 1);
     }
 
     /**

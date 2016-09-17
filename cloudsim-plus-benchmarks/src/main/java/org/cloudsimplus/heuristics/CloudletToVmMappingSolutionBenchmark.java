@@ -24,12 +24,11 @@ import org.openjdk.jmh.annotations.State;
 @BenchmarkMode({Mode.AverageTime, Mode.Throughput})
 @State(Scope.Thread)
 public class CloudletToVmMappingSolutionBenchmark {
-
     private CloudletToVmMappingSolution instance1;
     private CloudletToVmMappingSolution instance2;
 
     @Setup
-    public void setup() {
+    public void doSetup() {
         instance1 = createInstance();
         
         instance2 = createInstance();

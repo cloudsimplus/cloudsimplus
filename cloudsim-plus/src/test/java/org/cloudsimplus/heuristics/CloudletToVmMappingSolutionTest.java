@@ -167,7 +167,11 @@ public class CloudletToVmMappingSolutionTest {
                 createSolutionWithOneVmForEachCloudlet(NUMBER_OF_CLOUDLETS, PES);
         int expResult = 0;
         int result = instance.compareTo(o);
-        assertEquals(expResult, result);
+        assertEquals(
+            String.format(
+                "The instances should be equals. Instance fitness: %f Compared object fitness: %f",
+                instance.getFitness(), o.getFitness()), 
+        expResult, result);
     }
 
     @Test
