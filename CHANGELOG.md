@@ -4,7 +4,7 @@ Lists the main changes in the project.
 ## [v0.8-beta.2] - 2016-09-15
 
 ### Added
-- Introduction of classes and interfaces to allow implementation of heuristics such as [Tabu Search](http://en.wikipedia.org/wiki/Tabu_search), 
+- Introduction of classes and interfaces to allow implementation of [heuristics](http://en.wikipedia.org/wiki/Heuristic) such as [Tabu Search](http://en.wikipedia.org/wiki/Tabu_search), 
   [Simulated Annealing](http://en.wikipedia.org/wiki/Simulated_annealing) , 
   [Ant Colony Systems](http://en.wikipedia.org/wiki/Ant_colony_optimization_algorithms) and so on.
 - Introduction of new package `org.cloudsimplus.heuristics` with classes and interfaces that are the base for implementation

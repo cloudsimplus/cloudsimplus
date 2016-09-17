@@ -209,7 +209,7 @@ public class DatacenterBrokerHeuristicExample {
         for (Cloudlet c : cloudletList) {
             //cyclically selects a Vm (as in a circular queue)
             i = i % vmList.size(); 
-            roudRobinSolution.addCloudletToVm(c, vmList.get(i++));
+            roudRobinSolution.bindCloudletToVm(c, vmList.get(i++));
         }
         printSolution("Round robin solution used by DatacenterBrokerSimple class:", roudRobinSolution);
     }

@@ -11,6 +11,11 @@ import static java.util.stream.Collectors.groupingBy;
 
 import org.cloudbus.cloudsim.Cloudlet;
 import org.cloudbus.cloudsim.Vm;
+import static java.util.stream.Collectors.groupingBy;
+import static java.util.stream.Collectors.groupingBy;
+import static java.util.stream.Collectors.groupingBy;
+import static java.util.stream.Collectors.groupingBy;
+import static java.util.stream.Collectors.groupingBy;
 
 /**
  * A possible solution for mapping a set of Cloudlets to a set of Vm's.
@@ -24,6 +29,40 @@ public class CloudletToVmMappingSolution implements HeuristicSolution<Map<Cloudl
      * @see #getResult()  
      */
     private final Map<Cloudlet, Vm> cloudletVmMap;
+    
+    /**
+     * Indicates if the {@link #getFitness()} has to be recomputed
+     * due to changes in {@link #cloudletVmMap}. 
+     * When it is computed, its value is stored to be used
+     * in subsequent calls, until the map is changed again, in order to 
+     * improve performance.
+     */
+    private boolean recomputeFitness = true;
+    
+    /**
+     * Indicates if the {@link #getCloudletsGroupedByVmMap()} has to be regenerated
+     * due to changes in {@link #cloudletVmMap}. 
+     * When it is computed, its value is stored to be used
+     * in subsequent calls, until the map is changed again, in order to 
+     * improve performance.
+     */
+    private boolean regenerateMapOfCloudletsGroupedByVm = true;
+
+    /**
+     * The last computed fitness value, since the
+     * last time the {@link #cloudletVmMap} was changed.
+     * @see #getFitness() 
+     * @see #recomputeFitness
+     */
+    private double lastFitness = 0;
+    
+    /**
+     * The last computed Map of Cloudlets grouped by Vm, since the
+     * last time the {@link #cloudletVmMap} was changed.
+     * @see #getCloudletsGroupedByVmMap()  
+     * @see #recomputeFitness
+     */
+    private Map<Vm, Set<Cloudlet>> lastCloudletsGroupedByVmMap = Collections.EMPTY_MAP;
     
     private final Heuristic heuristic;
     
@@ -49,17 +88,19 @@ public class CloudletToVmMappingSolution implements HeuristicSolution<Map<Cloudl
      * @param solution the solution to be cloned
      */
     public CloudletToVmMappingSolution(CloudletToVmMappingSolution solution){
-        this(solution.heuristic, solution.cloneCloudletVmMap());
+        this(solution.heuristic, new HashMap<>(solution.cloudletVmMap));
     }
 
     /**
-     * Adds a cloudlet to be executed by a given Vm.
+     * Binds a cloudlet to be executed by a given Vm.
      * 
      * @param cloudlet the cloudlet to be added to a Vm
      * @param vm the Vm to assign a cloudlet to
      */
-    public void addCloudletToVm(Cloudlet cloudlet, Vm vm){
+    public void bindCloudletToVm(Cloudlet cloudlet, Vm vm){
         cloudletVmMap.put(cloudlet, vm);
+        recomputeFitness = true;
+        regenerateMapOfCloudletsGroupedByVm = true;
     }
 
     /**
@@ -71,9 +112,26 @@ public class CloudletToVmMappingSolution implements HeuristicSolution<Map<Cloudl
      */
     @Override
     public double getFitness() {
-        return getCloudletsGroupedByVmMap().entrySet().stream()
-                .mapToDouble(e -> getFitnessOfCloudletListToVm(e))
-                .sum();
+        if(recomputeFitness){
+            lastFitness = getCloudletsGroupedByVmMap().entrySet().stream()
+                    .mapToDouble(e -> getFitnessOfCloudletListToVm(e))
+                    .sum();
+            recomputeFitness = false;
+        }
+        
+        return lastFitness;
+    }
+    
+    /**
+     * It computes the fitness of the entire mapping between Vm's and cloudlets.
+     * 
+     * @param forceRecompute indicate if the fitness has to be recomputed anyway
+     * @return the fitness of the entire mapping between Vm's and cloudlets
+     * @see #getFitness() 
+     */
+    public double getFitness(boolean forceRecompute) {
+        recomputeFitness |= forceRecompute;
+        return getFitness();
     }
 
     /**
@@ -138,15 +196,35 @@ public class CloudletToVmMappingSolution implements HeuristicSolution<Map<Cloudl
      * that groups the cloudlets hosted by each Vm. 
      */
     public Map<Vm, Set<Cloudlet>> getCloudletsGroupedByVmMap() {
-        return cloudletVmMap.entrySet().stream()
-            .collect(
-                groupingBy(
-                    e -> e.getValue(),
-                    mapping(e -> e.getKey(), Collectors.toSet())
-                )
-            );
+        if(regenerateMapOfCloudletsGroupedByVm){
+            lastCloudletsGroupedByVmMap = cloudletVmMap.entrySet().stream()
+                .collect(
+                    groupingBy(
+                        e -> e.getValue(),
+                        mapping(e -> e.getKey(), Collectors.toSet())
+                    )
+                );
+            
+            regenerateMapOfCloudletsGroupedByVm = false;
+        }
+        
+        return lastCloudletsGroupedByVmMap;
     }
 
+    /**
+     * Gets a map of Cloudlets grouped by the hosting Vm.
+     * 
+     * @param forceRegenerate indicate if the map has to be regenerated anyway
+     * @return a transformed map from the {@link #cloudletVmMap}
+     * that groups the cloudlets hosted by each Vm. 
+     * 
+     * @see #getCloudletsGroupedByVmMap() 
+     */
+    public Map<Vm, Set<Cloudlet>> getCloudletsGroupedByVmMap(boolean forceRegenerate) {
+        regenerateMapOfCloudletsGroupedByVm |= forceRegenerate;
+        return getCloudletsGroupedByVmMap();
+    }
+    
     @Override
     public int compareTo(HeuristicSolution o) {
         return Double.compare(this.getFitness(), o.getFitness()); 
@@ -169,15 +247,6 @@ public class CloudletToVmMappingSolution implements HeuristicSolution<Map<Cloudl
         return clone;
     }
 
-    private Map<Cloudlet, Vm> cloneCloudletVmMap() {
-        Map<Cloudlet, Vm> clonedMap = new HashMap<>(cloudletVmMap.size());
-        cloudletVmMap.entrySet().stream().forEach(entry -> {
-            clonedMap.put(entry.getKey(), entry.getValue());
-        });
-        
-        return clonedMap;
-    }
-
     /**
      * Swap the Vm's of 2 randomly selected cloudlets 
      * in the {@link #cloudletVmMap} in order to 
@@ -190,15 +259,18 @@ public class CloudletToVmMappingSolution implements HeuristicSolution<Map<Cloudl
      * @param entries an array of 2 entries that the Vm of their cloudlets should
      * be swapped. If the entries don't have 2 elements, the method will
      * return without performing any change in the entries.
+     * @return true if the Cloudlet's VMs where swapped, false otherwise
      */
-    protected void swapVmsOfTwoMapEntries(Map.Entry<Cloudlet, Vm> entries[]) {
-        if(entries.length != 2)
-            return;
+    protected boolean swapVmsOfTwoMapEntries(Map.Entry<Cloudlet, Vm> entries[]) {
+        if(entries == null || entries.length != 2 || entries[0] == null || entries[1] == null)
+            return false;
+        
         
         Vm vm1 = entries[0].getValue();
         Vm vm2 = entries[1].getValue();
         entries[0].setValue(vm2);
         entries[1].setValue(vm1);
+        return true;
     }
     
     /**
@@ -211,9 +283,10 @@ public class CloudletToVmMappingSolution implements HeuristicSolution<Map<Cloudl
      * and vice-versa.
      * 
      * @see #swapVmsOfTwoMapEntries(java.util.Map.Entry<org.cloudbus.cloudsim.Cloudlet,org.cloudbus.cloudsim.Vm>[]) 
+     * @return true if the Cloudlet's VMs where swapped, false otherwise
      */
-    private void swapVmsOfTwoRandomSelectedMapEntries() {
-        swapVmsOfTwoMapEntries(getRandomMapEntries());
+    private boolean swapVmsOfTwoRandomSelectedMapEntries() {
+        return swapVmsOfTwoMapEntries(getRandomMapEntries());
     }
     
     /**
@@ -225,7 +298,7 @@ public class CloudletToVmMappingSolution implements HeuristicSolution<Map<Cloudl
      * 
      * @see #swapVmsOfTwoMapEntries(java.util.Map.Entry<org.cloudbus.cloudsim.Cloudlet,org.cloudbus.cloudsim.Vm>[]) 
      */
-    private Map.Entry<Cloudlet, Vm>[] getRandomMapEntries() {
+    protected Map.Entry<Cloudlet, Vm>[] getRandomMapEntries() {
         if(cloudletVmMap.isEmpty())
             return new Map.Entry[0];
         

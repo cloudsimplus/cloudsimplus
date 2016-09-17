@@ -10,4 +10,4 @@
                 <integration-tests>true</integration-tests>
             </properties>
         </action>
-    </actions>
+</actions>

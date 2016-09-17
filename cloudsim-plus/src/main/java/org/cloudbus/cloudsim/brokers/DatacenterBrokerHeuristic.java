@@ -58,12 +58,12 @@ public class DatacenterBrokerHeuristic extends DatacenterBrokerSimple {
         to get a solution.
         */
         Log.printFormattedLine(
-                "Broker %d started the heuristic to get a suboptimal solution for mapping Cloudlets to Vm's",
+                "\n# Broker %d started the heuristic to get a suboptimal solution for mapping Cloudlets to Vm's",
                 getId());
         Log.printLine("Please wait... It may take a while, depending on heuristic parameters and number of Cloudlets and Vm's.");
         double spendTime = heuristic.solve();
         Log.printFormattedLine(
-                "Broker %d finished the solution find for mapping Cloudlets to Vm's in %.2f seconds with a solution fitness of %.2f",
+                "# Broker %d finished the solution find for mapping Cloudlets to Vm's in %.2f seconds with a solution fitness of %.2f\n",
                 getId(), spendTime, heuristic.bestSolutionSoFar().getFitness());
     }
 

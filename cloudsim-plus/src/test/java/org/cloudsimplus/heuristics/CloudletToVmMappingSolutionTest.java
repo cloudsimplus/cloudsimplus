@@ -51,7 +51,7 @@ public class CloudletToVmMappingSolutionTest {
             
             long len = (long)(CLOUDLET_LEN/Math.pow(2, i));
             Cloudlet cloudlet = CloudletSimpleTest.createCloudlet(i, len, cloudletPes);      
-            instance.addCloudletToVm(cloudlet, vm);
+            instance.bindCloudletToVm(cloudlet, vm);
         });
         
         return instance;
@@ -136,7 +136,7 @@ public class CloudletToVmMappingSolutionTest {
             Vm vm = VmSimpleTest.createVm(i, i*1000, i);
             Set<Cloudlet> cloudlets = createCloudlets(i, initialCloudletId);
             initialCloudletId += i;
-            cloudlets.forEach(c -> instance.addCloudletToVm(c, vm));
+            cloudlets.forEach(c -> instance.bindCloudletToVm(c, vm));
             expResult.put(vm, cloudlets);
         }
         

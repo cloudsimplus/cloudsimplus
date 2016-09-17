@@ -6,7 +6,7 @@
     <version>1.0</version>
     <packaging>pom</packaging>
 
-    <name>CloudSim Plus Full Package: Examples, Sources and Docs</name>
+    <name>CloudSim Plus Full Package: Examples, Src, Docs</name>
     <description>CloudSim++ A CloudSim fork for Modeling and Simulation of Cloud Computing Infrastructures and Services that focuses on reusability principles and other ones such as DRY, KISS, SOLID and Design Patterns</description>
     <url>http://cloudsimplus.org</url>
 
@@ -44,6 +44,7 @@
     <modules>
         <module>cloudsim-plus</module>
         <module>cloudsim-plus-examples</module>
+								<module>cloudsim-plus-benchmarks</module>
         <module>distribution</module>
     </modules>
 
@@ -59,6 +60,7 @@
                         <target>1.8</target>
                     </configuration>
                 </plugin>
+
                 <!--
                  Plugin for code coverage, enabling
                  generation of reports on IDE to see percentage
@@ -129,6 +131,22 @@
                 <version>4.10</version>
                 <scope>test</scope>
             </dependency>
+
+            <!-- EasyMock framework for creation of mock objects in Unit Tests -->
+            <dependency>
+                <groupId>org.easymock</groupId>
+                <artifactId>easymock</artifactId>
+                <version>3.1</version>
+                <scope>test</scope>
+            </dependency>
+            <dependency>
+                <groupId>org.easymock</groupId>
+                <artifactId>easymockclassextension</artifactId>
+                <version>3.1</version>
+                <scope>test</scope>
+            </dependency>
+            <!-- ============================================= -->
+
             <!-- extension for easymock in order to provide mock of static methods -->
             <dependency>
                 <groupId>org.powermock</groupId>
@@ -142,18 +160,8 @@
                 <version>1.6.4</version>
                 <scope>test</scope>
             </dependency>
-            <dependency>
-                <groupId>org.easymock</groupId>
-                <artifactId>easymock</artifactId>
-                <version>3.1</version>
-                <scope>test</scope>
-            </dependency>
-            <dependency>
-                <groupId>org.easymock</groupId>
-                <artifactId>easymockclassextension</artifactId>
-                <version>3.1</version>
-                <scope>test</scope>
-            </dependency>
+            <!-- ============================================= -->
+
         </dependencies>
     </dependencyManagement>
 </project>
