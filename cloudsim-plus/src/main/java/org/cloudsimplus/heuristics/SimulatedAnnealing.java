@@ -33,6 +33,7 @@ import org.cloudbus.cloudsim.distributions.ContinuousDistribution;
  * 
  * @author Manoel Campos da Silva Filho
  * @param <T> the class of solutions the heuristic will deal with
+ * @see <a href="http://dx.doi.org/10.1109/101.17235">[1] R. A. Rutenbar, “Simulated Annealing Algorithms: An overview,” IEEE Circuits Devices Mag., vol. 1, no. 5, pp. 19–26, 1989.</a>
  */
 public abstract class SimulatedAnnealing<T extends HeuristicSolution> implements Heuristic<T> {
     /**
@@ -97,15 +98,17 @@ public abstract class SimulatedAnnealing<T extends HeuristicSolution> implements
 
     /**
      * {@inheritDoc}
-     * <p>It is used the Boltzmann factor to define if a worse solution
-     * has to be accepted or not in order to avoid local maximums.
-     * The factor also ensures that better solutions are always accepted.
+     * <p>It is used the Boltzmann distribution to define the probability 
+     * of a worse solution (considering its cost) 
+     * to be accepted or not in order to avoid local minima.
+     * The Boltzmann factor computed also ensures that better solutions are always accepted.
      * 
      * The Boltzmann Constant has different values depending of the used unit.
      * In this case, it was used the natural unit of information.</p>
      * 
      * @return {@inheritDoc}
      * 
+     * @see <a href="http://www.wikiwand.com/en/Boltzmann_distribution">Boltzmann distribution</a>
      * @see <a href="http://en.wikipedia.org/wiki/Boltzmann_constant">Boltzmann_constant</a>
      * @see <a href="http://en.wikipedia.org/wiki/Nat_(unit)">Natural unit of information</a>
      */

@@ -1,4 +1,4 @@
-package org.cloudsimplus.experiments;
+package org.cloudsimplus.examples;
 
 import org.cloudbus.cloudsim.util.CloudletsTableBuilderHelper;
 import org.cloudbus.cloudsim.util.TextTableBuilder;
@@ -44,7 +44,9 @@ import org.cloudsimplus.heuristics.HeuristicSolution;
  * <p>An example that uses a 
  * <a href="http://en.wikipedia.org/wiki/Simulated_annealing">Simulated Annealing</a> 
  * heuristic to find a suboptimal mapping between Cloudlets and Vm's submitted to a 
- * DatacenterBroker.
+ * DatacenterBroker. The number of {@link Pe}s of Vm's and Cloudlets are defined
+ * randomly.
+ * 
  * The {@link DatacenterBrokerHeuristic} is used 
  * with the {@link CloudletToVmMappingSimulatedAnnealing} class
  * in order to find an acceptable solution with a high 
@@ -139,7 +141,7 @@ public class DatacenterBrokerHeuristicExample {
                     "Heuristic solution for mapping cloudlets to Vm's         ", 
                     heuristic.getBestSolutionSoFar(), false);
             System.out.printf(
-                "The heuristic solution cost represents %.2f%% of the roud robin mapping cost used by the DatacenterBrokerSimple\n", 
+                "The heuristic solution cost represents %.2f%% of the round robin mapping cost used by the DatacenterBrokerSimple\n", 
                 heuristic.getBestSolutionSoFar().getCost()*100.0/roudRobinMappingCost);
 
             Log.printFormattedLine("\n%s finished!", getClass().getSimpleName());

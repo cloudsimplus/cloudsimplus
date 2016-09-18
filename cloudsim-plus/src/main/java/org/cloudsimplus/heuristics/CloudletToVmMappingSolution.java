@@ -124,8 +124,10 @@ public class CloudletToVmMappingSolution implements HeuristicSolution<Map<Cloudl
      * However, this is more complex and would require that all other cloudlets
      * are assigned to the Vm in order to estimate the completion time
      * in a environment with concurring Pe access.
-     * The cost would consider the number of idle Vm PEs, regarding
+     * The cost would consider the number of idle Vm PEs and number of idle Cloudlets, regarding
      * the CloudletScheduler used. Idle resources count to cost increase.
+     * Sometimes the VM may not have idle PEs, but has waiting cloudlets.
+     * Other times it may not have waiting cloudlets by may have idle PEs.
      */
     public double getCostOfCloudletToVm(Cloudlet cloudlet, Vm vm) {
         return cloudlet.getCloudletTotalLength()/vm.getTotalMipsCapacity();
