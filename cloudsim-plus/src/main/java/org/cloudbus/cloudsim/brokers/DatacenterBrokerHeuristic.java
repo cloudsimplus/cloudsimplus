@@ -58,13 +58,13 @@ public class DatacenterBrokerHeuristic extends DatacenterBrokerSimple {
         to get a solution.
         */
         Log.printFormattedLine(
-                "\n# Broker %d started the heuristic to get a suboptimal solution for mapping Cloudlets to Vm's",
-                getId());
+                "\n# Broker %d started the heuristic to get a suboptimal solution for mapping Cloudlets to Vm's running %d neighborhood searches by iteration",
+                getId(), heuristic.getNumberOfNeighborhoodSearchsByIteration());
         Log.printLine("Please wait... It may take a while, depending on heuristic parameters and number of Cloudlets and Vm's.");
         double spendTime = heuristic.solve();
         Log.printFormattedLine(
                 "# Broker %d finished the solution find for mapping Cloudlets to Vm's in %.2f seconds with a solution fitness of %.2f\n",
-                getId(), spendTime, heuristic.bestSolutionSoFar().getFitness());
+                getId(), spendTime, heuristic.getBestSolutionSoFar().getFitness());
     }
 
     @Override
@@ -82,7 +82,7 @@ public class DatacenterBrokerHeuristic extends DatacenterBrokerSimple {
 
         //If user didn't bind this cloudlet and it has not been executed yet,
         //gets the Vm for the Cloudlet from the heuristic solution.
-        return heuristic.bestSolutionSoFar().getResult().getOrDefault(cloudlet, fallbackVm);
+        return heuristic.getBestSolutionSoFar().getResult().getOrDefault(cloudlet, fallbackVm);
     }
     
     /**

@@ -35,8 +35,7 @@ public class CloudletToVmMappingSimulatedAnnealing extends SimulatedAnnealing<Cl
         setCurrentTemperature(initialTemperature);
     }
 
-    @Override
-    public CloudletToVmMappingSolution generatesRandomSolution() {
+    public CloudletToVmMappingSolution generatesTotallyRandomSolution() {
         CloudletToVmMappingSolution solution = new CloudletToVmMappingSolution(this);
         cloudletList.stream()
                 .filter(c-> !c.isBoundedToVm())
@@ -56,7 +55,7 @@ public class CloudletToVmMappingSimulatedAnnealing extends SimulatedAnnealing<Cl
     @Override
     public CloudletToVmMappingSolution getInitialSolution() {
         if(!isThereInitialSolution() && isReadToGenerateInitialSolution()) {
-            initialSolution = generatesRandomSolution();
+            initialSolution = generatesTotallyRandomSolution();
         }
         
         return initialSolution;

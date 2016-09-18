@@ -90,12 +90,13 @@ public class DatacenterBrokerHeuristicExample {
             
             CloudSim.init(numberOfCloudUsers, Calendar.getInstance(), traceEvents);
 
-            Datacenter datacenter0 = createDatacenter("Datacenter0", 10);
+            Datacenter datacenter0 = createDatacenter("Datacenter0", 100);
 
             heuristic = 
-                    new CloudletToVmMappingSimulatedAnnealing(10000, new UniformDistr(0, 1));
-            heuristic.setColdTemperature(1);
+                    new CloudletToVmMappingSimulatedAnnealing(1, new UniformDistr(0, 1));
+            heuristic.setColdTemperature(0.00001);
             heuristic.setCoolingRate(0.003);
+            heuristic.setNumberOfNeighborhoodSearchsByIteration(100);
             
             DatacenterBrokerHeuristic broker0 = new DatacenterBrokerHeuristic("Broker0");
             broker0.setHeuristic(heuristic);
@@ -117,7 +118,7 @@ public class DatacenterBrokerHeuristicExample {
             CloudSim.stopSimulation();
             printSolution(
                     "\nFinal heuristic solution for mapping cloudlets to Vm's", 
-                    heuristic.bestSolutionSoFar());
+                    heuristic.getBestSolutionSoFar());
             computeRoudRobinMappingFitness();
 
             List<Cloudlet> finishedCloudlets = broker0.getCloudletsFinishedList();
@@ -223,7 +224,7 @@ public class DatacenterBrokerHeuristicExample {
                 e.getKey().getNumberOfPes(), e.getKey().getCloudletLength(),
                 e.getValue().getId(),
                 e.getValue().getNumberOfPes(), e.getValue().getMips(),
-                solution.getFitnessOfCloudletToVm(e.getKey(), e.getValue()));
+                solution.getCostOfCloudletToVm(e.getKey(), e.getValue()));
         }
         System.out.println();
     }    

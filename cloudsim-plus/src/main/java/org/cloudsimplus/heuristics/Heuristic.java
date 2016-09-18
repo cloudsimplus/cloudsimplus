@@ -1,5 +1,6 @@
 package org.cloudsimplus.heuristics;
 
+import java.util.stream.IntStream;
 import org.cloudbus.cloudsim.distributions.ContinuousDistribution;
 
 /**
@@ -27,18 +28,23 @@ import org.cloudbus.cloudsim.distributions.ContinuousDistribution;
  */
 public interface Heuristic<T extends HeuristicSolution> {
     /**
+     * Computes the acceptance probability to define if a neighbor solution
+     * has to be accepted or not, compared to the {@link #getBestSolutionSoFar()}.
      * 
-     * @return true if a neighbor solution can be accepted, false otherwise
-     * @see #getNeighborSolution() 
+     * @return the acceptance probability, in scale from [0 to 1] where
+     * 0 is to maintain the {@link #getBestSolutionSoFar() current solution},
+     * 1 is to accept the neighbor solution, while intermediate
+     * values defines the probability that the neighbor solution
+     * will be randomly accepted.
      */
-    public boolean acceptNeighborSolution();  
+    public double getAcceptanceProbability();  
     
     /**
      * Checks if the solution search can be stopped.
      * 
      * @return true if the solution search can be stopped, false otherwise.
      */
-    public boolean stopSearch();
+    public boolean isToStopSearch();
     
     /**
      * Updates the state of the system in order to keep looking
@@ -53,24 +59,12 @@ public interface Heuristic<T extends HeuristicSolution> {
      * @return the initial randomly generated solution
      */
     public T getInitialSolution();
-    
-    /**
-     * Based on the {@link #getCurrentSolution() current solution}
-     * checks if a just created neighbor solution is better than the
-     * current one, updating both current and neighbor ones.
-     */
-    public void findNextSolution();
-    
-    /**
-     * 
-     * @return current solution
-     */
-    public T getCurrentSolution();
-    
+        
     /**
      * 
      * @return latest neighbor solution created
-     * @see #findNextSolution() 
+     * @see #generateAndAssessNextSolution() 
+     * @see HeuristicSolution#createNeighbor() 
      */
     public T getNeighborSolution();
     
@@ -78,7 +72,7 @@ public interface Heuristic<T extends HeuristicSolution> {
      * 
      * @return best solution that has found up to now
      */
-    public T bestSolutionSoFar();
+    public T getBestSolutionSoFar();
     
     /**
      * 
@@ -87,9 +81,10 @@ public interface Heuristic<T extends HeuristicSolution> {
     public ContinuousDistribution getRandom();
     
     /**
-     * 
-     * @return the current system state, that depends
+     * Gets the current system state, that depends
      * of the heuristic implementation.
+     * 
+     * @return the current system state
      */
     public double getCurrentState();
     
@@ -97,10 +92,14 @@ public interface Heuristic<T extends HeuristicSolution> {
      * Sets a solution as the current one.
      * @param solution the solution to set as the current one.
      */
-    public void setCurrentSolution(T solution);
+    public void setBestSolutionSoFar(T solution);
     
-    public T generatesRandomSolution();
-    
+    /**
+     * Sets a solution as the neighbor one.
+     * @param solution the solution to set as the neighbor one.
+     */
+    public void setNeighborSolution(T solution);
+
     /**
      * Gets a random number between 0 (inclusive) and maxValue (exclusive).
      * 
@@ -114,20 +113,44 @@ public interface Heuristic<T extends HeuristicSolution> {
         values between [0 and 1[ or >= 1*/
         return (int)(uniform >= 1 ? uniform % maxValue : uniform * maxValue);        
     }
+
+    /**
+     * 
+     * @return the number of times a neighbor solution will be searched
+     * at each iteration of the {@link #solve() solution find}.
+     */
+    public int getNumberOfNeighborhoodSearchsByIteration();
+    
+    /**
+     * Sets the number of times a neighbor solution will be searched
+     * at each iteration of the {@link #solve() solution find}.
+     * 
+     * @param numberOfNeighborhoodSearches number of neighbor searches to perform
+     * at each iteration
+     */
+    public void setNumberOfNeighborhoodSearchsByIteration(int numberOfNeighborhoodSearches);
     
     /**
      * Starts the heuristic to find a suboptimal solution.
-     * After the method finishes, call the {@link #bestSolutionSoFar()}
+     * After the method finishes, call the {@link #getBestSolutionSoFar()}
      * to get the final solution.
      * 
      * @return the time spent in solution finding (in seconds)
-     * @see #bestSolutionSoFar() 
+     * @see #getBestSolutionSoFar() 
+     * @todo @author manoelcampos Try to parallelize the solution finding in order 
+     * to reduce search time. Maybe a Map-Reduce approach can be useful.
      */
     public default double solve() {
         long startTime = System.currentTimeMillis();
-        setCurrentSolution(getInitialSolution());
-        while (!stopSearch()) {
-            findNextSolution();
+        setBestSolutionSoFar(getInitialSolution());
+        while (!isToStopSearch()) {
+            IntStream.range(0, getNumberOfNeighborhoodSearchsByIteration()).forEach(i -> {
+                setNeighborSolution((T)getBestSolutionSoFar().createNeighbor());
+                if (getAcceptanceProbability() > getRandomValue(1)) {
+                    setBestSolutionSoFar(getNeighborSolution());
+                }
+            });
+
             updateSystemState();
         }
 
@@ -147,16 +170,16 @@ public interface Heuristic<T extends HeuristicSolution> {
  * for this interface and extensions of it.
  */
 class HeuristicNull<T extends HeuristicSolution> implements Heuristic<T> {
-    @Override public boolean acceptNeighborSolution() { return false; }
-    @Override public boolean stopSearch() { return false; }
+    @Override public double getAcceptanceProbability() { return 0.0; }
+    @Override public boolean isToStopSearch() { return false; }
     @Override public void updateSystemState() {}
     @Override public T getInitialSolution() { return (T)HeuristicSolution.NULL; }
-    @Override public void findNextSolution() {}
-    @Override public T getCurrentSolution() { return (T)HeuristicSolution.NULL; }
     @Override public T getNeighborSolution() { return (T)HeuristicSolution.NULL; }
-    @Override public T bestSolutionSoFar() { return (T)HeuristicSolution.NULL; }
+    @Override public T getBestSolutionSoFar() { return (T)HeuristicSolution.NULL; }
     @Override public ContinuousDistribution getRandom() { return ContinuousDistribution.NULL; }
     @Override public double getCurrentState() { return 0.0; }
-    @Override public void setCurrentSolution(HeuristicSolution solution) {}
-    @Override public T generatesRandomSolution() { return (T)HeuristicSolution.NULL; }
+    @Override public void setBestSolutionSoFar(HeuristicSolution solution) {}
+    @Override public void setNeighborSolution(HeuristicSolution solution) {}
+    @Override public int getNumberOfNeighborhoodSearchsByIteration() { return 0; }
+    @Override public void setNumberOfNeighborhoodSearchsByIteration(int numberOfNeighborhoodSearches) {}
 }

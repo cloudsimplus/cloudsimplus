@@ -12,18 +12,34 @@ package org.cloudsimplus.heuristics;
  */
 public interface HeuristicSolution<T> extends Comparable<HeuristicSolution<T>> {
     /**
-     * Defines how good the solution is. As greater is the fitness,
+     * Defines how good the solution is and it the inverse of the {@link #getCost()}. 
+     * As higher is the fitness,
      * better is a solution. How a solution fitness is computed is totally 
      * dependent of the heuristic implementation being used 
      * to find a solution.
      * 
      * @return the solution fitness
+     * @see #getCost() 
      */
-    double getFitness();
+    public default double getFitness() {
+        return 1/getCost();
+    }
+    
+    /**
+     * Defines the cost of using this solution. 
+     * As higher is the cost, worse is a solution. How a solution cost is computed is totally 
+     * dependent of the heuristic implementation being used to find a solution.
+     * 
+     * @return the solution cost
+     * @see #getFitness() 
+     */
+    double getCost();
     
     /**
      * Creates a neighbor solution cloning the current one
      * and randomly changing some of its values.
+     * A neighbor solution is one that is close to the current solution
+     * and has just little changes.
      * 
      * @param <T> the class of this solution
      * @return the cloned and randomly changed solution that represents a neighbor solution 
@@ -42,7 +58,8 @@ public interface HeuristicSolution<T> extends Comparable<HeuristicSolution<T>> {
     public static final HeuristicSolution NULL = new HeuristicSolution() {
         private final Object object = new Object();
         
-        @Override public double getFitness() { return 0; }
+        @Override public double getFitness() { return 0.0; }
+        @Override public double getCost() { return 0.0; }
         @Override public HeuristicSolution createNeighbor() { return this; }
         @Override public int compareTo(Object o) { return 0; }
         @Override public Object getResult() { return object; }

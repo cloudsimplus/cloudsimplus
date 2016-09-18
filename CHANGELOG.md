@@ -1,6 +1,11 @@
 # Change Log
 
 Lists the main changes in the project.
+
+## [v0.8-beta.3] - 2016-09-17
+- Inclusion of new module "cloudsim-plus-benchmarks" that uses JMH (Java Microbenchmark Harness framework) that implement some
+  benchmarks in order to assess CloudSim Plus performance.
+
 ## [v0.8-beta.2] - 2016-09-15
 
 ### Added

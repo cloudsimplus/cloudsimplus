@@ -29,9 +29,11 @@ public class CloudletToVmMappingSolutionTest {
         CloudletToVmMappingSolution instance = 
                 createSolutionWithOneVmForEachCloudlet(NUMBER_OF_CLOUDLETS, PES);
 
-        double expResult = 0.7;
+        double expResult = 0.016;
         double result = instance.getFitness();
-        assertEquals(expResult, result, 0.01);
+        assertEquals(
+            String.format("Fitness not as expected for the cost %.2f", instance.getCost()),
+            expResult, result, 0.01);
     }
 
     private CloudletToVmMappingSolution createSolutionWithOneVmForEachCloudlet(
@@ -47,9 +49,9 @@ public class CloudletToVmMappingSolutionTest {
         CloudletToVmMappingSolution instance = new CloudletToVmMappingSolution(Heuristic.NULL);
         
         IntStream.range(0, numberOfCloudlets).forEach(i -> {
-            Vm vm = VmSimpleTest.createVm(0, VM_MIPS, vmPes);
+            Vm vm = VmSimpleTest.createVm(i, VM_MIPS, vmPes);
             
-            long len = (long)(CLOUDLET_LEN/Math.pow(2, i));
+            long len = (long)(CLOUDLET_LEN*(i+1));
             Cloudlet cloudlet = CloudletSimpleTest.createCloudlet(i, len, cloudletPes);      
             instance.bindCloudletToVm(cloudlet, vm);
         });
@@ -58,7 +60,7 @@ public class CloudletToVmMappingSolutionTest {
     }
 
     @Test
-    public void testGetFitnessOfCloudletListToVm() {
+    public void testGetCostOfCloudletListToVm() {
         final int VM_MIPS = 1000;
         final int CLOUDLET_LEN = 10000;
         final int PES = 2;
@@ -67,13 +69,13 @@ public class CloudletToVmMappingSolutionTest {
         Vm vm = VmSimpleTest.createVm(0, VM_MIPS, PES);
         Set<Cloudlet> cloudlets = new HashSet<>(NUMBER_OF_CLOUDLETS);
         IntStream.range(0, NUMBER_OF_CLOUDLETS).forEach(i -> {
-            long cloudletLen = (long)(CLOUDLET_LEN/Math.pow(2, i));
+            long cloudletLen = (long)(CLOUDLET_LEN*(i+1));
             cloudlets.add(CloudletSimpleTest.createCloudlet(i, cloudletLen, PES));      
         });
 
         Map.Entry<Vm, Set<Cloudlet>> entry = new HashMap.SimpleEntry(vm, cloudlets);
-        double expResult = 0.7;
-        double result = instance.getFitnessOfCloudletListToVm(entry);
+        double expResult = 60;
+        double result = instance.getCostOfCloudletListToVm(entry);
         assertEquals(expResult, result, 0.01);
     }
     
@@ -82,20 +84,20 @@ public class CloudletToVmMappingSolutionTest {
         CloudletToVmMappingSolution instance = new CloudletToVmMappingSolution(Heuristic.NULL);
         Vm vm = VmSimpleTest.createVm(0, 1000, 1);
         Cloudlet cloudlet = CloudletSimpleTest.createCloudlet(0, 10000, 2);
-        double expResult = 0.05;
-        double result = instance.getFitnessOfCloudletToVm(cloudlet, vm);
+        double expResult = 20;
+        double result = instance.getCostOfCloudletToVm(cloudlet, vm);
         assertEquals(expResult, result, 0.1);        
     }
     
     @Test
-    public void testGetCloudletEstimatedCompletionTime() {
+    public void testGetCostOfCloudletToVm() {
         final int CLOUDLET_LEN = 10000;
         final int VM_MIPS = CLOUDLET_LEN/10;
         CloudletToVmMappingSolution instance = new CloudletToVmMappingSolution(Heuristic.NULL);
         Cloudlet cloudlet = CloudletSimpleTest.createCloudlet(0, CLOUDLET_LEN, 2);
         Vm vm = VmSimpleTest.createVm(0, VM_MIPS, 1);
         double expResult = 20; 
-        double result = instance.getCloudletEstimatedCompletionTime(cloudlet, vm);
+        double result = instance.getCostOfCloudletToVm(cloudlet, vm);
         assertEquals(expResult, result, 0.1);
     }
     
@@ -150,11 +152,16 @@ public class CloudletToVmMappingSolutionTest {
         final int PES = 2;
         CloudletToVmMappingSolution instance = 
                 createSolutionWithOneVmForEachCloudlet(NUMBER_OF_CLOUDLETS, PES);
+        
         HeuristicSolution o = 
                 createSolutionWithOneVmForEachCloudlet(NUMBER_OF_CLOUDLETS, PES, PES/2);
         int expResult = 1;
         int result = instance.compareTo(o);
-        assertEquals(expResult, result);
+        assertEquals(
+            String.format(
+                "The instance was expected to be greater than the compared object. Instance fitness: %f Compared object fitness: %f",
+                instance.getFitness(), o.getFitness()), 
+            expResult, result);
     }
 
     @Test

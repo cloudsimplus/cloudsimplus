@@ -7,10 +7,11 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 import static java.util.stream.Collectors.mapping;
-import static java.util.stream.Collectors.groupingBy;
+
 
 import org.cloudbus.cloudsim.Cloudlet;
 import org.cloudbus.cloudsim.Vm;
+import static java.util.stream.Collectors.groupingBy;
 
 /**
  * A possible solution for mapping a set of Cloudlets to a set of Vm's.
@@ -26,13 +27,13 @@ public class CloudletToVmMappingSolution implements HeuristicSolution<Map<Cloudl
     private final Map<Cloudlet, Vm> cloudletVmMap;
     
     /**
-     * Indicates if the {@link #getFitness()} has to be recomputed
+     * Indicates if the {@link #getCost() ()} has to be recomputed
      * due to changes in {@link #cloudletVmMap}. 
      * When it is computed, its value is stored to be used
      * in subsequent calls, until the map is changed again, in order to 
      * improve performance.
      */
-    private boolean recomputeFitness = true;
+    private boolean recomputeCost = true;
     
     /**
      * Indicates if the {@link #getCloudletsGroupedByVmMap()} has to be regenerated
@@ -44,18 +45,18 @@ public class CloudletToVmMappingSolution implements HeuristicSolution<Map<Cloudl
     private boolean regenerateMapOfCloudletsGroupedByVm = true;
 
     /**
-     * The last computed fitness value, since the
+     * The last computed cost value, since the
      * last time the {@link #cloudletVmMap} was changed.
-     * @see #getFitness() 
-     * @see #recomputeFitness
+     * @see #getCost() 
+     * @see #recomputeCost
      */
-    private double lastFitness = 0;
+    private double lastCost = 0;
     
     /**
      * The last computed Map of Cloudlets grouped by Vm, since the
      * last time the {@link #cloudletVmMap} was changed.
      * @see #getCloudletsGroupedByVmMap()  
-     * @see #recomputeFitness
+     * @see #recomputeCost
      */
     private Map<Vm, Set<Cloudlet>> lastCloudletsGroupedByVmMap = Collections.EMPTY_MAP;
     
@@ -94,7 +95,7 @@ public class CloudletToVmMappingSolution implements HeuristicSolution<Map<Cloudl
      */
     public void bindCloudletToVm(Cloudlet cloudlet, Vm vm){
         cloudletVmMap.put(cloudlet, vm);
-        recomputeFitness = true;
+        recomputeCost = true;
         regenerateMapOfCloudletsGroupedByVm = true;
     }
 
@@ -106,73 +107,56 @@ public class CloudletToVmMappingSolution implements HeuristicSolution<Map<Cloudl
      * @return {@inheritDoc}
      */
     @Override
-    public double getFitness() {
-        if(recomputeFitness){
-            lastFitness = getCloudletsGroupedByVmMap().entrySet().stream()
-                    .mapToDouble(e -> getFitnessOfCloudletListToVm(e))
+    public double getCost() {
+        if(recomputeCost){
+            lastCost = getCloudletsGroupedByVmMap().entrySet().stream()
+                    .mapToDouble(e -> getCostOfCloudletListToVm(e))
                     .sum();
-            recomputeFitness = false;
+            recomputeCost = false;
         }
         
-        return lastFitness;
+        return lastCost;
     }
-    
+        
     /**
-     * It computes the fitness of the entire mapping between Vm's and cloudlets.
+     * It computes the costs of the entire mapping between Vm's and cloudlets.
      * 
-     * @param forceRecompute indicate if the fitness has to be recomputed anyway
-     * @return the fitness of the entire mapping between Vm's and cloudlets
-     * @see #getFitness() 
+     * @param forceRecompute indicate if the cost has to be recomputed anyway
+     * @return the cost of the entire mapping between Vm's and cloudlets
+     * @see #getCost() 
      */
-    public double getFitness(boolean forceRecompute) {
-        recomputeFitness |= forceRecompute;
-        return getFitness();
+    public double getCost(boolean forceRecompute) {
+        recomputeCost |= forceRecompute;
+        return getCost();
     }
 
     /**
-     * <p>Computes the fitness for the currently assigned cloudlets to a given Vm.
-     * By this way, it defines how good is the mapping of these cloudlets assigned
-     * to that Vm.</p> 
-     * 
-     * <p>As greater is the fitness, better is the mapping of the cloudlets
-     * to the given Vm.</p>
+     * Computes the cost for the currently assigned cloudlets to a given Vm.
+     * As greater is the cost, worse is the mapping of the cloudlets
+     * to the given Vm.
      * 
      * @param entry an entry that defines the mapping between a list of cloudlets
      * to a given Vm
-     * 
-     * @return the fitness value of the mapping between the list of cloudlets to a 
+     * @return the cost value of the mapping between the list of cloudlets to a 
      * given Vm
+     * 
+     * @see #getCostOfCloudletToVm(org.cloudbus.cloudsim.Cloudlet, org.cloudbus.cloudsim.Vm) 
      */
-    public double getFitnessOfCloudletListToVm(Map.Entry<Vm, Set<Cloudlet>> entry) {
+    public double getCostOfCloudletListToVm(Map.Entry<Vm, Set<Cloudlet>> entry) {
         return entry.getValue().stream()
-                .mapToDouble(c -> getFitnessOfCloudletToVm(c, entry.getKey()))
+                .mapToDouble(c -> getCostOfCloudletToVm(c, entry.getKey()))
                 .sum();
     }
 
     /**
-     * Gets the fitness value to run a Cloudlet in a given Vm.
-     * By this way, it defines how good is the mapping of the cloudlet assigned
-     * to that Vm.
-     * This is the inverse of the estimated cloudlet completion time.
-     * Therefore, as lower is the estimated completion time,
-     * greater is the fitness.
+     * Gets the cost value to run a Cloudlet in a given Vm.
+     * This is the estimated cloudlet completion time.
+     * Therefore, as higher is the estimated completion time,
+     * higher is the cost.
      * 
-     * @param cloudlet the cloudlet to get the fitness of running inside a given Vm
-     * @param vm the Vm to check a cloudlet's fitness value
-     * @return the fitness to run the Cloudlet in the given Vm
-     * @see #getCloudletEstimatedCompletionTime(org.cloudbus.cloudsim.Cloudlet, org.cloudbus.cloudsim.Vm) 
-     */
-    public double getFitnessOfCloudletToVm(Cloudlet cloudlet, Vm vm) {
-        return 1.0/getCloudletEstimatedCompletionTime(cloudlet, vm);
-    }
-
-    /**
-     * Gets the estimated completion time of a given cloudlet if executed
-     * inside a given Vm.
-     * 
-     * @param cloudlet the cloudlet to check the estimated completion time
-     * @param vm the expected Vm to run the cloudlet
-     * @return cloudlet estimated completion time (in seconds)
+     * @param cloudlet the cloudlet to get the cost of running inside a given Vm
+     * @param vm the Vm to check a cloudlet's cost value
+     * @return the cost to run the Cloudlet in the given Vm
      * 
      * @todo @author manoelcampos The estimation just considers
      * that the cloudlet will use the Vm's PEs all the time 
@@ -182,7 +166,7 @@ public class CloudletToVmMappingSolution implements HeuristicSolution<Map<Cloudl
      * are assigned to the Vm in order to estimate the completion time
      * in a environment with concurring Pe access.
      */
-    public double getCloudletEstimatedCompletionTime(Cloudlet cloudlet, Vm vm) {
+    public double getCostOfCloudletToVm(Cloudlet cloudlet, Vm vm) {
         return cloudlet.getCloudletTotalLength()/vm.getTotalMipsCapacity();
     }
 
@@ -220,6 +204,13 @@ public class CloudletToVmMappingSolution implements HeuristicSolution<Map<Cloudl
         return getCloudletsGroupedByVmMap();
     }
     
+    /**
+     * Compares this solution with another given one, based on the solution
+     * fitness. 
+     * 
+     * @param o the solution to compare this instance to
+     * @return {@inheritDoc}
+     */
     @Override
     public int compareTo(HeuristicSolution o) {
         double diff = this.getFitness() - o.getFitness();
@@ -227,7 +218,7 @@ public class CloudletToVmMappingSolution implements HeuristicSolution<Map<Cloudl
         Precision Issue: checks the absolute difference between the two values
         in order to avoid that solutions with little decimal difference be 
         considered different one of the other.*/
-        if(Math.abs(diff) <= 0.01)
+        if(Math.abs(diff) <= 0.0001)
             return 0;
         
         return (diff < 0 ? -1 : 1);
@@ -322,5 +313,6 @@ public class CloudletToVmMappingSolution implements HeuristicSolution<Map<Cloudl
         selectedEntries[1] = allEntries[j];
         return selectedEntries;
     }
+
     
 }

@@ -32,12 +32,12 @@ public class CloudletToVmMappingSolutionBenchmark {
         instance1 = createInstance();
         
         instance2 = createInstance();
-        /*Call the getFitness the first time without measure it
+        /*Call the getCost the first time without measure it
         in order to measure the time for the second call,
-        when the fitness is already computed*/
-        instance2.getFitness();
+        when the cost is already computed*/
+        instance2.getCost();
         
-        //the same reasoning for the call to getFitness() above
+        //the same reasoning for the call to getCost() above
         instance2.getCloudletsGroupedByVmMap();
     }
 
@@ -59,23 +59,22 @@ public class CloudletToVmMappingSolutionBenchmark {
     }
 
     @Benchmark
-    public double testGetFitness_FirstCall() {
-        return instance1.getFitness(true);
+    public double testGetCost_FirstCall() {
+        return instance1.getCost(true);
     }
 
     /**
-     * The second time the getFitness method is called
-     * without changing Cloudlets to Vm's mapping,
-     * the fitness will be the same and will not be computed
-     * again.
+     * The second time the getCost method is called 
+     * without changing Cloudlets to Vm's mapping, 
+     * the fitness will be the same and will not be computed again.
      * The first time the method is called is in the
-     * {@link #setup()} method.
+     * {@link #doSetup()} method.
      * 
-     * @return the fitness value
+     * @return the cost value
      */
     @Benchmark
-    public double testGetFitness_SecondCall() {
-        return instance2.getFitness();
+    public double testGetCost_SecondCall() {
+        return instance2.getCost();
     }
     
     @Benchmark
@@ -89,7 +88,7 @@ public class CloudletToVmMappingSolutionBenchmark {
      * the map will be the same and will not be generated
      * again.
      * The first time the method is called is in the
-     * {@link #setup()} method.
+     * {@link #doSetup()} method.
      * 
      * @return the map of cloudlets grouped by hosting Vm
      */
