@@ -65,9 +65,22 @@ public class DatacenterBrokerHeuristicExample {
     private List<Vm> vmList;
     private CloudletToVmMappingSimulatedAnnealing heuristic;
     
+    /**
+     * Number of cloudlets created so far.
+     */
     private int numberOfCreatedCloudlets = 0;
+    /**
+     * Number of VMs created so far.
+     */
     private int numberOfCreatedVms = 0;
+    /**
+     * Number of hosts created so far.
+     */
     private int numberOfCreatedHosts = 0;
+    
+    private static final int HOSTS_TO_CREATE = 100;
+    private static final int VMS_TO_CREATE = 50;
+    private static final int CLOUDLETS_TO_CREATE = 100;
 
     /**
      * Starts the simulation.
@@ -90,7 +103,7 @@ public class DatacenterBrokerHeuristicExample {
             
             CloudSim.init(numberOfCloudUsers, Calendar.getInstance(), traceEvents);
 
-            Datacenter datacenter0 = createDatacenter("Datacenter0", 100);
+            Datacenter datacenter0 = createDatacenter("Datacenter0");
 
             heuristic = 
                     new CloudletToVmMappingSimulatedAnnealing(1, new UniformDistr(0, 1));
@@ -101,38 +114,55 @@ public class DatacenterBrokerHeuristicExample {
             DatacenterBrokerHeuristic broker0 = new DatacenterBrokerHeuristic("Broker0");
             broker0.setHeuristic(heuristic);
 
-            final int numberOfVms = 5;
-            final int numberOfCloudlets = 10;
-            vmList = new ArrayList<>(numberOfVms);
-            for(int i = 0; i < numberOfVms; i++){
-                vmList.add(createVm(broker0));
+            vmList = new ArrayList<>(VMS_TO_CREATE);
+            int pesNumber;
+            for(int i = 0; i < VMS_TO_CREATE; i++){
+                pesNumber = getRandomNumberOfPes(4);
+                vmList.add(createVm(broker0, pesNumber));
             }
             broker0.submitVmList(vmList);
 
-            for(int i = 0; i < numberOfCloudlets; i++){
-                cloudletList.add(createCloudlet(broker0));
+            for(int i = 0; i < CLOUDLETS_TO_CREATE; i++){
+                pesNumber = getRandomNumberOfPes(4);
+                cloudletList.add(createCloudlet(broker0, pesNumber));
             }
             broker0.submitCloudletList(cloudletList);
 
             CloudSim.startSimulation();
             CloudSim.stopSimulation();
-            printSolution(
-                    "\nFinal heuristic solution for mapping cloudlets to Vm's", 
-                    heuristic.getBestSolutionSoFar());
-            computeRoudRobinMappingFitness();
 
             List<Cloudlet> finishedCloudlets = broker0.getCloudletsFinishedList();
             CloudletsTableBuilderHelper.print(new TextTableBuilder(), finishedCloudlets);
-            Log.printFormattedLine("%s finished!", getClass().getSimpleName());
+
+            double roudRobinMappingCost = computeRoudRobinMappingCost();
+            printSolution(
+                    "Heuristic solution for mapping cloudlets to Vm's         ", 
+                    heuristic.getBestSolutionSoFar(), false);
+            System.out.printf(
+                "The heuristic solution cost represents %.2f%% of the roud robin mapping cost used by the DatacenterBrokerSimple\n", 
+                heuristic.getBestSolutionSoFar().getCost()*100.0/roudRobinMappingCost);
+
+            Log.printFormattedLine("\n%s finished!", getClass().getSimpleName());
         } catch (Exception e) {
             Log.printFormattedLine("Unexpected errors happened: %s", e.getMessage());
         }
     }
 
-    private DatacenterSimple createDatacenter(String name, int numberOfHosts) {
+    /**
+     * Randomly gets a number of PEs (CPU cores).
+     * 
+     * @param maxPesNumber the maximum value to get a random number of PEs
+     * @return the randomly generated PEs number
+     */
+    private int getRandomNumberOfPes(int maxPesNumber) {
+        return heuristic.getRandomValue(maxPesNumber)+1;
+    }
+
+    private DatacenterSimple createDatacenter(String name) {
         List<Host> hostList = new ArrayList<>();
-        for(int i = 0; i < numberOfHosts; i++)
+        for(int i = 0; i < HOSTS_TO_CREATE; i++) {
             hostList.add(createHost()); 
+        }
 
         //Defines the characteristics of the data center
         String arch = "x86"; // system architecture of datacenter hosts
@@ -161,7 +191,7 @@ public class DatacenterBrokerHeuristicExample {
         List<Pe> cpuCoresList = new ArrayList<>();
         /*Creates the Host's CPU cores and defines the provisioner
         used to allocate each core for requesting VMs.*/
-        for(int i = 0; i < 4; i++)
+        for(int i = 0; i < 8; i++)
             cpuCoresList.add(new PeSimple(i, new PeProvisionerSimple(mips)));
         
         return new HostSimple(numberOfCreatedHosts++,
@@ -171,23 +201,21 @@ public class DatacenterBrokerHeuristicExample {
                 new VmSchedulerTimeShared(cpuCoresList));
     }
 
-    private Vm createVm(DatacenterBroker broker) {
+    private Vm createVm(DatacenterBroker broker, int pesNumber) {
         double mips = 1000;
         long   storage = 10000; // vm image size (MB)
         int    ram = 512; // vm memory (MB)
         long   bw = 1000; // vm bandwidth 
-        int    pesNumber = 4; // number of CPU cores
         
         return new VmSimple(numberOfCreatedVms++, 
                 broker.getId(), mips, pesNumber, ram, bw, storage,
                 VMM, new CloudletSchedulerTimeShared());
     }
 
-    private Cloudlet createCloudlet(DatacenterBroker broker) {
+    private Cloudlet createCloudlet(DatacenterBroker broker, int numberOfPes) {
         long length = 400000; //in Million Structions (MI)
         long fileSize = 300; //Size (in bytes) before execution
         long outputSize = 300; //Size (in bytes) after execution
-        int  numberOfCpuCores = 2;
         
         //Defines how CPU, RAM and Bandwidth resources are used
         //Sets the same utilization model for all these resources.
@@ -195,7 +223,7 @@ public class DatacenterBrokerHeuristicExample {
         
         Cloudlet cloudlet
                 = new CloudletSimple(
-                        numberOfCreatedCloudlets++, length, numberOfCpuCores, 
+                        numberOfCreatedCloudlets++, length, numberOfPes, 
                         fileSize, outputSize, 
                         utilization, utilization, utilization);
         cloudlet.setUserId(broker.getId());
@@ -203,23 +231,32 @@ public class DatacenterBrokerHeuristicExample {
         return cloudlet;
     }
     
-    private void computeRoudRobinMappingFitness() {
+    private double computeRoudRobinMappingCost() {
         CloudletToVmMappingSolution roudRobinSolution =
                 new CloudletToVmMappingSolution(heuristic);
         int i = 0;
         for (Cloudlet c : cloudletList) {
             //cyclically selects a Vm (as in a circular queue)
-            i = i % vmList.size(); 
-            roudRobinSolution.bindCloudletToVm(c, vmList.get(i++));
+            roudRobinSolution.bindCloudletToVm(c, vmList.get(i));
+            i = (i+1) % vmList.size(); 
         }
-        printSolution("Round robin solution used by DatacenterBrokerSimple class:", roudRobinSolution);
+        printSolution(
+            "Round robin solution used by DatacenterBrokerSimple class", 
+            roudRobinSolution, false);
+        return roudRobinSolution.getCost();
     }
 
-    private static void printSolution(String title, CloudletToVmMappingSolution solution) {
-        System.out.printf("%s (fitness %.2f)\n", title, solution.getFitness());
+    private static void printSolution(String title, 
+            CloudletToVmMappingSolution solution,
+            boolean showIndividualCloudletFitness) {
+        System.out.printf("%s (cost %.2f fitness %.6f)\n", 
+                title, solution.getCost(), solution.getFitness());
+        if(!showIndividualCloudletFitness)
+            return;
+        
         for(Map.Entry<Cloudlet, Vm> e: solution.getResult().entrySet()){
             System.out.printf(
-                "Cloudlet %d (%d PEs, %6d MI) mapped to Vm %d (%d PEs, %6.0f MIPS) with fitness %.2f\n",
+                "Cloudlet %3d (%d PEs, %6d MI) mapped to Vm %3d (%d PEs, %6.0f MIPS) with fitness %.2f\n",
                 e.getKey().getId(),
                 e.getKey().getNumberOfPes(), e.getKey().getCloudletLength(),
                 e.getValue().getId(),

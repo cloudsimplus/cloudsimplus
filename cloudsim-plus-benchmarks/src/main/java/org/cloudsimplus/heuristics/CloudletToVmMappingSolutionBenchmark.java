@@ -36,9 +36,6 @@ public class CloudletToVmMappingSolutionBenchmark {
         in order to measure the time for the second call,
         when the cost is already computed*/
         instance2.getCost();
-        
-        //the same reasoning for the call to getCost() above
-        instance2.getCloudletsGroupedByVmMap();
     }
 
     private CloudletToVmMappingSolution createInstance() {
@@ -76,25 +73,4 @@ public class CloudletToVmMappingSolutionBenchmark {
     public double testGetCost_SecondCall() {
         return instance2.getCost();
     }
-    
-    @Benchmark
-    public Map<Vm, Set<Cloudlet>> testGetCloudletsGroupedByVmMap_FirstCall(){
-        return instance1.getCloudletsGroupedByVmMap(true);
-    }
-
-    /**
-     * The second time the getCloudletsGroupedByVmMap method is called
-     * without changing Cloudlets to Vm's mapping,
-     * the map will be the same and will not be generated
-     * again.
-     * The first time the method is called is in the
-     * {@link #doSetup()} method.
-     * 
-     * @return the map of cloudlets grouped by hosting Vm
-     */
-    @Benchmark
-    public Map<Vm, Set<Cloudlet>> testGetCloudletsGroupedByVmMap_SecondCall(){
-        return instance2.getCloudletsGroupedByVmMap();
-    }
-    
 }

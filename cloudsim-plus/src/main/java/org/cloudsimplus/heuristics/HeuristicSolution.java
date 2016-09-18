@@ -22,7 +22,7 @@ public interface HeuristicSolution<T> extends Comparable<HeuristicSolution<T>> {
      * @see #getCost() 
      */
     public default double getFitness() {
-        return 1/getCost();
+        return 1.0/getCost();
     }
     
     /**

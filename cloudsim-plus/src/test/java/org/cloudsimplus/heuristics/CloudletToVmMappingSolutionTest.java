@@ -60,26 +60,6 @@ public class CloudletToVmMappingSolutionTest {
     }
 
     @Test
-    public void testGetCostOfCloudletListToVm() {
-        final int VM_MIPS = 1000;
-        final int CLOUDLET_LEN = 10000;
-        final int PES = 2;
-        final int NUMBER_OF_CLOUDLETS = 3;
-        CloudletToVmMappingSolution instance = new CloudletToVmMappingSolution(Heuristic.NULL);
-        Vm vm = VmSimpleTest.createVm(0, VM_MIPS, PES);
-        Set<Cloudlet> cloudlets = new HashSet<>(NUMBER_OF_CLOUDLETS);
-        IntStream.range(0, NUMBER_OF_CLOUDLETS).forEach(i -> {
-            long cloudletLen = (long)(CLOUDLET_LEN*(i+1));
-            cloudlets.add(CloudletSimpleTest.createCloudlet(i, cloudletLen, PES));      
-        });
-
-        Map.Entry<Vm, Set<Cloudlet>> entry = new HashMap.SimpleEntry(vm, cloudlets);
-        double expResult = 60;
-        double result = instance.getCostOfCloudletListToVm(entry);
-        assertEquals(expResult, result, 0.01);
-    }
-    
-    @Test
     public void testGetFitnessOfCloudletToVm() {
         CloudletToVmMappingSolution instance = new CloudletToVmMappingSolution(Heuristic.NULL);
         Vm vm = VmSimpleTest.createVm(0, 1000, 1);
@@ -129,23 +109,6 @@ public class CloudletToVmMappingSolutionTest {
         return array;
     }
     
-    @Test
-    public void testGetCloudletsGroupedByVmMap() {
-        CloudletToVmMappingSolution instance = new CloudletToVmMappingSolution(Heuristic.NULL);
-        Map<Vm, Set<Cloudlet>> expResult = new TreeMap<>();
-        int initialCloudletId = 0;
-        for(int i = 1; i <= 4; i++){
-            Vm vm = VmSimpleTest.createVm(i, i*1000, i);
-            Set<Cloudlet> cloudlets = createCloudlets(i, initialCloudletId);
-            initialCloudletId += i;
-            cloudlets.forEach(c -> instance.bindCloudletToVm(c, vm));
-            expResult.put(vm, cloudlets);
-        }
-        
-        Map<Vm, Set<Cloudlet>> result = instance.getCloudletsGroupedByVmMap();
-        assertEquals(expResult, result);
-    }
-
     @Test
     public void testCompareTo_InstanceIsGreater() {
         final int NUMBER_OF_CLOUDLETS = 3;

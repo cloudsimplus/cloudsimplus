@@ -5,13 +5,10 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
-import java.util.stream.Collectors;
-import static java.util.stream.Collectors.mapping;
 
 
 import org.cloudbus.cloudsim.Cloudlet;
 import org.cloudbus.cloudsim.Vm;
-import static java.util.stream.Collectors.groupingBy;
 
 /**
  * A possible solution for mapping a set of Cloudlets to a set of Vm's.
@@ -34,15 +31,6 @@ public class CloudletToVmMappingSolution implements HeuristicSolution<Map<Cloudl
      * improve performance.
      */
     private boolean recomputeCost = true;
-    
-    /**
-     * Indicates if the {@link #getCloudletsGroupedByVmMap()} has to be regenerated
-     * due to changes in {@link #cloudletVmMap}. 
-     * When it is computed, its value is stored to be used
-     * in subsequent calls, until the map is changed again, in order to 
-     * improve performance.
-     */
-    private boolean regenerateMapOfCloudletsGroupedByVm = true;
 
     /**
      * The last computed cost value, since the
@@ -51,14 +39,6 @@ public class CloudletToVmMappingSolution implements HeuristicSolution<Map<Cloudl
      * @see #recomputeCost
      */
     private double lastCost = 0;
-    
-    /**
-     * The last computed Map of Cloudlets grouped by Vm, since the
-     * last time the {@link #cloudletVmMap} was changed.
-     * @see #getCloudletsGroupedByVmMap()  
-     * @see #recomputeCost
-     */
-    private Map<Vm, Set<Cloudlet>> lastCloudletsGroupedByVmMap = Collections.EMPTY_MAP;
     
     private final Heuristic heuristic;
     
@@ -96,7 +76,6 @@ public class CloudletToVmMappingSolution implements HeuristicSolution<Map<Cloudl
     public void bindCloudletToVm(Cloudlet cloudlet, Vm vm){
         cloudletVmMap.put(cloudlet, vm);
         recomputeCost = true;
-        regenerateMapOfCloudletsGroupedByVm = true;
     }
 
     /**
@@ -109,8 +88,8 @@ public class CloudletToVmMappingSolution implements HeuristicSolution<Map<Cloudl
     @Override
     public double getCost() {
         if(recomputeCost){
-            lastCost = getCloudletsGroupedByVmMap().entrySet().stream()
-                    .mapToDouble(e -> getCostOfCloudletListToVm(e))
+            lastCost = cloudletVmMap.entrySet().stream()
+                    .mapToDouble(e -> getCostOfCloudletToVm(e.getKey(), e.getValue()))
                     .sum();
             recomputeCost = false;
         }
@@ -131,24 +110,6 @@ public class CloudletToVmMappingSolution implements HeuristicSolution<Map<Cloudl
     }
 
     /**
-     * Computes the cost for the currently assigned cloudlets to a given Vm.
-     * As greater is the cost, worse is the mapping of the cloudlets
-     * to the given Vm.
-     * 
-     * @param entry an entry that defines the mapping between a list of cloudlets
-     * to a given Vm
-     * @return the cost value of the mapping between the list of cloudlets to a 
-     * given Vm
-     * 
-     * @see #getCostOfCloudletToVm(org.cloudbus.cloudsim.Cloudlet, org.cloudbus.cloudsim.Vm) 
-     */
-    public double getCostOfCloudletListToVm(Map.Entry<Vm, Set<Cloudlet>> entry) {
-        return entry.getValue().stream()
-                .mapToDouble(c -> getCostOfCloudletToVm(c, entry.getKey()))
-                .sum();
-    }
-
-    /**
      * Gets the cost value to run a Cloudlet in a given Vm.
      * This is the estimated cloudlet completion time.
      * Therefore, as higher is the estimated completion time,
@@ -165,45 +126,25 @@ public class CloudletToVmMappingSolution implements HeuristicSolution<Map<Cloudl
      * However, this is more complex and would require that all other cloudlets
      * are assigned to the Vm in order to estimate the completion time
      * in a environment with concurring Pe access.
+     * The cost would consider the number of idle Vm PEs, regarding
+     * the CloudletScheduler used. Idle resources count to cost increase.
      */
     public double getCostOfCloudletToVm(Cloudlet cloudlet, Vm vm) {
         return cloudlet.getCloudletTotalLength()/vm.getTotalMipsCapacity();
     }
 
     /**
-     * @return a transformed map from the {@link #cloudletVmMap}
-     * that groups the cloudlets hosted by each Vm. 
+     * Computes the cost of all cloudlets hosted by a given Vm.
+     * @param vm The VM to compute the cost of its cloudlets
+     * @return the VM cost
      */
-    public Map<Vm, Set<Cloudlet>> getCloudletsGroupedByVmMap() {
-        if(regenerateMapOfCloudletsGroupedByVm){
-            lastCloudletsGroupedByVmMap = cloudletVmMap.entrySet().stream()
-                .collect(
-                    groupingBy(
-                        e -> e.getValue(),
-                        mapping(e -> e.getKey(), Collectors.toSet())
-                    )
-                );
-            
-            regenerateMapOfCloudletsGroupedByVm = false;
-        }
-        
-        return lastCloudletsGroupedByVmMap;
+    public double getVmCost(Vm vm) {
+        return cloudletVmMap.entrySet().stream()
+            .filter(e->e.getValue().equals(vm))
+            .mapToDouble(e->getCostOfCloudletToVm(e.getKey(), vm))
+            .sum();
     }
 
-    /**
-     * Gets a map of Cloudlets grouped by the hosting Vm.
-     * 
-     * @param forceRegenerate indicate if the map has to be regenerated anyway
-     * @return a transformed map from the {@link #cloudletVmMap}
-     * that groups the cloudlets hosted by each Vm. 
-     * 
-     * @see #getCloudletsGroupedByVmMap() 
-     */
-    public Map<Vm, Set<Cloudlet>> getCloudletsGroupedByVmMap(boolean forceRegenerate) {
-        regenerateMapOfCloudletsGroupedByVm |= forceRegenerate;
-        return getCloudletsGroupedByVmMap();
-    }
-    
     /**
      * Compares this solution with another given one, based on the solution
      * fitness. 

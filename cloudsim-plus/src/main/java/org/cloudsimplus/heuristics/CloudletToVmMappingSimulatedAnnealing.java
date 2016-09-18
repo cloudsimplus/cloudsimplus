@@ -38,7 +38,6 @@ public class CloudletToVmMappingSimulatedAnnealing extends SimulatedAnnealing<Cl
     public CloudletToVmMappingSolution generatesTotallyRandomSolution() {
         CloudletToVmMappingSolution solution = new CloudletToVmMappingSolution(this);
         cloudletList.stream()
-                .filter(c-> !c.isBoundedToVm())
                 .forEach(c -> solution.bindCloudletToVm(c, getRandomVm()));    
         
         return solution;

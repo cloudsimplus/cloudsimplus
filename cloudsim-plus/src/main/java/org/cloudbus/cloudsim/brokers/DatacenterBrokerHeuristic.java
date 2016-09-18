@@ -1,5 +1,6 @@
 package org.cloudbus.cloudsim.brokers;
 
+import java.util.stream.Collectors;
 import org.cloudbus.cloudsim.Cloudlet;
 import org.cloudbus.cloudsim.Log;
 import org.cloudbus.cloudsim.Vm;
@@ -50,7 +51,10 @@ public class DatacenterBrokerHeuristic extends DatacenterBrokerSimple {
      */
     private void setupAndStartHeuristic() {
         heuristic.setVmList(vmsCreatedList);
-        heuristic.setCloudletList(cloudletsWaitingList);
+        heuristic.setCloudletList(
+                cloudletsWaitingList.stream()
+                        .filter(c-> !c.isBoundedToVm())
+                        .collect(Collectors.toList()));
         /*
         Starts the heuristic to get a sub-optimal solution 
         for the Cloudlets to Vm's mapping.
