@@ -5,15 +5,15 @@ import java.lang.reflect.InvocationTargetException;
 import org.cloudbus.cloudsim.distributions.ContinuousDistribution;
 
 /**
- * Provides the methods for implementation of 
- * a <a href="http://en.wikipedia.org/wiki/Simulated_annealing">Simulated Annealing</a> 
+ * Provides the methods for implementation of
+ * a <a href="http://en.wikipedia.org/wiki/Simulated_annealing">Simulated Annealing</a>
  * algorithm in order to find a suboptimal solution for a problem.
  * The Simulated Annealing is a heuristic that starts with a random solution
  * and iteratively generates a random neighbor solution that its fitness
  * is assessed in order to reach a sub-optimal result.
- * The algorithm try to avoid local maximums, randomly selecting 
+ * The algorithm try to avoid local maximums, randomly selecting
  * worse solutions to get away from being stuck in these locals.
- * 
+ *
  * The algorithm basically works as follows:
  * <ol>
  *  <li>Starts generating a random solution as you wish;</li>
@@ -29,85 +29,50 @@ import org.cloudbus.cloudsim.distributions.ContinuousDistribution;
  * of iterations or time is reached. These conditions are defined by the developer
  * implementing the heuristic.</li>
  * </ol>
- * 
- * 
+ *
+ *
  * @author Manoel Campos da Silva Filho
  * @param <T> the class of solutions the heuristic will deal with
  * @see <a href="http://dx.doi.org/10.1109/101.17235">[1] R. A. Rutenbar, “Simulated Annealing Algorithms: An overview,” IEEE Circuits Devices Mag., vol. 1, no. 5, pp. 19–26, 1989.</a>
  */
-public abstract class SimulatedAnnealing<T extends HeuristicSolution> implements Heuristic<T> {
+public abstract class SimulatedAnnealing<T extends HeuristicSolution> extends HeuristicAbstract<T> {
     /**
-     * @see #getColdTemperature() 
+     * @see #getColdTemperature()
      */
     private double coldTemperature;
-    
+
     /**
-     * @see #getCurrentTemperature() 
+     * @see #getCurrentTemperature()
      */
     private double currentTemperature;
-    
+
     /**
-     * @see #getCoolingRate() 
+     * @see #getCoolingRate()
      */
     private double coolingRate;
 
-    /**
-     * Reference to the generic class that will be used to instantiate objects.
-     */
-    private final Class<T> klass;
-    
-    /**
-     * @see #getNumberOfNeighborhoodSearchsByIteration() 
-     */
-    private int numberOfNeighborhoodSearchsByIteration;
-    
-    /**
-     * @see #getBestSolutionSoFar() 
-     */
-    private T bestSolutionSoFar;
-    /**
-     * @see #getNeighborSolution() 
-     */
-    private T neighborSolution;
-    
-    private final ContinuousDistribution random;
-    
-    /**
+	/**
      * Instantiates a simulated annealing heuristic.
-     * 
+     *
      * @param klass Reference to the generic class that will be used to instantiate objects.
      * @param random a pseudo random number generator
      */
     public SimulatedAnnealing(Class<T> klass, ContinuousDistribution random){
-        this.random = random;
-        this.klass = klass;
-        setBestSolutionSoFar(newSolutionInstance());
-        neighborSolution = bestSolutionSoFar;
-        this.numberOfNeighborhoodSearchsByIteration = 1;
+        super(random, klass);
     }
 
-    private T newSolutionInstance() throws RuntimeException {
-        try {
-            Constructor<T> c = klass.getConstructor(new Class[]{Heuristic.class});
-            return c.newInstance(this);
-        } catch (IllegalArgumentException | InvocationTargetException | NoSuchMethodException | SecurityException | InstantiationException | IllegalAccessException ex) {
-            throw new RuntimeException(ex);
-        }
-    }
-    
-
-    /**
+	/**
      * {@inheritDoc}
-     * <p>It is used the Boltzmann distribution to define the probability 
-     * of a worse solution (considering its cost) 
+     * <p>It is used the Boltzmann distribution to define the probability
+     * of a worse solution (considering its cost)
      * to be accepted or not in order to avoid local minima.
      * The Boltzmann factor computed also ensures that better solutions are always accepted.
-     * 
+     *
      * The Boltzmann Constant has different values depending of the used unit.
      * In this case, it was used the natural unit of information.</p>
-     * 
+     *
      * @return {@inheritDoc}
-     * 
+     *
      * @see <a href="http://www.wikiwand.com/en/Boltzmann_distribution">Boltzmann distribution</a>
      * @see <a href="http://en.wikipedia.org/wiki/Boltzmann_constant">Boltzmann_constant</a>
      * @see <a href="http://en.wikipedia.org/wiki/Nat_(unit)">Natural unit of information</a>
@@ -115,76 +80,69 @@ public abstract class SimulatedAnnealing<T extends HeuristicSolution> implements
     @Override
     public double getAcceptanceProbability() {
         final double boltzmannConstant = 1.0;
-        return Math.exp((getBestSolutionSoFar().getCost() - getNeighborSolution().getCost()) 
-               / (boltzmannConstant * getCurrentState()));
+        return Math.exp((getBestSolutionSoFar().getCost() - getNeighborSolution().getCost())
+               / (boltzmannConstant * currentTemperature));
     }
 
     /**
      * {@inheritDoc}
-     * 
+     *
      * @return true if the system is cold enough and solution search can be
      * stopped, false otherwise
      */
     @Override
     public boolean isToStopSearch() {
-        return getCurrentState()<= getColdTemperature();
+        return currentTemperature <= coldTemperature;
     }
 
     /**
      * {@inheritDoc}
-     * 
+     *
      * Cools the system at a the defined {@link #getCoolingRate() cooling rate}.
-     * @see #getCurrentState()  
+     * @see #getCurrentTemperature() ()
      */
     @Override
     public void updateSystemState() {
-        setCurrentTemperature(getCurrentState()* 1 - getCoolingRate());
+	    currentTemperature *= (1 - coolingRate);
     }
 
     /**
-     * {@inheritDoc}
-     * <b>In this case, it returns the current system temperature.</b>
-     * 
+     * Gets the current system temperature that
+     * represents the system state at the time
+     * of the method call.
+     *
      * @return the current system temperature
      */
-    @Override
-    public double getCurrentState() {
+    public double getCurrentTemperature() {
         return currentTemperature;
     }
-    
-    @Override
-    public T getBestSolutionSoFar() {
-        return bestSolutionSoFar;
-    }
 
-    @Override
-    public T getNeighborSolution() {
-        return neighborSolution;
-    }
+	/**
+	 * Sets the current system temperature.
+	 * @param currentTemperature the temperature to set
+	 */
+	protected void setCurrentTemperature(double currentTemperature) {
+		this.currentTemperature = currentTemperature;
+	}
 
-    @Override
-    public ContinuousDistribution getRandom() {
-        return random;
-    }
-
-    /**
-     * 
+	/**
+     *
      * @return percentage rate in which the system will be cooled, in scale from [0 to 1[.
      */
     public double getCoolingRate() {
         return coolingRate;
     }
 
-    public void setCoolingRate(double coolingRate) {
+	/**
+	 * Sets the percentage rate in which the system will be cooled, in scale from [0 to 1[.
+	 * @param coolingRate the rate to set
+	 */
+	public void setCoolingRate(double coolingRate) {
         this.coolingRate = coolingRate;
     }
 
-    public final void setCurrentTemperature(double currentTemperature) {
-        this.currentTemperature = currentTemperature;
-    }
-
     /**
-     * 
+     *
      * @return the temperature that defines the system is cold enough
      * and solution search may be stopped.
      */
@@ -195,31 +153,11 @@ public abstract class SimulatedAnnealing<T extends HeuristicSolution> implements
     /**
      * Sets the temperature that defines the system is cold enough
      * and solution search may be stopped.
-     * 
+     *
      * @param coldTemperature the cold temperature to set
      */
     public void setColdTemperature(double coldTemperature) {
         this.coldTemperature = coldTemperature;
     }
 
-    @Override
-    public final void setBestSolutionSoFar(T solution) {
-        this.bestSolutionSoFar = solution;
-    }    
-
-    @Override
-    public void setNeighborSolution(T neighborSolution) {
-        this.neighborSolution = neighborSolution;
-    }
-
-    @Override
-    public int getNumberOfNeighborhoodSearchsByIteration() {
-        return numberOfNeighborhoodSearchsByIteration;
-    }
-
-    @Override
-    public void setNumberOfNeighborhoodSearchsByIteration(int numberOfNeighborhoodSearches) {
-        this.numberOfNeighborhoodSearchsByIteration = numberOfNeighborhoodSearches;
-    }
-    
 }

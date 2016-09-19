@@ -9,6 +9,8 @@ package org.cloudbus.cloudsim.allocationpolicies;
 
 import java.util.List;
 import java.util.Map;
+
+import org.cloudbus.cloudsim.Datacenter;
 import org.cloudbus.cloudsim.Host;
 import org.cloudbus.cloudsim.Vm;
 import org.cloudbus.cloudsim.listeners.HostToVmEventInfo;
@@ -60,7 +62,7 @@ public abstract class VmAllocationPolicyAbstract implements VmAllocationPolicy {
     protected final void setHostList(List<? extends Host> hostList) {
         if(hostList == null || hostList.isEmpty())
             throw new IllegalArgumentException("hostList cannot be null or empty.");
-        
+
         this.hostList = hostList;
     }
 

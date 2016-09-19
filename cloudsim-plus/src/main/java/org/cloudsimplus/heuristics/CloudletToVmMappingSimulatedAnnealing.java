@@ -6,28 +6,28 @@ import org.cloudbus.cloudsim.Vm;
 import org.cloudbus.cloudsim.distributions.ContinuousDistribution;
 
 /**
- * A heuristic that uses <a href="http://en.wikipedia.org/wiki/Simulated_annealing">Simulated Annealing</a> 
+ * A heuristic that uses <a href="http://en.wikipedia.org/wiki/Simulated_annealing">Simulated Annealing</a>
  * to find a sub-optimal mapping among a set of Cloudlets and VMs in order to reduce
  * task completion time.
- * 
+ *
  * @author Manoel Campos da Silva Filho
  */
 public class CloudletToVmMappingSimulatedAnnealing extends SimulatedAnnealing<CloudletToVmMappingSolution> implements CloudletToVmMappingHeuristic {
     private CloudletToVmMappingSolution initialSolution;
-    
+
     /** @see #getVmList() */
     private List<Vm> vmList;
-    
+
     /** @see #getCloudletList()  */
     private List<Cloudlet> cloudletList;
 
     /**
      * Creates a new Simulated Annealing Heuristic for solving Cloudlets to Vm's mapping.
-     * 
+     *
      * @param initialTemperature the system initial temperature
      * @param random a random number generator
-     * @see #setColdTemperature(int) 
-     * @see #setCoolingRate(double) 
+     * @see #setColdTemperature(double)
+     * @see #setCoolingRate(double)
      */
     public CloudletToVmMappingSimulatedAnnealing(double initialTemperature, ContinuousDistribution random) {
         super(CloudletToVmMappingSolution.class, random);
@@ -38,16 +38,16 @@ public class CloudletToVmMappingSimulatedAnnealing extends SimulatedAnnealing<Cl
     public CloudletToVmMappingSolution generatesTotallyRandomSolution() {
         CloudletToVmMappingSolution solution = new CloudletToVmMappingSolution(this);
         cloudletList.stream()
-                .forEach(c -> solution.bindCloudletToVm(c, getRandomVm()));    
-        
+                .forEach(c -> solution.bindCloudletToVm(c, getRandomVm()));
+
         return solution;
     }
-    
-    protected boolean isReadToGenerateInitialSolution(){
+
+    private boolean isReadToGenerateInitialSolution(){
         return !cloudletList.isEmpty() && !vmList.isEmpty();
     }
-    
-    protected boolean isThereInitialSolution(){
+
+    private boolean isThereInitialSolution(){
         return !initialSolution.getResult().isEmpty();
     }
 
@@ -56,12 +56,12 @@ public class CloudletToVmMappingSimulatedAnnealing extends SimulatedAnnealing<Cl
         if(!isThereInitialSolution() && isReadToGenerateInitialSolution()) {
             initialSolution = generatesTotallyRandomSolution();
         }
-        
+
         return initialSolution;
     }
 
     /**
-     * 
+     *
      * @return the list of available Vm's to host Cloudlets.
      */
     @Override
@@ -71,7 +71,7 @@ public class CloudletToVmMappingSimulatedAnnealing extends SimulatedAnnealing<Cl
 
     /**
      * Sets the list of available Vm's to host Cloudlets.
-     * @param vmList 
+     * @param vmList
      */
     @Override
     public void setVmList(List<Vm> vmList) {
@@ -79,7 +79,7 @@ public class CloudletToVmMappingSimulatedAnnealing extends SimulatedAnnealing<Cl
     }
 
     /**
-     * 
+     *
      * @return the list of cloudlets to be mapped to {@link #getVmList() available Vm's}.
      */
     @Override
@@ -89,7 +89,7 @@ public class CloudletToVmMappingSimulatedAnnealing extends SimulatedAnnealing<Cl
 
     /**
      * Sets the list of cloudlets to be mapped to {@link #getVmList() available Vm's}.
-     * @param cloudletList 
+     * @param cloudletList
      */
     @Override
     public void setCloudletList(List<Cloudlet> cloudletList) {
@@ -103,5 +103,5 @@ public class CloudletToVmMappingSimulatedAnnealing extends SimulatedAnnealing<Cl
         final int i = getRandomValue(vmList.size());
         return vmList.get(i);
     }
-    
+
 }

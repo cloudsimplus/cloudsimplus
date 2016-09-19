@@ -84,6 +84,7 @@ public class UniformDistr extends AbstractContinuousDistribution implements Cont
      * 1 - U(0, 1)[seed_1], ..., 1 - U(0, 1)[seed_n].
      * 
      * @return true if the technique has to be applied, false otherwise
+     * @see <a href="https://en.wikipedia.org/wiki/Antithetic_variates">Antithetic variates</a>
      */
     public boolean isApplyAntitheticVariatesTechnique() {
         return applyAntitheticVariatesTechnique;
