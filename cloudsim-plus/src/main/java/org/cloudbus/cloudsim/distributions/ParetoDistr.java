@@ -18,7 +18,7 @@ import org.apache.commons.math3.distribution.ParetoDistribution;
  * @author Marcos Dias de Assuncao
  * @since CloudSim Toolkit 1.0
  */
-public class ParetoDistr extends AbstractContinuousDistribution implements ContinuousDistribution {
+public class ParetoDistr extends ContinuousDistributionAbstract {
 
     /**
      * Instantiates a new Pareto pseudo random number generator.

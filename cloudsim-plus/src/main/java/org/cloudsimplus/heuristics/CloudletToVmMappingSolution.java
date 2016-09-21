@@ -255,5 +255,10 @@ public class CloudletToVmMappingSolution implements HeuristicSolution<Map<Cloudl
         return selectedEntries;
     }
 
+	@Override
+	public Heuristic getHeuristic() {
+		return heuristic;
+	}
+
 
 }

@@ -31,8 +31,8 @@ public class CloudletToVmMappingSimulatedAnnealing extends SimulatedAnnealing<Cl
      */
     public CloudletToVmMappingSimulatedAnnealing(double initialTemperature, ContinuousDistribution random) {
         super(CloudletToVmMappingSolution.class, random);
+	    setCurrentTemperature(initialTemperature);
         initialSolution = new CloudletToVmMappingSolution(this);
-        setCurrentTemperature(initialTemperature);
     }
 
     public CloudletToVmMappingSolution generatesTotallyRandomSolution() {

@@ -114,6 +114,4 @@ public class DatacenterBrokerHeuristic extends DatacenterBrokerSimple {
         this.heuristic = heuristic;
     }
 
-
-
 }

@@ -18,7 +18,7 @@ import org.apache.commons.math3.distribution.WeibullDistribution;
  * @author Marcos Dias de Assuncao
  * @since CloudSim Toolkit 1.0
  */
-public class WeibullDistr extends AbstractContinuousDistribution implements ContinuousDistribution {
+public class WeibullDistr extends ContinuousDistributionAbstract {
 
     /**
      * Instantiates a new Weibull pseudo random number generator.

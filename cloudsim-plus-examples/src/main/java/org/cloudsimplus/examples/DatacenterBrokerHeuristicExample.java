@@ -84,6 +84,14 @@ public class DatacenterBrokerHeuristicExample {
     private static final int VMS_TO_CREATE = 50;
     private static final int CLOUDLETS_TO_CREATE = 100;
 
+	/**
+	 * Simulated Annealing (SA) parameters.
+	 */
+	public static final double SA_INITIAL_TEMPERATURE = 1.0;
+	public static final double SA_COLD_TEMPERATURE = 0.0001;
+	public static final double SA_COOLING_RATE = 0.003;
+	public static final int    SA_NUMBER_OF_NEIGHBORHOOD_SEARCHES = 50;
+
     /**
      * Starts the simulation.
      * @param args
@@ -107,28 +115,10 @@ public class DatacenterBrokerHeuristicExample {
 
             Datacenter datacenter0 = createDatacenter("Datacenter0");
 
-            heuristic =
-                    new CloudletToVmMappingSimulatedAnnealing(1, new UniformDistr(0, 1));
-            heuristic.setColdTemperature(0.0001);
-            heuristic.setCoolingRate(0.003);
-            heuristic.setNumberOfNeighborhoodSearchesByIteration(50);
+	        DatacenterBrokerHeuristic broker0 = createBroker();
 
-            DatacenterBrokerHeuristic broker0 = new DatacenterBrokerHeuristic("Broker0");
-            broker0.setHeuristic(heuristic);
-
-            vmList = new ArrayList<>(VMS_TO_CREATE);
-            int pesNumber;
-            for(int i = 0; i < VMS_TO_CREATE; i++){
-                pesNumber = getRandomNumberOfPes(4);
-                vmList.add(createVm(broker0, pesNumber));
-            }
-            broker0.submitVmList(vmList);
-
-            for(int i = 0; i < CLOUDLETS_TO_CREATE; i++){
-                pesNumber = getRandomNumberOfPes(4);
-                cloudletList.add(createCloudlet(broker0, pesNumber));
-            }
-            broker0.submitCloudletList(cloudletList);
+	        createAndSubmitVms(broker0);
+	        createAndSubmitCloudlets(broker0);
 
             CloudSim.startSimulation();
             CloudSim.stopSimulation();
@@ -136,22 +126,61 @@ public class DatacenterBrokerHeuristicExample {
             List<Cloudlet> finishedCloudlets = broker0.getCloudletsFinishedList();
             CloudletsTableBuilderHelper.print(new TextTableBuilder(), finishedCloudlets);
 
-            double roudRobinMappingCost = computeRoudRobinMappingCost();
-            printSolution(
-                    "Heuristic solution for mapping cloudlets to Vm's         ",
-                    heuristic.getBestSolutionSoFar(), false);
-            System.out.printf(
-                "The heuristic solution cost represents %.2f%% of the round robin mapping cost used by the DatacenterBrokerSimple\n",
-                heuristic.getBestSolutionSoFar().getCost()*100.0/roudRobinMappingCost);
-	        System.out.printf("The solution finding spend %.2f seconds to finish\n", broker0.getHeuristic().getSolveTime());
-
-            Log.printFormattedLine("\n%s finished!", getClass().getSimpleName());
+	        print(broker0);
         } catch (Exception e) {
             Log.printFormattedLine("Unexpected errors happened: %s", e.getMessage());
         }
     }
 
-    /**
+	private DatacenterBrokerHeuristic createBroker() {
+		createSimulatedAnnealingHeuristic();
+		DatacenterBrokerHeuristic broker0 = new DatacenterBrokerHeuristic("Broker0");
+		broker0.setHeuristic(heuristic);
+		return broker0;
+	}
+
+	private void createAndSubmitCloudlets(DatacenterBrokerHeuristic broker0) {
+		for(int i = 0; i < CLOUDLETS_TO_CREATE; i++){
+		    cloudletList.add(createCloudlet(broker0, getRandomNumberOfPes(4)));
+		}
+		broker0.submitCloudletList(cloudletList);
+	}
+
+	private void createAndSubmitVms(DatacenterBrokerHeuristic broker0) {
+		vmList = new ArrayList<>(VMS_TO_CREATE);
+		for(int i = 0; i < VMS_TO_CREATE; i++){
+		    vmList.add(createVm(broker0, getRandomNumberOfPes(4)));
+		}
+		broker0.submitVmList(vmList);
+	}
+
+	private void createSimulatedAnnealingHeuristic() {
+		heuristic =
+		        new CloudletToVmMappingSimulatedAnnealing(SA_INITIAL_TEMPERATURE, new UniformDistr(0, 1));
+		heuristic.setColdTemperature(SA_COLD_TEMPERATURE);
+		heuristic.setCoolingRate(SA_COOLING_RATE);
+		heuristic.setNumberOfNeighborhoodSearchesByIteration(SA_NUMBER_OF_NEIGHBORHOOD_SEARCHES);
+	}
+
+	private void print(DatacenterBrokerHeuristic broker0) {
+		double roudRobinMappingCost = computeRoudRobinMappingCost();
+		printSolution(
+		        "Heuristic solution for mapping cloudlets to Vm's         ",
+		        heuristic.getBestSolutionSoFar(), false);
+
+		System.out.printf(
+		    "The heuristic solution cost represents %.2f%% of the round robin mapping cost used by the DatacenterBrokerSimple\n",
+		    heuristic.getBestSolutionSoFar().getCost()*100.0/roudRobinMappingCost);
+		System.out.printf("The solution finding spend %.2f seconds to finish\n", broker0.getHeuristic().getSolveTime());
+		System.out.println("Simulated Annealing Parameters");
+		System.out.printf("\tInitial Temperature: %.2f", SA_INITIAL_TEMPERATURE);
+		System.out.printf(" Cooling Rate: %.4f", SA_COOLING_RATE);
+		System.out.printf(" Cold Temperature: %.6f", SA_COLD_TEMPERATURE);
+		System.out.printf(" Number of neighborhood searches by iteration: %d\n", SA_NUMBER_OF_NEIGHBORHOOD_SEARCHES);
+		Log.printFormattedLine("\n%s finished!", getClass().getSimpleName());
+	}
+
+	/**
      * Randomly gets a number of PEs (CPU cores).
      *
      * @param maxPesNumber the maximum value to get a random number of PEs
@@ -249,7 +278,7 @@ public class DatacenterBrokerHeuristicExample {
         return roudRobinSolution.getCost();
     }
 
-    private static void printSolution(String title,
+    private void printSolution(String title,
             CloudletToVmMappingSolution solution,
             boolean showIndividualCloudletFitness) {
         System.out.printf("%s (cost %.2f fitness %.6f)\n",

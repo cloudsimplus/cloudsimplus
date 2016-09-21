@@ -36,11 +36,12 @@ import org.cloudsimplus.heuristics.CloudletToVmMappingSolution;
 import org.cloudsimplus.heuristics.HeuristicSolution;
 
 /**
- * <p>An example that uses a
+ * <p>An experiment that uses a
  * <a href="http://en.wikipedia.org/wiki/Simulated_annealing">Simulated Annealing</a>
  * heuristic to find a suboptimal mapping between Cloudlets and Vm's submitted to a
  * DatacenterBroker. The number of {@link Pe}s of Vm's and Cloudlets are defined
- * randomly.
+ * randomly by the {@link DatacenterBrokerHeuristicRunner} that instantiates
+ * and runs several of this experiment and collect statistics from the results.
  *
  * The {@link DatacenterBrokerHeuristic} is used
  * with the {@link CloudletToVmMappingSimulatedAnnealing} class
@@ -59,26 +60,25 @@ public class DatacenterBrokerHeuristicExperiment {
 	/**
 	 * Simulated Annealing (SA) parameters.
 	 */
-	public static final int    SA_INITIAL_TEMPERATURE = 1;
-	public static final double SA_COLD_TEMPERATURE = 0.00001;
+	public static final double SA_INITIAL_TEMPERATURE = 1.0;
+	public static final double SA_COLD_TEMPERATURE = 0.0001;
 	public static final double SA_COOLING_RATE = 0.003;
-	public static final int    SA_NUMBER_OF_NEIGHBORHOOD_SEARCHES = 100;
+	public static final int    SA_NUMBER_OF_NEIGHBORHOOD_SEARCHES = 50;
 
 	private final List<Cloudlet> cloudletList;
 	private List<Vm> vmList;
-	private double secondsToRunExperiment;
+
+	/**
+	 * Array with Number of PEs for each created VM. The length of the array defines
+	 * the number of VMs to create.
+	 */
+    private int vmPesArray[];
 
     /**
-     * Number of PEs for each created VM. The length of the array defines
-     * the number of Vm's to create.
-     */
-    private int vmsPes[];
-
-    /**
-     * Number of PEs for each created Cloudlet. The length of the array defines
+     * Array with Number of PEs for each created Cloudlet. The length of the array defines
      * the number of Cloudlets to create.
      */
-    private int cloudletsPes[];
+    private int cloudletPesArray[];
 
     /**
      * The heuristic used to solve the mapping between cloudlets and Vm's.
@@ -101,11 +101,6 @@ public class DatacenterBrokerHeuristicExperiment {
     private int numberOfCreatedHosts = 0;
 
     /**
-     * The pseudo random number generator used in the experiment.
-     */
-    private final UniformDistr randomGen;
-
-    /**
      * A number that identifies the experiment being run.
      */
     private final int experimentIndex;
@@ -123,34 +118,37 @@ public class DatacenterBrokerHeuristicExperiment {
      */
     public DatacenterBrokerHeuristicExperiment(UniformDistr randomGen, int experimentIndex) {
         this.experimentIndex = experimentIndex;
-        this.randomGen = randomGen;
         this.vmList = new ArrayList<>();
         this.cloudletList = new ArrayList<>();
+
+	    createSimulatedAnnealingHeuristic(randomGen);
     }
 
-    /**
-     * Build the simulation scenario and starts simulation.
+	private void createSimulatedAnnealingHeuristic(UniformDistr randomGen) {
+		heuristic = new CloudletToVmMappingSimulatedAnnealing(SA_INITIAL_TEMPERATURE, randomGen);
+		heuristic.setColdTemperature(SA_COLD_TEMPERATURE);
+		heuristic.setCoolingRate(SA_COOLING_RATE);
+		heuristic.setNumberOfNeighborhoodSearchesByIteration(SA_NUMBER_OF_NEIGHBORHOOD_SEARCHES);
+	}
+
+	/**
+     * Starts simulation.
      *
      * @return the final solution
      * @throws RuntimeException
      */
     public final CloudletToVmMappingSolution start() throws RuntimeException {
-        buildScenario();
         CloudSim.startSimulation();
         CloudSim.stopSimulation();
-	    heuristic.solve();
-        if (verbose) {
-            printSolution(
-                String.format(
-                        "Run %d > Heuristic solution for mapping cloudlets to Vm's",
-                        experimentIndex),
-                heuristic.getBestSolutionSoFar());
-        }
+		printSolution(
+			String.format(
+				"Experiment %d > Heuristic solution for mapping cloudlets to Vm's",
+				experimentIndex));
 
         return heuristic.getBestSolutionSoFar();
     }
 
-    private void buildScenario() {
+    public void buildScenario() {
         int numberOfCloudUsers = 1;
         boolean traceEvents = false;
 
@@ -162,26 +160,22 @@ public class DatacenterBrokerHeuristicExperiment {
     }
 
     private DatacenterBrokerHeuristic createBroker() {
-        heuristic = new CloudletToVmMappingSimulatedAnnealing(SA_INITIAL_TEMPERATURE, this.randomGen);
-        heuristic.setColdTemperature(SA_COLD_TEMPERATURE);
-        heuristic.setCoolingRate(SA_COOLING_RATE);
-        heuristic.setNumberOfNeighborhoodSearchesByIteration(SA_NUMBER_OF_NEIGHBORHOOD_SEARCHES);
         DatacenterBrokerHeuristic broker0 = new DatacenterBrokerHeuristic("Broker0");
         broker0.setHeuristic(heuristic);
         return broker0;
     }
 
     private void createAndSubmitCloudlets(DatacenterBrokerHeuristic broker0) {
-        for (int i = 0; i < cloudletsPes.length; i++) {
-            cloudletList.add(createCloudlet(broker0, cloudletsPes[i]));
+        for (int pes: cloudletPesArray) {
+            cloudletList.add(createCloudlet(broker0, pes));
         }
         broker0.submitCloudletList(cloudletList);
     }
 
     private void createAndSubmitVms(DatacenterBrokerHeuristic broker0) {
-        vmList = new ArrayList<>(vmsPes.length);
-        for (int i = 0; i < vmsPes.length; i++) {
-            vmList.add(createVm(broker0, vmsPes[i]));
+        vmList = new ArrayList<>(vmPesArray.length);
+        for (int pes: vmPesArray) {
+            vmList.add(createVm(broker0, pes));
         }
         broker0.submitVmList(vmList);
     }
@@ -200,8 +194,11 @@ public class DatacenterBrokerHeuristicExperiment {
         double costPerStorage = 0.001; // the cost of using storage in this datacenter
         double costPerBw = 0.0; // the cost of using bw in this datacenter
         LinkedList<FileStorage> storageList = new LinkedList<>(); // we are not adding SAN devices
-        DatacenterCharacteristics characteristics = new DatacenterCharacteristicsSimple(arch, os, VMM, hostList, time_zone, cost, costPerMem, costPerStorage, costPerBw);
-        return new DatacenterSimple(name, characteristics, new VmAllocationPolicySimple(hostList), storageList, 0);
+        DatacenterCharacteristics characteristics =
+	        new DatacenterCharacteristicsSimple(arch, os, VMM,
+	        hostList, time_zone, cost, costPerMem, costPerStorage, costPerBw);
+        return new DatacenterSimple(name, characteristics,
+	        new VmAllocationPolicySimple(hostList), storageList, 0);
     }
 
     private Host createHost() {
@@ -215,7 +212,10 @@ public class DatacenterBrokerHeuristicExperiment {
         for (int i = 0; i < 8; i++) {
             cpuCoresList.add(new PeSimple(i, new PeProvisionerSimple(mips)));
         }
-        return new HostSimple(numberOfCreatedHosts++, new ResourceProvisionerSimple<>(new Ram(ram)), new ResourceProvisionerSimple<>(new Bandwidth(bw)), storage, cpuCoresList, new VmSchedulerTimeShared(cpuCoresList));
+        return new HostSimple(numberOfCreatedHosts++,
+	        new ResourceProvisionerSimple<>(new Ram(ram)),
+	        new ResourceProvisionerSimple<>(new Bandwidth(bw)), storage, cpuCoresList,
+	        new VmSchedulerTimeShared(cpuCoresList));
     }
 
     private Vm createVm(DatacenterBroker broker, int pesNumber) {
@@ -223,7 +223,9 @@ public class DatacenterBrokerHeuristicExperiment {
         long storage = 10000; // vm image size (MB)
         int ram = 512; // vm memory (MB)
         long bw = 1000; // vm bandwidth
-        return new VmSimple(numberOfCreatedVms++, broker.getId(), mips, pesNumber, ram, bw, storage, VMM, new CloudletSchedulerTimeShared());
+        return new VmSimple(numberOfCreatedVms++, broker.getId(), mips,
+	        pesNumber, ram, bw, storage, VMM,
+	        new CloudletSchedulerTimeShared());
     }
 
     private Cloudlet createCloudlet(DatacenterBroker broker, int numberOfPes) {
@@ -233,13 +235,20 @@ public class DatacenterBrokerHeuristicExperiment {
         //Defines how CPU, RAM and Bandwidth resources are used
         //Sets the same utilization model for all these resources.
         UtilizationModel utilization = new UtilizationModelFull();
-        Cloudlet cloudlet = new CloudletSimple(numberOfCreatedCloudlets++, length, numberOfPes, fileSize, outputSize, utilization, utilization, utilization);
+        Cloudlet cloudlet = new CloudletSimple(numberOfCreatedCloudlets++,
+	        length, numberOfPes, fileSize, outputSize,
+	        utilization, utilization, utilization);
         cloudlet.setUserId(broker.getId());
         return cloudlet;
     }
 
-    private void printSolution(String title, CloudletToVmMappingSolution solution) {
-        System.out.printf("%s: cost %.2f fitness %.6f\n", title, solution.getCost(), solution.getFitness());
+    public void printSolution(String title) {
+		if(!verbose)
+			return;
+
+        System.out.printf("%s: cost %.2f fitness %.6f\n", title,
+	        heuristic.getBestSolutionSoFar().getCost(),
+	        heuristic.getBestSolutionSoFar().getFitness());
     }
 
     public CloudletToVmMappingSimulatedAnnealing getHeuristic() {
@@ -258,18 +267,12 @@ public class DatacenterBrokerHeuristicExperiment {
         this.verbose = verbose;
     }
 
-    public void setVmsPes(int[] vmsPes) {
-        this.vmsPes = vmsPes;
+    public void setVmPesArray(int vmPesArray[]) {
+        this.vmPesArray = vmPesArray;
     }
 
-    public void setCloudlestPes(int[] cloudlestPes) {
-        this.cloudletsPes = cloudlestPes;
+    public void setCloudletPesArray(int[] cloudletPesArray) {
+        this.cloudletPesArray = cloudletPesArray;
     }
 
-	/**
-	 * The number of seconds the experijment took to run.
-	 */
-	public double getSecondsToRunExperiment() {
-		return secondsToRunExperiment;
-	}
 }
