@@ -13,6 +13,23 @@ import static org.junit.Assert.*;
 public class CloudletTest {
     
     @Test
+    public void testIsBoundedToVm() {
+        Cloudlet cloudlet = createCloudlet(0);
+        assertFalse(cloudlet.isBoundedToVm());
+        cloudlet.setVmId(-1);
+        assertFalse(cloudlet.isBoundedToVm());
+        cloudlet.setVmId(0);
+        assertTrue(cloudlet.isBoundedToVm());
+        cloudlet.setVmId(1);
+        assertTrue(cloudlet.isBoundedToVm());
+    }
+
+    private static CloudletSimple createCloudlet(int id) {
+        return new CloudletSimple(id, 1, 1, 1, 1, 
+                UtilizationModel.NULL, UtilizationModel.NULL, UtilizationModel.NULL);
+    }
+    
+    @Test
     public void testNullObject(){
         assertFalse(Cloudlet.NULL.addRequiredFile(""));
         assertFalse(Cloudlet.NULL.deleteRequiredFile(""));
@@ -97,6 +114,8 @@ public class CloudletTest {
         
         Cloudlet.NULL.setUtilizationModelRam(um);
         assertSame(UtilizationModel.NULL, Cloudlet.NULL.getUtilizationModelRam());
+        
+        assertFalse(Cloudlet.NULL.isBoundedToVm());
     }
     
 }

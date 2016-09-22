@@ -43,6 +43,7 @@ import org.cloudbus.cloudsim.core.Identificable;
  * 
  * @todo @author manoelcampos The class doesn't do anything. It just
  * serves as a recipient for a list of NetworkCloudlets.
+ * It can't be submitted to the broker.
  * It doesn't have business rules, it is just a data object for this single list.
  * It is in fact currently useless. 
  *

@@ -119,7 +119,7 @@ public abstract class CloudletSchedulerAbstract implements CloudletScheduler {
      */
     protected void setCurrentMipsShare(List<Double> currentMipsShare) {
         this.currentMipsShare = currentMipsShare;
-        processor = Processor.getProcessorFromMipsListRemovingAllZeroMips(currentMipsShare);
+        processor = Processor.fromMipsList(currentMipsShare, getCloudletExecList());
     }
 
     @Override
@@ -410,9 +410,19 @@ public abstract class CloudletSchedulerAbstract implements CloudletScheduler {
      * since the last time cloudlet was processed.
      * 
      * @see #updateCloudletsProcessing(double, java.util.List) 
+     * 
+     * @todo @author manoelcampos Shouldn't the processing update of a cloudlet 
+     * consider the cloudlet's UtilizationModel of CPU?
+     * Usually the utilization model used is the UtilizationModelFull,
+     * that uses the CPU 100% all the available time.
+     * However, if were have an utilization model that uses just 10% of
+     * CPU, the cloudlet will last 10 times more to finish.
+     * It has to be checked how the MigrationExample1 works,
+     * once it uses the UtilizationModelArithmeticProgression
+     * instead of the UtilizationModelFull.
      */
     protected long cloudletExecutionTotalLengthForElapsedTime(CloudletExecutionInfo rcl, double currentTime) {
-        return (long)(processor.getCapacity() * rcl.getNumberOfPes() * timeSpan(currentTime) * Consts.MILLION);
+        return (long)(processor.getAvailableMipsByPe() * rcl.getNumberOfPes() * timeSpan(currentTime) * Consts.MILLION);
     }
 
     /**
@@ -435,9 +445,9 @@ public abstract class CloudletSchedulerAbstract implements CloudletScheduler {
      * @param mipsShare list with MIPS share of each PE available to the scheduler
      * @return a {@link Processor} object
      */
-    protected Processor getProcessor(List<Double> mipsShare) {
-        return Processor.getProcessorFromMipsListRemovingAllZeroMips(mipsShare);
-    }  
+    /*protected Processor getProcessor(List<Double> mipsShare) {
+        return Processor.fromMipsList(mipsShare);
+    }*/ 
     
     /**
      * Removes finished cloudlets from the 
@@ -505,7 +515,7 @@ public abstract class CloudletSchedulerAbstract implements CloudletScheduler {
     protected double getEstimatedFinishTimeOfCloudlet(CloudletExecutionInfo rcl, double currentTime) {
         double estimatedFinishTime = currentTime
                 + (rcl.getRemainingCloudletLength() / 
-                (processor.getCapacity() * rcl.getNumberOfPes()));
+                (processor.getAvailableMipsByPe() * rcl.getNumberOfPes()));
         if (estimatedFinishTime - currentTime < CloudSim.getMinTimeBetweenEvents()) {
             estimatedFinishTime = currentTime + CloudSim.getMinTimeBetweenEvents();
         }

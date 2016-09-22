@@ -13,6 +13,7 @@ import org.cloudbus.cloudsim.Vm;
  * Pattern in order to start avoiding {@link NullPointerException} 
  * when using the {@link VmScheduler#NULL} object instead
  * of attributing {@code null} to {@link VmScheduler} variables.
+ * 
  * @author Manoel Campos da Silva Filho
  */
 public interface VmScheduler {

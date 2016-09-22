@@ -19,7 +19,7 @@ import org.cloudbus.cloudsim.resources.ResourceManageable;
  *
  * @author Manoel Campos da Silva Filho
  */
-public interface Vm extends Identificable {
+public interface Vm extends Identificable, Comparable<Vm> {
 
     /**
      * Adds a VM state history entry.
@@ -143,6 +143,16 @@ public interface Vm extends Identificable {
      * @see #getMips()
      */
     int getNumberOfPes();
+    
+    /**
+     * Gets the total MIPS capacity (across all PEs) of this VM. 
+     *
+     * @return MIPS capacity sum of all PEs
+     *
+     * @see #getMips() 
+     * @see #getNumberOfPes() 
+     */
+    double getTotalMipsCapacity();
     
     <T extends Number, R extends ResourceManageable<? extends T>> ResourceManageable<T> getResource(Class<R> resourceClass);
     
@@ -450,5 +460,7 @@ public interface Vm extends Identificable {
         @Override public <T extends Number, R extends ResourceManageable<? extends T>> ResourceManageable<T> getResource(Class<R> resourceClass) { return ResourceManageable.NULL_DOUBLE; }
         @Override public EventListener<HostToVmEventInfo> getOnUpdateVmProcessingListener() { return EventListener.NULL; }
         @Override public void setOnUpdateVmProcessingListener(EventListener<HostToVmEventInfo> onUpdateVmProcessingListener) {}
+        @Override public int compareTo(Vm o) { return 0; }
+        @Override public double getTotalMipsCapacity() { return 0.0; }
     };
 }

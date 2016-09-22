@@ -5,9 +5,9 @@ import java.util.Calendar;
 import java.util.List;
 import org.cloudbus.cloudsim.Cloudlet;
 import org.cloudbus.cloudsim.schedulers.CloudletSchedulerSpaceShared;
-import org.cloudbus.cloudsim.brokers.DatacenterBrokerSimple;
 import org.cloudbus.cloudsim.Log;
 import org.cloudbus.cloudsim.Vm;
+import org.cloudbus.cloudsim.brokers.DatacenterBroker;
 import org.cloudbus.cloudsim.schedulers.VmSchedulerTimeShared;
 import org.cloudbus.cloudsim.builders.BrokerBuilderDecorator;
 import org.cloudbus.cloudsim.builders.HostBuilder;
@@ -80,8 +80,8 @@ public final class VmCreationFailureIntegrationTest {
         numberOfHostAllocations++;
         Log.printFormattedLine("# Host %s allocated to Vm %s at time %3.0f",
                 evt.getHost().getId(), evt.getVm().getId(), evt.getTime());
-        if (scenario.getFirstHostOfFirstDatacenter().equals(evt.getHost())
-                && scenario.getFirstVmOfTheFirstBroker().equals(evt.getVm())) {
+        if (scenario.getFirstHostFromFirstDatacenter().equals(evt.getHost())
+                && scenario.getFirstVmFromFirstBroker().equals(evt.getVm())) {
             assertEquals(
                 "Host wasn't allocated to Vm at the expected time", 
                 0, evt.getTime(), 0.2);
@@ -101,8 +101,8 @@ public final class VmCreationFailureIntegrationTest {
         Log.printFormattedLine(
                 "# Vm %s moved/removed from Host %s at time %3.0f",
                 evt.getVm().getId(), evt.getHost().getId(), evt.getTime());
-        if (scenario.getFirstHostOfFirstDatacenter().equals(evt.getHost()) && 
-            scenario.getFirstVmOfTheFirstBroker().equals(evt.getVm())) {
+        if (scenario.getFirstHostFromFirstDatacenter().equals(evt.getHost()) && 
+            scenario.getFirstVmFromFirstBroker().equals(evt.getVm())) {
             assertEquals(
                     "Vm wasn't removed from the Host at the expected time", 
                     20, evt.getTime(), 0.2);
@@ -136,11 +136,11 @@ public final class VmCreationFailureIntegrationTest {
         switch ((int) evt.getTime()) {
             case 10:
                 assertEquals(200,
-                        scenario.getFirstHostOfFirstDatacenter().getAvailableMips(), 0.1);
+                        scenario.getFirstHostFromFirstDatacenter().getAvailableMips(), 0.1);
             break;
             case 20:
                 assertEquals(200,
-                        scenario.getFirstHostOfFirstDatacenter().getAvailableMips(), 0.1);
+                        scenario.getFirstHostFromFirstDatacenter().getAvailableMips(), 0.1);
             break;
         }
     }
@@ -179,7 +179,7 @@ public final class VmCreationFailureIntegrationTest {
 
         BrokerBuilderDecorator brokerBuilder = scenario.getBrokerBuilder().createBroker();
 
-        brokerBuilder.getVmBuilderForTheCreatedBroker()
+        brokerBuilder.getVmBuilder()
                 .setRam(512).setBw(1000)
                 .setPes(1).setMips(1000).setSize(10000)
                 .setCloudletScheduler(new CloudletSchedulerSpaceShared())
@@ -191,7 +191,7 @@ public final class VmCreationFailureIntegrationTest {
                  thus, 1 will fail being created*/
                 .createAndSubmitVms(2);
 
-        brokerBuilder.getCloudletBuilderForTheCreatedBroker()
+        brokerBuilder.getCloudletBuilder()
                 .setLength(10000)
                 .setUtilizationModelCpuRamAndBw(new UtilizationModelFull())
                 .setPEs(1)
@@ -202,7 +202,7 @@ public final class VmCreationFailureIntegrationTest {
     public void integrationTest() {
         startSimulationAndWaitToStop();
 
-        final DatacenterBrokerSimple broker = scenario.getBrokerBuilder().getBrokers().get(0);
+        DatacenterBroker broker = scenario.getBrokerBuilder().getBrokers().get(0);
         assertThatBrokerCloudletsHaveTheExpectedExecutionTimes(broker);
         assertThatListenersWereCalledTheExpectedAmountOfTimes();
 
@@ -214,11 +214,11 @@ public final class VmCreationFailureIntegrationTest {
         CloudSim.stopSimulation();
     }
 
-    public void printCloudletsExecutionResults(DatacenterBrokerSimple broker) {
+    public void printCloudletsExecutionResults(DatacenterBroker broker) {
         CloudletsTableBuilderHelper.print(new TextTableBuilder(), broker.getCloudletsFinishedList());
     }
 
-    public void assertThatBrokerCloudletsHaveTheExpectedExecutionTimes(DatacenterBrokerSimple broker) {
+    public void assertThatBrokerCloudletsHaveTheExpectedExecutionTimes(DatacenterBroker broker) {
         /*The array of expected results for each broker cloudlet*/
         final ExpectedCloudletExecutionResults expectedResults[]
                 = new ExpectedCloudletExecutionResults[]{

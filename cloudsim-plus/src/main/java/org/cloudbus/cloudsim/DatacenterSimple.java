@@ -9,7 +9,6 @@ package org.cloudbus.cloudsim;
 import org.cloudbus.cloudsim.network.InfoPacket;
 import org.cloudbus.cloudsim.resources.File;
 import org.cloudbus.cloudsim.allocationpolicies.VmAllocationPolicy;
-import org.cloudbus.cloudsim.allocationpolicies.VmAllocationPolicyAbstract;
 import org.cloudbus.cloudsim.schedulers.CloudletScheduler;
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -82,12 +81,12 @@ public class DatacenterSimple extends SimEntity implements Datacenter {
     public DatacenterSimple(
             String name,
             DatacenterCharacteristics characteristics,
-            VmAllocationPolicyAbstract vmAllocationPolicy,
+            VmAllocationPolicy vmAllocationPolicy,
             List<FileStorage> storageList,
             double schedulingInterval) {
         super(name);
 
-        // If this resource doesn't have any PEs then no useful at all
+        // If this resource doesn't have any PEs then it isn't useful at all
         if (characteristics.getNumberOfPes() == 0) {
             throw new IllegalArgumentException(super.getName()
                     + " : Error - this entity has no PEs. Therefore, can't process any Cloudlets.");
@@ -437,9 +436,9 @@ public class DatacenterSimple extends SimEntity implements Datacenter {
     }
 
     /**
-     * Process the event for an User/Broker who wants to create a VM in this
-     * DatacenterSimple. This DatacenterSimple will then send the status back to
-     * the User/Broker.
+     * Process the event for a Broker which wants to create a VM in this
+     * Datacenter. This Datacenter will then send the status back to
+     * the Broker.
      *
      * @param ev information about the event just happened
      * @param ack indicates if the event's sender expects to receive an
@@ -688,7 +687,7 @@ public class DatacenterSimple extends SimEntity implements Datacenter {
     }
 
     /**
-     * Processes a Cloudlet submission.
+     * Processes the submission of a Cloudlet by a DatacenterBroker.
      *
      * @param ev information about the event just happened
      * @param ack indicates if the event's sender expects to receive an
@@ -703,33 +702,7 @@ public class DatacenterSimple extends SimEntity implements Datacenter {
         try {
             // gets the Cloudlet object
             Cloudlet cl = (Cloudlet) ev.getData();
-
-            // checks whether this Cloudlet has finished or not
-            if (cl.isFinished()) {
-                String name = CloudSim.getEntityName(cl.getUserId());
-                Log.printConcatLine(getName(), ": Warning - Cloudlet #", cl.getId(), " owned by ", name,
-                        " is already completed/finished.");
-                Log.printLine("Therefore, it is not being executed again");
-                Log.printLine();
-
-                // NOTE: If a Cloudlet has finished, then it won't be processed.
-                // So, if ack is required, this method sends back a result.
-                // If ack is not required, this method don't send back a result.
-                // Hence, this might cause CloudSim to be hanged since waiting
-                // for this Cloudlet back.
-                if (ack) {
-                    int[] data = new int[3];
-                    data[0] = getId();
-                    data[1] = cl.getId();
-                    data[2] = CloudSimTags.FALSE;
-
-                    // unique tag = operation tag
-                    int tag = CloudSimTags.CLOUDLET_SUBMIT_ACK;
-                    sendNow(cl.getUserId(), tag, data);
-                }
-
-                sendNow(cl.getUserId(), CloudSimTags.CLOUDLET_RETURN, cl);
-
+            if (checksIfSubmittedCloudletIsAlreadyFinishedAndNotifyBroker(cl, ack)) {
                 return;
             }
 
@@ -738,33 +711,7 @@ public class DatacenterSimple extends SimEntity implements Datacenter {
                     getId(), getCharacteristics().getCostPerSecond(),
                     getCharacteristics().getCostPerBw());
 
-            int userId = cl.getUserId();
-            int vmId = cl.getVmId();
-
-            // time to transfer the files
-            double fileTransferTime = predictFileTransferTime(cl.getRequiredFiles());
-
-            Host host = getVmAllocationPolicy().getHost(vmId, userId);
-            Vm vm = host.getVm(vmId, userId);
-            CloudletScheduler scheduler = vm.getCloudletScheduler();
-            double estimatedFinishTime = scheduler.cloudletSubmit(cl, fileTransferTime);
-
-            // if this cloudlet is in the exec queue
-            if (estimatedFinishTime > 0.0 && !Double.isInfinite(estimatedFinishTime)) {
-                estimatedFinishTime += fileTransferTime;
-                send(getId(), estimatedFinishTime, CloudSimTags.VM_UPDATE_CLOUDLET_PROCESSING_EVENT);
-            }
-
-            if (ack) {
-                int[] data = new int[3];
-                data[0] = getId();
-                data[1] = cl.getId();
-                data[2] = CloudSimTags.TRUE;
-
-                // unique tag = operation tag
-                int tag = CloudSimTags.CLOUDLET_SUBMIT_ACK;
-                sendNow(cl.getUserId(), tag, data);
-            }
+            submitCloudletToVm(cl, ack);
         } catch (ClassCastException c) {
             Log.printLine(getName() + ".processCloudletSubmit(): " + "ClassCastException error.");
             c.printStackTrace();
@@ -776,6 +723,94 @@ public class DatacenterSimple extends SimEntity implements Datacenter {
         checkCloudletsCompletionForAllHosts();
     }
 
+    /**
+     * Submits a cloudlet to be executed inside its bound VM.
+     * 
+     * @param cl the cloudlet to the executed
+     * @param ack indicates if the Broker is waiting for an ACK after the Datacenter
+     * receives the cloudlet submission
+     */
+    private void submitCloudletToVm(Cloudlet cl, boolean ack) {
+        // time to transfer cloudlet files
+        double fileTransferTime = predictFileTransferTime(cl.getRequiredFiles());
+        
+        Host host = getVmAllocationPolicy().getHost(cl.getVmId(), cl.getUserId());
+        Vm vm = host.getVm(cl.getVmId(), cl.getUserId());
+        CloudletScheduler scheduler = vm.getCloudletScheduler();
+        double estimatedFinishTime = scheduler.cloudletSubmit(cl, fileTransferTime);
+        
+        // if this cloudlet is in the exec queue
+        if (estimatedFinishTime > 0.0 && !Double.isInfinite(estimatedFinishTime)) {
+            estimatedFinishTime += fileTransferTime;
+            send(getId(), estimatedFinishTime, CloudSimTags.VM_UPDATE_CLOUDLET_PROCESSING_EVENT);
+        }
+        
+        sendCloudletSubmitAckToBroker(ack, cl, CloudSimTags.TRUE);
+    }
+
+    /**
+     * Checks if a submitted cloudlet has already finished.
+     * If it is the case, the Datacenter notifies the Broker that
+     * the Cloudlet cannot be created again because it has already finished.
+     * 
+     * @param cl the submitted cloudlet 
+     * @param ack indicates if the Broker is waiting for an ACK after the Datacenter
+     * receives the cloudlet submission
+     * @return true if the submitted cloudlet has already finished, indicating
+     * it can be created again; false otherwise
+     */
+    private boolean checksIfSubmittedCloudletIsAlreadyFinishedAndNotifyBroker(Cloudlet cl, boolean ack) {
+        if(!cl.isFinished()){
+            return false;
+        }
+        
+        String name = CloudSim.getEntityName(cl.getUserId());
+        Log.printConcatLine(
+                getName(), ": Warning - Cloudlet #", cl.getId(), " owned by ", name,
+                " is already completed/finished.");
+        Log.printLine("Therefore, it is not being executed again");
+        Log.printLine();
+        
+        /* 
+         NOTE: If a Cloudlet has finished, then it won't be processed.
+         So, if ack is required, this method sends back a result.
+         If ack is not required, this method don't send back a result.
+         Hence, this might cause CloudSim to be hanged since waiting
+         for this Cloudlet back.
+        */
+        sendCloudletSubmitAckToBroker(ack, cl,  CloudSimTags.FALSE);
+        
+        sendNow(cl.getUserId(), CloudSimTags.CLOUDLET_RETURN, cl);
+        return true;
+    }
+
+    /**
+     * Sends an ACK to the DatacenterBroker that submitted the Cloudlet for execution
+     * in order to respond the reception of the submission request,
+     * informing if the cloudlet was created or not.
+     * 
+     * The ACK is sent just if the Broker is waiting for it and that condition
+     * is indicated in the ack parameter.
+     * 
+     * @oaram ack indicates if the Broker is waiting for an ACK after the Datacenter
+     * receives the cloudlet submission
+     * @param cl the cloudlet to respond to DatacenterBroker if it was created or not
+     * @param cloudletCreated indicates if the cloudlet was successfully created 
+     * by the Datacenter, according to the {@link CloudSimTags#TRUE} or
+     * {@link CloudSimTags#FALSE} tags.
+     */
+    private void sendCloudletSubmitAckToBroker(boolean ack, Cloudlet cl, final int cloudletCreated) {
+        if(!ack){
+            return;
+        }
+        
+        int[] data = new int[3];
+        data[0] = getId();
+        data[1] = cl.getId();
+        data[2] = cloudletCreated;
+        
+        sendNow(cl.getUserId(), CloudSimTags.CLOUDLET_SUBMIT_ACK, data);
+    }
     /**
      * Predict the total time to transfer a list of files.
      *
@@ -1131,7 +1166,7 @@ public class DatacenterSimple extends SimEntity implements Datacenter {
      *
      * @param vmAllocationPolicy the new vm allocation policy
      */
-    protected final void setVmAllocationPolicy(VmAllocationPolicyAbstract vmAllocationPolicy) {
+    protected final void setVmAllocationPolicy(VmAllocationPolicy vmAllocationPolicy) {
         this.vmAllocationPolicy = vmAllocationPolicy;
     }
 

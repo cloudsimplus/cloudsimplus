@@ -40,7 +40,10 @@ import org.cloudbus.cloudsim.resources.Ram;
  * @author Manoel Campos da Silva Filho
  */
 public class MinimalExample {
-    private static final String VMM = "Xen"; // Virtual Machine Monitor name
+    /**
+     * Virtual Machine Monitor name.
+     */
+    private static final String VMM = "Xen"; 
     private List<Cloudlet> cloudletList;
     private List<Vm> vmList;
     private int numberOfCreatedCloudlets = 0;
@@ -59,7 +62,7 @@ public class MinimalExample {
      * Default constructor where the simulation is built.
      */
     public MinimalExample() {
-        Log.printFormattedLine("Starting Minimal Example ...");
+        Log.printLine("Starting Minimal Example ...");
         try {
             this.vmList = new ArrayList<>();
             this.cloudletList = new ArrayList<>();
@@ -94,7 +97,7 @@ public class MinimalExample {
             (you can use your own code here to print what you want from this cloudlet list)*/
             List<Cloudlet> finishedCloudlets = broker0.getCloudletsFinishedList();
             CloudletsTableBuilderHelper.print(new TextTableBuilder(), finishedCloudlets);
-            Log.printFormattedLine("Minimal Example finished!");
+            Log.printLine("Minimal Example finished!");
         } catch (Exception e) {
             Log.printFormattedLine("Unexpected errors happened: %s", e.getMessage());
         }
@@ -124,8 +127,8 @@ public class MinimalExample {
     }    
 
     private Host createHost() {
-        int mips = 1000; // capacity of each CPU core (in Million Instructions per Second)
-        int ram = 2048; // host memory (MB)
+        int  mips = 1000; // capacity of each CPU core (in Million Instructions per Second)
+        int  ram = 2048; // host memory (MB)
         long storage = 1000000; // host storage
         long bw = 10000;
         
@@ -142,11 +145,11 @@ public class MinimalExample {
     }
 
     private Vm createVm(DatacenterBroker broker) {
-        int mips = 1000;
-        long storage = 10000; // vm image size (MB)
-        int ram = 512; // vm memory (MB)
-        long bw = 1000; // vm bandwidth 
-        int pesNumber = 1; // number of CPU cores
+        double mips = 1000;
+        long   storage = 10000; // vm image size (MB)
+        int    ram = 512; // vm memory (MB)
+        long   bw = 1000; // vm bandwidth 
+        int    pesNumber = 1; // number of CPU cores
         
         return new VmSimple(numberOfCreatedVms++, 
                 broker.getId(), mips, pesNumber, ram, bw, storage,
@@ -157,7 +160,7 @@ public class MinimalExample {
         long length = 400000; //in Million Structions (MI)
         long fileSize = 300; //Size (in bytes) before execution
         long outputSize = 300; //Size (in bytes) after execution
-        int numberOfCpuCores = vm.getNumberOfPes(); //cloudlet will use all the VM's CPU cores
+        int  numberOfCpuCores = vm.getNumberOfPes(); //cloudlet will use all the VM's CPU cores
         
         //Defines how CPU, RAM and Bandwidth resources are used
         //Sets the same utilization model for all these resources.

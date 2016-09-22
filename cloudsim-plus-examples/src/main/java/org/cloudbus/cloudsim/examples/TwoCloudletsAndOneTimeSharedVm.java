@@ -43,14 +43,13 @@ import org.cloudbus.cloudsim.resources.Ram;
 
 /**
  * A simple example showing how to create a data center with 1 host, 1 vm and
- * run 2 cloudlet on it that will compete for the VM's CPU.
+ * run 2 cloudlets on it that will compete for the VM's CPU.
  * The VM's CPU is shared among the cloudlets using a time shared scheduler,
  * that performs a preemptive scheduling. By this way, all the 2 cloudlets
  * will have a quantum to use the VM's CPU. As they have the same length,
  * they start and finish together. Thus, the execution time is the double
  * compared to running each cloudlet in its own VM or using a space shared
  * scheduler.
- * <p/>
  *
  * Based on the {@link CloudSimExample01}
  *
@@ -164,22 +163,21 @@ public class TwoCloudletsAndOneTimeSharedVm {
      * @return the datacenter
      */
     private static Datacenter createDatacenter(String name) {
-
-            // Here are the steps needed to create a DatacenterSimple:
+        // Here are the steps needed to create a DatacenterSimple:
         // 1. We need to create a list to store
         // our machine
         List<Host> hostList = new ArrayList<>();
 
-            // 2. A Machine contains one or more PEs or CPUs/Cores.
+        // 2. A Machine contains one or more PEs or CPUs/Cores.
         // In this example, it will have only one core.
         List<Pe> peList = new ArrayList<>();
 
         int mips = 1000;
 
         // 3. Create PEs and add these into a list.
-        peList.add(new PeSimple(0, new PeProvisionerSimple(mips))); // need to store Pe id and MIPS Rating
+        peList.add(new PeSimple(0, new PeProvisionerSimple(mips))); 
 
-            // 4. Create HostSimple with its id and list of PEs and add them to the list
+        // 4. Create HostSimple with its id and list of PEs and add them to the list
         // of machines
         int hostId = 0;
         int ram = 2048; // host memory (MB)
@@ -187,16 +185,16 @@ public class TwoCloudletsAndOneTimeSharedVm {
         long bw = 10000;
 
         hostList.add(new HostSimple(
-                    hostId,
-                    new ResourceProvisionerSimple<>(new Ram(ram)),
-                    new ResourceProvisionerSimple<>(new Bandwidth(bw)),
-                    storage,
-                    peList,
-                    new VmSchedulerTimeShared(peList)
-                )
+                hostId,
+                new ResourceProvisionerSimple<>(new Ram(ram)),
+                new ResourceProvisionerSimple<>(new Bandwidth(bw)),
+                storage,
+                peList,
+                new VmSchedulerTimeShared(peList)
+            )
         ); 
 
-            // 5. Create a DatacenterCharacteristics object that stores the
+        // 5. Create a DatacenterCharacteristics object that stores the
         // properties of a data center: architecture, OS, list of
         // Machines, allocation policy: time- or space-shared, time zone
         // and its price (G$/Pe time unit).
@@ -217,14 +215,7 @@ public class TwoCloudletsAndOneTimeSharedVm {
                 costPerStorage, costPerBw);
 
         // 6. Finally, we need to create a DatacenterSimple object.
-        Datacenter datacenter = null;
-        try {
-            datacenter = new DatacenterSimple(name, characteristics, new VmAllocationPolicySimple(hostList), storageList, 0);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
-        return datacenter;
+        return new DatacenterSimple(name, characteristics, new VmAllocationPolicySimple(hostList), storageList, 0);
     }
 
     // We strongly encourage users to develop their own broker policies, to
@@ -236,13 +227,7 @@ public class TwoCloudletsAndOneTimeSharedVm {
      * @return the datacenter broker
      */
     private static DatacenterBroker createBroker() {
-        try {
-            return new DatacenterBrokerSimple("Broker");
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        
-        return null;
+        return new DatacenterBrokerSimple("Broker");
     }
 
 }

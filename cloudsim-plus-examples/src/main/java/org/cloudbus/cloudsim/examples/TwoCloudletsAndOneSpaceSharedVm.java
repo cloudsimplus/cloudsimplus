@@ -42,16 +42,15 @@ import org.cloudbus.cloudsim.provisioners.ResourceProvisionerSimple;
 import org.cloudbus.cloudsim.resources.Ram;
 
 /**
- * A simple example showing how to create a data center with 1 host, 1 vm and
- * run 2 cloudlet on it that will run sequentially: first one cloudlet executes
+ * A simple example showing how to create a data center with 1 host, 1 VM and
+ * run 2 cloudlets on it that will run sequentially: first one cloudlet executes
  * until complete, after the other one do the same.
- * One there is only the cloudlets running on the VM,
+ * Once there is only one cloudlet running on the VM by time,
  * each one uses all VM's CPU capacity while executing. 
  * By this way, one cloudlet finishes prior to the other, but
  * the execution time (the time using the processor) is the same.
- * Using the space shared scheduler, the cloudlet is not interrupted
+ * Using the cloudlet space shared scheduler, the cloudlet is not interrupted
  * when it starts to run (because the non-preemptive nature of the scheduler).
- * <p/>
  *
  * Based on the {@link CloudSimExample01}
  *

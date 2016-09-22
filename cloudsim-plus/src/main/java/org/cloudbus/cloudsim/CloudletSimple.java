@@ -128,11 +128,11 @@ public class CloudletSimple extends AbstractCloudlet {
      *
      * @param cloudletId the unique ID of this cloudlet
      * @param cloudletLength the length or size (in MI) of this cloudlet to be
-     * executed in a Datacenter
+     * executed in a VM
      * @param cloudletFileSize the file size (in byte) of this cloudlet
-     * <tt>BEFORE</tt> submitting to a PowerDatacenter
+     * <tt>BEFORE</tt> submitting to a Datacenter
      * @param cloudletOutputSize the file size (in byte) of this cloudlet
-     * <tt>AFTER</tt> finish executing by a Datacenter
+     * <tt>AFTER</tt> finish executing by a VM
      * @param pesNumber the pes number
      * @param utilizationModelCpu the utilization model of cpu
      * @param utilizationModelRam the utilization model of ram
@@ -854,4 +854,29 @@ public class CloudletSimple extends AbstractCloudlet {
     public final void setSubmissionDelay(double submissionDelay) {
         this.submissionDelay = submissionDelay;
     }
+
+    @Override
+    public boolean isBoundedToVm() {
+        return vmId != Cloudlet.NOT_ASSIGNED;
+    }
+
+    @Override
+    public String toString() {
+        return String.format("Cloudlet %d of User %d", id, userId);
+    }
+
+    /**
+     * <p>Compares this Cloudlet with another one, considering
+     * the {@link #getCloudletTotalLength() total length of the Cloudlets's}.</p>
+     * 
+     * @param o the Vm to be compared to
+     * @return {@inheritDoc }
+     * @see #getCloudletTotalLength() 
+     */
+    @Override
+    public int compareTo(Cloudlet o) {
+        return Long.compare(this.getCloudletTotalLength(), o.getCloudletTotalLength());
+    }
+    
+    
 }

@@ -38,6 +38,7 @@ import org.cloudbus.cloudsim.provisioners.PeProvisionerSimple;
 import org.cloudbus.cloudsim.resources.Bandwidth;
 import org.cloudbus.cloudsim.provisioners.ResourceProvisionerSimple;
 import org.cloudbus.cloudsim.resources.Ram;
+import org.cloudbus.cloudsim.schedulers.CloudletSchedulerSpaceShared;
 import org.cloudbus.cloudsim.schedulers.CloudletSchedulerTimeShared;
 import org.cloudbus.cloudsim.schedulers.VmSchedulerSpaceShared;
 
@@ -66,7 +67,7 @@ public class DynamicCloudletsArrival1 {
      * Number of Cloudlets to create simultaneously.
      * Other cloudlets will be enqueued.
      */
-    private static final int NUMBER_OF_CLOUDLETS = VM_PES_NUMBER; 
+    private static final int NUMBER_OF_CLOUDLETS = VM_PES_NUMBER*2; 
     
     /**
      * The Virtual Machine Monitor (VMM) used by hosts to manage VMs.
@@ -86,10 +87,8 @@ public class DynamicCloudletsArrival1 {
      * @param args command line parameters
      */
     public static void main(String[] args) {
-        Log.printFormattedLine("Starting %s ...", DynamicCloudletsArrival1.class.getSimpleName());
         try {
             new DynamicCloudletsArrival1();
-            Log.printFormattedLine("%s finished!", DynamicCloudletsArrival1.class.getSimpleName());        
         } catch (Exception e) {
             Log.printFormattedLine("Unwanted errors happened: %s", e.getMessage());
         }
@@ -101,6 +100,7 @@ public class DynamicCloudletsArrival1 {
     public DynamicCloudletsArrival1() {
         int numberOfUsers = 1; // number of cloud users/customers (brokers)
         Calendar calendar = Calendar.getInstance();
+        Log.printFormattedLine("Starting %s ...", getClass().getSimpleName());
         CloudSim.init(numberOfUsers, calendar);
         
         this.hostList = new ArrayList<>();
@@ -111,12 +111,13 @@ public class DynamicCloudletsArrival1 {
 
         Vm vm = createAndSubmitVmAndCloudlets();
         
-        /*Defines a delay of 10 seconds and creates another group of cloudlets
+        /*Defines a delay of 5 seconds and creates another group of cloudlets
         that will start executing inside a VM only after this delay expires.*/
-        double submissionDelay = 10;
-        createAndSubmitCloudlets(vm, submissionDelay);
+        double submissionDelay = 5;
+        //createAndSubmitCloudlets(vm, submissionDelay);
 
         runSimulationAndPrintResults();
+        Log.printFormattedLine("%s finished!", getClass().getSimpleName());                
     }
 
     private void runSimulationAndPrintResults() {

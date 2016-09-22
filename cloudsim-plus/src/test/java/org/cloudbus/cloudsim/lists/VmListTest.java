@@ -33,22 +33,40 @@ public class VmListTest {
     }
 
     @Test
-    public void testGetVMbyID() {
-        assertNull(VmList.getById(vmList, 0));
-        assertNull(VmList.getById(vmList, 1));
-        assertNull(VmList.getById(vmList, 2));
+    public void testGetById() {
+        Vm vm0 = VmSimpleTest.createVm(0, 1);
+        Vm vm1 = VmSimpleTest.createVm(1, 2);
+        Vm vm2 = VmSimpleTest.createVm(2, 2);
 
-        Vm vm1 = VmSimpleTest.createVm(0, 1);
-        Vm vm2 = VmSimpleTest.createVm(1, 2);
-        VmSimple vm3 = VmSimpleTest.createVm(2, 2);
-
+        vmList.add(vm0);
         vmList.add(vm1);
         vmList.add(vm2);
-        vmList.add(vm3);
 
-        assertSame(vm1, VmList.getById(vmList, 0));
-        assertSame(vm2, VmList.getById(vmList, 1));
-        assertSame(vm3, VmList.getById(vmList, 2));
+        assertSame(vm0, VmList.getById(vmList, 0));
+        assertSame(vm1, VmList.getById(vmList, 1));
+        assertSame(vm2, VmList.getById(vmList, 2));
+    }
+
+    @Test
+    public void testGetById_EmptyList() {
+        assertSame(Vm.NULL, VmList.getById(vmList, -1));
+        assertSame(Vm.NULL, VmList.getById(vmList, 0));
+        assertSame(Vm.NULL, VmList.getById(vmList, 1));        
+    }
+
+    @Test
+    public void testGetById_NotFoundVm() {
+        Vm vm0 = VmSimpleTest.createVm(0, 1);
+        Vm vm1 = VmSimpleTest.createVm(1, 2);
+        Vm vm2 = VmSimpleTest.createVm(2, 2);
+
+        vmList.add(vm0);
+        vmList.add(vm1);
+        vmList.add(vm2);
+
+        assertSame(Vm.NULL, VmList.getById(vmList, -1));
+        assertSame(Vm.NULL, VmList.getById(vmList, vmList.size()));
+        assertSame(Vm.NULL, VmList.getById(vmList, vmList.size()+1));
     }
 
     @Test

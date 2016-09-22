@@ -184,7 +184,7 @@ public class CloudletSchedulerSpaceShared extends CloudletSchedulerAbstract {
     @Override
     public double getTotalCurrentAvailableMipsForCloudlet(CloudletExecutionInfo rcl, List<Double> mipsShare) {
         /*@todo The param rcl is not being used.*/
-        Processor p = Processor.getProcessorFromMipsListRemovingAllZeroMips(mipsShare);
+        Processor p = Processor.fromMipsList(mipsShare);
         return p.getCapacity();
     }
 

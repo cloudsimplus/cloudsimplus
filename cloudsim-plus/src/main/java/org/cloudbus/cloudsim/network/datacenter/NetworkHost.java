@@ -190,7 +190,7 @@ public class NetworkHost extends HostSimple {
         for (HostPacket hostPkt : hostPktList) {
             NetworkPacket networkPkt = new NetworkPacket(getId(), hostPkt);
             Vm receiverVm = VmList.getById(this.getVmList(), hostPkt.getReceiverVmId());
-            if (receiverVm != null) {
+            if (receiverVm != Vm.NULL) {
                 networkPacketsToSendLocal.add(networkPkt);
             } else {
                 networkPacketsToSendGlobal.add(networkPkt);

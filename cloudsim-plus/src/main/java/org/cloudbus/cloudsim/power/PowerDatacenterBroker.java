@@ -42,7 +42,7 @@ public class PowerDatacenterBroker extends DatacenterBrokerSimple {
 	}
 
 	@Override
-	protected boolean processVmCreate(SimEvent ev) {
+	protected boolean processVmCreateResponseFromDatacenter(SimEvent ev) {
 		int[] data = (int[]) ev.getData();
 		int result = data[2];
 
@@ -52,7 +52,7 @@ public class PowerDatacenterBroker extends DatacenterBrokerSimple {
 			throw new RuntimeException(CloudSim.clock() + ": " + getName() + ": Creation of VM #" + vmId
 					+ " failed in Datacenter #" + datacenterId);
 		}
-		return super.processVmCreate(ev);
+		return super.processVmCreateResponseFromDatacenter(ev);
 	}
 
 }

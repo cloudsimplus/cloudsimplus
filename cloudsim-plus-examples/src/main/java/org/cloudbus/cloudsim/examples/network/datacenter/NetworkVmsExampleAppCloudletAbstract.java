@@ -9,6 +9,7 @@ import org.cloudbus.cloudsim.DatacenterCharacteristics;
 import org.cloudbus.cloudsim.DatacenterCharacteristicsSimple;
 import org.cloudbus.cloudsim.Host;
 import org.cloudbus.cloudsim.Log;
+import org.cloudbus.cloudsim.Vm;
 import org.cloudbus.cloudsim.core.CloudSim;
 import org.cloudbus.cloudsim.distributions.UniformDistr;
 import org.cloudbus.cloudsim.lists.VmList;
@@ -274,7 +275,9 @@ public abstract class NetworkVmsExampleAppCloudletAbstract {
         for (int i = 0; i < numberOfVmsToSelect; i++) {
             int vmId = (int) rand.sample();
             NetworkVm vm = VmList.getById(this.vmList, vmId);
-            list.add(vm);
+            if(vm != Vm.NULL){
+                list.add(vm);
+            }
         }
         return list;
     }

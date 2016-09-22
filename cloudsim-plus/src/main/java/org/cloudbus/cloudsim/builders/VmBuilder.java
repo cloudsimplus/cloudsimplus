@@ -22,7 +22,7 @@ public class VmBuilder {
     private CloudletScheduler cloudletScheduler;    
     private long size = 10000;
     private int  ram = 512;
-    private int  mips = 1000;
+    private double  mips = 1000;
     private long bw = 1000;
     private int  pes = 1;
     private int numberOfCreatedVms;
@@ -50,7 +50,7 @@ public class VmBuilder {
         return this;
     }
 
-    public VmBuilder setMips(int defaultMIPS) {
+    public VmBuilder setMips(double defaultMIPS) {
         this.mips = defaultMIPS;
         return this;
     }
@@ -131,7 +131,7 @@ public class VmBuilder {
         return ram;
     }
 
-    public int getMips() {
+    public double getMips() {
         return mips;
     }
 

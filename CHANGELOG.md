@@ -2,7 +2,39 @@
 
 Lists the main changes in the project.
 
-## [1.0.4] - 2016-08-28
+## [v0.8-beta.3] - 2016-09-17
+- Inclusion of new module "cloudsim-plus-benchmarks" that uses JMH (Java Microbenchmark Harness framework) that implement some
+  benchmarks in order to assess CloudSim Plus performance.
+
+## [v0.8-beta.2] - 2016-09-15
+
+### Added
+- Introduction of classes and interfaces to allow implementation of [heuristics](http://en.wikipedia.org/wiki/Heuristic) such as [Tabu Search](http://en.wikipedia.org/wiki/Tabu_search), 
+  [Simulated Annealing](http://en.wikipedia.org/wiki/Simulated_annealing) , 
+  [Ant Colony Systems](http://en.wikipedia.org/wiki/Ant_colony_optimization_algorithms) and so on.
+- Introduction of new package `org.cloudsimplus.heuristics` with classes and interfaces that are the base for implementation
+  of heuristics. The `Heuristic` is the base interface and classes such as the `SimulatedAnnealing` one implements it.
+  It is an abstract class to be extended in order to provide a simulated annealing implementation for specific problems
+  such as mapping of Cloudlets to Vm's.
+- A first implementation of a Simulated Annealing heuristic to find a suboptimal mapping between Cloudlets and Vm's
+  is provided by class `CloudletToVmMappingSimulatedAnnealing`.
+- The new `DatacenterBrokerHeuristic` extends the `DatacenterBrokerSimple` and receives a heuristic implementation
+  to find a suboptimal mapping between submitted Cloudlets and Vm's.
+- New examples for these features were included in the package `org.cloudsimplus.experiments` of the examples project.
+
+## [v0.8-beta.1] - 2016-09-04
+
+### Changed & Added
+- Completey refactored `DatacenterBroker` classes and interface. The `DatacenterBrokerSimple` class had methods with several 
+  lines of code performing several different tasks that were very confusing. Method names were completely difficult to understand.
+  These classes and interfaces were refactored in order to provide methods that have just one goal. 
+- A new `DatacenterBrokerAbstract` class was introduced as the base implementation for `DatacenterBroker`s. Such an interface 
+ now enables real extensibility, providing methods to allow defining specific policies for: 
+ selection of `Vm`s to host `Cloudlet`s; selection of `Datacenter`s to host `Vm`s;
+ and fallback policies to select a different `Datacenter` for `Vm`s when the previous selected one fails to host the requested `Vm`s.
+- Now, implementations such as `DatacenterBrokerSimple` are very reduced and completely clear.
+
+## [v0.7-beta] - 2016-08-28
 
 ### Added
 - A new feature of subtitle columns was added to the TableBuilder interface in order to allow adding a subtitle row below the title row of a table.
@@ -23,7 +55,7 @@ Lists the main changes in the project.
 - The getter getSubmissionTime was renamed to getDatacenterArrivalTime. Both methods now
   return Cloudlet.NOT_ASSIGNED when the cloudlet hasn't been assigned to a datacenter yet.
 
-## [1.0.3] - 2016-06-10 
+## [v0.6-beta] - 2016-06-10 
 
 ### Added
 - [Examples](cloudsim-plus-examples/src/main/java/org/cloudbus/cloudsim/examples/listeners/) using the new listener features of Vm and Cloudlet classes. 
@@ -40,7 +72,7 @@ Lists the main changes in the project.
   [listeners](cloudsim-plus-examples/src/main/java/org/cloudbus/cloudsim/examples/listeners/) example package.
 - Allowed to delay the submission of cloudlets by a `DatacenterBroker`, simulating the dynamic arrival of Cloudlets (closes the feature request #11)
 
-## [1.0.2] - 2016-04-28 
+## [v0.5-beta] - 2016-04-28 
 
 ### Changed
 - Changed the name of the method getCloudResourceList at CloudSim class to getDatacenterIdsList once it
@@ -60,8 +92,8 @@ Lists the main changes in the project.
 - Changed the name of the method getDatacenterCharacteristicsList at the DatacenterBrokerSimple class to getDatacenterCharacteristicsMap
   because in fact it is returning a map, not a list. 
 - Renamed the class TaskStage at the package org.cloudbus.cloudsim.network.datacenter to CloudletTask
-  and made it an abstract class. New sub-classes were introduced. See the section "Added" below.
-  Encapsuled and renamed all attributes. 
+  and made it an abstract class, because it in fact doesn't represent the stage of a task
+  but a task itself. New sub-classes were introduced. See the section "Added" below.
   
 ### Added
 - Created new subclasses CloudletDataTask and CloudletExecutionTask from CloudletTask.
@@ -69,7 +101,7 @@ Lists the main changes in the project.
   (that now is an enum).
 
 
-## [1.0.0] - 2016-04-25 
+## [v0.4-beta] - 2016-04-25 
 
 ### Fixed
 - The `HarddriveStorage` class had an issue when calling the method `addReservedFile` without priorly reserving space for the file by 
@@ -90,7 +122,7 @@ of null when the method in fact doesn't perform any VM placement optimization.
 This change was performed to reduce null checks and avoid NullPointerException's.
 
 - The method getCloudletFinishedSoFar of CloudletSimple class now returns 0 when the cloudlet hasn't started executing yet,
-instead of returning the cloudlet length. If it hasn't started, the executed length is thus 0.
+instead of returning the cloudlet length. If it hasn't started yet, the executed length is abviously 0.
 
 - Changed the return value of the VmAllocationPolicy.optimizeAllocation method from List<Map<String, Object>> to Map<Vm, Host>
 	- The return value was completely strange and didn't correctly use generics. 
@@ -212,7 +244,7 @@ The classes `Datacenter`, `DatacenterCharacteristics`, `DatacenterBroker`, `Host
 `Cloudlet` and `CloudletScheduler` (and maybe others) had their names suffixed with the word "Simple", as already has been used in other classes 
 such as `VmAllocationPolicySimple`. Further, they were introduced new interfaces with the same name of the original classes 
 (without the suffix "Simple"), defining the common public methods to be present in each class that implements one of these interfaces. 
-By this way, it was paved the way to start applying the "Liskov Substitution Principle", one of the SOLID principles that say to 
+By this way, it was paved the way to start applying the "Liskov Substitution Principle", one of the SOLID principles that says to 
 "program to an interface, not to an implementation".
 
 - All the examples were accordingly updated in order to use the new classes. Thus, for all mentioned classes, instead of
@@ -273,7 +305,7 @@ reduce code duplication of unit tests; include extensive set of unit tests to va
     is always used for a given resource (`Bandwidth` always use `Long`, `Ram` always use `Integer`, `FileStorage` always use `Long`). 
     It also standardize the type of each resource, avoiding some inconsistencies found throughout the code.
     
-    - Several refactoring on classes that controls storage space, in order to remove code duplication, improve class hierarchy and 
+    - Several refactoring on classes that control storage space, in order to remove code duplication, improve class hierarchy and 
     reduce bugs probabilities (once that duplicated code doesn't have to be tested several times in different classes). 
     The major part of duplicated code was related to dealing with storage capacity, used space and available space. 
     As the introduced `Resource` interface and related classes implement these features, there isn't duplicated code for that anymore.
@@ -373,7 +405,7 @@ These notifications can be about the change in state of CloudSim entities.
     to set listeners to receive notifications about Vm state changes:
 	    - `onHostAllocationListener`: gets notified when a Host is allocated to a Vm
 	    - `onHostDeallocationListener`: gets notified when a Host is deallocated to a Vm
-	    - `setOnVmCreationFailureListener:` gets notified when a Vm fail being placed at a Host due to lack of resources
+	    - `onVmCreationFailureListener:` gets notified when a Vm fail being placed at a Host due to lack of resources
 	- The inclusion of the Vm listeners doesn't change the way VMs are instantiated.
 
 	- The `EventListener` interface implements the Null Object Design Pattern in order to avoid `NullPointerException` when a
@@ -391,7 +423,7 @@ These notifications can be about the change in state of CloudSim entities.
     CloudSim versions.
 
 	- Due to the use of the new eventProcessingListener at the CloudSim class, it was introduced the method getInstance() 
-    that implements the Singleton Design Pattern in order to avoid multiple instances of the CloudSim package. However, 
+    that implements the Singleton Design Pattern in order to avoid multiple instances of the CloudSim class. However, 
     CloudSim continues working through its static method calls.
 
 
