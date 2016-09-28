@@ -288,12 +288,11 @@ public class DatacenterBrokerHeuristicExample {
 
         for(Map.Entry<Cloudlet, Vm> e: solution.getResult().entrySet()){
             System.out.printf(
-                "Cloudlet %3d (%d PEs, %6d MI) mapped to Vm %3d (%d PEs, %6.0f MIPS) with fitness %.2f\n",
+                "Cloudlet %3d (%d PEs, %6d MI) mapped to Vm %3d (%d PEs, %6.0f MIPS)\n",
                 e.getKey().getId(),
                 e.getKey().getNumberOfPes(), e.getKey().getCloudletLength(),
                 e.getValue().getId(),
-                e.getValue().getNumberOfPes(), e.getValue().getMips(),
-                solution.getCostOfCloudletToVm(e.getKey(), e.getValue()));
+                e.getValue().getNumberOfPes(), e.getValue().getMips());
         }
         System.out.println();
     }

@@ -27,7 +27,7 @@ public class DatacenterBrokerHeuristicRunner extends ExperimentRunnerAbstract {
     /**
      * Number of Vm's to create for each experiment.
      */
-	private static final int VMS_TO_CREATE = VM_PES_NUMBERS.length*20;
+	private static final int VMS_TO_CREATE = VM_PES_NUMBERS.length * 20;
 
     /**
      * Number of Cloudlets to create for each experiment.

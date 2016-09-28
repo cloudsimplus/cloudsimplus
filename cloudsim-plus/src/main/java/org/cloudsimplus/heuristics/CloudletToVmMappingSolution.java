@@ -1,9 +1,7 @@
 package org.cloudsimplus.heuristics;
 
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
+import java.util.stream.Collectors;
 
 import org.cloudbus.cloudsim.Cloudlet;
 import org.cloudbus.cloudsim.Vm;
@@ -86,9 +84,14 @@ public class CloudletToVmMappingSolution implements HeuristicSolution<Map<Cloudl
     @Override
     public double getCost() {
         if(recomputeCost){
-            lastCost = cloudletVmMap.entrySet().stream()
-                    .mapToDouble(e -> getCostOfCloudletToVm(e.getKey(), e.getValue()))
-                    .sum();
+	        Map<Vm, List<Map.Entry<Cloudlet, Vm>>> cloudletsByVm =
+		        cloudletVmMap.entrySet().stream()
+			        .collect(Collectors.groupingBy(e -> e.getValue()));
+
+	        lastCost = cloudletsByVm.entrySet().stream()
+		        .mapToDouble(e-> getVmCost(e.getKey(), e.getValue()))
+	            .sum();
+
             recomputeCost = false;
         }
 
@@ -108,53 +111,35 @@ public class CloudletToVmMappingSolution implements HeuristicSolution<Map<Cloudl
     }
 
     /**
-     * Gets the cost value to run a Cloudlet in a given Vm.
-     * This is the estimated cloudlet completion time.
-     * Therefore, as higher is the estimated completion time,
-     * higher is the cost.
-     *
-     * @param cloudlet the cloudlet to get the cost of running inside a given Vm
-     * @param vm the Vm to check a cloudlet's cost value
-     * @return the cost to run the Cloudlet in the given Vm
-     *
-     * @todo @author manoelcampos The estimation just considers
-     * that the cloudlet will use the Vm's PEs all the time
-     * (as in a CloudletSchedulerSpaceShared). To get a more accurate
-     * estimation, this calculation would be made by the Vm's CloudletScheduler.
-     * However, this is more complex and would require that all other cloudlets
-     * are assigned to the Vm in order to estimate the completion time
-     * in a environment with concurring Pe access.
-     * The cost would consider the number of idle Vm PEs and number of idle Cloudlets, regarding
-     * the CloudletScheduler used. Idle resources count to cost increase.
-     * Sometimes the VM may not have idle PEs, but has waiting cloudlets.
-     * Other times it may not have waiting cloudlets by may have idle PEs.
-     */
-    public double getCostOfCloudletToVm(Cloudlet cloudlet, Vm vm) {
-        return cloudlet.getCloudletTotalLength()/vm.getTotalMipsCapacity();
-    }
-
-    /**
      * Computes the cost of all Cloudlets hosted by a given Vm.
-     * @param vm The VM to compute the cost of its cloudlets
-     * @return the VM cost
+     * The cost is based on the number of PEs from the VM that
+     * will be idle or overloaded.
+     *
+     * @param vm VM to compute the cost based on the hosted Cloudlets
+     * @param listOfCloudletsForVm A list containing all Cloudlets for a given VM
+     * @return the VM cost to host the Cloudlets
      */
-    public double getVmCost(Vm vm) {
-        return cloudletVmMap.entrySet().stream()
-            .filter(e->e.getValue().equals(vm))
-            .mapToDouble(e->getCostOfCloudletToVm(e.getKey(), vm))
-            .sum();
+    public double getVmCost(Vm vm, List<Map.Entry<Cloudlet, Vm>> listOfCloudletsForVm) {
+	    final int totalCloudletsPes = listOfCloudletsForVm.stream()
+		    .mapToInt(e->e.getKey().getNumberOfPes())
+		    .sum();
+
+        return Math.abs(vm.getNumberOfPes() - totalCloudletsPes);
     }
 
     /**
      * Compares this solution with another given one, based on the solution
-     * fitness.
+     * cost. The current object is considered to be:
+     * equal to the given object if they have the same cost;
+     * greater than the given object if it has a lower cost;
+     * lower than the given object if it has a higher cost;
      *
      * @param o the solution to compare this instance to
      * @return {@inheritDoc}
      */
     @Override
     public int compareTo(HeuristicSolution o) {
-        double diff = this.getFitness() - o.getFitness();
+        double diff = this.getCost() - o.getCost();
         /*
         Precision Issue: checks the absolute difference between the two values
         in order to avoid that solutions with little decimal difference be
@@ -162,7 +147,7 @@ public class CloudletToVmMappingSolution implements HeuristicSolution<Map<Cloudl
         if(Math.abs(diff) <= 0.0001)
             return 0;
 
-        return (diff < 0 ? -1 : 1);
+        return (diff > 0 ? -1 : 1);
     }
 
     /**
@@ -200,11 +185,11 @@ public class CloudletToVmMappingSolution implements HeuristicSolution<Map<Cloudl
         if(entries == null || entries.length != 2 || entries[0] == null || entries[1] == null)
             return false;
 
-
         Vm vm1 = entries[0].getValue();
         Vm vm2 = entries[1].getValue();
         entries[0].setValue(vm2);
         entries[1].setValue(vm1);
+
         return true;
     }
 
