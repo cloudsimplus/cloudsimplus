@@ -79,7 +79,7 @@ public class CloudletToVmMappingSolution implements HeuristicSolution<Map<Cloudl
     /**
      * {@inheritDoc}
      *
-     * It computes the fitness of the entire mapping between Vm's and cloudlets.
+     * It computes the fitness of the entire mapping between Vm's and Cloudlets.
      *
      * @return {@inheritDoc}
      */
@@ -134,7 +134,7 @@ public class CloudletToVmMappingSolution implements HeuristicSolution<Map<Cloudl
     }
 
     /**
-     * Computes the cost of all cloudlets hosted by a given Vm.
+     * Computes the cost of all Cloudlets hosted by a given Vm.
      * @param vm The VM to compute the cost of its cloudlets
      * @return the VM cost
      */

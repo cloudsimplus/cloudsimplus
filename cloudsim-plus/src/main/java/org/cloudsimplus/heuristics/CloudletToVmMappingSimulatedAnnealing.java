@@ -18,7 +18,7 @@ public class CloudletToVmMappingSimulatedAnnealing extends SimulatedAnnealing<Cl
     /** @see #getVmList() */
     private List<Vm> vmList;
 
-    /** @see #getCloudletList()  */
+    /** @see #getCloudletList() */
     private List<Cloudlet> cloudletList;
 
     /**
@@ -35,7 +35,7 @@ public class CloudletToVmMappingSimulatedAnnealing extends SimulatedAnnealing<Cl
         initialSolution = new CloudletToVmMappingSolution(this);
     }
 
-    public CloudletToVmMappingSolution generatesTotallyRandomSolution() {
+    public CloudletToVmMappingSolution generateTotallyRandomSolution() {
         CloudletToVmMappingSolution solution = new CloudletToVmMappingSolution(this);
         cloudletList.stream()
                 .forEach(c -> solution.bindCloudletToVm(c, getRandomVm()));
@@ -54,7 +54,7 @@ public class CloudletToVmMappingSimulatedAnnealing extends SimulatedAnnealing<Cl
     @Override
     public CloudletToVmMappingSolution getInitialSolution() {
         if(!isThereInitialSolution() && isReadToGenerateInitialSolution()) {
-            initialSolution = generatesTotallyRandomSolution();
+            initialSolution = generateTotallyRandomSolution();
         }
 
         return initialSolution;

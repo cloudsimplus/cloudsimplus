@@ -1,4 +1,4 @@
-package org.cloudsimplus.experiments;
+package org.cloudsimplus.testbeds;
 
 import java.util.ArrayList;
 import java.util.Calendar;

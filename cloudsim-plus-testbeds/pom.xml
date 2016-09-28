@@ -1,0 +1,48 @@
+<?xml version="1.0"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <parent>
+        <groupId>org.cloudsimplus</groupId>
+        <artifactId>cloudsim-plus-package</artifactId>
+        <version>1.0</version>
+    </parent>
+    <artifactId>cloudsim-plus-testbeds</artifactId>
+    <name>CloudSim Plus Testbeds</name>
+    <description>
+        A set of more complex and comprehensive testbeds used to assess
+		implementation of algorithms for different purposes such as
+		mapping of Cloudlets to VMs, allocation and scheduling policies,
+		resource utilization models or VM placement and migration
+		policies.
+
+		Each testbeds execute an experiment a defined number of times
+		in order to get means and standard deviations to enable
+		the assessment of results for the algorithms under test.
+
+		Usually each experiment is defined in a specific class
+		named with the suffix "Experiment" and a class named with
+		a suffix "Runner" will execute this experiment several times,
+		may apply some statistics techniques to reduce variance and/or
+		correlation, collect and present results.
+    </description>
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>2.3.2</version>
+                <configuration>
+                    <source>1.8</source>
+                    <target>1.8</target>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+    <dependencies>
+        <dependency>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>cloudsim-plus</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+    </dependencies>
+</project>

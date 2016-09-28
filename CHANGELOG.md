@@ -2,9 +2,16 @@
 
 Lists the main changes in the project.
 
-## [v0.8-beta.3] - 2016-09-17
+## [v0.8-beta.3] - 2016-09-28
 - Inclusion of new module "cloudsim-plus-benchmarks" that uses JMH (Java Microbenchmark Harness framework) that implement some
   benchmarks in order to assess CloudSim Plus performance.
+- Inclusion of new module "cloudsim-plus-testbeds" to provide a set of more complex and comprehensive 
+  testbeds used to assess implementation of algorithms for different purposes such as
+	mapping of Cloudlets to VMs, allocation and scheduling policies,
+	resource utilization models or VM placement and migration policies.
+  These testbeds also show how to apply statistical methods to get simulation results
+  scientifically valid. Some method to reduce confidence interval and correlation 
+  are implemented and can be used for several experiments. 
 
 ## [v0.8-beta.2] - 2016-09-15
 
