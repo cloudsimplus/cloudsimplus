@@ -8,6 +8,10 @@ import org.cloudbus.cloudsim.Log;
 import org.cloudbus.cloudsim.distributions.NormalDistr;
 import org.cloudbus.cloudsim.distributions.UniformDistr;
 import org.cloudsimplus.heuristics.CloudletToVmMappingSolution;
+import org.cloudsimplus.heuristics.Heuristic;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Runs the {@link DatacenterBrokerHeuristicExperiment}
@@ -16,7 +20,7 @@ import org.cloudsimplus.heuristics.CloudletToVmMappingSolution;
  *
  * @author Manoel Campos da Silva Filho
  */
-public class DatacenterBrokerHeuristicRunner extends ExperimentRunnerAbstract {
+public class DatacenterBrokerHeuristicRunner extends ExperimentRunner<DatacenterBrokerHeuristicExperiment> {
 	/**
 	 * Possible number of PEs for VMs to be created.
 	 * Each VM has to have one of this number of PEs,
@@ -40,7 +44,7 @@ public class DatacenterBrokerHeuristicRunner extends ExperimentRunnerAbstract {
      * including number of hosts, VMs and Cloudlets.
      * What changes is the random number generator seed for each experiment.
      */
-    private final int cloudletPesArray[];
+    private int cloudletPesArray[];
 
 	/**
 	 * Number of PEs for each created VM.
@@ -48,12 +52,12 @@ public class DatacenterBrokerHeuristicRunner extends ExperimentRunnerAbstract {
 	 * including number of hosts, VMs and Cloudlets.
 	 * What changes is the random number generator seed for each experiment.
 	 */
-	private final int vmPesArray[];
+	private int vmPesArray[];
 
 	/**
      * The cost to map Cloudlets to VMs for each executed experiment.
      */
-    private double experimentCosts[];
+    private List<Double> experimentCosts;
 
 	/**
 	 * An object that compute statistics about experiment run time.
@@ -67,12 +71,18 @@ public class DatacenterBrokerHeuristicRunner extends ExperimentRunnerAbstract {
      */
     private CloudletToVmMappingSolution roundRobinSolution = null;
 
+	/**
+	 * Indicates if each experiment will output execution logs
+	 * or not.
+	 */
+	private final boolean experimentVerbose = false;
+
 	public DatacenterBrokerHeuristicRunner(){
 		super();
-		experimentCosts = new double[0];
+		experimentCosts = new ArrayList<>();
 	    runtimeStats = new SummaryStatistics();
-		vmPesArray = createVmPesArray();
-		cloudletPesArray = createCloudletPesArray();
+		vmPesArray = new int[0];
+		cloudletPesArray = new int[0];
     }
 
     /**
@@ -82,10 +92,12 @@ public class DatacenterBrokerHeuristicRunner extends ExperimentRunnerAbstract {
      */
     public static void main(String[] args) {
         new DatacenterBrokerHeuristicRunner()
-	        .setNumberOfSimulationRuns(240)
+	        .setNumberOfSimulationRuns(1200)
 	        .setApplyAntitheticVariatesTechnique(true)
 	        .setNumberOfBatches(6)
-	        .start();
+	        .setBaseSeed(1475098589732L)
+	        .setVerbose(true)
+	        .run();
     }
 
 	/**
@@ -99,13 +111,10 @@ public class DatacenterBrokerHeuristicRunner extends ExperimentRunnerAbstract {
 		int[] array = new int[CLOUDLETS_TO_CREATE];
 		int totalNumberOfPes = 0;
 		NormalDistr random = new NormalDistr(getBaseSeed(), 2, 0.6);
-		System.out.printf("PEs created for %d Cloudlets:\n\t", CLOUDLETS_TO_CREATE);
 		for(int i = 0; i < CLOUDLETS_TO_CREATE; i++){
 			array[i] =  (int) random.sample()+1;
-			System.out.printf("%d ", array[i]);
 			totalNumberOfPes += array[i];
 		}
-		System.out.printf("\n\tTotal of %d Cloudlet PEs created.\n\n", totalNumberOfPes);
 
 		return array;
 	}
@@ -121,44 +130,62 @@ public class DatacenterBrokerHeuristicRunner extends ExperimentRunnerAbstract {
 		UniformDistr random = new UniformDistr(0, VM_PES_NUMBERS.length, getBaseSeed());
 		int[] array = new int[VMS_TO_CREATE];
 		int totalNumberOfPes = 0;
-		System.out.printf("PEs created for %d VMs:\n\t", VMS_TO_CREATE);
 		for(int i = 0; i < VMS_TO_CREATE; i++){
 			array[i] =  VM_PES_NUMBERS[(int)random.sample()];
-			System.out.printf("%d ", array[i]);
 			totalNumberOfPes += array[i];
 		}
-		System.out.printf("\n\tTotal of %d VMs PEs created.\n\n", totalNumberOfPes);
+
 		return array;
 	}
 
-	@Override
-	protected void createAndRunExperiment(int i) {
-		System.out.print((i % 100 == 0 ? "\n." : "."));
-		DatacenterBrokerHeuristicExperiment experiment = newExperiment(i, false);
-		CloudletToVmMappingSolution solution = experiment.start();
-		experimentCosts[i] = solution.getCost();
-		runtimeStats.addValue(solution.getHeuristic().getSolveTime());
-		createRoundRobinSolutionIfNotCreatedYet(experiment);
+	/**
+	 * Adds the computed cost to map Cloudlets to a VM for the current experiment
+	 * to the list of mapping costs.
+	 *
+	 * @param cost the cost to add
+	 */
+	public void addExperimentCost(double cost){
+		experimentCosts.add(cost);
 	}
 
 	/**
-	 * Creates an experiment.
+	 * Adds the run time that the simulated annealing heuristic
+	 * spent to compute the mapping of Cloudlets to a VM for the current experiment
+	 * to the list of run times.
 	 *
-	 * @param index a number that identifies the experiment
-	 * @oaram verbose if experiment execution information must be shown
-	 * @return the created experiment
+	 * @param runTime the run time to add
 	 */
-	private DatacenterBrokerHeuristicExperiment newExperiment(int index, boolean verbose) {
-		UniformDistr randomGen = createRandomGen(index);
-		DatacenterBrokerHeuristicExperiment exp =
-			new DatacenterBrokerHeuristicExperiment(randomGen, index);
+	public void addSimulatedAnnealingRuntime(double runTime){
+		runtimeStats.addValue(runTime);
+	}
 
-		exp.setVerbose(verbose);
+	@Override
+	protected DatacenterBrokerHeuristicExperiment createExperiment(int i) {
+		UniformDistr prng = createRandomGen(i);
+		addSeed(prng.getSeed());
+		DatacenterBrokerHeuristicExperiment exp =
+			new DatacenterBrokerHeuristicExperiment(this, prng, i);
+
+		exp.setVerbose(experimentVerbose);
 		exp.setVmPesArray(vmPesArray);
 		exp.setCloudletPesArray(cloudletPesArray);
-		exp.buildScenario();
+		exp.setAfterExperimentFinish(this::afterExperimentFinish);
 
 		return exp;
+	}
+
+	/**
+	 * Method automatically called after every experiment finishes running.
+	 * It performs some post-processing such as collection of data for
+	 * statistic analysis.
+	 *
+	 * @param experiment the finished experiment
+	 */
+	private void afterExperimentFinish(DatacenterBrokerHeuristicExperiment experiment){
+		CloudletToVmMappingSolution solution = experiment.getHeuristic().getBestSolutionSoFar();
+		addExperimentCost(solution.getCost());
+		addSimulatedAnnealingRuntime(solution.getHeuristic().getSolveTime());
+		createRoundRobinSolutionIfNotCreatedYet(experiment);
 	}
 
 	@Override
@@ -183,7 +210,9 @@ public class DatacenterBrokerHeuristicRunner extends ExperimentRunnerAbstract {
 
 	@Override
 	protected void setup() {
-		experimentCosts = new double[getNumberOfSimulationRuns()];
+		experimentCosts = new ArrayList<>(getNumberOfSimulationRuns());
+		vmPesArray = createVmPesArray();
+		cloudletPesArray = createCloudletPesArray();
 	}
 
     @Override
@@ -238,14 +267,12 @@ public class DatacenterBrokerHeuristicRunner extends ExperimentRunnerAbstract {
 	@Override
     protected SummaryStatistics computeStatistics() {
 		SummaryStatistics costsStats = new SummaryStatistics();
-        double costs[] = experimentCosts;
+        List<Double> costs = experimentCosts;
 
 	    costs = computeBatchMeans(costs);
         costs = computeAntitheticMeans(costs);
 
-        for(double cost: costs){
-            costsStats.addValue(cost);
-        }
+		costs.forEach(costsStats::addValue);
 
         return costsStats;
     }
@@ -267,11 +294,11 @@ public class DatacenterBrokerHeuristicRunner extends ExperimentRunnerAbstract {
      *
      * @param exp the experiment to get the list of Cloudlets and Vm's
      */
-    private void createRoundRobinSolutionIfNotCreatedYet(DatacenterBrokerHeuristicExperiment exp) {
+    public void createRoundRobinSolutionIfNotCreatedYet(SimulationExperiment exp) {
 		if(roundRobinSolution != null)
 			return;
 
-        roundRobinSolution = new CloudletToVmMappingSolution(exp.getHeuristic());
+        roundRobinSolution = new CloudletToVmMappingSolution(Heuristic.NULL);
         int i = 0;
         for (Cloudlet c : exp.getCloudletList()) {
             //cyclically selects a Vm (as in a circular queue)

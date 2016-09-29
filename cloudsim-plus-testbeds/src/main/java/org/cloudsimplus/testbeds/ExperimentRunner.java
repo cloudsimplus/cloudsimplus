@@ -6,13 +6,17 @@ import org.apache.commons.math3.stat.descriptive.SummaryStatistics;
 import org.cloudbus.cloudsim.Log;
 import org.cloudbus.cloudsim.distributions.UniformDistr;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * A base class to run a given experiment a defined number of times
  * and collect statistics about the execution.
  *
  * @author Manoel Campos da Silva Filho
  */
-public abstract class ExperimentRunnerAbstract {
+public abstract class ExperimentRunner<T extends SimulationExperiment> implements Runnable {
+	protected boolean verbose = false;
 	/**
 	 * @see #getBaseSeed()
 	 */
@@ -21,7 +25,7 @@ public abstract class ExperimentRunnerAbstract {
 	/**
 	 * @see #getSeeds()
 	 */
-	private long[] seeds;
+	private List<Long> seeds;
 	/**
 	 * @see #getNumberOfSimulationRuns()
 	 */
@@ -51,19 +55,36 @@ public abstract class ExperimentRunnerAbstract {
 	 * Creates an experiment runner, setting the {@link #getBaseSeed() base seed}
 	 * as the current time.
 	 */
-	public ExperimentRunnerAbstract() {
-		seeds = new long[0];
-		baseSeed = System.currentTimeMillis();
+	public ExperimentRunner() {
+		seeds = new ArrayList<>();
+		setBaseSeed(System.currentTimeMillis());
 		setNumberOfBatches(0);
 	}
 
 	/**
-	 * Setup experiment attributes considering
+	 * <p>Setup experiment attributes considering
 	 * the dependency between each other.
-	 * The method is called by the {@link #start()} method,
+	 * The method is called by the {@link #run()} method,
 	 * just after all the attributes were set.
-	 * By this way, it initialize internal attributes
-	 * and validate other ones.
+	 * By this way, it initializes internal attributes
+	 * and validates other ones.</p>
+	 *
+	 * <p><b>NOTE:</b> As a good practice, it is tried to reduce
+	 * the number of parameters for the class constructor,
+	 * as it tends to increase as the experiment code evolves.
+	 * Accordingly, all the parameters have to be defined
+	 * using the corresponding setters. By this way,
+	 * <b>it has to be avoided setting up
+	 * attributes inside the constructor, once
+	 * they can become invalid or out-of-date
+	 * because dependency between parameters.</b>
+	 * The constructor has just to initialize
+	 * objects to avoid {@link NullPointerException}.
+	 * By this way, one have to set all the parameters
+	 * inside this method. For instance, if the constructor
+	 * creates and Random Number Generator (PRNG) using a default seed
+	 * but the method setSeed is called after the constructor,
+	 * the PRNG will not be update to use the new seed.</p>
 	 */
 	protected abstract void setup();
 
@@ -82,7 +103,7 @@ public abstract class ExperimentRunnerAbstract {
 		}
 
 		setup();
-		seeds = new long[getNumberOfSimulationRuns()];
+		seeds = new ArrayList<>(getNumberOfSimulationRuns());
 	}
 
 	/**
@@ -137,29 +158,29 @@ public abstract class ExperimentRunnerAbstract {
 	}
 
 	/**
-	 * Gets an array of samples and apply the "Batch Means Method"
+	 * Gets an list of samples and apply the "Batch Means Method"
 	 * to reduce samples correlation, if the "Batch Means Method"
 	 * {@link #isApplyBatchMeansMethod() is to be applied}.
 	 *
-	 * @param samples the array with samples to apply the "Batch Means Method"
-	 * @return the samples array after applying the "Batch Means Method",
+	 * @param samples the list with samples to apply the "Batch Means Method"
+	 * @return the samples list after applying the "Batch Means Method",
 	 * in case the method is enabled to be applied, that will reduce the
 	 * array to the number of batches defined by {@link #getNumberOfBatches()}
 	 * (each value in the returned array will be the mean of every sample batch).
 	 * Otherwise, return the same given array
 	 */
-	protected double[] computeBatchMeans(double samples[]) {
+	protected List<Double> computeBatchMeans(List<Double> samples) {
 		if(!isApplyBatchMeansMethod())
 			return samples;
 
-		double batchMeans[] = new double[getNumberOfBatches()];
+		List<Double> batchMeans = new ArrayList<>(getNumberOfBatches());
 		int k = batchSizeCeil();
 		for(int i = 0; i < getNumberOfBatches(); i++){
-			batchMeans[i] = 0;
+			double sum = 0.0;
 			for(int j = 0; j < k; j++){
-				batchMeans[i] += samples[i*k + j];
+				sum += samples.get(i*k + j);
 			}
-			batchMeans[i] /= k;
+			batchMeans.add(sum / k);
 		}
 
 		System.out.printf(
@@ -249,12 +270,12 @@ public abstract class ExperimentRunnerAbstract {
 		return numberOfSimulationRuns;
 	}
 
-	protected ExperimentRunnerAbstract setNumberOfSimulationRuns(int numberOfSimulationRuns) {
+	protected ExperimentRunner setNumberOfSimulationRuns(int numberOfSimulationRuns) {
 		this.numberOfSimulationRuns = numberOfSimulationRuns;
 		return this;
 	}
 
-	protected ExperimentRunnerAbstract setApplyAntitheticVariatesTechnique(boolean applyAntitheticVariatesTechnique) {
+	protected ExperimentRunner setApplyAntitheticVariatesTechnique(boolean applyAntitheticVariatesTechnique) {
 		this.applyAntitheticVariatesTechnique = applyAntitheticVariatesTechnique;
 		return this;
 	}
@@ -274,7 +295,7 @@ public abstract class ExperimentRunnerAbstract {
 	 * @param numberOfBatches number of simulation run batches
 	 * @see #getNumberOfBatches()
 	 */
-	protected ExperimentRunnerAbstract setNumberOfBatches(int numberOfBatches) {
+	protected ExperimentRunner setNumberOfBatches(int numberOfBatches) {
 		this.numberOfBatches = numberOfBatches;
 		return this;
 	}
@@ -297,7 +318,7 @@ public abstract class ExperimentRunnerAbstract {
 	 *
 	 * @see #createRandomGen(int)
 	 */
-	public long[] getSeeds() {
+	public List<Long> getSeeds() {
 		return seeds;
 	}
 
@@ -312,24 +333,31 @@ public abstract class ExperimentRunnerAbstract {
 	 * @see UniformDistr#isApplyAntitheticVariatesTechnique()
 	 */
 	protected UniformDistr createRandomGen(int experimentIndex) {
-		final long experimentSeed = getBaseSeed() + experimentIndex + 1;
-		UniformDistr rnd;
 		if (isApplyAntitheticVariatesTechnique() && experimentIndex >= halfSimulationRuns()) {
 			int previousExperiment = experimentIndex - halfSimulationRuns();
-			rnd = new UniformDistr(0, 1, getSeeds()[previousExperiment]);
-			rnd.setApplyAntitheticVariatesTechnique(true);
-		}
-		else rnd = new UniformDistr(0, 1, experimentSeed);
 
-		getSeeds()[experimentIndex] = rnd.getSeed();
-		return rnd;
+			return new UniformDistr(0, 1, seeds.get(previousExperiment))
+							.setApplyAntitheticVariatesTechnique(true);
+		}
+
+		final long experimentSeed = getBaseSeed() + experimentIndex + 1;
+		return new UniformDistr(0, 1, experimentSeed);
+	}
+
+	/**
+	 * Adds a seed to the list of seeds used for each experiment.
+	 *
+	 * @param seed seed of the current experiment to add to the list
+	 */
+	protected void addSeed(long seed){
+		seeds.add(seed);
 	}
 
 	/**
 	 * @return the half of {@link #getNumberOfSimulationRuns()}
 	 */
 	private int halfSimulationRuns() {
-		return getNumberOfSimulationRuns()/2;
+		return numberOfSimulationRuns/2;
 	}
 
 	/**
@@ -349,7 +377,8 @@ public abstract class ExperimentRunnerAbstract {
 	/**
 	 * Setup and starts the execution of the experiments.
 	 */
-	protected void start() {
+	@Override
+	public void run() {
 		setupInternal();
 
 		printSimulationParameters();
@@ -357,12 +386,24 @@ public abstract class ExperimentRunnerAbstract {
 
 		experimentsStartTime = System.currentTimeMillis();
 		for(int i = 0; i < getNumberOfSimulationRuns(); i++){
-			createAndRunExperiment(i);
+			if(isVerbose()) {
+				System.out.print((i % 100 == 0 ? "\n." : "."));
+			}
+			createExperiment(i).run();
 		}
+		System.out.println();
 		experimentsFinishTime = (System.currentTimeMillis() - experimentsStartTime)/1000;
 
 		printResults(computeStatistics());
 	}
+
+	/**
+	 * Creates an experiment to be run for the i'th time.
+	 *
+	 * @param i a number that identifies the experiment
+	 * @return the created experiment
+	 */
+	protected abstract T createExperiment(int i);
 
 	/**
 	 * <p>Computes the antithetic means for the given samples
@@ -377,22 +418,22 @@ public abstract class ExperimentRunnerAbstract {
 	 * the seeds from the first half of experiments must be used
 	 * for the second half.</p>
 	 *
-	 * @param samples the samples to compute the antithetic means from
+	 * @param samples the list of samples to compute the antithetic means from
 	 * @return the computed antithetic means from the given samples
 	 * if the "Antithetic Variates Technique" is to be applied,
-	 * otherwise return the same given samples array.
+	 * otherwise return the same given samples list.
 	 *
 	 * @see #createRandomGen(int)
 	 */
-	protected double[] computeAntitheticMeans(double samples[]) {
+	protected List<Double> computeAntitheticMeans(List<Double> samples) {
 		if(!isApplyAntitheticVariatesTechnique())
 			return samples;
 
-		final int half = samples.length/2;
-		double antitheticMeans[] = new double[half];
+		final int half = samples.size()/2;
+		List<Double> antitheticMeans = new ArrayList<>(half);
 		//applies the "Antithetic Variates Technique" to reduce variance
 		for(int i = 0; i < half; i++){
-			antitheticMeans[i] = (samples[i] + samples[half+i])/2.0;
+			antitheticMeans.add((samples.get(i) + samples.get(half+i))/2.0);
 		}
 
 		System.out.printf(
@@ -412,9 +453,20 @@ public abstract class ExperimentRunnerAbstract {
 	 */
 	protected abstract void printResults(SummaryStatistics stats);
 
+	public ExperimentRunner setBaseSeed(long baseSeed) {
+		this.baseSeed = baseSeed;
+		return this;
+	}
+
 	/**
-	 * Creates and run an experiment for the i'th time.
-	 * @param i the index that represents the current experiment run
+	 * Indicates if the runner will output execution logs or not.
 	 */
-	protected abstract void createAndRunExperiment(int i);
+	public boolean isVerbose() {
+		return verbose;
+	}
+
+	public ExperimentRunner setVerbose(boolean verbose) {
+		this.verbose = verbose;
+		return this;
+	}
 }

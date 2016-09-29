@@ -98,8 +98,9 @@ public class UniformDistr extends ContinuousDistributionAbstract {
      * @param applyAntitheticVariatesTechnique true if the technique has to be applied, false otherwise
      * @see #isApplyAntitheticVariatesTechnique()
      */
-    public void setApplyAntitheticVariatesTechnique(boolean applyAntitheticVariatesTechnique) {
+    public UniformDistr setApplyAntitheticVariatesTechnique(boolean applyAntitheticVariatesTechnique) {
         this.applyAntitheticVariatesTechnique = applyAntitheticVariatesTechnique;
+	    return this;
     }
 
     @Override

@@ -88,6 +88,7 @@ public abstract class HeuristicAbstract<T extends HeuristicSolution>  implements
 	@Override
 	public int getRandomValue(int maxValue){
 		final double uniform = getRandom().sample();
+
         /*always get an index between [0 and size[,
         regardless if the random number generator returns
         values between [0 and 1[ or >= 1*/

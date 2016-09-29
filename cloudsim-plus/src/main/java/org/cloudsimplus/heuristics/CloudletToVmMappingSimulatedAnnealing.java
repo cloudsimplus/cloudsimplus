@@ -8,7 +8,7 @@ import org.cloudbus.cloudsim.distributions.ContinuousDistribution;
 /**
  * A heuristic that uses <a href="http://en.wikipedia.org/wiki/Simulated_annealing">Simulated Annealing</a>
  * to find a sub-optimal mapping among a set of Cloudlets and VMs in order to reduce
- * task completion time.
+ * the number of idle or overloaded Vm Pe's.
  *
  * @author Manoel Campos da Silva Filho
  */
@@ -35,7 +35,7 @@ public class CloudletToVmMappingSimulatedAnnealing extends SimulatedAnnealing<Cl
         initialSolution = new CloudletToVmMappingSolution(this);
     }
 
-    public CloudletToVmMappingSolution generateTotallyRandomSolution() {
+    public CloudletToVmMappingSolution generateRandomSolution() {
         CloudletToVmMappingSolution solution = new CloudletToVmMappingSolution(this);
         cloudletList.stream()
                 .forEach(c -> solution.bindCloudletToVm(c, getRandomVm()));
@@ -54,7 +54,7 @@ public class CloudletToVmMappingSimulatedAnnealing extends SimulatedAnnealing<Cl
     @Override
     public CloudletToVmMappingSolution getInitialSolution() {
         if(!isThereInitialSolution() && isReadToGenerateInitialSolution()) {
-            initialSolution = generateTotallyRandomSolution();
+            initialSolution = generateRandomSolution();
         }
 
         return initialSolution;
