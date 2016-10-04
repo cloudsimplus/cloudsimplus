@@ -70,7 +70,7 @@ at [the Computer Science and Software Engineering Department](http://www.csse.un
 
 # Project's Modules
 
-CloudSim Plus has a simpler structure that can be understood right away. It consists of 5 modules, of which 2 are new, as presented below.
+CloudSim Plus has a simpler structure that can be understood right away. It consists of 5 modules, 2 of which are new, as presented below.
 
 - [cloudsim-plus](cloudsim-plus): the CloudSim Plus cloud simulation framework API that is used by all other modules. 
   It is the main module that contains the simulation framework implementation and is the only
