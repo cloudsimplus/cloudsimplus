@@ -94,8 +94,8 @@ public class DatacenterBrokerHeuristicRunner extends ExperimentRunner<Datacenter
         new DatacenterBrokerHeuristicRunner()
 	        .setNumberOfSimulationRuns(1200)
 	        .setApplyAntitheticVariatesTechnique(true)
-	        .setNumberOfBatches(6)
-	        .setBaseSeed(1475098589732L)
+	        .setNumberOfBatches(6) //comment this or set to 0 to disable the "Batch Means Method"
+	        .setBaseSeed(1475098589732L) //comment this to use the current time as base seed
 	        .setVerbose(true)
 	        .run();
     }

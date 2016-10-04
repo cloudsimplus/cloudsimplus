@@ -10,6 +10,8 @@
 |
 <b><a href="#a-minimal-simulation-example">Example</a></b>
 |
+<b><a href="#projects-modules">Modules</a></b>
+|
 <b><a href="#documentation-and-help">Docs and Help</a></b>
 |
 <b><a href="#why-care">Why should I care?</a></b>
@@ -168,6 +170,24 @@ Log.printFormattedLine("Minimal Example finished!");
 And the results are more structured and clear, including the unit of some presented data, in order to allow better understanding. 
 The image below, for a simulation with two cloudlets (applications) gives you a preview. 
 ![Simulation Results](simulation-results.png)
+
+<p align="right"><a href="#top">:arrow_up:</a></p>
+
+# Project's Modules
+
+CloudSim Plus has a simpler structure that can be understood right away. It consists of 5 modules, of which 2 are new, as presented below.
+
+- [cloudsim-plus](cloudsim-plus): the CloudSim Plus cloud simulation framework API that is used by all other modules. 
+  It is the main module that contains the simulation framework implementation and is the only
+  one you need to write your cloud simulations. 
+- [cloudsim-plus-examples](cloudsim-plus-examples): includes a series of different examples, since minimal simulation scenarios using basic 
+  CloudSim Plus features, to complex scenarios using workloads from trace files or \texttt{Vm} migration examples.
+- [cloudsim-plus-testbeds](cloudsim-plus-testbeds): a new module that implements some simulation testbeds in a repeatable manner, 
+  allowing a researcher to execute several simulation runs for a given experiment and collect statistical data using a scientific approach.
+- [cloudsim-plus-benchmarks](cloudsim-plus-benchmarks): a new module introduced to implement micro benchmarks using the 
+  [Java Microbenchmark Harness framework (JMH)](http://openjdk.java.net/projects/code-tools/jmh/) to enable measuring critical methods of the 
+  CloudSim Plus API that have a high impact in the simulation framework performance.
+- [distribution](distribution): a module used just to build jar files for distribution of packaged CloudSim Plus binaries, documentation and source code.   
 
 <p align="right"><a href="#top">:arrow_up:</a></p>
 

@@ -239,9 +239,6 @@ public abstract class ExperimentRunner<T extends SimulationExperiment> implement
 		    final double significance = 1.0 - confidenceLevel;
 		    final double criticalValue = tDist.inverseCumulativeProbability(1.0 - significance/2.0);
 		    System.out.printf("\n\tt-Distribution critical value for %d samples: %f\n", stats.getN(), criticalValue);
-		    if(isApplyAntitheticVariatesTechnique()){
-			    System.out.println("\tThere are less samples than simulation runs due to the application of 'Antithetic Variates Technique', that reduces the number of samples to half.");
-		    }
 
 	        // Calculates the confidence interval error margin
 	        return criticalValue * stats.getStandardDeviation() / Math.sqrt(stats.getN());
@@ -387,7 +384,7 @@ public abstract class ExperimentRunner<T extends SimulationExperiment> implement
 		experimentsStartTime = System.currentTimeMillis();
 		for(int i = 0; i < getNumberOfSimulationRuns(); i++){
 			if(isVerbose()) {
-				System.out.print((i % 100 == 0 ? "\n." : "."));
+				System.out.print(((i+1) % 100 == 0 ? String.format(". Run #%d\n", i+1) : "."));
 			}
 			createExperiment(i).run();
 		}

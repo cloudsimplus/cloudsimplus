@@ -6,18 +6,16 @@ Lists the main changes in the project.
 - Inclusion of new module "cloudsim-plus-benchmarks" that uses JMH (Java Microbenchmark Harness framework) that implement some
   benchmarks in order to assess CloudSim Plus performance.
 - Inclusion of new module "cloudsim-plus-testbeds" to provide a set of more complex and comprehensive 
-  testbeds used to assess implementation of algorithms for different purposes such as
-	mapping of Cloudlets to VMs, allocation and scheduling policies,
-	resource utilization models or VM placement and migration policies.
-  These testbeds also show how to apply statistical methods to get simulation results
-  scientifically valid. Some method to reduce confidence interval and correlation 
-  are implemented and can be used for several experiments. 
+  testbeds used to assess implementation of algorithms for different purposes such as:
+	mapping of Cloudlets to VMs, allocation and scheduling policies, resource utilization models or VM placement and migration policies.
+  These testbeds also show how to apply statistical methods to get scientifically valid simulation results. 
+  Some method to reduce confidence interval and correlation are implemented and can be used for several experiments. 
 
 ## [v0.8-beta.2] - 2016-09-15
 
 ### Added
-- Introduction of classes and interfaces to allow implementation of [heuristics](http://en.wikipedia.org/wiki/Heuristic) such as [Tabu Search](http://en.wikipedia.org/wiki/Tabu_search), 
-  [Simulated Annealing](http://en.wikipedia.org/wiki/Simulated_annealing) , 
+- Introduction of classes and interfaces to allow implementation of [heuristics](http://en.wikipedia.org/wiki/Heuristic) such as 
+  [Tabu Search](http://en.wikipedia.org/wiki/Tabu_search), [Simulated Annealing](http://en.wikipedia.org/wiki/Simulated_annealing), 
   [Ant Colony Systems](http://en.wikipedia.org/wiki/Ant_colony_optimization_algorithms) and so on.
 - Introduction of new package `org.cloudsimplus.heuristics` with classes and interfaces that are the base for implementation
   of heuristics. The `Heuristic` is the base interface and classes such as the `SimulatedAnnealing` one implements it.

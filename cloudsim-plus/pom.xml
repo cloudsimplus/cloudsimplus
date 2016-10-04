@@ -8,7 +8,7 @@
     </parent>
     <artifactId>cloudsim-plus</artifactId>
     <name>CloudSim Plus API</name>
-    <description>CloudSim Plus A CloudSim fork for Modeling and Simulation of Cloud Computing Infrastructures and Services that focuses on reusability principles and other ones such as DRY, KISS, SOLID and Design Patterns</description>
+    <description>CloudSim Plus: A CloudSim fork for Modeling and Simulation of Cloud Computing Infrastructures and Services that focuses on reusability principles and other ones such as DRY, KISS, SOLID and Design Patterns</description>
     <url>http://cloudsimplus.org</url>
 
     <organization>
