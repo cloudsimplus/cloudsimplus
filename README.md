@@ -181,7 +181,8 @@ CloudSim Plus has a simpler structure that can be understood right away. It cons
   It is the main module that contains the simulation framework implementation and is the only
   one you need to write your cloud simulations. 
 - [cloudsim-plus-examples](cloudsim-plus-examples): includes a series of different examples, since minimal simulation scenarios using basic 
-  CloudSim Plus features, to complex scenarios using workloads from trace files or \texttt{Vm} migration examples.
+  CloudSim Plus features, to complex scenarios using workloads from trace files or Vm migration examples. This is an excelent start point 
+  for learning how to build cloud simulations using CloudSim Plus.
 - [cloudsim-plus-testbeds](cloudsim-plus-testbeds): a new module that implements some simulation testbeds in a repeatable manner, 
   allowing a researcher to execute several simulation runs for a given experiment and collect statistical data using a scientific approach.
 - [cloudsim-plus-benchmarks](cloudsim-plus-benchmarks): a new module introduced to implement micro benchmarks using the 
