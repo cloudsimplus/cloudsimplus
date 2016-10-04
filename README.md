@@ -81,7 +81,9 @@ CloudSim Plus has a simpler structure that can be understood right away. It cons
 - [cloudsim-plus-testbeds](cloudsim-plus-testbeds): a new module that implements some simulation testbeds in a repeatable manner, 
   allowing a researcher to execute several simulation runs for a given experiment and collect statistical data using a scientific approach. 
   It represents real testbeds implemented to assess CloudSim Plus features, providing relevant results. The module provides a set of class which 
-  can be used by other researchers to implement their own comprehensive testbeds.
+  can be used by other researchers to implement their own comprehensive testbeds. Different from the examples module that aims just
+  to show how to use CloudSim Plus features, this module includes more complex simulation scenarios concerned in providing
+  scientifically valid results. 
 - [cloudsim-plus-benchmarks](cloudsim-plus-benchmarks): a new module introduced to implement micro benchmarks using the 
   [Java Microbenchmark Harness framework (JMH)](http://openjdk.java.net/projects/code-tools/jmh/) to enable measuring critical methods of the 
   CloudSim Plus API that have a high impact in the simulation framework performance.
