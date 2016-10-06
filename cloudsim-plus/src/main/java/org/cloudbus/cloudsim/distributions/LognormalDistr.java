@@ -17,7 +17,7 @@ import org.apache.commons.math3.distribution.LogNormalDistribution;
  * @author Marcos Dias de Assuncao
  * @since CloudSim Toolkit 1.0
  */
-public class LognormalDistr extends AbstractContinuousDistribution implements ContinuousDistribution {
+public class LognormalDistr extends ContinuousDistributionAbstract {
 
     /**
      * Instantiates a new Log-normal pseudo random number generator.
@@ -37,7 +37,7 @@ public class LognormalDistr extends AbstractContinuousDistribution implements Co
      * @param scale the scale
      */
     public LognormalDistr(double shape, double scale) {
-        this(-1, shape, scale);        
+        this(-1, shape, scale);
     }
 
 }

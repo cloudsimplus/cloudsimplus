@@ -17,7 +17,7 @@ import org.apache.commons.math3.distribution.UniformRealDistribution;
  * @author Marcos Dias de Assuncao
  * @since CloudSim Toolkit 1.0
  */
-public class ZipfDistr extends AbstractContinuousDistribution implements ContinuousDistribution {
+public class ZipfDistr extends ContinuousDistributionAbstract {
 
     /**
      * The shape.
@@ -41,7 +41,7 @@ public class ZipfDistr extends AbstractContinuousDistribution implements Continu
         if (shape <= 0.0 || population < 1) {
             throw new IllegalArgumentException("Mean must be greater than 0.0 and population greater than 0");
         }
-        
+
         this.shape = shape;
         computeDen(shape, population);
     }

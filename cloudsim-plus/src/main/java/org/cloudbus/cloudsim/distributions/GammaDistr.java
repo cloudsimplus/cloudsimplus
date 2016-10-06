@@ -8,8 +8,6 @@ mulation) Toolkit for Modeling and Simulation of Clouds
  */
 package org.cloudbus.cloudsim.distributions;
 
-import java.util.Random;
-
 import org.apache.commons.math3.distribution.GammaDistribution;
 
 /**
@@ -20,7 +18,7 @@ import org.apache.commons.math3.distribution.GammaDistribution;
  * @author Marcos Dias de Assuncao
  * @since CloudSim Toolkit 1.0
  */
-public class GammaDistr extends AbstractContinuousDistribution implements ContinuousDistribution {
+public class GammaDistr extends ContinuousDistributionAbstract {
 
     /**
      * Instantiates a new Gamma pseudo random number generator.

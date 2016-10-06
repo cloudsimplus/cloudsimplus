@@ -60,12 +60,12 @@ THE POSSIBILITY OF SUCH DAMAGE.
             <version>1.14</version>
             <scope>provided</scope>
         </dependency>
-        
+
         <dependency>
             <groupId>${project.groupId}</groupId>
             <artifactId>cloudsim-plus</artifactId>
             <version>${project.version}</version>
-        </dependency>        
+        </dependency>
     </dependencies>
 
     <properties>
@@ -129,7 +129,7 @@ THE POSSIBILITY OF SUCH DAMAGE.
                             <shadedArtifactAttached>true</shadedArtifactAttached>
                             <!-- https://maven.apache.org/plugins/maven-shade-plugin/examples/attached-artifact.html -->
                             <!-- Can be any name that makes sense -->
-                            <shadedClassifierName>jhm</shadedClassifierName>                             
+                            <shadedClassifierName>jhm</shadedClassifierName>
                         </configuration>
                     </execution>
                 </executions>
@@ -160,14 +160,6 @@ THE POSSIBILITY OF SUCH DAMAGE.
                 <plugin>
                     <artifactId>maven-resources-plugin</artifactId>
                     <version>2.6</version>
-                </plugin>
-                <plugin>
-                    <artifactId>maven-site-plugin</artifactId>
-                    <version>3.3</version>
-                </plugin>
-                <plugin>
-                    <artifactId>maven-source-plugin</artifactId>
-                    <version>2.2.1</version>
                 </plugin>
                 <plugin>
                     <artifactId>maven-surefire-plugin</artifactId>

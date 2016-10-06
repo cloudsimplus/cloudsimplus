@@ -17,8 +17,7 @@ import org.apache.commons.math3.distribution.ExponentialDistribution;
  * @author Marcos Dias de Assuncao
  * @since CloudSim Toolkit 1.0
  */
-public class ExponentialDistr extends AbstractContinuousDistribution implements ContinuousDistribution {
-
+public class ExponentialDistr extends ContinuousDistributionAbstract {
     /**
      * Creates a new exponential pseudo random number generator.
      *

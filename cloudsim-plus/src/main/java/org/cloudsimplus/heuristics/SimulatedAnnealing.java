@@ -54,7 +54,7 @@ public abstract class SimulatedAnnealing<T extends HeuristicSolution> extends He
 	/**
      * Instantiates a simulated annealing heuristic.
      *
-     * @param klass Reference to the generic class that will be used to instantiate objects.
+     * @param klass Reference to the generic class that will be used to instantiate heuristic solutions
      * @param random a pseudo random number generator
      */
     public SimulatedAnnealing(Class<T> klass, ContinuousDistribution random){

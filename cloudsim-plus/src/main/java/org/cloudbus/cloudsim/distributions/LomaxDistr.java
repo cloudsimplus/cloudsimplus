@@ -15,7 +15,7 @@ package org.cloudbus.cloudsim.distributions;
  * @author Marcos Dias de Assuncao
  * @since CloudSim Toolkit 1.0
  */
-public class LomaxDistribution extends ParetoDistr implements ContinuousDistribution {
+public class LomaxDistr extends ParetoDistr {
 
     /**
      * The shift.
@@ -29,7 +29,7 @@ public class LomaxDistribution extends ParetoDistr implements ContinuousDistribu
      * @param location the location
      * @param shift the shift
      */
-    public LomaxDistribution(double shape, double location, double shift) {
+    public LomaxDistr(double shape, double location, double shift) {
         this(-1, shape, location, shift);
     }
 
@@ -41,14 +41,14 @@ public class LomaxDistribution extends ParetoDistr implements ContinuousDistribu
      * @param location the location
      * @param shift the shift
      */
-    public LomaxDistribution(long seed, double shape, double location, double shift) {
+    public LomaxDistr(long seed, double shape, double location, double shift) {
         super(seed, shape, location);
         if (shift > location) {
             throw new IllegalArgumentException("Shift must be smaller or equal than location");
         }
 
         this.shift = shift;
-    }    
+    }
 
     @Override
     public double sample() {
