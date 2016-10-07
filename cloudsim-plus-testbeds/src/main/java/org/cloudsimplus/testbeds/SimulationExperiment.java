@@ -11,13 +11,13 @@ import org.cloudbus.cloudsim.schedulers.CloudletSchedulerTimeShared;
 import org.cloudbus.cloudsim.schedulers.VmSchedulerTimeShared;
 import org.cloudbus.cloudsim.utilizationmodels.UtilizationModel;
 import org.cloudbus.cloudsim.utilizationmodels.UtilizationModelFull;
+import org.cloudsimplus.testbeds.heuristics.DatacenterBrokerHeuristicRunner;
 
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.function.Consumer;
-import java.util.function.Function;
 
 /**
  * A base class to implement simulation experiments.
@@ -32,6 +32,12 @@ public abstract class SimulationExperiment implements Runnable {
 	 * @see #getIndex()
 	 */
 	private final int index;
+
+	/**
+	 * @see #getAfterExperimentFinish()
+	 */
+	private Consumer<? extends SimulationExperiment> afterExperimentFinish;
+
 	private List<Vm> vmList;
 	private int numberOfCreatedCloudlets = 0;
 	private int numberOfCreatedVms = 0;
@@ -47,13 +53,18 @@ public abstract class SimulationExperiment implements Runnable {
 	 * Creates a simulation experiment.
 	 *
 	 * @param index the index that identifies the current experiment run.
+	 * @param runner The {@link ExperimentRunner} that is in charge
+	 * of executing this experiment a defined number of times and to collect
+	 * data for statistical analysis.
 	 */
 	public SimulationExperiment(int index, DatacenterBrokerHeuristicRunner runner) {
 		this.verbose = false;
 		this.vmList = new ArrayList<>();
 		this.index = index;
 		this.cloudletList = new ArrayList<>();
+		this.brokerList = new ArrayList<>();
 		this.runner = runner;
+		afterExperimentFinish = exp->{};
 	}
 
 	public List<Cloudlet> getCloudletList() {
@@ -117,6 +128,11 @@ public abstract class SimulationExperiment implements Runnable {
 		return verbose;
 	}
 
+	/**
+	 * @see #getBrokerList()
+	 */
+	private List<DatacenterBroker> brokerList;
+
 	protected Host createHost() {
 		int mips = 1000; // capacity of each CPU core (in Million Instructions per Second)
 		int ram = 2048; // host memory (MB)
@@ -160,7 +176,7 @@ public abstract class SimulationExperiment implements Runnable {
 	}
 
 	/**
-	 * Builds the simulation scenario and starts simulation.
+	 * Builds the simulation scenario and starts execution.
 	 *
 	 * @return the final solution
 	 * @throws RuntimeException
@@ -171,13 +187,35 @@ public abstract class SimulationExperiment implements Runnable {
 
 		CloudSim.startSimulation();
 		CloudSim.stopSimulation();
-		printSolution(
-			String.format(
-				"Experiment %d > Heuristic solution for mapping cloudlets to Vm's",
-				getIndex()));
+		getAfterExperimentFinish().accept(this);
+
+		printResultsInternal();
 	}
 
-	public abstract void printSolution(String title);
+
+	/**
+	 * Checks if {@link #isVerbose()} is true
+	 * in order to call {@link #printResults()}
+	 * to print the experiment results.
+	 *
+	 * @see #printResults()
+	 */
+	private void printResultsInternal(){
+		if(!isVerbose())
+			return;
+
+		printResults();
+	}
+
+	/**
+	 * Prints the results for the experiment.
+	 *
+	 * The method has to be implemented by subclasses in order to output
+	 * the experiment results.
+	 *
+	 * @see #printResultsInternal()
+	 */
+	public abstract void printResults();
 
 	private void buildScenario() {
 		int numberOfCloudUsers = 1;
@@ -185,22 +223,34 @@ public abstract class SimulationExperiment implements Runnable {
 
 		CloudSim.init(numberOfCloudUsers, Calendar.getInstance(), traceEvents);
 		Datacenter datacenter0 = createDatacenter("Datacenter0");
-		DatacenterBroker broker0 = createBroker();
+		DatacenterBroker broker0 = createBrokerAndAddToList();
 		createAndSubmitVms(broker0);
 		createAndSubmitCloudlets(broker0);
 	}
 
+	/**
+	 * Creates a DatacenterBroker.
+	 * @return the created DatacenterBroker
+	 */
 	protected abstract DatacenterBroker createBroker();
 
 	/**
-	 * Array with Number of PEs for each created VM. The length of the array defines
-	 * the number of VMs to create.
+	 * Creates a DatacenterBroker and adds it to the {@link #getBrokerList() DatacenterBroker list}.
+	 * @return the created DatacenterBroker.
+	 */
+	private DatacenterBroker createBrokerAndAddToList(){
+		DatacenterBroker broker = createBroker();
+		brokerList.add(broker);
+		return broker;
+	}
+
+	/**
+	 * @see #setVmPesArray(int[])
 	 */
 	private int vmPesArray[];
 
 	/**
-	 * Array with Number of PEs for each created Cloudlet. The length of the array defines
-	 * the number of Cloudlets to create.
+	 * @see #setCloudletPesArray(int[])
 	 */
 	private int cloudletPesArray[];
 
@@ -240,15 +290,64 @@ public abstract class SimulationExperiment implements Runnable {
 			new VmAllocationPolicySimple(hostList), storageList, 0);
 	}
 
-	public void setVmPesArray(int vmPesArray[]) {
+	/**
+	 * Sets the array with Number of PEs for each VM to create.
+	 * The length of the array defines the number of VMs to create.
+	 * @param vmPesArray VMs PEs array to set
+	 */
+	public SimulationExperiment setVmPesArray(int vmPesArray[]) {
 		this.vmPesArray = vmPesArray;
+		return this;
 	}
 
-	public void setCloudletPesArray(int[] cloudletPesArray) {
+	/**
+	 * Sets the array with Number of PEs for each Cloudlet to create.
+	 * The length of the array defines the number of Cloudlets to create.
+	 * @param cloudletPesArray Cloudlets PEs array to set
+	 */
+	public SimulationExperiment setCloudletPesArray(int[] cloudletPesArray) {
 		this.cloudletPesArray = cloudletPesArray;
+		return this;
 	}
 
 	public DatacenterBrokerHeuristicRunner getRunner() {
 		return runner;
 	}
+
+	/**
+	 * @return list of created DatacenterBrokers.
+	 */
+	public List<DatacenterBroker> getBrokerList() {
+		return brokerList;
+	}
+
+	/**
+	 * <p>Sets a {@link Consumer} object that will receive the experiment instance after the experiment
+	 * finishes executing and performs some post-processing tasks.
+	 * These tasks are defined by the developer using the current class
+	 * and can include collecting data for statistical analysis.</p>
+	 *
+	 * <p>Setting a Consumer object is optional.</p>
+	 *
+	 * @param afterExperimentFinishConsumer a {@link Consumer} instance to set.
+	 * @param <T> a generic class that defines the type of experiment the {@link Consumer}
+	 *           will deal with. It is used to ensure that when the {@link Consumer} is called,
+	 *           it will receive an object of the exact type of the {@link SimulationExperiment}
+	 *           instance that the Consumer is being associated to.
+	 */
+	public <T extends SimulationExperiment> void setAfterExperimentFinish(Consumer<T> afterExperimentFinishConsumer){
+		this.afterExperimentFinish = afterExperimentFinishConsumer;
+	}
+
+	/**
+	 * <p>Gets a {@link Consumer} object that will receive the experiment instance after the experiment
+	 * finishes executing and performs some post-processing tasks.
+	 * These tasks are defined by the developer using the current class
+	 * and can include collecting data for statistical analysis.</p>
+	 *
+	 */
+	private <T extends SimulationExperiment> Consumer<T> getAfterExperimentFinish() {
+		return (Consumer<T>) afterExperimentFinish;
+	}
+
 }

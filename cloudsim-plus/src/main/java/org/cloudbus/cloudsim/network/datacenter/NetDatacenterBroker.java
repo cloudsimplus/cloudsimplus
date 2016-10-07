@@ -19,18 +19,18 @@ import org.cloudbus.cloudsim.brokers.DatacenterBrokerSimple;
  * NetDatacentreBroker is a {@link DatacenterBroker} implementation
  * that works with network components such as {@link NetworkDatacenter},
  * {@link NetworkHost} and {@link NetworkVm}.
- * 
+ *
  * It accepts the submission of {@link NetworkCloudlet} lists,
  * each one that composes a {@link AppCloudlet}.
- * 
+ *
  * @author Saurabh Kumar Garg
  * @author Manoel Campos da Silva Filho
- * 
+ *
  * @since CloudSim Toolkit 3.0
  */
 public class NetDatacenterBroker extends DatacenterBrokerSimple {
     /**
-     * The list of  {@link AppCloudlet AppCloudlets} submitted to the broker that are 
+     * The list of  {@link AppCloudlet AppCloudlets} submitted to the broker that are
      * waiting to be created inside some Vm yet.
      */
     private List<? extends AppCloudlet> appCloudletWaitingList;
@@ -52,10 +52,10 @@ public class NetDatacenterBroker extends DatacenterBrokerSimple {
 
     @Override
     public boolean hasMoreCloudletsToBeExecuted() {
-        return super.hasMoreCloudletsToBeExecuted() || 
-               (getAppCloudletList().size() > 0 && cloudletsCreated == 0);
+        return super.hasMoreCloudletsToBeExecuted() ||
+               (getAppCloudletList().size() > 0 && getCloudletsCreated() == 0);
     }
-    
+
     public List<? extends AppCloudlet> getAppCloudletList() {
         return appCloudletWaitingList;
     }

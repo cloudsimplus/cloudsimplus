@@ -20,11 +20,12 @@ import org.cloudbus.cloudsim.VmSimple;
 import org.cloudbus.cloudsim.core.CloudSim;
 
 /**
- * A VmAllocationPolicy implementation that chooses, as
+ * <p>A VmAllocationPolicy implementation that chooses, as
  * the host for a VM, that one with less PEs in use. It is therefore a Worst Fit
- * policy, allocating VMs into the host with most available PEs.
- * This policy doesn't perform optimization of VM allocation (placement) 
- * by means of VM migration.
+ * policy, allocating VMs into the host with most available PEs.</p>
+ *
+ * <b>NOTE: This policy doesn't perform optimization of VM allocation (placement)
+ * by means of VM migration.</b>
  *
  * @author Rodrigo N. Calheiros
  * @author Anton Beloglazov
@@ -73,6 +74,12 @@ public class VmAllocationPolicySimple extends VmAllocationPolicyAbstract {
         boolean result = false;
         int tries = 0;
         List<Integer> freePesTmp = new ArrayList<>();
+
+	    /**
+	     * @todo It is copying the elements from freePesList to
+	     * freePesTmp. The ArrayList constructor that receives a list
+	     * already copies the given itens to the new list.
+	     */
         getFreePesList().forEach(freePes -> freePesTmp.add(freePes));
 
         if (!getVmTable().containsKey(vm.getUid())) { // if this vm was not created
@@ -169,7 +176,7 @@ public class VmAllocationPolicySimple extends VmAllocationPolicyAbstract {
     /**
      * The method in this VmAllocationPolicy doesn't perform any
      * VM placement optimization and, in fact, has no effect.
-     * 
+     *
      * @param vmList
      * @return an empty map to indicate that it never performs optimization
      */
@@ -189,7 +196,7 @@ public class VmAllocationPolicySimple extends VmAllocationPolicyAbstract {
             getFreePesList().set(idx, getFreePesList().get(idx) - requiredPes);
 
             Log.printFormattedLine(
-                    "%.2f: VM #%d has been allocated to the host #%d", 
+                    "%.2f: VM #%d has been allocated to the host #%d",
                     CloudSim.clock(), vm.getId(), host.getId());
             return true;
         }

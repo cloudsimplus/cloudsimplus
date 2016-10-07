@@ -7,6 +7,7 @@
  */
 package org.cloudbus.cloudsim;
 
+import org.cloudbus.cloudsim.brokers.DatacenterBroker;
 import org.cloudbus.cloudsim.utilizationmodels.UtilizationModel;
 import java.text.DecimalFormat;
 import java.util.LinkedList;
@@ -17,7 +18,7 @@ import org.cloudbus.cloudsim.listeners.VmToCloudletEventInfo;
 import org.cloudbus.cloudsim.listeners.EventListener;
 
 /**
- * Cloudlet implements the basic features of an application/job/task to be executed 
+ * Cloudlet implements the basic features of an application/job/task to be executed
  * by a {@link Vm} on behalf of a given user. It stores, despite all the
  * information encapsulated in the Cloudlet, the ID of the VM running it.
  *
@@ -25,14 +26,14 @@ import org.cloudbus.cloudsim.listeners.EventListener;
  * @author Anton Beloglazov
  * @since CloudSim Toolkit 1.0
  * @see DatacenterBroker
- * 
+ *
  * @todo @author manoelcampos Cloudlets doesn't have a priority attribute
  * to define which of them will be executed first.
  * For instance, considering a VM with just one PE
  * and several cloudlets, the execution order of cloudlets can be defined by
  * their priorities.
  */
-public class CloudletSimple extends AbstractCloudlet {    
+public class CloudletSimple extends CloudletAbstract {
     /** @see #getId() */
     private final int id;
 
@@ -48,7 +49,7 @@ public class CloudletSimple extends AbstractCloudlet {
     /** @see #getCloudletOutputSize() */
     private final long cloudletOutputSize;
 
-    
+
     /** @see #getNumberOfPes() */
     private int numberOfPes;
 
@@ -65,7 +66,7 @@ public class CloudletSimple extends AbstractCloudlet {
     private int reservationId = NOT_ASSIGNED;
 
     /**
-     * @see #isRecordTransactionHistory() 
+     * @see #isRecordTransactionHistory()
      */
     private boolean recordTransactionHistory;
 
@@ -90,7 +91,7 @@ public class CloudletSimple extends AbstractCloudlet {
      */
     private final DecimalFormat num;
 
-    /** @see #getVm() */
+    /** @see #getVmId() */
     protected int vmId;
 
     /** @see #getCostPerBw() */
@@ -110,15 +111,15 @@ public class CloudletSimple extends AbstractCloudlet {
 
     /** @see #getRequiredFiles() */
     private List<String> requiredFiles;
-    
+
     /**@see #getOnCloudletFinishEventListener() */
     private EventListener<VmToCloudletEventInfo> onCloudletFinishEventListener = EventListener.NULL;
-    
+
     /**@see #getOnUpdateCloudletProcessingListener() () */
     private EventListener<VmToCloudletEventInfo> onUpdateCloudletProcessingListener = EventListener.NULL;
-    
+
     /**
-     * @see #getSubmissionDelay() 
+     * @see #getSubmissionDelay()
      */
     private double submissionDelay;
 
@@ -154,7 +155,7 @@ public class CloudletSimple extends AbstractCloudlet {
             final UtilizationModel utilizationModelRam,
             final UtilizationModel utilizationModelBw) {
         super();
-        num = new DecimalFormat("#0.00#"); 
+        num = new DecimalFormat("#0.00#");
         newline = System.getProperty("line.separator");
         userId = NOT_ASSIGNED;          // to be set by a Broker or user
         status = Status.CREATED;
@@ -193,10 +194,10 @@ public class CloudletSimple extends AbstractCloudlet {
     public void setOnCloudletFinishEventListener(EventListener<VmToCloudletEventInfo> onCloudletFinishEventListener) {
         if(onCloudletFinishEventListener == null)
             onCloudletFinishEventListener = EventListener.NULL;
-        
+
         this.onCloudletFinishEventListener = onCloudletFinishEventListener;
     }
-    
+
     @Override
     public boolean setReservationId(final int reservationId) {
         if (reservationId <= 0) {
@@ -215,7 +216,7 @@ public class CloudletSimple extends AbstractCloudlet {
     public boolean hasReserved() {
         return reservationId > NOT_ASSIGNED;
     }
-    
+
     @Override
     public boolean setCloudletLength(final long cloudletLength) {
         if (cloudletLength <= 0) {
@@ -283,9 +284,9 @@ public class CloudletSimple extends AbstractCloudlet {
 
     @Override
     public String getCloudletHistory() {
-        if (history == null) 
+        if (history == null)
             return String.format(NO_HISTORY_IS_RECORDED_FOR_CLOUDLET, id);
-        
+
         return history.toString();
     }
 
@@ -307,7 +308,7 @@ public class CloudletSimple extends AbstractCloudlet {
 
         final long finishedMI = getExecutionInDatacenterInfoList().get(getLastExecutedDatacenterIndex()).finishedSoFar;
         final long remainingMI = getCloudletLength() - finishedMI;
-        
+
         return remainingMI <= 0.0;
     }
 
@@ -325,7 +326,7 @@ public class CloudletSimple extends AbstractCloudlet {
 
         final ExecutionInDatacenterInfo res = getExecutionInDatacenterInfoList().get(getLastExecutedDatacenterIndex());
         res.finishedSoFar = length;
-        
+
         write("Set the length's finished so far to %d", length);
         return true;
     }
@@ -406,8 +407,8 @@ public class CloudletSimple extends AbstractCloudlet {
             }
         }
 
-        setLastExecutedDatacenterIndex(getLastExecutedDatacenterIndex() + 1);  
-    }    
+        setLastExecutedDatacenterIndex(getLastExecutedDatacenterIndex() + 1);
+    }
 
     @Override
     public double getDatacenterArrivalTime() {
@@ -440,7 +441,7 @@ public class CloudletSimple extends AbstractCloudlet {
 
         write("Sets the wall clock time to %s and the actual CPU time to %s",
               num.format(wallTime), num.format(actualTime));
-        
+
         return true;
     }
 
@@ -544,7 +545,7 @@ public class CloudletSimple extends AbstractCloudlet {
         if (datacenter != null) {
             return datacenter.finishedSoFar;
         }
-        
+
         return 0;
     }
 
@@ -601,7 +602,7 @@ public class CloudletSimple extends AbstractCloudlet {
             return;
         }
 
-        if (history == null) { 
+        if (history == null) {
             // Creates the transaction history of this Cloudlet
             history = new StringBuffer(1000);
             history.append("Time below denotes the simulation time.");
@@ -618,8 +619,8 @@ public class CloudletSimple extends AbstractCloudlet {
         history.append(num.format(CloudSim.clock()));
         history.append("   ").append(str).append(newline);
     }
-    
-    
+
+
     /**
      * Writes a formatted particular history transaction of this Cloudlet into a log.
      *
@@ -629,7 +630,7 @@ public class CloudletSimple extends AbstractCloudlet {
      * that are referenced by the format.
      * @pre format != null
      * @post $none
-     * @see #write(java.lang.String) 
+     * @see #write(java.lang.String)
      */
     protected void write(final String format, Object... args) {
         final String str = String.format(format, args);
@@ -660,7 +661,7 @@ public class CloudletSimple extends AbstractCloudlet {
     public double getActualCPUTime() {
         if(getFinishTime() == NOT_ASSIGNED)
             return NOT_ASSIGNED;
-        
+
         return getFinishTime() - getExecStartTime();
     }
 
@@ -672,14 +673,14 @@ public class CloudletSimple extends AbstractCloudlet {
          * CloudletScheduler that the VM will use to execute the cloudlet.
          * Thus, it may be more complex to estimate that value.
          */
-        
+
         // cloudlet cost: execution cost...
         // double cost = getProcessingCost();
         double cost = 0;
-        
+
         // ... plus input data transfer cost...
         cost += getAccumulatedBwCost();
-        
+
         // ... plus output cost
         cost += getCostPerBw() * getCloudletOutputSize();
         return cost;
@@ -814,12 +815,12 @@ public class CloudletSimple extends AbstractCloudlet {
      */
     private void setAccumulatedBwCost(double accumulatedBwCost) {
         this.accumulatedBwCost = accumulatedBwCost;
-    }    
+    }
 
     /**
      * Indicates if Cloudlet transaction history is to be recorded or not.
-     * @see #getCloudletHistory() 
-     * @return 
+     * @see #getCloudletHistory()
+     * @return
      */
     public boolean isRecordTransactionHistory() {
         return recordTransactionHistory;
@@ -827,7 +828,7 @@ public class CloudletSimple extends AbstractCloudlet {
 
     /**
      * Sets the Cloudlet transaction history writing.
-     * 
+     *
      * @param recordTransactionHistory true enables transaction history writing,
      * false disables.
      */
@@ -868,15 +869,15 @@ public class CloudletSimple extends AbstractCloudlet {
     /**
      * <p>Compares this Cloudlet with another one, considering
      * the {@link #getCloudletTotalLength() total length of the Cloudlets's}.</p>
-     * 
+     *
      * @param o the Vm to be compared to
      * @return {@inheritDoc }
-     * @see #getCloudletTotalLength() 
+     * @see #getCloudletTotalLength()
      */
     @Override
     public int compareTo(Cloudlet o) {
         return Long.compare(this.getCloudletTotalLength(), o.getCloudletTotalLength());
     }
-    
-    
+
+
 }

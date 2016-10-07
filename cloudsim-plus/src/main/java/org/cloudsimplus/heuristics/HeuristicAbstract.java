@@ -10,13 +10,17 @@ import java.util.stream.IntStream;
  * A base class for {@link Heuristic} implementations.
  *
  * @author Manoel Campos da Silva Filho
- * @param <T> the class of solutions the heuristic will deal with
+ * @param <T> the class of solutions the heuristic will deal with, starting with a initial
+ *           solution (usually random, depending on sub-classes implementations)
+ *           and executing the solution search in order
+ *           to achieve a satisfying solution (defined by a stop criteria)
  */
 public abstract class HeuristicAbstract<T extends HeuristicSolution>  implements Heuristic<T> {
 	/**
 	 * Reference to the generic class that will be used to instantiate objects.
 	 */
-	protected final Class<T> klass;
+	protected final Class<T> solutionClass;
+
 	private final ContinuousDistribution random;
 	/**
 	 * @see #getNumberOfNeighborhoodSearchesByIteration()
@@ -40,9 +44,10 @@ public abstract class HeuristicAbstract<T extends HeuristicSolution>  implements
 	 * Creates a heuristic.
 	 *
 	 * @param random a random number generator
+	 * @param solutionClass reference to the generic class that will be used to instantiate heuristic solutions
 	 */
-	public HeuristicAbstract(ContinuousDistribution random, Class<T> klass){
-		this.klass = klass;
+	public HeuristicAbstract(ContinuousDistribution random, Class<T> solutionClass){
+		this.solutionClass = solutionClass;
 		this.random = random;
 		this.numberOfNeighborhoodSearchesByIteration = 1;
 		setBestSolutionSoFar(newSolutionInstance());
@@ -72,7 +77,7 @@ public abstract class HeuristicAbstract<T extends HeuristicSolution>  implements
 
 	private T newSolutionInstance() throws RuntimeException {
 	    try {
-	        Constructor<T> c = klass.getConstructor(new Class[]{Heuristic.class});
+	        Constructor<T> c = solutionClass.getConstructor(new Class[]{Heuristic.class});
 	        return c.newInstance(this);
 	    } catch (IllegalArgumentException | InvocationTargetException | NoSuchMethodException | SecurityException | InstantiationException | IllegalAccessException ex) {
 	        throw new RuntimeException(ex);

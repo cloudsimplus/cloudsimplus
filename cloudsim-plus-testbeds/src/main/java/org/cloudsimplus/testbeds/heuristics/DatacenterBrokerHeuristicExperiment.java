@@ -1,14 +1,12 @@
-package org.cloudsimplus.testbeds;
+package org.cloudsimplus.testbeds.heuristics;
 
 import org.cloudbus.cloudsim.brokers.DatacenterBrokerHeuristic;
 import org.cloudbus.cloudsim.distributions.UniformDistr;
 import org.cloudbus.cloudsim.resources.Pe;
 import org.cloudsimplus.heuristics.CloudletToVmMappingHeuristic;
 import org.cloudsimplus.heuristics.CloudletToVmMappingSimulatedAnnealing;
-import org.cloudsimplus.heuristics.CloudletToVmMappingSolution;
 import org.cloudsimplus.heuristics.HeuristicSolution;
-
-import java.util.function.Consumer;
+import org.cloudsimplus.testbeds.SimulationExperiment;
 
 /**
  * <p>An experiment that uses a
@@ -41,8 +39,6 @@ public class DatacenterBrokerHeuristicExperiment extends SimulationExperiment {
 
 	private CloudletToVmMappingSimulatedAnnealing heuristic;
 
-	private Consumer<? super DatacenterBrokerHeuristicExperiment> afterExperimentFinishConsumer;
-
 	/**
      * Instantiates the simulation experiment.
      *
@@ -54,7 +50,6 @@ public class DatacenterBrokerHeuristicExperiment extends SimulationExperiment {
 	    super(index, runner);
 		setHostsToCreate(HOSTS_TO_CREATE);
 	    createSimulatedAnnealingHeuristic(randomGen);
-	    afterExperimentFinishConsumer = exp->{};
     }
 
 	private void createSimulatedAnnealingHeuristic(UniformDistr randomGen) {
@@ -72,19 +67,12 @@ public class DatacenterBrokerHeuristicExperiment extends SimulationExperiment {
 	}
 
 	@Override
-    public void printSolution(String title) {
-		if(!isVerbose())
-			return;
-
-        System.out.printf("%s: cost %.2f fitness %.6f\n", title,
+    public void printResults() {
+		System.out.printf(
+			"Experiment %d > Heuristic solution for mapping cloudlets to Vm's: ",  getIndex());
+		System.out.printf("cost %.2f fitness %.6f\n",
 	        heuristic.getBestSolutionSoFar().getCost(),
 	        heuristic.getBestSolutionSoFar().getFitness());
-    }
-
-    @Override
-	public void run(){
-		super.run();
-	    afterExperimentFinishConsumer.accept(this);
     }
 
     /**
@@ -93,17 +81,5 @@ public class DatacenterBrokerHeuristicExperiment extends SimulationExperiment {
     public CloudletToVmMappingSimulatedAnnealing getHeuristic() {
         return heuristic;
     }
-
-	/**
-	 * Sets a consumer object that receives the experiment instance after the experiment
-	 * finishes executing and performs some post-processing tasks.
-	 * These tasks can include collecting some statistics.
-	 *
-	 * @param afterExperimentFinishConsumer an instance of a {@link Consumer functional consumer interface}
-	 * that will perform some operation using the current instance of this class.
-	 */
-	protected void setAfterExperimentFinish(Consumer<DatacenterBrokerHeuristicExperiment> afterExperimentFinishConsumer){
-		this.afterExperimentFinishConsumer = afterExperimentFinishConsumer;
-	}
 
 }

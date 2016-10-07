@@ -21,64 +21,65 @@ import org.cloudbus.cloudsim.lists.VmList;
 
 /**
  * An abstract class to be used as base for implementing a {@link DatacenterBroker}.
- * 
+ *
  * @author Manoel Campos da Silva Filho
  */
 public abstract class DatacenterBrokerAbstract extends SimEntity implements DatacenterBroker {
     /**
-     * @see #getLastSelectedVm() 
+     * @see #getLastSelectedVm()
      */
     private Vm lastSelectedVm = Vm.NULL;
-    
+
     /**
      * @see #getVmsWaitingList()
      */
-    protected List<Vm> vmsWaitingList;
+    private List<Vm> vmsWaitingList;
     /**
      * @see #getVmsCreatedList()
      */
-    protected List<Vm> vmsCreatedList;
+    private List<Vm> vmsCreatedList;
     /**
      * @see #getCloudletsWaitingList()
      */
-    protected List<Cloudlet> cloudletsWaitingList;
+    private List<Cloudlet> cloudletsWaitingList;
     /**
      * @see #getCloudletsFinishedList()
      */
-    protected List<Cloudlet> cloudletsFinishedList;
-    /**
-     * The total number of cloudlets created inside some Vm.
-     */
-    protected int cloudletsCreated;
+    private List<Cloudlet> cloudletsFinishedList;
+
+	/**
+	 * @see #getCloudletsCreated()
+	 */
+    private int cloudletsCreated;
     /**
      * @see #getVmCreationRequests()
      */
-    protected int vmCreationRequests;
+    private int vmCreationRequests;
     /**
      *@see #getVmCreationAcks()
      */
-    protected int vmCreationAcks;
+    private int vmCreationAcks;
     /**
      * @see #getVmsDestroyed()
      */
-    protected int vmsDestroyed;
+    private int vmsDestroyed;
     /**
      * @see #getDatacenterIdsList()
      */
-    protected List<Integer> datacenterIdsList;
+    private List<Integer> datacenterIdsList;
     /**
      * @see #getDatacenterRequestedIdsList()
      */
-    protected List<Integer> datacenterRequestedIdsList;
+    private List<Integer> datacenterRequestedIdsList;
     /**
      * @see #getVmsToDatacentersMap()
      */
-    protected Map<Integer, Integer> vmsToDatacentersMap;
+    private Map<Integer, Integer> vmsToDatacentersMap;
     /**
      * @see #getDatacenterCharacteristicsMap()
      */
-    protected Map<Integer, DatacenterCharacteristics> datacenterCharacteristicsMap;
-    
+    private Map<Integer, DatacenterCharacteristics> datacenterCharacteristicsMap;
+
     /**
      * Creates a new DatacenterBroker object.
      *
@@ -214,14 +215,14 @@ public abstract class DatacenterBrokerAbstract extends SimEntity implements Data
         } else {
             processFailedVmCreationInDatacenter(vmId, datacenterId);
         }
-        
+
         // all the requested VMs have been created
         if (getVmsCreatedList().size() == getVmsWaitingList().size() - getVmsDestroyed()) {
             requestDatacentersToCreateWaitingCloudlets();
         } else if (getVmCreationRequests() == getVmCreationAcks()) {
             requestCreationOfWaitingVmsToNextDatacenter();
         }
-        
+
         return vmCreatedAndLocated;
     }
 
@@ -350,9 +351,9 @@ public abstract class DatacenterBrokerAbstract extends SimEntity implements Data
     }
 
     /**
-     * <p>Request a datacenter to create the VM in the 
+     * <p>Request a datacenter to create the VM in the
      * {@link #getVmsWaitingList() VM waiting list}.</p>
-     * 
+     *
      * <p>This method is called after the list of available Datacenters
      * is received.</p>
      *
@@ -381,10 +382,10 @@ public abstract class DatacenterBrokerAbstract extends SimEntity implements Data
      * {@link #getCloudletsWaitingList() Cloudlets waiting list}.
      * If there aren't available VMs to host all cloudlets,
      * the creation of some ones will be postponed.</p>
-     * 
+     *
      * <p>This method is called after all submitted VMs are created
      * in some Datacenter.</p>
-     * 
+     *
      * @pre $none
      * @post $none
      * @see #submitCloudletList(java.util.List)
@@ -402,7 +403,7 @@ public abstract class DatacenterBrokerAbstract extends SimEntity implements Data
             }
             Log.printFormattedLine("%.2f: %s: Sending %s %d to VM #%d", CloudSim.clock(), getName(), cloudlet.getClass().getSimpleName(), cloudlet.getId(), getLastSelectedVm().getId());
             cloudlet.setVmId(lastSelectedVm.getId());
-            send(getVmsToDatacentersMap().get(getLastSelectedVm().getId()), 
+            send(getVmsToDatacentersMap().get(getLastSelectedVm().getId()),
                     cloudlet.getSubmissionDelay(), CloudSimTags.CLOUDLET_SUBMIT, cloudlet);
             cloudletsCreated++;
             successfullySubmitted.add(cloudlet);
@@ -566,11 +567,17 @@ public abstract class DatacenterBrokerAbstract extends SimEntity implements Data
     }
 
     /**
-     * 
+     *
      * @return latest VM selected to run a cloudlet.
      */
     protected Vm getLastSelectedVm() {
         return lastSelectedVm;
     }
-    
+
+	/**
+	 * Gets the total number of cloudlets created inside some Vm.
+	 */
+	protected int getCloudletsCreated() {
+		return cloudletsCreated;
+	}
 }

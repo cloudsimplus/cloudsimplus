@@ -12,7 +12,7 @@ import java.util.List;
 /**
  * A base class to run a given experiment a defined number of times
  * and collect statistics about the execution.
- *
+ * @param <T> the class of experiment the runner will execute
  * @author Manoel Campos da Silva Filho
  */
 public abstract class ExperimentRunner<T extends SimulationExperiment> implements Runnable {
@@ -272,7 +272,7 @@ public abstract class ExperimentRunner<T extends SimulationExperiment> implement
 		return this;
 	}
 
-	protected ExperimentRunner setApplyAntitheticVariatesTechnique(boolean applyAntitheticVariatesTechnique) {
+	public ExperimentRunner setApplyAntitheticVariatesTechnique(boolean applyAntitheticVariatesTechnique) {
 		this.applyAntitheticVariatesTechnique = applyAntitheticVariatesTechnique;
 		return this;
 	}
@@ -292,7 +292,7 @@ public abstract class ExperimentRunner<T extends SimulationExperiment> implement
 	 * @param numberOfBatches number of simulation run batches
 	 * @see #getNumberOfBatches()
 	 */
-	protected ExperimentRunner setNumberOfBatches(int numberOfBatches) {
+	public ExperimentRunner setNumberOfBatches(int numberOfBatches) {
 		this.numberOfBatches = numberOfBatches;
 		return this;
 	}

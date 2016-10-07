@@ -1,4 +1,4 @@
-package org.cloudsimplus.testbeds;
+package org.cloudsimplus.testbeds.heuristics;
 
 import org.apache.commons.math3.stat.descriptive.SummaryStatistics;
 
@@ -9,6 +9,8 @@ import org.cloudbus.cloudsim.distributions.NormalDistr;
 import org.cloudbus.cloudsim.distributions.UniformDistr;
 import org.cloudsimplus.heuristics.CloudletToVmMappingSolution;
 import org.cloudsimplus.heuristics.Heuristic;
+import org.cloudsimplus.testbeds.ExperimentRunner;
+import org.cloudsimplus.testbeds.SimulationExperiment;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -91,11 +93,18 @@ public class DatacenterBrokerHeuristicRunner extends ExperimentRunner<Datacenter
      * @param args
      */
     public static void main(String[] args) {
+	    /*
+	    Values used for CloudSim Plus Paper:
+	        NumberOfSimulationRuns: 1200
+	        ApplyAntitheticVariatesTechnique: true
+	        NumberOfBatches: 6
+	        BaseSeed: 1475098589732L
+	    */
         new DatacenterBrokerHeuristicRunner()
 	        .setNumberOfSimulationRuns(1200)
 	        .setApplyAntitheticVariatesTechnique(true)
-	        .setNumberOfBatches(6) //comment this or set to 0 to disable the "Batch Means Method"
-	        .setBaseSeed(1475098589732L) //comment this to use the current time as base seed
+	        .setNumberOfBatches(6) //Comment this or set to 0 to disable the "Batch Means Method"
+	        .setBaseSeed(1475098589732L) //Comment this to use the current time as base seed
 	        .setVerbose(true)
 	        .run();
     }

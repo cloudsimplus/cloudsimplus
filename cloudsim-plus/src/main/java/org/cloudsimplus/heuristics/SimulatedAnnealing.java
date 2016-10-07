@@ -5,9 +5,10 @@ import java.lang.reflect.InvocationTargetException;
 import org.cloudbus.cloudsim.distributions.ContinuousDistribution;
 
 /**
- * Provides the methods for implementation of
- * a <a href="http://en.wikipedia.org/wiki/Simulated_annealing">Simulated Annealing</a>
- * algorithm in order to find a suboptimal solution for a problem.
+ * <p>A base class for implementation of
+ * <a href="http://en.wikipedia.org/wiki/Simulated_annealing">Simulated Annealing</a>
+ * algorithms used to find a suboptimal solution for a problem defined by sub-classes of this one.</p>
+ *
  * The Simulated Annealing is a heuristic that starts with a random solution
  * and iteratively generates a random neighbor solution that its fitness
  * is assessed in order to reach a sub-optimal result.
@@ -30,10 +31,12 @@ import org.cloudbus.cloudsim.distributions.ContinuousDistribution;
  * implementing the heuristic.</li>
  * </ol>
  *
- *
+ * @param <T> the class of solutions the heuristic will deal with, starting with a random solution
+ *           and execute the solution search in order to achieve a satisfying solution (defined by a stop criteria)
  * @author Manoel Campos da Silva Filho
- * @param <T> the class of solutions the heuristic will deal with
- * @see <a href="http://dx.doi.org/10.1109/101.17235">[1] R. A. Rutenbar, “Simulated Annealing Algorithms: An overview,” IEEE Circuits Devices Mag., vol. 1, no. 5, pp. 19–26, 1989.</a>
+ * @see <a href="http://dx.doi.org/10.1109/101.17235">[1] R. A. Rutenbar,
+ * “Simulated Annealing Algorithms: An overview,” IEEE Circuits Devices Mag., vol. 1, no. 5,
+ * pp. 19–26, 1989.</a>
  */
 public abstract class SimulatedAnnealing<T extends HeuristicSolution> extends HeuristicAbstract<T> {
     /**
@@ -54,11 +57,11 @@ public abstract class SimulatedAnnealing<T extends HeuristicSolution> extends He
 	/**
      * Instantiates a simulated annealing heuristic.
      *
-     * @param klass Reference to the generic class that will be used to instantiate heuristic solutions
-     * @param random a pseudo random number generator
+	 * @param random a pseudo random number generator
+     * @param solutionClass reference to the generic class that will be used to instantiate heuristic solutions
      */
-    public SimulatedAnnealing(Class<T> klass, ContinuousDistribution random){
-        super(random, klass);
+    public SimulatedAnnealing(ContinuousDistribution random, Class<T> solutionClass){
+        super(random, solutionClass);
     }
 
 	/**
@@ -74,8 +77,7 @@ public abstract class SimulatedAnnealing<T extends HeuristicSolution> extends He
      * @return {@inheritDoc}
      *
      * @see <a href="http://www.wikiwand.com/en/Boltzmann_distribution">Boltzmann distribution</a>
-     * @see <a href="http://en.wikipedia.org/wiki/Boltzmann_constant">Boltzmann_constant</a>
-     * @see <a href="http://en.wikipedia.org/wiki/Nat_(unit)">Natural unit of information</a>
+     * @see <a href="http://en.wikipedia.org/wiki/Boltzmann_constant">Boltzmann constant</a>
      */
     @Override
     public double getAcceptanceProbability() {

@@ -7,17 +7,17 @@ import org.cloudbus.cloudsim.core.CloudSim;
 
 /**
  * A base class for {@link Cloudlet} implementations.
- * 
+ *
  * @author Manoel Campos da Silva Filho
  */
-public abstract class AbstractCloudlet implements Cloudlet {
+public abstract class CloudletAbstract implements Cloudlet {
     /**
      * The list of every {@link Datacenter} where the cloudlet has been executed. In case
      * it starts and finishes executing in a single datacenter, without
      * being migrated, this list will have only one item.
      */
     private final List<ExecutionInDatacenterInfo> executionInDatacenterInfoList;
-    
+
     /**
      * The index of the last Datacenter where the cloudlet was executed. If the
      * cloudlet is migrated during its execution, this index is updated. The
@@ -25,14 +25,14 @@ public abstract class AbstractCloudlet implements Cloudlet {
      */
     private int lastExecutedDatacenterIndex;
 
-    protected AbstractCloudlet(){
+    protected CloudletAbstract(){
 	// Normally, a Cloudlet is only executed on a resource without being
         // migrated to others. Hence, to reduce memory consumption, set the
         // size of this ArrayList to be less than the default one.
         executionInDatacenterInfoList = new ArrayList<>(2);
         lastExecutedDatacenterIndex = NOT_ASSIGNED;
     }
-    
+
     @Override
     public double registerArrivalOfCloudletIntoDatacenter() {
         if (!isAssignedToDatacenter()) {
@@ -44,11 +44,11 @@ public abstract class AbstractCloudlet implements Cloudlet {
 
         return dcInfo.arrivalTime;
     }
-    
+
     @Override
     public boolean isAssignedToDatacenter() {
         return getLastExecutedDatacenterIndex() > NOT_ASSIGNED;
-    }    
+    }
 
     protected int getLastExecutedDatacenterIndex() {
         return lastExecutedDatacenterIndex;
@@ -57,15 +57,15 @@ public abstract class AbstractCloudlet implements Cloudlet {
     protected void setLastExecutedDatacenterIndex(int lastExecutedDatacenterIndex) {
         this.lastExecutedDatacenterIndex = lastExecutedDatacenterIndex;
     }
-    
+
     protected List<ExecutionInDatacenterInfo> getExecutionInDatacenterInfoList() {
         return executionInDatacenterInfoList;
     }
-    
+
     /**
      * Internal class that keeps track of Cloudlet's movement in different
      * {@link Datacenter Datacenters}. Each time a cloudlet is run on a given Datacenter, the cloudlet's
-     * execution history on each Datacenter is registered at {@link Cloudlet#executionInDatacenterInfoList}
+     * execution history on each Datacenter is registered at {@link #getExecutionInDatacenterInfoList()}
      */
     protected static class ExecutionInDatacenterInfo {
         /**
@@ -103,5 +103,5 @@ public abstract class AbstractCloudlet implements Cloudlet {
          * The Datacenter name.
          */
         public String name = "";
-    }    
+    }
 }

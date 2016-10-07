@@ -1,14 +1,15 @@
 package org.cloudbus.cloudsim.brokers;
 
+import java.util.Collections;
 import java.util.List;
 import org.cloudbus.cloudsim.Cloudlet;
 import org.cloudbus.cloudsim.Vm;
 
 /**
- * Represents a broker acting on behalf of a cloud customer. 
- * It hides VM management such as vm creation, submission of cloudlets to VMs 
+ * Represents a broker acting on behalf of a cloud customer.
+ * It hides VM management such as vm creation, submission of cloudlets to VMs
  * and destruction of VMs.
- * 
+ *
  * A broker implements the policies for selecting a VM to run a Cloudlet
  * and a Datacenter to run the submitted VMs.
  *
@@ -122,37 +123,58 @@ public interface DatacenterBroker {
      * @return true if there are waiting cloudlets, false otherwise
      */
     boolean hasMoreCloudletsToBeExecuted();
-    
+
     /**
      * Defines the policy to select a VM to host a given cloudlet
      * that is waiting to be created.
-     * 
+     *
      * @param cloudlet the cloudlet that needs a VM to be placed into
      * @return the selected Vm for the cloudlet or {@link Vm#NULL} if
      * no suitable VM was found
      */
     Vm selectVmForWaitingCloudlet(Cloudlet cloudlet);
-    
+
     /**
      * Defines the policy to select a Datacenter to host a VM
      * that is waiting to be created.
-     * 
+     *
      * @return id of the Datacenter selected to request the creating
      * of waiting VMs or -1 if no suitable Datacenter was found
      */
     int selectDatacenterForWaitingVms();
 
     /**
-     * Defines the policy to select a Datacenter to host a VM when 
+     * Defines the policy to select a Datacenter to host a VM when
      * all VM creation requests were received but not all VMs could be created.
      * In this case, a different datacenter has to be selected to request
      * the creation of the remaining VMs in the waiting list.
-     * 
+     *
      * @return id of the Datacenter selected to try creating
      * the remaining VMs or -1 if no suitable Datacenter was found
-     * 
-     * @see #selectDatacenterForWaitingVms() 
+     *
+     * @see #selectDatacenterForWaitingVms()
      */
     int selectFallbackDatacenterForWaitingVms();
 
+	/**
+	 * A property that implements the Null Object Design Pattern for {@link DatacenterBroker}
+	 * objects.
+	 */
+	DatacenterBroker NULL = new DatacenterBroker() {
+		@Override public int getId() { return 0; }
+		@Override public String getName() { return ""; }
+		@Override public void bindCloudletToVm(int cloudletId, int vmId) { }
+		@Override public <T extends Cloudlet> List<T> getCloudletsWaitingList() { return Collections.emptyList(); }
+		@Override public <T extends Cloudlet> List<T> getCloudletsFinishedList() { return Collections.emptyList(); }
+		@Override public Vm getWaitingVm(int index) { return Vm.NULL; }
+		@Override public <T extends Vm> List<T> getVmsWaitingList() { return Collections.emptyList(); }
+		@Override public <T extends Vm> List<T> getVmsCreatedList() { return Collections.emptyList(); }
+		@Override public void submitCloudletList(List<? extends Cloudlet> list) {}
+		@Override public void submitCloudletList(List<? extends Cloudlet> list, double submissionDelay) {}
+		@Override public void submitVmList(List<? extends Vm> list) {}
+		@Override public boolean hasMoreCloudletsToBeExecuted() { return false; }
+		@Override public Vm selectVmForWaitingCloudlet(Cloudlet cloudlet) { return Vm.NULL; }
+		@Override public int selectDatacenterForWaitingVms() { return 0; }
+		@Override public int selectFallbackDatacenterForWaitingVms() { return 0; }
+	};
 }

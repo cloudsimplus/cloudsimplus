@@ -1,6 +1,7 @@
 package org.cloudbus.cloudsim;
 
 import org.cloudbus.cloudsim.core.Identificable;
+import org.cloudbus.cloudsim.resources.Pe;
 import org.cloudbus.cloudsim.schedulers.CloudletScheduler;
 import java.util.Collections;
 import java.util.List;
@@ -11,7 +12,7 @@ import org.cloudbus.cloudsim.resources.ResourceManageable;
 
 /**
  * An interface to be implemented by each class that provides basic
- * features of Virtual Machines (VMs). 
+ * features of Virtual Machines (VMs).
  * The interface implements the Null Object
  * Design Pattern in order to start avoiding {@link NullPointerException} when
  * using the {@link Vm#NULL} object instead of attributing {@code null} to
@@ -122,11 +123,11 @@ public interface Vm extends Identificable, Comparable<Vm> {
 
     /**
      * Gets unique string identifier of the VM.
-     * 
+     *
      * @return string uid
      */
     String getUid();
-    
+
     /**
      * Gets the individual MIPS capacity of any VM's PE, considering that all
      * PEs have the same capacity.
@@ -143,19 +144,19 @@ public interface Vm extends Identificable, Comparable<Vm> {
      * @see #getMips()
      */
     int getNumberOfPes();
-    
+
     /**
-     * Gets the total MIPS capacity (across all PEs) of this VM. 
+     * Gets the total MIPS capacity (across all PEs) of this VM.
      *
      * @return MIPS capacity sum of all PEs
      *
-     * @see #getMips() 
-     * @see #getNumberOfPes() 
+     * @see #getMips()
+     * @see #getNumberOfPes()
      */
     double getTotalMipsCapacity();
-    
+
     <T extends Number, R extends ResourceManageable<? extends T>> ResourceManageable<T> getResource(Class<R> resourceClass);
-    
+
 
     /**
      * Gets the listener object that will be notified when a {@link Host}
@@ -180,7 +181,7 @@ public interface Vm extends Identificable, Comparable<Vm> {
     /**
      * Gets the listener object that will be notified when a Vm fail in
      * being placed for lack of a {@link Host} in the {@link Datacenter}
-     * with enough resources. 
+     * with enough resources.
      *
      * @return the onVmCreationFailureListener
      */
@@ -324,7 +325,7 @@ public interface Vm extends Identificable, Comparable<Vm> {
     /**
      * Sets the listener object that will be notified when a {@link Host}
      * is allocated to the Vm, that is, when the Vm is placed into a
-     * given Host. 
+     * given Host.
      *
      * @param onHostAllocationListener the listener to set
      */
@@ -333,7 +334,7 @@ public interface Vm extends Identificable, Comparable<Vm> {
     /**
      * Sets the listener object that will be notified when a {@link Host}
      * is deallocated to the Vm, that is, when the Vm is
-     * moved/removed from the Host it was placed. 
+     * moved/removed from the Host it was placed.
      *
      * @param onHostDeallocationListener the listener to set
      */
@@ -345,12 +346,12 @@ public interface Vm extends Identificable, Comparable<Vm> {
      * with enough resources.
      *
      * @param onVmCreationFailureListener the listener to set
-     * @see #updateVmProcessing(double, java.util.List) 
+     * @see #updateVmProcessing(double, java.util.List)
      */
     void setOnVmCreationFailureListener(EventListener<DatacenterToVmEventInfo> onVmCreationFailureListener);
 
     /**
-     * Gets the listener object that will be notified every time when 
+     * Gets the listener object that will be notified every time when
      * the processing of the Vm is updated in its {@link Host}.
      *
      * @return the onUpdateVmProcessingListener
@@ -358,21 +359,21 @@ public interface Vm extends Identificable, Comparable<Vm> {
     EventListener<HostToVmEventInfo> getOnUpdateVmProcessingListener();
 
     /**
-     * Sets the listener object that will be notified every time when 
+     * Sets the listener object that will be notified every time when
      * the processing of the Vm is updated in its {@link Host}.
      *
      * @param onUpdateVmProcessingListener the listener to set
-     * @see #updateVmProcessing(double, java.util.List) 
+     * @see #updateVmProcessing(double, java.util.List)
      */
     void setOnUpdateVmProcessingListener(EventListener<HostToVmEventInfo> onUpdateVmProcessingListener);
-    
+
     /**
      * Sets RAM capacity.
      *
      * @param ramCapacity new RAM capacity
      * @return true if ramCapacity > 0 and ramCapacity >= current allocated
      * resource, false otherwise
-     * @pre ram > 0
+     * @pre ramCapacity > 0
      * @post $none
      */
     boolean setRam(int ramCapacity);
@@ -388,11 +389,11 @@ public interface Vm extends Identificable, Comparable<Vm> {
      *
      */
     boolean setSize(long size);
-    
+
     /**
-     * Sets the uid.
+     * Sets the ID of the User (UID) that owns the VM.
      *
-     * @param uid the new uid
+     * @param uid the new UID
      */
     void setUid(String uid);
 
