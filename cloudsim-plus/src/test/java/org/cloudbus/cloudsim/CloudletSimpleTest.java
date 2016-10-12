@@ -221,7 +221,7 @@ public class CloudletSimpleTest {
     }
 
     @Test
-    public void testGetClassType() {
+    public void testGetPriority() {
         final int expected = 8;
         cloudlet.setPriority(expected);
         assertEquals(expected, cloudlet.getPriority(), 0);
@@ -545,21 +545,21 @@ public class CloudletSimpleTest {
     }
 
     @Test
-    public void testSetClassType() {
-        final int invalid0 = 0;
-        Assert.assertFalse(
+    public void testSetPriority() {
+        final int valid0 = 0;
+        Assert.assertTrue(
                 "Cloudlet.setPriority should return false",
-                cloudlet.setPriority(invalid0));
+                cloudlet.setPriority(valid0));
 
         final int invalidNegative = -1;
         Assert.assertFalse(
                 "Cloudlet.setPriority should return false",
                 cloudlet.setPriority(invalidNegative));
 
-        final int valid = 1;
+        final int valid1 = 1;
         Assert.assertTrue(
                 "Cloudlet.setPriority should return true",
-                cloudlet.setPriority(valid));
+                cloudlet.setPriority(valid1));
     }
 
     @Test

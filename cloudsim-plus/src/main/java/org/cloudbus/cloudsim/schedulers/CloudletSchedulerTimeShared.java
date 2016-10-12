@@ -1,13 +1,15 @@
 /*
  * Title: CloudSim Toolkit Description: CloudSim (Cloud Simulation) Toolkit for Modeling and
  * Simulation of Clouds Licence: GPL - http://www.gnu.org/copyleft/gpl.html
- * 
+ *
  * Copyright (c) 2009-2012, The University of Melbourne, Australia
  */
 package org.cloudbus.cloudsim.schedulers;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
+
 import org.cloudbus.cloudsim.Cloudlet;
 import org.cloudbus.cloudsim.CloudletExecutionInfo;
 
@@ -44,25 +46,28 @@ public class CloudletSchedulerTimeShared extends CloudletSchedulerAbstract {
 
     @Override
     public double cloudletResume(int cloudletId) {
-        for (int i = 0; i < getCloudletPausedList().size(); i++) {
-            CloudletExecutionInfo rcl = getCloudletPausedList().get(i);
-            if (rcl.getCloudletId() == cloudletId) {
-                getCloudletPausedList().remove(rcl);
-                rcl.setCloudletStatus(Cloudlet.Status.INEXEC);
-                getCloudletExecList().add(rcl);
+	    Optional<CloudletExecutionInfo> optional =
+		    getCloudletPausedList().stream()
+		        .filter(c -> c.getCloudletId() == cloudletId)
+		        .findFirst();
 
-                // calculate the expected time for cloudlet completion
-                // first: how many PEs do we have?
-                double remainingLength = rcl.getRemainingCloudletLength();
-                double estimatedFinishTime = CloudSim.clock()
-                        + (remainingLength / (getProcessor().getCapacity() 
-                        * rcl.getNumberOfPes()));
-
-                return estimatedFinishTime;
-            }
+        if(!optional.isPresent()) {
+	        return 0.0;
         }
 
-        return 0.0;
+        CloudletExecutionInfo rcl = optional.get();
+        getCloudletPausedList().remove(rcl);
+        rcl.setCloudletStatus(Cloudlet.Status.INEXEC);
+        getCloudletExecList().add(rcl);
+
+        // calculate the expected time for cloudlet completion
+        // first: how many PEs do we have?
+        double remainingLength = rcl.getRemainingCloudletLength();
+        double estimatedFinishTime = CloudSim.clock()
+                + (remainingLength / (getProcessor().getCapacity()
+                * rcl.getNumberOfPes()));
+
+        return estimatedFinishTime;
     }
 
     @Override
@@ -94,10 +99,10 @@ public class CloudletSchedulerTimeShared extends CloudletSchedulerAbstract {
     /**
      * {@inheritDoc}
      * It in fact doesn't consider the parameters given
-     * because in the Time Shared Scheduler, all the 
+     * because in the Time Shared Scheduler, all the
      * CPU capacity from the VM that is managed by the scheduler
      * is made available for all VMs.
-     * 
+     *
      * @param rcl {@inheritDoc}
      * @param mipsShare {@inheritDoc}
      * @return {@inheritDoc}
@@ -116,7 +121,6 @@ public class CloudletSchedulerTimeShared extends CloudletSchedulerAbstract {
     @Override
     public double getTotalCurrentRequestedMipsForCloudlet(CloudletExecutionInfo rcl, double time) {
         //@todo The method is not implemented, in fact
-        // TODO Auto-generated method stub
         return 0.0;
     }
 

@@ -30,16 +30,16 @@ public interface Cloudlet extends Identificable, Comparable<Cloudlet> {
          */
         CREATED,
         /**
-         * The Cloudlet has been assigned to a CloudResource object to be executed
+         * The Cloudlet has been assigned to a Datacenter object to be executed
          * as planned.
          */
         READY,
         /**
-         * The Cloudlet has moved to a Cloud node.
+         * The Cloudlet has moved to a Vm.
          */
         QUEUED,
         /**
-         * The Cloudlet is in execution in a Cloud node.
+         * The Cloudlet is in execution in a Vm.
          */
         INEXEC,
         /**
