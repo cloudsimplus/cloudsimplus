@@ -80,8 +80,8 @@ public class CloudletSimple extends CloudletAbstract {
      */
     private StringBuffer history;
 
-    /** @see #getClassType() */
-    private int classType;
+    /** @see #getPriority() */
+    private int priority;
 
     /** @see #getNetServiceLevel() */
     private int netServiceLevel;
@@ -163,7 +163,7 @@ public class CloudletSimple extends CloudletAbstract {
         numberOfPes = pesNumber;
         execStartTime = 0.0;
         setFinishTime(NOT_ASSIGNED);    // meaning this Cloudlet hasn't finished yet
-        classType = 0;
+        priority = 0;
         netServiceLevel = 0;
 
         // Cloudlet length, Input and Output size should be at least 1 byte.
@@ -254,18 +254,18 @@ public class CloudletSimple extends CloudletAbstract {
     }
 
     @Override
-    public boolean setClassType(final int classType) {
-        if (classType > 0) {
-            this.classType = classType;
+    public boolean setPriority(final int priority) {
+        if (priority >= 0) {
+            this.priority = priority;
             return true;
         }
 
         return false;
     }
 
-    @Override
-    public int getClassType() {
-        return classType;
+	@Override
+    public int getPriority() {
+        return priority;
     }
 
     @Override

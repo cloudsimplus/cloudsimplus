@@ -2,6 +2,7 @@ package org.cloudbus.cloudsim;
 
 import org.cloudbus.cloudsim.brokers.DatacenterBroker;
 import org.cloudbus.cloudsim.core.Identificable;
+import org.cloudbus.cloudsim.schedulers.CloudletScheduler;
 import org.cloudbus.cloudsim.utilizationmodels.UtilizationModel;
 import java.util.Collections;
 import java.util.List;
@@ -349,25 +350,27 @@ public interface Cloudlet extends Identificable, Comparable<Cloudlet> {
     double getSubmissionTime(final int datacenterId);
 
     /**
-     * Gets the classType or priority of this Cloudlet for scheduling on a Datacenter.
+     * Gets the priority of this Cloudlet for scheduling inside a Vm.
+     * Each {@link CloudletScheduler} implementation can define if it will
+     * use this Cloudlet attribute to impose execution priorities or
+     * not.
      *
-     * @return classtype of this cloudlet
+     * @return priority of this cloudlet
      * @pre $none
      * @post $none
      */
-    int getClassType();
+    int getPriority();
 
     /**
-     * Sets the {@link #getClassType() classType or priority} of this Cloudlet for scheduling on a
-     * Datacenter.
+     * Sets the {@link #getPriority() priority} of this Cloudlet for scheduling inside a Vm.
      *
-     * @param classType classType of this Cloudlet
-     * @return <tt>true</tt> if it is classType is valid, <tt>false</tt> otherwise
+     * @param priority priority of this Cloudlet
+     * @return <tt>true</tt> if it is priority is valid, <tt>false</tt> otherwise
      *
-     * @pre classType > 0
+     * @pre priority >= 0
      * @post $none
      */
-    boolean setClassType(final int classType);
+    boolean setPriority(final int priority);
 
     /**
      * Gets the Type of Service (ToS) of IPv4 for sending Cloudlet over the network.
@@ -784,7 +787,7 @@ public interface Cloudlet extends Identificable, Comparable<Cloudlet> {
       @Override public double getAccumulatedBwCost() { return 0.0; }
       @Override public double getActualCPUTime(int datacenterId) { return 0.0; }
       @Override public double getActualCPUTime() { return 0.0; }
-      @Override public int getClassType() { return 0; }
+      public int getPriority() { return 0; }
       @Override public long getCloudletFileSize() { return 0L; }
       @Override public long getCloudletFinishedSoFar() { return 0L; }
       @Override public long getCloudletFinishedSoFar(int datacenterId) { return 0L; }
@@ -823,7 +826,7 @@ public interface Cloudlet extends Identificable, Comparable<Cloudlet> {
       @Override public boolean hasReserved() { return false; }
       @Override public boolean isFinished() { return false; }
       @Override public boolean requiresFiles() { return false; }
-      @Override public boolean setClassType(int classType) { return false; }
+      @Override public boolean setPriority(int priority) { return false; }
       @Override public boolean setCloudletLength(long cloudletLength) { return false; }
       @Override public boolean setCloudletStatus(Status newStatus) { return false; }
       @Override public boolean setNetServiceLevel(int netServiceLevel) { return false; }

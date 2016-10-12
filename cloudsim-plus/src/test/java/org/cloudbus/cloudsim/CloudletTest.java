@@ -11,7 +11,7 @@ import static org.junit.Assert.*;
  * @author Manoel Campos da Silva Filho
  */
 public class CloudletTest {
-    
+
     @Test
     public void testIsBoundedToVm() {
         Cloudlet cloudlet = createCloudlet(0);
@@ -25,10 +25,10 @@ public class CloudletTest {
     }
 
     private static CloudletSimple createCloudlet(int id) {
-        return new CloudletSimple(id, 1, 1, 1, 1, 
+        return new CloudletSimple(id, 1, 1, 1, 1,
                 UtilizationModel.NULL, UtilizationModel.NULL, UtilizationModel.NULL);
     }
-    
+
     @Test
     public void testNullObject(){
         assertFalse(Cloudlet.NULL.addRequiredFile(""));
@@ -36,7 +36,7 @@ public class CloudletTest {
         assertEquals(0, Cloudlet.NULL.getAccumulatedBwCost(), 0);
         assertEquals(0, Cloudlet.NULL.getActualCPUTime(0), 0);
         assertEquals(0, Cloudlet.NULL.getActualCPUTime(), 0);
-        assertEquals(0, Cloudlet.NULL.getClassType(), 0);
+        assertEquals(0, Cloudlet.NULL.getPriority(), 0);
         assertEquals(0, Cloudlet.NULL.getCloudletFileSize(), 0);
         assertEquals(0, Cloudlet.NULL.getCloudletFinishedSoFar(), 0);
         assertEquals(0, Cloudlet.NULL.getCloudletFinishedSoFar(), 0);
@@ -75,7 +75,7 @@ public class CloudletTest {
         assertFalse(Cloudlet.NULL.hasReserved());
         assertFalse(Cloudlet.NULL.isFinished());
         assertFalse(Cloudlet.NULL.requiresFiles());
-        assertFalse(Cloudlet.NULL.setClassType(0));
+        assertFalse(Cloudlet.NULL.setPriority(0));
         assertFalse(Cloudlet.NULL.setCloudletLength(0));
         assertFalse(Cloudlet.NULL.setCloudletStatus(Cloudlet.Status.SUCCESS));
         Cloudlet.NULL.setExecStartTime(100);
@@ -89,16 +89,16 @@ public class CloudletTest {
         EasyMock.replay(listener);
         Cloudlet.NULL.setOnCloudletFinishEventListener(listener);
         assertSame(EventListener.NULL, Cloudlet.NULL.getOnCloudletFinishEventListener());
-        
+
         Cloudlet.NULL.setUserId(10);
         assertEquals(0, Cloudlet.NULL.getUserId(), 0);
-        
+
         Cloudlet.NULL.setSubmissionDelay(10);
         assertEquals(0, Cloudlet.NULL.getSubmissionDelay(), 0);
-        
+
         assertEquals(0, Cloudlet.NULL.getDatacenterId(), 0);
         assertEquals(0, Cloudlet.NULL.getCostPerSec(), 0);
-        
+
         Cloudlet.NULL.assignCloudletToDatacenter(1, 1, 1);
         assertEquals(0, Cloudlet.NULL.getDatacenterId(), 0);
         assertEquals(0, Cloudlet.NULL.getCostPerSec(), 0);
@@ -108,14 +108,14 @@ public class CloudletTest {
         EasyMock.replay(um);
         Cloudlet.NULL.setUtilizationModelBw(um);
         assertSame(UtilizationModel.NULL, Cloudlet.NULL.getUtilizationModelBw());
-        
+
         Cloudlet.NULL.setUtilizationModelCpu(um);
         assertSame(UtilizationModel.NULL, Cloudlet.NULL.getUtilizationModelCpu());
-        
+
         Cloudlet.NULL.setUtilizationModelRam(um);
         assertSame(UtilizationModel.NULL, Cloudlet.NULL.getUtilizationModelRam());
-        
+
         assertFalse(Cloudlet.NULL.isBoundedToVm());
     }
-    
+
 }

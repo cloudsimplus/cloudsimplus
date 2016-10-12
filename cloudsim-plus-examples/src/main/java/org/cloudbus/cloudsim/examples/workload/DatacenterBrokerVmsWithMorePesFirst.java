@@ -1,5 +1,6 @@
 package org.cloudbus.cloudsim.examples.workload;
 
+import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 import org.cloudbus.cloudsim.Vm;
@@ -25,7 +26,7 @@ public class DatacenterBrokerVmsWithMorePesFirst extends DatacenterBrokerSimple 
      */
     @Override
     public <T extends Vm> List<T> getVmsWaitingList() {
-        super.getVmsWaitingList().sort(new Comparator<Vm>() {
+        Collections.sort(super.getVmsWaitingList(), new Comparator<Vm>() {
             @Override
             public int compare(Vm vm1, Vm vm2) {
                 return Integer.compare(vm2.getNumberOfPes(), vm1.getNumberOfPes());

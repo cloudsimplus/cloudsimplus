@@ -11,7 +11,7 @@ import org.cloudbus.cloudsim.Cloudlet.Status;
 import org.cloudbus.cloudsim.core.CloudSim;
 
 /**
- * Represents execution information about a Cloudlet submitted to a Datacenter for
+ * Stores execution information about a Cloudlet submitted to a Datacenter for
  * processing. This class keeps track of the time for all activities in the
  * Datacenter for a specific Cloudlet. Before a Cloudlet exits the Datacenter,
  * it is RECOMMENDED to call this method {@link #finalizeCloudlet()}.
@@ -62,7 +62,7 @@ public class CloudletExecutionInfo {
     private long cloudletFinishedSoFar;
 
     /**
-     * Latest cloudlet execution start time in the current Datacenter. 
+     * Latest cloudlet execution start time in the current Datacenter.
      * This attribute will only hold the latest
      * time since a Cloudlet can be canceled, paused or resumed.
      */
@@ -78,7 +78,7 @@ public class CloudletExecutionInfo {
      */
     private double totalCompletionTime;
 
-    /* 
+    /*
      * The below attributes are only to be used by the CloudletSchedulerSpaceShared policy.
      * @todo @manoelcampos If the attributes have to be used only for a
      * specific scheduler, they shouldn't be here
@@ -89,7 +89,7 @@ public class CloudletExecutionInfo {
      * The number of PEs needed to execute this Cloudlet.
      */
     private int pesNumber;
-    
+
     // NOTE: Below attributes are related to Advanced Reservation (AR) stuff
     /**
      * Defines a values for fields that haven't been
@@ -118,7 +118,8 @@ public class CloudletExecutionInfo {
      * {@link org.cloudbus.cloudsim.core.CloudSim#clock()}.
      *
      * @param cloudlet a cloudlet object
-     * @see gridsim.CloudSim#clock()
+     *
+     * @see CloudSim#clock()
      * @pre cloudlet != null
      * @post $none
      */
@@ -135,10 +136,11 @@ public class CloudletExecutionInfo {
      * @param cloudlet a cloudlet object
      * @param startTime a reservation start time. Can also be interpreted as
      * starting time to execute this Cloudlet.
-     * @param duration a reservation reservationDuration time. 
+     * @param duration a reservation reservationDuration time.
      * Can also be interpreted as how long to execute this Cloudlet.
      * @param reservationId a reservation ID that owns this Cloudlet
-     * @see gridsim.CloudSim#clock()
+     *
+     * @see CloudSim#clock()
      * @pre cloudlet != null
      * @pre startTime > 0
      * @pre duration > 0
@@ -159,7 +161,7 @@ public class CloudletExecutionInfo {
         //In case a Cloudlet has been executed partially by some other host
         this.cloudletFinishedSoFar = cloudlet.getCloudletFinishedSoFar() * Consts.MILLION;
     }
-    
+
     /**
      * Gets the Cloudlet or reservation start time.
      *
@@ -268,7 +270,7 @@ public class CloudletExecutionInfo {
      * @post $none
      */
     public int getCloudletClassType() {
-        return cloudlet.getClassType();
+        return cloudlet.getPriority();
     }
 
     /**
@@ -323,7 +325,7 @@ public class CloudletExecutionInfo {
 
     /**
      * Checks if the cloudlet is NOT in a running state.
-     * 
+     *
      * @param status The current cloudlet status
      * @return true if the cloudlet is NOT running, false if it is.
      */
@@ -419,12 +421,12 @@ public class CloudletExecutionInfo {
     public void updateCloudletFinishedSoFar(long numberOfExecutedInstructions) {
         if(numberOfExecutedInstructions <= 0)
             return;
-        
+
         this.cloudletFinishedSoFar += numberOfExecutedInstructions;
-        this.cloudletFinishedSoFar = 
-                Math.min(this.cloudletFinishedSoFar, 
+        this.cloudletFinishedSoFar =
+                Math.min(this.cloudletFinishedSoFar,
                         cloudlet.getCloudletTotalLength()*Consts.MILLION);
-        
+
         double finishedSoFarByPeMI = cloudletFinishedSoFar  / pesNumber / Consts.MILLION;
         cloudlet.setCloudletFinishedSoFar((long)finishedSoFarByPeMI);
     }

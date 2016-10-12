@@ -7,6 +7,7 @@
  */
 package org.cloudbus.cloudsim;
 
+import org.cloudbus.cloudsim.brokers.DatacenterBroker;
 import org.cloudbus.cloudsim.resources.Pe;
 import org.cloudbus.cloudsim.schedulers.VmScheduler;
 import java.util.ArrayList;
@@ -23,7 +24,7 @@ import org.cloudbus.cloudsim.provisioners.ResourceProvisioner;
  * @author Anton Beloglazov
  * @since CloudSim Toolkit 2.0
  * @todo @author manoelcampos When using this host, the
- * {@link DatacenterBroker#getCloudletReceivedList()} returns an empty list
+ * {@link DatacenterBroker#getCloudletsFinishedList()} returns an empty list
  * after stopping the simulation.
  */
 public class HostDynamicWorkloadSimple extends HostSimple implements HostDynamicWorkload {

@@ -7,6 +7,7 @@
  */
 package org.cloudbus.cloudsim.examples.migration;
 
+import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Set;
@@ -50,7 +51,7 @@ public class NonPowerVmAllocationPolicyMigrationWorstFitStaticThreshold extends 
     @Override
     public <T extends Host> List<T> getHostList() {
         final List<PowerHostSimple> list = super.<PowerHostSimple>getHostList();
-        list.sort(new PowerHostComparator());
+        Collections.sort(list, new PowerHostComparator());
         return (List<T>) list;
     }
 
