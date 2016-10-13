@@ -6,9 +6,7 @@
  */
 package org.cloudbus.cloudsim.schedulers;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 import org.cloudbus.cloudsim.Cloudlet;
 import org.cloudbus.cloudsim.CloudletExecutionInfo;
@@ -27,6 +25,10 @@ import org.cloudbus.cloudsim.core.CloudSim;
  * @since CloudSim Toolkit 1.0
  */
 public class CloudletSchedulerTimeShared extends CloudletSchedulerAbstract {
+	/**
+	 * @see #getCloudletExecList()
+	 */
+	private Collection<? extends CloudletExecutionInfo> cloudletExecList;
 
     /**
      * Creates a new CloudletSchedulerTimeShared object. This method must be
@@ -37,6 +39,7 @@ public class CloudletSchedulerTimeShared extends CloudletSchedulerAbstract {
      */
     public CloudletSchedulerTimeShared() {
         super();
+	    this.cloudletExecList = new ArrayList<>();
     }
 
     @Override
@@ -71,7 +74,7 @@ public class CloudletSchedulerTimeShared extends CloudletSchedulerAbstract {
 	        return 0.0;
         }
 
-        CloudletExecutionInfo rcl = optional.get();
+        final CloudletExecutionInfo rcl = optional.get();
         getCloudletPausedList().remove(rcl);
         rcl.setCloudletStatus(Cloudlet.Status.INEXEC);
         getCloudletExecList().add(rcl);
@@ -109,7 +112,7 @@ public class CloudletSchedulerTimeShared extends CloudletSchedulerAbstract {
      */
     @Override
     public List<Double> getCurrentRequestedMips() {
-        return new ArrayList<>();
+        return Collections.emptyList();
     }
 
     /**
@@ -142,17 +145,24 @@ public class CloudletSchedulerTimeShared extends CloudletSchedulerAbstract {
 
     @Override
     public double getCurrentRequestedUtilizationOfRam() {
+	    final double time = CloudSim.clock();
         return getCloudletExecList().stream()
-                .mapToDouble(
-                        rcl -> rcl.getCloudlet().getUtilizationOfRam(CloudSim.clock()))
+                .mapToDouble(rcl -> rcl.getCloudlet().getUtilizationOfRam(time))
                 .sum();
     }
 
     @Override
     public double getCurrentRequestedUtilizationOfBw() {
+	    final double time = CloudSim.clock();
         return getCloudletExecList().stream()
-                .mapToDouble(
-                        rcl -> rcl.getCloudlet().getUtilizationOfBw(CloudSim.clock()))
+                .mapToDouble(rcl -> rcl.getCloudlet().getUtilizationOfBw(time))
                 .sum();
     }
+
+	@SuppressWarnings("unchecked")
+	@Override
+	public <T extends CloudletExecutionInfo> Collection<T> getCloudletExecList() {
+		return (Collection<T>) cloudletExecList;
+	}
+
 }

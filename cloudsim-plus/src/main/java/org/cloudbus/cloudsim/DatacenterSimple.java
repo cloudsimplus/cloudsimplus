@@ -110,8 +110,6 @@ public class DatacenterSimple extends SimEntity implements Datacenter {
     /**
      * Overrides this method when making a new and different type of resource.
      * <br>
-     * <b>NOTE:</b> You do not need to override {@link #body()} method, if you
-     * use this method.
      *
      * @pre $none
      * @post $none
@@ -820,18 +818,16 @@ public class DatacenterSimple extends SimEntity implements Datacenter {
     protected double predictFileTransferTime(List<String> requiredFiles) {
         double time = 0.0;
 
-        Iterator<String> iter = requiredFiles.iterator();
-        while (iter.hasNext()) {
-            String fileName = iter.next();
-            for (int i = 0; i < getStorageList().size(); i++) {
-                FileStorage tempStorage = getStorageList().get(i);
-                File tempFile = tempStorage.getFile(fileName);
-                if (tempFile != null) {
-                    time += tempFile.getSize() / tempStorage.getMaxTransferRate();
+        for (String fileName: requiredFiles) {
+            for (FileStorage storageDevice: getStorageList()) {
+                File file = storageDevice.getFile(fileName);
+                if (file != null) {
+                    time += file.getSize() / storageDevice.getMaxTransferRate();
                     break;
                 }
             }
         }
+
         return time;
     }
 
@@ -1009,7 +1005,7 @@ public class DatacenterSimple extends SimEntity implements Datacenter {
     public void checkCloudletsCompletionForGivenVm(Vm vm) {
         while (vm.getCloudletScheduler().hasFinishedCloudlets()) {
             Cloudlet cl = vm.getCloudletScheduler().getNextFinishedCloudlet();
-            if (cl != null) {
+            if (cl != Cloudlet.NULL) {
                 sendNow(cl.getUserId(), CloudSimTags.CLOUDLET_RETURN, cl);
             }
         }

@@ -1,6 +1,8 @@
 package org.cloudbus.cloudsim.IntegrationTests;
 
 import java.util.Calendar;
+
+import org.cloudbus.cloudsim.Host;
 import org.cloudbus.cloudsim.Log;
 import org.cloudbus.cloudsim.brokers.DatacenterBroker;
 import org.cloudbus.cloudsim.builders.BrokerBuilderDecorator;
@@ -27,10 +29,10 @@ import org.junit.Before;
  * It is created one broker for each VM and one VM finishes executing
  * prior to the other. By this way, the IT checks if the CPU used by the
  * finished VM is freed on the host. Creating the VMs for the same broker
- * doesn't make the finished VM to be automatically destroyed. 
+ * doesn't make the finished VM to be automatically destroyed.
  * In this case, only after all user VMs are finished that they are
  * destroyed in order to free resources.
- * 
+ *
  * @author Manoel Campos da Silva Filho
  */
 public final class CheckHostAvailableMipsTest {
@@ -45,23 +47,23 @@ public final class CheckHostAvailableMipsTest {
 
     private SimulationScenarioBuilder scenario;
     private UtilizationModel utilizationModel;
-    
+
     /**
      * A lambda function used by the {@link Host#setOnUpdateVmsProcessingListener(org.cloudbus.cloudsim.listeners.EventListener)}
      * that will be called every time a host updates the processing of its VMs.
      * It checks if the amount of available Host CPU is as expected,
      * every time a host updates the processing of all its VMs.
-     * 
+     *
      * @param evt
      */
     private void onUpdateVmsProcessing(HostUpdatesVmsProcessingEventInfo evt) {
         double time = (int)evt.getTime();
         final double hostCapacity = HOST_MIPS * HOST_PES;
-        final double usedHostMips = (NUMBER_OF_CLOUDLETS * CLOUDLET_PES * VM_MIPS 
+        final double usedHostMips = (NUMBER_OF_CLOUDLETS * CLOUDLET_PES * VM_MIPS
                 * utilizationModel.getUtilization(time));
         double expectedAvailableHostMips = hostCapacity - usedHostMips;
-        
-        /*After 10 seconds all VMs finish and 
+
+        /*After 10 seconds all VMs finish and
         all host capacity will be free*/
         if(time > 10)
             expectedAvailableHostMips = hostCapacity;
@@ -70,14 +72,14 @@ public final class CheckHostAvailableMipsTest {
         else if(time > 5){
             expectedAvailableHostMips += VM_MIPS*VM_PES;
         }
-        
+
         Log.printConcatLine(
-            "- VMs processing at time ", time, " host ", evt.getHost().getId(), 
-            " available mips: ", evt.getHost().getAvailableMips(), 
+            "- VMs processing at time ", time, " host ", evt.getHost().getId(),
+            " available mips: ", evt.getHost().getAvailableMips(),
             " expected availability: ", expectedAvailableHostMips);
-        
+
         assertEquals(
-                String.format("Host available mips at time %.0f", time), 
+                String.format("Host available mips at time %.0f", time),
                 expectedAvailableHostMips, evt.getHost().getAvailableMips(), 0);
     }
 
@@ -128,7 +130,7 @@ public final class CheckHostAvailableMipsTest {
 
     public void printCloudletsExecutionResults(DatacenterBroker broker) {
         CloudletsTableBuilderHelper.print(
-                new TextTableBuilder(broker.getName()), 
+                new TextTableBuilder(broker.getName()),
                 broker.getCloudletsFinishedList());
     }
 

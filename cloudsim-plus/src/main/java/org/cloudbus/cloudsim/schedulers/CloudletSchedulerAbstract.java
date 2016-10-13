@@ -8,6 +8,7 @@
 package org.cloudbus.cloudsim.schedulers;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 import java.util.function.Consumer;
@@ -58,11 +59,6 @@ public abstract class CloudletSchedulerAbstract implements CloudletScheduler {
     private List<? extends CloudletExecutionInfo> cloudletWaitingList;
 
     /**
-     * @see #getCloudletExecList()
-     */
-    private List<? extends CloudletExecutionInfo> cloudletExecList;
-
-    /**
      * @see #getCloudletPausedList()
      */
     private List<? extends CloudletExecutionInfo> cloudletPausedList;
@@ -91,8 +87,8 @@ public abstract class CloudletSchedulerAbstract implements CloudletScheduler {
      */
     public CloudletSchedulerAbstract() {
         setPreviousTime(0.0);
+	    vm = Vm.NULL;
         cloudletWaitingList = new ArrayList<>();
-        cloudletExecList = new ArrayList<>();
         cloudletPausedList = new ArrayList<>();
         cloudletFinishedList = new ArrayList<>();
         cloudletFailedList = new ArrayList<>();
@@ -136,46 +132,10 @@ public abstract class CloudletSchedulerAbstract implements CloudletScheduler {
         return (List<T>) cloudletWaitingList;
     }
 
-    /**
-     * Sets the list of cloudlet waiting to be executed on the VM.
-     *
-     * @param <T> the generic type
-     * @param cloudletWaitingList the cloudlet waiting list
-     */
-    protected <T extends CloudletExecutionInfo> void setCloudletWaitingList(List<T> cloudletWaitingList) {
-        this.cloudletWaitingList = cloudletWaitingList;
-    }
-
-    @SuppressWarnings("unchecked")
-    @Override
-    public <T extends CloudletExecutionInfo> List<T> getCloudletExecList() {
-        return (List<T>) cloudletExecList;
-    }
-
-    /**
-     * Sets the list of cloudlets being executed on the VM.
-     *
-     * @param <T> the generic type
-     * @param cloudletExecList the new cloudlet exec list
-     */
-    protected <T extends CloudletExecutionInfo> void setCloudletExecList(List<T> cloudletExecList) {
-        this.cloudletExecList = cloudletExecList;
-    }
-
     @SuppressWarnings("unchecked")
     @Override
     public <T extends CloudletExecutionInfo> List<T> getCloudletPausedList() {
         return (List<T>) cloudletPausedList;
-    }
-
-    /**
-     * Sets the list of paused cloudlets.
-     *
-     * @param <T> the generic type
-     * @param cloudletPausedList the new cloudlet paused list
-     */
-    protected <T extends CloudletExecutionInfo> void setCloudletPausedList(List<T> cloudletPausedList) {
-        this.cloudletPausedList = cloudletPausedList;
     }
 
     @SuppressWarnings("unchecked")
@@ -184,30 +144,10 @@ public abstract class CloudletSchedulerAbstract implements CloudletScheduler {
         return (List<T>) cloudletFinishedList;
     }
 
-    /**
-     * Sets the list of finished cloudlets.
-     *
-     * @param <T> the generic type
-     * @param cloudletFinishedList the new cloudlet finished list
-     */
-    protected <T extends CloudletExecutionInfo> void setCloudletFinishedList(List<T> cloudletFinishedList) {
-        this.cloudletFinishedList = cloudletFinishedList;
-    }
-
     @SuppressWarnings("unchecked")
     @Override
     public <T extends CloudletExecutionInfo> List<T> getCloudletFailedList() {
         return (List<T>) cloudletFailedList;
-    }
-
-    /**
-     * Sets the list of failed cloudlets.
-     *
-     * @param <T> the generic type
-     * @param cloudletFailedList the new cloudlet failed list.
-     */
-    protected <T extends CloudletExecutionInfo> void setCloudletFailedList(List<T> cloudletFailedList) {
-        this.cloudletFailedList = cloudletFailedList;
     }
 
     @Override
@@ -234,17 +174,18 @@ public abstract class CloudletSchedulerAbstract implements CloudletScheduler {
 
     @Override
     public Cloudlet getNextFinishedCloudlet() {
-        if (!getCloudletFinishedList().isEmpty()) {
-            return getCloudletFinishedList().remove(0).getCloudlet();
+        if (getCloudletFinishedList().isEmpty()) {
+	        return Cloudlet.NULL;
         }
-        return null;
+
+	    return getCloudletFinishedList().remove(0).getCloudlet();
     }
 
     /**
      * Returns the first cloudlet in the execution list to migrate to another VM,
      * removing it from the list.
      *
-     * @return the first running cloudlet
+     * @return the first executing cloudlet or {@link Cloudlet#NULL} if the executing list is empty
      * @pre $none
      * @post $none
      */
@@ -254,35 +195,58 @@ public abstract class CloudletSchedulerAbstract implements CloudletScheduler {
             return Cloudlet.NULL;
         }
 
-        CloudletExecutionInfo rcl = getCloudletExecList().remove(0);
+        CloudletExecutionInfo rcl = getCloudletExecList().stream().findFirst().get();
+	    getCloudletExecList().remove(rcl);
         rcl.finalizeCloudlet();
+
         return rcl.getCloudlet();
     }
 
     @Override
     public int getCloudletStatus(int cloudletId) {
-        for (CloudletExecutionInfo rcl : getCloudletExecList()) {
-            if (rcl.getCloudletId() == cloudletId) {
-                return rcl.getCloudletStatus().ordinal();
-            }
-        }
+	    Optional<CloudletExecutionInfo> optional = searchCloudletInAllLists(cloudletId);
 
-        for (CloudletExecutionInfo rcl : getCloudletPausedList()) {
-            if (rcl.getCloudletId() == cloudletId) {
-                return rcl.getCloudletStatus().ordinal();
-            }
-        }
-
-        for (CloudletExecutionInfo rcl : getCloudletWaitingList()) {
-            if (rcl.getCloudletId() == cloudletId) {
-                return rcl.getCloudletStatus().ordinal();
-            }
+	    if (optional.isPresent()) {
+            return optional.get().getCloudletStatus().ordinal();
         }
 
         return -1;
     }
 
-    @Override
+	/**
+	 * Search for a Cloudlet into all Cloudlet lists.
+	 *
+	 * @param cloudletId the id of the Cloudlet to search for
+	 * @return an {@link Optional} value that is able to indicate if the Cloudlet was found or not
+	 */
+	protected Optional<CloudletExecutionInfo> searchCloudletInAllLists(double cloudletId) {
+		Collection[] allLists =
+			new Collection[]{getCloudletExecList(), getCloudletPausedList(), getCloudletWaitingList(),
+				getCloudletFinishedList(), getCloudletFailedList()};
+
+		for(Collection list: allLists){
+			Optional<CloudletExecutionInfo> optional = searchCloudletInList(cloudletId, list);
+			if(optional.isPresent())
+				return optional;
+		}
+
+		return Optional.empty();
+	}
+
+	/**
+	 * Search for a Cloudlet into a given list.
+	 *
+	 * @param cloudletId the id of the Cloudlet to search for
+	 * @param list the list to search the Cloudlet into
+	 * @return an {@link Optional} value that is able to indicate if the Cloudlet was found or not
+	 */
+	protected Optional<CloudletExecutionInfo> searchCloudletInList(double cloudletId, Collection<CloudletExecutionInfo> list) {
+		return list.stream()
+			.filter(rcl -> rcl.getCloudletId() == cloudletId)
+			.findFirst();
+	}
+
+	@Override
     public void cloudletFinish(CloudletExecutionInfo rcl) {
         rcl.setCloudletStatus(Cloudlet.Status.SUCCESS);
         rcl.finalizeCloudlet();
@@ -365,20 +329,20 @@ public abstract class CloudletSchedulerAbstract implements CloudletScheduler {
      * in the given list
      */
     private Cloudlet changeStatusOfCloudletIntoList(
-            List<CloudletExecutionInfo> cloudletList, int cloudletId,
-            Consumer<CloudletExecutionInfo> consumer) {
-        for (int i = 0; i < cloudletList.size(); i++) {
-            CloudletExecutionInfo rcl = cloudletList.get(i);
-            if (rcl.getCloudletId() == cloudletId) {
-                cloudletList.remove(rcl);
-                if(consumer != null){
-                    consumer.accept(rcl);
-                }
-                return rcl.getCloudlet();
-            }
+	    Collection<CloudletExecutionInfo> cloudletList, int cloudletId,
+	    Consumer<CloudletExecutionInfo> consumer) {
+
+	    Optional<CloudletExecutionInfo> optional = cloudletList.stream()
+		    .filter(c->c.getCloudlet().getId() == cloudletId)
+		    .findFirst();
+
+        if (!optional.isPresent()) {
+	        return Cloudlet.NULL;
         }
 
-        return Cloudlet.NULL;
+        cloudletList.remove(optional.get());
+        consumer.accept(optional.get());
+        return optional.get().getCloudlet();
     }
 
     /**
@@ -462,23 +426,24 @@ public abstract class CloudletSchedulerAbstract implements CloudletScheduler {
     protected int removeFinishedCloudletsFromExecutionList() {
         List<CloudletExecutionInfo> toRemove =
 	        getCloudletExecList().stream()
-		        .filter(this::checkFinishedCloudlet)
+		        .filter(c->c.getCloudlet().isFinished())
 		        .collect(Collectors.toList());
 
+	    toRemove.stream().forEach(this::setFinishTimeIfCloudletIsFinished);
         getCloudletExecList().removeAll(toRemove);
 
         return toRemove.size();
     }
 
     /**
-     * Checks if a specific finished cloudlet from the
+     * Sets its finishe time if a specific finished cloudlet from the
      * {@link #getCloudletExecList() list of cloudlets to execute}
-     * has finished.
+     * is finished.
      *
-     * @param rcl the cloudlet to check if has finished
-     * @return true if the cloudlet has finished, false otherwise
+     * @param rcl the cloudlet to set the finish time
+     * @return true if the cloudlet is finished (indicating the finish time was set), false otherwise
      */
-    protected boolean checkFinishedCloudlet(CloudletExecutionInfo rcl) {
+    protected boolean setFinishTimeIfCloudletIsFinished(CloudletExecutionInfo rcl) {
         if (rcl.getCloudlet().isFinished()) {
             rcl.setFinishTime(CloudSim.clock());
             cloudletFinish(rcl);
@@ -489,7 +454,7 @@ public abstract class CloudletSchedulerAbstract implements CloudletScheduler {
     }
 
     /**
-     * Gets the estimated finish time of the cloudlet that is expected to
+     * Gets the estimated finish time of the Cloudlet that is expected to
      * finish executing sooner than all other ones that are executing
      * on the VM using this scheduler.
      *
@@ -512,6 +477,9 @@ public abstract class CloudletSchedulerAbstract implements CloudletScheduler {
 
     /**
      * Gets the estimated time when a given cloudlet is supposed to finish executing.
+     * It considers the amount of Vm PES and the sum of PEs required by all VMs running
+     * inside the VM.
+     *
      * @param rcl cloudlet to get the estimated finish time
      * @param currentTime current simulation time
      * @return the estimated finish time of the given cloudlet
@@ -520,7 +488,7 @@ public abstract class CloudletSchedulerAbstract implements CloudletScheduler {
         double estimatedFinishTime = currentTime
                 + (rcl.getRemainingCloudletLength() /
                 (processor.getAvailableMipsByPe() * rcl.getNumberOfPes()));
-	    
+
         if (estimatedFinishTime - currentTime < CloudSim.getMinTimeBetweenEvents()) {
             estimatedFinishTime = currentTime + CloudSim.getMinTimeBetweenEvents();
         }

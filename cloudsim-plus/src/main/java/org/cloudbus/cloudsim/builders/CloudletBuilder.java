@@ -12,7 +12,7 @@ import org.cloudbus.cloudsim.listeners.VmToCloudletEventInfo;
 
 /**
  * A Builder class to create {@link Cloudlet} objects.
- * 
+ *
  * @author Manoel Campos da Silva Filho
  */
 public class CloudletBuilder extends Builder {
@@ -28,35 +28,37 @@ public class CloudletBuilder extends Builder {
     private UtilizationModel utilizationModelRam;
     private UtilizationModel utilizationModelCpu;
     private UtilizationModel utilizationModelBw;
-    
+
     private final List<Cloudlet> cloudlets;
     private int numberOfCreatedCloudlets;
-    
+
     private final BrokerBuilderDecorator brokerBuilder;
     private final DatacenterBrokerSimple broker;
-    
-    private EventListener<VmToCloudletEventInfo> onCloudletFinishEventListener = EventListener.NULL;
 
-    public CloudletBuilder(final BrokerBuilderDecorator brokerBuilder, final DatacenterBrokerSimple broker) {
+    private EventListener<VmToCloudletEventInfo> onCloudletFinishEventListener = EventListener.NULL;
+	private List<String> requiredFiles;
+
+	public CloudletBuilder(final BrokerBuilderDecorator brokerBuilder, final DatacenterBrokerSimple broker) {
         if(brokerBuilder == null)
-           throw new RuntimeException("The brokerBuilder parameter cannot be null."); 
+           throw new RuntimeException("The brokerBuilder parameter cannot be null.");
         if(broker == null)
-           throw new RuntimeException("The broker parameter cannot be null."); 
-        
-        this.brokerBuilder = brokerBuilder;   
+           throw new RuntimeException("The broker parameter cannot be null.");
+
+        this.brokerBuilder = brokerBuilder;
         setUtilizationModelCpuRamAndBw(new UtilizationModelFull());
         this.broker = broker;
         this.cloudlets = new ArrayList<>();
-        this.numberOfCreatedCloudlets = 0;        
+		this.requiredFiles = new ArrayList<>();
+        this.numberOfCreatedCloudlets = 0;
     }
 
     /**
      * Sets the same utilization model for CPU, RAM and BW.
      * By this way, at a time t, every one of the 3 resources will use the same percentage
      * of its capacity.
-     * 
+     *
      * @param utilizationModel the utilization model to set
-     * @return 
+     * @return
      */
     public final CloudletBuilder setUtilizationModelCpuRamAndBw(UtilizationModel utilizationModel) {
         if(utilizationModel != null){
@@ -66,7 +68,7 @@ public class CloudletBuilder extends Builder {
         }
         return this;
     }
-    
+
     public CloudletBuilder setVmId(int defaultVmId) {
         this.vmId = defaultVmId;
         return this;
@@ -75,6 +77,11 @@ public class CloudletBuilder extends Builder {
     public CloudletBuilder setFileSize(long defaultFileSize) {
         this.fileSize = defaultFileSize;
         return this;
+    }
+
+    public CloudletBuilder setRequiredFiles(List<String> requiredFiles){
+	    this.requiredFiles = requiredFiles;
+	    return this;
     }
 
     public List<Cloudlet> getCloudlets() {
@@ -104,7 +111,7 @@ public class CloudletBuilder extends Builder {
                 return cloudlet;
             }
         }
-        return null;
+        return Cloudlet.NULL;
     }
 
     public CloudletBuilder setOutputSize(long defaultOutputSize) {
@@ -120,11 +127,11 @@ public class CloudletBuilder extends Builder {
         this.length = defaultLength;
         return this;
     }
-    
+
     public CloudletBuilder createAndSubmitOneCloudlet() {
         return createAndSubmitCloudlets(1);
     }
-    
+
     public CloudletBuilder createCloudlets(final int amount) {
         createCloudletsInternal(amount);
         return this;
@@ -136,18 +143,19 @@ public class CloudletBuilder extends Builder {
             final int cloudletId = numberOfCreatedCloudlets++;
             Cloudlet cloudlet =
                     new CloudletSimple(
-                            cloudletId, length, 
-                            pes, fileSize, 
-                            outputSize, 
+                            cloudletId, length,
+                            pes, fileSize,
+                            outputSize,
                             utilizationModelCpu, utilizationModelRam, utilizationModelBw);
             cloudlet.setUserId(broker.getId());
             cloudlet.setOnCloudletFinishEventListener(onCloudletFinishEventListener);
+	        requiredFiles.stream().forEach(cloudlet::addRequiredFile);
             localList.add(cloudlet);
         }
         cloudlets.addAll(localList);
         return localList;
     }
-    
+
     public CloudletBuilder createAndSubmitCloudlets(final int amount) {
         List<Cloudlet> localList = createCloudletsInternal(amount);
         broker.submitCloudletList(localList);
@@ -156,7 +164,7 @@ public class CloudletBuilder extends Builder {
         }
         return this;
     }
-    
+
     /**
      * Submits the list of created cloudlets to the latest created broker.
      * @return the CloudletBuilder instance

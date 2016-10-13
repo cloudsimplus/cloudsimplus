@@ -13,13 +13,13 @@ import org.cloudbus.cloudsim.resources.FileStorage;
 
 /**
  * A Builder class to createDatacenter {@link DatacenterSimple} objects.
- * 
+ *
  * @author Manoel Campos da Silva Filho
  */
 public class DatacenterBuilder extends Builder {
     public static final String DATACENTER_NAME_FORMAT = "Datacenter%d";
 
-    public static final String VMM = "Xen"; 
+    public static final String VMM = "Xen";
     private String architecture = "x86";
     private String operatingSystem = "Linux";
     private double costPerBwByte = 0.0;
@@ -28,14 +28,16 @@ public class DatacenterBuilder extends Builder {
     private double costPerMem = 0.05;
     private double schedulingInterval = 1;
     private double timezone = 10;
-    
+
     private final List<Datacenter> datacenters;
     private int numberOfCreatedDatacenters;
+	private List<FileStorage> storageList;
 
-    public DatacenterBuilder() {
+	public DatacenterBuilder() {
         this.datacenters = new ArrayList<>();
+		this.storageList = new ArrayList<>();
         this.numberOfCreatedDatacenters = 0;
-    }    
+    }
 
     public List<Datacenter> getDatacenters() {
         return datacenters;
@@ -44,34 +46,33 @@ public class DatacenterBuilder extends Builder {
     public Datacenter get(final int index) {
         if(index >= 0 && index < datacenters.size())
             return datacenters.get(index);
-        
+
         return Datacenter.NULL;
     }
-    
+
     public Host getHostOfDatacenter(final int hostIndex, final int datacenterIndex){
         return get(datacenterIndex).getHost(hostIndex);
-    }    
-    
+    }
+
     public Host getFirstHostFromFirstDatacenter(){
         return getHostOfDatacenter(0,0);
-    }    
+    }
 
     public DatacenterBuilder createDatacenter(final List<Host> hosts) {
         if (hosts == null || hosts.isEmpty()) {
             throw new RuntimeException("The hosts parameter has to have at least 1 host.");
         }
-        
-        LinkedList<FileStorage> storageList = new LinkedList<>();
-        DatacenterCharacteristics characteristics = 
+
+        DatacenterCharacteristics characteristics =
                 new DatacenterCharacteristicsSimple (
-                        architecture, operatingSystem, VMM, hosts, 
-                        timezone, costPerCpuSecond, 
-                        costPerMem, costPerStorage, 
+                        architecture, operatingSystem, VMM, hosts,
+                        timezone, costPerCpuSecond,
+                        costPerMem, costPerStorage,
                         costPerBwByte);
         String name = String.format(DATACENTER_NAME_FORMAT, numberOfCreatedDatacenters++);
-        Datacenter datacenter = 
-                new DatacenterSimple(name, characteristics, 
-                        new VmAllocationPolicySimple(hosts), 
+        Datacenter datacenter =
+                new DatacenterSimple(name, characteristics,
+                        new VmAllocationPolicySimple(hosts),
                         storageList, schedulingInterval);
         this.datacenters.add(datacenter);
         return this;
@@ -148,4 +149,15 @@ public class DatacenterBuilder extends Builder {
         this.schedulingInterval = schedulingInterval;
         return this;
     }
+
+	public DatacenterBuilder setStorageList(List<FileStorage> storageList) {
+		this.storageList = storageList;
+		return this;
+	}
+
+	public DatacenterBuilder addStorageToList(FileStorage storage) {
+		this.storageList.add(storage);
+		return this;
+	}
+
 }

@@ -1,6 +1,7 @@
 package org.cloudbus.cloudsim.schedulers;
 
 import java.io.Serializable;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import org.cloudbus.cloudsim.Cloudlet;
@@ -57,7 +58,8 @@ public interface CloudletScheduler extends Serializable {
      * Resumes execution of a paused cloudlet.
      *
      * @param clId ID of the cloudlet being resumed
-     * @return expected finish time of the cloudlet, 0.0 if queued
+     * @return expected finish time of the cloudlet, 0.0 if queued or not found in the
+     * paused list
      * @pre $none
      * @post $none
      */
@@ -85,13 +87,16 @@ public interface CloudletScheduler extends Serializable {
     double cloudletSubmit(Cloudlet cl);
 
     /**
-     * Gets the list of cloudlets being executed on the VM.
+     * Gets the {@link Collection} of cloudlets being executed on the VM.
+     * It is being used a more generic interface instead of {@link List}
+     * to enable implementations to decide the best and more efficient data structure to
+     * store the executing Cloudlets.
      *
      * @param <T> the generic type
-     * @return the cloudlet exec list
+     * @return the cloudlet exec collection
      */
     @SuppressWarnings(value = "unchecked")
-    <T extends CloudletExecutionInfo> List<T> getCloudletExecList();
+    <T extends CloudletExecutionInfo> Collection<T> getCloudletExecList();
 
     /**
      * Gets the list of failed cloudlets.
@@ -121,14 +126,14 @@ public interface CloudletScheduler extends Serializable {
     <T extends CloudletExecutionInfo> List<T> getCloudletPausedList();
 
     /**
-     * Gets the status of a cloudlet.
+     * Gets the status of a cloudlet with a given id.
      *
-     * @param clId ID of the cloudlet
-     * @return status of the cloudlet, -1 if cloudlet not found
+     * @param cloudletId ID of the cloudlet to get the status
+     * @return status of the cloudlet if it was found, otherwise, returns -1
      * @pre $none
      * @post $none
      */
-    int getCloudletStatus(int clId);
+    int getCloudletStatus(int cloudletId);
 
     /**
      * Gets the list of cloudlet waiting to be executed on the VM.
@@ -174,9 +179,9 @@ public interface CloudletScheduler extends Serializable {
     double getCurrentRequestedUtilizationOfRam();
 
     /**
-     * Returns the next cloudlet in the finished list.
+     * Removes the next cloudlet in the finished list and returns it.
      *
-     * @return a finished cloudlet or $null if the respective list is empty
+     * @return a finished cloudlet or {@link Cloudlet#NULL} if the respective list is empty
      * @pre $none
      * @post $none
      */
@@ -322,11 +327,11 @@ public interface CloudletScheduler extends Serializable {
         @Override public double cloudletResume(int clId) { return 0.0; }
         @Override public double cloudletSubmit(Cloudlet cl, double fileTransferTime){ return 0.0; }
         @Override public double cloudletSubmit(Cloudlet cl) { return 0.0; }
-        @Override public <T extends CloudletExecutionInfo> List<T> getCloudletExecList() { return Collections.emptyList(); }
+        @Override public <T extends CloudletExecutionInfo> Collection<T> getCloudletExecList() { return Collections.emptyList(); }
         @Override public <T extends CloudletExecutionInfo> List<T> getCloudletFailedList() { return Collections.emptyList(); }
         @Override public <T extends CloudletExecutionInfo> List<T> getCloudletFinishedList() { return Collections.emptyList(); }
         @Override public <T extends CloudletExecutionInfo> List<T> getCloudletPausedList() { return Collections.emptyList(); }
-        @Override public int getCloudletStatus(int clId) { return 0; }
+        @Override public int getCloudletStatus(int cloudletId) { return 0; }
         @Override public <T extends CloudletExecutionInfo> List<T> getCloudletWaitingList() { return Collections.emptyList(); }
         @Override public List<Double> getCurrentMipsShare() { return Collections.emptyList(); }
         @Override public List<Double> getCurrentRequestedMips() { return Collections.emptyList(); }

@@ -4,6 +4,7 @@ import org.cloudbus.cloudsim.Cloudlet;
 import org.cloudbus.cloudsim.CloudletExecutionInfo;
 import org.cloudbus.cloudsim.resources.Pe;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.TreeMap;
 import java.util.stream.Collectors;
@@ -41,11 +42,9 @@ import java.util.stream.Collectors;
  */
 public class CloudletSchedulerCompletelyFair extends CloudletSchedulerTimeShared {
 	/**
-	 * A {@link TreeMap Red-Black Tree} that stores the list of running Cloudlets,
-	 * where each key is the virtual runtime (vruntime), which indicates the amount of time
-	 * the Cloudlet has run yet.
+	 * @see #getCloudletExecList()
 	 */
-	private TreeMap<Double, CloudletExecutionInfo> runQueue;
+	private TreeMap<Double, CloudletExecutionInfo> cloudletExecList;
 
 	/**
 	 * @see #getMininumGranularity()
@@ -59,6 +58,7 @@ public class CloudletSchedulerCompletelyFair extends CloudletSchedulerTimeShared
 
 	public CloudletSchedulerCompletelyFair(){
 		super();
+		cloudletExecList = new TreeMap<>();
 	}
 
 	@Override
@@ -189,16 +189,15 @@ public class CloudletSchedulerCompletelyFair extends CloudletSchedulerTimeShared
 	}
 
 	/**
-	 * {@inheritDoc}
+	 *  Gets a {@link TreeMap Red-Black Tree} that stores the list of running Cloudlets
+	 * (the so called run queue), where each key is the virtual runtime (vruntime),
+	 * which indicates the amount of time the Cloudlet has to run yet.
 	 *
-	 * <p><b>As the CFS internally uses a Red-Black Tree to store the
-	 * running Cloudlets in the {@link #runQueue}, this method is overrides
-	 * to return values directly from this tree.</b></p>
 	 * @param <T> {@inheritDoc}
-	 * @return {@inheritDoc}
+	 * @return {@inheritDoc} (the so called run queue)
 	 */
 	@Override
-	public <T extends CloudletExecutionInfo> List<T> getCloudletExecList() {
-		return (List<T>)runQueue.values().stream().collect(Collectors.toList());
+	public <T extends CloudletExecutionInfo> Collection<T> getCloudletExecList() {
+		return (Collection<T>) cloudletExecList;
 	}
 }

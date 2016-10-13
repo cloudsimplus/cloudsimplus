@@ -1,6 +1,7 @@
 package org.cloudbus.cloudsim.resources;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.stream.IntStream;
 import org.cloudbus.cloudsim.Cloudlet;
@@ -16,22 +17,22 @@ import static org.junit.Assert.*;
 public class ProcessorTest {
     private static final double PE_MIPS = 1000;
     private static final int NUMBER_OF_PES = 2;
-    
+
     @Test
     public void testFromMipsList_CheckCloudletList() {
         List<Double> mipsList = createMipsList(1);
         List<CloudletExecutionInfo> cloudletExecList = createCloudletExecList(1);
-        
+
         Processor processor = Processor.fromMipsList(mipsList, cloudletExecList);
-        assertEquals("The cloudlet exec list is the same size as expected", 
+        assertEquals("The cloudlet exec list is the same size as expected",
                 cloudletExecList.size(), processor.getCloudletExecList().size());
     }
 
     private List<CloudletExecutionInfo> createCloudletExecList(int numberOfCloudlets) {
         List<CloudletExecutionInfo> cloudletExecList = new ArrayList<>();
         Cloudlet cloudlet = createMockCloudlet(numberOfCloudlets);
-        
-        IntStream.range(0, numberOfCloudlets).forEach(i -> 
+
+        IntStream.range(0, numberOfCloudlets).forEach(i ->
                 cloudletExecList.add(new CloudletExecutionInfo(cloudlet)));
         return cloudletExecList;
     }
@@ -118,8 +119,8 @@ public class ProcessorTest {
         List<CloudletExecutionInfo> cloudletExecList = createCloudletExecList(2);
         List<Double> mipsList = createMipsList(NUMBER_OF_PES);
         Processor instance = Processor.fromMipsList(mipsList, cloudletExecList);
-        List<CloudletExecutionInfo> result = instance.getCloudletExecList();
-        assertEquals("The number of cloudlets in the exec list is not as expected", 
+        Collection<CloudletExecutionInfo> result = instance.getCloudletExecList();
+        assertEquals("The number of cloudlets in the exec list is not as expected",
                 cloudletExecList.size(), result.size());
     }
 
@@ -131,14 +132,4 @@ public class ProcessorTest {
         instance.getCloudletExecList().add(null);
     }
 
-    @Test
-    public void testSetCloudletExecList() {
-        List<CloudletExecutionInfo> cloudletExecList = createCloudletExecList(NUMBER_OF_PES*2);
-        Processor instance = createDefaultProcessor();
-        instance.setCloudletExecList(cloudletExecList);
-        assertEquals("The number of cloudlets in the exec list is not as expected", 
-                cloudletExecList.size(), instance.getCloudletExecList().size());
-        
-    }
-    
 }
