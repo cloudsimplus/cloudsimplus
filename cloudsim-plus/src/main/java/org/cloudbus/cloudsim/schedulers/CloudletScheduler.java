@@ -6,17 +6,20 @@ import java.util.List;
 import org.cloudbus.cloudsim.Cloudlet;
 import org.cloudbus.cloudsim.CloudletExecutionInfo;
 import org.cloudbus.cloudsim.Vm;
+import org.cloudbus.cloudsim.core.CloudSimTags;
+import org.cloudbus.cloudsim.network.datacenter.NetworkCloudletSpaceSharedScheduler;
+import org.cloudbus.cloudsim.resources.Pe;
 
 /**
- * An interface to be implemented by each class that provides a policy 
+ * An interface to be implemented by each class that provides a policy
  * of scheduling performed by a virtual machine to run its {@link Cloudlet Cloudlets}.
  * Each VM has to have its own instance of a CloudletScheduler.
- * 
+ *
  * <p>It also implements the Null Object
  * Design Pattern in order to start avoiding {@link NullPointerException} when
  * using the {@link CloudletScheduler#NULL} object instead of attributing {@code null} to
  * {@link CloudletScheduler} variables.</p>
- * 
+ *
  * @author Manoel Campos da Silva Filho
  */
 public interface CloudletScheduler extends Serializable {
@@ -224,7 +227,7 @@ public interface CloudletScheduler extends Serializable {
     double getTotalCurrentRequestedMipsForCloudlet(CloudletExecutionInfo rcl, double time);
 
     /**
-     * Gets total CPU utilization percentage of all cloudlets, 
+     * Gets total CPU utilization percentage of all cloudlets,
      * according to CPU UtilizationModel of each one (in scale from 0 to 1,
      * where 1 is 100%).
      *
@@ -243,13 +246,29 @@ public interface CloudletScheduler extends Serializable {
     boolean hasFinishedCloudlets();
 
     /**
-     * Returns one cloudlet to migrate to another vm.
+     * Returns one cloudlet to migrate to another Vm.
+     * How the migrating cloudlet is select is defined by each
+     * class implementing this interface.
      *
      * @return one running cloudlet
      * @pre $none
      * @post $none
+     * @todo @author manoelcampos Despite there is this method, it is not being
+     * used anywhere and Cloudlet migration is not in fact supported.
+     * Actually, in a real scenario, application migration is a tough
+     * issue, once it has to deal with configuration and data migration,
+     * dependencies, etc. Further, I don't think it is a reasonable approach
+     * to follow. Vm migration makes more sense because you deal it as a
+     * black box, not having to be concerned with any internal data or
+     * configurations. You just move the entire VM to another host.
+     * There is the {@link CloudSimTags#CLOUDLET_MOVE} that is used in the
+     * {@link org.cloudbus.cloudsim.DatacenterSimple} class, but the event
+     * is not being sent anywhere. The CloudSim forum has 3 questions about
+     * Cloudlet migration only. It shows that this features is not
+     * highly required and in fact. Even for migration of parallel workloads
+     * such as Map-Reduce, data has to be migrated with the application.
      */
-    Cloudlet migrateCloudlet();
+    Cloudlet getCloudletToMigrate();
 
     /**
      * Returns the number of cloudlets running in the virtual machine.
@@ -271,28 +290,27 @@ public interface CloudletScheduler extends Serializable {
      * @post $none
      */
     double updateVmProcessing(double currentTime, List<Double> mipsShare);
-    
+
     /**
      * Gets the Vm that uses the scheduler.
-     * @return 
+     * @return
      */
     Vm getVm();
 
     /**
      * Sets the Vm that will use the scheduler.
-     * @param vm 
+     * @param vm
      */
     void setVm(Vm vm) ;
-    
+
     /**
      * Updates the processing of a specific cloudlet of the Vm using this scheduler.
      * @param rcl The cloudlet to be its processing updated
      * @param currentTime current simulation time
-     * 
-     * @see #updateCloudletsProcessing(double, org.cloudbus.cloudsim.resources.Processor) 
+     *
      */
-    void updateCloudletProcessing(CloudletExecutionInfo rcl, double currentTime);    
-    
+    void updateCloudletProcessing(CloudletExecutionInfo rcl, double currentTime);
+
     /**
      * A property that implements the Null Object Design Pattern for {@link CloudletScheduler}
      * objects.
@@ -321,7 +339,7 @@ public interface CloudletScheduler extends Serializable {
         @Override public double getTotalCurrentRequestedMipsForCloudlet(CloudletExecutionInfo rcl, double time) { return 0.0; }
         @Override public double getTotalUtilizationOfCpu(double time) { return 0.0; }
         @Override public boolean hasFinishedCloudlets() { return false; }
-        @Override public Cloudlet migrateCloudlet() { return Cloudlet.NULL; }
+        @Override public Cloudlet getCloudletToMigrate() { return Cloudlet.NULL; }
         @Override public int runningCloudletsNumber() { return 0; }
         @Override public double updateVmProcessing(double currentTime, List<Double> mipsShare) { return 0.0; }
         @Override public Vm getVm() { return Vm.NULL; }

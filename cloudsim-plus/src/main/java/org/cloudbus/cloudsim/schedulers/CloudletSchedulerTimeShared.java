@@ -44,7 +44,23 @@ public class CloudletSchedulerTimeShared extends CloudletSchedulerAbstract {
         return super.updateVmProcessing(currentTime, mipsShare);
     }
 
-    @Override
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p><b>For time-shared schedulers, this list is always empty, once
+	 * the VM PEs are shared across all Cloudlets running inside a VM.
+	 * Each Cloudlet has the opportunity to use the PEs
+	 * for a given timeslice.</b></p>
+	 *
+	 * @param <T> {@inheritDoc}
+	 * @return {@inheritDoc}
+	 */
+	@Override
+	public <T extends CloudletExecutionInfo> List<T> getCloudletWaitingList() {
+		return super.getCloudletWaitingList();
+	}
+
+	@Override
     public double cloudletResume(int cloudletId) {
 	    Optional<CloudletExecutionInfo> optional =
 		    getCloudletPausedList().stream()

@@ -1,7 +1,7 @@
 /*
  * Title: CloudSim Toolkit Description: CloudSim (Cloud Simulation) Toolkit for Modeling and
  * Simulation of Clouds Licence: GPL - http://www.gnu.org/copyleft/gpl.html
- * 
+ *
  * Copyright (c) 2009-2012, The University of Melbourne, Australia
  */
 package org.cloudbus.cloudsim;
@@ -24,7 +24,7 @@ import org.cloudbus.cloudsim.resources.FileStorage;
 /**
  * Implements the basic features of a Virtualized Cloud Datacenter. It deals
  * with processing of VM queries (i.e., handling of VMs) instead of processing
- * Cloudlet-related queries. 
+ * Cloudlet-related queries.
  *
  * @author Rodrigo N. Calheiros
  * @author Anton Beloglazov
@@ -188,12 +188,12 @@ public class DatacenterSimple extends SimEntity implements Datacenter {
                 processCloudlet(ev, CloudSimTags.CLOUDLET_RESUME_ACK);
                 break;
 
-            // Moves a previously submitted Cloudlet to a different resource
+            // Moves a previously submitted Cloudlet to a different Datacenter
             case CloudSimTags.CLOUDLET_MOVE:
                 processCloudletMove((int[]) ev.getData(), CloudSimTags.CLOUDLET_MOVE);
                 break;
 
-            // Moves a previously submitted Cloudlet to a different resource
+            // Moves a previously submitted Cloudlet to a different Datacenter
             case CloudSimTags.CLOUDLET_MOVE_ACK:
                 processCloudletMove((int[]) ev.getData(), CloudSimTags.CLOUDLET_MOVE_ACK);
                 break;
@@ -458,7 +458,7 @@ public class DatacenterSimple extends SimEntity implements Datacenter {
             data[0] = getId();
             data[1] = vm.getId();
             data[2] = (hostAllocatedForVm ? CloudSimTags.TRUE : CloudSimTags.FALSE);
-            send(vm.getUserId(), CloudSim.getMinTimeBetweenEvents(), 
+            send(vm.getUserId(), CloudSim.getMinTimeBetweenEvents(),
                  CloudSimTags.VM_CREATE_ACK, data);
         }
 
@@ -474,7 +474,7 @@ public class DatacenterSimple extends SimEntity implements Datacenter {
                     .getHost(vm).getVmScheduler()
                     .getAllocatedMipsForVm(vm));
         }
-        
+
         return hostAllocatedForVm;
     }
 
@@ -725,7 +725,7 @@ public class DatacenterSimple extends SimEntity implements Datacenter {
 
     /**
      * Submits a cloudlet to be executed inside its bound VM.
-     * 
+     *
      * @param cl the cloudlet to the executed
      * @param ack indicates if the Broker is waiting for an ACK after the Datacenter
      * receives the cloudlet submission
@@ -733,18 +733,18 @@ public class DatacenterSimple extends SimEntity implements Datacenter {
     private void submitCloudletToVm(Cloudlet cl, boolean ack) {
         // time to transfer cloudlet files
         double fileTransferTime = predictFileTransferTime(cl.getRequiredFiles());
-        
+
         Host host = getVmAllocationPolicy().getHost(cl.getVmId(), cl.getUserId());
         Vm vm = host.getVm(cl.getVmId(), cl.getUserId());
         CloudletScheduler scheduler = vm.getCloudletScheduler();
         double estimatedFinishTime = scheduler.cloudletSubmit(cl, fileTransferTime);
-        
+
         // if this cloudlet is in the exec queue
         if (estimatedFinishTime > 0.0 && !Double.isInfinite(estimatedFinishTime)) {
             estimatedFinishTime += fileTransferTime;
             send(getId(), estimatedFinishTime, CloudSimTags.VM_UPDATE_CLOUDLET_PROCESSING_EVENT);
         }
-        
+
         sendCloudletSubmitAckToBroker(ack, cl, CloudSimTags.TRUE);
     }
 
@@ -752,8 +752,8 @@ public class DatacenterSimple extends SimEntity implements Datacenter {
      * Checks if a submitted cloudlet has already finished.
      * If it is the case, the Datacenter notifies the Broker that
      * the Cloudlet cannot be created again because it has already finished.
-     * 
-     * @param cl the submitted cloudlet 
+     *
+     * @param cl the submitted cloudlet
      * @param ack indicates if the Broker is waiting for an ACK after the Datacenter
      * receives the cloudlet submission
      * @return true if the submitted cloudlet has already finished, indicating
@@ -763,15 +763,15 @@ public class DatacenterSimple extends SimEntity implements Datacenter {
         if(!cl.isFinished()){
             return false;
         }
-        
+
         String name = CloudSim.getEntityName(cl.getUserId());
         Log.printConcatLine(
                 getName(), ": Warning - Cloudlet #", cl.getId(), " owned by ", name,
                 " is already completed/finished.");
         Log.printLine("Therefore, it is not being executed again");
         Log.printLine();
-        
-        /* 
+
+        /*
          NOTE: If a Cloudlet has finished, then it won't be processed.
          So, if ack is required, this method sends back a result.
          If ack is not required, this method don't send back a result.
@@ -779,7 +779,7 @@ public class DatacenterSimple extends SimEntity implements Datacenter {
          for this Cloudlet back.
         */
         sendCloudletSubmitAckToBroker(ack, cl,  CloudSimTags.FALSE);
-        
+
         sendNow(cl.getUserId(), CloudSimTags.CLOUDLET_RETURN, cl);
         return true;
     }
@@ -788,14 +788,14 @@ public class DatacenterSimple extends SimEntity implements Datacenter {
      * Sends an ACK to the DatacenterBroker that submitted the Cloudlet for execution
      * in order to respond the reception of the submission request,
      * informing if the cloudlet was created or not.
-     * 
+     *
      * The ACK is sent just if the Broker is waiting for it and that condition
      * is indicated in the ack parameter.
-     * 
+     *
      * @oaram ack indicates if the Broker is waiting for an ACK after the Datacenter
      * receives the cloudlet submission
      * @param cl the cloudlet to respond to DatacenterBroker if it was created or not
-     * @param cloudletCreated indicates if the cloudlet was successfully created 
+     * @param cloudletCreated indicates if the cloudlet was successfully created
      * by the Datacenter, according to the {@link CloudSimTags#TRUE} or
      * {@link CloudSimTags#FALSE} tags.
      */
@@ -803,12 +803,12 @@ public class DatacenterSimple extends SimEntity implements Datacenter {
         if(!ack){
             return;
         }
-        
+
         int[] data = new int[3];
         data[0] = getId();
         data[1] = cl.getId();
         data[2] = cloudletCreated;
-        
+
         sendNow(cl.getUserId(), CloudSimTags.CLOUDLET_SUBMIT_ACK, data);
     }
     /**
@@ -919,7 +919,7 @@ public class DatacenterSimple extends SimEntity implements Datacenter {
 
     /**
      * Updates processing of each cloudlet running in this DatacenterSimple
-     * and schedules the next processing update. 
+     * and schedules the next processing update.
      * It is necessary because Hosts and VMs are simple objects, not
      * entities. So, they don't receive events and updating cloudlets inside
      * them must be called from the outside.
@@ -928,9 +928,9 @@ public class DatacenterSimple extends SimEntity implements Datacenter {
      * @post $none
      */
     protected void updateCloudletProcessing() {
-        if (!isTimeToUpdateCloudletsProcessing()) 
+        if (!isTimeToUpdateCloudletsProcessing())
             return;
-        
+
         double delay = delayToUpdateCloudletProcessing();
         if (delay != Double.MAX_VALUE) {
             schedule(getId(), delay, CloudSimTags.VM_UPDATE_CLOUDLET_PROCESSING_EVENT);
@@ -942,7 +942,7 @@ public class DatacenterSimple extends SimEntity implements Datacenter {
         // if some time passed since last processing
         // R: for term is to allow loop at simulation start. Otherwise, one initial
         // simulation step is skipped and schedulers are not properly initialized
-        return CloudSim.clock() < 0.111 || 
+        return CloudSim.clock() < 0.111 ||
                CloudSim.clock() > getLastProcessTime() + CloudSim.getMinTimeBetweenEvents();
     }
 
@@ -962,7 +962,7 @@ public class DatacenterSimple extends SimEntity implements Datacenter {
             // what time do we expect that the next cloudlet will finish?
             completionTimeOfNextFinishingCloudlet = Math.min(time, completionTimeOfNextFinishingCloudlet);
         }
-        
+
         // gurantees a minimal interval before scheduling the event
         if (completionTimeOfNextFinishingCloudlet < CloudSim.clock()+CloudSim.getMinTimeBetweenEvents()+0.01) {
             completionTimeOfNextFinishingCloudlet = CloudSim.clock()+CloudSim.getMinTimeBetweenEvents()+0.01;
@@ -1241,7 +1241,7 @@ public class DatacenterSimple extends SimEntity implements Datacenter {
         if (index >= 0 && index < getHostList().size()) {
             return getHostList().get(index);
         }
-        
+
         return Host.NULL;
     }
 

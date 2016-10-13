@@ -113,7 +113,7 @@ public class CloudletExecutionInfo {
     private final int reservationId;
 
     /**
-     * Instantiates a new ResCloudlet object upon the arrival of a Cloudlet object.
+     * Instantiates a new CloudletExecutionInfo object upon the arrival of a Cloudlet object.
      * The arriving time is determined by
      * {@link org.cloudbus.cloudsim.core.CloudSim#clock()}.
      *
@@ -128,7 +128,7 @@ public class CloudletExecutionInfo {
     }
 
     /**
-     * Instantiates a new ResCloudlet object upon the arrival of a Cloudlet object.
+     * Instantiates a new CloudletExecutionInfo object upon the arrival of a Cloudlet object.
      * Use this constructor to store reserved Cloudlets, i.e. Cloudlets that
      * done reservation before. The arriving time is determined by
      * {@link org.cloudbus.cloudsim.core.CloudSim#clock()}.

@@ -363,14 +363,14 @@ public interface Cloudlet extends Identificable, Comparable<Cloudlet> {
 
     /**
      * Sets the {@link #getPriority() priority} of this Cloudlet for scheduling inside a Vm.
+     * How the priority is interpreted depends on the {@link CloudletScheduler}
+     * that is being used by the Vm running the Cloudlet.
      *
      * @param priority priority of this Cloudlet
-     * @return <tt>true</tt> if it is priority is valid, <tt>false</tt> otherwise
      *
-     * @pre priority >= 0
      * @post $none
      */
-    boolean setPriority(final int priority);
+    void setPriority(final int priority);
 
     /**
      * Gets the Type of Service (ToS) of IPv4 for sending Cloudlet over the network.
@@ -711,7 +711,7 @@ public interface Cloudlet extends Identificable, Comparable<Cloudlet> {
      *
      * @param wallTime the time of this Cloudlet resides in a Datacenter
      * (from arrival time until departure time).
-     * @param actualTime the total execution time of this Cloudlet in a
+     * @param actualCPUTime the total execution time of this Cloudlet in a
      * Datacenter.
      * @return true if the submission time is valid and
      * the cloudlet has already being assigned to a datacenter for execution
@@ -720,7 +720,7 @@ public interface Cloudlet extends Identificable, Comparable<Cloudlet> {
      * @pre actualTime >= 0.0
      * @post $none
      */
-    boolean setWallClockTime(final double wallTime, final double actualTime);
+    boolean setWallClockTime(final double wallTime, final double actualCPUTime);
 
     /**
      *
@@ -826,7 +826,7 @@ public interface Cloudlet extends Identificable, Comparable<Cloudlet> {
       @Override public boolean hasReserved() { return false; }
       @Override public boolean isFinished() { return false; }
       @Override public boolean requiresFiles() { return false; }
-      @Override public boolean setPriority(int priority) { return false; }
+      @Override public void setPriority(int priority) {}
       @Override public boolean setCloudletLength(long cloudletLength) { return false; }
       @Override public boolean setCloudletStatus(Status newStatus) { return false; }
       @Override public boolean setNetServiceLevel(int netServiceLevel) { return false; }
@@ -850,7 +850,7 @@ public interface Cloudlet extends Identificable, Comparable<Cloudlet> {
        * but they are used by ResCloudlet class.
        */
       @Override public boolean setCloudletFinishedSoFar(long length) { return false; }
-      @Override public boolean setWallClockTime(double wallTime, double actualTime) { return false; }
+      @Override public boolean setWallClockTime(double wallTime, double actualCPUTime) { return false; }
       @Override public void setExecStartTime(double clockTime) {}
       @Override public boolean isAssignedToDatacenter() { return false; }
       @Override public double registerArrivalOfCloudletIntoDatacenter() { return -1; }

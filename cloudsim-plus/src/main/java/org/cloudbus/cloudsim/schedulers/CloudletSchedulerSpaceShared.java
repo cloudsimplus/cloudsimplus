@@ -59,7 +59,7 @@ public class CloudletSchedulerSpaceShared extends CloudletSchedulerAbstract {
             // not found in the paused list: either it is in in the queue, executing or not exist
             return 0.0;
         }
-        
+
         getCloudletPausedList().remove(foundRcl);
 
         // it can go to the exec list
@@ -74,7 +74,7 @@ public class CloudletSchedulerSpaceShared extends CloudletSchedulerAbstract {
              * of the attribute, it is supposed to be the length
              * that will be executed in each cloudlet PE,
              * not the length sum across all existing PEs,
-             * as it is being changed here 
+             * as it is being changed here
              * (you can see that the size is being multiplied by the
              * number of PEs).
              */
@@ -103,7 +103,7 @@ public class CloudletSchedulerSpaceShared extends CloudletSchedulerAbstract {
 
     /**
      * Search for a cloudlet into a given list.
-     * @param cloudletList the cloudlet list 
+     * @param cloudletList the cloudlet list
      * @param cloudletId the id of the cloudlet to search
      * @return the cloudlet or null if not found
      */
@@ -137,12 +137,12 @@ public class CloudletSchedulerSpaceShared extends CloudletSchedulerAbstract {
         double extraSize = getProcessor().getCapacity() * fileTransferTime;
         long length = cloudlet.getCloudletLength();
         length += extraSize;
-        
+
         /**
          * @todo @author manoelcampos It is very strange to change
-         * the length of the cloudlet, once it is 
+         * the length of the cloudlet, once it is
          * a value defined by the user.
-         * The execution length is one thing, 
+         * The execution length is one thing,
          * the total execution time is other.
          * The length is being increased to include
          * the time the cloudlet spend to be transfered
@@ -153,21 +153,20 @@ public class CloudletSchedulerSpaceShared extends CloudletSchedulerAbstract {
     }
 
     /**
-     * Returns the first cloudlet to migrate to another VM.
+     * {@inheritDoc}
      *
-     * @return the first running cloudlet
+     * @return {@inheritDoc}
      * @pre $none
      * @post $none
      */
     @Override
-    public Cloudlet migrateCloudlet() {
-        Cloudlet cl = super.migrateCloudlet();
+    public Cloudlet getCloudletToMigrate() {
+        Cloudlet cl = super.getCloudletToMigrate();
         if(cl != Cloudlet.NULL){
             usedPes -= cl.getNumberOfPes();
-            return cl;
         }
-        
-        return null;
+
+        return cl;
     }
 
     @Override

@@ -254,13 +254,8 @@ public class CloudletSimple extends CloudletAbstract {
     }
 
     @Override
-    public boolean setPriority(final int priority) {
-        if (priority >= 0) {
-            this.priority = priority;
-            return true;
-        }
-
-        return false;
+    public void setPriority(final int priority) {
+        this.priority = priority;
     }
 
 	@Override
@@ -430,17 +425,17 @@ public class CloudletSimple extends CloudletAbstract {
     }
 
     @Override
-    public boolean setWallClockTime(final double wallTime, final double actualTime) {
-        if (wallTime < 0.0 || actualTime < 0.0 || getLastExecutedDatacenterIndex() <= NOT_ASSIGNED) {
+    public boolean setWallClockTime(final double wallTime, final double actualCPUTime) {
+        if (wallTime < 0.0 || actualCPUTime < 0.0 || getLastExecutedDatacenterIndex() <= NOT_ASSIGNED) {
             return false;
         }
 
         final ExecutionInDatacenterInfo datacenter = getExecutionInDatacenterInfoList().get(getLastExecutedDatacenterIndex());
         datacenter.wallClockTime = wallTime;
-        datacenter.actualCPUTime = actualTime;
+        datacenter.actualCPUTime = actualCPUTime;
 
         write("Sets the wall clock time to %s and the actual CPU time to %s",
-              num.format(wallTime), num.format(actualTime));
+              num.format(wallTime), num.format(actualCPUTime));
 
         return true;
     }

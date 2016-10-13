@@ -75,7 +75,6 @@ public class CloudletTest {
         assertFalse(Cloudlet.NULL.hasReserved());
         assertFalse(Cloudlet.NULL.isFinished());
         assertFalse(Cloudlet.NULL.requiresFiles());
-        assertFalse(Cloudlet.NULL.setPriority(0));
         assertFalse(Cloudlet.NULL.setCloudletLength(0));
         assertFalse(Cloudlet.NULL.setCloudletStatus(Cloudlet.Status.SUCCESS));
         Cloudlet.NULL.setExecStartTime(100);
