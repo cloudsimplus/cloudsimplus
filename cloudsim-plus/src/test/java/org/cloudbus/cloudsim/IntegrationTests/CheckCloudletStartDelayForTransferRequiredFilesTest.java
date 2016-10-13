@@ -9,8 +9,8 @@ import org.cloudbus.cloudsim.core.CloudSim;
 import org.cloudbus.cloudsim.resources.File;
 import org.cloudbus.cloudsim.resources.FileStorage;
 import org.cloudbus.cloudsim.resources.SanStorage;
-import org.cloudbus.cloudsim.schedulers.CloudletSchedulerDynamicWorkload;
 import org.cloudbus.cloudsim.schedulers.CloudletSchedulerSpaceShared;
+import org.cloudbus.cloudsim.schedulers.CloudletSchedulerTimeShared;
 import org.cloudbus.cloudsim.schedulers.VmSchedulerSpaceShared;
 import org.cloudbus.cloudsim.util.CloudletsTableBuilderHelper;
 import org.cloudbus.cloudsim.util.TextTableBuilder;
@@ -28,21 +28,30 @@ import static org.junit.Assert.assertEquals;
 
 /**
  *
- * An Integration Test (IT) running a simulation scenario with 1 PM, 1 VM
- * and 1 cloudlet with a list of required files.
- * The test checks if the begin of cloudlet execution was
+ * An Integration Test (IT) running a simulation scenario with 2 PMs, 2 VMs
+ * (one using {@link CloudletSchedulerSpaceShared} and other using
+ * {@link CloudletSchedulerTimeShared}) and 2 cloudlets with a list of required files.
+ * The test checks if the end of cloudlet execution was
  * correctly delayed by the time to transfer the file list
  * to the VM.
+ *
+ * <p>It is created a Storage Area Network (SAN) for the Datacenter and
+ * a list of {@link File Files} is stored on it.
+ * The name of these files are then added to the list
+ * of required files of the created Cloudlet.
+ * Thus, the time to transfer these files from the SAN
+ * to the Vm has to be added to cloudlet finish time.</p>
  *
  * @author Manoel Campos da Silva Filho
  */
 public final class CheckCloudletStartDelayForTransferRequiredFilesTest {
+	private static final int NUMBER_OF_CLOUDLETS = 2;
     private static final int HOST_MIPS = 1000;
-    private static final int HOST_PES = 1;
+    private static final int HOST_PES = 2;
     private static final int VM_MIPS = HOST_MIPS;
-    private static final int VM_PES = HOST_PES;
+    private static final int VM_PES = HOST_PES/2;
     private static final int CLOUDLET_PES = VM_PES;
-    private static final int CLOUDLET_LENGTH = HOST_MIPS*10;
+    private static final int CLOUDLET_LENGTH = HOST_MIPS*5;
 	private static final int FILE_SIZE_MB = 100;
 	private static final int NUMBER_OF_FILES_TO_CREATE = 2;
 	private static final double SAN_BANDWIDTH_MBITS_PER_SEC = 100;
@@ -61,7 +70,7 @@ public final class CheckCloudletStartDelayForTransferRequiredFilesTest {
         utilizationModel = new UtilizationModelFull();
         scenario = new SimulationScenarioBuilder();
         scenario.getDatacenterBuilder()
-	        .setSchedulingInterval(2)
+	        .setSchedulingInterval(1)
 	        .addStorageToList(storage)
 	        .createDatacenter(
 	            new HostBuilder()
@@ -81,12 +90,14 @@ public final class CheckCloudletStartDelayForTransferRequiredFilesTest {
                 .setCloudletScheduler(new CloudletSchedulerSpaceShared())
                 .createAndSubmitOneVm();
 
+		brokerBuilder.getVmBuilder().setCloudletScheduler(new CloudletSchedulerTimeShared()).createAndSubmitOneVm();
+
         brokerBuilder.getCloudletBuilder()
                 .setLength(CLOUDLET_LENGTH)
                 .setUtilizationModelCpu(utilizationModel)
                 .setPEs(CLOUDLET_PES)
 	            .setRequiredFiles(getFileNames())
-                .createAndSubmitOneCloudlet();
+                .createAndSubmitCloudlets(NUMBER_OF_CLOUDLETS);
     }
 
 	private void createStorage() {
@@ -116,9 +127,13 @@ public final class CheckCloudletStartDelayForTransferRequiredFilesTest {
 	@Test
     public void integrationTest() {
         startSimulationAndWaitToStop();
-		Cloudlet cloudlet = broker.getCloudletsFinishedList().get(0);
-		long expectedFinishTime = 12;
-		assertEquals(expectedFinishTime, cloudlet.getFinishTime(), 0.1);
+		List<Cloudlet> cloudlets = broker.getCloudletsFinishedList();
+		/* The expected finish time considers the delay to transfer the Cloudlet
+		 * required files and the actual execution time.*/
+		final long expectedFinishTime = 7;
+		for(Cloudlet c: cloudlets) {
+			assertEquals(String.format("Cloudlet %d", c.getId()), expectedFinishTime, c.getFinishTime(), 0.1);
+		}
 	    printCloudletsExecutionResults();
     }
 

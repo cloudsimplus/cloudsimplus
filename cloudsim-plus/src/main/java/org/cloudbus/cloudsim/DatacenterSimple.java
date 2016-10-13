@@ -653,7 +653,7 @@ public class DatacenterSimple extends SimEntity implements Datacenter {
             // prepare cloudlet for migration
             cl.setVmId(vmDestId);
 
-            // the cloudlet will migrate from one vm to another does the destination VM exist?
+            // The cloudlet will migrate from one vm to another. Does the destination VM exist?
             if (destId == getId()) {
                 Vm vm = getVmAllocationPolicy().getHost(vmDestId, userId).getVm(vmDestId, userId);
                 if (vm == null) {
@@ -739,7 +739,6 @@ public class DatacenterSimple extends SimEntity implements Datacenter {
 
         // if this cloudlet is in the exec queue
         if (estimatedFinishTime > 0.0 && !Double.isInfinite(estimatedFinishTime)) {
-            estimatedFinishTime += fileTransferTime;
             send(getId(), estimatedFinishTime, CloudSimTags.VM_UPDATE_CLOUDLET_PROCESSING_EVENT);
         }
 

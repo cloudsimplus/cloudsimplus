@@ -17,7 +17,7 @@ import java.lang.management.ManagementFactory;
  *
  * @author Anton Beloglazov
  * @since CloudSim Toolkit 2.0
- * @todo @author manoelcampos Could be replaced by 
+ * @todo @author manoelcampos Could be replaced by
  * {@link http://logging.apache.org/log4j/2.x/ Apache Log4j}
  */
 public class Log {
@@ -26,15 +26,15 @@ public class Log {
      * of a log message.
      */
     public enum Level {
-        INFO, 
+        INFO,
         ERROR,
-        
+
         /**
          * A log level for messages that will be shown only when the application
          * is run in debug mode.
          */
         DEBUG};
-    
+
     /**
      * The Constant LINE_SEPARATOR.
      */
@@ -55,19 +55,19 @@ public class Log {
      * Buffer to avoid creating new string builder upon every print.
      */
     private static final StringBuilder buffer = new StringBuilder();
-    
+
     /**
      * Checks if application is running in debug mode.
      * "jdwp" is the acronym for "Java Debug Wire Protocol" that
      * may exists as an application parameter to define
      * the application is running in debug mode.
-     * 
-     * @see #isDebug() 
+     *
+     * @see #isDebug()
      */
-    private static boolean debug = 
+    private static boolean debug =
             ManagementFactory.getRuntimeMXBean().getInputArguments()
                     .toString().indexOf("jdwp") > 0;
-    
+
     /**
      * Prints a message.
      *
@@ -115,7 +115,7 @@ public class Log {
      */
     public static void printConcat(Object... messages) {
         if (isEnabled()) {
-            buffer.setLength(0); // Clear the buffer		    
+            buffer.setLength(0); // Clear the buffer
             for (int i = 0; i < messages.length; i++) {
                 buffer.append(String.valueOf(messages[i]));
             }
@@ -131,7 +131,7 @@ public class Log {
      */
     public static void printConcatLine(Object... messages) {
         if (isEnabled()) {
-            buffer.setLength(0); // Clear the buffer		    
+            buffer.setLength(0); // Clear the buffer
             for (int i = 0; i < messages.length; i++) {
                 buffer.append(String.valueOf(messages[i]));
             }
@@ -171,7 +171,7 @@ public class Log {
 
     /**
      * Prints a string formated as in String.printFormatted(), followed by a new
-     * line, that will be printed only according to 
+     * line, that will be printed only according to
      * the specified level
      *
      * @param level the level that define the kind of message
@@ -184,7 +184,7 @@ public class Log {
     public static void println(Level level, Class _class, double time, String format, Object... args) {
         if((level == Level.DEBUG && isDebug()) || (level != Level.DEBUG)){
             String msg = String.format(format, args);
-            printFormattedLine("Time %d %s/%s\n   %s", (long)time, level.name(), _class.getSimpleName(), msg);
+            printFormattedLine("Time %.1f %s/%s\n   %s", time, level.name(), _class.getSimpleName(), msg);
         }
     }
 
@@ -253,6 +253,6 @@ public class Log {
     public static boolean isDebug() {
         return debug;
     }
-    
+
 
 }

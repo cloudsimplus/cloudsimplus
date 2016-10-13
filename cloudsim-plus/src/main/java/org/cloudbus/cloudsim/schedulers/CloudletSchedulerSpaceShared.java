@@ -16,6 +16,7 @@ import org.cloudbus.cloudsim.Cloudlet;
 import org.cloudbus.cloudsim.CloudletExecutionInfo;
 
 import org.cloudbus.cloudsim.core.CloudSim;
+import org.cloudbus.cloudsim.resources.Pe;
 import org.cloudbus.cloudsim.resources.Processor;
 
 /**
@@ -62,7 +63,7 @@ public class CloudletSchedulerSpaceShared extends CloudletSchedulerAbstract {
 
     @Override
     public double cloudletResume(int cloudletId) {
-	    Optional<CloudletExecutionInfo> optional = searchCloudletInList(cloudletId, getCloudletPausedList());
+	    Optional<CloudletExecutionInfo> optional = findCloudletInList(cloudletId, getCloudletPausedList());
         if (!optional.isPresent()) {
             // not found in the paused list: either it is in in the queue, executing or not exist
             return 0.0;
@@ -124,51 +125,32 @@ public class CloudletSchedulerSpaceShared extends CloudletSchedulerAbstract {
 		return estimatedFinishTime;
 	}
 
-	/**
-	 * Moves a paused cloudlet to the waiting list.
-	 *
-	 * @param c the cloudlet to be moved
-	 */
-	private void moveCloudletToWaitingList(CloudletExecutionInfo c) {
-		c.setCloudletStatus(Cloudlet.Status.QUEUED);
-		getCloudletWaitingList().add(c);
-	}
-
 	@Override
     public double cloudletSubmit(Cloudlet cloudlet, double fileTransferTime) {
-		CloudletExecutionInfo rcl = new CloudletExecutionInfo(cloudlet);
-        // it can go to the exec list
-        if ((getProcessor().getNumberOfPes() - usedPes) >= cloudlet.getNumberOfPes()) {
-            rcl.setCloudletStatus(Cloudlet.Status.INEXEC);
-            getCloudletExecList().add(rcl);
-            usedPes += cloudlet.getNumberOfPes();
-        } else {// no enough free PEs: go to the waiting queue
-            moveCloudletToWaitingList(rcl);
-            return 0.0;
+		double cloudletExpectedFinishTime = super.cloudletSubmit(cloudlet, fileTransferTime);
+		//if the expected finish time is greater than 0, the Cloudlet was added to the execution list
+		if (cloudletExpectedFinishTime > 0) {
+	        usedPes += cloudlet.getNumberOfPes();
         }
 
-        // calculate the expected time for cloudlet completion
-        // use the current capacity to estimate the extra amount of
-        // time to transfer the cloudlet to the VM. It must be added to the cloudlet length
-        double extraSize = getProcessor().getCapacity() * fileTransferTime;
-        long length = cloudlet.getCloudletLength();
-        length += extraSize;
-
-        /**
-         * @todo @author manoelcampos It is very strange to change
-         * the length of the cloudlet, once it is
-         * a value defined by the user.
-         * The execution length is one thing,
-         * the total execution time is other.
-         * The length is being increased to include
-         * the time the cloudlet spend to be transfered
-         * to the VM (see comment above)
-         */
-        cloudlet.setCloudletLength(length);
-        return cloudlet.getCloudletLength() / getProcessor().getCapacity();
+        return cloudletExpectedFinishTime;
     }
 
-    /**
+	/**
+	 * The space-shared scheduler <b>does not</b> share the CPU time between executing cloudlets.
+	 * Each CPU ({@link Pe}) is used by another Cloudlet just when the previous Cloudlet
+	 * using it has finished executing completely.
+	 * By this way, if there are more Cloudlets than PEs, some Cloudlet
+	 * will not be allowed to start executing immediately.
+	 *
+	 * @return {@inheritDoc}
+	 */
+	@Override
+	public boolean canAddCloudletToExecutionList(Cloudlet cloudlet) {
+		return (getProcessor().getNumberOfPes() - usedPes) >= cloudlet.getNumberOfPes();
+	}
+
+	/**
      * {@inheritDoc}
      *
      * @return {@inheritDoc}

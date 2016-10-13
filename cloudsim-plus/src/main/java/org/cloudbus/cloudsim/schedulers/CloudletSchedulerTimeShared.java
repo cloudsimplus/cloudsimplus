@@ -11,6 +11,7 @@ import java.util.*;
 import org.cloudbus.cloudsim.Cloudlet;
 import org.cloudbus.cloudsim.CloudletExecutionInfo;
 
+import org.cloudbus.cloudsim.Log;
 import org.cloudbus.cloudsim.core.CloudSim;
 
 /**
@@ -89,22 +90,21 @@ public class CloudletSchedulerTimeShared extends CloudletSchedulerAbstract {
         return estimatedFinishTime;
     }
 
-    @Override
-    public double cloudletSubmit(Cloudlet cloudlet, double fileTransferTime) {
-        CloudletExecutionInfo rcl = new CloudletExecutionInfo(cloudlet);
-        rcl.setCloudletStatus(Cloudlet.Status.INEXEC);
-        getCloudletExecList().add(rcl);
+	/**
+	 * This time-shared scheduler shares the CPU time between all executing cloudlets,
+	 * giving the same CPU timeslice for each Cloudlet to execute.
+	 * It always allow any submitted Cloudlets to be imediately added to the execution list.
+	 * By this way, doesn't matter what Cloudlet is being submitted, it always will
+	 * include it in the execution list.
+	 *
+	 * @return always <b>true</b> to indicate that any submitted Cloudlet can be immediately added to the execution list
+	 */
+	@Override
+	public boolean canAddCloudletToExecutionList(Cloudlet cloudlet) {
+		return true;
+	}
 
-        // use the current capacity to estimate the extra amount of
-        // time to file transferring. It must be added to the cloudlet length
-        double extraSize = getProcessor().getCapacity() * fileTransferTime;
-        long length = (long) (cloudlet.getCloudletLength() + extraSize);
-        cloudlet.setCloudletLength(length);
-
-        return cloudlet.getCloudletLength() / getProcessor().getCapacity();
-    }
-
-    /**
+	/**
      * @todo If the method always return an empty list (that is created locally),
      * it doesn't make sense to exist. See other implementations such as
      * {@link CloudletSchedulerSpaceShared#getCurrentRequestedMips()}

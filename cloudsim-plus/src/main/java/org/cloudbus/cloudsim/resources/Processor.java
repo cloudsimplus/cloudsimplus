@@ -110,13 +110,15 @@ public class Processor implements ResourceCapacity<Double>{
     /**
      * Gets the amount of MIPS available (free) for each Processor PE,
      * considering the currently executing cloudlets in this processor
-     * and their number of PEs these cloudlets require.
+     * and the number of PEs these cloudlets require.
      * This is the amount of MIPS that each Cloudlet is allowed to used,
      * considering that the processor is shared among all executing
-     * cloudlets. In the case of space shared schedulers,
+     * cloudlets.
+     *
+     * <p>In the case of space shared schedulers,
      * there is no concurrency for PEs because some cloudlets
      * may wait in a queue until there is available PEs to be used
-     * exclusively by them.
+     * exclusively by them.</p>
      *
      * @return the amount of available MIPS for each Processor PE.
      */

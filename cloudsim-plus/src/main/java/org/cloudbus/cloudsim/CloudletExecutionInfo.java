@@ -9,6 +9,7 @@ package org.cloudbus.cloudsim;
 
 import org.cloudbus.cloudsim.Cloudlet.Status;
 import org.cloudbus.cloudsim.core.CloudSim;
+import org.cloudbus.cloudsim.resources.Pe;
 
 /**
  * Stores execution information about a Cloudlet submitted to a Datacenter for
@@ -35,6 +36,11 @@ public class CloudletExecutionInfo {
      * The Cloudlet object.
      */
     private final Cloudlet cloudlet;
+
+	/**
+	 * @see #getFileTransferTime()
+	 */
+	private double fileTransferTime;
 
     /**
      * The time the cloudlet arrived for execution
@@ -67,6 +73,11 @@ public class CloudletExecutionInfo {
      * time since a Cloudlet can be canceled, paused or resumed.
      */
     private double startExecTime;
+
+	/**
+	 * @see #getLastProcessingTime()
+	 */
+	private double lastProcessingTime;
 
     /**
      * The total time the Cloudlet spent in the last state
@@ -315,7 +326,6 @@ public class CloudletExecutionInfo {
                 startExecTime = clock;
                 cloudlet.setExecStartTime(startExecTime);
             }
-
         } catch (Exception e) {
             success = false;
         }
@@ -471,7 +481,7 @@ public class CloudletExecutionInfo {
      * @pre $none
      * @post $result >= -1.0
      */
-    public double getClouddletFinishTime() {
+    public double getFinishTime() {
         return finishedTime;
     }
 
@@ -506,4 +516,39 @@ public class CloudletExecutionInfo {
         return getUserId() + "-" + getCloudletId();
     }
 
+	/**
+	 * Gets the time to transfer the list of files required by the Cloudlet
+	 * from the Datacenter storage (such as a Storage Area Network)
+	 * to the Vm of the Cloudlet.
+	 */
+	public double getFileTransferTime() {
+		return fileTransferTime;
+	}
+
+	/**
+	 * Sets the time to transfer the list of files required by the Cloudlet
+	 * from the Datacenter storage (such as a Storage Area Network)
+	 * to the Vm of the Cloudlet.
+	 *
+	 * @param fileTransferTime the file transfer time to set
+	 */
+	public void setFileTransferTime(double fileTransferTime) {
+		this.fileTransferTime = fileTransferTime;
+	}
+
+	/**
+	 * Gets the last time this Cloudlet was processed in some CPU ({@link Pe}).
+	 * Zero means the Cloudlet has never been processed yet.
+	 */
+	public double getLastProcessingTime() {
+		return lastProcessingTime;
+	}
+
+	/**
+	 * Sets the last time this Cloudlet was processed in some CPU ({@link Pe}).
+	 * @param lastProcessingTime the last processing time to set
+	 */
+	public void setLastProcessingTime(double lastProcessingTime) {
+		this.lastProcessingTime = lastProcessingTime;
+	}
 }
