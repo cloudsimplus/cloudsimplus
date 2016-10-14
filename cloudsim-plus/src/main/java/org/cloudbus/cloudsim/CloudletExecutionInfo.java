@@ -538,7 +538,7 @@ public class CloudletExecutionInfo {
 
 	/**
 	 * Gets the last time this Cloudlet was processed in some CPU ({@link Pe}).
-	 * Zero means the Cloudlet has never been processed yet.
+	 * @return the last time this Cloudlet was processed or zero when it has never been processed yet
 	 */
 	public double getLastProcessingTime() {
 		return lastProcessingTime;

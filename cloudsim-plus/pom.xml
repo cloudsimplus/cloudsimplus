@@ -129,6 +129,26 @@
 
     <build>
         <plugins>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-jar-plugin</artifactId>
+				<configuration>
+					<archive>
+						<manifest>
+							<!-- Adds dependencies to classpath into the manifest file inside the jar !-->
+							<addClasspath>true</addClasspath>
+
+							<!-- Defines that the dependencies will follow the same
+							 hierarchical directory structure of a maven repository !-->
+							<classpathLayoutType>repository</classpathLayoutType>
+
+							<!-- Defines the root folder where the dependencies are. In this case
+							 is the the root of the local maven repository. !-->
+							<classpathPrefix>${user.home}/.m2/repository/</classpathPrefix>
+						</manifest>
+					</archive>
+				</configuration>
+			</plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-javadoc-plugin</artifactId>
@@ -241,12 +261,10 @@
         <dependency>
             <groupId>org.powermock</groupId>
             <artifactId>powermock-module-junit4</artifactId>
-            <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>org.powermock</groupId>
             <artifactId>powermock-api-easymock</artifactId>
-            <scope>test</scope>
         </dependency>
     </dependencies>
 
@@ -261,11 +279,6 @@
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-jxr-plugin</artifactId>
                 <version>2.3</version>
-            </plugin>
-            <plugin>
-                <groupId>org.sonatype.maven.plugin</groupId>
-                <artifactId>emma-maven-plugin</artifactId>
-                <version>1.2</version>
             </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
