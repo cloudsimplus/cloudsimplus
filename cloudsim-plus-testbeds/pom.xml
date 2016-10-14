@@ -29,6 +29,26 @@
         <plugins>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-jar-plugin</artifactId>
+                <configuration>
+                    <archive>
+                        <manifest>
+                            <!-- Adds dependencies to classpath into the manifest file inside the jar !-->
+                            <addClasspath>true</addClasspath>
+
+                            <!-- Defines that the dependencies will follow the same
+                             hierarchical directory structure of a maven repository !-->
+                            <classpathLayoutType>repository</classpathLayoutType>
+
+                            <!-- Defines the root folder where the dependencies are. In this case
+                             is the the root of the local maven repository. !-->
+                            <classpathPrefix>${user.home}/.m2/repository/</classpathPrefix>
+                        </manifest>
+                    </archive>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
                 <version>2.3.2</version>
                 <configuration>
