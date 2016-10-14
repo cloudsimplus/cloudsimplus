@@ -2,7 +2,7 @@
 
 Lists the main changes in the project.
 
-## [v0.8-beta.4] - 2016-10-15
+## [v0.8-beta.3] - 2016-10-15
 
 - Included documentation about CloudSim Plus modules into the README file
 - The examples module now generates an uber jar file, a jar containing all required dependencies,
@@ -15,9 +15,6 @@ Lists the main changes in the project.
   an usage help. It is in fact the easier way to build the project and run examples. 
   To run the same example 1, it is as easy as typing `./bootstrap.sh org.cloudbus.cloudsim.examples.CloudSimExample1` inside the `script` folder.
   It will automatically discover the exact name of the examples jar file to run, whatever its version number is.
-- Some issues closed  
-
-## [v0.8-beta.3] - 2016-09-28
 - Inclusion of new module "cloudsim-plus-benchmarks" that uses JMH (Java Microbenchmark Harness framework) that implement some
   benchmarks in order to assess CloudSim Plus performance.
 - Inclusion of new module "cloudsim-plus-testbeds" to provide a set of more complex and comprehensive 
@@ -25,6 +22,7 @@ Lists the main changes in the project.
 	mapping of Cloudlets to VMs, allocation and scheduling policies, resource utilization models or VM placement and migration policies.
   These testbeds also show how to apply statistical methods to get scientifically valid simulation results. 
   Some method to reduce confidence interval and correlation are implemented and can be used for several experiments. 
+- Some issues closed  
 
 ## [v0.8-beta.2] - 2016-09-15
 
