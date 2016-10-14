@@ -1,37 +1,69 @@
 #!/bin/bash
-clear
-echo "This script allows you to build CloudSim Plus and execute its examples"
-echo "If you try to run any example before building the project, it will automatically build it for you before running the example."
-echo "It uses maven to build all CloudSim++ sources and create the JAR packages."
-echo "It also allows you to run any CloudSim++ examples when you give the full name of the example class you want to run (that includes the full package name)."
-echo "For instance, to run the CloudSimExample1 you can type: $0 org.cloudbus.cloudsim.examples.CloudSimExample1"
+echo ""
+echo "This script allows you to build CloudSim Plus and to execute its examples."
+echo "It requires maven to build all sources and to create the JAR packages. Thus, make sure you have it installed."
+echo "http://cloudsimplus.org"
 echo ""
 
+#Gets the root directory of CloudSim Plus project
 BASEDIR=$(dirname "$0")
 if [ "$BASEDIR" = "." ]; then
-  BASEDIR=".." 
+   BASEDIR=".." 
 elif [ "$BASEDIR" = "script" ]; then
-  BASEDIR="." 
+   BASEDIR="." 
 fi
 
-VERSION="1.0" 
-#CLOUDSIMPLUS="$BASEDIR/cloudsim-plus/target/cloudsim-plus-$VERSION.jar"
-EXAMPLES="$BASEDIR/cloudsim-plus-examples/target/cloudsim-plus-examples-$VERSION.jar"
+#Gets the most recent jar file with a specific filename pattern
+function get_examples_jar_file() {
+    echo "`ls -t $BASEDIR/cloudsim-plus-examples/target/cloudsim-plus-examples-*-with-dependencies.jar | head -n 1`"
+}
 
-echo "Base dir: $BASEDIR"
-echo "CloudSim Plus Version: $VERSION"
-#echo "CloudSim Plus jar: $CLOUDSIMPLUS"
-echo "CloudSim Plus Examples jar: $EXAMPLES"
+#call the function getting its output
+EXAMPLES_JAR=$(get_examples_jar_file)
+
+#No parameter was passed to the script. Show the usage help
+if [ "$#" -eq 0 ]; then
+    echo "Usage:"
+    echo "	Build the project: $0 build"
+    echo "	Run a specific example: $0 example_class"
+    echo "		The 'example_class' has to be replaced by the fully qualified class name (that includes the package name), for instance:"
+    echo "		$0 org.cloudbus.cloudsim.examples.CloudSimExample1"
+    echo "		If you try to run an example before building the project, it will be built automatically"
+    echo ""
+    exit -1
+fi
+
+echo "CloudSim Plus Base Dir: $BASEDIR"
+echo "CloudSim Plus Examples Package: $EXAMPLES_JAR"
 echo ""
 
-if [ "$#" -eq 0 ] || [ ! -e $CLOUDSIMPLUS ] || [ ! -e $EXAMPLES ]; then
+#If the build parameter was passed or if the examples jar doesn't exist, build the project
+if [ "$1" = "build" ] || [ "$EXAMPLES_JAR" = "" ]; then
     echo "Building all modules, running test suits and creating JAR files"
     mvn clean package install
+    
+    if [ "$?" -ne 0 ]; then
+    	echo "Error building CloudSim Plus. Check the log to try fix the build."
+    	exit -1
+    fi
+
+    #If the script was built and the examples jar variable is empty,
+	#the user requested to run an example before building the project.
+	#The project was built, now call the function to get the jar file name again and 
+	#execute the requested example
+    if [ "$EXAMPLES_JAR" = "" ]; then
+		EXAMPLES_JAR=$(get_examples_jar_file)
+    	echo ""
+    	echo "CloudSim Plus was just built. Starting the requested example."
+    fi
 fi
 
-if [ "$#" -eq 1 ]; then    
-	echo "Running the requested example $1"
-    echo "java -cp $EXAMPLES $1"
+#If a parameter was passed and it is not the "build" parameter, it is expected to be an example class name.
+#Thus, try to run this example.
+if [ "$#" -eq 1 ] && [ "$1" != "build" ]; then    
+	echo "Running the requested example $1:"
+    echo "	java -cp $EXAMPLES_JAR $1"
     echo ""
-    java -cp $CLOUDSIMPLUS:$EXAMPLES "$1"
+    java -cp $EXAMPLES_JAR "$1"
 fi
+

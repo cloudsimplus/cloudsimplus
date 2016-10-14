@@ -2,6 +2,21 @@
 
 Lists the main changes in the project.
 
+## [v0.8-beta.4] - 2016-10-15
+
+- Included documentation about CloudSim Plus modules into the README file
+- The examples module now generates an uber jar file, a jar containing all required dependencies,
+  including CloudSim Plus itself. This jar makes easier to run the examples directly from the terminal
+  using the traditional java command. Having Maven installed, below are the command line instructions to build and run the examples:
+  - at the root folder of the CloudSim Plus, build the project typing `mvn package`
+  - at the cloudsim-plus-examples/target folder, run a example (such as the number 1), typing `java -cp cloudsim-plus-examples-1.0-with-dependencies.jar org.cloudbus.cloudsim.examples.CloudSimExample1`
+  - realise that you have to change the 1.0 version at the name of the jar file in the instruction above to the actual CloudSim Plus version you are using
+- The script in `script/bootstrap.sh` was also updated to make it easier to use. Now, if it is called whitout parameters, it shows
+  an usage help. It is in fact the easier way to build the project and run examples. 
+  To run the same example 1, it is as easy as typing `./bootstrap.sh org.cloudbus.cloudsim.examples.CloudSimExample1` inside the `script` folder.
+  It will automatically discover the exact name of the examples jar file to run, whatever its version number is.
+- Some issues closed  
+
 ## [v0.8-beta.3] - 2016-09-28
 - Inclusion of new module "cloudsim-plus-benchmarks" that uses JMH (Java Microbenchmark Harness framework) that implement some
   benchmarks in order to assess CloudSim Plus performance.
@@ -341,7 +356,7 @@ reduce code duplication of unit tests; include extensive set of unit tests to va
     `ResourceProvisionerSimple` to get information of a given `Vm` resource (such as capacity and available amount). 
     For instance, if a `ResourceProvisioner` manages allocation of `Ram` resource, the class uses the getResource method of the 
     `Vm` interface to get the information about the `Ram` object assigned to the VM. 
-    Despite these changes, it doesn't change how a Vm is used.
+    Despite these modifications, it doesn't change how a Vm is used.
     
     - Now, when instantiating a `Host`, it doesn’t have to be used a different `ResourceProvisioner` class for each resource such as Ram and Bw
     (at least if you don’t want to). It only has to be passed a different instance of a `ResourceRrovisioner` for each `Host` resource. 
