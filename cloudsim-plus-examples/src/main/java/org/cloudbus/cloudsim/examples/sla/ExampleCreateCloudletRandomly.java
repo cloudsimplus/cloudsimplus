@@ -41,37 +41,44 @@ import org.cloudbus.cloudsim.utilizationmodels.UtilizationModelFull;
 /**
  *
  * @author raysaoliveira
+ * 
+ * This simple example show how to create cloudlets randomly 
+ * using poisson distribution.
  */
 public class ExampleCreateCloudletRandomly {
 
     /**
      * The cloudlet list.
      */
-    private List<Cloudlet> cloudletList;
+    private final List<Cloudlet> cloudletList;
 
     /**
      * The vmlist.
      */
-    private List<Vm> vmlist;
+    private final List<Vm> vmlist;
 
+    /**
+     * Average number of customers that arrives per minute.
+     * The value of 0.4 customers per minute means that 1 customer will arrive 
+     * at every 2.5 minutes.
+     * It means that 1 minute / 0.4 customer per minute = 1 customer at every 2.5 minutes.
+     * This is the interarrival time (in average).
+     */
+    private static final double MEAN_CUSTOMERS_ARRIVAL_PER_MINUTE=0.4; 
+    
     /**
      * Number of simulations to run.
      */
-    private static final int NUMBER_OF_SIMULATIONS = 1000;
-
+    private static final int NUMBER_OF_SIMULATIONS = 1;
+    
     /**
-     * Time length of each simulation in minutes.
-     */
-    private static final int SIMULATION_TIME_LENGHT = 25;
-
-    /**
-     * Average number of customers that arrives per minute. The value of 0.4
-     * customers per minute means that 1 customer will arrive at every 2.5
-     * minutes. It means that 1 minute / 0.4 customer per minute = 1 customer at
-     * every 2.5 minutes. This is the interarrival time (in average).
-     */
-    private static final double MEAN_CUSTOMERS_ARRIVAL_PER_MINUTE = 0.4;
-
+     * The maximum time that a Cloudlet can arrive.
+     * Between the first simulation minute and this time,
+     * different Cloudlets can arrive.
+    */
+    private final int MAX_TIME_FOR_CLOUDLET_ARRIVAL = 25;
+    
+    
     /**
      * Create Vms
      *
@@ -83,6 +90,7 @@ public class ExampleCreateCloudletRandomly {
         //Creates a container to store VMs. This list is passed to the broker later
         List<Vm> list = new LinkedList<>();
         //VM Parameters
+        int vmid = 0;
         long size = 10000; //image size (MB)
         int ram = 512; //vm memory (MB)
         int mips = 1000;
@@ -98,35 +106,7 @@ public class ExampleCreateCloudletRandomly {
             //for creating a VM with a space shared scheduling policy for cloudlets:
             //vm[i] = VmSimple(i, userId, mips, pesNumber, ram, bw, size, priority, vmm, new CloudletSchedulerSpaceShared());
             list.add(vm[i]);
-        }
-        return list;
-    }
-
-    /**
-     * Create cloudlets
-     *
-     * @param userId
-     * @param cloudlets
-     * @return
-     */
-    private List<Cloudlet> createCloudlet(int userId, int cloudlets) {
-        // Creates a container to store Cloudlets
-        List<Cloudlet> list = new LinkedList<>();
-        //cloudlet parameters
-        long length = 1000;
-        long fileSize = 300;
-        long outputSize = 300;
-        int pesNumber = 1;
-        UtilizationModel utilizationModel = new UtilizationModelFull();
-        Cloudlet[] cloudlet = new Cloudlet[cloudlets];
-
-        for (int i = 0; i < cloudlets; i++) {
-            cloudlet[i] = new CloudletSimple(
-                    i, length, pesNumber, fileSize, outputSize,
-                    utilizationModel, utilizationModel, utilizationModel);
-            // setting the owner of these Cloudlets
-            cloudlet[i].setUserId(userId);
-            list.add(cloudlet[i]);
+            vmid++;
         }
         return list;
     }
@@ -134,7 +114,10 @@ public class ExampleCreateCloudletRandomly {
     public static void main(String[] args) {
         Log.printFormattedLine(" Starting... ");
         try {
-            new ExampleCreateCloudletRandomly();
+            for (int i = 0; i < NUMBER_OF_SIMULATIONS; i++) {
+                new ExampleCreateCloudletRandomly();
+            }
+             Log.printFormattedLine("... finished!");
         } catch (Exception e) {
             e.printStackTrace();
             Log.printLine("Unwanted errors happen");
@@ -156,37 +139,34 @@ public class ExampleCreateCloudletRandomly {
         DatacenterBroker broker = createBroker();
         int brokerId = broker.getId();
 
-        vmlist = createVM(brokerId, 3);
+        //create cloudlet randomly
+        cloudletList = new ArrayList<>();
+        long seed = System.currentTimeMillis();
+        //creates a poisson process that checks the arrival of 1 (k) cloudlet
+        //1 is the default value for k
+        PoissonProcess poisson = new PoissonProcess(MEAN_CUSTOMERS_ARRIVAL_PER_MINUTE, seed);
+        int totalArrivedCustomers = 0;
+        int cloudletId = 0;
+        for(int minute = 0; minute < MAX_TIME_FOR_CLOUDLET_ARRIVAL; minute++){
+            if(poisson.haveKEventsHappened()){ //Have k Cloudlets arrived?
+                totalArrivedCustomers += poisson.getK();
+                Cloudlet cloudlet = createCloudlet(cloudletId++, brokerId);
+                cloudlet.setSubmissionDelay(minute);
+                cloudletList.add(cloudlet);
+                
+                System.out.printf(
+                    "%d cloudlets arrived at minute %d\n",
+                    poisson.getK(), minute,  poisson.probabilityToArriveNextKEvents());
+            }
+        }
+        System.out.printf("\n\t%d cloudlets have arrived\n", totalArrivedCustomers);
+        
+        broker.submitCloudletList(cloudletList);
+
+        vmlist = createVM(brokerId, totalArrivedCustomers);
 
         // submit vm list to the broker
         broker.submitVmList(vmlist);
-
-        List<Cloudlet> list = new LinkedList<>();
-        //cloudlet parameters
-        long length = 1000;
-        long fileSize = 300;
-        long outputSize = 300;
-        int pesNumber = 1;
-        UtilizationModel utilizationModel = new UtilizationModelFull();
-        Cloudlet cloudlet = null;
-        //poisson
-
-        int customersArrivedInAllSimulations = 0;
-        PoissonProcess poisson = null;
-
-        for (int i = 0; i < NUMBER_OF_SIMULATIONS; i++) {
-            long seed = System.currentTimeMillis();
-            poisson = new PoissonProcess(MEAN_CUSTOMERS_ARRIVAL_PER_MINUTE, seed);
-            System.out.printf("Simulation number %d\n", i);
-            customersArrivedInAllSimulations += runSimulation(poisson, false);
-            cloudlet.setSubmissionDelay(CloudSim.clock());
-            cloudletList.add(cloudlet);
-        }
-        
-        double mean = customersArrivedInAllSimulations/(double)NUMBER_OF_SIMULATIONS;
-        System.out.printf("\nArrived cloudlets average after %d simulations: %.2f\n", NUMBER_OF_SIMULATIONS, mean);
-
-        broker.submitCloudletList(cloudletList);
 
         CloudSim.startSimulation();
         CloudSim.stopSimulation();
@@ -195,7 +175,19 @@ public class ExampleCreateCloudletRandomly {
         List<Cloudlet> newList = broker.getCloudletsFinishedList();
         CloudletsTableBuilderHelper.print(new TextTableBuilder(), newList);
 
-        Log.printFormattedLine("... finished!");
+    }
+
+    public Cloudlet createCloudlet(int cloudletId, int brokerId) {
+        long length = 1000;
+        long fileSize = 300;
+        long outputSize = 300;
+        int pesNumber = 1;
+        UtilizationModel utilizationModel = new UtilizationModelFull();
+        Cloudlet cloudlet = new CloudletSimple(cloudletId, length, pesNumber, fileSize,
+                outputSize, utilizationModel, utilizationModel,
+                utilizationModel);
+        cloudlet.setUserId(brokerId);
+        return cloudlet;
     }
 
     private static Datacenter createDatacenter(String name) {
@@ -209,7 +201,7 @@ public class ExampleCreateCloudletRandomly {
         // In this example, it will have only one core.
         List<Pe> peList = new ArrayList<Pe>();
 
-        int mips = 1000;
+        int mips = 10000;
 
         // 3. Create PEs and add these into a list.
         peList.add(new PeSimple(0, new PeProvisionerSimple(mips))); // need to store Pe id and MIPS Rating
@@ -217,7 +209,7 @@ public class ExampleCreateCloudletRandomly {
         // 4. Create Host with its id and list of PEs and add them to the list
         // of machines
         int hostId = 0;
-        int ram = 2048; // host memory (MB)
+        int ram = 4096; // host memory (MB)
         long storage = 1000000; // host storage
         long bw = 10000;
 
@@ -276,33 +268,6 @@ public class ExampleCreateCloudletRandomly {
             return null;
         }
         return broker;
-    }
-
-    /**
-     * Simulates the arrival of customers for a given time period.
-     *
-     * @param poisson the PoissonProcess object that will compute the customer
-     * arrivals probabilities
-     * @param showCustomerArrivals if the arrival of each customer has to be
-     * shown
-     * @return the number of arrived customers
-     */
-    private static int runSimulation(PoissonProcess poisson, boolean showCustomerArrivals) {
-        int totalArrivedCustomers = 0;
-
-        /*We want to check the probability of 1 customer to arrive at each
-         single minute. The default k value is 1, so we dont need to set it.*/
-        for (int minute = 0; minute < SIMULATION_TIME_LENGHT; minute++) {
-            if (poisson.haveKEventsHappened()) {
-                totalArrivedCustomers += poisson.getK();
-                if (showCustomerArrivals) {
-                    System.out.printf(
-                            "%d customers arrived at minute %d\n",
-                            poisson.getK(), minute, poisson.probabilityToArriveNextKEvents());
-                }
-            }
-        }
-        return totalArrivedCustomers;
     }
 
 }

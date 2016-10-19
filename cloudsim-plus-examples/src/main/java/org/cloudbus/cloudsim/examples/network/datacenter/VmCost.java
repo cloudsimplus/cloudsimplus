@@ -38,7 +38,7 @@ public class VmCost {
      * @return costMemory
      */
     public double costMemory() {
-        return datacenter.getCharacteristics().getCostPerMem() * getVm().getRam();
+        return (datacenter.getCharacteristics().getCostPerMem() * getVm().getRam());
     }
 
     /**

@@ -53,7 +53,7 @@ public abstract class NetworkVmsExampleAppCloudletAbstract {
     public static final String OS = "Linux"; // operating system
     public static final String VMM = "Xen";
     public static final double TIME_ZONE = 10.0; // time zone this resource located
-    public static final int    MAX_VMS_PER_HOST = 2;
+    public static final int MAX_VMS_PER_HOST = 2;
 
     public static final double COST = 3.0; // the cost of using processing in this resource
     public static final double COST_PER_MEM = 0.05; // the cost of using memory in this resource

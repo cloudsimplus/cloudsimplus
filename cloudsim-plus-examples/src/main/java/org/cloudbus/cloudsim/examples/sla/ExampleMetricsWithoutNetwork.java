@@ -1,10 +1,5 @@
 package org.cloudbus.cloudsim.examples.sla;
 
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.LinkedList;
@@ -27,6 +22,7 @@ import org.cloudbus.cloudsim.allocationpolicies.VmAllocationPolicySimple;
 import org.cloudbus.cloudsim.brokers.DatacenterBrokerSimple;
 import org.cloudbus.cloudsim.schedulers.VmSchedulerTimeShared;
 import org.cloudbus.cloudsim.core.CloudSim;
+import static org.cloudbus.cloudsim.examples.network.datacenter.NetworkVmsExampleAppCloudletAbstract.MAX_VMS_PER_HOST;
 import org.cloudbus.cloudsim.examples.network.datacenter.VmCost;
 import org.cloudbus.cloudsim.provisioners.PeProvisionerSimple;
 import org.cloudbus.cloudsim.provisioners.ResourceProvisionerSimple;
@@ -42,39 +38,34 @@ import org.cloudbus.cloudsim.utilizationmodels.UtilizationModelFull;
 /**
  *
  * @author RaysaOliveira
+ *
+ * This example show an simple example using metrics of quality of service
+ * without network.
  */
 public class ExampleMetricsWithoutNetwork {
 
     /**
      * The cloudlet list.
      */
-    private List<Cloudlet> cloudletList;
+    private final List<Cloudlet> cloudletList;
 
     /**
      * The vmlist.
      */
-    private List<Vm> vmlist;
+    private final List<Vm> vmlist;
 
     /**
-     * The vmCost list
-     */
-    private List<VmCost> vmCost;
-
-    /**
-     * The totalCosts list
-     */
-    private List<VmCost> totalCost;
-
-    /**
-     * Create Vms
+     * Creates Vms
      *
-     * @param userId
-     * @param vms
+     * @param userId broker id
+     * @param vms amount of vms to criate
      * @return list de vms
      */
     private List<Vm> createVM(int userId, int vms) {
-        //Creates a container to store VMs. This list is passed to the broker later
+
+        //Creates a container to store VMs.
         List<Vm> list = new LinkedList<>();
+
         //VM Parameters
         long size = 10000; //image size (MB)
         int ram = 512; //vm memory (MB)
@@ -89,23 +80,24 @@ public class ExampleMetricsWithoutNetwork {
         for (int i = 0; i < vms; i++) {
             vm[i] = new VmSimple(i, userId, mips, pesNumber, ram, bw, size, vmm, new CloudletSchedulerTimeShared());
             //for creating a VM with a space shared scheduling policy for cloudlets:
-            //vm[i] = VmSimple(i, userId, mips, pesNumber, ram, bw, size, priority, vmm, new CloudletSchedulerSpaceShared());
+            //vm[i] = new VmSimple(i, userId, mips, pesNumber, ram, bw, size, vmm, new CloudletSchedulerSpaceShared());
             list.add(vm[i]);
         }
         return list;
     }
 
     /**
-     * Create cloudlets
+     * Creates cloudlets
      *
-     * @param userId
-     * @param cloudlets
-     * @return
+     * @param userId broker id
+     * @param cloudlets to criate
+     * @return list of cloudlets
      */
     private List<Cloudlet> createCloudlet(int userId, int cloudlets) {
         // Creates a container to store Cloudlets
         List<Cloudlet> list = new LinkedList<>();
-        //cloudlet parameters
+
+        //Cloudlet Parameters 
         long length = 1000;
         long fileSize = 300;
         long outputSize = 300;
@@ -123,28 +115,36 @@ public class ExampleMetricsWithoutNetwork {
         }
         return list;
     }
-    
+
     /**
-     * Calculate the cost price of resources
-     * 
+     * Calculates the cost price of resources
+     *
      * @param datacenter
      * @param vmCost
      * @param totalCost
-     * @return 
+     * @return
      */
-   /* private List<VmCost> totalCost(Datacenter datacenter, List<VmCost> vmCost, List<VmCost> totalCost) {
-        for (VmCost vm : vmCost) {
-    //        totalCost = vm.costBw() + vm.costMemory() + vm.costProcessing() + vm.costStorage();
-        }
+    /*
+    private List<Double> totalCostPrice(Datacenter datacenter, List<Vm> vmlist) {
+        double memoryDataCenterVm,bwDataCenterVm, miDataCenterVm, storageDataCenterVm;
+        List<Double> totalCost = new LinkedList<>();
+        int numberOfVms = datacenter.getCharacteristics().getHostList().size() * MAX_VMS_PER_HOST;
+        for (Vm vms : vmlist) {
+            memoryDataCenterVm = ((datacenter.getCharacteristics().getCostPerMem()) * vms.getRam() * numberOfVms);
+            bwDataCenterVm = ((datacenter.getCharacteristics().getCostPerBw()) * vms.getBw() * numberOfVms);
+            miDataCenterVm = ((datacenter.getCharacteristics().getCostPerMi()) * vms.getMips() * numberOfVms);
+            storageDataCenterVm = ((datacenter.getCharacteristics().getCostPerStorage()) * vms.getSize() * numberOfVms);
 
+            totalCost += memoryDataCenterVm + bwDataCenterVm + miDataCenterVm + storageDataCenterVm;
+
+        }
         return totalCost;
     }*/
 
     /**
-     * *
-     * Give the response time of cloudlets
+     * Shows the response time of cloudlets
      *
-     * @param cloudlet
+     * @param cloudlets to calculate the response time
      * @return responseTime
      */
     private double responseTimeCloudlet(List<Cloudlet> cloudlet) {
@@ -158,10 +158,9 @@ public class ExampleMetricsWithoutNetwork {
     }
 
     /**
-     * *
-     * Give the cpu utilization
+     * Shows the cpu utilization
      *
-     * @param cloudlet
+     * @param cloudlet to calculate the utilization
      * @return cpuUtilization
      */
     private double cpuUtilization(List<Cloudlet> cloudlet) {
@@ -173,10 +172,10 @@ public class ExampleMetricsWithoutNetwork {
     }
 
     /**
-     * *
-     * Give utilization resources (BW, CPU, RAM) in percentage
+     * Shows the utilization resources (BW, CPU, RAM) in percentage
      *
-     * @param cloudlet
+     * @param cloudlet to calculate the utilization resources
+     * @param time calculates in given time
      * @return utilizationResources
      */
     public double utilizationResources(List<Cloudlet> cloudlet, double time) {
@@ -188,13 +187,11 @@ public class ExampleMetricsWithoutNetwork {
             utilizationResources += bw + cpu + ram;
 
         }
-        //  System.out.println("** tamanho cloudlet: " + cloudlet.size());
         return utilizationResources;
     }
 
     /**
-     * *
-     * Give the wait time
+     * Shows the wait time of cloudlets
      *
      * @param cloudlet list of cloudlets
      * @return the waitTime
@@ -214,7 +211,7 @@ public class ExampleMetricsWithoutNetwork {
      }
      */
     /**
-     * Creates main() to run this example.
+     * main()
      *
      * @param args the args
      */
@@ -229,32 +226,32 @@ public class ExampleMetricsWithoutNetwork {
     }
 
     public ExampleMetricsWithoutNetwork() {
-        // First step: Initialize the CloudSim package. It should be called before creating any entities.
+        //  Initialize the CloudSim package. 
         int num_user = 1; // number of cloud users
         Calendar calendar = Calendar.getInstance(); // Calendar whose fields have been initialized with the current date and time.
         boolean trace_flag = false; // trace events
 
         CloudSim.init(num_user, calendar, trace_flag);
 
-        // Second step: Create Datacenters
+        //Create Datacenters
         Datacenter datacenter0 = createDatacenter("Datacenter_0");
 
-        // Third step: Create Broker
+        //Create Broker
         DatacenterBroker broker = createBroker();
         int brokerId = broker.getId();
 
-        vmlist = createVM(brokerId, 3);
+        vmlist = createVM(brokerId, 12);
 
         // submit vm list to the broker
         broker.submitVmList(vmlist);
 
-        /* Fifth step: Read Cloudlets from workload external file in the swf format
+        /*Read Cloudlets from workload external file in the swf format
          WorkloadFileReader workloadFileReader = new WorkloadFileReader("src/main/java/org/cloudbus/cloudsim/examples/sla/UniLu-Gaia-2014-2.swf", 1);
          cloudletList = workloadFileReader.generateWorkload().subList(0, 1000);
          for (Cloudlet cloudlet : cloudletList) {
          cloudlet.setUserId(brokerId);
          } */
-        cloudletList = createCloudlet(brokerId, 40);
+        cloudletList = createCloudlet(brokerId, 12);
 
         // submit cloudlet list to the broker
         broker.submitCloudletList(cloudletList);
@@ -265,29 +262,26 @@ public class ExampleMetricsWithoutNetwork {
         System.out.println("______________________________________________________");
         System.out.println("\n\t\t - System Métrics - \n ");
 
-        //totalCost
-        List<VmCost> totalCost = new LinkedList<>();
-        for (Vm vm : vmlist) {
-            VmCost vmCost = new VmCost(vm);
-            totalCost.add(vmCost);
-        }
-        //List<VmCost> totalCostFunction = totalCost(datacenter0, vmCost, totalCost);
-        //System.out.printf("\n\t** Total Cost Price: %.2f %n", totalCostFunction);
-
         //responseTime
         double responseT = responseTimeCloudlet(cloudletList);
         System.out.printf("\t** Response Time of Cloudlets - %.2f %n", responseT);
 
+        //cpu time
         double cpuTime = cpuUtilization(cloudletList);
-        System.out.printf("\t** Time CPU %% - %.2f %n ", (cpuTime*100)/100);
+        System.out.printf("\t** Time CPU %% - %.2f %n ", (cpuTime * 100) / 100);
 
+        //utilization resource
         double time = CloudSim.clock();
         double utilizationresources = utilizationResources(cloudletList, time);
         System.out.printf("\t** Utilization Resources %%  (Bw-CPU-Ram) - %.2f %n", utilizationresources / 100);
 
+        //wait time
         double waitTime = waitTime(cloudletList);
         System.out.printf("\t** Wait Time - %.2f %n", waitTime);
 
+       // total cost
+        // double totalPrice = totalCostPrice(datacenter0, vmlist);
+        // System.out.printf("\t** Total Cost Price (memory, bw, mips, storage)- %.2f %n", totalPrice);
         System.out.println("______________________________________________________");
 
         //Final step: Print results when simulation is over
@@ -315,7 +309,7 @@ public class ExampleMetricsWithoutNetwork {
         // In this example, it will have only one core.
         List<Pe> peList = new ArrayList<Pe>();
 
-        int mips = 1000;
+        int mips = 14000;
 
         // 3. Create PEs and add these into a list.
         peList.add(new PeSimple(0, new PeProvisionerSimple(mips))); // need to store Pe id and MIPS Rating
@@ -323,9 +317,9 @@ public class ExampleMetricsWithoutNetwork {
         // 4. Create Host with its id and list of PEs and add them to the list
         // of machines
         int hostId = 0;
-        int ram = 2048; // host memory (MB)
+        int ram = 8192; // host memory (MB)
         long storage = 1000000; // host storage
-        long bw = 10000;
+        long bw = 100000;
 
         hostList.add(new HostSimple(
                 hostId,
