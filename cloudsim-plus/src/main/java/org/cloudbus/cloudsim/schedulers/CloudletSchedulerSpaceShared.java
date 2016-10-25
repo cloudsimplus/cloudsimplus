@@ -7,10 +7,7 @@
  */
 package org.cloudbus.cloudsim.schedulers;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 import org.cloudbus.cloudsim.Cloudlet;
 import org.cloudbus.cloudsim.CloudletExecutionInfo;
@@ -29,13 +26,14 @@ import org.cloudbus.cloudsim.resources.Processor;
  *
  * @author Rodrigo N. Calheiros
  * @author Anton Beloglazov
+ * @author Manoel Campos da Silva Filho
  * @since CloudSim Toolkit 1.0
  */
 public class CloudletSchedulerSpaceShared extends CloudletSchedulerAbstract {
 	/**
 	 * @see #getCloudletExecList()
 	 */
-	private Collection<? extends CloudletExecutionInfo> cloudletExecList;
+	private final Collection<CloudletExecutionInfo> cloudletExecList;
 
     /**
      * Creates a new CloudletSchedulerSpaceShared object. This method must be
@@ -46,19 +44,18 @@ public class CloudletSchedulerSpaceShared extends CloudletSchedulerAbstract {
      */
     public CloudletSchedulerSpaceShared() {
         super();
-        usedPes = 0;
 	    this.cloudletExecList = new ArrayList<>();
-    }
-
-    @Override
-    public double updateVmProcessing(double currentTime, List<Double> mipsShare) {
-        return super.updateVmProcessing(currentTime, mipsShare);
     }
 
     @Override
     public void cloudletFinish(CloudletExecutionInfo rcl) {
         super.cloudletFinish(rcl);
-        usedPes -= rcl.getNumberOfPes();
+        removeUsedPes(rcl.getNumberOfPes());
+    }
+
+    @Override
+    protected void removeCloudletFromExecList(CloudletExecutionInfo cloudlet) {
+        cloudletExecList.remove(cloudlet);
     }
 
     @Override
@@ -69,15 +66,15 @@ public class CloudletSchedulerSpaceShared extends CloudletSchedulerAbstract {
             return 0.0;
         }
 
-        getCloudletPausedList().remove(optional.get());
-	    CloudletExecutionInfo c = optional.get();
+        CloudletExecutionInfo c = optional.get();
+        getCloudletPausedList().remove(c);
 
         // it can go to the exec list
-        if ((getProcessor().getNumberOfPes() - usedPes) >= c.getNumberOfPes()) {
+        if (isThereEnoughFreePesForCloudlet(c.getCloudlet())) {
 	        return movePausedCloudletToExecList(c);
         }
 
-        // no enough free PEs: go to the waiting queue
+        // No enough free PEs: go to the waiting queue
 		/*
 		* @todo @author manoelcampos The cloudlet length is the lenght in MI
 		* to be executed by each cloudlet PE. However, this code inherited from CloudSim
@@ -114,8 +111,8 @@ public class CloudletSchedulerSpaceShared extends CloudletSchedulerAbstract {
 		c.getCloudlet().setCloudletLength(remainingLenghtAcrossAllPes);
 
 		c.setCloudletStatus(Cloudlet.Status.INEXEC);
-		getCloudletExecList().add(c);
-		usedPes += c.getNumberOfPes();
+		addCloudletToExecList(c);
+		addUsedPes(c.getNumberOfPes());
 
 		// calculate the expected time for cloudlet completion
 		long remainingLength = c.getRemainingCloudletLength();
@@ -130,7 +127,7 @@ public class CloudletSchedulerSpaceShared extends CloudletSchedulerAbstract {
 		double cloudletExpectedFinishTime = super.cloudletSubmit(cloudlet, fileTransferTime);
 		//if the expected finish time is greater than 0, the Cloudlet was added to the execution list
 		if (cloudletExpectedFinishTime > 0) {
-	        usedPes += cloudlet.getNumberOfPes();
+            addUsedPes(cloudlet.getNumberOfPes());
         }
 
         return cloudletExpectedFinishTime;
@@ -147,7 +144,7 @@ public class CloudletSchedulerSpaceShared extends CloudletSchedulerAbstract {
 	 */
 	@Override
 	public boolean canAddCloudletToExecutionList(Cloudlet cloudlet) {
-		return (getProcessor().getNumberOfPes() - usedPes) >= cloudlet.getNumberOfPes();
+		return isThereEnoughFreePesForCloudlet(cloudlet);
 	}
 
 	/**
@@ -161,7 +158,7 @@ public class CloudletSchedulerSpaceShared extends CloudletSchedulerAbstract {
     public Cloudlet getCloudletToMigrate() {
         Cloudlet cl = super.getCloudletToMigrate();
         if(cl != Cloudlet.NULL){
-            usedPes -= cl.getNumberOfPes();
+            removeUsedPes(cl.getNumberOfPes());
         }
 
         return cl;
@@ -169,20 +166,18 @@ public class CloudletSchedulerSpaceShared extends CloudletSchedulerAbstract {
 
     @Override
     public List<Double> getCurrentRequestedMips() {
-        List<Double> mipsShare = new ArrayList<>();
-        if (getCurrentMipsShare() != null) {
-            for (Double mips : getCurrentMipsShare()) {
-                mipsShare.add(mips);
-            }
-        }
-        return mipsShare;
+        return Collections.unmodifiableList(getCurrentMipsShare());
     }
 
-	@SuppressWarnings("unchecked")
 	@Override
-	public <T extends CloudletExecutionInfo> Collection<T> getCloudletExecList() {
-		return (Collection<T>) cloudletExecList;
+	public Collection<CloudletExecutionInfo> getCloudletExecList() {
+        return Collections.unmodifiableCollection(cloudletExecList);
 	}
+
+    @Override
+    public void addCloudletToExecList(CloudletExecutionInfo cloudlet) {
+        cloudletExecList.add(cloudlet);
+    }
 
     @Override
     public double getTotalCurrentAvailableMipsForCloudlet(CloudletExecutionInfo rcl, List<Double> mipsShare) {

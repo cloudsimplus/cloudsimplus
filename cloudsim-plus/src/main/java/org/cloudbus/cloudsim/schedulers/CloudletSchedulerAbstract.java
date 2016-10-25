@@ -7,17 +7,17 @@
  */
 package org.cloudbus.cloudsim.schedulers;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 import java.util.function.Consumer;
+import java.util.function.Function;
 import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 import org.cloudbus.cloudsim.*;
 import org.cloudbus.cloudsim.Cloudlet.Status;
 import org.cloudbus.cloudsim.core.CloudSim;
 import org.cloudbus.cloudsim.listeners.VmToCloudletEventInfo;
+import org.cloudbus.cloudsim.resources.Pe;
 import org.cloudbus.cloudsim.resources.Processor;
 
 /**
@@ -29,6 +29,7 @@ import org.cloudbus.cloudsim.resources.Processor;
  *
  * @author Rodrigo N. Calheiros
  * @author Anton Beloglazov
+ * @author Manoel Campos da Silva Filho
  * @since CloudSim Toolkit 1.0
  */
 public abstract class CloudletSchedulerAbstract implements CloudletScheduler {
@@ -36,9 +37,9 @@ public abstract class CloudletSchedulerAbstract implements CloudletScheduler {
     private Processor processor;
 
     /**
-     * The number of used PEs.
+     * @see #getUsedPes()
      */
-    protected int usedPes;
+    private int usedPes;
 
     /**
      * @see #getPreviousTime()
@@ -53,22 +54,22 @@ public abstract class CloudletSchedulerAbstract implements CloudletScheduler {
     /**
      * @see #getCloudletWaitingList()
      */
-    private List<? extends CloudletExecutionInfo> cloudletWaitingList;
+    private final List<CloudletExecutionInfo> cloudletWaitingList;
 
     /**
      * @see #getCloudletPausedList()
      */
-    private List<? extends CloudletExecutionInfo> cloudletPausedList;
+    private final List<CloudletExecutionInfo> cloudletPausedList;
 
     /**
      * @see #getCloudletFinishedList()
      */
-    private List<? extends CloudletExecutionInfo> cloudletFinishedList;
+    private final List<CloudletExecutionInfo> cloudletFinishedList;
 
     /**
      * @see #getCloudletFailedList()
      */
-    private List<? extends CloudletExecutionInfo> cloudletFailedList;
+    private final List<CloudletExecutionInfo> cloudletFailedList;
 
     /**
      * @see #getVm()
@@ -84,11 +85,13 @@ public abstract class CloudletSchedulerAbstract implements CloudletScheduler {
      */
     public CloudletSchedulerAbstract() {
         setPreviousTime(0.0);
+        usedPes = 0;
 	    vm = Vm.NULL;
         cloudletWaitingList = new ArrayList<>();
         cloudletPausedList = new ArrayList<>();
         cloudletFinishedList = new ArrayList<>();
         cloudletFailedList = new ArrayList<>();
+        currentMipsShare = new ArrayList<>();
     }
 
     @Override
@@ -123,28 +126,24 @@ public abstract class CloudletSchedulerAbstract implements CloudletScheduler {
         return currentMipsShare;
     }
 
-    @SuppressWarnings("unchecked")
     @Override
-    public <T extends CloudletExecutionInfo> List<T> getCloudletWaitingList() {
-        return (List<T>) cloudletWaitingList;
+    public List<CloudletExecutionInfo> getCloudletWaitingList() {
+        return cloudletWaitingList;
     }
 
-    @SuppressWarnings("unchecked")
     @Override
-    public <T extends CloudletExecutionInfo> List<T> getCloudletPausedList() {
-        return (List<T>) cloudletPausedList;
+    public List<CloudletExecutionInfo> getCloudletPausedList() {
+        return cloudletPausedList;
     }
 
-    @SuppressWarnings("unchecked")
     @Override
-    public <T extends CloudletExecutionInfo> List<T> getCloudletFinishedList() {
-        return (List<T>) cloudletFinishedList;
+    public List<CloudletExecutionInfo> getCloudletFinishedList() {
+        return cloudletFinishedList;
     }
 
-    @SuppressWarnings("unchecked")
     @Override
-    public <T extends CloudletExecutionInfo> List<T> getCloudletFailedList() {
-        return (List<T>) cloudletFailedList;
+    public List<CloudletExecutionInfo> getCloudletFailedList() {
+        return cloudletFailedList;
     }
 
     @Override
@@ -160,7 +159,7 @@ public abstract class CloudletSchedulerAbstract implements CloudletScheduler {
 			rcl.setCloudletStatus(Cloudlet.Status.INEXEC);
 			rcl.setFileTransferTime(fileTransferTime);
 			rcl.setLastProcessingTime(CloudSim.clock());
-			getCloudletExecList().add(rcl);
+			addCloudletToExecList(rcl);
 			return fileTransferTime + (cl.getCloudletLength() / getProcessor().getCapacity());
 		}
 
@@ -220,7 +219,7 @@ public abstract class CloudletSchedulerAbstract implements CloudletScheduler {
         }
 
         CloudletExecutionInfo rcl = getCloudletExecList().stream().findFirst().get();
-	    getCloudletExecList().remove(rcl);
+	    removeCloudletFromExecListAndSetFinishTime(rcl);
         rcl.finalizeCloudlet();
 
         return rcl.getCloudlet();
@@ -229,12 +228,7 @@ public abstract class CloudletSchedulerAbstract implements CloudletScheduler {
     @Override
     public int getCloudletStatus(int cloudletId) {
 	    Optional<CloudletExecutionInfo> optional = findCloudletInAllLists(cloudletId);
-
-	    if (optional.isPresent()) {
-            return optional.get().getCloudletStatus().ordinal();
-        }
-
-        return -1;
+        return optional.map(c->c.getCloudletStatus().ordinal()).orElse(-1);
     }
 
 	/**
@@ -248,7 +242,7 @@ public abstract class CloudletSchedulerAbstract implements CloudletScheduler {
 			new Collection[]{getCloudletExecList(), getCloudletPausedList(), getCloudletWaitingList(),
 				getCloudletFinishedList(), getCloudletFailedList()};
 
-		for(Collection list: allLists){
+        for(Collection list: allLists){
 			Optional<CloudletExecutionInfo> optional = findCloudletInList(cloudletId, list);
 			if(optional.isPresent())
 				return optional;
@@ -344,29 +338,31 @@ public abstract class CloudletSchedulerAbstract implements CloudletScheduler {
     }
 
     /**
-     * Search for a cloudlet into a given list in order to change its status.
+     * Search for a cloudlet into a given list in order to change its status
+     * and remove it from that list.
+     *
      * @param cloudletList the list where to search the cloudlet
      * @param cloudletId the id of the cloudlet to have its status changed
-     * @param consumer the {@link Consumer} that will apply the change in the
+     * @param cloudletStatusUpdaterConsumer the {@link Consumer} that will apply the change in the
      * status of the found cloudlet
      * @return the changed cloudlet or {@link Cloudlet#NULL} if not found
      * in the given list
      */
     private Cloudlet changeStatusOfCloudletIntoList(
 	    Collection<CloudletExecutionInfo> cloudletList, int cloudletId,
-	    Consumer<CloudletExecutionInfo> consumer) {
+	    Consumer<CloudletExecutionInfo> cloudletStatusUpdaterConsumer)
+    {
+        Function<CloudletExecutionInfo, Cloudlet> removeCloudletFromListAndUpdateItsStatus = c -> {
+            cloudletList.remove(c);
+            cloudletStatusUpdaterConsumer.accept(c);
+            return c.getCloudlet();
+        };
 
-	    Optional<CloudletExecutionInfo> optional = cloudletList.stream()
+	    return cloudletList.stream()
 		    .filter(c->c.getCloudlet().getId() == cloudletId)
-		    .findFirst();
-
-        if (!optional.isPresent()) {
-	        return Cloudlet.NULL;
-        }
-
-        cloudletList.remove(optional.get());
-        consumer.accept(optional.get());
-        return optional.get().getCloudlet();
+		    .findFirst()
+            .map(removeCloudletFromListAndUpdateItsStatus)
+            .orElse(Cloudlet.NULL);
     }
 
 	@Override
@@ -395,6 +391,7 @@ public abstract class CloudletSchedulerAbstract implements CloudletScheduler {
      * @param currentTime current simulation time
      */
     private void updateCloudletsProcessing(double currentTime) {
+		Log.println(Log.Level.DEBUG, getClass(), CloudSim.clock(), "getCloudletExecList size: %d\n", getCloudletExecList().size());
         getCloudletExecList().forEach(rcl -> updateCloudletProcessing(rcl, currentTime));
     }
 
@@ -495,17 +492,6 @@ public abstract class CloudletSchedulerAbstract implements CloudletScheduler {
         return Math.floor(currentTime) - Math.floor(getPreviousTime());
     }
 
-     /**
-     * Gets a {@link Processor} object from a list of MIPS capacity available
-     * for the scheduler.
-     *
-     * @param mipsShare list with MIPS share of each PE available to the scheduler
-     * @return a {@link Processor} object
-     */
-    /*protected Processor getProcessor(List<Double> mipsShare) {
-        return Processor.fromMipsList(mipsShare);
-    }*/
-
     /**
      * Removes finished cloudlets from the
      * {@link #getCloudletExecList() list of cloudlets to execute}.
@@ -514,35 +500,39 @@ public abstract class CloudletSchedulerAbstract implements CloudletScheduler {
      * {@link #getCloudletExecList() execution list}
      */
     protected int removeFinishedCloudletsFromExecutionList() {
-        List<CloudletExecutionInfo> toRemove =
+        List<CloudletExecutionInfo> finishedCloudlets =
 	        getCloudletExecList().stream()
 		        .filter(c->c.getCloudlet().isFinished())
 		        .collect(Collectors.toList());
 
-	    toRemove.stream().forEach(this::setFinishTimeIfCloudletIsFinished);
-        getCloudletExecList().removeAll(toRemove);
+        finishedCloudlets.stream().forEach(this::removeCloudletFromExecListAndSetFinishTime);
 
-        return toRemove.size();
+        return finishedCloudlets.size();
+    }
+
+    @Override
+    public void removeCloudletFromExecListAndSetFinishTime(CloudletExecutionInfo cloudlet) {
+        setCloudletFinishTime(cloudlet);
+        removeCloudletFromExecList(cloudlet);
     }
 
     /**
-     * Sets its finishe time if a specific finished cloudlet from the
-     * {@link #getCloudletExecList() list of cloudlets to execute}
-     * is finished.
+     * Removes a Cloudlet from the collection of cloudlets in execution.
+     *
+     * @param cloudlet the Cloudlet to be removed
+     */
+    protected abstract void removeCloudletFromExecList(CloudletExecutionInfo cloudlet);
+
+    /**
+     * Sets the finish time of a cloudlet.
      *
      * @param rcl the cloudlet to set the finish time
-     * @return true if the cloudlet is finished (indicating the finish time was set), false otherwise
      */
-    protected boolean setFinishTimeIfCloudletIsFinished(CloudletExecutionInfo rcl) {
+    protected void setCloudletFinishTime(CloudletExecutionInfo rcl) {
 	    final double clock = CloudSim.clock();
-        if (rcl.getCloudlet().isFinished()) {
-	        //Log.println(Log.Level.INFO, getClass(), clock, "Start Time: %f Transfer Time: %f", rcl.getExecStartTime(), rcl.getFileTransferTime());
-            rcl.setFinishTime(clock);
-            cloudletFinish(rcl);
-            return true;
-        }
-
-        return false;
+        //Log.println(Log.Level.INFO, getClass(), clock, "Start Time: %f Transfer Time: %f", rcl.getExecStartTime(), rcl.getFileTransferTime());
+        rcl.setFinishTime(clock);
+        cloudletFinish(rcl);
     }
 
     /**
@@ -602,37 +592,54 @@ public abstract class CloudletSchedulerAbstract implements CloudletScheduler {
 	        return;
         }
 
-        for (int i = 0; i < numberOfFinishedCloudlets; i++) {
-	        Optional<CloudletExecutionInfo> optionalWaitingCl = findSuitableWaitingCloudletToStartExecuting();
-	        if(optionalWaitingCl.isPresent()) {
-		        getCloudletExecList().add(optionalWaitingCl.get());
-		        usedPes += optionalWaitingCl.get().getNumberOfPes();
-		        getCloudletWaitingList().remove(optionalWaitingCl.get());
-	        }
-        }
+        Consumer<CloudletExecutionInfo> addCloudletToExecutionList = c -> {
+            addCloudletToExecList(c);
+            addUsedPes(c.getNumberOfPes());
+            getCloudletWaitingList().remove(c);
+        };
+
+        IntStream.range(0, numberOfFinishedCloudlets).forEach(i ->
+            findSuitableWaitingCloudletToStartExecuting().ifPresent(addCloudletToExecutionList)
+        );
+    }
+
+    /**
+     * Checks if the amount of PEs required by a given Cloudlet is free
+     * to used.
+     *
+     * @param c the Cloudlet to get the number of required PEs
+     * @return true if there is the amount of free PEs, false otherwise
+     */
+    protected boolean isThereEnoughFreePesForCloudlet(Cloudlet c){
+        return processor.getNumberOfPes() - usedPes >= c.getNumberOfPes();
     }
 
 	/**
 	 * Try to find the first Cloudlet in the waiting list that the number of
 	 * required PEs is not higher than the number of free PEs.
+     * If a Cloudlet is found, sets its status to {@link Status#INEXEC}
+     * and returns it.
 	 *
 	 * @return an {@link Optional} that indicates if a Cloudlet with the required
 	 * conditions was found or not
 	 */
 	private Optional<CloudletExecutionInfo> findSuitableWaitingCloudletToStartExecuting() {
-		for (CloudletExecutionInfo cl : getCloudletWaitingList()) {
-		    if ((processor.getNumberOfPes() - usedPes) >= cl.getNumberOfPes()) {
-		        cl.setCloudletStatus(Status.INEXEC);
-		        return Optional.of(cl);
-		    }
-		}
+        //Receives the cloudlet, change its status and return the changed cloudlet.
+        Function<CloudletExecutionInfo, CloudletExecutionInfo> changeCloudletStatusToExecAndReturnIt = c -> {
+            c.setCloudletStatus(Status.INEXEC);
+            return c;
+        };
 
-		return Optional.empty();
+        return getCloudletWaitingList().stream()
+            .filter(c -> isThereEnoughFreePesForCloudlet(c.getCloudlet()))
+            .findFirst()
+            .map(changeCloudletStatusToExecAndReturnIt);
 	}
 
 	/**
      * Processor object created every time the processing of VMs is executed.
      * It represent the last CPU capacity assigned to the scheduler.
+     *
      * @return
      * @see #updateVmProcessing(double, java.util.List)
      */
@@ -649,4 +656,30 @@ public abstract class CloudletSchedulerAbstract implements CloudletScheduler {
     public void setVm(Vm vm) {
         this.vm = vm;
     }
+
+    /**
+     * Gets the number of currently used {@link Pe}'s.
+     */
+    public int getUsedPes() {
+        return usedPes;
+    }
+
+    /**
+     * Adds a given number of PEs to the amount of currently used PEs.
+     *
+     * @param usedPesToAdd number of PEs to add to the amount of used PEs
+     */
+    protected void addUsedPes(int usedPesToAdd) {
+        this.usedPes += usedPesToAdd;
+    }
+
+    /**
+     * Subtracts a given number of PEs from the amount of currently used PEs.
+     *
+     * @param usedPesToRemove number of PEs to subtract from the amount of used PEs
+     */
+    protected void removeUsedPes(int usedPesToRemove) {
+        this.usedPes -= usedPesToRemove;
+    }
+
 }

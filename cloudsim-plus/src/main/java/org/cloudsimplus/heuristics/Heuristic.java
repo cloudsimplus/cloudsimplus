@@ -24,9 +24,9 @@ import org.cloudbus.cloudsim.distributions.ContinuousDistribution;
  * to name a few.</p>
  *
  * @author Manoel Campos da Silva Filho
- * @param <T> the class of solutions the heuristic will deal with
+ * @param <S> the class of solutions the heuristic will deal with
  */
-public interface Heuristic<T extends HeuristicSolution> {
+public interface Heuristic<S extends HeuristicSolution<?>> {
     /**
      * Computes the acceptance probability to define if a neighbor solution
      * has to be accepted or not, compared to the {@link #getBestSolutionSoFar()}.
@@ -37,7 +37,7 @@ public interface Heuristic<T extends HeuristicSolution> {
      * values defines the probability that the neighbor solution
      * will be randomly accepted.
      */
-    public double getAcceptanceProbability();
+    double getAcceptanceProbability();
 
 	/**
 	 * Gets a random number between 0 (inclusive) and maxValue (exclusive).
@@ -45,14 +45,14 @@ public interface Heuristic<T extends HeuristicSolution> {
 	 * @param maxValue the max value to get a random number (exclusive)
 	 * @return the random number
 	 */
-	public int getRandomValue(int maxValue);
+    int getRandomValue(int maxValue);
 
     /**
      * Checks if the solution search can be stopped.
      *
      * @return true if the solution search can be stopped, false otherwise.
      */
-    public boolean isToStopSearch();
+    boolean isToStopSearch();
 
     /**
      * Gets the initial solution that the heuristic will start from
@@ -60,27 +60,38 @@ public interface Heuristic<T extends HeuristicSolution> {
      * generated yet, one should be randomly generated.
      * @return the initial randomly generated solution
      */
-    public T getInitialSolution();
+    S getInitialSolution();
 
     /**
      *
      * @return latest neighbor solution created
-     * @see HeuristicSolution#createNeighbor()
+     * @see #createNeighbor(HeuristicSolution)
      */
-    public T getNeighborSolution();
+    S getNeighborSolution();
+
+    /**
+     * Creates a neighbor solution cloning a source one
+     * and randomly changing some of its values.
+     * A neighbor solution is one that is close to the current solution
+     * and has just little changes.
+     *
+     * @param source the source to create a neighbor solution
+     * @return the cloned and randomly changed solution that represents a neighbor solution
+     */
+    S createNeighbor(S source);
 
     /**
      *
-     * @return best solution that has found up to now
+     * @return best solution found out up to now
      */
-    public T getBestSolutionSoFar();
+    S getBestSolutionSoFar();
 
     /**
      *
      * @return the number of times a neighbor solution will be searched
      * at each iteration of the {@link #solve() solution find}.
      */
-    public int getNumberOfNeighborhoodSearchesByIteration();
+    int getNumberOfNeighborhoodSearchesByIteration();
 
     /**
      * Sets the number of times a neighbor solution will be searched
@@ -89,7 +100,7 @@ public interface Heuristic<T extends HeuristicSolution> {
      * @param numberOfNeighborhoodSearches number of neighbor searches to perform
      * at each iteration
      */
-    public void setNumberOfNeighborhoodSearchesByIteration(int numberOfNeighborhoodSearches);
+    void setNumberOfNeighborhoodSearchesByIteration(int numberOfNeighborhoodSearches);
 
 	/**
 	 * Starts the heuristic to find a suboptimal solution.
@@ -101,34 +112,35 @@ public interface Heuristic<T extends HeuristicSolution> {
 	 * @todo @author manoelcampos Try to parallelize the solution finding in order
 	 * to reduce search time. Maybe a Map-Reduce approach can be useful.
 	 */
-	public T solve();
+	S solve();
 
 	/**
 	 *
 	 * @return the time taken to finish the solution search (in seconds).
 	 * @see #solve()
 	 */
-	public double getSolveTime();
+	double getSolveTime();
 
     /**
      * A property that implements the Null Object Design Pattern for {@link Heuristic}
      * objects.
      */
-    public static final Heuristic NULL = new HeuristicNull();
+    Heuristic NULL = new HeuristicNull();
 }
 
 /**
  * A class to allow the implementation of Null Object Design Pattern
  * for this interface and extensions of it.
  */
-class HeuristicNull<T extends HeuristicSolution> implements Heuristic<T> {
+class HeuristicNull<S extends HeuristicSolution<?>> implements Heuristic<S> {
     @Override public double getAcceptanceProbability() { return 0.0; }
-	@Override  public int getRandomValue(int maxValue) { return 0; }
+	@Override public int getRandomValue(int maxValue) { return 0; }
 	@Override public boolean isToStopSearch() { return false; }
-    @Override public T getInitialSolution() { return (T)HeuristicSolution.NULL; }
-    @Override public T getNeighborSolution() { return (T)HeuristicSolution.NULL; }
-	@Override  public T solve() { return (T)HeuristicSolution.NULL; }
-	@Override public T getBestSolutionSoFar() { return (T)HeuristicSolution.NULL; }
+    @Override public S getInitialSolution() { return (S)HeuristicSolution.NULL; }
+    @Override public S getNeighborSolution() { return (S)HeuristicSolution.NULL; }
+    @Override  public S createNeighbor(S source) { return (S)HeuristicSolution.NULL; }
+    @Override public S solve() { return (S)HeuristicSolution.NULL; }
+	@Override public S getBestSolutionSoFar() { return (S)HeuristicSolution.NULL; }
 	@Override public int getNumberOfNeighborhoodSearchesByIteration() { return 0; }
 	@Override public void setNumberOfNeighborhoodSearchesByIteration(int numberOfNeighborhoodSearches) {}
 	@Override public double getSolveTime() { return 0; }

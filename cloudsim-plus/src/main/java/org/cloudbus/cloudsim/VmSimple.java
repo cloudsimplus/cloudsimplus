@@ -1,7 +1,7 @@
 /*
  * Title: CloudSim Toolkit Description: CloudSim (Cloud Simulation) Toolkit for Modeling and
  * Simulation of Clouds Licence: GPL - http://www.gnu.org/copyleft/gpl.html
- * 
+ *
  * Copyright (c) 2009-2012, The University of Melbourne, Australia
  */
 package org.cloudbus.cloudsim;
@@ -15,11 +15,8 @@ import java.util.Optional;
 import org.cloudbus.cloudsim.listeners.DatacenterToVmEventInfo;
 import org.cloudbus.cloudsim.listeners.EventListener;
 import org.cloudbus.cloudsim.listeners.HostToVmEventInfo;
-import org.cloudbus.cloudsim.resources.Bandwidth;
-import org.cloudbus.cloudsim.resources.Ram;
-import org.cloudbus.cloudsim.resources.RawStorage;
+import org.cloudbus.cloudsim.resources.*;
 import org.cloudbus.cloudsim.schedulers.CloudletScheduler;
-import org.cloudbus.cloudsim.resources.ResourceManageable;
 
 /**
  * Implements the basic features of a Virtual Machine (VM) that runs inside a
@@ -195,7 +192,7 @@ public class VmSimple implements Vm {
             onUpdateVmProcessingListener.update(info);
             return result;
         }
-        
+
         return Double.MAX_VALUE;
     }
 
@@ -227,7 +224,7 @@ public class VmSimple implements Vm {
         if (isBeingInstantiated()) {
             return getBw();
         }
-        
+
         return (long) (getCloudletScheduler().getCurrentRequestedUtilizationOfBw() * getBw());
     }
 
@@ -414,7 +411,7 @@ public class VmSimple implements Vm {
     protected final void setCloudletScheduler(CloudletScheduler cloudletScheduler) {
         if(cloudletScheduler == null)
             cloudletScheduler = CloudletScheduler.NULL;
-        
+
         cloudletScheduler.setVm(this);
         this.cloudletScheduler = cloudletScheduler;
     }
@@ -522,7 +519,7 @@ public class VmSimple implements Vm {
 
     @Override
     public void addStateHistoryEntry(VmStateHistoryEntry entry) {
-        
+
         if (!getStateHistory().isEmpty()) {
             VmStateHistoryEntry previousState = getStateHistory().get(getStateHistory().size() - 1);
             if (previousState.getTime() == entry.getTime()) {
@@ -553,7 +550,7 @@ public class VmSimple implements Vm {
     public void setOnHostAllocationListener(EventListener<HostToVmEventInfo> onHostAllocationListener) {
         if (onHostAllocationListener == null)
             onHostAllocationListener = EventListener.NULL;
-        
+
         this.onHostAllocationListener = onHostAllocationListener;
     }
 
@@ -561,7 +558,7 @@ public class VmSimple implements Vm {
     public void setOnHostDeallocationListener(EventListener<HostToVmEventInfo> onHostDeallocationListener) {
         if (onHostDeallocationListener == null)
             onHostDeallocationListener = EventListener.NULL;
-        
+
         this.onHostDeallocationListener = onHostDeallocationListener;
     }
 
@@ -587,9 +584,9 @@ public class VmSimple implements Vm {
 
     @Override
     public void setOnVmCreationFailureListener(EventListener<DatacenterToVmEventInfo> onVmCreationFailureListener) {
-        if (onVmCreationFailureListener == null) 
+        if (onVmCreationFailureListener == null)
             onVmCreationFailureListener = EventListener.NULL;
-        
+
         this.onVmCreationFailureListener = onVmCreationFailureListener;
     }
 
@@ -602,17 +599,17 @@ public class VmSimple implements Vm {
     public void setOnUpdateVmProcessingListener(EventListener<HostToVmEventInfo> onUpdateVmProcessingListener) {
         if(onUpdateVmProcessingListener == null)
             onUpdateVmProcessingListener = EventListener.NULL;
-        
+
         this.onUpdateVmProcessingListener = onUpdateVmProcessingListener;
     }
 
     /**
      * <p>Compares this Vm with another one, considering
      * the {@link #getTotalMipsCapacity() total MIPS capacity of the Vm's}.</p>
-     * 
+     *
      * @param o the Vm to be compared to
      * @return {@inheritDoc }
-     * @see #getTotalMipsCapacity() 
+     * @see #getTotalMipsCapacity()
      */
     @Override
     public int compareTo(Vm o) {

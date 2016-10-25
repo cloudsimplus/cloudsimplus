@@ -148,13 +148,24 @@ public abstract class ExperimentRunner<T extends SimulationExperiment> implement
 		return (int)Math.ceil(getNumberOfSimulationRuns() / (double) getNumberOfBatches());
 	}
 
+    /**
+     * Checks if the number of simulation runs and the number of batches
+     * are compatible
+     * @return
+     */
+	public boolean simulationRunsAndNumberOfBatchesAreCompatible(){
+        final boolean batchesGreaterThan1 =  getNumberOfBatches() > 1;
+        final boolean numSimulationRunsGraterThanBatches = getNumberOfSimulationRuns() > getNumberOfBatches();
+        return batchesGreaterThan1 && numSimulationRunsGraterThanBatches;
+    }
+
 	/**
 	 *
 	 * Checks if the "Batch Means Method" is to be applied to reduce
 	 * correlation between the results for different experiment runs.
 	 */
 	public boolean isApplyBatchMeansMethod(){
-		return getNumberOfBatches() > 1;
+        return simulationRunsAndNumberOfBatchesAreCompatible();
 	}
 
 	/**

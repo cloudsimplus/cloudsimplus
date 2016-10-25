@@ -153,33 +153,6 @@ public class CloudletToVmMappingSolutionTest {
     }
 
     @Test
-    public void testCreateNeighbor_NotSameObject() {
-        CloudletToVmMappingSolution instance = new CloudletToVmMappingSolution(Heuristic.NULL);
-        CloudletToVmMappingSolution result = instance.createNeighbor();
-        assertNotSame(
-            "The neighbor solution must be a modified clone of the given instance, not the same object.",
-            instance, result);
-    }
-
-    @Test
-    public void testCreateNeighbor_NotEmpty() {
-        CloudletToVmMappingSolution instance = createSolutionWithOneVmForEachCloudlet(2, 2);
-        CloudletToVmMappingSolution result = instance.createNeighbor();
-        assertFalse(
-            "The cloned (neighbor) solution cannot be empty.",
-            result.getResult().isEmpty());
-    }
-
-    @Test
-    public void testCreateNeighbor_SameSize() {
-        CloudletToVmMappingSolution instance = createSolutionWithOneVmForEachCloudlet(2, 2);
-        CloudletToVmMappingSolution result = instance.createNeighbor();
-        assertEquals(
-            "The cloned (neighbor) solution has to have the same number of elements of the original solution.",
-            instance.getResult().size(), result.getResult().size());
-    }
-
-    @Test
     public void testSwapVmsOfTwoMapEntries() {
         final int numberOfEntries = 2;
         Map.Entry<Cloudlet, Vm> originalEntries[] = new Map.Entry[numberOfEntries];

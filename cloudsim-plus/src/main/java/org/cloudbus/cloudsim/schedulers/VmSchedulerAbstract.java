@@ -1,7 +1,7 @@
 /*
  * Title: CloudSim Toolkit Description: CloudSim (Cloud Simulation) Toolkit for Modeling and
  * Simulation of Clouds Licence: GPL - http://www.gnu.org/copyleft/gpl.html
- * 
+ *
  * Copyright (c) 2009-2012, The University of Melbourne, Australia
  */
 package org.cloudbus.cloudsim.schedulers;
@@ -13,6 +13,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.OptionalDouble;
 import org.cloudbus.cloudsim.Log;
+import org.cloudbus.cloudsim.provisioners.PeProvisioner;
 import org.cloudbus.cloudsim.resources.Pe;
 import org.cloudbus.cloudsim.Vm;
 
@@ -132,7 +133,7 @@ public abstract class VmSchedulerAbstract implements VmScheduler {
         final List<Double> list = getMipsMap().get(vm.getUid());
         if(list == null)
             return Collections.EMPTY_LIST;
-        
+
         return list;
     }
 
@@ -159,14 +160,12 @@ public abstract class VmSchedulerAbstract implements VmScheduler {
             return 0;
         }
 
-        OptionalDouble max = 
+        OptionalDouble max =
                 getPeList().stream()
-                        .mapToDouble(pe -> pe.getPeProvisioner().getAvailableMips())
-                        .max();
-        if(max.isPresent())
-            return max.getAsDouble();
-        
-        return 0.0;
+                    .map(Pe::getPeProvisioner)
+                    .mapToDouble(PeProvisioner::getAvailableMips)
+                    .max();
+        return max.orElse(0);
     }
 
     /**
@@ -299,5 +298,5 @@ public abstract class VmSchedulerAbstract implements VmScheduler {
      */
     protected final void setPeMap(Map<String, List<Pe>> peMap) {
         this.peMap = peMap;
-    }    
+    }
 }

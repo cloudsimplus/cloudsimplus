@@ -15,7 +15,7 @@ Lists the main changes in the project.
   an usage help. It is in fact the easier way to build the project and run examples. 
   To run the same example 1, it is as easy as typing `./bootstrap.sh org.cloudbus.cloudsim.examples.CloudSimExample1` inside the `script` folder.
   It will automatically discover the exact name of the examples jar file to run, whatever its version number is.
-- Inclusion of new module "cloudsim-plus-benchmarks" that uses JMH (Java Microbenchmark Harness framework) that implement some
+- Inclusion of new module "cloudsim-plus-benchmarks" that uses [JMH (Java Microbenchmark Harness framework)](http://openjdk.java.net/projects/code-tools/jmh/) that implement some
   benchmarks in order to assess CloudSim Plus performance.
 - Inclusion of new module "cloudsim-plus-testbeds" to provide a set of more complex and comprehensive 
   testbeds used to assess implementation of algorithms for different purposes such as:

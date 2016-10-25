@@ -44,7 +44,7 @@ public class CloudletTest {
         assertEquals(0, Cloudlet.NULL.getId(), 0);
         assertEquals(0, Cloudlet.NULL.getCloudletLength(), 0);
         assertEquals(0, Cloudlet.NULL.getCloudletOutputSize(), 0);
-        assertEquals(Cloudlet.Status.FAILED, Cloudlet.NULL.getCloudletStatus());
+        assertEquals(Cloudlet.Status.FAILED, Cloudlet.NULL.getStatus());
         assertEquals(Cloudlet.Status.FAILED, Cloudlet.NULL.getStatus());
         assertEquals("", Cloudlet.NULL.getCloudletStatusString());
         assertEquals(0, Cloudlet.NULL.getCloudletTotalLength(), 0);

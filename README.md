@@ -107,18 +107,17 @@ download the project source by cloning the repositosy using the command `git clo
 at a terminal. 
 
 The project has a [bash script](script/bootstrap.sh) that you can use to build and run CloudSim Plus examples. 
-The script must be run on the project root directory in a Unix-like system such as Linux, FreeBDS and Mac OSX.
+This is a script for Unix-like system such as Linux, FreeBDS and Mac OSX.
 
 To run some example type the command: `sh script/bootstrap.sh ExampleClassName`.
-For instance, to run the CloudSimExample1 you can type: `sh script/bootstrap.sh CloudSimExample1`. 
-To run an example into a sub-directory, type `sh script/bootstrap.sh sub_directory_name.ExampleClassName`.
+For instance, to run the CloudSimExample1 you can type: `sh script/bootstrap.sh org.cloudbus.cloudsim.examples.CloudSimExample1`. 
+To run an example into a sub-directory, type `sh script/bootstrap.sh package_name.ExampleClassName`.
 For instance, to run the [workload/SwfWorkloadFormatExample1](/cloudsim-plus-examples/src/main/java/org/cloudbus/cloudsim/examples/workload/SwfWorkloadFormatExample1.java) 
-example, type `sh script/bootstrap.sh workload.SwfWorkloadFormatExample1`.
+example, type `sh script/bootstrap.sh org.cloudbus.cloudsim.examples.workload.SwfWorkloadFormatExample1`.
 
 The script checks if it is required to build the project, using maven in this case, making sure to download all dependencies. 
 To see what examples are available, just navigate through the [examples directory](/cloudsim-plus-examples/src/main/java/org/cloudbus/cloudsim/examples).
-
-To just build the CloudSim Plus and examples packages, execute the script without any parameter.  
+To see more script options, run it without any parameter.  
  
 ## By means of an IDE (the easier way to just take a look or to create your own simulations)
 The easier way to use the project is relying on some IDE such as [NetBeans](http://netbeans.org), [Eclipse](http://eclipse.org) 

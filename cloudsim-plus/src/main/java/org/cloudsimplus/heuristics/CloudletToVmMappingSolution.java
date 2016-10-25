@@ -74,6 +74,11 @@ public class CloudletToVmMappingSolution implements HeuristicSolution<Map<Cloudl
         recomputeCost = true;
     }
 
+    @Override
+    public Heuristic<HeuristicSolution<Map<Cloudlet, Vm>>> getHeuristic() {
+        return heuristic;
+    }
+
     /**
      * {@inheritDoc}
      *
@@ -160,13 +165,6 @@ public class CloudletToVmMappingSolution implements HeuristicSolution<Map<Cloudl
         return Collections.unmodifiableMap(cloudletVmMap);
     }
 
-    @Override
-    public CloudletToVmMappingSolution createNeighbor() {
-        CloudletToVmMappingSolution clone = new CloudletToVmMappingSolution(this);
-        clone.swapVmsOfTwoRandomSelectedMapEntries();
-        return clone;
-    }
-
     /**
      * Swap the Vm's of 2 randomly selected cloudlets
      * in the {@link #cloudletVmMap} in order to
@@ -205,7 +203,7 @@ public class CloudletToVmMappingSolution implements HeuristicSolution<Map<Cloudl
      * @see #swapVmsOfTwoMapEntries(Map.Entry[])
      * @return true if the Cloudlet's VMs where swapped, false otherwise
      */
-    private boolean swapVmsOfTwoRandomSelectedMapEntries() {
+    boolean swapVmsOfTwoRandomSelectedMapEntries() {
         return swapVmsOfTwoMapEntries(getRandomMapEntries());
     }
 
@@ -239,11 +237,6 @@ public class CloudletToVmMappingSolution implements HeuristicSolution<Map<Cloudl
         selectedEntries[1] = allEntries[j];
         return selectedEntries;
     }
-
-	@Override
-	public Heuristic getHeuristic() {
-		return heuristic;
-	}
 
 
 }

@@ -31,14 +31,14 @@ import org.cloudbus.cloudsim.distributions.ContinuousDistribution;
  * implementing the heuristic.</li>
  * </ol>
  *
- * @param <T> the class of solutions the heuristic will deal with, starting with a random solution
+ * @param <S> the class of solutions the heuristic will deal with, starting with a random solution
  *           and execute the solution search in order to achieve a satisfying solution (defined by a stop criteria)
  * @author Manoel Campos da Silva Filho
  * @see <a href="http://dx.doi.org/10.1109/101.17235">[1] R. A. Rutenbar,
  * “Simulated Annealing Algorithms: An overview,” IEEE Circuits Devices Mag., vol. 1, no. 5,
  * pp. 19–26, 1989.</a>
  */
-public abstract class SimulatedAnnealing<T extends HeuristicSolution> extends HeuristicAbstract<T> {
+public abstract class SimulatedAnnealing<S extends HeuristicSolution<?>> extends HeuristicAbstract<S> {
     /**
      * @see #getColdTemperature()
      */
@@ -60,7 +60,7 @@ public abstract class SimulatedAnnealing<T extends HeuristicSolution> extends He
 	 * @param random a pseudo random number generator
      * @param solutionClass reference to the generic class that will be used to instantiate heuristic solutions
      */
-    public SimulatedAnnealing(ContinuousDistribution random, Class<T> solutionClass){
+    public SimulatedAnnealing(ContinuousDistribution random, Class<S> solutionClass){
         super(random, solutionClass);
     }
 

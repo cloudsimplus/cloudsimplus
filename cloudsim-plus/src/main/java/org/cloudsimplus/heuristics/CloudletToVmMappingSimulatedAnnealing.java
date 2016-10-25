@@ -1,6 +1,8 @@
 package org.cloudsimplus.heuristics;
 
 import java.util.List;
+import java.util.Map;
+
 import org.cloudbus.cloudsim.Cloudlet;
 import org.cloudbus.cloudsim.Vm;
 import org.cloudbus.cloudsim.distributions.ContinuousDistribution;
@@ -12,7 +14,9 @@ import org.cloudbus.cloudsim.distributions.ContinuousDistribution;
  *
  * @author Manoel Campos da Silva Filho
  */
-public class CloudletToVmMappingSimulatedAnnealing extends SimulatedAnnealing<CloudletToVmMappingSolution> implements CloudletToVmMappingHeuristic {
+public class CloudletToVmMappingSimulatedAnnealing
+      extends SimulatedAnnealing<CloudletToVmMappingSolution>
+      implements CloudletToVmMappingHeuristic {
     private CloudletToVmMappingSolution initialSolution;
 
     /** @see #getVmList() */
@@ -86,6 +90,13 @@ public class CloudletToVmMappingSimulatedAnnealing extends SimulatedAnnealing<Cl
     private Vm getRandomVm() {
         final int i = getRandomValue(vmList.size());
         return vmList.get(i);
+    }
+
+    @Override
+    public CloudletToVmMappingSolution createNeighbor(CloudletToVmMappingSolution source) {
+        CloudletToVmMappingSolution clone = new CloudletToVmMappingSolution(source);
+        clone.swapVmsOfTwoRandomSelectedMapEntries();
+        return clone;
     }
 
 }

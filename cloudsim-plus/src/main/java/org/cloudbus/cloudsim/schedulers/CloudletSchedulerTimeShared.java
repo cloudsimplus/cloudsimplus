@@ -11,8 +11,8 @@ import java.util.*;
 import org.cloudbus.cloudsim.Cloudlet;
 import org.cloudbus.cloudsim.CloudletExecutionInfo;
 
-import org.cloudbus.cloudsim.Log;
 import org.cloudbus.cloudsim.core.CloudSim;
+import org.cloudbus.cloudsim.resources.Pe;
 
 /**
  * CloudletSchedulerTimeShared implements a policy of scheduling performed by a
@@ -20,16 +20,36 @@ import org.cloudbus.cloudsim.core.CloudSim;
  * time-shared manner in VM, i.e., it performs preemptive execution
  * of Cloudlets in the VM's PEs. Each VM has to have its own instance of a
  * CloudletScheduler.
- *
+ * 
+ * <p>CPU context switch is the process of removing an application (Cloudlets) that is using 
+ * a CPU core ({@link Pe}) from the {@link #getCloudletExecList() run queue}, 
+ * to allow other one in the {@link #getCloudletWaitingList() waiting queue} 
+ * to start executing in the same CPU.
+ * This process enables sharing the CPU time between different applications.  
+ * </p>
+ * 
+ * <p>
+ * <b>NOTE</b>: This implementation simplifies the context switch process, not 
+ * in fact switching cloudlets between the run queue and the waiting queue.
+ * It just considers there is not waiting Cloudlet, oversimplifying the 
+ * problem as if for a simulation second <tt>t</tt>, the total processing capacity 
+ * of the processor cores (in MIPS) is equally divided by the applications that are using them.
+ * This in fact is not possible, once just one application can use
+ * a CPU core at a time. However, since the basic CloudletScheduler implementations
+ * do not account the context switch overhead, there is no difference in
+ * Cloudlets finish time and this simplification works well. 
+ * </p>
+ * 
  * @author Rodrigo N. Calheiros
  * @author Anton Beloglazov
+ * @author Manoel Campos da Silva Filho
  * @since CloudSim Toolkit 1.0
  */
 public class CloudletSchedulerTimeShared extends CloudletSchedulerAbstract {
 	/**
 	 * @see #getCloudletExecList()
 	 */
-	private Collection<? extends CloudletExecutionInfo> cloudletExecList;
+	private final Collection<CloudletExecutionInfo> cloudletExecList;
 
     /**
      * Creates a new CloudletSchedulerTimeShared object. This method must be
@@ -43,11 +63,6 @@ public class CloudletSchedulerTimeShared extends CloudletSchedulerAbstract {
 	    this.cloudletExecList = new ArrayList<>();
     }
 
-    @Override
-    public double updateVmProcessing(double currentTime, List<Double> mipsShare) {
-        return super.updateVmProcessing(currentTime, mipsShare);
-    }
-
 	/**
 	 * {@inheritDoc}
 	 *
@@ -56,47 +71,53 @@ public class CloudletSchedulerTimeShared extends CloudletSchedulerAbstract {
 	 * Each Cloudlet has the opportunity to use the PEs
 	 * for a given timeslice.</b></p>
 	 *
-	 * @param <T> {@inheritDoc}
 	 * @return {@inheritDoc}
 	 */
 	@Override
-	public <T extends CloudletExecutionInfo> List<T> getCloudletWaitingList() {
+	public List<CloudletExecutionInfo> getCloudletWaitingList() {
 		return super.getCloudletWaitingList();
 	}
 
-	@Override
-    public double cloudletResume(int cloudletId) {
-	    Optional<CloudletExecutionInfo> optional =
-		    getCloudletPausedList().stream()
-		        .filter(c -> c.getCloudletId() == cloudletId)
-		        .findFirst();
-
-        if(!optional.isPresent()) {
-	        return 0.0;
-        }
-
-        final CloudletExecutionInfo rcl = optional.get();
-        getCloudletPausedList().remove(rcl);
-        rcl.setCloudletStatus(Cloudlet.Status.INEXEC);
-        getCloudletExecList().add(rcl);
+    /**
+     * Moves a Cloudlet that was paused and has just been resumed
+     * to the Cloudlet execution list.
+     *
+     * @param cloudlet the Cloudlet to move from the paused to the exec lit
+     * @return the Cloudlet expected finish time
+     */
+    private double movePausedCloudletToExecListAndGetExpectedFinishTime(CloudletExecutionInfo cloudlet){
+        getCloudletPausedList().remove(cloudlet);
+        cloudlet.setCloudletStatus(Cloudlet.Status.INEXEC);
+        addCloudletToExecList(cloudlet);
 
         // calculate the expected time for cloudlet completion
         // first: how many PEs do we have?
-        double remainingLength = rcl.getRemainingCloudletLength();
+        double remainingLength = cloudlet.getRemainingCloudletLength();
         double estimatedFinishTime = CloudSim.clock()
-                + (remainingLength / (getProcessor().getCapacity()
-                * rcl.getNumberOfPes()));
+            + (remainingLength / (getProcessor().getCapacity()
+            * cloudlet.getNumberOfPes()));
 
         return estimatedFinishTime;
+    };
+
+	@Override
+    public double cloudletResume(int cloudletId) {
+	    return
+		    getCloudletPausedList().stream()
+		        .filter(c -> c.getCloudletId() == cloudletId)
+		        .findFirst()
+                .map(this::movePausedCloudletToExecListAndGetExpectedFinishTime)
+                .orElse(0.0);
     }
 
 	/**
 	 * This time-shared scheduler shares the CPU time between all executing cloudlets,
 	 * giving the same CPU timeslice for each Cloudlet to execute.
 	 * It always allow any submitted Cloudlets to be imediately added to the execution list.
-	 * By this way, doesn't matter what Cloudlet is being submitted, it always will
-	 * include it in the execution list.
+	 * By this way, it doesn't matter what Cloudlet is being submitted, since it will
+	 * always include it in the execution list.
 	 *
+	 * @param cloudlet the Cloudlet that will be added to the execution list.
 	 * @return always <b>true</b> to indicate that any submitted Cloudlet can be immediately added to the execution list
 	 */
 	@Override
@@ -159,10 +180,19 @@ public class CloudletSchedulerTimeShared extends CloudletSchedulerAbstract {
                 .sum();
     }
 
-	@SuppressWarnings("unchecked")
 	@Override
-	public <T extends CloudletExecutionInfo> Collection<T> getCloudletExecList() {
-		return (Collection<T>) cloudletExecList;
+	public Collection<CloudletExecutionInfo> getCloudletExecList() {
+		return Collections.unmodifiableCollection(cloudletExecList);
 	}
+
+    @Override
+    protected void removeCloudletFromExecList(CloudletExecutionInfo cloudlet) {
+        cloudletExecList.remove(cloudlet);
+    }
+
+    @Override
+    public void addCloudletToExecList(CloudletExecutionInfo cloudlet) {
+        cloudletExecList.add(cloudlet);
+    }
 
 }

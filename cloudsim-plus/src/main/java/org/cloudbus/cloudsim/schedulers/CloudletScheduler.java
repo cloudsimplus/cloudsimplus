@@ -89,43 +89,51 @@ public interface CloudletScheduler extends Serializable {
     double cloudletSubmit(Cloudlet cl);
 
     /**
-     * Gets the {@link Collection} of cloudlets being executed on the VM.
+     * Gets a <b>read-only</b> {@link Collection} of cloudlets being executed on the VM.
      * It is being used a more generic interface instead of {@link List}
      * to enable implementations to decide the best and more efficient data structure to
      * store the executing Cloudlets.
      *
-     * @param <T> the generic type
      * @return the cloudlet exec collection
+     * @see #addCloudletToExecList(CloudletExecutionInfo)
      */
-    @SuppressWarnings(value = "unchecked")
-    <T extends CloudletExecutionInfo> Collection<T> getCloudletExecList();
+    Collection<CloudletExecutionInfo> getCloudletExecList();
+
+    /**
+     * Adds a Cloudlet to the collection of cloudlets in execution.
+     *
+     * @param cloudlet the Cloudlet to be added
+     */
+    void addCloudletToExecList(CloudletExecutionInfo cloudlet);
+
+    /**
+     * Removes a Cloudlet from the collection of cloudlets in execution
+     * and sets its finish time.
+     *
+     * @param cloudlet the Cloudlet to be removed
+     */
+    void removeCloudletFromExecListAndSetFinishTime(CloudletExecutionInfo cloudlet);
 
     /**
      * Gets the list of failed cloudlets.
      *
-     * @param <T> the generic type
      * @return the cloudlet failed list.
      */
-    @SuppressWarnings(value = "unchecked")
-    <T extends CloudletExecutionInfo> List<T> getCloudletFailedList();
+    List<CloudletExecutionInfo> getCloudletFailedList();
 
     /**
      * Gets the list of finished cloudlets.
      *
-     * @param <T> the generic type
      * @return the cloudlet finished list
      */
-    @SuppressWarnings(value = "unchecked")
-    <T extends CloudletExecutionInfo> List<T> getCloudletFinishedList();
+    List<CloudletExecutionInfo> getCloudletFinishedList();
 
     /**
      * Gets the list of paused cloudlets.
      *
-     * @param <T> the generic type
      * @return the cloudlet paused list
      */
-    @SuppressWarnings(value = "unchecked")
-    <T extends CloudletExecutionInfo> List<T> getCloudletPausedList();
+    List<CloudletExecutionInfo> getCloudletPausedList();
 
     /**
      * Gets the status of a cloudlet with a given id.
@@ -140,11 +148,9 @@ public interface CloudletScheduler extends Serializable {
     /**
      * Gets the list of cloudlet waiting to be executed on the VM.
      *
-     * @param <T> the generic type
      * @return the cloudlet waiting list
      */
-    @SuppressWarnings(value = "unchecked")
-    <T extends CloudletExecutionInfo> List<T> getCloudletWaitingList();
+    List<CloudletExecutionInfo> getCloudletWaitingList();
 
     /**
      * Gets the list of current mips capacity from the VM that will be
@@ -353,12 +359,14 @@ public interface CloudletScheduler extends Serializable {
         @Override public double cloudletResume(int clId) { return 0.0; }
         @Override public double cloudletSubmit(Cloudlet cl, double fileTransferTime){ return 0.0; }
         @Override public double cloudletSubmit(Cloudlet cl) { return 0.0; }
-        @Override public <T extends CloudletExecutionInfo> Collection<T> getCloudletExecList() { return Collections.emptyList(); }
-        @Override public <T extends CloudletExecutionInfo> List<T> getCloudletFailedList() { return Collections.emptyList(); }
-        @Override public <T extends CloudletExecutionInfo> List<T> getCloudletFinishedList() { return Collections.emptyList(); }
-        @Override public <T extends CloudletExecutionInfo> List<T> getCloudletPausedList() { return Collections.emptyList(); }
+        @Override public Collection<CloudletExecutionInfo> getCloudletExecList() { return Collections.emptyList(); }
+        @Override public void addCloudletToExecList(CloudletExecutionInfo cloudlet) {}
+        @Override  public void removeCloudletFromExecListAndSetFinishTime(CloudletExecutionInfo cloudlet) {}
+        @Override public List<CloudletExecutionInfo> getCloudletFailedList() { return Collections.emptyList(); }
+        @Override public List<CloudletExecutionInfo> getCloudletFinishedList() { return Collections.emptyList(); }
+        @Override public List<CloudletExecutionInfo> getCloudletPausedList() { return Collections.emptyList(); }
         @Override public int getCloudletStatus(int cloudletId) { return 0; }
-        @Override public <T extends CloudletExecutionInfo> List<T> getCloudletWaitingList() { return Collections.emptyList(); }
+        @Override public List<CloudletExecutionInfo> getCloudletWaitingList() { return Collections.emptyList(); }
         @Override public List<Double> getCurrentMipsShare() { return Collections.emptyList(); }
         @Override public List<Double> getCurrentRequestedMips() { return Collections.emptyList(); }
         @Override public double getCurrentRequestedUtilizationOfBw() { return 0.0; }
@@ -370,7 +378,7 @@ public interface CloudletScheduler extends Serializable {
         @Override public double getTotalCurrentRequestedMipsForCloudlet(CloudletExecutionInfo rcl, double time) { return 0.0; }
         @Override public double getTotalUtilizationOfCpu(double time) { return 0.0; }
         @Override public boolean hasFinishedCloudlets() { return false; }
-	    @Override  public boolean canAddCloudletToExecutionList(Cloudlet cloudlet) { return false; }
+	    @Override public boolean canAddCloudletToExecutionList(Cloudlet cloudlet) { return false; }
 	    @Override public Cloudlet getCloudletToMigrate() { return Cloudlet.NULL; }
         @Override public int runningCloudletsNumber() { return 0; }
         @Override public double updateVmProcessing(double currentTime, List<Double> mipsShare) { return 0.0; }

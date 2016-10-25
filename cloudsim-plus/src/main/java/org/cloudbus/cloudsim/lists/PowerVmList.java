@@ -47,7 +47,7 @@ public class PowerVmList extends VmList {
      * @param vmList the vm list to be sorted
      */
     public static <T extends Vm> void sortByCpuUtilization(List<T> vmList) {
-        Collections.sort(vmList, (T vm1, T vm2) -> {
+        vmList.sort((vm1, vm2) -> {
             Double vm1Utilization = vm1.getTotalUtilizationOfCpuMips(CloudSim.clock());
             Double vm2Utilization = vm2.getTotalUtilizationOfCpuMips(CloudSim.clock());
             return vm2Utilization.compareTo(vm1Utilization);

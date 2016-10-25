@@ -1,16 +1,16 @@
 package org.cloudbus.cloudsim.util;
 
 /**
- * Implement basic math operations over values of a generic type that extends 
+ * Implement basic math operations over values of a generic type that extends
  * the Number class.
- * Considers a generic variable T a and T b, where the generic type T extends 
- * Number & Comparable&lt;T&gt;.
+ * Considers a generic variable T a and T b, where the generic type
+ * {@code T extends Number & Comparable<T>.}
  * It isn't possible to perform basic math operations such as
  * a + b over Number values.
  * This interface defines methods to perform these basic math operations
  * over Number values.
- * 
- * @author Manoel Campos da Silva Filho <manoelcampos at gmail.com>
+ *
+ * @author Manoel Campos da Silva Filho
  * @param <T> The generic type of the values the calculator deals with
  */
 public final class Calculator<T extends Number & Comparable<T>> {
@@ -23,7 +23,7 @@ public final class Calculator<T extends Number & Comparable<T>> {
 
     /** @see #getZero() */
     private final T zero;
-    
+
     /**
      * Instantiates a Calculator
      * @param type any number that just to know what is the type
@@ -51,30 +51,30 @@ public final class Calculator<T extends Number & Comparable<T>> {
             return (T)(Number)value.shortValue();
         if(type instanceof Byte)
             return (T)(Number)value.byteValue();
-        
+
         throw new IllegalArgumentException(
                 String.format("Operation over values of the type of %s is not supported", value));
     }
-    
+
     private T calculate(final T a, final T b, final Operation op){
         validate(a, b);
         final Double result;
         switch(op){
-            case add:      result = a.doubleValue() + b.doubleValue(); break; 
-            case subtract: result = a.doubleValue() - b.doubleValue(); break; 
-            case multiple: result = a.doubleValue() * b.doubleValue(); break; 
-            case divide:   result = a.doubleValue() / b.doubleValue(); break; 
-            case mod:      result = a.doubleValue() % b.doubleValue(); break;                 
+            case add:      result = a.doubleValue() + b.doubleValue(); break;
+            case subtract: result = a.doubleValue() - b.doubleValue(); break;
+            case multiple: result = a.doubleValue() * b.doubleValue(); break;
+            case divide:   result = a.doubleValue() / b.doubleValue(); break;
+            case mod:      result = a.doubleValue() % b.doubleValue(); break;
             case min:      result = Math.min(a.doubleValue(), b.doubleValue()); break;
             case max:      result = Math.max(a.doubleValue(), b.doubleValue()); break;
-            default: 
+            default:
                 throw new IllegalArgumentException(
                         String.format("Math operation not implemented: %s", op.name()));
         }
-        
+
         return convert(result);
     }
-    
+
     public T add(final T a, final T b){
         return calculate(a, b, Operation.add);
     }
@@ -82,7 +82,7 @@ public final class Calculator<T extends Number & Comparable<T>> {
     public T subtract(final T a, final T b){
         return calculate(a, b, Operation.subtract);
     }
-    
+
     public T multiple(final T a, final T b){
         return calculate(a, b, Operation.multiple);
     }
@@ -102,7 +102,7 @@ public final class Calculator<T extends Number & Comparable<T>> {
     public T max(final T a, final T b){
         return calculate(a, b, Operation.max);
     }
-    
+
     public T abs(final T a){
         return convert(Math.abs(a.doubleValue()));
     }
@@ -129,7 +129,7 @@ public final class Calculator<T extends Number & Comparable<T>> {
     /**
      * @return A generic zero used to make "comparisons with zero" throughout the class,
      * in order to avoid NullPointerException when comparing
-     * null to zero. Using this attribute, we compare 
+     * null to zero. Using this attribute, we compare
      * zero to null, avoiding exception.
      */
     public T getZero() {

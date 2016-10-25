@@ -227,6 +227,8 @@ public class DatacenterBrokerHeuristicRunner extends ExperimentRunner<Datacenter
     @Override
     protected void printResults(SummaryStatistics stats) {
         System.out.printf("\n# Results for %d simulation runs\n", getNumberOfSimulationRuns());
+        if(!simulationRunsAndNumberOfBatchesAreCompatible())
+            System.out.println("\tBatch means method was not be applied because the number of simulation runs is not greater than the number of batches.");
         System.out.printf(
             "\tRound-robin solution used by DatacenterBrokerSimple - Cost: %.2f\n",
             roundRobinSolution.getCost());

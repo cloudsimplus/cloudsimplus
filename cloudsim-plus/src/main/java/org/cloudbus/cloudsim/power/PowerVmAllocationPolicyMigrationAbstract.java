@@ -119,7 +119,7 @@ public abstract class PowerVmAllocationPolicyMigrationAbstract extends PowerVmAl
         super(hostList);
         setVmSelectionPolicy(vmSelectionPolicy);
     }
-    
+
     @Override
     public Map<Vm, Host> optimizeAllocation(List<? extends Vm> vmList) {
         ExecutionTimeMeasurer.start("optimizeAllocationTotal");
@@ -141,7 +141,7 @@ public abstract class PowerVmAllocationPolicyMigrationAbstract extends PowerVmAl
         if(!overUtilizedHosts.isEmpty()){
             Log.printLine("Reallocation of VMs from the over-utilized hosts:");
             ExecutionTimeMeasurer.start("optimizeAllocationVmReallocation");
-            migrationMap = 
+            migrationMap =
                     getNewVmPlacement(vmsToMigrate, new HashSet<>(overUtilizedHosts));
             getExecutionTimeHistoryVmReallocation().add(
                     ExecutionTimeMeasurer.end("optimizeAllocationVmReallocation"));
@@ -366,6 +366,7 @@ public abstract class PowerVmAllocationPolicyMigrationAbstract extends PowerVmAl
                 break;
             }
         }
+
         return migrationMap;
     }
 
@@ -531,13 +532,13 @@ public abstract class PowerVmAllocationPolicyMigrationAbstract extends PowerVmAl
             host.vmDestroyAll();
             host.reallocateMigratingInVms();
         }
-        
+
         for (Vm vm : getSavedAllocation().keySet()) {
             PowerHostSimple host = (PowerHostSimple) getSavedAllocation().get(vm);
             if (!host.vmCreate(vm)) {
                 throw new RuntimeException(
                     String.format(
-                        "Couldn't restore VM #%d on host #%d", 
+                        "Couldn't restore VM #%d on host #%d",
                         vm.getId(), host.getId()));
             }
             getVmTable().put(vm.getUid(), host);
