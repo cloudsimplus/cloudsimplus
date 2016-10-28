@@ -4,11 +4,12 @@ import org.cloudbus.cloudsim.Cloudlet;
 import org.cloudbus.cloudsim.CloudletExecutionInfo;
 import org.cloudbus.cloudsim.resources.Pe;
 
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
+import static java.util.stream.Collectors.toList;
+import java.util.stream.Stream;
 
 /**
  * A <a href="https://en.wikipedia.org/wiki/Completely_Fair_Scheduler">Completely Fair Scheduler (CFS)</a>
@@ -64,7 +65,7 @@ import java.util.TreeMap;
  * @see <a href="http://www.ibm.com/developerworks/library/l-lpic1-103-6/index.html">Learn Linux, 101: Process execution priorities</a>
  * @see <a href="https://www.kernel.org/doc/Documentation/scheduler/sched-design-CFS.txt">kernel.org: CFS Design</a>
  */
-public class CloudletSchedulerCompletelyFair extends CloudletSchedulerTimeShared {
+public final class CloudletSchedulerCompletelyFair extends CloudletSchedulerTimeShared {
 	/**
      * A {@link TreeMap Red-Black Tree} that stores the list of Cloudlets
      * that active for running, the so called <a href="https://en.wikipedia.org/wiki/Run_queue">run queue</a>. 
@@ -73,7 +74,13 @@ public class CloudletSchedulerCompletelyFair extends CloudletSchedulerTimeShared
      * This runtime increases as the Cloudlet executes, what makes
      * it changes its position inside the map.
      * 
-     * <p><b>NOTE:</b> Do not confuse 
+     * <p><b>NOTES:</b> 
+     * <ul>
+     * <li>This list <b>does not</b> contain the Cloudlets that are in fact
+     * running at the current time. They are just Cloudlets that are sharing
+     * the PEs with other actually running cloudlets in the
+     * {@link #runningCloudletByPe running Cloudlets map}.</li>
+     * <li>Do not confuse 
      * the executing list with the {@link #getCloudletWaitingList() waiting list}.
      * The executing list stores the cloudlets that are able to run
      * in a preemptive way, sharing the CPU cores between them.
@@ -81,7 +88,10 @@ public class CloudletSchedulerCompletelyFair extends CloudletSchedulerTimeShared
      * all the Cloudlets in the executing list to finish completely
      * to then start executing, what just happens in 
      * space-shared schedulers. In this scheduler, the waiting list
-     * is always empty.</p>
+     * is always empty.
+     * </li>
+     * </ul>
+     * </p>
      *
      * @see #getCloudletExecList()
      * @see #runningCloudletByPe
@@ -94,12 +104,26 @@ public class CloudletSchedulerCompletelyFair extends CloudletSchedulerTimeShared
      * the PEs at the current time, that are got from the {@link #cloudletExecList}.
      * As each Pe can in fact run just one Cloudlet by time, 
      * this maps stores the Cloudlets that are really running
-     * in the moment. Each item in this map represents a Cloudlet
+     * in the moment. 
+     * 
+     * <p>
+     * Each key in this map is the virtual runtime (vruntime), 
+     * which indicates the amount of time the Cloudlet has run.
+     * Each value represents a Cloudlet
      * running into a group of Pe (defined by the number of
      * Pes the Cloudlet requires). 
+     * </p>
      * 
-     * <p>The sum of the PEs of Cloudlets into this map cannot excceeds 
-     * the number of PEs available for the scheduler. If the usm of Cloudlets PEs
+     * <p>
+     * Before starting executing, a Cloudlet is removed from the
+     * {@link #cloudletExecList run queue} and added to this map.
+     * When the Cloudlet vruntime reaches its timeslice (the amount of time
+     * it can use the CPU), it is remove from this mapand added
+     * back to the run queue.
+     * </p>
+     * 
+     * <p>The sum of the PEs of Cloudlets into this map cannot exceeds 
+     * the number of PEs available for the scheduler. If the sum of Cloudlets PEs
      * in this map is less than the number of existing PEs, there are 
      * idle PEs. Since the CPU context switch overhead is not regarded
      * in this implementation and as result, it doesn't matter which
@@ -113,16 +137,8 @@ public class CloudletSchedulerCompletelyFair extends CloudletSchedulerTimeShared
      * finishes executing, to avoid the overhead to change to process from 
      * a run queue to another unnecessarily.</p>
      * 
-     * <p>The key of the map is the virtual runtime (vruntime), 
-     * which indicates the amount of time the Cloudlet has run.
-     * Before starting executing, a Cloudlet is removed from the
-     * {@link #cloudletExecList run queue} and added to this map.
-     * When the Cloudlet vruntime reaches its timeslice (the amount of time
-     * it can use the CPU), it is remove from this mapand added
-     * back to the run queue.
-     * </p>
      */
-    private final Map<Cloudlet, Double> runningCloudletByPe;
+    private final Map<Double, CloudletExecutionInfo> runningCloudletByPe;
 
 	/**
 	 * @see #getMininumGranularity()
@@ -216,7 +232,8 @@ public class CloudletSchedulerCompletelyFair extends CloudletSchedulerTimeShared
 	 *
      * <p>As the {@link #getTimeSlice(Cloudlet) timelice} assigned to a Cloudlet to use the CPU is defined
      * exponentially instead of linearly according to its niceness,
-     * this method is used as the base to correctly compute the timeslice. </p>
+     * this method is used as the base to correctly compute the timeslice.
+     * </p>
 	 * <p><b>NOTICE</b>: The formula used is based on the book referenced at the class documentation.</p>
 	 *
 	 * @param cloudlet Cloudlet to get the weight to use PEs
@@ -278,8 +295,11 @@ public class CloudletSchedulerCompletelyFair extends CloudletSchedulerTimeShared
 	}
 
 	@Override
-	public Collection<CloudletExecutionInfo> getCloudletExecList() {
-		return cloudletExecList.values();
+	public List<CloudletExecutionInfo> getCloudletExecList() {
+        return Stream.concat(
+                    runningCloudletByPe.values().stream(), 
+                    cloudletExecList.values().stream()
+                ).collect(toList());
 	}
 
     @Override

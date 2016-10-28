@@ -49,7 +49,7 @@ public class CloudletSchedulerTimeShared extends CloudletSchedulerAbstract {
 	/**
 	 * @see #getCloudletExecList()
 	 */
-	private final Collection<CloudletExecutionInfo> cloudletExecList;
+	private final List<CloudletExecutionInfo> cloudletExecList;
 
     /**
      * Creates a new CloudletSchedulerTimeShared object. This method must be
@@ -121,7 +121,7 @@ public class CloudletSchedulerTimeShared extends CloudletSchedulerAbstract {
 	 * @return always <b>true</b> to indicate that any submitted Cloudlet can be immediately added to the execution list
 	 */
 	@Override
-	public boolean canAddCloudletToExecutionList(Cloudlet cloudlet) {
+	public boolean canAddCloudletToExecutionList(CloudletExecutionInfo cloudlet) {
 		return true;
 	}
 
@@ -181,8 +181,8 @@ public class CloudletSchedulerTimeShared extends CloudletSchedulerAbstract {
     }
 
 	@Override
-	public Collection<CloudletExecutionInfo> getCloudletExecList() {
-		return Collections.unmodifiableCollection(cloudletExecList);
+	public List<CloudletExecutionInfo> getCloudletExecList() {
+		return Collections.unmodifiableList(cloudletExecList);
 	}
 
     @Override

@@ -1,4 +1,4 @@
-<https://groups.google.com/d/forum/cloudsim-plus>
+<https://groups.google.com/group/cloudsim-plus>
 <a id="top"></a>
 
 [![Build Status](https://img.shields.io/travis/manoelcampos/cloudsim-plus/master.svg)](https://travis-ci.org/manoelcampos/cloudsim-plus) [![Codacy Badge](https://api.codacy.com/project/badge/Grade/3f132b184d5e475dbbcd356ee84499fc)](https://www.codacy.com/app/manoelcampos/cloudsim-plus?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=manoelcampos/cloudsim-plus&amp;utm_campaign=Badge_Grade) [![Codacy Badge](https://api.codacy.com/project/badge/Coverage/3f132b184d5e475dbbcd356ee84499fc)](https://www.codacy.com/app/manoelcampos/cloudsim-plus?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=manoelcampos/cloudsim-plus&amp;utm_campaign=Badge_Coverage) [![GPL licensed](https://img.shields.io/badge/license-GPL-blue.svg)](http://www.gnu.org/licenses/gpl-3.0)
@@ -203,7 +203,7 @@ You can see the javadoc documentation for classes and their elements directly on
 The documentation is available online at <http://cloudsimplus.org/docs/>.
 There is also a [Wiki page](https://github.com/manoelcampos/cloudsim-plus/wiki) with additional information such as a FAQ list.  
 
-A Google Group forum is also available at <https://groups.google.com/d/forum/cloudsim-plus>
+A Google Group forum is also available at <https://groups.google.com/group/cloudsim-plus>
 
 <p align="right"><a href="#top">:arrow_up:</a></p>
 

@@ -1,7 +1,6 @@
 package org.cloudbus.cloudsim.schedulers;
 
 import java.io.Serializable;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import org.cloudbus.cloudsim.Cloudlet;
@@ -89,15 +88,13 @@ public interface CloudletScheduler extends Serializable {
     double cloudletSubmit(Cloudlet cl);
 
     /**
-     * Gets a <b>read-only</b> {@link Collection} of cloudlets being executed on the VM.
-     * It is being used a more generic interface instead of {@link List}
-     * to enable implementations to decide the best and more efficient data structure to
-     * store the executing Cloudlets.
+     * Gets a <b>read-only</b> List of cloudlets being executed on the VM.
      *
      * @return the cloudlet exec collection
      * @see #addCloudletToExecList(CloudletExecutionInfo)
+     * @see #removeCloudletFromExecListAndSetFinishTime(org.cloudbus.cloudsim.CloudletExecutionInfo) 
      */
-    Collection<CloudletExecutionInfo> getCloudletExecList();
+    List<CloudletExecutionInfo> getCloudletExecList();
 
     /**
      * Adds a Cloudlet to the collection of cloudlets in execution.
@@ -105,14 +102,6 @@ public interface CloudletScheduler extends Serializable {
      * @param cloudlet the Cloudlet to be added
      */
     void addCloudletToExecList(CloudletExecutionInfo cloudlet);
-
-    /**
-     * Removes a Cloudlet from the collection of cloudlets in execution
-     * and sets its finish time.
-     *
-     * @param cloudlet the Cloudlet to be removed
-     */
-    void removeCloudletFromExecListAndSetFinishTime(CloudletExecutionInfo cloudlet);
 
     /**
      * Gets the list of failed cloudlets.
@@ -280,7 +269,7 @@ public interface CloudletScheduler extends Serializable {
 	 * @param cloudlet Cloudlet to check if it can be added to the execution list
 	 * @return true if the Cloudlet can be added to the execution list, false otherwise
 	 */
-	boolean canAddCloudletToExecutionList(Cloudlet cloudlet);
+	boolean canAddCloudletToExecutionList(CloudletExecutionInfo cloudlet);
 
     /**
      * Returns one cloudlet to migrate to another Vm.
@@ -359,9 +348,8 @@ public interface CloudletScheduler extends Serializable {
         @Override public double cloudletResume(int clId) { return 0.0; }
         @Override public double cloudletSubmit(Cloudlet cl, double fileTransferTime){ return 0.0; }
         @Override public double cloudletSubmit(Cloudlet cl) { return 0.0; }
-        @Override public Collection<CloudletExecutionInfo> getCloudletExecList() { return Collections.emptyList(); }
+        @Override public List<CloudletExecutionInfo> getCloudletExecList() { return Collections.emptyList(); }
         @Override public void addCloudletToExecList(CloudletExecutionInfo cloudlet) {}
-        @Override  public void removeCloudletFromExecListAndSetFinishTime(CloudletExecutionInfo cloudlet) {}
         @Override public List<CloudletExecutionInfo> getCloudletFailedList() { return Collections.emptyList(); }
         @Override public List<CloudletExecutionInfo> getCloudletFinishedList() { return Collections.emptyList(); }
         @Override public List<CloudletExecutionInfo> getCloudletPausedList() { return Collections.emptyList(); }
@@ -378,7 +366,7 @@ public interface CloudletScheduler extends Serializable {
         @Override public double getTotalCurrentRequestedMipsForCloudlet(CloudletExecutionInfo rcl, double time) { return 0.0; }
         @Override public double getTotalUtilizationOfCpu(double time) { return 0.0; }
         @Override public boolean hasFinishedCloudlets() { return false; }
-	    @Override public boolean canAddCloudletToExecutionList(Cloudlet cloudlet) { return false; }
+	    @Override public boolean canAddCloudletToExecutionList(CloudletExecutionInfo cloudlet) { return false; }
 	    @Override public Cloudlet getCloudletToMigrate() { return Cloudlet.NULL; }
         @Override public int runningCloudletsNumber() { return 0; }
         @Override public double updateVmProcessing(double currentTime, List<Double> mipsShare) { return 0.0; }

@@ -21,10 +21,11 @@ import org.cloudbus.cloudsim.resources.Pe;
  * machine and the Pe (Processing Element) allocated to it. It acts as a
  * placeholder for maintaining the amount of resource share allocated at various
  * times for simulating any scheduling using internal events.
- * <p>
- As the VM where the Cloudlet is running might migrate to another
- Datacenter, each CloudletExecutionInfo object represents the data about
- execution of the cloudlet when the Vm was in a given Datacenter.
+ * </p>
+ * 
+ * <p>As the VM where the Cloudlet is running might migrate to another
+ * Datacenter, each CloudletExecutionInfo object represents the data about
+ * execution of the cloudlet when the Vm was in a given Datacenter.</p>
  *
  * @author Manzur Murshed
  * @author Rajkumar Buyya
@@ -33,7 +34,7 @@ import org.cloudbus.cloudsim.resources.Pe;
 public class CloudletExecutionInfo {
 
     /**
-     * The Cloudlet object.
+     * @see #getCloudlet() 
      */
     private final Cloudlet cloudlet;
 
@@ -102,11 +103,6 @@ public class CloudletExecutionInfo {
     private int pesNumber;
 
     // NOTE: Below attributes are related to Advanced Reservation (AR) stuff
-    /**
-     * Defines a values for fields that haven't been
-     * initialized yet.
-     */
-    private static final int NOT_FOUND = -1;
 
     /**
      * The reservation start time.
@@ -135,7 +131,7 @@ public class CloudletExecutionInfo {
      * @post $none
      */
     public CloudletExecutionInfo(Cloudlet cloudlet) {
-        this(cloudlet, 0, 0, NOT_FOUND);
+        this(cloudlet, 0, 0, Cloudlet.NOT_ASSIGNED);
     }
 
     /**
@@ -165,7 +161,7 @@ public class CloudletExecutionInfo {
         this.reservationId = reservationId;
         this.pesNumber = cloudlet.getNumberOfPes();
         this.arrivalTime = cloudlet.registerArrivalOfCloudletIntoDatacenter();
-        this.finishedTime = NOT_FOUND;  // Cannot finish in this hourly slot.
+        this.finishedTime = Cloudlet.NOT_ASSIGNED;  // Cannot finish in this hourly slot.
         this.totalCompletionTime = 0.0;
         this.startExecTime = 0.0;
 
@@ -226,7 +222,7 @@ public class CloudletExecutionInfo {
      * @post $none
      */
     public boolean hasReserved() {
-        return (reservationId != NOT_FOUND);
+        return (reservationId != Cloudlet.NOT_ASSIGNED);
     }
 
     /**
@@ -486,9 +482,9 @@ public class CloudletExecutionInfo {
     }
 
     /**
-     * Gets the related Cloudlet object.
+     * Gets the Cloudlet for which the execution information is related to.
      *
-     * @return cloudlet object
+     * @return cloudlet for this execution information object
      * @pre $none
      * @post $result != null
      */

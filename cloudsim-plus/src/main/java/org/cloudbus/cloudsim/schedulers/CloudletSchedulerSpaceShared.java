@@ -33,7 +33,7 @@ public class CloudletSchedulerSpaceShared extends CloudletSchedulerAbstract {
 	/**
 	 * @see #getCloudletExecList()
 	 */
-	private final Collection<CloudletExecutionInfo> cloudletExecList;
+	private final List<CloudletExecutionInfo> cloudletExecList;
 
     /**
      * Creates a new CloudletSchedulerSpaceShared object. This method must be
@@ -70,7 +70,7 @@ public class CloudletSchedulerSpaceShared extends CloudletSchedulerAbstract {
         getCloudletPausedList().remove(c);
 
         // it can go to the exec list
-        if (isThereEnoughFreePesForCloudlet(c.getCloudlet())) {
+        if (isThereEnoughFreePesForCloudlet(c)) {
 	        return movePausedCloudletToExecList(c);
         }
 
@@ -140,10 +140,11 @@ public class CloudletSchedulerSpaceShared extends CloudletSchedulerAbstract {
 	 * By this way, if there are more Cloudlets than PEs, some Cloudlet
 	 * will not be allowed to start executing immediately.
 	 *
+     * @param cloudlet {@inheritDoc}
 	 * @return {@inheritDoc}
 	 */
 	@Override
-	public boolean canAddCloudletToExecutionList(Cloudlet cloudlet) {
+	public boolean canAddCloudletToExecutionList(CloudletExecutionInfo cloudlet) {
 		return isThereEnoughFreePesForCloudlet(cloudlet);
 	}
 
@@ -170,8 +171,8 @@ public class CloudletSchedulerSpaceShared extends CloudletSchedulerAbstract {
     }
 
 	@Override
-	public Collection<CloudletExecutionInfo> getCloudletExecList() {
-        return Collections.unmodifiableCollection(cloudletExecList);
+	public List<CloudletExecutionInfo> getCloudletExecList() {
+        return Collections.unmodifiableList(cloudletExecList);
 	}
 
     @Override

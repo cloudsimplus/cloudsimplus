@@ -155,7 +155,7 @@ public abstract class CloudletSchedulerAbstract implements CloudletScheduler {
 	public double cloudletSubmit(Cloudlet cl, double fileTransferTime) {
 		//Log.println(Log.Level.INFO, getClass(), CloudSim.clock(), "Cloudlet %d file transfer time: %f", cl.getId(), fileTransferTime);
 		CloudletExecutionInfo rcl = new CloudletExecutionInfo(cl);
-		if(canAddCloudletToExecutionList(cl)){
+		if(canAddCloudletToExecutionList(rcl)){
 			rcl.setCloudletStatus(Cloudlet.Status.INEXEC);
 			rcl.setFileTransferTime(fileTransferTime);
 			rcl.setLastProcessingTime(CloudSim.clock());
@@ -505,13 +505,20 @@ public abstract class CloudletSchedulerAbstract implements CloudletScheduler {
 		        .filter(c->c.getCloudlet().isFinished())
 		        .collect(Collectors.toList());
 
-        finishedCloudlets.stream().forEach(this::removeCloudletFromExecListAndSetFinishTime);
+        for(CloudletExecutionInfo c: finishedCloudlets){
+            removeCloudletFromExecListAndSetFinishTime(c);
+        }
 
         return finishedCloudlets.size();
     }
 
-    @Override
-    public void removeCloudletFromExecListAndSetFinishTime(CloudletExecutionInfo cloudlet) {
+    /**
+     * Removes a Cloudlet from the collection of cloudlets in execution
+     * and sets its finish time.
+     *
+     * @param cloudlet the Cloudlet to be removed
+     */
+    protected void removeCloudletFromExecListAndSetFinishTime(CloudletExecutionInfo cloudlet) {
         setCloudletFinishTime(cloudlet);
         removeCloudletFromExecList(cloudlet);
     }
@@ -544,17 +551,10 @@ public abstract class CloudletSchedulerAbstract implements CloudletScheduler {
      * @return the estimated finish time of sooner finishing cloudlet
      */
     protected double getEstimatedFinishTimeOfSoonerFinishingCloudlet(double currentTime) {
-        double nextEvent = Double.MAX_VALUE;
-        for (CloudletExecutionInfo rcl : getCloudletExecList()) {
-            double estimatedFinishTime =
-                    getEstimatedFinishTimeOfCloudlet(rcl, currentTime);
-
-            if (estimatedFinishTime < nextEvent) {
-                nextEvent = estimatedFinishTime;
-            }
-        }
-
-        return nextEvent;
+        return getCloudletExecList()
+                .stream()
+                .mapToDouble(c->getEstimatedFinishTimeOfCloudlet(c, currentTime))
+                .min().orElse(Double.MAX_VALUE);
     }
 
     /**
@@ -610,7 +610,7 @@ public abstract class CloudletSchedulerAbstract implements CloudletScheduler {
      * @param c the Cloudlet to get the number of required PEs
      * @return true if there is the amount of free PEs, false otherwise
      */
-    protected boolean isThereEnoughFreePesForCloudlet(Cloudlet c){
+    protected boolean isThereEnoughFreePesForCloudlet(CloudletExecutionInfo c){
         return processor.getNumberOfPes() - usedPes >= c.getNumberOfPes();
     }
 
@@ -631,7 +631,7 @@ public abstract class CloudletSchedulerAbstract implements CloudletScheduler {
         };
 
         return getCloudletWaitingList().stream()
-            .filter(c -> isThereEnoughFreePesForCloudlet(c.getCloudlet()))
+            .filter(this::isThereEnoughFreePesForCloudlet)
             .findFirst()
             .map(changeCloudletStatusToExecAndReturnIt);
 	}
