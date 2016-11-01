@@ -13,6 +13,7 @@ import org.cloudbus.cloudsim.CloudletExecutionInfo;
 
 import org.cloudbus.cloudsim.core.CloudSim;
 import org.cloudbus.cloudsim.resources.Pe;
+import org.cloudbus.cloudsim.resources.Processor;
 
 /**
  * CloudletSchedulerTimeShared implements a policy of scheduling performed by a
@@ -102,12 +103,13 @@ public class CloudletSchedulerTimeShared extends CloudletSchedulerAbstract {
 
 	@Override
     public double cloudletResume(int cloudletId) {
-	    return
-		    getCloudletPausedList().stream()
-		        .filter(c -> c.getCloudletId() == cloudletId)
-		        .findFirst()
-                .map(this::movePausedCloudletToExecListAndGetExpectedFinishTime)
-                .orElse(0.0);
+        Optional<CloudletExecutionInfo> optional = getCloudletPausedList().stream()
+                .filter(c -> c.getCloudletId() == cloudletId)
+                .findFirst();
+        
+         return optional
+                 .map(this::movePausedCloudletToExecListAndGetExpectedFinishTime)
+                 .orElse(0.0);
     }
 
 	/**
@@ -126,10 +128,13 @@ public class CloudletSchedulerTimeShared extends CloudletSchedulerAbstract {
 	}
 
 	/**
+     * {@inheritDoc}
+     * 
      * @todo If the method always return an empty list (that is created locally),
      * it doesn't make sense to exist. See other implementations such as
      * {@link CloudletSchedulerSpaceShared#getCurrentRequestedMips()}
-     * @return
+     * 
+     * @return {@inheritDoc}
      */
     @Override
     public List<Double> getCurrentRequestedMips() {
@@ -139,28 +144,37 @@ public class CloudletSchedulerTimeShared extends CloudletSchedulerAbstract {
     /**
      * {@inheritDoc}
      * It in fact doesn't consider the parameters given
-     * because in the Time Shared Scheduler, all the
+     * because in the Time Shared Scheduler, the
      * CPU capacity from the VM that is managed by the scheduler
-     * is made available for all VMs.
-     *
+     * is shared between all running cloudlets.
+     * 
+     * @todo if there is 2 cloudlets requiring 1 PE and there is just 1
+     * PE, the MIPS capacity of this PE is splited between the 2 cloudlets,
+     * but the method seen to always return the entire capacity.
+     * New test cases have to be created to check this.
+     * 
      * @param rcl {@inheritDoc}
      * @param mipsShare {@inheritDoc}
      * @return {@inheritDoc}
      */
     @Override
     public double getTotalCurrentAvailableMipsForCloudlet(CloudletExecutionInfo rcl, List<Double> mipsShare) {
-        return getProcessor().getCapacity();
+        return Processor.fromMipsList(mipsShare).getCapacity();
     }
 
     @Override
     public double getTotalCurrentAllocatedMipsForCloudlet(CloudletExecutionInfo rcl, double time) {
-        //@todo The method is not implemented, in fact
+        /**
+         * @todo @author manoelcampos The method is not implemented, in fact
+         */
         return 0.0;
     }
 
     @Override
     public double getTotalCurrentRequestedMipsForCloudlet(CloudletExecutionInfo rcl, double time) {
-        //@todo The method is not implemented, in fact
+        /**
+         * @todo @author manoelcampos The method is not implemented, in fact
+         */
         return 0.0;
     }
 
@@ -186,12 +200,12 @@ public class CloudletSchedulerTimeShared extends CloudletSchedulerAbstract {
 	}
 
     @Override
-    protected void removeCloudletFromExecList(CloudletExecutionInfo cloudlet) {
-        cloudletExecList.remove(cloudlet);
+    protected boolean removeCloudletFromExecList(CloudletExecutionInfo cloudlet) {
+        return cloudletExecList.remove(cloudlet);
     }
 
     @Override
-    public void addCloudletToExecList(CloudletExecutionInfo cloudlet) {
+    protected void addCloudletToExecList(CloudletExecutionInfo cloudlet) {
         cloudletExecList.add(cloudlet);
     }
 

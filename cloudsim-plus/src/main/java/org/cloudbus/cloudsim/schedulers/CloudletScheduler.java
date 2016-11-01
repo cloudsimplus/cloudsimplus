@@ -97,13 +97,6 @@ public interface CloudletScheduler extends Serializable {
     List<CloudletExecutionInfo> getCloudletExecList();
 
     /**
-     * Adds a Cloudlet to the collection of cloudlets in execution.
-     *
-     * @param cloudlet the Cloudlet to be added
-     */
-    void addCloudletToExecList(CloudletExecutionInfo cloudlet);
-
-    /**
      * Gets the list of failed cloudlets.
      *
      * @return the cloudlet failed list.
@@ -202,11 +195,14 @@ public interface CloudletScheduler extends Serializable {
     double getTotalCurrentAllocatedMipsForCloudlet(CloudletExecutionInfo rcl, double time);
 
     /**
-     * Gets the total current available mips for the Cloudlet.
+     * Gets the total current mips that a Cloudlet can use for each PE
+     * it requires. Thus, the value returned by the method indicates the
+     * amount of MIPS each Cloudlet PE can use.
      *
      * @param rcl the rcl
      * @param mipsShare the mips share
-     * @return the total current mips
+     * @return the total current mips available for each Cloudlet PE
+     * 
      * @todo In fact, this method is returning different data depending
      * of the subclass. It is expected that the way the method use to compute
      * the resulting value can be different in every subclass,
@@ -349,7 +345,6 @@ public interface CloudletScheduler extends Serializable {
         @Override public double cloudletSubmit(Cloudlet cl, double fileTransferTime){ return 0.0; }
         @Override public double cloudletSubmit(Cloudlet cl) { return 0.0; }
         @Override public List<CloudletExecutionInfo> getCloudletExecList() { return Collections.emptyList(); }
-        @Override public void addCloudletToExecList(CloudletExecutionInfo cloudlet) {}
         @Override public List<CloudletExecutionInfo> getCloudletFailedList() { return Collections.emptyList(); }
         @Override public List<CloudletExecutionInfo> getCloudletFinishedList() { return Collections.emptyList(); }
         @Override public List<CloudletExecutionInfo> getCloudletPausedList() { return Collections.emptyList(); }

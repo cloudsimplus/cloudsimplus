@@ -182,14 +182,12 @@ public class PeList {
 
     /**
      * Sets the status of PEs of a host to FAILED or FREE. NOTE:
-     * <tt>resName</tt> and
      * <tt>hostId</tt> are used for debugging purposes, which is <b>ON</b> by
      * default. Use {@link #setStatusFailed(List, boolean)} if you do not want this
      * information.
      *
      * @param <T>
      * @param peList the host's PE list to be set as failed or free
-     * @param resName the name of the resource
      * @param hostId the id of the host
      * @param failed true if the host's PEs have to be set as FAILED, false if
      * they have to be set as FREE.
@@ -197,11 +195,10 @@ public class PeList {
      */
     public static <T extends Pe> void setStatusFailed(
             List<T> peList,
-            String resName,
             int hostId,
             boolean failed) {
         String status = (failed ? "FAILED" : "WORKING");
-        Log.printConcatLine(resName, " - Machine: ", hostId, " is ", status);
+        Log.printConcatLine("Host ", hostId, " is ", status);
         setStatusFailed(peList, failed);
     }
 

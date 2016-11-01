@@ -379,26 +379,24 @@ public class CloudletSimple extends CloudletAbstract {
      * @post $none
      */
     protected void assignCloudletToDatacenter(final int datacenterId, final double costPerCpuSec) {
-        final ExecutionInDatacenterInfo datacenter = new ExecutionInDatacenterInfo();
-        datacenter.datacenterId = datacenterId;
-        datacenter.costPerSec = costPerCpuSec;
-        datacenter.name = CloudSim.getEntityName(datacenterId);
+        final ExecutionInDatacenterInfo datacenterInfo = new ExecutionInDatacenterInfo();
+        datacenterInfo.datacenterId = datacenterId;
+        datacenterInfo.costPerSec = costPerCpuSec;
+        datacenterInfo.datacenterName = CloudSim.getEntityName(datacenterId);
 
         // add into a list if moving to a new cloud datacenter
-        getExecutionInDatacenterInfoList().add(datacenter);
+        getExecutionInDatacenterInfoList().add(datacenterInfo);
 
         if(recordTransactionHistory){
             if (isAssignedToDatacenter()) {
                 final int id = getExecutionInDatacenterInfoList().get(getLastExecutedDatacenterIndex()).datacenterId;
-                final String name = getExecutionInDatacenterInfoList().get(getLastExecutedDatacenterIndex()).name;
-                write(
-                    "Moves Cloudlet from %s (ID #%d) to %s (ID #%d) with cost = $%s/sec",
-                    name, id, datacenter.name, datacenterId, num.format(costPerCpuSec));
+                final String name = getExecutionInDatacenterInfoList().get(getLastExecutedDatacenterIndex()).datacenterName;
+                write("Moves Cloudlet from %s (ID #%d) to %s (ID #%d) with cost = $%s/sec",
+                    name, id, datacenterInfo.datacenterName, datacenterId, num.format(costPerCpuSec));
 
             } else {
-                write(
-                    "Allocates this Cloudlet to %s (ID #%d) with cost = $%s/sec",
-                    datacenter.name,  datacenterId, num.format(costPerCpuSec));
+                write("Allocates this Cloudlet to %s (ID #%d) with cost = $%s/sec",
+                    datacenterInfo.datacenterName,  datacenterId, num.format(costPerCpuSec));
             }
         }
 

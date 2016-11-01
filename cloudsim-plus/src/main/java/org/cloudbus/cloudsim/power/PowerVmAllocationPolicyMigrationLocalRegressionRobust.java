@@ -15,8 +15,8 @@ import org.cloudbus.cloudsim.util.MathUtil;
  * A VM allocation policy that uses Local Regression Robust (LRR) to predict host utilization (load)
  * and define if a host is overloaded or not.
  * 
- * <br/>If you are using any algorithms, policies or workload included in the power package please cite
- * the following paper:<br/>
+ * <p>If you are using any algorithms, policies or workload included in the power package please cite
+ * the following paper:</p>
  * 
  * <ul>
  * <li><a href="http://dx.doi.org/10.1002/cpe.1867">Anton Beloglazov, and Rajkumar Buyya, "Optimal Online Deterministic Algorithms and Adaptive

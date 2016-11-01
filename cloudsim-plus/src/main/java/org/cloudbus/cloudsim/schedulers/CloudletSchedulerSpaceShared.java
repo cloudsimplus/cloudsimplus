@@ -54,8 +54,8 @@ public class CloudletSchedulerSpaceShared extends CloudletSchedulerAbstract {
     }
 
     @Override
-    protected void removeCloudletFromExecList(CloudletExecutionInfo cloudlet) {
-        cloudletExecList.remove(cloudlet);
+    protected boolean removeCloudletFromExecList(CloudletExecutionInfo cloudlet) {
+        return cloudletExecList.remove(cloudlet);
     }
 
     @Override
@@ -133,7 +133,12 @@ public class CloudletSchedulerSpaceShared extends CloudletSchedulerAbstract {
         return cloudletExpectedFinishTime;
     }
 
-	/**
+	@Override
+    public double cloudletSubmit(Cloudlet cloudlet) {
+		return cloudletSubmit(cloudlet, 0);
+    }
+
+    /**
 	 * The space-shared scheduler <b>does not</b> share the CPU time between executing cloudlets.
 	 * Each CPU ({@link Pe}) is used by another Cloudlet just when the previous Cloudlet
 	 * using it has finished executing completely.
@@ -148,25 +153,16 @@ public class CloudletSchedulerSpaceShared extends CloudletSchedulerAbstract {
 		return isThereEnoughFreePesForCloudlet(cloudlet);
 	}
 
-	/**
-     * {@inheritDoc}
-     *
-     * @return {@inheritDoc}
-     * @pre $none
-     * @post $none
-     */
-    @Override
-    public Cloudlet getCloudletToMigrate() {
-        Cloudlet cl = super.getCloudletToMigrate();
-        if(cl != Cloudlet.NULL){
-            removeUsedPes(cl.getNumberOfPes());
-        }
-
-        return cl;
-    }
-
     @Override
     public List<Double> getCurrentRequestedMips() {
+        /**
+         * @todo @author manoelcampos The code inherited from CloudSim
+         * is just returning the amount of current mips
+         * instead of the amount of currently used mips,
+         * that is the list of mips actually being used by running cloudlets.
+         * The original method documentation doesn't make it clear
+         * what is the return value.
+         */
         return Collections.unmodifiableList(getCurrentMipsShare());
     }
 
@@ -176,15 +172,23 @@ public class CloudletSchedulerSpaceShared extends CloudletSchedulerAbstract {
 	}
 
     @Override
-    public void addCloudletToExecList(CloudletExecutionInfo cloudlet) {
+    protected void addCloudletToExecList(CloudletExecutionInfo cloudlet) {
         cloudletExecList.add(cloudlet);
     }
 
+    /**
+     * {@inheritDoc}
+     * <p>It doesn't consider the given Cloudlet because the scheduler
+     * ensures that the Cloudlet will use all required PEs until it
+     * finishes executing. </p>
+     * 
+     * @param rcl {@inheritDoc}
+     * @param mipsShare {@inheritDoc}
+     * @return {@inheritDoc}
+     */
     @Override
     public double getTotalCurrentAvailableMipsForCloudlet(CloudletExecutionInfo rcl, List<Double> mipsShare) {
-        /*@todo The param rcl is not being used.*/
-        Processor p = Processor.fromMipsList(mipsShare);
-        return p.getCapacity();
+        return Processor.fromMipsList(mipsShare).getCapacity();
     }
 
     @Override

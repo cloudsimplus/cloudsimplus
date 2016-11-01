@@ -27,8 +27,8 @@ import org.cloudbus.cloudsim.util.ExecutionTimeMeasurer;
  * An abstract power-aware VM allocation policy that dynamically optimizes the
  * VM allocation (placement) using migration.
  *
- * <br/>If you are using any algorithms, policies or workload included in the
- * power package please cite the following paper:<br/>
+ * <p>If you are using any algorithms, policies or workload included in the
+ * power package please cite the following paper:</p>
  *
  * <ul>
  * <li><a href="http://dx.doi.org/10.1002/cpe.1867">Anton Beloglazov, and

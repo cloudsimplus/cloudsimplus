@@ -186,10 +186,7 @@ public class CloudletSchedulerDynamicWorkload extends CloudletSchedulerTimeShare
     public double getTotalCurrentAllocatedMipsForCloudlet(CloudletExecutionInfo rcl, double time) {
         double totalCurrentRequestedMips = getTotalCurrentRequestedMipsForCloudlet(rcl, time);
         double totalCurrentAvailableMips = getTotalCurrentAvailableMipsForCloudlet(rcl, getCurrentMipsShare());
-        if (totalCurrentRequestedMips > totalCurrentAvailableMips) {
-            return totalCurrentAvailableMips;
-        }
-        return totalCurrentRequestedMips;
+        return Math.min(totalCurrentRequestedMips, totalCurrentAvailableMips);
     }
 
     /**

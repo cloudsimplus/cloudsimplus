@@ -81,10 +81,10 @@ public class PeListTest {
         assertEquals(PeSimple.Status.FREE, PeList.getById(peList, 0).getStatus());
         assertEquals(PeSimple.Status.FREE, PeList.getById(peList, 1).getStatus());
 
-        PeList.setStatusFailed(peList, "test", 0, true);
+        PeList.setStatusFailed(peList, 0, true);
         assertEquals(PeSimple.Status.FAILED, PeList.getById(peList, 0).getStatus());
         assertEquals(PeSimple.Status.FAILED, PeList.getById(peList, 1).getStatus());
-        PeList.setStatusFailed(peList, "test", 0, false);
+        PeList.setStatusFailed(peList, 0, false);
         assertEquals(PeSimple.Status.FREE, PeList.getById(peList, 0).getStatus());
         assertEquals(PeSimple.Status.FREE, PeList.getById(peList, 1).getStatus());
     }

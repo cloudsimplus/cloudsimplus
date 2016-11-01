@@ -18,8 +18,8 @@ import org.cloudbus.cloudsim.util.MathUtil;
  * A VM allocation policy that uses Inter Quartile Range (IQR)  to compute
  * a dynamic threshold in order to detect host over utilization.
  * 
- * <br/>If you are using any algorithms, policies or workload included in the power package please cite
- * the following paper:<br/>
+ * <p>If you are using any algorithms, policies or workload included in the power package please cite
+ * the following paper:</p>
  * 
  * <ul>
  * <li><a href="http://dx.doi.org/10.1002/cpe.1867">Anton Beloglazov, and Rajkumar Buyya, "Optimal Online Deterministic Algorithms and Adaptive

@@ -66,9 +66,34 @@ import java.util.stream.Stream;
  * @see <a href="https://www.kernel.org/doc/Documentation/scheduler/sched-design-CFS.txt">kernel.org: CFS Design</a>
  */
 public final class CloudletSchedulerCompletelyFair extends CloudletSchedulerTimeShared {
+    /**
+     * @todo O scheduler é baseado no time-shared mas deve funcionar de maneira diferente.
+     * A getCloudletExecutionList deve representar
+     * apenas as cloudlets que estão executando de fato no momento atual.
+     * A diferença é que no construtor tal lista pode ser instanciada como um 
+     * Set para manter a ordem dos elementos de acordo com o vruntime.
+     * Como o CloudletExecutionInfo não tem um atributo vruntime, uma classe
+     * interna e filha dela pode ser criada para incluir tal campo e permitir
+     * ordenar o Set por ele. Isso vai facilitar remover uma cloudlet
+     * desta lista, considerando aquela que tiver o maior vruntime (que já rodou mais 
+     * que as outras). A lista pode ser ordenada de forma descrescente para
+     * permitir usar stream pra pegar o primeiro elemento.
+     * 
+     * O getCloudletWaitingList() é que será de fato a runqueue, contendo
+     * a lista de cloudlets que devem rodar em seguida (conforme definição da wikipedia).
+     * Ela, diferente do CloudletSchedulerTimeShared,
+     * deve sim ter cloudlets. O CFS deve de fato implementar a preempção,
+     * removendo processos na execution list para dar a vez
+     * (mesmo que tais processos não tenhma terminado) para outros processos
+     * na runqueue (waiting list).
+     * 
+     * A waiting list sim é que deve ser implementada como uma Red-Black tree.
+     */
+    
 	/**
      * A {@link TreeMap Red-Black Tree} that stores the list of Cloudlets
-     * that active for running, the so called <a href="https://en.wikipedia.org/wiki/Run_queue">run queue</a>. 
+     * that are active for running, the so called 
+     * <a href="https://en.wikipedia.org/wiki/Run_queue">run queue</a>. 
      * Each key in this map is the virtual runtime (vruntime),
      * which indicates the amount of time the Cloudlet has run.
      * This runtime increases as the Cloudlet executes, what makes
@@ -314,8 +339,8 @@ public final class CloudletSchedulerCompletelyFair extends CloudletSchedulerTime
     }
 
     @Override
-    protected void removeCloudletFromExecList(CloudletExecutionInfo c) {
-        cloudletExecList.remove(getTimeSlice(c.getCloudlet()));
+    protected boolean removeCloudletFromExecList(CloudletExecutionInfo c) {
+        return cloudletExecList.remove(getTimeSlice(c.getCloudlet())) != null;
     }
 
 }

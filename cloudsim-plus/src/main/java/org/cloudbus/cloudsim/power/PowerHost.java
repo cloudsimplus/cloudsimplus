@@ -105,7 +105,6 @@ public interface PowerHost extends HostDynamicWorkload {
         @Override public void reallocateMigratingInVms() {}
         @Override public void removeMigratingInVm(Vm vm) {}
         @Override public void setDatacenter(Datacenter datacenter) {}
-        @Override public boolean setFailed(String resName, boolean failed) { return false; }
         @Override public boolean setFailed(boolean failed) { return false; }
         @Override public boolean setPeStatus(int peId, Pe.Status status) { return false; }
         @Override public boolean vmCreate(Vm vm) { return false; }

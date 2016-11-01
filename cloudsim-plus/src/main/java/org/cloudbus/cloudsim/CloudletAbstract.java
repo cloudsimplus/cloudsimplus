@@ -100,8 +100,8 @@ public abstract class CloudletAbstract implements Cloudlet {
         public int datacenterId = NOT_ASSIGNED;
 
         /**
-         * The Datacenter name.
+         * The Datacenter datacenterName.
          */
-        public String name = "";
+        public String datacenterName = "";
     }
 }

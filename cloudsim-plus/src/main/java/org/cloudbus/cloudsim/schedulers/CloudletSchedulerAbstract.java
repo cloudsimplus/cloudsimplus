@@ -11,7 +11,6 @@ import java.util.*;
 import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.stream.Collectors;
-import java.util.stream.IntStream;
 
 import org.cloudbus.cloudsim.*;
 import org.cloudbus.cloudsim.Cloudlet.Status;
@@ -87,11 +86,11 @@ public abstract class CloudletSchedulerAbstract implements CloudletScheduler {
         setPreviousTime(0.0);
         usedPes = 0;
 	    vm = Vm.NULL;
-        cloudletWaitingList = new ArrayList<>();
-        cloudletPausedList = new ArrayList<>();
+        cloudletWaitingList  = new ArrayList<>();
+        cloudletPausedList   = new ArrayList<>();
         cloudletFinishedList = new ArrayList<>();
-        cloudletFailedList = new ArrayList<>();
-        currentMipsShare = new ArrayList<>();
+        cloudletFailedList   = new ArrayList<>();
+        currentMipsShare     = new ArrayList<>();
     }
 
     @Override
@@ -167,6 +166,14 @@ public abstract class CloudletSchedulerAbstract implements CloudletScheduler {
 		moveCloudletToWaitingList(rcl);
 		return 0.0;
 	}
+    
+    /**
+     * Adds a Cloudlet to the collection of cloudlets in execution.
+     *
+     * @param cloudlet the Cloudlet to be added
+     */
+    protected abstract void addCloudletToExecList(CloudletExecutionInfo cloudlet);
+    
 
 	/**
 	 * Moves a paused cloudlet to the waiting list.
@@ -214,15 +221,16 @@ public abstract class CloudletSchedulerAbstract implements CloudletScheduler {
      */
     @Override
     public Cloudlet getCloudletToMigrate() {
-        if (getCloudletExecList().isEmpty()) {
-            return Cloudlet.NULL;
-        }
+        Function<CloudletExecutionInfo, Cloudlet> finishMigratingCloudlet = rcl -> {
+            removeCloudletFromExecListAndSetFinishTime(rcl);
+            rcl.finalizeCloudlet();
+            return rcl.getCloudlet();
+        };
+        
 
-        CloudletExecutionInfo rcl = getCloudletExecList().stream().findFirst().get();
-	    removeCloudletFromExecListAndSetFinishTime(rcl);
-        rcl.finalizeCloudlet();
-
-        return rcl.getCloudlet();
+        return getCloudletExecList().stream()
+                .findFirst()
+                .map(finishMigratingCloudlet).orElse(Cloudlet.NULL);
     }
 
     @Override
@@ -391,7 +399,7 @@ public abstract class CloudletSchedulerAbstract implements CloudletScheduler {
      * @param currentTime current simulation time
      */
     private void updateCloudletsProcessing(double currentTime) {
-		Log.println(Log.Level.DEBUG, getClass(), CloudSim.clock(), "getCloudletExecList size: %d\n", getCloudletExecList().size());
+		Log.println(Log.Level.DEBUG, getClass(), currentTime, "getCloudletExecList size: %d\n", getCloudletExecList().size());
         getCloudletExecList().forEach(rcl -> updateCloudletProcessing(rcl, currentTime));
     }
 
@@ -459,10 +467,12 @@ public abstract class CloudletSchedulerAbstract implements CloudletScheduler {
 	        actualProcessingTime = timeSpan(currentTime);
 
 	    double executedInstructions =
-		    (processor.getAvailableMipsByPe() * rcl.getNumberOfPes() * actualProcessingTime * Consts.MILLION);
+		    (processor.getAvailableMipsByPe() * rcl.getNumberOfPes() * 
+            actualProcessingTime * Consts.MILLION);
 	    Log.println(Log.Level.DEBUG, getClass(), currentTime,
-		    "Cloudlet: %d Processing time: %.2f Last processed time: %.2f Actual process time: %.2f MI: %.0f",
-		    rcl.getCloudletId(), actualProcessingTime, rcl.getLastProcessingTime(), actualProcessingTime, executedInstructions/Consts.MILLION);
+		    "Cloudlet: %d Processing time: %.2f Last processed time: %.2f Actual process time: %.2f MI so far: %d",
+		    rcl.getCloudletId(), currentTime, rcl.getLastProcessingTime(), 
+            actualProcessingTime, rcl.getCloudlet().getCloudletFinishedSoFar());
 
 	    return (long)executedInstructions;
     }
@@ -476,7 +486,9 @@ public abstract class CloudletSchedulerAbstract implements CloudletScheduler {
 	 * @return true if the time to transfer the files has passed, false otherwise
 	 */
 	private boolean hasCloudletFileTransferTimePassed(CloudletExecutionInfo rcl, double currentTime) {
-		return currentTime - rcl.getLastProcessingTime() > rcl.getFileTransferTime() || rcl.getCloudlet().getCloudletFinishedSoFar() > 0;
+		return rcl.getFileTransferTime() == 0 ||
+               currentTime - rcl.getLastProcessingTime() > rcl.getFileTransferTime() || 
+               rcl.getCloudlet().getCloudletFinishedSoFar() > 0;
 	}
 
 	/**
@@ -513,7 +525,7 @@ public abstract class CloudletSchedulerAbstract implements CloudletScheduler {
     }
 
     /**
-     * Removes a Cloudlet from the collection of cloudlets in execution
+     * Removes a Cloudlet from the list of cloudlets in execution
      * and sets its finish time.
      *
      * @param cloudlet the Cloudlet to be removed
@@ -524,11 +536,12 @@ public abstract class CloudletSchedulerAbstract implements CloudletScheduler {
     }
 
     /**
-     * Removes a Cloudlet from the collection of cloudlets in execution.
+     * Removes a Cloudlet from the list of cloudlets in execution.
      *
      * @param cloudlet the Cloudlet to be removed
+     * @return true if the Cloudlet was found and remove from the execution list. 
      */
-    protected abstract void removeCloudletFromExecList(CloudletExecutionInfo cloudlet);
+    protected abstract boolean removeCloudletFromExecList(CloudletExecutionInfo cloudlet);
 
     /**
      * Sets the finish time of a cloudlet.
@@ -598,9 +611,9 @@ public abstract class CloudletSchedulerAbstract implements CloudletScheduler {
             getCloudletWaitingList().remove(c);
         };
 
-        IntStream.range(0, numberOfFinishedCloudlets).forEach(i ->
-            findSuitableWaitingCloudletToStartExecuting().ifPresent(addCloudletToExecutionList)
-        );
+        for(int i = 0; i < numberOfFinishedCloudlets; i++){
+            findSuitableWaitingCloudletToStartExecuting().ifPresent(addCloudletToExecutionList);
+        };
     }
 
     /**

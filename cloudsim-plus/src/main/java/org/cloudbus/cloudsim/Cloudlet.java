@@ -445,26 +445,26 @@ public interface Cloudlet extends Identificable, Comparable<Cloudlet> {
     UtilizationModel getUtilizationModelRam();
 
     /**
-     * Gets the utilization percentage of bw at a given time.
+     * Gets the utilization percentage of bw at a given time (in scale from [0 to 1])..
      *
      * @param time the time
-     * @return the utilization percentage of bw
+     * @return the utilization percentage of bw, from [0 to 1]
      */
     double getUtilizationOfBw(final double time);
 
     /**
-     * Gets the utilization percentage of cpu at a given time.
+     * Gets the utilization percentage of cpu at a given time (in scale from [0 to 1]).
      *
      * @param time the time
-     * @return the utilization percentage of cpu
+     * @return the utilization percentage of cpu, from [0 to 1]
      */
     double getUtilizationOfCpu(final double time);
 
     /**
-     * Gets the utilization percentage of memory at a given time.
+     * Gets the utilization percentage of memory at a given time (in scale from [0 to 1])..
      *
      * @param time the time
-     * @return the utilization percentage of memory
+     * @return the utilization percentage of memory, from [0 to 1]
      */
     double getUtilizationOfRam(final double time);
 
