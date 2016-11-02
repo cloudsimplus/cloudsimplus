@@ -8,12 +8,10 @@ import org.powermock.api.easymock.PowerMock;
 /**
  * A class that provides a set of methods to mock the {@link CloudSim} class
  * using {@link PowerMock}. Realize that we aren't talking about mocking objects
- * but mocking classes.
- * 
- * <p>Due to the extensive use of static methods in CloudSim class,
+ * but mocking classes. Due to the extensive use of static methods in CloudSim class,
  * it is difficult to mock it. The regular way of mocking
- * objects doesn't work. Alternatively, PowerMock can be used
- * to enable such a feature.</p>
+ * objects doesn't work for classes. Alternatively, PowerMock can be used
+ * to enable such a feature.
  * 
  * <p>Each method in this class provides a mock for a method with the same
  * name in the CloudSim class.</p>
@@ -47,6 +45,10 @@ public final class CloudSimMocker {
      * This example will make the mocked CloudSim.clock() method to return
      * 10 for the first time it is called inside a unit test and 11
      * for the second time.
+     * 
+     * <p>Realize that the provided examples uses lambda expression
+     * as a parameter to the build method, defining
+     * which method calls are expected in the mocked CloudSim class.</p>
      * 
      * @param consumer 
      */

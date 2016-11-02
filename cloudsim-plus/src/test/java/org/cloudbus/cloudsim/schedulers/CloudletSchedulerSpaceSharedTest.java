@@ -20,7 +20,7 @@ import org.powermock.modules.junit4.PowerMockRunner;
 @RunWith(PowerMockRunner.class)
 @PrepareForTest({CloudSim.class}) //to intercept and mock static method calls
 public class CloudletSchedulerSpaceSharedTest {
-    final double schedulerMips = 1000;
+    private static final double SCHEDULER_MIPS = 1000;
     
     @Test
     public void testCloudletFinish_CheckCloudletWasSetToFinished() {
@@ -94,8 +94,7 @@ public class CloudletSchedulerSpaceSharedTest {
         final int cloudletPes = 1;
         final int numberOfCloudlets = 2;
         CloudletSchedulerSpaceShared instance = new CloudletSchedulerSpaceShared();
-        instance.setCurrentMipsShare(
-                CloudletSchedulerUtil.createMipsList(numberOfCloudlets, schedulerMips));
+        instance.setCurrentMipsShare(CloudletSchedulerUtil.createMipsList(numberOfCloudlets, SCHEDULER_MIPS));
         for(int i = 0; i <= numberOfCloudlets; i++){
             instance.addCloudletToExecList(
                 new CloudletExecutionInfo(
@@ -114,12 +113,12 @@ public class CloudletSchedulerSpaceSharedTest {
     @Test
     public void testCloudletSubmit_VerifyIfCloudletWasAddedToExecListByCheckingSubmitReturnValue() {
         final int pes = 1;
-        final long cloudletLen = (long)schedulerMips;
+        final long cloudletLen = (long)SCHEDULER_MIPS;
         final double fileTransferTime = 0.0;
         
         Cloudlet cloudlet = CloudletSimpleTest.createCloudlet0(cloudletLen, pes);
         CloudletSchedulerSpaceShared instance = new CloudletSchedulerSpaceShared();
-        List<Double> mipsList = CloudletSchedulerUtil.createMipsList(pes, schedulerMips);
+        List<Double> mipsList = CloudletSchedulerUtil.createMipsList(pes, SCHEDULER_MIPS);
         instance.setCurrentMipsShare(mipsList);
 
         //number of expected seconds to finish the cloudlet
@@ -131,12 +130,12 @@ public class CloudletSchedulerSpaceSharedTest {
     @Test
     public void testCloudletSubmit_VerifyIfCloudletWasAddedToExecListByCheckingSuchList() {
         final int pes = 1;
-        final long cloudletLen = (long)schedulerMips;
+        final long cloudletLen = (long)SCHEDULER_MIPS;
         final double fileTransferTime = 0.0;
         
         Cloudlet cloudlet = CloudletSimpleTest.createCloudlet0(cloudletLen, pes);
         CloudletSchedulerSpaceShared instance = new CloudletSchedulerSpaceShared();
-        List<Double> mipsList = CloudletSchedulerUtil.createMipsList(pes, schedulerMips);
+        List<Double> mipsList = CloudletSchedulerUtil.createMipsList(pes, SCHEDULER_MIPS);
         instance.setCurrentMipsShare(mipsList);
 
         instance.cloudletSubmit(cloudlet, fileTransferTime);
@@ -146,12 +145,12 @@ public class CloudletSchedulerSpaceSharedTest {
     @Test
     public void testCloudletSubmit_WhenThereAreMoreCloudletsThanPes_VerifyThatSubmitedCloudletWasAddedToWaitListByCheckingSubmitReturnValue() {
         final int pes = 1;
-        final long cloudletLen = (long)schedulerMips;
+        final long cloudletLen = (long)SCHEDULER_MIPS;
         final double fileTransferTime = 0.0;
         
         Cloudlet cloudlet0 = CloudletSimpleTest.createCloudlet(0, cloudletLen, pes);
         CloudletSchedulerSpaceShared instance = new CloudletSchedulerSpaceShared();
-        List<Double> mipsList = CloudletSchedulerUtil.createMipsList(pes, schedulerMips);
+        List<Double> mipsList = CloudletSchedulerUtil.createMipsList(pes, SCHEDULER_MIPS);
         instance.setCurrentMipsShare(mipsList);
         instance.cloudletSubmit(cloudlet0, fileTransferTime);
 
@@ -164,12 +163,12 @@ public class CloudletSchedulerSpaceSharedTest {
     @Test
     public void testCloudletSubmit_WhenThereAreMoreCloudletsThanPes_VerifyThatSubmitedCloudletWasAddedToWaitListByCheckingSuchList() {
         final int pes = 1;
-        final long cloudletLen = (long)schedulerMips;
+        final long cloudletLen = (long)SCHEDULER_MIPS;
         final double fileTransferTime = 0.0;
         
         Cloudlet cloudlet0 = CloudletSimpleTest.createCloudlet(0, cloudletLen, pes);
         CloudletSchedulerSpaceShared instance = new CloudletSchedulerSpaceShared();
-        List<Double> mipsList = CloudletSchedulerUtil.createMipsList(pes, schedulerMips);
+        List<Double> mipsList = CloudletSchedulerUtil.createMipsList(pes, SCHEDULER_MIPS);
         instance.setCurrentMipsShare(mipsList);
         instance.cloudletSubmit(cloudlet0, fileTransferTime);
 
@@ -184,7 +183,7 @@ public class CloudletSchedulerSpaceSharedTest {
     public void testCanAddCloudletToExecutionList_EmptyExecList() {
         CloudletExecutionInfo cloudlet = new CloudletExecutionInfo(Cloudlet.NULL);
         CloudletSchedulerSpaceShared instance = new CloudletSchedulerSpaceShared();
-        instance.setCurrentMipsShare(CloudletSchedulerUtil.createUnitaryMipsList(schedulerMips));
+        instance.setCurrentMipsShare(CloudletSchedulerUtil.createUnitaryMipsList(SCHEDULER_MIPS));
         assertTrue(instance.canAddCloudletToExecutionList(cloudlet));
     }
 
@@ -193,7 +192,7 @@ public class CloudletSchedulerSpaceSharedTest {
         final int cloudletPes = 1;
         final int fileTransferTime = 0;
         CloudletSchedulerSpaceShared instance = new CloudletSchedulerSpaceShared();
-        instance.setCurrentMipsShare(CloudletSchedulerUtil.createUnitaryMipsList(schedulerMips));
+        instance.setCurrentMipsShare(CloudletSchedulerUtil.createUnitaryMipsList(SCHEDULER_MIPS));
         Cloudlet cloudlet0 = CloudletSimpleTest.createCloudlet(0, cloudletPes);
         instance.cloudletSubmit(cloudlet0, fileTransferTime);
         
@@ -208,8 +207,7 @@ public class CloudletSchedulerSpaceSharedTest {
         final int schedulerPes = 2;
         final int fileTransferTime = 0;
         CloudletSchedulerSpaceShared instance = new CloudletSchedulerSpaceShared();
-        instance.setCurrentMipsShare(
-                CloudletSchedulerUtil.createMipsList(schedulerPes, schedulerMips));
+        instance.setCurrentMipsShare(CloudletSchedulerUtil.createMipsList(schedulerPes, SCHEDULER_MIPS));
         Cloudlet cloudlet0 = CloudletSimpleTest.createCloudlet(0, cloudletPes);
         instance.cloudletSubmit(cloudlet0, fileTransferTime);
         
@@ -224,8 +222,7 @@ public class CloudletSchedulerSpaceSharedTest {
         final int schedulerPes = 4;
         final int fileTransferTime = 0;
         CloudletSchedulerSpaceShared instance = new CloudletSchedulerSpaceShared();
-        instance.setCurrentMipsShare(
-                CloudletSchedulerUtil.createMipsList(schedulerPes, schedulerMips));
+        instance.setCurrentMipsShare(CloudletSchedulerUtil.createMipsList(schedulerPes, SCHEDULER_MIPS));
         Cloudlet cloudlet0 = CloudletSimpleTest.createCloudlet(0, cloudletPes);
         instance.cloudletSubmit(cloudlet0, fileTransferTime);
         
@@ -247,8 +244,7 @@ public class CloudletSchedulerSpaceSharedTest {
         final int schedulerPes = 2;
         final int cloudletPes = 1;
         CloudletSchedulerSpaceShared instance = new CloudletSchedulerSpaceShared();
-        instance.setCurrentMipsShare(
-                CloudletSchedulerUtil.createMipsList(schedulerPes, schedulerMips));
+        instance.setCurrentMipsShare(CloudletSchedulerUtil.createMipsList(schedulerPes, SCHEDULER_MIPS));
         
         Cloudlet expResult = CloudletSimpleTest.createCloudlet(0, cloudletPes);
         instance.cloudletSubmit(expResult);
@@ -262,8 +258,7 @@ public class CloudletSchedulerSpaceSharedTest {
         final int schedulerPes = 2;
         final int cloudletPes = 1;
         CloudletSchedulerSpaceShared instance = new CloudletSchedulerSpaceShared();
-        instance.setCurrentMipsShare(
-                CloudletSchedulerUtil.createMipsList(schedulerPes, schedulerMips));
+        instance.setCurrentMipsShare(CloudletSchedulerUtil.createMipsList(schedulerPes, SCHEDULER_MIPS));
         
         Cloudlet expResult = CloudletSimpleTest.createCloudlet(0, cloudletPes);
         instance.cloudletSubmit(expResult);
@@ -277,8 +272,7 @@ public class CloudletSchedulerSpaceSharedTest {
         final int schedulerPes = 2;
         final int cloudletPes = 1;
         CloudletSchedulerSpaceShared instance = new CloudletSchedulerSpaceShared();
-        instance.setCurrentMipsShare(
-                CloudletSchedulerUtil.createMipsList(schedulerPes, schedulerMips));
+        instance.setCurrentMipsShare(CloudletSchedulerUtil.createMipsList(schedulerPes, SCHEDULER_MIPS));
         
         assertEquals(0, instance.getUsedPes());
         Cloudlet cloudlet0 = CloudletSimpleTest.createCloudlet(0, cloudletPes);
@@ -298,7 +292,7 @@ public class CloudletSchedulerSpaceSharedTest {
     public void testGetCurrentRequestedMips() {
         final int schedulerPes = 1;
         CloudletSchedulerSpaceShared instance = new CloudletSchedulerSpaceShared();
-        List<Double> expResult = CloudletSchedulerUtil.createMipsList(schedulerPes, schedulerMips);
+        List<Double> expResult = CloudletSchedulerUtil.createMipsList(schedulerPes, SCHEDULER_MIPS);
         instance.setCurrentMipsShare(expResult);
         List<Double> result = instance.getCurrentRequestedMips();
         assertEquals(expResult, result);
@@ -308,7 +302,7 @@ public class CloudletSchedulerSpaceSharedTest {
     public void testGetCurrentRequestedMips_TryToChangeReturnedListThrowsException() {
         final int schedulerPes = 1;
         CloudletSchedulerSpaceShared instance = new CloudletSchedulerSpaceShared();
-        List<Double> expResult = CloudletSchedulerUtil.createMipsList(schedulerPes, schedulerMips);
+        List<Double> expResult = CloudletSchedulerUtil.createMipsList(schedulerPes, SCHEDULER_MIPS);
         instance.setCurrentMipsShare(expResult);
         instance.getCurrentRequestedMips().add(0.0);
     }
@@ -324,8 +318,7 @@ public class CloudletSchedulerSpaceSharedTest {
     public void testGetCloudletExecList_SubmitedCloudletIsInExecList() {
         CloudletSchedulerSpaceShared instance = new CloudletSchedulerSpaceShared();
         final int schedulerPes = 1;
-        instance.setCurrentMipsShare(
-            CloudletSchedulerUtil.createMipsList(schedulerPes, schedulerMips));
+        instance.setCurrentMipsShare(CloudletSchedulerUtil.createMipsList(schedulerPes, SCHEDULER_MIPS));
         Cloudlet cloudlet = CloudletSimpleTest.createCloudletWithOnePe(0);
         instance.cloudletSubmit(cloudlet);
         List<CloudletExecutionInfo> result = instance.getCloudletExecList();
@@ -365,9 +358,9 @@ public class CloudletSchedulerSpaceSharedTest {
         CloudletExecutionInfo rcl = new CloudletExecutionInfo(Cloudlet.NULL);
         final int schedulerPes = 2;        
         List<Double> mipsShare = 
-                CloudletSchedulerUtil.createMipsList(schedulerPes, schedulerMips);
+                CloudletSchedulerUtil.createMipsList(schedulerPes, SCHEDULER_MIPS);
         CloudletSchedulerSpaceShared instance = new CloudletSchedulerSpaceShared();
-        double expResult = schedulerMips;
+        double expResult = SCHEDULER_MIPS;
         double result = instance.getTotalCurrentAvailableMipsForCloudlet(rcl, mipsShare);
         assertEquals(expResult, result, 0.0);
     }
