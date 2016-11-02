@@ -10,6 +10,7 @@ package org.cloudbus.cloudsim;
 import org.cloudbus.cloudsim.Cloudlet.Status;
 import org.cloudbus.cloudsim.core.CloudSim;
 import org.cloudbus.cloudsim.resources.Pe;
+import org.cloudbus.cloudsim.schedulers.CloudletScheduler;
 
 /**
  * Stores execution information about a Cloudlet submitted to a Datacenter for
@@ -118,6 +119,11 @@ public class CloudletExecutionInfo {
      * The reservation id.
      */
     private final int reservationId;
+    
+    /**
+     * @see #getVirtualRuntime() 
+     */
+    private double virtualRuntime;
 
     /**
      * Instantiates a new CloudletExecutionInfo object upon the arrival of a Cloudlet object.
@@ -155,6 +161,7 @@ public class CloudletExecutionInfo {
      * @post $none
      */
     public CloudletExecutionInfo(Cloudlet cloudlet, long startTime, int duration, int reservationId) {
+        this.virtualRuntime = 0;
         this.cloudlet = cloudlet;
         this.reservationStartTime = startTime;
         this.reservationDuration = duration;
@@ -405,7 +412,7 @@ public class CloudletExecutionInfo {
         double wallClockTime = CloudSim.clock() - arrivalTime;
         cloudlet.setWallClockTime(wallClockTime, totalCompletionTime);
 
-        long finishedLengthAcrossAllPes = 0;
+        long finishedLengthAcrossAllPes;
         //if (cloudlet.getCloudletTotalLength() * Consts.MILLION < cloudletFinishedSoFar) {
         if (cloudlet.getStatus() == Status.SUCCESS) {
             finishedLengthAcrossAllPes = cloudlet.getCloudletLength();
@@ -547,4 +554,31 @@ public class CloudletExecutionInfo {
 	public void setLastProcessingTime(double lastProcessingTime) {
 		this.lastProcessingTime = lastProcessingTime;
 	}
+
+    /**
+     * Gets the virtual runtime (vruntime) that indicates how long the Cloudlet
+     * has been executing by a {@link CloudletScheduler}. 
+     * The default value of this attribute is zero and each scheduler
+     * implementation might or not set a value to such attribute
+     * so that the scheduler might use to perform context switch,
+     * preempting running Cloudlets to enable other ones to start executing.
+     * By this way, the attribute is just used internally by specific CloudletSchedulers.
+     * 
+     * @return 
+     */
+    public double getVirtualRuntime() {
+        return virtualRuntime;
+    }
+
+    /**
+     * Sets the virtual runtime (vruntime) that indicates how long the Cloudlet
+     * has been executing by a {@link CloudletScheduler}. This attribute is used
+     * just internally by specific CloudletSchedulers.
+     * 
+     * @param virtualRuntime the value to set
+     * @see #getVirtualRuntime() 
+     */
+    public void setVirtualRuntime(double virtualRuntime) {
+        this.virtualRuntime = virtualRuntime;
+    }
 }

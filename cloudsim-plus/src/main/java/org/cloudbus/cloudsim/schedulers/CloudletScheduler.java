@@ -1,6 +1,7 @@
 package org.cloudbus.cloudsim.schedulers;
 
 import java.io.Serializable;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import org.cloudbus.cloudsim.Cloudlet;
@@ -88,34 +89,11 @@ public interface CloudletScheduler extends Serializable {
     double cloudletSubmit(Cloudlet cl);
 
     /**
-     * Gets a <b>read-only</b> List of cloudlets being executed on the VM.
-     *
-     * @return the cloudlet exec collection
-     * @see #addCloudletToExecList(CloudletExecutionInfo)
-     * @see #removeCloudletFromExecListAndSetFinishTime(org.cloudbus.cloudsim.CloudletExecutionInfo) 
-     */
-    List<CloudletExecutionInfo> getCloudletExecList();
-
-    /**
-     * Gets the list of failed cloudlets.
-     *
-     * @return the cloudlet failed list.
-     */
-    List<CloudletExecutionInfo> getCloudletFailedList();
-
-    /**
-     * Gets the list of finished cloudlets.
+     * Gets a list of finished cloudlets.
      *
      * @return the cloudlet finished list
      */
     List<CloudletExecutionInfo> getCloudletFinishedList();
-
-    /**
-     * Gets the list of paused cloudlets.
-     *
-     * @return the cloudlet paused list
-     */
-    List<CloudletExecutionInfo> getCloudletPausedList();
 
     /**
      * Gets the status of a cloudlet with a given id.
@@ -126,13 +104,6 @@ public interface CloudletScheduler extends Serializable {
      * @post $none
      */
     int getCloudletStatus(int cloudletId);
-
-    /**
-     * Gets the list of cloudlet waiting to be executed on the VM.
-     *
-     * @return the cloudlet waiting list
-     */
-    List<CloudletExecutionInfo> getCloudletWaitingList();
 
     /**
      * Gets the list of current mips capacity from the VM that will be
@@ -344,12 +315,7 @@ public interface CloudletScheduler extends Serializable {
         @Override public double cloudletResume(int clId) { return 0.0; }
         @Override public double cloudletSubmit(Cloudlet cl, double fileTransferTime){ return 0.0; }
         @Override public double cloudletSubmit(Cloudlet cl) { return 0.0; }
-        @Override public List<CloudletExecutionInfo> getCloudletExecList() { return Collections.emptyList(); }
-        @Override public List<CloudletExecutionInfo> getCloudletFailedList() { return Collections.emptyList(); }
-        @Override public List<CloudletExecutionInfo> getCloudletFinishedList() { return Collections.emptyList(); }
-        @Override public List<CloudletExecutionInfo> getCloudletPausedList() { return Collections.emptyList(); }
         @Override public int getCloudletStatus(int cloudletId) { return 0; }
-        @Override public List<CloudletExecutionInfo> getCloudletWaitingList() { return Collections.emptyList(); }
         @Override public List<Double> getCurrentMipsShare() { return Collections.emptyList(); }
         @Override public List<Double> getCurrentRequestedMips() { return Collections.emptyList(); }
         @Override public double getCurrentRequestedUtilizationOfBw() { return 0.0; }
@@ -368,5 +334,6 @@ public interface CloudletScheduler extends Serializable {
         @Override public void setVm(Vm vm) {}
         @Override public void updateCloudletProcessing(CloudletExecutionInfo rcl, double currentTime) {}
         @Override public boolean canAddCloudletToExecutionList(CloudletExecutionInfo cloudlet) { return false; }
+        @Override public List<CloudletExecutionInfo> getCloudletFinishedList() { return Collections.EMPTY_LIST; }
     };
 }

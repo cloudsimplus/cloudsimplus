@@ -17,17 +17,13 @@ public class CloudletSchedulerTest {
         assertEquals(Cloudlet.NULL, instance.cloudletCancel(0));
 
         instance.cloudletFinish(null);
-        assertTrue(instance.getCloudletFinishedList().isEmpty());
         assertEquals(0, instance.cloudletResume(0), 0);
         assertEquals(0, instance.cloudletSubmit(null, 0), 0);
         assertEquals(0, instance.cloudletSubmit(null), 0);
-        assertTrue(instance.getCloudletExecList().isEmpty());
-        assertTrue(instance.getCloudletFailedList().isEmpty());
 
         assertFalse(instance.cloudletPause(0));
-        assertTrue(instance.getCloudletPausedList().isEmpty());
         assertEquals(0, instance.getCloudletStatus(0));
-        assertTrue(instance.getCloudletWaitingList().isEmpty());
+        assertTrue(instance.getCloudletFinishedList().isEmpty());
         assertTrue(instance.getCurrentMipsShare().isEmpty());
         assertTrue(instance.getCurrentRequestedMips().isEmpty());
         assertEquals(0, instance.getCurrentRequestedUtilizationOfBw(), 0);

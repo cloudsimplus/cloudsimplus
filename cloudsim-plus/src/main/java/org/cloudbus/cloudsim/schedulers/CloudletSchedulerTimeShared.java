@@ -64,10 +64,6 @@ import org.cloudbus.cloudsim.resources.Processor;
  * @since CloudSim Toolkit 1.0
  */
 public class CloudletSchedulerTimeShared extends CloudletSchedulerAbstract {
-	/**
-	 * @see #getCloudletExecList()
-	 */
-	private final List<CloudletExecutionInfo> cloudletExecList;
 
     /**
      * Creates a new CloudletSchedulerTimeShared object. This method must be
@@ -78,7 +74,6 @@ public class CloudletSchedulerTimeShared extends CloudletSchedulerAbstract {
      */
     public CloudletSchedulerTimeShared() {
         super();
-	    this.cloudletExecList = new ArrayList<>();
     }
 
 	/**
@@ -91,11 +86,11 @@ public class CloudletSchedulerTimeShared extends CloudletSchedulerAbstract {
 	 *
 	 * @return {@inheritDoc}
 	 */
-	@Override
-	public List<CloudletExecutionInfo> getCloudletWaitingList() {
-		return super.getCloudletWaitingList();
-	}
-
+    @Override
+    public Collection<CloudletExecutionInfo> getCloudletWaitingList() {
+        return super.getCloudletWaitingList();
+    }
+    
     /**
      * Moves a Cloudlet that was paused and has just been resumed
      * to the Cloudlet execution list.
@@ -120,13 +115,11 @@ public class CloudletSchedulerTimeShared extends CloudletSchedulerAbstract {
 
 	@Override
     public double cloudletResume(int cloudletId) {
-        Optional<CloudletExecutionInfo> optional = getCloudletPausedList().stream()
+        return getCloudletPausedList().stream()
                 .filter(c -> c.getCloudletId() == cloudletId)
-                .findFirst();
-        
-         return optional
-                 .map(this::movePausedCloudletToExecListAndGetExpectedFinishTime)
-                 .orElse(0.0);
+                .findFirst()
+                .map(this::movePausedCloudletToExecListAndGetExpectedFinishTime)
+                .orElse(0.0);
     }
 
 	/**
@@ -196,37 +189,6 @@ public class CloudletSchedulerTimeShared extends CloudletSchedulerAbstract {
                 .sum();
     }
 
-	@Override
-	public List<CloudletExecutionInfo> getCloudletExecList() {
-		return Collections.unmodifiableList(cloudletExecList);
-	}
-
-    @Override
-    protected boolean removeCloudletFromExecList(CloudletExecutionInfo cloudlet) {
-        return cloudletExecList.remove(cloudlet);
-    }
-
-    @Override
-    protected void addCloudletToExecList(CloudletExecutionInfo cloudlet) {
-        cloudletExecList.add(cloudlet);
-    }
-
-    /**
-     * Since this scheduler always allows submitted Cloudlets to 
-     * be immediately added to the execution list, executing all
-     * Cloudlets at the same time, never will be waiting Cloudlets to
-     * execute next. By this way, this method doesn't need to do anything.
-     * 
-     * <p>See the class documentation for more details of the oversimplification
-     * of this time-shared scheduler.</p>
-     * 
-     * @param currentTime {@inheritDoc}
-     * @param numberOfJustFinishedCloudlets {@inheritDoc}
-     * @see #canAddCloudletToExecutionList(org.cloudbus.cloudsim.CloudletExecutionInfo) 
-     */
-    @Override
-    protected void selectNextCloudletsToStartExecuting(double currentTime, int numberOfJustFinishedCloudlets) {}
-
     /**
 	 * This time-shared scheduler shares the CPU time between all executing cloudlets,
 	 * giving the same CPU timeslice for each Cloudlet to execute.
@@ -241,5 +203,5 @@ public class CloudletSchedulerTimeShared extends CloudletSchedulerAbstract {
     public boolean canAddCloudletToExecutionList(CloudletExecutionInfo cloudlet) {
         return true;
     }
-
+    
 }

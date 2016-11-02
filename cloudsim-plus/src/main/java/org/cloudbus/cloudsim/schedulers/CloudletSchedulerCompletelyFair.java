@@ -1,15 +1,15 @@
 package org.cloudbus.cloudsim.schedulers;
 
+import java.util.Collection;
 import org.cloudbus.cloudsim.Cloudlet;
 import org.cloudbus.cloudsim.CloudletExecutionInfo;
 import org.cloudbus.cloudsim.resources.Pe;
 
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.TreeMap;
-import static java.util.stream.Collectors.toList;
-import java.util.stream.Stream;
+import java.util.TreeSet;
 
 /**
  * A <a href="https://en.wikipedia.org/wiki/Completely_Fair_Scheduler">Completely Fair Scheduler (CFS)</a>
@@ -56,6 +56,43 @@ import java.util.stream.Stream;
  * The implementation was based on the book of Robert Love: Linux Kernel Development, 3rd ed. Addison-Wesley, 2010
  * and some other references listed below.
  * </p>
+ * 
+     * <p>
+     * O scheduler é baseado no time-shared mas deve funcionar de maneira diferente.
+     * <ul>
+     * <li>
+     *   <strike>
+     *   A getCloudletExecutionList deve representar
+     *   apenas as cloudlets que estão executando de fato no momento atual.
+     *   A diferença é que no construtor, tal lista deve ser instanciada como um 
+     *   {@link Set} para manter a ordem dos elementos de acordo com o vruntime.
+     * </strike>
+     * <li>
+     * 
+     * <li>
+     *   <strike>Adicionar vruntime ao CloudletExecutionInfo para permitir
+     *   ordenar a execution list por ele. Isso vai facilitar remover uma cloudlet
+     *   desta lista, considerando aquela que tiver o maior vruntime (que já rodou mais 
+     *   que as outras).
+     * </strike>
+     * </li>
+     * 
+     * <li><strike>A lista pode ser ordenada de forma descrescente para
+     * permitir usar stream pra pegar o primeiro elemento.</strike></li>
+     * 
+     * <li>A waiting list é que será de fato a runqueue, contendo
+     * a lista de cloudlets que devem rodar em seguida (conforme definição da wikipedia).</li>
+     * 
+     * <li>Ela, diferente do CloudletSchedulerTimeShared,
+     * deve sim ter cloudlets. O CFS deve de fato implementar a preempção,
+     * removendo processos na execution list para dar a vez
+     * (mesmo que tais processos não tenhma terminado) para outros processos
+     * na runqueue (waiting list).</li>
+     * 
+     * <li>A waiting list sim é que deve ser implementada como uma Red-Black tree.</li>
+     * </ul>
+     * </p>
+ * 
  *
  * @author Manoel Campos da Silva Filho
  *
@@ -66,110 +103,11 @@ import java.util.stream.Stream;
  * @see <a href="https://www.kernel.org/doc/Documentation/scheduler/sched-design-CFS.txt">kernel.org: CFS Design</a>
  */
 public final class CloudletSchedulerCompletelyFair extends CloudletSchedulerTimeShared {
-    /**
-     * @todo O scheduler é baseado no time-shared mas deve funcionar de maneira diferente.
-     * A getCloudletExecutionList deve representar
-     * apenas as cloudlets que estão executando de fato no momento atual.
-     * A diferença é que no construtor tal lista pode ser instanciada como um 
-     * Set para manter a ordem dos elementos de acordo com o vruntime.
-     * Como o CloudletExecutionInfo não tem um atributo vruntime, uma classe
-     * interna e filha dela pode ser criada para incluir tal campo e permitir
-     * ordenar o Set por ele. Isso vai facilitar remover uma cloudlet
-     * desta lista, considerando aquela que tiver o maior vruntime (que já rodou mais 
-     * que as outras). A lista pode ser ordenada de forma descrescente para
-     * permitir usar stream pra pegar o primeiro elemento.
-     * 
-     * O getCloudletWaitingList() é que será de fato a runqueue, contendo
-     * a lista de cloudlets que devem rodar em seguida (conforme definição da wikipedia).
-     * Ela, diferente do CloudletSchedulerTimeShared,
-     * deve sim ter cloudlets. O CFS deve de fato implementar a preempção,
-     * removendo processos na execution list para dar a vez
-     * (mesmo que tais processos não tenhma terminado) para outros processos
-     * na runqueue (waiting list).
-     * 
-     * A waiting list sim é que deve ser implementada como uma Red-Black tree.
-     */
-    
-	/**
-     * A {@link TreeMap Red-Black Tree} that stores the list of Cloudlets
-     * that are active for running, the so called 
-     * <a href="https://en.wikipedia.org/wiki/Run_queue">run queue</a>. 
-     * Each key in this map is the virtual runtime (vruntime),
-     * which indicates the amount of time the Cloudlet has run.
-     * This runtime increases as the Cloudlet executes, what makes
-     * it changes its position inside the map.
-     * 
-     * <p><b>NOTES:</b> 
-     * <ul>
-     * <li>This list <b>does not</b> contain the Cloudlets that are in fact
-     * running at the current time. They are just Cloudlets that are sharing
-     * the PEs with other actually running cloudlets in the
-     * {@link #runningCloudletByPe running Cloudlets map}.</li>
-     * <li>Do not confuse 
-     * the executing list with the {@link #getCloudletWaitingList() waiting list}.
-     * The executing list stores the cloudlets that are able to run
-     * in a preemptive way, sharing the CPU cores between them.
-     * The waiting list is the list of Cloudlets that have to wait
-     * all the Cloudlets in the executing list to finish completely
-     * to then start executing, what just happens in 
-     * space-shared schedulers. In this scheduler, the waiting list
-     * is always empty.
-     * </li>
-     * </ul>
-     * </p>
-     *
-     * @see #getCloudletExecList()
-     * @see #runningCloudletByPe
-     * @see #getCloudletWaitingList() 
-	 */
-	private final Map<Double, CloudletExecutionInfo> cloudletExecList;
-    
-    /**
-     * The map of Cloudlets that are in fact using
-     * the PEs at the current time, that are got from the {@link #cloudletExecList}.
-     * As each Pe can in fact run just one Cloudlet by time, 
-     * this maps stores the Cloudlets that are really running
-     * in the moment. 
-     * 
-     * <p>
-     * Each key in this map is the virtual runtime (vruntime), 
-     * which indicates the amount of time the Cloudlet has run.
-     * Each value represents a Cloudlet
-     * running into a group of Pe (defined by the number of
-     * Pes the Cloudlet requires). 
-     * </p>
-     * 
-     * <p>
-     * Before starting executing, a Cloudlet is removed from the
-     * {@link #cloudletExecList run queue} and added to this map.
-     * When the Cloudlet vruntime reaches its timeslice (the amount of time
-     * it can use the CPU), it is remove from this mapand added
-     * back to the run queue.
-     * </p>
-     * 
-     * <p>The sum of the PEs of Cloudlets into this map cannot exceeds 
-     * the number of PEs available for the scheduler. If the sum of Cloudlets PEs
-     * in this map is less than the number of existing PEs, there are 
-     * idle PEs. Since the CPU context switch overhead is not regarded
-     * in this implementation and as result, it doesn't matter which
-     * PEs are running which Cloudlets, there is not such information
-     * in this map. As an example, if the first Cloudlet on it requires 2 PEs,
-     * then one can say that it is using the first 2 PEs.
-     * But if at the next simulation time the same Cloudlet is
-     * in the 3º position in this map, indicating that now it is using
-     * the 3º and 4º Pe, it doesn't change anything. In real schedulers,
-     * usually a process is pinned to a specific set of cores until it
-     * finishes executing, to avoid the overhead to change to process from 
-     * a run queue to another unnecessarily.</p>
-     * 
-     */
-    private final Map<Double, CloudletExecutionInfo> runningCloudletByPe;
-
 	/**
 	 * @see #getMininumGranularity()
 	 */
 	private int mininumGranularity = 1;
-
+    
 	/**
 	 * @see #getLatency()
 	 */
@@ -177,11 +115,37 @@ public final class CloudletSchedulerCompletelyFair extends CloudletSchedulerTime
 
 	public CloudletSchedulerCompletelyFair(){
 		super();
-		cloudletExecList = new TreeMap<>();
-        runningCloudletByPe = new HashMap<>();
+		setCloudletExecList(new TreeSet<>(this::executingCloudletsComparator));
+        setCloudletWaitingList(new TreeSet<>(this::waitingCloudletsComparator));
 	}
+    
+    /**
+     * A comparator used to descendingly sort running Cloudlets into the execution list
+     * based on their virtual runtime.
+     * 
+     * @param c1 first Cloudlet to compare
+     * @param c2 second Cloudlet to compare
+     * @return a negative value if c2 is lower than c1, zero if they are equals,
+     * a positive value if c2 is greater than c1
+     */
+    private int executingCloudletsComparator(CloudletExecutionInfo c1, CloudletExecutionInfo c2){
+        return (int)(c2.getVirtualRuntime() - c1.getVirtualRuntime());
+    }
 
-	@Override
+    /**
+     * A comparator used to ascendingly sort Cloudlets into the waiting list
+     * based on their virtual runtime.
+     * 
+     * @param c1 first Cloudlet to compare
+     * @param c2 second Cloudlet to compare
+     * @return a negative value if c1 is lower than c2, zero if they are equals,
+     * a positive value if c1 is greater than c2
+     */
+    private int waitingCloudletsComparator(CloudletExecutionInfo c1, CloudletExecutionInfo c2){
+        return (int)(c1.getVirtualRuntime() - c2.getVirtualRuntime());
+    }
+
+    @Override
 	public double updateVmProcessing(double currentTime, List<Double> mipsShare) {
 		return super.updateVmProcessing(currentTime, mipsShare);
 	}
@@ -319,28 +283,46 @@ public final class CloudletSchedulerCompletelyFair extends CloudletSchedulerTime
 		this.mininumGranularity = mininumGranularity;
 	}
 
-	@Override
-	public List<CloudletExecutionInfo> getCloudletExecList() {
-        return Stream.concat(
-                    runningCloudletByPe.values().stream(), 
-                    cloudletExecList.values().stream()
-                ).collect(toList());
-	}
-
+    /**
+     * {@inheritDoc}
+     * It also sets the initial virtual runtime for the given Cloudlet
+     * in order to define how long the Cloudlet has executed yet.
+     * 
+     * 
+     * <p>See {@link #computeCloudletVirtualRuntime(org.cloudbus.cloudsim.CloudletExecutionInfo)}
+     * for more details.</p>
+     * 
+     * @param cloudlet {@inheritDoc}
+     */
     @Override
-    public void addCloudletToExecList(CloudletExecutionInfo c) {
-		//A negative virtual runtime indicates the cloudlet has never been executed yet.
-		//This math was used just to ensure that the first added cloudlets
-		//will have the lower vruntime, depending of their priorites.
-		//If all cloudlets have the same priority, the first
-		//addedd will start executing first.
-		double vruntime = -(c.getCloudlet().getPriority() * 1.0/c.getCloudletId());
-        cloudletExecList.put(vruntime, c);
+    public void addCloudletToExecList(CloudletExecutionInfo cloudlet) {
+        cloudlet.setVirtualRuntime(computeCloudletVirtualRuntime(cloudlet));
+        super.addCloudletToExecList(cloudlet);
     }
 
-    @Override
-    protected boolean removeCloudletFromExecList(CloudletExecutionInfo c) {
-        return cloudletExecList.remove(getTimeSlice(c.getCloudlet())) != null;
+    /**
+     * Computes the initial virtual runtime for a Cloudlet that will be added to the execution list.
+     * This virtual runtime is update as long as the Cloudlet is executed.
+     * The initial value is negative to indicate the Cloudlet hasn't started
+     * executing yet. The virtual runtime is computed based on the Cloudlet priority.
+     * 
+     * @param cloudlet Cloudlet to compute the initial virtual runtime
+     * @return the computed initial virtual runtime as a negative value
+     * to indicate that the Cloudlet hasn't started executing yet
+     */
+    private double computeCloudletVirtualRuntime(CloudletExecutionInfo cloudlet) {
+        /*
+        * A negative virtual runtime indicates the cloudlet has never been executed yet.
+        * This math was used just to ensure that the first added cloudlets
+        * will have the lower vruntime, depending of their priorites.
+        * If all cloudlets have the same priority, the first
+        * addedd will start executing first.
+        * The 1.0/cloudletId is used to get the inverse of the Cloudlet id and
+        * ensure that the first submitted Cloudlets (with lower id) will
+        * be in the begining of the execution list (as the execution list
+        * is sorted decreasingly by Cloudlet vruntime).
+        */
+        return -(cloudlet.getCloudlet().getPriority() * 1.0/cloudlet.getCloudletId());
     }
 
     /**
@@ -360,8 +342,91 @@ public final class CloudletSchedulerCompletelyFair extends CloudletSchedulerTime
     public boolean canAddCloudletToExecutionList(CloudletExecutionInfo cloudlet) {
         return isThereEnoughFreePesForCloudlet(cloudlet);
     }
+   
+    @Override
+    protected boolean removeCloudletFromWaitingList(CloudletExecutionInfo cloudlet) {
+        return super.removeCloudletFromWaitingList(cloudlet); 
+    }
     
-    
+    /**
+     * {@inheritDoc}
+     * 
+     * <p>Prior to start executing, a Cloudlet is added to this Collection.
+     * When the Cloudlet vruntime reaches its timeslice (the amount of time
+     * it can use the CPU), it is removed from this Collection and added
+     * back to the {@link #getCloudletWaitingList()}.</p>
+     * 
+     * <p>The sum of the PEs of Cloudlets into this Collection cannot exceeds 
+     * the number of PEs available for the scheduler. If the sum of PEs of such Cloudlets
+     * is less than the number of existing PEs, there are 
+     * idle PEs. Since the CPU context switch overhead is not regarded
+     * in this implementation and as result, it doesn't matter which
+     * PEs are running which Cloudlets, there is not such information
+     * in anywhere. As an example, if the first Cloudlet requires 2 PEs,
+     * then one can say that it is using the first 2 PEs.
+     * But if at the next simulation time the same Cloudlet can be
+     * at the 3º position in this Collection, indicating that now it is using
+     * the 3º and 4º Pe, which doesn't change anything. In real schedulers,
+     * usually a process is pinned to a specific set of cores until it
+     * finishes executing, to avoid the overhead of changing processes from 
+     * a run queue to another unnecessarily.</p>
+     * 
+     * @return 
+     */
+    @Override
+    public Collection<CloudletExecutionInfo> getCloudletExecList() {
+        return super.getCloudletExecList(); 
+    }
 
+    /**
+     * Gets a <b>read-only</b> {@link TreeSet} (a implementation of a Red-Black Tree) that stores the list of Cloudlets
+     * that are waiting to run, the so called 
+     * <a href="https://en.wikipedia.org/wiki/Run_queue">run queue</a>. 
+     * Each key in this map is the virtual runtime (vruntime),
+     * which indicates the amount of time the Cloudlet has run.
+     * This runtime increases as the Cloudlet executes, what makes
+     * it to change its position inside the map.
+     * Each value represents a Cloudlet
+     * running into a group of PE (defined by the number of
+     * PEs the Cloudlet requires). 
+     * 
+     * <p>
+     * <b>NOTE:</b> Different from real implementations, this scheduler uses just one run queue 
+     * for all processor cores (PEs). Since CPU context switch is not concerned,
+     * there is no point in using different run queues.
+     * </p>
+     * 
+     * @return 
+     */
+    @Override
+    public Collection<CloudletExecutionInfo> getCloudletWaitingList() {
+        return super.getCloudletWaitingList();
+    }
+
+    /**
+     * Checks which Cloudlets in the execution list has the virtual runtime
+     * equals to its allocated time slice and preempt them, getting 
+     * the most priority Cloudlets in the waiting list (that is those ones
+     * in the beginning of the list).
+     * 
+     * @param numberOfJustFinishedCloudlets {@inheritDoc}
+     */
+    @Override
+    protected void moveSelectedCloudletsFromWaitingToExecList(int numberOfJustFinishedCloudlets) {
+        //@todo esta implementação tem que ser unida com a da class abstrata
+        /*
+        Looks the waiting list trying to get cloudlets to move to the execution list,
+        while there are free PEs.
+        */
+        for(int i = 0; i < getCloudletWaitingList().size() && getFreePes() > 0; i++){
+            CloudletExecutionInfo c = getCloudletWaitingList().stream().findFirst().get();
+            if(isThereEnoughFreePesForCloudlet(c)){
+                removeCloudletFromWaitingList(c);
+                addCloudletToExecList(c);
+            }
+        }
+    }
+
+    
 }
 

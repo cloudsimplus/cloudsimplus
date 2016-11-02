@@ -29,10 +29,6 @@ import org.cloudbus.cloudsim.resources.Processor;
  * @since CloudSim Toolkit 1.0
  */
 public class CloudletSchedulerSpaceShared extends CloudletSchedulerAbstract {
-	/**
-	 * @see #getCloudletExecList()
-	 */
-	private final List<CloudletExecutionInfo> cloudletExecList;
 
     /**
      * Creates a new CloudletSchedulerSpaceShared object. This method must be
@@ -43,18 +39,12 @@ public class CloudletSchedulerSpaceShared extends CloudletSchedulerAbstract {
      */
     public CloudletSchedulerSpaceShared() {
         super();
-	    this.cloudletExecList = new ArrayList<>();
     }
 
     @Override
     public void cloudletFinish(CloudletExecutionInfo rcl) {
         super.cloudletFinish(rcl);
         removeUsedPes(rcl.getNumberOfPes());
-    }
-
-    @Override
-    protected boolean removeCloudletFromExecList(CloudletExecutionInfo cloudlet) {
-        return cloudletExecList.remove(cloudlet);
     }
 
     @Override
@@ -150,16 +140,6 @@ public class CloudletSchedulerSpaceShared extends CloudletSchedulerAbstract {
         return Collections.unmodifiableList(getCurrentMipsShare());
     }
 
-	@Override
-	public List<CloudletExecutionInfo> getCloudletExecList() {
-        return Collections.unmodifiableList(cloudletExecList);
-	}
-
-    @Override
-    protected void addCloudletToExecList(CloudletExecutionInfo cloudlet) {
-        cloudletExecList.add(cloudlet);
-    }
-
     /**
      * {@inheritDoc}
      * <p>It doesn't consider the given Cloudlet because the scheduler
@@ -203,11 +183,6 @@ public class CloudletSchedulerSpaceShared extends CloudletSchedulerAbstract {
         return 0;
     }
 
-    @Override
-    protected void selectNextCloudletsToStartExecuting(double currentTime, int numberOfJustFinishedCloudlets) {
-        startNewCloudletsFromWaitingList(numberOfJustFinishedCloudlets);    
-    }
-
     /**
 	 * The space-shared scheduler <b>does not</b> share the CPU time between executing cloudlets.
 	 * Each CPU ({@link Pe}) is used by another Cloudlet just when the previous Cloudlet
@@ -222,5 +197,4 @@ public class CloudletSchedulerSpaceShared extends CloudletSchedulerAbstract {
     public boolean canAddCloudletToExecutionList(CloudletExecutionInfo cloudlet) {
         return isThereEnoughFreePesForCloudlet(cloudlet);
     }
-
 }
