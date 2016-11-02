@@ -343,5 +343,25 @@ public final class CloudletSchedulerCompletelyFair extends CloudletSchedulerTime
         return cloudletExecList.remove(getTimeSlice(c.getCloudlet())) != null;
     }
 
+    /**
+     * Checks if a Cloudlet can be submitted to the execution list.
+     * 
+     * This scheduler, different from its time-shared parent, only adds
+     * submitted Cloudlets to the execution list if there is enough free PEs.
+     * Otherwise, such Cloudlets are added to the waiting list,
+     * really enabling time-sharing between running Cloudlets.
+     * By this way, some Cloudlets have to be preempted to allow other ones
+     * to be executed.
+     * 
+     * @param cloudlet {@inheritDoc}
+     * @return {@inheritDoc}
+     */
+    @Override
+    public boolean canAddCloudletToExecutionList(CloudletExecutionInfo cloudlet) {
+        return isThereEnoughFreePesForCloudlet(cloudlet);
+    }
+    
+    
+
 }
 

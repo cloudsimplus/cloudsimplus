@@ -21,9 +21,16 @@ public class Processor implements ResourceCapacity<Double>{
 
     /** @see #getCloudletExecList() */
     private Collection<CloudletExecutionInfo> cloudletExecList;
+    
+    /**
+     * Instantiates a Processor with zero capacity (zero PEs and MIPS).
+     */
+    public Processor(){
+        this(0.0, 0);
+    }
 
     /**
-     * Instantiates a new Processor.
+     * Instantiates a Processor.
      *
      * @param individualPeCapacity capacity of each {@link Pe Processing Elements (cores)}
      * @param numberOfPes number of {@link Pe Processing Elements (cores)}

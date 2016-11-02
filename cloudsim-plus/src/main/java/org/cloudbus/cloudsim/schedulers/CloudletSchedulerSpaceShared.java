@@ -13,7 +13,6 @@ import org.cloudbus.cloudsim.Cloudlet;
 import org.cloudbus.cloudsim.CloudletExecutionInfo;
 
 import org.cloudbus.cloudsim.core.CloudSim;
-import org.cloudbus.cloudsim.resources.Pe;
 import org.cloudbus.cloudsim.resources.Processor;
 
 /**
@@ -138,21 +137,6 @@ public class CloudletSchedulerSpaceShared extends CloudletSchedulerAbstract {
 		return cloudletSubmit(cloudlet, 0);
     }
 
-    /**
-	 * The space-shared scheduler <b>does not</b> share the CPU time between executing cloudlets.
-	 * Each CPU ({@link Pe}) is used by another Cloudlet just when the previous Cloudlet
-	 * using it has finished executing completely.
-	 * By this way, if there are more Cloudlets than PEs, some Cloudlet
-	 * will not be allowed to start executing immediately.
-	 *
-     * @param cloudlet {@inheritDoc}
-	 * @return {@inheritDoc}
-	 */
-	@Override
-	public boolean canAddCloudletToExecutionList(CloudletExecutionInfo cloudlet) {
-		return isThereEnoughFreePesForCloudlet(cloudlet);
-	}
-
     @Override
     public List<Double> getCurrentRequestedMips() {
         /**
@@ -217,6 +201,26 @@ public class CloudletSchedulerSpaceShared extends CloudletSchedulerAbstract {
         //@todo the method isn't in fact implemented
         // TODO Auto-generated method stub
         return 0;
+    }
+
+    @Override
+    protected void selectNextCloudletsToStartExecuting(double currentTime, int numberOfJustFinishedCloudlets) {
+        startNewCloudletsFromWaitingList(numberOfJustFinishedCloudlets);    
+    }
+
+    /**
+	 * The space-shared scheduler <b>does not</b> share the CPU time between executing cloudlets.
+	 * Each CPU ({@link Pe}) is used by another Cloudlet just when the previous Cloudlet
+	 * using it has finished executing completely.
+	 * By this way, if there are more Cloudlets than PEs, some Cloudlet
+	 * will not be allowed to start executing immediately.
+	 *
+     * @param cloudlet {@inheritDoc}
+	 * @return {@inheritDoc}
+	 */    
+    @Override
+    public boolean canAddCloudletToExecutionList(CloudletExecutionInfo cloudlet) {
+        return isThereEnoughFreePesForCloudlet(cloudlet);
     }
 
 }

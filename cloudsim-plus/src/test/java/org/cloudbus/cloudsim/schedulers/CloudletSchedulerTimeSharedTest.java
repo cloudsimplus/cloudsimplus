@@ -117,13 +117,28 @@ public class CloudletSchedulerTimeSharedTest {
     }
 
     @Test
-    public void testCanAddCloudletToExecutionList() {
-        CloudletExecutionInfo cloudlet = new CloudletExecutionInfo(Cloudlet.NULL);
+    public void testIsThereEnoughFreePesForCloudlet_EmptyList() {
+        final int cloudletPes = 1;
+        Cloudlet cloudlet0 = CloudletSimpleTest.createCloudlet(0, cloudletPes);
         CloudletSchedulerTimeShared instance = new CloudletSchedulerTimeShared();
-        assertTrue(instance.canAddCloudletToExecutionList(cloudlet));
+        //Vm processing was never updated, so the processing capacity is unknow yet
+        assertFalse(instance.isThereEnoughFreePesForCloudlet(new CloudletExecutionInfo(cloudlet0)));
     }
 
-    @Test @Ignore("The test is being ignored because the tested method in fact is always returning an empty list. It doesn't have an actual implementation.")
+    @Test
+    public void testIsThereEnoughFreePesForCloudlet_WhenThereIsOneRunningCloudlet() {
+        final int cloudletPes = 1;
+        final int schedulerPes = 2;
+        final double schedulerMips = 1000;
+        Cloudlet cloudlet0 = CloudletSimpleTest.createCloudlet(0, cloudletPes);
+        CloudletSchedulerTimeShared instance = createCloudletSchedulerWithMipsList(schedulerPes, schedulerMips);
+        instance.cloudletSubmit(cloudlet0);
+        final double time0 = 0;
+        instance.updateVmProcessing(time0, instance.getCurrentMipsShare());
+        assertTrue(instance.isThereEnoughFreePesForCloudlet(new CloudletExecutionInfo(cloudlet0)));
+    }
+
+    @Test @Ignore("The test is being ignored because the tested method, in fact, is always returning an empty list. It doesn't have an actual implementation.")
     public void testGetCurrentRequestedMips() {
         CloudletSchedulerTimeShared instance = new CloudletSchedulerTimeShared();
         List<Double> result = instance.getCurrentRequestedMips();

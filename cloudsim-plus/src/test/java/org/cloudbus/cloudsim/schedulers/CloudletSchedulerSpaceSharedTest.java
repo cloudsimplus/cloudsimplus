@@ -180,15 +180,15 @@ public class CloudletSchedulerSpaceSharedTest {
     }
 
     @Test
-    public void testCanAddCloudletToExecutionList_EmptyExecList() {
+    public void testIsThereEnoughFreePesForCloudlet_EmptyExecList() {
         CloudletExecutionInfo cloudlet = new CloudletExecutionInfo(Cloudlet.NULL);
         CloudletSchedulerSpaceShared instance = new CloudletSchedulerSpaceShared();
         instance.setCurrentMipsShare(CloudletSchedulerUtil.createUnitaryMipsList(SCHEDULER_MIPS));
-        assertTrue(instance.canAddCloudletToExecutionList(cloudlet));
+        assertTrue(instance.isThereEnoughFreePesForCloudlet(cloudlet));
     }
 
     @Test
-    public void testCanAddCloudletToExecutionList_WhenThereAreOnePesAndOneAlreadyRunningCloudlet() {
+    public void testIsThereEnoughFreePesForCloudlet_WhenThereAreOnePesAndOneAlreadyRunningCloudlet() {
         final int cloudletPes = 1;
         final int fileTransferTime = 0;
         CloudletSchedulerSpaceShared instance = new CloudletSchedulerSpaceShared();
@@ -198,11 +198,11 @@ public class CloudletSchedulerSpaceSharedTest {
         
         CloudletExecutionInfo cloudlet1 = 
                 new CloudletExecutionInfo(CloudletSimpleTest.createCloudlet(1, cloudletPes));
-        assertFalse(instance.canAddCloudletToExecutionList(cloudlet1));
+        assertFalse(instance.isThereEnoughFreePesForCloudlet(cloudlet1));
     }
 
     @Test
-    public void testCanAddCloudletToExecutionList_WhenThereAreTwoPesAndOneAlreadyRunningCloudlet() {
+    public void testIsThereEnoughFreePesForCloudlet_WhenThereAreTwoPesAndOneAlreadyRunningCloudlet() {
         final int cloudletPes = 1;
         final int schedulerPes = 2;
         final int fileTransferTime = 0;
@@ -213,11 +213,11 @@ public class CloudletSchedulerSpaceSharedTest {
         
         CloudletExecutionInfo cloudlet1 = 
                 new CloudletExecutionInfo(CloudletSimpleTest.createCloudlet(1, cloudletPes));
-        assertTrue(instance.canAddCloudletToExecutionList(cloudlet1));
+        assertTrue(instance.isThereEnoughFreePesForCloudlet(cloudlet1));
     }
 
     @Test
-    public void testCanAddCloudletToExecutionList_WhenThereAreFourPesAndOneAlreadyRunningCloudletRequiringTwoPes() {
+    public void testIsThereEnoughFreePesForCloudlet_WhenThereAreFourPesAndOneAlreadyRunningCloudletRequiringTwoPes() {
         final int cloudletPes = 2;
         final int schedulerPes = 4;
         final int fileTransferTime = 0;
@@ -228,7 +228,7 @@ public class CloudletSchedulerSpaceSharedTest {
         
         CloudletExecutionInfo cloudlet1 = 
                 new CloudletExecutionInfo(CloudletSimpleTest.createCloudlet(1, cloudletPes));
-        assertTrue(instance.canAddCloudletToExecutionList(cloudlet1));
+        assertTrue(instance.isThereEnoughFreePesForCloudlet(cloudlet1));
     }
 
     @Test

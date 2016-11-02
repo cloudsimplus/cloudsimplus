@@ -16,6 +16,11 @@ import org.powermock.api.easymock.PowerMock;
  * <p>Each method in this class provides a mock for a method with the same
  * name in the CloudSim class.</p>
  * 
+ * <p><b>NOTE</b>: For the CloudSimMocker to work inside a test,
+ * the test class using it has to be annotated with 
+ * {@code @RunWith(PowerMockRunner.class) @PrepareForTest({CloudSim.class})}. This is
+ * a requirement to PowerMock.</p>
+ * 
  * @author Manoel Campos da Silva Filho
  */
 public final class CloudSimMocker {

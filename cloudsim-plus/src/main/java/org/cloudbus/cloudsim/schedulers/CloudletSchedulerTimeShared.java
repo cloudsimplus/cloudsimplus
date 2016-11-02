@@ -18,8 +18,7 @@ import org.cloudbus.cloudsim.resources.Processor;
 /**
  * CloudletSchedulerTimeShared implements a policy of scheduling performed by a
  * virtual machine to run its {@link Cloudlet Cloudlets}. Cloudlets execute in
- * time-shared manner in VM, i.e., it performs preemptive execution
- * of Cloudlets in the VM's PEs. Each VM has to have its own instance of a
+ * time-shared manner in VM. Each VM has to have its own instance of a
  * CloudletScheduler.
  * 
  * <p>CPU context switch is the process of removing an application (Cloudlets) that is using 
@@ -32,13 +31,31 @@ import org.cloudbus.cloudsim.resources.Processor;
  * <p>
  * <b>NOTE</b>: This implementation simplifies the context switch process, not 
  * in fact switching cloudlets between the run queue and the waiting queue.
- * It just considers there is not waiting Cloudlet, oversimplifying the 
+ * It just considers there is not waiting Cloudlet, <b>oversimplifying</b> the 
  * problem as if for a simulation second <tt>t</tt>, the total processing capacity 
  * of the processor cores (in MIPS) is equally divided by the applications that are using them.
  * This in fact is not possible, once just one application can use
- * a CPU core at a time. However, since the basic CloudletScheduler implementations
- * do not account the context switch overhead, there is no difference in
- * Cloudlets finish time and this simplification works well. 
+ * a CPU core at a time. </p>
+ * 
+ * <p>However, since the basic CloudletScheduler implementations
+ * do not account the context switch overhead, the only impact of this oversimplification
+ * is that if there are Cloudlets of the same length running in the same PEs,
+ * they will finish exactly at the same time, while a real time-shared scheduler 
+ * these Cloudlets will finish almost in the same time.
+ * As an example, consider a scheduler that has 1 PE that is able to execute
+ * 1000 MI/S (MIPS) and is running Cloudlet 0 and Cloudlet 1, each of having 5000 MI
+ * of length.
+ * These 2 Cloudlets will spend 5 seconds to finish. Now consider that
+ * the time slice allocated to each Cloudlet to execute is 1 second.
+ * As at every 1 second a different Cloudlet is allowed to run, the execution
+ * path will be as follows:<br>
+ * 
+ * Time (second): 00  01  02  03  04  05<br>
+ * Cloudlet (id): C0  C1  C0  C1  C0  C1<br>
+ * 
+ * As one can see, in a real time-shared scheduler that do not define
+ * priorities for applications, the 2 Cloudlets will in fact finish in different times.
+ * In this example, one Cloudlet will finish 1 second after the other.
  * </p>
  * 
  * @author Rodrigo N. Calheiros
@@ -111,21 +128,6 @@ public class CloudletSchedulerTimeShared extends CloudletSchedulerAbstract {
                  .map(this::movePausedCloudletToExecListAndGetExpectedFinishTime)
                  .orElse(0.0);
     }
-
-	/**
-	 * This time-shared scheduler shares the CPU time between all executing cloudlets,
-	 * giving the same CPU timeslice for each Cloudlet to execute.
-	 * It always allow any submitted Cloudlets to be imediately added to the execution list.
-	 * By this way, it doesn't matter what Cloudlet is being submitted, since it will
-	 * always include it in the execution list.
-	 *
-	 * @param cloudlet the Cloudlet that will be added to the execution list.
-	 * @return always <b>true</b> to indicate that any submitted Cloudlet can be immediately added to the execution list
-	 */
-	@Override
-	public boolean canAddCloudletToExecutionList(CloudletExecutionInfo cloudlet) {
-		return true;
-	}
 
 	/**
      * {@inheritDoc}
@@ -207,6 +209,37 @@ public class CloudletSchedulerTimeShared extends CloudletSchedulerAbstract {
     @Override
     protected void addCloudletToExecList(CloudletExecutionInfo cloudlet) {
         cloudletExecList.add(cloudlet);
+    }
+
+    /**
+     * Since this scheduler always allows submitted Cloudlets to 
+     * be immediately added to the execution list, executing all
+     * Cloudlets at the same time, never will be waiting Cloudlets to
+     * execute next. By this way, this method doesn't need to do anything.
+     * 
+     * <p>See the class documentation for more details of the oversimplification
+     * of this time-shared scheduler.</p>
+     * 
+     * @param currentTime {@inheritDoc}
+     * @param numberOfJustFinishedCloudlets {@inheritDoc}
+     * @see #canAddCloudletToExecutionList(org.cloudbus.cloudsim.CloudletExecutionInfo) 
+     */
+    @Override
+    protected void selectNextCloudletsToStartExecuting(double currentTime, int numberOfJustFinishedCloudlets) {}
+
+    /**
+	 * This time-shared scheduler shares the CPU time between all executing cloudlets,
+	 * giving the same CPU timeslice for each Cloudlet to execute.
+	 * It always allow any submitted Cloudlets to be immediately added to the execution list.
+	 * By this way, it doesn't matter what Cloudlet is being submitted, since it will
+	 * always include it in the execution list.
+     * 
+	 * @param cloudlet the Cloudlet that will be added to the execution list.
+	 * @return always <b>true</b> to indicate that any submitted Cloudlet can be immediately added to the execution list
+	 */
+    @Override
+    public boolean canAddCloudletToExecutionList(CloudletExecutionInfo cloudlet) {
+        return true;
     }
 
 }

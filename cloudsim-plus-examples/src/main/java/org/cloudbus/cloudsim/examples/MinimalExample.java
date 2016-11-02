@@ -8,7 +8,6 @@ import java.util.LinkedList;
 import java.util.List;
 
 import org.cloudbus.cloudsim.Cloudlet;
-import org.cloudbus.cloudsim.schedulers.CloudletSchedulerTimeShared;
 import org.cloudbus.cloudsim.CloudletSimple;
 import org.cloudbus.cloudsim.Datacenter;
 import org.cloudbus.cloudsim.DatacenterSimple;
@@ -33,10 +32,12 @@ import org.cloudbus.cloudsim.provisioners.PeProvisionerSimple;
 import org.cloudbus.cloudsim.resources.Bandwidth;
 import org.cloudbus.cloudsim.provisioners.ResourceProvisionerSimple;
 import org.cloudbus.cloudsim.resources.Ram;
+import org.cloudbus.cloudsim.schedulers.CloudletSchedulerSpaceShared;
 
 /**
- * A minimal example showing how to create a data center with 1 host and run 1
- * cloudlet on it.
+ * A minimal example showing how to create a data center with 1 host and run 2
+ * cloudlets on it.
+ * 
  * @author Manoel Campos da Silva Filho
  */
 public class MinimalExample {
@@ -82,9 +83,11 @@ public class MinimalExample {
             this.vmList.add(vm0);
             broker0.submitVmList(vmList);
 
-            /*Creates a cloudlet that represents an application to be run inside a VM.*/
+            /*Creates Cloudlets that represent applications to be run inside a VM.*/
             Cloudlet cloudlet0 = createCloudlet(broker0, vm0);
             this.cloudletList.add(cloudlet0);
+            Cloudlet cloudlet1 = createCloudlet(broker0, vm0);
+            this.cloudletList.add(cloudlet1);
             broker0.submitCloudletList(cloudletList);
 
             /*Starts the simulation and waits all cloudlets to be executed*/
@@ -153,11 +156,11 @@ public class MinimalExample {
         
         return new VmSimple(numberOfCreatedVms++, 
                 broker.getId(), mips, pesNumber, ram, bw, storage,
-                VMM, new CloudletSchedulerTimeShared());
+                VMM, new CloudletSchedulerSpaceShared());
     }
 
     private Cloudlet createCloudlet(DatacenterBroker broker, Vm vm) {
-        long length = 400000; //in Million Structions (MI)
+        long length = 10000; //in Million Structions (MI)
         long fileSize = 300; //Size (in bytes) before execution
         long outputSize = 300; //Size (in bytes) after execution
         int  numberOfCpuCores = vm.getNumberOfPes(); //cloudlet will use all the VM's CPU cores

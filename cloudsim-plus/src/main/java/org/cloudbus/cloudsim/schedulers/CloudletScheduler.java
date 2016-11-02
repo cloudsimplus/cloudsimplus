@@ -243,30 +243,6 @@ public interface CloudletScheduler extends Serializable {
      */
     boolean hasFinishedCloudlets();
 
-	/**
-	 * Checks if a Cloudlet can be added to the execution list or not.
-	 * Each CloudletScheduler can define a different policy to
-	 * indicate if a Cloudlet can be added to the execution list
-	 * or not at the moment this method is called.
-	 *
-	 * <p>For instance, time-shared implementations can put all
-	 * Cloudlets in the execution list, once it uses a preemptive policy
-	 * that shares the CPU time between all running Cloudlets,
-	 * even there are more Cloudlets than the number of CPUs.
-	 * That is, it might always add new Cloudlets to the execution list.
-	 * </p>
-	 *
-	 * <p>On the other hand, space-shared schedulers do not share
-	 * the same CPUs between different Cloudlets. In this type of
-	 * scheduler, a CPU is only allocated to a Cloudlet when the previous
-	 * Cloudlet finished its entire execution.
-	 * That is, it might not always add new Cloudlets to the execution list.</p>
-	 *
-	 * @param cloudlet Cloudlet to check if it can be added to the execution list
-	 * @return true if the Cloudlet can be added to the execution list, false otherwise
-	 */
-	boolean canAddCloudletToExecutionList(CloudletExecutionInfo cloudlet);
-
     /**
      * Returns one cloudlet to migrate to another Vm.
      * How the migrating cloudlet is select is defined by each
@@ -302,7 +278,7 @@ public interface CloudletScheduler extends Serializable {
     int runningCloudletsNumber();
 
     /**
-     * Updates the processing of cloudlets running under management of this scheduler.
+     * Updates the processing of cloudlets inside the Vm running under management of this scheduler.
      *
      * @param currentTime current simulation time
      * @param mipsShare list with MIPS share of each Pe available to the scheduler
@@ -332,6 +308,30 @@ public interface CloudletScheduler extends Serializable {
      *
      */
     void updateCloudletProcessing(CloudletExecutionInfo rcl, double currentTime);
+    
+    /**
+	 * Checks if a Cloudlet can be added to the execution list or not.
+	 * Each CloudletScheduler can define a different policy to
+	 * indicate if a Cloudlet can be added to the execution list
+	 * or not at the moment this method is called.
+	 *
+	 * <p>For instance, time-shared implementations can put all
+	 * Cloudlets in the execution list, once it uses a preemptive policy
+	 * that shares the CPU time between all running Cloudlets,
+	 * even there are more Cloudlets than the number of CPUs.
+	 * That is, it might always add new Cloudlets to the execution list.
+	 * </p>
+	 *
+	 * <p>On the other hand, space-shared schedulers do not share
+	 * the same CPUs between different Cloudlets. In this type of
+	 * scheduler, a CPU is only allocated to a Cloudlet when the previous
+	 * Cloudlet finished its entire execution.
+	 * That is, it might not always add new Cloudlets to the execution list.</p>
+	 *
+	 * @param cloudlet Cloudlet to check if it can be added to the execution list
+	 * @return true if the Cloudlet can be added to the execution list, false otherwise
+	 */
+	boolean canAddCloudletToExecutionList(CloudletExecutionInfo cloudlet);    
 
     /**
      * A property that implements the Null Object Design Pattern for {@link CloudletScheduler}
@@ -361,12 +361,12 @@ public interface CloudletScheduler extends Serializable {
         @Override public double getTotalCurrentRequestedMipsForCloudlet(CloudletExecutionInfo rcl, double time) { return 0.0; }
         @Override public double getTotalUtilizationOfCpu(double time) { return 0.0; }
         @Override public boolean hasFinishedCloudlets() { return false; }
-	    @Override public boolean canAddCloudletToExecutionList(CloudletExecutionInfo cloudlet) { return false; }
 	    @Override public Cloudlet getCloudletToMigrate() { return Cloudlet.NULL; }
         @Override public int runningCloudletsNumber() { return 0; }
         @Override public double updateVmProcessing(double currentTime, List<Double> mipsShare) { return 0.0; }
         @Override public Vm getVm() { return Vm.NULL; }
         @Override public void setVm(Vm vm) {}
         @Override public void updateCloudletProcessing(CloudletExecutionInfo rcl, double currentTime) {}
+        @Override public boolean canAddCloudletToExecutionList(CloudletExecutionInfo cloudlet) { return false; }
     };
 }

@@ -108,11 +108,8 @@ at a terminal.
 The project has a [bash script](script/bootstrap.sh) that you can use to build and run CloudSim Plus examples. 
 This is a script for Unix-like system such as Linux, FreeBDS and Mac OSX.
 
-To run some example type the command: `sh script/bootstrap.sh ExampleClassName`.
+To run some example type the command: `sh script/bootstrap.sh package.ExampleClassName`.
 For instance, to run the CloudSimExample1 you can type: `sh script/bootstrap.sh org.cloudbus.cloudsim.examples.CloudSimExample1`. 
-To run an example into a sub-directory, type `sh script/bootstrap.sh package_name.ExampleClassName`.
-For instance, to run the [workload/SwfWorkloadFormatExample1](/cloudsim-plus-examples/src/main/java/org/cloudbus/cloudsim/examples/workload/SwfWorkloadFormatExample1.java) 
-example, type `sh script/bootstrap.sh org.cloudbus.cloudsim.examples.workload.SwfWorkloadFormatExample1`.
 
 The script checks if it is required to build the project, using maven in this case, making sure to download all dependencies. 
 To see what examples are available, just navigate through the [examples directory](/cloudsim-plus-examples/src/main/java/org/cloudbus/cloudsim/examples).
@@ -171,9 +168,11 @@ Vm vm0 = createVm(broker0);
 this.vmList.add(vm0);
 broker0.submitVmList(vmList);
 
-/*Creates a cloudlet that represents an application to be run inside a VM.*/
+/*Creates Cloudlets that represent applications to be run inside a VM.*/
 Cloudlet cloudlet0 = createCloudlet(broker0, vm0);
 this.cloudletList.add(cloudlet0);
+Cloudlet cloudlet1 = createCloudlet(broker0, vm0);
+this.cloudletList.add(cloudlet1);
 broker0.submitCloudletList(cloudletList);
 
 /*Starts the simulation and waits all cloudlets to be executed*/

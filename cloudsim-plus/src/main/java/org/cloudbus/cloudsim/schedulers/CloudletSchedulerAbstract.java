@@ -84,6 +84,7 @@ public abstract class CloudletSchedulerAbstract implements CloudletScheduler {
      */
     public CloudletSchedulerAbstract() {
         setPreviousTime(0.0);
+        processor = new Processor();
         usedPes = 0;
 	    vm = Vm.NULL;
         cloudletWaitingList  = new ArrayList<>();
@@ -152,7 +153,6 @@ public abstract class CloudletSchedulerAbstract implements CloudletScheduler {
 
 	@Override
 	public double cloudletSubmit(Cloudlet cl, double fileTransferTime) {
-		//Log.println(Log.Level.INFO, getClass(), CloudSim.clock(), "Cloudlet %d file transfer time: %f", cl.getId(), fileTransferTime);
 		CloudletExecutionInfo rcl = new CloudletExecutionInfo(cl);
 		if(canAddCloudletToExecutionList(rcl)){
 			rcl.setCloudletStatus(Cloudlet.Status.INEXEC);
@@ -162,7 +162,7 @@ public abstract class CloudletSchedulerAbstract implements CloudletScheduler {
 			return fileTransferTime + (cl.getCloudletLength() / getProcessor().getCapacity());
 		}
 
-		// no enough free PEs: go to the waiting queue
+		// No enough free PEs, then add Cloudlet to the waiting queue
 		moveCloudletToWaitingList(rcl);
 		return 0.0;
 	}
@@ -372,6 +372,27 @@ public abstract class CloudletSchedulerAbstract implements CloudletScheduler {
             .map(removeCloudletFromListAndUpdateItsStatus)
             .orElse(Cloudlet.NULL);
     }
+    
+    /**
+     * Selects the next Cloudlets to start executing and adds them to the execution list.
+     * The method might move the currently executing Cloudlets
+     * to the waiting list in order to give other Cloudlets
+     * the opportunity to use the PEs, what is called <a href="https://en.wikipedia.org/wiki/Context_switch">context switch</a>.
+     * However, each CloudletScheduler implementation is in charge to decide how
+     * this process is implemented. For instance, Space-Shared schedulers may just
+     * perform context switch just after currently running Cloudlets completely
+     * finish executing.
+     * 
+     * <p>This method is called internally by the {@link #updateVmProcessing(double, java.util.List)} one.</p>
+     *
+     * @param currentTime current simulation time
+     * @param numberOfJustFinishedCloudlets the number of Cloudlets that are currently finished since
+     * the last time the method was called. Accordingly, it isn't the overall amount of finished
+     * Cloudlets so far, but the finished amount since the last time
+     * @pre currentTime >= 0
+     * @post $none
+     */
+    protected abstract void selectNextCloudletsToStartExecuting(double currentTime, int numberOfJustFinishedCloudlets);
 
 	@Override
 	public double updateVmProcessing(double currentTime, List<Double> mipsShare) {
@@ -382,10 +403,9 @@ public abstract class CloudletSchedulerAbstract implements CloudletScheduler {
 			return Double.MAX_VALUE;
 		}
 
-		updateCloudletsProcessing(currentTime);
-
-		final int finished = removeFinishedCloudletsFromExecutionList();
-		startNewCloudletsFromWaitingList(finished);
+		updateCloudletsProcessing(currentTime);        
+		final int finishedCloudlets = removeFinishedCloudletsFromExecutionList();
+        selectNextCloudletsToStartExecuting(currentTime, finishedCloudlets);
 
 		double nextEvent = getEstimatedFinishTimeOfSoonerFinishingCloudlet(currentTime);
 		setPreviousTime(currentTime);
@@ -399,7 +419,6 @@ public abstract class CloudletSchedulerAbstract implements CloudletScheduler {
      * @param currentTime current simulation time
      */
     private void updateCloudletsProcessing(double currentTime) {
-		Log.println(Log.Level.DEBUG, getClass(), currentTime, "getCloudletExecList size: %d\n", getCloudletExecList().size());
         getCloudletExecList().forEach(rcl -> updateCloudletProcessing(rcl, currentTime));
     }
 
@@ -600,7 +619,7 @@ public abstract class CloudletSchedulerAbstract implements CloudletScheduler {
 	 *
 	 * @param numberOfFinishedCloudlets number of Cloudlets that have just finished.
 	 */
-    private void startNewCloudletsFromWaitingList(int numberOfFinishedCloudlets) {
+    protected void startNewCloudletsFromWaitingList(int numberOfFinishedCloudlets) {
         if (getCloudletWaitingList().isEmpty()) {
 	        return;
         }
@@ -613,7 +632,7 @@ public abstract class CloudletSchedulerAbstract implements CloudletScheduler {
 
         for(int i = 0; i < numberOfFinishedCloudlets; i++){
             findSuitableWaitingCloudletToStartExecuting().ifPresent(addCloudletToExecutionList);
-        };
+        }
     }
 
     /**
