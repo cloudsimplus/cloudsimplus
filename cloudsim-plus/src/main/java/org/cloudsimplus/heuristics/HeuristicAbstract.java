@@ -10,13 +10,17 @@ import java.util.stream.IntStream;
  * A base class for {@link Heuristic} implementations.
  *
  * @author Manoel Campos da Silva Filho
- * @param <T> the class of solutions the heuristic will deal with
+ * @param <S> the class of solutions the heuristic will deal with, starting with a initial
+ *           solution (usually random, depending on sub-classes implementations)
+ *           and executing the solution search in order
+ *           to achieve a satisfying solution (defined by a stop criteria)
  */
-public abstract class HeuristicAbstract<T extends HeuristicSolution>  implements Heuristic<T> {
+public abstract class HeuristicAbstract<S extends HeuristicSolution<?>>  implements Heuristic<S> {
 	/**
 	 * Reference to the generic class that will be used to instantiate objects.
 	 */
-	protected final Class<T> klass;
+	protected final Class<S> solutionClass;
+
 	private final ContinuousDistribution random;
 	/**
 	 * @see #getNumberOfNeighborhoodSearchesByIteration()
@@ -25,11 +29,11 @@ public abstract class HeuristicAbstract<T extends HeuristicSolution>  implements
 	/**
 	 * @see #getBestSolutionSoFar()
 	 */
-	protected T bestSolutionSoFar;
+	protected S bestSolutionSoFar;
 	/**
 	 * @see #getNeighborSolution()
 	 */
-	protected T neighborSolution;
+	protected S neighborSolution;
 
 	/**
 	 * @see #getSolveTime()
@@ -40,9 +44,10 @@ public abstract class HeuristicAbstract<T extends HeuristicSolution>  implements
 	 * Creates a heuristic.
 	 *
 	 * @param random a random number generator
+	 * @param solutionClass reference to the generic class that will be used to instantiate heuristic solutions
 	 */
-	public HeuristicAbstract(ContinuousDistribution random, Class<T> klass){
-		this.klass = klass;
+	public HeuristicAbstract(ContinuousDistribution random, Class<S> solutionClass){
+		this.solutionClass = solutionClass;
 		this.random = random;
 		this.numberOfNeighborhoodSearchesByIteration = 1;
 		setBestSolutionSoFar(newSolutionInstance());
@@ -70,9 +75,9 @@ public abstract class HeuristicAbstract<T extends HeuristicSolution>  implements
 		return random;
 	}
 
-	private T newSolutionInstance() throws RuntimeException {
+	private S newSolutionInstance() throws RuntimeException {
 	    try {
-	        Constructor<T> c = klass.getConstructor(new Class[]{Heuristic.class});
+	        Constructor<S> c = solutionClass.getConstructor(new Class[]{Heuristic.class});
 	        return c.newInstance(this);
 	    } catch (IllegalArgumentException | InvocationTargetException | NoSuchMethodException | SecurityException | InstantiationException | IllegalAccessException ex) {
 	        throw new RuntimeException(ex);
@@ -96,12 +101,12 @@ public abstract class HeuristicAbstract<T extends HeuristicSolution>  implements
 	}
 
 	@Override
-	public T solve() {
+	public S solve() {
 		long startTime = System.currentTimeMillis();
 		setBestSolutionSoFar(getInitialSolution());
 		while (!isToStopSearch()) {
 			IntStream.range(0, getNumberOfNeighborhoodSearchesByIteration()).forEach(i -> {
-				setNeighborSolution((T)getBestSolutionSoFar().createNeighbor());
+				setNeighborSolution(createNeighbor(getBestSolutionSoFar()));
 				if (getAcceptanceProbability() > getRandomValue(1)) {
 					setBestSolutionSoFar(getNeighborSolution());
 				}
@@ -115,12 +120,12 @@ public abstract class HeuristicAbstract<T extends HeuristicSolution>  implements
 	}
 
 	@Override
-	public T getBestSolutionSoFar() {
+	public S getBestSolutionSoFar() {
 	    return bestSolutionSoFar;
 	}
 
 	@Override
-	public T getNeighborSolution() {
+	public S getNeighborSolution() {
 	    return neighborSolution;
 	}
 
@@ -128,7 +133,7 @@ public abstract class HeuristicAbstract<T extends HeuristicSolution>  implements
 	 * Sets a solution as the current one.
 	 * @param solution the solution to set as the current one.
 	 */
-	protected final void setBestSolutionSoFar(T solution) {
+	protected final void setBestSolutionSoFar(S solution) {
         this.bestSolutionSoFar = solution;
     }
 
@@ -136,7 +141,7 @@ public abstract class HeuristicAbstract<T extends HeuristicSolution>  implements
 	 * Sets a solution as the neighbor one.
 	 * @param neighborSolution the solution to set as the neighbor one.
 	 */
-    protected final void setNeighborSolution(T neighborSolution) {
+    protected final void setNeighborSolution(S neighborSolution) {
         this.neighborSolution = neighborSolution;
     }
 

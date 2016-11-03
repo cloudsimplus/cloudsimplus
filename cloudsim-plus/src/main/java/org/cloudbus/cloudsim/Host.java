@@ -236,19 +236,8 @@ public interface Host extends Identificable {
     void setDatacenter(Datacenter datacenter);
 
     /**
-     * Sets the status of all host PEs to FAILED. NOTE: <tt>resName</tt> is used for debugging
-     * purposes, which is <b>ON</b> by default. Use {@link #setFailed(boolean)} if you do not want
-     * this information.
-     *
-     * @param resName the name of the resource
-     * @param failed the failed
-     * @return <tt>true</tt> if successful, <tt>false</tt> otherwise
-     */
-    boolean setFailed(String resName, boolean failed);
-
-    /**
-     * Sets the PEs of the host to a FAILED status.
-     *
+     * Sets the status of all host PEs to FAILED. 
+     * 
      * @param failed the failed
      * @return <tt>true</tt> if successful, <tt>false</tt> otherwise
      */
@@ -356,7 +345,6 @@ public interface Host extends Identificable {
         @Override public void reallocateMigratingInVms() {}
         @Override public void removeMigratingInVm(Vm vm) {}
         @Override public void setDatacenter(Datacenter datacenter) {}
-        @Override public boolean setFailed(String resName, boolean failed) { return false; }
         @Override public boolean setFailed(boolean failed) { return false; }
         @Override public boolean setPeStatus(int peId, Pe.Status status) { return false; }
         @Override public double updateVmsProcessing(double currentTime) { return 0.0; }

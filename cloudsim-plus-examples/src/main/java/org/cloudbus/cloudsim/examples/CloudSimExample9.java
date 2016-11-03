@@ -161,7 +161,7 @@ public class CloudSimExample9 {
             showCpuUtilizationForAllHosts(finishTime, datacenter0);
 
             String title = (newList.isEmpty() ? "Finished cloudlet list is empty" : "Executed cloudlets");
-            CloudletsTableBuilderHelper.print(new TextTableBuilder(title), newList);
+            new CloudletsTableBuilderHelper(new TextTableBuilder(title), newList);
             Log.printFormattedLine("%s finished!", CloudSimExample9.class.getSimpleName());
         } catch (Exception e) {
             e.printStackTrace();

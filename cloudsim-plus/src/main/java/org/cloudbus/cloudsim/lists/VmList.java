@@ -46,6 +46,7 @@ public class VmList {
                 return vm;
             }
         }
+
         return (T)Vm.NULL;
     }
 

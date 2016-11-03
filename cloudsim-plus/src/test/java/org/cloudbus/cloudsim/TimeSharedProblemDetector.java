@@ -111,20 +111,20 @@ public class TimeSharedProblemDetector {
             long outputSize = 300;
             UtilizationModel utilizationModel = new UtilizationModelFull();
 
-            Cloudlet cloudlet = 
-                    new CloudletSimple(id, length, pesNumber, fileSize, outputSize, 
+            Cloudlet cloudlet =
+                    new CloudletSimple(id, length, pesNumber, fileSize, outputSize,
                             utilizationModel, utilizationModel, utilizationModel);
             cloudlet.setUserId(brokerId);
             cloudlet.setVmId(vmid);
 
-            Cloudlet cloudlet1 = 
-                    new CloudletSimple(1, length, pesNumber, fileSize, outputSize, 
+            Cloudlet cloudlet1 =
+                    new CloudletSimple(1, length, pesNumber, fileSize, outputSize,
                             utilizationModel, utilizationModel, utilizationModel);
             cloudlet1.setUserId(brokerId);
             cloudlet1.setVmId(1);
 
-            Cloudlet cloudlet2 = 
-                    new CloudletSimple(2, length, pesNumber, fileSize, outputSize, 
+            Cloudlet cloudlet2 =
+                    new CloudletSimple(2, length, pesNumber, fileSize, outputSize,
                             utilizationModel, utilizationModel, utilizationModel);
             cloudlet2.setUserId(brokerId);
             cloudlet2.setVmId(2);
@@ -217,7 +217,7 @@ public class TimeSharedProblemDetector {
         DatacenterSimple datacenter = null;
         try {
             datacenter = new DatacenterSimple(
-                    name, characteristics, 
+                    name, characteristics,
                     new VmAllocationPolicySimple(hostList), storageList, 0);
         } catch (Exception e) {
             e.printStackTrace();
@@ -266,7 +266,7 @@ public class TimeSharedProblemDetector {
             cloudlet = list.get(i);
             Log.print(indent + cloudlet.getId() + indent + indent);
 
-            if (cloudlet.getCloudletStatus() == Cloudlet.Status.SUCCESS) {
+            if (cloudlet.getStatus() == Cloudlet.Status.SUCCESS) {
                 Log.print("SUCCESS");
 
                 Log.printLine(indent + indent + cloudlet.getDatacenterId()

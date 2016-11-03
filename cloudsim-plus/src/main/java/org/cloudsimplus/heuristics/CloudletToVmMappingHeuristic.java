@@ -2,13 +2,15 @@ package org.cloudsimplus.heuristics;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
+
 import org.cloudbus.cloudsim.Cloudlet;
 import org.cloudbus.cloudsim.Vm;
 
 /**
  * Provides the methods to be used for implementing a heuristic to get
  * a sub-optimal solution for mapping Cloudlets to Vm's.
- * 
+ *
  * @author Manoel Campos da Silva Filho
  */
 public interface CloudletToVmMappingHeuristic extends Heuristic<CloudletToVmMappingSolution> {
@@ -36,12 +38,12 @@ public interface CloudletToVmMappingHeuristic extends Heuristic<CloudletToVmMapp
      * @param vmList
      */
     void setVmList(List<Vm> vmList);
-        
+
     /**
      * A property that implements the Null Object Design Pattern for {@link Heuristic}
      * objects.
      */
-    public static final CloudletToVmMappingHeuristic NULL = new CloudletToVmMappingHeuristicNull();    
+    public static final CloudletToVmMappingHeuristic NULL = new CloudletToVmMappingHeuristicNull();
 }
 
 /**

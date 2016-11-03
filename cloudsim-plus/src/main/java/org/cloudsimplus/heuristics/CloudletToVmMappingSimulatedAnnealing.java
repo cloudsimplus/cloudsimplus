@@ -1,6 +1,8 @@
 package org.cloudsimplus.heuristics;
 
 import java.util.List;
+import java.util.Map;
+
 import org.cloudbus.cloudsim.Cloudlet;
 import org.cloudbus.cloudsim.Vm;
 import org.cloudbus.cloudsim.distributions.ContinuousDistribution;
@@ -12,7 +14,9 @@ import org.cloudbus.cloudsim.distributions.ContinuousDistribution;
  *
  * @author Manoel Campos da Silva Filho
  */
-public class CloudletToVmMappingSimulatedAnnealing extends SimulatedAnnealing<CloudletToVmMappingSolution> implements CloudletToVmMappingHeuristic {
+public class CloudletToVmMappingSimulatedAnnealing
+      extends SimulatedAnnealing<CloudletToVmMappingSolution>
+      implements CloudletToVmMappingHeuristic {
     private CloudletToVmMappingSolution initialSolution;
 
     /** @see #getVmList() */
@@ -30,7 +34,7 @@ public class CloudletToVmMappingSimulatedAnnealing extends SimulatedAnnealing<Cl
      * @see #setCoolingRate(double)
      */
     public CloudletToVmMappingSimulatedAnnealing(double initialTemperature, ContinuousDistribution random) {
-        super(CloudletToVmMappingSolution.class, random);
+        super(random, CloudletToVmMappingSolution.class);
 	    setCurrentTemperature(initialTemperature);
         initialSolution = new CloudletToVmMappingSolution(this);
     }
@@ -60,37 +64,21 @@ public class CloudletToVmMappingSimulatedAnnealing extends SimulatedAnnealing<Cl
         return initialSolution;
     }
 
-    /**
-     *
-     * @return the list of available Vm's to host Cloudlets.
-     */
     @Override
     public List<Vm> getVmList() {
         return vmList;
     }
 
-    /**
-     * Sets the list of available Vm's to host Cloudlets.
-     * @param vmList
-     */
     @Override
     public void setVmList(List<Vm> vmList) {
         this.vmList = vmList;
     }
 
-    /**
-     *
-     * @return the list of cloudlets to be mapped to {@link #getVmList() available Vm's}.
-     */
     @Override
     public List<Cloudlet> getCloudletList() {
         return cloudletList;
     }
 
-    /**
-     * Sets the list of cloudlets to be mapped to {@link #getVmList() available Vm's}.
-     * @param cloudletList
-     */
     @Override
     public void setCloudletList(List<Cloudlet> cloudletList) {
         this.cloudletList = cloudletList;
@@ -102,6 +90,13 @@ public class CloudletToVmMappingSimulatedAnnealing extends SimulatedAnnealing<Cl
     private Vm getRandomVm() {
         final int i = getRandomValue(vmList.size());
         return vmList.get(i);
+    }
+
+    @Override
+    public CloudletToVmMappingSolution createNeighbor(CloudletToVmMappingSolution source) {
+        CloudletToVmMappingSolution clone = new CloudletToVmMappingSolution(source);
+        clone.swapVmsOfTwoRandomSelectedMapEntries();
+        return clone;
     }
 
 }

@@ -108,7 +108,7 @@ public class NetworkVmsExample1 {
 
     private void showSimulationResults() {
         List<Cloudlet> newList = broker.getCloudletsFinishedList();
-        CloudletsTableBuilderHelper.print(new TextTableBuilder(), newList);
+        new CloudletsTableBuilderHelper(new TextTableBuilder(), newList);
         
         for(NetworkHost host: datacenter.<NetworkHost>getHostList()){
             Log.printFormatted("\nHost %d data transfered: %d bytes",

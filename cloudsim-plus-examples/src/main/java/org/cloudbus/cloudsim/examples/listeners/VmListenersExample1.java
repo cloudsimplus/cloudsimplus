@@ -126,7 +126,7 @@ public class VmListenersExample1 {
         CloudSim.stopSimulation();
 
         List<Cloudlet> finishedCloudlets = broker.getCloudletsFinishedList();
-        CloudletsTableBuilderHelper.print(new TextTableBuilder(), finishedCloudlets);
+        new CloudletsTableBuilderHelper(new TextTableBuilder(), finishedCloudlets);
     }
 
     /**

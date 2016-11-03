@@ -107,9 +107,9 @@ public class CloudletSchedulerDynamicWorkload extends CloudletSchedulerTimeShare
             }
         }
 
-        for (CloudletExecutionInfo rgl : cloudletsToFinish) {
-            getCloudletExecList().remove(rgl);
-            cloudletFinish(rgl);
+        for (CloudletExecutionInfo c : cloudletsToFinish) {
+            removeCloudletFromExecList(c);
+            cloudletFinish(c);
         }
 
         setPreviousTime(currentTime);
@@ -124,8 +124,7 @@ public class CloudletSchedulerDynamicWorkload extends CloudletSchedulerTimeShare
     @Override
     public double cloudletSubmit(Cloudlet cl, double fileTransferTime) {
         CloudletExecutionInfo rcl = new CloudletExecutionInfo(cl);
-        rcl.setCloudletStatus(Cloudlet.Status.INEXEC);
-        getCloudletExecList().add(rcl);
+        addCloudletToExecList(rcl);
         return getEstimatedFinishTime(rcl, getPreviousTime());
     }
 
@@ -186,10 +185,7 @@ public class CloudletSchedulerDynamicWorkload extends CloudletSchedulerTimeShare
     public double getTotalCurrentAllocatedMipsForCloudlet(CloudletExecutionInfo rcl, double time) {
         double totalCurrentRequestedMips = getTotalCurrentRequestedMipsForCloudlet(rcl, time);
         double totalCurrentAvailableMips = getTotalCurrentAvailableMipsForCloudlet(rcl, getCurrentMipsShare());
-        if (totalCurrentRequestedMips > totalCurrentAvailableMips) {
-            return totalCurrentAvailableMips;
-        }
-        return totalCurrentRequestedMips;
+        return Math.min(totalCurrentRequestedMips, totalCurrentAvailableMips);
     }
 
     /**

@@ -7,7 +7,6 @@
  */
 package org.cloudbus.cloudsim.resources;
 
-import junit.framework.Assert;
 import org.cloudbus.cloudsim.provisioners.PeProvisioner;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertSame;
@@ -86,7 +85,7 @@ public class PeTest {
     public void testNewPe_nullPeProvisioner() {
         createPe(null);
     }
-    
+
     @Test
     public void testNullObject(){
         assertEquals(0, Pe.NULL.getId(), 0);
@@ -94,7 +93,7 @@ public class PeTest {
         assertEquals(Status.FAILED, Pe.NULL.getStatus());
         assertFalse(Pe.NULL.setMips(1000));
         assertEquals(0, Pe.NULL.getPeProvisioner().getMips(), 0);
-        
+
         //setters haven't any effect on Null Object Design Pattern
         Pe.NULL.setStatus(Status.FREE);
         assertEquals(Status.FAILED, Pe.NULL.getStatus());

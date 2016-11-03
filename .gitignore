@@ -6,6 +6,7 @@
 /cloudsim-plus/nbproject/
 /distribution/target/
 /target/
+dependency-reduced-pom.xml
 
 #Ignore IntelliJ IDEA project files
 .idea/

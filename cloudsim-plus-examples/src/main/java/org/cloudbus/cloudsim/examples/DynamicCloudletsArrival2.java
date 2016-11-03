@@ -123,7 +123,7 @@ public class DynamicCloudletsArrival2 {
         CloudSim.stopSimulation();
 
         List<Cloudlet> cloudlets = broker.getCloudletsFinishedList();
-        CloudletsTableBuilderHelper.print(new TextTableBuilder(), cloudlets);
+        new CloudletsTableBuilderHelper(new TextTableBuilder(), cloudlets);
     }
 
     /**

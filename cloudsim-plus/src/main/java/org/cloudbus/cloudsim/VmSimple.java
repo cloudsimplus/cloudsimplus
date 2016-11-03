@@ -1,7 +1,7 @@
 /*
  * Title: CloudSim Toolkit Description: CloudSim (Cloud Simulation) Toolkit for Modeling and
  * Simulation of Clouds Licence: GPL - http://www.gnu.org/copyleft/gpl.html
- * 
+ *
  * Copyright (c) 2009-2012, The University of Melbourne, Australia
  */
 package org.cloudbus.cloudsim;
@@ -16,11 +16,8 @@ import org.cloudbus.cloudsim.core.CloudSim;
 import org.cloudbus.cloudsim.listeners.DatacenterToVmEventInfo;
 import org.cloudbus.cloudsim.listeners.EventListener;
 import org.cloudbus.cloudsim.listeners.HostToVmEventInfo;
-import org.cloudbus.cloudsim.resources.Bandwidth;
-import org.cloudbus.cloudsim.resources.Ram;
-import org.cloudbus.cloudsim.resources.RawStorage;
+import org.cloudbus.cloudsim.resources.*;
 import org.cloudbus.cloudsim.schedulers.CloudletScheduler;
-import org.cloudbus.cloudsim.resources.ResourceManageable;
 
 /**
  * Implements the basic features of a Virtual Machine (VM) that runs inside a
@@ -645,9 +642,8 @@ public class VmSimple implements Vm {
     }
 
     /**
-     * <p>
-     * Compares this Vm with another one, considering the
-     * {@link #getTotalMipsCapacity() total MIPS capacity of the Vm's}.</p>
+     * <p>Compares this Vm with another one, considering
+     * the {@link #getTotalMipsCapacity() total MIPS capacity of the Vm's}.</p>
      *
      * @param o the Vm to be compared to
      * @return {@inheritDoc }

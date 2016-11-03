@@ -18,7 +18,7 @@ import org.cloudbus.cloudsim.Cloudlet;
  * @since CloudSim Toolkit 2.0
  */
 public class CloudletList {
-    
+
     /**
      * A index to indicate that an object was not found into a list.
      */
@@ -33,11 +33,12 @@ public class CloudletList {
      * @return a Cloudlet with the given ID or $null if not found
      */
     public static <T extends Cloudlet> T getById(List<T> cloudletList, int id) {
-        for (Cloudlet cloudlet : cloudletList) {
+        for (T cloudlet : cloudletList) {
             if (cloudlet.getId() == id) {
-                return (T) cloudlet;
+                return cloudlet;
             }
         }
+
         /**
          * @todo @author manoelcampos Should return an empty object instead of
          * null, in order to avoid NullPointerExceptions. Check the same for the
@@ -80,5 +81,5 @@ public class CloudletList {
             return cla.compareTo(clb);
         });
     }
-    
+
 }

@@ -24,6 +24,51 @@
                 </configuration>
             </plugin>
 
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-jar-plugin</artifactId>
+				<version>3.0.2</version>
+				<configuration>
+					<archive>
+						<manifest>
+							<!-- Adds dependencies to classpath into the manifest file inside the jar !-->
+							<addClasspath>true</addClasspath>
+
+							<!-- Defines that the dependencies will follow the same
+							 hierarchical directory structure of a maven repository !-->
+							<classpathLayoutType>repository</classpathLayoutType>
+
+							<!-- Defines the root folder where the dependencies are. In this case
+							 is the the root of the local maven repository. !-->
+							<classpathPrefix>${user.home}/.m2/repository/</classpathPrefix>
+						</manifest>
+					</archive>
+				</configuration>
+			</plugin>
+
+            <!-- Creates a "uber jar" that includes all external dependencies
+            inside it. By this way, the jar can be run directly in any
+            computer with a regular JVM installed. -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-shade-plugin</artifactId>
+				<version>2.4.3</version>
+                <executions>
+                    <execution>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>shade</goal>
+                        </goals>
+                    </execution>
+                </executions>
+                <configuration>
+                    <!-- Keep the original jar file and generate a new shaded jar (the uber jar) -->
+                    <shadedArtifactAttached>true</shadedArtifactAttached>
+                    <!-- The suffix to add to the shaded jar -->
+                    <shadedClassifierName>with-dependencies</shadedClassifierName>
+                </configuration>
+            </plugin>
+
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-source-plugin</artifactId>

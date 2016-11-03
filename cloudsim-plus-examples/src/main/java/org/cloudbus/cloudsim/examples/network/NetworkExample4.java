@@ -136,7 +136,7 @@ public class NetworkExample4 {
 
                     CloudSim.stopSimulation();
 
-                    CloudletsTableBuilderHelper.print(new TextTableBuilder(), newList);
+                    new CloudletsTableBuilderHelper(new TextTableBuilder(), newList);
                     Log.printFormattedLine("%s finished!", NetworkExample4.class.getSimpleName());
             }
             catch (Exception e) {

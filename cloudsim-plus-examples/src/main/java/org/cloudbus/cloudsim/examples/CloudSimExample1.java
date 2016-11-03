@@ -140,7 +140,7 @@ public class CloudSimExample1 {
 
             //Final step: Print results when simulation is over
             List<Cloudlet> newList = broker.getCloudletsFinishedList();
-            CloudletsTableBuilderHelper.print(new TextTableBuilder(), newList);
+            new CloudletsTableBuilderHelper(new TextTableBuilder(), newList);
             Log.printFormattedLine("%s finished!", CloudSimExample1.class.getSimpleName());
         } catch (Exception e) {
             e.printStackTrace();

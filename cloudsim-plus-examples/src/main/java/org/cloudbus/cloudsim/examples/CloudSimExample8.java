@@ -156,7 +156,7 @@ public class CloudSimExample8 {
 
             CloudSim.stopSimulation();
 
-            CloudletsTableBuilderHelper.print(new TextTableBuilder(), newList);
+            new CloudletsTableBuilderHelper(new TextTableBuilder(), newList);
             Log.printFormattedLine("%s finished!", CloudSimExample8.class.getSimpleName());
         } catch (Exception e) {
             e.printStackTrace();

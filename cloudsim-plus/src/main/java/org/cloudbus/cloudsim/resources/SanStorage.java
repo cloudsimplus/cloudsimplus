@@ -9,17 +9,17 @@
 package org.cloudbus.cloudsim.resources;
 
 /**
- * SanStorage represents a Storage Area Network (SAN) composed of a set of 
+ * SanStorage represents a Storage Area Network (SAN) composed of a set of
  * hard disks connected in a LAN.
  * Capacity of individual disks are abstracted, thus only the overall capacity of the SAN is
  * considered. <p/>
- * 
+ *
  * <tt>WARNING</tt>: This class is not yet fully functional. Effects of network contention are
  * not considered in the simulation. So, time for file transfer is underestimated in the presence of
  * high network load.
- * 
+ *
  * @todo See the warning in class documentation.
- * 
+ *
  * @author Rodrigo N. Calheiros
  * @since CloudSim Toolkit 1.0
  */
@@ -32,10 +32,10 @@ public class SanStorage extends HarddriveStorage {
 
     /**
      * Creates a new SAN with a given capacity, latency, and bandwidth of the network connection.
-     * 
+     *
      * @param capacity Total storage capacity of the SAN
-     * @param bandwidth Network bandwidth
-     * @param networkLatency Network latency
+     * @param bandwidth Network bandwidth (in Megabits/s)
+     * @param networkLatency Network latency (in seconds)
      * @throws IllegalArgumentException when the name and the capacity are not valid
      */
     public SanStorage(final long capacity, final double bandwidth, final double networkLatency) throws IllegalArgumentException {
@@ -47,11 +47,11 @@ public class SanStorage extends HarddriveStorage {
     /**
      * Creates a new SAN with a given capacity, latency, and bandwidth of the network connection
      * and with a specific name.
-     * 
+     *
      * @param name the name of the new storage device
      * @param capacity Storage device capacity
-     * @param bandwidth Network bandwidth
-     * @param networkLatency Network latency
+     * @param bandwidth Network bandwidth (in Megabits/s)
+     * @param networkLatency Network latency (in seconds)
      * @throws IllegalArgumentException when the name and the capacity are not valid
      */
     public SanStorage(final String name, final long capacity, final double bandwidth, final double networkLatency){
@@ -71,7 +71,7 @@ public class SanStorage extends HarddriveStorage {
      * It is defined as the minimum value between the disk rate and the SAN bandwidth.
      * Even the bandwidth being faster the the disk rate, the max transfer rate
      * is limited by the disk speed.
-     * 
+     *
      * @return the max transfer in MB/sec
      */
     @Override
@@ -88,7 +88,7 @@ public class SanStorage extends HarddriveStorage {
         final double time = super.addFile(file);
         if(time > 0)
             return time + getFileTransferTimePlusNetworkLatency(file);
-        
+
         return time;
     }
 
@@ -103,7 +103,7 @@ public class SanStorage extends HarddriveStorage {
     }
 
     /**
-     * Get the bandwidth of the SAN network. 
+     * Get the bandwidth of the SAN network.
      * @return the bandwidth
      */
     public double getBandwidth() {
@@ -111,7 +111,7 @@ public class SanStorage extends HarddriveStorage {
     }
 
     /**
-     * Gets the SAN's network latency. 
+     * Gets the SAN's network latency.
      * @return the SAN's network latency
      */
     public double getNetworkLatency() {

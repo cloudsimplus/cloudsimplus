@@ -18,8 +18,8 @@ import org.cloudbus.cloudsim.Vm;
  * A simple VM allocation policy that does <b>not</b> perform any optimization
  * on VM allocation.
  *
- * <br/>If you are using any algorithms, policies or workload included in the
- * power package please cite the following paper:<br/>
+ * <p>If you are using any algorithms, policies or workload included in the
+ * power package please cite the following paper:</p>
  *
  * <ul>
  * <li><a href="http://dx.doi.org/10.1002/cpe.1867">Anton Beloglazov, and

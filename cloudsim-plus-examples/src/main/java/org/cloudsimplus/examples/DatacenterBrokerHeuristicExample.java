@@ -41,13 +41,13 @@ import org.cloudsimplus.heuristics.CloudletToVmMappingSolution;
 import org.cloudsimplus.heuristics.HeuristicSolution;
 
 /**
- * <p>An example that uses a
+ * An example that uses a
  * <a href="http://en.wikipedia.org/wiki/Simulated_annealing">Simulated Annealing</a>
  * heuristic to find a suboptimal mapping between Cloudlets and Vm's submitted to a
  * DatacenterBroker. The number of {@link Pe}s of Vm's and Cloudlets are defined
  * randomly.
  *
- * The {@link DatacenterBrokerHeuristic} is used
+ * <p>The {@link DatacenterBrokerHeuristic} is used
  * with the {@link CloudletToVmMappingSimulatedAnnealing} class
  * in order to find an acceptable solution with a high
  * {@link HeuristicSolution#getFitness() fitness value}.</p>
@@ -124,7 +124,7 @@ public class DatacenterBrokerHeuristicExample {
             CloudSim.stopSimulation();
 
             List<Cloudlet> finishedCloudlets = broker0.getCloudletsFinishedList();
-            CloudletsTableBuilderHelper.print(new TextTableBuilder(), finishedCloudlets);
+            new CloudletsTableBuilderHelper(new TextTableBuilder(), finishedCloudlets);
 
 	        print(broker0);
         } catch (Exception e) {

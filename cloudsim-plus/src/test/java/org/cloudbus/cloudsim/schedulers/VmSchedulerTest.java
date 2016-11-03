@@ -1,9 +1,5 @@
 package org.cloudbus.cloudsim.schedulers;
 
-import java.util.List;
-import java.util.Map;
-import org.cloudbus.cloudsim.Vm;
-import org.cloudbus.cloudsim.resources.Pe;
 import org.junit.Test;
 import static org.junit.Assert.*;
 

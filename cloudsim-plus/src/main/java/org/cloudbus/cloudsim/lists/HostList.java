@@ -104,11 +104,12 @@ public class HostList {
      * @post $none
      */
     public static <T extends Host> T getHostWithFreePe(List<T> hostList, int pesNumber) {
-        for (Host host : hostList) {
+        for (T host : hostList) {
             if (PeList.getNumberOfFreePes(host.getPeList()) >= pesNumber) {
-                return (T) host;
+                return host;
             }
         }
+
         return null;
     }
 

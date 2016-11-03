@@ -9,9 +9,10 @@ package org.cloudbus.cloudsim;
 
 import org.cloudbus.cloudsim.Cloudlet.Status;
 import org.cloudbus.cloudsim.core.CloudSim;
+import org.cloudbus.cloudsim.resources.Pe;
 
 /**
- * Represents execution information about a Cloudlet submitted to a Datacenter for
+ * Stores execution information about a Cloudlet submitted to a Datacenter for
  * processing. This class keeps track of the time for all activities in the
  * Datacenter for a specific Cloudlet. Before a Cloudlet exits the Datacenter,
  * it is RECOMMENDED to call this method {@link #finalizeCloudlet()}.
@@ -20,10 +21,11 @@ import org.cloudbus.cloudsim.core.CloudSim;
  * machine and the Pe (Processing Element) allocated to it. It acts as a
  * placeholder for maintaining the amount of resource share allocated at various
  * times for simulating any scheduling using internal events.
- * <p>
- As the VM where the Cloudlet is running might migrate to another
- Datacenter, each CloudletExecutionInfo object represents the data about
- execution of the cloudlet when the Vm was in a given Datacenter.
+ * </p>
+ * 
+ * <p>As the VM where the Cloudlet is running might migrate to another
+ * Datacenter, each CloudletExecutionInfo object represents the data about
+ * execution of the cloudlet when the Vm was in a given Datacenter.</p>
  *
  * @author Manzur Murshed
  * @author Rajkumar Buyya
@@ -32,9 +34,14 @@ import org.cloudbus.cloudsim.core.CloudSim;
 public class CloudletExecutionInfo {
 
     /**
-     * The Cloudlet object.
+     * @see #getCloudlet() 
      */
     private final Cloudlet cloudlet;
+
+	/**
+	 * @see #getFileTransferTime()
+	 */
+	private double fileTransferTime;
 
     /**
      * The time the cloudlet arrived for execution
@@ -62,11 +69,16 @@ public class CloudletExecutionInfo {
     private long cloudletFinishedSoFar;
 
     /**
-     * Latest cloudlet execution start time in the current Datacenter. 
+     * Latest cloudlet execution start time in the current Datacenter.
      * This attribute will only hold the latest
      * time since a Cloudlet can be canceled, paused or resumed.
      */
     private double startExecTime;
+
+	/**
+	 * @see #getLastProcessingTime()
+	 */
+	private double lastProcessingTime;
 
     /**
      * The total time the Cloudlet spent in the last state
@@ -78,7 +90,7 @@ public class CloudletExecutionInfo {
      */
     private double totalCompletionTime;
 
-    /* 
+    /*
      * The below attributes are only to be used by the CloudletSchedulerSpaceShared policy.
      * @todo @manoelcampos If the attributes have to be used only for a
      * specific scheduler, they shouldn't be here
@@ -89,13 +101,8 @@ public class CloudletExecutionInfo {
      * The number of PEs needed to execute this Cloudlet.
      */
     private int pesNumber;
-    
+
     // NOTE: Below attributes are related to Advanced Reservation (AR) stuff
-    /**
-     * Defines a values for fields that haven't been
-     * initialized yet.
-     */
-    private static final int NOT_FOUND = -1;
 
     /**
      * The reservation start time.
@@ -111,23 +118,24 @@ public class CloudletExecutionInfo {
      * The reservation id.
      */
     private final int reservationId;
-
+    
     /**
-     * Instantiates a new ResCloudlet object upon the arrival of a Cloudlet object.
+     * Instantiates a new CloudletExecutionInfo object upon the arrival of a Cloudlet object.
      * The arriving time is determined by
      * {@link org.cloudbus.cloudsim.core.CloudSim#clock()}.
      *
      * @param cloudlet a cloudlet object
-     * @see gridsim.CloudSim#clock()
+     *
+     * @see CloudSim#clock()
      * @pre cloudlet != null
      * @post $none
      */
     public CloudletExecutionInfo(Cloudlet cloudlet) {
-        this(cloudlet, 0, 0, NOT_FOUND);
+        this(cloudlet, 0, 0, Cloudlet.NOT_ASSIGNED);
     }
 
     /**
-     * Instantiates a new ResCloudlet object upon the arrival of a Cloudlet object.
+     * Instantiates a new CloudletExecutionInfo object upon the arrival of a Cloudlet object.
      * Use this constructor to store reserved Cloudlets, i.e. Cloudlets that
      * done reservation before. The arriving time is determined by
      * {@link org.cloudbus.cloudsim.core.CloudSim#clock()}.
@@ -135,10 +143,11 @@ public class CloudletExecutionInfo {
      * @param cloudlet a cloudlet object
      * @param startTime a reservation start time. Can also be interpreted as
      * starting time to execute this Cloudlet.
-     * @param duration a reservation reservationDuration time. 
+     * @param duration a reservation reservationDuration time.
      * Can also be interpreted as how long to execute this Cloudlet.
      * @param reservationId a reservation ID that owns this Cloudlet
-     * @see gridsim.CloudSim#clock()
+     *
+     * @see CloudSim#clock()
      * @pre cloudlet != null
      * @pre startTime > 0
      * @pre duration > 0
@@ -152,14 +161,14 @@ public class CloudletExecutionInfo {
         this.reservationId = reservationId;
         this.pesNumber = cloudlet.getNumberOfPes();
         this.arrivalTime = cloudlet.registerArrivalOfCloudletIntoDatacenter();
-        this.finishedTime = NOT_FOUND;  // Cannot finish in this hourly slot.
+        this.finishedTime = Cloudlet.NOT_ASSIGNED;  // Cannot finish in this hourly slot.
         this.totalCompletionTime = 0.0;
         this.startExecTime = 0.0;
 
         //In case a Cloudlet has been executed partially by some other host
         this.cloudletFinishedSoFar = cloudlet.getCloudletFinishedSoFar() * Consts.MILLION;
     }
-    
+
     /**
      * Gets the Cloudlet or reservation start time.
      *
@@ -213,7 +222,7 @@ public class CloudletExecutionInfo {
      * @post $none
      */
     public boolean hasReserved() {
-        return (reservationId != NOT_FOUND);
+        return (reservationId != Cloudlet.NOT_ASSIGNED);
     }
 
     /**
@@ -268,7 +277,7 @@ public class CloudletExecutionInfo {
      * @post $none
      */
     public int getCloudletClassType() {
-        return cloudlet.getClassType();
+        return cloudlet.getPriority();
     }
 
     /**
@@ -313,7 +322,6 @@ public class CloudletExecutionInfo {
                 startExecTime = clock;
                 cloudlet.setExecStartTime(startExecTime);
             }
-
         } catch (Exception e) {
             success = false;
         }
@@ -323,7 +331,7 @@ public class CloudletExecutionInfo {
 
     /**
      * Checks if the cloudlet is NOT in a running state.
-     * 
+     *
      * @param status The current cloudlet status
      * @return true if the cloudlet is NOT running, false if it is.
      */
@@ -397,7 +405,7 @@ public class CloudletExecutionInfo {
         double wallClockTime = CloudSim.clock() - arrivalTime;
         cloudlet.setWallClockTime(wallClockTime, totalCompletionTime);
 
-        long finishedLengthAcrossAllPes = 0;
+        long finishedLengthAcrossAllPes;
         //if (cloudlet.getCloudletTotalLength() * Consts.MILLION < cloudletFinishedSoFar) {
         if (cloudlet.getStatus() == Status.SUCCESS) {
             finishedLengthAcrossAllPes = cloudlet.getCloudletLength();
@@ -419,12 +427,12 @@ public class CloudletExecutionInfo {
     public void updateCloudletFinishedSoFar(long numberOfExecutedInstructions) {
         if(numberOfExecutedInstructions <= 0)
             return;
-        
+
         this.cloudletFinishedSoFar += numberOfExecutedInstructions;
-        this.cloudletFinishedSoFar = 
-                Math.min(this.cloudletFinishedSoFar, 
+        this.cloudletFinishedSoFar =
+                Math.min(this.cloudletFinishedSoFar,
                         cloudlet.getCloudletTotalLength()*Consts.MILLION);
-        
+
         double finishedSoFarByPeMI = cloudletFinishedSoFar  / pesNumber / Consts.MILLION;
         cloudlet.setCloudletFinishedSoFar((long)finishedSoFarByPeMI);
     }
@@ -469,14 +477,14 @@ public class CloudletExecutionInfo {
      * @pre $none
      * @post $result >= -1.0
      */
-    public double getClouddletFinishTime() {
+    public double getFinishTime() {
         return finishedTime;
     }
 
     /**
-     * Gets the related Cloudlet object.
+     * Gets the Cloudlet for which the execution information is related to.
      *
-     * @return cloudlet object
+     * @return cloudlet for this execution information object
      * @pre $none
      * @post $result != null
      */
@@ -504,4 +512,71 @@ public class CloudletExecutionInfo {
         return getUserId() + "-" + getCloudletId();
     }
 
+	/**
+	 * Gets the time to transfer the list of files required by the Cloudlet
+	 * from the Datacenter storage (such as a Storage Area Network)
+	 * to the Vm of the Cloudlet.
+     * @return 
+	 */
+	public double getFileTransferTime() {
+		return fileTransferTime;
+	}
+
+	/**
+	 * Sets the time to transfer the list of files required by the Cloudlet
+	 * from the Datacenter storage (such as a Storage Area Network)
+	 * to the Vm of the Cloudlet.
+	 *
+	 * @param fileTransferTime the file transfer time to set
+	 */
+	public void setFileTransferTime(double fileTransferTime) {
+		this.fileTransferTime = fileTransferTime;
+	}
+
+	/**
+	 * Gets the last time this Cloudlet was processed in some CPU ({@link Pe}).
+	 * @return the last time this Cloudlet was processed or zero when it has never been processed yet
+	 */
+	public double getLastProcessingTime() {
+		return lastProcessingTime;
+	}
+
+	/**
+	 * Sets the last time this Cloudlet was processed in some CPU ({@link Pe}).
+	 * @param lastProcessingTime the last processing time to set
+	 */
+	public void setLastProcessingTime(double lastProcessingTime) {
+		this.lastProcessingTime = lastProcessingTime;
+	}
+    
+    /**
+     * Gets the virtual runtime of the related Cloudlet.
+     * @return 
+     * 
+     * @see Cloudlet#getVirtualRuntime() 
+     */
+    public double getVirtualRuntime(){
+        return cloudlet.getVirtualRuntime();
+    }
+    
+    /**
+     * Sets the virtual runtime of the related Cloudlet.
+     * @param virtualRuntime the virtual runtime to set
+     * 
+     * @see Cloudlet#setVirtualRuntime(double) 
+     */
+    public void setVirtualRuntime(double virtualRuntime){
+        cloudlet.setVirtualRuntime(virtualRuntime);
+    }
+
+    @Override
+    public String toString() {
+        return String.format("Cloudlet %d", getCloudletId());
+    }
+
+    /**
+     * A property that implements the Null Object Design Pattern for {@link CloudletExecutionInfo}
+     * objects.
+     */
+    public static final CloudletExecutionInfo NULL = new CloudletExecutionInfo(Cloudlet.NULL);
 }

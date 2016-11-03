@@ -7,8 +7,8 @@
  */
 package org.cloudbus.cloudsim.schedulers;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
+
 import org.cloudbus.cloudsim.Cloudlet;
 import org.cloudbus.cloudsim.CloudletExecutionInfo;
 
@@ -25,6 +25,7 @@ import org.cloudbus.cloudsim.resources.Processor;
  *
  * @author Rodrigo N. Calheiros
  * @author Anton Beloglazov
+ * @author Manoel Campos da Silva Filho
  * @since CloudSim Toolkit 1.0
  */
 public class CloudletSchedulerSpaceShared extends CloudletSchedulerAbstract {
@@ -38,154 +39,109 @@ public class CloudletSchedulerSpaceShared extends CloudletSchedulerAbstract {
      */
     public CloudletSchedulerSpaceShared() {
         super();
-        usedPes = 0;
-    }
-
-    @Override
-    public double updateVmProcessing(double currentTime, List<Double> mipsShare) {
-        return super.updateVmProcessing(currentTime, mipsShare);
     }
 
     @Override
     public void cloudletFinish(CloudletExecutionInfo rcl) {
         super.cloudletFinish(rcl);
-        usedPes -= rcl.getNumberOfPes();
+        removeUsedPes(rcl.getNumberOfPes());
     }
 
     @Override
     public double cloudletResume(int cloudletId) {
-        CloudletExecutionInfo foundRcl = searchForCloudletIntoList(getCloudletPausedList(), cloudletId);
-        if (foundRcl == null) {
+	    Optional<CloudletExecutionInfo> optional = findCloudletInList(cloudletId, getCloudletPausedList());
+        if (!optional.isPresent()) {
             // not found in the paused list: either it is in in the queue, executing or not exist
             return 0.0;
         }
-        
-        getCloudletPausedList().remove(foundRcl);
+
+        CloudletExecutionInfo c = optional.get();
+        getCloudletPausedList().remove(c);
 
         // it can go to the exec list
-        if ((getProcessor().getNumberOfPes() - usedPes) >= foundRcl.getNumberOfPes()) {
-            foundRcl.setCloudletStatus(Cloudlet.Status.INEXEC);
-            long remainingLenghtAcrossAllPes = foundRcl.getRemainingCloudletLength();
-            remainingLenghtAcrossAllPes *= foundRcl.getNumberOfPes();
-            /**
-             * @todo @author manoelcampos It's very strange
-             * to change the cloudlet length that is
-             * defined by the user. And in the documentation
-             * of the attribute, it is supposed to be the length
-             * that will be executed in each cloudlet PE,
-             * not the length sum across all existing PEs,
-             * as it is being changed here 
-             * (you can see that the size is being multiplied by the
-             * number of PEs).
-             */
-            foundRcl.getCloudlet().setCloudletLength(remainingLenghtAcrossAllPes);
-
-            getCloudletExecList().add(foundRcl);
-            usedPes += foundRcl.getNumberOfPes();
-
-            // calculate the expected time for cloudlet completion
-            long remainingLength = foundRcl.getRemainingCloudletLength();
-            double estimatedFinishTime = CloudSim.clock()
-                    + (remainingLength / (getProcessor().getCapacity() * foundRcl.getNumberOfPes()));
-
-            return estimatedFinishTime;
-        } else {// no enough free PEs: go to the waiting queue
-            foundRcl.setCloudletStatus(Cloudlet.Status.QUEUED);
-
-            long remainingLengthAcrossPes = foundRcl.getRemainingCloudletLength();
-            remainingLengthAcrossPes *= foundRcl.getNumberOfPes();
-            foundRcl.getCloudlet().setCloudletLength(remainingLengthAcrossPes);
-
-            getCloudletWaitingList().add(foundRcl);
-            return 0.0;
-        }
-    }
-
-    /**
-     * Search for a cloudlet into a given list.
-     * @param cloudletList the cloudlet list 
-     * @param cloudletId the id of the cloudlet to search
-     * @return the cloudlet or null if not found
-     */
-    protected CloudletExecutionInfo searchForCloudletIntoList(List<CloudletExecutionInfo> cloudletList, int cloudletId) {
-        for (CloudletExecutionInfo rcl : cloudletList) {
-            if (rcl.getCloudletId() == cloudletId) {
-                return rcl;
-            }
-        }
-        return null;
-    }
-
-    @Override
-    public double cloudletSubmit(Cloudlet cloudlet, double fileTransferTime) {
-        // it can go to the exec list
-        if ((getProcessor().getNumberOfPes() - usedPes) >= cloudlet.getNumberOfPes()) {
-            CloudletExecutionInfo rcl = new CloudletExecutionInfo(cloudlet);
-            rcl.setCloudletStatus(Cloudlet.Status.INEXEC);
-            getCloudletExecList().add(rcl);
-            usedPes += cloudlet.getNumberOfPes();
-        } else {// no enough free PEs: go to the waiting queue
-            CloudletExecutionInfo rcl = new CloudletExecutionInfo(cloudlet);
-            rcl.setCloudletStatus(Cloudlet.Status.QUEUED);
-            getCloudletWaitingList().add(rcl);
-            return 0.0;
+        if (isThereEnoughFreePesForCloudlet(c)) {
+	        return movePausedCloudletToExecList(c);
         }
 
-        // calculate the expected time for cloudlet completion
-        // use the current capacity to estimate the extra amount of
-        // time to transfer the cloudlet to the VM. It must be added to the cloudlet length
-        double extraSize = getProcessor().getCapacity() * fileTransferTime;
-        long length = cloudlet.getCloudletLength();
-        length += extraSize;
-        
-        /**
-         * @todo @author manoelcampos It is very strange to change
-         * the length of the cloudlet, once it is 
-         * a value defined by the user.
-         * The execution length is one thing, 
-         * the total execution time is other.
-         * The length is being increased to include
-         * the time the cloudlet spend to be transfered
-         * to the VM (see comment above)
-         */
-        cloudlet.setCloudletLength(length);
-        return cloudlet.getCloudletLength() / getProcessor().getCapacity();
+        // No enough free PEs: go to the waiting queue
+		/*
+		* @todo @author manoelcampos The cloudlet length is the lenght in MI
+		* to be executed by each cloudlet PE. However, this code inherited from CloudSim
+		* changes to length to the total length across all PEs, what is very strange
+		* and has to be investigated.*/
+	    long remainingLengthAcrossPes = c.getRemainingCloudletLength();
+	    remainingLengthAcrossPes *= c.getNumberOfPes();
+	    c.getCloudlet().setCloudletLength(remainingLengthAcrossPes);
+        /*
+         * A resumed cloudlet is not immediately added to the execution list.
+         * It is queued so that the next time the scheduler process VM execution,
+         * the cloudlet may have the opportunity to run.
+         * It goes to the end of the waiting list because other cloudlets
+         * could be waiting longer and have priority to execute.
+        */
+	    addCloudletToWaitingList(c);
+        return 0.0;
     }
 
-    /**
-     * Returns the first cloudlet to migrate to another VM.
-     *
-     * @return the first running cloudlet
-     * @pre $none
-     * @post $none
-     */
-    @Override
-    public Cloudlet migrateCloudlet() {
-        Cloudlet cl = super.migrateCloudlet();
-        if(cl != Cloudlet.NULL){
-            usedPes -= cl.getNumberOfPes();
-            return cl;
-        }
-        
-        return null;
-    }
+	/**
+	 * Moves a paused cloudlet to the execution list.
+	 *
+	 * @param c the cloudlet to be moved
+	 * @return the time the cloudlet is expected to finish
+	 */
+	private double movePausedCloudletToExecList(CloudletExecutionInfo c) {
+		long remainingLenghtAcrossAllPes = c.getRemainingCloudletLength();
+		remainingLenghtAcrossAllPes *= c.getNumberOfPes();
+
+		/**
+		 * @todo @author manoelcampos It's very strange
+		 * to change the cloudlet length that is
+		 * defined by the user. And in the documentation
+		 * of the attribute, it is supposed to be the length
+		 * that will be executed in each cloudlet PE,
+		 * not the length sum across all existing PEs,
+		 * as it is being changed here
+		 * (you can see that the size is being multiplied by the
+		 * number of PEs).
+		 */
+		c.getCloudlet().setCloudletLength(remainingLenghtAcrossAllPes);
+
+		addCloudletToExecList(c);
+
+		// calculate the expected time for cloudlet completion
+		long remainingLength = c.getRemainingCloudletLength();
+		double estimatedFinishTime = CloudSim.clock()
+		        + (remainingLength / (getProcessor().getCapacity() * c.getNumberOfPes()));
+
+		return estimatedFinishTime;
+	}
 
     @Override
     public List<Double> getCurrentRequestedMips() {
-        List<Double> mipsShare = new ArrayList<>();
-        if (getCurrentMipsShare() != null) {
-            for (Double mips : getCurrentMipsShare()) {
-                mipsShare.add(mips);
-            }
-        }
-        return mipsShare;
+        /**
+         * @todo @author manoelcampos The code inherited from CloudSim
+         * is just returning the amount of current mips
+         * instead of the amount of currently used mips,
+         * that is the list of mips actually being used by running cloudlets.
+         * The original method documentation doesn't make it clear
+         * what is the return value.
+         */
+        return Collections.unmodifiableList(getCurrentMipsShare());
     }
 
+    /**
+     * {@inheritDoc}
+     * <p>It doesn't consider the given Cloudlet because the scheduler
+     * ensures that the Cloudlet will use all required PEs until it
+     * finishes executing. </p>
+     * 
+     * @param rcl {@inheritDoc}
+     * @param mipsShare {@inheritDoc}
+     * @return {@inheritDoc}
+     */
     @Override
     public double getTotalCurrentAvailableMipsForCloudlet(CloudletExecutionInfo rcl, List<Double> mipsShare) {
-        /*@todo The param rcl is not being used.*/
-        Processor p = Processor.fromMipsList(mipsShare);
-        return p.getCapacity();
+        return Processor.fromMipsList(mipsShare).getCapacity();
     }
 
     @Override
@@ -216,4 +172,18 @@ public class CloudletSchedulerSpaceShared extends CloudletSchedulerAbstract {
         return 0;
     }
 
+    /**
+	 * The space-shared scheduler <b>does not</b> share the CPU time between executing cloudlets.
+	 * Each CPU ({@link Pe}) is used by another Cloudlet just when the previous Cloudlet
+	 * using it has finished executing completely.
+	 * By this way, if there are more Cloudlets than PEs, some Cloudlet
+	 * will not be allowed to start executing immediately.
+	 *
+     * @param cloudlet {@inheritDoc}
+	 * @return {@inheritDoc}
+	 */    
+    @Override
+    public boolean canAddCloudletToExecutionList(CloudletExecutionInfo cloudlet) {
+        return isThereEnoughFreePesForCloudlet(cloudlet);
+    }
 }

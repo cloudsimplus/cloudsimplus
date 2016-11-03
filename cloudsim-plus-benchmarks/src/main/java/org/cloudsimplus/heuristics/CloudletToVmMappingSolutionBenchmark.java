@@ -7,6 +7,8 @@ import org.cloudbus.cloudsim.Cloudlet;
 import org.cloudbus.cloudsim.CloudletSimple;
 import org.cloudbus.cloudsim.Vm;
 import org.cloudbus.cloudsim.VmSimple;
+import org.cloudbus.cloudsim.distributions.NormalDistr;
+import org.cloudbus.cloudsim.distributions.UniformDistr;
 import org.cloudbus.cloudsim.schedulers.CloudletScheduler;
 import org.cloudbus.cloudsim.utilizationmodels.UtilizationModel;
 import org.openjdk.jmh.annotations.Benchmark;
@@ -24,13 +26,15 @@ import org.openjdk.jmh.annotations.State;
 @BenchmarkMode({Mode.AverageTime, Mode.Throughput})
 @State(Scope.Thread)
 public class CloudletToVmMappingSolutionBenchmark {
+    private CloudletToVmMappingSimulatedAnnealing heuristic;
     private CloudletToVmMappingSolution instance1;
     private CloudletToVmMappingSolution instance2;
 
     @Setup
     public void doSetup() {
+        CloudletToVmMappingSimulatedAnnealing heuristic =
+            new CloudletToVmMappingSimulatedAnnealing(0, new UniformDistr(0, 1));
         instance1 = createInstance();
-        
         instance2 = createInstance();
         /*Call the getCost the first time without measure it
         in order to measure the time for the second call,
@@ -39,20 +43,20 @@ public class CloudletToVmMappingSolutionBenchmark {
     }
 
     private CloudletToVmMappingSolution createInstance() {
-        CloudletToVmMappingSolution result = new CloudletToVmMappingSolution(Heuristic.NULL);
+        CloudletToVmMappingSolution result = new CloudletToVmMappingSolution(heuristic);
         UtilizationModel um = UtilizationModel.NULL;
         IntStream.range(0, 100).forEach(i
                 -> result.bindCloudletToVm(
                         new CloudletSimple(i, 1, 1, 1, 1, um, um, um),
                         new VmSimple(i, 0, 1000, 1, 1, 1, 1, "xen", CloudletScheduler.NULL))
         );
-        
+
         return result;
     }
 
     @Benchmark
     public CloudletToVmMappingSolution testCreateNeighbor() {
-        return instance1.createNeighbor();
+        return heuristic.createNeighbor(instance1);
     }
 
     @Benchmark
@@ -61,12 +65,12 @@ public class CloudletToVmMappingSolutionBenchmark {
     }
 
     /**
-     * The second time the getCost method is called 
-     * without changing Cloudlets to Vm's mapping, 
+     * The second time the getCost method is called
+     * without changing Cloudlets to Vm's mapping,
      * the fitness will be the same and will not be computed again.
      * The first time the method is called is in the
      * {@link #doSetup()} method.
-     * 
+     *
      * @return the cost value
      */
     @Benchmark

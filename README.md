@@ -1,4 +1,3 @@
-<https://groups.google.com/d/forum/cloudsim-plus>
 <a id="top"></a>
 
 [![Build Status](https://img.shields.io/travis/manoelcampos/cloudsim-plus/master.svg)](https://travis-ci.org/manoelcampos/cloudsim-plus) [![Codacy Badge](https://api.codacy.com/project/badge/Grade/3f132b184d5e475dbbcd356ee84499fc)](https://www.codacy.com/app/manoelcampos/cloudsim-plus?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=manoelcampos/cloudsim-plus&amp;utm_campaign=Badge_Grade) [![Codacy Badge](https://api.codacy.com/project/badge/Coverage/3f132b184d5e475dbbcd356ee84499fc)](https://www.codacy.com/app/manoelcampos/cloudsim-plus?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=manoelcampos/cloudsim-plus&amp;utm_campaign=Badge_Coverage) [![GPL licensed](https://img.shields.io/badge/license-GPL-blue.svg)](http://www.gnu.org/licenses/gpl-3.0)
@@ -107,18 +106,14 @@ download the project source by cloning the repositosy using the command `git clo
 at a terminal. 
 
 The project has a [bash script](script/bootstrap.sh) that you can use to build and run CloudSim Plus examples. 
-The script must be run on the project root directory in a Unix-like system such as Linux, FreeBDS and Mac OSX.
+This is a script for Unix-like system such as Linux, FreeBDS and Mac OSX.
 
-To run some example type the command: `sh script/bootstrap.sh ExampleClassName`.
-For instance, to run the CloudSimExample1 you can type: `sh script/bootstrap.sh CloudSimExample1`. 
-To run an example into a sub-directory, type `sh script/bootstrap.sh sub_directory_name.ExampleClassName`.
-For instance, to run the [workload/SwfWorkloadFormatExample1](/cloudsim-plus-examples/src/main/java/org/cloudbus/cloudsim/examples/workload/SwfWorkloadFormatExample1.java) 
-example, type `sh script/bootstrap.sh workload.SwfWorkloadFormatExample1`.
+To run some example type the command: `sh script/bootstrap.sh package.ExampleClassName`.
+For instance, to run the CloudSimExample1 you can type: `sh script/bootstrap.sh org.cloudbus.cloudsim.examples.CloudSimExample1`. 
 
 The script checks if it is required to build the project, using maven in this case, making sure to download all dependencies. 
 To see what examples are available, just navigate through the [examples directory](/cloudsim-plus-examples/src/main/java/org/cloudbus/cloudsim/examples).
-
-To just build the CloudSim Plus and examples packages, execute the script without any parameter.  
+To see more script options, run it without any parameter.  
  
 ## By means of an IDE (the easier way to just take a look or to create your own simulations)
 The easier way to use the project is relying on some IDE such as [NetBeans](http://netbeans.org), [Eclipse](http://eclipse.org) 
@@ -152,7 +147,7 @@ In order to build such a simulation you have to create, at least:
 By this way, the main code used to build such a simulation scenario can be as below. 
 This is simply the code of the constructor method. 
 The complete example is available at the cloudsim-plus-examples module 
-[here](/cloudsim-plus-examples/src/main/java/org/cloudbus/cloudsim/examples/MinimalExample.java).
+[here](/cloudsim-plus-examples/src/main/java/org/cloudbus/cloudsim/examples/CloudSimExample0.java).
 
 ```java
 this.vmList = new ArrayList<>();
@@ -173,9 +168,11 @@ Vm vm0 = createVm(broker0);
 this.vmList.add(vm0);
 broker0.submitVmList(vmList);
 
-/*Creates a cloudlet that represents an application to be run inside a VM.*/
+/*Creates Cloudlets that represent applications to be run inside a VM.*/
 Cloudlet cloudlet0 = createCloudlet(broker0, vm0);
 this.cloudletList.add(cloudlet0);
+Cloudlet cloudlet1 = createCloudlet(broker0, vm0);
+this.cloudletList.add(cloudlet1);
 broker0.submitCloudletList(cloudletList);
 
 /*Starts the simulation and waits all cloudlets to be executed*/
@@ -204,7 +201,7 @@ You can see the javadoc documentation for classes and their elements directly on
 The documentation is available online at <http://cloudsimplus.org/docs/>.
 There is also a [Wiki page](https://github.com/manoelcampos/cloudsim-plus/wiki) with additional information such as a FAQ list.  
 
-A Google Group forum is also available at <https://groups.google.com/d/forum/cloudsim-plus>
+A Google Group forum is also available at <https://groups.google.com/group/cloudsim-plus>
 
 <p align="right"><a href="#top">:arrow_up:</a></p>
 

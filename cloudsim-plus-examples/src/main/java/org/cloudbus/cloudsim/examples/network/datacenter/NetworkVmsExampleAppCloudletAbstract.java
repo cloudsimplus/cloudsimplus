@@ -132,7 +132,7 @@ public abstract class NetworkVmsExampleAppCloudletAbstract {
             app = appCloudletList.get(i);
             List<Cloudlet> newList = broker.getCloudletsFinishedList();
             String caption = broker.getName() + " - AppCloudlet " + app.getId();
-            CloudletsTableBuilderHelper.print(new TextTableBuilder(caption), newList);
+            new CloudletsTableBuilderHelper(new TextTableBuilder(caption), newList);
             Log.printFormattedLine(
                 "Number of NetworkCloudlets for AppCloudlet %s: %d", app.getId(), newList.size());
         }

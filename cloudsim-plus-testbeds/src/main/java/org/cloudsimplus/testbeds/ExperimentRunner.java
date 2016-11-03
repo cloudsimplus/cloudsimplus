@@ -12,7 +12,7 @@ import java.util.List;
 /**
  * A base class to run a given experiment a defined number of times
  * and collect statistics about the execution.
- *
+ * @param <T> the class of experiment the runner will execute
  * @author Manoel Campos da Silva Filho
  */
 public abstract class ExperimentRunner<T extends SimulationExperiment> implements Runnable {
@@ -148,13 +148,24 @@ public abstract class ExperimentRunner<T extends SimulationExperiment> implement
 		return (int)Math.ceil(getNumberOfSimulationRuns() / (double) getNumberOfBatches());
 	}
 
+    /**
+     * Checks if the number of simulation runs and the number of batches
+     * are compatible
+     * @return
+     */
+	public boolean simulationRunsAndNumberOfBatchesAreCompatible(){
+        final boolean batchesGreaterThan1 =  getNumberOfBatches() > 1;
+        final boolean numSimulationRunsGraterThanBatches = getNumberOfSimulationRuns() > getNumberOfBatches();
+        return batchesGreaterThan1 && numSimulationRunsGraterThanBatches;
+    }
+
 	/**
 	 *
 	 * Checks if the "Batch Means Method" is to be applied to reduce
 	 * correlation between the results for different experiment runs.
 	 */
 	public boolean isApplyBatchMeansMethod(){
-		return getNumberOfBatches() > 1;
+        return simulationRunsAndNumberOfBatchesAreCompatible();
 	}
 
 	/**
@@ -272,7 +283,7 @@ public abstract class ExperimentRunner<T extends SimulationExperiment> implement
 		return this;
 	}
 
-	protected ExperimentRunner setApplyAntitheticVariatesTechnique(boolean applyAntitheticVariatesTechnique) {
+	public ExperimentRunner setApplyAntitheticVariatesTechnique(boolean applyAntitheticVariatesTechnique) {
 		this.applyAntitheticVariatesTechnique = applyAntitheticVariatesTechnique;
 		return this;
 	}
@@ -292,7 +303,7 @@ public abstract class ExperimentRunner<T extends SimulationExperiment> implement
 	 * @param numberOfBatches number of simulation run batches
 	 * @see #getNumberOfBatches()
 	 */
-	protected ExperimentRunner setNumberOfBatches(int numberOfBatches) {
+	public ExperimentRunner setNumberOfBatches(int numberOfBatches) {
 		this.numberOfBatches = numberOfBatches;
 		return this;
 	}

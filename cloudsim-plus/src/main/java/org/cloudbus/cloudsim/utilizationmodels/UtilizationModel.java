@@ -20,7 +20,7 @@ package org.cloudbus.cloudsim.utilizationmodels;
  */
 public interface UtilizationModel {
     /**
-     * Gets the utilization percentage of a given resource.
+     * Gets the utilization percentage of a given resource (in scale from [0 to 1])..
      *
      * @param time the time to get the resource usage.
      * @return utilization percentage, from [0 to 1]

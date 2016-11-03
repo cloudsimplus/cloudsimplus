@@ -57,7 +57,6 @@ public class HostTest {
         instance.setDatacenter(createMockDatacenter());
         assertEquals(Datacenter.NULL, instance.getDatacenter());
         
-        assertFalse(instance.setFailed("", false));
         assertFalse(instance.setFailed(false));
         assertFalse(instance.setPeStatus(0, Pe.Status.FREE));
         assertEquals(0, instance.getId());

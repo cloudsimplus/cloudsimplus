@@ -437,18 +437,10 @@ public class HostSimple implements Host {
     }
 
     @Override
-    public boolean setFailed(String resName, boolean failed) {
-        // all the PEs are failed (or recovered, depending on fail)
-        this.failed = failed;
-        PeList.setStatusFailed(getPeList(), resName, getId(), failed);
-        return true;
-    }
-
-    @Override
     public final boolean setFailed(boolean failed) {
         // all the PEs are failed (or recovered, depending on fail)
         this.failed = failed;
-        PeList.setStatusFailed(getPeList(), failed);
+        PeList.setStatusFailed(getPeList(), getId(), failed);
         return true;
     }
 

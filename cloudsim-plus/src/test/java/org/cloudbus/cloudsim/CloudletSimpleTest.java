@@ -19,7 +19,6 @@ import java.util.List;
 import org.cloudbus.cloudsim.core.CloudSim;
 import org.cloudbus.cloudsim.listeners.EventListener;
 import org.cloudbus.cloudsim.listeners.VmToCloudletEventInfo;
-import org.easymock.EasyMock;
 import org.junit.Assert;
 
 import org.junit.Before;
@@ -86,8 +85,8 @@ public class CloudletSimpleTest {
     public void testGetWaitingTime() {
         final double arrivalTime = 0.0, execStartTime = 10.0;
         final int datacenterId = 0;
-        mockCloudSimClockAndGetEntityNameMethods(arrivalTime, datacenterId);
-        
+        CloudSimMocker.build(mocker -> mocker.clock(arrivalTime).getEntityName(datacenterId));
+            
         CloudletSimple cloudlet = createCloudlet();
         assertEquals(0, cloudlet.getWaitingTime(), 0);
         cloudlet.assignCloudletToDatacenter(datacenterId, 0);
@@ -97,16 +96,6 @@ public class CloudletSimpleTest {
         assertEquals(expectedWaitingTime, cloudlet.getWaitingTime(), 0);
     }
 
-    private void mockCloudSimClockAndGetEntityNameMethods(final double arrivalTime, final int datacenterId) {
-        mockCloudSimClockAndGetEntityNameMethodsWithoutReplay(arrivalTime, datacenterId);
-        PowerMock.replay(CloudSim.class);
-    }
-    
-    private void mockCloudSimClockAndGetEntityNameMethodsWithoutReplay(final double arrivalTime, final int datacenterId) {
-        mockCloudSimClockWithoutCallingReplay(arrivalTime);
-        EasyMock.expect(CloudSim.getEntityName(datacenterId)).andReturn("datacenter" + datacenterId);        
-    }
-    
     @Test
     public void testAssignCloudletToDataCenter_recodLogEnabledDatacenterNotAssigned() {
         final int datacenterId = 0;
@@ -143,7 +132,7 @@ public class CloudletSimpleTest {
     public void testGetDatacenterArrivalTime() {
         final double submissionTime = 1;
         final int datacenterId = 0;
-        mockCloudSimClockAndGetEntityNameMethods(submissionTime, datacenterId);
+        CloudSimMocker.build(mocker -> mocker.clock(submissionTime).getEntityName(datacenterId));
 
         CloudletSimple cloudlet = createCloudlet();
         assertEquals(Cloudlet.NOT_ASSIGNED, cloudlet.getDatacenterArrivalTime(), 0);
@@ -160,7 +149,7 @@ public class CloudletSimpleTest {
 
         cloudlet.assignCloudletToDatacenter(0, 0);
         final double arrivalTime = 0.0, execStartTime = 10.0;
-        mockCloudSimClock(arrivalTime);
+        CloudSimMocker.build(mocker -> mocker.clock(arrivalTime));
 
         cloudlet.registerArrivalOfCloudletIntoDatacenter();
         cloudlet.setExecStartTime(execStartTime);
@@ -169,15 +158,6 @@ public class CloudletSimpleTest {
         assertEquals(wallClockTime, cloudlet.getWallClockTimeInLastExecutedDatacenter(), 0);
     }
 
-    private void mockCloudSimClock(final double arrivalTime) {
-        mockCloudSimClockWithoutCallingReplay(arrivalTime);
-        PowerMock.replay(CloudSim.class);
-    }
-
-    private void mockCloudSimClockWithoutCallingReplay(final double arrivalTime) {
-        PowerMock.mockStatic(CloudSim.class);
-        EasyMock.expect(CloudSim.clock()).andReturn(arrivalTime);
-    }
 
     @Test
     public void testGetActualCPUTime() {
@@ -185,10 +165,11 @@ public class CloudletSimpleTest {
         final double simulationClock = 100;
         final double actualCpuTime = simulationClock - execStartTime;
         final int datacenterId = 0;
-        //This will mock the CloudSim static method calls
-        mockCloudSimClockAndGetEntityNameMethodsWithoutReplay(submissionTime, datacenterId);
-        EasyMock.expect(CloudSim.clock()).andReturn(simulationClock);
-        PowerMock.replay(CloudSim.class);
+        
+        CloudSimMocker.build(mocker -> 
+                mocker.clock(submissionTime)
+                    .getEntityName(datacenterId)
+                    .clock(simulationClock));
 
         CloudletSimple cloudlet = createCloudlet();
         assertEquals(Cloudlet.NOT_ASSIGNED, cloudlet.getActualCPUTime(), 0);
@@ -221,10 +202,10 @@ public class CloudletSimpleTest {
     }
 
     @Test
-    public void testGetClassType() {
+    public void testGetPriority() {
         final int expected = 8;
-        cloudlet.setClassType(expected);
-        assertEquals(expected, cloudlet.getClassType(), 0);
+        cloudlet.setPriority(expected);
+        assertEquals(expected, cloudlet.getPriority(), 0);
     }
 
     @Test
@@ -374,14 +355,14 @@ public class CloudletSimpleTest {
         return createCloudlet(id, utilizationModel);
     }
 
-    private static CloudletSimple createCloudlet(
+    public static CloudletSimple createCloudlet(
             final int id, UtilizationModel cpuRamAndBwUtilizationModel) {
         return createCloudlet(id, cpuRamAndBwUtilizationModel,
                 cpuRamAndBwUtilizationModel,
                 cpuRamAndBwUtilizationModel);
     }
 
-    private static CloudletSimple createCloudlet(final int id, 
+    private static CloudletSimple createCloudlet(final int id,
             UtilizationModel utilizationModelCPU,
             UtilizationModel utilizationModelRAM,
             UtilizationModel utilizationModelBW) {
@@ -390,7 +371,7 @@ public class CloudletSimpleTest {
                 CLOUDLET_LENGTH, 1);
     }
 
-    private static CloudletSimple createCloudlet(final int id, 
+    public static CloudletSimple createCloudlet(final int id,
             UtilizationModel utilizationModelCPU,
             UtilizationModel utilizationModelRAM,
             UtilizationModel utilizationModelBW,
@@ -400,12 +381,38 @@ public class CloudletSimpleTest {
                 utilizationModelCPU, utilizationModelRAM, utilizationModelBW);
     }
 
+    public static CloudletSimple createCloudletWithOnePe(final int id) {
+        return createCloudlet(id, CLOUDLET_LENGTH, 1);
+    }
+
+    public static CloudletSimple createCloudletWithOnePe(
+            final int id, long length) {
+        return createCloudlet(id, length, 1);
+    }
+
     public static CloudletSimple createCloudlet(
             final int id, long length, int numberOfPes) {
         final UtilizationModel utilizationModel = new UtilizationModelFull();
         return createCloudlet(id, utilizationModel, utilizationModel, utilizationModel, length, numberOfPes);
     }
 
+    public static CloudletSimple createCloudlet(
+            final int id, int numberOfPes) {
+        return createCloudlet(id, CLOUDLET_LENGTH, numberOfPes);
+    }
+
+    /**
+     * Creates a Cloudlet with id equals to 0.
+     * 
+     * @param length the length of the Cloudlet to create
+     * @param numberOfPes the number of PEs of the Cloudlet to create
+     * @return the created Cloudlet
+     */
+    public static CloudletSimple createCloudlet0(
+            long length, int numberOfPes) {
+        return createCloudlet(0, length, numberOfPes);
+    }
+        
     @Test
     public void testSetUtilizationModels() {
         CloudletSimple c = createCloudlet();
@@ -545,21 +552,18 @@ public class CloudletSimpleTest {
     }
 
     @Test
-    public void testSetClassType() {
-        final int invalid0 = 0;
-        Assert.assertFalse(
-                "Cloudlet.setClassType should return false",
-                cloudlet.setClassType(invalid0));
+    public void testSetPriority() {
+        final int zero = 0;
+	    cloudlet.setPriority(zero);
+        Assert.assertEquals(zero, cloudlet.getPriority());
 
-        final int invalidNegative = -1;
-        Assert.assertFalse(
-                "Cloudlet.setClassType should return false",
-                cloudlet.setClassType(invalidNegative));
+        final int negative = -1;
+        cloudlet.setPriority(negative);
+	    Assert.assertEquals(negative, cloudlet.getPriority());
 
-        final int valid = 1;
-        Assert.assertTrue(
-                "Cloudlet.setClassType should return true",
-                cloudlet.setClassType(valid));
+        final int one = 1;
+        cloudlet.setPriority(one);
+	    Assert.assertEquals(one, cloudlet.getPriority());
     }
 
     @Test

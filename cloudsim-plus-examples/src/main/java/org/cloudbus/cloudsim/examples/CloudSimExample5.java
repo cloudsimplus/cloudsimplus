@@ -151,8 +151,8 @@ public class CloudSimExample5 {
 
             CloudSim.stopSimulation();
 
-            CloudletsTableBuilderHelper.print(new TextTableBuilder("User " + brokerId1), newList1);
-            CloudletsTableBuilderHelper.print(new TextTableBuilder("User " + brokerId2), newList2);
+            new CloudletsTableBuilderHelper(new TextTableBuilder("User " + brokerId1), newList1);
+            new CloudletsTableBuilderHelper(new TextTableBuilder("User " + brokerId2), newList2);
             Log.printFormattedLine("%s finished!", CloudSimExample5.class.getSimpleName());
         } catch (Exception e) {
             e.printStackTrace();

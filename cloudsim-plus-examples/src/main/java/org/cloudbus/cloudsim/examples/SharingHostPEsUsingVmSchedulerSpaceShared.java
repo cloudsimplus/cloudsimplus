@@ -138,7 +138,7 @@ public class SharingHostPEsUsingVmSchedulerSpaceShared {
             /*Prints results when the simulation is over
             (you can use your own code here to print what you want from this cloudlet list)*/
             List<Cloudlet> finishedCloudlets = broker0.getCloudletsFinishedList();
-            CloudletsTableBuilderHelper.print(new TextTableBuilder(), finishedCloudlets);
+            new CloudletsTableBuilderHelper(new TextTableBuilder(), finishedCloudlets);
             Log.printFormattedLine("%s Example finished!", getClass().getSimpleName());
         } catch (Exception e) {
             Log.printFormattedLine("Unexpected errors happened: %s", e.getMessage());

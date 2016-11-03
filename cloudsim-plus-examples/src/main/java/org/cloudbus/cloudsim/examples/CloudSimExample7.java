@@ -151,13 +151,13 @@ public class CloudSimExample7 {
 
             CloudSim.stopSimulation();
 
-            CloudletsTableBuilderHelper.print(
+            new CloudletsTableBuilderHelper(
                     new TextTableBuilder(
                             "\n#Broker " + broker.getName() + " received cloudlets."),
                     newList);
             if (monitor.getBroker() != null) {
                 newList = monitor.getBroker().getCloudletsFinishedList();
-                CloudletsTableBuilderHelper.print(
+                new CloudletsTableBuilderHelper(
                         new TextTableBuilder(
                                 "\n#Broker " + monitor.getBroker().getName() + " received cloudlets."),
                         newList);
