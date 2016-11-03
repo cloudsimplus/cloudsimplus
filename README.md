@@ -147,7 +147,7 @@ In order to build such a simulation you have to create, at least:
 By this way, the main code used to build such a simulation scenario can be as below. 
 This is simply the code of the constructor method. 
 The complete example is available at the cloudsim-plus-examples module 
-[here](/cloudsim-plus-examples/src/main/java/org/cloudbus/cloudsim/examples/MinimalExample.java).
+[here](/cloudsim-plus-examples/src/main/java/org/cloudbus/cloudsim/examples/CloudSimExample0.java).
 
 ```java
 this.vmList = new ArrayList<>();

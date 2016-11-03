@@ -72,7 +72,14 @@ public class CloudletSchedulerSpaceShared extends CloudletSchedulerAbstract {
 	    long remainingLengthAcrossPes = c.getRemainingCloudletLength();
 	    remainingLengthAcrossPes *= c.getNumberOfPes();
 	    c.getCloudlet().setCloudletLength(remainingLengthAcrossPes);
-	    moveCloudletToWaitingList(c);
+        /*
+         * A resumed cloudlet is not immediately added to the execution list.
+         * It is queued so that the next time the scheduler process VM execution,
+         * the cloudlet may have the opportunity to run.
+         * It goes to the end of the waiting list because other cloudlets
+         * could be waiting longer and have priority to execute.
+        */
+	    addCloudletToWaitingList(c);
         return 0.0;
     }
 
@@ -99,9 +106,7 @@ public class CloudletSchedulerSpaceShared extends CloudletSchedulerAbstract {
 		 */
 		c.getCloudlet().setCloudletLength(remainingLenghtAcrossAllPes);
 
-		c.setCloudletStatus(Cloudlet.Status.INEXEC);
 		addCloudletToExecList(c);
-		addUsedPes(c.getNumberOfPes());
 
 		// calculate the expected time for cloudlet completion
 		long remainingLength = c.getRemainingCloudletLength();
@@ -110,22 +115,6 @@ public class CloudletSchedulerSpaceShared extends CloudletSchedulerAbstract {
 
 		return estimatedFinishTime;
 	}
-
-	@Override
-    public double cloudletSubmit(Cloudlet cloudlet, double fileTransferTime) {
-		double cloudletExpectedFinishTime = super.cloudletSubmit(cloudlet, fileTransferTime);
-		//if the expected finish time is greater than 0, the Cloudlet was added to the execution list
-		if (cloudletExpectedFinishTime > 0) {
-            addUsedPes(cloudlet.getNumberOfPes());
-        }
-
-        return cloudletExpectedFinishTime;
-    }
-
-	@Override
-    public double cloudletSubmit(Cloudlet cloudlet) {
-		return cloudletSubmit(cloudlet, 0);
-    }
 
     @Override
     public List<Double> getCurrentRequestedMips() {

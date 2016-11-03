@@ -100,7 +100,6 @@ public class CloudletSchedulerTimeShared extends CloudletSchedulerAbstract {
      */
     private double movePausedCloudletToExecListAndGetExpectedFinishTime(CloudletExecutionInfo cloudlet){
         getCloudletPausedList().remove(cloudlet);
-        cloudlet.setCloudletStatus(Cloudlet.Status.INEXEC);
         addCloudletToExecList(cloudlet);
 
         // calculate the expected time for cloudlet completion

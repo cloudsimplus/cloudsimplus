@@ -124,7 +124,6 @@ public class CloudletSchedulerDynamicWorkload extends CloudletSchedulerTimeShare
     @Override
     public double cloudletSubmit(Cloudlet cl, double fileTransferTime) {
         CloudletExecutionInfo rcl = new CloudletExecutionInfo(cl);
-        rcl.setCloudletStatus(Cloudlet.Status.INEXEC);
         addCloudletToExecList(rcl);
         return getEstimatedFinishTime(rcl, getPreviousTime());
     }

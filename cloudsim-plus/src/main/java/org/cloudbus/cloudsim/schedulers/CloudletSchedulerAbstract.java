@@ -156,6 +156,7 @@ public abstract class CloudletSchedulerAbstract implements CloudletScheduler {
     }
 
     protected void addCloudletToWaitingList(CloudletExecutionInfo cloudlet){
+		cloudlet.setCloudletStatus(Cloudlet.Status.QUEUED);
         cloudletWaitingList.add(cloudlet);
     }
 
@@ -219,7 +220,7 @@ public abstract class CloudletSchedulerAbstract implements CloudletScheduler {
 		}
 
 		// No enough free PEs, then add Cloudlet to the waiting queue
-		moveCloudletToWaitingList(rcl);
+		addCloudletToWaitingList(rcl);
 		return 0.0;
 	}
     
@@ -229,18 +230,10 @@ public abstract class CloudletSchedulerAbstract implements CloudletScheduler {
      * @param cloudlet the Cloudlet to be added
      */
     protected void addCloudletToExecList(CloudletExecutionInfo cloudlet) {
+		cloudlet.setCloudletStatus(Cloudlet.Status.INEXEC);
         cloudletExecList.add(cloudlet);
+        addUsedPes(cloudlet.getNumberOfPes());        
     }
-
-	/**
-	 * Moves a paused cloudlet to the waiting list.
-	 *
-	 * @param c the cloudlet to be moved
-	 */
-	protected void moveCloudletToWaitingList(CloudletExecutionInfo c) {
-		c.setCloudletStatus(Cloudlet.Status.QUEUED);
-        addCloudletToWaitingList(c);
-	}
 
 	@Override
     public double getTotalUtilizationOfCpu(double time) {
@@ -440,8 +433,8 @@ public abstract class CloudletSchedulerAbstract implements CloudletScheduler {
 		}
 
 		updateCloudletsProcessing(currentTime);        
-		final int finishedCloudlets = removeFinishedCloudletsFromExecutionList();
-        moveSelectedCloudletsFromWaitingToExecList(finishedCloudlets);    
+		removeFinishedCloudletsFromExecutionList();
+        moveNextCloudletsFromWaitingToExecList();    
 
 		double nextEvent = getEstimatedFinishTimeOfSoonerFinishingCloudlet(currentTime);
 		setPreviousTime(currentTime);
@@ -458,12 +451,18 @@ public abstract class CloudletSchedulerAbstract implements CloudletScheduler {
         getCloudletExecList().forEach(rcl -> updateCloudletProcessing(rcl, currentTime));
     }
 
-    @Override
-    public void updateCloudletProcessing(CloudletExecutionInfo rcl, double currentTime) {
+    /**
+     * Updates the processing of a specific cloudlet of the Vm using this scheduler.
+     * @param rcl The cloudlet to be its processing updated
+     * @param currentTime current simulation time
+     *
+     */
+    protected void updateCloudletProcessing(CloudletExecutionInfo rcl, double currentTime) {
         long numberExecutedInstructions = cloudletExecutionTotalLengthForElapsedTime(rcl, currentTime);
         rcl.updateCloudletFinishedSoFar(numberExecutedInstructions);
-	    if(numberExecutedInstructions > 0)
+	    if(numberExecutedInstructions > 0) {
 	    	rcl.setLastProcessingTime(currentTime);
+        }
 
         Cloudlet cloudlet = rcl.getCloudlet();
         VmToCloudletEventInfo evt = new VmToCloudletEventInfo(currentTime, vm, cloudlet);
@@ -656,6 +655,8 @@ public abstract class CloudletSchedulerAbstract implements CloudletScheduler {
     /**
      * Selects the next Cloudlets in the waiting list to move
      * to the execution list in order to start executing them.
+     * While there is enough free PEs, the method try to find a suitable
+     * Cloudlet in the list, until it reaches the end of such a list.
      * 
      * The method might also exchange some cloudlets in the execution list
      * with some in the waiting list. Thus, some running
@@ -668,26 +669,12 @@ public abstract class CloudletSchedulerAbstract implements CloudletScheduler {
      * 
      * <p>This method is called internally by the {@link #updateVmProcessing(double, java.util.List)} one.</p>
      *
-     * @param numberOfFinishedCloudlets the number of Cloudlets that have just finished, since
-     * the last time the method was called. Accordingly, it isn't the overall amount of finished
-     * Cloudlets so far, but the finished amount since the last time
      * @pre currentTime >= 0
      * @post $none
      */
-    protected void moveSelectedCloudletsFromWaitingToExecList(int numberOfFinishedCloudlets) {
-        //moveSelectedCloudletsFromWaitingToExecList
-        if (getCloudletWaitingList().isEmpty()) {
-	        return;
-        }
-
-        Consumer<CloudletExecutionInfo> addCloudletToExecutionList = c -> {
-            addCloudletToExecList(c);
-            addUsedPes(c.getNumberOfPes());
-            removeCloudletFromWaitingList(c);
-        };
-
-        for(int i = 0; i < numberOfFinishedCloudlets; i++){
-            findSuitableWaitingCloudletToStartExecuting().ifPresent(addCloudletToExecutionList);
+    protected void moveNextCloudletsFromWaitingToExecList() {
+        for(int i = 0; i < cloudletWaitingList.size() && getFreePes() > 0; i++){
+            findSuitableWaitingCloudletToStartExecutingAndRemoveIt().ifPresent(this::addCloudletToExecList);
         }
     }
 
@@ -706,22 +693,26 @@ public abstract class CloudletSchedulerAbstract implements CloudletScheduler {
 	 * Try to find the first Cloudlet in the waiting list that the number of
 	 * required PEs is not higher than the number of free PEs.
      * If a Cloudlet is found, sets its status to {@link Status#INEXEC}
-     * and returns it.
+     * and returns it, removing such Cloudlet from the waiting list.
 	 *
-	 * @return an {@link Optional} that indicates if a Cloudlet with the required
-	 * conditions was found or not
+	 * @return an {@link Optional} containing the found Cloudlet or an empty Optional
+     * otherwise
 	 */
-	protected Optional<CloudletExecutionInfo> findSuitableWaitingCloudletToStartExecuting() {
+	protected Optional<CloudletExecutionInfo> findSuitableWaitingCloudletToStartExecutingAndRemoveIt() {
         //Receives the cloudlet, change its status and return the changed cloudlet.
         Function<CloudletExecutionInfo, CloudletExecutionInfo> changeCloudletStatusToExecAndReturnIt = c -> {
             c.setCloudletStatus(Status.INEXEC);
             return c;
         };
 
-        return getCloudletWaitingList().stream()
+        Optional<CloudletExecutionInfo> optional =  getCloudletWaitingList().stream()
             .filter(this::isThereEnoughFreePesForCloudlet)
             .findFirst()
             .map(changeCloudletStatusToExecAndReturnIt);
+        
+        optional.ifPresent(this::removeCloudletFromWaitingList);
+        
+        return optional;
 	}
 
 	/**

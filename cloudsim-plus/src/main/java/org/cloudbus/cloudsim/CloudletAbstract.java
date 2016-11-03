@@ -12,6 +12,11 @@ import org.cloudbus.cloudsim.core.CloudSim;
  */
 public abstract class CloudletAbstract implements Cloudlet {
     /**
+     * @see #getVirtualRuntime() 
+     */
+    private double virtualRuntime;
+    
+    /**
      * The list of every {@link Datacenter} where the cloudlet has been executed. In case
      * it starts and finishes executing in a single datacenter, without
      * being migrated, this list will have only one item.
@@ -26,11 +31,14 @@ public abstract class CloudletAbstract implements Cloudlet {
     private int lastExecutedDatacenterIndex;
 
     protected CloudletAbstract(){
-	// Normally, a Cloudlet is only executed on a resource without being
-        // migrated to others. Hence, to reduce memory consumption, set the
-        // size of this ArrayList to be less than the default one.
+        /*
+        Normally, a Cloudlet is only executed on a Datacenter without being
+        migrated to others. Hence, to reduce memory consumption, set the
+        size of this ArrayList to be less than the default one.
+        */
         executionInDatacenterInfoList = new ArrayList<>(2);
         lastExecutedDatacenterIndex = NOT_ASSIGNED;
+        virtualRuntime = 0;
     }
 
     @Override
@@ -60,6 +68,24 @@ public abstract class CloudletAbstract implements Cloudlet {
 
     protected List<ExecutionInDatacenterInfo> getExecutionInDatacenterInfoList() {
         return executionInDatacenterInfoList;
+    }
+    
+    @Override
+    public double getVirtualRuntime() {
+        return virtualRuntime;
+    }
+
+    @Override
+    public void setVirtualRuntime(double virtualRuntime) {
+        this.virtualRuntime = virtualRuntime;
+    }
+
+    @Override
+    public double addVirtualRuntime(double timeToAdd) {
+        if(timeToAdd >= 0) {
+            setVirtualRuntime(virtualRuntime + timeToAdd);
+        }
+        return getVirtualRuntime();
     }
 
     /**

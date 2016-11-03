@@ -215,7 +215,7 @@ public final class VmCreationFailureIntegrationTest {
     }
 
     public void printCloudletsExecutionResults(DatacenterBroker broker) {
-        CloudletsTableBuilderHelper.print(new TextTableBuilder(), broker.getCloudletsFinishedList());
+        new CloudletsTableBuilderHelper(new TextTableBuilder(), broker.getCloudletsFinishedList());
     }
 
     public void assertThatBrokerCloudletsHaveTheExpectedExecutionTimes(DatacenterBroker broker) {

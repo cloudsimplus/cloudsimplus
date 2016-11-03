@@ -11,17 +11,20 @@ import org.cloudbus.cloudsim.Cloudlet;
 public class CloudletsTableBuilderHelper {
     private TableBuilder printer; 
     private List<? extends Cloudlet> cloudletList;
-    
-    protected CloudletsTableBuilderHelper(){}
-    
-    public static void print(final TableBuilder printer, final List<? extends Cloudlet> list){
-        new CloudletsTableBuilderHelper()
-                .setPrinter(printer)
-                .setCloudletList(list)
-                .buildTable();        
+
+    /**
+     * Creates new helper object and prints the list of cloudlets using the given printer.
+     * 
+     * @param printer the printer to be used to generate the table to be printed
+     * @param list the list of Cloudlets that the data will be included into the table to be printed
+     */    
+    public CloudletsTableBuilderHelper(final TableBuilder printer, final List<? extends Cloudlet> list){
+        this.setPrinter(printer)
+            .setCloudletList(list)
+            .buildTable();        
     }
     
-    private void buildTable(){
+    protected void buildTable(){
         if(printer.getTitle().isEmpty()){
             printer.setTitle("SIMULATION RESULTS");
         }
@@ -60,13 +63,17 @@ public class CloudletsTableBuilderHelper {
         printer.addColumn("ExecTime").setFormat("%.0f").setSubTitle("Seconds");
     }
 
-    private CloudletsTableBuilderHelper setPrinter(TableBuilder printer) {
+    protected final CloudletsTableBuilderHelper setPrinter(TableBuilder printer) {
         this.printer = printer;
         return this;
     }
 
-    private CloudletsTableBuilderHelper setCloudletList(List<? extends Cloudlet> cloudletList) {
+    protected CloudletsTableBuilderHelper setCloudletList(List<? extends Cloudlet> cloudletList) {
         this.cloudletList = cloudletList;
         return this;
+    }
+
+    protected TableBuilder getPrinter() {
+        return printer;
     }
 }

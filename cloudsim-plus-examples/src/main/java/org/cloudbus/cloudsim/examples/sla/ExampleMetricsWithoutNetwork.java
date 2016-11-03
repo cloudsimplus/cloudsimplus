@@ -292,7 +292,7 @@ public class ExampleMetricsWithoutNetwork {
 
         //Final step: Print results when simulation is over
         List<Cloudlet> newList = broker.getCloudletsFinishedList();
-        CloudletsTableBuilderHelper.print(new TextTableBuilder(), newList);
+        new CloudletsTableBuilderHelper(new TextTableBuilder(), newList);
 
         Log.printFormattedLine("... finished!");
     }

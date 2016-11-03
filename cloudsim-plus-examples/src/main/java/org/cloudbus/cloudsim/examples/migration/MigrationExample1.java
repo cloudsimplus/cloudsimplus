@@ -156,7 +156,7 @@ public class MigrationExample1 {
             CloudSim.startSimulation();
             CloudSim.stopSimulation();
 
-            CloudletsTableBuilderHelper.print(new TextTableBuilder(), broker.getCloudletsFinishedList());
+            new CloudletsTableBuilderHelper(new TextTableBuilder(), broker.getCloudletsFinishedList());
 
             Log.printConcatLine(MigrationExample1.class.getSimpleName(), " finished!");
         } catch (Exception e) {

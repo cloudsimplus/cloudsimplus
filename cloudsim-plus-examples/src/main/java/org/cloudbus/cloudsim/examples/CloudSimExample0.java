@@ -40,7 +40,7 @@ import org.cloudbus.cloudsim.schedulers.CloudletSchedulerSpaceShared;
  * 
  * @author Manoel Campos da Silva Filho
  */
-public class MinimalExample {
+public class CloudSimExample0 {
     /**
      * Virtual Machine Monitor name.
      */
@@ -56,13 +56,13 @@ public class MinimalExample {
      * @param args 
      */
     public static void main(String[] args) {
-        new MinimalExample();
+        new CloudSimExample0();
     }
 
     /**
      * Default constructor where the simulation is built.
      */
-    public MinimalExample() {
+    public CloudSimExample0() {
         Log.printLine("Starting Minimal Example ...");
         try {
             this.vmList = new ArrayList<>();
@@ -99,7 +99,7 @@ public class MinimalExample {
             /*Prints results when the simulation is over
             (you can use your own code here to print what you want from this cloudlet list)*/
             List<Cloudlet> finishedCloudlets = broker0.getCloudletsFinishedList();
-            CloudletsTableBuilderHelper.print(new TextTableBuilder(), finishedCloudlets);
+            new CloudletsTableBuilderHelper(new TextTableBuilder(), finishedCloudlets);
             Log.printLine("Minimal Example finished!");
         } catch (Exception e) {
             Log.printFormattedLine("Unexpected errors happened: %s", e.getMessage());

@@ -273,14 +273,6 @@ public interface CloudletScheduler extends Serializable {
     void setVm(Vm vm) ;
 
     /**
-     * Updates the processing of a specific cloudlet of the Vm using this scheduler.
-     * @param rcl The cloudlet to be its processing updated
-     * @param currentTime current simulation time
-     *
-     */
-    void updateCloudletProcessing(CloudletExecutionInfo rcl, double currentTime);
-    
-    /**
 	 * Checks if a Cloudlet can be added to the execution list or not.
 	 * Each CloudletScheduler can define a different policy to
 	 * indicate if a Cloudlet can be added to the execution list
@@ -332,7 +324,6 @@ public interface CloudletScheduler extends Serializable {
         @Override public double updateVmProcessing(double currentTime, List<Double> mipsShare) { return 0.0; }
         @Override public Vm getVm() { return Vm.NULL; }
         @Override public void setVm(Vm vm) {}
-        @Override public void updateCloudletProcessing(CloudletExecutionInfo rcl, double currentTime) {}
         @Override public boolean canAddCloudletToExecutionList(CloudletExecutionInfo cloudlet) { return false; }
         @Override public List<CloudletExecutionInfo> getCloudletFinishedList() { return Collections.EMPTY_LIST; }
     };
