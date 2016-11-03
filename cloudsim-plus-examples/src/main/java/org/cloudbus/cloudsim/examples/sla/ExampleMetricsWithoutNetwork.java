@@ -210,6 +210,7 @@ public class ExampleMetricsWithoutNetwork {
      return 1;
      }
      */
+    
     /**
      * main()
      *
@@ -245,12 +246,6 @@ public class ExampleMetricsWithoutNetwork {
         // submit vm list to the broker
         broker.submitVmList(vmlist);
 
-        /*Read Cloudlets from workload external file in the swf format
-         WorkloadFileReader workloadFileReader = new WorkloadFileReader("src/main/java/org/cloudbus/cloudsim/examples/sla/UniLu-Gaia-2014-2.swf", 1);
-         cloudletList = workloadFileReader.generateWorkload().subList(0, 1000);
-         for (Cloudlet cloudlet : cloudletList) {
-         cloudlet.setUserId(brokerId);
-         } */
         cloudletList = createCloudlet(brokerId, 12);
 
         // submit cloudlet list to the broker

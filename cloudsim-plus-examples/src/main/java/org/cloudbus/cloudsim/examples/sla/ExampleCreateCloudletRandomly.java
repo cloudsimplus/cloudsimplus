@@ -41,44 +41,41 @@ import org.cloudbus.cloudsim.utilizationmodels.UtilizationModelFull;
 /**
  *
  * @author raysaoliveira
- * 
- * This simple example show how to create cloudlets randomly 
- * using poisson distribution.
+ *
+ * This simple example show how to create cloudlets randomly using poisson
+ * distribution.
  */
 public class ExampleCreateCloudletRandomly {
 
     /**
-     * The cloudlet list.
+     * List of Cloudlet .
      */
     private final List<Cloudlet> cloudletList;
 
     /**
-     * The vmlist.
+     * List of Vms
      */
     private final List<Vm> vmlist;
 
     /**
-     * Average number of customers that arrives per minute.
-     * The value of 0.4 customers per minute means that 1 customer will arrive 
-     * at every 2.5 minutes.
-     * It means that 1 minute / 0.4 customer per minute = 1 customer at every 2.5 minutes.
-     * This is the interarrival time (in average).
+     * Average number of customers that arrives per minute. The value of 0.4
+     * customers per minute means that 1 customer will arrive at every 2.5
+     * minutes. It means that 1 minute / 0.4 customer per minute = 1 customer at
+     * every 2.5 minutes. This is the interarrival time (in average).
      */
-    private static final double MEAN_CUSTOMERS_ARRIVAL_PER_MINUTE=0.4; 
-    
+    private static final double MEAN_CUSTOMERS_ARRIVAL_PER_MINUTE = 0.4;
+
     /**
      * Number of simulations to run.
      */
     private static final int NUMBER_OF_SIMULATIONS = 1;
-    
+
     /**
-     * The maximum time that a Cloudlet can arrive.
-     * Between the first simulation minute and this time,
-     * different Cloudlets can arrive.
-    */
-    private final int MAX_TIME_FOR_CLOUDLET_ARRIVAL = 25;
-    
-    
+     * The maximum time that a Cloudlet can arrive. Between the first simulation
+     * minute and this time, different Cloudlets can arrive.
+     */
+    private final int MAX_TIME_FOR_CLOUDLET_ARRIVAL = 100;
+
     /**
      * Create Vms
      *
@@ -117,7 +114,7 @@ public class ExampleCreateCloudletRandomly {
             for (int i = 0; i < NUMBER_OF_SIMULATIONS; i++) {
                 new ExampleCreateCloudletRandomly();
             }
-             Log.printFormattedLine("... finished!");
+            Log.printFormattedLine("... finished!");
         } catch (Exception e) {
             e.printStackTrace();
             Log.printLine("Unwanted errors happen");
@@ -138,7 +135,7 @@ public class ExampleCreateCloudletRandomly {
         // Third step: Create Broker
         DatacenterBroker broker = createBroker();
         int brokerId = broker.getId();
-
+       
         //create cloudlet randomly
         cloudletList = new ArrayList<>();
         long seed = System.currentTimeMillis();
@@ -147,20 +144,21 @@ public class ExampleCreateCloudletRandomly {
         PoissonProcess poisson = new PoissonProcess(MEAN_CUSTOMERS_ARRIVAL_PER_MINUTE, seed);
         int totalArrivedCustomers = 0;
         int cloudletId = 0;
-        for(int minute = 0; minute < MAX_TIME_FOR_CLOUDLET_ARRIVAL; minute++){
-            if(poisson.haveKEventsHappened()){ //Have k Cloudlets arrived?
+        for (int minute = 0; minute < MAX_TIME_FOR_CLOUDLET_ARRIVAL; minute++) {
+            if (poisson.haveKEventsHappened()) { //Have k Cloudlets arrived?
                 totalArrivedCustomers += poisson.getK();
                 Cloudlet cloudlet = createCloudlet(cloudletId++, brokerId);
                 cloudlet.setSubmissionDelay(minute);
                 cloudletList.add(cloudlet);
-                
+
                 System.out.printf(
-                    "%d cloudlets arrived at minute %d\n",
-                    poisson.getK(), minute,  poisson.probabilityToArriveNextKEvents());
+                        "%d cloudlets arrived at minute %d\n",
+                        poisson.getK(), minute, poisson.probabilityToArriveNextKEvents());
             }
         }
-        System.out.printf("\n\t%d cloudlets have arrived\n", totalArrivedCustomers);
         
+        System.out.printf("\n\t%d cloudlets have arrived\n", totalArrivedCustomers);
+
         broker.submitCloudletList(cloudletList);
 
         vmlist = createVM(brokerId, totalArrivedCustomers);
@@ -177,7 +175,7 @@ public class ExampleCreateCloudletRandomly {
 
     }
 
-    public Cloudlet createCloudlet(int cloudletId, int brokerId) {
+    private Cloudlet createCloudlet(int cloudletId, int brokerId) {
         long length = 1000;
         long fileSize = 300;
         long outputSize = 300;
@@ -195,23 +193,22 @@ public class ExampleCreateCloudletRandomly {
         // Here are the steps needed to create a PowerDatacenter:
         // 1. We need to create a list to store
         // our machine
-        List<Host> hostList = new ArrayList<Host>();
+        List<Host> hostList = new ArrayList<>();
 
         // 2. A Machine contains one or more PEs or CPUs/Cores.
         // In this example, it will have only one core.
         List<Pe> peList = new ArrayList<Pe>();
 
-        int mips = 10000;
+        int mips = 30000000;
 
         // 3. Create PEs and add these into a list.
         peList.add(new PeSimple(0, new PeProvisionerSimple(mips))); // need to store Pe id and MIPS Rating
-
         // 4. Create Host with its id and list of PEs and add them to the list
         // of machines
         int hostId = 0;
-        int ram = 4096; // host memory (MB)
-        long storage = 1000000; // host storage
-        long bw = 10000;
+        int ram = 1000000; // host memory (MB)
+        long storage = 100000000; // host storage
+        long bw = 3000000;
 
         hostList.add(new HostSimple(
                 hostId,
@@ -268,6 +265,13 @@ public class ExampleCreateCloudletRandomly {
             return null;
         }
         return broker;
+    }
+
+    /**
+     * @return the MAX_TIME_FOR_CLOUDLET_ARRIVAL
+     */
+    public int getMAX_TIME_FOR_CLOUDLET_ARRIVAL() {
+        return MAX_TIME_FOR_CLOUDLET_ARRIVAL;
     }
 
 }

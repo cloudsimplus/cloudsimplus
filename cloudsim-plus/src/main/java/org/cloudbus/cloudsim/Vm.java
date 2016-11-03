@@ -410,6 +410,16 @@ public interface Vm extends Identificable, Comparable<Vm> {
     double updateVmProcessing(double currentTime, List<Double> mipsShare);
 
     /**
+     * Sets the status of VM to FAILED.
+     * The failure is caused deallocating the PEs for VMs
+     * 
+     * @param failed the failed
+     * @param vm the vm
+     * @return true if successful and false otherwise
+     */
+    boolean setFailed(boolean failed, Vm vm);    
+    
+    /**
      * A property that implements the Null Object Design Pattern for {@link Vm}
      * objects.
      */
@@ -462,5 +472,9 @@ public interface Vm extends Identificable, Comparable<Vm> {
         @Override public void setOnUpdateVmProcessingListener(EventListener<HostToVmEventInfo> onUpdateVmProcessingListener) {}
         @Override public int compareTo(Vm o) { return 0; }
         @Override public double getTotalMipsCapacity() { return 0.0; }
+        @Override public boolean setFailed(boolean failed, Vm vm){return false;}
+    
+       
+   
     };
 }
