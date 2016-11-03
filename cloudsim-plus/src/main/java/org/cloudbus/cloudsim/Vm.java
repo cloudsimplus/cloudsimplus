@@ -415,10 +415,8 @@ public interface Vm extends Identificable, Comparable<Vm> {
      * The failure is caused deallocating the PEs for VMs
      * 
      * @param failed the failed
-     * @param vm the vm
-     * @return true if successful and false otherwise
      */
-    boolean setFailed(boolean failed, Vm vm);    
+    void setFailed(boolean failed);    
     
     /**
      * A property that implements the Null Object Design Pattern for {@link Vm}
@@ -473,9 +471,6 @@ public interface Vm extends Identificable, Comparable<Vm> {
         @Override public void setOnUpdateVmProcessingListener(EventListener<HostToVmEventInfo> onUpdateVmProcessingListener) {}
         @Override public int compareTo(Vm o) { return 0; }
         @Override public double getTotalMipsCapacity() { return 0.0; }
-        @Override public boolean setFailed(boolean failed, Vm vm){return false;}
-    
-       
-   
+        @Override public void setFailed(boolean failed){}
     };
 }

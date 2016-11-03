@@ -1,4 +1,4 @@
-package org.cloudbus.cloudsim.examples.sla;
+package org.cloudsimplus.sla;
 
 
 import java.util.Random;

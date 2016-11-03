@@ -700,9 +700,23 @@ public class CloudSim {
         future.addEvent(e);
         entities.get(src).setState(SimEntity.HOLDING);
     }
+    
+    /**
+     * Sends an event from one entity to another without delaying 
+     * the message.
+     *
+     * @param src Id of entity who scheduled the event.
+     * @param dest Id of entity that the event will be sent to
+     * @param tag the tag
+     * @param data the data
+     */
+    public static void sendNow(int src, int dest, int tag, Object data) {
+        send(src, dest, 0, tag, data);
+    }
+    
 
     /**
-     * Used to send an event from one entity to another.
+     * Sends an event from one entity to another.
      *
      * @param src Id of entity who scheduled the event.
      * @param dest Id of entity that the event will be sent to

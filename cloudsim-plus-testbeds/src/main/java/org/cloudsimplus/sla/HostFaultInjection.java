@@ -3,12 +3,11 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package org.cloudbus.cloudsim.examples.sla;
+package org.cloudsimplus.sla;
 
 import org.cloudbus.cloudsim.Host;
 import org.cloudbus.cloudsim.Log;
-import org.cloudbus.cloudsim.Vm;
-import org.cloudbus.cloudsim.core.CloudSim;
+import org.cloudbus.cloudsim.core.CloudSimTags;
 import org.cloudbus.cloudsim.core.SimEntity;
 import org.cloudbus.cloudsim.core.SimEvent;
 
@@ -20,11 +19,7 @@ import org.cloudbus.cloudsim.core.SimEvent;
  * 
  */
 public class HostFaultInjection extends SimEntity {
-
-    /**
-     * 1 means that the host failure is true and 0 otherwise
-     */
-    private static final int HOST_FAILURE = 1;
+    
     private Host host;
 
     public HostFaultInjection(String name) {
@@ -35,20 +30,14 @@ public class HostFaultInjection extends SimEntity {
     public void startEntity() {
         int delay = delayRandomly(10);
         Log.printLine(getName() + " is starting...");
-        schedule(getId(), delay, HOST_FAILURE);
+        schedule(getId(), delay, CloudSimTags.HOST_FAILURE);
     }
 
     @Override
     public void processEvent(SimEvent ev) {
         switch (ev.getTag()) {
-            case HOST_FAILURE:
-                host.setFailed(true); // set to true
-                if (host.isFailed()) {
-                    Log.printLine(CloudSim.clock() + " ---> Host " + host + " FAILURE...\n");
-                    for (Vm vm : host.getVmList()) {
-                        vm.setFailed(true, vm);
-                    }
-                }
+            case CloudSimTags.HOST_FAILURE:
+                host.setFailed(true); 
                 break;
 
             default:
@@ -74,13 +63,15 @@ public class HostFaultInjection extends SimEntity {
     }
 
     /**
-     * @return the host
+     * Gets the host in which a failure may happen.
+     * @return 
      */
     public Host getHost() {
         return host;
     }
 
     /**
+     * Sets the host in which failure may happen.
      * @param host the host to set
      */
     public void setHost(Host host) {

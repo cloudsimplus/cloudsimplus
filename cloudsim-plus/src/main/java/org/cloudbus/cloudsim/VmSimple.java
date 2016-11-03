@@ -660,13 +660,12 @@ public class VmSimple implements Vm {
     }
 
     @Override
-    public boolean setFailed(boolean failed, Vm vm) {
-        // all the PEs are failed (or recovered, depending on fail)
+    public void setFailed(boolean failed) {
+        // all the PEs are failed (or recovered, depending on fail parameter)
         this.failed = failed;
-        host.deallocatePesForVm(vm);
-        host.vmCreate(vm);
-        Log.printLine(CloudSim.clock() + " ---> VM " + vm.getUid() + " FAILURE...\n");
-        return true; 
+        if(failed) {
+            Log.printLine(CloudSim.clock() + " ---> VM " + getUid() + " FAILURE...\n");
+        }
     }
 
 }

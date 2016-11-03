@@ -11,7 +11,6 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.OptionalDouble;
 import org.cloudbus.cloudsim.Log;
 import org.cloudbus.cloudsim.provisioners.PeProvisioner;
 import org.cloudbus.cloudsim.resources.Pe;
@@ -160,12 +159,10 @@ public abstract class VmSchedulerAbstract implements VmScheduler {
             return 0;
         }
 
-        OptionalDouble max =
-                getPeList().stream()
+        return getPeList().stream()
                     .map(Pe::getPeProvisioner)
                     .mapToDouble(PeProvisioner::getAvailableMips)
-                    .max();
-        return max.orElse(0);
+                    .max().orElse(0.0);
     }
 
     /**

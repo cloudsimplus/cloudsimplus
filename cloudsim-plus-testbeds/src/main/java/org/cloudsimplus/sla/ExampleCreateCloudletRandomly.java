@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package org.cloudbus.cloudsim.examples.sla;
+package org.cloudsimplus.sla;
 
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -171,7 +171,7 @@ public class ExampleCreateCloudletRandomly {
 
         //Final step: Print results when simulation is over
         List<Cloudlet> newList = broker.getCloudletsFinishedList();
-        CloudletsTableBuilderHelper.print(new TextTableBuilder(), newList);
+        new CloudletsTableBuilderHelper(new TextTableBuilder(), newList);
 
     }
 

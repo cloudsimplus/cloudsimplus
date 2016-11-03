@@ -1,4 +1,4 @@
-package org.cloudbus.cloudsim.examples.network.datacenter;
+package org.cloudsimplus.sla;
 
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -13,7 +13,6 @@ import org.cloudbus.cloudsim.core.CloudSim;
 import org.cloudbus.cloudsim.network.datacenter.EdgeSwitch;
 import org.cloudbus.cloudsim.network.datacenter.NetDatacenterBroker;
 import org.cloudbus.cloudsim.network.datacenter.NetworkCloudlet;
-import org.cloudbus.cloudsim.network.datacenter.NetworkCloudletSpaceSharedScheduler;
 import org.cloudbus.cloudsim.network.datacenter.NetworkDatacenter;
 import org.cloudbus.cloudsim.network.datacenter.NetworkHost;
 import org.cloudbus.cloudsim.network.datacenter.NetworkVm;
@@ -163,7 +162,7 @@ public class NetworkVmsExampleWithMetrics {
 
         //Final step: Print results when simulation is over
         List<Cloudlet> newList = broker.getCloudletsFinishedList();
-        CloudletsTableBuilderHelper.print(new TextTableBuilder(), newList);
+        new CloudletsTableBuilderHelper(new TextTableBuilder(), newList);
 
         Log.printFormattedLine("... finished!");
     }

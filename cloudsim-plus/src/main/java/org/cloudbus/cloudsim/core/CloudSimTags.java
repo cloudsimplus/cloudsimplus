@@ -312,6 +312,17 @@ public class CloudSimTags {
 
     public static final int NETWORK_EVENT_HOST = BASE + 47;
 
+    /**
+     * Defines the base tag to be used for failure events such as 
+     * failure of hosts or VMs.
+    */
+    public static final int FAILURE = BASE + 47;
+    
+    /**
+     * Defines the tag that represents a host failure.
+     */
+    public static final int HOST_FAILURE = FAILURE + 1;
+
     
     /**
      * Private Constructor.

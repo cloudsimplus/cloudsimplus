@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package org.cloudbus.cloudsim.examples.sla;
+package org.cloudsimplus.sla;
 
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -71,7 +71,6 @@ public class ExampleUsingFaultInjector {
      * @return list de vms
      */
     private List<Vm> createVM(int userId, int vms) {
-
         //Creates a container to store VMs.
         List<Vm> list = new ArrayList<>();
 
@@ -177,7 +176,7 @@ public class ExampleUsingFaultInjector {
 
         //Final step: Print results when simulation is over
         List<Cloudlet> newList = broker.getCloudletsFinishedList();
-        CloudletsTableBuilderHelper.print(new TextTableBuilder(), newList);
+        new CloudletsTableBuilderHelper(new TextTableBuilder(), newList);
 
         Log.printFormattedLine("... finished!");
     }

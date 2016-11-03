@@ -12,6 +12,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.cloudbus.cloudsim.core.CloudSim;
+import org.cloudbus.cloudsim.core.CloudSimTags;
 import org.cloudbus.cloudsim.listeners.EventListener;
 import org.cloudbus.cloudsim.listeners.HostUpdatesVmsProcessingEventInfo;
 import org.cloudbus.cloudsim.lists.PeList;
@@ -438,10 +439,33 @@ public class HostSimple implements Host {
 
     @Override
     public final boolean setFailed(boolean failed) {
-        // all the PEs are failed (or recovered, depending on fail)
+        // all the PEs are failed (or recovered, depending on failed parameter)
         this.failed = failed;
         PeList.setStatusFailed(getPeList(), getId(), failed);
+        Log.printLine(CloudSim.clock() + " ---> Host " + id + " FAILURE...\n");
+        setVmsToFailedWhenHostIsFailed();
+        
         return true;
+    }
+
+    /**
+     * Checks if the the host is failed and 
+     * sets all its Vm' to failed.
+     */
+    public void setVmsToFailedWhenHostIsFailed() {
+        if(!this.failed)
+            return;
+            
+        for (Vm vm : getVmList()) {
+            vm.setFailed(true);
+            /*
+            As the broker is expected to request vm creation and destruction,
+            it is set here as the sender of the vm destroy request.
+            */
+            CloudSim.sendNow(
+                vm.getUserId(), getDatacenter().getId(), 
+                CloudSimTags.VM_DESTROY, vm);
+        }
     }
 
     @Override

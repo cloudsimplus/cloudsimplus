@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package org.cloudbus.cloudsim.examples.sla.readJsonFile;
+package org.cloudsimplus.sla.readJsonFile;
 
 /**
  * This class represents the violations of sla contract and their values 

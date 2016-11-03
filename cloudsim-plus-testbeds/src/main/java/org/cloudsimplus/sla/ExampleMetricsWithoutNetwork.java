@@ -1,4 +1,4 @@
-package org.cloudbus.cloudsim.examples.sla;
+package org.cloudsimplus.sla;
 
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -22,8 +22,6 @@ import org.cloudbus.cloudsim.allocationpolicies.VmAllocationPolicySimple;
 import org.cloudbus.cloudsim.brokers.DatacenterBrokerSimple;
 import org.cloudbus.cloudsim.schedulers.VmSchedulerTimeShared;
 import org.cloudbus.cloudsim.core.CloudSim;
-import static org.cloudbus.cloudsim.examples.network.datacenter.NetworkVmsExampleAppCloudletAbstract.MAX_VMS_PER_HOST;
-import org.cloudbus.cloudsim.examples.network.datacenter.VmCost;
 import org.cloudbus.cloudsim.provisioners.PeProvisionerSimple;
 import org.cloudbus.cloudsim.provisioners.ResourceProvisionerSimple;
 import org.cloudbus.cloudsim.resources.Bandwidth;
