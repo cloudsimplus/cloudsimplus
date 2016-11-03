@@ -5,11 +5,9 @@ import org.cloudbus.cloudsim.brokers.DatacenterBroker;
 import org.cloudbus.cloudsim.brokers.DatacenterBrokerSimple;
 import org.cloudbus.cloudsim.util.CloudletsTableBuilderHelper;
 import org.cloudbus.cloudsim.util.TextTableBuilder;
-import org.cloudsimplus.testbeds.heuristics.DatacenterBrokerHeuristicExperiment;
 import org.cloudsimplus.testbeds.heuristics.DatacenterBrokerHeuristicRunner;
 
 import java.util.List;
-import java.util.function.Consumer;
 
 /**
  * An experiment that shows how the dynamic arrival of Cloudlets
@@ -37,7 +35,7 @@ public class DynamicCloudletsArrivalExperiment extends SimulationExperiment {
 	public void printResults() {
 		DatacenterBroker broker = getBrokerList().stream().findFirst().orElse(DatacenterBroker.NULL);
 		List<Cloudlet> newList = broker.getCloudletsFinishedList();
-		CloudletsTableBuilderHelper.print(new TextTableBuilder(), newList);
+		new CloudletsTableBuilderHelper(new TextTableBuilder(), newList);
 	}
 
 	@Override

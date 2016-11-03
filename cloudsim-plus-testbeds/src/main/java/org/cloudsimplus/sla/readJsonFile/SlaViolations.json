@@ -1,0 +1,49 @@
+[{
+        "id": 1,
+        "metricNameViolation": "responseTime",
+        "max": 200,
+        "min": 150,
+        "unit": "ms"
+    },
+    {
+        "id": 2,
+        "metricNameViolation": "availability",
+        "max": 100,
+        "min": 95,
+        "unit": "%"
+    },
+    {
+        "id": 3,
+        "metricNameViolation": "cpuUtilization",
+        "max": 90,
+        "min": 80,
+        "unit": "%"
+    },
+    {
+        "id": 4,
+        "metricNameViolation": "waitTime",
+        "max": 20,
+        "min": 15,
+        "unit": "ms"
+    },
+    {
+        "id": 5,
+        "metricNameViolation": "faulTolerance",
+        "max": 95,
+        "min": 90,
+        "unit": "%"
+    },
+    {
+        "id": 6,
+        "metricNameViolation": "throughput",
+        "max": 20,
+        "min": 15,
+        "unit": "bits/s"
+    },
+    {
+        "id": 7,
+        "metricNameViolation": "costPrice",
+        "max": 500,
+        "min": 400,
+        "unit": "$"
+    }]

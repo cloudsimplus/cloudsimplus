@@ -12,6 +12,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import org.cloudbus.cloudsim.core.CloudSim;
 import org.cloudbus.cloudsim.listeners.DatacenterToVmEventInfo;
 import org.cloudbus.cloudsim.listeners.EventListener;
 import org.cloudbus.cloudsim.listeners.HostToVmEventInfo;
@@ -20,27 +21,32 @@ import org.cloudbus.cloudsim.schedulers.CloudletScheduler;
 
 /**
  * Implements the basic features of a Virtual Machine (VM) that runs inside a
- * {@link Host} that may be shared among other VMs. It processes {@link Cloudlet cloudlets}.
- * This processing happens according to a policy, defined by the
- * {@link CloudletScheduler}. Each VM has a owner (user), which can submit cloudlets to
- * the VM to execute them.
+ * {@link Host} that may be shared among other VMs. It processes
+ * {@link Cloudlet cloudlets}. This processing happens according to a policy,
+ * defined by the {@link CloudletScheduler}. Each VM has a owner (user), which
+ * can submit cloudlets to the VM to execute them.
  *
  * @author Rodrigo N. Calheiros
  * @author Anton Beloglazov
  * @since CloudSim Toolkit 1.0
  *
  * @todo @author manoelcampos Instead of having the methods getRam, getUsedRam,
- getAvailableRam (and the same for other resources), it would be returned the
- ResourceManageable object for each different kind of resource, in order to allow the
- user to get the resource capacity, used and available capacity without
- defining a specific method for each one.
+ * getAvailableRam (and the same for other resources), it would be returned the
+ * ResourceManageable object for each different kind of resource, in order to
+ * allow the user to get the resource capacity, used and available capacity
+ * without defining a specific method for each one.
  */
 public class VmSimple implements Vm {
+    private boolean failed;
 
-    /** @see #getId() */
+    /**
+     * @see #getId()
+     */
     private int id;
 
-    /** @see #getUserId() */
+    /**
+     * @see #getUserId()
+     */
     private int userId;
 
     /**
@@ -49,28 +55,44 @@ public class VmSimple implements Vm {
      */
     private String uid;
 
-    /** @see #getMips() */
+    /**
+     * @see #getMips()
+     */
     private double mips;
 
-    /** @see #getCurrentAllocatedMips() */
+    /**
+     * @see #getCurrentAllocatedMips()
+     */
     private List<Double> currentAllocatedMips;
 
-    /** @see #getNumberOfPes() */
+    /**
+     * @see #getNumberOfPes()
+     */
     private int numberOfPes;
 
-    /** @see #getVmm() */
+    /**
+     * @see #getVmm()
+     */
     private String vmm;
 
-    /** @see #getCloudletScheduler() */
+    /**
+     * @see #getCloudletScheduler()
+     */
     private CloudletScheduler cloudletScheduler;
 
-    /** @see #getHost() */
+    /**
+     * @see #getHost()
+     */
     private Host host;
 
-    /** @see #isInMigration() */
+    /**
+     * @see #isInMigration()
+     */
     private boolean inMigration;
 
-    /** @see #isBeingInstantiated() */
+    /**
+     * @see #isBeingInstantiated()
+     */
     private boolean beingInstantiated;
 
     /**
@@ -79,7 +101,9 @@ public class VmSimple implements Vm {
      */
     private final Map<Class<? extends ResourceManageable<? extends Number>>, ResourceManageable<? extends Number>> resources;
 
-    /** @see #getStateHistory() */
+    /**
+     * @see #getStateHistory()
+     */
     private final List<VmStateHistoryEntry> stateHistory = new LinkedList<>();
 
     /**
@@ -100,16 +124,24 @@ public class VmSimple implements Vm {
      */
     private final Bandwidth bw;
 
-    /** @see #getOnHostAllocationListener() */
+    /**
+     * @see #getOnHostAllocationListener()
+     */
     private EventListener<HostToVmEventInfo> onHostAllocationListener = EventListener.NULL;
 
-    /** @see #getOnHostDeallocationListener() */
+    /**
+     * @see #getOnHostDeallocationListener()
+     */
     private EventListener<HostToVmEventInfo> onHostDeallocationListener = EventListener.NULL;
 
-    /** @see #getOnVmCreationFailureListener() */
+    /**
+     * @see #getOnVmCreationFailureListener()
+     */
     private EventListener<DatacenterToVmEventInfo> onVmCreationFailureListener = EventListener.NULL;
 
-    /** @see #getOnUpdateVmProcessingListener() */
+    /**
+     * @see #getOnUpdateVmProcessingListener()
+     */
     private EventListener<HostToVmEventInfo> onUpdateVmProcessingListener = EventListener.NULL;
 
     /**
@@ -120,7 +152,8 @@ public class VmSimple implements Vm {
      * @param mipsCapacity the mips
      * @param numberOfPes amount of CPUs
      * @param ramCapacity amount of ram
-     * @param bwCapacity amount of bandwidth to be allocated to the VM (in Megabits/s)
+     * @param bwCapacity amount of bandwidth to be allocated to the VM (in
+     * Megabits/s)
      * @param storageCapacity The size the VM image (the amount of storage it
      * will use, at least initially).
      * @param vmm virtual machine monitor
@@ -409,8 +442,9 @@ public class VmSimple implements Vm {
      * @param cloudletScheduler the new cloudlet scheduler
      */
     protected final void setCloudletScheduler(CloudletScheduler cloudletScheduler) {
-        if(cloudletScheduler == null)
+        if (cloudletScheduler == null) {
             cloudletScheduler = CloudletScheduler.NULL;
+        }
 
         cloudletScheduler.setVm(this);
         this.cloudletScheduler = cloudletScheduler;
@@ -548,16 +582,18 @@ public class VmSimple implements Vm {
 
     @Override
     public void setOnHostAllocationListener(EventListener<HostToVmEventInfo> onHostAllocationListener) {
-        if (onHostAllocationListener == null)
+        if (onHostAllocationListener == null) {
             onHostAllocationListener = EventListener.NULL;
+        }
 
         this.onHostAllocationListener = onHostAllocationListener;
     }
 
     @Override
     public void setOnHostDeallocationListener(EventListener<HostToVmEventInfo> onHostDeallocationListener) {
-        if (onHostDeallocationListener == null)
+        if (onHostDeallocationListener == null) {
             onHostDeallocationListener = EventListener.NULL;
+        }
 
         this.onHostDeallocationListener = onHostDeallocationListener;
     }
@@ -584,8 +620,9 @@ public class VmSimple implements Vm {
 
     @Override
     public void setOnVmCreationFailureListener(EventListener<DatacenterToVmEventInfo> onVmCreationFailureListener) {
-        if (onVmCreationFailureListener == null)
+        if (onVmCreationFailureListener == null) {
             onVmCreationFailureListener = EventListener.NULL;
+        }
 
         this.onVmCreationFailureListener = onVmCreationFailureListener;
     }
@@ -597,8 +634,9 @@ public class VmSimple implements Vm {
 
     @Override
     public void setOnUpdateVmProcessingListener(EventListener<HostToVmEventInfo> onUpdateVmProcessingListener) {
-        if(onUpdateVmProcessingListener == null)
+        if (onUpdateVmProcessingListener == null) {
             onUpdateVmProcessingListener = EventListener.NULL;
+        }
 
         this.onUpdateVmProcessingListener = onUpdateVmProcessingListener;
     }
@@ -620,4 +658,14 @@ public class VmSimple implements Vm {
     public double getTotalMipsCapacity() {
         return getMips() * getNumberOfPes();
     }
+
+    @Override
+    public void setFailed(boolean failed) {
+        // all the PEs are failed (or recovered, depending on fail parameter)
+        this.failed = failed;
+        if(failed) {
+            Log.printLine(CloudSim.clock() + " ---> VM " + getUid() + " FAILURE...\n");
+        }
+    }
+
 }

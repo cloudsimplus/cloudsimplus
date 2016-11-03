@@ -500,6 +500,7 @@ public class DatacenterSimple extends SimEntity implements Datacenter {
 
             sendNow(vm.getUserId(), CloudSimTags.VM_DESTROY_ACK, data);
         }
+        Log.printFormatted("Time %.2f: Vm %d destroyed\n", CloudSim.clock(), vm.getId());
 
         getVmList().remove(vm);
     }

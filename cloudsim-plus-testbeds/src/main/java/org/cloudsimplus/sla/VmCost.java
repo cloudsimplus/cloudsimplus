@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package org.cloudbus.cloudsim.examples.network.datacenter;
+package org.cloudsimplus.sla;
 
 import org.cloudbus.cloudsim.Datacenter;
 import org.cloudbus.cloudsim.Vm;
@@ -38,7 +38,7 @@ public class VmCost {
      * @return costMemory
      */
     public double costMemory() {
-        return datacenter.getCharacteristics().getCostPerMem() * getVm().getRam();
+        return (datacenter.getCharacteristics().getCostPerMem() * getVm().getRam());
     }
 
     /**

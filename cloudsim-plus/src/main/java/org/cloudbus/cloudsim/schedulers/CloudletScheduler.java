@@ -1,7 +1,6 @@
 package org.cloudbus.cloudsim.schedulers;
 
 import java.io.Serializable;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import org.cloudbus.cloudsim.Cloudlet;
