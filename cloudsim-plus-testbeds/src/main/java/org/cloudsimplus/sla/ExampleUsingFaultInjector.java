@@ -133,12 +133,7 @@ public class ExampleUsingFaultInjector {
         try {
             new ExampleUsingFaultInjector();
         } catch (Exception e) {
-<<<<<<< HEAD
-            e.printStackTrace();
-            Log.printLine("Unwanted errors happen");
-=======
-            Log.printFormattedLine("Simulation finished due to unexpected error: %s", e);
->>>>>>> upstream/master
+           Log.printFormattedLine("Simulation finished due to unexpected error: %s", e);
         }
     }
 
@@ -179,11 +174,7 @@ public class ExampleUsingFaultInjector {
 
         //Final step: Print results when simulation is over
         List<Cloudlet> newList = broker.getCloudletsFinishedList();
-<<<<<<< HEAD
-        new CloudletsTableBuilderHelper(new TextTableBuilder(), newList);
-=======
         new CloudletsTableBuilderHelper(newList).build();
->>>>>>> upstream/master
 
         Log.printFormattedLine("... finished!");
     }
@@ -233,19 +224,8 @@ public class ExampleUsingFaultInjector {
                 arch, os, vmm, getHostList(), time_zone, cost, costPerMem,
                 costPerStorage, costPerBw);
 
-<<<<<<< HEAD
-        Datacenter datacenter = null;
-        try {
-            datacenter = new DatacenterSimple(name, characteristics, new VmAllocationPolicySimple(getHostList()), storageList, 0);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
-        return datacenter;
-=======
         return new DatacenterSimple(name, characteristics, 
                 new VmAllocationPolicySimple(getHostList()), storageList, 0);
->>>>>>> upstream/master
     }
 
     public List<Pe> createHostPesList(int hostPes, int mips) {
