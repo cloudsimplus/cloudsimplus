@@ -1,6 +1,6 @@
 package org.cloudbus.cloudsim.resources;
 
-import org.cloudbus.cloudsim.util.Calculator;
+import org.cloudsimplus.util.Calculator;
 
 /**
  * A class that represent simple resources such as RAM, CPU or Bandwidth,

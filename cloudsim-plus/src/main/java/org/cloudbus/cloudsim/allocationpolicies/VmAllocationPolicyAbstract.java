@@ -13,7 +13,7 @@ import java.util.Map;
 import org.cloudbus.cloudsim.Datacenter;
 import org.cloudbus.cloudsim.Host;
 import org.cloudbus.cloudsim.Vm;
-import org.cloudbus.cloudsim.listeners.HostToVmEventInfo;
+import org.cloudsimplus.listeners.HostToVmEventInfo;
 
 /**
  * An abstract class that represents the policy

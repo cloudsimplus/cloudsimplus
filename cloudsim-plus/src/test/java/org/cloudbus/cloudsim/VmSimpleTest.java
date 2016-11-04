@@ -14,9 +14,9 @@ import static org.easymock.EasyMock.verify;
 
 import java.util.ArrayList;
 import java.util.List;
-import org.cloudbus.cloudsim.listeners.DatacenterToVmEventInfo;
-import org.cloudbus.cloudsim.listeners.EventListener;
-import org.cloudbus.cloudsim.listeners.HostToVmEventInfo;
+import org.cloudsimplus.listeners.DatacenterToVmEventInfo;
+import org.cloudsimplus.listeners.EventListener;
+import org.cloudsimplus.listeners.HostToVmEventInfo;
 import org.cloudbus.cloudsim.schedulers.CloudletScheduler;
 import org.cloudbus.cloudsim.schedulers.CloudletSchedulerTimeShared;
 import org.easymock.EasyMock;

@@ -1,5 +1,6 @@
 package org.cloudbus.cloudsim.util;
 
+import org.cloudsimplus.util.Calculator;
 import org.junit.Test;
 import static org.junit.Assert.*;
 

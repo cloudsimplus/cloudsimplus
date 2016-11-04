@@ -17,8 +17,8 @@ import org.cloudbus.cloudsim.utilizationmodels.UtilizationModel;
 
 import java.util.List;
 import org.cloudbus.cloudsim.core.CloudSim;
-import org.cloudbus.cloudsim.listeners.EventListener;
-import org.cloudbus.cloudsim.listeners.VmToCloudletEventInfo;
+import org.cloudsimplus.listeners.EventListener;
+import org.cloudsimplus.listeners.VmToCloudletEventInfo;
 import org.junit.Assert;
 
 import org.junit.Before;

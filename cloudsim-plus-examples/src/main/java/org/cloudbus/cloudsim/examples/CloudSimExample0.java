@@ -1,6 +1,6 @@
 package org.cloudbus.cloudsim.examples;
 
-import org.cloudbus.cloudsim.util.CloudletsTableBuilderHelper;
+import org.cloudsimplus.util.tablebuilder.CloudletsTableBuilderHelper;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.LinkedList;

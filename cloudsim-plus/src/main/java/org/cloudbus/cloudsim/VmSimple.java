@@ -13,9 +13,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import org.cloudbus.cloudsim.core.CloudSim;
-import org.cloudbus.cloudsim.listeners.DatacenterToVmEventInfo;
-import org.cloudbus.cloudsim.listeners.EventListener;
-import org.cloudbus.cloudsim.listeners.HostToVmEventInfo;
+import org.cloudsimplus.listeners.DatacenterToVmEventInfo;
+import org.cloudsimplus.listeners.EventListener;
+import org.cloudsimplus.listeners.HostToVmEventInfo;
 import org.cloudbus.cloudsim.resources.*;
 import org.cloudbus.cloudsim.schedulers.CloudletScheduler;
 

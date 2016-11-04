@@ -14,8 +14,8 @@ import org.cloudbus.cloudsim.core.CloudSim;
 import org.cloudbus.cloudsim.core.CloudSimTags;
 import org.cloudbus.cloudsim.core.SimEntity;
 import org.cloudbus.cloudsim.core.SimEvent;
-import org.cloudbus.cloudsim.listeners.DatacenterToVmEventInfo;
-import org.cloudbus.cloudsim.listeners.VmToCloudletEventInfo;
+import org.cloudsimplus.listeners.DatacenterToVmEventInfo;
+import org.cloudsimplus.listeners.VmToCloudletEventInfo;
 import org.cloudbus.cloudsim.lists.CloudletList;
 import org.cloudbus.cloudsim.lists.VmList;
 

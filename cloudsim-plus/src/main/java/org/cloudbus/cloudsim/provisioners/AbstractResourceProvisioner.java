@@ -11,7 +11,7 @@ package org.cloudbus.cloudsim.provisioners;
 import java.util.HashMap;
 import java.util.Map;
 import org.cloudbus.cloudsim.Vm;
-import org.cloudbus.cloudsim.util.Calculator;
+import org.cloudsimplus.util.Calculator;
 import org.cloudbus.cloudsim.resources.ResourceManageable;
 
 /**

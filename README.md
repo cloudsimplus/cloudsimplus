@@ -112,7 +112,7 @@ To run some example type the command: `sh script/bootstrap.sh package.ExampleCla
 For instance, to run the CloudSimExample1 you can type: `sh script/bootstrap.sh org.cloudbus.cloudsim.examples.CloudSimExample1`. 
 
 The script checks if it is required to build the project, using maven in this case, making sure to download all dependencies. 
-To see what examples are available, just navigate through the [examples directory](/cloudsim-plus-examples/src/main/java/org/cloudbus/cloudsim/examples).
+To see what examples are available, just navigate through the [examples directory](/cloudsim-plus-examples/src/main/java/).
 To see more script options, run it without any parameter.  
  
 ## By means of an IDE (the easier way to just take a look or to create your own simulations)
@@ -184,7 +184,7 @@ CloudSim.stopSimulation();
 /*Prints results when the simulation is over
 (you can use your own code here to print what you want from this cloudlet list)*/
 List<Cloudlet> finishedCloudlets = broker0.getCloudletsFinishedList();
-CloudletsTableBuilderHelper.print(new TextTableBuilder(), finishedCloudlets);
+new CloudletsTableBuilderHelper(finishedCloudlets).build();
 Log.printFormattedLine("Minimal Example finished!");
 ```
 
@@ -254,7 +254,7 @@ Accordingly, the main contributions of CloudSim Plus are:
 - Completely new Test Suites.
 - New set of features.
 - New examples for old and new features.
-- Update to Java 8.
+- Updated to Java 8.
 
 All these improvements are described in details in the next sub-sections. 
 
@@ -340,12 +340,12 @@ Some totally new features were introduced in CloudSim Plus:
 
 - **A `TableBuilder` interface and a set of implementing classes to automate the process of printing simulation 
   results in different formats such as Text (ASCII), CSV and HTML**: the interface and classes are available
-  at the [util](/cloudsim-plus/src/main/java/org/cloudbus/cloudsim/util/) package. 
+  at the [org.cloudsimplus.util.tablebuilder](/cloudsim-plus/src/main/java/org/cloudsimplus/util/tablebuilder/) package. 
   To print results of a list of executed cloudlet you can use a single line of code such as 
-  `CloudletsTableBuilderHelper.print(new TextTableBuilder(), broker.getCloudletsFinishedList());`. 
+  `new CloudletsTableBuilderHelper(broker.getCloudletsFinishedList()).build();`. 
   All the perfectly aligned tables that you will see after running the examples use the `TextTableBuilder` class.
 - **Listener objects that allow you to be notified when different events happen during your simulation execution**: 
-  interfaces and classes included in the [org.cloudbus.cloudsim.listeners](/cloudsim-plus/src/main/java/org/cloudbus/cloudsim/listeners/) 
+  interfaces and classes included in the [org.cloudsimplus.listeners](/cloudsim-plus/src/main/java/org/cloudsimplus/listeners/) 
   package allow you to keep track of simulation execution and perform additional tasks when a given event happens. 
   These listeners were implemented for some CloudSim Plus classes such as below (the next section describes examples of this feature):
     - at `CloudSim` class: to notify observers when any event is processed by CloudSim Plus.      
@@ -357,11 +357,11 @@ Some totally new features were introduced in CloudSim Plus:
   used to ease the creation of objects. As several simulations require the developer to create multiple instances of a 
   given object with the same attribute values (such as several identical hosts), that starts being a repetitive, 
   time-consuming and boring task. 
-  The package [org.cloudbus.cloudsim.builders](/cloudsim-plus/src/main/java/org/cloudbus/cloudsim/builders/) 
+  The package [org.cloudsimplus.builders](/cloudsim-plus/src/main/java/org/cloudsimplus/builders/) 
   provides a set of classes to automate the instantiation of such objects. 
-  The class [SimulationScenarioBuilder](/cloudsim-plus/src/main/java/org/cloudbus/cloudsim/builders/SimulationScenarioBuilder.java) 
+  The class [SimulationScenarioBuilder](/cloudsim-plus/src/main/java/org/cloudsimplus/builders/SimulationScenarioBuilder.java) 
   is the start point to access all the introduced builders. 
-  New examples were not included yet, but the [Integration Tests package](/cloudsim-plus/src/test/java/org/cloudbus/cloudsim/IntegrationTests/) 
+  New examples were not included yet, but the [Integration Tests package](/cloudsim-plus/src/test/java/org/cloudsimplus/IntegrationTests/) 
   makes intensive use of such a new feature.
 - **Delay the submission of cloudlets to VM**, simulating the dynamic arrival of cloudlets 
   inside the Cloud provider infrastructure. See the issue #11 for more details.  
@@ -369,17 +369,17 @@ Some totally new features were introduced in CloudSim Plus:
 ## New examples for old and new features
 
 New concise and easy to understand examples of features that have lots of questions at forums were included, such as:
-- [Dynamic creation of cloudlets based on workload traces](/cloudsim-plus-examples/src/main/java/org/cloudbus/cloudsim/examples/workload/): 
+- [Dynamic creation of cloudlets based on workload traces](/cloudsim-plus-examples/src/main/java/org/cloudsimplus/examples/workload/): 
   the example dynamically creates cloudlets according to the data of a workload trace file. 
   VMs are created to fulfil cloudlets' requirements and, in its turn, Hosts are created to fulfil VMs' requirements. 
   It may not represent a real world use case, but the example can be adapted according to developer needs.  
-- [VM migration](/cloudsim-plus-examples/src/main/java/org/cloudbus/cloudsim/examples/migration/): 
+- [VM migration](/cloudsim-plus-examples/src/main/java/org/cloudsimplus/examples/migration/): 
   the example performs VM migrations based on Host utilization threshold. 
 - Implementation of custom `DatacenterBroker` and `VmAllocationPolicy` for the given examples.
 - Examples using the new Listener features were included to the package 
-  [org.cloudbus.cloudsim.examples.listeners](/cloudsim-plus-examples/src/main/java/org/cloudbus/cloudsim/examples/listeners/).
+  [org.cloudsimplus.examples.listeners](/cloudsim-plus-examples/src/main/java/org/cloudsimplus/examples/listeners/).
 
-## Update to Java 8
+## Updated to Java 8
 
 The [CloudSim Plus module](/cloudsim-plus), that represents the Cloud Simulation API, now requires the JDK 8 and makes intensive use of 
 [Lambda Expressions, Streams and Functional Programming](http://www.oracle.com/webfolder/technetwork/tutorials/obe/java/Lambda-QuickStart/index.html) 
@@ -489,7 +489,7 @@ Host host = new HostSimple(id,
 <p align="right"><a href="#top">:arrow_up:</a></p>
 
 <a id="publications"></a>
-# Publications about the original CloudSim version
+# Publications of the original CloudSim version
 
   * Anton Beloglazov, and Rajkumar Buyya, [Optimal Online Deterministic Algorithms and Adaptive Heuristics for Energy and Performance Efficient Dynamic Consolidation of Virtual Machines in Cloud Data Centers](http://beloglazov.info/papers/2012-optimal-algorithms-ccpe.pdf), Concurrency and Computation: Practice and Experience, Volume 24, Number 13, Pages: 1397-1420, John Wiley & Sons, Ltd, New York, USA, 2012.
   * Saurabh Kumar Garg and Rajkumar Buyya, [NetworkCloudSim: Modelling Parallel Applications in Cloud Simulations](http://www.cloudbus.org/papers/NetworkCloudSim2011.pdf), Proceedings of the 4th IEEE/ACM International Conference on Utility and Cloud Computing (UCC 2011, IEEE CS Press, USA), Melbourne, Australia, December 5-7, 2011.

@@ -3,7 +3,7 @@ package org.cloudsimplus.testbeds;
 import org.cloudbus.cloudsim.Cloudlet;
 import org.cloudbus.cloudsim.brokers.DatacenterBroker;
 import org.cloudbus.cloudsim.brokers.DatacenterBrokerSimple;
-import org.cloudbus.cloudsim.util.CloudletsTableBuilderHelper;
+import org.cloudsimplus.util.tablebuilder.CloudletsTableBuilderHelper;
 import org.cloudsimplus.testbeds.heuristics.DatacenterBrokerHeuristicRunner;
 
 import java.util.List;

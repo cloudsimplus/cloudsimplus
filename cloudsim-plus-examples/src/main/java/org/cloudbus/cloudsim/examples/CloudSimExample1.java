@@ -8,7 +8,7 @@ package org.cloudbus.cloudsim.examples;
  *
  * Copyright (c) 2009, The University of Melbourne, Australia
  */
-import org.cloudbus.cloudsim.util.CloudletsTableBuilderHelper;
+import org.cloudsimplus.util.tablebuilder.CloudletsTableBuilderHelper;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.LinkedList;

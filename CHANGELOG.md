@@ -76,7 +76,7 @@ Lists the main changes in the project.
 ## [v0.6-beta] - 2016-06-10 
 
 ### Added
-- [Examples](cloudsim-plus-examples/src/main/java/org/cloudbus/cloudsim/examples/listeners/) using the new listener features of Vm and Cloudlet classes. 
+- [Examples](cloudsim-plus-examples/src/main/java/org/cloudsimplus/examples/listeners/) using the new listener features of Vm and Cloudlet classes. 
 - Examples showing how to create listeners objects to be notified when: a host is allocated to a VM; a host is desallocated for a VM
   (that can mean the VM finished executing or was migrated); the placement of a VM fails due to lack of a suitable host.
 - Examples showing how to reuse the same listener objects to several VMs. 
@@ -87,7 +87,7 @@ Lists the main changes in the project.
 - Converted the relationship between Vm and CloudletScheduler to a bi-directional one (now CloudletScheduler has access to Vm).
 - Included new listener `onUpdateCloudletProcessingListener` for Cloudlet, that gets notified when 
   the execution of the Cloudlet inside a Vm is updated. A new example of this feature was introduced in the  
-  [listeners](cloudsim-plus-examples/src/main/java/org/cloudbus/cloudsim/examples/listeners/) example package.
+  [listeners](cloudsim-plus-examples/src/main/java/org/cloudsimplus/examples/listeners/) example package.
 - Allowed to delay the submission of cloudlets by a `DatacenterBroker`, simulating the dynamic arrival of Cloudlets (closes the feature request #11)
 
 ## [v0.5-beta] - 2016-04-28 
@@ -273,7 +273,7 @@ However, you can declare and instantiate the object using `CloudletSimple cloudl
 
 - Implementation of the Null Object Design Pattern in order to start avoiding null checks and `NullPointerException` 
 when using the classes just mentioned above.
-The `NULL` attributes created are broadly used by classes of the new `org.cloudbus.cloudsim.builders` package in order to avoid `NullPointerException`. 
+The `NULL` attributes created are broadly used by classes of the new `org.cloudsimplus.builders` package in order to avoid `NullPointerException`. 
 This package will be presented in the next sections.
 
 - Each interface that implements the Null Object Design Pattern has a public static final attribute named `NULL`, that implements the interface itself, 
@@ -382,7 +382,7 @@ to their PEs number. By this way, VMs requiring more PEs will be submitted first
     By this way, it is easy to understand simulation results.
 
 - Added the interface TableBuilder and classes AbstractTableBuilder, TextTableBuilder, CsvTableBuilder and HtmlTableBuilder to the 
-org.cloudbus.cloudsim.util package
+org.cloudsimplus.util.tablebuilder package
     -  They provide standard features for printing CloudSim generated data.
     The set of classes use the Builder Design Pattern in order to create a table in different formats such as Text, CSV and HTML.
     The class hierarchy was designed to enable the easy creation of new table formats (such as Latex and others).
@@ -391,7 +391,7 @@ org.cloudbus.cloudsim.util package
     - Updated all examples in order to remove the duplicated code to print simulation results (the list of executed cloudlets)
     and start using the new set of classes for generating tabular data.
     Simulation results were presented in a not completely organized tabular format, that caused some data to
-    appear misplaced. A new ResultsHelper class was created into the package org.cloudbus.cloudsim.examples.util
+    appear misplaced. A new CloudletsTableBuilderHelper class was created into the package org.cloudsimplus.util.tablebuilder
     in order to easily print simulation results and to present them in a well formatted table that
     makes results analysis easier.
 
@@ -407,7 +407,7 @@ org.cloudbus.cloudsim.util package
     - It was used the already included maven-surefire-plugin instead of the maven-failsafe-plugin to run
     these new tests. By this way, it is possible to see the Integration/Functional tests results directly at the NetBeans JUnit
     graphical test results interface.
-    - Functional/Integration Tests have to be included in the package `org.cloudbus.cloudsim.IntegrationTests`
+    - Functional/Integration Tests have to be included in the package `org.cloudsimplus.IntegrationTests`
     (as configured in maven profiles inside the pom.xml).
     - To run all tests at NetBeans, including the Functional/Integration ones, you can right click on the project root,
     select "Set Configurtion >> integration-test", right click again and select "Custom >> integration-tests" 
@@ -417,7 +417,7 @@ org.cloudbus.cloudsim.util package
 
 - Inclusion of the interface `EventListener` in order to provide event notification features for user applications running CloudSim simulations.
 These notifications can be about the change in state of CloudSim entities.
-	- The package `org.cloudbus.cloudsim.listeners` was introduced to place the classes and interfaces related to event listeners.
+	- The package `org.cloudsimplus.listeners` was introduced to place the classes and interfaces related to event listeners.
 
 	- First listeners were included in the `Vm` class. The following listeners attributes were introduced to allow CloudSim users
     to set listeners to receive notifications about Vm state changes:
@@ -445,7 +445,7 @@ These notifications can be about the change in state of CloudSim entities.
     CloudSim continues working through its static method calls.
 
 
-- Inclusion of the package `org.cloudbus.cloudsim.builders` with classes and interfaces that implement the [Builder Design Pattern](https://en.wikipedia.org/wiki/Builder_pattern) 
+- Inclusion of the package `org.cloudsimplus.builders` with classes and interfaces that implement the [Builder Design Pattern](https://en.wikipedia.org/wiki/Builder_pattern) 
 	- These classes and interfaces were introduced as an alternative way to help creating CloudSim objects, such as 
     `Host`, `Datacenter`, `DatacenterBroker`, `Vm` and `Cloudlet`.
 

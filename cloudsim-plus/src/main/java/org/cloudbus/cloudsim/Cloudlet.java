@@ -6,8 +6,8 @@ import org.cloudbus.cloudsim.schedulers.CloudletScheduler;
 import org.cloudbus.cloudsim.utilizationmodels.UtilizationModel;
 import java.util.Collections;
 import java.util.List;
-import org.cloudbus.cloudsim.listeners.VmToCloudletEventInfo;
-import org.cloudbus.cloudsim.listeners.EventListener;
+import org.cloudsimplus.listeners.VmToCloudletEventInfo;
+import org.cloudsimplus.listeners.EventListener;
 
 /**
  * An interface to be implemented by each class that provides basic

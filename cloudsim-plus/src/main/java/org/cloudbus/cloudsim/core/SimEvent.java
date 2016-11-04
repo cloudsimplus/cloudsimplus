@@ -7,7 +7,7 @@
  */
 package org.cloudbus.cloudsim.core;
 
-import org.cloudbus.cloudsim.listeners.EventInfo;
+import org.cloudsimplus.listeners.EventInfo;
 
 /**
  * This class represents a simulation event which is passed between the entities
