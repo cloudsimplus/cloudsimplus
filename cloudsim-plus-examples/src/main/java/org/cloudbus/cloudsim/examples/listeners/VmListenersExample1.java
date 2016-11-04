@@ -9,7 +9,6 @@ package org.cloudbus.cloudsim.examples.listeners;
  * Copyright (c) 2009, The University of Melbourne, Australia
  */
 import org.cloudbus.cloudsim.util.CloudletsTableBuilderHelper;
-import org.cloudbus.cloudsim.util.TextTableBuilder;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.LinkedList;
@@ -126,7 +125,7 @@ public class VmListenersExample1 {
         CloudSim.stopSimulation();
 
         List<Cloudlet> finishedCloudlets = broker.getCloudletsFinishedList();
-        new CloudletsTableBuilderHelper(new TextTableBuilder(), finishedCloudlets);
+        new CloudletsTableBuilderHelper(finishedCloudlets).build();
     }
 
     /**

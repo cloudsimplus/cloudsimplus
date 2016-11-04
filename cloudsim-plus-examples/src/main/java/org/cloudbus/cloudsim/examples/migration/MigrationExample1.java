@@ -43,7 +43,6 @@ import org.cloudbus.cloudsim.resources.Bandwidth;
 import org.cloudbus.cloudsim.resources.FileStorage;
 import org.cloudbus.cloudsim.resources.Ram;
 import org.cloudbus.cloudsim.util.CloudletsTableBuilderHelper;
-import org.cloudbus.cloudsim.util.TextTableBuilder;
 
 /**
  * <p>An example showing how to create 1 datacenter with 3 hosts, 
@@ -156,14 +155,11 @@ public class MigrationExample1 {
             CloudSim.startSimulation();
             CloudSim.stopSimulation();
 
-            new CloudletsTableBuilderHelper(new TextTableBuilder(), broker.getCloudletsFinishedList());
+            new CloudletsTableBuilderHelper(broker.getCloudletsFinishedList()).build();
 
             Log.printConcatLine(MigrationExample1.class.getSimpleName(), " finished!");
-        } catch (Exception e) {
-            throw new RuntimeException(
-                String.format(
-                    "The simulation has been terminated at %3.2f seconds due to an unexpected error", 
-                    CloudSim.clock()), e);
+        } catch (RuntimeException e) {
+            Log.printFormattedLine("Simulation finished due to unexpected error: %s", e);
         }
     }
 
@@ -283,22 +279,18 @@ public class MigrationExample1 {
                 DATACENTER_COST_PER_CPU, DATACENTER_COST_PER_RAM, 
                 DATACENTER_COST_PER_STORAGE, DATACENTER_COST_PER_BW);
 
-        try {
-            NonPowerVmAllocationPolicyMigrationWorstFitStaticThreshold allocationPolicy = 
-                new NonPowerVmAllocationPolicyMigrationWorstFitStaticThreshold(
-                    hostList,  
-                    new PowerVmSelectionPolicyMinimumUtilization(), 
-                    HOST_UTILIZATION_THRESHOLD_FOR_VM_MIGRATION); 
+        NonPowerVmAllocationPolicyMigrationWorstFitStaticThreshold allocationPolicy = 
+            new NonPowerVmAllocationPolicyMigrationWorstFitStaticThreshold(
+                hostList,  
+                new PowerVmSelectionPolicyMinimumUtilization(), 
+                HOST_UTILIZATION_THRESHOLD_FOR_VM_MIGRATION); 
 
-            PowerDatacenter dc = new PowerDatacenter(
-                        name, characteristics, 
-                        allocationPolicy, storageList, SCHEDULE_TIME_TO_PROCESS_DATACENTER_EVENTS);
-            dc.setDisableMigrations(false);
-            return dc;
-        } catch (Exception e) {
-            throw new RuntimeException(
-                "An unexpected error ocurred when trying to create a datacenter", e);
-        }
+        PowerDatacenter dc = new PowerDatacenter(
+                    name, characteristics, 
+                    allocationPolicy, storageList, 
+                    SCHEDULE_TIME_TO_PROCESS_DATACENTER_EVENTS);
+        dc.setDisableMigrations(false);
+        return dc;
     }
 
     /**
@@ -339,11 +331,6 @@ public class MigrationExample1 {
     //We strongly encourage users to develop their own broker policies, to submit vms and cloudlets according
     //to the specific rules of the simulated scenario
     private static DatacenterBroker createBroker(int id) {
-        try {
-            return new DatacenterBrokerSimple("Broker" + id);
-        } catch (Exception e) {
-            throw new RuntimeException(
-                "An unexpected error ocurred when trying to create a datacenter broker", e);
-        }
+        return new DatacenterBrokerSimple("Broker" + id);
     }
 }

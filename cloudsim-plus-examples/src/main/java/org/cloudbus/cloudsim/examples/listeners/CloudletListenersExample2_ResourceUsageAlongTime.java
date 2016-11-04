@@ -9,7 +9,6 @@ package org.cloudbus.cloudsim.examples.listeners;
  * Copyright (c) 2009, The University of Melbourne, Australia
  */
 import org.cloudbus.cloudsim.util.CloudletsTableBuilderHelper;
-import org.cloudbus.cloudsim.util.TextTableBuilder;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.LinkedList;
@@ -106,7 +105,7 @@ public class CloudletListenersExample2_ResourceUsageAlongTime {
             new CloudletListenersExample2_ResourceUsageAlongTime();
             Log.printFormattedLine("%s finished!", CloudletListenersExample2_ResourceUsageAlongTime.class.getSimpleName());        
         } catch (Exception e) {
-            Log.printFormattedLine("Unwanted errors happened: %s", e.getMessage());
+            Log.printFormattedLine("Simulation finished due to unexpected error: %s", e);
         }
     }
 
@@ -161,7 +160,7 @@ public class CloudletListenersExample2_ResourceUsageAlongTime {
         CloudSim.stopSimulation();
 
         List<Cloudlet> finishedCloudlets = broker.getCloudletsFinishedList();
-        new CloudletsTableBuilderHelper(new TextTableBuilder(), finishedCloudlets);
+        new CloudletsTableBuilderHelper(finishedCloudlets).build();
     }
 
     /**

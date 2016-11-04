@@ -13,18 +13,21 @@ public class CloudletsTableBuilderHelper {
     private List<? extends Cloudlet> cloudletList;
 
     /**
-     * Creates new helper object and prints the list of cloudlets using the given printer.
+     * Creates new helper object to print the list of cloudlets using the a
+     * default {@link TextTableBuilder}.
+     * To use a different {@link TableBuilder}, use the
+     * {@link #setPrinter(org.cloudbus.cloudsim.util.TableBuilder)} method.
      * 
-     * @param printer the printer to be used to generate the table to be printed
      * @param list the list of Cloudlets that the data will be included into the table to be printed
      */    
-    public CloudletsTableBuilderHelper(final TableBuilder printer, final List<? extends Cloudlet> list){
-        this.setPrinter(printer)
-            .setCloudletList(list)
-            .buildTable();        
+    public CloudletsTableBuilderHelper(final List<? extends Cloudlet> list){
+        this.setPrinter(new TextTableBuilder()).setCloudletList(list);        
     }
     
-    protected void buildTable(){
+    /**
+     * Builds the table with the data of the Cloudlet list and shows the results.
+     */
+    public void build(){
         if(printer.getTitle().isEmpty()){
             printer.setTitle("SIMULATION RESULTS");
         }
@@ -63,7 +66,7 @@ public class CloudletsTableBuilderHelper {
         printer.addColumn("ExecTime").setFormat("%.0f").setSubTitle("Seconds");
     }
 
-    protected final CloudletsTableBuilderHelper setPrinter(TableBuilder printer) {
+    public final CloudletsTableBuilderHelper setPrinter(TableBuilder printer) {
         this.printer = printer;
         return this;
     }

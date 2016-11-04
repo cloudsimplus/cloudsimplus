@@ -103,7 +103,7 @@ public class CloudletListenersExample1 {
             new CloudletListenersExample1();
             Log.printFormattedLine("%s finished!", CloudletListenersExample1.class.getSimpleName());        
         } catch (Exception e) {
-            Log.printFormattedLine("Unwanted errors happened: %s", e.getMessage());
+            Log.printFormattedLine("Simulation finished due to unexpected error: %s", e);
         }
     }
 
@@ -150,7 +150,7 @@ public class CloudletListenersExample1 {
         CloudSim.stopSimulation();
 
         List<Cloudlet> finishedCloudlets = broker.getCloudletsFinishedList();
-        new CloudletsTableBuilderHelper(new TextTableBuilder(), finishedCloudlets);
+        new CloudletsTableBuilderHelper(finishedCloudlets).build();
     }
 
     /**

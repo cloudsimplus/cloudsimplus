@@ -121,7 +121,7 @@ public class NetworkVmsExampleWithMetrics {
         try {
             new NetworkVmsExampleWithMetrics();
         } catch (Exception e) {
-            Log.printLine("Unwanted errors happen");
+            Log.printFormattedLine("Simulation finished due to unexpected error: %s", e);
         }
     }
 
@@ -162,7 +162,7 @@ public class NetworkVmsExampleWithMetrics {
 
         //Final step: Print results when simulation is over
         List<Cloudlet> newList = broker.getCloudletsFinishedList();
-        new CloudletsTableBuilderHelper(new TextTableBuilder(), newList);
+        new CloudletsTableBuilderHelper(newList).build();
 
         Log.printFormattedLine("... finished!");
     }
@@ -175,7 +175,6 @@ public class NetworkVmsExampleWithMetrics {
      * @return the datacenter
      */
     protected final NetworkDatacenter createDatacenter(String name) {
-
         // Here are the steps needed to create a PowerDatacenter:
         // 1. We need to create a list to store
         // our machine
@@ -183,7 +182,7 @@ public class NetworkVmsExampleWithMetrics {
 
         // 2. A Machine contains one or more PEs or CPUs/Cores.
         // In this example, it will have only one core.
-        List<Pe> peList = new ArrayList<Pe>();
+        List<Pe> peList = new ArrayList<>();
 
         int mips = 8000;
 
@@ -228,12 +227,9 @@ public class NetworkVmsExampleWithMetrics {
                 costPerStorage, costPerBw);
 
         // 6. Finally, we need to create a PowerDatacenter object.
-        NetworkDatacenter datacenter = null;
-        try {
-            datacenter = new NetworkDatacenter(name, characteristics, new NetworkVmAllocationPolicy(hostList), storageList, 0);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+        NetworkDatacenter datacenter =
+                new NetworkDatacenter(name, characteristics, 
+                        new NetworkVmAllocationPolicy(hostList), storageList, 0);
         createNetwork(datacenter);
         return datacenter;
     }
@@ -264,14 +260,7 @@ public class NetworkVmsExampleWithMetrics {
      * @return the datacenter broker
      */
     private static NetDatacenterBroker createBroker() {
-        NetDatacenterBroker broker = null;
-        try {
-            broker = new NetDatacenterBroker("Broker");
-        } catch (Exception e) {
-            e.printStackTrace();
-            return null;
-        }
-        return broker;
+        return new NetDatacenterBroker("Broker");
     }
 }
 

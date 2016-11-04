@@ -9,7 +9,6 @@ package org.cloudbus.cloudsim.examples;
  * Copyright (c) 2009, The University of Melbourne, Australia
  */
 import org.cloudbus.cloudsim.util.CloudletsTableBuilderHelper;
-import org.cloudbus.cloudsim.util.TextTableBuilder;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.LinkedList;
@@ -95,7 +94,7 @@ public class DynamicCloudletsArrival2 {
             new DynamicCloudletsArrival2();
             Log.printFormattedLine("%s finished!", DynamicCloudletsArrival2.class.getSimpleName());        
         } catch (Exception e) {
-            Log.printFormattedLine("Unwanted errors happened: %s", e.getMessage());
+            Log.printFormattedLine("Simulation finished due to unexpected error: %s", e);
         }
     }
 
@@ -123,7 +122,7 @@ public class DynamicCloudletsArrival2 {
         CloudSim.stopSimulation();
 
         List<Cloudlet> cloudlets = broker.getCloudletsFinishedList();
-        new CloudletsTableBuilderHelper(new TextTableBuilder(), cloudlets);
+        new CloudletsTableBuilderHelper(cloudlets).build();
     }
 
     /**

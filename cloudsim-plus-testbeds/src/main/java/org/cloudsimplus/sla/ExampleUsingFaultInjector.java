@@ -34,7 +34,6 @@ import org.cloudbus.cloudsim.resources.FileStorage;
 import org.cloudbus.cloudsim.resources.PeSimple;
 import org.cloudbus.cloudsim.resources.Ram;
 import org.cloudbus.cloudsim.util.CloudletsTableBuilderHelper;
-import org.cloudbus.cloudsim.util.TextTableBuilder;
 import org.cloudbus.cloudsim.utilizationmodels.UtilizationModel;
 import org.cloudbus.cloudsim.utilizationmodels.UtilizationModelFull;
 
@@ -134,8 +133,7 @@ public class ExampleUsingFaultInjector {
         try {
             new ExampleUsingFaultInjector();
         } catch (Exception e) {
-            e.printStackTrace();
-            Log.printLine("Unwanted errors happen");
+            Log.printFormattedLine("Simulation finished due to unexpected error: %s", e);
         }
     }
 
@@ -176,7 +174,7 @@ public class ExampleUsingFaultInjector {
 
         //Final step: Print results when simulation is over
         List<Cloudlet> newList = broker.getCloudletsFinishedList();
-        new CloudletsTableBuilderHelper(new TextTableBuilder(), newList);
+        new CloudletsTableBuilderHelper(newList).build();
 
         Log.printFormattedLine("... finished!");
     }
@@ -226,14 +224,8 @@ public class ExampleUsingFaultInjector {
                 arch, os, vmm, getHostList(), time_zone, cost, costPerMem,
                 costPerStorage, costPerBw);
 
-        Datacenter datacenter = null;
-        try {
-            datacenter = new DatacenterSimple(name, characteristics, new VmAllocationPolicySimple(getHostList()), storageList, 0);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
-        return datacenter;
+        return new DatacenterSimple(name, characteristics, 
+                new VmAllocationPolicySimple(getHostList()), storageList, 0);
     }
 
     public List<Pe> createHostPesList(int hostPes, int mips) {

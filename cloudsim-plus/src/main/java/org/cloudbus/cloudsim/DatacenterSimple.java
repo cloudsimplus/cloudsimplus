@@ -98,7 +98,7 @@ public class DatacenterSimple extends SimEntity implements Datacenter {
         setVmAllocationPolicy(vmAllocationPolicy);
         setLastProcessTime(0.0);
         setStorageList(storageList);
-        setVmList(new ArrayList<Vm>());
+        setVmList(new ArrayList<>());
         setSchedulingInterval(schedulingInterval);
         assignHostsToCurrentDatacenter();
     }

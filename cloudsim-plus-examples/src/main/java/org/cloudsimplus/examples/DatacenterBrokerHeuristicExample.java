@@ -1,7 +1,6 @@
 package org.cloudsimplus.examples;
 
 import org.cloudbus.cloudsim.util.CloudletsTableBuilderHelper;
-import org.cloudbus.cloudsim.util.TextTableBuilder;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.LinkedList;
@@ -124,11 +123,11 @@ public class DatacenterBrokerHeuristicExample {
             CloudSim.stopSimulation();
 
             List<Cloudlet> finishedCloudlets = broker0.getCloudletsFinishedList();
-            new CloudletsTableBuilderHelper(new TextTableBuilder(), finishedCloudlets);
+            new CloudletsTableBuilderHelper(finishedCloudlets).build();
 
 	        print(broker0);
-        } catch (Exception e) {
-            Log.printFormattedLine("Unexpected errors happened: %s", e.getMessage());
+        } catch (RuntimeException e) {
+            Log.printFormattedLine("Simulation finished due to unexpected error: %s", e);
         }
     }
 

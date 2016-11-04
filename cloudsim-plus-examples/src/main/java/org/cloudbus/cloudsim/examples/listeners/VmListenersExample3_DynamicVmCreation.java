@@ -116,7 +116,7 @@ public class VmListenersExample3_DynamicVmCreation {
             new VmListenersExample3_DynamicVmCreation();
             Log.printFormattedLine("%s finished!", VmListenersExample3_DynamicVmCreation.class.getSimpleName());        
         } catch (Exception e) {
-            Log.printFormattedLine("Unwanted errors happened: %s", e.getMessage());
+            Log.printFormattedLine("Simulation finished due to unexpected error: %s", e);
         }
     }
 
@@ -192,7 +192,9 @@ public class VmListenersExample3_DynamicVmCreation {
         for(DatacenterBroker broker: brokerList){
             cloudlets = broker.getCloudletsFinishedList();
             title = broker.getName() + (cloudlets.size() > 0 ? "" : " (for the failed VM)");
-            new CloudletsTableBuilderHelper(new TextTableBuilder(title), cloudlets);
+            new CloudletsTableBuilderHelper(cloudlets)
+                    .setPrinter(new TextTableBuilder(title))
+                    .build();
         }
     }
 

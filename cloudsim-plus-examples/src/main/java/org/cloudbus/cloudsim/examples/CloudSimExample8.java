@@ -37,7 +37,6 @@ import org.cloudbus.cloudsim.core.CloudSim;
 import org.cloudbus.cloudsim.core.SimEntity;
 import org.cloudbus.cloudsim.core.SimEvent;
 import org.cloudbus.cloudsim.util.CloudletsTableBuilderHelper;
-import org.cloudbus.cloudsim.util.TextTableBuilder;
 import org.cloudbus.cloudsim.provisioners.PeProvisionerSimple;
 import org.cloudbus.cloudsim.provisioners.ResourceProvisionerSimple;
 import org.cloudbus.cloudsim.resources.Bandwidth;
@@ -156,11 +155,10 @@ public class CloudSimExample8 {
 
             CloudSim.stopSimulation();
 
-            new CloudletsTableBuilderHelper(new TextTableBuilder(), newList);
+            new CloudletsTableBuilderHelper(newList).build();
             Log.printFormattedLine("%s finished!", CloudSimExample8.class.getSimpleName());
-        } catch (Exception e) {
-            e.printStackTrace();
-            Log.printLine("The simulation has been terminated due to an unexpected error");
+        } catch (RuntimeException e) {
+            Log.printFormattedLine("Simulation finished due to unexpected error: %s", e);
         }
     }
 
@@ -232,7 +230,8 @@ public class CloudSimExample8 {
                 arch, os, vmm, hostList, time_zone, cost, costPerMem, costPerStorage, costPerBw);
 
         // 6. Finally, we need to create a DatacenterSimple object.
-        return new DatacenterSimple(name, characteristics, new VmAllocationPolicySimple(hostList), storageList, 0);
+        return new DatacenterSimple(name, characteristics, 
+                    new VmAllocationPolicySimple(hostList), storageList, 0);
     }
 
     //We strongly encourage users to develop their own broker policies, to submit vms and cloudlets according

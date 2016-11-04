@@ -34,7 +34,6 @@ import org.cloudbus.cloudsim.allocationpolicies.VmAllocationPolicySimple;
 import org.cloudbus.cloudsim.schedulers.VmSchedulerTimeShared;
 import org.cloudbus.cloudsim.core.CloudSim;
 import org.cloudbus.cloudsim.util.CloudletsTableBuilderHelper;
-import org.cloudbus.cloudsim.util.TextTableBuilder;
 import org.cloudbus.cloudsim.provisioners.PeProvisionerSimple;
 import org.cloudbus.cloudsim.provisioners.ResourceProvisionerSimple;
 import org.cloudbus.cloudsim.resources.Bandwidth;
@@ -106,10 +105,14 @@ public class CloudSimExample9 {
             String vmm = "Xen"; //VMM name
 
             //create two VMs
-            Vm vm1 = new VmSimple(++vmid, brokerId, mips, pesNumber, ram, bw, size, vmm, new CloudletSchedulerTimeShared());
+            Vm vm1 = new VmSimple(++vmid, brokerId, mips, 
+                    pesNumber, ram, bw, size, vmm, 
+                    new CloudletSchedulerTimeShared());
 
             //the second VM will have twice the priority of VM1 and so will receive twice CPU time
-            Vm vm2 = new VmSimple(++vmid, brokerId, mips * 2, pesNumber, ram, bw, size, vmm, new CloudletSchedulerTimeShared());
+            Vm vm2 = new VmSimple(++vmid, brokerId, mips * 2, 
+                    pesNumber, ram, bw, size, vmm, 
+                    new CloudletSchedulerTimeShared());
 
             //add the VMs to the vmList
             vmlist.add(vm1);
@@ -160,12 +163,10 @@ public class CloudSimExample9 {
 
             showCpuUtilizationForAllHosts(finishTime, datacenter0);
 
-            String title = (newList.isEmpty() ? "Finished cloudlet list is empty" : "Executed cloudlets");
-            new CloudletsTableBuilderHelper(new TextTableBuilder(title), newList);
+            new CloudletsTableBuilderHelper(newList).build();
             Log.printFormattedLine("%s finished!", CloudSimExample9.class.getSimpleName());
-        } catch (Exception e) {
-            e.printStackTrace();
-            Log.printLine("The simulation has been terminated due to an unexpected error");
+        } catch (RuntimeException e) {
+            Log.printFormattedLine("Simulation finished due to unexpected error: %s", e);
         }
     }
 
@@ -281,28 +282,14 @@ public class CloudSimExample9 {
                 arch, os, vmm, hostList, time_zone, cost, costPerMem, costPerStorage, costPerBw);
 
         // 6. Finally, we need to create a DatacenterSimple object.
-        DatacenterSimple datacenter = null;
-        try {
-            datacenter = new DatacenterSimple(
+        return new DatacenterSimple(
                     name, characteristics, 
                     new VmAllocationPolicySimple(hostList), storageList, 0);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
-        return datacenter;
     }
 
     //We strongly encourage users to develop their own broker policies, to submit vms and cloudlets according
     //to the specific rules of the simulated scenario
     private static DatacenterBroker createBroker() {
-        DatacenterBroker broker = null;
-        try {
-            broker = new DatacenterBrokerSimple("Broker");
-        } catch (Exception e) {
-            e.printStackTrace();
-            return null;
-        }
-        return broker;
+        return new DatacenterBrokerSimple("Broker");
     }
 }

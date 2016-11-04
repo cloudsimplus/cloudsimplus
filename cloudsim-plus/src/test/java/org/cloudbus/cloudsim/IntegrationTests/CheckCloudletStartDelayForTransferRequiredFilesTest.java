@@ -150,9 +150,9 @@ public final class CheckCloudletStartDelayForTransferRequiredFilesTest {
     }
 
     public void printCloudletsExecutionResults() {
-        new CloudletsTableBuilderHelper(
-                new TextTableBuilder(broker.getName()),
-                broker.getCloudletsFinishedList());
+        new CloudletsTableBuilderHelper(broker.getCloudletsFinishedList())
+                .setPrinter(new TextTableBuilder(broker.getName()))
+                .build();
     }
 
 }

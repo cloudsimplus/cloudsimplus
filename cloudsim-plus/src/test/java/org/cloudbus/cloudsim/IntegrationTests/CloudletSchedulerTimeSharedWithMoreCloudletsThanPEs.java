@@ -96,9 +96,9 @@ public final class CloudletSchedulerTimeSharedWithMoreCloudletsThanPEs {
     }
 
     public void printCloudletsExecutionResults(DatacenterBroker broker) {
-        new CloudletsTableBuilderHelper(
-                new TextTableBuilder(broker.getName()), 
-                broker.getCloudletsFinishedList());
+        new CloudletsTableBuilderHelper(broker.getCloudletsFinishedList())
+                .setPrinter(new TextTableBuilder(broker.getName()))
+                .build();
     }
 
 }

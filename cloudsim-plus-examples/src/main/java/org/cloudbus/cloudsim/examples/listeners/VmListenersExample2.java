@@ -113,7 +113,7 @@ public class VmListenersExample2 {
             new VmListenersExample2();
             Log.printFormattedLine("%s finished!", VmListenersExample2.class.getSimpleName());        
         } catch (Exception e) {
-            Log.printFormattedLine("Unwanted errors happened: %s", e.getMessage());
+            Log.printFormattedLine("Simulation finished due to unexpected error: %s", e);
         }
     }
 
@@ -284,6 +284,6 @@ public class VmListenersExample2 {
         CloudSim.stopSimulation();
 
         List<Cloudlet> newList = broker.getCloudletsFinishedList();
-        new CloudletsTableBuilderHelper(new TextTableBuilder(), newList);
+        new CloudletsTableBuilderHelper(newList).build();
     }    
 }

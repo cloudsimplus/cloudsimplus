@@ -100,15 +100,14 @@ public class NetworkVmsExample1 {
             CloudSim.stopSimulation();
 
             showSimulationResults();
-        } catch (Exception e) {
-            e.printStackTrace();
-            Log.printLine("Unexpected errors happened");
+        } catch (RuntimeException e) {
+            Log.printFormattedLine("Simulation finished due to unexpected error: %s", e);
         }
     }
 
     private void showSimulationResults() {
         List<Cloudlet> newList = broker.getCloudletsFinishedList();
-        new CloudletsTableBuilderHelper(new TextTableBuilder(), newList);
+        new CloudletsTableBuilderHelper(newList).build();
         
         for(NetworkHost host: datacenter.<NetworkHost>getHostList()){
             Log.printFormatted("\nHost %d data transfered: %d bytes",

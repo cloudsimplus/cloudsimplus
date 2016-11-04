@@ -35,11 +35,11 @@ import org.cloudbus.cloudsim.allocationpolicies.VmAllocationPolicySimple;
 import org.cloudbus.cloudsim.schedulers.VmSchedulerSpaceShared;
 import org.cloudbus.cloudsim.core.CloudSim;
 import org.cloudbus.cloudsim.util.CloudletsTableBuilderHelper;
-import org.cloudbus.cloudsim.util.TextTableBuilder;
 import org.cloudbus.cloudsim.provisioners.PeProvisionerSimple;
 import org.cloudbus.cloudsim.provisioners.ResourceProvisionerSimple;
 import org.cloudbus.cloudsim.resources.Bandwidth;
 import org.cloudbus.cloudsim.resources.Ram;
+import org.cloudbus.cloudsim.util.TextTableBuilder;
 
 /**
  * A simple example showing how to create 2 datacenters with 1 host each and run
@@ -104,10 +104,12 @@ public class CloudSimExample5 {
             String vmm = "Xen"; //VMM name
 
             //create two VMs: the first one belongs to user1
-            Vm vm1 = new VmSimple(vmid, brokerId1, mips, pesNumber, ram, bw, size, vmm, new CloudletSchedulerTimeShared());
+            Vm vm1 = new VmSimple(vmid, brokerId1, mips, pesNumber, ram, bw, size, 
+                                  vmm, new CloudletSchedulerTimeShared());
 
             //the second VM: this one belongs to user2
-            Vm vm2 = new VmSimple(vmid, brokerId2, mips, pesNumber, ram, bw, size, vmm, new CloudletSchedulerTimeShared());
+            Vm vm2 = new VmSimple(vmid, brokerId2, mips, pesNumber, ram, bw, size, 
+                                  vmm, new CloudletSchedulerTimeShared());
 
             //add the VMs to the vmlists
             vmlist1.add(vm1);
@@ -128,10 +130,16 @@ public class CloudSimExample5 {
             long outputSize = 300;
             UtilizationModel utilizationModel = new UtilizationModelFull();
 
-            Cloudlet cloudlet1 = new CloudletSimple(id, length, pesNumber, fileSize, outputSize, utilizationModel, utilizationModel, utilizationModel);
+            Cloudlet cloudlet1 = 
+                    new CloudletSimple(id, length, pesNumber, 
+                        fileSize, outputSize, 
+                        utilizationModel, utilizationModel, utilizationModel);
             cloudlet1.setUserId(brokerId1);
 
-            Cloudlet cloudlet2 = new CloudletSimple(id, length, pesNumber, fileSize, outputSize, utilizationModel, utilizationModel, utilizationModel);
+            Cloudlet cloudlet2 = 
+                    new CloudletSimple(id, length, pesNumber, 
+                        fileSize, outputSize, 
+                        utilizationModel, utilizationModel, utilizationModel);
             cloudlet2.setUserId(brokerId2);
 
             //add the cloudlets to the lists: each cloudlet belongs to one user
@@ -151,17 +159,19 @@ public class CloudSimExample5 {
 
             CloudSim.stopSimulation();
 
-            new CloudletsTableBuilderHelper(new TextTableBuilder("User " + brokerId1), newList1);
-            new CloudletsTableBuilderHelper(new TextTableBuilder("User " + brokerId2), newList2);
+            new CloudletsTableBuilderHelper(newList1)
+                    .setPrinter(new TextTableBuilder("User " + brokerId1))
+                    .build();
+            new CloudletsTableBuilderHelper(newList2)
+                    .setPrinter(new TextTableBuilder("User " + brokerId2))
+                    .build();
             Log.printFormattedLine("%s finished!", CloudSimExample5.class.getSimpleName());
-        } catch (Exception e) {
-            e.printStackTrace();
-            Log.printLine("The simulation has been terminated due to an unexpected error");
+        } catch (RuntimeException e) {
+            Log.printFormattedLine("Simulation finished due to unexpected error: %s", e);
         }
     }
 
     private static Datacenter createDatacenter(String name) {
-
         // Here are the steps needed to create a DatacenterSimple:
         // 1. We need to create a list to store
         //    our machine
@@ -212,27 +222,12 @@ public class CloudSimExample5 {
                 arch, os, vmm, hostList, time_zone, cost, costPerMem, costPerStorage, costPerBw);
 
         // 6. Finally, we need to create a DatacenterSimple object.
-        Datacenter datacenter = null;
-        try {
-            datacenter = new DatacenterSimple(name, characteristics, new VmAllocationPolicySimple(hostList), storageList, 0);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
-        return datacenter;
+        return new DatacenterSimple(name, characteristics, new VmAllocationPolicySimple(hostList), storageList, 0);
     }
 
     //We strongly encourage users to develop their own broker policies, to submit vms and cloudlets according
     //to the specific rules of the simulated scenario
     private static DatacenterBroker createBroker(int id) {
-
-        DatacenterBroker broker = null;
-        try {
-            broker = new DatacenterBrokerSimple("Broker" + id);
-        } catch (Exception e) {
-            e.printStackTrace();
-            return null;
-        }
-        return broker;
+        return new DatacenterBrokerSimple("Broker" + id);
     }
 }
