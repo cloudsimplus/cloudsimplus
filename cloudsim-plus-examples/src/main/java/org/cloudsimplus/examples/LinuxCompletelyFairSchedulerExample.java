@@ -1,7 +1,6 @@
 package org.cloudsimplus.examples;
 
-import org.cloudbus.cloudsim.util.CloudletsTableBuilderHelper;
-import org.cloudbus.cloudsim.util.TextTableBuilder;
+import org.cloudsimplus.util.tablebuilder.CloudletsTableBuilderHelper;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.LinkedList;
@@ -33,7 +32,6 @@ import org.cloudbus.cloudsim.resources.Bandwidth;
 import org.cloudbus.cloudsim.provisioners.ResourceProvisionerSimple;
 import org.cloudbus.cloudsim.resources.Ram;
 import org.cloudbus.cloudsim.schedulers.CloudletSchedulerCompletelyFair;
-import org.cloudbus.cloudsim.util.TableBuilder;
 
 /**
  * An example that uses an implementation of the {@link CloudletSchedulerCompletelyFair Completely Fair Scheduler}
@@ -99,10 +97,10 @@ public class LinuxCompletelyFairSchedulerExample {
             CloudSim.stopSimulation();
             
             List<Cloudlet> finishedCloudlets = broker0.getCloudletsFinishedList();
-            new PriorityCloudletsTableBuilderHelper(new TextTableBuilder(), finishedCloudlets);
+            new PriorityCloudletsTableBuilderHelper(finishedCloudlets).build();
             Log.printFormattedLine("%s finished!", getClass().getSimpleName());
         } catch (RuntimeException e) {
-            Log.printFormattedLine("Unexpected errors happened: %s", e.getMessage());
+            Log.printFormattedLine("Simulation finished due to unexpected error: %s", e);
         }
     }
 
@@ -205,8 +203,8 @@ public class LinuxCompletelyFairSchedulerExample {
  * @author Manoel Campos da Silva Filho
  */
 class PriorityCloudletsTableBuilderHelper extends CloudletsTableBuilderHelper {
-    public PriorityCloudletsTableBuilderHelper(TableBuilder printer, List<? extends Cloudlet> list) {
-        super(printer, list);
+    public PriorityCloudletsTableBuilderHelper(List<? extends Cloudlet> list) {
+        super(list);
     }
 
     @Override

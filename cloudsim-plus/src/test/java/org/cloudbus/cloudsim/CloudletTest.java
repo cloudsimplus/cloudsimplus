@@ -1,6 +1,6 @@
 package org.cloudbus.cloudsim;
 
-import org.cloudbus.cloudsim.listeners.EventListener;
+import org.cloudsimplus.listeners.EventListener;
 import org.cloudbus.cloudsim.utilizationmodels.UtilizationModel;
 import org.easymock.EasyMock;
 import org.junit.Test;

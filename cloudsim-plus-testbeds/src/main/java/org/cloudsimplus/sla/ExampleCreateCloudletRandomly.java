@@ -33,8 +33,7 @@ import org.cloudbus.cloudsim.resources.PeSimple;
 import org.cloudbus.cloudsim.resources.Ram;
 import org.cloudbus.cloudsim.schedulers.CloudletSchedulerTimeShared;
 import org.cloudbus.cloudsim.schedulers.VmSchedulerTimeShared;
-import org.cloudbus.cloudsim.util.CloudletsTableBuilderHelper;
-import org.cloudbus.cloudsim.util.TextTableBuilder;
+import org.cloudsimplus.util.tablebuilder.CloudletsTableBuilderHelper;
 import org.cloudbus.cloudsim.utilizationmodels.UtilizationModel;
 import org.cloudbus.cloudsim.utilizationmodels.UtilizationModelFull;
 
@@ -116,8 +115,12 @@ public class ExampleCreateCloudletRandomly {
             }
             Log.printFormattedLine("... finished!");
         } catch (Exception e) {
+<<<<<<< HEAD
             e.printStackTrace();
             Log.printLine("Unwanted errors happen");
+=======
+            Log.printFormattedLine("Simulation finished due to unexpected error: %s", e);
+>>>>>>> upstream/master
         }
     }
 
@@ -171,7 +174,11 @@ public class ExampleCreateCloudletRandomly {
 
         //Final step: Print results when simulation is over
         List<Cloudlet> newList = broker.getCloudletsFinishedList();
+<<<<<<< HEAD
         new CloudletsTableBuilderHelper(new TextTableBuilder(), newList);
+=======
+        new CloudletsTableBuilderHelper(newList).build();
+>>>>>>> upstream/master
 
     }
 
@@ -189,7 +196,10 @@ public class ExampleCreateCloudletRandomly {
     }
 
     private static Datacenter createDatacenter(String name) {
+<<<<<<< HEAD
 
+=======
+>>>>>>> upstream/master
         // Here are the steps needed to create a PowerDatacenter:
         // 1. We need to create a list to store
         // our machine
@@ -197,7 +207,11 @@ public class ExampleCreateCloudletRandomly {
 
         // 2. A Machine contains one or more PEs or CPUs/Cores.
         // In this example, it will have only one core.
+<<<<<<< HEAD
         List<Pe> peList = new ArrayList<Pe>();
+=======
+        List<Pe> peList = new ArrayList<>();
+>>>>>>> upstream/master
 
         int mips = 30000000;
 
@@ -241,6 +255,7 @@ public class ExampleCreateCloudletRandomly {
                 costPerStorage, costPerBw);
 
         // 6. Finally, we need to create a PowerDatacenter object.
+<<<<<<< HEAD
         Datacenter datacenter = null;
         try {
             datacenter = new DatacenterSimple(name, characteristics, new VmAllocationPolicySimple(hostList), storageList, 0);
@@ -249,6 +264,10 @@ public class ExampleCreateCloudletRandomly {
         }
 
         return datacenter;
+=======
+        return new DatacenterSimple(name, characteristics, 
+                new VmAllocationPolicySimple(hostList), storageList, 0);
+>>>>>>> upstream/master
     }
 
     /**
@@ -257,6 +276,7 @@ public class ExampleCreateCloudletRandomly {
      * @return the datacenter broker
      */
     private static DatacenterBroker createBroker() {
+<<<<<<< HEAD
         DatacenterBroker broker = null;
         try {
             broker = new DatacenterBrokerSimple("Broker");
@@ -265,6 +285,9 @@ public class ExampleCreateCloudletRandomly {
             return null;
         }
         return broker;
+=======
+        return new DatacenterBrokerSimple("Broker");
+>>>>>>> upstream/master
     }
 
     /**

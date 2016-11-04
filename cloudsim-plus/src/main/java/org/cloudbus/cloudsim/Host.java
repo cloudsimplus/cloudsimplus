@@ -5,8 +5,8 @@ import org.cloudbus.cloudsim.resources.Pe;
 import org.cloudbus.cloudsim.schedulers.VmScheduler;
 import java.util.Collections;
 import java.util.List;
-import org.cloudbus.cloudsim.listeners.EventListener;
-import org.cloudbus.cloudsim.listeners.HostUpdatesVmsProcessingEventInfo;
+import org.cloudsimplus.listeners.EventListener;
+import org.cloudsimplus.listeners.HostUpdatesVmsProcessingEventInfo;
 import org.cloudbus.cloudsim.provisioners.ResourceProvisioner;
 
 /**

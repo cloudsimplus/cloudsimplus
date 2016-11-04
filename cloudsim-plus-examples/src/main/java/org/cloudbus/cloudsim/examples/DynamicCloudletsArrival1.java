@@ -8,8 +8,7 @@ package org.cloudbus.cloudsim.examples;
  *
  * Copyright (c) 2009, The University of Melbourne, Australia
  */
-import org.cloudbus.cloudsim.util.CloudletsTableBuilderHelper;
-import org.cloudbus.cloudsim.util.TextTableBuilder;
+import org.cloudsimplus.util.tablebuilder.CloudletsTableBuilderHelper;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.LinkedList;
@@ -38,7 +37,6 @@ import org.cloudbus.cloudsim.provisioners.PeProvisionerSimple;
 import org.cloudbus.cloudsim.resources.Bandwidth;
 import org.cloudbus.cloudsim.provisioners.ResourceProvisionerSimple;
 import org.cloudbus.cloudsim.resources.Ram;
-import org.cloudbus.cloudsim.schedulers.CloudletSchedulerSpaceShared;
 import org.cloudbus.cloudsim.schedulers.CloudletSchedulerTimeShared;
 import org.cloudbus.cloudsim.schedulers.VmSchedulerSpaceShared;
 
@@ -90,7 +88,7 @@ public class DynamicCloudletsArrival1 {
         try {
             new DynamicCloudletsArrival1();
         } catch (Exception e) {
-            Log.printFormattedLine("Unwanted errors happened: %s", e.getMessage());
+            Log.printFormattedLine("Simulation finished due to unexpected error: %s", e);
         }
     }
 
@@ -125,7 +123,7 @@ public class DynamicCloudletsArrival1 {
         CloudSim.stopSimulation();
 
         List<Cloudlet> cloudlets = broker.getCloudletsFinishedList();
-        new CloudletsTableBuilderHelper(new TextTableBuilder(), cloudlets);
+        new CloudletsTableBuilderHelper(cloudlets).build();
     }
 
     /**

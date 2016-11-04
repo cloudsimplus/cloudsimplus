@@ -5,9 +5,9 @@ import org.cloudbus.cloudsim.resources.Pe;
 import org.cloudbus.cloudsim.schedulers.CloudletScheduler;
 import java.util.Collections;
 import java.util.List;
-import org.cloudbus.cloudsim.listeners.DatacenterToVmEventInfo;
-import org.cloudbus.cloudsim.listeners.EventListener;
-import org.cloudbus.cloudsim.listeners.HostToVmEventInfo;
+import org.cloudsimplus.listeners.DatacenterToVmEventInfo;
+import org.cloudsimplus.listeners.EventListener;
+import org.cloudsimplus.listeners.HostToVmEventInfo;
 import org.cloudbus.cloudsim.resources.ResourceManageable;
 
 /**

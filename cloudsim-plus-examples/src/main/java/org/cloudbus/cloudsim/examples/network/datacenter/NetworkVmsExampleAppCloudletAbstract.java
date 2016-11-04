@@ -32,8 +32,8 @@ import org.cloudbus.cloudsim.resources.Pe;
 import org.cloudbus.cloudsim.resources.PeSimple;
 import org.cloudbus.cloudsim.resources.Ram;
 import org.cloudbus.cloudsim.schedulers.VmSchedulerTimeShared;
-import org.cloudbus.cloudsim.util.CloudletsTableBuilderHelper;
-import org.cloudbus.cloudsim.util.TextTableBuilder;
+import org.cloudsimplus.util.tablebuilder.CloudletsTableBuilderHelper;
+import org.cloudsimplus.util.tablebuilder.TextTableBuilder;
 
 /**
  * A base class for network simulation examples
@@ -118,9 +118,8 @@ public abstract class NetworkVmsExampleAppCloudletAbstract {
             CloudSim.stopSimulation();
 
             showSimulationResults();
-        } catch (Exception e) {
-            e.printStackTrace();
-            Log.printLine("Unexpected errors happened");
+        } catch (RuntimeException e) {
+            Log.printFormattedLine("Simulation finished due to unexpected error: %s", e);
         }
     }
 
@@ -132,7 +131,9 @@ public abstract class NetworkVmsExampleAppCloudletAbstract {
             app = appCloudletList.get(i);
             List<Cloudlet> newList = broker.getCloudletsFinishedList();
             String caption = broker.getName() + " - AppCloudlet " + app.getId();
-            new CloudletsTableBuilderHelper(new TextTableBuilder(caption), newList);
+            new CloudletsTableBuilderHelper(newList)
+                    .setPrinter(new TextTableBuilder(caption))
+                    .build();
             Log.printFormattedLine(
                 "Number of NetworkCloudlets for AppCloudlet %s: %d", app.getId(), newList.size());
         }

@@ -14,8 +14,8 @@ import java.util.LinkedList;
 import java.util.List;
 
 import org.cloudbus.cloudsim.core.CloudSim;
-import org.cloudbus.cloudsim.listeners.VmToCloudletEventInfo;
-import org.cloudbus.cloudsim.listeners.EventListener;
+import org.cloudsimplus.listeners.VmToCloudletEventInfo;
+import org.cloudsimplus.listeners.EventListener;
 
 /**
  * Cloudlet implements the basic features of an application/job/task to be executed

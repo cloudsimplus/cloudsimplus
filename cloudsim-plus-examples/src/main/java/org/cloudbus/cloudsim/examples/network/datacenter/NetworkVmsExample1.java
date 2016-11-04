@@ -32,8 +32,8 @@ import org.cloudbus.cloudsim.resources.Pe;
 import org.cloudbus.cloudsim.resources.PeSimple;
 import org.cloudbus.cloudsim.resources.Ram;
 import org.cloudbus.cloudsim.schedulers.VmSchedulerTimeShared;
-import org.cloudbus.cloudsim.util.CloudletsTableBuilderHelper;
-import org.cloudbus.cloudsim.util.TextTableBuilder;
+import org.cloudsimplus.util.tablebuilder.CloudletsTableBuilderHelper;
+import org.cloudsimplus.util.tablebuilder.TextTableBuilder;
 import org.cloudbus.cloudsim.utilizationmodels.UtilizationModel;
 import org.cloudbus.cloudsim.utilizationmodels.UtilizationModelFull;
 
@@ -100,15 +100,14 @@ public class NetworkVmsExample1 {
             CloudSim.stopSimulation();
 
             showSimulationResults();
-        } catch (Exception e) {
-            e.printStackTrace();
-            Log.printLine("Unexpected errors happened");
+        } catch (RuntimeException e) {
+            Log.printFormattedLine("Simulation finished due to unexpected error: %s", e);
         }
     }
 
     private void showSimulationResults() {
         List<Cloudlet> newList = broker.getCloudletsFinishedList();
-        new CloudletsTableBuilderHelper(new TextTableBuilder(), newList);
+        new CloudletsTableBuilderHelper(newList).build();
         
         for(NetworkHost host: datacenter.<NetworkHost>getHostList()){
             Log.printFormatted("\nHost %d data transfered: %d bytes",

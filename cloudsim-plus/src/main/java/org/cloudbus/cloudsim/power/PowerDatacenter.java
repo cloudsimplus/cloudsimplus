@@ -27,8 +27,8 @@ import org.cloudbus.cloudsim.resources.FileStorage;
  * PowerDatacenter is a class that enables simulation of power-aware data
  * centers.
  *
- * <br/>If you are using any algorithms, policies or workload included in the
- * power package please cite the following paper:<br/>
+ * <br>If you are using any algorithms, policies or workload included in the
+ * power package please cite the following paper:<br>
  *
  * <ul>
  * <li><a href="http://dx.doi.org/10.1002/cpe.1867">Anton Beloglazov, and
@@ -72,14 +72,13 @@ public class PowerDatacenter extends DatacenterSimple {
      * @param schedulingInterval the scheduling interval
      * @param vmAllocationPolicy the vm provisioner
      * @param storageList the storage list
-     * @throws Exception the exception
      */
     public PowerDatacenter(
             String name,
             DatacenterCharacteristics characteristics,
             VmAllocationPolicy vmAllocationPolicy,
             List<FileStorage> storageList,
-            double schedulingInterval) throws Exception {
+            double schedulingInterval) {
         super(name, characteristics, vmAllocationPolicy, storageList, schedulingInterval);
 
         setPower(0.0);

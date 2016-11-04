@@ -3,8 +3,7 @@ package org.cloudsimplus.testbeds;
 import org.cloudbus.cloudsim.Cloudlet;
 import org.cloudbus.cloudsim.brokers.DatacenterBroker;
 import org.cloudbus.cloudsim.brokers.DatacenterBrokerSimple;
-import org.cloudbus.cloudsim.util.CloudletsTableBuilderHelper;
-import org.cloudbus.cloudsim.util.TextTableBuilder;
+import org.cloudsimplus.util.tablebuilder.CloudletsTableBuilderHelper;
 import org.cloudsimplus.testbeds.heuristics.DatacenterBrokerHeuristicRunner;
 
 import java.util.List;
@@ -35,7 +34,11 @@ public class DynamicCloudletsArrivalExperiment extends SimulationExperiment {
 	public void printResults() {
 		DatacenterBroker broker = getBrokerList().stream().findFirst().orElse(DatacenterBroker.NULL);
 		List<Cloudlet> newList = broker.getCloudletsFinishedList();
+<<<<<<< HEAD
 		new CloudletsTableBuilderHelper(new TextTableBuilder(), newList);
+=======
+		new CloudletsTableBuilderHelper(newList).build();
+>>>>>>> upstream/master
 	}
 
 	@Override

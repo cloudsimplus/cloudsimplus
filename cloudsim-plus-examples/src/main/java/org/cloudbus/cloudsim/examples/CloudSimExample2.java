@@ -34,8 +34,7 @@ import org.cloudbus.cloudsim.VmSimple;
 import org.cloudbus.cloudsim.allocationpolicies.VmAllocationPolicySimple;
 import org.cloudbus.cloudsim.schedulers.VmSchedulerTimeShared;
 import org.cloudbus.cloudsim.core.CloudSim;
-import org.cloudbus.cloudsim.util.CloudletsTableBuilderHelper;
-import org.cloudbus.cloudsim.util.TextTableBuilder;
+import org.cloudsimplus.util.tablebuilder.CloudletsTableBuilderHelper;
 import org.cloudbus.cloudsim.provisioners.PeProvisionerSimple;
 import org.cloudbus.cloudsim.provisioners.ResourceProvisionerSimple;
 import org.cloudbus.cloudsim.resources.Bandwidth;
@@ -123,11 +122,17 @@ public class CloudSimExample2 {
             long outputSize = 300;
             UtilizationModel utilizationModel = new UtilizationModelFull();
 
-            Cloudlet cloudlet1 = new CloudletSimple(id, length, pesNumber, fileSize, outputSize, utilizationModel, utilizationModel, utilizationModel);
+            Cloudlet cloudlet1 = 
+                    new CloudletSimple(id, length, pesNumber, 
+                        fileSize, outputSize, 
+                        utilizationModel, utilizationModel, utilizationModel);
             cloudlet1.setUserId(brokerId);
 
             id++;
-            Cloudlet cloudlet2 = new CloudletSimple(id, length, pesNumber, fileSize, outputSize, utilizationModel, utilizationModel, utilizationModel);
+            Cloudlet cloudlet2 = 
+                    new CloudletSimple(id, length, pesNumber, 
+                        fileSize, outputSize, 
+                        utilizationModel, utilizationModel, utilizationModel);
             cloudlet2.setUserId(brokerId);
 
             //add the cloudlets to the list
@@ -150,16 +155,14 @@ public class CloudSimExample2 {
 
             CloudSim.stopSimulation();
 
-            new CloudletsTableBuilderHelper(new TextTableBuilder(), newList);
+            new CloudletsTableBuilderHelper(newList).build();
             Log.printFormattedLine("%s finished!", CloudSimExample2.class.getSimpleName());
-        } catch (Exception e) {
-            e.printStackTrace();
-            Log.printLine("The simulation has been terminated due to an unexpected error");
+        } catch (RuntimeException e) {
+            Log.printFormattedLine("Simulation finished due to unexpected error: %s", e);
         }
     }
 
     private static DatacenterSimple createDatacenter(String name) {
-
         // Here are the steps needed to create a DatacenterSimple:
         // 1. We need to create a list to store
         //    our machine
@@ -208,15 +211,8 @@ public class CloudSimExample2 {
                 arch, os, vmm, hostList, time_zone, cost, costPerMem, costPerStorage, costPerBw);
 
         // 6. Finally, we need to create a DatacenterSimple object.
-        DatacenterSimple datacenter = null;
-        try {
-            datacenter = new DatacenterSimple(name, characteristics, 
+        return new DatacenterSimple(name, characteristics, 
                     new VmAllocationPolicySimple(hostList), storageList, 1);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
-        return datacenter;
     }
 
     /*
@@ -225,14 +221,6 @@ public class CloudSimExample2 {
     to the specific rules of the simulated scenario
     */
     private static DatacenterBroker createBroker() {
-
-        DatacenterBroker broker = null;
-        try {
-            broker = new DatacenterBrokerSimple("Broker");
-        } catch (Exception e) {
-            e.printStackTrace();
-            return null;
-        }
-        return broker;
+        return new DatacenterBrokerSimple("Broker");
     }
 }

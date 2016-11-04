@@ -15,8 +15,8 @@ import org.cloudbus.cloudsim.schedulers.CloudletSchedulerDynamicWorkload;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.IntStream;
-import org.cloudbus.cloudsim.listeners.EventListener;
-import org.cloudbus.cloudsim.listeners.HostUpdatesVmsProcessingEventInfo;
+import org.cloudsimplus.listeners.EventListener;
+import org.cloudsimplus.listeners.HostUpdatesVmsProcessingEventInfo;
 
 import org.cloudbus.cloudsim.provisioners.PeProvisionerSimple;
 import org.cloudbus.cloudsim.resources.Bandwidth;

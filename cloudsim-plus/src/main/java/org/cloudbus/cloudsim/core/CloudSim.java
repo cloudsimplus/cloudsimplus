@@ -23,7 +23,7 @@ import org.cloudbus.cloudsim.Log;
 import org.cloudbus.cloudsim.core.predicates.Predicate;
 import org.cloudbus.cloudsim.core.predicates.PredicateAny;
 import org.cloudbus.cloudsim.core.predicates.PredicateNone;
-import org.cloudbus.cloudsim.listeners.EventListener;
+import org.cloudsimplus.listeners.EventListener;
 
 /**
  * Manages Cloud Computing simulations providing all methods to start, pause

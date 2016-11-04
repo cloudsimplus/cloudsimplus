@@ -26,8 +26,8 @@ import org.cloudbus.cloudsim.resources.PeSimple;
 import org.cloudbus.cloudsim.resources.Ram;
 import org.cloudbus.cloudsim.schedulers.CloudletSchedulerTimeShared;
 import org.cloudbus.cloudsim.schedulers.VmSchedulerTimeShared;
-import org.cloudbus.cloudsim.util.CloudletsTableBuilderHelper;
-import org.cloudbus.cloudsim.util.TextTableBuilder;
+import org.cloudsimplus.util.tablebuilder.CloudletsTableBuilderHelper;
+import org.cloudsimplus.util.tablebuilder.TextTableBuilder;
 import org.cloudbus.cloudsim.utilizationmodels.UtilizationModel;
 import org.cloudbus.cloudsim.utilizationmodels.UtilizationModelFull;
 
@@ -121,7 +121,11 @@ public class NetworkVmsExampleWithMetrics {
         try {
             new NetworkVmsExampleWithMetrics();
         } catch (Exception e) {
+<<<<<<< HEAD
             Log.printLine("Unwanted errors happen");
+=======
+            Log.printFormattedLine("Simulation finished due to unexpected error: %s", e);
+>>>>>>> upstream/master
         }
     }
 
@@ -162,7 +166,11 @@ public class NetworkVmsExampleWithMetrics {
 
         //Final step: Print results when simulation is over
         List<Cloudlet> newList = broker.getCloudletsFinishedList();
+<<<<<<< HEAD
         new CloudletsTableBuilderHelper(new TextTableBuilder(), newList);
+=======
+        new CloudletsTableBuilderHelper(newList).build();
+>>>>>>> upstream/master
 
         Log.printFormattedLine("... finished!");
     }
@@ -175,7 +183,10 @@ public class NetworkVmsExampleWithMetrics {
      * @return the datacenter
      */
     protected final NetworkDatacenter createDatacenter(String name) {
+<<<<<<< HEAD
 
+=======
+>>>>>>> upstream/master
         // Here are the steps needed to create a PowerDatacenter:
         // 1. We need to create a list to store
         // our machine
@@ -183,7 +194,11 @@ public class NetworkVmsExampleWithMetrics {
 
         // 2. A Machine contains one or more PEs or CPUs/Cores.
         // In this example, it will have only one core.
+<<<<<<< HEAD
         List<Pe> peList = new ArrayList<Pe>();
+=======
+        List<Pe> peList = new ArrayList<>();
+>>>>>>> upstream/master
 
         int mips = 8000;
 
@@ -228,12 +243,18 @@ public class NetworkVmsExampleWithMetrics {
                 costPerStorage, costPerBw);
 
         // 6. Finally, we need to create a PowerDatacenter object.
+<<<<<<< HEAD
         NetworkDatacenter datacenter = null;
         try {
             datacenter = new NetworkDatacenter(name, characteristics, new NetworkVmAllocationPolicy(hostList), storageList, 0);
         } catch (Exception e) {
             e.printStackTrace();
         }
+=======
+        NetworkDatacenter datacenter =
+                new NetworkDatacenter(name, characteristics, 
+                        new NetworkVmAllocationPolicy(hostList), storageList, 0);
+>>>>>>> upstream/master
         createNetwork(datacenter);
         return datacenter;
     }
@@ -264,6 +285,7 @@ public class NetworkVmsExampleWithMetrics {
      * @return the datacenter broker
      */
     private static NetDatacenterBroker createBroker() {
+<<<<<<< HEAD
         NetDatacenterBroker broker = null;
         try {
             broker = new NetDatacenterBroker("Broker");
@@ -272,6 +294,9 @@ public class NetworkVmsExampleWithMetrics {
             return null;
         }
         return broker;
+=======
+        return new NetDatacenterBroker("Broker");
+>>>>>>> upstream/master
     }
 }
 

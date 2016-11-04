@@ -34,8 +34,8 @@ import org.cloudbus.cloudsim.VmSimple;
 import org.cloudbus.cloudsim.allocationpolicies.VmAllocationPolicySimple;
 import org.cloudbus.cloudsim.schedulers.VmSchedulerTimeShared;
 import org.cloudbus.cloudsim.core.CloudSim;
-import org.cloudbus.cloudsim.util.CloudletsTableBuilderHelper;
-import org.cloudbus.cloudsim.util.TextTableBuilder;
+import org.cloudsimplus.util.tablebuilder.CloudletsTableBuilderHelper;
+import org.cloudsimplus.util.tablebuilder.TextTableBuilder;
 import org.cloudbus.cloudsim.provisioners.PeProvisionerSimple;
 import org.cloudbus.cloudsim.provisioners.ResourceProvisionerSimple;
 import org.cloudbus.cloudsim.resources.Bandwidth;
@@ -151,27 +151,26 @@ public class CloudSimExample7 {
 
             CloudSim.stopSimulation();
 
-            new CloudletsTableBuilderHelper(
-                    new TextTableBuilder(
-                            "\n#Broker " + broker.getName() + " received cloudlets."),
-                    newList);
+            new CloudletsTableBuilderHelper(newList)
+                 .setPrinter(
+                    new TextTableBuilder("\n#Broker " + broker.getName() + " received cloudlets."))
+                 .build();
+            
             if (monitor.getBroker() != null) {
                 newList = monitor.getBroker().getCloudletsFinishedList();
-                new CloudletsTableBuilderHelper(
-                        new TextTableBuilder(
-                                "\n#Broker " + monitor.getBroker().getName() + " received cloudlets."),
-                        newList);
+                new CloudletsTableBuilderHelper(newList)
+                    .setPrinter(
+                        new TextTableBuilder("\n#Broker " + monitor.getBroker().getName() + " received cloudlets."))
+                    .build();
             }
 
             Log.printLine("CloudSimExample7 finished!");
-        } catch (Exception e) {
-            e.printStackTrace();
-            Log.printLine("The simulation has been terminated due to an unexpected error");
+        } catch (InterruptedException | RuntimeException e) {
+            Log.printFormattedLine("Simulation finished due to unexpected error: %s", e);
         }
     }
 
     private static Datacenter createDatacenter(String name) {
-
         // Here are the steps needed to create a PowerDatacenter:
         // 1. We need to create a list to store one or more
         //    Machines
@@ -239,7 +238,8 @@ public class CloudSimExample7 {
                 arch, os, vmm, hostList, time_zone, cost, costPerMem, costPerStorage, costPerBw);
 
         // 6. Finally, we need to create a PowerDatacenter object.
-        return new DatacenterSimple(name, characteristics, new VmAllocationPolicySimple(hostList), storageList, 0);
+        return new DatacenterSimple(name, characteristics, 
+                    new VmAllocationPolicySimple(hostList), storageList, 0);
     }
 
     //We strongly encourage users to develop their own broker policies, to submit vms and cloudlets according

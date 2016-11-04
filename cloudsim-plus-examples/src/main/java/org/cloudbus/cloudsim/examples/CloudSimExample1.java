@@ -8,8 +8,7 @@ package org.cloudbus.cloudsim.examples;
  *
  * Copyright (c) 2009, The University of Melbourne, Australia
  */
-import org.cloudbus.cloudsim.util.CloudletsTableBuilderHelper;
-import org.cloudbus.cloudsim.util.TextTableBuilder;
+import org.cloudsimplus.util.tablebuilder.CloudletsTableBuilderHelper;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.LinkedList;
@@ -140,11 +139,10 @@ public class CloudSimExample1 {
 
             //Final step: Print results when simulation is over
             List<Cloudlet> newList = broker.getCloudletsFinishedList();
-            new CloudletsTableBuilderHelper(new TextTableBuilder(), newList);
+            new CloudletsTableBuilderHelper(newList).build();
             Log.printFormattedLine("%s finished!", CloudSimExample1.class.getSimpleName());
-        } catch (Exception e) {
-            e.printStackTrace();
-            Log.printLine("Unwanted errors happen");
+        } catch (RuntimeException e) {
+            Log.printFormattedLine("Simulation finished due to unexpected error: %s", e);
         }
     }
 
@@ -209,16 +207,9 @@ public class CloudSimExample1 {
                 costPerStorage, costPerBw);
 
         // 6. Finally, we need to create a DatacenterSimple object.
-        DatacenterSimple datacenter = null;
-        try {
-            datacenter = new DatacenterSimple(
-                    name, characteristics,
-                    new VmAllocationPolicySimple(hostList), storageList, 0);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
-        return datacenter;
+        return new DatacenterSimple(
+                name, characteristics,
+                new VmAllocationPolicySimple(hostList), storageList, 0);
     }
 
     // We strongly encourage users to develop their own broker policies, to
@@ -230,14 +221,7 @@ public class CloudSimExample1 {
      * @return the datacenter broker
      */
     private static DatacenterBroker createBroker() {
-        DatacenterBroker broker = null;
-        try {
-            broker = new DatacenterBrokerSimple("Broker");
-        } catch (Exception e) {
-            e.printStackTrace();
-            return null;
-        }
-        return broker;
+        return new DatacenterBrokerSimple("Broker");
     }
 
 }
