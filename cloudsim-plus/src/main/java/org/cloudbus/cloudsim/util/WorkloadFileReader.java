@@ -28,7 +28,7 @@ import org.cloudbus.cloudsim.utilizationmodels.UtilizationModelFull;
 
 /**
  * This class is responsible for reading resource traces from a file and
- * creating a list of jobs ({@link Cloudlet Cloudlets}). By default, it follows
+ * creating a list of ({@link Cloudlet Cloudlets}) (jobs). By default, it follows
  * the Standard Workload Format (*.swf files) from
  * <a href="http://www.cs.huji.ac.il/labs/parallel/workload/">
  * The Hebrew University of Jerusalem</a>. However, you can use other formats by
@@ -37,8 +37,8 @@ import org.cloudbus.cloudsim.utilizationmodels.UtilizationModelFull;
  * <li> {@link #setComment(String)}
  * <li> {@link #setField(int, int, int, int, int)}
  * </ul>
- * <p/>
- * <b>NOTE:</b>
+ * <p>
+ * <b>NOTES:</b>
  * <ul>
  * <li>This class can only take <tt>one</tt> trace file of the following format:
  * <i>ASCII text, zip, gz.</i>
@@ -56,6 +56,7 @@ import org.cloudbus.cloudsim.utilizationmodels.UtilizationModelFull;
  * processors. This means each processor runs job #1 for 100 seconds, if the
  * processors have the same specification.
  * </ul>
+ * </p>
  *
  * @todo The last item in the list above is not true. The cloudlet length is not
  * divided by the number of PEs. If there is more than 1 PE, all PEs run the
@@ -65,9 +66,8 @@ import org.cloudbus.cloudsim.utilizationmodels.UtilizationModelFull;
  *
  * @author Anthony Sulistio
  * @author Marcos Dias de Assuncao
- * @since 5.0
  *
- * @see Workload
+ * @see WorkloadModel
  */
 public class WorkloadFileReader implements WorkloadModel {
 
@@ -193,7 +193,7 @@ public class WorkloadFileReader implements WorkloadModel {
      * Reads job information from a trace file and generates the respective
      * cloudlets.
      *
-     * @return the list of cloudlets read from the file; <code>null</code> in
+     * @return the list of cloudlets read from the file or an empty list in
      * case of failure.
      * @see #file
      */

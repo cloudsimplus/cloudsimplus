@@ -7,16 +7,16 @@ there are a few guidelines that we need contributors to follow so that we can ha
 ## Getting Started
 
 * Make sure you have a [GitHub account](https://github.com/signup/free)
-* Check if you are using the latest development version of CloudSim++
+* Check if you are using the latest development version of CloudSim Plus
 * Submit a [ticket for your issue](issues), assuming one does not already exist. 
 * When submitting a ticket for the issue, read carefully the information at the issue submission form.
 * Fork the repository on GitHub
 
 ## Before Making Changes
 
-CloudSim++ started as a CloudSim fork aiming to fix several software engineering issues that have been found at the original source code 
-and that make CloudSim++ to follow its own path in order to ensure the use of software engineering standards, recommendations and best practices.
-Accordingly, if you are willing to perform changes or include some new feature and get your contributions merged in the CloudSim++ code, you have to:
+CloudSim Plus started as a CloudSim fork aiming to fix several software engineering issues that have been found at the original source code 
+and that make CloudSim Plus to follow its own path in order to ensure the use of software engineering standards, recommendations and best practices.
+Accordingly, if you are willing to perform changes or include some new feature and get your contributions merged in the CloudSim Plus code, you have to:
 
 - Completely avoid code duplication. A single line of code that is called twice, requires you to create a method to allow [code reuse](https://en.wikipedia.org/wiki/Code_reuse). 
   Some recomendations are:
@@ -25,7 +25,7 @@ Accordingly, if you are willing to perform changes or include some new feature a
     - Most of the times, each method has to make just a single thing. For instance, if a given method computes the number of 
       million instructions (MI) that a Cloudlet has to execute across all its Processor Elements (PEs) and also compute the time that the 
       Cloudlet is expected to finish, you must create a method for each one of these computations.
-    - Identifier names have to be strongly meaningful. Avoid abbreviated names, unless the abbreviation is already part of CloudSim++ 
+    - Identifier names have to be strongly meaningful. Avoid abbreviated names, unless the abbreviation is already part of CloudSim Plus 
       vocabulary (such as VM, PM, PE, etc).
     - If you have to write a comment to explain a portion of the code, probably you should use the 
       [Extract Method refactor](http://refactoring.com/catalog/extractMethod.html) using your IDE to create a new method to that portion of code. 
@@ -70,18 +70,16 @@ Accordingly, if you are willing to perform changes or include some new feature a
 
 ## Submitting Changes
 
-* [Squash all your local commits together](https://robots.thoughtbot.com/git-interactive-rebase-squash-amend-rewriting-history#squash-commits-together) 
-  before submitting a pull request. If we have the need to revert your changes, it will be straightforward to revert from a single commit.
-* [Rebase your changes on top of CloudSim++ master branch at the oficial repository] (https://robots.thoughtbot.com/git-interactive-rebase-squash-amend-rewriting-history#rebase-on-top-of-master) 
+* [Rebase your changes on top of CloudSim Plus master branch at the oficial repository] (https://robots.thoughtbot.com/git-interactive-rebase-squash-amend-rewriting-history#rebase-on-top-of-master) 
   so that you wil get the most recent development version and perform any merge conflicts that may happen.
 * [Commit the final changes including something such as "Closes #NUMBER_OF_THE_ISSUE" or "Fixes #NUMBER_OF_THE_ISSUE"] (https://help.github.com/articles/closing-issues-via-commit-messages/) 
   in order to reference the issue in which you were working on.
 * Push your changes to a topic branch in your fork of the repository.
-* Submit a pull request to the official CloudSim++ repository.
+* Submit a pull request to the official CloudSim Plus repository.
 * Wait for your contribution to be assessed and thanks in advance for contributing.
 
 # Credits
 
 This Contribution Guide was based on [Puppet guide](https://github.com/puppetlabs/puppet/blob/master/CONTRIBUTING.md), 
 recommend by the [Friction tool](https://github.com/rafalchmiel/friction). 
-The current guide was adapted and improved to follow CloudSim++ required standards.
+The current guide was adapted and improved to follow CloudSim Plus required standards.

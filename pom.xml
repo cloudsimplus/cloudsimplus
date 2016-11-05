@@ -6,7 +6,7 @@
     <version>1.0</version>
     <packaging>pom</packaging>
 
-    <name>CloudSim Plus Full Package: Examples, Src, Docs</name>
+    <name>CloudSim Plus Full Package: Examples, Src, Testbeds, Benchmarks</name>
     <description>CloudSim++ A CloudSim fork for Modeling and Simulation of Cloud Computing Infrastructures and Services that focuses on reusability principles and other ones such as DRY, KISS, SOLID and Design Patterns</description>
     <url>http://cloudsimplus.org</url>
 

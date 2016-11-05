@@ -30,7 +30,13 @@ import org.cloudbus.cloudsim.distributions.ContinuousDistribution;
  */
 public class HarddriveStorage implements FileStorage {
     /** The internal storage that just manages
-     * the HD capacity and used space. */
+     * the HD capacity and used space.
+     * The {@link HarddriveStorage} (HD) does not extends such class
+     * to avoid its capacity and available amount of space
+     * to be changed indiscriminately.
+     * The available space is update according to files added or removed
+     * from the HD.
+     */
     private RawStorage storage;
     
     /**
