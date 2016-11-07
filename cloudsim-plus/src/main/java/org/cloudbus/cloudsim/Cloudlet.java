@@ -667,38 +667,6 @@ public interface Cloudlet extends Identificable, Comparable<Cloudlet> {
      * @post $none
      */
     boolean setCloudletFinishedSoFar(final long length);
-    
-    /**
-     * Gets the virtual runtime (vruntime) that indicates how long the Cloudlet
-     * has been executing by a {@link CloudletScheduler} (in seconds). 
-     * The default value of this attribute is zero and each scheduler
-     * implementation might or not set a value to such attribute
-     * so that the scheduler might use to perform context switch,
-     * preempting running Cloudlets to enable other ones to start executing.
-     * By this way, the attribute is just used internally by specific CloudletSchedulers.
-     * 
-     * @return 
-     */
-    double getVirtualRuntime();
-    
-    /**
-     * Adds a given time to the {@link #getVirtualRuntime() virtual runtime}.
-     * 
-     * @param timeToAdd time to add to the virtual runtime  (in seconds)
-     * @return the new virtual runtime  (in seconds)
-     * @pre timeToAdd >= 0
-     */
-    double addVirtualRuntime(double timeToAdd);
-
-    /**
-     * Sets the virtual runtime (vruntime) that indicates how long the Cloudlet
-     * has been executing by a {@link CloudletScheduler}  (in seconds). This attribute is used
-     * just internally by specific CloudletSchedulers.
-     * 
-     * @param virtualRuntime the value to set  (in seconds)
-     * @see #getVirtualRuntime() 
-     */
-    void setVirtualRuntime(double virtualRuntime);    
 
     /**
      * Gets the listener object that will be notified every time when
@@ -824,7 +792,7 @@ public interface Cloudlet extends Identificable, Comparable<Cloudlet> {
       @Override public long getCloudletFinishedSoFar() { return 0L; }
       @Override public long getCloudletFinishedSoFar(int datacenterId) { return 0L; }
       @Override public String getCloudletHistory() { return ""; };
-      @Override public int getId() { return 0; }
+      @Override public int getId() { return -1; }
       @Override public long getCloudletLength() { return 0L; }
       @Override public long getCloudletOutputSize() { return 0L; }
       @Override public Status getCloudletStatus() { return Status.FAILED; }
@@ -839,12 +807,12 @@ public interface Cloudlet extends Identificable, Comparable<Cloudlet> {
       @Override public int getNumberOfPes(){ return 0; }
       @Override public double getProcessingCost(){ return 0.0; }
       @Override public List<String> getRequiredFiles() { return Collections.emptyList();}
-      @Override public int getReservationId() { return 0; }
-      @Override public int getDatacenterId() { return 0; }
+      @Override public int getReservationId() { return -1; }
+      @Override public int getDatacenterId() { return -1; }
       @Override public Status getStatus() { return getCloudletStatus(); }
       @Override public double getDatacenterArrivalTime() { return 0.0; }
       @Override public double getSubmissionTime(int datacenterId) { return 0.0; }
-      @Override public int getUserId() { return 0; }
+      @Override public int getUserId() { return -1; }
       @Override public UtilizationModel getUtilizationModelBw() { return UtilizationModel.NULL; }
       @Override public UtilizationModel getUtilizationModelCpu() { return UtilizationModel.NULL; }
       @Override public UtilizationModel getUtilizationModelRam() { return UtilizationModel.NULL; }
@@ -888,8 +856,5 @@ public interface Cloudlet extends Identificable, Comparable<Cloudlet> {
       @Override public double registerArrivalOfCloudletIntoDatacenter() { return -1; }
       @Override public boolean isBoundedToVm() { return false; }
       @Override public int compareTo(Cloudlet o) { return 0; }
-      @Override public double getVirtualRuntime() { return 0; }
-      @Override public void setVirtualRuntime(double virtualRuntime) {}
-      @Override public double addVirtualRuntime(double timeToAdd) { return 0; }
   };
 }

@@ -10,6 +10,7 @@ package org.cloudbus.cloudsim;
 import org.cloudbus.cloudsim.Cloudlet.Status;
 import org.cloudbus.cloudsim.core.CloudSim;
 import org.cloudbus.cloudsim.resources.Pe;
+import org.cloudbus.cloudsim.schedulers.CloudletScheduler;
 
 /**
  * Stores execution information about a Cloudlet submitted to a Datacenter for
@@ -22,7 +23,7 @@ import org.cloudbus.cloudsim.resources.Pe;
  * placeholder for maintaining the amount of resource share allocated at various
  * times for simulating any scheduling using internal events.
  * </p>
- * 
+ *
  * <p>As the VM where the Cloudlet is running might migrate to another
  * Datacenter, each CloudletExecutionInfo object represents the data about
  * execution of the cloudlet when the Vm was in a given Datacenter.</p>
@@ -34,7 +35,7 @@ import org.cloudbus.cloudsim.resources.Pe;
 public class CloudletExecutionInfo {
 
     /**
-     * @see #getCloudlet() 
+     * @see #getCloudlet()
      */
     private final Cloudlet cloudlet;
 
@@ -53,7 +54,7 @@ public class CloudletExecutionInfo {
      * The time when the Cloudlet has finished completely
      * (not just in a given Datacenter, but finished at all).
      * If the cloudlet wasn't finished completely yet,
-     * the value is equals to {@link #NOT_FOUND}.
+     * the value is equals to {@link Cloudlet#NOT_ASSIGNED}.
      */
     private double finishedTime;
 
@@ -118,7 +119,17 @@ public class CloudletExecutionInfo {
      * The reservation id.
      */
     private final int reservationId;
-    
+
+    /**
+     * @see #getVirtualRuntime()
+     */
+    private double virtualRuntime;
+
+    /**
+     * @see #getTimeSlice()
+     */
+    private double timeSlice;
+
     /**
      * Instantiates a new CloudletExecutionInfo object upon the arrival of a Cloudlet object.
      * The arriving time is determined by
@@ -164,6 +175,8 @@ public class CloudletExecutionInfo {
         this.finishedTime = Cloudlet.NOT_ASSIGNED;  // Cannot finish in this hourly slot.
         this.totalCompletionTime = 0.0;
         this.startExecTime = 0.0;
+        this.virtualRuntime = 0;
+
 
         //In case a Cloudlet has been executed partially by some other host
         this.cloudletFinishedSoFar = cloudlet.getCloudletFinishedSoFar() * Consts.MILLION;
@@ -516,7 +529,7 @@ public class CloudletExecutionInfo {
 	 * Gets the time to transfer the list of files required by the Cloudlet
 	 * from the Datacenter storage (such as a Storage Area Network)
 	 * to the Vm of the Cloudlet.
-     * @return 
+     * @return
 	 */
 	public double getFileTransferTime() {
 		return fileTransferTime;
@@ -548,25 +561,65 @@ public class CloudletExecutionInfo {
 	public void setLastProcessingTime(double lastProcessingTime) {
 		this.lastProcessingTime = lastProcessingTime;
 	}
-    
+
     /**
-     * Gets the virtual runtime of the related Cloudlet.
-     * @return 
-     * 
-     * @see Cloudlet#getVirtualRuntime() 
+     * Gets the virtual runtime (vruntime) that indicates how long the Cloudlet
+     * has been executing by a {@link CloudletScheduler} (in seconds).
+     * The default value of this attribute is zero and each scheduler
+     * implementation might or not set a value to such attribute
+     * so that the scheduler might use to perform context switch,
+     * preempting running Cloudlets to enable other ones to start executing.
+     * By this way, the attribute is just used internally by specific CloudletSchedulers.
+     *
+     * @return
      */
     public double getVirtualRuntime(){
-        return cloudlet.getVirtualRuntime();
+        return virtualRuntime;
     }
-    
+
     /**
-     * Sets the virtual runtime of the related Cloudlet.
-     * @param virtualRuntime the virtual runtime to set
-     * 
-     * @see Cloudlet#setVirtualRuntime(double) 
+     * Adds a given time to the {@link #getVirtualRuntime() virtual runtime}.
+     *
+     * @param timeToAdd time to add to the virtual runtime  (in seconds)
+     * @return the new virtual runtime  (in seconds)
+     * @pre timeToAdd >= 0
+     */
+    public double addVirtualRuntime(double timeToAdd) {
+        if(timeToAdd >= 0) {
+            setVirtualRuntime(virtualRuntime + timeToAdd);
+        }
+        return getVirtualRuntime();
+
+    }
+
+    /**
+     * Sets the virtual runtime (vruntime) that indicates how long the Cloudlet
+     * has been executing by a {@link CloudletScheduler}  (in seconds). This attribute is used
+     * just internally by specific CloudletSchedulers.
+     *
+     * @param virtualRuntime the value to set  (in seconds)
+     * @see #getVirtualRuntime()
      */
     public void setVirtualRuntime(double virtualRuntime){
-        cloudlet.setVirtualRuntime(virtualRuntime);
+        this.virtualRuntime = virtualRuntime;
+    }
+
+    /**
+     * Gets the timeslice assigned by a CloudletScheduler for a Cloudlet, that is the amount
+     * of time (in seconds) that such a Cloudlet will have to use the PEs
+     * of a Vm. Each CloudletScheduler implementation can make use of this attribute or not.
+     * CloudletSchedulers that use it, are in charge to compute the timeslice to
+     * assign to each Cloudlet.
+     *
+     * @return Cloudlet timeslice (in seconds)
+     *
+     */
+    public double getTimeSlice() {
+        return timeSlice;
+    }
+
+    public void setTimeSlice(double timeSlice) {
+        this.timeSlice = timeSlice;
     }
 
     @Override
@@ -574,9 +627,16 @@ public class CloudletExecutionInfo {
         return String.format("Cloudlet %d", getCloudletId());
     }
 
+    @Override
+    public boolean equals(Object obj) {
+        return (obj instanceof CloudletExecutionInfo) &&
+               ((CloudletExecutionInfo)obj).getCloudletId() == this.getCloudletId();
+    }
+
     /**
      * A property that implements the Null Object Design Pattern for {@link CloudletExecutionInfo}
      * objects.
      */
     public static final CloudletExecutionInfo NULL = new CloudletExecutionInfo(Cloudlet.NULL);
+
 }

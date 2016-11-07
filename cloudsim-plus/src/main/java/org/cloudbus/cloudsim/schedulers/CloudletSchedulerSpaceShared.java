@@ -42,12 +42,6 @@ public class CloudletSchedulerSpaceShared extends CloudletSchedulerAbstract {
     }
 
     @Override
-    public void cloudletFinish(CloudletExecutionInfo rcl) {
-        super.cloudletFinish(rcl);
-        removeUsedPes(rcl.getNumberOfPes());
-    }
-
-    @Override
     public double cloudletResume(int cloudletId) {
 	    Optional<CloudletExecutionInfo> optional = findCloudletInList(cloudletId, getCloudletPausedList());
         if (!optional.isPresent()) {
@@ -134,7 +128,7 @@ public class CloudletSchedulerSpaceShared extends CloudletSchedulerAbstract {
      * <p>It doesn't consider the given Cloudlet because the scheduler
      * ensures that the Cloudlet will use all required PEs until it
      * finishes executing. </p>
-     * 
+     *
      * @param rcl {@inheritDoc}
      * @param mipsShare {@inheritDoc}
      * @return {@inheritDoc}
@@ -181,7 +175,7 @@ public class CloudletSchedulerSpaceShared extends CloudletSchedulerAbstract {
 	 *
      * @param cloudlet {@inheritDoc}
 	 * @return {@inheritDoc}
-	 */    
+	 */
     @Override
     public boolean canAddCloudletToExecutionList(CloudletExecutionInfo cloudlet) {
         return isThereEnoughFreePesForCloudlet(cloudlet);
