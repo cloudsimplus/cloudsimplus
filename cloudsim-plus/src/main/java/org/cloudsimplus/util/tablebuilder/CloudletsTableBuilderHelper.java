@@ -5,25 +5,25 @@ import org.cloudbus.cloudsim.Cloudlet;
 
 /**
  * A class to help printing simulation results for a list of cloudlets.
- * 
+ *
  * @author Manoel Campos da Silva Filho
  */
 public class CloudletsTableBuilderHelper {
-    private TableBuilder printer; 
+    private TableBuilder printer;
     private List<? extends Cloudlet> cloudletList;
 
     /**
      * Creates new helper object to print the list of cloudlets using the a
      * default {@link TextTableBuilder}.
      * To use a different {@link TableBuilder}, use the
-     * {@link #setPrinter(org.cloudbus.cloudsim.util.TableBuilder)} method.
-     * 
+     * {@link #setPrinter(TableBuilder)} method.
+     *
      * @param list the list of Cloudlets that the data will be included into the table to be printed
-     */    
+     */
     public CloudletsTableBuilderHelper(final List<? extends Cloudlet> list){
-        this.setPrinter(new TextTableBuilder()).setCloudletList(list);        
+        this.setPrinter(new TextTableBuilder()).setCloudletList(list);
     }
-    
+
     /**
      * Builds the table with the data of the Cloudlet list and shows the results.
      */
@@ -31,7 +31,7 @@ public class CloudletsTableBuilderHelper {
         if(printer.getTitle().isEmpty()){
             printer.setTitle("SIMULATION RESULTS");
         }
-        
+
         createTableColumns();
         cloudletList.stream().forEach(cloudlet -> addDataToRow(cloudlet, printer.newRow()));
         printer.print();

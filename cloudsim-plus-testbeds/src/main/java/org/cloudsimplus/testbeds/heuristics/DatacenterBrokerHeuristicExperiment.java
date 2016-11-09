@@ -1,12 +1,27 @@
 package org.cloudsimplus.testbeds.heuristics;
 
+import org.cloudbus.cloudsim.*;
+import org.cloudbus.cloudsim.brokers.DatacenterBroker;
 import org.cloudbus.cloudsim.brokers.DatacenterBrokerHeuristic;
 import org.cloudbus.cloudsim.distributions.UniformDistr;
+import org.cloudbus.cloudsim.provisioners.PeProvisionerSimple;
+import org.cloudbus.cloudsim.provisioners.ResourceProvisionerSimple;
+import org.cloudbus.cloudsim.resources.Bandwidth;
 import org.cloudbus.cloudsim.resources.Pe;
+import org.cloudbus.cloudsim.resources.PeSimple;
+import org.cloudbus.cloudsim.resources.Ram;
+import org.cloudbus.cloudsim.schedulers.CloudletSchedulerTimeShared;
+import org.cloudbus.cloudsim.schedulers.VmSchedulerTimeShared;
+import org.cloudbus.cloudsim.utilizationmodels.UtilizationModel;
+import org.cloudbus.cloudsim.utilizationmodels.UtilizationModelFull;
 import org.cloudsimplus.heuristics.CloudletToVmMappingHeuristic;
 import org.cloudsimplus.heuristics.CloudletToVmMappingSimulatedAnnealing;
 import org.cloudsimplus.heuristics.HeuristicSolution;
 import org.cloudsimplus.testbeds.SimulationExperiment;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.function.Supplier;
 
 /**
  * <p>An experiment that uses a
@@ -26,10 +41,10 @@ import org.cloudsimplus.testbeds.SimulationExperiment;
  *
  * @author Manoel Campos da Silva Filho
  */
-public class DatacenterBrokerHeuristicExperiment extends SimulationExperiment {
+final class DatacenterBrokerHeuristicExperiment extends SimulationExperiment {
 	public static final int HOSTS_TO_CREATE = 100;
 
-	/**
+    /**
 	 * Simulated Annealing (SA) parameters.
 	 */
 	public static final double SA_INITIAL_TEMPERATURE = 1.0;
@@ -37,22 +52,46 @@ public class DatacenterBrokerHeuristicExperiment extends SimulationExperiment {
 	public static final double SA_COOLING_RATE = 0.003;
 	public static final int    SA_NUMBER_OF_NEIGHBORHOOD_SEARCHES = 50;
 
+
+    /**
+     * Sets the array with Number of PEs for each VM to create.
+     * The length of the array defines the number of VMs to create.
+     * @param vmPesArray VMs PEs array to set
+     */
+    private int vmPesArray[];
+
+    /**
+     * Sets the array with Number of PEs for each Cloudlet to create.
+     * The length of the array defines the number of Cloudlets to create.
+     * @param cloudletPesArray Cloudlets PEs array to set
+     */
+    private int cloudletPesArray[];
+
+    /**
+     * Pseudo random number generator used in the experiment.
+     */
+    private UniformDistr randomGen;
+
 	private CloudletToVmMappingSimulatedAnnealing heuristic;
 
 	/**
      * Instantiates the simulation experiment.
      *
 	 * @param runner the runner that will be in charge to setup and run the experiment
-     * @param randomGen pseudo random number generator used in the experiment
      * @param index a number the identifies the current experiment being run
      */
-    public DatacenterBrokerHeuristicExperiment(DatacenterBrokerHeuristicRunner runner, UniformDistr randomGen, int index) {
+    public DatacenterBrokerHeuristicExperiment(DatacenterBrokerHeuristicRunner runner, int index) {
 	    super(index, runner);
-		setHostsToCreate(HOSTS_TO_CREATE);
-	    createSimulatedAnnealingHeuristic(randomGen);
+	    this.randomGen = new UniformDistr(0, 1);
     }
 
-	private void createSimulatedAnnealingHeuristic(UniformDistr randomGen) {
+    @Override
+    protected void buildScenario() {
+        createSimulatedAnnealingHeuristic();
+        super.buildScenario();
+    }
+
+    private void createSimulatedAnnealingHeuristic() {
 		heuristic = new CloudletToVmMappingSimulatedAnnealing(SA_INITIAL_TEMPERATURE, randomGen);
 		heuristic.setColdTemperature(SA_COLD_TEMPERATURE);
 		heuristic.setCoolingRate(SA_COOLING_RATE);
@@ -61,12 +100,91 @@ public class DatacenterBrokerHeuristicExperiment extends SimulationExperiment {
 
 	@Override
 	protected DatacenterBrokerHeuristic createBroker() {
-		DatacenterBrokerHeuristic broker0 = new DatacenterBrokerHeuristic("Broker0");
-		broker0.setHeuristic(heuristic);
-		return broker0;
+		return new DatacenterBrokerHeuristic("Broker0").setHeuristic(heuristic);
 	}
 
-	@Override
+    @Override
+    protected void createCloudlets(DatacenterBroker broker) {
+        for (int pes: cloudletPesArray) {
+            addNewCloudletToList(getCloudletSupplier(broker, pes));
+        }
+    }
+
+    /**
+     * Gets a {@link Supplier} function that is able to create a Cloudlet.
+     *
+     * @param broker broker that the Cloudlet to be created by the Supplier function will belong to
+     * @param cloudletPes number of PEs for the Cloudlet to be created by the Supplier function
+     * @return the Supplier function that can create a Cloudlet when requested
+     */
+    private Supplier<Cloudlet> getCloudletSupplier(DatacenterBroker broker, int cloudletPes) {
+        return () -> {
+            long length = 400000; //in Million Instructions (MI)
+            long fileSize = 300; //Size (in bytes) before execution
+            long outputSize = 300; //Size (in bytes) after execution
+            //Defines how CPU, RAM and Bandwidth resources are used
+            //Sets the same utilization model for all these resources.
+            UtilizationModel utilization = new UtilizationModelFull();
+            Cloudlet cloudlet = new CloudletSimple(getNumberOfCreatedCloudlets(),
+                length, cloudletPes, fileSize, outputSize,
+                utilization, utilization, utilization);
+            cloudlet.setUserId(broker.getId());
+            return cloudlet;
+        };
+    }
+
+    @Override
+    protected void createVms(DatacenterBroker broker) {
+        setVmList(new ArrayList<>(vmPesArray.length));
+        for (int pes: vmPesArray) {
+            addNewVmToList(getVmSupplier(broker, pes));
+        }
+
+    }
+
+    /**
+     * Gets a {@link Supplier} function that is able to create a Vm.
+     *
+     * @param broker broker that the Vm to be created by the Supplier function will belong to
+     * @param vmPes number of PEs for the Vm to be created by the Supplier function
+     * @return the Supplier function that can create a Vm when requested
+     */
+    private Supplier<Vm> getVmSupplier(DatacenterBroker broker, int vmPes) {
+        return () -> {
+            double mips = 1000;
+            long storage = 10000; // vm image size (MB)
+            int ram = 512; // vm memory (MB)
+            long bw = 1000; // vm bandwidth
+            return new VmSimple(getNumberOfCreatedVms(), broker.getId(), mips,
+                vmPes, ram, bw, storage, VMM,
+                new CloudletSchedulerTimeShared());
+        };
+    }
+
+    @Override
+    protected void createHosts()  {
+        for (int i = 0; i < HOSTS_TO_CREATE; i++) {
+            addNewHostToList(this::createHost);
+        }
+    }
+
+    private Host createHost() {
+        int mips = 1000;
+        int ram = 2048; // MB
+        long storage = 1000000;
+        long bw = 10000;
+        List<Pe> cpuCoresList = new ArrayList<>();
+        for (int i = 0; i < 8; i++) {
+            cpuCoresList.add(new PeSimple(i, new PeProvisionerSimple(mips)));
+        }
+
+        return new HostSimple(getNumberOfCreatedHosts(),
+            new ResourceProvisionerSimple<>(new Ram(ram)),
+            new ResourceProvisionerSimple<>(new Bandwidth(bw)), storage, cpuCoresList,
+            new VmSchedulerTimeShared(cpuCoresList));
+    }
+
+    @Override
     public void printResults() {
 		System.out.printf(
 			"Experiment %d > Heuristic solution for mapping cloudlets to Vm's: ",  getIndex());
@@ -82,4 +200,25 @@ public class DatacenterBrokerHeuristicExperiment extends SimulationExperiment {
         return heuristic;
     }
 
+    /**
+     * Sets the pseudo random number generator (PRNG) used internally in the experiment
+     * by the {@link CloudletToVmMappingSimulatedAnnealing} to try finding a suboptimal solution
+     * for mapping Cloudlets to VMs.
+     *
+     * @param randomGen the PRNG to set
+     */
+    public DatacenterBrokerHeuristicExperiment setRandomGen(UniformDistr randomGen) {
+        this.randomGen = randomGen;
+        return this;
+    }
+
+    public DatacenterBrokerHeuristicExperiment setVmPesArray(int[] vmPesArray) {
+        this.vmPesArray = vmPesArray;
+        return this;
+    }
+
+    public DatacenterBrokerHeuristicExperiment setCloudletPesArray(int[] cloudletPesArray) {
+        this.cloudletPesArray = cloudletPesArray;
+        return this;
+    }
 }

@@ -352,8 +352,9 @@ public interface Cloudlet extends Identificable, Comparable<Cloudlet> {
     /**
      * Gets the priority of this Cloudlet for scheduling inside a Vm.
      * Each {@link CloudletScheduler} implementation can define if it will
-     * use this Cloudlet attribute to impose execution priorities or
-     * not.
+     * use this attribute to impose execution priorities or not.
+     * How the priority is interpreted and what is the range of values it accepts depends on the {@link CloudletScheduler}
+     * that is being used by the Vm running the Cloudlet.
      *
      * @return priority of this cloudlet
      * @pre $none
@@ -363,7 +364,9 @@ public interface Cloudlet extends Identificable, Comparable<Cloudlet> {
 
     /**
      * Sets the {@link #getPriority() priority} of this Cloudlet for scheduling inside a Vm.
-     * How the priority is interpreted depends on the {@link CloudletScheduler}
+     * Each {@link CloudletScheduler} implementation can define if it will
+     * use this attribute to impose execution priorities or not.
+     * How the priority is interpreted and what is the range of values it accepts depends on the {@link CloudletScheduler}
      * that is being used by the Vm running the Cloudlet.
      *
      * @param priority priority of this Cloudlet

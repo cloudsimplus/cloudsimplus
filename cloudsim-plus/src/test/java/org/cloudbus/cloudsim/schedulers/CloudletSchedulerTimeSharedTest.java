@@ -1,8 +1,6 @@
 package org.cloudbus.cloudsim.schedulers;
 
 import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
 import java.util.List;
 import org.cloudbus.cloudsim.Cloudlet;
 import org.cloudbus.cloudsim.CloudletExecutionInfo;
@@ -52,7 +50,7 @@ public class CloudletSchedulerTimeSharedTest {
     @Test
     public void testGetCloudletWaitingList_Empty() {
         CloudletSchedulerTimeShared instance = new CloudletSchedulerTimeShared();
-        Collection<CloudletExecutionInfo> result = instance.getCloudletWaitingList();
+        List<CloudletExecutionInfo> result = instance.getCloudletWaitingList();
         assertTrue(result.isEmpty());
     }
 
@@ -64,7 +62,7 @@ public class CloudletSchedulerTimeSharedTest {
         final int cloudletId = 0;
         createCloudletAndAddItToPausedList(instance, cloudletId, cloudletLength);
         instance.cloudletResume(cloudletId);
-        Collection<CloudletExecutionInfo> result = instance.getCloudletWaitingList();
+        List<CloudletExecutionInfo> result = instance.getCloudletWaitingList();
         assertTrue(result.isEmpty());
     }
 
@@ -230,7 +228,7 @@ public class CloudletSchedulerTimeSharedTest {
     @Test
     public void testGetCloudletExecList_Empty() {
         CloudletSchedulerTimeShared instance = new CloudletSchedulerTimeShared();
-        Collection<CloudletExecutionInfo> result = instance.getCloudletExecList();
+        List<CloudletExecutionInfo> result = instance.getCloudletExecList();
         assertTrue(result.isEmpty());
     }
 

@@ -1,6 +1,5 @@
 package org.cloudsimplus.examples;
 
-import org.cloudsimplus.util.tablebuilder.CloudletsTableBuilderHelper;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.LinkedList;
@@ -32,14 +31,15 @@ import org.cloudbus.cloudsim.resources.Bandwidth;
 import org.cloudbus.cloudsim.provisioners.ResourceProvisionerSimple;
 import org.cloudbus.cloudsim.resources.Ram;
 import org.cloudbus.cloudsim.schedulers.CloudletSchedulerCompletelyFair;
+import org.cloudsimplus.util.tablebuilder.PriorityCloudletsTableBuilderHelper;
 
 /**
  * An example that uses an implementation of the {@link CloudletSchedulerCompletelyFair Completely Fair Scheduler}
  * used in the Linux Kernel for scheduling of Cloudlets execution inside a Vm.
- * 
+ *
  * @author Manoel Campos da Silva Filho
  * @see <a href="https://en.wikipedia.org/wiki/Completely_Fair_Scheduler">Completely Fair Scheduler (CFS)</a>
- * 
+ *
  */
 public class LinuxCompletelyFairSchedulerExample {
     private static final int HOSTS_NUMBER = 1;
@@ -51,21 +51,21 @@ public class LinuxCompletelyFairSchedulerExample {
     private static final int CLOUDLETS_NUMBER = HOST_PES*2;
     private static final int CLOUDLET_PES = 1;
     private static final int CLOUDLET_LEN = 10000; //in MI
-    
+
     /**
      * Virtual Machine Monitor name.
      */
-    private static final String VMM = "Xen"; 
+    private static final String VMM = "Xen";
     private List<Cloudlet> cloudletList;
     private List<Vm> vmList;
-    
+
     private int numberOfCreatedCloudlets = 0;
     private int numberOfCreatedVms = 0;
     private int numberOfCreatedHosts = 0;
 
     /**
      * Starts the simulation.
-     * @param args 
+     * @param args
      */
     public static void main(String[] args) {
         new LinuxCompletelyFairSchedulerExample();
@@ -78,9 +78,9 @@ public class LinuxCompletelyFairSchedulerExample {
         Log.printFormattedLine("Starting %s...", getClass().getSimpleName());
         try {
             //Number of cloud customers
-            int numberOfCloudUsers = 1; 
+            int numberOfCloudUsers = 1;
             boolean traceEvents = false;
-            
+
             CloudSim.init(numberOfCloudUsers, Calendar.getInstance(), traceEvents);
 
             Datacenter datacenter0 = createDatacenter("Datacenter0");
@@ -90,12 +90,12 @@ public class LinuxCompletelyFairSchedulerExample {
             createAndSubmitVms(broker0);
             createAndSubmitCloudlets(broker0);
             for(int i = 0; i < CLOUDLETS_NUMBER/2; i++){
-                cloudletList.get(i).setPriority(10);
+                cloudletList.get(i).setPriority(4);
             }
 
             CloudSim.startSimulation();
             CloudSim.stopSimulation();
-            
+
             List<Cloudlet> finishedCloudlets = broker0.getCloudletsFinishedList();
             new PriorityCloudletsTableBuilderHelper(finishedCloudlets).build();
             Log.printFormattedLine("%s finished!", getClass().getSimpleName());
@@ -117,13 +117,13 @@ public class LinuxCompletelyFairSchedulerExample {
         for(int i = 0; i < VMS_NUMBER; i++){
             this.vmList.add(createVm(broker0));
         }
-        broker0.submitVmList(vmList);        
+        broker0.submitVmList(vmList);
     }
 
     private DatacenterSimple createDatacenter(String name) {
         List<Host> hostList = new ArrayList<>(HOSTS_NUMBER);
         for(int i = 0; i < HOSTS_NUMBER; i++){
-            hostList.add(createHost()); 
+            hostList.add(createHost());
         }
 
         //Defines the characteristics of the data center
@@ -140,17 +140,17 @@ public class LinuxCompletelyFairSchedulerExample {
                 arch, os, VMM, hostList, time_zone, cost, costPerMem,
                 costPerStorage, costPerBw);
 
-        return new DatacenterSimple(name, characteristics, 
+        return new DatacenterSimple(name, characteristics,
                 new VmAllocationPolicySimple(hostList), storageList, 0);
-    }    
+    }
 
     private Host createHost() {
         final int  ram = 2048; // host memory (MB)
         final long storage = 1000000; // host storage
         final long bw = 10000;
-        
+
         List<Pe> cpuCoresList = createHostPesList(HOST_MIPS);
-        
+
         return new HostSimple(numberOfCreatedHosts++,
                 new ResourceProvisionerSimple<>(new Ram(ram)),
                 new ResourceProvisionerSimple<>(new Bandwidth(bw)),
@@ -163,59 +163,36 @@ public class LinuxCompletelyFairSchedulerExample {
         for(int i = 0; i < HOST_PES; i++){
             cpuCoresList.add(new PeSimple(i, new PeProvisionerSimple(mips)));
         }
-        
+
         return cpuCoresList;
     }
 
     private Vm createVm(DatacenterBroker broker) {
         final long   storage = 10000; // vm image size (MB)
         final int    ram = 512; // vm memory (MB)
-        final long   bw = 1000; // vm bandwidth 
-        
-        return new VmSimple(numberOfCreatedVms++, 
-                broker.getId(), VM_MIPS, VM_PES, ram, bw, storage,
-                VMM, new CloudletSchedulerCompletelyFair());
+        final long   bw = 1000; // vm bandwidth
+
+        return new VmSimple(numberOfCreatedVms++,
+                broker.getId(), VM_MIPS, VM_PES, ram, bw, storage, VMM,
+                new CloudletSchedulerCompletelyFair());
     }
 
     private Cloudlet createCloudlet(DatacenterBroker broker) {
         final long fileSize = 300; //Size (in bytes) before execution
         final long outputSize = 300; //Size (in bytes) after execution
-        
+
         //Defines how CPU, RAM and Bandwidth resources are used
         //Sets the same utilization model for all these resources.
         UtilizationModel utilization = new UtilizationModelFull();
-        
+
         Cloudlet cloudlet
                 = new CloudletSimple(
-                        numberOfCreatedCloudlets++, CLOUDLET_LEN, CLOUDLET_PES, 
-                        fileSize, outputSize, 
+                        numberOfCreatedCloudlets++, CLOUDLET_LEN, CLOUDLET_PES,
+                        fileSize, outputSize,
                         utilization, utilization, utilization);
         cloudlet.setUserId(broker.getId());
-        
+
         return cloudlet;
     }
 }
 
-/**
- * A helper class to print cloudlets results as a table that includes
- * the Cloudlet priority as a table field.
- * 
- * @author Manoel Campos da Silva Filho
- */
-class PriorityCloudletsTableBuilderHelper extends CloudletsTableBuilderHelper {
-    public PriorityCloudletsTableBuilderHelper(List<? extends Cloudlet> list) {
-        super(list);
-    }
-
-    @Override
-    protected void createTableColumns() {
-        super.createTableColumns();
-        getPrinter().addColumn("Priority");
-    }
-
-    @Override
-    protected void addDataToRow(Cloudlet cloudlet, List<Object> row) {
-        super.addDataToRow(cloudlet, row);
-        row.add(cloudlet.getPriority());
-    }    
-}

@@ -22,7 +22,12 @@ import java.util.List;
  *
  * @author Manoel Campos da Silva Filho
  */
-public class DatacenterBrokerHeuristicRunner extends ExperimentRunner<DatacenterBrokerHeuristicExperiment> {
+final class DatacenterBrokerHeuristicRunner extends ExperimentRunner<DatacenterBrokerHeuristicExperiment> {
+    /**
+     * Number of Cloudlets to create for each experiment.
+     */
+    public static final int CLOUDLETS_TO_CREATE = 100;
+
 	/**
 	 * Possible number of PEs for VMs to be created.
 	 * Each VM has to have one of this number of PEs,
@@ -34,11 +39,6 @@ public class DatacenterBrokerHeuristicRunner extends ExperimentRunner<Datacenter
      * Number of Vm's to create for each experiment.
      */
 	private static final int VMS_TO_CREATE = VM_PES_NUMBERS.length * 20;
-
-    /**
-     * Number of Cloudlets to create for each experiment.
-     */
-    private static final int CLOUDLETS_TO_CREATE = 100;
 
 	/**
      * Number of PEs for each created Cloudlet.
@@ -62,7 +62,7 @@ public class DatacenterBrokerHeuristicRunner extends ExperimentRunner<Datacenter
     private List<Double> experimentCosts;
 
 	/**
-	 * An object that compute statistics about experiment run time.
+	 * An object that compute statistics about experiment execution time of all executed experiment runs.
 	 */
 	private final SummaryStatistics runtimeStats;
 
@@ -117,15 +117,15 @@ public class DatacenterBrokerHeuristicRunner extends ExperimentRunner<Datacenter
 	 * @return the created cloudlet PEs array
 	 */
 	private int[] createCloudletPesArray() {
-		int[] array = new int[CLOUDLETS_TO_CREATE];
+		int[] pesArray = new int[CLOUDLETS_TO_CREATE];
 		int totalNumberOfPes = 0;
 		NormalDistr random = new NormalDistr(getBaseSeed(), 2, 0.6);
 		for(int i = 0; i < CLOUDLETS_TO_CREATE; i++){
-			array[i] =  (int) random.sample()+1;
-			totalNumberOfPes += array[i];
+			pesArray[i] =  (int) random.sample()+1;
+			totalNumberOfPes += pesArray[i];
 		}
 
-		return array;
+		return pesArray;
 	}
 
 	/**
@@ -137,14 +137,14 @@ public class DatacenterBrokerHeuristicRunner extends ExperimentRunner<Datacenter
 	 */
 	private int[] createVmPesArray() {
 		UniformDistr random = new UniformDistr(0, VM_PES_NUMBERS.length, getBaseSeed());
-		int[] array = new int[VMS_TO_CREATE];
+		int[] pesArray = new int[VMS_TO_CREATE];
 		int totalNumberOfPes = 0;
 		for(int i = 0; i < VMS_TO_CREATE; i++){
-			array[i] =  VM_PES_NUMBERS[(int)random.sample()];
-			totalNumberOfPes += array[i];
+			pesArray[i] =  VM_PES_NUMBERS[(int)random.sample()];
+			totalNumberOfPes += pesArray[i];
 		}
 
-		return array;
+		return pesArray;
 	}
 
 	/**
@@ -170,20 +170,25 @@ public class DatacenterBrokerHeuristicRunner extends ExperimentRunner<Datacenter
 
 	@Override
 	protected DatacenterBrokerHeuristicExperiment createExperiment(int i) {
-		UniformDistr prng = createRandomGen(i);
-		addSeed(prng.getSeed());
+		UniformDistr prng = createRandomGenAndAddSeedToList(i, 0, 1);
 		DatacenterBrokerHeuristicExperiment exp =
-			new DatacenterBrokerHeuristicExperiment(this, prng, i);
+			new DatacenterBrokerHeuristicExperiment(this, i)
+            .setRandomGen(prng)
+            .setCloudletPesArray(cloudletPesArray)
+            .setVmPesArray(vmPesArray);
 
-		exp.setVerbose(experimentVerbose);
-		exp.setVmPesArray(vmPesArray);
-		exp.setCloudletPesArray(cloudletPesArray);
-		exp.setAfterExperimentFinish(this::afterExperimentFinish);
-
+		exp.setVerbose(experimentVerbose).setAfterExperimentFinish(this::afterExperimentFinish);
 		return exp;
 	}
 
-	/**
+    @Override
+    protected void setup() {
+        experimentCosts = new ArrayList<>(getNumberOfSimulationRuns());
+        vmPesArray = createVmPesArray();
+        cloudletPesArray = createCloudletPesArray();
+    }
+
+    /**
 	 * Method automatically called after every experiment finishes running.
 	 * It performs some post-processing such as collection of data for
 	 * statistic analysis.
@@ -217,15 +222,8 @@ public class DatacenterBrokerHeuristicRunner extends ExperimentRunner<Datacenter
 			DatacenterBrokerHeuristicExperiment.SA_NUMBER_OF_NEIGHBORHOOD_SEARCHES);
 	}
 
-	@Override
-	protected void setup() {
-		experimentCosts = new ArrayList<>(getNumberOfSimulationRuns());
-		vmPesArray = createVmPesArray();
-		cloudletPesArray = createCloudletPesArray();
-	}
-
     @Override
-    protected void printResults(SummaryStatistics stats) {
+    protected void printFinalResults(SummaryStatistics stats) {
         System.out.printf("\n# Results for %d simulation runs\n", getNumberOfSimulationRuns());
         if(!simulationRunsAndNumberOfBatchesAreCompatible())
             System.out.println("\tBatch means method was not be applied because the number of simulation runs is not greater than the number of batches.");
@@ -276,7 +274,7 @@ public class DatacenterBrokerHeuristicRunner extends ExperimentRunner<Datacenter
 	 * to allow get mean, standard deviation and confidence interval
      */
 	@Override
-    protected SummaryStatistics computeStatistics() {
+    protected SummaryStatistics computeFinalStatistics() {
 		SummaryStatistics costsStats = new SummaryStatistics();
         List<Double> costs = experimentCosts;
 

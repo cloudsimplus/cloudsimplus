@@ -333,7 +333,9 @@ public class CloudletExecutionInfo {
             // if a Cloudlet is now in execution
             if (status == Status.INEXEC || (prevStatus == Status.PAUSED && status == Status.RESUMED)) {
                 startExecTime = clock;
-                cloudlet.setExecStartTime(startExecTime);
+                if(cloudlet.getExecStartTime() == 0) {
+                    cloudlet.setExecStartTime(startExecTime);
+                }
             }
         } catch (Exception e) {
             success = false;

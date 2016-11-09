@@ -1,6 +1,7 @@
-package org.cloudsimplus.testbeds;
+package org.cloudsimplus.testbeds.dynamiccloudlets;
 
 import org.apache.commons.math3.stat.descriptive.SummaryStatistics;
+import org.cloudsimplus.testbeds.ExperimentRunner;
 
 /**
  * Runs the {@link DynamicCloudletsArrivalExperiment}
@@ -9,7 +10,7 @@ import org.apache.commons.math3.stat.descriptive.SummaryStatistics;
  *
  * @author Manoel Campos da Silva Filho
  */
-public class DynamicCloudletsArrivalRunner extends ExperimentRunner<DynamicCloudletsArrivalExperiment> {
+final class DynamicCloudletsArrivalRunner extends ExperimentRunner<DynamicCloudletsArrivalExperiment> {
 	@Override
 	protected void setup() {
 
@@ -26,12 +27,12 @@ public class DynamicCloudletsArrivalRunner extends ExperimentRunner<DynamicCloud
 	}
 
 	@Override
-	protected SummaryStatistics computeStatistics() {
+	protected SummaryStatistics computeFinalStatistics() {
 		return null;
 	}
 
 	@Override
-	protected void printResults(SummaryStatistics stats) {
+	protected void printFinalResults(SummaryStatistics stats) {
 
 	}
 }

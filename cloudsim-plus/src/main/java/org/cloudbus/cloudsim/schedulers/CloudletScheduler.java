@@ -172,7 +172,7 @@ public interface CloudletScheduler extends Serializable {
      * @param rcl the rcl
      * @param mipsShare the mips share
      * @return the total current mips available for each Cloudlet PE
-     * 
+     *
      * @todo In fact, this method is returning different data depending
      * of the subclass. It is expected that the way the method use to compute
      * the resulting value can be different in every subclass,
@@ -272,6 +272,19 @@ public interface CloudletScheduler extends Serializable {
     void setVm(Vm vm) ;
 
     /**
+     * Gets the number of currently used {@link Pe}'s.
+     * @return
+     */
+    int getUsedPes();
+
+    /**
+     * Gets the number of PEs currently not being used.
+     * @return
+     */
+    int getFreePes();
+
+
+    /**
 	 * Checks if a Cloudlet can be added to the execution list or not.
 	 * Each CloudletScheduler can define a different policy to
 	 * indicate if a Cloudlet can be added to the execution list
@@ -293,7 +306,7 @@ public interface CloudletScheduler extends Serializable {
 	 * @param cloudlet Cloudlet to check if it can be added to the execution list
 	 * @return true if the Cloudlet can be added to the execution list, false otherwise
 	 */
-	boolean canAddCloudletToExecutionList(CloudletExecutionInfo cloudlet);    
+	boolean canAddCloudletToExecutionList(CloudletExecutionInfo cloudlet);
 
     /**
      * A property that implements the Null Object Design Pattern for {@link CloudletScheduler}
@@ -323,6 +336,10 @@ public interface CloudletScheduler extends Serializable {
         @Override public double updateVmProcessing(double currentTime, List<Double> mipsShare) { return 0.0; }
         @Override public Vm getVm() { return Vm.NULL; }
         @Override public void setVm(Vm vm) {}
+
+        @Override  public int getUsedPes() { return 0; }
+        @Override  public int getFreePes() { return 0; }
+
         @Override public boolean canAddCloudletToExecutionList(CloudletExecutionInfo cloudlet) { return false; }
         @Override public List<CloudletExecutionInfo> getCloudletFinishedList() { return Collections.EMPTY_LIST; }
     };

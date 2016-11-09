@@ -1,10 +1,11 @@
-package org.cloudsimplus.testbeds;
+package org.cloudsimplus.testbeds.dynamiccloudlets;
 
 import org.cloudbus.cloudsim.Cloudlet;
 import org.cloudbus.cloudsim.brokers.DatacenterBroker;
 import org.cloudbus.cloudsim.brokers.DatacenterBrokerSimple;
+import org.cloudsimplus.testbeds.ExperimentRunner;
+import org.cloudsimplus.testbeds.SimulationExperiment;
 import org.cloudsimplus.util.tablebuilder.CloudletsTableBuilderHelper;
-import org.cloudsimplus.testbeds.heuristics.DatacenterBrokerHeuristicRunner;
 
 import java.util.List;
 
@@ -14,7 +15,7 @@ import java.util.List;
  *
  * @author Manoel Campos da Silva Filho
  */
-public class DynamicCloudletsArrivalExperiment extends SimulationExperiment {
+final class DynamicCloudletsArrivalExperiment extends SimulationExperiment {
 	public static final int HOSTS_TO_CREATE = 100;
 
 	/**
@@ -25,9 +26,8 @@ public class DynamicCloudletsArrivalExperiment extends SimulationExperiment {
 	 * of executing this experiment a defined number of times and to collect
 	 * data for statistical analysis.
 	 */
-	public DynamicCloudletsArrivalExperiment(int index, DatacenterBrokerHeuristicRunner runner) {
+	public DynamicCloudletsArrivalExperiment(int index, DynamicCloudletsArrivalRunner runner) {
 		super(index, runner);
-		 setHostsToCreate(HOSTS_TO_CREATE);
 	}
 
 	@Override
@@ -42,14 +42,28 @@ public class DynamicCloudletsArrivalExperiment extends SimulationExperiment {
 		return new DatacenterBrokerSimple("broker0");
 	}
 
-	/**
+    @Override
+    protected void createCloudlets(DatacenterBroker broker) {
+
+    }
+
+    @Override
+    protected void createVms(DatacenterBroker broker) {
+
+    }
+
+    @Override
+    protected void createHosts() {
+
+    }
+
+    /**
 	 * Just a method to try a single run of the experiment.
 	 *
 	 * @param args
 	 */
 	public static void main(String[] args) {
 		DynamicCloudletsArrivalExperiment exp = new DynamicCloudletsArrivalExperiment(0, null);
-		exp.setVmPesArray(new int[]{2, 4, 6, 8}).setCloudletPesArray(new int[]{2, 4, 6, 8});
 		exp.run();
 	}
 

@@ -54,7 +54,7 @@ public abstract class CloudletSchedulerAbstract implements CloudletScheduler {
 	/**
 	 * @see #getCloudletExecList()
 	 */
-	private Collection<CloudletExecutionInfo> cloudletExecList;
+	private List<CloudletExecutionInfo> cloudletExecList;
 
     /**
      * @see #getCloudletPausedList()
@@ -74,7 +74,7 @@ public abstract class CloudletSchedulerAbstract implements CloudletScheduler {
     /**
      * @see #getCloudletWaitingList()
      */
-    private Collection<CloudletExecutionInfo> cloudletWaitingList;
+    private List<CloudletExecutionInfo> cloudletWaitingList;
 
     /**
      * @see #getVm()
@@ -134,24 +134,21 @@ public abstract class CloudletSchedulerAbstract implements CloudletScheduler {
     }
 
     /**
-     * Gets a Collection of cloudlets being executed on the VM.
-     * It is used a Collection instead of List in order to enable different
-     * schedulers to define what implementation has to be used for such
-     * Collection (if a ordered Set as the TreeSet or a regular List as the ArrayList).
+     * Gets a List of cloudlets being executed on the VM.
      *
-     * @return the cloudlet exec collection
+     * @return the cloudlet execution list
      * @see #addCloudletToExecList(CloudletExecutionInfo)
      * @see #removeCloudletFromExecListAndSetFinishTime(org.cloudbus.cloudsim.CloudletExecutionInfo)
      */
-    protected Collection<CloudletExecutionInfo> getCloudletExecList() {
+    protected List<CloudletExecutionInfo> getCloudletExecList() {
         return cloudletExecList;
 	}
 
-    protected final void setCloudletWaitingList(Collection<CloudletExecutionInfo> cloudletWaitingList){
+    protected final void setCloudletWaitingList(List<CloudletExecutionInfo> cloudletWaitingList){
         this.cloudletWaitingList = cloudletWaitingList;
     }
 
-    protected final void setCloudletExecList(Collection<CloudletExecutionInfo> cloudletExecList){
+    protected final void setCloudletExecList(List<CloudletExecutionInfo> cloudletExecList){
         this.cloudletExecList = cloudletExecList;
     }
 
@@ -192,14 +189,11 @@ public abstract class CloudletSchedulerAbstract implements CloudletScheduler {
     }
 
     /**
-     * Gets a Collection of cloudlet waiting to be executed on the VM.
-     * It is used a Collection instead of List in order to enable different
-     * schedulers to define what implementation has to be used for such
-     * Collection (if a ordered Set as the TreeSet or a regular List as the ArrayList).
+     * Gets a List of cloudlet waiting to be executed on the VM.
      *
      * @return the cloudlet waiting list
      */
-    protected Collection<CloudletExecutionInfo> getCloudletWaitingList() {
+    protected List<CloudletExecutionInfo> getCloudletWaitingList() {
         return cloudletWaitingList;
     }
 
@@ -228,7 +222,6 @@ public abstract class CloudletSchedulerAbstract implements CloudletScheduler {
         if(canAddCloudletToExecutionList(rcl)){
 	        rcl.setCloudletStatus(Status.INEXEC);
 	        rcl.setFileTransferTime(fileTransferTime);
-	        rcl.setLastProcessingTime(CloudSim.clock());
 	        addCloudletToExecList(rcl);
 	        return fileTransferTime + (rcl.getCloudletLength() / getProcessor().getCapacity());
         }
@@ -245,6 +238,7 @@ public abstract class CloudletSchedulerAbstract implements CloudletScheduler {
      */
     protected void addCloudletToExecList(CloudletExecutionInfo cloudlet) {
 		cloudlet.setCloudletStatus(Cloudlet.Status.INEXEC);
+        cloudlet.setLastProcessingTime(CloudSim.clock());
         cloudletExecList.add(cloudlet);
         addUsedPes(cloudlet.getNumberOfPes());
     }
@@ -537,10 +531,7 @@ public abstract class CloudletSchedulerAbstract implements CloudletScheduler {
 	    double executedInstructions =
 		    (processor.getAvailableMipsByPe() * rcl.getNumberOfPes() *
             actualProcessingTime * Consts.MILLION);
-	    Log.println(Log.Level.DEBUG, getClass(), currentTime,
-		    "Cloudlet: %d Processing time: %.2f Last processed time: %.2f Actual process time: %.2f MI so far: %d",
-		    rcl.getCloudletId(), currentTime, rcl.getLastProcessingTime(),
-            actualProcessingTime, rcl.getCloudlet().getCloudletFinishedSoFar());
+	    //Log.println(Log.Level.DEBUG, getClass(), currentTime, "Cloudlet: %d Processing time: %.2f Last processed time: %.2f Actual process time: %.2f MI so far: %d",  rcl.getCloudletId(), currentTime, rcl.getLastProcessingTime(),  actualProcessingTime, rcl.getCloudlet().getCloudletFinishedSoFar());
 
 	    return (long)executedInstructions;
     }
@@ -751,16 +742,15 @@ public abstract class CloudletSchedulerAbstract implements CloudletScheduler {
         this.vm = vm;
     }
 
-    /**
-     * Gets the number of currently used {@link Pe}'s.
-     * @return
-     *
-     * @todo The number of free and used PEs should be inside the Processor class.
-     * However, a new instance of the class is created every time the
-     * updateVmProcessing is called, what will make the information about the
-     * number of usedPes to be lost.
-     */
+    @Override
     public int getUsedPes() {
+        /**
+         *
+         * @todo The number of free and used PEs should be inside the Processor class.
+         * However, a new instance of the class is created every time the
+         * updateVmProcessing is called, what will make the information about the
+         * number of usedPes to be lost.
+         */
         return usedPes;
     }
 
@@ -768,7 +758,8 @@ public abstract class CloudletSchedulerAbstract implements CloudletScheduler {
      * Gets the number of PEs currently not being used.
      * @return
      */
-    protected int getFreePes() {
+    @Override
+    public int getFreePes() {
         return getProcessor().getNumberOfPes() - getUsedPes();
     }
 

@@ -1,6 +1,5 @@
 package org.cloudbus.cloudsim.schedulers;
 
-import java.util.Collection;
 import java.util.List;
 import org.cloudbus.cloudsim.Cloudlet;
 import org.cloudbus.cloudsim.CloudletExecutionInfo;
@@ -295,7 +294,7 @@ public class CloudletSchedulerSpaceSharedTest {
     @Test
     public void testGetCloudletExecList_ReturnEmptyList() {
         CloudletSchedulerSpaceShared instance = new CloudletSchedulerSpaceShared();
-        Collection<CloudletExecutionInfo> result = instance.getCloudletExecList();
+        List<CloudletExecutionInfo> result = instance.getCloudletExecList();
         assertTrue(instance.getCloudletExecList().isEmpty());
     }
 
@@ -306,7 +305,7 @@ public class CloudletSchedulerSpaceSharedTest {
         instance.setCurrentMipsShare(CloudletSchedulerUtil.createMipsList(schedulerPes, SCHEDULER_MIPS));
         Cloudlet cloudlet = CloudletSimpleTest.createCloudletWithOnePe(0);
         instance.cloudletSubmit(cloudlet);
-        Collection<CloudletExecutionInfo> result = instance.getCloudletExecList();
+        List<CloudletExecutionInfo> result = instance.getCloudletExecList();
 
         assertTrue(
             instance.getCloudletExecList()
