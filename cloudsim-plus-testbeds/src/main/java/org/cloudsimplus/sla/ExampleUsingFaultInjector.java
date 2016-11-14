@@ -27,6 +27,7 @@ import org.cloudbus.cloudsim.allocationpolicies.VmAllocationPolicySimple;
 import org.cloudbus.cloudsim.brokers.DatacenterBrokerSimple;
 import org.cloudbus.cloudsim.schedulers.VmSchedulerTimeShared;
 import org.cloudbus.cloudsim.core.CloudSim;
+import org.cloudbus.cloudsim.distributions.UniformDistr;
 import org.cloudbus.cloudsim.provisioners.PeProvisionerSimple;
 import org.cloudbus.cloudsim.provisioners.ResourceProvisionerSimple;
 import org.cloudbus.cloudsim.resources.Bandwidth;
@@ -38,16 +39,17 @@ import org.cloudbus.cloudsim.utilizationmodels.UtilizationModel;
 import org.cloudbus.cloudsim.utilizationmodels.UtilizationModelFull;
 
 /**
- * This simple example shows how to use a fault injector.
+ * This simple example shows how to use a fault injector in the host.
  *
  * @author raysaoliveira
  */
 public class ExampleUsingFaultInjector {
-    private static final int HOSTS_NUMBER = 4;
+
+    private static final int HOSTS_NUMBER = 2;
     private static final int HOST_PES = 5;
     private static final int VMS_NUMBER = HOSTS_NUMBER;
     private static final int VM_PES = HOST_PES;
-    private static final int CLOUDLETS_NUMBER = VMS_NUMBER*VM_PES;
+    private static final int CLOUDLETS_NUMBER = VMS_NUMBER * VM_PES;
     private static final int CLOUDLET_PES = 1;
 
     /**
@@ -56,7 +58,7 @@ public class ExampleUsingFaultInjector {
     private final List<Cloudlet> cloudletList;
 
     private static List<Host> hostList;
-    
+
     /**
      * The vmlist.
      */
@@ -84,9 +86,9 @@ public class ExampleUsingFaultInjector {
         Vm[] vm = new Vm[vms];
 
         for (int i = 0; i < vms; i++) {
-            vm[i] = new VmSimple(i, userId, mips, VM_PES, 
-                                 ram, bw, size, vmm, 
-                                 new CloudletSchedulerTimeShared());
+            vm[i] = new VmSimple(i, userId, mips, VM_PES,
+                    ram, bw, size, vmm,
+                    new CloudletSchedulerTimeShared());
             //for creating a VM with a space shared scheduling policy for cloudlets:
             //vm[i] = new VmSimple(i, userId, mips, pesNumber, ram, bw, size, vmm, new CloudletSchedulerSpaceShared());
             list.add(vm[i]);
@@ -111,7 +113,7 @@ public class ExampleUsingFaultInjector {
         long outputSize = 300;
         UtilizationModel utilizationModel = new UtilizationModelFull();
         Cloudlet[] cloudlet = new Cloudlet[cloudlets];
-        
+
         for (int i = 0; i < cloudlets; i++) {
             cloudlet[i] = new CloudletSimple(
                     i, length, CLOUDLET_PES, fileSize, outputSize,
@@ -130,11 +132,7 @@ public class ExampleUsingFaultInjector {
      */
     public static void main(String[] args) {
         Log.printFormattedLine(" Starting... ");
-        try {
-            new ExampleUsingFaultInjector();
-        } catch (Exception e) {
-            Log.printFormattedLine("Simulation finished due to unexpected error: %s", e);
-        }
+        new ExampleUsingFaultInjector();
     }
 
     public ExampleUsingFaultInjector() {
@@ -148,10 +146,26 @@ public class ExampleUsingFaultInjector {
         //Create Datacenters
         Datacenter datacenter0 = createDatacenter("Datacenter_0");
 
-        for (Host host : datacenter0.getHostList()) {
-            //create a new intance of fault and start it.
-            HostFaultInjection fault = new HostFaultInjection("FaultInjection" + host.getId());
-            fault.setHost(host);
+        //Inject Fault
+        long seed = System.currentTimeMillis();
+        PoissonProcess poisson = new PoissonProcess(0.2, seed);
+
+        UniformDistr failurePesRand = new UniformDistr(seed);
+        for (int i = 0; i < datacenter0.getHostList().size(); i++) {
+            for (Host host : datacenter0.getHostList()) {
+                if (poisson.haveKEventsHappened()) {
+                    UniformDistr delayForFailureOfHostRandom = new UniformDistr(1, 10, seed + i);
+
+                    //create a new intance of fault and start it.
+                    HostFaultInjection fault = new HostFaultInjection("FaultInjection" + host.getId());
+                    fault.setNumberOfFailedPesRandom(failurePesRand);
+                    fault.setDelayForFailureOfHostRandom(delayForFailureOfHostRandom);
+                    fault.setHost(host);
+                } else {
+                    System.out.println("\t *** Host not failed. -> Id: " + host.getId() + "\n");
+                }
+                i++;
+            }
         }
 
         //Create Broker
@@ -172,11 +186,34 @@ public class ExampleUsingFaultInjector {
         CloudSim.startSimulation();
         CloudSim.stopSimulation();
 
+        for (Cloudlet cloudlet: cloudletList) {
+            System.out.println("--->Status do Cloudlet: " + cloudlet.getStatus());
+        }
+
+        for (Host host : datacenter0.getHostList()) {
+            System.out.printf("Host %d ", host.getId());
+            for (Pe pe : host.getPeList()) {
+                System.out.printf(" PE: %d Status: %s\n", pe.getId(),pe.getStatus());
+            }
+        }
+
+        for (Cloudlet cloudletFinished : broker.getCloudletsFinishedList()) {
+            if (broker.getCloudletsFinishedList().isEmpty()) {
+                System.out.println("\n List of finished cloudlets is empty. \n");
+
+            } else {
+                System.out.println("Finished Cloudlet  -> Id : " + cloudletFinished.getId());
+            }
+        }
+
         //Final step: Print results when simulation is over
         List<Cloudlet> newList = broker.getCloudletsFinishedList();
-        new CloudletsTableBuilderHelper(newList).build();
 
-        Log.printFormattedLine("... finished!");
+        new CloudletsTableBuilderHelper(newList)
+                .build();
+
+        Log.printFormattedLine(
+                "... finished!");
     }
 
     /**
@@ -196,7 +233,7 @@ public class ExampleUsingFaultInjector {
         long bw = 100000;
 
         for (int i = 0; i < HOSTS_NUMBER; i++) {
-            List<Pe> peList = createHostPesList(HOST_PES, mips); 
+            List<Pe> peList = createHostPesList(HOST_PES, mips);
             getHostList().add(new HostSimple(
                     hostId,
                     new ResourceProvisionerSimple<>(new Ram(ram)),
@@ -224,14 +261,15 @@ public class ExampleUsingFaultInjector {
                 arch, os, vmm, getHostList(), time_zone, cost, costPerMem,
                 costPerStorage, costPerBw);
 
-        return new DatacenterSimple(name, characteristics, 
+        return new DatacenterSimple(name, characteristics,
                 new VmAllocationPolicySimple(getHostList()), storageList, 0);
     }
 
     public List<Pe> createHostPesList(int hostPes, int mips) {
         List<Pe> peList = new ArrayList<>();
-        for(int i=0; i < hostPes; i++)
+        for (int i = 0; i < hostPes; i++) {
             peList.add(new PeSimple(i, new PeProvisionerSimple(mips))); // need to store Pe id and MIPS Rating
+        }
         return peList;
     }
 
@@ -241,4 +279,12 @@ public class ExampleUsingFaultInjector {
     public List<Host> getHostList() {
         return hostList;
     }
+
+    /**
+     * @return the HOST_PES
+     */
+    public static int getHOST_PES() {
+        return HOST_PES;
+    }
+
 }

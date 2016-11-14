@@ -26,6 +26,26 @@ public class UniformDistr extends ContinuousDistributionAbstract {
     private boolean applyAntitheticVariatesTechnique;
 
     /**
+     * Creates new uniform pseudo random number generator
+     * that generates values between [0 and 1] using the current
+     * time as seed.
+     *
+     */
+    public UniformDistr() {
+        this(0, 1);
+    }
+
+    /**
+     * Creates new uniform pseudo random number generator
+     * that generates values between [0 and 1].
+     *
+     * @param seed simulation seed to be used
+     */
+    public UniformDistr(long seed) {
+        this(0, 1, seed);
+    }
+
+    /**
      * Creates new uniform pseudo random number generator.
      *
      * @param min minimum value (inclusive)

@@ -412,7 +412,6 @@ public interface Vm extends Identificable, Comparable<Vm> {
 
     /**
      * Sets the status of VM to FAILED.
-     * The failure is caused deallocating the PEs for VMs
      * 
      * @param failed the failed
      */
