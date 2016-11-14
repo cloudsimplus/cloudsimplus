@@ -28,7 +28,7 @@ public abstract class SimEntity implements Cloneable, Nameable {
     /**
      * The entity id.
      */
-    public int id;
+    private int id;
 
     /**
      * The buffer for selected incoming events.
@@ -538,7 +538,7 @@ public abstract class SimEntity implements Cloneable, Nameable {
      * type.
      *
      * @param entityId the id number of the destination entity
-     * @param delay How many seconds after the current simulation time the event should be sent. 
+     * @param delay How many seconds after the current simulation time the event should be sent.
      * If delay is a negative number, then it will be changed to 0
      * @param cloudSimTag an user-defined number representing the type of an
      * event/message
@@ -581,7 +581,7 @@ public abstract class SimEntity implements Cloneable, Nameable {
      * type.
      *
      * @param entityId the id number of the destination entity
-     * @param delay How many seconds after the current simulation time the event should be sent. 
+     * @param delay How many seconds after the current simulation time the event should be sent.
      * If delay is a negative number, then it will be changed to 0
      * @param cloudSimTag an user-defined number representing the type of an
      * event/message
@@ -599,7 +599,7 @@ public abstract class SimEntity implements Cloneable, Nameable {
      * type.
      *
      * @param entityName the name of the destination entity
-     * @param delay How many seconds after the current simulation time the event should be sent. 
+     * @param delay How many seconds after the current simulation time the event should be sent.
      * If delay is a negative number, then it will be changed to 0
      * @param cloudSimTag an user-defined number representing the type of an
      * event/message
@@ -619,7 +619,7 @@ public abstract class SimEntity implements Cloneable, Nameable {
      * type.
      *
      * @param entityName the name of the destination entity
-     * @param delay How many seconds after the current simulation time the event should be sent. 
+     * @param delay How many seconds after the current simulation time the event should be sent.
      * If delay is a negative number, then it will be changed to 0
      * @param cloudSimTag an user-defined number representing the type of an
      * event/message

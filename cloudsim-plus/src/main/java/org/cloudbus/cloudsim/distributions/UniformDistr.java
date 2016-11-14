@@ -27,7 +27,7 @@ public class UniformDistr extends ContinuousDistributionAbstract {
 
     /**
      * Creates new uniform pseudo random number generator
-     * that generates values between [0 and 1] using the current
+     * that generates values between [0 and 1[ using the current
      * time as seed.
      *
      */
@@ -37,7 +37,7 @@ public class UniformDistr extends ContinuousDistributionAbstract {
 
     /**
      * Creates new uniform pseudo random number generator
-     * that generates values between [0 and 1].
+     * that generates values between [0 and 1[ using a given seed.
      *
      * @param seed simulation seed to be used
      */

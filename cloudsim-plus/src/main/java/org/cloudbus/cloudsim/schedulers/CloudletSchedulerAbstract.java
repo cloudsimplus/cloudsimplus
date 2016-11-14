@@ -302,7 +302,10 @@ public abstract class CloudletSchedulerAbstract implements CloudletScheduler {
     @Override
     public int getCloudletStatus(int cloudletId) {
         Optional<CloudletExecutionInfo> optional = findCloudletInAllLists(cloudletId);
-        return optional.map(c -> c.getCloudletStatus().ordinal()).orElse(-1);
+        return optional
+                    .map(CloudletExecutionInfo::getCloudletStatus)
+                    .map(Status::ordinal)
+                    .orElse(-1);
     }
 
     /**
@@ -321,7 +324,7 @@ public abstract class CloudletSchedulerAbstract implements CloudletScheduler {
         //Gets all elements in each list and makes them a single full list,
         //returning the first Cloudlet with the given id
         return streamOfAllLists
-                .flatMap(list -> list.stream())
+                .flatMap(List::stream)
                 .filter(c -> c.getCloudletId() == cloudletId)
                 .findFirst();
     }
