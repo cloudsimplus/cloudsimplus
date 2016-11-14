@@ -28,7 +28,7 @@ public abstract class SimEntity implements Cloneable, Nameable {
     /**
      * The entity id.
      */
-    private int id;
+    public int id;
 
     /**
      * The buffer for selected incoming events.

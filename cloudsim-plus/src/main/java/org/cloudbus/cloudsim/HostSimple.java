@@ -439,11 +439,8 @@ public class HostSimple implements Host {
 
     @Override
     public final boolean setFailed(boolean failed) {
-        // all the PEs are failed (or recovered, depending on failed parameter)
         this.failed = failed;
         PeList.setStatusFailed(getPeList(), getId(), failed);
-        Log.printLine(CloudSim.clock() + " ---> Host " + id + " FAILURE...\n");
-        setVmsToFailedWhenHostIsFailed();
         
         return true;
     }

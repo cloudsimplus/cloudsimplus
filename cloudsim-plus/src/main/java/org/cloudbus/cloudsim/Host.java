@@ -235,14 +235,7 @@ public interface Host extends Identificable {
      */
     void setDatacenter(Datacenter datacenter);
 
-    /**
-     * Sets the status of all host PEs to FAILED. 
-     * 
-     * @param failed the failed
-     * @return <tt>true</tt> if successful, <tt>false</tt> otherwise
-     */
-    boolean setFailed(boolean failed);
-
+    
     /**
      * Sets the particular Pe status on the host.
      *
@@ -313,6 +306,9 @@ public interface Host extends Identificable {
      */
     void setOnUpdateVmsProcessingListener(EventListener<HostUpdatesVmsProcessingEventInfo> onUpdateVmsProcessingListener);    
     
+    boolean setFailed(boolean failed);
+    
+    
     /**
      * A property that implements the Null Object Design Pattern for {@link Host}
      * objects.
@@ -345,7 +341,6 @@ public interface Host extends Identificable {
         @Override public void reallocateMigratingInVms() {}
         @Override public void removeMigratingInVm(Vm vm) {}
         @Override public void setDatacenter(Datacenter datacenter) {}
-        @Override public boolean setFailed(boolean failed) { return false; }
         @Override public boolean setPeStatus(int peId, Pe.Status status) { return false; }
         @Override public double updateVmsProcessing(double currentTime) { return 0.0; }
         @Override public boolean vmCreate(Vm vm) { return false; }
@@ -354,5 +349,6 @@ public interface Host extends Identificable {
         @Override public EventListener<HostUpdatesVmsProcessingEventInfo> getOnUpdateVmsProcessingListener() { return EventListener.NULL; }
         @Override public void setOnUpdateVmsProcessingListener(EventListener<HostUpdatesVmsProcessingEventInfo> onUpdateVmsProcessingListener) {}
         @Override public long getAvailableStorage() { return 0L; }
+        @Override public boolean setFailed(boolean failed){return true;}
     };
 }

@@ -51,10 +51,10 @@ public abstract class CloudletSchedulerAbstract implements CloudletScheduler {
      */
     private List<Double> currentMipsShare;
 
-	/**
-	 * @see #getCloudletExecList()
-	 */
-	private Collection<CloudletExecutionInfo> cloudletExecList;
+    /**
+     * @see #getCloudletExecList()
+     */
+    private Collection<CloudletExecutionInfo> cloudletExecList;
 
     /**
      * @see #getCloudletPausedList()
