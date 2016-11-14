@@ -21,7 +21,7 @@ public class Processor implements ResourceCapacity<Double>{
 
     /** @see #getCloudletExecList() */
     private Collection<CloudletExecutionInfo> cloudletExecList;
-    
+
     /**
      * Instantiates a Processor with zero capacity (zero PEs and MIPS).
      */
@@ -48,13 +48,12 @@ public class Processor implements ResourceCapacity<Double>{
      * @param mipsList a list of {@link Pe Processing Elements (cores)} capacity
      * where all elements have the same capacity. This list represents
      * the capacity of each processor core.
-     * @param cloudletExecList list of information about cloudlets for starting
-     * executing in this processor.
+     * @param cloudletExecList list of cloudlets currently executing in this processor.
      *
      * @return the new processor
      */
     public static Processor fromMipsList(List<Double> mipsList,
-            Collection<CloudletExecutionInfo> cloudletExecList) {
+            List<CloudletExecutionInfo> cloudletExecList) {
         if(mipsList == null){
             throw new IllegalArgumentException("The mipsList cannot be null.");
         }
@@ -128,6 +127,11 @@ public class Processor implements ResourceCapacity<Double>{
      * exclusively by them.</p>
      *
      * @return the amount of available MIPS for each Processor PE.
+     * @todo Splitting the capacity of a CPU core among different applications
+     * is not in fact possible. This was just an oversimplification
+     * performed by the CloudletSchedulerTimeShared that may affect
+     * other schedulers such as the CloudletSchedulerCompletelyFair
+     * that in fact performs tasks preemption.
      */
     public double getAvailableMipsByPe(){
         final int totalPesOfAllExecCloudlets = totalPesOfAllExecCloudlets();
@@ -141,7 +145,7 @@ public class Processor implements ResourceCapacity<Double>{
      * @return the total number of PEs of all cloudlets currently executing in this processor.
      */
     private int totalPesOfAllExecCloudlets() {
-        return cloudletExecList.stream().mapToInt(c -> c.getNumberOfPes()).reduce(0, Integer::sum);
+        return cloudletExecList.stream().mapToInt(CloudletExecutionInfo::getNumberOfPes).sum();
     }
 
     /**
@@ -177,9 +181,8 @@ public class Processor implements ResourceCapacity<Double>{
     }
 
     /**
-     *
-     * @return a read-only list of information about cloudlets currently executing
-     * in this processor
+     * Gets a read-only list of cloudlets currently executing in this processor.
+     * @return
      */
     public Collection<CloudletExecutionInfo> getCloudletExecList() {
         return Collections.unmodifiableCollection(cloudletExecList);

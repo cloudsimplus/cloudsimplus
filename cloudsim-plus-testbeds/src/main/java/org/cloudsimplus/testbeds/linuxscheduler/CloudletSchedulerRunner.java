@@ -60,7 +60,7 @@ abstract class CloudletSchedulerRunner<T extends CloudletSchedulerExperiment> ex
     protected void setup() {
         cloudletsCompletionTimeMeans = new ArrayList<>(getNumberOfSimulationRuns());
         cloudletsNumber = new ArrayList<>(getNumberOfSimulationRuns());
-        numberOfCloudletsPRNG = new UniformDistr(VM_PES/2, VM_PES, getBaseSeed());
+        numberOfCloudletsPRNG = new UniformDistr(VM_PES/2, VM_PES+1, getBaseSeed());
     }
 
     @Override

@@ -145,7 +145,7 @@ public class CloudletSchedulerTimeShared extends CloudletSchedulerAbstract {
      * is shared between all running cloudlets.
      *
      * @todo if there is 2 cloudlets requiring 1 PE and there is just 1
-     * PE, the MIPS capacity of this PE is splited between the 2 cloudlets,
+     * PE, the MIPS capacity of this PE is split between the 2 cloudlets,
      * but the method seen to always return the entire capacity.
      * New test cases have to be created to check this.
      *
