@@ -76,6 +76,12 @@ public abstract class VmSchedulerAbstract implements VmScheduler {
      * associated to.
      * @pre peList != $null
      * @post $none
+     * @todo It has to be assessed if the PE list can be got directly from the
+     * Host where the scheduler is linked to.
+     * By this way, a new Host attribute can be added to this class
+     * and when a new Policy is set to a given Host, the Host
+     * sets itself to the Policy, creating a bi-directional link.
+     * Thus, the Policy constructor will not required a Pe list anymore.
      */
     public VmSchedulerAbstract(List<Pe> pelist) {
         setPeList(pelist);

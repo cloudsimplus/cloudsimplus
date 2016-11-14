@@ -15,11 +15,11 @@ import org.cloudbus.cloudsim.schedulers.CloudletScheduler;
 
 /**
  * A Builder class to create {@link Vm} objects.
- * 
+ *
  * @author Manoel Campos da Silva Filho
  */
 public class VmBuilder {
-    private CloudletScheduler cloudletScheduler;    
+    private CloudletScheduler cloudletScheduler;
     private long size = 10000;
     private int  ram = 512;
     private double  mips = 1000;
@@ -34,8 +34,8 @@ public class VmBuilder {
 
     public VmBuilder(final DatacenterBrokerSimple broker) {
         if(broker == null)
-           throw new RuntimeException("The broker parameter cannot be null."); 
-        
+           throw new RuntimeException("The broker parameter cannot be null.");
+
         this.broker = broker;
         this.numberOfCreatedVms = 0;
         this.onHostAllocationListener = EventListener.NULL;
@@ -44,7 +44,7 @@ public class VmBuilder {
         this.onUpdateVmProcessingListener = EventListener.NULL;
         this.cloudletScheduler = new CloudletSchedulerSpaceShared();
     }
-    
+
     public VmBuilder setOnHostDeallocationListener(final EventListener<HostToVmEventInfo> onHostDeallocationListener) {
         this.onHostDeallocationListener = onHostDeallocationListener;
         return this;
@@ -79,7 +79,7 @@ public class VmBuilder {
         this.onVmCreationFailureListener = onVmCreationFailureListener;
         return this;
     }
-    
+
     public VmBuilder createAndSubmitOneVm() {
         return createAndSubmitVms(1);
     }
@@ -87,14 +87,14 @@ public class VmBuilder {
     public VmBuilder createAndSubmitVms(final int amount) {
         final List<Vm> vms = new ArrayList<>();
         for (int i = 0; i < amount; i++) {
-            Vm vm = new VmSimple(numberOfCreatedVms++, 
-                    broker.getId(), mips, pes, ram, bw, 
-                    size, DatacenterBuilder.VMM, 
-                    cloudletScheduler);
-            vm.setOnHostAllocationListener(onHostAllocationListener);
-            vm.setOnHostDeallocationListener(onHostDeallocationListener);
-            vm.setOnVmCreationFailureListener(onVmCreationFailureListener);
-            vm.setOnUpdateVmProcessingListener(onUpdateVmProcessingListener);
+            Vm vm = new VmSimple(numberOfCreatedVms++, mips, pes)
+                    .setRam(ram).setBw(bw).setSize(size)
+                    .setCloudletScheduler(cloudletScheduler)
+                    .setBroker(broker)
+                    .setOnHostAllocationListener(onHostAllocationListener)
+                    .setOnHostDeallocationListener(onHostDeallocationListener)
+                    .setOnVmCreationFailureListener(onVmCreationFailureListener)
+                    .setOnUpdateVmProcessingListener(onUpdateVmProcessingListener);
             vms.add(vm);
         }
         broker.submitVmList(vms);
@@ -126,7 +126,7 @@ public class VmBuilder {
     public List<Vm> getVms() {
         return broker.getVmsWaitingList();
     }
-    
+
     public int getRam() {
         return ram;
     }

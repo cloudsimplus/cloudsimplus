@@ -10,7 +10,6 @@ package org.cloudbus.cloudsim.examples;
 
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.LinkedList;
 import java.util.List;
 import org.cloudbus.cloudsim.Cloudlet;
 import org.cloudbus.cloudsim.CloudletSimple;
@@ -42,16 +41,16 @@ import org.cloudbus.cloudsim.resources.Ram;
 
 /**
  * A simple example showing how to create a datacenter with two hosts,
- * with one Vm in each one, and run 1 cloudlet in each Vm. 
- * At the end, it shows the total resource utilization of hosts 
+ * with one Vm in each one, and run 1 cloudlet in each Vm.
+ * At the end, it shows the total resource utilization of hosts
  * into a datacenter (considering the usage of their VMs).
  *
  * Cloudlets run in VMs with different MIPS requirements. The cloudlets will
  * take different time to complete the execution depending on the requested VM
  * performance.
- * 
+ *
  * Code originated from the {@link CloudSimExample3} class.<br>
- * 
+ *
  * @author <a href="http://manoelcampos.com">Manoel Campos da Silva Filho</a>
  */
 public class CloudSimExample9 {
@@ -90,7 +89,6 @@ public class CloudSimExample9 {
 
             //Third step: Create Broker
             DatacenterBroker broker = createBroker();
-            int brokerId = broker.getId();
 
             //Fourth step: Create one virtual machine
             vmlist = new ArrayList<>();
@@ -105,14 +103,17 @@ public class CloudSimExample9 {
             String vmm = "Xen"; //VMM name
 
             //create two VMs
-            Vm vm1 = new VmSimple(++vmid, brokerId, mips, 
-                    pesNumber, ram, bw, size, vmm, 
-                    new CloudletSchedulerTimeShared());
+            Vm vm1 = new VmSimple(++vmid, mips, pesNumber)
+                .setRam(ram).setBw(bw).setSize(size)
+                .setCloudletScheduler(new CloudletSchedulerTimeShared())
+                .setBroker(broker);
+
 
             //the second VM will have twice the priority of VM1 and so will receive twice CPU time
-            Vm vm2 = new VmSimple(++vmid, brokerId, mips * 2, 
-                    pesNumber, ram, bw, size, vmm, 
-                    new CloudletSchedulerTimeShared());
+            Vm vm2 = new VmSimple(++vmid, mips*2, pesNumber)
+                .setRam(ram).setBw(bw).setSize(size)
+                .setCloudletScheduler(new CloudletSchedulerTimeShared())
+                .setBroker(broker);
 
             //add the VMs to the vmList
             vmlist.add(vm1);
@@ -131,15 +132,19 @@ public class CloudSimExample9 {
             long outputSize = 300;
             UtilizationModel utilizationModel = new UtilizationModelFull();
 
-            Cloudlet cloudlet1 = 
-                    new CloudletSimple(++id, length, pesNumber, fileSize, outputSize, 
-                            utilizationModel, utilizationModel, utilizationModel);
-            cloudlet1.setUserId(brokerId);
+            Cloudlet cloudlet1 = new CloudletSimple(++id, length, pesNumber)
+                .setCloudletFileSize(fileSize)
+                .setCloudletOutputSize(outputSize)
+                .setUtilizationModel(utilizationModel)
+                .setBroker(broker)
+                .setVmId(vmid);
 
-            Cloudlet cloudlet2 = 
-                    new CloudletSimple(++id, length, pesNumber, fileSize, outputSize, 
-                            utilizationModel, utilizationModel, utilizationModel);
-            cloudlet2.setUserId(brokerId);
+            Cloudlet cloudlet2 = new CloudletSimple(++id, length, pesNumber)
+                .setCloudletFileSize(fileSize)
+                .setCloudletOutputSize(outputSize)
+                .setUtilizationModel(utilizationModel)
+                .setBroker(broker)
+                .setVmId(vmid);
 
             //add the cloudlets to the list
             cloudletList.add(cloudlet1);
@@ -172,11 +177,11 @@ public class CloudSimExample9 {
 
     /**
      * Shows CPU utilization of all hosts into a given datacenter.
-     * 
+     *
      * @param simulationFinishTime The time the simulation has finished
      * @param datacenter0 There datacenter where to check the utilization of hosts
-     * 
-     * @todo It has to be checked if the results are correct. The results 
+     *
+     * @todo It has to be checked if the results are correct. The results
      * are suspicious.
      */
     private static void showCpuUtilizationForAllHosts(final double simulationFinishTime, Datacenter datacenter0) {
@@ -204,7 +209,7 @@ public class CloudSimExample9 {
 
     /**
      * Gets the total CPU utilization of host at a given time.
-     * 
+     *
      * @param host
      * @param time
      * @return The total host CPU utilization in MIPS for the requested time
@@ -236,9 +241,9 @@ public class CloudSimExample9 {
 
         //4. Create Hosts with its id and list of PEs and add them to the list of machines
         int hostId = -1;
-        int ram = 2048; //host memory (MB)
-        long storage = 1000000; //host storage
-        long bw = 10000;
+        long ram = 2048; //host memory (MB)
+        long storage = 1000000; //host storage (MB)
+        long bw = 10000; //Megabits/s
 
         hostList.add(new HostDynamicWorkloadSimple(
                         ++hostId,
@@ -268,23 +273,20 @@ public class CloudSimExample9 {
         //    properties of a data center: architecture, OS, list of
         //    Machines, allocation policy: time- or space-shared, time zone
         //    and its price (G$/Pe time unit).
-        String arch = "x86";      // system architecture
-        String os = "Linux";          // operating system
-        String vmm = "Xen";
-        double time_zone = 10.0;         // time zone this resource located
         double cost = 3.0;              // the cost of using processing in this resource
         double costPerMem = 0.05;		// the cost of using memory in this resource
         double costPerStorage = 0.001;	// the cost of using storage in this resource
         double costPerBw = 0.0;			// the cost of using bw in this resource
-        LinkedList<FileStorage> storageList = new LinkedList<>();	//we are not adding SAN devices by now
 
-        DatacenterCharacteristics characteristics = new DatacenterCharacteristicsSimple (
-                arch, os, vmm, hostList, time_zone, cost, costPerMem, costPerStorage, costPerBw);
+        DatacenterCharacteristics characteristics =
+            new DatacenterCharacteristicsSimple(hostList)
+                .setCostPerSecond(cost)
+                .setCostPerMem(costPerMem)
+                .setCostPerStorage(costPerStorage)
+                .setCostPerBw(costPerBw);
 
         // 6. Finally, we need to create a DatacenterSimple object.
-        return new DatacenterSimple(
-                    name, characteristics, 
-                    new VmAllocationPolicySimple(hostList), storageList, 0);
+        return new DatacenterSimple(name, characteristics, new VmAllocationPolicySimple(hostList));
     }
 
     //We strongly encourage users to develop their own broker policies, to submit vms and cloudlets according

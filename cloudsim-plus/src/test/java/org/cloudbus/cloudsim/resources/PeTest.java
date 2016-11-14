@@ -88,7 +88,7 @@ public class PeTest {
 
     @Test
     public void testNullObject(){
-        assertEquals(0, Pe.NULL.getId(), 0);
+        assertEquals(-1, Pe.NULL.getId(), 0);
         assertEquals(0, Pe.NULL.getMips(), 0);
         assertEquals(Status.FAILED, Pe.NULL.getStatus());
         assertFalse(Pe.NULL.setMips(1000));

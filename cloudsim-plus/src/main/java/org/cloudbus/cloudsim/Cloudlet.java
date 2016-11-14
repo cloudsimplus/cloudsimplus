@@ -77,13 +77,25 @@ public interface Cloudlet extends Identificable, Comparable<Cloudlet> {
     int NOT_ASSIGNED = -1;
 
     /**
-     * Adds the required filename to the list.
+     * Adds a file to the list or required files.
      *
-     * @param fileName the required filename
+     * @param fileName the name of the required file
      * @return <tt>true</tt> if the file was added (it didn't exist in the
      * list of required files), <tt>false</tt> otherwise (it did already exist)
      */
     boolean addRequiredFile(final String fileName);
+
+    /**
+     * Adds a list of files to the required files list.
+     * Just the files that don't exist yet in the current required list
+     * will be added.
+     *
+     * @param fileNames the list of files to be added
+     * @return <tt>true</tt> if at leat one file was added,
+     * false if no file was added (in the case that all given files
+     * already exist in the current required list)
+     */
+    boolean addRequiredFiles(final List<String> fileNames);
 
     /**
      * Deletes the given filename from the list.
@@ -141,10 +153,10 @@ public interface Cloudlet extends Identificable, Comparable<Cloudlet> {
     double getActualCPUTime();
 
     /**
-     * Gets the input file size of this Cloudlet before execution (unit: in byte).
+     * Gets the input file size of this Cloudlet before execution (in bytes).
      * This size has to be considered the program + input data sizes.
      *
-     * @return the input file size of this Cloudlet
+     * @return the input file size of this Cloudlet (in bytes)
      * @pre $none
      * @post $result >= 1
      */
@@ -194,7 +206,7 @@ public interface Cloudlet extends Identificable, Comparable<Cloudlet> {
     long getCloudletLength();
 
     /**
-     * Gets the output file size of this Cloudlet after execution (unit: in byte).
+     * Gets the output file size of this Cloudlet after execution (in bytes).
      * It is the data produced as result of cloudlet execution
      * that needs to be transferred thought the network to
      * simulate sending response data to the user.
@@ -203,7 +215,7 @@ public interface Cloudlet extends Identificable, Comparable<Cloudlet> {
      * <a href="https://groups.google.com/forum/#!topic/cloudsim/MyZ7OnrXuuI">this
      * discussion</a>
      *
-     * @return the Cloudlet output file size
+     * @return the Cloudlet output file size (in bytes)
      * @pre $none
      * @post $result >= 1
      */
@@ -418,12 +430,12 @@ public interface Cloudlet extends Identificable, Comparable<Cloudlet> {
     int getDatacenterId();
 
     /**
-     * Gets the user Id, that represents the broker the cloudlet belongs to.
+     * Gets the ID the {@link DatacenterBroker} that represents the owner of the VM.
      *
-     * @return the user ID or <tt>{@link #NOT_ASSIGNED}</tt> if the user ID has not been set before
+     * @return the broker ID or <tt>{@link #NOT_ASSIGNED}</tt> if a broker has not been set yet
      * @pre $none
      */
-    int getUserId();
+    int getBrokerId();
 
     /**
      * Gets the utilization model that defines how the cloudlet will use the VM's
@@ -547,16 +559,43 @@ public interface Cloudlet extends Identificable, Comparable<Cloudlet> {
      * Sets the execution length of this Cloudlet (in Million Instructions (MI))
      * that will be executed in each defined PE.
      *
-     * @param cloudletLength the length (in MI) of this Cloudlet to be
-     * executed in a CloudResource
-     * @return <tt>true</tt> if the cloudletLength is valid, <tt>false</tt> otherwise
+     * @param cloudletLength the length (in MI) of this Cloudlet to be executed in a Vm
+     * @return
+     * @throws IllegalArgumentException when the given length is lower or equal to zero
      *
      * @see #getCloudletTotalLength()
      * @see #getCloudletLength()
      * @pre cloudletLength > 0
      * @post $none
      */
-    boolean setCloudletLength(final long cloudletLength);
+    Cloudlet setCloudletLength(final long cloudletLength);
+
+    /**
+     * Sets the input file size of this Cloudlet before execution (in bytes).
+     * This size has to be considered the program + input data sizes.
+     *
+     * @param cloudletFileSize the size to set (in bytes)
+     * @return
+     * @throws IllegalArgumentException when the given size is lower or equal to zero
+     *
+     * @pre cloudletFileSize > 0
+     * @post $none
+     */
+    Cloudlet setCloudletFileSize(long cloudletFileSize);
+
+    /**
+     * Sets the output file size of this Cloudlet after execution (in bytes).
+     * It is the data produced as result of cloudlet execution
+     * that needs to be transferred thought the network to
+     * simulate sending response data to the user.
+     *
+     * @param cloudletOutputSize the output size to set (in bytes)
+     * @return
+     * @throws IllegalArgumentException when the given size is lower or equal to zero
+     * @pre $none
+     * @post $result >= 1
+     */
+    Cloudlet setCloudletOutputSize(long cloudletOutputSize);
 
     /**
      * Sets the {@link #getStatus() execution status} of this Cloudlet.
@@ -586,12 +625,13 @@ public interface Cloudlet extends Identificable, Comparable<Cloudlet> {
      * 2 PEs. This means each PE will execute 500 MI of this Cloudlet.
      *
      * @param numberOfPes number of PEs
-     * @return <tt>true</tt> if it is numberOfPes is valid, <tt>false</tt> otherwise
+     * @return
+     * @throw IllegalArgumentException when the number of PEs is lower or equal to zero
      *
      * @pre numPE > 0
      * @post $none
      */
-    boolean setNumberOfPes(final int numberOfPes);
+    Cloudlet setNumberOfPes(final int numberOfPes);
 
     /**
      * Sets the {@link #getReservationId() id of the reservation} made for this cloudlet.
@@ -620,41 +660,52 @@ public interface Cloudlet extends Identificable, Comparable<Cloudlet> {
             final int datacenterId, final double costPerCpuSec, final double costPerByteOfBw);
 
     /**
-     * Sets the user Id, that represents the broker the cloudlet belongs to.
+     * Sets a {@link DatacenterBroker} that represents the owner of the Cloudlet.
      *
-     * @param userId the new user ID
-     * @pre id >= 0
-     * @post $none
+     * @param broker the {@link DatacenterBroker} to set
      */
-    void setUserId(final int userId);
+    Cloudlet setBroker(DatacenterBroker broker);
+
+    /**
+     * Sets the same utilization model for defining the usage of Bandwidth, CPU and RAM.
+     * To set different utilization models for each one of these resources, use the
+     * respective setters.
+     *
+     * @param utilizationModel the new utilization model for BW, CPU and RAM
+     *
+     * @see #setUtilizationModelBw(UtilizationModel)
+     * @see #setUtilizationModelCpu(UtilizationModel)
+     * @see #setUtilizationModelRam(UtilizationModel)
+     */
+    Cloudlet setUtilizationModel(final UtilizationModel utilizationModel);
 
     /**
      * Sets the {@link #getUtilizationModelBw() utilization model of bw}.
      *
      * @param utilizationModelBw the new utilization model of bw
      */
-    void setUtilizationModelBw(final UtilizationModel utilizationModelBw);
+    Cloudlet setUtilizationModelBw(final UtilizationModel utilizationModelBw);
 
     /**
      * Sets the {@link #getUtilizationModelCpu() utilization model of cpu}.
      *
      * @param utilizationModelCpu the new utilization model of cpu
      */
-    void setUtilizationModelCpu(final UtilizationModel utilizationModelCpu);
+    Cloudlet setUtilizationModelCpu(final UtilizationModel utilizationModelCpu);
 
     /**
      * Sets the {@link #getUtilizationModelRam() utilization model of ram}.
      *
      * @param utilizationModelRam the new utilization model of ram
      */
-    void setUtilizationModelRam(final UtilizationModel utilizationModelRam);
+    Cloudlet setUtilizationModelRam(final UtilizationModel utilizationModelRam);
 
     /**
      * Sets the id of {@link Vm} that is planned to execute the cloudlet.
      *
      * @param vmId the id of vm to run the cloudlet
      */
-    void setVmId(final int vmId);
+    Cloudlet setVmId(final int vmId);
 
     /**
      * Sets the length of this Cloudlet that has been executed so far (in MI),
@@ -676,7 +727,6 @@ public interface Cloudlet extends Identificable, Comparable<Cloudlet> {
      * the processing of the Cloudlet is updated in its {@link Vm}.
      *
      * @return the onUpdateVmProcessingListener
-     * @see org.cloudbus.cloudsim.schedulers.CloudletScheduler#updateCloudletProcessing(CloudletExecutionInfo, double)
      */
     EventListener<VmToCloudletEventInfo> getOnUpdateCloudletProcessingListener();
 
@@ -687,7 +737,7 @@ public interface Cloudlet extends Identificable, Comparable<Cloudlet> {
      * @param onUpdateCloudletProcessingListener the listener to set
      * @see #setCloudletFinishedSoFar(long)
      */
-    void setOnUpdateCloudletProcessingListener(EventListener<VmToCloudletEventInfo> onUpdateCloudletProcessingListener);
+    Cloudlet setOnUpdateCloudletProcessingListener(EventListener<VmToCloudletEventInfo> onUpdateCloudletProcessingListener);
 
     /**
      * Gets the length of this Cloudlet that has been executed so far (in MI),
@@ -778,86 +828,90 @@ public interface Cloudlet extends Identificable, Comparable<Cloudlet> {
      * its execution at a given {@link Vm}.
      * @param onCloudletFinishEventListener
      */
-    void setOnCloudletFinishEventListener(EventListener<VmToCloudletEventInfo> onCloudletFinishEventListener);
+    Cloudlet setOnCloudletFinishEventListener(EventListener<VmToCloudletEventInfo> onCloudletFinishEventListener);
 
     /**
      * A property that implements the Null Object Design Pattern for {@link Cloudlet}
      * objects.
      */
     Cloudlet NULL = new Cloudlet() {
-      @Override public boolean addRequiredFile(String fileName) { return false; }
-      @Override public boolean deleteRequiredFile(String filename) { return false; }
-      @Override public double getAccumulatedBwCost() { return 0.0; }
-      @Override public double getActualCPUTime(int datacenterId) { return 0.0; }
-      @Override public double getActualCPUTime() { return 0.0; }
-      @Override public int getPriority() { return 0; }
-      @Override public long getCloudletFileSize() { return 0L; }
-      @Override public long getCloudletFinishedSoFar() { return 0L; }
-      @Override public long getCloudletFinishedSoFar(int datacenterId) { return 0L; }
-      @Override public String getCloudletHistory() { return ""; };
-      @Override public int getId() { return -1; }
-      @Override public long getCloudletLength() { return 0L; }
-      @Override public long getCloudletOutputSize() { return 0L; }
-      @Override public Status getCloudletStatus() { return Status.FAILED; }
-      @Override public String getCloudletStatusString() { return ""; }
-      @Override public long getCloudletTotalLength() { return 0L; }
-      @Override public double getCostPerBw(){ return 0.0; }
-      @Override public double getCostPerSec(){ return 0.0; }
-      @Override public double getCostPerSec(int datacenterId) { return 0.0; }
-      @Override public double getExecStartTime(){ return 0.0; }
-      @Override public double getFinishTime(){ return 0.0; }
-      @Override public int getNetServiceLevel(){ return 0; }
-      @Override public int getNumberOfPes(){ return 0; }
-      @Override public double getProcessingCost(){ return 0.0; }
-      @Override public List<String> getRequiredFiles() { return Collections.emptyList();}
-      @Override public int getReservationId() { return -1; }
-      @Override public int getDatacenterId() { return -1; }
-      @Override public Status getStatus() { return getCloudletStatus(); }
-      @Override public double getDatacenterArrivalTime() { return 0.0; }
-      @Override public double getSubmissionTime(int datacenterId) { return 0.0; }
-      @Override public int getUserId() { return -1; }
-      @Override public UtilizationModel getUtilizationModelBw() { return UtilizationModel.NULL; }
-      @Override public UtilizationModel getUtilizationModelCpu() { return UtilizationModel.NULL; }
-      @Override public UtilizationModel getUtilizationModelRam() { return UtilizationModel.NULL; }
-      @Override public double getUtilizationOfBw(double time) { return 0.0; }
-      @Override public double getUtilizationOfCpu(double time) { return 0.0; }
-      @Override public double getUtilizationOfRam(double time) { return 0.0; }
-      @Override public int getVmId() { return NOT_ASSIGNED; }
-      @Override public double getWaitingTime() { return 0.0; }
-      @Override public double getWallClockTimeInLastExecutedDatacenter() { return 0.0; }
-      @Override public double getWallClockTime(int datacenterId) { return 0.0; }
-      @Override public boolean hasReserved() { return false; }
-      @Override public boolean isFinished() { return false; }
-      @Override public boolean requiresFiles() { return false; }
-      @Override public void setPriority(int priority) {}
-      @Override public boolean setCloudletLength(long cloudletLength) { return false; }
-      @Override public boolean setCloudletStatus(Status newStatus) { return false; }
-      @Override public boolean setNetServiceLevel(int netServiceLevel) { return false; }
-      @Override public boolean setNumberOfPes(int numberOfPes) { return false; }
-      @Override public boolean setReservationId(int reservationId) { return false; }
-      @Override public void assignCloudletToDatacenter(int datacenterId, double costPerCpuSec, double costPerByteOfBw) {}
-      @Override public void setUserId(int userId) {}
-      @Override public void setUtilizationModelBw(UtilizationModel utilizationModelBw) {}
-      @Override public void setUtilizationModelCpu(UtilizationModel utilizationModelCpu) {}
-      @Override public void setUtilizationModelRam(UtilizationModel utilizationModelRam) {}
-      @Override public void setVmId(int vmId) {}
-      @Override public EventListener<VmToCloudletEventInfo> getOnCloudletFinishEventListener() { return EventListener.NULL;}
-      @Override public void setOnCloudletFinishEventListener(EventListener<VmToCloudletEventInfo> onCloudletFinishEventListener) {}
-      @Override public EventListener<VmToCloudletEventInfo> getOnUpdateCloudletProcessingListener() { return EventListener.NULL; }
-      @Override public void setOnUpdateCloudletProcessingListener(EventListener<VmToCloudletEventInfo> onUpdateCloudletProcessingListener) {}
-      @Override public double getSubmissionDelay() { return 0; }
-      @Override public void setSubmissionDelay(double submissionDelay) {}
+        @Override public boolean addRequiredFile(String fileName) { return false; }
+        @Override public boolean addRequiredFiles(List<String> fileNames) { return false; }
+        @Override public boolean deleteRequiredFile(String filename) { return false; }
+        @Override public double getAccumulatedBwCost() { return 0.0; }
+        @Override public double getActualCPUTime(int datacenterId) { return 0.0; }
+        @Override public double getActualCPUTime() { return 0.0; }
+        @Override public int getPriority() { return 0; }
+        @Override public long getCloudletFileSize() { return 0L; }
+        @Override public long getCloudletFinishedSoFar() { return 0L; }
+        @Override public long getCloudletFinishedSoFar(int datacenterId) { return 0L; }
+        @Override public String getCloudletHistory() { return ""; };
+        @Override public int getId() { return -1; }
+        @Override public long getCloudletLength() { return 0L; }
+        @Override public long getCloudletOutputSize() { return 0L; }
+        @Override public Status getCloudletStatus() { return Status.FAILED; }
+        @Override public String getCloudletStatusString() { return ""; }
+        @Override public long getCloudletTotalLength() { return 0L; }
+        @Override public double getCostPerBw(){ return 0.0; }
+        @Override public double getCostPerSec(){ return 0.0; }
+        @Override public double getCostPerSec(int datacenterId) { return 0.0; }
+        @Override public double getExecStartTime(){ return 0.0; }
+        @Override public double getFinishTime(){ return 0.0; }
+        @Override public int getNetServiceLevel(){ return 0; }
+        @Override public int getNumberOfPes(){ return 0; }
+        @Override public double getProcessingCost(){ return 0.0; }
+        @Override public List<String> getRequiredFiles() { return Collections.emptyList();}
+        @Override public int getReservationId() { return -1; }
+        @Override public int getDatacenterId() { return -1; }
+        @Override public Status getStatus() { return getCloudletStatus(); }
+        @Override public double getDatacenterArrivalTime() { return 0.0; }
+        @Override public double getSubmissionTime(int datacenterId) { return 0.0; }
+        @Override public int getBrokerId() { return -1; }
+        @Override public UtilizationModel getUtilizationModelBw() { return UtilizationModel.NULL; }
+        @Override public UtilizationModel getUtilizationModelCpu() { return UtilizationModel.NULL; }
+        @Override public UtilizationModel getUtilizationModelRam() { return UtilizationModel.NULL; }
+        @Override public double getUtilizationOfBw(double time) { return 0.0; }
+        @Override public double getUtilizationOfCpu(double time) { return 0.0; }
+        @Override public double getUtilizationOfRam(double time) { return 0.0; }
+        @Override public int getVmId() { return NOT_ASSIGNED; }
+        @Override public double getWaitingTime() { return 0.0; }
+        @Override public double getWallClockTimeInLastExecutedDatacenter() { return 0.0; }
+        @Override public double getWallClockTime(int datacenterId) { return 0.0; }
+        @Override public boolean hasReserved() { return false; }
+        @Override public boolean isFinished() { return false; }
+        @Override public boolean requiresFiles() { return false; }
+        @Override public void setPriority(int priority) {}
+        @Override public Cloudlet setCloudletLength(long cloudletLength) { return Cloudlet.NULL; }
+        @Override public Cloudlet setCloudletFileSize(long cloudletFileSize) { return Cloudlet.NULL; }
+        @Override public Cloudlet setCloudletOutputSize(long cloudletOutputSize) { return Cloudlet.NULL; }
+        @Override public boolean setCloudletStatus(Status newStatus) { return false; }
+        @Override public boolean setNetServiceLevel(int netServiceLevel) { return false; }
+        @Override public Cloudlet setNumberOfPes(int numberOfPes) { return Cloudlet.NULL; }
+        @Override public boolean setReservationId(int reservationId) { return false; }
+        @Override public void assignCloudletToDatacenter(int datacenterId, double costPerCpuSec, double costPerByteOfBw) {}
+        @Override public Cloudlet setBroker(DatacenterBroker broker) { return Cloudlet.NULL; }
+        @Override public Cloudlet setUtilizationModel(UtilizationModel utilizationModel) { return Cloudlet.NULL; }
+        @Override public Cloudlet setUtilizationModelBw(UtilizationModel utilizationModelBw) { return Cloudlet.NULL; }
+        @Override public Cloudlet setUtilizationModelCpu(UtilizationModel utilizationModelCpu) { return Cloudlet.NULL; }
+        @Override public Cloudlet setUtilizationModelRam(UtilizationModel utilizationModelRam) { return Cloudlet.NULL; }
+        @Override public Cloudlet setVmId(int vmId) { return Cloudlet.NULL; }
+        @Override public EventListener<VmToCloudletEventInfo> getOnCloudletFinishEventListener() { return EventListener.NULL;}
+        @Override public Cloudlet setOnCloudletFinishEventListener(EventListener<VmToCloudletEventInfo> onCloudletFinishEventListener) { return Cloudlet.NULL; }
+        @Override public EventListener<VmToCloudletEventInfo> getOnUpdateCloudletProcessingListener() { return EventListener.NULL; }
+        @Override public Cloudlet setOnUpdateCloudletProcessingListener(EventListener<VmToCloudletEventInfo> onUpdateCloudletProcessingListener) { return Cloudlet.NULL; }
+        @Override public double getSubmissionDelay() { return 0; }
+        @Override public void setSubmissionDelay(double submissionDelay) {}
 
-      /**
-       * @todo @author manoelcampos These methods shouldn't be public,
-       * but they are used by ResCloudlet class.
-       */
-      @Override public boolean setCloudletFinishedSoFar(long length) { return false; }
-      @Override public boolean setWallClockTime(double wallTime, double actualCPUTime) { return false; }
-      @Override public void setExecStartTime(double clockTime) {}
-      @Override public boolean isAssignedToDatacenter() { return false; }
-      @Override public double registerArrivalOfCloudletIntoDatacenter() { return -1; }
-      @Override public boolean isBoundedToVm() { return false; }
-      @Override public int compareTo(Cloudlet o) { return 0; }
+        /**
+        * @todo @author manoelcampos These methods shouldn't be public,
+        * but they are used by CloudletExecutionInfo class.
+        */
+        @Override public boolean setCloudletFinishedSoFar(long length) { return false; }
+        @Override public boolean setWallClockTime(double wallTime, double actualCPUTime) { return false; }
+        @Override public void setExecStartTime(double clockTime) {}
+        @Override public boolean isAssignedToDatacenter() { return false; }
+        @Override public double registerArrivalOfCloudletIntoDatacenter() { return -1; }
+        @Override public boolean isBoundedToVm() { return false; }
+        @Override public int compareTo(Cloudlet o) { return 0; }
   };
 }

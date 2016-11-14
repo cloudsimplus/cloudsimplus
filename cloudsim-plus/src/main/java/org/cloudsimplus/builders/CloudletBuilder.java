@@ -142,14 +142,15 @@ public class CloudletBuilder extends Builder {
         for (int i = 0; i < amount; i++) {
             final int cloudletId = numberOfCreatedCloudlets++;
             Cloudlet cloudlet =
-                    new CloudletSimple(
-                            cloudletId, length,
-                            pes, fileSize,
-                            outputSize,
-                            utilizationModelCpu, utilizationModelRam, utilizationModelBw);
-            cloudlet.setUserId(broker.getId());
-            cloudlet.setOnCloudletFinishEventListener(onCloudletFinishEventListener);
-	        requiredFiles.stream().forEach(cloudlet::addRequiredFile);
+                    new CloudletSimple(cloudletId, length, pes)
+                    .setCloudletFileSize(fileSize)
+                    .setCloudletOutputSize(outputSize)
+                    .setUtilizationModelCpu(utilizationModelCpu)
+                    .setUtilizationModelRam(utilizationModelRam)
+                    .setUtilizationModelBw(utilizationModelBw)
+                    .setBroker(broker)
+                    .setOnCloudletFinishEventListener(onCloudletFinishEventListener);
+            cloudlet.addRequiredFiles(requiredFiles);
             localList.add(cloudlet);
         }
         cloudlets.addAll(localList);

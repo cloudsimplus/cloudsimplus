@@ -161,7 +161,7 @@ public interface DatacenterBroker {
 	 * objects.
 	 */
 	DatacenterBroker NULL = new DatacenterBroker() {
-		@Override public int getId() { return 0; }
+		@Override public int getId() { return -1; }
 		@Override public String getName() { return ""; }
 		@Override public void bindCloudletToVm(int cloudletId, int vmId) { }
 		@Override public <T extends Cloudlet> List<T> getCloudletsWaitingList() { return Collections.emptyList(); }

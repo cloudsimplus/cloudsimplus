@@ -10,7 +10,6 @@ package org.cloudbus.cloudsim.examples.network;
 
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.LinkedList;
 import java.util.List;
 import org.cloudbus.cloudsim.Cloudlet;
 import org.cloudbus.cloudsim.CloudletSimple;
@@ -93,10 +92,12 @@ public class NetworkExample4 {
             int ram = 512; //vm memory (MB)
             long bw = 1000;
             int pesNumber = 1; //number of cpus
-            String vmm = "Xen"; //VMM name
 
             //create VM
-            Vm vm1 = new VmSimple(vmid, brokerId, mips, pesNumber, ram, bw, size, vmm, new CloudletSchedulerTimeShared());
+            Vm vm1 = new VmSimple(vmid, mips, pesNumber)
+                .setRam(ram).setBw(bw).setSize(size)
+                .setCloudletScheduler(new CloudletSchedulerTimeShared())
+                .setBroker(broker);
 
             //add the VM to the vmList
             vmlist.add(vm1);
@@ -114,8 +115,12 @@ public class NetworkExample4 {
             long outputSize = 300;
             UtilizationModel utilizationModel = new UtilizationModelFull();
 
-            Cloudlet cloudlet1 = new CloudletSimple(id, length, pesNumber, fileSize, outputSize, utilizationModel, utilizationModel, utilizationModel);
-            cloudlet1.setUserId(brokerId);
+            Cloudlet cloudlet1 =
+                new CloudletSimple(id, length, pesNumber)
+                    .setCloudletFileSize(fileSize)
+                    .setCloudletOutputSize(outputSize)
+                    .setUtilizationModel(utilizationModel)
+                    .setBroker(broker);
 
             //add the cloudlet to the list
             cloudletList.add(cloudlet1);
@@ -159,9 +164,9 @@ public class NetworkExample4 {
 
         //4. Create HostSimple with its id and list of PEs and add them to the list of machines
         int hostId = 0;
-        int ram = 2048; //host memory (MB)
-        long storage = 1000000; //host storage
-        long bw = 10000;
+        long ram = 2048; //host memory (MB)
+        long storage = 1000000; //host storage (MB)
+        long bw = 10000; //Megabits/s
 
         hostList.add(new HostSimple(
                 hostId,
@@ -177,23 +182,20 @@ public class NetworkExample4 {
         //    properties of a data center: architecture, OS, list of
         //    Machines, allocation policy: time- or space-shared, time zone
         //    and its price (G$/Pe time unit).
-        String arch = "x86";      // system architecture
-        String os = "Linux";          // operating system
-        String vmm = "Xen";
-        double time_zone = 10.0;         // time zone this resource located
         double cost = 3.0;              // the cost of using processing in this resource
         double costPerMem = 0.05;		// the cost of using memory in this resource
         double costPerStorage = 0.001;	// the cost of using storage in this resource
         double costPerBw = 0.0;			// the cost of using bw in this resource
-        LinkedList<FileStorage> storageList = new LinkedList<>();	//we are not adding SAN devices by now
 
-        DatacenterCharacteristics characteristics = new DatacenterCharacteristicsSimple(
-                arch, os, vmm, hostList, time_zone, cost, costPerMem,
-                costPerStorage, costPerBw);
+        DatacenterCharacteristics characteristics =
+            new DatacenterCharacteristicsSimple(hostList)
+                .setCostPerSecond(cost)
+                .setCostPerMem(costPerMem)
+                .setCostPerStorage(costPerStorage)
+                .setCostPerBw(costPerBw);
 
         // 6. Finally, we need to create a DatacenterSimple object.
-        return new DatacenterSimple(name, characteristics, 
-                new VmAllocationPolicySimple(hostList), storageList, 0);
+        return new DatacenterSimple(name, characteristics, new VmAllocationPolicySimple(hostList));
     }
 
     //We strongly encourage users to develop their own broker policies, to submit vms and cloudlets according

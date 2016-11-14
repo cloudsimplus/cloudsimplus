@@ -34,28 +34,49 @@ import org.cloudbus.cloudsim.util.MathUtil;
  * @since CloudSim Toolkit 2.0
  */
 public class PowerHostUtilizationHistory extends PowerHostSimple {
+    /**
+     * Creates a PowerHostUtilizationHistory.
+     *
+     * @param id the host id
+     * @param storage the storage capacity in MB
+     * @param peList the host's PEs list
+     */
+    public PowerHostUtilizationHistory(int id, long storage, List<Pe> peList) {
+        super(id, storage, peList);
+    }
 
 	/**
-	 * Instantiates a new PowerHostUtilizationHistory.
+	 * Creates a PowerHostUtilizationHistory with the given parameters.
 	 *
 	 * @param id the host id
-	 * @param ramProvisioner the ram provisioner
-	 * @param bwProvisioner the bw provisioner
-	 * @param storage the storage capacity
+     * @param ramProvisioner the ram provisioner with capacity in MB
+     * @param bwProvisioner the bw provisioner with capacity in Megabits/s
+     * @param storage the storage capacity in MB
 	 * @param peList the host's PEs list
 	 * @param vmScheduler the vm scheduler
 	 * @param powerModel the power consumption model
+     *
+     * @deprecated Use the other available constructors with less parameters
+     * and set the remaining ones using the respective setters.
+     * This constructor will be removed in future versions.
 	 */
-	public PowerHostUtilizationHistory(
+	@Deprecated
+	private PowerHostUtilizationHistory(
 			int id,
-			ResourceProvisioner<Integer> ramProvisioner,
-			ResourceProvisioner<Long> bwProvisioner,
+			ResourceProvisioner ramProvisioner,
+			ResourceProvisioner bwProvisioner,
 			long storage,
 			List<Pe> peList,
 			VmScheduler vmScheduler,
-			PowerModel powerModel) {
-		super(id, ramProvisioner, bwProvisioner, storage, peList, vmScheduler, powerModel);
-	}
+			PowerModel powerModel)
+    {
+		this(id, storage, peList);
+        setRamProvisioner(ramProvisioner);
+        setBwProvisioner(bwProvisioner);
+        setVmScheduler(vmScheduler);
+        setPowerModel(powerModel);
+
+    }
 
 	/**
 	 * Gets the host CPU utilization percentage history.

@@ -107,7 +107,7 @@ public class ExampleUsingFaultInjector {
         // Creates a container to store Cloudlets
         List<Cloudlet> list = new LinkedList<>();
 
-        //Cloudlet Parameters 
+        //Cloudlet Parameters
         long length = 10000;
         long fileSize = 300;
         long outputSize = 300;
@@ -119,7 +119,7 @@ public class ExampleUsingFaultInjector {
                     i, length, CLOUDLET_PES, fileSize, outputSize,
                     utilizationModel, utilizationModel, utilizationModel);
             // setting the owner of these Cloudlets
-            cloudlet[i].setUserId(userId);
+            cloudlet[i].setBroker(userId);
             list.add(cloudlet[i]);
         }
         return list;
@@ -136,7 +136,7 @@ public class ExampleUsingFaultInjector {
     }
 
     public ExampleUsingFaultInjector() {
-        //  Initialize the CloudSim package. 
+        //  Initialize the CloudSim package.
         int num_user = 1; // number of cloud users
         Calendar calendar = Calendar.getInstance(); // Calendar whose fields have been initialized with the current date and time.
         boolean trace_flag = false; // trace events

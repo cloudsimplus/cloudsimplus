@@ -5,15 +5,16 @@ import java.util.List;
 import java.util.Map;
 import org.cloudbus.cloudsim.resources.Pe;
 import org.cloudbus.cloudsim.Vm;
+import org.cloudbus.cloudsim.resources.Resource;
 
 /**
  * An interface to be implemented by VmScheduler objects in order to provide
  * scheduling algorithms that allocate host's PEs for VMs running on it.
  * It also implements the Null Object Design
- * Pattern in order to start avoiding {@link NullPointerException} 
+ * Pattern in order to start avoiding {@link NullPointerException}
  * when using the {@link VmScheduler#NULL} object instead
  * of attributing {@code null} to {@link VmScheduler} variables.
- * 
+ *
  * @author Manoel Campos da Silva Filho
  */
 public interface VmScheduler {
@@ -34,7 +35,7 @@ public interface VmScheduler {
      * allocation or change it? I think that the obvious action is to change the
      * allocation, however, the implementations aren't working to deal this
      * situation. For that, they have to use some method such as
-     * {@link org.cloudbus.cloudsim.resources.Resource#isSuitable(java.lang.Number)}
+     * {@link Resource#isResourceAmountAvailable(long)}
      * to first check if the difference from the current allocated mips and the
      * requested one is available. Currently the implementations wrongly check
      * if the total requested mips is available, while only the difference has
@@ -79,16 +80,16 @@ public interface VmScheduler {
      * @return the free mips
      */
     double getAvailableMips();
-    
+
     /**
      * Checks if the PM using this scheduler has enough MIPS capacity
      * to host a given VM.
-     * 
+     *
      * @param vm the vm to check if there is enough available resource on the PM to host it
-     * 
+     *
      * @return true, if it is possible to allocate the the VM into the host; false otherwise
      */
-    boolean isSuitableForVm(Vm vm);    
+    boolean isSuitableForVm(Vm vm);
 
     /**
      * Returns maximum available MIPS among all the host's PEs.
@@ -152,12 +153,12 @@ public interface VmScheduler {
      * @return the vms in migration
      */
     List<String> getVmsMigratingOut();
-    
+
     /**
-     * Defines the percentage of Host's CPU usage increase when a 
-     * VM is migrating in or out of the Host. 
+     * Defines the percentage of Host's CPU usage increase when a
+     * VM is migrating in or out of the Host.
      * The value is in scale from 0 to 1 (where 1 is 100%).
-     * 
+     *
      * @return the Host's CPU migration overhead percentage.
      */
     double getCpuOverheadDueToVmMigration();

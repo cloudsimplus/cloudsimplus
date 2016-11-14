@@ -1,6 +1,20 @@
 # Change Log
 
 Lists the main changes in the project.
+## [] - YYYY-MM-DD
+- Introduction of the class CloudletSchedulerCompletelyFair that implements the Completely Fair Scheduler used in recent version of the Linux Kernel.
+  The scheduler perform an actual Cloudlet preemption,  assigning a timeslice for each Cloudlet (according to its priority), that allow it
+  to use the CPU for a specific time interval. After this time slice expires, such Cloudlets are moved to the waiting list,
+  allowing previous waiting ones to execute. This is the first scheduler that in fact considers Cloudlets priorities.
+  The CloudletSchedulerTimeShared does not implements a preemption mechanism and makes an oversimplification
+  assuming that all Cloudlets can run simultaneously, even there are less PEs in the Vm than required by all Cloudlets.
+  Such a scheduler assumes that if two Cloudlets are concurring for the same PE, they will execute simultaneously by
+  assigning 50% of the PE capacity to each PE. This oversimplification makes that all Cloudlets finish at the exact same 
+  time, what is not possible in a real scheduler. Furthermore, it increases the task completion time of all cloudlets,
+  because it simply distribute the waiting time among all submited Cloudlets, harming all Cloudelets performance.
+- Changed the DatacenterCharacteristics constructor that were requiring a long parameter list to accept just the Host list.
+  Attributes Architecture, OS, TimeZone and VMM were set to default values. All costs were set by default to zero.
+  The parameters that were removed now can be defined using the respective setter. 
 
 ## [v0.8-beta.3] - 2016-10-15
 
@@ -22,7 +36,7 @@ Lists the main changes in the project.
 	mapping of Cloudlets to VMs, allocation and scheduling policies, resource utilization models or VM placement and migration policies.
   These testbeds also show how to apply statistical methods to get scientifically valid simulation results. 
   Some method to reduce confidence interval and correlation are implemented and can be used for several experiments. 
-- Some issues closed  
+- Some issues closed. 
 
 ## [v0.8-beta.2] - 2016-09-15
 

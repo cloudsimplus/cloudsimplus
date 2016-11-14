@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.IntStream;
 import org.cloudbus.cloudsim.core.CloudSim;
+import org.cloudbus.cloudsim.mocks.Mocks;
 import org.cloudbus.cloudsim.power.PowerVm;
 import org.cloudbus.cloudsim.schedulers.CloudletScheduler;
 import org.easymock.EasyMock;
@@ -51,10 +52,10 @@ public class PowerVmListTest {
                             .anyTimes();
                     list[i].setVm(EasyMock.anyObject());
                     EasyMock.expectLastCall().once();
-                    
+
                     EasyMock.replay(list[i]);
                 });
-        
+
         return list;
     }
 
@@ -62,20 +63,23 @@ public class PowerVmListTest {
         final double utilization = vmIndex*(1.0/NUMBER_OF_VMS);
         if(ascendingCpuUtilization)
             return utilization;
-        
+
         return 1 - utilization;
     }
 
     private List<PowerVm> createPowerVmList(boolean ascendingCpuUtilization) {
-        CloudletScheduler cloudletSchedulerList[] = 
+        CloudletScheduler cloudletSchedulerList[] =
                 createCloudletSchedulerMocks(ascendingCpuUtilization);
-        
+
         final List<PowerVm> list = new ArrayList<>();
-        IntStream.range(0, cloudletSchedulerList.length).forEach(
-                i -> list.add(
-                    new PowerVm(i, 
-                        USER_ID, MIPS, PES, RAM, BW, STORAGE, 0, 
-                        VMM, cloudletSchedulerList[i], 1)));
+        for(int i = 0; i < cloudletSchedulerList.length; i++){
+                PowerVm vm = new PowerVm(i, MIPS, PES);
+                vm.setSchedulingInterval(1)
+                  .setRam(RAM).setBw(BW).setSize(STORAGE)
+                  .setCloudletScheduler(cloudletSchedulerList[i])
+                  .setBroker(Mocks.createMockBroker(USER_ID));
+                list.add(vm);
+        }
         return list;
     }
 
@@ -83,9 +87,9 @@ public class PowerVmListTest {
     public void testSortByCpuUtilizationWithVmsInIncreasingUtilizationOrder() {
         System.out.println("sortByCpuUtilization");
         final List<PowerVm> list = createPowerVmList(true);
-        
+
         PowerVmList.sortByCpuUtilization(list);
-        
+
         int i = NUMBER_OF_VMS;
         for(PowerVm vm: list) {
             i--;
@@ -103,7 +107,7 @@ public class PowerVmListTest {
         System.out.println("sortByCpuUtilization");
         final List<PowerVm> list = createPowerVmList(false);
         PowerVmList.sortByCpuUtilization(list);
-        
+
         int i = -1;
         for(PowerVm vm: list) {
             i++;
@@ -115,5 +119,5 @@ public class PowerVmListTest {
             EasyMock.verify(vm.getCloudletScheduler());
         };
     }
-    
+
 }

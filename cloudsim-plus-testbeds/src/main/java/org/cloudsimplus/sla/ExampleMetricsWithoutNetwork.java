@@ -94,7 +94,7 @@ public class ExampleMetricsWithoutNetwork {
         // Creates a container to store Cloudlets
         List<Cloudlet> list = new LinkedList<>();
 
-        //Cloudlet Parameters 
+        //Cloudlet Parameters
         long length = 1000;
         long fileSize = 300;
         long outputSize = 300;
@@ -107,7 +107,7 @@ public class ExampleMetricsWithoutNetwork {
                     i, length, pesNumber, fileSize, outputSize,
                     utilizationModel, utilizationModel, utilizationModel);
             // setting the owner of these Cloudlets
-            cloudlet[i].setUserId(userId);
+            cloudlet[i].setBroker(userId);
             list.add(cloudlet[i]);
         }
         return list;
@@ -207,7 +207,7 @@ public class ExampleMetricsWithoutNetwork {
      return 1;
      }
      */
-    
+
     /**
      * main()
      *
@@ -223,7 +223,7 @@ public class ExampleMetricsWithoutNetwork {
     }
 
     public ExampleMetricsWithoutNetwork() {
-        //  Initialize the CloudSim package. 
+        //  Initialize the CloudSim package.
         int num_user = 1; // number of cloud users
         Calendar calendar = Calendar.getInstance(); // Calendar whose fields have been initialized with the current date and time.
         boolean trace_flag = false; // trace events
@@ -343,7 +343,7 @@ public class ExampleMetricsWithoutNetwork {
                 costPerStorage, costPerBw);
 
         // 6. Finally, we need to create a PowerDatacenter object.
-        return new DatacenterSimple(name, characteristics, 
+        return new DatacenterSimple(name, characteristics,
                 new VmAllocationPolicySimple(hostList), storageList, 0);
     }
 

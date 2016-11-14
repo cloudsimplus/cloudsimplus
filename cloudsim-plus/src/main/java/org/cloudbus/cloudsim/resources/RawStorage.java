@@ -6,8 +6,12 @@ package org.cloudbus.cloudsim.resources;
  * file inclusion or deletion.
  * @author Manoel Campos da Silva Filho <manoelcampos at gmail.com>
  */
-public final class RawStorage extends AbstractResource<Long> {
-    public RawStorage(Long capacity) {
+public final class RawStorage extends AbstractResource {
+    /**
+     * Creates a new Storage device.
+     * @param capacity the storage capacity in Megabytes
+     */
+    public RawStorage(long capacity) {
         super(capacity);
     }
 }

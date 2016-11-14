@@ -51,7 +51,7 @@ import org.cloudbus.cloudsim.resources.FileStorage;
  *
  * @author Saurabh Kumar Garg
  * @author Manoel Campos da Silva Filho
- * 
+ *
  * @todo @author manoelcampos If an AllocationPolicy is not being used, why it is being created. Perhaps a
  * better class hierarchy should be created, introducing some abstract class or
  * interface.
@@ -60,35 +60,31 @@ import org.cloudbus.cloudsim.resources.FileStorage;
 public class NetworkDatacenter extends DatacenterSimple {
 
     /**
-     * @see #getVmToSwitchMap() 
+     * @see #getVmToSwitchMap()
      */
     private final Map<Integer, Integer> vmToSwitchMap;
 
     /**
-     * @see #getHostToSwitchMap() 
+     * @see #getHostToSwitchMap()
      */
     private final Map<Integer, Integer> hostToSwitchMap;
 
     /**
-     * @see #getSwitchMap() 
+     * @see #getSwitchMap()
      */
     private final Map<Integer, Switch> switchMap;
 
     /**
-     * @see #getVmToHostMap() 
+     * @see #getVmToHostMap()
      */
     private final Map<Integer, Integer> vmToHostMap;
 
     /**
-     * Instantiates a new NetworkDatacenter object.
+     * Creates a NetworkDatacenter with the given parameters.
      *
-     * @param name the name to be associated with this entity (as required by
-     * {@link org.cloudbus.cloudsim.core.SimEntity})
-     * @param characteristics the datacenter characteristics
-     * @param vmAllocationPolicy the vmAllocationPolicy
-     * @param storageList a List of storage elements, for data simulation
-     * @param schedulingInterval the scheduling delay to process each datacenter
-     * received event
+     * @param name the name of the datacenter
+     * @param characteristics the characteristics of the datacenter to be created
+     * @param vmAllocationPolicy the policy to be used to allocate VMs into hosts
      *
      * @throws IllegalArgumentException when one of the following scenarios occur:
      * <ul>
@@ -105,16 +101,56 @@ public class NetworkDatacenter extends DatacenterSimple {
      * @post $none
      */
     public NetworkDatacenter(
-            String name,
-            DatacenterCharacteristics characteristics,
-            VmAllocationPolicy vmAllocationPolicy,
-            List<FileStorage> storageList,
-            double schedulingInterval) {
-        super(name, characteristics, vmAllocationPolicy, storageList, schedulingInterval);
+        String name,
+        DatacenterCharacteristics characteristics,
+        VmAllocationPolicy vmAllocationPolicy)
+    {
+        super(name, characteristics, vmAllocationPolicy);
+
         vmToSwitchMap = new HashMap<>();
         hostToSwitchMap = new HashMap<>();
         vmToHostMap = new HashMap<>();
         switchMap = new HashMap<>();
+    }
+
+    /**
+     * Creates a NetworkDatacenter with the given parameters.
+     *
+     * @param name the name of the datacenter
+     * @param characteristics the characteristics of the datacenter to be created
+     * @param vmAllocationPolicy the policy to be used to allocate VMs into hosts
+     * @param storageList a List of storage elements, for data simulation
+     * @param schedulingInterval the scheduling delay to process each datacenter received event
+     *
+     * @throws IllegalArgumentException when one of the following scenarios occur:
+     * <ul>
+     * <li>creating this entity before initializing CloudSim package
+     * <li>this entity name is <tt>null</tt> or empty
+     * <li>this entity has <tt>zero</tt> number of PEs (Processing Elements).
+     * <br>
+     * No PEs mean the Cloudlets can't be processed. A CloudResource must
+     * contain one or more Machines. A Machine must contain one or more PEs.
+     * </ul>
+     *
+     * @pre name != null
+     * @pre resource != null
+     * @post $none
+     *
+     * @deprecated Use the other available constructors with less parameters
+     * and set the remaining ones using the respective setters.
+     * This constructor will be removed in future versions.
+     */
+    @Deprecated
+    private NetworkDatacenter(
+        String name,
+        DatacenterCharacteristics characteristics,
+        VmAllocationPolicy vmAllocationPolicy,
+        List<FileStorage> storageList,
+        double schedulingInterval)
+    {
+        this(name, characteristics, vmAllocationPolicy);
+        setStorageList(storageList);
+        setSchedulingInterval(schedulingInterval);
     }
 
     /**
@@ -134,14 +170,14 @@ public class NetworkDatacenter extends DatacenterSimple {
     protected boolean processVmCreate(SimEvent ev, boolean ack) {
         if(!super.processVmCreate(ev, ack))
             return false;
-        
+
         Vm vm = (Vm) ev.getData();
         vmToSwitchMap.put(vm.getId(), ((NetworkHost) vm.getHost()).getEdgeSwitch().getId());
         vmToHostMap.put(vm.getId(), vm.getHost().getId());
         Log.printLine(vm.getId() + " VM is created on " + vm.getHost().getId());
         return true;
     }
-    
+
     /**
      * Adds a {@link Switch} to the Datacenter.
      * @param sw the Switch to be added
@@ -160,9 +196,9 @@ public class NetworkDatacenter extends DatacenterSimple {
 
             // checks whether this Cloudlet has finished or not
             if (cl.isFinished()) {
-                String name = CloudSim.getEntityName(cl.getUserId());
+                String name = CloudSim.getEntityName(cl.getBrokerId());
                 Log.printConcatLine(
-                        getName(), ": Warning - Cloudlet #", 
+                        getName(), ": Warning - Cloudlet #",
                         cl.getId(), " owned by ", name,
                         " is already completed/finished.");
                 Log.printLine("Therefore, it is not being executed again\n");
@@ -180,20 +216,20 @@ public class NetworkDatacenter extends DatacenterSimple {
 
                     // unique tag = operation tag
                     int tag = CloudSimTags.CLOUDLET_SUBMIT_ACK;
-                    sendNow(cl.getUserId(), tag, data);
+                    sendNow(cl.getBrokerId(), tag, data);
                 }
 
-                sendNow(cl.getUserId(), CloudSimTags.CLOUDLET_RETURN, cl);
+                sendNow(cl.getBrokerId(), CloudSimTags.CLOUDLET_RETURN, cl);
 
                 return;
             }
 
             // process this Cloudlet to this Datacenter
             cl.assignCloudletToDatacenter(
-                    getId(), getCharacteristics().getCostPerSecond(), 
+                    getId(), getCharacteristics().getCostPerSecond(),
                     getCharacteristics().getCostPerBw());
 
-            int userId = cl.getUserId();
+            int userId = cl.getBrokerId();
             int vmId = cl.getVmId();
 
             // time to transfer the files
@@ -221,7 +257,7 @@ public class NetworkDatacenter extends DatacenterSimple {
 
                 // unique tag = operation tag
                 int tag = CloudSimTags.CLOUDLET_SUBMIT_ACK;
-                sendNow(cl.getUserId(), tag, data);
+                sendNow(cl.getBrokerId(), tag, data);
             }
         } catch (ClassCastException c) {
             Log.printLine(getName() + ".processCloudletSubmit(): " + "ClassCastException error.");
@@ -246,16 +282,16 @@ public class NetworkDatacenter extends DatacenterSimple {
     /**
      * Gets a map between VMs and Switches, where each key is a VM id and the
      * corresponding value is the id of the switch where the VM is connected to.
-     * 
+     *
      * @return a read-only map of VMs connected to Switches
      */
     public Map<Integer, Integer> getVmToSwitchMap() {
         return Collections.unmodifiableMap(vmToSwitchMap);
     }
-    
+
     /**
      * Connects a VM to a given Switch.
-     * 
+     *
      * @param vm the VM to be connected
      * @param sw the Switch to connect the VM to
      */
@@ -267,16 +303,16 @@ public class NetworkDatacenter extends DatacenterSimple {
      * Gets a map between hosts and Switches, where each key is a host id and the
      * corresponding value is the id of the switch where the host is connected
      * to.
-     * 
+     *
      * @return a read-only map of Host connected to Switches
      */
     public Map<Integer, Integer> getHostToSwitchMap() {
         return Collections.unmodifiableMap(hostToSwitchMap);
     }
-    
+
     /**
      * Connects a host to a given Switch.
-     * 
+     *
      * @param host the host to be connected
      * @param sw the Switch to connect the host to
      */
@@ -287,20 +323,20 @@ public class NetworkDatacenter extends DatacenterSimple {
     /**
      * Gets a map between VMs and Hosts, where each key is a VM id and the
      * corresponding value is the id of the host where the VM is placed.
-     * 
+     *
      * @return a read-only map of VMs placed into Hosts
-     * 
-     * @todo @author manoelcampos This mapping doesn't make sense, once the placement of 
+     *
+     * @todo @author manoelcampos This mapping doesn't make sense, once the placement of
      * VMs into Hosts is dynamic. A VM can be migrated to another host
      * due to several reasons.
      */
     public Map<Integer, Integer> getVmToHostMap() {
         return Collections.unmodifiableMap(vmToHostMap);
     }
-    
+
     /**
      * Connects a VM to a given host.
-     * 
+     *
      * @param vm the VM to be connected
      * @param host the host to connect the VM to
      */

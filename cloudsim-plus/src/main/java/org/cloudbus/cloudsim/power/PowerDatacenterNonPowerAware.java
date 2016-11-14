@@ -41,25 +41,45 @@ import org.cloudbus.cloudsim.resources.FileStorage;
  * @since CloudSim Toolkit 2.0
  */
 public class PowerDatacenterNonPowerAware extends PowerDatacenter {
-
     /**
-     * Instantiates a new datacenter.
+     * Creates a datacenter.
      *
      * @param name the datacenter name
      * @param characteristics the datacenter characteristics
-     * @param schedulingInterval the scheduling interval
      * @param vmAllocationPolicy the vm provisioner
-     * @param storageList the storage list
      *
-     * @throws Exception the exception
      */
     public PowerDatacenterNonPowerAware(
+        String name,
+        DatacenterCharacteristics characteristics,
+        VmAllocationPolicy vmAllocationPolicy)
+    {
+        super(name, characteristics, vmAllocationPolicy);
+    }
+
+    /**
+     * Creates a datacenter with the given parameters.
+     *
+     * @param name the datacenter name
+     * @param characteristics the datacenter characteristics
+     * @param vmAllocationPolicy the vm provisioner
+     * @param storageList the storage list
+     * @param schedulingInterval the scheduling interval
+     *
+     * @deprecated Use the other available constructors with less parameters
+     * and set the remaining ones using the respective setters.
+     * This constructor will be removed in future versions.
+     */
+    @Deprecated
+    private PowerDatacenterNonPowerAware(
             String name,
             DatacenterCharacteristics characteristics,
             VmAllocationPolicy vmAllocationPolicy,
             List<FileStorage> storageList,
-            double schedulingInterval) throws Exception {
-        super(name, characteristics, vmAllocationPolicy, storageList, schedulingInterval);
+            double schedulingInterval) {
+        this(name, characteristics, vmAllocationPolicy);
+        setStorageList(storageList);
+        setSchedulingInterval(schedulingInterval);
     }
 
     @Override

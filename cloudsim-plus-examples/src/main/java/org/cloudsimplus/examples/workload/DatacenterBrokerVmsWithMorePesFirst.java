@@ -33,6 +33,6 @@ public class DatacenterBrokerVmsWithMorePesFirst extends DatacenterBrokerSimple 
             }
         });
 
-        return (List<T>)super.getVmsWaitingList();
+        return super.getVmsWaitingList();
     }
 }

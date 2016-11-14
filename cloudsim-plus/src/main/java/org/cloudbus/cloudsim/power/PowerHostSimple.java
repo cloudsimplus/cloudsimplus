@@ -41,25 +41,47 @@ public class PowerHostSimple extends HostDynamicWorkloadSimple implements PowerH
     private PowerModel powerModel;
 
     /**
-     * Instantiates a new PowerHost.
+     * Creates a PowerHost with the given parameters.
      *
      * @param id the id of the host
-     * @param ramProvisioner the ram provisioner
-     * @param bwProvisioner the bw provisioner
-     * @param storage the storage capacity
+     * @param storage the storage capacity in MB
+     * @param peList the host's PEs list
+     *
+     */
+    public PowerHostSimple(int id, long storage, List<Pe> peList) {
+        super(id, storage, peList);
+        setPowerModel(PowerModel.NULL);
+    }
+
+    /**
+     * Creates a PowerHost with the given parameters.
+     *
+     * @param id the id of the host
+     * @param ramProvisioner the ram provisioner with capacity in MB
+     * @param bwProvisioner the bw provisioner with capacity in Megabits/s
+     * @param storage the storage capacity in MB
      * @param peList the host's PEs list
      * @param vmScheduler the VM scheduler
      * @param powerModel the model of power consumption
+     *
+     * @deprecated Use the other available constructors with less parameters
+     * and set the remaining ones using the respective setters.
+     * This constructor will be removed in future versions.
      */
-    public PowerHostSimple(
+    @Deprecated
+    private PowerHostSimple(
             int id,
-            ResourceProvisioner<Integer> ramProvisioner,
-            ResourceProvisioner<Long> bwProvisioner,
+            ResourceProvisioner ramProvisioner,
+            ResourceProvisioner bwProvisioner,
             long storage,
             List<Pe> peList,
             VmScheduler vmScheduler,
-            PowerModel powerModel) {
-        super(id, ramProvisioner, bwProvisioner, storage, peList, vmScheduler);
+            PowerModel powerModel)
+    {
+        this(id, storage, peList);
+        setRamProvisioner(ramProvisioner);
+        setBwProvisioner(bwProvisioner);
+        setVmScheduler(vmScheduler);
         setPowerModel(powerModel);
     }
 
@@ -126,20 +148,12 @@ public class PowerHostSimple extends HostDynamicWorkloadSimple implements PowerH
         return (fromPower + (toPower - fromPower) / 2) * time;
     }
 
-    /**
-     * Sets the power model.
-     *
-     * @param powerModel the new power model
-     */
-    protected final void setPowerModel(PowerModel powerModel) {
+    @Override
+    public final PowerHost setPowerModel(PowerModel powerModel) {
         this.powerModel = powerModel;
+        return this;
     }
 
-    /**
-     * Gets the power model.
-     *
-     * @return the power model
-     */
     @Override
     public PowerModel getPowerModel() {
         return powerModel;

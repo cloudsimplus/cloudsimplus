@@ -93,13 +93,13 @@ public class HostFaultInjection extends SimEntity {
             host.getPeList().get(i).setStatus(Pe.Status.FAILED);
             Log.printLine(CloudSim.clock() + " ---> Host " + id + " FAILURE...\n");
         }
-        
-        
-        
+
+
+
         if (numberOfFailedPes == host.getPeList().size()) {
             setVmsToFailedWhenHostIsFailed();
         }
-        
+
         return this.failed;
     }
 
@@ -131,7 +131,7 @@ public class HostFaultInjection extends SimEntity {
              it is set here as the sender of the vm destroy request.
              */
             CloudSim.sendNow(
-                    vm.getUserId(), host.getDatacenter().getId(),
+                    vm.getBrokerId(), host.getDatacenter().getId(),
                     CloudSimTags.VM_DESTROY, vm);
         }
     }
@@ -162,10 +162,10 @@ public class HostFaultInjection extends SimEntity {
     }
 
     /**
-     * Gets the pseudo random number generator (PRNG) 
+     * Gets the pseudo random number generator (PRNG)
      * that is used to define the number of PEs to be
      * set to failed for the related host. The PRNG returns
-     * values between [0 and 1] 
+     * values between [0 and 1]
      *
      * @return
      */
@@ -174,7 +174,7 @@ public class HostFaultInjection extends SimEntity {
     }
 
     /**
-     * Sets the pseudo random number generator (PRNG) 
+     * Sets the pseudo random number generator (PRNG)
      * that is used to define the number of PEs to be
      * set to failed for the related host. The PRNG must return
      * values between [0 and 1]

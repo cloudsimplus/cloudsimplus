@@ -7,12 +7,12 @@ import org.cloudbus.cloudsim.provisioners.PeProvisionerSimple;
  * <p>A interface to be implemented by each class that provides
  * the basic features of a virtual or physical Processing Element (PE)
  * of a PM or VM. Each Pe represents a  virtual or physical processor core.</p>
- * 
+ *
  * It also implements the Null Object
  * Design Pattern in order to start avoiding {@link NullPointerException} when
  * using the {@link Pe#NULL} object instead of attributing {@code null} to
  * {@link Pe} variables.
- * 
+ *
  * @author Manoel Campos da Silva Filho
  */
 public interface Pe {
@@ -25,12 +25,12 @@ public interface Pe {
         /** Denotes PE is allocated and hence busy processing some Cloudlet. */
         BUSY,
         /**
-         * Denotes PE is failed and hence it can't process any Cloudlet at this moment. 
+         * Denotes PE is failed and hence it can't process any Cloudlet at this moment.
          * This PE is failed because it belongs to a machine which is also failed.
          */
         FAILED
     }
-    
+
     /**
      * Gets the PE id.
      *
@@ -82,13 +82,13 @@ public interface Pe {
      * @post $none
      */
     void setStatus(Status status);
-    
+
     /**
      * A property that implements the Null Object Design Pattern for {@link Pe}
      * objects.
      */
     Pe NULL = new Pe(){
-        @Override public int getId(){ return 0; }
+        @Override public int getId(){ return -1; }
         @Override public int getMips() { return 0; }
         @Override public PeProvisioner getPeProvisioner() { return new PeProvisionerSimple(0); }
         @Override public Status getStatus() { return Status.FAILED; }

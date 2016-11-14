@@ -125,11 +125,12 @@ final class DatacenterBrokerHeuristicExperiment extends SimulationExperiment {
             //Defines how CPU, RAM and Bandwidth resources are used
             //Sets the same utilization model for all these resources.
             UtilizationModel utilization = new UtilizationModelFull();
-            Cloudlet cloudlet = new CloudletSimple(getNumberOfCreatedCloudlets(),
-                length, cloudletPes, fileSize, outputSize,
-                utilization, utilization, utilization);
-            cloudlet.setUserId(broker.getId());
-            return cloudlet;
+            return new CloudletSimple(getNumberOfCreatedCloudlets(), length, cloudletPes)
+                .setCloudletFileSize(fileSize)
+                .setCloudletOutputSize(outputSize)
+                .setUtilizationModel(utilization)
+                .setBroker(broker);
+
         };
     }
 
@@ -155,9 +156,10 @@ final class DatacenterBrokerHeuristicExperiment extends SimulationExperiment {
             long storage = 10000; // vm image size (MB)
             int ram = 512; // vm memory (MB)
             long bw = 1000; // vm bandwidth
-            return new VmSimple(getNumberOfCreatedVms(), broker.getId(), mips,
-                vmPes, ram, bw, storage, VMM,
-                new CloudletSchedulerTimeShared());
+            return new VmSimple(getNumberOfCreatedVms(), mips, vmPes)
+                .setRam(ram).setBw(bw).setSize(storage)
+                .setCloudletScheduler(new CloudletSchedulerTimeShared())
+                .setBroker(broker);
         };
     }
 
@@ -173,15 +175,15 @@ final class DatacenterBrokerHeuristicExperiment extends SimulationExperiment {
         int ram = 2048; // MB
         long storage = 1000000;
         long bw = 10000;
-        List<Pe> cpuCoresList = new ArrayList<>();
+        List<Pe> peList = new ArrayList<>();
         for (int i = 0; i < 8; i++) {
-            cpuCoresList.add(new PeSimple(i, new PeProvisionerSimple(mips)));
+            peList.add(new PeSimple(i, new PeProvisionerSimple(mips)));
         }
 
-        return new HostSimple(getNumberOfCreatedHosts(),
-            new ResourceProvisionerSimple<>(new Ram(ram)),
-            new ResourceProvisionerSimple<>(new Bandwidth(bw)), storage, cpuCoresList,
-            new VmSchedulerTimeShared(cpuCoresList));
+        return new HostSimple(getNumberOfCreatedHosts(), storage, peList)
+            .setRamProvisioner(new ResourceProvisionerSimple(new Ram(ram)))
+            .setBwProvisioner(new ResourceProvisionerSimple(new Bandwidth(bw)))
+            .setVmScheduler(new VmSchedulerTimeShared(peList));
     }
 
     @Override

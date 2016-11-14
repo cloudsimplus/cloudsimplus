@@ -27,10 +27,9 @@ import static org.junit.Assert.assertTrue;
  * @since	CloudSim Toolkit 2.0
  */
 public class HostDynamicWorkloadTest {
-
     private static final int ID = 0;
     private static final long STORAGE = Consts.MILLION;
-    private static final int RAM = 1024;
+    private static final long RAM = 1024;
     private static final long BW = 10000;
     private static final double MIPS = 1000;
 
@@ -42,14 +41,11 @@ public class HostDynamicWorkloadTest {
         peList = new ArrayList<>();
         peList.add(new PeSimple(0, new PeProvisionerSimple(MIPS)));
         peList.add(new PeSimple(1, new PeProvisionerSimple(MIPS)));
-        host = new HostDynamicWorkloadSimple(
-                ID,
-                new ResourceProvisionerSimple<>(new Ram(RAM)),
-                new ResourceProvisionerSimple<>(new Bandwidth(BW)),
-                STORAGE,
-                peList,
-                new VmSchedulerTimeShared(peList)
-        );
+
+        host = new HostDynamicWorkloadSimple(ID, STORAGE, peList);
+        host.setRamProvisioner(new ResourceProvisionerSimple(new Ram(RAM)))
+            .setBwProvisioner(new ResourceProvisionerSimple(new Bandwidth(BW)))
+            .setVmScheduler(new VmSchedulerTimeShared(peList));
     }
 
     @Test

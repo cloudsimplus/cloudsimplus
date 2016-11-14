@@ -3,7 +3,6 @@ package org.cloudsimplus.examples;
 import org.cloudsimplus.util.tablebuilder.CloudletsTableBuilderHelper;
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
@@ -196,21 +195,19 @@ public class DatacenterBrokerHeuristicExample {
         }
 
         //Defines the characteristics of the data center
-        String arch = "x86"; // system architecture of datacenter hosts
-        String os = "Linux"; // operating system of datacenter hosts
-        double time_zone = 10.0; // time zone where the datacenter is located
         double cost = 3.0; // the cost of using processing in this datacenter
         double costPerMem = 0.05; // the cost of using memory in this datacenter
         double costPerStorage = 0.001; // the cost of using storage in this datacenter
         double costPerBw = 0.0; // the cost of using bw in this datacenter
-        LinkedList<FileStorage> storageList = new LinkedList<>(); // we are not adding SAN devices
 
-        DatacenterCharacteristics characteristics = new DatacenterCharacteristicsSimple(
-                arch, os, VMM, hostList, time_zone, cost, costPerMem,
-                costPerStorage, costPerBw);
+        DatacenterCharacteristics characteristics =
+            new DatacenterCharacteristicsSimple(hostList)
+                .setCostPerSecond(cost)
+                .setCostPerMem(costPerMem)
+                .setCostPerStorage(costPerStorage)
+                .setCostPerBw(costPerBw);
 
-        return new DatacenterSimple(name, characteristics,
-                new VmAllocationPolicySimple(hostList), storageList, 0);
+        return new DatacenterSimple(name, characteristics, new VmAllocationPolicySimple(hostList));
     }
 
     private Host createHost() {
@@ -226,8 +223,8 @@ public class DatacenterBrokerHeuristicExample {
             cpuCoresList.add(new PeSimple(i, new PeProvisionerSimple(mips)));
 
         return new HostSimple(numberOfCreatedHosts++,
-                new ResourceProvisionerSimple<>(new Ram(ram)),
-                new ResourceProvisionerSimple<>(new Bandwidth(bw)),
+                new ResourceProvisionerSimple(new Ram(ram)),
+                new ResourceProvisionerSimple(new Bandwidth(bw)),
                 storage, cpuCoresList,
                 new VmSchedulerTimeShared(cpuCoresList));
     }
@@ -238,9 +235,11 @@ public class DatacenterBrokerHeuristicExample {
         int    ram = 512; // vm memory (MB)
         long   bw = 1000; // vm bandwidth
 
-        return new VmSimple(numberOfCreatedVms++,
-                broker.getId(), mips, pesNumber, ram, bw, storage,
-                VMM, new CloudletSchedulerTimeShared());
+        return new VmSimple(numberOfCreatedVms++, mips, pesNumber)
+            .setRam(ram).setBw(bw).setSize(storage)
+            .setCloudletScheduler(new CloudletSchedulerTimeShared())
+            .setBroker(broker);
+
     }
 
     private Cloudlet createCloudlet(DatacenterBroker broker, int numberOfPes) {
@@ -253,11 +252,11 @@ public class DatacenterBrokerHeuristicExample {
         UtilizationModel utilization = new UtilizationModelFull();
 
         Cloudlet cloudlet
-                = new CloudletSimple(
-                        numberOfCreatedCloudlets++, length, numberOfPes,
-                        fileSize, outputSize,
-                        utilization, utilization, utilization);
-        cloudlet.setUserId(broker.getId());
+            = new CloudletSimple(numberOfCreatedCloudlets++, length, numberOfPes)
+            .setCloudletFileSize(fileSize)
+            .setCloudletOutputSize(outputSize)
+            .setUtilizationModel(utilization)
+            .setBroker(broker);
 
         return cloudlet;
     }

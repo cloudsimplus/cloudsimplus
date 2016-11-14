@@ -42,13 +42,13 @@ public class NetworkVmsExampleBagOfTasksAppCloudlet extends NetworkVmsExampleApp
      * See {@link CloudletSendTask#addPacket(int, int, long) }
      * @param app
      * @param broker
-     * @return 
+     * @return
      */
     @Override
     public List<NetworkCloudlet> createNetworkCloudlets(AppCloudlet app, NetDatacenterBroker broker){
         final int NETCLOUDLETS_FOR_EACH_APP = 3;
         List<NetworkCloudlet> networkCloudletList = new ArrayList<>(NETCLOUDLETS_FOR_EACH_APP+1);
-        List<NetworkVm> selectedVms = 
+        List<NetworkVm> selectedVms =
              randomlySelectVmsForAppCloudlet(broker, NETCLOUDLETS_FOR_EACH_APP+1);
         //basically, each task runs the simulation and then data is consolidated in one task
         long memory = 1000;
@@ -67,9 +67,9 @@ public class NetworkVmsExampleBagOfTasksAppCloudlet extends NetworkVmsExampleApp
                             NETCLOUDLET_OUTPUT_SIZE,
                             memory, utilizationModel, utilizationModel, utilizationModel);
             netCloudlet.setAppCloudlet(app);
-            netCloudlet.setUserId(broker.getId());
+            netCloudlet.setBroker(broker.getId());
             netCloudlet.setVmId(selectedVms.get(i).getId());
-            
+
             //compute and send data to node 0
             CloudletTask task;
             task = new CloudletExecutionTask(taskStageId++, networkCloudletLength);

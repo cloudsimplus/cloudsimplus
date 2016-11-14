@@ -1,11 +1,12 @@
 /*
  * Title: CloudSim Toolkit Description: CloudSim (Cloud Simulation) Toolkit for Modeling and
  * Simulation of Clouds Licence: GPL - http://www.gnu.org/copyleft/gpl.html
- * 
+ *
  * Copyright (c) 2009-2012, The University of Melbourne, Australia
  */
 package org.cloudbus.cloudsim;
 
+import org.cloudbus.cloudsim.brokers.DatacenterBroker;
 import org.cloudbus.cloudsim.schedulers.CloudletSchedulerAbstract;
 import org.cloudbus.cloudsim.schedulers.CloudletSchedulerDynamicWorkload;
 import static org.easymock.EasyMock.expect;
@@ -52,7 +53,7 @@ public class VmSimpleTest {
         vmScheduler = new CloudletSchedulerDynamicWorkload(MIPS, PES_NUMBER);
         vm = VmSimpleTest.createVm(vmScheduler);
     }
-    
+
 
     /**
      * Creates a VM with the 1 PE and half mips capacity defined in
@@ -61,7 +62,7 @@ public class VmSimpleTest {
      * @param vmId the id of the VM
      * @return
      */
-    public static VmSimple createVmWithOnePeAndHalfMips(final int vmId) {
+    public static Vm createVmWithOnePeAndHalfMips(final int vmId) {
         return VmSimpleTest.createVm(vmId, MIPS / 2, 1, RAM, BW, SIZE, null);
     }
 
@@ -72,7 +73,7 @@ public class VmSimpleTest {
      * @param vmId the id of the VM
      * @return
      */
-    public static VmSimple createVmWithOnePeAndTotalMips(final int vmId) {
+    public static Vm createVmWithOnePeAndTotalMips(final int vmId) {
         return VmSimpleTest.createVm(vmId, MIPS, 1, RAM, BW, SIZE, null);
     }
 
@@ -87,9 +88,9 @@ public class VmSimpleTest {
      */
     public static VmSimple createVm(final int vmId,
             final double mips, final int numberOfPes) {
-        return new VmSimple(
-                vmId, 0, mips, numberOfPes, RAM, BW, SIZE, 
-                "", CloudletScheduler.NULL);
+        VmSimple vm = new VmSimple(vmId, mips, numberOfPes);
+        vm.setRam(RAM).setBw(BW).setSize(SIZE).setCloudletScheduler(CloudletScheduler.NULL);
+        return vm;
     }
 
     /**
@@ -101,9 +102,9 @@ public class VmSimpleTest {
      * @return
      */
     public static VmSimple createVm(final int vmId, final int numberOfPes) {
-        return new VmSimple(
-                vmId, 0, MIPS, numberOfPes, RAM, BW, SIZE, 
-                "", CloudletScheduler.NULL);
+        VmSimple vm = new VmSimple(vmId, MIPS, numberOfPes);
+        vm.setRam(RAM).setBw(BW).setSize(SIZE).setCloudletScheduler(CloudletScheduler.NULL);
+        return vm;
     }
 
     /**
@@ -120,9 +121,11 @@ public class VmSimpleTest {
      */
     public static VmSimple createVm(final int vmId,
             final double mips, final int numberOfPes,
-            final int ram, final long bw, final long storage,
+            final long ram, final long bw, final long storage,
             final CloudletScheduler scheduler) {
-        return new VmSimple(vmId, 0, mips, numberOfPes, ram, bw, storage, "", scheduler);
+        VmSimple vm = new VmSimple(vmId, mips, numberOfPes);
+        vm.setRam(ram).setBw(bw).setSize(storage).setCloudletScheduler(scheduler);
+        return vm;
     }
 
     /**
@@ -130,15 +133,18 @@ public class VmSimpleTest {
      * configuration for MIPS, RAM, BW and Storage.
      *
      * @param vmId
-     * @param userId
+     * @param broker
      * @param numberOfPes
      * @return
      */
     public static VmSimple createVmWithSpecificNumberOfPEsForSpecificUser(
-            final int vmId, final int userId, final int numberOfPes) {
-        return new VmSimple(
-                vmId, userId, MIPS, numberOfPes, RAM, BW, SIZE, 
-                "", CloudletScheduler.NULL);
+        final int vmId, final DatacenterBroker broker, final int numberOfPes) {
+        VmSimple vm = new VmSimple(vmId, MIPS, numberOfPes);
+        vm
+            .setBroker(broker)
+            .setRam(RAM).setBw(BW).setSize(SIZE)
+            .setCloudletScheduler(CloudletScheduler.NULL);
+        return vm;
     }
 
     @Test
@@ -159,17 +165,17 @@ public class VmSimpleTest {
 
     @Test
     public void testSetRam() {
-        assertTrue(vm.setRam(RAM / 2));
+        vm.setRam(RAM / 2);
         assertEquals(RAM / 2, vm.getRam(), 0);
     }
-    
+
     @Test
     public void testAddStateHistoryEntry_addEntryToEmptyList(){
         Vm vm = VmSimpleTest.createVm(vmScheduler);
         double time=0, allocatedMips=1000, requestedMips=100;
         boolean inMigration = false;
         assertTrue(vm.getStateHistory().isEmpty());
-        VmStateHistoryEntry entry = 
+        VmStateHistoryEntry entry =
                 new VmStateHistoryEntry(time, allocatedMips, requestedMips, inMigration);
         vm.addStateHistoryEntry(entry);
         assertFalse(vm.getStateHistory().isEmpty());
@@ -205,7 +211,7 @@ public class VmSimpleTest {
 
     @Test
     public void testSetBw() {
-        assertTrue(vm.setBw(BW / 2));
+        vm.setBw(BW / 2);
         assertEquals(BW / 2, vm.getBw(), 0);
     }
 
@@ -311,32 +317,6 @@ public class VmSimpleTest {
     }
 
     @Test
-    public void testGetCurrentAllocatedSize() {
-        assertEquals(0, vm.getCurrentAllocatedSize());
-        vm.setCurrentAllocatedSize(SIZE);
-        assertEquals(SIZE, vm.getCurrentAllocatedSize());
-    }
-
-    @Test
-    public void testGetCurrentAllocatedRam() {
-        assertEquals(0, vm.getCurrentAllocatedRam());
-        vm.setCurrentAllocatedRam(RAM);
-        assertEquals(RAM, vm.getCurrentAllocatedRam());
-    }
-
-    @Test
-    public void testGetCurrentAllocatedBw() {
-        assertEquals(0, vm.getCurrentAllocatedBw());
-        vm.setCurrentAllocatedBw(BW);
-        assertEquals(BW, vm.getCurrentAllocatedBw());
-    }
-
-    @Test
-    public void testGetCurrentAllocatedMips() {
-        assertNull(vm.getCurrentAllocatedMips());
-    }
-
-    @Test
     public void testIsBeingInstantiated() {
         assertTrue(vm.isBeingInstantiated());
         vm.setBeingInstantiated(false);
@@ -355,7 +335,7 @@ public class VmSimpleTest {
         expect(cloudletScheduler.getCurrentRequestedMips()).andReturn(expectedCurrentMips);
         replay(cloudletScheduler);
 
-        VmSimple vm = VmSimpleTest.createVm(cloudletScheduler);
+        Vm vm = VmSimpleTest.createVm(cloudletScheduler);
         vm.setBeingInstantiated(false);
         assertEquals(expectedCurrentMips, vm.getCurrentRequestedMips());
 
@@ -372,23 +352,23 @@ public class VmSimpleTest {
         expect(cloudletScheduler.getCurrentRequestedUtilizationOfBw())
                 .andReturn(currentBwUtilizationPercentage);
         replay(cloudletScheduler);
-        
-        VmSimple vm0 = VmSimpleTest.createVm(cloudletScheduler);
+
+        Vm vm0 = VmSimpleTest.createVm(cloudletScheduler);
         vm0.setBeingInstantiated(false);
-        
+
         final long expectedCurrentBwUtilization = (long)(currentBwUtilizationPercentage*BW);
         assertEquals(expectedCurrentBwUtilization, vm0.getCurrentRequestedBw());
         verify(cloudletScheduler);
     }
-    
+
     @Test
     public void testGetCurrentRequestedBwVmBeingInstantiated() {
-        VmSimple vm0 = VmSimpleTest.createVm(CloudletScheduler.NULL);
+        Vm vm0 = VmSimpleTest.createVm(CloudletScheduler.NULL);
         vm0.setBeingInstantiated(true);
         final long expectedCurrentBwUtilization = BW;
         assertEquals(expectedCurrentBwUtilization, vm0.getCurrentRequestedBw());
     }
-    
+
     @Test
     public void testGetCurrentRequestedRamVmNotBeingInstantiated() {
         final double currentRamUtilizationPercentage = 0.5;
@@ -400,25 +380,25 @@ public class VmSimpleTest {
         expect(cloudletScheduler.getCurrentRequestedUtilizationOfRam())
                 .andReturn(currentRamUtilizationPercentage);
         replay(cloudletScheduler);
-        
-        VmSimple vm0 = VmSimpleTest.createVm(cloudletScheduler);
+
+        Vm vm0 = VmSimpleTest.createVm(cloudletScheduler);
         vm0.setBeingInstantiated(false);
         assertEquals(expectedCurrentRamUtilization, vm0.getCurrentRequestedRam());
         verify(cloudletScheduler);
     }
-    
+
     @Test
     public void testGetCurrentRequestedRamVmBeingInstantiated() {
-        VmSimple vm0 = VmSimpleTest.createVm(CloudletScheduler.NULL);
+        Vm vm0 = VmSimpleTest.createVm(CloudletScheduler.NULL);
         vm0.setBeingInstantiated(true);
         final long expectedCurrentRamUtilization = RAM;
         assertEquals(expectedCurrentRamUtilization, vm0.getCurrentRequestedRam());
-    }    
+    }
 
     @Test
     public void testGetCurrentRequestedMipsTimeSharedScheduler() {
         CloudletScheduler cloudletScheduler = new CloudletSchedulerTimeShared();
-        VmSimple vm = VmSimpleTest.createVm(cloudletScheduler);
+        Vm vm = VmSimpleTest.createVm(cloudletScheduler);
         vm.setBeingInstantiated(false);
 
         assertTrue(vm.getCurrentRequestedMips().isEmpty());
@@ -432,7 +412,9 @@ public class VmSimpleTest {
      * @return
      */
     public static VmSimple createVm(CloudletScheduler cloudletScheduler) {
-        return new VmSimple(ID, USER_ID, MIPS, PES_NUMBER, RAM, BW, SIZE, VMM, cloudletScheduler);
+        VmSimple vm = new VmSimple(ID, MIPS, PES_NUMBER);
+        vm.setRam(RAM).setBw(BW).setSize(SIZE).setCloudletScheduler(cloudletScheduler);
+        return vm;
     }
 
     @Test
@@ -447,7 +429,7 @@ public class VmSimpleTest {
         expect(cloudletScheduler.getCurrentRequestedMips()).andReturn(currentMips);
         replay(cloudletScheduler);
 
-        VmSimple vm = VmSimpleTest.createVm(cloudletScheduler);
+        Vm vm = VmSimpleTest.createVm(cloudletScheduler);
         assertEquals(MIPS * 2, vm.getCurrentRequestedTotalMips(), 0);
         verify(cloudletScheduler);
     }

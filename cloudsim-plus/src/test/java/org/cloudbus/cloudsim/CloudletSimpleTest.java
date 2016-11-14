@@ -11,6 +11,8 @@ c) 2009-2010, The University of Melbourne, Australia
 package org.cloudbus.cloudsim;
 
 import java.util.ArrayList;
+
+import org.cloudbus.cloudsim.mocks.CloudSimMocker;
 import org.cloudbus.cloudsim.utilizationmodels.UtilizationModelFull;
 import org.cloudbus.cloudsim.utilizationmodels.UtilizationModelStochastic;
 import org.cloudbus.cloudsim.utilizationmodels.UtilizationModel;
@@ -54,10 +56,12 @@ public class CloudletSimpleTest {
         utilizationModelCpu = new UtilizationModelStochastic();
         utilizationModelRam = new UtilizationModelStochastic();
         utilizationModelBw = new UtilizationModelStochastic();
-        cloudlet = new CloudletSimple(
-                0, CLOUDLET_LENGTH, PES_NUMBER,
-                CLOUDLET_FILE_SIZE, CLOUDLET_OUTPUT_SIZE,
-                utilizationModelCpu, utilizationModelRam, utilizationModelBw);
+        cloudlet = new CloudletSimple(0, CLOUDLET_LENGTH, PES_NUMBER);
+        cloudlet.setCloudletFileSize(CLOUDLET_FILE_SIZE)
+                .setCloudletOutputSize(CLOUDLET_OUTPUT_SIZE)
+                .setUtilizationModelCpu(utilizationModelCpu)
+                .setUtilizationModelRam(utilizationModelRam)
+                .setUtilizationModelBw(utilizationModelBw);
     }
 
     @Test
@@ -86,7 +90,7 @@ public class CloudletSimpleTest {
         final double arrivalTime = 0.0, execStartTime = 10.0;
         final int datacenterId = 0;
         CloudSimMocker.build(mocker -> mocker.clock(arrivalTime).getEntityName(datacenterId));
-            
+
         CloudletSimple cloudlet = createCloudlet();
         assertEquals(0, cloudlet.getWaitingTime(), 0);
         cloudlet.assignCloudletToDatacenter(datacenterId, 0);
@@ -165,8 +169,8 @@ public class CloudletSimpleTest {
         final double simulationClock = 100;
         final double actualCpuTime = simulationClock - execStartTime;
         final int datacenterId = 0;
-        
-        CloudSimMocker.build(mocker -> 
+
+        CloudSimMocker.build(mocker ->
                 mocker.clock(submissionTime)
                     .getEntityName(datacenterId)
                     .clock(simulationClock));
@@ -214,12 +218,10 @@ public class CloudletSimpleTest {
         CloudletSimple cloudlet = createCloudlet(id);
         final String expected = String.format(Cloudlet.NO_HISTORY_IS_RECORDED_FOR_CLOUDLET, id);
         assertEquals(expected, cloudlet.getCloudletHistory());
-        cloudlet.setUserId(1);
         assertEquals(expected, cloudlet.getCloudletHistory());
 
         cloudlet = createCloudlet(id);
         cloudlet.setRecordTransactionHistory(true);
-        cloudlet.setUserId(1);
         Assert.assertNotSame(expected, cloudlet.getCloudletHistory());
     }
 
@@ -277,35 +279,39 @@ public class CloudletSimpleTest {
     }
 
     @Test
-    public void testSetCloudletLength() {
-        int expected = 1000;
-        Assert.assertTrue(cloudlet.setCloudletLength(expected));
-        Assert.assertEquals(expected, cloudlet.getCloudletLength());
-
-        Assert.assertFalse(cloudlet.setCloudletLength(0));
-        Assert.assertEquals(expected, cloudlet.getCloudletLength());
-        Assert.assertFalse(cloudlet.setCloudletLength(-1));
-        Assert.assertEquals(expected, cloudlet.getCloudletLength());
-
-        expected = 2000;
-        Assert.assertTrue(cloudlet.setCloudletLength(expected));
+    public void testSetValidCloudletLength() {
+        final int expected = 1000;
+        cloudlet.setCloudletLength(expected);
         Assert.assertEquals(expected, cloudlet.getCloudletLength());
     }
 
+    @Test(expected = IllegalArgumentException.class)
+    public void testSetCloudletLengthToZero() {
+        int expected = 1000;
+        cloudlet.setCloudletLength(0);
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void testSetCloudletLengthToNegative() {
+        final int expected = 1000;
+        cloudlet.setCloudletLength(-1);
+    }
+
     @Test
-    public void testSetNumberOfPes() {
+    public void testSetValidNumberOfPes() {
         int expected = 2;
-        Assert.assertTrue(cloudlet.setNumberOfPes(expected));
+        cloudlet.setNumberOfPes(expected);
         Assert.assertEquals(expected, cloudlet.getNumberOfPes());
+    }
 
-        Assert.assertFalse(cloudlet.setNumberOfPes(0));
-        Assert.assertEquals(expected, cloudlet.getNumberOfPes());
-        Assert.assertFalse(cloudlet.setNumberOfPes(-1));
-        Assert.assertEquals(expected, cloudlet.getNumberOfPes());
+    @Test(expected = IllegalArgumentException.class)
+    public void testSetNumberOfPesToZero() {
+        cloudlet.setNumberOfPes(0);
+    }
 
-        expected = 4;
-        Assert.assertTrue(cloudlet.setNumberOfPes(expected));
-        Assert.assertEquals(expected, cloudlet.getNumberOfPes());
+    @Test(expected = IllegalArgumentException.class)
+    public void testSetNumberOfPesToNegative() {
+        cloudlet.setNumberOfPes(-1);
     }
 
     @Test
@@ -376,9 +382,14 @@ public class CloudletSimpleTest {
             UtilizationModel utilizationModelRAM,
             UtilizationModel utilizationModelBW,
             long length, int numberOfPes) {
-        return new CloudletSimple(
-                id, length, numberOfPes, CLOUDLET_FILE_SIZE, CLOUDLET_OUTPUT_SIZE,
-                utilizationModelCPU, utilizationModelRAM, utilizationModelBW);
+        CloudletSimple cloudlet = new CloudletSimple(id, length, numberOfPes);
+        cloudlet
+            .setCloudletFileSize(CLOUDLET_FILE_SIZE)
+            .setCloudletOutputSize(CLOUDLET_OUTPUT_SIZE)
+            .setUtilizationModelCpu(utilizationModelCPU)
+            .setUtilizationModelRam(utilizationModelRAM)
+            .setUtilizationModelBw(utilizationModelBW);
+        return cloudlet;
     }
 
     public static CloudletSimple createCloudletWithOnePe(final int id) {
@@ -403,7 +414,7 @@ public class CloudletSimpleTest {
 
     /**
      * Creates a Cloudlet with id equals to 0.
-     * 
+     *
      * @param length the length of the Cloudlet to create
      * @param numberOfPes the number of PEs of the Cloudlet to create
      * @return the created Cloudlet
@@ -412,7 +423,7 @@ public class CloudletSimpleTest {
             long length, int numberOfPes) {
         return createCloudlet(0, length, numberOfPes);
     }
-        
+
     @Test
     public void testSetUtilizationModels() {
         CloudletSimple c = createCloudlet();

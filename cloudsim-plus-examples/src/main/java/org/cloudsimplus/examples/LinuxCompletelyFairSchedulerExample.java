@@ -2,7 +2,6 @@ package org.cloudsimplus.examples;
 
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.LinkedList;
 import java.util.List;
 
 import org.cloudbus.cloudsim.Cloudlet;
@@ -127,33 +126,31 @@ public class LinuxCompletelyFairSchedulerExample {
         }
 
         //Defines the characteristics of the data center
-        final String arch = "x86"; // system architecture of datacenter hosts
-        final String os = "Linux"; // operating system of datacenter hosts
-        final double time_zone = 10.0; // time zone where the datacenter is located
         final double cost = 3.0; // the cost of using processing in this datacenter
         final double costPerMem = 0.05; // the cost of using memory in this datacenter
         final double costPerStorage = 0.001; // the cost of using storage in this datacenter
         final double costPerBw = 0.0; // the cost of using bw in this datacenter
-        LinkedList<FileStorage> storageList = new LinkedList<>(); // we are not adding SAN devices
 
-        DatacenterCharacteristics characteristics = new DatacenterCharacteristicsSimple(
-                arch, os, VMM, hostList, time_zone, cost, costPerMem,
-                costPerStorage, costPerBw);
+        DatacenterCharacteristics characteristics =
+            new DatacenterCharacteristicsSimple(hostList)
+                .setCostPerSecond(cost)
+                .setCostPerMem(costPerMem)
+                .setCostPerStorage(costPerStorage)
+                .setCostPerBw(costPerBw);
 
-        return new DatacenterSimple(name, characteristics,
-                new VmAllocationPolicySimple(hostList), storageList, 0);
+        return new DatacenterSimple(name, characteristics, new VmAllocationPolicySimple(hostList));
     }
 
     private Host createHost() {
-        final int  ram = 2048; // host memory (MB)
+        final long ram = 2048; // host memory (MB)
         final long storage = 1000000; // host storage
         final long bw = 10000;
 
         List<Pe> cpuCoresList = createHostPesList(HOST_MIPS);
 
         return new HostSimple(numberOfCreatedHosts++,
-                new ResourceProvisionerSimple<>(new Ram(ram)),
-                new ResourceProvisionerSimple<>(new Bandwidth(bw)),
+                new ResourceProvisionerSimple(new Ram(ram)),
+                new ResourceProvisionerSimple(new Bandwidth(bw)),
                 storage, cpuCoresList,
                 new VmSchedulerTimeShared(cpuCoresList));
     }
@@ -172,9 +169,10 @@ public class LinuxCompletelyFairSchedulerExample {
         final int    ram = 512; // vm memory (MB)
         final long   bw = 1000; // vm bandwidth
 
-        return new VmSimple(numberOfCreatedVms++,
-                broker.getId(), VM_MIPS, VM_PES, ram, bw, storage, VMM,
-                new CloudletSchedulerCompletelyFair());
+        return new VmSimple(numberOfCreatedVms++, VM_MIPS, VM_PES)
+            .setRam(ram).setBw(bw).setSize(storage)
+            .setCloudletScheduler(new CloudletSchedulerCompletelyFair())
+            .setBroker(broker);
     }
 
     private Cloudlet createCloudlet(DatacenterBroker broker) {
@@ -186,12 +184,11 @@ public class LinuxCompletelyFairSchedulerExample {
         UtilizationModel utilization = new UtilizationModelFull();
 
         Cloudlet cloudlet
-                = new CloudletSimple(
-                        numberOfCreatedCloudlets++, CLOUDLET_LEN, CLOUDLET_PES,
-                        fileSize, outputSize,
-                        utilization, utilization, utilization);
-        cloudlet.setUserId(broker.getId());
-
+            = new CloudletSimple(numberOfCreatedCloudlets++, CLOUDLET_LEN, CLOUDLET_PES)
+                .setCloudletFileSize(fileSize)
+                .setCloudletOutputSize(outputSize)
+                .setUtilizationModel(utilization)
+                .setBroker(broker);
         return cloudlet;
     }
 }

@@ -14,6 +14,8 @@ import org.cloudbus.cloudsim.Vm;
 
 import org.cloudbus.cloudsim.VmSimple;
 import org.cloudbus.cloudsim.VmSimpleTest;
+import org.cloudbus.cloudsim.brokers.DatacenterBroker;
+import org.cloudbus.cloudsim.mocks.Mocks;
 import org.junit.Before;
 import org.junit.Test;
 import static org.junit.Assert.assertNull;
@@ -51,7 +53,7 @@ public class VmListTest {
     public void testGetById_EmptyList() {
         assertSame(Vm.NULL, VmList.getById(vmList, -1));
         assertSame(Vm.NULL, VmList.getById(vmList, 0));
-        assertSame(Vm.NULL, VmList.getById(vmList, 1));        
+        assertSame(Vm.NULL, VmList.getById(vmList, 1));
     }
 
     @Test
@@ -76,11 +78,11 @@ public class VmListTest {
         assertNull(VmList.getByIdAndUserId(vmList, 0, 1));
         assertNull(VmList.getByIdAndUserId(vmList, 1, 1));
 
-        final int user0 = 0;
-        VmSimple vm1 = VmSimpleTest.createVm(user0, 1);
-        VmSimple vm2 = VmSimpleTest.createVmWithSpecificNumberOfPEsForSpecificUser(1, user0, 1);
-        
-        int user1 = 1;
+        final DatacenterBroker broker0 = Mocks.createMockBroker(0);
+        VmSimple vm1 = VmSimpleTest.createVm(0, 1);
+        VmSimple vm2 = VmSimpleTest.createVmWithSpecificNumberOfPEsForSpecificUser(1, broker0, 1);
+
+        final DatacenterBroker user1 = Mocks.createMockBroker(1);
         VmSimple vm3 = VmSimpleTest.createVmWithSpecificNumberOfPEsForSpecificUser(0, user1, 1);
         VmSimple vm4 = VmSimpleTest.createVmWithSpecificNumberOfPEsForSpecificUser(1, user1, 2);
 

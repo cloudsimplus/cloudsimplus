@@ -1,4 +1,4 @@
-package org.cloudbus.cloudsim;
+package org.cloudbus.cloudsim.mocks;
 
 import java.util.function.Consumer;
 import org.cloudbus.cloudsim.core.CloudSim;
@@ -12,26 +12,26 @@ import org.powermock.api.easymock.PowerMock;
  * it is difficult to mock it. The regular way of mocking
  * objects doesn't work for classes. Alternatively, PowerMock can be used
  * to enable such a feature.
- * 
+ *
  * <p>Each method in this class provides a mock for a method with the same
  * name in the CloudSim class.</p>
- * 
+ *
  * <p><b>NOTE</b>: For the CloudSimMocker to work inside a test,
- * the test class using it has to be annotated with 
+ * the test class using it has to be annotated with
  * {@code @RunWith(PowerMockRunner.class) @PrepareForTest({CloudSim.class})}. This is
  * a requirement to PowerMock.</p>
- * 
+ *
  * @author Manoel Campos da Silva Filho
  */
 public final class CloudSimMocker {
-    
+
     /**
      * Builds a mock of the CloudSim class. It creates the mocker
      * object that will initialize the mocked CloudSim class.
-     * It requires a {@link Consumer} object as parameter 
+     * It requires a {@link Consumer} object as parameter
      * (that can be a lambda expression) where the developer
      * defines what methods of the Mocker class will be called.
-     * Each CloudSimMocker's method call defines a method in the mocked 
+     * Each CloudSimMocker's method call defines a method in the mocked
      * CloudSim class that is expected to be called.
      * <p>
      * An usage example can be as follows:
@@ -40,7 +40,7 @@ public final class CloudSimMocker {
      * </p>
      * This example will mock the static methods clock and getEntityName
      * from CloudSim class, making it return 10 and 1, respectively.
-     * 
+     *
      * <p>
      * If you a mocked method to return 2 different values in different calls,
      * use a code like that:
@@ -50,19 +50,19 @@ public final class CloudSimMocker {
      * This example will make the mocked CloudSim.clock() method to return
      * 10 for the first time it is called inside a unit test and 11
      * for the second time.
-     * 
+     *
      * <p>Realize that the provided examples uses lambda expression
      * as a parameter to the build method, defining
      * which method calls are expected in the mocked CloudSim class.</p>
-     * 
-     * @param consumer 
+     *
+     * @param consumer
      */
     public static void build(Consumer<CloudSimMocker> consumer){
         CloudSimMocker mocker = new CloudSimMocker();
         consumer.accept(mocker);
         mocker.replay();
     }
-    
+
     /**
      * Instantiates a CloudSimMocker object and enable the mocking of
      * static methods in the CloudSim class.
@@ -78,10 +78,10 @@ public final class CloudSimMocker {
      * to return a given value.
      * The method from the mocked CloudSim class is expected to be called
      * just once.
-     * 
-     * @param clockTimeToReturn the value that the {@link CloudSim#clock()} method 
+     *
+     * @param clockTimeToReturn the value that the {@link CloudSim#clock()} method
      * must return
-     * @return 
+     * @return
      */
     public CloudSimMocker clock(final double clockTimeToReturn) {
         clock(clockTimeToReturn, 1);
@@ -93,12 +93,12 @@ public final class CloudSimMocker {
      * to return a given value.
      * The method from the mocked CloudSim class is expected to be called
      * a given number of times.
-     * 
-     * @param clockTimeToReturn the value that the {@link CloudSim#clock()} method 
+     *
+     * @param clockTimeToReturn the value that the {@link CloudSim#clock()} method
      * must return
      * @param numberOfExpectedCalls the number of times the {@link CloudSim#clock()} method
      * is expected to be called
-     * @return 
+     * @return
      */
     public CloudSimMocker clock(final double clockTimeToReturn, int numberOfExpectedCalls) {
         EasyMock
@@ -114,7 +114,7 @@ public final class CloudSimMocker {
             .andReturn("datacenter" + datacenterId);
         return this;
     }
-    
+
     /**
      * Finishes the mocking process, making the mocked CloudSim class ready to use.
      * The method is used just internally as the final step in the
@@ -123,7 +123,7 @@ public final class CloudSimMocker {
     private void replay(){
         PowerMock.replay(CloudSim.class);
     }
-    
+
     /**
      * Checks if the expected calls to CloudSim class were in fact made.
      * Calling this method is an optional step that might be performed,
@@ -134,5 +134,5 @@ public final class CloudSimMocker {
     public static void verify(){
         PowerMock.verify(CloudSim.class);
     }
-    
+
 }

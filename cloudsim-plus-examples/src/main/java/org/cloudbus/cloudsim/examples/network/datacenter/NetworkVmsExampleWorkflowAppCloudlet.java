@@ -31,7 +31,7 @@ public class NetworkVmsExampleWorkflowAppCloudlet extends NetworkVmsExampleAppCl
     private static final long PACKET_DATA_LENGTH_IN_BYTES = 1000;
     private static final long NUMBER_OF_PACKETS_TO_SEND = 100;
     private int currentNetworkCloudletId = -1;
-    
+
     public NetworkVmsExampleWorkflowAppCloudlet(){
         super();
     }
@@ -49,11 +49,11 @@ public class NetworkVmsExampleWorkflowAppCloudlet extends NetworkVmsExampleAppCl
     public List<NetworkCloudlet> createNetworkCloudlets(
             AppCloudlet appCloudlet, NetDatacenterBroker broker) {
         NetworkCloudlet networkCloudletList[] = new NetworkCloudlet[3];
-        List<NetworkVm> selectedVms = 
+        List<NetworkVm> selectedVms =
                 randomlySelectVmsForAppCloudlet(broker, networkCloudletList.length);
 
         for(int i = 0; i < networkCloudletList.length; i++){
-            networkCloudletList[i] = 
+            networkCloudletList[i] =
                     createNetworkCloudlet(appCloudlet, selectedVms.get(i), broker);
             Log.printFormattedLine(
                 "Created NetworkCloudlet %d for AppCloudlet %d",
@@ -136,15 +136,17 @@ public class NetworkVmsExampleWorkflowAppCloudlet extends NetworkVmsExampleAppCl
      */
     private NetworkCloudlet createNetworkCloudlet(AppCloudlet appCloudlet, NetworkVm vm, NetDatacenterBroker broker) {
         UtilizationModel utilizationModel = new UtilizationModelFull();
-        NetworkCloudlet netCloudlet = new NetworkCloudlet(
-                ++currentNetworkCloudletId, 1, NETCLOUDLET_PES_NUMBER,
-                NETCLOUDLET_FILE_SIZE, NETCLOUDLET_OUTPUT_SIZE, NETCLOUDLET_RAM,
-                utilizationModel, utilizationModel, utilizationModel);
-        netCloudlet.setAppCloudlet(appCloudlet);
-        netCloudlet.setUserId(broker.getId());
-        netCloudlet.setVmId(vm.getId());
+        NetworkCloudlet cloudlet = new NetworkCloudlet(++currentNetworkCloudletId, 1, NETCLOUDLET_PES_NUMBER);
+        cloudlet
+                .setMemory(NETCLOUDLET_RAM)
+                .setAppCloudlet(appCloudlet)
+                .setCloudletFileSize(NETCLOUDLET_FILE_SIZE)
+                .setCloudletOutputSize(NETCLOUDLET_OUTPUT_SIZE)
+                .setUtilizationModel(utilizationModel)
+                .setBroker(broker)
+                .setVmId(vm.getId());
 
-        return netCloudlet;
+        return cloudlet;
     }
 
 

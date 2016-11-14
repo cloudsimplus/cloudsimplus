@@ -25,8 +25,7 @@ public class CloudletTest {
     }
 
     private static CloudletSimple createCloudlet(int id) {
-        return new CloudletSimple(id, 1, 1, 1, 1,
-                UtilizationModel.NULL, UtilizationModel.NULL, UtilizationModel.NULL);
+        return new CloudletSimple(id, 1, 1);
     }
 
     @Test
@@ -60,7 +59,7 @@ public class CloudletTest {
         assertEquals(-1, Cloudlet.NULL.getDatacenterId());
         assertEquals(0, Cloudlet.NULL.getDatacenterArrivalTime(), 0);
         assertEquals(0, Cloudlet.NULL.getSubmissionTime(0), 0);
-        assertEquals(-1, Cloudlet.NULL.getUserId());
+        assertEquals(-1, Cloudlet.NULL.getBrokerId());
         assertSame(UtilizationModel.NULL, Cloudlet.NULL.getUtilizationModelBw());
         assertSame(UtilizationModel.NULL, Cloudlet.NULL.getUtilizationModelCpu());
         assertSame(UtilizationModel.NULL, Cloudlet.NULL.getUtilizationModelRam());
@@ -75,12 +74,10 @@ public class CloudletTest {
         assertFalse(Cloudlet.NULL.hasReserved());
         assertFalse(Cloudlet.NULL.isFinished());
         assertFalse(Cloudlet.NULL.requiresFiles());
-        assertFalse(Cloudlet.NULL.setCloudletLength(0));
         assertFalse(Cloudlet.NULL.setCloudletStatus(Cloudlet.Status.SUCCESS));
         Cloudlet.NULL.setExecStartTime(100);
         assertEquals(0, Cloudlet.NULL.getExecStartTime(), 0);
         assertFalse(Cloudlet.NULL.setNetServiceLevel(0));
-        assertFalse(Cloudlet.NULL.setNumberOfPes(0));
         assertFalse(Cloudlet.NULL.setReservationId(0));
         assertEquals(Cloudlet.NOT_ASSIGNED, Cloudlet.NULL.registerArrivalOfCloudletIntoDatacenter(), 0);
         assertSame(EventListener.NULL, Cloudlet.NULL.getOnCloudletFinishEventListener());
@@ -89,8 +86,7 @@ public class CloudletTest {
         Cloudlet.NULL.setOnCloudletFinishEventListener(listener);
         assertSame(EventListener.NULL, Cloudlet.NULL.getOnCloudletFinishEventListener());
 
-        Cloudlet.NULL.setUserId(10);
-        assertEquals(-1, Cloudlet.NULL.getUserId());
+        assertEquals(-1, Cloudlet.NULL.getBrokerId());
 
         Cloudlet.NULL.setSubmissionDelay(10);
         assertEquals(0, Cloudlet.NULL.getSubmissionDelay(), 0);

@@ -27,12 +27,12 @@ public interface CloudletScheduler extends Serializable {
     /**
      * Cancels execution of a cloudlet.
      *
-     * @param clId ID of the cloudlet being canceled
+     * @param cloudletId ID of the cloudlet being canceled
      * @return the canceled cloudlet, $null if not found
      * @pre $none
      * @post $none
      */
-    Cloudlet cloudletCancel(int clId);
+    Cloudlet cloudletCancel(int cloudletId);
 
     /**
      * Processes a finished cloudlet.
@@ -46,23 +46,23 @@ public interface CloudletScheduler extends Serializable {
     /**
      * Pauses execution of a cloudlet.
      *
-     * @param clId ID of the cloudlet being paused
+     * @param cloudletId ID of the cloudlet being paused
      * @return $true if cloudlet paused, $false otherwise
      * @pre $none
      * @post $none
      */
-    boolean cloudletPause(int clId);
+    boolean cloudletPause(int cloudletId);
 
     /**
      * Resumes execution of a paused cloudlet.
      *
-     * @param clId ID of the cloudlet being resumed
+     * @param cloudletId ID of the cloudlet being resumed
      * @return expected finish time of the cloudlet, 0.0 if queued or not found in the
      * paused list
      * @pre $none
      * @post $none
      */
-    double cloudletResume(int clId);
+    double cloudletResume(int cloudletId);
 
     /**
      * Receives an cloudlet to be executed in the VM managed by this scheduler.
@@ -313,10 +313,10 @@ public interface CloudletScheduler extends Serializable {
      * objects.
      */
     CloudletScheduler NULL = new CloudletScheduler() {
-        @Override public Cloudlet cloudletCancel(int clId) { return Cloudlet.NULL; }
+        @Override public Cloudlet cloudletCancel(int cloudletId) { return Cloudlet.NULL; }
         @Override public void cloudletFinish(CloudletExecutionInfo rcl) {}
-        @Override public boolean cloudletPause(int clId) { return false; }
-        @Override public double cloudletResume(int clId) { return 0.0; }
+        @Override public boolean cloudletPause(int cloudletId) { return false; }
+        @Override public double cloudletResume(int cloudletId) { return 0.0; }
         @Override public double cloudletSubmit(Cloudlet cl, double fileTransferTime){ return 0.0; }
         @Override public double cloudletSubmit(Cloudlet cl) { return 0.0; }
         @Override public int getCloudletStatus(int cloudletId) { return 0; }
@@ -336,10 +336,8 @@ public interface CloudletScheduler extends Serializable {
         @Override public double updateVmProcessing(double currentTime, List<Double> mipsShare) { return 0.0; }
         @Override public Vm getVm() { return Vm.NULL; }
         @Override public void setVm(Vm vm) {}
-
         @Override  public int getUsedPes() { return 0; }
         @Override  public int getFreePes() { return 0; }
-
         @Override public boolean canAddCloudletToExecutionList(CloudletExecutionInfo cloudlet) { return false; }
         @Override public List<CloudletExecutionInfo> getCloudletFinishedList() { return Collections.EMPTY_LIST; }
     };

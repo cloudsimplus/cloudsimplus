@@ -11,7 +11,7 @@ import org.cloudbus.cloudsim.resources.File;
 import org.cloudbus.cloudsim.allocationpolicies.VmAllocationPolicy;
 import org.cloudbus.cloudsim.schedulers.CloudletScheduler;
 import java.util.ArrayList;
-import java.util.Iterator;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
@@ -53,16 +53,11 @@ public class DatacenterSimple extends SimEntity implements Datacenter {
     private double schedulingInterval;
 
     /**
-     * Instantiates a new Datacenter object.
+     * Creates a Datacenter.
      *
      * @param name the name of the datacenter
-     * @param characteristics the characteristics of the datacenter to be
-     * created
-     * @param storageList a List of storage elements, for data simulation
-     * @param vmAllocationPolicy the policy to be used to allocate VMs into
-     * hosts
-     * @param schedulingInterval the scheduling interval to process each
-     * datacenter received event (in seconds)
+     * @param characteristics the characteristics of the datacenter to be created
+     * @param vmAllocationPolicy the policy to be used to allocate VMs into hosts
      * @throws IllegalArgumentException when one of the following scenarios
      * occur:
      * <ul>
@@ -79,28 +74,66 @@ public class DatacenterSimple extends SimEntity implements Datacenter {
      * @post $none
      */
     public DatacenterSimple(
-            String name,
-            DatacenterCharacteristics characteristics,
-            VmAllocationPolicy vmAllocationPolicy,
-            List<FileStorage> storageList,
-            double schedulingInterval) {
+        String name,
+        DatacenterCharacteristics characteristics,
+        VmAllocationPolicy vmAllocationPolicy) {
         super(name);
 
         // If this resource doesn't have any PEs then it isn't useful at all
         if (characteristics.getNumberOfPes() == 0) {
             throw new IllegalArgumentException(super.getName()
-                    + " : Error - this entity has no PEs. Therefore, can't process any Cloudlets.");
+                + " : Error - this entity has no PEs. Therefore, can't process any Cloudlets.");
         }
 
-        // stores id of this class
+        // DatacenterCharacteristics stores the id of the Datacenter
         setCharacteristics(characteristics);
 
         setVmAllocationPolicy(vmAllocationPolicy);
         setLastProcessTime(0.0);
-        setStorageList(storageList);
+        setSchedulingInterval(0);
         setVmList(new ArrayList<>());
-        setSchedulingInterval(schedulingInterval);
+        setStorageList(new ArrayList<>());
         assignHostsToCurrentDatacenter();
+    }
+
+    /**
+     * Creates a Datacenter with the given parameters.
+     *
+     * @param name the name of the datacenter
+     * @param characteristics the characteristics of the datacenter to be created
+     * @param storageList a List of storage elements, for data simulation
+     * @param vmAllocationPolicy the policy to be used to allocate VMs into hosts
+     * @param schedulingInterval the scheduling interval to process each
+     * datacenter received event (in seconds)
+     * @throws IllegalArgumentException when one of the following scenarios
+     * occur:
+     * <ul>
+     * <li>creating this entity before initializing CloudSim package
+     * <li>this entity name is <tt>null</tt> or empty
+     * <li>this entity has <tt>zero</tt> number of PEs (Processing Elements).
+     * <br>
+     * No PEs mean the Cloudlets can't be processed. A CloudResource must
+     * contain one or more Machines. A Machine must contain one or more PEs.
+     * </ul>
+     *
+     * @pre name != null
+     * @pre resource != null
+     * @post $none
+     *
+     * @deprecated Use the other available constructors with less parameters
+     * and set the remaining ones using the respective setters.
+     * This constructor will be removed in future versions.
+     */
+    @Deprecated
+    private DatacenterSimple(
+        String name,
+        DatacenterCharacteristics characteristics,
+        VmAllocationPolicy vmAllocationPolicy,
+        List<FileStorage> storageList,
+        double schedulingInterval) {
+            this(name, characteristics, vmAllocationPolicy);
+            setStorageList(storageList);
+            setSchedulingInterval(schedulingInterval);
     }
 
     private void assignHostsToCurrentDatacenter() {
@@ -376,7 +409,7 @@ public class DatacenterSimple extends SimEntity implements Datacenter {
             try {
                 Cloudlet cl = (Cloudlet) ev.getData();
                 cloudletId = cl.getId();
-                userId = cl.getUserId();
+                userId = cl.getBrokerId();
 
                 status = getCloudletStatus(vmId, userId, cloudletId);
             } catch (Exception e) {
@@ -456,7 +489,7 @@ public class DatacenterSimple extends SimEntity implements Datacenter {
             data[0] = getId();
             data[1] = vm.getId();
             data[2] = (hostAllocatedForVm ? CloudSimTags.TRUE : CloudSimTags.FALSE);
-            send(vm.getUserId(), CloudSim.getMinTimeBetweenEvents(),
+            send(vm.getBrokerId(), CloudSim.getMinTimeBetweenEvents(),
                  CloudSimTags.VM_CREATE_ACK, data);
         }
 
@@ -498,7 +531,7 @@ public class DatacenterSimple extends SimEntity implements Datacenter {
             data[1] = vm.getId();
             data[2] = CloudSimTags.TRUE;
 
-            sendNow(vm.getUserId(), CloudSimTags.VM_DESTROY_ACK, data);
+            sendNow(vm.getBrokerId(), CloudSimTags.VM_DESTROY_ACK, data);
         }
         Log.printFormatted("Time %.2f: Vm %d destroyed\n", CloudSim.clock(), vm.getId());
 
@@ -577,7 +610,7 @@ public class DatacenterSimple extends SimEntity implements Datacenter {
             try {
                 Cloudlet cl = (Cloudlet) ev.getData();
                 cloudletId = cl.getId();
-                userId = cl.getUserId();
+                userId = cl.getBrokerId();
                 vmId = cl.getVmId();
             } catch (Exception e) {
                 Log.printConcatLine(super.getName(), ": Error in processing Cloudlet");
@@ -647,8 +680,8 @@ public class DatacenterSimple extends SimEntity implements Datacenter {
                 data[0] = getId();
                 data[1] = cloudletId;
                 data[2] = 0;
-                sendNow(cl.getUserId(), CloudSimTags.CLOUDLET_SUBMIT_ACK, data);
-                sendNow(cl.getUserId(), CloudSimTags.CLOUDLET_RETURN, cl);
+                sendNow(cl.getBrokerId(), CloudSimTags.CLOUDLET_SUBMIT_ACK, data);
+                sendNow(cl.getBrokerId(), CloudSimTags.CLOUDLET_RETURN, cl);
             }
 
             // prepare cloudlet for migration
@@ -681,7 +714,7 @@ public class DatacenterSimple extends SimEntity implements Datacenter {
             } else {
                 data[2] = 1;
             }
-            sendNow(cl.getUserId(), CloudSimTags.CLOUDLET_SUBMIT_ACK, data);
+            sendNow(cl.getBrokerId(), CloudSimTags.CLOUDLET_SUBMIT_ACK, data);
         }
     }
 
@@ -733,8 +766,8 @@ public class DatacenterSimple extends SimEntity implements Datacenter {
         // time to transfer cloudlet files
         double fileTransferTime = predictFileTransferTime(cl.getRequiredFiles());
 
-        Host host = getVmAllocationPolicy().getHost(cl.getVmId(), cl.getUserId());
-        Vm vm = host.getVm(cl.getVmId(), cl.getUserId());
+        Host host = getVmAllocationPolicy().getHost(cl.getVmId(), cl.getBrokerId());
+        Vm vm = host.getVm(cl.getVmId(), cl.getBrokerId());
         CloudletScheduler scheduler = vm.getCloudletScheduler();
         double estimatedFinishTime = scheduler.cloudletSubmit(cl, fileTransferTime);
 
@@ -762,7 +795,7 @@ public class DatacenterSimple extends SimEntity implements Datacenter {
             return false;
         }
 
-        String name = CloudSim.getEntityName(cl.getUserId());
+        String name = CloudSim.getEntityName(cl.getBrokerId());
         Log.printConcatLine(
                 getName(), ": Warning - Cloudlet #", cl.getId(), " owned by ", name,
                 " is already completed/finished.");
@@ -778,7 +811,7 @@ public class DatacenterSimple extends SimEntity implements Datacenter {
         */
         sendCloudletSubmitAckToBroker(ack, cl,  CloudSimTags.FALSE);
 
-        sendNow(cl.getUserId(), CloudSimTags.CLOUDLET_RETURN, cl);
+        sendNow(cl.getBrokerId(), CloudSimTags.CLOUDLET_RETURN, cl);
         return true;
     }
 
@@ -807,7 +840,7 @@ public class DatacenterSimple extends SimEntity implements Datacenter {
         data[1] = cl.getId();
         data[2] = cloudletCreated;
 
-        sendNow(cl.getUserId(), CloudSimTags.CLOUDLET_SUBMIT_ACK, data);
+        sendNow(cl.getBrokerId(), CloudSimTags.CLOUDLET_SUBMIT_ACK, data);
     }
     /**
      * Predict the total time to transfer a list of files.
@@ -1006,7 +1039,7 @@ public class DatacenterSimple extends SimEntity implements Datacenter {
         while (vm.getCloudletScheduler().hasFinishedCloudlets()) {
             Cloudlet cl = vm.getCloudletScheduler().getNextFinishedCloudlet();
             if (cl != Cloudlet.NULL) {
-                sendNow(cl.getUserId(), CloudSimTags.CLOUDLET_RETURN, cl);
+                sendNow(cl.getBrokerId(), CloudSimTags.CLOUDLET_RETURN, cl);
             }
         }
     }
@@ -1184,13 +1217,9 @@ public class DatacenterSimple extends SimEntity implements Datacenter {
         this.lastProcessTime = lastProcessTime;
     }
 
-    /**
-     * Gets the list of storage devices of the datacenter.
-     *
-     * @return the storage list
-     */
-    protected List<FileStorage> getStorageList() {
-        return storageList;
+    @Override
+    public List<FileStorage> getStorageList() {
+        return Collections.unmodifiableList(storageList);
     }
 
     /**
@@ -1198,8 +1227,14 @@ public class DatacenterSimple extends SimEntity implements Datacenter {
      *
      * @param storageList the new storage list
      */
-    protected final void setStorageList(List<FileStorage> storageList) {
+    @Override
+    public final Datacenter setStorageList(List<FileStorage> storageList) {
+        if(storageList == null){
+            throw new NullPointerException("Datacenter Storage List cannot be null.");
+        }
+
         this.storageList = storageList;
+        return this;
     }
 
     @Override
@@ -1228,8 +1263,9 @@ public class DatacenterSimple extends SimEntity implements Datacenter {
      *
      * @param schedulingInterval the new scheduling interval
      */
-    protected final void setSchedulingInterval(double schedulingInterval) {
+    public final Datacenter setSchedulingInterval(double schedulingInterval) {
         this.schedulingInterval = schedulingInterval;
+        return this;
     }
 
     @Override

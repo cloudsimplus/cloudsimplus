@@ -133,7 +133,7 @@ public class ExampleCreateCloudletRandomly {
         // Third step: Create Broker
         DatacenterBroker broker = createBroker();
         int brokerId = broker.getId();
-       
+
         //create cloudlet randomly
         cloudletList = new ArrayList<>();
         long seed = System.currentTimeMillis();
@@ -154,7 +154,7 @@ public class ExampleCreateCloudletRandomly {
                         poisson.getK(), minute, poisson.probabilityToArriveNextKEvents());
             }
         }
-        
+
         System.out.printf("\n\t%d cloudlets have arrived\n", totalArrivedCustomers);
 
         broker.submitCloudletList(cloudletList);
@@ -182,7 +182,7 @@ public class ExampleCreateCloudletRandomly {
         Cloudlet cloudlet = new CloudletSimple(cloudletId, length, pesNumber, fileSize,
                 outputSize, utilizationModel, utilizationModel,
                 utilizationModel);
-        cloudlet.setUserId(brokerId);
+        cloudlet.setBroker(brokerId);
         return cloudlet;
     }
 
@@ -238,7 +238,7 @@ public class ExampleCreateCloudletRandomly {
                 costPerStorage, costPerBw);
 
         // 6. Finally, we need to create a PowerDatacenter object.
-        return new DatacenterSimple(name, characteristics, 
+        return new DatacenterSimple(name, characteristics,
                 new VmAllocationPolicySimple(hostList), storageList, 0);
     }
 

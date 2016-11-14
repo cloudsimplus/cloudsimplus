@@ -3,7 +3,6 @@ package org.cloudbus.cloudsim.examples.network.datacenter;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
-import java.util.LinkedList;
 import java.util.List;
 import org.cloudbus.cloudsim.Cloudlet;
 import org.cloudbus.cloudsim.DatacenterCharacteristics;
@@ -33,15 +32,14 @@ import org.cloudbus.cloudsim.resources.PeSimple;
 import org.cloudbus.cloudsim.resources.Ram;
 import org.cloudbus.cloudsim.schedulers.VmSchedulerTimeShared;
 import org.cloudsimplus.util.tablebuilder.CloudletsTableBuilderHelper;
-import org.cloudsimplus.util.tablebuilder.TextTableBuilder;
 import org.cloudbus.cloudsim.utilizationmodels.UtilizationModel;
 import org.cloudbus.cloudsim.utilizationmodels.UtilizationModelFull;
 
 /**
  * A simple example showing how two {@link NetworkCloudlet}'s
- * communicate between them, each one running inside VMs of 
+ * communicate between them, each one running inside VMs of
  * different hosts.
- * 
+ *
  * @author Manoel Campos da Silva Filho
  */
 public class NetworkVmsExample1 {
@@ -68,14 +66,14 @@ public class NetworkVmsExample1 {
     private static final long PACKET_DATA_LENGTH_IN_BYTES = 1000;
     private static final int NUMBER_OF_PACKETS_TO_SEND = 1;
     public static final long  TASK_RAM = 100;
-    
+
     private List<NetworkVm> vmList;
     private List<NetworkCloudlet> cloudletList;
     private NetworkDatacenter datacenter;
     private NetDatacenterBroker broker;
-    
+
     private int currentNetworkCloudletId = -1;
-   
+
     /**
      * Creates, starts, stops the simulation and shows results.
      */
@@ -84,14 +82,14 @@ public class NetworkVmsExample1 {
         try {
             int num_user = 1; // number of cloud users
             Calendar calendar = Calendar.getInstance();
-            boolean trace_flag = false; 
+            boolean trace_flag = false;
 
             CloudSim.init(num_user, calendar, trace_flag);
 
             this.datacenter = createDatacenter("Datacenter_0");
             this.broker = new NetDatacenterBroker("Broker_0");
             this.vmList = new ArrayList<>();
-                   
+
             this.vmList.addAll(createAndSubmitVMs(broker));
             this.cloudletList = createNetworkCloudlets(broker);
             broker.submitCloudletList(this.cloudletList);
@@ -108,12 +106,12 @@ public class NetworkVmsExample1 {
     private void showSimulationResults() {
         List<Cloudlet> newList = broker.getCloudletsFinishedList();
         new CloudletsTableBuilderHelper(newList).build();
-        
+
         for(NetworkHost host: datacenter.<NetworkHost>getHostList()){
             Log.printFormatted("\nHost %d data transfered: %d bytes",
                     host.getId(), host.getTotalDataTransferBytes());
         }
-        
+
         Log.printFormattedLine("\n\n%s finished!", this.getClass().getSimpleName());
     }
 
@@ -142,18 +140,18 @@ public class NetworkVmsExample1 {
         // properties of a data center: architecture, OS, list of
         // Machines, allocation policy: time- or space-shared, time zone
         // and its price (G$/Pe time unit).
-        LinkedList<FileStorage> storageList = new LinkedList<>();
+        List<FileStorage> storageList = new ArrayList<>();
         DatacenterCharacteristics characteristics =
-                new DatacenterCharacteristicsSimple(
-                        ARCH, OS, VMM, hostList, TIME_ZONE, COST,
-                        COST_PER_MEM, COST_PER_STORAGE, COST_PER_BW);
+                new DatacenterCharacteristicsSimple(hostList)
+                    .setCostPerSecond(COST)
+                    .setCostPerMem(COST_PER_MEM)
+                    .setCostPerStorage(COST_PER_STORAGE)
+                    .setCostPerBw(COST_PER_BW);
+
         // 6. Finally, we need to create a NetworkDatacenter object.
-        NetworkDatacenter newDatacenter =
-                new NetworkDatacenter(
-                        name, characteristics,
-                        new NetworkVmAllocationPolicy(hostList),
-                        storageList, 5);
-        
+        NetworkDatacenter newDatacenter = new NetworkDatacenter(name, characteristics, new NetworkVmAllocationPolicy(hostList));
+        newDatacenter.setSchedulingInterval(5);
+
         createNetwork(newDatacenter);
         return newDatacenter;
     }
@@ -168,7 +166,7 @@ public class NetworkVmsExample1 {
         }
         return peList;
     }
-    
+
     /**
      * Creates internal Datacenter network.
      * @param datacenter datacenter where the network will be created
@@ -198,13 +196,14 @@ public class NetworkVmsExample1 {
     private List<NetworkVm> createAndSubmitVMs(NetDatacenterBroker broker) {
         final List<NetworkVm> list = new ArrayList<>();
         for (int i = 0; i < NUMBER_OF_HOSTS; i++) {
-            NetworkVm vm =
-                new NetworkVm(i,
-                    broker.getId(), HOST_MIPS, HOST_PES, HOST_RAM, HOST_BW, HOST_STORAGE, VMM,
-                    new NetworkCloudletSpaceSharedScheduler(datacenter));
+            NetworkVm vm = new NetworkVm (i, HOST_MIPS, HOST_PES);
+            vm.setRam(HOST_RAM).setBw(HOST_BW).setSize(HOST_STORAGE)
+                .setCloudletScheduler(new NetworkCloudletSpaceSharedScheduler(datacenter))
+                .setBroker(broker);
+
             list.add(vm);
         }
-        
+
         broker.submitVmList(list);
         return list;
     }
@@ -212,7 +211,7 @@ public class NetworkVmsExample1 {
     /**
      * Creates a list of {@link NetworkCloudlet} that together represents the distributed
      * processes of a given {@link AppCloudlet}.
-     * 
+     *
      * @param broker broker to associate the NetworkCloudlets
      * @return the list of create NetworkCloudlets
      */
@@ -220,7 +219,7 @@ public class NetworkVmsExample1 {
         NetworkCloudlet networkCloudletList[] = new NetworkCloudlet[2];
 
         for(int i = 0; i < networkCloudletList.length; i++){
-            networkCloudletList[i] = 
+            networkCloudletList[i] =
                     createNetworkCloudlet(vmList.get(i), broker);
         }
 
@@ -244,11 +243,13 @@ public class NetworkVmsExample1 {
      */
     private NetworkCloudlet createNetworkCloudlet(NetworkVm vm, NetDatacenterBroker broker) {
         UtilizationModel utilizationModel = new UtilizationModelFull();
-        NetworkCloudlet netCloudlet = new NetworkCloudlet(
-                ++currentNetworkCloudletId, 1, HOST_PES,
-                NETCLOUDLET_FILE_SIZE, NETCLOUDLET_OUTPUT_SIZE, TASK_RAM,
-                utilizationModel, utilizationModel, utilizationModel);
-        netCloudlet.setUserId(broker.getId());
+        NetworkCloudlet netCloudlet = new NetworkCloudlet(++currentNetworkCloudletId, 1, HOST_PES);
+        netCloudlet
+                .setMemory(TASK_RAM)
+                .setCloudletFileSize(NETCLOUDLET_FILE_SIZE)
+                .setCloudletOutputSize(NETCLOUDLET_OUTPUT_SIZE)
+                .setUtilizationModel(utilizationModel);
+        netCloudlet.setBroker(broker);
         netCloudlet.setVmId(vm.getId());
 
         return netCloudlet;
@@ -308,5 +309,5 @@ public class NetworkVmsExample1 {
         new NetworkVmsExample1();
     }
 
-    
+
 }

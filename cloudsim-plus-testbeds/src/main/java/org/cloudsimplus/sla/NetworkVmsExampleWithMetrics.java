@@ -27,7 +27,6 @@ import org.cloudbus.cloudsim.resources.Ram;
 import org.cloudbus.cloudsim.schedulers.CloudletSchedulerTimeShared;
 import org.cloudbus.cloudsim.schedulers.VmSchedulerTimeShared;
 import org.cloudsimplus.util.tablebuilder.CloudletsTableBuilderHelper;
-import org.cloudsimplus.util.tablebuilder.TextTableBuilder;
 import org.cloudbus.cloudsim.utilizationmodels.UtilizationModel;
 import org.cloudbus.cloudsim.utilizationmodels.UtilizationModelFull;
 
@@ -51,7 +50,7 @@ public class NetworkVmsExampleWithMetrics {
      * The datacenter
      */
     NetworkDatacenter datacenter0;
-    
+
     /**
      * Create NetworkVms
      *
@@ -101,12 +100,12 @@ public class NetworkVmsExampleWithMetrics {
         UtilizationModel utilizationModel = new UtilizationModelFull();
         NetworkCloudlet[] cloudlet = new NetworkCloudlet[cloudlets];
 
-        
+
         for (int i = 0; i < cloudlets; i++) {
             cloudlet[i] = new NetworkCloudlet(i, length, pesNumber, fileSize, outputSize,memory,
                     utilizationModel, utilizationModel, utilizationModel);
             // setting the owner of these Cloudlets
-            cloudlet[i].setUserId(userId);
+            cloudlet[i].setBroker(userId);
             list.add(cloudlet[i]);
         }
         return list;
@@ -149,7 +148,7 @@ public class NetworkVmsExampleWithMetrics {
          WorkloadFileReader workloadFileReader = new WorkloadFileReader("src/main/java/org/cloudbus/cloudsim/examples/sla/UniLu-Gaia-2014-2.swf", 1);
          cloudletList = workloadFileReader.generateWorkload().subList(0, 1000);
          for (Cloudlet cloudlet : cloudletList) {
-         cloudlet.setUserId(brokerId);
+         cloudlet.setBroker(brokerId);
          } */
         cloudletList = createCloudlet(brokerId, 10);
 
@@ -228,7 +227,7 @@ public class NetworkVmsExampleWithMetrics {
 
         // 6. Finally, we need to create a PowerDatacenter object.
         NetworkDatacenter datacenter =
-                new NetworkDatacenter(name, characteristics, 
+                new NetworkDatacenter(name, characteristics,
                         new NetworkVmAllocationPolicy(hostList), storageList, 0);
         createNetwork(datacenter);
         return datacenter;
@@ -253,7 +252,7 @@ public class NetworkVmsExampleWithMetrics {
         }
     }
 
-    
+
     /**
      * Creates the broker.
      *
@@ -278,10 +277,10 @@ public class NetworkVmsExampleWithMetrics {
         }
         System.out.println("* Total Cost Price ******: " + totalCost);
     }
-    
+
     */
     /*
-     private void responseTimeCloudlet(NetworkCloudlet cloudlet) {    
+     private void responseTimeCloudlet(NetworkCloudlet cloudlet) {
      double rt = cloudlet.getFinishTime() - cloudlet.getDatacenterArrivalTime();
      System.out.println("***** Tempo de resposta CLOUDLETS - " + rt);
      } */

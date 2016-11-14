@@ -96,18 +96,18 @@ abstract class CloudletSchedulerExperiment extends SimulationExperiment {
 
     private Host getHostSupplier() {
         int mips = 1000; // capacity of each CPU core (in Million Instructions per Second)
-        int ram = 2048; // host memory (MB)
-        long storage = 1000000; // host storage
-        long bw = 10000;
-        List<Pe> cpuCoresList = new ArrayList<>();
+        long ram = 2048; // host memory (MB)
+        long storage = 1000000; // host storage (MB)
+        long bw = 10000; //Megabits/s
+        List<Pe> peList = new ArrayList<>();
         for (int i = 0; i < HOST_PES; i++) {
-            cpuCoresList.add(new PeSimple(i, new PeProvisionerSimple(mips)));
+            peList.add(new PeSimple(i, new PeProvisionerSimple(mips)));
         }
 
-        return new HostSimple(getNumberOfCreatedHosts(),
-            new ResourceProvisionerSimple<>(new Ram(ram)),
-            new ResourceProvisionerSimple<>(new Bandwidth(bw)), storage, cpuCoresList,
-            new VmSchedulerTimeShared(cpuCoresList));
+        return new HostSimple(getNumberOfCreatedHosts(), storage, peList)
+            .setRamProvisioner(new ResourceProvisionerSimple(new Ram(ram)))
+            .setBwProvisioner(new ResourceProvisionerSimple(new Bandwidth(bw)))
+            .setVmScheduler(new VmSchedulerTimeShared(peList));
     }
 
     @Override
@@ -146,11 +146,11 @@ abstract class CloudletSchedulerExperiment extends SimulationExperiment {
             //Defines how CPU, RAM and Bandwidth resources are used
             //Sets the same utilization model for all these resources.
             UtilizationModel utilization = new UtilizationModelFull();
-            Cloudlet cloudlet = new CloudletSimple(getNumberOfCreatedCloudlets(),
-                CLOUDLET_LENGHT_MI, cloudletPes, fileSize, outputSize,
-                utilization, utilization, utilization);
-            cloudlet.setUserId(broker.getId());
-            return cloudlet;
+            return new CloudletSimple(getNumberOfCreatedCloudlets(), CLOUDLET_LENGHT_MI, cloudletPes)
+                .setCloudletFileSize(fileSize)
+                .setCloudletOutputSize(outputSize)
+                .setUtilizationModel(utilization)
+                .setBroker(broker);
         };
     }
 

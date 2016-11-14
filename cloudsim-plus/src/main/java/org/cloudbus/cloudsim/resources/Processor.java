@@ -13,20 +13,20 @@ import org.cloudbus.cloudsim.CloudletExecutionInfo;
  *
  * @author Manoel Campos da Silva Filho
  */
-public class Processor implements ResourceCapacity<Double>{
-    private double capacity;
+public class Processor implements ResourceCapacity {
+    private long capacity;
 
     /** @see #getNumberOfPes() */
     private int numberOfPes;
 
     /** @see #getCloudletExecList() */
-    private Collection<CloudletExecutionInfo> cloudletExecList;
+    private List<CloudletExecutionInfo> cloudletExecList;
 
     /**
      * Instantiates a Processor with zero capacity (zero PEs and MIPS).
      */
     public Processor(){
-        this(0.0, 0);
+        this(0, 0);
     }
 
     /**
@@ -35,7 +35,7 @@ public class Processor implements ResourceCapacity<Double>{
      * @param individualPeCapacity capacity of each {@link Pe Processing Elements (cores)}
      * @param numberOfPes number of {@link Pe Processing Elements (cores)}
      */
-    public Processor(Double individualPeCapacity, int numberOfPes) {
+    public Processor(long individualPeCapacity, int numberOfPes) {
         cloudletExecList = new ArrayList<>();
         setCapacity(individualPeCapacity);
         setNumberOfPes(numberOfPes);
@@ -60,7 +60,7 @@ public class Processor implements ResourceCapacity<Double>{
 
         mipsList = getNonZeroMipsElements(mipsList);
 
-        Double peMips = 0.0;
+        double peMips = 0.0;
         if(!mipsList.isEmpty()){
             peMips = mipsList.get(0);
 
@@ -72,7 +72,7 @@ public class Processor implements ResourceCapacity<Double>{
             }
         }
 
-        Processor p = new Processor(peMips, mipsList.size());
+        Processor p = new Processor((long)peMips, mipsList.size());
         p.cloudletExecList = cloudletExecList;
         return p;
     }
@@ -100,7 +100,7 @@ public class Processor implements ResourceCapacity<Double>{
      * that is the sum of all its {@link Pe Processing Elements (cores)} capacity.
      * @return
      */
-    public Double getTotalMipsCapacity(){
+    public double getTotalMipsCapacity(){
         return getCapacity()*getNumberOfPes();
     }
 
@@ -109,7 +109,7 @@ public class Processor implements ResourceCapacity<Double>{
      * @return
      */
     @Override
-    public Double getCapacity() {
+    public long getCapacity() {
         return capacity;
     }
 
@@ -173,9 +173,11 @@ public class Processor implements ResourceCapacity<Double>{
      * @return true if the capacity is valid and was set, false otherwise
      * @pre newCapacity != null && newCapacity >= 0
      */
-    public final boolean setCapacity(Double newCapacity) {
-        if(newCapacity == null || newCapacity < 0)
-            throw new IllegalArgumentException("Capacity cannot be null or negative");
+    public final boolean setCapacity(long newCapacity) {
+        if(newCapacity < 0) {
+            throw new IllegalArgumentException("Capacity cannot be negative");
+        }
+
         this.capacity = newCapacity;
         return true;
     }
@@ -184,8 +186,8 @@ public class Processor implements ResourceCapacity<Double>{
      * Gets a read-only list of cloudlets currently executing in this processor.
      * @return
      */
-    public Collection<CloudletExecutionInfo> getCloudletExecList() {
-        return Collections.unmodifiableCollection(cloudletExecList);
+    public List<CloudletExecutionInfo> getCloudletExecList() {
+        return Collections.unmodifiableList(cloudletExecList);
     }
 
 }

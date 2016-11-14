@@ -8,6 +8,8 @@ import org.cloudbus.cloudsim.Cloudlet;
 import org.cloudbus.cloudsim.CloudletExecutionInfo;
 import org.easymock.EasyMock;
 import org.junit.Test;
+
+import static java.util.stream.Collectors.toList;
 import static org.junit.Assert.*;
 
 /**
@@ -15,7 +17,7 @@ import static org.junit.Assert.*;
  * @author Manoel Campos da Silva Filho
  */
 public class ProcessorTest {
-    private static final double PE_MIPS = 1000;
+    private static final long PE_MIPS = 1000;
     private static final int NUMBER_OF_PES = 2;
 
     @Test
@@ -56,15 +58,17 @@ public class ProcessorTest {
 
     private List<Double> createMipsList(int numberOfPes) {
         List<Double> mipsList = new ArrayList<>();
-        IntStream.range(0, numberOfPes).forEach(i->mipsList.add(PE_MIPS));
+        for(int i = 0; i < numberOfPes; i++) {
+            mipsList.add((double) PE_MIPS);
+        }
         return mipsList;
     }
 
     @Test
     public void testGetTotalMipsCapacity() {
         Processor instance = createDefaultProcessor();
-        Double expResult = PE_MIPS * NUMBER_OF_PES;
-        assertEquals(expResult, instance.getTotalMipsCapacity());
+        long expResult = PE_MIPS * NUMBER_OF_PES;
+        assertEquals(expResult, instance.getTotalMipsCapacity(), 0);
     }
 
     /**
@@ -78,7 +82,7 @@ public class ProcessorTest {
     @Test
     public void testGetCapacity() {
         Processor instance = createDefaultProcessor();
-        Double expResult = PE_MIPS;
+        long expResult = PE_MIPS;
         assertEquals(expResult, instance.getCapacity());
     }
 
@@ -108,7 +112,7 @@ public class ProcessorTest {
 
     @Test
     public void testSetCapacity() {
-        double expResult = PE_MIPS*2;
+        long expResult = PE_MIPS*2;
         Processor instance = createDefaultProcessor();
         instance.setCapacity(expResult);
         assertEquals(expResult, instance.getCapacity(), 0.0);

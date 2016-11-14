@@ -5,7 +5,7 @@ import org.cloudbus.cloudsim.Cloudlet;
 import org.cloudbus.cloudsim.CloudletExecutionInfo;
 import org.cloudbus.cloudsim.CloudletSimpleTest;
 import org.cloudbus.cloudsim.core.CloudSim;
-import org.cloudbus.cloudsim.CloudSimMocker;
+import org.cloudbus.cloudsim.mocks.CloudSimMocker;
 import org.junit.Test;
 import static org.junit.Assert.*;
 import org.junit.Ignore;

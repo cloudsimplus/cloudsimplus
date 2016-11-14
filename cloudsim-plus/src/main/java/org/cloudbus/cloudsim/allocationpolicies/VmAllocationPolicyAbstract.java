@@ -38,19 +38,24 @@ public abstract class VmAllocationPolicyAbstract implements VmAllocationPolicy {
 
     /**
      * @see #getHostList()
+     * @todo It has to be assessed if the host list can be got directly from the
+     * Datacenter where the AllocationPolicy is linked to.
+     * By this way, a new Datacenter attribute can be added to this class
+     * and when a new Policy is set to a given Datacenter, the Datacenter
+     * sets itself to the AllocationPolicy, creating a bi-directional link.
+     * Thus, the AllocationPolicy constructor will not required a Host list anymore.
      */
     private List<? extends Host> hostList;
 
     /**
      * Creates a new VmAllocationPolicy object.
      *
-     * @param list of Hosts available in a {@link Datacenter}, that will be used
-     * by the Allocation Policy to place VMs.
+     * @param hostList the list of hosts that will be managed by the allocation policy to place VMs
      * @pre $none
      * @post $none
      */
-    public VmAllocationPolicyAbstract(List<? extends Host> list) {
-        setHostList(list);
+    public VmAllocationPolicyAbstract(List<? extends Host> hostList) {
+        setHostList(hostList);
     }
 
     /**

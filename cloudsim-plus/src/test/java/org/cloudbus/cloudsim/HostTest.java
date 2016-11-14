@@ -21,7 +21,7 @@ public class HostTest {
         System.out.println("testNullObject");
         final Host instance = Host.NULL;
         final Vm vm = Vm.NULL;
-        
+
         instance.addMigratingInVm(vm);
         assertTrue(instance.getVmsMigratingIn().isEmpty());
         instance.deallocatePesForVm(null);
@@ -29,15 +29,15 @@ public class HostTest {
         assertTrue(instance.getAllocatedMipsForVm(vm).isEmpty());
         assertEquals(0, instance.getAvailableMips(), 0);
         assertEquals(0, instance.getAvailableStorage(), 0);
-     
+
         assertEquals(0, instance.getBwCapacity(), 0);
-        assertEquals(ResourceProvisioner.NULL_LONG, instance.getBwProvisioner());
+        assertEquals(ResourceProvisioner.NULL, instance.getBwProvisioner());
         assertEquals(0, instance.getMaxAvailableMips(), 0);
         assertEquals(0, instance.getNumberOfFreePes(), 0);
         assertEquals(0, instance.getNumberOfPes(), 0);
         assertTrue(instance.getPeList().isEmpty());
         assertEquals(0, instance.getRamCapacity(), 0);
-        assertEquals(ResourceProvisioner.NULL_INT, instance.getRamProvisioner());
+        assertEquals(ResourceProvisioner.NULL, instance.getRamProvisioner());
         assertEquals(0, instance.getStorageCapacity(), 0);
         assertEquals(0, instance.getTotalAllocatedMipsForVm(vm), 0);
         assertEquals(0, instance.getTotalMips(), 0);
@@ -45,33 +45,33 @@ public class HostTest {
         assertEquals(VmScheduler.NULL, instance.getVmScheduler());
         assertFalse(instance.isFailed());
         assertFalse(instance.isSuitableForVm(vm));
-        
+
         instance.reallocateMigratingInVms();
         assertTrue(instance.getVmsMigratingIn().isEmpty());
         assertTrue(instance.getVmList().isEmpty());
-        
+
         instance.removeMigratingInVm(vm);
         assertTrue(instance.getVmsMigratingIn().isEmpty());
         assertTrue(instance.getVmList().isEmpty());
-        
+
         instance.setDatacenter(createMockDatacenter());
         assertEquals(Datacenter.NULL, instance.getDatacenter());
-        
+
         assertFalse(instance.setFailed(false));
         assertFalse(instance.setPeStatus(0, Pe.Status.FREE));
-        assertEquals(0, instance.getId());
+        assertEquals(-1, instance.getId());
         assertEquals(0, instance.updateVmsProcessing(0), 0);
         assertFalse(instance.vmCreate(vm));
         assertTrue(instance.getVmList().isEmpty());
-        
+
         instance.vmDestroy(vm);
         assertTrue(instance.getVmList().isEmpty());
         instance.vmDestroyAll();
         assertTrue(instance.getVmList().isEmpty());
-        
+
         instance.setOnUpdateVmsProcessingListener(createMockListener());
         assertEquals(EventListener.NULL, instance.getOnUpdateVmsProcessingListener());
-    }    
+    }
 
     private Datacenter createMockDatacenter() {
         Datacenter dc = EasyMock.createMock(Datacenter.class);
