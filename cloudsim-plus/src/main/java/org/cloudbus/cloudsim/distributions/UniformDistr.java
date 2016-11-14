@@ -90,7 +90,7 @@ public class UniformDistr extends ContinuousDistributionAbstract {
      * of experiments using this PRNG.
      *
      * This technique doesn't work for all the cases. However,
-     * in the cases it can be applied, in order to it work one have to
+     * in the cases it can be applied, in order to it work, one have to
      * perform some actions. Consider an experiment that has to run "n" times.
      * The first half of these experiments has to use the seeds the developer
      * want. However, the second half of the experiments have to

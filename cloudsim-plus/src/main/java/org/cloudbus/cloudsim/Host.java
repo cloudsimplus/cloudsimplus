@@ -349,6 +349,6 @@ public interface Host extends Identificable {
         @Override public EventListener<HostUpdatesVmsProcessingEventInfo> getOnUpdateVmsProcessingListener() { return EventListener.NULL; }
         @Override public void setOnUpdateVmsProcessingListener(EventListener<HostUpdatesVmsProcessingEventInfo> onUpdateVmsProcessingListener) {}
         @Override public long getAvailableStorage() { return 0L; }
-        @Override public boolean setFailed(boolean failed){return true;}
+        @Override public boolean setFailed(boolean failed){return false;}
     };
 }

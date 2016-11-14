@@ -109,9 +109,11 @@ public class DatacenterBrokerHeuristic extends DatacenterBrokerSimple {
      * depends on the heuristic parameters that have to be set carefully.</p>
      *
      * @param heuristic the heuristic to be set
+     * @return the DatacenterBrokerHeuristic instance
      */
-    public void setHeuristic(CloudletToVmMappingHeuristic heuristic) {
+    public DatacenterBrokerHeuristic setHeuristic(CloudletToVmMappingHeuristic heuristic) {
         this.heuristic = heuristic;
+        return this;
     }
 
 }

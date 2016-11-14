@@ -13,3 +13,9 @@ dependency-reduced-pom.xml
 *.iml
 *.ipr
 *.iws
+
+#Eclipse project files
+.classpath
+.project
+.settings/
+bin/

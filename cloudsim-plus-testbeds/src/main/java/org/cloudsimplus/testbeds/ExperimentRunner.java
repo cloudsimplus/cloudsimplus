@@ -11,7 +11,9 @@ import java.util.List;
 
 /**
  * A base class to run a given experiment a defined number of times
- * and collect statistics about the execution.
+ * and collect statistics about the execution. The runner represents a testbed
+ * compounded of a set of experiments that it runs.
+ *
  * @param <T> the class of experiment the runner will execute
  * @author Manoel Campos da Silva Filho
  */
@@ -324,33 +326,40 @@ public abstract class ExperimentRunner<T extends SimulationExperiment> implement
 	/**
 	 * Gets the seeds used to run each experiment.
 	 *
-	 * @see #createRandomGen(int)
+	 * @see #createRandomGenAndAddSeedToList(int, double, double)
 	 */
 	public List<Long> getSeeds() {
 		return seeds;
 	}
 
 	/**
-	 * Creates a pseudo random number generator (PRNG) for a experiment run.
-	 * If it is to apply the {@link #isApplyAntitheticVariatesTechnique() "Antithetic Variates Technique"} to reduce
+	 * Creates a pseudo random number generator (PRNG) for a experiment run that generates
+     * uniform values between [min and max[. Adds the PRNG seed to the {@link #getSeeds()} list.
+ 	 * If it is to apply the {@link #isApplyAntitheticVariatesTechnique() "Antithetic Variates Technique"} to reduce
 	 * results variance, the second half of experiments will used
 	 * the seeds from the first half.
 	 *
+     * @param minValue the minimum value that generator will return (inclusive)
+     * @param maxValue the minimum value that generator will return (exclusive)
 	 * @return the created PRNG
 	 *
 	 * @see UniformDistr#isApplyAntitheticVariatesTechnique()
 	 */
-	protected UniformDistr createRandomGen(int experimentIndex) {
-		if (isApplyAntitheticVariatesTechnique() && experimentIndex >= halfSimulationRuns()) {
+	protected UniformDistr createRandomGenAndAddSeedToList(int experimentIndex, double minValue, double maxValue) {
+        UniformDistr prng;
+		if (isApplyAntitheticVariatesTechnique() &&
+        numberOfSimulationRuns > 1 && experimentIndex >= halfSimulationRuns()) {
 			int previousExperiment = experimentIndex - halfSimulationRuns();
 
-			return new UniformDistr(0, 1, seeds.get(previousExperiment))
+			prng = new UniformDistr(minValue, maxValue, seeds.get(previousExperiment))
 							.setApplyAntitheticVariatesTechnique(true);
 		}
 
 		final long experimentSeed = getBaseSeed() + experimentIndex + 1;
-		return new UniformDistr(0, 1, experimentSeed);
-	}
+		prng = new UniformDistr(minValue, maxValue, experimentSeed);
+        addSeed(prng.getSeed());
+        return prng;
+    }
 
 	/**
 	 * Adds a seed to the list of seeds used for each experiment.
@@ -390,19 +399,23 @@ public abstract class ExperimentRunner<T extends SimulationExperiment> implement
 		setupInternal();
 
 		printSimulationParameters();
+
 		Log.disable();
+        try {
+            experimentsStartTime = System.currentTimeMillis();
+            for(int i = 0; i < getNumberOfSimulationRuns(); i++){
+	            if(isVerbose()) {
+		            System.out.print(((i+1) % 100 == 0 ? String.format(". Run #%d\n", i+1) : "."));
+	            }
+	            createExperiment(i).run();
+            }
+            System.out.println();
+            experimentsFinishTime = (System.currentTimeMillis() - experimentsStartTime)/1000;
+        } finally {
+            Log.enable();
+        }
 
-		experimentsStartTime = System.currentTimeMillis();
-		for(int i = 0; i < getNumberOfSimulationRuns(); i++){
-			if(isVerbose()) {
-				System.out.print(((i+1) % 100 == 0 ? String.format(". Run #%d\n", i+1) : "."));
-			}
-			createExperiment(i).run();
-		}
-		System.out.println();
-		experimentsFinishTime = (System.currentTimeMillis() - experimentsStartTime)/1000;
-
-		printResults(computeStatistics());
+        printFinalResults(computeFinalStatistics());
 	}
 
 	/**
@@ -431,7 +444,7 @@ public abstract class ExperimentRunner<T extends SimulationExperiment> implement
 	 * if the "Antithetic Variates Technique" is to be applied,
 	 * otherwise return the same given samples list.
 	 *
-	 * @see #createRandomGen(int)
+	 * @see #createRandomGenAndAddSeedToList(int, double, double)
 	 */
 	protected List<Double> computeAntitheticMeans(List<Double> samples) {
 		if(!isApplyAntitheticVariatesTechnique())
@@ -451,15 +464,22 @@ public abstract class ExperimentRunner<T extends SimulationExperiment> implement
 	}
 
 	protected abstract void printSimulationParameters();
-	protected abstract SummaryStatistics computeStatistics();
+
+    /**
+     * Computes the final statistics for all experiment runs.
+     *
+     * @return
+     */
+	protected abstract SummaryStatistics computeFinalStatistics();
 
 	/**
 	 * Prints final simulation results such as means, standard deviations
 	 * and confidence intervals.
 	 *
-	 * @param stats the {@link SummaryStatistics} object to compute the statistics
+	 * @param stats the {@link SummaryStatistics} containing means of each experiment run
+     *              that will be used to computed an overall mean and other statistics
 	 */
-	protected abstract void printResults(SummaryStatistics stats);
+	protected abstract void printFinalResults(SummaryStatistics stats);
 
 	public ExperimentRunner setBaseSeed(long baseSeed) {
 		this.baseSeed = baseSeed;
@@ -468,11 +488,19 @@ public abstract class ExperimentRunner<T extends SimulationExperiment> implement
 
 	/**
 	 * Indicates if the runner will output execution logs or not.
+     * This doesn't affect the verbosity of individual experiments executed.
+     * Each {@link SimulationExperiment} has its own verbose attribute.
 	 */
 	public boolean isVerbose() {
 		return verbose;
 	}
 
+    /**
+     * Defines if the runner will output execution logs or not.
+     * This doesn't affect the verbosity of individual experiments executed.
+     * Each {@link SimulationExperiment} has its own verbose attribute.
+     * @param verbose true if the results have to be output, falser otherwise
+     */
 	public ExperimentRunner setVerbose(boolean verbose) {
 		this.verbose = verbose;
 		return this;

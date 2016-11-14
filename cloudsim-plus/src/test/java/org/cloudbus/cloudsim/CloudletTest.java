@@ -41,7 +41,7 @@ public class CloudletTest {
         assertEquals(0, Cloudlet.NULL.getCloudletFinishedSoFar(), 0);
         assertEquals(0, Cloudlet.NULL.getCloudletFinishedSoFar(), 0);
         assertEquals("", Cloudlet.NULL.getCloudletHistory());
-        assertEquals(0, Cloudlet.NULL.getId(), 0);
+        assertEquals(-1, Cloudlet.NULL.getId());
         assertEquals(0, Cloudlet.NULL.getCloudletLength(), 0);
         assertEquals(0, Cloudlet.NULL.getCloudletOutputSize(), 0);
         assertEquals(Cloudlet.Status.FAILED, Cloudlet.NULL.getStatus());
@@ -56,11 +56,11 @@ public class CloudletTest {
         assertEquals(0, Cloudlet.NULL.getNumberOfPes(), 0);
         assertEquals(0, Cloudlet.NULL.getProcessingCost(), 0);
         assertTrue(Cloudlet.NULL.getRequiredFiles().isEmpty());
-        assertEquals(0, Cloudlet.NULL.getReservationId(), 0);
-        assertEquals(0, Cloudlet.NULL.getDatacenterId(), 0);
+        assertEquals(-1, Cloudlet.NULL.getReservationId());
+        assertEquals(-1, Cloudlet.NULL.getDatacenterId());
         assertEquals(0, Cloudlet.NULL.getDatacenterArrivalTime(), 0);
         assertEquals(0, Cloudlet.NULL.getSubmissionTime(0), 0);
-        assertEquals(0, Cloudlet.NULL.getUserId(), 0);
+        assertEquals(-1, Cloudlet.NULL.getUserId());
         assertSame(UtilizationModel.NULL, Cloudlet.NULL.getUtilizationModelBw());
         assertSame(UtilizationModel.NULL, Cloudlet.NULL.getUtilizationModelCpu());
         assertSame(UtilizationModel.NULL, Cloudlet.NULL.getUtilizationModelRam());
@@ -68,7 +68,7 @@ public class CloudletTest {
         assertEquals(0, Cloudlet.NULL.getUtilizationOfCpu(0), 0);
         assertEquals(0, Cloudlet.NULL.getUtilizationOfRam(0), 0);
         Cloudlet.NULL.setVmId(100);
-        assertEquals(Cloudlet.NOT_ASSIGNED, Cloudlet.NULL.getVmId(), 0);
+        assertEquals(-1, Cloudlet.NULL.getVmId());
         assertEquals(0, Cloudlet.NULL.getWaitingTime(), 0);
         assertEquals(0, Cloudlet.NULL.getWallClockTimeInLastExecutedDatacenter(), 0);
         assertEquals(0, Cloudlet.NULL.getWallClockTime(0), 0);
@@ -90,16 +90,16 @@ public class CloudletTest {
         assertSame(EventListener.NULL, Cloudlet.NULL.getOnCloudletFinishEventListener());
 
         Cloudlet.NULL.setUserId(10);
-        assertEquals(0, Cloudlet.NULL.getUserId(), 0);
+        assertEquals(-1, Cloudlet.NULL.getUserId());
 
         Cloudlet.NULL.setSubmissionDelay(10);
         assertEquals(0, Cloudlet.NULL.getSubmissionDelay(), 0);
 
-        assertEquals(0, Cloudlet.NULL.getDatacenterId(), 0);
+        assertEquals(-1, Cloudlet.NULL.getDatacenterId());
         assertEquals(0, Cloudlet.NULL.getCostPerSec(), 0);
 
         Cloudlet.NULL.assignCloudletToDatacenter(1, 1, 1);
-        assertEquals(0, Cloudlet.NULL.getDatacenterId(), 0);
+        assertEquals(-1, Cloudlet.NULL.getDatacenterId());
         assertEquals(0, Cloudlet.NULL.getCostPerSec(), 0);
         assertEquals(0, Cloudlet.NULL.getCostPerBw(), 0);
 

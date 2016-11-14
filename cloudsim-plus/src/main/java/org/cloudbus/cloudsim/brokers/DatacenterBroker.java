@@ -56,7 +56,8 @@ public interface DatacenterBroker {
      * @param <T>
      * @return the list of finished cloudlets
      */
-    <T extends Cloudlet> List<T> getCloudletsFinishedList();
+    <T extends Cloudlet> List<T>
+    getCloudletsFinishedList();
 
     Vm getWaitingVm(final int index);
 

@@ -94,6 +94,8 @@ public class HostFaultInjection extends SimEntity {
             Log.printLine(CloudSim.clock() + " ---> Host " + id + " FAILURE...\n");
         }
         
+        
+        
         if (numberOfFailedPes == host.getPeList().size()) {
             setVmsToFailedWhenHostIsFailed();
         }

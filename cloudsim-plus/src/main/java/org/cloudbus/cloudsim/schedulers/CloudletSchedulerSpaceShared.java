@@ -17,11 +17,15 @@ import org.cloudbus.cloudsim.resources.Processor;
 
 /**
  * CloudletSchedulerSpaceShared implements a policy of scheduling performed by a
- * virtual machine to run its {@link Cloudlet Cloudlets}. It consider there will
- * be only one cloudlet per VM. Other cloudlets will be in a waiting list. We
- * consider that file transfer from cloudlets waiting happens before cloudlet
- * execution. I.e., even though cloudlets must wait for CPU, data transfer
- * happens as soon as cloudlets are submitted.
+ * virtual machine to run its {@link Cloudlet Cloudlets}. It considers there will
+ * be only one Cloudlet per VM. Other Cloudlets will be in a waiting list. It also
+ * considers that the time to transfer Cloudlets to the Vm happens before Cloudlet
+ * starts executing. I.e., even though Cloudlets must wait for CPU, data transfer
+ * happens as soon as Cloudlets are submitted.
+ *
+ * <p><b>This scheduler does not consider Cloudlets priorities to
+ * define execution order. If actual priorities are defined for Cloudlets, they
+ * are just ignored by the scheduler.</b></p>
  *
  * @author Rodrigo N. Calheiros
  * @author Anton Beloglazov
@@ -39,12 +43,6 @@ public class CloudletSchedulerSpaceShared extends CloudletSchedulerAbstract {
      */
     public CloudletSchedulerSpaceShared() {
         super();
-    }
-
-    @Override
-    public void cloudletFinish(CloudletExecutionInfo rcl) {
-        super.cloudletFinish(rcl);
-        removeUsedPes(rcl.getNumberOfPes());
     }
 
     @Override
@@ -134,7 +132,7 @@ public class CloudletSchedulerSpaceShared extends CloudletSchedulerAbstract {
      * <p>It doesn't consider the given Cloudlet because the scheduler
      * ensures that the Cloudlet will use all required PEs until it
      * finishes executing. </p>
-     * 
+     *
      * @param rcl {@inheritDoc}
      * @param mipsShare {@inheritDoc}
      * @return {@inheritDoc}
@@ -181,7 +179,7 @@ public class CloudletSchedulerSpaceShared extends CloudletSchedulerAbstract {
 	 *
      * @param cloudlet {@inheritDoc}
 	 * @return {@inheritDoc}
-	 */    
+	 */
     @Override
     public boolean canAddCloudletToExecutionList(CloudletExecutionInfo cloudlet) {
         return isThereEnoughFreePesForCloudlet(cloudlet);
