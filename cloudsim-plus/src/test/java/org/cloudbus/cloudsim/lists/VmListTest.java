@@ -78,13 +78,13 @@ public class VmListTest {
         assertNull(VmList.getByIdAndUserId(vmList, 0, 1));
         assertNull(VmList.getByIdAndUserId(vmList, 1, 1));
 
-        final DatacenterBroker broker0 = Mocks.createMockBroker(0);
-        VmSimple vm1 = VmSimpleTest.createVm(0, 1);
+        final DatacenterBroker broker0 = Mocks.createMockBroker(0, 4);
+        VmSimple vm1 = VmSimpleTest.createVmWithSpecificNumberOfPEsForSpecificUser(0, broker0, 1);
         VmSimple vm2 = VmSimpleTest.createVmWithSpecificNumberOfPEsForSpecificUser(1, broker0, 1);
 
-        final DatacenterBroker user1 = Mocks.createMockBroker(1);
-        VmSimple vm3 = VmSimpleTest.createVmWithSpecificNumberOfPEsForSpecificUser(0, user1, 1);
-        VmSimple vm4 = VmSimpleTest.createVmWithSpecificNumberOfPEsForSpecificUser(1, user1, 2);
+        final DatacenterBroker broker1 = Mocks.createMockBroker(1, 4);
+        VmSimple vm3 = VmSimpleTest.createVmWithSpecificNumberOfPEsForSpecificUser(0, broker1, 1);
+        VmSimple vm4 = VmSimpleTest.createVmWithSpecificNumberOfPEsForSpecificUser(1, broker1, 2);
 
         vmList.add(vm1);
         vmList.add(vm2);

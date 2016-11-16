@@ -182,37 +182,26 @@ public class CloudSimExample3 {
         peList.add(new PeSimple(0, new PeProvisionerSimple(mips))); // need to store Pe id and MIPS Rating
 
         //4. Create Hosts with its id and list of PEs and add them to the list of machines
-        int hostId = 0;
+        int hostId = -1;
         int ram = 2048; //host memory (MB)
         long storage = 1000000; //host storage
         long bw = 10000;
 
-        hostList.add(new HostSimple(
-                hostId,
-                new ResourceProvisionerSimple(new Ram(ram)),
-                new ResourceProvisionerSimple(new Bandwidth(bw)),
-                storage,
-                peList,
-                new VmSchedulerTimeShared(peList)
-        )
-        ); // This is our first machine
+        Host host = new HostSimple(++hostId, storage, peList)
+            .setRamProvisioner(new ResourceProvisionerSimple(new Ram(ram)))
+            .setBwProvisioner(new ResourceProvisionerSimple(new Bandwidth(bw)))
+            .setVmScheduler(new VmSchedulerTimeShared(peList));
+        hostList.add(host);        
 
         //create another machine in the Data center
         List<Pe> peList2 = new ArrayList<>();
-
         peList2.add(new PeSimple(0, new PeProvisionerSimple(mips)));
 
-        hostId++;
-
-        hostList.add(new HostSimple(
-                hostId,
-                new ResourceProvisionerSimple(new Ram(ram)),
-                new ResourceProvisionerSimple(new Bandwidth(bw)),
-                storage,
-                peList2,
-                new VmSchedulerTimeShared(peList2)
-        )
-        ); // This is our second machine
+        Host hos2t = new HostSimple(++hostId, storage, peList2)
+            .setRamProvisioner(new ResourceProvisionerSimple(new Ram(ram)))
+            .setBwProvisioner(new ResourceProvisionerSimple(new Bandwidth(bw)))
+            .setVmScheduler(new VmSchedulerTimeShared(peList2));
+        hostList.add(host);        
 
         // 5. Create a DatacenterCharacteristics object that stores the
         //    properties of a data center: architecture, OS, list of

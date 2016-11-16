@@ -15,7 +15,7 @@ import org.cloudbus.cloudsim.utilizationmodels.UtilizationModelFull;
  * 3 {@link NetworkCloudlet}'s with 3 {@link CloudletExecutionTask}'s each one.
  * The cloudlets just process data, not performing network communication,
  * running in a similar way of a regular {@link org.cloudbus.cloudsim.Cloudlet}.
- * The difference is that the processing is splitted among the NetworkCloudlet's tasks,
+ * The difference is that the processing is split among the NetworkCloudlet's tasks,
  * simulating a distributed application.
  *
  * @author Saurabh Kumar Garg
@@ -59,16 +59,17 @@ public class NetworkVmsExampleSimpleAppCloudlet extends NetworkVmsExampleAppClou
             long memory = 256;
             int pesNumber = 4;
             UtilizationModel utilizationModel = new UtilizationModelFull();
-            NetworkCloudlet netCloudlet = new NetworkCloudlet(
-                    ++currentNetworkCloudletId,
-                    networkCloudletLengthMI, pesNumber, fileSize, outputSize, memory,
-                    utilizationModel, utilizationModel, utilizationModel);
-            netCloudlet.setAppCloudlet(app);
-            // setting the owner of the NetworkCloudlet
-            netCloudlet.setBroker(broker.getId());
+            NetworkCloudlet cloudlet = new NetworkCloudlet(
+                    ++currentNetworkCloudletId, networkCloudletLengthMI, pesNumber); 
+            cloudlet.setMemory(memory)
+                    .setAppCloudlet(app)
+                    .setCloudletFileSize(fileSize)
+                    .setCloudletOutputSize(outputSize)
+                    .setUtilizationModel(utilizationModel)
+                    .setBroker(broker);
 
-            createNetworkCloudletExecutionTasks(netCloudlet);
-            networkCloudletList.add(netCloudlet);
+            createNetworkCloudletExecutionTasks(cloudlet);
+            networkCloudletList.add(cloudlet);
         }
 
         return networkCloudletList;

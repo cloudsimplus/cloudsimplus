@@ -37,9 +37,11 @@ public class HarddriveStorageTest {
         new HarddriveStorage(-1);
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void testNewHarddriveStorage_zeroSize() {
-        new HarddriveStorage(0);
+        final int expResult = 0;
+        HarddriveStorage hd = new HarddriveStorage(expResult);
+        assertEquals(expResult, hd.getCapacity());
     }
 
     @Test

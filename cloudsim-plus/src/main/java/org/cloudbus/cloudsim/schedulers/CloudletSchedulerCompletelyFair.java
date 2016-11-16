@@ -4,15 +4,11 @@ import java.util.*;
 
 import org.cloudbus.cloudsim.Cloudlet;
 import org.cloudbus.cloudsim.CloudletExecutionInfo;
-import org.cloudbus.cloudsim.core.CloudSim;
 import org.cloudbus.cloudsim.resources.Pe;
 
-import java.util.function.Consumer;
 import java.util.function.Predicate;
-import java.util.stream.Stream;
 
 import static java.util.stream.Collectors.toList;
-import org.cloudbus.cloudsim.Log;
 
 /**
  * A simplified implementation of the <a href="https://en.wikipedia.org/wiki/Completely_Fair_Scheduler">Completely Fair Scheduler (CFS)</a>

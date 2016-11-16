@@ -14,10 +14,31 @@ public class Mocks {
      */
     private Mocks() {}
 
+    /**
+     * Creates a mocked DatacenterBroker where the {@link DatacenterBroker#getId()}
+     * is expected to be called just once. For such a call, it will be returned
+     * the given id.
+     * 
+     * @param brokerId the id to return for the expected call of {@link DatacenterBroker#getId()} 
+     * @return a mocked DatacenterBroker
+     */
     public static DatacenterBroker createMockBroker(int brokerId) {
+        return createMockBroker(brokerId, 1);
+    }
+    
+    /**
+     * Creates a mocked DatacenterBroker where the {@link DatacenterBroker#getId()}
+     * is expected to be called a given number of times. For each call, it will be returned
+     * the given id.
+     * 
+     * @param brokerId the id to return for each call of {@link DatacenterBroker#getId()} 
+     * @param expectedCallsToGetId the number of times the {@link DatacenterBroker#getId()} is expected to be called
+     * @return a mocked DatacenterBroker
+     */
+    public static DatacenterBroker createMockBroker(int brokerId, int expectedCallsToGetId) {
         final DatacenterBroker broker = EasyMock.createMock(DatacenterBroker.class);
-        EasyMock.expect(broker.getId()).andReturn(brokerId).once();
+        EasyMock.expect(broker.getId()).andReturn(brokerId).times(expectedCallsToGetId);
         EasyMock.replay(broker);
-        return broker;
+        return broker;        
     }
 }

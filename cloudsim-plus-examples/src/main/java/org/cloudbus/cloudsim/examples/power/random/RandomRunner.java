@@ -64,10 +64,8 @@ public class RandomRunner extends RunnerAbstract {
 			CloudSim.init(1, Calendar.getInstance(), false);
 
 			broker = Helper.createBroker();
-			int brokerId = broker.getId();
-
-			cloudletList = RandomHelper.createCloudletList(brokerId, RandomConstants.NUMBER_OF_VMS);
-			vmList = Helper.createVmList(brokerId, cloudletList.size());
+			cloudletList = RandomHelper.createCloudletList(broker, RandomConstants.NUMBER_OF_VMS);
+			vmList = Helper.createVmList(broker, cloudletList.size());
 			hostList = Helper.createHostList(RandomConstants.NUMBER_OF_HOSTS);
 		} catch (Exception e) {
 			e.printStackTrace();

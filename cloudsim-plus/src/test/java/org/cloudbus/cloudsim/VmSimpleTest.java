@@ -15,6 +15,7 @@ import static org.easymock.EasyMock.verify;
 
 import java.util.ArrayList;
 import java.util.List;
+import org.cloudbus.cloudsim.mocks.Mocks;
 import org.cloudsimplus.listeners.DatacenterToVmEventInfo;
 import org.cloudsimplus.listeners.EventListener;
 import org.cloudsimplus.listeners.HostToVmEventInfo;
@@ -51,7 +52,9 @@ public class VmSimpleTest {
     @Before
     public void setUp() throws Exception {
         vmScheduler = new CloudletSchedulerDynamicWorkload(MIPS, PES_NUMBER);
+        DatacenterBroker broker = Mocks.createMockBroker(USER_ID, 2);
         vm = VmSimpleTest.createVm(vmScheduler);
+        vm.setBroker(broker);
     }
 
 

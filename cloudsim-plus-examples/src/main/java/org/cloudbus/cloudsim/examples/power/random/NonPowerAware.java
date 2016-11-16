@@ -12,7 +12,6 @@ import org.cloudbus.cloudsim.examples.power.Constants;
 import org.cloudbus.cloudsim.examples.power.Helper;
 import org.cloudbus.cloudsim.power.PowerDatacenterNonPowerAware;
 import org.cloudbus.cloudsim.power.PowerHost;
-import org.cloudbus.cloudsim.power.PowerHostSimple;
 import org.cloudbus.cloudsim.power.PowerVmAllocationPolicySimple;
 
 /**
@@ -51,12 +50,11 @@ public class NonPowerAware {
 			CloudSim.init(1, Calendar.getInstance(), false);
 
 			DatacenterBroker broker = Helper.createBroker();
-			int brokerId = broker.getId();
 
 			List<Cloudlet> cloudletList = RandomHelper.createCloudletList(
-					brokerId,
+					broker,
 					RandomConstants.NUMBER_OF_VMS);
-			List<Vm> vmList = Helper.createVmList(brokerId, cloudletList.size());
+			List<Vm> vmList = Helper.createVmList(broker, cloudletList.size());
 			List<PowerHost> hostList = Helper.createHostList(RandomConstants.NUMBER_OF_HOSTS);
 
 			PowerDatacenterNonPowerAware datacenter = (PowerDatacenterNonPowerAware) Helper.createDatacenter(

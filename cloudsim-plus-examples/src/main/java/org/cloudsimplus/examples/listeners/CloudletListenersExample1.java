@@ -214,7 +214,7 @@ public class CloudletListenersExample1 {
                     .setCloudletFileSize(fileSize)
                     .setCloudletOutputSize(outputSize)
                     .setUtilizationModel(utilizationModel)
-                    .setBroker(broker.getId())
+                    .setBroker(broker)
                     .setVmId(vm.getId())
                     .setOnCloudletFinishEventListener(onCloudletFinishListener);
 
@@ -262,9 +262,10 @@ public class CloudletListenersExample1 {
         long storage = 1000000; // host storage (MB)
         long bw = 10000; //Megabits/s
 
-        return new HostSimple(id,
-                new ResourceProvisionerSimple(new Ram(ram)),
-                new ResourceProvisionerSimple(new Bandwidth(bw)),
-                storage, peList, new VmSchedulerTimeShared(peList));
+        return new HostSimple(id, storage, peList)
+            .setRamProvisioner(new ResourceProvisionerSimple(new Ram(ram)))
+            .setBwProvisioner(new ResourceProvisionerSimple(new Bandwidth(bw)))
+            .setVmScheduler(new VmSchedulerTimeShared(peList));
+        
     }
 }

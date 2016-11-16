@@ -41,6 +41,7 @@ import org.cloudbus.cloudsim.provisioners.PeProvisionerSimple;
 import org.cloudbus.cloudsim.provisioners.ResourceProvisionerSimple;
 import org.cloudbus.cloudsim.resources.Bandwidth;
 import org.cloudbus.cloudsim.resources.Ram;
+import org.cloudbus.cloudsim.schedulers.CloudletScheduler;
 
 /**
  * A simple example showing how to create 2 datacenters with 1 host each and run
@@ -84,17 +85,14 @@ public class NetworkExample3 {
 
             //Third step: Create Brokers
             DatacenterBroker broker1 = createBroker(1);
-            int brokerId1 = broker1.getId();
-
             DatacenterBroker broker2 = createBroker(2);
-            int brokerId2 = broker2.getId();
 
             //Fourth step: Create one virtual machine for each broker/user
             vmlist1 = new ArrayList<>();
             vmlist2 = new ArrayList<>();
 
             //VM description
-            int vmid = 0;
+            int vmid = -1;
             long size = 10000; //image size (MB)
             int mips = 250;
             int ram = 512; //vm memory (MB)
@@ -103,10 +101,16 @@ public class NetworkExample3 {
             String vmm = "Xen"; //VMM name
 
             //create two VMs: the first one belongs to user1
-            Vm vm1 = new VmSimple(vmid, brokerId1, mips, pesNumber, ram, bw, size, vmm, new CloudletSchedulerTimeShared());
+            Vm vm1 = new VmSimple(++vmid, mips, pesNumber)
+                    .setBroker(broker1)
+                    .setRam(ram).setBw(bw).setSize(size)
+                    .setCloudletScheduler(new CloudletSchedulerTimeShared());
 
             //the second VM: this one belongs to user2
-            Vm vm2 = new VmSimple(vmid, brokerId2, mips, pesNumber, ram, bw, size, vmm, new CloudletSchedulerTimeShared());
+            Vm vm2 = new VmSimple(++vmid, mips, pesNumber)
+                    .setBroker(broker2)
+                    .setRam(ram).setBw(bw).setSize(size)
+                    .setCloudletScheduler(new CloudletSchedulerTimeShared());
 
             //add the VMs to the vmlists
             vmlist1.add(vm1);
@@ -132,14 +136,14 @@ public class NetworkExample3 {
                     .setCloudletFileSize(fileSize)
                     .setCloudletOutputSize(outputSize)
                     .setUtilizationModel(utilizationModel)
-                    .setBroker(brokerId1);
+                    .setBroker(broker1);
 
             Cloudlet cloudlet2 =
                 new CloudletSimple(++id, length, pesNumber)
                     .setCloudletFileSize(fileSize)
                     .setCloudletOutputSize(outputSize)
                     .setUtilizationModel(utilizationModel)
-                    .setBroker(brokerId2);
+                    .setBroker(broker2);
 
             //add the cloudlets to the lists: each cloudlet belongs to one user
             cloudletList1.add(cloudlet1);
@@ -180,10 +184,10 @@ public class NetworkExample3 {
             CloudSim.stopSimulation();
 
             new CloudletsTableBuilderHelper(newList1)
-                    .setPrinter(new TextTableBuilder("User " + brokerId1))
+                    .setPrinter(new TextTableBuilder("Broker " + broker1))
                     .build();
             new CloudletsTableBuilderHelper(newList2)
-                    .setPrinter(new TextTableBuilder("User " + brokerId2))
+                    .setPrinter(new TextTableBuilder("Broker " + broker2))
                     .build();
             Log.printFormattedLine("%s finished!", NetworkExample3.class.getSimpleName());
         } catch (RuntimeException e) {
@@ -213,17 +217,13 @@ public class NetworkExample3 {
         long bw = 10000;
 
         //in this example, the VMAllocatonPolicy in use is SpaceShared. It means that only one VM
-        //is allowed to run on each Pe. As each HostSimple has only one Pe, only one VM can run on each HostSimple.
-        hostList.add(new HostSimple(
-                hostId,
-                new ResourceProvisionerSimple(new Ram(ram)),
-                new ResourceProvisionerSimple(new Bandwidth(bw)),
-                storage,
-                peList,
-                new VmSchedulerSpaceShared(peList)
-        )
-        ); // This is our machine
-
+        //is allowed to run on each Pe. As each HostSimple has only one Pe, only one VM can run on each HostSimple.        
+        Host host = new HostSimple(hostId, storage, peList)
+            .setRamProvisioner(new ResourceProvisionerSimple(new Ram(ram)))
+            .setBwProvisioner(new ResourceProvisionerSimple(new Bandwidth(bw)))
+            .setVmScheduler(new VmSchedulerSpaceShared(peList));
+        hostList.add(host);
+        
         // 5. Create a DatacenterCharacteristics object that stores the
         //    properties of a data center: architecture, OS, list of
         //    Machines, allocation policy: time- or space-shared, time zone
@@ -232,7 +232,6 @@ public class NetworkExample3 {
         double costPerMem = 0.05;		// the cost of using memory in this resource
         double costPerStorage = 0.001;	// the cost of using storage in this resource
         double costPerBw = 0.0;			// the cost of using bw in this resource
-        List<FileStorage> storageList = new LinkedList<>();	//we are not adding SAN devices by now
 
         DatacenterCharacteristics characteristics =
             new DatacenterCharacteristicsSimple(hostList)
@@ -242,8 +241,7 @@ public class NetworkExample3 {
                 .setCostPerBw(costPerBw);
 
         // 6. Finally, we need to create a DatacenterSimple object.
-        return new DatacenterSimple(name, characteristics,
-                new VmAllocationPolicySimple(hostList), storageList, 0);
+        return new DatacenterSimple(name, characteristics, new VmAllocationPolicySimple(hostList));
     }
 
     //We strongly encourage users to develop their own broker policies, to submit vms and cloudlets according

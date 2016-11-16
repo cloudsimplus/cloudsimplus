@@ -33,6 +33,7 @@ import org.cloudbus.cloudsim.VmSimple;
 import org.cloudbus.cloudsim.allocationpolicies.VmAllocationPolicySimple;
 import org.cloudbus.cloudsim.core.CloudSim;
 import org.cloudbus.cloudsim.provisioners.PeProvisionerSimple;
+import org.cloudbus.cloudsim.provisioners.ResourceProvisioner;
 import org.cloudbus.cloudsim.resources.Bandwidth;
 import org.cloudbus.cloudsim.provisioners.ResourceProvisionerSimple;
 import org.cloudbus.cloudsim.resources.Ram;
@@ -177,9 +178,10 @@ public class DynamicCloudletsArrival2 {
         long size = 10000; // image size (MB)
         int ram = 512; // vm memory (MB)
         long bw = 1000;
-        Vm vm = new VmSimple(
-                id, broker.getId(), mips, VM_PES_NUMBER, ram, bw, size,
-                VMM, new CloudletSchedulerTimeShared());
+        Vm vm = new VmSimple(id, mips, VM_PES_NUMBER)
+                .setBroker(broker)
+                .setRam(ram).setBw(bw).setSize(size)
+                .setCloudletScheduler(new CloudletSchedulerTimeShared());
         return vm;
     }
 
@@ -201,7 +203,7 @@ public class DynamicCloudletsArrival2 {
             .setCloudletFileSize(fileSize)
             .setCloudletOutputSize(outputSize)
             .setUtilizationModel(utilizationModel)
-            .setBroker(broker.getId())
+            .setBroker(broker)
             .setVmId(vm.getId());
 
         return cloudlet;
@@ -221,7 +223,6 @@ public class DynamicCloudletsArrival2 {
         double costPerMem = 0.05; // the cost of using memory in this resource
         double costPerStorage = 0.001; // the cost of using storage in this datacenter
         double costPerBw = 0.0; // the cost of using bw in this resource
-        List<FileStorage> storageList = new ArrayList<>(); // we are not adding SAN devices by now
 
         DatacenterCharacteristics characteristics =
             new DatacenterCharacteristicsSimple(hostList)
@@ -230,8 +231,7 @@ public class DynamicCloudletsArrival2 {
                 .setCostPerStorage(costPerStorage)
                 .setCostPerBw(costPerBw);
 
-        return new DatacenterSimple(name, characteristics,
-                new VmAllocationPolicySimple(hostList), storageList, 0);
+        return new DatacenterSimple(name, characteristics, new VmAllocationPolicySimple(hostList));
     }
 
     /**
@@ -250,9 +250,9 @@ public class DynamicCloudletsArrival2 {
         long storage = 1000000; // host storage (MB)
         long bw = 10000; //Megabits/s
 
-        return new HostSimple(id,
-                new ResourceProvisionerSimple(new Ram(ram)),
-                new ResourceProvisionerSimple(new Bandwidth(bw)),
-                storage, peList, new VmSchedulerSpaceShared(peList));
+        return new HostSimple(id, storage, peList)
+                .setRamProvisioner(new ResourceProvisionerSimple(new Ram(ram)))
+                .setBwProvisioner(new ResourceProvisionerSimple(new Bandwidth(bw)))
+                .setVmScheduler(new VmSchedulerSpaceShared(peList));
     }
 }

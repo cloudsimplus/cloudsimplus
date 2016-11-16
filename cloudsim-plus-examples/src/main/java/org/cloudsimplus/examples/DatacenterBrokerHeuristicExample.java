@@ -19,7 +19,6 @@ import org.cloudbus.cloudsim.HostSimple;
 import org.cloudbus.cloudsim.Log;
 import org.cloudbus.cloudsim.resources.Pe;
 import org.cloudbus.cloudsim.resources.PeSimple;
-import org.cloudbus.cloudsim.resources.FileStorage;
 import org.cloudbus.cloudsim.utilizationmodels.UtilizationModel;
 import org.cloudbus.cloudsim.utilizationmodels.UtilizationModelFull;
 import org.cloudbus.cloudsim.Vm;
@@ -216,17 +215,16 @@ public class DatacenterBrokerHeuristicExample {
         long storage = 1000000; // host storage
         long bw = 10000;
 
-        List<Pe> cpuCoresList = new ArrayList<>();
+        List<Pe> peList = new ArrayList<>();
         /*Creates the Host's CPU cores and defines the provisioner
         used to allocate each core for requesting VMs.*/
         for(int i = 0; i < 8; i++)
-            cpuCoresList.add(new PeSimple(i, new PeProvisionerSimple(mips)));
+            peList.add(new PeSimple(i, new PeProvisionerSimple(mips)));
 
-        return new HostSimple(numberOfCreatedHosts++,
-                new ResourceProvisionerSimple(new Ram(ram)),
-                new ResourceProvisionerSimple(new Bandwidth(bw)),
-                storage, cpuCoresList,
-                new VmSchedulerTimeShared(cpuCoresList));
+       return new HostSimple(numberOfCreatedHosts++, storage, peList)
+            .setRamProvisioner(new ResourceProvisionerSimple(new Ram(ram)))
+            .setBwProvisioner(new ResourceProvisionerSimple(new Bandwidth(bw)))
+            .setVmScheduler(new VmSchedulerTimeShared(peList));        
     }
 
     private Vm createVm(DatacenterBroker broker, int pesNumber) {

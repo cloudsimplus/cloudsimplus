@@ -36,7 +36,6 @@ import org.cloudsimplus.util.tablebuilder.CloudletsTableBuilderHelper;
 import org.cloudbus.cloudsim.provisioners.PeProvisionerSimple;
 import org.cloudbus.cloudsim.provisioners.ResourceProvisionerSimple;
 import org.cloudbus.cloudsim.resources.Bandwidth;
-import org.cloudbus.cloudsim.resources.FileStorage;
 import org.cloudbus.cloudsim.resources.Ram;
 
 /**
@@ -245,29 +244,21 @@ public class CloudSimExample9 {
         long storage = 1000000; //host storage (MB)
         long bw = 10000; //Megabits/s
 
-        hostList.add(new HostDynamicWorkloadSimple(
-                        ++hostId,
-                        new ResourceProvisionerSimple(new Ram(ram)),
-                        new ResourceProvisionerSimple(new Bandwidth(bw)),
-                        storage,
-                        peList1,
-                        new VmSchedulerTimeShared(peList1)
-                )
-        ); // This is our first machine
+        Host host1 = new HostDynamicWorkloadSimple(++hostId, storage, peList1)
+            .setRamProvisioner(new ResourceProvisionerSimple(new Ram(ram)))
+            .setBwProvisioner(new ResourceProvisionerSimple(new Bandwidth(bw)))
+            .setVmScheduler(new VmSchedulerTimeShared(peList1));
+        hostList.add(host1);
 
         //create another machine in the Data center
         List<Pe> peList2 = new ArrayList<>();
         peList2.add(new PeSimple(0, new PeProvisionerSimple(mips * 2)));
 
-        hostList.add(new HostDynamicWorkloadSimple(
-                        ++hostId,
-                        new ResourceProvisionerSimple(new Ram(ram)),
-                        new ResourceProvisionerSimple(new Bandwidth(bw)),
-                        storage,
-                        peList2,
-                        new VmSchedulerTimeShared(peList2)
-                )
-        ); // This is our second machine
+        Host host2 = new HostDynamicWorkloadSimple(++hostId, storage, peList2)
+            .setRamProvisioner(new ResourceProvisionerSimple(new Ram(ram)))
+            .setBwProvisioner(new ResourceProvisionerSimple(new Bandwidth(bw)))
+            .setVmScheduler(new VmSchedulerTimeShared(peList2));
+        hostList.add(host2);
 
 		// 5. Create a DatacenterCharacteristics object that stores the
         //    properties of a data center: architecture, OS, list of

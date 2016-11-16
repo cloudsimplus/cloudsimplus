@@ -58,38 +58,39 @@ public class NetworkVmsExampleBagOfTasksAppCloudlet extends NetworkVmsExampleApp
         for(int i = 0; i < NETCLOUDLETS_FOR_EACH_APP; i++){
             currentCloudletId++;
             UtilizationModel utilizationModel = new UtilizationModelFull();
-            NetworkCloudlet netCloudlet =
+            NetworkCloudlet cloudlet =
                     new NetworkCloudlet(
                             currentCloudletId,
                             networkCloudletLength,
-                            NETCLOUDLET_PES_NUMBER,
-                            NETCLOUDLET_FILE_SIZE,
-                            NETCLOUDLET_OUTPUT_SIZE,
-                            memory, utilizationModel, utilizationModel, utilizationModel);
-            netCloudlet.setAppCloudlet(app);
-            netCloudlet.setBroker(broker.getId());
-            netCloudlet.setVmId(selectedVms.get(i).getId());
+                            NETCLOUDLET_PES_NUMBER);
+            cloudlet.setAppCloudlet(app)
+                    .setMemory(memory)
+                    .setCloudletFileSize(NETCLOUDLET_FILE_SIZE)
+                    .setCloudletOutputSize(NETCLOUDLET_OUTPUT_SIZE)
+                    .setUtilizationModel(utilizationModel)
+                    .setBroker(broker)
+                    .setVmId(selectedVms.get(i).getId());
 
             //compute and send data to node 0
             CloudletTask task;
             task = new CloudletExecutionTask(taskStageId++, networkCloudletLength);
             task.setMemory(memory);
-            netCloudlet.addTask(task);
+            cloudlet.addTask(task);
 
             //NetworkCloudlet 0 wait data from other cloudlets, while the other cloudlets send data
             if (i==0){
                 for(int j=1; j < NETCLOUDLETS_FOR_EACH_APP; j++) {
                     task = new CloudletReceiveTask(taskStageId++, selectedVms.get(j+1).getId());
                     task.setMemory(memory);
-                    netCloudlet.addTask(task);
+                    cloudlet.addTask(task);
                 }
             } else {
                 task = new CloudletSendTask(taskStageId++);
                 task.setMemory(memory);
-                netCloudlet.addTask(task);
+                cloudlet.addTask(task);
             }
 
-            networkCloudletList.add(netCloudlet);
+            networkCloudletList.add(cloudlet);
         }
 
         return networkCloudletList;

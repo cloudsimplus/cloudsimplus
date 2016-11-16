@@ -325,9 +325,9 @@ public class VmListenersExample3_DynamicVmCreation {
         long storage = 1000000; // host storage (MB)
         long bw = 10000; //Megabits/s
 
-        return new HostSimple(id,
-                new ResourceProvisionerSimple(new Ram(ram)),
-                new ResourceProvisionerSimple(new Bandwidth(bw)),
-                storage, peList, new VmSchedulerSpaceShared(peList));
+        return new HostSimple(id, storage, peList)
+            .setRamProvisioner(new ResourceProvisionerSimple(new Ram(ram)))
+            .setBwProvisioner(new ResourceProvisionerSimple(new Bandwidth(bw)))
+            .setVmScheduler(new VmSchedulerSpaceShared(peList));
     }
 }
