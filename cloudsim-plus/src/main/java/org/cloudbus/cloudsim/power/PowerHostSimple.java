@@ -69,7 +69,7 @@ public class PowerHostSimple extends HostDynamicWorkloadSimple implements PowerH
      * This constructor will be removed in future versions.
      */
     @Deprecated
-    private PowerHostSimple(
+    public PowerHostSimple(
             int id,
             ResourceProvisioner ramProvisioner,
             ResourceProvisioner bwProvisioner,

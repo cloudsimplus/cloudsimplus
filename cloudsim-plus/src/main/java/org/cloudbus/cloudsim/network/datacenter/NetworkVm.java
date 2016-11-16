@@ -94,7 +94,7 @@ public class NetworkVm extends VmSimple {
      * This constructor will be removed in future versions.
      */
     @Deprecated
-    private NetworkVm(
+    public NetworkVm(
             int id,
             DatacenterBroker broker,
             double mipsCapacity,
@@ -103,7 +103,8 @@ public class NetworkVm extends VmSimple {
             long bwCapacity,
             long size,
             String vmm,
-            CloudletScheduler cloudletScheduler) {
+            CloudletScheduler cloudletScheduler)
+    {
         this(id, mipsCapacity, numberOfPes);
         setBroker(broker);
         setRam(ramCapacity);

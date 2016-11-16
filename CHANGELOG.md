@@ -12,9 +12,13 @@ Lists the main changes in the project.
   assigning 50% of the PE capacity to each PE. This oversimplification makes that all Cloudlets finish at the exact same 
   time, what is not possible in a real scheduler. Furthermore, it increases the task completion time of all cloudlets,
   because it simply distribute the waiting time among all submited Cloudlets, harming all Cloudelets performance.
-- Changed the DatacenterCharacteristics constructor that were requiring a long parameter list to accept just the Host list.
-  Attributes Architecture, OS, TimeZone and VMM were set to default values. All costs were set by default to zero.
-  The parameters that were removed now can be defined using the respective setter. 
+- Constructors of Cloudlet, Vm, Host, Datacenter and DatacenterCharacteristics with a
+  too long parameter list were deprecated and simpler constructors were introduced.
+- Refactoring Resource and ResourceProvisioner classes to remove the generic type for Number.
+- Standardized the type to represent amount of RAM, Bandwidth (BW) and Storage to the primitive type long.
+- Clearly defined the unit for some resources, updating the documentation. The units are as follows:
+  - MB for RAM and Storage
+  - Megabits/s for Bandwidth
 
 ## [v0.8-beta.3] - 2016-10-15
 

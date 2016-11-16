@@ -71,12 +71,13 @@ public class PowerDatacenterNonPowerAware extends PowerDatacenter {
      * This constructor will be removed in future versions.
      */
     @Deprecated
-    private PowerDatacenterNonPowerAware(
+    public PowerDatacenterNonPowerAware(
             String name,
             DatacenterCharacteristics characteristics,
             VmAllocationPolicy vmAllocationPolicy,
             List<FileStorage> storageList,
-            double schedulingInterval) {
+            double schedulingInterval)
+    {
         this(name, characteristics, vmAllocationPolicy);
         setStorageList(storageList);
         setSchedulingInterval(schedulingInterval);

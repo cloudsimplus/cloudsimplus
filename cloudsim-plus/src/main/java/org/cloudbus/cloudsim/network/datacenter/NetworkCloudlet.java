@@ -95,7 +95,7 @@ public class NetworkCloudlet extends CloudletSimple {
      *
      */
     @Deprecated
-    private NetworkCloudlet(
+    public NetworkCloudlet(
             int id,
             final long cloudletLength,
             int pesNumber,
@@ -104,7 +104,8 @@ public class NetworkCloudlet extends CloudletSimple {
             long memory,
             UtilizationModel utilizationModelCpu,
             UtilizationModel utilizationModelRam,
-            UtilizationModel utilizationModelBw) {
+            UtilizationModel utilizationModelBw)
+    {
         this(id, cloudletLength, pesNumber);
         this.setCloudletFileSize(cloudletFileSize)
             .setCloudletOutputSize(cloudletOutputSize)

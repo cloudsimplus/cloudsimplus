@@ -98,7 +98,7 @@ public class PowerDatacenter extends DatacenterSimple {
      * This constructor will be removed in future versions.
      */
     @Deprecated
-    private PowerDatacenter(
+    public PowerDatacenter(
         String name,
         DatacenterCharacteristics characteristics,
         VmAllocationPolicy vmAllocationPolicy,

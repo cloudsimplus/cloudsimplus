@@ -151,7 +151,7 @@ public class DatacenterCharacteristicsSimple implements DatacenterCharacteristic
      * @post $none
      */
     @Deprecated
-    private DatacenterCharacteristicsSimple(
+    public DatacenterCharacteristicsSimple(
         String architecture,
         String os,
         String vmm,
@@ -160,7 +160,8 @@ public class DatacenterCharacteristicsSimple implements DatacenterCharacteristic
         double costPerSec,
         double costPerMem,
         double costPerStorage,
-        double costPerBw) {
+        double costPerBw)
+    {
             this(hostList);
             this.setTimeZone(timeZone)
                 .setCostPerSecond(costPerSec)

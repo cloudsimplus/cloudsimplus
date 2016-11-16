@@ -119,7 +119,7 @@ public class HostSimple implements Host {
      * This constructor will be removed in future versions.
      */
     @Deprecated
-    private HostSimple(
+    public HostSimple(
             int id,
             ResourceProvisioner ramProvisioner,
             ResourceProvisioner bwProvisioner,
