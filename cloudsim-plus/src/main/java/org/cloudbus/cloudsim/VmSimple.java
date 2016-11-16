@@ -661,4 +661,10 @@ public class VmSimple implements Vm {
         }
     }
 
+    @Override
+    public boolean isFailed() {
+        return failed;
+    }
+
+
 }

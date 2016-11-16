@@ -136,7 +136,7 @@ public interface Vm extends Identificable, Comparable<Vm> {
      * @see #getMips()
      */
     int getNumberOfPes();
-
+    
     /**
      * Gets the total MIPS capacity (across all PEs) of this VM.
      *
@@ -397,11 +397,17 @@ public interface Vm extends Identificable, Comparable<Vm> {
 
     /**
      * Sets the status of VM to FAILED.
-     *
+     * 
      * @param failed the failed
      */
-    void setFailed(boolean failed);
-
+    void setFailed(boolean failed);   
+    
+    /**
+     * Checks if the Vm is failed or not.
+     * @return 
+     */
+    boolean isFailed();
+    
     /**
      * A property that implements the Null Object Design Pattern for {@link Vm}
      * objects.
@@ -453,5 +459,6 @@ public interface Vm extends Identificable, Comparable<Vm> {
         @Override public int compareTo(Vm o) { return 0; }
         @Override public double getTotalMipsCapacity() { return 0.0; }
         @Override public void setFailed(boolean failed){}
+        @Override public boolean isFailed() { return false; }
     };
 }

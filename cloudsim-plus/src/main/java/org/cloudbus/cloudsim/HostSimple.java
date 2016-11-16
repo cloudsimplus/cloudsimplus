@@ -454,7 +454,6 @@ public class HostSimple implements Host {
     public final boolean setFailed(boolean failed) {
         this.failed = failed;
         PeList.setStatusFailed(getPeList(), getId(), failed);
-
         return true;
     }
 
@@ -532,6 +531,13 @@ public class HostSimple implements Host {
     @Override
     public long getAvailableStorage() {
         return getStorage().getAvailableResource();
+    }
+
+    @Override
+    public long getNumberOfWorkingPes() {
+        return getPeList().stream()
+                .filter(pe -> pe.getStatus() != Pe.Status.FAILED)
+                .count();
     }
 
     private Host setStorage(long size) {

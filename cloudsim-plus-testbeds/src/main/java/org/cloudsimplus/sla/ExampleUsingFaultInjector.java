@@ -7,7 +7,6 @@ package org.cloudsimplus.sla;
 
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.LinkedList;
 import java.util.List;
 import org.cloudbus.cloudsim.Cloudlet;
 import org.cloudbus.cloudsim.CloudletSimple;
@@ -31,7 +30,6 @@ import org.cloudbus.cloudsim.distributions.UniformDistr;
 import org.cloudbus.cloudsim.provisioners.PeProvisionerSimple;
 import org.cloudbus.cloudsim.provisioners.ResourceProvisionerSimple;
 import org.cloudbus.cloudsim.resources.Bandwidth;
-import org.cloudbus.cloudsim.resources.FileStorage;
 import org.cloudbus.cloudsim.resources.PeSimple;
 import org.cloudbus.cloudsim.resources.Ram;
 import org.cloudsimplus.util.tablebuilder.CloudletsTableBuilderHelper;
@@ -44,13 +42,27 @@ import org.cloudbus.cloudsim.utilizationmodels.UtilizationModelFull;
  * @author raysaoliveira
  */
 public class ExampleUsingFaultInjector {
-
-    private static final int HOSTS_NUMBER = 2;
+    private static final int HOSTS_NUMBER = 3;
     private static final int HOST_PES = 5;
-    private static final int VMS_NUMBER = HOSTS_NUMBER;
-    private static final int VM_PES = HOST_PES;
-    private static final int CLOUDLETS_NUMBER = VMS_NUMBER * VM_PES;
+    private static final int VM_PES1 = 2;
+    private static final int VM_PES2 = 4;
+    private static final int TOTAL_VM_PES = VM_PES1 + VM_PES2;
+    private static final int CLOUDLETS_NUMBER = HOSTS_NUMBER * TOTAL_VM_PES;
     private static final int CLOUDLET_PES = 1;
+
+    /**
+     * @return the VM_PES
+     */
+    public static int getVM_PES2() {
+        return VM_PES2;
+    }
+
+    /**
+     * @return the VM_PES1
+     */
+    public static int getVM_PES1() {
+        return VM_PES1;
+    }
 
     /**
      * The cloudlet list.
@@ -63,64 +75,64 @@ public class ExampleUsingFaultInjector {
      * The vmlist.
      */
     private final List<Vm> vmlist;
+    private int lastCreatedVmId = 0;
 
     /**
      * Creates Vms
      *
      * @param userId broker id
-     * @param vms amount of vms to criate
+     * @param numberOfPes number of PEs for each VM to be created
+     * @param numberOfVms number of VMs to create
      * @return list de vms
      */
-    private List<Vm> createVM(int userId, int vms) {
+    private List<Vm> createVM(DatacenterBroker broker, int numberOfPes, int numberOfVms) {
         //Creates a container to store VMs.
-        List<Vm> list = new ArrayList<>();
+        List<Vm> list = new ArrayList<>(numberOfVms);
 
         //VM Parameters
+        int vmid = 0;
         long size = 10000; //image size (MB)
         int ram = 512; //vm memory (MB)
         int mips = 1000;
         long bw = 1000;
-        String vmm = "Xen"; //VMM name
 
-        //create VMs
-        Vm[] vm = new Vm[vms];
-
-        for (int i = 0; i < vms; i++) {
-            vm[i] = new VmSimple(i, userId, mips, VM_PES,
-                    ram, bw, size, vmm,
-                    new CloudletSchedulerTimeShared());
-            //for creating a VM with a space shared scheduling policy for cloudlets:
-            //vm[i] = new VmSimple(i, userId, mips, pesNumber, ram, bw, size, vmm, new CloudletSchedulerSpaceShared());
-            list.add(vm[i]);
+        //create VMs with differents configurations
+        for (int i = 0; i < numberOfVms; i++) {
+            Vm vm  = new VmSimple(
+                        this.lastCreatedVmId++, mips, numberOfPes)
+                        .setRam(ram).setBw(bw).setSize(size)
+                        .setCloudletScheduler(new CloudletSchedulerTimeShared())
+                        .setBroker(broker);
+            list.add(vm);
         }
+
         return list;
     }
 
     /**
      * Creates cloudlets
      *
-     * @param userId broker id
+     * @param broker broker id
      * @param cloudlets to criate
      * @return list of cloudlets
      */
-    private List<Cloudlet> createCloudlet(int userId, int cloudlets) {
+    private List<Cloudlet> createCloudlet(DatacenterBroker broker, int cloudlets) {
         // Creates a container to store Cloudlets
-        List<Cloudlet> list = new LinkedList<>();
+        List<Cloudlet> list = new ArrayList<>(cloudlets);
 
         //Cloudlet Parameters
         long length = 10000;
         long fileSize = 300;
         long outputSize = 300;
         UtilizationModel utilizationModel = new UtilizationModelFull();
-        Cloudlet[] cloudlet = new Cloudlet[cloudlets];
-
+        
         for (int i = 0; i < cloudlets; i++) {
-            cloudlet[i] = new CloudletSimple(
-                    i, length, CLOUDLET_PES, fileSize, outputSize,
-                    utilizationModel, utilizationModel, utilizationModel);
-            // setting the owner of these Cloudlets
-            cloudlet[i].setBroker(userId);
-            list.add(cloudlet[i]);
+            Cloudlet cloudlet = new CloudletSimple(i, length, CLOUDLET_PES)
+                    .setCloudletFileSize(fileSize)
+                    .setCloudletOutputSize(outputSize)
+                    .setUtilizationModel(utilizationModel)
+                    .setBroker(broker);
+            list.add(cloudlet);
         }
         return list;
     }
@@ -142,6 +154,7 @@ public class ExampleUsingFaultInjector {
         boolean trace_flag = false; // trace events
 
         CloudSim.init(num_user, calendar, trace_flag);
+        Log.disable();
 
         //Create Datacenters
         Datacenter datacenter0 = createDatacenter("Datacenter_0");
@@ -170,14 +183,15 @@ public class ExampleUsingFaultInjector {
 
         //Create Broker
         DatacenterBroker broker = new DatacenterBrokerSimple("Broker");
-        int brokerId = broker.getId();
 
-        vmlist = createVM(brokerId, VMS_NUMBER);
+        vmlist = new ArrayList<>();
+        vmlist.addAll(createVM(broker, VM_PES1, 2));
+        vmlist.addAll(createVM(broker, VM_PES2, 2));
 
         // submit vm list to the broker
         broker.submitVmList(vmlist);
 
-        cloudletList = createCloudlet(brokerId, CLOUDLETS_NUMBER);
+        cloudletList = createCloudlet(broker, CLOUDLETS_NUMBER);
 
         // submit cloudlet list to the broker
         broker.submitCloudletList(cloudletList);
@@ -185,35 +199,20 @@ public class ExampleUsingFaultInjector {
         // Sixth step: Starts the simulation
         CloudSim.startSimulation();
         CloudSim.stopSimulation();
-
-        for (Cloudlet cloudlet: cloudletList) {
-            System.out.println("--->Status do Cloudlet: " + cloudlet.getStatus());
+        
+        System.out.println("\n");
+        for (Cloudlet cloudlet : cloudletList) {
+            System.out.println("--->Status Cloudlet: " + cloudlet.getStatus()
+            + " in VM: " + cloudlet.getVmId());
+            
         }
-
-        for (Host host : datacenter0.getHostList()) {
-            System.out.printf("Host %d ", host.getId());
-            for (Pe pe : host.getPeList()) {
-                System.out.printf(" PE: %d Status: %s\n", pe.getId(),pe.getStatus());
-            }
-        }
-
-        for (Cloudlet cloudletFinished : broker.getCloudletsFinishedList()) {
-            if (broker.getCloudletsFinishedList().isEmpty()) {
-                System.out.println("\n List of finished cloudlets is empty. \n");
-
-            } else {
-                System.out.println("Finished Cloudlet  -> Id : " + cloudletFinished.getId());
-            }
-        }
-
+      
         //Final step: Print results when simulation is over
         List<Cloudlet> newList = broker.getCloudletsFinishedList();
 
-        new CloudletsTableBuilderHelper(newList)
-                .build();
-
-        Log.printFormattedLine(
-                "... finished!");
+        Log.enable();
+        new CloudletsTableBuilderHelper(newList).build();
+        Log.printFormattedLine("... finished!");
     }
 
     /**
@@ -234,35 +233,29 @@ public class ExampleUsingFaultInjector {
 
         for (int i = 0; i < HOSTS_NUMBER; i++) {
             List<Pe> peList = createHostPesList(HOST_PES, mips);
-            getHostList().add(new HostSimple(
-                    hostId,
-                    new ResourceProvisionerSimple<>(new Ram(ram)),
-                    new ResourceProvisionerSimple<>(new Bandwidth(bw)),
-                    storage,
-                    peList,
-                    new VmSchedulerTimeShared(peList)
-            ));
-            hostId++;
+            Host host = new HostSimple(hostId++, storage, peList)
+                    .setRamProvisioner(new ResourceProvisionerSimple(new Ram(ram)))
+                    .setBwProvisioner(new ResourceProvisionerSimple(new Bandwidth(bw)))
+                    .setVmScheduler(new VmSchedulerTimeShared(peList));
+            
+            getHostList().add(host);
         }// This is our machine
 
-        String arch = "x86"; // system architecture
-        String os = "Linux"; // operating system
-        String vmm = "Xen";
-        double time_zone = 10.0; // time zone this resource located
         double cost = 3.0; // the cost of using processing in this resource
         double costPerMem = 0.05; // the cost of using memory in this resource
         double costPerStorage = 0.001; // the cost of using storage in this
         // resource
         double costPerBw = 0.0; // the cost of using bw in this resource
-        LinkedList<FileStorage> storageList = new LinkedList<>(); // we are not adding SAN
-        // devices by now
 
-        DatacenterCharacteristics characteristics = new DatacenterCharacteristicsSimple(
-                arch, os, vmm, getHostList(), time_zone, cost, costPerMem,
-                costPerStorage, costPerBw);
+        DatacenterCharacteristics characteristics = 
+                new DatacenterCharacteristicsSimple(hostList)
+                .setCostPerSecond(cost)
+                .setCostPerMem(costPerMem)
+                .setCostPerStorage(costPerStorage)
+                .setCostPerBw(costPerBw);
 
-        return new DatacenterSimple(name, characteristics,
-                new VmAllocationPolicySimple(getHostList()), storageList, 0);
+        return new DatacenterSimple(name, characteristics, 
+                new VmAllocationPolicySimple(getHostList()));
     }
 
     public List<Pe> createHostPesList(int hostPes, int mips) {

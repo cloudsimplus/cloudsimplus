@@ -94,7 +94,7 @@ public class NetworkVm extends VmSimple {
      * This constructor will be removed in future versions.
      */
     @Deprecated
-    public NetworkVm(
+    private NetworkVm(
             int id,
             DatacenterBroker broker,
             double mipsCapacity,
