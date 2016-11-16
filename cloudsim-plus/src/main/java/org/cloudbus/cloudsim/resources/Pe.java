@@ -22,8 +22,10 @@ public interface Pe {
     public enum Status {
         /** Denotes PE is FREE for allocation. */
         FREE,
+        
         /** Denotes PE is allocated and hence busy processing some Cloudlet. */
         BUSY,
+        
         /**
          * Denotes PE is failed and hence it can't process any Cloudlet at this moment. 
          * This PE is failed because it belongs to a machine which is also failed.

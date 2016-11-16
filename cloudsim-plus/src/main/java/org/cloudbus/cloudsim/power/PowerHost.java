@@ -113,5 +113,6 @@ public interface PowerHost extends HostDynamicWorkload {
         @Override public EventListener<HostUpdatesVmsProcessingEventInfo> getOnUpdateVmsProcessingListener() { return EventListener.NULL; }
         @Override public void setOnUpdateVmsProcessingListener(EventListener<HostUpdatesVmsProcessingEventInfo> onUpdateVmsProcessingListener) {}
         @Override public int getId() { return 0; }
+        @Override public long getNumberOfWorkingPes(){return 0L;}
     };
 }

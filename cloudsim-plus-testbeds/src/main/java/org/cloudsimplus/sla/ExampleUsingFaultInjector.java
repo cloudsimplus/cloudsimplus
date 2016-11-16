@@ -45,12 +45,27 @@ import org.cloudbus.cloudsim.utilizationmodels.UtilizationModelFull;
  */
 public class ExampleUsingFaultInjector {
 
-    private static final int HOSTS_NUMBER = 2;
+    private static final int HOSTS_NUMBER = 3;
     private static final int HOST_PES = 5;
-    private static final int VMS_NUMBER = HOSTS_NUMBER;
-    private static final int VM_PES = HOST_PES;
-    private static final int CLOUDLETS_NUMBER = VMS_NUMBER * VM_PES;
+    private static final int VM_PES1 = 2;
+    private static final int VM_PES2 = 4;
+    private static final int TOTAL_VM_PES = VM_PES1 + VM_PES2;
+    private static final int CLOUDLETS_NUMBER = HOSTS_NUMBER * TOTAL_VM_PES;
     private static final int CLOUDLET_PES = 1;
+
+    /**
+     * @return the VM_PES
+     */
+    public static int getVM_PES2() {
+        return VM_PES2;
+    }
+
+    /**
+     * @return the VM_PES1
+     */
+    public static int getVM_PES1() {
+        return VM_PES1;
+    }
 
     /**
      * The cloudlet list.
@@ -63,36 +78,39 @@ public class ExampleUsingFaultInjector {
      * The vmlist.
      */
     private final List<Vm> vmlist;
+    private int lastCreatedVmId = 0;
 
     /**
      * Creates Vms
      *
      * @param userId broker id
-     * @param vms amount of vms to criate
+     * @param numberOfPes number of PEs for each VM to be created
+     * @param numberOfVms number of VMs to create
      * @return list de vms
      */
-    private List<Vm> createVM(int userId, int vms) {
+    private List<Vm> createVM(int userId, int numberOfPes, int numberOfVms) {
         //Creates a container to store VMs.
         List<Vm> list = new ArrayList<>();
 
         //VM Parameters
+        int vmid = 0;
         long size = 10000; //image size (MB)
         int ram = 512; //vm memory (MB)
         int mips = 1000;
         long bw = 1000;
         String vmm = "Xen"; //VMM name
 
-        //create VMs
-        Vm[] vm = new Vm[vms];
+        Vm[] vm = new Vm[numberOfVms];
 
-        for (int i = 0; i < vms; i++) {
-            vm[i] = new VmSimple(i, userId, mips, VM_PES,
-                    ram, bw, size, vmm,
-                    new CloudletSchedulerTimeShared());
-            //for creating a VM with a space shared scheduling policy for cloudlets:
-            //vm[i] = new VmSimple(i, userId, mips, pesNumber, ram, bw, size, vmm, new CloudletSchedulerSpaceShared());
+        //create VMs with differents configurations
+        for (int i = 0; i < numberOfVms; i++) {
+            vm[i] = new VmSimple(
+                        this.lastCreatedVmId++, userId, mips, numberOfPes, 
+                        ram, bw, size, vmm, 
+                        new CloudletSchedulerTimeShared());
             list.add(vm[i]);
         }
+
         return list;
     }
 
@@ -142,6 +160,7 @@ public class ExampleUsingFaultInjector {
         boolean trace_flag = false; // trace events
 
         CloudSim.init(num_user, calendar, trace_flag);
+        Log.disable();
 
         //Create Datacenters
         Datacenter datacenter0 = createDatacenter("Datacenter_0");
@@ -172,7 +191,9 @@ public class ExampleUsingFaultInjector {
         DatacenterBroker broker = new DatacenterBrokerSimple("Broker");
         int brokerId = broker.getId();
 
-        vmlist = createVM(brokerId, VMS_NUMBER);
+        vmlist = new ArrayList<>();
+        vmlist.addAll(createVM(brokerId, VM_PES1, 2));
+        vmlist.addAll(createVM(brokerId, VM_PES2, 2));
 
         // submit vm list to the broker
         broker.submitVmList(vmlist);
@@ -185,35 +206,21 @@ public class ExampleUsingFaultInjector {
         // Sixth step: Starts the simulation
         CloudSim.startSimulation();
         CloudSim.stopSimulation();
-
-        for (Cloudlet cloudlet: cloudletList) {
-            System.out.println("--->Status do Cloudlet: " + cloudlet.getStatus());
+        
+        System.out.println("\n");
+        for (Cloudlet cloudlet : cloudletList) {
+            System.out.println("--->Status Cloudlet: " + cloudlet.getStatus()
+            + " in VM: " + cloudlet.getVmId());
+            
         }
-
-        for (Host host : datacenter0.getHostList()) {
-            System.out.printf("Host %d ", host.getId());
-            for (Pe pe : host.getPeList()) {
-                System.out.printf(" PE: %d Status: %s\n", pe.getId(),pe.getStatus());
-            }
-        }
-
-        for (Cloudlet cloudletFinished : broker.getCloudletsFinishedList()) {
-            if (broker.getCloudletsFinishedList().isEmpty()) {
-                System.out.println("\n List of finished cloudlets is empty. \n");
-
-            } else {
-                System.out.println("Finished Cloudlet  -> Id : " + cloudletFinished.getId());
-            }
-        }
-
+      
         //Final step: Print results when simulation is over
         List<Cloudlet> newList = broker.getCloudletsFinishedList();
 
-        new CloudletsTableBuilderHelper(newList)
-                .build();
+        Log.enable();
+        new CloudletsTableBuilderHelper(newList).build();
 
-        Log.printFormattedLine(
-                "... finished!");
+        Log.printFormattedLine("... finished!");
     }
 
     /**

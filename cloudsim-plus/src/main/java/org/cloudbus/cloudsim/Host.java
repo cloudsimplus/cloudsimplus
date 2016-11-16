@@ -108,6 +108,14 @@ public interface Host extends Identificable {
      * @return the free pes number
      */
     int getNumberOfFreePes();
+    
+    /**
+     * Gets the number of PEs that are working.
+     * That is, the number of PEs that aren't FAIL.
+     *
+     * @return the number of working pes
+     */
+    long getNumberOfWorkingPes();    
 
     /**
      * Gets the PEs number.
@@ -350,5 +358,6 @@ public interface Host extends Identificable {
         @Override public void setOnUpdateVmsProcessingListener(EventListener<HostUpdatesVmsProcessingEventInfo> onUpdateVmsProcessingListener) {}
         @Override public long getAvailableStorage() { return 0L; }
         @Override public boolean setFailed(boolean failed){return false;}
+        @Override public long getNumberOfWorkingPes() { return 0; }
     };
 }

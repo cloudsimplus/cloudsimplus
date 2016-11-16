@@ -5,6 +5,9 @@
  */
 package org.cloudsimplus.sla;
 
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.List;
 import org.cloudbus.cloudsim.Host;
 import org.cloudbus.cloudsim.Log;
 import org.cloudbus.cloudsim.Vm;
@@ -79,28 +82,52 @@ public class HostFaultInjection extends SimEntity {
     }
 
     /**
-     * Generates a failure on Host' PEs or not,
-     * according to the number of PEs to be set to failed,
-     * returned by the {@link #numberOfFailedPesRandom} PRNG.
+     * Generates a failure on Host' PEs or not, according to the number of PEs
+     * to be set to failed, returned by the {@link #numberOfFailedPesRandom}
+     * PRNG.
      *
-     * @return <tt>true</tt> if the failure was generated, <tt>false</tt> otherwise
+     * @return <tt>true</tt> if the failure was generated, <tt>false</tt>
+     * otherwise
      */
     public final boolean generateFailure() {
-        int numberOfFailedPes = generateNumberOfFailedPes();
+        final int numberOfFailedPes = generateNumberOfFailedPes();
 
         this.failed = numberOfFailedPes > 0;
         for (int i = 0; i < numberOfFailedPes; i++) {
             host.getPeList().get(i).setStatus(Pe.Status.FAILED);
-            Log.printLine(CloudSim.clock() + " ---> Host " + id + " FAILURE...\n");
+            //  Log.printLine(CloudSim.clock() + " ---> Host " + host.getId() + " FAILURE...\n");
         }
+
+        Comparator<Vm> sortVmsDescendinglyByPesNumber
+                = (vm1, vm2) -> Integer.compare(vm2.getNumberOfPes(), vm1.getNumberOfPes());
+
+        final List<Vm> sortedHostVmList = new ArrayList<>(host.getVmList());
+        sortedHostVmList.sort(sortVmsDescendinglyByPesNumber);
+
         
-        
-        
-        if (numberOfFailedPes == host.getPeList().size()) {
-            setVmsToFailedWhenHostIsFailed();
+
+        for (Vm vm : sortedHostVmList) {
+            long numberOfWorkingPes = host.getNumberOfWorkingPes();
+            long pesSumOfWorkingVms = getPesSumOfWorkingVms(sortedHostVmList);
+            if (pesSumOfWorkingVms > numberOfWorkingPes) {
+                setVmToFailedWhenHostIsFailed(vm);
+                System.out.printf(
+                        "** Host %d working pes: %d Quant working PEs of all VMs of the Host: %d. Failed VM %d with %d PEs\n",
+                        host.getId(), host.getNumberOfWorkingPes(),
+                        pesSumOfWorkingVms, vm.getId(), vm.getNumberOfPes());
+                System.out.println("Vm failed -> " + vm.getId());
+            } else {  
+                break;
+            }
         }
-        
         return this.failed;
+    }
+
+    public int getPesSumOfWorkingVms(List<Vm> sortedHostVmList) {
+        return sortedHostVmList.stream()
+                .filter(vm -> !vm.isFailed())
+                .mapToInt(vm -> vm.getNumberOfPes())
+                .sum();
     }
 
     /**
@@ -118,22 +145,22 @@ public class HostFaultInjection extends SimEntity {
 
     /**
      * Checks if the the host is failed and sets all its Vm' to failed.
+     *
+     * @param vm vm to set to failed
      */
-    public void setVmsToFailedWhenHostIsFailed() {
+    public void setVmToFailedWhenHostIsFailed(Vm vm) {
         if (!this.isFailed()) {
             return;
         }
 
-        for (Vm vm : host.getVmList()) {
-            vm.setFailed(true);
-            /*
-             As the broker is expected to request vm creation and destruction,
-             it is set here as the sender of the vm destroy request.
-             */
-            CloudSim.sendNow(
-                    vm.getUserId(), host.getDatacenter().getId(),
-                    CloudSimTags.VM_DESTROY, vm);
-        }
+        vm.setFailed(true);
+        /*
+         As the broker is expected to request vm creation and destruction,
+         it is set here as the sender of the vm destroy request.
+         */
+        CloudSim.sendNow(
+                vm.getUserId(), host.getDatacenter().getId(),
+                CloudSimTags.VM_DESTROY, vm);
     }
 
     /**
@@ -162,10 +189,9 @@ public class HostFaultInjection extends SimEntity {
     }
 
     /**
-     * Gets the pseudo random number generator (PRNG) 
-     * that is used to define the number of PEs to be
-     * set to failed for the related host. The PRNG returns
-     * values between [0 and 1] 
+     * Gets the pseudo random number generator (PRNG) that is used to define the
+     * number of PEs to be set to failed for the related host. The PRNG returns
+     * values between [0 and 1]
      *
      * @return
      */
@@ -174,10 +200,9 @@ public class HostFaultInjection extends SimEntity {
     }
 
     /**
-     * Sets the pseudo random number generator (PRNG) 
-     * that is used to define the number of PEs to be
-     * set to failed for the related host. The PRNG must return
-     * values between [0 and 1]
+     * Sets the pseudo random number generator (PRNG) that is used to define the
+     * number of PEs to be set to failed for the related host. The PRNG must
+     * return values between [0 and 1]
      *
      * @param numberOfFailedPesRandom the numberOfFailedPesRandom to set
      */

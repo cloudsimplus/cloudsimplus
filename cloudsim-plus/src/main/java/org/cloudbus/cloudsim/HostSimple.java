@@ -517,4 +517,11 @@ public class HostSimple implements Host {
     public long getAvailableStorage() {
         return getStorage().getAvailableResource();
     }
+
+    @Override
+    public long getNumberOfWorkingPes() {
+        return getPeList().stream()
+                .filter(pe -> pe.getStatus() != Pe.Status.FAILED)
+                .count();
+    }
 }
