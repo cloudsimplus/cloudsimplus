@@ -65,7 +65,7 @@ public class CloudletSimple extends CloudletAbstract {
      * @post $none
      */
     @Deprecated()
-    private CloudletSimple(
+    public CloudletSimple(
         final int id,
         final long cloudletLength,
         final int pesNumber,
@@ -73,7 +73,8 @@ public class CloudletSimple extends CloudletAbstract {
         final long cloudletOutputSize,
         final UtilizationModel utilizationModelCpu,
         final UtilizationModel utilizationModelRam,
-        final UtilizationModel utilizationModelBw) {
+        final UtilizationModel utilizationModelBw)
+    {
             this(id, cloudletLength, pesNumber);
             this.setCloudletFileSize(cloudletFileSize)
                 .setCloudletOutputSize(cloudletOutputSize)

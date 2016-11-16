@@ -100,7 +100,7 @@ public class PowerVm extends VmSimple {
      * This constructor will be removed in future versions.
      */
     @Deprecated
-    private PowerVm(
+    public PowerVm(
             final int id,
             final DatacenterBroker broker,
             final double mipsCapacity,
@@ -111,7 +111,8 @@ public class PowerVm extends VmSimple {
             final int priority,
             final String vmm,
             final CloudletScheduler cloudletScheduler,
-            final double schedulingInterval) {
+            final double schedulingInterval)
+    {
         this(id, mipsCapacity, numberOfPes);
         setBroker(broker);
         setRam(ramCapacity);

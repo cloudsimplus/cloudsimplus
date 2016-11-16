@@ -189,7 +189,7 @@ public class VmSimple implements Vm {
      * @post $none
      */
     @Deprecated
-    private VmSimple(
+    public VmSimple(
             int id,
             DatacenterBroker broker,
             double mipsCapacity,
@@ -198,7 +198,8 @@ public class VmSimple implements Vm {
             long bwCapacity,
             long size,
             String vmm,
-            CloudletScheduler cloudletScheduler) {
+            CloudletScheduler cloudletScheduler)
+    {
         this(id, mipsCapacity, numberOfPes);
         setBroker(broker);
         setRam(ramCapacity);

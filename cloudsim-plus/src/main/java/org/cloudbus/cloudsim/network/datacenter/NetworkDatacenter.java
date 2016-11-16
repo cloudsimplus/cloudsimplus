@@ -141,7 +141,7 @@ public class NetworkDatacenter extends DatacenterSimple {
      * This constructor will be removed in future versions.
      */
     @Deprecated
-    private NetworkDatacenter(
+    public NetworkDatacenter(
         String name,
         DatacenterCharacteristics characteristics,
         VmAllocationPolicy vmAllocationPolicy,

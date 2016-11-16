@@ -73,13 +73,14 @@ public class HostDynamicWorkloadSimple extends HostSimple implements HostDynamic
      * This constructor will be removed in future versions.
      */
     @Deprecated
-    private HostDynamicWorkloadSimple(
+    public HostDynamicWorkloadSimple(
             int id,
             ResourceProvisioner ramProvisioner,
             ResourceProvisioner bwProvisioner,
             long storage,
             List<Pe> peList,
-            VmScheduler vmScheduler) {
+            VmScheduler vmScheduler)
+    {
         this(id, storage, peList);
         setRamProvisioner(ramProvisioner);
         setBwProvisioner(bwProvisioner);

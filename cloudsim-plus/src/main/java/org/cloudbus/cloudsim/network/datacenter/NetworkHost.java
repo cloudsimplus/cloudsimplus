@@ -99,7 +99,7 @@ public class NetworkHost extends HostSimple {
      * This constructor will be removed in future versions.
      */
     @Deprecated
-    private NetworkHost(
+    public NetworkHost(
             int id,
             ResourceProvisioner ramProvisioner,
             ResourceProvisioner bwProvisioner,

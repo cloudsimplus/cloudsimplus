@@ -61,7 +61,7 @@ public class PowerHostUtilizationHistory extends PowerHostSimple {
      * This constructor will be removed in future versions.
 	 */
 	@Deprecated
-	private PowerHostUtilizationHistory(
+    public PowerHostUtilizationHistory(
 			int id,
 			ResourceProvisioner ramProvisioner,
 			ResourceProvisioner bwProvisioner,

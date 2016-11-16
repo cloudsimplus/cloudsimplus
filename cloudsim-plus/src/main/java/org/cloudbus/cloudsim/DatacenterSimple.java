@@ -125,12 +125,13 @@ public class DatacenterSimple extends SimEntity implements Datacenter {
      * This constructor will be removed in future versions.
      */
     @Deprecated
-    private DatacenterSimple(
+    public DatacenterSimple(
         String name,
         DatacenterCharacteristics characteristics,
         VmAllocationPolicy vmAllocationPolicy,
         List<FileStorage> storageList,
-        double schedulingInterval) {
+        double schedulingInterval)
+    {
             this(name, characteristics, vmAllocationPolicy);
             setStorageList(storageList);
             setSchedulingInterval(schedulingInterval);

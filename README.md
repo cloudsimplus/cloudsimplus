@@ -464,12 +464,12 @@ Instead, it requires an object that implements the new `Resource` interface (suc
 By this way, to instantiate a host you can use a code such as below:
 
 ```java
-int ram = 20480;
-long bw = 1000000;
-long storage = 1000000;
+long ram = 20480; //in MB
+long bw = 1000000; //in Megabits/s
+long storage = 1000000; //in MB
 Host host = new HostSimple(id,
-        new ResourceProvisionerSimple<>(new Ram(ram)),
-        new ResourceProvisionerSimple<>(new Bandwidth(bw)),
+        new ResourceProvisionerSimple(new Ram(ram)),
+        new ResourceProvisionerSimple(new Bandwidth(bw)),
         storage, peList, new VmSchedulerTimeShared(peList));
 ``` 
 
