@@ -38,6 +38,7 @@ import org.cloudbus.cloudsim.provisioners.PeProvisionerSimple;
 import org.cloudbus.cloudsim.resources.Bandwidth;
 import org.cloudbus.cloudsim.provisioners.ResourceProvisionerSimple;
 import org.cloudbus.cloudsim.resources.Ram;
+import org.cloudbus.cloudsim.schedulers.CloudletScheduler;
 import org.cloudbus.cloudsim.schedulers.CloudletSchedulerSpaceShared;
 import org.cloudbus.cloudsim.utilizationmodels.UtilizationModelStochastic;
 
@@ -199,9 +200,10 @@ public class CloudletListenersExample2_ResourceUsageAlongTime {
         long size = 10000; // image size (MB)
         int ram = 512; // vm memory (MB)
         long bw = 1000;
-        Vm vm = new VmSimple(
-                id, broker.getId(), mips, VM_PES_NUMBER, ram, bw, size,
-                VMM, new CloudletSchedulerSpaceShared());
+        Vm vm = new VmSimple(id, mips, VM_PES_NUMBER)
+                .setBroker(broker)
+                .setRam(ram).setBw(bw).setSize(size)
+                .setCloudletScheduler(new CloudletSchedulerSpaceShared());
         return vm;
     }
 
@@ -230,7 +232,7 @@ public class CloudletListenersExample2_ResourceUsageAlongTime {
                 .setUtilizationModelCpu(cpuUtilizationModel)
                 .setUtilizationModelRam(ramUtilizationModel)
                 .setUtilizationModelBw(bwUtilizationModel)
-                .setBroker(broker.getId())
+                .setBroker(broker)
                 .setVmId(vm.getId())
                 .setOnUpdateCloudletProcessingListener(onUpdateCloudletProcessingListener);
 
@@ -251,7 +253,6 @@ public class CloudletListenersExample2_ResourceUsageAlongTime {
         double costPerMem = 0.05; // the cost of using memory in this resource
         double costPerStorage = 0.001; // the cost of using storage in this datacenter
         double costPerBw = 0.0; // the cost of using bw in this resource
-        List<FileStorage> storageList = new ArrayList<>(); // we are not adding SAN devices by now
 
         DatacenterCharacteristics characteristics =
             new DatacenterCharacteristicsSimple(hostList)
@@ -260,8 +261,9 @@ public class CloudletListenersExample2_ResourceUsageAlongTime {
                 .setCostPerStorage(costPerStorage)
                 .setCostPerBw(costPerBw);
 
-        return new DatacenterSimple(name, characteristics,
-                new VmAllocationPolicySimple(hostList), storageList, DATACENTER_SCHEDULING_INTERVAL);
+        return new DatacenterSimple(
+                name, characteristics,new VmAllocationPolicySimple(hostList))
+                .setSchedulingInterval(DATACENTER_SCHEDULING_INTERVAL);
     }
 
     /**
@@ -280,9 +282,9 @@ public class CloudletListenersExample2_ResourceUsageAlongTime {
         long storage = 1000000; // host storage (MB)
         long bw = 10000; //Megabits/s
 
-        return new HostSimple(id,
-                new ResourceProvisionerSimple(new Ram(ram)),
-                new ResourceProvisionerSimple(new Bandwidth(bw)),
-                storage, peList, new VmSchedulerTimeShared(peList));
+        return new HostSimple(id, storage, peList)
+            .setRamProvisioner(new ResourceProvisionerSimple(new Ram(ram)))
+            .setBwProvisioner(new ResourceProvisionerSimple(new Bandwidth(bw)))
+            .setVmScheduler(new VmSchedulerTimeShared(peList));        
     }
 }

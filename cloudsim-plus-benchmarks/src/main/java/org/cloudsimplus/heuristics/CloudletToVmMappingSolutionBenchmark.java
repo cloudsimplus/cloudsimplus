@@ -47,8 +47,8 @@ public class CloudletToVmMappingSolutionBenchmark {
         UtilizationModel um = UtilizationModel.NULL;
         IntStream.range(0, 100).forEach(i
                 -> result.bindCloudletToVm(
-                        new CloudletSimple(i, 1, 1, 1, 1, um, um, um),
-                        new VmSimple(i, 0, 1000, 1, 1, 1, 1, "xen", CloudletScheduler.NULL))
+                        new CloudletSimple(i, 1, 1).setUtilizationModel(um),
+                        new VmSimple(i, 1000, 1))
         );
 
         return result;

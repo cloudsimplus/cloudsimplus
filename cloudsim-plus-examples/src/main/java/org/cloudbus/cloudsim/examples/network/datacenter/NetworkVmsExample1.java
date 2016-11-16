@@ -126,14 +126,12 @@ public class NetworkVmsExample1 {
         List<Host> hostList = new ArrayList<>();
         for (int i = 0; i < NUMBER_OF_HOSTS; i++) {
             List<Pe> peList = createPEs(HOST_PES, HOST_MIPS);
-            // 4. Create Host with its id and list of PEs and add them to
-            // the list of machines
-            hostList.add(
-                new NetworkHost(i,
-                    new ResourceProvisionerSimple(new Ram(HOST_RAM)),
-                    new ResourceProvisionerSimple(new Bandwidth(HOST_BW)),
-                    HOST_STORAGE, peList,
-                    new VmSchedulerTimeShared(peList)));
+            Host host = new NetworkHost(i, HOST_STORAGE, peList)
+                .setRamProvisioner(new ResourceProvisionerSimple(new Ram(HOST_RAM)))
+                .setBwProvisioner(new ResourceProvisionerSimple(new Bandwidth(HOST_BW)))
+                .setVmScheduler(new VmSchedulerTimeShared(peList));
+            
+            hostList.add(host);
         }
 
         // 5. Create a DatacenterCharacteristics object that stores the

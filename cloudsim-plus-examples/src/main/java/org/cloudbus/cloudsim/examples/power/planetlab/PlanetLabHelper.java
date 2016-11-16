@@ -7,6 +7,7 @@ import java.util.List;
 import org.cloudbus.cloudsim.Cloudlet;
 
 import org.cloudbus.cloudsim.CloudletSimple;
+import org.cloudbus.cloudsim.brokers.DatacenterBroker;
 import org.cloudbus.cloudsim.utilizationmodels.UtilizationModel;
 import org.cloudbus.cloudsim.utilizationmodels.UtilizationModelZero;
 import org.cloudbus.cloudsim.utilizationmodels.UtilizationModelPlanetLabInMemory;
@@ -31,12 +32,12 @@ public class PlanetLabHelper {
 	/**
 	 * Creates the cloudlet list planet lab.
 	 *
-	 * @param brokerId the broker id
+	 * @param broker the broker
 	 * @param inputFolderName the input folder name
 	 * @return the list
 	 * @throws FileNotFoundException the file not found exception
 	 */
-	public static List<Cloudlet> createCloudletListPlanetLab(int brokerId, String inputFolderName)
+	public static List<Cloudlet> createCloudletListPlanetLab(DatacenterBroker broker, String inputFolderName)
 			throws FileNotFoundException {
 		List<Cloudlet> list = new ArrayList<>();
 
@@ -46,28 +47,27 @@ public class PlanetLabHelper {
 
 		File inputFolder = new File(inputFolderName);
 		File[] files = inputFolder.listFiles();
-
+        
 		for (int i = 0; i < files.length; i++) {
-			CloudletSimple cloudlet = null;
 			try {
-				cloudlet = new CloudletSimple(
-						i,
-						Constants.CLOUDLET_LENGTH,
-						Constants.CLOUDLET_PES,
-						fileSize,
-						outputSize,
-						new UtilizationModelPlanetLabInMemory(
+                UtilizationModel utilizationModelCPU = 
+                        new UtilizationModelPlanetLabInMemory(
 								files[i].getAbsolutePath(),
-								Constants.SCHEDULING_INTERVAL),
-                                                                utilizationModelNull,
-                                                                utilizationModelNull);
+								Constants.SCHEDULING_INTERVAL);
+				CloudletSimple cloudlet = new CloudletSimple(
+                        i, Constants.CLOUDLET_LENGTH, Constants.CLOUDLET_PES);
+				cloudlet.setCloudletFileSize(fileSize)
+                        .setCloudletOutputSize(outputSize)
+						.setUtilizationModelCpu(utilizationModelCPU)
+                        .setUtilizationModelRam(utilizationModelNull)
+                        .setUtilizationModelBw(utilizationModelNull);
+                cloudlet.setBroker(broker);
+                cloudlet.setVmId(i);
+                list.add(cloudlet);
 			} catch (Exception e) {
 				e.printStackTrace();
 				System.exit(0);
 			}
-			cloudlet.setBroker(brokerId);
-			cloudlet.setVmId(i);
-			list.add(cloudlet);
 		}
 
 		return list;

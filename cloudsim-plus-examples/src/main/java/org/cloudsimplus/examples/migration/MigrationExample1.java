@@ -37,9 +37,11 @@ import org.cloudbus.cloudsim.power.PowerVm;
 import org.cloudbus.cloudsim.power.PowerVmSelectionPolicyMinimumUtilization;
 import org.cloudbus.cloudsim.power.models.PowerModelLinear;
 import org.cloudbus.cloudsim.provisioners.PeProvisionerSimple;
+import org.cloudbus.cloudsim.provisioners.ResourceProvisioner;
 import org.cloudbus.cloudsim.provisioners.ResourceProvisionerSimple;
 import org.cloudbus.cloudsim.resources.Bandwidth;
 import org.cloudbus.cloudsim.resources.Ram;
+import org.cloudbus.cloudsim.schedulers.VmScheduler;
 import org.cloudsimplus.util.tablebuilder.CloudletsTableBuilderHelper;
 
 /**
@@ -231,7 +233,7 @@ public class MigrationExample1 {
                     .setUtilizationModelCpu(cpuUtilizationModel)
                     .setUtilizationModelRam(utilizationModelFull)
                     .setUtilizationModelBw(utilizationModelFull);
-            c.setBroker(broker.getId());
+            c.setBroker(broker);
             list.add(c);
         }
 
@@ -306,14 +308,12 @@ public class MigrationExample1 {
      */
     public static PowerHostUtilizationHistory createHost(int id, int numberOfPes, double mipsByPe) {
             List<Pe> peList = createPeList(numberOfPes, mipsByPe);
-            return new PowerHostUtilizationHistory(
-                    id,
-                    new ResourceProvisionerSimple(new Ram(HOST_RAM)),
-                    new ResourceProvisionerSimple(new Bandwidth(HOST_BW)),
-                    HOST_STORAGE, peList,
-                    new VmSchedulerTimeShared(peList),
-                    new PowerModelLinear(1000, 0.7)
-                );
+            PowerHostUtilizationHistory host = new PowerHostUtilizationHistory(id, HOST_STORAGE, peList);
+            host.setPowerModel(new PowerModelLinear(1000, 0.7))
+                .setRamProvisioner(new ResourceProvisionerSimple(new Ram(HOST_RAM)))
+                .setBwProvisioner(new ResourceProvisionerSimple(new Bandwidth(HOST_BW)))
+                .setVmScheduler(new VmSchedulerTimeShared(peList));
+            return host;
     }
 
     public static List<Pe> createPeList(int numberOfPEs, double mips) {

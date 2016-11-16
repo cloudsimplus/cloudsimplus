@@ -156,8 +156,8 @@ public class CloudletToVmMappingSolutionTest {
         Map.Entry<Cloudlet, Vm> originalEntries[] = new Map.Entry[numberOfEntries];
         Map.Entry<Cloudlet, Vm> swapedVmsEntries[] = new Map.Entry[numberOfEntries];
         Cloudlet[] cloudlets = new Cloudlet[numberOfEntries];
-        for(int i = 0; i < numberOfEntries; i++){
-            cloudlets[i] = CloudletSimpleTest.createCloudlet(i, i*1000, i);
+        for(int i = 1; i <= numberOfEntries; i++){
+            cloudlets[i-1] = CloudletSimpleTest.createCloudlet(i, i*1000, i);
         }
 
         Vm[] vms = createVms(numberOfEntries);

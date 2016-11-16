@@ -10,7 +10,6 @@ package org.cloudbus.cloudsim.examples;
 
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.LinkedList;
 import java.util.List;
 import org.cloudbus.cloudsim.Cloudlet;
 import org.cloudbus.cloudsim.CloudletSimple;
@@ -26,7 +25,6 @@ import org.cloudbus.cloudsim.HostSimple;
 import org.cloudbus.cloudsim.Log;
 import org.cloudbus.cloudsim.resources.Pe;
 import org.cloudbus.cloudsim.resources.PeSimple;
-import org.cloudbus.cloudsim.resources.FileStorage;
 import org.cloudbus.cloudsim.utilizationmodels.UtilizationModel;
 import org.cloudbus.cloudsim.utilizationmodels.UtilizationModelFull;
 import org.cloudbus.cloudsim.Vm;
@@ -187,25 +185,18 @@ public class CloudSimExample6 {
         long storage = 1000000; //host storage (MB)
         long bw = 10000; //Megabits/s
 
-        hostList.add(new HostSimple(
-                ++hostId,
-                new ResourceProvisionerSimple(new Ram(ram)),
-                new ResourceProvisionerSimple(new Bandwidth(bw)),
-                storage,
-                peList1,
-                new VmSchedulerTimeShared(peList1)
-        )
-        ); // This is our first machine
+        Host host1 = new HostSimple(++hostId, storage, peList1)
+            .setRamProvisioner(new ResourceProvisionerSimple(new Ram(ram)))
+            .setBwProvisioner(new ResourceProvisionerSimple(new Bandwidth(bw)))
+            .setVmScheduler(new VmSchedulerTimeShared(peList1));
+        hostList.add(host1);
 
-        hostList.add(new HostSimple(
-                ++hostId,
-                new ResourceProvisionerSimple(new Ram(ram)),
-                new ResourceProvisionerSimple(new Bandwidth(bw)),
-                storage,
-                peList2,
-                new VmSchedulerTimeShared(peList2)
-        )
-        ); // Second machine
+        Host host2 = new HostSimple(++hostId, storage, peList2)
+            .setRamProvisioner(new ResourceProvisionerSimple(new Ram(ram)))
+            .setBwProvisioner(new ResourceProvisionerSimple(new Bandwidth(bw)))
+            .setVmScheduler(new VmSchedulerTimeShared(peList2));
+        hostList.add(host2);
+
 
         // 5. Create a DatacenterCharacteristics object that stores the
         //    properties of a data center: architecture, OS, list of

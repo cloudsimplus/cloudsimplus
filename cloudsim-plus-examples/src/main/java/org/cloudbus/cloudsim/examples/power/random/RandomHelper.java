@@ -8,6 +8,7 @@ import java.util.List;
 import org.cloudbus.cloudsim.Cloudlet;
 
 import org.cloudbus.cloudsim.CloudletSimple;
+import org.cloudbus.cloudsim.brokers.DatacenterBroker;
 import org.cloudbus.cloudsim.utilizationmodels.UtilizationModel;
 import org.cloudbus.cloudsim.utilizationmodels.UtilizationModelZero;
 import org.cloudbus.cloudsim.utilizationmodels.UtilizationModelStochastic;
@@ -32,13 +33,13 @@ public class RandomHelper {
 	/**
 	 * Creates the cloudlet list.
 	 *
-	 * @param brokerId the broker id
+	 * @param broker the broker
 	 * @param cloudletsNumber the cloudlets number
 	 *
 	 * @return the list< cloudlet>
 	 */
-	public static List<Cloudlet> createCloudletList(int brokerId, int cloudletsNumber) {
-		List<Cloudlet> list = new ArrayList<Cloudlet>();
+	public static List<Cloudlet> createCloudletList(DatacenterBroker broker, int cloudletsNumber) {
+		List<Cloudlet> list = new ArrayList<>(cloudletsNumber);
 
 		long fileSize = 300;
 		long outputSize = 300;
@@ -48,27 +49,24 @@ public class RandomHelper {
 		for (int i = 0; i < cloudletsNumber; i++) {
 			CloudletSimple cloudlet = null;
 			if (seed == -1) {
-				cloudlet = new CloudletSimple(
-						i,
-						Constants.CLOUDLET_LENGTH,
-						Constants.CLOUDLET_PES,
-						fileSize,
-						outputSize,
-						new UtilizationModelStochastic(),
-						utilizationModelNull,
-						utilizationModelNull);
+				cloudlet = new CloudletSimple(i,Constants.CLOUDLET_LENGTH, Constants.CLOUDLET_PES);
+                cloudlet
+                        .setCloudletFileSize(fileSize)
+                        .setCloudletOutputSize(outputSize)
+						.setUtilizationModelCpu(new UtilizationModelStochastic())
+						.setUtilizationModelRam(utilizationModelNull)
+						.setUtilizationModelBw(utilizationModelNull);
 			} else {
-				cloudlet = new CloudletSimple(
-						i,
-						Constants.CLOUDLET_LENGTH,
-						Constants.CLOUDLET_PES,
-						fileSize,
-						outputSize,
-						new UtilizationModelStochastic(seed * i),
-						utilizationModelNull,
-						utilizationModelNull);
+				cloudlet = new CloudletSimple(i,Constants.CLOUDLET_LENGTH, Constants.CLOUDLET_PES);
+                cloudlet
+                        .setCloudletFileSize(fileSize)
+                        .setCloudletOutputSize(outputSize)
+						.setUtilizationModelCpu(new UtilizationModelStochastic(seed*i))
+						.setUtilizationModelRam(utilizationModelNull)
+						.setUtilizationModelBw(utilizationModelNull);
+                
 			}
-			cloudlet.setBroker(brokerId);
+			cloudlet.setBroker(broker);
 			cloudlet.setVmId(i);
 			list.add(cloudlet);
 		}

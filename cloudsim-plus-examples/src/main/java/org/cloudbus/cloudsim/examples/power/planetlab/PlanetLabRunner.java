@@ -66,10 +66,9 @@ public class PlanetLabRunner extends RunnerAbstract {
 			CloudSim.init(1, Calendar.getInstance(), false);
 
 			broker = Helper.createBroker();
-			int brokerId = broker.getId();
 
-			cloudletList = PlanetLabHelper.createCloudletListPlanetLab(brokerId, inputFolder);
-			vmList = Helper.createVmList(brokerId, cloudletList.size());
+			cloudletList = PlanetLabHelper.createCloudletListPlanetLab(broker, inputFolder);
+			vmList = Helper.createVmList(broker, cloudletList.size());
 			hostList = Helper.createHostList(PlanetLabConstants.NUMBER_OF_HOSTS);
 		} catch (Exception e) {
 			e.printStackTrace();

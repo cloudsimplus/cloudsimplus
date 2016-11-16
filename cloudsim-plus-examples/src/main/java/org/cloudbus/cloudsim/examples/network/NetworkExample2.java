@@ -10,7 +10,6 @@ package org.cloudbus.cloudsim.examples.network;
 
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.LinkedList;
 import java.util.List;
 import org.cloudbus.cloudsim.Cloudlet;
 import org.cloudbus.cloudsim.CloudletSimple;
@@ -27,7 +26,6 @@ import org.cloudbus.cloudsim.Log;
 import org.cloudbus.cloudsim.network.NetworkTopology;
 import org.cloudbus.cloudsim.resources.Pe;
 import org.cloudbus.cloudsim.resources.PeSimple;
-import org.cloudbus.cloudsim.resources.FileStorage;
 import org.cloudbus.cloudsim.utilizationmodels.UtilizationModel;
 import org.cloudbus.cloudsim.utilizationmodels.UtilizationModelFull;
 import org.cloudbus.cloudsim.Vm;
@@ -201,17 +199,11 @@ public class NetworkExample2 {
         long storage = 1000000; //host storage
         long bw = 10000;
 
-        //in this example, the VMAllocatonPolicy in use is Time Shared with priorities. It means that VMs
-        //receive time shares accroding to their priority.
-        hostList.add(new HostSimple(
-                hostId,
-                new ResourceProvisionerSimple(new Ram(ram)),
-                new ResourceProvisionerSimple(new Bandwidth(bw)),
-                storage,
-                peList,
-                new VmSchedulerTimeShared(peList)
-        )
-        ); // This is our machine
+        Host host = new HostSimple(hostId, storage, peList)
+            .setRamProvisioner(new ResourceProvisionerSimple(new Ram(ram)))
+            .setBwProvisioner(new ResourceProvisionerSimple(new Bandwidth(bw)))
+            .setVmScheduler(new VmSchedulerTimeShared(peList));
+        hostList.add(host);        
 
         // 5. Create a DatacenterCharacteristics object that stores the
         //    properties of a data center: architecture, OS, list of

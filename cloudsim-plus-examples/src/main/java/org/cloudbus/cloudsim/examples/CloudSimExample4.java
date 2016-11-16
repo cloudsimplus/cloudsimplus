@@ -25,7 +25,6 @@ import org.cloudbus.cloudsim.HostSimple;
 import org.cloudbus.cloudsim.Log;
 import org.cloudbus.cloudsim.resources.Pe;
 import org.cloudbus.cloudsim.resources.PeSimple;
-import org.cloudbus.cloudsim.resources.FileStorage;
 import org.cloudbus.cloudsim.utilizationmodels.UtilizationModel;
 import org.cloudbus.cloudsim.utilizationmodels.UtilizationModelFull;
 import org.cloudbus.cloudsim.Vm;
@@ -187,15 +186,11 @@ public class CloudSimExample4 {
 
         //in this example, the VMAllocatonPolicy in use is SpaceShared. It means that only one VM
         //is allowed to run on each Pe. As each Host has only one Pe, only one VM can run on each HostSimple.
-        hostList.add(new HostSimple(
-                hostId,
-                new ResourceProvisionerSimple(new Ram(ram)),
-                new ResourceProvisionerSimple(new Bandwidth(bw)),
-                storage,
-                peList,
-                new VmSchedulerSpaceShared(peList)
-        )
-        ); // This is our first machine
+        Host host = new HostSimple(++hostId, storage, peList)
+            .setRamProvisioner(new ResourceProvisionerSimple(new Ram(ram)))
+            .setBwProvisioner(new ResourceProvisionerSimple(new Bandwidth(bw)))
+            .setVmScheduler(new VmSchedulerSpaceShared(peList));
+        hostList.add(host);
 
         // 5. Create a DatacenterCharacteristics object that stores the
         //    properties of a data center: architecture, OS, list of

@@ -186,7 +186,7 @@ public class SwfWorkloadFormatExample1 {
         this.cloudletList = reader.generateWorkload();
 
         for (Cloudlet c : this.cloudletList) {
-            c.setBroker(broker.getId());
+            c.setBroker(broker);
         }
 
         Log.printConcatLine("#Created ", this.cloudletList.size(), " Cloudlets for broker ", broker.getName());
@@ -270,13 +270,11 @@ public class SwfWorkloadFormatExample1 {
         for(int i = 0; i < numberOfHosts; i++){
             List<Pe> peList = createPeList(numberOfPes, VM_MIPS);
 
-            Host host = new HostSimple(
-                    lastCreatedHostId++,
-                    new ResourceProvisionerSimple(new Ram(ram)),
-                    new ResourceProvisionerSimple(new Bandwidth(bw)),
-                    storage, peList,
-                    new VmSchedulerTimeShared(peList)
-            );
+            Host host = 
+                new HostSimple(lastCreatedHostId++, storage, peList)
+                    .setRamProvisioner(new ResourceProvisionerSimple(new Ram(ram)))
+                    .setBwProvisioner(new ResourceProvisionerSimple(new Bandwidth(bw)))
+                    .setVmScheduler(new VmSchedulerTimeShared(peList));            
 
             list.add(host);
         }

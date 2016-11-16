@@ -10,7 +10,6 @@ package org.cloudbus.cloudsim.examples.network;
 
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.LinkedList;
 import java.util.List;
 import org.cloudbus.cloudsim.Cloudlet;
 import org.cloudbus.cloudsim.CloudletSimple;
@@ -177,15 +176,11 @@ public class NetworkExample1 {
         long storage = 1000000; //host storage
         long bw = 10000;
 
-        hostList.add(new HostSimple(
-                hostId,
-                new ResourceProvisionerSimple(new Ram(ram)),
-                new ResourceProvisionerSimple(new Bandwidth(bw)),
-                storage,
-                peList,
-                new VmSchedulerTimeShared(peList)
-        )
-        ); // This is our machine
+        Host host = new HostSimple(hostId, storage, peList)
+            .setRamProvisioner(new ResourceProvisionerSimple(new Ram(ram)))
+            .setBwProvisioner(new ResourceProvisionerSimple(new Bandwidth(bw)))
+            .setVmScheduler(new VmSchedulerTimeShared(peList));
+        hostList.add(host);        
 
         // 5. Create a DatacenterCharacteristics object that stores the
         //    properties of a data center: architecture, OS, list of

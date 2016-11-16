@@ -25,7 +25,6 @@ import org.cloudbus.cloudsim.HostSimple;
 import org.cloudbus.cloudsim.Log;
 import org.cloudbus.cloudsim.resources.Pe;
 import org.cloudbus.cloudsim.resources.PeSimple;
-import org.cloudbus.cloudsim.resources.FileStorage;
 import org.cloudbus.cloudsim.utilizationmodels.UtilizationModel;
 import org.cloudbus.cloudsim.utilizationmodels.UtilizationModelFull;
 import org.cloudbus.cloudsim.Vm;
@@ -252,9 +251,10 @@ public class DynamicCloudletsArrival1 {
         long storage = 1000000; // host storage (MB)
         long bw = 10000; //Megabits/s
 
-        return new HostSimple(id,
-                new ResourceProvisionerSimple(new Ram(ram)),
-                new ResourceProvisionerSimple(new Bandwidth(bw)),
-                storage, peList, new VmSchedulerSpaceShared(peList));
+       return new HostSimple(id, storage, peList)
+            .setRamProvisioner(new ResourceProvisionerSimple(new Ram(ram)))
+            .setBwProvisioner(new ResourceProvisionerSimple(new Bandwidth(bw)))
+            .setVmScheduler(new VmSchedulerSpaceShared(peList));
+        
     }
 }

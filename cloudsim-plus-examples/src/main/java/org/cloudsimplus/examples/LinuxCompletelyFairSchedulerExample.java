@@ -17,7 +17,6 @@ import org.cloudbus.cloudsim.HostSimple;
 import org.cloudbus.cloudsim.Log;
 import org.cloudbus.cloudsim.resources.Pe;
 import org.cloudbus.cloudsim.resources.PeSimple;
-import org.cloudbus.cloudsim.resources.FileStorage;
 import org.cloudbus.cloudsim.utilizationmodels.UtilizationModel;
 import org.cloudbus.cloudsim.utilizationmodels.UtilizationModelFull;
 import org.cloudbus.cloudsim.Vm;
@@ -146,13 +145,13 @@ public class LinuxCompletelyFairSchedulerExample {
         final long storage = 1000000; // host storage
         final long bw = 10000;
 
-        List<Pe> cpuCoresList = createHostPesList(HOST_MIPS);
+        List<Pe> peList = createHostPesList(HOST_MIPS);
 
-        return new HostSimple(numberOfCreatedHosts++,
-                new ResourceProvisionerSimple(new Ram(ram)),
-                new ResourceProvisionerSimple(new Bandwidth(bw)),
-                storage, cpuCoresList,
-                new VmSchedulerTimeShared(cpuCoresList));
+       return new HostSimple(numberOfCreatedHosts++, storage, peList)
+            .setRamProvisioner(new ResourceProvisionerSimple(new Ram(ram)))
+            .setBwProvisioner(new ResourceProvisionerSimple(new Bandwidth(bw)))
+            .setVmScheduler(new VmSchedulerTimeShared(peList));
+
     }
 
     private List<Pe> createHostPesList(double mips) {

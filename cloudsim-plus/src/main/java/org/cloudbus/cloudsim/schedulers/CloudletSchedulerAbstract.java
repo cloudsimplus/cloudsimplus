@@ -17,7 +17,6 @@ import org.cloudbus.cloudsim.*;
 import org.cloudbus.cloudsim.Cloudlet.Status;
 import org.cloudbus.cloudsim.core.CloudSim;
 import org.cloudsimplus.listeners.VmToCloudletEventInfo;
-import org.cloudbus.cloudsim.resources.Pe;
 import org.cloudbus.cloudsim.resources.Processor;
 
 /**

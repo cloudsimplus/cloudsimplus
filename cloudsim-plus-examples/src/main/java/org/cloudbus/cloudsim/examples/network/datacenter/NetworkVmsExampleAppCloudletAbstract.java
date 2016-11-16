@@ -2,7 +2,6 @@ package org.cloudbus.cloudsim.examples.network.datacenter;
 
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.LinkedList;
 import java.util.List;
 import org.cloudbus.cloudsim.Cloudlet;
 import org.cloudbus.cloudsim.DatacenterCharacteristics;
@@ -27,7 +26,6 @@ import org.cloudbus.cloudsim.network.datacenter.RootSwitch;
 import org.cloudbus.cloudsim.provisioners.PeProvisionerSimple;
 import org.cloudbus.cloudsim.provisioners.ResourceProvisionerSimple;
 import org.cloudbus.cloudsim.resources.Bandwidth;
-import org.cloudbus.cloudsim.resources.FileStorage;
 import org.cloudbus.cloudsim.resources.Pe;
 import org.cloudbus.cloudsim.resources.PeSimple;
 import org.cloudbus.cloudsim.resources.Ram;
@@ -168,25 +166,21 @@ public abstract class NetworkVmsExampleAppCloudletAbstract {
      * @return the datacenter
      */
     protected final NetworkDatacenter createDatacenter(String name) {
-        List<Host> hostList = new ArrayList<>();
         final int numberOfHosts = EdgeSwitch.PORTS * AggregateSwitch.PORTS * RootSwitch.PORTS;
+        List<Host> hostList = new ArrayList<>(numberOfHosts);
         for (int i = 0; i < numberOfHosts; i++) {
             List<Pe> peList = createPEs(HOST_PES, HOST_MIPS);
-            // 4. Create Host with its id and list of PEs and add them to
-            // the list of machines
-            hostList.add(
-                new NetworkHost(i,
-                    new ResourceProvisionerSimple(new Ram(HOST_RAM)),
-                    new ResourceProvisionerSimple(new Bandwidth(HOST_BW)),
-                    HOST_STORAGE, peList,
-                    new VmSchedulerTimeShared(peList)));
+            Host host = new NetworkHost(i, HOST_STORAGE, peList)
+                    .setRamProvisioner(new ResourceProvisionerSimple(new Ram(HOST_RAM)))
+                    .setBwProvisioner(new ResourceProvisionerSimple(new Bandwidth(HOST_BW)))
+                    .setVmScheduler(new VmSchedulerTimeShared(peList));
+            hostList.add(host);
         }
 
         // 5. Create a DatacenterCharacteristics object that stores the
         // properties of a data center: architecture, OS, list of
         // Machines, allocation policy: time- or space-shared, time zone
         // and its price (G$/Pe time unit).
-        List<FileStorage> storageList = new ArrayList<>();
         DatacenterCharacteristics characteristics =
                 new DatacenterCharacteristicsSimple(hostList)
                     .setCostPerSecond(COST)
@@ -196,9 +190,8 @@ public abstract class NetworkVmsExampleAppCloudletAbstract {
         // 6. Finally, we need to create a NetworkDatacenter object.
         NetworkDatacenter newDatacenter =
                 new NetworkDatacenter(
-                        name, characteristics,
-                        new NetworkVmAllocationPolicy(hostList),
-                        storageList, 5);
+                        name, characteristics, new NetworkVmAllocationPolicy(hostList));
+        newDatacenter.setSchedulingInterval(5);
 
         createNetwork(newDatacenter);
         return newDatacenter;
@@ -245,10 +238,12 @@ public abstract class NetworkVmsExampleAppCloudletAbstract {
         final int numberOfVms = getDatacenterHostList().size() * MAX_VMS_PER_HOST;
         final List<NetworkVm> list = new ArrayList<>();
         for (int i = 0; i < numberOfVms; i++) {
-            NetworkVm vm =
-                new NetworkVm(i,
-                    broker.getId(), VM_MIPS, VM_PES_NUMBER, VM_RAM, VM_BW, VM_SIZE, VMM,
-                    new NetworkCloudletSpaceSharedScheduler(datacenter));
+            NetworkVm vm = new NetworkVm(i,VM_MIPS, VM_PES_NUMBER);
+            vm.setRam(VM_RAM)
+              .setBw(VM_BW)
+              .setSize(VM_SIZE)
+              .setBroker(broker)
+              .setCloudletScheduler(new NetworkCloudletSpaceSharedScheduler(datacenter));
             list.add(vm);
         }
 
