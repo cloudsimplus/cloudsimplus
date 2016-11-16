@@ -1,14 +1,14 @@
 package org.cloudbus.cloudsim;
 
+import org.cloudbus.cloudsim.brokers.DatacenterBroker;
 import org.cloudbus.cloudsim.core.Identificable;
-import org.cloudbus.cloudsim.resources.Pe;
+import org.cloudbus.cloudsim.resources.*;
 import org.cloudbus.cloudsim.schedulers.CloudletScheduler;
 import java.util.Collections;
 import java.util.List;
 import org.cloudsimplus.listeners.DatacenterToVmEventInfo;
 import org.cloudsimplus.listeners.EventListener;
 import org.cloudsimplus.listeners.HostToVmEventInfo;
-import org.cloudbus.cloudsim.resources.ResourceManageable;
 
 /**
  * An interface to be implemented by each class that provides basic
@@ -54,20 +54,11 @@ public interface Vm extends Identificable, Comparable<Vm> {
     long getCurrentAllocatedBw();
 
     /**
-     * Gets the current allocated MIPS for each VM's {@link Pe}. This list
-     * represents the amount of MIPS in each VM's Pe that is available to be
-     * allocated for VM's Cloudlets.
-     *
-     * @return the current allocated MIPS
-     */
-    List<Double> getCurrentAllocatedMips();
-
-    /**
      * Gets the current allocated ram.
      *
      * @return the current allocated ram
      */
-    int getCurrentAllocatedRam();
+    long getCurrentAllocatedRam();
 
     /**
      * Gets the current allocated storage size.
@@ -103,7 +94,7 @@ public interface Vm extends Identificable, Comparable<Vm> {
      *
      * @return the current requested ram
      */
-    int getCurrentRequestedRam();
+    long getCurrentRequestedRam();
 
     /**
      * Gets the current requested total mips. It is the sum of MIPS capacity
@@ -122,9 +113,10 @@ public interface Vm extends Identificable, Comparable<Vm> {
     Host getHost();
 
     /**
-     * Gets unique string identifier of the VM.
+     * Gets the Unique Identifier (UID) for the VM, that is compounded by the user id
+     * and VM id.
      *
-     * @return string uid
+     * @return string UID
      */
     String getUid();
 
@@ -155,7 +147,15 @@ public interface Vm extends Identificable, Comparable<Vm> {
      */
     double getTotalMipsCapacity();
 
-    <T extends Number, R extends ResourceManageable<? extends T>> ResourceManageable<T> getResource(Class<R> resourceClass);
+    /**
+     * Gets a given Vm {@link Resource}, such as {@link Ram} or {@link Bandwidth},
+     * from the class of the resource to get.
+     *
+     * @param resourceClass the class of the resource to get
+     * @param <R> generic type that defines the class of resources that can be got
+     * @return the Vm {@link Resource} corresponding to the given class
+     */
+    <R extends ResourceManageable> ResourceManageable getResource(Class<R> resourceClass);
 
 
     /**
@@ -188,16 +188,16 @@ public interface Vm extends Identificable, Comparable<Vm> {
     EventListener<DatacenterToVmEventInfo> getOnVmCreationFailureListener();
 
     /**
-     * Gets the RAM capacity.
+     * Gets the RAM capacity in Megabytes.
      *
      * @return the RAM capacity
      * @pre $none
      * @post $none
      */
-    int getRam();
+    long getRam();
 
     /**
-     * Gets the storage size (capacity) of the VM image (the amount of storage
+     * Gets the storage size (capacity) of the VM image in Megabytes (the amount of storage
      * it will use, at least initially).
      *
      * @return amount of storage
@@ -234,13 +234,21 @@ public interface Vm extends Identificable, Comparable<Vm> {
     double getTotalUtilizationOfCpuMips(double time);
 
     /**
-     * Gets the ID of the owner of the VM.
+     * Gets the ID the {@link DatacenterBroker} that represents the owner of the VM.
      *
-     * @return VM's owner ID
+     * @return the broker ID or <tt>-1</tt> if a broker has not been set yet
      * @pre $none
      * @post $none
      */
-    int getUserId();
+    int getBrokerId();
+
+    /**
+     * Sets a {@link DatacenterBroker} that represents the owner of the VM.
+     *
+     * @param broker the {@link DatacenterBroker} to set
+     */
+    Vm setBroker(DatacenterBroker broker);
+
 
     /**
      * Gets the Virtual Machine Monitor (VMM) that manages the VM.
@@ -252,7 +260,8 @@ public interface Vm extends Identificable, Comparable<Vm> {
     String getVmm();
 
     /**
-     * Checks if the VM is being instantiated.
+     * Checks if the VM is being instantiated, and was not placed inside a {@link Host} yet.
+     * By this way, resources required by the Vm were not provisioned yet.
      *
      * @return true, if is being instantiated; false otherwise
      */
@@ -266,10 +275,10 @@ public interface Vm extends Identificable, Comparable<Vm> {
     boolean isInMigration();
 
     /**
-     * Indicates if the VM is being instantiated.
+     * Changes the instantiation status of the Vm.
      *
-     * @param beingInstantiated true to indicate the VM is being instantiated;
-     * false otherwise
+     * @param beingInstantiated true to indicate the VM is being instantiated; false otherwise
+     * @see #isBeingInstantiated()
      */
     void setBeingInstantiated(boolean beingInstantiated);
 
@@ -277,33 +286,11 @@ public interface Vm extends Identificable, Comparable<Vm> {
      * Sets the BW capacity
      *
      * @param bwCapacity new BW capacity
-     * @return true if bwCapacity > 0 and bwCapacity >= current allocated
-     * resource, false otherwise
+     * @return
      * @pre bwCapacity > 0
      * @post $none
      */
-    boolean setBw(long bwCapacity);
-
-    /**
-     * Sets the current allocated bw.
-     *
-     * @param newTotalAllocateddBw the new total allocated bw
-     */
-    void setCurrentAllocatedBw(long newTotalAllocateddBw);
-
-    /**
-     * Sets the current allocated MIPS for each VM's PE.
-     *
-     * @param currentAllocatedMips the new current allocated mips
-     */
-    void setCurrentAllocatedMips(List<Double> currentAllocatedMips);
-
-    /**
-     * Sets the current allocated ram.
-     *
-     * @param newTotalAllocateddRam the new total allocated ram
-     */
-    void setCurrentAllocatedRam(int newTotalAllocateddRam);
+    Vm setBw(long bwCapacity);
 
     /**
      * Sets the PM that hosts the VM.
@@ -329,7 +316,7 @@ public interface Vm extends Identificable, Comparable<Vm> {
      *
      * @param onHostAllocationListener the listener to set
      */
-    void setOnHostAllocationListener(EventListener<HostToVmEventInfo> onHostAllocationListener);
+    Vm setOnHostAllocationListener(EventListener<HostToVmEventInfo> onHostAllocationListener);
 
     /**
      * Sets the listener object that will be notified when a {@link Host}
@@ -338,7 +325,7 @@ public interface Vm extends Identificable, Comparable<Vm> {
      *
      * @param onHostDeallocationListener the listener to set
      */
-    void setOnHostDeallocationListener(EventListener<HostToVmEventInfo> onHostDeallocationListener);
+    Vm setOnHostDeallocationListener(EventListener<HostToVmEventInfo> onHostDeallocationListener);
 
     /**
      * Sets the listener object that will be notified when the Vm fail in
@@ -348,7 +335,7 @@ public interface Vm extends Identificable, Comparable<Vm> {
      * @param onVmCreationFailureListener the listener to set
      * @see #updateVmProcessing(double, java.util.List)
      */
-    void setOnVmCreationFailureListener(EventListener<DatacenterToVmEventInfo> onVmCreationFailureListener);
+    Vm setOnVmCreationFailureListener(EventListener<DatacenterToVmEventInfo> onVmCreationFailureListener);
 
     /**
      * Gets the listener object that will be notified every time when
@@ -365,37 +352,28 @@ public interface Vm extends Identificable, Comparable<Vm> {
      * @param onUpdateVmProcessingListener the listener to set
      * @see #updateVmProcessing(double, java.util.List)
      */
-    void setOnUpdateVmProcessingListener(EventListener<HostToVmEventInfo> onUpdateVmProcessingListener);
+    Vm setOnUpdateVmProcessingListener(EventListener<HostToVmEventInfo> onUpdateVmProcessingListener);
 
     /**
-     * Sets RAM capacity.
+     * Sets RAM capacity in Megabytes.
      *
      * @param ramCapacity new RAM capacity
-     * @return true if ramCapacity > 0 and ramCapacity >= current allocated
-     * resource, false otherwise
+     * @return
      * @pre ramCapacity > 0
      * @post $none
      */
-    boolean setRam(int ramCapacity);
+    Vm setRam(long ramCapacity);
 
     /**
-     * Sets the storage size (capacity) of the VM image.
+     * Sets the storage size (capacity) of the VM image in Megabytes.
      *
      * @param size new storage size
-     * @return true if size > 0 and size >= current allocated resource, false
-     * otherwise
+     * @return
      * @pre size > 0
      * @post $none
      *
      */
-    boolean setSize(long size);
-
-    /**
-     * Sets the ID of the User (UID) that owns the VM.
-     *
-     * @param uid the new UID
-     */
-    void setUid(String uid);
+    Vm setSize(long size);
 
     /**
      * Updates the processing of cloudlets running on this VM.
@@ -409,6 +387,13 @@ public interface Vm extends Identificable, Comparable<Vm> {
      * @post $none
      */
     double updateVmProcessing(double currentTime, List<Double> mipsShare);
+
+    /**
+     * Sets the Cloudlet scheduler the VM uses to schedule cloudlets execution.
+     *
+     * @param cloudletScheduler the cloudlet scheduler to set
+     */
+    Vm setCloudletScheduler(CloudletScheduler cloudletScheduler);
 
     /**
      * Sets the status of VM to FAILED.
@@ -429,51 +414,48 @@ public interface Vm extends Identificable, Comparable<Vm> {
      */
     Vm NULL = new Vm() {
         @Override public void addStateHistoryEntry(VmStateHistoryEntry entry) {}
-        @Override public long getBw(){ return 0L; }
+        @Override public long getBw(){ return 0; }
         @Override public CloudletScheduler getCloudletScheduler() { return CloudletScheduler.NULL; }
-        @Override public long getCurrentAllocatedBw() { return 0L; }
-        @Override public List<Double> getCurrentAllocatedMips(){ return Collections.emptyList(); }
-        @Override public int getCurrentAllocatedRam(){ return 0; }
-        @Override public long getCurrentAllocatedSize() { return 0L; }
-        @Override public long getCurrentRequestedBw() { return 0L; }
+        @Override public long getCurrentAllocatedBw() { return 0; }
+        @Override public long getCurrentAllocatedRam(){ return 0; }
+        @Override public long getCurrentAllocatedSize() { return 0; }
+        @Override public long getCurrentRequestedBw() { return 0; }
         @Override public double getCurrentRequestedMaxMips() { return 0.0; }
         @Override public List<Double> getCurrentRequestedMips() { return Collections.emptyList(); }
-        @Override public int getCurrentRequestedRam() { return 0; }
+        @Override public long getCurrentRequestedRam() { return 0; }
         @Override public double getCurrentRequestedTotalMips() { return 0.0; }
         @Override public Host getHost() { return Host.NULL; }
-        @Override public int getId() { return 0; }
+        @Override public int getId() { return -1; }
         @Override public double getMips() { return 0.0; }
         @Override public int getNumberOfPes() { return 0; }
         @Override public EventListener<HostToVmEventInfo> getOnHostAllocationListener() { return EventListener.NULL; }
         @Override public EventListener<HostToVmEventInfo> getOnHostDeallocationListener() { return EventListener.NULL; }
         @Override public EventListener<DatacenterToVmEventInfo> getOnVmCreationFailureListener() { return EventListener.NULL; }
-        @Override public int getRam() { return 0; }
-        @Override public long getSize(){ return 0L; }
+        @Override public long getRam() { return 0; }
+        @Override public long getSize(){ return 0; }
         @Override public List<VmStateHistoryEntry> getStateHistory() { return Collections.emptyList(); }
         @Override public double getTotalUtilizationOfCpu(double time) { return 0.0; }
         @Override public double getTotalUtilizationOfCpuMips(double time) { return 0.0; }
         @Override public String getUid(){ return ""; }
-        @Override public int getUserId() { return 0; }
+        @Override public int getBrokerId() { return -1; }
+        @Override  public Vm setBroker(DatacenterBroker broker) { return Vm.NULL; }
         @Override public String getVmm() { return ""; }
         @Override public boolean isBeingInstantiated() { return false; }
         @Override public boolean isInMigration() { return false; }
         @Override public void setBeingInstantiated(boolean beingInstantiated){}
-        @Override public boolean setBw(long bwCapacity) { return false; }
-        @Override public void setCurrentAllocatedBw(long newTotalAllocateddBw) {}
-        @Override public void setCurrentAllocatedMips(List<Double> currentAllocatedMips) {}
-        @Override public void setCurrentAllocatedRam(int newTotalAllocateddRam) {}
+        @Override public Vm setBw(long bwCapacity) { return Vm.NULL; }
         @Override public void setHost(Host host) {}
         @Override public void setInMigration(boolean inMigration) {}
-        @Override public void setOnHostAllocationListener(EventListener<HostToVmEventInfo> onHostAllocationListener) {}
-        @Override public void setOnHostDeallocationListener(EventListener<HostToVmEventInfo> onHostDeallocationListener) {}
-        @Override public void setOnVmCreationFailureListener(EventListener<DatacenterToVmEventInfo> onVmCreationFailureListener) {}
-        @Override public boolean setRam(int ramCapacity) { return false; }
-        @Override public boolean setSize(long size){ return false; }
-        @Override public void setUid(String uid) {}
+        @Override public Vm setOnHostAllocationListener(EventListener<HostToVmEventInfo> onHostAllocationListener) { return Vm.NULL; }
+        @Override public Vm setOnHostDeallocationListener(EventListener<HostToVmEventInfo> onHostDeallocationListener) { return Vm.NULL; }
+        @Override public Vm setOnVmCreationFailureListener(EventListener<DatacenterToVmEventInfo> onVmCreationFailureListener) { return Vm.NULL; }
+        @Override public Vm setRam(long ramCapacity) { return Vm.NULL; }
+        @Override public Vm setSize(long size) { return Vm.NULL; }
         @Override public double updateVmProcessing(double currentTime, List<Double> mipsShare){ return 0.0; }
-        @Override public <T extends Number, R extends ResourceManageable<? extends T>> ResourceManageable<T> getResource(Class<R> resourceClass) { return ResourceManageable.NULL_DOUBLE; }
+        @Override public Vm setCloudletScheduler(CloudletScheduler cloudletScheduler) { return Vm.NULL; }
+        @Override public <R extends ResourceManageable> ResourceManageable getResource(Class<R> resourceClass) { return ResourceManageable.NULL; }
         @Override public EventListener<HostToVmEventInfo> getOnUpdateVmProcessingListener() { return EventListener.NULL; }
-        @Override public void setOnUpdateVmProcessingListener(EventListener<HostToVmEventInfo> onUpdateVmProcessingListener) {}
+        @Override public Vm setOnUpdateVmProcessingListener(EventListener<HostToVmEventInfo> onUpdateVmProcessingListener) { return Vm.NULL; }
         @Override public int compareTo(Vm o) { return 0; }
         @Override public double getTotalMipsCapacity() { return 0.0; }
         @Override public void setFailed(boolean failed){}

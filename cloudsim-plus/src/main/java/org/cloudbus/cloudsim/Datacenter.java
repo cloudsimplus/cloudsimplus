@@ -3,6 +3,8 @@ package org.cloudbus.cloudsim;
 import org.cloudbus.cloudsim.core.Nameable;
 import org.cloudbus.cloudsim.resources.File;
 import org.cloudbus.cloudsim.allocationpolicies.VmAllocationPolicy;
+import org.cloudbus.cloudsim.resources.FileStorage;
+
 import java.util.Collections;
 import java.util.List;
 
@@ -41,7 +43,7 @@ public interface Datacenter extends Nameable {
      * Gets the policy to be used by the datacenter to allocate VMs into hosts.
      *
      * @return the VM allocation policy
-     * @see AbstractVmAllocationPolicy
+     * @see VmAllocationPolicy
      */
     VmAllocationPolicy getVmAllocationPolicy();
 
@@ -71,6 +73,15 @@ public interface Datacenter extends Nameable {
     double getSchedulingInterval();
 
     /**
+     * Sets the scheduling delay to process each event received by the
+     * datacenter (in seconds).
+     *
+     * @param schedulingInterval the new scheduling interval
+     */
+    Datacenter setSchedulingInterval(double schedulingInterval);
+
+
+    /**
      * Gets the datacenter characteristics.
      *
      * @return the datacenter characteristics
@@ -78,53 +89,52 @@ public interface Datacenter extends Nameable {
     DatacenterCharacteristics getCharacteristics();
 
     /**
+     * Gets a <b>read-only</b> list of storage devices of the datacenter.
+     *
+     * @return the storage list
+     */
+    List<FileStorage> getStorageList();
+
+    /**
+     * Sets the list of storage devices of the datacenter.
+     *
+     * @param storageList the new storage list
+     */
+    Datacenter setStorageList(List<FileStorage> storageList);
+
+
+    /**
      * A property that implements the Null Object Design Pattern for
      * {@link Datacenter} objects.
      */
     Datacenter NULL = new Datacenter() {
-        @Override
-        public int getId() {
+        @Override public int getId() {
+            return -1;
+        }
+        @Override public String getName() { return ""; }
+        @Override public int addFile(File file) {
             return 0;
         }
-
-        @Override
-        public String getName() {
-            return "";
-        }
-
-        @Override
-        public int addFile(File file) {
-            return 0;
-        }
-
-        @Override
-        public List<Host> getHostList() {
+        @Override public List<Host> getHostList() {
             return Collections.emptyList();
         }
-
-        @Override
-        public VmAllocationPolicy getVmAllocationPolicy() {
+        @Override public VmAllocationPolicy getVmAllocationPolicy() {
             return VmAllocationPolicy.NULL;
         }
-
-        @Override
-        public List<Vm> getVmList() {
+        @Override public List<Vm> getVmList() {
             return Collections.emptyList();
         }
-
-        @Override
-        public Host getHost(final int index) {
+        @Override public Host getHost(final int index) {
             return Host.NULL;
         }
-
-        @Override
-        public double getSchedulingInterval() {
+        @Override public double getSchedulingInterval() {
             return 0;
         }
-
-        @Override
-        public DatacenterCharacteristics getCharacteristics() {
+        @Override public Datacenter setSchedulingInterval(double schedulingInterval) { return Datacenter.NULL; }
+        @Override public DatacenterCharacteristics getCharacteristics() {
             return DatacenterCharacteristics.NULL;
         }
+        @Override public List<FileStorage> getStorageList() { return Collections.emptyList(); }
+        @Override public Datacenter setStorageList(List<FileStorage> storageList) { return Datacenter.NULL; }
     };
 }

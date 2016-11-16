@@ -45,7 +45,21 @@ public class HostDynamicWorkloadSimple extends HostSimple implements HostDynamic
     private final List<HostStateHistoryEntry> stateHistory = new LinkedList<>();
 
     /**
-     * Instantiates a new host.
+     * Creates a host.
+     *
+     * @param id the id
+     * @param storage the storage capacity
+     * @param peList the host's PEs list
+     *
+     */
+    public HostDynamicWorkloadSimple(int id, long storage, List<Pe> peList) {
+        super(id, storage, peList);
+        setUtilizationMips(0);
+        setPreviousUtilizationMips(0);
+    }
+
+    /**
+     * Creates a host with the given parameters.
      *
      * @param id the id
      * @param ramProvisioner the ram provisioner
@@ -53,17 +67,23 @@ public class HostDynamicWorkloadSimple extends HostSimple implements HostDynamic
      * @param storage the storage capacity
      * @param peList the host's PEs list
      * @param vmScheduler the VM scheduler
+     *
+     * @deprecated Use the other available constructors with less parameters
+     * and set the remaining ones using the respective setters.
+     * This constructor will be removed in future versions.
      */
-    public HostDynamicWorkloadSimple(
+    @Deprecated
+    private HostDynamicWorkloadSimple(
             int id,
-            ResourceProvisioner<Integer> ramProvisioner,
-            ResourceProvisioner<Long> bwProvisioner,
+            ResourceProvisioner ramProvisioner,
+            ResourceProvisioner bwProvisioner,
             long storage,
             List<Pe> peList,
             VmScheduler vmScheduler) {
-        super(id, ramProvisioner, bwProvisioner, storage, peList, vmScheduler);
-        setUtilizationMips(0);
-        setPreviousUtilizationMips(0);
+        this(id, storage, peList);
+        setRamProvisioner(ramProvisioner);
+        setBwProvisioner(bwProvisioner);
+        setVmScheduler(vmScheduler);
     }
 
     @Override
@@ -192,7 +212,7 @@ public class HostDynamicWorkloadSimple extends HostSimple implements HostDynamic
      * @return the utilization of memory
      */
     @Override
-    public int getUtilizationOfRam() {
+    public long getUtilizationOfRam() {
         return getRamProvisioner().getTotalAllocatedResource();
     }
 

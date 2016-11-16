@@ -8,6 +8,8 @@
 package org.cloudbus.cloudsim;
 
 import org.cloudbus.cloudsim.resources.Pe;
+
+import java.util.ArrayList;
 import java.util.List;
 
 import org.cloudbus.cloudsim.core.CloudSim;
@@ -94,7 +96,33 @@ public class DatacenterCharacteristicsSimple implements DatacenterCharacteristic
     private Datacenter datacenter;
 
     /**
-     * Creates a new DatacenterCharacteristics object. If the time zone is
+     * Creates a DatacenterCharacteristics with default values
+     * for {@link #getArchitecture() architecture}, {@link #getOs() OS}, {@link #getTimeZone() Time Zone} and
+     * {@link #getVmm() VMM}. The costs for {@link #getCostPerBw() BW}, {@link #getCostPerMem()} () RAM}
+     * and {@link #getCostPerStorage()} () Storage} are set to zero.
+     *
+     * @param hostList list of {@link Host} in the datacenter
+     *
+     * @pre machineList != null
+     * @post $none
+     */
+    public DatacenterCharacteristicsSimple(List<? extends Host> hostList){
+        setId(-1);
+        setHostList(hostList);
+        setArchitecture(DEFAULT_ARCH);
+        setOs(DEFAULT_OS);
+        setHostList(hostList);
+        setTimeZone(DEFAULT_TIMEZONE);
+        setVmm(DEFAULT_VMM);
+        setCostPerSecond(0);
+        setCostPerMem(0);
+        setCostPerStorage(0);
+        setCostPerBw(0);
+        this.datacenter = Datacenter.NULL;
+    }
+
+    /**
+     * Creates a DatacenterCharacteristics. If the time zone is
      * invalid, then by default, it will be GMT+0.
      *
      * @param architecture the architecture of the datacenter
@@ -108,42 +136,37 @@ public class DatacenterCharacteristicsSimple implements DatacenterCharacteristic
      * @param costPerStorage the cost to use storage in the datacenter
      * @param costPerBw the cost of each byte of bandwidth (bw) consumed
      *
+     * @deprecated Use the other available constructors with less parameters
+     * and set the remaining ones using the respective setters.
+     * This constructor will be removed in future versions.
+     *
      * @pre architecture != null
      * @pre OS != null
      * @pre VMM != null
      * @pre machineList != null
      * @pre timeZone >= -12 && timeZone <= 13
-	 * @
-     * pre costPerSec >= 0.0
+     * @pre costPerSec >= 0.0
      * @pre costPerMem >= 0
      * @pre costPerStorage >= 0
      * @post $none
      */
-    public DatacenterCharacteristicsSimple(
-            String architecture,
-            String os,
-            String vmm,
-            List<? extends Host> hostList,
-            double timeZone,
-            double costPerSec,
-            double costPerMem,
-            double costPerStorage,
-            double costPerBw) {
-        setId(-1);
-        setArchitecture(architecture);
-        setOs(os);
-        setHostList(hostList);
-        /*@todo allocationPolicy is not a parameter. It is setting
-         the attribute to itself, what has not effect. */
-        setAllocationPolicy(allocationPolicy);
-        setCostPerSecond(costPerSec);
-
-        setTimeZone(timeZone);
-
-        setVmm(vmm);
-        setCostPerMem(costPerMem);
-        setCostPerStorage(costPerStorage);
-        setCostPerBw(costPerBw);
+    @Deprecated
+    private DatacenterCharacteristicsSimple(
+        String architecture,
+        String os,
+        String vmm,
+        List<? extends Host> hostList,
+        double timeZone,
+        double costPerSec,
+        double costPerMem,
+        double costPerStorage,
+        double costPerBw) {
+            this(hostList);
+            this.setTimeZone(timeZone)
+                .setCostPerSecond(costPerSec)
+                .setCostPerMem(costPerMem)
+                .setCostPerStorage(costPerStorage)
+                .setCostPerBw(costPerBw);
     }
 
     @Override
@@ -162,19 +185,6 @@ public class DatacenterCharacteristicsSimple implements DatacenterCharacteristic
     }
 
     @Override
-    public int getMipsOfOnePe() {
-        if (getHostList().isEmpty()) {
-            return -1;
-        }
-
-        /*@todo Why is it always get the MIPS of the first host in the datacenter?
-         The note in the method states that it is considered that all PEs into
-         a PM have the same MIPS capacity, but different PM can have different
-         PEs' MIPS.*/
-        return PeList.getMips(getHostList().get(0).getPeList(), 0);
-    }
-
-    @Override
     public int getMipsOfOnePe(int hostId, int peId) {
         if (getHostList().isEmpty()) {
             return -1;
@@ -185,81 +195,7 @@ public class DatacenterCharacteristicsSimple implements DatacenterCharacteristic
 
     @Override
     public int getMips() {
-        int mips = 0;
-        /*@todo It assumes that the heterogeinety of PE's capacity of PMs
-         is dependent of the CPU allocation policy of the Datacenter.
-         However, I don't see any relation between PMs heterogeinety and
-         allocation policy.
-         I can have a time shared policy in a datacenter of
-         PMs with the same or different processing capacity.
-         The same is true for a space shared or even any other policy. 
-         */
-
-        /*@todo the method doesn't use polymorphism to ensure that it will
-         automatically behave according to the instance of the allocationPolicy used.
-         The use of a switch here breaks the Open/Close Principle (OCP).
-         Thus, it doesn't allow the class to be closed for changes
-         and opened for extension.
-         If a new scheduler is created, the class has to be changed
-         to include the new scheduler in switches like that below.
-         */
-        switch (getAllocationPolicy()) {
-                        // Assuming all PEs in all PMs have same rating.
-                        /*@todo But it is possible to add PMs of different configurations
-             in a hostlist attached to a DatacenterCharacteristic attribute
-             of a Datacenter*/
-            case DatacenterCharacteristics.TIME_SHARED:
-            case DatacenterCharacteristics.OTHER_POLICY_SAME_RATING:
-                mips = getMipsOfOnePe() * HostList.getNumberOfPes(getHostList());
-                break;
-
-			// Assuming all PEs in a given PM have the same rating.
-            // But different PMs in a Cluster can have different rating
-            case DatacenterCharacteristics.SPACE_SHARED:
-            case DatacenterCharacteristics.OTHER_POLICY_DIFFERENT_RATING:
-                for (Host host : getHostList()) {
-                    mips += host.getTotalMips();
-                }
-                break;
-
-            default:
-                break;
-        }
-
-        return mips;
-    }
-
-    @Override
-    public double getCpuTime(double cloudletLength, double load) {
-        double cpuTime = 0.0;
-
-        switch (getAllocationPolicy()) {
-            case DatacenterCharacteristics.TIME_SHARED:
-                /*@todo It is not exacly clear what this method does.
-                 I guess it computes how many time the cloudlet will
-                 spend using the CPU to finish its job, considering 
-                 the CPU allocation policy. By this way,
-                 the load parameter may be cloudlet's the percentage of load (from 0 to 1).
-                 Then, (getMipsOfOnePe() * (1.0 - load)) computes the amount
-                 MIPS that is currently being used by the cloudlet.
-                 Dividing the total cloudlet length in MI by that result
-                 returns the number of seconds that the cloudlet will spend
-                 to execute its total MI.
-                                
-                 This method has to be reviewed and documentation
-                 checked.
-                            
-                 If load is equals to 1, this calculation will 
-                 raise and division by zero exception, what makes invalid
-                 the pre condition defined in the method documention*/
-                cpuTime = cloudletLength / (getMipsOfOnePe() * (1.0 - load));
-                break;
-
-            default:
-                break;
-        }
-
-        return cpuTime;
+        return getHostList().stream().mapToInt(Host::getTotalMips).sum();
     }
 
     @Override
@@ -280,11 +216,6 @@ public class DatacenterCharacteristicsSimple implements DatacenterCharacteristic
     @Override
     public boolean setPeStatus(Pe.Status status, int hostId, int peId) {
         return HostList.setPeStatus(getHostList(), status, hostId, peId);
-    }
-
-    @Override
-    public double getCostPerMi() {
-        return getCostPerSecond() / getMipsOfOnePe();
     }
 
     @Override
@@ -319,8 +250,9 @@ public class DatacenterCharacteristicsSimple implements DatacenterCharacteristic
     }
 
     @Override
-    public final void setCostPerMem(double costPerMem) {
+    public final DatacenterCharacteristics setCostPerMem(double costPerMem) {
         this.costPerMem = costPerMem;
+        return this;
     }
 
     @Override
@@ -329,8 +261,9 @@ public class DatacenterCharacteristicsSimple implements DatacenterCharacteristic
     }
 
     @Override
-    public final void setCostPerStorage(double costPerStorage) {
+    public final DatacenterCharacteristics setCostPerStorage(double costPerStorage) {
         this.costPerStorage = costPerStorage;
+        return this;
     }
 
     @Override
@@ -339,8 +272,9 @@ public class DatacenterCharacteristicsSimple implements DatacenterCharacteristic
     }
 
     @Override
-    public final void setCostPerBw(double costPerBw) {
+    public final DatacenterCharacteristics setCostPerBw(double costPerBw) {
         this.costPerBw = costPerBw;
+        return this;
     }
 
     @Override
@@ -362,40 +296,26 @@ public class DatacenterCharacteristicsSimple implements DatacenterCharacteristic
         this.id = id;
     }
 
-    /**
-     * Gets the architecture.
-     *
-     * @return the architecture
-     */
-    protected String getArchitecture() {
+    @Override
+    public String getArchitecture() {
         return architecture;
     }
 
-    /**
-     * Sets the architecture.
-     *
-     * @param architecture the new architecture
-     */
-    protected final void setArchitecture(String architecture) {
+    @Override
+    public final DatacenterCharacteristics setArchitecture(String architecture) {
         this.architecture = architecture;
+        return this;
     }
 
-    /**
-     * Gets the Operating System (OS).
-     *
-     * @return the Operating System (OS)
-     */
-    protected String getOs() {
+    @Override
+    public String getOs() {
         return os;
     }
 
-    /**
-     * Sets the Operating System (OS).
-     *
-     * @param os the new Operating System (OS)
-     */
-    protected final void setOs(String os) {
+    @Override
+    public final DatacenterCharacteristics setOs(String os) {
         this.os = os;
+        return this;
     }
 
     @Override
@@ -409,25 +329,23 @@ public class DatacenterCharacteristicsSimple implements DatacenterCharacteristic
      * @param hostList the new host list
      */
     protected final void setHostList(List<? extends Host> hostList) {
+        if(hostList == null)
+            hostList = new ArrayList<>();
         this.hostList = hostList;
     }
 
-    /**
-     * Gets the time zone.
-     *
-     * @return the time zone
-     */
-    protected double getTimeZone() {
+    @Override
+    public double getTimeZone() {
         return timeZone;
     }
 
-    /**
-     * Sets the time zone.
-     *
-     * @param timeZone the new time zone
-     */
-    protected final void setTimeZone(double timeZone) {
+    @Override
+    public final DatacenterCharacteristics setTimeZone(double timeZone) {
+        if(timeZone < -12 || timeZone > 13)
+            timeZone = 0;
+
         this.timeZone = timeZone;
+        return this;
     }
 
     @Override
@@ -435,40 +353,16 @@ public class DatacenterCharacteristicsSimple implements DatacenterCharacteristic
         return costPerSecond;
     }
 
-    /**
-     * Sets the cost per second of CPU.
-     *
-     * @param costPerSecond the new cost per second
-     */
-    protected final void setCostPerSecond(double costPerSecond) {
+    @Override
+    public final DatacenterCharacteristics setCostPerSecond(double costPerSecond) {
         this.costPerSecond = costPerSecond;
+        return this;
     }
 
-    /**
-     * Gets the allocation policy.
-     *
-     * @return the allocation policy
-     */
-    protected int getAllocationPolicy() {
-        return allocationPolicy;
-    }
-
-    /**
-     * Sets the allocation policy.
-     *
-     * @param allocationPolicy the new allocation policy
-     */
-    protected final void setAllocationPolicy(int allocationPolicy) {
-        this.allocationPolicy = allocationPolicy;
-    }
-
-    /**
-     * Sets the vmm.
-     *
-     * @param vmm the new vmm
-     */
-    protected final void setVmm(String vmm) {
+    @Override
+    public final DatacenterCharacteristics setVmm(String vmm) {
         this.vmm = vmm;
+        return this;
     }
 
     @Override
@@ -477,8 +371,9 @@ public class DatacenterCharacteristicsSimple implements DatacenterCharacteristic
     }
 
     @Override
-    public void setDatacenter(Datacenter datacenter) {
+    public DatacenterCharacteristics setDatacenter(Datacenter datacenter) {
         this.datacenter = datacenter;
         this.setId(datacenter.getId());
+        return this;
     }
 }

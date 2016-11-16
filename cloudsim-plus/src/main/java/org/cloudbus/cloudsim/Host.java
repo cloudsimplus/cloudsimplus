@@ -11,12 +11,12 @@ import org.cloudbus.cloudsim.provisioners.ResourceProvisioner;
 
 /**
  * An interface to be implemented by each class that provides
- * Physical Machines (Hosts) features. 
+ * Physical Machines (Hosts) features.
  * The interface implements the Null Object Design
- * Pattern in order to start avoiding {@link NullPointerException} 
+ * Pattern in order to start avoiding {@link NullPointerException}
  * when using the {@link Host#NULL} object instead
  * of attributing {@code null} to {@link Host} variables.
- * 
+ *
  * @author Manoel Campos da Silva Filho
  */
 public interface Host extends Identificable {
@@ -66,14 +66,14 @@ public interface Host extends Identificable {
     double getAvailableMips();
 
     /**
-     * Gets the total free storage available at the host.
+     * Gets the total free storage available at the host in Megabytes.
      *
      * @return the free storage
      */
     long getAvailableStorage();
 
     /**
-     * Gets the host bw capacity.
+     * Gets the host bw capacity in Megabits/s.
      *
      * @return the host bw capacity
      * @pre $none
@@ -82,11 +82,18 @@ public interface Host extends Identificable {
     long getBwCapacity();
 
     /**
-     * Gets the bandwidth(BW) provisioner.
+     * Gets the bandwidth (BW) provisioner with capacity in Megabits/s.
      *
      * @return the bw provisioner
      */
-    ResourceProvisioner<Long> getBwProvisioner();
+    ResourceProvisioner getBwProvisioner();
+
+    /**
+     * Sets the bandwidth(BW) provisioner with capacity in Megabits/s.
+     *
+     * @param bwProvisioner the new bw provisioner
+     */
+    Host setBwProvisioner(ResourceProvisioner bwProvisioner);
 
     /**
      * Gets the datacenter where the host is placed.
@@ -133,23 +140,30 @@ public interface Host extends Identificable {
     List<Pe> getPeList();
 
     /**
-     * Gets the host memory capacity.
+     * Gets the host memory capacity in Megabytes.
      *
      * @return the host memory capacity
      * @pre $none
      * @post $result > 0
      */
-    int getRamCapacity();
+    long getRamCapacity();
 
     /**
-     * Gets the ram provisioner.
+     * Gets the ram provisioner with capacity in Megabytes.
      *
      * @return the ram provisioner
      */
-    ResourceProvisioner<Integer> getRamProvisioner();
+    ResourceProvisioner getRamProvisioner();
 
     /**
-     * Gets the host storage capacity.
+     * Sets the ram provisioner with capacity in Megabytes.
+     *
+     * @param ramProvisioner the new ram provisioner
+     */
+    Host setRamProvisioner(ResourceProvisioner ramProvisioner);
+
+    /**
+     * Gets the host storage capacity in Megabytes.
      *
      * @return the host storage capacity
      * @pre $none
@@ -194,14 +208,22 @@ public interface Host extends Identificable {
     /**
      * Gets the policy for allocation of host PEs to VMs in order to schedule VM execution.
      *
-     * @return the VM scheduler
-     * @see VmSchedulerAbstract
+     * @return the {@link VmScheduler}
      */
     VmScheduler getVmScheduler();
 
     /**
+     * Sets the policy for allocation of host PEs to VMs in order to schedule VM
+     * execution.
+     *
+     * @param vmScheduler the vm scheduler to set
+     */
+    Host setVmScheduler(VmScheduler vmScheduler);
+
+
+    /**
      * Gets the list of VMs migrating into this host.
-     * 
+     *
      * @param <T> the generic type
      * @return the vms migrating in
      */
@@ -243,7 +265,6 @@ public interface Host extends Identificable {
      */
     void setDatacenter(Datacenter datacenter);
 
-    
     /**
      * Sets the particular Pe status on the host.
      *
@@ -295,28 +316,28 @@ public interface Host extends Identificable {
      * @post $none
      */
     void vmDestroyAll();
-    
+
     /**
-     * Gets the listener object that will be notified every time when 
+     * Gets the listener object that will be notified every time when
      * the host updates the processing of all its {@link Vm VMs}.
-     * 
+     *
      * @return the onUpdateVmsProcessingListener
-     * @see #updateVmsProcessing(double) 
+     * @see #updateVmsProcessing(double)
      */
     EventListener<HostUpdatesVmsProcessingEventInfo> getOnUpdateVmsProcessingListener();
 
     /**
-     * Sets the listener object that will be notified every time when 
+     * Sets the listener object that will be notified every time when
      * the host updates the processing of all its {@link Vm VMs}.
      *
      * @param onUpdateVmsProcessingListener the onUpdateVmsProcessingListener to set
-     * @see #updateVmsProcessing(double) 
+     * @see #updateVmsProcessing(double)
      */
-    void setOnUpdateVmsProcessingListener(EventListener<HostUpdatesVmsProcessingEventInfo> onUpdateVmsProcessingListener);    
-    
+    Host setOnUpdateVmsProcessingListener(EventListener<HostUpdatesVmsProcessingEventInfo> onUpdateVmsProcessingListener);
+
     boolean setFailed(boolean failed);
-    
-    
+
+
     /**
      * A property that implements the Null Object Design Pattern for {@link Host}
      * objects.
@@ -328,21 +349,24 @@ public interface Host extends Identificable {
         @Override public List<Double> getAllocatedMipsForVm(Vm vm) { return Collections.emptyList(); }
         @Override public double getAvailableMips() { return 0; }
         @Override public long getBwCapacity() { return 0; }
-        @Override public ResourceProvisioner<Long> getBwProvisioner() { return ResourceProvisioner.NULL_LONG; }
+        @Override public ResourceProvisioner getBwProvisioner() { return ResourceProvisioner.NULL; }
+        @Override public Host setBwProvisioner(ResourceProvisioner bwProvisioner) { return Host.NULL; }
         @Override public Datacenter getDatacenter() { return Datacenter.NULL; }
-        @Override public int getId() { return 0; }
+        @Override public int getId() { return -1; }
         @Override public double getMaxAvailableMips() { return 0.0; }
         @Override public int getNumberOfFreePes() { return 0; }
         @Override public int getNumberOfPes() { return 0; }
         @Override public List<Pe> getPeList() { return Collections.emptyList(); }
-        @Override public int getRamCapacity() { return 0; }
-        @Override public ResourceProvisioner<Integer> getRamProvisioner() { return ResourceProvisioner.NULL_INT; }
+        @Override public long getRamCapacity() { return 0; }
+        @Override public ResourceProvisioner getRamProvisioner() { return ResourceProvisioner.NULL; }
+        @Override public Host setRamProvisioner(ResourceProvisioner ramProvisioner) { return Host.NULL; }
         @Override public long getStorageCapacity() { return 0L; }
         @Override public double getTotalAllocatedMipsForVm(Vm vm) { return 0.0; }
         @Override public int getTotalMips() { return 0; }
         @Override public Vm getVm(int vmId, int userId) { return Vm.NULL; }
         @Override public List<Vm> getVmList() { return Collections.emptyList(); }
         @Override public VmScheduler getVmScheduler() {return VmScheduler.NULL; }
+        @Override public Host setVmScheduler(VmScheduler vmScheduler) { return Host.NULL; }
         @Override public List<Vm> getVmsMigratingIn() { return Collections.EMPTY_LIST; }
         @Override public boolean isFailed() { return false; }
         @Override public boolean isSuitableForVm(Vm vm) { return false; }
@@ -355,7 +379,7 @@ public interface Host extends Identificable {
         @Override public void vmDestroy(Vm vm) {}
         @Override public void vmDestroyAll() {}
         @Override public EventListener<HostUpdatesVmsProcessingEventInfo> getOnUpdateVmsProcessingListener() { return EventListener.NULL; }
-        @Override public void setOnUpdateVmsProcessingListener(EventListener<HostUpdatesVmsProcessingEventInfo> onUpdateVmsProcessingListener) {}
+        @Override public Host setOnUpdateVmsProcessingListener(EventListener<HostUpdatesVmsProcessingEventInfo> onUpdateVmsProcessingListener) { return Host.NULL; }
         @Override public long getAvailableStorage() { return 0L; }
         @Override public boolean setFailed(boolean failed){return false;}
         @Override public long getNumberOfWorkingPes() { return 0; }

@@ -7,7 +7,6 @@ package org.cloudsimplus.sla;
 
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.LinkedList;
 import java.util.List;
 import org.cloudbus.cloudsim.Cloudlet;
 import org.cloudbus.cloudsim.CloudletSimple;
@@ -31,7 +30,6 @@ import org.cloudbus.cloudsim.distributions.UniformDistr;
 import org.cloudbus.cloudsim.provisioners.PeProvisionerSimple;
 import org.cloudbus.cloudsim.provisioners.ResourceProvisionerSimple;
 import org.cloudbus.cloudsim.resources.Bandwidth;
-import org.cloudbus.cloudsim.resources.FileStorage;
 import org.cloudbus.cloudsim.resources.PeSimple;
 import org.cloudbus.cloudsim.resources.Ram;
 import org.cloudsimplus.util.tablebuilder.CloudletsTableBuilderHelper;
@@ -44,7 +42,6 @@ import org.cloudbus.cloudsim.utilizationmodels.UtilizationModelFull;
  * @author raysaoliveira
  */
 public class ExampleUsingFaultInjector {
-
     private static final int HOSTS_NUMBER = 3;
     private static final int HOST_PES = 5;
     private static final int VM_PES1 = 2;
@@ -88,9 +85,9 @@ public class ExampleUsingFaultInjector {
      * @param numberOfVms number of VMs to create
      * @return list de vms
      */
-    private List<Vm> createVM(int userId, int numberOfPes, int numberOfVms) {
+    private List<Vm> createVM(DatacenterBroker broker, int numberOfPes, int numberOfVms) {
         //Creates a container to store VMs.
-        List<Vm> list = new ArrayList<>();
+        List<Vm> list = new ArrayList<>(numberOfVms);
 
         //VM Parameters
         int vmid = 0;
@@ -98,17 +95,15 @@ public class ExampleUsingFaultInjector {
         int ram = 512; //vm memory (MB)
         int mips = 1000;
         long bw = 1000;
-        String vmm = "Xen"; //VMM name
-
-        Vm[] vm = new Vm[numberOfVms];
 
         //create VMs with differents configurations
         for (int i = 0; i < numberOfVms; i++) {
-            vm[i] = new VmSimple(
-                        this.lastCreatedVmId++, userId, mips, numberOfPes, 
-                        ram, bw, size, vmm, 
-                        new CloudletSchedulerTimeShared());
-            list.add(vm[i]);
+            Vm vm  = new VmSimple(
+                        this.lastCreatedVmId++, mips, numberOfPes)
+                        .setRam(ram).setBw(bw).setSize(size)
+                        .setCloudletScheduler(new CloudletSchedulerTimeShared())
+                        .setBroker(broker);
+            list.add(vm);
         }
 
         return list;
@@ -117,28 +112,27 @@ public class ExampleUsingFaultInjector {
     /**
      * Creates cloudlets
      *
-     * @param userId broker id
+     * @param broker broker id
      * @param cloudlets to criate
      * @return list of cloudlets
      */
-    private List<Cloudlet> createCloudlet(int userId, int cloudlets) {
+    private List<Cloudlet> createCloudlet(DatacenterBroker broker, int cloudlets) {
         // Creates a container to store Cloudlets
-        List<Cloudlet> list = new LinkedList<>();
+        List<Cloudlet> list = new ArrayList<>(cloudlets);
 
-        //Cloudlet Parameters 
+        //Cloudlet Parameters
         long length = 10000;
         long fileSize = 300;
         long outputSize = 300;
         UtilizationModel utilizationModel = new UtilizationModelFull();
-        Cloudlet[] cloudlet = new Cloudlet[cloudlets];
-
+        
         for (int i = 0; i < cloudlets; i++) {
-            cloudlet[i] = new CloudletSimple(
-                    i, length, CLOUDLET_PES, fileSize, outputSize,
-                    utilizationModel, utilizationModel, utilizationModel);
-            // setting the owner of these Cloudlets
-            cloudlet[i].setUserId(userId);
-            list.add(cloudlet[i]);
+            Cloudlet cloudlet = new CloudletSimple(i, length, CLOUDLET_PES)
+                    .setCloudletFileSize(fileSize)
+                    .setCloudletOutputSize(outputSize)
+                    .setUtilizationModel(utilizationModel)
+                    .setBroker(broker);
+            list.add(cloudlet);
         }
         return list;
     }
@@ -154,7 +148,7 @@ public class ExampleUsingFaultInjector {
     }
 
     public ExampleUsingFaultInjector() {
-        //  Initialize the CloudSim package. 
+        //  Initialize the CloudSim package.
         int num_user = 1; // number of cloud users
         Calendar calendar = Calendar.getInstance(); // Calendar whose fields have been initialized with the current date and time.
         boolean trace_flag = false; // trace events
@@ -189,16 +183,15 @@ public class ExampleUsingFaultInjector {
 
         //Create Broker
         DatacenterBroker broker = new DatacenterBrokerSimple("Broker");
-        int brokerId = broker.getId();
 
         vmlist = new ArrayList<>();
-        vmlist.addAll(createVM(brokerId, VM_PES1, 2));
-        vmlist.addAll(createVM(brokerId, VM_PES2, 2));
+        vmlist.addAll(createVM(broker, VM_PES1, 2));
+        vmlist.addAll(createVM(broker, VM_PES2, 2));
 
         // submit vm list to the broker
         broker.submitVmList(vmlist);
 
-        cloudletList = createCloudlet(brokerId, CLOUDLETS_NUMBER);
+        cloudletList = createCloudlet(broker, CLOUDLETS_NUMBER);
 
         // submit cloudlet list to the broker
         broker.submitCloudletList(cloudletList);
@@ -219,7 +212,6 @@ public class ExampleUsingFaultInjector {
 
         Log.enable();
         new CloudletsTableBuilderHelper(newList).build();
-
         Log.printFormattedLine("... finished!");
     }
 
@@ -241,35 +233,29 @@ public class ExampleUsingFaultInjector {
 
         for (int i = 0; i < HOSTS_NUMBER; i++) {
             List<Pe> peList = createHostPesList(HOST_PES, mips);
-            getHostList().add(new HostSimple(
-                    hostId,
-                    new ResourceProvisionerSimple<>(new Ram(ram)),
-                    new ResourceProvisionerSimple<>(new Bandwidth(bw)),
-                    storage,
-                    peList,
-                    new VmSchedulerTimeShared(peList)
-            ));
-            hostId++;
+            Host host = new HostSimple(hostId++, storage, peList)
+                    .setRamProvisioner(new ResourceProvisionerSimple(new Ram(ram)))
+                    .setBwProvisioner(new ResourceProvisionerSimple(new Bandwidth(bw)))
+                    .setVmScheduler(new VmSchedulerTimeShared(peList));
+            
+            getHostList().add(host);
         }// This is our machine
 
-        String arch = "x86"; // system architecture
-        String os = "Linux"; // operating system
-        String vmm = "Xen";
-        double time_zone = 10.0; // time zone this resource located
         double cost = 3.0; // the cost of using processing in this resource
         double costPerMem = 0.05; // the cost of using memory in this resource
         double costPerStorage = 0.001; // the cost of using storage in this
         // resource
         double costPerBw = 0.0; // the cost of using bw in this resource
-        LinkedList<FileStorage> storageList = new LinkedList<>(); // we are not adding SAN
-        // devices by now
 
-        DatacenterCharacteristics characteristics = new DatacenterCharacteristicsSimple(
-                arch, os, vmm, getHostList(), time_zone, cost, costPerMem,
-                costPerStorage, costPerBw);
+        DatacenterCharacteristics characteristics = 
+                new DatacenterCharacteristicsSimple(hostList)
+                .setCostPerSecond(cost)
+                .setCostPerMem(costPerMem)
+                .setCostPerStorage(costPerStorage)
+                .setCostPerBw(costPerBw);
 
-        return new DatacenterSimple(name, characteristics,
-                new VmAllocationPolicySimple(getHostList()), storageList, 0);
+        return new DatacenterSimple(name, characteristics, 
+                new VmAllocationPolicySimple(getHostList()));
     }
 
     public List<Pe> createHostPesList(int hostPes, int mips) {

@@ -65,26 +65,49 @@ public class PowerDatacenter extends DatacenterSimple {
     private int migrationCount;
 
     /**
-     * Instantiates a new PowerDatacenter.
+     * Creates a PowerDatacenter.
      *
-     * @param name the datacenter name
-     * @param characteristics the datacenter characteristics
-     * @param schedulingInterval the scheduling interval
-     * @param vmAllocationPolicy the vm provisioner
-     * @param storageList the storage list
+     * @param name the name of the datacenter
+     * @param characteristics the characteristics of the datacenter to be created
+     * @param vmAllocationPolicy the policy to be used to allocate VMs into hosts
+     *
      */
     public PowerDatacenter(
-            String name,
-            DatacenterCharacteristics characteristics,
-            VmAllocationPolicy vmAllocationPolicy,
-            List<FileStorage> storageList,
-            double schedulingInterval) {
-        super(name, characteristics, vmAllocationPolicy, storageList, schedulingInterval);
-
+        String name,
+        DatacenterCharacteristics characteristics,
+        VmAllocationPolicy vmAllocationPolicy)
+    {
+        super(name, characteristics, vmAllocationPolicy);
         setPower(0.0);
         setDisableMigrations(false);
         setCloudletSubmitted(-1);
         setMigrationCount(0);
+    }
+
+    /**
+     * Creates a PowerDatacenter with the given parameters.
+     *
+     * @param name the name of the datacenter
+     * @param characteristics the characteristics of the datacenter to be created
+     * @param vmAllocationPolicy the policy to be used to allocate VMs into hosts
+     * @param storageList a List of storage elements, for data simulation
+     * @param schedulingInterval the scheduling delay to process each datacenter received event
+     *
+     * @deprecated Use the other available constructors with less parameters
+     * and set the remaining ones using the respective setters.
+     * This constructor will be removed in future versions.
+     */
+    @Deprecated
+    private PowerDatacenter(
+        String name,
+        DatacenterCharacteristics characteristics,
+        VmAllocationPolicy vmAllocationPolicy,
+        List<FileStorage> storageList,
+        double schedulingInterval)
+    {
+        this(name, characteristics, vmAllocationPolicy);
+        setStorageList(storageList);
+        setSchedulingInterval(schedulingInterval);
     }
 
     @Override
@@ -103,7 +126,7 @@ public class PowerDatacenter extends DatacenterSimple {
             double minTime = updateCloudetProcessingWithoutSchedulingFutureEventsForce();
 
             if (!isDisableMigrations()) {
-                Map<Vm, Host> migrationMap = 
+                Map<Vm, Host> migrationMap =
                         getVmAllocationPolicy().optimizeAllocation(getVmList());
 
                 for (Entry<Vm, Host> migrate : migrationMap.entrySet()) {
@@ -117,7 +140,7 @@ public class PowerDatacenter extends DatacenterSimple {
                     } else {
                         Log.printFormattedLine(
                             "%.2f: Migration of VM #%d from Host #%d to Host #%d is started",
-                            currentTime, migrate.getKey().getId(), 
+                            currentTime, migrate.getKey().getId(),
                             oldHost.getId(), targetHost.getId());
                     }
 
@@ -317,8 +340,9 @@ public class PowerDatacenter extends DatacenterSimple {
      *
      * @param disableMigrations true to disable migrations; false to enable
      */
-    public final void setDisableMigrations(boolean disableMigrations) {
+    public final PowerDatacenter setDisableMigrations(boolean disableMigrations) {
         this.disableMigrations = disableMigrations;
+        return this;
     }
 
     /**

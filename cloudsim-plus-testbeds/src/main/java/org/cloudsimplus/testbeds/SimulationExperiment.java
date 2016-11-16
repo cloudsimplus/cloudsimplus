@@ -244,19 +244,19 @@ public abstract class SimulationExperiment implements Runnable {
     private DatacenterSimple createDatacenter(String name) {
         createHosts();
 		//Defines the characteristics of the data center
-		String arch = "x86"; // system architecture of datacenter hosts
-		String os = "Linux"; // operating system of datacenter hosts
-		double time_zone = 10.0; // time zone where the datacenter is located
 		double cost = 3.0; // the cost of using processing in this datacenter
 		double costPerMem = 0.05; // the cost of using memory in this datacenter
 		double costPerStorage = 0.001; // the cost of using storage in this datacenter
 		double costPerBw = 0.0; // the cost of using bw in this datacenter
-		LinkedList<FileStorage> storageList = new LinkedList<>(); // we are not adding SAN devices
-		DatacenterCharacteristics characteristics =
-			new DatacenterCharacteristicsSimple(arch, os, VMM,
-				hostList, time_zone, cost, costPerMem, costPerStorage, costPerBw);
-		return new DatacenterSimple(name, characteristics,
-			new VmAllocationPolicySimple(hostList), storageList, 0);
+        List<FileStorage> storageList = new ArrayList<>(); // we are not adding SAN devices by now
+        DatacenterCharacteristics characteristics =
+            new DatacenterCharacteristicsSimple(hostList)
+                .setCostPerSecond(cost)
+                .setCostPerMem(costPerMem)
+                .setCostPerStorage(costPerStorage)
+                .setCostPerBw(costPerBw);
+
+		return new DatacenterSimple(name, characteristics, new VmAllocationPolicySimple(hostList));
 	}
 
     protected abstract void createHosts();

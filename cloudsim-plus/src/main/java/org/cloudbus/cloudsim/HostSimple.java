@@ -1,12 +1,13 @@
 /*
  * Title: CloudSim Toolkit Description: CloudSim (Cloud Simulation) Toolkit for Modeling and
  * Simulation of Clouds Licence: GPL - http://www.gnu.org/copyleft/gpl.html
- * 
+ *
  * Copyright (c) 2009-2012, The University of Melbourne, Australia
  */
 package org.cloudbus.cloudsim;
 
 import org.cloudbus.cloudsim.resources.Pe;
+import org.cloudbus.cloudsim.resources.PeSimple;
 import org.cloudbus.cloudsim.schedulers.VmScheduler;
 import java.util.ArrayList;
 import java.util.List;
@@ -38,20 +39,17 @@ public class HostSimple implements Host {
      */
     private int id;
 
-    /**
-     * @see #getStorage()
-     */
-    private final RawStorage storage;
+    private RawStorage storage;
 
     /**
      * @see #getRamProvisioner()
      */
-    private ResourceProvisioner<Integer> ramProvisioner;
+    private ResourceProvisioner ramProvisioner;
 
     /**
      * @see #getBwProvisioner()
      */
-    private ResourceProvisioner<Long> bwProvisioner;
+    private ResourceProvisioner bwProvisioner;
 
     /**
      * @see #getVmScheduler()
@@ -89,30 +87,51 @@ public class HostSimple implements Host {
     private EventListener<HostUpdatesVmsProcessingEventInfo> onUpdateVmsProcessingListener;
 
     /**
-     * Instantiates a new Host.
+     * Creates a Host.
      *
      * @param id the host id
-     * @param ramProvisioner the ram provisioner
-     * @param bwProvisioner the bw provisioner
-     * @param storageCapacity the storage capacity
+     * @param storageCapacity the storage capacity in Megabytes
      * @param peList the host's PEs list
-     * @param vmScheduler the vm scheduler
      */
-    public HostSimple(
-            int id,
-            ResourceProvisioner<Integer> ramProvisioner,
-            ResourceProvisioner<Long> bwProvisioner,
-            long storageCapacity,
-            List<Pe> peList,
-            VmScheduler vmScheduler) {
+    public HostSimple(int id, long storageCapacity,  List<Pe> peList) {
         setId(id);
-        setRamProvisioner(ramProvisioner);
-        setBwProvisioner(bwProvisioner);
-        storage = new RawStorage(storageCapacity);
-        setVmScheduler(vmScheduler);
+        setRamProvisioner(ResourceProvisioner.NULL);
+        setBwProvisioner(ResourceProvisioner.NULL);
+        setVmScheduler(VmScheduler.NULL);
+        this.setStorage(storageCapacity);
         setPeList(peList);
         setFailed(false);
-        onUpdateVmsProcessingListener = EventListener.NULL;
+        this.onUpdateVmsProcessingListener = EventListener.NULL;
+    }
+
+    /**
+     * Creates a Host with the given parameters.
+     *
+     * @param id the host id
+     * @param ramProvisioner the ram provisioner with capacity in Megabytes
+     * @param bwProvisioner the bw provisioner with capacity in Megabits/s
+     * @param storageCapacity the storage capacity in Megabytes
+     * @param peList the host's PEs list
+     * @param vmScheduler the vm scheduler
+     *
+     * @deprecated Use the other available constructors with less parameters
+     * and set the remaining ones using the respective setters.
+     * This constructor will be removed in future versions.
+     */
+    @Deprecated
+    private HostSimple(
+            int id,
+            ResourceProvisioner ramProvisioner,
+            ResourceProvisioner bwProvisioner,
+            long storageCapacity,
+            List<Pe> peList,
+            VmScheduler vmScheduler)
+    {
+        this(id, storageCapacity, peList);
+        setRamProvisioner(ramProvisioner);
+        setBwProvisioner(bwProvisioner);
+        setPeList(peList);
+        setVmScheduler(vmScheduler);
     }
 
     @Override
@@ -127,7 +146,7 @@ public class HostSimple implements Host {
             }
         }
 
-        HostUpdatesVmsProcessingEventInfo eventInfo = 
+        HostUpdatesVmsProcessingEventInfo eventInfo =
                 new HostUpdatesVmsProcessingEventInfo(currentTime, this);
         eventInfo.setCompletionTimeOfNextFinishingCloudlet(completionTimeOfNextFinishingCloudlet);
         onUpdateVmsProcessingListener.update(eventInfo);
@@ -169,7 +188,7 @@ public class HostSimple implements Host {
                         "[VmScheduler.addMigratingInVm] Allocation of VM #%d to Host #%d" +
                         " failed by MIPS", vm.getId(),  getId()));
             }
-            
+
             getStorage().allocateResource(vm.getSize());
 
             getVmsMigratingIn().add(vm);
@@ -289,7 +308,7 @@ public class HostSimple implements Host {
     @Override
     public Vm getVm(int vmId, int userId) {
         for (Vm vm : getVmList()) {
-            if (vm.getId() == vmId && vm.getUserId() == userId) {
+            if (vm.getId() == vmId && vm.getBrokerId() == userId) {
                 return vm;
             }
         }
@@ -347,7 +366,7 @@ public class HostSimple implements Host {
     }
 
     @Override
-    public int getRamCapacity() {
+    public long getRamCapacity() {
         return getRamProvisioner().getCapacity();
     }
 
@@ -371,31 +390,25 @@ public class HostSimple implements Host {
     }
 
     @Override
-    public ResourceProvisioner<Integer> getRamProvisioner() {
+    public ResourceProvisioner getRamProvisioner() {
         return ramProvisioner;
     }
 
-    /**
-     * Sets the ram provisioner.
-     *
-     * @param ramProvisioner the new ram provisioner
-     */
-    protected final void setRamProvisioner(ResourceProvisioner<Integer> ramProvisioner) {
+    @Override
+    public final Host setRamProvisioner(ResourceProvisioner ramProvisioner) {
         this.ramProvisioner = ramProvisioner;
+        return this;
     }
 
     @Override
-    public ResourceProvisioner<Long> getBwProvisioner() {
+    public ResourceProvisioner getBwProvisioner() {
         return bwProvisioner;
     }
 
-    /**
-     * Sets the bandwidth(BW) provisioner.
-     *
-     * @param bwProvisioner the new bw provisioner
-     */
-    protected final void setBwProvisioner(ResourceProvisioner<Long> bwProvisioner) {
+    @Override
+    public final Host setBwProvisioner(ResourceProvisioner bwProvisioner) {
         this.bwProvisioner = bwProvisioner;
+        return this;
     }
 
     @Override
@@ -403,14 +416,10 @@ public class HostSimple implements Host {
         return vmScheduler;
     }
 
-    /**
-     * Sets the policy for allocation of host PEs to VMs in order to schedule VM
-     * execution.
-     *
-     * @param vmScheduler the vm scheduler
-     */
-    protected final void setVmScheduler(VmScheduler vmScheduler) {
+    @Override
+    public final Host setVmScheduler(VmScheduler vmScheduler) {
         this.vmScheduler = vmScheduler;
+        return this;
     }
 
     @Override
@@ -423,8 +432,12 @@ public class HostSimple implements Host {
      *
      * @param peList the new pe list
      */
-    protected final void setPeList(List<Pe> peList) {
+    protected Host setPeList(List<Pe> peList) {
+        if(peList == null){
+            peList = new ArrayList<>();
+        }
         this.peList = peList;
+        return this;
     }
 
     @Override
@@ -441,18 +454,17 @@ public class HostSimple implements Host {
     public final boolean setFailed(boolean failed) {
         this.failed = failed;
         PeList.setStatusFailed(getPeList(), getId(), failed);
-        
         return true;
     }
 
     /**
-     * Checks if the the host is failed and 
+     * Checks if the the host is failed and
      * sets all its Vm' to failed.
      */
     public void setVmsToFailedWhenHostIsFailed() {
         if(!this.failed)
             return;
-            
+
         for (Vm vm : getVmList()) {
             vm.setFailed(true);
             /*
@@ -460,7 +472,7 @@ public class HostSimple implements Host {
             it is set here as the sender of the vm destroy request.
             */
             CloudSim.sendNow(
-                vm.getUserId(), getDatacenter().getId(), 
+                vm.getBrokerId(), getDatacenter().getId(),
                 CloudSimTags.VM_DESTROY, vm);
         }
     }
@@ -486,7 +498,9 @@ public class HostSimple implements Host {
     }
 
     /**
-     * Gets the storage device of the host.
+     * @see #getStorage()
+     */ /**
+     * Gets the storage device of the host with capacity in Megabytes.
      *
      * @return the storage device
      */
@@ -505,12 +519,13 @@ public class HostSimple implements Host {
     }
 
     @Override
-    public void setOnUpdateVmsProcessingListener(EventListener<HostUpdatesVmsProcessingEventInfo> onUpdateVmsProcessingListener) {
+    public Host setOnUpdateVmsProcessingListener(EventListener<HostUpdatesVmsProcessingEventInfo> onUpdateVmsProcessingListener) {
         if (onUpdateVmsProcessingListener == null) {
             onUpdateVmsProcessingListener = EventListener.NULL;
         }
 
         this.onUpdateVmsProcessingListener = onUpdateVmsProcessingListener;
+        return this;
     }
 
     @Override
@@ -523,5 +538,10 @@ public class HostSimple implements Host {
         return getPeList().stream()
                 .filter(pe -> pe.getStatus() != Pe.Status.FAILED)
                 .count();
+    }
+
+    private Host setStorage(long size) {
+        this.storage = new RawStorage(size);
+        return this;
     }
 }

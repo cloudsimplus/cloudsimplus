@@ -63,7 +63,7 @@ public class VmList {
      */
     public static <T extends Vm> T getByIdAndUserId(List<T> vmList, int id, int userId) {
         for (T vm : vmList) {
-            if (vm.getId() == id && vm.getUserId() == userId) {
+            if (vm.getId() == id && vm.getBrokerId() == userId) {
                 return vm;
             }
         }

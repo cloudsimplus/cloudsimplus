@@ -1,7 +1,6 @@
 package org.cloudsimplus.builders;
 
 import java.util.ArrayList;
-import java.util.LinkedList;
 import java.util.List;
 import org.cloudbus.cloudsim.Datacenter;
 import org.cloudbus.cloudsim.DatacenterSimple;
@@ -19,10 +18,7 @@ import org.cloudbus.cloudsim.resources.FileStorage;
 public class DatacenterBuilder extends Builder {
     public static final String DATACENTER_NAME_FORMAT = "Datacenter%d";
 
-    public static final String VMM = "Xen";
-    private String architecture = "x86";
-    private String operatingSystem = "Linux";
-    private double costPerBwByte = 0.0;
+    private double costPerBwMegabit = 0.0;
     private double costPerCpuSecond = 3.0;
     private double costPerStorage = 0.001;
     private double costPerMem = 0.05;
@@ -64,44 +60,27 @@ public class DatacenterBuilder extends Builder {
         }
 
         DatacenterCharacteristics characteristics =
-                new DatacenterCharacteristicsSimple (
-                        architecture, operatingSystem, VMM, hosts,
-                        timezone, costPerCpuSecond,
-                        costPerMem, costPerStorage,
-                        costPerBwByte);
+                new DatacenterCharacteristicsSimple (hosts)
+                      .setTimeZone(timezone)
+                      .setCostPerSecond(costPerCpuSecond)
+                      .setCostPerMem(costPerMem)
+                      .setCostPerStorage(costPerStorage)
+                      .setCostPerBw(costPerBwMegabit);
         String name = String.format(DATACENTER_NAME_FORMAT, numberOfCreatedDatacenters++);
         Datacenter datacenter =
-                new DatacenterSimple(name, characteristics,
-                        new VmAllocationPolicySimple(hosts),
-                        storageList, schedulingInterval);
+                new DatacenterSimple(name, characteristics, new VmAllocationPolicySimple(hosts))
+                    .setStorageList(storageList)
+                    .setSchedulingInterval(schedulingInterval);
         this.datacenters.add(datacenter);
         return this;
     }
 
-    public String getArchitecture() {
-        return architecture;
+    public double getCostPerBwMegabit() {
+        return costPerBwMegabit;
     }
 
-    public DatacenterBuilder setArchitecture(String defaultArchitecture) {
-        this.architecture = defaultArchitecture;
-        return this;
-    }
-
-    public String getOperatingSystem() {
-        return operatingSystem;
-    }
-
-    public DatacenterBuilder setOperatingSystem(String defaultOperatingSystem) {
-        this.operatingSystem = defaultOperatingSystem;
-        return this;
-    }
-
-    public double getCostPerBwByte() {
-        return costPerBwByte;
-    }
-
-    public DatacenterBuilder setCostPerBwByte(double defaultCostPerBwByte) {
-        this.costPerBwByte = defaultCostPerBwByte;
+    public DatacenterBuilder setCostPerBwMegabit(double defaultCostPerBwByte) {
+        this.costPerBwMegabit = defaultCostPerBwByte;
         return this;
     }
 

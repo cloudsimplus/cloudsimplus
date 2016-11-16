@@ -11,7 +11,6 @@ package org.cloudbus.cloudsim.examples;
 import org.cloudsimplus.util.tablebuilder.CloudletsTableBuilderHelper;
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.LinkedList;
 import java.util.List;
 import org.cloudbus.cloudsim.Cloudlet;
 import org.cloudbus.cloudsim.CloudletSimple;
@@ -50,7 +49,7 @@ import org.cloudbus.cloudsim.resources.Ram;
  * space shared scheduler, the cloudlet is not interrupted when it starts to run
  * (because the non-preemptive nature of the scheduler).
  *
- * Based on the {@link CloudSimExample01}
+ * Based on the {@link CloudSimExample1}
  *
  * @author Manoel Campos da Silva Filho
  */
@@ -89,7 +88,6 @@ public class TwoCloudletsAndOneSpaceSharedVm {
 
             // Third step: Create Broker
             DatacenterBroker broker = createBroker();
-            int brokerId = broker.getId();
 
             // Fourth step: Create one virtual machine
             vmlist = new ArrayList<>();
@@ -101,11 +99,11 @@ public class TwoCloudletsAndOneSpaceSharedVm {
             int ram = 512; // vm memory (MB)
             long bw = 1000;
             int pesNumber = 1; // number of cpus
-            String vmm = "Xen"; // VMM name
 
-            Vm vm = new VmSimple(
-                    vmid, brokerId, mips, pesNumber, ram, bw, size,
-                    vmm, new CloudletSchedulerSpaceShared());
+            Vm vm = new VmSimple(vmid, mips, pesNumber)
+                .setRam(ram).setBw(bw).setSize(size)
+                .setCloudletScheduler(new CloudletSchedulerSpaceShared())
+                .setBroker(broker);
             vmlist.add(vm);
 
             // submit vm list to the broker
@@ -115,25 +113,26 @@ public class TwoCloudletsAndOneSpaceSharedVm {
             cloudletList = new ArrayList<>();
 
             // Cloudlet properties
-            int id = 0;
+            int id = -1;
             long length = 10000;
             long fileSize = 300;
             long outputSize = 300;
             UtilizationModel utilizationModel = new UtilizationModelFull();
 
-            Cloudlet cloudlet1
-                    = new CloudletSimple(id, length, pesNumber, fileSize,
-                            outputSize, utilizationModel, utilizationModel,
-                            utilizationModel);
-            cloudlet1.setUserId(brokerId);
-            cloudlet1.setVmId(vmid);
+            Cloudlet cloudlet1 = new CloudletSimple(++id, length, pesNumber)
+                .setCloudletFileSize(fileSize)
+                .setCloudletOutputSize(outputSize)
+                .setUtilizationModel(utilizationModel)
+                .setBroker(broker)
+                .setVmId(vmid);
             cloudletList.add(cloudlet1);
 
-            Cloudlet cloudlet2 = new CloudletSimple(id, length, pesNumber, fileSize,
-                    outputSize, utilizationModel, utilizationModel,
-                    utilizationModel);
-            cloudlet2.setUserId(brokerId);
-            cloudlet2.setVmId(vmid);
+            Cloudlet cloudlet2 = new CloudletSimple(++id, length, pesNumber)
+                .setCloudletFileSize(fileSize)
+                .setCloudletOutputSize(outputSize)
+                .setUtilizationModel(utilizationModel)
+                .setBroker(broker)
+                .setVmId(vmid);
             cloudletList.add(cloudlet2);
 
             // submit cloudlet list to the broker
@@ -177,14 +176,14 @@ public class TwoCloudletsAndOneSpaceSharedVm {
         // 4. Create HostSimple with its id and list of PEs and add them to the list
         // of machines
         int hostId = 0;
-        int ram = 2048; // host memory (MB)
-        long storage = 1000000; // host storage
-        long bw = 10000;
+        long ram = 2048; // host memory (MB)
+        long storage = 1000000; // host storage (MB)
+        long bw = 10000; //Megabits/s
 
         hostList.add(new HostSimple(
                 hostId,
-                new ResourceProvisionerSimple<>(new Ram(ram)),
-                new ResourceProvisionerSimple<>(new Bandwidth(bw)),
+                new ResourceProvisionerSimple(new Ram(ram)),
+                new ResourceProvisionerSimple(new Bandwidth(bw)),
                 storage,
                 peList,
                 new VmSchedulerTimeShared(peList)
@@ -195,26 +194,21 @@ public class TwoCloudletsAndOneSpaceSharedVm {
         // properties of a data center: architecture, OS, list of
         // Machines, allocation policy: time- or space-shared, time zone
         // and its price (G$/Pe time unit).
-        String arch = "x86"; // system architecture
-        String os = "Linux"; // operating system
-        String vmm = "Xen";
-        double time_zone = 10.0; // time zone this resource located
         double cost = 3.0; // the cost of using processing in this resource
         double costPerMem = 0.05; // the cost of using memory in this resource
         double costPerStorage = 0.001; // the cost of using storage in this
         // resource
         double costPerBw = 0.0; // the cost of using bw in this resource
-        LinkedList<FileStorage> storageList = new LinkedList<>(); // we are not adding SAN
-        // devices by now
 
-        DatacenterCharacteristics characteristics = new DatacenterCharacteristicsSimple(
-                arch, os, vmm, hostList, time_zone, cost, costPerMem,
-                costPerStorage, costPerBw);
+        DatacenterCharacteristics characteristics =
+            new DatacenterCharacteristicsSimple(hostList)
+                .setCostPerSecond(cost)
+                .setCostPerMem(costPerMem)
+                .setCostPerStorage(costPerStorage)
+                .setCostPerBw(costPerBw);
 
         // 6. Finally, we need to create a DatacenterSimple object.
-        return new DatacenterSimple(
-                name, characteristics, 
-                new VmAllocationPolicySimple(hostList), storageList, 0);
+        return new DatacenterSimple(name, characteristics, new VmAllocationPolicySimple(hostList));
     }
 
     // We strongly encourage users to develop their own broker policies, to

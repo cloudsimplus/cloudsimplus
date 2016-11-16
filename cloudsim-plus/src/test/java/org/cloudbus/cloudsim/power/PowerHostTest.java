@@ -30,15 +30,14 @@ import org.junit.Test;
  * @since		CloudSim Toolkit 2.0
  */
 public class PowerHostTest {
-	
-    private static final int RAM = 1024;
+    private static final long RAM = 1024;
     private static final long BW = 10000;
     private static final double MIPS = 1000;
     private static final double MAX_POWER = 200;
     private static final double STATIC_POWER_PERCENT = 0.3;
     private static final double TIME = 10;
     private static final long STORAGE = Consts.MILLION;
-    
+
 
     private PowerHostSimple host;
 
@@ -46,15 +45,16 @@ public class PowerHostTest {
         final List<Pe> peList = new ArrayList<>(numberOfPes);
         for(int i = 0; i < numberOfPes; i++)
             peList.add(new PeSimple(i, new PeProvisionerSimple(MIPS)));
-        
-        return new PowerHostSimple(hostId, 
-                new ResourceProvisionerSimple<>(new Ram(RAM)), 
-                new ResourceProvisionerSimple<>(new Bandwidth(BW)), 
-                STORAGE, peList, new VmSchedulerTimeShared(peList),
-                new PowerModelLinear(MAX_POWER, STATIC_POWER_PERCENT)
-        );
+
+        PowerHostSimple host = new PowerHostSimple(hostId, STORAGE, peList);
+        host.setPowerModel(new PowerModelLinear(MAX_POWER, STATIC_POWER_PERCENT))
+            .setRamProvisioner(new ResourceProvisionerSimple(new Ram(RAM)))
+            .setBwProvisioner(new ResourceProvisionerSimple(new Bandwidth(BW)))
+            .setVmScheduler(new VmSchedulerTimeShared(peList));
+
+        return host;
     }
-    
+
     @Before
     public void setUp() throws Exception {
         host = createPowerHost(0, 1);
@@ -62,7 +62,7 @@ public class PowerHostTest {
 
     @Test
     public void testGetMaxPower() {
-        assertEquals(MAX_POWER, host.getMaxPower(), 0);		
+        assertEquals(MAX_POWER, host.getMaxPower(), 0);
     }
 
     @Test

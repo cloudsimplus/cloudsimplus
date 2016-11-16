@@ -11,6 +11,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map.Entry;
 
+import org.cloudbus.cloudsim.Host;
 import org.cloudbus.cloudsim.HostSimple;
 import org.cloudbus.cloudsim.Log;
 import org.cloudbus.cloudsim.resources.Pe;
@@ -64,28 +65,58 @@ public class NetworkHost extends HostSimple {
 
     /**
      * @todo What exactly is this bandwidth? Because it is redundant with the bw
-     * capacity defined in {@link Host#bwProvisioner}
+     * capacity defined in {@link Host#getBwProvisioner()}
      */
     public double bandwidth;
 
-    public NetworkHost(
-            int id,
-            ResourceProvisioner<Integer> ramProvisioner,
-            ResourceProvisioner<Long> bwProvisioner,
-            long storage,
-            List<Pe> peList,
-            VmScheduler vmScheduler) {
-        super(id, ramProvisioner, bwProvisioner, storage, peList, vmScheduler);
-
+    /**
+     * Creates a NetworkHost.
+     *
+     * @param id the id
+     * @param storage the storage capacity
+     * @param peList the host's PEs list
+     *
+     */
+    public NetworkHost(int id, long storage, List<Pe> peList) {
+        super(id, storage, peList);
         networkPacketsReceived = new ArrayList<>();
         networkPacketsToSendGlobal = new ArrayList<>();
         networkPacketsToSendLocal = new ArrayList<>();
     }
 
+    /**
+     * Creates a NetworkHost with the given parameters.
+     *
+     * @param id the id
+     * @param ramProvisioner the ram provisioner
+     * @param bwProvisioner the bw provisioner
+     * @param storage the storage capacity
+     * @param peList the host's PEs list
+     * @param vmScheduler the VM scheduler
+     *
+     * @deprecated Use the other available constructors with less parameters
+     * and set the remaining ones using the respective setters.
+     * This constructor will be removed in future versions.
+     */
+    @Deprecated
+    private NetworkHost(
+            int id,
+            ResourceProvisioner ramProvisioner,
+            ResourceProvisioner bwProvisioner,
+            long storage,
+            List<Pe> peList,
+            VmScheduler vmScheduler)
+    {
+        this(id, storage, peList);
+        setRamProvisioner(ramProvisioner);
+        setBwProvisioner(bwProvisioner);
+        setVmScheduler(vmScheduler);
+    }
+
     @Override
     public double updateVmsProcessing(double currentTime) {
         double completionTimeOfNextFinishingCloudlet = super.updateVmsProcessing(currentTime);
-        receivePackets();        
+        receivePackets();
         sendAllPacketListsOfAllVms();
 
         return  completionTimeOfNextFinishingCloudlet;
@@ -100,20 +131,20 @@ public class NetworkHost extends HostSimple {
                 netPkt.getHostPacket().setReceiveTime(CloudSim.clock());
 
                 Vm vm = VmList.getById(getVmList(), netPkt.getHostPacket().getReceiverVmId());
-                NetworkCloudletSpaceSharedScheduler sched = 
+                NetworkCloudletSpaceSharedScheduler sched =
                         ((NetworkCloudletSpaceSharedScheduler) vm.getCloudletScheduler());
 
                 sched.addPacketToListOfPacketsSentFromVm(netPkt.getHostPacket());
                 Log.println(
-                    Log.Level.DEBUG, getClass(), CloudSim.clock(), 
-                    "Host %d received pkt with %.0f bytes from Cloudlet %d in VM %d and fowarded it to Cloudlet %d in VM %d", 
+                    Log.Level.DEBUG, getClass(), CloudSim.clock(),
+                    "Host %d received pkt with %.0f bytes from Cloudlet %d in VM %d and fowarded it to Cloudlet %d in VM %d",
                     getId(), netPkt.getHostPacket().getDataLength(),
-                    netPkt.getHostPacket().getSenderCloudlet().getId(), 
+                    netPkt.getHostPacket().getSenderCloudlet().getId(),
                     netPkt.getHostPacket().getSenderVmId(),
-                    netPkt.getHostPacket().getReceiverCloudlet().getId(), 
+                    netPkt.getHostPacket().getReceiverCloudlet().getId(),
                     netPkt.getHostPacket().getReceiverVmId());
             }
-        
+
             networkPacketsReceived.clear();
         } catch(Exception e){
             throw new RuntimeException(
@@ -140,7 +171,7 @@ public class NetworkHost extends HostSimple {
             ((NetworkCloudletSpaceSharedScheduler) vm.getCloudletScheduler())
                     .addPacketToListOfPacketsSentFromVm(netPkt.getHostPacket());
         }
-        
+
         if (flag) {
             for (Vm vm : getVmList()) {
                 vm.updateVmProcessing(
@@ -157,21 +188,21 @@ public class NetworkHost extends HostSimple {
 
             // send to switch with delay
             CloudSim.send(
-                    getDatacenter().getId(), getEdgeSwitch().getId(), 
+                    getDatacenter().getId(), getEdgeSwitch().getId(),
                     delay, CloudSimTags.NETWORK_EVENT_UP, netPkt);
         }
-        
+
         networkPacketsToSendGlobal.clear();
     }
 
     /**
      * Collects all lists of packets of a given Vm
      * in order to get them together to be sent.
-     * 
+     *
      * @param sourceVm the VM from where the packets will be sent
      */
     protected void collectAllListsOfPacketsToSendFromVm(Vm sourceVm) {
-        NetworkCloudletSpaceSharedScheduler sched = 
+        NetworkCloudletSpaceSharedScheduler sched =
                 (NetworkCloudletSpaceSharedScheduler) sourceVm.getCloudletScheduler();
         for (Entry<Integer, List<HostPacket>> es : sched.getHostPacketsToSendMap().entrySet()) {
             collectListOfPacketToSendFromVm(es);
@@ -181,8 +212,8 @@ public class NetworkHost extends HostSimple {
     /**
      * Collects all packets of a specific packet list of a given Vm
      * in order to get them together to be sent.
-     * 
-     * @param es The Map entry from a packet map where the key is the 
+     *
+     * @param es The Map entry from a packet map where the key is the
      * sender VM id and the value is a list of packets to send
      */
     protected void collectListOfPacketToSendFromVm(Entry<Integer, List<HostPacket>> es) {
@@ -224,7 +255,7 @@ public class NetworkHost extends HostSimple {
     /**
      * Adds a packet to the list of received packets in order
      * to further submit them to the respective target VMs and Cloudlets.
-     * 
+     *
      * @param networkPacket received network packet
      */
     public void addReceivedNetworkPacket(NetworkPacket networkPacket){

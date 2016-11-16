@@ -7,6 +7,7 @@ import java.util.List;
 import org.cloudbus.cloudsim.Consts;
 import org.cloudbus.cloudsim.Host;
 import org.cloudbus.cloudsim.HostSimple;
+import org.cloudbus.cloudsim.schedulers.VmScheduler;
 import org.cloudsimplus.listeners.EventListener;
 import org.cloudsimplus.listeners.HostUpdatesVmsProcessingEventInfo;
 import org.cloudbus.cloudsim.resources.Pe;
@@ -18,7 +19,7 @@ import org.cloudbus.cloudsim.resources.Ram;
 
 /**
  * A Builder class to create {@link Host} objects.
- * 
+ *
  * @author Manoel Campos da Silva Filho
  */
 public class HostBuilder extends Builder {
@@ -26,10 +27,10 @@ public class HostBuilder extends Builder {
     private int    pes = 1;
     private long   bw = 10000;
     private long   storage = Consts.MILLION;
-    private int    ram = 1024;
+    private long   ram = 1024;
     private Class<? extends VmSchedulerAbstract> vmSchedulerClass = VmSchedulerTimeShared.class;
     private EventListener<HostUpdatesVmsProcessingEventInfo> onUpdateVmsProcessingListener = EventListener.NULL;
-    
+
     private int numberOfCreatedHosts;
     private final List<Host> hosts;
 
@@ -49,11 +50,12 @@ public class HostBuilder extends Builder {
             Constructor cons =
                     vmSchedulerClass.getConstructor(new Class[]{List.class});
 
-            final Host host = new HostSimple(id,
-                    new ResourceProvisionerSimple<>(new Ram(ram)),
-                    new ResourceProvisionerSimple<>(new Bandwidth(bw)),
-                    storage, peList, (VmSchedulerAbstract) cons.newInstance(peList));
-            host.setOnUpdateVmsProcessingListener(onUpdateVmsProcessingListener);
+            final Host host =
+             new HostSimple(id, storage, peList)
+                .setRamProvisioner(new ResourceProvisionerSimple(new Ram(ram)))
+                .setBwProvisioner(new ResourceProvisionerSimple(new Bandwidth(bw)))
+                .setVmScheduler((VmScheduler) cons.newInstance(peList))
+                .setOnUpdateVmsProcessingListener(onUpdateVmsProcessingListener);
             hosts.add(host);
             return host;
         } catch (NoSuchMethodException | SecurityException ex) {
@@ -62,19 +64,19 @@ public class HostBuilder extends Builder {
             throw new RuntimeException("It wasn't possible to instantiate VmScheduler", ex);
         }
     }
-    
+
     public HostBuilder createOneHost() {
         return createHosts(1);
     }
-    
+
     public HostBuilder createHosts(final int amount) {
         validateAmount(amount);
-        
+
         for (int i = 0; i < amount; i++) {
             hosts.add(createHost(numberOfCreatedHosts++));
         }
         return this;
-    }    
+    }
 
     public double getMips() {
         return mips;
@@ -112,7 +114,7 @@ public class HostBuilder extends Builder {
         return this;
     }
 
-    public int getRam() {
+    public long getRam() {
         return ram;
     }
 

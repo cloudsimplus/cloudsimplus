@@ -24,14 +24,14 @@ import org.junit.Before;
 public class HostListTest {
     private static final int NUMBER_OF_HOSTS = 10;
     private static final int PES = 1;
-    private static final int RAM = 1024;
+    private static final long RAM = 1024;
     private static final long BW = 10000;
     private static final double MIPS = 1000;
     private static final long STORAGE = Consts.MILLION;
-    
+
     private List<HostSimple> hostSimpleList;
     private List<NetworkHost> networkHostList;
-    
+
     @Before
     public void setUp() {
         this.hostSimpleList = createHostSimpleList();
@@ -79,7 +79,7 @@ public class HostListTest {
         System.out.println("getNumberOfFreePes");
         createHostsAndCheckNumberOfPesByStatus(NUMBER_OF_HOSTS, 1, Status.FREE);
         createHostsAndCheckNumberOfPesByStatus(NUMBER_OF_HOSTS, 2, Status.FREE);
-        
+
         List<HostSimple> list = createHostSimpleList(NUMBER_OF_HOSTS, 1);
         setStatusOfFirstPeOfHostsWithEvenId(list, Pe.Status.BUSY);
         checkNumberOfPesByStatus(list, NUMBER_OF_HOSTS/2, Status.FREE);
@@ -98,7 +98,7 @@ public class HostListTest {
         checkNumberOfPesByStatus(list, numberOfHosts*numberOfPes, statusToCheck);
     }
 
-    private void checkNumberOfPesByStatus(List<HostSimple> list, 
+    private void checkNumberOfPesByStatus(List<HostSimple> list,
             final int expectedNumberOfPesByStatus, Pe.Status statusToCheck) {
         int result = 0;
         switch(statusToCheck){
@@ -111,13 +111,13 @@ public class HostListTest {
     @Test
     public void testGetNumberOfBusyPes() {
         System.out.println("getNumberOfBusyPes");
-        
+
         List<HostSimple> list = createHostSimpleList(NUMBER_OF_HOSTS, 2);
         checkNumberOfPesByStatus(list, 0, Status.BUSY);
-        
+
         list = createHostSimpleList(NUMBER_OF_HOSTS, 1);
         checkNumberOfPesByStatus(list, 0, Status.BUSY);
-        
+
         setStatusOfFirstPeOfHostsWithEvenId(list, Pe.Status.BUSY);
         checkNumberOfPesByStatus(list, NUMBER_OF_HOSTS/2, Status.BUSY);
     }
@@ -130,12 +130,12 @@ public class HostListTest {
 
         host0.setPeStatus(0, Status.BUSY);
         HostSimple host1 = hostSimpleList.get(1);
-        assertEquals(host1, HostList.getHostWithFreePe(hostSimpleList));   
-        
+        assertEquals(host1, HostList.getHostWithFreePe(hostSimpleList));
+
         hostSimpleList.forEach(h -> {
             IntStream.range(0, PES).forEach(i -> h.setPeStatus(i, Status.BUSY));
         });
-        assertEquals(null, HostList.getHostWithFreePe(hostSimpleList));   
+        assertEquals(null, HostList.getHostWithFreePe(hostSimpleList));
     }
 
     @Test
@@ -145,25 +145,25 @@ public class HostListTest {
         List<HostSimple> list = createHostSimpleList(NUMBER_OF_HOSTS, numberOfFreePes);
         HostSimple host0 = list.get(0);
         assertEquals(host0, HostList.getHostWithFreePe(list, numberOfFreePes));
-        
+
         host0.setPeStatus(0, Status.BUSY);
         HostSimple host1 = list.get(1);
-        assertEquals(host1, HostList.getHostWithFreePe(list, numberOfFreePes));        
+        assertEquals(host1, HostList.getHostWithFreePe(list, numberOfFreePes));
     }
 
     @Test
     public void testSetPeStatus() {
         System.out.println("setPeStatus");
         assertTrue(HostList.setPeStatus(hostSimpleList, Pe.Status.FREE, 0, 0));
-        
+
         //PE doesn't exist
         assertFalse(HostList.setPeStatus(hostSimpleList, Pe.Status.FREE, 0, PES));
 
         //host doesn't exist
-        assertFalse(HostList.setPeStatus(hostSimpleList, Pe.Status.FREE, NUMBER_OF_HOSTS, 0));        
+        assertFalse(HostList.setPeStatus(hostSimpleList, Pe.Status.FREE, NUMBER_OF_HOSTS, 0));
 
         //host and PE don't exist
-        assertFalse(HostList.setPeStatus(hostSimpleList, Pe.Status.FREE, NUMBER_OF_HOSTS, PES));        
+        assertFalse(HostList.setPeStatus(hostSimpleList, Pe.Status.FREE, NUMBER_OF_HOSTS, PES));
     }
 
     private List<HostSimple> createHostSimpleList() {
@@ -173,24 +173,25 @@ public class HostListTest {
     private List<HostSimple> createHostSimpleList(int numberOfHosts, int numberOfPes) {
         List<HostSimple> list = new ArrayList<>();
         IntStream.range(0, numberOfHosts)
-                .forEach(i -> list.add(HostSimpleTest.createHostSimple(i, numberOfPes)));    
+                .forEach(i -> list.add(HostSimpleTest.createHostSimple(i, numberOfPes)));
         return list;
     }
 
     private List<NetworkHost> createNetworkHostList() {
         List<NetworkHost> list = new ArrayList<>();
         IntStream.range(0, NUMBER_OF_HOSTS)
-                .forEach(i -> list.add(createNetworkHost(i)));    
+                .forEach(i -> list.add(createNetworkHost(i)));
         return list;
     }
-    
+
     private NetworkHost createNetworkHost(final int hostId) {
         final List<Pe> peList = HostSimpleTest.createPes(PES, MIPS);
 
-        return new NetworkHost(hostId,
-                new ResourceProvisionerSimple<>(new Ram(RAM)),
-                new ResourceProvisionerSimple<>(new Bandwidth(BW)),
-                STORAGE, peList, new VmSchedulerTimeShared(peList));
-    }    
-    
+        NetworkHost host = new NetworkHost(hostId, STORAGE, peList);
+        host.setRamProvisioner(new ResourceProvisionerSimple(new Ram(RAM)))
+            .setBwProvisioner(new ResourceProvisionerSimple(new Bandwidth(BW)))
+            .setVmScheduler(new VmSchedulerTimeShared(peList));
+        return host;
+    }
+
 }

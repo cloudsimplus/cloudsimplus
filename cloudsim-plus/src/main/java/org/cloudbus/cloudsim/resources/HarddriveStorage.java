@@ -23,7 +23,7 @@ import org.cloudbus.cloudsim.distributions.ContinuousDistribution;
  *   <li>avg seek time = 9 m/s</li>
  *   <li>max transfer rate = 133 MB/sec</li>
  * </ul>
- * 
+ *
  * @author Uros Cibej
  * @author Anthony Sulistio
  * @since CloudSim Toolkit 1.0
@@ -38,19 +38,19 @@ public class HarddriveStorage implements FileStorage {
      * from the HD.
      */
     private RawStorage storage;
-    
+
     /**
      * An storage just to control the amount of space previously allocated
      * to add reserved files. When the reserved files are effectively added
-     * to the Hard Drive, the reserved space for the file is remove for 
+     * to the Hard Drive, the reserved space for the file is remove for
      * this attribute. The attribute is used to avoid adding a reserved file
      * that the space wasn't previously reserved, what results in
      * wrong allocated space.
-     * @see #reserveSpace(int) 
-     * @see #addReservedFile(org.cloudbus.cloudsim.File) 
+     * @see #reserveSpace(int)
+     * @see #addReservedFile(File)
      */
     private RawStorage reservedStorage;
-    
+
     /** @see #getFileNameList()   */
     private List<String> fileNameList;
 
@@ -74,7 +74,7 @@ public class HarddriveStorage implements FileStorage {
 
     /**
      * Creates a new hard drive storage with a given name and capacity.
-     * 
+     *
      * @param name the name of the new hard drive storage
      * @param capacity the capacity in MByte
      * @throws IllegalArgumentException when the name and the capacity are not valid
@@ -93,7 +93,7 @@ public class HarddriveStorage implements FileStorage {
     /**
      * Creates a new hard drive storage with a given capacity. In this case the name of the storage
      * is a default name.
-     * 
+     *
      * @param capacity the capacity in MByte
      * @throws IllegalArgumentException when the name and the capacity are not valid
      */
@@ -128,7 +128,7 @@ public class HarddriveStorage implements FileStorage {
             reservedStorage.allocateResource((long)fileSize);
             return true;
         }
-        
+
         return false;
     }
 
@@ -137,7 +137,7 @@ public class HarddriveStorage implements FileStorage {
         if (file == null) {
             return 0;
         }
-        
+
         if(!reservedStorage.isResourceAmountBeingUsed((long)file.getSize())){
             throw new RuntimeException("The file size wasn't previously reserved in order to add a reserved file.");
         }
@@ -165,7 +165,7 @@ public class HarddriveStorage implements FileStorage {
         if (storage.isResourceAmountAvailable((long)fileSize)) {
             return true;
         }
-        
+
         int deletedFileSize = 0;
 
         // if not enough space, then if want to clear/delete some files
@@ -192,7 +192,7 @@ public class HarddriveStorage implements FileStorage {
 
     /**
      * Sets the latency of this hard drive in seconds.
-     * 
+     *
      * @param latency the new latency in seconds
      * @return <tt>true</tt> if the setting succeeded, <tt>false</tt> otherwise
      */
@@ -207,7 +207,7 @@ public class HarddriveStorage implements FileStorage {
 
     /**
      * Gets the latency of this hard drive in seconds.
-     * 
+     *
      * @return the latency in seconds
      */
     public double getLatency() {
@@ -231,9 +231,9 @@ public class HarddriveStorage implements FileStorage {
 
     /**
      * Sets the average seek time of the storage in seconds.
-     * 
+     *
      * @param seekTime the average seek time in seconds
-     * @return <tt>true</tt> if the values is greater than zero and was set successfully, 
+     * @return <tt>true</tt> if the values is greater than zero and was set successfully,
      * <tt>false</tt> otherwise
      */
     public boolean setAvgSeekTime(final double seekTime) {
@@ -243,10 +243,10 @@ public class HarddriveStorage implements FileStorage {
     /**
      * Sets the average seek time and a new generator of seek times in seconds. The generator
      * determines a randomized seek time.
-     * 
+     *
      * @param seekTime the average seek time in seconds
      * @param gen the ContinuousGenerator which generates seek times
-     * @return <tt>true</tt> if the values is greater than zero and was set successfully, 
+     * @return <tt>true</tt> if the values is greater than zero and was set successfully,
      * <tt>false</tt> otherwise
      */
     public boolean setAvgSeekTime(final double seekTime, final ContinuousDistribution gen) {
@@ -260,8 +260,8 @@ public class HarddriveStorage implements FileStorage {
     }
 
     /**
-     * Gets the average seek time of the hard drive in seconds. 
-     * 
+     * Gets the average seek time of the hard drive in seconds.
+     *
      * @return the average seek time in seconds
      */
     public double getAvgSeekTime() {
@@ -298,7 +298,7 @@ public class HarddriveStorage implements FileStorage {
     public List<String> getFileNameList() {
         return fileNameList;
     }
-    
+
     protected List<File> getFileList(){
         return fileList;
     }
@@ -306,7 +306,7 @@ public class HarddriveStorage implements FileStorage {
     /**
      * Get the seek time for a file with the defined size. Given a file size in MB, this method
      * returns a seek time for the file in seconds.
-     * 
+     *
      * @param fileSize the size of a file in MB
      * @return the seek time in seconds
      */
@@ -326,7 +326,7 @@ public class HarddriveStorage implements FileStorage {
 
     /**
      * Gets the transfer time of a given file.
-     * 
+     *
      * @param fileSize the size of the transferred file
      * @return the transfer time in seconds
      */
@@ -339,13 +339,13 @@ public class HarddriveStorage implements FileStorage {
         return result;
     }
 
-    
+
     /**
      * {@inheritDoc}
-     * 
+     *
      * <p/>First, the method checks if there is enough space on the storage,
-     * then it checks if the file with the same name is already taken to avoid duplicate filenames. 
-     * 
+     * then it checks if the file with the same name is already taken to avoid duplicate filenames.
+     *
      * @param file {@inheritDoc}
      * @return {@inheritDoc}
      */
@@ -356,7 +356,7 @@ public class HarddriveStorage implements FileStorage {
             Log.printConcatLine(name, ".addFile(): Invalid file ", file);
             return result;
         }
- 
+
        // check the capacity
         if (!storage.isResourceAmountAvailable((long)file.getSize())) {
             Log.printConcatLine(name, ".addFile(): Warning - not enough space to store ", file.getName());
@@ -386,7 +386,7 @@ public class HarddriveStorage implements FileStorage {
         }
 
         for (File file: list) {
-            result += addFile(file);    
+            result += addFile(file);
         }
         return result;
     }
@@ -435,7 +435,7 @@ public class HarddriveStorage implements FileStorage {
             Log.printConcatLine(name, ".contains(): Warning - invalid file name");
             return false;
         }
-        
+
         return fileNameList.contains(fileName);
     }
 
@@ -470,22 +470,22 @@ public class HarddriveStorage implements FileStorage {
     }
 
     @Override
-    public Long getCapacity() {
+    public long getCapacity() {
         return storage.getCapacity();
     }
 
     @Override
-    public Long getAvailableResource() {
+    public long getAvailableResource() {
         return storage.getAvailableResource();
     }
 
     @Override
-    public Long getAllocatedResource() {
+    public long getAllocatedResource() {
         return storage.getAllocatedResource();
     }
 
     @Override
-    public boolean isResourceAmountAvailable(Long amountToCheck) {
+    public boolean isResourceAmountAvailable(long amountToCheck) {
         return storage.isResourceAmountAvailable(amountToCheck);
     }
 

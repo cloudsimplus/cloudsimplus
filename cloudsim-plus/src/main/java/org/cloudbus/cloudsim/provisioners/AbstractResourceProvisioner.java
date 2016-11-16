@@ -11,70 +11,58 @@ package org.cloudbus.cloudsim.provisioners;
 import java.util.HashMap;
 import java.util.Map;
 import org.cloudbus.cloudsim.Vm;
-import org.cloudsimplus.util.Calculator;
+import org.cloudbus.cloudsim.resources.AbstractResource;
 import org.cloudbus.cloudsim.resources.ResourceManageable;
 
 /**
- * An abstract class that implements the basic features of a provisioning policy used by a host 
- * to allocate a given resource to virtual machines inside it. 
- * 
+ * An abstract class that implements the basic features of a provisioning policy used by a host
+ * to allocate a given resource to virtual machines inside it.
+ *
  * @see ResourceProvisioner
  * @author Rodrigo N. Calheiros
  * @author Anton Beloglazov
  * @author Manoel Campos da Silva Filho
- * @param <T> The type of the resource capacity of the provisioner
  * @since 3.0.4
  */
-public abstract class AbstractResourceProvisioner<T extends Number & Comparable<T>> implements ResourceProvisioner<T> {
+public abstract class AbstractResourceProvisioner implements ResourceProvisioner {
     /**
      * The resource being managed for the provisioner, such as RAM, BW or CPU.
      */
-    private final ResourceManageable<T> resource;
-    
-    /**
-     * The class of the resource being managed for the provisioner,
-     * such as {@link ResourceCpu}, {@link ResourceRam} or {@link ResourceBandwidth}.
-     * @see #resource
-     */
-    private final Class<? extends ResourceManageable<T>> resourceClass;
-    
+    private final ResourceManageable resource;
+
     /** The VM resource allocation map, where each key is a VM and each value
      * is the amount of resource allocated to that VM. */
-    private final Map<Vm, T> resourceAllocationMap;
-    
-    /** A calculator for basic math operations over values extending of the Number class. */
-    private final Calculator<T> calc;    
+    private final Map<Vm, Long> resourceAllocationMap;
+    private final Class<? extends ResourceManageable> resourceClass;
 
     /**
      * Creates a new ResourceManageable Provisioner.
-     * 
+     *
      * @param resource The resource to be managed by the provisioner
      * @post $none
      */
-    public AbstractResourceProvisioner(final ResourceManageable<T> resource) {
-        if(resource == null)
+    public AbstractResourceProvisioner(final ResourceManageable resource) {
+        if(resource == null){
             throw new IllegalArgumentException("Resource cannot be null");
-        calc = new Calculator<>(resource.getCapacity());
+        }
+
         this.resource = resource;
-        this.resourceClass = (Class<ResourceManageable<T>>)resource.getClass();
+        this.resourceClass = resource.getClass();
         this.resourceAllocationMap = new HashMap<>();
     }
 
     @Override
-    public T getAllocatedResourceForVm(Vm vm) {
-        if (getResourceAllocationMap().containsKey(vm)) {
-                return getResourceAllocationMap().get(vm);
-        }
-        return calc.getZero();
+    public long getAllocatedResourceForVm(Vm vm) {
+        return getResourceAllocationMap().getOrDefault(vm, 0L);
     }
-    
+
     @Override
     public void deallocateResourceForAllVms() {
         for(Vm vm: getResourceAllocationMap().keySet()){
             deallocateResourceForVmSettingAllocationMapEntryToZero(vm);
         }
         getResourceAllocationMap().clear();
-    }    
+    }
 
     /**
      * Deallocate the resource for the given VM, without removing
@@ -83,41 +71,41 @@ public abstract class AbstractResourceProvisioner<T extends Number & Comparable<
      * @param vm the VM to deallocate resource
      * @return the amount of allocated VM resource or zero if VM is not found
      */
-    protected abstract T deallocateResourceForVmSettingAllocationMapEntryToZero(Vm vm);
+    protected abstract long deallocateResourceForVmSettingAllocationMapEntryToZero(Vm vm);
 
     /**
      * @return the resource
      */
-    protected ResourceManageable<T> getResource() {
+    protected ResourceManageable getResource() {
         return resource;
     }
 
     /**
      * @return the resourceClass
      */
-    protected Class<? extends ResourceManageable<T>> getResourceClass() {
+    protected Class<? extends ResourceManageable> getResourceClass() {
         return resourceClass;
     }
 
     /**
      * @return the resourceAllocationMap
      */
-    protected Map<Vm, T> getResourceAllocationMap() {
+    protected Map<Vm, Long> getResourceAllocationMap() {
         return resourceAllocationMap;
     }
 
     @Override
-    public T getCapacity() {
+    public long getCapacity() {
         return resource.getCapacity();
     }
 
     @Override
-    public T getTotalAllocatedResource() {
+    public long getTotalAllocatedResource() {
         return resource.getAllocatedResource();
     }
 
     @Override
-    public T getAvailableResource() {
+    public long getAvailableResource() {
         return resource.getAvailableResource();
     }
 }

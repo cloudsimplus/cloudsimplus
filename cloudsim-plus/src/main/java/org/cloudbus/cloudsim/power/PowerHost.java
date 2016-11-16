@@ -2,10 +2,8 @@ package org.cloudbus.cloudsim.power;
 
 import java.util.Collections;
 import java.util.List;
-import org.cloudbus.cloudsim.Datacenter;
-import org.cloudbus.cloudsim.HostDynamicWorkload;
-import org.cloudbus.cloudsim.HostStateHistoryEntry;
-import org.cloudbus.cloudsim.Vm;
+
+import org.cloudbus.cloudsim.*;
 import org.cloudsimplus.listeners.EventListener;
 import org.cloudsimplus.listeners.HostUpdatesVmsProcessingEventInfo;
 import org.cloudbus.cloudsim.power.models.PowerModel;
@@ -19,8 +17,8 @@ import org.cloudbus.cloudsim.schedulers.VmScheduler;
  * Design Pattern in order to start avoiding {@link NullPointerException} when
  * using the {@link PowerHost#NULL} object instead of attributing {@code null} to
  * {@link PowerHost} variables.
- * 
- * 
+ *
+ *
  * @author Manoel Campos da Silva Filho
  */
 public interface PowerHost extends HostDynamicWorkload {
@@ -55,7 +53,15 @@ public interface PowerHost extends HostDynamicWorkload {
      * @return the power model
      */
     PowerModel getPowerModel();
-    
+
+    /**
+     * Sets the power model.
+     *
+     * @param powerModel the new power model
+     */
+    PowerHost setPowerModel(PowerModel powerModel);
+
+
     /**
      * A property that implements the Null Object Design Pattern for {@link PowerHost}
      * objects.
@@ -65,6 +71,7 @@ public interface PowerHost extends HostDynamicWorkload {
         @Override public double getMaxPower() { return 0; }
         @Override public double getPower() { return 0; }
         @Override public PowerModel getPowerModel() { return PowerModel.NULL; }
+        @Override public PowerHost setPowerModel(PowerModel powerModel) { return PowerHost.NULL; }
         @Override public void addStateHistoryEntry(double time, double allocatedMips, double requestedMips, boolean isActive) {}
         @Override public List<Vm> getCompletedVms() { return Collections.EMPTY_LIST; }
         @Override public double getMaxUtilization() { return 0; }
@@ -73,32 +80,35 @@ public interface PowerHost extends HostDynamicWorkload {
         @Override public double getPreviousUtilizationOfCpu() { return 0; }
         @Override public List<HostStateHistoryEntry> getStateHistory() { return Collections.EMPTY_LIST; }
         @Override public double getUtilizationMips() { return 0; }
-        @Override public long getUtilizationOfBw() { return 0L; }
+        @Override public long getUtilizationOfBw() { return 0; }
         @Override public double getUtilizationOfCpu() { return 0; }
         @Override public double getUtilizationOfCpuMips() { return 0; }
-        @Override public int getUtilizationOfRam() { return 0; }
+        @Override public long getUtilizationOfRam() { return 0; }
         @Override public double updateVmsProcessing(double currentTime) { return 0; }
         @Override public void addMigratingInVm(Vm vm) {}
         @Override public boolean allocatePesForVm(Vm vm, List<Double> mipsShare) { return false; }
         @Override public void deallocatePesForVm(Vm vm) {}
         @Override public List<Double> getAllocatedMipsForVm(Vm vm) { return Collections.EMPTY_LIST; }
         @Override public double getAvailableMips() { return 0; }
-        @Override public long getAvailableStorage() { return 0L; }
-        @Override public long getBwCapacity() { return 0L; }
-        @Override public ResourceProvisioner<Long> getBwProvisioner() { return ResourceProvisioner.NULL_LONG; }
+        @Override public long getAvailableStorage() { return 0; }
+        @Override public long getBwCapacity() { return 0; }
+        @Override public ResourceProvisioner getBwProvisioner() { return ResourceProvisioner.NULL; }
+        @Override public Host setBwProvisioner(ResourceProvisioner bwProvisioner) { return Host.NULL; }
         @Override public Datacenter getDatacenter() { return Datacenter.NULL; }
         @Override public double getMaxAvailableMips() { return 0; }
         @Override public int getNumberOfFreePes() { return 0; }
         @Override public int getNumberOfPes() { return 0; }
         @Override public List<Pe> getPeList() { return Collections.EMPTY_LIST; }
-        @Override public int getRamCapacity() { return 0; }
-        @Override public ResourceProvisioner<Integer> getRamProvisioner() { return ResourceProvisioner.NULL_INT; }
-        @Override public long getStorageCapacity() { return 0L; }
+        @Override public long getRamCapacity() { return 0; }
+        @Override public ResourceProvisioner getRamProvisioner() { return ResourceProvisioner.NULL; }
+        @Override public Host setRamProvisioner(ResourceProvisioner ramProvisioner) { return Host.NULL; }
+        @Override public long getStorageCapacity() { return 0; }
         @Override public double getTotalAllocatedMipsForVm(Vm vm) { return 0; }
         @Override public int getTotalMips() { return 0; }
         @Override public Vm getVm(int vmId, int userId) { return Vm.NULL; }
         @Override public <T extends Vm> List<T> getVmList() { return Collections.EMPTY_LIST; }
         @Override public VmScheduler getVmScheduler() { return VmScheduler.NULL; }
+        @Override public Host setVmScheduler(VmScheduler vmScheduler) { return Host.NULL; }
         @Override public <T extends Vm> List<T> getVmsMigratingIn() { return Collections.EMPTY_LIST; }
         @Override public boolean isFailed() { return false; }
         @Override public boolean isSuitableForVm(Vm vm) { return false; }
@@ -111,7 +121,7 @@ public interface PowerHost extends HostDynamicWorkload {
         @Override public void vmDestroy(Vm vm) {}
         @Override public void vmDestroyAll() {}
         @Override public EventListener<HostUpdatesVmsProcessingEventInfo> getOnUpdateVmsProcessingListener() { return EventListener.NULL; }
-        @Override public void setOnUpdateVmsProcessingListener(EventListener<HostUpdatesVmsProcessingEventInfo> onUpdateVmsProcessingListener) {}
+        @Override public Host setOnUpdateVmsProcessingListener(EventListener<HostUpdatesVmsProcessingEventInfo> onUpdateVmsProcessingListener) { return Host.NULL; }
         @Override public int getId() { return 0; }
         @Override public long getNumberOfWorkingPes(){return 0L;}
     };

@@ -1,10 +1,8 @@
 package org.cloudsimplus.heuristics;
 
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
-import java.util.TreeMap;
 import java.util.TreeSet;
 import java.util.stream.IntStream;
 import org.cloudbus.cloudsim.Cloudlet;
@@ -12,7 +10,6 @@ import org.cloudbus.cloudsim.CloudletSimple;
 import org.cloudbus.cloudsim.CloudletSimpleTest;
 import org.cloudbus.cloudsim.Vm;
 import org.cloudbus.cloudsim.VmSimpleTest;
-import org.cloudbus.cloudsim.utilizationmodels.UtilizationModel;
 import org.junit.Assert;
 import org.junit.Test;
 import static org.junit.Assert.*;
@@ -60,9 +57,10 @@ public class CloudletToVmMappingSolutionTest {
     }
 
     private Cloudlet createCloudlet(int id, int numberOfPes){
-        Cloudlet cloudlet = new CloudletSimple(id, 10000, numberOfPes, 100, 100,
-                UtilizationModel.NULL, UtilizationModel.NULL, UtilizationModel.NULL);
-        cloudlet.setUserId(0);
+        Cloudlet cloudlet =
+            new CloudletSimple(id, 10000, numberOfPes)
+              .setCloudletFileSize(100)
+              .setCloudletOutputSize(100);
         return cloudlet;
     }
 

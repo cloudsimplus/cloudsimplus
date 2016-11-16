@@ -21,7 +21,7 @@ public class CloudletListTest {
     private static final int CLOUDLET_LENGTH = 1000;
     private static final int CLOUDLET_PES = 1;
     private static final int CLOUDLET_LENGTH_ARRAY[] = {300, 500, 200, 400, 600, 100, 900, 800, 700};
-    private List<CloudletSimple> simpleCloudletList;
+    private List<Cloudlet> simpleCloudletList;
     private List<NetworkCloudlet> networkCloudletList;
 
     @Before
@@ -29,43 +29,54 @@ public class CloudletListTest {
         this.simpleCloudletList = createSimpleCloudlets();
         this.networkCloudletList = createNetworkCloudlets();
     }
-    
+
     /**
      * Creates the number of cloudlets defined by the length of the cloudletLengths array
      * @param cloudletLengths the length of each cloudlet to be created
-     * @return 
+     * @return
      */
-    private List<CloudletSimple> createSimpleCloudlets(int cloudletLengths[]){
-        List<CloudletSimple> l = new ArrayList<>();
+    private List<Cloudlet> createSimpleCloudlets(int cloudletLengths[]){
+        List<Cloudlet> l = new ArrayList<>(cloudletLengths.length);
         UtilizationModel um = UtilizationModel.NULL;
         for(int i = 0; i < cloudletLengths.length; i++){
-            l.add(new CloudletSimple(i, cloudletLengths[i], CLOUDLET_PES, 100, 100, um, um, um));
+            Cloudlet cloudlet =
+                new CloudletSimple(i, cloudletLengths[i], CLOUDLET_PES)
+                .setCloudletFileSize(100)
+                .setCloudletOutputSize(100)
+                .setUtilizationModel(um);
+            l.add(cloudlet);
         }
         return l;
     }
-    
-    private List<CloudletSimple> createSimpleCloudlets(){
-        int cloudletLengths[] = new int[NUMBER_OF_CLOUDLETS]; 
+
+    private List<Cloudlet> createSimpleCloudlets(){
+        int cloudletLengths[] = new int[NUMBER_OF_CLOUDLETS];
         Arrays.fill(cloudletLengths, CLOUDLET_LENGTH);
         return createSimpleCloudlets(cloudletLengths);
     }
-   
+
     /**
      * Creates the number of cloudlets defined by the length of the cloudletLengths array
      * @param cloudletLengths the length of each cloudlet to be created
-     * @return 
+     * @return
      */
     private List<NetworkCloudlet> createNetworkCloudlets(int cloudletLengths[]){
-        List<NetworkCloudlet> l = new ArrayList<>();
+        List<NetworkCloudlet> l = new ArrayList<>(cloudletLengths.length);
         UtilizationModel um = UtilizationModel.NULL;
         for(int i = 0; i < cloudletLengths.length; i++){
-            l.add(new NetworkCloudlet(i, cloudletLengths[i], CLOUDLET_PES, 100, 100, 512, um, um, um));
+            NetworkCloudlet cloudlet = new NetworkCloudlet(i, cloudletLengths[i], CLOUDLET_PES);
+            cloudlet
+                .setMemory(512)
+                .setCloudletFileSize(100)
+                .setCloudletOutputSize(100)
+                .setUtilizationModel(um);
+            l.add(cloudlet);
         }
         return l;
     }
-    
+
     private List<NetworkCloudlet> createNetworkCloudlets(){
-        int cloudletLengths[] = new int[NUMBER_OF_CLOUDLETS]; 
+        int cloudletLengths[] = new int[NUMBER_OF_CLOUDLETS];
         Arrays.fill(cloudletLengths, CLOUDLET_LENGTH);
         return createNetworkCloudlets(cloudletLengths);
     }
@@ -117,16 +128,16 @@ public class CloudletListTest {
     @Test
     public void testSortSimpleCloudlets() {
         System.out.println("sort");
-        List<CloudletSimple> list = createSimpleCloudlets(CLOUDLET_LENGTH_ARRAY);
+        List<Cloudlet> list = createSimpleCloudlets(CLOUDLET_LENGTH_ARRAY);
         CloudletList.sort(list);
         checkIfCloudletListIsInAccendingTotalLengthOrder(list, CLOUDLET_LENGTH_ARRAY);
     }
-    
+
     @Test
     public void testSortSimpleCloudletsAlreadySorted() {
         System.out.println("sort");
         final int cloudletLengths[] = {100, 200, 300, 400, 500};
-        List<CloudletSimple> list = createSimpleCloudlets(cloudletLengths);
+        List<Cloudlet> list = createSimpleCloudlets(cloudletLengths);
         CloudletList.sort(list);
         checkIfCloudletListIsInAccendingTotalLengthOrder(list, cloudletLengths);
     }
@@ -135,7 +146,7 @@ public class CloudletListTest {
     public void testSortSimpleCloudletsInvertedSorted() {
         System.out.println("sort");
         final int cloudletLengths[] = {500, 400, 300, 200, 100};
-        List<CloudletSimple> list = createSimpleCloudlets(cloudletLengths);
+        List<Cloudlet> list = createSimpleCloudlets(cloudletLengths);
         CloudletList.sort(list);
         checkIfCloudletListIsInAccendingTotalLengthOrder(list, cloudletLengths);
     }

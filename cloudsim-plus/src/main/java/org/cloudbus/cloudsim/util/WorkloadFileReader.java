@@ -23,6 +23,7 @@ import java.util.zip.ZipFile;
 import org.cloudbus.cloudsim.Cloudlet;
 
 import org.cloudbus.cloudsim.CloudletSimple;
+import org.cloudbus.cloudsim.DataCloudTags;
 import org.cloudbus.cloudsim.utilizationmodels.UtilizationModel;
 import org.cloudbus.cloudsim.utilizationmodels.UtilizationModelFull;
 
@@ -47,9 +48,9 @@ import org.cloudbus.cloudsim.utilizationmodels.UtilizationModelFull;
  * <li>If size of the trace file is huge or contains lots of traces, please
  * increase the JVM heap size accordingly by using <tt>java -Xmx</tt> option
  * when running the simulation.
- * <li>The default job file size for sending to and receiving from a resource is
- * {@link org.cloudbus.cloudsim.DataCloudTags#DEFAULT_MTU}. However, you can
- * specify the file size by using {@link #setCloudletFileSize(int)}.
+ * <li>The default Cloudlet file size for sending to and receiving from a Datacenter is
+ * {@link DataCloudTags#DEFAULT_MTU}. However, you can
+ * specify the file size by using {@link Cloudlet#setCloudletFileSize(long)}.
  * <li>A job run time is only for 1 PE <tt>not</tt> the total number of
  * allocated PEs. Therefore, a Cloudlet length is also calculated for 1 PE.<br>
  * For example, job #1 in the trace has a run time of 100 seconds for 2
@@ -60,7 +61,7 @@ import org.cloudbus.cloudsim.utilizationmodels.UtilizationModelFull;
  *
  * @todo The last item in the list above is not true. The cloudlet length is not
  * divided by the number of PEs. If there is more than 1 PE, all PEs run the
- * same number of MI as specified in the {@link Cloudlet#cloudletLength}
+ * same number of MI as specified in the {@link Cloudlet#getCloudletLength()}
  * attribute. See {@link Cloudlet#setNumberOfPes(int)} method documentation.
  *
  *
@@ -149,9 +150,9 @@ public class WorkloadFileReader implements WorkloadModel {
      * A temp array storing all the fields read from a line of the trace file.
      */
     private String[] fieldArray = null;
-    
+
     /**
-     * @see #getMaxNumberOfLinesToRead() 
+     * @see #getMaxNumberOfLinesToRead()
      */
     private int maxNumberOfLinesToRead;
 
@@ -188,7 +189,7 @@ public class WorkloadFileReader implements WorkloadModel {
         this.rating = rating;
         this.maxNumberOfLinesToRead = -1;
     }
-    
+
     /**
      * Reads job information from a trace file and generates the respective
      * cloudlets.
@@ -326,7 +327,7 @@ public class WorkloadFileReader implements WorkloadModel {
      * @param id a Cloudlet ID
      * @param submitTime Cloudlet's submit time
      * @param runTime The number of seconds the Cloudlet has to run. Considering
-     * that and the {@link #rating}, the {@link Cloudlet#cloudletLength} is
+     * that and the {@link #rating}, the {@link Cloudlet#getCloudletLength()} is
      * computed.
      * @param numProc number of Cloudlet's PEs
      * @param reqRunTime user estimated run time (@todo the parameter is not
@@ -348,19 +349,13 @@ public class WorkloadFileReader implements WorkloadModel {
             final int reqRunTime,
             final int userID,
             final int groupID) {
-        // create the cloudlet
         final int len = runTime * rating;
         UtilizationModel utilizationModel = new UtilizationModelFull();
-        final Cloudlet wgl = new CloudletSimple(
-                id,
-                len,
-                numProc,
-                0,
-                0,
-                utilizationModel,
-                utilizationModel,
-                utilizationModel);
-        jobs.add(wgl);
+        final Cloudlet cloudlet = new CloudletSimple(id,  len,  numProc)
+                .setCloudletFileSize(DataCloudTags.DEFAULT_MTU)
+                .setCloudletOutputSize(DataCloudTags.DEFAULT_MTU)
+                .setUtilizationModel(utilizationModel);
+        jobs.add(cloudlet);
     }
 
     /**
@@ -436,7 +431,7 @@ public class WorkloadFileReader implements WorkloadModel {
      * @param line a line from the trace file
      * @param lineNum the line number
      * @return true if the line was parsed, false otherwise
-     * 
+     *
      * @pre line != null
      * @pre lineNum > 0
      * @post $none
@@ -467,7 +462,7 @@ public class WorkloadFileReader implements WorkloadModel {
         if (index == MAX_FIELD) {
             createCloudletFromOneTraceFileLine(fieldArray, lineNum);
         }
-        
+
         return true;
     }
 
@@ -534,12 +529,12 @@ public class WorkloadFileReader implements WorkloadModel {
                 readFile(zipFile.getInputStream(zipEntry));
             }
             return true;
-        } 
+        }
     }
-    
+
     /**
      * Reads the next line of the workload file.
-     * 
+     *
      * @param reader the object that is reading the workload file
      * @param lineNumber the number of the line that that will be read from the workload file
      * @return the line read; or null if there isn't any more lines to read or if
@@ -548,7 +543,7 @@ public class WorkloadFileReader implements WorkloadModel {
     private String readNextLine(BufferedReader reader, int lineNumber) throws IOException {
         if(reader.ready() && (maxNumberOfLinesToRead == -1 || lineNumber <= maxNumberOfLinesToRead))
             return reader.readLine();
-        
+
         return null;
     }
 
@@ -556,8 +551,8 @@ public class WorkloadFileReader implements WorkloadModel {
      * Gets the maximum number of lines of the workload file that will be read.
      * The value -1 indicates that all lines will be read, creating
      * a cloudlet from every one.
-     * 
-     * @return 
+     *
+     * @return
      */
     public int getMaxNumberOfLinesToRead() {
         return maxNumberOfLinesToRead;
@@ -567,7 +562,7 @@ public class WorkloadFileReader implements WorkloadModel {
      * Sets the maximum number of lines of the workload file that will be read.
      * The value -1 indicates that all lines will be read, creating
      * a cloudlet from every one.
-     * 
+     *
      * @param maxNumberOfLinesToRead
      */
     public void setMaxNumberOfLinesToRead(int maxNumberOfLinesToRead) {

@@ -11,6 +11,9 @@ import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 
+import org.cloudbus.cloudsim.Vm;
+import org.cloudbus.cloudsim.brokers.DatacenterBroker;
+import org.cloudbus.cloudsim.resources.Pe;
 import org.cloudbus.cloudsim.schedulers.CloudletScheduler;
 import org.cloudbus.cloudsim.VmSimple;
 import org.cloudbus.cloudsim.core.CloudSim;
@@ -59,33 +62,63 @@ public class PowerVm extends VmSimple {
     private double schedulingInterval;
 
     /**
+     * Creates a Vm with 1024 MB of RAM, 1000 Megabits/s of Bandwidth and 1024 MB of Storage Size.
+     *
+     * To change these values, use the respective setters. While the Vm {@link #isBeingInstantiated()
+     * is being instantiated}, such values can be changed freely.
+     *
+     * @param id unique ID of the VM
+     * @param mipsCapacity the mips capacity of each Vm {@link Pe}
+     * @param numberOfPes amount of {@link Pe} (CPU cores)
+     *
+     * @pre id >= 0
+     * @pre numberOfPes > 0
+     * @post $none
+     */
+    public PowerVm(int id, double mipsCapacity, int numberOfPes) {
+        super(id, mipsCapacity, numberOfPes);
+        setSchedulingInterval(0);
+    }
+
+    /**
      * Instantiates a new PowerVm.
      *
-     * @param id the id
-     * @param userId the user id
-     * @param mips the mips
-     * @param pesNumber the pes number
-     * @param ram the ram
-     * @param bw the bw
-     * @param size the size
+     * @param id unique ID of the VM
+     * @param broker ID of the VM's owner, that is represented by the id of the {@link DatacenterBroker}
+     * @param mipsCapacity the mips capacity of each Vm {@link Pe}
+     * @param numberOfPes amount of {@link Pe} (CPU cores)
+     * @param ramCapacity amount of ram in Megabytes
+     * @param bwCapacity amount of bandwidth to be allocated to the VM (in Megabits/s)
+     * @param size size the VM image in Megabytes (the amount of storage it will use, at least initially).
      * @param priority the priority
-     * @param vmm the vmm
-     * @param cloudletScheduler the cloudlet scheduler
+     * @param vmm Virtual Machine Monitor that manages the VM lifecycle
+     * @param cloudletScheduler scheduler that defines the execution policy for Cloudlets inside this Vm
      * @param schedulingInterval the scheduling interval
+     *
+     * @deprecated Use the other available constructors with less parameters
+     * and set the remaining ones using the respective setters.
+     * This constructor will be removed in future versions.
      */
-    public PowerVm(
+    @Deprecated
+    private PowerVm(
             final int id,
-            final int userId,
-            final double mips,
-            final int pesNumber,
-            final int ram,
-            final long bw,
+            final DatacenterBroker broker,
+            final double mipsCapacity,
+            final int numberOfPes,
+            final int ramCapacity,
+            final long bwCapacity,
             final long size,
             final int priority,
             final String vmm,
             final CloudletScheduler cloudletScheduler,
             final double schedulingInterval) {
-        super(id, userId, mips, pesNumber, ram, bw, size, vmm, cloudletScheduler);
+        this(id, mipsCapacity, numberOfPes);
+        setBroker(broker);
+        setRam(ramCapacity);
+        setBw(bwCapacity);
+        setSize(size);
+        setVmm(vmm);
+        setCloudletScheduler(cloudletScheduler);
         setSchedulingInterval(schedulingInterval);
     }
 
@@ -210,8 +243,9 @@ public class PowerVm extends VmSimple {
      *
      * @param schedulingInterval the schedulingInterval to set
      */
-    protected final void setSchedulingInterval(final double schedulingInterval) {
+    public final PowerVm setSchedulingInterval(final double schedulingInterval) {
         this.schedulingInterval = schedulingInterval;
+        return this;
     }
 
 }

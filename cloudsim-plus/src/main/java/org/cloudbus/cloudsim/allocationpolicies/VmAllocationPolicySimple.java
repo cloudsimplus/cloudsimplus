@@ -46,12 +46,12 @@ public class VmAllocationPolicySimple extends VmAllocationPolicyAbstract {
     /**
      * Creates a new VmAllocationPolicySimple object.
      *
-     * @param list the list of hosts
+     * @param hostList the list of hosts that will be managed by the allocation policy to place VMs
      * @pre $none
      * @post $none
      */
-    public VmAllocationPolicySimple(List<Host> list) {
-        super(list);
+    public VmAllocationPolicySimple(List<Host> hostList) {
+        super(hostList);
 
         setFreePesList(new ArrayList<>());
         getHostList().forEach(host -> getFreePesList().add(host.getNumberOfPes()));

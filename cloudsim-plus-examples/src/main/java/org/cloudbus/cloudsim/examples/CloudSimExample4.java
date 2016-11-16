@@ -10,7 +10,6 @@ package org.cloudbus.cloudsim.examples;
 
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.LinkedList;
 import java.util.List;
 import org.cloudbus.cloudsim.Cloudlet;
 import org.cloudbus.cloudsim.CloudletSimple;
@@ -97,10 +96,15 @@ public class CloudSimExample4 {
             String vmm = "Xen"; //VMM name
 
             //create two VMs
-            Vm vm1 = new VmSimple(++vmid, brokerId, mips, pesNumber, ram, bw, 
-                                  size, vmm, new CloudletSchedulerTimeShared());
-            Vm vm2 = new VmSimple(++vmid, brokerId, mips, pesNumber, ram, bw, 
-                                  size, vmm, new CloudletSchedulerTimeShared());
+            Vm vm1 = new VmSimple(++vmid, mips, pesNumber)
+                .setRam(ram).setBw(bw).setSize(size)
+                .setCloudletScheduler(new CloudletSchedulerTimeShared())
+                .setBroker(broker);
+
+            Vm vm2 = new VmSimple(++vmid, mips, pesNumber)
+                .setRam(ram).setBw(bw).setSize(size)
+                .setCloudletScheduler(new CloudletSchedulerTimeShared())
+                .setBroker(broker);
 
             //add the VMs to the vmList
             vmlist.add(vm1);
@@ -113,24 +117,24 @@ public class CloudSimExample4 {
             cloudletList = new ArrayList<>();
 
             //Cloudlet properties
-            int id = 0;
+            int id = -1;
             long length = 40000;
             long fileSize = 300;
             long outputSize = 300;
             UtilizationModel utilizationModel = new UtilizationModelFull();
 
-            Cloudlet cloudlet1 = 
-                    new CloudletSimple(id, length, pesNumber, 
-                        fileSize, outputSize, 
-                        utilizationModel, utilizationModel, utilizationModel);
-            cloudlet1.setUserId(brokerId);
+            Cloudlet cloudlet1 = new CloudletSimple(++id, length, pesNumber)
+                .setCloudletFileSize(fileSize)
+                .setCloudletOutputSize(outputSize)
+                .setUtilizationModel(utilizationModel)
+                .setBroker(broker);
 
-            id++;
-            Cloudlet cloudlet2 = 
-                    new CloudletSimple(id, length, pesNumber, 
-                        fileSize, outputSize, 
-                        utilizationModel, utilizationModel, utilizationModel);
-            cloudlet2.setUserId(brokerId);
+            Cloudlet cloudlet2 = new CloudletSimple(++id, length, pesNumber)
+                .setCloudletFileSize(fileSize)
+                .setCloudletOutputSize(outputSize)
+                .setUtilizationModel(utilizationModel)
+                .setBroker(broker)
+                .setVmId(vmid);
 
             //add the cloudlets to the list
             cloudletList.add(cloudlet1);
@@ -197,21 +201,20 @@ public class CloudSimExample4 {
         //    properties of a data center: architecture, OS, list of
         //    Machines, allocation policy: time- or space-shared, time zone
         //    and its price (G$/Pe time unit).
-        String arch = "x86";      // system architecture
-        String os = "Linux";          // operating system
-        String vmm = "Xen";
-        double time_zone = 10.0;         // time zone this resource located
         double cost = 3.0;              // the cost of using processing in this resource
         double costPerMem = 0.05;		// the cost of using memory in this resource
         double costPerStorage = 0.001;	// the cost of using storage in this resource
         double costPerBw = 0.0;			// the cost of using bw in this resource
-        LinkedList<FileStorage> storageList = new LinkedList<>();	//we are not adding SAN devices by now
 
-        DatacenterCharacteristics characteristics = new DatacenterCharacteristicsSimple(
-                arch, os, vmm, hostList, time_zone, cost, costPerMem, costPerStorage, costPerBw);
+        DatacenterCharacteristics characteristics =
+            new DatacenterCharacteristicsSimple(hostList)
+                .setCostPerSecond(cost)
+                .setCostPerMem(costPerMem)
+                .setCostPerStorage(costPerStorage)
+                .setCostPerBw(costPerBw);
 
         // 6. Finally, we need to create a DatacenterSimple object.
-        return new DatacenterSimple(name, characteristics, new VmAllocationPolicySimple(hostList), storageList, 0);
+        return new DatacenterSimple(name, characteristics, new VmAllocationPolicySimple(hostList));
     }
 
     //We strongly encourage users to develop their own broker policies, to submit vms and cloudlets according

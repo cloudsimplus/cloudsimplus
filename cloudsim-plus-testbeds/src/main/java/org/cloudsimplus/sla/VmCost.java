@@ -21,10 +21,6 @@ public class VmCost {
         this.vm = vm;
     }
 
-    public VmCost() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
-
     /**
      * @return the vm
      */
@@ -35,47 +31,50 @@ public class VmCost {
     /**
      * Return the cost of memory
      *
-     * @return costMemory
+     * @return getVmMemoryCost
      */
-    public double costMemory() {
-        return (datacenter.getCharacteristics().getCostPerMem() * getVm().getRam());
+    public double getVmMemoryCost() {
+        return (datacenter.getCharacteristics().getCostPerMem() * vm.getRam());
     }
 
     /**
      * Return the cost of BW
      *
-     * @return costBw
+     * @return getVmBwCost
      */
-    public double costBw() {
-        return datacenter.getCharacteristics().getCostPerBw() * getVm().getBw();
+    public double getVmBwCost() {
+        return datacenter.getCharacteristics().getCostPerBw() * vm.getBw();
     }
 
     /**
-     * Return the cost of processing
+     * Return the cost of processing for a given host
      *
-     * @return costProcessing
+     * @return getVmProcessingCost
      */
-    public double costProcessing() {
-        return datacenter.getCharacteristics().getCostPerMi() * getVm().getMips() * getVm().getNumberOfPes();
+    public double getVmProcessingCost() {
+        double hostMips = vm.getHost().getPeList().stream().findFirst().map(pe -> pe.getMips()).orElse(0);
+        double costPerMI = (hostMips > 0 ? datacenter.getCharacteristics().getCostPerSecond()/hostMips : 0);
+        
+        return costPerMI * getVm().getMips() * getVm().getNumberOfPes();
     }
 
     /**
      * Return the cost of storage
      *
-     * @return costStorage
+     * @return getVmStorageCost
      */
-    public double costStorage() {
-        return datacenter.getCharacteristics().getCostPerStorage() * getVm().getSize();
+    public double getVmStorageCost() {
+        return datacenter.getCharacteristics().getCostPerStorage() * vm.getSize();
     }
 
     /**
-     * Sum of costs of a vm
+     * Gets the total cost of a vm,
+     * that includes the processing, bandwidth, memory and storage cost.
      *
      * @return
      */
-    public double sumCostOfaVm() {
-        return costBw() + costMemory() + costProcessing() + costStorage();
-
+    public double getVmTotalCost() {
+        return getVmProcessingCost() + getVmStorageCost() + getVmMemoryCost() + getVmBwCost();
     }
 
     /**

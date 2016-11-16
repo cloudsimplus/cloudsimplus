@@ -78,15 +78,14 @@ public class ExampleCreateCloudletRandomly {
     /**
      * Create Vms
      *
-     * @param userId
+     * @param broker
      * @param vms
      * @return list de vms
      */
-    private List<Vm> createVM(int userId, int vms) {
+    private List<Vm> createVM(DatacenterBroker broker, int vms) {
         //Creates a container to store VMs. This list is passed to the broker later
-        List<Vm> list = new LinkedList<>();
+        List<Vm> list = new ArrayList<>(vms);
         //VM Parameters
-        int vmid = 0;
         long size = 10000; //image size (MB)
         int ram = 512; //vm memory (MB)
         int mips = 1000;
@@ -94,15 +93,12 @@ public class ExampleCreateCloudletRandomly {
         int pesNumber = 1; //number of cpus
         String vmm = "Xen"; //VMM name
 
-        //create VMs
-        Vm[] vm = new Vm[vms];
-
         for (int i = 0; i < vms; i++) {
-            vm[i] = new VmSimple(i, userId, mips, pesNumber, ram, bw, size, vmm, new CloudletSchedulerTimeShared());
-            //for creating a VM with a space shared scheduling policy for cloudlets:
-            //vm[i] = VmSimple(i, userId, mips, pesNumber, ram, bw, size, priority, vmm, new CloudletSchedulerSpaceShared());
-            list.add(vm[i]);
-            vmid++;
+            Vm vm = new VmSimple(i, mips, pesNumber)
+                    .setBroker(broker)
+                    .setRam(ram).setBw(bw).setSize(size)
+                    .setCloudletScheduler(new CloudletSchedulerTimeShared());
+            list.add(vm);
         }
         return list;
     }
@@ -132,8 +128,7 @@ public class ExampleCreateCloudletRandomly {
 
         // Third step: Create Broker
         DatacenterBroker broker = createBroker();
-        int brokerId = broker.getId();
-       
+
         //create cloudlet randomly
         cloudletList = new ArrayList<>();
         long seed = System.currentTimeMillis();
@@ -145,7 +140,7 @@ public class ExampleCreateCloudletRandomly {
         for (int minute = 0; minute < MAX_TIME_FOR_CLOUDLET_ARRIVAL; minute++) {
             if (poisson.haveKEventsHappened()) { //Have k Cloudlets arrived?
                 totalArrivedCustomers += poisson.getK();
-                Cloudlet cloudlet = createCloudlet(cloudletId++, brokerId);
+                Cloudlet cloudlet = createCloudlet(cloudletId++, broker);
                 cloudlet.setSubmissionDelay(minute);
                 cloudletList.add(cloudlet);
 
@@ -154,12 +149,12 @@ public class ExampleCreateCloudletRandomly {
                         poisson.getK(), minute, poisson.probabilityToArriveNextKEvents());
             }
         }
-        
+
         System.out.printf("\n\t%d cloudlets have arrived\n", totalArrivedCustomers);
 
         broker.submitCloudletList(cloudletList);
 
-        vmlist = createVM(brokerId, totalArrivedCustomers);
+        vmlist = createVM(broker, totalArrivedCustomers);
 
         // submit vm list to the broker
         broker.submitVmList(vmlist);
@@ -173,16 +168,17 @@ public class ExampleCreateCloudletRandomly {
 
     }
 
-    private Cloudlet createCloudlet(int cloudletId, int brokerId) {
+    private Cloudlet createCloudlet(int cloudletId, DatacenterBroker broker) {
         long length = 1000;
         long fileSize = 300;
         long outputSize = 300;
         int pesNumber = 1;
         UtilizationModel utilizationModel = new UtilizationModelFull();
-        Cloudlet cloudlet = new CloudletSimple(cloudletId, length, pesNumber, fileSize,
-                outputSize, utilizationModel, utilizationModel,
-                utilizationModel);
-        cloudlet.setUserId(brokerId);
+        Cloudlet cloudlet = new CloudletSimple(cloudletId, length, pesNumber)
+                .setCloudletFileSize(fileSize)
+                .setCloudletOutputSize(outputSize)
+                .setBroker(broker)
+                .setUtilizationModel(utilizationModel);
         return cloudlet;
     }
 
@@ -207,39 +203,33 @@ public class ExampleCreateCloudletRandomly {
         long storage = 100000000; // host storage
         long bw = 3000000;
 
-        hostList.add(new HostSimple(
-                hostId,
-                new ResourceProvisionerSimple<>(new Ram(ram)),
-                new ResourceProvisionerSimple<>(new Bandwidth(bw)),
-                storage,
-                peList,
-                new VmSchedulerTimeShared(peList)
-        )
-        ); // This is our machine
+        Host host = new HostSimple(hostId++, storage, peList)
+                .setRamProvisioner(new ResourceProvisionerSimple(new Ram(ram)))
+                .setBwProvisioner(new ResourceProvisionerSimple(new Bandwidth(bw)))
+                .setVmScheduler(new VmSchedulerTimeShared(peList));
+
+        hostList.add(host);
 
         // 5. Create a DatacenterCharacteristics object that stores the
         // properties of a data center: architecture, OS, list of
         // Machines, allocation policy: time- or space-shared, time zone
         // and its price (G$/Pe time unit).
-        String arch = "x86"; // system architecture
-        String os = "Linux"; // operating system
-        String vmm = "Xen";
-        double time_zone = 10.0; // time zone this resource located
         double cost = 3.0; // the cost of using processing in this resource
         double costPerMem = 0.05; // the cost of using memory in this resource
         double costPerStorage = 0.001; // the cost of using storage in this
         // resource
         double costPerBw = 0.0; // the cost of using bw in this resource
-        LinkedList<FileStorage> storageList = new LinkedList<>(); // we are not adding SAN
-        // devices by now
 
-        DatacenterCharacteristics characteristics = new DatacenterCharacteristicsSimple(
-                arch, os, vmm, hostList, time_zone, cost, costPerMem,
-                costPerStorage, costPerBw);
+        DatacenterCharacteristics characteristics = 
+                new DatacenterCharacteristicsSimple(hostList)
+                .setCostPerSecond(cost)
+                .setCostPerMem(costPerMem)
+                .setCostPerStorage(costPerStorage)
+                .setCostPerBw(costPerBw);
 
-        // 6. Finally, we need to create a PowerDatacenter object.
         return new DatacenterSimple(name, characteristics, 
-                new VmAllocationPolicySimple(hostList), storageList, 0);
+                new VmAllocationPolicySimple(hostList));
+
     }
 
     /**

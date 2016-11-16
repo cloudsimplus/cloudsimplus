@@ -5,7 +5,7 @@ import java.util.List;
 /**
  * An interface to be implemented by Host classes that provide
  * dynamic workloads.
- * 
+ *
  * @author Manoel Campos da Silva Filho
  */
 public interface HostDynamicWorkload extends Host {
@@ -98,5 +98,5 @@ public interface HostDynamicWorkload extends Host {
      *
      * @return the utilization of memory
      */
-    int getUtilizationOfRam();
+    long getUtilizationOfRam();
 }

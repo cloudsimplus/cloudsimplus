@@ -11,7 +11,6 @@ package org.cloudbus.cloudsim.examples;
 import org.cloudsimplus.util.tablebuilder.CloudletsTableBuilderHelper;
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.LinkedList;
 import java.util.List;
 import org.cloudbus.cloudsim.Cloudlet;
 import org.cloudbus.cloudsim.CloudletSimple;
@@ -45,7 +44,7 @@ import org.cloudbus.cloudsim.schedulers.VmSchedulerSpaceShared;
  * Even there is enough resources to run all cloudlets simultaneously,
  * the example delays the creation and execution of some cloudlets inside a VM,
  * simulating the dynamic arrival of cloudlets.
- * It first creates a set of cloudlets without delay and 
+ * It first creates a set of cloudlets without delay and
  * another set of cloudlets all with the same submission delay.
  *
  * @author Manoel Campos da Silva Filho
@@ -54,34 +53,34 @@ public class DynamicCloudletsArrival1 {
     /**
      * Number of Processor Elements (CPU Cores) of each Host.
      */
-    private static final int HOST_PES_NUMBER = 4; 
+    private static final int HOST_PES_NUMBER = 4;
 
     /**
      * Number of Processor Elements (CPU Cores) of each VM and cloudlet.
      */
-    private static final int VM_PES_NUMBER = HOST_PES_NUMBER;    
-    
+    private static final int VM_PES_NUMBER = HOST_PES_NUMBER;
+
     /**
      * Number of Cloudlets to create simultaneously.
      * Other cloudlets will be enqueued.
      */
-    private static final int NUMBER_OF_CLOUDLETS = VM_PES_NUMBER*2; 
-    
+    private static final int NUMBER_OF_CLOUDLETS = VM_PES_NUMBER*2;
+
     /**
      * The Virtual Machine Monitor (VMM) used by hosts to manage VMs.
      */
-    private static final String VMM = "Xen"; 
-    
+    private static final String VMM = "Xen";
+
     private final List<Host> hostList;
     private final List<Vm> vmList;
     private final List<Cloudlet> cloudletList;
     private final DatacenterBroker broker;
     private final Datacenter datacenter;
-    
+
     /**
      * Starts the example execution, calling the class constructor\
      * to build and run the simulation.
-     * 
+     *
      * @param args command line parameters
      */
     public static void main(String[] args) {
@@ -100,7 +99,7 @@ public class DynamicCloudletsArrival1 {
         Calendar calendar = Calendar.getInstance();
         Log.printFormattedLine("Starting %s ...", getClass().getSimpleName());
         CloudSim.init(numberOfUsers, calendar);
-        
+
         this.hostList = new ArrayList<>();
         this.vmList = new ArrayList<>();
         this.cloudletList = new ArrayList<>();
@@ -108,14 +107,14 @@ public class DynamicCloudletsArrival1 {
         this.broker = new DatacenterBrokerSimple("Broker0");
 
         Vm vm = createAndSubmitVmAndCloudlets();
-        
+
         /*Defines a delay of 5 seconds and creates another group of cloudlets
         that will start executing inside a VM only after this delay expires.*/
         double submissionDelay = 5;
         //createAndSubmitCloudlets(vm, submissionDelay);
 
         runSimulationAndPrintResults();
-        Log.printFormattedLine("%s finished!", getClass().getSimpleName());                
+        Log.printFormattedLine("%s finished!", getClass().getSimpleName());
     }
 
     private void runSimulationAndPrintResults() {
@@ -129,11 +128,11 @@ public class DynamicCloudletsArrival1 {
     /**
      * Creates cloudlets and submit them to the broker, applying
      * a submission delay for each one (simulating the dynamic cloudlet arrival).
-     * 
+     *
      * @param vm Vm to run the cloudlets to be created
      * @param submissionDelay the delay the broker has to include when submitting the Cloudlets
-     * 
-     * @see #createCloudlet(int, org.cloudbus.cloudsim.Vm) 
+     *
+     * @see #createCloudlet(int, Vm, DatacenterBroker)
      */
     private void createAndSubmitCloudlets(Vm vm, double submissionDelay) {
         int cloudletId = cloudletList.size();
@@ -148,48 +147,49 @@ public class DynamicCloudletsArrival1 {
     }
 
     /**
-     * Creates one Vm and a group of cloudlets to run inside it, 
+     * Creates one Vm and a group of cloudlets to run inside it,
      * and submit the Vm and its cloudlets to the broker.
      * @return the created VM
-     * 
-     * @see #createVm(int, org.cloudbus.cloudsim.brokers.DatacenterBroker) 
+     *
+     * @see #createVm(int, org.cloudbus.cloudsim.brokers.DatacenterBroker)
      */
     private Vm createAndSubmitVmAndCloudlets() {
         List<Vm> list = new ArrayList<>();
         Vm vm = createVm(this.vmList.size(), broker);
         list.add(vm);
-        
+
         broker.submitVmList(list);
         this.vmList.addAll(list);
-        
+
         //Submit cloudlets without delay
-        createAndSubmitCloudlets(vm, 0);  
+        createAndSubmitCloudlets(vm, 0);
         return vm;
     }
 
     /**
      * Creates a VM with pre-defined configuration.
-     * 
+     *
      * @param id the VM id
      * @param broker the broker that will be submit the VM
      * @return the created VM
-     * 
-     * @see #createVmListener() 
+     *
      */
     private Vm createVm(int id, DatacenterBroker broker) {
         int mips = 1000;
         long size = 10000; // image size (MB)
         int ram = 512; // vm memory (MB)
         long bw = 1000;
-        Vm vm = new VmSimple(
-                id, broker.getId(), mips, VM_PES_NUMBER, ram, bw, size,
-                VMM, new CloudletSchedulerTimeShared());
+        Vm vm = new VmSimple(id, mips, VM_PES_NUMBER)
+            .setRam(ram).setBw(bw).setSize(size)
+            .setCloudletScheduler(new CloudletSchedulerTimeShared())
+            .setBroker(broker);
+
         return vm;
     }
 
     /**
      * Creates a cloudlet with pre-defined configuration.
-     * 
+     *
      * @param id Cloudlet id
      * @param vm vm to run the cloudlet
      * @param broker the broker that will submit the cloudlets
@@ -201,13 +201,13 @@ public class DynamicCloudletsArrival1 {
         long length = 10000; //in number of Million Instructions (MI)
         int pesNumber = 1;
         UtilizationModel utilizationModel = new UtilizationModelFull();
-        Cloudlet cloudlet
-                = new CloudletSimple(id, length, pesNumber, fileSize,
-                        outputSize, utilizationModel, utilizationModel,
-                        utilizationModel);
-        cloudlet.setUserId(broker.getId());
-        cloudlet.setVmId(vm.getId());
-        
+        Cloudlet cloudlet = new CloudletSimple(id, length, pesNumber)
+            .setCloudletFileSize(fileSize)
+            .setCloudletOutputSize(outputSize)
+            .setUtilizationModel(utilizationModel)
+            .setBroker(broker)
+            .setVmId(vm.getId());
+
         return cloudlet;
     }
 
@@ -219,28 +219,26 @@ public class DynamicCloudletsArrival1 {
      */
     private Datacenter createDatacenter(String name) {
         Host host = createHost(0);
-        hostList.add(host); 
+        hostList.add(host);
 
-        String arch = "x86"; // system architecture
-        String os = "Linux"; // operating system
-        double time_zone = 10.0; // time zone this resource located
         double cost = 3.0; // the cost of using processing in this resource
         double costPerMem = 0.05; // the cost of using memory in this resource
         double costPerStorage = 0.001; // the cost of using storage in this datacenter
         double costPerBw = 0.0; // the cost of using bw in this resource
-        LinkedList<FileStorage> storageList = new LinkedList<>(); // we are not adding SAN devices by now
 
-        DatacenterCharacteristics characteristics = new DatacenterCharacteristicsSimple(
-                arch, os, VMM, hostList, time_zone, cost, costPerMem,
-                costPerStorage, costPerBw);
+        DatacenterCharacteristics characteristics =
+            new DatacenterCharacteristicsSimple(hostList)
+                .setCostPerSecond(cost)
+                .setCostPerMem(costPerMem)
+                .setCostPerStorage(costPerStorage)
+                .setCostPerBw(costPerBw);
 
-        return new DatacenterSimple(name, characteristics, 
-                new VmAllocationPolicySimple(hostList), storageList, 0);
+        return new DatacenterSimple(name, characteristics, new VmAllocationPolicySimple(hostList));
     }
 
     /**
      * Creates a host with pre-defined configuration.
-     * 
+     *
      * @param id The Host id
      * @return the created host
      */
@@ -250,13 +248,13 @@ public class DynamicCloudletsArrival1 {
         for(int i = 0; i < HOST_PES_NUMBER; i++){
             peList.add(new PeSimple(i, new PeProvisionerSimple(mips)));
         }
-        int ram = 2048; // host memory (MB)
-        long storage = 1000000; // host storage
-        long bw = 10000;
-        
+        long ram = 2048; // host memory (MB)
+        long storage = 1000000; // host storage (MB)
+        long bw = 10000; //Megabits/s
+
         return new HostSimple(id,
-                new ResourceProvisionerSimple<>(new Ram(ram)),
-                new ResourceProvisionerSimple<>(new Bandwidth(bw)),
+                new ResourceProvisionerSimple(new Ram(ram)),
+                new ResourceProvisionerSimple(new Bandwidth(bw)),
                 storage, peList, new VmSchedulerSpaceShared(peList));
     }
 }

@@ -58,9 +58,9 @@ public class CloudSimExample8 {
      */
     private static List<Vm> vmList;
 
-    private static List<Vm> createVM(int userId, int vms, int idShift) {
+    private static List<Vm> createVM(DatacenterBroker broker, int vms, int idShift) {
         //Creates a container to store VMs. This list is passed to the broker later
-        List<Vm> list = new LinkedList<>();
+        List<Vm> list = new ArrayList<>(vms);
 
         //VM Parameters
         long size = 10000; //image size (MB)
@@ -71,21 +71,20 @@ public class CloudSimExample8 {
         String vmm = "Xen"; //VMM name
 
         //create VMs
-        Vm[] vm = new VmSimple[vms];
-
         for (int i = 0; i < vms; i++) {
-            vm[i] = new VmSimple(idShift + i, userId, mips, 
-                        pesNumber, ram, bw, size, vmm, 
-                        new CloudletSchedulerTimeShared());
-            list.add(vm[i]);
+            Vm vm = new VmSimple(idShift+i, mips, pesNumber)
+                .setRam(ram).setBw(bw).setSize(size)
+                .setCloudletScheduler(new CloudletSchedulerTimeShared())
+                .setBroker(broker);
+            list.add(vm);
         }
 
         return list;
     }
 
-    private static List<Cloudlet> createCloudlet(int userId, int cloudlets, int idShift) {
+    private static List<Cloudlet> createCloudlet(DatacenterBroker broker, int cloudlets, int idShift) {
         // Creates a container to store Cloudlets
-        List<Cloudlet> list = new LinkedList<>();
+        List<Cloudlet> list = new ArrayList<>(cloudlets);
 
         //cloudlet parameters
         long length = 40000;
@@ -94,15 +93,13 @@ public class CloudSimExample8 {
         int pesNumber = 1;
         UtilizationModel utilizationModel = new UtilizationModelFull();
 
-        Cloudlet[] cloudlet = new CloudletSimple[cloudlets];
-
         for (int i = 0; i < cloudlets; i++) {
-            cloudlet[i] = new CloudletSimple(idShift + i, length, pesNumber, 
-                    fileSize, outputSize, utilizationModel, 
-                    utilizationModel, utilizationModel);
-            // setting the owner of these Cloudlets
-            cloudlet[i].setUserId(userId);
-            list.add(cloudlet[i]);
+            Cloudlet cloudlet = new CloudletSimple(idShift + i, length, pesNumber)
+                .setCloudletFileSize(fileSize)
+                .setCloudletOutputSize(outputSize)
+                .setUtilizationModel(utilizationModel)
+                .setBroker(broker);
+            list.add(cloudlet);
         }
 
         return list;
@@ -128,7 +125,7 @@ public class CloudSimExample8 {
             GlobalBroker globalBroker = new GlobalBroker("GlobalBroker");
 
             // Second step: Create Datacenters
-            //Datacenters are the resource providers in CloudSim. 
+            //Datacenters are the resource providers in CloudSim.
             //We need at list one of them to run a CloudSim simulation
             @SuppressWarnings("unused")
             Datacenter datacenter0 = createDatacenter("Datacenter_0");
@@ -137,11 +134,10 @@ public class CloudSimExample8 {
 
             //Third step: Create Broker
             DatacenterBroker broker = createBroker("Broker_0");
-            int brokerId = broker.getId();
 
             //Fourth step: Create VMs and Cloudlets and send them to broker
-            vmList = createVM(brokerId, 5, 0); //creating 5 vms
-            cloudletList = createCloudlet(brokerId, 10, 0); // creating 10 cloudlets
+            vmList = createVM(broker, 5, 0); //creating 5 vms
+            cloudletList = createCloudlet(broker, 10, 0); // creating 10 cloudlets
 
             broker.submitVmList(vmList);
             broker.submitCloudletList(cloudletList);
@@ -177,7 +173,7 @@ public class CloudSimExample8 {
 
         // 3. Create PEs and add these into the list.
         //for a quad-core machine, a list of 4 PEs is required:
-        peList1.add(new PeSimple(0, new PeProvisionerSimple(mips))); 
+        peList1.add(new PeSimple(0, new PeProvisionerSimple(mips)));
         peList1.add(new PeSimple(1, new PeProvisionerSimple(mips)));
         peList1.add(new PeSimple(2, new PeProvisionerSimple(mips)));
         peList1.add(new PeSimple(3, new PeProvisionerSimple(mips)));
@@ -190,9 +186,9 @@ public class CloudSimExample8 {
 
         //4. Create Hosts with its id and list of PEs and add them to the list of machines
         int hostId = -1;
-        int ram = 16384; //host memory (MB)
-        long storage = 1000000; //host storage
-        long bw = 10000;
+        long ram = 16384; //host memory (MB)
+        long storage = 1000000; //host storage (MB)
+        long bw = 10000; //Megabits/s
 
         hostList.add(new HostSimple(
             ++hostId,
@@ -216,22 +212,20 @@ public class CloudSimExample8 {
         //    properties of a data center: architecture, OS, list of
         //    Machines, allocation policy: time- or space-shared, time zone
         //    and its price (G$/Pe time unit).
-        String arch = "x86";      // system architecture
-        String os = "Linux";          // operating system
-        String vmm = "Xen";
-        double time_zone = 10.0;         // time zone this resource located
         double cost = 3.0;              // the cost of using processing in this resource
         double costPerMem = 0.05;		// the cost of using memory in this resource
         double costPerStorage = 0.1;	// the cost of using storage in this resource
         double costPerBw = 0.1;			// the cost of using bw in this resource
-        List<FileStorage> storageList = new LinkedList<>();	//we are not adding SAN devices by now
 
-        DatacenterCharacteristics characteristics = new DatacenterCharacteristicsSimple(
-                arch, os, vmm, hostList, time_zone, cost, costPerMem, costPerStorage, costPerBw);
+        DatacenterCharacteristics characteristics =
+            new DatacenterCharacteristicsSimple(hostList)
+                .setCostPerSecond(cost)
+                .setCostPerMem(costPerMem)
+                .setCostPerStorage(costPerStorage)
+                .setCostPerBw(costPerBw);
 
         // 6. Finally, we need to create a DatacenterSimple object.
-        return new DatacenterSimple(name, characteristics, 
-                    new VmAllocationPolicySimple(hostList), storageList, 0);
+        return new DatacenterSimple(name, characteristics, new VmAllocationPolicySimple(hostList));
     }
 
     //We strongly encourage users to develop their own broker policies, to submit vms and cloudlets according
@@ -258,9 +252,9 @@ public class CloudSimExample8 {
 
                     //Create VMs and Cloudlets and send them to broker
                     //creating 5 vms
-                    setVmList(createVM(getBroker().getId(), 5, 100)); 
+                    setVmList(createVM(getBroker(), 5, 100));
                     // creating 10 cloudlets
-                    setCloudletList(createCloudlet(getBroker().getId(), 10, 100)); 
+                    setCloudletList(createCloudlet(getBroker(), 10, 100));
 
                     broker.submitVmList(getVmList());
                     broker.submitCloudletList(getCloudletList());

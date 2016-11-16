@@ -11,7 +11,8 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
+
+import org.cloudbus.cloudsim.brokers.DatacenterBroker;
 import org.cloudbus.cloudsim.core.CloudSim;
 import org.cloudsimplus.listeners.DatacenterToVmEventInfo;
 import org.cloudsimplus.listeners.EventListener;
@@ -44,26 +45,12 @@ public class VmSimple implements Vm {
      */
     private int id;
 
-    /**
-     * @see #getUserId()
-     */
-    private int userId;
-
-    /**
-     * A Unique Identifier (UID) for the VM, that is compounded by the user id
-     * and VM id.
-     */
-    private String uid;
+    private DatacenterBroker broker;
 
     /**
      * @see #getMips()
      */
     private double mips;
-
-    /**
-     * @see #getCurrentAllocatedMips()
-     */
-    private List<Double> currentAllocatedMips;
 
     /**
      * @see #getNumberOfPes()
@@ -99,7 +86,7 @@ public class VmSimple implements Vm {
      * The map of resources the VM has. Each key is the class of a given VM
      * resource and each value is the resource itself.
      */
-    private final Map<Class<? extends ResourceManageable<? extends Number>>, ResourceManageable<? extends Number>> resources;
+    private final Map<Class<? extends ResourceManageable>, ResourceManageable> resources;
 
     /**
      * @see #getStateHistory()
@@ -107,22 +94,22 @@ public class VmSimple implements Vm {
     private final List<VmStateHistoryEntry> stateHistory = new LinkedList<>();
 
     /**
-     * The VM's storage resource, containing information about capacity and
-     * allocation.
+     * The VM's storage resource that represents the Vm size in disk.
+     * This object contains information about capacity and allocation.
      */
-    private final RawStorage storage;
+    private RawStorage storage;
 
     /**
      * The VM's RAM resource, containing information about capacity and
      * allocation.
      */
-    private final Ram ram;
+    private Ram ram;
 
     /**
      * The VM's Bandwidth (BW) resource, containing information about capacity
      * and allocation (in Megabits/s).
      */
-    private final Bandwidth bw;
+    private Bandwidth bw;
 
     /**
      * @see #getOnHostAllocationListener()
@@ -145,76 +132,80 @@ public class VmSimple implements Vm {
     private EventListener<HostToVmEventInfo> onUpdateVmProcessingListener = EventListener.NULL;
 
     /**
-     * Creates a new Vm object.
+     * Creates a Vm with 1024 MB of RAM, 1000 Megabits/s of Bandwidth and 1024 MB of Storage Size.
+     *
+     * To change these values, use the respective setters. While the Vm {@link #isBeingInstantiated()
+     * is being instantiated}, such values can be changed freely.
      *
      * @param id unique ID of the VM
-     * @param userId ID of the VM's owner
-     * @param mipsCapacity the mips
-     * @param numberOfPes amount of CPUs
-     * @param ramCapacity amount of ram
-     * @param bwCapacity amount of bandwidth to be allocated to the VM (in
-     * Megabits/s)
-     * @param storageCapacity The size the VM image (the amount of storage it
-     * will use, at least initially).
-     * @param vmm virtual machine monitor
-     * @param cloudletScheduler cloudletScheduler policy for cloudlets
-     * scheduling
+     * @param mipsCapacity the mips capacity of each Vm {@link Pe}
+     * @param numberOfPes amount of {@link Pe} (CPU cores)
      *
      * @pre id >= 0
-     * @pre userId >= 0
+     * @pre numberOfPes > 0
+     * @post $none
+     */
+    public VmSimple(int id, double mipsCapacity, int numberOfPes) {
+        this.resources = new HashMap<>();
+        setInMigration(false);
+        setBeingInstantiated(true);
+
+        setId(id);
+        setBroker(DatacenterBroker.NULL);
+        setMips(mipsCapacity);
+        setNumberOfPes(numberOfPes);
+        setRam(new Ram(1024));
+        setBw(new Bandwidth(1000));
+        setStorage(new RawStorage(1024));
+        setVmm("Xen");
+
+        setCloudletScheduler(CloudletScheduler.NULL);
+    }
+
+    /**
+     * Creates a Vm with the given parameters.
+     *
+     * @param id unique ID of the VM
+     * @param broker ID of the VM's owner, that is represented by the id of the {@link DatacenterBroker}
+     * @param mipsCapacity the mips capacity of each Vm {@link Pe}
+     * @param numberOfPes amount of {@link Pe} (CPU cores)
+     * @param ramCapacity amount of ram in Megabytes
+     * @param bwCapacity amount of bandwidth to be allocated to the VM (in Megabits/s)
+     * @param size size the VM image in Megabytes (the amount of storage it will use, at least initially).
+     * @param vmm Virtual Machine Monitor that manages the VM lifecycle
+     * @param cloudletScheduler scheduler that defines the execution policy for Cloudlets inside this Vm
+     *
+     * @deprecated Use the other available constructors with less parameters
+     * and set the remaining ones using the respective setters.
+     * This constructor will be removed in future versions.
+     *
+     * @pre id >= 0
+     * @pre broker >= 0
      * @pre storageCapacity > 0
      * @pre ramCapacity > 0
      * @pre bwCapacity > 0
      * @pre numberOfPes > 0
-     * @pre priority >= 0
      * @pre cloudletScheduler != null
      * @post $none
      */
-    public VmSimple(
+    @Deprecated
+    private VmSimple(
             int id,
-            int userId,
+            DatacenterBroker broker,
             double mipsCapacity,
             int numberOfPes,
-            int ramCapacity,
+            long ramCapacity,
             long bwCapacity,
-            long storageCapacity,
+            long size,
             String vmm,
             CloudletScheduler cloudletScheduler) {
-        resources = new HashMap<>();
-        this.ram = new Ram(ramCapacity);
-        this.bw = new Bandwidth(bwCapacity);
-        this.storage = new RawStorage(storageCapacity);
-        assignVmResources();
-
-        setId(id);
-        setUserId(userId);
-        setUid(getUid(userId, id));
-        setMips(mipsCapacity);
-        setNumberOfPes(numberOfPes);
-        setSize(storageCapacity);
+        this(id, mipsCapacity, numberOfPes);
+        setBroker(broker);
+        setRam(ramCapacity);
+        setBw(bwCapacity);
+        setSize(size);
         setVmm(vmm);
         setCloudletScheduler(cloudletScheduler);
-
-        setInMigration(false);
-        setBeingInstantiated(true);
-
-        setCurrentAllocatedBw(0);
-        setCurrentAllocatedMips(null);
-        setCurrentAllocatedRam(0);
-        setCurrentAllocatedSize(0);
-    }
-
-    /**
-     * Assigns each individual VM resource to the {@link #resources} map in
-     * order to allow getting the information of a given resource in a
-     * generic/parameterized way.
-     *
-     * @see #getResource(java.lang.Class)
-     */
-    private void assignVmResources() {
-        resources.put(Ram.class, ram);
-        resources.put(Bandwidth.class, bw);
-        resources.put(RawStorage.class, storage);
     }
 
     @Override
@@ -243,13 +234,12 @@ public class VmSimple implements Vm {
 
     @Override
     public double getCurrentRequestedTotalMips() {
-        return getCurrentRequestedMips().stream().reduce(0.0, Double::sum);
+        return getCurrentRequestedMips().stream().mapToDouble(m->m).sum();
     }
 
     @Override
     public double getCurrentRequestedMaxMips() {
-        Optional<Double> result = getCurrentRequestedMips().stream().max(Double::compare);
-        return result.orElse(0.0);
+        return getCurrentRequestedMips().stream().mapToDouble(m->m).max().orElse(0.0);
     }
 
     @Override
@@ -262,10 +252,11 @@ public class VmSimple implements Vm {
     }
 
     @Override
-    public int getCurrentRequestedRam() {
+    public long getCurrentRequestedRam() {
         if (isBeingInstantiated()) {
             return getRam();
         }
+
         return (int) (getCloudletScheduler().getCurrentRequestedUtilizationOfRam() * getRam());
     }
 
@@ -298,13 +289,8 @@ public class VmSimple implements Vm {
     }
 
     @Override
-    public final void setUid(String uid) {
-        this.uid = uid;
-    }
-
-    @Override
     public String getUid() {
-        return uid;
+        return getUid(broker.getId(), id);
     }
 
     /**
@@ -327,25 +313,25 @@ public class VmSimple implements Vm {
      * Sets the VM id.
      *
      * @param id the new VM id, that has to be unique for the current
-     * {@link #getUserId() user}
+     * {@link #getBrokerId() user}
      * @todo The uniqueness of VM id for a given user is not being ensured
      */
     protected final void setId(int id) {
         this.id = id;
     }
 
-    /**
-     * Sets the ID of the owner of the VM.
-     *
-     * @param userId the new user id
-     */
-    protected final void setUserId(int userId) {
-        this.userId = userId;
+    @Override
+    public final Vm setBroker(DatacenterBroker broker) {
+        if(broker == null) {
+            broker = DatacenterBroker.NULL;
+        }
+        this.broker = broker;
+        return this;
     }
 
     @Override
-    public int getUserId() {
-        return userId;
+    public int getBrokerId() {
+        return broker.getId();
     }
 
     @Override
@@ -378,13 +364,30 @@ public class VmSimple implements Vm {
     }
 
     @Override
-    public int getRam() {
+    public long getRam() {
         return ram.getCapacity();
     }
 
+    /**
+     * Sets a new {@link Ram} resource for the Vm.
+     * @param ram the Ram resource to set
+     */
+    private void setRam(Ram ram) {
+        if(ram == null){
+            throw new NullPointerException("Vm RAM cannot be null");
+        }
+        this.ram = ram;
+        resources.put(Ram.class, ram);
+    }
+
     @Override
-    public final boolean setRam(int ramCapacity) {
-        return ram.setCapacity(ramCapacity);
+    public final Vm setRam(long ramCapacity) {
+        if(!this.isBeingInstantiated()){
+            throw new UnsupportedOperationException("RAM capacity can just be changed when the Vm is being instantiated.");
+        }
+
+        setRam(new Ram(ramCapacity));
+        return this;
     }
 
     @Override
@@ -392,9 +395,25 @@ public class VmSimple implements Vm {
         return bw.getCapacity();
     }
 
+    /**
+     * Sets a new {@link Bandwidth} resource for the Vm.
+     * @param bw the Bandwidth resource to set
+     */
+    private void setBw(Bandwidth bw){
+        if(bw == null){
+            throw new NullPointerException("Vm Bandwidth cannot be null");
+        }
+        this.bw = bw;
+        resources.put(Bandwidth.class, bw);
+    }
+
     @Override
-    public final boolean setBw(long bwCapacity) {
-        return bw.setCapacity(bwCapacity);
+    public final Vm setBw(long bwCapacity) {
+        if(!this.isBeingInstantiated()){
+            throw new UnsupportedOperationException("Bandwidth capacity can just be changed when the Vm is being instantiated.");
+        }
+        setBw(new Bandwidth(bwCapacity));
+        return this;
     }
 
     @Override
@@ -402,9 +421,25 @@ public class VmSimple implements Vm {
         return storage.getCapacity();
     }
 
+    /**
+     * Sets a new {@link RawStorage} resource for the Vm.
+     * @param storage the RawStorage resource to set
+     */
+    private void setStorage(RawStorage storage){
+        if(storage == null){
+            throw new NullPointerException("Vm Storage cannot be null");
+        }
+        this.storage = storage;
+        resources.put(RawStorage.class, storage);
+    }
+
     @Override
-    public final boolean setSize(long size) {
-        return this.storage.setCapacity(size);
+    public final Vm setSize(long size) {
+        if(!this.isBeingInstantiated()){
+            throw new UnsupportedOperationException("Storage size can just be changed when the Vm is being instantiated.");
+        }
+        setStorage(new RawStorage(size));
+        return this;
     }
 
     @Override
@@ -436,18 +471,19 @@ public class VmSimple implements Vm {
         return cloudletScheduler;
     }
 
-    /**
-     * Sets the Cloudlet scheduler the VM uses to schedule cloudlets execution.
-     *
-     * @param cloudletScheduler the new cloudlet scheduler
-     */
-    protected final void setCloudletScheduler(CloudletScheduler cloudletScheduler) {
+    @Override
+    public final Vm setCloudletScheduler(CloudletScheduler cloudletScheduler) {
+        if(!isBeingInstantiated()){
+            throw new UnsupportedOperationException("CloudletScheduler can just be changed when the Vm is being instantiated.");
+        }
+
         if (cloudletScheduler == null) {
             cloudletScheduler = CloudletScheduler.NULL;
         }
 
         cloudletScheduler.setVm(this);
         this.cloudletScheduler = cloudletScheduler;
+        return this;
     }
 
     @Override
@@ -472,58 +508,14 @@ public class VmSimple implements Vm {
         return storage.getAllocatedResource();
     }
 
-    /**
-     * Sets the current allocated storage size.
-     *
-     * @param currentAllocatedSize the new current allocated size
-     * @todo It has never been used.
-     */
-    protected final void setCurrentAllocatedSize(long currentAllocatedSize) {
-        storage.setAllocatedResource(currentAllocatedSize);
-    }
-
     @Override
-    public int getCurrentAllocatedRam() {
+    public long getCurrentAllocatedRam() {
         return ram.getAllocatedResource();
-    }
-
-    @Override
-    public final void setCurrentAllocatedRam(int newTotalAllocateddRam) {
-        ram.setAllocatedResource(newTotalAllocateddRam);
     }
 
     @Override
     public long getCurrentAllocatedBw() {
         return bw.getAllocatedResource();
-    }
-
-    @Override
-    public final void setCurrentAllocatedBw(long newTotalAllocateddBw) {
-        bw.setAllocatedResource(newTotalAllocateddBw);
-    }
-
-    /**
-     * Gets the current allocated MIPS for each VM's {@link Pe}. This list
-     * represents the amount of MIPS in each VM's Pe that is available to be
-     * allocated for VM's Cloudlets.
-     *
-     * @return the current allocated MIPS
-     * @TODO The method doesn't appear to be used.
-     */
-    @Override
-    public List<Double> getCurrentAllocatedMips() {
-        return currentAllocatedMips;
-    }
-
-    /**
-     * Sets the current allocated MIPS for each VM's PE.
-     *
-     * @param currentAllocatedMips the new current allocated mips
-     * @todo The method doesn't appear to be used.
-     */
-    @Override
-    public final void setCurrentAllocatedMips(List<Double> currentAllocatedMips) {
-        this.currentAllocatedMips = currentAllocatedMips;
     }
 
     @Override
@@ -553,7 +545,6 @@ public class VmSimple implements Vm {
 
     @Override
     public void addStateHistoryEntry(VmStateHistoryEntry entry) {
-
         if (!getStateHistory().isEmpty()) {
             VmStateHistoryEntry previousState = getStateHistory().get(getStateHistory().size() - 1);
             if (previousState.getTime() == entry.getTime()) {
@@ -568,34 +559,34 @@ public class VmSimple implements Vm {
      * @todo The method has to be tested with different instances of
      * AbstractResource, with children in different levels of the class
      * hierarchy.
-     * @param <T>
-     * @param <R>
-     * @param resourceClass
+     * @param resourceClass the class of the resource to be got
      * @return
      */
     @Override
-    public <T extends Number, R extends ResourceManageable<? extends T>>
-            ResourceManageable<T> getResource(Class<R> resourceClass) {
+    public <R extends ResourceManageable>
+            ResourceManageable getResource(Class<R> resourceClass) {
         //reference: http://stackoverflow.com/questions/2284949/how-do-i-declare-a-member-with-multiple-generic-types-that-have-non-trivial-rela
-        return (ResourceManageable<T>) resources.get(resourceClass);
+        return resources.get(resourceClass);
     }
 
     @Override
-    public void setOnHostAllocationListener(EventListener<HostToVmEventInfo> onHostAllocationListener) {
+    public Vm setOnHostAllocationListener(EventListener<HostToVmEventInfo> onHostAllocationListener) {
         if (onHostAllocationListener == null) {
             onHostAllocationListener = EventListener.NULL;
         }
 
         this.onHostAllocationListener = onHostAllocationListener;
+        return this;
     }
 
     @Override
-    public void setOnHostDeallocationListener(EventListener<HostToVmEventInfo> onHostDeallocationListener) {
+    public Vm setOnHostDeallocationListener(EventListener<HostToVmEventInfo> onHostDeallocationListener) {
         if (onHostDeallocationListener == null) {
             onHostDeallocationListener = EventListener.NULL;
         }
 
         this.onHostDeallocationListener = onHostDeallocationListener;
+        return this;
     }
 
     @Override
@@ -610,7 +601,7 @@ public class VmSimple implements Vm {
 
     @Override
     public String toString() {
-        return this.uid;
+        return this.getUid();
     }
 
     @Override
@@ -619,12 +610,13 @@ public class VmSimple implements Vm {
     }
 
     @Override
-    public void setOnVmCreationFailureListener(EventListener<DatacenterToVmEventInfo> onVmCreationFailureListener) {
+    public Vm setOnVmCreationFailureListener(EventListener<DatacenterToVmEventInfo> onVmCreationFailureListener) {
         if (onVmCreationFailureListener == null) {
             onVmCreationFailureListener = EventListener.NULL;
         }
 
         this.onVmCreationFailureListener = onVmCreationFailureListener;
+        return this;
     }
 
     @Override
@@ -633,12 +625,13 @@ public class VmSimple implements Vm {
     }
 
     @Override
-    public void setOnUpdateVmProcessingListener(EventListener<HostToVmEventInfo> onUpdateVmProcessingListener) {
+    public Vm setOnUpdateVmProcessingListener(EventListener<HostToVmEventInfo> onUpdateVmProcessingListener) {
         if (onUpdateVmProcessingListener == null) {
             onUpdateVmProcessingListener = EventListener.NULL;
         }
 
         this.onUpdateVmProcessingListener = onUpdateVmProcessingListener;
+        return this;
     }
 
     /**

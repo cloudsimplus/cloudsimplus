@@ -8,6 +8,7 @@
 
 package org.cloudbus.cloudsim.provisioners;
 
+import org.cloudbus.cloudsim.Vm;
 import org.cloudbus.cloudsim.resources.Ram;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
@@ -24,13 +25,12 @@ import org.cloudbus.cloudsim.schedulers.CloudletScheduler;
  * @since		CloudSim Toolkit 2.0
  */
 public class ResourceProvisionerSimpleTest {
-    private static final Integer ZERO = 0;
-    private static final Integer CAPACITY = 1000;
-    private static final Integer HALF_CAPACITY = CAPACITY / 2;
-    private static final Integer QUARTER_OF_CAPACITY = CAPACITY / 4;
+    private static final long CAPACITY = 1000;
+    private static final long HALF_CAPACITY = CAPACITY / 2;
+    private static final long QUARTER_OF_CAPACITY = CAPACITY / 4;
 
     /** @see #createSimpleProvisioner()  */
-    private ResourceProvisionerSimple<Integer> provisioner;
+    private ResourceProvisionerSimple provisioner;
 
     @Before
     public void setUp() throws Exception {
@@ -41,11 +41,11 @@ public class ResourceProvisionerSimpleTest {
      * Creates a provisioner for any generic resource. It in fact doesn't matter
      * if it is for RAM, CPU, BW or any other possible resource.
      */
-    private ResourceProvisionerSimple<Integer> createSimpleProvisioner() {
+    private ResourceProvisionerSimple createSimpleProvisioner() {
         return new ResourceProvisionerSimple(new Ram(CAPACITY));
     }
 
-    private ResourceProvisionerSimple<Integer> createSimpleProvisioner(ResourceManageable resource) {
+    private ResourceProvisionerSimple createSimpleProvisioner(ResourceManageable resource) {
         return new ResourceProvisionerSimple(resource);
     }
 
@@ -66,27 +66,27 @@ public class ResourceProvisionerSimpleTest {
 
     @Test
     public void testGetTotalAllocatedResource() {
-        ResourceProvisioner<Integer> p = createSimpleProvisioner();
+        ResourceProvisioner p = createSimpleProvisioner();
         assertEquals(p.getCapacity(), p.getAvailableResource());
-        assertEquals(ZERO, p.getTotalAllocatedResource());
+        assertEquals(0, p.getTotalAllocatedResource());
 
         VmSimple vm = createVm(1, CAPACITY);
-        final Integer allocatedResource = HALF_CAPACITY;
+        final long allocatedResource = HALF_CAPACITY;
         p.allocateResourceForVm(vm, allocatedResource);
         assertEquals(allocatedResource, p.getTotalAllocatedResource());
     }
 
     /**
-     * Creates a VM
-     * @param vmId
-     * @param capacity a capacity that will be set to all resources, such as 
-     * CPU, RAM, BW, etc.
-     * @return 
+     * Creates a VM with 1 PE.
+     *
+     * @param vmId id of the VM
+     * @param capacity a capacity that will be set to all resources, such as CPU, RAM, BW, etc.
+     * @return
      */
-    private static VmSimple createVm(final int vmId, Integer capacity) {
-        return new VmSimple(
-                vmId, 1, capacity, 1, capacity, capacity, 
-                capacity, "", CloudletScheduler.NULL);
+    private static VmSimple createVm(final int vmId, long capacity) {
+        VmSimple vm =  new VmSimple(vmId, capacity, 1);
+        vm.setRam(capacity).setBw(capacity).setSize(capacity);
+        return vm;
     }
 
     @Test
@@ -96,11 +96,11 @@ public class ResourceProvisionerSimpleTest {
         assertTrue(provisioner.isSuitableForVm(vm0, HALF_CAPACITY));
         assertTrue(provisioner.isSuitableForVm(vm0, CAPACITY));
         assertFalse(provisioner.isSuitableForVm(vm0, CAPACITY*2));
-        
+
         provisioner.allocateResourceForVm(vm0, HALF_CAPACITY);
         assertTrue(provisioner.isSuitableForVm(vm0, QUARTER_OF_CAPACITY));
     }
-    
+
     @Test
     public void testAllocateResourceForVm() {
         VmSimple vm0 = createVm(0, HALF_CAPACITY);
@@ -120,7 +120,7 @@ public class ResourceProvisionerSimpleTest {
 
         assertTrue(provisioner.isSuitableForVm(vm1, HALF_CAPACITY));
         assertTrue(provisioner.allocateResourceForVm(vm1, HALF_CAPACITY));
-        assertEquals(ZERO, provisioner.getAvailableResource());
+        assertEquals(0, provisioner.getAvailableResource());
     }
 
     @Test
@@ -134,7 +134,7 @@ public class ResourceProvisionerSimpleTest {
 
         assertFalse(provisioner.isSuitableForVm(vm2, CAPACITY));
         assertFalse(provisioner.allocateResourceForVm(vm2, CAPACITY));
-        assertEquals(ZERO, provisioner.getAllocatedResourceForVm(vm2));
+        assertEquals(0, provisioner.getAllocatedResourceForVm(vm2));
 
         assertTrue(provisioner.isSuitableForVm(vm2, QUARTER_OF_CAPACITY));
         assertTrue(provisioner.allocateResourceForVm(vm2, QUARTER_OF_CAPACITY));
@@ -164,7 +164,7 @@ public class ResourceProvisionerSimpleTest {
         assertTrue(provisioner.allocateResourceForVm(vm1, HALF_CAPACITY));
         assertTrue(provisioner.isSuitableForVm(vm2, HALF_CAPACITY));
         assertTrue(provisioner.allocateResourceForVm(vm2, HALF_CAPACITY));
-        assertEquals(ZERO, provisioner.getAvailableResource());
+        assertEquals(0, provisioner.getAvailableResource());
 
         provisioner.deallocateResourceForVm(vm1);
         provisioner.deallocateResourceForVm(vm2);
