@@ -262,7 +262,7 @@ public class CloudletListenersExample2_ResourceUsageAlongTime {
                 .setCostPerBw(costPerBw);
 
         return new DatacenterSimple(
-                name, characteristics,new VmAllocationPolicySimple(hostList))
+                name, characteristics,new VmAllocationPolicySimple())
                 .setSchedulingInterval(DATACENTER_SCHEDULING_INTERVAL);
     }
 
@@ -285,6 +285,6 @@ public class CloudletListenersExample2_ResourceUsageAlongTime {
         return new HostSimple(id, storage, peList)
             .setRamProvisioner(new ResourceProvisionerSimple(new Ram(ram)))
             .setBwProvisioner(new ResourceProvisionerSimple(new Bandwidth(bw)))
-            .setVmScheduler(new VmSchedulerTimeShared(peList));        
+            .setVmScheduler(new VmSchedulerTimeShared(peList));
     }
 }

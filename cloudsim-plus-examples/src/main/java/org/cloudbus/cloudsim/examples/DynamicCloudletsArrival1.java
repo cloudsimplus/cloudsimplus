@@ -232,7 +232,7 @@ public class DynamicCloudletsArrival1 {
                 .setCostPerStorage(costPerStorage)
                 .setCostPerBw(costPerBw);
 
-        return new DatacenterSimple(name, characteristics, new VmAllocationPolicySimple(hostList));
+        return new DatacenterSimple(name, characteristics, new VmAllocationPolicySimple());
     }
 
     /**
@@ -255,6 +255,6 @@ public class DynamicCloudletsArrival1 {
             .setRamProvisioner(new ResourceProvisionerSimple(new Ram(ram)))
             .setBwProvisioner(new ResourceProvisionerSimple(new Bandwidth(bw)))
             .setVmScheduler(new VmSchedulerSpaceShared(peList));
-        
+
     }
 }

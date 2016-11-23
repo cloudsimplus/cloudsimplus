@@ -251,7 +251,7 @@ public class VmListenersExample2 {
                 .setCostPerStorage(costPerStorage)
                 .setCostPerBw(costPerBw);
 
-        return new DatacenterSimple(name, characteristics, new VmAllocationPolicySimple(hostList));
+        return new DatacenterSimple(name, characteristics, new VmAllocationPolicySimple());
     }
 
     /**

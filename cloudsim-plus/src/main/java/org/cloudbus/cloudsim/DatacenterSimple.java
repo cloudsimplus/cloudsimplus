@@ -76,7 +76,8 @@ public class DatacenterSimple extends SimEntity implements Datacenter {
     public DatacenterSimple(
         String name,
         DatacenterCharacteristics characteristics,
-        VmAllocationPolicy vmAllocationPolicy) {
+        VmAllocationPolicy vmAllocationPolicy)
+    {
         super(name);
 
         // If this resource doesn't have any PEs then it isn't useful at all
@@ -87,7 +88,6 @@ public class DatacenterSimple extends SimEntity implements Datacenter {
 
         // DatacenterCharacteristics stores the id of the Datacenter
         setCharacteristics(characteristics);
-
         setVmAllocationPolicy(vmAllocationPolicy);
         setLastProcessTime(0.0);
         setSchedulingInterval(0);
@@ -1196,8 +1196,14 @@ public class DatacenterSimple extends SimEntity implements Datacenter {
      *
      * @param vmAllocationPolicy the new vm allocation policy
      */
-    protected final void setVmAllocationPolicy(VmAllocationPolicy vmAllocationPolicy) {
+    protected final Datacenter setVmAllocationPolicy(VmAllocationPolicy vmAllocationPolicy) {
+        if(vmAllocationPolicy == null){
+            vmAllocationPolicy = VmAllocationPolicy.NULL;
+        }
+
+        vmAllocationPolicy.setDatacenter(this);
         this.vmAllocationPolicy = vmAllocationPolicy;
+        return this;
     }
 
     /**

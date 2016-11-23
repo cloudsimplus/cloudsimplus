@@ -15,6 +15,18 @@ import org.cloudbus.cloudsim.Vm;
  * @author Manoel Campos da Silva Filho
  */
 public interface VmAllocationPolicy {
+    /**
+     * Gets the {@link Datacenter} associated to the Allocation Policy.
+     * @return
+     */
+    Datacenter getDatacenter();
+
+    /**
+     * Sets the Datacenter associated to the Allocation Policy
+     * @param datacenter the Datacenter to set
+     * @return
+     */
+    void setDatacenter(Datacenter datacenter);
 
     /**
      * Allocates a host for a given VM.
@@ -94,6 +106,8 @@ public interface VmAllocationPolicy {
      * objects.
      */
     VmAllocationPolicy NULL = new VmAllocationPolicy() {
+        @Override public Datacenter getDatacenter() { return Datacenter.NULL; }
+        @Override public void setDatacenter(Datacenter datacenter) {}
         @Override public boolean allocateHostForVm(Vm vm){ return false; }
         @Override public boolean allocateHostForVm(Vm vm, Host host) { return false; }
         @Override public void deallocateHostForVm(Vm vm){}

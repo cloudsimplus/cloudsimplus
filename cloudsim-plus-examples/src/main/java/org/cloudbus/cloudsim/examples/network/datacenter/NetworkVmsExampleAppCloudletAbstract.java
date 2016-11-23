@@ -190,7 +190,7 @@ public abstract class NetworkVmsExampleAppCloudletAbstract {
         // 6. Finally, we need to create a NetworkDatacenter object.
         NetworkDatacenter newDatacenter =
                 new NetworkDatacenter(
-                        name, characteristics, new NetworkVmAllocationPolicy(hostList));
+                        name, characteristics, new NetworkVmAllocationPolicy());
         newDatacenter.setSchedulingInterval(5);
 
         createNetwork(newDatacenter);

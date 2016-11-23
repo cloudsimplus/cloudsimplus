@@ -33,11 +33,11 @@ import org.cloudbus.cloudsim.resources.Ram;
 /**
  * A simple example showing how to create a datacenter with two hosts,
  * with one Vm in each one, and run 1 cloudlet in each Vm.
- * At the end, it shows the total resource utilization of hosts
- * into a datacenter (considering the usage of their VMs).
+ * At the end, it shows the total CPU utilization of hosts
+ * into a datacenter.
  *
- * Cloudlets run in VMs with different MIPS requirements. The cloudlets will
- * take different time to complete the execution depending on the requested VM
+ * Cloudlets run in VMs with different MIPS requirements. They will
+ * take different times to complete the execution depending on the requested VM
  * performance.
  *
  * @author Manoel Campos da Silva Filho
@@ -234,7 +234,7 @@ public class HostsCpuUsageExample {
                 .setCostPerBw(costPerBw);
 
         // 6. Finally, we need to create a DatacenterSimple object.
-        return new DatacenterSimple(name, characteristics, new VmAllocationPolicySimple(hostList));
+        return new DatacenterSimple(name, characteristics, new VmAllocationPolicySimple());
     }
 
     //We strongly encourage users to develop their own broker policies, to submit vms and cloudlets according

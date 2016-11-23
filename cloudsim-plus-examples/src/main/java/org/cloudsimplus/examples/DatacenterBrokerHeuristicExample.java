@@ -206,7 +206,7 @@ public class DatacenterBrokerHeuristicExample {
                 .setCostPerStorage(costPerStorage)
                 .setCostPerBw(costPerBw);
 
-        return new DatacenterSimple(name, characteristics, new VmAllocationPolicySimple(hostList));
+        return new DatacenterSimple(name, characteristics, new VmAllocationPolicySimple());
     }
 
     private Host createHost() {
@@ -224,7 +224,7 @@ public class DatacenterBrokerHeuristicExample {
        return new HostSimple(numberOfCreatedHosts++, storage, peList)
             .setRamProvisioner(new ResourceProvisionerSimple(new Ram(ram)))
             .setBwProvisioner(new ResourceProvisionerSimple(new Bandwidth(bw)))
-            .setVmScheduler(new VmSchedulerTimeShared(peList));        
+            .setVmScheduler(new VmSchedulerTimeShared(peList));
     }
 
     private Vm createVm(DatacenterBroker broker, int pesNumber) {

@@ -34,10 +34,10 @@ public class NonPowerVmAllocationPolicyMigrationWorstFitStaticThreshold extends 
     private double underUtilizationThreshold = 0.35;
 
     public NonPowerVmAllocationPolicyMigrationWorstFitStaticThreshold(
-            List<PowerHost> hostList,
             PowerVmSelectionPolicy vmSelectionPolicy,
-            double utilizationThreshold) {
-        super(hostList, vmSelectionPolicy, utilizationThreshold);
+            double utilizationThreshold)
+    {
+        super(vmSelectionPolicy, utilizationThreshold);
     }
 
     /**

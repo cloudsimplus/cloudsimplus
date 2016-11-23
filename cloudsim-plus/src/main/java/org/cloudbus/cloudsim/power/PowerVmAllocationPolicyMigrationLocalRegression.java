@@ -56,9 +56,8 @@ public class PowerVmAllocationPolicyMigrationLocalRegression extends PowerVmAllo
 	private PowerVmAllocationPolicyMigration fallbackVmAllocationPolicy;
 
 	/**
-	 * Instantiates a new PowerVmAllocationPolicyMigrationLocalRegression.
+	 * Creates a PowerVmAllocationPolicyMigrationLocalRegression.
 	 *
-	 * @param hostList the host list
 	 * @param vmSelectionPolicy the vm selection policy
          * @param safetyParameter
 	 * @param schedulingInterval the scheduling interval
@@ -66,34 +65,31 @@ public class PowerVmAllocationPolicyMigrationLocalRegression extends PowerVmAllo
 	 * @param utilizationThreshold the utilization threshold
 	 */
 	public PowerVmAllocationPolicyMigrationLocalRegression(
-			List<PowerHost> hostList,
 			PowerVmSelectionPolicy vmSelectionPolicy,
 			double safetyParameter,
 			double schedulingInterval,
 			PowerVmAllocationPolicyMigration fallbackVmAllocationPolicy,
 			double utilizationThreshold) {
-		super(hostList, vmSelectionPolicy);
+		super(vmSelectionPolicy);
 		setSafetyParameter(safetyParameter);
 		setSchedulingInterval(schedulingInterval);
 		setFallbackVmAllocationPolicy(fallbackVmAllocationPolicy);
 	}
 
 	/**
-	 * Instantiates a new PowerVmAllocationPolicyMigrationLocalRegression.
+	 * Creates a PowerVmAllocationPolicyMigrationLocalRegression.
 	 *
-	 * @param hostList the host list
 	 * @param vmSelectionPolicy the vm selection policy
-         * @param safetyParameter
+     * @param safetyParameter
 	 * @param schedulingInterval the scheduling interval
 	 * @param fallbackVmAllocationPolicy the fallback vm allocation policy
 	 */
 	public PowerVmAllocationPolicyMigrationLocalRegression(
-			List<PowerHost> hostList,
 			PowerVmSelectionPolicy vmSelectionPolicy,
 			double safetyParameter,
 			double schedulingInterval,
 			PowerVmAllocationPolicyMigration fallbackVmAllocationPolicy) {
-		super(hostList, vmSelectionPolicy);
+		super(vmSelectionPolicy);
 		setSafetyParameter(safetyParameter);
 		setSchedulingInterval(schedulingInterval);
 		setFallbackVmAllocationPolicy(fallbackVmAllocationPolicy);

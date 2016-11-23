@@ -34,32 +34,13 @@ import org.cloudbus.cloudsim.core.CloudSim;
 public final class NetworkVmAllocationPolicy extends VmAllocationPolicyAbstract {
 
     /**
-     * The used PEs map, where each key is a VM id and each value is the number
-     * of required PEs the VM is using.
-     */
-    private Map<String, Integer> usedPes;
-
-    /**
-     * The free pes.
-     */
-    private List<Integer> freePes;
-
-    /**
-     * Creates a new VmAllocationPolicySimple object.
-     *
-     * @param list list Machines available in a {@link Datacenter}
+     * Creates a VmAllocationPolicySimple.
      *
      * @pre $none
      * @post $none
      */
-    public NetworkVmAllocationPolicy(List<Host> list) {
-        super(list);
-
-        setFreePes(new ArrayList<>());
-        getHostList().forEach(host -> getFreePes().add(host.getNumberOfPes()));
-
-        setVmTable(new HashMap<>());
-        setUsedPes(new HashMap<>());
+    public NetworkVmAllocationPolicy() {
+        super();
     }
 
     @Override
@@ -68,7 +49,7 @@ public final class NetworkVmAllocationPolicy extends VmAllocationPolicyAbstract 
         boolean result = false;
         int tries = 0;
         List<Integer> freePesTmp = new ArrayList<>();
-        for (Integer freePesNumber : getFreePes()) {
+        for (Integer freePesNumber : getFreePesList()) {
             freePesTmp.add(freePesNumber);
         }
 
@@ -91,14 +72,14 @@ public final class NetworkVmAllocationPolicy extends VmAllocationPolicyAbstract 
                 if (result) { // if vm were succesfully created in the host
                     getVmTable().put(vm.getUid(), host);
                     getUsedPes().put(vm.getUid(), requiredPes);
-                    getFreePes().set(idx, getFreePes().get(idx) - requiredPes);
+                    getFreePesList().set(idx, getFreePesList().get(idx) - requiredPes);
                     result = true;
                     break;
                 } else {
                     freePesTmp.set(idx, Integer.MIN_VALUE);
                 }
                 tries++;
-            } while (!result && tries < getFreePes().size());
+            } while (!result && tries < getFreePesList().size());
 
         }
 
@@ -143,7 +124,7 @@ public final class NetworkVmAllocationPolicy extends VmAllocationPolicyAbstract 
         int pes = getUsedPes().remove(vm.getUid());
         if (host != null) {
             host.vmDestroy(vm);
-            getFreePes().set(idx, getFreePes().get(idx) + pes);
+            getFreePesList().set(idx, getFreePesList().get(idx) + pes);
         }
     }
 
@@ -155,42 +136,6 @@ public final class NetworkVmAllocationPolicy extends VmAllocationPolicyAbstract 
     @Override
     public Host getHost(int vmId, int userId) {
         return getVmTable().get(VmSimple.getUid(userId, vmId));
-    }
-
-    /**
-     * Gets the used pes.
-     *
-     * @return the used pes
-     */
-    protected Map<String, Integer> getUsedPes() {
-        return usedPes;
-    }
-
-    /**
-     * Sets the used pes.
-     *
-     * @param usedPes the used pes
-     */
-    protected void setUsedPes(Map<String, Integer> usedPes) {
-        this.usedPes = usedPes;
-    }
-
-    /**
-     * Gets the free pes.
-     *
-     * @return the free pes
-     */
-    protected final List<Integer> getFreePes() {
-        return freePes;
-    }
-
-    /**
-     * Sets the free pes.
-     *
-     * @param freePes the new free pes
-     */
-    protected final void setFreePes(List<Integer> freePes) {
-        this.freePes = freePes;
     }
 
     /**
@@ -213,7 +158,7 @@ public final class NetworkVmAllocationPolicy extends VmAllocationPolicyAbstract 
             int requiredPes = vm.getNumberOfPes();
             int idx = getHostList().indexOf(host);
             getUsedPes().put(vm.getUid(), requiredPes);
-            getFreePes().set(idx, getFreePes().get(idx) - requiredPes);
+            getFreePesList().set(idx, getFreePesList().get(idx) - requiredPes);
 
             Log.printFormattedLine(
                     "%.2f: VM #" + vm.getId() + " has been allocated to the host #" + host.getId(),

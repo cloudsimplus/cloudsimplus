@@ -17,17 +17,17 @@ import org.cloudbus.cloudsim.util.MathUtil;
 /**
  * A VM allocation policy that uses Inter Quartile Range (IQR)  to compute
  * a dynamic threshold in order to detect host over utilization.
- * 
+ *
  * <p>If you are using any algorithms, policies or workload included in the power package please cite
  * the following paper:</p>
- * 
+ *
  * <ul>
  * <li><a href="http://dx.doi.org/10.1002/cpe.1867">Anton Beloglazov, and Rajkumar Buyya, "Optimal Online Deterministic Algorithms and Adaptive
  * Heuristics for Energy and Performance Efficient Dynamic Consolidation of Virtual Machines in
  * Cloud Data Centers", Concurrency and Computation: Practice and Experience (CCPE), Volume 24,
  * Issue 13, Pages: 1397-1420, John Wiley & Sons, Ltd, New York, USA, 2012</a>
  * </ul>
- * 
+ *
  * @author Anton Beloglazov
  * @since CloudSim Toolkit 3.0
  */
@@ -35,16 +35,16 @@ public class PowerVmAllocationPolicyMigrationInterQuartileRange extends
 		PowerVmAllocationPolicyMigrationAbstract {
 
 	/** The safety parameter in percentage (at scale from 0 to 1).
-         * It is a tuning parameter used by the allocation policy to 
+         * It is a tuning parameter used by the allocation policy to
          * estimate host utilization (load). The host overload detection is based
          * on this estimation.
          * This parameter is used to tune the estimation
-         * to up or down. If the parameter is set as 1.2, for instance, 
+         * to up or down. If the parameter is set as 1.2, for instance,
          * the estimated host utilization is increased in 20%, giving
          * the host a safety margin of 20% to grow its usage in order to try
          * avoiding SLA violations. As this parameter decreases, more
          * aggressive will be the consolidation (packing) of VMs inside a host,
-         * what may lead to optimization of resource usage, but rising of SLA 
+         * what may lead to optimization of resource usage, but rising of SLA
          * violations. Thus, the parameter has to be set in order to balance
          * such factors.
          */
@@ -56,46 +56,42 @@ public class PowerVmAllocationPolicyMigrationInterQuartileRange extends
 	private PowerVmAllocationPolicyMigration fallbackVmAllocationPolicy;
 
 	/**
-	 * Instantiates a new PowerVmAllocationPolicyMigrationInterQuartileRange.
-	 * 
-	 * @param hostList the host list
-	 * @param vmSelectionPolicy the vm selection policy
+	 * Creates a PowerVmAllocationPolicyMigrationInterQuartileRange.
+	 *
+	 * @param vmSelectionPolicy the policy that defines how VMs are selected for migration
 	 * @param safetyParameter the safety parameter
-         * @param fallbackVmAllocationPolicy
+     * @param fallbackVmAllocationPolicy
 	 * @param utilizationThreshold the utilization threshold
 	 */
 	public PowerVmAllocationPolicyMigrationInterQuartileRange(
-			List<PowerHost> hostList,
 			PowerVmSelectionPolicy vmSelectionPolicy,
 			double safetyParameter,
 			PowerVmAllocationPolicyMigrationAbstract fallbackVmAllocationPolicy,
 			double utilizationThreshold) {
-		super(hostList, vmSelectionPolicy);
+		super(vmSelectionPolicy);
 		setSafetyParameter(safetyParameter);
 		setFallbackVmAllocationPolicy(fallbackVmAllocationPolicy);
 	}
 
 	/**
-	 * Instantiates a new PowerVmAllocationPolicyMigrationInterQuartileRange.
-	 * 
-	 * @param hostList the host list
+	 * Creates a PowerVmAllocationPolicyMigrationInterQuartileRange.
+	 *
 	 * @param vmSelectionPolicy the vm selection policy
 	 * @param safetyParameter the safety parameter
-         * @param fallbackVmAllocationPolicy
+     * @param fallbackVmAllocationPolicy
 	 */
 	public PowerVmAllocationPolicyMigrationInterQuartileRange(
-			List<PowerHost> hostList,
 			PowerVmSelectionPolicy vmSelectionPolicy,
 			double safetyParameter,
 			PowerVmAllocationPolicyMigration fallbackVmAllocationPolicy) {
-		super(hostList, vmSelectionPolicy);
+		super(vmSelectionPolicy);
 		setSafetyParameter(safetyParameter);
 		setFallbackVmAllocationPolicy(fallbackVmAllocationPolicy);
 	}
 
 	/**
 	 * Checks if the host is over utilized, based on CPU utilization.
-	 * 
+	 *
 	 * @param host the host
 	 * @return true, if the host is over utilized; false otherwise
 	 */
@@ -119,7 +115,7 @@ public class PowerVmAllocationPolicyMigrationInterQuartileRange extends
 
 	/**
 	 * Gets the host CPU utilization percentage IQR.
-	 * 
+	 *
 	 * @param host the host
 	 * @return the host CPU utilization percentage IQR
 	 */
@@ -133,7 +129,7 @@ public class PowerVmAllocationPolicyMigrationInterQuartileRange extends
 
 	/**
 	 * Sets the safety parameter.
-	 * 
+	 *
 	 * @param safetyParameter the new safety parameter
 	 */
 	protected final void setSafetyParameter(double safetyParameter) {
@@ -147,7 +143,7 @@ public class PowerVmAllocationPolicyMigrationInterQuartileRange extends
 
 	/**
 	 * Gets the safety parameter.
-	 * 
+	 *
 	 * @return the safety parameter
 	 */
 	protected double getSafetyParameter() {
@@ -156,7 +152,7 @@ public class PowerVmAllocationPolicyMigrationInterQuartileRange extends
 
 	/**
 	 * Sets the fallback vm allocation policy.
-	 * 
+	 *
 	 * @param fallbackVmAllocationPolicy the new fallback vm allocation policy
 	 */
 	public final void setFallbackVmAllocationPolicy(
@@ -166,7 +162,7 @@ public class PowerVmAllocationPolicyMigrationInterQuartileRange extends
 
 	/**
 	 * Gets the fallback vm allocation policy.
-	 * 
+	 *
 	 * @return the fallback vm allocation policy
 	 */
 	public PowerVmAllocationPolicyMigration getFallbackVmAllocationPolicy() {

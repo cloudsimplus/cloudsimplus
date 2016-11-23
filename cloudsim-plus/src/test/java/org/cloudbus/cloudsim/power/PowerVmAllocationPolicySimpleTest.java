@@ -13,14 +13,8 @@ import static org.junit.Assert.*;
 public class PowerVmAllocationPolicySimpleTest {
 
     @Test(expected = IllegalArgumentException.class)
-    public void testNew_emptyHostList() {
-        List<PowerHost> hosts = new ArrayList<>();
-        new PowerVmAllocationPolicySimple(hosts);
-    }
-
-    @Test(expected = IllegalArgumentException.class)
     public void testNew_nullHostList() {
-        new PowerVmAllocationPolicySimple(null);
+        new PowerVmAllocationPolicySimple();
     }
 
     @Test
@@ -28,15 +22,15 @@ public class PowerVmAllocationPolicySimpleTest {
         System.out.println("optimizeAllocation");
         List<PowerHost> hosts = new ArrayList<>();
         hosts.add(PowerHost.NULL);
-        PowerVmAllocationPolicySimple instance = new PowerVmAllocationPolicySimple(hosts);
-        
+        PowerVmAllocationPolicySimple instance = new PowerVmAllocationPolicySimple();
+
         assertNotNull(instance.optimizeAllocation(null));
-        
+
         List<Vm> vmList = new ArrayList<>();
         assertNotNull(instance.optimizeAllocation(vmList));
         assertTrue(instance.optimizeAllocation(vmList).isEmpty());
         vmList.add(Vm.NULL);
         assertTrue(instance.optimizeAllocation(vmList).isEmpty());
     }
-    
+
 }

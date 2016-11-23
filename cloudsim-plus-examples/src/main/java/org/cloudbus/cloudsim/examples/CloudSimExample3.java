@@ -191,7 +191,7 @@ public class CloudSimExample3 {
             .setRamProvisioner(new ResourceProvisionerSimple(new Ram(ram)))
             .setBwProvisioner(new ResourceProvisionerSimple(new Bandwidth(bw)))
             .setVmScheduler(new VmSchedulerTimeShared(peList));
-        hostList.add(host);        
+        hostList.add(host);
 
         //create another machine in the Data center
         List<Pe> peList2 = new ArrayList<>();
@@ -201,7 +201,7 @@ public class CloudSimExample3 {
             .setRamProvisioner(new ResourceProvisionerSimple(new Ram(ram)))
             .setBwProvisioner(new ResourceProvisionerSimple(new Bandwidth(bw)))
             .setVmScheduler(new VmSchedulerTimeShared(peList2));
-        hostList.add(host);        
+        hostList.add(host);
 
         // 5. Create a DatacenterCharacteristics object that stores the
         //    properties of a data center: architecture, OS, list of
@@ -220,7 +220,7 @@ public class CloudSimExample3 {
                 .setCostPerBw(costPerBw);
 
         // 6. Finally, we need to create a DatacenterSimple object.
-        return new DatacenterSimple(name, characteristics, new VmAllocationPolicySimple(hostList));
+        return new DatacenterSimple(name, characteristics, new VmAllocationPolicySimple());
     }
 
     //We strongly encourage users to develop their own broker policies, to submit vms and cloudlets according

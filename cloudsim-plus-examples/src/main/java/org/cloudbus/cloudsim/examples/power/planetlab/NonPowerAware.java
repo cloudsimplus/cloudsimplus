@@ -18,19 +18,19 @@ import org.cloudbus.cloudsim.power.PowerVmAllocationPolicySimple;
 /**
  * A simulation of a heterogeneous non-power aware data center: all hosts consume maximum power all
  * the time.
- * 
+ *
  * This example uses a real PlanetLab workload: 20110303.
- * 
+ *
  * The remaining configuration parameters are in the Constants and PlanetLabConstants classes.
- * 
+ *
  * If you are using any algorithms, policies or workload included in the power package please cite
  * the following paper:
- * 
+ *
  * Anton Beloglazov, and Rajkumar Buyya, "Optimal Online Deterministic Algorithms and Adaptive
  * Heuristics for Energy and Performance Efficient Dynamic Consolidation of Virtual Machines in
  * Cloud Data Centers", Concurrency and Computation: Practice and Experience (CCPE), Volume 24,
  * Issue 13, Pages: 1397-1420, John Wiley & Sons, Ltd, New York, USA, 2012
- * 
+ *
  * @author Anton Beloglazov
  * @since Jan 5, 2012
  */
@@ -38,7 +38,7 @@ public class NonPowerAware {
 
 	/**
 	 * The main method.
-	 * 
+	 *
 	 * @param args the arguments
 	 * @throws IOException Signals that an I/O exception has occurred.
 	 */
@@ -64,7 +64,7 @@ public class NonPowerAware {
 					"Datacenter",
 					PowerDatacenterNonPowerAware.class,
 					hostList,
-					new PowerVmAllocationPolicySimple(hostList));
+					new PowerVmAllocationPolicySimple());
 
 			datacenter.setDisableMigrations(true);
 
