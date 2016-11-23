@@ -228,7 +228,7 @@ public class ExampleCreateCloudletRandomly {
                 .setCostPerBw(costPerBw);
 
         return new DatacenterSimple(name, characteristics, 
-                new VmAllocationPolicySimple(hostList));
+                new VmAllocationPolicySimple());
 
     }
 

@@ -255,7 +255,7 @@ public class ExampleUsingFaultInjector {
                 .setCostPerBw(costPerBw);
 
         return new DatacenterSimple(name, characteristics,
-                new VmAllocationPolicySimple(getHostList()));
+                new VmAllocationPolicySimple());
     }
 
     public List<Pe> createHostPesList(int hostPes, int mips) {

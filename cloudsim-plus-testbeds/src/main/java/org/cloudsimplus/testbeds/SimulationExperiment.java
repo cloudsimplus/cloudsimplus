@@ -4,17 +4,10 @@ import org.cloudbus.cloudsim.*;
 import org.cloudbus.cloudsim.allocationpolicies.VmAllocationPolicySimple;
 import org.cloudbus.cloudsim.brokers.DatacenterBroker;
 import org.cloudbus.cloudsim.core.CloudSim;
-import org.cloudbus.cloudsim.provisioners.PeProvisionerSimple;
-import org.cloudbus.cloudsim.provisioners.ResourceProvisionerSimple;
 import org.cloudbus.cloudsim.resources.*;
-import org.cloudbus.cloudsim.schedulers.CloudletSchedulerTimeShared;
-import org.cloudbus.cloudsim.schedulers.VmSchedulerTimeShared;
-import org.cloudbus.cloudsim.utilizationmodels.UtilizationModel;
-import org.cloudbus.cloudsim.utilizationmodels.UtilizationModelFull;
 
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
@@ -256,7 +249,7 @@ public abstract class SimulationExperiment implements Runnable {
                 .setCostPerStorage(costPerStorage)
                 .setCostPerBw(costPerBw);
 
-		return new DatacenterSimple(name, characteristics, new VmAllocationPolicySimple(hostList));
+		return new DatacenterSimple(name, characteristics, new VmAllocationPolicySimple());
 	}
 
     protected abstract void createHosts();
