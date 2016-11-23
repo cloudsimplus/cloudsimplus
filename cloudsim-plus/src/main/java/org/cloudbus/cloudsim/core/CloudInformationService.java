@@ -19,6 +19,7 @@ import org.cloudbus.cloudsim.Log;
  * readiness to process Cloudlets by registering themselves with this entity.
  * Other entities such as the resource broker can contact this class for
  * resource discovery service, which returns a list of registered resource IDs.
+ *
  * In summary, it acts like a yellow page service. This class will be created by
  * CloudSim upon initialisation of the simulation. Hence, do not need to worry
  * about creating an object of this class.
@@ -50,16 +51,14 @@ public class CloudInformationService extends SimEntity {
     /**
      * Instantiates a new CloudInformationService object.
      *
-     * @param name the name to be associated with this entity (as required by
-     * {@link SimEntity} class)
+     * @param name the name to be associated with this entity (as required by {@link SimEntity} class)
      * @throws IllegalArgumentException when creating this entity before
-     * initialising CloudSim package or this entity name is <tt>null</tt> or
-     * empty
+     * initialising CloudSim package or this entity name is <tt>null</tt> or empty
      * @pre name != null
      * @post $none
      *
      */
-    public CloudInformationService(String name) throws IllegalArgumentException {
+    CloudInformationService(String name) throws IllegalArgumentException {
         super(name);
         datacenterIdsList = new LinkedList<>();
         datacenterIdsArList = new LinkedList<>();
@@ -70,8 +69,7 @@ public class CloudInformationService extends SimEntity {
      * The method has no effect at the current class.
      */
     @Override
-    public void startEntity() {
-    }
+    public void startEntity() {}
 
     @Override
     public void processEvent(SimEvent ev) {
@@ -187,10 +185,10 @@ public class CloudInformationService extends SimEntity {
         if (id == null || id < 0) {
             return false;
         }
-        
+
         return datacenterExists(datacenterIdsList, id);
     }
-    
+
     /**
      * Checks whether a datacenter list contains a particular datacenter id.
      *
@@ -207,7 +205,7 @@ public class CloudInformationService extends SimEntity {
         }
 
         return list.contains(datacenterId);
-    }    
+    }
 
     /**
      * Process non-default received events that aren't processed by the

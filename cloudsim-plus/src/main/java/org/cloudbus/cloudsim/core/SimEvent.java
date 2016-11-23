@@ -14,38 +14,38 @@ import org.cloudsimplus.listeners.EventInfo;
  * in the simulation.
  *
  * @author Costas Simatos
- * @see Simulation
+ * @see CloudSim
  * @see SimEntity
  */
 public class SimEvent implements Cloneable, Comparable<SimEvent>, EventInfo {
 
     /**
-     * Internal event type. *
+     * Internal event type.
      */
-    private final int etype;
+    private final int type;
 
     /**
-     * The time that this event was scheduled, at which it should occur. *
+     * The time that this event was scheduled, at which it should occur.
      */
     private final double time;
 
     /**
-     * Time that the event was removed from the queue to start service. *
+     * Time that the event was removed from the queue to start service.
      */
     private double endWaitingTime;
 
     /**
-     * Id of entity who scheduled the event. *
+     * Id of entity who scheduled the event.
      */
-    private int entSrc;
+    private int sourceEntityId;
 
     /**
-     * Id of entity that the event will be sent to. *
+     * Id of entity that the event will be sent to.
      */
-    private int entDst;
+    private int destinationEntityId;
 
     /**
-     * The user defined type of the event. *
+     * The user defined type of the event.
      */
     private final int tag;
 
@@ -70,6 +70,7 @@ public class SimEvent implements Cloneable, Comparable<SimEvent>, EventInfo {
     private long serial = -1;
 
     // Internal event types
+    //@todo @author manoelcampos Should be an Enum
     public static final int ENULL = 0;
 
     public static final int SEND = 1;
@@ -82,31 +83,31 @@ public class SimEvent implements Cloneable, Comparable<SimEvent>, EventInfo {
      * Creates a blank event.
      */
     public SimEvent() {
-        etype = ENULL;
-        time = -1L;
-        endWaitingTime = -1.0;
-        entSrc = -1;
-        entDst = -1;
-        tag = -1;
-        data = null;
+        this.type = ENULL;
+        this.time = -1L;
+        this.endWaitingTime = -1.0;
+        this.sourceEntityId = -1;
+        this.destinationEntityId = -1;
+        this.tag = -1;
+        this.data = null;
     }
 
-    SimEvent(int evtype, double time, int src, int dest, int tag, Object edata) {
-        etype = evtype;
+    SimEvent(int type, double time, int sourceEntityId, int destinationEntityId, int tag, Object data) {
+        this.type = type;
         this.time = time;
-        entSrc = src;
-        entDst = dest;
+        this.sourceEntityId = sourceEntityId;
+        this.destinationEntityId = destinationEntityId;
         this.tag = tag;
-        data = edata;
+        this.data = data;
     }
 
-    SimEvent(int evtype, double time, int src) {
-        etype = evtype;
+    SimEvent(int type, double time, int sourceEntityId) {
+        this.type = type;
         this.time = time;
-        entSrc = src;
-        entDst = -1;
-        tag = -1;
-        data = null;
+        this.sourceEntityId = sourceEntityId;
+        this.destinationEntityId = -1;
+        this.tag = -1;
+        this.data = null;
     }
 
     protected void setSerial(long serial) {
@@ -116,16 +117,16 @@ public class SimEvent implements Cloneable, Comparable<SimEvent>, EventInfo {
     /**
      * Sets the time that the event was removed from the queue to start service.
      *
-     * @param end_waiting_time
+     * @param endWaitingTime
      */
-    protected void setEndWaitingTime(double end_waiting_time) {
-        endWaitingTime = end_waiting_time;
+    protected void setEndWaitingTime(double endWaitingTime) {
+        this.endWaitingTime = endWaitingTime;
     }
 
     @Override
     public String toString() {
-        return "Event tag = " + tag + " source = " + CloudSim.getEntity(entSrc).getName() + " destination = "
-                + CloudSim.getEntity(entDst).getName();
+        return "Event tag = " + tag + " source = " + CloudSim.getEntity(sourceEntityId).getName() + " destination = "
+                + CloudSim.getEntity(destinationEntityId).getName();
     }
 
     /**
@@ -134,7 +135,7 @@ public class SimEvent implements Cloneable, Comparable<SimEvent>, EventInfo {
      * @return
      */
     public int getType() {
-        return etype;
+        return type;
     }
 
     @Override
@@ -160,7 +161,7 @@ public class SimEvent implements Cloneable, Comparable<SimEvent>, EventInfo {
      * @return the id number
      */
     public int getDestination() {
-        return entDst;
+        return destinationEntityId;
     }
 
     /**
@@ -169,7 +170,7 @@ public class SimEvent implements Cloneable, Comparable<SimEvent>, EventInfo {
      * @return the id number
      */
     public int getSource() {
-        return entSrc;
+        return sourceEntityId;
     }
 
     /**
@@ -192,21 +193,12 @@ public class SimEvent implements Cloneable, Comparable<SimEvent>, EventInfo {
     }
 
     /**
-     * Get the user-defined tag of this event
-     *
-     * @return The tag
-     */
-    public int type() {
-        return tag;
-    }
-
-    /**
      * Get the unique id number of the entity which scheduled this event.
      *
      * @return the id number
      */
     public int scheduledBy() {
-        return entSrc;
+        return sourceEntityId;
     }
 
     /**
@@ -227,27 +219,31 @@ public class SimEvent implements Cloneable, Comparable<SimEvent>, EventInfo {
         return data;
     }
 
+    /**
+     * @todo @author manoelcampos Should be used a clone constructor
+     * @return
+     */
     @Override
     public Object clone() {
-        return new SimEvent(etype, time, entSrc, entDst, tag, data);
+        return new SimEvent(type, time, sourceEntityId, destinationEntityId, tag, data);
     }
 
     /**
      * Set the source entity of this event.
      *
-     * @param s The unique id number of the entity
+     * @param source The unique id number of the source entity
      */
-    public void setSource(int s) {
-        entSrc = s;
+    public void setSource(int source) {
+        this.sourceEntityId = source;
     }
 
     /**
      * Set the destination entity of this event.
      *
-     * @param d The unique id number of the entity
+     * @param destination The unique id number of the destination entity
      */
-    public void setDestination(int d) {
-        entDst = d;
+    public void setDestination(int destination) {
+        this.destinationEntityId = destination;
     }
 
     @Override

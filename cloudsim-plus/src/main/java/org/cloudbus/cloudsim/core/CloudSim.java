@@ -28,7 +28,7 @@ import org.cloudsimplus.listeners.EventListener;
 /**
  * Manages Cloud Computing simulations providing all methods to start, pause
  * and stop them. It sends and processes all discrete events during the simulation time.
- * 
+ *
  *
  * @author Rodrigo N. Calheiros
  * @author Anton Beloglazov
@@ -37,9 +37,9 @@ import org.cloudsimplus.listeners.EventListener;
 public class CloudSim {
 
     /**
-     * The CloudSim current version.
+     * The CloudSim Plus current version.
      */
-    private static final String CLOUDSIM_VERSION_STRING = "4.0";
+    private static final String CLOUDSIMPLUS_VERSION_STRING = "1.0";
 
     /**
      * The id of CIS entity.
@@ -88,7 +88,7 @@ public class CloudSim {
      * @see #getOnEventProcessingListener()
      */
     private static EventListener<SimEvent> onEventProcessingListener = EventListener.NULL;
-    
+
     /** @see #getInstance() */
     private static final CloudSim cloudSim = new CloudSim();
 
@@ -96,13 +96,13 @@ public class CloudSim {
      * Gets an instance of the CloudSim simulator.
      * Implements the Singleton Design Pattern in order to avoid
      * creating multiple instances of the class.
-     * 
+     *
      * @return a singleton instance of the CloudSim simulator.
      */
     public static CloudSim getInstance() {
         return cloudSim;
     }
-    
+
     /**
      * A private default constructor to avoid direct instantiation of the CloudSim class.
      */
@@ -179,7 +179,7 @@ public class CloudSim {
             Log.printLine(e.getMessage());
         }
     }
-    
+
     /**
      * Initialises CloudSim parameters. This method should be called before
      * creating any entities.
@@ -257,7 +257,7 @@ public class CloudSim {
      * @post $none
      */
     public static double startSimulation() throws RuntimeException {
-        Log.printConcatLine("Starting CloudSim version ", CLOUDSIM_VERSION_STRING);
+        Log.printConcatLine("Starting CloudSim version ", CLOUDSIMPLUS_VERSION_STRING);
         try {
             double lastSimulationTime = run();
 
@@ -285,7 +285,7 @@ public class CloudSim {
      * initialising CloudSim package or this entity name is <tt>null</tt> or
      * empty
      * @see #init(int, Calendar, boolean)
-     * @see #runStop() 
+     * @see #runStop()
      * @pre $none
      * @post $none
      */
@@ -561,21 +561,19 @@ public class CloudSim {
         return list;
     }
 
-	// Public update methods
     /**
-     * Add a new entity to the simulation. This is present for compatibility
-     * with existing simulations since entities are automatically added to the
-     * simulation upon instantiation.
+     * Adds a new entity to the simulation. Each {@link SimEntity} object
+     * register itself when it is instantiated.
      *
      * @param e The new entity
      */
     public static void addEntity(SimEntity e) {
-        SimEvent evt;
         if (running) {
             // Post an event to make this entity
-            evt = new SimEvent(SimEvent.CREATE, clock, 1, 0, 0, e);
+            SimEvent evt = new SimEvent(SimEvent.CREATE, clock, 1, 0, 0, e);
             future.addEvent(evt);
         }
+
         if (e.getId() == -1) { // Only add once!
             int id = entities.size();
             e.setId(id);
@@ -586,8 +584,9 @@ public class CloudSim {
 
     /**
      * Internal method used to add a new entity to the simulation when the
-     * simulation is running. It should <b>not</b> be called from user
-     * simulations.
+     * simulation is running.
+     *
+     * <b>It should not be called from user simulations.</b>
      *
      * @param e The new entity
      */
@@ -601,7 +600,7 @@ public class CloudSim {
     }
 
     /**
-     * Run one tick of the simulation, processing and removing the 
+     * Run one tick of the simulation, processing and removing the
      * events the the {@link #future future event queue}.
      *
      * @return true if the event queue was empty at the beginning of the
@@ -662,7 +661,7 @@ public class CloudSim {
         List<SimEntity> runableEntities = entities.stream()
                 .filter(ent -> ent.getState() == SimEntity.RUNNABLE)
                 .collect(Collectors.toList());
-        
+
         //dont use stream because the entities are being changed
         for(SimEntity ent: runableEntities) {
             ent.run();
@@ -700,9 +699,9 @@ public class CloudSim {
         future.addEvent(e);
         entities.get(src).setState(SimEntity.HOLDING);
     }
-    
+
     /**
-     * Sends an event from one entity to another without delaying 
+     * Sends an event from one entity to another without delaying
      * the message.
      *
      * @param src Id of entity who scheduled the event.
@@ -713,7 +712,7 @@ public class CloudSim {
     public static void sendNow(int src, int dest, int tag, Object data) {
         send(src, dest, 0, tag, data);
     }
-    
+
 
     /**
      * Sends an event from one entity to another.
@@ -1012,7 +1011,7 @@ public class CloudSim {
         if (!running) {
             runStart();
         }
-        
+
         while (true) {
             if (runClockTickAndCheckThatEventQueueIsEmpty() || abruptTerminate) {
                 break;
@@ -1110,9 +1109,9 @@ public class CloudSim {
     /**
      * Gets the {@link EventListener} object that will be notified when any event
      * is processed by CloudSim.
-     * 
+     *
      * @return the EventListener.
-     * @see #processEvent(org.cloudbus.cloudsim.core.SimEvent) 
+     * @see #processEvent(org.cloudbus.cloudsim.core.SimEvent)
      */
     public static EventListener<SimEvent> getOnEventProcessingListener() {
         return onEventProcessingListener;
@@ -1121,14 +1120,14 @@ public class CloudSim {
     /**
      * Sets the {@link EventListener} object that will be notified when any event
      * is processed by CloudSim.
-     * 
+     *
      * @param onEventProcessingListener the event listener to be set
-     * @see #getOnEventProcessingListener() 
+     * @see #getOnEventProcessingListener()
      */
     public static void setOnEventProcessingListener(EventListener<SimEvent> onEventProcessingListener) {
         if(onEventProcessingListener == null)
             onEventProcessingListener = EventListener.NULL;
-        
+
         CloudSim.onEventProcessingListener = onEventProcessingListener;
     }
 

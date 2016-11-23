@@ -4,6 +4,7 @@ import java.util.Collections;
 import java.util.List;
 import org.cloudbus.cloudsim.Cloudlet;
 import org.cloudbus.cloudsim.Vm;
+import org.cloudbus.cloudsim.core.Nameable;
 
 /**
  * Represents a broker acting on behalf of a cloud customer.
@@ -15,11 +16,7 @@ import org.cloudbus.cloudsim.Vm;
  *
  * @author Manoel Campos da Silva Filho
  */
-public interface DatacenterBroker {
-    int getId();
-
-    String getName();
-
+public interface DatacenterBroker extends Nameable {
     /**
      * Specifies that an already submitted cloudlet, that is in the {@link #getCloudletsWaitingList() waiting list},
      * must run in a specific virtual machine.
