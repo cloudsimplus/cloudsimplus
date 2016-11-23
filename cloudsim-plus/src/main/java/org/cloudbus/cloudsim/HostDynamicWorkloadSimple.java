@@ -11,6 +11,7 @@ import org.cloudbus.cloudsim.brokers.DatacenterBroker;
 import org.cloudbus.cloudsim.resources.Pe;
 import org.cloudbus.cloudsim.schedulers.VmScheduler;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -313,7 +314,7 @@ public class HostDynamicWorkloadSimple extends HostSimple implements HostDynamic
      */
     @Override
     public List<HostStateHistoryEntry> getStateHistory() {
-        return stateHistory;
+        return Collections.unmodifiableList(stateHistory);
     }
 
     /**
@@ -331,14 +332,14 @@ public class HostDynamicWorkloadSimple extends HostSimple implements HostDynamic
                 allocatedMips,
                 requestedMips,
                 isActive);
-        if (!getStateHistory().isEmpty()) {
-            HostStateHistoryEntry previousState = getStateHistory().get(getStateHistory().size() - 1);
+        if (!stateHistory.isEmpty()) {
+            HostStateHistoryEntry previousState = stateHistory.get(stateHistory.size() - 1);
             if (previousState.getTime() == time) {
-                getStateHistory().set(getStateHistory().size() - 1, newState);
+                stateHistory.set(stateHistory.size() - 1, newState);
                 return;
             }
         }
-        getStateHistory().add(newState);
+        stateHistory.add(newState);
     }
 
 }

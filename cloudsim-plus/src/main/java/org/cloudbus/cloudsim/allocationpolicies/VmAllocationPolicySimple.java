@@ -50,7 +50,7 @@ public class VmAllocationPolicySimple extends VmAllocationPolicyAbstract {
      * @pre $none
      * @post $none
      */
-    public VmAllocationPolicySimple(List<Host> hostList) {
+    public VmAllocationPolicySimple(List<? extends Host> hostList) {
         super(hostList);
 
         setFreePesList(new ArrayList<>());
