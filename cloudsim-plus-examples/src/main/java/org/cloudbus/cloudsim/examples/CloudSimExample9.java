@@ -50,7 +50,7 @@ import org.cloudbus.cloudsim.resources.Ram;
  *
  * Code originated from the {@link CloudSimExample3} class.<br>
  *
- * @author <a href="http://manoelcampos.com">Manoel Campos da Silva Filho</a>
+ * @author Manoel Campos da Silva Filho
  */
 public class CloudSimExample9 {
 

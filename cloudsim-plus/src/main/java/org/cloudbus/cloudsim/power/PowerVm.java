@@ -198,14 +198,14 @@ public class PowerVm extends VmSimple {
      * @param utilization the CPU utilization percentage to add
      */
     public void addUtilizationHistoryValue(final double utilization) {
-        getUtilizationHistory().add(0, utilization);
+        utilizationHistory.add(0, utilization);
         if (getUtilizationHistory().size() > MAX_HISTORY_ENTRIES) {
-            getUtilizationHistory().remove(MAX_HISTORY_ENTRIES);
+            utilizationHistory.remove(MAX_HISTORY_ENTRIES);
         }
     }
 
     /**
-     * Gets the CPU utilization percentage history.
+     * Gets a <b>read-only</b> CPU utilization percentage history.
      *
      */
     public List<Double> getUtilizationHistory() {
