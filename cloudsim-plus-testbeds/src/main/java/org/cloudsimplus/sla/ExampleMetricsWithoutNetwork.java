@@ -322,7 +322,7 @@ public final class ExampleMetricsWithoutNetwork {
                 .setCostPerBw(costPerBw);
 
         return new DatacenterSimple(name, characteristics,
-                new VmAllocationPolicySimple(hostList));
+                new VmAllocationPolicySimple());
     }
 
     /**

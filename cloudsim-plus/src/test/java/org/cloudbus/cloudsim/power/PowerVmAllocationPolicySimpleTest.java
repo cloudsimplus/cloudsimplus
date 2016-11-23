@@ -12,11 +12,6 @@ import static org.junit.Assert.*;
  */
 public class PowerVmAllocationPolicySimpleTest {
 
-    @Test(expected = IllegalArgumentException.class)
-    public void testNew_nullHostList() {
-        new PowerVmAllocationPolicySimple();
-    }
-
     @Test
     public void testOptimizeAllocation() {
         System.out.println("optimizeAllocation");

@@ -218,7 +218,7 @@ public class NetworkVmsExampleWithMetrics {
         // 6. Finally, we need to create a PowerDatacenter object.
         NetworkDatacenter datacenter =
                 new NetworkDatacenter(
-                        name, characteristics, new NetworkVmAllocationPolicy(hostList));
+                        name, characteristics, new NetworkVmAllocationPolicy());
         createNetwork(datacenter);
         return datacenter;
     }
