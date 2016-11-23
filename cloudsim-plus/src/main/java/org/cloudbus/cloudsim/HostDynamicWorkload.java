@@ -57,7 +57,7 @@ public interface HostDynamicWorkload extends Host {
     double getPreviousUtilizationOfCpu();
 
     /**
-     * Gets the host state history.
+     * Gets a <b>read-only</b> host state history.
      *
      * @return the state history
      */

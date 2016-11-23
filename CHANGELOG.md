@@ -1,7 +1,9 @@
 # Change Log
 
 Lists the main changes in the project.
+
 ## [] - YYYY-MM-DD
+- Removed the hostList parameter from the VmAllocationPolicy constructors. The host list is now automatically got directly from the Datacenter.
 - Introduction of the class CloudletSchedulerCompletelyFair that implements the Completely Fair Scheduler used in recent version of the Linux Kernel.
   The scheduler perform an actual Cloudlet preemption,  assigning a timeslice for each Cloudlet (according to its priority), that allow it
   to use the CPU for a specific time interval. After this time slice expires, such Cloudlets are moved to the waiting list,

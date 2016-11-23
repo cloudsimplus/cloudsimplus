@@ -123,18 +123,9 @@ public class CloudletSchedulerTimeShared extends CloudletSchedulerAbstract {
                 .orElse(0.0);
     }
 
-	/**
-     * {@inheritDoc}
-     *
-     * @todo If the method always return an empty list (that is created locally),
-     * it doesn't make sense to exist. See other implementations such as
-     * {@link CloudletSchedulerSpaceShared#getCurrentRequestedMips()}
-     *
-     * @return {@inheritDoc}
-     */
     @Override
     public List<Double> getCurrentRequestedMips() {
-        return Collections.emptyList();
+        return Collections.unmodifiableList(getCurrentMipsShare());
     }
 
     /**

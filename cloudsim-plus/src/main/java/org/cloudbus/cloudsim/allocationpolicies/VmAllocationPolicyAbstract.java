@@ -7,6 +7,8 @@
  */
 package org.cloudbus.cloudsim.allocationpolicies;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -14,6 +16,8 @@ import org.cloudbus.cloudsim.Datacenter;
 import org.cloudbus.cloudsim.Host;
 import org.cloudbus.cloudsim.Vm;
 import org.cloudsimplus.listeners.HostToVmEventInfo;
+
+import static java.util.stream.Collectors.toList;
 
 /**
  * An abstract class that represents the policy
@@ -37,43 +41,35 @@ public abstract class VmAllocationPolicyAbstract implements VmAllocationPolicy {
     private Map<String, Host> vmTable;
 
     /**
-     * @see #getHostList()
-     * @todo It has to be assessed if the host list can be got directly from the
-     * Datacenter where the AllocationPolicy is linked to.
-     * By this way, a new Datacenter attribute can be added to this class
-     * and when a new Policy is set to a given Datacenter, the Datacenter
-     * sets itself to the AllocationPolicy, creating a bi-directional link.
-     * Thus, the AllocationPolicy constructor will not required a Host list anymore.
+     * @see #getDatacenter()
      */
-    private List<? extends Host> hostList;
+    private Datacenter datacenter;
+    /**
+     * @see #getFreePesList()
+     */
+    private List<Integer> freePesList;
+    /**
+     * @see #getUsedPes()
+     */
+    private Map<String, Integer> usedPes;
 
     /**
      * Creates a new VmAllocationPolicy object.
      *
-     * @param hostList the list of hosts that will be managed by the allocation policy to place VMs
      * @pre $none
      * @post $none
      */
-    public VmAllocationPolicyAbstract(List<? extends Host> hostList) {
-        setHostList(hostList);
-    }
+    public VmAllocationPolicyAbstract() {
+        setFreePesList(new ArrayList<>());
+        setVmTable(new HashMap<>());
+        setUsedPes(new HashMap<>());
 
-    /**
-     * Sets the list of Hosts available in a {@link Datacenter}, that will be
-     * used by the Allocation Policy to place VMs.
-     *
-     * @param hostList the new host list
-     */
-    protected final void setHostList(List<? extends Host> hostList) {
-        if(hostList == null || hostList.isEmpty())
-            throw new IllegalArgumentException("hostList cannot be null or empty.");
-
-        this.hostList = hostList;
+        datacenter = Datacenter.NULL;
     }
 
     @Override
     public <T extends Host> List<T> getHostList() {
-        return (List<T>) hostList;
+        return (List<T>) datacenter.getHostList();
     }
 
     /**
@@ -122,5 +118,73 @@ public abstract class VmAllocationPolicyAbstract implements VmAllocationPolicy {
         HostToVmEventInfo info = new HostToVmEventInfo(host, vm);
         vm.getOnHostDeallocationListener().update(info);
         return host;
+    }
+
+    @Override
+    public Datacenter getDatacenter() {
+        return datacenter;
+    }
+
+    /**
+     * Sets the Datacenter associated to the Allocation Policy
+     * @param datacenter the Datacenter to set
+     */
+    @Override
+    public void setDatacenter(Datacenter datacenter){
+        if(datacenter == null){
+            datacenter = Datacenter.NULL;
+        }
+
+        this.datacenter = datacenter;
+        addPesFromHostsToFreePesList();
+    }
+
+    /**
+     * Gets the number of PEs from each Host in the {@link #getHostList() host list}
+     * and adds these number of PEs to the {@link #getFreePesList() list of free PEs}.
+     * <b>The method expects that the {@link #datacenter} is already set.</b>
+     *
+     */
+    private void addPesFromHostsToFreePesList() {
+        List<Integer> numberOfPesByHost = getHostList().stream().map(Host::getNumberOfPes).collect(toList());
+        setFreePesList(new ArrayList<>(getHostList().size()));
+        getFreePesList().addAll(numberOfPesByHost);
+    }
+
+    /**
+     * Gets the number of free PEs for each host from {@link #getHostList()}.
+     *
+     * @return the free PEs list
+     */
+    protected final List<Integer> getFreePesList() {
+        return freePesList;
+    }
+
+    /**
+     * Sets the free pes.
+     *
+     * @param freePesList the new free pes
+     */
+    protected final void setFreePesList(List<Integer> freePesList) {
+        this.freePesList = freePesList;
+    }
+
+    /**
+     * Gets the map between each VM and the number of PEs used. The map key is a
+     * VM UID and the value is the number of used Pes for that VM.
+     *
+     * @return the used PEs map
+     */
+    protected Map<String, Integer> getUsedPes() {
+        return usedPes;
+    }
+
+    /**
+     * Sets the used pes.
+     *
+     * @param usedPes the used pes
+     */
+    protected final void setUsedPes(Map<String, Integer> usedPes) {
+        this.usedPes = usedPes;
     }
 }

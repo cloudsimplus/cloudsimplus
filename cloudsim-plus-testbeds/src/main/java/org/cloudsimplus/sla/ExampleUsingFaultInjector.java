@@ -125,7 +125,7 @@ public class ExampleUsingFaultInjector {
         long fileSize = 300;
         long outputSize = 300;
         UtilizationModel utilizationModel = new UtilizationModelFull();
-        
+
         for (int i = 0; i < cloudlets; i++) {
             Cloudlet cloudlet = new CloudletSimple(i, length, CLOUDLET_PES)
                     .setCloudletFileSize(fileSize)
@@ -199,14 +199,14 @@ public class ExampleUsingFaultInjector {
         // Sixth step: Starts the simulation
         CloudSim.startSimulation();
         CloudSim.stopSimulation();
-        
+
         System.out.println("\n");
         for (Cloudlet cloudlet : cloudletList) {
             System.out.println("--->Status Cloudlet: " + cloudlet.getStatus()
             + " in VM: " + cloudlet.getVmId());
-            
+
         }
-      
+
         //Final step: Print results when simulation is over
         List<Cloudlet> newList = broker.getCloudletsFinishedList();
 
@@ -237,7 +237,7 @@ public class ExampleUsingFaultInjector {
                     .setRamProvisioner(new ResourceProvisionerSimple(new Ram(ram)))
                     .setBwProvisioner(new ResourceProvisionerSimple(new Bandwidth(bw)))
                     .setVmScheduler(new VmSchedulerTimeShared(peList));
-            
+
             getHostList().add(host);
         }// This is our machine
 
@@ -247,14 +247,14 @@ public class ExampleUsingFaultInjector {
         // resource
         double costPerBw = 0.0; // the cost of using bw in this resource
 
-        DatacenterCharacteristics characteristics = 
+        DatacenterCharacteristics characteristics =
                 new DatacenterCharacteristicsSimple(hostList)
                 .setCostPerSecond(cost)
                 .setCostPerMem(costPerMem)
                 .setCostPerStorage(costPerStorage)
                 .setCostPerBw(costPerBw);
 
-        return new DatacenterSimple(name, characteristics, 
+        return new DatacenterSimple(name, characteristics,
                 new VmAllocationPolicySimple(getHostList()));
     }
 

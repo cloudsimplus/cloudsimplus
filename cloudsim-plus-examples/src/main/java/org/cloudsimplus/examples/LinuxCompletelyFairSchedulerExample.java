@@ -137,7 +137,7 @@ public class LinuxCompletelyFairSchedulerExample {
                 .setCostPerStorage(costPerStorage)
                 .setCostPerBw(costPerBw);
 
-        return new DatacenterSimple(name, characteristics, new VmAllocationPolicySimple(hostList));
+        return new DatacenterSimple(name, characteristics, new VmAllocationPolicySimple());
     }
 
     private Host createHost() {

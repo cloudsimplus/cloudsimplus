@@ -108,15 +108,12 @@ public abstract class PowerVmAllocationPolicyMigrationAbstract extends PowerVmAl
     private final List<Double> executionTimeHistoryTotal = new LinkedList<>();
 
     /**
-     * Instantiates a new PowerVmAllocationPolicyMigrationAbstract.
+     * Creates a PowerVmAllocationPolicyMigrationAbstract.
      *
-     * @param hostList the host list
-     * @param vmSelectionPolicy the vm selection policy
+     * @param vmSelectionPolicy the policy that defines how VMs are selected for migration
      */
-    public PowerVmAllocationPolicyMigrationAbstract(
-            List<PowerHost> hostList,
-            PowerVmSelectionPolicy vmSelectionPolicy) {
-        super(hostList);
+    public PowerVmAllocationPolicyMigrationAbstract(PowerVmSelectionPolicy vmSelectionPolicy) {
+        super();
         setVmSelectionPolicy(vmSelectionPolicy);
     }
 

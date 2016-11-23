@@ -208,7 +208,7 @@ public class SwfWorkloadFormatExample1 {
                 .setCostPerStorage(DATACENTER_STORAGE_COST)
                 .setCostPerBw(DATACENTER_BW_COST);
 
-        Datacenter datacenter = new DatacenterSimple(name, characteristics, new VmAllocationPolicySimple(hostList));
+        Datacenter datacenter = new DatacenterSimple(name, characteristics, new VmAllocationPolicySimple());
         Log.printConcatLine("#Created ", hostList.size(), " Hosts at ", datacenter.getName());
         return datacenter;
     }
@@ -270,11 +270,11 @@ public class SwfWorkloadFormatExample1 {
         for(int i = 0; i < numberOfHosts; i++){
             List<Pe> peList = createPeList(numberOfPes, VM_MIPS);
 
-            Host host = 
+            Host host =
                 new HostSimple(lastCreatedHostId++, storage, peList)
                     .setRamProvisioner(new ResourceProvisionerSimple(new Ram(ram)))
                     .setBwProvisioner(new ResourceProvisionerSimple(new Bandwidth(bw)))
-                    .setVmScheduler(new VmSchedulerTimeShared(peList));            
+                    .setVmScheduler(new VmSchedulerTimeShared(peList));
 
             list.add(host);
         }

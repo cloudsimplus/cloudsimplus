@@ -68,7 +68,7 @@ public class DatacenterBuilder extends Builder {
                       .setCostPerBw(costPerBwMegabit);
         String name = String.format(DATACENTER_NAME_FORMAT, numberOfCreatedDatacenters++);
         Datacenter datacenter =
-                new DatacenterSimple(name, characteristics, new VmAllocationPolicySimple(hosts))
+                new DatacenterSimple(name, characteristics, new VmAllocationPolicySimple())
                     .setStorageList(storageList)
                     .setSchedulingInterval(schedulingInterval);
         this.datacenters.add(datacenter);

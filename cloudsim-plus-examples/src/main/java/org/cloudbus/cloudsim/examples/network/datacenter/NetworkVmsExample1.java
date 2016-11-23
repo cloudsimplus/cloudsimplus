@@ -130,7 +130,7 @@ public class NetworkVmsExample1 {
                 .setRamProvisioner(new ResourceProvisionerSimple(new Ram(HOST_RAM)))
                 .setBwProvisioner(new ResourceProvisionerSimple(new Bandwidth(HOST_BW)))
                 .setVmScheduler(new VmSchedulerTimeShared(peList));
-            
+
             hostList.add(host);
         }
 
@@ -147,7 +147,7 @@ public class NetworkVmsExample1 {
                     .setCostPerBw(COST_PER_BW);
 
         // 6. Finally, we need to create a NetworkDatacenter object.
-        NetworkDatacenter newDatacenter = new NetworkDatacenter(name, characteristics, new NetworkVmAllocationPolicy(hostList));
+        NetworkDatacenter newDatacenter = new NetworkDatacenter(name, characteristics, new NetworkVmAllocationPolicy());
         newDatacenter.setSchedulingInterval(5);
 
         createNetwork(newDatacenter);

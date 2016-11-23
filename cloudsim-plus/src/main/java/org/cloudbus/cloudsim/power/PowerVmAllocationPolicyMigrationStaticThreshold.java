@@ -14,17 +14,17 @@ import org.cloudbus.cloudsim.Vm;
 /**
  * A VM allocation policy that uses a Static CPU utilization Threshold (THR) to detect host over
  * utilization.
- * 
+ *
  * <p>If you are using any algorithms, policies or workload included in the power package please cite
  * the following paper:</p>
- * 
+ *
  * <ul>
  * <li><a href="http://dx.doi.org/10.1002/cpe.1867">Anton Beloglazov, and Rajkumar Buyya, "Optimal Online Deterministic Algorithms and Adaptive
  * Heuristics for Energy and Performance Efficient Dynamic Consolidation of Virtual Machines in
  * Cloud Data Centers", Concurrency and Computation: Practice and Experience (CCPE), Volume 24,
  * Issue 13, Pages: 1397-1420, John Wiley & Sons, Ltd, New York, USA, 2012</a>
  * </ul>
- * 
+ *
  * @author Anton Beloglazov
  * @since CloudSim Toolkit 3.0
  */
@@ -36,23 +36,22 @@ public class PowerVmAllocationPolicyMigrationStaticThreshold extends PowerVmAllo
 	private double utilizationThreshold = 0.9;
 
 	/**
-	 * Instantiates a new PowerVmAllocationPolicyMigrationStaticThreshold.
-	 * 
-	 * @param hostList the host list
-	 * @param vmSelectionPolicy the vm selection policy
+	 * Creates a PowerVmAllocationPolicyMigrationStaticThreshold.
+	 *
+	 * @param vmSelectionPolicy the policy that defines how VMs are selected for migration
 	 * @param utilizationThreshold the utilization threshold
 	 */
 	public PowerVmAllocationPolicyMigrationStaticThreshold(
-			List<PowerHost> hostList,
 			PowerVmSelectionPolicy vmSelectionPolicy,
-			double utilizationThreshold) {
-		super(hostList, vmSelectionPolicy);
+			double utilizationThreshold)
+    {
+		super(vmSelectionPolicy);
 		setUtilizationThreshold(utilizationThreshold);
 	}
 
 	/**
 	 * Checks if a host is over utilized, based on CPU usage.
-	 * 
+	 *
 	 * @param host the host
 	 * @return true, if the host is over utilized; false otherwise
 	 */
@@ -69,7 +68,7 @@ public class PowerVmAllocationPolicyMigrationStaticThreshold extends PowerVmAllo
 
 	/**
 	 * Sets the utilization threshold.
-	 * 
+	 *
 	 * @param utilizationThreshold the new utilization threshold
 	 */
 	protected final void setUtilizationThreshold(double utilizationThreshold) {
@@ -78,7 +77,7 @@ public class PowerVmAllocationPolicyMigrationStaticThreshold extends PowerVmAllo
 
 	/**
 	 * Gets the utilization threshold.
-	 * 
+	 *
 	 * @return the utilization threshold
 	 */
 	protected double getUtilizationThreshold() {

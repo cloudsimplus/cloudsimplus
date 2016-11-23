@@ -208,7 +208,7 @@ public class CloudSimExample2 {
                 .setCostPerBw(costPerBw);
 
         // 6. Finally, we need to create a DatacenterSimple object.
-        DatacenterSimple datacenter = new DatacenterSimple(name, characteristics, new VmAllocationPolicySimple(hostList));
+        DatacenterSimple datacenter = new DatacenterSimple(name, characteristics, new VmAllocationPolicySimple());
         datacenter.setSchedulingInterval(1);
         return datacenter;
     }

@@ -37,16 +37,15 @@ public class PowerVmAllocationPolicySimple extends PowerVmAllocationPolicyAbstra
     /**
      * Instantiates a new PowerVmAllocationPolicySimple.
      *
-     * @param list the list
      */
-    public PowerVmAllocationPolicySimple(List<? extends PowerHost> list) {
-        super(list);
+    public PowerVmAllocationPolicySimple() {
+        super();
     }
 
     /**
      * The method in this VmAllocationPolicy doesn't perform any
      * VM placement optimization and, in fact, has no effect.
-     * 
+     *
      * @param vmList
      * @return an empty map to indicate that it never performs optimization
      */

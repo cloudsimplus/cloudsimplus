@@ -116,14 +116,6 @@ public class CloudletSchedulerSpaceShared extends CloudletSchedulerAbstract {
 
     @Override
     public List<Double> getCurrentRequestedMips() {
-        /**
-         * @todo @author manoelcampos The code inherited from CloudSim
-         * is just returning the amount of current mips
-         * instead of the amount of currently used mips,
-         * that is the list of mips actually being used by running cloudlets.
-         * The original method documentation doesn't make it clear
-         * what is the return value.
-         */
         return Collections.unmodifiableList(getCurrentMipsShare());
     }
 

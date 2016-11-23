@@ -34,30 +34,13 @@ import org.cloudbus.cloudsim.core.CloudSim;
 public class VmAllocationPolicySimple extends VmAllocationPolicyAbstract {
 
     /**
-     * @see #getUsedPes()
-     */
-    private Map<String, Integer> usedPes;
-
-    /**
-     * @see #getFreePesList()
-     */
-    private List<Integer> freePesList;
-
-    /**
      * Creates a new VmAllocationPolicySimple object.
      *
-     * @param hostList the list of hosts that will be managed by the allocation policy to place VMs
      * @pre $none
      * @post $none
      */
-    public VmAllocationPolicySimple(List<Host> hostList) {
-        super(hostList);
-
-        setFreePesList(new ArrayList<>());
-        getHostList().forEach(host -> getFreePesList().add(host.getNumberOfPes()));
-
-        setVmTable(new HashMap<>());
-        setUsedPes(new HashMap<>());
+    public VmAllocationPolicySimple() {
+        super();
     }
 
     /**
@@ -134,43 +117,6 @@ public class VmAllocationPolicySimple extends VmAllocationPolicyAbstract {
     @Override
     public Host getHost(int vmId, int userId) {
         return getVmTable().get(VmSimple.getUid(userId, vmId));
-    }
-
-    /**
-     * Gets the map between each VM and the number of PEs used. The map key is a
-     * VM UID and the value is the number of used Pes for that VM.
-     *
-     * @return the used PEs map
-     */
-    protected Map<String, Integer> getUsedPes() {
-        return usedPes;
-    }
-
-    /**
-     * Sets the used pes.
-     *
-     * @param usedPes the used pes
-     */
-    protected final void setUsedPes(Map<String, Integer> usedPes) {
-        this.usedPes = usedPes;
-    }
-
-    /**
-     * Gets the number of free PEs for each host from {@link #getHostList()}.
-     *
-     * @return the free PEs list
-     */
-    protected final List<Integer> getFreePesList() {
-        return freePesList;
-    }
-
-    /**
-     * Sets the free pes.
-     *
-     * @param freePesList the new free pes
-     */
-    protected final void setFreePesList(List<Integer> freePesList) {
-        this.freePesList = freePesList;
     }
 
     /**

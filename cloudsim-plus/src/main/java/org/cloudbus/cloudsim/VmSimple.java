@@ -225,11 +225,12 @@ public class VmSimple implements Vm {
     public List<Double> getCurrentRequestedMips() {
         List<Double> currentRequestedMips = getCloudletScheduler().getCurrentRequestedMips();
         if (isBeingInstantiated()) {
-            currentRequestedMips = new ArrayList<>();
+            currentRequestedMips = new ArrayList<>(getNumberOfPes());
             for (int i = 0; i < getNumberOfPes(); i++) {
                 currentRequestedMips.add(getMips());
             }
         }
+
         return currentRequestedMips;
     }
 

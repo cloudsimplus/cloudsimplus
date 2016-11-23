@@ -204,7 +204,7 @@ public class TwoCloudletsAndOneSpaceSharedVm {
                 .setCostPerBw(costPerBw);
 
         // 6. Finally, we need to create a DatacenterSimple object.
-        return new DatacenterSimple(name, characteristics, new VmAllocationPolicySimple(hostList));
+        return new DatacenterSimple(name, characteristics, new VmAllocationPolicySimple());
     }
 
     // We strongly encourage users to develop their own broker policies, to

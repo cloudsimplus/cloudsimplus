@@ -280,7 +280,6 @@ public class MigrationExample1 {
 
         NonPowerVmAllocationPolicyMigrationWorstFitStaticThreshold allocationPolicy =
             new NonPowerVmAllocationPolicyMigrationWorstFitStaticThreshold(
-                hostList,
                 new PowerVmSelectionPolicyMinimumUtilization(),
                 HOST_UTILIZATION_THRESHOLD_FOR_VM_MIGRATION);
 
