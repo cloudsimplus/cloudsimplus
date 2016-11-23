@@ -87,7 +87,7 @@ public class CloudInformationService extends SimEntity {
                 id = ((Integer) ev.getData());
 
                 // Send the regional GIS list back to sender
-                super.send(id, 0L, ev.getTag(), cisList);
+                super.send(id, 0, ev.getTag(), cisList);
                 break;
 
             // A datacenter is requesting to register.
@@ -108,7 +108,7 @@ public class CloudInformationService extends SimEntity {
                 id = ((Integer) ev.getData());
 
                 // Send the resource list back to the sender
-                super.send(id, 0L, ev.getTag(), datacenterIdsList);
+                super.send(id, 0, ev.getTag(), datacenterIdsList);
                 break;
 
             // A Broker is requesting for a list of all datacenters that support advanced reservation.
@@ -118,7 +118,7 @@ public class CloudInformationService extends SimEntity {
                 id = ((Integer) ev.getData());
 
                 // Send the resource AR list back to the sender
-                super.send(id, 0L, ev.getTag(), datacenterIdsArList);
+                super.send(id, 0, ev.getTag(), datacenterIdsArList);
                 break;
 
             default:

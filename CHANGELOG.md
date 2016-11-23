@@ -2,8 +2,9 @@
 
 Lists the main changes in the project.
 
-## [] - YYYY-MM-DD
-- Removed the hostList parameter from the VmAllocationPolicy constructors. The host list is now automatically got directly from the Datacenter.
+## [v0.8-beta.5] - 2016-11-23
+
+### Added
 - Introduction of the class CloudletSchedulerCompletelyFair that implements the Completely Fair Scheduler used in recent version of the Linux Kernel.
   The scheduler perform an actual Cloudlet preemption,  assigning a timeslice for each Cloudlet (according to its priority), that allow it
   to use the CPU for a specific time interval. After this time slice expires, such Cloudlets are moved to the waiting list,
@@ -14,17 +15,51 @@ Lists the main changes in the project.
   assigning 50% of the PE capacity to each PE. This oversimplification makes that all Cloudlets finish at the exact same 
   time, what is not possible in a real scheduler. Furthermore, it increases the task completion time of all cloudlets,
   because it simply distribute the waiting time among all submited Cloudlets, harming all Cloudelets performance.
+
+### Changed
 - Constructors of Cloudlet, Vm, Host, Datacenter and DatacenterCharacteristics with a
   too long parameter list were deprecated and simpler constructors were introduced.
-- Refactoring Resource and ResourceProvisioner classes to remove the generic type for Number.
+- Refactored Resource and ResourceProvisioner classes to remove the generic type for Number, simplifying the class usage.
 - Standardized the type to represent amount of RAM, Bandwidth (BW) and Storage to the primitive type long.
 - Clearly defined the unit for some resources, updating the documentation. The units are as follows:
   - MB for RAM and Storage
   - Megabits/s for Bandwidth
 
+### Removed
+- Removed the hostList parameter from the VmAllocationPolicy constructors. The host list is now automatically got directly from the Datacenter.
+
+## [v0.8-beta.4] - 2016-11-03
+
+### Changed
+- Moved almost all exclusive features of CloudSim Plus to specific packages prefixed with org.cloudsimplus
+- The exclusive features moved are now in packages:
+    - org.cloudsimplus.builders
+    - org.cloudsimplus.heuristics
+    - org.cloudsimplus.listeners
+    - org.cloudsimplus.util
+    - org.cloudsimplus.util.tablebuilder
+- The exclusive examples are now in packages:
+    - org.cloudsimplus.examples
+    - org.cloudsimplus.examples.listeners
+    - org.cloudsimplus.examples.migration
+    - org.cloudsimplus.examples.workload
+- Simplified the CloudletsTableBuilderHelper used to print simulation results in examples
+- Several internal refactorings for upcoming features
+- Just remembering that all the Testbeds module is exclusive of CloudSim Plus
+
 ## [v0.8-beta.3] - 2016-10-15
 
+### Added
 - Included documentation about CloudSim Plus modules into the README file
+- Inclusion of new module "cloudsim-plus-benchmarks" that uses [JMH (Java Microbenchmark Harness framework)](http://openjdk.java.net/projects/code-tools/jmh/) that implement some
+  benchmarks in order to assess CloudSim Plus performance.
+- Inclusion of new module "cloudsim-plus-testbeds" to provide a set of more complex and comprehensive 
+  testbeds used to assess implementation of algorithms for different purposes such as:
+	mapping of Cloudlets to VMs, allocation and scheduling policies, resource utilization models or VM placement and migration policies.
+  These testbeds also show how to apply statistical methods to get scientifically valid simulation results. 
+  Some method to reduce confidence interval and correlation are implemented and can be used for several experiments.
+
+### Changed 
 - The examples module now generates an uber jar file, a jar containing all required dependencies,
   including CloudSim Plus itself. This jar makes easier to run the examples directly from the terminal
   using the traditional java command. Having Maven installed, below are the command line instructions to build and run the examples:
@@ -35,13 +70,6 @@ Lists the main changes in the project.
   an usage help. It is in fact the easier way to build the project and run examples. 
   To run the same example 1, it is as easy as typing `./bootstrap.sh org.cloudbus.cloudsim.examples.CloudSimExample1` inside the `script` folder.
   It will automatically discover the exact name of the examples jar file to run, whatever its version number is.
-- Inclusion of new module "cloudsim-plus-benchmarks" that uses [JMH (Java Microbenchmark Harness framework)](http://openjdk.java.net/projects/code-tools/jmh/) that implement some
-  benchmarks in order to assess CloudSim Plus performance.
-- Inclusion of new module "cloudsim-plus-testbeds" to provide a set of more complex and comprehensive 
-  testbeds used to assess implementation of algorithms for different purposes such as:
-	mapping of Cloudlets to VMs, allocation and scheduling policies, resource utilization models or VM placement and migration policies.
-  These testbeds also show how to apply statistical methods to get scientifically valid simulation results. 
-  Some method to reduce confidence interval and correlation are implemented and can be used for several experiments. 
 - Some issues closed. 
 
 ## [v0.8-beta.2] - 2016-09-15
