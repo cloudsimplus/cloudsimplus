@@ -1,6 +1,6 @@
 [{
         "metricName": "responseTime",
-        "value": 200,
+        "value": 3,
         "unit": "ms"
     }, {
         "metricName": "availability",

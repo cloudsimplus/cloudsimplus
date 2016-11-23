@@ -7,15 +7,23 @@ package org.cloudsimplus.sla.readJsonFile;
 
 /**
  * This class represents the metrics of sla contract and their values.
+ *
  * @author raysaoliveira
  */
-public class Metrics {
-    
+public final class Metrics {
+
     private String metricName;
     private int value;
     private String unit;
+
+    public Metrics(String name, int value, String unit){
+       
+        this.metricName = name;
+        this.value =  value;
+        this.unit = unit;
+    }
     
-        /**
+    /**
      * @return the metricName
      */
     public String getMetricName() {
@@ -42,7 +50,7 @@ public class Metrics {
     public void setValue(int value) {
         this.value = value;
     }
-    
+
     /**
      * @return the unit
      */
@@ -57,10 +65,9 @@ public class Metrics {
         this.unit = unit;
     }
 
-    
     @Override
     public String toString() {
-        return "Metric{" + "Metric Name =" + metricName + ", value = " + value + ", unit = " + unit +'}';
+        return "Metric{" + "Metric Name =" + this.metricName + ", value = " + this.value + ", unit = " + this.unit + '}';
     }
 
 }

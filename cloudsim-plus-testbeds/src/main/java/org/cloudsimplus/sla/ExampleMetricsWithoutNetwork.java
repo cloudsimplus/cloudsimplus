@@ -29,6 +29,8 @@ import org.cloudbus.cloudsim.resources.Ram;
 import org.cloudsimplus.util.tablebuilder.CloudletsTableBuilderHelper;
 import org.cloudbus.cloudsim.utilizationmodels.UtilizationModel;
 import org.cloudbus.cloudsim.utilizationmodels.UtilizationModelFull;
+import org.cloudsimplus.sla.readJsonFile.Metrics;
+import org.cloudsimplus.sla.readJsonFile.ReadSlaAgreements;
 
 /**
  *
@@ -37,7 +39,7 @@ import org.cloudbus.cloudsim.utilizationmodels.UtilizationModelFull;
  * This example show an simple example using metrics of quality of service
  * without network.
  */
-public class ExampleMetricsWithoutNetwork {
+public final class ExampleMetricsWithoutNetwork {
 
     /**
      * The cloudlet list.
@@ -48,6 +50,8 @@ public class ExampleMetricsWithoutNetwork {
      * The vmlist.
      */
     private final List<Vm> vmlist;
+
+    private double responseTimeCloudlet;
 
     /**
      * Creates Vms
@@ -96,7 +100,7 @@ public class ExampleMetricsWithoutNetwork {
         long outputSize = 300;
         int pesNumber = 1;
         UtilizationModel utilizationModel = new UtilizationModelFull();
-        
+
         for (int i = 0; i < cloudlets; i++) {
             Cloudlet cloudlet = new CloudletSimple(i, length, pesNumber)
                     .setCloudletFileSize(fileSize)
@@ -109,35 +113,29 @@ public class ExampleMetricsWithoutNetwork {
     }
 
     /**
-     * Calculates the cost price of resources
+     * Calculates the cost price of resources (processing, bw, memory, storage)
+     * of each or all of the datacenter VMs()
      *
-     * @param datacenter
-     * @param vmCost
-     * @param totalCost
-     * @return
+     * @param vmlist
      */
-    /*
-    private List<Double> totalCostPrice(Datacenter datacenter, List<Vm> vmlist) {
-        double memoryDataCenterVm,bwDataCenterVm, miDataCenterVm, storageDataCenterVm;
-        List<Double> totalCost = new LinkedList<>();
-        int numberOfVms = datacenter.getCharacteristics().getHostList().size() * MAX_VMS_PER_HOST;
-        for (Vm vms : vmlist) {
-            memoryDataCenterVm = ((datacenter.getCharacteristics().getCostPerMem()) * vms.getRam() * numberOfVms);
-            bwDataCenterVm = ((datacenter.getCharacteristics().getCostPerBw()) * vms.getBw() * numberOfVms);
-            miDataCenterVm = ((datacenter.getCharacteristics().getCostPerMi()) * vms.getMips() * numberOfVms);
-            storageDataCenterVm = ((datacenter.getCharacteristics().getCostPerStorage()) * vms.getSize() * numberOfVms);
+    private void totalCostPrice(List<Vm> vmlist) {
 
-            totalCost += memoryDataCenterVm + bwDataCenterVm + miDataCenterVm + storageDataCenterVm;
+        VmCost vmCost;
+        double totalCost = 0.0;
+        for (Vm vm : vmlist) {
+            vmCost = new VmCost(vm);
+            totalCost = vmCost.getVmTotalCost();
 
         }
-        return totalCost;
-    }*/
+        System.out.println("Total cost (memory, bw, processing, storage)"
+                + " of  all VMs in the Datacenter is: " + totalCost);
+    }
 
     /**
      * Shows the response time of cloudlets
      *
      * @param cloudlets to calculate the response time
-     * @return responseTime
+     * @return responseTimeCloudlet
      */
     private double responseTimeCloudlet(List<Cloudlet> cloudlet) {
 
@@ -200,14 +198,7 @@ public class ExampleMetricsWithoutNetwork {
      public static double throughput() {
      //pegar o dowlink BW do edge, pois as Vms estao conectadas nele
      return 1;
-     }
-     */
-
-    /**
-     * main()
-     *
-     * @param args the args
-     */
+     }*/
     public static void main(String[] args) {
         Log.printFormattedLine(" Starting... ");
         try {
@@ -230,8 +221,8 @@ public class ExampleMetricsWithoutNetwork {
 
         //Create Broker
         DatacenterBroker broker = createBroker();
-        
-        vmlist = createVM(broker, 12);
+
+        vmlist = createVM(broker, 2);
 
         // submit vm list to the broker
         broker.submitVmList(vmlist);
@@ -248,8 +239,8 @@ public class ExampleMetricsWithoutNetwork {
         System.out.println("\n\t\t - System Métrics - \n ");
 
         //responseTime
-        double responseT = responseTimeCloudlet(cloudletList);
-        System.out.printf("\t** Response Time of Cloudlets - %.2f %n", responseT);
+        responseTimeCloudlet = responseTimeCloudlet(cloudletList);
+        System.out.printf("\t** Response Time of Cloudlets - %.2f %n", responseTimeCloudlet);
 
         //cpu time
         double cpuTime = cpuUtilization(cloudletList);
@@ -264,11 +255,11 @@ public class ExampleMetricsWithoutNetwork {
         double waitTime = waitTime(cloudletList);
         System.out.printf("\t** Wait Time - %.2f %n", waitTime);
 
-       // total cost
-        // double totalPrice = totalCostPrice(datacenter0, vmlist);
-        // System.out.printf("\t** Total Cost Price (memory, bw, mips, storage)- %.2f %n", totalPrice);
+        // total cost
+        //totalCostPrice(vmlist);
         System.out.println("______________________________________________________");
 
+        verifyViolationSla(); 
         //Final step: Print results when simulation is over
         List<Cloudlet> newList = broker.getCloudletsFinishedList();
         new CloudletsTableBuilderHelper(newList).build();
@@ -323,14 +314,14 @@ public class ExampleMetricsWithoutNetwork {
         // resource
         double costPerBw = 0.0; // the cost of using bw in this resource
 
-        DatacenterCharacteristics characteristics = 
-                new DatacenterCharacteristicsSimple(hostList)
+        DatacenterCharacteristics characteristics
+                = new DatacenterCharacteristicsSimple(hostList)
                 .setCostPerSecond(cost)
                 .setCostPerMem(costPerMem)
                 .setCostPerStorage(costPerStorage)
                 .setCostPerBw(costPerBw);
 
-        return new DatacenterSimple(name, characteristics, 
+        return new DatacenterSimple(name, characteristics,
                 new VmAllocationPolicySimple(hostList));
     }
 
@@ -342,4 +333,26 @@ public class ExampleMetricsWithoutNetwork {
     private static DatacenterBroker createBroker() {
         return new DatacenterBrokerSimple("Broker");
     }
+
+    /**
+     * @return the responseTimeCloudlet
+     */
+    public double getResponseTime() {
+        return responseTimeCloudlet;
+    }
+    
+     private void verifyViolationSla() {
+        ReadSlaAgreements sla = new ReadSlaAgreements();
+        SlaMetricsMonitoring monitoring = new SlaMetricsMonitoring();
+         System.out.println(sla.getName());
+        if (responseTimeCloudlet >= sla.getValueResponseTime()) {
+            monitoring.monitoringMetrics(sla.getNameMetricRT());
+            
+            System.out.println("\nName: " + sla.getNameMetricRT());
+            System.out.println("Value: " + sla.getValueResponseTime());
+           
+        }
+    }
+
+
 }
