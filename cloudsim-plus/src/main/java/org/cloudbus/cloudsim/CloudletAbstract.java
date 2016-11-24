@@ -6,7 +6,7 @@ import java.util.LinkedList;
 import java.util.List;
 
 import org.cloudbus.cloudsim.brokers.DatacenterBroker;
-import org.cloudbus.cloudsim.core.CloudSim;
+import org.cloudbus.cloudsim.core.Simulation;
 import org.cloudbus.cloudsim.utilizationmodels.UtilizationModel;
 import org.cloudsimplus.listeners.EventListener;
 import org.cloudsimplus.listeners.VmToCloudletEventInfo;
@@ -94,6 +94,11 @@ public abstract class CloudletAbstract implements Cloudlet {
     private double submissionDelay;
 
     /**
+     * @see #getSimulation()
+     */
+    private Simulation simulation;
+
+    /**
      * Creates a Cloudlet with no priority and file size and output size equal to 1.
      *
      * @param cloudletId id of the Cloudlet
@@ -121,7 +126,8 @@ public abstract class CloudletAbstract implements Cloudlet {
         this.recordTransactionHistory = false;
 
         this.lastExecutedDatacenterIndex = NOT_ASSIGNED;
-        setBroker(DatacenterBroker.NULL);          // to be set by a Broker or user
+        setBroker(DatacenterBroker.NULL);          
+        this.simulation = Simulation.NULL;
         setFinishTime(NOT_ASSIGNED);    // meaning this Cloudlet hasn't finished yet
         setVmId(NOT_ASSIGNED);
 
@@ -158,7 +164,7 @@ public abstract class CloudletAbstract implements Cloudlet {
         }
 
         final ExecutionInDatacenterInfo dcInfo = executionInDatacenterInfoList.get(lastExecutedDatacenterIndex);
-        dcInfo.arrivalTime = CloudSim.clock();
+        dcInfo.arrivalTime = simulation.clock();
 
         return dcInfo.arrivalTime;
     }
@@ -268,7 +274,7 @@ public abstract class CloudletAbstract implements Cloudlet {
     }
 
     @Override
-    public Cloudlet setNumberOfPes(final int numberOfPes) {
+    public final Cloudlet setNumberOfPes(final int numberOfPes) {
         if (numberOfPes <= 0) {
             throw new IllegalArgumentException("Cloudlet number of PEs has to be greater than zero.");
         }
@@ -331,7 +337,7 @@ public abstract class CloudletAbstract implements Cloudlet {
     }
 
     @Override
-    public Cloudlet setBroker(DatacenterBroker broker) {
+    public final Cloudlet setBroker(DatacenterBroker broker) {
         if (broker == null) {
             broker = DatacenterBroker.NULL;
         }
@@ -397,7 +403,7 @@ public abstract class CloudletAbstract implements Cloudlet {
         }
 
         if (newStatus == Status.SUCCESS) {
-            setFinishTime(CloudSim.clock());
+            setFinishTime(simulation.clock());
         }
 
         write("Sets Cloudlet status from %s to %s",
@@ -412,7 +418,7 @@ public abstract class CloudletAbstract implements Cloudlet {
      * Sets the {@link #getFinishTime() finish time} of this cloudlet in the latest Datacenter.
      * @param finishTime the finish time
      */
-    protected void setFinishTime(final double finishTime) {
+    protected final void setFinishTime(final double finishTime) {
         this.finishTime = finishTime;
     }
 
@@ -542,12 +548,12 @@ public abstract class CloudletAbstract implements Cloudlet {
             history.append(System.getProperty("line.separator"));
             history.append("------------------------------------------");
             history.append(System.getProperty("line.separator"));
-            history.append(num.format(CloudSim.clock()));
+            history.append(num.format(simulation.clock()));
             history.append("   Creates Cloudlet ID #").append(id);
             history.append(System.getProperty("line.separator"));
         }
 
-        history.append(num.format(CloudSim.clock()));
+        history.append(num.format(simulation.clock()));
         history.append("   ").append(str).append(newline);
     }
 
@@ -583,7 +589,7 @@ public abstract class CloudletAbstract implements Cloudlet {
     }
 
     @Override
-    public Cloudlet setVmId(final int vmId) {
+    public final Cloudlet setVmId(final int vmId) {
         this.vmId = vmId;
         return this;
     }
@@ -742,7 +748,7 @@ public abstract class CloudletAbstract implements Cloudlet {
      * Sets {@link #getCostPerBw() the cost of each byte of bandwidth (bw)} consumed.
      * @param costPerBw the new cost per bw to set
      */
-    protected void setCostPerBw(double costPerBw) {
+    protected final void setCostPerBw(double costPerBw) {
         this.costPerBw = costPerBw;
     }
 
@@ -755,7 +761,7 @@ public abstract class CloudletAbstract implements Cloudlet {
      * Sets the {@link #getAccumulatedBwCost() accumulated bw cost}.
      * @param accumulatedBwCost the accumulated bw cost to set
      */
-    protected void setAccumulatedBwCost(double accumulatedBwCost) {
+    protected final void setAccumulatedBwCost(double accumulatedBwCost) {
         this.accumulatedBwCost = accumulatedBwCost;
     }
 
@@ -842,7 +848,7 @@ public abstract class CloudletAbstract implements Cloudlet {
         final ExecutionInDatacenterInfo datacenterInfo = new ExecutionInDatacenterInfo();
         datacenterInfo.datacenterId = datacenterId;
         datacenterInfo.costPerSec = costPerCpuSec;
-        datacenterInfo.datacenterName = CloudSim.getEntityName(datacenterId);
+        datacenterInfo.datacenterName = simulation.getEntityName(datacenterId);
 
         // add into a list if moving to a new cloud datacenter
         getExecutionInDatacenterInfoList().add(datacenterInfo);
@@ -877,6 +883,17 @@ public abstract class CloudletAbstract implements Cloudlet {
             return NOT_ASSIGNED;
         }
         return getExecutionInDatacenterInfoList().get(getLastExecutedDatacenterIndex()).arrivalTime;
+    }
+
+    @Override
+    public Simulation getSimulation() {
+        return this.simulation;
+    }
+
+    @Override
+    public Cloudlet setSimulation(Simulation simulation) {
+        this.simulation = simulation;
+        return this;
     }
 
     /**

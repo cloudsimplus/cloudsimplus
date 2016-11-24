@@ -4,6 +4,9 @@ import java.util.Collections;
 import java.util.List;
 import org.cloudbus.cloudsim.Cloudlet;
 import org.cloudbus.cloudsim.Vm;
+import org.cloudbus.cloudsim.core.SimEntity;
+import org.cloudbus.cloudsim.core.SimEvent;
+import org.cloudbus.cloudsim.core.Simulation;
 
 /**
  * Represents a broker acting on behalf of a cloud customer.
@@ -15,11 +18,7 @@ import org.cloudbus.cloudsim.Vm;
  *
  * @author Manoel Campos da Silva Filho
  */
-public interface DatacenterBroker {
-    int getId();
-
-    String getName();
-
+public interface DatacenterBroker extends SimEntity {
     /**
      * Specifies that an already submitted cloudlet, that is in the {@link #getCloudletsWaitingList() waiting list},
      * must run in a specific virtual machine.
@@ -157,11 +156,15 @@ public interface DatacenterBroker {
     int selectFallbackDatacenterForWaitingVms();
 
 	/**
-	 * A property that implements the Null Object Design Pattern for {@link DatacenterBroker}
+	 * An attribute that implements the Null Object Design Pattern for {@link DatacenterBroker}
 	 * objects.
 	 */
 	DatacenterBroker NULL = new DatacenterBroker() {
-		@Override public int getId() { return -1; }
+        @Override public Simulation getSimulation() { return Simulation.NULL; }
+        @Override public SimEntity setSimulation(Simulation simulation) { return this;}
+        @Override public void processEvent(SimEvent ev) {}
+        @Override public void run() {}
+        @Override public int getId() { return -1; }
 		@Override public String getName() { return ""; }
 		@Override public void bindCloudletToVm(int cloudletId, int vmId) { }
 		@Override public <T extends Cloudlet> List<T> getCloudletsWaitingList() { return Collections.emptyList(); }
@@ -176,5 +179,8 @@ public interface DatacenterBroker {
 		@Override public Vm selectVmForWaitingCloudlet(Cloudlet cloudlet) { return Vm.NULL; }
 		@Override public int selectDatacenterForWaitingVms() { return 0; }
 		@Override public int selectFallbackDatacenterForWaitingVms() { return 0; }
-	};
+        @Override public void startEntity() {}
+        @Override public void shutdownEntity() {}
+        @Override public SimEntity setName(String newName) throws IllegalArgumentException { return this; }
+    };
 }

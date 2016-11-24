@@ -33,6 +33,7 @@ import org.cloudbus.cloudsim.utilizationmodels.UtilizationModelFull;
 import org.cloudsimplus.sla.readJsonFile.SlaMetric;
 import org.cloudsimplus.sla.readJsonFile.SlaReader;
 
+
 /**
  *
  * @author RaysaOliveira
@@ -67,6 +68,7 @@ public final class ExampleMetricsWithoutNetwork {
     private double responseTimeCloudlet;
     private double cpuUtilization;
     private double waitTimeCloudlet;
+    private final CloudSim cloudsim;
 
     /**
      * Creates Vms
@@ -217,25 +219,20 @@ public final class ExampleMetricsWithoutNetwork {
      //pegar o dowlink BW do edge, pois as Vms estao conectadas nele
      return 1;
      }*/
+
     public static void main(String[] args) throws FileNotFoundException {
         Log.printFormattedLine(" Starting... ");
-       // try {
             new ExampleMetricsWithoutNetwork();
-       // } catch (Exception e) {
-       //     Log.printFormattedLine("Simulation finished due to unexpected error: %s", e);
-       // }
     }
 
     public ExampleMetricsWithoutNetwork() throws FileNotFoundException {
         //  Initialize the CloudSim package.
         int num_user = 1; // number of cloud users
-        Calendar calendar = Calendar.getInstance(); // Calendar whose fields have been initialized with the current date and time.
-        boolean trace_flag = false; // trace events
-
-        CloudSim.init(num_user, calendar, trace_flag);
+       
+        cloudsim = new CloudSim(num_user);
 
         //Create Datacenters
-        Datacenter datacenter0 = createDatacenter("Datacenter_0");
+        Datacenter datacenter0 = createDatacenter();
 
         //Create Broker
         DatacenterBroker broker = createBroker();
@@ -253,7 +250,7 @@ public final class ExampleMetricsWithoutNetwork {
         broker.submitCloudletList(cloudletList);
 
         // Sixth step: Starts the simulation
-        CloudSim.startSimulation();
+        cloudsim.start();
         
         /*for(Host h: datacenter0.getHostList()){
             System.out.println("->>>>>> " + h);
@@ -264,7 +261,8 @@ public final class ExampleMetricsWithoutNetwork {
         totalCostPrice(vmlist);*/
        
         
-        CloudSim.stopSimulation();
+        cloudsim.stop();
+
         System.out.println("______________________________________________________");
         System.out.println("\n\t\t - System Métrics - \n ");
 
@@ -277,7 +275,7 @@ public final class ExampleMetricsWithoutNetwork {
         System.out.printf("\t** Utilization CPU %% - %.2f %n ", cpuUtilization);
 
         //utilization resource
-        double time = CloudSim.clock();
+        double time = cloudsim.clock();
         double utilizationresources = utilizationResources(cloudletList, time);
         System.out.printf("\t** Utilization Resources %%  (Bw-CPU-Ram) - %.2f %n", utilizationresources);
 
@@ -287,13 +285,14 @@ public final class ExampleMetricsWithoutNetwork {
 
         // total cost
         //totalCostPrice(vmlist);
+
         System.out.println("______________________________________________________");
 
         System.out.println("______________________________________________________");
         System.out.println("\n\t\t - Metric monitoring - \n\t\t(violated or not violated)  \n ");
 
         checkSlaViolations(); 
-            
+
         System.out.println("______________________________________________________");
 
         //Final step: Print results when simulation is over
@@ -311,7 +310,7 @@ public final class ExampleMetricsWithoutNetwork {
      * @return the datacenter
      */
    
-    private Datacenter createDatacenter(String name) {
+    private Datacenter createDatacenter() {
         hostList = new ArrayList<>();
 
         int mips = 10000;
@@ -336,14 +335,14 @@ public final class ExampleMetricsWithoutNetwork {
         // resource
         double costPerBw = 0.0; // the cost of using bw in this resource
 
-        DatacenterCharacteristics characteristics =
-                new DatacenterCharacteristicsSimple(hostList)
+   DatacenterCharacteristics characteristics
+                = new DatacenterCharacteristicsSimple(hostList)
                 .setCostPerSecond(cost)
                 .setCostPerMem(costPerMem)
                 .setCostPerStorage(costPerStorage)
                 .setCostPerBw(costPerBw);
 
-        return new DatacenterSimple(name, characteristics,
+        return new DatacenterSimple(cloudsim, characteristics,
                 new VmAllocationPolicySimple());
     }
 
@@ -361,8 +360,8 @@ public final class ExampleMetricsWithoutNetwork {
      *
      * @return the datacenter broker
      */
-    private static DatacenterBroker createBroker() {
-        return new DatacenterBrokerSimple("Broker");
+    private DatacenterBroker createBroker() {
+        return new DatacenterBrokerSimple(cloudsim);
     }
 
     /**
@@ -434,7 +433,6 @@ public final class ExampleMetricsWithoutNetwork {
      */
     private List<Host> getHostList() {
         return hostList;
-    }
-
+    }    
 
 }

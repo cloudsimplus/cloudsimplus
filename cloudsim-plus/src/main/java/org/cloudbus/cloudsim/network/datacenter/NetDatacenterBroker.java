@@ -14,6 +14,7 @@ import org.cloudbus.cloudsim.Cloudlet;
 
 import org.cloudbus.cloudsim.brokers.DatacenterBroker;
 import org.cloudbus.cloudsim.brokers.DatacenterBrokerSimple;
+import org.cloudbus.cloudsim.core.CloudSim;
 
 /**
  * NetDatacentreBroker is a {@link DatacenterBroker} implementation
@@ -38,15 +39,12 @@ public class NetDatacenterBroker extends DatacenterBrokerSimple {
     /**
      * Creates a new NetDatacenterBroker object.
      *
-     * @param name name to be associated with this entity
+     * @param simulation The CloudSim instance that represents the simulation the Entity is related to
      *
-     * @throws IllegalArgumentException when the entity name is invalid
-     *
-     * @pre name != null
      * @post $none
      */
-    public NetDatacenterBroker(String name) {
-        super(name);
+    public NetDatacenterBroker(CloudSim simulation) {
+        super(simulation);
         setAppCloudletList(new ArrayList<>());
     }
 

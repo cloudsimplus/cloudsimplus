@@ -13,7 +13,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.cloudbus.cloudsim.brokers.DatacenterBroker;
-import org.cloudbus.cloudsim.core.CloudSim;
+import org.cloudbus.cloudsim.core.Simulation;
 import org.cloudsimplus.listeners.DatacenterToVmEventInfo;
 import org.cloudsimplus.listeners.EventListener;
 import org.cloudsimplus.listeners.HostToVmEventInfo;
@@ -132,6 +132,11 @@ public class VmSimple implements Vm {
     private EventListener<HostToVmEventInfo> onUpdateVmProcessingListener = EventListener.NULL;
 
     /**
+     * @see #getSimulation()
+     */
+    private Simulation simulation;
+
+    /**
      * Creates a Vm with 1024 MB of RAM, 1000 Megabits/s of Bandwidth and 1024 MB of Storage Size.
      *
      * To change these values, use the respective setters. While the Vm {@link #isBeingInstantiated()
@@ -158,7 +163,7 @@ public class VmSimple implements Vm {
         setBw(new Bandwidth(1000));
         setStorage(new RawStorage(1024));
         setVmm("Xen");
-
+        this.simulation = Simulation.NULL;
         setCloudletScheduler(CloudletScheduler.NULL);
     }
 
@@ -659,13 +664,24 @@ public class VmSimple implements Vm {
         // all the PEs are failed (or recovered, depending on fail parameter)
         this.failed = failed;
         if(failed) {
-            Log.printLine(CloudSim.clock() + " ---> VM " + getUid() + " FAILURE...\n");
+            Log.printLine(getSimulation().clock() + " ---> VM " + getUid() + " FAILURE...\n");
         }
     }
 
     @Override
     public boolean isFailed() {
         return failed;
+    }
+
+    @Override
+    public Simulation getSimulation() {
+        return this.simulation;
+    }
+
+    @Override
+    public Vm setSimulation(Simulation simulation) {
+        this.simulation = simulation;
+        return this;
     }
 
 

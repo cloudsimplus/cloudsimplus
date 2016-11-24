@@ -2,7 +2,6 @@ package org.cloudbus.cloudsim.examples;
 
 import org.cloudsimplus.util.tablebuilder.CloudletsTableBuilderHelper;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.List;
 
 import org.cloudbus.cloudsim.Cloudlet;
@@ -75,12 +74,9 @@ public class SharingHostPEsUsingVmSchedulerTimeShared {
     private static final int NUMBER_OF_VMS = HOST_PES_NUM*2;
 
     private static final double VM_MIPS = HOST_TOTAL_MIPS_CAPACITY/NUMBER_OF_VMS;
+    private final CloudSim simulation;
 
 
-    /**
-     *  Virtual Machine Monitor name.
-     */
-    private static final String VMM = "Xen";
     private List<Cloudlet> cloudletList;
     private List<Vm> vmList;
     private int numberOfCreatedCloudlets = 0;
@@ -100,37 +96,33 @@ public class SharingHostPEsUsingVmSchedulerTimeShared {
      */
     public SharingHostPEsUsingVmSchedulerTimeShared() {
         Log.printFormattedLine("Starting %s Example ...", getClass().getSimpleName());
-        try {
-            this.vmList = new ArrayList<>();
-            this.cloudletList = new ArrayList<>();
-            //Number of cloud customers
-            int numberOfCloudUsers = 1;
-            boolean traceEvents = false;
+        this.vmList = new ArrayList<>();
+        this.cloudletList = new ArrayList<>();
+        //Number of cloud customers
+        int numberOfCloudUsers = 1;
+        boolean traceEvents = false;
 
-            CloudSim.init(numberOfCloudUsers, Calendar.getInstance(), traceEvents);
+        simulation = new CloudSim(numberOfCloudUsers, traceEvents);
 
-            Datacenter datacenter0 = createDatacenter("Datacenter0");
+        Datacenter datacenter0 = createDatacenter();
 
-            /*Creates a Broker accountable for submission of VMs and Cloudlets
-            on behalf of a given cloud user (customer).*/
-            DatacenterBroker broker0 = new DatacenterBrokerSimple("Broker0");
+        /*Creates a Broker accountable for submission of VMs and Cloudlets
+        on behalf of a given cloud user (customer).*/
+        DatacenterBroker broker0 = new DatacenterBrokerSimple(simulation);
 
-            createAndSubmitVmsAndCloudlets(broker0);
+        createAndSubmitVmsAndCloudlets(broker0);
 
-            /*Starts the simulation and waits all cloudlets to be executed*/
-            CloudSim.startSimulation();
+        /*Starts the simulation and waits all cloudlets to be executed*/
+        simulation.start();
 
-            //Finishes the simulation
-            CloudSim.stopSimulation();
+        //Finishes the simulation
+        simulation.stop();
 
-            /*Prints results when the simulation is over
-            (you can use your own code here to print what you want from this cloudlet list)*/
-            List<Cloudlet> finishedCloudlets = broker0.getCloudletsFinishedList();
-            new CloudletsTableBuilderHelper(finishedCloudlets).build();
-            Log.printFormattedLine("%s Example finished!", getClass().getSimpleName());
-        } catch (RuntimeException e) {
-            Log.printFormattedLine("Simulation finished due to unexpected error: %s", e);
-        }
+        /*Prints results when the simulation is over
+        (you can use your own code here to print what you want from this cloudlet list)*/
+        List<Cloudlet> finishedCloudlets = broker0.getCloudletsFinishedList();
+        new CloudletsTableBuilderHelper(finishedCloudlets).build();
+        Log.printFormattedLine("%s Example finished!", getClass().getSimpleName());
     }
 
     private void createAndSubmitVmsAndCloudlets(DatacenterBroker broker0) {
@@ -147,7 +139,7 @@ public class SharingHostPEsUsingVmSchedulerTimeShared {
         broker0.submitCloudletList(cloudletList);
     }
 
-    private DatacenterSimple createDatacenter(String name) {
+    private DatacenterSimple createDatacenter() {
         List<Host> hostList = new ArrayList<>();
         Host host0 = createHost();
         hostList.add(host0);
@@ -165,7 +157,7 @@ public class SharingHostPEsUsingVmSchedulerTimeShared {
                 .setCostPerStorage(costPerStorage)
                 .setCostPerBw(costPerBw);
 
-        return new DatacenterSimple(name, characteristics, new VmAllocationPolicySimple());
+        return new DatacenterSimple(simulation, characteristics, new VmAllocationPolicySimple());
     }
 
     private Host createHost() {

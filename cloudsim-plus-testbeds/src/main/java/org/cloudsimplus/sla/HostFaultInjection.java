@@ -11,10 +11,7 @@ import java.util.List;
 import org.cloudbus.cloudsim.Host;
 import org.cloudbus.cloudsim.Log;
 import org.cloudbus.cloudsim.Vm;
-import org.cloudbus.cloudsim.core.CloudSim;
-import org.cloudbus.cloudsim.core.CloudSimTags;
-import org.cloudbus.cloudsim.core.SimEntity;
-import org.cloudbus.cloudsim.core.SimEvent;
+import org.cloudbus.cloudsim.core.*;
 import org.cloudbus.cloudsim.distributions.ContinuousDistribution;
 import org.cloudbus.cloudsim.distributions.UniformDistr;
 import org.cloudbus.cloudsim.resources.Pe;
@@ -31,7 +28,7 @@ import org.cloudbus.cloudsim.resources.Pe;
  * @author raysaoliveira
  *
  */
-public class HostFaultInjection extends SimEntity {
+public class HostFaultInjection extends CloudSimEntity {
 
     private Host host;
     private ContinuousDistribution numberOfFailedPesRandom;
@@ -43,14 +40,15 @@ public class HostFaultInjection extends SimEntity {
      * failures with a delay and number of failed PEs generated using a Uniform
      * Pseudo Random Number Generator (PRNG) for each one.
      *
-     * @param name name of the fault injection
+     * @param simulation The CloudSim instance that represents the 
+     * simulation the Entity is related to
      * @see
      * #setDelayForFailureOfHostRandom(org.cloudbus.cloudsim.distributions.ContinuousDistribution)
      * @see
      * #setNumberOfFailedPesRandom(org.cloudbus.cloudsim.distributions.ContinuousDistribution)
      */
-    public HostFaultInjection(String name) {
-        super(name);
+    public HostFaultInjection(CloudSim simulation) {
+        super(simulation);
         this.numberOfFailedPesRandom = new UniformDistr();
         this.delayForFailureOfHostRandom = new UniformDistr();
         this.failed = false;
@@ -104,7 +102,7 @@ public class HostFaultInjection extends SimEntity {
         final List<Vm> sortedHostVmList = new ArrayList<>(host.getVmList());
         sortedHostVmList.sort(sortVmsDescendinglyByPesNumber);
 
-        
+
 
         for (Vm vm : sortedHostVmList) {
             final long numberOfWorkingPes = host.getNumberOfWorkingPes();
@@ -116,7 +114,7 @@ public class HostFaultInjection extends SimEntity {
                         host.getId(), host.getNumberOfWorkingPes(),
                         pesSumOfWorkingVms, vm.getId(), vm.getNumberOfPes());
                 System.out.println("Vm failed -> " + vm.getId());
-            } else {  
+            } else {
                 break;
             }
         }
@@ -158,7 +156,7 @@ public class HostFaultInjection extends SimEntity {
          As the broker is expected to request vm creation and destruction,
          it is set here as the sender of the vm destroy request.
          */
-        CloudSim.sendNow(
+        getSimulation().sendNow(
                 vm.getBrokerId(), host.getDatacenter().getId(),
                 CloudSimTags.VM_DESTROY, vm);
     }

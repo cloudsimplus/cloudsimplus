@@ -60,7 +60,7 @@ public class CloudSimTags {
 
     /**
      * Denotes an abrupt end of simulation. That is, one event of this type is
-     * enough for {@link CloudSimShutdown} to trigger the end of the simulation
+     * enough for {@link CloudCloudSimShutdown} to trigger the end of the simulation
      */
     public static final int ABRUPT_END_OF_SIMULATION = -2;
 
@@ -175,7 +175,7 @@ public class CloudSimTags {
     public static final int INFOPKT_RETURN = NETBASE + 6;
 
     /**
-     * Denotes the return of a finished Cloudlet back to the sender. 
+     * Denotes the return of a finished Cloudlet back to the sender.
      * This tag is normally used by Datacenter entity.
      */
     public static final int CLOUDLET_RETURN = BASE + 20;
@@ -313,17 +313,17 @@ public class CloudSimTags {
     public static final int NETWORK_EVENT_HOST = BASE + 47;
 
     /**
-     * Defines the base tag to be used for failure events such as 
+     * Defines the base tag to be used for failure events such as
      * failure of hosts or VMs.
     */
     public static final int FAILURE = BASE + 47;
-    
+
     /**
      * Defines the tag that represents a host failure.
      */
     public static final int HOST_FAILURE = FAILURE + 1;
 
-    
+
     /**
      * Private Constructor.
      */

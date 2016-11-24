@@ -33,7 +33,9 @@ import org.cloudbus.cloudsim.power.PowerVmAllocationPolicySimple;
  */
 public class NonPowerAware {
 
-	/**
+    private static CloudSim simulation;
+
+    /**
 	 * Creates main() to run this example.
 	 *
 	 * @param args the args
@@ -47,34 +49,31 @@ public class NonPowerAware {
 		Log.printLine("Starting " + experimentName);
 
 		try {
-			CloudSim.init(1, Calendar.getInstance(), false);
+            simulation = new CloudSim(1);
 
-			DatacenterBroker broker = Helper.createBroker();
+			DatacenterBroker broker = Helper.createBroker(simulation);
 
 			List<Cloudlet> cloudletList = RandomHelper.createCloudletList(
-					broker,
-					RandomConstants.NUMBER_OF_VMS);
+					broker, RandomConstants.NUMBER_OF_VMS);
 			List<Vm> vmList = Helper.createVmList(broker, cloudletList.size());
 			List<PowerHost> hostList = Helper.createHostList(RandomConstants.NUMBER_OF_HOSTS);
 
 			PowerDatacenterNonPowerAware datacenter = (PowerDatacenterNonPowerAware) Helper.createDatacenter(
-					"Datacenter",
-					PowerDatacenterNonPowerAware.class,
-					hostList,
-					new PowerVmAllocationPolicySimple());
+                simulation, PowerDatacenterNonPowerAware.class, hostList,
+                new PowerVmAllocationPolicySimple());
 
 			datacenter.setDisableMigrations(true);
 
 			broker.submitVmList(vmList);
 			broker.submitCloudletList(cloudletList);
 
-			CloudSim.terminateSimulation(Constants.SIMULATION_LIMIT);
-			double lastClock = CloudSim.startSimulation();
+			simulation.terminateAt(Constants.SIMULATION_LIMIT);
+			double lastClock = simulation.start();
 
 			List<Cloudlet> newList = broker.getCloudletsFinishedList();
 			Log.printLine("Received " + newList.size() + " cloudlets");
 
-			CloudSim.stopSimulation();
+			simulation.stop();
 
 			Helper.printResults(
 					datacenter,

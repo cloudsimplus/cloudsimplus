@@ -172,7 +172,7 @@ public class DatacenterCharacteristicsSimple implements DatacenterCharacteristic
 
     @Override
     public String getResourceName() {
-        return CloudSim.getEntityName(getId());
+        return datacenter.getSimulation().getEntityName(getId());
     }
 
     @Override

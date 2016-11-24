@@ -313,7 +313,7 @@ public class CloudletExecutionInfo {
 
         boolean success = true;
         try {
-            double clock = CloudSim.clock();   // gets the current clock
+            double clock = cloudlet.getSimulation().clock();   // gets the current clock
 
             // sets Cloudlet's current status
             cloudlet.setCloudletStatus(status);
@@ -417,7 +417,7 @@ public class CloudletExecutionInfo {
      */
     public void finalizeCloudlet() {
         // Sets the wall clock time and actual CPU time
-        double wallClockTime = CloudSim.clock() - arrivalTime;
+        double wallClockTime = cloudlet.getSimulation().clock() - arrivalTime;
         cloudlet.setWallClockTime(wallClockTime, totalCompletionTime);
 
         long finishedLengthAcrossAllPes;

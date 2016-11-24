@@ -2,7 +2,6 @@ package org.cloudsimplus.examples;
 
 import org.cloudsimplus.util.tablebuilder.CloudletsTableBuilderHelper;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.List;
 import java.util.Map;
 
@@ -55,11 +54,7 @@ import org.cloudsimplus.heuristics.HeuristicSolution;
  * @author Manoel Campos da Silva Filho
  */
 public class DatacenterBrokerHeuristicExample {
-    /**
-     * Virtual Machine Monitor name.
-     */
-    private static final String VMM = "Xen";
-
+    private final CloudSim simulation;
     private List<Cloudlet> cloudletList;
     private List<Vm> vmList;
     private CloudletToVmMappingSimulatedAnnealing heuristic;
@@ -102,36 +97,32 @@ public class DatacenterBrokerHeuristicExample {
      */
     public DatacenterBrokerHeuristicExample() {
         Log.printFormattedLine("Starting %s ...", getClass().getSimpleName());
-        try {
-            this.vmList = new ArrayList<>();
-            this.cloudletList = new ArrayList<>();
-            int numberOfCloudUsers = 1;
-            boolean traceEvents = false;
+        this.vmList = new ArrayList<>();
+        this.cloudletList = new ArrayList<>();
+        int numberOfCloudUsers = 1;
+        boolean traceEvents = false;
 
-            CloudSim.init(numberOfCloudUsers, Calendar.getInstance(), traceEvents);
+        simulation = new CloudSim(numberOfCloudUsers, traceEvents);
 
-            Datacenter datacenter0 = createDatacenter("Datacenter0");
+        Datacenter datacenter0 = createDatacenter();
 
-	        DatacenterBrokerHeuristic broker0 = createBroker();
+        DatacenterBrokerHeuristic broker0 = createBroker();
 
-	        createAndSubmitVms(broker0);
-	        createAndSubmitCloudlets(broker0);
+        createAndSubmitVms(broker0);
+        createAndSubmitCloudlets(broker0);
 
-            CloudSim.startSimulation();
-            CloudSim.stopSimulation();
+        simulation.start();
+        simulation.stop();
 
-            List<Cloudlet> finishedCloudlets = broker0.getCloudletsFinishedList();
-            new CloudletsTableBuilderHelper(finishedCloudlets).build();
+        List<Cloudlet> finishedCloudlets = broker0.getCloudletsFinishedList();
+        new CloudletsTableBuilderHelper(finishedCloudlets).build();
 
-	        print(broker0);
-        } catch (RuntimeException e) {
-            Log.printFormattedLine("Simulation finished due to unexpected error: %s", e);
-        }
+        print(broker0);
     }
 
 	private DatacenterBrokerHeuristic createBroker() {
 		createSimulatedAnnealingHeuristic();
-		DatacenterBrokerHeuristic broker0 = new DatacenterBrokerHeuristic("Broker0");
+		DatacenterBrokerHeuristic broker0 = new DatacenterBrokerHeuristic(simulation);
 		broker0.setHeuristic(heuristic);
 		return broker0;
 	}
@@ -187,7 +178,7 @@ public class DatacenterBrokerHeuristicExample {
         return heuristic.getRandomValue(maxPesNumber)+1;
     }
 
-    private DatacenterSimple createDatacenter(String name) {
+    private DatacenterSimple createDatacenter() {
         List<Host> hostList = new ArrayList<>();
         for(int i = 0; i < HOSTS_TO_CREATE; i++) {
             hostList.add(createHost());
@@ -206,7 +197,7 @@ public class DatacenterBrokerHeuristicExample {
                 .setCostPerStorage(costPerStorage)
                 .setCostPerBw(costPerBw);
 
-        return new DatacenterSimple(name, characteristics, new VmAllocationPolicySimple());
+        return new DatacenterSimple(simulation, characteristics, new VmAllocationPolicySimple());
     }
 
     private Host createHost() {

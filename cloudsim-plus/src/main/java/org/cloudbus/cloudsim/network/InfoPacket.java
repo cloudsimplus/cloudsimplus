@@ -18,13 +18,12 @@ package org.cloudbus.cloudsim.network;
 import java.text.DecimalFormat;
 import java.util.Vector;
 
-import org.cloudbus.cloudsim.core.CloudSim;
 import org.cloudbus.cloudsim.core.CloudSimTags;
 
 /**
  * InfoPacket class can be used to gather information from the network layer. An
  * InfoPacket traverses the network topology similar to a
- * {@link org.cloudbus.cloudsim.network.datacenter.NetworkPacket}, 
+ * {@link org.cloudbus.cloudsim.network.datacenter.NetworkPacket},
  * but it collects information like bandwidths,
  * and Round Trip Time etc. It is the equivalent of ICMP in physical networks.
  * <p/>
@@ -37,7 +36,7 @@ import org.cloudbus.cloudsim.core.CloudSimTags;
  * @author Gokul Poduval
  * @author Chen-Khong Tham, National University of Singapore
  * @since CloudSim Toolkit 1.0
- * 
+ *
  * @todo @author manoelcampos InfoPacket, HostPacket and NetworkPacket should implement at least
  * one common interface.
  */
@@ -93,11 +92,8 @@ public class InfoPacket implements Packet {
 
     /**
      * The level of service type.
-     *
-     * @todo Is it the Type of Service (ToS) of IPv4, like in the
-     * {@link Cloudlet#netToS}? If yes, so the names would be standardized.
      */
-    private int netServiceType;
+    private int netServiceLevel;
 
     /**
      * The bandwidth bottleneck.
@@ -139,17 +135,17 @@ public class InfoPacket implements Packet {
      * @param size size of the packet
      * @param srcID The ID of the entity that sends out this packet
      * @param destID The ID of the entity to which this packet is destined
-     * @param netServiceType the class of traffic this packet belongs to
+     * @param netServiceLevel the class of traffic this packet belongs to
      * @pre name != null
      * @post $none
      */
-    public InfoPacket(String name, int packetID, long size, int srcID, int destID, int netServiceType) {
+    public InfoPacket(String name, int packetID, long size, int srcID, int destID, int netServiceLevel) {
         this.name = name;
         packetId = packetID;
         srcId = srcID;
         destId = destID;
         this.size = size;
-        this.netServiceType = netServiceType;
+        this.netServiceLevel = netServiceLevel;
 
         init();
     }
@@ -232,7 +228,7 @@ public class InfoPacket implements Packet {
         String tab = "    ";  // 4 spaces
         for (int i = 0; i < entities.size(); i++) {
             int resID = entities.get(i).intValue();
-            sb.append(CloudSim.getEntityName(resID) + "\t\t");
+            sb.append("Entity " + resID + "\t\t");
 
             String entry = getData(entryTimes, i);
             String exit = getData(exitTimes, i);
@@ -559,21 +555,19 @@ public class InfoPacket implements Packet {
      * @pre $none
      * @post $none
      */
-    @Override
-    public int getNetServiceType() {
-        return netServiceType;
+    public int getNetServiceLevel() {
+        return netServiceLevel;
     }
 
     /**
      * Sets the network service type of the packet.
      *
-     * @param netServiceType the packet's network service type
-     * @pre netServiceType >= 0
+     * @param netServiceLevel the packet's network service type
+     * @pre netServiceLevel >= 0
      * @post $none
      */
-    @Override
-    public void setNetServiceType(int netServiceType) {
-        this.netServiceType = netServiceType;
+    public void setNetServiceLevel(int netServiceLevel) {
+        this.netServiceLevel = netServiceLevel;
     }
 
     /**

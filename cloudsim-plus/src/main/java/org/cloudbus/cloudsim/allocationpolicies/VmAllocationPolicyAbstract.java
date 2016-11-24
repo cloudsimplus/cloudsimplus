@@ -101,7 +101,8 @@ public abstract class VmAllocationPolicyAbstract implements VmAllocationPolicy {
     protected void mapVmToPm(Vm vm, Host host) {
         // if vm were succesfully created in the host
         getVmTable().put(vm.getUid(), host);
-        HostToVmEventInfo info = new HostToVmEventInfo(host, vm);
+        HostToVmEventInfo info = 
+                new HostToVmEventInfo(host.getSimulation().clock(), host, vm);
         vm.getOnHostAllocationListener().update(info);
     }
 
@@ -115,7 +116,8 @@ public abstract class VmAllocationPolicyAbstract implements VmAllocationPolicy {
      */
     protected Host unmapVmFromPm(Vm vm) {
         final Host host = getVmTable().remove(vm.getUid());
-        HostToVmEventInfo info = new HostToVmEventInfo(host, vm);
+        HostToVmEventInfo info = 
+                new HostToVmEventInfo(host.getSimulation().clock(), host, vm);
         vm.getOnHostDeallocationListener().update(info);
         return host;
     }

@@ -1,12 +1,14 @@
 package org.cloudbus.cloudsim;
 
-import org.cloudbus.cloudsim.core.Nameable;
+import org.cloudbus.cloudsim.core.SimEntity;
+import org.cloudbus.cloudsim.core.SimEvent;
 import org.cloudbus.cloudsim.resources.File;
 import org.cloudbus.cloudsim.allocationpolicies.VmAllocationPolicy;
 import org.cloudbus.cloudsim.resources.FileStorage;
 
 import java.util.Collections;
 import java.util.List;
+import org.cloudbus.cloudsim.core.Simulation;
 
 /**
  * An interface to be implemented by each class that provides Datacenter
@@ -17,7 +19,7 @@ import java.util.List;
  *
  * @author Manoel Campos da Silva Filho
  */
-public interface Datacenter extends Nameable {
+public interface Datacenter extends SimEntity {
 
     /**
      * Adds a file into the resource's storage before the experiment starts. If
@@ -102,7 +104,6 @@ public interface Datacenter extends Nameable {
      */
     Datacenter setStorageList(List<FileStorage> storageList);
 
-
     /**
      * A property that implements the Null Object Design Pattern for
      * {@link Datacenter} objects.
@@ -136,5 +137,12 @@ public interface Datacenter extends Nameable {
         }
         @Override public List<FileStorage> getStorageList() { return Collections.emptyList(); }
         @Override public Datacenter setStorageList(List<FileStorage> storageList) { return Datacenter.NULL; }
+        @Override public Simulation getSimulation() { return Simulation.NULL; }
+        @Override public SimEntity setSimulation(Simulation simulation) { return this; }
+        @Override public void processEvent(SimEvent ev) {}
+        @Override public void run() {}
+        @Override public void startEntity() {}
+        @Override public void shutdownEntity() {}
+        @Override public SimEntity setName(String newName) throws IllegalArgumentException { return this; }
     };
 }

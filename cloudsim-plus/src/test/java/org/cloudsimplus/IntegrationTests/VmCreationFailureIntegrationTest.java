@@ -1,7 +1,8 @@
 package org.cloudsimplus.IntegrationTests;
 
+import org.cloudbus.cloudsim.core.SimEvent;
 import org.cloudbus.cloudsim.util.ExpectedCloudletExecutionResults;
-import java.util.Calendar;
+
 import java.util.List;
 import org.cloudbus.cloudsim.Cloudlet;
 import org.cloudbus.cloudsim.schedulers.CloudletSchedulerSpaceShared;
@@ -13,7 +14,6 @@ import org.cloudsimplus.builders.BrokerBuilderDecorator;
 import org.cloudsimplus.builders.HostBuilder;
 import org.cloudsimplus.builders.SimulationScenarioBuilder;
 import org.cloudbus.cloudsim.core.CloudSim;
-import org.cloudbus.cloudsim.core.SimEvent;
 import org.cloudsimplus.listeners.DatacenterToVmEventInfo;
 import org.cloudsimplus.listeners.HostToVmEventInfo;
 import org.cloudsimplus.util.tablebuilder.CloudletsTableBuilderHelper;
@@ -51,28 +51,29 @@ import org.junit.Before;
  * @see Vm#setOnHostDeallocationListener(org.cloudbus.cloudsim.listeners.EventListener)
  * @see Vm#setOnVmCreationFailureListener(org.cloudbus.cloudsim.listeners.EventListener)
  * @see CloudSim#setOnEventProcessingListener(org.cloudbus.cloudsim.listeners.EventListener)
- * @see Cloudlet#setOnCloudletFinishEventListener(org.cloudbus.cloudsim.listeners.EventListener) 
+ * @see Cloudlet#setOnCloudletFinishEventListener(org.cloudbus.cloudsim.listeners.EventListener)
  *
  * @author Manoel Campos da Silva Filho
  */
 public final class VmCreationFailureIntegrationTest {
     /** The number of times a host was allocated to a VM. */
     private int numberOfHostAllocations = 0;
-    
+
     /** The number of times a host was deallocated to a VM. */
     private int numberOfHostDeallocations = 0;
-    
+
     /** The number of times a VM failed to be created due to lack of host resources. */
     private int numberOfVmCreationFailures = 0;
 
     private SimulationScenarioBuilder scenario;
+    private CloudSim simulation;
 
     /**
-     * A lambda function used by an {@link Vm#setOnHostAllocationListener(org.cloudbus.cloudsim.listeners.EventListener) } 
+     * A lambda function used by an {@link Vm#setOnHostAllocationListener(org.cloudbus.cloudsim.listeners.EventListener) }
      * that will be called every time a Host is
      * allocated to a given VM. It tries to assert that the Host 0 was allocated
      * to the Vm 0 at the expected time.
-     * 
+     *
      * @param evt
      */
     private void onHostAllocation(HostToVmEventInfo evt) {
@@ -82,17 +83,17 @@ public final class VmCreationFailureIntegrationTest {
         if (scenario.getFirstHostFromFirstDatacenter().equals(evt.getHost())
                 && scenario.getFirstVmFromFirstBroker().equals(evt.getVm())) {
             assertEquals(
-                "Host wasn't allocated to Vm at the expected time", 
+                "Host wasn't allocated to Vm at the expected time",
                 0, evt.getTime(), 0.2);
         }
     }
 
     /**
-     * A lambda function used by an {@link Vm#setOnHostDeallocationListener(org.cloudbus.cloudsim.listeners.EventListener) } 
+     * A lambda function used by an {@link Vm#setOnHostDeallocationListener(org.cloudbus.cloudsim.listeners.EventListener) }
      * that will be called every time a Host is
      * deallocated to a given VM. It tries to assert that the Host 0 was
      * deallocated to the Vm 0 at the expected time.
-     * 
+     *
      * @param evt
      */
     private void onHostDeallocation(HostToVmEventInfo evt) {
@@ -100,19 +101,19 @@ public final class VmCreationFailureIntegrationTest {
         Log.printFormattedLine(
                 "# Vm %s moved/removed from Host %s at time %3.0f",
                 evt.getVm().getId(), evt.getHost().getId(), evt.getTime());
-        if (scenario.getFirstHostFromFirstDatacenter().equals(evt.getHost()) && 
+        if (scenario.getFirstHostFromFirstDatacenter().equals(evt.getHost()) &&
             scenario.getFirstVmFromFirstBroker().equals(evt.getVm())) {
             assertEquals(
-                    "Vm wasn't removed from the Host at the expected time", 
+                    "Vm wasn't removed from the Host at the expected time",
                     20, evt.getTime(), 0.2);
         }
     }
 
     /**
-     * A lambda function used by an {@link Vm#setOnVmCreationFailureListener(org.cloudbus.cloudsim.listeners.EventListener) } 
+     * A lambda function used by an {@link Vm#setOnVmCreationFailureListener(org.cloudbus.cloudsim.listeners.EventListener) }
      * that will be called every time a Vm failed to be created
-     * due to lack of host resources. 
-     * 
+     * due to lack of host resources.
+     *
      * @param evt
      */
     private void onVmCreationFailure(DatacenterToVmEventInfo evt) {
@@ -126,8 +127,8 @@ public final class VmCreationFailureIntegrationTest {
     }
 
     /**
-     * A lambda function used by an {@link CloudSim#onEventProcessingListener} 
-     * that will be called every time an event is processed by {@link CloudSim}. 
+     * A lambda function used by an {@link CloudSim#onEventProcessingListener}
+     * that will be called every time an event is processed by {@link CloudSim}.
      * @param evt
      */
     private void onEventProcessing(SimEvent evt) {
@@ -143,30 +144,30 @@ public final class VmCreationFailureIntegrationTest {
             break;
         }
     }
-    
-    
+
+
     /**
-     * A lambda function used by an {@link Vm#setOnUpdateVmProcessingListener(org.cloudbus.cloudsim.listeners.EventListener) } 
+     * A lambda function used by an {@link Vm#setOnUpdateVmProcessingListener(org.cloudbus.cloudsim.listeners.EventListener) }
      * that will be called every time the processing of a Vm is updated inside its host.
-     * Considering there is only one Host and only 1 VM where its cloudlets use a 
-     * {@link UtilizationModelFull} for CPU utilization model, 
+     * Considering there is only one Host and only 1 VM where its cloudlets use a
+     * {@link UtilizationModelFull} for CPU utilization model,
      * at any time, the amount of available Host CPU should be the same.
-     * 
+     *
      * @param evt
      */
     private void onUpdateVmProcessing(HostToVmEventInfo evt) {
         Log.printConcatLine(
-            "- onUpdateVmProcessing at time ", evt.getTime(), " - vm: ", 
-            evt.getVm().getId(), " host ", evt.getHost().getId(), " available mips: ", 
+            "- onUpdateVmProcessing at time ", evt.getTime(), " - vm: ",
+            evt.getVm().getId(), " host ", evt.getHost().getId(), " available mips: ",
             evt.getHost().getAvailableMips());
         assertEquals(200, evt.getHost().getAvailableMips(), 0);
     }
 
     @Before
     public void setUp() {
-        CloudSim.init(1, Calendar.getInstance(), false);
-        CloudSim.setOnEventProcessingListener((evt) -> onEventProcessing(evt));
-        scenario = new SimulationScenarioBuilder();
+        simulation = new CloudSim(1);
+        simulation.setOnEventProcessingListener((evt) -> onEventProcessing(evt));
+        scenario = new SimulationScenarioBuilder(simulation);
         scenario.getDatacenterBuilder().createDatacenter(
                 new HostBuilder()
                 .setVmSchedulerClass(VmSchedulerTimeShared.class)
@@ -209,8 +210,8 @@ public final class VmCreationFailureIntegrationTest {
     }
 
     public void startSimulationAndWaitToStop() throws RuntimeException, NullPointerException {
-        CloudSim.startSimulation();
-        CloudSim.stopSimulation();
+        simulation.start();
+        simulation.stop();
     }
 
     public void printCloudletsExecutionResults(DatacenterBroker broker) {
@@ -227,7 +228,7 @@ public final class VmCreationFailureIntegrationTest {
 
         final List<Cloudlet> cloudletList = broker.getCloudletsFinishedList();
         assertEquals(
-                "The number of finished cloudlets was not as expected", 
+                "The number of finished cloudlets was not as expected",
                 cloudletList.size(), expectedResults.length);
         int i = -1;
         for (Cloudlet cloudlet : cloudletList) {

@@ -12,7 +12,6 @@ import java.util.Date;
 import org.cloudbus.cloudsim.Consts;
 import org.cloudbus.cloudsim.DataCloudTags;
 
-import org.cloudbus.cloudsim.core.CloudSim;
 
 /**
  * Stores related information regarding to a
@@ -82,10 +81,6 @@ public class FileAttribute {
     private boolean readOnly;
 
     /**
-     * Resource ID storing this file.
-     */
-    private int datacenterId;
-    /**
      * The file that this attribute object is related to
      */
     private final File file;
@@ -100,10 +95,10 @@ public class FileAttribute {
         this.file = file;
 
         // set the file creation time. This is absolute time
-        final Calendar cal
-                = (CloudSim.getSimulationCalendar() != null
-                        ? CloudSim.getSimulationCalendar()
-                        : Calendar.getInstance());
+        final Calendar cal = 
+                (file.getDatacenter().getSimulation() != null  ? 
+                file.getDatacenter().getSimulation().getCalendar() : 
+                Calendar.getInstance());
         Date date = cal.getTime();
         if (date == null) {
             creationTime = 0;
@@ -117,7 +112,6 @@ public class FileAttribute {
         type = File.TYPE_UNKOWN;
         lastUpdateTime = 0;
         cost = 0;
-        datacenterId = -1;
         masterCopy = true;
         readOnly = false;
         setFileSize(fileSize);
@@ -137,7 +131,6 @@ public class FileAttribute {
         }
 
         destinationAttr.setFileSize(fileSize);
-        destinationAttr.setResourceID(datacenterId);
         destinationAttr.setOwnerName(ownerName);
         destinationAttr.setUpdateTime(lastUpdateTime);
         destinationAttr.setRegistrationId(id);
@@ -173,30 +166,6 @@ public class FileAttribute {
      */
     public long getCreationTime() {
         return creationTime;
-    }
-
-    /**
-     * Sets the ID of the datacenter that will store the file.
-     *
-     * @param datacenterId the ID of the datacenter that will store the file
-     * @return <tt>true</tt> if successful, <tt>false</tt> otherwise
-     */
-    public boolean setResourceID(int datacenterId) {
-        if (datacenterId == -1) {
-            return false;
-        }
-
-        this.datacenterId = datacenterId;
-        return true;
-    }
-
-    /**
-     * Gets the ID of the datacenter that stores the file.
-     *
-     * @return the resource ID
-     */
-    public int getDatacenterId() {
-        return datacenterId;
     }
 
     /**

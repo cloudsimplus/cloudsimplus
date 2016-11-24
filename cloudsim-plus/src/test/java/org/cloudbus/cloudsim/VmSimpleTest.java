@@ -15,6 +15,8 @@ import static org.easymock.EasyMock.verify;
 
 import java.util.ArrayList;
 import java.util.List;
+import org.cloudbus.cloudsim.core.CloudSim;
+import org.cloudbus.cloudsim.mocks.CloudSimMocker;
 import org.cloudbus.cloudsim.mocks.Mocks;
 import org.cloudsimplus.listeners.DatacenterToVmEventInfo;
 import org.cloudsimplus.listeners.EventListener;
@@ -29,7 +31,6 @@ import org.junit.Test;
 import static org.easymock.EasyMock.createMock;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
 /**
@@ -66,7 +67,7 @@ public class VmSimpleTest {
      * @return
      */
     public static Vm createVmWithOnePeAndHalfMips(final int vmId) {
-        return VmSimpleTest.createVm(vmId, MIPS / 2, 1, RAM, BW, SIZE, null);
+        return createVm(vmId, MIPS / 2, 1, RAM, BW, SIZE, CloudletScheduler.NULL);
     }
 
     /**
@@ -77,7 +78,20 @@ public class VmSimpleTest {
      * @return
      */
     public static Vm createVmWithOnePeAndTotalMips(final int vmId) {
-        return VmSimpleTest.createVm(vmId, MIPS, 1, RAM, BW, SIZE, null);
+        return createVm(vmId, MIPS, 1, RAM, BW, SIZE, CloudletScheduler.NULL);
+    }
+
+
+    /**
+     * Creates a VM with the given numberOfPes and default configuration for
+     * MIPS, RAM, BW and Storage.
+     *
+     * @param vmId
+     * @param numberOfPes
+     * @return
+     */
+    public static VmSimple createVm(final int vmId, final int numberOfPes) {
+        return createVm(vmId, MIPS, numberOfPes);
     }
 
     /**
@@ -89,27 +103,9 @@ public class VmSimpleTest {
      * @param numberOfPes
      * @return
      */
-    public static VmSimple createVm(final int vmId,
-            final double mips, final int numberOfPes) {
-        VmSimple vm = new VmSimple(vmId, mips, numberOfPes);
-        vm.setRam(RAM).setBw(BW).setSize(SIZE).setCloudletScheduler(CloudletScheduler.NULL);
-        return vm;
+    public static VmSimple createVm(final int vmId, final double mips, final int numberOfPes) {
+        return createVm(vmId, mips, numberOfPes, RAM, BW, SIZE, CloudletScheduler.NULL);
     }
-
-    /**
-     * Creates a VM with the given numberOfPes and default configuration for
-     * MIPS, RAM, BW and Storage.
-     *
-     * @param vmId
-     * @param numberOfPes
-     * @return
-     */
-    public static VmSimple createVm(final int vmId, final int numberOfPes) {
-        VmSimple vm = new VmSimple(vmId, MIPS, numberOfPes);
-        vm.setRam(RAM).setBw(BW).setSize(SIZE).setCloudletScheduler(CloudletScheduler.NULL);
-        return vm;
-    }
-
     /**
      * Creates a VM with the given configuration
      *
@@ -119,15 +115,20 @@ public class VmSimpleTest {
      * @param ram
      * @param bw
      * @param storage
-     * @param scheduler the cloudlet scheduler
+     * @param scheduler
      * @return
      */
     public static VmSimple createVm(final int vmId,
             final double mips, final int numberOfPes,
             final long ram, final long bw, final long storage,
-            final CloudletScheduler scheduler) {
+            final CloudletScheduler scheduler) 
+    {
+        CloudSim cloudsim = CloudSimMocker.createMock(mocker -> mocker.clock(0));
         VmSimple vm = new VmSimple(vmId, mips, numberOfPes);
-        vm.setRam(ram).setBw(bw).setSize(storage).setCloudletScheduler(scheduler);
+        vm.setRam(ram).setBw(bw)
+                .setSize(storage)
+                .setCloudletScheduler(scheduler)
+                .setSimulation(cloudsim);
         return vm;
     }
 
@@ -142,11 +143,8 @@ public class VmSimpleTest {
      */
     public static VmSimple createVmWithSpecificNumberOfPEsForSpecificUser(
         final int vmId, final DatacenterBroker broker, final int numberOfPes) {
-        VmSimple vm = new VmSimple(vmId, MIPS, numberOfPes);
-        vm
-            .setBroker(broker)
-            .setRam(RAM).setBw(BW).setSize(SIZE)
-            .setCloudletScheduler(CloudletScheduler.NULL);
+        VmSimple vm = createVm(vmId, MIPS, numberOfPes, RAM, BW, SIZE, CloudletScheduler.NULL);
+        vm.setBroker(broker);
         return vm;
     }
 
@@ -415,9 +413,7 @@ public class VmSimpleTest {
      * @return
      */
     public static VmSimple createVm(CloudletScheduler cloudletScheduler) {
-        VmSimple vm = new VmSimple(ID, MIPS, PES_NUMBER);
-        vm.setRam(RAM).setBw(BW).setSize(SIZE).setCloudletScheduler(cloudletScheduler);
-        return vm;
+        return createVm(ID, MIPS, PES_NUMBER, RAM, BW, SIZE, cloudletScheduler);
     }
 
     @Test

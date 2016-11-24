@@ -11,7 +11,7 @@ package org.cloudsimplus.sla;
  */
 public class SlaMetricsMonitoring {
     private String metric;
-    
+
     public void monitoringResponseTime(String metric){
         this.metric = metric; 
         System.out.println("\n-->The metric: " + metric + " was violated !!");

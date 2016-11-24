@@ -1,7 +1,5 @@
 package org.cloudsimplus.IntegrationTests;
 
-import java.util.Calendar;
-
 import org.cloudbus.cloudsim.Host;
 import org.cloudbus.cloudsim.Log;
 import org.cloudbus.cloudsim.brokers.DatacenterBroker;
@@ -47,6 +45,7 @@ public final class CheckHostAvailableMipsTest {
 
     private SimulationScenarioBuilder scenario;
     private UtilizationModel utilizationModel;
+    private CloudSim simulation;
 
     /**
      * A lambda function used by the {@link Host#setOnUpdateVmsProcessingListener(org.cloudbus.cloudsim.listeners.EventListener)}
@@ -85,9 +84,9 @@ public final class CheckHostAvailableMipsTest {
 
     @Before
     public void setUp() {
-        CloudSim.init(1, Calendar.getInstance(), false);
+        this.simulation = new  CloudSim(1);
         utilizationModel = new UtilizationModelFull();
-        scenario = new SimulationScenarioBuilder();
+        scenario = new SimulationScenarioBuilder(simulation);
         scenario.getDatacenterBuilder().setSchedulingInterval(2).createDatacenter(
             new HostBuilder()
                 .setVmSchedulerClass(VmSchedulerSpaceShared.class)
@@ -124,8 +123,8 @@ public final class CheckHostAvailableMipsTest {
     }
 
     public void startSimulationAndWaitToStop() throws RuntimeException, NullPointerException {
-        CloudSim.startSimulation();
-        CloudSim.stopSimulation();
+        simulation.start();
+        simulation.stop();
     }
 
     public void printCloudletsExecutionResults(DatacenterBroker broker) {

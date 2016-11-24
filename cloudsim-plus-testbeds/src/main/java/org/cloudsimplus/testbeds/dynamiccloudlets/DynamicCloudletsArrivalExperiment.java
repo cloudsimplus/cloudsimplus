@@ -39,7 +39,7 @@ final class DynamicCloudletsArrivalExperiment extends SimulationExperiment {
 
 	@Override
 	protected DatacenterBroker createBroker() {
-		return new DatacenterBrokerSimple("broker0");
+		return new DatacenterBrokerSimple(getCloudsim());
 	}
 
     @Override

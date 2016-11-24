@@ -21,14 +21,11 @@ import java.util.List;
 import org.cloudbus.cloudsim.core.CloudSim;
 import org.cloudsimplus.listeners.EventListener;
 import org.cloudsimplus.listeners.VmToCloudletEventInfo;
+import org.easymock.EasyMock;
 import org.junit.Assert;
 
 import org.junit.Before;
 import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.powermock.api.easymock.PowerMock;
-import org.powermock.core.classloader.annotations.PrepareForTest;
-import org.powermock.modules.junit4.PowerMockRunner;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertSame;
 
@@ -36,8 +33,6 @@ import static org.junit.Assert.assertSame;
  * @author	Anton Beloglazov
  * @since	CloudSim Toolkit 2.0
  */
-@RunWith(PowerMockRunner.class)
-@PrepareForTest({CloudSim.class}) //to intercept and mock static method calls
 public class CloudletSimpleTest {
 
     private static final long CLOUDLET_LENGTH = 1000;
@@ -89,9 +84,13 @@ public class CloudletSimpleTest {
     public void testGetWaitingTime() {
         final double arrivalTime = 0.0, execStartTime = 10.0;
         final int datacenterId = 0;
-        CloudSimMocker.build(mocker -> mocker.clock(arrivalTime).getEntityName(datacenterId));
+        CloudSim cloudsim = CloudSimMocker.createMock(mocker -> {
+            mocker.clock(arrivalTime);
+            mocker.getEntityName(datacenterId);
+        });
 
         CloudletSimple cloudlet = createCloudlet();
+        cloudlet.setSimulation(cloudsim);
         assertEquals(0, cloudlet.getWaitingTime(), 0);
         cloudlet.assignCloudletToDatacenter(datacenterId, 0);
         final double expectedWaitingTime = execStartTime - arrivalTime;
@@ -136,9 +135,13 @@ public class CloudletSimpleTest {
     public void testGetDatacenterArrivalTime() {
         final double submissionTime = 1;
         final int datacenterId = 0;
-        CloudSimMocker.build(mocker -> mocker.clock(submissionTime).getEntityName(datacenterId));
+        CloudSim cloudsim = CloudSimMocker.createMock(mocker -> {
+            mocker.clock(submissionTime);
+            mocker.getEntityName(datacenterId);
+        });
 
         CloudletSimple cloudlet = createCloudlet();
+        cloudlet.setSimulation(cloudsim);
         assertEquals(Cloudlet.NOT_ASSIGNED, cloudlet.getDatacenterArrivalTime(), 0);
 
         cloudlet.assignCloudletToDatacenter(datacenterId, 0);
@@ -153,7 +156,7 @@ public class CloudletSimpleTest {
 
         cloudlet.assignCloudletToDatacenter(0, 0);
         final double arrivalTime = 0.0, execStartTime = 10.0;
-        CloudSimMocker.build(mocker -> mocker.clock(arrivalTime));
+        CloudSimMocker.createMock(mocker -> mocker.clock(arrivalTime));
 
         cloudlet.registerArrivalOfCloudletIntoDatacenter();
         cloudlet.setExecStartTime(execStartTime);
@@ -170,12 +173,14 @@ public class CloudletSimpleTest {
         final double actualCpuTime = simulationClock - execStartTime;
         final int datacenterId = 0;
 
-        CloudSimMocker.build(mocker ->
-                mocker.clock(submissionTime)
-                    .getEntityName(datacenterId)
-                    .clock(simulationClock));
+        CloudSim cloudsim = CloudSimMocker.createMock(mocker -> {
+            mocker.clock(submissionTime);
+            mocker.getEntityName(datacenterId);
+            mocker.clock(simulationClock);
+        });
 
         CloudletSimple cloudlet = createCloudlet();
+        cloudlet.setSimulation(cloudsim);
         assertEquals(Cloudlet.NOT_ASSIGNED, cloudlet.getActualCPUTime(), 0);
 
         cloudlet.assignCloudletToDatacenter(datacenterId, 0);
@@ -184,7 +189,7 @@ public class CloudletSimpleTest {
         cloudlet.setCloudletStatus(Cloudlet.Status.SUCCESS);
         assertEquals(actualCpuTime, cloudlet.getActualCPUTime(), 0);
 
-        PowerMock.verify(CloudSim.class);
+        EasyMock.verify(cloudsim);
     }
 
     @Test
@@ -383,12 +388,18 @@ public class CloudletSimpleTest {
             UtilizationModel utilizationModelBW,
             long length, int numberOfPes) {
         CloudletSimple cloudlet = new CloudletSimple(id, length, numberOfPes);
+        CloudSim cloudsim = CloudSimMocker.createMock(mocker -> {
+            mocker.clock(0).anyTimes();
+            mocker.getEntityName(EasyMock.anyInt()).anyTimes();
+        });
+        
         cloudlet
             .setCloudletFileSize(CLOUDLET_FILE_SIZE)
             .setCloudletOutputSize(CLOUDLET_OUTPUT_SIZE)
             .setUtilizationModelCpu(utilizationModelCPU)
             .setUtilizationModelRam(utilizationModelRAM)
             .setUtilizationModelBw(utilizationModelBW);
+        cloudlet.setSimulation(cloudsim);
         return cloudlet;
     }
 

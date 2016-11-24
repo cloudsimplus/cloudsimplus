@@ -14,9 +14,11 @@ import org.cloudbus.cloudsim.brokers.DatacenterBrokerSimple;
 public class BrokerBuilder extends Builder implements BrokerBuilderInterface {
     private static final String BROKER_NAME_FORMAT = "Broker%d";
     private final List<DatacenterBroker> brokers;
+    private final SimulationScenarioBuilder scenario;
     private int numberOfCreatedBrokers;
 
-    public BrokerBuilder() {
+    public BrokerBuilder(SimulationScenarioBuilder scenario) {
+        this.scenario = scenario;
         this.brokers = new ArrayList<>();
         this.numberOfCreatedBrokers = 0;
     }
@@ -24,7 +26,7 @@ public class BrokerBuilder extends Builder implements BrokerBuilderInterface {
     @Override
     public BrokerBuilderDecorator createBroker() {
         String name = String.format(BROKER_NAME_FORMAT, numberOfCreatedBrokers++);
-        DatacenterBrokerSimple broker = new DatacenterBrokerSimple(name);
+        DatacenterBrokerSimple broker = new DatacenterBrokerSimple(scenario.getSimulation());
         brokers.add(broker);
         return new BrokerBuilderDecorator(this, broker);
     }

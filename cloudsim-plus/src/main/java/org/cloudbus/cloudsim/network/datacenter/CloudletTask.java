@@ -58,9 +58,9 @@ public abstract class CloudletTask implements Identificable {
     private long memory;
 
     /**
-     * @see #getNetworkCloudlet()
+     * @see #getCloudlet()
      */
-    private NetworkCloudlet networkCloudlet;
+    private NetworkCloudlet cloudlet;
 
     /**
      * Creates a new task.
@@ -127,12 +127,12 @@ public abstract class CloudletTask implements Identificable {
      * Gets the NetworkCloudlet that the task belongs to.
      * @return
      */
-    public NetworkCloudlet getNetworkCloudlet() {
-        return networkCloudlet;
+    public NetworkCloudlet getCloudlet() {
+        return cloudlet;
     }
 
-    public void setNetworkCloudlet(NetworkCloudlet networkCloudlet) {
-        this.networkCloudlet = networkCloudlet;
+    public void setCloudlet(NetworkCloudlet cloudlet) {
+        this.cloudlet = cloudlet;
     }
 
     /**
@@ -156,7 +156,7 @@ public abstract class CloudletTask implements Identificable {
         //If the task was not finished before and try to set it to finished,
         //stores the finishTime
         if(!this.finished && finished)
-            finishTime = CloudSim.clock();
+            finishTime = cloudlet.getSimulation().clock();
 
         this.finished = finished;
     }

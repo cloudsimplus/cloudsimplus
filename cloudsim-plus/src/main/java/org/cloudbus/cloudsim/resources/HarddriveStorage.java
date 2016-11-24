@@ -9,6 +9,7 @@
 package org.cloudbus.cloudsim.resources;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import org.cloudbus.cloudsim.Log;
 
@@ -296,11 +297,12 @@ public class HarddriveStorage implements FileStorage {
 
     @Override
     public List<String> getFileNameList() {
-        return fileNameList;
+        return Collections.unmodifiableList(fileNameList);
     }
 
-    protected List<File> getFileList(){
-        return fileList;
+    @Override
+    public List<File> getFileList(){
+        return Collections.unmodifiableList(fileList);
     }
 
     /**

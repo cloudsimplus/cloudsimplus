@@ -14,9 +14,9 @@ import org.cloudbus.cloudsim.Log;
 import org.cloudbus.cloudsim.core.CloudSim;
 
 /**
- * A task executed by a {@link NetworkCloudlet} that 
+ * A task executed by a {@link NetworkCloudlet} that
  * receives data from a {@link CloudletSendTask}.
- * Each receiver task expects to receive packets 
+ * Each receiver task expects to receive packets
  * from just one VM.
  *
  * <p>
@@ -36,17 +36,17 @@ import org.cloudbus.cloudsim.core.CloudSim;
  * @author Manoel Campos da Silva Filho
  *
  * @since CloudSim Toolkit 1.0
- * 
+ *
  * @todo @author manoelcampos For how long will the task be waiting for packets?
  * The sender task has a defined amount of packets to send, but
  * the receiver doesn't have to know how many packets to wait for.
- * Considering a real distributed app such as a web app, the sender can be 
+ * Considering a real distributed app such as a web app, the sender can be
  * a browser and the receiver a web server. In this case,
  * the web server runs indefinitely. However, the simulation
  * has to have a time interval. For instance, it may be simulated
  * the operation of this distributed app for 24 hours.
  * By this way, the receiver task could have a specific amount
- * of time to run. In the web app scenario, the web server just 
+ * of time to run. In the web app scenario, the web server just
  * keep running, waiting for any client to send packets to it,
  * but it is not required that a client do that. The web app
  * may not be accessed during this time.
@@ -55,26 +55,26 @@ import org.cloudbus.cloudsim.core.CloudSim;
  * and has to have a timeout period so that the client can
  * skip waiting to receive an answer and move to the next task
  * or finish.
- * 
+ *
  * Each task has to have a status (such as the Cloudlet itself)
  * to define if it was executed successfully or not.
  * For instance, a receive ask that is waiting to receive
  * a list of packets can be configured to finish
  * after a given timeout without receiving the expected packets.
- * 
+ *
  * How is the network delay being computed?
  *
  */
 public class CloudletReceiveTask extends CloudletTask {
     private final List<HostPacket> packetsReceived;
-    
+
     /**
-     * @see #getNumberOfExpectedPacketsToReceive() 
+     * @see #getNumberOfExpectedPacketsToReceive()
      */
     private long numberOfExpectedPacketsToReceive;
 
     /**
-     * @see #getSourceVmId() 
+     * @see #getSourceVmId()
      */
     private final int sourceVmId;
 
@@ -89,7 +89,7 @@ public class CloudletReceiveTask extends CloudletTask {
         this.packetsReceived = new ArrayList<>();
         this.sourceVmId = sourceVm;
     }
-    
+
     /**
      * Receives a packet sent from a {@link CloudletSendTask}
      * and add it the the received packet list.
@@ -97,7 +97,7 @@ public class CloudletReceiveTask extends CloudletTask {
      * @param packet the packet received
      */
     public void receivePacket(HostPacket packet) {
-        packet.setReceiveTime(CloudSim.clock());
+        packet.setReceiveTime(getCloudlet().getSimulation().clock());
         this.packetsReceived.add(packet);
         boolean finished = this.packetsReceived.size() >= numberOfExpectedPacketsToReceive;
         setFinished(finished);
@@ -113,7 +113,7 @@ public class CloudletReceiveTask extends CloudletTask {
 
     /**
      * Gets the Vm where it is expected to receive packets from.
-     * @return 
+     * @return
      */
     public int getSourceVmId() {
         return sourceVmId;
@@ -123,7 +123,7 @@ public class CloudletReceiveTask extends CloudletTask {
      * The number of packets that are expected to be received.
      * After this number of packets is received, the task
      * is marked as finished.
-     * @return 
+     * @return
      */
     public long getNumberOfExpectedPacketsToReceive() {
         return numberOfExpectedPacketsToReceive;

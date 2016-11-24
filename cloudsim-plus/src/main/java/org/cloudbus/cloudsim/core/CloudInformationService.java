@@ -7,11 +7,11 @@
  */
 package org.cloudbus.cloudsim.core;
 
+import org.cloudbus.cloudsim.Log;
+
 import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
-
-import org.cloudbus.cloudsim.Log;
 
 /**
  * A Cloud Information Service (CIS) is an entity that provides cloud resource
@@ -19,6 +19,7 @@ import org.cloudbus.cloudsim.Log;
  * readiness to process Cloudlets by registering themselves with this entity.
  * Other entities such as the resource broker can contact this class for
  * resource discovery service, which returns a list of registered resource IDs.
+ *
  * In summary, it acts like a yellow page service. This class will be created by
  * CloudSim upon initialisation of the simulation. Hence, do not need to worry
  * about creating an object of this class.
@@ -27,7 +28,7 @@ import org.cloudbus.cloudsim.Log;
  * @author Rajkumar Buyya
  * @since CloudSim Toolkit 1.0
  */
-public class CloudInformationService extends SimEntity {
+public class CloudInformationService extends CloudSimEntity {
 
     /**
      * A list containing the id of all Datacenters that are registered at the
@@ -50,17 +51,13 @@ public class CloudInformationService extends SimEntity {
     /**
      * Instantiates a new CloudInformationService object.
      *
-     * @param name the name to be associated with this entity (as required by
-     * {@link SimEntity} class)
-     * @throws IllegalArgumentException when creating this entity before
-     * initialising CloudSim package or this entity name is <tt>null</tt> or
-     * empty
+     * @param simulation The CloudSim instance that represents the simulation the Entity is related to
      * @pre name != null
      * @post $none
      *
      */
-    public CloudInformationService(String name) throws IllegalArgumentException {
-        super(name);
+    CloudInformationService(CloudSim simulation) {
+        super(simulation);
         datacenterIdsList = new LinkedList<>();
         datacenterIdsArList = new LinkedList<>();
         cisList = new LinkedList<>();
@@ -70,8 +67,7 @@ public class CloudInformationService extends SimEntity {
      * The method has no effect at the current class.
      */
     @Override
-    public void startEntity() {
-    }
+    public void startEntity() {}
 
     @Override
     public void processEvent(SimEvent ev) {
@@ -89,7 +85,7 @@ public class CloudInformationService extends SimEntity {
                 id = ((Integer) ev.getData());
 
                 // Send the regional GIS list back to sender
-                super.send(id, 0L, ev.getTag(), cisList);
+                super.send(id, 0, ev.getTag(), cisList);
                 break;
 
             // A datacenter is requesting to register.
@@ -110,7 +106,7 @@ public class CloudInformationService extends SimEntity {
                 id = ((Integer) ev.getData());
 
                 // Send the resource list back to the sender
-                super.send(id, 0L, ev.getTag(), datacenterIdsList);
+                super.send(id, 0, ev.getTag(), datacenterIdsList);
                 break;
 
             // A Broker is requesting for a list of all datacenters that support advanced reservation.
@@ -120,7 +116,7 @@ public class CloudInformationService extends SimEntity {
                 id = ((Integer) ev.getData());
 
                 // Send the resource AR list back to the sender
-                super.send(id, 0L, ev.getTag(), datacenterIdsArList);
+                super.send(id, 0, ev.getTag(), datacenterIdsArList);
                 break;
 
             default:
@@ -187,10 +183,10 @@ public class CloudInformationService extends SimEntity {
         if (id == null || id < 0) {
             return false;
         }
-        
+
         return datacenterExists(datacenterIdsList, id);
     }
-    
+
     /**
      * Checks whether a datacenter list contains a particular datacenter id.
      *
@@ -207,15 +203,15 @@ public class CloudInformationService extends SimEntity {
         }
 
         return list.contains(datacenterId);
-    }    
+    }
 
     /**
      * Process non-default received events that aren't processed by the
-     * {@link #processEvent(org.cloudbus.cloudsim.core.SimEvent)} method. This
+     * {@link #processEvent(SimEvent)} method. This
      * method should be overridden by subclasses in other to process new defined
      * events.
      *
-     * @param ev a SimEvent object
+     * @param ev a CloudSimEvent object
      * @pre ev != null
      * @post $none
      */
@@ -227,7 +223,7 @@ public class CloudInformationService extends SimEntity {
         }
 
         Log.printLine("CloudInformationSevice.processOtherEvent(): " + "Unable to handle a request from "
-                + CloudSim.getEntityName(ev.getSource()) + " with event tag = " + ev.getTag());
+                + getSimulation().getEntityName(ev.getSource()) + " with event tag = " + ev.getTag());
     }
 
     /**

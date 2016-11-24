@@ -1,6 +1,8 @@
 package org.cloudbus.cloudsim.resources;
 
 import org.cloudbus.cloudsim.DataCloudTags;
+import org.cloudbus.cloudsim.Datacenter;
+import org.cloudbus.cloudsim.DatacenterSimple;
 import org.junit.Test;
 import static org.junit.Assert.*;
 
@@ -11,11 +13,11 @@ import static org.junit.Assert.*;
 public class FileTest {
     private final String NAME = "file1.txt";
     private final int SIZE = 100;
-    
+
     private File createFile(){
         return createFile(NAME);
     }
-    
+
     private File createFile(final String name){
         return new File(name, SIZE);
     }
@@ -85,7 +87,7 @@ public class FileTest {
         File instance = createFile(SIZE);
         int attributeSize =  DataCloudTags.PKT_SIZE + NAME.length();
         assertEquals(attributeSize, instance.getAttributeSize());
-        
+
         final String owner = "Manoel Campos";
         instance.setOwnerName(owner);
         attributeSize += owner.length();
@@ -93,12 +95,11 @@ public class FileTest {
     }
 
     @Test
-    public void testSetDatacenterId() {
-        System.out.println("setResourceID");
+    public void testSetDatacenterToNull() {
+        System.out.println("setDatacenter");
         File instance = createFile();
-        final int datacenterId = 1;
-        assertTrue(instance.setDatacenterId(datacenterId));
-        assertEquals(datacenterId, instance.getDatacenterId(), 0);
+        instance.setDatacenter(null);
+        assertEquals(Datacenter.NULL, instance.getDatacenter());
     }
 
     @Test
@@ -116,7 +117,7 @@ public class FileTest {
         assertTrue(File.isValid("new-file.txt"));
         assertTrue(File.isValid("file1.txt"));
         assertFalse(File.isValid(""));
-        
+
         final String nullStr = null;
         assertFalse(File.isValid(nullStr));
         assertTrue(File.isValid("file with blank spaces.txt"));
@@ -147,10 +148,10 @@ public class FileTest {
         assertEquals(SIZE, instance.getSize());
         assertTrue(instance.setSize(fileSize));
         assertEquals(fileSize, instance.getSize());
-        
+
         assertFalse(instance.setSize(-1));
         assertEquals(fileSize, instance.getSize());
-        
+
         final int zero = 0;
         assertTrue(instance.setSize(zero));
         assertEquals(zero, instance.getSize());
@@ -162,7 +163,7 @@ public class FileTest {
         final double time = 10;
         File instance = createFile();
         assertEquals(0, instance.getLastUpdateTime(), 0.0);
-        
+
         assertTrue(instance.setUpdateTime(time));
         assertEquals(time, instance.getLastUpdateTime(), 0.0);
     }
@@ -177,12 +178,12 @@ public class FileTest {
         assertTrue(instance.setRegistrationID(0));
         assertEquals(id0, instance.getRegistrationID());
         assertTrue(instance.isRegistered());
-        
+
         final int id1 = 1;
         assertTrue(instance.setRegistrationID(id1));
         assertEquals(id1, instance.getRegistrationID());
         assertTrue(instance.isRegistered());
-        
+
         assertFalse(instance.setRegistrationID(-1));
         assertEquals(id1, instance.getRegistrationID());
         assertTrue(instance.isRegistered());
@@ -200,7 +201,7 @@ public class FileTest {
         final int type0 = 0;
         assertTrue(instance.setType(type0));
         assertEquals(type0, instance.getType(), 0);
-        
+
         final int type2 = 2;
         assertTrue(instance.setType(type2));
         assertEquals(type2, instance.getType(), 0);
@@ -221,13 +222,13 @@ public class FileTest {
         final int checksum0 = 0;
         assertTrue(instance.setChecksum(checksum0));
         assertEquals(checksum0, instance.getChecksum(), 0);
-        
+
         final int checksum2 = 2;
         assertTrue(instance.setChecksum(checksum2));
         assertEquals(checksum2, instance.getChecksum(), 0);
 
         assertFalse(instance.setChecksum(-1));
-        assertEquals(checksum2, instance.getChecksum(), 0);   
+        assertEquals(checksum2, instance.getChecksum(), 0);
     }
 
     @Test
@@ -235,15 +236,15 @@ public class FileTest {
         System.out.println("setCost");
         final double cost = 10;
         File instance = createFile();
-        
+
         assertTrue(instance.setCost(cost));
         assertEquals(cost, instance.getCost(), 0.0);
         assertFalse(instance.setCost(-1));
-        
+
         final double zero = 0;
         assertTrue(instance.setCost(zero));
         assertEquals(zero, instance.getCost(), 0.0);
-        
+
         final double newCost = 20;
         assertTrue(instance.setCost(newCost));
         assertEquals(newCost, instance.getCost(), 0.0);
@@ -254,10 +255,10 @@ public class FileTest {
         System.out.println("setMasterCopy");
         File instance = createFile();
         assertTrue(instance.isMasterCopy());
-        
+
         instance.setMasterCopy(false);
         assertFalse(instance.isMasterCopy());
-        
+
         instance.setMasterCopy(true);
         assertTrue(instance.isMasterCopy());
     }
@@ -268,10 +269,10 @@ public class FileTest {
         System.out.println("setReadOnly");
         File instance = createFile();
         assertFalse(instance.isReadOnly());
-        
+
         instance.setReadOnly(true);
         assertTrue(instance.isReadOnly());
-        
+
         instance.setReadOnly(false);
         assertFalse(instance.isReadOnly());
     }
@@ -282,7 +283,7 @@ public class FileTest {
         final double time1 = 1, zero = 0;
         File instance = createFile();
         assertEquals(zero, instance.getTransactionTime(), zero);
-        
+
         assertTrue(instance.setTransactionTime(time1));
         assertEquals(time1, instance.getTransactionTime(), 0);
 
@@ -292,7 +293,7 @@ public class FileTest {
         final double time2 = 2;
         assertTrue(instance.setTransactionTime(time2));
         assertEquals(time2, instance.getTransactionTime(), 0);
-        
+
         assertFalse(instance.setTransactionTime(-1));
         assertEquals(time2, instance.getTransactionTime(), 0);
     }
@@ -303,5 +304,5 @@ public class FileTest {
         File instance = createFile(NAME);
         assertEquals(NAME, instance.toString());
     }
-    
+
 }

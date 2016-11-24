@@ -10,7 +10,6 @@ package org.cloudsimplus.examples.migration;
 
 import org.cloudbus.cloudsim.utilizationmodels.UtilizationModelArithmeticProgression;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.List;
 
 import org.cloudbus.cloudsim.Cloudlet;
@@ -91,7 +90,6 @@ public class MigrationExample1 {
      */
     private static final double HOST_UTILIZATION_THRESHOLD_FOR_VM_MIGRATION = 0.7;
 
-    private static final String VMM = "Xen";
     private static final int    VM_MIPS = 1000;
     private static final long   VM_SIZE = 1000; //image size (MB)
     private static final int    VM_RAM = 10000; //vm memory (MB)
@@ -124,6 +122,7 @@ public class MigrationExample1 {
     private static final int   NUMBER_OF_CLOUDLETS_TO_CREATE_BY_VM = 1;
 
     private static final List<Vm> vmlist = new ArrayList<>();
+    private static CloudSim simulation;
 
     /**
      * Starts the example.
@@ -133,29 +132,24 @@ public class MigrationExample1 {
     public static void main(String[] args) {
         Log.printConcatLine("Starting ", MigrationExample1.class.getSimpleName(), "...");
 
-        try {
-            int num_user = 2;   // number of cloud users
-            Calendar calendar = Calendar.getInstance();
-            boolean trace_flag = false;  // mean trace events
-            CloudSim.init(num_user, calendar, trace_flag);
+        int num_user = 2;   // number of cloud users
+        boolean trace_flag = false;  // mean trace events
+        simulation = new CloudSim(num_user, trace_flag);
 
-            @SuppressWarnings("unused")
-            Datacenter datacenter0 = createDatacenter("Datacenter_0");
+        @SuppressWarnings("unused")
+        Datacenter datacenter0 = createDatacenter();
 
-            DatacenterBroker broker = createBroker(1);
-            createAndSubmitVms(broker);
+        DatacenterBroker broker = createBroker();
+        createAndSubmitVms(broker);
 
-            createAndSubmitCloudlets(broker);
+        createAndSubmitCloudlets(broker);
 
-            CloudSim.startSimulation();
-            CloudSim.stopSimulation();
+        simulation.start();
+        simulation.stop();
 
-            new CloudletsTableBuilderHelper(broker.getCloudletsFinishedList()).build();
+        new CloudletsTableBuilderHelper(broker.getCloudletsFinishedList()).build();
 
-            Log.printConcatLine(MigrationExample1.class.getSimpleName(), " finished!");
-        } catch (RuntimeException e) {
-            Log.printFormattedLine("Simulation finished due to unexpected error: %s", e);
-        }
+        Log.printConcatLine(MigrationExample1.class.getSimpleName(), " finished!");
     }
 
     public static void createAndSubmitCloudlets(DatacenterBroker broker) {
@@ -194,6 +188,7 @@ public class MigrationExample1 {
           .setRam(VM_RAM).setBw(VM_BW).setSize(VM_SIZE)
           .setBroker(broker)
           .setCloudletScheduler(new CloudletSchedulerDynamicWorkload(VM_MIPS, VM_PES_NUM));
+
         Log.printConcatLine(
                 "#Requested creation of VM ", vm.getId(), " with ", VM_MIPS, " MIPS x ", VM_PES_NUM);
         return vm;
@@ -263,7 +258,7 @@ public class MigrationExample1 {
                 hostingVm, broker, false);
     }
 
-    private static Datacenter createDatacenter(String name) {
+    private static Datacenter createDatacenter() {
         ArrayList<PowerHost> hostList = new ArrayList<>();
         for(int i = 0; i < NUMBER_OF_HOSTS_TO_CREATE; i++){
             hostList.add(createHost(i, HOST_NUMBER_OF_PES, HOST_MIPS_BY_PE));
@@ -283,7 +278,7 @@ public class MigrationExample1 {
                 new PowerVmSelectionPolicyMinimumUtilization(),
                 HOST_UTILIZATION_THRESHOLD_FOR_VM_MIGRATION);
 
-        PowerDatacenter dc = new PowerDatacenter(name, characteristics, allocationPolicy);
+        PowerDatacenter dc = new PowerDatacenter(simulation, characteristics, allocationPolicy);
         dc.setDisableMigrations(false).setSchedulingInterval(SCHEDULE_TIME_TO_PROCESS_DATACENTER_EVENTS);
         return dc;
     }
@@ -323,7 +318,7 @@ public class MigrationExample1 {
 
     //We strongly encourage users to develop their own broker policies, to submit vms and cloudlets according
     //to the specific rules of the simulated scenario
-    private static DatacenterBroker createBroker(int id) {
-        return new DatacenterBrokerSimple("Broker" + id);
+    private static DatacenterBroker createBroker() {
+        return new DatacenterBrokerSimple(simulation);
     }
 }

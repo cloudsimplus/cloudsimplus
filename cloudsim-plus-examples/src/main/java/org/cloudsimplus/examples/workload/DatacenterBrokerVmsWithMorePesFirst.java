@@ -5,6 +5,7 @@ import java.util.Comparator;
 import java.util.List;
 import org.cloudbus.cloudsim.Vm;
 import org.cloudbus.cloudsim.brokers.DatacenterBrokerSimple;
+import org.cloudbus.cloudsim.core.CloudSim;
 
 /**
  * A Broker which requests for creation of VMs inside a datacenter
@@ -15,8 +16,8 @@ import org.cloudbus.cloudsim.brokers.DatacenterBrokerSimple;
  */
 public class DatacenterBrokerVmsWithMorePesFirst extends DatacenterBrokerSimple {
 
-    public DatacenterBrokerVmsWithMorePesFirst(String name) throws Exception {
-        super(name);
+    public DatacenterBrokerVmsWithMorePesFirst(CloudSim simulation) {
+        super(simulation);
     }
 
     /**

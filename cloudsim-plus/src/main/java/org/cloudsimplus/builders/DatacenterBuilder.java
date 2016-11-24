@@ -8,6 +8,7 @@ import org.cloudbus.cloudsim.DatacenterCharacteristics;
 import org.cloudbus.cloudsim.DatacenterCharacteristicsSimple;
 import org.cloudbus.cloudsim.Host;
 import org.cloudbus.cloudsim.allocationpolicies.VmAllocationPolicySimple;
+import org.cloudbus.cloudsim.core.CloudSim;
 import org.cloudbus.cloudsim.resources.FileStorage;
 
 /**
@@ -17,6 +18,7 @@ import org.cloudbus.cloudsim.resources.FileStorage;
  */
 public class DatacenterBuilder extends Builder {
     public static final String DATACENTER_NAME_FORMAT = "Datacenter%d";
+    private final SimulationScenarioBuilder scenario;
 
     private double costPerBwMegabit = 0.0;
     private double costPerCpuSecond = 3.0;
@@ -29,7 +31,8 @@ public class DatacenterBuilder extends Builder {
     private int numberOfCreatedDatacenters;
 	private List<FileStorage> storageList;
 
-	public DatacenterBuilder() {
+	public DatacenterBuilder(SimulationScenarioBuilder scenario) {
+	    this.scenario = scenario;
         this.datacenters = new ArrayList<>();
 		this.storageList = new ArrayList<>();
         this.numberOfCreatedDatacenters = 0;
@@ -68,9 +71,10 @@ public class DatacenterBuilder extends Builder {
                       .setCostPerBw(costPerBwMegabit);
         String name = String.format(DATACENTER_NAME_FORMAT, numberOfCreatedDatacenters++);
         Datacenter datacenter =
-                new DatacenterSimple(name, characteristics, new VmAllocationPolicySimple())
+                new DatacenterSimple(scenario.getSimulation(), characteristics, new VmAllocationPolicySimple())
                     .setStorageList(storageList)
                     .setSchedulingInterval(schedulingInterval);
+        datacenter.setName(name);
         this.datacenters.add(datacenter);
         return this;
     }

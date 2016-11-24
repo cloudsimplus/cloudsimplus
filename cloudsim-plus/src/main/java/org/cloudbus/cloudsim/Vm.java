@@ -6,6 +6,7 @@ import org.cloudbus.cloudsim.resources.*;
 import org.cloudbus.cloudsim.schedulers.CloudletScheduler;
 import java.util.Collections;
 import java.util.List;
+import org.cloudbus.cloudsim.core.Simulation;
 import org.cloudsimplus.listeners.DatacenterToVmEventInfo;
 import org.cloudsimplus.listeners.EventListener;
 import org.cloudsimplus.listeners.HostToVmEventInfo;
@@ -136,7 +137,7 @@ public interface Vm extends Identificable, Comparable<Vm> {
      * @see #getMips()
      */
     int getNumberOfPes();
-    
+
     /**
      * Gets the total MIPS capacity (across all PEs) of this VM.
      *
@@ -392,22 +393,40 @@ public interface Vm extends Identificable, Comparable<Vm> {
      * Sets the Cloudlet scheduler the VM uses to schedule cloudlets execution.
      *
      * @param cloudletScheduler the cloudlet scheduler to set
+     * @return 
      */
     Vm setCloudletScheduler(CloudletScheduler cloudletScheduler);
 
     /**
      * Sets the status of VM to FAILED.
-     * 
+     *
      * @param failed the failed
      */
-    void setFailed(boolean failed);   
-    
+    void setFailed(boolean failed);
+
     /**
      * Checks if the Vm is failed or not.
-     * @return 
+     * @return
      */
     boolean isFailed();
-    
+
+    /**
+     * Gets the CloudSim instance that represents the simulation the Entity is related to.
+     * @return 
+     * @see #setSimulation(CloudSim)
+     */
+    Simulation getSimulation();
+
+    /**
+     * Sets the CloudSim instance that represents the simulation the Entity is related to.
+     * Such attribute has to be set by the {@link DatacenterBroker} that creates
+     * the Vm on behalf of its owner.
+     * @param simulation The CloudSim instance that represents the simulation the Entity is related to
+     * @return 
+     */
+    Vm setSimulation(Simulation simulation);
+
+
     /**
      * A property that implements the Null Object Design Pattern for {@link Vm}
      * objects.
@@ -460,5 +479,7 @@ public interface Vm extends Identificable, Comparable<Vm> {
         @Override public double getTotalMipsCapacity() { return 0.0; }
         @Override public void setFailed(boolean failed){}
         @Override public boolean isFailed() { return false; }
+        @Override public Simulation getSimulation() { return Simulation.NULL; }
+        @Override public Vm setSimulation(Simulation simulation) { return this; }
     };
 }

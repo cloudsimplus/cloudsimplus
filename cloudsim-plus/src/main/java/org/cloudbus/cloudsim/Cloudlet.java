@@ -1,11 +1,13 @@
 package org.cloudbus.cloudsim;
 
 import org.cloudbus.cloudsim.brokers.DatacenterBroker;
+import org.cloudbus.cloudsim.core.CloudSim;
 import org.cloudbus.cloudsim.core.Identificable;
 import org.cloudbus.cloudsim.schedulers.CloudletScheduler;
 import org.cloudbus.cloudsim.utilizationmodels.UtilizationModel;
 import java.util.Collections;
 import java.util.List;
+import org.cloudbus.cloudsim.core.Simulation;
 import org.cloudsimplus.listeners.VmToCloudletEventInfo;
 import org.cloudsimplus.listeners.EventListener;
 
@@ -827,8 +829,26 @@ public interface Cloudlet extends Identificable, Comparable<Cloudlet> {
      * Sets the listener object that will be notified when a cloudlet finishes
      * its execution at a given {@link Vm}.
      * @param onCloudletFinishEventListener
+     * @return 
      */
     Cloudlet setOnCloudletFinishEventListener(EventListener<VmToCloudletEventInfo> onCloudletFinishEventListener);
+
+    /**
+     * Gets the CloudSim instance that represents the simulation the Entity is related to.
+     * @return 
+     * @see #setSimulation(CloudSim)
+     */
+    Simulation getSimulation();
+
+    /**
+     * Sets the CloudSim instance that represents the simulation the Entity is related to.
+     * Such attribute has to be set by the {@link DatacenterBroker} that creates
+     * the Cloudlet on behalf of its owner.
+     * @param simulation The CloudSim instance that represents the simulation the Entity is related to
+     * @return 
+     */
+    Cloudlet setSimulation(Simulation simulation);
+
 
     /**
      * A property that implements the Null Object Design Pattern for {@link Cloudlet}
@@ -897,6 +917,8 @@ public interface Cloudlet extends Identificable, Comparable<Cloudlet> {
         @Override public Cloudlet setVmId(int vmId) { return Cloudlet.NULL; }
         @Override public EventListener<VmToCloudletEventInfo> getOnCloudletFinishEventListener() { return EventListener.NULL;}
         @Override public Cloudlet setOnCloudletFinishEventListener(EventListener<VmToCloudletEventInfo> onCloudletFinishEventListener) { return Cloudlet.NULL; }
+        @Override public Simulation getSimulation() { return Simulation.NULL; }
+        @Override public Cloudlet setSimulation(Simulation simulation) { return this; }
         @Override public EventListener<VmToCloudletEventInfo> getOnUpdateCloudletProcessingListener() { return EventListener.NULL; }
         @Override public Cloudlet setOnUpdateCloudletProcessingListener(EventListener<VmToCloudletEventInfo> onUpdateCloudletProcessingListener) { return Cloudlet.NULL; }
         @Override public double getSubmissionDelay() { return 0; }

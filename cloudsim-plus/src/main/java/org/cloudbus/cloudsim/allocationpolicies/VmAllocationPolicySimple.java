@@ -143,7 +143,7 @@ public class VmAllocationPolicySimple extends VmAllocationPolicyAbstract {
 
             Log.printFormattedLine(
                     "%.2f: VM #%d has been allocated to the host #%d",
-                    CloudSim.clock(), vm.getId(), host.getId());
+                    vm.getSimulation().clock(), vm.getId(), host.getId());
             return true;
         }
 

@@ -44,23 +44,23 @@ public class PowerDatacenterNonPowerAware extends PowerDatacenter {
     /**
      * Creates a datacenter.
      *
-     * @param name the datacenter name
+     * @param simulation The CloudSim instance that represents the simulation the Entity is related to
      * @param characteristics the datacenter characteristics
      * @param vmAllocationPolicy the vm provisioner
      *
      */
     public PowerDatacenterNonPowerAware(
-        String name,
+        CloudSim simulation,
         DatacenterCharacteristics characteristics,
         VmAllocationPolicy vmAllocationPolicy)
     {
-        super(name, characteristics, vmAllocationPolicy);
+        super(simulation, characteristics, vmAllocationPolicy);
     }
 
     /**
      * Creates a datacenter with the given parameters.
      *
-     * @param name the datacenter name
+     * @param simulation The CloudSim instance that represents the simulation the Entity is related to
      * @param characteristics the datacenter characteristics
      * @param vmAllocationPolicy the vm provisioner
      * @param storageList the storage list
@@ -72,25 +72,25 @@ public class PowerDatacenterNonPowerAware extends PowerDatacenter {
      */
     @Deprecated
     public PowerDatacenterNonPowerAware(
-            String name,
+            CloudSim simulation,
             DatacenterCharacteristics characteristics,
             VmAllocationPolicy vmAllocationPolicy,
             List<FileStorage> storageList,
             double schedulingInterval)
     {
-        this(name, characteristics, vmAllocationPolicy);
+        this(simulation, characteristics, vmAllocationPolicy);
         setStorageList(storageList);
         setSchedulingInterval(schedulingInterval);
     }
 
     @Override
     protected void updateCloudletProcessing() {
-        if (getCloudletSubmitted() == -1 || getCloudletSubmitted() == CloudSim.clock()) {
-            CloudSim.cancelAll(getId(), new PredicateType(CloudSimTags.VM_UPDATE_CLOUDLET_PROCESSING_EVENT));
+        if (getCloudletSubmitted() == -1 || getCloudletSubmitted() == getSimulation().clock()) {
+            getSimulation().cancelAll(getId(), new PredicateType(CloudSimTags.VM_UPDATE_CLOUDLET_PROCESSING_EVENT));
             schedule(getId(), getSchedulingInterval(), CloudSimTags.VM_UPDATE_CLOUDLET_PROCESSING_EVENT);
             return;
         }
-        double currentTime = CloudSim.clock();
+        double currentTime = getSimulation().clock();
         double timeframePower = 0.0;
 
         if (currentTime > getLastProcessTime()) {
@@ -100,7 +100,7 @@ public class PowerDatacenterNonPowerAware extends PowerDatacenter {
             Log.printLine("\n");
 
             for (PowerHostSimple host : this.<PowerHostSimple>getHostList()) {
-                Log.printFormattedLine("%.2f: Host #%d", CloudSim.clock(), host.getId());
+                Log.printFormattedLine("%.2f: Host #%d", getSimulation().clock(), host.getId());
 
                 double hostPower = 0.0;
 
@@ -113,22 +113,22 @@ public class PowerDatacenterNonPowerAware extends PowerDatacenter {
 
                 Log.printFormattedLine(
                         "%.2f: Host #%d utilization is %.2f%%",
-                        CloudSim.clock(),
+                        getSimulation().clock(),
                         host.getId(),
                         host.getUtilizationOfCpu() * 100);
                 Log.printFormattedLine(
                         "%.2f: Host #%d energy is %.2f W*sec",
-                        CloudSim.clock(),
+                        getSimulation().clock(),
                         host.getId(),
                         hostPower);
             }
 
-            Log.printFormattedLine("\n%.2f: Consumed energy is %.2f W*sec\n", CloudSim.clock(), timeframePower);
+            Log.printFormattedLine("\n%.2f: Consumed energy is %.2f W*sec\n", getSimulation().clock(), timeframePower);
 
             Log.printLine("\n\n--------------------------------------------------------------\n\n");
 
             for (PowerHostSimple host : this.<PowerHostSimple>getHostList()) {
-                Log.printFormattedLine("\n%.2f: Host #%d", CloudSim.clock(), host.getId());
+                Log.printFormattedLine("\n%.2f: Host #%d", getSimulation().clock(), host.getId());
 
                 double time = host.updateVmsProcessing(currentTime); // inform VMs to update
                 // processing
@@ -165,13 +165,13 @@ public class PowerDatacenterNonPowerAware extends PowerDatacenter {
                     if (oldHost == null) {
                         Log.printFormattedLine(
                             "%.2f: Migration of VM #%d to Host #%d is started",
-                            CloudSim.clock(),
+                            getSimulation().clock(),
                             entry.getKey().getId(),
                             targetHost.getId());
                     } else {
                         Log.printFormattedLine(
                             "%.2f: Migration of VM #%d from Host #%d to Host #%d is started",
-                            CloudSim.clock(),
+                            getSimulation().clock(),
                             entry.getKey().getId(),
                             oldHost.getId(),
                             targetHost.getId());
@@ -190,8 +190,8 @@ public class PowerDatacenterNonPowerAware extends PowerDatacenter {
 
             // schedules an event to the next time
             if (minTime != Double.MAX_VALUE) {
-                CloudSim.cancelAll(getId(), new PredicateType(CloudSimTags.VM_UPDATE_CLOUDLET_PROCESSING_EVENT));
-                // CloudSim.cancelAll(getId(), CloudSim.SIM_ANY);
+                getSimulation().cancelAll(getId(), new PredicateType(CloudSimTags.VM_UPDATE_CLOUDLET_PROCESSING_EVENT));
+                // getSimulation().cancelAll(getId(), CloudSim.SIM_ANY);
                 send(getId(), getSchedulingInterval(), CloudSimTags.VM_UPDATE_CLOUDLET_PROCESSING_EVENT);
             }
 

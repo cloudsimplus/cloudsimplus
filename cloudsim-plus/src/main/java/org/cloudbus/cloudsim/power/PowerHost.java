@@ -4,6 +4,7 @@ import java.util.Collections;
 import java.util.List;
 
 import org.cloudbus.cloudsim.*;
+import org.cloudbus.cloudsim.core.Simulation;
 import org.cloudsimplus.listeners.EventListener;
 import org.cloudsimplus.listeners.HostUpdatesVmsProcessingEventInfo;
 import org.cloudbus.cloudsim.power.models.PowerModel;
@@ -22,7 +23,6 @@ import org.cloudbus.cloudsim.schedulers.VmScheduler;
  * @author Manoel Campos da Silva Filho
  */
 public interface PowerHost extends HostDynamicWorkload {
-
     /**
      * Gets the energy consumption using linear interpolation of the utilization change.
      *
@@ -58,12 +58,13 @@ public interface PowerHost extends HostDynamicWorkload {
      * Sets the power model.
      *
      * @param powerModel the new power model
+     * @return 
      */
     PowerHost setPowerModel(PowerModel powerModel);
 
 
     /**
-     * A property that implements the Null Object Design Pattern for {@link PowerHost}
+     * An attribute that implements the Null Object Design Pattern for {@link PowerHost}
      * objects.
      */
     PowerHost NULL = new PowerHost() {
@@ -116,6 +117,8 @@ public interface PowerHost extends HostDynamicWorkload {
         @Override public void removeMigratingInVm(Vm vm) {}
         @Override public void setDatacenter(Datacenter datacenter) {}
         @Override public boolean setFailed(boolean failed) { return false; }
+        @Override public Simulation getSimulation() { return Simulation.NULL; }
+        @Override public Host setSimulation(Simulation simulation) { return this; }
         @Override public boolean setPeStatus(int peId, Pe.Status status) { return false; }
         @Override public boolean vmCreate(Vm vm) { return false; }
         @Override public void vmDestroy(Vm vm) {}

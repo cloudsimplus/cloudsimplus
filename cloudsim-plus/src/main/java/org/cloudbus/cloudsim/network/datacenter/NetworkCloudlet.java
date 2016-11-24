@@ -272,7 +272,7 @@ public class NetworkCloudlet extends CloudletSimple {
      * @return the NetworkCloudlet instance
      */
     public NetworkCloudlet addTask(CloudletTask task) {
-        task.setNetworkCloudlet(this);
+        task.setCloudlet(this);
         tasks.add(task);
         return this;
     }

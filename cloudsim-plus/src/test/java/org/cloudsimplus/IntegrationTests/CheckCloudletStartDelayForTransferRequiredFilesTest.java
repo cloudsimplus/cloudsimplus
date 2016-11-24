@@ -20,7 +20,6 @@ import org.junit.Before;
 import org.junit.Test;
 
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -61,14 +60,15 @@ public final class CheckCloudletStartDelayForTransferRequiredFilesTest {
 	private DatacenterBroker broker;
 	private List<File> files;
 	private FileStorage storage;
+    private CloudSim simulation;
 
 	@Before
     public void setUp() {
 		createStorage();
 
-        CloudSim.init(1, Calendar.getInstance(), false);
+        this.simulation = new  CloudSim(1);
         utilizationModel = new UtilizationModelFull();
-        scenario = new SimulationScenarioBuilder();
+        scenario = new SimulationScenarioBuilder(simulation);
         scenario.getDatacenterBuilder()
 	        .setSchedulingInterval(1)
 	        .addStorageToList(storage)
@@ -145,8 +145,8 @@ public final class CheckCloudletStartDelayForTransferRequiredFilesTest {
     }
 
     public void startSimulationAndWaitToStop() throws RuntimeException {
-        CloudSim.startSimulation();
-        CloudSim.stopSimulation();
+        simulation.start();
+        simulation.stop();
     }
 
     public void printCloudletsExecutionResults() {

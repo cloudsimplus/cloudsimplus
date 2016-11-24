@@ -1,7 +1,7 @@
 /*
  * Title: CloudSim Toolkit Description: CloudSim (Cloud Simulation) Toolkit for Modeling and
  * Simulation of Clouds Licence: GPL - http://www.gnu.org/copyleft/gpl.html
- * 
+ *
  * Copyright (c) 2009-2012, The University of Melbourne, Australia
  */
 package org.cloudbus.cloudsim.schedulers;
@@ -39,7 +39,7 @@ public class CloudletSchedulerDynamicWorkload extends CloudletSchedulerTimeShare
      * scheduler, considering that all PEs have the same capacity.
      *
      * @todo Despite of the class considers that all PEs have the same capacity,
-     * it accepts a list of PEs with different MIPS at the method 
+     * it accepts a list of PEs with different MIPS at the method
          * {@link #updateVmProcessing(double, java.util.List) }
      */
     private double mips;
@@ -98,8 +98,8 @@ public class CloudletSchedulerDynamicWorkload extends CloudletSchedulerTimeShare
                 cloudletsToFinish.add(rcl);
             } else { // not finish: estimate the finish time
                 double estimatedFinishTime = getEstimatedFinishTime(rcl, currentTime);
-                if (estimatedFinishTime - currentTime < CloudSim.getMinTimeBetweenEvents()) {
-                    estimatedFinishTime = currentTime + CloudSim.getMinTimeBetweenEvents();
+                if (estimatedFinishTime - currentTime < getVm().getSimulation().getMinTimeBetweenEvents()) {
+                    estimatedFinishTime = currentTime + getVm().getSimulation().getMinTimeBetweenEvents();
                 }
                 if (estimatedFinishTime < nextEvent) {
                     nextEvent = estimatedFinishTime;
@@ -136,8 +136,8 @@ public class CloudletSchedulerDynamicWorkload extends CloudletSchedulerTimeShare
      * @return the estimated finish time
      */
     public double getEstimatedFinishTime(CloudletExecutionInfo rcl, double time) {
-        return time + 
-               ((rcl.getRemainingCloudletLength()) / 
+        return time +
+               ((rcl.getRemainingCloudletLength()) /
                 getTotalCurrentAllocatedMipsForCloudlet(rcl, time));
     }
 

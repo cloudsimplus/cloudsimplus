@@ -14,17 +14,12 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.stream.Collectors;
 
-import org.cloudbus.cloudsim.DatacenterSimple;
-import org.cloudbus.cloudsim.DatacenterCharacteristics;
-import org.cloudbus.cloudsim.Host;
-import org.cloudbus.cloudsim.Log;
-import org.cloudbus.cloudsim.Vm;
-import org.cloudbus.cloudsim.Cloudlet;
+import org.cloudbus.cloudsim.*;
 import org.cloudbus.cloudsim.allocationpolicies.VmAllocationPolicy;
+import org.cloudbus.cloudsim.core.SimEvent;
 import org.cloudbus.cloudsim.schedulers.CloudletScheduler;
 import org.cloudbus.cloudsim.core.CloudSim;
 import org.cloudbus.cloudsim.core.CloudSimTags;
-import org.cloudbus.cloudsim.core.SimEvent;
 import org.cloudbus.cloudsim.resources.FileStorage;
 
 /**
@@ -33,7 +28,7 @@ import org.cloudbus.cloudsim.resources.FileStorage;
  * network. For example, which VM is connected to what switch etc. It deals with
  * processing of VM queries (i.e., handling of VMs) instead of processing
  * Cloudlet-related queries. So, even though an AllocationPolicy will be instantiated
- * (in the init() method of the superclass, it will not be used, as processing
+ * (in the CloudSim() method of the superclass, it will not be used, as processing
  * of cloudlets are handled by the CloudletScheduler and processing of
  * Virtual Machines are handled by the VmAllocationPolicy.
  *
@@ -82,30 +77,23 @@ public class NetworkDatacenter extends DatacenterSimple {
     /**
      * Creates a NetworkDatacenter with the given parameters.
      *
-     * @param name the name of the datacenter
+     * @param simulation The CloudSim instance that represents the simulation the Entity is related to
      * @param characteristics the characteristics of the datacenter to be created
      * @param vmAllocationPolicy the policy to be used to allocate VMs into hosts
      *
-     * @throws IllegalArgumentException when one of the following scenarios occur:
-     * <ul>
-     * <li>creating this entity before initializing CloudSim package
-     * <li>this entity name is <tt>null</tt> or empty
-     * <li>this entity has <tt>zero</tt> number of PEs (Processing Elements).
+     * @throws IllegalArgumentException when this entity has <tt>zero</tt> number of PEs (Processing Elements).
      * <br>
      * No PEs mean the Cloudlets can't be processed. A CloudResource must
      * contain one or more Machines. A Machine must contain one or more PEs.
-     * </ul>
      *
-     * @pre name != null
-     * @pre resource != null
      * @post $none
      */
     public NetworkDatacenter(
-        String name,
+        CloudSim simulation,
         DatacenterCharacteristics characteristics,
         VmAllocationPolicy vmAllocationPolicy)
     {
-        super(name, characteristics, vmAllocationPolicy);
+        super(simulation, characteristics, vmAllocationPolicy);
 
         vmToSwitchMap = new HashMap<>();
         hostToSwitchMap = new HashMap<>();
@@ -116,24 +104,17 @@ public class NetworkDatacenter extends DatacenterSimple {
     /**
      * Creates a NetworkDatacenter with the given parameters.
      *
-     * @param name the name of the datacenter
+     * @param simulation The CloudSim instance that represents the simulation the Entity is related to
      * @param characteristics the characteristics of the datacenter to be created
      * @param vmAllocationPolicy the policy to be used to allocate VMs into hosts
      * @param storageList a List of storage elements, for data simulation
      * @param schedulingInterval the scheduling delay to process each datacenter received event
      *
-     * @throws IllegalArgumentException when one of the following scenarios occur:
-     * <ul>
-     * <li>creating this entity before initializing CloudSim package
-     * <li>this entity name is <tt>null</tt> or empty
-     * <li>this entity has <tt>zero</tt> number of PEs (Processing Elements).
+     * @throws IllegalArgumentException when this entity has <tt>zero</tt> number of PEs (Processing Elements).
      * <br>
      * No PEs mean the Cloudlets can't be processed. A CloudResource must
      * contain one or more Machines. A Machine must contain one or more PEs.
-     * </ul>
      *
-     * @pre name != null
-     * @pre resource != null
      * @post $none
      *
      * @deprecated Use the other available constructors with less parameters
@@ -142,13 +123,13 @@ public class NetworkDatacenter extends DatacenterSimple {
      */
     @Deprecated
     public NetworkDatacenter(
-        String name,
+        CloudSim simulation,
         DatacenterCharacteristics characteristics,
         VmAllocationPolicy vmAllocationPolicy,
         List<FileStorage> storageList,
         double schedulingInterval)
     {
-        this(name, characteristics, vmAllocationPolicy);
+        this(simulation, characteristics, vmAllocationPolicy);
         setStorageList(storageList);
         setSchedulingInterval(schedulingInterval);
     }
@@ -196,7 +177,7 @@ public class NetworkDatacenter extends DatacenterSimple {
 
             // checks whether this Cloudlet has finished or not
             if (cl.isFinished()) {
-                String name = CloudSim.getEntityName(cl.getBrokerId());
+                String name = getSimulation().getEntityName(cl.getBrokerId());
                 Log.printConcatLine(
                         getName(), ": Warning - Cloudlet #",
                         cl.getId(), " owned by ", name,

@@ -107,7 +107,7 @@ public class CloudletSchedulerTimeShared extends CloudletSchedulerAbstract {
         // calculate the expected time for cloudlet completion
         // first: how many PEs do we have?
         double remainingLength = cloudlet.getRemainingCloudletLength();
-        double estimatedFinishTime = CloudSim.clock()
+        double estimatedFinishTime = getVm().getSimulation().clock()
             + (remainingLength / (getProcessor().getCapacity()
             * cloudlet.getNumberOfPes()));
 
@@ -167,7 +167,7 @@ public class CloudletSchedulerTimeShared extends CloudletSchedulerAbstract {
 
     @Override
     public double getCurrentRequestedUtilizationOfRam() {
-	    final double time = CloudSim.clock();
+	    final double time = getVm().getSimulation().clock();
         return getCloudletExecList().stream()
                 .mapToDouble(rcl -> rcl.getCloudlet().getUtilizationOfRam(time))
                 .sum();
@@ -175,7 +175,7 @@ public class CloudletSchedulerTimeShared extends CloudletSchedulerAbstract {
 
     @Override
     public double getCurrentRequestedUtilizationOfBw() {
-	    final double time = CloudSim.clock();
+	    final double time = getVm().getSimulation().clock();
         return getCloudletExecList().stream()
                 .mapToDouble(rcl -> rcl.getCloudlet().getUtilizationOfBw(time))
                 .sum();

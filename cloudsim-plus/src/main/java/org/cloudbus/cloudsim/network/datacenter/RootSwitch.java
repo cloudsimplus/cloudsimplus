@@ -9,6 +9,7 @@ package org.cloudbus.cloudsim.network.datacenter;
 
 import org.cloudbus.cloudsim.Log;
 
+import org.cloudbus.cloudsim.core.CloudSim;
 import org.cloudbus.cloudsim.core.SimEvent;
 
 /**
@@ -30,7 +31,7 @@ import org.cloudbus.cloudsim.core.SimEvent;
  *
  * @author Saurabh Kumar Garg
  * @author Manoel Campos da Silva Filho
- * 
+ *
  * @since CloudSim Toolkit 3.0
  */
 public class RootSwitch extends Switch {
@@ -44,12 +45,12 @@ public class RootSwitch extends Switch {
      * {@link AggregateSwitch} that can be connected to it.
      */
     public static int PORTS = 1;
-    
+
     /**
      * Default switching delay in milliseconds.
      */
     public static double SWITCHING_DELAY = 0.00285;
-    
+
     /**
      * The downlink bandwidth of RootSwitch in Megabits/s.
      * It also represents the uplink bandwidth of connected aggregation switches.
@@ -60,11 +61,11 @@ public class RootSwitch extends Switch {
      * Instantiates a Root Switch specifying what other switches are connected
      * to its downlink ports, and corresponding bandwidths.
      *
-     * @param name Name of the root switch
+     * @param simulation The CloudSim instance that represents the simulation the Entity is related to
      * @param dc The Datacenter where the switch is connected to
      */
-    public RootSwitch(String name, NetworkDatacenter dc) {
-        super(name, dc);
+    public RootSwitch(CloudSim simulation, NetworkDatacenter dc) {
+        super(simulation, dc);
         setDownlinkBandwidth(DOWNLINK_BW);
         setSwitchingDelay(SWITCHING_DELAY);
         setPorts(PORTS);
@@ -73,12 +74,12 @@ public class RootSwitch extends Switch {
     @Override
     protected void processPacketUp(SimEvent ev) {
         super.processPacketUp(ev);
-        
+
         NetworkPacket netPkt = (NetworkPacket) ev.getData();
         int receiverVmId = netPkt.getHostPacket().getReceiverVmId();
         int edgeSwitchId = getDatacenter().getVmToSwitchMap().get(receiverVmId);
         int aggSwitchId = findAggregateSwitchConnectedToGivenEdgeSwitch(edgeSwitchId);
-        
+
         if (aggSwitchId < 0) {
             Log.printLine("No destination switch for this packet");
         } else {

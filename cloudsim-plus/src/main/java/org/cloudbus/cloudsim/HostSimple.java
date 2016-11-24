@@ -7,13 +7,12 @@
 package org.cloudbus.cloudsim;
 
 import org.cloudbus.cloudsim.resources.Pe;
-import org.cloudbus.cloudsim.resources.PeSimple;
 import org.cloudbus.cloudsim.schedulers.VmScheduler;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.cloudbus.cloudsim.core.CloudSim;
 import org.cloudbus.cloudsim.core.CloudSimTags;
+import org.cloudbus.cloudsim.core.Simulation;
 import org.cloudsimplus.listeners.EventListener;
 import org.cloudsimplus.listeners.HostUpdatesVmsProcessingEventInfo;
 import org.cloudbus.cloudsim.lists.PeList;
@@ -87,6 +86,11 @@ public class HostSimple implements Host {
     private EventListener<HostUpdatesVmsProcessingEventInfo> onUpdateVmsProcessingListener;
 
     /**
+     * @see #getSimulation()
+     */
+    private Simulation simulation;
+
+    /**
      * Creates a Host.
      *
      * @param id the host id
@@ -101,6 +105,7 @@ public class HostSimple implements Host {
         this.setStorage(storageCapacity);
         setPeList(peList);
         setFailed(false);
+        this.simulation = Simulation.NULL;
         this.onUpdateVmsProcessingListener = EventListener.NULL;
     }
 
@@ -192,8 +197,8 @@ public class HostSimple implements Host {
             getStorage().allocateResource(vm.getSize());
 
             getVmsMigratingIn().add(vm);
-            updateVmsProcessing(CloudSim.clock());
-            vm.getHost().updateVmsProcessing(CloudSim.clock());
+            updateVmsProcessing(simulation.clock());
+            vm.getHost().updateVmsProcessing(simulation.clock());
         }
     }
 
@@ -432,7 +437,7 @@ public class HostSimple implements Host {
      *
      * @param peList the new pe list
      */
-    protected Host setPeList(List<Pe> peList) {
+    protected final Host setPeList(List<Pe> peList) {
         if(peList == null){
             peList = new ArrayList<>();
         }
@@ -471,7 +476,7 @@ public class HostSimple implements Host {
             As the broker is expected to request vm creation and destruction,
             it is set here as the sender of the vm destroy request.
             */
-            CloudSim.sendNow(
+            simulation.sendNow(
                 vm.getBrokerId(), getDatacenter().getId(),
                 CloudSimTags.VM_DESTROY, vm);
         }
@@ -544,4 +549,16 @@ public class HostSimple implements Host {
         this.storage = new RawStorage(size);
         return this;
     }
+
+    @Override
+    public Simulation getSimulation() {
+        return this.simulation;
+    }
+
+    @Override
+    public Host setSimulation(Simulation simulation) {
+        this.simulation = simulation;
+        return this;
+    }
+
 }

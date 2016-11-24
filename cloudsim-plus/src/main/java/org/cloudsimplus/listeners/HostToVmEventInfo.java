@@ -24,17 +24,14 @@ public class HostToVmEventInfo extends VmEventInfoSimple implements HostEventInf
     private Host host;
 
     /**
-     * Default constructor that uses the current simulation time
-     * as the event time.
+     * Creates a EventInfo with the given parameters.
      * 
-     * @param host
-     * @param vm
-     * @see CloudSim#clock() 
+     * @param time the time the event was generated
+     * @param host host where the Vm is placed
+     * @param vm Vm that fired the event
+     * @todo probably the Host is redundant, since now there is a host
+     * attribute inside the Vm
      */
-    public HostToVmEventInfo(Host host, Vm vm) {
-        this(USE_CURRENT_SIMULATION_TIME, host, vm);
-    }    
-    
     public HostToVmEventInfo(double time, Host host, Vm vm) {
         super(time, vm);
         setHost(host);

@@ -6,8 +6,6 @@
 package org.cloudsimplus.sla;
 
 import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.LinkedList;
 import java.util.List;
 import org.cloudbus.cloudsim.Cloudlet;
 import org.cloudbus.cloudsim.CloudletSimple;
@@ -27,7 +25,6 @@ import org.cloudbus.cloudsim.core.CloudSim;
 import org.cloudbus.cloudsim.provisioners.PeProvisionerSimple;
 import org.cloudbus.cloudsim.provisioners.ResourceProvisionerSimple;
 import org.cloudbus.cloudsim.resources.Bandwidth;
-import org.cloudbus.cloudsim.resources.FileStorage;
 import org.cloudbus.cloudsim.resources.Pe;
 import org.cloudbus.cloudsim.resources.PeSimple;
 import org.cloudbus.cloudsim.resources.Ram;
@@ -74,6 +71,7 @@ public class ExampleCreateCloudletRandomly {
      * minute and this time, different Cloudlets can arrive.
      */
     private final int MAX_TIME_FOR_CLOUDLET_ARRIVAL = 100;
+    private final CloudSim cloudsim;
 
     /**
      * Create Vms
@@ -105,26 +103,19 @@ public class ExampleCreateCloudletRandomly {
 
     public static void main(String[] args) {
         Log.printFormattedLine(" Starting... ");
-        try {
-            for (int i = 0; i < NUMBER_OF_SIMULATIONS; i++) {
-                new ExampleCreateCloudletRandomly();
-            }
-            Log.printFormattedLine("... finished!");
-        } catch (Exception e) {
-            Log.printFormattedLine("Simulation finished due to unexpected error: %s", e);
+        for (int i = 0; i < NUMBER_OF_SIMULATIONS; i++) {
+            new ExampleCreateCloudletRandomly();
         }
+        Log.printFormattedLine("... finished!");
     }
 
     public ExampleCreateCloudletRandomly() {
-
         int num_user = 1; // number of cloud users
-        Calendar calendar = Calendar.getInstance(); // Calendar whose fields have been initialized with the current date and time.
-        boolean trace_flag = false; // trace events
 
-        CloudSim.init(num_user, calendar, trace_flag);
+        this.cloudsim = new CloudSim(num_user);
 
         // Second step: Create Datacenters
-        Datacenter datacenter0 = createDatacenter("Datacenter_0");
+        Datacenter datacenter0 = createDatacenter();
 
         // Third step: Create Broker
         DatacenterBroker broker = createBroker();
@@ -159,8 +150,8 @@ public class ExampleCreateCloudletRandomly {
         // submit vm list to the broker
         broker.submitVmList(vmlist);
 
-        CloudSim.startSimulation();
-        CloudSim.stopSimulation();
+        cloudsim.start();
+        cloudsim.stop();
 
         //Final step: Print results when simulation is over
         List<Cloudlet> newList = broker.getCloudletsFinishedList();
@@ -182,7 +173,7 @@ public class ExampleCreateCloudletRandomly {
         return cloudlet;
     }
 
-    private static Datacenter createDatacenter(String name) {
+    private Datacenter createDatacenter() {
         // Here are the steps needed to create a PowerDatacenter:
         // 1. We need to create a list to store
         // our machine
@@ -220,16 +211,14 @@ public class ExampleCreateCloudletRandomly {
         // resource
         double costPerBw = 0.0; // the cost of using bw in this resource
 
-        DatacenterCharacteristics characteristics = 
+        DatacenterCharacteristics characteristics =
                 new DatacenterCharacteristicsSimple(hostList)
                 .setCostPerSecond(cost)
                 .setCostPerMem(costPerMem)
                 .setCostPerStorage(costPerStorage)
                 .setCostPerBw(costPerBw);
 
-        return new DatacenterSimple(name, characteristics, 
-                new VmAllocationPolicySimple());
-
+        return new DatacenterSimple(cloudsim, characteristics, new VmAllocationPolicySimple());
     }
 
     /**
@@ -237,8 +226,8 @@ public class ExampleCreateCloudletRandomly {
      *
      * @return the datacenter broker
      */
-    private static DatacenterBroker createBroker() {
-        return new DatacenterBrokerSimple("Broker");
+    private DatacenterBroker createBroker() {
+        return new DatacenterBrokerSimple(cloudsim);
     }
 
     /**

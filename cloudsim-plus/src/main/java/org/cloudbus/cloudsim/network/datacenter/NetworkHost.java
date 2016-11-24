@@ -128,7 +128,7 @@ public class NetworkHost extends HostSimple {
     private void receivePackets() {
         try{
             for (NetworkPacket netPkt : networkPacketsReceived) {
-                netPkt.getHostPacket().setReceiveTime(CloudSim.clock());
+                netPkt.getHostPacket().setReceiveTime(getSimulation().clock());
 
                 Vm vm = VmList.getById(getVmList(), netPkt.getHostPacket().getReceiverVmId());
                 NetworkCloudletSpaceSharedScheduler sched =
@@ -136,7 +136,7 @@ public class NetworkHost extends HostSimple {
 
                 sched.addPacketToListOfPacketsSentFromVm(netPkt.getHostPacket());
                 Log.println(
-                    Log.Level.DEBUG, getClass(), CloudSim.clock(),
+                    Log.Level.DEBUG, getClass(), getSimulation().clock(),
                     "Host %d received pkt with %.0f bytes from Cloudlet %d in VM %d and fowarded it to Cloudlet %d in VM %d",
                     getId(), netPkt.getHostPacket().getDataLength(),
                     netPkt.getHostPacket().getSenderCloudlet().getId(),
@@ -148,7 +148,7 @@ public class NetworkHost extends HostSimple {
             networkPacketsReceived.clear();
         } catch(Exception e){
             throw new RuntimeException(
-                    "Error when cloudlet was receiving packets at time " + CloudSim.clock(), e);
+                    "Error when cloudlet was receiving packets at time " + getSimulation().clock(), e);
         }
     }
 
@@ -164,7 +164,7 @@ public class NetworkHost extends HostSimple {
         for (NetworkPacket netPkt : networkPacketsToSendLocal) {
             flag = true;
             netPkt.setSendTime(netPkt.getReceiveTime());
-            netPkt.getHostPacket().setReceiveTime(CloudSim.clock());
+            netPkt.getHostPacket().setReceiveTime(getSimulation().clock());
             // insert the packet in recievedlist
             Vm vm = VmList.getById(getVmList(), netPkt.getHostPacket().getReceiverVmId());
 
@@ -175,7 +175,7 @@ public class NetworkHost extends HostSimple {
         if (flag) {
             for (Vm vm : getVmList()) {
                 vm.updateVmProcessing(
-                        CloudSim.clock(), getVmScheduler().getAllocatedMipsForVm(vm));
+                    getSimulation().clock(), getVmScheduler().getAllocatedMipsForVm(vm));
             }
         }
 
@@ -187,7 +187,7 @@ public class NetworkHost extends HostSimple {
             totalDataTransferBytes += netPkt.getHostPacket().getDataLength();
 
             // send to switch with delay
-            CloudSim.send(
+            getSimulation().send(
                     getDatacenter().getId(), getEdgeSwitch().getId(),
                     delay, CloudSimTags.NETWORK_EVENT_UP, netPkt);
         }

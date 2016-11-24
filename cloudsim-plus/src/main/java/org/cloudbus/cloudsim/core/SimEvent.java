@@ -1,185 +1,45 @@
-/*
- * Title:        CloudSim Toolkit
- * Description:  CloudSim (Cloud Simulation) Toolkit for Modeling and Simulation of Clouds
- * Licence:      GPL - http://www.gnu.org/copyleft/gpl.html
- *
- * Copyright (c) 2009-2012, The University of Melbourne, Australia
- */
 package org.cloudbus.cloudsim.core;
 
 import org.cloudsimplus.listeners.EventInfo;
 
 /**
- * This class represents a simulation event which is passed between the entities
- * in the simulation.
- *
- * @author Costas Simatos
- * @see Simulation
- * @see SimEntity
+ * @author Manoel Campos da Silva Filho
  */
-public class SimEvent implements Cloneable, Comparable<SimEvent>, EventInfo {
-
-    /**
-     * Internal event type. *
-     */
-    private final int etype;
-
-    /**
-     * The time that this event was scheduled, at which it should occur. *
-     */
-    private final double time;
-
-    /**
-     * Time that the event was removed from the queue to start service. *
-     */
-    private double endWaitingTime;
-
-    /**
-     * Id of entity who scheduled the event. *
-     */
-    private int entSrc;
-
-    /**
-     * Id of entity that the event will be sent to. *
-     */
-    private int entDst;
-
-    /**
-     * The user defined type of the event. *
-     */
-    private final int tag;
-
-    /**
-     * Any data the event is carrying.
-     *
-     * @todo I would be used generics to define the type of the event data. But
-     * this modification would incur several changes in the simulator core that
-     * has to be assessed first.
-     *
-     */
-    private final Object data;
-
-    /**
-     * An attribute to help CloudSim to identify the order of received events
-     * when multiple events are generated at the same time. If two events have
-     * the same {@link #time}, to know what event is greater than other (i.e.
-     * that happens after other), the
-     * {@link #compareTo(org.cloudbus.cloudsim.core.SimEvent)} makes use of this
-     * field.
-     */
-    private long serial = -1;
-
+public interface SimEvent extends Cloneable, Comparable<SimEvent>, EventInfo {
     // Internal event types
-    public static final int ENULL = 0;
-
-    public static final int SEND = 1;
-
-    public static final int HOLD_DONE = 2;
-
-    public static final int CREATE = 3;
-
-    /**
-     * Creates a blank event.
-     */
-    public SimEvent() {
-        etype = ENULL;
-        time = -1L;
-        endWaitingTime = -1.0;
-        entSrc = -1;
-        entDst = -1;
-        tag = -1;
-        data = null;
-    }
-
-    SimEvent(int evtype, double time, int src, int dest, int tag, Object edata) {
-        etype = evtype;
-        this.time = time;
-        entSrc = src;
-        entDst = dest;
-        this.tag = tag;
-        data = edata;
-    }
-
-    SimEvent(int evtype, double time, int src) {
-        etype = evtype;
-        this.time = time;
-        entSrc = src;
-        entDst = -1;
-        tag = -1;
-        data = null;
-    }
-
-    protected void setSerial(long serial) {
-        this.serial = serial;
-    }
-
-    /**
-     * Sets the time that the event was removed from the queue to start service.
-     *
-     * @param end_waiting_time
-     */
-    protected void setEndWaitingTime(double end_waiting_time) {
-        endWaitingTime = end_waiting_time;
-    }
-
-    @Override
-    public String toString() {
-        return "Event tag = " + tag + " source = " + CloudSim.getEntity(entSrc).getName() + " destination = "
-                + CloudSim.getEntity(entDst).getName();
-    }
+    //@todo @author manoelcampos Should be an Enum
+    int ENULL = 0;
+    int SEND = 1;
+    int HOLD_DONE = 2;
+    int CREATE = 3;
 
     /**
      * Gets the internal type
      *
      * @return
      */
-    public int getType() {
-        return etype;
-    }
-
-    @Override
-    public int compareTo(SimEvent event) {
-        if (event == null) {
-            return 1;
-        } else if (time < event.time) {
-            return -1;
-        } else if (time > event.time) {
-            return 1;
-        } else if (serial < event.serial) {
-            return -1;
-        } else if (this == event) {
-            return 0;
-        } else {
-            return 1;
-        }
-    }
+    int getType();
 
     /**
      * Get the unique id number of the entity which received this event.
      *
      * @return the id number
      */
-    public int getDestination() {
-        return entDst;
-    }
+    int getDestination();
 
     /**
      * Get the unique id number of the entity which scheduled this event.
      *
      * @return the id number
      */
-    public int getSource() {
-        return entSrc;
-    }
+    int getSource();
 
     /**
      * Get the simulation time that this event was scheduled.
      *
      * @return The simulation time
      */
-    public double eventTime() {
-        return time;
-    }
+    double eventTime();
 
     /**
      * Get the simulation time that this event was removed from the queue for
@@ -187,71 +47,86 @@ public class SimEvent implements Cloneable, Comparable<SimEvent>, EventInfo {
      *
      * @return The simulation time
      */
-    public double endWaitingTime() {
-        return endWaitingTime;
-    }
-
-    /**
-     * Get the user-defined tag of this event
-     *
-     * @return The tag
-     */
-    public int type() {
-        return tag;
-    }
+    double endWaitingTime();
 
     /**
      * Get the unique id number of the entity which scheduled this event.
      *
      * @return the id number
      */
-    public int scheduledBy() {
-        return entSrc;
-    }
+    int scheduledBy();
 
     /**
      * Get the user-defined tag of this event.
      *
      * @return The tag
      */
-    public int getTag() {
-        return tag;
-    }
+    int getTag();
 
     /**
      * Get the data passed in this event.
      *
      * @return A reference to the data
      */
-    public Object getData() {
-        return data;
-    }
-
-    @Override
-    public Object clone() {
-        return new SimEvent(etype, time, entSrc, entDst, tag, data);
-    }
+    Object getData();
 
     /**
      * Set the source entity of this event.
      *
-     * @param s The unique id number of the entity
+     * @param source The unique id number of the source entity
+     * @return 
      */
-    public void setSource(int s) {
-        entSrc = s;
-    }
+    SimEvent setSource(int source);
 
     /**
      * Set the destination entity of this event.
      *
-     * @param d The unique id number of the entity
+     * @param destination The unique id number of the destination entity
+     * @return 
      */
-    public void setDestination(int d) {
-        entDst = d;
-    }
+    SimEvent setDestination(int destination);
 
     @Override
-    public double getTime() {
-        return time;
-    }
+    double getTime();
+
+    /**
+     * An attribute to help CloudSim to identify the order of received events
+     * when multiple events are generated at the same time. If two events have
+     * the same {@link #getTag()}, to know what event is greater than other (i.e.
+     * that happens after other), the
+     * {@link #compareTo(SimEvent)} makes use of this field.
+     * @return 
+     */
+    long getSerial();
+
+    /**
+     * Gets the CloudSim instance that represents the simulation the Entity is related to.
+     * @return 
+     */
+    Simulation getSimulation();
+
+    @Override
+    int compareTo(SimEvent o);
+
+    /**
+     * An attribute that implements the Null Object Design Pattern for {@link SimEvent}
+     * objects.
+     */
+    final SimEvent NULL = new SimEvent() {
+        @Override public int getType() { return 0; }
+        @Override public int getDestination() { return 0; }
+        @Override public int getSource() { return 0; }
+        @Override public double eventTime() { return 0; }
+        @Override public double endWaitingTime() { return 0; }
+        @Override public int scheduledBy() { return 0; }
+        @Override public int getTag() { return 0; }
+        @Override public Object getData() { return 0; }
+        @Override public SimEvent setSource(int source) { return this; }
+        @Override public SimEvent setDestination(int destination) { return this; }
+        @Override public double getTime() { return 0; }
+        @Override public int compareTo(SimEvent o) { return 0; }
+        @Override public long getSerial() { return 0; }
+        @Override public Simulation getSimulation() { return Simulation.NULL; }
+    };
+
 }

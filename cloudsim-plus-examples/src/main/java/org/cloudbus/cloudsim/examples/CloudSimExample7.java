@@ -9,7 +9,6 @@
 package org.cloudbus.cloudsim.examples;
 
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.List;
 import org.cloudbus.cloudsim.Cloudlet;
 import org.cloudbus.cloudsim.CloudletSimple;
@@ -44,16 +43,74 @@ import org.cloudbus.cloudsim.resources.Ram;
  * simulation entities (a DatacenterBroker in this example) dynamically.
  */
 public class CloudSimExample7 {
-
-    /**
-     * The cloudlet list.
-     */
     private static List<Cloudlet> cloudletList;
+    private static List<Vm> vmlist;
+    private static CloudSim simulation;
 
     /**
-     * The vmlist.
+     * Runs the example.
+     *
+     * @param args
      */
-    private static List<Vm> vmlist;
+    public static void main(String[] args) {
+        Log.printLine("Starting CloudSimExample7...");
+
+        try {
+            // First step: Initialize the CloudSim package. It should be called
+            // before creating any entities.
+            int num_user = 2;   // number of grid users
+            boolean trace_flag = false;  // mean trace events
+
+            // Initialize the CloudSim library
+            simulation = new CloudSim(num_user, trace_flag);
+
+            // Second step: Create Datacenters
+            //Datacenters are the resource providers in CloudSim. We need at list one of them to run a CloudSim simulation
+            @SuppressWarnings("unused")
+            Datacenter datacenter0 = createDatacenter();
+            @SuppressWarnings("unused")
+            Datacenter datacenter1 = createDatacenter();
+
+            //Third step: Create Broker
+            DatacenterBroker broker = createBroker();
+
+            //Fourth step: Create VMs and Cloudlets and send them to broker
+            vmlist = createVM(broker, 5, 0); //creating 5 vms
+            cloudletList = createCloudlet(broker, 10, 0); // creating 10 cloudlets
+
+            broker.submitVmList(vmlist);
+            broker.submitCloudletList(cloudletList);
+
+            ThreadMonitor monitor = new ThreadMonitor(simulation);
+            monitor.start();
+            Thread.sleep(1000);
+
+            // Fifth step: Starts the simulation
+            simulation.start();
+
+            // Final step: Print results when simulation is over
+            List<Cloudlet> newList = broker.getCloudletsFinishedList();
+
+            simulation.stop();
+
+            new CloudletsTableBuilderHelper(newList)
+                 .setPrinter(
+                    new TextTableBuilder("\n#Broker " + broker.getName() + " received cloudlets."))
+                 .build();
+
+            if (monitor.getBroker() != null) {
+                newList = monitor.getBroker().getCloudletsFinishedList();
+                new CloudletsTableBuilderHelper(newList)
+                    .setPrinter(
+                        new TextTableBuilder("\n#Broker " + monitor.getBroker().getName() + " received cloudlets."))
+                    .build();
+            }
+
+            Log.printLine("CloudSimExample7 finished!");
+        } catch (InterruptedException | RuntimeException e) {
+            Log.printFormattedLine("Simulation finished due to unexpected error: %s", e);
+        }
+    }
 
     static List<Vm> createVM(DatacenterBroker broker, int numberOfVms, int idShift) {
         //Creates a container to store VMs. This list is passed to the broker later
@@ -65,7 +122,6 @@ public class CloudSimExample7 {
         int mips = 250;
         long bw = 1000;
         int pesNumber = 1; //number of cpus
-        String vmm = "Xen"; //VMM name
 
         //create VMs
         for (int i = 0; i < numberOfVms; i++) {
@@ -102,73 +158,8 @@ public class CloudSimExample7 {
         return list;
     }
 
-    /**
-     * Runs the example.
-     *
-     * @param args
-     */
-    public static void main(String[] args) {
-        Log.printLine("Starting CloudSimExample7...");
 
-        try {
-            // First step: Initialize the CloudSim package. It should be called
-            // before creating any entities.
-            int num_user = 2;   // number of grid users
-            Calendar calendar = Calendar.getInstance();
-            boolean trace_flag = false;  // mean trace events
-
-            // Initialize the CloudSim library
-            CloudSim.init(num_user, calendar, trace_flag);
-
-            // Second step: Create Datacenters
-            //Datacenters are the resource providers in CloudSim. We need at list one of them to run a CloudSim simulation
-            @SuppressWarnings("unused")
-            Datacenter datacenter0 = createDatacenter("Datacenter_0");
-            @SuppressWarnings("unused")
-            Datacenter datacenter1 = createDatacenter("Datacenter_1");
-
-            //Third step: Create Broker
-            DatacenterBroker broker = createBroker("Broker_0");
-
-            //Fourth step: Create VMs and Cloudlets and send them to broker
-            vmlist = createVM(broker, 5, 0); //creating 5 vms
-            cloudletList = createCloudlet(broker, 10, 0); // creating 10 cloudlets
-
-            broker.submitVmList(vmlist);
-            broker.submitCloudletList(cloudletList);
-
-            ThreadMonitor monitor = new ThreadMonitor();
-            monitor.start();
-            Thread.sleep(1000);
-
-            // Fifth step: Starts the simulation
-            CloudSim.startSimulation();
-
-            // Final step: Print results when simulation is over
-            List<Cloudlet> newList = broker.getCloudletsFinishedList();
-
-            CloudSim.stopSimulation();
-
-            new CloudletsTableBuilderHelper(newList)
-                 .setPrinter(
-                    new TextTableBuilder("\n#Broker " + broker.getName() + " received cloudlets."))
-                 .build();
-
-            if (monitor.getBroker() != null) {
-                newList = monitor.getBroker().getCloudletsFinishedList();
-                new CloudletsTableBuilderHelper(newList)
-                    .setPrinter(
-                        new TextTableBuilder("\n#Broker " + monitor.getBroker().getName() + " received cloudlets."))
-                    .build();
-            }
-
-            Log.printLine("CloudSimExample7 finished!");
-        } catch (InterruptedException | RuntimeException e) {
-            Log.printFormattedLine("Simulation finished due to unexpected error: %s", e);
-        }
-    }
-
-    private static Datacenter createDatacenter(String name) {
+    private static Datacenter createDatacenter() {
         // Here are the steps needed to create a PowerDatacenter:
         // 1. We need to create a list to store one or more
         //    Machines
@@ -229,13 +220,13 @@ public class CloudSimExample7 {
                 .setCostPerBw(costPerBw);
 
         // 6. Finally, we need to create a PowerDatacenter object.
-        return new DatacenterSimple(name, characteristics, new VmAllocationPolicySimple());
+        return new DatacenterSimple(simulation, characteristics, new VmAllocationPolicySimple());
     }
 
     //We strongly encourage users to develop their own broker policies, to submit vms and cloudlets according
     //to the specific rules of the simulated scenario
-    static DatacenterBroker createBroker(String name) {
-        return new DatacenterBrokerSimple(name);
+    static DatacenterBroker createBroker() {
+        return new DatacenterBrokerSimple(simulation);
     }
 }
 
@@ -243,17 +234,22 @@ public class CloudSimExample7 {
  * A thread that will create a new broker at 200 clock time.
  */
 class ThreadMonitor extends Thread {
+    private final CloudSim simulation;
     /**
      * The DatacenterBroker created inside the thread.
      */
     private DatacenterBroker broker = null;
 
+    public ThreadMonitor(CloudSim simulation){
+        this.simulation = simulation;
+    }
+
     @Override
     public void run() {
-        CloudSim.pauseSimulation(200);
+        simulation.pause(200);
 
         while (true) {
-            if (CloudSim.isPaused()) {
+            if (simulation.isPaused()) {
                 break;
             }
             try {
@@ -263,7 +259,7 @@ class ThreadMonitor extends Thread {
             }
         }
 
-        Log.printLine("\n\n\n" + CloudSim.clock() + ": The simulation is paused for 5 sec \n\n");
+        Log.printLine("\n\n\n" + simulation.clock() + ": The simulation is paused for 5 sec \n\n");
 
         try {
             Thread.sleep(5000);
@@ -271,7 +267,7 @@ class ThreadMonitor extends Thread {
             e.printStackTrace();
         }
 
-        broker = CloudSimExample7.createBroker("Broker_1");
+        broker = CloudSimExample7.createBroker();
 
         //Create VMs and Cloudlets and send them to broker
         //creating 5 vms
@@ -283,7 +279,7 @@ class ThreadMonitor extends Thread {
         broker.submitVmList(vmlist);
         broker.submitCloudletList(cloudletList);
 
-        CloudSim.resumeSimulation();
+        simulation.resume();
     }
 
     public DatacenterBroker getBroker() {

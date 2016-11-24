@@ -2,7 +2,6 @@ package org.cloudbus.cloudsim.examples;
 
 import org.cloudsimplus.util.tablebuilder.CloudletsTableBuilderHelper;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.List;
 
 import org.cloudbus.cloudsim.Cloudlet;
@@ -38,6 +37,7 @@ import org.cloudbus.cloudsim.schedulers.CloudletSchedulerSpaceShared;
  * @author Manoel Campos da Silva Filho
  */
 public class CloudSimExample0 {
+    private final CloudSim simulation;
     private List<Cloudlet> cloudletList;
     private List<Vm> vmList;
     private int numberOfCreatedCloudlets = 0;
@@ -57,49 +57,45 @@ public class CloudSimExample0 {
      */
     public CloudSimExample0() {
         Log.printLine("Starting Minimal Example ...");
-        try {
-            this.vmList = new ArrayList<>();
-            this.cloudletList = new ArrayList<>();
-            //Number of cloud customers
-            int numberOfCloudUsers = 1;
-            boolean traceEvents = false;
+        this.vmList = new ArrayList<>();
+        this.cloudletList = new ArrayList<>();
+        //Number of cloud customers
+        int numberOfCloudUsers = 1;
+        boolean traceEvents = false;
 
-            CloudSim.init(numberOfCloudUsers, Calendar.getInstance(), traceEvents);
+        this.simulation = new CloudSim(numberOfCloudUsers, traceEvents);
 
-            Datacenter datacenter0 = createDatacenter("Datacenter0");
+        Datacenter datacenter0 = createDatacenter();
 
-            /*Creates a Broker accountable for submission of VMs and Cloudlets
-            on behalf of a given cloud user (customer).*/
-            DatacenterBroker broker0 = new DatacenterBrokerSimple("Broker0");
+        /*Creates a Broker accountable for submission of VMs and Cloudlets
+        on behalf of a given cloud user (customer).*/
+        DatacenterBroker broker0 = new DatacenterBrokerSimple(simulation);
 
-            Vm vm0 = createVm(broker0);
-            this.vmList.add(vm0);
-            broker0.submitVmList(vmList);
+        Vm vm0 = createVm(broker0);
+        this.vmList.add(vm0);
+        broker0.submitVmList(vmList);
 
-            /*Creates Cloudlets that represent applications to be run inside a VM.*/
-            Cloudlet cloudlet0 = createCloudlet(broker0, vm0);
-            this.cloudletList.add(cloudlet0);
-            Cloudlet cloudlet1 = createCloudlet(broker0, vm0);
-            this.cloudletList.add(cloudlet1);
-            broker0.submitCloudletList(cloudletList);
+        /*Creates Cloudlets that represent applications to be run inside a VM.*/
+        Cloudlet cloudlet0 = createCloudlet(broker0, vm0);
+        this.cloudletList.add(cloudlet0);
+        Cloudlet cloudlet1 = createCloudlet(broker0, vm0);
+        this.cloudletList.add(cloudlet1);
+        broker0.submitCloudletList(cloudletList);
 
-            /*Starts the simulation and waits all cloudlets to be executed*/
-            CloudSim.startSimulation();
+        /*Starts the simulation and waits all cloudlets to be executed*/
+        simulation.start();
 
-            //Finishes the simulation
-            CloudSim.stopSimulation();
+        //Finishes the simulation
+        simulation.stop();
 
-            /*Prints results when the simulation is over
-            (you can use your own code here to print what you want from this cloudlet list)*/
-            List<Cloudlet> finishedCloudlets = broker0.getCloudletsFinishedList();
-            new CloudletsTableBuilderHelper(finishedCloudlets).build();
-            Log.printLine("Minimal Example finished!");
-        } catch (RuntimeException e) {
-            Log.printFormattedLine("Simulation finished due to unexpected error: %s", e);
-        }
+        /*Prints results when the simulation is over
+        (you can use your own code here to print what you want from this cloudlet list)*/
+        List<Cloudlet> finishedCloudlets = broker0.getCloudletsFinishedList();
+        new CloudletsTableBuilderHelper(finishedCloudlets).build();
+        Log.printLine("Minimal Example finished!");
     }
 
-    private DatacenterSimple createDatacenter(String name) {
+    private DatacenterSimple createDatacenter() {
         List<Host> hostList = new ArrayList<>();
         Host host0 = createHost();
         hostList.add(host0);
@@ -117,7 +113,7 @@ public class CloudSimExample0 {
                 .setCostPerStorage(costPerStorage)
                 .setCostPerBw(costPerBw);
 
-        return new DatacenterSimple(name, characteristics, new VmAllocationPolicySimple());
+        return new DatacenterSimple(simulation, characteristics, new VmAllocationPolicySimple());
     }
 
     private Host createHost() {
