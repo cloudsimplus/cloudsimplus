@@ -100,7 +100,7 @@ final class DatacenterBrokerHeuristicExperiment extends SimulationExperiment {
 
 	@Override
 	protected DatacenterBrokerHeuristic createBroker() {
-		return new DatacenterBrokerHeuristic("Broker0").setHeuristic(heuristic);
+		return new DatacenterBrokerHeuristic(getCloudsim()).setHeuristic(heuristic);
 	}
 
     @Override

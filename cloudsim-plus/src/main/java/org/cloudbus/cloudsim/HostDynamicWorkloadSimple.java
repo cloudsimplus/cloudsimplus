@@ -15,7 +15,6 @@ import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 
-import org.cloudbus.cloudsim.core.CloudSim;
 import org.cloudbus.cloudsim.lists.PeList;
 import org.cloudbus.cloudsim.provisioners.ResourceProvisioner;
 
@@ -112,7 +111,7 @@ public class HostDynamicWorkloadSimple extends HostSimple implements HostDynamic
                         "%.2f: [Host #" + getId() + "] Total allocated MIPS for VM #" + vm.getId()
                         + " (Host #" + vm.getHost().getId()
                         + ") is %.2f, was requested %.2f out of total %.2f (%.2f%%)",
-                        CloudSim.clock(),
+                        getSimulation().clock(),
                         totalAllocatedMips,
                         totalRequestedMips,
                         vm.getMips(),
@@ -128,16 +127,16 @@ public class HostDynamicWorkloadSimple extends HostSimple implements HostDynamic
                         "%.2f: [Host #" + getId() + "] MIPS for VM #" + vm.getId() + " by PEs ("
                         + getNumberOfPes() + " * " + getVmScheduler().getPeCapacity() + ")."
                         + pesString,
-                        CloudSim.clock());
+                        getSimulation().clock());
             }
 
             if (getVmsMigratingIn().contains(vm)) {
                 Log.printFormattedLine("%.2f: [Host #" + getId() + "] VM #" + vm.getId()
-                        + " is being migrated to Host #" + getId(), CloudSim.clock());
+                        + " is being migrated to Host #" + getId(), getSimulation().clock());
             } else {
                 if (totalAllocatedMips + 0.1 < totalRequestedMips) {
                     Log.printFormattedLine("%.2f: [Host #" + getId() + "] Under allocated MIPS for VM #" + vm.getId()
-                            + ": %.2f", CloudSim.clock(), totalRequestedMips - totalAllocatedMips);
+                            + ": %.2f", getSimulation().clock(), totalRequestedMips - totalAllocatedMips);
                 }
 
                 VmStateHistoryEntry entry = new VmStateHistoryEntry(
@@ -150,7 +149,7 @@ public class HostDynamicWorkloadSimple extends HostSimple implements HostDynamic
                 if (vm.isInMigration()) {
                     Log.printFormattedLine(
                             "%.2f: [Host #" + getId() + "] VM #" + vm.getId() + " is in migration",
-                            CloudSim.clock());
+                            getSimulation().clock());
                     totalAllocatedMips /= 0.9; // performance degradation due to migration - 10%
                 }
             }

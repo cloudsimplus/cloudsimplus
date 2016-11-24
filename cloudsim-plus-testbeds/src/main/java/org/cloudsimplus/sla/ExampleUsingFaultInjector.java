@@ -153,7 +153,7 @@ public class ExampleUsingFaultInjector {
         Calendar calendar = Calendar.getInstance(); // Calendar whose fields have been initialized with the current date and time.
         boolean trace_flag = false; // trace events
 
-        CloudSim.init(num_user, calendar, trace_flag);
+        CloudSim.CloudSim(num_user, calendar, trace_flag);
         Log.disable();
 
         //Create Datacenters
@@ -197,8 +197,8 @@ public class ExampleUsingFaultInjector {
         broker.submitCloudletList(cloudletList);
 
         // Sixth step: Starts the simulation
-        CloudSim.startSimulation();
-        CloudSim.stopSimulation();
+        CloudSim.start();
+        CloudSim.stop();
 
         System.out.println("\n");
         for (Cloudlet cloudlet : cloudletList) {

@@ -47,10 +47,6 @@ import org.cloudsimplus.util.tablebuilder.TextTableBuilder;
  * @author Manoel Campos da Silva Filho
  */
 public abstract class NetworkVmsExampleAppCloudletAbstract {
-    public static final String ARCH = "x86"; // system architecture
-    public static final String OS = "Linux"; // operating system
-    public static final String VMM = "Xen";
-    public static final double TIME_ZONE = 10.0; // time zone this resource located
     public static final int MAX_VMS_PER_HOST = 2;
 
     public static final double COST = 3.0; // the cost of using processing in this resource
@@ -77,6 +73,7 @@ public abstract class NetworkVmsExampleAppCloudletAbstract {
     public static final int  NETCLOUDLET_FILE_SIZE = 300;
     public static final int  NETCLOUDLET_OUTPUT_SIZE = 300;
     public static final long NETCLOUDLET_RAM = 100;
+    private final CloudSim simulation;
 
     private int currentAppCloudletId = -1;
 
@@ -93,32 +90,28 @@ public abstract class NetworkVmsExampleAppCloudletAbstract {
      */
     public NetworkVmsExampleAppCloudletAbstract() {
         Log.printFormattedLine("Starting %s...", this.getClass().getSimpleName());
-        try {
-            int num_user = 1; // number of cloud users
-            Calendar calendar = Calendar.getInstance();
-            boolean trace_flag = false;
+        int num_user = 1; // number of cloud users
+        Calendar calendar = Calendar.getInstance();
+        boolean trace_flag = false;
 
-            CloudSim.init(num_user, calendar, trace_flag);
+        simulation = new CloudSim(num_user, trace_flag);
 
-            this.datacenter = createDatacenter("Datacenter_0");
-            this.brokerList = createBrokerForEachAppCloudlet();
-            this.appCloudletList = new ArrayList<>();
-            this.vmList = new ArrayList<>();
+        this.datacenter = createDatacenter();
+        this.brokerList = createBrokerForEachAppCloudlet();
+        this.appCloudletList = new ArrayList<>();
+        this.vmList = new ArrayList<>();
 
-            AppCloudlet app;
-            for(NetDatacenterBroker broker: this.brokerList){
-                this.vmList.addAll(createAndSubmitVMs(broker));
-                app = createAppCloudletAndSubmitToBroker(broker);
-                this.appCloudletList.add(app);
-            }
-
-            CloudSim.startSimulation();
-            CloudSim.stopSimulation();
-
-            showSimulationResults();
-        } catch (RuntimeException e) {
-            Log.printFormattedLine("Simulation finished due to unexpected error: %s", e);
+        AppCloudlet app;
+        for(NetDatacenterBroker broker: this.brokerList){
+            this.vmList.addAll(createAndSubmitVMs(broker));
+            app = createAppCloudletAndSubmitToBroker(broker);
+            this.appCloudletList.add(app);
         }
+
+        simulation.start();
+        simulation.stop();
+
+        showSimulationResults();
     }
 
     private void showSimulationResults() {
@@ -152,7 +145,7 @@ public abstract class NetworkVmsExampleAppCloudletAbstract {
     private  List<NetDatacenterBroker> createBrokerForEachAppCloudlet() {
         List<NetDatacenterBroker> list = new ArrayList<>();
         for(int i = 0; i < NUMBER_OF_APP_CLOUDLETS; i++){
-            list.add(new NetDatacenterBroker("Broker_"+i));
+            list.add(new NetDatacenterBroker(simulation));
         }
 
         return list;
@@ -161,11 +154,9 @@ public abstract class NetworkVmsExampleAppCloudletAbstract {
     /**
      * Creates the datacenter.
      *
-     * @param name the datacenter name
-     *
      * @return the datacenter
      */
-    protected final NetworkDatacenter createDatacenter(String name) {
+    protected final NetworkDatacenter createDatacenter() {
         final int numberOfHosts = EdgeSwitch.PORTS * AggregateSwitch.PORTS * RootSwitch.PORTS;
         List<Host> hostList = new ArrayList<>(numberOfHosts);
         for (int i = 0; i < numberOfHosts; i++) {
@@ -190,7 +181,7 @@ public abstract class NetworkVmsExampleAppCloudletAbstract {
         // 6. Finally, we need to create a NetworkDatacenter object.
         NetworkDatacenter newDatacenter =
                 new NetworkDatacenter(
-                        name, characteristics, new NetworkVmAllocationPolicy());
+                        simulation, characteristics, new NetworkVmAllocationPolicy());
         newDatacenter.setSchedulingInterval(5);
 
         createNetwork(newDatacenter);
@@ -215,7 +206,7 @@ public abstract class NetworkVmsExampleAppCloudletAbstract {
     protected void createNetwork(NetworkDatacenter datacenter) {
         EdgeSwitch[] edgeSwitches = new EdgeSwitch[1];
         for (int i = 0; i < edgeSwitches.length; i++) {
-            edgeSwitches[i] = new EdgeSwitch("Edge" + i, datacenter);
+            edgeSwitches[i] = new EdgeSwitch(simulation, datacenter);
             datacenter.addSwitch(edgeSwitches[i]);
         }
 

@@ -9,55 +9,54 @@ import org.cloudbus.cloudsim.mocks.CloudSimMocker;
 import org.junit.Test;
 import static org.junit.Assert.*;
 import org.junit.Ignore;
-import org.junit.runner.RunWith;
-import org.powermock.core.classloader.annotations.PrepareForTest;
-import org.powermock.modules.junit4.PowerMockRunner;
 
 /**
  *
  * @author Manoel Campos da Silva Filho
  */
-@RunWith(PowerMockRunner.class)
-@PrepareForTest({CloudSim.class}) //to intercept and mock static method calls
 public class CloudletSchedulerSpaceSharedTest {
     private static final double SCHEDULER_MIPS = 1000;
-
+    
     @Test
     public void testCloudletFinish_CheckCloudletWasSetToFinished() {
         final double clockMethodReturnValue = 0;
         final int expectedClockCalls = 3;
-        CloudSimMocker.build(mocker -> mocker.clock(clockMethodReturnValue, expectedClockCalls));
+        CloudSim cloudsim = CloudSimMocker.createMock(
+                mocker -> mocker.clock(clockMethodReturnValue).times(expectedClockCalls));
         Cloudlet c = CloudletSimpleTest.createCloudlet(0, 1000, 1);
+        c.setSimulation(cloudsim);
         CloudletExecutionInfo rcl = new CloudletExecutionInfo(c);
         CloudletSchedulerSpaceShared instance = new CloudletSchedulerSpaceShared();
         instance.cloudletFinish(rcl);
         assertEquals(Cloudlet.Status.SUCCESS, c.getStatus());
-        CloudSimMocker.verify();
+        CloudSimMocker.verify(cloudsim);
     }
 
     @Test
     public void testCloudletFinish_CloudletMovedToFinishList() {
         final double clockMethodReturnValue = 0;
         final int expectedClockCalls = 3;
-        CloudSimMocker.build(mocker -> mocker.clock(clockMethodReturnValue, expectedClockCalls));
-        CloudletExecutionInfo rcl =
-                new CloudletExecutionInfo(CloudletSimpleTest.createCloudlet(0, 1000, 1));
+        CloudSim cloudsim = CloudSimMocker.createMock(
+                mocker -> mocker.clock(clockMethodReturnValue).times(expectedClockCalls));
+        Cloudlet cloudlet = CloudletSimpleTest.createCloudlet(0, 1000, 1);
+        cloudlet.setSimulation(cloudsim);
+        CloudletExecutionInfo rcl = new CloudletExecutionInfo(cloudlet);
         CloudletSchedulerSpaceShared instance = new CloudletSchedulerSpaceShared();
         instance.cloudletFinish(rcl);
         assertTrue(instance.getCloudletFinishedList().contains(rcl));
-        CloudSimMocker.verify();
+        CloudSimMocker.verify(cloudsim);
     }
 
     @Test
     public void testRemoveCloudletFromExecList_NotInExecList() {
-        CloudletExecutionInfo cloudlet = new CloudletExecutionInfo(Cloudlet.NULL);
+        CloudletExecutionInfo cloudlet = new CloudletExecutionInfo(CloudletSimpleTest.createCloudletWithOnePe(0));
         CloudletSchedulerSpaceShared instance = new CloudletSchedulerSpaceShared();
         assertFalse(instance.removeCloudletFromExecList(cloudlet));
     }
 
     @Test
     public void testRemoveCloudletFromExecList_InExecList() {
-        CloudletExecutionInfo cloudlet = new CloudletExecutionInfo(Cloudlet.NULL);
+        CloudletExecutionInfo cloudlet = new CloudletExecutionInfo(CloudletSimpleTest.createCloudletWithOnePe(0));
         CloudletSchedulerSpaceShared instance = new CloudletSchedulerSpaceShared();
         instance.addCloudletToExecList(cloudlet);
         assertTrue(instance.removeCloudletFromExecList(cloudlet));

@@ -15,7 +15,6 @@ import java.util.stream.Stream;
 
 import org.cloudbus.cloudsim.*;
 import org.cloudbus.cloudsim.Cloudlet.Status;
-import org.cloudbus.cloudsim.core.CloudSim;
 import org.cloudsimplus.listeners.VmToCloudletEventInfo;
 import org.cloudbus.cloudsim.resources.Processor;
 
@@ -245,7 +244,7 @@ public abstract class CloudletSchedulerAbstract implements CloudletScheduler {
      */
     protected void addCloudletToExecList(CloudletExecutionInfo cloudlet) {
         cloudlet.setCloudletStatus(Cloudlet.Status.INEXEC);
-        cloudlet.setLastProcessingTime(CloudSim.clock());
+        cloudlet.setLastProcessingTime(getVm().getSimulation().clock());
         cloudletExecList.add(cloudlet);
         addUsedPes(cloudlet.getNumberOfPes());
     }
@@ -637,7 +636,7 @@ public abstract class CloudletSchedulerAbstract implements CloudletScheduler {
      * @param rcl the cloudlet to set the finish time
      */
     protected void setCloudletFinishTime(CloudletExecutionInfo rcl) {
-        final double clock = CloudSim.clock();
+        final double clock = getVm().getSimulation().clock();
         //Log.println(Log.Level.INFO, getClass(), clock, "Start Time: %f Transfer Time: %f", rcl.getExecStartTime(), rcl.getFileTransferTime());
         rcl.setFinishTime(clock);
         cloudletFinish(rcl);
@@ -672,8 +671,8 @@ public abstract class CloudletSchedulerAbstract implements CloudletScheduler {
                 + (rcl.getRemainingCloudletLength()
                 / (processor.getAvailableMipsByPe() * rcl.getNumberOfPes()));
 
-        if (estimatedFinishTime - currentTime < CloudSim.getMinTimeBetweenEvents()) {
-            estimatedFinishTime = currentTime + CloudSim.getMinTimeBetweenEvents();
+        if (estimatedFinishTime - currentTime < getVm().getSimulation().getMinTimeBetweenEvents()) {
+            estimatedFinishTime = currentTime + getVm().getSimulation().getMinTimeBetweenEvents();
         }
 
         return estimatedFinishTime;

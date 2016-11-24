@@ -11,17 +11,12 @@ public class VmEventInfoSimple extends EventInfoAbstract implements VmEventInfo 
     private Vm vm;
 
     /**
-     * Default constructor that uses the current simulation time
-     * as the event time.
+     * Creates a EventInfo with the given parameters.
      * 
-     * @param vm
-     * @see CloudSim#clock() 
+     * @param time the time the event was generated
+     * @param vm Vm that fired the event
      */
-    public VmEventInfoSimple(Vm vm) {
-        this(USE_CURRENT_SIMULATION_TIME, vm);
-    }
-
-    public VmEventInfoSimple(double time, Vm vm) {
+     public VmEventInfoSimple(double time, Vm vm) {
         super(time);
         setVm(vm);
     }

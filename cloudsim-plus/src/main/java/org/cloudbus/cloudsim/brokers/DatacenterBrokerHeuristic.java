@@ -4,6 +4,7 @@ import java.util.stream.Collectors;
 import org.cloudbus.cloudsim.Cloudlet;
 import org.cloudbus.cloudsim.Log;
 import org.cloudbus.cloudsim.Vm;
+import org.cloudbus.cloudsim.core.CloudSim;
 import org.cloudbus.cloudsim.lists.VmList;
 import org.cloudsimplus.heuristics.CloudletToVmMappingHeuristic;
 import org.cloudsimplus.heuristics.CloudletToVmMappingSolution;
@@ -28,14 +29,12 @@ public class DatacenterBrokerHeuristic extends DatacenterBrokerSimple {
     /**
      * Creates a new DatacenterBroker object.
      *
-     * @param name name to be associated with this entity
-     * @throws IllegalArgumentException when the entity name is invalid
-     * @pre name != null
+     * @param simulation The CloudSim instance that represents the simulation the Entity is related to
      * @post $none
      * @see #setHeuristic(CloudletToVmMappingHeuristic)
      */
-    public DatacenterBrokerHeuristic(String name) {
-        super(name);
+    public DatacenterBrokerHeuristic(CloudSim simulation) {
+        super(simulation);
         heuristic = CloudletToVmMappingHeuristic.NULL;
     }
 

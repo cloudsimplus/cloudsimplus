@@ -2,19 +2,22 @@
 
 Lists the main changes in the project.
 
+## [xxx] - 2016-MM-DD
+
+### Added
+
+### Changed
+
+### Removed
+
 ## [v0.8-beta.5] - 2016-11-23
 
 ### Added
-- Introduction of the class CloudletSchedulerCompletelyFair that implements the Completely Fair Scheduler used in recent version of the Linux Kernel.
-  The scheduler perform an actual Cloudlet preemption,  assigning a timeslice for each Cloudlet (according to its priority), that allow it
-  to use the CPU for a specific time interval. After this time slice expires, such Cloudlets are moved to the waiting list,
-  allowing previous waiting ones to execute. This is the first scheduler that in fact considers Cloudlets priorities.
-  The CloudletSchedulerTimeShared does not implements a preemption mechanism and makes an oversimplification
-  assuming that all Cloudlets can run simultaneously, even there are less PEs in the Vm than required by all Cloudlets.
-  Such a scheduler assumes that if two Cloudlets are concurring for the same PE, they will execute simultaneously by
-  assigning 50% of the PE capacity to each PE. This oversimplification makes that all Cloudlets finish at the exact same 
-  time, what is not possible in a real scheduler. Furthermore, it increases the task completion time of all cloudlets,
-  because it simply distribute the waiting time among all submited Cloudlets, harming all Cloudelets performance.
+Introduction of the class CloudletSchedulerCompletelyFair that implements the Completely Fair Scheduler used in recent version of the Linux Kernel. The scheduler performs an actual Cloudlet preemption, assigning a timeslice for each Cloudlet (according to its priority), that allow it  to use the CPU for a specific time interval. After this time slice expires, such Cloudlets are moved to the waiting list, allowing previous waiting ones to execute. This is the first scheduler that in fact considers Cloudlets priorities.
+  
+The CloudletSchedulerTimeShared does not implements a preemption mechanism and makes an oversimplification assuming that all Cloudlets can run simultaneously, even there are less PEs in the Vm than required by all Cloudlets.
+
+Such a scheduler assumes that if two Cloudlets are concurring for the same PE, they will execute simultaneously by assigning 50% of the PE capacity to each PE. This oversimplification makes that all Cloudlets finish at the exact same  time, what is not possible in a real scheduler. Furthermore, it increases the task completion time of all cloudlets, because it simply distribute the waiting time among all submited Cloudlets, harming all Cloudelets performance.
 
 ### Changed
 - Constructors of Cloudlet, Vm, Host, Datacenter and DatacenterCharacteristics with a
@@ -27,6 +30,7 @@ Lists the main changes in the project.
 
 ### Removed
 - Removed the hostList parameter from the VmAllocationPolicy constructors. The host list is now automatically got directly from the Datacenter.
+  An example of Datacenter instantiation can be `new DatacenterSimple(name, characteristics, new VmAllocationPolicySimple());`
 
 ## [v0.8-beta.4] - 2016-11-03
 

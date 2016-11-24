@@ -49,7 +49,7 @@ public class CloudletSendTask extends CloudletTask {
     }
 
     /**
-     * Creates and add a packet to the list of packets to be sent to a 
+     * Creates and add a packet to the list of packets to be sent to a
      * {@link Cloudlet} that is inside a specific VM.
      *
      * @param destinationCloudlet destination cloudlet to send packets to
@@ -59,16 +59,16 @@ public class CloudletSendTask extends CloudletTask {
      * @throws IllegalArgumentException when the source or destination Cloudlet doesn't have an assigned VM
      */
     public HostPacket addPacket(Cloudlet destinationCloudlet, long dataLength) {
-        if(getNetworkCloudlet() == null)
+        if(getCloudlet() == null)
             throw new RuntimeException("You must assign a NetworkCloudlet to this Task before adding packets.");
-        if(!getNetworkCloudlet().isBoundedToVm())
+        if(!getCloudlet().isBoundedToVm())
             throw new IllegalArgumentException("The source Cloudlet has to have an assigned VM.");
         if(!destinationCloudlet.isBoundedToVm())
             throw new IllegalArgumentException("The destination Cloudlet has to have an assigned VM.");
-        
+
         HostPacket packet = new HostPacket(
-                getNetworkCloudlet().getVmId(), destinationCloudlet.getVmId(),
-                dataLength, getNetworkCloudlet(), destinationCloudlet);
+                getCloudlet().getVmId(), destinationCloudlet.getVmId(),
+                dataLength, getCloudlet(), destinationCloudlet);
         packetsToSend.add(packet);
         return packet;
     }
@@ -83,21 +83,21 @@ public class CloudletSendTask extends CloudletTask {
     /**
      * Gets the list of packets to send,
      * updating the send time to the given time
-     * and clearing the list of packets, marking the 
+     * and clearing the list of packets, marking the
      * task as finished.
-     * 
+     *
      * @param sendTime the send time to update all packets in the list
      * @return the packet list with the send time
      * updated to the given time
      */
     public List<HostPacket> getPacketsToSend(double sendTime) {
-        packetsToSend.forEach(pkt ->  pkt.setSendTime(sendTime));  
-        
+        packetsToSend.forEach(pkt ->  pkt.setSendTime(sendTime));
+
         if(isFinished())
             packetsToSend.clear();
         else setFinished(true);
-        
+
         return packetsToSend;
     }
-   
+
 }

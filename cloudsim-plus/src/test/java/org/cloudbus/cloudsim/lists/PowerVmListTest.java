@@ -3,25 +3,17 @@ package org.cloudbus.cloudsim.lists;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.IntStream;
-import org.cloudbus.cloudsim.core.CloudSim;
 import org.cloudbus.cloudsim.mocks.Mocks;
 import org.cloudbus.cloudsim.power.PowerVm;
 import org.cloudbus.cloudsim.schedulers.CloudletScheduler;
 import org.easymock.EasyMock;
 import org.junit.Test;
 import static org.junit.Assert.*;
-import org.junit.Before;
-import org.junit.runner.RunWith;
-import org.powermock.api.easymock.PowerMock;
-import org.powermock.core.classloader.annotations.PrepareForTest;
-import org.powermock.modules.junit4.PowerMockRunner;
 
 /**
  *
  * @author Manoel Campos da Silva Filho
  */
-@RunWith(PowerMockRunner.class)
-@PrepareForTest({CloudSim.class}) //to intercept and mock static method calls
 public class PowerVmListTest {
     private static final int USER_ID=0;
     private static final double MIPS=1000;
@@ -32,13 +24,6 @@ public class PowerVmListTest {
     private static final String VMM="Xen";
     private static final int NUMBER_OF_VMS = 10;
     private static final int TIME = 0;
-
-    @Before
-    public void setUp(){
-        PowerMock.mockStatic(CloudSim.class);
-        EasyMock.expect(CloudSim.clock()).andReturn(0.0).anyTimes();
-        PowerMock.replay(CloudSim.class);
-    }
 
     private CloudletScheduler[] createCloudletSchedulerMocks(boolean ascendingCpuUtilization) {
         CloudletScheduler list[] = new CloudletScheduler[NUMBER_OF_VMS];
@@ -88,7 +73,7 @@ public class PowerVmListTest {
         System.out.println("sortByCpuUtilization");
         final List<PowerVm> list = createPowerVmList(true);
 
-        PowerVmList.sortByCpuUtilization(list);
+        PowerVmList.sortByCpuUtilization(list, 0);
 
         int i = NUMBER_OF_VMS;
         for(PowerVm vm: list) {
@@ -106,7 +91,7 @@ public class PowerVmListTest {
     public void testSortByCpuUtilizationWithVmsInDecreasingUtilizationOrder() {
         System.out.println("sortByCpuUtilization");
         final List<PowerVm> list = createPowerVmList(false);
-        PowerVmList.sortByCpuUtilization(list);
+        PowerVmList.sortByCpuUtilization(list, 0);
 
         int i = -1;
         for(PowerVm vm: list) {

@@ -74,11 +74,18 @@ public interface FileStorage extends Resource {
     File getFile(String fileName);
 
     /**
-     * Gets a list with the names of all files stored on the device.
+     * Gets a <b>read-only</b> list with the names of all files stored on the device.
      *
      * @return a List of file names
      */
     List<String> getFileNameList();
+
+    /**
+     * Gets a <b>read-only</b> list with all files stored on the device.
+     *
+     * @return a List of files
+     */
+    List<File> getFileList();
 
     /**
      * Adds a file to the storage. The time taken (in seconds) for adding the specified file can

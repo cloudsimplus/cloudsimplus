@@ -7,7 +7,6 @@ package org.cloudsimplus.sla;
 
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.LinkedList;
 import java.util.List;
 import org.cloudbus.cloudsim.Cloudlet;
 import org.cloudbus.cloudsim.CloudletSimple;
@@ -27,7 +26,6 @@ import org.cloudbus.cloudsim.core.CloudSim;
 import org.cloudbus.cloudsim.provisioners.PeProvisionerSimple;
 import org.cloudbus.cloudsim.provisioners.ResourceProvisionerSimple;
 import org.cloudbus.cloudsim.resources.Bandwidth;
-import org.cloudbus.cloudsim.resources.FileStorage;
 import org.cloudbus.cloudsim.resources.Pe;
 import org.cloudbus.cloudsim.resources.PeSimple;
 import org.cloudbus.cloudsim.resources.Ram;
@@ -121,7 +119,7 @@ public class ExampleCreateCloudletRandomly {
         Calendar calendar = Calendar.getInstance(); // Calendar whose fields have been initialized with the current date and time.
         boolean trace_flag = false; // trace events
 
-        CloudSim.init(num_user, calendar, trace_flag);
+        CloudSim.CloudSim(num_user, calendar, trace_flag);
 
         // Second step: Create Datacenters
         Datacenter datacenter0 = createDatacenter("Datacenter_0");
@@ -159,8 +157,8 @@ public class ExampleCreateCloudletRandomly {
         // submit vm list to the broker
         broker.submitVmList(vmlist);
 
-        CloudSim.startSimulation();
-        CloudSim.stopSimulation();
+        CloudSim.start();
+        CloudSim.stop();
 
         //Final step: Print results when simulation is over
         List<Cloudlet> newList = broker.getCloudletsFinishedList();
@@ -220,14 +218,14 @@ public class ExampleCreateCloudletRandomly {
         // resource
         double costPerBw = 0.0; // the cost of using bw in this resource
 
-        DatacenterCharacteristics characteristics = 
+        DatacenterCharacteristics characteristics =
                 new DatacenterCharacteristicsSimple(hostList)
                 .setCostPerSecond(cost)
                 .setCostPerMem(costPerMem)
                 .setCostPerStorage(costPerStorage)
                 .setCostPerBw(costPerBw);
 
-        return new DatacenterSimple(name, characteristics, 
+        return new DatacenterSimple(name, characteristics,
                 new VmAllocationPolicySimple());
 
     }

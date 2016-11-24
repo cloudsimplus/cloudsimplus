@@ -13,6 +13,7 @@ import java.util.Calendar;
 import java.util.List;
 import org.cloudbus.cloudsim.Cloudlet;
 import org.cloudbus.cloudsim.CloudletSimple;
+import org.cloudbus.cloudsim.core.SimEvent;
 import org.cloudbus.cloudsim.schedulers.CloudletSchedulerTimeShared;
 import org.cloudbus.cloudsim.Datacenter;
 import org.cloudbus.cloudsim.DatacenterSimple;
@@ -32,8 +33,7 @@ import org.cloudbus.cloudsim.VmSimple;
 import org.cloudbus.cloudsim.allocationpolicies.VmAllocationPolicySimple;
 import org.cloudbus.cloudsim.schedulers.VmSchedulerTimeShared;
 import org.cloudbus.cloudsim.core.CloudSim;
-import org.cloudbus.cloudsim.core.SimEntity;
-import org.cloudbus.cloudsim.core.SimEvent;
+import org.cloudbus.cloudsim.core.CloudSimEntity;
 import org.cloudsimplus.util.tablebuilder.CloudletsTableBuilderHelper;
 import org.cloudbus.cloudsim.provisioners.PeProvisionerSimple;
 import org.cloudbus.cloudsim.provisioners.ResourceProvisionerSimple;
@@ -45,16 +45,57 @@ import org.cloudbus.cloudsim.resources.Ram;
  * this example) in run-time using a {@link GlobalBroker global entity manager}.
  */
 public class CloudSimExample8 {
-
-    /**
-     * The cloudlet list.
-     */
     private static List<Cloudlet> cloudletList;
+    private static List<Vm> vmList;
+    private static CloudSim simulation;
 
     /**
-     * The vmList.
+     * Executes the example.
+     *
+     * @param args
      */
-    private static List<Vm> vmList;
+    public static void main(String[] args) {
+        Log.printFormattedLine("Starting %s...", CloudSimExample8.class.getSimpleName());
+        // First step: Initialize the CloudSim package. It should be called
+        // before creating any entities.
+        int num_user = 2;   // number of grid users
+        boolean trace_flag = false;  // mean trace events
+
+        // Initialize the CloudSim library
+        simulation = new CloudSim(num_user, trace_flag);
+
+        GlobalBroker globalBroker = new GlobalBroker("GlobalBroker");
+
+        // Second step: Create Datacenters
+        //Datacenters are the resource providers in CloudSim.
+        //We need at list one of them to run a CloudSim simulation
+        @SuppressWarnings("unused")
+        Datacenter datacenter0 = createDatacenter();
+        @SuppressWarnings("unused")
+        Datacenter datacenter1 = createDatacenter();
+
+        //Third step: Create Broker
+        DatacenterBroker broker = createBroker("Broker_0");
+
+        //Fourth step: Create VMs and Cloudlets and send them to broker
+        vmList = createVM(broker, 5, 0); //creating 5 vms
+        cloudletList = createCloudlet(broker, 10, 0); // creating 10 cloudlets
+
+        broker.submitVmList(vmList);
+        broker.submitCloudletList(cloudletList);
+
+        // Fifth step: Starts the simulation
+        simulation.start();
+
+        // Final step: Print results when simulation is over
+        List<Cloudlet> newList = broker.getCloudletsFinishedList();
+        newList.addAll(globalBroker.getBroker().getCloudletsFinishedList());
+
+        simulation.stop();
+
+        new CloudletsTableBuilderHelper(newList).build();
+        Log.printFormattedLine("%s finished!", CloudSimExample8.class.getSimpleName());
+    }
 
     private static List<Vm> createVM(DatacenterBroker broker, int vms, int idShift) {
         //Creates a container to store VMs. This list is passed to the broker later
@@ -66,7 +107,6 @@ public class CloudSimExample8 {
         int mips = 250;
         long bw = 1000;
         int pesNumber = 1; //number of cpus
-        String vmm = "Xen"; //VMM name
 
         //create VMs
         for (int i = 0; i < vms; i++) {
@@ -103,60 +143,7 @@ public class CloudSimExample8 {
         return list;
     }
 
-    /**
-     * Executes the example.
-     *
-     * @param args
-     */
-    public static void main(String[] args) {
-        Log.printFormattedLine("Starting %s...", CloudSimExample8.class.getSimpleName());
-        try {
-            // First step: Initialize the CloudSim package. It should be called
-            // before creating any entities.
-            int num_user = 2;   // number of grid users
-            Calendar calendar = Calendar.getInstance();
-            boolean trace_flag = false;  // mean trace events
-
-            // Initialize the CloudSim library
-            CloudSim.init(num_user, calendar, trace_flag);
-
-            GlobalBroker globalBroker = new GlobalBroker("GlobalBroker");
-
-            // Second step: Create Datacenters
-            //Datacenters are the resource providers in CloudSim.
-            //We need at list one of them to run a CloudSim simulation
-            @SuppressWarnings("unused")
-            Datacenter datacenter0 = createDatacenter("Datacenter_0");
-            @SuppressWarnings("unused")
-            Datacenter datacenter1 = createDatacenter("Datacenter_1");
-
-            //Third step: Create Broker
-            DatacenterBroker broker = createBroker("Broker_0");
-
-            //Fourth step: Create VMs and Cloudlets and send them to broker
-            vmList = createVM(broker, 5, 0); //creating 5 vms
-            cloudletList = createCloudlet(broker, 10, 0); // creating 10 cloudlets
-
-            broker.submitVmList(vmList);
-            broker.submitCloudletList(cloudletList);
-
-            // Fifth step: Starts the simulation
-            CloudSim.startSimulation();
-
-            // Final step: Print results when simulation is over
-            List<Cloudlet> newList = broker.getCloudletsFinishedList();
-            newList.addAll(globalBroker.getBroker().getCloudletsFinishedList());
-
-            CloudSim.stopSimulation();
-
-            new CloudletsTableBuilderHelper(newList).build();
-            Log.printFormattedLine("%s finished!", CloudSimExample8.class.getSimpleName());
-        } catch (RuntimeException e) {
-            Log.printFormattedLine("Simulation finished due to unexpected error: %s", e);
-        }
-    }
-
-    private static Datacenter createDatacenter(String name) {
+    private static Datacenter createDatacenter() {
         // Here are the steps needed to create a DatacenterSimple:
         // 1. We need to create a list to store one or more
         //    Machines
@@ -217,23 +204,24 @@ public class CloudSimExample8 {
                 .setCostPerBw(costPerBw);
 
         // 6. Finally, we need to create a DatacenterSimple object.
-        return new DatacenterSimple(name, characteristics, new VmAllocationPolicySimple());
+        return new DatacenterSimple(simulation, characteristics, new VmAllocationPolicySimple());
     }
 
     //We strongly encourage users to develop their own broker policies, to submit vms and cloudlets according
     //to the specific rules of the simulated scenario
     private static DatacenterBroker createBroker(String name) {
-        return new DatacenterBrokerSimple(name);
+        return new DatacenterBrokerSimple(simulation);
     }
 
-    public static class GlobalBroker extends SimEntity {
+    public static class GlobalBroker extends CloudSimEntity {
         private static final int CREATE_BROKER = 0;
         private List<Vm> vmList;
         private List<Cloudlet> cloudletList;
         private DatacenterBroker broker;
 
         public GlobalBroker(String name) {
-            super(name);
+            super(simulation);
+            setName(name);
         }
 
         @Override
@@ -251,7 +239,7 @@ public class CloudSimExample8 {
                     broker.submitVmList(getVmList());
                     broker.submitCloudletList(getCloudletList());
 
-                    CloudSim.resumeSimulation();
+                    simulation.resume();
                 break;
 
                 default:

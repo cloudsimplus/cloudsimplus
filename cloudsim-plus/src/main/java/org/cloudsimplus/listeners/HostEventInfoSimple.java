@@ -11,16 +11,11 @@ public class HostEventInfoSimple extends EventInfoAbstract implements HostEventI
     private Host host;
 
     /**
-     * Default constructor that uses the current simulation time
-     * as the event time.
+     * Creates an EventInfo with the given parameters.
      * 
-     * @param host
-     * @see CloudSim#clock() 
+     * @param time time when the event was fired
+     * @param host the Host that fired the event
      */
-    public HostEventInfoSimple(Host host) {
-        this(USE_CURRENT_SIMULATION_TIME, host);
-    }
-
     public HostEventInfoSimple(double time, Host host) {
         super(time);
         setHost(host);

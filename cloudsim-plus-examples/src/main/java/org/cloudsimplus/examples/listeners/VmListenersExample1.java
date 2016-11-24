@@ -68,16 +68,12 @@ public class VmListenersExample1 {
      */
     private static final int VM_PES_NUMBER = HOST_PES_NUMBER;
 
-    /**
-     * The Virtual Machine Monitor (VMM) used by hosts to manage VMs.
-     */
-    private static final String VMM = "Xen";
-
     private final List<Host> hostList;
     private final List<Vm> vmList;
     private final List<Cloudlet> cloudletList;
     private final DatacenterBroker broker;
     private final Datacenter datacenter;
+    private final CloudSim simulation;
 
     /**
      * Starts the example execution, calling the class constructor\
@@ -87,12 +83,8 @@ public class VmListenersExample1 {
      */
     public static void main(String[] args) {
         Log.printFormattedLine("Starting %s ...", VmListenersExample1.class.getSimpleName());
-        try {
-            new VmListenersExample1();
-            Log.printFormattedLine("%s finished!", VmListenersExample1.class.getSimpleName());
-        } catch (Exception e) {
-            Log.printFormattedLine("Unwanted errors happened: %s", e.getMessage());
-        }
+        new VmListenersExample1();
+        Log.printFormattedLine("%s finished!", VmListenersExample1.class.getSimpleName());
     }
 
     /**
@@ -100,14 +92,13 @@ public class VmListenersExample1 {
      */
     public VmListenersExample1() {
         int numberOfUsers = 1; // number of cloud users/customers (brokers)
-        Calendar calendar = Calendar.getInstance();
-        CloudSim.init(numberOfUsers, calendar);
+        simulation = new CloudSim(numberOfUsers);
 
         this.hostList = new ArrayList<>();
         this.vmList = new ArrayList<>();
         this.cloudletList = new ArrayList<>();
-        this.datacenter = createDatacenter("Datacenter_0");
-        this.broker = new DatacenterBrokerSimple("Broker");
+        this.datacenter = createDatacenter();
+        this.broker = new DatacenterBrokerSimple(simulation);
 
         createAndSubmitVms();
         createAndSubmitCloudlets();
@@ -116,8 +107,8 @@ public class VmListenersExample1 {
     }
 
     private void runSimulationAndPrintResults() {
-        CloudSim.startSimulation();
-        CloudSim.stopSimulation();
+        simulation.start();
+        simulation.stop();
 
         List<Cloudlet> finishedCloudlets = broker.getCloudletsFinishedList();
         new CloudletsTableBuilderHelper(finishedCloudlets).build();
@@ -191,6 +182,7 @@ public class VmListenersExample1 {
         long size = 10000; // image size (MB)
         int ram = 512; // vm memory (MB)
         long bw = 1000;
+
         Vm vm = new VmSimple(id, mips, VM_PES_NUMBER)
             .setRam(ram).setBw(bw).setSize(size)
             .setCloudletScheduler(new CloudletSchedulerTimeShared())
@@ -223,10 +215,9 @@ public class VmListenersExample1 {
     /**
      * Creates a datacenter with pre-defined configuration.
      *
-     * @param name the datacenter name
      * @return the created datacenter
      */
-    private Datacenter createDatacenter(String name) {
+    private Datacenter createDatacenter() {
         Host host = createHost(0);
         hostList.add(host);
 
@@ -242,7 +233,7 @@ public class VmListenersExample1 {
                 .setCostPerStorage(costPerStorage)
                 .setCostPerBw(costPerBw);
 
-        return new DatacenterSimple(name, characteristics, new VmAllocationPolicySimple());
+        return new DatacenterSimple(simulation, characteristics, new VmAllocationPolicySimple());
     }
 
     /**

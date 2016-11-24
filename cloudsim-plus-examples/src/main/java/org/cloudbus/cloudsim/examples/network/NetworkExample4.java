@@ -9,7 +9,6 @@
 package org.cloudbus.cloudsim.examples.network;
 
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.List;
 import org.cloudbus.cloudsim.Cloudlet;
 import org.cloudbus.cloudsim.CloudletSimple;
@@ -26,7 +25,6 @@ import org.cloudbus.cloudsim.Log;
 import org.cloudbus.cloudsim.network.NetworkTopology;
 import org.cloudbus.cloudsim.resources.Pe;
 import org.cloudbus.cloudsim.resources.PeSimple;
-import org.cloudbus.cloudsim.resources.FileStorage;
 import org.cloudbus.cloudsim.utilizationmodels.UtilizationModel;
 import org.cloudbus.cloudsim.utilizationmodels.UtilizationModelFull;
 import org.cloudbus.cloudsim.Vm;
@@ -46,16 +44,9 @@ import org.cloudbus.cloudsim.resources.Ram;
  * describing the links, links are inserted in the code.
  */
 public class NetworkExample4 {
-
-    /**
-     * The cloudlet list.
-     */
     private static List<Cloudlet> cloudletList;
-
-    /**
-     * The vmlist.
-     */
     private static List<Vm> vmlist;
+    private static CloudSim simulation;
 
     /**
      * Creates main() to run this example
@@ -64,90 +55,84 @@ public class NetworkExample4 {
      */
     public static void main(String[] args) {
         Log.printFormattedLine("Starting %s...", NetworkExample4.class.getSimpleName());
-        try {
-            // First step: Initialize the CloudSim package. It should be called
-            // before creating any entities.
-            int num_user = 1;   // number of cloud users
-            Calendar calendar = Calendar.getInstance();
-            boolean trace_flag = false;  // mean trace events
+        // First step: Initialize the CloudSim package. It should be called
+        // before creating any entities.
+        int num_user = 1;   // number of cloud users
+        boolean trace_flag = false;  // mean trace events
 
-            // Initialize the CloudSim library
-            CloudSim.init(num_user, calendar, trace_flag);
+        // Initialize the CloudSim library
+        simulation = new CloudSim(num_user, trace_flag);
 
-            // Second step: Create Datacenters
-            //Datacenters are the resource providers in CloudSim. We need at list one of them to run a CloudSim simulation
-            Datacenter datacenter0 = createDatacenter("Datacenter_0");
+        // Second step: Create Datacenters
+        //Datacenters are the resource providers in CloudSim. We need at list one of them to run a CloudSim simulation
+        Datacenter datacenter0 = createDatacenter();
 
-            //Third step: Create Broker
-            DatacenterBroker broker = createBroker();
-            int brokerId = broker.getId();
+        //Third step: Create Broker
+        DatacenterBroker broker = createBroker();
 
-            //Fourth step: Create one virtual machine
-            vmlist = new ArrayList<>();
+        //Fourth step: Create one virtual machine
+        vmlist = new ArrayList<>();
 
-            //VM description
-            int vmid = 0;
-            int mips = 250;
-            long size = 10000; //image size (MB)
-            int ram = 512; //vm memory (MB)
-            long bw = 1000;
-            int pesNumber = 1; //number of cpus
+        //VM description
+        int vmid = 0;
+        int mips = 250;
+        long size = 10000; //image size (MB)
+        int ram = 512; //vm memory (MB)
+        long bw = 1000;
+        int pesNumber = 1; //number of cpus
 
-            //create VM
-            Vm vm1 = new VmSimple(vmid, mips, pesNumber)
-                .setRam(ram).setBw(bw).setSize(size)
-                .setCloudletScheduler(new CloudletSchedulerTimeShared())
+        //create VM
+        Vm vm1 = new VmSimple(vmid, mips, pesNumber)
+            .setRam(ram).setBw(bw).setSize(size)
+            .setCloudletScheduler(new CloudletSchedulerTimeShared())
+            .setBroker(broker);
+
+        //add the VM to the vmList
+        vmlist.add(vm1);
+
+        //submit vm list to the broker
+        broker.submitVmList(vmlist);
+
+        //Fifth step: Create one Cloudlet
+        cloudletList = new ArrayList<>();
+
+        //Cloudlet properties
+        int id = 0;
+        long length = 40000;
+        long fileSize = 300;
+        long outputSize = 300;
+        UtilizationModel utilizationModel = new UtilizationModelFull();
+
+        Cloudlet cloudlet1 =
+            new CloudletSimple(id, length, pesNumber)
+                .setCloudletFileSize(fileSize)
+                .setCloudletOutputSize(outputSize)
+                .setUtilizationModel(utilizationModel)
                 .setBroker(broker);
 
-            //add the VM to the vmList
-            vmlist.add(vm1);
+        //add the cloudlet to the list
+        cloudletList.add(cloudlet1);
 
-            //submit vm list to the broker
-            broker.submitVmList(vmlist);
+        //submit cloudlet list to the broker
+        broker.submitCloudletList(cloudletList);
 
-            //Fifth step: Create one Cloudlet
-            cloudletList = new ArrayList<>();
+        //Sixth step: configure network
+        //maps CloudSim entities to BRITE entities
+        NetworkTopology.addLink(datacenter0.getId(), broker.getId(), 10.0, 10);
 
-            //Cloudlet properties
-            int id = 0;
-            long length = 40000;
-            long fileSize = 300;
-            long outputSize = 300;
-            UtilizationModel utilizationModel = new UtilizationModelFull();
+        // Seventh step: Starts the simulation
+        simulation.start();
 
-            Cloudlet cloudlet1 =
-                new CloudletSimple(id, length, pesNumber)
-                    .setCloudletFileSize(fileSize)
-                    .setCloudletOutputSize(outputSize)
-                    .setUtilizationModel(utilizationModel)
-                    .setBroker(broker);
+        // Final step: Print results when simulation is over
+        List<Cloudlet> newList = broker.getCloudletsFinishedList();
 
-            //add the cloudlet to the list
-            cloudletList.add(cloudlet1);
+        simulation.stop();
 
-            //submit cloudlet list to the broker
-            broker.submitCloudletList(cloudletList);
-
-            //Sixth step: configure network
-            //maps CloudSim entities to BRITE entities
-            NetworkTopology.addLink(datacenter0.getId(), broker.getId(), 10.0, 10);
-
-            // Seventh step: Starts the simulation
-            CloudSim.startSimulation();
-
-            // Final step: Print results when simulation is over
-            List<Cloudlet> newList = broker.getCloudletsFinishedList();
-
-            CloudSim.stopSimulation();
-
-            new CloudletsTableBuilderHelper(newList).build();
-            Log.printFormattedLine("%s finished!", NetworkExample4.class.getSimpleName());
-        } catch (RuntimeException e) {
-            Log.printFormattedLine("Simulation finished due to unexpected error: %s", e);
-        }
+        new CloudletsTableBuilderHelper(newList).build();
+        Log.printFormattedLine("%s finished!", NetworkExample4.class.getSimpleName());
     }
 
-    private static Datacenter createDatacenter(String name) {
+    private static Datacenter createDatacenter() {
         // Here are the steps needed to create a DatacenterSimple:
         // 1. We need to create a list to store
         //    our machine
@@ -191,12 +176,12 @@ public class NetworkExample4 {
                 .setCostPerBw(costPerBw);
 
         // 6. Finally, we need to create a DatacenterSimple object.
-        return new DatacenterSimple(name, characteristics, new VmAllocationPolicySimple());
+        return new DatacenterSimple(simulation, characteristics, new VmAllocationPolicySimple());
     }
 
     //We strongly encourage users to develop their own broker policies, to submit vms and cloudlets according
     //to the specific rules of the simulated scenario
     private static DatacenterBroker createBroker() {
-        return new DatacenterBrokerSimple("Broker");
+        return new DatacenterBrokerSimple(simulation);
     }
 }

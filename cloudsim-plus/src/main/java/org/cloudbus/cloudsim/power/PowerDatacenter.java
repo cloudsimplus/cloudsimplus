@@ -67,17 +67,17 @@ public class PowerDatacenter extends DatacenterSimple {
     /**
      * Creates a PowerDatacenter.
      *
-     * @param name the name of the datacenter
+     * @param simulation The CloudSim instance that represents the simulation the Entity is related to
      * @param characteristics the characteristics of the datacenter to be created
      * @param vmAllocationPolicy the policy to be used to allocate VMs into hosts
      *
      */
     public PowerDatacenter(
-        String name,
+        CloudSim simulation,
         DatacenterCharacteristics characteristics,
         VmAllocationPolicy vmAllocationPolicy)
     {
-        super(name, characteristics, vmAllocationPolicy);
+        super(simulation, characteristics, vmAllocationPolicy);
         setPower(0.0);
         setDisableMigrations(false);
         setCloudletSubmitted(-1);
@@ -87,7 +87,7 @@ public class PowerDatacenter extends DatacenterSimple {
     /**
      * Creates a PowerDatacenter with the given parameters.
      *
-     * @param name the name of the datacenter
+     * @param simulation The CloudSim instance that represents the simulation the Entity is related to
      * @param characteristics the characteristics of the datacenter to be created
      * @param vmAllocationPolicy the policy to be used to allocate VMs into hosts
      * @param storageList a List of storage elements, for data simulation
@@ -99,25 +99,25 @@ public class PowerDatacenter extends DatacenterSimple {
      */
     @Deprecated
     public PowerDatacenter(
-        String name,
+        CloudSim simulation,
         DatacenterCharacteristics characteristics,
         VmAllocationPolicy vmAllocationPolicy,
         List<FileStorage> storageList,
         double schedulingInterval)
     {
-        this(name, characteristics, vmAllocationPolicy);
+        this(simulation, characteristics, vmAllocationPolicy);
         setStorageList(storageList);
         setSchedulingInterval(schedulingInterval);
     }
 
     @Override
     protected void updateCloudletProcessing() {
-        if (getCloudletSubmitted() == -1 || getCloudletSubmitted() == CloudSim.clock()) {
-            CloudSim.cancelAll(getId(), new PredicateType(CloudSimTags.VM_UPDATE_CLOUDLET_PROCESSING_EVENT));
+        if (getCloudletSubmitted() == -1 || getCloudletSubmitted() == getSimulation().clock()) {
+            getSimulation().cancelAll(getId(), new PredicateType(CloudSimTags.VM_UPDATE_CLOUDLET_PROCESSING_EVENT));
             schedule(getId(), getSchedulingInterval(), CloudSimTags.VM_UPDATE_CLOUDLET_PROCESSING_EVENT);
             return;
         }
-        double currentTime = CloudSim.clock();
+        double currentTime = getSimulation().clock();
 
         // if some time passed since last processing
         if (currentTime > getLastProcessTime()) {
@@ -162,7 +162,7 @@ public class PowerDatacenter extends DatacenterSimple {
 
             // schedules an event to the next time
             if (minTime != Double.MAX_VALUE) {
-                CloudSim.cancelAll(getId(), new PredicateType(CloudSimTags.VM_UPDATE_CLOUDLET_PROCESSING_EVENT));
+                getSimulation().cancelAll(getId(), new PredicateType(CloudSimTags.VM_UPDATE_CLOUDLET_PROCESSING_EVENT));
                 send(getId(), getSchedulingInterval(), CloudSimTags.VM_UPDATE_CLOUDLET_PROCESSING_EVENT);
             }
 
@@ -182,7 +182,7 @@ public class PowerDatacenter extends DatacenterSimple {
      * returns 0 by default.
      */
     protected double updateCloudetProcessingWithoutSchedulingFutureEvents() {
-        if (CloudSim.clock() > getLastProcessTime()) {
+        if (getSimulation().clock() > getLastProcessTime()) {
             return updateCloudetProcessingWithoutSchedulingFutureEventsForce();
         }
         return 0;
@@ -196,7 +196,7 @@ public class PowerDatacenter extends DatacenterSimple {
      * expected in this host
      */
     protected double updateCloudetProcessingWithoutSchedulingFutureEventsForce() {
-        double currentTime = CloudSim.clock();
+        double currentTime = getSimulation().clock();
         double minTime = Double.MAX_VALUE;
         double timeDiff = currentTime - getLastProcessTime();
         double timeFrameDatacenterEnergy = 0.0;
@@ -280,8 +280,8 @@ public class PowerDatacenter extends DatacenterSimple {
     protected void processVmMigrate(SimEvent ev, boolean ack) {
         updateCloudetProcessingWithoutSchedulingFutureEvents();
         super.processVmMigrate(ev, ack);
-        SimEvent event = CloudSim.findFirstDeferred(getId(), new PredicateType(CloudSimTags.VM_MIGRATE));
-        if (event == null || event.eventTime() > CloudSim.clock()) {
+        SimEvent event = getSimulation().findFirstDeferred(getId(), new PredicateType(CloudSimTags.VM_MIGRATE));
+        if (event == null || event.eventTime() > getSimulation().clock()) {
             updateCloudetProcessingWithoutSchedulingFutureEventsForce();
         }
     }
@@ -289,7 +289,7 @@ public class PowerDatacenter extends DatacenterSimple {
     @Override
     protected void processCloudletSubmit(SimEvent ev, boolean ack) {
         super.processCloudletSubmit(ev, ack);
-        setCloudletSubmitted(CloudSim.clock());
+        setCloudletSubmitted(getSimulation().clock());
     }
 
     /**

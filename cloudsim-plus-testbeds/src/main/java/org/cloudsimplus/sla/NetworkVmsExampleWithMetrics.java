@@ -97,7 +97,7 @@ public class NetworkVmsExampleWithMetrics {
         UtilizationModel utilizationModel = new UtilizationModelFull();
 
         for (int i = 0; i < cloudlets; i++) {
-            NetworkCloudlet cloudlet = new NetworkCloudlet(i, length, pesNumber); 
+            NetworkCloudlet cloudlet = new NetworkCloudlet(i, length, pesNumber);
             cloudlet.setMemory(memory)
                     .setCloudletFileSize(fileSize)
                     .setCloudletOutputSize(outputSize)
@@ -127,7 +127,7 @@ public class NetworkVmsExampleWithMetrics {
         Calendar calendar = Calendar.getInstance(); // Calendar whose fields have been initialized with the current date and time.
         boolean trace_flag = false; // trace events
 
-        CloudSim.init(num_user, calendar, trace_flag);
+        CloudSim.CloudSim(num_user, calendar, trace_flag);
 
         // Second step: Create Datacenters
         datacenter0 = createDatacenter("Datacenter_0");
@@ -152,8 +152,8 @@ public class NetworkVmsExampleWithMetrics {
         broker.submitCloudletList(cloudletList);
 
         // Sixth step: Starts the simulation
-        CloudSim.startSimulation();
-        CloudSim.stopSimulation();
+        CloudSim.start();
+        CloudSim.stop();
 
         //Final step: Print results when simulation is over
         List<Cloudlet> newList = broker.getCloudletsFinishedList();
@@ -190,13 +190,13 @@ public class NetworkVmsExampleWithMetrics {
         int ram = 4096; // host memory (MB)
         long storage = 1000000; // host storage
         long bw = 10000;
-        
+
         Host host = new NetworkHost(hostId, storage, peList);
         host.setRamProvisioner(new ResourceProvisionerSimple(new Ram(ram)))
             .setBwProvisioner(new ResourceProvisionerSimple(new Bandwidth(bw)))
             .setVmScheduler(new VmSchedulerTimeShared(peList));
 
-        hostList.add(host); 
+        hostList.add(host);
 
         // 5. Create a DatacenterCharacteristics object that stores the
         // properties of a data center: architecture, OS, list of
@@ -208,7 +208,7 @@ public class NetworkVmsExampleWithMetrics {
         // resource
         double costPerBw = 0.0; // the cost of using bw in this resource
 
-        DatacenterCharacteristics characteristics = 
+        DatacenterCharacteristics characteristics =
                 new DatacenterCharacteristicsSimple(hostList)
                 .setCostPerSecond(cost)
                 .setCostPerMem(costPerMem)

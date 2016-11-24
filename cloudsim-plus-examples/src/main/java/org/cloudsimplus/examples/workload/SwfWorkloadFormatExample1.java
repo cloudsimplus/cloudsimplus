@@ -71,6 +71,7 @@ public class SwfWorkloadFormatExample1 {
      * The workload file to be read.
      */
     private static final String WORKLOAD_FILENAME = "NASA-iPSC-1993-3.1-cln.swf.gz";
+    private final CloudSim simulation;
 
     /**
      * Defines the maximum number of cloudlets to be created
@@ -96,18 +97,9 @@ public class SwfWorkloadFormatExample1 {
     private static final long VM_SIZE = 2000;
     private static final int VM_RAM = 1000;
     private static final long VM_BW = 50000;
-    private static final String VMM = "Xen";
 
-    /**
-     * The cloudlet list.
-     */
     private List<Cloudlet> cloudletList;
-
-    /**
-     * The vmlist.
-     */
     private List<Vm> vmlist;
-
     private Datacenter datacenter0;
     private DatacenterBroker broker;
 
@@ -125,14 +117,13 @@ public class SwfWorkloadFormatExample1 {
     public SwfWorkloadFormatExample1() {
         Log.printConcatLine("Starting ", SwfWorkloadFormatExample1.class.getSimpleName(), "...");
 
+        int num_user = 1; // number of cloud users
+        Calendar calendar = Calendar.getInstance(); // Calendar whose fields have been initialized with the current date and time.
+        boolean trace_flag = false; // trace events
+
+        simulation = new CloudSim(num_user, trace_flag);
         try {
-            int num_user = 1; // number of cloud users
-            Calendar calendar = Calendar.getInstance(); // Calendar whose fields have been initialized with the current date and time.
-            boolean trace_flag = false; // trace events
-
-            CloudSim.init(num_user, calendar, trace_flag);
-
-            broker = new DatacenterBrokerVmsWithMorePesFirst("Broker0");
+            broker = new DatacenterBrokerVmsWithMorePesFirst(simulation);
 
             /*Vms and cloudlets are created before the datacenter and host
             because the example is defining the hosts based on VM requirements
@@ -140,13 +131,13 @@ public class SwfWorkloadFormatExample1 {
             createCloudletsFromWorkloadFile();
             createOneVmForEachCloudlet(broker);
 
-            datacenter0 = createDatacenterAndHostsBasedOnVmRequirements("Datacenter_0");
+            datacenter0 = createDatacenterAndHostsBasedOnVmRequirements();
 
             broker.submitVmList(vmlist);
             broker.submitCloudletList(cloudletList);
 
-            CloudSim.startSimulation();
-            CloudSim.stopSimulation();
+            simulation.start();
+            simulation.stop();
 
             List<Cloudlet> newList = broker.getCloudletsFinishedList();
             printCloudletList(newList);
@@ -154,9 +145,6 @@ public class SwfWorkloadFormatExample1 {
             Log.printConcatLine(SwfWorkloadFormatExample1.class.getSimpleName(), " finished!");
         } catch (FileNotFoundException e) {
             Log.printConcatLine(e.getMessage());
-        } catch (Exception e) {
-            e.printStackTrace();
-            Log.printLine("Unwanted errors happen");
         }
     }
 
@@ -195,11 +183,9 @@ public class SwfWorkloadFormatExample1 {
     /**
      * Creates the datacenter.
      *
-     * @param name the name
-     *
      * @return the datacenter
      */
-    private Datacenter createDatacenterAndHostsBasedOnVmRequirements(String name) throws Exception {
+    private Datacenter createDatacenterAndHostsBasedOnVmRequirements() {
         List<Host> hostList = createHostsAccordingToVmRequirements();
         DatacenterCharacteristics characteristics =
             new DatacenterCharacteristicsSimple (hostList)
@@ -208,7 +194,7 @@ public class SwfWorkloadFormatExample1 {
                 .setCostPerStorage(DATACENTER_STORAGE_COST)
                 .setCostPerBw(DATACENTER_BW_COST);
 
-        Datacenter datacenter = new DatacenterSimple(name, characteristics, new VmAllocationPolicySimple());
+        Datacenter datacenter = new DatacenterSimple(simulation, characteristics, new VmAllocationPolicySimple());
         Log.printConcatLine("#Created ", hostList.size(), " Hosts at ", datacenter.getName());
         return datacenter;
     }

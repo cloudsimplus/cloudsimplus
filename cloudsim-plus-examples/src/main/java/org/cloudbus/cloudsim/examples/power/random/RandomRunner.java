@@ -9,21 +9,20 @@ import org.cloudbus.cloudsim.examples.power.RunnerAbstract;
 
 /**
  * The example runner for the random workload.
- * 
+ *
  * If you are using any algorithms, policies or workload included in the power package please cite
  * the following paper:
- * 
+ *
  * Anton Beloglazov, and Rajkumar Buyya, "Optimal Online Deterministic Algorithms and Adaptive
  * Heuristics for Energy and Performance Efficient Dynamic Consolidation of Virtual Machines in
  * Cloud Data Centers", Concurrency and Computation: Practice and Experience (CCPE), Volume 24,
  * Issue 13, Pages: 1397-1420, John Wiley & Sons, Ltd, New York, USA, 2012
- * 
+ *
  * @author Anton Beloglazov
  * @since Jan 5, 2012
  */
 public class RandomRunner extends RunnerAbstract {
-
-	/**
+    /**
 	 * @param enableOutput
 	 * @param outputToFile
 	 * @param inputFolder
@@ -41,7 +40,8 @@ public class RandomRunner extends RunnerAbstract {
 			String workload,
 			String vmAllocationPolicy,
 			String vmSelectionPolicy,
-			String parameter) {
+			String parameter)
+    {
 		super(
 				enableOutput,
 				outputToFile,
@@ -53,17 +53,12 @@ public class RandomRunner extends RunnerAbstract {
 				parameter);
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see org.cloudbus.cloudsim.examples.power.RunnerAbstract#init(java.lang.String)
-	 */
 	@Override
 	protected void init(String inputFolder) {
 		try {
-			CloudSim.init(1, Calendar.getInstance(), false);
+            super.init(inputFolder);
 
-			broker = Helper.createBroker();
+			broker = Helper.createBroker(getSimulation());
 			cloudletList = RandomHelper.createCloudletList(broker, RandomConstants.NUMBER_OF_VMS);
 			vmList = Helper.createVmList(broker, cloudletList.size());
 			hostList = Helper.createHostList(RandomConstants.NUMBER_OF_HOSTS);

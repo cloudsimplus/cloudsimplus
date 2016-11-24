@@ -1,6 +1,5 @@
 package org.cloudsimplus.IntegrationTests;
 
-import java.util.Calendar;
 import org.cloudbus.cloudsim.Log;
 import org.cloudbus.cloudsim.Host;
 import org.cloudbus.cloudsim.brokers.DatacenterBroker;
@@ -12,7 +11,6 @@ import org.cloudsimplus.listeners.HostUpdatesVmsProcessingEventInfo;
 import org.cloudbus.cloudsim.schedulers.CloudletSchedulerDynamicWorkload;
 import org.cloudbus.cloudsim.schedulers.VmSchedulerSpaceShared;
 import org.cloudsimplus.util.tablebuilder.CloudletsTableBuilderHelper;
-import org.cloudsimplus.util.tablebuilder.TextTableBuilder;
 import org.cloudbus.cloudsim.utilizationmodels.UtilizationModelArithmeticProgression;
 import org.junit.Test;
 import static org.junit.Assert.*;
@@ -24,7 +22,7 @@ import org.junit.Ignore;
  * An Integration Test (IT) running a simulation scenario with 1 PM, 2 VMs
  * and 2 cloudlets in each VM. It checks if the amount of available
  * CPU of the host is as expected along the simulation time.
- * 
+ *
  * @author Manoel Campos da Silva Filho
  */
 public final class CheckHostAvailableMipsDynamicUtilizationTest {
@@ -39,32 +37,33 @@ public final class CheckHostAvailableMipsDynamicUtilizationTest {
 
     private SimulationScenarioBuilder scenario;
     private UtilizationModelArithmeticProgression utilizationModel;
-    
+    private CloudSim simulation;
+
     /**
      * A lambda function used by the {@link Host#setOnUpdateVmsProcessingListener(org.cloudbus.cloudsim.listeners.EventListener)}
      * that will be called every time a host updates the processing of its VMs.
      * It checks if the amount of available Host CPU is as expected,
      * every time a host updates the processing of all its VMs.
-     * 
-     * @param evt 
+     *
+     * @param evt
      */
     private void onUpdateVmsProcessing(HostUpdatesVmsProcessingEventInfo evt) {
-        final double expectedAvailableHostMips = 
+        final double expectedAvailableHostMips =
                HOST_MIPS * HOST_PES * utilizationModel.getUtilization(evt.getTime());
-        
+
         Log.printConcatLine(
-            "- onUpdateVmProcessing at time ", evt.getTime(), " host ", evt.getHost().getId(), 
-            " available mips: ", evt.getHost().getAvailableMips(), 
+            "- onUpdateVmProcessing at time ", evt.getTime(), " host ", evt.getHost().getId(),
+            " available mips: ", evt.getHost().getAvailableMips(),
             " expected availability: ", expectedAvailableHostMips);
-        
-        assertEquals("The amount of Host available MIPS was not as expected.", 
+
+        assertEquals("The amount of Host available MIPS was not as expected.",
                  expectedAvailableHostMips, evt.getHost().getAvailableMips(), 0);
     }
 
     @Before
     public void setUp() {
-        CloudSim.init(1, Calendar.getInstance(), false);
-        scenario = new SimulationScenarioBuilder();
+        this.simulation = new  CloudSim(1);
+        scenario = new SimulationScenarioBuilder(simulation);
         scenario.getDatacenterBuilder().setSchedulingInterval(2).createDatacenter(
                 new HostBuilder()
                     .setVmSchedulerClass(VmSchedulerSpaceShared.class)
@@ -102,8 +101,8 @@ public final class CheckHostAvailableMipsDynamicUtilizationTest {
     }
 
     public void startSimulationAndWaitToStop() throws RuntimeException, NullPointerException {
-        CloudSim.startSimulation();
-        CloudSim.stopSimulation();
+        simulation.start();
+        simulation.stop();
     }
 
     public void printCloudletsExecutionResults(DatacenterBroker broker) {

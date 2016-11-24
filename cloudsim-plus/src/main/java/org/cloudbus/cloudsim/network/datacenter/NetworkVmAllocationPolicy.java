@@ -162,7 +162,7 @@ public final class NetworkVmAllocationPolicy extends VmAllocationPolicyAbstract 
 
             Log.printFormattedLine(
                     "%.2f: VM #" + vm.getId() + " has been allocated to the host #" + host.getId(),
-                    CloudSim.clock());
+                    host.getSimulation().clock());
             return true;
         }
 

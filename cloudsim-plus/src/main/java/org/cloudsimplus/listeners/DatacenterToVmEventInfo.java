@@ -16,17 +16,12 @@ public class DatacenterToVmEventInfo extends VmEventInfoSimple implements Datace
     private Datacenter datacenter;
 
     /**
-     * Default constructor that uses the current simulation time
-     * as the event time.
+     * Creates an EventInfo with the given parameters.
      * 
-     * @param datacenter
-     * @param vm
-     * @see CloudSim#clock() 
+     * @param time time when the event was fired
+     * @param datacenter Datacenter where the Vm is placed
+     * @param vm Vm that fired the event
      */
-    public DatacenterToVmEventInfo(Datacenter datacenter, Vm vm) {
-        this(USE_CURRENT_SIMULATION_TIME, datacenter, vm);
-    }    
-
     public DatacenterToVmEventInfo(double time, Datacenter datacenter, Vm vm) {
         super(time, vm);
         setDatacenter(datacenter);

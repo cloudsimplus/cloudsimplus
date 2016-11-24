@@ -58,9 +58,7 @@ public class HostBuilder extends Builder {
                 .setOnUpdateVmsProcessingListener(onUpdateVmsProcessingListener);
             hosts.add(host);
             return host;
-        } catch (NoSuchMethodException | SecurityException ex) {
-            throw new RuntimeException("It wasn't possible to instantiate VmScheduler", ex);
-        } catch (InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException ex) {
+        } catch (NoSuchMethodException | SecurityException | InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException ex) {
             throw new RuntimeException("It wasn't possible to instantiate VmScheduler", ex);
         }
     }

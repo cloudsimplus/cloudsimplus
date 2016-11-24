@@ -1,7 +1,6 @@
 package org.cloudsimplus.examples;
 
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.List;
 
 import org.cloudbus.cloudsim.Cloudlet;
@@ -50,10 +49,7 @@ public class LinuxCompletelyFairSchedulerExample {
     private static final int CLOUDLET_PES = 1;
     private static final int CLOUDLET_LEN = 10000; //in MI
 
-    /**
-     * Virtual Machine Monitor name.
-     */
-    private static final String VMM = "Xen";
+    private final CloudSim simulation;
     private List<Cloudlet> cloudletList;
     private List<Vm> vmList;
 
@@ -74,32 +70,28 @@ public class LinuxCompletelyFairSchedulerExample {
      */
     public LinuxCompletelyFairSchedulerExample() {
         Log.printFormattedLine("Starting %s...", getClass().getSimpleName());
-        try {
-            //Number of cloud customers
-            int numberOfCloudUsers = 1;
-            boolean traceEvents = false;
+        //Number of cloud customers
+        int numberOfCloudUsers = 1;
+        boolean traceEvents = false;
 
-            CloudSim.init(numberOfCloudUsers, Calendar.getInstance(), traceEvents);
+        simulation = new CloudSim(numberOfCloudUsers, traceEvents);
 
-            Datacenter datacenter0 = createDatacenter("Datacenter0");
+        Datacenter datacenter0 = createDatacenter();
 
-            DatacenterBroker broker0 = new DatacenterBrokerSimple("Broker0");
+        DatacenterBroker broker0 = new DatacenterBrokerSimple(simulation);
 
-            createAndSubmitVms(broker0);
-            createAndSubmitCloudlets(broker0);
-            for(int i = 0; i < CLOUDLETS_NUMBER/2; i++){
-                cloudletList.get(i).setPriority(4);
-            }
-
-            CloudSim.startSimulation();
-            CloudSim.stopSimulation();
-
-            List<Cloudlet> finishedCloudlets = broker0.getCloudletsFinishedList();
-            new PriorityCloudletsTableBuilderHelper(finishedCloudlets).build();
-            Log.printFormattedLine("%s finished!", getClass().getSimpleName());
-        } catch (RuntimeException e) {
-            Log.printFormattedLine("Simulation finished due to unexpected error: %s", e);
+        createAndSubmitVms(broker0);
+        createAndSubmitCloudlets(broker0);
+        for(int i = 0; i < CLOUDLETS_NUMBER/2; i++){
+            cloudletList.get(i).setPriority(4);
         }
+
+        simulation.start();
+        simulation.stop();
+
+        List<Cloudlet> finishedCloudlets = broker0.getCloudletsFinishedList();
+        new PriorityCloudletsTableBuilderHelper(finishedCloudlets).build();
+        Log.printFormattedLine("%s finished!", getClass().getSimpleName());
     }
 
     private void createAndSubmitCloudlets(DatacenterBroker broker0) {
@@ -118,7 +110,7 @@ public class LinuxCompletelyFairSchedulerExample {
         broker0.submitVmList(vmList);
     }
 
-    private DatacenterSimple createDatacenter(String name) {
+    private DatacenterSimple createDatacenter() {
         List<Host> hostList = new ArrayList<>(HOSTS_NUMBER);
         for(int i = 0; i < HOSTS_NUMBER; i++){
             hostList.add(createHost());
@@ -137,7 +129,7 @@ public class LinuxCompletelyFairSchedulerExample {
                 .setCostPerStorage(costPerStorage)
                 .setCostPerBw(costPerBw);
 
-        return new DatacenterSimple(name, characteristics, new VmAllocationPolicySimple());
+        return new DatacenterSimple(simulation, characteristics, new VmAllocationPolicySimple());
     }
 
     private Host createHost() {

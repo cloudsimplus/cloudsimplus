@@ -10,17 +10,17 @@ package org.cloudbus.cloudsim.core;
 
 /**
  * CloudimShutdown waits for termination of all CloudSim user entities to determine the end of
- * simulation. This class will be created by CloudSim upon initialisation of the simulation, i.e.
- * done via <tt>CloudSim.init()</tt> method. Hence, do not need to worry about creating an object of
+ * simulation. This class will be created when a CloudSim instance is created.
+ * Hence, do not need to worry about creating an object of
  * this class. This object signals the end of simulation to CloudInformationService (CIS) entity.
- * 
+ *
  * @author Manzur Murshed
  * @author Rajkumar Buyya
  * @since CloudSim Toolkit 1.0
  */
-public class CloudSimShutdown extends SimEntity {
+public class CloudCloudSimShutdown extends CloudSimEntity {
 
-	/** The total number of cloud users. 
+	/** The total number of cloud users.
          * @todo how the dynamic creation of brokers impact this attribute
          * that is also defined in CloudSim class?
          * How is it in fact used?
@@ -28,26 +28,24 @@ public class CloudSimShutdown extends SimEntity {
 	private int numUser;
 
 	/**
-	 * Instantiates a new CloudSimShutdown object.
+	 * Instantiates a new CloudCloudSimShutdown object.
 	 * <p/>
 	 * The total number of cloud user entities plays an important role to determine whether all
 	 * hostList' should be shut down or not. If one or more users are still not finished, then the
 	 * hostList's will not be shut down. Therefore, it is important to give a correct number of total
 	 * cloud user entities. Otherwise, CloudSim program will hang or encounter a weird behaviour.
-	 * 
-	 * @param name the name to be associated with this entity (as required by {@link SimEntity} class)
-	 * @param numUser total number of cloud user entities
-	 * @throws IllegalArgumentException when creating this entity before initialising CloudSim package
-	 *             or this entity name is <tt>null</tt> or empty
-	 * @see CloudSim#init(int, java.util.Calendar, boolean) 
+	 *
+     * @param simulation The CloudSim instance that represents the simulation the Entity is related to
+     * @param numUser total number of cloud user entities
+	 * @see CloudSim#CloudSim(int, java.util.Calendar, boolean)
 	 * @pre name != null
 	 * @pre numUser >= 0
 	 * @post $none
 	 */
-	public CloudSimShutdown(String name, int numUser) throws IllegalArgumentException {
+	public CloudCloudSimShutdown(CloudSim simulation, int numUser) {
 		// NOTE: This entity doesn't use any I/O port.
 		// super(name, CloudSimTags.DEFAULT_BAUD_RATE);
-		super(name);
+		super(simulation);
 		this.numUser = numUser;
 	}
 
@@ -59,7 +57,7 @@ public class CloudSimShutdown extends SimEntity {
 	 * cloud users have been shut down or an entity requires an abrupt end of the whole simulation.
 	 * In the first case, the number of cloud users given in the Constructor <tt>must</tt> be
 	 * correct. Otherwise, CloudSim package hangs forever or it does not terminate properly.
-	 * 
+	 *
 	 * @param ev the ev
 	 * @pre $none
 	 * @post $none
@@ -68,7 +66,7 @@ public class CloudSimShutdown extends SimEntity {
 	public void processEvent(SimEvent ev) {
 		numUser--;
 		if (numUser == 0 || ev.getTag() == CloudSimTags.ABRUPT_END_OF_SIMULATION) {
-			CloudSim.abruptallyTerminate();
+			getSimulation().abruptallyTerminate();
 		}
 	}
 
@@ -79,7 +77,7 @@ public class CloudSimShutdown extends SimEntity {
 	public void startEntity() {
 		// do nothing
 	}
-        
+
         /**
          * The method has no effect at the current class.
          */

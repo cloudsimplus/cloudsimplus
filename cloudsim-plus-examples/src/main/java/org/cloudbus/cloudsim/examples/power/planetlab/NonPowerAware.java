@@ -1,7 +1,6 @@
 package org.cloudbus.cloudsim.examples.power.planetlab;
 
 import java.io.IOException;
-import java.util.Calendar;
 import java.util.List;
 import org.cloudbus.cloudsim.Cloudlet;
 
@@ -35,8 +34,9 @@ import org.cloudbus.cloudsim.power.PowerVmAllocationPolicySimple;
  * @since Jan 5, 2012
  */
 public class NonPowerAware {
+    private static CloudSim simulation;
 
-	/**
+    /**
 	 * The main method.
 	 *
 	 * @param args the arguments
@@ -52,32 +52,31 @@ public class NonPowerAware {
 		Log.printLine("Starting " + experimentName);
 
 		try {
-			CloudSim.init(1, Calendar.getInstance(), false);
+            simulation = new CloudSim(1);
 
-			DatacenterBroker broker = Helper.createBroker();
+			DatacenterBroker broker = Helper.createBroker(simulation);
 
 			List<Cloudlet> cloudletList = PlanetLabHelper.createCloudletListPlanetLab(broker, inputFolder);
 			List<Vm> vmList = Helper.createVmList(broker, cloudletList.size());
 			List<PowerHost> hostList = Helper.createHostList(PlanetLabConstants.NUMBER_OF_HOSTS);
 
 			PowerDatacenterNonPowerAware datacenter = (PowerDatacenterNonPowerAware) Helper.createDatacenter(
-					"Datacenter",
-					PowerDatacenterNonPowerAware.class,
-					hostList,
-					new PowerVmAllocationPolicySimple());
+			    simulation,
+                PowerDatacenterNonPowerAware.class, hostList,
+                new PowerVmAllocationPolicySimple());
 
 			datacenter.setDisableMigrations(true);
 
 			broker.submitVmList(vmList);
 			broker.submitCloudletList(cloudletList);
 
-			CloudSim.terminateSimulation(Constants.SIMULATION_LIMIT);
-			double lastClock = CloudSim.startSimulation();
+			simulation.terminateAt(Constants.SIMULATION_LIMIT);
+			double lastClock = simulation.start();
 
 			List<Cloudlet> newList = broker.getCloudletsFinishedList();
 			Log.printLine("Received " + newList.size() + " cloudlets");
 
-			CloudSim.stopSimulation();
+			simulation.stop();
 
 			Helper.printResults(
 					datacenter,

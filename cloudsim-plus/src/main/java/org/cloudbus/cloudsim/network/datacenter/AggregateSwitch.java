@@ -7,6 +7,7 @@
  */
 package org.cloudbus.cloudsim.network.datacenter;
 
+import org.cloudbus.cloudsim.core.CloudSim;
 import org.cloudbus.cloudsim.core.SimEvent;
 
 /**
@@ -27,7 +28,7 @@ import org.cloudbus.cloudsim.core.SimEvent;
  *
  * @author Saurabh Kumar Garg
  * @author Manoel Campos da Silva Filho
- * 
+ *
  * @since CloudSim Toolkit 1.0
  */
 public class AggregateSwitch extends Switch {
@@ -40,7 +41,7 @@ public class AggregateSwitch extends Switch {
      * Default delay of {@link AggregateSwitch} in milliseconds.
      */
     public static final double SWITCHING_DELAY = 0.00245;
-    
+
     /**
      * Default downlink bandwidth of {@link AggregateSwitch} in Megabits/s.
      * It also represents the uplink bandwidth of connected edge switches.
@@ -56,25 +57,25 @@ public class AggregateSwitch extends Switch {
      * Instantiates a Aggregate Switch specifying the switches that are
      * connected to its downlink and uplink ports and corresponding bandwidths.
      *
-     * @param name Name of the switch
+     * @param simulation The CloudSim instance that represents the simulation the Entity is related to
      * @param dc The Datacenter where the switch is connected to
      */
-    public AggregateSwitch(String name, NetworkDatacenter dc) {
-        super(name, dc);
+    public AggregateSwitch(CloudSim simulation, NetworkDatacenter dc) {
+        super(simulation, dc);
         setUplinkBandwidth(RootSwitch.DOWNLINK_BW);
         setDownlinkBandwidth(DOWNLINK_BW);
         setSwitchingDelay(SWITCHING_DELAY);
         setPorts(PORTS);
-        
+
     }
 
     @Override
     protected void processPacketDown(SimEvent ev) {
         super.processPacketDown(ev);
-        
+
         NetworkPacket netPkt = (NetworkPacket) ev.getData();
         int receiverVmId = netPkt.getHostPacket().getReceiverVmId();
-        
+
         // packet is coming from root so need to be sent to edgelevel swich
         // find the id for edgelevel switch
         int switchId = getDatacenter().getVmToSwitchMap().get(receiverVmId);
@@ -84,7 +85,7 @@ public class AggregateSwitch extends Switch {
     @Override
     protected void processPacketUp(SimEvent ev) {
         super.processPacketUp(ev);
-        
+
         NetworkPacket netPkt = (NetworkPacket) ev.getData();
         int receiverVmId = netPkt.getHostPacket().getReceiverVmId();
 

@@ -10,7 +10,6 @@ package org.cloudbus.cloudsim.examples;
  */
 import org.cloudsimplus.util.tablebuilder.CloudletsTableBuilderHelper;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.List;
 import org.cloudbus.cloudsim.Cloudlet;
 import org.cloudbus.cloudsim.CloudletSimple;
@@ -65,16 +64,12 @@ public class DynamicCloudletsArrival1 {
      */
     private static final int NUMBER_OF_CLOUDLETS = VM_PES_NUMBER*2;
 
-    /**
-     * The Virtual Machine Monitor (VMM) used by hosts to manage VMs.
-     */
-    private static final String VMM = "Xen";
-
     private final List<Host> hostList;
     private final List<Vm> vmList;
     private final List<Cloudlet> cloudletList;
     private final DatacenterBroker broker;
     private final Datacenter datacenter;
+    private final CloudSim simulation;
 
     /**
      * Starts the example execution, calling the class constructor\
@@ -83,11 +78,7 @@ public class DynamicCloudletsArrival1 {
      * @param args command line parameters
      */
     public static void main(String[] args) {
-        try {
-            new DynamicCloudletsArrival1();
-        } catch (Exception e) {
-            Log.printFormattedLine("Simulation finished due to unexpected error: %s", e);
-        }
+        new DynamicCloudletsArrival1();
     }
 
     /**
@@ -95,15 +86,14 @@ public class DynamicCloudletsArrival1 {
      */
     public DynamicCloudletsArrival1() {
         int numberOfUsers = 1; // number of cloud users/customers (brokers)
-        Calendar calendar = Calendar.getInstance();
         Log.printFormattedLine("Starting %s ...", getClass().getSimpleName());
-        CloudSim.init(numberOfUsers, calendar);
+        simulation = new CloudSim(numberOfUsers);
 
         this.hostList = new ArrayList<>();
         this.vmList = new ArrayList<>();
         this.cloudletList = new ArrayList<>();
-        this.datacenter = createDatacenter("Datacenter0");
-        this.broker = new DatacenterBrokerSimple("Broker0");
+        this.datacenter = createDatacenter();
+        this.broker = new DatacenterBrokerSimple(simulation);
 
         Vm vm = createAndSubmitVmAndCloudlets();
 
@@ -117,8 +107,8 @@ public class DynamicCloudletsArrival1 {
     }
 
     private void runSimulationAndPrintResults() {
-        CloudSim.startSimulation();
-        CloudSim.stopSimulation();
+        simulation.start();
+        simulation.stop();
 
         List<Cloudlet> cloudlets = broker.getCloudletsFinishedList();
         new CloudletsTableBuilderHelper(cloudlets).build();
@@ -213,10 +203,9 @@ public class DynamicCloudletsArrival1 {
     /**
      * Creates a datacenter with pre-defined configuration.
      *
-     * @param name the datacenter name
      * @return the created datacenter
      */
-    private Datacenter createDatacenter(String name) {
+    private Datacenter createDatacenter() {
         Host host = createHost(0);
         hostList.add(host);
 
@@ -232,7 +221,7 @@ public class DynamicCloudletsArrival1 {
                 .setCostPerStorage(costPerStorage)
                 .setCostPerBw(costPerBw);
 
-        return new DatacenterSimple(name, characteristics, new VmAllocationPolicySimple());
+        return new DatacenterSimple(simulation, characteristics, new VmAllocationPolicySimple());
     }
 
     /**

@@ -43,11 +43,6 @@ import org.cloudbus.cloudsim.utilizationmodels.UtilizationModelFull;
  * @author Manoel Campos da Silva Filho
  */
 public class NetworkVmsExample1 {
-    private static final String ARCH = "x86"; // system architecture
-    private static final String OS = "Linux"; // operating system
-    private static final String VMM = "Xen";
-    private static final double TIME_ZONE = 10.0; // time zone this resource located
-
     private static final double COST = 3.0; // the cost of using processing in this resource
     private static final double COST_PER_MEM = 0.05; // the cost of using memory in this resource
     private static final double COST_PER_STORAGE = 0.001; // the cost of using storage in this resource
@@ -66,6 +61,7 @@ public class NetworkVmsExample1 {
     private static final long PACKET_DATA_LENGTH_IN_BYTES = 1000;
     private static final int NUMBER_OF_PACKETS_TO_SEND = 1;
     public static final long  TASK_RAM = 100;
+    private final CloudSim simulation;
 
     private List<NetworkVm> vmList;
     private List<NetworkCloudlet> cloudletList;
@@ -79,28 +75,24 @@ public class NetworkVmsExample1 {
      */
     public NetworkVmsExample1() {
         Log.printFormattedLine("Starting %s...", this.getClass().getSimpleName());
-        try {
-            int num_user = 1; // number of cloud users
-            Calendar calendar = Calendar.getInstance();
-            boolean trace_flag = false;
+        int num_user = 1; // number of cloud users
+        Calendar calendar = Calendar.getInstance();
+        boolean trace_flag = false;
 
-            CloudSim.init(num_user, calendar, trace_flag);
+        simulation = new CloudSim(num_user, trace_flag);
 
-            this.datacenter = createDatacenter("Datacenter_0");
-            this.broker = new NetDatacenterBroker("Broker_0");
-            this.vmList = new ArrayList<>();
+        this.datacenter = createDatacenter();
+        this.broker = new NetDatacenterBroker(simulation);
+        this.vmList = new ArrayList<>();
 
-            this.vmList.addAll(createAndSubmitVMs(broker));
-            this.cloudletList = createNetworkCloudlets(broker);
-            broker.submitCloudletList(this.cloudletList);
+        this.vmList.addAll(createAndSubmitVMs(broker));
+        this.cloudletList = createNetworkCloudlets(broker);
+        broker.submitCloudletList(this.cloudletList);
 
-            CloudSim.startSimulation();
-            CloudSim.stopSimulation();
+        simulation.start();
+        simulation.stop();
 
-            showSimulationResults();
-        } catch (RuntimeException e) {
-            Log.printFormattedLine("Simulation finished due to unexpected error: %s", e);
-        }
+        showSimulationResults();
     }
 
     private void showSimulationResults() {
@@ -118,11 +110,9 @@ public class NetworkVmsExample1 {
     /**
      * Creates the datacenter.
      *
-     * @param name the datacenter name
-     *
      * @return the datacenter
      */
-    private NetworkDatacenter createDatacenter(String name) {
+    private NetworkDatacenter createDatacenter() {
         List<Host> hostList = new ArrayList<>();
         for (int i = 0; i < NUMBER_OF_HOSTS; i++) {
             List<Pe> peList = createPEs(HOST_PES, HOST_MIPS);
@@ -147,7 +137,8 @@ public class NetworkVmsExample1 {
                     .setCostPerBw(COST_PER_BW);
 
         // 6. Finally, we need to create a NetworkDatacenter object.
-        NetworkDatacenter newDatacenter = new NetworkDatacenter(name, characteristics, new NetworkVmAllocationPolicy());
+        NetworkDatacenter newDatacenter =
+            new NetworkDatacenter(simulation, characteristics, new NetworkVmAllocationPolicy());
         newDatacenter.setSchedulingInterval(5);
 
         createNetwork(newDatacenter);
@@ -172,7 +163,7 @@ public class NetworkVmsExample1 {
     private void createNetwork(NetworkDatacenter datacenter) {
         EdgeSwitch[] edgeSwitches = new EdgeSwitch[1];
         for (int i = 0; i < edgeSwitches.length; i++) {
-            edgeSwitches[i] = new EdgeSwitch("Edge" + i, datacenter);
+            edgeSwitches[i] = new EdgeSwitch(simulation, datacenter);
             datacenter.addSwitch(edgeSwitches[i]);
         }
 

@@ -17,17 +17,17 @@ import org.cloudbus.cloudsim.core.CloudSim;
 /**
  * A VM selection policy that selects for migration the VM with Minimum Utilization (MU)
  * of CPU.
- * 
+ *
  * <br/>If you are using any algorithms, policies or workload included in the power package please cite
  * the following paper:<br/>
- * 
+ *
  * <ul>
  * <li><a href="http://dx.doi.org/10.1002/cpe.1867">Anton Beloglazov, and Rajkumar Buyya, "Optimal Online Deterministic Algorithms and Adaptive
  * Heuristics for Energy and Performance Efficient Dynamic Consolidation of Virtual Machines in
  * Cloud Data Centers", Concurrency and Computation: Practice and Experience (CCPE), Volume 24,
  * Issue 13, Pages: 1397-1420, John Wiley & Sons, Ltd, New York, USA, 2012</a>
  * </ul>
- * 
+ *
  * @author Anton Beloglazov
  * @since CloudSim Toolkit 3.0
  */
@@ -44,7 +44,7 @@ public class PowerVmSelectionPolicyMinimumUtilization extends PowerVmSelectionPo
 			if (vm.isInMigration()) {
 				continue;
 			}
-			double metric = vm.getTotalUtilizationOfCpuMips(CloudSim.clock()) / vm.getMips();
+			double metric = vm.getTotalUtilizationOfCpuMips(host.getSimulation().clock()) / vm.getMips();
 			if (metric < minMetric) {
 				minMetric = metric;
 				vmToMigrate = vm;

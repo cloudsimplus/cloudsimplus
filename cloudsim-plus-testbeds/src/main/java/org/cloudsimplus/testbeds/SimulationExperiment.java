@@ -7,7 +7,6 @@ import org.cloudbus.cloudsim.core.CloudSim;
 import org.cloudbus.cloudsim.resources.*;
 
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.List;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
@@ -37,6 +36,7 @@ public abstract class SimulationExperiment implements Runnable {
     private int numberOfCreatedCloudlets = 0;
     private int numberOfCreatedVms = 0;
 	private boolean verbose;
+    private CloudSim cloudsim;
 
     /**
 	 * Creates a simulation experiment.
@@ -142,8 +142,8 @@ public abstract class SimulationExperiment implements Runnable {
 	public void run() {
 		buildScenario();
 
-		CloudSim.startSimulation();
-		CloudSim.stopSimulation();
+		cloudsim.start();
+		cloudsim.stop();
 		getAfterExperimentFinish().accept(this);
 
 		printResultsInternal();
@@ -180,9 +180,9 @@ public abstract class SimulationExperiment implements Runnable {
 	protected void buildScenario() {
 		int numberOfCloudUsers = 1;
 		boolean traceEvents = false;
+		this.cloudsim = new CloudSim(numberOfCloudUsers, traceEvents);
 
-		CloudSim.init(numberOfCloudUsers, Calendar.getInstance(), traceEvents);
-		Datacenter datacenter0 = createDatacenter("Datacenter0");
+		Datacenter datacenter0 = createDatacenter();
 		DatacenterBroker broker0 = createBrokerAndAddToList();
 		createAndSubmitVmsInternal(broker0);
 		createAndSubmitCloudletsInternal(broker0);
@@ -234,7 +234,7 @@ public abstract class SimulationExperiment implements Runnable {
         broker.submitVmList(getVmList());
     }
 
-    private DatacenterSimple createDatacenter(String name) {
+    private DatacenterSimple createDatacenter() {
         createHosts();
 		//Defines the characteristics of the data center
 		double cost = 3.0; // the cost of using processing in this datacenter
@@ -249,7 +249,7 @@ public abstract class SimulationExperiment implements Runnable {
                 .setCostPerStorage(costPerStorage)
                 .setCostPerBw(costPerBw);
 
-		return new DatacenterSimple(name, characteristics, new VmAllocationPolicySimple());
+		return new DatacenterSimple(cloudsim, characteristics, new VmAllocationPolicySimple());
 	}
 
     protected abstract void createHosts();
@@ -321,5 +321,9 @@ public abstract class SimulationExperiment implements Runnable {
 
     public int getNumberOfCreatedVms() {
         return numberOfCreatedVms;
+    }
+
+    public CloudSim getCloudsim() {
+        return cloudsim;
     }
 }

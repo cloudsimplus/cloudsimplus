@@ -14,6 +14,7 @@ import java.util.Map;
 import java.util.Scanner;
 
 import org.cloudbus.cloudsim.CloudletSimple;
+import org.cloudbus.cloudsim.core.CloudSim;
 import org.cloudbus.cloudsim.schedulers.CloudletSchedulerDynamicWorkload;
 import org.cloudbus.cloudsim.brokers.DatacenterBroker;
 import org.cloudbus.cloudsim.DatacenterCharacteristics;
@@ -36,13 +37,11 @@ import org.cloudbus.cloudsim.power.PowerHostUtilizationHistory;
 import org.cloudbus.cloudsim.power.PowerVm;
 import org.cloudbus.cloudsim.power.PowerVmAllocationPolicyMigrationAbstract;
 import org.cloudbus.cloudsim.provisioners.PeProvisionerSimple;
-import org.cloudbus.cloudsim.provisioners.ResourceProvisioner;
 import org.cloudbus.cloudsim.provisioners.ResourceProvisionerSimple;
 import org.cloudbus.cloudsim.resources.Bandwidth;
 import org.cloudbus.cloudsim.resources.FileStorage;
 import org.cloudbus.cloudsim.resources.Ram;
 import org.cloudbus.cloudsim.schedulers.CloudletScheduler;
-import org.cloudbus.cloudsim.schedulers.VmScheduler;
 import org.cloudbus.cloudsim.util.MathUtil;
 
 /**
@@ -72,13 +71,13 @@ public class Helper {
 		List<Vm> vms = new ArrayList<>(vmsNumber);
 		for (int i = 0; i < vmsNumber; i++) {
 			int vmType = i / (int) Math.ceil((double) vmsNumber / Constants.VM_TYPES);
-            CloudletScheduler scheduler = 
+            CloudletScheduler scheduler =
                     new CloudletSchedulerDynamicWorkload(
                             Constants.VM_MIPS[vmType], Constants.VM_PES[vmType]);
-            
+
             PowerVm vm = new PowerVm(i, Constants.VM_MIPS[vmType], Constants.VM_PES[vmType]);
             vm.setSchedulingInterval(Constants.SCHEDULING_INTERVAL);
-            vm.setRam(Constants.VM_RAM[vmType])    
+            vm.setRam(Constants.VM_RAM[vmType])
                .setBw(Constants.VM_BW)
                .setSize(Constants.VM_SIZE)
 			   .setBroker(broker)
@@ -120,10 +119,10 @@ public class Helper {
 	 *
 	 * @return the datacenter broker
 	 */
-	public static DatacenterBroker createBroker() {
+	public static DatacenterBroker createBroker(CloudSim simulation) {
 		DatacenterBroker broker = null;
 		try {
-			broker = new PowerDatacenterBroker("Broker");
+			broker = new PowerDatacenterBroker(simulation);
 		} catch (Exception e) {
 			e.printStackTrace();
 			System.exit(0);
@@ -134,7 +133,6 @@ public class Helper {
 	/**
 	 * Creates the datacenter.
 	 *
-	 * @param name the name
 	 * @param datacenterClass the datacenter class
 	 * @param hostList the host list
 	 * @param vmAllocationPolicy the vm allocation policy
@@ -144,10 +142,10 @@ public class Helper {
 	 * @throws Exception the exception
 	 */
 	public static Datacenter createDatacenter(
-			String name,
-			Class<? extends Datacenter> datacenterClass,
-			List<PowerHost> hostList,
-			VmAllocationPolicy vmAllocationPolicy) throws Exception {
+	    CloudSim simulation,
+        Class<? extends Datacenter> datacenterClass,
+        List<PowerHost> hostList,
+        VmAllocationPolicy vmAllocationPolicy) throws Exception {
 		double cost = 3.0; // the cost of using processing in this resource
 		double costPerMem = 0.05; // the cost of using memory in this resource
 		double costPerStorage = 0.001; // the cost of using storage in this resource
@@ -160,15 +158,12 @@ public class Helper {
                 .setCostPerStorage(costPerStorage)
                 .setCostPerBw(costPerBw);
 
-        Constructor<? extends Datacenter> construct = datacenterClass.getConstructor(String.class,
+        Constructor<? extends Datacenter> construct = datacenterClass.getConstructor(CloudSim.class,
             DatacenterCharacteristics.class,
-            VmAllocationPolicy.class,
-            List.class, Double.class);
+            VmAllocationPolicy.class);
 
-        return construct.newInstance(name, characteristics,
-            vmAllocationPolicy,
-            new ArrayList<FileStorage>(),
-            Constants.SCHEDULING_INTERVAL);
+        Datacenter datacenter = construct.newInstance(simulation, characteristics, vmAllocationPolicy);
+        return datacenter.setSchedulingInterval(Constants.SCHEDULING_INTERVAL);
 	}
 
 	/**

@@ -1,6 +1,5 @@
 package org.cloudsimplus.IntegrationTests;
 
-import java.util.Calendar;
 import org.cloudbus.cloudsim.Cloudlet;
 import org.cloudbus.cloudsim.brokers.DatacenterBroker;
 import org.cloudsimplus.builders.BrokerBuilderDecorator;
@@ -19,12 +18,12 @@ import org.junit.Before;
 
 /**
  *
- * An Integration Test (IT) running a simulation scenario with 1 PM of 2 PEs, 
- * 1 VMs of 2 PEs and 4 cloudlet in that VM. 
+ * An Integration Test (IT) running a simulation scenario with 1 PM of 2 PEs,
+ * 1 VMs of 2 PEs and 4 cloudlet in that VM.
  * The VM uses a {@link CloudletSchedulerTimeShared}. As the number of Cloudlets
  * is the double of VM's PEs, all cloudlets will spend the double of the
  * time to finish, because they will concur for CPU.
- * 
+ *
  * @author Manoel Campos da Silva Filho
  */
 public final class CloudletSchedulerTimeSharedWithMoreCloudletsThanPEs {
@@ -40,12 +39,13 @@ public final class CloudletSchedulerTimeSharedWithMoreCloudletsThanPEs {
     private SimulationScenarioBuilder scenario;
     private UtilizationModel utilizationModel;
     private DatacenterBroker broker;
-    
+    private CloudSim simulation;
+
     @Before
     public void setUp() {
-        CloudSim.init(1, Calendar.getInstance(), false);
+        simulation = new CloudSim(1);
         utilizationModel = new UtilizationModelFull();
-        scenario = new SimulationScenarioBuilder();
+        scenario = new SimulationScenarioBuilder(simulation);
         scenario.getDatacenterBuilder().setSchedulingInterval(2).createDatacenter(
             new HostBuilder()
                 .setVmSchedulerClass(VmSchedulerSpaceShared.class)
@@ -75,24 +75,24 @@ public final class CloudletSchedulerTimeSharedWithMoreCloudletsThanPEs {
     public void integrationTest() {
         startSimulationAndWaitToStop();
         printCloudletsExecutionResults(broker);
-        
+
         final double time = 20;
         for(Cloudlet c: broker.getCloudletsFinishedList()){
             assertEquals(String.format(
-                "Cloudlet %d doesn't have the expected finish time.", 
-                c.getId(), time), 
+                "Cloudlet %d doesn't have the expected finish time.",
+                c.getId(), time),
                 time, c.getFinishTime(), 0.2);
 
             assertEquals(String.format(
-                "Cloudlet %d doesn't have the expected exec time.", 
-                c.getId(), time), 
+                "Cloudlet %d doesn't have the expected exec time.",
+                c.getId(), time),
                 time, c.getActualCPUTime(), 0.2);
         }
     }
 
     public void startSimulationAndWaitToStop() throws RuntimeException, NullPointerException {
-        CloudSim.startSimulation();
-        CloudSim.stopSimulation();
+        simulation.start();
+        simulation.stop();
     }
 
     public void printCloudletsExecutionResults(DatacenterBroker broker) {

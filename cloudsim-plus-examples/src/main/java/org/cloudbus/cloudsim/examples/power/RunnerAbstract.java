@@ -41,31 +41,12 @@ import org.cloudbus.cloudsim.power.PowerVmSelectionPolicyRandomSelection;
  * @author Anton Beloglazov
  */
 public abstract class RunnerAbstract {
-
-    /**
-     * The enable output.
-     */
     private static boolean enableOutput;
-
-    /**
-     * The broker.
-     */
     protected static DatacenterBroker broker;
-
-    /**
-     * The cloudlet list.
-     */
     protected static List<Cloudlet> cloudletList;
-
-    /**
-     * The vm list.
-     */
     protected static List<Vm> vmList;
-
-    /**
-     * The host list.
-     */
     protected static List<PowerHost> hostList;
+    private CloudSim simulation;
 
     /**
      * Run.
@@ -129,7 +110,8 @@ public abstract class RunnerAbstract {
         String workload,
         String vmAllocationPolicy,
         String vmSelectionPolicy,
-        String parameter) throws IOException, FileNotFoundException {
+        String parameter) throws IOException, FileNotFoundException
+    {
         setEnableOutput(enableOutput);
         Log.setDisabled(!isEnableOutput());
         if (isEnableOutput() && outputToFile) {
@@ -155,7 +137,9 @@ public abstract class RunnerAbstract {
      *
      * @param inputFolder the input folder
      */
-    protected abstract void init(String inputFolder);
+    protected void init(String inputFolder){
+        this.simulation = new CloudSim(1);
+    }
 
     /**
      * Starts the simulation.
@@ -169,7 +153,7 @@ public abstract class RunnerAbstract {
 
         try {
             PowerDatacenter datacenter = (PowerDatacenter) Helper.createDatacenter(
-                "Datacenter",
+                simulation,
                 PowerDatacenter.class,
                 hostList,
                 vmAllocationPolicy);
@@ -179,13 +163,13 @@ public abstract class RunnerAbstract {
             broker.submitVmList(vmList);
             broker.submitCloudletList(cloudletList);
 
-            CloudSim.terminateSimulation(Constants.SIMULATION_LIMIT);
-            double lastClock = CloudSim.startSimulation();
+            simulation.terminateAt(Constants.SIMULATION_LIMIT);
+            double lastClock = simulation.start();
 
             List<Cloudlet> newList = broker.getCloudletsFinishedList();
             Log.printLine("Received " + newList.size() + " cloudlets");
 
-            CloudSim.stopSimulation();
+            simulation.stop();
 
             Helper.printResults(
                 datacenter,
@@ -339,4 +323,7 @@ public abstract class RunnerAbstract {
     }
 
 
+    public CloudSim getSimulation() {
+        return simulation;
+    }
 }

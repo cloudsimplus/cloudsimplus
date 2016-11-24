@@ -5,6 +5,7 @@ import org.cloudbus.cloudsim.resources.Pe;
 import org.cloudbus.cloudsim.schedulers.VmScheduler;
 import java.util.Collections;
 import java.util.List;
+import org.cloudbus.cloudsim.core.Simulation;
 import org.cloudsimplus.listeners.EventListener;
 import org.cloudsimplus.listeners.HostUpdatesVmsProcessingEventInfo;
 import org.cloudbus.cloudsim.provisioners.ResourceProvisioner;
@@ -115,14 +116,14 @@ public interface Host extends Identificable {
      * @return the free pes number
      */
     int getNumberOfFreePes();
-    
+
     /**
      * Gets the number of PEs that are working.
      * That is, the number of PEs that aren't FAIL.
      *
      * @return the number of working pes
      */
-    long getNumberOfWorkingPes();    
+    long getNumberOfWorkingPes();
 
     /**
      * Gets the PEs number.
@@ -331,11 +332,27 @@ public interface Host extends Identificable {
      * the host updates the processing of all its {@link Vm VMs}.
      *
      * @param onUpdateVmsProcessingListener the onUpdateVmsProcessingListener to set
+     * @return 
      * @see #updateVmsProcessing(double)
      */
     Host setOnUpdateVmsProcessingListener(EventListener<HostUpdatesVmsProcessingEventInfo> onUpdateVmsProcessingListener);
 
     boolean setFailed(boolean failed);
+
+    /**
+     * Gets the CloudSim instance that represents the simulation the Entity is related to.
+     * @return 
+     * @see #setSimulation(CloudSim)
+     */
+    Simulation getSimulation();
+
+    /**
+     * Sets the CloudSim instance that represents the simulation the Entity is related to.
+     * Such attribute has to be set by the {@link Datacenter} that the host belongs to.
+     * @param simulation The CloudSim instance that represents the simulation the Entity is related to
+     * @return 
+     */
+    Host setSimulation(Simulation simulation);
 
 
     /**
@@ -382,6 +399,8 @@ public interface Host extends Identificable {
         @Override public Host setOnUpdateVmsProcessingListener(EventListener<HostUpdatesVmsProcessingEventInfo> onUpdateVmsProcessingListener) { return Host.NULL; }
         @Override public long getAvailableStorage() { return 0L; }
         @Override public boolean setFailed(boolean failed){return false;}
+        @Override public Simulation getSimulation() { return Simulation.NULL; }
+        @Override public Host setSimulation(Simulation simulation) { return this; }
         @Override public long getNumberOfWorkingPes() { return 0; }
     };
 }

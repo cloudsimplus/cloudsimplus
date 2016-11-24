@@ -13,6 +13,7 @@ import org.cloudbus.cloudsim.Cloudlet;
 import org.cloudbus.cloudsim.CloudletExecutionInfo;
 
 import org.cloudbus.cloudsim.core.CloudSim;
+import org.cloudbus.cloudsim.resources.Pe;
 import org.cloudbus.cloudsim.resources.Processor;
 
 /**
@@ -108,7 +109,7 @@ public class CloudletSchedulerSpaceShared extends CloudletSchedulerAbstract {
 
 		// calculate the expected time for cloudlet completion
 		long remainingLength = c.getRemainingCloudletLength();
-		double estimatedFinishTime = CloudSim.clock()
+		double estimatedFinishTime = getVm().getSimulation().clock()
 		        + (remainingLength / (getProcessor().getCapacity() * c.getNumberOfPes()));
 
 		return estimatedFinishTime;

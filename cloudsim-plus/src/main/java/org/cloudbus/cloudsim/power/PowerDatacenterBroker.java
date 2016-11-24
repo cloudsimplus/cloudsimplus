@@ -15,17 +15,17 @@ import org.cloudbus.cloudsim.core.SimEvent;
 
 /**
  * A power-aware {@link DatacenterBrokerSimple}.
- * 
+ *
  * <br/>If you are using any algorithms, policies or workload included in the power package please cite
  * the following paper:<br/>
- * 
+ *
  * <ul>
  * <li><a href="http://dx.doi.org/10.1002/cpe.1867">Anton Beloglazov, and Rajkumar Buyya, "Optimal Online Deterministic Algorithms and Adaptive
  * Heuristics for Energy and Performance Efficient Dynamic Consolidation of Virtual Machines in
  * Cloud Data Centers", Concurrency and Computation: Practice and Experience (CCPE), Volume 24,
  * Issue 13, Pages: 1397-1420, John Wiley & Sons, Ltd, New York, USA, 2012</a>
  * </ul>
- * 
+ *
  * @author Anton Beloglazov
  * @since CloudSim Toolkit 2.0
  */
@@ -33,12 +33,11 @@ public class PowerDatacenterBroker extends DatacenterBrokerSimple {
 
 	/**
 	 * Instantiates a new PowerDatacenterBroker.
-	 * 
-	 * @param name the name of the broker
-	 * @throws Exception the exception
+	 *
+	 * @param simulation The CloudSim instance that represents the simulation the Entity is related to
 	 */
-	public PowerDatacenterBroker(String name) throws Exception {
-		super(name);
+	public PowerDatacenterBroker(CloudSim simulation)  {
+		super(simulation);
 	}
 
 	@Override
@@ -49,7 +48,7 @@ public class PowerDatacenterBroker extends DatacenterBrokerSimple {
 		if (result != CloudSimTags.TRUE) {
 			int datacenterId = data[0];
 			int vmId = data[1];
-			throw new RuntimeException(CloudSim.clock() + ": " + getName() + ": Creation of VM #" + vmId
+			throw new RuntimeException(getSimulation().clock() + ": " + getName() + ": Creation of VM #" + vmId
 					+ " failed in Datacenter #" + datacenterId);
 		}
 		return super.processVmCreateResponseFromDatacenter(ev);

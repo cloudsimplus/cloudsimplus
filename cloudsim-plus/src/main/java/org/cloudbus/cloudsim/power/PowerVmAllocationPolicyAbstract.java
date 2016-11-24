@@ -9,7 +9,6 @@
 package org.cloudbus.cloudsim.power;
 
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 import org.cloudbus.cloudsim.Host;
@@ -17,7 +16,7 @@ import org.cloudbus.cloudsim.Log;
 import org.cloudbus.cloudsim.Vm;
 import org.cloudbus.cloudsim.allocationpolicies.VmAllocationPolicyAbstract;
 import org.cloudbus.cloudsim.VmSimple;
-import org.cloudbus.cloudsim.core.CloudSim;
+import org.cloudbus.cloudsim.core.Simulation;
 
 /**
  * An abstract power-aware VM allocation policy.
@@ -56,20 +55,21 @@ public abstract class PowerVmAllocationPolicyAbstract extends VmAllocationPolicy
 
 	@Override
 	public boolean allocateHostForVm(Vm vm, Host host) {
+	    final Simulation simulation = vm.getSimulation();
 		if (host == null) {
-			Log.printFormattedLine("%.2f: No suitable host found for VM #" + vm.getId() + "\n", CloudSim.clock());
+			Log.printFormattedLine("%.2f: No suitable host found for VM #" + vm.getId() + "\n", simulation.clock());
 			return false;
 		}
 		if (host.vmCreate(vm)) { // if vm has been succesfully created in the host
 			getVmTable().put(vm.getUid(), host);
 			Log.printFormattedLine(
 					"%.2f: VM #" + vm.getId() + " has been allocated to the host #" + host.getId(),
-					CloudSim.clock());
+                simulation.clock());
 			return true;
 		}
 		Log.printFormattedLine(
 				"%.2f: Creation of VM #" + vm.getId() + " on the host #" + host.getId() + " failed\n",
-				CloudSim.clock());
+            simulation.clock());
 		return false;
 	}
 

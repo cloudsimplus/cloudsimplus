@@ -6,7 +6,6 @@ import org.cloudbus.cloudsim.Cloudlet;
 import org.cloudbus.cloudsim.CloudletExecutionInfo;
 import org.cloudbus.cloudsim.CloudletSimple;
 import org.cloudbus.cloudsim.CloudletSimpleTest;
-import org.cloudbus.cloudsim.core.CloudSim;
 import org.cloudbus.cloudsim.utilizationmodels.UtilizationModel;
 import org.cloudbus.cloudsim.utilizationmodels.UtilizationModelArithmeticProgression;
 import org.easymock.EasyMock;
@@ -14,16 +13,11 @@ import org.junit.Test;
 import static org.junit.Assert.*;
 import org.junit.Before;
 import org.junit.Ignore;
-import org.junit.runner.RunWith;
-import org.powermock.core.classloader.annotations.PrepareForTest;
-import org.powermock.modules.junit4.PowerMockRunner;
 
 /**
  *
  * @author Manoel Campos da Silva Filho
  */
-@RunWith(PowerMockRunner.class)
-@PrepareForTest({CloudSim.class}) //to intercept and mock static method calls
 public class CloudletSchedulerTimeSharedTest {
     private static final double CPU_UTILIZATION_INCREMENT = 0;
     private static final double CPU_INITIAL_UTILIZATION = 0.5;

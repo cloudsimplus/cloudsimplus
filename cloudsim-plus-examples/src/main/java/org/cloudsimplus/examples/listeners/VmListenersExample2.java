@@ -11,7 +11,6 @@ package org.cloudsimplus.examples.listeners;
 import org.cloudsimplus.util.tablebuilder.CloudletsTableBuilderHelper;
 
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.List;
 import org.cloudbus.cloudsim.Cloudlet;
 import org.cloudbus.cloudsim.CloudletSimple;
@@ -73,16 +72,12 @@ public class VmListenersExample2 {
      */
     private static final int VM_PES_NUMBER = 1;
 
-    /**
-     * The Virtual Machine Monitor (VMM) used by hosts to manage VMs.
-     */
-    private static final String VMM = "Xen";
-
     private final List<Host> hostList;
     private final List<Vm> vmList;
     private final List<Cloudlet> cloudletList;
     private final DatacenterBroker broker;
     private final Datacenter datacenter;
+    private final CloudSim simulation;
 
     /**
      * The listener object that will be created in order to be notified when
@@ -119,14 +114,13 @@ public class VmListenersExample2 {
      */
     public VmListenersExample2() {
         int numberOfUsers = 1; // number of cloud users/customers (brokers)
-        Calendar calendar = Calendar.getInstance();
-        CloudSim.init(numberOfUsers, calendar);
+        simulation = new CloudSim(numberOfUsers);
 
         this.hostList = new ArrayList<>();
         this.vmList = new ArrayList<>();
         this.cloudletList = new ArrayList<>();
-        this.datacenter = createDatacenter("Datacenter_0");
-        this.broker = new DatacenterBrokerSimple("Broker");
+        this.datacenter = createDatacenter();
+        this.broker = new DatacenterBrokerSimple(simulation);
 
         createVmListeners();
         createAndSubmitVmsAndCloudlets();
@@ -232,10 +226,9 @@ public class VmListenersExample2 {
     /**
      * Creates a datacenter with pre-defined configuration.
      *
-     * @param name the datacenter name
      * @return the created datacenter
      */
-    private Datacenter createDatacenter(String name) {
+    private Datacenter createDatacenter() {
         Host host = createHost(0);
         hostList.add(host);
 
@@ -251,7 +244,7 @@ public class VmListenersExample2 {
                 .setCostPerStorage(costPerStorage)
                 .setCostPerBw(costPerBw);
 
-        return new DatacenterSimple(name, characteristics, new VmAllocationPolicySimple());
+        return new DatacenterSimple(simulation, characteristics, new VmAllocationPolicySimple());
     }
 
     /**
@@ -277,8 +270,8 @@ public class VmListenersExample2 {
     }
 
     private void runSimulationAndPrintResults() {
-        CloudSim.startSimulation();
-        CloudSim.stopSimulation();
+        simulation.start();
+        simulation.stop();
 
         List<Cloudlet> newList = broker.getCloudletsFinishedList();
         new CloudletsTableBuilderHelper(newList).build();

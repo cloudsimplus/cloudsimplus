@@ -29,7 +29,6 @@ import org.cloudbus.cloudsim.resources.Ram;
 import org.cloudsimplus.util.tablebuilder.CloudletsTableBuilderHelper;
 import org.cloudbus.cloudsim.utilizationmodels.UtilizationModel;
 import org.cloudbus.cloudsim.utilizationmodels.UtilizationModelFull;
-import org.cloudsimplus.sla.readJsonFile.Metrics;
 import org.cloudsimplus.sla.readJsonFile.ReadSlaAgreements;
 
 /**
@@ -214,7 +213,7 @@ public final class ExampleMetricsWithoutNetwork {
         Calendar calendar = Calendar.getInstance(); // Calendar whose fields have been initialized with the current date and time.
         boolean trace_flag = false; // trace events
 
-        CloudSim.init(num_user, calendar, trace_flag);
+        CloudSim.CloudSim(num_user, calendar, trace_flag);
 
         //Create Datacenters
         Datacenter datacenter0 = createDatacenter("Datacenter_0");
@@ -233,8 +232,8 @@ public final class ExampleMetricsWithoutNetwork {
         broker.submitCloudletList(cloudletList);
 
         // Sixth step: Starts the simulation
-        CloudSim.startSimulation();
-        CloudSim.stopSimulation();
+        CloudSim.start();
+        CloudSim.stop();
         System.out.println("______________________________________________________");
         System.out.println("\n\t\t - System Métrics - \n ");
 
@@ -259,7 +258,7 @@ public final class ExampleMetricsWithoutNetwork {
         //totalCostPrice(vmlist);
         System.out.println("______________________________________________________");
 
-        verifyViolationSla(); 
+        verifyViolationSla();
         //Final step: Print results when simulation is over
         List<Cloudlet> newList = broker.getCloudletsFinishedList();
         new CloudletsTableBuilderHelper(newList).build();
@@ -340,17 +339,17 @@ public final class ExampleMetricsWithoutNetwork {
     public double getResponseTime() {
         return responseTimeCloudlet;
     }
-    
+
      private void verifyViolationSla() {
         ReadSlaAgreements sla = new ReadSlaAgreements();
         SlaMetricsMonitoring monitoring = new SlaMetricsMonitoring();
          System.out.println(sla.getName());
         if (responseTimeCloudlet >= sla.getValueResponseTime()) {
             monitoring.monitoringMetrics(sla.getNameMetricRT());
-            
+
             System.out.println("\nName: " + sla.getNameMetricRT());
             System.out.println("Value: " + sla.getValueResponseTime());
-           
+
         }
     }
 

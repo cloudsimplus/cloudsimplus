@@ -19,10 +19,13 @@ import org.cloudbus.cloudsim.Vm;
 public class VmToCloudletEventInfo extends CloudletEventInfoSimple implements  VmEventInfo {
     private Vm vm;
 
-    public VmToCloudletEventInfo(Vm vm, Cloudlet cloudlet) {
-        this(USE_CURRENT_SIMULATION_TIME, vm, cloudlet);
-    }
-
+    /**
+     * Creates an EventInfo with the given parameters.
+     * 
+     * @param time time the event was fired
+     * @param vm Vm where the Cloudlet is running
+     * @param cloudlet the Cloudlet that fired the event
+     */
     public VmToCloudletEventInfo(double time, Vm vm, Cloudlet cloudlet) {
         super(time, cloudlet);
         this.vm = vm;

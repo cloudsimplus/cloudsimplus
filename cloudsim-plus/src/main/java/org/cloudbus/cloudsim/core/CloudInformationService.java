@@ -7,11 +7,11 @@
  */
 package org.cloudbus.cloudsim.core;
 
+import org.cloudbus.cloudsim.Log;
+
 import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
-
-import org.cloudbus.cloudsim.Log;
 
 /**
  * A Cloud Information Service (CIS) is an entity that provides cloud resource
@@ -28,7 +28,7 @@ import org.cloudbus.cloudsim.Log;
  * @author Rajkumar Buyya
  * @since CloudSim Toolkit 1.0
  */
-public class CloudInformationService extends SimEntity {
+public class CloudInformationService extends CloudSimEntity {
 
     /**
      * A list containing the id of all Datacenters that are registered at the
@@ -51,15 +51,13 @@ public class CloudInformationService extends SimEntity {
     /**
      * Instantiates a new CloudInformationService object.
      *
-     * @param name the name to be associated with this entity (as required by {@link SimEntity} class)
-     * @throws IllegalArgumentException when creating this entity before
-     * initialising CloudSim package or this entity name is <tt>null</tt> or empty
+     * @param simulation The CloudSim instance that represents the simulation the Entity is related to
      * @pre name != null
      * @post $none
      *
      */
-    CloudInformationService(String name) throws IllegalArgumentException {
-        super(name);
+    CloudInformationService(CloudSim simulation) {
+        super(simulation);
         datacenterIdsList = new LinkedList<>();
         datacenterIdsArList = new LinkedList<>();
         cisList = new LinkedList<>();
@@ -209,11 +207,11 @@ public class CloudInformationService extends SimEntity {
 
     /**
      * Process non-default received events that aren't processed by the
-     * {@link #processEvent(org.cloudbus.cloudsim.core.SimEvent)} method. This
+     * {@link #processEvent(SimEvent)} method. This
      * method should be overridden by subclasses in other to process new defined
      * events.
      *
-     * @param ev a SimEvent object
+     * @param ev a CloudSimEvent object
      * @pre ev != null
      * @post $none
      */
@@ -225,7 +223,7 @@ public class CloudInformationService extends SimEntity {
         }
 
         Log.printLine("CloudInformationSevice.processOtherEvent(): " + "Unable to handle a request from "
-                + CloudSim.getEntityName(ev.getSource()) + " with event tag = " + ev.getTag());
+                + getSimulation().getEntityName(ev.getSource()) + " with event tag = " + ev.getTag());
     }
 
     /**

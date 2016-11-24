@@ -128,7 +128,7 @@ public class PowerVm extends VmSimple {
         double time = super.updateVmProcessing(currentTime, mipsShare);
         if (currentTime > getPreviousTime() && (currentTime - 0.1) % getSchedulingInterval() == 0) {
             double utilization = getTotalUtilizationOfCpu(getCloudletScheduler().getPreviousTime());
-            if (CloudSim.clock() != 0 || utilization != 0) {
+            if (getSimulation().clock() != 0 || utilization != 0) {
                 addUtilizationHistoryValue(utilization);
             }
             setPreviousTime(currentTime);

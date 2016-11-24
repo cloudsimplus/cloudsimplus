@@ -19,7 +19,7 @@ import org.cloudbus.cloudsim.Host;
 import org.cloudbus.cloudsim.HostDynamicWorkloadSimple;
 import org.cloudbus.cloudsim.Log;
 import org.cloudbus.cloudsim.Vm;
-import org.cloudbus.cloudsim.core.CloudSim;
+import org.cloudbus.cloudsim.core.Simulation;
 import org.cloudbus.cloudsim.lists.PowerVmList;
 import org.cloudbus.cloudsim.util.ExecutionTimeMeasurer;
 
@@ -324,7 +324,7 @@ public abstract class PowerVmAllocationPolicyMigrationAbstract extends PowerVmAl
     protected Map<Vm, Host> getNewVmPlacement(
             List<Vm> vmsToMigrate, Set<Host> excludedHosts) {
         Map<Vm, Host> migrationMap = new HashMap<>();
-        PowerVmList.sortByCpuUtilization(vmsToMigrate);
+        PowerVmList.sortByCpuUtilization(vmsToMigrate, getDatacenter().getSimulation().clock());
         for (Vm vm : vmsToMigrate) {
             PowerHostSimple allocatedHost = findHostForVm(vm, excludedHosts);
             if (allocatedHost != null) {
@@ -349,7 +349,7 @@ public abstract class PowerVmAllocationPolicyMigrationAbstract extends PowerVmAl
             List<? extends Vm> vmsToMigrate,
             Set<? extends Host> excludedHosts) {
         Map<Vm, Host> migrationMap = new HashMap<>();
-        PowerVmList.sortByCpuUtilization(vmsToMigrate);
+        PowerVmList.sortByCpuUtilization(vmsToMigrate, getDatacenter().getSimulation().clock());
         for (Vm vm : vmsToMigrate) {
             PowerHostSimple allocatedHost = findHostForVm(vm, excludedHosts);
             if (allocatedHost != null) {
@@ -476,6 +476,7 @@ public abstract class PowerVmAllocationPolicyMigrationAbstract extends PowerVmAl
                 return true;
             }
         }
+        
         return true;
     }
 
@@ -486,6 +487,7 @@ public abstract class PowerVmAllocationPolicyMigrationAbstract extends PowerVmAl
      * @param metric the metric to be added to the metric history map
      */
     protected void addHistoryEntry(HostDynamicWorkloadSimple host, double metric) {
+        Simulation simulation = host.getSimulation();
         int hostId = host.getId();
         if (!getTimeHistory().containsKey(hostId)) {
             getTimeHistory().put(hostId, new LinkedList<>());
@@ -496,8 +498,8 @@ public abstract class PowerVmAllocationPolicyMigrationAbstract extends PowerVmAl
         if (!getMetricHistory().containsKey(hostId)) {
             getMetricHistory().put(hostId, new LinkedList<>());
         }
-        if (!getTimeHistory().get(hostId).contains(CloudSim.clock())) {
-            getTimeHistory().get(hostId).add(CloudSim.clock());
+        if (!getTimeHistory().get(hostId).contains(simulation.clock())) {
+            getTimeHistory().get(hostId).add(simulation.clock());
             getUtilizationHistory().get(hostId).add(host.getUtilizationOfCpu());
             getMetricHistory().get(hostId).add(metric);
         }

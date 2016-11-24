@@ -10,6 +10,7 @@ package org.cloudbus.cloudsim.network.datacenter;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.cloudbus.cloudsim.core.CloudSim;
 import org.cloudbus.cloudsim.core.CloudSimTags;
 import org.cloudbus.cloudsim.core.SimEvent;
 
@@ -30,9 +31,9 @@ import org.cloudbus.cloudsim.core.SimEvent;
  *
  * @author Saurabh Kumar Garg
  * @author Manoel Campos da Silva Filho
- * 
+ *
  * @since CloudSim Toolkit 3.0
- * 
+ *
  */
 public class EdgeSwitch extends Switch {
     /**
@@ -45,13 +46,13 @@ public class EdgeSwitch extends Switch {
      * It also represents the uplink bandwidth of connected hosts.
      */
     public static final long DOWNLINK_BW = 100 * 1024 * 1024;
-    
+
     /**
      * Default number of ports that defines the number of
      * {@link org.cloudbus.cloudsim.Host} that can be connected to the switch.
      */
     public static final int PORTS = 4;
-    
+
     /**
      * Default switching delay in milliseconds.
      */
@@ -62,22 +63,22 @@ public class EdgeSwitch extends Switch {
      * downlink and uplink ports, and corresponding bandwidths. In this switch,
      * downlink ports aren't connected to other switch but to hosts.
      *
-     * @param name Name of the switch
+     * @param simulation The CloudSim instance that represents the simulation the Entity is related to
      * @param dc The Datacenter where the switch is connected to
      */
-    public EdgeSwitch(String name, NetworkDatacenter dc) {
-        super(name, dc);
-        
+    public EdgeSwitch(CloudSim simulation, NetworkDatacenter dc) {
+        super(simulation, dc);
+
         setUplinkBandwidth(AggregateSwitch.DOWNLINK_BW);
         setDownlinkBandwidth(DOWNLINK_BW);
         setSwitchingDelay(SWITCHING_DELAY);
         setPorts(PORTS);
     }
-    
+
     @Override
     protected void processPacketDown(SimEvent ev) {
         super.processPacketDown(ev);
-        
+
         NetworkPacket netPkt = (NetworkPacket) ev.getData();
         int recvVmId = netPkt.getHostPacket().getReceiverVmId();
         // packet is to be recieved by host
@@ -89,12 +90,12 @@ public class EdgeSwitch extends Switch {
             getPacketToHostMap().put(hostid, pktlist);
         }
         pktlist.add(netPkt);
-    }    
+    }
 
     @Override
     protected void processPacketUp(SimEvent ev) {
         super.processPacketUp(ev);
-        
+
         NetworkPacket netPkt = (NetworkPacket) ev.getData();
         int receiverVmId = netPkt.getHostPacket().getReceiverVmId();
 
@@ -109,10 +110,10 @@ public class EdgeSwitch extends Switch {
             addPacketToBeSentToHost(host.getId(), netPkt);
             return;
         }
-        
+
         // otherwise
         // packet is to be sent to upper switch
-        /** 
+        /**
          * @todo ASSUMPTION: EACH EDGE is connected to one aggregate level switch.
          * If there are more than one Aggregate level switch, the following code has to be modified.
         */
@@ -124,7 +125,7 @@ public class EdgeSwitch extends Switch {
     protected void processPacketForward(SimEvent ev) {
         /**
          * @todo @author manoelcampos these methods below appear
-         * to have duplicated code from methods with the same name in 
+         * to have duplicated code from methods with the same name in
          * the super class.
          */
         forwardPacketsToUplinkSwitches();
