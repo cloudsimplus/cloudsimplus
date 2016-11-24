@@ -51,20 +51,6 @@ public class ExampleUsingFaultInjector {
     private static final int CLOUDLET_PES = 1;
 
     /**
-     * @return the VM_PES
-     */
-    public static int getVM_PES2() {
-        return VM_PES2;
-    }
-
-    /**
-     * @return the VM_PES1
-     */
-    public static int getVM_PES1() {
-        return VM_PES1;
-    }
-
-    /**
      * The cloudlet list.
      */
     private final List<Cloudlet> cloudletList;

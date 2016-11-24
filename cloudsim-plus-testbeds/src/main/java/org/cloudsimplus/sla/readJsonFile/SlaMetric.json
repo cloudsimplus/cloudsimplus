@@ -1,32 +1,39 @@
 [{
-        "metricName": "responseTime",
-        "value": 3,
+        "name": "responseTime",
+        "valueMin": 0,
+        "valueMax": 10,
         "unit": "ms"
     }, {
-        "metricName": "availability",
-        "value": 95,
+        "name": "availability",
+        "valueMin": 95,
+        "valueMax": 100,
         "unit": "%"
     },
     {
-        "metricName": "cpuUtilization",
-        "value": 90,
+        "name": "cpuUtilization",
+        "valueMin": 60,
+        "valueMax": 95,
         "unit": "%"
     }, {
-        "metricName": "waitTime",
-        "value": 20,
+        "name": "waitTime",
+        "valueMin": 0,
+        "valueMax": 10,
         "unit": "ms"
     },
     {
-        "metricName": "faulTolerance",
-        "value": 95,
+        "name": "faulTolerance",
+        "valueMin": 90,
+        "valueMax": 100,
         "unit": "%"
     }, {
-        "metricName": "throughput",
-        "value": 95,
+        "name": "throughput",
+        "valueMin": 95,
+        "valueMax": 100,
         "unit": "bits/s"
     },
     {
-        "metricName": "costPrice",
-        "value": 500,
+        "name": "costPrice",
+        "valueMin": 250,
+        "valueMax": 500,
         "unit": "$"
     }]

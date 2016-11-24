@@ -12,11 +12,19 @@ package org.cloudsimplus.sla;
 public class SlaMetricsMonitoring {
     private String metric;
     
-    public void monitoringMetrics(String metric){
-        this.metric = metric;
-        
-        System.out.println("\n The metric: " + metric + " was violated !!");
+    public void monitoringResponseTime(String metric){
+        this.metric = metric; 
+        System.out.println("\n-->The metric: " + metric + " was violated !!");
+    }
     
+    public void monitoringCpuUtilization(String metric){
+        this.metric = metric; 
+        System.out.println("\n-->The metric: " + metric + " was violated !!");
+    }
+    
+    public void monitoringWaitTime(String metric){
+        this.metric = metric; 
+        System.out.println("\n-->The metric: " + metric + " was violated !!");
     }
     
 }
