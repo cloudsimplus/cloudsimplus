@@ -154,15 +154,15 @@ this.vmList = new ArrayList<>();
 this.cloudletList = new ArrayList<>();
 //Number of cloud customers
 int numberOfCloudUsers = 1; 
-boolean traceEvents = false;
 
-CloudSim.init(numberOfCloudUsers, Calendar.getInstance(), traceEvents);
+//Creates a CloudSim object to initialize the simulation.
+CloudSim simulation = new CloudSim(numberOfCloudUsers);
 
-Datacenter datacenter0 = createDatacenter("Datacenter0");
+Datacenter datacenter0 = createDatacenter(simulation);
 
 /*Creates a Broker accountable for submission of VMs and Cloudlets
 on behalf of a given cloud user (customer).*/
-DatacenterBroker broker0 = new DatacenterBrokerSimple("Broker0");
+DatacenterBroker broker0 = new DatacenterBrokerSimple(simulation);
 
 Vm vm0 = createVm(broker0);
 this.vmList.add(vm0);
@@ -176,10 +176,10 @@ this.cloudletList.add(cloudlet1);
 broker0.submitCloudletList(cloudletList);
 
 /*Starts the simulation and waits all cloudlets to be executed*/
-CloudSim.startSimulation();
+simulation.start();
 
 //Finishes the simulation
-CloudSim.stopSimulation();
+simulation.stop();
 
 /*Prints results when the simulation is over
 (you can use your own code here to print what you want from this cloudlet list)*/
@@ -221,18 +221,18 @@ They also try to avoid forcing you to change core classes of the simulator in or
 Changing these core classes is a bad practice, once you will not be able to automatically update your project to new versions 
 of the simulator, without losing your changes or struggling to fix merge conflicts.  
 
-And as I have seen in forums that I've attended, many times users have to perform these changes in core classes 
+And as we have seen in forums that we've attended, many times users have to perform these changes in core classes 
 just to implement some specific features they need. 
-By this way, I think those problems are enough reasons that show the need of a new re-engineered version of the simulator.  
+By this way, we think those problems are enough reasons that show the need of a new re-engineered version of the simulator.  
 
 <p align="right"><a href="#top">:arrow_up:</a></p>
 
 <a id="why-another-fork"></a>
 # But why another CloudSim fork? :unamused:
-I know what you are thinking: it would be better to pull a request to the original CloudSim repository 
+We know what you are thinking: it would be better to pull a request to the original CloudSim repository 
 in order to really contribute to the project, benefiting everybody.
 
-Well, I strongly agree with you and in fact I tried that. However, the original CloudSim moved on to a new major release, 
+Well, we strongly agree with you and in fact we tried that. However, the original CloudSim moved on to a new major release, 
 introducing a completely new set of classes to provide Container as a Service (CaaS) simulations, 
 before the changes proposed here being merged to the official repository. 
 The huge amount of contributions of CloudSim Plus are discussed in the section below. 
@@ -283,7 +283,7 @@ sometimes you don't have time to go through the details*).
   [SOLID principles](https://en.wikipedia.org/wiki/SOLID_(object-oriented_design)), it will be easier to understand and extend.
 - **Division of very long and confuse methods into small, clean and meaningful ones that usually make just one thing each one**: 
   when using the approach of reading the code to understand how it works, it is very difficult to figure out what is happening into 
-  a method with dozen or hundred lines. And I'm not even talking about the problems to maintain such methods. 
+  a method with dozen or hundred lines. And we'm not even discussing the problems to maintain such methods. 
   Thus, little methods with just one responsibility and with meangniful names are easier to maintain. 
   Further, they improve reuse and extension, the most important parts for you that are creating cloud simulations.
 - **Improved class hierarchy following the [Interface Segregation Principle (ISP)](https://en.wikipedia.org/wiki/Interface_segregation_principle) 
