@@ -54,7 +54,7 @@ Additional changes are presented as follows.
 - Removed the `name` parameter from `SimEntity` constructors and included a parameter `CloudSim simulation`.  
 - Remomve the word "Simulation" from the name of the  methods `startSimulation`, `stopSimulation`, `pauseSimulation`, `terminateSimulation`.
 - The method `boolean terminateSimulation(double time)` was renamed to `boolean terminateAt(double time)` to provide a clear name, indicanting
-  that it, diferent from the `terminate` method, will terminate the simulation just at the given time. 
+  that it, different from the `terminate` method, will terminate the simulation just at the given time. 
 
 ## [v0.8-beta.5] - 2016-11-23
 
