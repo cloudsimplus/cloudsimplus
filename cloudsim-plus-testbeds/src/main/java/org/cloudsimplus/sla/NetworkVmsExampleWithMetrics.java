@@ -49,6 +49,7 @@ public class NetworkVmsExampleWithMetrics {
      * The datacenter
      */
     NetworkDatacenter datacenter0;
+    private final CloudSim cloudsim;
 
     /**
      * Create NetworkVms
@@ -124,13 +125,11 @@ public class NetworkVmsExampleWithMetrics {
     private NetworkVmsExampleWithMetrics() {
         // First step: Initialize the CloudSim package. It should be called before creating any entities.
         int num_user = 1; // number of cloud users
-        Calendar calendar = Calendar.getInstance(); // Calendar whose fields have been initialized with the current date and time.
-        boolean trace_flag = false; // trace events
-
-        CloudSim.CloudSim(num_user, calendar, trace_flag);
+        
+        cloudsim = new CloudSim(num_user);
 
         // Second step: Create Datacenters
-        datacenter0 = createDatacenter("Datacenter_0");
+        datacenter0 = createDatacenter();
 
         // Third step: Create Broker
         NetDatacenterBroker broker = createBroker();
@@ -152,8 +151,8 @@ public class NetworkVmsExampleWithMetrics {
         broker.submitCloudletList(cloudletList);
 
         // Sixth step: Starts the simulation
-        CloudSim.start();
-        CloudSim.stop();
+        cloudsim.start();
+        cloudsim.stop();
 
         //Final step: Print results when simulation is over
         List<Cloudlet> newList = broker.getCloudletsFinishedList();
@@ -169,7 +168,7 @@ public class NetworkVmsExampleWithMetrics {
      *
      * @return the datacenter
      */
-    protected final NetworkDatacenter createDatacenter(String name) {
+    protected final NetworkDatacenter createDatacenter() {
         // Here are the steps needed to create a PowerDatacenter:
         // 1. We need to create a list to store
         // our machine
@@ -218,7 +217,7 @@ public class NetworkVmsExampleWithMetrics {
         // 6. Finally, we need to create a PowerDatacenter object.
         NetworkDatacenter datacenter =
                 new NetworkDatacenter(
-                        name, characteristics, new NetworkVmAllocationPolicy());
+                        cloudsim, characteristics, new NetworkVmAllocationPolicy());
         createNetwork(datacenter);
         return datacenter;
     }
@@ -230,7 +229,7 @@ public class NetworkVmsExampleWithMetrics {
     protected void createNetwork(NetworkDatacenter datacenter) {
         EdgeSwitch[] edgeSwitches = new EdgeSwitch[1];
         for (int i = 0; i < edgeSwitches.length; i++) {
-            edgeSwitches[i] = new EdgeSwitch("Edge" + i, datacenter);
+            edgeSwitches[i] = new EdgeSwitch(cloudsim, datacenter);
             datacenter.addSwitch(edgeSwitches[i]);
         }
 
@@ -248,8 +247,8 @@ public class NetworkVmsExampleWithMetrics {
      *
      * @return the datacenter broker
      */
-    private static NetDatacenterBroker createBroker() {
-        return new NetDatacenterBroker("Broker");
+    private NetDatacenterBroker createBroker() {
+        return new NetDatacenterBroker(cloudsim);
     }
 }
 

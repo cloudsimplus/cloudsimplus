@@ -40,14 +40,15 @@ public class HostFaultInjection extends CloudSimEntity {
      * failures with a delay and number of failed PEs generated using a Uniform
      * Pseudo Random Number Generator (PRNG) for each one.
      *
-     * @param name name of the fault injection
+     * @param simulation The CloudSim instance that represents the 
+     * simulation the Entity is related to
      * @see
      * #setDelayForFailureOfHostRandom(org.cloudbus.cloudsim.distributions.ContinuousDistribution)
      * @see
      * #setNumberOfFailedPesRandom(org.cloudbus.cloudsim.distributions.ContinuousDistribution)
      */
-    public HostFaultInjection(String name) {
-        super(name);
+    public HostFaultInjection(CloudSim simulation) {
+        super(simulation);
         this.numberOfFailedPesRandom = new UniformDistr();
         this.delayForFailureOfHostRandom = new UniformDistr();
         this.failed = false;
@@ -155,7 +156,7 @@ public class HostFaultInjection extends CloudSimEntity {
          As the broker is expected to request vm creation and destruction,
          it is set here as the sender of the vm destroy request.
          */
-        CloudSim.sendNow(
+        getSimulation().sendNow(
                 vm.getBrokerId(), host.getDatacenter().getId(),
                 CloudSimTags.VM_DESTROY, vm);
     }

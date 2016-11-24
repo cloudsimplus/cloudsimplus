@@ -6,7 +6,6 @@
 package org.cloudsimplus.sla;
 
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.List;
 import org.cloudbus.cloudsim.Cloudlet;
 import org.cloudbus.cloudsim.CloudletSimple;
@@ -51,20 +50,6 @@ public class ExampleUsingFaultInjector {
     private static final int CLOUDLET_PES = 1;
 
     /**
-     * @return the VM_PES
-     */
-    public static int getVM_PES2() {
-        return VM_PES2;
-    }
-
-    /**
-     * @return the VM_PES1
-     */
-    public static int getVM_PES1() {
-        return VM_PES1;
-    }
-
-    /**
      * The cloudlet list.
      */
     private final List<Cloudlet> cloudletList;
@@ -76,6 +61,7 @@ public class ExampleUsingFaultInjector {
      */
     private final List<Vm> vmlist;
     private int lastCreatedVmId = 0;
+    private final CloudSim cloudsim;
 
     /**
      * Creates Vms
@@ -150,14 +136,12 @@ public class ExampleUsingFaultInjector {
     public ExampleUsingFaultInjector() {
         //  Initialize the CloudSim package.
         int num_user = 1; // number of cloud users
-        Calendar calendar = Calendar.getInstance(); // Calendar whose fields have been initialized with the current date and time.
-        boolean trace_flag = false; // trace events
-
-        CloudSim.CloudSim(num_user, calendar, trace_flag);
+       
+        this.cloudsim = new CloudSim(num_user);
         Log.disable();
 
         //Create Datacenters
-        Datacenter datacenter0 = createDatacenter("Datacenter_0");
+        Datacenter datacenter0 = createDatacenter();
 
         //Inject Fault
         long seed = System.currentTimeMillis();
@@ -170,7 +154,7 @@ public class ExampleUsingFaultInjector {
                     UniformDistr delayForFailureOfHostRandom = new UniformDistr(1, 10, seed + i);
 
                     //create a new intance of fault and start it.
-                    HostFaultInjection fault = new HostFaultInjection("FaultInjection" + host.getId());
+                    HostFaultInjection fault = new HostFaultInjection(cloudsim);
                     fault.setNumberOfFailedPesRandom(failurePesRand);
                     fault.setDelayForFailureOfHostRandom(delayForFailureOfHostRandom);
                     fault.setHost(host);
@@ -182,7 +166,7 @@ public class ExampleUsingFaultInjector {
         }
 
         //Create Broker
-        DatacenterBroker broker = new DatacenterBrokerSimple("Broker");
+        DatacenterBroker broker = new DatacenterBrokerSimple(cloudsim);
 
         vmlist = new ArrayList<>();
         vmlist.addAll(createVM(broker, VM_PES1, 2));
@@ -197,8 +181,8 @@ public class ExampleUsingFaultInjector {
         broker.submitCloudletList(cloudletList);
 
         // Sixth step: Starts the simulation
-        CloudSim.start();
-        CloudSim.stop();
+        cloudsim.start();
+        cloudsim.stop();
 
         System.out.println("\n");
         for (Cloudlet cloudlet : cloudletList) {
@@ -222,7 +206,7 @@ public class ExampleUsingFaultInjector {
      *
      * @return the datacenter
      */
-    private Datacenter createDatacenter(String name) {
+    private Datacenter createDatacenter() {
         hostList = new ArrayList<>();
 
         int mips = 10000;
@@ -254,7 +238,7 @@ public class ExampleUsingFaultInjector {
                 .setCostPerStorage(costPerStorage)
                 .setCostPerBw(costPerBw);
 
-        return new DatacenterSimple(name, characteristics,
+        return new DatacenterSimple(cloudsim, characteristics,
                 new VmAllocationPolicySimple());
     }
 

@@ -5,7 +5,6 @@ import org.cloudbus.cloudsim.allocationpolicies.VmAllocationPolicySimple;
 import org.cloudbus.cloudsim.brokers.DatacenterBroker;
 import org.cloudbus.cloudsim.core.CloudSim;
 import org.cloudbus.cloudsim.resources.*;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Consumer;
