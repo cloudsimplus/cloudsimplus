@@ -467,10 +467,10 @@ By this way, to instantiate a host you can use a code such as below:
 long ram = 20480; //in MB
 long bw = 1000000; //in Megabits/s
 long storage = 1000000; //in MB
-Host host = new HostSimple(id,
-        new ResourceProvisionerSimple(new Ram(ram)),
-        new ResourceProvisionerSimple(new Bandwidth(bw)),
-        storage, peList, new VmSchedulerTimeShared(peList));
+Host host = new HostSimple(id, storage, pesList)
+        .setRamProvisioner(new ResourceProvisionerSimple(new Ram(ram)))
+        .setBwProvisioner(new ResourceProvisionerSimple(new Bandwidth(bw)))
+        .setVmScheduler(new VmSchedulerTimeShared(pesList));
 ``` 
 
 <p align="right"><a href="#top">:arrow_up:</a></p>
