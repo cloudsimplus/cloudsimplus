@@ -39,7 +39,7 @@ public class ResourceProvisionerSimpleTest {
 
     /**
      * Creates a provisioner for any generic resource. It in fact doesn't matter
-     * if it is for RAM, CPU, BW or any other possible resource.
+     * if it is for HOST_RAM, CPU, HOST_BW or any other possible resource.
      */
     private ResourceProvisionerSimple createSimpleProvisioner() {
         return new ResourceProvisionerSimple(new Ram(CAPACITY));
@@ -80,7 +80,7 @@ public class ResourceProvisionerSimpleTest {
      * Creates a VM with 1 PE.
      *
      * @param vmId id of the VM
-     * @param capacity a capacity that will be set to all resources, such as CPU, RAM, BW, etc.
+     * @param capacity a capacity that will be set to all resources, such as CPU, HOST_RAM, HOST_BW, etc.
      * @return
      */
     private static VmSimple createVm(final int vmId, long capacity) {

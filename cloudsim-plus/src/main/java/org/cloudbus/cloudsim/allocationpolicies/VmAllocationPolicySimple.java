@@ -7,17 +7,12 @@
  */
 package org.cloudbus.cloudsim.allocationpolicies;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
+
 import org.cloudbus.cloudsim.Host;
 import org.cloudbus.cloudsim.Log;
 import org.cloudbus.cloudsim.Vm;
 import org.cloudbus.cloudsim.VmSimple;
-
-import org.cloudbus.cloudsim.core.CloudSim;
 
 /**
  * <p>A VmAllocationPolicy implementation that chooses, as
@@ -53,59 +48,65 @@ public class VmAllocationPolicySimple extends VmAllocationPolicyAbstract {
      */
     @Override
     public boolean allocateHostForVm(Vm vm) {
-        int requiredPes = vm.getNumberOfPes();
-        boolean result = false;
-        int tries = 0;
-        List<Integer> freePesTmp = new ArrayList<>();
-
-	    /**
-	     * @todo It is copying the elements from freePesList to
-	     * freePesTmp. The ArrayList constructor that receives a list
-	     * already copies the given itens to the new list.
-	     */
-        getFreePesList().forEach(freePes -> freePesTmp.add(freePes));
-
-        if (!getVmTable().containsKey(vm.getUid())) { // if this vm was not created
-            do {// we still trying until we find a host or until we try all of them
-                int moreFree = Integer.MIN_VALUE;
-                int idx = -1;
-
-                // we want the host with less pes in use
-                for (int i = 0; i < freePesTmp.size(); i++) {
-                    if (freePesTmp.get(i) > moreFree) {
-                        moreFree = freePesTmp.get(i);
-                        idx = i;
-                    }
-                }
-
-                Host host = getHostList().get(idx);
-                result = host.vmCreate(vm);
-
-                if (result) {
-                    mapVmToPm(vm, host);
-                    getUsedPes().put(vm.getUid(), requiredPes);
-                    getFreePesList().set(idx, getFreePesList().get(idx) - requiredPes);
-                    result = true;
-                    break;
-                } else {
-                    freePesTmp.set(idx, Integer.MIN_VALUE);
-                }
-                tries++;
-            } while (!result && tries < getFreePesList().size());
-
+        if(getHostList().isEmpty()){
+            Log.printFormattedLine(
+                "Vm %s could not be allocated because there isn't any Host for Datacenter %d",
+                vm.getId(), getDatacenter().getId());
+            return false;
         }
 
-        return result;
+        // if this vm was already created
+        if (getVmTable().containsKey(vm.getUid())) {
+            return false;
+        }
+
+        List<Host> hostsWhereVmCreationFailed = new ArrayList<>();
+        //We still trying until we find a host or until we try all of them
+        for(int tries = 0; tries < getHostFreePesMap().size(); tries++) {
+            Map.Entry<Host, Integer> entry = getHostWithLessUsedPes(hostsWhereVmCreationFailed);
+            Host host = entry.getKey();
+            final int hostFreePes = entry.getValue();
+            if (host.vmCreate(vm)) {
+                mapVmToPm(vm, host);
+                getUsedPes().put(vm.getUid(), vm.getNumberOfPes());
+                getHostFreePesMap().put(host, hostFreePes - vm.getNumberOfPes());
+                if(!hostsWhereVmCreationFailed.isEmpty()){
+                    Log.printFormattedLine("[VmAllocationPolicy] VM #%d was successfully allocated to Host #%d", vm.getId(), host.getId());
+                }
+                return true;
+            } else {
+                hostsWhereVmCreationFailed.add(host);
+            }
+        }
+
+        return false;
+    }
+
+    /**
+     * Gets the host from the {@link #getHostList()} that has
+     * the less number of used PEs.
+     *
+     * <b>The method must not be called without checking if the host list is empty first.</b>
+     *
+     * @param ignoredHosts the list of hosts that have to be ignored when selecting the
+     *                     host with less used PEs. These list can be, for instance,
+     *                     the list of hosts that the creation of a given VM failed.
+     * @return
+     */
+    private Map.Entry<Host, Integer> getHostWithLessUsedPes(List<Host> ignoredHosts) {
+        return getHostFreePesMap().entrySet().stream()
+            .filter(entry -> !ignoredHosts.contains(entry.getKey()))
+            .max(Comparator.comparing(Map.Entry::getValue))
+            .get();
     }
 
     @Override
     public void deallocateHostForVm(Vm vm) {
         Host host = unmapVmFromPm(vm);
-        int idx = getHostList().indexOf(host);
         int pes = getUsedPes().remove(vm.getUid());
         if (host != null) {
             host.vmDestroy(vm);
-            getFreePesList().set(idx, getFreePesList().get(idx) + pes);
+            getHostFreePesMap().put(host, getHostFreePesMap().get(host) + pes);
         }
     }
 
@@ -136,10 +137,9 @@ public class VmAllocationPolicySimple extends VmAllocationPolicyAbstract {
         if (host.vmCreate(vm)) {
             mapVmToPm(vm, host);
 
-            int requiredPes = vm.getNumberOfPes();
-            int idx = getHostList().indexOf(host);
+            final int requiredPes = vm.getNumberOfPes();
             getUsedPes().put(vm.getUid(), requiredPes);
-            getFreePesList().set(idx, getFreePesList().get(idx) - requiredPes);
+            getHostFreePesMap().put(host, getHostFreePesMap().get(host) - requiredPes);
 
             Log.printFormattedLine(
                     "%.2f: VM #%d has been allocated to the host #%d",

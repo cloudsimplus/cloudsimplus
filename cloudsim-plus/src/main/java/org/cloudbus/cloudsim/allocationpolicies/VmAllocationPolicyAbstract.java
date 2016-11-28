@@ -7,7 +7,6 @@
  */
 package org.cloudbus.cloudsim.allocationpolicies;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -16,8 +15,6 @@ import org.cloudbus.cloudsim.Datacenter;
 import org.cloudbus.cloudsim.Host;
 import org.cloudbus.cloudsim.Vm;
 import org.cloudsimplus.listeners.HostToVmEventInfo;
-
-import static java.util.stream.Collectors.toList;
 
 /**
  * An abstract class that represents the policy
@@ -45,9 +42,9 @@ public abstract class VmAllocationPolicyAbstract implements VmAllocationPolicy {
      */
     private Datacenter datacenter;
     /**
-     * @see #getFreePesList()
+     * @see #getHostFreePesMap()
      */
-    private List<Integer> freePesList;
+    private Map<Host, Integer> hostFreePesMap;
     /**
      * @see #getUsedPes()
      */
@@ -60,16 +57,12 @@ public abstract class VmAllocationPolicyAbstract implements VmAllocationPolicy {
      * @post $none
      */
     public VmAllocationPolicyAbstract() {
-        setFreePesList(new ArrayList<>());
-        setVmTable(new HashMap<>());
-        setUsedPes(new HashMap<>());
-
-        datacenter = Datacenter.NULL;
+        setDatacenter(Datacenter.NULL);
     }
 
     @Override
     public <T extends Host> List<T> getHostList() {
-        return (List<T>) datacenter.getHostList();
+        return (List<T>) getDatacenter().getHostList();
     }
 
     /**
@@ -101,7 +94,7 @@ public abstract class VmAllocationPolicyAbstract implements VmAllocationPolicy {
     protected void mapVmToPm(Vm vm, Host host) {
         // if vm were succesfully created in the host
         getVmTable().put(vm.getUid(), host);
-        HostToVmEventInfo info = 
+        HostToVmEventInfo info =
                 new HostToVmEventInfo(host.getSimulation().clock(), host, vm);
         vm.getOnHostAllocationListener().update(info);
     }
@@ -116,7 +109,7 @@ public abstract class VmAllocationPolicyAbstract implements VmAllocationPolicy {
      */
     protected Host unmapVmFromPm(Vm vm) {
         final Host host = getVmTable().remove(vm.getUid());
-        HostToVmEventInfo info = 
+        HostToVmEventInfo info =
                 new HostToVmEventInfo(host.getSimulation().clock(), host, vm);
         vm.getOnHostDeallocationListener().update(info);
         return host;
@@ -143,32 +136,35 @@ public abstract class VmAllocationPolicyAbstract implements VmAllocationPolicy {
 
     /**
      * Gets the number of PEs from each Host in the {@link #getHostList() host list}
-     * and adds these number of PEs to the {@link #getFreePesList() list of free PEs}.
+     * and adds these number of PEs to the {@link #getHostFreePesMap() list of free PEs}.
      * <b>The method expects that the {@link #datacenter} is already set.</b>
      *
      */
     private void addPesFromHostsToFreePesList() {
-        List<Integer> numberOfPesByHost = getHostList().stream().map(Host::getNumberOfPes).collect(toList());
-        setFreePesList(new ArrayList<>(getHostList().size()));
-        getFreePesList().addAll(numberOfPesByHost);
+        setHostFreePesMap(new HashMap<>(getHostList().size()));
+        setVmTable(new HashMap<>());
+        setUsedPes(new HashMap<>());
+        getHostList().stream().forEach(host -> hostFreePesMap.put(host, host.getNumberOfPes()));
     }
 
     /**
-     * Gets the number of free PEs for each host from {@link #getHostList()}.
+     * Gets a map with the number of free PEs for each host from {@link #getHostList()}.
      *
-     * @return the free PEs list
+     * @return a Map where each key is a host and each value is the number of free PEs of that host.
      */
-    protected final List<Integer> getFreePesList() {
-        return freePesList;
+    protected final Map<Host, Integer> getHostFreePesMap() {
+        return hostFreePesMap;
     }
 
     /**
-     * Sets the free pes.
+     * Sets the Host free PEs Map.
      *
-     * @param freePesList the new free pes
+     * @param hostFreePesMap the new Host free PEs map
+     * @return
      */
-    protected final void setFreePesList(List<Integer> freePesList) {
-        this.freePesList = freePesList;
+    protected final VmAllocationPolicy setHostFreePesMap(Map<Host, Integer> hostFreePesMap) {
+        this.hostFreePesMap = hostFreePesMap;
+        return this;
     }
 
     /**

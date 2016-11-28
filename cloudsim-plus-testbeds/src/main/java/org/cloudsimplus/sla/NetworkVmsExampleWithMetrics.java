@@ -7,6 +7,7 @@ import org.cloudbus.cloudsim.DatacenterCharacteristics;
 import org.cloudbus.cloudsim.DatacenterCharacteristicsSimple;
 import org.cloudbus.cloudsim.Host;
 import org.cloudbus.cloudsim.Log;
+import org.cloudbus.cloudsim.allocationpolicies.VmAllocationPolicySimple;
 import org.cloudbus.cloudsim.brokers.DatacenterBroker;
 import org.cloudbus.cloudsim.core.CloudSim;
 import org.cloudbus.cloudsim.network.datacenter.EdgeSwitch;
@@ -15,7 +16,6 @@ import org.cloudbus.cloudsim.network.datacenter.NetworkCloudlet;
 import org.cloudbus.cloudsim.network.datacenter.NetworkDatacenter;
 import org.cloudbus.cloudsim.network.datacenter.NetworkHost;
 import org.cloudbus.cloudsim.network.datacenter.NetworkVm;
-import org.cloudbus.cloudsim.network.datacenter.NetworkVmAllocationPolicy;
 import org.cloudbus.cloudsim.provisioners.PeProvisionerSimple;
 import org.cloudbus.cloudsim.provisioners.ResourceProvisionerSimple;
 import org.cloudbus.cloudsim.resources.Bandwidth;
@@ -53,8 +53,8 @@ public class NetworkVmsExampleWithMetrics {
     /**
      * Create NetworkVms
      *
-     * @param userId
-     * @param vms
+     * @param broker the broker that acts on behalf of a user
+     * @param vms number of VMs to create
      * @return list de vms
      */
     private List<NetworkVm> createVM(DatacenterBroker broker, int vms) {
@@ -163,8 +163,6 @@ public class NetworkVmsExampleWithMetrics {
     /**
      * Creates the NetworkDatacenter.
      *
-     * @param name the datacenter
-     *
      * @return the datacenter
      */
     protected final NetworkDatacenter createDatacenter() {
@@ -216,7 +214,7 @@ public class NetworkVmsExampleWithMetrics {
         // 6. Finally, we need to create a PowerDatacenter object.
         NetworkDatacenter datacenter =
                 new NetworkDatacenter(
-                        cloudsim, characteristics, new NetworkVmAllocationPolicy());
+                        cloudsim, characteristics, new VmAllocationPolicySimple());
         createNetwork(datacenter);
         return datacenter;
     }

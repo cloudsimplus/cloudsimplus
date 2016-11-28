@@ -84,7 +84,7 @@ public class VmSimpleTest {
 
     /**
      * Creates a VM with the given numberOfPes and default configuration for
-     * MIPS, RAM, BW and Storage.
+     * HOST_MIPS, HOST_RAM, HOST_BW and Storage.
      *
      * @param vmId
      * @param numberOfPes
@@ -96,7 +96,7 @@ public class VmSimpleTest {
 
     /**
      * Creates a VM with the given mips and numberOfPes and default
-     * configuration for RAM, BW and Storage.
+     * configuration for HOST_RAM, HOST_BW and Storage.
      *
      * @param vmId
      * @param mips
@@ -121,7 +121,7 @@ public class VmSimpleTest {
     public static VmSimple createVm(final int vmId,
             final double mips, final int numberOfPes,
             final long ram, final long bw, final long storage,
-            final CloudletScheduler scheduler) 
+            final CloudletScheduler scheduler)
     {
         CloudSim cloudsim = CloudSimMocker.createMock(mocker -> mocker.clock(0));
         VmSimple vm = new VmSimple(vmId, mips, numberOfPes);
@@ -134,7 +134,7 @@ public class VmSimpleTest {
 
     /**
      * Creates a VM with the given numberOfPes for a given user and default
-     * configuration for MIPS, RAM, BW and Storage.
+     * configuration for HOST_MIPS, HOST_RAM, HOST_BW and Storage.
      *
      * @param vmId
      * @param broker
