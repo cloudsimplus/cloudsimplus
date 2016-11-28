@@ -2,6 +2,13 @@
 
 Lists the main changes in the project.
 
+## [Current Development Version]
+
+### Changed
+- Removed the PE list parameter from the VmScheduler constructors. Now classes that implement VmScheduler have a host attribute from where the PE list is got directly.
+  This attribute is automatically set by a host when the Host.setScheduler setter is called. By this way, the user doesn't have to worry about this VmScheduler attribute. 
+  This change makes it easier to create a VmScheduler and consequently a Host.
+
 ## [v0.8-beta.6] - 2016-11-24
 Methods and attributes of the `CloudSim` class aren't static anymore. By this way, each simulation now requires an instance of `CloudSim` instead of calling  methods directly from such a class. Despite this change appears to introduce more complexity when creating a simulation, in fact, it makes it simpler. All classes that extend `SimEntity` required a name to be passed when calling their constructors. Since that name usually was just the name of the class followed by its id, it wasn't meaningful.
 The name is just used for log purposes. Accordingly, such constructor parameter was removed and a default name is given for each `SimEntity` object. All `SimEntity` objects now require an `CloudSim` instance. Thus, the constructor parameter "name" was removed and in its place a `CloudSim simulation` parameter was introduced.

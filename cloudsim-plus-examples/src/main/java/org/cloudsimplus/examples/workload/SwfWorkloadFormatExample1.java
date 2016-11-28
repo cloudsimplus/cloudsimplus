@@ -260,7 +260,7 @@ public class SwfWorkloadFormatExample1 {
                 new HostSimple(lastCreatedHostId++, storage, peList)
                     .setRamProvisioner(new ResourceProvisionerSimple(new Ram(ram)))
                     .setBwProvisioner(new ResourceProvisionerSimple(new Bandwidth(bw)))
-                    .setVmScheduler(new VmSchedulerTimeShared(peList));
+                    .setVmScheduler(new VmSchedulerTimeShared());
 
             list.add(host);
         }

@@ -107,7 +107,7 @@ abstract class CloudletSchedulerExperiment extends SimulationExperiment {
         return new HostSimple(getNumberOfCreatedHosts(), storage, peList)
             .setRamProvisioner(new ResourceProvisionerSimple(new Ram(ram)))
             .setBwProvisioner(new ResourceProvisionerSimple(new Bandwidth(bw)))
-            .setVmScheduler(new VmSchedulerTimeShared(peList));
+            .setVmScheduler(new VmSchedulerTimeShared());
     }
 
     @Override

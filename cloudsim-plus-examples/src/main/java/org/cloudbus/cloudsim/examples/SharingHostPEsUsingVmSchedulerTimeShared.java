@@ -175,7 +175,7 @@ public class SharingHostPEsUsingVmSchedulerTimeShared {
         return new HostSimple(numberOfCreatedHosts++, storage, peList)
             .setRamProvisioner(new ResourceProvisionerSimple(new Ram(ram)))
             .setBwProvisioner(new ResourceProvisionerSimple(new Bandwidth(bw)))
-            .setVmScheduler(new VmSchedulerTimeShared(peList));
+            .setVmScheduler(new VmSchedulerTimeShared());
     }
 
     private Vm createVm(DatacenterBroker broker, double mips, int pesNumber) {

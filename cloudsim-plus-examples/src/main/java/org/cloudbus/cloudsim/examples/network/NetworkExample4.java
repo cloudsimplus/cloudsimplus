@@ -156,7 +156,7 @@ public class NetworkExample4 {
         Host host = new HostSimple(hostId, storage, peList)
             .setRamProvisioner(new ResourceProvisionerSimple(new Ram(ram)))
             .setBwProvisioner(new ResourceProvisionerSimple(new Bandwidth(bw)))
-            .setVmScheduler(new VmSchedulerTimeShared(peList));
+            .setVmScheduler(new VmSchedulerTimeShared());
         hostList.add(host);
 
         // 5. Create a DatacenterCharacteristics object that stores the

@@ -45,7 +45,7 @@ public class HostDynamicWorkloadTest {
         host = new HostDynamicWorkloadSimple(ID, STORAGE, peList);
         host.setRamProvisioner(new ResourceProvisionerSimple(new Ram(RAM)))
             .setBwProvisioner(new ResourceProvisionerSimple(new Bandwidth(BW)))
-            .setVmScheduler(new VmSchedulerTimeShared(peList));
+            .setVmScheduler(new VmSchedulerTimeShared());
     }
 
     @Test

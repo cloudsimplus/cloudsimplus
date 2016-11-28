@@ -13,6 +13,8 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+
+import org.cloudbus.cloudsim.Host;
 import org.cloudbus.cloudsim.resources.Pe;
 import org.cloudbus.cloudsim.Vm;
 
@@ -44,13 +46,19 @@ public class VmSchedulerSpaceShared extends VmSchedulerAbstract {
     /**
      * Instantiates a new vm space-shared scheduler.
      *
-     * @param pelist the pelist
      */
-    public VmSchedulerSpaceShared(List<Pe> pelist) {
-        super(pelist);
+    public VmSchedulerSpaceShared() {
+        super();
         setPeAllocationMap(new HashMap<>());
-        setFreePesList(new ArrayList<>(pelist));
-        getFreePesList().addAll(pelist);
+        setFreePesList(new ArrayList<>());
+    }
+
+    @Override
+    public VmScheduler setHost(Host host) {
+        super.setHost(host);
+        setPeAllocationMap(new HashMap<>());
+        setFreePesList(new ArrayList<>(this.getHost().getPeList()));
+        return this;
     }
 
     @Override
@@ -69,7 +77,7 @@ public class VmSchedulerSpaceShared extends VmSchedulerAbstract {
         if (getFreePesList().size() < vmRequestedMipsShare.size()) {
             return Collections.EMPTY_LIST;
         }
-        
+
         List<Pe> selectedPes = new ArrayList<>();
         Iterator<Pe> peIterator = getFreePesList().iterator();
         Pe pe = peIterator.next();
@@ -82,11 +90,11 @@ public class VmSchedulerSpaceShared extends VmSchedulerAbstract {
                 pe = peIterator.next();
             }
         }
-        
+
         if (vmRequestedMipsShare.size() > selectedPes.size()) {
             return Collections.EMPTY_LIST;
         }
-        
+
         return selectedPes;
     }
 
@@ -96,13 +104,13 @@ public class VmSchedulerSpaceShared extends VmSchedulerAbstract {
         if(selectedPes.isEmpty()){
             return false;
         }
-        
+
         double totalMips = mipsShareRequested.stream().reduce(0.0, Double::sum);
 
         getFreePesList().removeAll(selectedPes);
 
         getPeAllocationMap().put(vm.getUid(), selectedPes);
-        getMipsMap().put(vm.getUid(), mipsShareRequested);
+        getMipsMapAllocated().put(vm.getUid(), mipsShareRequested);
         setAvailableMips(getAvailableMips() - totalMips);
         return true;
     }
@@ -113,12 +121,12 @@ public class VmSchedulerSpaceShared extends VmSchedulerAbstract {
         getPeAllocationMap().remove(vm.getUid());
 
         double totalMips = 0;
-        for (double mips : getMipsMap().get(vm.getUid())) {
+        for (double mips : getMipsMapAllocated().get(vm.getUid())) {
             totalMips += mips;
         }
         setAvailableMips(getAvailableMips() + totalMips);
 
-        getMipsMap().remove(vm.getUid());
+        getMipsMapAllocated().remove(vm.getUid());
     }
 
     /**

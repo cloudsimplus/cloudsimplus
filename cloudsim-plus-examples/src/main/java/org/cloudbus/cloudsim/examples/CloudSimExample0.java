@@ -131,7 +131,7 @@ public class CloudSimExample0 {
         return new HostSimple(numberOfCreatedHosts++, storage, pesList)
                 .setRamProvisioner(new ResourceProvisionerSimple(new Ram(ram)))
                 .setBwProvisioner(new ResourceProvisionerSimple(new Bandwidth(bw)))
-                .setVmScheduler(new VmSchedulerTimeShared(pesList));
+                .setVmScheduler(new VmSchedulerTimeShared());
     }
 
     private Vm createVm(DatacenterBroker broker) {

@@ -9,7 +9,6 @@
 package org.cloudbus.cloudsim.examples;
 
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.List;
 import org.cloudbus.cloudsim.Cloudlet;
 import org.cloudbus.cloudsim.CloudletSimple;
@@ -180,7 +179,7 @@ public class CloudSimExample4 {
         Host host = new HostSimple(++hostId, storage, peList)
             .setRamProvisioner(new ResourceProvisionerSimple(new Ram(ram)))
             .setBwProvisioner(new ResourceProvisionerSimple(new Bandwidth(bw)))
-            .setVmScheduler(new VmSchedulerSpaceShared(peList));
+            .setVmScheduler(new VmSchedulerSpaceShared());
         hostList.add(host);
 
         // 5. Create a DatacenterCharacteristics object that stores the

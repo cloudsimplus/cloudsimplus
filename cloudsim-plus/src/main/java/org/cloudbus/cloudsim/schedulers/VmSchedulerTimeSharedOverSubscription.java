@@ -1,7 +1,7 @@
 /*
  * Title: CloudSim Toolkit Description: CloudSim (Cloud Simulation) Toolkit for Modeling and
  * Simulation of Clouds Licence: GPL - http://www.gnu.org/copyleft/gpl.html
- * 
+ *
  * Copyright (c) 2009-2012, The University of Melbourne, Australia
  */
 package org.cloudbus.cloudsim.schedulers;
@@ -11,7 +11,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
-import org.cloudbus.cloudsim.resources.Pe;
 
 import org.cloudbus.cloudsim.lists.PeList;
 
@@ -30,11 +29,9 @@ public class VmSchedulerTimeSharedOverSubscription extends VmSchedulerTimeShared
     /**
      * Instantiates a new vm scheduler time shared over subscription.
      *
-     * @param pelist the list of PEs of the host where the VmScheduler is
-     * associated to.
      */
-    public VmSchedulerTimeSharedOverSubscription(List<Pe> pelist) {
-        super(pelist);
+    public VmSchedulerTimeSharedOverSubscription() {
+        super();
     }
 
     /**
@@ -87,7 +84,7 @@ public class VmSchedulerTimeSharedOverSubscription extends VmSchedulerTimeShared
                 mipsShareAllocated.add(mipsRequested);
             }
 
-            getMipsMap().put(vmUid, mipsShareAllocated);
+            getMipsMapAllocated().put(vmUid, mipsShareAllocated);
             setAvailableMips(getAvailableMips() - totalRequestedMips);
         } else {
             redistributeMipsDueToOverSubscription();
@@ -135,7 +132,7 @@ public class VmSchedulerTimeSharedOverSubscription extends VmSchedulerTimeShared
         double scalingFactor = totalAvailableMips / totalRequiredMipsByAllVms;
 
         // Clear the old MIPS allocation
-        getMipsMap().clear();
+        getMipsMapAllocated().clear();
 
         // Update the actual MIPS allocated to the VMs
         for (Entry<String, List<Double>> entry : mipsMapCapped.entrySet()) {
@@ -162,7 +159,7 @@ public class VmSchedulerTimeSharedOverSubscription extends VmSchedulerTimeShared
             }
 
             // add in the new map
-            getMipsMap().put(vmUid, updatedMipsAllocation);
+            getMipsMapAllocated().put(vmUid, updatedMipsAllocation);
         }
 
         // As the host is oversubscribed, there no more available MIPS

@@ -39,7 +39,6 @@ import org.cloudbus.cloudsim.power.PowerVmAllocationPolicyMigrationAbstract;
 import org.cloudbus.cloudsim.provisioners.PeProvisionerSimple;
 import org.cloudbus.cloudsim.provisioners.ResourceProvisionerSimple;
 import org.cloudbus.cloudsim.resources.Bandwidth;
-import org.cloudbus.cloudsim.resources.FileStorage;
 import org.cloudbus.cloudsim.resources.Ram;
 import org.cloudbus.cloudsim.schedulers.CloudletScheduler;
 import org.cloudbus.cloudsim.util.MathUtil;
@@ -108,7 +107,7 @@ public class Helper {
                 host.setPowerModel(Constants.HOST_POWER[hostType])
                     .setRamProvisioner(new ResourceProvisionerSimple(new Ram(Constants.HOST_RAM[hostType])))
                     .setBwProvisioner(new ResourceProvisionerSimple(new Bandwidth(Constants.HOST_BW)))
-                    .setVmScheduler(new VmSchedulerTimeSharedOverSubscription(peList));
+                    .setVmScheduler(new VmSchedulerTimeSharedOverSubscription());
                 hostList.add(host);
             }
             return hostList;

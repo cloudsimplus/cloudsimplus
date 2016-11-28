@@ -174,13 +174,13 @@ public class CloudSimExample6 {
         Host host1 = new HostSimple(++hostId, storage, peList1)
             .setRamProvisioner(new ResourceProvisionerSimple(new Ram(ram)))
             .setBwProvisioner(new ResourceProvisionerSimple(new Bandwidth(bw)))
-            .setVmScheduler(new VmSchedulerTimeShared(peList1));
+            .setVmScheduler(new VmSchedulerTimeShared());
         hostList.add(host1);
 
         Host host2 = new HostSimple(++hostId, storage, peList2)
             .setRamProvisioner(new ResourceProvisionerSimple(new Ram(ram)))
             .setBwProvisioner(new ResourceProvisionerSimple(new Bandwidth(bw)))
-            .setVmScheduler(new VmSchedulerTimeShared(peList2));
+            .setVmScheduler(new VmSchedulerTimeShared());
         hostList.add(host2);
 
 

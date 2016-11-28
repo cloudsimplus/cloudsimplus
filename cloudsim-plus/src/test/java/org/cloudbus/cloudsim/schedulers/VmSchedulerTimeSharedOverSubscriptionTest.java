@@ -1,21 +1,20 @@
 /*
  * Title: CloudSim Toolkit Description: CloudSim (Cloud Simulation) Toolkit for Modeling and
  * Simulation of Clouds Licence: GPL - http://www.gnu.org/copyleft/gpl.html
- * 
+ *
  * Copyright (c) 2009-2012, The University of Melbourne, Australia
  */
 
 package org.cloudbus.cloudsim.schedulers;
 
+import org.cloudbus.cloudsim.*;
 import org.cloudbus.cloudsim.resources.Pe;
 import org.cloudbus.cloudsim.resources.PeSimple;
 
 
 import java.util.ArrayList;
 import java.util.List;
-import org.cloudbus.cloudsim.Vm;
-import org.cloudbus.cloudsim.VmSimple;
-import org.cloudbus.cloudsim.VmSimpleTest;
+import java.util.stream.IntStream;
 
 import org.cloudbus.cloudsim.lists.PeList;
 import org.cloudbus.cloudsim.provisioners.PeProvisionerSimple;
@@ -34,22 +33,28 @@ public class VmSchedulerTimeSharedOverSubscriptionTest {
 
     private static final double MIPS = 1000;
     private VmSchedulerTimeSharedOverSubscription vmScheduler;
-    private List<Pe> peList;
     private Vm vm1;
     private Vm vm2;
 
     @Before
     public void setUp() throws Exception {
-        peList = new ArrayList<>();
-        peList.add(new PeSimple(0, new PeProvisionerSimple(MIPS)));
-        peList.add(new PeSimple(1, new PeProvisionerSimple(MIPS)));
-        vmScheduler = new VmSchedulerTimeSharedOverSubscription(peList);
+        vmScheduler = createVmScheduler(MIPS, 2);
         vm1 = VmSimpleTest.createVm(0, MIPS / 4, 1);
         vm2 = VmSimpleTest.createVm(1, MIPS / 2, 2);
     }
 
+    private VmSchedulerTimeSharedOverSubscription createVmScheduler(double mips, int pesNumber) {
+        List<Pe> peList = new ArrayList<>(pesNumber);
+        IntStream.range(0, pesNumber).forEach(i -> peList.add(new PeSimple(i, new PeProvisionerSimple(mips))));
+        Host host = new HostSimple(1, 1000, peList);
+        VmSchedulerTimeSharedOverSubscription scheduler = new VmSchedulerTimeSharedOverSubscription();
+        scheduler.setHost(host);
+        return scheduler;
+    }
+
     @Test
     public void testInit() {
+        List<Pe> peList = vmScheduler.getHost().getPeList();
         assertSame(peList, vmScheduler.getPeList());
         assertEquals(PeList.getTotalMips(peList), vmScheduler.getAvailableMips(), 0);
         assertEquals(PeList.getTotalMips(peList), vmScheduler.getMaxAvailableMips(), 0);
@@ -62,7 +67,7 @@ public class VmSchedulerTimeSharedOverSubscriptionTest {
         mipsShare1.add(MIPS / 4);
 
         assertTrue(vmScheduler.allocatePesForVm(vm1, mipsShare1));
-
+        List<Pe> peList = vmScheduler.getHost().getPeList();
         assertEquals(PeList.getTotalMips(peList) - MIPS / 4, vmScheduler.getAvailableMips(), 0);
         assertEquals(PeList.getTotalMips(peList) - MIPS / 4, vmScheduler.getMaxAvailableMips(), 0);
         assertEquals(MIPS / 4, vmScheduler.getTotalAllocatedMipsForVm(vm1), 0);
@@ -132,7 +137,7 @@ public class VmSchedulerTimeSharedOverSubscriptionTest {
         mipsShare1.add(MIPS / 4);
 
         assertTrue(vmScheduler.allocatePesForVm(vm1, mipsShare1));
-
+        List<Pe> peList = vmScheduler.getHost().getPeList();
         assertEquals(PeList.getTotalMips(peList) - MIPS / 4, vmScheduler.getAvailableMips(), 0);
         assertEquals(PeList.getTotalMips(peList) - MIPS / 4, vmScheduler.getMaxAvailableMips(), 0);
         assertEquals(0.9 * MIPS / 4, vmScheduler.getTotalAllocatedMipsForVm(vm1), 0);
@@ -162,9 +167,7 @@ public class VmSchedulerTimeSharedOverSubscriptionTest {
 
     @Test
     public void testAllocatePesForVmShortageEqualsToAllocatedMips() {
-        List<Pe> peList = new ArrayList<>();
-        peList.add(new PeSimple(0, new PeProvisionerSimple(3500)));
-        VmSchedulerAbstract vmScheduler = new VmSchedulerTimeSharedOverSubscription(peList);
+        VmSchedulerAbstract vmScheduler = createVmScheduler(3500, 1);
         Vm vm1 = VmSimpleTest.createVm(0, 170, 1);
         Vm vm2 = VmSimpleTest.createVm(1, 2000, 1);
         Vm vm3 = VmSimpleTest.createVm(2, 10, 1);
@@ -206,9 +209,8 @@ public class VmSchedulerTimeSharedOverSubscriptionTest {
 
     @Test
     public void testAllocatePesForSameSizedVmsOversubscribed() {
-        List<Pe> peList = new ArrayList<>();
-        peList.add(new PeSimple(0, new PeProvisionerSimple(1000)));
-        VmSchedulerAbstract vmScheduler = new VmSchedulerTimeSharedOverSubscription(peList);
+        VmSchedulerAbstract vmScheduler = createVmScheduler(MIPS, 1);
+
         VmSimple vm1 = VmSimpleTest.createVm(0, 1500, 1);
         VmSimple vm2 = VmSimpleTest.createVm(1, 1000, 1);
         VmSimple vm3 = VmSimpleTest.createVm(2, 1000, 1);

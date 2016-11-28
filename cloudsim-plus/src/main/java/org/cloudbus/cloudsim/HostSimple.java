@@ -423,6 +423,11 @@ public class HostSimple implements Host {
 
     @Override
     public final Host setVmScheduler(VmScheduler vmScheduler) {
+        if(vmScheduler == null){
+            vmScheduler = VmScheduler.NULL;
+        }
+
+        vmScheduler.setHost(this);
         this.vmScheduler = vmScheduler;
         return this;
     }

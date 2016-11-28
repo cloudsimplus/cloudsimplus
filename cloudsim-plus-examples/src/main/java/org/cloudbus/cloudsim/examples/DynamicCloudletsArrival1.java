@@ -243,7 +243,7 @@ public class DynamicCloudletsArrival1 {
        return new HostSimple(id, storage, peList)
             .setRamProvisioner(new ResourceProvisionerSimple(new Ram(ram)))
             .setBwProvisioner(new ResourceProvisionerSimple(new Bandwidth(bw)))
-            .setVmScheduler(new VmSchedulerSpaceShared(peList));
+            .setVmScheduler(new VmSchedulerSpaceShared());
 
     }
 }

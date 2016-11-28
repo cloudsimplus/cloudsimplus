@@ -304,7 +304,7 @@ public class MigrationExample1 {
             host.setPowerModel(new PowerModelLinear(1000, 0.7))
                 .setRamProvisioner(new ResourceProvisionerSimple(new Ram(HOST_RAM)))
                 .setBwProvisioner(new ResourceProvisionerSimple(new Bandwidth(HOST_BW)))
-                .setVmScheduler(new VmSchedulerTimeShared(peList));
+                .setVmScheduler(new VmSchedulerTimeShared());
             return host;
     }
 

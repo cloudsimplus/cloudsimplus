@@ -1,7 +1,6 @@
 package org.cloudsimplus.sla;
 
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.List;
 import org.cloudbus.cloudsim.Cloudlet;
 import org.cloudbus.cloudsim.DatacenterCharacteristics;
@@ -125,7 +124,7 @@ public class NetworkVmsExampleWithMetrics {
     private NetworkVmsExampleWithMetrics() {
         // First step: Initialize the CloudSim package. It should be called before creating any entities.
         int num_user = 1; // number of cloud users
-        
+
         cloudsim = new CloudSim(num_user);
 
         // Second step: Create Datacenters
@@ -193,7 +192,7 @@ public class NetworkVmsExampleWithMetrics {
         Host host = new NetworkHost(hostId, storage, peList);
         host.setRamProvisioner(new ResourceProvisionerSimple(new Ram(ram)))
             .setBwProvisioner(new ResourceProvisionerSimple(new Bandwidth(bw)))
-            .setVmScheduler(new VmSchedulerTimeShared(peList));
+            .setVmScheduler(new VmSchedulerTimeShared());
 
         hostList.add(host);
 

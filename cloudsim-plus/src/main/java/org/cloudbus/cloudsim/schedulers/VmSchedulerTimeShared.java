@@ -1,7 +1,7 @@
 /*
  * Title: CloudSim Toolkit Description: CloudSim (Cloud Simulation) Toolkit for Modeling and
  * Simulation of Clouds Licence: GPL - http://www.gnu.org/copyleft/gpl.html
- * 
+ *
  * Copyright (c) 2009-2012, The University of Melbourne, Australia
  */
 package org.cloudbus.cloudsim.schedulers;
@@ -22,11 +22,11 @@ import org.cloudbus.cloudsim.provisioners.PeProvisioner;
 /**
  * VmSchedulerTimeShared is a Virtual Machine Monitor (VMM) allocation policy
  * that allocates one or more PEs from a PM to a VM, and allows sharing of PEs
- * by multiple VMs. This class also implements 10% performance degradation due
- * to VM migration. This scheduler does not support over-subscription.<p/>
+ * by multiple VMs. <b>This class also implements 10% performance degradation due
+ * to VM migration. It does not support over-subscription.</b>
  *
- * Each host has to use is own instance of a VmSchedulerAbstract that will so
- * schedule the allocation of host's PEs for VMs running on it.
+ * <p>Each host has to use is own instance of a VmSchedulerAbstract that will so
+ * schedule the allocation of host's PEs for VMs running on it.</p>
  *
  * @author Rodrigo N. Calheiros
  * @author Anton Beloglazov
@@ -46,13 +46,11 @@ public class VmSchedulerTimeShared extends VmSchedulerAbstract {
     private int pesInUse;
 
     /**
-     * Instantiates a new vm time-shared scheduler.
+     * Creates a vm time-shared scheduler.
      *
-     * @param pelist the list of PEs of the host where the VmSchedulerAbstract
-     * is associated to.
      */
-    public VmSchedulerTimeShared(List<Pe> pelist) {
-        super(pelist);
+    public VmSchedulerTimeShared() {
+        super();
         setMipsMapRequested(new HashMap<>());
     }
 
@@ -138,7 +136,7 @@ public class VmSchedulerTimeShared extends VmSchedulerAbstract {
             mipsShareAllocated.add(mipsRequested);
         }
 
-        getMipsMap().put(vmUid, mipsShareAllocated);
+        getMipsMapAllocated().put(vmUid, mipsShareAllocated);
         setAvailableMips(getAvailableMips() - totalRequestedMips);
 
         return true;
@@ -147,7 +145,7 @@ public class VmSchedulerTimeShared extends VmSchedulerAbstract {
     /**
      * Update allocation of VMs on PEs.
      *
-     * @too The method is too long and may be refactored to make clearer its
+     * @todo @author manoelcampos The method is too long and may be refactored to make clearer its
      * responsibility.
      */
     protected void updatePeProvisioning() {
@@ -159,7 +157,7 @@ public class VmSchedulerTimeShared extends VmSchedulerAbstract {
         PeProvisioner peProvisioner = pe.getPeProvisioner();
         double availableMips = peProvisioner.getAvailableMips();
 
-        for (Map.Entry<String, List<Double>> entry : getMipsMap().entrySet()) {
+        for (Map.Entry<String, List<Double>> entry : getMipsMapAllocated().entrySet()) {
             String vmUid = entry.getKey();
             getPeMap().put(vmUid, new LinkedList<>());
 
@@ -193,7 +191,7 @@ public class VmSchedulerTimeShared extends VmSchedulerAbstract {
     public void deallocatePesForVm(Vm vm) {
         getMipsMapRequested().remove(vm.getUid());
         setPesInUse(0);
-        getMipsMap().clear();
+        getMipsMapAllocated().clear();
         setAvailableMips(PeList.getTotalMips(getPeList()));
 
         for (Pe pe : getPeList()) {

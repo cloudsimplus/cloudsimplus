@@ -196,7 +196,7 @@ public class HostsCpuUsageExample {
         host1
             .setRamProvisioner(new ResourceProvisionerSimple(new Ram(ram)))
             .setBwProvisioner(new ResourceProvisionerSimple(new Bandwidth(bw)))
-            .setVmScheduler(new VmSchedulerTimeShared(peList1));
+            .setVmScheduler(new VmSchedulerTimeShared());
         hostList.add(host1);
 
         //create another machine in the Data center
@@ -207,7 +207,7 @@ public class HostsCpuUsageExample {
         host2
             .setRamProvisioner(new ResourceProvisionerSimple(new Ram(ram)))
             .setBwProvisioner(new ResourceProvisionerSimple(new Bandwidth(bw)))
-            .setVmScheduler(new VmSchedulerTimeShared(peList2));
+            .setVmScheduler(new VmSchedulerTimeShared());
         hostList.add(host2);
 
 		// 5. Create a DatacenterCharacteristics object that stores the

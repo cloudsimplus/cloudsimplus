@@ -119,7 +119,7 @@ public class NetworkVmsExample1 {
             Host host = new NetworkHost(i, HOST_STORAGE, peList)
                 .setRamProvisioner(new ResourceProvisionerSimple(new Ram(HOST_RAM)))
                 .setBwProvisioner(new ResourceProvisionerSimple(new Bandwidth(HOST_BW)))
-                .setVmScheduler(new VmSchedulerTimeShared(peList));
+                .setVmScheduler(new VmSchedulerTimeShared());
 
             hostList.add(host);
         }

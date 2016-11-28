@@ -136,7 +136,7 @@ public class ExampleUsingFaultInjector {
     public ExampleUsingFaultInjector() {
         //  Initialize the CloudSim package.
         int num_user = 1; // number of cloud users
-       
+
         this.cloudsim = new CloudSim(num_user);
         Log.disable();
 
@@ -220,7 +220,7 @@ public class ExampleUsingFaultInjector {
             Host host = new HostSimple(hostId++, storage, peList)
                     .setRamProvisioner(new ResourceProvisionerSimple(new Ram(ram)))
                     .setBwProvisioner(new ResourceProvisionerSimple(new Bandwidth(bw)))
-                    .setVmScheduler(new VmSchedulerTimeShared(peList));
+                    .setVmScheduler(new VmSchedulerTimeShared());
 
             getHostList().add(host);
         }// This is our machine

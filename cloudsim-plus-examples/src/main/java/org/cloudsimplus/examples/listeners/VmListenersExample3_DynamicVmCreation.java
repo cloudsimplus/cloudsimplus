@@ -316,6 +316,6 @@ public class VmListenersExample3_DynamicVmCreation {
         return new HostSimple(id, storage, peList)
             .setRamProvisioner(new ResourceProvisionerSimple(new Ram(ram)))
             .setBwProvisioner(new ResourceProvisionerSimple(new Bandwidth(bw)))
-            .setVmScheduler(new VmSchedulerSpaceShared(peList));
+            .setVmScheduler(new VmSchedulerSpaceShared());
     }
 }
