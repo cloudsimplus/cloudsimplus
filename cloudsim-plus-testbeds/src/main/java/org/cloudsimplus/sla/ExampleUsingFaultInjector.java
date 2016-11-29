@@ -136,7 +136,6 @@ public class ExampleUsingFaultInjector {
     public ExampleUsingFaultInjector() {
         //  Initialize the CloudSim package.
         int num_user = 1; // number of cloud users
-
         this.cloudsim = new CloudSim(num_user);
         Log.disable();
 

@@ -10,7 +10,7 @@ import java.util.List;
 /**
  * This class read the sla agreements in json format.
  * 
- * The sla agreements is in the {@link SlaMetric}. This class 
+ * The sla agreements is in the {@link SlaContractMetrics}. This class 
  * contains the name of the metric, the minimum and maximum 
  * acceptable value, and the metric unit. 
  * The minimum and maximum values will be used to check 
@@ -26,11 +26,11 @@ public class SlaReader {
     public static final String CPU_UTILIZATION_FIELD = "cpuUtilization";
     public static final String WAIT_TIME_FIELD = "waitTime";
     
-    private List<SlaMetric> metrics;
+    private List<SlaContractMetrics> metrics;
 
     public SlaReader(String slaFileName) throws FileNotFoundException{
         Gson gson = new Gson();
-        SlaMetric[] array = gson.fromJson(new FileReader(slaFileName), SlaMetric[].class);
+        SlaContractMetrics[] array = gson.fromJson(new FileReader(slaFileName), SlaContractMetrics[].class);
         metrics = Arrays.asList(array);
     }
     
@@ -39,7 +39,7 @@ public class SlaReader {
      * SLA contract file.
      * @return 
      */
-    public List<SlaMetric> getMetrics() {
+    public List<SlaContractMetrics> getMetrics() {
         return Collections.unmodifiableList(metrics);
     }
 
