@@ -1,6 +1,9 @@
-package org.cloudbus.cloudsim;
+package org.cloudbus.cloudsim.vms;
 
 import java.util.Collections;
+
+import org.cloudbus.cloudsim.hosts.Host;
+import org.cloudbus.cloudsim.vms.Vm;
 import org.cloudsimplus.listeners.EventListener;
 import org.cloudbus.cloudsim.power.PowerHost;
 import org.cloudbus.cloudsim.schedulers.CloudletScheduler;

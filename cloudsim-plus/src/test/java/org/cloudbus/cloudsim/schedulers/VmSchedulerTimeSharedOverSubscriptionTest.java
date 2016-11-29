@@ -7,7 +7,8 @@
 
 package org.cloudbus.cloudsim.schedulers;
 
-import org.cloudbus.cloudsim.*;
+import org.cloudbus.cloudsim.hosts.Host;
+import org.cloudbus.cloudsim.hosts.HostSimple;
 import org.cloudbus.cloudsim.resources.Pe;
 import org.cloudbus.cloudsim.resources.PeSimple;
 
@@ -18,6 +19,9 @@ import java.util.stream.IntStream;
 
 import org.cloudbus.cloudsim.lists.PeList;
 import org.cloudbus.cloudsim.provisioners.PeProvisionerSimple;
+import org.cloudbus.cloudsim.vms.Vm;
+import org.cloudbus.cloudsim.vms.VmSimple;
+import org.cloudbus.cloudsim.vms.VmSimpleTest;
 import org.junit.Before;
 import org.junit.Test;
 

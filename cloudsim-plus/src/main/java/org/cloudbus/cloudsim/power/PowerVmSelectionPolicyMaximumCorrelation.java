@@ -12,23 +12,23 @@ import java.util.LinkedList;
 import java.util.List;
 
 import org.apache.commons.math3.linear.Array2DRowRealMatrix;
-import org.cloudbus.cloudsim.Vm;
+import org.cloudbus.cloudsim.vms.Vm;
 import org.cloudbus.cloudsim.util.MathUtil;
 
 /**
- * A VM selection policy that selects for migration the VM with the Maximum Correlation Coefficient (MCC) among 
+ * A VM selection policy that selects for migration the VM with the Maximum Correlation Coefficient (MCC) among
  * a list of migratable VMs.
- * 
+ *
  * <br/>If you are using any algorithms, policies or workload included in the power package please cite
  * the following paper:<br/>
- * 
+ *
  * <ul>
  * <li><a href="http://dx.doi.org/10.1002/cpe.1867">Anton Beloglazov, and Rajkumar Buyya, "Optimal Online Deterministic Algorithms and Adaptive
  * Heuristics for Energy and Performance Efficient Dynamic Consolidation of Virtual Machines in
  * Cloud Data Centers", Concurrency and Computation: Practice and Experience (CCPE), Volume 24,
  * Issue 13, Pages: 1397-1420, John Wiley & Sons, Ltd, New York, USA, 2012</a>
  * </ul>
- * 
+ *
  * @author Anton Beloglazov
  * @since CloudSim Toolkit 3.0
  */
@@ -40,7 +40,7 @@ public class PowerVmSelectionPolicyMaximumCorrelation extends PowerVmSelectionPo
 
 	/**
 	 * Instantiates a new PowerVmSelectionPolicyMaximumCorrelation.
-	 * 
+	 *
 	 * @param fallbackPolicy the fallback policy
 	 */
 	public PowerVmSelectionPolicyMaximumCorrelation(final PowerVmSelectionPolicy fallbackPolicy) {
@@ -74,7 +74,7 @@ public class PowerVmSelectionPolicyMaximumCorrelation extends PowerVmSelectionPo
 
 	/**
 	 * Gets the CPU utilization percentage matrix for a given list of VMs.
-	 * 
+	 *
 	 * @param vmList the VM list
 	 * @return the CPU utilization percentage matrix, where each line i
          * is a VM and each column j is a CPU utilization percentage history for that VM.
@@ -84,7 +84,7 @@ public class PowerVmSelectionPolicyMaximumCorrelation extends PowerVmSelectionPo
                 /*@todo It gets the min size of the history among all VMs considering
                 that different VMs can have different history sizes.
                 However, the j loop is not using the m variable
-                but the size of the vm list. If a VM list has 
+                but the size of the vm list. If a VM list has
                 a size greater than m, it will thow an exception.
                 It as to be included a test case for that.*/
 		int m = getMinUtilizationHistorySize(vmList);
@@ -100,7 +100,7 @@ public class PowerVmSelectionPolicyMaximumCorrelation extends PowerVmSelectionPo
 
 	/**
 	 * Gets the min CPU utilization percentage history size among a list of VMs.
-	 * 
+	 *
 	 * @param vmList the VM list
 	 * @return the min CPU utilization percentage history size of the VM list
 	 */
@@ -117,7 +117,7 @@ public class PowerVmSelectionPolicyMaximumCorrelation extends PowerVmSelectionPo
 
 	/**
 	 * Gets the correlation coefficients.
-	 * 
+	 *
 	 * @param data the data
 	 * @return the correlation coefficients
 	 */
@@ -146,7 +146,7 @@ public class PowerVmSelectionPolicyMaximumCorrelation extends PowerVmSelectionPo
 
 	/**
 	 * Gets the fallback policy.
-	 * 
+	 *
 	 * @return the fallback policy
 	 */
 	public PowerVmSelectionPolicy getFallbackPolicy() {
@@ -155,7 +155,7 @@ public class PowerVmSelectionPolicyMaximumCorrelation extends PowerVmSelectionPo
 
 	/**
 	 * Sets the fallback policy.
-	 * 
+	 *
 	 * @param fallbackPolicy the new fallback policy
 	 */
 	public final void setFallbackPolicy(final PowerVmSelectionPolicy fallbackPolicy) {

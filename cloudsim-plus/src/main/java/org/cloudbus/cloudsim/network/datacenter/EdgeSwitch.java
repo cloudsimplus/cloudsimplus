@@ -13,6 +13,7 @@ import java.util.List;
 import org.cloudbus.cloudsim.core.CloudSim;
 import org.cloudbus.cloudsim.core.CloudSimTags;
 import org.cloudbus.cloudsim.core.SimEvent;
+import org.cloudbus.cloudsim.hosts.Host;
 
 /**
  * This class represents an Edge Switch in a Datacenter network. It interacts
@@ -49,7 +50,7 @@ public class EdgeSwitch extends Switch {
 
     /**
      * Default number of ports that defines the number of
-     * {@link org.cloudbus.cloudsim.Host} that can be connected to the switch.
+     * {@link Host} that can be connected to the switch.
      */
     public static final int PORTS = 4;
 

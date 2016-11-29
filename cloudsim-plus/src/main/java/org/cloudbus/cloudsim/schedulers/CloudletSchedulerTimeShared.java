@@ -8,11 +8,9 @@ package org.cloudbus.cloudsim.schedulers;
 
 import java.util.*;
 
-import org.cloudbus.cloudsim.Cloudlet;
-import org.cloudbus.cloudsim.CloudletExecutionInfo;
+import org.cloudbus.cloudsim.cloudlets.Cloudlet;
+import org.cloudbus.cloudsim.cloudlets.CloudletExecutionInfo;
 
-import org.cloudbus.cloudsim.core.CloudSim;
-import org.cloudbus.cloudsim.resources.Pe;
 import org.cloudbus.cloudsim.resources.Processor;
 
 /**

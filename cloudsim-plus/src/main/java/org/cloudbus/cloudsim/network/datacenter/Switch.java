@@ -15,7 +15,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 
 import org.cloudbus.cloudsim.Log;
-import org.cloudbus.cloudsim.Vm;
+import org.cloudbus.cloudsim.vms.Vm;
 import org.cloudbus.cloudsim.core.*;
 import org.cloudbus.cloudsim.core.predicates.PredicateType;
 import org.cloudbus.cloudsim.lists.VmList;

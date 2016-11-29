@@ -3,7 +3,7 @@ package org.cloudsimplus.examples.workload;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
-import org.cloudbus.cloudsim.Vm;
+import org.cloudbus.cloudsim.vms.Vm;
 import org.cloudbus.cloudsim.brokers.DatacenterBrokerSimple;
 import org.cloudbus.cloudsim.core.CloudSim;
 

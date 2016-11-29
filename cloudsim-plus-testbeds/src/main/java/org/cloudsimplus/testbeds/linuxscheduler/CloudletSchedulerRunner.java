@@ -1,7 +1,7 @@
 package org.cloudsimplus.testbeds.linuxscheduler;
 
 import org.apache.commons.math3.stat.descriptive.SummaryStatistics;
-import org.cloudbus.cloudsim.Cloudlet;
+import org.cloudbus.cloudsim.cloudlets.Cloudlet;
 import org.cloudbus.cloudsim.brokers.DatacenterBroker;
 import org.cloudbus.cloudsim.distributions.ContinuousDistribution;
 import org.cloudbus.cloudsim.distributions.UniformDistr;

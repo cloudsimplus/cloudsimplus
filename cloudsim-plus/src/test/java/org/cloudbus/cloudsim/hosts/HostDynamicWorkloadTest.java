@@ -5,8 +5,11 @@
  *
  * Copyright (c) 2009-2012, The University of Melbourne, Australia
  */
-package org.cloudbus.cloudsim;
+package org.cloudbus.cloudsim.hosts;
 
+import org.cloudbus.cloudsim.Consts;
+import org.cloudbus.cloudsim.vms.Vm;
+import org.cloudbus.cloudsim.vms.VmSimpleTest;
 import org.cloudbus.cloudsim.resources.Pe;
 import org.cloudbus.cloudsim.resources.PeSimple;
 import org.cloudbus.cloudsim.schedulers.VmSchedulerTimeShared;

@@ -8,9 +8,9 @@
 package org.cloudbus.cloudsim.provisioners;
 
 import java.util.List;
-import org.cloudbus.cloudsim.DatacenterCharacteristics;
+import org.cloudbus.cloudsim.datacenters.DatacenterCharacteristics;
 
-import org.cloudbus.cloudsim.Vm;
+import org.cloudbus.cloudsim.vms.Vm;
 
 /**
  * /**
@@ -79,7 +79,7 @@ public abstract class PeProvisioner {
      *
      * @pre $none
      * @post $none
-     * @see #allocateMipsForVm(org.cloudbus.cloudsim.Vm, double)
+     * @see #allocateMipsForVm(Vm, double)
      */
     public abstract boolean allocateMipsForVm(String vmUid, double mips);
 

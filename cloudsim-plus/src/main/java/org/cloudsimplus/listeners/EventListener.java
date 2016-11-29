@@ -1,9 +1,11 @@
 package org.cloudsimplus.listeners;
 
+import org.cloudbus.cloudsim.vms.Vm;
+
 /**
  *
- * An interface to define observer objects that listen to specific changes in 
- * the state of a given observable object, also called subject. 
+ * An interface to define observer objects that listen to specific changes in
+ * the state of a given observable object, also called subject.
  * By this way, the EventListener gets notified when
  * the observed object has its state changed.
  * The interface was defined allowing the
@@ -14,7 +16,7 @@ package org.cloudsimplus.listeners;
  * If the subject has multiple state changes to be observed,
  * it can define multiple properties of the EventListener class
  * to allow this multiple events to be observable.
- * See interfaces such as {@link org.cloudbus.cloudsim.Vm}
+ * See interfaces such as {@link Vm}
  * to get an overview of how this interface can be used.
  *
  * @author Manoel Campos da Silva Filho

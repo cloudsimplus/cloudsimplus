@@ -4,12 +4,11 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.stream.IntStream;
-import org.cloudbus.cloudsim.Cloudlet;
-import org.cloudbus.cloudsim.CloudletExecutionInfo;
+import org.cloudbus.cloudsim.cloudlets.Cloudlet;
+import org.cloudbus.cloudsim.cloudlets.CloudletExecutionInfo;
 import org.easymock.EasyMock;
 import org.junit.Test;
 
-import static java.util.stream.Collectors.toList;
 import static org.junit.Assert.*;
 
 /**

@@ -3,9 +3,9 @@ package org.cloudbus.cloudsim.allocationpolicies;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
-import org.cloudbus.cloudsim.Datacenter;
-import org.cloudbus.cloudsim.Host;
-import org.cloudbus.cloudsim.Vm;
+import org.cloudbus.cloudsim.datacenters.Datacenter;
+import org.cloudbus.cloudsim.hosts.Host;
+import org.cloudbus.cloudsim.vms.Vm;
 
 /**
  * An interface to be implemented by each class that represents a policy used by

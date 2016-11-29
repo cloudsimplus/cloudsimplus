@@ -1,6 +1,9 @@
-package org.cloudbus.cloudsim;
+package org.cloudbus.cloudsim.hosts;
 
 import java.util.Collections;
+
+import org.cloudbus.cloudsim.vms.Vm;
+import org.cloudbus.cloudsim.datacenters.Datacenter;
 import org.cloudsimplus.listeners.EventListener;
 import org.cloudsimplus.listeners.HostUpdatesVmsProcessingEventInfo;
 import org.cloudbus.cloudsim.provisioners.ResourceProvisioner;

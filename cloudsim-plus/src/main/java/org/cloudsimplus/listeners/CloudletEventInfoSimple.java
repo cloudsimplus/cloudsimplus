@@ -1,6 +1,6 @@
 package org.cloudsimplus.listeners;
 
-import org.cloudbus.cloudsim.Cloudlet;
+import org.cloudbus.cloudsim.cloudlets.Cloudlet;
 
 /**
  * A basic implementation of the {@link CloudletEventInfo} interface.

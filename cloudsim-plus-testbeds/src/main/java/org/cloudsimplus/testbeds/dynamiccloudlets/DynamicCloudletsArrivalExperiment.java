@@ -1,6 +1,6 @@
 package org.cloudsimplus.testbeds.dynamiccloudlets;
 
-import org.cloudbus.cloudsim.Cloudlet;
+import org.cloudbus.cloudsim.cloudlets.Cloudlet;
 import org.cloudbus.cloudsim.brokers.DatacenterBroker;
 import org.cloudbus.cloudsim.brokers.DatacenterBrokerSimple;
 import org.cloudsimplus.testbeds.ExperimentRunner;

@@ -14,7 +14,7 @@ import java.util.List;
 import java.util.Map;
 import org.cloudbus.cloudsim.Log;
 import org.cloudbus.cloudsim.resources.Pe;
-import org.cloudbus.cloudsim.Vm;
+import org.cloudbus.cloudsim.vms.Vm;
 
 import org.cloudbus.cloudsim.lists.PeList;
 import org.cloudbus.cloudsim.provisioners.PeProvisioner;

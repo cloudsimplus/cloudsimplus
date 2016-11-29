@@ -2,7 +2,7 @@ package org.cloudbus.cloudsim.power;
 
 import java.util.ArrayList;
 import java.util.List;
-import org.cloudbus.cloudsim.Vm;
+import org.cloudbus.cloudsim.vms.Vm;
 import org.junit.Test;
 import static org.junit.Assert.*;
 

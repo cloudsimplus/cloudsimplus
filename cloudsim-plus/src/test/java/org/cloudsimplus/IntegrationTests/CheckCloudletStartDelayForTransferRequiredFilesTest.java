@@ -1,6 +1,6 @@
 package org.cloudsimplus.IntegrationTests;
 
-import org.cloudbus.cloudsim.Cloudlet;
+import org.cloudbus.cloudsim.cloudlets.Cloudlet;
 import org.cloudbus.cloudsim.brokers.DatacenterBroker;
 import org.cloudsimplus.builders.BrokerBuilderDecorator;
 import org.cloudsimplus.builders.HostBuilder;

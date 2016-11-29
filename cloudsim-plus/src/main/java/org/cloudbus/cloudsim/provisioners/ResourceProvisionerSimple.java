@@ -8,7 +8,7 @@
 
 package org.cloudbus.cloudsim.provisioners;
 
-import org.cloudbus.cloudsim.Vm;
+import org.cloudbus.cloudsim.vms.Vm;
 import org.cloudbus.cloudsim.resources.ResourceManageable;
 
 /**

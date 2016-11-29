@@ -1,13 +1,13 @@
 package org.cloudsimplus.listeners;
 
-import org.cloudbus.cloudsim.Host;
+import org.cloudbus.cloudsim.hosts.Host;
 
 /**
  * An {@link EventInfo} class that stores data to be passed
  * to {@link EventListener} objects that are registered to be notified
- * when a Host updates the processing of all its VMs.  
- * 
- * @see Host#getOnUpdateVmsProcessingListener() 
+ * when a Host updates the processing of all its VMs.
+ *
+ * @see Host#getOnUpdateVmsProcessingListener()
  * @author Manoel Campos da Silva Filho
  */
 public class HostUpdatesVmsProcessingEventInfo extends HostEventInfoSimple  {
@@ -31,6 +31,6 @@ public class HostUpdatesVmsProcessingEventInfo extends HostEventInfoSimple  {
     public void setCompletionTimeOfNextFinishingCloudlet(double completionTimeOfNextFinishingCloudlet) {
         this.completionTimeOfNextFinishingCloudlet = completionTimeOfNextFinishingCloudlet;
     }
-    
-    
+
+
 }

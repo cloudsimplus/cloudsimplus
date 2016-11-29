@@ -1,6 +1,6 @@
 package org.cloudsimplus.listeners;
 
-import org.cloudbus.cloudsim.Vm;
+import org.cloudbus.cloudsim.vms.Vm;
 
 /**
  * An {@link EventInfo} interface that stores data to be passed
@@ -19,7 +19,7 @@ public interface VmEventInfo extends EventInfo {
 
     /**
      * Sets the Vm for which the event happened.
-     * 
+     *
      * @param vm
      */
     void setVm(Vm vm);

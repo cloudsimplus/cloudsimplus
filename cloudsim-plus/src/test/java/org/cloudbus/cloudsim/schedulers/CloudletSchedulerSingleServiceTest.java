@@ -7,7 +7,7 @@
  */
 package org.cloudbus.cloudsim.schedulers;
 
-import org.cloudbus.cloudsim.Cloudlet;
+import org.cloudbus.cloudsim.cloudlets.Cloudlet;
 import org.cloudbus.cloudsim.utilizationmodels.UtilizationModelStochastic;
 import org.cloudbus.cloudsim.utilizationmodels.UtilizationModel;
 import static org.easymock.EasyMock.expect;
@@ -18,8 +18,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import org.cloudbus.cloudsim.CloudletSimple;
-import org.cloudbus.cloudsim.CloudletExecutionInfo;
+import org.cloudbus.cloudsim.cloudlets.CloudletSimple;
+import org.cloudbus.cloudsim.cloudlets.CloudletExecutionInfo;
 import org.easymock.EasyMock;
 
 import org.junit.Before;

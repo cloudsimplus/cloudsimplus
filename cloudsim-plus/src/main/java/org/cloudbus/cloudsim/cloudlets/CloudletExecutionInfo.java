@@ -5,9 +5,9 @@
  *
  * Copyright (c) 2009-2012, The University of Melbourne, Australia
  */
-package org.cloudbus.cloudsim;
+package org.cloudbus.cloudsim.cloudlets;
 
-import org.cloudbus.cloudsim.Cloudlet.Status;
+import org.cloudbus.cloudsim.Consts;
 import org.cloudbus.cloudsim.core.CloudSim;
 import org.cloudbus.cloudsim.resources.Pe;
 import org.cloudbus.cloudsim.schedulers.CloudletScheduler;
@@ -302,9 +302,9 @@ public class CloudletExecutionInfo {
      * @pre status >= 0
      * @post $none
      */
-    public boolean setCloudletStatus(Status status) {
+    public boolean setCloudletStatus(Cloudlet.Status status) {
         // gets Cloudlet's previous status
-        Status prevStatus = cloudlet.getStatus();
+        Cloudlet.Status prevStatus = cloudlet.getStatus();
 
         // if the status of a Cloudlet is the same as last time, then ignore
         if (prevStatus == status) {
@@ -318,20 +318,20 @@ public class CloudletExecutionInfo {
             // sets Cloudlet's current status
             cloudlet.setCloudletStatus(status);
 
-            if (prevStatus == Status.INEXEC && isNotRunning(status)) {
+            if (prevStatus == Cloudlet.Status.INEXEC && isNotRunning(status)) {
                 // then update the Cloudlet completion time
                 totalCompletionTime += (clock - startExecTime);
                 return true;
             }
 
-            if (prevStatus == Status.RESUMED && status == Status.SUCCESS) {
+            if (prevStatus == Cloudlet.Status.RESUMED && status == Cloudlet.Status.SUCCESS) {
                 // then update the Cloudlet completion time
                 totalCompletionTime += (clock - startExecTime);
                 return true;
             }
 
             // if a Cloudlet is now in execution
-            if (status == Status.INEXEC || (prevStatus == Status.PAUSED && status == Status.RESUMED)) {
+            if (status == Cloudlet.Status.INEXEC || (prevStatus == Cloudlet.Status.PAUSED && status == Cloudlet.Status.RESUMED)) {
                 startExecTime = clock;
                 if(cloudlet.getExecStartTime() == 0) {
                     cloudlet.setExecStartTime(startExecTime);
@@ -350,8 +350,8 @@ public class CloudletExecutionInfo {
      * @param status The current cloudlet status
      * @return true if the cloudlet is NOT running, false if it is.
      */
-    protected static boolean isNotRunning(Status status) {
-        return status == Status.CANCELED || status == Status.PAUSED || status == Status.SUCCESS;
+    protected static boolean isNotRunning(Cloudlet.Status status) {
+        return status == Cloudlet.Status.CANCELED || status == Cloudlet.Status.PAUSED || status == Cloudlet.Status.SUCCESS;
     }
 
     /**
@@ -422,7 +422,7 @@ public class CloudletExecutionInfo {
 
         long finishedLengthAcrossAllPes;
         //if (cloudlet.getCloudletTotalLength() * Consts.MILLION < cloudletFinishedSoFar) {
-        if (cloudlet.getStatus() == Status.SUCCESS) {
+        if (cloudlet.getStatus() == Cloudlet.Status.SUCCESS) {
             finishedLengthAcrossAllPes = cloudlet.getCloudletLength();
         } else {
             finishedLengthAcrossAllPes = cloudletFinishedSoFar / Consts.MILLION;
@@ -514,7 +514,7 @@ public class CloudletExecutionInfo {
      * @pre $none
      * @post $none
      */
-    public Status getCloudletStatus() {
+    public Cloudlet.Status getCloudletStatus() {
         return cloudlet.getStatus();
     }
 

@@ -2,7 +2,7 @@ package org.cloudsimplus.testbeds.heuristics;
 
 import org.apache.commons.math3.stat.descriptive.SummaryStatistics;
 
-import org.cloudbus.cloudsim.Cloudlet;
+import org.cloudbus.cloudsim.cloudlets.Cloudlet;
 import org.cloudbus.cloudsim.brokers.DatacenterBrokerSimple;
 import org.cloudbus.cloudsim.Log;
 import org.cloudbus.cloudsim.distributions.NormalDistr;

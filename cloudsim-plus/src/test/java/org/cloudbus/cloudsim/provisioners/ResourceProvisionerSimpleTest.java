@@ -8,17 +8,15 @@
 
 package org.cloudbus.cloudsim.provisioners;
 
-import org.cloudbus.cloudsim.Vm;
 import org.cloudbus.cloudsim.resources.Ram;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
-import org.cloudbus.cloudsim.VmSimple;
+import org.cloudbus.cloudsim.vms.VmSimple;
 import org.junit.Before;
 import org.junit.Test;
 import org.cloudbus.cloudsim.resources.ResourceManageable;
-import org.cloudbus.cloudsim.schedulers.CloudletScheduler;
 
 /**
  * @author		Anton Beloglazov

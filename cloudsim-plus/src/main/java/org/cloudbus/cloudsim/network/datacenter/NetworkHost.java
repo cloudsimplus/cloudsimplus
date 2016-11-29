@@ -11,13 +11,12 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map.Entry;
 
-import org.cloudbus.cloudsim.Host;
-import org.cloudbus.cloudsim.HostSimple;
+import org.cloudbus.cloudsim.hosts.Host;
+import org.cloudbus.cloudsim.hosts.HostSimple;
 import org.cloudbus.cloudsim.Log;
 import org.cloudbus.cloudsim.resources.Pe;
 import org.cloudbus.cloudsim.schedulers.VmScheduler;
-import org.cloudbus.cloudsim.Vm;
-import org.cloudbus.cloudsim.core.CloudSim;
+import org.cloudbus.cloudsim.vms.Vm;
 import org.cloudbus.cloudsim.core.CloudSimTags;
 import org.cloudbus.cloudsim.lists.PeList;
 import org.cloudbus.cloudsim.lists.VmList;

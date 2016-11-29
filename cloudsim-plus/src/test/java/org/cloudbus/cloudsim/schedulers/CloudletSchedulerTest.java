@@ -1,6 +1,6 @@
 package org.cloudbus.cloudsim.schedulers;
 
-import org.cloudbus.cloudsim.Cloudlet;
+import org.cloudbus.cloudsim.cloudlets.Cloudlet;
 import org.junit.Test;
 import static org.junit.Assert.*;
 

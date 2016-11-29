@@ -8,7 +8,7 @@
 package org.cloudbus.cloudsim.lists;
 
 import java.util.List;
-import org.cloudbus.cloudsim.Host;
+import org.cloudbus.cloudsim.hosts.Host;
 import org.cloudbus.cloudsim.resources.Pe;
 
 /**

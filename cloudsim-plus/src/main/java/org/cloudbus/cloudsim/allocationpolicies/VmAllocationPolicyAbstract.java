@@ -11,9 +11,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.cloudbus.cloudsim.Datacenter;
-import org.cloudbus.cloudsim.Host;
-import org.cloudbus.cloudsim.Vm;
+import org.cloudbus.cloudsim.datacenters.Datacenter;
+import org.cloudbus.cloudsim.hosts.Host;
+import org.cloudbus.cloudsim.vms.Vm;
 import org.cloudsimplus.listeners.HostToVmEventInfo;
 
 /**

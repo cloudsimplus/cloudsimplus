@@ -11,12 +11,10 @@ import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 
-import org.cloudbus.cloudsim.Vm;
 import org.cloudbus.cloudsim.brokers.DatacenterBroker;
 import org.cloudbus.cloudsim.resources.Pe;
 import org.cloudbus.cloudsim.schedulers.CloudletScheduler;
-import org.cloudbus.cloudsim.VmSimple;
-import org.cloudbus.cloudsim.core.CloudSim;
+import org.cloudbus.cloudsim.vms.VmSimple;
 import org.cloudbus.cloudsim.util.MathUtil;
 
 /**

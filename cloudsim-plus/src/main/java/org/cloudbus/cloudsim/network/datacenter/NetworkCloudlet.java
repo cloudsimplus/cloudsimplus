@@ -11,7 +11,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import org.cloudbus.cloudsim.CloudletSimple;
+import org.cloudbus.cloudsim.cloudlets.CloudletSimple;
 import org.cloudbus.cloudsim.utilizationmodels.UtilizationModel;
 
 /**

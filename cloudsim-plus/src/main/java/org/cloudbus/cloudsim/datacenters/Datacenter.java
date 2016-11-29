@@ -1,5 +1,8 @@
-package org.cloudbus.cloudsim;
+package org.cloudbus.cloudsim.datacenters;
 
+import org.cloudbus.cloudsim.hosts.Host;
+import org.cloudbus.cloudsim.vms.Vm;
+import org.cloudbus.cloudsim.cloudlets.Cloudlet;
 import org.cloudbus.cloudsim.core.SimEntity;
 import org.cloudbus.cloudsim.core.SimEvent;
 import org.cloudbus.cloudsim.resources.File;

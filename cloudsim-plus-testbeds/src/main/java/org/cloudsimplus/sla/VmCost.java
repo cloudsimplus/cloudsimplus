@@ -5,8 +5,8 @@
  */
 package org.cloudsimplus.sla;
 
-import org.cloudbus.cloudsim.Datacenter;
-import org.cloudbus.cloudsim.Vm;
+import org.cloudbus.cloudsim.datacenters.Datacenter;
+import org.cloudbus.cloudsim.vms.Vm;
 
 /**
  * This class contains the methods needed to calculate the cost of vms
@@ -54,7 +54,7 @@ public class VmCost {
     public double getVmProcessingCost() {
         double hostMips = vm.getHost().getPeList().stream().findFirst().map(pe -> pe.getMips()).orElse(0);
         double costPerMI = (hostMips > 0 ? datacenter.getCharacteristics().getCostPerSecond()/hostMips : 0);
-        
+
         return costPerMI * getVm().getMips() * getVm().getNumberOfPes();
     }
 

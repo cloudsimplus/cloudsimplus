@@ -11,7 +11,7 @@ import java.util.List;
 
 import org.cloudbus.cloudsim.Log;
 import org.cloudbus.cloudsim.resources.Pe;
-import org.cloudbus.cloudsim.Vm;
+import org.cloudbus.cloudsim.vms.Vm;
 
 /**
  * PeList is a collection of operations on lists of PEs.

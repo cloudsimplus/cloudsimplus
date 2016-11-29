@@ -3,10 +3,11 @@ package org.cloudbus.cloudsim.schedulers;
 import java.io.Serializable;
 import java.util.Collections;
 import java.util.List;
-import org.cloudbus.cloudsim.Cloudlet;
-import org.cloudbus.cloudsim.CloudletExecutionInfo;
-import org.cloudbus.cloudsim.Vm;
+import org.cloudbus.cloudsim.cloudlets.Cloudlet;
+import org.cloudbus.cloudsim.cloudlets.CloudletExecutionInfo;
+import org.cloudbus.cloudsim.vms.Vm;
 import org.cloudbus.cloudsim.core.CloudSimTags;
+import org.cloudbus.cloudsim.datacenters.DatacenterSimple;
 import org.cloudbus.cloudsim.network.datacenter.NetworkCloudletSpaceSharedScheduler;
 import org.cloudbus.cloudsim.resources.Pe;
 
@@ -230,7 +231,7 @@ public interface CloudletScheduler extends Serializable {
      * black box, not having to be concerned with any internal data or
      * configurations. You just move the entire VM to another host.
      * There is the {@link CloudSimTags#CLOUDLET_MOVE} that is used in the
-     * {@link org.cloudbus.cloudsim.DatacenterSimple} class, but the event
+     * {@link DatacenterSimple} class, but the event
      * is not being sent anywhere. The CloudSim forum has 3 questions about
      * Cloudlet migration only. It shows that this features is not
      * highly required and in fact. Even for migration of parallel workloads

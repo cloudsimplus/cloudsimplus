@@ -1,6 +1,8 @@
-package org.cloudbus.cloudsim;
+package org.cloudbus.cloudsim.hosts;
 
+import org.cloudbus.cloudsim.vms.Vm;
 import org.cloudbus.cloudsim.core.Identificable;
+import org.cloudbus.cloudsim.datacenters.Datacenter;
 import org.cloudbus.cloudsim.resources.Pe;
 import org.cloudbus.cloudsim.schedulers.VmScheduler;
 import java.util.Collections;

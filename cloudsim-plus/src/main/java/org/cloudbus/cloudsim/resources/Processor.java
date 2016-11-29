@@ -1,11 +1,10 @@
 package org.cloudbus.cloudsim.resources;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
-import org.cloudbus.cloudsim.CloudletExecutionInfo;
+import org.cloudbus.cloudsim.cloudlets.CloudletExecutionInfo;
 
 /**
  * A Central Unit Processing (CPU) that can have multiple

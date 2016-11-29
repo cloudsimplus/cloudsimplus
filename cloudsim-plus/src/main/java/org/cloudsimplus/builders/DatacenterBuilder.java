@@ -2,13 +2,12 @@ package org.cloudsimplus.builders;
 
 import java.util.ArrayList;
 import java.util.List;
-import org.cloudbus.cloudsim.Datacenter;
-import org.cloudbus.cloudsim.DatacenterSimple;
-import org.cloudbus.cloudsim.DatacenterCharacteristics;
-import org.cloudbus.cloudsim.DatacenterCharacteristicsSimple;
-import org.cloudbus.cloudsim.Host;
+import org.cloudbus.cloudsim.datacenters.Datacenter;
+import org.cloudbus.cloudsim.datacenters.DatacenterSimple;
+import org.cloudbus.cloudsim.datacenters.DatacenterCharacteristics;
+import org.cloudbus.cloudsim.datacenters.DatacenterCharacteristicsSimple;
+import org.cloudbus.cloudsim.hosts.Host;
 import org.cloudbus.cloudsim.allocationpolicies.VmAllocationPolicySimple;
-import org.cloudbus.cloudsim.core.CloudSim;
 import org.cloudbus.cloudsim.resources.FileStorage;
 
 /**

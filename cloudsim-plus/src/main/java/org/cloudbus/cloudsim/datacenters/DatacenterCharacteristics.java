@@ -1,7 +1,9 @@
-package org.cloudbus.cloudsim;
+package org.cloudbus.cloudsim.datacenters;
 
 import java.util.Collections;
 import java.util.List;
+
+import org.cloudbus.cloudsim.hosts.Host;
 import org.cloudbus.cloudsim.core.Identificable;
 import org.cloudbus.cloudsim.resources.Pe;
 

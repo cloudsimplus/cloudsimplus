@@ -1,8 +1,7 @@
 package org.cloudbus.cloudsim.resources;
 
 import org.cloudbus.cloudsim.DataCloudTags;
-import org.cloudbus.cloudsim.Datacenter;
-import org.cloudbus.cloudsim.DatacenterSimple;
+import org.cloudbus.cloudsim.datacenters.Datacenter;
 import org.junit.Test;
 import static org.junit.Assert.*;
 

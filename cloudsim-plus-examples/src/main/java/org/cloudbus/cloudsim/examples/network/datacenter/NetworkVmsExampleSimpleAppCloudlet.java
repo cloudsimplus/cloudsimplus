@@ -2,6 +2,8 @@ package org.cloudbus.cloudsim.examples.network.datacenter;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import org.cloudbus.cloudsim.cloudlets.Cloudlet;
 import org.cloudbus.cloudsim.network.datacenter.AppCloudlet;
 import org.cloudbus.cloudsim.network.datacenter.CloudletExecutionTask;
 import org.cloudbus.cloudsim.network.datacenter.CloudletTask;
@@ -14,7 +16,7 @@ import org.cloudbus.cloudsim.utilizationmodels.UtilizationModelFull;
  * An example of a simple {@link AppCloudlet} that is composed of
  * 3 {@link NetworkCloudlet}'s with 3 {@link CloudletExecutionTask}'s each one.
  * The cloudlets just process data, not performing network communication,
- * running in a similar way of a regular {@link org.cloudbus.cloudsim.Cloudlet}.
+ * running in a similar way of a regular {@link Cloudlet}.
  * The difference is that the processing is split among the NetworkCloudlet's tasks,
  * simulating a distributed application.
  *
@@ -60,7 +62,7 @@ public class NetworkVmsExampleSimpleAppCloudlet extends NetworkVmsExampleAppClou
             int pesNumber = 4;
             UtilizationModel utilizationModel = new UtilizationModelFull();
             NetworkCloudlet cloudlet = new NetworkCloudlet(
-                    ++currentNetworkCloudletId, networkCloudletLengthMI, pesNumber); 
+                    ++currentNetworkCloudletId, networkCloudletLengthMI, pesNumber);
             cloudlet.setMemory(memory)
                     .setAppCloudlet(app)
                     .setCloudletFileSize(fileSize)

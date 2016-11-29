@@ -1,7 +1,7 @@
 package org.cloudsimplus.testbeds.linuxscheduler;
 
-import org.cloudbus.cloudsim.Vm;
-import org.cloudbus.cloudsim.VmSimple;
+import org.cloudbus.cloudsim.vms.Vm;
+import org.cloudbus.cloudsim.vms.VmSimple;
 import org.cloudbus.cloudsim.brokers.DatacenterBroker;
 import org.cloudbus.cloudsim.schedulers.CloudletSchedulerCompletelyFair;
 import org.cloudbus.cloudsim.schedulers.CloudletSchedulerTimeShared;

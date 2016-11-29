@@ -1,9 +1,12 @@
 package org.cloudsimplus.testbeds.heuristics;
 
-import org.cloudbus.cloudsim.*;
 import org.cloudbus.cloudsim.brokers.DatacenterBroker;
 import org.cloudbus.cloudsim.brokers.DatacenterBrokerHeuristic;
+import org.cloudbus.cloudsim.cloudlets.Cloudlet;
+import org.cloudbus.cloudsim.cloudlets.CloudletSimple;
 import org.cloudbus.cloudsim.distributions.UniformDistr;
+import org.cloudbus.cloudsim.hosts.Host;
+import org.cloudbus.cloudsim.hosts.HostSimple;
 import org.cloudbus.cloudsim.provisioners.PeProvisionerSimple;
 import org.cloudbus.cloudsim.provisioners.ResourceProvisionerSimple;
 import org.cloudbus.cloudsim.resources.Bandwidth;
@@ -14,6 +17,8 @@ import org.cloudbus.cloudsim.schedulers.CloudletSchedulerTimeShared;
 import org.cloudbus.cloudsim.schedulers.VmSchedulerTimeShared;
 import org.cloudbus.cloudsim.utilizationmodels.UtilizationModel;
 import org.cloudbus.cloudsim.utilizationmodels.UtilizationModelFull;
+import org.cloudbus.cloudsim.vms.Vm;
+import org.cloudbus.cloudsim.vms.VmSimple;
 import org.cloudsimplus.heuristics.CloudletToVmMappingHeuristic;
 import org.cloudsimplus.heuristics.CloudletToVmMappingSimulatedAnnealing;
 import org.cloudsimplus.heuristics.HeuristicSolution;

@@ -12,20 +12,20 @@ import org.cloudbus.cloudsim.utilizationmodels.UtilizationModelArithmeticProgres
 import java.util.ArrayList;
 import java.util.List;
 
-import org.cloudbus.cloudsim.Cloudlet;
+import org.cloudbus.cloudsim.cloudlets.Cloudlet;
 import org.cloudbus.cloudsim.schedulers.CloudletSchedulerDynamicWorkload;
-import org.cloudbus.cloudsim.CloudletSimple;
-import org.cloudbus.cloudsim.Datacenter;
+import org.cloudbus.cloudsim.cloudlets.CloudletSimple;
+import org.cloudbus.cloudsim.datacenters.Datacenter;
 import org.cloudbus.cloudsim.brokers.DatacenterBroker;
 import org.cloudbus.cloudsim.brokers.DatacenterBrokerSimple;
-import org.cloudbus.cloudsim.DatacenterCharacteristics;
-import org.cloudbus.cloudsim.DatacenterCharacteristicsSimple;
+import org.cloudbus.cloudsim.datacenters.DatacenterCharacteristics;
+import org.cloudbus.cloudsim.datacenters.DatacenterCharacteristicsSimple;
 import org.cloudbus.cloudsim.Log;
 import org.cloudbus.cloudsim.resources.Pe;
 import org.cloudbus.cloudsim.resources.PeSimple;
 import org.cloudbus.cloudsim.utilizationmodels.UtilizationModel;
 import org.cloudbus.cloudsim.utilizationmodels.UtilizationModelFull;
-import org.cloudbus.cloudsim.Vm;
+import org.cloudbus.cloudsim.vms.Vm;
 import org.cloudbus.cloudsim.schedulers.VmSchedulerSpaceShared;
 import org.cloudbus.cloudsim.schedulers.VmSchedulerTimeShared;
 import org.cloudbus.cloudsim.core.CloudSim;

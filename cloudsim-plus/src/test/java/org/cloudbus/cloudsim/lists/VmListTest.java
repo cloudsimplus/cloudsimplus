@@ -10,10 +10,10 @@ package org.cloudbus.cloudsim.lists;
 
 import java.util.ArrayList;
 import java.util.List;
-import org.cloudbus.cloudsim.Vm;
+import org.cloudbus.cloudsim.vms.Vm;
 
-import org.cloudbus.cloudsim.VmSimple;
-import org.cloudbus.cloudsim.VmSimpleTest;
+import org.cloudbus.cloudsim.vms.VmSimple;
+import org.cloudbus.cloudsim.vms.VmSimpleTest;
 import org.cloudbus.cloudsim.brokers.DatacenterBroker;
 import org.cloudbus.cloudsim.mocks.Mocks;
 import org.junit.Before;

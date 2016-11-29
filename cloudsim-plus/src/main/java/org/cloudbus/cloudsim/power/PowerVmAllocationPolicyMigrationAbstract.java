@@ -15,10 +15,10 @@ import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import org.cloudbus.cloudsim.Host;
-import org.cloudbus.cloudsim.HostDynamicWorkloadSimple;
+import org.cloudbus.cloudsim.hosts.Host;
+import org.cloudbus.cloudsim.hosts.HostDynamicWorkloadSimple;
 import org.cloudbus.cloudsim.Log;
-import org.cloudbus.cloudsim.Vm;
+import org.cloudbus.cloudsim.vms.Vm;
 import org.cloudbus.cloudsim.core.Simulation;
 import org.cloudbus.cloudsim.lists.PowerVmList;
 import org.cloudbus.cloudsim.util.ExecutionTimeMeasurer;
@@ -476,7 +476,7 @@ public abstract class PowerVmAllocationPolicyMigrationAbstract extends PowerVmAl
                 return true;
             }
         }
-        
+
         return true;
     }
 

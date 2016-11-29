@@ -8,7 +8,7 @@
 
 package org.cloudbus.cloudsim.resources;
 
-import org.cloudbus.cloudsim.Datacenter;
+import org.cloudbus.cloudsim.datacenters.Datacenter;
 
 /**
  * A class for representing a physical file in a DataCloud environment
@@ -20,11 +20,11 @@ import org.cloudbus.cloudsim.Datacenter;
 public class File {
     /** Logical file name. */
     private String name;
-    
+
     /**
-     * @see #getDatacenter() 
+     * @see #getDatacenter()
      */
-    private Datacenter datacenter;    
+    private Datacenter datacenter;
 
     /**
      * A file attribute.
@@ -90,7 +90,7 @@ public class File {
         if (fileSize <= 0) {
             throw new IllegalArgumentException("File(): Error - size <= 0.");
         }
-        datacenter = Datacenter.NULL;        
+        datacenter = Datacenter.NULL;
         setName(fileName);
         transactionTime = 0;
         createAttribute(fileSize);
@@ -439,7 +439,7 @@ public class File {
      * the Datacenter sets itself for all files of that storage.
      *
      * @param datacenter the datacenter that will store the file
-     * @return 
+     * @return
      */
     public final File setDatacenter(Datacenter datacenter) {
         if (datacenter == null) {
@@ -456,7 +456,7 @@ public class File {
      */
     public Datacenter getDatacenter() {
         return datacenter;
-    }    
+    }
 
 
 }
