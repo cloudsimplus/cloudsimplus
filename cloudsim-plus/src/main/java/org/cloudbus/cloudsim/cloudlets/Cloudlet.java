@@ -4,7 +4,7 @@ import org.cloudbus.cloudsim.datacenters.Datacenter;
 import org.cloudbus.cloudsim.vms.Vm;
 import org.cloudbus.cloudsim.brokers.DatacenterBroker;
 import org.cloudbus.cloudsim.core.Identificable;
-import org.cloudbus.cloudsim.schedulers.CloudletScheduler;
+import org.cloudbus.cloudsim.schedulers.cloudlet.CloudletScheduler;
 import org.cloudbus.cloudsim.utilizationmodels.UtilizationModel;
 import java.util.Collections;
 import java.util.List;
@@ -249,8 +249,8 @@ public interface Cloudlet extends Identificable, Comparable<Cloudlet> {
      * Register the arrival time of this Cloudlet into a Datacenter to the
      * current simulation time and returns this time.
      *
-     * @return the arrived time set or {@link #NOT_ASSIGNED} if the cloudlet is not assigned to a datacenter
-     * @pre cloudlet is already assigned to a datacenter
+     * @return the arrived time set or {@link #NOT_ASSIGNED} if the cloudlet is not assigned to a switches
+     * @pre cloudlet is already assigned to a switches
      * @post $none
      */
     double registerArrivalOfCloudletIntoDatacenter();
@@ -348,7 +348,7 @@ public interface Cloudlet extends Identificable, Comparable<Cloudlet> {
      * Datacenter where it has executed.
      *
      * @return the arrival time or {@link #NOT_ASSIGNED} if
-     * the cloudlet has never been assigned to a datacenter
+     * the cloudlet has never been assigned to a switches
      * @pre $none
      * @post $result >= 0.0
      */
@@ -770,7 +770,7 @@ public interface Cloudlet extends Identificable, Comparable<Cloudlet> {
      * @param actualCPUTime the total execution time of this Cloudlet in a
      * Datacenter.
      * @return true if the submission time is valid and
-     * the cloudlet has already being assigned to a datacenter for execution
+     * the cloudlet has already being assigned to a switches for execution
      *
      * @pre wallTime >= 0.0
      * @pre actualTime >= 0.0
@@ -780,7 +780,7 @@ public interface Cloudlet extends Identificable, Comparable<Cloudlet> {
 
     /**
      *
-     * @return true if the cloudlet has even been assigned to a datacenter
+     * @return true if the cloudlet has even been assigned to a switches
      * in order to run, false otherwise.
      */
     boolean isAssignedToDatacenter();

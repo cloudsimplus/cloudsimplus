@@ -35,8 +35,8 @@ import org.cloudbus.cloudsim.resources.Bandwidth;
 import org.cloudbus.cloudsim.resources.Pe;
 import org.cloudbus.cloudsim.resources.PeSimple;
 import org.cloudbus.cloudsim.resources.Ram;
-import org.cloudbus.cloudsim.schedulers.CloudletSchedulerSpaceShared;
-import org.cloudbus.cloudsim.schedulers.VmSchedulerTimeShared;
+import org.cloudbus.cloudsim.schedulers.cloudlet.CloudletSchedulerSpaceShared;
+import org.cloudbus.cloudsim.schedulers.vm.VmSchedulerTimeShared;
 import org.cloudbus.cloudsim.util.WorkloadFileReader;
 
 /**
@@ -125,7 +125,7 @@ public class SwfWorkloadFormatExample1 {
         try {
             broker = new DatacenterBrokerVmsWithMorePesFirst(simulation);
 
-            /*Vms and cloudlets are created before the datacenter and host
+            /*Vms and cloudlets are created before the switches and host
             because the example is defining the hosts based on VM requirements
             and VMs are created based on cloudlet requirements.*/
             createCloudletsFromWorkloadFile();
@@ -181,9 +181,9 @@ public class SwfWorkloadFormatExample1 {
     }
 
     /**
-     * Creates the datacenter.
+     * Creates the switches.
      *
-     * @return the datacenter
+     * @return the switches
      */
     private Datacenter createDatacenterAndHostsBasedOnVmRequirements() {
         List<Host> hostList = createHostsAccordingToVmRequirements();

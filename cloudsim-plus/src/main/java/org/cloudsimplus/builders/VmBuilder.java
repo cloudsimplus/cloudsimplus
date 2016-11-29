@@ -2,14 +2,14 @@ package org.cloudsimplus.builders;
 
 import java.util.ArrayList;
 import java.util.List;
-import org.cloudbus.cloudsim.schedulers.CloudletSchedulerSpaceShared;
+import org.cloudbus.cloudsim.schedulers.cloudlet.CloudletSchedulerSpaceShared;
 import org.cloudbus.cloudsim.brokers.DatacenterBrokerSimple;
 import org.cloudbus.cloudsim.vms.Vm;
 import org.cloudbus.cloudsim.vms.VmSimple;
 import org.cloudsimplus.listeners.DatacenterToVmEventInfo;
 import org.cloudsimplus.listeners.EventListener;
 import org.cloudsimplus.listeners.HostToVmEventInfo;
-import org.cloudbus.cloudsim.schedulers.CloudletScheduler;
+import org.cloudbus.cloudsim.schedulers.cloudlet.CloudletScheduler;
 
 /**
  * A Builder class to create {@link Vm} objects.

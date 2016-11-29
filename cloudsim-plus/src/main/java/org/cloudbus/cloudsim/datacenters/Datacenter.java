@@ -45,7 +45,7 @@ public interface Datacenter extends SimEntity {
     Host getHost(final int index);
 
     /**
-     * Gets the policy to be used by the datacenter to allocate VMs into hosts.
+     * Gets the policy to be used by the switches to allocate VMs into hosts.
      *
      * @return the VM allocation policy
      * @see VmAllocationPolicy
@@ -53,7 +53,7 @@ public interface Datacenter extends SimEntity {
     VmAllocationPolicy getVmAllocationPolicy();
 
     /**
-     * Gets the list of VMs submitted to be ran in some host of this datacenter.
+     * Gets the list of VMs submitted to be ran in some host of this switches.
      *
      * @param <T>
      * @return the vm list
@@ -62,7 +62,7 @@ public interface Datacenter extends SimEntity {
 
     /**
      * Gets the scheduling interval to process each event received by the
-     * datacenter (in seconds). This value defines the interval in which
+     * switches (in seconds). This value defines the interval in which
      * processing of Cloudlets will be updated. The interval doesn't affect the
      * processing of cloudlets, it only defines in which interval the processing
      * will be updated. For instance, if it is set a interval of 10 seconds, the
@@ -79,7 +79,7 @@ public interface Datacenter extends SimEntity {
 
     /**
      * Sets the scheduling delay to process each event received by the
-     * datacenter (in seconds).
+     * switches (in seconds).
      *
      * @param schedulingInterval the new scheduling interval
      */
@@ -87,21 +87,21 @@ public interface Datacenter extends SimEntity {
 
 
     /**
-     * Gets the datacenter characteristics.
+     * Gets the switches characteristics.
      *
-     * @return the datacenter characteristics
+     * @return the switches characteristics
      */
     DatacenterCharacteristics getCharacteristics();
 
     /**
-     * Gets a <b>read-only</b> list of storage devices of the datacenter.
+     * Gets a <b>read-only</b> list of storage devices of the switches.
      *
      * @return the storage list
      */
     List<FileStorage> getStorageList();
 
     /**
-     * Sets the list of storage devices of the datacenter.
+     * Sets the list of storage devices of the switches.
      *
      * @param storageList the new storage list
      */

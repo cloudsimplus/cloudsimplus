@@ -21,14 +21,14 @@ import org.cloudbus.cloudsim.utilizationmodels.UtilizationModel;
 import org.cloudbus.cloudsim.utilizationmodels.UtilizationModelFull;
 import org.cloudbus.cloudsim.vms.Vm;
 import org.cloudbus.cloudsim.allocationpolicies.VmAllocationPolicySimple;
-import org.cloudbus.cloudsim.schedulers.VmSchedulerTimeShared;
+import org.cloudbus.cloudsim.schedulers.vm.VmSchedulerTimeShared;
 import org.cloudbus.cloudsim.vms.VmSimple;
 import org.cloudbus.cloudsim.core.CloudSim;
 import org.cloudbus.cloudsim.provisioners.PeProvisionerSimple;
 import org.cloudbus.cloudsim.resources.Bandwidth;
 import org.cloudbus.cloudsim.provisioners.ResourceProvisionerSimple;
 import org.cloudbus.cloudsim.resources.Ram;
-import org.cloudbus.cloudsim.schedulers.CloudletSchedulerSpaceShared;
+import org.cloudbus.cloudsim.schedulers.cloudlet.CloudletSchedulerSpaceShared;
 
 /**
  * A minimal example showing how to create a data center with 1 host and run 2
@@ -101,10 +101,10 @@ public class CloudSimExample0 {
         hostList.add(host0);
 
         //Defines the characteristics of the data center
-        double cost = 3.0; // the cost of using processing in this datacenter
-        double costPerMem = 0.05; // the cost of using memory in this datacenter
-        double costPerStorage = 0.001; // the cost of using storage in this datacenter
-        double costPerBw = 0.0; // the cost of using bw in this datacenter
+        double cost = 3.0; // the cost of using processing in this switches
+        double costPerMem = 0.05; // the cost of using memory in this switches
+        double costPerStorage = 0.001; // the cost of using storage in this switches
+        double costPerBw = 0.0; // the cost of using bw in this switches
 
         DatacenterCharacteristics characteristics =
             new DatacenterCharacteristicsSimple(hostList)

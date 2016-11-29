@@ -15,7 +15,7 @@ import java.util.Scanner;
 
 import org.cloudbus.cloudsim.cloudlets.CloudletSimple;
 import org.cloudbus.cloudsim.core.CloudSim;
-import org.cloudbus.cloudsim.schedulers.CloudletSchedulerDynamicWorkload;
+import org.cloudbus.cloudsim.schedulers.cloudlet.CloudletSchedulerDynamicWorkload;
 import org.cloudbus.cloudsim.brokers.DatacenterBroker;
 import org.cloudbus.cloudsim.datacenters.DatacenterCharacteristics;
 import org.cloudbus.cloudsim.hosts.HostSimple;
@@ -28,19 +28,19 @@ import org.cloudbus.cloudsim.datacenters.DatacenterCharacteristicsSimple;
 import org.cloudbus.cloudsim.resources.Pe;
 import org.cloudbus.cloudsim.vms.Vm;
 import org.cloudbus.cloudsim.allocationpolicies.VmAllocationPolicy;
-import org.cloudbus.cloudsim.schedulers.VmSchedulerTimeSharedOverSubscription;
+import org.cloudbus.cloudsim.schedulers.vm.VmSchedulerTimeSharedOverSubscription;
 import org.cloudbus.cloudsim.vms.VmStateHistoryEntry;
-import org.cloudbus.cloudsim.power.PowerDatacenter;
-import org.cloudbus.cloudsim.power.PowerDatacenterBroker;
-import org.cloudbus.cloudsim.power.PowerHost;
-import org.cloudbus.cloudsim.power.PowerHostUtilizationHistory;
-import org.cloudbus.cloudsim.power.PowerVm;
-import org.cloudbus.cloudsim.power.PowerVmAllocationPolicyMigrationAbstract;
+import org.cloudbus.cloudsim.datacenters.power.PowerDatacenter;
+import org.cloudbus.cloudsim.brokers.power.PowerDatacenterBroker;
+import org.cloudbus.cloudsim.hosts.power.PowerHost;
+import org.cloudbus.cloudsim.hosts.power.PowerHostUtilizationHistory;
+import org.cloudbus.cloudsim.vms.power.PowerVm;
+import org.cloudbus.cloudsim.allocationpolicies.power.PowerVmAllocationPolicyMigrationAbstract;
 import org.cloudbus.cloudsim.provisioners.PeProvisionerSimple;
 import org.cloudbus.cloudsim.provisioners.ResourceProvisionerSimple;
 import org.cloudbus.cloudsim.resources.Bandwidth;
 import org.cloudbus.cloudsim.resources.Ram;
-import org.cloudbus.cloudsim.schedulers.CloudletScheduler;
+import org.cloudbus.cloudsim.schedulers.cloudlet.CloudletScheduler;
 import org.cloudbus.cloudsim.util.MathUtil;
 
 /**
@@ -116,7 +116,7 @@ public class Helper {
 	/**
 	 * Creates the broker.
 	 *
-	 * @return the datacenter broker
+	 * @return the switches broker
 	 */
 	public static DatacenterBroker createBroker(CloudSim simulation) {
 		DatacenterBroker broker = null;
@@ -130,13 +130,13 @@ public class Helper {
 	}
 
 	/**
-	 * Creates the datacenter.
+	 * Creates the switches.
 	 *
-	 * @param datacenterClass the datacenter class
+	 * @param datacenterClass the switches class
 	 * @param hostList the host list
 	 * @param vmAllocationPolicy the vm allocation policy
 	 *
-	 * @return the power datacenter
+	 * @return the power switches
 	 *
 	 * @throws Exception the exception
 	 */
@@ -216,7 +216,7 @@ public class Helper {
 	/**
 	 * Prints the results.
 	 *
-	 * @param datacenter the datacenter
+	 * @param datacenter the switches
          * @param vms
 	 * @param lastClock the last clock
 	 * @param experimentName the experiment name

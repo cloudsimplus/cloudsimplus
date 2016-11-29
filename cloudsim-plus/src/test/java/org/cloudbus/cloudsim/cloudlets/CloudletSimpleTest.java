@@ -472,10 +472,10 @@ public class CloudletSimpleTest {
     public void testSetExecParam() {
         CloudletSimple c = createCloudlet();
 
-        //Cloudlet has not assigned to a datacenter yet
+        //Cloudlet has not assigned to a switches yet
         Assert.assertFalse(c.setWallClockTime(1, 2));
 
-        //Assign cloudlet to a datacenter
+        //Assign cloudlet to a switches
         final int resourceId = 1, cost = 1;
         c.assignCloudletToDatacenter(resourceId, cost);
 

@@ -2,6 +2,8 @@ package org.cloudsimplus.sla;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import org.cloudbus.cloudsim.brokers.network.NetworkDatacenterBroker;
 import org.cloudbus.cloudsim.cloudlets.Cloudlet;
 import org.cloudbus.cloudsim.datacenters.DatacenterCharacteristics;
 import org.cloudbus.cloudsim.datacenters.DatacenterCharacteristicsSimple;
@@ -10,20 +12,19 @@ import org.cloudbus.cloudsim.Log;
 import org.cloudbus.cloudsim.allocationpolicies.VmAllocationPolicySimple;
 import org.cloudbus.cloudsim.brokers.DatacenterBroker;
 import org.cloudbus.cloudsim.core.CloudSim;
-import org.cloudbus.cloudsim.network.datacenter.EdgeSwitch;
-import org.cloudbus.cloudsim.network.datacenter.NetDatacenterBroker;
-import org.cloudbus.cloudsim.network.datacenter.NetworkCloudlet;
-import org.cloudbus.cloudsim.network.datacenter.NetworkDatacenter;
-import org.cloudbus.cloudsim.network.datacenter.NetworkHost;
-import org.cloudbus.cloudsim.network.datacenter.NetworkVm;
+import org.cloudbus.cloudsim.network.switches.EdgeSwitch;
+import org.cloudbus.cloudsim.cloudlets.network.NetworkCloudlet;
+import org.cloudbus.cloudsim.datacenters.network.NetworkDatacenter;
+import org.cloudbus.cloudsim.hosts.network.NetworkHost;
+import org.cloudbus.cloudsim.vms.network.NetworkVm;
 import org.cloudbus.cloudsim.provisioners.PeProvisionerSimple;
 import org.cloudbus.cloudsim.provisioners.ResourceProvisionerSimple;
 import org.cloudbus.cloudsim.resources.Bandwidth;
 import org.cloudbus.cloudsim.resources.Pe;
 import org.cloudbus.cloudsim.resources.PeSimple;
 import org.cloudbus.cloudsim.resources.Ram;
-import org.cloudbus.cloudsim.schedulers.CloudletSchedulerTimeShared;
-import org.cloudbus.cloudsim.schedulers.VmSchedulerTimeShared;
+import org.cloudbus.cloudsim.schedulers.cloudlet.CloudletSchedulerTimeShared;
+import org.cloudbus.cloudsim.schedulers.vm.VmSchedulerTimeShared;
 import org.cloudsimplus.util.tablebuilder.CloudletsTableBuilderHelper;
 import org.cloudbus.cloudsim.utilizationmodels.UtilizationModel;
 import org.cloudbus.cloudsim.utilizationmodels.UtilizationModelFull;
@@ -45,7 +46,7 @@ public class NetworkVmsExampleWithMetrics {
     private final List<NetworkVm> vmlist;
 
     /**
-     * The datacenter
+     * The switches
      */
     NetworkDatacenter datacenter0;
     private final CloudSim cloudsim;
@@ -131,7 +132,7 @@ public class NetworkVmsExampleWithMetrics {
         datacenter0 = createDatacenter();
 
         // Third step: Create Broker
-        NetDatacenterBroker broker = createBroker();
+        NetworkDatacenterBroker broker = createBroker();
 
         vmlist = createVM(broker, 5);
 
@@ -163,7 +164,7 @@ public class NetworkVmsExampleWithMetrics {
     /**
      * Creates the NetworkDatacenter.
      *
-     * @return the datacenter
+     * @return the switches
      */
     protected final NetworkDatacenter createDatacenter() {
         // Here are the steps needed to create a PowerDatacenter:
@@ -242,10 +243,10 @@ public class NetworkVmsExampleWithMetrics {
     /**
      * Creates the broker.
      *
-     * @return the datacenter broker
+     * @return the switches broker
      */
-    private NetDatacenterBroker createBroker() {
-        return new NetDatacenterBroker(cloudsim);
+    private NetworkDatacenterBroker createBroker() {
+        return new NetworkDatacenterBroker(cloudsim);
     }
 }
 

@@ -4,11 +4,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.cloudbus.cloudsim.cloudlets.Cloudlet;
-import org.cloudbus.cloudsim.network.datacenter.AppCloudlet;
-import org.cloudbus.cloudsim.network.datacenter.CloudletExecutionTask;
-import org.cloudbus.cloudsim.network.datacenter.CloudletTask;
-import org.cloudbus.cloudsim.network.datacenter.NetDatacenterBroker;
-import org.cloudbus.cloudsim.network.datacenter.NetworkCloudlet;
+import org.cloudbus.cloudsim.cloudlets.network.AppCloudlet;
+import org.cloudbus.cloudsim.cloudlets.network.CloudletExecutionTask;
+import org.cloudbus.cloudsim.cloudlets.network.CloudletTask;
+import org.cloudbus.cloudsim.brokers.network.NetworkDatacenterBroker;
+import org.cloudbus.cloudsim.cloudlets.network.NetworkCloudlet;
 import org.cloudbus.cloudsim.utilizationmodels.UtilizationModel;
 import org.cloudbus.cloudsim.utilizationmodels.UtilizationModelFull;
 
@@ -52,7 +52,7 @@ public class NetworkVmsExampleSimpleAppCloudlet extends NetworkVmsExampleAppClou
      * @return {@inheritDoc }
      */
     @Override
-    public List<NetworkCloudlet> createNetworkCloudlets(AppCloudlet app, NetDatacenterBroker broker) {
+    public List<NetworkCloudlet> createNetworkCloudlets(AppCloudlet app, NetworkDatacenterBroker broker) {
         List<NetworkCloudlet> networkCloudletList = new ArrayList<>(NETCLOUDLETS_FOR_EACH_APP);
         for (int i = 0; i < NETCLOUDLETS_FOR_EACH_APP; i++) {
             long networkCloudletLengthMI = 1;

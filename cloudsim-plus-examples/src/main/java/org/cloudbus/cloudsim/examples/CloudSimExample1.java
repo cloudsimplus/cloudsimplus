@@ -13,7 +13,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.cloudbus.cloudsim.cloudlets.Cloudlet;
-import org.cloudbus.cloudsim.schedulers.CloudletSchedulerTimeShared;
+import org.cloudbus.cloudsim.schedulers.cloudlet.CloudletSchedulerTimeShared;
 import org.cloudbus.cloudsim.cloudlets.CloudletSimple;
 import org.cloudbus.cloudsim.datacenters.Datacenter;
 import org.cloudbus.cloudsim.datacenters.DatacenterSimple;
@@ -30,7 +30,7 @@ import org.cloudbus.cloudsim.utilizationmodels.UtilizationModel;
 import org.cloudbus.cloudsim.utilizationmodels.UtilizationModelFull;
 import org.cloudbus.cloudsim.vms.Vm;
 import org.cloudbus.cloudsim.allocationpolicies.VmAllocationPolicySimple;
-import org.cloudbus.cloudsim.schedulers.VmSchedulerTimeShared;
+import org.cloudbus.cloudsim.schedulers.vm.VmSchedulerTimeShared;
 import org.cloudbus.cloudsim.vms.VmSimple;
 import org.cloudbus.cloudsim.core.CloudSim;
 import org.cloudbus.cloudsim.provisioners.PeProvisionerSimple;
@@ -135,9 +135,9 @@ public class CloudSimExample1 {
     }
 
     /**
-     * Creates the datacenter.
+     * Creates the switches.
      *
-     * @return the datacenter
+     * @return the switches
      */
     private static DatacenterSimple createDatacenter() {
 
@@ -195,7 +195,7 @@ public class CloudSimExample1 {
     /**
      * Creates the broker.
      *
-     * @return the datacenter broker
+     * @return the switches broker
      */
     private static DatacenterBroker createBroker() {
         return new DatacenterBrokerSimple(simulation);

@@ -205,7 +205,7 @@ public abstract class DatacenterBrokerAbstract extends CloudSimEntity implements
     protected void processDatacenterCharacteristicsRequest(SimEvent ev) {
         setDatacenterIdsList(getSimulation().getDatacenterIdsList());
         this.datacenterCharacteristicsMap = new HashMap<>();
-        Log.printConcatLine(getSimulation().clock(), ": ", getName(), ": Cloud Datacenter List received with ", getDatacenterIdsList().size(), " datacenter(s)");
+        Log.printConcatLine(getSimulation().clock(), ": ", getName(), ": Cloud Datacenter List received with ", getDatacenterIdsList().size(), " switches(s)");
         for (Integer datacenterId : getDatacenterIdsList()) {
             sendNow(datacenterId, CloudSimTags.DATACENTER_CHARACTERISTICS, getId());
         }
@@ -249,7 +249,7 @@ public abstract class DatacenterBrokerAbstract extends CloudSimEntity implements
      * After the response (ack) of all VM creation request were received
      * but not all VMs could be created (what means some
      * acks informed about Vm creation failures), try to find
-     * another datacenter to request the creation of the VMs
+     * another switches to request the creation of the VMs
      * in the waiting list.
      */
     protected void requestCreationOfWaitingVmsToNextDatacenter() {
@@ -270,7 +270,7 @@ public abstract class DatacenterBrokerAbstract extends CloudSimEntity implements
     }
 
     /**
-     * Process a response from a datacenter informing that it was able to
+     * Process a response from a switches informing that it was able to
      * create the VM requested by the broker.
      *
      * @param vmId id of the Vm that succeeded to be created inside the Datacenter
@@ -295,7 +295,7 @@ public abstract class DatacenterBrokerAbstract extends CloudSimEntity implements
     }
 
     /**
-     * Process a response from a datacenter informing that it was NOT able to
+     * Process a response from a switches informing that it was NOT able to
      * create the VM requested by the broker.
      *
      * @param vmId id of the Vm that failed to be created inside the Datacenter
@@ -371,13 +371,13 @@ public abstract class DatacenterBrokerAbstract extends CloudSimEntity implements
     }
 
     /**
-     * <p>Request a datacenter to create the VM in the
+     * <p>Request a switches to create the VM in the
      * {@link #getVmsWaitingList() VM waiting list}.</p>
      *
      * <p>This method is called after the list of available Datacenters
      * is received.</p>
      *
-     * @param datacenterId id of the datacenter to request the VMs creation
+     * @param datacenterId id of the switches to request the VMs creation
      * @pre $none
      * @post $none
      * @see #submitVmList(java.util.List)
@@ -542,7 +542,7 @@ public abstract class DatacenterBrokerAbstract extends CloudSimEntity implements
     /**
      * Gets the id's list of available datacenters.
      *
-     * @return the datacenter id's list
+     * @return the switches id's list
      */
     protected List<Integer> getDatacenterIdsList() {
         return datacenterIdsList;
@@ -551,7 +551,7 @@ public abstract class DatacenterBrokerAbstract extends CloudSimEntity implements
     /**
      * Sets the id's list of available datacenters.
      *
-     * @param datacenterIdsList the new datacenter id's list
+     * @param datacenterIdsList the new switches id's list
      */
     protected final void setDatacenterIdsList(List<Integer> datacenterIdsList) {
         this.datacenterIdsList = datacenterIdsList;
@@ -559,7 +559,7 @@ public abstract class DatacenterBrokerAbstract extends CloudSimEntity implements
 
     /**
      * Gets the VM to Datacenter map, where each key is a VM id and each value is
-     * the id of the datacenter where the VM is placed.
+     * the id of the switches where the VM is placed.
      *
      * @return the VM to Datacenter map
      */
@@ -568,10 +568,10 @@ public abstract class DatacenterBrokerAbstract extends CloudSimEntity implements
     }
 
     /**
-     * Gets the datacenter characteristics map where each key is a datacenter id and
+     * Gets the switches characteristics map where each key is a switches id and
      * each value is its characteristics.
      *
-     * @return the datacenter characteristics map
+     * @return the switches characteristics map
      */
     protected Map<Integer, DatacenterCharacteristics> getDatacenterCharacteristicsMap() {
         return datacenterCharacteristicsMap;
@@ -580,7 +580,7 @@ public abstract class DatacenterBrokerAbstract extends CloudSimEntity implements
     /**
      * Gets the list of datacenters where was requested to place VMs.
      *
-     * @return the datacenter requested id's list
+     * @return the switches requested id's list
      */
     protected List<Integer> getDatacenterRequestedIdsList() {
         return datacenterRequestedIdsList;

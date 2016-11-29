@@ -21,7 +21,7 @@ import org.cloudsimplus.listeners.DatacenterToVmEventInfo;
 import org.cloudsimplus.listeners.EventListener;
 import org.cloudsimplus.listeners.HostToVmEventInfo;
 import org.cloudbus.cloudsim.resources.*;
-import org.cloudbus.cloudsim.schedulers.CloudletScheduler;
+import org.cloudbus.cloudsim.schedulers.cloudlet.CloudletScheduler;
 
 /**
  * Implements the basic features of a Virtual Machine (VM) that runs inside a

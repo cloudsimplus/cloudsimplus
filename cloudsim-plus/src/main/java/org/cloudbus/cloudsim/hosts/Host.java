@@ -4,7 +4,7 @@ import org.cloudbus.cloudsim.vms.Vm;
 import org.cloudbus.cloudsim.core.Identificable;
 import org.cloudbus.cloudsim.datacenters.Datacenter;
 import org.cloudbus.cloudsim.resources.Pe;
-import org.cloudbus.cloudsim.schedulers.VmScheduler;
+import org.cloudbus.cloudsim.schedulers.vm.VmScheduler;
 import java.util.Collections;
 import java.util.List;
 import org.cloudbus.cloudsim.core.Simulation;
@@ -99,7 +99,7 @@ public interface Host extends Identificable {
     Host setBwProvisioner(ResourceProvisioner bwProvisioner);
 
     /**
-     * Gets the datacenter where the host is placed.
+     * Gets the switches where the host is placed.
      *
      * @return the data center of the host
      */
@@ -262,7 +262,7 @@ public interface Host extends Identificable {
     void removeMigratingInVm(Vm vm);
 
     /**
-     * Sets the datacenter where the host is placed.
+     * Sets the switches where the host is placed.
      *
      * @param datacenter the new data center to move the host
      */

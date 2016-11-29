@@ -9,9 +9,9 @@ import org.cloudbus.cloudsim.core.CloudSim;
 import org.cloudbus.cloudsim.resources.File;
 import org.cloudbus.cloudsim.resources.FileStorage;
 import org.cloudbus.cloudsim.resources.SanStorage;
-import org.cloudbus.cloudsim.schedulers.CloudletSchedulerSpaceShared;
-import org.cloudbus.cloudsim.schedulers.CloudletSchedulerTimeShared;
-import org.cloudbus.cloudsim.schedulers.VmSchedulerSpaceShared;
+import org.cloudbus.cloudsim.schedulers.cloudlet.CloudletSchedulerSpaceShared;
+import org.cloudbus.cloudsim.schedulers.cloudlet.CloudletSchedulerTimeShared;
+import org.cloudbus.cloudsim.schedulers.vm.VmSchedulerSpaceShared;
 import org.cloudsimplus.util.tablebuilder.CloudletsTableBuilderHelper;
 import org.cloudsimplus.util.tablebuilder.TextTableBuilder;
 import org.cloudbus.cloudsim.utilizationmodels.UtilizationModel;
@@ -114,7 +114,7 @@ public final class CheckCloudletStartDelayForTransferRequiredFilesTest {
 	}
 
 	/**
-	 * List of files to be stored by the datacenter and that will be used
+	 * List of files to be stored by the switches and that will be used
 	 * by the created cloudlet.
 	 */
 	private void createListOfFiles() {

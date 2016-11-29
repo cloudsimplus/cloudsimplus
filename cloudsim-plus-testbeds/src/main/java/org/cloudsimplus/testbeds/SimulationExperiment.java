@@ -243,10 +243,10 @@ public abstract class SimulationExperiment implements Runnable {
     private DatacenterSimple createDatacenter() {
         createHosts();
 		//Defines the characteristics of the data center
-		double cost = 3.0; // the cost of using processing in this datacenter
-		double costPerMem = 0.05; // the cost of using memory in this datacenter
-		double costPerStorage = 0.001; // the cost of using storage in this datacenter
-		double costPerBw = 0.0; // the cost of using bw in this datacenter
+		double cost = 3.0; // the cost of using processing in this switches
+		double costPerMem = 0.05; // the cost of using memory in this switches
+		double costPerStorage = 0.001; // the cost of using storage in this switches
+		double costPerBw = 0.0; // the cost of using bw in this switches
         List<FileStorage> storageList = new ArrayList<>(); // we are not adding SAN devices by now
         DatacenterCharacteristics characteristics =
             new DatacenterCharacteristicsSimple(hostList)

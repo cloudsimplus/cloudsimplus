@@ -5,7 +5,7 @@ import java.util.Arrays;
 import java.util.List;
 import org.cloudbus.cloudsim.cloudlets.Cloudlet;
 import org.cloudbus.cloudsim.cloudlets.CloudletSimple;
-import org.cloudbus.cloudsim.network.datacenter.NetworkCloudlet;
+import org.cloudbus.cloudsim.cloudlets.network.NetworkCloudlet;
 import org.cloudbus.cloudsim.utilizationmodels.UtilizationModel;
 import org.junit.Test;
 import static org.junit.Assert.*;

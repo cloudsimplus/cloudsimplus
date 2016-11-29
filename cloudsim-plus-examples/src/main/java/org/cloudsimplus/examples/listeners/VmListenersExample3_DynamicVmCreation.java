@@ -37,8 +37,8 @@ import org.cloudbus.cloudsim.provisioners.PeProvisionerSimple;
 import org.cloudbus.cloudsim.resources.Bandwidth;
 import org.cloudbus.cloudsim.provisioners.ResourceProvisionerSimple;
 import org.cloudbus.cloudsim.resources.Ram;
-import org.cloudbus.cloudsim.schedulers.CloudletSchedulerSpaceShared;
-import org.cloudbus.cloudsim.schedulers.VmSchedulerSpaceShared;
+import org.cloudbus.cloudsim.schedulers.cloudlet.CloudletSchedulerSpaceShared;
+import org.cloudbus.cloudsim.schedulers.vm.VmSchedulerSpaceShared;
 
 /**
  * A simple example showing how to create a data center with 1 host that has
@@ -273,9 +273,9 @@ public class VmListenersExample3_DynamicVmCreation {
     }
 
     /**
-     * Creates a datacenter with pre-defined configuration.
+     * Creates a switches with pre-defined configuration.
      *
-     * @return the created datacenter
+     * @return the created switches
      */
     private Datacenter createDatacenter() {
         Host host = createHost(0);
@@ -283,7 +283,7 @@ public class VmListenersExample3_DynamicVmCreation {
 
         double cost = 3.0; // the cost of using processing in this resource
         double costPerMem = 0.05; // the cost of using memory in this resource
-        double costPerStorage = 0.001; // the cost of using storage in this datacenter
+        double costPerStorage = 0.001; // the cost of using storage in this switches
         double costPerBw = 0.0; // the cost of using bw in this resource
 
         DatacenterCharacteristics characteristics =

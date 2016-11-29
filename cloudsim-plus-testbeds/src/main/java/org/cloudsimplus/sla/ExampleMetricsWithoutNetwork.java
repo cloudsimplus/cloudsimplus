@@ -5,7 +5,7 @@ import java.util.ArrayList;
 import java.util.List;
 import org.cloudbus.cloudsim.cloudlets.Cloudlet;
 import org.cloudbus.cloudsim.cloudlets.CloudletSimple;
-import org.cloudbus.cloudsim.schedulers.CloudletSchedulerTimeShared;
+import org.cloudbus.cloudsim.schedulers.cloudlet.CloudletSchedulerTimeShared;
 import org.cloudbus.cloudsim.datacenters.Datacenter;
 import org.cloudbus.cloudsim.brokers.DatacenterBroker;
 import org.cloudbus.cloudsim.datacenters.DatacenterCharacteristics;
@@ -19,7 +19,7 @@ import org.cloudbus.cloudsim.vms.Vm;
 import org.cloudbus.cloudsim.vms.VmSimple;
 import org.cloudbus.cloudsim.allocationpolicies.VmAllocationPolicySimple;
 import org.cloudbus.cloudsim.brokers.DatacenterBrokerSimple;
-import org.cloudbus.cloudsim.schedulers.VmSchedulerTimeShared;
+import org.cloudbus.cloudsim.schedulers.vm.VmSchedulerTimeShared;
 import org.cloudbus.cloudsim.core.CloudSim;
 import org.cloudbus.cloudsim.provisioners.PeProvisionerSimple;
 import org.cloudbus.cloudsim.provisioners.ResourceProvisionerSimple;
@@ -132,7 +132,7 @@ public final class ExampleMetricsWithoutNetwork {
 
     /**
      * Calculates the cost price of resources (processing, bw, memory, storage)
-     * of each or all of the datacenter VMs()
+     * of each or all of the switches VMs()
      *
      * @param vmlist
      */
@@ -294,11 +294,11 @@ public final class ExampleMetricsWithoutNetwork {
     }
 
     /**
-     * Creates the datacenter.
+     * Creates the switches.
      *
      * @param name the name
      *
-     * @return the datacenter
+     * @return the switches
      */
     private Datacenter createDatacenter() {
         hostList = new ArrayList<>();
@@ -347,7 +347,7 @@ public final class ExampleMetricsWithoutNetwork {
     /**
      * Creates the broker.
      *
-     * @return the datacenter broker
+     * @return the switches broker
      */
     private DatacenterBroker createBroker() {
         return new DatacenterBrokerSimple(cloudsim);

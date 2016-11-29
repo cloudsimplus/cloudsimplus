@@ -76,13 +76,13 @@ public class CloudSimTags {
     public static final int EXPERIMENT = BASE + 1;
 
     /**
-     * Denotes a datacenter to be registered. This tag is normally used
+     * Denotes a switches to be registered. This tag is normally used
      * between {@link CloudInformationService} and Datacenter entities.
      */
     public static final int DATACENTER_REGISTRATION_REQUEST = BASE + 2;
 
     /**
-     * Denotes a datacenter to be registered, that can support advanced
+     * Denotes a switches to be registered, that can support advanced
      * reservation. This tag is normally used between
      * {@link CloudInformationService} and Datacenter entities.
      */
@@ -159,7 +159,7 @@ public class CloudSimTags {
     public static final int REQUEST_REGIONAL_GIS = BASE + 14;
 
     /**
-     * Denotes request for datacenter characteristics information. This tag
+     * Denotes request for switches characteristics information. This tag
      * is normally used between CloudSim and Datacenter entity.
      */
     public static final int DATACENTER_CHARACTERISTICS_REQUEST = BASE + 15;

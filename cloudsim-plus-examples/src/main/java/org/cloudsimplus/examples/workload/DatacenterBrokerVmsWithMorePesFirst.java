@@ -8,7 +8,7 @@ import org.cloudbus.cloudsim.brokers.DatacenterBrokerSimple;
 import org.cloudbus.cloudsim.core.CloudSim;
 
 /**
- * A Broker which requests for creation of VMs inside a datacenter
+ * A Broker which requests for creation of VMs inside a switches
  * following the order of VM's required PEs number. VMs that require
  * more PEs are submitted first.
  *

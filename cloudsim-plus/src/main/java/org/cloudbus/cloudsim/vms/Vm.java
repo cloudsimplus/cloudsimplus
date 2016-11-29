@@ -5,7 +5,7 @@ import org.cloudbus.cloudsim.core.Identificable;
 import org.cloudbus.cloudsim.datacenters.Datacenter;
 import org.cloudbus.cloudsim.hosts.Host;
 import org.cloudbus.cloudsim.resources.*;
-import org.cloudbus.cloudsim.schedulers.CloudletScheduler;
+import org.cloudbus.cloudsim.schedulers.cloudlet.CloudletScheduler;
 import java.util.Collections;
 import java.util.List;
 import org.cloudbus.cloudsim.core.Simulation;

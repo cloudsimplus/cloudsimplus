@@ -8,12 +8,15 @@
 
 package org.cloudbus.cloudsim.network;
 
+import org.cloudbus.cloudsim.network.topologies.TopologicalGraph;
+import org.cloudbus.cloudsim.network.topologies.TopologicalLink;
+
 import java.util.Iterator;
 
 /**
  * This class represents a delay matrix between every pair or nodes
  * inside a network topology, storing every distance between connected nodes.
- * 
+ *
  * @author Thomas Hohnstein
  * @since CloudSim Toolkit 1.0
  */
@@ -38,7 +41,7 @@ public class DelayMatrix_Float {
 
 	/**
 	 * Creates an correctly initialized Float-Delay-Matrix.
-	 * 
+	 *
 	 * @param graph the network topological graph
 	 * @param directed indicates if an directed matrix should be computed (true) or not (false)
 	 */
@@ -53,7 +56,7 @@ public class DelayMatrix_Float {
 
 	/**
          * Gets the delay between two nodes.
-         * 
+         *
 	 * @param srcID the id of the source node
 	 * @param destID the id of the destination node
 	 * @return the delay between the given two nodes
@@ -68,10 +71,10 @@ public class DelayMatrix_Float {
 	}
 
 	/**
-	 * Creates all internal necessary network-distance structures from the given graph. 
-         * For similarity, we assume all communication-distances are symmetrical, 
+	 * Creates all internal necessary network-distance structures from the given graph.
+         * For similarity, we assume all communication-distances are symmetrical,
          * thus leading to an undirected network.
-	 * 
+	 *
 	 * @param graph the network topological graph
 	 * @param directed indicates if an directed matrix should be computed (true) or not (false)
 	 */
