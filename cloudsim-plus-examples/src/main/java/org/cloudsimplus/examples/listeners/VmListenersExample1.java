@@ -207,7 +207,7 @@ public class VmListenersExample1 {
                     .setCloudletOutputSize(outputSize)
                     .setUtilizationModel(utilizationModel)
                     .setBroker(broker)
-                    .setVmId(vm.getId());
+                    .setVm(vm);
         return cloudlet;
     }
 

@@ -78,12 +78,12 @@ public class DatacenterBrokerSimple extends DatacenterBrokerAbstract {
      */
     @Override
     public Vm selectVmForWaitingCloudlet(Cloudlet cloudlet) {
-        if (cloudlet.isBoundedToVm()) {
-            // submit to the specific vm
-            return VmList.getById(getVmsCreatedList(), cloudlet.getVmId());
+        if (cloudlet.isBindToVm() && getVmsCreatedList().contains(cloudlet.getVm())) {
+            return cloudlet.getVm();
         }
 
-        //if user didn't bind this cloudlet and it has not been executed yet
+        /*If user didn't bind this cloudlet to a specific Vm
+        or if the bind VM was not created, try the next Vm on the list of created*/
         return getVmFromCreatedList(getNextVmIndex());
     }
 

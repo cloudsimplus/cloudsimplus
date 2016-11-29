@@ -46,7 +46,7 @@ public class CloudletsTableBuilderHelper {
         row.add(cloudlet.getId());
         row.add(cloudlet.getStatus().name());
         row.add(cloudlet.getDatacenterId());
-        row.add(cloudlet.getVmId());
+        row.add(cloudlet.getVm());
         row.add(cloudlet.getCloudletLength());
         row.add(cloudlet.getNumberOfPes());
         row.add((int)cloudlet.getExecStartTime());

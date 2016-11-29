@@ -47,10 +47,10 @@ public class PlanetLabHelper {
 
 		File inputFolder = new File(inputFolderName);
 		File[] files = inputFolder.listFiles();
-        
+
 		for (int i = 0; i < files.length; i++) {
 			try {
-                UtilizationModel utilizationModelCPU = 
+                UtilizationModel utilizationModelCPU =
                         new UtilizationModelPlanetLabInMemory(
 								files[i].getAbsolutePath(),
 								Constants.SCHEDULING_INTERVAL);
@@ -62,7 +62,7 @@ public class PlanetLabHelper {
                         .setUtilizationModelRam(utilizationModelNull)
                         .setUtilizationModelBw(utilizationModelNull);
                 cloudlet.setBroker(broker);
-                cloudlet.setVmId(i);
+                //cloudlet.setVm(i);
                 list.add(cloudlet);
 			} catch (Exception e) {
 				e.printStackTrace();

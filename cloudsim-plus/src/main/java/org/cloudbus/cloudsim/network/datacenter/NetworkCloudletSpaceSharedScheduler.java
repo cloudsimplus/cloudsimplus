@@ -17,7 +17,6 @@ import org.cloudbus.cloudsim.Log;
 
 import org.cloudbus.cloudsim.schedulers.CloudletSchedulerSpaceShared;
 import org.cloudbus.cloudsim.CloudletExecutionInfo;
-import org.cloudbus.cloudsim.core.CloudSim;
 
 /**
  * NetworkCloudletSchedulerSpaceShared implements a policy of scheduling performed by a
@@ -117,16 +116,16 @@ public class NetworkCloudletSpaceSharedScheduler extends CloudletSchedulerSpaceS
     protected void addPacketsToBeSentFromVm(NetworkCloudlet sourceCloudlet) {
         CloudletSendTask dataTask = (CloudletSendTask)sourceCloudlet.getCurrentTask();
         final List<HostPacket> packetsToSendFromVmOfCloudlet =
-                getListOfPacketsToBeSentFromVm(sourceCloudlet.getVmId());
+                getListOfPacketsToBeSentFromVm(sourceCloudlet.getVm().getId());
 
         Log.println(Log.Level.DEBUG, getClass(), sourceCloudlet.getSimulation().clock(),
                 "%d pkts added to be sent from cloudlet %d in VM %d",
                 dataTask.getPacketsToSend().size(), sourceCloudlet.getId(),
-                sourceCloudlet.getVmId());
+                sourceCloudlet.getVm());
 
         packetsToSendFromVmOfCloudlet.addAll(dataTask.getPacketsToSend(sourceCloudlet.getSimulation().clock()));
 
-        hostPacketsToSendMap.put(sourceCloudlet.getVmId(), packetsToSendFromVmOfCloudlet);
+        hostPacketsToSendMap.put(sourceCloudlet.getVm().getId(), packetsToSendFromVmOfCloudlet);
         scheduleNextTaskExecution(sourceCloudlet);
     }
 
@@ -192,7 +191,7 @@ public class NetworkCloudletSpaceSharedScheduler extends CloudletSchedulerSpaceS
 
         return packetsFromExpectedSenderVm
                 .stream()
-                .filter(pkt -> pkt.getReceiverVmId() == destinationTask.getCloudlet().getVmId())
+                .filter(pkt -> pkt.getReceiverVmId() == destinationTask.getCloudlet().getVm().getId())
                 .collect(Collectors.toList());
     }
 

@@ -2,6 +2,8 @@ package org.cloudbus.cloudsim.examples.network.datacenter;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import org.cloudbus.cloudsim.Cloudlet;
 import org.cloudbus.cloudsim.network.datacenter.AppCloudlet;
 import org.cloudbus.cloudsim.network.datacenter.CloudletSendTask;
 import org.cloudbus.cloudsim.network.datacenter.CloudletExecutionTask;
@@ -39,7 +41,7 @@ public class NetworkVmsExampleBagOfTasksAppCloudlet extends NetworkVmsExampleApp
 
     /**
      * @todo @author manoelcampos It isn't adding packets to send.
-     * See {@link CloudletSendTask#addPacket(int, int, long) }
+     * See {@link CloudletSendTask#addPacket(Cloudlet, long)}
      * @param app
      * @param broker
      * @return
@@ -69,7 +71,7 @@ public class NetworkVmsExampleBagOfTasksAppCloudlet extends NetworkVmsExampleApp
                     .setCloudletOutputSize(NETCLOUDLET_OUTPUT_SIZE)
                     .setUtilizationModel(utilizationModel)
                     .setBroker(broker)
-                    .setVmId(selectedVms.get(i).getId());
+                    .setVm(selectedVms.get(i));
 
             //compute and send data to node 0
             CloudletTask task;

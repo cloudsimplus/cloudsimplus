@@ -157,7 +157,7 @@ public class SwfWorkloadFormatExample1 {
                 .setCloudletScheduler(new CloudletSchedulerSpaceShared())
                 .setBroker(broker);
             vmlist.add(vm);
-            cloudlet.setVmId(vmId);
+            cloudlet.setVm(vm);
         }
 
         Log.printConcatLine("#Created ", vmlist.size(), " VMs for the broker ", broker.getName());
@@ -343,7 +343,7 @@ public class SwfWorkloadFormatExample1 {
                     cloudlet.getId(),
                     cloudlet.getStatus().name(),
                     cloudlet.getDatacenterId(),
-                    cloudlet.getVmId(),
+                    cloudlet.getVm(),
                     cloudlet.getActualCPUTime(),
                     cloudlet.getExecStartTime(),
                     cloudlet.getFinishTime()

@@ -232,7 +232,7 @@ public class MigrationExample1 {
 
         broker.submitCloudletList(list);
         for(Cloudlet c: list) {
-            broker.bindCloudletToVm(c.getId(), hostingVm.getId());
+            broker.bindCloudletToVm(c, hostingVm);
         }
 
         return list;

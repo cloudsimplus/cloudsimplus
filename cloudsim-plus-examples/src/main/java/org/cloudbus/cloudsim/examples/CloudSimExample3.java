@@ -136,8 +136,8 @@ public class CloudSimExample3 {
 
         //bind the cloudlets to the vms. This way, the broker
         // will submit the bound cloudlets only to the specific VM
-        broker.bindCloudletToVm(cloudlet1.getId(), vm1.getId());
-        broker.bindCloudletToVm(cloudlet2.getId(), vm2.getId());
+        broker.bindCloudletToVm(cloudlet1, vm1);
+        broker.bindCloudletToVm(cloudlet2, vm2);
 
         // Sixth step: Starts the simulation
         simulation.start();

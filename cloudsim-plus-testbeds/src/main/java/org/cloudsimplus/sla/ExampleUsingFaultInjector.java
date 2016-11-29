@@ -187,7 +187,7 @@ public class ExampleUsingFaultInjector {
         System.out.println("\n");
         for (Cloudlet cloudlet : cloudletList) {
             System.out.println("--->Status Cloudlet: " + cloudlet.getStatus()
-            + " in VM: " + cloudlet.getVmId());
+            + " in VM: " + cloudlet.getVm());
 
         }
 

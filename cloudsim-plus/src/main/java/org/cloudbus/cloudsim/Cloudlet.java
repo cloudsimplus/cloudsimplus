@@ -492,7 +492,7 @@ public interface Cloudlet extends Identificable, Comparable<Cloudlet> {
      * @pre $none
      * @post $none
      */
-    int getVmId();
+    Vm getVm();
 
     /**
      * Indicates if the Cloudlet is bounded to a specific Vm,
@@ -502,7 +502,7 @@ public interface Cloudlet extends Identificable, Comparable<Cloudlet> {
      *
      * @return true if the Cloudlet is bounded to a specific VM, false otherwise
      */
-    boolean isBoundedToVm();
+    boolean isBindToVm();
 
     /**
      * Gets the time the cloudlet had to wait before start executing on a
@@ -705,9 +705,9 @@ public interface Cloudlet extends Identificable, Comparable<Cloudlet> {
     /**
      * Sets the id of {@link Vm} that is planned to execute the cloudlet.
      *
-     * @param vmId the id of vm to run the cloudlet
+     * @param vm the id of vm to run the cloudlet
      */
-    Cloudlet setVmId(final int vmId);
+    Cloudlet setVm(final Vm vm);
 
     /**
      * Sets the length of this Cloudlet that has been executed so far (in MI),
@@ -829,14 +829,14 @@ public interface Cloudlet extends Identificable, Comparable<Cloudlet> {
      * Sets the listener object that will be notified when a cloudlet finishes
      * its execution at a given {@link Vm}.
      * @param onCloudletFinishEventListener
-     * @return 
+     * @return
      */
     Cloudlet setOnCloudletFinishEventListener(EventListener<VmToCloudletEventInfo> onCloudletFinishEventListener);
 
     /**
      * Gets the CloudSim instance that represents the simulation the Entity is related to.
-     * @return 
-     * @see #setSimulation(CloudSim)
+     * @return
+     * @see #setSimulation(Simulation)
      */
     Simulation getSimulation();
 
@@ -845,7 +845,7 @@ public interface Cloudlet extends Identificable, Comparable<Cloudlet> {
      * Such attribute has to be set by the {@link DatacenterBroker} that creates
      * the Cloudlet on behalf of its owner.
      * @param simulation The CloudSim instance that represents the simulation the Entity is related to
-     * @return 
+     * @return
      */
     Cloudlet setSimulation(Simulation simulation);
 
@@ -893,7 +893,7 @@ public interface Cloudlet extends Identificable, Comparable<Cloudlet> {
         @Override public double getUtilizationOfBw(double time) { return 0.0; }
         @Override public double getUtilizationOfCpu(double time) { return 0.0; }
         @Override public double getUtilizationOfRam(double time) { return 0.0; }
-        @Override public int getVmId() { return NOT_ASSIGNED; }
+        public Vm getVm() { return Vm.NULL; }
         @Override public double getWaitingTime() { return 0.0; }
         @Override public double getWallClockTimeInLastExecutedDatacenter() { return 0.0; }
         @Override public double getWallClockTime(int datacenterId) { return 0.0; }
@@ -914,7 +914,7 @@ public interface Cloudlet extends Identificable, Comparable<Cloudlet> {
         @Override public Cloudlet setUtilizationModelBw(UtilizationModel utilizationModelBw) { return Cloudlet.NULL; }
         @Override public Cloudlet setUtilizationModelCpu(UtilizationModel utilizationModelCpu) { return Cloudlet.NULL; }
         @Override public Cloudlet setUtilizationModelRam(UtilizationModel utilizationModelRam) { return Cloudlet.NULL; }
-        @Override public Cloudlet setVmId(int vmId) { return Cloudlet.NULL; }
+        @Override public Cloudlet setVm(Vm vm) { return Cloudlet.NULL; }
         @Override public EventListener<VmToCloudletEventInfo> getOnCloudletFinishEventListener() { return EventListener.NULL;}
         @Override public Cloudlet setOnCloudletFinishEventListener(EventListener<VmToCloudletEventInfo> onCloudletFinishEventListener) { return Cloudlet.NULL; }
         @Override public Simulation getSimulation() { return Simulation.NULL; }
@@ -933,7 +933,7 @@ public interface Cloudlet extends Identificable, Comparable<Cloudlet> {
         @Override public void setExecStartTime(double clockTime) {}
         @Override public boolean isAssignedToDatacenter() { return false; }
         @Override public double registerArrivalOfCloudletIntoDatacenter() { return -1; }
-        @Override public boolean isBoundedToVm() { return false; }
+        @Override public boolean isBindToVm() { return false; }
         @Override public int compareTo(Cloudlet o) { return 0; }
   };
 }

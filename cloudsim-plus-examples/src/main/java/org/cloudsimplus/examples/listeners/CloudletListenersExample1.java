@@ -205,7 +205,7 @@ public class CloudletListenersExample1 {
                     .setCloudletOutputSize(outputSize)
                     .setUtilizationModel(utilizationModel)
                     .setBroker(broker)
-                    .setVmId(vm.getId())
+                    .setVm(vm)
                     .setOnCloudletFinishEventListener(onCloudletFinishListener);
 
         return cloudlet;

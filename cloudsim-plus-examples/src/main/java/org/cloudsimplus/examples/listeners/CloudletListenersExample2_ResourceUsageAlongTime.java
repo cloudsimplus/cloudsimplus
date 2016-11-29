@@ -222,7 +222,7 @@ public class CloudletListenersExample2_ResourceUsageAlongTime {
                 .setUtilizationModelRam(ramUtilizationModel)
                 .setUtilizationModelBw(bwUtilizationModel)
                 .setBroker(broker)
-                .setVmId(vm.getId())
+                .setVm(vm)
                 .setOnUpdateCloudletProcessingListener(onUpdateCloudletProcessingListener);
 
         return cloudlet;

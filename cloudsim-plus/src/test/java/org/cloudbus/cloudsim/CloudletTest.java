@@ -15,13 +15,13 @@ public class CloudletTest {
     @Test
     public void testIsBoundedToVm() {
         Cloudlet cloudlet = createCloudlet(0);
-        assertFalse(cloudlet.isBoundedToVm());
-        cloudlet.setVmId(-1);
-        assertFalse(cloudlet.isBoundedToVm());
-        cloudlet.setVmId(0);
-        assertTrue(cloudlet.isBoundedToVm());
-        cloudlet.setVmId(1);
-        assertTrue(cloudlet.isBoundedToVm());
+        assertFalse(cloudlet.isBindToVm());
+        cloudlet.setVm(Vm.NULL);
+        assertFalse(cloudlet.isBindToVm());
+        cloudlet.setVm(VmSimpleTest.createVm(0, 1));
+        assertTrue(cloudlet.isBindToVm());
+        cloudlet.setVm(VmSimpleTest.createVm(1, 1));
+        assertTrue(cloudlet.isBindToVm());
     }
 
     private static CloudletSimple createCloudlet(int id) {
@@ -66,8 +66,7 @@ public class CloudletTest {
         assertEquals(0, Cloudlet.NULL.getUtilizationOfBw(0), 0);
         assertEquals(0, Cloudlet.NULL.getUtilizationOfCpu(0), 0);
         assertEquals(0, Cloudlet.NULL.getUtilizationOfRam(0), 0);
-        Cloudlet.NULL.setVmId(100);
-        assertEquals(-1, Cloudlet.NULL.getVmId());
+        assertEquals(Vm.NULL, Cloudlet.NULL.getVm());
         assertEquals(0, Cloudlet.NULL.getWaitingTime(), 0);
         assertEquals(0, Cloudlet.NULL.getWallClockTimeInLastExecutedDatacenter(), 0);
         assertEquals(0, Cloudlet.NULL.getWallClockTime(0), 0);
@@ -110,7 +109,7 @@ public class CloudletTest {
         Cloudlet.NULL.setUtilizationModelRam(um);
         assertSame(UtilizationModel.NULL, Cloudlet.NULL.getUtilizationModelRam());
 
-        assertFalse(Cloudlet.NULL.isBoundedToVm());
+        assertFalse(Cloudlet.NULL.isBindToVm());
     }
 
 }

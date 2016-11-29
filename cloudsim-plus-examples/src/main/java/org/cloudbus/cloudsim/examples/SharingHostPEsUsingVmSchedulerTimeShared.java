@@ -205,7 +205,7 @@ public class SharingHostPEsUsingVmSchedulerTimeShared {
                 .setCloudletOutputSize(outputSize)
                 .setUtilizationModel(utilization)
                 .setBroker(broker)
-                .setVmId(vm.getId());
+                .setVm(vm);
 
         return cloudlet;
     }

@@ -239,7 +239,7 @@ public class NetworkVmsExample1 {
                 .setCloudletOutputSize(NETCLOUDLET_OUTPUT_SIZE)
                 .setUtilizationModel(utilizationModel);
         netCloudlet.setBroker(broker);
-        netCloudlet.setVmId(vm.getId());
+        netCloudlet.setVm(vm);
 
         return netCloudlet;
     }
@@ -271,7 +271,7 @@ public class NetworkVmsExample1 {
      */
     private void addReceiveTask(NetworkCloudlet cloudlet, NetworkCloudlet sourceCloudlet) {
         CloudletReceiveTask task = new CloudletReceiveTask(
-                cloudlet.getTasks().size(), sourceCloudlet.getVmId());
+                cloudlet.getTasks().size(), sourceCloudlet.getVm().getId());
         task.setMemory(TASK_RAM);
         task.setNumberOfExpectedPacketsToReceive(NUMBER_OF_PACKETS_TO_SEND);
         cloudlet.addTask(task);

@@ -8,6 +8,10 @@ Lists the main changes in the project.
 - Removed the PE list parameter from the VmScheduler constructors. Now classes that implement VmScheduler have a host attribute from where the PE list is got directly.
   This attribute is automatically set by a host when the Host.setScheduler setter is called. By this way, the user doesn't have to worry about this VmScheduler attribute. 
   This change makes it easier to create a VmScheduler and consequently a Host.
+- Changed DatacenterBroker.bindCloudletToVm(int cloudletId, int vmId) to DatacenterBroker.bindCloudletToVm(Cloudlet cloudlet, Vm vm),
+  requiring a Cloudlet and a Vm instead of just int values. Once that the method accepted any int value, even an inexisting Vm or Cloudlet ID 
+  could be given, what caused NullPointerException when trying to find the Vm or Cloudlet. Now this problem is completely avoided.
+- Changed Cloudlet's vmId attribute from int to Vm and renamed it to vm to conform with the previous change.
 
 ## [v0.8-beta.6] - 2016-11-24
 Methods and attributes of the `CloudSim` class aren't static anymore. By this way, each simulation now requires an instance of `CloudSim` instead of calling  methods directly from such a class. Despite this change appears to introduce more complexity when creating a simulation, in fact, it makes it simpler. All classes that extend `SimEntity` required a name to be passed when calling their constructors. Since that name usually was just the name of the class followed by its id, it wasn't meaningful.

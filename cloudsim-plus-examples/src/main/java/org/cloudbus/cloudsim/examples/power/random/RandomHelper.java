@@ -64,10 +64,10 @@ public class RandomHelper {
 						.setUtilizationModelCpu(new UtilizationModelStochastic(seed*i))
 						.setUtilizationModelRam(utilizationModelNull)
 						.setUtilizationModelBw(utilizationModelNull);
-                
+
 			}
 			cloudlet.setBroker(broker);
-			cloudlet.setVmId(i);
+			//cloudlet.setVm(i);
 			list.add(cloudlet);
 		}
 

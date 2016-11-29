@@ -114,7 +114,7 @@ public class TwoCloudletsAndOneTimeSharedVm {
                     .setCloudletOutputSize(outputSize)
                     .setUtilizationModel(utilizationModel)
                     .setBroker(broker)
-                    .setVmId(vmid);
+                    .setVm(vm);
         cloudletList.add(cloudlet1);
 
         Cloudlet cloudlet2 = new CloudletSimple(++id, length, pesNumber)
@@ -122,7 +122,7 @@ public class TwoCloudletsAndOneTimeSharedVm {
             .setCloudletOutputSize(outputSize)
             .setUtilizationModel(utilizationModel)
             .setBroker(broker)
-            .setVmId(vmid);
+            .setVm(vm);
         cloudletList.add(cloudlet2);
 
         // submit cloudlet list to the broker

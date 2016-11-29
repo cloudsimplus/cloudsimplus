@@ -416,7 +416,7 @@ The iteration over lists now can be performed easily using the stream API.
 The example below uses a single line of code to iterate over a list of cloudlets, binding every one to a given VM.
 
 ```java
-cloudletList.forEach(cloudlet -> broker.bindCloudletToVm(cloudlet.getId(), vm.getId()));
+cloudletList.forEach(cloudlet -> broker.bindCloudletToVm(cloudlet, vm);
 ```
 
 This makes the code clearer to understand and less verbose. Further, the new Stream API provides a complete set of features 

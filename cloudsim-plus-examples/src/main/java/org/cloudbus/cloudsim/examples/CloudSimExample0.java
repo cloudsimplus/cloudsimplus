@@ -166,7 +166,7 @@ public class CloudSimExample0 {
                         .setCloudletOutputSize(outputSize)
                         .setUtilizationModel(utilization)
                         .setBroker(broker)
-                        .setVmId(vm.getId());
+                        .setVm(vm);
 
         return cloudlet;
     }
