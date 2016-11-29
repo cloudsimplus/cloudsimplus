@@ -10,11 +10,10 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import org.cloudbus.cloudsim.Cloudlet;
+import org.cloudbus.cloudsim.cloudlets.Cloudlet;
 import org.cloudbus.cloudsim.Consts;
-import org.cloudbus.cloudsim.CloudletExecutionInfo;
+import org.cloudbus.cloudsim.cloudlets.CloudletExecutionInfo;
 
-import org.cloudbus.cloudsim.core.CloudSim;
 import org.cloudbus.cloudsim.resources.Processor;
 
 /**

@@ -4,8 +4,13 @@
  *
  * Copyright (c) 2009-2012, The University of Melbourne, Australia
  */
-package org.cloudbus.cloudsim;
+package org.cloudbus.cloudsim.datacenters;
 
+import org.cloudbus.cloudsim.DataCloudTags;
+import org.cloudbus.cloudsim.hosts.Host;
+import org.cloudbus.cloudsim.Log;
+import org.cloudbus.cloudsim.vms.Vm;
+import org.cloudbus.cloudsim.cloudlets.Cloudlet;
 import org.cloudbus.cloudsim.core.*;
 import org.cloudbus.cloudsim.network.InfoPacket;
 import org.cloudbus.cloudsim.resources.File;

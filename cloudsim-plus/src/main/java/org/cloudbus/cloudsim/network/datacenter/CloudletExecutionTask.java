@@ -7,6 +7,8 @@
  */
 package org.cloudbus.cloudsim.network.datacenter;
 
+import org.cloudbus.cloudsim.cloudlets.Cloudlet;
+
 /**
  * A processing task that can be executed by a {@link NetworkCloudlet}
  * in a single {@link org.cloudbus.cloudsim.resources.Pe}.
@@ -26,57 +28,57 @@ package org.cloudbus.cloudsim.network.datacenter;
  *
  * @author Saurabh Kumar Garg
  * @author Manoel Campos da Silva Filho
- * 
+ *
  * @since CloudSim Toolkit 1.0
- * 
- * @todo @author manoelcampos Classes {@link CloudletTask} and {@link org.cloudbus.cloudsim.Cloudlet}
+ *
+ * @todo @author manoelcampos Classes {@link CloudletTask} and {@link Cloudlet}
  * and {@link org.cloudbus.cloudsim.ResCloudlet} share a common
  * set of attributes that would be defined by a common interface.
- * 
+ *
  * @todo @author manoelcampos Each execution task must use just a single core.
  * It may represent a thread (so the name of the class would be changed).
  * By this way, a execution task should use only one core.
  * However, tasks may be executed in parallel (considering there are multiple cores)
- * and/or sequentially. 
+ * and/or sequentially.
  * This feature has to be included in the class. One proposal is
  * to create a int group attribute. All tasks (not only execution tasks)
  * that have the group equals to zero are executed sequentially (that means they
  * aren't grouped). The tasks that have the same group have to be executed
  * in parallel, one in each CPU core (PE).
  * All tasks into a group will be executed together. The next group
- * starts only when all the tasks in the prior finishes (each task 
+ * starts only when all the tasks in the prior finishes (each task
  * can have a different length, so may finish in different times).
  * The value of the group define the tasks execution order.
  * Tasks with lower group number are executed first.
  * You can have single tasks (that are not grouped) between
  * grouped tasks (defining the order that this single task executes)
- * just assigning a group number to it and making sure to not 
+ * just assigning a group number to it and making sure to not
  * add other tasks with the same group. For instance, consider the
  * tasks below, represented by their group number, for a NetworkCloudlet with 4 cores:
  * 0 0 1 1 1 1 2 3 3
- * 
+ *
  * there are 2 ungrouped tasks (0) that will be executed sequentially,
  * 4 tasks of group 1 that will be executed in parallel after all ungrouped tasks,
  * there is a single task at group 2 that will be executed after the group 1
  * and finally there is 2 tasks at group 2 to be executed in parallel at the end.
- * 
+ *
  * When adding a task to a NetworkCloudlet, the addTask method
  * has to check if the current number of tasks for the group (that represents parallel tasks)
  * is lower than the number of NetworkCloudlet's PEs.
- * 
+ *
  */
 public class CloudletExecutionTask extends CloudletTask {
-    
+
     /**
-     * @see #getLength() 
+     * @see #getLength()
      */
-    private long length;    
-    
+    private long length;
+
     /**
-     * @see #getTotalExecutedLenght() 
+     * @see #getTotalExecutedLenght()
      */
     private long totalExecutedLenght;
-    
+
     /**
      * Creates a new task.
      * @param id task id
@@ -90,8 +92,8 @@ public class CloudletExecutionTask extends CloudletTask {
     /**
      * Gets the execution length of the task (in MI),
      * only used for tasks of the type {@link Type#EXECUTION}
-     * 
-     * @return 
+     *
+     * @return
      */
     public long getLength() {
         return length;
@@ -100,8 +102,8 @@ public class CloudletExecutionTask extends CloudletTask {
     /**
      * Sets the execution length of the task (in MI),
      * only used for tasks of the type {@link Type#EXECUTION}
-     * 
-     * @param length 
+     *
+     * @param length
      */
     public void setLength(long length) {
         this.length = length;
@@ -109,7 +111,7 @@ public class CloudletExecutionTask extends CloudletTask {
 
     /**
      * Gets the length of this CloudletTask that has been executed so far (in MI).
-     * @return 
+     * @return
      */
     public long getTotalExecutedLenght() {
         return totalExecutedLenght;
@@ -135,7 +137,7 @@ public class CloudletExecutionTask extends CloudletTask {
     public boolean process(long totalExecutedLenghtSoFar) {
         if(totalExecutedLenghtSoFar <= 0)
             return false;
-        
+
         this.totalExecutedLenght = Math.min(totalExecutedLenghtSoFar, length);
         setFinished(this.totalExecutedLenght == length);
         return true;

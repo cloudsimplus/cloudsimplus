@@ -1,15 +1,10 @@
 package org.cloudsimplus.heuristics;
 
-import java.util.Map;
-import java.util.Set;
 import java.util.stream.IntStream;
-import org.cloudbus.cloudsim.Cloudlet;
-import org.cloudbus.cloudsim.CloudletSimple;
-import org.cloudbus.cloudsim.Vm;
-import org.cloudbus.cloudsim.VmSimple;
-import org.cloudbus.cloudsim.distributions.NormalDistr;
+
+import org.cloudbus.cloudsim.cloudlets.CloudletSimple;
+import org.cloudbus.cloudsim.vms.VmSimple;
 import org.cloudbus.cloudsim.distributions.UniformDistr;
-import org.cloudbus.cloudsim.schedulers.CloudletScheduler;
 import org.cloudbus.cloudsim.utilizationmodels.UtilizationModel;
 import org.openjdk.jmh.annotations.Benchmark;
 import org.openjdk.jmh.annotations.BenchmarkMode;

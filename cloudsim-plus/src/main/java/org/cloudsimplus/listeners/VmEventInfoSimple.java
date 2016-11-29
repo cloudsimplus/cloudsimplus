@@ -1,6 +1,6 @@
 package org.cloudsimplus.listeners;
 
-import org.cloudbus.cloudsim.Vm;
+import org.cloudbus.cloudsim.vms.Vm;
 
 /**
  * A basic implementation of the {@link VmEventInfo} interface.
@@ -12,7 +12,7 @@ public class VmEventInfoSimple extends EventInfoAbstract implements VmEventInfo 
 
     /**
      * Creates a EventInfo with the given parameters.
-     * 
+     *
      * @param time the time the event was generated
      * @param vm Vm that fired the event
      */
@@ -20,7 +20,7 @@ public class VmEventInfoSimple extends EventInfoAbstract implements VmEventInfo 
         super(time);
         setVm(vm);
     }
-    
+
     @Override
     public Vm getVm() {
         return vm;
@@ -31,5 +31,5 @@ public class VmEventInfoSimple extends EventInfoAbstract implements VmEventInfo 
         this.vm = vm;
     }
 
-    
+
 }

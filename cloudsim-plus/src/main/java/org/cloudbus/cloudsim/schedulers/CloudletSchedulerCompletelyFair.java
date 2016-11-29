@@ -2,8 +2,8 @@ package org.cloudbus.cloudsim.schedulers;
 
 import java.util.*;
 
-import org.cloudbus.cloudsim.Cloudlet;
-import org.cloudbus.cloudsim.CloudletExecutionInfo;
+import org.cloudbus.cloudsim.cloudlets.Cloudlet;
+import org.cloudbus.cloudsim.cloudlets.CloudletExecutionInfo;
 import org.cloudbus.cloudsim.resources.Pe;
 
 import java.util.function.Predicate;
@@ -298,7 +298,7 @@ public final class CloudletSchedulerCompletelyFair extends CloudletSchedulerTime
      * <p>It also sets the initial virtual runtime for the given Cloudlet
      * in order to define how long the Cloudlet has executed yet.<br>
      *
-     * See {@link #computeCloudletInitialVirtualRuntime(org.cloudbus.cloudsim.CloudletExecutionInfo)}
+     * See {@link #computeCloudletInitialVirtualRuntime(CloudletExecutionInfo)}
      * for more details.</p>
      *
      * @param rcl {@inheritDoc}

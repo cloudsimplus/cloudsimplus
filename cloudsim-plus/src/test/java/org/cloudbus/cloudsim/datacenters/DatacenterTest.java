@@ -1,6 +1,8 @@
-package org.cloudbus.cloudsim;
+package org.cloudbus.cloudsim.datacenters;
 
+import org.cloudbus.cloudsim.hosts.Host;
 import org.cloudbus.cloudsim.allocationpolicies.VmAllocationPolicy;
+import org.junit.Assert;
 import org.junit.Test;
 import static org.junit.Assert.*;
 
@@ -18,7 +20,7 @@ public class DatacenterTest {
         assertEquals(-1, instance.getId());
         assertEquals(0, instance.getSchedulingInterval(), 0);
         assertTrue(instance.getHostList().isEmpty());
-        assertEquals(Host.NULL, instance.getHost(0));
+        Assert.assertEquals(Host.NULL, instance.getHost(0));
         assertEquals(VmAllocationPolicy.NULL, instance.getVmAllocationPolicy());
         assertTrue(instance.getVmList().isEmpty());
     }

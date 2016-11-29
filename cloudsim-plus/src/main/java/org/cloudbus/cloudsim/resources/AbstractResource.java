@@ -1,5 +1,7 @@
 package org.cloudbus.cloudsim.resources;
 
+import org.cloudbus.cloudsim.vms.Vm;
+
 /**
  * A class that represent simple resources such as RAM, CPU or Bandwidth,
  * storing, for instance, its capacity and amount of free available resource.
@@ -7,7 +9,7 @@ package org.cloudbus.cloudsim.resources;
  * for each kind of resource, allowing to differentiate, for instance,
  * a RAM resource instance from a BW resource instance.
  * The VM class also relies on this differentiation for generically getting a
- * required resource (see {@link org.cloudbus.cloudsim.Vm#getResource(java.lang.Class)}).
+ * required resource (see {@link Vm#getResource(java.lang.Class)}).
  *
  * @author Manoel Campos da Silva Filho
  * @since CloudSim Toolkit 3.0.4

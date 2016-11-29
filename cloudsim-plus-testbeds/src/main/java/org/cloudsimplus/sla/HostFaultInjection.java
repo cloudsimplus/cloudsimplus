@@ -8,9 +8,9 @@ package org.cloudsimplus.sla;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
-import org.cloudbus.cloudsim.Host;
+import org.cloudbus.cloudsim.hosts.Host;
 import org.cloudbus.cloudsim.Log;
-import org.cloudbus.cloudsim.Vm;
+import org.cloudbus.cloudsim.vms.Vm;
 import org.cloudbus.cloudsim.core.*;
 import org.cloudbus.cloudsim.distributions.ContinuousDistribution;
 import org.cloudbus.cloudsim.distributions.UniformDistr;
@@ -40,7 +40,7 @@ public class HostFaultInjection extends CloudSimEntity {
      * failures with a delay and number of failed PEs generated using a Uniform
      * Pseudo Random Number Generator (PRNG) for each one.
      *
-     * @param simulation The CloudSim instance that represents the 
+     * @param simulation The CloudSim instance that represents the
      * simulation the Entity is related to
      * @see
      * #setDelayForFailureOfHostRandom(org.cloudbus.cloudsim.distributions.ContinuousDistribution)

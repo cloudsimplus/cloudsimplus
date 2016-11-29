@@ -1,7 +1,11 @@
 package org.cloudbus.cloudsim.allocationpolicies;
 
-import org.cloudbus.cloudsim.*;
+import org.cloudbus.cloudsim.datacenters.Datacenter;
+import org.cloudbus.cloudsim.hosts.Host;
+import org.cloudbus.cloudsim.hosts.HostSimpleTest;
 import org.cloudbus.cloudsim.schedulers.CloudletScheduler;
+import org.cloudbus.cloudsim.vms.Vm;
+import org.cloudbus.cloudsim.vms.VmSimpleTest;
 import org.easymock.EasyMock;
 import org.junit.Before;
 import org.junit.Test;

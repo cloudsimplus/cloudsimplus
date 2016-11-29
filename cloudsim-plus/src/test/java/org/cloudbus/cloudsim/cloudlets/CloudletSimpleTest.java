@@ -8,10 +8,12 @@ import org.junit.Before;
 import org.junit.Test;
 c) 2009-2010, The University of Melbourne, Australia
  */
-package org.cloudbus.cloudsim;
+package org.cloudbus.cloudsim.cloudlets;
 
 import java.util.ArrayList;
 
+import org.cloudbus.cloudsim.cloudlets.Cloudlet;
+import org.cloudbus.cloudsim.cloudlets.CloudletSimple;
 import org.cloudbus.cloudsim.mocks.CloudSimMocker;
 import org.cloudbus.cloudsim.utilizationmodels.UtilizationModelFull;
 import org.cloudbus.cloudsim.utilizationmodels.UtilizationModelStochastic;
@@ -392,7 +394,7 @@ public class CloudletSimpleTest {
             mocker.clock(0).anyTimes();
             mocker.getEntityName(EasyMock.anyInt()).anyTimes();
         });
-        
+
         cloudlet
             .setCloudletFileSize(CLOUDLET_FILE_SIZE)
             .setCloudletOutputSize(CLOUDLET_OUTPUT_SIZE)

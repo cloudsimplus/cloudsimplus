@@ -2,10 +2,10 @@ package org.cloudbus.cloudsim.schedulers;
 
 import java.util.ArrayList;
 import java.util.List;
-import org.cloudbus.cloudsim.Cloudlet;
-import org.cloudbus.cloudsim.CloudletExecutionInfo;
-import org.cloudbus.cloudsim.CloudletSimple;
-import org.cloudbus.cloudsim.CloudletSimpleTest;
+import org.cloudbus.cloudsim.cloudlets.Cloudlet;
+import org.cloudbus.cloudsim.cloudlets.CloudletExecutionInfo;
+import org.cloudbus.cloudsim.cloudlets.CloudletSimple;
+import org.cloudbus.cloudsim.cloudlets.CloudletSimpleTest;
 import org.cloudbus.cloudsim.utilizationmodels.UtilizationModel;
 import org.cloudbus.cloudsim.utilizationmodels.UtilizationModelArithmeticProgression;
 import org.easymock.EasyMock;

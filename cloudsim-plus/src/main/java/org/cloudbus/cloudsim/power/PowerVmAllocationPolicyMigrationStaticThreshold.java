@@ -8,8 +8,7 @@
 
 package org.cloudbus.cloudsim.power;
 
-import java.util.List;
-import org.cloudbus.cloudsim.Vm;
+import org.cloudbus.cloudsim.vms.Vm;
 
 /**
  * A VM allocation policy that uses a Static CPU utilization Threshold (THR) to detect host over

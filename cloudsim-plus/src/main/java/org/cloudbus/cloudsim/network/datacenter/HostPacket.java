@@ -7,7 +7,7 @@
  */
 package org.cloudbus.cloudsim.network.datacenter;
 
-import org.cloudbus.cloudsim.Cloudlet;
+import org.cloudbus.cloudsim.cloudlets.Cloudlet;
 
 /**
  * HostPacket represents a packet that travels through the virtual network
@@ -32,27 +32,27 @@ import org.cloudbus.cloudsim.Cloudlet;
 public class HostPacket {
 
     /**
-     * @see #getSenderVmId() 
+     * @see #getSenderVmId()
      */
     private final int senderVmId;
 
     /**
-     * @see #getReceiverVmId() 
+     * @see #getReceiverVmId()
      */
     private final int receiverVmId;
 
     /**
-     * @see #getSenderCloudlet()   
+     * @see #getSenderCloudlet()
      */
     private final Cloudlet senderCloudlet;
 
     /**
-     * @see #getReceiverCloudlet() 
+     * @see #getReceiverCloudlet()
      */
     private final Cloudlet receiverCloudlet;
 
     /**
-     * @see #getDataLength() 
+     * @see #getDataLength()
      */
     private final double dataLength;
 
@@ -67,9 +67,9 @@ public class HostPacket {
     private double receiveTime;
 
     /**
-     * Creates a packet to be sent to to a VM inside the 
+     * Creates a packet to be sent to to a VM inside the
      * Host of the sender VM.
-     * 
+     *
      * @param senderVmId id of the VM sending the packet
      * @param receiverVmId id of the VM that has to receive the packet
      * @param dataLength data length of the packet
@@ -107,7 +107,7 @@ public class HostPacket {
     }
 
     /**
-     * 
+     *
      * @return id of the VM sending the packet.
      * This is the VM where the {@link #getSenderCloudlet() sending cloudlet}
      * is running.
@@ -117,7 +117,7 @@ public class HostPacket {
     }
 
     /**
-     * 
+     *
      * @return id of the VM that has to receive the packet.
      * This is the VM whwere th {@link #getReceiverCloudlet() receiver cloudlet}
      * is running.
@@ -127,13 +127,13 @@ public class HostPacket {
     }
 
     /**
-     * 
+     *
      * @return the cloudlet sending the packet.
      */
     public Cloudlet getSenderCloudlet() {
         return senderCloudlet;
     }
-    
+
     /**
      * @return the cloudlet that has to receive the packet.
      */
@@ -142,7 +142,7 @@ public class HostPacket {
     }
 
     /**
-     * 
+     *
      * @return the length of the data being sent,
      * that represents the size of the packet's payload (in bytes).
      */

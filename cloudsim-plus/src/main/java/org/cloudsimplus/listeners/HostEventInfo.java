@@ -1,12 +1,12 @@
 package org.cloudsimplus.listeners;
 
-import org.cloudbus.cloudsim.Host;
+import org.cloudbus.cloudsim.hosts.Host;
 
 /**
  * An {@link EventInfo} interface that stores data to be passed
  * to {@link EventListener} objects that are registered to be notified
  * about events of a given {@link Host}.
- * 
+ *
  * @author Manoel Campos da Silva Filho
  */
 public interface HostEventInfo extends EventInfo {
@@ -18,7 +18,7 @@ public interface HostEventInfo extends EventInfo {
 
     /**
      * Sets the Host for which the event happened.
-     * 
+     *
      * @param host
      */
     void setHost(Host host);

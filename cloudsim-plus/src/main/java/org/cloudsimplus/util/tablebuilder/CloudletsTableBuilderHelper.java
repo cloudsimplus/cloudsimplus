@@ -1,7 +1,7 @@
 package org.cloudsimplus.util.tablebuilder;
 
 import java.util.List;
-import org.cloudbus.cloudsim.Cloudlet;
+import org.cloudbus.cloudsim.cloudlets.Cloudlet;
 
 /**
  * A class to help printing simulation results for a list of cloudlets.

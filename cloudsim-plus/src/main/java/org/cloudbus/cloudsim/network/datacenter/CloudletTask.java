@@ -7,8 +7,8 @@
  */
 package org.cloudbus.cloudsim.network.datacenter;
 
-import org.cloudbus.cloudsim.CloudletExecutionInfo;
-import org.cloudbus.cloudsim.core.CloudSim;
+import org.cloudbus.cloudsim.cloudlets.CloudletExecutionInfo;
+import org.cloudbus.cloudsim.cloudlets.Cloudlet;
 import org.cloudbus.cloudsim.core.Identificable;
 
 /**
@@ -30,7 +30,7 @@ import org.cloudbus.cloudsim.core.Identificable;
  * @since CloudSim Toolkit 1.0
  *
  * @todo @author manoelcampos
- * Classes {@link CloudletTask} and {@link org.cloudbus.cloudsim.Cloudlet}
+ * Classes {@link CloudletTask} and {@link Cloudlet}
  * and {@link CloudletExecutionInfo} share a common
  * set of attributes that would be defined by a common interface.
  */

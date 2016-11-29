@@ -1,7 +1,8 @@
-package org.cloudbus.cloudsim;
+package org.cloudbus.cloudsim.cloudlets;
 
+import org.cloudbus.cloudsim.datacenters.Datacenter;
+import org.cloudbus.cloudsim.vms.Vm;
 import org.cloudbus.cloudsim.brokers.DatacenterBroker;
-import org.cloudbus.cloudsim.core.CloudSim;
 import org.cloudbus.cloudsim.core.Identificable;
 import org.cloudbus.cloudsim.schedulers.CloudletScheduler;
 import org.cloudbus.cloudsim.utilizationmodels.UtilizationModel;

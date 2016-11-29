@@ -9,10 +9,10 @@ package org.cloudbus.cloudsim.allocationpolicies;
 
 import java.util.*;
 
-import org.cloudbus.cloudsim.Host;
+import org.cloudbus.cloudsim.hosts.Host;
 import org.cloudbus.cloudsim.Log;
-import org.cloudbus.cloudsim.Vm;
-import org.cloudbus.cloudsim.VmSimple;
+import org.cloudbus.cloudsim.vms.Vm;
+import org.cloudbus.cloudsim.vms.VmSimple;
 
 /**
  * <p>A VmAllocationPolicy implementation that chooses, as

@@ -1,7 +1,9 @@
-package org.cloudbus.cloudsim;
+package org.cloudbus.cloudsim.vms;
 
 import org.cloudbus.cloudsim.brokers.DatacenterBroker;
 import org.cloudbus.cloudsim.core.Identificable;
+import org.cloudbus.cloudsim.datacenters.Datacenter;
+import org.cloudbus.cloudsim.hosts.Host;
 import org.cloudbus.cloudsim.resources.*;
 import org.cloudbus.cloudsim.schedulers.CloudletScheduler;
 import java.util.Collections;
@@ -393,7 +395,7 @@ public interface Vm extends Identificable, Comparable<Vm> {
      * Sets the Cloudlet scheduler the VM uses to schedule cloudlets execution.
      *
      * @param cloudletScheduler the cloudlet scheduler to set
-     * @return 
+     * @return
      */
     Vm setCloudletScheduler(CloudletScheduler cloudletScheduler);
 
@@ -412,7 +414,7 @@ public interface Vm extends Identificable, Comparable<Vm> {
 
     /**
      * Gets the CloudSim instance that represents the simulation the Entity is related to.
-     * @return 
+     * @return
      * @see #setSimulation(CloudSim)
      */
     Simulation getSimulation();
@@ -422,7 +424,7 @@ public interface Vm extends Identificable, Comparable<Vm> {
      * Such attribute has to be set by the {@link DatacenterBroker} that creates
      * the Vm on behalf of its owner.
      * @param simulation The CloudSim instance that represents the simulation the Entity is related to
-     * @return 
+     * @return
      */
     Vm setSimulation(Simulation simulation);
 

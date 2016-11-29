@@ -12,6 +12,11 @@ Lists the main changes in the project.
   requiring a Cloudlet and a Vm instead of just int values. Once that the method accepted any int value, even an inexisting Vm or Cloudlet ID 
   could be given, what caused NullPointerException when trying to find the Vm or Cloudlet. Now this problem is completely avoided.
 - Changed Cloudlet's vmId attribute from int to Vm and renamed it to vm to conform with the previous change.
+- Packages restructure:
+  - Moved Cloudlet, CloudletAbstract, CloudletExecutionInfo and CloudletSimple to org.cloudbus.cloudsim.cloudlets new package.
+  - Moved Datacenter, DatacenterSimple, DatacenterCharacteristics and DatacenterCharacteristicsSimple to org.cloudbus.cloudsim.datacenters new package.
+  - Moved Host, HostSimple, HostDynamicWorkload, HostDynamicWorkloadSimple and HostStateHistoryEntry to org.cloudbus.cloudsim.hosts new package.
+  - Moved Vm, VmSimple and VmStateHistoryEntry to org.cloudbus.cloudsim.vms new package. 
 
 ## [v0.8-beta.6] - 2016-11-24
 Methods and attributes of the `CloudSim` class aren't static anymore. By this way, each simulation now requires an instance of `CloudSim` instead of calling  methods directly from such a class. Despite this change appears to introduce more complexity when creating a simulation, in fact, it makes it simpler. All classes that extend `SimEntity` required a name to be passed when calling their constructors. Since that name usually was just the name of the class followed by its id, it wasn't meaningful.

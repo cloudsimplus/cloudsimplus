@@ -1,7 +1,7 @@
 package org.cloudsimplus.listeners;
 
-import org.cloudbus.cloudsim.Cloudlet;
-import org.cloudbus.cloudsim.Vm;
+import org.cloudbus.cloudsim.cloudlets.Cloudlet;
+import org.cloudbus.cloudsim.vms.Vm;
 
 /**
  * An {@link EventInfo} class that stores data to be passed
@@ -21,7 +21,7 @@ public class VmToCloudletEventInfo extends CloudletEventInfoSimple implements  V
 
     /**
      * Creates an EventInfo with the given parameters.
-     * 
+     *
      * @param time time the event was fired
      * @param vm Vm where the Cloudlet is running
      * @param cloudlet the Cloudlet that fired the event

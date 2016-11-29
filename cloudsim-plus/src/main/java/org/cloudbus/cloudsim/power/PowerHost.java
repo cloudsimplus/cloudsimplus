@@ -3,8 +3,12 @@ package org.cloudbus.cloudsim.power;
 import java.util.Collections;
 import java.util.List;
 
-import org.cloudbus.cloudsim.*;
 import org.cloudbus.cloudsim.core.Simulation;
+import org.cloudbus.cloudsim.datacenters.Datacenter;
+import org.cloudbus.cloudsim.hosts.Host;
+import org.cloudbus.cloudsim.hosts.HostDynamicWorkload;
+import org.cloudbus.cloudsim.hosts.HostStateHistoryEntry;
+import org.cloudbus.cloudsim.vms.Vm;
 import org.cloudsimplus.listeners.EventListener;
 import org.cloudsimplus.listeners.HostUpdatesVmsProcessingEventInfo;
 import org.cloudbus.cloudsim.power.models.PowerModel;
@@ -58,7 +62,7 @@ public interface PowerHost extends HostDynamicWorkload {
      * Sets the power model.
      *
      * @param powerModel the new power model
-     * @return 
+     * @return
      */
     PowerHost setPowerModel(PowerModel powerModel);
 

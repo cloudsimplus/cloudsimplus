@@ -1,6 +1,6 @@
 package org.cloudsimplus.listeners;
 
-import org.cloudbus.cloudsim.Cloudlet;
+import org.cloudbus.cloudsim.cloudlets.Cloudlet;
 
 /**
  * An {@link EventInfo} interface that stores data to be passed
@@ -22,5 +22,5 @@ public interface CloudletEventInfo {
      * @param cloudlet
      */
     void setCloudlet(Cloudlet cloudlet);
-    
+
 }

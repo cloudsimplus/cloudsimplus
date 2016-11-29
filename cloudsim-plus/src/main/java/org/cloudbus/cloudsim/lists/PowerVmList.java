@@ -7,11 +7,9 @@
  */
 package org.cloudbus.cloudsim.lists;
 
-import java.util.Collections;
 import java.util.List;
 
-import org.cloudbus.cloudsim.Vm;
-import org.cloudbus.cloudsim.core.CloudSim;
+import org.cloudbus.cloudsim.vms.Vm;
 
 /**
  * PowerVmList is a collection of operations on lists of power-enabled VMs.

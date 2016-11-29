@@ -10,8 +10,8 @@ package org.cloudbus.cloudsim.provisioners;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.cloudbus.cloudsim.Vm;
-import org.cloudbus.cloudsim.VmSimpleTest;
+import org.cloudbus.cloudsim.vms.Vm;
+import org.cloudbus.cloudsim.vms.VmSimpleTest;
 import org.junit.Before;
 import org.junit.Test;
 

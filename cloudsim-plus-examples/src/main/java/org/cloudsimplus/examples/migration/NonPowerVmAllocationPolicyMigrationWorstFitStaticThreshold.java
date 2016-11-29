@@ -12,8 +12,8 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.Set;
 
-import org.cloudbus.cloudsim.Host;
-import org.cloudbus.cloudsim.Vm;
+import org.cloudbus.cloudsim.hosts.Host;
+import org.cloudbus.cloudsim.vms.Vm;
 import org.cloudbus.cloudsim.allocationpolicies.VmAllocationPolicy;
 import org.cloudbus.cloudsim.power.PowerHost;
 import org.cloudbus.cloudsim.power.PowerHostSimple;
@@ -46,7 +46,7 @@ public class NonPowerVmAllocationPolicyMigrationWorstFitStaticThreshold extends 
      *
      * @param <T> The generic type.
      * @return The sorted list of hosts.
-     * @see #findHostForVm(org.cloudbus.cloudsim.Vm, java.util.Set)
+     * @see #findHostForVm(Vm, java.util.Set)
      */
     @Override
     public <T extends Host> List<T> getHostList() {

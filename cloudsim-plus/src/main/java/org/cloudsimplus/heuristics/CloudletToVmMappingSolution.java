@@ -3,8 +3,8 @@ package org.cloudsimplus.heuristics;
 import java.util.*;
 import java.util.stream.Collectors;
 
-import org.cloudbus.cloudsim.Cloudlet;
-import org.cloudbus.cloudsim.Vm;
+import org.cloudbus.cloudsim.cloudlets.Cloudlet;
+import org.cloudbus.cloudsim.vms.Vm;
 
 /**
  * A possible solution for mapping a set of Cloudlets to a set of Vm's.

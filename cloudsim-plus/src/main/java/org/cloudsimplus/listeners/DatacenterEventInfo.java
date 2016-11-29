@@ -1,6 +1,6 @@
 package org.cloudsimplus.listeners;
 
-import org.cloudbus.cloudsim.Datacenter;
+import org.cloudbus.cloudsim.datacenters.Datacenter;
 
 /**
  * An {@link EventInfo} interface that stores data to be passed
@@ -19,7 +19,7 @@ public interface DatacenterEventInfo extends EventInfo {
 
     /**
      * Sets the Datacenter for which the event happened.
-     * 
+     *
      * @param datacenter
      */
     void setDatacenter(Datacenter datacenter);

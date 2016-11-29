@@ -16,7 +16,7 @@ import java.util.stream.Collectors;
 import org.cloudbus.cloudsim.Log;
 
 import org.cloudbus.cloudsim.schedulers.CloudletSchedulerSpaceShared;
-import org.cloudbus.cloudsim.CloudletExecutionInfo;
+import org.cloudbus.cloudsim.cloudlets.CloudletExecutionInfo;
 
 /**
  * NetworkCloudletSchedulerSpaceShared implements a policy of scheduling performed by a

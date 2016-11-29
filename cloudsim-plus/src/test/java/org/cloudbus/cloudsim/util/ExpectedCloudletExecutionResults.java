@@ -1,13 +1,13 @@
 package org.cloudbus.cloudsim.util;
 
-import org.cloudbus.cloudsim.Cloudlet;
+import org.cloudbus.cloudsim.cloudlets.Cloudlet;
 
 /**
  * A data class to store expected results about the execution of a given cloudlet
  * during unit test execution.
  * The class is supposed to be used by Unit and Integration/Functional Tests
  * in order to validate the results of a executed cloudlet.
- * 
+ *
  * @author Manoel Campos da Silva Filho
  */
 public final class ExpectedCloudletExecutionResults {
@@ -28,7 +28,7 @@ public final class ExpectedCloudletExecutionResults {
 
     /**
      * The expected execution time of the {@link #cloudlet}.
-     * @return 
+     * @return
      */
     public double getExpectedExecTime() {
         return expectedExecTime;
@@ -36,7 +36,7 @@ public final class ExpectedCloudletExecutionResults {
 
     /**
      * The expected start time of the {@link #cloudlet}.
-     * @return 
+     * @return
      */
     public double getExpectedStartTime() {
         return expectedStartTime;
@@ -44,7 +44,7 @@ public final class ExpectedCloudletExecutionResults {
 
     /**
      * The expected finish time of the {@link #cloudlet}.
-     * @return 
+     * @return
      */
     public double getExpectedFinishTime() {
         return expectedFinishTime;
@@ -59,10 +59,10 @@ public final class ExpectedCloudletExecutionResults {
 
     /**
      * Sets the cloudlet to check if execution results were as expected.
-     * @param cloudlet 
+     * @param cloudlet
      */
     public void setCloudlet(Cloudlet cloudlet) {
         this.cloudlet = cloudlet;
     }
-    
+
 }

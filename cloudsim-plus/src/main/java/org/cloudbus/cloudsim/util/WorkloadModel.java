@@ -9,7 +9,7 @@ package org.cloudbus.cloudsim.util;
 
 import java.util.List;
 
-import org.cloudbus.cloudsim.Cloudlet;
+import org.cloudbus.cloudsim.cloudlets.Cloudlet;
 
 /**
  * Provides methods to be implemented by classes that generate a

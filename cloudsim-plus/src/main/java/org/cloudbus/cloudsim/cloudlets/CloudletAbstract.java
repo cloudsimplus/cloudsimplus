@@ -1,10 +1,12 @@
-package org.cloudbus.cloudsim;
+package org.cloudbus.cloudsim.cloudlets;
 
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
+import org.cloudbus.cloudsim.datacenters.Datacenter;
+import org.cloudbus.cloudsim.vms.Vm;
 import org.cloudbus.cloudsim.brokers.DatacenterBroker;
 import org.cloudbus.cloudsim.core.Simulation;
 import org.cloudbus.cloudsim.utilizationmodels.UtilizationModel;

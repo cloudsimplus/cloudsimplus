@@ -11,11 +11,11 @@ package org.cloudbus.cloudsim.power;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.cloudbus.cloudsim.Host;
+import org.cloudbus.cloudsim.hosts.Host;
 import org.cloudbus.cloudsim.Log;
-import org.cloudbus.cloudsim.Vm;
+import org.cloudbus.cloudsim.vms.Vm;
 import org.cloudbus.cloudsim.allocationpolicies.VmAllocationPolicyAbstract;
-import org.cloudbus.cloudsim.VmSimple;
+import org.cloudbus.cloudsim.vms.VmSimple;
 import org.cloudbus.cloudsim.core.Simulation;
 
 /**

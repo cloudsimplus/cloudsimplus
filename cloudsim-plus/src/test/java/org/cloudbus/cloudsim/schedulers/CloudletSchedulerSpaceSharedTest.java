@@ -1,9 +1,9 @@
 package org.cloudbus.cloudsim.schedulers;
 
 import java.util.List;
-import org.cloudbus.cloudsim.Cloudlet;
-import org.cloudbus.cloudsim.CloudletExecutionInfo;
-import org.cloudbus.cloudsim.CloudletSimpleTest;
+import org.cloudbus.cloudsim.cloudlets.Cloudlet;
+import org.cloudbus.cloudsim.cloudlets.CloudletExecutionInfo;
+import org.cloudbus.cloudsim.cloudlets.CloudletSimpleTest;
 import org.cloudbus.cloudsim.core.CloudSim;
 import org.cloudbus.cloudsim.mocks.CloudSimMocker;
 import org.junit.Test;
@@ -16,7 +16,7 @@ import org.junit.Ignore;
  */
 public class CloudletSchedulerSpaceSharedTest {
     private static final double SCHEDULER_MIPS = 1000;
-    
+
     @Test
     public void testCloudletFinish_CheckCloudletWasSetToFinished() {
         final double clockMethodReturnValue = 0;

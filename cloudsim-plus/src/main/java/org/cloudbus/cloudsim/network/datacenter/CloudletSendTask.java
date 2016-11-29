@@ -10,7 +10,7 @@ package org.cloudbus.cloudsim.network.datacenter;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import org.cloudbus.cloudsim.Cloudlet;
+import org.cloudbus.cloudsim.cloudlets.Cloudlet;
 
 /**
  * Represents a task executed by a {@link NetworkCloudlet} that sends data to a

@@ -1,5 +1,7 @@
-package org.cloudbus.cloudsim;
+package org.cloudbus.cloudsim.cloudlets;
 
+import org.cloudbus.cloudsim.vms.Vm;
+import org.cloudbus.cloudsim.vms.VmSimpleTest;
 import org.cloudsimplus.listeners.EventListener;
 import org.cloudbus.cloudsim.utilizationmodels.UtilizationModel;
 import org.easymock.EasyMock;

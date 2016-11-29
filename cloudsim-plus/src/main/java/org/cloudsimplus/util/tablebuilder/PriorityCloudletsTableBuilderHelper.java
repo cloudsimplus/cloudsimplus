@@ -1,6 +1,6 @@
 package org.cloudsimplus.util.tablebuilder;
 
-import org.cloudbus.cloudsim.Cloudlet;
+import org.cloudbus.cloudsim.cloudlets.Cloudlet;
 
 import java.util.List;
 

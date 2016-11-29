@@ -14,7 +14,10 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import org.cloudbus.cloudsim.*;
-import org.cloudbus.cloudsim.Cloudlet.Status;
+import org.cloudbus.cloudsim.cloudlets.Cloudlet;
+import org.cloudbus.cloudsim.cloudlets.Cloudlet.Status;
+import org.cloudbus.cloudsim.cloudlets.CloudletExecutionInfo;
+import org.cloudbus.cloudsim.vms.Vm;
 import org.cloudsimplus.listeners.VmToCloudletEventInfo;
 import org.cloudbus.cloudsim.resources.Processor;
 
@@ -140,7 +143,7 @@ public abstract class CloudletSchedulerAbstract implements CloudletScheduler {
      * @return the cloudlet execution list
      * @see #addCloudletToExecList(CloudletExecutionInfo)
      * @see
-     * #removeCloudletFromExecListAndSetFinishTime(org.cloudbus.cloudsim.CloudletExecutionInfo)
+     * #removeCloudletFromExecListAndSetFinishTime(CloudletExecutionInfo)
      */
     protected List<CloudletExecutionInfo> getCloudletExecList() {
         return cloudletExecList;

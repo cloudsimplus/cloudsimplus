@@ -10,8 +10,7 @@ package org.cloudbus.cloudsim.provisioners;
 
 import java.util.HashMap;
 import java.util.Map;
-import org.cloudbus.cloudsim.Vm;
-import org.cloudbus.cloudsim.resources.AbstractResource;
+import org.cloudbus.cloudsim.vms.Vm;
 import org.cloudbus.cloudsim.resources.ResourceManageable;
 
 /**

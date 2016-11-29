@@ -1,4 +1,6 @@
-package org.cloudbus.cloudsim;
+package org.cloudbus.cloudsim.hosts;
+
+import org.cloudbus.cloudsim.vms.Vm;
 
 import java.util.List;
 
