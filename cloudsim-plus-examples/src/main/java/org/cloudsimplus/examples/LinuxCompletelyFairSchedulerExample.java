@@ -20,14 +20,14 @@ import org.cloudbus.cloudsim.utilizationmodels.UtilizationModel;
 import org.cloudbus.cloudsim.utilizationmodels.UtilizationModelFull;
 import org.cloudbus.cloudsim.vms.Vm;
 import org.cloudbus.cloudsim.allocationpolicies.VmAllocationPolicySimple;
-import org.cloudbus.cloudsim.schedulers.VmSchedulerTimeShared;
+import org.cloudbus.cloudsim.schedulers.vm.VmSchedulerTimeShared;
 import org.cloudbus.cloudsim.vms.VmSimple;
 import org.cloudbus.cloudsim.core.CloudSim;
 import org.cloudbus.cloudsim.provisioners.PeProvisionerSimple;
 import org.cloudbus.cloudsim.resources.Bandwidth;
 import org.cloudbus.cloudsim.provisioners.ResourceProvisionerSimple;
 import org.cloudbus.cloudsim.resources.Ram;
-import org.cloudbus.cloudsim.schedulers.CloudletSchedulerCompletelyFair;
+import org.cloudbus.cloudsim.schedulers.cloudlet.CloudletSchedulerCompletelyFair;
 import org.cloudsimplus.util.tablebuilder.PriorityCloudletsTableBuilderHelper;
 
 /**
@@ -117,10 +117,10 @@ public class LinuxCompletelyFairSchedulerExample {
         }
 
         //Defines the characteristics of the data center
-        final double cost = 3.0; // the cost of using processing in this datacenter
-        final double costPerMem = 0.05; // the cost of using memory in this datacenter
-        final double costPerStorage = 0.001; // the cost of using storage in this datacenter
-        final double costPerBw = 0.0; // the cost of using bw in this datacenter
+        final double cost = 3.0; // the cost of using processing in this switches
+        final double costPerMem = 0.05; // the cost of using memory in this switches
+        final double costPerStorage = 0.001; // the cost of using storage in this switches
+        final double costPerBw = 0.0; // the cost of using bw in this switches
 
         DatacenterCharacteristics characteristics =
             new DatacenterCharacteristicsSimple(hostList)

@@ -31,7 +31,7 @@ public abstract class CloudletAbstract implements Cloudlet {
     private final DecimalFormat num;
     /**
      * The list of every {@link Datacenter} where the cloudlet has been executed. In case
-     * it starts and finishes executing in a single datacenter, without
+     * it starts and finishes executing in a single switches, without
      * being migrated, this list will have only one item.
      */
     private final List<ExecutionInDatacenterInfo> executionInDatacenterInfoList;
@@ -510,7 +510,7 @@ public abstract class CloudletAbstract implements Cloudlet {
      * Gets information about the cloudlet execution on a given Datacenter.
      *
      * @param datacenterId the Datacenter entity ID
-     * @return the Cloudlet execution information on the given datacenter
+     * @return the Cloudlet execution information on the given switches
      * or null if the Cloudlet has never been executed there
      * @pre datacenterId >= 0
      * @post $none
@@ -852,7 +852,7 @@ public abstract class CloudletAbstract implements Cloudlet {
         datacenterInfo.costPerSec = costPerCpuSec;
         datacenterInfo.datacenterName = simulation.getEntityName(datacenterId);
 
-        // add into a list if moving to a new cloud datacenter
+        // add into a list if moving to a new cloud switches
         getExecutionInDatacenterInfoList().add(datacenterInfo);
 
         if(isRecordTransactionHistory()){

@@ -13,7 +13,7 @@ import java.util.ArrayList;
 import java.util.List;
 import org.cloudbus.cloudsim.cloudlets.Cloudlet;
 import org.cloudbus.cloudsim.cloudlets.CloudletSimple;
-import org.cloudbus.cloudsim.schedulers.CloudletSchedulerSpaceShared;
+import org.cloudbus.cloudsim.schedulers.cloudlet.CloudletSchedulerSpaceShared;
 import org.cloudbus.cloudsim.datacenters.Datacenter;
 import org.cloudbus.cloudsim.datacenters.DatacenterSimple;
 import org.cloudbus.cloudsim.brokers.DatacenterBroker;
@@ -30,7 +30,7 @@ import org.cloudbus.cloudsim.utilizationmodels.UtilizationModelFull;
 import org.cloudbus.cloudsim.vms.Vm;
 import org.cloudbus.cloudsim.vms.VmSimple;
 import org.cloudbus.cloudsim.allocationpolicies.VmAllocationPolicySimple;
-import org.cloudbus.cloudsim.schedulers.VmSchedulerTimeShared;
+import org.cloudbus.cloudsim.schedulers.vm.VmSchedulerTimeShared;
 import org.cloudbus.cloudsim.core.CloudSim;
 import org.cloudbus.cloudsim.provisioners.PeProvisionerSimple;
 import org.cloudbus.cloudsim.resources.Bandwidth;
@@ -139,9 +139,9 @@ public class TwoCloudletsAndOneSpaceSharedVm {
     }
 
     /**
-     * Creates the datacenter.
+     * Creates the switches.
      *
-     * @return the datacenter
+     * @return the switches
      */
     private static Datacenter createDatacenter() {
         // Here are the steps needed to create a DatacenterSimple:
@@ -199,7 +199,7 @@ public class TwoCloudletsAndOneSpaceSharedVm {
     /**
      * Creates the broker.
      *
-     * @return the datacenter broker
+     * @return the switches broker
      */
     private static DatacenterBroker createBroker() {
         return new DatacenterBrokerSimple(simulation);

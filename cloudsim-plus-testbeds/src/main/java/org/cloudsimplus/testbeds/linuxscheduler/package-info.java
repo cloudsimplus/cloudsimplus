@@ -1,7 +1,7 @@
 /**
- * The package contains a set of experiments to compare the {@link org.cloudbus.cloudsim.schedulers.CloudletSchedulerTimeShared},
+ * The package contains a set of experiments to compare the {@link org.cloudbus.cloudsim.schedulers.cloudlet.CloudletSchedulerTimeShared},
  * that has an oversimplified implementation of a time-shared scheduler, and the new CloudSim Plus
- * {@link org.cloudbus.cloudsim.schedulers.CloudletSchedulerCompletelyFair} class that provides
+ * {@link org.cloudbus.cloudsim.schedulers.cloudlet.CloudletSchedulerCompletelyFair} class that provides
  * a basic implementation of the
  * <a href="https://en.wikipedia.org/wiki/Completely_Fair_Scheduler">Completely Fair Scheduler (CFS)</a> used by Linux Kernel.
  *

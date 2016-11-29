@@ -10,9 +10,9 @@ import org.cloudbus.cloudsim.vms.Vm;
 import org.cloudbus.cloudsim.core.CloudSim;
 import org.cloudbus.cloudsim.examples.power.Constants;
 import org.cloudbus.cloudsim.examples.power.Helper;
-import org.cloudbus.cloudsim.power.PowerDatacenterNonPowerAware;
-import org.cloudbus.cloudsim.power.PowerHost;
-import org.cloudbus.cloudsim.power.PowerVmAllocationPolicySimple;
+import org.cloudbus.cloudsim.datacenters.power.PowerDatacenterNonPowerAware;
+import org.cloudbus.cloudsim.hosts.power.PowerHost;
+import org.cloudbus.cloudsim.allocationpolicies.power.PowerVmAllocationPolicySimple;
 
 /**
  * A simulation of a heterogeneous non-power aware data center: all hosts consume maximum power all

@@ -9,7 +9,7 @@ package org.cloudbus.cloudsim.core;
 
 import org.cloudbus.cloudsim.Log;
 import org.cloudbus.cloudsim.core.predicates.Predicate;
-import org.cloudbus.cloudsim.network.NetworkTopology;
+import org.cloudbus.cloudsim.network.topologies.NetworkTopology;
 
 /**
  * This class represents a simulation entity. An entity handles events and can
@@ -53,7 +53,7 @@ public abstract class CloudSimEntity implements SimEntity {
         if(simulation == null){
             simulation = Simulation.NULL;
         }
-        
+
         this.simulation = simulation;
         id = -1;
         state = RUNNABLE;

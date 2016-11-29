@@ -12,7 +12,7 @@ import org.cloudbus.cloudsim.vms.Vm;
 import org.cloudbus.cloudsim.vms.VmStateHistoryEntry;
 import org.cloudbus.cloudsim.brokers.DatacenterBroker;
 import org.cloudbus.cloudsim.resources.Pe;
-import org.cloudbus.cloudsim.schedulers.VmScheduler;
+import org.cloudbus.cloudsim.schedulers.vm.VmScheduler;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.LinkedList;

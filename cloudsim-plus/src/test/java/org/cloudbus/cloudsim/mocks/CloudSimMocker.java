@@ -69,7 +69,7 @@ public final class CloudSimMocker {
 
     /**
      * Makes the {@link CloudSim#clock()} method from the mocked CloudSim class
-     * to return a given value. 
+     * to return a given value.
      *
      * @param clockTimeToReturn the value that the {@link CloudSim#clock()}
      * method must return
@@ -84,7 +84,7 @@ public final class CloudSimMocker {
     public IExpectationSetters<String> getEntityName(final int datacenterId) {
         return EasyMock
                 .expect(cloudsim.getEntityName(datacenterId))
-                .andReturn("datacenter" + datacenterId);
+                .andReturn("switches" + datacenterId);
     }
 
     /**

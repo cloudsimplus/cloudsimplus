@@ -8,7 +8,7 @@ import org.cloudsimplus.listeners.EventListener;
 import org.cloudsimplus.listeners.HostUpdatesVmsProcessingEventInfo;
 import org.cloudbus.cloudsim.provisioners.ResourceProvisioner;
 import org.cloudbus.cloudsim.resources.Pe;
-import org.cloudbus.cloudsim.schedulers.VmScheduler;
+import org.cloudbus.cloudsim.schedulers.vm.VmScheduler;
 import org.easymock.EasyMock;
 import org.junit.Test;
 import static org.junit.Assert.*;

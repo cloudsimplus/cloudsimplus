@@ -15,7 +15,7 @@ import org.cloudbus.cloudsim.core.*;
 import org.cloudbus.cloudsim.network.InfoPacket;
 import org.cloudbus.cloudsim.resources.File;
 import org.cloudbus.cloudsim.allocationpolicies.VmAllocationPolicy;
-import org.cloudbus.cloudsim.schedulers.CloudletScheduler;
+import org.cloudbus.cloudsim.schedulers.cloudlet.CloudletScheduler;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -58,7 +58,7 @@ public class DatacenterSimple extends CloudSimEntity implements Datacenter {
      * Creates a Datacenter.
      *
      * @param simulation The CloudSim instance that represents the simulation the Entity is related to
-     * @param characteristics the characteristics of the datacenter to be created
+     * @param characteristics the characteristics of the switches to be created
      * @param vmAllocationPolicy the policy to be used to allocate VMs into hosts
      * @throws IllegalArgumentException when this entity has <tt>zero</tt> number of PEs (Processing Elements).
      * <br>
@@ -101,11 +101,11 @@ public class DatacenterSimple extends CloudSimEntity implements Datacenter {
      * Creates a Datacenter with the given parameters.
      *
      * @param simulation The CloudSim instance that represents the simulation the Entity is related to
-     * @param characteristics the characteristics of the datacenter to be created
+     * @param characteristics the characteristics of the switches to be created
      * @param storageList a List of storage elements, for data simulation
      * @param vmAllocationPolicy the policy to be used to allocate VMs into hosts
      * @param schedulingInterval the scheduling interval to process each
-     * datacenter received event (in seconds)
+     * switches received event (in seconds)
      * @throws IllegalArgumentException when this entity has <tt>zero</tt> number of PEs (Processing Elements).
      * No PEs mean the Cloudlets can't be processed. A CloudResource must
      * contain one or more Machines. A Machine must contain one or more PEs.
@@ -966,7 +966,7 @@ public class DatacenterSimple extends CloudSimEntity implements Datacenter {
 
     /**
      * Gets the time that one next cloudlet will finish executing on the list of
-     * datacenter's hosts.
+     * switches's hosts.
      *
      * @return the time that one next cloudlet will finish executing or
      * {@link Double#MAX_VALUE} if there isn't any cloudlet running.
@@ -1061,7 +1061,7 @@ public class DatacenterSimple extends CloudSimEntity implements Datacenter {
     }
 
     /**
-     * Checks whether the datacenter has the given file.
+     * Checks whether the switches has the given file.
      *
      * @param file a file to be searched
      * @return <tt>true</tt> if successful, <tt>false</tt> otherwise
@@ -1074,7 +1074,7 @@ public class DatacenterSimple extends CloudSimEntity implements Datacenter {
     }
 
     /**
-     * Checks whether the datacenter has the given file.
+     * Checks whether the switches has the given file.
      *
      * @param fileName a file name to be searched
      * @return <tt>true</tt> if successful, <tt>false</tt> otherwise
@@ -1146,9 +1146,9 @@ public class DatacenterSimple extends CloudSimEntity implements Datacenter {
     }
 
     /**
-     * Sets the datacenter characteristics.
+     * Sets the switches characteristics.
      *
-     * @param characteristics the new datacenter characteristics
+     * @param characteristics the new switches characteristics
      */
     protected final void setCharacteristics(DatacenterCharacteristics characteristics) {
         characteristics.setDatacenter(this);
@@ -1180,7 +1180,7 @@ public class DatacenterSimple extends CloudSimEntity implements Datacenter {
     }
 
     /**
-     * Sets the policy to be used by the datacenter to allocate VMs into hosts.
+     * Sets the policy to be used by the switches to allocate VMs into hosts.
      *
      * @param vmAllocationPolicy the new vm allocation policy
      */
@@ -1195,7 +1195,7 @@ public class DatacenterSimple extends CloudSimEntity implements Datacenter {
     }
 
     /**
-     * Gets the last time some cloudlet was processed in the datacenter.
+     * Gets the last time some cloudlet was processed in the switches.
      *
      * @return the last process time
      */
@@ -1204,7 +1204,7 @@ public class DatacenterSimple extends CloudSimEntity implements Datacenter {
     }
 
     /**
-     * Sets the last time some cloudlet was processed in the datacenter.
+     * Sets the last time some cloudlet was processed in the switches.
      *
      * @param lastProcessTime the new last process time
      */
@@ -1218,7 +1218,7 @@ public class DatacenterSimple extends CloudSimEntity implements Datacenter {
     }
 
     /**
-     * Sets the list of storage devices of the datacenter.
+     * Sets the list of storage devices of the switches.
      *
      * @param storageList the new storage list
      * @return
@@ -1251,7 +1251,7 @@ public class DatacenterSimple extends CloudSimEntity implements Datacenter {
     }
 
     /**
-     * Sets the list of VMs submitted to be ran in some host of this datacenter.
+     * Sets the list of VMs submitted to be ran in some host of this switches.
      *
      * @param <T>
      * @param vmList the new vm list
@@ -1267,7 +1267,7 @@ public class DatacenterSimple extends CloudSimEntity implements Datacenter {
 
     /**
      * Sets the scheduling delay to process each event received by the
-     * datacenter (in seconds).
+     * switches (in seconds).
      *
      * @param schedulingInterval the new scheduling interval
      */

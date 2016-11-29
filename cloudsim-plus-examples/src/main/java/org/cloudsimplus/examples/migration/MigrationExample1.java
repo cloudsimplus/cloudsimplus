@@ -13,7 +13,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.cloudbus.cloudsim.cloudlets.Cloudlet;
-import org.cloudbus.cloudsim.schedulers.CloudletSchedulerDynamicWorkload;
+import org.cloudbus.cloudsim.schedulers.cloudlet.CloudletSchedulerDynamicWorkload;
 import org.cloudbus.cloudsim.cloudlets.CloudletSimple;
 import org.cloudbus.cloudsim.datacenters.Datacenter;
 import org.cloudbus.cloudsim.brokers.DatacenterBroker;
@@ -26,14 +26,14 @@ import org.cloudbus.cloudsim.resources.PeSimple;
 import org.cloudbus.cloudsim.utilizationmodels.UtilizationModel;
 import org.cloudbus.cloudsim.utilizationmodels.UtilizationModelFull;
 import org.cloudbus.cloudsim.vms.Vm;
-import org.cloudbus.cloudsim.schedulers.VmSchedulerSpaceShared;
-import org.cloudbus.cloudsim.schedulers.VmSchedulerTimeShared;
+import org.cloudbus.cloudsim.schedulers.vm.VmSchedulerSpaceShared;
+import org.cloudbus.cloudsim.schedulers.vm.VmSchedulerTimeShared;
 import org.cloudbus.cloudsim.core.CloudSim;
-import org.cloudbus.cloudsim.power.PowerDatacenter;
-import org.cloudbus.cloudsim.power.PowerHost;
-import org.cloudbus.cloudsim.power.PowerHostUtilizationHistory;
-import org.cloudbus.cloudsim.power.PowerVm;
-import org.cloudbus.cloudsim.power.PowerVmSelectionPolicyMinimumUtilization;
+import org.cloudbus.cloudsim.datacenters.power.PowerDatacenter;
+import org.cloudbus.cloudsim.hosts.power.PowerHost;
+import org.cloudbus.cloudsim.hosts.power.PowerHostUtilizationHistory;
+import org.cloudbus.cloudsim.vms.power.PowerVm;
+import org.cloudbus.cloudsim.selectionpolicies.power.PowerVmSelectionPolicyMinimumUtilization;
 import org.cloudbus.cloudsim.power.models.PowerModelLinear;
 import org.cloudbus.cloudsim.provisioners.PeProvisionerSimple;
 import org.cloudbus.cloudsim.provisioners.ResourceProvisionerSimple;
@@ -42,7 +42,7 @@ import org.cloudbus.cloudsim.resources.Ram;
 import org.cloudsimplus.util.tablebuilder.CloudletsTableBuilderHelper;
 
 /**
- * <p>An example showing how to create 1 datacenter with 3 hosts,
+ * <p>An example showing how to create 1 switches with 3 hosts,
  * 1 VM by host and 1 cloudlet by VM and perform VM migration based on
  * a custom VmAllocationPolicy that migrates VMs based on
  * {@link NonPowerVmAllocationPolicyMigrationWorstFitStaticThreshold

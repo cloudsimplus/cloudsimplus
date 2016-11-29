@@ -10,7 +10,7 @@ package org.cloudbus.cloudsim.cloudlets;
 import org.cloudbus.cloudsim.Consts;
 import org.cloudbus.cloudsim.core.CloudSim;
 import org.cloudbus.cloudsim.resources.Pe;
-import org.cloudbus.cloudsim.schedulers.CloudletScheduler;
+import org.cloudbus.cloudsim.schedulers.cloudlet.CloudletScheduler;
 
 /**
  * Stores execution information about a Cloudlet submitted to a Datacenter for

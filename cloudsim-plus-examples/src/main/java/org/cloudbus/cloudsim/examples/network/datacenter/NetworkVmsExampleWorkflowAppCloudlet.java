@@ -3,14 +3,14 @@ package org.cloudbus.cloudsim.examples.network.datacenter;
 import java.util.Arrays;
 import java.util.List;
 import org.cloudbus.cloudsim.Log;
-import org.cloudbus.cloudsim.network.datacenter.AppCloudlet;
-import org.cloudbus.cloudsim.network.datacenter.CloudletSendTask;
-import org.cloudbus.cloudsim.network.datacenter.NetworkCloudlet;
-import org.cloudbus.cloudsim.network.datacenter.NetworkVm;
-import org.cloudbus.cloudsim.network.datacenter.CloudletTask;
-import org.cloudbus.cloudsim.network.datacenter.CloudletExecutionTask;
-import org.cloudbus.cloudsim.network.datacenter.CloudletReceiveTask;
-import org.cloudbus.cloudsim.network.datacenter.NetDatacenterBroker;
+import org.cloudbus.cloudsim.cloudlets.network.AppCloudlet;
+import org.cloudbus.cloudsim.cloudlets.network.CloudletSendTask;
+import org.cloudbus.cloudsim.cloudlets.network.NetworkCloudlet;
+import org.cloudbus.cloudsim.vms.network.NetworkVm;
+import org.cloudbus.cloudsim.cloudlets.network.CloudletTask;
+import org.cloudbus.cloudsim.cloudlets.network.CloudletExecutionTask;
+import org.cloudbus.cloudsim.cloudlets.network.CloudletReceiveTask;
+import org.cloudbus.cloudsim.brokers.network.NetworkDatacenterBroker;
 import org.cloudbus.cloudsim.utilizationmodels.UtilizationModel;
 import org.cloudbus.cloudsim.utilizationmodels.UtilizationModelFull;
 
@@ -47,7 +47,7 @@ public class NetworkVmsExampleWorkflowAppCloudlet extends NetworkVmsExampleAppCl
 
     @Override
     public List<NetworkCloudlet> createNetworkCloudlets(
-            AppCloudlet appCloudlet, NetDatacenterBroker broker) {
+            AppCloudlet appCloudlet, NetworkDatacenterBroker broker) {
         NetworkCloudlet networkCloudletList[] = new NetworkCloudlet[3];
         List<NetworkVm> selectedVms =
                 randomlySelectVmsForAppCloudlet(broker, networkCloudletList.length);
@@ -134,7 +134,7 @@ public class NetworkVmsExampleWorkflowAppCloudlet extends NetworkVmsExampleAppCl
      * @param broker the broker that will own the create NetworkCloudlet
      * @return
      */
-    private NetworkCloudlet createNetworkCloudlet(AppCloudlet appCloudlet, NetworkVm vm, NetDatacenterBroker broker) {
+    private NetworkCloudlet createNetworkCloudlet(AppCloudlet appCloudlet, NetworkVm vm, NetworkDatacenterBroker broker) {
         UtilizationModel utilizationModel = new UtilizationModelFull();
         NetworkCloudlet cloudlet = new NetworkCloudlet(++currentNetworkCloudletId, 1, NETCLOUDLET_PES_NUMBER);
         cloudlet

@@ -23,7 +23,7 @@ import org.cloudbus.cloudsim.core.CloudSimTags;
 /**
  * InfoPacket class can be used to gather information from the network layer. An
  * InfoPacket traverses the network topology similar to a
- * {@link org.cloudbus.cloudsim.network.datacenter.NetworkPacket},
+ * {@link NetworkPacket},
  * but it collects information like bandwidths,
  * and Round Trip Time etc. It is the equivalent of ICMP in physical networks.
  * <p/>

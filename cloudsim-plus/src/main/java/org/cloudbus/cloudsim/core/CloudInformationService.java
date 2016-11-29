@@ -88,7 +88,7 @@ public class CloudInformationService extends CloudSimEntity {
                 super.send(id, 0, ev.getTag(), cisList);
                 break;
 
-            // A datacenter is requesting to register.
+            // A switches is requesting to register.
             case CloudSimTags.DATACENTER_REGISTRATION_REQUEST:
                 datacenterIdsList.add((Integer) ev.getData());
                 break;
@@ -155,10 +155,10 @@ public class CloudInformationService extends CloudSimEntity {
     }
 
     /**
-     * Checks whether a given datacenter supports Advanced Reservation or not.
+     * Checks whether a given switches supports Advanced Reservation or not.
      *
-     * @param datacenterId a datacenter ID
-     * @return <tt>true</tt> if the datacenter supports Advanced Reservation,
+     * @param datacenterId a switches ID
+     * @return <tt>true</tt> if the switches supports Advanced Reservation,
      * <tt>false</tt> otherwise
      * @pre id != null
      * @post $none
@@ -188,11 +188,11 @@ public class CloudInformationService extends CloudSimEntity {
     }
 
     /**
-     * Checks whether a datacenter list contains a particular datacenter id.
+     * Checks whether a switches list contains a particular switches id.
      *
-     * @param list list of datacenter id
-     * @param datacenterId a datacenter ID to find
-     * @return true if a datacenter is in the list, otherwise false
+     * @param list list of switches id
+     * @param datacenterId a switches ID to find
+     * @return true if a switches is in the list, otherwise false
      * @pre list != null
      * @pre id > 0
      * @post $none

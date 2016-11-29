@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.List;
+
+import org.cloudbus.cloudsim.brokers.network.NetworkDatacenterBroker;
 import org.cloudbus.cloudsim.cloudlets.Cloudlet;
 import org.cloudbus.cloudsim.datacenters.DatacenterCharacteristics;
 import org.cloudbus.cloudsim.datacenters.DatacenterCharacteristicsSimple;
@@ -11,18 +13,17 @@ import org.cloudbus.cloudsim.hosts.Host;
 import org.cloudbus.cloudsim.Log;
 import org.cloudbus.cloudsim.allocationpolicies.VmAllocationPolicySimple;
 import org.cloudbus.cloudsim.core.CloudSim;
-import org.cloudbus.cloudsim.network.datacenter.AppCloudlet;
-import org.cloudbus.cloudsim.network.datacenter.CloudletExecutionTask;
-import org.cloudbus.cloudsim.network.datacenter.CloudletReceiveTask;
-import org.cloudbus.cloudsim.network.datacenter.CloudletSendTask;
-import org.cloudbus.cloudsim.network.datacenter.CloudletTask;
-import org.cloudbus.cloudsim.network.datacenter.EdgeSwitch;
-import org.cloudbus.cloudsim.network.datacenter.NetDatacenterBroker;
-import org.cloudbus.cloudsim.network.datacenter.NetworkCloudletSpaceSharedScheduler;
-import org.cloudbus.cloudsim.network.datacenter.NetworkDatacenter;
-import org.cloudbus.cloudsim.network.datacenter.NetworkHost;
-import org.cloudbus.cloudsim.network.datacenter.NetworkVm;
-import org.cloudbus.cloudsim.network.datacenter.NetworkCloudlet;
+import org.cloudbus.cloudsim.cloudlets.network.AppCloudlet;
+import org.cloudbus.cloudsim.cloudlets.network.CloudletExecutionTask;
+import org.cloudbus.cloudsim.cloudlets.network.CloudletReceiveTask;
+import org.cloudbus.cloudsim.cloudlets.network.CloudletSendTask;
+import org.cloudbus.cloudsim.cloudlets.network.CloudletTask;
+import org.cloudbus.cloudsim.network.switches.EdgeSwitch;
+import org.cloudbus.cloudsim.schedulers.cloudlet.network.NetworkCloudletSpaceSharedScheduler;
+import org.cloudbus.cloudsim.datacenters.network.NetworkDatacenter;
+import org.cloudbus.cloudsim.hosts.network.NetworkHost;
+import org.cloudbus.cloudsim.vms.network.NetworkVm;
+import org.cloudbus.cloudsim.cloudlets.network.NetworkCloudlet;
 import org.cloudbus.cloudsim.provisioners.PeProvisionerSimple;
 import org.cloudbus.cloudsim.provisioners.ResourceProvisionerSimple;
 import org.cloudbus.cloudsim.resources.Bandwidth;
@@ -30,7 +31,7 @@ import org.cloudbus.cloudsim.resources.FileStorage;
 import org.cloudbus.cloudsim.resources.Pe;
 import org.cloudbus.cloudsim.resources.PeSimple;
 import org.cloudbus.cloudsim.resources.Ram;
-import org.cloudbus.cloudsim.schedulers.VmSchedulerTimeShared;
+import org.cloudbus.cloudsim.schedulers.vm.VmSchedulerTimeShared;
 import org.cloudsimplus.util.tablebuilder.CloudletsTableBuilderHelper;
 import org.cloudbus.cloudsim.utilizationmodels.UtilizationModel;
 import org.cloudbus.cloudsim.utilizationmodels.UtilizationModelFull;
@@ -66,7 +67,7 @@ public class NetworkVmsExample1 {
     private List<NetworkVm> vmList;
     private List<NetworkCloudlet> cloudletList;
     private NetworkDatacenter datacenter;
-    private NetDatacenterBroker broker;
+    private NetworkDatacenterBroker broker;
 
     private int currentNetworkCloudletId = -1;
 
@@ -82,7 +83,7 @@ public class NetworkVmsExample1 {
         simulation = new CloudSim(num_user, trace_flag);
 
         this.datacenter = createDatacenter();
-        this.broker = new NetDatacenterBroker(simulation);
+        this.broker = new NetworkDatacenterBroker(simulation);
         this.vmList = new ArrayList<>();
 
         this.vmList.addAll(createAndSubmitVMs(broker));
@@ -108,9 +109,9 @@ public class NetworkVmsExample1 {
     }
 
     /**
-     * Creates the datacenter.
+     * Creates the switches.
      *
-     * @return the datacenter
+     * @return the switches
      */
     private NetworkDatacenter createDatacenter() {
         List<Host> hostList = new ArrayList<>();
@@ -158,7 +159,7 @@ public class NetworkVmsExample1 {
 
     /**
      * Creates internal Datacenter network.
-     * @param datacenter datacenter where the network will be created
+     * @param datacenter switches where the network will be created
      */
     private void createNetwork(NetworkDatacenter datacenter) {
         EdgeSwitch[] edgeSwitches = new EdgeSwitch[1];
@@ -176,13 +177,13 @@ public class NetworkVmsExample1 {
     }
 
     /**
-     * Creates a list of virtual machines in a datacenter for a given broker
+     * Creates a list of virtual machines in a switches for a given broker
      * and submit the list to the broker.
      *
      * @param broker The broker that will own the created VMs
      * @return the list of created VMs
      */
-    private List<NetworkVm> createAndSubmitVMs(NetDatacenterBroker broker) {
+    private List<NetworkVm> createAndSubmitVMs(NetworkDatacenterBroker broker) {
         final List<NetworkVm> list = new ArrayList<>();
         for (int i = 0; i < NUMBER_OF_HOSTS; i++) {
             NetworkVm vm = new NetworkVm (i, HOST_MIPS, HOST_PES);
@@ -204,7 +205,7 @@ public class NetworkVmsExample1 {
      * @param broker broker to associate the NetworkCloudlets
      * @return the list of create NetworkCloudlets
      */
-    private List<NetworkCloudlet> createNetworkCloudlets(NetDatacenterBroker broker) {
+    private List<NetworkCloudlet> createNetworkCloudlets(NetworkDatacenterBroker broker) {
         NetworkCloudlet networkCloudletList[] = new NetworkCloudlet[2];
 
         for(int i = 0; i < networkCloudletList.length; i++){
@@ -230,7 +231,7 @@ public class NetworkVmsExample1 {
      * @param broker the broker that will own the create NetworkCloudlet
      * @return
      */
-    private NetworkCloudlet createNetworkCloudlet(NetworkVm vm, NetDatacenterBroker broker) {
+    private NetworkCloudlet createNetworkCloudlet(NetworkVm vm, NetworkDatacenterBroker broker) {
         UtilizationModel utilizationModel = new UtilizationModelFull();
         NetworkCloudlet netCloudlet = new NetworkCloudlet(++currentNetworkCloudletId, 1, HOST_PES);
         netCloudlet
