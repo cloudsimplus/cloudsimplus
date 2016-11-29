@@ -15,6 +15,7 @@ import org.cloudsimplus.builders.HostBuilder;
 import org.cloudsimplus.builders.SimulationScenarioBuilder;
 import org.cloudbus.cloudsim.core.CloudSim;
 import org.cloudsimplus.listeners.DatacenterToVmEventInfo;
+import org.cloudsimplus.listeners.EventListener;
 import org.cloudsimplus.listeners.HostToVmEventInfo;
 import org.cloudsimplus.util.tablebuilder.CloudletsTableBuilderHelper;
 import org.cloudbus.cloudsim.utilizationmodels.UtilizationModelFull;
@@ -32,14 +33,14 @@ import org.junit.Before;
  * order to avoid the documentation being out-of-date in case the IT is changed.
  *
  * <p>To see what verifications are being performed, take a look at methods such as
- * {@link #assertThatBrokerCloudletsHaveTheExpectedExecutionTimes(org.cloudbus.cloudsim.DatacenterBroker)}
+ * {@link #assertThatBrokerCloudletsHaveTheExpectedExecutionTimes(DatacenterBroker)}
  * and all the others that start with "assertThat". Those method names were
  * defined to give an exact notion of what is being tested.</p>
  *
  * <p>The IT uses the new VM listeners to get notified when a host is allocated,
  * deallocated for a given VM and when a VM fails to be created due to lack of
  * host resources. It also relies on the new CloudSim
- * {@link CloudSim#eventProcessingListener} listener to be notified every time
+ * {@link CloudSim#getOnEventProcessingListener()} listener to be notified every time
  * when any event is processed by CloudSim. By this way, it is possible to
  * verify, for instance, if the resource usage of a given host at a given time
  * is as expected.</p>
@@ -47,11 +48,11 @@ import org.junit.Before;
  * <i><b>NOTE</b>:See the profile section in the pom.xml for details of how to
  * run all tests, including Functional/Integration Tests in this package.</i>
  *
- * @see Vm#setOnHostAllocationListener(org.cloudbus.cloudsim.listeners.EventListener)
- * @see Vm#setOnHostDeallocationListener(org.cloudbus.cloudsim.listeners.EventListener)
- * @see Vm#setOnVmCreationFailureListener(org.cloudbus.cloudsim.listeners.EventListener)
- * @see CloudSim#setOnEventProcessingListener(org.cloudbus.cloudsim.listeners.EventListener)
- * @see Cloudlet#setOnCloudletFinishEventListener(org.cloudbus.cloudsim.listeners.EventListener)
+ * @see Vm#setOnHostAllocationListener(EventListener)
+ * @see Vm#setOnHostDeallocationListener(EventListener)
+ * @see Vm#setOnVmCreationFailureListener(EventListener)
+ * @see CloudSim#setOnEventProcessingListener(EventListener)
+ * @see Cloudlet#setOnCloudletFinishEventListener(EventListener)
  *
  * @author Manoel Campos da Silva Filho
  */
@@ -69,7 +70,7 @@ public final class VmCreationFailureIntegrationTest {
     private CloudSim simulation;
 
     /**
-     * A lambda function used by an {@link Vm#setOnHostAllocationListener(org.cloudbus.cloudsim.listeners.EventListener) }
+     * A lambda function used by an {@link Vm#setOnHostAllocationListener(EventListener)}  }
      * that will be called every time a Host is
      * allocated to a given VM. It tries to assert that the Host 0 was allocated
      * to the Vm 0 at the expected time.
@@ -89,7 +90,7 @@ public final class VmCreationFailureIntegrationTest {
     }
 
     /**
-     * A lambda function used by an {@link Vm#setOnHostDeallocationListener(org.cloudbus.cloudsim.listeners.EventListener) }
+     * A lambda function used by an {@link Vm#setOnHostDeallocationListener(EventListener)}  }
      * that will be called every time a Host is
      * deallocated to a given VM. It tries to assert that the Host 0 was
      * deallocated to the Vm 0 at the expected time.
@@ -110,7 +111,7 @@ public final class VmCreationFailureIntegrationTest {
     }
 
     /**
-     * A lambda function used by an {@link Vm#setOnVmCreationFailureListener(org.cloudbus.cloudsim.listeners.EventListener) }
+     * A lambda function used by an {@link Vm#setOnVmCreationFailureListener(EventListener)}  }
      * that will be called every time a Vm failed to be created
      * due to lack of host resources.
      *
@@ -147,7 +148,7 @@ public final class VmCreationFailureIntegrationTest {
 
 
     /**
-     * A lambda function used by an {@link Vm#setOnUpdateVmProcessingListener(org.cloudbus.cloudsim.listeners.EventListener) }
+     * A lambda function used by an {@link Vm#setOnUpdateVmProcessingListener(EventListener)}  }
      * that will be called every time the processing of a Vm is updated inside its host.
      * Considering there is only one Host and only 1 VM where its cloudlets use a
      * {@link UtilizationModelFull} for CPU utilization model,
@@ -241,7 +242,7 @@ public final class VmCreationFailureIntegrationTest {
         assertEquals("cloudlet.getActualCPUTime", results.getExpectedExecTime(), results.getCloudlet().getActualCPUTime(), 0.2);
         assertEquals("cloudlet.getExecStartTime", results.getExpectedStartTime(), results.getCloudlet().getExecStartTime(), 0.2);
         assertEquals("cloudlet.getFinishTime", results.getExpectedFinishTime(), results.getCloudlet().getFinishTime(), 0.2);
-        assertEquals(0, results.getCloudlet().getVmId(), 0);
+        assertEquals(0, results.getCloudlet().getVm().getId(), 0);
         assertEquals("Cloudlet wasn't executed at the expected Datacenter",
                 2, results.getCloudlet().getDatacenterId(), 0);
         assertEquals(Cloudlet.Status.SUCCESS, results.getCloudlet().getStatus());

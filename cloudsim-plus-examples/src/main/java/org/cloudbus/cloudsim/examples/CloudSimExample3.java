@@ -9,7 +9,6 @@
 package org.cloudbus.cloudsim.examples;
 
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.List;
 import org.cloudbus.cloudsim.Cloudlet;
 
@@ -137,8 +136,8 @@ public class CloudSimExample3 {
 
         //bind the cloudlets to the vms. This way, the broker
         // will submit the bound cloudlets only to the specific VM
-        broker.bindCloudletToVm(cloudlet1.getId(), vm1.getId());
-        broker.bindCloudletToVm(cloudlet2.getId(), vm2.getId());
+        broker.bindCloudletToVm(cloudlet1, vm1);
+        broker.bindCloudletToVm(cloudlet2, vm2);
 
         // Sixth step: Starts the simulation
         simulation.start();
@@ -176,7 +175,7 @@ public class CloudSimExample3 {
         Host host = new HostSimple(++hostId, storage, peList)
             .setRamProvisioner(new ResourceProvisionerSimple(new Ram(ram)))
             .setBwProvisioner(new ResourceProvisionerSimple(new Bandwidth(bw)))
-            .setVmScheduler(new VmSchedulerTimeShared(peList));
+            .setVmScheduler(new VmSchedulerTimeShared());
         hostList.add(host);
 
         //create another machine in the Data center
@@ -186,7 +185,7 @@ public class CloudSimExample3 {
         Host hos2t = new HostSimple(++hostId, storage, peList2)
             .setRamProvisioner(new ResourceProvisionerSimple(new Ram(ram)))
             .setBwProvisioner(new ResourceProvisionerSimple(new Bandwidth(bw)))
-            .setVmScheduler(new VmSchedulerTimeShared(peList2));
+            .setVmScheduler(new VmSchedulerTimeShared());
         hostList.add(host);
 
         // 5. Create a DatacenterCharacteristics object that stores the

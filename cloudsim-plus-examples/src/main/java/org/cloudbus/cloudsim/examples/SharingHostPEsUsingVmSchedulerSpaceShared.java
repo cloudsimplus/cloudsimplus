@@ -184,7 +184,7 @@ public class SharingHostPEsUsingVmSchedulerSpaceShared {
        return new HostSimple(numberOfCreatedHosts++, storage, peList)
             .setRamProvisioner(new ResourceProvisionerSimple(new Ram(ram)))
             .setBwProvisioner(new ResourceProvisionerSimple(new Bandwidth(bw)))
-            .setVmScheduler(new VmSchedulerSpaceShared(peList));
+            .setVmScheduler(new VmSchedulerSpaceShared());
 
     }
 
@@ -214,7 +214,7 @@ public class SharingHostPEsUsingVmSchedulerSpaceShared {
                 .setCloudletOutputSize(outputSize)
                 .setUtilizationModel(utilization)
                 .setBroker(broker)
-                .setVmId(vm.getId());
+                .setVm(vm);
 
         return cloudlet;
     }

@@ -133,8 +133,8 @@ public class NetworkExample2 {
 
         //bind the cloudlets to the vms. This way, the broker
         // will submit the bound cloudlets only to the specific VM
-        broker.bindCloudletToVm(cloudlet1.getId(), vm1.getId());
-        broker.bindCloudletToVm(cloudlet2.getId(), vm2.getId());
+        broker.bindCloudletToVm(cloudlet1, vm1);
+        broker.bindCloudletToVm(cloudlet2, vm2);
 
         //Sixth step: configure network
         //load the network topology file
@@ -189,7 +189,7 @@ public class NetworkExample2 {
         Host host = new HostSimple(hostId, storage, peList)
             .setRamProvisioner(new ResourceProvisionerSimple(new Ram(ram)))
             .setBwProvisioner(new ResourceProvisionerSimple(new Bandwidth(bw)))
-            .setVmScheduler(new VmSchedulerTimeShared(peList));
+            .setVmScheduler(new VmSchedulerTimeShared());
         hostList.add(host);
 
         // 5. Create a DatacenterCharacteristics object that stores the

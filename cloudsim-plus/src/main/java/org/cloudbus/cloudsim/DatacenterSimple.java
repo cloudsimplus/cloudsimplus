@@ -599,7 +599,7 @@ public class DatacenterSimple extends CloudSimEntity implements Datacenter {
                 Cloudlet cl = (Cloudlet) ev.getData();
                 cloudletId = cl.getId();
                 userId = cl.getBrokerId();
-                vmId = cl.getVmId();
+                vmId = cl.getVm().getId();
             } catch (Exception e) {
                 Log.printConcatLine(super.getName(), ": Error in processing Cloudlet");
                 Log.printLine(e.getMessage());
@@ -647,16 +647,14 @@ public class DatacenterSimple extends CloudSimEntity implements Datacenter {
         int[] array = receivedData;
         int cloudletId = array[0];
         int userId = array[1];
-        int vmId = array[2];
-        int vmDestId = array[3];
+        int sourceVmId = array[2];
+        int destVmId = array[3];
         int destId = array[4];
 
-        // get the cloudlet
-        Cloudlet cl = getVmAllocationPolicy()
-                .getHost(vmId, userId)
-                .getVm(vmId, userId)
-                .getCloudletScheduler()
-                .cloudletCancel(cloudletId);
+        Host host = getVmAllocationPolicy().getHost(sourceVmId, userId);
+        Vm sourceVm = host.getVm(sourceVmId, userId);
+        Vm destVm = host.getVm(destVmId, userId);
+        Cloudlet cl = sourceVm.getCloudletScheduler().cloudletCancel(cloudletId);
 
         boolean failed = false;
         if (cl == null) {// cloudlet doesn't exist
@@ -673,11 +671,11 @@ public class DatacenterSimple extends CloudSimEntity implements Datacenter {
             }
 
             // prepare cloudlet for migration
-            cl.setVmId(vmDestId);
+            cl.setVm(destVm);
 
             // The cloudlet will migrate from one vm to another. Does the destination VM exist?
             if (destId == getId()) {
-                Vm vm = getVmAllocationPolicy().getHost(vmDestId, userId).getVm(vmDestId, userId);
+                Vm vm = getVmAllocationPolicy().getHost(destVmId, userId).getVm(destVmId, userId);
                 if (vm == null) {
                     failed = true;
                 } else {
@@ -754,9 +752,7 @@ public class DatacenterSimple extends CloudSimEntity implements Datacenter {
         // time to transfer cloudlet files
         double fileTransferTime = predictFileTransferTime(cl.getRequiredFiles());
 
-        Host host = getVmAllocationPolicy().getHost(cl.getVmId(), cl.getBrokerId());
-        Vm vm = host.getVm(cl.getVmId(), cl.getBrokerId());
-        CloudletScheduler scheduler = vm.getCloudletScheduler();
+        CloudletScheduler scheduler = cl.getVm().getCloudletScheduler();
         double estimatedFinishTime = scheduler.cloudletSubmit(cl, fileTransferTime);
 
         // if this cloudlet is in the exec queue
@@ -1220,7 +1216,7 @@ public class DatacenterSimple extends CloudSimEntity implements Datacenter {
      * Sets the list of storage devices of the datacenter.
      *
      * @param storageList the new storage list
-     * @return 
+     * @return
      */
     @Override
     public final Datacenter setStorageList(List<FileStorage> storageList) {
@@ -1230,7 +1226,7 @@ public class DatacenterSimple extends CloudSimEntity implements Datacenter {
 
         this.storageList = storageList;
         setAllFilesOfAllStoragesToThisDatacenter();
-        
+
         return this;
     }
 

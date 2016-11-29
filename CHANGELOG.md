@@ -2,13 +2,70 @@
 
 Lists the main changes in the project.
 
-## [xxx] - 2016-MM-DD
-
-### Added
+## [Current Development Version]
 
 ### Changed
+- Removed the PE list parameter from the VmScheduler constructors. Now classes that implement VmScheduler have a host attribute from where the PE list is got directly.
+  This attribute is automatically set by a host when the Host.setScheduler setter is called. By this way, the user doesn't have to worry about this VmScheduler attribute. 
+  This change makes it easier to create a VmScheduler and consequently a Host.
+- Changed DatacenterBroker.bindCloudletToVm(int cloudletId, int vmId) to DatacenterBroker.bindCloudletToVm(Cloudlet cloudlet, Vm vm),
+  requiring a Cloudlet and a Vm instead of just int values. Once that the method accepted any int value, even an inexisting Vm or Cloudlet ID 
+  could be given, what caused NullPointerException when trying to find the Vm or Cloudlet. Now this problem is completely avoided.
+- Changed Cloudlet's vmId attribute from int to Vm and renamed it to vm to conform with the previous change.
 
-### Removed
+## [v0.8-beta.6] - 2016-11-24
+Methods and attributes of the `CloudSim` class aren't static anymore. By this way, each simulation now requires an instance of `CloudSim` instead of calling  methods directly from such a class. Despite this change appears to introduce more complexity when creating a simulation, in fact, it makes it simpler. All classes that extend `SimEntity` required a name to be passed when calling their constructors. Since that name usually was just the name of the class followed by its id, it wasn't meaningful.
+The name is just used for log purposes. Accordingly, such constructor parameter was removed and a default name is given for each `SimEntity` object. All `SimEntity` objects now require an `CloudSim` instance. Thus, the constructor parameter "name" was removed and in its place a `CloudSim simulation` parameter was introduced.
+
+Classes such as `Datacenter`, `DatacenterBroker`, `Host`, `Vm` and `Cloudlet` all require a `CloudSim` instance. However, just for the classes that extend `SimEntity` that a `CloudSim` instance has to be manually provided when calling the constructor. For other objects such as `Host`, `Vm` and `Cloudlet`, a `CloudSim` instance is set automatically and the framework users don't have to worry about it.
+
+The code snippet below shows what changed for creating a simulation scenario:
+
+```java
+//Initialization is now performed by instantianting a CloudSim object:
+//See that currently just the number of cloud users (the number of brokers) is required
+CloudSim simulation = new CloudSim(numberOfCloudUsers);
+//CloudSim.init(numberOfCloudUsers, Calendar.getInstance(), traceEvents); //old way
+
+//Creating a Datacenter:
+//See that instead of passing a name, it is now passed a CloudSim instance
+Datacenter datacenter = new DatacenterSimple(simulation, characteristics, new VmAllocationPolicySimple());
+//Datacenter datacenter = new DatacenterSimple(name, characteristics, new VmAllocationPolicySimple()); //old way
+
+//Creating a Broker:
+//The DatacenterBroker (and any SimEntity subclass) requires a CloudSim instance not a name anymore.
+//If you want to define a specific name, you can call the setName method yet.
+DatacenterBroker broker0 = new DatacenterBrokerSimple(simulation);
+//DatacenterBroker broker0 = new DatacenterBrokerSimple("Broker0"); //old way
+
+//Methods to start and stop the simulation now are called from a CloudSim instance and
+//are named just start and stop.
+simulation.start();
+simulation.stop();
+
+```  
+
+As can be seen, this improvement makes it easier to create simulations and brings great benefits:
+- Since `CloudSim` class no longer has static attributes that store data specific to a given simulation scenario, it is possible to run multiple simulations at the same time.
+- It makes easier to write unit tests for classes that depends on `CloudSim` methods. As all `CloudSim` methods were static, this made very difficult to write tests
+  that depend on it, since the class initialization was complex. Due to that complexity, the most obvious way was to create mock objects for `CloudSim`.
+  But as the class has just static methods and it in fact couldn't be instantiated, the regular approach to create a mock object using
+  libraries such as EasyMock couldn't be applied. The PowerMock library provides a way to mock static methods, but it adds more complexity 
+  for test writing. Now that the simulation in fact required a `CloudSim` instance, it is very easy to create a mock `CloudSim` object using EasyMock.   
+
+Additional changes are presented as follows.
+
+### Added
+- Introduction of public constructors for `CloudSim` class, that now must be used to create simulations. Such constructors are in fact the old CloudSim.init methods.  
+- The most useful constructor introduced accepts just the number of cloud users (number of brokers). The traceFlag and calendar attributes
+  are set to default values in this constructor, since the examples commonly use the same values for such parameters. Using such a constructor 
+  makes it easier to create a `CloudSim` instance (that in fact initializes the simulation). 
+
+### Changed
+- Removed the `name` parameter from `SimEntity` constructors and included a parameter `CloudSim simulation`.  
+- Remomve the word "Simulation" from the name of the  methods `startSimulation`, `stopSimulation`, `pauseSimulation`, `terminateSimulation`.
+- The method `boolean terminateSimulation(double time)` was renamed to `boolean terminateAt(double time)` to provide a clear name, indicanting
+  that it, different from the `terminate` method, will terminate the simulation just at the given time. 
 
 ## [v0.8-beta.5] - 2016-11-23
 

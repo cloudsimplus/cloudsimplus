@@ -103,7 +103,7 @@ public class NetworkVmsExampleWorkflowAppCloudlet extends NetworkVmsExampleAppCl
      */
     private void addReceiveTask(NetworkCloudlet cloudlet, NetworkCloudlet sourceCloudlet) {
         CloudletReceiveTask task = new CloudletReceiveTask(
-                cloudlet.getTasks().size(), sourceCloudlet.getVmId());
+                cloudlet.getTasks().size(), sourceCloudlet.getVm().getId());
         task.setMemory(NETCLOUDLET_RAM);
         task.setNumberOfExpectedPacketsToReceive(NUMBER_OF_PACKETS_TO_SEND);
         cloudlet.addTask(task);
@@ -144,7 +144,7 @@ public class NetworkVmsExampleWorkflowAppCloudlet extends NetworkVmsExampleAppCl
                 .setCloudletOutputSize(NETCLOUDLET_OUTPUT_SIZE)
                 .setUtilizationModel(utilizationModel)
                 .setBroker(broker)
-                .setVmId(vm.getId());
+                .setVm(vm);
 
         return cloudlet;
     }

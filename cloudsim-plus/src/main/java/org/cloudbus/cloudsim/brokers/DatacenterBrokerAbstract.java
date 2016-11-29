@@ -13,7 +13,6 @@ import org.cloudbus.cloudsim.Vm;
 import org.cloudbus.cloudsim.core.*;
 import org.cloudsimplus.listeners.DatacenterToVmEventInfo;
 import org.cloudsimplus.listeners.VmToCloudletEventInfo;
-import org.cloudbus.cloudsim.lists.CloudletList;
 import org.cloudbus.cloudsim.lists.VmList;
 
 /**
@@ -139,8 +138,13 @@ public abstract class DatacenterBrokerAbstract extends CloudSimEntity implements
     }
 
     @Override
-    public void bindCloudletToVm(int cloudletId, int vmId) {
-        CloudletList.getById(getCloudletsWaitingList(), cloudletId).setVmId(vmId);
+    public boolean bindCloudletToVm(Cloudlet cloudlet, Vm vm) {
+        if(!getCloudletsWaitingList().contains(cloudlet)){
+            return false;
+        }
+
+        cloudlet.setVm(vm);
+        return true;
     }
 
     @Override
@@ -302,7 +306,7 @@ public abstract class DatacenterBrokerAbstract extends CloudSimEntity implements
         Vm vm = VmList.getById(getVmsWaitingList(), vmId);
         if (vm != Vm.NULL) {
             Datacenter datacenter = datacenterCharacteristicsMap.get(datacenterId).getDatacenter();
-            DatacenterToVmEventInfo info = 
+            DatacenterToVmEventInfo info =
                     new DatacenterToVmEventInfo(getSimulation().clock(), datacenter, vm);
             vm.getOnVmCreationFailureListener().update(info);
         }
@@ -341,9 +345,8 @@ public abstract class DatacenterBrokerAbstract extends CloudSimEntity implements
     }
 
     protected void notifyCloudletFinishListener(Cloudlet cloudlet) {
-        Vm vm = VmList.getById(vmsWaitingList, cloudlet.getVmId());
-        VmToCloudletEventInfo info = 
-                new VmToCloudletEventInfo(getSimulation().clock(), vm, cloudlet);
+        VmToCloudletEventInfo info =
+                new VmToCloudletEventInfo(getSimulation().clock(), cloudlet.getVm(), cloudlet);
         cloudlet.getOnCloudletFinishEventListener().update(info);
     }
 
@@ -419,7 +422,7 @@ public abstract class DatacenterBrokerAbstract extends CloudSimEntity implements
                 continue;
             }
             Log.printFormattedLine("%.2f: %s: Sending %s %d to VM #%d", getSimulation().clock(), getName(), cloudlet.getClass().getSimpleName(), cloudlet.getId(), getLastSelectedVm().getId());
-            cloudlet.setVmId(lastSelectedVm.getId());
+            cloudlet.setVm(lastSelectedVm);
             send(getVmsToDatacentersMap().get(getLastSelectedVm().getId()),
                     cloudlet.getSubmissionDelay(), CloudSimTags.CLOUDLET_SUBMIT, cloudlet);
             cloudletsCreated++;

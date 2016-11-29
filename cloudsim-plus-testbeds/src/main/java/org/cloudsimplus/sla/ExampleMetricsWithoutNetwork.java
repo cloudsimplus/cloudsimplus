@@ -2,7 +2,6 @@ package org.cloudsimplus.sla;
 
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.List;
 import org.cloudbus.cloudsim.Cloudlet;
 import org.cloudbus.cloudsim.CloudletSimple;
@@ -30,9 +29,8 @@ import org.cloudbus.cloudsim.resources.Ram;
 import org.cloudsimplus.util.tablebuilder.CloudletsTableBuilderHelper;
 import org.cloudbus.cloudsim.utilizationmodels.UtilizationModel;
 import org.cloudbus.cloudsim.utilizationmodels.UtilizationModelFull;
-import org.cloudsimplus.sla.readJsonFile.SlaMetric;
+import org.cloudsimplus.sla.readJsonFile.SlaContractMetrics;
 import org.cloudsimplus.sla.readJsonFile.SlaReader;
-
 
 /**
  *
@@ -42,6 +40,7 @@ import org.cloudsimplus.sla.readJsonFile.SlaReader;
  * without network.
  */
 public final class ExampleMetricsWithoutNetwork {
+
     private static final String METRICS_FILE = "/Users/raysaoliveira/Desktop/TeseMestradoEngInformatica/cloudsim-plus/cloudsim-plus-testbeds/src/main/java/org/cloudsimplus/sla/readJsonFile/SlaMetric.json";
 
     private static final int HOSTS_NUMBER = 3;
@@ -51,10 +50,10 @@ public final class ExampleMetricsWithoutNetwork {
     private static final int TOTAL_VM_PES = VM_PES1 + VM_PES2;
     private static final int CLOUDLETS_NUMBER = HOSTS_NUMBER * TOTAL_VM_PES;
     private static final int CLOUDLET_PES = 1;
-    
+
     private static List<Host> hostList;
     private int lastCreatedVmId = 0;
-    
+
     /**
      * The cloudlet list.
      */
@@ -91,18 +90,17 @@ public final class ExampleMetricsWithoutNetwork {
 
         //create VMs with differents configurations
         for (int i = 0; i < numberOfVms; i++) {
-            Vm vm  = new VmSimple(
-                        this.lastCreatedVmId++, mips, numberOfPes)
-                        .setRam(ram).setBw(bw).setSize(size)
-                        .setCloudletScheduler(new CloudletSchedulerTimeShared())
-                        .setBroker(broker);
+            Vm vm = new VmSimple(
+                    this.lastCreatedVmId++, mips, numberOfPes)
+                    .setRam(ram).setBw(bw).setSize(size)
+                    .setCloudletScheduler(new CloudletSchedulerTimeShared())
+                    .setBroker(broker);
             list.add(vm);
         }
 
         return list;
     }
 
-    
     /**
      * Creates cloudlets
      *
@@ -197,7 +195,7 @@ public final class ExampleMetricsWithoutNetwork {
             utilizationResources += bw + cpu + ram;
 
         }
-        return (utilizationResources*100)/100;
+        return (utilizationResources * 100) / 100;
     }
 
     /**
@@ -219,16 +217,14 @@ public final class ExampleMetricsWithoutNetwork {
      //pegar o dowlink BW do edge, pois as Vms estao conectadas nele
      return 1;
      }*/
-
     public static void main(String[] args) throws FileNotFoundException {
         Log.printFormattedLine(" Starting... ");
-            new ExampleMetricsWithoutNetwork();
+        new ExampleMetricsWithoutNetwork();
     }
 
     public ExampleMetricsWithoutNetwork() throws FileNotFoundException {
         //  Initialize the CloudSim package.
         int num_user = 1; // number of cloud users
-       
         cloudsim = new CloudSim(num_user);
 
         //Create Datacenters
@@ -251,16 +247,13 @@ public final class ExampleMetricsWithoutNetwork {
 
         // Sixth step: Starts the simulation
         cloudsim.start();
-        
         /*for(Host h: datacenter0.getHostList()){
-            System.out.println("->>>>>> " + h);
-            for(Pe pe: h.getPeList()){
-                System.out.println("->>> " + pe.getMips());
-            }
-        }
-        totalCostPrice(vmlist);*/
-       
-        
+         System.out.println("->>>>>> " + h);
+         for(Pe pe: h.getPeList()){
+         System.out.println("->>> " + pe.getMips());
+         }
+         }
+         totalCostPrice(vmlist);*/
         cloudsim.stop();
 
         System.out.println("______________________________________________________");
@@ -285,14 +278,12 @@ public final class ExampleMetricsWithoutNetwork {
 
         // total cost
         //totalCostPrice(vmlist);
-
         System.out.println("______________________________________________________");
 
         System.out.println("______________________________________________________");
         System.out.println("\n\t\t - Metric monitoring - \n\t\t(violated or not violated)  \n ");
 
-        checkSlaViolations(); 
-
+        checkSlaViolations();
         System.out.println("______________________________________________________");
 
         //Final step: Print results when simulation is over
@@ -309,7 +300,6 @@ public final class ExampleMetricsWithoutNetwork {
      *
      * @return the datacenter
      */
-   
     private Datacenter createDatacenter() {
         hostList = new ArrayList<>();
 
@@ -324,7 +314,7 @@ public final class ExampleMetricsWithoutNetwork {
             Host host = new HostSimple(hostId++, storage, peList)
                     .setRamProvisioner(new ResourceProvisionerSimple(new Ram(ram)))
                     .setBwProvisioner(new ResourceProvisionerSimple(new Bandwidth(bw)))
-                    .setVmScheduler(new VmSchedulerTimeShared(peList));
+                    .setVmScheduler(new VmSchedulerTimeShared());
 
             getHostList().add(host);
         }// This is our machine
@@ -335,7 +325,7 @@ public final class ExampleMetricsWithoutNetwork {
         // resource
         double costPerBw = 0.0; // the cost of using bw in this resource
 
-   DatacenterCharacteristics characteristics
+        DatacenterCharacteristics characteristics
                 = new DatacenterCharacteristicsSimple(hostList)
                 .setCostPerSecond(cost)
                 .setCostPerMem(costPerMem)
@@ -354,7 +344,6 @@ public final class ExampleMetricsWithoutNetwork {
         return peList;
     }
 
-    
     /**
      * Creates the broker.
      *
@@ -370,69 +359,69 @@ public final class ExampleMetricsWithoutNetwork {
     public double getResponseTime() {
         return responseTimeCloudlet;
     }
-    
+
     private void checkSlaViolations() throws FileNotFoundException {
         SlaReader slaReader = new SlaReader(METRICS_FILE);
         slaReader.getMetrics().stream()
                 .filter(m -> m.isNamed(SlaReader.RESPONSE_TIME_FIELD))
                 .findFirst()
-                .ifPresent(this::checkResponseTimeViolation); 
-        
+                .ifPresent(this::checkResponseTimeViolation);
+
         slaReader.getMetrics().stream()
                 .filter(m -> m.isNamed(SlaReader.CPU_UTILIZATION_FIELD))
                 .findFirst()
-                .ifPresent(this::checkCpuUtilizationViolation); 
-        
+                .ifPresent(this::checkCpuUtilizationViolation);
+
         slaReader.getMetrics().stream()
                 .filter(m -> m.isNamed(SlaReader.WAIT_TIME_FIELD))
                 .findFirst()
-                .ifPresent(this::checkWaitTimeViolation); 
-        
-    }
-     
-    private void checkResponseTimeViolation(SlaMetric metric){
-        SlaMetricsMonitoring monitoring = new SlaMetricsMonitoring();
-        if (responseTimeCloudlet < metric.getValueMin() || responseTimeCloudlet > metric.getValueMax()) {
-            monitoring.monitoringResponseTime(metric.getName());   
-            printMetricDataViolated(metric);
-        }
-        else
-            System.out.println("\n* The metric: " + metric.getName() + " was not violated!! ");    
+                .ifPresent(this::checkWaitTimeViolation);
+
     }
 
-    private void checkCpuUtilizationViolation(SlaMetric metric){
+    private void checkResponseTimeViolation(SlaContractMetrics metric) {
+        SlaMetricsMonitoring monitoring = new SlaMetricsMonitoring();
+        if (responseTimeCloudlet < metric.getValueMin() || responseTimeCloudlet > metric.getValueMax()) {
+            monitoring.monitoringResponseTime(metric.getName());
+            printMetricDataViolated(metric);
+        } else {
+            System.out.println("\n* The metric: " + metric.getName() + " was not violated!! ");
+        }
+    }
+
+    private void checkCpuUtilizationViolation(SlaContractMetrics metric) {
         SlaMetricsMonitoring monitoring = new SlaMetricsMonitoring();
         if (cpuUtilization < metric.getValueMin() || cpuUtilization > metric.getValueMax()) {
-            monitoring.monitoringCpuUtilization(metric.getName());   
+            monitoring.monitoringCpuUtilization(metric.getName());
             printMetricDataViolated(metric);
+        } else {
+            System.out.println("\n* The metric: " + metric.getName() + " was not violated!! ");
         }
-        else
-            System.out.println("\n* The metric: " + metric.getName() + " was not violated!! ");    
     }
-    
-    private void checkWaitTimeViolation(SlaMetric metric){
+
+    private void checkWaitTimeViolation(SlaContractMetrics metric) {
         SlaMetricsMonitoring monitoring = new SlaMetricsMonitoring();
         if (waitTimeCloudlet < metric.getValueMin() || waitTimeCloudlet > metric.getValueMax()) {
-            monitoring.monitoringWaitTime(metric.getName());   
+            monitoring.monitoringWaitTime(metric.getName());
             printMetricDataViolated(metric);
+        } else {
+            System.out.println("\n* The metric: " + metric.getName() + " was not violated!! ");
         }
-        else
-            System.out.println("\n* The metric: " + metric.getName() + " was not violated!! ");    
     }
-    
-    private void printMetricDataViolated(SlaMetric metric) {
+
+    private void printMetricDataViolated(SlaContractMetrics metric) {
         System.out.println("\n\tName: " + metric.getName());
         System.out.println("\tMinimum value acceptable for this metric: " + metric.getValueMin());
         System.out.println("\tMaximun value acceptable for this metric: " + metric.getValueMax());
     }
 
-    
     /**
-     *  return the hostList
-     * @return 
+     * return the hostList
+     *
+     * @return
      */
     private List<Host> getHostList() {
         return hostList;
-    }    
+    }
 
 }

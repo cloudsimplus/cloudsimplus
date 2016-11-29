@@ -9,6 +9,7 @@ import org.cloudbus.cloudsim.DatacenterCharacteristics;
 import org.cloudbus.cloudsim.DatacenterCharacteristicsSimple;
 import org.cloudbus.cloudsim.Host;
 import org.cloudbus.cloudsim.Log;
+import org.cloudbus.cloudsim.allocationpolicies.VmAllocationPolicySimple;
 import org.cloudbus.cloudsim.core.CloudSim;
 import org.cloudbus.cloudsim.network.datacenter.AppCloudlet;
 import org.cloudbus.cloudsim.network.datacenter.CloudletExecutionTask;
@@ -22,7 +23,6 @@ import org.cloudbus.cloudsim.network.datacenter.NetworkDatacenter;
 import org.cloudbus.cloudsim.network.datacenter.NetworkHost;
 import org.cloudbus.cloudsim.network.datacenter.NetworkVm;
 import org.cloudbus.cloudsim.network.datacenter.NetworkCloudlet;
-import org.cloudbus.cloudsim.network.datacenter.NetworkVmAllocationPolicy;
 import org.cloudbus.cloudsim.provisioners.PeProvisionerSimple;
 import org.cloudbus.cloudsim.provisioners.ResourceProvisionerSimple;
 import org.cloudbus.cloudsim.resources.Bandwidth;
@@ -119,7 +119,7 @@ public class NetworkVmsExample1 {
             Host host = new NetworkHost(i, HOST_STORAGE, peList)
                 .setRamProvisioner(new ResourceProvisionerSimple(new Ram(HOST_RAM)))
                 .setBwProvisioner(new ResourceProvisionerSimple(new Bandwidth(HOST_BW)))
-                .setVmScheduler(new VmSchedulerTimeShared(peList));
+                .setVmScheduler(new VmSchedulerTimeShared());
 
             hostList.add(host);
         }
@@ -138,7 +138,7 @@ public class NetworkVmsExample1 {
 
         // 6. Finally, we need to create a NetworkDatacenter object.
         NetworkDatacenter newDatacenter =
-            new NetworkDatacenter(simulation, characteristics, new NetworkVmAllocationPolicy());
+            new NetworkDatacenter(simulation, characteristics, new VmAllocationPolicySimple());
         newDatacenter.setSchedulingInterval(5);
 
         createNetwork(newDatacenter);
@@ -239,7 +239,7 @@ public class NetworkVmsExample1 {
                 .setCloudletOutputSize(NETCLOUDLET_OUTPUT_SIZE)
                 .setUtilizationModel(utilizationModel);
         netCloudlet.setBroker(broker);
-        netCloudlet.setVmId(vm.getId());
+        netCloudlet.setVm(vm);
 
         return netCloudlet;
     }
@@ -271,7 +271,7 @@ public class NetworkVmsExample1 {
      */
     private void addReceiveTask(NetworkCloudlet cloudlet, NetworkCloudlet sourceCloudlet) {
         CloudletReceiveTask task = new CloudletReceiveTask(
-                cloudlet.getTasks().size(), sourceCloudlet.getVmId());
+                cloudlet.getTasks().size(), sourceCloudlet.getVm().getId());
         task.setMemory(TASK_RAM);
         task.setNumberOfExpectedPacketsToReceive(NUMBER_OF_PACKETS_TO_SEND);
         cloudlet.addTask(task);

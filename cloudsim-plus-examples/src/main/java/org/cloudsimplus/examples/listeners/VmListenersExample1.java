@@ -10,7 +10,6 @@ package org.cloudsimplus.examples.listeners;
  */
 import org.cloudsimplus.util.tablebuilder.CloudletsTableBuilderHelper;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.List;
 import org.cloudbus.cloudsim.Cloudlet;
 import org.cloudbus.cloudsim.CloudletSimple;
@@ -208,7 +207,7 @@ public class VmListenersExample1 {
                     .setCloudletOutputSize(outputSize)
                     .setUtilizationModel(utilizationModel)
                     .setBroker(broker)
-                    .setVmId(vm.getId());
+                    .setVm(vm);
         return cloudlet;
     }
 
@@ -256,7 +255,7 @@ public class VmListenersExample1 {
         return new HostSimple(id, storage, peList)
             .setRamProvisioner(new ResourceProvisionerSimple(new Ram(ram)))
             .setBwProvisioner(new ResourceProvisionerSimple(new Bandwidth(bw)))
-            .setVmScheduler(new VmSchedulerTimeShared(peList));
+            .setVmScheduler(new VmSchedulerTimeShared());
 
     }
 }

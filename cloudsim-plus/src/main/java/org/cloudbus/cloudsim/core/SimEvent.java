@@ -3,7 +3,11 @@ package org.cloudbus.cloudsim.core;
 import org.cloudsimplus.listeners.EventInfo;
 
 /**
+ * An interface that represents a simulation event which is passed between the entities
+ * in the simulation.
+ *
  * @author Manoel Campos da Silva Filho
+ * @see CloudSimEvent
  */
 public interface SimEvent extends Cloneable, Comparable<SimEvent>, EventInfo {
     // Internal event types
@@ -74,7 +78,7 @@ public interface SimEvent extends Cloneable, Comparable<SimEvent>, EventInfo {
      * Set the source entity of this event.
      *
      * @param source The unique id number of the source entity
-     * @return 
+     * @return
      */
     SimEvent setSource(int source);
 
@@ -82,7 +86,7 @@ public interface SimEvent extends Cloneable, Comparable<SimEvent>, EventInfo {
      * Set the destination entity of this event.
      *
      * @param destination The unique id number of the destination entity
-     * @return 
+     * @return
      */
     SimEvent setDestination(int destination);
 
@@ -95,13 +99,13 @@ public interface SimEvent extends Cloneable, Comparable<SimEvent>, EventInfo {
      * the same {@link #getTag()}, to know what event is greater than other (i.e.
      * that happens after other), the
      * {@link #compareTo(SimEvent)} makes use of this field.
-     * @return 
+     * @return
      */
     long getSerial();
 
     /**
      * Gets the CloudSim instance that represents the simulation the Entity is related to.
-     * @return 
+     * @return
      */
     Simulation getSimulation();
 

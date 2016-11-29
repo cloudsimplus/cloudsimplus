@@ -10,14 +10,14 @@ package org.cloudsimplus.sla.readJsonFile;
  *
  * @author raysaoliveira
  */
-public final class SlaMetric {
+public final class SlaContractMetrics {
 
     private String name;
     private int valueMin;
     private int valueMax;
     private String unit;
 
-    public SlaMetric() {
+    public SlaContractMetrics() {
     }
 
     /**

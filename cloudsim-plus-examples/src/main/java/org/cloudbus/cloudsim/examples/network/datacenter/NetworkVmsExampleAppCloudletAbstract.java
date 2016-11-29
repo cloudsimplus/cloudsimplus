@@ -9,6 +9,7 @@ import org.cloudbus.cloudsim.DatacenterCharacteristicsSimple;
 import org.cloudbus.cloudsim.Host;
 import org.cloudbus.cloudsim.Log;
 import org.cloudbus.cloudsim.Vm;
+import org.cloudbus.cloudsim.allocationpolicies.VmAllocationPolicySimple;
 import org.cloudbus.cloudsim.core.CloudSim;
 import org.cloudbus.cloudsim.distributions.UniformDistr;
 import org.cloudbus.cloudsim.lists.VmList;
@@ -21,7 +22,6 @@ import org.cloudbus.cloudsim.network.datacenter.NetworkDatacenter;
 import org.cloudbus.cloudsim.network.datacenter.NetworkHost;
 import org.cloudbus.cloudsim.network.datacenter.NetworkVm;
 import org.cloudbus.cloudsim.network.datacenter.NetworkCloudlet;
-import org.cloudbus.cloudsim.network.datacenter.NetworkVmAllocationPolicy;
 import org.cloudbus.cloudsim.network.datacenter.RootSwitch;
 import org.cloudbus.cloudsim.provisioners.PeProvisionerSimple;
 import org.cloudbus.cloudsim.provisioners.ResourceProvisionerSimple;
@@ -164,7 +164,7 @@ public abstract class NetworkVmsExampleAppCloudletAbstract {
             Host host = new NetworkHost(i, HOST_STORAGE, peList)
                     .setRamProvisioner(new ResourceProvisionerSimple(new Ram(HOST_RAM)))
                     .setBwProvisioner(new ResourceProvisionerSimple(new Bandwidth(HOST_BW)))
-                    .setVmScheduler(new VmSchedulerTimeShared(peList));
+                    .setVmScheduler(new VmSchedulerTimeShared());
             hostList.add(host);
         }
 
@@ -181,7 +181,7 @@ public abstract class NetworkVmsExampleAppCloudletAbstract {
         // 6. Finally, we need to create a NetworkDatacenter object.
         NetworkDatacenter newDatacenter =
                 new NetworkDatacenter(
-                        simulation, characteristics, new NetworkVmAllocationPolicy());
+                        simulation, characteristics, new VmAllocationPolicySimple());
         newDatacenter.setSchedulingInterval(5);
 
         createNetwork(newDatacenter);

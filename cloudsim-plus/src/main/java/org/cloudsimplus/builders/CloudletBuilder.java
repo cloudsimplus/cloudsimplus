@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import org.cloudbus.cloudsim.Cloudlet;
 import org.cloudbus.cloudsim.CloudletSimple;
+import org.cloudbus.cloudsim.Vm;
 import org.cloudbus.cloudsim.brokers.DatacenterBrokerSimple;
 import org.cloudbus.cloudsim.utilizationmodels.UtilizationModel;
 import org.cloudbus.cloudsim.utilizationmodels.UtilizationModelFull;
@@ -21,10 +22,9 @@ public class CloudletBuilder extends Builder {
     private long fileSize = 300;
     private int  pes = 1;
     /**
-     * The id of the VM to be binded to created cloudlets.
-     * If the value is equals to -1, none VMs will be binded to the cloudlets.
+     * The id of the VM to be bind to created cloudlets.
      */
-    private int  vmId = -1;
+    private Vm vm = Vm.NULL;
     private UtilizationModel utilizationModelRam;
     private UtilizationModel utilizationModelCpu;
     private UtilizationModel utilizationModelBw;
@@ -69,8 +69,8 @@ public class CloudletBuilder extends Builder {
         return this;
     }
 
-    public CloudletBuilder setVmId(int defaultVmId) {
-        this.vmId = defaultVmId;
+    public CloudletBuilder setVm(Vm defaultVm) {
+        this.vm = defaultVm;
         return this;
     }
 
@@ -160,8 +160,8 @@ public class CloudletBuilder extends Builder {
     public CloudletBuilder createAndSubmitCloudlets(final int amount) {
         List<Cloudlet> localList = createCloudletsInternal(amount);
         broker.submitCloudletList(localList);
-        if(vmId != -1){
-            localList.forEach(c -> broker.bindCloudletToVm(c.getId(), vmId));
+        if(vm != Vm.NULL){
+            localList.forEach(c -> broker.bindCloudletToVm(c, vm));
         }
         return this;
     }

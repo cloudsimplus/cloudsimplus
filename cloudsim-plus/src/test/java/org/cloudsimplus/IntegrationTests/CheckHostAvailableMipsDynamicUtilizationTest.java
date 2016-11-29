@@ -56,7 +56,7 @@ public final class CheckHostAvailableMipsDynamicUtilizationTest {
             " available mips: ", evt.getHost().getAvailableMips(),
             " expected availability: ", expectedAvailableHostMips);
 
-        assertEquals("The amount of Host available MIPS was not as expected.",
+        assertEquals("The amount of Host available HOST_MIPS was not as expected.",
                  expectedAvailableHostMips, evt.getHost().getAvailableMips(), 0);
     }
 

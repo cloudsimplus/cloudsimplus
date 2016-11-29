@@ -238,26 +238,26 @@ public class HostSimple implements Host {
     @Override
     public boolean vmCreate(Vm vm) {
         if (!storage.isResourceAmountAvailable(vm.getSize())) {
-            Log.printConcatLine("[VmScheduler.vmCreate] Allocation of VM #", vm.getId(), " to Host #", getId(),
+            Log.printConcatLine("[VmAllocationPolicy] Allocation of VM #", vm.getId(), " to Host #", getId(),
                     " failed by storage");
             return false;
         }
 
         if (!getRamProvisioner().allocateResourceForVm(vm, vm.getCurrentRequestedRam())) {
-            Log.printConcatLine("[VmScheduler.vmCreate] Allocation of VM #", vm.getId(), " to Host #", getId(),
+            Log.printConcatLine("[VmAllocationPolicy] Allocation of VM #", vm.getId(), " to Host #", getId(),
                     " failed by RAM");
             return false;
         }
 
         if (!getBwProvisioner().allocateResourceForVm(vm, vm.getCurrentRequestedBw())) {
-            Log.printConcatLine("[VmScheduler.vmCreate] Allocation of VM #", vm.getId(), " to Host #", getId(),
+            Log.printConcatLine("[VmAllocationPolicy] Allocation of VM #", vm.getId(), " to Host #", getId(),
                     " failed by BW");
             getRamProvisioner().deallocateResourceForVm(vm);
             return false;
         }
 
         if (!getVmScheduler().allocatePesForVm(vm, vm.getCurrentRequestedMips())) {
-            Log.printConcatLine("[VmScheduler.vmCreate] Allocation of VM #", vm.getId(), " to Host #", getId(),
+            Log.printConcatLine("[VmAllocationPolicy] Allocation of VM #", vm.getId(), " to Host #", getId(),
                     " failed by MIPS");
             getRamProvisioner().deallocateResourceForVm(vm);
             getBwProvisioner().deallocateResourceForVm(vm);
@@ -423,6 +423,11 @@ public class HostSimple implements Host {
 
     @Override
     public final Host setVmScheduler(VmScheduler vmScheduler) {
+        if(vmScheduler == null){
+            vmScheduler = VmScheduler.NULL;
+        }
+
+        vmScheduler.setHost(this);
         this.vmScheduler = vmScheduler;
         return this;
     }

@@ -45,16 +45,14 @@ public class HostBuilder extends Builder {
 
     private Host createHost(final int id) {
         try {
-            final List<Pe> peList =
-                    new PeBuilder().create(pes, mips);
-            Constructor cons =
-                    vmSchedulerClass.getConstructor(new Class[]{List.class});
+            final List<Pe> peList = new PeBuilder().create(pes, mips);
+            Constructor cons = vmSchedulerClass.getConstructor();
 
             final Host host =
              new HostSimple(id, storage, peList)
                 .setRamProvisioner(new ResourceProvisionerSimple(new Ram(ram)))
                 .setBwProvisioner(new ResourceProvisionerSimple(new Bandwidth(bw)))
-                .setVmScheduler((VmScheduler) cons.newInstance(peList))
+                .setVmScheduler((VmScheduler) cons.newInstance())
                 .setOnUpdateVmsProcessingListener(onUpdateVmsProcessingListener);
             hosts.add(host);
             return host;

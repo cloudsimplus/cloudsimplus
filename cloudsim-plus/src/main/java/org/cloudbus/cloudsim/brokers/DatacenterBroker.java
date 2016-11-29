@@ -23,22 +23,15 @@ public interface DatacenterBroker extends SimEntity {
      * Specifies that an already submitted cloudlet, that is in the {@link #getCloudletsWaitingList() waiting list},
      * must run in a specific virtual machine.
      *
-     * @param cloudletId ID of the cloudlet being bount to a vm
-     * @param vmId the vm id
+     * @param cloudlet the cloudlet to be bind to a given Vm
+     * @param vm the vm to bind the Cloudlet to
+     * @return true if the Cloudlet was found in the waiting list and was bind to the given Vm, false it the
+     * Cloudlet was not found in such a list (that may mean it wasn't submitted yet or was already created)
      * @pre cloudletId > 0
      * @pre id > 0
      * @post $none
-     * @todo @author manoelcampos This method would receive a Cloudlet object
-     * because it is just setting the vmId cloudlet attribute.
-     * When the method is called prior to call {@link DatacenterBroker#submitCloudletList(java.util.List)},
-     * it tries to locate the cloudlet in the submitted list
-     * and, when it doesn't exist yet, it is thrown a NullPointerException.
-     * At leat, an overloaded version of the method would be created
-     * and this one would try to find the cloudlet and, when
-     * it is not found, thrown an specific exception
-     * asking if the cloudlet already was submitted.
      */
-    void bindCloudletToVm(int cloudletId, int vmId);
+    boolean bindCloudletToVm(Cloudlet cloudlet, Vm vm);
 
     /**
      * Gets the list of cloudlets submmited to the broker that are waiting to be created inside
@@ -166,7 +159,7 @@ public interface DatacenterBroker extends SimEntity {
         @Override public void run() {}
         @Override public int getId() { return -1; }
 		@Override public String getName() { return ""; }
-		@Override public void bindCloudletToVm(int cloudletId, int vmId) { }
+		@Override public boolean bindCloudletToVm(Cloudlet cloudlet, Vm vm) { return false; }
 		@Override public <T extends Cloudlet> List<T> getCloudletsWaitingList() { return Collections.emptyList(); }
 		@Override public <T extends Cloudlet> List<T> getCloudletsFinishedList() { return Collections.emptyList(); }
 		@Override public Vm getWaitingVm(int index) { return Vm.NULL; }

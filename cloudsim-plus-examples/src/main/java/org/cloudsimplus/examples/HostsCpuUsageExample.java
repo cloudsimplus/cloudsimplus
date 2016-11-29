@@ -115,14 +115,14 @@ public class HostsCpuUsageExample {
             .setCloudletOutputSize(outputSize)
             .setUtilizationModel(utilizationModel)
             .setBroker(broker)
-            .setVmId(vm1.getId());
+            .setVm(vm1);
 
         Cloudlet cloudlet2 = new CloudletSimple(++id, length, pesNumber)
             .setCloudletFileSize(fileSize)
             .setCloudletOutputSize(outputSize)
             .setUtilizationModel(utilizationModel)
             .setBroker(broker)
-            .setVmId(vm2.getId());
+            .setVm(vm2);
 
         //add the cloudlets to the list
         cloudletList.add(cloudlet1);
@@ -133,8 +133,8 @@ public class HostsCpuUsageExample {
 
         //bind the cloudlets to the vms. This way, the broker
         // will submit the bound cloudlets only to the specific VM
-        broker.bindCloudletToVm(cloudlet1.getId(), vm1.getId());
-        broker.bindCloudletToVm(cloudlet2.getId(), vm2.getId());
+        broker.bindCloudletToVm(cloudlet1, vm1);
+        broker.bindCloudletToVm(cloudlet2, vm2);
 
         // Sixth step: Starts the simulation
         final double finishTime = simulation.start();
@@ -196,7 +196,7 @@ public class HostsCpuUsageExample {
         host1
             .setRamProvisioner(new ResourceProvisionerSimple(new Ram(ram)))
             .setBwProvisioner(new ResourceProvisionerSimple(new Bandwidth(bw)))
-            .setVmScheduler(new VmSchedulerTimeShared(peList1));
+            .setVmScheduler(new VmSchedulerTimeShared());
         hostList.add(host1);
 
         //create another machine in the Data center
@@ -207,7 +207,7 @@ public class HostsCpuUsageExample {
         host2
             .setRamProvisioner(new ResourceProvisionerSimple(new Ram(ram)))
             .setBwProvisioner(new ResourceProvisionerSimple(new Bandwidth(bw)))
-            .setVmScheduler(new VmSchedulerTimeShared(peList2));
+            .setVmScheduler(new VmSchedulerTimeShared());
         hostList.add(host2);
 
 		// 5. Create a DatacenterCharacteristics object that stores the

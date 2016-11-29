@@ -51,8 +51,8 @@ public abstract class CloudletAbstract implements Cloudlet {
     private int priority;
     /** @see #getNetServiceLevel() */
     private int netServiceLevel;
-    /** @see #getVmId() */
-    private int vmId;
+    /** @see #getVm() */
+    private Vm vm;
     /** @see #getRequiredFiles() */
     private List<String> requiredFiles;
 
@@ -126,10 +126,10 @@ public abstract class CloudletAbstract implements Cloudlet {
         this.recordTransactionHistory = false;
 
         this.lastExecutedDatacenterIndex = NOT_ASSIGNED;
-        setBroker(DatacenterBroker.NULL);          
+        setBroker(DatacenterBroker.NULL);
         this.simulation = Simulation.NULL;
         setFinishTime(NOT_ASSIGNED);    // meaning this Cloudlet hasn't finished yet
-        setVmId(NOT_ASSIGNED);
+        setVm(Vm.NULL);
 
         this.setCloudletLength(cloudletLength);
         this.setCloudletFileSize(1);
@@ -584,13 +584,13 @@ public abstract class CloudletAbstract implements Cloudlet {
     }
 
     @Override
-    public int getVmId() {
-        return vmId;
+    public Vm getVm() {
+        return vm;
     }
 
     @Override
-    public final Cloudlet setVmId(final int vmId) {
-        this.vmId = vmId;
+    public final Cloudlet setVm(final Vm vm) {
+        this.vm = vm;
         return this;
     }
 
@@ -787,8 +787,8 @@ public abstract class CloudletAbstract implements Cloudlet {
     }
 
     @Override
-    public boolean isBoundedToVm() {
-        return vmId != Cloudlet.NOT_ASSIGNED;
+    public boolean isBindToVm() {
+        return vm != Vm.NULL;
     }
 
     @Override

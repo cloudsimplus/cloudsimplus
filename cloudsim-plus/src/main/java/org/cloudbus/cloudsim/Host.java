@@ -215,7 +215,7 @@ public interface Host extends Identificable {
 
     /**
      * Sets the policy for allocation of host PEs to VMs in order to schedule VM
-     * execution.
+     * execution. The host also sets itself to the given scheduler.
      *
      * @param vmScheduler the vm scheduler to set
      */
@@ -332,7 +332,7 @@ public interface Host extends Identificable {
      * the host updates the processing of all its {@link Vm VMs}.
      *
      * @param onUpdateVmsProcessingListener the onUpdateVmsProcessingListener to set
-     * @return 
+     * @return
      * @see #updateVmsProcessing(double)
      */
     Host setOnUpdateVmsProcessingListener(EventListener<HostUpdatesVmsProcessingEventInfo> onUpdateVmsProcessingListener);
@@ -341,7 +341,7 @@ public interface Host extends Identificable {
 
     /**
      * Gets the CloudSim instance that represents the simulation the Entity is related to.
-     * @return 
+     * @return
      * @see #setSimulation(CloudSim)
      */
     Simulation getSimulation();
@@ -350,7 +350,7 @@ public interface Host extends Identificable {
      * Sets the CloudSim instance that represents the simulation the Entity is related to.
      * Such attribute has to be set by the {@link Datacenter} that the host belongs to.
      * @param simulation The CloudSim instance that represents the simulation the Entity is related to
-     * @return 
+     * @return
      */
     Host setSimulation(Simulation simulation);
 

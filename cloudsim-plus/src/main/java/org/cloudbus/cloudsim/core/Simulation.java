@@ -10,7 +10,7 @@ import org.cloudsimplus.listeners.EventListener;
 
 /**
  * An interface to be implemented by a class that manages simulation
- * executions, controlling all the simulation lifecycle.
+ * execution, controlling all the simulation lifecycle.
  *
  * @author Manoel Campos da Silva Filho
  * @see CloudSim

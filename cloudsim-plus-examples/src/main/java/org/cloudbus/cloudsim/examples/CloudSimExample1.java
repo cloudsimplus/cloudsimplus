@@ -112,7 +112,7 @@ public class CloudSimExample1 {
                 .setCloudletOutputSize(outputSize)
                 .setUtilizationModel(utilizationModel)
                 .setBroker(broker)
-                .setVmId(vmid);
+                .setVm(vm);
 
             // add the cloudlet to the list
             cloudletList.add(cloudlet);
@@ -165,7 +165,7 @@ public class CloudSimExample1 {
         Host host = new HostSimple(hostId, storage, peList)
             .setRamProvisioner(new ResourceProvisionerSimple(new Ram(ram)))
             .setBwProvisioner(new ResourceProvisionerSimple(new Bandwidth(bw)))
-            .setVmScheduler(new VmSchedulerTimeShared(peList));
+            .setVmScheduler(new VmSchedulerTimeShared());
 
         hostList.add(host);
 

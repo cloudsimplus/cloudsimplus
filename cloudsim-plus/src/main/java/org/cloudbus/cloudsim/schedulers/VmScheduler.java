@@ -3,6 +3,8 @@ package org.cloudbus.cloudsim.schedulers;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+
+import org.cloudbus.cloudsim.Host;
 import org.cloudbus.cloudsim.resources.Pe;
 import org.cloudbus.cloudsim.Vm;
 import org.cloudbus.cloudsim.resources.Resource;
@@ -164,6 +166,21 @@ public interface VmScheduler {
     double getCpuOverheadDueToVmMigration();
 
     /**
+     * Gets the host that the VmScheduler get the list of PEs to allocate to VMs.
+     * @return
+     */
+    Host getHost();
+
+    /**
+     * Sets the host that the VmScheduler get the list of PEs to allocate to VMs.
+     * A host for the VmScheduler is set when the VmScheduler is set to a given host.
+     * Thus, the host is in charge to set itself to a VmScheduler.
+     * @param host the host to be set
+     */
+    VmScheduler setHost(Host host);
+
+
+    /**
      * A property that implements the Null Object Design Pattern for {@link VmScheduler}
      * objects.
      */
@@ -183,5 +200,7 @@ public interface VmScheduler {
         @Override public List<String> getVmsMigratingOut() { return Collections.emptyList(); }
         @Override public boolean isSuitableForVm(Vm vm) { return false; }
         @Override public double getCpuOverheadDueToVmMigration() { return 0.0; }
+        @Override public Host getHost() { return Host.NULL; }
+        @Override public VmScheduler setHost(Host host) { return this; }
     };
 }

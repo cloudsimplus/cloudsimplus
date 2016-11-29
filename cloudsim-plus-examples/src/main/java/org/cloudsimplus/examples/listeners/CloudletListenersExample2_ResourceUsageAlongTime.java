@@ -222,7 +222,7 @@ public class CloudletListenersExample2_ResourceUsageAlongTime {
                 .setUtilizationModelRam(ramUtilizationModel)
                 .setUtilizationModelBw(bwUtilizationModel)
                 .setBroker(broker)
-                .setVmId(vm.getId())
+                .setVm(vm)
                 .setOnUpdateCloudletProcessingListener(onUpdateCloudletProcessingListener);
 
         return cloudlet;
@@ -273,6 +273,6 @@ public class CloudletListenersExample2_ResourceUsageAlongTime {
         return new HostSimple(id, storage, peList)
             .setRamProvisioner(new ResourceProvisionerSimple(new Ram(ram)))
             .setBwProvisioner(new ResourceProvisionerSimple(new Bandwidth(bw)))
-            .setVmScheduler(new VmSchedulerTimeShared(peList));
+            .setVmScheduler(new VmSchedulerTimeShared());
     }
 }

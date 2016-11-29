@@ -190,7 +190,7 @@ public class HostListTest {
         NetworkHost host = new NetworkHost(hostId, STORAGE, peList);
         host.setRamProvisioner(new ResourceProvisionerSimple(new Ram(RAM)))
             .setBwProvisioner(new ResourceProvisionerSimple(new Bandwidth(BW)))
-            .setVmScheduler(new VmSchedulerTimeShared(peList));
+            .setVmScheduler(new VmSchedulerTimeShared());
         return host;
     }
 

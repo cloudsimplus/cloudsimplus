@@ -319,8 +319,7 @@ public class CloudSim implements Simulation {
 
     @Override
     public Calendar getCalendar() {
-        // make a new copy
-        return (Calendar) calendar.clone();
+        return calendar;
     }
 
     @Override

@@ -219,7 +219,7 @@ public class VmListenersExample2 {
                     .setCloudletOutputSize(outputSize)
                     .setUtilizationModel(utilizationModel)
                     .setBroker(broker)
-                    .setVmId(vm.getId());
+                    .setVm(vm);
         return cloudlet;
     }
 
@@ -266,7 +266,7 @@ public class VmListenersExample2 {
         return new HostSimple(id, storage, peList)
             .setRamProvisioner(new ResourceProvisionerSimple(new Ram(ram)))
             .setBwProvisioner(new ResourceProvisionerSimple(new Bandwidth(bw)))
-            .setVmScheduler(new VmSchedulerTimeShared(peList));
+            .setVmScheduler(new VmSchedulerTimeShared());
     }
 
     private void runSimulationAndPrintResults() {

@@ -1,13 +1,13 @@
 package org.cloudsimplus.sla;
 
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.List;
 import org.cloudbus.cloudsim.Cloudlet;
 import org.cloudbus.cloudsim.DatacenterCharacteristics;
 import org.cloudbus.cloudsim.DatacenterCharacteristicsSimple;
 import org.cloudbus.cloudsim.Host;
 import org.cloudbus.cloudsim.Log;
+import org.cloudbus.cloudsim.allocationpolicies.VmAllocationPolicySimple;
 import org.cloudbus.cloudsim.brokers.DatacenterBroker;
 import org.cloudbus.cloudsim.core.CloudSim;
 import org.cloudbus.cloudsim.network.datacenter.EdgeSwitch;
@@ -16,7 +16,6 @@ import org.cloudbus.cloudsim.network.datacenter.NetworkCloudlet;
 import org.cloudbus.cloudsim.network.datacenter.NetworkDatacenter;
 import org.cloudbus.cloudsim.network.datacenter.NetworkHost;
 import org.cloudbus.cloudsim.network.datacenter.NetworkVm;
-import org.cloudbus.cloudsim.network.datacenter.NetworkVmAllocationPolicy;
 import org.cloudbus.cloudsim.provisioners.PeProvisionerSimple;
 import org.cloudbus.cloudsim.provisioners.ResourceProvisionerSimple;
 import org.cloudbus.cloudsim.resources.Bandwidth;
@@ -54,8 +53,8 @@ public class NetworkVmsExampleWithMetrics {
     /**
      * Create NetworkVms
      *
-     * @param userId
-     * @param vms
+     * @param broker the broker that acts on behalf of a user
+     * @param vms number of VMs to create
      * @return list de vms
      */
     private List<NetworkVm> createVM(DatacenterBroker broker, int vms) {
@@ -71,9 +70,9 @@ public class NetworkVmsExampleWithMetrics {
         for (int i = 0; i < vms; i++) {
             NetworkVm vm = new NetworkVm(i, mips, pesNumber);
             vm.setRam(ram)
-              .setBw(bw).setSize(size)
-              .setBroker(broker)
-              .setCloudletScheduler(new CloudletSchedulerTimeShared());
+                    .setBw(bw).setSize(size)
+                    .setBroker(broker)
+                    .setCloudletScheduler(new CloudletSchedulerTimeShared());
             list.add(vm);
         }
         return list;
@@ -111,6 +110,7 @@ public class NetworkVmsExampleWithMetrics {
 
     /**
      * main
+     *
      * @param args
      */
     public static void main(String[] args) {
@@ -125,7 +125,6 @@ public class NetworkVmsExampleWithMetrics {
     private NetworkVmsExampleWithMetrics() {
         // First step: Initialize the CloudSim package. It should be called before creating any entities.
         int num_user = 1; // number of cloud users
-        
         cloudsim = new CloudSim(num_user);
 
         // Second step: Create Datacenters
@@ -164,8 +163,6 @@ public class NetworkVmsExampleWithMetrics {
     /**
      * Creates the NetworkDatacenter.
      *
-     * @param name the datacenter
-     *
      * @return the datacenter
      */
     protected final NetworkDatacenter createDatacenter() {
@@ -192,8 +189,8 @@ public class NetworkVmsExampleWithMetrics {
 
         Host host = new NetworkHost(hostId, storage, peList);
         host.setRamProvisioner(new ResourceProvisionerSimple(new Ram(ram)))
-            .setBwProvisioner(new ResourceProvisionerSimple(new Bandwidth(bw)))
-            .setVmScheduler(new VmSchedulerTimeShared(peList));
+                .setBwProvisioner(new ResourceProvisionerSimple(new Bandwidth(bw)))
+                .setVmScheduler(new VmSchedulerTimeShared());
 
         hostList.add(host);
 
@@ -207,23 +204,24 @@ public class NetworkVmsExampleWithMetrics {
         // resource
         double costPerBw = 0.0; // the cost of using bw in this resource
 
-        DatacenterCharacteristics characteristics =
-                new DatacenterCharacteristicsSimple(hostList)
+        DatacenterCharacteristics characteristics
+                = new DatacenterCharacteristicsSimple(hostList)
                 .setCostPerSecond(cost)
                 .setCostPerMem(costPerMem)
                 .setCostPerStorage(costPerStorage)
                 .setCostPerBw(costPerBw);
 
         // 6. Finally, we need to create a PowerDatacenter object.
-        NetworkDatacenter datacenter =
-                new NetworkDatacenter(
-                        cloudsim, characteristics, new NetworkVmAllocationPolicy());
+        NetworkDatacenter datacenter
+                = new NetworkDatacenter(
+                        cloudsim, characteristics, new VmAllocationPolicySimple());
         createNetwork(datacenter);
         return datacenter;
     }
 
     /**
      * Creates internal Datacenter network.
+     *
      * @param datacenter datacenter where the network will be created
      */
     protected void createNetwork(NetworkDatacenter datacenter) {
@@ -241,7 +239,6 @@ public class NetworkVmsExampleWithMetrics {
         }
     }
 
-
     /**
      * Creates the broker.
      *
@@ -252,24 +249,24 @@ public class NetworkVmsExampleWithMetrics {
     }
 }
 
-   /* private void totalCostPrice() {
-        double memoryDataCenterVm, totalCost = 0;
-        double bwDataCenterVm, miDataCenterVm, storageDataCenterVm;
-        int numberOfVms = Datacenter().getCharacteristics().getHostList().size() * MAX_VMS_PER_HOST;
-        for (NetworkVm vms : getVmList()) {
-            memoryDataCenterVm = ((getDatacenter().getCharacteristics().getCostPerMem()) * vms.getRam() * numberOfVms);
-            bwDataCenterVm = ((getDatacenter().getCharacteristics().getCostPerBw()) * vms.getBw() * numberOfVms);
-            miDataCenterVm = ((getDatacenter().getCharacteristics().getCostPerMi()) * vms.getMips() * numberOfVms);
-            storageDataCenterVm = ((getDatacenter().getCharacteristics().getCostPerStorage()) * vms.getSize() * numberOfVms);
+/* private void totalCostPrice() {
+ double memoryDataCenterVm, totalCost = 0;
+ double bwDataCenterVm, miDataCenterVm, storageDataCenterVm;
+ int numberOfVms = Datacenter().getCharacteristics().getHostList().size() * MAX_VMS_PER_HOST;
+ for (NetworkVm vms : getVmList()) {
+ memoryDataCenterVm = ((getDatacenter().getCharacteristics().getCostPerMem()) * vms.getRam() * numberOfVms);
+ bwDataCenterVm = ((getDatacenter().getCharacteristics().getCostPerBw()) * vms.getBw() * numberOfVms);
+ miDataCenterVm = ((getDatacenter().getCharacteristics().getCostPerMi()) * vms.getMips() * numberOfVms);
+ storageDataCenterVm = ((getDatacenter().getCharacteristics().getCostPerStorage()) * vms.getSize() * numberOfVms);
 
-            totalCost = memoryDataCenterVm + bwDataCenterVm + miDataCenterVm + storageDataCenterVm;
-        }
-        System.out.println("* Total Cost Price ******: " + totalCost);
-    }
+ totalCost = memoryDataCenterVm + bwDataCenterVm + miDataCenterVm + storageDataCenterVm;
+ }
+ System.out.println("* Total Cost Price ******: " + totalCost);
+ }
 
-    */
-    /*
-     private void responseTimeCloudlet(NetworkCloudlet cloudlet) {
-     double rt = cloudlet.getFinishTime() - cloudlet.getDatacenterArrivalTime();
-     System.out.println("***** Tempo de resposta CLOUDLETS - " + rt);
-     } */
+ */
+/*
+ private void responseTimeCloudlet(NetworkCloudlet cloudlet) {
+ double rt = cloudlet.getFinishTime() - cloudlet.getDatacenterArrivalTime();
+ System.out.println("***** Tempo de resposta CLOUDLETS - " + rt);
+ } */

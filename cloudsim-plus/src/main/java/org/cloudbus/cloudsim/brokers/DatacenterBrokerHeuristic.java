@@ -52,7 +52,7 @@ public class DatacenterBrokerHeuristic extends DatacenterBrokerSimple {
         heuristic.setVmList(getVmsCreatedList());
         heuristic.setCloudletList(
 	        getCloudletsWaitingList().stream()
-                        .filter(c-> !c.isBoundedToVm())
+                        .filter(c-> !c.isBindToVm())
                         .collect(Collectors.toList()));
         /*
         Starts the heuristic to get a sub-optimal solution
@@ -72,16 +72,11 @@ public class DatacenterBrokerHeuristic extends DatacenterBrokerSimple {
 
     @Override
     public Vm selectVmForWaitingCloudlet(Cloudlet cloudlet) {
-        if (cloudlet.isBoundedToVm()) {
-            // submit to the specific vm
-            return VmList.getById(getVmsCreatedList(), cloudlet.getVmId());
-        }
-
         /*
          * Defines a fallback vm in the case the heuristic solution
          * didn't assign a Vm to the given cloudlet.
          */
-        Vm fallbackVm = VmList.getById(getVmsCreatedList(), getNextVmIndex());
+        Vm fallbackVm = super.selectVmForWaitingCloudlet(cloudlet);
 
         //If user didn't bind this cloudlet and it has not been executed yet,
         //gets the Vm for the Cloudlet from the heuristic solution.

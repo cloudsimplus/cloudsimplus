@@ -210,14 +210,11 @@ public class NetworkDatacenter extends DatacenterSimple {
                     getId(), getCharacteristics().getCostPerSecond(),
                     getCharacteristics().getCostPerBw());
 
-            int userId = cl.getBrokerId();
-            int vmId = cl.getVmId();
-
             // time to transfer the files
             double fileTransferTime = predictFileTransferTime(cl.getRequiredFiles());
 
-            Host host = getVmAllocationPolicy().getHost(vmId, userId);
-            Vm vm = host.getVm(vmId, userId);
+            Host host = getVmAllocationPolicy().getHost(cl.getVm().getId(), cl.getBrokerId());
+            Vm vm = host.getVm(cl.getVm().getId(), cl.getBrokerId());
             CloudletScheduler scheduler = vm.getCloudletScheduler();
             double estimatedFinishTime = scheduler.cloudletSubmit(cl, fileTransferTime);
 

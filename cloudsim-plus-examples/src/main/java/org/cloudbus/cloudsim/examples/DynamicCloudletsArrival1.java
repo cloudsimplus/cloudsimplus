@@ -195,7 +195,7 @@ public class DynamicCloudletsArrival1 {
             .setCloudletOutputSize(outputSize)
             .setUtilizationModel(utilizationModel)
             .setBroker(broker)
-            .setVmId(vm.getId());
+            .setVm(vm);
 
         return cloudlet;
     }
@@ -243,7 +243,7 @@ public class DynamicCloudletsArrival1 {
        return new HostSimple(id, storage, peList)
             .setRamProvisioner(new ResourceProvisionerSimple(new Ram(ram)))
             .setBwProvisioner(new ResourceProvisionerSimple(new Bandwidth(bw)))
-            .setVmScheduler(new VmSchedulerSpaceShared(peList));
+            .setVmScheduler(new VmSchedulerSpaceShared());
 
     }
 }

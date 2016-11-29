@@ -11,6 +11,8 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import org.cloudbus.cloudsim.Host;
 import org.cloudbus.cloudsim.Log;
 import org.cloudbus.cloudsim.provisioners.PeProvisioner;
 import org.cloudbus.cloudsim.resources.Pe;
@@ -30,29 +32,20 @@ import org.cloudbus.cloudsim.lists.PeList;
  * @since CloudSim Toolkit 1.0
  */
 public abstract class VmSchedulerAbstract implements VmScheduler {
-
     /**
-     * The PEs of the host where the scheduler is associated.
+     * @see #getHost()
      */
-    private List<Pe> peList;
+    private Host host;
 
     /**
-     * The map of VMs to PEs, where each key is a VM id and each value is a list
-     * of PEs allocated to that VM.
+     * @see #getPeMap()
      */
     private Map<String, List<Pe>> peMap;
 
     /**
-     * The map of VMs to MIPS, were each key is a VM id and each value is the
-     * currently allocated MIPS from the respective PE to that VM. The PEs where
-     * the MIPS capacity is get are defined in the {@link #peMap}.
-     *
-     * @todo subclasses such as {@link VmSchedulerTimeShared} have an
-     * {@link VmSchedulerTimeShared#mipsMapRequested} attribute that may be
-     * confused with this one. So, the name of this one may be changed to
-     * something such as allocatedMipsMap
+     * @see #getMipsMapAllocated()
      */
-    private Map<String, List<Double>> mipsMap;
+    private Map<String, List<Double>> mipsMapAllocated;
 
     /**
      * The total available MIPS that can be allocated on demand for VMs.
@@ -72,22 +65,10 @@ public abstract class VmSchedulerAbstract implements VmScheduler {
     /**
      * Creates a new VmScheduler.
      *
-     * @param pelist the list of PEs of the host where the VmScheduler is
-     * associated to.
-     * @pre peList != $null
      * @post $none
-     * @todo It has to be assessed if the PE list can be got directly from the
-     * Host where the scheduler is linked to.
-     * By this way, a new Host attribute can be added to this class
-     * and when a new Policy is set to a given Host, the Host
-     * sets itself to the Policy, creating a bi-directional link.
-     * Thus, the Policy constructor will not required a Pe list anymore.
      */
-    public VmSchedulerAbstract(List<Pe> pelist) {
-        setPeList(pelist);
-        setPeMap(new HashMap<>());
-        setMipsMap(new HashMap<>());
-        setAvailableMips(PeList.getTotalMips(getPeList()));
+    public VmSchedulerAbstract() {
+        setHost(Host.NULL);
         setVmsMigratingIn(new ArrayList<>());
         setVmsMigratingOut(new ArrayList<>());
     }
@@ -102,7 +83,7 @@ public abstract class VmSchedulerAbstract implements VmScheduler {
      */
     @Override
     public void deallocatePesForAllVms() {
-        getMipsMap().clear();
+        getMipsMapAllocated().clear();
         setAvailableMips(PeList.getTotalMips(getPeList()));
         getPeList().forEach(pe -> pe.getPeProvisioner().deallocateMipsForAllVms());
     }
@@ -135,7 +116,7 @@ public abstract class VmSchedulerAbstract implements VmScheduler {
      */
     @Override
     public List<Double> getAllocatedMipsForVm(Vm vm) {
-        final List<Double> list = getMipsMap().get(vm.getUid());
+        final List<Double> list = getMipsMapAllocated().get(vm.getUid());
         if(list == null)
             return Collections.EMPTY_LIST;
 
@@ -185,46 +166,39 @@ public abstract class VmSchedulerAbstract implements VmScheduler {
             Log.printLine("Pe list is empty");
             return 0;
         }
+
         return getPeList().get(0).getMips();
     }
 
     /**
-     * Gets the pe list.
-     *
-     * @return the pe list
+     * Gets the list of PEs from the Host.
+     * @return
      */
     @Override
     public final List<Pe> getPeList() {
-        return peList;
+        return host.getPeList();
     }
 
     /**
-     * Sets the pe list.
-     *
-     * @param peList the pe list
-     */
-    protected final void setPeList(List<Pe> peList) {
-        if(peList == null)
-            peList = new ArrayList<>();
-        this.peList = peList;
-    }
-
-    /**
-     * Gets the mips map.
+     * Gets the map of VMs to MIPS, were each key is a VM id and each value is the
+     * currently allocated MIPS from the respective PE to that VM. The PEs where
+     * the MIPS capacity is get are defined in the {@link #peMap}.
      *
      * @return the mips map
      */
-    protected Map<String, List<Double>> getMipsMap() {
-        return mipsMap;
+    protected Map<String, List<Double>> getMipsMapAllocated() {
+        return mipsMapAllocated;
     }
 
     /**
-     * Sets the mips map.
+     * Sets the map of VMs to MIPS, were each key is a VM id and each value is the
+     * currently allocated MIPS from the respective PE to that VM. The PEs where
+     * the MIPS capacity is get are defined in the {@link #peMap}.
      *
-     * @param mipsMap the mips map
+     * @param mipsMapAllocated the mips map
      */
-    protected final void setMipsMap(Map<String, List<Double>> mipsMap) {
-        this.mipsMap = mipsMap;
+    protected final void setMipsMapAllocated(Map<String, List<Double>> mipsMapAllocated) {
+        this.mipsMapAllocated = mipsMapAllocated;
     }
 
     /**
@@ -285,7 +259,8 @@ public abstract class VmSchedulerAbstract implements VmScheduler {
     }
 
     /**
-     * Gets the pe map.
+     * Gets the map of VMs to PEs, where each key is a VM id and each value is a list
+     * of PEs allocated to that VM.
      *
      * @return the pe map
      */
@@ -295,11 +270,32 @@ public abstract class VmSchedulerAbstract implements VmScheduler {
     }
 
     /**
-     * Sets the pe map.
+     * Sets the map of VMs to PEs, where each key is a VM id and each value is a list
+     * of PEs allocated to that VM.
      *
      * @param peMap the pe map
      */
     protected final void setPeMap(Map<String, List<Pe>> peMap) {
         this.peMap = peMap;
+    }
+
+    @Override
+    public Host getHost() {
+        return host;
+    }
+
+    @Override
+    public VmScheduler setHost(Host host) {
+        if(host == null){
+            host = Host.NULL;
+        }
+
+        this.host = host;
+
+        setPeMap(new HashMap<>());
+        setMipsMapAllocated(new HashMap<>());
+        setAvailableMips(PeList.getTotalMips(getPeList()));
+
+        return this;
     }
 }

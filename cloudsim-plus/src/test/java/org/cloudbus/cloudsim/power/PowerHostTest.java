@@ -50,7 +50,7 @@ public class PowerHostTest {
         host.setPowerModel(new PowerModelLinear(MAX_POWER, STATIC_POWER_PERCENT))
             .setRamProvisioner(new ResourceProvisionerSimple(new Ram(RAM)))
             .setBwProvisioner(new ResourceProvisionerSimple(new Bandwidth(BW)))
-            .setVmScheduler(new VmSchedulerTimeShared(peList));
+            .setVmScheduler(new VmSchedulerTimeShared());
 
         return host;
     }
