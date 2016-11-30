@@ -109,9 +109,12 @@ public interface Vm extends Identificable, Comparable<Vm> {
     double getCurrentRequestedTotalMips();
 
     /**
-     * Gets the PM that hosts the VM.
+     * Gets the Host where the Vm is or will be placed.
+     * To know if the Vm was already created inside this Host,
+     * call the {@link #isCreated()} method.
      *
      * @return the host
+     * @see #isCreated()
      */
     Host getHost();
 
@@ -263,17 +266,17 @@ public interface Vm extends Identificable, Comparable<Vm> {
     String getVmm();
 
     /**
-     * Checks if the VM was created and placed inside a {@link Host}.
+     * Checks if the VM was created and placed inside the {@link #getHost() Host}.
      * If so, resources required by the Vm already were provisioned.
      *
-     * @return true, if it was created, false otherwise
+     * @return true, if it was created inside the Host, false otherwise
      */
     boolean isCreated();
 
     /**
-     * Changes the created status of the Vm.
+     * Changes the created status of the Vm inside the Host.
      *
-     * @param created true to indicate the VM was created; false otherwise
+     * @param created true to indicate the VM was created inside the Host; false otherwise
      * @see #isCreated()
      */
     void setCreated(boolean created);
