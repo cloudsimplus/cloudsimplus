@@ -6,7 +6,7 @@
  */
 package org.cloudbus.cloudsim.hosts;
 
-import org.cloudbus.cloudsim.Log;
+import org.cloudbus.cloudsim.util.Log;
 import org.cloudbus.cloudsim.vms.Vm;
 import org.cloudbus.cloudsim.datacenters.Datacenter;
 import org.cloudbus.cloudsim.resources.Pe;
@@ -108,6 +108,7 @@ public class HostSimple implements Host {
         this.setStorage(storageCapacity);
         setPeList(peList);
         setFailed(false);
+        setDatacenter(Datacenter.NULL);
         this.simulation = Simulation.NULL;
         this.onUpdateVmsProcessingListener = EventListener.NULL;
     }
@@ -278,7 +279,6 @@ public class HostSimple implements Host {
         if (vm != null) {
             vmDeallocate(vm);
             getVmList().remove(vm);
-            vm.setHost(null);
         }
     }
 
@@ -286,7 +286,7 @@ public class HostSimple implements Host {
     public void vmDestroyAll() {
         vmDeallocateAll();
         for (Vm vm : getVmList()) {
-            vm.setHost(null);
+            vm.setCreated(false);
             getStorage().deallocateResource(vm.getSize());
         }
         getVmList().clear();
@@ -298,6 +298,7 @@ public class HostSimple implements Host {
      * @param vm the VM
      */
     protected void vmDeallocate(Vm vm) {
+        vm.setCreated(false);
         getRamProvisioner().deallocateResourceForVm(vm);
         getBwProvisioner().deallocateResourceForVm(vm);
         getVmScheduler().deallocatePesForVm(vm);
@@ -523,7 +524,7 @@ public class HostSimple implements Host {
 
     @Override
     public String toString() {
-        return String.valueOf(this.id);
+        return String.format("Host %d", getId());
     }
 
     @Override

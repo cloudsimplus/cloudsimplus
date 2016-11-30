@@ -7,7 +7,7 @@
  */
 package org.cloudbus.cloudsim.core;
 
-import org.cloudbus.cloudsim.Log;
+import org.cloudbus.cloudsim.util.Log;
 
 import java.util.Collection;
 import java.util.LinkedList;

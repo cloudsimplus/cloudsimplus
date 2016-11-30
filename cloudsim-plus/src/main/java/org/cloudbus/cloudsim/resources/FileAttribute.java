@@ -9,8 +9,8 @@ package org.cloudbus.cloudsim.resources;
 
 import java.util.Calendar;
 import java.util.Date;
-import org.cloudbus.cloudsim.Consts;
-import org.cloudbus.cloudsim.DataCloudTags;
+import org.cloudbus.cloudsim.util.Consts;
+import org.cloudbus.cloudsim.util.DataCloudTags;
 
 
 /**
@@ -95,9 +95,9 @@ public class FileAttribute {
         this.file = file;
 
         // set the file creation time. This is absolute time
-        final Calendar cal = 
-                (file.getDatacenter().getSimulation() != null  ? 
-                file.getDatacenter().getSimulation().getCalendar() : 
+        final Calendar cal =
+                (file.getDatacenter().getSimulation() != null  ?
+                file.getDatacenter().getSimulation().getCalendar() :
                 Calendar.getInstance());
         Date date = cal.getTime();
         if (date == null) {

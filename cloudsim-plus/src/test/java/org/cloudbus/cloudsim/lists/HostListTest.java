@@ -3,7 +3,7 @@ package org.cloudbus.cloudsim.lists;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.IntStream;
-import org.cloudbus.cloudsim.Consts;
+import org.cloudbus.cloudsim.util.Consts;
 import org.cloudbus.cloudsim.hosts.HostSimple;
 import org.cloudbus.cloudsim.hosts.HostSimpleTest;
 import org.cloudbus.cloudsim.hosts.network.NetworkHost;

@@ -1,6 +1,6 @@
 package org.cloudsimplus.util.tablebuilder;
 
-import org.cloudbus.cloudsim.Log;
+import org.cloudbus.cloudsim.util.Log;
 
 /**
  * Prints a table from a given data set, using a Comma Separated Text (CSV) format.
@@ -26,16 +26,16 @@ public class CsvTableBuilder extends AbstractTableBuilder {
 
     @Override
     protected void printRowOpenning() {}
-    
+
     @Override
     protected void printRowClosing() {
         Log.printLine();
     }
 
-    public String getLineSeparator() { 
-        return ""; 
+    public String getLineSeparator() {
+        return "";
     }
-    
+
     @Override
     public TableColumn addColumn(String columnTitle) {
         TableColumn col = new CsvTableColumn(this, columnTitle);

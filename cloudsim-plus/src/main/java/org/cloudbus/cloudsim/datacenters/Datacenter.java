@@ -147,5 +147,6 @@ public interface Datacenter extends SimEntity {
         @Override public void startEntity() {}
         @Override public void shutdownEntity() {}
         @Override public SimEntity setName(String newName) throws IllegalArgumentException { return this; }
+        @Override public String toString() { return "Datacenter.NULL"; }
     };
 }

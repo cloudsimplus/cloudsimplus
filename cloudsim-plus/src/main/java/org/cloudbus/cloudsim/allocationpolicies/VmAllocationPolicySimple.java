@@ -10,7 +10,7 @@ package org.cloudbus.cloudsim.allocationpolicies;
 import java.util.*;
 
 import org.cloudbus.cloudsim.hosts.Host;
-import org.cloudbus.cloudsim.Log;
+import org.cloudbus.cloudsim.util.Log;
 import org.cloudbus.cloudsim.vms.Vm;
 import org.cloudbus.cloudsim.vms.VmSimple;
 

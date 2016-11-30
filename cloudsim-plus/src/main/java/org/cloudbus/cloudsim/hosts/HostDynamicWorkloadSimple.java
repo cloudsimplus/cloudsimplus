@@ -7,7 +7,7 @@
  */
 package org.cloudbus.cloudsim.hosts;
 
-import org.cloudbus.cloudsim.Log;
+import org.cloudbus.cloudsim.util.Log;
 import org.cloudbus.cloudsim.vms.Vm;
 import org.cloudbus.cloudsim.vms.VmStateHistoryEntry;
 import org.cloudbus.cloudsim.brokers.DatacenterBroker;
@@ -109,7 +109,7 @@ public class HostDynamicWorkloadSimple extends HostSimple implements HostDynamic
             double totalRequestedMips = vm.getCurrentRequestedTotalMips();
             double totalAllocatedMips = getVmScheduler().getTotalAllocatedMipsForVm(vm);
 
-            if (!Log.isDisabled() && vm.getHost() != null) {
+            if (!Log.isDisabled() && vm.getHost() != Host.NULL) {
                 Log.printFormattedLine(
                         "%.2f: [Host #" + getId() + "] Total allocated MIPS for VM #" + vm.getId()
                         + " (Host #" + vm.getHost().getId()

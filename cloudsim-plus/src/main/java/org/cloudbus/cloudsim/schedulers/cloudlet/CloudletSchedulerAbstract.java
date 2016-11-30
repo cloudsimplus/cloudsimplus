@@ -13,10 +13,10 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import org.cloudbus.cloudsim.*;
 import org.cloudbus.cloudsim.cloudlets.Cloudlet;
 import org.cloudbus.cloudsim.cloudlets.Cloudlet.Status;
 import org.cloudbus.cloudsim.cloudlets.CloudletExecutionInfo;
+import org.cloudbus.cloudsim.util.Consts;
 import org.cloudbus.cloudsim.vms.Vm;
 import org.cloudsimplus.listeners.VmToCloudletEventInfo;
 import org.cloudbus.cloudsim.resources.Processor;

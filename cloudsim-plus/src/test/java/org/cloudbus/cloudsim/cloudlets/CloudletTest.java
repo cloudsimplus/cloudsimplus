@@ -55,7 +55,7 @@ public class CloudletTest {
         assertEquals(0, Cloudlet.NULL.getExecStartTime(), 0);
         assertEquals(0, Cloudlet.NULL.getNetServiceLevel(), 0);
         assertEquals(0, Cloudlet.NULL.getNumberOfPes(), 0);
-        assertEquals(0, Cloudlet.NULL.getProcessingCost(), 0);
+        assertEquals(0, Cloudlet.NULL.getTotalCost(), 0);
         assertTrue(Cloudlet.NULL.getRequiredFiles().isEmpty());
         assertEquals(-1, Cloudlet.NULL.getReservationId());
         assertEquals(-1, Cloudlet.NULL.getDatacenterId());
@@ -72,7 +72,7 @@ public class CloudletTest {
         assertEquals(0, Cloudlet.NULL.getWaitingTime(), 0);
         assertEquals(0, Cloudlet.NULL.getWallClockTimeInLastExecutedDatacenter(), 0);
         assertEquals(0, Cloudlet.NULL.getWallClockTime(0), 0);
-        assertFalse(Cloudlet.NULL.hasReserved());
+        assertFalse(Cloudlet.NULL.isReserved());
         assertFalse(Cloudlet.NULL.isFinished());
         assertFalse(Cloudlet.NULL.requiresFiles());
         assertFalse(Cloudlet.NULL.setCloudletStatus(Cloudlet.Status.SUCCESS));

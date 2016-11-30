@@ -12,7 +12,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
-import org.cloudbus.cloudsim.Log;
+import org.cloudbus.cloudsim.util.Log;
 import org.cloudbus.cloudsim.brokers.DatacenterBroker;
 import org.cloudbus.cloudsim.cloudlets.Cloudlet;
 import org.cloudbus.cloudsim.core.Simulation;
@@ -81,9 +81,9 @@ public class VmSimple implements Vm {
     private boolean inMigration;
 
     /**
-     * @see #isBeingInstantiated()
+     * @see #isCreated()
      */
-    private boolean beingInstantiated;
+    private boolean created;
 
     /**
      * The map of resources the VM has. Each key is the class of a given VM
@@ -142,7 +142,7 @@ public class VmSimple implements Vm {
     /**
      * Creates a Vm with 1024 MB of RAM, 1000 Megabits/s of Bandwidth and 1024 MB of Storage Size.
      *
-     * To change these values, use the respective setters. While the Vm {@link #isBeingInstantiated()
+     * To change these values, use the respective setters. While the Vm {@link #isCreated()
      * is being instantiated}, such values can be changed freely.
      *
      * @param id unique ID of the VM
@@ -156,7 +156,7 @@ public class VmSimple implements Vm {
     public VmSimple(int id, double mipsCapacity, int numberOfPes) {
         this.resources = new HashMap<>();
         setInMigration(false);
-        setBeingInstantiated(true);
+        setHost(Host.NULL);
 
         setId(id);
         setBroker(DatacenterBroker.NULL);
@@ -232,7 +232,7 @@ public class VmSimple implements Vm {
     @Override
     public List<Double> getCurrentRequestedMips() {
         List<Double> currentRequestedMips = getCloudletScheduler().getCurrentRequestedMips();
-        if (isBeingInstantiated()) {
+        if (!isCreated()) {
             currentRequestedMips = new ArrayList<>(getNumberOfPes());
             for (int i = 0; i < getNumberOfPes(); i++) {
                 currentRequestedMips.add(getMips());
@@ -254,7 +254,7 @@ public class VmSimple implements Vm {
 
     @Override
     public long getCurrentRequestedBw() {
-        if (isBeingInstantiated()) {
+        if (!isCreated()) {
             return getBw();
         }
 
@@ -263,7 +263,7 @@ public class VmSimple implements Vm {
 
     @Override
     public long getCurrentRequestedRam() {
-        if (isBeingInstantiated()) {
+        if (!isCreated()) {
             return getRam();
         }
 
@@ -392,8 +392,8 @@ public class VmSimple implements Vm {
 
     @Override
     public final Vm setRam(long ramCapacity) {
-        if(!this.isBeingInstantiated()){
-            throw new UnsupportedOperationException("RAM capacity can just be changed when the Vm is being instantiated.");
+        if(this.isCreated()){
+            throw new UnsupportedOperationException("RAM capacity can just be changed when the Vm was not created inside a Host yet.");
         }
 
         setRam(new Ram(ramCapacity));
@@ -419,8 +419,8 @@ public class VmSimple implements Vm {
 
     @Override
     public final Vm setBw(long bwCapacity) {
-        if(!this.isBeingInstantiated()){
-            throw new UnsupportedOperationException("Bandwidth capacity can just be changed when the Vm is being instantiated.");
+        if(this.isCreated()){
+            throw new UnsupportedOperationException("Bandwidth capacity can just be changed when the Vm was not created inside a Host yet.");
         }
         setBw(new Bandwidth(bwCapacity));
         return this;
@@ -445,8 +445,8 @@ public class VmSimple implements Vm {
 
     @Override
     public final Vm setSize(long size) {
-        if(!this.isBeingInstantiated()){
-            throw new UnsupportedOperationException("Storage size can just be changed when the Vm is being instantiated.");
+        if(this.isCreated()){
+            throw new UnsupportedOperationException("Storage size can just be changed when the Vm was not created inside a Host yet.");
         }
         setStorage(new RawStorage(size));
         return this;
@@ -468,6 +468,9 @@ public class VmSimple implements Vm {
 
     @Override
     public void setHost(Host host) {
+        if(host == Host.NULL){
+            setCreated(false);
+        }
         this.host = host;
     }
 
@@ -483,8 +486,8 @@ public class VmSimple implements Vm {
 
     @Override
     public final Vm setCloudletScheduler(CloudletScheduler cloudletScheduler) {
-        if(!isBeingInstantiated()){
-            throw new UnsupportedOperationException("CloudletScheduler can just be changed when the Vm is being instantiated.");
+        if(isCreated()){
+            throw new UnsupportedOperationException("CloudletScheduler can just be changed when the Vm was not created inside a Host yet.");
         }
 
         if (cloudletScheduler == null) {
@@ -529,13 +532,13 @@ public class VmSimple implements Vm {
     }
 
     @Override
-    public boolean isBeingInstantiated() {
-        return beingInstantiated;
+    public boolean isCreated() {
+        return created;
     }
 
     @Override
-    public final void setBeingInstantiated(boolean beingInstantiated) {
-        this.beingInstantiated = beingInstantiated;
+    public final void setCreated(boolean created) {
+        this.created = created;
     }
 
     /**
@@ -611,7 +614,7 @@ public class VmSimple implements Vm {
 
     @Override
     public String toString() {
-        return this.getUid();
+        return String.format("Vm %d", getId());
     }
 
     @Override

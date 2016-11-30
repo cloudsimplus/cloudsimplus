@@ -11,7 +11,7 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 import org.cloudbus.cloudsim.brokers.DatacenterBroker;
-import org.cloudbus.cloudsim.Log;
+import org.cloudbus.cloudsim.util.Log;
 import org.cloudbus.cloudsim.core.predicates.Predicate;
 import org.cloudsimplus.listeners.EventListener;
 

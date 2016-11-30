@@ -7,7 +7,7 @@
  */
 package org.cloudbus.cloudsim.hosts;
 
-import org.cloudbus.cloudsim.Consts;
+import org.cloudbus.cloudsim.util.Consts;
 import org.cloudbus.cloudsim.vms.Vm;
 import org.cloudbus.cloudsim.vms.VmSimpleTest;
 import org.cloudbus.cloudsim.resources.Pe;

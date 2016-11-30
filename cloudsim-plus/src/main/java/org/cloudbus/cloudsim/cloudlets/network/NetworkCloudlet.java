@@ -244,13 +244,6 @@ public class NetworkCloudlet extends CloudletSimple {
      * <p>The length of a NetworkCloudlet is the
      * length sum of all its {@link CloudletExecutionTask}'s.</p>
      * @return the length sum of all {@link CloudletExecutionTask}'s
-     *
-     * @todo @author manoelcampos It is being computed the total
-     * length into the getter because the
-     * code related to the cloudlet length in classes such as
-     * {@link CloudletSchedulerSpaceShared}
-     * is inappropriately changing this property as a mean to
-     * control cloudlet states. That issue should be fixed prior to fix this one.
      */
     @Override
     public long getCloudletLength() {

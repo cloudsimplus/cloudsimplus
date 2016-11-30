@@ -31,10 +31,6 @@ import org.cloudbus.cloudsim.cloudlets.Cloudlet;
  *
  * @since CloudSim Toolkit 1.0
  *
- * @todo @author manoelcampos Classes {@link CloudletTask} and {@link Cloudlet}
- * and {@link org.cloudbus.cloudsim.ResCloudlet} share a common
- * set of attributes that would be defined by a common interface.
- *
  * @todo @author manoelcampos Each execution task must use just a single core.
  * It may represent a thread (so the name of the class would be changed).
  * By this way, a execution task should use only one core.

@@ -9,7 +9,7 @@ package org.cloudbus.cloudsim.power.models;
 
 import static org.junit.Assert.assertEquals;
 
-import org.cloudbus.cloudsim.Log;
+import org.cloudbus.cloudsim.util.Log;
 import org.junit.Before;
 import org.junit.Test;
 

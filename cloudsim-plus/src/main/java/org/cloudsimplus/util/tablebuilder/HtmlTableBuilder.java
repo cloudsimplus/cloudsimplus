@@ -1,10 +1,10 @@
 package org.cloudsimplus.util.tablebuilder;
 
-import org.cloudbus.cloudsim.Log;
+import org.cloudbus.cloudsim.util.Log;
 
 /**
  * A generator of HTML tables.
- * 
+ *
  * @author Manoel Campos da Silva Filho
  */
 public class HtmlTableBuilder extends AbstractTableBuilder {
@@ -19,7 +19,7 @@ public class HtmlTableBuilder extends AbstractTableBuilder {
     public HtmlTableBuilder(final String title) {
         super(title);
     }
-    
+
     @Override
     protected void printTableOpenning() {
         Log.printLine("\n<table>");
@@ -50,5 +50,5 @@ public class HtmlTableBuilder extends AbstractTableBuilder {
         TableColumn col = new HtmlTableColumn(this, columnTitle);
         getColumns().add(col);
         return col;
-    }    
+    }
 }

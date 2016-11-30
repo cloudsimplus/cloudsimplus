@@ -5,7 +5,7 @@
  *
  * Copyright (c) 2009-2012, The University of Melbourne, Australia
  */
-package org.cloudbus.cloudsim;
+package org.cloudbus.cloudsim.util;
 
 /**
  * Contains additional tags for the DataCloud functionalities, such as file

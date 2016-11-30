@@ -6,9 +6,9 @@
  */
 package org.cloudbus.cloudsim.datacenters;
 
-import org.cloudbus.cloudsim.DataCloudTags;
+import org.cloudbus.cloudsim.util.DataCloudTags;
 import org.cloudbus.cloudsim.hosts.Host;
-import org.cloudbus.cloudsim.Log;
+import org.cloudbus.cloudsim.util.Log;
 import org.cloudbus.cloudsim.vms.Vm;
 import org.cloudbus.cloudsim.cloudlets.Cloudlet;
 import org.cloudbus.cloudsim.core.*;
@@ -489,8 +489,8 @@ public class DatacenterSimple extends CloudSimEntity implements Datacenter {
         if (hostAllocatedForVm) {
             getVmList().add(vm);
 
-            if (vm.isBeingInstantiated()) {
-                vm.setBeingInstantiated(false);
+            if (!vm.isCreated()) {
+                vm.setCreated(true);
             }
 
             vm.updateVmProcessing(getSimulation().clock(),
@@ -1285,4 +1285,8 @@ public class DatacenterSimple extends CloudSimEntity implements Datacenter {
         return Host.NULL;
     }
 
+    @Override
+    public String toString() {
+        return String.format("Datacenter %d", getId());
+    }
 }

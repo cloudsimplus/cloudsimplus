@@ -16,6 +16,7 @@ import java.io.IOException;
 import java.text.DecimalFormatSymbols;
 import java.util.Locale;
 
+import org.cloudbus.cloudsim.util.Log;
 import org.junit.Before;
 import org.junit.Test;
 

@@ -404,5 +404,6 @@ public interface Host extends Identificable {
         @Override public Simulation getSimulation() { return Simulation.NULL; }
         @Override public Host setSimulation(Simulation simulation) { return this; }
         @Override public long getNumberOfWorkingPes() { return 0; }
+        @Override public String toString() { return "Host.NULL"; }
     };
 }

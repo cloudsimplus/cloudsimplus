@@ -7,7 +7,7 @@
  */
 package org.cloudbus.cloudsim.core;
 
-import org.cloudbus.cloudsim.Log;
+import org.cloudbus.cloudsim.util.Log;
 import org.cloudbus.cloudsim.core.predicates.Predicate;
 import org.cloudbus.cloudsim.network.topologies.NetworkTopology;
 

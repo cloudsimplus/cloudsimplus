@@ -2,7 +2,7 @@ package org.cloudbus.cloudsim.brokers;
 
 import java.util.stream.Collectors;
 import org.cloudbus.cloudsim.cloudlets.Cloudlet;
-import org.cloudbus.cloudsim.Log;
+import org.cloudbus.cloudsim.util.Log;
 import org.cloudbus.cloudsim.vms.Vm;
 import org.cloudbus.cloudsim.core.CloudSim;
 import org.cloudsimplus.heuristics.CloudletToVmMappingHeuristic;

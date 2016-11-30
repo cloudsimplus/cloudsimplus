@@ -1,11 +1,11 @@
-package org.cloudbus.cloudsim;
+package org.cloudbus.cloudsim.util;
 
 /**
- * 
+ *
  * Defines common constants, used throughout CloudSim.
- * 
+ *
  * @author nikolay.grozev
- * 
+ *
  */
 public interface Consts {
 
@@ -17,21 +17,21 @@ public interface Consts {
     // ================== Time constants ==================
     /** One minute in seconds. */
     int MINUTE = 60;
-    
+
     /** One hour in seconds. */
     int HOUR = 60 * MINUTE;
-    
+
     /** One day in seconds. */
     int DAY = 24 * HOUR;
-    
-    /** One week in seconds. 
+
+    /** One week in seconds.
      */
     int WEEK = 7 * DAY;
 
     // ================== OS constants ==================
     /** Constant for *nix Operating Systems. */
     String NIX_OS = "Linux/Unix";
-    
+
     /** Constant for Windows Operating Systems. */
     String WINDOWS = "Windows";
 }

@@ -62,8 +62,8 @@ public class PowerVm extends VmSimple {
     /**
      * Creates a Vm with 1024 MB of RAM, 1000 Megabits/s of Bandwidth and 1024 MB of Storage Size.
      *
-     * To change these values, use the respective setters. While the Vm {@link #isBeingInstantiated()
-     * is being instantiated}, such values can be changed freely.
+     * To change these values, use the respective setters. While the Vm {@link #isCreated()
+     * is not created inside a Host}, such values can be changed freely.
      *
      * @param id unique ID of the VM
      * @param mipsCapacity the mips capacity of each Vm {@link Pe}

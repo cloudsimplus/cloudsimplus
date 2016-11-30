@@ -1,7 +1,7 @@
 package org.cloudsimplus.util.tablebuilder;
 
 import org.apache.commons.lang3.StringUtils;
-import org.cloudbus.cloudsim.Log;
+import org.cloudbus.cloudsim.util.Log;
 
 /**
  * Prints a table from a given data set, using a simple delimited text format.
@@ -21,7 +21,7 @@ public class TextTableBuilder extends CsvTableBuilder {
     }
 
     @Override
-    public void printTitle() {        
+    public void printTitle() {
         if(!getTitle().trim().isEmpty()){
             Log.print(getCentralizedString(getTitle()));
         }
@@ -29,20 +29,20 @@ public class TextTableBuilder extends CsvTableBuilder {
 
     @Override
     public void printTableOpenning() {
-        Log.printLine();        
+        Log.printLine();
     }
 
     @Override
     protected void printColumnHeaders() {
-        super.printColumnHeaders(); 
-        Log.printFormatted("%s\n", createHorizontalLine()); 
+        super.printColumnHeaders();
+        Log.printFormatted("%s\n", createHorizontalLine());
     }
-    
+
     @Override
     public void printTableClosing() {
         Log.printFormatted("%s\n", createHorizontalLine());
     }
-    
+
     /**
      * Gets a given string and returns a formatted version of it
      * that is centralized in the table width.
@@ -50,17 +50,17 @@ public class TextTableBuilder extends CsvTableBuilder {
      * @return The centralized version of the string
      */
     private String getCentralizedString(final String str) {
-        final int identationLength = (getLengthOfColumnHeadersRow() - str.length())/2;        
+        final int identationLength = (getLengthOfColumnHeadersRow() - str.length())/2;
         return String.format("\n%s%s\n", StringUtils.repeat(" ", identationLength), str);
-    }    
-    
+    }
+
     /**
      * Creates a horizontal line with the same width of the table.
      * @return The string containing the horizontal line
      */
     private String createHorizontalLine() {
         return stringRepeat(getLineSeparator(), getLengthOfColumnHeadersRow());
-    }    
+    }
 
     /**
      * Creates a copy of the a string repeated a given number of times.
@@ -70,20 +70,20 @@ public class TextTableBuilder extends CsvTableBuilder {
      */
     private String stringRepeat(final String str, final int timesToRepeat) {
         return new String(new char[timesToRepeat]).replace("\0", str);
-    }    
+    }
 
     /**
      * Gets the number of characters of the column headers row.
-     * 
+     *
      * @return the number of characters of column headers row
      */
     private int getLengthOfColumnHeadersRow(){
         return getColumns().stream().mapToInt(col -> col.generateTitleHeader().length()).sum();
     }
-    
+
     @Override
-    public String getLineSeparator() { 
-        return "-"; 
+    public String getLineSeparator() {
+        return "-";
     }
 
     @Override
@@ -92,7 +92,7 @@ public class TextTableBuilder extends CsvTableBuilder {
         getColumns().add(col);
         return col;
     }
-    
-    
- 
+
+
+
 }

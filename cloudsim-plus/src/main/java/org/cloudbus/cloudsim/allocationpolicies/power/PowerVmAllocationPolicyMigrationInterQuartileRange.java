@@ -8,7 +8,7 @@
 
 package org.cloudbus.cloudsim.allocationpolicies.power;
 
-import org.cloudbus.cloudsim.Log;
+import org.cloudbus.cloudsim.util.Log;
 import org.cloudbus.cloudsim.hosts.power.PowerHostSimple;
 import org.cloudbus.cloudsim.hosts.power.PowerHostUtilizationHistory;
 import org.cloudbus.cloudsim.selectionpolicies.power.PowerVmSelectionPolicy;

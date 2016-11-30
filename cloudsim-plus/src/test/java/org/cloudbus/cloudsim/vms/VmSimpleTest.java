@@ -7,6 +7,7 @@
 package org.cloudbus.cloudsim.vms;
 
 import org.cloudbus.cloudsim.brokers.DatacenterBroker;
+import org.cloudbus.cloudsim.hosts.Host;
 import org.cloudbus.cloudsim.hosts.HostSimple;
 import org.cloudbus.cloudsim.hosts.HostSimpleTest;
 import org.cloudbus.cloudsim.schedulers.cloudlet.CloudletSchedulerAbstract;
@@ -125,7 +126,7 @@ public class VmSimpleTest {
             final long ram, final long bw, final long storage,
             final CloudletScheduler scheduler)
     {
-        CloudSim cloudsim = CloudSimMocker.createMock(mocker -> mocker.clock(0));
+        CloudSim cloudsim = CloudSimMocker.createMock(mocker -> mocker.clock(0).anyTimes());
         VmSimple vm = new VmSimple(vmId, mips, numberOfPes);
         vm.setRam(ram).setBw(bw)
                 .setSize(storage)
@@ -281,7 +282,7 @@ public class VmSimpleTest {
 
     @Test
     public void testGetHost() {
-        assertEquals(null, vm.getHost());
+        assertEquals(Host.NULL, vm.getHost());
         HostSimple host = HostSimpleTest.createHostSimple(0, 1);
         vm.setHost(host);
         assertEquals(host, vm.getHost());
@@ -320,14 +321,14 @@ public class VmSimpleTest {
     }
 
     @Test
-    public void testIsBeingInstantiated() {
-        assertTrue(vm.isBeingInstantiated());
-        vm.setBeingInstantiated(false);
-        assertFalse(vm.isBeingInstantiated());
+    public void testIsCreated() {
+        assertFalse(vm.isCreated());
+        vm.setCreated(true);
+        assertTrue(vm.isCreated());
     }
 
     @Test
-    public void testGetCurrentRequestedMips() {
+    public void testGetCurrentRequestedMips_WhenVmWasCreatedInsideHost() {
         List<Double> expectedCurrentMips = new ArrayList<>();
         expectedCurrentMips.add(MIPS / 2);
         expectedCurrentMips.add(MIPS / 2);
@@ -339,14 +340,14 @@ public class VmSimpleTest {
         replay(cloudletScheduler);
 
         Vm vm = VmSimpleTest.createVm(cloudletScheduler);
-        vm.setBeingInstantiated(false);
+        vm.setCreated(true);
         assertEquals(expectedCurrentMips, vm.getCurrentRequestedMips());
 
         verify(cloudletScheduler);
     }
 
     @Test
-    public void testGetCurrentRequestedBwVmNotBeingInstantiated() {
+    public void testGetCurrentRequestedBw_WhenVmWasCreatedInsideHost() {
         final double currentBwUtilizationPercentage = 0.5;
 
         CloudletScheduler cloudletScheduler = createMock(CloudletScheduler.class);
@@ -357,7 +358,7 @@ public class VmSimpleTest {
         replay(cloudletScheduler);
 
         Vm vm0 = VmSimpleTest.createVm(cloudletScheduler);
-        vm0.setBeingInstantiated(false);
+        vm0.setCreated(true);
 
         final long expectedCurrentBwUtilization = (long)(currentBwUtilizationPercentage*BW);
         assertEquals(expectedCurrentBwUtilization, vm0.getCurrentRequestedBw());
@@ -365,15 +366,15 @@ public class VmSimpleTest {
     }
 
     @Test
-    public void testGetCurrentRequestedBwVmBeingInstantiated() {
+    public void testGetCurrentRequestedBw_WhenVmWasNotCreatedInsideHost() {
         Vm vm0 = VmSimpleTest.createVm(CloudletScheduler.NULL);
-        vm0.setBeingInstantiated(true);
+        vm0.setCreated(false);
         final long expectedCurrentBwUtilization = BW;
         assertEquals(expectedCurrentBwUtilization, vm0.getCurrentRequestedBw());
     }
 
     @Test
-    public void testGetCurrentRequestedRamVmNotBeingInstantiated() {
+    public void testGetCurrentRequestedRam_WhenVmWasCreatedInsideHost() {
         final double currentRamUtilizationPercentage = 0.5;
         final long expectedCurrentRamUtilization = (long)(currentRamUtilizationPercentage*RAM);
 
@@ -385,24 +386,24 @@ public class VmSimpleTest {
         replay(cloudletScheduler);
 
         Vm vm0 = VmSimpleTest.createVm(cloudletScheduler);
-        vm0.setBeingInstantiated(false);
+        vm0.setCreated(true);
         assertEquals(expectedCurrentRamUtilization, vm0.getCurrentRequestedRam());
         verify(cloudletScheduler);
     }
 
     @Test
-    public void testGetCurrentRequestedRamVmBeingInstantiated() {
+    public void testGetCurrentRequestedRam_WhenVmWasNotCreatedInsideHost() {
         Vm vm0 = VmSimpleTest.createVm(CloudletScheduler.NULL);
-        vm0.setBeingInstantiated(true);
+        vm0.setCreated(false);
         final long expectedCurrentRamUtilization = RAM;
         assertEquals(expectedCurrentRamUtilization, vm0.getCurrentRequestedRam());
     }
 
     @Test
-    public void testGetCurrentRequestedMipsTimeSharedScheduler() {
+    public void testGetCurrentRequestedMips_ForTimeSharedScheduler_WhenVmWasCreatedInsideHost() {
         CloudletScheduler cloudletScheduler = new CloudletSchedulerTimeShared();
         Vm vm = VmSimpleTest.createVm(cloudletScheduler);
-        vm.setBeingInstantiated(false);
+        vm.setCreated(true);
 
         assertTrue(vm.getCurrentRequestedMips().isEmpty());
     }

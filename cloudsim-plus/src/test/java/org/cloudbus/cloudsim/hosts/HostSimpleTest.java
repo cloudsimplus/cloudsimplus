@@ -7,7 +7,7 @@
  */
 package org.cloudbus.cloudsim.hosts;
 
-import org.cloudbus.cloudsim.Consts;
+import org.cloudbus.cloudsim.util.Consts;
 import org.cloudbus.cloudsim.vms.Vm;
 import org.cloudbus.cloudsim.vms.VmSimple;
 import org.cloudbus.cloudsim.vms.VmSimpleTest;
@@ -164,9 +164,10 @@ public class HostSimpleTest {
     public void testAddMigratingInVm_checkAvailableMipsAndStorage() {
         final int numberOfPes = 1;
         Host host = createHostSimple(0, numberOfPes);
-        VmSimple vm = VmSimpleTest.createVm(0, MIPS, numberOfPes, RAM, BW, STORAGE, new CloudletSchedulerTimeShared());
+        VmSimple vm = VmSimpleTest.createVm(
+            0, MIPS, numberOfPes, RAM, BW, STORAGE,
+            new CloudletSchedulerTimeShared());
         vm.setHost(Host.NULL);
-        vm.setBeingInstantiated(true);
         assertEquals(MIPS, host.getAvailableMips(), 0);
         host.addMigratingInVm(vm);
         final double availableMips = MIPS
@@ -179,7 +180,9 @@ public class HostSimpleTest {
     public void testAddMigratingInVm_lackOfRam() {
         final int numberOfPes = 2;
         Host host = createHostSimple(0, numberOfPes);
-        Vm vm = VmSimpleTest.createVm(0, MIPS, numberOfPes, RAM * 2, BW, STORAGE, new CloudletSchedulerTimeShared());
+        Vm vm = VmSimpleTest.createVm(
+            0, MIPS, numberOfPes, RAM * 2,
+            BW, STORAGE, new CloudletSchedulerTimeShared());
         host.addMigratingInVm(vm);
     }
 

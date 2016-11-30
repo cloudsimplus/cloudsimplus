@@ -17,7 +17,7 @@ import java.util.stream.Collectors;
 
 import org.cloudbus.cloudsim.hosts.Host;
 import org.cloudbus.cloudsim.hosts.HostDynamicWorkloadSimple;
-import org.cloudbus.cloudsim.Log;
+import org.cloudbus.cloudsim.util.Log;
 import org.cloudbus.cloudsim.hosts.power.PowerHostSimple;
 import org.cloudbus.cloudsim.hosts.power.PowerHostUtilizationHistory;
 import org.cloudbus.cloudsim.selectionpolicies.power.PowerVmSelectionPolicy;
@@ -298,7 +298,7 @@ public abstract class PowerVmAllocationPolicyMigrationAbstract extends PowerVmAl
     @Override
     public PowerHostSimple findHostForVm(Vm vm) {
         Set<Host> excludedHosts = new HashSet<>();
-        if (vm.getHost() != null) {
+        if (vm.getHost() != Host.NULL) {
             excludedHosts.add(vm.getHost());
         }
         return findHostForVm(vm, excludedHosts);

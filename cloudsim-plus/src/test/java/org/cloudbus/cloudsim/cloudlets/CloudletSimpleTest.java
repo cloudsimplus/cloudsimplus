@@ -12,8 +12,6 @@ package org.cloudbus.cloudsim.cloudlets;
 
 import java.util.ArrayList;
 
-import org.cloudbus.cloudsim.cloudlets.Cloudlet;
-import org.cloudbus.cloudsim.cloudlets.CloudletSimple;
 import org.cloudbus.cloudsim.mocks.CloudSimMocker;
 import org.cloudbus.cloudsim.utilizationmodels.UtilizationModelFull;
 import org.cloudbus.cloudsim.utilizationmodels.UtilizationModelStochastic;
@@ -203,13 +201,13 @@ public class CloudletSimpleTest {
 
         /**
          * @todo @author manoelcampos Actually the cpu cost it not being
-         * computed by the getProcessingCost() method.
+         * computed by the getTotalCost() method.
          */
         final double cpuCost = 0.0;
 
         final double totalCost = inputTransferCost + cpuCost + outputTransferCost;
         cloudlet.assignCloudletToDatacenter(0, costPerCpuSec, costPerByteOfBw);
-        assertEquals(totalCost, cloudlet.getProcessingCost(), 0);
+        assertEquals(totalCost, cloudlet.getTotalCost(), 0);
     }
 
     @Test
@@ -593,11 +591,11 @@ public class CloudletSimpleTest {
     @Test
     public void testHasReserved() {
         cloudlet.setReservationId(CloudletSimple.NOT_ASSIGNED);
-        Assert.assertFalse("Cloudlet.hasReserved should be false", cloudlet.hasReserved());
+        Assert.assertFalse("Cloudlet.isReserved should be false", cloudlet.isReserved());
 
         final int reservationId = 1;
         cloudlet.setReservationId(reservationId);
-        Assert.assertTrue("Cloudlet.hasReserved should be true", cloudlet.hasReserved());
+        Assert.assertTrue("Cloudlet.isReserved should be true", cloudlet.isReserved());
     }
 
     @Test
