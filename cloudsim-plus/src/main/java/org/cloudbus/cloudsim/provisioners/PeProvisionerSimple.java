@@ -56,14 +56,7 @@ public class PeProvisionerSimple extends PeProvisioner {
             return false;
         }
 
-        List<Double> allocatedMips;
-
-        if (getPeTable().containsKey(vmUid)) {
-            allocatedMips = getPeTable().get(vmUid);
-        } else {
-            allocatedMips = new ArrayList<>();
-        }
-
+        List<Double> allocatedMips = getPeTable().getOrDefault(vmUid, new ArrayList<>());
         allocatedMips.add(mips);
 
         setAvailableMips(getAvailableMips() - mips);

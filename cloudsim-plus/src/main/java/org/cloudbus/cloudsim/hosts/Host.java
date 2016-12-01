@@ -302,23 +302,21 @@ public interface Host extends Identificable {
     boolean vmCreate(Vm vm);
 
     /**
-     * Destroys a VM running in the host.
+     * Destroys a VM running in the host and removes it from the {@link #getVmList()}.
      *
      * @param vm the VM
      * @pre $none
      * @post $none
-     * @todo The methods vmDestroy, vmDestroyAll, vmDeallocate, vmDeallocateAll
-     * appear to be just duplicated code.
      */
-    void vmDestroy(Vm vm);
+    void destroyVm(Vm vm);
 
     /**
-     * Destroys all VMs running in the host.
+     * Destroys all VMs running in the host and remove them from the {@link #getVmList()}.
      *
      * @pre $none
      * @post $none
      */
-    void vmDestroyAll();
+    void destroyAllVms();
 
     /**
      * Gets the listener object that will be notified every time when
@@ -395,8 +393,8 @@ public interface Host extends Identificable {
         @Override public boolean setPeStatus(int peId, Pe.Status status) { return false; }
         @Override public double updateVmsProcessing(double currentTime) { return 0.0; }
         @Override public boolean vmCreate(Vm vm) { return false; }
-        @Override public void vmDestroy(Vm vm) {}
-        @Override public void vmDestroyAll() {}
+        @Override public void destroyVm(Vm vm) {}
+        @Override public void destroyAllVms() {}
         @Override public EventListener<HostUpdatesVmsProcessingEventInfo> getOnUpdateVmsProcessingListener() { return EventListener.NULL; }
         @Override public Host setOnUpdateVmsProcessingListener(EventListener<HostUpdatesVmsProcessingEventInfo> onUpdateVmsProcessingListener) { return Host.NULL; }
         @Override public long getAvailableStorage() { return 0L; }

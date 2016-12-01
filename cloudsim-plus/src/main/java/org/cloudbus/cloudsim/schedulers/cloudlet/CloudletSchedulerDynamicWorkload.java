@@ -10,6 +10,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
 import org.cloudbus.cloudsim.cloudlets.Cloudlet;
 import org.cloudbus.cloudsim.util.Consts;
 import org.cloudbus.cloudsim.cloudlets.CloudletExecutionInfo;
@@ -25,11 +26,11 @@ import org.cloudbus.cloudsim.resources.Processor;
  * other ones. Each VM has to have its own instance of a CloudletScheduler.
  *
  * @author Anton Beloglazov
- * @since CloudSim Toolkit 2.0
  * @todo @author manoelcampos The name of the class doesn't represent its goal. A clearer name would
- * be CloudletSchedulerSingleService as its Test Suite
+ * be CloudletSchedulerSingleService, the same as its Test class
  * @todo @author manoelcampos The class has some duplicated code from the
  * super class.
+ * @since CloudSim Toolkit 2.0
  */
 public class CloudletSchedulerDynamicWorkload extends CloudletSchedulerTimeShared {
 
@@ -39,7 +40,7 @@ public class CloudletSchedulerDynamicWorkload extends CloudletSchedulerTimeShare
      *
      * @todo Despite of the class considers that all PEs have the same capacity,
      * it accepts a list of PEs with different MIPS at the method
-         * {@link #updateVmProcessing(double, java.util.List) }
+     * {@link #updateVmProcessing(double, java.util.List) }
      */
     private double mips;
 
@@ -69,10 +70,10 @@ public class CloudletSchedulerDynamicWorkload extends CloudletSchedulerTimeShare
     /**
      * Instantiates a new VM scheduler
      *
-     * @param mips The individual MIPS capacity of each PE allocated to the VM
-     * using the scheduler, considering that all PEs have the same capacity.
+     * @param mips        The individual MIPS capacity of each PE allocated to the VM
+     *                    using the scheduler, considering that all PEs have the same capacity.
      * @param numberOfPes The number of PEs allocated to the VM using the
-     * scheduler.
+     *                    scheduler.
      */
     public CloudletSchedulerDynamicWorkload(double mips, int numberOfPes) {
         super();
@@ -91,7 +92,7 @@ public class CloudletSchedulerDynamicWorkload extends CloudletSchedulerTimeShare
 
         for (CloudletExecutionInfo rcl : getCloudletExecList()) {
             rcl.updateCloudletFinishedSoFar((long) (timeSpan(currentTime)
-                    * getTotalCurrentAllocatedMipsForCloudlet(rcl, getPreviousTime()) * Consts.MILLION));
+                * getTotalCurrentAllocatedMipsForCloudlet(rcl, getPreviousTime()) * Consts.MILLION));
 
             if (rcl.getCloudlet().isFinished()) { // finished: remove from the list
                 cloudletsToFinish.add(rcl);
@@ -130,13 +131,13 @@ public class CloudletSchedulerDynamicWorkload extends CloudletSchedulerTimeShare
     /**
      * Get the estimated completion time of a given cloudlet.
      *
-     * @param rcl the cloudlet
+     * @param rcl  the cloudlet
      * @param time the time
      * @return the estimated finish time
      */
     public double getEstimatedFinishTime(CloudletExecutionInfo rcl, double time) {
         return time +
-               ((rcl.getRemainingCloudletLength()) /
+            ((rcl.getRemainingCloudletLength()) /
                 getTotalCurrentAllocatedMipsForCloudlet(rcl, time));
     }
 
@@ -168,7 +169,7 @@ public class CloudletSchedulerDynamicWorkload extends CloudletSchedulerTimeShare
     public double getTotalCurrentAvailableMipsForCloudlet(CloudletExecutionInfo rcl, List<Double> mipsShare) {
         double totalCurrentMips = 0.0;
         if (mipsShare != null) {
-            int neededPEs = rcl.getNumberOfPes();
+            int neededPEs = rcl.getCloudlet().getNumberOfPes();
             for (double mips : mipsShare) {
                 totalCurrentMips += mips;
                 neededPEs--;
@@ -190,7 +191,7 @@ public class CloudletSchedulerDynamicWorkload extends CloudletSchedulerTimeShare
     /**
      * Update under allocated mips for cloudlet.
      *
-     * @param rcl the rgl
+     * @param rcl  the rgl
      * @param mips the mips
      * @todo It is not clear the goal of this method. The related test case
      * doesn't make it clear too. The method doesn't appear to be used anywhere.

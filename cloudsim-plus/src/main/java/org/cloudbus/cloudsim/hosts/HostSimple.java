@@ -208,7 +208,7 @@ public class HostSimple implements Host {
 
     @Override
     public void removeMigratingInVm(Vm vm) {
-        vmDeallocate(vm);
+        deallocateResourcesOfVm(vm);
         getVmsMigratingIn().remove(vm);
         getVmList().remove(vm);
         getVmScheduler().getVmsMigratingIn().remove(vm.getUid());
@@ -275,29 +275,19 @@ public class HostSimple implements Host {
     }
 
     @Override
-    public void vmDestroy(Vm vm) {
+    public void destroyVm(Vm vm) {
         if (vm != null) {
-            vmDeallocate(vm);
+            deallocateResourcesOfVm(vm);
             getVmList().remove(vm);
         }
     }
 
-    @Override
-    public void vmDestroyAll() {
-        vmDeallocateAll();
-        for (Vm vm : getVmList()) {
-            vm.setCreated(false);
-            getStorage().deallocateResource(vm.getSize());
-        }
-        getVmList().clear();
-    }
-
     /**
-     * Deallocate all resources of a VM.
+     * Deallocate all resources that a VM was using.
      *
      * @param vm the VM
      */
-    protected void vmDeallocate(Vm vm) {
+    protected void deallocateResourcesOfVm(Vm vm) {
         vm.setCreated(false);
         getRamProvisioner().deallocateResourceForVm(vm);
         getBwProvisioner().deallocateResourceForVm(vm);
@@ -305,10 +295,21 @@ public class HostSimple implements Host {
         getStorage().deallocateResource(vm.getSize());
     }
 
+    @Override
+    public void destroyAllVms() {
+        deallocateResourcesOfAllVms();
+        for (Vm vm : getVmList()) {
+            vm.setCreated(false);
+            getStorage().deallocateResource(vm.getSize());
+        }
+
+        getVmList().clear();
+    }
+
     /**
-     * Deallocate all resources of all VMs.
+     * Deallocate all resources that all VMs were using.
      */
-    protected void vmDeallocateAll() {
+    protected void deallocateResourcesOfAllVms() {
         getRamProvisioner().deallocateResourceForAllVms();
         getBwProvisioner().deallocateResourceForAllVms();
         getVmScheduler().deallocatePesForAllVms();

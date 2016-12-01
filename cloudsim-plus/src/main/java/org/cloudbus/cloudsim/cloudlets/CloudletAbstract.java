@@ -490,10 +490,10 @@ public abstract class CloudletAbstract implements Cloudlet {
     }
 
     @Override
-    public double getSubmissionTime(final int datacenterId) {
-        ExecutionInDatacenterInfo datacenter = getDatacenterInfo(datacenterId);
-        if (datacenter != null) {
-            return datacenter.arrivalTime;
+    public double getArrivalTime(final int datacenterId) {
+        ExecutionInDatacenterInfo datacenterInfo = getDatacenterInfo(datacenterId);
+        if (datacenterInfo != null) {
+            return datacenterInfo.arrivalTime;
         }
         return 0.0;
     }
@@ -607,13 +607,6 @@ public abstract class CloudletAbstract implements Cloudlet {
 
     @Override
     public double getTotalCost() {
-        /**
-         * @todo @author manoelcampos It is not computing the CPU
-         * cost, that depends on cloudlet length and the
-         * CloudletScheduler that the VM will use to execute the cloudlet.
-         * Thus, it may be more complex to estimate that value.
-         */
-
         // cloudlet cost: execution cost...
         double totalCost = getTotalCpuCostForAllDatacenters();
 
@@ -631,7 +624,7 @@ public abstract class CloudletAbstract implements Cloudlet {
      */
     private double getTotalCpuCostForAllDatacenters() {
         return getExecutionInDatacenterInfoList().stream()
-            .mapToDouble(info -> info.actualCPUTime * info.costPerSec)
+            .mapToDouble(dcInfo -> dcInfo.actualCPUTime * dcInfo.costPerSec)
             .sum();
     }
 

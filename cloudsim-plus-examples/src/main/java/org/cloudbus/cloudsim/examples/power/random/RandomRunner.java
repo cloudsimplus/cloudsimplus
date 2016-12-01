@@ -27,7 +27,9 @@ public class RandomRunner extends RunnerAbstract {
 	 * @param workload
 	 * @param vmAllocationPolicy
 	 * @param vmSelectionPolicy
-	 * @param parameter
+     * @param safetyParameterOrUtilizationThreshold a double value to be passed to the specific
+     *                               PowerVmSelectionPolicy being created, which the meaning depends
+     *                               on that policy.
 	 */
 	public RandomRunner(
 			boolean enableOutput,
@@ -37,7 +39,7 @@ public class RandomRunner extends RunnerAbstract {
 			String workload,
 			String vmAllocationPolicy,
 			String vmSelectionPolicy,
-			String parameter)
+			double safetyParameterOrUtilizationThreshold)
     {
 		super(
 				enableOutput,
@@ -47,7 +49,7 @@ public class RandomRunner extends RunnerAbstract {
 				workload,
 				vmAllocationPolicy,
 				vmSelectionPolicy,
-				parameter);
+				safetyParameterOrUtilizationThreshold);
 	}
 
 	@Override

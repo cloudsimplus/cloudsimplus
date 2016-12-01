@@ -46,7 +46,7 @@ public interface VmScheduler {
     boolean allocatePesForVm(Vm vm, List<Double> mipsShareRequested);
 
     /**
-     * Releases PEs allocated to all the VMs of the host the VmSchedulerAbstract
+     * Releases PEs allocated to all the VMs of the host the VmScheduler
      * is associated to. After that, all PEs will be available to be used on
      * demand for requesting VMs.
      *
@@ -66,20 +66,19 @@ public interface VmScheduler {
     void deallocatePesForVm(Vm vm);
 
     /**
-     * Returns the MIPS share of each host's Pe that is allocated to a given VM.
+     * Gets the MIPS share of each host's Pe that is allocated to a given VM.
      *
-     * @param vm the vm
-     * @return an array containing the amount of MIPS of each pe that is
-     * available to the VM
+     * @param vm the vm to get the MIPS share
+     * @return
      * @pre $none
      * @post $none
      */
     List<Double> getAllocatedMipsForVm(Vm vm);
 
     /**
-     * Gets the free mips.
+     * Gets the amount of MIPS that is free.
      *
-     * @return the free mips
+     * @return
      */
     double getAvailableMips();
 
@@ -94,16 +93,16 @@ public interface VmScheduler {
     boolean isSuitableForVm(Vm vm);
 
     /**
-     * Returns maximum available MIPS among all the host's PEs.
+     * Gets the maximum available MIPS among all the host's PEs.
      *
-     * @return max mips
+     * @return
      */
     double getMaxAvailableMips();
 
     /**
-     * Returns PE capacity in MIPS.
+     * Gets PE capacity in MIPS.
      *
-     * @return mips
+     * @return
      * @todo It considers that all PEs have the same capacity, what has been
      * shown doesn't be assured. The peList received by the VmScheduler can be
      * heterogeneous PEs.
@@ -111,48 +110,49 @@ public interface VmScheduler {
     double getPeCapacity();
 
     /**
-     * Gets the pe list.
+     * Gets the list of PEs from the Host.
      *
      * @param <T> the generic type
-     * @return the pe list
+     * @return
      *
      */
     <T extends Pe> List<T> getPeList();
 
     /**
-     * Gets the pe map.
+     * Gets the map of VMs to PEs, where each key is a VM UID and each value is a list
+     * of PEs allocated to that VM.
      *
-     * @return the pe map
+     * @return
      */
     Map<String, List<Pe>> getPeMap();
 
     /**
-     * Gets the pes allocated for a vm.
+     * Gets the list of PEs allocated for a VM.
      *
-     * @param vm the vm
-     * @return the pes allocated for the given vm
+     * @param vm the VM to get the allocated PEs
+     * @return
      */
     List<Pe> getPesAllocatedForVM(Vm vm);
 
     /**
      * Gets the total allocated MIPS for a VM along all its allocated PEs.
      *
-     * @param vm the vm
-     * @return the total allocated mips for the vm
+     * @param vm the VM to get the total allocated MIPS
+     * @return
      */
     double getTotalAllocatedMipsForVm(Vm vm);
 
     /**
-     * Gets the vms migrating in.
+     * Gets the list of VMs migrating in.
      *
-     * @return the vms migrating in
+     * @return
      */
     List<String> getVmsMigratingIn();
 
     /**
-     * Gets the vms migrating out.
+     * Gets the list of VMs migrating out.
      *
-     * @return the vms in migration
+     * @return
      */
     List<String> getVmsMigratingOut();
 

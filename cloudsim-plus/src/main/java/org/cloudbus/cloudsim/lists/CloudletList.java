@@ -39,12 +39,7 @@ public class CloudletList {
             }
         }
 
-        /**
-         * @todo @author manoelcampos Should return an empty object instead of
-         * null, in order to avoid NullPointerExceptions. Check the same for the
-         * other lists such as VmList and HostList.
-         */
-        return null;
+        return (T)Cloudlet.NULL;
     }
 
     /**

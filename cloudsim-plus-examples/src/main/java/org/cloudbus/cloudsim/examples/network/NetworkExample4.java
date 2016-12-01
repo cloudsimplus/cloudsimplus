@@ -12,6 +12,8 @@ import java.util.ArrayList;
 import java.util.List;
 import org.cloudbus.cloudsim.cloudlets.Cloudlet;
 import org.cloudbus.cloudsim.cloudlets.CloudletSimple;
+import org.cloudbus.cloudsim.network.topologies.BriteNetworkTopology;
+import org.cloudbus.cloudsim.network.topologies.NetworkTopology;
 import org.cloudbus.cloudsim.schedulers.cloudlet.CloudletSchedulerTimeShared;
 import org.cloudbus.cloudsim.datacenters.Datacenter;
 import org.cloudbus.cloudsim.datacenters.DatacenterSimple;
@@ -22,7 +24,6 @@ import org.cloudbus.cloudsim.datacenters.DatacenterCharacteristicsSimple;
 import org.cloudbus.cloudsim.hosts.Host;
 import org.cloudbus.cloudsim.hosts.HostSimple;
 import org.cloudbus.cloudsim.util.Log;
-import org.cloudbus.cloudsim.network.topologies.NetworkTopology;
 import org.cloudbus.cloudsim.resources.Pe;
 import org.cloudbus.cloudsim.resources.PeSimple;
 import org.cloudbus.cloudsim.utilizationmodels.UtilizationModel;
@@ -118,7 +119,9 @@ public class NetworkExample4 {
 
         //Sixth step: configure network
         //maps CloudSim entities to BRITE entities
-        NetworkTopology.addLink(datacenter0.getId(), broker.getId(), 10.0, 10);
+        NetworkTopology networkTopology = new BriteNetworkTopology();
+        simulation.setNetworkTopology(networkTopology);
+        networkTopology.addLink(datacenter0.getId(), broker.getId(), 10.0, 10);
 
         // Seventh step: Starts the simulation
         simulation.start();

@@ -6,6 +6,7 @@
  */
 package org.cloudbus.cloudsim.datacenters;
 
+import org.cloudbus.cloudsim.core.events.SimEvent;
 import org.cloudbus.cloudsim.util.DataCloudTags;
 import org.cloudbus.cloudsim.hosts.Host;
 import org.cloudbus.cloudsim.util.Log;
@@ -131,19 +132,6 @@ public class DatacenterSimple extends CloudSimEntity implements Datacenter {
 
     private void assignHostsToCurrentDatacenter() {
         getCharacteristics().getHostList().forEach(host -> host.setDatacenter(this));
-    }
-
-    /**
-     * Overrides this method when making a new and different type of resource.
-     * <br>
-     *
-     * @pre $none
-     * @post $none
-     *
-     * @todo This method doesn't appear to be used
-     */
-    protected void registerOtherEntity() {
-        // empty. This should be override by a child class
     }
 
     @Override
@@ -366,7 +354,7 @@ public class DatacenterSimple extends CloudSimEntity implements Datacenter {
      */
     protected void processPingRequest(SimEvent ev) {
         InfoPacket pkt = (InfoPacket) ev.getData();
-        pkt.setTag(CloudSimTags.INFOPKT_RETURN);
+        pkt.setDirection(CloudSimTags.INFOPKT_RETURN);
         pkt.setDestId(pkt.getSrcId());
 
         // sends back to the sender
@@ -1131,8 +1119,6 @@ public class DatacenterSimple extends CloudSimEntity implements Datacenter {
 
         // send the registration to CIS
         sendNow(cisID, CloudSimTags.DATACENTER_REGISTRATION_REQUEST, getId());
-        // Below method is for a child class to override
-        registerOtherEntity();
     }
 
     @Override

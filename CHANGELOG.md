@@ -3,7 +3,7 @@
 Lists the main changes in the project.
 ## [Current Development Version]
 
--
+- Enabled the complete navigation from Cloudlet up to the Datacenter. Now it is possible to call `cloudlet.getVm().getHost().getDatacenter()` and navigate between all the relationships that were introduced in CloudSim Plus for such classes. And it is totally safe to make such a call, even before starting the simulation, that you will not get a `NullPointerException`.
 
 ## [v0.8-beta.7] - 2016-11-29
 

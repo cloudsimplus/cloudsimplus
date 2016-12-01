@@ -58,7 +58,9 @@ public abstract class RunnerAbstract {
      * @param workload           the workload
      * @param vmAllocationPolicy the vm allocation policy
      * @param vmSelectionPolicy  the vm selection policy
-     * @param parameter          the parameter
+     * @param safetyParameterOrUtilizationThreshold a double value to be passed to the specific
+     *                               PowerVmSelectionPolicy being created, which the meaning depends
+     *                               on that policy.
      */
     public RunnerAbstract(
         boolean enableOutput,
@@ -68,7 +70,7 @@ public abstract class RunnerAbstract {
         String workload,
         String vmAllocationPolicy,
         String vmSelectionPolicy,
-        String parameter) {
+        double safetyParameterOrUtilizationThreshold) {
         try {
             initLogOutput(
                 enableOutput,
@@ -77,7 +79,7 @@ public abstract class RunnerAbstract {
                 workload,
                 vmAllocationPolicy,
                 vmSelectionPolicy,
-                parameter);
+                safetyParameterOrUtilizationThreshold);
         } catch (Exception e) {
             e.printStackTrace();
             System.exit(0);
@@ -85,9 +87,11 @@ public abstract class RunnerAbstract {
 
         init(inputFolder + "/" + workload);
         start(
-            getExperimentName(workload, vmAllocationPolicy, vmSelectionPolicy, parameter),
+            getExperimentName(
+                workload, vmAllocationPolicy, vmSelectionPolicy,
+                String.valueOf(safetyParameterOrUtilizationThreshold)),
             outputFolder,
-            getVmAllocationPolicy(vmAllocationPolicy, vmSelectionPolicy, parameter));
+            getVmAllocationPolicy(vmAllocationPolicy, vmSelectionPolicy, safetyParameterOrUtilizationThreshold));
     }
 
     /**
@@ -99,7 +103,9 @@ public abstract class RunnerAbstract {
      * @param workload           the workload
      * @param vmAllocationPolicy the vm allocation policy
      * @param vmSelectionPolicy  the vm selection policy
-     * @param parameter          the parameter
+     * @param safetyParameterOrUtilizationThreshold a double value to be passed to the specific
+     *                               PowerVmSelectionPolicy being created, which the meaning depends
+     *                               on that policy.
      * @throws IOException           Signals that an I/O exception has occurred.
      * @throws FileNotFoundException the file not found exception
      */
@@ -110,7 +116,7 @@ public abstract class RunnerAbstract {
         String workload,
         String vmAllocationPolicy,
         String vmSelectionPolicy,
-        String parameter) throws IOException, FileNotFoundException
+        double safetyParameterOrUtilizationThreshold) throws IOException, FileNotFoundException
     {
         setEnableOutput(enableOutput);
         Log.setDisabled(!isEnableOutput());
@@ -126,7 +132,8 @@ public abstract class RunnerAbstract {
             }
 
             File file = new File(outputFolder + "/log/"
-                + getExperimentName(workload, vmAllocationPolicy, vmSelectionPolicy, parameter) + ".txt");
+                + getExperimentName(workload, vmAllocationPolicy, vmSelectionPolicy,
+                String.valueOf(safetyParameterOrUtilizationThreshold)) + ".txt");
             file.createNewFile();
             Log.setOutput(new FileOutputStream(file));
         }
@@ -213,64 +220,55 @@ public abstract class RunnerAbstract {
      *
      * @param vmAllocationPolicyName the vm allocation policy name
      * @param vmSelectionPolicyName  the vm selection policy name
-     * @param parameterName          a double value to be passed to the specific
+     * @param safetyParameterOrUtilizationThreshold a double value to be passed to the specific
      *                               PowerVmSelectionPolicy being created, which the meaning depends
      *                               on that policy.
      * @return the vm allocation policy
-     * @todo It does not make sense the use of this parameterName as String.
-     * It is always being converted to Double.
      */
     protected VmAllocationPolicy getVmAllocationPolicy(
         String vmAllocationPolicyName,
         String vmSelectionPolicyName,
-        String parameterName) {
+        double safetyParameterOrUtilizationThreshold) {
         VmAllocationPolicy vmAllocationPolicy = null;
         PowerVmSelectionPolicy vmSelectionPolicy = null;
         if (!vmSelectionPolicyName.isEmpty()) {
             vmSelectionPolicy = getVmSelectionPolicy(vmSelectionPolicyName);
         }
-        double parameter = 0;
-        if (!parameterName.isEmpty()) {
-            parameter = Double.valueOf(parameterName);
-        }
+
         if (vmAllocationPolicyName.equals("iqr")) {
-            PowerVmAllocationPolicyMigrationAbstract fallbackVmSelectionPolicy = new PowerVmAllocationPolicyMigrationStaticThreshold(
-                vmSelectionPolicy,
-                0.7);
+            PowerVmAllocationPolicyMigrationAbstract fallbackVmSelectionPolicy =
+                new PowerVmAllocationPolicyMigrationStaticThreshold(vmSelectionPolicy, 0.7);
             vmAllocationPolicy = new PowerVmAllocationPolicyMigrationInterQuartileRange(
                 vmSelectionPolicy,
-                parameter,
+                safetyParameterOrUtilizationThreshold,
                 fallbackVmSelectionPolicy);
         } else if (vmAllocationPolicyName.equals("mad")) {
-            PowerVmAllocationPolicyMigrationAbstract fallbackVmSelectionPolicy = new PowerVmAllocationPolicyMigrationStaticThreshold(
-                vmSelectionPolicy,
-                0.7);
+            PowerVmAllocationPolicyMigrationAbstract fallbackVmSelectionPolicy =
+                new PowerVmAllocationPolicyMigrationStaticThreshold(vmSelectionPolicy, 0.7);
             vmAllocationPolicy = new PowerVmAllocationPolicyMigrationMedianAbsoluteDeviation(
                 vmSelectionPolicy,
-                parameter,
+                safetyParameterOrUtilizationThreshold,
                 fallbackVmSelectionPolicy);
         } else if (vmAllocationPolicyName.equals("lr")) {
-            PowerVmAllocationPolicyMigrationAbstract fallbackVmSelectionPolicy = new PowerVmAllocationPolicyMigrationStaticThreshold(
-                vmSelectionPolicy,
-                0.7);
+            PowerVmAllocationPolicyMigrationAbstract fallbackVmSelectionPolicy =
+                new PowerVmAllocationPolicyMigrationStaticThreshold(vmSelectionPolicy,0.7);
             vmAllocationPolicy = new PowerVmAllocationPolicyMigrationLocalRegression(
                 vmSelectionPolicy,
-                parameter,
+                safetyParameterOrUtilizationThreshold,
                 Constants.SCHEDULING_INTERVAL,
                 fallbackVmSelectionPolicy);
         } else if (vmAllocationPolicyName.equals("lrr")) {
-            PowerVmAllocationPolicyMigrationAbstract fallbackVmSelectionPolicy = new PowerVmAllocationPolicyMigrationStaticThreshold(
-                vmSelectionPolicy,
-                0.7);
+            PowerVmAllocationPolicyMigrationAbstract fallbackVmSelectionPolicy =
+                new PowerVmAllocationPolicyMigrationStaticThreshold(vmSelectionPolicy,0.7);
             vmAllocationPolicy = new PowerVmAllocationPolicyMigrationLocalRegressionRobust(
                 vmSelectionPolicy,
-                parameter,
+                safetyParameterOrUtilizationThreshold,
                 Constants.SCHEDULING_INTERVAL,
                 fallbackVmSelectionPolicy);
         } else if (vmAllocationPolicyName.equals("thr")) {
             vmAllocationPolicy = new PowerVmAllocationPolicyMigrationStaticThreshold(
                 vmSelectionPolicy,
-                parameter);
+                safetyParameterOrUtilizationThreshold);
         } else if (vmAllocationPolicyName.equals("dvfs")) {
             vmAllocationPolicy = new PowerVmAllocationPolicySimple();
         } else {

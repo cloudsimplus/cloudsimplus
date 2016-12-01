@@ -24,7 +24,7 @@ import org.cloudbus.cloudsim.schedulers.cloudlet.CloudletScheduler;
  * datacenters. It executes actions related to management of packets (sent and
  * received).
  *
- * <br>Please refer to following publication for more details:<br>
+ * <p>Please refer to following publication for more details:
  * <ul>
  * <li>
  * <a href="http://dx.doi.org/10.1109/UCC.2011.24">
@@ -34,30 +34,16 @@ import org.cloudbus.cloudsim.schedulers.cloudlet.CloudletScheduler;
  * Press, USA), Melbourne, Australia, December 5-7, 2011.
  * </a>
  * </ul>
+ * </p>
  *
  * @author Saurabh Kumar Garg
  * @since CloudSim Toolkit 3.0
- * @todo Attributes should be private
  */
 public class NetworkVm extends VmSimple {
-
-    /**
-     * List of {@link NetworkCloudlet} of the VM.
-     */
-    public List<NetworkCloudlet> cloudletList;
-
-    /**
-     * List of packets received by the VM.
-     */
-    public List<HostPacket> receivedPacketList;
-
-    /** Indicates if the VM is free or not. */
-    public boolean free;
-
-    /**
-     * The time when the VM finished to process its cloudlets.
-     */
-    public double finishTime;
+    private List<NetworkCloudlet> cloudletList;
+    private List<HostPacket> receivedPacketList;
+    private boolean free;
+    private double finishTime;
 
     /**
      * Creates a NetworkVm with 1024 MB of RAM, 1000 Megabits/s of Bandwidth and 1024 MB of Storage Size.
@@ -117,6 +103,7 @@ public class NetworkVm extends VmSimple {
         setCloudletScheduler(cloudletScheduler);
     }
 
+    /** Indicates if the VM is free or not. */
     public boolean isFree() {
         return free;
     }
@@ -124,5 +111,42 @@ public class NetworkVm extends VmSimple {
     @Override
     public int compareTo(Vm o) {
         return Double.compare(this.finishTime, ((NetworkVm) o).finishTime);
+    }
+
+    /**
+     * List of {@link NetworkCloudlet} of the VM.
+     */
+    public List<NetworkCloudlet> getCloudletList() {
+        return cloudletList;
+    }
+
+    public void setCloudletList(List<NetworkCloudlet> cloudletList) {
+        this.cloudletList = cloudletList;
+    }
+
+    /**
+     * List of packets received by the VM.
+     */
+    public List<HostPacket> getReceivedPacketList() {
+        return receivedPacketList;
+    }
+
+    public void setReceivedPacketList(List<HostPacket> receivedPacketList) {
+        this.receivedPacketList = receivedPacketList;
+    }
+
+    public void setFree(boolean free) {
+        this.free = free;
+    }
+
+    /**
+     * The time when the VM finished to process its cloudlets.
+     */
+    public double getFinishTime() {
+        return finishTime;
+    }
+
+    public void setFinishTime(double finishTime) {
+        this.finishTime = finishTime;
     }
 }

@@ -167,16 +167,16 @@
                 <configuration>
                     <!-- <failOnError>false</failOnError> -->
                     <tags>
-                        <tag>
+                        <direction>
                             <name>pre</name>
                             <placement>a</placement>
                             <head>Precondition:</head>
-                        </tag>
-                        <tag>
+                        </direction>
+                        <direction>
                             <name>post</name>
                             <placement>a</placement>
                             <head>Postcondition:</head>
-                        </tag>
+                        </direction>
                     </tags>
                 </configuration>
             </plugin>

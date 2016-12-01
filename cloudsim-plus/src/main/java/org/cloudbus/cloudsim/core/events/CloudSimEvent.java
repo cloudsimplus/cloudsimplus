@@ -5,7 +5,11 @@
  *
  * Copyright (c) 2009-2012, The University of Melbourne, Australia
  */
-package org.cloudbus.cloudsim.core;
+package org.cloudbus.cloudsim.core.events;
+
+import org.cloudbus.cloudsim.core.CloudSim;
+import org.cloudbus.cloudsim.core.SimEntity;
+import org.cloudbus.cloudsim.core.Simulation;
 
 /**
  * This class represents a simulation event which is passed between the entities
@@ -19,7 +23,7 @@ public final class CloudSimEvent implements SimEvent {
     /**
      * @see #getSimulation()
      */
-    private final CloudSim simulation;
+    private final Simulation simulation;
 
     protected final int type;
 
@@ -67,7 +71,22 @@ public final class CloudSimEvent implements SimEvent {
         this.data = null;
     }
 
-    CloudSimEvent(CloudSim simulation, int type, double time, int src, int dest, int tag, Object data) {
+    /**
+     * Creates an CloudSimEvent cloning another given one.
+     *
+     * @param eventToClone the event to clone
+     */
+    public CloudSimEvent(SimEvent eventToClone) {
+        this.simulation = eventToClone.getSimulation();
+        this.type = eventToClone.getType();
+        this.time = eventToClone.getTime();
+        this.src = eventToClone.getSource();
+        this.dest = eventToClone.getDestination();
+        this.tag = eventToClone.getTag();
+        this.data = eventToClone.getData();
+    }
+
+    public CloudSimEvent(CloudSim simulation, int type, double time, int src, int dest, int tag, Object data) {
         this.simulation = simulation;
         this.type = type;
         this.time = time;
@@ -77,7 +96,7 @@ public final class CloudSimEvent implements SimEvent {
         this.data = data;
     }
 
-    CloudSimEvent(CloudSim simulation, int type, double time, int src) {
+    public CloudSimEvent(CloudSim simulation, int type, double time, int src) {
         this.simulation = simulation;
         this.type = type;
         this.time = time;
@@ -87,7 +106,8 @@ public final class CloudSimEvent implements SimEvent {
         this.data = null;
     }
 
-    protected void setSerial(long serial) {
+    @Override
+    public void setSerial(long serial) {
         this.serial = serial;
     }
 
@@ -163,15 +183,6 @@ public final class CloudSimEvent implements SimEvent {
         return data;
     }
 
-    /**
-     * @todo @author manoelcampos Should be used a clone constructor
-     * @return
-     */
-    @Override
-    public Object clone() {
-        return new CloudSimEvent(simulation, type, time, src, dest, tag, data);
-    }
-
     @Override
     public SimEvent setSource(int source) {
         this.src = source;
@@ -195,7 +206,7 @@ public final class CloudSimEvent implements SimEvent {
     }
 
     @Override
-    public CloudSim getSimulation() {
+    public Simulation getSimulation() {
         return simulation;
     }
 }

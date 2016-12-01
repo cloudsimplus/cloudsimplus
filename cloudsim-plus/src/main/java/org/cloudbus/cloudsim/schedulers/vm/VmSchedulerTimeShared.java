@@ -17,7 +17,6 @@ import org.cloudbus.cloudsim.resources.Pe;
 import org.cloudbus.cloudsim.vms.Vm;
 
 import org.cloudbus.cloudsim.lists.PeList;
-import org.cloudbus.cloudsim.provisioners.PeProvisioner;
 
 /**
  * VmSchedulerTimeShared is a Virtual Machine Monitor (VMM) allocation policy
@@ -35,8 +34,7 @@ import org.cloudbus.cloudsim.provisioners.PeProvisioner;
 public class VmSchedulerTimeShared extends VmSchedulerAbstract {
 
     /**
-     * The map of requested mips, where each key is a VM and each value is a
-     * list of MIPS requested by that VM.
+     * @see #getMipsMapRequested()
      */
     private Map<String, List<Double>> mipsMapRequested;
 
@@ -66,9 +64,122 @@ public class VmSchedulerTimeShared extends VmSchedulerAbstract {
         } else if (getVmsMigratingOut().contains(vm.getUid())) {
             getVmsMigratingOut().remove(vm.getUid());
         }
-        boolean result = allocatePesForVm(vm.getUid(), mipsShareRequested);
-        updatePeProvisioning();
+        boolean result = updateMapOfRequestedMipsForVm(vm.getUid(), mipsShareRequested);
+
+        updatePesAllocationForAllVms();
         return result;
+    }
+
+    /**
+     * Update allocation of Host PEs for all VMs.
+     *
+     */
+    private void updatePesAllocationForAllVms() {
+        clearAllocationOfPesForAllVms();
+
+        for (Map.Entry<String, List<Double>> entry : getMipsMapAllocated().entrySet()) {
+            final String vmUid = entry.getKey();
+            getPeMap().put(vmUid, new LinkedList<>());
+            allocatePesListForVm(entry, vmUid);
+        }
+    }
+
+    /**
+     * Allocates Host PEs for a given VM.
+     *
+     * @param entry an entry from the {@link #getMipsMapAllocated()} containing a VM UID and
+     *              the list of MIPS to be allocated for each VM PE
+     * @param vmUid the UID of the VM to allocate PEs for it
+     * @todo @author manoelcampos The method implementation must to be checked. See the comments inside.
+     */
+    private void allocatePesListForVm(Map.Entry<String, List<Double>> entry, String vmUid) {
+        int vmPeId = -1;
+        //Iterate over the list of MIPS requested by each VM PE
+        for (double requestedMipsForVmPe : entry.getValue()) {
+            double allocatedMipsForVmPe = allocateMipsFromHostPesToGivenVirtualPe(vmUid, requestedMipsForVmPe);
+            if(requestedMipsForVmPe > 0.1 && allocatedMipsForVmPe <= 0.1){
+                Log.printFormattedLine(
+                    "Vm %s is requiring a total of %.0f MIPS for its PE %d but the Host PEs currently don't have such an available MIPS amount. Only %.0f MIPS were allocated.",
+                    vmUid, requestedMipsForVmPe, vmPeId, allocatedMipsForVmPe);
+            }
+        }
+    }
+
+    /**
+     * Try to allocate MIPS from one or more Host PEs to a specific Virtual PE (PE of a VM).
+     *
+     * @param vmUid the UID of the VM to try to find Host PEs for one of its Virtual PEs
+     * @param requestedMipsForVmPe the amount of MIPS requested by such a VM PE
+     * @return the total MIPS allocated for the requested VM PE
+     */
+    private double allocateMipsFromHostPesToGivenVirtualPe(String vmUid, final double requestedMipsForVmPe) {
+        if(requestedMipsForVmPe <= 0.1){
+            return 0;
+        }
+
+        final Iterator<Pe> hostPesIterator = getPeList().iterator();
+        Pe selectedHostPe = hostPesIterator.next();
+
+        double allocatedMipsForVmPe = 0;
+        /*
+        * While all the requestred MIPS for the VM PE was not allocated, try to find a Host PE
+        * with that MIPS amount available.
+        */
+        while (allocatedMipsForVmPe < 0.1) {
+            if (getAvailableMipsForHostPe(selectedHostPe) >= requestedMipsForVmPe) {
+                /*
+                 * If the selected Host PE has enough available MIPS that is requested by the
+                 * current VM PE, allocate that MIPS in that Host PE for that VM PE.
+                 * For each next VM PE, in case that the same previous selected Host PE yet
+                 * has available MIPS to allocate to it, that Host PE will be allocated
+                 * to that next VM PE. However, for the best of my knowledge,
+                 * in real virtualization, it is not possible to allocate
+                 * more than one VM to the same CPU core.
+                 *
+                 */
+                allocateMipsFromPeForVm(vmUid, selectedHostPe, requestedMipsForVmPe);
+                allocatedMipsForVmPe = requestedMipsForVmPe;
+            } else {
+                /*
+                 * If the selected Host PE doesn't have the available MIPS requested by the current
+                 * VM PE, allocate the MIPS that is available in that PE for the VM PE
+                 * and try to find another Host PE to allocate the remaining MIPS required by the
+                 * current VM PE. However, for the best of my knowledge,
+                 * in real virtualization, it is not possible to allocate
+                 * more than one VM to the same CPU core. If the current Host PE doesn't have the
+                 * MIPS required by the VM PE, another Host PE has to be found.
+                 * Using the current implementation, the same Host PE could be used
+                 * by different Hosts.
+                 */
+
+                //gets the available MIPS from Host PE before allocating it to the VM
+                allocatedMipsForVmPe += getAvailableMipsForHostPe(selectedHostPe);
+                allocateMipsFromPeForVm(vmUid, selectedHostPe, getAvailableMipsForHostPe(selectedHostPe));
+                if (requestedMipsForVmPe >= 0.1 && !hostPesIterator.hasNext()) {
+                    break;
+                }
+
+                selectedHostPe = hostPesIterator.next();
+            }
+        }
+
+        return allocatedMipsForVmPe;
+    }
+
+    private double getAvailableMipsForHostPe(Pe hostPe) {
+        return hostPe.getPeProvisioner().getAvailableMips();
+    }
+
+    /**
+     * Clear the allocation of any PE for all VMs in order to start a new allocation.
+     * By this way, a PE that was previously allocated to a given VM will be released
+     * and when the new allocation is performed, a different list of PEs can be alocated
+     * that VM.
+     * @see #updatePesAllocationForAllVms()
+     */
+    private void clearAllocationOfPesForAllVms() {
+        getPeMap().clear();
+        getPeList().forEach(pe -> pe.getPeProvisioner().deallocateMipsForAllVms());
     }
 
     @Override
@@ -104,13 +215,13 @@ public class VmSchedulerTimeShared extends VmSchedulerAbstract {
     }
 
     /**
-     * Allocate PEs for a vm.
+     * Update the {@link #getMipsMapRequested()} with the list of MIPS requested by a given VM.
      *
-     * @param vmUid the vm uid
+     * @param vmUid the VM uid
      * @param mipsShareRequested the list of mips share requested by the vm
-     * @return true, if successful
+     * @return true if successful, false otherwise
      */
-    protected boolean allocatePesForVm(String vmUid, List<Double> mipsShareRequested) {
+    protected boolean updateMapOfRequestedMipsForVm(String vmUid, List<Double> mipsShareRequested) {
         double totalRequestedMips = getTotalCapacityToBeAllocatedToVm(mipsShareRequested);
         if (totalRequestedMips == 0) {
             return false;
@@ -142,49 +253,16 @@ public class VmSchedulerTimeShared extends VmSchedulerAbstract {
         return true;
     }
 
+
     /**
-     * Update allocation of VMs on PEs.
-     *
-     * @todo @author manoelcampos The method is too long and may be refactored to make clearer its
-     * responsibility.
+     * Allocates a given amount of MIPS from a specific PE for a given VM.
+     * @param vmUid the VM UID to allocate the MIPS from a given PE
+     * @param pe the PE that will have MIPS allocated to the VM
+     * @param mipsToAllocate the amount of MIPS from the PE that have to be allocated to the VM
      */
-    protected void updatePeProvisioning() {
-        getPeMap().clear();
-        getPeList().forEach(pe -> pe.getPeProvisioner().deallocateMipsForAllVms());
-
-        Iterator<Pe> peIterator = getPeList().iterator();
-        Pe pe = peIterator.next();
-        PeProvisioner peProvisioner = pe.getPeProvisioner();
-        double availableMips = peProvisioner.getAvailableMips();
-
-        for (Map.Entry<String, List<Double>> entry : getMipsMapAllocated().entrySet()) {
-            String vmUid = entry.getKey();
-            getPeMap().put(vmUid, new LinkedList<>());
-
-            for (double mips : entry.getValue()) {
-                while (mips >= 0.1) {
-                    if (availableMips >= mips) {
-                        peProvisioner.allocateMipsForVm(vmUid, mips);
-                        getPeMap().get(vmUid).add(pe);
-                        availableMips -= mips;
-                        break;
-                    } else {
-                        peProvisioner.allocateMipsForVm(vmUid, availableMips);
-                        getPeMap().get(vmUid).add(pe);
-                        mips -= availableMips;
-                        if (mips <= 0.1) {
-                            break;
-                        }
-                        if (!peIterator.hasNext()) {
-                            Log.printConcatLine("There is no enough MIPS (", mips, ") to accommodate VM ", vmUid);
-                        }
-                        pe = peIterator.next();
-                        peProvisioner = pe.getPeProvisioner();
-                        availableMips = peProvisioner.getAvailableMips();
-                    }
-                }
-            }
-        }
+    private void allocateMipsFromPeForVm(String vmUid, Pe pe, double mipsToAllocate) {
+        pe.getPeProvisioner().allocateMipsForVm(vmUid, mipsToAllocate);
+        getPeMap().get(vmUid).add(pe);
     }
 
     @Override
@@ -199,10 +277,10 @@ public class VmSchedulerTimeShared extends VmSchedulerAbstract {
         }
 
         for (Map.Entry<String, List<Double>> entry : getMipsMapRequested().entrySet()) {
-            allocatePesForVm(entry.getKey(), entry.getValue());
+            updateMapOfRequestedMipsForVm(entry.getKey(), entry.getValue());
         }
 
-        updatePeProvisioning();
+        updatePesAllocationForAllVms();
     }
 
     /**
@@ -248,9 +326,10 @@ public class VmSchedulerTimeShared extends VmSchedulerAbstract {
     }
 
     /**
-     * Gets the mips map requested.
+     * Gets the map of mips requested by each VM, where each key is a VM and each value is a
+     * list of MIPS requested by that VM.
      *
-     * @return the mips map requested
+     * @return
      */
     protected Map<String, List<Double>> getMipsMapRequested() {
         return mipsMapRequested;

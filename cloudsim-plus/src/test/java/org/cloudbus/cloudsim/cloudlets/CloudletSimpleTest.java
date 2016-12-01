@@ -194,19 +194,16 @@ public class CloudletSimpleTest {
 
     @Test
     public void testGetProcessingCost() {
-        Cloudlet cloudlet = createCloudlet();
+        Cloudlet cloudlet = createCloudlet(0, 10000, 2);
         final double costPerCpuSec = 4, costPerByteOfBw = 2;
         final double inputTransferCost = CLOUDLET_FILE_SIZE * costPerByteOfBw;
         final double outputTransferCost = CLOUDLET_OUTPUT_SIZE * costPerByteOfBw;
 
-        /**
-         * @todo @author manoelcampos Actually the cpu cost it not being
-         * computed by the getTotalCost() method.
-         */
-        final double cpuCost = 0.0;
+        final double cpuCost = 40;
 
         final double totalCost = inputTransferCost + cpuCost + outputTransferCost;
         cloudlet.assignCloudletToDatacenter(0, costPerCpuSec, costPerByteOfBw);
+        cloudlet.setWallClockTime(10, 10);
         assertEquals(totalCost, cloudlet.getTotalCost(), 0);
     }
 

@@ -438,7 +438,7 @@ public class HostSimpleTest {
         assertSame(vm, host.getVm(0, 0));
         assertEquals(MIPS, host.getVmScheduler().getAvailableMips(), 0);
 
-        host.vmDestroy(vm);
+        host.destroyVm(vm);
         assertNull(host.getVm(0, 0));
         assertEquals(0, host.getVmList().size());
         assertEquals(MIPS * 2, host.getVmScheduler().getAvailableMips(), 0);
@@ -464,7 +464,7 @@ public class HostSimpleTest {
         assertSame(vm1, host.getVm(1, 0));
         assertEquals(0, host.getVmScheduler().getAvailableMips(), 0);
 
-        host.vmDestroyAll();
+        host.destroyAllVms();
         assertNull(host.getVm(0, 0));
         assertNull(host.getVm(1, 0));
         assertEquals(0, host.getVmList().size());

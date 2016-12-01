@@ -1,6 +1,6 @@
 package org.cloudbus.cloudsim.core;
 
-import org.cloudbus.cloudsim.core.predicates.Predicate;
+import org.cloudbus.cloudsim.core.events.SimEvent;
 
 /**
  * An interface that represents a simulation entity. An entity handles events and can
@@ -11,32 +11,20 @@ import org.cloudbus.cloudsim.core.predicates.Predicate;
  */
 public interface SimEntity extends Nameable, Cloneable, Runnable {
     /**
-     * The Constant RUNNABLE.
+     * Defines the event state.
      */
-    int RUNNABLE = 0;
-    /**
-     * The Constant WAITING.
-     */
-    int WAITING = 1;
-    /**
-     * The Constant HOLDING.
-     */
-    int HOLDING = 2;
-    /**
-     * The Constant FINISHED.
-     */
-    int FINISHED = 3;
+    enum State {RUNNABLE, WAITING, HOLDING, FINISHED};
 
     /**
      * Gets the CloudSim instance that represents the simulation the Entity is related to.
-     * @return 
+     * @return
      */
     Simulation getSimulation();
 
     /**
      * Sets the CloudSim instance that represents the simulation the Entity is related to.
      * @param simulation The CloudSim instance that represents the simulation the Entity is related to
-     * @return 
+     * @return
      */
     SimEntity setSimulation(Simulation simulation);
 
@@ -73,15 +61,15 @@ public interface SimEntity extends Nameable, Cloneable, Runnable {
      * this is the method in which the corresponding code would be placed.
      */
     void shutdownEntity();
-    
+
     /**
      * Sets the Entity name.
      *
      * @param newName the new name
-     * @return 
+     * @return
      * @throws IllegalArgumentException when the entity name is <tt>null</tt> or empty
      */
-    SimEntity setName(String newName) throws IllegalArgumentException;    
+    SimEntity setName(String newName) throws IllegalArgumentException;
 
     /**
      * An attribute that implements the Null Object Design Pattern for {@link SimEntity}

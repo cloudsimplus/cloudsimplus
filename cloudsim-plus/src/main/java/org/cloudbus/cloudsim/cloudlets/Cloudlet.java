@@ -352,14 +352,14 @@ public interface Cloudlet extends Identificable, Comparable<Cloudlet> {
     double getDatacenterArrivalTime();
 
     /**
-     * Gets the submission (arrival) time of this Cloudlet in the given Datacenter.
+     * Gets the arrival time of this Cloudlet in the given Datacenter.
      *
      * @param datacenterId the Datacenter entity ID
      * @return the submission time or 0 if the Cloudlet has never been executed in the given Datacenter
      * @pre datacenterId >= 0
      * @post $result >= 0.0
      */
-    double getSubmissionTime(final int datacenterId);
+    double getArrivalTime(final int datacenterId);
 
     /**
      * Gets the priority of this Cloudlet for scheduling inside a Vm.
@@ -883,7 +883,7 @@ public interface Cloudlet extends Identificable, Comparable<Cloudlet> {
         @Override public int getDatacenterId() { return -1; }
         @Override public Status getStatus() { return getCloudletStatus(); }
         @Override public double getDatacenterArrivalTime() { return 0.0; }
-        @Override public double getSubmissionTime(int datacenterId) { return 0.0; }
+        @Override public double getArrivalTime(int datacenterId) { return 0.0; }
         @Override public int getBrokerId() { return -1; }
         @Override public UtilizationModel getUtilizationModelBw() { return UtilizationModel.NULL; }
         @Override public UtilizationModel getUtilizationModelCpu() { return UtilizationModel.NULL; }

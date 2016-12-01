@@ -514,7 +514,6 @@ public class VmSimple implements Vm {
      *
      * @return the current allocated size
      * @see #getSize()
-     * @todo It has never been used.
      */
     @Override
     public long getCurrentAllocatedSize() {
@@ -570,7 +569,7 @@ public class VmSimple implements Vm {
 
     /**
      * @todo The method has to be tested with different instances of
-     * AbstractResource, with children in different levels of the class
+     * ResourceManageable, with children in different levels of the class
      * hierarchy.
      * @param resourceClass the class of the resource to be got
      * @return

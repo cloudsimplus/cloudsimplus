@@ -8,19 +8,18 @@
 
 package org.cloudbus.cloudsim.core.predicates;
 
-import org.cloudbus.cloudsim.core.SimEvent;
+import org.cloudbus.cloudsim.core.events.SimEvent;
 
 /**
  * A predicate which will <b>not</b> match any event on the deferred event queue.
  * See the publicly accessible instance of this predicate in
- * {@link org.cloudbus.cloudsim.core.CloudSim#SIM_NONE}, so no new instances needs to be created. <br/>
- * The idea of simulation predicates was copied from SimJava 2.
+ * {@link org.cloudbus.cloudsim.core.CloudSim#SIM_NONE}, so no new instances needs to be created. <br>
  *
  * @author Marcos Dias de Assuncao
  * @since CloudSim Toolkit 1.0
  * @see Predicate
  */
-public class PredicateNone extends Predicate {
+public class PredicateNone implements Predicate {
 
 	/**
 	 * Considers that no event received by the predicate matches.

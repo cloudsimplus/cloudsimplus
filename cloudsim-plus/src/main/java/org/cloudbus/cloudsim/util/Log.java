@@ -17,8 +17,6 @@ import java.lang.management.ManagementFactory;
  *
  * @author Anton Beloglazov
  * @since CloudSim Toolkit 2.0
- * @todo @author manoelcampos Could be replaced by
- * {@link http://logging.apache.org/log4j/2.x/ Apache Log4j}
  */
 public class Log {
     /**

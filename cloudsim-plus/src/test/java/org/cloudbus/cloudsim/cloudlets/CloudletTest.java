@@ -60,7 +60,7 @@ public class CloudletTest {
         assertEquals(-1, Cloudlet.NULL.getReservationId());
         assertEquals(-1, Cloudlet.NULL.getDatacenterId());
         assertEquals(0, Cloudlet.NULL.getDatacenterArrivalTime(), 0);
-        assertEquals(0, Cloudlet.NULL.getSubmissionTime(0), 0);
+        assertEquals(0, Cloudlet.NULL.getArrivalTime(0), 0);
         assertEquals(-1, Cloudlet.NULL.getBrokerId());
         assertSame(UtilizationModel.NULL, Cloudlet.NULL.getUtilizationModelBw());
         assertSame(UtilizationModel.NULL, Cloudlet.NULL.getUtilizationModelCpu());

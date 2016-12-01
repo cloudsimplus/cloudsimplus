@@ -1,6 +1,6 @@
 package org.cloudsimplus.IntegrationTests;
 
-import org.cloudbus.cloudsim.core.SimEvent;
+import org.cloudbus.cloudsim.core.events.SimEvent;
 import org.cloudbus.cloudsim.util.ExpectedCloudletExecutionResults;
 
 import java.util.List;

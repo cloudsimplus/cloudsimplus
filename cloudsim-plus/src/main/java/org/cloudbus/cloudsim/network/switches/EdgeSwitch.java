@@ -12,7 +12,7 @@ import java.util.List;
 
 import org.cloudbus.cloudsim.core.CloudSim;
 import org.cloudbus.cloudsim.core.CloudSimTags;
-import org.cloudbus.cloudsim.core.SimEvent;
+import org.cloudbus.cloudsim.core.events.SimEvent;
 import org.cloudbus.cloudsim.datacenters.network.NetworkDatacenter;
 import org.cloudbus.cloudsim.hosts.Host;
 import org.cloudbus.cloudsim.hosts.network.NetworkHost;
@@ -115,8 +115,7 @@ public class EdgeSwitch extends Switch {
             return;
         }
 
-        // otherwise
-        // packet is to be sent to upper switch
+        // otherwise, packet is to be sent to upper switch
         /**
          * @todo ASSUMPTION: EACH EDGE is connected to one aggregate level switch.
          * If there are more than one Aggregate level switch, the following code has to be modified.

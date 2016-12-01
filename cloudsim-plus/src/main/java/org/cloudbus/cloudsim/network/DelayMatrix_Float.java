@@ -25,18 +25,15 @@ public class DelayMatrix_Float {
 	/**
 	 * Matrix holding delay information between any two nodes.
 	 */
-	protected float[][] mDelayMatrix = null;
+	protected float[][] mDelayMatrix;
 
 	/**
 	 * Number of nodes in the distance-aware-topology.
 	 */
 	protected int mTotalNodeNum = 0;
 
-	/**
-	 * Private constructor to ensure that only an correct initialized delay-matrix could be created.
-	 */
-	@SuppressWarnings("unused")
-	private DelayMatrix_Float() {
+	public DelayMatrix_Float() {
+        mDelayMatrix = new float[0][0];
 	}
 
 	/**
@@ -112,9 +109,7 @@ public class DelayMatrix_Float {
 	 * Calculates the shortest path between all pairs of nodes.
 	 */
 	private void calculateShortestPath() {
-		FloydWarshall_Float floyd = new FloydWarshall_Float();
-
-		floyd.initialize(mTotalNodeNum);
+		FloydWarshall_Float floyd = new FloydWarshall_Float(mTotalNodeNum);
 		mDelayMatrix = floyd.allPairsShortestPaths(mDelayMatrix);
 	}
 

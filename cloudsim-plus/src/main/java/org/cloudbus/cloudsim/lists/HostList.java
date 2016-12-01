@@ -36,7 +36,7 @@ public class HostList {
                 return host;
             }
         }
-        return null;
+        return (T)Host.NULL;
     }
 
     /**
@@ -129,7 +129,7 @@ public class HostList {
      */
     public static <T extends Host> boolean setPeStatus(List<T> hostList, Pe.Status status, int hostId, int peId) {
         Host host = getById(hostList, hostId);
-        if (host == null) {
+        if (host == Host.NULL) {
             return false;
         }
         return host.setPeStatus(peId, status);

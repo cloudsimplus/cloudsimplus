@@ -37,7 +37,7 @@ public class PeProvisionerSimpleTest {
 
     @Test
     public void testGetMips() {
-        assertEquals(MIPS, peProvisioner.getMips(), 0);
+        assertEquals(MIPS, peProvisioner.getMipsCapacity(), 0);
     }
 
     @Test

@@ -180,7 +180,7 @@ public class MigrationExample1 {
      *
      * @todo @author manoelcampos The use of other CloudletScheduler instead
      * of {@link CloudletSchedulerDynamicWorkload} makes the Host CPU usage
-     * does not be updated (and maybe VM CPU usage too).
+     * not be updated (and maybe VM CPU usage too).
      */
     public static PowerVm createVm(DatacenterBroker broker) {
         PowerVm vm = new PowerVm(vmlist.size(), VM_MIPS, VM_PES_NUM);

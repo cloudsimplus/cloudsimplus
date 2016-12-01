@@ -6,12 +6,12 @@
  * Copyright (c) 2009-2012, The University of Melbourne, Australia
  */
 
-package org.cloudbus.cloudsim.core;
+package org.cloudbus.cloudsim.core.events;
 
-import java.util.Iterator;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.ListIterator;
+import org.cloudbus.cloudsim.core.CloudSim;
+
+import java.util.*;
+import java.util.stream.Stream;
 
 /**
  * This class implements the deferred event queue used by {@link CloudSim}.
@@ -20,12 +20,12 @@ import java.util.ListIterator;
  * @author Marcos Dias de Assuncao
  * @since CloudSim Toolkit 1.0
  * @see CloudSim
- * @see CloudSimEvent
+ * @see SimEvent
  */
-public class DeferredQueue {
+public class DeferredQueue implements EventQueue {
 
 	/** The list of events. */
-	private final List<CloudSimEvent> list = new LinkedList<CloudSimEvent>();
+	private final List<SimEvent> list = new LinkedList<SimEvent>();
 
 	/** The max time that an added event is scheduled. */
 	private double maxTime = -1;
@@ -36,7 +36,7 @@ public class DeferredQueue {
 	 *
 	 * @param newEvent The event to be added to the queue.
 	 */
-	public void addEvent(CloudSimEvent newEvent) {
+	public void addEvent(SimEvent newEvent) {
 		// The event has to be inserted as the last of all events
 		// with the same event_time(). Yes, this matters.
 		double eventTime = newEvent.eventTime();
@@ -46,8 +46,8 @@ public class DeferredQueue {
 			return;
 		}
 
-		ListIterator<CloudSimEvent> iterator = list.listIterator();
-		CloudSimEvent event;
+		ListIterator<SimEvent> iterator = list.listIterator();
+		SimEvent event;
 		while (iterator.hasNext()) {
 			event = iterator.next();
 			if (event.eventTime() > eventTime) {
@@ -65,9 +65,18 @@ public class DeferredQueue {
 	 *
 	 * @return the iterator
 	 */
-	public Iterator<CloudSimEvent> iterator() {
+	public Iterator<SimEvent> iterator() {
 		return list.iterator();
 	}
+
+    /**
+     * Returns a stream to the elements into the queue.
+     *
+     * @return the stream
+     */
+    public Stream<SimEvent> stream() {
+        return list.stream();
+    }
 
 	/**
 	 * Returns the size of this event queue.
@@ -78,7 +87,20 @@ public class DeferredQueue {
 		return list.size();
 	}
 
-	/**
+    @Override
+    public boolean isEmpty() {
+        return list.isEmpty();
+    }
+
+    @Override
+    public SimEvent first() throws NoSuchElementException {
+	    if(list.isEmpty())
+	        throw new NoSuchElementException("The Deferred Queue is empty.");
+
+        return list.get(0);
+    }
+
+    /**
 	 * Clears the queue.
 	 */
 	public void clear() {

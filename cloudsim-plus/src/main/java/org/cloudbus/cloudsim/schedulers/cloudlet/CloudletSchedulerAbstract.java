@@ -249,7 +249,7 @@ public abstract class CloudletSchedulerAbstract implements CloudletScheduler {
         cloudlet.setCloudletStatus(Cloudlet.Status.INEXEC);
         cloudlet.setLastProcessingTime(getVm().getSimulation().clock());
         cloudletExecList.add(cloudlet);
-        addUsedPes(cloudlet.getNumberOfPes());
+        addUsedPes(cloudlet.getCloudlet().getNumberOfPes());
     }
 
     @Override
@@ -530,7 +530,7 @@ public abstract class CloudletSchedulerAbstract implements CloudletScheduler {
      * @todo @author manoelcampos Shouldn't the processing update of a cloudlet
      * consider the cloudlet's UtilizationModel of CPU? Commonly the utilization
      * model used is the UtilizationModelFull, that uses the CPU 100% all the
-     * available time. However, if were have an utilization model that uses just
+     * available time. However, if we have an utilization model that uses just
      * 10% of CPU, the cloudlet will last 10 times more to finish. It has to be
      * checked how the MigrationExample1 works, once it uses the
      * UtilizationModelArithmeticProgression instead of the
@@ -554,7 +554,7 @@ public abstract class CloudletSchedulerAbstract implements CloudletScheduler {
         }
 
         double executedInstructions
-                = (processor.getAvailableMipsByPe() * rcl.getNumberOfPes()
+                = (processor.getAvailableMipsByPe() * rcl.getCloudlet().getNumberOfPes()
                 * actualProcessingTime * Consts.MILLION);
         //Log.println(Log.Level.DEBUG, getClass(), currentTime, "Cloudlet: %d Processing time: %.2f Last processed time: %.2f Actual process time: %.2f MI so far: %d",  rcl.getCloudletId(), currentTime, rcl.getLastProcessingTime(),  actualProcessingTime, rcl.getCloudlet().getCloudletFinishedSoFar());
 
@@ -629,7 +629,7 @@ public abstract class CloudletSchedulerAbstract implements CloudletScheduler {
      * list.
      */
     protected boolean removeCloudletFromExecList(CloudletExecutionInfo cloudlet) {
-        removeUsedPes(cloudlet.getNumberOfPes());
+        removeUsedPes(cloudlet.getCloudlet().getNumberOfPes());
         return cloudletExecList.remove(cloudlet);
     }
 
@@ -672,7 +672,7 @@ public abstract class CloudletSchedulerAbstract implements CloudletScheduler {
     protected double getEstimatedFinishTimeOfCloudlet(CloudletExecutionInfo rcl, double currentTime) {
         double estimatedFinishTime = currentTime
                 + (rcl.getRemainingCloudletLength()
-                / (processor.getAvailableMipsByPe() * rcl.getNumberOfPes()));
+                / (processor.getAvailableMipsByPe() * rcl.getCloudlet().getNumberOfPes()));
 
         if (estimatedFinishTime - currentTime < getVm().getSimulation().getMinTimeBetweenEvents()) {
             estimatedFinishTime = currentTime + getVm().getSimulation().getMinTimeBetweenEvents();
@@ -719,7 +719,7 @@ public abstract class CloudletSchedulerAbstract implements CloudletScheduler {
      * @return true if there is the amount of free PEs, false otherwise
      */
     protected boolean isThereEnoughFreePesForCloudlet(CloudletExecutionInfo c) {
-        return processor.getNumberOfPes() - usedPes >= c.getNumberOfPes();
+        return processor.getNumberOfPes() - usedPes >= c.getCloudlet().getNumberOfPes();
     }
 
     /**

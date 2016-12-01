@@ -14,6 +14,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
+import org.cloudbus.cloudsim.core.events.SimEvent;
 import org.cloudbus.cloudsim.util.Log;
 import org.cloudbus.cloudsim.datacenters.network.NetworkDatacenter;
 import org.cloudbus.cloudsim.hosts.network.NetworkHost;
@@ -35,13 +36,6 @@ public abstract class Switch extends CloudSimEntity {
      * The value of 1 Kilobyte in bytes.
      */
     public static final int KILOBYTE = 1024;
-
-    /**
-     * The id of the switches where the switch is connected to.
-     *
-     * @todo It doesn't appear to be used
-     */
-    private int datacenterId;
 
     /**
      * Map of packets sent to switches on the uplink, where each key is a switch
@@ -91,9 +85,7 @@ public abstract class Switch extends CloudSimEntity {
     private int ports;
 
     /**
-     * The switches where the switch is connected to.
-     *
-     * @todo It doesn't appear to be used
+     * @see #getDatacenter()
      */
     private NetworkDatacenter datacenter;
 
@@ -424,14 +416,6 @@ public abstract class Switch extends CloudSimEntity {
         return uplinkSwitches;
     }
 
-    public int getDatacenterId() {
-        return datacenterId;
-    }
-
-    public void setDatacenterId(int datacenterId) {
-        this.datacenterId = datacenterId;
-    }
-
     public Map<Integer, NetworkHost> getHostList() {
         return hostList;
     }
@@ -513,10 +497,18 @@ public abstract class Switch extends CloudSimEntity {
         getHostPacketList(hostId).add(packet);
     }
 
+    /**
+     * Gets the Datacenter where the switch is connected to.
+     * @return
+     */
     public NetworkDatacenter getDatacenter() {
         return datacenter;
     }
 
+    /**
+     * Sets the Datacenter where the switch is connected to.
+     * @param datacenter the Datacenter to set
+     */
     public void setDatacenter(NetworkDatacenter datacenter) {
         this.datacenter = datacenter;
     }

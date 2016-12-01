@@ -14,6 +14,8 @@
 
 package org.cloudbus.cloudsim.network;
 
+import org.cloudbus.cloudsim.core.CloudSimTags;
+
 /**
  * Defines the structure for a network packet.
  *
@@ -22,8 +24,7 @@ package org.cloudbus.cloudsim.network;
  * @since CloudSim Toolkit 1.0
  */
 public interface Packet {
-
-	/**
+    /**
 	 * Returns a string describing this packet in detail.
 	 *
 	 * @return description of this packet
@@ -85,10 +86,6 @@ public interface Packet {
 	 * @return the network service type
 	 * @pre $none
 	 * @post $none
-         *
-         * @todo Is it the Type of Service (ToS) of IPv4, like in
-         * the {@link Cloudlet#netToS}? If yes, so the names would
-         * be standardized.
 	 */
 	int getNetServiceLevel();
 
@@ -122,13 +119,26 @@ public interface Packet {
 	 */
 	void setLastHop(int lastHop);
 
-	/**
-	 * Gets this packet tag
-	 *
-	 * @return this packet tag
-	 * @pre $none
-	 * @post $none
-	 */
-	int getTag();
+    /**
+     * Gets the packet direction that indicates if it is going or returning.
+     * The direction can be {@link CloudSimTags#INFOPKT_SUBMIT}
+     * or {@link CloudSimTags#INFOPKT_RETURN}.
+     *
+     * @return
+     * @pre $none
+     * @post $none
+     */
+	int getDirection();
 
+    /**
+     * Sets the packet direction that indicates if it is going or returning.
+     * The direction can be {@link CloudSimTags#INFOPKT_SUBMIT}
+     * or {@link CloudSimTags#INFOPKT_RETURN}.
+     *
+     * @param direction the direction to set
+     * @return true if the direction is valid, false otherwise
+     * @pre direction > 0
+     * @post $none
+     */
+    boolean setDirection(int direction);
 }

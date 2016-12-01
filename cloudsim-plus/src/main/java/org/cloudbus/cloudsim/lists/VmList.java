@@ -41,13 +41,7 @@ public class VmList {
      * and in the creation of simulations that has to be priorly assessed.
      */
     public static <T extends Vm> T getById(List<T> vmList, int id) {
-        for (T vm : vmList) {
-            if (vm.getId() == id) {
-                return vm;
-            }
-        }
-
-        return (T)Vm.NULL;
+        return vmList.stream().filter(vm -> vm.getId() == id).findFirst().orElse((T)Vm.NULL);
     }
 
     /**
@@ -70,4 +64,18 @@ public class VmList {
         return null;
     }
 
+    /**
+     * Sort a given list of VMs by descending order of CPU utilization.
+     *
+     * @param <T> The generic type
+     * @param vmList the vm list to be sorted
+     * @param currentSimulationTime the current simulation time to get the current CPU utilization for each Vm
+     */
+    public static <T extends Vm> void sortByCpuUtilization(List<T> vmList, double currentSimulationTime) {
+        vmList.sort((vm1, vm2) -> {
+            Double vm1Utilization = vm1.getTotalUtilizationOfCpuMips(currentSimulationTime);
+            Double vm2Utilization = vm2.getTotalUtilizationOfCpuMips(currentSimulationTime);
+            return vm2Utilization.compareTo(vm1Utilization);
+        });
+    }
 }

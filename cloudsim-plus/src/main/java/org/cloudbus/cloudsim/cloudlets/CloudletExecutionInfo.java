@@ -91,32 +91,18 @@ public class CloudletExecutionInfo {
      */
     private double totalCompletionTime;
 
-    /*
-     * The below attributes are only to be used by the CloudletSchedulerSpaceShared policy.
-     * @todo @manoelcampos If the attributes have to be used only for a
-     * specific scheduler, they shouldn't be here
-     * in order to follow the ISP principle.
-    */
-
     /**
-     * The number of PEs needed to execute this Cloudlet.
-     */
-    private int pesNumber;
-
-    // NOTE: Below attributes are related to Advanced Reservation (AR) stuff
-
-    /**
-     * The reservation start time.
+     * The reservation start time (used by Advanced Reservation (AR) feature).
      */
     private final long reservationStartTime;
 
     /**
-     * The reservation duration time.
+     * The reservation duration time (used by Advanced Reservation (AR) feature).
      */
     private final int reservationDuration;
 
     /**
-     * The reservation id.
+     * The reservation id (used by Advanced Reservation (AR) feature).
      */
     private final int reservationId;
 
@@ -170,7 +156,6 @@ public class CloudletExecutionInfo {
         this.reservationStartTime = startTime;
         this.reservationDuration = duration;
         this.reservationId = reservationId;
-        this.pesNumber = cloudlet.getNumberOfPes();
         this.arrivalTime = cloudlet.registerArrivalOfCloudletIntoDatacenter();
         this.finishedTime = Cloudlet.NOT_ASSIGNED;  // Cannot finish in this hourly slot.
         this.totalCompletionTime = 0.0;
@@ -202,17 +187,6 @@ public class CloudletExecutionInfo {
      */
     public int getDurationTime() {
         return reservationDuration;
-    }
-
-    /**
-     * Gets the number of PEs required to execute this Cloudlet.
-     *
-     * @return number of Pe
-     * @pre $none
-     * @post $none
-     */
-    public int getNumberOfPes() {
-        return pesNumber;
     }
 
     /**
@@ -448,7 +422,7 @@ public class CloudletExecutionInfo {
                 Math.min(this.cloudletFinishedSoFar,
                         cloudlet.getCloudletTotalLength()*Consts.MILLION);
 
-        double finishedSoFarByPeMI = cloudletFinishedSoFar  / pesNumber / Consts.MILLION;
+        double finishedSoFarByPeMI = cloudletFinishedSoFar  / cloudlet.getNumberOfPes() / Consts.MILLION;
         cloudlet.setCloudletFinishedSoFar((long)finishedSoFarByPeMI);
     }
 
@@ -458,11 +432,6 @@ public class CloudletExecutionInfo {
      * @return arrival time
      * @pre $none
      * @post $result >= 0.0
-     *
-     * @todo It is being used different words for the same term. Here it is used
-     * arrival time while at Resource inner classe of the Cloudlet class it is
-     * being used submissionTime. It needs to be checked if they are the same
-     * term or different ones in fact.
      */
     public double getCloudletArrivalTime() {
         return arrivalTime;

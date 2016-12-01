@@ -265,15 +265,15 @@ public class FileTest {
 
     @Test
     public void testSetReadOnly() {
-        System.out.println("setReadOnly");
+        System.out.println("setDeleted");
         File instance = createFile();
-        assertFalse(instance.isReadOnly());
+        assertFalse(instance.isDeleted());
 
-        instance.setReadOnly(true);
-        assertTrue(instance.isReadOnly());
+        instance.setDeleted(true);
+        assertTrue(instance.isDeleted());
 
-        instance.setReadOnly(false);
-        assertFalse(instance.isReadOnly());
+        instance.setDeleted(false);
+        assertFalse(instance.isDeleted());
     }
 
     @Test

@@ -18,75 +18,76 @@ package org.cloudbus.cloudsim.network.topologies;
  */
 public class TopologicalLink {
 
-	/**
-	 * The BRITE id of the source node of the link.
-	 */
-	private int srcNodeID = 0;
+    /**
+     * The BRITE id of the source node of the link.
+     */
+    private int srcNodeID = 0;
 
-	/**
-	 * The BRITE id of the destination node of the link.
-	 */
-	private int destNodeID = 0;
+    /**
+     * The BRITE id of the destination node of the link.
+     */
+    private int destNodeID = 0;
 
-	/**
-	 * The link delay of the connection.
-	 */
-	private float linkDelay = 0;
+    /**
+     * The link delay of the connection.
+     */
+    private float linkDelay = 0;
 
-	/**
-	 * The link bandwidth (bw).
-	 */
-	private float linkBw = 0;
+    /**
+     * The link bandwidth (bw).
+     */
+    private float linkBw = 0;
 
-	/**
-	 * Creates a new Topological Link.
-         * @param srcNode
-         * @param destNode
-         * @param delay
-         * @param bw
-	*/
-	public TopologicalLink(int srcNode, int destNode, float delay, float bw) {
-		// lets initialize all internal attributes
-		linkDelay = delay;
-		srcNodeID = srcNode;
-		destNodeID = destNode;
-		linkBw = bw;
-	}
+    /**
+     * Creates a new Topological Link.
+     *
+     * @param srcNode
+     * @param destNode
+     * @param delay
+     * @param bw
+     */
+    public TopologicalLink(int srcNode, int destNode, float delay, float bw) {
+        // lets initialize all internal attributes
+        linkDelay = delay;
+        srcNodeID = srcNode;
+        destNodeID = destNode;
+        linkBw = bw;
+    }
 
-	/**
-	 * Gets the BRITE id of the source node of the link.
-	 *
-	 * @return nodeID
-	 */
-	public int getSrcNodeID() {
-		return srcNodeID;
-	}
+    /**
+     * Gets the BRITE id of the source node of the link.
+     *
+     * @return nodeID
+     */
+    public int getSrcNodeID() {
+        return srcNodeID;
+    }
 
-	/**
-	 * Gets the BRITE id of the destination node of the link.
-	 *
-	 * @return nodeID
-	 */
-	public int getDestNodeID() {
-		return destNodeID;
-	}
+    /**
+     * Gets the BRITE id of the destination node of the link.
+     *
+     * @return nodeID
+     */
+    public int getDestNodeID() {
+        return destNodeID;
+    }
 
-	/**
-	 * Gets the delay of the link.
-	 *
-	 * @return the link delay
-	 */
-	public float getLinkDelay() {
-		return linkDelay;
-	}
+    /**
+     * Gets the delay of the link.
+     *
+     * @return the link delay
+     */
+    public float getLinkDelay() {
+        return linkDelay;
+    }
 
-	/**
-	 * Gets the bandwidth of the link.
-	 *
-	 * @return the bw
-	 */
-	public float getLinkBw() {
-		return linkBw;
-	}
+    /**
+     * Gets the bandwidth of the link.
+     *
+     * @return the bw
+     */
+    public float getLinkBw() {
+        return linkBw;
+    }
 
 }

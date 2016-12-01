@@ -94,7 +94,7 @@ public abstract class PowerVmAllocationPolicyAbstract extends VmAllocationPolicy
 	public void deallocateHostForVm(Vm vm) {
 		Host host = getVmTable().remove(vm.getUid());
 		if (host != null) {
-			host.vmDestroy(vm);
+			host.destroyVm(vm);
 		}
 	}
 

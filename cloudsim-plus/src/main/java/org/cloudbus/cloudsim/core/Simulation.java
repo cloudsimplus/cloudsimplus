@@ -3,9 +3,12 @@ package org.cloudbus.cloudsim.core;
 import java.util.Calendar;
 import java.util.Collections;
 import java.util.List;
+
+import org.cloudbus.cloudsim.core.events.SimEvent;
 import org.cloudbus.cloudsim.core.predicates.Predicate;
 import org.cloudbus.cloudsim.core.predicates.PredicateAny;
 import org.cloudbus.cloudsim.core.predicates.PredicateNone;
+import org.cloudbus.cloudsim.network.topologies.NetworkTopology;
 import org.cloudsimplus.listeners.EventListener;
 
 /**
@@ -384,183 +387,103 @@ public interface Simulation {
      */
     int waiting(int d, Predicate p);
 
-    final Simulation NULL = new Simulation() {
-        @Override
-        public void abruptallyTerminate() {
-        }
+    /**
+     * Gets the network topology used for Network simulations.
+     * @return
+     */
+    NetworkTopology getNetworkTopology();
 
-        @Override
-        public void addEntity(CloudSimEntity e) {
-        }
+    /**
+     * Sets the network topology used for Network simulations.
+     * @param networkTopology the network topology to set
+     */
+    void setNetworkTopology(NetworkTopology networkTopology);
 
-        @Override
-        public SimEvent cancel(int src, Predicate p) { return SimEvent.NULL; }
-
-        @Override
-        public boolean cancelAll(int src, Predicate p) {
+    Simulation NULL = new Simulation() {
+        @Override public void abruptallyTerminate() {}
+        @Override public void addEntity(CloudSimEntity e) {}
+        @Override public SimEvent cancel(int src, Predicate p) { return SimEvent.NULL; }
+        @Override public boolean cancelAll(int src, Predicate p) {
             return false;
         }
-
-        @Override
-        public double clock() {
+        @Override public double clock() {
             return 0;
         }
-
-        @Override
-        public SimEvent findFirstDeferred(int src, Predicate p) { return SimEvent.NULL; }
-
-        @Override
-        public void finishSimulation() {}
-
-        @Override
-        public Calendar getCalendar() {
+        @Override public SimEvent findFirstDeferred(int src, Predicate p) { return SimEvent.NULL; }
+        @Override public void finishSimulation() {}
+        @Override public Calendar getCalendar() {
             return Calendar.getInstance();
         }
-
-        @Override
-        public int getCloudInfoServiceEntityId() {
+        @Override public int getCloudInfoServiceEntityId() {
             return 0;
         }
-
-        @Override
-        public List<Integer> getDatacenterIdsList() {
+        @Override public List<Integer> getDatacenterIdsList() {
             return Collections.EMPTY_LIST;
         }
-
-        @Override
-        public SimEntity getEntity(int id) { return SimEntity.NULL; }
-
-        @Override
-        public SimEntity getEntity(String name) { return SimEntity.NULL; }
-
-        @Override
-        public int getEntityId(String name) {
+        @Override public SimEntity getEntity(int id) { return SimEntity.NULL; }
+        @Override public SimEntity getEntity(String name) { return SimEntity.NULL; }
+        @Override public int getEntityId(String name) {
             return 0;
         }
-
-        @Override
-        public List<SimEntity> getEntityList() {
+        @Override public List<SimEntity> getEntityList() {
             return Collections.EMPTY_LIST;
         }
-
-        @Override
-        public String getEntityName(int entityId) {
+        @Override public String getEntityName(int entityId) {
             return "";
         }
-
-        @Override
-        public String getEntityName(Integer entityID) {
+        @Override public String getEntityName(Integer entityID) {
             return "";
         }
-
-        @Override
-        public double getMinTimeBetweenEvents() {
+        @Override public double getMinTimeBetweenEvents() {
             return 0;
         }
-
-        @Override
-        public int getNumEntities() {
+        @Override public int getNumEntities() {
             return 0;
         }
-
-        @Override
-        public EventListener<SimEvent> getOnEventProcessingListener() {
+        @Override public EventListener<SimEvent> getOnEventProcessingListener() {
             return EventListener.NULL;
         }
-
-        @Override
-        public void hold(int src, long delay) {
-        }
-
-        @Override
-        public boolean isPaused() {
+        @Override public void hold(int src, long delay) {}
+        @Override public boolean isPaused() {
             return false;
         }
-
-        @Override
-        public void pause(int src, double delay) {
-        }
-
-        @Override
-        public boolean pause() {
+        @Override public void pause(int src, double delay) {}
+        @Override public boolean pause() {
             return false;
         }
-
-        @Override
-        public boolean pause(long time) {
+        @Override public boolean pause(long time) {
             return false;
         }
-
-        @Override
-        public boolean resume() {
+        @Override public boolean resume() {
             return false;
         }
-
-        @Override
-        public void runStart() {
-        }
-
-        @Override
-        public void runStop() {
-        }
-
-        @Override
-        public boolean running() {
+        @Override public void runStart() {}
+        @Override public void runStop() {}
+        @Override public boolean running() {
             return false;
         }
-
-        @Override
-        public SimEvent select(int src, Predicate p) {
+        @Override public SimEvent select(int src, Predicate p) {
             return SimEvent.NULL;
         }
-
-        @Override
-        public void send(int src, int dest, double delay, int tag, Object data) {
-        }
-
-        @Override
-        public void sendFirst(int src, int dest, double delay, int tag, Object data) {
-        }
-
-        @Override
-        public void sendNow(int src, int dest, int tag, Object data) {
-        }
-
-        @Override
-        public Simulation setOnEventProcessingListener(EventListener<SimEvent> onEventProcessingListener) {
-            return this;
-        }
-
-        @Override
-        public double start() throws RuntimeException {
-            return 0;
-        }
-
-        @Override
-        public void stop() throws RuntimeException {
-        }
-
-        @Override
-        public boolean terminate() {
+        @Override public void send(int src, int dest, double delay, int tag, Object data) {}
+        @Override public void sendFirst(int src, int dest, double delay, int tag, Object data) {}
+        @Override public void sendNow(int src, int dest, int tag, Object data) {}
+        @Override public Simulation setOnEventProcessingListener(EventListener<SimEvent> onEventProcessingListener) { return this; }
+        @Override public double start() throws RuntimeException { return 0; }
+        @Override public void stop() throws RuntimeException {}
+        @Override public boolean terminate() {
             return false;
         }
-
-        @Override
-        public boolean terminateAt(double time) {
+        @Override public boolean terminateAt(double time) {
             return false;
         }
-
-        @Override
-        public void wait(int src, Predicate p) {
-        }
-
-        @Override
-        public int waiting(int d, Predicate p) {
+        @Override public void wait(int src, Predicate p) {}
+        @Override public int waiting(int d, Predicate p) {
             return 0;
         }
-
-        @Override
-        public boolean updateEntityName(String oldName) {
+        @Override public NetworkTopology getNetworkTopology() { return NetworkTopology.NULL; }
+        @Override public void setNetworkTopology(NetworkTopology networkTopology) {}
+        @Override public boolean updateEntityName(String oldName) {
             return false;
         }
     };

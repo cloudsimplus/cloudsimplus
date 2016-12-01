@@ -18,6 +18,21 @@ import org.cloudbus.cloudsim.datacenters.Datacenter;
  * @since CloudSim Toolkit 1.0
  */
 public class File {
+    /** Denotes that this file has not been registered to a Replica Catalogue. */
+    public static final int NOT_REGISTERED = -1;
+
+    /** Denotes that the type of this file is unknown. */
+    public static final int TYPE_UNKOWN = 0;
+
+    /** Denotes that the type of this file is a raw data. */
+    public static final int TYPE_RAW_DATA = 1;
+
+    /** Denotes that the type of this file is a reconstructed data. */
+    public static final int TYPE_RECONSTRUCTED_DATA = 2;
+
+    /** Denotes that the type of this file is a tag data. */
+    public static final int TYPE_TAG_DATA = 3;
+
     /** Logical file name. */
     private String name;
 
@@ -36,20 +51,10 @@ public class File {
      */
     private double transactionTime;
 
-    /** Denotes that this file has not been registered to a Replica Catalogue. */
-    public static final int NOT_REGISTERED = -1;
-
-    /** Denotes that the type of this file is unknown. */
-    public static final int TYPE_UNKOWN = 0;
-
-    /** Denotes that the type of this file is a raw data. */
-    public static final int TYPE_RAW_DATA = 1;
-
-    /** Denotes that the type of this file is a reconstructed data. */
-    public static final int TYPE_RECONSTRUCTED_DATA = 2;
-
-    /** Denotes that the type of this file is a tag data. */
-    public static final int TYPE_TAG_DATA = 3;
+    /**
+     * @see #isDeleted()
+     */
+    private boolean deleted;
 
     /**
      * Creates a new DataCloud file with a given size (in MBytes). <br>
@@ -386,21 +391,21 @@ public class File {
     }
 
     /**
-     * Marks the file as read-only or not.
+     * Sets the file as deleted or not.
      *
-     * @param readOnly a flag denotes <tt>true</tt> for read only or <tt>false</tt> for re-writeable
+     * @param deleted <tt>true</tt> if it was deleted, false otherwise
      */
-    public void setReadOnly(boolean readOnly) {
-            attribute.setReadOnly(readOnly);
+    public void setDeleted(boolean deleted) {
+            this.deleted = deleted;
     }
 
     /**
-     * Checks whether the file is read-only or not.
+     * Checks if the file was deleted or not.
      *
-     * @return <tt>true</tt> if it is a read only or <tt>false</tt> otherwise
+     * @return <tt>true</tt> if it was deleted, false otherwise
      */
-    public boolean isReadOnly() {
-            return attribute.isReadOnly();
+    public boolean isDeleted() {
+            return deleted;
     }
 
     /**

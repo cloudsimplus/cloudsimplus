@@ -46,5 +46,4 @@ public class HostToVmEventInfo extends VmEventInfoSimple implements HostEventInf
     public final void setHost(Host host) {
         this.host = host;
     }
-
 }

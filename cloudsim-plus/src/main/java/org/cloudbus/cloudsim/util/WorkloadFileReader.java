@@ -20,6 +20,7 @@ import java.util.List;
 import java.util.zip.GZIPInputStream;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
+
 import org.cloudbus.cloudsim.cloudlets.Cloudlet;
 
 import org.cloudbus.cloudsim.cloudlets.CloudletSimple;
@@ -58,15 +59,12 @@ import org.cloudbus.cloudsim.utilizationmodels.UtilizationModelFull;
  * </ul>
  * </p>
  *
+ * @author Anthony Sulistio
+ * @author Marcos Dias de Assuncao
  * @todo The last item in the list above is not true. The cloudlet length is not
  * divided by the number of PEs. If there is more than 1 PE, all PEs run the
  * same number of MI as specified in the {@link Cloudlet#getCloudletLength()}
  * attribute. See {@link Cloudlet#setNumberOfPes(int)} method documentation.
- *
- *
- * @author Anthony Sulistio
- * @author Marcos Dias de Assuncao
- *
  * @see WorkloadModel
  */
 public class WorkloadFileReader implements WorkloadModel {
@@ -159,16 +157,16 @@ public class WorkloadFileReader implements WorkloadModel {
      * Create a new WorkloadFileReader object.
      *
      * @param fileName the workload trace filename in one of the following
-     * formats:
-     * <i>ASCII text, zip, gz.</i>
-     * @param rating the cloudlet's PE rating (in MIPS), considering that all
-     * PEs of a cloudlet have the same rate
+     *                 formats:
+     *                 <i>ASCII text, zip, gz.</i>
+     * @param rating   the cloudlet's PE rating (in MIPS), considering that all
+     *                 PEs of a cloudlet have the same rate
      * @throws FileNotFoundException
      * @throws IllegalArgumentException This happens for the following
-     * conditions:
-     * <ul>
-     * <li>the workload trace file name is null or empty
-     * <li>the resource PE rating <= 0 </ul> @pre fileName != null
+     *                                  conditions:
+     *                                  <ul>
+     *                                  <li>the workload trace file name is null or empty
+     *                                  <li>the resource PE rating <= 0 </ul> @pre fileName != null
      * @pre rating > 0
      * @post $none
      */
@@ -205,9 +203,9 @@ public class WorkloadFileReader implements WorkloadModel {
 
             try {
                 /*@todo It would be implemented
-                            using specific classes to avoid using ifs.
-                            If a new format is included, the code has to be
-                            changed to include another if*/
+                using specific classes to avoid using ifs.
+                If a new format is included, the code has to be
+                changed to include another if*/
                 if (file.getName().endsWith(".gz")) {
                     readGZIPFile(file);
                 } else if (file.getName().endsWith(".zip")) {
@@ -227,7 +225,7 @@ public class WorkloadFileReader implements WorkloadModel {
      * Sets the string that identifies the start of a comment line.
      *
      * @param cmt a character that denotes the start of a comment, e.g. ";" or
-     * "#"
+     *            "#"
      * @return <code>true</code> if it is successful, <code>false</code>
      * otherwise
      * @pre comment != null
@@ -258,15 +256,15 @@ public class WorkloadFileReader implements WorkloadModel {
      * will be generate by the Workload class, instead of reading from the trace
      * file.
      *
-     * @param maxField max. number of field/column in one row
-     * @param jobNum field/column number for locating the job ID
+     * @param maxField   max. number of field/column in one row
+     * @param jobNum     field/column number for locating the job ID
      * @param submitTime field/column number for locating the job submit time
-     * @param runTime field/column number for locating the job run time
-     * @param numProc field/column number for locating the number of PEs
-     * required to run a job
+     * @param runTime    field/column number for locating the job run time
+     * @param numProc    field/column number for locating the number of PEs
+     *                   required to run a job
      * @return <code>true</code> if successful, <code>false</code> otherwise
      * @throws IllegalArgumentException if any of the arguments are not within
-     * the acceptable ranges
+     *                                  the acceptable ranges
      * @pre maxField > 0
      * @pre submitTime > 0
      * @pre runTime > 0
@@ -274,11 +272,11 @@ public class WorkloadFileReader implements WorkloadModel {
      * @post $none
      */
     public boolean setField(
-            final int maxField,
-            final int jobNum,
-            final int submitTime,
-            final int runTime,
-            final int numProc) {
+        final int maxField,
+        final int jobNum,
+        final int submitTime,
+        final int runTime,
+        final int numProc) {
         // need to subtract by 1 since array starts at 0.
         if (jobNum > 0) {
             JOB_NUM = jobNum - 1;
@@ -323,16 +321,14 @@ public class WorkloadFileReader implements WorkloadModel {
      * Creates a Cloudlet with the given information and adds to the list of
      * {@link #jobs}.
      *
-     * @param id a Cloudlet ID
+     * @param id         a Cloudlet ID
      * @param submitTime Cloudlet's submit time
-     * @param runTime The number of seconds the Cloudlet has to run. Considering
-     * that and the {@link #rating}, the {@link Cloudlet#getCloudletLength()} is
-     * computed.
-     * @param numProc number of Cloudlet's PEs
-     * @param reqRunTime user estimated run time (@todo the parameter is not
-     * being used and it is not clear what it is)
-     * @param userID user id
-     * @param groupID user's group id
+     * @param runTime    The number of seconds the Cloudlet has to run. Considering
+     *                   that and the {@link #rating}, the {@link Cloudlet#getCloudletLength()} is
+     *                   computed.
+     * @param numProc    number of Cloudlet's PEs
+     * @param userID     user id
+     * @param groupID    user's group id
      * @pre id >= 0
      * @pre submitTime >= 0
      * @pre runTime >= 0
@@ -341,19 +337,18 @@ public class WorkloadFileReader implements WorkloadModel {
      * @see #rating
      */
     private void createJob(
-            final int id,
-            final long submitTime,
-            final int runTime,
-            final int numProc,
-            final int reqRunTime,
-            final int userID,
-            final int groupID) {
+        final int id,
+        final long submitTime,
+        final int runTime,
+        final int numProc,
+        final int userID,
+        final int groupID) {
         final int len = runTime * rating;
         UtilizationModel utilizationModel = new UtilizationModelFull();
-        final Cloudlet cloudlet = new CloudletSimple(id,  len,  numProc)
-                .setCloudletFileSize(DataCloudTags.DEFAULT_MTU)
-                .setCloudletOutputSize(DataCloudTags.DEFAULT_MTU)
-                .setUtilizationModel(utilizationModel);
+        final Cloudlet cloudlet = new CloudletSimple(id, len, numProc)
+            .setCloudletFileSize(DataCloudTags.DEFAULT_MTU)
+            .setCloudletOutputSize(DataCloudTags.DEFAULT_MTU)
+            .setUtilizationModel(utilizationModel);
         jobs.add(cloudlet);
     }
 
@@ -363,7 +358,7 @@ public class WorkloadFileReader implements WorkloadModel {
      * information.
      *
      * @param array the array of fields generated from a line of the trace file.
-     * @param line the line number
+     * @param line  the line number
      * @pre array != null
      * @pre line > 0
      */
@@ -417,7 +412,7 @@ public class WorkloadFileReader implements WorkloadModel {
             if (numProc <= 0) {
                 numProc = 1;
             }
-            createJob(id, submitTime, runTime, numProc, reqRunTime, userID, groupID);
+            createJob(id, submitTime, runTime, numProc, userID, groupID);
         } catch (final Exception e) {
 
         }
@@ -427,10 +422,9 @@ public class WorkloadFileReader implements WorkloadModel {
      * Breaks a line from the trace file into many fields into the
      * {@link #fieldArray}.
      *
-     * @param line a line from the trace file
+     * @param line    a line from the trace file
      * @param lineNum the line number
      * @return true if the line was parsed, false otherwise
-     *
      * @pre line != null
      * @pre lineNum > 0
      * @post $none
@@ -471,7 +465,7 @@ public class WorkloadFileReader implements WorkloadModel {
      *
      * @param inputStream the stream that is able to read data from a workload file
      * @return <code>true</code> if successful, <code>false</code> otherwise.
-     * @throws IOException if the there was any error reading the file
+     * @throws IOException           if the there was any error reading the file
      * @throws FileNotFoundException if the file was not found
      */
     private boolean readFile(final InputStream inputStream) throws IOException, FileNotFoundException {
@@ -492,7 +486,7 @@ public class WorkloadFileReader implements WorkloadModel {
      *
      * @param fl a file name
      * @return <code>true</code> if successful, <code>false</code> otherwise.
-     * @throws IOException if the there was any error reading the file
+     * @throws IOException           if the there was any error reading the file
      * @throws FileNotFoundException if the file was not found
      */
     protected boolean readTextFile(final File fl) throws IOException, FileNotFoundException {
@@ -504,7 +498,7 @@ public class WorkloadFileReader implements WorkloadModel {
      *
      * @param fl a gzip file name
      * @return <code>true</code> if successful; <code>false</code> otherwise.
-     * @throws IOException if the there was any error reading the file
+     * @throws IOException           if the there was any error reading the file
      * @throws FileNotFoundException if the file was not found
      */
     protected boolean readGZIPFile(final File fl) throws IOException, FileNotFoundException {
@@ -520,7 +514,7 @@ public class WorkloadFileReader implements WorkloadModel {
      * @throws IOException if the there was any error reading the file
      */
     protected boolean readZipFile(final File fl) throws IOException {
-        try(ZipFile zipFile = new ZipFile(fl)) {
+        try (ZipFile zipFile = new ZipFile(fl)) {
             // ZipFile offers an Enumeration of all the files in the file
             final Enumeration<? extends ZipEntry> zipEntries = zipFile.entries();
             while (zipEntries.hasMoreElements()) {
@@ -534,13 +528,13 @@ public class WorkloadFileReader implements WorkloadModel {
     /**
      * Reads the next line of the workload file.
      *
-     * @param reader the object that is reading the workload file
+     * @param reader     the object that is reading the workload file
      * @param lineNumber the number of the line that that will be read from the workload file
      * @return the line read; or null if there isn't any more lines to read or if
      * the number of lines read reached the {@link #getMaxNumberOfLinesToRead()}
      */
     private String readNextLine(BufferedReader reader, int lineNumber) throws IOException {
-        if(reader.ready() && (maxNumberOfLinesToRead == -1 || lineNumber <= maxNumberOfLinesToRead))
+        if (reader.ready() && (maxNumberOfLinesToRead == -1 || lineNumber <= maxNumberOfLinesToRead))
             return reader.readLine();
 
         return null;

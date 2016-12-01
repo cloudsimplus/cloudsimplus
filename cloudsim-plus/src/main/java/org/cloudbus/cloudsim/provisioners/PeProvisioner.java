@@ -10,6 +10,7 @@ package org.cloudbus.cloudsim.provisioners;
 import java.util.List;
 import org.cloudbus.cloudsim.datacenters.DatacenterCharacteristics;
 
+import org.cloudbus.cloudsim.resources.Pe;
 import org.cloudbus.cloudsim.vms.Vm;
 
 /**
@@ -20,7 +21,7 @@ import org.cloudbus.cloudsim.vms.Vm;
  * In that way, a given PE might be shared among different VMs. Each host's PE
  * has to have its own instance of a PeProvisioner. When extending this class,
  * care must be taken to guarantee that the field availableMips will always
- * contain the amount of free mips available for future allocations.
+ * contain the amount of free mipsCapacity available for future allocations.
  *
  * @author Anton Beloglazov
  * @since CloudSim Toolkit 2.0
@@ -28,38 +29,37 @@ import org.cloudbus.cloudsim.vms.Vm;
 public abstract class PeProvisioner {
 
     /**
-     * The total mips capacity of the PE that the provisioner can allocate to
-     * VMs.
+     * @see #getMipsCapacity()
      */
-    private double mips;
+    private double mipsCapacity;
 
     /**
-     * The available mips.
+     * The available mipsCapacity.
      */
     private double availableMips;
 
     /**
      * Creates a new PeProvisioner.
      *
-     * @param mips The total mips capacity of the PE that the provisioner can
+     * @param mipsCapacity The total mipsCapacity capacity of the PE that the provisioner can
      * allocate to VMs
      *
-     * @pre mips>=0
+     * @pre mipsCapacity>=0
      * @post $none
      */
-    public PeProvisioner(double mips) {
-        setMips(mips);
-        setAvailableMips(mips);
+    public PeProvisioner(double mipsCapacity) {
+        setMipsCapacity(mipsCapacity);
+        setAvailableMips(mipsCapacity);
     }
 
     /**
      * Allocates a new virtual PE with a specific capacity for a given VM. The
-     * virtual PE to be added will use the total or partial mips capacity of the
+     * virtual PE to be added will use the total or partial mipsCapacity capacity of the
      * physical PE.
      *
      * @param vm the virtual machine for which the new virtual PE is being
      * allocated
-     * @param mips the mips to be allocated to the virtual PE of the given VM
+     * @param mips the mipsCapacity to be allocated to the virtual PE of the given VM
      *
      * @return $true if the virtual PE could be allocated; $false otherwise
      *
@@ -73,7 +73,7 @@ public abstract class PeProvisioner {
      *
      * @param vmUid the virtual machine for which the new virtual PE is being
      * allocated
-     * @param mips the mips to be allocated to the virtual PE of the given VM
+     * @param mips the mipsCapacity to be allocated to the virtual PE of the given VM
      *
      * @return $true if the virtual PE could be allocated; $false otherwise
      *
@@ -85,12 +85,12 @@ public abstract class PeProvisioner {
 
     /**
      * Allocates a new set of virtual PEs with a specific capacity for a given
-     * VM. The virtual PE to be added will use the total or partial mips
+     * VM. The virtual PE to be added will use the total or partial mipsCapacity
      * capacity of the physical PE.
      *
      * @param vm the virtual machine for which the new virtual PE is being
      * allocated
-     * @param mips the list of mips capacity of each virtual PE to be allocated
+     * @param mips the list of mipsCapacity capacity of each virtual PE to be allocated
      * to the VM
      *
      * @return $true if the set of virtual PEs could be allocated; $false
@@ -159,30 +159,32 @@ public abstract class PeProvisioner {
      * @post none
      */
     public void deallocateMipsForAllVms() {
-        setAvailableMips(getMips());
+        setAvailableMips(getMipsCapacity());
     }
 
     /**
-     * Gets the MIPS.
+     * Gets the total MIPS capacity of the PE that the provisioner can allocate to
+     * VMs.
      *
-     * @return the MIPS
+     * @return
      */
-    public double getMips() {
-        return mips;
+    public double getMipsCapacity() {
+        return mipsCapacity;
     }
 
     /**
-     * Sets the MIPS.
+     * Sets the total MIPS capacity of the PE that the provisioner can allocate to
+     * VMs.
      *
-     * @param mips the MIPS to set
-     * @return true if MIPS > 0, false otherwise
+     * @param mipsCapacity the MIPS capacity to set
+     * @return true if mipsCapacity > 0, false otherwise
      */
-    public final boolean setMips(double mips) {
-        if (mips <= 0) {
+    public final boolean setMipsCapacity(double mipsCapacity) {
+        if (mipsCapacity <= 0) {
             return false;
         }
 
-        this.mips = mips;
+        this.mipsCapacity = mipsCapacity;
         return true;
     }
 
@@ -208,8 +210,8 @@ public abstract class PeProvisioner {
         if (availableMips < 0) {
             return false;
         }
-        if (availableMips > mips) {
-            availableMips = mips;
+        if (availableMips > mipsCapacity) {
+            availableMips = mipsCapacity;
         }
 
         this.availableMips = availableMips;
@@ -222,7 +224,7 @@ public abstract class PeProvisioner {
      * @return the total allocated MIPS
      */
     public double getTotalAllocatedMips() {
-        double totalAllocatedMips = getMips() - getAvailableMips();
+        double totalAllocatedMips = getMipsCapacity() - getAvailableMips();
         if (totalAllocatedMips > 0) {
             return totalAllocatedMips;
         }
@@ -235,7 +237,7 @@ public abstract class PeProvisioner {
      * @return the utilization
      */
     public double getUtilization() {
-        return getTotalAllocatedMips() / getMips();
+        return getTotalAllocatedMips() / getMipsCapacity();
     }
 
 }

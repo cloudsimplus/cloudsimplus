@@ -63,7 +63,7 @@ public abstract class VmSchedulerAbstract implements VmScheduler {
     private List<String> vmsMigratingOut;
 
     /**
-     * Creates a new VmScheduler.
+     * Creates a VmScheduler.
      *
      * @post $none
      */
@@ -73,14 +73,6 @@ public abstract class VmSchedulerAbstract implements VmScheduler {
         setVmsMigratingOut(new ArrayList<>());
     }
 
-    /**
-     * Releases PEs allocated to all the VMs of the host the VmSchedulerAbstract
-     * is associated to. After that, all PEs will be available to be used on
-     * demand for requesting VMs.
-     *
-     * @pre $none
-     * @post $none
-     */
     @Override
     public void deallocatePesForAllVms() {
         getMipsMapAllocated().clear();
@@ -88,14 +80,6 @@ public abstract class VmSchedulerAbstract implements VmScheduler {
         getPeList().forEach(pe -> pe.getPeProvisioner().deallocateMipsForAllVms());
     }
 
-    /**
-     * Gets the pes allocated for a vm.
-     *
-     * @param vm the VM
-     * @return the PEs allocated for the given VM
-     * or an immutable empty list if there aren't allocated PEs
-     * for it
-     */
     @Override
     public List<Pe> getPesAllocatedForVM(Vm vm) {
         List<Pe> list = getPeMap().get(vm.getUid());
@@ -104,16 +88,6 @@ public abstract class VmSchedulerAbstract implements VmScheduler {
         return list;
     }
 
-    /**
-     * Returns the MIPS share of each host's Pe that is allocated to a given VM.
-     *
-     * @param vm the VM
-     * @return an array containing the amount of MIPS of each PE that is
-     * available to the VM or an immutable empty list if there aren't allocated PEs
-     * for the given VM
-     * @pre $none
-     * @post $none
-     */
     @Override
     public List<Double> getAllocatedMipsForVm(Vm vm) {
         final List<Double> list = getMipsMapAllocated().get(vm.getUid());
@@ -123,22 +97,11 @@ public abstract class VmSchedulerAbstract implements VmScheduler {
         return list;
     }
 
-    /**
-     * Gets the total allocated MIPS for a VM along all its allocated PEs.
-     *
-     * @param vm the vm
-     * @return the total allocated mips for the vm
-     */
     @Override
     public double getTotalAllocatedMipsForVm(Vm vm) {
         return getAllocatedMipsForVm(vm).stream().reduce(0.0, Double::sum);
     }
 
-    /**
-     * Returns maximum available MIPS among all the host's PEs.
-     *
-     * @return max mips
-     */
     @Override
     public double getMaxAvailableMips() {
         if (getPeList().isEmpty()) {
@@ -152,14 +115,6 @@ public abstract class VmSchedulerAbstract implements VmScheduler {
                     .max().orElse(0.0);
     }
 
-    /**
-     * Returns PE capacity in MIPS.
-     *
-     * @return mips
-     * @todo It considers that all PEs have the same capacity, what has been
-     * shown doesn't be assured. The peList received by the VmScheduler can be
-     * heterogeneous PEs.
-     */
     @Override
     public double getPeCapacity() {
         if (getPeList().isEmpty()) {
@@ -170,17 +125,13 @@ public abstract class VmSchedulerAbstract implements VmScheduler {
         return getPeList().get(0).getMips();
     }
 
-    /**
-     * Gets the list of PEs from the Host.
-     * @return
-     */
     @Override
     public final List<Pe> getPeList() {
         return host.getPeList();
     }
 
     /**
-     * Gets the map of VMs to MIPS, were each key is a VM id and each value is the
+     * Gets the map of VMs to MIPS, were each key is a VM UID and each value is the
      * currently allocated MIPS from the respective PE to that VM. The PEs where
      * the MIPS capacity is get are defined in the {@link #peMap}.
      *
@@ -201,30 +152,20 @@ public abstract class VmSchedulerAbstract implements VmScheduler {
         this.mipsMapAllocated = mipsMapAllocated;
     }
 
-    /**
-     * Gets the free mips.
-     *
-     * @return the free mips
-     */
     @Override
     public double getAvailableMips() {
         return availableMips;
     }
 
     /**
-     * Sets the free mips.
+     * Sets the amount of mips that is free.
      *
-     * @param availableMips the new free mips
+     * @param availableMips the new free mips amount
      */
     protected final void setAvailableMips(double availableMips) {
         this.availableMips = availableMips;
     }
 
-    /**
-     * Gets the vms migrating out.
-     *
-     * @return the vms in migration
-     */
     @Override
     public List<String> getVmsMigratingOut() {
         return vmsMigratingOut;
@@ -239,11 +180,6 @@ public abstract class VmSchedulerAbstract implements VmScheduler {
         vmsMigratingOut = vmsInMigration;
     }
 
-    /**
-     * Gets the vms migrating in.
-     *
-     * @return the vms migrating in
-     */
     @Override
     public List<String> getVmsMigratingIn() {
         return vmsMigratingIn;
@@ -258,12 +194,6 @@ public abstract class VmSchedulerAbstract implements VmScheduler {
         this.vmsMigratingIn = vmsMigratingIn;
     }
 
-    /**
-     * Gets the map of VMs to PEs, where each key is a VM id and each value is a list
-     * of PEs allocated to that VM.
-     *
-     * @return the pe map
-     */
     @Override
     public Map<String, List<Pe>> getPeMap() {
         return peMap;

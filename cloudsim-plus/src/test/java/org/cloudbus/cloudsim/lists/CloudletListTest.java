@@ -88,8 +88,8 @@ public class CloudletListTest {
         Cloudlet expResult = simpleCloudletList.get(0);
         Cloudlet result = CloudletList.getById(simpleCloudletList, id);
         assertEquals(expResult, result);
-        assertEquals(null, CloudletList.getById(simpleCloudletList, -1));
-        assertEquals(null, CloudletList.getById(simpleCloudletList, NUMBER_OF_CLOUDLETS));
+        assertEquals(Cloudlet.NULL, CloudletList.getById(simpleCloudletList, -1));
+        assertEquals(Cloudlet.NULL, CloudletList.getById(simpleCloudletList, NUMBER_OF_CLOUDLETS));
     }
 
     @Test
@@ -99,8 +99,8 @@ public class CloudletListTest {
         Cloudlet expResult = networkCloudletList.get(0);
         Cloudlet result = CloudletList.getById(networkCloudletList, id);
         assertEquals(expResult, result);
-        assertEquals(null, CloudletList.getById(networkCloudletList, -1));
-        assertEquals(null, CloudletList.getById(networkCloudletList, NUMBER_OF_CLOUDLETS));
+        assertEquals(Cloudlet.NULL, CloudletList.getById(networkCloudletList, -1));
+        assertEquals(Cloudlet.NULL, CloudletList.getById(networkCloudletList, NUMBER_OF_CLOUDLETS));
     }
 
     @Test

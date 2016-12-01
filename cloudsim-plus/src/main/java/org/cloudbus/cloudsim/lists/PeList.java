@@ -31,17 +31,7 @@ public class PeList {
      * @post $none
      */
     public static Pe getById(List<Pe> peList, int id) {
-        /*@todo such kind of search would be made using a HashMap
-                (to avoid always iterating over the list),
-                where the key is the id of the object and the value the object
-                itself. The same occurs for lists of hosts and VMs.*/
-        for (Pe pe : peList) {
-            if (pe.getId() == id) {
-                return pe;
-            }
-        }
-
-        return null;
+        return peList.stream().filter(pe -> pe.getId() == id).findFirst().orElse(Pe.NULL);
     }
 
     /**
@@ -55,7 +45,7 @@ public class PeList {
      */
     public static int getMips(List<Pe> peList, int id) {
         Pe pe = getById(peList, id);
-        if (pe != null) {
+        if (pe != Pe.NULL) {
             return pe.getMips();
         }
         return -1;
@@ -160,7 +150,7 @@ public class PeList {
      */
     public static boolean setPeStatus(List<Pe> peList, int id, Pe.Status status) {
         Pe pe = getById(peList, id);
-        if (pe != null) {
+        if (pe != Pe.NULL) {
             pe.setStatus(status);
             return true;
         }

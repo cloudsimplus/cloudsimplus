@@ -419,7 +419,7 @@ public interface Vm extends Identificable, Comparable<Vm> {
     /**
      * Gets the CloudSim instance that represents the simulation the Entity is related to.
      * @return
-     * @see #setSimulation(CloudSim)
+     * @see #setSimulation(Simulation)
      */
     Simulation getSimulation();
 
@@ -434,7 +434,7 @@ public interface Vm extends Identificable, Comparable<Vm> {
 
 
     /**
-     * A property that implements the Null Object Design Pattern for {@link Vm}
+     * An attribute that implements the Null Object Design Pattern for {@link Vm}
      * objects.
      */
     Vm NULL = new Vm() {
