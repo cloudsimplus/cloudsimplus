@@ -44,9 +44,9 @@ import java.util.List;
  */
 public class InfoPacket implements Packet {
     /**
-     * @see #getDirection()
+     * @see #getTag()
      */
-    private int direction;
+    private int tag;
 
     /**
      * The packet name.
@@ -150,7 +150,7 @@ public class InfoPacket implements Packet {
         this.baudRates = new ArrayList<>();
 
         lastHop = srcId;
-        direction = CloudSimTags.INFOPKT_SUBMIT;
+        tag = CloudSimTags.INFOPKT_SUBMIT;
         bandwidth = -1;
         hopsNumber = 0;
         pingSize = size;
@@ -516,17 +516,17 @@ public class InfoPacket implements Packet {
     }
 
     @Override
-    public int getDirection() {
-        return direction;
+    public int getTag() {
+        return tag;
     }
 
     @Override
-    public boolean setDirection(int direction) {
-        if(direction < CloudSimTags.INFOPKT_SUBMIT || direction > CloudSimTags.INFOPKT_RETURN){
+    public boolean setTag(int tag) {
+        if(tag < CloudSimTags.INFOPKT_SUBMIT || tag > CloudSimTags.INFOPKT_RETURN){
             return false;
         }
 
-        this.direction = direction;
+        this.tag = tag;
         return true;
     }
 

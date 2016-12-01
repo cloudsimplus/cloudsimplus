@@ -396,7 +396,7 @@ public class CloudSim implements Simulation {
     public void addEntity(CloudSimEntity e) {
         if (running) {
             // Post an event to make this entity
-            SimEvent evt = new CloudSimEvent(this, SimEvent.CREATE, clock, 1, 0, 0, e);
+            SimEvent evt = new CloudSimEvent(this, SimEvent.Type.CREATE, clock, 1, 0, 0, e);
             future.addEvent(evt);
         }
 
@@ -494,14 +494,14 @@ public class CloudSim implements Simulation {
 
     @Override
     public void hold(int src, long delay) {
-        SimEvent e = new CloudSimEvent(this, SimEvent.HOLD_DONE, clock + delay, src);
+        SimEvent e = new CloudSimEvent(this, SimEvent.Type.HOLD_DONE, clock + delay, src);
         future.addEvent(e);
         entities.get(src).setState(SimEntity.State.HOLDING);
     }
 
     @Override
     public void pause(int src, double delay) {
-        SimEvent e = new CloudSimEvent(this, SimEvent.HOLD_DONE, clock + delay, src);
+        SimEvent e = new CloudSimEvent(this, SimEvent.Type.HOLD_DONE, clock + delay, src);
         future.addEvent(e);
         entities.get(src).setState(SimEntity.State.HOLDING);
     }
@@ -517,7 +517,7 @@ public class CloudSim implements Simulation {
             throw new IllegalArgumentException("Send delay can't be negative.");
         }
 
-        SimEvent e = new CloudSimEvent(this, SimEvent.SEND, clock + delay, src, dest, tag, data);
+        SimEvent e = new CloudSimEvent(this, SimEvent.Type.SEND, clock + delay, src, dest, tag, data);
         future.addEvent(e);
     }
 
@@ -527,7 +527,7 @@ public class CloudSim implements Simulation {
             throw new IllegalArgumentException("Send delay can't be negative.");
         }
 
-        SimEvent e = new CloudSimEvent(this, SimEvent.SEND, clock + delay, src, dest, tag, data);
+        SimEvent e = new CloudSimEvent(this, SimEvent.Type.SEND, clock + delay, src, dest, tag, data);
         future.addEventFirst(e);
     }
 
@@ -627,15 +627,15 @@ public class CloudSim implements Simulation {
 
         // Ok now process it
         switch (e.getType()) {
-            case SimEvent.ENULL:
+            case NULL:
                 throw new IllegalArgumentException("Event has a null type.");
 
-            case SimEvent.CREATE:
+            case CREATE:
                 SimEntity newEvent = (SimEntity) e.getData();
                 addEntityDynamically(newEvent);
                 break;
 
-            case SimEvent.SEND:
+            case SEND:
                 // Check for matching wait
                 dest = e.getDestination();
                 if (dest < 0) {
@@ -659,7 +659,7 @@ public class CloudSim implements Simulation {
                 }
                 break;
 
-            case SimEvent.HOLD_DONE:
+            case HOLD_DONE:
                 src = e.getSource();
                 if (src < 0) {
                     throw new IllegalArgumentException("Null entity holding.");

@@ -22,8 +22,6 @@ import java.util.stream.Stream;
  * The event queue uses a {@link TreeSet} in order to store the events.
  *
  * @author Marcos Dias de Assuncao
- * @todo It would be used a common interface for queues
- * such as this one and {@link DeferredQueue}
  * @see java.util.TreeSet
  * @since CloudSim Toolkit 1.0
  */

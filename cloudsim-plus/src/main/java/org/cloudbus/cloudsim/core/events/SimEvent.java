@@ -11,19 +11,17 @@ import org.cloudsimplus.listeners.EventInfo;
  * @see CloudSimEvent
  */
 public interface SimEvent extends Comparable<SimEvent>, EventInfo {
-    // Internal event types
-    //@todo @author manoelcampos Should be an Enum
-    int ENULL = 0;
-    int SEND = 1;
-    int HOLD_DONE = 2;
-    int CREATE = 3;
+    /**
+     * Internal event types
+     */
+    enum Type {NULL, SEND, HOLD_DONE, CREATE};
 
     /**
      * Gets the internal type
      *
      * @return
      */
-    int getType();
+    Type getType();
 
     /**
      * Get the unique id number of the entity which received this event.
@@ -118,7 +116,7 @@ public interface SimEvent extends Comparable<SimEvent>, EventInfo {
      * objects.
      */
     final SimEvent NULL = new SimEvent() {
-        @Override public int getType() { return 0; }
+        @Override public Type getType() { return Type.NULL; }
         @Override public int getDestination() { return 0; }
         @Override public int getSource() { return 0; }
         @Override public double eventTime() { return 0; }

@@ -10,6 +10,8 @@ package org.cloudbus.cloudsim.core.predicates;
 
 import org.cloudbus.cloudsim.core.events.SimEvent;
 
+import java.util.Arrays;
+
 /**
  * A predicate which selects events coming from specific entities.<br>
  *
@@ -50,19 +52,8 @@ public class PredicateFrom implements Predicate {
 	 */
 	@Override
 	public boolean match(SimEvent ev) {
-		int src = ev.getSource();
-        /*
-        @todo Instead of using an array where each position stores
-        the id of an entity (that requires a loop over the array, it would be
-        used a HashSet to reduce the time to match the event.
-        This should be applied to the other implementation of the super class.
-        */
-		for (int id : ids) {
-			if (src == id) {
-				return true;
-			}
-		}
-		return false;
+		Integer srcId = ev.getSource();
+        return Arrays.stream(ids).filter(srcId::equals).findFirst().isPresent();
 	}
 
 }

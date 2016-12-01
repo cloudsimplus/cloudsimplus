@@ -128,17 +128,17 @@ public interface Packet {
      * @pre $none
      * @post $none
      */
-	int getDirection();
+	int getTag();
 
     /**
      * Sets the packet direction that indicates if it is going or returning.
      * The direction can be {@link CloudSimTags#INFOPKT_SUBMIT}
      * or {@link CloudSimTags#INFOPKT_RETURN}.
      *
-     * @param direction the direction to set
-     * @return true if the direction is valid, false otherwise
-     * @pre direction > 0
+     * @param tag the direction to set
+     * @return true if the tag is valid, false otherwise
+     * @pre tag > 0
      * @post $none
      */
-    boolean setDirection(int direction);
+    boolean setTag(int tag);
 }

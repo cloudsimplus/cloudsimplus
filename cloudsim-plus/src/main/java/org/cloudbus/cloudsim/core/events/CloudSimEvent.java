@@ -25,7 +25,7 @@ public final class CloudSimEvent implements SimEvent {
      */
     private final Simulation simulation;
 
-    protected final int type;
+    protected final Type type;
 
     /**
      * The time that this event was scheduled, at which it should occur.
@@ -62,7 +62,7 @@ public final class CloudSimEvent implements SimEvent {
      */
     public CloudSimEvent(CloudSim simulation) {
         this.simulation = simulation;
-        this.type = ENULL;
+        this.type = Type.NULL;
         this.time = -1L;
         this.endWaitingTime = -1.0;
         this.src = -1;
@@ -86,7 +86,7 @@ public final class CloudSimEvent implements SimEvent {
         this.data = eventToClone.getData();
     }
 
-    public CloudSimEvent(CloudSim simulation, int type, double time, int src, int dest, int tag, Object data) {
+    public CloudSimEvent(CloudSim simulation, Type type, double time, int src, int dest, int tag, Object data) {
         this.simulation = simulation;
         this.type = type;
         this.time = time;
@@ -96,7 +96,7 @@ public final class CloudSimEvent implements SimEvent {
         this.data = data;
     }
 
-    public CloudSimEvent(CloudSim simulation, int type, double time, int src) {
+    public CloudSimEvent(CloudSim simulation, Type type, double time, int src) {
         this.simulation = simulation;
         this.type = type;
         this.time = time;
@@ -127,7 +127,7 @@ public final class CloudSimEvent implements SimEvent {
     }
 
     @Override
-    public int getType() {
+    public Type getType() {
         return type;
     }
 

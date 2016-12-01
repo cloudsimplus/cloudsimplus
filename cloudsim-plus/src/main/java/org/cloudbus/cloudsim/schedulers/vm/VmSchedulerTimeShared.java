@@ -90,7 +90,6 @@ public class VmSchedulerTimeShared extends VmSchedulerAbstract {
      * @param entry an entry from the {@link #getMipsMapAllocated()} containing a VM UID and
      *              the list of MIPS to be allocated for each VM PE
      * @param vmUid the UID of the VM to allocate PEs for it
-     * @todo @author manoelcampos The method implementation must to be checked. See the comments inside.
      */
     private void allocatePesListForVm(Map.Entry<String, List<Double>> entry, String vmUid) {
         int vmPeId = -1;
@@ -111,6 +110,11 @@ public class VmSchedulerTimeShared extends VmSchedulerAbstract {
      * @param vmUid the UID of the VM to try to find Host PEs for one of its Virtual PEs
      * @param requestedMipsForVmPe the amount of MIPS requested by such a VM PE
      * @return the total MIPS allocated for the requested VM PE
+     *
+     * @todo @author manoelcampos The method implementation must to be checked. See the comments inside.
+     * Probably there was performed an oversimplification when implementing this method,
+     * as it as made for CloudletSchedulerTimeShared class.
+     *
      */
     private double allocateMipsFromHostPesToGivenVirtualPe(String vmUid, final double requestedMipsForVmPe) {
         if(requestedMipsForVmPe <= 0.1){
@@ -129,12 +133,14 @@ public class VmSchedulerTimeShared extends VmSchedulerAbstract {
             if (getAvailableMipsForHostPe(selectedHostPe) >= requestedMipsForVmPe) {
                 /*
                  * If the selected Host PE has enough available MIPS that is requested by the
-                 * current VM PE, allocate that MIPS in that Host PE for that VM PE.
-                 * For each next VM PE, in case that the same previous selected Host PE yet
+                 * current VM PE (Virtual PE, vPE or vCore), allocate that MIPS in that Host PE for that vPE.
+                 * For each next vPE, in case that the same previous selected Host PE yet
                  * has available MIPS to allocate to it, that Host PE will be allocated
-                 * to that next VM PE. However, for the best of my knowledge,
-                 * in real virtualization, it is not possible to allocate
+                 * to that next vPE. However, for the best of my knowledge,
+                 * in real scheduling, it is not possible to allocate
                  * more than one VM to the same CPU core.
+                 * The last picture in the following article makes it clear:
+                 * https://support.rackspace.com/how-to/numa-vnuma-and-cpu-scheduling/
                  *
                  */
                 allocateMipsFromPeForVm(vmUid, selectedHostPe, requestedMipsForVmPe);
@@ -142,12 +148,12 @@ public class VmSchedulerTimeShared extends VmSchedulerAbstract {
             } else {
                 /*
                  * If the selected Host PE doesn't have the available MIPS requested by the current
-                 * VM PE, allocate the MIPS that is available in that PE for the VM PE
+                 * vPE, allocate the MIPS that is available in that PE for the vPE
                  * and try to find another Host PE to allocate the remaining MIPS required by the
-                 * current VM PE. However, for the best of my knowledge,
-                 * in real virtualization, it is not possible to allocate
+                 * current vPE. However, for the best of my knowledge,
+                 * in real scheduling, it is not possible to allocate
                  * more than one VM to the same CPU core. If the current Host PE doesn't have the
-                 * MIPS required by the VM PE, another Host PE has to be found.
+                 * MIPS required by the vPE, another Host PE has to be found.
                  * Using the current implementation, the same Host PE could be used
                  * by different Hosts.
                  */

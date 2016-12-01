@@ -354,7 +354,7 @@ public class DatacenterSimple extends CloudSimEntity implements Datacenter {
      */
     protected void processPingRequest(SimEvent ev) {
         InfoPacket pkt = (InfoPacket) ev.getData();
-        pkt.setDirection(CloudSimTags.INFOPKT_RETURN);
+        pkt.setTag(CloudSimTags.INFOPKT_RETURN);
         pkt.setDestId(pkt.getSrcId());
 
         // sends back to the sender
