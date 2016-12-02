@@ -68,7 +68,7 @@ public class CloudletSchedulerSpaceShared extends CloudletSchedulerAbstract {
 		* changes to length to the total length across all PEs, what is very strange
 		* and has to be investigated.*/
 	    long remainingLengthAcrossPes = c.getRemainingCloudletLength();
-	    remainingLengthAcrossPes *= c.getNumberOfPes();
+	    remainingLengthAcrossPes *= c.getCloudlet().getNumberOfPes();
 	    c.getCloudlet().setCloudletLength(remainingLengthAcrossPes);
         /*
          * A resumed cloudlet is not immediately added to the execution list.
@@ -89,7 +89,7 @@ public class CloudletSchedulerSpaceShared extends CloudletSchedulerAbstract {
 	 */
 	private double movePausedCloudletToExecList(CloudletExecutionInfo c) {
 		long remainingLenghtAcrossAllPes = c.getRemainingCloudletLength();
-		remainingLenghtAcrossAllPes *= c.getNumberOfPes();
+		remainingLenghtAcrossAllPes *= c.getCloudlet().getNumberOfPes();
 
 		/**
 		 * @todo @author manoelcampos It's very strange
@@ -109,7 +109,7 @@ public class CloudletSchedulerSpaceShared extends CloudletSchedulerAbstract {
 		// calculate the expected time for cloudlet completion
 		long remainingLength = c.getRemainingCloudletLength();
 		double estimatedFinishTime = getVm().getSimulation().clock()
-		        + (remainingLength / (getProcessor().getCapacity() * c.getNumberOfPes()));
+		        + (remainingLength / (getProcessor().getCapacity() * c.getCloudlet().getNumberOfPes()));
 
 		return estimatedFinishTime;
 	}
@@ -137,28 +137,24 @@ public class CloudletSchedulerSpaceShared extends CloudletSchedulerAbstract {
     @Override
     public double getTotalCurrentAllocatedMipsForCloudlet(CloudletExecutionInfo rcl, double time) {
         //@todo the method isn't in fact implemented
-        // TODO Auto-generated method stub
         return 0.0;
     }
 
     @Override
     public double getTotalCurrentRequestedMipsForCloudlet(CloudletExecutionInfo rcl, double time) {
         //@todo the method isn't in fact implemented
-        // TODO Auto-generated method stub
         return 0.0;
     }
 
     @Override
     public double getCurrentRequestedUtilizationOfRam() {
         //@todo the method isn't in fact implemented
-        // TODO Auto-generated method stub
         return 0;
     }
 
     @Override
     public double getCurrentRequestedUtilizationOfBw() {
         //@todo the method isn't in fact implemented
-        // TODO Auto-generated method stub
         return 0;
     }
 

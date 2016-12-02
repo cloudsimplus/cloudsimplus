@@ -92,7 +92,7 @@ public class PeTest {
         assertEquals(0, Pe.NULL.getMips(), 0);
         assertEquals(Status.FAILED, Pe.NULL.getStatus());
         assertFalse(Pe.NULL.setMips(1000));
-        assertEquals(0, Pe.NULL.getPeProvisioner().getMips(), 0);
+        assertEquals(0, Pe.NULL.getPeProvisioner().getMipsCapacity(), 0);
 
         //setters haven't any effect on Null Object Design Pattern
         Pe.NULL.setStatus(Status.FREE);

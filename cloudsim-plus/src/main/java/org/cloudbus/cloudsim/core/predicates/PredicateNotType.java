@@ -8,24 +8,24 @@
 
 package org.cloudbus.cloudsim.core.predicates;
 
-import org.cloudbus.cloudsim.core.SimEvent;
+import org.cloudbus.cloudsim.core.events.SimEvent;
 
 /**
  * A predicate to select events that don't match specific tags.
- * 
+ *
  * @author Marcos Dias de Assuncao
  * @since CloudSim Toolkit 1.0
  * @see PredicateType
  * @see Predicate
  */
-public class PredicateNotType extends Predicate {
+public class PredicateNotType implements Predicate {
 
 	/** Array of tags to verify if the tag of received events doesn't correspond to. */
 	private final int[] tags;
 
 	/**
 	 * Constructor used to select events whose tags do not match a given tag.
-	 * 
+	 *
 	 * @param tag An event tag value
 	 */
 	public PredicateNotType(int tag) {
@@ -34,7 +34,7 @@ public class PredicateNotType extends Predicate {
 
 	/**
 	 * Constructor used to select events whose tag values do not match any of the given tags.
-	 * 
+	 *
 	 * @param tags the list of tags
 	 */
 	public PredicateNotType(int[] tags) {
@@ -43,7 +43,7 @@ public class PredicateNotType extends Predicate {
 
 	/**
 	 * Matches any event that hasn't one of the specified {@link #tags}.
-	 * 
+	 *
 	 * @param ev {@inheritDoc}
 	 * @return {@inheritDoc}
          * @see #tags

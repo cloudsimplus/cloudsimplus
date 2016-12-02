@@ -99,7 +99,7 @@ public class VmSchedulerTimeSharedOverSubscriptionTest {
          mipsShare3.add(HOST_MIPS);
          mipsShare3.add(HOST_MIPS);
 
-         assertTrue(vmScheduler.allocatePesForVm(vm3, mipsShare3));
+         assertTrue(vmScheduler.updateMapOfRequestedMipsForVm(vm3, mipsShare3));
 
          assertEquals(0, vmScheduler.getAvailableMips(), 0);
          assertEquals(0, vmScheduler.getMaxAvailableMips(), 0);

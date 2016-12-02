@@ -13,7 +13,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
-import org.cloudbus.cloudsim.Log;
+import org.cloudbus.cloudsim.util.Log;
 
 import org.cloudbus.cloudsim.cloudlets.network.CloudletExecutionTask;
 import org.cloudbus.cloudsim.cloudlets.network.CloudletReceiveTask;

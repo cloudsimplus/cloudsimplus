@@ -14,13 +14,13 @@ import java.util.Map.Entry;
 import org.cloudbus.cloudsim.datacenters.DatacenterCharacteristics;
 import org.cloudbus.cloudsim.datacenters.DatacenterSimple;
 import org.cloudbus.cloudsim.hosts.Host;
-import org.cloudbus.cloudsim.Log;
+import org.cloudbus.cloudsim.util.Log;
 import org.cloudbus.cloudsim.hosts.power.PowerHostSimple;
 import org.cloudbus.cloudsim.vms.Vm;
 import org.cloudbus.cloudsim.allocationpolicies.VmAllocationPolicy;
 import org.cloudbus.cloudsim.core.CloudSim;
 import org.cloudbus.cloudsim.core.CloudSimTags;
-import org.cloudbus.cloudsim.core.SimEvent;
+import org.cloudbus.cloudsim.core.events.SimEvent;
 import org.cloudbus.cloudsim.core.predicates.PredicateType;
 import org.cloudbus.cloudsim.resources.FileStorage;
 
@@ -124,7 +124,7 @@ public class PowerDatacenter extends DatacenterSimple {
         if (currentTime > getLastProcessTime()) {
             System.out.print(currentTime + " ");
 
-            double minTime = updateCloudetProcessingWithoutSchedulingFutureEventsForce();
+            double minTime = updateCloudetProcessingWithoutSchedulingFutureEvents();
 
             if (!isDisableMigrations()) {
                 Map<Vm, Host> migrationMap =
@@ -172,19 +172,18 @@ public class PowerDatacenter extends DatacenterSimple {
     }
 
     /**
-     * Update cloudet processing without scheduling future events.
+     * Update cloudet processing without scheduling future events just when
+     * the simulation clock is ahead of the last time some event was processed.
      *
-     * @return the double
-     * @see #updateCloudetProcessingWithoutSchedulingFutureEventsForce()
-     * @todo There is an inconsistence in the return value of this method with
-     * return value of similar methods such as
-     * {@link #updateCloudetProcessingWithoutSchedulingFutureEventsForce()},
-     * that returns {@link Double#MAX_VALUE} by default. The current method
-     * returns 0 by default.
+     * @return expected time of completion of the next cloudlet in all VMs of
+     * all hosts or {@link Double#MAX_VALUE} if there is no future events
+     * expected in this host
+     *
+     * @see #updateCloudetProcessingWithoutSchedulingFutureEvents()
      */
-    protected double updateCloudetProcessingWithoutSchedulingFutureEvents() {
+    protected double updateCloudetProcessingWithoutSchedulingFutureEventsIfClockWasUpdated() {
         if (getSimulation().clock() > getLastProcessTime()) {
-            return updateCloudetProcessingWithoutSchedulingFutureEventsForce();
+            return updateCloudetProcessingWithoutSchedulingFutureEvents();
         }
         return 0;
     }
@@ -196,7 +195,7 @@ public class PowerDatacenter extends DatacenterSimple {
      * all hosts or {@link Double#MAX_VALUE} if there is no future events
      * expected in this host
      */
-    protected double updateCloudetProcessingWithoutSchedulingFutureEventsForce() {
+    protected double updateCloudetProcessingWithoutSchedulingFutureEvents() {
         double currentTime = getSimulation().clock();
         double minTime = Double.MAX_VALUE;
         double timeDiff = currentTime - getLastProcessTime();
@@ -279,11 +278,11 @@ public class PowerDatacenter extends DatacenterSimple {
 
     @Override
     protected void processVmMigrate(SimEvent ev, boolean ack) {
-        updateCloudetProcessingWithoutSchedulingFutureEvents();
+        updateCloudetProcessingWithoutSchedulingFutureEventsIfClockWasUpdated();
         super.processVmMigrate(ev, ack);
         SimEvent event = getSimulation().findFirstDeferred(getId(), new PredicateType(CloudSimTags.VM_MIGRATE));
         if (event == null || event.eventTime() > getSimulation().clock()) {
-            updateCloudetProcessingWithoutSchedulingFutureEventsForce();
+            updateCloudetProcessingWithoutSchedulingFutureEvents();
         }
     }
 

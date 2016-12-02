@@ -9,8 +9,8 @@ package org.cloudbus.cloudsim.resources;
 
 import java.util.Calendar;
 import java.util.Date;
-import org.cloudbus.cloudsim.Consts;
-import org.cloudbus.cloudsim.DataCloudTags;
+import org.cloudbus.cloudsim.util.Consts;
+import org.cloudbus.cloudsim.util.DataCloudTags;
 
 
 /**
@@ -20,12 +20,6 @@ import org.cloudbus.cloudsim.DataCloudTags;
  * @author Uros Cibej
  * @author Anthony Sulistio
  * @since CloudSim Toolkit 1.0
- *
- * @todo Some attributes of this class may be duplicated from the {@link File}
- * class, such as name (logical file name), that is clearly related to the file.
- * There would be a relation between File and FileAttribute. There is a lot of
- * duplicated methods to, such as {@link #setMasterCopy(boolean)} or
- * {@link #isReadOnly()}
  */
 public class FileAttribute {
 
@@ -76,11 +70,6 @@ public class FileAttribute {
     private boolean masterCopy;
 
     /**
-     * Indicates if the file is read-only or not.
-     */
-    private boolean readOnly;
-
-    /**
      * The file that this attribute object is related to
      */
     private final File file;
@@ -95,9 +84,9 @@ public class FileAttribute {
         this.file = file;
 
         // set the file creation time. This is absolute time
-        final Calendar cal = 
-                (file.getDatacenter().getSimulation() != null  ? 
-                file.getDatacenter().getSimulation().getCalendar() : 
+        final Calendar cal =
+                (file.getDatacenter().getSimulation() != null  ?
+                file.getDatacenter().getSimulation().getCalendar() :
                 Calendar.getInstance());
         Date date = cal.getTime();
         if (date == null) {
@@ -113,7 +102,6 @@ public class FileAttribute {
         lastUpdateTime = 0;
         cost = 0;
         masterCopy = true;
-        readOnly = false;
         setFileSize(fileSize);
     }
 
@@ -138,7 +126,6 @@ public class FileAttribute {
         destinationAttr.setChecksum(checksum);
         destinationAttr.setCost(cost);
         destinationAttr.setMasterCopy(masterCopy);
-        destinationAttr.setReadOnly(readOnly);
         destinationAttr.setCreationTime(creationTime);
 
         return true;
@@ -393,25 +380,6 @@ public class FileAttribute {
      */
     public boolean isMasterCopy() {
         return masterCopy;
-    }
-
-    /**
-     * Marks this file as a read only or not.
-     *
-     * @param readOnly a flag denotes <tt>true</tt> for read only or
-     * <tt>false</tt> for re-writeable
-     */
-    public void setReadOnly(boolean readOnly) {
-        this.readOnly = readOnly;
-    }
-
-    /**
-     * Checks whether this file is a read only or not.
-     *
-     * @return <tt>true</tt> if it is a read only or <tt>false</tt> otherwise
-     */
-    public boolean isReadOnly() {
-        return readOnly;
     }
 
     /**

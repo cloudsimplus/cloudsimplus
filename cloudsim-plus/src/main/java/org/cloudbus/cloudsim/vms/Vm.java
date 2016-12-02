@@ -109,9 +109,12 @@ public interface Vm extends Identificable, Comparable<Vm> {
     double getCurrentRequestedTotalMips();
 
     /**
-     * Gets the PM that hosts the VM.
+     * Gets the Host where the Vm is or will be placed.
+     * To know if the Vm was already created inside this Host,
+     * call the {@link #isCreated()} method.
      *
      * @return the host
+     * @see #isCreated()
      */
     Host getHost();
 
@@ -263,12 +266,21 @@ public interface Vm extends Identificable, Comparable<Vm> {
     String getVmm();
 
     /**
-     * Checks if the VM is being instantiated, and was not placed inside a {@link Host} yet.
-     * By this way, resources required by the Vm were not provisioned yet.
+     * Checks if the VM was created and placed inside the {@link #getHost() Host}.
+     * If so, resources required by the Vm already were provisioned.
      *
-     * @return true, if is being instantiated; false otherwise
+     * @return true, if it was created inside the Host, false otherwise
      */
-    boolean isBeingInstantiated();
+    boolean isCreated();
+
+    /**
+     * Changes the created status of the Vm inside the Host.
+     *
+     * @param created true to indicate the VM was created inside the Host; false otherwise
+     * @see #isCreated()
+     */
+    void setCreated(boolean created);
+
 
     /**
      * Checks if the VM is in migration process.
@@ -276,14 +288,6 @@ public interface Vm extends Identificable, Comparable<Vm> {
      * @return true, if it is in migration
      */
     boolean isInMigration();
-
-    /**
-     * Changes the instantiation status of the Vm.
-     *
-     * @param beingInstantiated true to indicate the VM is being instantiated; false otherwise
-     * @see #isBeingInstantiated()
-     */
-    void setBeingInstantiated(boolean beingInstantiated);
 
     /**
      * Sets the BW capacity
@@ -415,7 +419,7 @@ public interface Vm extends Identificable, Comparable<Vm> {
     /**
      * Gets the CloudSim instance that represents the simulation the Entity is related to.
      * @return
-     * @see #setSimulation(CloudSim)
+     * @see #setSimulation(Simulation)
      */
     Simulation getSimulation();
 
@@ -430,7 +434,7 @@ public interface Vm extends Identificable, Comparable<Vm> {
 
 
     /**
-     * A property that implements the Null Object Design Pattern for {@link Vm}
+     * An attribute that implements the Null Object Design Pattern for {@link Vm}
      * objects.
      */
     Vm NULL = new Vm() {
@@ -461,9 +465,9 @@ public interface Vm extends Identificable, Comparable<Vm> {
         @Override public int getBrokerId() { return -1; }
         @Override  public Vm setBroker(DatacenterBroker broker) { return Vm.NULL; }
         @Override public String getVmm() { return ""; }
-        @Override public boolean isBeingInstantiated() { return false; }
+        public boolean isCreated() { return false; }
         @Override public boolean isInMigration() { return false; }
-        @Override public void setBeingInstantiated(boolean beingInstantiated){}
+        public void setCreated(boolean created){}
         @Override public Vm setBw(long bwCapacity) { return Vm.NULL; }
         @Override public void setHost(Host host) {}
         @Override public void setInMigration(boolean inMigration) {}
@@ -483,5 +487,6 @@ public interface Vm extends Identificable, Comparable<Vm> {
         @Override public boolean isFailed() { return false; }
         @Override public Simulation getSimulation() { return Simulation.NULL; }
         @Override public Vm setSimulation(Simulation simulation) { return this; }
+        @Override public String toString() { return "Vm.NULL"; }
     };
 }

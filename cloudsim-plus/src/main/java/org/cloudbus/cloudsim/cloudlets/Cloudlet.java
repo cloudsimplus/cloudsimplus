@@ -146,7 +146,7 @@ public interface Cloudlet extends Identificable, Comparable<Cloudlet> {
     double getActualCPUTime(final int datacenterId);
 
     /**
-     * Returns the total execution time of the Cloudlet.
+     * Returns the total execution time of the Cloudlet in seconds.
      *
      * @return time in which the Cloudlet was running
      * or {@link #NOT_ASSIGNED} if it hasn't finished yet
@@ -213,10 +213,6 @@ public interface Cloudlet extends Identificable, Comparable<Cloudlet> {
      * It is the data produced as result of cloudlet execution
      * that needs to be transferred thought the network to
      * simulate sending response data to the user.
-     *
-     * @todo See
-     * <a href="https://groups.google.com/forum/#!topic/cloudsim/MyZ7OnrXuuI">this
-     * discussion</a>
      *
      * @return the Cloudlet output file size (in bytes)
      * @pre $none
@@ -313,20 +309,20 @@ public interface Cloudlet extends Identificable, Comparable<Cloudlet> {
 
 
     /**
-     * Gets the total cost of processing or executing this Cloudlet.
-     * <tt>Processing Cost = input data transfer + processing cost + output
-     * transfer cost</tt> .
+     * Gets the total cost of executing this Cloudlet.
+     * <tt>Total Cost = input data transfer + processing cost + output transfer cost</tt> .
      *
-     * @return the total cost of processing Cloudlet
+     * @return the total cost of executing the Cloudlet
      * @pre $none
      * @post $result >= 0.0
      */
-    double getProcessingCost();
+    double getTotalCost();
 
     /**
      * Gets the latest execution start time of this Cloudlet. With new functionalities, such
      * as CANCEL, PAUSED and RESUMED, this attribute only stores the latest
      * execution time. Previous execution time are ignored.
+     * This time represents the simulation second when the cloudlet started.
      *
      * @return the latest execution start time
      * @pre $none
@@ -336,6 +332,7 @@ public interface Cloudlet extends Identificable, Comparable<Cloudlet> {
 
     /**
      * Gets the time when this Cloudlet has completed executing in the latest Datacenter.
+     * This time represents the simulation second when the cloudlet finished.
      *
      * @return the finish or completion time of this Cloudlet; or <tt>-1</tt> if
      * not finished yet.
@@ -355,14 +352,14 @@ public interface Cloudlet extends Identificable, Comparable<Cloudlet> {
     double getDatacenterArrivalTime();
 
     /**
-     * Gets the submission (arrival) time of this Cloudlet in the given Datacenter.
+     * Gets the arrival time of this Cloudlet in the given Datacenter.
      *
      * @param datacenterId the Datacenter entity ID
      * @return the submission time or 0 if the Cloudlet has never been executed in the given Datacenter
      * @pre datacenterId >= 0
      * @post $result >= 0.0
      */
-    double getSubmissionTime(final int datacenterId);
+    double getArrivalTime(final int datacenterId);
 
     /**
      * Gets the priority of this Cloudlet for scheduling inside a Vm.
@@ -546,7 +543,7 @@ public interface Cloudlet extends Identificable, Comparable<Cloudlet> {
      * i.e, its {@link #getReservationId()} is not equals to {@link #NOT_ASSIGNED};
      * <tt>false</tt> otherwise
      */
-    boolean hasReserved();
+    boolean isReserved();
 
     /**
      * Checks whether this Cloudlet has finished executing or not.
@@ -880,13 +877,13 @@ public interface Cloudlet extends Identificable, Comparable<Cloudlet> {
         @Override public double getFinishTime(){ return 0.0; }
         @Override public int getNetServiceLevel(){ return 0; }
         @Override public int getNumberOfPes(){ return 0; }
-        @Override public double getProcessingCost(){ return 0.0; }
+        @Override public double getTotalCost(){ return 0.0; }
         @Override public List<String> getRequiredFiles() { return Collections.emptyList();}
         @Override public int getReservationId() { return -1; }
         @Override public int getDatacenterId() { return -1; }
         @Override public Status getStatus() { return getCloudletStatus(); }
         @Override public double getDatacenterArrivalTime() { return 0.0; }
-        @Override public double getSubmissionTime(int datacenterId) { return 0.0; }
+        @Override public double getArrivalTime(int datacenterId) { return 0.0; }
         @Override public int getBrokerId() { return -1; }
         @Override public UtilizationModel getUtilizationModelBw() { return UtilizationModel.NULL; }
         @Override public UtilizationModel getUtilizationModelCpu() { return UtilizationModel.NULL; }
@@ -898,7 +895,7 @@ public interface Cloudlet extends Identificable, Comparable<Cloudlet> {
         @Override public double getWaitingTime() { return 0.0; }
         @Override public double getWallClockTimeInLastExecutedDatacenter() { return 0.0; }
         @Override public double getWallClockTime(int datacenterId) { return 0.0; }
-        @Override public boolean hasReserved() { return false; }
+        @Override public boolean isReserved() { return false; }
         @Override public boolean isFinished() { return false; }
         @Override public boolean requiresFiles() { return false; }
         @Override public void setPriority(int priority) {}
@@ -924,6 +921,10 @@ public interface Cloudlet extends Identificable, Comparable<Cloudlet> {
         @Override public Cloudlet setOnUpdateCloudletProcessingListener(EventListener<VmToCloudletEventInfo> onUpdateCloudletProcessingListener) { return Cloudlet.NULL; }
         @Override public double getSubmissionDelay() { return 0; }
         @Override public void setSubmissionDelay(double submissionDelay) {}
+        @Override public boolean isBindToVm() { return false; }
+        @Override public int compareTo(Cloudlet o) { return 0; }
+        @Override public boolean isAssignedToDatacenter() { return false; }
+        @Override public String toString() { return "Cloudlet.NULL"; }
 
         /**
         * @todo @author manoelcampos These methods shouldn't be public,
@@ -932,9 +933,7 @@ public interface Cloudlet extends Identificable, Comparable<Cloudlet> {
         @Override public boolean setCloudletFinishedSoFar(long length) { return false; }
         @Override public boolean setWallClockTime(double wallTime, double actualCPUTime) { return false; }
         @Override public void setExecStartTime(double clockTime) {}
-        @Override public boolean isAssignedToDatacenter() { return false; }
         @Override public double registerArrivalOfCloudletIntoDatacenter() { return -1; }
-        @Override public boolean isBindToVm() { return false; }
-        @Override public int compareTo(Cloudlet o) { return 0; }
-  };
+
+    };
 }

@@ -16,8 +16,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.IntStream;
 
-import org.cloudbus.cloudsim.schedulers.vm.VmScheduler;
-import org.cloudbus.cloudsim.schedulers.vm.VmSchedulerTimeShared;
 import org.cloudbus.cloudsim.vms.Vm;
 import org.cloudbus.cloudsim.vms.VmSimpleTest;
 
@@ -58,11 +56,11 @@ public class VmSchedulerTimeSharedTest {
     @Test
     public void testIsSuitableForVm() {
         Vm vm0 = VmSimpleTest.createVm(0, MIPS / 4, 2);
-        vm0.setBeingInstantiated(true);
+        vm0.setCreated(false);
         Vm vm1 = VmSimpleTest.createVm(1, MIPS / 2, 2);
-        vm1.setBeingInstantiated(true);
+        vm1.setCreated(false);
         Vm vm2 = VmSimpleTest.createVm(2, MIPS * 2, 2);
-        vm2.setBeingInstantiated(true);
+        vm2.setCreated(false);
         assertTrue(vmScheduler.isSuitableForVm(vm0));
         assertTrue(vmScheduler.isSuitableForVm(vm1));
         assertFalse(vmScheduler.isSuitableForVm(vm2));

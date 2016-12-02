@@ -3,7 +3,7 @@ package org.cloudsimplus.testbeds;
 import org.apache.commons.math3.distribution.TDistribution;
 import org.apache.commons.math3.exception.MathIllegalArgumentException;
 import org.apache.commons.math3.stat.descriptive.SummaryStatistics;
-import org.cloudbus.cloudsim.Log;
+import org.cloudbus.cloudsim.util.Log;
 import org.cloudbus.cloudsim.distributions.UniformDistr;
 
 import java.util.ArrayList;

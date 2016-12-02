@@ -11,7 +11,7 @@ package org.cloudbus.cloudsim.resources;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import org.cloudbus.cloudsim.Log;
+import org.cloudbus.cloudsim.util.Log;
 
 import org.cloudbus.cloudsim.distributions.ContinuousDistribution;
 
@@ -162,28 +162,15 @@ public class HarddriveStorage implements FileStorage {
             return false;
         }
 
-        // check if enough space left
         if (storage.isResourceAmountAvailable((long)fileSize)) {
             return true;
         }
 
-        int deletedFileSize = 0;
+        return getDeletedFilesTotalSize() > fileSize;
+    }
 
-        // if not enough space, then if want to clear/delete some files
-        // then check whether it still have space or not
-        for (File file: fileList) {
-            /*@todo @author manoelcampos It is not clear why it is checking
-            not ready only files.*/
-            if (!file.isReadOnly()) {
-                deletedFileSize += file.getSize();
-            }
-
-            if (deletedFileSize > fileSize) {
-                return true;
-            }
-        }
-
-        return false;
+    private int getDeletedFilesTotalSize() {
+        return fileList.stream().filter(f -> f.isDeleted()).mapToInt(File::getSize).sum();
     }
 
     @Override

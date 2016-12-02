@@ -1,5 +1,6 @@
-package org.cloudbus.cloudsim.core;
+package org.cloudbus.cloudsim.core.events;
 
+import org.cloudbus.cloudsim.core.Simulation;
 import org.cloudsimplus.listeners.EventInfo;
 
 /**
@@ -9,20 +10,18 @@ import org.cloudsimplus.listeners.EventInfo;
  * @author Manoel Campos da Silva Filho
  * @see CloudSimEvent
  */
-public interface SimEvent extends Cloneable, Comparable<SimEvent>, EventInfo {
-    // Internal event types
-    //@todo @author manoelcampos Should be an Enum
-    int ENULL = 0;
-    int SEND = 1;
-    int HOLD_DONE = 2;
-    int CREATE = 3;
+public interface SimEvent extends Comparable<SimEvent>, EventInfo {
+    /**
+     * Internal event types
+     */
+    enum Type {NULL, SEND, HOLD_DONE, CREATE};
 
     /**
      * Gets the internal type
      *
      * @return
      */
-    int getType();
+    Type getType();
 
     /**
      * Get the unique id number of the entity which received this event.
@@ -94,14 +93,15 @@ public interface SimEvent extends Cloneable, Comparable<SimEvent>, EventInfo {
     double getTime();
 
     /**
-     * An attribute to help CloudSim to identify the order of received events
-     * when multiple events are generated at the same time. If two events have
-     * the same {@link #getTag()}, to know what event is greater than other (i.e.
-     * that happens after other), the
-     * {@link #compareTo(SimEvent)} makes use of this field.
+     * Gets the serial number that defines the order of received events when multiple
+     * events are generated at the same time.
+     * If two events have the same {@link #getTag()}, to know what event is greater than other (i.e.
+     * that happens after other), the {@link #compareTo(SimEvent)} makes use of this field.
      * @return
      */
     long getSerial();
+
+    void setSerial(long serial);
 
     /**
      * Gets the CloudSim instance that represents the simulation the Entity is related to.
@@ -109,15 +109,14 @@ public interface SimEvent extends Cloneable, Comparable<SimEvent>, EventInfo {
      */
     Simulation getSimulation();
 
-    @Override
-    int compareTo(SimEvent o);
+    @Override int compareTo(SimEvent o);
 
     /**
      * An attribute that implements the Null Object Design Pattern for {@link SimEvent}
      * objects.
      */
     final SimEvent NULL = new SimEvent() {
-        @Override public int getType() { return 0; }
+        @Override public Type getType() { return Type.NULL; }
         @Override public int getDestination() { return 0; }
         @Override public int getSource() { return 0; }
         @Override public double eventTime() { return 0; }
@@ -130,6 +129,7 @@ public interface SimEvent extends Cloneable, Comparable<SimEvent>, EventInfo {
         @Override public double getTime() { return 0; }
         @Override public int compareTo(SimEvent o) { return 0; }
         @Override public long getSerial() { return 0; }
+        @Override public void setSerial(long serial) {}
         @Override public Simulation getSimulation() { return Simulation.NULL; }
     };
 

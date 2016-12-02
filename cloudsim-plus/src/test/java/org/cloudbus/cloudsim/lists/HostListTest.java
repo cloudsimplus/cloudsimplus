@@ -3,7 +3,9 @@ package org.cloudbus.cloudsim.lists;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.IntStream;
-import org.cloudbus.cloudsim.Consts;
+
+import org.cloudbus.cloudsim.hosts.Host;
+import org.cloudbus.cloudsim.util.Consts;
 import org.cloudbus.cloudsim.hosts.HostSimple;
 import org.cloudbus.cloudsim.hosts.HostSimpleTest;
 import org.cloudbus.cloudsim.hosts.network.NetworkHost;
@@ -44,8 +46,8 @@ public class HostListTest {
         final int id = 0;
         HostSimple expResult = hostSimpleList.get(id);
         assertEquals(expResult, HostList.getById(hostSimpleList, id));
-        assertEquals(null, HostList.getById(hostSimpleList, NUMBER_OF_HOSTS));
-        assertEquals(null, HostList.getById(hostSimpleList, -1));
+        assertEquals(Host.NULL, HostList.getById(hostSimpleList, NUMBER_OF_HOSTS));
+        assertEquals(Host.NULL, HostList.getById(hostSimpleList, -1));
     }
 
     @Test
@@ -54,8 +56,8 @@ public class HostListTest {
         final int id = 0;
         NetworkHost expResult = networkHostList.get(id);
         assertEquals(expResult, HostList.getById(networkHostList, id));
-        assertEquals(null, HostList.getById(networkHostList, NUMBER_OF_HOSTS));
-        assertEquals(null, HostList.getById(networkHostList, -1));
+        assertEquals(Host.NULL, HostList.getById(networkHostList, NUMBER_OF_HOSTS));
+        assertEquals(Host.NULL, HostList.getById(networkHostList, -1));
     }
 
     @Test
@@ -135,7 +137,7 @@ public class HostListTest {
         hostSimpleList.forEach(h -> {
             IntStream.range(0, PES).forEach(i -> h.setPeStatus(i, Status.BUSY));
         });
-        assertEquals(null, HostList.getHostWithFreePe(hostSimpleList));
+        assertEquals(Host.NULL, HostList.getHostWithFreePe(hostSimpleList));
     }
 
     @Test
@@ -157,7 +159,7 @@ public class HostListTest {
         assertTrue(HostList.setPeStatus(hostSimpleList, Pe.Status.FREE, 0, 0));
 
         //PE doesn't exist
-        assertFalse(HostList.setPeStatus(hostSimpleList, Pe.Status.FREE, 0, PES));
+        assertFalse(HostList.setPeStatus(hostSimpleList, Pe.Status.FREE, -1, PES));
 
         //host doesn't exist
         assertFalse(HostList.setPeStatus(hostSimpleList, Pe.Status.FREE, NUMBER_OF_HOSTS, 0));

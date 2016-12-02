@@ -2,6 +2,9 @@ package org.cloudsimplus.util.tablebuilder;
 
 import java.util.List;
 import org.cloudbus.cloudsim.cloudlets.Cloudlet;
+import org.cloudbus.cloudsim.datacenters.Datacenter;
+import org.cloudbus.cloudsim.hosts.Host;
+import org.cloudbus.cloudsim.vms.Vm;
 
 /**
  * A class to help printing simulation results for a list of cloudlets.
@@ -37,33 +40,40 @@ public class CloudletsTableBuilderHelper {
         printer.print();
     }
 
-    /**
-     * Add data to a row of the table being generated.
-     * @param cloudlet The cloudlet to get to data to show in the row of the table
-     * @param row The row to be added the data to
-     */
-    protected void addDataToRow(Cloudlet cloudlet, List<Object> row) {
-        row.add(cloudlet.getId());
-        row.add(cloudlet.getStatus().name());
-        row.add(cloudlet.getDatacenterId());
-        row.add(cloudlet.getVm());
-        row.add(cloudlet.getCloudletLength());
-        row.add(cloudlet.getNumberOfPes());
-        row.add((int)cloudlet.getExecStartTime());
-        row.add((int)cloudlet.getFinishTime());
-        row.add(cloudlet.getActualCPUTime());
-    }
 
     protected void createTableColumns() {
         printer.addColumn("Cloudlet").setSubTitle("ID");
         printer.addColumn("Status ");
         printer.addColumn("DC").setSubTitle("ID");
+        printer.addColumn("Host").setSubTitle("ID");
         printer.addColumn("VM").setSubTitle("ID");
         printer.addColumn("CloudletLen").setSubTitle("MI");
         printer.addColumn("CloudletPEs").setSubTitle("CPU cores");
         printer.addColumn("StartTime").setFormat("%d").setSubTitle("Seconds");
         printer.addColumn("FinishTime").setFormat("%d").setSubTitle("Seconds");
         printer.addColumn("ExecTime").setFormat("%.0f").setSubTitle("Seconds");
+    }
+
+    /**
+     * Add data to a row of the table being generated.
+     * @param cloudlet The cloudlet to get to data to show in the row of the table
+     * @param row The row to be added the data to
+     */
+    protected void addDataToRow(Cloudlet cloudlet, List<Object> row) {
+        Vm vm = cloudlet.getVm();
+        Host host = vm.getHost();
+        Datacenter datacenter = host.getDatacenter();
+
+        row.add(cloudlet.getId());
+        row.add(cloudlet.getStatus().name());
+        row.add(datacenter.getId());
+        row.add(host.getId());
+        row.add(vm.getId());
+        row.add(cloudlet.getCloudletLength());
+        row.add(cloudlet.getNumberOfPes());
+        row.add((int)cloudlet.getExecStartTime());
+        row.add((int)cloudlet.getFinishTime());
+        row.add(cloudlet.getActualCPUTime());
     }
 
     public final CloudletsTableBuilderHelper setPrinter(TableBuilder printer) {

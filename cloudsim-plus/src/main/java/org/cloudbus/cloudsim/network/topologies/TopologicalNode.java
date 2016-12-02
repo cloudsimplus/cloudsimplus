@@ -108,5 +108,4 @@ public class TopologicalNode {
     public int getCoordinateY() {
             return worldY;
     }
-
 }

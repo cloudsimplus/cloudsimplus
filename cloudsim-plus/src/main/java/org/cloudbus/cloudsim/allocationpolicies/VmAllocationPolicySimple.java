@@ -10,17 +10,17 @@ package org.cloudbus.cloudsim.allocationpolicies;
 import java.util.*;
 
 import org.cloudbus.cloudsim.hosts.Host;
-import org.cloudbus.cloudsim.Log;
+import org.cloudbus.cloudsim.util.Log;
 import org.cloudbus.cloudsim.vms.Vm;
 import org.cloudbus.cloudsim.vms.VmSimple;
 
 /**
- * <p>A VmAllocationPolicy implementation that chooses, as
+ * A VmAllocationPolicy implementation that chooses, as
  * the host for a VM, that one with less PEs in use. It is therefore a Worst Fit
- * policy, allocating VMs into the host with most available PEs.</p>
+ * policy, allocating VMs into the host with most available PEs.
  *
- * <b>NOTE: This policy doesn't perform optimization of VM allocation (placement)
- * by means of VM migration.</b>
+ * <p><b>NOTE: This policy doesn't perform optimization of VM allocation (placement)
+ * by means of VM migration.</b></p>
  *
  * @author Rodrigo N. Calheiros
  * @author Anton Beloglazov
@@ -105,7 +105,7 @@ public class VmAllocationPolicySimple extends VmAllocationPolicyAbstract {
         Host host = unmapVmFromPm(vm);
         int pes = getUsedPes().remove(vm.getUid());
         if (host != null) {
-            host.vmDestroy(vm);
+            host.destroyVm(vm);
             getHostFreePesMap().put(host, getHostFreePesMap().get(host) + pes);
         }
     }

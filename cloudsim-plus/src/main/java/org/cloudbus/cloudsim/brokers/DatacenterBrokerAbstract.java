@@ -6,9 +6,10 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import org.cloudbus.cloudsim.cloudlets.Cloudlet;
+import org.cloudbus.cloudsim.core.events.SimEvent;
 import org.cloudbus.cloudsim.datacenters.Datacenter;
 import org.cloudbus.cloudsim.datacenters.DatacenterCharacteristics;
-import org.cloudbus.cloudsim.Log;
+import org.cloudbus.cloudsim.util.Log;
 import org.cloudbus.cloudsim.vms.Vm;
 import org.cloudbus.cloudsim.core.*;
 import org.cloudsimplus.listeners.DatacenterToVmEventInfo;
@@ -287,7 +288,10 @@ public abstract class DatacenterBrokerAbstract extends CloudSimEntity implements
              * @todo @author manoelcampos It should remove the created VM from the waiting list.
              */
             getVmsCreatedList().add(vm);
-            Log.printConcatLine(getSimulation().clock(), ": ", getName(), ": VM #", vmId, " has been created in Datacenter #", datacenterId, ", Host #", VmList.getById(getVmsCreatedList(), vmId).getHost().getId());
+            Log.printConcatLine(
+                getSimulation().clock(), ": ", getName(),
+                ": VM #", vmId, " has been created in Datacenter #", datacenterId, ", Host #",
+                VmList.getById(getVmsCreatedList(), vmId).getHost().getId());
         } else {
             Log.printFormattedLine("The request to create Vm %d was not processed because the Vm was not found in the waiting list.", vmId);
         }
@@ -351,16 +355,13 @@ public abstract class DatacenterBrokerAbstract extends CloudSimEntity implements
     }
 
     /**
-     * Process non-default received events that aren't processed by the
-     * {@link #processEvent(SimEvent)} method. This
-     * method should be overridden by subclasses in other to process new defined
+     * Process non-default received events that aren't processed by the {@link #processEvent(SimEvent)} method.
+     * This method should be overridden by subclasses if they really want to process new defined
      * events.
      *
      * @param ev a CloudSimEvent object
      * @pre ev != null
      * @post $none
-     * @todo to ensure the method will be overridden, it should be defined as
-     * abstract in a super class from where new brokers have to be extended.
      */
     protected void processOtherEvent(SimEvent ev) {
         if (ev == null) {

@@ -46,7 +46,7 @@ public class VmSchedulerTimeSharedOverSubscription extends VmSchedulerTimeShared
      * @return true, if successful
      */
     @Override
-    protected boolean allocatePesForVm(String vmUid, List<Double> mipsShareRequested) {
+    protected boolean updateMapOfRequestedMipsForVm(String vmUid, List<Double> mipsShareRequested) {
         double totalRequestedMips = 0;
 
         // if the requested mips is bigger than the capacity of a single PE, we cap

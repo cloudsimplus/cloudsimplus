@@ -25,14 +25,14 @@ public interface HostDynamicWorkload extends Host {
     /**
      * Gets the list of completed vms.
      *
-     * @return the completed vms
+     * @return
      */
     List<Vm> getCompletedVms();
 
     /**
      * Gets the max utilization percentage among by all PEs.
      *
-     * @return the maximum utilization percentage
+     * @return
      */
     double getMaxUtilization();
 
@@ -40,21 +40,21 @@ public interface HostDynamicWorkload extends Host {
      * Gets the max utilization percentage among by all PEs allocated to a VM.
      *
      * @param vm the vm
-     * @return the max utilization percentage of the VM
+     * @return
      */
     double getMaxUtilizationAmongVmsPes(Vm vm);
 
     /**
      * Gets the previous utilization of CPU in mips.
      *
-     * @return the previous utilization of CPU in mips
+     * @return
      */
     double getPreviousUtilizationMips();
 
     /**
      * Gets the previous utilization of CPU in percentage.
      *
-     * @return the previous utilization of cpu in percents
+     * @return
      */
     double getPreviousUtilizationOfCpu();
 
@@ -66,39 +66,30 @@ public interface HostDynamicWorkload extends Host {
     List<HostStateHistoryEntry> getStateHistory();
 
     /**
-     * Gets the utilization of CPU in MIPS.
+     * Gets the current utilization of bw (in absolute values).
      *
-     * @return current utilization of CPU in MIPS
-     */
-    double getUtilizationMips();
-
-    /**
-     * Gets the utilization of bw (in absolute values).
-     *
-     * @return the utilization of bw
+     * @return
      */
     long getUtilizationOfBw();
 
     /**
-     * Get current utilization of CPU in percentage.
+     * Gets current utilization of CPU in percentage.
      *
-     * @return current utilization of CPU in percents
+     * @return
      */
     double getUtilizationOfCpu();
 
     /**
-     * Get current utilization of CPU in MIPS.
+     * Gets the current utilization of CPU in MIPS.
      *
-     * @return current utilization of CPU in MIPS
-     * @todo This method only calls the  {@link #getUtilizationMips()}.
-     * getUtilizationMips may be deprecated and its code copied here.
+     * @return
      */
     double getUtilizationOfCpuMips();
 
     /**
-     * Gets the utilization of memory (in absolute values).
+     * Gets the current utilization of memory (in absolute values).
      *
-     * @return the utilization of memory
+     * @return
      */
     long getUtilizationOfRam();
 }

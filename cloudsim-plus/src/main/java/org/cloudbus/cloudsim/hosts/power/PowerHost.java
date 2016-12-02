@@ -84,7 +84,6 @@ public interface PowerHost extends HostDynamicWorkload {
         @Override public double getPreviousUtilizationMips() { return 0; }
         @Override public double getPreviousUtilizationOfCpu() { return 0; }
         @Override public List<HostStateHistoryEntry> getStateHistory() { return Collections.EMPTY_LIST; }
-        @Override public double getUtilizationMips() { return 0; }
         @Override public long getUtilizationOfBw() { return 0; }
         @Override public double getUtilizationOfCpu() { return 0; }
         @Override public double getUtilizationOfCpuMips() { return 0; }
@@ -125,8 +124,8 @@ public interface PowerHost extends HostDynamicWorkload {
         @Override public Host setSimulation(Simulation simulation) { return this; }
         @Override public boolean setPeStatus(int peId, Pe.Status status) { return false; }
         @Override public boolean vmCreate(Vm vm) { return false; }
-        @Override public void vmDestroy(Vm vm) {}
-        @Override public void vmDestroyAll() {}
+        @Override public void destroyVm(Vm vm) {}
+        @Override public void destroyAllVms() {}
         @Override public EventListener<HostUpdatesVmsProcessingEventInfo> getOnUpdateVmsProcessingListener() { return EventListener.NULL; }
         @Override public Host setOnUpdateVmsProcessingListener(EventListener<HostUpdatesVmsProcessingEventInfo> onUpdateVmsProcessingListener) { return Host.NULL; }
         @Override public int getId() { return 0; }

@@ -62,16 +62,6 @@ public class DatacenterCharacteristicsSimple implements DatacenterCharacteristic
     private double costPerSecond;
 
     /**
-     * The CPU allocation policy for all PMs of the switches, according to
-     * constants such as {@link #TIME_SHARED} and {@link #SPACE_SHARED}.
-     *
-     * @todo The use of int constants difficult to know the valid values for the
-     * property. It may be used a enum instead.
-     */
-    private int allocationPolicy;
-
-
-    /**
      * The Virtual Machine Monitor (VMM), also called hypervisor, used in the
      * switches..
      */

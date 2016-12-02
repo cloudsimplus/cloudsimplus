@@ -1,6 +1,6 @@
 package org.cloudbus.cloudsim.resources;
 
-import org.cloudbus.cloudsim.DataCloudTags;
+import org.cloudbus.cloudsim.util.DataCloudTags;
 import org.cloudbus.cloudsim.datacenters.Datacenter;
 import org.junit.Test;
 import static org.junit.Assert.*;
@@ -265,15 +265,15 @@ public class FileTest {
 
     @Test
     public void testSetReadOnly() {
-        System.out.println("setReadOnly");
+        System.out.println("setDeleted");
         File instance = createFile();
-        assertFalse(instance.isReadOnly());
+        assertFalse(instance.isDeleted());
 
-        instance.setReadOnly(true);
-        assertTrue(instance.isReadOnly());
+        instance.setDeleted(true);
+        assertTrue(instance.isDeleted());
 
-        instance.setReadOnly(false);
-        assertFalse(instance.isReadOnly());
+        instance.setDeleted(false);
+        assertFalse(instance.isDeleted());
     }
 
     @Test

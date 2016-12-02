@@ -1,9 +1,6 @@
 package org.cloudbus.cloudsim.examples.power.planetlab;
 
-import java.util.Calendar;
-
-import org.cloudbus.cloudsim.Log;
-import org.cloudbus.cloudsim.core.CloudSim;
+import org.cloudbus.cloudsim.util.Log;
 import org.cloudbus.cloudsim.examples.power.Helper;
 import org.cloudbus.cloudsim.examples.power.RunnerAbstract;
 
@@ -33,7 +30,9 @@ public class PlanetLabRunner extends RunnerAbstract {
 	 * @param workload the workload
 	 * @param vmAllocationPolicy the vm allocation policy
 	 * @param vmSelectionPolicy the vm selection policy
-	 * @param parameter the parameter
+     * @param safetyParameterOrUtilizationThreshold a double value to be passed to the specific
+     *                               PowerVmSelectionPolicy being created, which the meaning depends
+     *                               on that policy.
 	 */
 	public PlanetLabRunner(
 			boolean enableOutput,
@@ -43,7 +42,7 @@ public class PlanetLabRunner extends RunnerAbstract {
 			String workload,
 			String vmAllocationPolicy,
 			String vmSelectionPolicy,
-			String parameter) {
+			double safetyParameterOrUtilizationThreshold) {
 		super(
 				enableOutput,
 				outputToFile,
@@ -52,7 +51,7 @@ public class PlanetLabRunner extends RunnerAbstract {
 				workload,
 				vmAllocationPolicy,
 				vmSelectionPolicy,
-				parameter);
+            safetyParameterOrUtilizationThreshold);
 	}
 
 	@Override

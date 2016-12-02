@@ -7,10 +7,10 @@
  */
 package org.cloudbus.cloudsim.network.switches;
 
-import org.cloudbus.cloudsim.Log;
+import org.cloudbus.cloudsim.util.Log;
 
 import org.cloudbus.cloudsim.core.CloudSim;
-import org.cloudbus.cloudsim.core.SimEvent;
+import org.cloudbus.cloudsim.core.events.SimEvent;
 import org.cloudbus.cloudsim.datacenters.network.NetworkDatacenter;
 import org.cloudbus.cloudsim.network.NetworkPacket;
 

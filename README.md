@@ -32,7 +32,7 @@
 
 # Overview
 
-CloudSim Plus is an extensible simulation framework that enables modeling, simulation, and experimentation of emerging Cloud computing 
+CloudSim Plus is a highly extensible simulation framework that enables modeling, simulation, and experimentation of emerging Cloud computing 
 infrastructures and application services, allowing its users to focus on specific system design issues that they want to investigate, 
 without getting concerned about the low level details related to Cloud-based infrastructures and services.
  

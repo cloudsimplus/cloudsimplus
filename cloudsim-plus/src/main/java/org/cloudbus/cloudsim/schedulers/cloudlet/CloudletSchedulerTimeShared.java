@@ -107,7 +107,7 @@ public class CloudletSchedulerTimeShared extends CloudletSchedulerAbstract {
         double remainingLength = cloudlet.getRemainingCloudletLength();
         double estimatedFinishTime = getVm().getSimulation().clock()
             + (remainingLength / (getProcessor().getCapacity()
-            * cloudlet.getNumberOfPes()));
+            * cloudlet.getCloudlet().getNumberOfPes()));
 
         return estimatedFinishTime;
     };
@@ -149,17 +149,13 @@ public class CloudletSchedulerTimeShared extends CloudletSchedulerAbstract {
 
     @Override
     public double getTotalCurrentAllocatedMipsForCloudlet(CloudletExecutionInfo rcl, double time) {
-        /**
-         * @todo @author manoelcampos The method is not implemented, in fact
-         */
+        /* @todo @author manoelcampos The method is not implemented, in fact */
         return 0.0;
     }
 
     @Override
     public double getTotalCurrentRequestedMipsForCloudlet(CloudletExecutionInfo rcl, double time) {
-        /**
-         * @todo @author manoelcampos The method is not implemented, in fact
-         */
+        /* @todo @author manoelcampos The method is not implemented, in fact */
         return 0.0;
     }
 

@@ -3,6 +3,8 @@
 Lists the main changes in the project.
 ## [Current Development Version]
 
+- Enabled the complete navigation from Cloudlet up to the Datacenter. Now it is possible to call `cloudlet.getVm().getHost().getDatacenter()` and navigate between all the relationships that were introduced in CloudSim Plus for such classes. And it is totally safe to make such a call, even before starting the simulation, that you will not get a `NullPointerException`. In case you make such a call before the simulation starts, as any allocation of Cloudlet or VMs was made, you will get default objects that follow the Null Object Design Pattern, namely `Vm.NULL` for `getVm()`, `Host.NULL` for `getHost()` and `Datacenter.NULL` for `getDatacenter()`.
+
 ## [v0.8-beta.7] - 2016-11-29
 
 ### Changed
@@ -14,32 +16,32 @@ Lists the main changes in the project.
   could be given, what caused NullPointerException when trying to find the Vm or Cloudlet. Now this problem is completely avoided.
 - Changed Cloudlet's vmId attribute from int to Vm and renamed it to vm to conform with the previous change.
 - Packages restructuring by placing classes with similar responsibilities together, that makes the project more organized and easier to understand:
-  - Moved Datacenter, DatacenterSimple, DatacenterCharacteristics and DatacenterCharacteristicsSimple to org.cloudbus.cloudsim.datacenters new package.
-  - Moved Host, HostSimple, HostDynamicWorkload, HostDynamicWorkloadSimple and HostStateHistoryEntry to org.cloudbus.cloudsim.hosts new package.
-  - Moved Vm, VmSimple and VmStateHistoryEntry to org.cloudbus.cloudsim.vms new package. 
-  - Moved Cloudlet, CloudletAbstract, CloudletExecutionInfo and CloudletSimple to org.cloudbus.cloudsim.cloudlets new package.
-  - Moved CloudletScheduler interface and implementing classes to org.cloudbus.cloudsim.schedulers.cloudlet new package.
-  - Moved VmScheduler interface and implementing classes to org.cloudbus.cloudsim.schedulers.vm new package.
+  - Moved Datacenter, DatacenterSimple, DatacenterCharacteristics and DatacenterCharacteristicsSimple to `org.cloudbus.cloudsim.datacenters` new package.
+  - Moved Host, HostSimple, HostDynamicWorkload, HostDynamicWorkloadSimple and HostStateHistoryEntry to `org.cloudbus.cloudsim.hosts` new package.
+  - Moved Vm, VmSimple and VmStateHistoryEntry to `org.cloudbus.cloudsim.vms` new package. 
+  - Moved Cloudlet, CloudletAbstract, CloudletExecutionInfo and CloudletSimple to `org.cloudbus.cloudsim.cloudlets` new package.
+  - Moved CloudletScheduler interface and implementing classes to `org.cloudbus.cloudsim.schedulers.cloudlet` new package.
+  - Moved VmScheduler interface and implementing classes to `org.cloudbus.cloudsim.schedulers.vm` new package.
   - As the package org.cloudbus.cloudsim.power contained a lot of classes with completely different responsibilities (such as Datacenters, Hosts, VMs), 
-    such classes were moved to appropriate packages as presented below.  
-    - Moved PowerDatacenter and PowerDatacenterNonPowerAware to org.cloudbus.cloudsim.datacenters.power new package.
-    - Moved PowerHost, PowerHostSimple and PowerHostUtilizationHistory to org.cloudbus.cloudsim.hosts.power new package.
+    such classes were moved to appropriate packages as presented below:  
+    - Moved PowerDatacenter and PowerDatacenterNonPowerAware to `org.cloudbus.cloudsim.datacenters.power` new package.
+    - Moved PowerHost, PowerHostSimple and PowerHostUtilizationHistory to `org.cloudbus.cloudsim.hosts.power` new package.
     - Moved PowerVm to org.cloudbus.cloudsim.vms.power new package. 
-    - Moved PowerVmAllocationPolicy interface and implementing classes to org.cloudbus.cloudsim.allocationpolicies.power new package.
-    - Moved PowerVmSelectionPolicy interface and implementing classes to org.cloudbus.cloudsim.selectionpolicies.power new package.
+    - Moved PowerVmAllocationPolicy interface and implementing classes to `org.cloudbus.cloudsim.allocationpolicies.power` new package.
+    - Moved PowerVmSelectionPolicy interface and implementing classes to `org.cloudbus.cloudsim.selectionpolicies.power` new package.
   - Classes from org.cloudbus.cloudsim.brokers.network also were moved to specific packages:
-    - Moved PowerDatacenterBroker to org.cloudbus.cloudsim.brokers.power new package.
-    - Renamed NetDatacenterBroker to NetworkDatacenterBroker and moved it to org.cloudbus.cloudsim.brokers.network new package.
-    - Moved NetworkDatacenter to org.cloudbus.cloudsim.datacenters.network new package.
-    - Moved NetworkHost to org.cloudbus.cloudsim.hosts.network new package.
-    - Moved AppCloudlet, NetworkCloudlet, CloudletTask, CloudletExecutionTask, CloudletReceiveTask and CloudletSendTask to org.cloudbus.cloudsim.cloudlets.network new package.
-    - Moved NetworkVm to org.cloudbus.cloudsim.vms.network new package.
-    - Moved NetworkCloudletSpaceSharedScheduler to org.cloudbus.cloudsim.schedulers.cloudlet.network new package.
-    - Renamed package org.cloudbus.cloudsim.network.datacenter to org.cloudbus.cloudsim.network.switches.  
+    - Moved PowerDatacenterBroker to `org.cloudbus.cloudsim.brokers.power` new package.
+    - Renamed NetDatacenterBroker to NetworkDatacenterBroker and moved it to `org.cloudbus.cloudsim.brokers.network` new package.
+    - Moved NetworkDatacenter to `org.cloudbus.cloudsim.datacenters.network` new package.
+    - Moved NetworkHost to `org.cloudbus.cloudsim.hosts.network` new package.
+    - Moved AppCloudlet, NetworkCloudlet, CloudletTask, CloudletExecutionTask, CloudletReceiveTask and CloudletSendTask to `org.cloudbus.cloudsim.cloudlets.network` new package.
+    - Moved NetworkVm to `org.cloudbus.cloudsim.vms.network` new package.
+    - Moved NetworkCloudletSpaceSharedScheduler to `org.cloudbus.cloudsim.schedulers.cloudlet.network` new package.
+    - Renamed package org.cloudbus.cloudsim.network.datacenter to `org.cloudbus.cloudsim.network.switches`.  
     - Moved HostPacket, NetworkPacket one package up.
     - Renamed GraphReaderIF to GraphReader.
-    - Moved TopologicalNode, TopologicalLink, TopologicalGraph, NetworkTopology to org.cloudbus.cloudsim.network.topologies new package.
-    - Moved GraphReader and GraphReaderBrite to org.cloudbus.cloudsim.network.topologies.readers new package.
+    - Moved TopologicalNode, TopologicalLink, TopologicalGraph, NetworkTopology to `org.cloudbus.cloudsim.network.topologies` new package.
+    - Moved GraphReader and GraphReaderBrite to `org.cloudbus.cloudsim.network.topologies.readers` new package.
 
 ## [v0.8-beta.6] - 2016-11-24
 Methods and attributes of the `CloudSim` class aren't static anymore. By this way, each simulation now requires an instance of `CloudSim` instead of calling  methods directly from such a class. Despite this change appears to introduce more complexity when creating a simulation, in fact, it makes it simpler. All classes that extend `SimEntity` required a name to be passed when calling their constructors. Since that name usually was just the name of the class followed by its id, it wasn't meaningful.

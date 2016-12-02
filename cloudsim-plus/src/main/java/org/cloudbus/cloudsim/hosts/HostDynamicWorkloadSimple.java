@@ -7,7 +7,7 @@
  */
 package org.cloudbus.cloudsim.hosts;
 
-import org.cloudbus.cloudsim.Log;
+import org.cloudbus.cloudsim.util.Log;
 import org.cloudbus.cloudsim.vms.Vm;
 import org.cloudbus.cloudsim.vms.VmStateHistoryEntry;
 import org.cloudbus.cloudsim.brokers.DatacenterBroker;
@@ -26,9 +26,6 @@ import org.cloudbus.cloudsim.provisioners.ResourceProvisioner;
  *
  * @author Anton Beloglazov
  * @since CloudSim Toolkit 2.0
- * @todo @author manoelcampos When using this host, the
- * {@link DatacenterBroker#getCloudletsFinishedList()} returns an empty list
- * after stopping the simulation.
  */
 public class HostDynamicWorkloadSimple extends HostSimple implements HostDynamicWorkload {
 
@@ -93,7 +90,7 @@ public class HostDynamicWorkloadSimple extends HostSimple implements HostDynamic
     @Override
     public double updateVmsProcessing(double currentTime) {
         double smallerTime = super.updateVmsProcessing(currentTime);
-        setPreviousUtilizationMips(getUtilizationMips());
+        setPreviousUtilizationMips(getUtilizationOfCpuMips());
         setUtilizationMips(0);
         double hostTotalRequestedMips = 0;
 
@@ -109,7 +106,7 @@ public class HostDynamicWorkloadSimple extends HostSimple implements HostDynamic
             double totalRequestedMips = vm.getCurrentRequestedTotalMips();
             double totalAllocatedMips = getVmScheduler().getTotalAllocatedMipsForVm(vm);
 
-            if (!Log.isDisabled() && vm.getHost() != null) {
+            if (!Log.isDisabled() && vm.getHost() != Host.NULL) {
                 Log.printFormattedLine(
                         "%.2f: [Host #" + getId() + "] Total allocated MIPS for VM #" + vm.getId()
                         + " (Host #" + vm.getHost().getId()
@@ -157,15 +154,15 @@ public class HostDynamicWorkloadSimple extends HostSimple implements HostDynamic
                 }
             }
 
-            setUtilizationMips(getUtilizationMips() + totalAllocatedMips);
+            setUtilizationMips(getUtilizationOfCpuMips() + totalAllocatedMips);
             hostTotalRequestedMips += totalRequestedMips;
         }
 
         addStateHistoryEntry(
                 currentTime,
-                getUtilizationMips(),
+            getUtilizationOfCpuMips(),
                 hostTotalRequestedMips,
-                (getUtilizationMips() > 0));
+                (getUtilizationOfCpuMips() > 0));
 
         return smallerTime;
     }
@@ -237,7 +234,7 @@ public class HostDynamicWorkloadSimple extends HostSimple implements HostDynamic
      */
     @Override
     public double getUtilizationOfCpu() {
-        double utilization = getUtilizationMips() / getTotalMips();
+        double utilization = getUtilizationOfCpuMips() / getTotalMips();
         if (utilization > 1 && utilization < 1.01) {
             utilization = 1;
         }
@@ -262,21 +259,9 @@ public class HostDynamicWorkloadSimple extends HostSimple implements HostDynamic
      * Get current utilization of CPU in MIPS.
      *
      * @return current utilization of CPU in MIPS
-     * @todo This method only calls the {@link #getUtilizationMips()}.
-     * getUtilizationMips may be deprecated and its code copied here.
      */
     @Override
     public double getUtilizationOfCpuMips() {
-        return getUtilizationMips();
-    }
-
-    /**
-     * Gets the utilization of CPU in MIPS.
-     *
-     * @return current utilization of CPU in MIPS
-     */
-    @Override
-    public double getUtilizationMips() {
         return utilizationMips;
     }
 

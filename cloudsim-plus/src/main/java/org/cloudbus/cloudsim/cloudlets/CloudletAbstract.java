@@ -225,7 +225,7 @@ public abstract class CloudletAbstract implements Cloudlet {
     }
 
     @Override
-    public boolean hasReserved() {
+    public boolean isReserved() {
         return reservationId > NOT_ASSIGNED;
     }
 
@@ -449,6 +449,7 @@ public abstract class CloudletAbstract implements Cloudlet {
         if (getLastExecutedDatacenterIndex() == NOT_ASSIGNED) {
             return 0.0;
         }
+
         return getExecutionInDatacenterInfoList().get(getLastExecutedDatacenterIndex()).costPerSec;
     }
 
@@ -489,10 +490,10 @@ public abstract class CloudletAbstract implements Cloudlet {
     }
 
     @Override
-    public double getSubmissionTime(final int datacenterId) {
-        ExecutionInDatacenterInfo datacenter = getDatacenterInfo(datacenterId);
-        if (datacenter != null) {
-            return datacenter.arrivalTime;
+    public double getArrivalTime(final int datacenterId) {
+        ExecutionInDatacenterInfo datacenterInfo = getDatacenterInfo(datacenterId);
+        if (datacenterInfo != null) {
+            return datacenterInfo.arrivalTime;
         }
         return 0.0;
     }
@@ -605,24 +606,26 @@ public abstract class CloudletAbstract implements Cloudlet {
     }
 
     @Override
-    public double getProcessingCost() {
-        /**
-         * @todo @author manoelcampos It is not computing the processing
-         * cost, that depends on cloudlet length and the
-         * CloudletScheduler that the VM will use to execute the cloudlet.
-         * Thus, it may be more complex to estimate that value.
-         */
-
+    public double getTotalCost() {
         // cloudlet cost: execution cost...
-        // double cost = getProcessingCost();
-        double cost = 0;
+        double totalCost = getTotalCpuCostForAllDatacenters();
 
         // ... plus input data transfer cost...
-        cost += getAccumulatedBwCost();
+        totalCost += getAccumulatedBwCost();
 
         // ... plus output cost
-        cost += getCostPerBw() * getCloudletOutputSize();
-        return cost;
+        totalCost += getCostPerBw() * getCloudletOutputSize();
+        return totalCost;
+    }
+
+    /**
+     * Gets the total cost for using CPU on every Datacenter where the Cloudlet has executed.
+     * @return
+     */
+    private double getTotalCpuCostForAllDatacenters() {
+        return getExecutionInDatacenterInfoList().stream()
+            .mapToDouble(dcInfo -> dcInfo.actualCPUTime * dcInfo.costPerSec)
+            .sum();
     }
 
     @Override

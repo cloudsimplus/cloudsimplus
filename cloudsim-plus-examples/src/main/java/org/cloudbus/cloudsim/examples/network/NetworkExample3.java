@@ -12,6 +12,8 @@ import java.util.ArrayList;
 import java.util.List;
 import org.cloudbus.cloudsim.cloudlets.Cloudlet;
 import org.cloudbus.cloudsim.cloudlets.CloudletSimple;
+import org.cloudbus.cloudsim.network.topologies.BriteNetworkTopology;
+import org.cloudbus.cloudsim.network.topologies.NetworkTopology;
 import org.cloudbus.cloudsim.schedulers.cloudlet.CloudletSchedulerTimeShared;
 import org.cloudbus.cloudsim.datacenters.Datacenter;
 import org.cloudbus.cloudsim.datacenters.DatacenterSimple;
@@ -21,8 +23,7 @@ import org.cloudbus.cloudsim.datacenters.DatacenterCharacteristics;
 import org.cloudbus.cloudsim.datacenters.DatacenterCharacteristicsSimple;
 import org.cloudbus.cloudsim.hosts.Host;
 import org.cloudbus.cloudsim.hosts.HostSimple;
-import org.cloudbus.cloudsim.Log;
-import org.cloudbus.cloudsim.network.topologies.NetworkTopology;
+import org.cloudbus.cloudsim.util.Log;
 import org.cloudbus.cloudsim.resources.Pe;
 import org.cloudbus.cloudsim.resources.PeSimple;
 import org.cloudbus.cloudsim.utilizationmodels.UtilizationModel;
@@ -141,24 +142,25 @@ public class NetworkExample3 {
 
         //Sixth step: configure network
         //load the network topology file
-        NetworkTopology.buildNetworkTopology("topology.brite");
+        NetworkTopology networkTopology = new BriteNetworkTopology("topology.brite");
+        simulation.setNetworkTopology(networkTopology);
 
         //maps CloudSim entities to BRITE entities
         //Datacenter0 will correspond to BRITE node 0
         int briteNode = 0;
-        NetworkTopology.mapNode(datacenter0.getId(), briteNode);
+        networkTopology.mapNode(datacenter0.getId(), briteNode);
 
         //Datacenter1 will correspond to BRITE node 2
         briteNode = 2;
-        NetworkTopology.mapNode(datacenter1.getId(), briteNode);
+        networkTopology.mapNode(datacenter1.getId(), briteNode);
 
         //Broker1 will correspond to BRITE node 3
         briteNode = 3;
-        NetworkTopology.mapNode(broker1.getId(), briteNode);
+        networkTopology.mapNode(broker1.getId(), briteNode);
 
         //Broker2 will correspond to BRITE node 4
         briteNode = 4;
-        NetworkTopology.mapNode(broker2.getId(), briteNode);
+        networkTopology.mapNode(broker2.getId(), briteNode);
 
         // Sixth step: Starts the simulation
         simulation.start();

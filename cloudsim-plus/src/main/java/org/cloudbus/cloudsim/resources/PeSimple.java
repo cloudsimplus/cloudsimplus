@@ -11,12 +11,12 @@ package org.cloudbus.cloudsim.resources;
 import org.cloudbus.cloudsim.provisioners.PeProvisioner;
 
 /**
- * Pe (Processing Element) class represents a CPU core of a physical machine (PM), 
+ * Pe (Processing Element) class represents a CPU core of a physical machine (PM),
  * defined in terms of Millions Instructions Per Second (MIPS) rating.<p/>
- * 
+ *
  * <b>ASSUMPTION:</b> All PEs under the same Machine have the same MIPS rating.
  * @todo This assumption is not being assured on different class (where other TODOs where introduced)
- * 
+ *
  * @author Manzur Murshed
  * @author Rajkumar Buyya
  * @since CloudSim Toolkit 1.0
@@ -33,7 +33,7 @@ public class PeSimple implements Pe {
 
     /**
      * Instantiates a new PE object.
-     * 
+     *
      * @param id the PE ID
      * @param peProvisioner the PE provisioner
      * @pre id >= 0
@@ -50,7 +50,7 @@ public class PeSimple implements Pe {
 
     /**
      * Sets the {@link #getId()}.
-     * 
+     *
      * @param id the new PE id
      */
     protected final void setId(int id) {
@@ -59,7 +59,7 @@ public class PeSimple implements Pe {
 
     /**
      * Gets the PE id.
-     * 
+     *
      * @return the PE id
      */
     @Override
@@ -69,7 +69,7 @@ public class PeSimple implements Pe {
 
     /**
      * Sets the MIPS Rating of this PE.
-     * 
+     *
      * @param d the mips
      * @return true if MIPS > 0, false otherwise
      * @pre mips >= 0
@@ -77,24 +77,24 @@ public class PeSimple implements Pe {
      */
     @Override
     public boolean setMips(double d) {
-        return getPeProvisioner().setMips(d);
+        return getPeProvisioner().setMipsCapacity(d);
     }
 
     /**
      * Gets the MIPS Rating of this Pe.
-     * 
+     *
      * @return the MIPS Rating
      * @pre $none
      * @post $result >= 0
      */
     @Override
     public int getMips() {
-        return (int) getPeProvisioner().getMips();
+        return (int) getPeProvisioner().getMipsCapacity();
     }
 
     /**
      * Gets the status of the PE.
-     * 
+     *
      * @return the PE status
      * @pre $none
      * @post $none
@@ -104,22 +104,16 @@ public class PeSimple implements Pe {
         return status;
     }
 
-    /**
-     * Sets the {@link #getStatus() status} of the PE.
-     * 
-     * @param status the new PE status
-     * @pre $none
-     * @post $none
-     */
     @Override
-    public final void setStatus(Status status) {
+    public final boolean setStatus(Status status) {
         this.status = status;
+        return true;
     }
 
     /**
      * Sets the {@link #getPeProvisioner()} that manages the allocation
      * of this physical PE to virtual machines.
-     * 
+     *
      * @param peProvisioner the new PE provisioner
      */
     protected final void setPeProvisioner(PeProvisioner peProvisioner) {
@@ -131,7 +125,7 @@ public class PeSimple implements Pe {
     /**
      * Gets the PE provisioner that manages the allocation
      * of this physical PE to virtual machines.
-     * 
+     *
      * @return the PE provisioner
      */
     @Override

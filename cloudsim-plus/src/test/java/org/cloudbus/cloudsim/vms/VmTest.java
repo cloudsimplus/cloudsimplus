@@ -38,8 +38,7 @@ public class VmTest {
         instance.setInMigration(true);
         assertFalse(instance.isInMigration());
 
-        instance.setBeingInstantiated(true);
-        assertFalse(instance.isBeingInstantiated());
+        assertFalse(instance.isCreated());
 
         instance.setBw(1000);
         assertEquals(0, instance.getBw());
@@ -52,7 +51,6 @@ public class VmTest {
         assertEquals(0, instance.getCurrentAllocatedRam());
         assertEquals(0, instance.getCurrentRequestedRam());
 
-        instance.setHost(PowerHost.NULL);
         assertEquals(Host.NULL, instance.getHost());
 
         instance.setOnHostAllocationListener(null);

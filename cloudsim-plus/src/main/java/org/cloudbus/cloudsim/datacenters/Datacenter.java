@@ -4,7 +4,7 @@ import org.cloudbus.cloudsim.hosts.Host;
 import org.cloudbus.cloudsim.vms.Vm;
 import org.cloudbus.cloudsim.cloudlets.Cloudlet;
 import org.cloudbus.cloudsim.core.SimEntity;
-import org.cloudbus.cloudsim.core.SimEvent;
+import org.cloudbus.cloudsim.core.events.SimEvent;
 import org.cloudbus.cloudsim.resources.File;
 import org.cloudbus.cloudsim.allocationpolicies.VmAllocationPolicy;
 import org.cloudbus.cloudsim.resources.FileStorage;
@@ -147,5 +147,6 @@ public interface Datacenter extends SimEntity {
         @Override public void startEntity() {}
         @Override public void shutdownEntity() {}
         @Override public SimEntity setName(String newName) throws IllegalArgumentException { return this; }
+        @Override public String toString() { return "Datacenter.NULL"; }
     };
 }

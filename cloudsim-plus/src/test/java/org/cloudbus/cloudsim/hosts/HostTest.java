@@ -67,9 +67,9 @@ public class HostTest {
         assertFalse(instance.vmCreate(vm));
         assertTrue(instance.getVmList().isEmpty());
 
-        instance.vmDestroy(vm);
+        instance.destroyVm(vm);
         assertTrue(instance.getVmList().isEmpty());
-        instance.vmDestroyAll();
+        instance.destroyAllVms();
         assertTrue(instance.getVmList().isEmpty());
 
         instance.setOnUpdateVmsProcessingListener(createMockListener());

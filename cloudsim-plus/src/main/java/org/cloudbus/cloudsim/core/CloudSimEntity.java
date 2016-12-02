@@ -7,9 +7,10 @@
  */
 package org.cloudbus.cloudsim.core;
 
-import org.cloudbus.cloudsim.Log;
-import org.cloudbus.cloudsim.core.predicates.Predicate;
+import org.cloudbus.cloudsim.core.events.SimEvent;
 import org.cloudbus.cloudsim.network.topologies.NetworkTopology;
+import org.cloudbus.cloudsim.util.Log;
+import org.cloudbus.cloudsim.core.predicates.Predicate;
 
 /**
  * This class represents a simulation entity. An entity handles events and can
@@ -38,10 +39,8 @@ public abstract class CloudSimEntity implements SimEntity {
 
     /**
      * The entity's current state.
-     *
-     * @todo The states should be an enum.
      */
-    private int state;
+    private State state;
 
     /**
      * Creates a new entity.
@@ -56,7 +55,7 @@ public abstract class CloudSimEntity implements SimEntity {
 
         this.simulation = simulation;
         id = -1;
-        state = RUNNABLE;
+        state = State.RUNNABLE;
         name = String.format("%s%d", getClass().getSimpleName(), simulation.getNumEntities());
         simulation.addEntity(this);
     }
@@ -381,7 +380,7 @@ public abstract class CloudSimEntity implements SimEntity {
         }
 
         simulation.wait(id, p);
-        state = WAITING;
+        state = State.WAITING;
     }
 
     /**
@@ -400,7 +399,7 @@ public abstract class CloudSimEntity implements SimEntity {
 
         while (ev != null) {
             processEvent(ev);
-            if (state != RUNNABLE) {
+            if (state != State.RUNNABLE) {
                 break;
             }
 
@@ -465,7 +464,7 @@ public abstract class CloudSimEntity implements SimEntity {
      *
      * @return the state
      */
-    public int getState() {
+    public State getState() {
         return state;
     }
 
@@ -483,7 +482,7 @@ public abstract class CloudSimEntity implements SimEntity {
      *
      * @param state the new state
      */
-    public SimEntity setState(int state) {
+    public SimEntity setState(State state) {
         this.state = state;
         return this;
     }
@@ -682,10 +681,7 @@ public abstract class CloudSimEntity implements SimEntity {
      * @pre dst >= 0
      */
     private double getNetworkDelay(int src, int dst) {
-        if (NetworkTopology.isNetworkEnabled()) {
-            return NetworkTopology.getDelay(src, dst);
-        }
-        return 0.0;
+        return getSimulation().getNetworkTopology().getDelay(src, dst);
     }
 
 }

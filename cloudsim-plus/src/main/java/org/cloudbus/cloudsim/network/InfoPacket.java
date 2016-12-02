@@ -15,10 +15,12 @@
  */
 package org.cloudbus.cloudsim.network;
 
-import java.text.DecimalFormat;
-import java.util.Vector;
-
 import org.cloudbus.cloudsim.core.CloudSimTags;
+
+import java.text.DecimalFormat;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
 /**
  * InfoPacket class can be used to gather information from the network layer. An
@@ -41,6 +43,10 @@ import org.cloudbus.cloudsim.core.CloudSimTags;
  * one common interface.
  */
 public class InfoPacket implements Packet {
+    /**
+     * @see #getTag()
+     */
+    private int tag;
 
     /**
      * The packet name.
@@ -73,14 +79,6 @@ public class InfoPacket implements Packet {
     private int lastHop;
 
     /**
-     * Whether the packet is going or returning, according to constants
-     * {@link  CloudSimTags#INFOPKT_SUBMIT} and
-     * {@link  CloudSimTags#INFOPKT_RETURN}.
-     * @todo @author manoelcampos this should be an enum.
-     */
-    private int tag;
-
-    /**
      * The number of hops.
      */
     private int hopsNumber;
@@ -104,23 +102,23 @@ public class InfoPacket implements Packet {
      * The list of entity IDs. The entities are elements where the packet
      * traverses, such as Routers or Datacenters.
      */
-    private Vector<Integer> entities;
+    private final List<Integer> entities;
 
     /**
      * A list containing the time the packet arrived at every entity it has
      * traversed
      */
-    private Vector<Double> entryTimes;
+    private final List<Double> entryTimes;
 
     /**
      * The list of exit times.
      */
-    private Vector<Double> exitTimes;
+    private final List<Double> exitTimes;
 
     /**
      * The baud rate of each output link of entities where the packet traverses.
      */
-    private Vector<Double> baudRates;
+    private final List<Double> baudRates;
 
     /**
      * The formatting for decimal points.
@@ -146,31 +144,19 @@ public class InfoPacket implements Packet {
         destId = destID;
         this.size = size;
         this.netServiceLevel = netServiceLevel;
+        this.entities = new ArrayList<>();
+        this.entryTimes = new ArrayList<>();
+        this.exitTimes = new ArrayList<>();
+        this.baudRates = new ArrayList<>();
 
-        init();
-    }
-
-    /**
-     * Initialises common attributes.
-     *
-     * @pre $none
-     * @post $none
-     */
-    private void init() {
         lastHop = srcId;
         tag = CloudSimTags.INFOPKT_SUBMIT;
         bandwidth = -1;
         hopsNumber = 0;
         pingSize = size;
-
-        if (name != null) {
-            entities = new Vector<>();
-            entryTimes = new Vector<>();
-            exitTimes = new Vector<>();
-            baudRates = new Vector<>();
-            num = new DecimalFormat("#0.000#"); // 4 decimal spaces
-        }
+        num = new DecimalFormat("#0.000#");
     }
+
 
     /**
      * Returns the ID of this packet.
@@ -239,7 +225,7 @@ public class InfoPacket implements Packet {
 
         sb.append("\nRound Trip Time : " + num.format(getTotalResponseTime()));
         sb.append(" seconds");
-        sb.append("\nNumber of Hops  : " + getNumHop());
+        sb.append("\nNumber of Hops  : " + getNumberOfHops());
         sb.append("\nBottleneck Bandwidth : " + bandwidth + " bits/s");
         return sb.toString();
     }
@@ -253,7 +239,7 @@ public class InfoPacket implements Packet {
      * @pre v != null
      * @post index > 0
      */
-    private String getData(Vector<Double> v, int index) {
+    private String getData(List<Double> v, int index) {
         String result;
         try {
             Double obj = v.get(index);
@@ -321,14 +307,14 @@ public class InfoPacket implements Packet {
     }
 
     /**
-     * Returns the number of hops that the packet has traversed. Since the
+     * Gets the number of hops that the packet has traversed. Since the
      * packet takes a round trip, the same router may have been traversed twice.
      *
-     * @return the number of hops this packet has traversed
+     * @return
      * @pre $none
      * @post $none
      */
-    public int getNumHop() {
+    public int getNumberOfHops() {
         int PAIR = 2;
         return ((hopsNumber - PAIR) + 1) / PAIR;
     }
@@ -345,14 +331,10 @@ public class InfoPacket implements Packet {
      * @post $none
      */
     public double getTotalResponseTime() {
-        if (exitTimes == null || entryTimes == null) {
-            return 0;
-        }
-
         double time = 0;
         try {
-            double startTime = exitTimes.firstElement();
-            double receiveTime = entryTimes.lastElement();
+            double startTime = exitTimes.stream().findFirst().orElse(0.0);
+            double receiveTime = entryTimes.stream().findFirst().orElse(0.0);
             time = receiveTime - startTime;
         } catch (Exception e) {
             time = 0;
@@ -382,10 +364,6 @@ public class InfoPacket implements Packet {
      * @post $none
      */
     public void addHop(int id) {
-        if (entities == null) {
-            return;
-        }
-
         hopsNumber++;
         entities.add(id);
     }
@@ -402,10 +380,6 @@ public class InfoPacket implements Packet {
      *
      */
     public void addEntryTime(double time) {
-        if (entryTimes == null) {
-            return;
-        }
-
         if (time < 0) {
             time = 0.0;
         }
@@ -425,10 +399,6 @@ public class InfoPacket implements Packet {
      * @post $none
      */
     public void addExitTime(double time) {
-        if (exitTimes == null) {
-            return;
-        }
-
         if (time < 0) {
             time = 0.0;
         }
@@ -447,10 +417,6 @@ public class InfoPacket implements Packet {
      * @post $none
      */
     public void addBaudRate(double baudRate) {
-        if (baudRates == null) {
-            return;
-        }
-
         baudRates.add(baudRate);
         if (bandwidth < 0 || baudRate < bandwidth) {
             bandwidth = baudRate;
@@ -458,70 +424,49 @@ public class InfoPacket implements Packet {
     }
 
     /**
-     * Returns the list of all the bandwidths that this packet has traversed.
+     * Gets a <b>read-only</b> list of all the bandwidths that this packet has traversed.
      *
-     * @return a Double Array of links bandwidths
+     * @return
      * @pre $none
      * @post $none
      */
-    public Object[] getDetailBaudRate() {
-        if (baudRates == null) {
-            return null;
-        }
-
-        return baudRates.toArray();
+    public List<Double> getDetailBaudRate() {
+        return Collections.unmodifiableList(baudRates);
     }
 
     /**
-     * Returns the list of all the hops that this packet has traversed.
+     * Gets a <b>read-only</b> list of all entities that this packet has traversed,
+     * that defines the hops it has made.
      *
-     * @return an Integer Array of hop ids
+     * @return
      * @pre $none
      * @post $none
-     * @todo Why does not return an array of Integer (that is the type of the
-     * entities attribute)? In fact, this method does not appear to be used
-     * anywhere.
      */
-    public Object[] getDetailHops() {
-        if (entities == null) {
-            return null;
-        }
-
-        return entities.toArray();
+    public List<Integer> getHopsList() {
+        return Collections.unmodifiableList(entities);
     }
 
     /**
-     * Returns the list of all entry times that the packet has traversed.
+     * Gets a <b>read-only</b> list of all entry times that the packet has traversed.
      *
-     * @return an Integer Array of entry time
+     * @return
      * @pre $none
      * @post $none
-     * @todo Why does not return an array of Double (that is the type of the
-     * entyTimes attribute)? In fact, this method does not appear to be used
-     * anywhere.
      */
-    public Object[] getDetailEntryTimes() {
-        if (entryTimes == null) {
-            return null;
-        }
-
-        return entryTimes.toArray();
+    public List<Double> getDetailEntryTimes() {
+        return Collections.unmodifiableList(entryTimes);
     }
 
     /**
-     * Returns the list of all exit times from all entities that the packet has
+     * Gets a <b>read-only</b> list of all exit times from all entities that the packet has
      * traversed.
      *
-     * @return an Integer Array of exit time
+     * @return
      * @pre $none
      * @post $none
      */
-    public Object[] getDetailExitTimes() {
-        if (exitTimes == null) {
-            return null;
-        }
-
-        return exitTimes.toArray();
+    public List<Double> getDetailExitTimes() {
+        return Collections.unmodifiableList(exitTimes);
     }
 
     /**
@@ -570,36 +515,19 @@ public class InfoPacket implements Packet {
         this.netServiceLevel = netServiceLevel;
     }
 
-    /**
-     * Gets the packet tag.
-     *
-     * @return this packet tag
-     * @pre $none
-     * @post $none
-     */
     @Override
     public int getTag() {
         return tag;
     }
 
-    /**
-     * Sets the tag of the packet.
-     *
-     * @param tag the packet's tag
-     * @return <tt>true</tt> if successful, <tt>false</tt> otherwise
-     * @pre tag > 0
-     * @post $none
-     */
+    @Override
     public boolean setTag(int tag) {
-        switch (tag) {
-            case CloudSimTags.INFOPKT_SUBMIT:
-            case CloudSimTags.INFOPKT_RETURN:
-                this.tag = tag;
-                return true;
-
+        if(tag < CloudSimTags.INFOPKT_SUBMIT || tag > CloudSimTags.INFOPKT_RETURN){
+            return false;
         }
 
-        return false;
+        this.tag = tag;
+        return true;
     }
 
     /**

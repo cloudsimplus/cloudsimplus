@@ -8,12 +8,18 @@
 package org.cloudbus.cloudsim.core;
 
 import java.util.*;
-import java.util.stream.Collectors;
 
 import org.cloudbus.cloudsim.brokers.DatacenterBroker;
-import org.cloudbus.cloudsim.Log;
+import org.cloudbus.cloudsim.core.events.CloudSimEvent;
+import org.cloudbus.cloudsim.core.events.DeferredQueue;
+import org.cloudbus.cloudsim.core.events.FutureQueue;
+import org.cloudbus.cloudsim.core.events.SimEvent;
+import org.cloudbus.cloudsim.network.topologies.NetworkTopology;
+import org.cloudbus.cloudsim.util.Log;
 import org.cloudbus.cloudsim.core.predicates.Predicate;
 import org.cloudsimplus.listeners.EventListener;
+
+import static java.util.stream.Collectors.toList;
 
 /**
  * The main class of the simulation API, that manages Cloud Computing simulations providing all methods to
@@ -25,6 +31,11 @@ import org.cloudsimplus.listeners.EventListener;
  * @since CloudSim Toolkit 1.0
  */
 public class CloudSim implements Simulation {
+
+    /**
+     * @see #getNetworkTopology()
+     */
+    private NetworkTopology networkTopology;
 
     /**
      * The CloudSim Plus current version.
@@ -177,6 +188,7 @@ public class CloudSim implements Simulation {
         future = new FutureQueue();
         deferred = new DeferredQueue();
         waitPredicates = new HashMap<>();
+        networkTopology = NetworkTopology.NULL;
         clock = 0;
         running = false;
 
@@ -384,7 +396,7 @@ public class CloudSim implements Simulation {
     public void addEntity(CloudSimEntity e) {
         if (running) {
             // Post an event to make this entity
-            CloudSimEvent evt = new CloudSimEvent(this, CloudSimEvent.CREATE, clock, 1, 0, 0, e);
+            SimEvent evt = new CloudSimEvent(this, SimEvent.Type.CREATE, clock, 1, 0, 0, e);
             future.addEvent(evt);
         }
 
@@ -426,50 +438,18 @@ public class CloudSim implements Simulation {
 
     /**
      * Run one tick of the simulation, processing and removing the
-     * events the the {@link #future future event queue}.
+     * events in the {@link #future future event queue}.
      *
      * @return true if the event queue was empty at the beginning of the
      * method execution, false otherwise
      */
-    private boolean runClockTickAndCheckThatEventQueueIsEmpty() {
+    private boolean runClockTickAndProcessFutureEventQueue() {
         executeRunnableEntities();
 
         // If there are more future events, then deal with them
         boolean queueWasEmpty = future.isEmpty();
         if (!queueWasEmpty) {
-            List<CloudSimEvent> toRemove = new ArrayList<>();
-            /**
-             * @todo @author manoelcampos Instead of getting an iterator
-             * to just get and remove the first element,
-             * it would be used the new future.first() method
-             * to do that. It has to be included a test case first to refactor this.
-             */
-            Iterator<CloudSimEvent> fit = future.iterator();
-            CloudSimEvent firstEvent = fit.next();
-            processEvent(firstEvent);
-            future.remove(firstEvent);
-
-            fit = future.iterator();
-
-            /**
-             * @todo @author manoelcampos
-             * It can be created a new method for this while.
-             * The comment gives a tip for the method name.
-             */
-            // Check if next events are at same time...
-            boolean checkNextEvent = fit.hasNext();
-            while (checkNextEvent) {
-                CloudSimEvent nextEvent = fit.next();
-                if (nextEvent.eventTime() == firstEvent.eventTime()) {
-                    processEvent(nextEvent);
-                    toRemove.add(nextEvent);
-                    checkNextEvent = fit.hasNext();
-                } else {
-                    checkNextEvent = false;
-                }
-            }
-
-            future.removeAll(toRemove);
+            future.stream().findFirst().ifPresent(this::processAllFutureEventsHappeningAtSameTimeOfTheFirstOne);
         } else {
             running = false;
             printMessage("Simulation: No more future events");
@@ -478,14 +458,28 @@ public class CloudSim implements Simulation {
         return queueWasEmpty;
     }
 
+    private void processAllFutureEventsHappeningAtSameTimeOfTheFirstOne(SimEvent firstEvent) {
+        processEvent(firstEvent);
+        future.remove(firstEvent);
+
+        List<SimEvent> eventsToProcess = future.stream()
+            .filter(e -> e.eventTime() == firstEvent.eventTime())
+            .collect(toList());
+
+        for(SimEvent evt: eventsToProcess) {
+            processEvent(evt);
+            future.remove(evt);
+        }
+    }
+
     /**
-     * Gets the list of entities that are in {@link CloudSimEntity#RUNNABLE}
+     * Gets the list of entities that are in {@link SimEntity.State#RUNNABLE}
      * and execute them.
      */
     private void executeRunnableEntities() {
         List<SimEntity> runableEntities = entities.stream()
-                .filter(ent -> ent.getState() == SimEntity.RUNNABLE)
-                .collect(Collectors.toList());
+                .filter(ent -> ent.getState() == SimEntity.State.RUNNABLE)
+                .collect(toList());
 
         //dont use stream because the entities are being changed
         for(SimEntity ent: runableEntities) {
@@ -500,16 +494,16 @@ public class CloudSim implements Simulation {
 
     @Override
     public void hold(int src, long delay) {
-        CloudSimEvent e = new CloudSimEvent(this, CloudSimEvent.HOLD_DONE, clock + delay, src);
+        SimEvent e = new CloudSimEvent(this, SimEvent.Type.HOLD_DONE, clock + delay, src);
         future.addEvent(e);
-        entities.get(src).setState(SimEntity.HOLDING);
+        entities.get(src).setState(SimEntity.State.HOLDING);
     }
 
     @Override
     public void pause(int src, double delay) {
-        CloudSimEvent e = new CloudSimEvent(this, CloudSimEvent.HOLD_DONE, clock + delay, src);
+        SimEvent e = new CloudSimEvent(this, SimEvent.Type.HOLD_DONE, clock + delay, src);
         future.addEvent(e);
-        entities.get(src).setState(SimEntity.HOLDING);
+        entities.get(src).setState(SimEntity.State.HOLDING);
     }
 
     @Override
@@ -523,7 +517,7 @@ public class CloudSim implements Simulation {
             throw new IllegalArgumentException("Send delay can't be negative.");
         }
 
-        CloudSimEvent e = new CloudSimEvent(this, CloudSimEvent.SEND, clock + delay, src, dest, tag, data);
+        SimEvent e = new CloudSimEvent(this, SimEvent.Type.SEND, clock + delay, src, dest, tag, data);
         future.addEvent(e);
     }
 
@@ -533,13 +527,13 @@ public class CloudSim implements Simulation {
             throw new IllegalArgumentException("Send delay can't be negative.");
         }
 
-        CloudSimEvent e = new CloudSimEvent(this, CloudSimEvent.SEND, clock + delay, src, dest, tag, data);
+        SimEvent e = new CloudSimEvent(this, SimEvent.Type.SEND, clock + delay, src, dest, tag, data);
         future.addEventFirst(e);
     }
 
     @Override
     public void wait(int src, Predicate p) {
-        entities.get(src).setState(SimEntity.WAITING);
+        entities.get(src).setState(SimEntity.State.WAITING);
         if (p != SIM_ANY) {
             // If a predicate has been used store it in order to check it
             waitPredicates.put(src, p);
@@ -549,8 +543,8 @@ public class CloudSim implements Simulation {
     @Override
     public int waiting(int d, Predicate p) {
         int count = 0;
-        CloudSimEvent event;
-        Iterator<CloudSimEvent> iterator = deferred.iterator();
+        SimEvent event;
+        Iterator<SimEvent> iterator = deferred.iterator();
         while (iterator.hasNext()) {
             event = iterator.next();
             if ((event.getDestination() == d) && (p.match(event))) {
@@ -561,9 +555,9 @@ public class CloudSim implements Simulation {
     }
 
     @Override
-    public CloudSimEvent select(int src, Predicate p) {
-        CloudSimEvent ev = null;
-        Iterator<CloudSimEvent> iterator = deferred.iterator();
+    public SimEvent select(int src, Predicate p) {
+        SimEvent ev = null;
+        Iterator<SimEvent> iterator = deferred.iterator();
         while (iterator.hasNext()) {
             ev = iterator.next();
             if (ev.getDestination() == src && p.match(ev)) {
@@ -575,9 +569,9 @@ public class CloudSim implements Simulation {
     }
 
     @Override
-    public CloudSimEvent findFirstDeferred(int src, Predicate p) {
-        CloudSimEvent ev = null;
-        Iterator<CloudSimEvent> iterator = deferred.iterator();
+    public SimEvent findFirstDeferred(int src, Predicate p) {
+        SimEvent ev = null;
+        Iterator<SimEvent> iterator = deferred.iterator();
         while (iterator.hasNext()) {
             ev = iterator.next();
             if (ev.getDestination() == src && p.match(ev)) {
@@ -588,9 +582,9 @@ public class CloudSim implements Simulation {
     }
 
     @Override
-    public CloudSimEvent cancel(int src, Predicate p) {
-        CloudSimEvent ev = null;
-        Iterator<CloudSimEvent> iter = future.iterator();
+    public SimEvent cancel(int src, Predicate p) {
+        SimEvent ev = null;
+        Iterator<SimEvent> iter = future.iterator();
         while (iter.hasNext()) {
             ev = iter.next();
             if (ev.getSource() == src && p.match(ev)) {
@@ -604,9 +598,9 @@ public class CloudSim implements Simulation {
 
     @Override
     public boolean cancelAll(int src, Predicate p) {
-        CloudSimEvent ev = null;
+        SimEvent ev = null;
         int previousSize = future.size();
-        Iterator<CloudSimEvent> iter = future.iterator();
+        Iterator<SimEvent> iter = future.iterator();
         while (iter.hasNext()) {
             ev = iter.next();
             if (ev.getSource() == src && p.match(ev)) {
@@ -621,7 +615,7 @@ public class CloudSim implements Simulation {
      *
      * @param e the e
      */
-    private void processEvent(CloudSimEvent e) {
+    private void processEvent(SimEvent e) {
         int dest, src;
         CloudSimEntity dest_ent;
         // Update the system's clock
@@ -633,15 +627,15 @@ public class CloudSim implements Simulation {
 
         // Ok now process it
         switch (e.getType()) {
-            case CloudSimEvent.ENULL:
+            case NULL:
                 throw new IllegalArgumentException("Event has a null type.");
 
-            case CloudSimEvent.CREATE:
-                SimEntity newe = (SimEntity) e.getData();
-                addEntityDynamically(newe);
+            case CREATE:
+                SimEntity newEvent = (SimEntity) e.getData();
+                addEntityDynamically(newEvent);
                 break;
 
-            case CloudSimEvent.SEND:
+            case SEND:
                 // Check for matching wait
                 dest = e.getDestination();
                 if (dest < 0) {
@@ -649,12 +643,12 @@ public class CloudSim implements Simulation {
                 } else {
                     int tag = e.getTag();
                     dest_ent = entities.get(dest);
-                    if (dest_ent.getState() == SimEntity.WAITING) {
+                    if (dest_ent.getState() == SimEntity.State.WAITING) {
                         Integer destObj = dest;
                         Predicate p = waitPredicates.get(destObj);
                         if ((p == null) || (tag == 9999) || (p.match(e))) {
-                            dest_ent.setEventBuffer((CloudSimEvent) e.clone());
-                            dest_ent.setState(SimEntity.RUNNABLE);
+                            dest_ent.setEventBuffer(new CloudSimEvent(e));
+                            dest_ent.setState(SimEntity.State.RUNNABLE);
                             waitPredicates.remove(destObj);
                         } else {
                             deferred.addEvent(e);
@@ -665,12 +659,12 @@ public class CloudSim implements Simulation {
                 }
                 break;
 
-            case CloudSimEvent.HOLD_DONE:
+            case HOLD_DONE:
                 src = e.getSource();
                 if (src < 0) {
                     throw new IllegalArgumentException("Null entity holding.");
                 } else {
-                    entities.get(src).setState(SimEntity.RUNNABLE);
+                    entities.get(src).setState(SimEntity.State.RUNNABLE);
                 }
                 break;
 
@@ -735,7 +729,7 @@ public class CloudSim implements Simulation {
         }
 
         while (true) {
-            if (runClockTickAndCheckThatEventQueueIsEmpty() || abruptTerminate) {
+            if (runClockTickAndProcessFutureEventQueue() || abruptTerminate) {
                 break;
             }
 
@@ -775,7 +769,7 @@ public class CloudSim implements Simulation {
         // Allow all entities to exit their body method
         if (!abruptTerminate) {
             for (CloudSimEntity ent : entities) {
-                if (ent.getState() != SimEntity.FINISHED) {
+                if (ent.getState() != SimEntity.State.FINISHED) {
                     ent.run();
                 }
             }
@@ -819,4 +813,13 @@ public class CloudSim implements Simulation {
         return this;
     }
 
+    @Override
+    public NetworkTopology getNetworkTopology() {
+        return networkTopology;
+    }
+
+    @Override
+    public void setNetworkTopology(NetworkTopology networkTopology) {
+        this.networkTopology = networkTopology;
+    }
 }

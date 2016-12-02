@@ -19,51 +19,48 @@ package org.cloudbus.cloudsim.network;
 public class FloydWarshall_Float {
 
     /**
-     * Number of vertices (nodes).
+     * Number of vertices (network nodes).
      */
     private int numVertices;
 
     /**
      * Matrices used in dynamic programming.
      */
-    private float[][] Dk, Dk_minus_one;
+    private float[][] dk, dk_minus_one;
 
     /**
      * The predecessor matrix. Matrix used by dynamic programming.
      */
-    private int[][] Pk;
+    private int[][] pk;
 
     /**
      * Matrix used by dynamic programming.
      */
-    private int[][] Pk_minus_one;
+    private int[][] pk_minus_one;
 
     /**
-     * Initialization the matrix.
+     * Creates a matrix of network nodes.
      *
-     * @param numVertices number of nodes
-     * @todo The class doesn't have a constructor. This should be the
-     * constructor.
+     * @param numVertices number of network nodes
      */
-    public void initialize(int numVertices) {
+    public FloydWarshall_Float(int numVertices) {
         this.numVertices = numVertices;
 
-        // Initialize Dk matrices.
-        Dk = new float[numVertices][];
-        Dk_minus_one = new float[numVertices][];
+        // Initialize dk matrices.
+        dk = new float[numVertices][];
+        dk_minus_one = new float[numVertices][];
         for (int i = 0; i < numVertices; i++) {
-            Dk[i] = new float[numVertices];
-            Dk_minus_one[i] = new float[numVertices];
+            dk[i] = new float[numVertices];
+            dk_minus_one[i] = new float[numVertices];
         }
 
-        // Initialize Pk matrices.
-        Pk = new int[numVertices][];
-        Pk_minus_one = new int[numVertices][];
+        // Initialize pk matrices.
+        pk = new int[numVertices][];
+        pk_minus_one = new int[numVertices][];
         for (int i = 0; i < numVertices; i++) {
-            Pk[i] = new int[numVertices];
-            Pk_minus_one[i] = new int[numVertices];
+            pk[i] = new int[numVertices];
+            pk_minus_one[i] = new int[numVertices];
         }
-
     }
 
     /**
@@ -73,54 +70,49 @@ public class FloydWarshall_Float {
      * @return the delay matrix
      */
     public float[][] allPairsShortestPaths(float[][] adjMatrix) {
-        // Dk_minus_one = weights when k = -1
+        // dk_minus_one = weights when k = -1
         for (int i = 0; i < numVertices; i++) {
             for (int j = 0; j < numVertices; j++) {
                 if (adjMatrix[i][j] != 0) {
-                    Dk_minus_one[i][j] = adjMatrix[i][j];
-                    Pk_minus_one[i][j] = i;
+                    dk_minus_one[i][j] = adjMatrix[i][j];
+                    pk_minus_one[i][j] = i;
                 } else {
-                    Dk_minus_one[i][j] = Float.MAX_VALUE;
-                    Pk_minus_one[i][j] = -1;
+                    dk_minus_one[i][j] = Float.MAX_VALUE;
+                    pk_minus_one[i][j] = -1;
                 }
                 // NOTE: we have set the value to infinity and will exploit
                 // this to avoid a comparison.
             }
         }
 
-        // Now iterate over k.
         for (int k = 0; k < numVertices; k++) {
-
-            // Compute Dk[i][j], for each i,j
             for (int i = 0; i < numVertices; i++) {
                 for (int j = 0; j < numVertices; j++) {
                     if (i != j) {
-
                         // D_k[i][j] = min ( D_k-1[i][j], D_k-1[i][k] + D_k-1[k][j].
-                        if (Dk_minus_one[i][j] <= Dk_minus_one[i][k] + Dk_minus_one[k][j]) {
-                            Dk[i][j] = Dk_minus_one[i][j];
-                            Pk[i][j] = Pk_minus_one[i][j];
+                        if (dk_minus_one[i][j] <= dk_minus_one[i][k] + dk_minus_one[k][j]) {
+                            dk[i][j] = dk_minus_one[i][j];
+                            pk[i][j] = pk_minus_one[i][j];
                         } else {
-                            Dk[i][j] = Dk_minus_one[i][k] + Dk_minus_one[k][j];
-                            Pk[i][j] = Pk_minus_one[k][j];
+                            dk[i][j] = dk_minus_one[i][k] + dk_minus_one[k][j];
+                            pk[i][j] = pk_minus_one[k][j];
                         }
                     } else {
-                        Pk[i][j] = -1;
+                        pk[i][j] = -1;
                     }
                 }
             }
 
-            // Now store current Dk into D_k-1
             for (int i = 0; i < numVertices; i++) {
                 for (int j = 0; j < numVertices; j++) {
-                    Dk_minus_one[i][j] = Dk[i][j];
-                    Pk_minus_one[i][j] = Pk[i][j];
+                    dk_minus_one[i][j] = dk[i][j];
+                    pk_minus_one[i][j] = pk[i][j];
                 }
             }
 
-        } // end-outermost-for
+        }
 
-        return Dk;
+        return dk;
 
     }
 
@@ -129,7 +121,7 @@ public class FloydWarshall_Float {
      *
      * @return predecessor matrix
      */
-    public int[][] getPK() {
-        return Pk;
+    public int[][] getPk() {
+        return pk;
     }
 }

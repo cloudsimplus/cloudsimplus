@@ -14,10 +14,9 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.stream.Collectors;
 
-import org.cloudbus.cloudsim.*;
 import org.cloudbus.cloudsim.allocationpolicies.VmAllocationPolicy;
 import org.cloudbus.cloudsim.cloudlets.Cloudlet;
-import org.cloudbus.cloudsim.core.SimEvent;
+import org.cloudbus.cloudsim.core.events.SimEvent;
 import org.cloudbus.cloudsim.datacenters.Datacenter;
 import org.cloudbus.cloudsim.datacenters.DatacenterCharacteristics;
 import org.cloudbus.cloudsim.datacenters.DatacenterSimple;
@@ -29,17 +28,13 @@ import org.cloudbus.cloudsim.schedulers.cloudlet.CloudletScheduler;
 import org.cloudbus.cloudsim.core.CloudSim;
 import org.cloudbus.cloudsim.core.CloudSimTags;
 import org.cloudbus.cloudsim.resources.FileStorage;
+import org.cloudbus.cloudsim.util.Log;
 import org.cloudbus.cloudsim.vms.Vm;
 
 /**
  * NetworkDatacenter class is a {@link Datacenter} whose hostList are
  * virtualized and networked. It contains all the information about internal
- * network. For example, which VM is connected to what switch etc. It deals with
- * processing of VM queries (i.e., handling of VMs) instead of processing
- * Cloudlet-related queries. So, even though an AllocationPolicy will be instantiated
- * (in the CloudSim() method of the superclass, it will not be used, as processing
- * of cloudlets are handled by the CloudletScheduler and processing of
- * Virtual Machines are handled by the VmAllocationPolicy.
+ * network. For example, which VM is connected to what switch, etc.
  *
  * <p>Please refer to following publication for more details:
  * <ul>
@@ -55,10 +50,6 @@ import org.cloudbus.cloudsim.vms.Vm;
  *
  * @author Saurabh Kumar Garg
  * @author Manoel Campos da Silva Filho
- *
- * @todo @author manoelcampos If an AllocationPolicy is not being used, why it is being created. Perhaps a
- * better class hierarchy should be created, introducing some abstract class or
- * interface.
  *
  */
 public class NetworkDatacenter extends DatacenterSimple {

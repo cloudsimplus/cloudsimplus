@@ -20,12 +20,6 @@ import org.cloudbus.cloudsim.utilizationmodels.UtilizationModel;
  * @author Anton Beloglazov
  * @since CloudSim Toolkit 1.0
  * @see DatacenterBroker
- *
- * @todo @author manoelcampos Cloudlets doesn't have a priority attribute
- * to define which of them will be executed first.
- * For instance, considering a VM with just one PE
- * and several cloudlets, the execution order of cloudlets can be defined by
- * their priorities.
  */
 public class CloudletSimple extends CloudletAbstract {
     /**
@@ -86,7 +80,7 @@ public class CloudletSimple extends CloudletAbstract {
 
     @Override
     public String toString() {
-        return String.format("Cloudlet %d of User %d", getId(), getBrokerId());
+        return String.format("Cloudlet %d", getId());
     }
 
     /**

@@ -8,7 +8,7 @@
 
 package org.cloudbus.cloudsim.core.predicates;
 
-import org.cloudbus.cloudsim.core.SimEvent;
+import org.cloudbus.cloudsim.core.events.SimEvent;
 
 /**
  * Predicates are used to select events from the deferred queue, according to
@@ -29,13 +29,10 @@ import org.cloudbus.cloudsim.core.SimEvent;
  * @see PredicateFrom
  * @see PredicateAny
  * @see PredicateNone
- * @todo It would be an interface, since it doesn't have any attributes, just
- * abstract methods.
- * @todo There already is a native java {@link java.util.function.Predicate} interface.
- * Maybe it was introduced with Java 8 (due to Stream and Lambda functions).
+ * @todo It should be used the native {@link java.util.function.Predicate} interface from Java 8.
  *
  */
-public abstract class Predicate {
+public interface Predicate {
 
 	/**
          * Verifies if a given event matches the required criteria.

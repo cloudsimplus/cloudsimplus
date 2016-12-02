@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
+
+import org.cloudbus.cloudsim.cloudlets.Cloudlet;
 import org.cloudbus.cloudsim.cloudlets.CloudletExecutionInfo;
 
 /**
@@ -144,7 +146,9 @@ public class Processor implements ResourceCapacity {
      * @return the total number of PEs of all cloudlets currently executing in this processor.
      */
     private int totalPesOfAllExecCloudlets() {
-        return cloudletExecList.stream().mapToInt(CloudletExecutionInfo::getNumberOfPes).sum();
+        return cloudletExecList.stream()
+            .map(CloudletExecutionInfo::getCloudlet)
+            .mapToInt(Cloudlet::getNumberOfPes).sum();
     }
 
     /**

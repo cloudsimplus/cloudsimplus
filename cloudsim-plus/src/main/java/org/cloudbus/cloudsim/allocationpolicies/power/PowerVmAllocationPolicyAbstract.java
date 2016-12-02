@@ -12,7 +12,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.cloudbus.cloudsim.hosts.Host;
-import org.cloudbus.cloudsim.Log;
+import org.cloudbus.cloudsim.util.Log;
 import org.cloudbus.cloudsim.hosts.power.PowerHostSimple;
 import org.cloudbus.cloudsim.vms.Vm;
 import org.cloudbus.cloudsim.allocationpolicies.VmAllocationPolicyAbstract;
@@ -94,7 +94,7 @@ public abstract class PowerVmAllocationPolicyAbstract extends VmAllocationPolicy
 	public void deallocateHostForVm(Vm vm) {
 		Host host = getVmTable().remove(vm.getUid());
 		if (host != null) {
-			host.vmDestroy(vm);
+			host.destroyVm(vm);
 		}
 	}
 
