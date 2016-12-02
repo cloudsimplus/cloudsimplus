@@ -102,8 +102,6 @@ public class HostFaultInjection extends CloudSimEntity {
         final List<Vm> sortedHostVmList = new ArrayList<>(host.getVmList());
         sortedHostVmList.sort(sortVmsDescendinglyByPesNumber);
 
-
-
         for (Vm vm : sortedHostVmList) {
             final long numberOfWorkingPes = host.getNumberOfWorkingPes();
             final long pesSumOfWorkingVms = getPesSumOfWorkingVms(sortedHostVmList);
