@@ -87,6 +87,13 @@
                         </execution>
                     </executions>
                 </plugin>
+
+                <!--Check out-of-date dependencies and License violations: www.versioneye.com-->
+                <plugin>
+                    <groupId>com.versioneye</groupId>
+                    <artifactId>versioneye-maven-plugin</artifactId>
+                    <version>3.11.0</version>
+                </plugin>
             </plugins>
         </pluginManagement>
     </build>

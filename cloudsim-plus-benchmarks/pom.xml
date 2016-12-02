@@ -52,12 +52,12 @@ THE POSSIBILITY OF SUCH DAMAGE.
         <dependency>
             <groupId>org.openjdk.jmh</groupId>
             <artifactId>jmh-core</artifactId>
-            <version>1.14</version>
+            <version>1.17</version>
         </dependency>
         <dependency>
             <groupId>org.openjdk.jmh</groupId>
             <artifactId>jmh-generator-annprocess</artifactId>
-            <version>1.14</version>
+            <version>1.17</version>
             <scope>provided</scope>
         </dependency>
 
