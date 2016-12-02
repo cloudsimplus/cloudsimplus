@@ -31,50 +31,42 @@ public class HostList {
      * @post $none
      */
     public static <T extends Host> T getById(List<T> hostList, int id) {
-        for (T host : hostList) {
-            if (host.getId() == id) {
-                return host;
-            }
-        }
-        return (T)Host.NULL;
+        return hostList.stream().filter(h -> h.getId() == id).findFirst().orElse((T)Host.NULL);
     }
 
     /**
      * Gets the total number of PEs for all Hosts.
      *
-     * @param <T> the generic type
      * @param hostList the list of existing hosts
      * @return total number of PEs for all PMs
      * @pre $none
      * @post $result >= 0
      */
-    public static <T extends Host> int getNumberOfPes(List<T> hostList) {
+    public static int getNumberOfPes(List<? extends Host> hostList) {
         return hostList.stream().mapToInt(h -> h.getPeList().size()).sum();
     }
 
     /**
      * Gets the total number of <tt>FREE</tt> (non-busy) PEs for all Hosts.
      *
-     * @param <T> the generic type
      * @param hostList the list of existing hosts
      * @return total number of free PEs
      * @pre $none
      * @post $result >= 0
      */
-    public static <T extends Host> int getNumberOfFreePes(List<T> hostList) {
+    public static int getNumberOfFreePes(List<? extends Host> hostList) {
         return hostList.stream().mapToInt(h -> PeList.getNumberOfFreePes(h.getPeList())).sum();
     }
 
     /**
      * Gets the total number of <tt>BUSY</tt> PEs for all Hosts.
      *
-     * @param <T> the generic type
      * @param hostList the list of existing hosts
      * @return total number of busy PEs
      * @pre $none
      * @post $result >= 0
      */
-    public static <T extends Host> int getNumberOfBusyPes(List<T> hostList) {
+    public static int getNumberOfBusyPes(List<? extends Host> hostList) {
         return hostList.stream()
                 .map((host) -> PeList.getNumberOfBusyPes(host.getPeList()))
                 .reduce(0, Integer::sum);
@@ -104,19 +96,16 @@ public class HostList {
      * @post $none
      */
     public static <T extends Host> T getHostWithFreePe(List<T> hostList, int pesNumber) {
-        for (T host : hostList) {
-            if (PeList.getNumberOfFreePes(host.getPeList()) >= pesNumber) {
-                return host;
-            }
-        }
+        return hostList.stream()
+            .filter(host -> PeList.getNumberOfFreePes(host.getPeList()) >= pesNumber)
+            .findFirst()
+            .orElse((T)Host.NULL);
 
-        return null;
     }
 
     /**
      * Sets the status of a particular PE on a given Host.
      *
-     * @param <T>
      * @param hostList the list of existing hosts
      * @param status the new PE status
      * @param hostId the host id
@@ -127,11 +116,8 @@ public class HostList {
      * @pre peId >= 0
      * @post $none
      */
-    public static <T extends Host> boolean setPeStatus(List<T> hostList, Pe.Status status, int hostId, int peId) {
+    public static boolean setPeStatus(List<? extends Host> hostList, Pe.Status status, int hostId, int peId) {
         Host host = getById(hostList, hostId);
-        if (host == Host.NULL) {
-            return false;
-        }
         return host.setPeStatus(peId, status);
     }
 

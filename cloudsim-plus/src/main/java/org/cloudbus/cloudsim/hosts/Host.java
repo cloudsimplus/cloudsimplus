@@ -273,7 +273,7 @@ public interface Host extends Identificable {
      *
      * @param peId the pe id
      * @param status the new Pe status
-     * @return <tt>true</tt> if the Pe status has changed, <tt>false</tt> otherwise (Pe id might not
+     * @return <tt>true</tt> if the Pe status has set, <tt>false</tt> otherwise (Pe id might not
      *         be exist)
      * @pre peID >= 0
      * @post $none
@@ -342,7 +342,7 @@ public interface Host extends Identificable {
     /**
      * Gets the CloudSim instance that represents the simulation the Entity is related to.
      * @return
-     * @see #setSimulation(CloudSim)
+     * @see #setSimulation(Simulation)
      */
     Simulation getSimulation();
 

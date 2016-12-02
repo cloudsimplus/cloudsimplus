@@ -104,28 +104,6 @@ public class CloudletListTest {
     }
 
     @Test
-    public void testGetPositionByIdSimpleCloudlet() {
-        System.out.println("getPositionById");
-        int id = NUMBER_OF_CLOUDLETS-1;
-        int expResult = id;
-        int result = CloudletList.getPositionById(simpleCloudletList, id);
-        assertEquals(expResult, result);
-        assertEquals(CloudletList.NOT_FOUND_INDEX, CloudletList.getPositionById(simpleCloudletList, -1));
-        assertEquals(CloudletList.NOT_FOUND_INDEX, CloudletList.getPositionById(simpleCloudletList, NUMBER_OF_CLOUDLETS));
-    }
-
-    @Test
-    public void testGetPositionByIdNetworkCloudlet() {
-        System.out.println("getPositionById");
-        int id = NUMBER_OF_CLOUDLETS-1;
-        int expResult = id;
-        int result = CloudletList.getPositionById(networkCloudletList, id);
-        assertEquals(expResult, result);
-        assertEquals(CloudletList.NOT_FOUND_INDEX, CloudletList.getPositionById(networkCloudletList, -1));
-        assertEquals(CloudletList.NOT_FOUND_INDEX, CloudletList.getPositionById(networkCloudletList, NUMBER_OF_CLOUDLETS));
-    }
-
-    @Test
     public void testSortSimpleCloudlets() {
         System.out.println("sort");
         List<Cloudlet> list = createSimpleCloudlets(CLOUDLET_LENGTH_ARRAY);

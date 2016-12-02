@@ -95,7 +95,7 @@ public class PeListTest {
         PeList.setPeStatus(peList, 0, PeSimple.Status.BUSY);
         assertSame(peList.get(1), PeList.getFreePe(peList));
         PeList.setPeStatus(peList, 1, PeSimple.Status.BUSY);
-        assertNull(PeList.getFreePe(peList));
+        assertEquals(Pe.NULL, PeList.getFreePe(peList));
     }
 
     @Test

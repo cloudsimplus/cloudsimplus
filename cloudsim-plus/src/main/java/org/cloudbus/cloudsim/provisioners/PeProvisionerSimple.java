@@ -102,7 +102,8 @@ public class PeProvisionerSimple extends PeProvisioner {
         if (getPeTable().containsKey(vm.getUid())) {
             return getPeTable().get(vm.getUid());
         }
-        return null;
+
+        return new ArrayList<>();
     }
 
     @Override

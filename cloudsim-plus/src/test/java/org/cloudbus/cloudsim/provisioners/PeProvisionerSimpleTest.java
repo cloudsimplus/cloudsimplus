@@ -105,7 +105,7 @@ public class PeProvisionerSimpleTest {
         Vm vm2 = VmSimpleTest.createVm(1, MIPS / 2, 1);
         Vm vm3 = VmSimpleTest.createVm(2, MIPS / 2, 2);
 
-        assertNull(peProvisioner.getAllocatedMipsForVm(vm1));
+        assertTrue(peProvisioner.getAllocatedMipsForVm(vm1).isEmpty());
         assertEquals(0, peProvisioner.getAllocatedMipsForVmByVirtualPeId(vm1, 0), 0);
 
         assertTrue(peProvisioner.allocateMipsForVm(vm1, MIPS / 2));
@@ -158,9 +158,9 @@ public class PeProvisionerSimpleTest {
         peProvisioner.deallocateMipsForVm(vm2);
         peProvisioner.deallocateMipsForVm(vm3);
 
-        assertNull(peProvisioner.getAllocatedMipsForVm(vm1));
-        assertNull(peProvisioner.getAllocatedMipsForVm(vm2));
-        assertNull(peProvisioner.getAllocatedMipsForVm(vm3));
+        assertTrue(peProvisioner.getAllocatedMipsForVm(vm1).isEmpty());
+        assertTrue(peProvisioner.getAllocatedMipsForVm(vm2).isEmpty());
+        assertTrue(peProvisioner.getAllocatedMipsForVm(vm3).isEmpty());
 
         assertEquals(0, peProvisioner.getAllocatedMipsForVmByVirtualPeId(vm1, 0), 0);
         assertEquals(0, peProvisioner.getAllocatedMipsForVmByVirtualPeId(vm2, 0), 0);

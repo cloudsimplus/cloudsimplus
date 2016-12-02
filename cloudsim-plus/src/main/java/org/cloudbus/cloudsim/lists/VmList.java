@@ -67,11 +67,10 @@ public class VmList {
     /**
      * Sort a given list of VMs by descending order of CPU utilization.
      *
-     * @param <T> The generic type
      * @param vmList the vm list to be sorted
      * @param currentSimulationTime the current simulation time to get the current CPU utilization for each Vm
      */
-    public static <T extends Vm> void sortByCpuUtilization(List<T> vmList, double currentSimulationTime) {
+    public static void sortByCpuUtilization(List<? extends Vm> vmList, double currentSimulationTime) {
         vmList.sort((vm1, vm2) -> {
             Double vm1Utilization = vm1.getTotalUtilizationOfCpuMips(currentSimulationTime);
             Double vm2Utilization = vm2.getTotalUtilizationOfCpuMips(currentSimulationTime);

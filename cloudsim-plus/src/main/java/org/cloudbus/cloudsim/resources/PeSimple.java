@@ -104,16 +104,10 @@ public class PeSimple implements Pe {
         return status;
     }
 
-    /**
-     * Sets the {@link #getStatus() status} of the PE.
-     *
-     * @param status the new PE status
-     * @pre $none
-     * @post $none
-     */
     @Override
-    public final void setStatus(Status status) {
+    public final boolean setStatus(Status status) {
         this.status = status;
+        return true;
     }
 
     /**

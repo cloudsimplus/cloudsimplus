@@ -9,6 +9,7 @@ package org.cloudbus.cloudsim.lists;
 
 import java.util.List;
 
+import org.cloudbus.cloudsim.provisioners.PeProvisioner;
 import org.cloudbus.cloudsim.util.Log;
 import org.cloudbus.cloudsim.resources.Pe;
 import org.cloudbus.cloudsim.vms.Vm;
@@ -30,8 +31,8 @@ public class PeList {
      * @pre id >= 0
      * @post $none
      */
-    public static Pe getById(List<Pe> peList, int id) {
-        return peList.stream().filter(pe -> pe.getId() == id).findFirst().orElse(Pe.NULL);
+    public static <T extends Pe> T getById(List<T> peList, int id) {
+        return peList.stream().filter(pe -> pe.getId() == id).findFirst().orElse((T)Pe.NULL);
     }
 
     /**
@@ -43,12 +44,9 @@ public class PeList {
      * @pre id >= 0
      * @post $none
      */
-    public static int getMips(List<Pe> peList, int id) {
+    public static int getMips(List<? extends Pe> peList, int id) {
         Pe pe = getById(peList, id);
-        if (pe != Pe.NULL) {
-            return pe.getMips();
-        }
-        return -1;
+        return (pe == Pe.NULL ? -1 : pe.getMips());
     }
 
     /**
@@ -59,30 +57,21 @@ public class PeList {
      * @pre $none
      * @post $none
      */
-    public static int getTotalMips(List<Pe> peList) {
-        int totalMips = 0;
-        for (Pe pe : peList) {
-            totalMips += pe.getMips();
-        }
-        return totalMips;
+    public static int getTotalMips(List<? extends Pe> peList) {
+        return peList.stream().mapToInt(Pe::getMips).sum();
     }
 
     /**
      * Gets the max utilization percentage among all PEs.
      *
-     * @param <T>
      * @param peList the pe list
      * @return the max utilization percentage
      */
-    public static <T extends Pe> double getMaxUtilization(List<T> peList) {
-        double maxUtilization = 0;
-        for (Pe pe : peList) {
-            double utilization = pe.getPeProvisioner().getUtilization();
-            if (utilization > maxUtilization) {
-                maxUtilization = utilization;
-            }
-        }
-        return maxUtilization;
+    public static double getMaxUtilization(List<? extends Pe> peList) {
+        return peList.stream()
+            .map(Pe::getPeProvisioner)
+            .mapToDouble(PeProvisioner::getUtilization)
+            .max().orElse(0);
     }
 
     /**
@@ -92,22 +81,16 @@ public class PeList {
      * @param peList the pe list
      * @return the max utilization percentage
      */
-    public static double getMaxUtilizationAmongVmsPes(List<Pe> peList, Vm vm) {
-        double maxUtilization = 0;
-        for (Pe pe : peList) {
-            if (pe.getPeProvisioner().getAllocatedMipsForVm(vm) == null) {
-                continue;
-            }
-            double utilization = pe.getPeProvisioner().getUtilization();
-            if (utilization > maxUtilization) {
-                maxUtilization = utilization;
-            }
-        }
-        return maxUtilization;
+    public static double getMaxUtilizationAmongVmsPes(List<? extends Pe> peList, Vm vm) {
+        return peList.stream()
+            .map(Pe::getPeProvisioner)
+            .filter(pv -> !pv.getAllocatedMipsForVm(vm).isEmpty())
+            .mapToDouble(PeProvisioner::getUtilization)
+            .max().orElse(0);
     }
 
     /**
-     * Gets the first <tt>FREE</tt> PE which.
+     * Gets the first <tt>FREE</tt> PE.
      *
      * @param <T>
      * @param peList the PE list
@@ -115,26 +98,8 @@ public class PeList {
      * @pre $none
      * @post $none
      */
-    public static <T extends Pe> Pe getFreePe(List<T> peList) {
-        for (Pe pe : peList) {
-            if (pe.getStatus() == Pe.Status.FREE) {
-                return pe;
-            }
-        }
-        return null;
-    }
-
-    /**
-     * Gets the number of <tt>FREE</tt> (non-busy) PEs.
-     *
-     * @param <T>
-     * @param peList the PE list
-     * @return number of free PEs
-     * @pre $none
-     * @post $result >= 0
-     */
-    public static <T extends Pe> int getNumberOfFreePes(List<T> peList) {
-        return (int)peList.stream().filter(pe -> pe.getStatus() == Pe.Status.FREE).count();
+    public static <T extends Pe> T getFreePe(List<T> peList) {
+        return peList.stream().filter(pe -> pe.getStatus() == Pe.Status.FREE).findFirst().orElse((T)Pe.NULL);
     }
 
     /**
@@ -148,26 +113,39 @@ public class PeList {
      * @pre peID >= 0
      * @post $none
      */
-    public static boolean setPeStatus(List<Pe> peList, int id, Pe.Status status) {
+    public static boolean setPeStatus(List<? extends Pe> peList, int id, Pe.Status status) {
         Pe pe = getById(peList, id);
-        if (pe != Pe.NULL) {
-            pe.setStatus(status);
-            return true;
-        }
-        return false;
+        return pe.setStatus(status);
     }
 
     /**
      * Gets the number of <tt>BUSY</tt> PEs.
      *
-     * @param <T> the generic type
      * @param peList the PE list
      * @return number of busy PEs
      * @pre $none
      * @post $result >= 0
      */
-    public static <T extends Pe> int getNumberOfBusyPes(List<T> peList) {
-        return (int)peList.stream().filter(pe -> pe.getStatus() == Pe.Status.BUSY).count();
+    public static int getNumberOfBusyPes(List<? extends Pe> peList) {
+        return (int)peList.stream()
+            .map(Pe::getStatus)
+            .filter(Pe.Status.BUSY::equals)
+            .count();
+    }
+
+    /**
+     * Gets the number of <tt>FREE</tt> (non-busy) PEs.
+     *
+     * @param peList the PE list
+     * @return number of free PEs
+     * @pre $none
+     * @post $result >= 0
+     */
+    public static int getNumberOfFreePes(List<? extends Pe> peList) {
+        return (int)peList.stream()
+            .map(Pe::getStatus)
+            .filter(Pe.Status.FREE::equals)
+            .count();
     }
 
     /**
@@ -176,17 +154,13 @@ public class PeList {
      * default. Use {@link #setStatusFailed(List, boolean)} if you do not want this
      * information.
      *
-     * @param <T>
      * @param peList the host's PE list to be set as failed or free
      * @param hostId the id of the host
      * @param failed true if the host's PEs have to be set as FAILED, false if
      * they have to be set as FREE.
      * @see #setStatusFailed(java.util.List, boolean)
      */
-    public static <T extends Pe> void setStatusFailed(
-            List<T> peList,
-            int hostId,
-            boolean failed) {
+    public static void setStatusFailed(List<? extends Pe> peList, int hostId, boolean failed) {
         String status = (failed ? "FAILED" : "WORKING");
         Log.printConcatLine("Host ", hostId, " is ", status);
         setStatusFailed(peList, failed);
@@ -201,13 +175,9 @@ public class PeList {
      * they have to be set as FREE.
      */
     public static <T extends Pe> void setStatusFailed(List<T> peList, boolean failed) {
-        // a loop to set the status of all the PEs in this machine
+        final Pe.Status status = (failed ? Pe.Status.FAILED : Pe.Status.FREE);
         for (Pe pe : peList) {
-            if (failed) {
-                pe.setStatus(Pe.Status.FAILED);
-            } else {
-                pe.setStatus(Pe.Status.FREE);
-            }
+            pe.setStatus(status);
         }
     }
 

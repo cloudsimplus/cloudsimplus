@@ -137,7 +137,7 @@ public class HostListTest {
         hostSimpleList.forEach(h -> {
             IntStream.range(0, PES).forEach(i -> h.setPeStatus(i, Status.BUSY));
         });
-        assertEquals(null, HostList.getHostWithFreePe(hostSimpleList));
+        assertEquals(Host.NULL, HostList.getHostWithFreePe(hostSimpleList));
     }
 
     @Test

@@ -22,10 +22,10 @@ public interface Pe {
     public enum Status {
         /** Denotes PE is FREE for allocation. */
         FREE,
-        
+
         /** Denotes PE is allocated and hence busy processing some Cloudlet. */
         BUSY,
-        
+
         /**
          * Denotes PE is failed and hence it can't process any Cloudlet at this moment.
          * This PE is failed because it belongs to a machine which is also failed.
@@ -80,10 +80,11 @@ public interface Pe {
      * Sets the {@link #getStatus() status} of the PE.
      *
      * @param status the new PE status
+     * @return true if the status was set, false otherwise
      * @pre $none
      * @post $none
      */
-    void setStatus(Status status);
+    boolean setStatus(Status status);
 
     /**
      * A property that implements the Null Object Design Pattern for {@link Pe}
@@ -95,6 +96,6 @@ public interface Pe {
         @Override public PeProvisioner getPeProvisioner() { return new PeProvisionerSimple(0); }
         @Override public Status getStatus() { return Status.FAILED; }
         @Override public boolean setMips(double d){ return false; }
-        @Override public void setStatus(Status status) {}
+        @Override public boolean setStatus(Status status) { return false; }
     };
 }
