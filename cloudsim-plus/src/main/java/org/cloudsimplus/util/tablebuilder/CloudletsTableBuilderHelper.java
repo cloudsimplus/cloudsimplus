@@ -27,6 +27,11 @@ public class CloudletsTableBuilderHelper {
         this.setPrinter(new TextTableBuilder()).setCloudletList(list);
     }
 
+    public CloudletsTableBuilderHelper setTitle(String title){
+        printer.setTitle(title);
+        return this;
+    }
+
     /**
      * Builds the table with the data of the Cloudlet list and shows the results.
      */

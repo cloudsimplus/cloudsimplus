@@ -10,6 +10,7 @@ dependency-reduced-pom.xml
 
 #Ignore IntelliJ IDEA project files
 .idea/
+*.uml
 *.iml
 *.ipr
 *.iws

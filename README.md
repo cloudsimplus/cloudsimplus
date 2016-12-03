@@ -1,9 +1,11 @@
 <a id="top"></a>
 
-[![Build Status](https://img.shields.io/travis/manoelcampos/cloudsim-plus/master.svg)](https://travis-ci.org/manoelcampos/cloudsim-plus) [![Codacy Badge](https://api.codacy.com/project/badge/Grade/3f132b184d5e475dbbcd356ee84499fc)](https://www.codacy.com/app/manoelcampos/cloudsim-plus?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=manoelcampos/cloudsim-plus&amp;utm_campaign=Badge_Grade) [![Codacy Badge](https://api.codacy.com/project/badge/Coverage/3f132b184d5e475dbbcd356ee84499fc)](https://www.codacy.com/app/manoelcampos/cloudsim-plus?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=manoelcampos/cloudsim-plus&amp;utm_campaign=Badge_Coverage) [![GPL licensed](https://img.shields.io/badge/license-GPL-blue.svg)](http://www.gnu.org/licenses/gpl-3.0)
+[![Build Status](https://img.shields.io/travis/manoelcampos/cloudsim-plus/master.svg)](https://travis-ci.org/manoelcampos/cloudsim-plus) [![Dependency Status](https://www.versioneye.com/user/projects/5841f4dfb1c38c0aa1cd46f1/badge.svg?style=flat-square)](https://www.versioneye.com/user/projects/5841f4dfb1c38c0aa1cd46f1) [![Codacy Badge](https://api.codacy.com/project/badge/Grade/3f132b184d5e475dbbcd356ee84499fc)](https://www.codacy.com/app/manoelcampos/cloudsim-plus?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=manoelcampos/cloudsim-plus&amp;utm_campaign=Badge_Grade) [![Codacy Badge](https://api.codacy.com/project/badge/Coverage/3f132b184d5e475dbbcd356ee84499fc)](https://www.codacy.com/app/manoelcampos/cloudsim-plus?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=manoelcampos/cloudsim-plus&amp;utm_campaign=Badge_Coverage) [![GPL licensed](https://img.shields.io/badge/license-GPL-blue.svg)](http://www.gnu.org/licenses/gpl-3.0)
 
 <p align="center">
 <b><a href="#overview">Overview</a></b>
+|
+<b><a href="#contributions">Main Contributions</a></b>
 |
 <b><a href="#projects-modules">Modules</a></b>
 |
@@ -16,8 +18,6 @@
 <b><a href="#why-care">Why should I care?</a></b>
 |
 <b><a href="#why-another-fork">Why another fork?</a></b>
-|
-<b><a href="#contributions">Main Contributions</a></b>
 |
 <b><a href="#differences">Differences from CloudSim</a></b>
 |
@@ -67,6 +67,29 @@ at [the Computer Science and Software Engineering Department](http://www.csse.un
 <p align="right"><a href="#top">:arrow_up:</a></p>
 
 
+<a id="contributions"></a>
+# Main Contributions
+
+CloudSim Plus provides a lot of exclusive features, ranging from the most basic ones that are missing in CloudSim to advanced features that enable implementation of more realistic simulation scenarios. 
+
+- [Listeners](/cloudsim-plus-examples/src/main/java/org/cloudsimplus/examples/listeners/) objects to enable simulation monitoring.
+- Builders to enable creating multiple simulation objects with same configuration.
+- [TableBuilder](/cloudsim-plus-examples/src/main/) objects that are used in all examples and enable printing simulation results in different formats such as ASCII Table, CSV or HTML.
+- Improved class hierarchy, modules and package structure that is easier to understand.
+- Reusable and standards-conforming code.
+- It is a really object-oriented framework that creates relationships among classes and allows chained call such as `cloudlet.getVm().getHost().getDatacenter()`.
+  And guess what? You don't even have to worry about `NullPointerException` when making this chained call because CloudSim Plus uses the [Null Object Design Pattern](https://en.wikipedia.org/wiki/Null_Object_pattern) to avoid that.
+- Delay execution of submitted Cloudlets, enabling simulation of dynamic arrival of tasks.
+- Classes and interfaces to allow implementation of [heuristics](http://en.wikipedia.org/wiki/Heuristic) such as 
+  [Tabu Search](http://en.wikipedia.org/wiki/Tabu_search), [Simulated Annealing](http://en.wikipedia.org/wiki/Simulated_annealing), 
+  [Ant Colony Systems](http://en.wikipedia.org/wiki/Ant_colony_optimization_algorithms) and so on. See an [example using Simulated Annealing here](/cloudsim-plus-examples/src/main/java/org/cloudsimplus/examples/DatacenterBrokerHeuristicExample.java).
+- [Implementation of the Completely Fair Scheduler](/cloudsim-plus-examples/src/main/java/org/cloudsimplus/examples/LinuxCompletelyFairSchedulerExample.java) used in recent version of the Linux Kernel.
+- Simpler constructors to instantiate simulation objects.
+- Throughout documentation update and improvement.
+- Integration Tests to increase framework accuracy by testing entire simulation scenarios.
+- Updated to Java 8.
+
+
 # Project's Modules
 
 CloudSim Plus has a simpler structure that can be understood right away. It consists of 5 modules, 2 of which are new, as presented below.
@@ -89,6 +112,7 @@ CloudSim Plus has a simpler structure that can be understood right away. It cons
 - [distribution](distribution): a module used just to build jar files for distribution of packaged CloudSim Plus binaries, documentation and source code.   
 
 <p align="right"><a href="#top">:arrow_up:</a></p>
+
 
 # How to use CloudSim Plus 
 CloudSim Plus is a Maven project with some modules. The easier way to use the project is relying on some IDE such as NetBeans, Eclipse or IntelliJ IDEA. 
@@ -241,193 +265,6 @@ And unfortunately, there are several months of hard work that would need to be r
 
 <p align="right"><a href="#top">:arrow_up:</a></p>
 
-<a id="contributions"></a>
-# OK, but I'm just wondering what are the real contributions of CloudSim Plus :blush:
-Thanks for asking. Firstly, there is a huge amount of changes that make CloudSim Plus **NOT BACKWARD COMPATIBLE** with original CloudSim. 
-However, to port your CloudSim simulations to CloudSim Plus can be relatively easy, as it will be presented further. 
-
-Accordingly, the main contributions of CloudSim Plus are:
-
-- Improved class hierarchy and code that is easier to understand.
-- Reusable and standards-conforming code.
-- Improved and extended documentation.
-- Completely new Test Suites.
-- New set of features.
-- New examples for old and new features.
-- Updated to Java 8.
-
-All these improvements are described in details in the next sub-sections. 
-
-## Improved class hierarchy and code that is easier to understand
-
-- **Classes were moved to new meangnifull packages in order to ease the process of finding a class that represents a given 
-  behaviour that you want to use or extend**. Some new packages are:
-  	- [org.cloudbus.cloudsim.allocationpolicies](/cloudsim-plus/src/main/java/org/cloudbus/cloudsim/allocationpolicies) for `VmAllocationPolicy` classes that define how a PM is selected to host a VM.
-  	- [org.cloudbus.cloudsim.brokers](/cloudsim-plus/src/main/java/org/cloudbus/cloudsim/brokers) for `DatacenterBroker` classes that define the policies for submission of customer VMs and cloudlets.
-  	- [org.cloudbus.cloudsim.resources](/cloudsim-plus/src/main/java/org/cloudbus/cloudsim/resources) for resources such as CPU cores (Processor Elements - PEs), RAM, Hard Drive Storage, SAN Storage, etc.
-  	- [org.cloudbus.cloudsim.schedulers](/cloudsim-plus/src/main/java/org/cloudbus/cloudsim/schedulers) for `VmScheduler` and `CloudletScheduler` classes that define how the execution of cloudlets and VMs are scheduled in the processor.
-  	- [org.cloudbus.cloudsim.utilizationmodels](/cloudsim-plus/src/main/java/org/cloudbus/cloudsim/utilizationmodels) for `UtilizationModel` classes that define how a cloudlet uses physical resources.
-- **More meaningful class and method names to provide clear understanding of the responsiblity of each one**: 
-  usually you have to look at classes and their methods to figure out if there is a feature you want to use. 
-  Not rarely you have to go through the documentation to understand what is the responsibility of a given class or method. 
-  Using more specific and clear names, frequently makes you to instantaneously find out what is the method or class you need. 
-  It thus relieves you to read the documentation to start coding (*despite it is really important to read the documentation,
-sometimes you don't have time to go through the details*).
-
-## Reusable and standards-conforming code
-
-- **Cleaner code that is easier to understand, maintain and test**: a cleaner and well organized code that always follows 
-  the same standards and formatting is easier to understand. 
-  And talking about an open source project, the best way to understand how the software works and how you can extend it is reading the source code. 
-  If it follows [clean code](http://cleancoder.com) practices, [Design Patterns](https://en.wikipedia.org/wiki/Software_design_pattern) and 
-  [SOLID principles](https://en.wikipedia.org/wiki/SOLID_(object-oriented_design)), it will be easier to understand and extend.
-- **Division of very long and confuse methods into small, clean and meaningful ones that usually make just one thing each one**: 
-  when using the approach of reading the code to understand how it works, it is very difficult to figure out what is happening into 
-  a method with dozen or hundred lines. And we'm not even discussing the problems to maintain such methods. 
-  Thus, little methods with just one responsibility and with meangniful names are easier to maintain. 
-  Further, they improve reuse and extension, the most important parts for you that are creating cloud simulations.
-- **Improved class hierarchy following the [Interface Segregation Principle (ISP)](https://en.wikipedia.org/wiki/Interface_segregation_principle) 
-  and [Open/Closed Principle (OCP)](https://en.wikipedia.org/wiki/Open/closed_principle) to increase reausability and facility for extension**: 
-  the ISP states that ["no client should be forced to depend on methods it does not use"](https://en.wikipedia.org/wiki/Interface_segregation_principle#cite_note-ASD-1) 
-  and the OCP states that ["software entities (classes, modules, functions, etc.) should be open for extension, but closed for modification"](https://en.wikipedia.org/wiki/Open/closed_principle#cite_note-1). 
-  These principles together impact directly developers that need to extend some simulator class to implement a desired behaviour 
-  (such as a specific `CloudletScheduler`). The ISP preach that you should have a great number of small classes following the 
-  [Single Responsibility Principle (SRP)](https://en.wikipedia.org/wiki/Single_responsibility_principle) instead of a small set of big classes. 
-  By this way, if you need to extend a given behaviour, usually you just have to extend a specific and little class, 
-  that has less code for you to worry about. By the other hand, the OCP relieves you of changing simulator classes to include a desired behaviour. 
-  Thus, it focuses on trying to give you the serenity to change just your code. 
-- **Both use of OCP and ISP to try to avoid changing base classes to include some new behaviour
-  and the bad [copy-and-paste anti-pattern](https://sourcemaking.com/antipatterns/cut-and-paste-programming)**: 
-  copy-and-paste is a bad practice that degrades the source code along the time. 
-  It makes difficulty to correct bugs when there may be several copies of the problematic code. 
-  The duplicated code has to be tested several times, what usually leads to neglecting tests. 
-  Further, along the time, the number of duplicated code just increases. 
-
-## Improved documentation
-
-- **Entirely documentation review and update**, improving explanation of classes and method responsibilities, 
-  fixing issues, correcting broken links, updating documentation that didn't reflect methods and classes' responsibility anymore.
-- **Documentation extension** to make clear the key points of classes and methods.
-- **Removal of duplicated documentation** that just gets out-of-date along the time. 
-  Subclasses that had documentation copied from the super class, just inherit the documentation or extend it using the 
-  javadoc [@inheritdoc](http://docs.oracle.com/javase/6/docs/technotes/tools/solaris/javadoc.html#inheritingcomments) tag.
-- **Inclusion of some missing documentation** and update of that ones just repeating the name of a method or attribute. 
-  For instance, a javadoc such as "This is the id", doesn't help in anyway.
-
-## Completely new Test Suites
-
-The original CloudSim already has some unit test suites, however, there aren't coverage reports enabled in the project. 
-After enabling these reports, it was realized that just 20% of the code was being covered by unit tests. 
-Tests are really important to try ensuring that the software works as expected and gives more security 
-and peace of mind to refactor the code, perform changes and fix bugs :pray:. 
-After all, a broad code coverage also tries to ensure that you are getting accurate results from your simulations.
-
-Finally, an entire simulation is very complex, integrating several classes communicating among themselves. Once, unit tests just check
-isolated method calls, integration/functional tests are required to validate entire simulation scenarios.
-This project introduces a set of such tests in order to increase simulation accuracy.
-Thus, the contributions in this area are as follows:
-
-- Functional/integration tests using JUnit to test a set of classes working together and overall simulation scenarios.
-- Continuous integration using [Travis](http://travis-ci.org) service (see the badge at the top of this file).
-- Inclusion of Maven Coverage Plugin to start tracking the percentage of code that is being coverage by unit tests.
-- Inclusion of public code coverage reports using [Codacy](http://codacy.com) service (see the badge at the top of this file). 
-  The code coverage raised from 20% to [![Codacy Badge](https://api.codacy.com/project/badge/Coverage/3f132b184d5e475dbbcd356ee84499fc)](https://www.codacy.com/app/manoelcampos/cloudsim-plus?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=manoelcampos/cloudsim-plus&amp;utm_campaign=Badge_Coverage).
-- Bug fixes.
-
-## New set of features
-
-Some totally new features were introduced in CloudSim Plus:
-
-- **A `TableBuilder` interface and a set of implementing classes to automate the process of printing simulation 
-  results in different formats such as Text (ASCII), CSV and HTML**: the interface and classes are available
-  at the [org.cloudsimplus.util.tablebuilder](/cloudsim-plus/src/main/java/org/cloudsimplus/util/tablebuilder/) package. 
-  To print results of a list of executed cloudlet you can use a single line of code such as 
-  `new CloudletsTableBuilderHelper(broker.getCloudletsFinishedList()).build();`. 
-  All the perfectly aligned tables that you will see after running the examples use the `TextTableBuilder` class.
-- **Listener objects that allow you to be notified when different events happen during your simulation execution**: 
-  interfaces and classes included in the [org.cloudsimplus.listeners](/cloudsim-plus/src/main/java/org/cloudsimplus/listeners/) 
-  package allow you to keep track of simulation execution and perform additional tasks when a given event happens. 
-  These listeners were implemented for some CloudSim Plus classes such as below (the next section describes examples of this feature):
-    - at `CloudSim` class: to notify observers when any event is processed by CloudSim Plus.      
-    - at `Host` class: to notify observers when VMs processing is updated.
-    - at `Vm` class: to notify observers when a host is allocated to a VM, a host is deallocated for a VM or the creation of a VM fails. 
-    - at `Cloudlet` class: to notify observers when a cloudlet finishes executing.
-- **A set of builder classes to automate the process of creating multiple simulation objects such as 
-  `Datacenter`s, `Host`s, `Vm`s and `Cloudlet`s**: [Builder](https://en.wikipedia.org/wiki/Builder_pattern) is a design pattern 
-  used to ease the creation of objects. As several simulations require the developer to create multiple instances of a 
-  given object with the same attribute values (such as several identical hosts), that starts being a repetitive, 
-  time-consuming and boring task. 
-  The package [org.cloudsimplus.builders](/cloudsim-plus/src/main/java/org/cloudsimplus/builders/) 
-  provides a set of classes to automate the instantiation of such objects. 
-  The class [SimulationScenarioBuilder](/cloudsim-plus/src/main/java/org/cloudsimplus/builders/SimulationScenarioBuilder.java) 
-  is the start point to access all the introduced builders. 
-  New examples were not included yet, but the [Integration Tests package](/cloudsim-plus/src/test/java/org/cloudsimplus/IntegrationTests/) 
-  makes intensive use of such a new feature.
-- **Delay the submission of cloudlets to VM**, simulating the dynamic arrival of cloudlets 
-  inside the Cloud provider infrastructure. See the issue #11 for more details.  
-
-## New examples for old and new features
-
-New concise and easy to understand examples of features that have lots of questions at forums were included, such as:
-- [Dynamic creation of cloudlets based on workload traces](/cloudsim-plus-examples/src/main/java/org/cloudsimplus/examples/workload/): 
-  the example dynamically creates cloudlets according to the data of a workload trace file. 
-  VMs are created to fulfil cloudlets' requirements and, in its turn, Hosts are created to fulfil VMs' requirements. 
-  It may not represent a real world use case, but the example can be adapted according to developer needs.  
-- [VM migration](/cloudsim-plus-examples/src/main/java/org/cloudsimplus/examples/migration/): 
-  the example performs VM migrations based on Host utilization threshold. 
-- Implementation of custom `DatacenterBroker` and `VmAllocationPolicy` for the given examples.
-- Examples using the new Listener features were included to the package 
-  [org.cloudsimplus.examples.listeners](/cloudsim-plus-examples/src/main/java/org/cloudsimplus/examples/listeners/).
-
-## Updated to Java 8
-
-The [CloudSim Plus module](/cloudsim-plus), that represents the Cloud Simulation API, now requires the JDK 8 and makes intensive use of 
-[Lambda Expressions, Streams and Functional Programming](http://www.oracle.com/webfolder/technetwork/tutorials/obe/java/Lambda-QuickStart/index.html) 
-of the Java 8. However, [cloudsim-plus-examples](/cloudsim-plus-examples) project was updated just from Java 6 to 7 aiming 
-to provide yet simple examples for beginner Java programmers, but less verbose code than Java 6.
-
-The amazing Java 8 features allow developers to drastically reduce the number of lines to implement basic tasks such as iteration, filtering,
-sorting and processing of lists, as well as reduction of [boilerplate code](https://en.wikipedia.org/wiki/Boilerplate_code) required 
-to use classes having just one method.
-
-For instance, see the code below to create a Thread in Java 7:
-
-```java
-Runnable task1 = 
-    new Runnable(){
-        @Override
-        public void run() {
-            //Your code to be run by the thread
-        }
-    };     
-        
-new Thread(task1).start();
-```
-
-In Java 8 you can just write:
-
-```java
-new Thread(() -> {
-    //Your code to be run by the thread
-}).start();
-```
-
-The iteration over lists now can be performed easily using the stream API. 
-The example below uses a single line of code to iterate over a list of cloudlets, binding every one to a given VM.
-
-```java
-cloudletList.forEach(cloudlet -> broker.bindCloudletToVm(cloudlet, vm);
-```
-
-This makes the code clearer to understand and less verbose. Further, the new Stream API provides a complete set of features 
-that even increases performance, such as allowing the 
-[parallel processing of lists](http://www.oracle.com/webfolder/technetwork/tutorials/obe/java/Lambda-QuickStart/index.html#section5).
-
-For more information about the changes and features included in this release, please read the [CHANGELOG](CHANGELOG.md) 
-file and the [cloudsim-plus-examples](/cloudsim-plus-examples) project.
-
-<p align="right"><a href="#top">:arrow_up:</a></p>
-
 <a id="differences"></a>
 # What are the practical differences of using CloudSim Plus instead of CloudSim? How can I update my simulations in order to use CloudSim Plus?
 
@@ -489,13 +326,10 @@ host.setRamProvisioner(new ResourceProvisionerSimple(new Ram(ram)))
 <p align="right"><a href="#top">:arrow_up:</a></p>
 
 <a id="publications"></a>
-# Publications of the original CloudSim version
+# CloudSim Plus Publications
 
-  * Anton Beloglazov, and Rajkumar Buyya, [Optimal Online Deterministic Algorithms and Adaptive Heuristics for Energy and Performance Efficient Dynamic Consolidation of Virtual Machines in Cloud Data Centers](http://beloglazov.info/papers/2012-optimal-algorithms-ccpe.pdf), Concurrency and Computation: Practice and Experience, Volume 24, Number 13, Pages: 1397-1420, John Wiley & Sons, Ltd, New York, USA, 2012.
-  * Saurabh Kumar Garg and Rajkumar Buyya, [NetworkCloudSim: Modelling Parallel Applications in Cloud Simulations](http://www.cloudbus.org/papers/NetworkCloudSim2011.pdf), Proceedings of the 4th IEEE/ACM International Conference on Utility and Cloud Computing (UCC 2011, IEEE CS Press, USA), Melbourne, Australia, December 5-7, 2011.
-  * **Rodrigo N. Calheiros, Rajiv Ranjan, Anton Beloglazov, Cesar A. F. De Rose, and Rajkumar Buyya, [CloudSim: A Toolkit for Modeling and Simulation of Cloud Computing Environments and Evaluation of Resource Provisioning Algorithms](http://www.buyya.com/papers/CloudSim2010.pdf), Software: Practice and Experience (SPE), Volume 41, Number 1, Pages: 23-50, ISSN: 0038-0644, Wiley Press, New York, USA, January, 2011. (Preferred reference for CloudSim)**
-  * Bhathiya Wickremasinghe, Rodrigo N. Calheiros, Rajkumar Buyya, [CloudAnalyst: A CloudSim-based Visual Modeller for Analysing Cloud Computing Environments and Applications](http://www.cloudbus.org/papers/CloudAnalyst-AINA2010.pdf), Proceedings of the 24th International Conference on Advanced Information Networking and Applications (AINA 2010), Perth, Australia, April 20-23, 2010.
-  * Rajkumar Buyya, Rajiv Ranjan and Rodrigo N. Calheiros, [Modeling and Simulation of Scalable Cloud Computing Environments and the CloudSim Toolkit: Challenges and Opportunities](http://www.cloudbus.org/papers/CloudSim-HPCS2009.pdf), Proceedings of the 7th High Performance Computing and Simulation Conference (HPCS 2009, ISBN: 978-1-4244-4907-1, IEEE Press, New York, USA), Leipzig, Germany, June 21-24, 2009.
+  * Coming soon.
+
   
 <p align="right"><a href="#top">:arrow_up:</a></p>
   

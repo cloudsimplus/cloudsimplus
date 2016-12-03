@@ -1,8 +1,13 @@
 # Change Log
 
 Lists the main changes in the project.
+
 ## [Current Development Version]
 
+- Included the example ParallelSimulationScenariosExample in org.cloudsimplus.examples package
+  that shows how to use Java 8 Parallel Streams to execute mutiple simulations scenarios in parallel.
+- Changed requirement of cloudsim-plus-examples to Java 8 in order to start providing more advanced examples using Java 8 Lambda Expressions and Streams API.
+  Existing examples were not changed and run as before in Java 7.
 - Enabled the complete navigation from Cloudlet up to the Datacenter. Now it is possible to call `cloudlet.getVm().getHost().getDatacenter()` and navigate between all the relationships that were introduced in CloudSim Plus for such classes. And it is totally safe to make such a call, even before starting the simulation, that you will not get a `NullPointerException`. In case you make such a call before the simulation starts, as any allocation of Cloudlet or VMs was made, you will get default objects that follow the Null Object Design Pattern, namely `Vm.NULL` for `getVm()`, `Host.NULL` for `getHost()` and `Datacenter.NULL` for `getDatacenter()`.
 
 ## [v0.8-beta.7] - 2016-11-29
@@ -44,6 +49,9 @@ Lists the main changes in the project.
     - Moved GraphReader and GraphReaderBrite to `org.cloudbus.cloudsim.network.topologies.readers` new package.
 
 ## [v0.8-beta.6] - 2016-11-24
+
+- Enabled parallel execution of simulation scenarios
+
 Methods and attributes of the `CloudSim` class aren't static anymore. By this way, each simulation now requires an instance of `CloudSim` instead of calling  methods directly from such a class. Despite this change appears to introduce more complexity when creating a simulation, in fact, it makes it simpler. All classes that extend `SimEntity` required a name to be passed when calling their constructors. Since that name usually was just the name of the class followed by its id, it wasn't meaningful.
 The name is just used for log purposes. Accordingly, such constructor parameter was removed and a default name is given for each `SimEntity` object. All `SimEntity` objects now require an `CloudSim` instance. Thus, the constructor parameter "name" was removed and in its place a `CloudSim simulation` parameter was introduced.
 
@@ -76,6 +84,9 @@ simulation.stop();
 ```  
 
 As can be seen, this improvement makes it easier to create simulations and brings great benefits:
+- Allows several simulation scenarios to be instantiated and executed in parallel. Using Java 8 Lambda Expressions and Streams API it is 
+  extremely easy to run such simulations in parallel, that are just possible because CloudSim Plus does not rely on static
+  classes that store attributes shared among every simulation.
 - Since `CloudSim` class no longer has static attributes that store data specific to a given simulation scenario, it is possible to run multiple simulations at the same time.
 - It makes easier to write unit tests for classes that depends on `CloudSim` methods. As all `CloudSim` methods were static, this made very difficult to write tests
   that depend on it, since the class initialization was complex. Due to that complexity, the most obvious way was to create mock objects for `CloudSim`.
@@ -219,7 +230,7 @@ Such a scheduler assumes that if two Cloudlets are concurring for the same PE, t
 - Examples showing how to create listeners objects to be notified when: a host is allocated to a VM; a host is desallocated for a VM
   (that can mean the VM finished executing or was migrated); the placement of a VM fails due to lack of a suitable host.
 - Examples showing how to reuse the same listener objects to several VMs. 
-- Example showing how to dynamically create a VM when another one finishes executing, simulating dynamic VM arrival.
+- [Example showing](cloudsim-plus-examples/src/main/java/org/cloudsimplus/examples/listeners/VmListenersExample3_DynamicVmCreation.java) how to dynamically create a VM when another one finishes executing, simulating dynamic VM arrival.
   It allows the sequential execution of VMs into a host that just have resources for a VM a time. 
   The use of listeners simplify the dynamic creation of VMs and allows the code to be clear
   and direct, without recurring to threads and sleep tricks. 
