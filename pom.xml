@@ -117,21 +117,39 @@
                     <groupId>com.mycila.maven-license-plugin</groupId>
                     <artifactId>maven-license-plugin</artifactId>
                     <version>1.10.b1</version>
+                    <inherited>false</inherited>
                     <configuration>
                         <header>${license.dir}/license-header.txt</header>
+                        <aggregate>true</aggregate>
                         <properties>
                             <project>${project.name}</project>
                             <founder>${project.organization.name}</founder>
                             <year>${project.inceptionYear}</year>
                             <website>${project.url}</website>
                         </properties>
+
+                        <strictCheck>true</strictCheck>
+
                         <includes>
-                            <include>src/main/java/**/*.java</include>
-                            <include>src/test/java/**/*.java</include>
+                            <include>**/src/main/java/**/*.java</include>
+                            <include>**/src/test/java/**/*.java</include>
                         </includes>
                         <excludes>
-                            <exclude>src/test/resources/**</exclude>
-                            <exclude>src/main/resources/**</exclude>
+                            <exclude>**/src/test/resources/**</exclude>
+                            <exclude>**/src/main/resources/**</exclude>
+                            <exclude>**/*.md</exclude>
+                            <exclude>**/*.properties</exclude>
+                            <exclude>**/*.uml</exclude>
+                            <exclude>**/*.iml</exclude>
+                            <exclude>**/nbactions.xml</exclude>
+
+                            <!-- Ignored just temporarily while the implementation is not included in the cloudsim
+                            main module-->
+                            <exclude>cloudsim-plus-testbeds/src/main/java/org/cloudsimplus/sla/**</exclude>
+
+                            <!-- Ignore the org.cloudbus packages from CloudSim -->
+                            <exclude>**/src/main/java/org/cloudbus/**</exclude>
+                            <exclude>**/src/test/java/org/cloudbus/**</exclude>
                         </excludes>
                     </configuration>
                     <executions>

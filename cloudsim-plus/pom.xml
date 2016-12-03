@@ -88,6 +88,15 @@
                             <additionalparam>-Xdoclint:none</additionalparam>
                         </configuration>
                     </plugin>
+
+                    <!-- Inherited from the parent pom. See the plugin there for more details. -->
+                    <plugin>
+                        <groupId>com.mycila.maven-license-plugin</groupId>
+                        <artifactId>maven-license-plugin</artifactId>
+                        <configuration>
+                            <header>${license.dir}/license-header.txt</header>
+                        </configuration>
+                    </plugin>
                 </plugins>
             </build>
         </profile>
