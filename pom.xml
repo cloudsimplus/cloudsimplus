@@ -39,6 +39,8 @@
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <!-- Directory where is the license file to be used by the com.mycila.maven-license-plugin -->
+        <license.dir>${project.basedir}</license.dir>
     </properties>
 
     <modules>
@@ -102,6 +104,56 @@
                     <configuration>
                         <projectId>5841f4dfb1c38c0aa1cd46f1</projectId>
                     </configuration>
+                </plugin>
+
+                <!--
+                Adds License Information to project source and binaries using com.mycila.maven-license-plugin.
+                https://dzone.com/articles/adding-license-information.
+
+                To add missing license information for source files run:
+                mvn license:format
+                -->
+                <plugin>
+                    <groupId>com.mycila.maven-license-plugin</groupId>
+                    <artifactId>maven-license-plugin</artifactId>
+                    <version>1.10.b1</version>
+                    <configuration>
+                        <header>${license.dir}/license-header.txt</header>
+                        <properties>
+                            <project>${project.name}</project>
+                            <founder>${project.organization.name}</founder>
+                            <year>${project.inceptionYear}</year>
+                            <website>${project.url}</website>
+                        </properties>
+                        <includes>
+                            <include>src/main/java/**/*.java</include>
+                            <include>src/test/java/**/*.java</include>
+                        </includes>
+                        <excludes>
+                            <exclude>src/test/resources/**</exclude>
+                            <exclude>src/main/resources/**</exclude>
+                        </excludes>
+                    </configuration>
+                    <executions>
+                        <execution>
+                            <goals>
+                                <!--
+                                Checks for missing license header in source files.
+                                You can use "format" to add missing headers or
+                                call manually using: mvn license:format
+                                -->
+                                <goal>check</goal>
+                            </goals>
+                            <phase>process-sources</phase>
+                        </execution>
+                    </executions>
+                    <dependencies>
+                        <dependency>
+                            <groupId>com.mycila</groupId>
+                            <artifactId>licenses</artifactId>
+                            <version>1</version>
+                        </dependency>
+                    </dependencies>
                 </plugin>
             </plugins>
         </pluginManagement>
