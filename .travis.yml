@@ -8,6 +8,7 @@ install: mvn install -DskipTests=true -Dmaven.javadoc.skip=true -B -V -pl clouds
 script: mvn clean package -pl cloudsim-plus,cloudsim-plus-examples
 after_success:
   - mvn clean test -Dintegration_tests=true jacoco:report
+  - mvn versioneye:update 
 jdk:
   - oraclejdk8 
 

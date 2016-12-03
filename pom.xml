@@ -17,7 +17,7 @@
 
     <licenses>
         <license>
-            <name>GNU LESSER GENERAL PUBLIC LICENSE, Version 3</name>
+            <name>GPLv3</name>
             <url>http://www.gnu.org/licenses/lgpl-3.0.txt</url>
         </license>
     </licenses>
@@ -102,8 +102,15 @@
                     <artifactId>versioneye-maven-plugin</artifactId>
                     <version>3.11.0</version>
                     <configuration>
+                        <!-- ID of the project at http://versioneye.com -->
                         <projectId>5841f4dfb1c38c0aa1cd46f1</projectId>
                     </configuration>
+                    <!--
+                    The plugin is just being executed when the repository is pushed to travis-ci.org
+                    in order to speed up local build.
+                    See the .travis.yml file to check the command line being executed.
+                    -->
+                    <!--<executions><execution><goals><goal>update</goal></goals></execution></executions>-->
                 </plugin>
 
                 <!--
