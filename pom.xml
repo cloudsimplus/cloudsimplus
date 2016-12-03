@@ -63,8 +63,8 @@
                 </plugin>
 
                 <!--
-                 Plugin for code coverage, enabling
-                 generation of reports on IDE to see percentage
+                 Plugin for code coverage: http://www.eclemma.org/jacoco/
+                 It enables generation of reports on IDE to see percentage
                  of the project's code that is being covered by unit tests.
                 -->
                 <plugin>
@@ -88,11 +88,20 @@
                     </executions>
                 </plugin>
 
-                <!--Check out-of-date dependencies and License violations: www.versioneye.com-->
+                <!--
+                Checks out-of-date dependencies and License violations: http://versioneye.com
+                The plugin automatically collect dependencies information and submit to the
+                project on its website.
+                It requires an API key that can be defined in an environment variable: export VERSIONEYE_API_KEY=value
+                For manual update execute: mvn versioneye:update
+                -->
                 <plugin>
                     <groupId>com.versioneye</groupId>
                     <artifactId>versioneye-maven-plugin</artifactId>
                     <version>3.11.0</version>
+                    <configuration>
+                        <projectId>5841f4dfb1c38c0aa1cd46f1</projectId>
+                    </configuration>
                 </plugin>
             </plugins>
         </pluginManagement>
