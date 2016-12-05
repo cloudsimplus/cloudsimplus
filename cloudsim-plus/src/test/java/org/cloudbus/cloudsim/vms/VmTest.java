@@ -2,9 +2,9 @@ package org.cloudbus.cloudsim.vms;
 
 import java.util.Collections;
 
+import org.cloudbus.cloudsim.brokers.DatacenterBroker;
 import org.cloudbus.cloudsim.hosts.Host;
 import org.cloudsimplus.listeners.EventListener;
-import org.cloudbus.cloudsim.hosts.power.PowerHost;
 import org.cloudbus.cloudsim.schedulers.cloudlet.CloudletScheduler;
 import org.junit.Test;
 import static org.junit.Assert.*;
@@ -73,7 +73,7 @@ public class VmTest {
 
         assertEquals("", instance.getUid());
         assertEquals(-1, instance.getId());
-        assertEquals(-1, instance.getBrokerId(), 0);
+        assertSame(DatacenterBroker.NULL, instance.getBroker());
         assertEquals("", instance.getVmm());
 
         assertEquals(0, instance.updateVmProcessing(0, Collections.EMPTY_LIST), 0);

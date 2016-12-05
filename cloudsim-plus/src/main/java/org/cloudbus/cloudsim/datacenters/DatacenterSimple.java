@@ -470,7 +470,7 @@ public class DatacenterSimple extends CloudSimEntity implements Datacenter {
             data[0] = getId();
             data[1] = vm.getId();
             data[2] = (hostAllocatedForVm ? CloudSimTags.TRUE : CloudSimTags.FALSE);
-            send(vm.getBrokerId(), getSimulation().getMinTimeBetweenEvents(),
+            send(vm.getBroker().getId(), getSimulation().getMinTimeBetweenEvents(),
                  CloudSimTags.VM_CREATE_ACK, data);
         }
 
@@ -512,7 +512,7 @@ public class DatacenterSimple extends CloudSimEntity implements Datacenter {
             data[1] = vm.getId();
             data[2] = CloudSimTags.TRUE;
 
-            sendNow(vm.getBrokerId(), CloudSimTags.VM_DESTROY_ACK, data);
+            sendNow(vm.getBroker().getId(), CloudSimTags.VM_DESTROY_ACK, data);
         }
         Log.printFormatted("Time %.2f: Vm %d destroyed\n", getSimulation().clock(), vm.getId());
 
@@ -669,7 +669,7 @@ public class DatacenterSimple extends CloudSimEntity implements Datacenter {
             // The cloudlet will migrate from one vm to another. Does the destination VM exist?
             if (destId == getId()) {
                 Vm vm = getVmAllocationPolicy().getHost(destVmId, userId).getVm(destVmId, userId);
-                if (vm == null) {
+                if (vm == Vm.NULL) {
                     failed = true;
                 } else {
                     // time to transfer the files

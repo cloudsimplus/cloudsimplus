@@ -56,12 +56,9 @@ public class VmList {
      * @post $none
      */
     public static <T extends Vm> T getByIdAndUserId(List<T> vmList, int id, int userId) {
-        for (T vm : vmList) {
-            if (vm.getId() == id && vm.getBrokerId() == userId) {
-                return vm;
-            }
-        }
-        return null;
+        return vmList.stream()
+            .filter(vm -> vm.getId() == id && vm.getBroker().getId() == userId)
+            .findFirst().orElse((T)Vm.NULL);
     }
 
     /**

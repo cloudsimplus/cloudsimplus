@@ -1,13 +1,32 @@
+/**
+ * CloudSim Plus: A highly-extensible and easier-to-use Framework for Modeling and Simulation of Cloud Computing Infrastructures and Services.
+ * http://cloudsimplus.org
+ *
+ *     Copyright (C) 2015-2016  Universidade da Beira Interior (UBI, Portugal) and the Instituto Federal de Educação Ciência e Tecnologia do Tocantins (IFTO, Brazil).
+ *
+ *     This file is part of CloudSim Plus.
+ *
+ *     CloudSim Plus is free software: you can redistribute it and/or modify
+ *     it under the terms of the GNU General Public License as published by
+ *     the Free Software Foundation, either version 3 of the License, or
+ *     (at your option) any later version.
+ *
+ *     CloudSim Plus is distributed in the hope that it will be useful,
+ *     but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *     GNU General Public License for more details.
+ *
+ *     You should have received a copy of the GNU General Public License
+ *     along with CloudSim Plus. If not, see <http://www.gnu.org/licenses/>.
+ */
 package org.cloudsimplus.heuristics;
 
-import java.lang.reflect.Constructor;
-import java.lang.reflect.InvocationTargetException;
 import org.cloudbus.cloudsim.distributions.ContinuousDistribution;
 
 /**
- * <p>A base class for implementation of
+ * A base class for implementation of
  * <a href="http://en.wikipedia.org/wiki/Simulated_annealing">Simulated Annealing</a>
- * algorithms used to find a suboptimal solution for a problem defined by sub-classes of this one.</p>
+ * algorithms used to find a suboptimal solution for a problem defined by sub-classes of this one.
  *
  * The Simulated Annealing is a heuristic that starts with a random solution
  * and iteratively generates a random neighbor solution that its fitness
@@ -15,14 +34,14 @@ import org.cloudbus.cloudsim.distributions.ContinuousDistribution;
  * The algorithm try to avoid local maximums, randomly selecting
  * worse solutions to get away from being stuck in these locals.
  *
- * The algorithm basically works as follows:
+ * <p>The algorithm basically works as follows:
  * <ol>
  *  <li>Starts generating a random solution as you wish;</li>
  *  <li>Computes its fitness using some function defined by the developer implementing the heuristic;</li>
  *  <li>Generates a neighbor random solution from the current solution and compute its fitness;</li>
  *  <li>Assess the neighbor and the current solution:
  *      <ul>
- *          <li>{@code if neighbor.getFitness() > current.getFitness()} then move the the new solution;</li>
+ *          <li>{@code if neighbor.getFitness() > current.getFitness()} then move to the new solution;</li>
  *          <li>{@code if neighbor.getFitness() < current.getFitness()} then randomly decide if move to the new solution;</li>
  *      </ul>
  *  </li>
@@ -30,6 +49,7 @@ import org.cloudbus.cloudsim.distributions.ContinuousDistribution;
  * of iterations or time is reached. These conditions are defined by the developer
  * implementing the heuristic.</li>
  * </ol>
+ * </p>
  *
  * @param <S> the class of solutions the heuristic will deal with, starting with a random solution
  *           and execute the solution search in order to achieve a satisfying solution (defined by a stop criteria)

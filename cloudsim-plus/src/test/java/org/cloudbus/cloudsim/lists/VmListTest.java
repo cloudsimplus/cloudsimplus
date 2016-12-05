@@ -73,10 +73,10 @@ public class VmListTest {
 
     @Test
     public void testGetVMByIdAndUserId() {
-        assertNull(VmList.getByIdAndUserId(vmList, 0, 0));
-        assertNull(VmList.getByIdAndUserId(vmList, 1, 0));
-        assertNull(VmList.getByIdAndUserId(vmList, 0, 1));
-        assertNull(VmList.getByIdAndUserId(vmList, 1, 1));
+        assertSame(Vm.NULL, VmList.getByIdAndUserId(vmList, 0, 0));
+        assertSame(Vm.NULL, VmList.getByIdAndUserId(vmList, 1, 0));
+        assertSame(Vm.NULL, VmList.getByIdAndUserId(vmList, 0, 1));
+        assertSame(Vm.NULL, VmList.getByIdAndUserId(vmList, 1, 1));
 
         final DatacenterBroker broker0 = Mocks.createMockBroker(0, 4);
         VmSimple vm1 = VmSimpleTest.createVmWithSpecificNumberOfPEsForSpecificUser(0, broker0, 1);

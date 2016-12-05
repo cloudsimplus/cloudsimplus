@@ -15,10 +15,10 @@ import org.cloudbus.cloudsim.vms.Vm;
 /**
  * A VM allocation policy that uses a Static CPU utilization Threshold (THR) to detect host over
  * utilization.
- *
+ * <p>
  * <p>If you are using any algorithms, policies or workload included in the power package please cite
  * the following paper:</p>
- *
+ * <p>
  * <ul>
  * <li><a href="http://dx.doi.org/10.1002/cpe.1867">Anton Beloglazov, and Rajkumar Buyya, "Optimal Online Deterministic Algorithms and Adaptive
  * Heuristics for Energy and Performance Efficient Dynamic Consolidation of Virtual Machines in
@@ -31,58 +31,61 @@ import org.cloudbus.cloudsim.vms.Vm;
  */
 public class PowerVmAllocationPolicyMigrationStaticThreshold extends PowerVmAllocationPolicyMigrationAbstract {
 
-	/** The static host CPU utilization threshold to detect over utilization.
-         * It is a percentage value from 0 to 1
-         * that can be changed when creating an instance of the class. */
-	private double utilizationThreshold = 0.9;
+    /**
+     * @see #getOverUtilizationThreshold()
+     */
+    private double overUtilizationThreshold = 0.9;
 
-	/**
-	 * Creates a PowerVmAllocationPolicyMigrationStaticThreshold.
-	 *
-	 * @param vmSelectionPolicy the policy that defines how VMs are selected for migration
-	 * @param utilizationThreshold the utilization threshold
-	 */
-	public PowerVmAllocationPolicyMigrationStaticThreshold(
-			PowerVmSelectionPolicy vmSelectionPolicy,
-			double utilizationThreshold)
-    {
-		super(vmSelectionPolicy);
-		setUtilizationThreshold(utilizationThreshold);
-	}
+    /**
+     * Creates a PowerVmAllocationPolicyMigrationStaticThreshold.
+     *
+     * @param vmSelectionPolicy    the policy that defines how VMs are selected for migration
+     * @param overUtilizationThreshold the over utilization threshold
+     */
+    public PowerVmAllocationPolicyMigrationStaticThreshold(
+        PowerVmSelectionPolicy vmSelectionPolicy,
+        double overUtilizationThreshold) {
+        super(vmSelectionPolicy);
+        setOverUtilizationThreshold(overUtilizationThreshold);
+    }
 
-	/**
-	 * Checks if a host is over utilized, based on CPU usage.
-	 *
-	 * @param host the host
-	 * @return true, if the host is over utilized; false otherwise
-	 */
-	@Override
-	public boolean isHostOverUtilized(PowerHostSimple host) {
-		addHistoryEntry(host, getUtilizationThreshold());
-		double totalRequestedMips = 0;
-		for (Vm vm : host.getVmList()) {
-			totalRequestedMips += vm.getCurrentRequestedTotalMips();
-		}
-		double utilization = totalRequestedMips / host.getTotalMips();
-		return utilization > getUtilizationThreshold();
-	}
+    /**
+     * Checks if a host is over utilized, based on CPU usage.
+     *
+     * @param host the host
+     * @return true, if the host is over utilized; false otherwise
+     */
+    @Override
+    public boolean isHostOverUtilized(PowerHostSimple host) {
+        addHistoryEntry(host, getOverUtilizationThreshold());
+        double totalRequestedMips = 0;
+        for (Vm vm : host.getVmList()) {
+            totalRequestedMips += vm.getCurrentRequestedTotalMips();
+        }
+        double utilization = totalRequestedMips / host.getTotalMips();
+        return utilization > getOverUtilizationThreshold();
+    }
 
-	/**
-	 * Sets the utilization threshold.
-	 *
-	 * @param utilizationThreshold the new utilization threshold
-	 */
-	protected final void setUtilizationThreshold(double utilizationThreshold) {
-		this.utilizationThreshold = utilizationThreshold;
-	}
+    /**
+     * Sets the static host CPU utilization threshold to detect over utilization.
+     * It is a percentage value from 0 to 1
+     * that can be changed when creating an instance of the class.
+     *
+     * @param overUtilizationThreshold the new utilization threshold
+     */
+    protected final void setOverUtilizationThreshold(double overUtilizationThreshold) {
+        this.overUtilizationThreshold = overUtilizationThreshold;
+    }
 
-	/**
-	 * Gets the utilization threshold.
-	 *
-	 * @return the utilization threshold
-	 */
-	protected double getUtilizationThreshold() {
-		return utilizationThreshold;
-	}
+    /**
+     * Gets the static host CPU utilization threshold to detect over utilization.
+     * It is a percentage value from 0 to 1
+     * that can be changed when creating an instance of the class.
+     *
+     * @return the utilization threshold
+     */
+    protected double getOverUtilizationThreshold() {
+        return overUtilizationThreshold;
+    }
 
 }

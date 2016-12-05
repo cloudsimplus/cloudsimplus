@@ -44,8 +44,8 @@ public class HostTest {
         assertEquals(0, instance.getStorageCapacity(), 0);
         assertEquals(0, instance.getTotalAllocatedMipsForVm(vm), 0);
         assertEquals(0, instance.getTotalMips(), 0);
-        assertEquals(Vm.NULL, instance.getVm(0,0));
-        assertEquals(VmScheduler.NULL, instance.getVmScheduler());
+        assertSame(Vm.NULL, instance.getVm(0,0));
+        assertSame(VmScheduler.NULL, instance.getVmScheduler());
         assertFalse(instance.isFailed());
         assertFalse(instance.isSuitableForVm(vm));
 
@@ -58,7 +58,7 @@ public class HostTest {
         assertTrue(instance.getVmList().isEmpty());
 
         instance.setDatacenter(createMockDatacenter());
-        assertEquals(Datacenter.NULL, instance.getDatacenter());
+        assertSame(Datacenter.NULL, instance.getDatacenter());
 
         assertFalse(instance.setFailed(false));
         assertFalse(instance.setPeStatus(0, Pe.Status.FREE));
@@ -73,7 +73,7 @@ public class HostTest {
         assertTrue(instance.getVmList().isEmpty());
 
         instance.setOnUpdateVmsProcessingListener(createMockListener());
-        assertEquals(EventListener.NULL, instance.getOnUpdateVmsProcessingListener());
+        assertSame(EventListener.NULL, instance.getOnUpdateVmsProcessingListener());
     }
 
     private Datacenter createMockDatacenter() {
