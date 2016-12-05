@@ -40,7 +40,7 @@ import org.cloudbus.cloudsim.utilizationmodels.UtilizationModelFull;
  *
  * @author raysaoliveira
  */
-public class ExampleUsingFaultInjector {
+public final class ExampleUsingFaultInjector {
     private static final int HOSTS_NUMBER = 3;
     private static final int HOST_PES = 5;
     private static final int VM_PES1 = 2;
@@ -52,7 +52,7 @@ public class ExampleUsingFaultInjector {
     /**
      * The cloudlet list.
      */
-    private final List<Cloudlet> cloudletList;
+    private final  List<Cloudlet> cloudletList;
 
     private static List<Host> hostList;
 
@@ -60,6 +60,8 @@ public class ExampleUsingFaultInjector {
      * The vmlist.
      */
     private final List<Vm> vmlist;
+    private static List<Vm> vmListCopy;
+    
     private int lastCreatedVmId = 0;
     private final CloudSim cloudsim;
 
@@ -142,27 +144,7 @@ public class ExampleUsingFaultInjector {
         //Create Datacenters
         Datacenter datacenter0 = createDatacenter();
 
-        //Inject Fault
-        long seed = System.currentTimeMillis();
-        PoissonProcess poisson = new PoissonProcess(0.2, seed);
-
-        UniformDistr failurePesRand = new UniformDistr(seed);
-        for (int i = 0; i < datacenter0.getHostList().size(); i++) {
-            for (Host host : datacenter0.getHostList()) {
-                if (poisson.haveKEventsHappened()) {
-                    UniformDistr delayForFailureOfHostRandom = new UniformDistr(1, 10, seed + i);
-
-                    //create a new intance of fault and start it.
-                    HostFaultInjection fault = new HostFaultInjection(cloudsim);
-                    fault.setNumberOfFailedPesRandom(failurePesRand);
-                    fault.setDelayForFailureOfHostRandom(delayForFailureOfHostRandom);
-                    fault.setHost(host);
-                } else {
-                    System.out.println("\t *** Host not failed. -> Id: " + host.getId() + "\n");
-                }
-                i++;
-            }
-        }
+        createFaultInjectionForHosts(datacenter0);
 
         //Create Broker
         DatacenterBroker broker = new DatacenterBrokerSimple(cloudsim);
@@ -171,6 +153,10 @@ public class ExampleUsingFaultInjector {
         vmlist.addAll(createVM(broker, VM_PES1, 2));
         vmlist.addAll(createVM(broker, VM_PES2, 2));
 
+        vmListCopy = new ArrayList<>();
+        vmListCopy.addAll(createVM(broker, VM_PES1, 2));
+        vmListCopy.addAll(createVM(broker, VM_PES2, 2));
+        
         // submit vm list to the broker
         broker.submitVmList(vmlist);
 
@@ -196,6 +182,30 @@ public class ExampleUsingFaultInjector {
         Log.enable();
         new CloudletsTableBuilderHelper(newList).build();
         Log.printFormattedLine("... finished!");
+    }
+
+    public void createFaultInjectionForHosts(Datacenter datacenter0) {
+        //Inject Fault
+        long seed = System.currentTimeMillis();
+        PoissonProcess poisson = new PoissonProcess(0.2, seed);
+        
+        UniformDistr failurePesRand = new UniformDistr(seed);
+        for (int i = 0; i < datacenter0.getHostList().size(); i++) {
+            for (Host host : datacenter0.getHostList()) {
+                if (poisson.haveKEventsHappened()) {
+                    UniformDistr delayForFailureOfHostRandom = new UniformDistr(1, 10, seed + i);
+                    
+                    //create a new intance of fault and start it.
+                    HostFaultInjection faultInjection = new HostFaultInjection(cloudsim);
+                    faultInjection.setNumberOfFailedPesRandom(failurePesRand);
+                    faultInjection.setDelayForFailureOfHostRandom(delayForFailureOfHostRandom);
+                    faultInjection.setHost(host);
+                } else {
+                    System.out.println("\t *** Host not failed. -> Id: " + host.getId() + "\n");
+                }
+                i++;
+            }
+        }
     }
 
     /**
@@ -261,6 +271,13 @@ public class ExampleUsingFaultInjector {
      */
     public static int getHOST_PES() {
         return HOST_PES;
+    }
+
+    /**
+     * @return the vmListCopy
+     */
+    public static List<Vm> getVmListCopy() {
+        return vmListCopy;
     }
 
 }

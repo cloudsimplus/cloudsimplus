@@ -150,7 +150,6 @@ public class HostFaultInjection extends CloudSimEntity {
         if (!this.isFailed()) {
             return;
         }
-
         vm.setFailed(true);
         /*
          As the broker is expected to request vm creation and destruction,
@@ -159,6 +158,7 @@ public class HostFaultInjection extends CloudSimEntity {
         getSimulation().sendNow(
                 vm.getBrokerId(), host.getDatacenter().getId(),
                 CloudSimTags.VM_DESTROY, vm);
+        
     }
 
     /**
