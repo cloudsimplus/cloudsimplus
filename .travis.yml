@@ -8,6 +8,7 @@ install: mvn install -DskipTests=true -Dmaven.javadoc.skip=true -B -V -pl clouds
 script: mvn clean package -pl cloudsim-plus,cloudsim-plus-examples
 after_success:
   - mvn clean test -Dintegration_tests=true jacoco:report
+  - mvn versioneye:update 
 jdk:
   - oraclejdk8 
 
@@ -17,4 +18,5 @@ test:
     - curl http://www.jpm4j.org/install/script -k > jpmInstall.sh
     - sudo sh jpmInstall.sh
     - sudo jpm install com.codacy:codacy-coverage-reporter:assembly
+    #Upload the coverage report to codacy.com. It requires the CODACY_PROJECT_TOKEN environment variable
     - codacy-coverage-reporter -l Java -r cloudsim-plus/target/site/jacoco/jacoco.xml

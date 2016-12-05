@@ -12,6 +12,21 @@
         Ready-to-run examples of how to use CloudSim++ API.
         Each Java class with a main method is a different example.
     </description>
+
+    <inceptionYear>2015</inceptionYear>
+
+    <licenses>
+        <license>
+            <name>GPLv3</name>
+            <url>http://www.gnu.org/licenses/lgpl-3.0.txt</url>
+        </license>
+    </licenses>
+
+    <properties>
+        <!-- Directory where is the license file to be used by the com.mycila.maven-license-plugin -->
+        <license.dir>${project.parent.basedir}</license.dir>
+    </properties>
+
     <build>
         <plugins>
             <plugin>
@@ -82,6 +97,15 @@
                         </goals>
                     </execution>
                 </executions>
+            </plugin>
+
+            <!-- Inherited from the parent pom. See the plugin there for more details. -->
+            <plugin>
+                <groupId>com.mycila.maven-license-plugin</groupId>
+                <artifactId>maven-license-plugin</artifactId>
+                <configuration>
+                    <header>${license.dir}/source-header.txt</header>
+                </configuration>
             </plugin>
         </plugins>
     </build>

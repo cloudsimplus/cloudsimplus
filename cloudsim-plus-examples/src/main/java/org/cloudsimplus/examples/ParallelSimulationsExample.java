@@ -33,18 +33,27 @@ import java.util.List;
 /**
  * An example showing how to run two simulation scenarios with different configurations
  * in parallel, using the CloudSim Plus exclusive features and Java 8 Lambda Expressions and Parallel Streams.
+ * The parallel execution of simulations doesn't ensure that the overall execution time will be reduced.
+ * It depends on diverse factors such as the number of simulations, the tasks that each simulation
+ * executes, the  number of available physical CPUs at your machine, etc.
+ *
+ * <p>This is just a minimal example that runs 2 simulations with different number
+ * of Hosts, VMs and Cloudlets. However, all these objects will have the same configurations
+ * in the different simulations. There will be just a difference in the number of created
+ * objects.</p>
  *
  * @author Manoel Campos da Silva Filho
  */
-public class ParallelSimulationScenariosExample {
-    private DatacenterBroker broker;
+public class ParallelSimulationsExample {
+    private final String title;
     private CloudSim simulation;
+    private DatacenterBroker broker;
     private List<Cloudlet> cloudletList;
     private List<Vm> vmList;
-    private int cloudletsToCreate = 0;
-    private int vmsToCreate = 0;
-    private int hostsToCreate = 0;
     private List<Cloudlet> finishedCloudletList;
+    private int hostsToCreate;
+    private int vmsToCreate;
+    private int cloudletsToCreate;
 
     /**
      * Creates the simulation scenarios with different configurations and execute them,
@@ -54,19 +63,19 @@ public class ParallelSimulationScenariosExample {
      */
     public static void main(String[] args) {
         Log.disable();  //It is mandatory to disable the Log when executing parallel simulations
-        List<ParallelSimulationScenariosExample> scenarios = new ArrayList<>(2);
+        List<ParallelSimulationsExample> examples = new ArrayList<>(2);
 
         //Creates the first simulation scenario
-        scenarios.add(
-            new ParallelSimulationScenariosExample()
+        examples.add(
+            new ParallelSimulationsExample("Simulation 1")
                 .setHostsToCreate(4)
                 .setVmsToCreate(4)
                 .setCloudletsToCreate(8)
         );
 
         //Creates the second simulation scenario
-        scenarios.add(
-            new ParallelSimulationScenariosExample()
+       examples.add(
+            new ParallelSimulationsExample("Simulation 2")
                 .setHostsToCreate(4)
                 .setVmsToCreate(4)
                 .setCloudletsToCreate(16)
@@ -91,37 +100,45 @@ public class ParallelSimulationScenariosExample {
         This was used because after that, we want to print results just after
         all simulations have finished.
         */
+        long startTimeMilliSec = System.currentTimeMillis();
         int totalExecutedCloudlets =
-            scenarios.parallelStream()
-                .mapToInt(scenario -> scenario.run())
+            examples.parallelStream()
+                .mapToInt(example -> example.run())
                 .sum();
 
-        Log.enable();
+        long finishTimeMilliSec = (System.currentTimeMillis() - startTimeMilliSec);
 
+        Log.enable();
+        Log.printFormattedLine("Time to run %d simulations: %d milliseconds", examples.size(), finishTimeMilliSec);
         Log.printFormattedLine(
             "Total number of executed cloudlets in all the %d simulation scenarios: %d",
-            scenarios.size(), totalExecutedCloudlets);
+            examples.size(), totalExecutedCloudlets);
 
         //With the cloudlet list of all scenarios executed, print such lists
-        for (int i = 0; i < scenarios.size(); i++) {
-            scenarios.get(i).printResults("Simulation Scenario " + i);
+        for (ParallelSimulationsExample example : examples) {
+            example.printResults();
         }
     }
 
-    public void printResults(String description){
+    public void printResults(){
         new CloudletsTableBuilderHelper(getFinishedCloudletList())
-            .setTitle(description)
+            .setTitle(this.title)
             .build();
     }
 
     /**
      * Default constructor where the simulation is initialized.
+     * @param title a title for the simulation scenario (just for log purposes)
      * @see #run()
      */
-    public ParallelSimulationScenariosExample() {
+    public ParallelSimulationsExample(String title) {
         //Number of cloud customers
         int numberOfCloudUsers = 1;
+        this.title = title;
         boolean traceEvents = false;
+        this.cloudletList = new ArrayList<>();
+        this.finishedCloudletList = new ArrayList<>();
+        this.vmList = new ArrayList<>();
         this.simulation = new CloudSim(numberOfCloudUsers, traceEvents);
     }
 
@@ -252,7 +269,7 @@ public class ParallelSimulationScenariosExample {
         return cloudletsToCreate;
     }
 
-    public ParallelSimulationScenariosExample setCloudletsToCreate(int cloudletsToCreate) {
+    public ParallelSimulationsExample setCloudletsToCreate(int cloudletsToCreate) {
         this.cloudletsToCreate = cloudletsToCreate;
         return this;
     }
@@ -261,7 +278,7 @@ public class ParallelSimulationScenariosExample {
         return vmsToCreate;
     }
 
-    public ParallelSimulationScenariosExample setVmsToCreate(int vmsToCreate) {
+    public ParallelSimulationsExample setVmsToCreate(int vmsToCreate) {
         this.vmsToCreate = vmsToCreate;
         return this;
     }
@@ -270,12 +287,16 @@ public class ParallelSimulationScenariosExample {
         return hostsToCreate;
     }
 
-    public ParallelSimulationScenariosExample setHostsToCreate(int hostsToCreate) {
+    public ParallelSimulationsExample setHostsToCreate(int hostsToCreate) {
         this.hostsToCreate = hostsToCreate;
         return this;
     }
 
     public List<Cloudlet> getFinishedCloudletList() {
         return finishedCloudletList;
+    }
+
+    public String getTitle() {
+        return title;
     }
 }

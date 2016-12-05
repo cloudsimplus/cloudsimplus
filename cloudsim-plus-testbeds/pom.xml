@@ -25,6 +25,21 @@
 		may apply some statistics techniques to reduce variance and/or
 		correlation, collect and present results.
     </description>
+
+    <inceptionYear>2016</inceptionYear>
+
+    <licenses>
+        <license>
+            <name>GPLv3</name>
+            <url>http://www.gnu.org/licenses/lgpl-3.0.txt</url>
+        </license>
+    </licenses>
+
+    <properties>
+        <!-- Directory where is the license file to be used by the com.mycila.maven-license-plugin -->
+        <license.dir>${project.parent.basedir}</license.dir>
+    </properties>
+
     <build>
         <plugins>
             <plugin>
@@ -55,6 +70,15 @@
                 <configuration>
                     <source>1.8</source>
                     <target>1.8</target>
+                </configuration>
+            </plugin>
+
+            <!-- Inherited from the parent pom. See the plugin there for more details. -->
+            <plugin>
+                <groupId>com.mycila.maven-license-plugin</groupId>
+                <artifactId>maven-license-plugin</artifactId>
+                <configuration>
+                    <header>${license.dir}/source-header.txt</header>
                 </configuration>
             </plugin>
         </plugins>

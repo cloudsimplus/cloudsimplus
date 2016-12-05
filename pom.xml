@@ -11,13 +11,13 @@
     <url>http://cloudsimplus.org</url>
 
     <organization>
-        <name>Systems, Security and Image Communication Lab, Instituto de Telecomunicações (IT), Universidade da Beira Interior (UBI), Instituto Federal de Educação Ciência e Tecnologia do Tocantins (IFTO)</name>
-        <url>http://www.it.pt/MSP-Cv http://www.it.pt http://www.ubi.pt http://www.ifto.edu.br</url>
+        <name>Systems, Security and Image Communication Lab, Instituto de Telecomunicações (IT) | Universidade da Beira Interior (UBI) | Instituto Federal de Educação Ciência e Tecnologia do Tocantins (IFTO)</name>
+        <url>http://www.it.pt/MSP-Cv | http://www.it.pt | http://www.ubi.pt | http://www.ifto.edu.br</url>
     </organization>
 
     <licenses>
         <license>
-            <name>GNU LESSER GENERAL PUBLIC LICENSE, Version 3</name>
+            <name>GPLv3</name>
             <url>http://www.gnu.org/licenses/lgpl-3.0.txt</url>
         </license>
     </licenses>
@@ -39,6 +39,7 @@
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <license.dir>${project.basedir}</license.dir>
     </properties>
 
     <modules>
@@ -63,8 +64,8 @@
                 </plugin>
 
                 <!--
-                 Plugin for code coverage, enabling
-                 generation of reports on IDE to see percentage
+                 Plugin for code coverage: http://www.eclemma.org/jacoco/
+                 It enables generation of reports on IDE to see percentage
                  of the project's code that is being covered by unit tests.
                 -->
                 <plugin>
@@ -88,11 +89,95 @@
                     </executions>
                 </plugin>
 
-                <!--Check out-of-date dependencies and License violations: www.versioneye.com-->
+                <!--
+                Checks out-of-date dependencies and License violations: http://versioneye.com
+                The plugin automatically collect dependencies information and submit to the
+                project on its website.
+                It requires an API key that can be defined in an environment variable: export VERSIONEYE_API_KEY=value
+                For manual update execute: mvn versioneye:update
+                -->
                 <plugin>
                     <groupId>com.versioneye</groupId>
                     <artifactId>versioneye-maven-plugin</artifactId>
                     <version>3.11.0</version>
+                    <configuration>
+                        <!-- ID of the project at http://versioneye.com -->
+                        <projectId>5841f4dfb1c38c0aa1cd46f1</projectId>
+                    </configuration>
+                    <!--
+                    The plugin is just being executed when the repository is pushed to travis-ci.org
+                    in order to speed up local build.
+                    See the .travis.yml file to check the command line being executed.
+                    -->
+                    <!--<executions><execution><goals><goal>update</goal></goals></execution></executions>-->
+                </plugin>
+
+                <!--
+                Adds License Information to project source and binaries using com.mycila.maven-license-plugin.
+                https://dzone.com/articles/adding-license-information.
+
+                To add missing license information for source files run:
+                mvn license:format
+                -->
+                <plugin>
+                    <groupId>com.mycila.maven-license-plugin</groupId>
+                    <artifactId>maven-license-plugin</artifactId>
+                    <version>1.10.b1</version>
+                    <inherited>false</inherited>
+                    <configuration>
+                        <header>${license.dir}/source-header.txt</header>
+                        <aggregate>true</aggregate>
+                        <properties>
+                            <project>${project.name}</project>
+                            <founder>${project.organization.name}</founder>
+                            <year>${project.inceptionYear}</year>
+                            <website>${project.url}</website>
+                        </properties>
+
+                        <strictCheck>true</strictCheck>
+
+                        <includes>
+                            <include>**/src/main/java/**/*.java</include>
+                            <include>**/src/test/java/**/*.java</include>
+                        </includes>
+                        <excludes>
+                            <exclude>**/src/test/resources/**</exclude>
+                            <exclude>**/src/main/resources/**</exclude>
+                            <exclude>**/*.md</exclude>
+                            <exclude>**/*.properties</exclude>
+                            <exclude>**/*.uml</exclude>
+                            <exclude>**/*.iml</exclude>
+                            <exclude>**/nbactions.xml</exclude>
+
+                            <!-- Ignored just temporarily while the implementation is not included in the cloudsim
+                            main module-->
+                            <exclude>cloudsim-plus-testbeds/src/main/java/org/cloudsimplus/sla/**</exclude>
+
+                            <!-- Ignore the org.cloudbus packages from CloudSim -->
+                            <exclude>**/src/main/java/org/cloudbus/**</exclude>
+                            <exclude>**/src/test/java/org/cloudbus/**</exclude>
+                        </excludes>
+                    </configuration>
+                    <executions>
+                        <execution>
+                            <goals>
+                                <!--
+                                Checks for missing license header in source files.
+                                You can use "format" to add missing headers or
+                                call manually using: mvn license:format
+                                -->
+                                <goal>check</goal>
+                            </goals>
+                            <phase>process-sources</phase>
+                        </execution>
+                    </executions>
+                    <dependencies>
+                        <dependency>
+                            <groupId>com.mycila</groupId>
+                            <artifactId>licenses</artifactId>
+                            <version>1</version>
+                        </dependency>
+                    </dependencies>
                 </plugin>
             </plugins>
         </pluginManagement>

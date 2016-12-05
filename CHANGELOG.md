@@ -4,7 +4,7 @@ Lists the main changes in the project.
 
 ## [Current Development Version]
 
-- Included the example ParallelSimulationScenariosExample in org.cloudsimplus.examples package
+- Included the example [/cloudsim-plus-examples/src/main/java/org/cloudsimplus/examples/ParallelSimulationsExample.java]
   that shows how to use Java 8 Parallel Streams to execute mutiple simulations scenarios in parallel.
 - Changed requirement of cloudsim-plus-examples to Java 8 in order to start providing more advanced examples using Java 8 Lambda Expressions and Streams API.
   Existing examples were not changed and run as before in Java 7.

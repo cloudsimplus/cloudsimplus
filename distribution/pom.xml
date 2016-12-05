@@ -9,12 +9,26 @@
     <packaging>pom</packaging>
     <name>CloudSim Plus Distribution Package</name>
     <description>
-        A package for distribution purpuse that contains:
+        A package for distribution purposes that contains:
         - CloudSim Plus API that you can use to build your cloud simulation scenarios;
         - Javadoc documentation in HTML format;
         - Several examples of how to build cloud simulations;
         - Source code.
     </description>
+
+    <inceptionYear>2015</inceptionYear>
+
+    <licenses>
+        <license>
+            <name>GPLv3</name>
+            <url>http://www.gnu.org/licenses/lgpl-3.0.txt</url>
+        </license>
+    </licenses>
+
+    <properties>
+        <!-- Directory where is the license file to be used by the com.mycila.maven-license-plugin -->
+        <license.dir>${project.parent.basedir}</license.dir>
+    </properties>
 
     <build>
         <finalName>cloudsim-plus-${project.version}</finalName>
@@ -36,6 +50,15 @@
                         <descriptor>src/main/assembly/package.xml</descriptor>
                     </descriptors>
                     <appendAssemblyId>false</appendAssemblyId>
+                </configuration>
+            </plugin>
+
+            <!-- Inherited from the parent pom. See the plugin there for more details. -->
+            <plugin>
+                <groupId>com.mycila.maven-license-plugin</groupId>
+                <artifactId>maven-license-plugin</artifactId>
+                <configuration>
+                    <header>${license.dir}/source-header.txt</header>
                 </configuration>
             </plugin>
 		</plugins>
