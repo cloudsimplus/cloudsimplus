@@ -8,7 +8,7 @@
 
 package org.cloudbus.cloudsim.allocationpolicies.power;
 
-import org.cloudbus.cloudsim.hosts.power.PowerHostSimple;
+import org.cloudbus.cloudsim.hosts.power.PowerHost;
 import org.cloudbus.cloudsim.hosts.power.PowerHostUtilizationHistory;
 import org.cloudbus.cloudsim.selectionpolicies.power.PowerVmSelectionPolicy;
 import org.cloudbus.cloudsim.vms.Vm;
@@ -104,7 +104,7 @@ public class PowerVmAllocationPolicyMigrationLocalRegression extends PowerVmAllo
 	 * @return true, if is host over utilized; false otherwise
 	 */
 	@Override
-	public boolean isHostOverUtilized(PowerHostSimple host) {
+	public boolean isHostOverUtilized(PowerHost host) {
 		PowerHostUtilizationHistory _host = (PowerHostUtilizationHistory) host;
 		double[] utilizationHistory = _host.getUtilizationHistory();
 		int length = 10; // we use 10 to make the regression responsive enough to latest values
@@ -125,7 +125,7 @@ public class PowerVmAllocationPolicyMigrationLocalRegression extends PowerVmAllo
 		double predictedUtilization = estimates[0] + estimates[1] * (length + migrationIntervals);
 		predictedUtilization *= getSafetyParameter();
 
-		addHistoryEntry(host, predictedUtilization);
+		addHistoryEntryIfAbsent(host, predictedUtilization);
 
 		return predictedUtilization >= 1;
 	}
@@ -146,7 +146,7 @@ public class PowerVmAllocationPolicyMigrationLocalRegression extends PowerVmAllo
 	 * @param host the host
 	 * @return the maximum vm migration time
 	 */
-	protected double getMaximumVmMigrationTime(PowerHostSimple host) {
+	protected double getMaximumVmMigrationTime(PowerHost host) {
 		double maxRam = host.getVmList().stream().mapToDouble(Vm::getRam).max().orElse(0);
 		return maxRam / (host.getBwCapacity() / (2 * 8));
 	}

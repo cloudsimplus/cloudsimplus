@@ -1,6 +1,6 @@
 package org.cloudbus.cloudsim.allocationpolicies.power;
 
-import org.cloudbus.cloudsim.hosts.power.PowerHostSimple;
+import org.cloudbus.cloudsim.hosts.power.PowerHost;
 import org.cloudbus.cloudsim.vms.Vm;
 import org.cloudbus.cloudsim.allocationpolicies.VmAllocationPolicy;
 
@@ -14,7 +14,8 @@ public interface PowerVmAllocationPolicy extends VmAllocationPolicy{
      * Finds the first host that has enough resources to host a given VM.
      *
      * @param vm the vm to find a host for it
-     * @return the first host found that can host the VM
+     * @return the first host found that can host the VM or {@link PowerHost#NULL} if no suitable
+     * Host was found for Vm
      */
-    PowerHostSimple findHostForVm(Vm vm);
+    PowerHost findHostForVm(Vm vm);
 }

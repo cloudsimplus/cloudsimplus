@@ -45,9 +45,9 @@ public interface PowerHost extends HostDynamicWorkload {
     double getMaxPower();
 
     /**
-     * Gets the power. For this moment only consumed by all PEs.
+     * Gets the power consumption of the host. For this moment it only computes the power consumed by PEs.
      *
-     * @return the power
+     * @return the power consumption
      */
     double getPower();
 

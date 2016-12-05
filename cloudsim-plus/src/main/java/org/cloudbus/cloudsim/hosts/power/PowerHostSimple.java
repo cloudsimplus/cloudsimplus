@@ -85,19 +85,13 @@ public class PowerHostSimple extends HostDynamicWorkloadSimple implements PowerH
         setPowerModel(powerModel);
     }
 
-    /**
-     * Gets the power. For this moment only consumed by all PEs.
-     *
-     * @return the power
-     */
     @Override
     public double getPower() {
         return getPower(getUtilizationOfCpu());
     }
 
     /**
-     * Gets the current power consumption of the host. For this moment only
-     * consumed by all PEs.
+     * Gets the power consumption of the host. For this moment it only computes the power consumed by PEs.
      *
      * @param utilization the utilization percentage (between [0 and 1]) of a
      * resource that is critical for power consumption

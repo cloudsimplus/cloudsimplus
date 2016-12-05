@@ -10,6 +10,7 @@ package org.cloudbus.cloudsim.allocationpolicies;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 import org.cloudbus.cloudsim.datacenters.Datacenter;
 import org.cloudbus.cloudsim.hosts.Host;
@@ -33,7 +34,7 @@ import org.cloudsimplus.listeners.HostToVmEventInfo;
 public abstract class VmAllocationPolicyAbstract implements VmAllocationPolicy {
 
     /**
-     * @see #getVmTable()
+     * @see #getVmHostMap()
      */
     private Map<String, Host> vmTable;
 
@@ -71,7 +72,7 @@ public abstract class VmAllocationPolicyAbstract implements VmAllocationPolicy {
      *
      * @return the VM map
      */
-    protected Map<String, Host> getVmTable() {
+    protected Map<String, Host> getVmHostMap() {
         return vmTable;
     }
 
@@ -93,7 +94,7 @@ public abstract class VmAllocationPolicyAbstract implements VmAllocationPolicy {
      */
     protected void mapVmToPm(Vm vm, Host host) {
         // if vm were succesfully created in the host
-        getVmTable().put(vm.getUid(), host);
+        getVmHostMap().put(vm.getUid(), host);
         HostToVmEventInfo info =
                 new HostToVmEventInfo(host.getSimulation().clock(), host, vm);
         vm.getOnHostAllocationListener().update(info);
@@ -108,7 +109,7 @@ public abstract class VmAllocationPolicyAbstract implements VmAllocationPolicy {
      * @return the Host where the Vm was removed/moved from
      */
     protected Host unmapVmFromPm(Vm vm) {
-        final Host host = getVmTable().remove(vm.getUid());
+        final Host host = getVmHostMap().remove(vm.getUid());
         HostToVmEventInfo info =
                 new HostToVmEventInfo(host.getSimulation().clock(), host, vm);
         vm.getOnHostDeallocationListener().update(info);
@@ -126,7 +127,7 @@ public abstract class VmAllocationPolicyAbstract implements VmAllocationPolicy {
      */
     @Override
     public void setDatacenter(Datacenter datacenter){
-        if(datacenter == null){
+        if(Objects.isNull(datacenter)){
             datacenter = Datacenter.NULL;
         }
 

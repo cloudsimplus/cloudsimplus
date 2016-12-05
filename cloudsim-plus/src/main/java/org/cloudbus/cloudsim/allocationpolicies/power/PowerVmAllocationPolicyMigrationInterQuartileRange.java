@@ -8,8 +8,9 @@
 
 package org.cloudbus.cloudsim.allocationpolicies.power;
 
+import org.cloudbus.cloudsim.core.Simulation;
+import org.cloudbus.cloudsim.hosts.power.PowerHost;
 import org.cloudbus.cloudsim.util.Log;
-import org.cloudbus.cloudsim.hosts.power.PowerHostSimple;
 import org.cloudbus.cloudsim.hosts.power.PowerHostUtilizationHistory;
 import org.cloudbus.cloudsim.selectionpolicies.power.PowerVmSelectionPolicy;
 import org.cloudbus.cloudsim.vms.Vm;
@@ -32,8 +33,7 @@ import org.cloudbus.cloudsim.util.MathUtil;
  * @author Anton Beloglazov
  * @since CloudSim Toolkit 3.0
  */
-public class PowerVmAllocationPolicyMigrationInterQuartileRange extends
-		PowerVmAllocationPolicyMigrationAbstract {
+public class PowerVmAllocationPolicyMigrationInterQuartileRange extends PowerVmAllocationPolicyMigrationAbstract {
 
 	/** The safety parameter in percentage (at scale from 0 to 1).
          * It is a tuning parameter used by the allocation policy to
@@ -97,7 +97,7 @@ public class PowerVmAllocationPolicyMigrationInterQuartileRange extends
 	 * @return true, if the host is over utilized; false otherwise
 	 */
 	@Override
-	public boolean isHostOverUtilized(PowerHostSimple host) {
+	public boolean isHostOverUtilized(PowerHost host) {
 		PowerHostUtilizationHistory _host = (PowerHostUtilizationHistory) host;
 		double upperThreshold = 0;
 		try {
@@ -105,7 +105,7 @@ public class PowerVmAllocationPolicyMigrationInterQuartileRange extends
 		} catch (IllegalArgumentException e) {
 			return getFallbackVmAllocationPolicy().isHostOverUtilized(host);
 		}
-		addHistoryEntry(host, upperThreshold);
+		addHistoryEntryIfAbsent(host, upperThreshold);
 		double totalRequestedMips = 0;
 		for (Vm vm : host.getVmList()) {
 			totalRequestedMips += vm.getCurrentRequestedTotalMips();

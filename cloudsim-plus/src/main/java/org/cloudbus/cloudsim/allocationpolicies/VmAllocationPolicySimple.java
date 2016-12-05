@@ -56,7 +56,7 @@ public class VmAllocationPolicySimple extends VmAllocationPolicyAbstract {
         }
 
         // if this vm was already created
-        if (getVmTable().containsKey(vm.getUid())) {
+        if (getVmHostMap().containsKey(vm.getUid())) {
             return false;
         }
 
@@ -112,12 +112,12 @@ public class VmAllocationPolicySimple extends VmAllocationPolicyAbstract {
 
     @Override
     public Host getHost(Vm vm) {
-        return getVmTable().get(vm.getUid());
+        return getVmHostMap().get(vm.getUid());
     }
 
     @Override
     public Host getHost(int vmId, int userId) {
-        return getVmTable().get(VmSimple.getUid(userId, vmId));
+        return getVmHostMap().get(VmSimple.getUid(userId, vmId));
     }
 
     /**

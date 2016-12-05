@@ -8,7 +8,7 @@
 
 package org.cloudbus.cloudsim.allocationpolicies.power;
 
-import org.cloudbus.cloudsim.hosts.power.PowerHostSimple;
+import org.cloudbus.cloudsim.hosts.power.PowerHost;
 import org.cloudbus.cloudsim.hosts.power.PowerHostUtilizationHistory;
 import org.cloudbus.cloudsim.selectionpolicies.power.PowerVmSelectionPolicy;
 import org.cloudbus.cloudsim.vms.Vm;
@@ -108,7 +108,7 @@ public class PowerVmAllocationPolicyMigrationMedianAbsoluteDeviation extends
 	 * @return true, if the host is over utilized; false otherwise
 	 */
 	@Override
-	public boolean isHostOverUtilized(PowerHostSimple host) {
+	public boolean isHostOverUtilized(PowerHost host) {
 		PowerHostUtilizationHistory _host = (PowerHostUtilizationHistory) host;
 		double upperThreshold = 0;
 		try {
@@ -116,7 +116,7 @@ public class PowerVmAllocationPolicyMigrationMedianAbsoluteDeviation extends
 		} catch (IllegalArgumentException e) {
 			return getFallbackVmAllocationPolicy().isHostOverUtilized(host);
 		}
-		addHistoryEntry(host, upperThreshold);
+		addHistoryEntryIfAbsent(host, upperThreshold);
 		double totalRequestedMips = 0;
 		for (Vm vm : host.getVmList()) {
 			totalRequestedMips += vm.getCurrentRequestedTotalMips();
