@@ -520,8 +520,8 @@ public class DatacenterSimple extends CloudSimEntity implements Datacenter {
     }
 
     /**
-     * Process the event for an User/Broker who wants to migrate a VM. This
-     * DatacenterSimple will then send the status back to the User/Broker.
+     * Process the event for a Broker thta wants to migrate a VM. This
+     * DatacenterSimple will then send the status back to the Broker.
      *
      * @param ev information about the event just happened
      * @param ack indicates if the event's sender expects to receive an

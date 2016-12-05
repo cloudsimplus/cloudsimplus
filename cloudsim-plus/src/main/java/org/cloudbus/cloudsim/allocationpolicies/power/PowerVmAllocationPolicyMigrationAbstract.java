@@ -184,7 +184,7 @@ public abstract class PowerVmAllocationPolicyMigrationAbstract extends PowerVmAl
             }
 
             PowerHost underUtilizedHost = getUnderUtilizedHost(excludedHostsForFindingUnderUtilizedHost);
-            if (underUtilizedHost == null) {
+            if (underUtilizedHost == PowerHost.NULL) {
                 break;
             }
 
@@ -287,11 +287,8 @@ public abstract class PowerVmAllocationPolicyMigrationAbstract extends PowerVmAl
      * @return the PM found to host the VM
      */
     public PowerHost findHostForVm(Vm vm, Set<? extends Host> excludedHosts) {
-        Comparator<PowerHost> hostPowerConsumptionComparator = (h1, h2) -> {
-            double h1PowerDiff = getPowerAfterAllocationDifference(h1, vm);
-            double h2PowerDiff = getPowerAfterAllocationDifference(h2, vm);
-            return (int)Math.ceil(h1PowerDiff - h2PowerDiff);
-        };
+        Comparator<PowerHost> hostPowerConsumptionComparator = (h1, h2) ->
+            Double.compare(getPowerAfterAllocationDifference(h1, vm), getPowerAfterAllocationDifference(h2, vm));
 
         return this.<PowerHost>getHostList().stream()
             .filter(h -> !excludedHosts.contains(h))
@@ -441,44 +438,44 @@ public abstract class PowerVmAllocationPolicyMigrationAbstract extends PowerVmAl
     }
 
     /**
-     * Gets the most under utilized host.
+     * Gets the most under utilized Host.
      *
-     * @param excludedHosts the excluded hosts
-     * @return the most under utilized host
+     * @param excludedHosts the Hosts that have to be disconsidering when looking for the under utilized Host
+     * @return the most under utilized host or {@link PowerHost#NULL}
+     * if no Host was found
      */
     protected PowerHost getUnderUtilizedHost(Set<? extends Host> excludedHosts) {
-        double minUtilization = 1;
-        PowerHost underUtilizedHost = null;
-        for (PowerHost host : this.<PowerHost>getHostList()) {
-            if (excludedHosts.contains(host)) {
-                continue;
-            }
-            double utilization = host.getUtilizationOfCpu();
-            if (utilization > 0 && utilization < minUtilization
-                    && !areAllVmsMigratingOutOrAnyVmMigratingIn(host)) {
-                minUtilization = utilization;
-                underUtilizedHost = host;
-            }
-        }
-        return underUtilizedHost;
+        return this.<PowerHost>getHostList().stream()
+            .filter(h -> !excludedHosts.contains(h))
+            .filter(h -> h.getUtilizationOfCpu() > 0)
+            .filter(h -> !allVmsAreMigratingOutOrThereAreVmsMigratingIn(h))
+            .min((h1, h2) -> Double.compare(h1.getUtilizationOfCpu(), h2.getUtilizationOfCpu()))
+            .orElse(PowerHost.NULL);
     }
 
     /**
-     * Checks whether all VMs of a given host are in migration.
+     * Checks if all VMs of a Host are migrating out or if there is at least one VM migrating in.
+     * In both cases, the given Host will not be selected as an underutilized Host at the current moment.
      *
-     * @param host the host
-     * @return true, if successful
+     * @param host the host to check
+     * @return
      */
-    protected boolean areAllVmsMigratingOutOrAnyVmMigratingIn(PowerHost host) {
+    protected boolean allVmsAreMigratingOutOrThereAreVmsMigratingIn(PowerHost host) {
         for (PowerVm vm : host.<PowerVm>getVmList()) {
-            if (!vm.isInMigration()) {
+            if (!vm.isInMigration()) { //VM is not in migration process (in or out)
+                //there is at least one VM that is not migrating anywhere (nor ir or out)
                 return false;
             }
+
+            //If the VM is in migration process, checks if it is migrating into the host.
+            //If it is not contained into the migratingIn list, it is migrating out.
             if (host.getVmsMigratingIn().contains(vm)) {
+                //there is at least one VM migrating into the host
                 return true;
             }
         }
 
+        //all VMs are migrating out
         return true;
     }
 

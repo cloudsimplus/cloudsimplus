@@ -283,11 +283,18 @@ public interface Vm extends Identificable, Comparable<Vm> {
 
 
     /**
-     * Checks if the VM is in migration process.
+     * Checks if the VM is in migration process or not.
      *
-     * @return true, if it is in migration
+     * @return
      */
     boolean isInMigration();
+
+    /**
+     * Defines if the VM is in migration process or not.
+     *
+     * @param inMigration true to indicate the VM is migrating into a Host, false otherwise
+     */
+    void setInMigration(boolean inMigration);
 
     /**
      * Sets the BW capacity
@@ -307,14 +314,6 @@ public interface Vm extends Identificable, Comparable<Vm> {
      * @post $none
      */
     void setHost(Host host);
-
-    /**
-     * Defines if the VM is in migration process.
-     *
-     * @param inMigration true to indicate the VM is in migration, false
-     * otherwise
-     */
-    void setInMigration(boolean inMigration);
 
     /**
      * Sets the listener object that will be notified when a {@link Host}
