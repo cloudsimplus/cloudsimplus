@@ -74,20 +74,20 @@ CloudSim Plus provides a lot of exclusive features, ranging from the most basic 
 
 - [Listeners](/cloudsim-plus-examples/src/main/java/org/cloudsimplus/examples/listeners/) objects to enable simulation monitoring.
 - Builders to enable creating multiple simulation objects with same configuration.
-- [TableBuilder](/cloudsim-plus-examples/src/main/) objects that are used in all examples and enable printing simulation results in different formats such as ASCII Table, CSV or HTML.
-- Improved class hierarchy, modules and package structure that is easier to understand.
-- Reusable and standards-conforming code.
-- It is a really object-oriented framework that creates relationships among classes and allows chained call such as `cloudlet.getVm().getHost().getDatacenter()`.
+- [TableBuilder](/cloudsim-plus-examples/src/main/) objects that are used in all examples and enable printing simulation results in different formats such as ASCII Table, CSV or HTML. It shows simulation results in perfectly aligned tables, including data units and additional data.
+- It is a strongly object-oriented framework that creates relationships among classes and allows chained call such as `cloudlet.getVm().getHost().getDatacenter()`.
   And guess what? You don't even have to worry about `NullPointerException` when making this chained call because CloudSim Plus uses the [Null Object Design Pattern](https://en.wikipedia.org/wiki/Null_Object_pattern) to avoid that.
 - Delay execution of submitted Cloudlets, enabling simulation of dynamic arrival of tasks.
 - Classes and interfaces to allow implementation of [heuristics](http://en.wikipedia.org/wiki/Heuristic) such as 
   [Tabu Search](http://en.wikipedia.org/wiki/Tabu_search), [Simulated Annealing](http://en.wikipedia.org/wiki/Simulated_annealing), 
   [Ant Colony Systems](http://en.wikipedia.org/wiki/Ant_colony_optimization_algorithms) and so on. See an [example using Simulated Annealing here](/cloudsim-plus-examples/src/main/java/org/cloudsimplus/examples/DatacenterBrokerHeuristicExample.java).
 - [Implementation of the Completely Fair Scheduler](/cloudsim-plus-examples/src/main/java/org/cloudsimplus/examples/LinuxCompletelyFairSchedulerExample.java) used in recent version of the Linux Kernel.
-- Simpler constructors to instantiate simulation objects.
+- Simpler constructors to instantiate simulation objects, making it less confusing to use the framework.
 - Throughout documentation update and improvement.
+- Improved class hierarchy, modules and package structure that is easier to understand.
+- As it is usual to extend framework classes to provide some specific behaviours for your simulations, you will find a totally refactored code that follows clean code programming, [SOLID](https://en.wikipedia.org/wiki/SOLID_(object-oriented_design)), [Design Patterns](https://en.wikipedia.org/wiki/Software_design_pattern) and several other software engineering principles and practices. By this way, it will be far easier to understand the code and implement the feature you want.
 - Integration Tests to increase framework accuracy by testing entire simulation scenarios.
-- Updated to Java 8.
+- Updated to Java 8, making extensive use of Lambda Expressions and Streams API to improve efficiency and provide a cleaner and easier-to-maintain code.
 
 
 # Project's Modules
@@ -106,7 +106,7 @@ CloudSim Plus has a simpler structure that can be understood right away. It cons
   can be used by other researchers to implement their own comprehensive testbeds. Different from the examples module that aims just
   to show how to use CloudSim Plus features, this module includes more complex simulation scenarios concerned in providing
   scientifically valid results. 
-- [cloudsim-plus-benchmarks](cloudsim-plus-benchmarks): a new module introduced to implement micro benchmarks using the 
+- [cloudsim-plus-benchmarks](cloudsim-plus-benchmarks): a new module used just internally to implement micro benchmarks using the 
   [Java Microbenchmark Harness framework (JMH)](http://openjdk.java.net/projects/code-tools/jmh/) to enable measuring critical methods of the 
   CloudSim Plus API that have a high impact in the simulation framework performance.
 - [distribution](distribution): a module used just to build jar files for distribution of packaged CloudSim Plus binaries, documentation and source code.   

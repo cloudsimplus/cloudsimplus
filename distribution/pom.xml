@@ -9,7 +9,7 @@
     <packaging>pom</packaging>
     <name>CloudSim Plus Distribution Package</name>
     <description>
-        A package for distribution purpuse that contains:
+        A package for distribution purposes that contains:
         - CloudSim Plus API that you can use to build your cloud simulation scenarios;
         - Javadoc documentation in HTML format;
         - Several examples of how to build cloud simulations;
@@ -58,7 +58,7 @@
                 <groupId>com.mycila.maven-license-plugin</groupId>
                 <artifactId>maven-license-plugin</artifactId>
                 <configuration>
-                    <header>${license.dir}/license-header.txt</header>
+                    <header>${license.dir}/source-header.txt</header>
                 </configuration>
             </plugin>
 		</plugins>

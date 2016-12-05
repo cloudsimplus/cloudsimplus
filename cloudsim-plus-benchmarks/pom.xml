@@ -152,7 +152,7 @@ THE POSSIBILITY OF SUCH DAMAGE.
                 <groupId>com.mycila.maven-license-plugin</groupId>
                 <artifactId>maven-license-plugin</artifactId>
                 <configuration>
-                    <header>${license.dir}/license-header.txt</header>
+                    <header>${license.dir}/source-header.txt</header>
                 </configuration>
             </plugin>
         </plugins>
