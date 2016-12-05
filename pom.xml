@@ -123,7 +123,7 @@
                     <groupId>com.mycila.maven-license-plugin</groupId>
                     <artifactId>maven-license-plugin</artifactId>
                     <version>1.10.b1</version>
-                    <inherited>false</inherited>
+                    <inherited>true</inherited>
                     <configuration>
                         <header>${license.dir}/source-header.txt</header>
                         <aggregate>true</aggregate>
@@ -135,12 +135,14 @@
                         </properties>
 
                         <strictCheck>true</strictCheck>
+                        <failIfMissing>false</failIfMissing>
 
                         <includes>
                             <include>**/src/main/java/**/*.java</include>
                             <include>**/src/test/java/**/*.java</include>
                         </includes>
                         <excludes>
+                            <exclude>**/package-info.java</exclude>
                             <exclude>**/src/test/resources/**</exclude>
                             <exclude>**/src/main/resources/**</exclude>
                             <exclude>**/*.md</exclude>
