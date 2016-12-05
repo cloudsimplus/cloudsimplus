@@ -317,12 +317,9 @@ public class HostSimple implements Host {
 
     @Override
     public Vm getVm(int vmId, int userId) {
-        for (Vm vm : getVmList()) {
-            if (vm.getId() == vmId && vm.getBrokerId() == userId) {
-                return vm;
-            }
-        }
-        return null;
+        return getVmList().stream()
+            .filter(vm -> vm.getId() == vmId && vm.getBroker().getId() == userId)
+            .findFirst().orElse(Vm.NULL);
     }
 
     @Override
@@ -487,7 +484,7 @@ public class HostSimple implements Host {
             it is set here as the sender of the vm destroy request.
             */
             simulation.sendNow(
-                vm.getBrokerId(), getDatacenter().getId(),
+                vm.getBroker().getId(), getDatacenter().getId(),
                 CloudSimTags.VM_DESTROY, vm);
         }
     }

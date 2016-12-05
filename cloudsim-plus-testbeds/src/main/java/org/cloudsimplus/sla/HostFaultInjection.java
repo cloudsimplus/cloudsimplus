@@ -180,7 +180,7 @@ public class HostFaultInjection extends CloudSimEntity {
          it is set here as the sender of the vm destroy request.
          */
         getSimulation().sendNow(
-                vm.getBrokerId(), host.getDatacenter().getId(),
+                vm.getBroker().getId(), host.getDatacenter().getId(),
                 CloudSimTags.VM_DESTROY, vm);
     }
 

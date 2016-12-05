@@ -37,7 +37,7 @@ import org.cloudbus.cloudsim.selectionpolicies.power.PowerVmSelectionPolicy;
 /**
  * A {@link VmAllocationPolicy} that uses a Static CPU utilization Threshold (THR) to
  * detect host {@link #getUnderUtilizationThreshold() under} and
- * {@link #getUtilizationThreshold() over} utilization.
+ * {@link #getOverUtilizationThreshold() over} utilization.
  * It selects as the host to place a VM, that one having the least used amount of CPU
  * MIPS (Worst Fit policy), <b>disregarding energy consumption</b>.
  *

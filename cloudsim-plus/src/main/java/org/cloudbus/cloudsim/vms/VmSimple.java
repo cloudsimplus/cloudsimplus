@@ -322,8 +322,7 @@ public class VmSimple implements Vm {
     /**
      * Sets the VM id.
      *
-     * @param id the new VM id, that has to be unique for the current
-     * {@link #getBrokerId() user}
+     * @param id the new VM id, that has to be unique for the current {@link #getBroker() broker}
      * @todo The uniqueness of VM id for a given user is not being ensured
      */
     protected final void setId(int id) {
@@ -340,8 +339,8 @@ public class VmSimple implements Vm {
     }
 
     @Override
-    public int getBrokerId() {
-        return broker.getId();
+    public DatacenterBroker getBroker() {
+        return broker;
     }
 
     @Override

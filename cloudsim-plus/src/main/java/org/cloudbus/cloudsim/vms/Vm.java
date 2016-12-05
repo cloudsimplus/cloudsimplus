@@ -240,13 +240,13 @@ public interface Vm extends Identificable, Comparable<Vm> {
     double getTotalUtilizationOfCpuMips(double time);
 
     /**
-     * Gets the ID the {@link DatacenterBroker} that represents the owner of the VM.
+     * Gets the {@link DatacenterBroker} that represents the owner of the VM.
      *
-     * @return the broker ID or <tt>-1</tt> if a broker has not been set yet
+     * @return the broker or <tt>{@link DatacenterBroker#NULL}</tt> if a broker has not been set yet
      * @pre $none
      * @post $none
      */
-    int getBrokerId();
+    DatacenterBroker getBroker();
 
     /**
      * Sets a {@link DatacenterBroker} that represents the owner of the VM.
@@ -462,7 +462,7 @@ public interface Vm extends Identificable, Comparable<Vm> {
         @Override public double getTotalUtilizationOfCpu(double time) { return 0.0; }
         @Override public double getTotalUtilizationOfCpuMips(double time) { return 0.0; }
         @Override public String getUid(){ return ""; }
-        @Override public int getBrokerId() { return -1; }
+        @Override public DatacenterBroker getBroker() { return DatacenterBroker.NULL; }
         @Override  public Vm setBroker(DatacenterBroker broker) { return Vm.NULL; }
         @Override public String getVmm() { return ""; }
         public boolean isCreated() { return false; }
