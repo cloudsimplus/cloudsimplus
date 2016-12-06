@@ -28,8 +28,7 @@ import org.cloudbus.cloudsim.util.MathUtil;
  * @author Anton Beloglazov
  * @since CloudSim Toolkit 3.0
  */
-public class PowerVmAllocationPolicyMigrationLocalRegressionRobust extends
-		PowerVmAllocationPolicyMigrationLocalRegression {
+public class PowerVmAllocationPolicyMigrationLocalRegressionRobust extends PowerVmAllocationPolicyMigrationLocalRegression {
 
 	/**
 	 * Creates a PowerVmAllocationPolicyMigrationLocalRegressionRobust.
@@ -62,7 +61,8 @@ public class PowerVmAllocationPolicyMigrationLocalRegressionRobust extends
 			PowerVmSelectionPolicy vmSelectionPolicy,
 			double safetyParameter,
 			double schedulingInterval,
-			PowerVmAllocationPolicyMigration fallbackVmAllocationPolicy) {
+			PowerVmAllocationPolicyMigration fallbackVmAllocationPolicy)
+    {
 		super(vmSelectionPolicy, safetyParameter, schedulingInterval, fallbackVmAllocationPolicy);
 	}
 

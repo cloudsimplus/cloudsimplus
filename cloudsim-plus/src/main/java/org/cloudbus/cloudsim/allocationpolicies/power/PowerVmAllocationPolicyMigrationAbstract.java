@@ -687,4 +687,23 @@ public abstract class PowerVmAllocationPolicyMigrationAbstract extends PowerVmAl
         return executionTimeHistoryTotal;
     }
 
+    /**
+     * Checks if a host is over utilized, based on current CPU usage.
+     *
+     * @param host the host
+     * @return true, if the host is over utilized; false otherwise
+     */
+    @Override
+    public boolean isHostOverUtilized(PowerHost host) {
+        final double upperThreshold = getOverUtilizationThreshold(host);
+        addHistoryEntryIfAbsent(host, upperThreshold);
+
+        final double totalRequestedMips =
+            host.getVmList().stream()
+                .mapToDouble(Vm::getCurrentRequestedTotalMips)
+                .sum();
+
+        final double utilization = totalRequestedMips / host.getTotalMips();
+        return utilization > upperThreshold;
+    }
 }

@@ -32,7 +32,7 @@ import org.cloudbus.cloudsim.vms.Vm;
 public class PowerVmAllocationPolicyMigrationStaticThreshold extends PowerVmAllocationPolicyMigrationAbstract {
 
     /**
-     * @see #getOverUtilizationThreshold()
+     * @see #getOverUtilizationThreshold(PowerHost)
      */
     private double overUtilizationThreshold = 0.9;
 
@@ -50,23 +50,6 @@ public class PowerVmAllocationPolicyMigrationStaticThreshold extends PowerVmAllo
     }
 
     /**
-     * Checks if a host is over utilized, based on CPU usage.
-     *
-     * @param host the host
-     * @return true, if the host is over utilized; false otherwise
-     */
-    @Override
-    public boolean isHostOverUtilized(PowerHost host) {
-        addHistoryEntryIfAbsent(host, getOverUtilizationThreshold());
-        double totalRequestedMips = 0;
-        for (Vm vm : host.getVmList()) {
-            totalRequestedMips += vm.getCurrentRequestedTotalMips();
-        }
-        double utilization = totalRequestedMips / host.getTotalMips();
-        return utilization > getOverUtilizationThreshold();
-    }
-
-    /**
      * Sets the static host CPU utilization threshold to detect over utilization.
      * It is a percentage value from 0 to 1
      * that can be changed when creating an instance of the class.
@@ -79,12 +62,15 @@ public class PowerVmAllocationPolicyMigrationStaticThreshold extends PowerVmAllo
 
     /**
      * Gets the static host CPU utilization threshold to detect over utilization.
-     * It is a percentage value from 0 to 1
-     * that can be changed when creating an instance of the class.
+     * It is a percentage value from 0 to 1 that can be changed when creating an instance of the class.
      *
-     * @return the over utilization threshold
+     * <p><b>This method always return the same over utilization threshold for any given host</b></p>
+     *
+     * @param host {@inheritDoc}
+     * @return {@inheritDoc} (that is the same for any given host)
      */
-    protected double getOverUtilizationThreshold() {
+    @Override
+    public double getOverUtilizationThreshold(PowerHost host) {
         return overUtilizationThreshold;
     }
 

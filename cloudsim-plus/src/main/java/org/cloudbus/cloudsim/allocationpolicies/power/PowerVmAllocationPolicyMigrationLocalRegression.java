@@ -19,181 +19,164 @@ import org.cloudbus.cloudsim.util.MathUtil;
  * and define if a host is overloaded or not.
  *
  * <p>If you are using any algorithms, policies or workload included in the power package please cite
- * the following paper:</p>
- *
+ * the following paper:
  * <ul>
  * <li><a href="http://dx.doi.org/10.1002/cpe.1867">Anton Beloglazov, and Rajkumar Buyya, "Optimal Online Deterministic Algorithms and Adaptive
  * Heuristics for Energy and Performance Efficient Dynamic Consolidation of Virtual Machines in
  * Cloud Data Centers", Concurrency and Computation: Practice and Experience (CCPE), Volume 24,
  * Issue 13, Pages: 1397-1420, John Wiley & Sons, Ltd, New York, USA, 2012</a>
  * </ul>
+ * </p>
  *
  * @author Anton Beloglazov
  * @since CloudSim Toolkit 3.0
  */
-public class PowerVmAllocationPolicyMigrationLocalRegression extends PowerVmAllocationPolicyMigrationAbstract {
+public class PowerVmAllocationPolicyMigrationLocalRegression extends PowerVmAllocationPolicyMigrationDynamicUpperThresholdAbstract{
 
-	/** The scheduling interval that defines the periodicity of VM migrations. */
-	private double schedulingInterval;
+    /**
+     * The scheduling interval that defines the periodicity of VM migrations.
+     */
+    private double schedulingInterval;
 
-	/** The safety parameter in percentage (at scale from 0 to 1).
-         * It is a tuning parameter used by the allocation policy to
-         * estimate host utilization (load). The host overload detection is based
-         * on this estimation.
-         * This parameter is used to tune the estimation
-         * to up or down. If the parameter is set as 1.2, for instance,
-         * the estimated host utilization is increased in 20%, giving
-         * the host a safety margin of 20% to grow its usage in order to try
-         * avoiding SLA violations. As this parameter decreases, more
-         * aggressive will be the consolidation (packing) of VMs inside a host,
-         * what may lead to optimization of resource usage, but rising of SLA
-         * violations. Thus, the parameter has to be set in order to balance
-         * such factors.
-         */
-	private double safetyParameter;
-
-	/** The fallback VM allocation policy to be used when
-         * the Local REgression over utilization host detection doesn't have
-         * data to be computed. */
-	private PowerVmAllocationPolicyMigration fallbackVmAllocationPolicy;
-
-	/**
-	 * Creates a PowerVmAllocationPolicyMigrationLocalRegression.
-	 *
-	 * @param vmSelectionPolicy the vm selection policy
-         * @param safetyParameter
-	 * @param schedulingInterval the scheduling interval
-	 * @param fallbackVmAllocationPolicy the fallback vm allocation policy
-	 * @param utilizationThreshold the utilization threshold
-	 */
-	public PowerVmAllocationPolicyMigrationLocalRegression(
-			PowerVmSelectionPolicy vmSelectionPolicy,
-			double safetyParameter,
-			double schedulingInterval,
-			PowerVmAllocationPolicyMigration fallbackVmAllocationPolicy,
-			double utilizationThreshold) {
-		super(vmSelectionPolicy);
-		setSafetyParameter(safetyParameter);
-		setSchedulingInterval(schedulingInterval);
-		setFallbackVmAllocationPolicy(fallbackVmAllocationPolicy);
-	}
-
-	/**
-	 * Creates a PowerVmAllocationPolicyMigrationLocalRegression.
-	 *
-	 * @param vmSelectionPolicy the vm selection policy
+    /**
+     * Creates a PowerVmAllocationPolicyMigrationLocalRegression.
+     *
+     * @param vmSelectionPolicy          the vm selection policy
      * @param safetyParameter
-	 * @param schedulingInterval the scheduling interval
-	 * @param fallbackVmAllocationPolicy the fallback vm allocation policy
-	 */
-	public PowerVmAllocationPolicyMigrationLocalRegression(
-			PowerVmSelectionPolicy vmSelectionPolicy,
-			double safetyParameter,
-			double schedulingInterval,
-			PowerVmAllocationPolicyMigration fallbackVmAllocationPolicy) {
-		super(vmSelectionPolicy);
-		setSafetyParameter(safetyParameter);
-		setSchedulingInterval(schedulingInterval);
-		setFallbackVmAllocationPolicy(fallbackVmAllocationPolicy);
-	}
+     * @param schedulingInterval         the scheduling interval
+     * @param fallbackVmAllocationPolicy the fallback vm allocation policy
+     * @param utilizationThreshold       the utilization threshold
+     */
+    public PowerVmAllocationPolicyMigrationLocalRegression(
+        PowerVmSelectionPolicy vmSelectionPolicy,
+        double safetyParameter,
+        double schedulingInterval,
+        PowerVmAllocationPolicyMigration fallbackVmAllocationPolicy,
+        double utilizationThreshold)
+    {
+        super(vmSelectionPolicy);
+        setSafetyParameter(safetyParameter);
+        setSchedulingInterval(schedulingInterval);
+        setFallbackVmAllocationPolicy(fallbackVmAllocationPolicy);
+    }
 
-	/**
-	 * Checks if a host is over utilized.
-	 *
-	 * @param host the host
-	 * @return true, if is host over utilized; false otherwise
-	 */
-	@Override
-	public boolean isHostOverUtilized(PowerHost host) {
-		PowerHostUtilizationHistory _host = (PowerHostUtilizationHistory) host;
-		double[] utilizationHistory = _host.getUtilizationHistory();
-		int length = 10; // we use 10 to make the regression responsive enough to latest values
-		if (utilizationHistory.length < length) {
-			return getFallbackVmAllocationPolicy().isHostOverUtilized(host);
-		}
-		double[] utilizationHistoryReversed = new double[length];
-		for (int i = 0; i < length; i++) {
-			utilizationHistoryReversed[i] = utilizationHistory[length - i - 1];
-		}
-		double[] estimates = null;
-		try {
-			estimates = getParameterEstimates(utilizationHistoryReversed);
-		} catch (IllegalArgumentException e) {
-			return getFallbackVmAllocationPolicy().isHostOverUtilized(host);
-		}
-		double migrationIntervals = Math.ceil(getMaximumVmMigrationTime(_host) / getSchedulingInterval());
-		double predictedUtilization = estimates[0] + estimates[1] * (length + migrationIntervals);
-		predictedUtilization *= getSafetyParameter();
+    /**
+     * Creates a PowerVmAllocationPolicyMigrationLocalRegression.
+     *
+     * @param vmSelectionPolicy          the vm selection policy
+     * @param safetyParameter
+     * @param schedulingInterval         the scheduling interval
+     * @param fallbackVmAllocationPolicy the fallback vm allocation policy
+     */
+    public PowerVmAllocationPolicyMigrationLocalRegression(
+        PowerVmSelectionPolicy vmSelectionPolicy,
+        double safetyParameter,
+        double schedulingInterval,
+        PowerVmAllocationPolicyMigration fallbackVmAllocationPolicy)
+    {
+        super(vmSelectionPolicy);
+        setSafetyParameter(safetyParameter);
+        setSchedulingInterval(schedulingInterval);
+        setFallbackVmAllocationPolicy(fallbackVmAllocationPolicy);
+    }
 
-		addHistoryEntryIfAbsent(host, predictedUtilization);
+    /**
+     * Checks if a host is over utilized based on estimation of CPU over utilization threshold computed
+     * using Local Regression.
+     *
+     * @param host the host
+     * @return true, if is host over utilized; false otherwise
+     */
+    @Override
+    public boolean isHostOverUtilized(PowerHost host) {
+        final double predictedUtilizationThreshold = getOverUtilizationThreshold(host);
+        if(predictedUtilizationThreshold == Double.MAX_VALUE){
+            return getFallbackVmAllocationPolicy().isHostOverUtilized(host);
+        }
 
-		return predictedUtilization >= 1;
-	}
+        addHistoryEntryIfAbsent(host, predictedUtilizationThreshold);
+        return predictedUtilizationThreshold >= 1;
+    }
 
-	/**
-	 * Gets utilization estimates.
-	 *
-	 * @param utilizationHistoryReversed the utilization history in reverse order
-	 * @return the utilization estimates
-	 */
-	protected double[] getParameterEstimates(double[] utilizationHistoryReversed) {
-		return MathUtil.getLoessParameterEstimates(utilizationHistoryReversed);
-	}
+    /**
+     * {@inheritDoc}.
+     * <b>In this case, this is a predicted value based on Local Regression of the utilization history.</b>
+     * @param host the host to get the over utilization threshold <b>prediction</b>
+     * @return {@inheritDoc} or {@link Double#MAX_VALUE} if the threshold could not be computed
+     */
+    @Override
+    public double getOverUtilizationThreshold(PowerHost host) {
+        try {
+            //@todo uncheck typecast
+            final double predictedUtilization = computeHostUtilizationMeasure((PowerHostUtilizationHistory) host);
+            return predictedUtilization * getSafetyParameter();
+        } catch (IllegalArgumentException | ClassCastException e) {
+            return Double.MAX_VALUE;
+        }
+    }
 
-	/**
-	 * Gets the maximum vm migration time.
-	 *
-	 * @param host the host
-	 * @return the maximum vm migration time
-	 */
-	protected double getMaximumVmMigrationTime(PowerHost host) {
-		double maxRam = host.getVmList().stream().mapToDouble(Vm::getRam).max().orElse(0);
-		return maxRam / (host.getBwCapacity() / (2 * 8));
-	}
+    /**
+     * Computes a Local Regression of the host utilization history to <b>estimate</b> the current host utilization.
+     * Such a value is used to generate the host over utilization threshold.
+     *
+     * @param host the host
+     * @return the host utilization Local Regression
+     * @throws {@inheritDoc}
+     */
+    @Override
+    public double computeHostUtilizationMeasure(PowerHostUtilizationHistory host) throws IllegalArgumentException{
+        double[] utilizationHistory = host.getUtilizationHistory();
+        final int length = 10; // we use 10 to make the regression responsive enough to latest values
+        if (utilizationHistory.length < length) {
+            throw new IllegalArgumentException("There is not enough Host history to estimate its utilization using Local Regression");
+        }
 
-	/**
-	 * Sets the scheduling interval.
-	 *
-	 * @param schedulingInterval the new scheduling interval
-	 */
-	protected final void setSchedulingInterval(double schedulingInterval) {
-		this.schedulingInterval = schedulingInterval;
-	}
+        double[] utilizationHistoryReversed = new double[length];
+        for (int i = 0; i < length; i++) {
+            utilizationHistoryReversed[i] = utilizationHistory[length - i - 1];
+        }
+        double[] estimates = getParameterEstimates(utilizationHistoryReversed);
+        double migrationIntervals = Math.ceil(getMaximumVmMigrationTime(host) / getSchedulingInterval());
+        return estimates[0] + estimates[1] * (length + migrationIntervals);
+    }
 
-	/**
-	 * Gets the scheduling interval.
-	 *
-	 * @return the scheduling interval
-	 */
-	protected double getSchedulingInterval() {
-		return schedulingInterval;
-	}
+    /**
+     * Gets utilization estimates.
+     *
+     * @param utilizationHistoryReversed the utilization history in reverse order
+     * @return the utilization estimates
+     */
+    protected double[] getParameterEstimates(double[] utilizationHistoryReversed) {
+        return MathUtil.getLoessParameterEstimates(utilizationHistoryReversed);
+    }
 
-	/**
-	 * Sets the fallback vm allocation policy.
-	 *
-	 * @param fallbackVmAllocationPolicy the new fallback vm allocation policy
-	 */
-	public final void setFallbackVmAllocationPolicy(
-			PowerVmAllocationPolicyMigration fallbackVmAllocationPolicy) {
-		this.fallbackVmAllocationPolicy = fallbackVmAllocationPolicy;
-	}
+    /**
+     * Gets the maximum vm migration time.
+     *
+     * @param host the host
+     * @return the maximum vm migration time
+     */
+    protected double getMaximumVmMigrationTime(PowerHost host) {
+        final double maxRam = host.getVmList().stream().mapToDouble(Vm::getRam).max().orElse(0);
+        return maxRam / (host.getBwCapacity() / (2 * 8));
+    }
 
-	/**
-	 * Gets the fallback vm allocation policy.
-	 *
-	 * @return the fallback vm allocation policy
-	 */
-	public PowerVmAllocationPolicyMigration getFallbackVmAllocationPolicy() {
-		return fallbackVmAllocationPolicy;
-	}
+    /**
+     * Sets the scheduling interval.
+     *
+     * @param schedulingInterval the new scheduling interval
+     */
+    protected final void setSchedulingInterval(double schedulingInterval) {
+        this.schedulingInterval = schedulingInterval;
+    }
 
-	public double getSafetyParameter() {
-		return safetyParameter;
-	}
-
-	public final void setSafetyParameter(double safetyParameter) {
-		this.safetyParameter = safetyParameter;
-	}
+    /**
+     * Gets the scheduling interval.
+     *
+     * @return the scheduling interval
+     */
+    protected double getSchedulingInterval() {
+        return schedulingInterval;
+    }
 
 }

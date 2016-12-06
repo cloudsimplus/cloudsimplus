@@ -462,11 +462,11 @@ public interface Vm extends Identificable, Comparable<Vm> {
         @Override public double getTotalUtilizationOfCpuMips(double time) { return 0.0; }
         @Override public String getUid(){ return ""; }
         @Override public DatacenterBroker getBroker() { return DatacenterBroker.NULL; }
-        @Override  public Vm setBroker(DatacenterBroker broker) { return Vm.NULL; }
+        @Override public Vm setBroker(DatacenterBroker broker) { return Vm.NULL; }
         @Override public String getVmm() { return ""; }
-        public boolean isCreated() { return false; }
+        @Override public boolean isCreated() { return false; }
         @Override public boolean isInMigration() { return false; }
-        public void setCreated(boolean created){}
+        @Override public void setCreated(boolean created){}
         @Override public Vm setBw(long bwCapacity) { return Vm.NULL; }
         @Override public void setHost(Host host) {}
         @Override public void setInMigration(boolean inMigration) {}

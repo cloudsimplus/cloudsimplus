@@ -98,6 +98,11 @@ public class NonPowerVmAllocationPolicyMigrationWorstFitStaticThreshold extends 
      */
     @Override
     protected PowerHost getUnderUtilizedHost(Set<? extends Host> excludedHosts) {
+        /*@todo there is duplication with the method in the PowerVmAllocationPolicyMigrationAbstract class.
+        * The only difference is that here is defined an underUtilizationThreshold.
+        * Maybe the super class could defined an abstract Predicate (boolean method)
+        * that performs the additional check to validate
+        * */
         return this.<PowerHost>getHostList().stream()
             .filter(h -> !excludedHosts.contains(h))
             .filter(h -> h.getUtilizationOfCpu() > 0)
