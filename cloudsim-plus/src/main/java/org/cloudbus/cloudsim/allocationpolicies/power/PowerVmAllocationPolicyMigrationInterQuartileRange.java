@@ -34,40 +34,28 @@ import org.cloudbus.cloudsim.util.MathUtil;
  * @since CloudSim Toolkit 3.0
  */
 public class PowerVmAllocationPolicyMigrationInterQuartileRange extends PowerVmAllocationPolicyMigrationDynamicUpperThresholdAbstract {
+
     /**
-     * Creates a PowerVmAllocationPolicyMigrationInterQuartileRange.
+     * Creates a PowerVmAllocationPolicyMigrationInterQuartileRange
+     * with a {@link #getSafetyParameter() safety parameter} equals to 0
+     * and no {@link #getFallbackVmAllocationPolicy() fallback policy}.
      *
-     * @param vmSelectionPolicy          the policy that defines how VMs are selected for migration
-     * @param safetyParameter            the safety parameter
-     * @param fallbackVmAllocationPolicy
-     * @param utilizationThreshold       the utilization threshold
+     * @param vmSelectionPolicy the policy that defines how VMs are selected for migration
      */
-    public PowerVmAllocationPolicyMigrationInterQuartileRange(
-        PowerVmSelectionPolicy vmSelectionPolicy,
-        double safetyParameter,
-        PowerVmAllocationPolicyMigrationAbstract fallbackVmAllocationPolicy,
-        double utilizationThreshold)
-    {
+    public PowerVmAllocationPolicyMigrationInterQuartileRange(PowerVmSelectionPolicy vmSelectionPolicy) {
         super(vmSelectionPolicy);
-        setSafetyParameter(safetyParameter);
-        setFallbackVmAllocationPolicy(fallbackVmAllocationPolicy);
     }
 
     /**
      * Creates a PowerVmAllocationPolicyMigrationInterQuartileRange.
      *
-     * @param vmSelectionPolicy          the vm selection policy
+     * @param vmSelectionPolicy          the policy that defines how VMs are selected for migration
      * @param safetyParameter            the safety parameter
-     * @param fallbackVmAllocationPolicy
+     * @param fallbackVmAllocationPolicy the fallback VM allocation policy to be used when
+     * the over utilization host detection doesn't have data to be computed
      */
-    public PowerVmAllocationPolicyMigrationInterQuartileRange(
-        PowerVmSelectionPolicy vmSelectionPolicy,
-        double safetyParameter,
-        PowerVmAllocationPolicyMigration fallbackVmAllocationPolicy)
-    {
-        super(vmSelectionPolicy);
-        setSafetyParameter(safetyParameter);
-        setFallbackVmAllocationPolicy(fallbackVmAllocationPolicy);
+    public PowerVmAllocationPolicyMigrationInterQuartileRange(PowerVmSelectionPolicy vmSelectionPolicy, double safetyParameter, PowerVmAllocationPolicyMigration fallbackVmAllocationPolicy) {
+        super(vmSelectionPolicy, safetyParameter, fallbackVmAllocationPolicy);
     }
 
     /**

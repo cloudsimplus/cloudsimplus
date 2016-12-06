@@ -255,16 +255,16 @@ public abstract class RunnerAbstract {
             vmAllocationPolicy = new PowerVmAllocationPolicyMigrationLocalRegression(
                 vmSelectionPolicy,
                 safetyParameterOrUtilizationThreshold,
-                Constants.SCHEDULING_INTERVAL,
-                fallbackVmSelectionPolicy);
+                fallbackVmSelectionPolicy)
+                .setSchedulingInterval(Constants.SCHEDULING_INTERVAL);
         } else if (vmAllocationPolicyName.equals("lrr")) {
             PowerVmAllocationPolicyMigrationAbstract fallbackVmSelectionPolicy =
                 new PowerVmAllocationPolicyMigrationStaticThreshold(vmSelectionPolicy,0.7);
             vmAllocationPolicy = new PowerVmAllocationPolicyMigrationLocalRegressionRobust(
                 vmSelectionPolicy,
                 safetyParameterOrUtilizationThreshold,
-                Constants.SCHEDULING_INTERVAL,
-                fallbackVmSelectionPolicy);
+                fallbackVmSelectionPolicy)
+                .setSchedulingInterval(Constants.SCHEDULING_INTERVAL);
         } else if (vmAllocationPolicyName.equals("thr")) {
             vmAllocationPolicy = new PowerVmAllocationPolicyMigrationStaticThreshold(
                 vmSelectionPolicy,

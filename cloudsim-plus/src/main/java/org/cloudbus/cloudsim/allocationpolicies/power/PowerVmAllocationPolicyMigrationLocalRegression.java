@@ -34,50 +34,35 @@ import org.cloudbus.cloudsim.util.MathUtil;
 public class PowerVmAllocationPolicyMigrationLocalRegression extends PowerVmAllocationPolicyMigrationDynamicUpperThresholdAbstract{
 
     /**
-     * The scheduling interval that defines the periodicity of VM migrations.
+     * @see #getSchedulingInterval()
      */
     private double schedulingInterval;
 
     /**
-     * Creates a PowerVmAllocationPolicyMigrationLocalRegression.
+     * Creates a PowerVmAllocationPolicyMigrationLocalRegression
+     * with a {@link #getSafetyParameter() safety parameter} equals to 0
+     * and no {@link #getFallbackVmAllocationPolicy() fallback policy}.
      *
-     * @param vmSelectionPolicy          the vm selection policy
-     * @param safetyParameter
-     * @param schedulingInterval         the scheduling interval
-     * @param fallbackVmAllocationPolicy the fallback vm allocation policy
-     * @param utilizationThreshold       the utilization threshold
+     * @param vmSelectionPolicy the policy that defines how VMs are selected for migration
      */
-    public PowerVmAllocationPolicyMigrationLocalRegression(
-        PowerVmSelectionPolicy vmSelectionPolicy,
-        double safetyParameter,
-        double schedulingInterval,
-        PowerVmAllocationPolicyMigration fallbackVmAllocationPolicy,
-        double utilizationThreshold)
-    {
+    public PowerVmAllocationPolicyMigrationLocalRegression(PowerVmSelectionPolicy vmSelectionPolicy) {
         super(vmSelectionPolicy);
-        setSafetyParameter(safetyParameter);
-        setSchedulingInterval(schedulingInterval);
-        setFallbackVmAllocationPolicy(fallbackVmAllocationPolicy);
     }
 
     /**
      * Creates a PowerVmAllocationPolicyMigrationLocalRegression.
      *
-     * @param vmSelectionPolicy          the vm selection policy
-     * @param safetyParameter
-     * @param schedulingInterval         the scheduling interval
-     * @param fallbackVmAllocationPolicy the fallback vm allocation policy
+     * @param vmSelectionPolicy          the policy that defines how VMs are selected for migration
+     * @param safetyParameter            the safety parameter
+     * @param fallbackVmAllocationPolicy the fallback VM allocation policy to be used when
+     * the over utilization host detection doesn't have data to be computed
      */
     public PowerVmAllocationPolicyMigrationLocalRegression(
         PowerVmSelectionPolicy vmSelectionPolicy,
         double safetyParameter,
-        double schedulingInterval,
         PowerVmAllocationPolicyMigration fallbackVmAllocationPolicy)
     {
-        super(vmSelectionPolicy);
-        setSafetyParameter(safetyParameter);
-        setSchedulingInterval(schedulingInterval);
-        setFallbackVmAllocationPolicy(fallbackVmAllocationPolicy);
+        super(vmSelectionPolicy, safetyParameter, fallbackVmAllocationPolicy);
     }
 
     /**
@@ -162,20 +147,21 @@ public class PowerVmAllocationPolicyMigrationLocalRegression extends PowerVmAllo
     }
 
     /**
-     * Sets the scheduling interval.
+     * Sets the scheduling interval that defines the periodicity of VM migrations.
      *
      * @param schedulingInterval the new scheduling interval
      */
-    protected final void setSchedulingInterval(double schedulingInterval) {
+    public final PowerVmAllocationPolicyMigrationLocalRegression setSchedulingInterval(double schedulingInterval) {
         this.schedulingInterval = schedulingInterval;
+        return this;
     }
 
     /**
-     * Gets the scheduling interval.
+     * Gets the scheduling interval that defines the periodicity of VM migrations.
      *
      * @return the scheduling interval
      */
-    protected double getSchedulingInterval() {
+    public double getSchedulingInterval() {
         return schedulingInterval;
     }
 

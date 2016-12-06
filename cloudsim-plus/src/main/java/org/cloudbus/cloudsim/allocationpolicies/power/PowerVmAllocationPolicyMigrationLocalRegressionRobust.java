@@ -30,43 +30,30 @@ import org.cloudbus.cloudsim.util.MathUtil;
  */
 public class PowerVmAllocationPolicyMigrationLocalRegressionRobust extends PowerVmAllocationPolicyMigrationLocalRegression {
 
-	/**
-	 * Creates a PowerVmAllocationPolicyMigrationLocalRegressionRobust.
-	 *
-	 * @param vmSelectionPolicy the vm selection policy
-     * @param safetyParameter
-	 * @param schedulingInterval the scheduling interval
-	 * @param fallbackVmAllocationPolicy the fallback vm allocation policy
-	 * @param utilizationThreshold the utilization threshold
-	 */
-	public PowerVmAllocationPolicyMigrationLocalRegressionRobust(
-			PowerVmSelectionPolicy vmSelectionPolicy,
-			double safetyParameter,
-			double schedulingInterval,
-			PowerVmAllocationPolicyMigration fallbackVmAllocationPolicy,
-			double utilizationThreshold)
-    {
-		super(vmSelectionPolicy, safetyParameter, schedulingInterval, fallbackVmAllocationPolicy, utilizationThreshold);
-	}
+    /**
+     * Creates a PowerVmAllocationPolicyMigrationLocalRegressionRobust
+     * with a {@link #getSafetyParameter() safety parameter} equals to 0
+     * and no {@link #getFallbackVmAllocationPolicy() fallback policy}.
+     *
+     * @param vmSelectionPolicy the policy that defines how VMs are selected for migration
+     */
+    public PowerVmAllocationPolicyMigrationLocalRegressionRobust(PowerVmSelectionPolicy vmSelectionPolicy) {
+        super(vmSelectionPolicy);
+    }
 
-	/**
-	 * Creates a PowerVmAllocationPolicyMigrationLocalRegressionRobust.
-	 *
-	 * @param vmSelectionPolicy the policy that defines how VMs are selected for migration
-     * @param safetyParameter
-	 * @param schedulingInterval the scheduling interval
-	 * @param fallbackVmAllocationPolicy the fallback vm allocation policy
-	 */
-	public PowerVmAllocationPolicyMigrationLocalRegressionRobust(
-			PowerVmSelectionPolicy vmSelectionPolicy,
-			double safetyParameter,
-			double schedulingInterval,
-			PowerVmAllocationPolicyMigration fallbackVmAllocationPolicy)
-    {
-		super(vmSelectionPolicy, safetyParameter, schedulingInterval, fallbackVmAllocationPolicy);
-	}
+    /**
+     * Creates a PowerVmAllocationPolicyMigrationLocalRegressionRobust.
+     *
+     * @param vmSelectionPolicy          the policy that defines how VMs are selected for migration
+     * @param safetyParameter            the safety parameter
+     * @param fallbackVmAllocationPolicy the fallback VM allocation policy to be used when
+     * the over utilization host detection doesn't have data to be computed
+     */
+    public PowerVmAllocationPolicyMigrationLocalRegressionRobust(PowerVmSelectionPolicy vmSelectionPolicy, double safetyParameter, PowerVmAllocationPolicyMigration fallbackVmAllocationPolicy) {
+        super(vmSelectionPolicy, safetyParameter, fallbackVmAllocationPolicy);
+    }
 
-	/**
+    /**
 	 * Gets the utilization estimates.
 	 *
 	 * @param utilizationHistoryReversed the utilization history reversed
