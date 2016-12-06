@@ -46,15 +46,17 @@ public interface PowerVmAllocationPolicyMigrationDynamicUpperThreshold extends P
      * As the safety parameter increases, the threshold decreases,
      * what may lead to less SLA violations. So, as higher is that parameter,
      * safer the algorithm will be when defining a host as overloaded.
+     * <b>A value equal to 0 indicates that the safery parameter doesn't affect
+     * the computed CPU utilization threshold.</b>
      * </p>
      *
      * <p>Let's take an example of a class that uses the MAD to compute the
-     * over utilization threshold. Considering a safety parameter of 1.5 (150%),
-     * a host's resource usage mean of 0.6 (60%)
-     * and a MAD of 0.2 (thus, the usage may vary from 0.4 to 0.8).
-     * To compute the usage threshold, the MAD is increased by 60%, being equals to 0.32.
-     * Finally, the threshold will be 1 - 0.32 = 0.68.
-     * Thus, only when the host utilization threshold exceeds 68%,
+     * over utilization threshold. Considering a host's resource usage mean of 0.6 (60%)
+     * and a MAD of 0.2, meaning the usage may vary from 0.4 to 0.8.
+     * Now take a safety parameter of 0.5 (50%).
+     * To compute the usage threshold, the MAD is increased by 50%, being equals to 0.3.
+     * Finally, the threshold will be 1 - 0.3 = 0.7.
+     * Thus, only when the host utilization threshold exceeds 70%,
      * the host is considered overloaded.
      * </p>
      *

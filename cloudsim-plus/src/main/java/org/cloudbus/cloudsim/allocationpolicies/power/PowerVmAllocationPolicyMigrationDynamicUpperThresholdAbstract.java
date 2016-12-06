@@ -4,6 +4,8 @@ import org.cloudbus.cloudsim.hosts.power.PowerHost;
 import org.cloudbus.cloudsim.hosts.power.PowerHostUtilizationHistory;
 import org.cloudbus.cloudsim.selectionpolicies.power.PowerVmSelectionPolicy;
 
+import java.util.Objects;
+
 /**
  * An abstract class that is the base for implementation of Power-aware VM allocation policies that use
  * a dynamic over utilization threshold.
@@ -16,7 +18,7 @@ public abstract class PowerVmAllocationPolicyMigrationDynamicUpperThresholdAbstr
     /**
      * @see #getSafetyParameter()
      */
-    private double safetyParameter = 0;
+    private double safetyParameter;
 
     /**
      * @see #getFallbackVmAllocationPolicy()
@@ -24,13 +26,32 @@ public abstract class PowerVmAllocationPolicyMigrationDynamicUpperThresholdAbstr
     private PowerVmAllocationPolicyMigration fallbackVmAllocationPolicy;
 
     /**
-     * Creates a PowerVmAllocationPolicyMigration.
+     * Creates a PowerVmAllocationPolicyMigrationDynamicUpperThreshold
+     * with a {@link #getSafetyParameter() safety parameter} equals to 0
+     * and no {@link #getFallbackVmAllocationPolicy() fallback policy}.
      *
      * @param vmSelectionPolicy the policy that defines how VMs are selected for migration
      */
     public PowerVmAllocationPolicyMigrationDynamicUpperThresholdAbstract(PowerVmSelectionPolicy vmSelectionPolicy) {
+        this(vmSelectionPolicy, 0, PowerVmAllocationPolicyMigration.NULL);
+    }
+
+    /**
+     * Creates a PowerVmAllocationPolicyMigrationDynamicUpperThreshold.
+     *
+     * @param vmSelectionPolicy          the policy that defines how VMs are selected for migration
+     * @param safetyParameter            the safety parameter
+     * @param fallbackVmAllocationPolicy the fallback VM allocation policy to be used when
+     * the over utilization host detection doesn't have data to be computed
+     */
+    public PowerVmAllocationPolicyMigrationDynamicUpperThresholdAbstract(
+        PowerVmSelectionPolicy vmSelectionPolicy,
+        double safetyParameter,
+        PowerVmAllocationPolicyMigration fallbackVmAllocationPolicy)
+    {
         super(vmSelectionPolicy);
-        this.fallbackVmAllocationPolicy = PowerVmAllocationPolicyMigration.NULL;
+        setSafetyParameter(safetyParameter);
+        setFallbackVmAllocationPolicy(fallbackVmAllocationPolicy);
     }
 
     /**
@@ -75,9 +96,9 @@ public abstract class PowerVmAllocationPolicyMigrationDynamicUpperThresholdAbstr
      * @param safetyParameter the new safety parameter
      */
     protected final void setSafetyParameter(double safetyParameter) {
-        if (safetyParameter < 0) {
+        if (safetyParameter < 0 || safetyParameter > 1) {
             throw new IllegalArgumentException(
-                "The safety parameter cannot be less than zero.");
+                "The safety parameter must be between [0 and 1].");
         }
         this.safetyParameter = safetyParameter;
     }
@@ -89,6 +110,10 @@ public abstract class PowerVmAllocationPolicyMigrationDynamicUpperThresholdAbstr
 
     @Override
     public void setFallbackVmAllocationPolicy(PowerVmAllocationPolicyMigration fallbackVmAllocationPolicy) {
+        if(Objects.isNull(fallbackVmAllocationPolicy)){
+            fallbackVmAllocationPolicy = PowerVmAllocationPolicyMigration.NULL;
+        }
+
         this.fallbackVmAllocationPolicy = fallbackVmAllocationPolicy;
     }
 

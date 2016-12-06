@@ -33,22 +33,14 @@ import org.cloudbus.cloudsim.util.MathUtil;
 public class PowerVmAllocationPolicyMigrationMedianAbsoluteDeviation extends PowerVmAllocationPolicyMigrationDynamicUpperThresholdAbstract {
 
     /**
-     * Creates a PowerVmAllocationPolicyMigrationMedianAbsoluteDeviation.
+     * Creates a PowerVmAllocationPolicyMigrationMedianAbsoluteDeviation
+     * with a {@link #getSafetyParameter() safety parameter} equals to 0
+     * and no {@link #getFallbackVmAllocationPolicy() fallback policy}.
      *
-     * @param vmSelectionPolicy          the policy that defines how VMs are selected for migration
-     * @param safetyParameter            the safety parameter
-     * @param fallbackVmAllocationPolicy
-     * @param utilizationThreshold       the utilization threshold
+     * @param vmSelectionPolicy the policy that defines how VMs are selected for migration
      */
-    public PowerVmAllocationPolicyMigrationMedianAbsoluteDeviation(
-        PowerVmSelectionPolicy vmSelectionPolicy,
-        double safetyParameter,
-        PowerVmAllocationPolicyMigration fallbackVmAllocationPolicy,
-        double utilizationThreshold)
-    {
+    public PowerVmAllocationPolicyMigrationMedianAbsoluteDeviation(PowerVmSelectionPolicy vmSelectionPolicy) {
         super(vmSelectionPolicy);
-        setSafetyParameter(safetyParameter);
-        setFallbackVmAllocationPolicy(fallbackVmAllocationPolicy);
     }
 
     /**
@@ -56,16 +48,11 @@ public class PowerVmAllocationPolicyMigrationMedianAbsoluteDeviation extends Pow
      *
      * @param vmSelectionPolicy          the policy that defines how VMs are selected for migration
      * @param safetyParameter            the safety parameter
-     * @param fallbackVmAllocationPolicy
+     * @param fallbackVmAllocationPolicy the fallback VM allocation policy to be used when
+     * the over utilization host detection doesn't have data to be computed
      */
-    public PowerVmAllocationPolicyMigrationMedianAbsoluteDeviation(
-        PowerVmSelectionPolicy vmSelectionPolicy,
-        double safetyParameter,
-        PowerVmAllocationPolicyMigration fallbackVmAllocationPolicy)
-    {
-        super(vmSelectionPolicy);
-        setSafetyParameter(safetyParameter);
-        setFallbackVmAllocationPolicy(fallbackVmAllocationPolicy);
+    public PowerVmAllocationPolicyMigrationMedianAbsoluteDeviation(PowerVmSelectionPolicy vmSelectionPolicy, double safetyParameter, PowerVmAllocationPolicyMigration fallbackVmAllocationPolicy) {
+        super(vmSelectionPolicy, safetyParameter, fallbackVmAllocationPolicy);
     }
 
     /**
