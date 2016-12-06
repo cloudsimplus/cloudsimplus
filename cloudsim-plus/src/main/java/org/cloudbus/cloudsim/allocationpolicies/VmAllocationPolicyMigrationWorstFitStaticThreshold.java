@@ -19,16 +19,13 @@
  *     You should have received a copy of the GNU General Public License
  *     along with CloudSim Plus. If not, see <http://www.gnu.org/licenses/>.
  */
-package org.cloudsimplus.examples.migration;
+package org.cloudbus.cloudsim.allocationpolicies;
 
-import java.util.Collections;
-import java.util.Comparator;
 import java.util.List;
 import java.util.Set;
 
 import org.cloudbus.cloudsim.hosts.Host;
 import org.cloudbus.cloudsim.vms.Vm;
-import org.cloudbus.cloudsim.allocationpolicies.VmAllocationPolicy;
 import org.cloudbus.cloudsim.hosts.power.PowerHost;
 import org.cloudbus.cloudsim.hosts.power.PowerHostSimple;
 import org.cloudbus.cloudsim.allocationpolicies.power.PowerVmAllocationPolicyMigrationStaticThreshold;
@@ -37,17 +34,17 @@ import org.cloudbus.cloudsim.selectionpolicies.power.PowerVmSelectionPolicy;
 /**
  * A {@link VmAllocationPolicy} that uses a Static CPU utilization Threshold (THR) to
  * detect host {@link #getUnderUtilizationThreshold() under} and
- * {@link #getOverUtilizationThreshold() over} utilization.
+ * {@link #getOverUtilizationThreshold(PowerHost)} over} utilization.
  * It selects as the host to place a VM, that one having the least used amount of CPU
  * MIPS (Worst Fit policy), <b>disregarding energy consumption</b>.
  *
  * @author Manoel Campos da Silva Filho
  */
-public class NonPowerVmAllocationPolicyMigrationWorstFitStaticThreshold extends PowerVmAllocationPolicyMigrationStaticThreshold {
+public class VmAllocationPolicyMigrationWorstFitStaticThreshold extends PowerVmAllocationPolicyMigrationStaticThreshold {
     /**@see #getUnderUtilizationThreshold() */
     private double underUtilizationThreshold = 0.35;
 
-    public NonPowerVmAllocationPolicyMigrationWorstFitStaticThreshold(
+    public VmAllocationPolicyMigrationWorstFitStaticThreshold(
             PowerVmSelectionPolicy vmSelectionPolicy,
             double utilizationThreshold)
     {
@@ -64,9 +61,21 @@ public class NonPowerVmAllocationPolicyMigrationWorstFitStaticThreshold extends 
      */
     @Override
     public <T extends Host> List<T> getHostList() {
-        final List<PowerHostSimple> list = super.<PowerHostSimple>getHostList();
-        Collections.sort(list, new PowerHostComparator());
-        return (List<T>) list;
+        super.<PowerHost>getHostList().sort(this::compareHosts);
+        return (List<T>) super.<PowerHostSimple>getHostList();
+    }
+
+    /**
+     * Compares two hosts. The host with the most available CPU MIPS
+     * is considered to be greater than the other one. Thus, in a sort operation,
+     * the host will be sorted in increasing order of available CPU MIPS.
+     *
+     * @param host1 the first host to be compared
+     * @param host2 the second host to be compared
+     * @return
+     */
+    private int compareHosts(PowerHost host1, PowerHost host2) {
+        return Double.compare(getUtilizationOfCpuMips(host1), getUtilizationOfCpuMips(host2));
     }
 
     /**
@@ -132,30 +141,4 @@ public class NonPowerVmAllocationPolicyMigrationWorstFitStaticThreshold extends 
         this.underUtilizationThreshold = underUtilizationThreshold;
     }
 
-    /**
-     * A {@link PowerHost} {@link Comparator} class that compares hosts based on
-     * their availability of CPU MIPS, considering the capacity
-     * of all Host PEs. This Comparator is used to allow sorting
-     * a list of VMs in methods such as {@link #getHostList()}.
-     *
-     * @see PowerHostComparator#compare(PowerHostSimple, PowerHostSimple)
-     */
-    class PowerHostComparator implements Comparator<PowerHostSimple> {
-        public PowerHostComparator() {}
-
-        /**
-         * Compares two hosts in an operation similar to
-         * {@code host1 > host2}. The host with the most available CPU MIPS
-         * is considered to be greater than the other one. Thus, in a sort operation,
-         * the host will be sorted in increasing order of available CPU MIPS.
-         *
-         * @param host1 the first host to be compared
-         * @param host2 the second host to be compared
-         * @return {@inheritDoc}
-         */
-        @Override
-        public int compare(PowerHostSimple host1, PowerHostSimple host2) {
-            return Double.compare(getUtilizationOfCpuMips(host1), getUtilizationOfCpuMips(host2));
-        }
-    }
 }

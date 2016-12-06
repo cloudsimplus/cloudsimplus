@@ -62,7 +62,7 @@ public abstract class PowerVmAllocationPolicyMigrationAbstract extends PowerVmAl
     /**
      * The metric history.
      *
-     * @todo the map stores different data. Sometimes it stores the upper
+     * @TODO the map stores different data. Sometimes it stores the upper
      * threshold, other it stores utilization threshold or predicted
      * utilization, that is very confusing.
      */
@@ -287,8 +287,8 @@ public abstract class PowerVmAllocationPolicyMigrationAbstract extends PowerVmAl
      * @return the PM found to host the VM or {@link PowerHost#NULL} if not found
      */
     public PowerHost findHostForVm(Vm vm, Set<? extends Host> excludedHosts) {
-        Comparator<PowerHost> hostPowerConsumptionComparator = (h1, h2) ->
-            Double.compare(getPowerAfterAllocationDifference(h1, vm), getPowerAfterAllocationDifference(h2, vm));
+        Comparator<PowerHost> hostPowerConsumptionComparator =
+            Comparator.comparingDouble(h -> getPowerAfterAllocationDifference(h, vm));
 
         return this.<PowerHost>getHostList().stream()
             .filter(h -> !excludedHosts.contains(h))
@@ -307,7 +307,7 @@ public abstract class PowerVmAllocationPolicyMigrationAbstract extends PowerVmAl
      */
     protected List<Host> extractHostListFromMigrationMap(Map<Vm, Host> migrationMap) {
         return migrationMap.entrySet().stream()
-                .map(e -> e.getValue())
+                .map(Map.Entry::getValue)
                 .collect(Collectors.toList());
     }
 
@@ -398,12 +398,10 @@ public abstract class PowerVmAllocationPolicyMigrationAbstract extends PowerVmAl
      * @return the vms to migrate from under utilized host
      */
     protected List<? extends Vm> getVmsToMigrateFromUnderUtilizedHost(PowerHost host) {
-        List<Vm> vmsToMigrate = new LinkedList<>();
-        for (Vm vm : host.getVmList()) {
-            if (!vm.isInMigration()) {
-                vmsToMigrate.add(vm);
-            }
-        }
+        List<Vm> vmsToMigrate =
+            host.getVmList().stream()
+                .filter(vm -> !vm.isInMigration())
+                .collect(Collectors.toCollection(LinkedList::new));
         return vmsToMigrate;
     }
 
