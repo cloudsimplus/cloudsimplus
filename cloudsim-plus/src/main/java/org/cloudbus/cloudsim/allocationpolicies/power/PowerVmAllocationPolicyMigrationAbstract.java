@@ -11,6 +11,7 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 import org.cloudbus.cloudsim.hosts.Host;
+import org.cloudbus.cloudsim.hosts.HostDynamicWorkload;
 import org.cloudbus.cloudsim.hosts.power.PowerHost;
 import org.cloudbus.cloudsim.lists.VmList;
 import org.cloudbus.cloudsim.util.Log;
@@ -211,7 +212,7 @@ public abstract class PowerVmAllocationPolicyMigrationAbstract extends PowerVmAl
         return migrationMap;
     }
 
-    public void printVmIDs(List<? extends Vm> vmList) {
+    private void printVmIDs(List<? extends Vm> vmList) {
         if (!Log.isDisabled()) {
             for (Vm vm : vmList) {
                 Log.print(vm.getId() + " ");
@@ -398,11 +399,9 @@ public abstract class PowerVmAllocationPolicyMigrationAbstract extends PowerVmAl
      * @return the vms to migrate from under utilized host
      */
     protected List<? extends Vm> getVmsToMigrateFromUnderUtilizedHost(PowerHost host) {
-        List<Vm> vmsToMigrate =
-            host.getVmList().stream()
-                .filter(vm -> !vm.isInMigration())
-                .collect(Collectors.toCollection(LinkedList::new));
-        return vmsToMigrate;
+        return host.getVmList().stream()
+            .filter(vm -> !vm.isInMigration())
+            .collect(Collectors.toCollection(LinkedList::new));
     }
 
     /**
@@ -411,13 +410,9 @@ public abstract class PowerVmAllocationPolicyMigrationAbstract extends PowerVmAl
      * @return the over utilized hosts
      */
     protected List<PowerHostUtilizationHistory> getOverUtilizedHosts() {
-        List<PowerHostUtilizationHistory> overUtilizedHosts = new LinkedList<>();
-        for (PowerHostUtilizationHistory host : this.<PowerHostUtilizationHistory>getHostList()) {
-            if (isHostOverUtilized(host)) {
-                overUtilizedHosts.add(host);
-            }
-        }
-        return overUtilizedHosts;
+        return this.<PowerHostUtilizationHistory>getHostList().stream()
+            .filter(this::isHostOverUtilized)
+            .collect(Collectors.toCollection(LinkedList::new));
     }
 
     /**
@@ -426,14 +421,9 @@ public abstract class PowerVmAllocationPolicyMigrationAbstract extends PowerVmAl
      * @return the switched off hosts
      */
     protected List<PowerHost> getSwitchedOffHosts() {
-        List<PowerHost> switchedOffHosts = new LinkedList<>();
-        for (PowerHost host : this.<PowerHost>getHostList()) {
-            if (host.getUtilizationOfCpu() == 0) {
-                switchedOffHosts.add(host);
-            }
-        }
-
-        return switchedOffHosts;
+        return this.<PowerHost>getHostList().stream()
+            .filter(host -> host.getUtilizationOfCpu() == 0)
+            .collect(Collectors.toCollection(LinkedList::new));
     }
 
     /**
@@ -448,7 +438,7 @@ public abstract class PowerVmAllocationPolicyMigrationAbstract extends PowerVmAl
             .filter(h -> !excludedHosts.contains(h))
             .filter(h -> h.getUtilizationOfCpu() > 0)
             .filter(h -> !allVmsAreMigratingOutOrThereAreVmsMigratingIn(h))
-            .min((h1, h2) -> Double.compare(h1.getUtilizationOfCpu(), h2.getUtilizationOfCpu()))
+            .min(Comparator.comparingDouble(HostDynamicWorkload::getUtilizationOfCpu))
             .orElse(PowerHost.NULL);
     }
 
@@ -551,7 +541,7 @@ public abstract class PowerVmAllocationPolicyMigrationAbstract extends PowerVmAl
         double requestedTotalMips = vm.getCurrentRequestedTotalMips();
         double hostUtilizationMips = getUtilizationOfCpuMips(host);
         double hostPotentialUtilizationMips = hostUtilizationMips + requestedTotalMips;
-        double pePotentialUtilization = hostPotentialUtilizationMips / host.getTotalMips();
+        final double pePotentialUtilization = hostPotentialUtilizationMips / host.getTotalMips();
         return pePotentialUtilization;
     }
 

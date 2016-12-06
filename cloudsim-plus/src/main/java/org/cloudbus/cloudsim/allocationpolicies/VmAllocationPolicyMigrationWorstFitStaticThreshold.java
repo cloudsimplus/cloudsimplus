@@ -89,7 +89,7 @@ public class VmAllocationPolicyMigrationWorstFitStaticThreshold extends PowerVmA
      * any suitable one.
      */
     @Override
-    public PowerHostSimple findHostForVm(Vm vm, Set<? extends Host> excludedHosts) {
+    public PowerHost findHostForVm(Vm vm, Set<? extends Host> excludedHosts) {
         for (PowerHostSimple host : this.<PowerHostSimple>getHostList()) {
             if (!excludedHosts.contains(host) && host.isSuitableForVm(vm)
                     && !isHostOverUtilizedAfterAllocation(host, vm)) {
@@ -97,7 +97,7 @@ public class VmAllocationPolicyMigrationWorstFitStaticThreshold extends PowerVmA
             }
         }
 
-        return null;
+        return PowerHost.NULL;
     }
 
     /**
