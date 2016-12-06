@@ -10,6 +10,8 @@ package org.cloudbus.cloudsim.provisioners;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
+
 import org.cloudbus.cloudsim.vms.Vm;
 import org.cloudbus.cloudsim.resources.ResourceManageable;
 
@@ -41,7 +43,7 @@ public abstract class AbstractResourceProvisioner implements ResourceProvisioner
      * @post $none
      */
     public AbstractResourceProvisioner(final ResourceManageable resource) {
-        if(resource == null){
+        if(Objects.isNull(resource)){
             throw new IllegalArgumentException("Resource cannot be null");
         }
 

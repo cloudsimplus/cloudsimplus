@@ -163,7 +163,7 @@ public class PowerDatacenterNonPowerAware extends PowerDatacenter {
                     Host targetHost = entry.getValue();
                     Host oldHost = entry.getKey().getHost();
 
-                    if (oldHost == null) {
+                    if (oldHost == Host.NULL) {
                         Log.printFormattedLine(
                             "%.2f: Migration of VM #%d to Host #%d is started",
                             getSimulation().clock(),

@@ -12,6 +12,8 @@ import org.cloudbus.cloudsim.network.topologies.NetworkTopology;
 import org.cloudbus.cloudsim.util.Log;
 import org.cloudbus.cloudsim.core.predicates.Predicate;
 
+import java.util.Objects;
+
 /**
  * This class represents a simulation entity. An entity handles events and can
  * send events to other entities.
@@ -49,7 +51,7 @@ public abstract class CloudSimEntity implements SimEntity {
      * @throws IllegalArgumentException when the entity name is invalid
      */
     public CloudSimEntity(Simulation simulation) {
-        if(simulation == null){
+        if(Objects.isNull(simulation)){
             simulation = Simulation.NULL;
         }
 
@@ -362,9 +364,11 @@ public abstract class CloudSimEntity implements SimEntity {
         if (!simulation.running()) {
             return null;
         }
+
         if (numEventsWaiting(p) > 0) {
             return selectEvent(p);
         }
+
         return null;
     }
 
@@ -442,14 +446,14 @@ public abstract class CloudSimEntity implements SimEntity {
 
     @Override
     public SimEntity setName(final String newName) throws IllegalArgumentException {
-        if (name == null) {
+        if (Objects.isNull(newName)) {
             throw new IllegalArgumentException("Entity names can't be null.");
         }
-        if (name.contains(" ")) {
+        if (newName.contains(" ")) {
             throw new IllegalArgumentException("Entity names can't contain spaces.");
         }
 
-        if (name.trim().equals("")) {
+        if (newName.trim().equals("")) {
             throw new IllegalArgumentException("Entity names can't be empty.");
         }
 

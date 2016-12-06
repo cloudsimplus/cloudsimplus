@@ -29,7 +29,7 @@ public interface CloudletScheduler extends Serializable {
      * Cancels execution of a cloudlet.
      *
      * @param cloudletId ID of the cloudlet being canceled
-     * @return the canceled cloudlet, $null if not found
+     * @return the canceled cloudlet or {@link Cloudlet#NULL} if not found
      * @pre $none
      * @post $none
      */

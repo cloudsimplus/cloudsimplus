@@ -8,8 +8,9 @@
 
 package org.cloudbus.cloudsim.allocationpolicies.power;
 
+import org.cloudbus.cloudsim.core.Simulation;
+import org.cloudbus.cloudsim.hosts.power.PowerHost;
 import org.cloudbus.cloudsim.util.Log;
-import org.cloudbus.cloudsim.hosts.power.PowerHostSimple;
 import org.cloudbus.cloudsim.hosts.power.PowerHostUtilizationHistory;
 import org.cloudbus.cloudsim.selectionpolicies.power.PowerVmSelectionPolicy;
 import org.cloudbus.cloudsim.vms.Vm;
@@ -18,10 +19,10 @@ import org.cloudbus.cloudsim.util.MathUtil;
 /**
  * A VM allocation policy that uses Inter Quartile Range (IQR)  to compute
  * a dynamic threshold in order to detect host over utilization.
- *
+ * <p>
  * <p>If you are using any algorithms, policies or workload included in the power package please cite
  * the following paper:</p>
- *
+ * <p>
  * <ul>
  * <li><a href="http://dx.doi.org/10.1002/cpe.1867">Anton Beloglazov, and Rajkumar Buyya, "Optimal Online Deterministic Algorithms and Adaptive
  * Heuristics for Energy and Performance Efficient Dynamic Consolidation of Virtual Machines in
@@ -32,142 +33,57 @@ import org.cloudbus.cloudsim.util.MathUtil;
  * @author Anton Beloglazov
  * @since CloudSim Toolkit 3.0
  */
-public class PowerVmAllocationPolicyMigrationInterQuartileRange extends
-		PowerVmAllocationPolicyMigrationAbstract {
-
-	/** The safety parameter in percentage (at scale from 0 to 1).
-         * It is a tuning parameter used by the allocation policy to
-         * estimate host utilization (load). The host overload detection is based
-         * on this estimation.
-         * This parameter is used to tune the estimation
-         * to up or down. If the parameter is set as 1.2, for instance,
-         * the estimated host utilization is increased in 20%, giving
-         * the host a safety margin of 20% to grow its usage in order to try
-         * avoiding SLA violations. As this parameter decreases, more
-         * aggressive will be the consolidation (packing) of VMs inside a host,
-         * what may lead to optimization of resource usage, but rising of SLA
-         * violations. Thus, the parameter has to be set in order to balance
-         * such factors.
-         */
-	private double safetyParameter = 0;
-
-	/** The fallback VM allocation policy to be used when
-         * the IQR over utilization host detection doesn't have
-         * data to be computed. */
-	private PowerVmAllocationPolicyMigration fallbackVmAllocationPolicy;
-
-	/**
-	 * Creates a PowerVmAllocationPolicyMigrationInterQuartileRange.
-	 *
-	 * @param vmSelectionPolicy the policy that defines how VMs are selected for migration
-	 * @param safetyParameter the safety parameter
+public class PowerVmAllocationPolicyMigrationInterQuartileRange extends PowerVmAllocationPolicyMigrationDynamicUpperThresholdAbstract {
+    /**
+     * Creates a PowerVmAllocationPolicyMigrationInterQuartileRange.
+     *
+     * @param vmSelectionPolicy          the policy that defines how VMs are selected for migration
+     * @param safetyParameter            the safety parameter
      * @param fallbackVmAllocationPolicy
-	 * @param utilizationThreshold the utilization threshold
-	 */
-	public PowerVmAllocationPolicyMigrationInterQuartileRange(
-			PowerVmSelectionPolicy vmSelectionPolicy,
-			double safetyParameter,
-			PowerVmAllocationPolicyMigrationAbstract fallbackVmAllocationPolicy,
-			double utilizationThreshold) {
-		super(vmSelectionPolicy);
-		setSafetyParameter(safetyParameter);
-		setFallbackVmAllocationPolicy(fallbackVmAllocationPolicy);
-	}
+     * @param utilizationThreshold       the utilization threshold
+     */
+    public PowerVmAllocationPolicyMigrationInterQuartileRange(
+        PowerVmSelectionPolicy vmSelectionPolicy,
+        double safetyParameter,
+        PowerVmAllocationPolicyMigrationAbstract fallbackVmAllocationPolicy,
+        double utilizationThreshold)
+    {
+        super(vmSelectionPolicy);
+        setSafetyParameter(safetyParameter);
+        setFallbackVmAllocationPolicy(fallbackVmAllocationPolicy);
+    }
 
-	/**
-	 * Creates a PowerVmAllocationPolicyMigrationInterQuartileRange.
-	 *
-	 * @param vmSelectionPolicy the vm selection policy
-	 * @param safetyParameter the safety parameter
+    /**
+     * Creates a PowerVmAllocationPolicyMigrationInterQuartileRange.
+     *
+     * @param vmSelectionPolicy          the vm selection policy
+     * @param safetyParameter            the safety parameter
      * @param fallbackVmAllocationPolicy
-	 */
-	public PowerVmAllocationPolicyMigrationInterQuartileRange(
-			PowerVmSelectionPolicy vmSelectionPolicy,
-			double safetyParameter,
-			PowerVmAllocationPolicyMigration fallbackVmAllocationPolicy) {
-		super(vmSelectionPolicy);
-		setSafetyParameter(safetyParameter);
-		setFallbackVmAllocationPolicy(fallbackVmAllocationPolicy);
-	}
+     */
+    public PowerVmAllocationPolicyMigrationInterQuartileRange(
+        PowerVmSelectionPolicy vmSelectionPolicy,
+        double safetyParameter,
+        PowerVmAllocationPolicyMigration fallbackVmAllocationPolicy)
+    {
+        super(vmSelectionPolicy);
+        setSafetyParameter(safetyParameter);
+        setFallbackVmAllocationPolicy(fallbackVmAllocationPolicy);
+    }
 
-	/**
-	 * Checks if the host is over utilized, based on CPU utilization.
-	 *
-	 * @param host the host
-	 * @return true, if the host is over utilized; false otherwise
-	 */
-	@Override
-	public boolean isHostOverUtilized(PowerHostSimple host) {
-		PowerHostUtilizationHistory _host = (PowerHostUtilizationHistory) host;
-		double upperThreshold = 0;
-		try {
-			upperThreshold = 1 - getSafetyParameter() * getHostUtilizationIqr(_host);
-		} catch (IllegalArgumentException e) {
-			return getFallbackVmAllocationPolicy().isHostOverUtilized(host);
-		}
-		addHistoryEntry(host, upperThreshold);
-		double totalRequestedMips = 0;
-		for (Vm vm : host.getVmList()) {
-			totalRequestedMips += vm.getCurrentRequestedTotalMips();
-		}
-		double utilization = totalRequestedMips / host.getTotalMips();
-		return utilization > upperThreshold;
-	}
+    /**
+     * Computes the host utilization IRQ used for generating the host over utilization threshold.
+     *
+     * @param host the host
+     * @return the host CPU utilization percentage IQR
+     */
+    @Override
+    public double computeHostUtilizationMeasure(PowerHostUtilizationHistory host) throws IllegalArgumentException {
+        double[] data = host.getUtilizationHistory();
+        if (MathUtil.countNonZeroBeginning(data) >= 12) { // 12 has been suggested as a safe value
+            return MathUtil.iqr(data);
+        }
 
-	/**
-	 * Gets the host CPU utilization percentage IQR.
-	 *
-	 * @param host the host
-	 * @return the host CPU utilization percentage IQR
-	 */
-	protected double getHostUtilizationIqr(PowerHostUtilizationHistory host) throws IllegalArgumentException {
-		double[] data = host.getUtilizationHistory();
-		if (MathUtil.countNonZeroBeginning(data) >= 12) { // 12 has been suggested as a safe value
-			return MathUtil.iqr(data);
-		}
-		throw new IllegalArgumentException();
-	}
-
-	/**
-	 * Sets the safety parameter.
-	 *
-	 * @param safetyParameter the new safety parameter
-	 */
-	protected final void setSafetyParameter(double safetyParameter) {
-		if (safetyParameter < 0) {
-			Log.printConcatLine("The safety parameter cannot be less than zero. The passed value is: ",
-					safetyParameter);
-			System.exit(0);
-		}
-		this.safetyParameter = safetyParameter;
-	}
-
-	/**
-	 * Gets the safety parameter.
-	 *
-	 * @return the safety parameter
-	 */
-	protected double getSafetyParameter() {
-		return safetyParameter;
-	}
-
-	/**
-	 * Sets the fallback vm allocation policy.
-	 *
-	 * @param fallbackVmAllocationPolicy the new fallback vm allocation policy
-	 */
-	public final void setFallbackVmAllocationPolicy(
-			PowerVmAllocationPolicyMigration fallbackVmAllocationPolicy) {
-		this.fallbackVmAllocationPolicy = fallbackVmAllocationPolicy;
-	}
-
-	/**
-	 * Gets the fallback vm allocation policy.
-	 *
-	 * @return the fallback vm allocation policy
-	 */
-	public PowerVmAllocationPolicyMigration getFallbackVmAllocationPolicy() {
-		return fallbackVmAllocationPolicy;
-	}
+        throw new IllegalArgumentException("There is not enough Host history to compute Host utilization IRQ");
+    }
 
 }

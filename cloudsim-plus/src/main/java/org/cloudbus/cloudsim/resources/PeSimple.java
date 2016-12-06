@@ -10,6 +10,8 @@ package org.cloudbus.cloudsim.resources;
 
 import org.cloudbus.cloudsim.provisioners.PeProvisioner;
 
+import java.util.Objects;
+
 /**
  * Pe (Processing Element) class represents a CPU core of a physical machine (PM),
  * defined in terms of Millions Instructions Per Second (MIPS) rating.<p/>
@@ -117,8 +119,9 @@ public class PeSimple implements Pe {
      * @param peProvisioner the new PE provisioner
      */
     protected final void setPeProvisioner(PeProvisioner peProvisioner) {
-        if(peProvisioner == null)
+        if(Objects.isNull(peProvisioner)) {
             throw new IllegalArgumentException("The peProvisioner of a Pe cannot be null");
+        }
         this.peProvisioner = peProvisioner;
     }
 

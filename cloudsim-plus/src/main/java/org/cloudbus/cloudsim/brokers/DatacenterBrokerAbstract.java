@@ -1,10 +1,7 @@
 package org.cloudbus.cloudsim.brokers;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
+
 import org.cloudbus.cloudsim.cloudlets.Cloudlet;
 import org.cloudbus.cloudsim.core.events.SimEvent;
 import org.cloudbus.cloudsim.datacenters.Datacenter;
@@ -364,7 +361,7 @@ public abstract class DatacenterBrokerAbstract extends CloudSimEntity implements
      * @post $none
      */
     protected void processOtherEvent(SimEvent ev) {
-        if (ev == null) {
+        if (Objects.isNull(ev)) {
             Log.printConcatLine(getName(), ".processOtherEvent(): ", "Error - an event is null.");
             return;
         }

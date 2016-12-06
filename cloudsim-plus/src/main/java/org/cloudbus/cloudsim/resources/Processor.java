@@ -3,6 +3,7 @@ package org.cloudbus.cloudsim.resources;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 import org.cloudbus.cloudsim.cloudlets.Cloudlet;
@@ -55,7 +56,7 @@ public class Processor implements ResourceCapacity {
      */
     public static Processor fromMipsList(List<Double> mipsList,
             List<CloudletExecutionInfo> cloudletExecList) {
-        if(mipsList == null){
+        if(Objects.isNull(mipsList)){
             throw new IllegalArgumentException("The mipsList cannot be null.");
         }
 

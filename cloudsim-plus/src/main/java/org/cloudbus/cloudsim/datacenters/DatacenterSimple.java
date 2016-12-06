@@ -17,10 +17,8 @@ import org.cloudbus.cloudsim.network.InfoPacket;
 import org.cloudbus.cloudsim.resources.File;
 import org.cloudbus.cloudsim.allocationpolicies.VmAllocationPolicy;
 import org.cloudbus.cloudsim.schedulers.cloudlet.CloudletScheduler;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
+
+import java.util.*;
 
 import org.cloudbus.cloudsim.resources.FileStorage;
 
@@ -280,12 +278,12 @@ public class DatacenterSimple extends CloudSimEntity implements Datacenter {
      * acknowledge message when the event finishes to be processed
      */
     protected void processDataDelete(SimEvent ev, boolean ack) {
-        if (ev == null) {
+        if (Objects.isNull(ev)) {
             return;
         }
 
         Object[] data = (Object[]) ev.getData();
-        if (data == null) {
+        if (Objects.isNull(data)) {
             return;
         }
 
@@ -319,12 +317,12 @@ public class DatacenterSimple extends CloudSimEntity implements Datacenter {
      * acknowledge message when the event finishes to be processed
      */
     protected void processDataAdd(SimEvent ev, boolean ack) {
-        if (ev == null) {
+        if (Objects.isNull(ev)) {
             return;
         }
 
         Object[] pack = (Object[]) ev.getData();
-        if (pack == null) {
+        if (Objects.isNull(pack)) {
             return;
         }
 
@@ -442,7 +440,7 @@ public class DatacenterSimple extends CloudSimEntity implements Datacenter {
      * @post $none
      */
     protected void processOtherEvent(SimEvent ev) {
-        if (ev == null) {
+        if (Objects.isNull(ev)) {
             Log.printConcatLine(getName(), ".processOtherEvent(): Error - an event is null.");
         }
     }
@@ -520,8 +518,8 @@ public class DatacenterSimple extends CloudSimEntity implements Datacenter {
     }
 
     /**
-     * Process the event for an User/Broker who wants to migrate a VM. This
-     * DatacenterSimple will then send the status back to the User/Broker.
+     * Process the event for a Broker thta wants to migrate a VM. This
+     * DatacenterSimple will then send the status back to the Broker.
      *
      * @param ev information about the event just happened
      * @param ack indicates if the event's sender expects to receive an
@@ -650,7 +648,7 @@ public class DatacenterSimple extends CloudSimEntity implements Datacenter {
         Cloudlet cl = sourceVm.getCloudletScheduler().cloudletCancel(cloudletId);
 
         boolean failed = false;
-        if (cl == null) {// cloudlet doesn't exist
+        if (cl == Cloudlet.NULL) {// cloudlet doesn't exist
             failed = true;
         } else {
             // has the cloudlet already finished?
@@ -1023,7 +1021,7 @@ public class DatacenterSimple extends CloudSimEntity implements Datacenter {
 
     @Override
     public int addFile(File file) {
-        if (file == null) {
+        if (Objects.isNull(file)) {
             return DataCloudTags.FILE_ADD_ERROR_EMPTY;
         }
 
@@ -1055,7 +1053,7 @@ public class DatacenterSimple extends CloudSimEntity implements Datacenter {
      * @return <tt>true</tt> if successful, <tt>false</tt> otherwise
      */
     protected boolean contains(File file) {
-        if (file == null) {
+        if (Objects.isNull(file)) {
             return false;
         }
         return contains(file.getName());
@@ -1068,7 +1066,7 @@ public class DatacenterSimple extends CloudSimEntity implements Datacenter {
      * @return <tt>true</tt> if successful, <tt>false</tt> otherwise
      */
     protected boolean contains(String fileName) {
-        if (fileName == null || fileName.length() == 0) {
+        if (Objects.isNull(fileName) || fileName.isEmpty()) {
             return false;
         }
 
@@ -1171,7 +1169,7 @@ public class DatacenterSimple extends CloudSimEntity implements Datacenter {
      * @param vmAllocationPolicy the new vm allocation policy
      */
     protected final Datacenter setVmAllocationPolicy(VmAllocationPolicy vmAllocationPolicy) {
-        if(vmAllocationPolicy == null){
+        if(Objects.isNull(vmAllocationPolicy)){
             vmAllocationPolicy = VmAllocationPolicy.NULL;
         }
 
@@ -1211,7 +1209,7 @@ public class DatacenterSimple extends CloudSimEntity implements Datacenter {
      */
     @Override
     public final Datacenter setStorageList(List<FileStorage> storageList) {
-        if(storageList == null){
+        if(Objects.isNull(storageList)){
             storageList = new ArrayList<>();
         }
 

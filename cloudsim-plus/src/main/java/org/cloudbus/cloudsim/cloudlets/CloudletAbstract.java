@@ -4,6 +4,7 @@ import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Objects;
 
 import org.cloudbus.cloudsim.datacenters.Datacenter;
 import org.cloudbus.cloudsim.vms.Vm;
@@ -203,8 +204,9 @@ public abstract class CloudletAbstract implements Cloudlet {
 
     @Override
     public Cloudlet setOnCloudletFinishEventListener(EventListener<VmToCloudletEventInfo> onCloudletFinishEventListener) {
-        if(onCloudletFinishEventListener == null)
+        if(Objects.isNull(onCloudletFinishEventListener)) {
             onCloudletFinishEventListener = EventListener.NULL;
+        }
 
         this.onCloudletFinishEventListener = onCloudletFinishEventListener;
         return this;
@@ -291,7 +293,7 @@ public abstract class CloudletAbstract implements Cloudlet {
 
     @Override
     public String getCloudletHistory() {
-        if (history == null)
+        if (Objects.isNull(history))
             return String.format(NO_HISTORY_IS_RECORDED_FOR_CLOUDLET, id);
 
         return history.toString();
@@ -340,7 +342,7 @@ public abstract class CloudletAbstract implements Cloudlet {
 
     @Override
     public final Cloudlet setBroker(DatacenterBroker broker) {
-        if (broker == null) {
+        if (Objects.isNull(broker)) {
             broker = DatacenterBroker.NULL;
         }
         this.broker = broker;
@@ -464,47 +466,31 @@ public abstract class CloudletAbstract implements Cloudlet {
     @Override
     public double getActualCPUTime(final int datacenterId) {
         ExecutionInDatacenterInfo datacenter = getDatacenterInfo(datacenterId);
-        if (datacenter != null) {
-            return datacenter.actualCPUTime;
-        }
-        return 0.0;
+        return datacenter.actualCPUTime;
     }
 
     @Override
     public double getCostPerSec(final int datacenterId) {
         ExecutionInDatacenterInfo resource = getDatacenterInfo(datacenterId);
-        if (resource != null) {
-            return resource.costPerSec;
-        }
-        return 0.0;
+        return resource.costPerSec;
     }
 
     @Override
     public long getCloudletFinishedSoFar(final int datacenterId) {
         ExecutionInDatacenterInfo datacenter = getDatacenterInfo(datacenterId);
-        if (datacenter != null) {
-            return datacenter.finishedSoFar;
-        }
-
-        return 0;
+        return datacenter.finishedSoFar;
     }
 
     @Override
     public double getArrivalTime(final int datacenterId) {
         ExecutionInDatacenterInfo datacenterInfo = getDatacenterInfo(datacenterId);
-        if (datacenterInfo != null) {
-            return datacenterInfo.arrivalTime;
-        }
-        return 0.0;
+        return datacenterInfo.arrivalTime;
     }
 
     @Override
     public double getWallClockTime(final int datacenterId) {
         ExecutionInDatacenterInfo datacenter = getDatacenterInfo(datacenterId);
-        if (datacenter != null) {
-            return datacenter.wallClockTime;
-        }
-        return 0.0;
+        return datacenter.wallClockTime;
     }
 
     /**
@@ -512,17 +498,14 @@ public abstract class CloudletAbstract implements Cloudlet {
      *
      * @param datacenterId the Datacenter entity ID
      * @return the Cloudlet execution information on the given switches
-     * or null if the Cloudlet has never been executed there
+     * or {@link ExecutionInDatacenterInfo#NULL} if the Cloudlet has never been executed there
      * @pre datacenterId >= 0
      * @post $none
      */
     private ExecutionInDatacenterInfo getDatacenterInfo(final int datacenterId) {
-        for (ExecutionInDatacenterInfo datacenter : getExecutionInDatacenterInfoList()) {
-            if (datacenter.datacenterId == datacenterId) {
-                return datacenter;
-            }
-        }
-        return null;
+        return getExecutionInDatacenterInfoList().stream()
+            .filter(info -> info.datacenterId == datacenterId)
+            .findFirst().orElse(ExecutionInDatacenterInfo.NULL);
     }
 
     @Override
@@ -542,7 +525,7 @@ public abstract class CloudletAbstract implements Cloudlet {
             return;
         }
 
-        if (history == null) {
+        if (Objects.isNull(history)) {
             // Creates the transaction history of this Cloudlet
             history = new StringBuffer(1000);
             history.append("Time below denotes the simulation time.");
@@ -639,9 +622,12 @@ public abstract class CloudletAbstract implements Cloudlet {
      * @param requiredFiles the new list of required files
      */
     public final void setRequiredFiles(final List<String> requiredFiles) {
-        if(requiredFiles == null)
+        if(Objects.isNull(requiredFiles)) {
             this.requiredFiles = new LinkedList<>();
-        else this.requiredFiles = requiredFiles;
+        }
+        else {
+            this.requiredFiles = requiredFiles;
+        }
     }
 
     @Override
@@ -680,7 +666,7 @@ public abstract class CloudletAbstract implements Cloudlet {
     @Override
     public boolean requiresFiles() {
         boolean result = false;
-        if (getRequiredFiles() != null && getRequiredFiles().size() > 0) {
+        if (getRequiredFiles().size() > 0) {
             result = true;
         }
 
@@ -694,7 +680,7 @@ public abstract class CloudletAbstract implements Cloudlet {
 
     @Override
     public final Cloudlet setUtilizationModelCpu(final UtilizationModel utilizationModelCpu) {
-        if(utilizationModelCpu == null) {
+        if(Objects.isNull(utilizationModelCpu)) {
             throw new IllegalArgumentException("The CPU utilization model cannot be null");
         }
         this.utilizationModelCpu = utilizationModelCpu;
@@ -708,7 +694,7 @@ public abstract class CloudletAbstract implements Cloudlet {
 
     @Override
     public final Cloudlet setUtilizationModelRam(final UtilizationModel utilizationModelRam) {
-        if(utilizationModelRam == null) {
+        if(Objects.isNull(utilizationModelRam)) {
             throw new IllegalArgumentException("The RAM utilization model cannot be null");
         }
         this.utilizationModelRam = utilizationModelRam;
@@ -722,7 +708,7 @@ public abstract class CloudletAbstract implements Cloudlet {
 
     @Override
     public final Cloudlet setUtilizationModelBw(final UtilizationModel utilizationModelBw) {
-        if(utilizationModelBw == null) {
+        if(Objects.isNull(utilizationModelBw)) {
             throw new IllegalArgumentException("The BW utilization model cannot be null");
         }
         this.utilizationModelBw = utilizationModelBw;
@@ -942,5 +928,7 @@ public abstract class CloudletAbstract implements Cloudlet {
          * The Datacenter datacenterName.
          */
         public String datacenterName = "";
+
+        public static final ExecutionInDatacenterInfo NULL = new ExecutionInDatacenterInfo();
     }
 }

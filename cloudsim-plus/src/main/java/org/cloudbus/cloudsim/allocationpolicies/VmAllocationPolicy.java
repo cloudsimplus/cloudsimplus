@@ -93,10 +93,7 @@ public interface VmAllocationPolicy {
      * Optimize allocation of the VMs according to current utilization.
      *
      * @param vmList the vm list
-     * @return the new vm placement list, where each item is a map
-     * where the key is the first item is the VM and the second is the
-     * host where it has to be placed. The map key is just to identify
-     * if the map item is the VM or Host
+     * @return the new vm placement map, where each key is a VM and each value is the host where such a Vm has to be placed
      *
      */
     Map<Vm, Host> optimizeAllocation(List<? extends Vm> vmList);

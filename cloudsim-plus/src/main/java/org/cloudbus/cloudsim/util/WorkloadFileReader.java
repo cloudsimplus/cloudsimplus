@@ -17,6 +17,7 @@ import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.List;
+import java.util.Objects;
 import java.util.zip.GZIPInputStream;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
@@ -171,7 +172,7 @@ public class WorkloadFileReader implements WorkloadModel {
      * @post $none
      */
     public WorkloadFileReader(final String fileName, final int rating) throws FileNotFoundException {
-        if (fileName == null || fileName.length() == 0) {
+        if (Objects.isNull(fileName) || fileName.isEmpty()) {
             throw new IllegalArgumentException("Invalid trace file name.");
         } else if (rating <= 0) {
             throw new IllegalArgumentException("Resource PE rating must be > 0.");
@@ -233,7 +234,7 @@ public class WorkloadFileReader implements WorkloadModel {
      */
     public boolean setComment(final String cmt) {
         boolean success = false;
-        if (cmt != null && cmt.length() > 0) {
+        if (!Objects.isNull(cmt) && !cmt.isEmpty()) {
             COMMENT = cmt;
             success = true;
         }
@@ -364,7 +365,7 @@ public class WorkloadFileReader implements WorkloadModel {
      */
     private void createCloudletFromOneTraceFileLine(final String[] array, final int line) {
         try {
-            Integer obj = null;
+            Integer obj;
 
             // get the job number
             int id = 0;
@@ -534,8 +535,9 @@ public class WorkloadFileReader implements WorkloadModel {
      * the number of lines read reached the {@link #getMaxNumberOfLinesToRead()}
      */
     private String readNextLine(BufferedReader reader, int lineNumber) throws IOException {
-        if (reader.ready() && (maxNumberOfLinesToRead == -1 || lineNumber <= maxNumberOfLinesToRead))
+        if (reader.ready() && (maxNumberOfLinesToRead == -1 || lineNumber <= maxNumberOfLinesToRead)) {
             return reader.readLine();
+        }
 
         return null;
     }

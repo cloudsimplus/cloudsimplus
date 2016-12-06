@@ -241,15 +241,13 @@ public abstract class Switch extends CloudSimEntity {
      * @see #packetToHostMap
      */
     private void forwardPacketsToHosts() {
-        if (packetToHostMap != null) {
-            for (Entry<Integer, List<NetworkPacket>> es : packetToHostMap.entrySet()) {
-                List<NetworkPacket> netPktList = es.getValue();
-                for(NetworkPacket netPkt: netPktList) {
-                    double delay = networkDelayForPacketTransmission(netPkt, downlinkBandwidth, netPktList);
-                    this.send(getId(), delay, CloudSimTags.NETWORK_EVENT_HOST, netPkt);
-                }
-                netPktList.clear();
+        for (Entry<Integer, List<NetworkPacket>> es : packetToHostMap.entrySet()) {
+            List<NetworkPacket> netPktList = es.getValue();
+            for(NetworkPacket netPkt: netPktList) {
+                double delay = networkDelayForPacketTransmission(netPkt, downlinkBandwidth, netPktList);
+                this.send(getId(), delay, CloudSimTags.NETWORK_EVENT_HOST, netPkt);
             }
+            netPktList.clear();
         }
     }
 
@@ -259,16 +257,14 @@ public abstract class Switch extends CloudSimEntity {
      * @see #uplinkSwitchPacketMap
      */
     private void forwardPacketsToUplinkSwitches() {
-        if (uplinkSwitchPacketMap != null) {
-            for (Entry<Integer, List<NetworkPacket>> es : uplinkSwitchPacketMap.entrySet()) {
-                int destinationSwitchId = es.getKey();
-                List<NetworkPacket> netPktList = es.getValue();
-                for(NetworkPacket netPkt: netPktList) {
-                    double delay = networkDelayForPacketTransmission(netPkt, uplinkBandwidth, netPktList);
-                    this.send(destinationSwitchId, delay, CloudSimTags.NETWORK_EVENT_UP, netPkt);
-                }
-                netPktList.clear();
+        for (Entry<Integer, List<NetworkPacket>> es : uplinkSwitchPacketMap.entrySet()) {
+            int destinationSwitchId = es.getKey();
+            List<NetworkPacket> netPktList = es.getValue();
+            for(NetworkPacket netPkt: netPktList) {
+                double delay = networkDelayForPacketTransmission(netPkt, uplinkBandwidth, netPktList);
+                this.send(destinationSwitchId, delay, CloudSimTags.NETWORK_EVENT_UP, netPkt);
             }
+            netPktList.clear();
         }
     }
 
@@ -278,7 +274,6 @@ public abstract class Switch extends CloudSimEntity {
      * @see #downlinkSwitchPacketMap
      */
     private void forwardPacketsToDownlinkSwitches() {
-        if (downlinkSwitchPacketMap != null) {
             for (Entry<Integer, List<NetworkPacket>> es : downlinkSwitchPacketMap.entrySet()) {
                 int destinationSwitchId = es.getKey();
                 List<NetworkPacket> netPktList = es.getValue();
@@ -288,7 +283,6 @@ public abstract class Switch extends CloudSimEntity {
                 }
                 netPktList.clear();
             }
-        }
     }
 
     /**
@@ -354,6 +348,7 @@ public abstract class Switch extends CloudSimEntity {
                 return es.getValue();
             }
         }
+
         return null;
     }
 
@@ -467,13 +462,8 @@ public abstract class Switch extends CloudSimEntity {
      * @return the list of packets from the map entry with the given key
      */
     private List<NetworkPacket> getListOfPackets(Map<Integer, List<NetworkPacket>> map, int key) {
-        List<NetworkPacket> list = map.get(key);
-        if(list == null){
-            list = new ArrayList<>();
-            map.put(key, list);
-        }
-
-        return list;
+        map.putIfAbsent(key, new ArrayList<>());
+        return map.get(key);
     }
 
     /**

@@ -9,6 +9,8 @@ package org.cloudbus.cloudsim.resources;
 
 import java.util.Calendar;
 import java.util.Date;
+import java.util.Objects;
+
 import org.cloudbus.cloudsim.util.Consts;
 import org.cloudbus.cloudsim.util.DataCloudTags;
 
@@ -85,17 +87,13 @@ public class FileAttribute {
 
         // set the file creation time. This is absolute time
         final Calendar cal =
-                (file.getDatacenter().getSimulation() != null  ?
+                (!Objects.isNull(file.getDatacenter().getSimulation())  ?
                 file.getDatacenter().getSimulation().getCalendar() :
                 Calendar.getInstance());
         Date date = cal.getTime();
-        if (date == null) {
-            creationTime = 0;
-        } else {
-            creationTime = date.getTime();
-        }
+        creationTime = (Objects.isNull(date) ? 0 : date.getTime());
 
-        ownerName = null;
+        ownerName = "";
         id = File.NOT_REGISTERED;
         checksum = 0;
         type = File.TYPE_UNKOWN;
@@ -114,7 +112,7 @@ public class FileAttribute {
      * otherwise
      */
     public boolean copyValue(FileAttribute destinationAttr) {
-        if (destinationAttr == null) {
+        if (Objects.isNull(destinationAttr)) {
             return false;
         }
 
@@ -162,7 +160,7 @@ public class FileAttribute {
      * @return <tt>true</tt> if successful, <tt>false</tt> otherwise
      */
     public boolean setOwnerName(String name) {
-        if (name == null || name.length() == 0) {
+        if (Objects.isNull(name) || name.isEmpty()) {
             return false;
         }
 
@@ -188,7 +186,7 @@ public class FileAttribute {
      */
     public int getAttributeSize() {
         int length = DataCloudTags.PKT_SIZE;
-        if (ownerName != null) {
+        if (!Objects.isNull(ownerName)) {
             length += ownerName.length();
         }
 
@@ -389,6 +387,6 @@ public class FileAttribute {
      * @return <tt>true</tt> if the file name is valid, <tt>false</tt> otherwise
      */
     public static final boolean isValid(final String fileName) {
-        return (fileName != null) && !fileName.trim().isEmpty();
+        return (!Objects.isNull(fileName)) && !fileName.trim().isEmpty();
     }
 }

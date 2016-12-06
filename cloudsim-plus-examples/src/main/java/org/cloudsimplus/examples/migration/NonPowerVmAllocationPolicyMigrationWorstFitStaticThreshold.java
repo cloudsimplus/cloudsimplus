@@ -97,22 +97,19 @@ public class NonPowerVmAllocationPolicyMigrationWorstFitStaticThreshold extends 
      * @return the first under utilized host or null if there isn't any one
      */
     @Override
-    protected PowerHostSimple getUnderUtilizedHost(Set<? extends Host> excludedHosts) {
-        double minUtilization = 1;
-        PowerHostSimple underUtilizedHost = null;
-        for (PowerHostSimple host : this.<PowerHostSimple>getHostList()) {
-            if (excludedHosts.contains(host)) {
-                continue;
-            }
-
-            double utilization = host.getUtilizationOfCpu();
-            if (utilization > 0 && utilization < underUtilizationThreshold
-            &&  utilization < minUtilization && !areAllVmsMigratingOutOrAnyVmMigratingIn(host)) {
-                underUtilizedHost = host;
-                minUtilization = utilization;
-            }
-        }
-        return underUtilizedHost;
+    protected PowerHost getUnderUtilizedHost(Set<? extends Host> excludedHosts) {
+        /*@todo there is duplication with the method in the PowerVmAllocationPolicyMigrationAbstract class.
+        * The only difference is that here is defined an underUtilizationThreshold.
+        * Maybe the super class could defined an abstract Predicate (boolean method)
+        * that performs the additional check to validate
+        * */
+        return this.<PowerHost>getHostList().stream()
+            .filter(h -> !excludedHosts.contains(h))
+            .filter(h -> h.getUtilizationOfCpu() > 0)
+            .filter(h -> h.getUtilizationOfCpu() < underUtilizationThreshold)
+            .filter(h -> !allVmsAreMigratingOutOrThereAreVmsMigratingIn(h))
+            .min((h1, h2) -> Double.compare(h1.getUtilizationOfCpu(), h2.getUtilizationOfCpu()))
+            .orElse(PowerHost.NULL);
     }
 
     /**

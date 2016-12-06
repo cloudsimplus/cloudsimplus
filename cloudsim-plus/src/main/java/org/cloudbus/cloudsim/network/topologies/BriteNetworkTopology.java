@@ -11,6 +11,8 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
+import java.util.Objects;
+
 import org.cloudbus.cloudsim.util.Log;
 import org.cloudbus.cloudsim.network.DelayMatrix_Float;
 import org.cloudbus.cloudsim.network.topologies.readers.GraphReaderBrite;
@@ -148,12 +150,11 @@ public class BriteNetworkTopology implements NetworkTopology {
 
     @Override
     public void addLink(int srcId, int destId, double bw, double lat) {
-
-        if (getTopologycalGraph() == null) {
+        if (Objects.isNull(getTopologycalGraph())) {
             graph = new TopologicalGraph();
         }
 
-        if (map == null) {
+        if (Objects.isNull(map)) {
             map = new HashMap<>();
         }
 

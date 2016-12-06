@@ -10,6 +10,8 @@ package org.cloudbus.cloudsim.resources;
 
 import org.cloudbus.cloudsim.datacenters.Datacenter;
 
+import java.util.Objects;
+
 /**
  * A class for representing a physical file in a DataCloud environment
  *
@@ -80,7 +82,7 @@ public class File {
      * @throws IllegalArgumentException This happens when the source file is <tt>null</tt>
      */
     public File(File file) throws IllegalArgumentException {
-        if (file == null) {
+        if (Objects.isNull(file)) {
             throw new IllegalArgumentException("File(): Error - file is null.");
         }
 
@@ -121,7 +123,7 @@ public class File {
      */
     public File makeMasterCopy() {
             File file = makeCopy();
-            if (file != null) {
+            if (!Objects.isNull(file)) {
                 file.setMasterCopy(true);
             }
 
@@ -134,16 +136,12 @@ public class File {
      * @return a clone of the current file (as a replica) or <tt>null</tt> if an error occurs
      */
     private File makeCopy() {
-        try {
-            File file = new File(name, attribute.getFileSize());
+        File file = new File(name, attribute.getFileSize());
 
-            this.attribute.copyValue(file.attribute);
-            file.attribute.setMasterCopy(false);   // set this file as a replica
+        this.attribute.copyValue(file.attribute);
+        file.attribute.setMasterCopy(false);   // set this file as a replica
 
-            return file;
-        } catch (Exception e) {
-            return null;
-        }
+        return file;
     }
 
     /**
@@ -206,7 +204,7 @@ public class File {
      * @return <tt>true</tt> if the file is valid, <tt>false</tt> otherwise
      */
     public static final boolean isValid(final File file) {
-        return (file != null) && isValid(file.getName());
+        return (!Objects.isNull(file)) && isValid(file.getName());
     }
 
     /**
@@ -447,7 +445,7 @@ public class File {
      * @return
      */
     public final File setDatacenter(Datacenter datacenter) {
-        if (datacenter == null) {
+        if (Objects.isNull(datacenter)) {
             datacenter = Datacenter.NULL;
         }
 

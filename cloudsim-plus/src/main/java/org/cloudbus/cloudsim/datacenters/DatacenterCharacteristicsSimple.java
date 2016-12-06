@@ -12,6 +12,7 @@ import org.cloudbus.cloudsim.resources.Pe;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 import org.cloudbus.cloudsim.lists.HostList;
 import org.cloudbus.cloudsim.lists.PeList;
@@ -320,8 +321,9 @@ public class DatacenterCharacteristicsSimple implements DatacenterCharacteristic
      * @param hostList the new host list
      */
     protected final void setHostList(List<? extends Host> hostList) {
-        if(hostList == null)
+        if(Objects.isNull(hostList)) {
             hostList = new ArrayList<>();
+        }
         this.hostList = hostList;
     }
 

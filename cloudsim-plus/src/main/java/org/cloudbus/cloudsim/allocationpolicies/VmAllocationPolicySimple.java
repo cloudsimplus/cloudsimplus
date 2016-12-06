@@ -10,6 +10,7 @@ package org.cloudbus.cloudsim.allocationpolicies;
 import java.util.*;
 
 import org.cloudbus.cloudsim.hosts.Host;
+import org.cloudbus.cloudsim.hosts.power.PowerHost;
 import org.cloudbus.cloudsim.util.Log;
 import org.cloudbus.cloudsim.vms.Vm;
 import org.cloudbus.cloudsim.vms.VmSimple;
@@ -56,7 +57,7 @@ public class VmAllocationPolicySimple extends VmAllocationPolicyAbstract {
         }
 
         // if this vm was already created
-        if (getVmTable().containsKey(vm.getUid())) {
+        if (getVmHostMap().containsKey(vm.getUid())) {
             return false;
         }
 
@@ -104,7 +105,7 @@ public class VmAllocationPolicySimple extends VmAllocationPolicyAbstract {
     public void deallocateHostForVm(Vm vm) {
         Host host = unmapVmFromPm(vm);
         int pes = getUsedPes().remove(vm.getUid());
-        if (host != null) {
+        if (host != Host.NULL) {
             host.destroyVm(vm);
             getHostFreePesMap().put(host, getHostFreePesMap().get(host) + pes);
         }
@@ -112,12 +113,12 @@ public class VmAllocationPolicySimple extends VmAllocationPolicyAbstract {
 
     @Override
     public Host getHost(Vm vm) {
-        return getVmTable().get(vm.getUid());
+        return getVmHostMap().get(vm.getUid());
     }
 
     @Override
     public Host getHost(int vmId, int userId) {
-        return getVmTable().get(VmSimple.getUid(userId, vmId));
+        return getVmHostMap().get(VmSimple.getUid(userId, vmId));
     }
 
     /**

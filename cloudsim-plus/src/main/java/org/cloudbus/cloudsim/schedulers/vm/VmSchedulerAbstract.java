@@ -6,11 +6,7 @@
  */
 package org.cloudbus.cloudsim.schedulers.vm;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import org.cloudbus.cloudsim.hosts.Host;
 import org.cloudbus.cloudsim.util.Log;
@@ -82,19 +78,14 @@ public abstract class VmSchedulerAbstract implements VmScheduler {
 
     @Override
     public List<Pe> getPesAllocatedForVM(Vm vm) {
-        List<Pe> list = getPeMap().get(vm.getUid());
-        if(list == null)
-            return Collections.EMPTY_LIST;
-        return list;
+        getPeMap().putIfAbsent(vm.getUid(), new ArrayList<>());
+        return getPeMap().get(vm.getUid());
     }
 
     @Override
     public List<Double> getAllocatedMipsForVm(Vm vm) {
-        final List<Double> list = getMipsMapAllocated().get(vm.getUid());
-        if(list == null)
-            return Collections.EMPTY_LIST;
-
-        return list;
+        getMipsMapAllocated().putIfAbsent(vm.getUid(), new ArrayList<>());
+        return getMipsMapAllocated().get(vm.getUid());
     }
 
     @Override
@@ -216,7 +207,7 @@ public abstract class VmSchedulerAbstract implements VmScheduler {
 
     @Override
     public VmScheduler setHost(Host host) {
-        if(host == null){
+        if(Objects.isNull(host)){
             host = Host.NULL;
         }
 

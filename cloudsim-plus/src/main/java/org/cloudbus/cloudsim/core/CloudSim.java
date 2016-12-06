@@ -195,7 +195,7 @@ public class CloudSim implements Simulation {
         // NOTE: the order for the below 3 lines are important
         this.traceFlag = traceFlag;
 
-        this.calendar = (calendar == null ? Calendar.getInstance() : calendar);
+        this.calendar = (Objects.isNull(calendar) ? Calendar.getInstance() : calendar);
 
         // creates a CloudCloudSimShutdown object
         this.shutdown = new CloudCloudSimShutdown(this, numUsers);
@@ -367,11 +367,7 @@ public class CloudSim implements Simulation {
     @Override
     public int getEntityId(String name) {
         SimEntity obj = entitiesByName.get(name);
-        if (obj == null) {
-            return NOT_FOUND;
-        } else {
-            return obj.getId();
-        }
+        return (Objects.isNull(obj) ? NOT_FOUND : obj.getId());
     }
 
     @Override
@@ -381,10 +377,7 @@ public class CloudSim implements Simulation {
 
     @Override
     public String getEntityName(Integer entityID) {
-        if (entityID != null) {
-            return getEntityName(entityID.intValue());
-        }
-        return null;
+        return (Objects.isNull(entityID) ? "" : getEntityName(entityID.intValue()));
     }
 
     @Override
@@ -411,7 +404,7 @@ public class CloudSim implements Simulation {
     @Override
     public boolean updateEntityName(final String oldName){
         SimEntity entity = entitiesByName.remove(oldName);
-        if(entity != null){
+        if(!Objects.isNull(entity)){
             entitiesByName.put(entity.getName(), entity);
             return true;
         }
@@ -428,7 +421,7 @@ public class CloudSim implements Simulation {
      * @param e The new entity
      */
     protected void addEntityDynamically(SimEntity e) {
-        if (e == null) {
+        if (Objects.isNull(e)) {
             throw new IllegalArgumentException("Adding null entity.");
         } else {
             printMessage("Adding: " + e.getName());
@@ -578,6 +571,7 @@ public class CloudSim implements Simulation {
                 break;
             }
         }
+
         return ev;
     }
 
@@ -646,7 +640,7 @@ public class CloudSim implements Simulation {
                     if (dest_ent.getState() == SimEntity.State.WAITING) {
                         Integer destObj = dest;
                         Predicate p = waitPredicates.get(destObj);
-                        if ((p == null) || (tag == 9999) || (p.match(e))) {
+                        if ((Objects.isNull(p)) || (tag == 9999) || p.match(e)) {
                             dest_ent.setEventBuffer(new CloudSimEvent(e));
                             dest_ent.setState(SimEntity.State.RUNNABLE);
                             waitPredicates.remove(destObj);
@@ -806,8 +800,9 @@ public class CloudSim implements Simulation {
 
     @Override
     public Simulation setOnEventProcessingListener(EventListener<SimEvent> onEventProcessingListener) {
-        if(onEventProcessingListener == null)
+        if(Objects.isNull(onEventProcessingListener)) {
             onEventProcessingListener = EventListener.NULL;
+        }
 
         this.onEventProcessingListener = onEventProcessingListener;
         return this;

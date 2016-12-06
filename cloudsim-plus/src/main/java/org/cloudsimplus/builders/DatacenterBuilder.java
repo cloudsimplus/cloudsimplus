@@ -23,6 +23,8 @@ package org.cloudsimplus.builders;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
+
 import org.cloudbus.cloudsim.datacenters.Datacenter;
 import org.cloudbus.cloudsim.datacenters.DatacenterSimple;
 import org.cloudbus.cloudsim.datacenters.DatacenterCharacteristics;
@@ -78,7 +80,7 @@ public class DatacenterBuilder extends Builder {
     }
 
     public DatacenterBuilder createDatacenter(final List<Host> hosts) {
-        if (hosts == null || hosts.isEmpty()) {
+        if (Objects.isNull(hosts) || hosts.isEmpty()) {
             throw new RuntimeException("The hosts parameter has to have at least 1 host.");
         }
 

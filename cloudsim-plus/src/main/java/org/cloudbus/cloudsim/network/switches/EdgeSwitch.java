@@ -9,6 +9,7 @@ package org.cloudbus.cloudsim.network.switches;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 import org.cloudbus.cloudsim.core.CloudSim;
 import org.cloudbus.cloudsim.core.CloudSimTags;
@@ -88,12 +89,8 @@ public class EdgeSwitch extends Switch {
         // packet is to be recieved by host
         int hostid = getDatacenter().getVmToHostMap().get(recvVmId);
         netPkt.setReceiverHostId(hostid);
-        List<NetworkPacket> pktlist = getPacketToHostMap().get(hostid);
-        if (pktlist == null) {
-            pktlist = new ArrayList<>();
-            getPacketToHostMap().put(hostid, pktlist);
-        }
-        pktlist.add(netPkt);
+        getPacketToHostMap().putIfAbsent(hostid, new ArrayList<>());
+        getPacketToHostMap().get(hostid).add(netPkt);
     }
 
     @Override
@@ -110,7 +107,7 @@ public class EdgeSwitch extends Switch {
         netPkt.setReceiverHostId(hostId);
 
         // packet needs to go to a host which is connected directly to switch
-        if (host != null) {
+        if (!Objects.isNull(host)) {
             addPacketToBeSentToHost(host.getId(), netPkt);
             return;
         }
@@ -136,28 +133,24 @@ public class EdgeSwitch extends Switch {
     }
 
     private void forwardPacketsToHosts() {
-        if (getPacketToHostMap() != null) {
-            for (Integer hostId : getPacketToHostMap().keySet()) {
-                List<NetworkPacket> packetList = getHostPacketList(hostId);
-                for (NetworkPacket pkt: packetList) {
-                    double delay = networkDelayForPacketTransmission(pkt, getDownlinkBandwidth(), packetList);
-                    this.send(getId(), delay, CloudSimTags.NETWORK_EVENT_HOST, pkt);
-                }
-                packetList.clear();
+        for (Integer hostId : getPacketToHostMap().keySet()) {
+            List<NetworkPacket> packetList = getHostPacketList(hostId);
+            for (NetworkPacket pkt: packetList) {
+                double delay = networkDelayForPacketTransmission(pkt, getDownlinkBandwidth(), packetList);
+                this.send(getId(), delay, CloudSimTags.NETWORK_EVENT_HOST, pkt);
             }
+            packetList.clear();
         }
     }
 
     private void forwardPacketsToUplinkSwitches() {
-        if (getUplinkSwitchPacketMap() != null) {
-            for (Integer destinationSwitchId : getUplinkSwitchPacketMap().keySet()) {
-                List<NetworkPacket> packetList = getUplinkSwitchPacketList(destinationSwitchId);
-                for(NetworkPacket netPkt: packetList) {
-                    double delay = networkDelayForPacketTransmission(netPkt, getUplinkBandwidth(), packetList);
-                    this.send(destinationSwitchId, delay, CloudSimTags.NETWORK_EVENT_UP, netPkt);
-                }
-                packetList.clear();
+        for (Integer destinationSwitchId : getUplinkSwitchPacketMap().keySet()) {
+            List<NetworkPacket> packetList = getUplinkSwitchPacketList(destinationSwitchId);
+            for(NetworkPacket netPkt: packetList) {
+                double delay = networkDelayForPacketTransmission(netPkt, getUplinkBandwidth(), packetList);
+                this.send(destinationSwitchId, delay, CloudSimTags.NETWORK_EVENT_UP, netPkt);
             }
+            packetList.clear();
         }
     }
 

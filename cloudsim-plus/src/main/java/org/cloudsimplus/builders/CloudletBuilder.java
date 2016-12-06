@@ -23,6 +23,8 @@ package org.cloudsimplus.builders;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
+
 import org.cloudbus.cloudsim.cloudlets.Cloudlet;
 import org.cloudbus.cloudsim.cloudlets.CloudletSimple;
 import org.cloudbus.cloudsim.vms.Vm;
@@ -60,10 +62,12 @@ public class CloudletBuilder extends Builder {
 	private List<String> requiredFiles;
 
 	public CloudletBuilder(final BrokerBuilderDecorator brokerBuilder, final DatacenterBrokerSimple broker) {
-        if(brokerBuilder == null)
-           throw new RuntimeException("The brokerBuilder parameter cannot be null.");
-        if(broker == null)
-           throw new RuntimeException("The broker parameter cannot be null.");
+        if(Objects.isNull(brokerBuilder)) {
+            throw new RuntimeException("The brokerBuilder parameter cannot be null.");
+        }
+        if(Objects.isNull(broker)) {
+            throw new RuntimeException("The broker parameter cannot be null.");
+        }
 
         this.brokerBuilder = brokerBuilder;
         setUtilizationModelCpuRamAndBw(new UtilizationModelFull());
@@ -82,7 +86,7 @@ public class CloudletBuilder extends Builder {
      * @return
      */
     public final CloudletBuilder setUtilizationModelCpuRamAndBw(UtilizationModel utilizationModel) {
-        if(utilizationModel != null){
+        if(!Objects.isNull(utilizationModel)){
             this.utilizationModelCpu = utilizationModel;
             this.utilizationModelRam = utilizationModel;
             this.utilizationModelBw = utilizationModel;
@@ -214,9 +218,10 @@ public class CloudletBuilder extends Builder {
     }
 
     public CloudletBuilder setUtilizationModelRam(UtilizationModel utilizationModelRam) {
-        if(utilizationModelRam != null){
+        if(!Objects.isNull(utilizationModelRam)){
             this.utilizationModelRam = utilizationModelRam;
         }
+
         return this;
     }
 
@@ -225,9 +230,10 @@ public class CloudletBuilder extends Builder {
     }
 
     public CloudletBuilder setUtilizationModelCpu(UtilizationModel utilizationModelCpu) {
-        if(utilizationModelCpu != null){
+        if(!Objects.isNull(utilizationModelCpu)){
             this.utilizationModelCpu = utilizationModelCpu;
         }
+
         return this;
     }
 
@@ -236,7 +242,7 @@ public class CloudletBuilder extends Builder {
     }
 
     public CloudletBuilder setUtilizationModelBw(UtilizationModel utilizationModelBw) {
-        if(utilizationModelBw != null){
+        if(!Objects.isNull(utilizationModelBw)){
             this.utilizationModelBw = utilizationModelBw;
         }
         return this;
