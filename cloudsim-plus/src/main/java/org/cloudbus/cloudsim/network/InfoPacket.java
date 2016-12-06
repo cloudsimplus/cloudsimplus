@@ -21,6 +21,7 @@ import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
 
 /**
  * InfoPacket class can be used to gather information from the network layer. An
@@ -201,7 +202,7 @@ public class InfoPacket implements Packet {
      */
     @Override
     public String toString() {
-        if (name == null) {
+        if (Objects.isNull(name)) {
             return "Empty InfoPacket that contains no ping information.";
         }
 

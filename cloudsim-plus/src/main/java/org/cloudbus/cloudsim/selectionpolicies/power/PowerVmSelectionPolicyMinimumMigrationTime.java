@@ -10,7 +10,7 @@ package org.cloudbus.cloudsim.selectionpolicies.power;
 
 import java.util.List;
 
-import org.cloudbus.cloudsim.hosts.power.PowerHostSimple;
+import org.cloudbus.cloudsim.hosts.power.PowerHost;
 import org.cloudbus.cloudsim.vms.power.PowerVm;
 import org.cloudbus.cloudsim.vms.Vm;
 
@@ -32,12 +32,13 @@ import org.cloudbus.cloudsim.vms.Vm;
  */
 public class PowerVmSelectionPolicyMinimumMigrationTime extends PowerVmSelectionPolicy {
 	@Override
-	public Vm getVmToMigrate(PowerHostSimple host) {
+	public Vm getVmToMigrate(PowerHost host) {
 		List<PowerVm> migratableVms = getMigratableVms(host);
 		if (migratableVms.isEmpty()) {
-			return null;
+			return Vm.NULL;
 		}
-		Vm vmToMigrate = null;
+
+		Vm vmToMigrate = Vm.NULL;
 		double minMetric = Double.MAX_VALUE;
 		for (Vm vm : migratableVms) {
 			if (vm.isInMigration()) {
@@ -49,6 +50,7 @@ public class PowerVmSelectionPolicyMinimumMigrationTime extends PowerVmSelection
 				vmToMigrate = vm;
 			}
 		}
+
 		return vmToMigrate;
 	}
 

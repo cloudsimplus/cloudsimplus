@@ -39,7 +39,7 @@ public class GraphReaderBrite implements GraphReader {
     /**
      * The network Topological Graph.
      */
-    private TopologicalGraph graph = null;
+    private TopologicalGraph graph;
 
     @Override
     public TopologicalGraph readGraphFile(String filename) throws IOException {
@@ -50,7 +50,7 @@ public class GraphReaderBrite implements GraphReader {
         BufferedReader br = new BufferedReader(fr);
 
         String lineSep = System.getProperty("line.separator");
-        String nextLine = null;
+        String nextLine;
         StringBuffer sb = new StringBuffer();
 
         while ((nextLine = br.readLine()) != null) {

@@ -10,9 +10,10 @@ package org.cloudbus.cloudsim.selectionpolicies.power;
 
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Objects;
 
 import org.apache.commons.math3.linear.Array2DRowRealMatrix;
-import org.cloudbus.cloudsim.hosts.power.PowerHostSimple;
+import org.cloudbus.cloudsim.hosts.power.PowerHost;
 import org.cloudbus.cloudsim.vms.power.PowerVm;
 import org.cloudbus.cloudsim.vms.Vm;
 import org.cloudbus.cloudsim.util.MathUtil;
@@ -53,17 +54,19 @@ public class PowerVmSelectionPolicyMaximumCorrelation extends PowerVmSelectionPo
     }
 
     @Override
-    public Vm getVmToMigrate(final PowerHostSimple host) {
+    public Vm getVmToMigrate(final PowerHost host) {
         List<PowerVm> migratableVms = getMigratableVms(host);
         if (migratableVms.isEmpty()) {
-            return null;
+            return Vm.NULL;
         }
-        List<Double> metrics = null;
+
+        List<Double> metrics;
         try {
             metrics = getCorrelationCoefficients(getUtilizationMatrix(migratableVms));
         } catch (IllegalArgumentException e) { // the degrees of freedom must be greater than zero
             return getFallbackPolicy().getVmToMigrate(host);
         }
+
         double maxMetric = Double.MIN_VALUE;
         int maxIndex = 0;
         for (int i = 0; i < metrics.size(); i++) {
@@ -73,6 +76,7 @@ public class PowerVmSelectionPolicyMaximumCorrelation extends PowerVmSelectionPo
                 maxIndex = i;
             }
         }
+
         return migratableVms.get(maxIndex);
     }
 

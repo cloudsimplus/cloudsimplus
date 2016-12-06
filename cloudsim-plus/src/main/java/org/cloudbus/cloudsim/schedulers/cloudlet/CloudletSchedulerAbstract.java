@@ -371,8 +371,7 @@ public abstract class CloudletSchedulerAbstract implements CloudletScheduler {
     @Override
     public Cloudlet cloudletCancel(int cloudletId) {
         Cloudlet cloudlet;
-        cloudlet = changeStatusOfCloudletIntoList(getCloudletFinishedList(), cloudletId, (c) -> {
-        });
+        cloudlet = changeStatusOfCloudletIntoList(getCloudletFinishedList(), cloudletId, (c) -> {});
         if (cloudlet != Cloudlet.NULL) {
             return cloudlet;
         }
@@ -398,7 +397,7 @@ public abstract class CloudletSchedulerAbstract implements CloudletScheduler {
             return cloudlet;
         }
 
-        return null;
+        return Cloudlet.NULL;
     }
 
     /**

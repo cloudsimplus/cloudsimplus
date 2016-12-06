@@ -11,7 +11,7 @@ package org.cloudbus.cloudsim.selectionpolicies.power;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.cloudbus.cloudsim.hosts.power.PowerHostSimple;
+import org.cloudbus.cloudsim.hosts.power.PowerHost;
 import org.cloudbus.cloudsim.vms.power.PowerVm;
 import org.cloudbus.cloudsim.vms.Vm;
 
@@ -38,9 +38,9 @@ public abstract class PowerVmSelectionPolicy {
 	 * Gets a VM to migrate from a given host.
 	 *
 	 * @param host the host to get a Vm to migrate from
-	 * @return the vm to migrate
+	 * @return the vm to migrate or {@link Vm#NULL} if there is not Vm to migrate
 	 */
-	public abstract Vm getVmToMigrate(PowerHostSimple host);
+	public abstract Vm getVmToMigrate(PowerHost host);
 
 	/**
 	 * Gets the list of migratable VMs from a given host.
@@ -48,7 +48,7 @@ public abstract class PowerVmSelectionPolicy {
 	 * @param host the host to get VMs to migrate from
 	 * @return the list of migratable VMs
 	 */
-	protected List<PowerVm> getMigratableVms(PowerHostSimple host) {
+	protected List<PowerVm> getMigratableVms(PowerHost host) {
 		List<PowerVm> migratableVms = new ArrayList<>();
 		for (PowerVm vm : host.<PowerVm> getVmList()) {
 			if (!vm.isInMigration()) {

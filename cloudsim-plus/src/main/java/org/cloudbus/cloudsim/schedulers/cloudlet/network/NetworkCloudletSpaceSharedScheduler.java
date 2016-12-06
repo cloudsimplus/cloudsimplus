@@ -142,11 +142,8 @@ public class NetworkCloudletSpaceSharedScheduler extends CloudletSchedulerSpaceS
      * @return
      */
     protected List<HostPacket> getListOfPacketsToBeSentFromVm(int sourceVmId) {
-        List<HostPacket> pktList = hostPacketsToSendMap.get(sourceVmId);
-        if (pktList == null) {
-            pktList = new ArrayList<>();
-        }
-        return pktList;
+        hostPacketsToSendMap.putIfAbsent(sourceVmId, new ArrayList<>());
+        return hostPacketsToSendMap.get(sourceVmId);
     }
 
     /**
@@ -247,13 +244,8 @@ public class NetworkCloudletSpaceSharedScheduler extends CloudletSchedulerSpaceS
      * @return the list of packets sent from the given VM
      */
     public List<HostPacket> getListOfPacketsSentFromVm(int sourceVmId){
-        List<HostPacket> list = hostPacketsReceivedMap.get(sourceVmId);
-        if(list == null){
-            list = new ArrayList<>();
-            hostPacketsReceivedMap.put(sourceVmId, list);
-        }
-
-        return list;
+        hostPacketsReceivedMap.putIfAbsent(sourceVmId, new ArrayList<>());
+        return hostPacketsReceivedMap.get(sourceVmId);
     }
 
     /**

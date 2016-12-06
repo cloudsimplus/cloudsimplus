@@ -14,6 +14,7 @@ import java.util.Objects;
 
 import org.cloudbus.cloudsim.datacenters.Datacenter;
 import org.cloudbus.cloudsim.hosts.Host;
+import org.cloudbus.cloudsim.hosts.power.PowerHost;
 import org.cloudbus.cloudsim.vms.Vm;
 import org.cloudsimplus.listeners.HostToVmEventInfo;
 
@@ -93,10 +94,13 @@ public abstract class VmAllocationPolicyAbstract implements VmAllocationPolicy {
      * @param host the Host where the Vm has just been placed
      */
     protected void mapVmToPm(Vm vm, Host host) {
-        // if vm were succesfully created in the host
+        if(Objects.isNull(vm) || Objects.isNull(host)) {
+            return;
+        }
+
         getVmHostMap().put(vm.getUid(), host);
         HostToVmEventInfo info =
-                new HostToVmEventInfo(host.getSimulation().clock(), host, vm);
+            new HostToVmEventInfo(host.getSimulation().clock(), host, vm);
         vm.getOnHostAllocationListener().update(info);
     }
 
@@ -106,13 +110,25 @@ public abstract class VmAllocationPolicyAbstract implements VmAllocationPolicy {
      * moved/removed from a Host.
      *
      * @param vm the moved/removed Vm
-     * @return the Host where the Vm was removed/moved from
+     * @return the Host where the Vm was removed/moved from or {@link Host#NULL}
+     * if the Vm wasn't associated to a Host
      */
     protected Host unmapVmFromPm(Vm vm) {
-        final Host host = getVmHostMap().remove(vm.getUid());
-        HostToVmEventInfo info =
+        if(Objects.isNull(vm)) {
+            return Host.NULL;
+        }
+
+        Host host = getVmHostMap().remove(vm.getUid());
+        if(Objects.isNull(host)) {
+            return Host.NULL;
+        }
+
+        if(host != Host.NULL) {
+            HostToVmEventInfo info =
                 new HostToVmEventInfo(host.getSimulation().clock(), host, vm);
-        vm.getOnHostDeallocationListener().update(info);
+            vm.getOnHostDeallocationListener().update(info);
+        }
+
         return host;
     }
 

@@ -11,6 +11,8 @@ import org.cloudbus.cloudsim.core.CloudSim;
 import org.cloudbus.cloudsim.core.SimEntity;
 import org.cloudbus.cloudsim.core.Simulation;
 
+import java.util.Objects;
+
 /**
  * This class represents a simulation event which is passed between the entities
  * in the simulation.
@@ -133,7 +135,7 @@ public final class CloudSimEvent implements SimEvent {
 
     @Override
     public int compareTo(SimEvent event) {
-        if (event == null) {
+        if (Objects.isNull(event)) {
             return 1;
         } else if (time < event.getTime()) {
             return -1;

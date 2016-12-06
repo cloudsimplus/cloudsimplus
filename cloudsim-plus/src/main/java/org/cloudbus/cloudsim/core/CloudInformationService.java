@@ -13,6 +13,7 @@ import org.cloudbus.cloudsim.util.Log;
 import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Objects;
 
 /**
  * A Cloud Information Service (CIS) is an entity that provides cloud resource
@@ -165,7 +166,7 @@ public class CloudInformationService extends CloudSimEntity {
      * @post $none
      */
     public boolean datacenterSupportAR(Integer datacenterId) {
-        if (datacenterId == null || datacenterId < 0) {
+        if (Objects.isNull(datacenterId) || datacenterId < 0) {
             return false;
         }
 
@@ -181,7 +182,7 @@ public class CloudInformationService extends CloudSimEntity {
      * @post $none
      */
     public boolean datacenterExists(Integer id) {
-        if (id == null || id < 0) {
+        if (Objects.isNull(id) || id < 0) {
             return false;
         }
 
@@ -199,7 +200,7 @@ public class CloudInformationService extends CloudSimEntity {
      * @post $none
      */
     private boolean datacenterExists(Collection<Integer> list, Integer datacenterId) {
-        if (list == null || datacenterId == null || datacenterId < 0) {
+        if (Objects.isNull(list) || Objects.isNull(datacenterId) || datacenterId < 0) {
             return false;
         }
 
@@ -217,7 +218,7 @@ public class CloudInformationService extends CloudSimEntity {
      * @post $none
      */
     protected void processOtherEvent(SimEvent ev) {
-        if (ev == null) {
+        if (Objects.isNull(ev)) {
             Log.printConcatLine("CloudInformationService.processOtherEvent(): ",
                     "Unable to handle a request since the event is null.");
             return;
@@ -262,7 +263,7 @@ public class CloudInformationService extends CloudSimEntity {
      */
     protected void signalShutdown(Collection<Integer> list) {
         // checks whether a list is empty or not
-        if (list == null) {
+        if (Objects.isNull(list)) {
             return;
         }
 

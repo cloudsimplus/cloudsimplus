@@ -22,6 +22,8 @@
 package org.cloudsimplus.builders;
 
 import java.util.List;
+import java.util.Objects;
+
 import org.cloudbus.cloudsim.brokers.DatacenterBroker;
 import org.cloudbus.cloudsim.brokers.DatacenterBrokerSimple;
 
@@ -50,10 +52,12 @@ public class BrokerBuilderDecorator implements BrokerBuilderInterface {
     private final DatacenterBroker broker;
 
     public BrokerBuilderDecorator(final BrokerBuilder builder, final DatacenterBrokerSimple broker) {
-        if(builder == null)
-           throw new RuntimeException("The builder parameter cannot be null.");
-        if(broker == null)
-           throw new RuntimeException("The broker parameter cannot be null.");
+        if(Objects.isNull(builder)) {
+            throw new RuntimeException("The builder parameter cannot be null.");
+        }
+        if(Objects.isNull(broker)) {
+            throw new RuntimeException("The broker parameter cannot be null.");
+        }
         this.builder = builder;
         this.broker = broker;
 

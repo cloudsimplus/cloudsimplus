@@ -13,6 +13,7 @@ import org.cloudbus.cloudsim.resources.Pe;
 import org.cloudbus.cloudsim.schedulers.vm.VmScheduler;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 import org.cloudbus.cloudsim.core.CloudSimTags;
 import org.cloudbus.cloudsim.core.Simulation;
@@ -276,7 +277,7 @@ public class HostSimple implements Host {
 
     @Override
     public void destroyVm(Vm vm) {
-        if (vm != null) {
+        if (!Objects.isNull(vm)) {
             deallocateResourcesOfVm(vm);
             getVmList().remove(vm);
         }
@@ -425,7 +426,7 @@ public class HostSimple implements Host {
 
     @Override
     public final Host setVmScheduler(VmScheduler vmScheduler) {
-        if(vmScheduler == null){
+        if(Objects.isNull(vmScheduler)){
             vmScheduler = VmScheduler.NULL;
         }
 
@@ -445,7 +446,7 @@ public class HostSimple implements Host {
      * @param peList the new pe list
      */
     protected final Host setPeList(List<Pe> peList) {
-        if(peList == null){
+        if(Objects.isNull(peList)){
             peList = new ArrayList<>();
         }
         this.peList = peList;
@@ -532,7 +533,7 @@ public class HostSimple implements Host {
 
     @Override
     public Host setOnUpdateVmsProcessingListener(EventListener<HostUpdatesVmsProcessingEventInfo> onUpdateVmsProcessingListener) {
-        if (onUpdateVmsProcessingListener == null) {
+        if (Objects.isNull(onUpdateVmsProcessingListener)) {
             onUpdateVmsProcessingListener = EventListener.NULL;
         }
 

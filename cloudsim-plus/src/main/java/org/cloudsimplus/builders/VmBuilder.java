@@ -23,6 +23,8 @@ package org.cloudsimplus.builders;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
+
 import org.cloudbus.cloudsim.schedulers.cloudlet.CloudletSchedulerSpaceShared;
 import org.cloudbus.cloudsim.brokers.DatacenterBrokerSimple;
 import org.cloudbus.cloudsim.vms.Vm;
@@ -52,8 +54,9 @@ public class VmBuilder {
     private EventListener<HostToVmEventInfo> onUpdateVmProcessingListener;
 
     public VmBuilder(final DatacenterBrokerSimple broker) {
-        if(broker == null)
+        if(Objects.isNull(broker)){
            throw new RuntimeException("The broker parameter cannot be null.");
+        }
 
         this.broker = broker;
         this.numberOfCreatedVms = 0;
@@ -130,12 +133,9 @@ public class VmBuilder {
     }
 
     public Vm getVmById(final int id) {
-        for (Vm vm : broker.getVmsWaitingList()) {
-            if (vm.getId() == id) {
-                return vm;
-            }
-        }
-        return null;
+        return broker.getVmsWaitingList().stream()
+            .filter(vm -> vm.getId() == id)
+            .findFirst().orElse(Vm.NULL);
     }
 
     public long getSize() {
@@ -173,9 +173,10 @@ public class VmBuilder {
     }
 
     public VmBuilder setOnUpdateVmProcessingListener(EventListener<HostToVmEventInfo> onUpdateVmProcessing) {
-        if(onUpdateVmProcessing != null) {
+        if(!Objects.isNull(onUpdateVmProcessing)) {
             this.onUpdateVmProcessingListener = onUpdateVmProcessing;
         }
+
         return this;
     }
 }

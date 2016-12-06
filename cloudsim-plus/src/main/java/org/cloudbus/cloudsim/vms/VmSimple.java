@@ -6,11 +6,7 @@
  */
 package org.cloudbus.cloudsim.vms;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import org.cloudbus.cloudsim.util.Log;
 import org.cloudbus.cloudsim.brokers.DatacenterBroker;
@@ -219,7 +215,7 @@ public class VmSimple implements Vm {
 
     @Override
     public double updateVmProcessing(double currentTime, List<Double> mipsShare) {
-        if (mipsShare != null) {
+        if (!Objects.isNull(mipsShare)) {
             double result = getCloudletScheduler().updateVmProcessing(currentTime, mipsShare);
             HostToVmEventInfo info = new HostToVmEventInfo(currentTime, host, this);
             onUpdateVmProcessingListener.update(info);
@@ -331,7 +327,7 @@ public class VmSimple implements Vm {
 
     @Override
     public final Vm setBroker(DatacenterBroker broker) {
-        if(broker == null) {
+        if(Objects.isNull(broker)) {
             broker = DatacenterBroker.NULL;
         }
         this.broker = broker;
@@ -382,7 +378,7 @@ public class VmSimple implements Vm {
      * @param ram the Ram resource to set
      */
     private void setRam(Ram ram) {
-        if(ram == null){
+        if(Objects.isNull(ram)){
             throw new NullPointerException("Vm RAM cannot be null");
         }
         this.ram = ram;
@@ -409,7 +405,7 @@ public class VmSimple implements Vm {
      * @param bw the Bandwidth resource to set
      */
     private void setBw(Bandwidth bw){
-        if(bw == null){
+        if(Objects.isNull(bw)){
             throw new NullPointerException("Vm Bandwidth cannot be null");
         }
         this.bw = bw;
@@ -435,7 +431,7 @@ public class VmSimple implements Vm {
      * @param storage the RawStorage resource to set
      */
     private void setStorage(RawStorage storage){
-        if(storage == null){
+        if(Objects.isNull(storage)){
             throw new NullPointerException("Vm Storage cannot be null");
         }
         this.storage = storage;
@@ -489,7 +485,7 @@ public class VmSimple implements Vm {
             throw new UnsupportedOperationException("CloudletScheduler can just be changed when the Vm was not created inside a Host yet.");
         }
 
-        if (cloudletScheduler == null) {
+        if (Objects.isNull(cloudletScheduler)) {
             cloudletScheduler = CloudletScheduler.NULL;
         }
 
@@ -582,7 +578,7 @@ public class VmSimple implements Vm {
 
     @Override
     public Vm setOnHostAllocationListener(EventListener<HostToVmEventInfo> onHostAllocationListener) {
-        if (onHostAllocationListener == null) {
+        if (Objects.isNull(onHostAllocationListener)) {
             onHostAllocationListener = EventListener.NULL;
         }
 
@@ -592,7 +588,7 @@ public class VmSimple implements Vm {
 
     @Override
     public Vm setOnHostDeallocationListener(EventListener<HostToVmEventInfo> onHostDeallocationListener) {
-        if (onHostDeallocationListener == null) {
+        if (Objects.isNull(onHostDeallocationListener)) {
             onHostDeallocationListener = EventListener.NULL;
         }
 
@@ -622,7 +618,7 @@ public class VmSimple implements Vm {
 
     @Override
     public Vm setOnVmCreationFailureListener(EventListener<DatacenterToVmEventInfo> onVmCreationFailureListener) {
-        if (onVmCreationFailureListener == null) {
+        if (Objects.isNull(onVmCreationFailureListener)) {
             onVmCreationFailureListener = EventListener.NULL;
         }
 
@@ -637,7 +633,7 @@ public class VmSimple implements Vm {
 
     @Override
     public Vm setOnUpdateVmProcessingListener(EventListener<HostToVmEventInfo> onUpdateVmProcessingListener) {
-        if (onUpdateVmProcessingListener == null) {
+        if (Objects.isNull(onUpdateVmProcessingListener)) {
             onUpdateVmProcessingListener = EventListener.NULL;
         }
 

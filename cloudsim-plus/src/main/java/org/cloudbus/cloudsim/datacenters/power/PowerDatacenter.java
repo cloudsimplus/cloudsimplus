@@ -10,6 +10,7 @@ package org.cloudbus.cloudsim.datacenters.power;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Objects;
 
 import org.cloudbus.cloudsim.datacenters.DatacenterCharacteristics;
 import org.cloudbus.cloudsim.datacenters.DatacenterSimple;
@@ -134,7 +135,7 @@ public class PowerDatacenter extends DatacenterSimple {
                     Host targetHost = migrate.getValue();
                     Host oldHost = migrate.getKey().getHost();
 
-                    if (oldHost == null) {
+                    if (oldHost == Host.NULL) {
                         Log.printFormattedLine(
                             "%.2f: Migration of VM #%d to Host #%d is started",
                             currentTime, migrate.getKey().getId(), targetHost.getId());
@@ -281,7 +282,7 @@ public class PowerDatacenter extends DatacenterSimple {
         updateCloudetProcessingWithoutSchedulingFutureEventsIfClockWasUpdated();
         super.processVmMigrate(ev, ack);
         SimEvent event = getSimulation().findFirstDeferred(getId(), new PredicateType(CloudSimTags.VM_MIGRATE));
-        if (event == null || event.eventTime() > getSimulation().clock()) {
+        if (Objects.isNull(event) || event.eventTime() > getSimulation().clock()) {
             updateCloudetProcessingWithoutSchedulingFutureEvents();
         }
     }

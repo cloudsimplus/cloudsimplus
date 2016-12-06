@@ -11,6 +11,8 @@ package org.cloudbus.cloudsim.resources;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
+
 import org.cloudbus.cloudsim.util.Log;
 
 import org.cloudbus.cloudsim.distributions.ContinuousDistribution;
@@ -83,7 +85,7 @@ public class HarddriveStorage implements FileStorage {
     public HarddriveStorage(final String name, final long capacity) throws IllegalArgumentException {
         this.storage = new RawStorage(capacity);
         this.reservedStorage = new RawStorage(capacity);
-        if (name == null || name.trim().isEmpty()) {
+        if (Objects.isNull(name) || name.trim().isEmpty()) {
             throw new IllegalArgumentException("HarddriveStorage(): Error - invalid storage name.");
         }
 
@@ -135,7 +137,7 @@ public class HarddriveStorage implements FileStorage {
 
     @Override
     public double addReservedFile(File file) {
-        if (file == null) {
+        if (Objects.isNull(file)) {
             return 0;
         }
 
@@ -302,7 +304,7 @@ public class HarddriveStorage implements FileStorage {
     private double getSeekTime(final int fileSize) {
         double result = 0;
 
-        if (gen != null) {
+        if (!Objects.isNull(gen)) {
             result += gen.sample();
         }
 
@@ -369,7 +371,7 @@ public class HarddriveStorage implements FileStorage {
     @Override
     public double addFile(final List<File> list) {
         double result = 0.0;
-        if (list == null || list.isEmpty()) {
+        if (Objects.isNull(list) || list.isEmpty()) {
             Log.printConcatLine(getName(), ".addFile(): Warning - list is empty.");
             return result;
         }
@@ -420,7 +422,7 @@ public class HarddriveStorage implements FileStorage {
 
     @Override
     public boolean contains(final String fileName) {
-        if (fileName == null || fileName.length() == 0) {
+        if (Objects.isNull(fileName) || fileName.isEmpty()) {
             Log.printConcatLine(name, ".contains(): Warning - invalid file name");
             return false;
         }
@@ -447,7 +449,7 @@ public class HarddriveStorage implements FileStorage {
         final String oldName = file.getName();
         // replace the file name in the file (physical) list
         final File renamedFile = getFile(oldName);
-        if (renamedFile != null) {
+        if (!Objects.isNull(renamedFile)) {
             renamedFile.setName(newName);
             renamedFile.setTransactionTime(0);
             fileNameList.remove(oldName);

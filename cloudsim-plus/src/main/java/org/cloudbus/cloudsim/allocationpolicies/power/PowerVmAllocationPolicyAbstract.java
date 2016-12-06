@@ -10,6 +10,7 @@ package org.cloudbus.cloudsim.allocationpolicies.power;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 
 import org.cloudbus.cloudsim.hosts.Host;
 import org.cloudbus.cloudsim.hosts.power.PowerHost;
@@ -86,7 +87,7 @@ public abstract class PowerVmAllocationPolicyAbstract extends VmAllocationPolicy
     @Override
     public void deallocateHostForVm(Vm vm) {
         Host host = getVmHostMap().remove(vm.getUid());
-        if (host != null) {
+        if (!Objects.isNull(host)) {
             host.destroyVm(vm);
         }
     }

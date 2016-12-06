@@ -20,22 +20,22 @@ public class TopologicalNode {
     /**
      * The BRITE id of the node inside the network.
      */
-    private int nodeID = 0;
+    private int nodeID;
 
     /**
      * The name of the node inside the network.
      */
-    private String nodeName = null;
+    private String nodeName;
 
     /**
      * Represents the x world-coordinate.
      */
-    private int worldX = 0;
+    private int worldX;
 
     /**
      * Represents the y world-coordinate.
      */
-    private int worldY = 0;
+    private int worldY;
 
     /**
      * Constructs an new node.

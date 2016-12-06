@@ -10,6 +10,7 @@ package org.cloudbus.cloudsim.util;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.lang.management.ManagementFactory;
+import java.util.Objects;
 
 /**
  * Logger used for performing logging of the simulation process. It provides the
@@ -201,7 +202,7 @@ public class Log {
      * @return the output
      */
     public static OutputStream getOutput() {
-        if (output == null) {
+        if (Objects.isNull(output)) {
             setOutput(System.out);
         }
         return output;

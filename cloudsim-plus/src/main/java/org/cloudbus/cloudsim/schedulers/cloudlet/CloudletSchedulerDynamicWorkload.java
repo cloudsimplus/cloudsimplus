@@ -6,10 +6,7 @@
  */
 package org.cloudbus.cloudsim.schedulers.cloudlet;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import org.cloudbus.cloudsim.cloudlets.Cloudlet;
 import org.cloudbus.cloudsim.util.Consts;
@@ -168,7 +165,7 @@ public class CloudletSchedulerDynamicWorkload extends CloudletSchedulerTimeShare
     @Override
     public double getTotalCurrentAvailableMipsForCloudlet(CloudletExecutionInfo rcl, List<Double> mipsShare) {
         double totalCurrentMips = 0.0;
-        if (mipsShare != null) {
+        if (!Objects.isNull(mipsShare)) {
             int neededPEs = rcl.getCloudlet().getNumberOfPes();
             for (double mips : mipsShare) {
                 totalCurrentMips += mips;

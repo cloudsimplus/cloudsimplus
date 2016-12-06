@@ -284,7 +284,7 @@ public abstract class PowerVmAllocationPolicyMigrationAbstract extends PowerVmAl
      *
      * @param vm the VM
      * @param excludedHosts the excluded hosts
-     * @return the PM found to host the VM
+     * @return the PM found to host the VM or {@link PowerHost#NULL} if not found
      */
     public PowerHost findHostForVm(Vm vm, Set<? extends Host> excludedHosts) {
         Comparator<PowerHost> hostPowerConsumptionComparator = (h1, h2) ->
@@ -326,7 +326,7 @@ public abstract class PowerVmAllocationPolicyMigrationAbstract extends PowerVmAl
         VmList.sortByCpuUtilization(vmsToMigrate, getDatacenter().getSimulation().clock());
         for (Vm vm : vmsToMigrate) {
             PowerHost allocatedHost = findHostForVm(vm, excludedHosts);
-            if (allocatedHost != null) {
+            if (allocatedHost != PowerHost.NULL) {
                 allocatedHost.vmCreate(vm);
                 Log.printConcatLine("VM #", vm.getId(), " allocated to host #", allocatedHost.getId());
 
@@ -351,7 +351,7 @@ public abstract class PowerVmAllocationPolicyMigrationAbstract extends PowerVmAl
         VmList.sortByCpuUtilization(vmsToMigrate, getDatacenter().getSimulation().clock());
         for (Vm vm : vmsToMigrate) {
             PowerHost allocatedHost = findHostForVm(vm, excludedHosts);
-            if (allocatedHost != null) {
+            if (allocatedHost != PowerHost.NULL) {
                 allocatedHost.vmCreate(vm);
                 Log.printConcatLine("VM #", vm.getId(), " allocated to host #", allocatedHost.getId());
                 migrationMap.put(vm, allocatedHost);
@@ -372,13 +372,12 @@ public abstract class PowerVmAllocationPolicyMigrationAbstract extends PowerVmAl
      * @param overUtilizedHosts the over utilized hosts
      * @return the VMs to migrate from hosts
      */
-    protected List<Vm>
-            getVmsToMigrateFromHosts(List<PowerHostUtilizationHistory> overUtilizedHosts) {
+    protected List<Vm> getVmsToMigrateFromHosts(List<PowerHostUtilizationHistory> overUtilizedHosts) {
         List<Vm> vmsToMigrate = new LinkedList<>();
         for (PowerHostUtilizationHistory host : overUtilizedHosts) {
             while (true) {
                 Vm vm = getVmSelectionPolicy().getVmToMigrate(host);
-                if (vm == null) {
+                if (vm == Vm.NULL) {
                     break;
                 }
                 vmsToMigrate.add(vm);
@@ -388,6 +387,7 @@ public abstract class PowerVmAllocationPolicyMigrationAbstract extends PowerVmAl
                 }
             }
         }
+
         return vmsToMigrate;
     }
 
@@ -434,6 +434,7 @@ public abstract class PowerVmAllocationPolicyMigrationAbstract extends PowerVmAl
                 switchedOffHosts.add(host);
             }
         }
+
         return switchedOffHosts;
     }
 
