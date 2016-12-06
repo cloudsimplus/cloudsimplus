@@ -151,8 +151,9 @@ public class PowerVmAllocationPolicyMigrationLocalRegression extends PowerVmAllo
      *
      * @param schedulingInterval the new scheduling interval
      */
-    public final void setSchedulingInterval(double schedulingInterval) {
+    public final PowerVmAllocationPolicyMigrationLocalRegression setSchedulingInterval(double schedulingInterval) {
         this.schedulingInterval = schedulingInterval;
+        return this;
     }
 
     /**
