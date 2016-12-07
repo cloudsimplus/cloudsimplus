@@ -24,8 +24,9 @@ package org.cloudsimplus.util.tablebuilder;
 /**
  * A column of an CSV table. The class generates the CSV code
  * that represents a column in a CSV table.
- * 
+ *
  * @author Manoel Campos da Silva Filho
+ * @since CloudSim Plus 1.0
  */
 public class CsvTableColumn extends AbstractTableColumn {
 
@@ -48,5 +49,5 @@ public class CsvTableColumn extends AbstractTableColumn {
         return String.format("%s%s", super.generateData(data), getColumnSeparator());
     }
 
-    
+
 }

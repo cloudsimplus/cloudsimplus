@@ -21,9 +21,6 @@
  */
 package org.cloudsimplus.heuristics;
 
-import java.util.stream.IntStream;
-import org.cloudbus.cloudsim.distributions.ContinuousDistribution;
-
 /**
  * <p>Provides the methods to be used for implementation of heuristics
  * to find solution for complex problems where the solution space
@@ -46,6 +43,7 @@ import org.cloudbus.cloudsim.distributions.ContinuousDistribution;
  *
  * @author Manoel Campos da Silva Filho
  * @param <S> the class of solutions the heuristic will deal with
+ * @since CloudSim Plus 1.0
  */
 public interface Heuristic<S extends HeuristicSolution<?>> {
     /**

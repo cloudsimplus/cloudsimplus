@@ -29,6 +29,7 @@ import org.cloudbus.cloudsim.vms.Vm;
  * about events happened for a given {@link Vm}.
  *
  * @author Manoel Campos da Silva Filho
+ * @since CloudSim Plus 1.0
  */
 public interface VmEventInfo extends EventInfo {
 

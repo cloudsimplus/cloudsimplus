@@ -27,6 +27,7 @@ import org.cloudbus.cloudsim.hosts.Host;
  * A basic implementation of the {@link HostEventInfo} interface.
  *
  * @author Manoel Campos da Silva Filho
+ * @since CloudSim Plus 1.0
  */
 public class HostEventInfoSimple extends EventInfoAbstract implements HostEventInfo {
     private Host host;

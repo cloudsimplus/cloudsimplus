@@ -73,6 +73,7 @@ import org.cloudsimplus.heuristics.HeuristicSolution;
  * with the {@link DatacenterBrokerHeuristic} class.</p>
  *
  * @author Manoel Campos da Silva Filho
+ * @since CloudSim Plus 1.0
  */
 public class DatacenterBrokerHeuristicExample {
     private final CloudSim simulation;

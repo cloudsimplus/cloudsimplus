@@ -21,6 +21,7 @@
  */
 package org.cloudsimplus.builders;
 
+import org.cloudbus.cloudsim.brokers.DatacenterBroker;
 import org.cloudbus.cloudsim.cloudlets.Cloudlet;
 import org.cloudbus.cloudsim.datacenters.Datacenter;
 import org.cloudbus.cloudsim.hosts.Host;
@@ -31,7 +32,7 @@ import org.cloudbus.cloudsim.vms.Vm;
  * such as {@link Datacenter},
  * {@link Host},
  * {@link Vm}
- * {@link org.cloudbus.cloudsim.DatacenterBroker} and
+ * {@link DatacenterBroker} and
  * {@link Cloudlet}.
  *
  * The builders helps in the creation of such objects,
@@ -39,6 +40,7 @@ import org.cloudbus.cloudsim.vms.Vm;
  * in order to create several objects with the same characteristics.
  *
  * @author Manoel Campos da Silva Filho
+ * @since CloudSim Plus 1.0
  */
 public abstract class Builder {
     public void validateAmount(final int amount){

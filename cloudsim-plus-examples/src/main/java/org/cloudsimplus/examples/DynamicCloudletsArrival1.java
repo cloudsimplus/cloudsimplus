@@ -1,13 +1,26 @@
-package org.cloudbus.cloudsim.examples;
-
-/*
- * Title:        CloudSim Toolkit
- * Description:  CloudSim (Cloud Simulation) Toolkit for Modeling and Simulation
- *               of Clouds
- * Licence:      GPL - http://www.gnu.org/copyleft/gpl.html
+/**
+ * CloudSim Plus: A highly-extensible and easier-to-use Framework for Modeling and Simulation of Cloud Computing Infrastructures and Services.
+ * http://cloudsimplus.org
  *
- * Copyright (c) 2009, The University of Melbourne, Australia
+ *     Copyright (C) 2015-2016  Universidade da Beira Interior (UBI, Portugal) and the Instituto Federal de Educação Ciência e Tecnologia do Tocantins (IFTO, Brazil).
+ *
+ *     This file is part of CloudSim Plus.
+ *
+ *     CloudSim Plus is free software: you can redistribute it and/or modify
+ *     it under the terms of the GNU General Public License as published by
+ *     the Free Software Foundation, either version 3 of the License, or
+ *     (at your option) any later version.
+ *
+ *     CloudSim Plus is distributed in the hope that it will be useful,
+ *     but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *     GNU General Public License for more details.
+ *
+ *     You should have received a copy of the GNU General Public License
+ *     along with CloudSim Plus. If not, see <http://www.gnu.org/licenses/>.
  */
+package org.cloudsimplus.examples;
+
 import org.cloudsimplus.util.tablebuilder.CloudletsTableBuilderHelper;
 import java.util.ArrayList;
 import java.util.List;
@@ -40,18 +53,15 @@ import org.cloudbus.cloudsim.schedulers.vm.VmSchedulerSpaceShared;
 /**
  * An example showing how to delay the submission of cloudlets.
  * Even there is enough resources to run all cloudlets simultaneously,
- * the example delays the creation of each cloudlet inside a VM,
+ * the example delays the creation and execution of some cloudlets inside a VM,
  * simulating the dynamic arrival of cloudlets.
- * For each instantiated cloudlet will be defined a different
- * submission delay.
- * Even there is enough resources to run all cloudlets simultaneously,
- * it is used a CloudletSchedulerTimeShared, analyzing the output
- * you can see that each cloudlet starts in a different time,
- * simulating different arrivals.
+ * It first creates a set of cloudlets without delay and
+ * another set of cloudlets all with the same submission delay.
  *
  * @author Manoel Campos da Silva Filho
+ * @since CloudSim Plus 1.0
  */
-public class DynamicCloudletsArrival2 {
+public class DynamicCloudletsArrival1 {
     /**
      * Number of Processor Elements (CPU Cores) of each Host.
      */
@@ -66,7 +76,7 @@ public class DynamicCloudletsArrival2 {
      * Number of Cloudlets to create simultaneously.
      * Other cloudlets will be enqueued.
      */
-    private static final int NUMBER_OF_CLOUDLETS = VM_PES_NUMBER;
+    private static final int NUMBER_OF_CLOUDLETS = VM_PES_NUMBER*2;
 
     private final List<Host> hostList;
     private final List<Vm> vmList;
@@ -82,16 +92,15 @@ public class DynamicCloudletsArrival2 {
      * @param args command line parameters
      */
     public static void main(String[] args) {
-        Log.printFormattedLine("Starting %s ...", DynamicCloudletsArrival2.class.getSimpleName());
-        new DynamicCloudletsArrival2();
-        Log.printFormattedLine("%s finished!", DynamicCloudletsArrival2.class.getSimpleName());
+        new DynamicCloudletsArrival1();
     }
 
     /**
      * Default constructor that builds and starts the simulation.
      */
-    public DynamicCloudletsArrival2() {
+    public DynamicCloudletsArrival1() {
         int numberOfUsers = 1; // number of cloud users/customers (brokers)
+        Log.printFormattedLine("Starting %s ...", getClass().getSimpleName());
         simulation = new CloudSim(numberOfUsers);
 
         this.hostList = new ArrayList<>();
@@ -100,9 +109,15 @@ public class DynamicCloudletsArrival2 {
         this.datacenter = createDatacenter();
         this.broker = new DatacenterBrokerSimple(simulation);
 
-        createAndSubmitVmAndCloudlets();
+        Vm vm = createAndSubmitVmAndCloudlets();
+
+        /*Defines a delay of 5 seconds and creates another group of cloudlets
+        that will start executing inside a VM only after this delay expires.*/
+        double submissionDelay = 5;
+        //createAndSubmitCloudlets(vm, submissionDelay);
 
         runSimulationAndPrintResults();
+        Log.printFormattedLine("%s finished!", getClass().getSimpleName());
     }
 
     private void runSimulationAndPrintResults() {
@@ -115,34 +130,33 @@ public class DynamicCloudletsArrival2 {
 
     /**
      * Creates cloudlets and submit them to the broker, applying
-     * a different submission delay for each one (simulating the dynamic cloudlet arrival).
+     * a submission delay for each one (simulating the dynamic cloudlet arrival).
      *
      * @param vm Vm to run the cloudlets to be created
+     * @param submissionDelay the delay the broker has to include when submitting the Cloudlets
      *
      * @see #createCloudlet(int, Vm, DatacenterBroker)
      */
-    private void createAndSubmitCloudlets(Vm vm) {
+    private void createAndSubmitCloudlets(Vm vm, double submissionDelay) {
         int cloudletId = cloudletList.size();
-        double submissionDelay = 0;
         List<Cloudlet> list = new ArrayList<>(NUMBER_OF_CLOUDLETS);
         for(int i = 0; i < NUMBER_OF_CLOUDLETS; i++){
             Cloudlet cloudlet = createCloudlet(cloudletId++, vm, broker);
-            cloudlet.setSubmissionDelay(submissionDelay);
-            submissionDelay += 10;
             list.add(cloudlet);
         }
 
-        broker.submitCloudletList(list);
+        broker.submitCloudletList(list, submissionDelay);
         cloudletList.addAll(list);
     }
 
     /**
      * Creates one Vm and a group of cloudlets to run inside it,
      * and submit the Vm and its cloudlets to the broker.
+     * @return the created VM
      *
      * @see #createVm(int, org.cloudbus.cloudsim.brokers.DatacenterBroker)
      */
-    private void createAndSubmitVmAndCloudlets() {
+    private Vm createAndSubmitVmAndCloudlets() {
         List<Vm> list = new ArrayList<>();
         Vm vm = createVm(this.vmList.size(), broker);
         list.add(vm);
@@ -150,7 +164,9 @@ public class DynamicCloudletsArrival2 {
         broker.submitVmList(list);
         this.vmList.addAll(list);
 
-        createAndSubmitCloudlets(vm);
+        //Submit cloudlets without delay
+        createAndSubmitCloudlets(vm, 0);
+        return vm;
     }
 
     /**
@@ -166,11 +182,11 @@ public class DynamicCloudletsArrival2 {
         long size = 10000; // image size (MB)
         int ram = 512; // vm memory (MB)
         long bw = 1000;
-
         Vm vm = new VmSimple(id, mips, VM_PES_NUMBER)
-                .setBroker(broker)
-                .setRam(ram).setBw(bw).setSize(size)
-                .setCloudletScheduler(new CloudletSchedulerTimeShared());
+            .setRam(ram).setBw(bw).setSize(size)
+            .setCloudletScheduler(new CloudletSchedulerTimeShared())
+            .setBroker(broker);
+
         return vm;
     }
 
@@ -238,9 +254,10 @@ public class DynamicCloudletsArrival2 {
         long storage = 1000000; // host storage (MB)
         long bw = 10000; //Megabits/s
 
-        return new HostSimple(id, storage, peList)
-                .setRamProvisioner(new ResourceProvisionerSimple(new Ram(ram)))
-                .setBwProvisioner(new ResourceProvisionerSimple(new Bandwidth(bw)))
-                .setVmScheduler(new VmSchedulerSpaceShared());
+       return new HostSimple(id, storage, peList)
+            .setRamProvisioner(new ResourceProvisionerSimple(new Ram(ram)))
+            .setBwProvisioner(new ResourceProvisionerSimple(new Bandwidth(bw)))
+            .setVmScheduler(new VmSchedulerSpaceShared());
+
     }
 }

@@ -1,11 +1,5 @@
 package org.cloudbus.cloudsim.network.topologies;
 
-import org.cloudbus.cloudsim.network.topologies.readers.GraphReaderBrite;
-import org.cloudbus.cloudsim.util.Log;
-
-import java.io.IOException;
-import java.util.HashMap;
-
 /**
  **
  * Implements a network layer by reading the topology from a file in a specific format

@@ -26,13 +26,14 @@ package org.cloudsimplus.listeners;
  * of the {@link EventInfo} interface.
  *
  * @author Manoel Campos da Silva Filho
+ * @since CloudSim Plus 1.0
  */
 public class EventInfoAbstract implements EventInfo {
     private final double time;
 
     /**
      * Creates an EventInfo at the the given time.
-     * 
+     *
      * @param time time the event was fired
      */
     public EventInfoAbstract(double time){

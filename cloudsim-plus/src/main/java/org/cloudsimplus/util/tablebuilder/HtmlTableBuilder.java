@@ -27,6 +27,7 @@ import org.cloudbus.cloudsim.util.Log;
  * A generator of HTML tables.
  *
  * @author Manoel Campos da Silva Filho
+ * @since CloudSim Plus 1.0
  */
 public class HtmlTableBuilder extends AbstractTableBuilder {
     public HtmlTableBuilder() {

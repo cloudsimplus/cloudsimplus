@@ -1,13 +1,26 @@
-package org.cloudbus.cloudsim.examples;
-
-/*
- * Title:        CloudSim Toolkit
- * Description:  CloudSim (Cloud Simulation) Toolkit for Modeling and Simulation
- *               of Clouds
- * Licence:      GPL - http://www.gnu.org/copyleft/gpl.html
+/**
+ * CloudSim Plus: A highly-extensible and easier-to-use Framework for Modeling and Simulation of Cloud Computing Infrastructures and Services.
+ * http://cloudsimplus.org
  *
- * Copyright (c) 2009, The University of Melbourne, Australia
+ *     Copyright (C) 2015-2016  Universidade da Beira Interior (UBI, Portugal) and the Instituto Federal de Educação Ciência e Tecnologia do Tocantins (IFTO, Brazil).
+ *
+ *     This file is part of CloudSim Plus.
+ *
+ *     CloudSim Plus is free software: you can redistribute it and/or modify
+ *     it under the terms of the GNU General Public License as published by
+ *     the Free Software Foundation, either version 3 of the License, or
+ *     (at your option) any later version.
+ *
+ *     CloudSim Plus is distributed in the hope that it will be useful,
+ *     but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *     GNU General Public License for more details.
+ *
+ *     You should have received a copy of the GNU General Public License
+ *     along with CloudSim Plus. If not, see <http://www.gnu.org/licenses/>.
  */
+package org.cloudsimplus.examples;
+
 import org.cloudsimplus.util.tablebuilder.CloudletsTableBuilderHelper;
 import java.util.ArrayList;
 import java.util.List;
@@ -47,9 +60,8 @@ import org.cloudbus.cloudsim.resources.Ram;
  * compared to running each cloudlet in its own VM or using a space shared
  * scheduler.
  *
- * Based on the {@link CloudSimExample1}
- *
  * @author Manoel Campos da Silva Filho
+ * @since CloudSim Plus 1.0
  */
 public class TwoCloudletsAndOneTimeSharedVm {
     private static List<Cloudlet> cloudletList;
@@ -66,9 +78,7 @@ public class TwoCloudletsAndOneTimeSharedVm {
 
         // First step: Initialize the CloudSim package. It should be called before creating any entities.
         int num_user = 1; // number of cloud users
-        boolean trace_flag = false; // trace events
-
-        simulation = new CloudSim(num_user, trace_flag);
+        simulation = new CloudSim(num_user);
 
         // Second step: Create Datacenters
         // Datacenters are the resource providers in CloudSim. We need at

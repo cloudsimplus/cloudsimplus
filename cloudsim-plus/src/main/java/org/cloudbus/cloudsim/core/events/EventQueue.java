@@ -1,6 +1,5 @@
 package org.cloudbus.cloudsim.core.events;
 
-import java.util.Collection;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
 import java.util.stream.Stream;

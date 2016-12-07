@@ -33,6 +33,7 @@ import org.cloudbus.cloudsim.vms.Vm;
  *
  * @author Manoel Campos da Silva Filho
  * @see Heuristic
+ * @since CloudSim Plus 1.0
  */
 public class CloudletToVmMappingSolution implements HeuristicSolution<Map<Cloudlet, Vm>> {
     /**

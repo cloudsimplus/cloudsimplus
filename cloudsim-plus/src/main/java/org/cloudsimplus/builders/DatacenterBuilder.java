@@ -37,6 +37,7 @@ import org.cloudbus.cloudsim.resources.FileStorage;
  * A Builder class to createDatacenter {@link DatacenterSimple} objects.
  *
  * @author Manoel Campos da Silva Filho
+ * @since CloudSim Plus 1.0
  */
 public class DatacenterBuilder extends Builder {
     public static final String DATACENTER_NAME_FORMAT = "Datacenter%d";

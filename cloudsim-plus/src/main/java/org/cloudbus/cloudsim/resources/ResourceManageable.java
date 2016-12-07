@@ -5,7 +5,6 @@ package org.cloudbus.cloudsim.resources;
  * Bandwidth) with features to manage resource capacity and allocation.
  *
  * @author Manoel Campos da Silva Filho
- * @since CloudSim Toolkit 3.0.4
  */
 public interface ResourceManageable extends Resource {
 

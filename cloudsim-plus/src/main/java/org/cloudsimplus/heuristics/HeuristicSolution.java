@@ -30,6 +30,7 @@ package org.cloudsimplus.heuristics;
  * a mapping between Cloudlets and Vm's, this type would be
  * a {@code  Map<Cloudet, Vm>}, that will indicate which Vm will
  * run each Cloudlet. Such result can be obtained by calling the {@link #getResult()} method.
+ * @since CloudSim Plus 1.0
  */
 public interface HeuristicSolution<T> extends Comparable<HeuristicSolution<T>> {
 	/**

@@ -64,6 +64,7 @@ import java.util.List;
  * objects.</p>
  *
  * @author Manoel Campos da Silva Filho
+ * @since CloudSim Plus 1.0
  */
 public class ParallelSimulationsExample {
     private final String title;
@@ -156,11 +157,10 @@ public class ParallelSimulationsExample {
         //Number of cloud customers
         int numberOfCloudUsers = 1;
         this.title = title;
-        boolean traceEvents = false;
         this.cloudletList = new ArrayList<>();
         this.finishedCloudletList = new ArrayList<>();
         this.vmList = new ArrayList<>();
-        this.simulation = new CloudSim(numberOfCloudUsers, traceEvents);
+        this.simulation = new CloudSim(numberOfCloudUsers);
     }
 
     private DatacenterSimple createDatacenter() {

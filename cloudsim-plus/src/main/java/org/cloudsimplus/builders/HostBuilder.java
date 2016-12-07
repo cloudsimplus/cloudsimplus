@@ -42,6 +42,7 @@ import org.cloudbus.cloudsim.resources.Ram;
  * A Builder class to create {@link Host} objects.
  *
  * @author Manoel Campos da Silva Filho
+ * @since CloudSim Plus 1.0
  */
 public class HostBuilder extends Builder {
     private double mips = 2000;

@@ -33,6 +33,7 @@ import org.cloudbus.cloudsim.distributions.ContinuousDistribution;
  * the number of idle or overloaded Vm Pe's.
  *
  * @author Manoel Campos da Silva Filho
+ * @since CloudSim Plus 1.0
  */
 public class CloudletToVmMappingSimulatedAnnealing
       extends SimulatedAnnealing<CloudletToVmMappingSolution>

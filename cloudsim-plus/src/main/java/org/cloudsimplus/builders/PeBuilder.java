@@ -32,8 +32,9 @@ import org.cloudbus.cloudsim.provisioners.PeProvisionerSimple;
 
 /**
  * A Builder class to create {@link PeSimple} objects.
- * 
+ *
  * @author Manoel Campos da Silva Filho
+ * @since CloudSim Plus 1.0
  */
 public class PeBuilder extends Builder {
     private Class<? extends PeProvisioner> provisionerClass = PeProvisionerSimple.class;

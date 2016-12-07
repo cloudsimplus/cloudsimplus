@@ -72,6 +72,7 @@ at [the Computer Science and Software Engineering Department](http://www.csse.un
 
 CloudSim Plus provides a lot of exclusive features, ranging from the most basic ones that are missing in CloudSim to advanced features that enable implementation of more realistic simulation scenarios. 
 
+- Parallel execution of simulations, allowing several simulations to be run simultaneously, in a isolated way, inside a multi-core computer.
 - [Listeners](/cloudsim-plus-examples/src/main/java/org/cloudsimplus/examples/listeners/) objects to enable simulation monitoring.
 - Builders to enable creating multiple simulation objects with same configuration.
 - [TableBuilder](/cloudsim-plus-examples/src/main/) objects that are used in all examples and enable printing simulation results in different formats such as ASCII Table, CSV or HTML. It shows simulation results in perfectly aligned tables, including data units and additional data.

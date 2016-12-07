@@ -27,6 +27,7 @@ import org.cloudbus.cloudsim.util.Log;
 /**
  * Prints a table from a given data set, using a simple delimited text format.
  * @author Manoel Campos da Silva Filho
+ * @since CloudSim Plus 1.0
  */
 public class TextTableBuilder extends CsvTableBuilder {
     public TextTableBuilder() {

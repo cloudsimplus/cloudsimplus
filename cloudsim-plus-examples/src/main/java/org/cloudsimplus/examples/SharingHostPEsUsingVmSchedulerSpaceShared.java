@@ -1,4 +1,25 @@
-package org.cloudbus.cloudsim.examples;
+/**
+ * CloudSim Plus: A highly-extensible and easier-to-use Framework for Modeling and Simulation of Cloud Computing Infrastructures and Services.
+ * http://cloudsimplus.org
+ *
+ *     Copyright (C) 2015-2016  Universidade da Beira Interior (UBI, Portugal) and the Instituto Federal de Educação Ciência e Tecnologia do Tocantins (IFTO, Brazil).
+ *
+ *     This file is part of CloudSim Plus.
+ *
+ *     CloudSim Plus is free software: you can redistribute it and/or modify
+ *     it under the terms of the GNU General Public License as published by
+ *     the Free Software Foundation, either version 3 of the License, or
+ *     (at your option) any later version.
+ *
+ *     CloudSim Plus is distributed in the hope that it will be useful,
+ *     but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *     GNU General Public License for more details.
+ *
+ *     You should have received a copy of the GNU General Public License
+ *     along with CloudSim Plus. If not, see <http://www.gnu.org/licenses/>.
+ */
+package org.cloudsimplus.examples;
 
 import org.cloudsimplus.util.tablebuilder.CloudletsTableBuilderHelper;
 import java.util.ArrayList;
@@ -22,7 +43,7 @@ import org.cloudbus.cloudsim.utilizationmodels.UtilizationModel;
 import org.cloudbus.cloudsim.utilizationmodels.UtilizationModelFull;
 import org.cloudbus.cloudsim.vms.Vm;
 import org.cloudbus.cloudsim.allocationpolicies.VmAllocationPolicySimple;
-import org.cloudbus.cloudsim.schedulers.vm.VmSchedulerTimeShared;
+import org.cloudbus.cloudsim.schedulers.vm.VmSchedulerSpaceShared;
 import org.cloudbus.cloudsim.vms.VmSimple;
 import org.cloudbus.cloudsim.core.CloudSim;
 import org.cloudbus.cloudsim.provisioners.PeProvisionerSimple;
@@ -31,24 +52,34 @@ import org.cloudbus.cloudsim.provisioners.ResourceProvisionerSimple;
 import org.cloudbus.cloudsim.resources.Ram;
 
 /**
- * An example showing how to create 1 host and place multiple VMs at the same
- * {@link Pe Processor Element (CPU core)} of it,
- * using a VmSchedulerTimeShared policy at the Host.
+ * An example that execute exactly as the
+ * {@link SharingHostPEsUsingVmSchedulerTimeShared},
+ * however the host uses an {@link VmSchedulerSpaceShared},
+ * showing how half of the VMs will fail to be placed due to
+ * lack of available Host PEs.
  *
- * It number of VMs to be created will be the double of the Host PEs number.
- * For each Host PE, two VMs requiring half the MIPS capacity of the PE will be
- * created. Each VM will have just one cloudlet that will use
- * all VM PEs and MIPS capacity.
+ * Considering this scenario where we have 1 hosts with 2 PEs
+ * and 4 VMs each one requesting these 2 PEs.
+ * This CloudSim paper below states in the section 3.2 that when using a
+ * VmSchedulerSpaceShared, one VM will execute first and after it finishes,
+ * the other one will start executing.
+ * However, the DatacenterBroker fails in allocating a host for 2 VMs
+ * due to lack of available PEs.
+ * Once each one of the 2 host PEs has a capacity of 1000 MIPS, even defining
+ * that each one of the 4 VMs requires just 500 MIPS, the allocation
+ * of 2 VMs fails.
  *
- * Thus, considering that each cloudlet has a length of 10000 MI and
- * each VM has a PE of 1000 MIPS, the cloudlet will spend 10 seconds to finish.
- * However, as each Host PE will be shared between two VMs using a time shared
- * scheduler, the cloudlet will spend the double of the time to finish,
- * as can be seen in the simulation results after running the example.
+ * <ul>
+ *  <li><a href="http://arxiv.org/abs/0903.2525">R. N. Calheiros, R. Ranjan, C. A. F. De Rose, and R. Buyya,
+ * “CloudSim: A Novel Framework for Modeling and Simulation of Cloud Computing
+ * Infrastructures and Services,” arXiv preprint arXiv:0903.2525. arXiv, p. 9, 2009</a>.</li>
+ * </ul>
+ *
  *
  * @author Manoel Campos da Silva Filho
+ * @since CloudSim Plus 1.0
  */
-public class SharingHostPEsUsingVmSchedulerTimeShared {
+public class SharingHostPEsUsingVmSchedulerSpaceShared {
     /**
      * Capacity of each CPU core (in Million Instructions per Second).
      */
@@ -88,21 +119,20 @@ public class SharingHostPEsUsingVmSchedulerTimeShared {
      * @param args
      */
     public static void main(String[] args) {
-        new SharingHostPEsUsingVmSchedulerTimeShared();
+        new SharingHostPEsUsingVmSchedulerSpaceShared();
     }
 
     /**
      * Default constructor where the simulation is built.
      */
-    public SharingHostPEsUsingVmSchedulerTimeShared() {
+    public SharingHostPEsUsingVmSchedulerSpaceShared() {
         Log.printFormattedLine("Starting %s Example ...", getClass().getSimpleName());
         this.vmList = new ArrayList<>();
         this.cloudletList = new ArrayList<>();
         //Number of cloud customers
         int numberOfCloudUsers = 1;
-        boolean traceEvents = false;
 
-        simulation = new CloudSim(numberOfCloudUsers, traceEvents);
+        simulation = new CloudSim(numberOfCloudUsers);
 
         Datacenter datacenter0 = createDatacenter();
 
@@ -172,10 +202,11 @@ public class SharingHostPEsUsingVmSchedulerTimeShared {
             peList.add(new PeSimple(i, new PeProvisionerSimple(HOST_MIPS)));
         }
 
-        return new HostSimple(numberOfCreatedHosts++, storage, peList)
+       return new HostSimple(numberOfCreatedHosts++, storage, peList)
             .setRamProvisioner(new ResourceProvisionerSimple(new Ram(ram)))
             .setBwProvisioner(new ResourceProvisionerSimple(new Bandwidth(bw)))
-            .setVmScheduler(new VmSchedulerTimeShared());
+            .setVmScheduler(new VmSchedulerSpaceShared());
+
     }
 
     private Vm createVm(DatacenterBroker broker, double mips, int pesNumber) {
@@ -187,7 +218,6 @@ public class SharingHostPEsUsingVmSchedulerTimeShared {
             .setRam(ram).setBw(bw).setSize(storage)
             .setCloudletScheduler(new CloudletSchedulerTimeShared())
             .setBroker(broker);
-
     }
 
     private Cloudlet createCloudlet(DatacenterBroker broker, Vm vm) {
@@ -199,8 +229,8 @@ public class SharingHostPEsUsingVmSchedulerTimeShared {
         //Sets the same utilization model for all these resources.
         UtilizationModel utilization = new UtilizationModelFull();
 
-        Cloudlet cloudlet
-            = new CloudletSimple(numberOfCreatedCloudlets++, CLOUDLET_LENGTH, numberOfCpuCores)
+        Cloudlet cloudlet =
+            new CloudletSimple(numberOfCreatedCloudlets++, CLOUDLET_LENGTH, numberOfCpuCores)
                 .setCloudletFileSize(fileSize)
                 .setCloudletOutputSize(outputSize)
                 .setUtilizationModel(utilization)

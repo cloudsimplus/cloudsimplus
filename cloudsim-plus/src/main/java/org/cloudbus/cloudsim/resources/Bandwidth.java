@@ -2,7 +2,8 @@ package org.cloudbus.cloudsim.resources;
 
 /**
  * Represents the Bandwidth (BW) capacity of a PM or VM in Megabits/s.
- * @author Manoel Campos da Silva Filho <manoelcampos at gmail.com>
+ *
+ * @author Manoel Campos da Silva Filho
  */
 public final class Bandwidth extends AbstractResource {
     /**

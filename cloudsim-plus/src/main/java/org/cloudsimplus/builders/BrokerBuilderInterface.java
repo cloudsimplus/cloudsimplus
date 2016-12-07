@@ -30,6 +30,7 @@ import org.cloudbus.cloudsim.brokers.DatacenterBrokerSimple;
  * An interface to classes that build {@link DatacenterBrokerSimple} objects.
  *
  * @author Manoel Campos da Silva Filho
+ * @since CloudSim Plus 1.0
  */
 public interface BrokerBuilderInterface {
     BrokerBuilderDecorator createBroker();

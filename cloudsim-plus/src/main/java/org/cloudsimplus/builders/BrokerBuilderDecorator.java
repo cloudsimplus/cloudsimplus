@@ -44,6 +44,7 @@ import org.cloudbus.cloudsim.brokers.DatacenterBrokerSimple;
  * <ul><li>{@link #createBroker() createBroker()}.{@link #getVmBuilder() getVmBuilder()}</li></ul>
  *
  * @author Manoel Campos da Silva Filho
+ * @since CloudSim Plus 1.0
  */
 public class BrokerBuilderDecorator implements BrokerBuilderInterface {
     private final BrokerBuilder builder;

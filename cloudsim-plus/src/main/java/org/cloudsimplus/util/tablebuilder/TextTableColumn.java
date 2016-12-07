@@ -24,8 +24,9 @@ package org.cloudsimplus.util.tablebuilder;
 /**
  * A column of an text (ASCII) table. The class generates the string
  * that represents a column in a text table.
- * 
+ *
  * @author Manoel Campos da Silva Filho
+ * @since CloudSim Plus 1.0
  */
 public class TextTableColumn extends CsvTableColumn {
 
@@ -37,7 +38,7 @@ public class TextTableColumn extends CsvTableColumn {
     @Override
     public String generateData(Object data) {
         return alignStringRight(super.generateData(data));
-    }    
+    }
 
     /**
      * Align a string to the right side, based on the length of the title
@@ -48,12 +49,12 @@ public class TextTableColumn extends CsvTableColumn {
     private String alignStringRight(String str) {
         final String fmt = String.format("%%%ds", generateTitleHeader().length());
         return String.format(fmt, str);
-    }    
+    }
 
     @Override
     public String generateSubtitleHeader() {
-        return alignStringRight(super.generateSubtitleHeader()); 
+        return alignStringRight(super.generateSubtitleHeader());
     }
 
-  
+
 }

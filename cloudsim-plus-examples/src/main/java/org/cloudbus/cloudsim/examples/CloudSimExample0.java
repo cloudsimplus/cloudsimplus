@@ -35,6 +35,7 @@ import org.cloudbus.cloudsim.schedulers.cloudlet.CloudletSchedulerSpaceShared;
  * cloudlets on it.
  *
  * @author Manoel Campos da Silva Filho
+ * @since CloudSim Plus 1.0
  */
 public class CloudSimExample0 {
     private final CloudSim simulation;

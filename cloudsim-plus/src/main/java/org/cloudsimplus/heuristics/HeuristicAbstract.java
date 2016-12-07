@@ -35,6 +35,7 @@ import java.util.stream.IntStream;
  *           solution (usually random, depending on sub-classes implementations)
  *           and executing the solution search in order
  *           to achieve a satisfying solution (defined by a stop criteria)
+ * @since CloudSim Plus 1.0
  */
 public abstract class HeuristicAbstract<S extends HeuristicSolution<?>>  implements Heuristic<S> {
 	/**

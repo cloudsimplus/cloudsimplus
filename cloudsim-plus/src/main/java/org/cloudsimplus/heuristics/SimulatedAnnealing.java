@@ -57,6 +57,7 @@ import org.cloudbus.cloudsim.distributions.ContinuousDistribution;
  * @see <a href="http://dx.doi.org/10.1109/101.17235">[1] R. A. Rutenbar,
  * “Simulated Annealing Algorithms: An overview,” IEEE Circuits Devices Mag., vol. 1, no. 5,
  * pp. 19–26, 1989.</a>
+ * @since CloudSim Plus 1.0
  */
 public abstract class SimulatedAnnealing<S extends HeuristicSolution<?>> extends HeuristicAbstract<S> {
     /**

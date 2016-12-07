@@ -1,3 +1,11 @@
+/*
+ * Title:        CloudSim Toolkit
+ * Description:  CloudSim (Cloud Simulation) Toolkit for Modeling and Simulation of Clouds
+ * Licence:      GPL - http://www.gnu.org/copyleft/gpl.html
+ *
+ * Copyright (c) 2009-2012, The University of Melbourne, Australia
+ */
+
 package org.cloudbus.cloudsim.resources;
 
 import java.util.List;
@@ -14,7 +22,6 @@ import java.util.List;
  * @author Uros Cibej
  * @author Anthony Sulistio
  * @author Manoel Campos da Silva Filho
- * @since CloudSim Toolkit 3.0.4
  */
 public interface FileStorage extends Resource {
     /**

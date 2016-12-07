@@ -1,3 +1,10 @@
+/*
+ * Title:        CloudSim Toolkit
+ * Description:  CloudSim (Cloud Simulation) Toolkit for Modeling and Simulation of Clouds
+ * Licence:      GPL - http://www.gnu.org/copyleft/gpl.html
+ *
+ * Copyright (c) 2009-2012, The University of Melbourne, Australia
+ */
 package org.cloudbus.cloudsim.cloudlets;
 
 import java.text.DecimalFormat;
@@ -17,6 +24,8 @@ import org.cloudsimplus.listeners.VmToCloudletEventInfo;
 /**
  * A base class for {@link Cloudlet} implementations.
  *
+ * @author Rodrigo N. Calheiros
+ * @author Anton Beloglazov
  * @author Manoel Campos da Silva Filho
  */
 public abstract class CloudletAbstract implements Cloudlet {

@@ -29,6 +29,7 @@ import org.cloudbus.cloudsim.core.CloudSim;
  * An builder to help getting instance of other CloudSim object builders.
  *
  * @author Manoel Campos da Silva Filho
+ * @since CloudSim Plus 1.0
  */
 public class SimulationScenarioBuilder {
     private final DatacenterBuilder datacenterBuilder;

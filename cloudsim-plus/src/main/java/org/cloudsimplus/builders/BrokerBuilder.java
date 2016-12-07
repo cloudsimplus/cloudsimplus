@@ -31,6 +31,7 @@ import org.cloudbus.cloudsim.brokers.DatacenterBrokerSimple;
  * A Builder class to createBroker {@link DatacenterBrokerSimple} objects.
  *
  * @author Manoel Campos da Silva Filho
+ * @since CloudSim Plus 1.0
  */
 public class BrokerBuilder extends Builder implements BrokerBuilderInterface {
     private static final String BROKER_NAME_FORMAT = "Broker%d";
