@@ -133,7 +133,7 @@ public class ExampleCreateCloudletRandomly {
     public ExampleCreateCloudletRandomly() {
         int num_user = 1; // number of cloud users
 
-        this.cloudsim = new CloudSim(num_user);
+        this.cloudsim = new CloudSim();
 
         // Second step: Create Datacenters
         Datacenter datacenter0 = createDatacenter();

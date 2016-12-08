@@ -21,16 +21,6 @@ import org.cloudbus.cloudsim.core.events.SimEvent;
  * @since CloudSim Toolkit 1.0
  */
 public class CloudCloudSimShutdown extends CloudSimEntity {
-
-    /**
-     * The total number of cloud users.
-     *
-     * @todo how the dynamic creation of brokers impact this attribute
-     * that is also defined in CloudSim class?
-     * How is it in fact used?
-     */
-    private int numUsers;
-
     /**
      * Instantiates a new CloudCloudSimShutdown object.
      * <p/>
@@ -40,17 +30,10 @@ public class CloudCloudSimShutdown extends CloudSimEntity {
      * cloud user entities. Otherwise, CloudSim program will hang or encounter a weird behaviour.
      *
      * @param simulation The CloudSim instance that represents the simulation the Entity is related to
-     * @param numUsers   Total number of cloud user entities
-     * @pre name != null
-     * @pre numUsers >= 0
      * @post $none
-     * @see CloudSim#CloudSim(int, java.util.Calendar, boolean)
      */
-    public CloudCloudSimShutdown(CloudSim simulation, int numUsers) {
-        // NOTE: This entity doesn't use any I/O port.
-        // super(name, CloudSimTags.DEFAULT_BAUD_RATE);
+    public CloudCloudSimShutdown(CloudSim simulation) {
         super(simulation);
-        this.numUsers = numUsers;
     }
 
     /**
@@ -68,8 +51,7 @@ public class CloudCloudSimShutdown extends CloudSimEntity {
      */
     @Override
     public void processEvent(SimEvent ev) {
-        numUsers--;
-        if (numUsers == 0 || ev.getTag() == CloudSimTags.ABRUPT_END_OF_SIMULATION) {
+        if (getSimulation().decrementNumberOfUsers() <= 0 || ev.getTag() == CloudSimTags.ABRUPT_END_OF_SIMULATION) {
             getSimulation().abruptallyTerminate();
         }
     }
@@ -78,15 +60,11 @@ public class CloudCloudSimShutdown extends CloudSimEntity {
      * The method has no effect at the current class.
      */
     @Override
-    public void startEntity() {
-        // do nothing
-    }
+    public void startEntity() {}
 
     /**
      * The method has no effect at the current class.
      */
     @Override
-    public void shutdownEntity() {
-        // do nothing
-    }
+    public void shutdownEntity() {}
 }

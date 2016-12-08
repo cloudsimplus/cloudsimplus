@@ -61,7 +61,7 @@ public class CloudSimExample8 {
         boolean trace_flag = false;  // mean trace events
 
         // Initialize the CloudSim library
-        simulation = new CloudSim(num_user, trace_flag);
+        simulation = new CloudSim(trace_flag);
 
         GlobalBroker globalBroker = new GlobalBroker("GlobalBroker");
 

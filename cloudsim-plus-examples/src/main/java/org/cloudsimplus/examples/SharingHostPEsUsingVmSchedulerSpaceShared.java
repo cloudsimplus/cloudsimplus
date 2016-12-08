@@ -132,7 +132,7 @@ public class SharingHostPEsUsingVmSchedulerSpaceShared {
         //Number of cloud customers
         int numberOfCloudUsers = 1;
 
-        simulation = new CloudSim(numberOfCloudUsers);
+        simulation = new CloudSim();
 
         Datacenter datacenter0 = createDatacenter();
 

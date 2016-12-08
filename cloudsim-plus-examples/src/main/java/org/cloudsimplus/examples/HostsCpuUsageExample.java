@@ -81,7 +81,7 @@ public class HostsCpuUsageExample {
         // before creating any entities.
         int num_user = 1;   // number of cloud users
         // Initialize the CloudSim library
-        simulation = new CloudSim(num_user);
+        simulation = new CloudSim();
 
         // Second step: Create Datacenters
         //Datacenters are the resource providers in CloudSim. We need at list one of them to run a CloudSim simulation

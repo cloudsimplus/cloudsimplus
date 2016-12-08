@@ -3,7 +3,9 @@ package org.cloudbus.cloudsim.core;
 import java.util.Calendar;
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 
+import org.cloudbus.cloudsim.brokers.DatacenterBroker;
 import org.cloudbus.cloudsim.core.events.SimEvent;
 import org.cloudbus.cloudsim.core.predicates.Predicate;
 import org.cloudbus.cloudsim.core.predicates.PredicateAny;
@@ -185,7 +187,6 @@ public interface Simulation {
      * is processed by CloudSim.
      *
      * @return the EventListener.
-     * @see #processEvent(SimEvent)
      */
     EventListener<SimEvent> getOnEventProcessingListener();
 
@@ -309,17 +310,14 @@ public interface Simulation {
     Simulation setOnEventProcessingListener(EventListener<SimEvent> onEventProcessingListener);
 
     /**
-     * Starts the execution of CloudSim simulation. It waits for complete
+     * Starts the execution of CloudSim simulation and waits for complete
      * execution of all entities, i.e. until all entities threads reach
      * non-RUNNABLE state or there are no more events in the future event queue.
      * <p>
-     * <b>Note</b>: This method should be called after all the entities have
-     * been setup and added.
+     * <b>Note</b>: This method should be called after all the entities have been setup and added.
+     * </p>
      *
      * @return the last clock time
-     * @throws RuntimeException when creating this entity
-     * before initialising CloudSim package or this entity name is <tt>null</tt>
-     * or empty.
      * @pre $none
      * @post $none
      */
@@ -333,7 +331,6 @@ public interface Simulation {
      * @throws RuntimeException This happens when creating this entity before
      * initialising CloudSim package or this entity name is <tt>null</tt> or
      * empty
-     * @see #CloudSim(int, Calendar, boolean)
      * @see #runStop()
      * @pre $none
      * @post $none
@@ -369,7 +366,7 @@ public interface Simulation {
 
 
     /**
-     * Removes an entity with and old name from the {@link #entitiesByName} map
+     * Removes an entity with and old name from the {@link #getEntitiesByName()} map
      * and adds it again using its new name.
      *
      * @param oldName the name the entity had before
@@ -398,6 +395,38 @@ public interface Simulation {
      * @param networkTopology the network topology to set
      */
     void setNetworkTopology(NetworkTopology networkTopology);
+
+    /**
+     * Gets a <b>read-only</b> map where each key is the name of an {@link SimEntity} and each value
+     * is the actual {@link SimEntity}.
+     */
+    Map<String, SimEntity> getEntitiesByName();
+
+    /**
+     * Gets the number of {@link DatacenterBroker} created. It
+     * indicates that the internal {@link CloudCloudSimShutdown} must first
+     * wait for all broker entities's END_OF_SIMULATION signal before issuing
+     * a terminate signal to other entities.
+     *
+     * @return
+     */
+    int getNumberOfUsers();
+
+    /**
+     * Adds 1 to the number of {@link DatacenterBroker} created.
+     *
+     * @return the new value of {@link #getNumberOfUsers()}
+     * @see #getNumberOfUsers()
+     */
+    int incrementNumberOfUsers();
+
+    /**
+     * Subtracts 1 from the number of {@link DatacenterBroker} created.
+     *
+     * @return the new value of {@link #getNumberOfUsers()}
+     * @see #getNumberOfUsers()
+     */
+    int decrementNumberOfUsers();
 
     Simulation NULL = new Simulation() {
         @Override public void abruptallyTerminate() {}
@@ -483,6 +512,10 @@ public interface Simulation {
         }
         @Override public NetworkTopology getNetworkTopology() { return NetworkTopology.NULL; }
         @Override public void setNetworkTopology(NetworkTopology networkTopology) {}
+        @Override public Map<String, SimEntity> getEntitiesByName() { return Collections.emptyMap(); }
+        @Override public int getNumberOfUsers() { return 0; }
+        @Override public int incrementNumberOfUsers() { return 0; }
+        @Override public int decrementNumberOfUsers() { return 0; }
         @Override public boolean updateEntityName(String oldName) {
             return false;
         }

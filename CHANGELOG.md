@@ -9,6 +9,8 @@ Lists the main changes in the project.
 - Changed requirement of cloudsim-plus-examples to Java 8 in order to start providing more advanced examples using Java 8 Lambda Expressions and Streams API.
   Existing examples were not changed and run as before in Java 7.
 - Enabled the complete navigation from Cloudlet up to the Datacenter. Now it is possible to call `cloudlet.getVm().getHost().getDatacenter()` and navigate between all the relationships that were introduced in CloudSim Plus for such classes. And it is totally safe to make such a call, even before starting the simulation, that you will not get a `NullPointerException`. In case you make such a call before the simulation starts, as any allocation of Cloudlet or VMs was made, you will get default objects that follow the Null Object Design Pattern, namely `Vm.NULL` for `getVm()`, `Host.NULL` for `getHost()` and `Datacenter.NULL` for `getDatacenter()`.
+- Removed the numUsers parameter, that represents the number of created DatacenterBrokers, from CloudSim constructor. Now when a Broker is created, it automatically 
+  increases the numberOfUsers in the given CloudSim instance. This probably will automatically make possible to create brokers dynamically during simuluation execution (it has to be tested yet). 
 
 ## [v0.8-beta.7] - 2016-11-29
 

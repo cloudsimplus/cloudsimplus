@@ -51,15 +51,11 @@ public abstract class CloudSimEntity implements SimEntity {
      * @throws IllegalArgumentException when the entity name is invalid
      */
     public CloudSimEntity(Simulation simulation) {
-        if(Objects.isNull(simulation)){
-            simulation = Simulation.NULL;
-        }
-
-        this.simulation = simulation;
+        setSimulation(simulation);
         id = -1;
         state = State.RUNNABLE;
-        name = String.format("%s%d", getClass().getSimpleName(), simulation.getNumEntities());
-        simulation.addEntity(this);
+        name = String.format("%s%d", getClass().getSimpleName(), this.simulation.getNumEntities());
+        this.simulation.addEntity(this);
     }
 
     /**
@@ -440,6 +436,10 @@ public abstract class CloudSimEntity implements SimEntity {
 
     @Override
     public SimEntity setSimulation(Simulation simulation) {
+        if(Objects.isNull(simulation)){
+            simulation = Simulation.NULL;
+        }
+
         this.simulation = simulation;
         return this;
     }

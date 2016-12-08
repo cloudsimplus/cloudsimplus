@@ -135,7 +135,7 @@ public class VmListenersExample2 {
      */
     public VmListenersExample2() {
         int numberOfUsers = 1; // number of cloud users/customers (brokers)
-        simulation = new CloudSim(numberOfUsers);
+        simulation = new CloudSim();
 
         this.hostList = new ArrayList<>();
         this.vmList = new ArrayList<>();

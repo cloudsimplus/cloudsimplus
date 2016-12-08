@@ -64,7 +64,7 @@ public final class CloudletSchedulerTimeSharedWithMoreCloudletsThanPEs {
 
     @Before
     public void setUp() {
-        simulation = new CloudSim(1);
+        simulation = new CloudSim();
         utilizationModel = new UtilizationModelFull();
         scenario = new SimulationScenarioBuilder(simulation);
         scenario.getDatacenterBuilder().setSchedulingInterval(2).createDatacenter(

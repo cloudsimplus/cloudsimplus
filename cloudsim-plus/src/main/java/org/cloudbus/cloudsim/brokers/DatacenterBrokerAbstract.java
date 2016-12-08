@@ -91,6 +91,7 @@ public abstract class DatacenterBrokerAbstract extends CloudSimEntity implements
      */
     public DatacenterBrokerAbstract(CloudSim simulation) {
         super(simulation);
+        this.getSimulation().incrementNumberOfUsers();
 
         this.vmsWaitingList = new ArrayList<>();
         this.vmsCreatedList = new ArrayList<>();

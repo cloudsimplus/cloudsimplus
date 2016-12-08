@@ -105,7 +105,7 @@ public final class CheckHostAvailableMipsTest {
 
     @Before
     public void setUp() {
-        this.simulation = new  CloudSim(1);
+        this.simulation = new  CloudSim();
         utilizationModel = new UtilizationModelFull();
         scenario = new SimulationScenarioBuilder(simulation);
         scenario.getDatacenterBuilder().setSchedulingInterval(2).createDatacenter(

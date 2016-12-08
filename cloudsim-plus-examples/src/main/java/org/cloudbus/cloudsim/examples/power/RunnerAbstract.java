@@ -145,7 +145,7 @@ public abstract class RunnerAbstract {
      * @param inputFolder the input folder
      */
     protected void init(String inputFolder){
-        this.simulation = new CloudSim(1);
+        this.simulation = new CloudSim();
     }
 
     /**

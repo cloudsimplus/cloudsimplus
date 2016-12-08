@@ -64,7 +64,7 @@ public class CloudSimExample1 {
             /*
              * Initialize the CloudSim library.
             */
-            simulation = new CloudSim(num_user, trace_flag);
+            simulation = new CloudSim(trace_flag);
 
             // Second step: Create Datacenters
             // Datacenters are the resource providers in CloudSim. We need at

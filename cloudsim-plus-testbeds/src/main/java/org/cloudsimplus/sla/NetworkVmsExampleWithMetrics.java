@@ -147,7 +147,7 @@ public class NetworkVmsExampleWithMetrics {
     private NetworkVmsExampleWithMetrics() {
         // First step: Initialize the CloudSim package. It should be called before creating any entities.
         int num_user = 1; // number of cloud users
-        cloudsim = new CloudSim(num_user);
+        cloudsim = new CloudSim();
 
         // Second step: Create Datacenters
         datacenter0 = createDatacenter();

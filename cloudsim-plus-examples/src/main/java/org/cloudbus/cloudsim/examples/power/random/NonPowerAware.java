@@ -48,7 +48,7 @@ public class NonPowerAware {
 		Log.printLine("Starting " + experimentName);
 
 		try {
-            simulation = new CloudSim(1);
+            simulation = new CloudSim();
 
 			DatacenterBroker broker = Helper.createBroker(simulation);
 

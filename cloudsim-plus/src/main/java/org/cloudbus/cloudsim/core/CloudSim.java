@@ -54,6 +54,11 @@ public class CloudSim implements Simulation {
     private CloudCloudSimShutdown shutdown;
 
     /**
+     * @see #getNumberOfUsers()
+     */
+    private int numberOfUsers;
+
+    /**
      * The CIS object.
      */
     private CloudInformationService cis;
@@ -105,7 +110,7 @@ public class CloudSim implements Simulation {
     private boolean running;
 
     /**
-     * The entities by name.
+     * @see #getEntitiesByName()
      */
     private Map<String, SimEntity> entitiesByName;
 
@@ -144,17 +149,13 @@ public class CloudSim implements Simulation {
      * </ul>
      * <p>
      *
-     * @param numUser the number of {@link DatacenterBroker} created. This parameters
-     * indicates that {@link CloudCloudSimShutdown} first
-     * waits for all user entities's END_OF_SIMULATION signal before issuing
-     * terminate signal to other entities
      * @see CloudCloudSimShutdown
      * @see CloudInformationService
      * @pre numUser >= 0
      * @post $none
      */
-    public CloudSim(int numUser){
-        this(numUser, null, false);
+    public CloudSim(){
+        this(null, false);
     }
 
     /**
@@ -167,10 +168,6 @@ public class CloudSim implements Simulation {
      * </ul>
      * <p>
      *
-     * @param numUsers the number of {@link DatacenterBroker} created. This parameters
-     * indicates that {@link CloudCloudSimShutdown} first
-     * waits for all user entities's END_OF_SIMULATION signal before issuing
-     * terminate signal to other entities
      * @param cal starting time for this simulation. If it is <tt>null</tt>,
      * then the time will be taken from <tt>Calendar.getInstance()</tt>
      * @param traceFlag <tt>true</tt> if CloudSim trace need to be written
@@ -178,19 +175,19 @@ public class CloudSim implements Simulation {
      *
      * @see CloudCloudSimShutdown
      * @see CloudInformationService
-     * @pre numUsers >= 0
      * @post $none
      */
-    public CloudSim(int numUsers, Calendar cal, boolean traceFlag) throws RuntimeException {
-        Log.printLine("Initialising...");
-        entities = new ArrayList<>();
-        entitiesByName = new LinkedHashMap<>();
-        future = new FutureQueue();
-        deferred = new DeferredQueue();
-        waitPredicates = new HashMap<>();
-        networkTopology = NetworkTopology.NULL;
-        clock = 0;
-        running = false;
+    public CloudSim(Calendar cal, boolean traceFlag) throws RuntimeException {
+        Log.printFormattedLine("Initialising CloudSim Plus %s...", CloudSim.CLOUDSIMPLUS_VERSION_STRING);
+        this.numberOfUsers = 0;
+        this.entities = new ArrayList<>();
+        this.entitiesByName = new LinkedHashMap<>();
+        this.future = new FutureQueue();
+        this.deferred = new DeferredQueue();
+        this.waitPredicates = new HashMap<>();
+        this.networkTopology = NetworkTopology.NULL;
+        this.clock = 0;
+        this.running = false;
 
         // NOTE: the order for the below 3 lines are important
         this.traceFlag = traceFlag;
@@ -198,8 +195,8 @@ public class CloudSim implements Simulation {
         this.calendar = (Objects.isNull(calendar) ? Calendar.getInstance() : calendar);
 
         // creates a CloudCloudSimShutdown object
-        this.shutdown = new CloudCloudSimShutdown(this, numUsers);
-        cis = new CloudInformationService(this);
+        this.shutdown = new CloudCloudSimShutdown(this);
+        this.cis = new CloudInformationService(this);
     }
 
     /**
@@ -212,10 +209,6 @@ public class CloudSim implements Simulation {
      * </ul>
      * <p>
      *
-     * @param numUsers the number of {@link DatacenterBroker} created. This parameters
-     * indicates that {@link CloudCloudSimShutdown} first
-     * waits for all user entities's END_OF_SIMULATION signal before issuing
-     * terminate signal to other entities
      * @param traceFlag <tt>true</tt> if CloudSim trace need to be written
      * @throws RuntimeException
      *
@@ -224,8 +217,8 @@ public class CloudSim implements Simulation {
      * @pre numUsers >= 0
      * @post $none
      */
-    public CloudSim(int numUsers, boolean traceFlag) throws RuntimeException {
-        this(numUsers, null, traceFlag);
+    public CloudSim(boolean traceFlag) throws RuntimeException {
+        this(null, traceFlag);
     }
 
     /**
@@ -238,10 +231,6 @@ public class CloudSim implements Simulation {
      * </ul>
      * <p>
      *
-     * @param numUser the number of {@link DatacenterBroker} created. This parameters
-     * indicates that {@link CloudCloudSimShutdown} first
-     * waits for all user entities's END_OF_SIMULATION signal before issuing
-     * terminate signal to other entities
      * @param cal starting time for this simulation. If it is <tt>null</tt>,
      * then the time will be taken from <tt>Calendar.getInstance()</tt>
      * @see CloudCloudSimShutdown
@@ -249,8 +238,8 @@ public class CloudSim implements Simulation {
      * @pre numUser >= 0
      * @post $none
      */
-    public CloudSim(int numUser, Calendar cal){
-        this(numUser, cal, false);
+    public CloudSim(Calendar cal){
+        this(cal, false);
     }
 
     /**
@@ -263,10 +252,7 @@ public class CloudSim implements Simulation {
      * </ul>
      * <p>
      *
-     * @param numUser the number of {@link DatacenterBroker} created. This parameters
-     * indicates that {@link CloudCloudSimShutdown} first
-     * waits for all user entities's END_OF_SIMULATION signal before issuing
-     * terminate signal to other entities
+     * @param numUser this parameter is not being used anymore
      * @param cal starting time for this simulation. If it is <tt>null</tt>,
      * then the time will be taken from <tt>Calendar.getInstance()</tt>
      * @param traceFlag <tt>true</tt> if CloudSim trace need to be written
@@ -282,7 +268,7 @@ public class CloudSim implements Simulation {
      */
     @Deprecated
     public CloudSim(int numUser, Calendar cal, boolean traceFlag, double periodBetweenEvents) throws RuntimeException{
-        this(numUser, cal, traceFlag);
+        this(cal, traceFlag);
 
         if (periodBetweenEvents <= 0) {
             throw new IllegalArgumentException("The minimal time between events should be positive, but is:" + periodBetweenEvents);
@@ -295,6 +281,25 @@ public class CloudSim implements Simulation {
     public double start() throws RuntimeException {
         Log.printConcatLine("Starting CloudSim version ", CLOUDSIMPLUS_VERSION_STRING);
         return run();
+    }
+
+    /**
+     * Starts the execution of CloudSim simulation and waits for complete
+     * execution of all entities, then automatically stops the simulation.
+     * <p>
+     * <b>Note</b>: This method should be called after all the entities have been setup and added.
+     * </p>
+     *
+     * @return the last clock time
+     * @pre $none
+     * @post $none
+     * @see #start()
+     * @see #stop()
+     */
+    public double startAndAutoStopWhenFinished() throws RuntimeException{
+        final double lastClockTime = start();
+        stop();
+        return lastClockTime;
     }
 
     @Override
@@ -817,4 +822,25 @@ public class CloudSim implements Simulation {
     public void setNetworkTopology(NetworkTopology networkTopology) {
         this.networkTopology = networkTopology;
     }
+
+    @Override
+    public Map<String, SimEntity> getEntitiesByName() {
+        return Collections.unmodifiableMap(entitiesByName);
+    }
+
+    @Override
+    public int getNumberOfUsers() {
+        return numberOfUsers;
+    }
+
+    @Override
+    public int incrementNumberOfUsers() {
+        return ++this.numberOfUsers;
+    }
+
+    @Override
+    public int decrementNumberOfUsers() {
+        return (this.numberOfUsers == 0 ? this.numberOfUsers : --this.numberOfUsers);
+    }
+
 }

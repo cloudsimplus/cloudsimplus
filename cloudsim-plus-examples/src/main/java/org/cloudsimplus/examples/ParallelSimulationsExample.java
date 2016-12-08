@@ -160,7 +160,7 @@ public class ParallelSimulationsExample {
         this.cloudletList = new ArrayList<>();
         this.finishedCloudletList = new ArrayList<>();
         this.vmList = new ArrayList<>();
-        this.simulation = new CloudSim(numberOfCloudUsers);
+        this.simulation = new CloudSim();
     }
 
     private DatacenterSimple createDatacenter() {

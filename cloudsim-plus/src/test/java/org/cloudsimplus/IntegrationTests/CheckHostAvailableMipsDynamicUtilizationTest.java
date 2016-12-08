@@ -83,7 +83,7 @@ public final class CheckHostAvailableMipsDynamicUtilizationTest {
 
     @Before
     public void setUp() {
-        this.simulation = new  CloudSim(1);
+        this.simulation = new  CloudSim();
         scenario = new SimulationScenarioBuilder(simulation);
         scenario.getDatacenterBuilder().setSchedulingInterval(2).createDatacenter(
                 new HostBuilder()

@@ -87,7 +87,7 @@ public final class CheckCloudletStartDelayForTransferRequiredFilesTest {
     public void setUp() {
 		createStorage();
 
-        this.simulation = new  CloudSim(1);
+        this.simulation = new  CloudSim();
         utilizationModel = new UtilizationModelFull();
         scenario = new SimulationScenarioBuilder(simulation);
         scenario.getDatacenterBuilder()

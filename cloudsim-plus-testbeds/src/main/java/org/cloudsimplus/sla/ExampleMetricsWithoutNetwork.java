@@ -246,7 +246,7 @@ public final class ExampleMetricsWithoutNetwork {
     public ExampleMetricsWithoutNetwork() throws FileNotFoundException {
         //  Initialize the CloudSim package.
         int num_user = 1; // number of cloud users
-        cloudsim = new CloudSim(num_user);
+        cloudsim = new CloudSim();
 
         //Create Datacenters
         Datacenter datacenter0 = createDatacenter();

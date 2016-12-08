@@ -124,7 +124,7 @@ public class DatacenterBrokerHeuristicExample {
         int numberOfCloudUsers = 1;
         boolean traceEvents = false;
 
-        simulation = new CloudSim(numberOfCloudUsers, traceEvents);
+        simulation = new CloudSim(traceEvents);
 
         Datacenter datacenter0 = createDatacenter();
 

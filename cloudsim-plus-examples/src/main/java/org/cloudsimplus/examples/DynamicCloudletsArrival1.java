@@ -101,7 +101,7 @@ public class DynamicCloudletsArrival1 {
     public DynamicCloudletsArrival1() {
         int numberOfUsers = 1; // number of cloud users/customers (brokers)
         Log.printFormattedLine("Starting %s ...", getClass().getSimpleName());
-        simulation = new CloudSim(numberOfUsers);
+        simulation = new CloudSim();
 
         this.hostList = new ArrayList<>();
         this.vmList = new ArrayList<>();

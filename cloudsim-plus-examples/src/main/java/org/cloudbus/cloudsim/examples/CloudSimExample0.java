@@ -64,7 +64,7 @@ public class CloudSimExample0 {
         int numberOfCloudUsers = 1;
         boolean traceEvents = false;
 
-        this.simulation = new CloudSim(numberOfCloudUsers, traceEvents);
+        this.simulation = new CloudSim(traceEvents);
 
         Datacenter datacenter0 = createDatacenter();
 
@@ -83,11 +83,12 @@ public class CloudSimExample0 {
         this.cloudletList.add(cloudlet1);
         broker0.submitCloudletList(cloudletList);
 
-        /*Starts the simulation and waits all cloudlets to be executed*/
-        simulation.start();
-
-        //Finishes the simulation
-        simulation.stop();
+        /* Starts the simulation and waits all cloudlets to be executed.
+         * Finally, finishes the simulation by stopping it.
+         * You can also call simulation.start() and simulation.stop()
+         * individually if you want.
+        */
+        simulation.startAndAutoStopWhenFinished();
 
         /*Prints results when the simulation is over
         (you can use your own code here to print what you want from this cloudlet list)*/
