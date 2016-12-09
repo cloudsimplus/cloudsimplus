@@ -5,6 +5,7 @@ import org.cloudbus.cloudsim.brokers.DatacenterBrokerSimple;
 import org.cloudbus.cloudsim.cloudlets.Cloudlet;
 import org.cloudbus.cloudsim.cloudlets.CloudletSimple;
 import org.cloudbus.cloudsim.core.CloudSim;
+import org.cloudbus.cloudsim.core.events.SimEvent;
 import org.cloudbus.cloudsim.datacenters.Datacenter;
 import org.cloudbus.cloudsim.datacenters.DatacenterCharacteristics;
 import org.cloudbus.cloudsim.datacenters.DatacenterCharacteristicsSimple;
@@ -34,8 +35,9 @@ import java.util.List;
 
 /**
  * An example showing how to pause the simulation at a given time in order to collect
- * some partial results. In this case, such results are the cloudlets that have finished so far.
+ * some partial results. In this example, such results are the cloudlets that have finished so far.
  * The example creates 4 Cloudlets that will run sequentially using a {@link CloudletSchedulerSpaceShared}.
+ * The pause is scheduled after the simulation starts.
  *
  * <p>This example uses CloudSim Plus Listener features to intercept when
  * the simulation was paused, allowing to collect the desired data.
@@ -52,7 +54,7 @@ import java.util.List;
  * @see CloudSim#setOnSimulationPausedListener(EventListener)
  * @see EventListener
  */
-public class PauseSimulationAtGivenTime {
+public class PauseSimulationAtGivenTime2 {
     /**
      * The interval in which the Datacenter will schedule events.
      * As lower is this interval, sooner the processing ofCloudlets inside VMs
@@ -86,13 +88,13 @@ public class PauseSimulationAtGivenTime {
      * @param args
      */
     public static void main(String[] args) {
-        new PauseSimulationAtGivenTime();
+        new PauseSimulationAtGivenTime2();
     }
 
     /**
      * Default constructor that builds the simulation.
      */
-    public PauseSimulationAtGivenTime() {
+    public PauseSimulationAtGivenTime2() {
         Log.printFormattedLine("Starting %s Example ...", getClass().getSimpleName());
         this.vmList = new ArrayList<>();
         this.cloudletList = new ArrayList<>();
@@ -117,9 +119,14 @@ public class PauseSimulationAtGivenTime {
 
         this.broker.submitCloudletList(cloudletList);
 
-        //Requests the simulation to be paused at the 22nd second.
-        //The method schedules the simulation pause for a future time and returns immediately.
-        this.simulation.pause(22);
+        /**
+         * Sets a Listener that will be notified when any event is processed during the simulation
+         * execution.
+         * Realise that it is being used Java 8 Lambda Expressions to define a Listener
+         * that will be executed only when a simulation event happens.
+         * See the {@link #pauseSimulationAtSpecificTime(SimEvent)} method for more details.
+         */
+        this.simulation.setOnEventProcessingListener(event -> pauseSimulationAtSpecificTime(event));
 
         /*
         * Sets a Listener that will be notified when the simulation is paused.
@@ -136,6 +143,15 @@ public class PauseSimulationAtGivenTime {
         printsListOfFinishedCloudlets("Finished cloudlets after simulation is complete");
 
         Log.printConcatLine(getClass().getSimpleName(), " Example finished!");
+    }
+
+    /**
+     * Pauses the simulation when any event occurs at the a defined time.
+     */
+    private void pauseSimulationAtSpecificTime(SimEvent event) {
+        if(Math.floor(event.getTime()) == 22){
+            simulation.pause();
+        }
     }
 
     private void printCloudletsFinishedSoFarAndResumeSimulation(EventInfo event) {
