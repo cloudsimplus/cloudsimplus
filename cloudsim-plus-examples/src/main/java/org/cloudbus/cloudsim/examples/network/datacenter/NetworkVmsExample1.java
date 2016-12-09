@@ -91,7 +91,6 @@ public class NetworkVmsExample1 {
         broker.submitCloudletList(this.cloudletList);
 
         simulation.start();
-        simulation.stop();
 
         showSimulationResults();
     }

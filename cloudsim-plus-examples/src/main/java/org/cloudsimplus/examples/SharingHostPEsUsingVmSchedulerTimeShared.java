@@ -135,9 +135,6 @@ public class SharingHostPEsUsingVmSchedulerTimeShared {
         /*Starts the simulation and waits all cloudlets to be executed*/
         simulation.start();
 
-        //Finishes the simulation
-        simulation.stop();
-
         /*Prints results when the simulation is over
         (you can use your own code here to print what you want from this cloudlet list)*/
         List<Cloudlet> finishedCloudlets = broker0.getCloudletsFinishedList();

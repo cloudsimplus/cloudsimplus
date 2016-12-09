@@ -136,9 +136,6 @@ public class NetworkExample1 {
 
         // Final step: Print results when simulation is over
         List<Cloudlet> newList = broker.getCloudletsFinishedList();
-
-        simulation.stop();
-
         new CloudletsTableBuilderHelper(newList).build();
         Log.printFormattedLine("%s finished!", NetworkExample1.class.getSimpleName());
     }

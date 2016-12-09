@@ -159,7 +159,6 @@ public class MigrationExample1 {
         createAndSubmitCloudlets(broker);
 
         simulation.start();
-        simulation.stop();
 
         new CloudletsTableBuilderHelper(broker.getCloudletsFinishedList()).build();
 

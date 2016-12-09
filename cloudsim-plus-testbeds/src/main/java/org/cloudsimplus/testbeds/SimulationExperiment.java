@@ -170,7 +170,6 @@ public abstract class SimulationExperiment implements Runnable {
 		buildScenario();
 
 		cloudsim.start();
-		cloudsim.stop();
 		getAfterExperimentFinish().accept(this);
 
 		printResultsInternal();

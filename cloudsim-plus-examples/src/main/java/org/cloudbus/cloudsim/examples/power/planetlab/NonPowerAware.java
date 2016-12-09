@@ -76,8 +76,6 @@ public class NonPowerAware {
 			List<Cloudlet> newList = broker.getCloudletsFinishedList();
 			Log.printLine("Received " + newList.size() + " cloudlets");
 
-			simulation.stop();
-
 			Helper.printResults(
 					datacenter,
 					vmList,

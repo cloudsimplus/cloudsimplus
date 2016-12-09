@@ -194,7 +194,6 @@ public class VmListenersExample3_DynamicVmCreation {
 
     private void runSimulationAndPrintResults() {
         simulation.start();
-        simulation.stop();
 
         List<Cloudlet> cloudlets;
         String title;

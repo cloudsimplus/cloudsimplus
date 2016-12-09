@@ -202,7 +202,6 @@ public class ExampleUsingFaultInjector {
 
         // Sixth step: Starts the simulation
         cloudsim.start();
-        cloudsim.stop();
 
         System.out.println("\n");
         for (Cloudlet cloudlet : cloudletList) {

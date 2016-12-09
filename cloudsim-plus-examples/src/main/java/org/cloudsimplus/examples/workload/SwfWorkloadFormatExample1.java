@@ -158,7 +158,6 @@ public class SwfWorkloadFormatExample1 {
             broker.submitCloudletList(cloudletList);
 
             simulation.start();
-            simulation.stop();
 
             List<Cloudlet> newList = broker.getCloudletsFinishedList();
             printCloudletList(newList);

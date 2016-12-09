@@ -28,7 +28,7 @@ import org.cloudbus.cloudsim.cloudlets.Cloudlet;
  *
  * @author Manoel Campos da Silva Filho
  */
-public abstract class CloudletEventInfoSimple extends EventInfoAbstract implements CloudletEventInfo {
+public abstract class CloudletEventInfoSimple extends EventInfoSimple implements CloudletEventInfo {
 
     private Cloudlet cloudlet;
 

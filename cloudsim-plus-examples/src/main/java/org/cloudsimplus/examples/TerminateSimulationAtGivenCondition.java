@@ -1,43 +1,59 @@
-package org.cloudbus.cloudsim.examples;
+package org.cloudsimplus.examples;
 
-import org.cloudsimplus.util.tablebuilder.CloudletsTableBuilderHelper;
-import java.util.ArrayList;
-import java.util.List;
-
-import org.cloudbus.cloudsim.cloudlets.Cloudlet;
-import org.cloudbus.cloudsim.cloudlets.CloudletSimple;
-import org.cloudbus.cloudsim.datacenters.Datacenter;
-import org.cloudbus.cloudsim.datacenters.DatacenterSimple;
+import org.cloudbus.cloudsim.allocationpolicies.VmAllocationPolicySimple;
 import org.cloudbus.cloudsim.brokers.DatacenterBroker;
 import org.cloudbus.cloudsim.brokers.DatacenterBrokerSimple;
+import org.cloudbus.cloudsim.cloudlets.Cloudlet;
+import org.cloudbus.cloudsim.cloudlets.CloudletSimple;
+import org.cloudbus.cloudsim.core.CloudSim;
+import org.cloudbus.cloudsim.datacenters.Datacenter;
 import org.cloudbus.cloudsim.datacenters.DatacenterCharacteristics;
 import org.cloudbus.cloudsim.datacenters.DatacenterCharacteristicsSimple;
+import org.cloudbus.cloudsim.datacenters.DatacenterSimple;
 import org.cloudbus.cloudsim.hosts.Host;
 import org.cloudbus.cloudsim.hosts.HostSimple;
-import org.cloudbus.cloudsim.util.Log;
+import org.cloudbus.cloudsim.provisioners.PeProvisionerSimple;
+import org.cloudbus.cloudsim.provisioners.ResourceProvisionerSimple;
+import org.cloudbus.cloudsim.resources.Bandwidth;
 import org.cloudbus.cloudsim.resources.Pe;
 import org.cloudbus.cloudsim.resources.PeSimple;
+import org.cloudbus.cloudsim.resources.Ram;
+import org.cloudbus.cloudsim.schedulers.cloudlet.CloudletSchedulerSpaceShared;
+import org.cloudbus.cloudsim.schedulers.vm.VmSchedulerTimeShared;
+import org.cloudbus.cloudsim.util.Log;
 import org.cloudbus.cloudsim.utilizationmodels.UtilizationModel;
 import org.cloudbus.cloudsim.utilizationmodels.UtilizationModelFull;
 import org.cloudbus.cloudsim.vms.Vm;
-import org.cloudbus.cloudsim.allocationpolicies.VmAllocationPolicySimple;
-import org.cloudbus.cloudsim.schedulers.vm.VmSchedulerTimeShared;
 import org.cloudbus.cloudsim.vms.VmSimple;
-import org.cloudbus.cloudsim.core.CloudSim;
-import org.cloudbus.cloudsim.provisioners.PeProvisionerSimple;
-import org.cloudbus.cloudsim.resources.Bandwidth;
-import org.cloudbus.cloudsim.provisioners.ResourceProvisionerSimple;
-import org.cloudbus.cloudsim.resources.Ram;
-import org.cloudbus.cloudsim.schedulers.cloudlet.CloudletSchedulerSpaceShared;
+import org.cloudsimplus.listeners.EventListener;
+import org.cloudsimplus.listeners.VmToCloudletEventInfo;
+import org.cloudsimplus.util.tablebuilder.CloudletsTableBuilderHelper;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
- * A minimal example showing how to create a data center with 1 host and run 2
- * cloudlets on it.
+ * An example showing how to terminate the simulation when a condition is met, before its natural end.
+ * The example creates 4 Cloudlets that will run sequentially using a {@link CloudletSchedulerSpaceShared}.
+ * However, when the last Cloudlet reaches 50% of its execution,
+ * the simulation will be interrupted. By this way, just 3 Cloudlets will finish.
+ *
+ * <p>This example uses CloudSim Plus Listener features to intercept when
+ * the second Cloudlet reaches 50% of its execution to then request
+ * the simulation termination. This example uses the Java 8 Lambda Functions features
+ * to pass a listener to the mentioned Cloudlet, by means of the
+ * {@link Cloudlet#setOnUpdateCloudletProcessingListener(EventListener)} method.
+ * However, the same feature can be used for Java 7 passing an anonymous class
+ * that implements {@code EventListener<VmToCloudletEventInfo>}.</p>
  *
  * @author Manoel Campos da Silva Filho
  * @since CloudSim Plus 1.0
+ *
+ * @see CloudSim#terminate()
+ * @see Cloudlet#setOnUpdateCloudletProcessingListener(EventListener)
+ * @see EventListener
  */
-public class CloudSimExample0 {
+public class TerminateSimulationAtGivenCondition {
     private final CloudSim simulation;
     private List<Cloudlet> cloudletList;
     private List<Vm> vmList;
@@ -50,37 +66,38 @@ public class CloudSimExample0 {
      * @param args
      */
     public static void main(String[] args) {
-        new CloudSimExample0();
+        new TerminateSimulationAtGivenCondition();
     }
 
     /**
      * Default constructor that builds the simulation.
      */
-    public CloudSimExample0() {
-        Log.printLine("Starting Minimal Example ...");
+    public TerminateSimulationAtGivenCondition() {
+        Log.printFormattedLine("Starting %s Example ...", getClass().getSimpleName());
         this.vmList = new ArrayList<>();
         this.cloudletList = new ArrayList<>();
-        //Number of cloud customers
-        int numberOfCloudUsers = 1;
-        boolean traceEvents = false;
-
-        this.simulation = new CloudSim(traceEvents);
+        this.simulation = new CloudSim();
 
         Datacenter datacenter0 = createDatacenter();
 
-        /*Creates a Broker accountable for submission of VMs and Cloudlets
-        on behalf of a given cloud user (customer).*/
+        /*
+        Creates a Broker accountable for submission of VMs and Cloudlets
+        on behalf of a given cloud user (customer).
+        */
         DatacenterBroker broker0 = new DatacenterBrokerSimple(simulation);
 
         Vm vm0 = createVm(broker0);
         this.vmList.add(vm0);
         broker0.submitVmList(vmList);
 
-        /*Creates Cloudlets that represent applications to be run inside a VM.*/
-        Cloudlet cloudlet0 = createCloudlet(broker0, vm0);
-        this.cloudletList.add(cloudlet0);
-        Cloudlet cloudlet1 = createCloudlet(broker0, vm0);
-        this.cloudletList.add(cloudlet1);
+        for(int i = 0; i < 4; i++) {
+            Cloudlet cloudlet = createCloudlet(broker0, vm0);
+            this.cloudletList.add(cloudlet);
+        }
+
+        Cloudlet lastCloudlet = this.cloudletList.get(this.cloudletList.size()-1);
+        lastCloudlet.setOnUpdateCloudletProcessingListener(event -> onClouletProcessingUpdate(event));
+
         broker0.submitCloudletList(cloudletList);
 
         /* Starts the simulation and waits all cloudlets to be executed. */
@@ -90,7 +107,20 @@ public class CloudSimExample0 {
         (you can use your own code here to print what you want from this cloudlet list)*/
         List<Cloudlet> finishedCloudlets = broker0.getCloudletsFinishedList();
         new CloudletsTableBuilderHelper(finishedCloudlets).build();
-        Log.printLine("Minimal Example finished!");
+        Log.printConcatLine(getClass().getSimpleName(), " Example finished!");
+    }
+
+    /**
+     * Checks if the Cloudlet that had its processing updated reached 50% of execution.
+     * If so, request the simulation interruption.
+     * @param event object containing data about the happened event
+     */
+    private void onClouletProcessingUpdate(VmToCloudletEventInfo event) {
+        if(event.getCloudlet().getCloudletFinishedSoFar() >= event.getCloudlet().getCloudletLength()/2.0){
+            Log.printFormattedLine("Cloudlet %d reached 50% of execution. Intentionally requesting termination of the simulation at time %.2f",
+                event.getCloudlet().getId(), simulation.clock());
+            simulation.terminate();
+        }
     }
 
     private DatacenterSimple createDatacenter() {

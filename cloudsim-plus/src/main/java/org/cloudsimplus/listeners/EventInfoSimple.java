@@ -22,13 +22,13 @@
 package org.cloudsimplus.listeners;
 
 /**
- * An abstract class to that implements the basic methods
- * of the {@link EventInfo} interface.
+ * An implementation of the {@link EventInfo} interface
+ * that provides provides the time that an event happened.
  *
  * @author Manoel Campos da Silva Filho
  * @since CloudSim Plus 1.0
  */
-public class EventInfoAbstract implements EventInfo {
+public class EventInfoSimple implements EventInfo {
     private final double time;
 
     /**
@@ -36,7 +36,7 @@ public class EventInfoAbstract implements EventInfo {
      *
      * @param time time the event was fired
      */
-    public EventInfoAbstract(double time){
+    public EventInfoSimple(double time){
         this.time = time;
     }
 

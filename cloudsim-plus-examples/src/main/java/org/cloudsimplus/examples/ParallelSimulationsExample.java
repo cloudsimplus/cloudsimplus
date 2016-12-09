@@ -279,9 +279,6 @@ public class ParallelSimulationsExample {
         /*Starts the simulation and waits all cloudlets to be executed*/
         simulation.start();
 
-        //Finishes the simulation
-        simulation.stop();
-
         this.finishedCloudletList = broker.getCloudletsFinishedList();
         return this.finishedCloudletList.size();
     }

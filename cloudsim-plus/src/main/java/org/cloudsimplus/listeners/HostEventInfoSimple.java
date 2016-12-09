@@ -29,7 +29,7 @@ import org.cloudbus.cloudsim.hosts.Host;
  * @author Manoel Campos da Silva Filho
  * @since CloudSim Plus 1.0
  */
-public class HostEventInfoSimple extends EventInfoAbstract implements HostEventInfo {
+public class HostEventInfoSimple extends EventInfoSimple implements HostEventInfo {
     private Host host;
 
     /**

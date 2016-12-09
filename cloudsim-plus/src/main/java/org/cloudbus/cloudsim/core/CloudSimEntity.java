@@ -8,7 +8,6 @@
 package org.cloudbus.cloudsim.core;
 
 import org.cloudbus.cloudsim.core.events.SimEvent;
-import org.cloudbus.cloudsim.network.topologies.NetworkTopology;
 import org.cloudbus.cloudsim.util.Log;
 import org.cloudbus.cloudsim.core.predicates.Predicate;
 
@@ -91,7 +90,7 @@ public abstract class CloudSimEntity implements SimEntity {
      * @param data  The data to be sent with the event.
      */
     public void schedule(int dest, double delay, int tag, Object data) {
-        if (!simulation.running()) {
+        if (!simulation.isRunning()) {
             return;
         }
         simulation.send(id, dest, delay, tag, data);
@@ -191,7 +190,7 @@ public abstract class CloudSimEntity implements SimEntity {
      * @param data  The data to be sent with the event.
      */
     public void scheduleFirst(int dest, double delay, int tag, Object data) {
-        if (!simulation.running()) {
+        if (!simulation.isRunning()) {
             return;
         }
         simulation.sendFirst(id, dest, delay, tag, data);
@@ -293,10 +292,10 @@ public abstract class CloudSimEntity implements SimEntity {
         if (delay < 0) {
             throw new IllegalArgumentException("Negative delay supplied.");
         }
-        if (!simulation.running()) {
+        if (!simulation.isRunning()) {
             return;
         }
-        simulation.pause(id, delay);
+        simulation.pauseEntity(id, delay);
     }
 
     /**
@@ -327,7 +326,7 @@ public abstract class CloudSimEntity implements SimEntity {
      * @return the simulation event
      */
     public SimEvent selectEvent(Predicate p) {
-        if (!simulation.running()) {
+        if (!simulation.isRunning()) {
             return null;
         }
 
@@ -342,7 +341,7 @@ public abstract class CloudSimEntity implements SimEntity {
      * @return The number of events cancelled (0 or 1)
      */
     public SimEvent cancelEvent(Predicate p) {
-        if (!simulation.running()) {
+        if (!simulation.isRunning()) {
             return null;
         }
 
@@ -357,7 +356,7 @@ public abstract class CloudSimEntity implements SimEntity {
      * @return the simulation event
      */
     public SimEvent getNextEvent(Predicate p) {
-        if (!simulation.running()) {
+        if (!simulation.isRunning()) {
             return null;
         }
 
@@ -375,7 +374,7 @@ public abstract class CloudSimEntity implements SimEntity {
      * @param p The predicate to match
      */
     public void waitForEvent(Predicate p) {
-        if (!simulation.running()) {
+        if (!simulation.isRunning()) {
             return;
         }
 

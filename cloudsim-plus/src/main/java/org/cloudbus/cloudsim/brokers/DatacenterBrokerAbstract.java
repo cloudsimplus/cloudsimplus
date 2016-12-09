@@ -158,30 +158,30 @@ public abstract class DatacenterBrokerAbstract extends CloudSimEntity implements
     @Override
     public void processEvent(SimEvent ev) {
         switch (ev.getTag()) {
-        // Datacenter characteristics request
+            // Datacenter characteristics request
             case CloudSimTags.DATACENTER_CHARACTERISTICS_REQUEST:
                 processDatacenterCharacteristicsRequest(ev);
-                break;
-        // Datacenter characteristics response
+            break;
+            // Datacenter characteristics response
             case CloudSimTags.DATACENTER_CHARACTERISTICS:
                 processDatacenterCharacteristicsResponse(ev);
-                break;
-        // VM Creation response
+            break;
+            // VM Creation response
             case CloudSimTags.VM_CREATE_ACK:
                 processVmCreateResponseFromDatacenter(ev);
-                break;
-        // A finished cloudlet returned
+            break;
+            // A finished cloudlet returned
             case CloudSimTags.CLOUDLET_RETURN:
                 processCloudletReturn(ev);
-                break;
-        // if the simulation finishes
+            break;
+            // if the simulation finishes
             case CloudSimTags.END_OF_SIMULATION:
                 shutdownEntity();
-                break;
-        // other unknown tags are processed by this method
+            break;
+            // other unknown tags are processed by this method
             default:
                 processOtherEvent(ev);
-                break;
+            break;
         }
     }
 

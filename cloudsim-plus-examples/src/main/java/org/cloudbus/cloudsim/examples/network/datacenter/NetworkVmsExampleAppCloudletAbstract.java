@@ -110,7 +110,6 @@ public abstract class NetworkVmsExampleAppCloudletAbstract {
         }
 
         simulation.start();
-        simulation.stop();
 
         showSimulationResults();
     }

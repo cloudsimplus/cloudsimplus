@@ -161,8 +161,6 @@ public class HostsCpuUsageExample {
         // Sixth step: Starts the simulation
         final double finishTime = simulation.start();
 
-        simulation.stop();
-
         // Final step: Print results when simulation is over
         List<Cloudlet> newList = broker.getCloudletsFinishedList();
 

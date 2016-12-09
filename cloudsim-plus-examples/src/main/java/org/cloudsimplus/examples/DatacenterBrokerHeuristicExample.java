@@ -134,7 +134,6 @@ public class DatacenterBrokerHeuristicExample {
         createAndSubmitCloudlets(broker0);
 
         simulation.start();
-        simulation.stop();
 
         List<Cloudlet> finishedCloudlets = broker0.getCloudletsFinishedList();
         new CloudletsTableBuilderHelper(finishedCloudlets).build();

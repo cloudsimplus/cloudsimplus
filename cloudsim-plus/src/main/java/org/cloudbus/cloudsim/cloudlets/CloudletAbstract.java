@@ -325,9 +325,7 @@ public abstract class CloudletAbstract implements Cloudlet {
         }
 
         final long finishedMI = getExecutionInDatacenterInfoList().get(getLastExecutedDatacenterIndex()).finishedSoFar;
-        final long remainingMI = getCloudletLength() - finishedMI;
-
-        return remainingMI <= 0.0;
+        return finishedMI >= getCloudletLength();
     }
 
     @Override

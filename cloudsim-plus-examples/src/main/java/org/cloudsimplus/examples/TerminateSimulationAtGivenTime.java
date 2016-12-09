@@ -1,43 +1,49 @@
-package org.cloudbus.cloudsim.examples;
+package org.cloudsimplus.examples;
 
-import org.cloudsimplus.util.tablebuilder.CloudletsTableBuilderHelper;
-import java.util.ArrayList;
-import java.util.List;
-
-import org.cloudbus.cloudsim.cloudlets.Cloudlet;
-import org.cloudbus.cloudsim.cloudlets.CloudletSimple;
-import org.cloudbus.cloudsim.datacenters.Datacenter;
-import org.cloudbus.cloudsim.datacenters.DatacenterSimple;
+import org.cloudbus.cloudsim.allocationpolicies.VmAllocationPolicySimple;
 import org.cloudbus.cloudsim.brokers.DatacenterBroker;
 import org.cloudbus.cloudsim.brokers.DatacenterBrokerSimple;
+import org.cloudbus.cloudsim.cloudlets.Cloudlet;
+import org.cloudbus.cloudsim.cloudlets.CloudletSimple;
+import org.cloudbus.cloudsim.core.CloudSim;
+import org.cloudbus.cloudsim.datacenters.Datacenter;
 import org.cloudbus.cloudsim.datacenters.DatacenterCharacteristics;
 import org.cloudbus.cloudsim.datacenters.DatacenterCharacteristicsSimple;
+import org.cloudbus.cloudsim.datacenters.DatacenterSimple;
 import org.cloudbus.cloudsim.hosts.Host;
 import org.cloudbus.cloudsim.hosts.HostSimple;
-import org.cloudbus.cloudsim.util.Log;
+import org.cloudbus.cloudsim.provisioners.PeProvisionerSimple;
+import org.cloudbus.cloudsim.provisioners.ResourceProvisionerSimple;
+import org.cloudbus.cloudsim.resources.Bandwidth;
 import org.cloudbus.cloudsim.resources.Pe;
 import org.cloudbus.cloudsim.resources.PeSimple;
+import org.cloudbus.cloudsim.resources.Ram;
+import org.cloudbus.cloudsim.schedulers.cloudlet.CloudletSchedulerSpaceShared;
+import org.cloudbus.cloudsim.schedulers.vm.VmSchedulerTimeShared;
+import org.cloudbus.cloudsim.util.Log;
 import org.cloudbus.cloudsim.utilizationmodels.UtilizationModel;
 import org.cloudbus.cloudsim.utilizationmodels.UtilizationModelFull;
 import org.cloudbus.cloudsim.vms.Vm;
-import org.cloudbus.cloudsim.allocationpolicies.VmAllocationPolicySimple;
-import org.cloudbus.cloudsim.schedulers.vm.VmSchedulerTimeShared;
 import org.cloudbus.cloudsim.vms.VmSimple;
-import org.cloudbus.cloudsim.core.CloudSim;
-import org.cloudbus.cloudsim.provisioners.PeProvisionerSimple;
-import org.cloudbus.cloudsim.resources.Bandwidth;
-import org.cloudbus.cloudsim.provisioners.ResourceProvisionerSimple;
-import org.cloudbus.cloudsim.resources.Ram;
-import org.cloudbus.cloudsim.schedulers.cloudlet.CloudletSchedulerSpaceShared;
+import org.cloudsimplus.util.tablebuilder.CloudletsTableBuilderHelper;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
- * A minimal example showing how to create a data center with 1 host and run 2
- * cloudlets on it.
+ * An example showing how to terminate the simulation at a given time, before its natural end.
+ * The example creates 4 Cloudlets that will run sequentially using a {@link CloudletSchedulerSpaceShared}.
+ * However, at the middle of the simulation, after just 2 of these 4 Cloudlets have finished,
+ * the simulation will be interrupeted, avoiding the other 2 Cloudlets to run.
  *
  * @author Manoel Campos da Silva Filho
  * @since CloudSim Plus 1.0
+ *
+ * @see CloudSim#terminateAt(double)
  */
-public class CloudSimExample0 {
+public class TerminateSimulationAtGivenTime {
+    private static final int TIME_TO_FINISH_SIMULATION = 21;
+
     private final CloudSim simulation;
     private List<Cloudlet> cloudletList;
     private List<Vm> vmList;
@@ -50,21 +56,17 @@ public class CloudSimExample0 {
      * @param args
      */
     public static void main(String[] args) {
-        new CloudSimExample0();
+        new TerminateSimulationAtGivenTime();
     }
 
     /**
      * Default constructor that builds the simulation.
      */
-    public CloudSimExample0() {
-        Log.printLine("Starting Minimal Example ...");
+    public TerminateSimulationAtGivenTime() {
+        Log.printFormattedLine("Starting %s Example ...", getClass().getSimpleName());
         this.vmList = new ArrayList<>();
         this.cloudletList = new ArrayList<>();
-        //Number of cloud customers
-        int numberOfCloudUsers = 1;
-        boolean traceEvents = false;
-
-        this.simulation = new CloudSim(traceEvents);
+        this.simulation = new CloudSim();
 
         Datacenter datacenter0 = createDatacenter();
 
@@ -76,12 +78,17 @@ public class CloudSimExample0 {
         this.vmList.add(vm0);
         broker0.submitVmList(vmList);
 
-        /*Creates Cloudlets that represent applications to be run inside a VM.*/
-        Cloudlet cloudlet0 = createCloudlet(broker0, vm0);
-        this.cloudletList.add(cloudlet0);
-        Cloudlet cloudlet1 = createCloudlet(broker0, vm0);
-        this.cloudletList.add(cloudlet1);
+        for(int i = 0; i < 4; i++) {
+            Cloudlet cloudlet = createCloudlet(broker0, vm0);
+            this.cloudletList.add(cloudlet);
+        }
         broker0.submitCloudletList(cloudletList);
+
+        /* Schedule the simulation termination to the 21st second,
+         * after the 2 first Cloudlets have finished.
+         * By this way, the other 2 ones will not execute.
+         * */
+        simulation.terminateAt(TIME_TO_FINISH_SIMULATION);
 
         /* Starts the simulation and waits all cloudlets to be executed. */
         simulation.start();
@@ -90,7 +97,7 @@ public class CloudSimExample0 {
         (you can use your own code here to print what you want from this cloudlet list)*/
         List<Cloudlet> finishedCloudlets = broker0.getCloudletsFinishedList();
         new CloudletsTableBuilderHelper(finishedCloudlets).build();
-        Log.printLine("Minimal Example finished!");
+        Log.printConcatLine(getClass().getSimpleName(), " Example finished!");
     }
 
     private DatacenterSimple createDatacenter() {

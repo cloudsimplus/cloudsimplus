@@ -176,8 +176,6 @@ public abstract class RunnerAbstract {
             List<Cloudlet> newList = broker.getCloudletsFinishedList();
             Log.printLine("Received " + newList.size() + " cloudlets");
 
-            simulation.stop();
-
             Helper.printResults(
                 datacenter,
                 vmList,

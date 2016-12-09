@@ -275,7 +275,6 @@ public final class ExampleMetricsWithoutNetwork {
          }
          }
          totalCostPrice(vmlist);*/
-        cloudsim.stop();
 
         System.out.println("______________________________________________________");
         System.out.println("\n\t\t - System Métrics - \n ");
@@ -316,8 +315,6 @@ public final class ExampleMetricsWithoutNetwork {
 
     /**
      * Creates the switches.
-     *
-     * @param name the name
      *
      * @return the switches
      */

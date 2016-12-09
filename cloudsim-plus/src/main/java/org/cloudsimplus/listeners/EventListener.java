@@ -45,6 +45,7 @@ import org.cloudbus.cloudsim.vms.Vm;
  * listener when the expected event happens.
  * @since CloudSim Plus 1.0
  */
+@FunctionalInterface
 public interface EventListener<T extends EventInfo> {
 
     /**

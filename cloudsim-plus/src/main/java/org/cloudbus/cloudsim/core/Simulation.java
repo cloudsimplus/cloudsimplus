@@ -11,6 +11,7 @@ import org.cloudbus.cloudsim.core.predicates.Predicate;
 import org.cloudbus.cloudsim.core.predicates.PredicateAny;
 import org.cloudbus.cloudsim.core.predicates.PredicateNone;
 import org.cloudbus.cloudsim.network.topologies.NetworkTopology;
+import org.cloudsimplus.listeners.EventInfo;
 import org.cloudsimplus.listeners.EventListener;
 
 /**
@@ -21,7 +22,6 @@ import org.cloudsimplus.listeners.EventListener;
  * @see CloudSim
  */
 public interface Simulation {
-    // The two standard predicates
     /**
      * A standard predicate that matches any event.
      */
@@ -34,7 +34,10 @@ public interface Simulation {
 
 
     /**
-     * Abruptally terminate.
+     * Abruptally terminate the simulation without finishing the processing
+     * of entities in the {@link #getEntityList() entities list}, <b>what may give
+     * unexpected results</b>.
+     * <p><b>Use this method just if you want to abandon the simulation an usually ignore the results.</b></p>
      */
     void abruptallyTerminate();
 
@@ -81,12 +84,6 @@ public interface Simulation {
      * @return the sim event
      */
     SimEvent findFirstDeferred(int src, Predicate p);
-
-    /**
-     * Internal method that allows the entities to terminate. This method should
-     * <b>not</b> be used in user simulations.
-     */
-    void finishSimulation();
 
     /**
      * Gets a new copy of initial simulation Calendar.
@@ -158,16 +155,6 @@ public interface Simulation {
     String getEntityName(int entityId);
 
     /**
-     * Gets name of the entity given its entity ID.
-     *
-     * @param entityID the entity ID
-     * @return the Entity name or if this object does not have one
-     * @pre entityID > 0
-     * @post $none
-     */
-    String getEntityName(Integer entityID);
-
-    /**
      * Returns the minimum time between events. Events within shorter periods
      * after the last event are discarded.
      *
@@ -186,48 +173,72 @@ public interface Simulation {
      * Gets the {@link EventListener} object that will be notified when any event
      * is processed by CloudSim.
      *
-     * @return the EventListener.
+     * @return
      */
     EventListener<SimEvent> getOnEventProcessingListener();
 
     /**
-     * Used to hold an entity for some time.
+     * Sets the {@link EventListener} object that will be notified when the simulation is paused.
      *
-     * @param src Id of entity who scheduled the event
-     * @param delay How many seconds after the current time the entity has to be held
+     * @param onSimulationPausedListener the event listener to be set
      */
-    void hold(int src, long delay);
+    Simulation setOnSimulationPausedListener(EventListener<EventInfo> onSimulationPausedListener);
 
     /**
-     * Checks if is paused.
+     * Gets the {@link EventListener} object that will be notified when the simulation is paused.
      *
-     * @return true, if is paused
+     * @return
+     */
+    EventListener<EventInfo> getOnSimulationPausedListener();
+
+    /**
+     * Sets the {@link EventListener} object that will be notified when any event
+     * is processed by CloudSim.
+     *
+     * @param onEventProcessingListener the event listener to be set
+     */
+    Simulation setOnEventProcessingListener(EventListener<SimEvent> onEventProcessingListener);
+
+
+    /**
+     * Pauses an entity for some time.
+     *
+     * @param src id of entity to be paused
+     * @param delay the time period for which the entity will be inactive
+     */
+    void pauseEntity(int src, double delay);
+
+    /**
+     * Holds an entity for some time.
+     *
+     * @param src id of entity to be held
+     * @param delay How many seconds after the current time the entity has to be held
+     */
+    void holdEntity(int src, long delay);
+
+    /**
+     * Checks if the simulation is paused.
+     *
+     * @return
      */
     boolean isPaused();
 
     /**
-     * Used to pause an entity for some time.
+     * Requests the simulation to be paused as soon as possible.
      *
-     * @param src Id of entity who scheduled the event
-     * @param delay the time period for which the entity will be inactive
-     */
-    void pause(int src, double delay);
-
-    /**
-     * This method is called if one wants to pause the simulation.
-     *
-     * @return true, if successful otherwise.
+     * @return true if the simulation was paused, false if it was already paused or has finished
      */
     boolean pause();
 
     /**
-     * This method is called if one wants to pause the simulation at a given
-     * time.
+     * Requests the simulation to be paused at a given time.
+     * The method schedules the pause request and then returns immediately.
      *
      * @param time the time at which the simulation has to be paused
-     * @return true, if successful otherwise.
+     * @return true if pause request was successfully received (the given time
+     * is greater than or equal to the current simulation time), false otherwise.
      */
-    boolean pause(long time);
+    boolean pause(double time);
 
     /**
      * This method is called if one wants to resume the simulation that has
@@ -238,24 +249,17 @@ public interface Simulation {
     boolean resume();
 
     /**
-     * Internal method used to start the simulation. This method should
-     * <b>not</b> be used by user simulations.
-     */
-    void runStart();
-
-    /**
-     * Internal method used to stop the simulation. This method should
-     * <b>not</b> be used directly.
-     */
-    void runStop();
-
-    /**
-     * Check if the simulation is still running. This method should be used by
+     * Check if the simulation is still running.
+     * Even if the simulation {@link #isPaused() is paused},
+     * the method returns true to indicate that the simulation is
+     * in fact active yet.
+     *
+     * This method should be used by
      * entities to check if they should continue executing.
      *
-     * @return if the simulation is still running, otherwise
+     * @return
      */
-    boolean running();
+    boolean isRunning();
 
     /**
      * Selects an event matching a predicate.
@@ -301,55 +305,34 @@ public interface Simulation {
     void sendNow(int src, int dest, int tag, Object data);
 
     /**
-     * Sets the {@link EventListener} object that will be notified when any event
-     * is processed by CloudSim.
-     *
-     * @param onEventProcessingListener the event listener to be set
-     * @see #getOnEventProcessingListener()
-     */
-    Simulation setOnEventProcessingListener(EventListener<SimEvent> onEventProcessingListener);
-
-    /**
-     * Starts the execution of CloudSim simulation and waits for complete
-     * execution of all entities, i.e. until all entities threads reach
+     * Starts the execution of CloudSim simulation and <b>waits for complete
+     * execution of all entities</b>, i.e. until all entities threads reach
      * non-RUNNABLE state or there are no more events in the future event queue.
      * <p>
      * <b>Note</b>: This method should be called after all the entities have been setup and added.
      * </p>
      *
      * @return the last clock time
+     * @throws RuntimeException When the simulation already run once. If you paused the simulation and wants to resume it,
+     * you must use {@link #resume()} instead of {@link #start()}.
      * @pre $none
      * @post $none
      */
     double start() throws RuntimeException;
 
     /**
-     * Stops Cloud Simulation (based on {@link #runStop()}). This
-     * should be only called if any of the user defined entities
-     * <b>explicitly</b> want to terminate simulation during execution.
+     * Forces the termination of the simulation before it ends.
      *
-     * @throws RuntimeException This happens when creating this entity before
-     * initialising CloudSim package or this entity name is <tt>null</tt> or
-     * empty
-     * @see #runStop()
-     * @pre $none
-     * @post $none
-     */
-    void stop() throws RuntimeException;
-
-    /**
-     * This method is called if one wants to terminate the simulation.
-     *
-     * @return true, if successful; false otherwise.
+     * @return true if the simulation was running and the termination request was accepted,
+     * false if the simulation was not running
      */
     boolean terminate();
 
     /**
-     * This method is called if one wants to terminate the simulation at a given
-     * time.
+     * Schedules the termination of the simulation for a given time before it has completely finished.
      *
      * @param time the time at which the simulation has to be terminated
-     * @return true, if successful otherwise.
+     * @return true if successful, false otherwise.
      */
     boolean terminateAt(double time);
 
@@ -363,7 +346,6 @@ public interface Simulation {
      * @param p the p
      */
     void wait(int src, Predicate p);
-
 
     /**
      * Removes an entity with and old name from the {@link #getEntitiesByName()} map
@@ -439,7 +421,6 @@ public interface Simulation {
             return 0;
         }
         @Override public SimEvent findFirstDeferred(int src, Predicate p) { return SimEvent.NULL; }
-        @Override public void finishSimulation() {}
         @Override public Calendar getCalendar() {
             return Calendar.getInstance();
         }
@@ -460,9 +441,6 @@ public interface Simulation {
         @Override public String getEntityName(int entityId) {
             return "";
         }
-        @Override public String getEntityName(Integer entityID) {
-            return "";
-        }
         @Override public double getMinTimeBetweenEvents() {
             return 0;
         }
@@ -472,23 +450,23 @@ public interface Simulation {
         @Override public EventListener<SimEvent> getOnEventProcessingListener() {
             return EventListener.NULL;
         }
-        @Override public void hold(int src, long delay) {}
+        @Override public Simulation setOnSimulationPausedListener(EventListener<EventInfo> onSimulationPausedListener) { return this; }
+        @Override public EventListener<EventInfo> getOnSimulationPausedListener() { return EventListener.NULL; }
+        @Override public void holdEntity(int src, long delay) {}
         @Override public boolean isPaused() {
             return false;
         }
-        @Override public void pause(int src, double delay) {}
+        @Override public void pauseEntity(int src, double delay) {}
         @Override public boolean pause() {
             return false;
         }
-        @Override public boolean pause(long time) {
+        @Override public boolean pause(double time) {
             return false;
         }
         @Override public boolean resume() {
             return false;
         }
-        @Override public void runStart() {}
-        @Override public void runStop() {}
-        @Override public boolean running() {
+        @Override public boolean isRunning() {
             return false;
         }
         @Override public SimEvent select(int src, Predicate p) {
@@ -499,7 +477,6 @@ public interface Simulation {
         @Override public void sendNow(int src, int dest, int tag, Object data) {}
         @Override public Simulation setOnEventProcessingListener(EventListener<SimEvent> onEventProcessingListener) { return this; }
         @Override public double start() throws RuntimeException { return 0; }
-        @Override public void stop() throws RuntimeException {}
         @Override public boolean terminate() {
             return false;
         }
@@ -520,5 +497,6 @@ public interface Simulation {
             return false;
         }
     };
+
 
 }

@@ -935,7 +935,7 @@ public class DatacenterSimple extends CloudSimEntity implements Datacenter {
         if (!isTimeToUpdateCloudletsProcessing())
             return;
 
-        double delay = delayToUpdateCloudletProcessing();
+        double delay = updateVmsProcessingOfAllHosts();
         if (delay != Double.MAX_VALUE) {
             schedule(getId(), delay, CloudSimTags.VM_UPDATE_CLOUDLET_PROCESSING_EVENT);
         }
@@ -951,13 +951,12 @@ public class DatacenterSimple extends CloudSimEntity implements Datacenter {
     }
 
     /**
-     * Gets the time that one next cloudlet will finish executing on the list of
-     * switches's hosts.
+     * Updates the processing of VMs of all active hosts.
      *
-     * @return the time that one next cloudlet will finish executing or
-     * {@link Double#MAX_VALUE} if there isn't any cloudlet running.
+     * @return the time to wait before updating the processing of running cloudlets or
+     * {@link Double#MAX_VALUE} if there isn't any cloudlet running anymore.
      */
-    protected double completionTimeOfNextFinishingCloudlet() {
+    protected double updateVmsProcessingOfAllHosts() {
         List<? extends Host> list = getVmAllocationPolicy().getHostList();
         double completionTimeOfNextFinishingCloudlet = Double.MAX_VALUE;
         for (Host host : list) {
@@ -967,31 +966,19 @@ public class DatacenterSimple extends CloudSimEntity implements Datacenter {
             completionTimeOfNextFinishingCloudlet = Math.min(time, completionTimeOfNextFinishingCloudlet);
         }
 
-        // gurantees a minimal interval before scheduling the event
-        if (completionTimeOfNextFinishingCloudlet < getSimulation().clock()+getSimulation().getMinTimeBetweenEvents()+0.01) {
-            completionTimeOfNextFinishingCloudlet = getSimulation().clock()+getSimulation().getMinTimeBetweenEvents()+0.01;
+        // Guarantees a minimal interval before scheduling the event
+        final double minTimeBetweenEvents = getSimulation().clock()+getSimulation().getMinTimeBetweenEvents()+0.01;
+        if (completionTimeOfNextFinishingCloudlet < minTimeBetweenEvents) {
+            completionTimeOfNextFinishingCloudlet = minTimeBetweenEvents;
         }
-        return completionTimeOfNextFinishingCloudlet;
-    }
 
-    /**
-     * Gets the time to wait before updating the processing of running
-     * cloudlets.
-     *
-     * @return the cloudlet's processing delay or {@link Double#MAX_VALUE} if
-     * there isn't any cloudlet running.
-     *
-     * @see #updateCloudletProcessing()
-     */
-    protected double delayToUpdateCloudletProcessing() {
-        double completionTimeOfNextFinishingCloudlet = completionTimeOfNextFinishingCloudlet();
         if (completionTimeOfNextFinishingCloudlet == Double.MAX_VALUE) {
             return completionTimeOfNextFinishingCloudlet;
         }
 
         return getSchedulingInterval() > 0
-                ? getSchedulingInterval()
-                : completionTimeOfNextFinishingCloudlet - getSimulation().clock();
+            ? getSchedulingInterval()
+            : completionTimeOfNextFinishingCloudlet - getSimulation().clock();
     }
 
     /**
@@ -1012,7 +999,7 @@ public class DatacenterSimple extends CloudSimEntity implements Datacenter {
 
     public void checkCloudletsCompletionForGivenVm(Vm vm) {
         while (vm.getCloudletScheduler().hasFinishedCloudlets()) {
-            Cloudlet cl = vm.getCloudletScheduler().getNextFinishedCloudlet();
+            Cloudlet cl = vm.getCloudletScheduler().removeNextFinishedCloudlet();
             if (cl != Cloudlet.NULL) {
                 sendNow(cl.getBrokerId(), CloudSimTags.CLOUDLET_RETURN, cl);
             }
@@ -1249,12 +1236,7 @@ public class DatacenterSimple extends CloudSimEntity implements Datacenter {
         return schedulingInterval;
     }
 
-    /**
-     * Sets the scheduling delay to process each event received by the
-     * switches (in seconds).
-     *
-     * @param schedulingInterval the new scheduling interval
-     */
+    @Override
     public final Datacenter setSchedulingInterval(double schedulingInterval) {
         this.schedulingInterval = schedulingInterval;
         return this;

@@ -173,7 +173,6 @@ public class NetworkVmsExampleWithMetrics {
 
         // Sixth step: Starts the simulation
         cloudsim.start();
-        cloudsim.stop();
 
         //Final step: Print results when simulation is over
         List<Cloudlet> newList = broker.getCloudletsFinishedList();

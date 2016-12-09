@@ -169,8 +169,6 @@ public class NetworkExample3 {
         List<Cloudlet> newList1 = broker1.getCloudletsFinishedList();
         List<Cloudlet> newList2 = broker2.getCloudletsFinishedList();
 
-        simulation.stop();
-
         new CloudletsTableBuilderHelper(newList1)
                 .setPrinter(new TextTableBuilder("Broker " + broker1))
                 .build();

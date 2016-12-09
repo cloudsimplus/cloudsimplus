@@ -172,7 +172,6 @@ public class ExampleCreateCloudletRandomly {
         broker.submitVmList(vmlist);
 
         cloudsim.start();
-        cloudsim.stop();
 
         //Final step: Print results when simulation is over
         List<Cloudlet> newList = broker.getCloudletsFinishedList();

@@ -28,6 +28,7 @@ import org.cloudsimplus.builders.BrokerBuilderDecorator;
 import org.cloudsimplus.builders.HostBuilder;
 import org.cloudsimplus.builders.SimulationScenarioBuilder;
 import org.cloudbus.cloudsim.core.CloudSim;
+import org.cloudsimplus.listeners.EventListener;
 import org.cloudsimplus.listeners.HostUpdatesVmsProcessingEventInfo;
 import org.cloudbus.cloudsim.schedulers.cloudlet.CloudletSchedulerDynamicWorkload;
 import org.cloudbus.cloudsim.schedulers.vm.VmSchedulerSpaceShared;
@@ -69,7 +70,7 @@ public final class CheckHostAvailableMipsTest {
     private CloudSim simulation;
 
     /**
-     * A lambda function used by the {@link Host#setOnUpdateVmsProcessingListener(org.cloudbus.cloudsim.listeners.EventListener)}
+     * A lambda function used by the {@link Host#setOnUpdateVmsProcessingListener(EventListener)}
      * that will be called every time a host updates the processing of its VMs.
      * It checks if the amount of available Host CPU is as expected,
      * every time a host updates the processing of all its VMs.
@@ -139,13 +140,8 @@ public final class CheckHostAvailableMipsTest {
 
     @Test
     public void integrationTest() {
-        startSimulationAndWaitToStop();
-        scenario.getBrokerBuilder().getBrokers().stream().forEach(b->printCloudletsExecutionResults(b));
-    }
-
-    public void startSimulationAndWaitToStop() throws RuntimeException, NullPointerException {
         simulation.start();
-        simulation.stop();
+        scenario.getBrokerBuilder().getBrokers().stream().forEach(b->printCloudletsExecutionResults(b));
     }
 
     public void printCloudletsExecutionResults(DatacenterBroker broker) {

@@ -12,6 +12,7 @@ import java.util.ArrayList;
 import java.util.List;
 import org.cloudbus.cloudsim.cloudlets.Cloudlet;
 import org.cloudbus.cloudsim.cloudlets.CloudletSimple;
+import org.cloudbus.cloudsim.core.events.SimEvent;
 import org.cloudbus.cloudsim.schedulers.cloudlet.CloudletSchedulerTimeShared;
 import org.cloudbus.cloudsim.datacenters.Datacenter;
 import org.cloudbus.cloudsim.datacenters.DatacenterSimple;
@@ -31,90 +32,78 @@ import org.cloudbus.cloudsim.vms.VmSimple;
 import org.cloudbus.cloudsim.allocationpolicies.VmAllocationPolicySimple;
 import org.cloudbus.cloudsim.schedulers.vm.VmSchedulerTimeShared;
 import org.cloudbus.cloudsim.core.CloudSim;
+import org.cloudbus.cloudsim.core.CloudSimEntity;
 import org.cloudsimplus.util.tablebuilder.CloudletsTableBuilderHelper;
-import org.cloudsimplus.util.tablebuilder.TextTableBuilder;
 import org.cloudbus.cloudsim.provisioners.PeProvisionerSimple;
 import org.cloudbus.cloudsim.provisioners.ResourceProvisionerSimple;
 import org.cloudbus.cloudsim.resources.Bandwidth;
 import org.cloudbus.cloudsim.resources.Ram;
 
 /**
- * An example showing how to pause and resume the simulation, and create
- * simulation entities (a DatacenterBroker in this example) dynamically.
+ * An example showing how to create simulation entities (a {@link DatacenterBroker} in
+ * this example) in run-time (during simulation execution) using a {@link EntityManager}.
+ * The {@link EntityManager} is a custom {@link CloudSimEntity} created for this example that dispatches
+ * a message to schedule the creation of a {@link DatacenterBroker} with a set of VMs and Cloudlets
+ * for a given simulation time.
+ * When the requested time arrives, the {@link EntityManager} will be notified to
+ * create the requested Broker, including its VMs and Cloudlets.
  */
 public class CloudSimExample7 {
-    private static List<Cloudlet> cloudletList;
-    private static List<Vm> vmlist;
-    private static CloudSim simulation;
+    private List<Cloudlet> cloudletList;
+    private List<Vm> vmList;
+    private CloudSim simulation;
 
     /**
-     * Runs the example.
+     * Executes the example.
      *
      * @param args
      */
     public static void main(String[] args) {
-        Log.printLine("Starting CloudSimExample7...");
-
-        try {
-            // First step: Initialize the CloudSim package. It should be called
-            // before creating any entities.
-            int num_user = 2;   // number of grid users
-            boolean trace_flag = false;  // mean trace events
-
-            // Initialize the CloudSim library
-            simulation = new CloudSim(trace_flag);
-
-            // Second step: Create Datacenters
-            //Datacenters are the resource providers in CloudSim. We need at list one of them to run a CloudSim simulation
-            @SuppressWarnings("unused")
-            Datacenter datacenter0 = createDatacenter();
-            @SuppressWarnings("unused")
-            Datacenter datacenter1 = createDatacenter();
-
-            //Third step: Create Broker
-            DatacenterBroker broker = createBroker();
-
-            //Fourth step: Create VMs and Cloudlets and send them to broker
-            vmlist = createVM(broker, 5, 0); //creating 5 vms
-            cloudletList = createCloudlet(broker, 10, 0); // creating 10 cloudlets
-
-            broker.submitVmList(vmlist);
-            broker.submitCloudletList(cloudletList);
-
-            ThreadMonitor monitor = new ThreadMonitor(simulation);
-            monitor.start();
-            Thread.sleep(1000);
-
-            // Fifth step: Starts the simulation
-            simulation.start();
-
-            // Final step: Print results when simulation is over
-            List<Cloudlet> newList = broker.getCloudletsFinishedList();
-
-            simulation.stop();
-
-            new CloudletsTableBuilderHelper(newList)
-                 .setPrinter(
-                    new TextTableBuilder("\n#Broker " + broker.getName() + " received cloudlets."))
-                 .build();
-
-            if (monitor.getBroker() != null) {
-                newList = monitor.getBroker().getCloudletsFinishedList();
-                new CloudletsTableBuilderHelper(newList)
-                    .setPrinter(
-                        new TextTableBuilder("\n#Broker " + monitor.getBroker().getName() + " received cloudlets."))
-                    .build();
-            }
-
-            Log.printLine("CloudSimExample7 finished!");
-        } catch (InterruptedException | RuntimeException e) {
-            Log.printFormattedLine("Simulation finished due to unexpected error: %s", e);
-        }
+        new CloudSimExample7();
     }
 
-    static List<Vm> createVM(DatacenterBroker broker, int numberOfVms, int idShift) {
-        //Creates a container to store VMs. This list is passed to the broker later
-        List<Vm> list = new ArrayList<>(numberOfVms);
+    public CloudSimExample7() {
+        Log.printFormattedLine("Starting %s...", getClass().getSimpleName());
+        // Initialize the CloudSim library
+        simulation = new CloudSim();
+
+        EntityManager entityManager = new EntityManager(simulation);
+
+        // Second step: Create Datacenters
+        //Datacenters are the resource providers in CloudSim.
+        //We need at list one of them to run a CloudSim simulation
+        @SuppressWarnings("unused")
+        Datacenter datacenter0 = createDatacenter();
+        @SuppressWarnings("unused")
+        Datacenter datacenter1 = createDatacenter();
+
+        //Third step: Create Broker
+        DatacenterBroker staticBroker = createBroker("BrokerStaticallyCreated");
+
+        //Fourth step: Create VMs and Cloudlets and send them to dynamicBroker
+        vmList = createVM(staticBroker, 5, 0); //creating 5 vms
+        cloudletList = createCloudlet(staticBroker, 10, 0); // creating 10 cloudlets
+
+        staticBroker.submitVmList(vmList);
+        staticBroker.submitCloudletList(cloudletList);
+
+        // Fifth step: Starts the simulation
+        simulation.start();
+
+        // Final step: Print results when simulation is over
+        new CloudletsTableBuilderHelper(staticBroker.getCloudletsFinishedList())
+            .setTitle(staticBroker.getName())
+            .build();
+        new CloudletsTableBuilderHelper(entityManager.getDynamicBroker()
+            .getCloudletsFinishedList())
+            .setTitle(entityManager.getDynamicBroker().getName())
+            .build();
+        Log.printFormattedLine("%s finished!", getClass().getSimpleName());
+    }
+
+    private List<Vm> createVM(DatacenterBroker broker, int vms, int idShift) {
+        //Creates a container to store VMs. This list is passed to the dynamicBroker later
+        List<Vm> list = new ArrayList<>(vms);
 
         //VM Parameters
         long size = 10000; //image size (MB)
@@ -124,7 +113,7 @@ public class CloudSimExample7 {
         int pesNumber = 1; //number of cpus
 
         //create VMs
-        for (int i = 0; i < numberOfVms; i++) {
+        for (int i = 0; i < vms; i++) {
             Vm vm = new VmSimple(idShift+i, mips, pesNumber)
                 .setRam(ram).setBw(bw).setSize(size)
                 .setCloudletScheduler(new CloudletSchedulerTimeShared())
@@ -135,9 +124,9 @@ public class CloudSimExample7 {
         return list;
     }
 
-    static List<Cloudlet> createCloudlet(DatacenterBroker broker, int numberOfCloudlets, int idShift) {
+    private List<Cloudlet> createCloudlet(DatacenterBroker broker, int cloudlets, int idShift) {
         // Creates a container to store Cloudlets
-        List<Cloudlet> list = new ArrayList<>(numberOfCloudlets);
+        List<Cloudlet> list = new ArrayList<>(cloudlets);
 
         //cloudlet parameters
         long length = 40000;
@@ -146,21 +135,20 @@ public class CloudSimExample7 {
         int pesNumber = 1;
         UtilizationModel utilizationModel = new UtilizationModelFull();
 
-        for (int i = 0; i < numberOfCloudlets; i++) {
+        for (int i = 0; i < cloudlets; i++) {
             Cloudlet cloudlet = new CloudletSimple(idShift + i, length, pesNumber)
-                                .setCloudletFileSize(fileSize)
-                                .setCloudletOutputSize(outputSize)
-                                .setUtilizationModel(utilizationModel)
-                                .setBroker(broker);
+                .setCloudletFileSize(fileSize)
+                .setCloudletOutputSize(outputSize)
+                .setUtilizationModel(utilizationModel)
+                .setBroker(broker);
             list.add(cloudlet);
         }
 
         return list;
     }
 
-
-    private static Datacenter createDatacenter() {
-        // Here are the steps needed to create a PowerDatacenter:
+    private Datacenter createDatacenter() {
+        // Here are the steps needed to create a DatacenterSimple:
         // 1. We need to create a list to store one or more
         //    Machines
         List<Host> hostList = new ArrayList<>();
@@ -219,70 +207,107 @@ public class CloudSimExample7 {
                 .setCostPerStorage(costPerStorage)
                 .setCostPerBw(costPerBw);
 
-        // 6. Finally, we need to create a PowerDatacenter object.
+        // 6. Finally, we need to create a DatacenterSimple object.
         return new DatacenterSimple(simulation, characteristics, new VmAllocationPolicySimple());
     }
 
-    //We strongly encourage users to develop their own broker policies, to submit vms and cloudlets according
+    //We strongly encourage users to develop their own dynamicBroker policies, to submit vms and cloudlets according
     //to the specific rules of the simulated scenario
-    static DatacenterBroker createBroker() {
-        return new DatacenterBrokerSimple(simulation);
-    }
-}
-
-/**
- * A thread that will create a new broker at 200 clock time.
- */
-class ThreadMonitor extends Thread {
-    private final CloudSim simulation;
-    /**
-     * The DatacenterBroker created inside the thread.
-     */
-    private DatacenterBroker broker = null;
-
-    public ThreadMonitor(CloudSim simulation){
-        this.simulation = simulation;
-    }
-
-    @Override
-    public void run() {
-        simulation.pause(200);
-
-        while (true) {
-            if (simulation.isPaused()) {
-                break;
-            }
-            try {
-                Thread.sleep(100);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-        }
-
-        Log.printLine("\n\n\n" + simulation.clock() + ": The simulation is paused for 5 sec \n\n");
-
-        try {
-            Thread.sleep(5000);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-
-        broker = CloudSimExample7.createBroker();
-
-        //Create VMs and Cloudlets and send them to broker
-        //creating 5 vms
-        List<Vm> vmlist = CloudSimExample7.createVM(broker, 5, 100);
-
-        //creating 5 cloudlets
-        List<Cloudlet> cloudletList = CloudSimExample7.createCloudlet(broker, 5, 100);
-
-        broker.submitVmList(vmlist);
-        broker.submitCloudletList(cloudletList);
-
-        simulation.resume();
-    }
-
-    public DatacenterBroker getBroker() {
+    private DatacenterBroker createBroker(String name) {
+        DatacenterBrokerSimple broker = new DatacenterBrokerSimple(simulation);
+        broker.setName(name);
         return broker;
     }
-};
+
+    /**
+     * A class that schedules the creation of a {@link DatacenterBroker}
+     * and a set of VMs and Cloudlets for it.
+     */
+    private class EntityManager extends CloudSimEntity {
+        /**
+         * Simulation time when the a broker has to be dynamically created.
+         */
+        public static final int TIME_TO_CREATE_THE_BROKER = 200;
+
+        /**
+         * The message to be dispatched which indicates that a broker
+         * has to be created.
+         * @see #startEntity()
+         * @see #processEvent(SimEvent)
+         */
+        private static final int CREATE_BROKER_MSG = 0;
+
+        /**
+         * List of VMs that will be created when the broker is created.
+         */
+        private List<Vm> vmList;
+
+        /**
+         * List of Cloudlets that will be created when the broker is created.
+         */
+        private List<Cloudlet> cloudletList;
+
+        /**
+         * @see #getDynamicBroker()
+         */
+        private DatacenterBroker dynamicBroker;
+
+        /**
+         * Creates a EntityManager that will schedule the dynamic creation of a {@link DatacenterBroker}.
+         * @param simulation
+         */
+        public EntityManager(CloudSim simulation) {
+            super(simulation);
+            this.cloudletList = new ArrayList<>();
+            this.vmList = new ArrayList<>();
+        }
+
+        @Override
+        public void processEvent(SimEvent ev) {
+            switch (ev.getTag()) {
+                case CREATE_BROKER_MSG:
+                    this.dynamicBroker = createBroker("BrokerDynamicallyCreated");
+
+                    //Create VMs and Cloudlets and send them to the broker created dynamically.
+                    this.vmList = createVM(this.dynamicBroker, 5, 100);
+                    this.cloudletList = createCloudlet(this.dynamicBroker, 10, 100);
+
+                    this.dynamicBroker.submitVmList(this.vmList);
+                    this.dynamicBroker.submitCloudletList(this.cloudletList);
+                break;
+
+                default:
+                    Log.printLine(getName() + ": unknown event type");
+                break;
+            }
+        }
+
+        /**
+         * Starts the DatacenterBroker entity and schedules the creation
+         * of a broker for the time defined in {@link #TIME_TO_CREATE_THE_BROKER}.
+         * The method schedule the dispatch of broker creation request that will be processed
+         * by the {@link #processEvent(SimEvent)} method.
+         */
+        @Override
+        public void startEntity() {
+            Log.printLine(super.getName() + " is starting...");
+            schedule(getId(), TIME_TO_CREATE_THE_BROKER, CREATE_BROKER_MSG);
+        }
+
+        @Override public void shutdownEntity() {}
+        public List<Vm> getVmList() {
+            return vmList;
+        }
+        public List<Cloudlet> getCloudletList() {
+            return cloudletList;
+        }
+
+        /**
+         * Gets the broker that is dynamically create by this EntityManager.
+         * @return the dynamically created broker or null if it wasn't created yet
+         */
+        public DatacenterBroker getDynamicBroker() { return dynamicBroker; }
+
+    }
+
+}

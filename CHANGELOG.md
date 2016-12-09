@@ -11,6 +11,12 @@ Lists the main changes in the project.
 - Enabled the complete navigation from Cloudlet up to the Datacenter. Now it is possible to call `cloudlet.getVm().getHost().getDatacenter()` and navigate between all the relationships that were introduced in CloudSim Plus for such classes. And it is totally safe to make such a call, even before starting the simulation, that you will not get a `NullPointerException`. In case you make such a call before the simulation starts, as any allocation of Cloudlet or VMs was made, you will get default objects that follow the Null Object Design Pattern, namely `Vm.NULL` for `getVm()`, `Host.NULL` for `getHost()` and `Datacenter.NULL` for `getDatacenter()`.
 - Removed the numUsers parameter, that represents the number of created DatacenterBrokers, from CloudSim constructor. Now when a Broker is created, it automatically 
   increases the numberOfUsers in the given CloudSim instance. This probably will automatically make possible to create brokers dynamically during simuluation execution (it has to be tested yet). 
+- Changed the method Simulation.running() to Simulation.isRunning()
+- Removed the Simulation.stop() method because it in fact was doing nothing. When the Simulation.start() is called, it already waits for the simulation to
+  finish executing and automatically stops when there is not more events to process.
+- Renamed method in Simulation interface: pause(int src, double delay) to Simulation.pauseEntity(int src, double delay);
+  hold(int src, long delay) to holdEntity(int src, long delay).
+- Included examples that shows how to [schedule the simulation termination at a given time](cloudsim-plus-examples/src/main/java/org/cloudsimplus/examples/TerminateSimulationAtGivenTime.java), how to terminate it [when a specific condition is met](cloudsim-plus-examples/src/main/java/org/cloudsimplus/examples/TerminateSimulationAtGivenCondition.java) and how to [pause the simulation at an specific time and collect partial results](cloudsim-plus-examples/src/main/java/org/cloudsimplus/examples/PauseSimulationAtGivenTime.java).
 
 ## [v0.8-beta.7] - 2016-11-29
 

@@ -121,8 +121,6 @@ public class DynamicCloudletsArrival2 {
 
     private void runSimulationAndPrintResults() {
         simulation.start();
-        simulation.stop();
-
         List<Cloudlet> cloudlets = broker.getCloudletsFinishedList();
         new CloudletsTableBuilderHelper(cloudlets).build();
     }

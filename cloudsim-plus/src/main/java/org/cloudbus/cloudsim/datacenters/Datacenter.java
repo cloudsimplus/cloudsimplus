@@ -62,9 +62,9 @@ public interface Datacenter extends SimEntity {
 
     /**
      * Gets the scheduling interval to process each event received by the
-     * switches (in seconds). This value defines the interval in which
+     * Datacenter (in seconds). This value defines the interval in which
      * processing of Cloudlets will be updated. The interval doesn't affect the
-     * processing of cloudlets, it only defines in which interval the processing
+     * processing of such cloudlets, it only defines in which interval the processing
      * will be updated. For instance, if it is set a interval of 10 seconds, the
      * processing of cloudlets will be updated at every 10 seconds. By this way,
      * trying to get the amount of instructions the cloudlet has executed after
@@ -82,6 +82,7 @@ public interface Datacenter extends SimEntity {
      * switches (in seconds).
      *
      * @param schedulingInterval the new scheduling interval
+     * @see #getSchedulingInterval()
      */
     Datacenter setSchedulingInterval(double schedulingInterval);
 

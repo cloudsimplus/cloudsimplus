@@ -141,8 +141,6 @@ public class TwoCloudletsAndOneSpaceSharedVm {
         // Sixth step: Starts the simulation
         simulation.start();
 
-        simulation.stop();
-
         //Final step: Print results when simulation is over
         List<Cloudlet> newList = broker.getCloudletsFinishedList();
         new CloudletsTableBuilderHelper(newList).build();
