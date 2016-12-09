@@ -177,11 +177,9 @@ The complete example is available at the cloudsim-plus-examples module
 ```java
 this.vmList = new ArrayList<>();
 this.cloudletList = new ArrayList<>();
-//Number of cloud customers
-int numberOfCloudUsers = 1; 
 
 //Creates a CloudSim object to initialize the simulation.
-CloudSim simulation = new CloudSim(numberOfCloudUsers);
+CloudSim simulation = new CloudSim();
 
 Datacenter datacenter0 = createDatacenter(simulation);
 
