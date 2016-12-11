@@ -110,10 +110,29 @@ public abstract class DatacenterBrokerAbstract extends CloudSimEntity implements
         this.datacenterCharacteristicsMap = new HashMap<>();
     }
 
+    /**
+     * {@inheritDoc}
+     * <p>If the entity already started (the simulation is running),
+     * the creation of previously submitted VMs already was requested
+     * by the {@link #startEntity()} method that is called just once.
+     * By this way, this method will immediately request the creation of these
+     * just submitted VMs in order to allow VM creation after
+     * the simulation has started. This avoid the developer to
+     * dynamically create brokers just to create VMs or Cloudlets during
+     * simulation execution.</p>
+     * @param {@inheritDoc}
+     */
     @Override
     public void submitVmList(List<? extends Vm> list) {
         setSimulationInstanceForSubmittedVms(list);
         getVmsWaitingList().addAll(list);
+
+        if(isStarted()){
+            Log.printConcatLine(getSimulation().clock(), ": ", getName(),
+                ": List of ", list.size(),
+                " VMs submitted to the broker during simulation execution. VMs creation request sent to Datacenter.");
+            requestDatacenterToCreateWaitingVms();
+        }
     }
 
     private void setSimulationInstanceForSubmittedVms(List<? extends Vm> list) {
@@ -122,10 +141,31 @@ public abstract class DatacenterBrokerAbstract extends CloudSimEntity implements
         }
     }
 
+    /**
+     * {@inheritDoc}
+     * <p>If the entity already started (the simulation is running),
+     * the creation of previously submitted Cloudlets already was requested
+     * by the {@link #startEntity()} method that is called just once.
+     * By this way, this method will immediately request the creation of these
+     * just submitted Cloudlets if all submitted VMs were already created,
+     * in order to allow Cloudlet creation after
+     * the simulation has started. This avoid the developer to
+     * dynamically create brokers just to create VMs or Cloudlets during
+     * simulation execution.</p>
+     * @param {@inheritDoc}
+     * @see #submitCloudletList(List, double)
+     */
     @Override
     public void submitCloudletList(List<? extends Cloudlet> list) {
         setSimulationInstanceForSubmittedCloudlets(list);
         getCloudletsWaitingList().addAll(list);
+        Log.printConcat(getSimulation().clock(), ": ", getName(),
+            ": List of ", list.size(), " Cloudlets submitted to the broker during simulation execution.");
+        if(isStarted() && getVmsWaitingList().isEmpty()){
+            Log.printConcat(" Cloudlets creation request sent to Datacenter.");
+            requestDatacentersToCreateWaitingCloudlets();
+        } else Log.printConcat(" Waiting VMs creation to send Cloudlets creation request to Datacenter.");
+        Log.printLine();
     }
 
     private void setSimulationInstanceForSubmittedCloudlets(List<? extends Cloudlet> list) {

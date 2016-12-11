@@ -78,7 +78,8 @@ CloudSim Plus provides a lot of exclusive features, ranging from the most basic 
 - [TableBuilder](/cloudsim-plus-examples/src/main/) objects that are used in all examples and enable printing simulation results in different formats such as ASCII Table, CSV or HTML. It shows simulation results in perfectly aligned tables, including data units and additional data.
 - It is a strongly object-oriented framework that creates relationships among classes and allows chained call such as `cloudlet.getVm().getHost().getDatacenter()`.
   And guess what? You don't even have to worry about `NullPointerException` when making this chained call because CloudSim Plus uses the [Null Object Design Pattern](https://en.wikipedia.org/wiki/Null_Object_pattern) to avoid that.
-- Delay execution of submitted Cloudlets, enabling simulation of dynamic arrival of tasks.
+- Delay creation of submitted Cloudlets, enabling simulation of dynamic arrival of tasks.
+- Allow dynamic creation of VMs and Cloudlets without requiring creation of Datacenter Brokers at runtime, enabling VMs to be created on-demand according to arrived cloudlets.
 - Classes and interfaces to allow implementation of [heuristics](http://en.wikipedia.org/wiki/Heuristic) such as 
   [Tabu Search](http://en.wikipedia.org/wiki/Tabu_search), [Simulated Annealing](http://en.wikipedia.org/wiki/Simulated_annealing), 
   [Ant Colony Systems](http://en.wikipedia.org/wiki/Ant_colony_optimization_algorithms) and so on. See an [example using Simulated Annealing here](/cloudsim-plus-examples/src/main/java/org/cloudsimplus/examples/DatacenterBrokerHeuristicExample.java).

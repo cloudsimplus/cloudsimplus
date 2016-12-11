@@ -17,6 +17,8 @@ Lists the main changes in the project.
 - Renamed method in Simulation interface: pause(int src, double delay) to Simulation.pauseEntity(int src, double delay);
   hold(int src, long delay) to holdEntity(int src, long delay).
 - Included examples that shows how to [schedule the simulation termination at a given time](cloudsim-plus-examples/src/main/java/org/cloudsimplus/examples/TerminateSimulationAtGivenTime.java), how to terminate it [when a specific condition is met](cloudsim-plus-examples/src/main/java/org/cloudsimplus/examples/TerminateSimulationAtGivenCondition.java) and how to [schedule a simulation pause at an specific time, before the simulation has started, and collect partial results](cloudsim-plus-examples/src/main/java/org/cloudsimplus/examples/PauseSimulationAtGivenTime1.java) and [at a given time, after the simulation has started](cloudsim-plus-examples/src/main/java/org/cloudsimplus/examples/PauseSimulationAtGivenTime2.java).
+- Allow dynamic creation of VMs and Cloudlets without requiring creation of Datacenter Brokers at runtime, enabling VMs to be created on-demand according to arrived cloudlets.
+  During simulation execution, new VMs and Cloudlets can be just submitted using the usual methods and they will be dynamically created. See the [DynamicCreationOfVmsAndCloudlets.java](cloudsim-plus-examples/src/main/java/org/cloudsimplus/examples/DynamicCreationOfVmsAndCloudlets.java) example for more details.
 
 ## [v0.8-beta.7] - 2016-11-29
 
