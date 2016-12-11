@@ -135,7 +135,8 @@ public class PauseSimulationAtGivenTime1 {
         * Realise that it is being used Java 8 Lambda Expressions to define a Listener
         * that will be executed only when the simulation is paused.
         * */
-        this.simulation.setOnSimulationPausedListener(event -> printCloudletsFinishedSoFarAndResumeSimulation(event));
+        this.simulation
+            .setOnSimulationPausedListener(pauseInfo -> printCloudletsFinishedSoFarAndResumeSimulation(pauseInfo));
 
         /* Starts the simulation and waits all cloudlets to be executed. */
         this.simulation.start();
@@ -147,8 +148,8 @@ public class PauseSimulationAtGivenTime1 {
         Log.printConcatLine(getClass().getSimpleName(), " Example finished!");
     }
 
-    private void printCloudletsFinishedSoFarAndResumeSimulation(EventInfo event) {
-        Log.printFormattedLine("\n#Simulation paused at %.2f second", event.getTime());
+    private void printCloudletsFinishedSoFarAndResumeSimulation(EventInfo pauseInfo) {
+        Log.printFormattedLine("\n#Simulation paused at %.2f second", pauseInfo.getTime());
         printsListOfFinishedCloudlets("Cloudlets Finished So Far");
         this.simulation.resume();
     }

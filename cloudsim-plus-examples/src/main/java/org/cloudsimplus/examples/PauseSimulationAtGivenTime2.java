@@ -57,7 +57,7 @@ import java.util.List;
 public class PauseSimulationAtGivenTime2 {
     /**
      * The interval in which the Datacenter will schedule events.
-     * As lower is this interval, sooner the processing ofCloudlets inside VMs
+     * As lower is this interval, sooner the processing of Cloudlets inside VMs
      * is updated and you will get more notifications about the simulation execution.
      * However, as higher is this value, it can affect the simulation performance.
      *
@@ -68,6 +68,11 @@ public class PauseSimulationAtGivenTime2 {
      * at the time 22, the Cloudlets execution will be updated just 1 time, that means
      * if we get the list of finished cloudlets at time 22, it will not be updated yet with
      * the second Cloudlet that finished at time 20.</p>
+     *
+     * <p><b>Realise that changing this value, the method {@link #pauseSimulationAtSpecificTime(SimEvent)}
+     * may not be called at the expected time, doesn't making the simulation to pause.
+     * If you want to change this value, the number used inside the method mentioned above
+     * has to be a multiple of this value.</b></p>
      *
      * <p>Considering this characteristics, the scheduling interval
      * was set to a lower value to get updates as soon as possible.
@@ -120,20 +125,21 @@ public class PauseSimulationAtGivenTime2 {
         this.broker.submitCloudletList(cloudletList);
 
         /**
-         * Sets a Listener that will be notified when any event is processed during the simulation
+         * Sets a Listener that will be notified when any {@link SimEvent} is processed during the simulation
          * execution.
          * Realise that it is being used Java 8 Lambda Expressions to define a Listener
          * that will be executed only when a simulation event happens.
          * See the {@link #pauseSimulationAtSpecificTime(SimEvent)} method for more details.
          */
-        this.simulation.setOnEventProcessingListener(event -> pauseSimulationAtSpecificTime(event));
+        this.simulation.setOnEventProcessingListener(simEvent -> pauseSimulationAtSpecificTime(simEvent));
 
         /*
         * Sets a Listener that will be notified when the simulation is paused.
         * Realise that it is being used Java 8 Lambda Expressions to define a Listener
         * that will be executed only when the simulation is paused.
         * */
-        this.simulation.setOnSimulationPausedListener(event -> printCloudletsFinishedSoFarAndResumeSimulation(event));
+        this.simulation
+            .setOnSimulationPausedListener(pauseInfo -> printCloudletsFinishedSoFarAndResumeSimulation(pauseInfo));
 
         /* Starts the simulation and waits all cloudlets to be executed. */
         this.simulation.start();
@@ -148,14 +154,14 @@ public class PauseSimulationAtGivenTime2 {
     /**
      * Pauses the simulation when any event occurs at the a defined time.
      */
-    private void pauseSimulationAtSpecificTime(SimEvent event) {
-        if(Math.floor(event.getTime()) == 22){
+    private void pauseSimulationAtSpecificTime(SimEvent simEvent) {
+        if(Math.floor(simEvent.getTime()) == 22){
             simulation.pause();
         }
     }
 
-    private void printCloudletsFinishedSoFarAndResumeSimulation(EventInfo event) {
-        Log.printFormattedLine("\n#Simulation paused at %.2f second", event.getTime());
+    private void printCloudletsFinishedSoFarAndResumeSimulation(EventInfo pauseInfo) {
+        Log.printFormattedLine("\n#Simulation paused at %.2f second", pauseInfo.getTime());
         printsListOfFinishedCloudlets("Cloudlets Finished So Far");
         this.simulation.resume();
     }

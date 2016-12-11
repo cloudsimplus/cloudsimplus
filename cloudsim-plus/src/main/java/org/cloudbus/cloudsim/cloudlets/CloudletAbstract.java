@@ -45,7 +45,7 @@ public abstract class CloudletAbstract implements Cloudlet {
      * being migrated, this list will have only one item.
      */
     private final List<ExecutionInDatacenterInfo> executionInDatacenterInfoList;
-    /** @see #getBrokerId() */
+    /** @see #getBroker() */
     private DatacenterBroker broker;
     /** @see #getCloudletLength() */
     private long cloudletLength;
@@ -357,8 +357,8 @@ public abstract class CloudletAbstract implements Cloudlet {
     }
 
     @Override
-    public int getBrokerId() {
-        return broker.getId();
+    public DatacenterBroker getBroker() {
+        return broker;
     }
 
     @Override

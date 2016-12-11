@@ -388,7 +388,7 @@ public class DatacenterSimple extends CloudSimEntity implements Datacenter {
             try {
                 Cloudlet cl = (Cloudlet) ev.getData();
                 cloudletId = cl.getId();
-                userId = cl.getBrokerId();
+                userId = cl.getBroker().getId();
 
                 status = getCloudletStatus(vmId, userId, cloudletId);
             } catch (Exception e) {
@@ -589,7 +589,7 @@ public class DatacenterSimple extends CloudSimEntity implements Datacenter {
             try {
                 Cloudlet cl = (Cloudlet) ev.getData();
                 cloudletId = cl.getId();
-                userId = cl.getBrokerId();
+                userId = cl.getBroker().getId();
                 vmId = cl.getVm().getId();
             } catch (Exception e) {
                 Log.printConcatLine(super.getName(), ": Error in processing Cloudlet");
@@ -657,8 +657,8 @@ public class DatacenterSimple extends CloudSimEntity implements Datacenter {
                 data[0] = getId();
                 data[1] = cloudletId;
                 data[2] = 0;
-                sendNow(cl.getBrokerId(), CloudSimTags.CLOUDLET_SUBMIT_ACK, data);
-                sendNow(cl.getBrokerId(), CloudSimTags.CLOUDLET_RETURN, cl);
+                sendNow(cl.getBroker().getId(), CloudSimTags.CLOUDLET_SUBMIT_ACK, data);
+                sendNow(cl.getBroker().getId(), CloudSimTags.CLOUDLET_RETURN, cl);
             }
 
             // prepare cloudlet for migration
@@ -691,7 +691,7 @@ public class DatacenterSimple extends CloudSimEntity implements Datacenter {
             } else {
                 data[2] = 1;
             }
-            sendNow(cl.getBrokerId(), CloudSimTags.CLOUDLET_SUBMIT_ACK, data);
+            sendNow(cl.getBroker().getId(), CloudSimTags.CLOUDLET_SUBMIT_ACK, data);
         }
     }
 
@@ -770,7 +770,7 @@ public class DatacenterSimple extends CloudSimEntity implements Datacenter {
             return false;
         }
 
-        String name = getSimulation().getEntityName(cl.getBrokerId());
+        String name = getSimulation().getEntityName(cl.getBroker().getId());
         Log.printConcatLine(
                 getName(), ": Warning - Cloudlet #", cl.getId(), " owned by ", name,
                 " is already completed/finished.");
@@ -786,7 +786,7 @@ public class DatacenterSimple extends CloudSimEntity implements Datacenter {
         */
         sendCloudletSubmitAckToBroker(ack, cl,  CloudSimTags.FALSE);
 
-        sendNow(cl.getBrokerId(), CloudSimTags.CLOUDLET_RETURN, cl);
+        sendNow(cl.getBroker().getId(), CloudSimTags.CLOUDLET_RETURN, cl);
         return true;
     }
 
@@ -815,7 +815,7 @@ public class DatacenterSimple extends CloudSimEntity implements Datacenter {
         data[1] = cl.getId();
         data[2] = cloudletCreated;
 
-        sendNow(cl.getBrokerId(), CloudSimTags.CLOUDLET_SUBMIT_ACK, data);
+        sendNow(cl.getBroker().getId(), CloudSimTags.CLOUDLET_SUBMIT_ACK, data);
     }
     /**
      * Predict the total time to transfer a list of files.
@@ -1001,7 +1001,7 @@ public class DatacenterSimple extends CloudSimEntity implements Datacenter {
         while (vm.getCloudletScheduler().hasFinishedCloudlets()) {
             Cloudlet cl = vm.getCloudletScheduler().removeNextFinishedCloudlet();
             if (cl != Cloudlet.NULL) {
-                sendNow(cl.getBrokerId(), CloudSimTags.CLOUDLET_RETURN, cl);
+                sendNow(cl.getBroker().getId(), CloudSimTags.CLOUDLET_RETURN, cl);
             }
         }
     }

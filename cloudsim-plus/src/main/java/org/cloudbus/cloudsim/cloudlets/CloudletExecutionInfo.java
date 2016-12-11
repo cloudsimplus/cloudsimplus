@@ -231,7 +231,7 @@ public class CloudletExecutionInfo {
      * @post $none
      */
     public int getUserId() {
-        return cloudlet.getBrokerId();
+        return cloudlet.getBroker().getId();
     }
 
     /**

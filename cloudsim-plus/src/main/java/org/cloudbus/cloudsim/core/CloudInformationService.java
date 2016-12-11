@@ -10,10 +10,7 @@ package org.cloudbus.cloudsim.core;
 import org.cloudbus.cloudsim.core.events.SimEvent;
 import org.cloudbus.cloudsim.util.Log;
 
-import java.util.Collection;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 
 /**
  * A Cloud Information Service (CIS) is an entity that provides cloud resource
@@ -37,18 +34,18 @@ public class CloudInformationService extends CloudSimEntity {
      * Cloud Information Service (CIS).
      *
      */
-    private final List<Integer> datacenterIdsList;
+    private final Set<Integer> datacenterIdsList;
 
     /**
      * A list containing only the id of entities with Advanced Reservation
      * feature that are registered at the CIS.
      */
-    private final List<Integer> datacenterIdsArList;
+    private final Set<Integer> datacenterIdsArList;
 
     /**
      * List of all regional CIS.
      */
-    private final List<Integer> cisList;
+    private final Set<Integer> cisList;
 
     /**
      * Instantiates a new CloudInformationService object.
@@ -60,9 +57,9 @@ public class CloudInformationService extends CloudSimEntity {
      */
     CloudInformationService(CloudSim simulation) {
         super(simulation);
-        datacenterIdsList = new LinkedList<>();
-        datacenterIdsArList = new LinkedList<>();
-        cisList = new LinkedList<>();
+        datacenterIdsList = new TreeSet<>();
+        datacenterIdsArList = new TreeSet<>();
+        cisList = new TreeSet<>();
     }
 
     /**
@@ -103,7 +100,6 @@ public class CloudInformationService extends CloudSimEntity {
 
             // A Broker is requesting for a list of all datacenters.
             case CloudSimTags.DATACENTER_LIST:
-
                 // Get ID of an entity that send this event
                 id = ((Integer) ev.getData());
 
@@ -139,7 +135,7 @@ public class CloudInformationService extends CloudSimEntity {
      * @pre $none
      * @post $none
      */
-    public List<Integer> getDatacenterIdsList() {
+    public Set<Integer> getDatacenterIdsList() {
         return datacenterIdsList;
     }
 
@@ -152,7 +148,7 @@ public class CloudInformationService extends CloudSimEntity {
      * @pre $none
      * @post $none
      */
-    public List<Integer> getDatacenterIdsArList() {
+    public Set<Integer> getDatacenterIdsArList() {
         return datacenterIdsArList;
     }
 

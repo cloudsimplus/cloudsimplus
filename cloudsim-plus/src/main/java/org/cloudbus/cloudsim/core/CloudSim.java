@@ -60,7 +60,7 @@ public class CloudSim implements Simulation {
     private int numberOfUsers;
 
     /**
-     * The CIS object.
+     * The Cloud Information Service (CIS) entity.
      */
     private CloudInformationService cis;
 
@@ -298,7 +298,7 @@ public class CloudSim implements Simulation {
 
     @Override
     public double start() throws RuntimeException {
-        Log.printConcatLine("Starting CloudSim version ", CLOUDSIMPLUS_VERSION_STRING);
+        Log.printConcatLine("Starting CloudSim Plus version ", CLOUDSIMPLUS_VERSION_STRING);
         return run();
     }
 
@@ -339,7 +339,7 @@ public class CloudSim implements Simulation {
     }
 
     @Override
-    public List<Integer> getDatacenterIdsList() {
+    public Set<Integer> getDatacenterIdsList() {
         return cis.getDatacenterIdsList();
     }
 

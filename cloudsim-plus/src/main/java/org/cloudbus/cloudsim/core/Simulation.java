@@ -1,9 +1,6 @@
 package org.cloudbus.cloudsim.core;
 
-import java.util.Calendar;
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import org.cloudbus.cloudsim.brokers.DatacenterBroker;
 import org.cloudbus.cloudsim.core.events.SimEvent;
@@ -111,7 +108,7 @@ public interface Simulation {
      * @pre $none
      * @post $none
      */
-    List<Integer> getDatacenterIdsList();
+    Set<Integer> getDatacenterIdsList();
 
     /**
      * Get the entity with a given id.
@@ -179,6 +176,12 @@ public interface Simulation {
 
     /**
      * Sets the {@link EventListener} object that will be notified when the simulation is paused.
+     * When this Listener is notified, it will receive an {@link EventInfo} informing
+     * the time the pause occurred.
+     *
+     * <p>This object is just information about the event
+     * that happened. In fact, it isn't generated an actual {@limk SimEvent} for a pause event
+     * because there is not need for that.</p>
      *
      * @param onSimulationPausedListener the event listener to be set
      */
@@ -193,7 +196,8 @@ public interface Simulation {
 
     /**
      * Sets the {@link EventListener} object that will be notified when any event
-     * is processed by CloudSim.
+     * is processed by CloudSim. When this Listener is notified, it will receive
+     * the {@link SimEvent} that was processed.
      *
      * @param onEventProcessingListener the event listener to be set
      */
@@ -427,8 +431,8 @@ public interface Simulation {
         @Override public int getCloudInfoServiceEntityId() {
             return 0;
         }
-        @Override public List<Integer> getDatacenterIdsList() {
-            return Collections.EMPTY_LIST;
+        @Override public Set<Integer> getDatacenterIdsList() {
+            return Collections.EMPTY_SET;
         }
         @Override public SimEntity getEntity(int id) { return SimEntity.NULL; }
         @Override public SimEntity getEntity(String name) { return SimEntity.NULL; }

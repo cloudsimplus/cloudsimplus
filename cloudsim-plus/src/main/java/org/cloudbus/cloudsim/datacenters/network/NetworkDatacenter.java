@@ -177,7 +177,7 @@ public class NetworkDatacenter extends DatacenterSimple {
 
             // checks whether this Cloudlet has finished or not
             if (cl.isFinished()) {
-                String name = getSimulation().getEntityName(cl.getBrokerId());
+                String name = getSimulation().getEntityName(cl.getBroker().getId());
                 Log.printConcatLine(
                         getName(), ": Warning - Cloudlet #",
                         cl.getId(), " owned by ", name,
@@ -197,10 +197,10 @@ public class NetworkDatacenter extends DatacenterSimple {
 
                     // unique tag = operation tag
                     int tag = CloudSimTags.CLOUDLET_SUBMIT_ACK;
-                    sendNow(cl.getBrokerId(), tag, data);
+                    sendNow(cl.getBroker().getId(), tag, data);
                 }
 
-                sendNow(cl.getBrokerId(), CloudSimTags.CLOUDLET_RETURN, cl);
+                sendNow(cl.getBroker().getId(), CloudSimTags.CLOUDLET_RETURN, cl);
 
                 return;
             }
@@ -213,8 +213,8 @@ public class NetworkDatacenter extends DatacenterSimple {
             // time to transfer the files
             double fileTransferTime = predictFileTransferTime(cl.getRequiredFiles());
 
-            Host host = getVmAllocationPolicy().getHost(cl.getVm().getId(), cl.getBrokerId());
-            Vm vm = host.getVm(cl.getVm().getId(), cl.getBrokerId());
+            Host host = getVmAllocationPolicy().getHost(cl.getVm().getId(), cl.getBroker().getId());
+            Vm vm = host.getVm(cl.getVm().getId(), cl.getBroker().getId());
             CloudletScheduler scheduler = vm.getCloudletScheduler();
             double estimatedFinishTime = scheduler.cloudletSubmit(cl, fileTransferTime);
 
@@ -235,7 +235,7 @@ public class NetworkDatacenter extends DatacenterSimple {
 
                 // unique tag = operation tag
                 int tag = CloudSimTags.CLOUDLET_SUBMIT_ACK;
-                sendNow(cl.getBrokerId(), tag, data);
+                sendNow(cl.getBroker().getId(), tag, data);
             }
         } catch (ClassCastException c) {
             Log.printLine(getName() + ".processCloudletSubmit(): " + "ClassCastException error.");
