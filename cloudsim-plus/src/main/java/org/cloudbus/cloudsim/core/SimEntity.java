@@ -11,6 +11,12 @@ import org.cloudbus.cloudsim.core.events.SimEvent;
  */
 public interface SimEntity extends Nameable, Cloneable, Runnable {
     /**
+     * Checks if the entity already was started or not.
+     * @return
+     */
+    boolean isStarted();
+
+    /**
      * Defines the event state.
      */
     enum State {RUNNABLE, WAITING, HOLDING, FINISHED};
@@ -50,10 +56,10 @@ public interface SimEntity extends Nameable, Cloneable, Runnable {
     @Override void run();
 
     /**
-     * This method is invoked by the {@link CloudSim} class when the simulation
-     * is started. It should be responsible for starting the entity up.
+     * Starts the entity during simulation start.
+     * This method is invoked by the {@link CloudSim} class when the simulation is started.
      */
-    void startEntity();
+    void start();
 
     /**
      * Shuts down the entity. This method is invoked by the {@link CloudSim}
@@ -76,11 +82,12 @@ public interface SimEntity extends Nameable, Cloneable, Runnable {
      * objects.
      */
     final SimEntity NULL = new SimEntity() {
+        @Override public boolean isStarted() { return false; }
         @Override public Simulation getSimulation() { return Simulation.NULL; }
         @Override public SimEntity setSimulation(Simulation simulation) { return this; }
         @Override public void processEvent(SimEvent ev) {}
         @Override public void run() {}
-        @Override public void startEntity() {}
+        @Override public void start() {}
         @Override public void shutdownEntity() {}
         @Override public SimEntity setName(String newName) throws IllegalArgumentException { return this; }
         @Override public String getName() { return ""; }

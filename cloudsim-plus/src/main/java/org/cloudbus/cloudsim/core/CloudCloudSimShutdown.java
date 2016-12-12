@@ -60,7 +60,7 @@ public class CloudCloudSimShutdown extends CloudSimEntity {
      * The method has no effect at the current class.
      */
     @Override
-    public void startEntity() {}
+    protected void startEntity() {}
 
     /**
      * The method has no effect at the current class.

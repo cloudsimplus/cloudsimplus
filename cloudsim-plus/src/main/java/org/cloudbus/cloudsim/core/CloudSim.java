@@ -420,7 +420,7 @@ public class CloudSim implements Simulation {
         } else {
             printMessage("Adding: " + e.getName());
         }
-        e.startEntity();
+        e.start();
     }
 
     /**
@@ -644,7 +644,7 @@ public class CloudSim implements Simulation {
         running = true;
         // Start all the entities
         for (SimEntity ent : entities) {
-            ent.startEntity();
+            ent.start();
         }
 
         printMessage("Entities started.");

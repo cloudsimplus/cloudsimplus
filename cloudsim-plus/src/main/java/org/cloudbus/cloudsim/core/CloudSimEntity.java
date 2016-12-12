@@ -22,6 +22,11 @@ import java.util.Objects;
  */
 public abstract class CloudSimEntity implements SimEntity {
     /**
+     * @see #isStarted()
+     */
+    private boolean started;
+
+    /**
      * The CloudSim instance that represents the simulation the Entity is related to.
      */
     private Simulation simulation;
@@ -55,6 +60,7 @@ public abstract class CloudSimEntity implements SimEntity {
         state = State.RUNNABLE;
         name = String.format("%s%d", getClass().getSimpleName(), this.simulation.getNumEntities());
         this.simulation.addEntity(this);
+        this.started = false;
     }
 
     /**
@@ -79,6 +85,24 @@ public abstract class CloudSimEntity implements SimEntity {
     public int getId() {
         return id;
     }
+
+    /**
+     * {@inheritDoc}.
+     * It performs general initialization tasks that are common for every entity
+     * and executes the specific entity startup code by calling {@link #startEntity()}.
+     *
+     * @see #startEntity()
+     */
+    @Override
+    public void start() {
+        startEntity();
+        this.setStarted(true);
+    }
+
+    /**
+     * Defines the logic to be performed by the entity when the simulation starts.
+     */
+    protected abstract void startEntity();
 
     /**
      * Sends an event to another entity by id number, with data. Note that the
@@ -687,4 +711,16 @@ public abstract class CloudSimEntity implements SimEntity {
         return getSimulation().getNetworkTopology().getDelay(src, dst);
     }
 
+    @Override
+    public boolean isStarted() {
+        return started;
+    }
+
+    /**
+     * Defines if the entity has already started or not.
+     * @param started
+     */
+    protected void setStarted(boolean started) {
+        this.started = started;
+    }
 }

@@ -141,11 +141,12 @@ public interface Datacenter extends SimEntity {
         }
         @Override public List<FileStorage> getStorageList() { return Collections.emptyList(); }
         @Override public Datacenter setStorageList(List<FileStorage> storageList) { return Datacenter.NULL; }
+        @Override public boolean isStarted() { return false; }
         @Override public Simulation getSimulation() { return Simulation.NULL; }
         @Override public SimEntity setSimulation(Simulation simulation) { return this; }
         @Override public void processEvent(SimEvent ev) {}
         @Override public void run() {}
-        @Override public void startEntity() {}
+        @Override public void start() {}
         @Override public void shutdownEntity() {}
         @Override public SimEntity setName(String newName) throws IllegalArgumentException { return this; }
         @Override public String toString() { return "Datacenter.NULL"; }

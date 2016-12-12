@@ -80,11 +80,6 @@ public abstract class DatacenterBrokerAbstract extends CloudSimEntity implements
     private Map<Integer, DatacenterCharacteristics> datacenterCharacteristicsMap;
 
     /**
-     * @see #isStarted()
-     */
-    private boolean started;
-
-    /**
      * Creates a new DatacenterBroker object.
      *
      * @param simulation The CloudSim instance that represents the simulation the Entity is related to
@@ -93,7 +88,6 @@ public abstract class DatacenterBrokerAbstract extends CloudSimEntity implements
     public DatacenterBrokerAbstract(CloudSim simulation) {
         super(simulation);
         this.getSimulation().incrementNumberOfUsers();
-        this.started = false;
 
         this.vmsWaitingList = new ArrayList<>();
         this.vmsCreatedList = new ArrayList<>();
@@ -114,7 +108,7 @@ public abstract class DatacenterBrokerAbstract extends CloudSimEntity implements
      * {@inheritDoc}
      * <p>If the entity already started (the simulation is running),
      * the creation of previously submitted VMs already was requested
-     * by the {@link #startEntity()} method that is called just once.
+     * by the {@link #start()} method that is called just once.
      * By this way, this method will immediately request the creation of these
      * just submitted VMs in order to allow VM creation after
      * the simulation has started. This avoid the developer to
@@ -145,7 +139,7 @@ public abstract class DatacenterBrokerAbstract extends CloudSimEntity implements
      * {@inheritDoc}
      * <p>If the entity already started (the simulation is running),
      * the creation of previously submitted Cloudlets already was requested
-     * by the {@link #startEntity()} method that is called just once.
+     * by the {@link #start()} method that is called just once.
      * By this way, this method will immediately request the creation of these
      * just submitted Cloudlets if all submitted VMs were already created,
      * in order to allow Cloudlet creation after
@@ -537,7 +531,6 @@ public abstract class DatacenterBrokerAbstract extends CloudSimEntity implements
     public void startEntity() {
         Log.printConcatLine(getName(), " is starting...");
         schedule(getId(), 0, CloudSimTags.DATACENTER_CHARACTERISTICS_REQUEST);
-        this.started = true;
     }
 
     @Override
@@ -661,11 +654,4 @@ public abstract class DatacenterBrokerAbstract extends CloudSimEntity implements
 		return cloudletsCreated;
 	}
 
-    /**
-     * Checks if the entity already was started or not.
-     * @return
-     */
-    public boolean isStarted() {
-        return started;
-    }
 }

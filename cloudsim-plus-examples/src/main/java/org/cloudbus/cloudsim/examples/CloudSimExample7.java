@@ -232,7 +232,7 @@ public class CloudSimExample7 {
         /**
          * The message to be dispatched which indicates that a broker
          * has to be created.
-         * @see #startEntity()
+         * @see #start()
          * @see #processEvent(SimEvent)
          */
         private static final int CREATE_BROKER_MSG = 0;
@@ -289,7 +289,7 @@ public class CloudSimExample7 {
          * by the {@link #processEvent(SimEvent)} method.
          */
         @Override
-        public void startEntity() {
+        protected void startEntity() {
             Log.printLine(super.getName() + " is starting...");
             schedule(getId(), TIME_TO_CREATE_THE_BROKER, CREATE_BROKER_MSG);
         }

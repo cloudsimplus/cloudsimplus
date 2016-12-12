@@ -153,10 +153,12 @@ public interface DatacenterBroker extends SimEntity {
 	 * objects.
 	 */
 	DatacenterBroker NULL = new DatacenterBroker() {
+        @Override public boolean isStarted() { return false; }
         @Override public Simulation getSimulation() { return Simulation.NULL; }
         @Override public SimEntity setSimulation(Simulation simulation) { return this;}
         @Override public void processEvent(SimEvent ev) {}
         @Override public void run() {}
+        @Override public void start() {}
         @Override public int getId() { return -1; }
 		@Override public String getName() { return ""; }
 		@Override public boolean bindCloudletToVm(Cloudlet cloudlet, Vm vm) { return false; }
@@ -172,7 +174,6 @@ public interface DatacenterBroker extends SimEntity {
 		@Override public Vm selectVmForWaitingCloudlet(Cloudlet cloudlet) { return Vm.NULL; }
 		@Override public int selectDatacenterForWaitingVms() { return 0; }
 		@Override public int selectFallbackDatacenterForWaitingVms() { return 0; }
-        @Override public void startEntity() {}
         @Override public void shutdownEntity() {}
         @Override public SimEntity setName(String newName) throws IllegalArgumentException { return this; }
     };
