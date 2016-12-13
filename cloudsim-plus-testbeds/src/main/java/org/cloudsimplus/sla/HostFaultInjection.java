@@ -125,8 +125,6 @@ public class HostFaultInjection extends CloudSimEntity {
         final List<Vm> sortedHostVmList = new ArrayList<>(host.getVmList());
         sortedHostVmList.sort(sortVmsDescendinglyByPesNumber);
 
-
-
         for (Vm vm : sortedHostVmList) {
             final long numberOfWorkingPes = host.getNumberOfWorkingPes();
             final long pesSumOfWorkingVms = getPesSumOfWorkingVms(sortedHostVmList);
@@ -173,7 +171,6 @@ public class HostFaultInjection extends CloudSimEntity {
         if (!this.isFailed()) {
             return;
         }
-
         vm.setFailed(true);
         /*
          As the broker is expected to request vm creation and destruction,
@@ -182,6 +179,7 @@ public class HostFaultInjection extends CloudSimEntity {
         getSimulation().sendNow(
                 vm.getBroker().getId(), host.getDatacenter().getId(),
                 CloudSimTags.VM_DESTROY, vm);
+        
     }
 
     /**

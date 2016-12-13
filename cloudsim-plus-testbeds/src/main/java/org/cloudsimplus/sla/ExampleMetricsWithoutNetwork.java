@@ -50,7 +50,8 @@ import org.cloudbus.cloudsim.resources.Ram;
 import org.cloudsimplus.util.tablebuilder.CloudletsTableBuilderHelper;
 import org.cloudbus.cloudsim.utilizationmodels.UtilizationModel;
 import org.cloudbus.cloudsim.utilizationmodels.UtilizationModelFull;
-import org.cloudsimplus.sla.readJsonFile.SlaContractMetrics;
+import org.cloudsimplus.sla.readJsonFile.SlaMetricDimension;
+import org.cloudsimplus.sla.readJsonFile.SlaMetric;
 import org.cloudsimplus.sla.readJsonFile.SlaReader;
 
 /**
@@ -62,7 +63,7 @@ import org.cloudsimplus.sla.readJsonFile.SlaReader;
  */
 public final class ExampleMetricsWithoutNetwork {
 
-    private static final String METRICS_FILE = "/Users/raysaoliveira/Desktop/TeseMestradoEngInformatica/cloudsim-plus/cloudsim-plus-testbeds/src/main/java/org/cloudsimplus/sla/readJsonFile/SlaMetric.json";
+    private static final String METRICS_FILE = "/Users/raysaoliveira/Desktop/TeseMestradoEngInformatica/cloudsim-plus/cloudsim-plus-testbeds/src/main/java/org/cloudsimplus/sla/readJsonFile/SlaMetrics.json";
 
     private static final int HOSTS_NUMBER = 3;
     private static final int HOST_PES = 5;
@@ -314,9 +315,9 @@ public final class ExampleMetricsWithoutNetwork {
     }
 
     /**
-     * Creates the switches.
+     * Creates the DATACENTER.
      *
-     * @return the switches
+     * @return the datacenter
      */
     private Datacenter createDatacenter() {
         hostList = new ArrayList<>();
@@ -379,58 +380,93 @@ public final class ExampleMetricsWithoutNetwork {
     }
 
     private void checkSlaViolations() throws FileNotFoundException {
-        SlaReader slaReader = new SlaReader(METRICS_FILE);
-        slaReader.getMetrics().stream()
-                .filter(m -> m.isNamed(SlaReader.RESPONSE_TIME_FIELD))
+        SlaReader reader = new SlaReader(METRICS_FILE);
+        List<SlaMetric> metrics = reader.getContract().getMetrics();
+        metrics.stream()
+                .filter(m -> m.isReponseTime())
                 .findFirst()
                 .ifPresent(this::checkResponseTimeViolation);
 
-        slaReader.getMetrics().stream()
-                .filter(m -> m.isNamed(SlaReader.CPU_UTILIZATION_FIELD))
+        metrics.stream()
+                .filter(m -> m.isCpuUtilization())
                 .findFirst()
                 .ifPresent(this::checkCpuUtilizationViolation);
 
-        slaReader.getMetrics().stream()
-                .filter(m -> m.isNamed(SlaReader.WAIT_TIME_FIELD))
+        metrics.stream()
+                .filter(m -> m.isWaitTime())
                 .findFirst()
                 .ifPresent(this::checkWaitTimeViolation);
 
     }
 
-    private void checkResponseTimeViolation(SlaContractMetrics metric) {
+    private void checkResponseTimeViolation(SlaMetric metric) {
         SlaMetricsMonitoring monitoring = new SlaMetricsMonitoring();
-        if (responseTimeCloudlet < metric.getValueMin() || responseTimeCloudlet > metric.getValueMax()) {
-            monitoring.monitoringResponseTime(metric.getName());
+        double minValue = 
+                metric.getDimensions().stream()
+                    .filter(d -> d.isValueMin())
+                    .map(d -> d.getValue())
+                    .findFirst().orElse(Double.MIN_VALUE);
+        double maxValue = 
+                metric.getDimensions().stream()
+                    .filter(d -> d.isValueMax())
+                    .map(d -> d.getValue())
+                    .findFirst().orElse(Double.MAX_VALUE);
+
+        if (responseTimeCloudlet > maxValue) {
+            monitoring.monitoringResponseTime(metric.getMetricName());
             printMetricDataViolated(metric);
         } else {
-            System.out.println("\n* The metric: " + metric.getName() + " was not violated!! ");
+            System.out.println("\n* The metric: " + metric.getMetricName()+ " was not violated!! ");
         }
     }
 
-    private void checkCpuUtilizationViolation(SlaContractMetrics metric) {
+    private void checkCpuUtilizationViolation(SlaMetric metric) {
         SlaMetricsMonitoring monitoring = new SlaMetricsMonitoring();
-        if (cpuUtilization < metric.getValueMin() || cpuUtilization > metric.getValueMax()) {
-            monitoring.monitoringCpuUtilization(metric.getName());
+        double minValue = metric.getDimensions().stream()
+                .filter(d -> d.isValueMin())
+                .map(d -> d.getValue())
+                .findFirst().orElse(Double.MIN_VALUE);
+        
+        double maxValue = 
+                metric.getDimensions().stream()
+                    .filter(d -> d.isValueMax())
+                    .map(d -> d.getValue())
+                    .findFirst().orElse(Double.MAX_VALUE);
+        
+        if (cpuUtilization < minValue || cpuUtilization > maxValue) {
+            monitoring.monitoringCpuUtilization(metric.getMetricName());
             printMetricDataViolated(metric);
         } else {
-            System.out.println("\n* The metric: " + metric.getName() + " was not violated!! ");
+            System.out.println("\n* The metric: " + metric.getMetricName() + " was not violated!! ");
         }
     }
 
-    private void checkWaitTimeViolation(SlaContractMetrics metric) {
-        SlaMetricsMonitoring monitoring = new SlaMetricsMonitoring();
-        if (waitTimeCloudlet < metric.getValueMin() || waitTimeCloudlet > metric.getValueMax()) {
-            monitoring.monitoringWaitTime(metric.getName());
+    private void checkWaitTimeViolation(SlaMetric metric) {
+        SlaMetricsMonitoring monitoring = new SlaMetricsMonitoring();   
+        double minValue = metric.getDimensions().stream()
+                .filter(d -> d.isValueMin())
+                .map(d -> d.getValue())
+                .findFirst().orElse(Double.MIN_VALUE);
+        
+        double maxValue = 
+                metric.getDimensions().stream()
+                    .filter(d -> d.isValueMax())
+                    .map(d -> d.getValue())
+                    .findFirst().orElse(Double.MAX_VALUE);
+        
+        if (waitTimeCloudlet < minValue || waitTimeCloudlet > maxValue) {
+            monitoring.monitoringWaitTime(metric.getMetricName());
             printMetricDataViolated(metric);
         } else {
-            System.out.println("\n* The metric: " + metric.getName() + " was not violated!! ");
+            System.out.println("\n* The metric: " + metric.getMetricName() + " was not violated!! ");
         }
     }
 
-    private void printMetricDataViolated(SlaContractMetrics metric) {
-        System.out.println("\n\tName: " + metric.getName());
-        System.out.println("\tMinimum value acceptable for this metric: " + metric.getValueMin());
-        System.out.println("\tMaximun value acceptable for this metric: " + metric.getValueMax());
+    private void printMetricDataViolated(SlaMetric metric) {
+        System.out.println("\n\tName: " + metric.getMetricName());
+        for(SlaMetricDimension d: metric.getDimensions()){
+            System.out.printf("\t%s acceptable for this metric: %.2f\n", d.getName(), d.getValue());
+        }
     }
 
     /**

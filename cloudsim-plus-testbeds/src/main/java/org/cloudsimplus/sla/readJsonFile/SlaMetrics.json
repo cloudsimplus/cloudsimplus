@@ -1,0 +1,109 @@
+{
+    "metrics" : [
+   
+    {
+        "metricName": "ResponseTime",
+        "dimensions": [
+            {
+                "name": "valueMin",
+                "value": 0,
+                "unit" : "Milliseconds"
+            },
+            {
+                "name": "valueMax",
+                "value": 10,
+                "unit" : "Milliseconds"
+            }]
+    },
+    {
+        "metricName": "Availability",
+        "dimensions": [
+            {
+                "name": "valueMin",
+                "value": 95,
+                "unit" : "Percent"
+            },
+            {
+                "name": "valueMax",
+                "value": 100,
+                "unit" : "Percent"
+            }
+        ]
+    },
+    {
+        "metricName": "CpuUtilization",
+        "dimensions": [
+            {
+                "name": "valueMin",
+                "value": 60,
+                "unit" : "Percent"
+                
+            },
+            {
+                "name": "valueMax",
+                "value": 95,
+                "unit" : "Percent"
+            }
+        ]
+    },
+    {
+        "metricName": "WaitTime",
+        "dimensions": [
+            {
+                "name": "valueMin",
+                "value": 0,
+                "unit" : "Milliseconds"
+            },
+            {
+                "name": "valueMax",
+                "value": 10,
+                "unit" : "Milliseconds"
+            }
+        ]
+    },
+    {
+        "metricName": "FaulTolerance",
+        "dimensions": [
+            {
+                "name": "valueMin",
+                "value": 90,
+                "unit" : "Percent"
+            },
+            {
+                "name": "valueMax",
+                "value": 100,
+                "unit" : "Percent"
+            }
+        ]
+    },
+    {
+        "metricName": "Throughput",
+        "dimensions": [
+            {
+                "name": "valueMin",
+                "value": 195,
+                "unit" : "Bits/Second"
+            },
+            {
+                "name": "valueMax",
+                "value": 250,
+                "unit" : "Bits/Second"
+            }
+        ]
+    },
+    {
+        "metricName": "CostPrice",
+        "dimensions": [
+            {
+                "name": "valueMin",
+                "value": 250
+            },
+            {
+                "name": "valueMax",
+                "value": 500
+            }
+        ]
+    }  
+ ]}    
+
+  
