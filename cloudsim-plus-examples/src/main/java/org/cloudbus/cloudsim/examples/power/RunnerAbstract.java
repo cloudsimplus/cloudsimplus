@@ -145,7 +145,7 @@ public abstract class RunnerAbstract {
      * @param inputFolder the input folder
      */
     protected void init(String inputFolder){
-        this.simulation = new CloudSim(1);
+        this.simulation = new CloudSim();
     }
 
     /**
@@ -175,8 +175,6 @@ public abstract class RunnerAbstract {
 
             List<Cloudlet> newList = broker.getCloudletsFinishedList();
             Log.printLine("Received " + newList.size() + " cloudlets");
-
-            simulation.stop();
 
             Helper.printResults(
                 datacenter,

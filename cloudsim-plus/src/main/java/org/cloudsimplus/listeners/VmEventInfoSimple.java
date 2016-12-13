@@ -27,8 +27,9 @@ import org.cloudbus.cloudsim.vms.Vm;
  * A basic implementation of the {@link VmEventInfo} interface.
  *
  * @author Manoel Campos da Silva Filho
+ * @since CloudSim Plus 1.0
  */
-public class VmEventInfoSimple extends EventInfoAbstract implements VmEventInfo {
+public class VmEventInfoSimple extends EventInfoSimple implements VmEventInfo {
     private Vm vm;
 
     /**

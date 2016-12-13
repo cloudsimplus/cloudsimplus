@@ -24,16 +24,6 @@ import org.cloudbus.cloudsim.core.CloudSimTags;
  * @since CloudSim Toolkit 1.0
  */
 public interface Packet {
-    /**
-	 * Returns a string describing this packet in detail.
-	 *
-	 * @return description of this packet
-	 * @pre $none
-	 * @post $none
-	 */
-	@Override
-	String toString();
-
 	/**
 	 * Returns the size of this packet
 	 *

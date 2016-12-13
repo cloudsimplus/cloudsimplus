@@ -22,6 +22,7 @@ import org.cloudsimplus.listeners.HostToVmEventInfo;
  * {@link Vm} variables.
  *
  * @author Manoel Campos da Silva Filho
+ * @since CloudSim Plus 1.0
  */
 public interface Vm extends Identificable, Comparable<Vm> {
 

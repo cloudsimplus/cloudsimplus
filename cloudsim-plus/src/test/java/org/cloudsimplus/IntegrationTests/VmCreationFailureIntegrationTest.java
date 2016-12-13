@@ -187,7 +187,7 @@ public final class VmCreationFailureIntegrationTest {
 
     @Before
     public void setUp() {
-        simulation = new CloudSim(1);
+        simulation = new CloudSim();
         simulation.setOnEventProcessingListener((evt) -> onEventProcessing(evt));
         scenario = new SimulationScenarioBuilder(simulation);
         scenario.getDatacenterBuilder().createDatacenter(
@@ -222,18 +222,12 @@ public final class VmCreationFailureIntegrationTest {
 
     @Test
     public void integrationTest() {
-        startSimulationAndWaitToStop();
-
+        simulation.start();
         DatacenterBroker broker = scenario.getBrokerBuilder().getBrokers().get(0);
         assertThatBrokerCloudletsHaveTheExpectedExecutionTimes(broker);
         assertThatListenersWereCalledTheExpectedAmountOfTimes();
 
         printCloudletsExecutionResults(broker);
-    }
-
-    public void startSimulationAndWaitToStop() throws RuntimeException, NullPointerException {
-        simulation.start();
-        simulation.stop();
     }
 
     public void printCloudletsExecutionResults(DatacenterBroker broker) {

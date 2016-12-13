@@ -146,7 +146,7 @@ public interface CloudletScheduler extends Serializable {
      * @pre $none
      * @post $none
      */
-    Cloudlet getNextFinishedCloudlet();
+    Cloudlet removeNextFinishedCloudlet();
 
     /**
      * Gets the previous time when the scheduler updated the processing of
@@ -325,7 +325,7 @@ public interface CloudletScheduler extends Serializable {
         @Override public List<Double> getCurrentRequestedMips() { return Collections.emptyList(); }
         @Override public double getCurrentRequestedUtilizationOfBw() { return 0.0; }
         @Override public double getCurrentRequestedUtilizationOfRam() { return 0.0; }
-        @Override public Cloudlet getNextFinishedCloudlet() { return Cloudlet.NULL; }
+        @Override public Cloudlet removeNextFinishedCloudlet() { return Cloudlet.NULL; }
         @Override public double getPreviousTime() { return 0.0; }
         @Override public double getTotalCurrentAllocatedMipsForCloudlet(CloudletExecutionInfo rcl, double time) { return 0.0; }
         @Override public double getTotalCurrentAvailableMipsForCloudlet(CloudletExecutionInfo rcl, List<Double> mipsShare) { return 0.0; }

@@ -11,7 +11,7 @@
 |
 <b><a href="#how-to-use-cloudsim-plus">How to use</a></b>
 |
-<b><a href="#a-minimal-simulation-example">Example</a></b>
+<b><a href="#a-minimal-simulation-example">Examples</a></b>
 |
 <b><a href="#documentation-and-help">Docs and Help</a></b>
 |
@@ -72,12 +72,14 @@ at [the Computer Science and Software Engineering Department](http://www.csse.un
 
 CloudSim Plus provides a lot of exclusive features, ranging from the most basic ones that are missing in CloudSim to advanced features that enable implementation of more realistic simulation scenarios. 
 
+- Parallel execution of simulations, allowing several simulations to be run simultaneously, in a isolated way, inside a multi-core computer.
 - [Listeners](/cloudsim-plus-examples/src/main/java/org/cloudsimplus/examples/listeners/) objects to enable simulation monitoring.
 - Builders to enable creating multiple simulation objects with same configuration.
 - [TableBuilder](/cloudsim-plus-examples/src/main/) objects that are used in all examples and enable printing simulation results in different formats such as ASCII Table, CSV or HTML. It shows simulation results in perfectly aligned tables, including data units and additional data.
 - It is a strongly object-oriented framework that creates relationships among classes and allows chained call such as `cloudlet.getVm().getHost().getDatacenter()`.
   And guess what? You don't even have to worry about `NullPointerException` when making this chained call because CloudSim Plus uses the [Null Object Design Pattern](https://en.wikipedia.org/wiki/Null_Object_pattern) to avoid that.
-- Delay execution of submitted Cloudlets, enabling simulation of dynamic arrival of tasks.
+- Delay creation of submitted Cloudlets, enabling simulation of dynamic arrival of tasks.
+- Allow dynamic creation of VMs and Cloudlets without requiring creation of Datacenter Brokers at runtime, enabling VMs to be created on-demand according to arrived cloudlets.
 - Classes and interfaces to allow implementation of [heuristics](http://en.wikipedia.org/wiki/Heuristic) such as 
   [Tabu Search](http://en.wikipedia.org/wiki/Tabu_search), [Simulated Annealing](http://en.wikipedia.org/wiki/Simulated_annealing), 
   [Ant Colony Systems](http://en.wikipedia.org/wiki/Ant_colony_optimization_algorithms) and so on. See an [example using Simulated Annealing here](/cloudsim-plus-examples/src/main/java/org/cloudsimplus/examples/DatacenterBrokerHeuristicExample.java).
@@ -170,17 +172,17 @@ In order to build such a simulation you have to create, at least:
 
 By this way, the main code used to build such a simulation scenario can be as below. 
 This is simply the code of the constructor method. 
-The complete example is available at the cloudsim-plus-examples module 
-[here](/cloudsim-plus-examples/src/main/java/org/cloudbus/cloudsim/examples/CloudSimExample0.java).
+The complete example is available
+[here](/cloudsim-plus-examples/src/main/java/org/cloudbus/cloudsim/examples/CloudSimExample0.java),
+together with [other examples](cloudsim-plus-examples). Specific examples of CloudSim Plus, showing several
+new exclusive features and advanced scenarios, can be found [here](cloudsim-plus-examples/src/main/java/org/cloudsimplus/examples/). 
 
 ```java
 this.vmList = new ArrayList<>();
 this.cloudletList = new ArrayList<>();
-//Number of cloud customers
-int numberOfCloudUsers = 1; 
 
 //Creates a CloudSim object to initialize the simulation.
-CloudSim simulation = new CloudSim(numberOfCloudUsers);
+CloudSim simulation = new CloudSim();
 
 Datacenter datacenter0 = createDatacenter(simulation);
 
@@ -202,9 +204,6 @@ broker0.submitCloudletList(cloudletList);
 /*Starts the simulation and waits all cloudlets to be executed*/
 simulation.start();
 
-//Finishes the simulation
-simulation.stop();
-
 /*Prints results when the simulation is over
 (you can use your own code here to print what you want from this cloudlet list)*/
 List<Cloudlet> finishedCloudlets = broker0.getCloudletsFinishedList();
@@ -222,7 +221,7 @@ The image below, for a simulation with two cloudlets (applications) gives you a 
 The project documentation originated from CloudSim was entirely updated and extended. 
 You can see the javadoc documentation for classes and their elements directly on your IDE.
 
-The documentation is available online at <http://cloudsimplus.org/docs/>.
+The documentation is available online at <http://cloudsimplus.org/apidocs/>.
 There is also a [Wiki page](https://github.com/manoelcampos/cloudsim-plus/wiki) with additional information such as a FAQ list.  
 
 A Google Group forum is also available at <https://groups.google.com/group/cloudsim-plus>

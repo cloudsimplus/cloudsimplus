@@ -62,7 +62,7 @@ public class CloudSimExample5 {
         boolean trace_flag = false;  // mean trace events
 
         // Initialize the CloudSim library
-        simulation = new CloudSim(num_user, trace_flag);
+        simulation = new CloudSim(trace_flag);
 
         // Second step: Create Datacenters
         //Datacenters are the resource providers in CloudSim. We need at list one of them to run a CloudSim simulation
@@ -147,8 +147,6 @@ public class CloudSimExample5 {
         // Final step: Print results when simulation is over
         List<Cloudlet> newList1 = broker1.getCloudletsFinishedList();
         List<Cloudlet> newList2 = broker2.getCloudletsFinishedList();
-
-        simulation.stop();
 
         new CloudletsTableBuilderHelper(newList1)
                 .setPrinter(new TextTableBuilder("User " + broker1))

@@ -57,6 +57,7 @@ import org.cloudsimplus.util.tablebuilder.PriorityCloudletsTableBuilderHelper;
  *
  * @author Manoel Campos da Silva Filho
  * @see <a href="https://en.wikipedia.org/wiki/Completely_Fair_Scheduler">Completely Fair Scheduler (CFS)</a>
+ * @since CloudSim Plus 1.0
  *
  */
 public class LinuxCompletelyFairSchedulerExample {
@@ -93,9 +94,8 @@ public class LinuxCompletelyFairSchedulerExample {
         Log.printFormattedLine("Starting %s...", getClass().getSimpleName());
         //Number of cloud customers
         int numberOfCloudUsers = 1;
-        boolean traceEvents = false;
 
-        simulation = new CloudSim(numberOfCloudUsers, traceEvents);
+        simulation = new CloudSim();
 
         Datacenter datacenter0 = createDatacenter();
 
@@ -108,7 +108,6 @@ public class LinuxCompletelyFairSchedulerExample {
         }
 
         simulation.start();
-        simulation.stop();
 
         List<Cloudlet> finishedCloudlets = broker0.getCloudletsFinishedList();
         new PriorityCloudletsTableBuilderHelper(finishedCloudlets).build();

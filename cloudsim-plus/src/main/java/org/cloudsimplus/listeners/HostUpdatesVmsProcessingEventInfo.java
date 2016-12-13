@@ -30,6 +30,7 @@ import org.cloudbus.cloudsim.hosts.Host;
  *
  * @see Host#getOnUpdateVmsProcessingListener()
  * @author Manoel Campos da Silva Filho
+ * @since CloudSim Plus 1.0
  */
 public class HostUpdatesVmsProcessingEventInfo extends HostEventInfoSimple  {
     private double completionTimeOfNextFinishingCloudlet;

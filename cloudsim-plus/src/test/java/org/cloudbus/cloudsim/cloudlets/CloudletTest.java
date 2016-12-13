@@ -1,5 +1,6 @@
 package org.cloudbus.cloudsim.cloudlets;
 
+import org.cloudbus.cloudsim.brokers.DatacenterBroker;
 import org.cloudbus.cloudsim.vms.Vm;
 import org.cloudbus.cloudsim.vms.VmSimpleTest;
 import org.cloudsimplus.listeners.EventListener;
@@ -61,7 +62,7 @@ public class CloudletTest {
         assertEquals(-1, Cloudlet.NULL.getDatacenterId());
         assertEquals(0, Cloudlet.NULL.getDatacenterArrivalTime(), 0);
         assertEquals(0, Cloudlet.NULL.getArrivalTime(0), 0);
-        assertEquals(-1, Cloudlet.NULL.getBrokerId());
+        assertSame(DatacenterBroker.NULL, Cloudlet.NULL.getBroker());
         assertSame(UtilizationModel.NULL, Cloudlet.NULL.getUtilizationModelBw());
         assertSame(UtilizationModel.NULL, Cloudlet.NULL.getUtilizationModelCpu());
         assertSame(UtilizationModel.NULL, Cloudlet.NULL.getUtilizationModelRam());
@@ -86,8 +87,6 @@ public class CloudletTest {
         EasyMock.replay(listener);
         Cloudlet.NULL.setOnCloudletFinishEventListener(listener);
         assertSame(EventListener.NULL, Cloudlet.NULL.getOnCloudletFinishEventListener());
-
-        assertEquals(-1, Cloudlet.NULL.getBrokerId());
 
         Cloudlet.NULL.setSubmissionDelay(10);
         assertEquals(0, Cloudlet.NULL.getSubmissionDelay(), 0);

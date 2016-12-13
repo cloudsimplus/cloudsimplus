@@ -28,6 +28,7 @@ import org.cloudsimplus.builders.BrokerBuilderDecorator;
 import org.cloudsimplus.builders.HostBuilder;
 import org.cloudsimplus.builders.SimulationScenarioBuilder;
 import org.cloudbus.cloudsim.core.CloudSim;
+import org.cloudsimplus.listeners.EventListener;
 import org.cloudsimplus.listeners.HostUpdatesVmsProcessingEventInfo;
 import org.cloudbus.cloudsim.schedulers.cloudlet.CloudletSchedulerDynamicWorkload;
 import org.cloudbus.cloudsim.schedulers.vm.VmSchedulerSpaceShared;
@@ -61,7 +62,7 @@ public final class CheckHostAvailableMipsDynamicUtilizationTest {
     private CloudSim simulation;
 
     /**
-     * A lambda function used by the {@link Host#setOnUpdateVmsProcessingListener(org.cloudbus.cloudsim.listeners.EventListener)}
+     * A lambda function used by the {@link Host#setOnUpdateVmsProcessingListener(EventListener)}
      * that will be called every time a host updates the processing of its VMs.
      * It checks if the amount of available Host CPU is as expected,
      * every time a host updates the processing of all its VMs.
@@ -83,7 +84,7 @@ public final class CheckHostAvailableMipsDynamicUtilizationTest {
 
     @Before
     public void setUp() {
-        this.simulation = new  CloudSim(1);
+        this.simulation = new  CloudSim();
         scenario = new SimulationScenarioBuilder(simulation);
         scenario.getDatacenterBuilder().setSchedulingInterval(2).createDatacenter(
                 new HostBuilder()
@@ -116,14 +117,9 @@ public final class CheckHostAvailableMipsDynamicUtilizationTest {
                 + " and CloudletSchedulerDynamicWorkload to make the host CPU usage"
                 + " to be correctly updated.")
     public void integrationTest() {
-        startSimulationAndWaitToStop();
+        simulation.start();
         DatacenterBroker broker = scenario.getBrokerBuilder().getBrokers().get(0);
         printCloudletsExecutionResults(broker);
-    }
-
-    public void startSimulationAndWaitToStop() throws RuntimeException, NullPointerException {
-        simulation.start();
-        simulation.stop();
     }
 
     public void printCloudletsExecutionResults(DatacenterBroker broker) {

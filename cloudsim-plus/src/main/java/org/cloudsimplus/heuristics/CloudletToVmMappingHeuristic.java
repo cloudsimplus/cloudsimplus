@@ -32,6 +32,7 @@ import org.cloudbus.cloudsim.vms.Vm;
  * a sub-optimal solution for mapping Cloudlets to Vm's.
  *
  * @author Manoel Campos da Silva Filho
+ * @since CloudSim Plus 1.0
  */
 public interface CloudletToVmMappingHeuristic extends Heuristic<CloudletToVmMappingSolution> {
 

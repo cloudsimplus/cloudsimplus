@@ -430,14 +430,6 @@ public interface Cloudlet extends Identificable, Comparable<Cloudlet> {
     int getDatacenterId();
 
     /**
-     * Gets the ID the {@link DatacenterBroker} that represents the owner of the VM.
-     *
-     * @return the broker ID or <tt>{@link #NOT_ASSIGNED}</tt> if a broker has not been set yet
-     * @pre $none
-     */
-    int getBrokerId();
-
-    /**
      * Gets the utilization model that defines how the cloudlet will use the VM's
      * bandwidth (bw).
      *
@@ -667,6 +659,13 @@ public interface Cloudlet extends Identificable, Comparable<Cloudlet> {
     Cloudlet setBroker(DatacenterBroker broker);
 
     /**
+     * Gets the {@link DatacenterBroker} that represents the owner of the Cloudlet.
+     *
+     * @return
+     */
+    DatacenterBroker getBroker();
+
+    /**
      * Sets the same utilization model for defining the usage of Bandwidth, CPU and RAM.
      * To set different utilization models for each one of these resources, use the
      * respective setters.
@@ -884,7 +883,6 @@ public interface Cloudlet extends Identificable, Comparable<Cloudlet> {
         @Override public Status getStatus() { return getCloudletStatus(); }
         @Override public double getDatacenterArrivalTime() { return 0.0; }
         @Override public double getArrivalTime(int datacenterId) { return 0.0; }
-        @Override public int getBrokerId() { return -1; }
         @Override public UtilizationModel getUtilizationModelBw() { return UtilizationModel.NULL; }
         @Override public UtilizationModel getUtilizationModelCpu() { return UtilizationModel.NULL; }
         @Override public UtilizationModel getUtilizationModelRam() { return UtilizationModel.NULL; }
@@ -908,6 +906,7 @@ public interface Cloudlet extends Identificable, Comparable<Cloudlet> {
         @Override public boolean setReservationId(int reservationId) { return false; }
         @Override public void assignCloudletToDatacenter(int datacenterId, double costPerCpuSec, double costPerByteOfBw) {}
         @Override public Cloudlet setBroker(DatacenterBroker broker) { return Cloudlet.NULL; }
+        @Override public DatacenterBroker getBroker() { return DatacenterBroker.NULL; }
         @Override public Cloudlet setUtilizationModel(UtilizationModel utilizationModel) { return Cloudlet.NULL; }
         @Override public Cloudlet setUtilizationModelBw(UtilizationModel utilizationModelBw) { return Cloudlet.NULL; }
         @Override public Cloudlet setUtilizationModelCpu(UtilizationModel utilizationModelCpu) { return Cloudlet.NULL; }

@@ -161,7 +161,7 @@ public class ExampleUsingFaultInjector {
     public ExampleUsingFaultInjector() {
         //  Initialize the CloudSim package.
         int num_user = 1; // number of cloud users
-        this.cloudsim = new CloudSim(num_user);
+        this.cloudsim = new CloudSim();
         Log.disable();
 
         //Create Datacenters
@@ -186,7 +186,6 @@ public class ExampleUsingFaultInjector {
 
         // Sixth step: Starts the simulation
         cloudsim.start();
-        cloudsim.stop();
 
         System.out.println("\n");
         for (Cloudlet cloudlet : cloudletList) {

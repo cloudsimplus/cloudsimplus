@@ -38,6 +38,7 @@ import org.cloudbus.cloudsim.schedulers.cloudlet.CloudletScheduler;
  * A Builder class to create {@link Vm} objects.
  *
  * @author Manoel Campos da Silva Filho
+ * @since CloudSim Plus 1.0
  */
 public class VmBuilder {
     private CloudletScheduler cloudletScheduler;

@@ -21,7 +21,6 @@ import org.cloudbus.cloudsim.resources.ResourceManageable;
  * @author Anton Beloglazov
  * @author Manoel Campos da Silva Filho
  * @since 3.0.4
- * @see AbstractResourceProvisioner
  */
 public class ResourceProvisionerSimple extends AbstractResourceProvisioner {
     /**

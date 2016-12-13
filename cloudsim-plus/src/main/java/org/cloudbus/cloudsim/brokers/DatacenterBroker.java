@@ -3,6 +3,7 @@ package org.cloudbus.cloudsim.brokers;
 import java.util.Collections;
 import java.util.List;
 import org.cloudbus.cloudsim.cloudlets.Cloudlet;
+import org.cloudbus.cloudsim.datacenters.Datacenter;
 import org.cloudbus.cloudsim.vms.Vm;
 import org.cloudbus.cloudsim.core.SimEntity;
 import org.cloudbus.cloudsim.core.events.SimEvent;
@@ -70,12 +71,11 @@ public interface DatacenterBroker extends SimEntity {
     <T extends Vm> List<T> getVmsCreatedList();
 
     /**
-     * Sends a list of cloudlets to the broker for further
-     * creation of each one in some Vm, following the submission delay
+     * Sends a list of cloudlets for the broker to request its creation inside some VM, following the submission delay
      * specified in each cloudlet (if any).
      * All cloudlets will be added to the {@link #getCloudletsWaitingList()}.
      *
-     * @param list the list
+     * @param list the list of Cloudlets to request the creation
      * @pre list !=null
      * @post $none
      * @see #submitCloudletList(java.util.List, double)
@@ -83,13 +83,12 @@ public interface DatacenterBroker extends SimEntity {
     void submitCloudletList(List<? extends Cloudlet>  list);
 
     /**
-     * Sends a list of cloudlets to the broker that will
-     * be created into some Vm after a given delay.
+     * Sends a list of cloudlets for the broker to request its creation inside some VM after a given delay.
      * All cloudlets will be added to the {@link #getCloudletsWaitingList()},
      * setting their submission delay to the specified value.
      *
-     * @param list the list
-     * @param submissionDelay the delay the broker has to include when submitting the Cloudlets
+     * @param list the list of Cloudlets to request the creation
+     * @param submissionDelay the delay the broker has to include when requesting the creation of Cloudlets
      * @pre list !=null
      * @post $none
      * @see #submitCloudletList(java.util.List)
@@ -99,10 +98,11 @@ public interface DatacenterBroker extends SimEntity {
 
 
     /**
-     * Sends to the broker the list with virtual machines that must be
-     * created.
+     * Sends to the broker a list with VMs that the creation will be requested to some
+     * {@link Datacenter}. The Datacenter that will be chosen to place a VM is
+     * determined by the {@link #selectDatacenterForWaitingVms()}.
      *
-     * @param list the list
+     * @param list the list of VMs to request the creation
      * @pre list !=null
      * @post $none
      */
@@ -153,10 +153,12 @@ public interface DatacenterBroker extends SimEntity {
 	 * objects.
 	 */
 	DatacenterBroker NULL = new DatacenterBroker() {
+        @Override public boolean isStarted() { return false; }
         @Override public Simulation getSimulation() { return Simulation.NULL; }
         @Override public SimEntity setSimulation(Simulation simulation) { return this;}
         @Override public void processEvent(SimEvent ev) {}
         @Override public void run() {}
+        @Override public void start() {}
         @Override public int getId() { return -1; }
 		@Override public String getName() { return ""; }
 		@Override public boolean bindCloudletToVm(Cloudlet cloudlet, Vm vm) { return false; }
@@ -172,7 +174,6 @@ public interface DatacenterBroker extends SimEntity {
 		@Override public Vm selectVmForWaitingCloudlet(Cloudlet cloudlet) { return Vm.NULL; }
 		@Override public int selectDatacenterForWaitingVms() { return 0; }
 		@Override public int selectFallbackDatacenterForWaitingVms() { return 0; }
-        @Override public void startEntity() {}
         @Override public void shutdownEntity() {}
         @Override public SimEntity setName(String newName) throws IllegalArgumentException { return this; }
     };

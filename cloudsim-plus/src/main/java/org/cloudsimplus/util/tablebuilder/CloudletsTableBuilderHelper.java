@@ -31,6 +31,7 @@ import org.cloudbus.cloudsim.vms.Vm;
  * A class to help printing simulation results for a list of cloudlets.
  *
  * @author Manoel Campos da Silva Filho
+ * @since CloudSim Plus 1.0
  */
 public class CloudletsTableBuilderHelper {
     private TableBuilder printer;

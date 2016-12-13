@@ -1,3 +1,10 @@
+/*
+ * Title:        CloudSim Toolkit
+ * Description:  CloudSim (Cloud Simulation) Toolkit for Modeling and Simulation of Clouds
+ * Licence:      GPL - http://www.gnu.org/copyleft/gpl.html
+ *
+ * Copyright (c) 2009-2012, The University of Melbourne, Australia
+ */
 package org.cloudbus.cloudsim.cloudlets;
 
 import java.text.DecimalFormat;
@@ -17,6 +24,8 @@ import org.cloudsimplus.listeners.VmToCloudletEventInfo;
 /**
  * A base class for {@link Cloudlet} implementations.
  *
+ * @author Rodrigo N. Calheiros
+ * @author Anton Beloglazov
  * @author Manoel Campos da Silva Filho
  */
 public abstract class CloudletAbstract implements Cloudlet {
@@ -36,7 +45,7 @@ public abstract class CloudletAbstract implements Cloudlet {
      * being migrated, this list will have only one item.
      */
     private final List<ExecutionInDatacenterInfo> executionInDatacenterInfoList;
-    /** @see #getBrokerId() */
+    /** @see #getBroker() */
     private DatacenterBroker broker;
     /** @see #getCloudletLength() */
     private long cloudletLength;
@@ -316,9 +325,7 @@ public abstract class CloudletAbstract implements Cloudlet {
         }
 
         final long finishedMI = getExecutionInDatacenterInfoList().get(getLastExecutedDatacenterIndex()).finishedSoFar;
-        final long remainingMI = getCloudletLength() - finishedMI;
-
-        return remainingMI <= 0.0;
+        return finishedMI >= getCloudletLength();
     }
 
     @Override
@@ -350,8 +357,8 @@ public abstract class CloudletAbstract implements Cloudlet {
     }
 
     @Override
-    public int getBrokerId() {
-        return broker.getId();
+    public DatacenterBroker getBroker() {
+        return broker;
     }
 
     @Override

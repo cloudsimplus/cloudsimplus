@@ -73,6 +73,7 @@ import org.cloudsimplus.heuristics.HeuristicSolution;
  * with the {@link DatacenterBrokerHeuristic} class.</p>
  *
  * @author Manoel Campos da Silva Filho
+ * @since CloudSim Plus 1.0
  */
 public class DatacenterBrokerHeuristicExample {
     private final CloudSim simulation;
@@ -123,7 +124,7 @@ public class DatacenterBrokerHeuristicExample {
         int numberOfCloudUsers = 1;
         boolean traceEvents = false;
 
-        simulation = new CloudSim(numberOfCloudUsers, traceEvents);
+        simulation = new CloudSim(traceEvents);
 
         Datacenter datacenter0 = createDatacenter();
 
@@ -133,7 +134,6 @@ public class DatacenterBrokerHeuristicExample {
         createAndSubmitCloudlets(broker0);
 
         simulation.start();
-        simulation.stop();
 
         List<Cloudlet> finishedCloudlets = broker0.getCloudletsFinishedList();
         new CloudletsTableBuilderHelper(finishedCloudlets).build();

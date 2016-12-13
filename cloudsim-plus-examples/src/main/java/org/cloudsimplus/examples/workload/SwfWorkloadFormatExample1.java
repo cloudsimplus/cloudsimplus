@@ -142,7 +142,7 @@ public class SwfWorkloadFormatExample1 {
         Calendar calendar = Calendar.getInstance(); // Calendar whose fields have been initialized with the current date and time.
         boolean trace_flag = false; // trace events
 
-        simulation = new CloudSim(num_user, trace_flag);
+        simulation = new CloudSim(trace_flag);
         try {
             broker = new DatacenterBrokerVmsWithMorePesFirst(simulation);
 
@@ -158,7 +158,6 @@ public class SwfWorkloadFormatExample1 {
             broker.submitCloudletList(cloudletList);
 
             simulation.start();
-            simulation.stop();
 
             List<Cloudlet> newList = broker.getCloudletsFinishedList();
             printCloudletList(newList);

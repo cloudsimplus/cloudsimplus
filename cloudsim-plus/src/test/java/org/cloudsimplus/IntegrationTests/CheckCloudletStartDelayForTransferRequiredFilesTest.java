@@ -87,7 +87,7 @@ public final class CheckCloudletStartDelayForTransferRequiredFilesTest {
     public void setUp() {
 		createStorage();
 
-        this.simulation = new  CloudSim(1);
+        this.simulation = new  CloudSim();
         utilizationModel = new UtilizationModelFull();
         scenario = new SimulationScenarioBuilder(simulation);
         scenario.getDatacenterBuilder()
@@ -147,7 +147,7 @@ public final class CheckCloudletStartDelayForTransferRequiredFilesTest {
 
 	@Test
     public void integrationTest() {
-        startSimulationAndWaitToStop();
+        simulation.start();
 		List<Cloudlet> cloudlets = broker.getCloudletsFinishedList();
 		/* The expected finish time considers the delay to transfer the Cloudlet
 		 * required files and the actual execution time.*/
@@ -163,11 +163,6 @@ public final class CheckCloudletStartDelayForTransferRequiredFilesTest {
 			assertEquals(String.format("Cloudlet %d", c.getId()), CLOUDLET_LENGTH, c.getCloudletLength(), 0.1);
 		}
 	    printCloudletsExecutionResults();
-    }
-
-    public void startSimulationAndWaitToStop() throws RuntimeException {
-        simulation.start();
-        simulation.stop();
     }
 
     public void printCloudletsExecutionResults() {

@@ -31,6 +31,7 @@ package org.cloudsimplus.listeners;
  * object.
  *
  * @author Manoel Campos da Silva Filho
+ * @since CloudSim Plus 1.0
  */
 public interface EventInfo {
     /**

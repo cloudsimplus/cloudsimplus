@@ -8,7 +8,6 @@
 package org.cloudbus.cloudsim.core;
 
 import org.cloudbus.cloudsim.core.events.SimEvent;
-import org.cloudbus.cloudsim.network.topologies.NetworkTopology;
 import org.cloudbus.cloudsim.util.Log;
 import org.cloudbus.cloudsim.core.predicates.Predicate;
 
@@ -22,6 +21,11 @@ import java.util.Objects;
  * @since CloudSim Toolkit 1.0
  */
 public abstract class CloudSimEntity implements SimEntity {
+    /**
+     * @see #isStarted()
+     */
+    private boolean started;
+
     /**
      * The CloudSim instance that represents the simulation the Entity is related to.
      */
@@ -51,15 +55,12 @@ public abstract class CloudSimEntity implements SimEntity {
      * @throws IllegalArgumentException when the entity name is invalid
      */
     public CloudSimEntity(Simulation simulation) {
-        if(Objects.isNull(simulation)){
-            simulation = Simulation.NULL;
-        }
-
-        this.simulation = simulation;
+        setSimulation(simulation);
         id = -1;
         state = State.RUNNABLE;
-        name = String.format("%s%d", getClass().getSimpleName(), simulation.getNumEntities());
-        simulation.addEntity(this);
+        name = String.format("%s%d", getClass().getSimpleName(), this.simulation.getNumEntities());
+        this.simulation.addEntity(this);
+        this.started = false;
     }
 
     /**
@@ -86,6 +87,24 @@ public abstract class CloudSimEntity implements SimEntity {
     }
 
     /**
+     * {@inheritDoc}.
+     * It performs general initialization tasks that are common for every entity
+     * and executes the specific entity startup code by calling {@link #startEntity()}.
+     *
+     * @see #startEntity()
+     */
+    @Override
+    public void start() {
+        startEntity();
+        this.setStarted(true);
+    }
+
+    /**
+     * Defines the logic to be performed by the entity when the simulation starts.
+     */
+    protected abstract void startEntity();
+
+    /**
      * Sends an event to another entity by id number, with data. Note that the
      * tag <code>9999</code> is reserved.
      *
@@ -95,7 +114,7 @@ public abstract class CloudSimEntity implements SimEntity {
      * @param data  The data to be sent with the event.
      */
     public void schedule(int dest, double delay, int tag, Object data) {
-        if (!simulation.running()) {
+        if (!simulation.isRunning()) {
             return;
         }
         simulation.send(id, dest, delay, tag, data);
@@ -195,7 +214,7 @@ public abstract class CloudSimEntity implements SimEntity {
      * @param data  The data to be sent with the event.
      */
     public void scheduleFirst(int dest, double delay, int tag, Object data) {
-        if (!simulation.running()) {
+        if (!simulation.isRunning()) {
             return;
         }
         simulation.sendFirst(id, dest, delay, tag, data);
@@ -297,10 +316,10 @@ public abstract class CloudSimEntity implements SimEntity {
         if (delay < 0) {
             throw new IllegalArgumentException("Negative delay supplied.");
         }
-        if (!simulation.running()) {
+        if (!simulation.isRunning()) {
             return;
         }
-        simulation.pause(id, delay);
+        simulation.pauseEntity(id, delay);
     }
 
     /**
@@ -331,7 +350,7 @@ public abstract class CloudSimEntity implements SimEntity {
      * @return the simulation event
      */
     public SimEvent selectEvent(Predicate p) {
-        if (!simulation.running()) {
+        if (!simulation.isRunning()) {
             return null;
         }
 
@@ -346,7 +365,7 @@ public abstract class CloudSimEntity implements SimEntity {
      * @return The number of events cancelled (0 or 1)
      */
     public SimEvent cancelEvent(Predicate p) {
-        if (!simulation.running()) {
+        if (!simulation.isRunning()) {
             return null;
         }
 
@@ -361,7 +380,7 @@ public abstract class CloudSimEntity implements SimEntity {
      * @return the simulation event
      */
     public SimEvent getNextEvent(Predicate p) {
-        if (!simulation.running()) {
+        if (!simulation.isRunning()) {
             return null;
         }
 
@@ -379,7 +398,7 @@ public abstract class CloudSimEntity implements SimEntity {
      * @param p The predicate to match
      */
     public void waitForEvent(Predicate p) {
-        if (!simulation.running()) {
+        if (!simulation.isRunning()) {
             return;
         }
 
@@ -440,6 +459,10 @@ public abstract class CloudSimEntity implements SimEntity {
 
     @Override
     public SimEntity setSimulation(Simulation simulation) {
+        if(Objects.isNull(simulation)){
+            simulation = Simulation.NULL;
+        }
+
         this.simulation = simulation;
         return this;
     }
@@ -688,4 +711,16 @@ public abstract class CloudSimEntity implements SimEntity {
         return getSimulation().getNetworkTopology().getDelay(src, dst);
     }
 
+    @Override
+    public boolean isStarted() {
+        return started;
+    }
+
+    /**
+     * Defines if the entity has already started or not.
+     * @param started
+     */
+    protected void setStarted(boolean started) {
+        this.started = started;
+    }
 }

@@ -43,7 +43,9 @@ import org.cloudbus.cloudsim.vms.Vm;
  * @author Manoel Campos da Silva Filho
  * @param <T> The class of the object containing information to be given to the
  * listener when the expected event happens.
+ * @since CloudSim Plus 1.0
  */
+@FunctionalInterface
 public interface EventListener<T extends EventInfo> {
 
     /**

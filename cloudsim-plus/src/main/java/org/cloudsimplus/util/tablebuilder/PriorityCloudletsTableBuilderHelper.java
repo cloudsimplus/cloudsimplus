@@ -29,6 +29,7 @@ import java.util.List;
  * A helper class to print cloudlets results as a table, including the Cloudlet priority value.
  *
  * @author Manoel Campos da Silva Filho
+ * @since CloudSim Plus 1.0
  */
 public class PriorityCloudletsTableBuilderHelper extends CloudletsTableBuilderHelper {
     public PriorityCloudletsTableBuilderHelper(List<? extends Cloudlet> list) {

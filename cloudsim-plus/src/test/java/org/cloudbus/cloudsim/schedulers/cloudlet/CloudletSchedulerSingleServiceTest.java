@@ -8,7 +8,6 @@
 package org.cloudbus.cloudsim.schedulers.cloudlet;
 
 import org.cloudbus.cloudsim.cloudlets.Cloudlet;
-import org.cloudbus.cloudsim.schedulers.cloudlet.CloudletSchedulerDynamicWorkload;
 import org.cloudbus.cloudsim.utilizationmodels.UtilizationModelStochastic;
 import org.cloudbus.cloudsim.utilizationmodels.UtilizationModel;
 import static org.easymock.EasyMock.expect;
@@ -160,7 +159,7 @@ public class CloudletSchedulerSingleServiceTest {
 
         assertEquals(CloudletSimple.Status.SUCCESS.ordinal(), cloudletScheduler.getCloudletStatus(0));
         assertTrue(cloudletScheduler.hasFinishedCloudlets());
-        assertSame(cloudlet, cloudletScheduler.getNextFinishedCloudlet());
+        assertSame(cloudlet, cloudletScheduler.removeNextFinishedCloudlet());
     }
 
     @Test

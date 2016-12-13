@@ -143,7 +143,7 @@ public abstract class CloudletSchedulerAbstract implements CloudletScheduler {
      * @return the cloudlet execution list
      * @see #addCloudletToExecList(CloudletExecutionInfo)
      * @see
-     * #removeCloudletFromExecListAndSetFinishTime(CloudletExecutionInfo)
+     * #removeCloudletFromExecListAndAddToFinishedList(CloudletExecutionInfo)
      */
     protected List<CloudletExecutionInfo> getCloudletExecList() {
         return cloudletExecList;
@@ -270,7 +270,7 @@ public abstract class CloudletSchedulerAbstract implements CloudletScheduler {
     }
 
     @Override
-    public Cloudlet getNextFinishedCloudlet() {
+    public Cloudlet removeNextFinishedCloudlet() {
         if (getCloudletFinishedList().isEmpty()) {
             return Cloudlet.NULL;
         }
@@ -290,7 +290,7 @@ public abstract class CloudletSchedulerAbstract implements CloudletScheduler {
     @Override
     public Cloudlet getCloudletToMigrate() {
         Function<CloudletExecutionInfo, Cloudlet> finishMigratingCloudlet = rcl -> {
-            removeCloudletFromExecListAndSetFinishTime(rcl);
+            removeCloudletFromExecListAndAddToFinishedList(rcl);
             rcl.finalizeCloudlet();
             return rcl.getCloudlet();
         };
@@ -403,22 +403,22 @@ public abstract class CloudletSchedulerAbstract implements CloudletScheduler {
     /**
      * Changes the status of a given cloudlet.
      *
-     * @param cloudlet
-     * @param currentStatus
-     * @param statusToSet
+     * @param cloudlet Cloudlet to set its status
+     * @param currentStatus the current cloudlet status
+     * @param newStatus the new status to set
      *
      * @todo @author manoelcampos The parameter currentStatus only exists
      * because apparently, the cloudlet status is not being accordingly changed
      * along the simulation run.
      */
-    private void changeStatusOfCloudlet(CloudletExecutionInfo cloudlet, Status currentStatus, Status statusToSet) {
+    private void changeStatusOfCloudlet(CloudletExecutionInfo cloudlet, Status currentStatus, Status newStatus) {
         if ((currentStatus == Status.INEXEC || currentStatus == Status.READY) && cloudlet.getCloudlet().isFinished()) {
             cloudletFinish(cloudlet);
         } else {
-            cloudlet.setCloudletStatus(statusToSet);
+            cloudlet.setCloudletStatus(newStatus);
         }
 
-        switch (statusToSet) {
+        switch (newStatus) {
             case PAUSED:
                 getCloudletPausedList().add(cloudlet);
                 break;
@@ -462,7 +462,7 @@ public abstract class CloudletSchedulerAbstract implements CloudletScheduler {
         }
 
         updateCloudletsProcessing(currentTime);
-        removeFinishedCloudletsFromExecutionList();
+        removeFinishedCloudletsFromExecutionListAndAddToFinishedList();
         moveNextCloudletsFromWaitingToExecList();
 
         double nextEvent = getEstimatedFinishTimeOfSoonerFinishingCloudlet(currentTime);
@@ -591,32 +591,27 @@ public abstract class CloudletSchedulerAbstract implements CloudletScheduler {
 
     /**
      * Removes finished cloudlets from the
-     * {@link #getCloudletExecList() list of cloudlets to execute}.
+     * {@link #getCloudletExecList() list of cloudlets to execute}
+     * and adds them to finished list.
      *
      * @return the number of finished cloudlets removed from the
      * {@link #getCloudletExecList() execution list}
      */
-    protected int removeFinishedCloudletsFromExecutionList() {
+    protected int removeFinishedCloudletsFromExecutionListAndAddToFinishedList() {
         List<CloudletExecutionInfo> finishedCloudlets
                 = getCloudletExecList().stream()
                 .filter(c -> c.getCloudlet().isFinished())
                 .collect(Collectors.toList());
 
         for (CloudletExecutionInfo c : finishedCloudlets) {
-            removeCloudletFromExecListAndSetFinishTime(c);
+            removeCloudletFromExecListAndAddToFinishedList(c);
         }
 
         return finishedCloudlets.size();
     }
 
-    /**
-     * Removes a Cloudlet from the list of cloudlets in execution and sets its
-     * finish time.
-     *
-     * @param cloudlet the Cloudlet to be removed
-     */
-    protected void removeCloudletFromExecListAndSetFinishTime(CloudletExecutionInfo cloudlet) {
-        setCloudletFinishTime(cloudlet);
+    protected void removeCloudletFromExecListAndAddToFinishedList(CloudletExecutionInfo cloudlet) {
+        setCloudletFinishTimeAndAddToFinishedList(cloudlet);
         removeCloudletFromExecList(cloudlet);
     }
 
@@ -633,13 +628,13 @@ public abstract class CloudletSchedulerAbstract implements CloudletScheduler {
     }
 
     /**
-     * Sets the finish time of a cloudlet.
+     * Sets the finish time of a cloudlet and adds it to the
+     * finished list.
      *
      * @param rcl the cloudlet to set the finish time
      */
-    protected void setCloudletFinishTime(CloudletExecutionInfo rcl) {
+    protected void setCloudletFinishTimeAndAddToFinishedList(CloudletExecutionInfo rcl) {
         final double clock = getVm().getSimulation().clock();
-        //Log.println(Log.Level.INFO, getClass(), clock, "Start Time: %f Transfer Time: %f", rcl.getExecStartTime(), rcl.getFileTransferTime());
         rcl.setFinishTime(clock);
         cloudletFinish(rcl);
     }
@@ -712,7 +707,7 @@ public abstract class CloudletSchedulerAbstract implements CloudletScheduler {
     }
 
     /**
-     * Checks if the amount of PEs required by a given Cloudlet is free to used.
+     * Checks if the amount of PEs required by a given Cloudlet is free to use.
      *
      * @param c the Cloudlet to get the number of required PEs
      * @return true if there is the amount of free PEs, false otherwise

@@ -135,7 +135,7 @@ public class VmListenersExample3_DynamicVmCreation {
      */
     public VmListenersExample3_DynamicVmCreation() {
         int numberOfUsers = 1; // number of cloud users/customers (brokers)
-        simulation = new CloudSim(numberOfUsers);
+        simulation = new CloudSim();
 
         this.hostList = new ArrayList<>();
         this.brokerList = new ArrayList<>();
@@ -194,7 +194,6 @@ public class VmListenersExample3_DynamicVmCreation {
 
     private void runSimulationAndPrintResults() {
         simulation.start();
-        simulation.stop();
 
         List<Cloudlet> cloudlets;
         String title;

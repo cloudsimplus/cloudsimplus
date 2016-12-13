@@ -62,6 +62,7 @@ import org.cloudbus.cloudsim.resources.Ram;
  * performance.
  *
  * @author Manoel Campos da Silva Filho
+ * @since CloudSim Plus 1.0
  */
 public class HostsCpuUsageExample {
     private static List<Cloudlet> cloudletList;
@@ -79,10 +80,8 @@ public class HostsCpuUsageExample {
         // First step: Initialize the CloudSim package. It should be called
         // before creating any entities.
         int num_user = 1;   // number of cloud users
-        boolean trace_flag = false;  // mean trace events
-
         // Initialize the CloudSim library
-        simulation = new CloudSim(num_user, trace_flag);
+        simulation = new CloudSim();
 
         // Second step: Create Datacenters
         //Datacenters are the resource providers in CloudSim. We need at list one of them to run a CloudSim simulation
@@ -161,8 +160,6 @@ public class HostsCpuUsageExample {
 
         // Sixth step: Starts the simulation
         final double finishTime = simulation.start();
-
-        simulation.stop();
 
         // Final step: Print results when simulation is over
         List<Cloudlet> newList = broker.getCloudletsFinishedList();

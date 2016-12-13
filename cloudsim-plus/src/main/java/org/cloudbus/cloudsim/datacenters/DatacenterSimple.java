@@ -388,7 +388,7 @@ public class DatacenterSimple extends CloudSimEntity implements Datacenter {
             try {
                 Cloudlet cl = (Cloudlet) ev.getData();
                 cloudletId = cl.getId();
-                userId = cl.getBrokerId();
+                userId = cl.getBroker().getId();
 
                 status = getCloudletStatus(vmId, userId, cloudletId);
             } catch (Exception e) {
@@ -589,7 +589,7 @@ public class DatacenterSimple extends CloudSimEntity implements Datacenter {
             try {
                 Cloudlet cl = (Cloudlet) ev.getData();
                 cloudletId = cl.getId();
-                userId = cl.getBrokerId();
+                userId = cl.getBroker().getId();
                 vmId = cl.getVm().getId();
             } catch (Exception e) {
                 Log.printConcatLine(super.getName(), ": Error in processing Cloudlet");
@@ -657,8 +657,8 @@ public class DatacenterSimple extends CloudSimEntity implements Datacenter {
                 data[0] = getId();
                 data[1] = cloudletId;
                 data[2] = 0;
-                sendNow(cl.getBrokerId(), CloudSimTags.CLOUDLET_SUBMIT_ACK, data);
-                sendNow(cl.getBrokerId(), CloudSimTags.CLOUDLET_RETURN, cl);
+                sendNow(cl.getBroker().getId(), CloudSimTags.CLOUDLET_SUBMIT_ACK, data);
+                sendNow(cl.getBroker().getId(), CloudSimTags.CLOUDLET_RETURN, cl);
             }
 
             // prepare cloudlet for migration
@@ -691,7 +691,7 @@ public class DatacenterSimple extends CloudSimEntity implements Datacenter {
             } else {
                 data[2] = 1;
             }
-            sendNow(cl.getBrokerId(), CloudSimTags.CLOUDLET_SUBMIT_ACK, data);
+            sendNow(cl.getBroker().getId(), CloudSimTags.CLOUDLET_SUBMIT_ACK, data);
         }
     }
 
@@ -770,7 +770,7 @@ public class DatacenterSimple extends CloudSimEntity implements Datacenter {
             return false;
         }
 
-        String name = getSimulation().getEntityName(cl.getBrokerId());
+        String name = getSimulation().getEntityName(cl.getBroker().getId());
         Log.printConcatLine(
                 getName(), ": Warning - Cloudlet #", cl.getId(), " owned by ", name,
                 " is already completed/finished.");
@@ -786,7 +786,7 @@ public class DatacenterSimple extends CloudSimEntity implements Datacenter {
         */
         sendCloudletSubmitAckToBroker(ack, cl,  CloudSimTags.FALSE);
 
-        sendNow(cl.getBrokerId(), CloudSimTags.CLOUDLET_RETURN, cl);
+        sendNow(cl.getBroker().getId(), CloudSimTags.CLOUDLET_RETURN, cl);
         return true;
     }
 
@@ -815,7 +815,7 @@ public class DatacenterSimple extends CloudSimEntity implements Datacenter {
         data[1] = cl.getId();
         data[2] = cloudletCreated;
 
-        sendNow(cl.getBrokerId(), CloudSimTags.CLOUDLET_SUBMIT_ACK, data);
+        sendNow(cl.getBroker().getId(), CloudSimTags.CLOUDLET_SUBMIT_ACK, data);
     }
     /**
      * Predict the total time to transfer a list of files.
@@ -935,7 +935,7 @@ public class DatacenterSimple extends CloudSimEntity implements Datacenter {
         if (!isTimeToUpdateCloudletsProcessing())
             return;
 
-        double delay = delayToUpdateCloudletProcessing();
+        double delay = updateVmsProcessingOfAllHosts();
         if (delay != Double.MAX_VALUE) {
             schedule(getId(), delay, CloudSimTags.VM_UPDATE_CLOUDLET_PROCESSING_EVENT);
         }
@@ -951,13 +951,12 @@ public class DatacenterSimple extends CloudSimEntity implements Datacenter {
     }
 
     /**
-     * Gets the time that one next cloudlet will finish executing on the list of
-     * switches's hosts.
+     * Updates the processing of VMs of all active hosts.
      *
-     * @return the time that one next cloudlet will finish executing or
-     * {@link Double#MAX_VALUE} if there isn't any cloudlet running.
+     * @return the time to wait before updating the processing of running cloudlets or
+     * {@link Double#MAX_VALUE} if there isn't any cloudlet running anymore.
      */
-    protected double completionTimeOfNextFinishingCloudlet() {
+    protected double updateVmsProcessingOfAllHosts() {
         List<? extends Host> list = getVmAllocationPolicy().getHostList();
         double completionTimeOfNextFinishingCloudlet = Double.MAX_VALUE;
         for (Host host : list) {
@@ -967,31 +966,19 @@ public class DatacenterSimple extends CloudSimEntity implements Datacenter {
             completionTimeOfNextFinishingCloudlet = Math.min(time, completionTimeOfNextFinishingCloudlet);
         }
 
-        // gurantees a minimal interval before scheduling the event
-        if (completionTimeOfNextFinishingCloudlet < getSimulation().clock()+getSimulation().getMinTimeBetweenEvents()+0.01) {
-            completionTimeOfNextFinishingCloudlet = getSimulation().clock()+getSimulation().getMinTimeBetweenEvents()+0.01;
+        // Guarantees a minimal interval before scheduling the event
+        final double minTimeBetweenEvents = getSimulation().clock()+getSimulation().getMinTimeBetweenEvents()+0.01;
+        if (completionTimeOfNextFinishingCloudlet < minTimeBetweenEvents) {
+            completionTimeOfNextFinishingCloudlet = minTimeBetweenEvents;
         }
-        return completionTimeOfNextFinishingCloudlet;
-    }
 
-    /**
-     * Gets the time to wait before updating the processing of running
-     * cloudlets.
-     *
-     * @return the cloudlet's processing delay or {@link Double#MAX_VALUE} if
-     * there isn't any cloudlet running.
-     *
-     * @see #updateCloudletProcessing()
-     */
-    protected double delayToUpdateCloudletProcessing() {
-        double completionTimeOfNextFinishingCloudlet = completionTimeOfNextFinishingCloudlet();
         if (completionTimeOfNextFinishingCloudlet == Double.MAX_VALUE) {
             return completionTimeOfNextFinishingCloudlet;
         }
 
         return getSchedulingInterval() > 0
-                ? getSchedulingInterval()
-                : completionTimeOfNextFinishingCloudlet - getSimulation().clock();
+            ? getSchedulingInterval()
+            : completionTimeOfNextFinishingCloudlet - getSimulation().clock();
     }
 
     /**
@@ -1012,9 +999,9 @@ public class DatacenterSimple extends CloudSimEntity implements Datacenter {
 
     public void checkCloudletsCompletionForGivenVm(Vm vm) {
         while (vm.getCloudletScheduler().hasFinishedCloudlets()) {
-            Cloudlet cl = vm.getCloudletScheduler().getNextFinishedCloudlet();
+            Cloudlet cl = vm.getCloudletScheduler().removeNextFinishedCloudlet();
             if (cl != Cloudlet.NULL) {
-                sendNow(cl.getBrokerId(), CloudSimTags.CLOUDLET_RETURN, cl);
+                sendNow(cl.getBroker().getId(), CloudSimTags.CLOUDLET_RETURN, cl);
             }
         }
     }
@@ -1105,7 +1092,7 @@ public class DatacenterSimple extends CloudSimEntity implements Datacenter {
     }
 
     @Override
-    public void startEntity() {
+    protected void startEntity() {
         Log.printConcatLine(getName(), " is starting...");
         // this resource should register to regional CIS.
         // However, if not specified, then register to system CIS (the
@@ -1249,12 +1236,7 @@ public class DatacenterSimple extends CloudSimEntity implements Datacenter {
         return schedulingInterval;
     }
 
-    /**
-     * Sets the scheduling delay to process each event received by the
-     * switches (in seconds).
-     *
-     * @param schedulingInterval the new scheduling interval
-     */
+    @Override
     public final Datacenter setSchedulingInterval(double schedulingInterval) {
         this.schedulingInterval = schedulingInterval;
         return this;

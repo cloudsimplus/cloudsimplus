@@ -248,7 +248,7 @@ public final class ExampleMetricsWithoutNetwork {
     public ExampleMetricsWithoutNetwork() throws FileNotFoundException {
         //  Initialize the CloudSim package.
         int num_user = 1; // number of cloud users
-        cloudsim = new CloudSim(num_user);
+        cloudsim = new CloudSim();
 
         //Create Datacenters
         Datacenter datacenter0 = createDatacenter();
@@ -277,7 +277,6 @@ public final class ExampleMetricsWithoutNetwork {
          }
          }
          totalCostPrice(vmlist);*/
-        cloudsim.stop();
 
         System.out.println("______________________________________________________");
         System.out.println("\n\t\t - System Métrics - \n ");
@@ -318,8 +317,6 @@ public final class ExampleMetricsWithoutNetwork {
 
     /**
      * Creates the DATACENTER.
-     *
-     * @param name the name
      *
      * @return the switches
      */

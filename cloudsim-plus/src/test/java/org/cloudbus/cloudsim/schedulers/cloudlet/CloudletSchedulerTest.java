@@ -1,7 +1,6 @@
 package org.cloudbus.cloudsim.schedulers.cloudlet;
 
 import org.cloudbus.cloudsim.cloudlets.Cloudlet;
-import org.cloudbus.cloudsim.schedulers.cloudlet.CloudletScheduler;
 import org.junit.Test;
 import static org.junit.Assert.*;
 
@@ -29,7 +28,7 @@ public class CloudletSchedulerTest {
         assertTrue(instance.getCurrentRequestedMips().isEmpty());
         assertEquals(0, instance.getCurrentRequestedUtilizationOfBw(), 0);
         assertEquals(0, instance.getCurrentRequestedUtilizationOfRam(), 0);
-        assertEquals(Cloudlet.NULL, instance.getNextFinishedCloudlet());
+        assertEquals(Cloudlet.NULL, instance.removeNextFinishedCloudlet());
         assertEquals(0, instance.getPreviousTime(), 0);
         assertEquals(0, instance.getTotalCurrentAllocatedMipsForCloudlet(null, 0), 0);
         assertEquals(0, instance.getTotalCurrentAvailableMipsForCloudlet(null, null), 0);

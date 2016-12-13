@@ -29,6 +29,7 @@ import org.cloudbus.cloudsim.hosts.Host;
  * about events of a given {@link Host}.
  *
  * @author Manoel Campos da Silva Filho
+ * @since CloudSim Plus 1.0
  */
 public interface HostEventInfo extends EventInfo {
 

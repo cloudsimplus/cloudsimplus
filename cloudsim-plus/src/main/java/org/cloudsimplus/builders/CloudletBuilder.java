@@ -38,6 +38,7 @@ import org.cloudsimplus.listeners.VmToCloudletEventInfo;
  * A Builder class to create {@link Cloudlet} objects.
  *
  * @author Manoel Campos da Silva Filho
+ * @since CloudSim Plus 1.0
  */
 public class CloudletBuilder extends Builder {
     private long length = 10000;

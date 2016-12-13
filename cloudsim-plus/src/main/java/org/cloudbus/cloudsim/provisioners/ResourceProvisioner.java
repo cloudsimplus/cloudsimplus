@@ -16,6 +16,7 @@ import org.cloudbus.cloudsim.vms.Vm;
  *
  * Each host has to have its own instance of a ResourceProvisioner for each
  * resource it owns, such as RAM, Bandwidth (BW) and CPU.
+ *
  * @author Rodrigo N. Calheiros
  * @author Anton Beloglazov
  * @author Manoel Campos da Silva Filho

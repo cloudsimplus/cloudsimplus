@@ -52,7 +52,7 @@ public class NonPowerAware {
 		Log.printLine("Starting " + experimentName);
 
 		try {
-            simulation = new CloudSim(1);
+            simulation = new CloudSim();
 
 			DatacenterBroker broker = Helper.createBroker(simulation);
 
@@ -75,8 +75,6 @@ public class NonPowerAware {
 
 			List<Cloudlet> newList = broker.getCloudletsFinishedList();
 			Log.printLine("Received " + newList.size() + " cloudlets");
-
-			simulation.stop();
 
 			Helper.printResults(
 					datacenter,

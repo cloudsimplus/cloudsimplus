@@ -35,6 +35,7 @@ import org.cloudbus.cloudsim.schedulers.cloudlet.CloudletSchedulerSpaceShared;
  * cloudlets on it.
  *
  * @author Manoel Campos da Silva Filho
+ * @since CloudSim Plus 1.0
  */
 public class CloudSimExample0 {
     private final CloudSim simulation;
@@ -53,7 +54,7 @@ public class CloudSimExample0 {
     }
 
     /**
-     * Default constructor where the simulation is built.
+     * Default constructor that builds the simulation.
      */
     public CloudSimExample0() {
         Log.printLine("Starting Minimal Example ...");
@@ -63,7 +64,7 @@ public class CloudSimExample0 {
         int numberOfCloudUsers = 1;
         boolean traceEvents = false;
 
-        this.simulation = new CloudSim(numberOfCloudUsers, traceEvents);
+        this.simulation = new CloudSim(traceEvents);
 
         Datacenter datacenter0 = createDatacenter();
 
@@ -82,11 +83,8 @@ public class CloudSimExample0 {
         this.cloudletList.add(cloudlet1);
         broker0.submitCloudletList(cloudletList);
 
-        /*Starts the simulation and waits all cloudlets to be executed*/
+        /* Starts the simulation and waits all cloudlets to be executed. */
         simulation.start();
-
-        //Finishes the simulation
-        simulation.stop();
 
         /*Prints results when the simulation is over
         (you can use your own code here to print what you want from this cloudlet list)*/

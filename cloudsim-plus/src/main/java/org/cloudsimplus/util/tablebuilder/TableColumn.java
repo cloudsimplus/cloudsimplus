@@ -24,8 +24,9 @@ package org.cloudsimplus.util.tablebuilder;
 /**
  * An interface that represents a column of a table generated
  * using a {@link TableBuilder}.
- * 
+ *
  * @author Manoel Campos da Silva Filho
+ * @since CloudSim Plus 1.0
  */
 public interface TableColumn {
 
@@ -82,12 +83,12 @@ public interface TableColumn {
     TableColumn setTable(TableBuilder table);
 
     TableColumn setTitle(String title);
-    
+
     /**
      * @return The string used to separate one column from another (optional).
      */
     String getColumnSeparator();
-    
+
     TableColumn setColumnSeparator(String columnSeparator);
-    
+
 }

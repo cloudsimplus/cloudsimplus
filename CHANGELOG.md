@@ -4,11 +4,27 @@ Lists the main changes in the project.
 
 ## [Current Development Version]
 
-- Included the example [/cloudsim-plus-examples/src/main/java/org/cloudsimplus/examples/ParallelSimulationsExample.java]
+## [v0.8-beta.8] - 2016-12-12
+
+### Added
+- Enabled dynamic creation of VMs and Cloudlets without requiring creation of Datacenter Brokers at runtime, enabling VMs to be created on-demand according to arrived cloudlets.
+  During simulation execution, new VMs and Cloudlets can be submitted using the methods `submitVmList` and `submitCloudletList` that they will be dynamically created. See the [DynamicCreationOfVmsAndCloudlets.java](cloudsim-plus-examples/src/main/java/org/cloudsimplus/examples/DynamicCreationOfVmsAndCloudlets.java) example for more details.
+- Enabled the complete navigation from Cloudlet up to the Datacenter. Now it is possible to call `cloudlet.getVm().getHost().getDatacenter()` and navigate between all the relationships that were introduced in CloudSim Plus for such classes. And it is totally safe to make such a call, even before starting the simulation, that you will not get a `NullPointerException`. In case you make such a call before the simulation starts, as any allocation of Cloudlet or VMs was made, you will get default objects that follow the Null - Included the example [/cloudsim-plus-examples/src/main/java/org/cloudsimplus/examples/ParallelSimulationsExample.java]
   that shows how to use Java 8 Parallel Streams to execute mutiple simulations scenarios in parallel.
+Object Design Pattern, namely `Vm.NULL` for `getVm()`, `Host.NULL` for `getHost()` and `Datacenter.NULL` for `getDatacenter()`.
+- Included examples that show how to [schedule the simulation termination at a given time](cloudsim-plus-examples/src/main/java/org/cloudsimplus/examples/TerminateSimulationAtGivenTime.java), how to terminate it [when a specific condition is met](cloudsim-plus-examples/src/main/java/org/cloudsimplus/examples/TerminateSimulationAtGivenCondition.java) and how to [schedule a simulation pause at an specific time, before the simulation has started, and collect partial results](cloudsim-plus-examples/src/main/java/org/cloudsimplus/examples/PauseSimulationAtGivenTime1.java) and [at a given time, after the simulation has started](cloudsim-plus-examples/src/main/java/org/cloudsimplus/examples/PauseSimulationAtGivenTime2.java).
+
+### Changed
 - Changed requirement of cloudsim-plus-examples to Java 8 in order to start providing more advanced examples using Java 8 Lambda Expressions and Streams API.
   Existing examples were not changed and run as before in Java 7.
-- Enabled the complete navigation from Cloudlet up to the Datacenter. Now it is possible to call `cloudlet.getVm().getHost().getDatacenter()` and navigate between all the relationships that were introduced in CloudSim Plus for such classes. And it is totally safe to make such a call, even before starting the simulation, that you will not get a `NullPointerException`. In case you make such a call before the simulation starts, as any allocation of Cloudlet or VMs was made, you will get default objects that follow the Null Object Design Pattern, namely `Vm.NULL` for `getVm()`, `Host.NULL` for `getHost()` and `Datacenter.NULL` for `getDatacenter()`.
+- Renamed method in Simulation interface: `pause(int src, double delay)` to `Simulation.pauseEntity(int src, double delay)`;
+  `hold(int src, long delay)` to `holdEntity(int src, long delay)` and `running()` to `isRunning()`.
+
+### Removed
+- Removed the `numUsers` parameter, that represents the number of created DatacenterBrokers, from CloudSim constructor. Now when a Broker is created, it automatically 
+  increases the `numberOfUsers` attribute in the given CloudSim instance. This automatically makes possible to create brokers dynamically (during simulation execution) without worring about such an attribute. Usually, dynamic creation of brokers was performed to allow dynamic submission of VMs and Cloudlets during simulation execution. However, as currently the `submitVmList` and `submitCloudletList` methods in DatacenterBroker implementations in CloudSim Plus allow submission of Cloudlets and VMs even after the simulation has started, it is not a requirement anymore to create a new broker just to perform such tasks. 
+- Removed the `Simulation.stop()` method because it in fact was doing nothing. When the Simulation.start() is called, it already waits for the simulation to
+  finish executing and automatically stops when there is not more events to process.
 
 ## [v0.8-beta.7] - 2016-11-29
 

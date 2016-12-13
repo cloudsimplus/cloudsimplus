@@ -64,7 +64,7 @@ public final class CloudletSchedulerTimeSharedWithMoreCloudletsThanPEs {
 
     @Before
     public void setUp() {
-        simulation = new CloudSim(1);
+        simulation = new CloudSim();
         utilizationModel = new UtilizationModelFull();
         scenario = new SimulationScenarioBuilder(simulation);
         scenario.getDatacenterBuilder().setSchedulingInterval(2).createDatacenter(
@@ -94,7 +94,7 @@ public final class CloudletSchedulerTimeSharedWithMoreCloudletsThanPEs {
 
     @Test
     public void integrationTest() {
-        startSimulationAndWaitToStop();
+        simulation.start();
         printCloudletsExecutionResults(broker);
 
         final double time = 20;
@@ -109,11 +109,6 @@ public final class CloudletSchedulerTimeSharedWithMoreCloudletsThanPEs {
                 c.getId(), time),
                 time, c.getActualCPUTime(), 0.2);
         }
-    }
-
-    public void startSimulationAndWaitToStop() throws RuntimeException, NullPointerException {
-        simulation.start();
-        simulation.stop();
     }
 
     public void printCloudletsExecutionResults(DatacenterBroker broker) {

@@ -112,7 +112,7 @@ public class VmListenersExample1 {
      */
     public VmListenersExample1() {
         int numberOfUsers = 1; // number of cloud users/customers (brokers)
-        simulation = new CloudSim(numberOfUsers);
+        simulation = new CloudSim();
 
         this.hostList = new ArrayList<>();
         this.vmList = new ArrayList<>();
@@ -128,7 +128,6 @@ public class VmListenersExample1 {
 
     private void runSimulationAndPrintResults() {
         simulation.start();
-        simulation.stop();
 
         List<Cloudlet> finishedCloudlets = broker.getCloudletsFinishedList();
         new CloudletsTableBuilderHelper(finishedCloudlets).build();

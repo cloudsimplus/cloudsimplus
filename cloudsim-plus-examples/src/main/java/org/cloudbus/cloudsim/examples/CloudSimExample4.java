@@ -56,11 +56,9 @@ public class CloudSimExample4 {
         try {
             // First step: Initialize the CloudSim package. It should be called
             // before creating any entities.
-            int num_user = 1;   // number of cloud users
-            boolean trace_flag = false;  // mean trace events
 
-            // Initialize the GridSim library
-            simulation = new CloudSim(num_user, trace_flag);
+            // Initialize the CloudSim library
+            simulation = new CloudSim();
 
             // Second step: Create Datacenters
             //Datacenters are the resource providers in CloudSim. We need at list one of them to run a CloudSim simulation
@@ -71,7 +69,6 @@ public class CloudSimExample4 {
 
             //Third step: Create Broker
             DatacenterBroker broker = createBroker();
-            int brokerId = broker.getId();
 
             //Fourth step: Create one virtual machine
             vmlist = new ArrayList<>();
@@ -106,24 +103,23 @@ public class CloudSimExample4 {
             cloudletList = new ArrayList<>();
 
             //Cloudlet properties
-            int id = -1;
+            int cloudletId = -1;
             long length = 40000;
             long fileSize = 300;
             long outputSize = 300;
             UtilizationModel utilizationModel = new UtilizationModelFull();
 
-            Cloudlet cloudlet1 = new CloudletSimple(++id, length, pesNumber)
+            Cloudlet cloudlet1 = new CloudletSimple(++cloudletId, length, pesNumber)
                 .setCloudletFileSize(fileSize)
                 .setCloudletOutputSize(outputSize)
                 .setUtilizationModel(utilizationModel)
                 .setBroker(broker);
 
-            Cloudlet cloudlet2 = new CloudletSimple(++id, length, pesNumber)
+            Cloudlet cloudlet2 = new CloudletSimple(++cloudletId, length, pesNumber)
                 .setCloudletFileSize(fileSize)
                 .setCloudletOutputSize(outputSize)
                 .setUtilizationModel(utilizationModel)
-                .setBroker(broker)
-                .setVm(vm2);
+                .setBroker(broker);
 
             //add the cloudlets to the list
             cloudletList.add(cloudlet1);
@@ -142,9 +138,6 @@ public class CloudSimExample4 {
 
             // Final step: Print results when simulation is over
             List<Cloudlet> newList = broker.getCloudletsFinishedList();
-
-            simulation.stop();
-
             new CloudletsTableBuilderHelper(newList).build();
             Log.printFormattedLine("%s finished!", CloudSimExample4.class.getSimpleName());
         } catch (RuntimeException e) {
@@ -153,7 +146,6 @@ public class CloudSimExample4 {
     }
 
     private static DatacenterSimple createDatacenter() {
-
         // Here are the steps needed to create a DatacenterSimple:
         // 1. We need to create a list to store
         //    our machine
@@ -164,7 +156,6 @@ public class CloudSimExample4 {
         List<Pe> peList = new ArrayList<>();
 
         int mips = 1000;
-
         // 3. Create PEs and add these into a list.
         peList.add(new PeSimple(0, new PeProvisionerSimple(mips))); // need to store Pe id and MIPS Rating
 

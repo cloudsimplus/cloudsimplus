@@ -36,6 +36,7 @@ import org.cloudbus.cloudsim.vms.Vm;
  * @see Cloudlet#getOnCloudletFinishEventListener()
  * @author Manoel Campos da Silva Filho
  * @todo Such classes should be defined as a FunctionalInterface
+ * @since CloudSim Plus 1.0
  */
 public class VmToCloudletEventInfo extends CloudletEventInfoSimple implements  VmEventInfo {
     private Vm vm;

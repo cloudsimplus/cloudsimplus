@@ -40,6 +40,7 @@ import org.cloudbus.cloudsim.vms.Vm;
  * @see Vm#getOnHostDeallocationListener()
  * @see Vm#getOnUpdateVmProcessingListener()
  * @author Manoel Campos da Silva Filho
+ * @since CloudSim Plus 1.0
  */
 public class HostToVmEventInfo extends VmEventInfoSimple implements HostEventInfo {
     private Host host;

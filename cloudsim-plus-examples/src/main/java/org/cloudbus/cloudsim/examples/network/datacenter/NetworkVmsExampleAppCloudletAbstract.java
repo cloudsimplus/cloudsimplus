@@ -95,7 +95,7 @@ public abstract class NetworkVmsExampleAppCloudletAbstract {
         Calendar calendar = Calendar.getInstance();
         boolean trace_flag = false;
 
-        simulation = new CloudSim(num_user, trace_flag);
+        simulation = new CloudSim(trace_flag);
 
         this.datacenter = createDatacenter();
         this.brokerList = createBrokerForEachAppCloudlet();
@@ -110,7 +110,6 @@ public abstract class NetworkVmsExampleAppCloudletAbstract {
         }
 
         simulation.start();
-        simulation.stop();
 
         showSimulationResults();
     }

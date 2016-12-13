@@ -148,7 +148,7 @@ public class MigrationExample1 {
 
         int num_user = 2;   // number of cloud users
         boolean trace_flag = false;  // mean trace events
-        simulation = new CloudSim(num_user, trace_flag);
+        simulation = new CloudSim(trace_flag);
 
         @SuppressWarnings("unused")
         Datacenter datacenter0 = createDatacenter();
@@ -159,7 +159,6 @@ public class MigrationExample1 {
         createAndSubmitCloudlets(broker);
 
         simulation.start();
-        simulation.stop();
 
         new CloudletsTableBuilderHelper(broker.getCloudletsFinishedList()).build();
 
