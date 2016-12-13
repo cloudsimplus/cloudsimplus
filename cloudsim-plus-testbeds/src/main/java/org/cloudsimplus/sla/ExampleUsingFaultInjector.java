@@ -1,23 +1,26 @@
 /**
- * CloudSim Plus: A highly-extensible and easier-to-use Framework for Modeling and Simulation of Cloud Computing Infrastructures and Services.
+ * CloudSim Plus: A highly-extensible and easier-to-use Framework for Modeling
+ * and Simulation of Cloud Computing Infrastructures and Services.
  * http://cloudsimplus.org
  *
- *     Copyright (C) 2015-2016  Universidade da Beira Interior (UBI, Portugal) and the Instituto Federal de Educação Ciência e Tecnologia do Tocantins (IFTO, Brazil).
+ * Copyright (C) 2015-2016 Universidade da Beira Interior (UBI, Portugal) and
+ * the Instituto Federal de Educação Ciência e Tecnologia do Tocantins (IFTO,
+ * Brazil).
  *
- *     This file is part of CloudSim Plus.
+ * This file is part of CloudSim Plus.
  *
- *     CloudSim Plus is free software: you can redistribute it and/or modify
- *     it under the terms of the GNU General Public License as published by
- *     the Free Software Foundation, either version 3 of the License, or
- *     (at your option) any later version.
+ * CloudSim Plus is free software: you can redistribute it and/or modify it
+ * under the terms of the GNU General Public License as published by the Free
+ * Software Foundation, either version 3 of the License, or (at your option) any
+ * later version.
  *
- *     CloudSim Plus is distributed in the hope that it will be useful,
- *     but WITHOUT ANY WARRANTY; without even the implied warranty of
- *     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *     GNU General Public License for more details.
+ * CloudSim Plus is distributed in the hope that it will be useful, but WITHOUT
+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+ * FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
+ * details.
  *
- *     You should have received a copy of the GNU General Public License
- *     along with CloudSim Plus. If not, see <http://www.gnu.org/licenses/>.
+ * You should have received a copy of the GNU General Public License along with
+ * CloudSim Plus. If not, see <http://www.gnu.org/licenses/>.
  */
 /*
  * To change this license header, choose License Headers in Project Properties.
@@ -61,7 +64,8 @@ import org.cloudbus.cloudsim.utilizationmodels.UtilizationModelFull;
  *
  * @author raysaoliveira
  */
-public final class ExampleUsingFaultInjector {
+public class ExampleUsingFaultInjector {
+
     private static final int HOSTS_NUMBER = 3;
     private static final int HOST_PES = 5;
     private static final int VM_PES1 = 2;
@@ -73,7 +77,7 @@ public final class ExampleUsingFaultInjector {
     /**
      * The cloudlet list.
      */
-    private final  List<Cloudlet> cloudletList;
+    private final List<Cloudlet> cloudletList;
 
     private static List<Host> hostList;
 
@@ -81,8 +85,6 @@ public final class ExampleUsingFaultInjector {
      * The vmlist.
      */
     private final List<Vm> vmlist;
-    private static List<Vm> vmListCopy;
-    
     private int lastCreatedVmId = 0;
     private final CloudSim cloudsim;
 
@@ -107,11 +109,11 @@ public final class ExampleUsingFaultInjector {
 
         //create VMs with differents configurations
         for (int i = 0; i < numberOfVms; i++) {
-            Vm vm  = new VmSimple(
-                        this.lastCreatedVmId++, mips, numberOfPes)
-                        .setRam(ram).setBw(bw).setSize(size)
-                        .setCloudletScheduler(new CloudletSchedulerTimeShared())
-                        .setBroker(broker);
+            Vm vm = new VmSimple(
+                    this.lastCreatedVmId++, mips, numberOfPes)
+                    .setRam(ram).setBw(bw).setSize(size)
+                    .setCloudletScheduler(new CloudletSchedulerTimeShared())
+                    .setBroker(broker);
             list.add(vm);
         }
 
@@ -165,7 +167,7 @@ public final class ExampleUsingFaultInjector {
         //Create Datacenters
         Datacenter datacenter0 = createDatacenter();
 
-        createFaultInjectionForHosts(datacenter0);
+        CreateFaultInjectionForHosts(datacenter0);
 
         //Create Broker
         DatacenterBroker broker = new DatacenterBrokerSimple(cloudsim);
@@ -174,10 +176,6 @@ public final class ExampleUsingFaultInjector {
         vmlist.addAll(createVM(broker, VM_PES1, 2));
         vmlist.addAll(createVM(broker, VM_PES2, 2));
 
-        vmListCopy = new ArrayList<>();
-        vmListCopy.addAll(createVM(broker, VM_PES1, 2));
-        vmListCopy.addAll(createVM(broker, VM_PES2, 2));
-        
         // submit vm list to the broker
         broker.submitVmList(vmlist);
 
@@ -193,7 +191,7 @@ public final class ExampleUsingFaultInjector {
         System.out.println("\n");
         for (Cloudlet cloudlet : cloudletList) {
             System.out.println("--->Status Cloudlet: " + cloudlet.getStatus()
-            + " in VM: " + cloudlet.getVm());
+                    + " in VM: " + cloudlet.getVm());
 
         }
 
@@ -205,7 +203,7 @@ public final class ExampleUsingFaultInjector {
         Log.printFormattedLine("... finished!");
     }
 
-    public void createFaultInjectionForHosts(Datacenter datacenter0) {
+    public void CreateFaultInjectionForHosts(Datacenter datacenter0) {
         //Inject Fault
         long seed = System.currentTimeMillis();
         PoissonProcess poisson = new PoissonProcess(0.2, seed);
@@ -217,10 +215,10 @@ public final class ExampleUsingFaultInjector {
                     UniformDistr delayForFailureOfHostRandom = new UniformDistr(1, 10, seed + i);
                     
                     //create a new intance of fault and start it.
-                    HostFaultInjection faultInjection = new HostFaultInjection(cloudsim);
-                    faultInjection.setNumberOfFailedPesRandom(failurePesRand);
-                    faultInjection.setDelayForFailureOfHostRandom(delayForFailureOfHostRandom);
-                    faultInjection.setHost(host);
+                    HostFaultInjection fault = new HostFaultInjection(cloudsim);
+                    fault.setNumberOfFailedPesRandom(failurePesRand);
+                    fault.setDelayForFailureOfHostRandom(delayForFailureOfHostRandom);
+                    fault.setHost(host);
                 } else {
                     System.out.println("\t *** Host not failed. -> Id: " + host.getId() + "\n");
                 }
@@ -261,8 +259,8 @@ public final class ExampleUsingFaultInjector {
         // resource
         double costPerBw = 0.0; // the cost of using bw in this resource
 
-        DatacenterCharacteristics characteristics =
-                new DatacenterCharacteristicsSimple(hostList)
+        DatacenterCharacteristics characteristics
+                = new DatacenterCharacteristicsSimple(hostList)
                 .setCostPerSecond(cost)
                 .setCostPerMem(costPerMem)
                 .setCostPerStorage(costPerStorage)
@@ -292,13 +290,6 @@ public final class ExampleUsingFaultInjector {
      */
     public static int getHOST_PES() {
         return HOST_PES;
-    }
-
-    /**
-     * @return the vmListCopy
-     */
-    public static List<Vm> getVmListCopy() {
-        return vmListCopy;
     }
 
 }

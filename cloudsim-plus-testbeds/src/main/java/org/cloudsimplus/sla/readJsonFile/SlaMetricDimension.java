@@ -31,18 +31,15 @@ package org.cloudsimplus.sla.readJsonFile;
  *
  * @author raysaoliveira
  */
-public final class SlaContractMetrics {
-
+public final class SlaMetricDimension {
+    public static final String VALUE_MAX_NAME="valueMax";
+    public static final String VALUE_MIN_NAME="valueMin";
+    
     private String name;
-    private int valueMin;
-    private int valueMax;
-    private String unit;
-
-    public SlaContractMetrics() {
-    }
+    private double value;
 
     /**
-     * @return the name of the metric
+     * @return the name
      */
     public String getName() {
         return name;
@@ -56,60 +53,46 @@ public final class SlaContractMetrics {
     }
 
     /**
-     * @return the valueMin of the metric
+     * @return the value
      */
-    public int getValueMin() {
-        return valueMin;
+    public double getValue() {
+        return value;
     }
 
     /**
-     * @param valueMin the valueMin to set
+     * @param value the value to set
      */
-    public void setValueMin(int valueMin) {
-        this.valueMin = valueMin;
+    public void setValue(double value) {
+        if(value < 0){
+            throw new IllegalArgumentException("Metric value cannot be negative");
+        }
+        this.value = value;
     }
-
+    
     /**
-     * @return the valueMax
-     */
-    public int getValueMax() {
-        return valueMax;
-    }
-
-    /**
-     * @param valueMax the valueMax to set
-     */
-    public void setValueMax(int valueMax) {
-        this.valueMax = valueMax;
-    }
-
-    /**
-     * @return the unit of the metric valueMin
-     */
-    public String getUnit() {
-        return unit;
-    }
-
-    /**
-     * @param unit the unit to set
-     */
-    public void setUnit(String unit) {
-        this.unit = unit;
-    }
-
-    /**
-     * Checks if the metric has a given name.
+     * Checks if this is a max value dimension.
      *
-     * @param name the name to check
-     * @return true if the metric has the given name, false otherwise
+     * @return 
      */
-    public boolean isNamed(String name) {
-        return this.name.trim().equals(name);
+    public boolean isValueMax(){
+        return this.name.trim().equals(VALUE_MAX_NAME);
+    }
+
+    /**
+     * Checks if this is a min value dimension.
+     *
+     * @return 
+     */
+    public boolean isValueMin(){
+        return this.name.trim().equals(VALUE_MIN_NAME);
     }
 
     @Override
     public String toString() {
-        return "Metric{name =" + name + ", valueMin = " + valueMin + ", valueMax = " + valueMax + ", unit = " + unit + '}';
+        return String.format("Dimension{name = %s, value = %.2f}", name, value);
     }
-
-}
+    
+    
+    
+    
+}   

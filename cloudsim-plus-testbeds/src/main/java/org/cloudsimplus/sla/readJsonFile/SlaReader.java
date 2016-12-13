@@ -24,14 +24,11 @@ package org.cloudsimplus.sla.readJsonFile;
 import com.google.gson.Gson;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
 
 /**
  * This class read the sla agreements in json format.
  * 
- * The sla agreements is in the {@link SlaContractMetrics}. This class 
+ * The sla agreements is in the {@link DimensionMetricsSlaContract}. This class 
  * contains the name of the metric, the minimum and maximum 
  * acceptable value, and the metric unit. 
  * The minimum and maximum values will be used to check 
@@ -43,25 +40,34 @@ import java.util.List;
  */
 public class SlaReader {
     
-    public static final String RESPONSE_TIME_FIELD = "responseTime";
-    public static final String CPU_UTILIZATION_FIELD = "cpuUtilization";
-    public static final String WAIT_TIME_FIELD = "waitTime";
-    
-    private List<SlaContractMetrics> metrics;
+    private final SlaContract contract;
 
     public SlaReader(String slaFileName) throws FileNotFoundException{
         Gson gson = new Gson();
-        SlaContractMetrics[] array = gson.fromJson(new FileReader(slaFileName), SlaContractMetrics[].class);
-        metrics = Arrays.asList(array);
+        this.contract = gson.fromJson(
+                new FileReader(slaFileName), SlaContract.class);
+    }
+
+    
+    public static void main(String[] args) throws FileNotFoundException {
+        final String file = "/Users/raysaoliveira/Desktop/TeseMestradoEngInformatica/cloudsim-plus/cloudsim-plus-testbeds/src/main/java/org/cloudsimplus/sla/readJsonFile/SlaMetrics.json";
+        SlaReader reader = new SlaReader(file);
+        for(SlaMetric m: reader.getContract().getMetrics()){
+            System.out.println(m);
+        }
+        
+        if(reader.getContract().getMetrics().isEmpty()){
+            System.out.println("No metrics found");
+        }
+    }
+
+    /**
+     * @return the contract
+     */
+    public SlaContract getContract() {
+        return contract;
     }
     
-    /**
-     * Gets a read-only list of metrics that were read from the 
-     * SLA contract file.
-     * @return 
-     */
-    public List<SlaContractMetrics> getMetrics() {
-        return Collections.unmodifiableList(metrics);
-    }
+
 
 }
