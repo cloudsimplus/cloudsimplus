@@ -28,7 +28,11 @@ package org.cloudsimplus.sla.readJsonFile;
 
 /**
  * Represents the values for a specific metrics of a SLA contract.
- *
+ * 
+ * Each dimension contains the name of the metric, the minimum and maximum 
+ * acceptable value, and the metric unit. 
+ * See: http://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/viewing_metrics_with_cloudwatch.html
+ * 
  * @author raysaoliveira
  */
 public final class SlaMetricDimension {

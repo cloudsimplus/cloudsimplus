@@ -28,7 +28,7 @@ import java.io.FileReader;
 /**
  * This class read the sla agreements in json format.
  * 
- * The sla agreements is in the {@link DimensionMetricsSlaContract}. This class 
+ * The sla agreements is in the {@link SlaMetricDimension}. This class 
  * contains the name of the metric, the minimum and maximum 
  * acceptable value, and the metric unit. 
  * The minimum and maximum values will be used to check 

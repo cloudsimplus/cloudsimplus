@@ -24,7 +24,6 @@ package org.cloudsimplus.sla;
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 import org.cloudbus.cloudsim.cloudlets.Cloudlet;
 import org.cloudbus.cloudsim.cloudlets.CloudletSimple;
 import org.cloudbus.cloudsim.schedulers.cloudlet.CloudletSchedulerTimeShared;
@@ -318,7 +317,7 @@ public final class ExampleMetricsWithoutNetwork {
     /**
      * Creates the DATACENTER.
      *
-     * @return the switches
+     * @return the datacenter
      */
     private Datacenter createDatacenter() {
         hostList = new ArrayList<>();

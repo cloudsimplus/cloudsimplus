@@ -167,7 +167,7 @@ public class ExampleUsingFaultInjector {
         //Create Datacenters
         Datacenter datacenter0 = createDatacenter();
 
-        CreateFaultInjectionForHosts(datacenter0);
+        createFaultInjectionForHosts(datacenter0);
 
         //Create Broker
         DatacenterBroker broker = new DatacenterBrokerSimple(cloudsim);
@@ -202,7 +202,7 @@ public class ExampleUsingFaultInjector {
         Log.printFormattedLine("... finished!");
     }
 
-    public void CreateFaultInjectionForHosts(Datacenter datacenter0) {
+    public void createFaultInjectionForHosts(Datacenter datacenter0) {
         //Inject Fault
         long seed = System.currentTimeMillis();
         PoissonProcess poisson = new PoissonProcess(0.2, seed);
@@ -227,11 +227,11 @@ public class ExampleUsingFaultInjector {
     }
 
     /**
-     * Creates the switches.
+     * Creates the datacenter.
      *
      * @param name the name
      *
-     * @return the switches
+     * @return the datacenter
      */
     private Datacenter createDatacenter() {
         hostList = new ArrayList<>();
