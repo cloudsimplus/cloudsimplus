@@ -781,6 +781,9 @@ public abstract class CloudletAbstract implements Cloudlet {
 
     @Override
     public final void setSubmissionDelay(double submissionDelay) {
+        if(submissionDelay < 0) {
+            return;
+        }
         this.submissionDelay = submissionDelay;
     }
 

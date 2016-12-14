@@ -111,6 +111,11 @@ public class VmSimple implements Vm {
     private Bandwidth bw;
 
     /**
+     * @see #getSubmissionDelay()
+     */
+    private double submissionDelay;
+
+    /**
      * @see #getOnHostAllocationListener()
      */
     private EventListener<HostToVmEventInfo> onHostAllocationListener = EventListener.NULL;
@@ -161,6 +166,7 @@ public class VmSimple implements Vm {
         setRam(new Ram(1024));
         setBw(new Bandwidth(1000));
         setStorage(new RawStorage(1024));
+        setSubmissionDelay(0);
         setVmm("Xen");
         this.simulation = Simulation.NULL;
         setCloudletScheduler(CloudletScheduler.NULL);
@@ -685,4 +691,16 @@ public class VmSimple implements Vm {
     }
 
 
+    @Override
+    public double getSubmissionDelay() {
+        return this.submissionDelay;
+    }
+
+    @Override
+    public final void setSubmissionDelay(double submissionDelay) {
+        if(submissionDelay < 0) {
+            return;
+        }
+        this.submissionDelay = submissionDelay;
+    }
 }

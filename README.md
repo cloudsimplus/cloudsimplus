@@ -84,7 +84,7 @@ CloudSim Plus provides a lot of exclusive features, ranging from the most basic 
   [Tabu Search](http://en.wikipedia.org/wiki/Tabu_search), [Simulated Annealing](http://en.wikipedia.org/wiki/Simulated_annealing), 
   [Ant Colony Systems](http://en.wikipedia.org/wiki/Ant_colony_optimization_algorithms) and so on. See an [example using Simulated Annealing here](/cloudsim-plus-examples/src/main/java/org/cloudsimplus/examples/DatacenterBrokerHeuristicExample.java).
 - [Implementation of the Completely Fair Scheduler](/cloudsim-plus-examples/src/main/java/org/cloudsimplus/examples/LinuxCompletelyFairSchedulerExample.java) used in recent version of the Linux Kernel.
-- Simpler constructors to instantiate simulation objects, making it less confusing to use the framework (see issue #30 for more details).
+- Simpler constructors to instantiate simulation objects, making it less confusing to use the framework. It applies the Convention over Configuration principle (CoC) to ask just mandatory parameters when instantiating objects (see issue #30 for more details).
 - Throughout documentation update, improvement and extension.
 - Improved class hierarchy, modules and package structure that is easier to understand.
 - As it is usual to extend framework classes to provide some specific behaviours for your simulations, you will find a totally refactored code that follows clean code programming, [SOLID](https://en.wikipedia.org/wiki/SOLID_(object-oriented_design)), [Design Patterns](https://en.wikipedia.org/wiki/Software_design_pattern) and several other software engineering principles and practices. By this way, it will be far easier to understand the code and implement the feature you want.
@@ -341,6 +341,6 @@ This project is licensed under [GNU GPLv3](http://www.gnu.org/licenses/gpl-3.0),
 # Contributing
 
 If you desire to contribute to the project, you are welcome. However, make sure to read the [contribution guide](CONTRIBUTING.md) before you start.
-If you just want to request a feature, feel free to use the [issues page](https://github.com/manoelcampos/cloudsim-plus/issues).
+If you just want to request a feature or report an issue, feel free to use the [create a ticket here](https://github.com/manoelcampos/cloudsim-plus/issues).
 
 <p align="right"><a href="#top">:arrow_up:</a></p>

@@ -1,6 +1,7 @@
 package org.cloudbus.cloudsim.vms;
 
 import org.cloudbus.cloudsim.brokers.DatacenterBroker;
+import org.cloudbus.cloudsim.core.Delayable;
 import org.cloudbus.cloudsim.core.Identificable;
 import org.cloudbus.cloudsim.datacenters.Datacenter;
 import org.cloudbus.cloudsim.hosts.Host;
@@ -24,7 +25,7 @@ import org.cloudsimplus.listeners.HostToVmEventInfo;
  * @author Manoel Campos da Silva Filho
  * @since CloudSim Plus 1.0
  */
-public interface Vm extends Identificable, Comparable<Vm> {
+public interface Vm extends Identificable, Delayable, Comparable<Vm> {
 
     /**
      * Adds a VM state history entry.
@@ -438,6 +439,8 @@ public interface Vm extends Identificable, Comparable<Vm> {
      * objects.
      */
     Vm NULL = new Vm() {
+        @Override public double getSubmissionDelay() { return 0; }
+        @Override public void setSubmissionDelay(double submissionDelay) {}
         @Override public void addStateHistoryEntry(VmStateHistoryEntry entry) {}
         @Override public long getBw(){ return 0; }
         @Override public CloudletScheduler getCloudletScheduler() { return CloudletScheduler.NULL; }

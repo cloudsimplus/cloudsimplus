@@ -104,6 +104,12 @@ public abstract class DatacenterBrokerAbstract extends CloudSimEntity implements
         this.datacenterCharacteristicsMap = new HashMap<>();
     }
 
+    @Override
+    public void submitVmList(List<? extends Vm> list, double submissionDelay) {
+        setDelayForSubmittedEntities(list, submissionDelay);
+        submitVmList(list);
+    }
+
     /**
      * {@inheritDoc}
      * <p>If the entity already started (the simulation is running),
@@ -170,14 +176,19 @@ public abstract class DatacenterBrokerAbstract extends CloudSimEntity implements
 
     @Override
     public void submitCloudletList(List<? extends Cloudlet> list, double submissionDelay) {
-        setDelayForSubmittedCloudlets(list, submissionDelay);
+        setDelayForSubmittedEntities(list, submissionDelay);
         submitCloudletList(list);
     }
 
-    private void setDelayForSubmittedCloudlets(List<? extends Cloudlet> list, double submissionDelay) {
-        for(Cloudlet cloudlet: list) {
-            cloudlet.setSubmissionDelay(submissionDelay);
-        }
+    /**
+     * Sets the delay for a list of {@link Delayable} entities, that can be a {@link Cloudlet},
+     * {@link Vm} or any object that implements {@link Delayable}.
+     *
+     * @param list list of objects to set their delays
+     * @param submissionDelay the submission delay to set
+     */
+    private void setDelayForSubmittedEntities(List<? extends Delayable> list, double submissionDelay) {
+        list.forEach(entity -> entity.setSubmissionDelay(submissionDelay));
     }
 
     @Override
