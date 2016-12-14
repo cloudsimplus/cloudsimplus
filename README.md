@@ -5,7 +5,7 @@
 <p align="center">
 <b><a href="#overview">Overview</a></b>
 |
-<b><a href="#contributions">Main Contributions</a></b>
+<b><a href="#contributions">Exclusive Features</a></b>
 |
 <b><a href="#projects-modules">Modules</a></b>
 |
@@ -68,28 +68,28 @@ at [the Computer Science and Software Engineering Department](http://www.csse.un
 
 
 <a id="contributions"></a>
-# Main Contributions
+# Exclusive Features
 
 CloudSim Plus provides a lot of exclusive features, ranging from the most basic ones that are missing in CloudSim to advanced features that enable implementation of more realistic simulation scenarios. 
 
-- Parallel execution of simulations, allowing several simulations to be run simultaneously, in a isolated way, inside a multi-core computer.
+- [Parallel execution of simulations](cloudsim-plus-examples/src/main/java/org/cloudsimplus/examples/ParallelSimulationsExample.java), allowing several simulations to be run simultaneously, in a isolated way, inside a multi-core computer.
 - [Listeners](/cloudsim-plus-examples/src/main/java/org/cloudsimplus/examples/listeners/) objects to enable simulation monitoring.
-- Builders to enable creating multiple simulation objects with same configuration.
-- [TableBuilder](/cloudsim-plus-examples/src/main/) objects that are used in all examples and enable printing simulation results in different formats such as ASCII Table, CSV or HTML. It shows simulation results in perfectly aligned tables, including data units and additional data.
-- It is a strongly object-oriented framework that creates relationships among classes and allows chained call such as `cloudlet.getVm().getHost().getDatacenter()`.
-  And guess what? You don't even have to worry about `NullPointerException` when making this chained call because CloudSim Plus uses the [Null Object Design Pattern](https://en.wikipedia.org/wiki/Null_Object_pattern) to avoid that.
-- Delay creation of submitted Cloudlets, enabling simulation of dynamic arrival of tasks.
-- Allow dynamic creation of VMs and Cloudlets without requiring creation of Datacenter Brokers at runtime, enabling VMs to be created on-demand according to arrived cloudlets.
+- [Builders](/cloudsim-plus/src/main/java/org/cloudsimplus/builders/) to enable creating multiple simulation objects with same configuration.
+- TableBuilder objects that are used in all examples and enable printing simulation results in different formats such as ASCII Table, CSV or HTML. It shows simulation results in perfectly aligned tables, including data units and additional data. See the last line of the [BasicFirstExample](/cloudsim-plus-examples/src/main/java/org/cloudsimplus/examples/BasicFirstExample.java) constructor to see how it is easy to print results.
+- It is a strongly object-oriented framework that creates relationships among classes and allows chained calls such as `cloudlet.getVm().getHost().getDatacenter()`.
+  And guess what? You don't even have to worry about `NullPointerException` when making such a chained call because CloudSim Plus uses the [Null Object Design Pattern](https://en.wikipedia.org/wiki/Null_Object_pattern) to avoid that.
+- [Delay creation of submitted Cloudlets](/cloudsim-plus-examples/src/main/java/org/cloudsimplus/examples/DynamicCloudletsArrival1.java), enabling simulation of dynamic arrival of tasks (see issue #11 for more details).
+- [Allow dynamic creation of VMs and Cloudlets without requiring creation of Datacenter Brokers at runtime](/cloudsim-plus-examples/src/main/java/org/cloudsimplus/examples/DynamicCreationOfVmsAndCloudlets.java), enabling VMs to be created on-demand according to arrived cloudlets (see issue #43 for more details).
 - Classes and interfaces to allow implementation of [heuristics](http://en.wikipedia.org/wiki/Heuristic) such as 
   [Tabu Search](http://en.wikipedia.org/wiki/Tabu_search), [Simulated Annealing](http://en.wikipedia.org/wiki/Simulated_annealing), 
   [Ant Colony Systems](http://en.wikipedia.org/wiki/Ant_colony_optimization_algorithms) and so on. See an [example using Simulated Annealing here](/cloudsim-plus-examples/src/main/java/org/cloudsimplus/examples/DatacenterBrokerHeuristicExample.java).
 - [Implementation of the Completely Fair Scheduler](/cloudsim-plus-examples/src/main/java/org/cloudsimplus/examples/LinuxCompletelyFairSchedulerExample.java) used in recent version of the Linux Kernel.
-- Simpler constructors to instantiate simulation objects, making it less confusing to use the framework.
-- Throughout documentation update and improvement.
+- Simpler constructors to instantiate simulation objects, making it less confusing to use the framework (see issue #30 for more details).
+- Throughout documentation update, improvement and extension.
 - Improved class hierarchy, modules and package structure that is easier to understand.
 - As it is usual to extend framework classes to provide some specific behaviours for your simulations, you will find a totally refactored code that follows clean code programming, [SOLID](https://en.wikipedia.org/wiki/SOLID_(object-oriented_design)), [Design Patterns](https://en.wikipedia.org/wiki/Software_design_pattern) and several other software engineering principles and practices. By this way, it will be far easier to understand the code and implement the feature you want.
 - Integration Tests to increase framework accuracy by testing entire simulation scenarios.
-- Updated to Java 8, making extensive use of Lambda Expressions and Streams API to improve efficiency and provide a cleaner and easier-to-maintain code.
+- Updated to Java 8, making extensive use of [Lambda Expressions](http://www.oracle.com/webfolder/technetwork/tutorials/obe/java/Lambda-QuickStart/index.html) and [Streams API](http://www.oracle.com/technetwork/articles/java/ma14-java-se-8-streams-2177646.html) to improve efficiency and provide a cleaner and easier-to-maintain code.
 
 
 # Project's Modules
@@ -173,7 +173,7 @@ In order to build such a simulation you have to create, at least:
 By this way, the main code used to build such a simulation scenario can be as below. 
 This is simply the code of the constructor method. 
 The complete example is available
-[here](/cloudsim-plus-examples/src/main/java/org/cloudbus/cloudsim/examples/CloudSimExample0.java),
+[here](/cloudsim-plus-examples/src/main/java/org/cloudsimplus/examples/BasicFirstExample.java),
 together with [other examples](cloudsim-plus-examples). Specific examples of CloudSim Plus, showing several
 new exclusive features and advanced scenarios, can be found [here](cloudsim-plus-examples/src/main/java/org/cloudsimplus/examples/). 
 

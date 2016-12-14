@@ -1,5 +1,6 @@
 package org.cloudbus.cloudsim.examples;
 
+import org.cloudbus.cloudsim.schedulers.cloudlet.CloudletSchedulerTimeShared;
 import org.cloudsimplus.util.tablebuilder.CloudletsTableBuilderHelper;
 import java.util.ArrayList;
 import java.util.List;
@@ -28,22 +29,27 @@ import org.cloudbus.cloudsim.provisioners.PeProvisionerSimple;
 import org.cloudbus.cloudsim.resources.Bandwidth;
 import org.cloudbus.cloudsim.provisioners.ResourceProvisionerSimple;
 import org.cloudbus.cloudsim.resources.Ram;
-import org.cloudbus.cloudsim.schedulers.cloudlet.CloudletSchedulerSpaceShared;
 
 /**
- * A minimal example showing how to create a data center with 1 host and run 2
- * cloudlets on it.
+ * A minimal example showing how to create a data center with 2 {@link Host} with 2 {@link Vm} run 2
+ * {@link Cloudlet}, inside each Vm. Each created Vm will use a {@link CloudletSchedulerTimeShared}
+ * scheduler to allow sharing CPU time between its Cloudlets.
  *
  * @author Manoel Campos da Silva Filho
  * @since CloudSim Plus 1.0
  */
 public class CloudSimExample0 {
+    private static final int HOSTS = 2;
+    private static final int VMS = 2;
+    private static final int CLOUDLETS_PER_VM = 2;
+
     private final CloudSim simulation;
-    private List<Cloudlet> cloudletList;
     private List<Vm> vmList;
-    private int numberOfCreatedCloudlets = 0;
-    private int numberOfCreatedVms = 0;
+    private List<Cloudlet> cloudletList;
+
     private int numberOfCreatedHosts = 0;
+    private int numberOfCreatedVms = 0;
+    private int numberOfCreatedCloudlets = 0;
 
     /**
      * Starts the simulation.
@@ -58,13 +64,7 @@ public class CloudSimExample0 {
      */
     public CloudSimExample0() {
         Log.printLine("Starting Minimal Example ...");
-        this.vmList = new ArrayList<>();
-        this.cloudletList = new ArrayList<>();
-        //Number of cloud customers
-        int numberOfCloudUsers = 1;
-        boolean traceEvents = false;
-
-        this.simulation = new CloudSim(traceEvents);
+        this.simulation = new CloudSim();
 
         Datacenter datacenter0 = createDatacenter();
 
@@ -72,16 +72,24 @@ public class CloudSimExample0 {
         on behalf of a given cloud user (customer).*/
         DatacenterBroker broker0 = new DatacenterBrokerSimple(simulation);
 
-        Vm vm0 = createVm(broker0);
-        this.vmList.add(vm0);
-        broker0.submitVmList(vmList);
+        this.vmList = new ArrayList<>(VMS);
+        this.cloudletList = new ArrayList<>(VMS);
 
-        /*Creates Cloudlets that represent applications to be run inside a VM.*/
-        Cloudlet cloudlet0 = createCloudlet(broker0, vm0);
-        this.cloudletList.add(cloudlet0);
-        Cloudlet cloudlet1 = createCloudlet(broker0, vm0);
-        this.cloudletList.add(cloudlet1);
+        /**
+         * Creates VMs and one Cloudlet for each VM.
+         */
+        for (int i = 0; i < VMS; i++) {
+            Vm vm = createVm(broker0);
+            this.vmList.add(vm);
+            for (int j = 0; j < CLOUDLETS_PER_VM; j++) {
+                /*Creates a Cloudlet that represents an application to be run inside a VM.*/
+                Cloudlet cloudlet = createCloudlet(broker0, vm);
+                this.cloudletList.add(cloudlet);
+            }
+        }
+        broker0.submitVmList(vmList);
         broker0.submitCloudletList(cloudletList);
+
 
         /* Starts the simulation and waits all cloudlets to be executed. */
         simulation.start();
@@ -94,9 +102,11 @@ public class CloudSimExample0 {
     }
 
     private DatacenterSimple createDatacenter() {
-        List<Host> hostList = new ArrayList<>();
-        Host host0 = createHost();
-        hostList.add(host0);
+        List<Host> hostList = new ArrayList<>(HOSTS);
+        for(int i = 0; i < HOSTS; i++) {
+            Host host = createHost();
+            hostList.add(host);
+        }
 
         //Defines the characteristics of the data center
         double cost = 3.0; // the cost of using processing in this switches
@@ -124,7 +134,9 @@ public class CloudSimExample0 {
 
         /*Creates the Host's CPU cores and defines the provisioner
         used to allocate each core for requesting VMs.*/
-        pesList.add(new PeSimple(0, new PeProvisionerSimple(mips)));
+        for (int i = 0; i < 2; i++) {
+            pesList.add(new PeSimple(i, new PeProvisionerSimple(mips)));
+        }
 
         return new HostSimple(numberOfCreatedHosts++, storage, pesList)
                 .setRamProvisioner(new ResourceProvisionerSimple(new Ram(ram)))
@@ -137,14 +149,14 @@ public class CloudSimExample0 {
         long   storage = 10000; // vm image size (MB)
         int    ram = 512; // vm memory (MB)
         long   bw = 1000; // vm bandwidth (Megabits/s)
-        int    pesNumber = 1; // number of CPU cores
+        int    pesNumber = 2; // number of CPU cores
 
         return new VmSimple(numberOfCreatedVms++, mips, pesNumber)
                 .setBroker(broker)
                 .setRam(ram)
                 .setBw(bw)
                 .setSize(storage)
-                .setCloudletScheduler(new CloudletSchedulerSpaceShared());
+                .setCloudletScheduler(new CloudletSchedulerTimeShared());
     }
 
     private Cloudlet createCloudlet(DatacenterBroker broker, Vm vm) {
