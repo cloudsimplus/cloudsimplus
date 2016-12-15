@@ -14,14 +14,14 @@ import org.cloudbus.cloudsim.vms.Vm;
  * @author Manoel Campos da Silva Filho
  * @since CloudSim Toolkit 3.0.4
  */
-public abstract class AbstractResource implements ResourceManageable {
+public abstract class ResourceAbstract implements ResourceManageable {
     /** @see #getCapacity() */
     private long capacity;
 
     /** @see #getAvailableResource() */
     private long availableResource;
 
-    public AbstractResource(final long capacity) {
+    public ResourceAbstract(final long capacity) {
         if(!isCapacityValid(capacity))
             throw new IllegalArgumentException("Capacity cannot be negative");
 

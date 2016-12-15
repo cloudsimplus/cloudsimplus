@@ -21,7 +21,7 @@
  */
 package org.cloudsimplus.examples.migration;
 
-import org.cloudbus.cloudsim.allocationpolicies.VmAllocationPolicyMigrationWorstFitStaticThreshold;
+import org.cloudbus.cloudsim.allocationpolicies.power.PowerVmAllocationPolicyMigrationWorstFitStaticThreshold;
 import org.cloudbus.cloudsim.utilizationmodels.UtilizationModelArithmeticProgression;
 import java.util.ArrayList;
 import java.util.List;
@@ -59,10 +59,10 @@ import org.cloudsimplus.util.tablebuilder.CloudletsTableBuilderHelper;
  * <p>An example showing how to create 1 switches with 3 hosts,
  * 1 VM by host and 1 cloudlet by VM and perform VM migration based on
  * a custom VmAllocationPolicy that migrates VMs based on
- * {@link VmAllocationPolicyMigrationWorstFitStaticThreshold
+ * {@link PowerVmAllocationPolicyMigrationWorstFitStaticThreshold
  * static host CPU utilization threshold}. </p>
  *
- * <p>The created {@link VmAllocationPolicyMigrationWorstFitStaticThreshold policy}
+ * <p>The created {@link PowerVmAllocationPolicyMigrationWorstFitStaticThreshold policy}
  * allows the definition of static under and over CPU utilization thresholds to
  * enable VM migration.
  * The example uses a custom UtilizationModel to define CPU usage of cloudlets that
@@ -286,8 +286,8 @@ public class MigrationExample1 {
                 .setCostPerStorage(DATACENTER_COST_PER_STORAGE)
                 .setCostPerBw(DATACENTER_COST_PER_BW);
 
-        VmAllocationPolicyMigrationWorstFitStaticThreshold allocationPolicy =
-            new VmAllocationPolicyMigrationWorstFitStaticThreshold(
+        PowerVmAllocationPolicyMigrationWorstFitStaticThreshold allocationPolicy =
+            new PowerVmAllocationPolicyMigrationWorstFitStaticThreshold(
                 new PowerVmSelectionPolicyMinimumUtilization(),
                 HOST_UTILIZATION_THRESHOLD_FOR_VM_MIGRATION);
 

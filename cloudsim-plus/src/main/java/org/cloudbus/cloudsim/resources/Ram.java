@@ -5,7 +5,7 @@ package org.cloudbus.cloudsim.resources;
  *
  * @author Manoel Campos da Silva Filho
  */
-public final class Ram extends AbstractResource {
+public final class Ram extends ResourceAbstract {
     /**
      * Creates a new RAM resource.
      * @param capacity the RAM capacity in Megabytes

@@ -19,11 +19,12 @@
  *     You should have received a copy of the GNU General Public License
  *     along with CloudSim Plus. If not, see <http://www.gnu.org/licenses/>.
  */
-package org.cloudbus.cloudsim.allocationpolicies;
+package org.cloudbus.cloudsim.allocationpolicies.power;
 
 import java.util.List;
 import java.util.Set;
 
+import org.cloudbus.cloudsim.allocationpolicies.VmAllocationPolicy;
 import org.cloudbus.cloudsim.hosts.Host;
 import org.cloudbus.cloudsim.vms.Vm;
 import org.cloudbus.cloudsim.hosts.power.PowerHost;
@@ -40,9 +41,9 @@ import org.cloudbus.cloudsim.selectionpolicies.power.PowerVmSelectionPolicy;
  *
  * @author Manoel Campos da Silva Filho
  */
-public class VmAllocationPolicyMigrationWorstFitStaticThreshold extends PowerVmAllocationPolicyMigrationStaticThreshold {
+public class PowerVmAllocationPolicyMigrationWorstFitStaticThreshold extends PowerVmAllocationPolicyMigrationStaticThreshold {
 
-    public VmAllocationPolicyMigrationWorstFitStaticThreshold(
+    public PowerVmAllocationPolicyMigrationWorstFitStaticThreshold(
             PowerVmSelectionPolicy vmSelectionPolicy,
             double utilizationThreshold)
     {
