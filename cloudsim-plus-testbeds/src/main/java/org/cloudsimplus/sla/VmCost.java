@@ -36,7 +36,6 @@ import org.cloudbus.cloudsim.vms.Vm;
 public class VmCost {
 
     private Vm vm;
-    private Datacenter datacenter;
 
     public VmCost(Vm vm) {
         this.vm = vm;
@@ -55,7 +54,11 @@ public class VmCost {
      * @return getVmMemoryCost
      */
     public double getVmMemoryCost() {
-        return (datacenter.getCharacteristics().getCostPerMem() * vm.getRam());
+        return (getDatacenter().getCharacteristics().getCostPerMem() * vm.getRam());
+    }
+
+    private Datacenter getDatacenter() {
+        return vm.getHost().getDatacenter();
     }
 
     /**
@@ -64,7 +67,7 @@ public class VmCost {
      * @return getVmBwCost
      */
     public double getVmBwCost() {
-        return datacenter.getCharacteristics().getCostPerBw() * vm.getBw();
+        return getDatacenter().getCharacteristics().getCostPerBw() * vm.getBw();
     }
 
     /**
@@ -74,7 +77,7 @@ public class VmCost {
      */
     public double getVmProcessingCost() {
         double hostMips = vm.getHost().getPeList().stream().findFirst().map(pe -> pe.getMips()).orElse(0);
-        double costPerMI = (hostMips > 0 ? datacenter.getCharacteristics().getCostPerSecond()/hostMips : 0);
+        double costPerMI = (hostMips > 0 ? getDatacenter().getCharacteristics().getCostPerSecond()/hostMips : 0.0);
 
         return costPerMI * getVm().getMips() * getVm().getNumberOfPes();
     }
@@ -85,7 +88,7 @@ public class VmCost {
      * @return getVmStorageCost
      */
     public double getVmStorageCost() {
-        return datacenter.getCharacteristics().getCostPerStorage() * vm.getSize();
+        return getDatacenter().getCharacteristics().getCostPerStorage() * vm.getSize();
     }
 
     /**

@@ -167,6 +167,7 @@ public class ExampleUsingFaultInjector {
         //Create Datacenters
         Datacenter datacenter0 = createDatacenter();
 
+        //fault injection
         createFaultInjectionForHosts(datacenter0);
 
         //Create Broker
@@ -201,8 +202,12 @@ public class ExampleUsingFaultInjector {
         new CloudletsTableBuilderHelper(newList).build();
         Log.printFormattedLine("... finished!");
     }
-
-    public void createFaultInjectionForHosts(Datacenter datacenter0) {
+    
+    /**
+     * Creates the fault injection for host
+     * @param datacenter0 
+     */
+    private void createFaultInjectionForHosts(Datacenter datacenter0) {
         //Inject Fault
         long seed = System.currentTimeMillis();
         PoissonProcess poisson = new PoissonProcess(0.2, seed);

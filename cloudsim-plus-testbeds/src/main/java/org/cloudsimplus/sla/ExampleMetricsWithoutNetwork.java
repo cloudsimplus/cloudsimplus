@@ -158,17 +158,16 @@ public final class ExampleMetricsWithoutNetwork {
      *
      * @param vmlist
      */
-    private void totalCostPrice(List<Vm> vmlist) {
+    private double totalCostPrice(List<Vm> vmlist) {
 
         VmCost vmCost;
         double totalCost = 0.0;
         for (Vm vm : vmlist) {
             vmCost = new VmCost(vm);
             totalCost = vmCost.getVmTotalCost();
-
         }
-        System.out.println("Total cost (memory, bw, processing, storage)"
-                + " of  all VMs in the Datacenter is: " + totalCost);
+        return totalCost;
+        
     }
 
     /**
@@ -269,15 +268,8 @@ public final class ExampleMetricsWithoutNetwork {
 
         // Sixth step: Starts the simulation
         cloudsim.start();
-        /*for(Host h: datacenter0.getHostList()){
-         System.out.println("->>>>>> " + h);
-         for(Pe pe: h.getPeList()){
-         System.out.println("->>> " + pe.getMips());
-         }
-         }
-         totalCostPrice(vmlist);*/
-
-        System.out.println("______________________________________________________");
+       
+        System.out.println("________________________________________________________________");
         System.out.println("\n\t\t - System Métrics - \n ");
 
         //responseTime
@@ -298,14 +290,15 @@ public final class ExampleMetricsWithoutNetwork {
         System.out.printf("\t** Wait Time - %.2f %n", waitTimeCloudlet);
 
         // total cost
-        //totalCostPrice(vmlist);
-        System.out.println("______________________________________________________");
+        double totalCost = totalCostPrice(vmlist);
+        System.out.println("\t** Total cost (memory, bw, processing, storage) - " + totalCost);
+        System.out.println("________________________________________________________________");
 
-        System.out.println("______________________________________________________");
+        System.out.println("________________________________________________________________");
         System.out.println("\n\t\t - Metric monitoring - \n\t\t(violated or not violated)  \n ");
 
         checkSlaViolations();
-        System.out.println("______________________________________________________");
+        System.out.println("________________________________________________________________");
 
         //Final step: Print results when simulation is over
         List<Cloudlet> newList = broker.getCloudletsFinishedList();
