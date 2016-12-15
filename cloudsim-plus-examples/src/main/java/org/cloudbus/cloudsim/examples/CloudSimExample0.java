@@ -48,8 +48,6 @@ public class CloudSimExample0 {
     private List<Cloudlet> cloudletList;
 
     private int numberOfCreatedHosts = 0;
-    private int numberOfCreatedVms = 0;
-    private int numberOfCreatedCloudlets = 0;
 
     /**
      * Starts the simulation.
@@ -151,7 +149,7 @@ public class CloudSimExample0 {
         long   bw = 1000; // vm bandwidth (Megabits/s)
         int    pesNumber = 2; // number of CPU cores
 
-        return new VmSimple(numberOfCreatedVms++, mips, pesNumber)
+        return new VmSimple(vmList.size(), mips, pesNumber)
                 .setBroker(broker)
                 .setRam(ram)
                 .setBw(bw)
@@ -171,7 +169,7 @@ public class CloudSimExample0 {
 
         Cloudlet cloudlet
                 = new CloudletSimple(
-                        numberOfCreatedCloudlets++, length, numberOfCpuCores)
+                        cloudletList.size(), length, numberOfCpuCores)
                         .setCloudletFileSize(fileSize)
                         .setCloudletOutputSize(outputSize)
                         .setUtilizationModel(utilization)

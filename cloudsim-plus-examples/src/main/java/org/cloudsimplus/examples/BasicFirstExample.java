@@ -13,12 +13,14 @@ import org.cloudbus.cloudsim.datacenters.DatacenterSimple;
 import org.cloudbus.cloudsim.hosts.Host;
 import org.cloudbus.cloudsim.hosts.HostSimple;
 import org.cloudbus.cloudsim.provisioners.PeProvisionerSimple;
+import org.cloudbus.cloudsim.provisioners.ResourceProvisioner;
 import org.cloudbus.cloudsim.provisioners.ResourceProvisionerSimple;
 import org.cloudbus.cloudsim.resources.Bandwidth;
 import org.cloudbus.cloudsim.resources.Pe;
 import org.cloudbus.cloudsim.resources.PeSimple;
 import org.cloudbus.cloudsim.resources.Ram;
 import org.cloudbus.cloudsim.schedulers.cloudlet.CloudletSchedulerTimeShared;
+import org.cloudbus.cloudsim.schedulers.vm.VmScheduler;
 import org.cloudbus.cloudsim.schedulers.vm.VmSchedulerTimeShared;
 import org.cloudbus.cloudsim.utilizationmodels.UtilizationModel;
 import org.cloudbus.cloudsim.utilizationmodels.UtilizationModelFull;
@@ -84,9 +86,9 @@ public class BasicFirstExample {
                 pesList.add(new PeSimple(p, new PeProvisionerSimple(1000)));
             }
 
-            ResourceProvisionerSimple ramProvisioner = new ResourceProvisionerSimple(new Ram(2048));
-            ResourceProvisionerSimple bwProvisioner = new ResourceProvisionerSimple(new Bandwidth(10000));
-            VmSchedulerTimeShared vmScheduler = new VmSchedulerTimeShared();
+            ResourceProvisioner ramProvisioner = new ResourceProvisionerSimple(new Ram(2048));
+            ResourceProvisioner bwProvisioner = new ResourceProvisionerSimple(new Bandwidth(10000));
+            VmScheduler vmScheduler = new VmSchedulerTimeShared();
             Host host =
                 new HostSimple(h, 1000000, pesList)
                     .setRamProvisioner(ramProvisioner)
