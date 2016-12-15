@@ -5,7 +5,7 @@ package org.cloudbus.cloudsim.resources;
  *
  * @author Manoel Campos da Silva Filho
  */
-public final class Bandwidth extends AbstractResource {
+public final class Bandwidth extends ResourceAbstract {
     /**
      * Creates a new Bandwidth resource.
      * @param capacity the bandwidth capacity in in Megabits/s

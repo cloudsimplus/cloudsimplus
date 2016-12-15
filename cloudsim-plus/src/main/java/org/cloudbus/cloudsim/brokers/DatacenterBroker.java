@@ -83,7 +83,7 @@ public interface DatacenterBroker extends SimEntity {
     void submitCloudletList(List<? extends Cloudlet>  list);
 
     /**
-     * Sends a list of cloudlets for the broker to request its creation inside some VM after a given delay.
+     * Sends a list of cloudlets for the broker that their creation inside some VM will be requested just after a given delay.
      * All cloudlets will be added to the {@link #getCloudletsWaitingList()},
      * setting their submission delay to the specified value.
      *
@@ -98,7 +98,7 @@ public interface DatacenterBroker extends SimEntity {
 
 
     /**
-     * Sends to the broker a list with VMs that the creation will be requested to some
+     * Sends to the broker a list with VMs that their creation inside a Host will be requested to some
      * {@link Datacenter}. The Datacenter that will be chosen to place a VM is
      * determined by the {@link #selectDatacenterForWaitingVms()}.
      *
@@ -107,6 +107,21 @@ public interface DatacenterBroker extends SimEntity {
      * @post $none
      */
     void submitVmList(List<? extends Vm>  list);
+
+    /**
+     * Sends a list of VMs for the broker that their creation inside some Host will be requested just after a given delay.
+     * All VMs will be added to the {@link #getVmsWaitingList()},
+     * setting their submission delay to the specified value.
+     *
+     * @param list the list of VMs to request the creation
+     * @param submissionDelay the delay the broker has to include when requesting the creation of VMs
+     * @pre list !=null
+     * @post $none
+     * @see #submitVmList(java.util.List)
+     * @see Vm#getSubmissionDelay()
+     */
+    void submitVmList(List<? extends Vm>  list, double submissionDelay);
+
 
     /**
      * Indicates if there are more cloudlets waiting to
@@ -170,7 +185,8 @@ public interface DatacenterBroker extends SimEntity {
 		@Override public void submitCloudletList(List<? extends Cloudlet> list) {}
 		@Override public void submitCloudletList(List<? extends Cloudlet> list, double submissionDelay) {}
 		@Override public void submitVmList(List<? extends Vm> list) {}
-		@Override public boolean hasMoreCloudletsToBeExecuted() { return false; }
+        @Override public void submitVmList(List<? extends Vm> list, double submissionDelay) {}
+        @Override public boolean hasMoreCloudletsToBeExecuted() { return false; }
 		@Override public Vm selectVmForWaitingCloudlet(Cloudlet cloudlet) { return Vm.NULL; }
 		@Override public int selectDatacenterForWaitingVms() { return 0; }
 		@Override public int selectFallbackDatacenterForWaitingVms() { return 0; }

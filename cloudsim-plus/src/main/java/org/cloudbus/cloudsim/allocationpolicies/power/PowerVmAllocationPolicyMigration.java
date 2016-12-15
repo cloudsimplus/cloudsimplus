@@ -11,7 +11,8 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * An interface to be implemented by VM allocation policy for Power-aware VMs.
+ * An interface to be implemented by VM allocation policy for power-aware VMs
+ * that detects {@link PowerHost} under and over CPU utilization.
  *
  * @author Manoel Campos da Silva Filho
  */
@@ -35,6 +36,30 @@ public interface PowerVmAllocationPolicyMigration extends PowerVmAllocationPolic
     double getOverUtilizationThreshold(PowerHost host);
 
     /**
+     * Checks if host is under utilized.
+     *
+     * @param host the host
+     * @return true, if the host is under utilized; false otherwise
+     */
+    boolean isHostUnderUtilized(PowerHost host);
+
+    /**
+     * Gets the percentage of total CPU utilization
+     * to indicate that a host is under used and its VMs have to be migrated.
+     *
+     * @return the under utilization threshold (in scale is from 0 to 1, where 1 is 100%)
+     */
+    double getUnderUtilizationThreshold();
+
+    /**
+     * Sets the percentage of total CPU utilization
+     * to indicate that a host is under used and its VMs have to be migrated.
+     *
+     * @param underUtilizationThreshold the under utilization threshold (in scale is from 0 to 1, where 1 is 100%)
+     */
+    void setUnderUtilizationThreshold(double underUtilizationThreshold);
+
+    /**
      * An attribute that implements the Null Object Design Pattern for {@link PowerVmAllocationPolicyMigration}
      * objects.
      */
@@ -50,6 +75,10 @@ public interface PowerVmAllocationPolicyMigration extends PowerVmAllocationPolic
         @Override public <T extends Host> List<T> getHostList() { return Collections.emptyList(); }
         @Override public Map<Vm, Host> optimizeAllocation(List<? extends Vm> vmList) { return Collections.emptyMap(); }
         @Override public boolean isHostOverUtilized(PowerHost host) { return false;}
+        @Override public boolean isHostUnderUtilized(PowerHost host) { return false;}
         @Override public double getOverUtilizationThreshold(PowerHost host) { return 0; }
+        @Override public double getUnderUtilizationThreshold() { return 0; }
+        @Override public void setUnderUtilizationThreshold(double underUtilizationThreshold) {}
     };
+
 }

@@ -7,7 +7,7 @@ package org.cloudsimplus.migration;
 
 import java.util.ArrayList;
 import java.util.List;
-import org.cloudbus.cloudsim.allocationpolicies.VmAllocationPolicyMigrationWorstFitStaticThreshold;
+import org.cloudbus.cloudsim.allocationpolicies.power.PowerVmAllocationPolicyMigrationWorstFitStaticThreshold;
 import org.cloudbus.cloudsim.brokers.DatacenterBroker;
 import org.cloudbus.cloudsim.brokers.DatacenterBrokerSimple;
 import org.cloudbus.cloudsim.cloudlets.Cloudlet;
@@ -243,8 +243,8 @@ public class ExampleMigrationVmWhenCpuMetricIsViolated {
                 .setCostPerStorage(DATACENTER_COST_PER_STORAGE)
                 .setCostPerBw(DATACENTER_COST_PER_BW);
                 
-        VmAllocationPolicyMigrationWorstFitStaticThreshold allocationPolicy =
-            new VmAllocationPolicyMigrationWorstFitStaticThreshold(
+        PowerVmAllocationPolicyMigrationWorstFitStaticThreshold allocationPolicy =
+            new PowerVmAllocationPolicyMigrationWorstFitStaticThreshold(
                 new ExamplePowerVmSelectionPolicyMinimumUtilization(),HOST_UTILIZATION_THRESHOLD_FOR_VM_MIGRATION);
 
         PowerDatacenter dc = new PowerDatacenter(simulation, characteristics, allocationPolicy);

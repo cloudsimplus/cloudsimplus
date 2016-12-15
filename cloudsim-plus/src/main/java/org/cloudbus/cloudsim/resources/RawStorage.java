@@ -7,7 +7,7 @@ package org.cloudbus.cloudsim.resources;
  *
  * @author Manoel Campos da Silva Filho
  */
-public final class RawStorage extends AbstractResource {
+public final class RawStorage extends ResourceAbstract {
     /**
      * Creates a new Storage device.
      * @param capacity the storage capacity in Megabytes

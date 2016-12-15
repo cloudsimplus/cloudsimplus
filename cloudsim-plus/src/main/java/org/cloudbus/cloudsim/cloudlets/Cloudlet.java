@@ -1,5 +1,6 @@
 package org.cloudbus.cloudsim.cloudlets;
 
+import org.cloudbus.cloudsim.core.Delayable;
 import org.cloudbus.cloudsim.datacenters.Datacenter;
 import org.cloudbus.cloudsim.vms.Vm;
 import org.cloudbus.cloudsim.brokers.DatacenterBroker;
@@ -21,7 +22,7 @@ import org.cloudsimplus.listeners.EventListener;
  *
  * @author Manoel Campos da Silva Filho
  */
-public interface Cloudlet extends Identificable, Comparable<Cloudlet> {
+public interface Cloudlet extends Identificable, Delayable, Comparable<Cloudlet> {
   String NO_HISTORY_IS_RECORDED_FOR_CLOUDLET = "No history is recorded for Cloudlet #%d";
 
   /**
@@ -793,26 +794,6 @@ public interface Cloudlet extends Identificable, Comparable<Cloudlet> {
      * @post $none
      */
     void setExecStartTime(final double clockTime);
-
-    /**
-     * Gets the delay (in seconds) that a {@link DatacenterBroker} has to include
-     * when submitting the Cloudlet, in order that it will be assigned
-     * to a VM only after this delay has expired.
-     *
-     * @return the submission delay
-     */
-    double getSubmissionDelay();
-
-    /**
-     * Sets the delay (in seconds) that a {@link DatacenterBroker} has to include
-     * when submitting the Cloudlet, in order that it will be assigned
-     * to a VM only after this delay has expired.
-     *
-     * @param submissionDelay the amount of seconds from the current simulation
-     * time that the cloudlet will wait to be submitted to be created and
-     * assigned to a VM
-     */
-    void setSubmissionDelay(double submissionDelay);
 
     /**
      * Gets the listener object that will be notified when a cloudlet finishes
