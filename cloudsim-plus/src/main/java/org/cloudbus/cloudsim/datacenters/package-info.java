@@ -1,7 +1,7 @@
 /**
- * The package provides {@link org.cloudbus.cloudsim.datacenters.Datacenter} implementations.
- * A Datacenter contains a set of {@link org.cloudbus.cloudsim.hosts.Host}
- * that together provide the basic cloud infrastructure.
+ * Provides {@link org.cloudbus.cloudsim.datacenters.Datacenter} implementations,
+ * that represents a physical Cloud Datacenter and contains a set of
+ * {@link org.cloudbus.cloudsim.hosts.Host} that together provide the basic cloud infrastructure.
  *
  * <p>Each Datacenter has attributes that define its characteristics, such as the costs
  * to use different physical resources from Hosts.

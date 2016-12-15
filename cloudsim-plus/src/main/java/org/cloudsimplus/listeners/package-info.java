@@ -1,6 +1,6 @@
 /**
- * The package includes {@link org.cloudsimplus.listeners.EventListener}
- * implementations to provide event notification for simulations.
+ * Provides {@link org.cloudsimplus.listeners.EventListener}
+ * implementations to enable event notification during simulation execution.
  *
  * <p>These notifications are related to changes in the state of simulation entities.
  * The listeners enable, for instance, notifying when:

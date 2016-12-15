@@ -1,7 +1,7 @@
 /**
- * The package provides {@link org.cloudsimplus.builders.Builder} classes that
+ * Provides {@link org.cloudsimplus.builders.Builder} classes that
  * implement the <a href="https://en.wikipedia.org/wiki/Builder_pattern">Builder Design Pattern</a>
- * to allow instantianting multiple simulation objects more easily.
+ * to allow instantiating multiple simulation objects more easily.
  *
  * <p>Since that creating and setting up some simulation objects such as a
  * {@link org.cloudbus.cloudsim.datacenters.Datacenter} requires a considerable amount

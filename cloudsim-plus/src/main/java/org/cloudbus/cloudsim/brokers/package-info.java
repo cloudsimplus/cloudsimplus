@@ -1,7 +1,7 @@
 /**
- * The package provides {@link org.cloudbus.cloudsim.brokers.DatacenterBroker} classes that act on behalf of a cloud customer,
+ * Provides {@link org.cloudbus.cloudsim.brokers.DatacenterBroker} classes that act on behalf of a cloud customer,
  * attending his/her requests for creation and destruction of
- * {@link org.cloudbus.cloudsim.cloudlets.Cloudlet Cloudlets}) and
+ * {@link org.cloudbus.cloudsim.cloudlets.Cloudlet Cloudlets} and
  * {@link org.cloudbus.cloudsim.vms.Vm VMs}, assigning such Cloudlets to specific VMs.
  * These brokers can implement decision making algorithms to prioritize submission of Cloudlets
  * to the cloud, to define how a VM is selected to run a given Cloudlets, etc.

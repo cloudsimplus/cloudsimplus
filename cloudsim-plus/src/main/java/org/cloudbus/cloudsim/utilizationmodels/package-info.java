@@ -1,5 +1,5 @@
 /**
- * The package provides  classes that models utilization of resources such as
+ * Provides classes that model utilization of resources such as
  * {@link org.cloudbus.cloudsim.resources.Pe CPU}, {@link org.cloudbus.cloudsim.resources.Ram} and
  * {@link org.cloudbus.cloudsim.resources.Bandwidth},
  * defining how a given resource is used  by a {@link org.cloudbus.cloudsim.cloudlets.Cloudlet}

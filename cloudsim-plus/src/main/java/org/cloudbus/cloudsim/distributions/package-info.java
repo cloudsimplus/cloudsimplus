@@ -1,5 +1,5 @@
 /**
- * The package provides Pseudo Random Number Generators (PRNG) following several statistical
+ * Provides Pseudo Random Number Generators (PRNG) following several statistical
  * distributions used by the simulation API.
  * Additionally, they can be used by developers implementing their own simulations.
  *

@@ -1,5 +1,5 @@
 /**
- * The package provides class to define network assets, such
+ * Provides classes to define network assets, such
  * as different kinds of {@link org.cloudbus.cloudsim.network.switches.Switch}
  * and also the {@link org.cloudbus.cloudsim.network.topologies.NetworkTopology}
  * that can be specified in some standard file format and read

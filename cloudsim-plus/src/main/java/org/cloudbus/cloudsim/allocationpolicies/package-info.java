@@ -1,5 +1,5 @@
 /**
- * The package provides classes that implement policies for a {@link org.cloudbus.cloudsim.datacenters.Datacenter}
+ * Provides classes that implement policies for a {@link org.cloudbus.cloudsim.datacenters.Datacenter}
  * to select a Host to <b>place</b> or <b>migrate</b> a VM, based on some criteria defined by each class.
  * Different policies can follow approaches such as best-fit, worst-fit and so on.
  *

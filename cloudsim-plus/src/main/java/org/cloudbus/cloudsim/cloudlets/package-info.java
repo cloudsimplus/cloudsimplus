@@ -1,7 +1,7 @@
 /**
- * The package provides {@link org.cloudbus.cloudsim.cloudlets.Cloudlet} implementations.
- * A Cloudlet represents an application that will run inside a {@link org.cloudbus.cloudsim.vms.Vm},
- * abstractly defined in terms of its characteristics,
+ * Provides {@link org.cloudbus.cloudsim.cloudlets.Cloudlet} implementations,
+ * that represent an application that will run inside a {@link org.cloudbus.cloudsim.vms.Vm}.
+ * Each Cloudlet is abstractly defined in terms of its characteristics,
  * such as the number of Million Instructions (MI) to execute,
  * the number of required {@link org.cloudbus.cloudsim.resources.Pe}
  * and a {@link org.cloudbus.cloudsim.utilizationmodels.UtilizationModel} for CPU, RAM and bandwidth.

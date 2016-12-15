@@ -1,10 +1,9 @@
 /**
- *
- * The package includes a set of interfaces and classes to develop heuristics for
- * providing sub-optimnal solutions for problems, considering some
+ * Provides a set of interfaces and classes to develop heuristics to
+ * find sub-optimal solutions for problems, considering some
  * utility function that has to be minimized or maximized.
  * Such a function is also called a fitness function and as higher is the fitness
- * better the the found solution.
+ * better the found solution is.
  *
  * <p>
  * Different heuristics include

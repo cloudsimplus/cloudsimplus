@@ -1,6 +1,6 @@
 /**
- * The package provides {@link org.cloudbus.cloudsim.hosts.Host} implementations.
- * A Host is a Physical Machine (PM) that is used to run {@link org.cloudbus.cloudsim.vms.Vm}
+ * Provides {@link org.cloudbus.cloudsim.hosts.Host} implementations
+ * that represent a Physical Machine (PM) is used to run {@link org.cloudbus.cloudsim.vms.Vm}
  * from different cloud customers
  * (represented by a {@link org.cloudbus.cloudsim.brokers.DatacenterBroker}).
  *

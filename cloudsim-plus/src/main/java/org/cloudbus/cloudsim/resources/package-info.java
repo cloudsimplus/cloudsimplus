@@ -1,6 +1,7 @@
 /**
- * The package provides classes that represent different physical and logical
- * {@link org.cloudbus.cloudsim.resources.Resource}.
+ * Provides classes that represent different physical and logical
+ * {@link org.cloudbus.cloudsim.resources.Resource} used by simulation
+ * objects such as Hosts and VMs.
  *
  * <p>There are different interfaces that enable the existence of
  * resources with different features such as if the capacity

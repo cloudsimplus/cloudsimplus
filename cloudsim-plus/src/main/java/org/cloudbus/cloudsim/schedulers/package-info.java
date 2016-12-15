@@ -1,5 +1,5 @@
 /**
- * The package provides processor schedulers implementations to enable multiple
+ * Provides processor schedulers implementations to enable multiple
  * processes to run on some CPU cores ({@link org.cloudbus.cloudsim.resources.Pe}).
  * Consider a process being a {@link org.cloudbus.cloudsim.vms.Vm} running inside a
  * {@link org.cloudbus.cloudsim.hosts.Host} (PM) or a
