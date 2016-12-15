@@ -42,7 +42,11 @@ import org.cloudbus.cloudsim.util.ExecutionTimeMeasurer;
  * @author Anton Beloglazov
  * @since CloudSim Toolkit 3.0
  */
-public abstract class PowerVmAllocationPolicyMigrationAbstract extends PowerVmAllocationPolicyAbstract implements PowerVmAllocationPolicyMigration {
+public abstract class PowerVmAllocationPolicyMigrationAbstract extends PowerVmAllocationPolicyAbstract
+    implements PowerVmAllocationPolicyMigration {
+
+    /**@see #getUnderUtilizationThreshold() */
+    private double underUtilizationThreshold = 0.35;
 
     /**
      * The vm selection policy.
@@ -214,9 +218,7 @@ public abstract class PowerVmAllocationPolicyMigrationAbstract extends PowerVmAl
 
     private void printVmIDs(List<? extends Vm> vmList) {
         if (!Log.isDisabled()) {
-            for (Vm vm : vmList) {
-                Log.print(vm.getId() + " ");
-            }
+            vmList.forEach(vm -> Log.print(vm.getId() + " "));
             Log.printLine();
         }
     }
@@ -687,12 +689,42 @@ public abstract class PowerVmAllocationPolicyMigrationAbstract extends PowerVmAl
         final double upperThreshold = getOverUtilizationThreshold(host);
         addHistoryEntryIfAbsent(host, upperThreshold);
 
-        final double totalRequestedMips =
-            host.getVmList().stream()
-                .mapToDouble(Vm::getCurrentRequestedTotalMips)
-                .sum();
+        return getHostCpuUtilizationPercentage(host) > upperThreshold;
+    }
 
-        final double utilization = totalRequestedMips / host.getTotalMips();
-        return utilization > upperThreshold;
+    private double getHostCpuUtilizationPercentage(PowerHost host) {
+        return getHostTotalRequestedMips(host) / host.getTotalMips();
+    }
+
+    /**
+     * Gets the total MIPS that is currently being used by all VMs inside the Host.
+     * @param host
+     * @return
+     */
+    private double getHostTotalRequestedMips(PowerHost host) {
+        return host.getVmList().stream()
+            .mapToDouble(Vm::getCurrentRequestedTotalMips)
+            .sum();
+    }
+
+    /**
+     * Checks if a host is under utilized, based on current CPU usage.
+     *
+     * @param host the host
+     * @return true, if the host is under utilized; false otherwise
+     */
+    @Override
+    public boolean isHostUnderUtilized(PowerHost host) {
+        final double underThreshold = getUnderUtilizationThreshold();
+
+        return getHostCpuUtilizationPercentage(host) < underThreshold;
+    }
+
+    public double getUnderUtilizationThreshold() {
+        return underUtilizationThreshold;
+    }
+
+    public void setUnderUtilizationThreshold(double underUtilizationThreshold) {
+        this.underUtilizationThreshold = underUtilizationThreshold;
     }
 }

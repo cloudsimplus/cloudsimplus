@@ -13,7 +13,7 @@ import org.cloudbus.cloudsim.selectionpolicies.power.PowerVmSelectionPolicy;
 import org.cloudbus.cloudsim.vms.Vm;
 
 /**
- * A VM allocation policy that uses a Static CPU utilization Threshold (THR) to detect host over
+ * A VM allocation policy that uses a static CPU utilization threshold to detect host over
  * utilization.
  *
  * <p>If you are using any algorithms, policies or workload included in the power package please cite

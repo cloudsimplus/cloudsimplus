@@ -111,4 +111,5 @@ public abstract class PowerVmAllocationPolicyAbstract extends VmAllocationPolicy
     public Map<String, Host> getVmHostMap() {
         return vmHostMap;
     }
+
 }

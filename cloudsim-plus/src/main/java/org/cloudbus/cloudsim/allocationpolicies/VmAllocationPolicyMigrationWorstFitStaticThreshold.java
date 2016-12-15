@@ -41,8 +41,6 @@ import org.cloudbus.cloudsim.selectionpolicies.power.PowerVmSelectionPolicy;
  * @author Manoel Campos da Silva Filho
  */
 public class VmAllocationPolicyMigrationWorstFitStaticThreshold extends PowerVmAllocationPolicyMigrationStaticThreshold {
-    /**@see #getUnderUtilizationThreshold() */
-    private double underUtilizationThreshold = 0.35;
 
     public VmAllocationPolicyMigrationWorstFitStaticThreshold(
             PowerVmSelectionPolicy vmSelectionPolicy,
@@ -90,14 +88,12 @@ public class VmAllocationPolicyMigrationWorstFitStaticThreshold extends PowerVmA
      */
     @Override
     public PowerHost findHostForVm(Vm vm, Set<? extends Host> excludedHosts) {
-        for (PowerHostSimple host : this.<PowerHostSimple>getHostList()) {
-            if (!excludedHosts.contains(host) && host.isSuitableForVm(vm)
-                    && !isHostOverUtilizedAfterAllocation(host, vm)) {
-                return host;
-            }
-        }
-
-        return PowerHost.NULL;
+        return this.<PowerHost>getHostList().stream()
+            .filter(host -> !excludedHosts.contains(host))
+            .filter(host -> host.isSuitableForVm(vm))
+            .filter(host -> !isHostOverUtilizedAfterAllocation(host, vm))
+            .findFirst()
+            .orElse(PowerHost.NULL);
     }
 
     /**
@@ -115,30 +111,10 @@ public class VmAllocationPolicyMigrationWorstFitStaticThreshold extends PowerVmA
         return this.<PowerHost>getHostList().stream()
             .filter(h -> !excludedHosts.contains(h))
             .filter(h -> h.getUtilizationOfCpu() > 0)
-            .filter(h -> h.getUtilizationOfCpu() < underUtilizationThreshold)
+            .filter(h -> h.getUtilizationOfCpu() < getUnderUtilizationThreshold())
             .filter(h -> !allVmsAreMigratingOutOrThereAreVmsMigratingIn(h))
             .min((h1, h2) -> Double.compare(h1.getUtilizationOfCpu(), h2.getUtilizationOfCpu()))
             .orElse(PowerHost.NULL);
-    }
-
-    /**
-     * Gets the percentage of total CPU utilization
-     * to indicate that a host is under used and its VMs have to be migrated.
-     *
-     * @return the under utilization threshold (in scale is from 0 to 1, where 1 is 100%)
-     */
-    public double getUnderUtilizationThreshold() {
-        return underUtilizationThreshold;
-    }
-
-    /**
-     * Sets the percentage of total CPU utilization
-     * to indicate that a host is under used and its VMs have to be migrated.
-     *
-     * @param underUtilizationThreshold the under utilization threshold (in scale is from 0 to 1, where 1 is 100%)
-     */
-    public void setUnderUtilizationThreshold(double underUtilizationThreshold) {
-        this.underUtilizationThreshold = underUtilizationThreshold;
     }
 
 }

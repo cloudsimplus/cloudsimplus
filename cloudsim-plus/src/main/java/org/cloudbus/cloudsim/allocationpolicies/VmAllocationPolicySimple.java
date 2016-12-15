@@ -135,19 +135,18 @@ public class VmAllocationPolicySimple extends VmAllocationPolicyAbstract {
 
     @Override
     public boolean allocateHostForVm(Vm vm, Host host) {
-        if (host.vmCreate(vm)) {
-            mapVmToPm(vm, host);
-
-            final int requiredPes = vm.getNumberOfPes();
-            getUsedPes().put(vm.getUid(), requiredPes);
-            getHostFreePesMap().put(host, getHostFreePesMap().get(host) - requiredPes);
-
-            Log.printFormattedLine(
-                    "%.2f: VM #%d has been allocated to the host #%d",
-                    vm.getSimulation().clock(), vm.getId(), host.getId());
-            return true;
+        if (!host.vmCreate(vm)) {
+            return false;
         }
 
-        return false;
+        mapVmToPm(vm, host);
+        final int requiredPes = vm.getNumberOfPes();
+        getUsedPes().put(vm.getUid(), requiredPes);
+        getHostFreePesMap().put(host, getHostFreePesMap().get(host) - requiredPes);
+
+        Log.printFormattedLine(
+                "%.2f: VM #%d has been allocated to the host #%d",
+                vm.getSimulation().clock(), vm.getId(), host.getId());
+        return true;
     }
 }
