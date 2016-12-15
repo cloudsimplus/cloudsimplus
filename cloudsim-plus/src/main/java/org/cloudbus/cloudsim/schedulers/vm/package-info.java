@@ -1,5 +1,5 @@
 /**
- * The package provides {@link org.cloudbus.cloudsim.schedulers.vm.VmScheduler}
+ * Provides {@link org.cloudbus.cloudsim.schedulers.vm.VmScheduler}
  * implementations that are used to schedule the execution of multiple
  * {@link org.cloudbus.cloudsim.vms.Vm} inside a given
  * {@link org.cloudbus.cloudsim.hosts.Host}.

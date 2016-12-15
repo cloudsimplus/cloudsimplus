@@ -1,6 +1,6 @@
 /**
  * Provides {@link org.cloudsimplus.listeners.EventListener}
- * implementations to enable event notification during simulation execution.
+ * implementations to enable event notifications during simulation execution.
  *
  * <p>These notifications are related to changes in the state of simulation entities.
  * The listeners enable, for instance, notifying when:

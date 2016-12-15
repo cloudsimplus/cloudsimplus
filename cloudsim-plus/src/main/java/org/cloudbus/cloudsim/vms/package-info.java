@@ -1,7 +1,7 @@
 /**
  *
  * Provides implementations of Virtual Machines ({@link org.cloudbus.cloudsim.vms.Vm})
- * that are a software package that emulate the architecture of a physical machine.
+ * which are a software package that emulate the architecture of a physical machine.
  * Each VM is executed by a Host and it is used to run applications ({@link org.cloudbus.cloudsim.cloudlets.Cloudlet}).
  * Both VMs and Cloudlets are owned by a specific cloud customer
  * (represented by a {@link org.cloudbus.cloudsim.brokers.DatacenterBroker}).
