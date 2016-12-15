@@ -221,7 +221,10 @@ The image below, for a simulation with two cloudlets (applications) gives you a 
 The project documentation originated from CloudSim was entirely updated and extended. 
 You can see the javadoc documentation for classes and their elements directly on your IDE.
 
-The documentation is available online at <http://cloudsimplus.org/apidocs/>.
+The JavaDoc documentation is available online at <http://cloudsimplus.org/apidocs/>. 
+CloudSim Plus extends the documentation of classes and interfaces and also includes extremelly helpful
+package documentation that can be viewed directly on your IDE or at the home page of the link provided above.
+Such a package documentation gives a general overview of the classes used to build a cloud simulation.
 There is also a [Wiki page](https://github.com/manoelcampos/cloudsim-plus/wiki) with additional information such as a FAQ list.  
 
 A Google Group forum is also available at <https://groups.google.com/group/cloudsim-plus>
