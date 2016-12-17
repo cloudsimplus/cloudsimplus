@@ -2,20 +2,20 @@ package org.cloudbus.cloudsim.examples.network.datacenter;
 
 import java.util.Arrays;
 import java.util.List;
+
+import org.cloudbus.cloudsim.brokers.DatacenterBroker;
 import org.cloudbus.cloudsim.util.Log;
-import org.cloudbus.cloudsim.cloudlets.network.AppCloudlet;
 import org.cloudbus.cloudsim.cloudlets.network.CloudletSendTask;
 import org.cloudbus.cloudsim.cloudlets.network.NetworkCloudlet;
 import org.cloudbus.cloudsim.vms.network.NetworkVm;
 import org.cloudbus.cloudsim.cloudlets.network.CloudletTask;
 import org.cloudbus.cloudsim.cloudlets.network.CloudletExecutionTask;
 import org.cloudbus.cloudsim.cloudlets.network.CloudletReceiveTask;
-import org.cloudbus.cloudsim.brokers.network.NetworkDatacenterBroker;
 import org.cloudbus.cloudsim.utilizationmodels.UtilizationModel;
 import org.cloudbus.cloudsim.utilizationmodels.UtilizationModelFull;
 
 /**
- * An example of a Workflow {@link AppCloudlet}'s that are composed of
+ * An example of a "Workflow Application" that is compounded by
  * 3 {@link NetworkCloudlet}, each one having different stages
  * such as sending, receiving or processing data.
  *
@@ -27,12 +27,12 @@ import org.cloudbus.cloudsim.utilizationmodels.UtilizationModelFull;
  * It freezes after the cloudlets creation.
  * Maybe the problem is in the NetworkCloudletSpaceSharedScheduler class.
  */
-public class NetworkVmsExampleWorkflowAppCloudlet extends NetworkVmsExampleAppCloudletAbstract {
+public class NetworkVmsExampleWorkflowApp extends NetworkVmExampleAbstract {
     private static final long PACKET_DATA_LENGTH_IN_BYTES = 1000;
     private static final long NUMBER_OF_PACKETS_TO_SEND = 100;
     private int currentNetworkCloudletId = -1;
 
-    public NetworkVmsExampleWorkflowAppCloudlet(){
+    public NetworkVmsExampleWorkflowApp(){
         super();
     }
 
@@ -42,22 +42,21 @@ public class NetworkVmsExampleWorkflowAppCloudlet extends NetworkVmsExampleAppCl
      * @param args command line arguments
      */
     public static void main(String[] args) {
-        new NetworkVmsExampleWorkflowAppCloudlet();
+        new NetworkVmsExampleWorkflowApp();
     }
 
     @Override
-    public List<NetworkCloudlet> createNetworkCloudlets(
-            AppCloudlet appCloudlet, NetworkDatacenterBroker broker) {
+    public List<NetworkCloudlet> createNetworkCloudlets(DatacenterBroker broker) {
         NetworkCloudlet networkCloudletList[] = new NetworkCloudlet[3];
         List<NetworkVm> selectedVms =
-                randomlySelectVmsForAppCloudlet(broker, networkCloudletList.length);
+                randomlySelectVmsForApp(broker, networkCloudletList.length);
 
         for(int i = 0; i < networkCloudletList.length; i++){
             networkCloudletList[i] =
-                    createNetworkCloudlet(appCloudlet, selectedVms.get(i), broker);
+                    createNetworkCloudlet(selectedVms.get(i), broker);
             Log.printFormattedLine(
-                "Created NetworkCloudlet %d for AppCloudlet %d",
-                networkCloudletList[i].getId(), appCloudlet.getId());
+                "Created NetworkCloudlet %d for Application %d",
+                networkCloudletList[i].getId(), broker.getId());
         }
 
         //NetworkCloudlet 0 Tasks
@@ -127,19 +126,17 @@ public class NetworkVmsExampleWorkflowAppCloudlet extends NetworkVmsExampleAppCl
     }
 
     /**
-     * Creates a {@link NetworkCloudlet} for the given {@link AppCloudlet}.
+     * Creates a {@link NetworkCloudlet}.
      *
-     * @param appCloudlet the {@link AppCloudlet} that will own the created {@link NetworkCloudlet)
      * @param vm the VM that will run the created {@link NetworkCloudlet)
      * @param broker the broker that will own the create NetworkCloudlet
      * @return
      */
-    private NetworkCloudlet createNetworkCloudlet(AppCloudlet appCloudlet, NetworkVm vm, NetworkDatacenterBroker broker) {
+    private NetworkCloudlet createNetworkCloudlet(NetworkVm vm, DatacenterBroker broker) {
         UtilizationModel utilizationModel = new UtilizationModelFull();
         NetworkCloudlet cloudlet = new NetworkCloudlet(++currentNetworkCloudletId, 1, NETCLOUDLET_PES_NUMBER);
         cloudlet
                 .setMemory(NETCLOUDLET_RAM)
-                .setAppCloudlet(appCloudlet)
                 .setCloudletFileSize(NETCLOUDLET_FILE_SIZE)
                 .setCloudletOutputSize(NETCLOUDLET_OUTPUT_SIZE)
                 .setUtilizationModel(utilizationModel)

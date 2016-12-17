@@ -24,7 +24,7 @@ package org.cloudsimplus.sla;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.cloudbus.cloudsim.brokers.network.NetworkDatacenterBroker;
+import org.cloudbus.cloudsim.brokers.DatacenterBrokerSimple;
 import org.cloudbus.cloudsim.cloudlets.Cloudlet;
 import org.cloudbus.cloudsim.datacenters.DatacenterCharacteristics;
 import org.cloudbus.cloudsim.datacenters.DatacenterCharacteristicsSimple;
@@ -153,7 +153,7 @@ public class NetworkVmsExampleWithMetrics {
         datacenter0 = createDatacenter();
 
         // Third step: Create Broker
-        NetworkDatacenterBroker broker = createBroker();
+        DatacenterBroker broker = new DatacenterBrokerSimple(cloudsim);
 
         vmlist = createVM(broker, 5);
 
@@ -260,34 +260,4 @@ public class NetworkVmsExampleWithMetrics {
         }
     }
 
-    /**
-     * Creates the broker.
-     *
-     * @return the switches broker
-     */
-    private NetworkDatacenterBroker createBroker() {
-        return new NetworkDatacenterBroker(cloudsim);
-    }
 }
-
-/* private void totalCostPrice() {
- double memoryDataCenterVm, totalCost = 0;
- double bwDataCenterVm, miDataCenterVm, storageDataCenterVm;
- int numberOfVms = Datacenter().getCharacteristics().getHostList().size() * MAX_VMS_PER_HOST;
- for (NetworkVm vms : getVmList()) {
- memoryDataCenterVm = ((getDatacenter().getCharacteristics().getCostPerMem()) * vms.getRam() * numberOfVms);
- bwDataCenterVm = ((getDatacenter().getCharacteristics().getCostPerBw()) * vms.getBw() * numberOfVms);
- miDataCenterVm = ((getDatacenter().getCharacteristics().getCostPerMi()) * vms.getMips() * numberOfVms);
- storageDataCenterVm = ((getDatacenter().getCharacteristics().getCostPerStorage()) * vms.getSize() * numberOfVms);
-
- totalCost = memoryDataCenterVm + bwDataCenterVm + miDataCenterVm + storageDataCenterVm;
- }
- System.out.println("* Total Cost Price ******: " + totalCost);
- }
-
- */
-/*
- private void responseTimeCloudlet(NetworkCloudlet cloudlet) {
- double rt = cloudlet.getFinishTime() - cloudlet.getDatacenterArrivalTime();
- System.out.println("***** Tempo de resposta CLOUDLETS - " + rt);
- } */

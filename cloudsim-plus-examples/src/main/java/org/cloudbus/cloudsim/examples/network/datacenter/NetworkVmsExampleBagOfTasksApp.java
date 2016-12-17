@@ -3,20 +3,19 @@ package org.cloudbus.cloudsim.examples.network.datacenter;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.cloudbus.cloudsim.brokers.DatacenterBroker;
 import org.cloudbus.cloudsim.cloudlets.Cloudlet;
-import org.cloudbus.cloudsim.cloudlets.network.AppCloudlet;
 import org.cloudbus.cloudsim.cloudlets.network.CloudletSendTask;
 import org.cloudbus.cloudsim.cloudlets.network.CloudletExecutionTask;
 import org.cloudbus.cloudsim.cloudlets.network.CloudletReceiveTask;
 import org.cloudbus.cloudsim.cloudlets.network.CloudletTask;
-import org.cloudbus.cloudsim.brokers.network.NetworkDatacenterBroker;
 import org.cloudbus.cloudsim.cloudlets.network.NetworkCloudlet;
 import org.cloudbus.cloudsim.vms.network.NetworkVm;
 import org.cloudbus.cloudsim.utilizationmodels.UtilizationModel;
 import org.cloudbus.cloudsim.utilizationmodels.UtilizationModelFull;
 
 /**
- * An example of a Bag of Tasks {@link AppCloudlet}'s that are composed of
+ * An example of "Bag of Tasks" application that is compounded by
  * 3 {@link NetworkCloudlet}, where 2 of them send data to the first created one,
  * that waits to data be received.
  *
@@ -24,9 +23,9 @@ import org.cloudbus.cloudsim.utilizationmodels.UtilizationModelFull;
  * @author Rajkumar Buyya
  * @author Manoel Campos da Silva Filho
  */
-public class NetworkVmsExampleBagOfTasksAppCloudlet extends NetworkVmsExampleAppCloudletAbstract {
+public class NetworkVmsExampleBagOfTasksApp extends NetworkVmExampleAbstract {
 
-    public NetworkVmsExampleBagOfTasksAppCloudlet(){
+    public NetworkVmsExampleBagOfTasksApp(){
         super();
     }
 
@@ -36,22 +35,20 @@ public class NetworkVmsExampleBagOfTasksAppCloudlet extends NetworkVmsExampleApp
      * @param args command line arguments
      */
     public static void main(String[] args) {
-        new NetworkVmsExampleBagOfTasksAppCloudlet();
+        new NetworkVmsExampleBagOfTasksApp();
     }
 
     /**
      * @todo @author manoelcampos It isn't adding packets to send.
      * See {@link CloudletSendTask#addPacket(Cloudlet, long)}
-     * @param app
      * @param broker
      * @return
      */
     @Override
-    public List<NetworkCloudlet> createNetworkCloudlets(AppCloudlet app, NetworkDatacenterBroker broker){
+    public List<NetworkCloudlet> createNetworkCloudlets(DatacenterBroker broker){
         final int NETCLOUDLETS_FOR_EACH_APP = 3;
         List<NetworkCloudlet> networkCloudletList = new ArrayList<>(NETCLOUDLETS_FOR_EACH_APP+1);
-        List<NetworkVm> selectedVms =
-             randomlySelectVmsForAppCloudlet(broker, NETCLOUDLETS_FOR_EACH_APP+1);
+        List<NetworkVm> selectedVms = randomlySelectVmsForApp(broker, NETCLOUDLETS_FOR_EACH_APP+1);
         //basically, each task runs the simulation and then data is consolidated in one task
         long memory = 1000;
         long networkCloudletLength = 10000;
@@ -65,7 +62,7 @@ public class NetworkVmsExampleBagOfTasksAppCloudlet extends NetworkVmsExampleApp
                             currentCloudletId,
                             networkCloudletLength,
                             NETCLOUDLET_PES_NUMBER);
-            cloudlet.setAppCloudlet(app)
+            cloudlet
                     .setMemory(memory)
                     .setCloudletFileSize(NETCLOUDLET_FILE_SIZE)
                     .setCloudletOutputSize(NETCLOUDLET_OUTPUT_SIZE)

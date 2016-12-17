@@ -51,11 +51,6 @@ public class NetworkCloudlet extends CloudletSimple {
     private final List<CloudletTask> tasks;
 
     /**
-     * @see #getAppCloudlet()
-     */
-    private AppCloudlet appCloudlet;
-
-    /**
      * @see #getMemory()
      */
     private long memory;
@@ -114,25 +109,6 @@ public class NetworkCloudlet extends CloudletSimple {
             .setUtilizationModelRam(utilizationModelRam)
             .setUtilizationModelBw(utilizationModelBw);
         this.memory = memory;
-    }
-
-    /**
-     * Gets the {@link AppCloudlet} that owns this NetworkCloudlet.
-     *
-     * @return
-     */
-    public AppCloudlet getAppCloudlet() {
-        return appCloudlet;
-    }
-
-    /**
-     * Set the {@link AppCloudlet} that owns this NetworkCloudlet.
-     *
-     * @param appCloudlet
-     */
-    public NetworkCloudlet setAppCloudlet(AppCloudlet appCloudlet) {
-        this.appCloudlet = appCloudlet;
-        return this;
     }
 
     public double getNumberOfTasks() {
