@@ -13,7 +13,7 @@ import java.util.stream.Stream;
 import org.cloudbus.cloudsim.core.events.*;
 import org.cloudbus.cloudsim.network.topologies.NetworkTopology;
 import org.cloudbus.cloudsim.util.Log;
-import org.cloudbus.cloudsim.core.predicates.Predicate;
+import java.util.function.Predicate;
 import org.cloudsimplus.listeners.EventInfo;
 import org.cloudsimplus.listeners.EventInfoSimple;
 import org.cloudsimplus.listeners.EventListener;
@@ -386,8 +386,7 @@ public class CloudSim implements Simulation {
         }
 
         if (e.getId() == -1) { // Only add once!
-            int id = entities.size();
-            e.setId(id);
+            e.setId(entities.size());
             entities.add(e);
             entitiesByName.put(e.getName(), e);
         }
@@ -492,7 +491,7 @@ public class CloudSim implements Simulation {
     }
 
     @Override
-    public void wait(int src, Predicate p) {
+    public void wait(int src, Predicate<SimEvent> p) {
         entities.get(src).setState(SimEntity.State.WAITING);
         if (p != SIM_ANY) {
             // If a predicate has been used, store it in order to check incomming events that matches it
@@ -501,13 +500,13 @@ public class CloudSim implements Simulation {
     }
 
     @Override
-    public long waiting(int dest, Predicate p) {
-        return getEventsForDestinationEntity(deferred, p, dest).count();
+    public long waiting(int dest, Predicate<SimEvent> p) {
+        return filterEventsForDestinationEntity(deferred, p, dest).count();
     }
 
     @Override
-    public SimEvent select(int dest, Predicate p) {
-        SimEvent evt = getEventsForDestinationEntity(deferred, p, dest).findFirst().orElse(SimEvent.NULL);
+    public SimEvent select(int dest, Predicate<SimEvent> p) {
+        SimEvent evt = filterEventsForDestinationEntity(deferred, p, dest).findFirst().orElse(SimEvent.NULL);
         deferred.remove(evt);
         return evt;
     }
@@ -521,8 +520,8 @@ public class CloudSim implements Simulation {
      * @param dest Id of entity that scheduled the event
      * @return a Stream of events from the queue
      */
-    private Stream<SimEvent> getEventsForDestinationEntity(EventQueue queue, Predicate p, int dest) {
-        return queue.stream().filter(p.and(e -> e.getDestination() == dest));
+    private Stream<SimEvent> filterEventsForDestinationEntity(EventQueue queue, Predicate<SimEvent> p, int dest) {
+        return filterEvents(queue, p.and(e -> e.getDestination() == dest));
     }
 
     /**
@@ -532,12 +531,12 @@ public class CloudSim implements Simulation {
      * @param p the event selection predicate
      * @return a Stream of events from the queue
      */
-    private Stream<SimEvent> getEventsForDestinationEntity(EventQueue queue, Predicate p) {
+    private Stream<SimEvent> filterEvents(EventQueue queue, Predicate<SimEvent> p) {
         return queue.stream().filter(p);
     }
 
     @Override
-    public SimEvent findFirstDeferred(int src, Predicate p) {
+    public SimEvent findFirstDeferred(int src, Predicate<SimEvent> p) {
         SimEvent ev = null;
         Iterator<SimEvent> iterator = deferred.iterator();
         while (iterator.hasNext()) {
@@ -551,14 +550,14 @@ public class CloudSim implements Simulation {
     }
 
     @Override
-    public SimEvent cancel(int src, Predicate p) {
+    public SimEvent cancel(int src, Predicate<SimEvent> p) {
         SimEvent evt = future.stream().filter(p.and(e -> e.getSource() == src)).findFirst().orElse(SimEvent.NULL);
         future.remove(evt);
         return evt;
     }
 
     @Override
-    public boolean cancelAll(int src, Predicate p) {
+    public boolean cancelAll(int src, Predicate<SimEvent> p) {
         SimEvent ev = null;
         int previousSize = future.size();
         Iterator<SimEvent> iter = future.iterator();
@@ -605,7 +604,7 @@ public class CloudSim implements Simulation {
                     destEnt = entities.get(dest);
                     if (destEnt.getState() == SimEntity.State.WAITING) {
                         Integer destObj = dest;
-                        Predicate p = waitPredicates.get(destObj);
+                        Predicate<SimEvent> p = waitPredicates.get(destObj);
                         if ((Objects.isNull(p)) || (e.getTag() == 9999) || p.test(e)) {
                             destEnt.setEventBuffer(new CloudSimEvent(e));
                             destEnt.setState(SimEntity.State.RUNNABLE);

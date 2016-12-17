@@ -9,9 +9,9 @@ package org.cloudbus.cloudsim.core;
 
 import org.cloudbus.cloudsim.core.events.SimEvent;
 import org.cloudbus.cloudsim.util.Log;
-import org.cloudbus.cloudsim.core.predicates.Predicate;
 
 import java.util.Objects;
+import java.util.function.Predicate;
 
 /**
  * This class represents a simulation entity. An entity handles events and can
@@ -329,7 +329,7 @@ public abstract class CloudSimEntity implements SimEntity {
      * @param p The event selection predicate
      * @return The count of matching events
      */
-    public long numEventsWaiting(Predicate p) {
+    public long numEventsWaiting(Predicate<SimEvent> p) {
         return simulation.waiting(id, p);
     }
 
@@ -349,7 +349,7 @@ public abstract class CloudSimEntity implements SimEntity {
      * @param p The event selection predicate
      * @return the simulation event
      */
-    public SimEvent selectEvent(Predicate p) {
+    public SimEvent selectEvent(Predicate<SimEvent> p) {
         if (!simulation.isRunning()) {
             return null;
         }
@@ -364,7 +364,7 @@ public abstract class CloudSimEntity implements SimEntity {
      * @param p the event selection predicate
      * @return the removed event or {@link SimEvent#NULL} if not found
      */
-    public SimEvent cancelEvent(Predicate p) {
+    public SimEvent cancelEvent(Predicate<SimEvent> p) {
         return (simulation.isRunning() ? simulation.cancel(id, p) : SimEvent.NULL);
     }
 
@@ -375,7 +375,7 @@ public abstract class CloudSimEntity implements SimEntity {
      * @param p The predicate to match
      * @return the simulation event
      */
-    public SimEvent getNextEvent(Predicate p) {
+    public SimEvent getNextEvent(Predicate<SimEvent> p) {
         if (!simulation.isRunning()) {
             return null;
         }
@@ -393,7 +393,7 @@ public abstract class CloudSimEntity implements SimEntity {
      *
      * @param p The predicate to match
      */
-    public void waitForEvent(Predicate p) {
+    public void waitForEvent(Predicate<SimEvent> p) {
         if (!simulation.isRunning()) {
             return;
         }

@@ -4,7 +4,7 @@ import java.util.*;
 
 import org.cloudbus.cloudsim.brokers.DatacenterBroker;
 import org.cloudbus.cloudsim.core.events.SimEvent;
-import org.cloudbus.cloudsim.core.predicates.Predicate;
+import java.util.function.Predicate;
 import org.cloudbus.cloudsim.core.predicates.PredicateAny;
 import org.cloudbus.cloudsim.core.predicates.PredicateNone;
 import org.cloudbus.cloudsim.network.topologies.NetworkTopology;
@@ -54,7 +54,7 @@ public interface Simulation {
      * @param p the event selection predicate
      * @return the removed event or {@link SimEvent#NULL} if not found
      */
-    SimEvent cancel(int src, Predicate p);
+    SimEvent cancel(int src, Predicate<SimEvent> p);
 
     /**
      * Cancels all events from the future event queue that matches a given predicate
@@ -64,7 +64,7 @@ public interface Simulation {
      * @param p the event selection predicate
      * @return true if at least one event has been cancelled; false otherwise
      */
-    boolean cancelAll(int src, Predicate p);
+    boolean cancelAll(int src, Predicate<SimEvent> p);
 
     /**
      * Gets the current simulation time.
@@ -81,7 +81,7 @@ public interface Simulation {
      * @param p the event selection predicate
      * @return the first matched event or {@link SimEvent#NULL} if not found
      */
-    SimEvent findFirstDeferred(int src, Predicate p);
+    SimEvent findFirstDeferred(int src, Predicate<SimEvent> p);
 
     /**
      * Gets a new copy of initial simulation Calendar.
@@ -273,7 +273,7 @@ public interface Simulation {
      * @param p the event selection predicate
      * @return the removed event or {@link SimEvent#NULL} if not found
      */
-    SimEvent select(int dest, Predicate p);
+    SimEvent select(int dest, Predicate<SimEvent> p);
 
     /**
      * Sends an event from one entity to another.
@@ -347,7 +347,7 @@ public interface Simulation {
      * @param src Id of entity that scheduled the event
      * @param p the event selection predicate
      */
-    void wait(int src, Predicate p);
+    void wait(int src, Predicate<SimEvent> p);
 
     /**
      * Removes an entity with and old name from the {@link #getEntitiesByName()} map
@@ -366,7 +366,7 @@ public interface Simulation {
      * @param p the event selection predicate
      * @return
      */
-    long waiting(int dest, Predicate p);
+    long waiting(int dest, Predicate<SimEvent> p);
 
     /**
      * Gets the network topology used for Network simulations.
@@ -415,14 +415,14 @@ public interface Simulation {
     Simulation NULL = new Simulation() {
         @Override public void abort() {}
         @Override public void addEntity(CloudSimEntity e) {}
-        @Override public SimEvent cancel(int src, Predicate p) { return SimEvent.NULL; }
-        @Override public boolean cancelAll(int src, Predicate p) {
+        @Override public SimEvent cancel(int src, Predicate<SimEvent> p) { return SimEvent.NULL; }
+        @Override public boolean cancelAll(int src, Predicate<SimEvent> p) {
             return false;
         }
         @Override public double clock() {
             return 0;
         }
-        @Override public SimEvent findFirstDeferred(int src, Predicate p) { return SimEvent.NULL; }
+        @Override public SimEvent findFirstDeferred(int src, Predicate<SimEvent> p) { return SimEvent.NULL; }
         @Override public Calendar getCalendar() {
             return Calendar.getInstance();
         }
@@ -471,7 +471,7 @@ public interface Simulation {
         @Override public boolean isRunning() {
             return false;
         }
-        @Override public SimEvent select(int dest, Predicate p) {
+        @Override public SimEvent select(int dest, Predicate<SimEvent> p) {
             return SimEvent.NULL;
         }
         @Override public void send(int src, int dest, double delay, int tag, Object data) {}
@@ -485,8 +485,8 @@ public interface Simulation {
         @Override public boolean terminateAt(double time) {
             return false;
         }
-        @Override public void wait(int src, Predicate p) {}
-        @Override public long waiting(int dest, Predicate p) {
+        @Override public void wait(int src, Predicate<SimEvent> p) {}
+        @Override public long waiting(int dest, Predicate<SimEvent> p) {
             return 0;
         }
         @Override public NetworkTopology getNetworkTopology() { return NetworkTopology.NULL; }

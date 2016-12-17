@@ -10,53 +10,52 @@ package org.cloudbus.cloudsim.core.predicates;
 
 import org.cloudbus.cloudsim.core.events.SimEvent;
 
+import java.util.function.Predicate;
+import java.util.stream.IntStream;
+
 /**
  * A predicate to select events that don't match specific tags.
  *
  * @author Marcos Dias de Assuncao
- * @since CloudSim Toolkit 1.0
  * @see PredicateType
  * @see Predicate
+ * @since CloudSim Toolkit 1.0
  */
-public class PredicateNotType implements Predicate {
+public class PredicateNotType implements Predicate<SimEvent> {
 
-	/** Array of tags to verify if the tag of received events doesn't correspond to. */
-	private final int[] tags;
+    /**
+     * Array of tags to verify if the tag of received events doesn't correspond to.
+     */
+    private final IntStream tags;
 
-	/**
-	 * Constructor used to select events whose tags do not match a given tag.
-	 *
-	 * @param tag An event tag value
-	 */
-	public PredicateNotType(int tag) {
-		tags = new int[] { tag };
-	}
+    /**
+     * Constructor used to select events whose tags do not match a given tag.
+     *
+     * @param tag An event {@link SimEvent#getTag() tag} value
+     */
+    public PredicateNotType(int tag) {
+        tags = IntStream.of(tag);
+    }
 
-	/**
-	 * Constructor used to select events whose tag values do not match any of the given tags.
-	 *
-	 * @param tags the list of tags
-	 */
-	public PredicateNotType(int[] tags) {
-		this.tags = tags.clone();
-	}
+    /**
+     * Constructor used to select events whose tag values do not match any of the given tags.
+     *
+     * @param tags the list of {@link SimEvent#getTag() tags}
+     */
+    public PredicateNotType(int[] tags) {
+        this.tags = IntStream.of(tags);
+    }
 
-	/**
-	 * Matches any event that hasn't one of the specified {@link #tags}.
-	 *
-	 * @param ev {@inheritDoc}
-	 * @return {@inheritDoc}
-         * @see #tags
-	 */
-	@Override
-	public boolean test(SimEvent ev) {
-		int tag = ev.getTag();
-		for (int tag2 : tags) {
-			if (tag == tag2) {
-				return false;
-			}
-		}
-		return true;
-	}
+    /**
+     * Matches any event that hasn't one of the specified {@link #tags}.
+     *
+     * @param ev {@inheritDoc}
+     * @return {@inheritDoc}
+     * @see #tags
+     */
+    @Override
+    public boolean test(SimEvent ev) {
+        return tags.noneMatch(tag -> tag == ev.getTag());
+    }
 
 }
