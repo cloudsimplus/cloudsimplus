@@ -13,6 +13,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
+
+import org.cloudbus.cloudsim.network.VmPacket;
 import org.cloudbus.cloudsim.util.Log;
 
 import org.cloudbus.cloudsim.cloudlets.network.CloudletExecutionTask;
@@ -20,7 +22,6 @@ import org.cloudbus.cloudsim.cloudlets.network.CloudletReceiveTask;
 import org.cloudbus.cloudsim.cloudlets.network.CloudletSendTask;
 import org.cloudbus.cloudsim.cloudlets.network.NetworkCloudlet;
 import org.cloudbus.cloudsim.datacenters.network.NetworkDatacenter;
-import org.cloudbus.cloudsim.network.HostPacket;
 import org.cloudbus.cloudsim.schedulers.cloudlet.CloudletSchedulerSpaceShared;
 import org.cloudbus.cloudsim.cloudlets.CloudletExecutionInfo;
 
@@ -47,13 +48,13 @@ public class NetworkCloudletSpaceSharedScheduler extends CloudletSchedulerSpaceS
     /**
      * @see #getHostPacketsToSendMap()
      */
-    private final Map<Integer, List<HostPacket>> hostPacketsToSendMap;
+    private final Map<Integer, List<VmPacket>> hostPacketsToSendMap;
 
     /**
-     * A map of {@link HostPacket}'s received, where each key is the Id
+     * A map of {@link VmPacket}'s received, where each key is the Id
      * of a sender VM and each value is the list of packets sent by that VM.
      */
-    private final Map<Integer, List<HostPacket>> hostPacketsReceivedMap;
+    private final Map<Integer, List<VmPacket>> hostPacketsReceivedMap;
 
     /**
      * The switches where the VM using this scheduler runs.
@@ -121,7 +122,7 @@ public class NetworkCloudletSpaceSharedScheduler extends CloudletSchedulerSpaceS
      */
     protected void addPacketsToBeSentFromVm(NetworkCloudlet sourceCloudlet) {
         CloudletSendTask dataTask = (CloudletSendTask)sourceCloudlet.getCurrentTask();
-        final List<HostPacket> packetsToSendFromVmOfCloudlet =
+        final List<VmPacket> packetsToSendFromVmOfCloudlet =
                 getListOfPacketsToBeSentFromVm(sourceCloudlet.getVm().getId());
 
         Log.println(Log.Level.DEBUG, getClass(), sourceCloudlet.getSimulation().clock(),
@@ -141,7 +142,7 @@ public class NetworkCloudletSpaceSharedScheduler extends CloudletSchedulerSpaceS
      * be obtained
      * @return
      */
-    protected List<HostPacket> getListOfPacketsToBeSentFromVm(int sourceVmId) {
+    protected List<VmPacket> getListOfPacketsToBeSentFromVm(int sourceVmId) {
         hostPacketsToSendMap.putIfAbsent(sourceVmId, new ArrayList<>());
         return hostPacketsToSendMap.get(sourceVmId);
     }
@@ -155,7 +156,7 @@ public class NetworkCloudletSpaceSharedScheduler extends CloudletSchedulerSpaceS
     protected void receivePackets(NetworkCloudlet sourceCloudlet) {
         CloudletReceiveTask task = (CloudletReceiveTask)sourceCloudlet.getCurrentTask();
 
-        final List<HostPacket> receivedPkts = getPacketsSentToGivenTask(task);
+        final List<VmPacket> receivedPkts = getPacketsSentToGivenTask(task);
         // Asumption: packet will not arrive in the same cycle
         receivedPkts.forEach(pkt -> task.receivePacket(pkt));
         receivedPkts.stream().forEach(pkt ->
@@ -163,10 +164,10 @@ public class NetworkCloudletSpaceSharedScheduler extends CloudletSchedulerSpaceS
                 Log.Level.DEBUG, getClass(), sourceCloudlet.getSimulation().clock(),
                 "Cloudlet %d in VM %d received pkt with %.0f bytes from Cloudlet %d in VM %d",
                 pkt.getReceiverCloudlet().getId(),
-                pkt.getReceiverVmId(),
-                pkt.getDataLength(),
+                pkt.getDestinationId(),
+                pkt.getSize(),
                 pkt.getSenderCloudlet().getId(),
-                pkt.getSenderVmId())
+                pkt.getSourceId())
         );
 
 
@@ -188,13 +189,13 @@ public class NetworkCloudletSpaceSharedScheduler extends CloudletSchedulerSpaceS
      * @param destinationTask The task that is waiting for packets
      * @return
      */
-    protected List<HostPacket> getPacketsSentToGivenTask(CloudletReceiveTask destinationTask) {
-        List<HostPacket> packetsFromExpectedSenderVm =
+    protected List<VmPacket> getPacketsSentToGivenTask(CloudletReceiveTask destinationTask) {
+        List<VmPacket> packetsFromExpectedSenderVm =
                 getListOfPacketsSentFromVm(destinationTask.getSourceVmId());
 
         return packetsFromExpectedSenderVm
                 .stream()
-                .filter(pkt -> pkt.getReceiverVmId() == destinationTask.getCloudlet().getVm().getId())
+                .filter(pkt -> pkt.getDestinationId() == destinationTask.getCloudlet().getVm().getId())
                 .collect(Collectors.toList());
     }
 
@@ -228,12 +229,12 @@ public class NetworkCloudletSpaceSharedScheduler extends CloudletSchedulerSpaceS
     }
 
     /**
-     * Gets the map of {@link HostPacket}'s to send, where each key is the id of the sending VM
+     * Gets the map of {@link VmPacket}'s to send, where each key is the id of the sending VM
      * and each value is the list of packets to send.
      *
-     * @return a ready-only map of {@link HostPacket}'s to send
+     * @return a ready-only map of {@link VmPacket}'s to send
      */
-    public Map<Integer, List<HostPacket>> getHostPacketsToSendMap() {
+    public Map<Integer, List<VmPacket>> getHostPacketsToSendMap() {
         return Collections.unmodifiableMap(hostPacketsToSendMap);
     }
 
@@ -243,7 +244,7 @@ public class NetworkCloudletSpaceSharedScheduler extends CloudletSchedulerSpaceS
      * @param sourceVmId id of VM to get the list of packets sent from
      * @return the list of packets sent from the given VM
      */
-    public List<HostPacket> getListOfPacketsSentFromVm(int sourceVmId){
+    public List<VmPacket> getListOfPacketsSentFromVm(int sourceVmId){
         hostPacketsReceivedMap.putIfAbsent(sourceVmId, new ArrayList<>());
         return hostPacketsReceivedMap.get(sourceVmId);
     }
@@ -255,8 +256,8 @@ public class NetworkCloudletSpaceSharedScheduler extends CloudletSchedulerSpaceS
      * @param pkt packet to be added to the list
      * @return true if the packet was added, false otherwise
      */
-    public boolean addPacketToListOfPacketsSentFromVm(HostPacket pkt){
-        return getListOfPacketsSentFromVm(pkt.getSenderVmId()).add(pkt);
+    public boolean addPacketToListOfPacketsSentFromVm(VmPacket pkt){
+        return getListOfPacketsSentFromVm(pkt.getSourceId()).add(pkt);
     }
 
 

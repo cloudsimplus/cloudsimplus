@@ -13,7 +13,7 @@ import java.util.List;
 import java.util.Objects;
 
 import org.cloudbus.cloudsim.cloudlets.Cloudlet;
-import org.cloudbus.cloudsim.network.HostPacket;
+import org.cloudbus.cloudsim.network.VmPacket;
 
 /**
  * Represents a task executed by a {@link NetworkCloudlet} that sends data to a
@@ -39,7 +39,7 @@ import org.cloudbus.cloudsim.network.HostPacket;
  *
  */
 public class CloudletSendTask extends CloudletTask {
-    private final List<HostPacket> packetsToSend;
+    private final List<VmPacket> packetsToSend;
 
     /**
      * Creates a new task.
@@ -61,7 +61,7 @@ public class CloudletSendTask extends CloudletTask {
      * @throws RuntimeException when a NetworkCloudlet was not assigned to the Task
      * @throws IllegalArgumentException when the source or destination Cloudlet doesn't have an assigned VM
      */
-    public HostPacket addPacket(Cloudlet destinationCloudlet, long dataLength) {
+    public VmPacket addPacket(Cloudlet destinationCloudlet, long dataLength) {
         if(Objects.isNull(getCloudlet())) {
             throw new RuntimeException("You must assign a NetworkCloudlet to this Task before adding packets.");
         }
@@ -72,7 +72,7 @@ public class CloudletSendTask extends CloudletTask {
             throw new IllegalArgumentException("The destination Cloudlet has to have an assigned VM.");
         }
 
-        HostPacket packet = new HostPacket(
+        VmPacket packet = new VmPacket(
                 getCloudlet().getVm().getId(), destinationCloudlet.getVm().getId(),
                 dataLength, getCloudlet(), destinationCloudlet);
         packetsToSend.add(packet);
@@ -82,7 +82,7 @@ public class CloudletSendTask extends CloudletTask {
     /**
      * @return a read-only list of packets to send
      */
-    public List<HostPacket> getPacketsToSend() {
+    public List<VmPacket> getPacketsToSend() {
         return Collections.unmodifiableList(packetsToSend);
     }
 
@@ -96,7 +96,7 @@ public class CloudletSendTask extends CloudletTask {
      * @return the packet list with the send time
      * updated to the given time
      */
-    public List<HostPacket> getPacketsToSend(double sendTime) {
+    public List<VmPacket> getPacketsToSend(double sendTime) {
         packetsToSend.forEach(pkt ->  pkt.setSendTime(sendTime));
 
         if(isFinished())

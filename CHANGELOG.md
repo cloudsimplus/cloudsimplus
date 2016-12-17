@@ -4,10 +4,15 @@ Lists the main changes in the project.
 
 ## [Current Development Version]
 
-## Added
+### Added
 - Allowed to delay the submission of VMs by a `DatacenterBroker`, simulating the dynamic arrival of VMs (closes the feature request #23)
-- Renamed `Simulation`class methods `abruptallyTerminate` to `Simulation.abort` and attribute `numberOfUsers` to `numberOfBrokers`.
 
+### Changed
+- Renamed `Simulation`class methods `abruptallyTerminate` to `Simulation.abort` and attribute `numberOfUsers` to `numberOfBrokers`.
+- Renamed the class `HostPacket` to `VmPacket` because such a kind of packet is sent between VMs.
+- Renamed the class `NetworkPacket` to `HostPacket` because such a kind of packet is sent between Hosts.
+- Renamed the class `InfoPacket` to `IcmpPacket` because such a kind of packet is sent to simulate ping requests (ICMP protocol).
+- Classes `IcmpPacket`, `HostPacket` and `VmPacket` now implements the new interface `NetworkPacket`
 
 ## [v0.8-beta.8] - 2016-12-12
 

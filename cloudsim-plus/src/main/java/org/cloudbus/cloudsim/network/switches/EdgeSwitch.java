@@ -17,7 +17,7 @@ import org.cloudbus.cloudsim.core.events.SimEvent;
 import org.cloudbus.cloudsim.datacenters.network.NetworkDatacenter;
 import org.cloudbus.cloudsim.hosts.Host;
 import org.cloudbus.cloudsim.hosts.network.NetworkHost;
-import org.cloudbus.cloudsim.network.NetworkPacket;
+import org.cloudbus.cloudsim.network.HostPacket;
 
 /**
  * This class represents an Edge Switch in a Datacenter network. It interacts
@@ -84,11 +84,11 @@ public class EdgeSwitch extends Switch {
     protected void processPacketDown(SimEvent ev) {
         super.processPacketDown(ev);
 
-        NetworkPacket netPkt = (NetworkPacket) ev.getData();
-        int recvVmId = netPkt.getHostPacket().getReceiverVmId();
+        HostPacket netPkt = (HostPacket) ev.getData();
+        int recvVmId = netPkt.getVmPacket().getDestinationId();
         // packet is to be recieved by host
         int hostid = getDatacenter().getVmToHostMap().get(recvVmId);
-        netPkt.setReceiverHostId(hostid);
+        netPkt.setDestinationId(hostid);
         getPacketToHostMap().putIfAbsent(hostid, new ArrayList<>());
         getPacketToHostMap().get(hostid).add(netPkt);
     }
@@ -97,14 +97,14 @@ public class EdgeSwitch extends Switch {
     protected void processPacketUp(SimEvent ev) {
         super.processPacketUp(ev);
 
-        NetworkPacket netPkt = (NetworkPacket) ev.getData();
-        int receiverVmId = netPkt.getHostPacket().getReceiverVmId();
+        HostPacket netPkt = (HostPacket) ev.getData();
+        int receiverVmId = netPkt.getVmPacket().getDestinationId();
 
         // packet is recieved from host
         // packet is to be sent to aggregate level or to another host in the same level
         int hostId = getDatacenter().getVmToHostMap().get(receiverVmId);
         NetworkHost host = getHostList().get(hostId);
-        netPkt.setReceiverHostId(hostId);
+        netPkt.setDestinationId(hostId);
 
         // packet needs to go to a host which is connected directly to switch
         if (!Objects.isNull(host)) {
@@ -134,8 +134,8 @@ public class EdgeSwitch extends Switch {
 
     private void forwardPacketsToHosts() {
         for (Integer hostId : getPacketToHostMap().keySet()) {
-            List<NetworkPacket> packetList = getHostPacketList(hostId);
-            for (NetworkPacket pkt: packetList) {
+            List<HostPacket> packetList = getHostPacketList(hostId);
+            for (HostPacket pkt: packetList) {
                 double delay = networkDelayForPacketTransmission(pkt, getDownlinkBandwidth(), packetList);
                 this.send(getId(), delay, CloudSimTags.NETWORK_EVENT_HOST, pkt);
             }
@@ -145,8 +145,8 @@ public class EdgeSwitch extends Switch {
 
     private void forwardPacketsToUplinkSwitches() {
         for (Integer destinationSwitchId : getUplinkSwitchPacketMap().keySet()) {
-            List<NetworkPacket> packetList = getUplinkSwitchPacketList(destinationSwitchId);
-            for(NetworkPacket netPkt: packetList) {
+            List<HostPacket> packetList = getUplinkSwitchPacketList(destinationSwitchId);
+            for(HostPacket netPkt: packetList) {
                 double delay = networkDelayForPacketTransmission(netPkt, getUplinkBandwidth(), packetList);
                 this.send(destinationSwitchId, delay, CloudSimTags.NETWORK_EVENT_UP, netPkt);
             }

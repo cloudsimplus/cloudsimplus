@@ -1,103 +1,93 @@
 /*
- * Title:        CloudSim Toolkit
- * Description:  CloudSim (Cloud Simulation) Toolkit for Modeling and Simulation of Clouds
- * Licence:      GPL - http://www.gnu.org/copyleft/gpl.html
+ * Gokul Poduval & Chen-Khong Tham
+ * Computer Communication Networks (CCN) Lab
+ * Dept of Electrical & Computer Engineering
+ * National University of Singapore
+ * August 2004
  *
- * Copyright (c) 2009-2012, The University of Melbourne, Australia
+ * Licence: GPL - http://www.gnu.org/copyleft/gpl.html
+ * Copyright (c) 2004, The University of Melbourne, Australia and National
+ * University of Singapore
+ * Packet.java - Interface of a Network Packet.
+ *
  */
+
 package org.cloudbus.cloudsim.network;
 
 /**
- * NewtorkPacket represents a packet which travels from one server to another.
- * Each packet contains IDs of the sender VM and receiver VM which are
- * communicating, time at which it is sent and received, type and virtual IDs of
- * tasks.
+ * Defines the structure for a network packet.
  *
- * <br>Please refer to following publication for more details:<br>
- * <ul>
- * <li>
- * <a href="http://dx.doi.org/10.1109/UCC.2011.24">
- * Saurabh Kumar Garg and Rajkumar Buyya, NetworkCloudSim: Modelling Parallel
- * Applications in Cloud Simulations, Proceedings of the 4th IEEE/ACM
- * International Conference on Utility and Cloud Computing (UCC 2011, IEEE CS
- * Press, USA), Melbourne, Australia, December 5-7, 2011.
- * </a>
- * </ul>
- *
- * @author Saurabh Kumar Garg
+ * @author Gokul Poduval
+ * @author Chen-Khong Tham, National University of Singapore
  * @author Manoel Campos da Silva Filho
+ *
  * @since CloudSim Toolkit 1.0
  */
-public class NetworkPacket {
-
+public interface NetworkPacket {
     /**
-     * Information about the virtual sender and receiver entities of the packet
-     * (the sender and receiver Cloudlet and their respective VMs).
-     */
-    private final HostPacket hostPacket;
-
-    /**
-     * Id of the sender host.
-     */
-    private int senderHostId;
-
-    /**
-     * Id of the receiver host.
-     */
-    private int receiverHostId;
-
-    /**
-     * Time when the packet was sent.
-     */
-    private double sendTime;
-
-    /**
-     * Time when the packet was received.
-     */
-    private double receiveTime;
-
-    /**
-     * Creates a new packet to be sent through the network between two hosts.
+     * Gets the size of the packet.
      *
-     * @param senderHostId The id of the host sending the packet
-     * @param pkt The host packet containing information of sender and
-     * receiver Cloudlets and their VMs.
+     * @return
+     * @pre $none
+     * @post $none
      */
-    public NetworkPacket(int senderHostId, HostPacket pkt) {
-        this.hostPacket = pkt;
-        this.sendTime = pkt.getSendTime();
-        this.senderHostId = senderHostId;
-    }
+    long getSize();
 
-    public int getSenderHostId() {
-        return senderHostId;
-    }
+    /**
+     * Gets the ID of the entity that this packet is coming from (the sender).
+     *
+     * @return
+     * @pre $none
+     * @post $none
+     */
+    int getSourceId();
 
-    public int getReceiverHostId() {
-        return receiverHostId;
-    }
+    /**
+     * Sets the ID of the entity that this packet is coming from (the sender).
+     * @param sourceId the source ID to set
+     */
+    void setSourceId(int sourceId);
 
-    public double getSendTime() {
-        return sendTime;
-    }
+    /**
+     * Gets the ID of the entity that the packet is going to.
+     *
+     * @return
+     * @pre $none
+     * @post $none
+     */
+    int getDestinationId();
 
-    public double getReceiveTime() {
-        return receiveTime;
-    }
+    /**
+     * Sets the ID of the entity that the packet is going to (the receiver).
+     *
+     * @param destinationId the destination ID to set
+     * @pre destinationId > 0
+     * @post $none
+     */
+    void setDestinationId(int destinationId);
 
-    public HostPacket getHostPacket() {
-        return hostPacket;
-    }
+    /**
+     * Gets the time when the packet was sent.
+     * @return
+     */
+    double getSendTime();
 
-    public void setSendTime(double sendTime) {
-        this.sendTime = sendTime;
-    }
+    /**
+     * Sets the time when the packet was sent.
+     * @param time the time to set
+     */
+    void setSendTime(double time);
 
-    public void setSenderHostId(int senderHostId) {
-        this.senderHostId = senderHostId;
-    }
+    /**
+     * Gets the time when the packet was received.
+     * @return
+     */
+    double getReceiveTime();
 
-    public void setReceiverHostId(int receiverHostId) {
-        this.receiverHostId = receiverHostId;
-    }
+    /**
+     * Sets the time when the packet was received.
+     * @param time the time to set
+     */
+    void setReceiveTime(double time);
+
 }

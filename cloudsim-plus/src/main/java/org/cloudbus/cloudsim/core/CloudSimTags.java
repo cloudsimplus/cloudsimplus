@@ -163,12 +163,12 @@ public class CloudSimTags {
     /**
      * This tag is used by an entity to send ping requests.
      */
-    public static final int INFOPKT_SUBMIT = NETBASE + 5;
+    public static final int ICMP_PKT_SUBMIT = NETBASE + 5;
 
     /**
      * This tag is used to return the ping request back to sender.
      */
-    public static final int INFOPKT_RETURN = NETBASE + 6;
+    public static final int ICMP_PKT_RETURN = NETBASE + 6;
 
     /**
      * Denotes the return of a finished Cloudlet back to the sender.

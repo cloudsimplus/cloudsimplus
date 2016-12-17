@@ -7,12 +7,12 @@
  */
 package org.cloudbus.cloudsim.network.switches;
 
+import org.cloudbus.cloudsim.network.HostPacket;
 import org.cloudbus.cloudsim.util.Log;
 
 import org.cloudbus.cloudsim.core.CloudSim;
 import org.cloudbus.cloudsim.core.events.SimEvent;
 import org.cloudbus.cloudsim.datacenters.network.NetworkDatacenter;
-import org.cloudbus.cloudsim.network.NetworkPacket;
 
 /**
  * This class allows to simulate Root switch which connects Datacenters to
@@ -77,8 +77,8 @@ public class RootSwitch extends Switch {
     protected void processPacketUp(SimEvent ev) {
         super.processPacketUp(ev);
 
-        NetworkPacket netPkt = (NetworkPacket) ev.getData();
-        int receiverVmId = netPkt.getHostPacket().getReceiverVmId();
+        HostPacket netPkt = (HostPacket) ev.getData();
+        int receiverVmId = netPkt.getVmPacket().getDestinationId();
         int edgeSwitchId = getDatacenter().getVmToSwitchMap().get(receiverVmId);
         int aggSwitchId = findAggregateSwitchConnectedToGivenEdgeSwitch(edgeSwitchId);
 

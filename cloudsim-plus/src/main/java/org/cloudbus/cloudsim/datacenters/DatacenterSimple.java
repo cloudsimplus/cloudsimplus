@@ -7,13 +7,13 @@
 package org.cloudbus.cloudsim.datacenters;
 
 import org.cloudbus.cloudsim.core.events.SimEvent;
+import org.cloudbus.cloudsim.network.IcmpPacket;
 import org.cloudbus.cloudsim.util.DataCloudTags;
 import org.cloudbus.cloudsim.hosts.Host;
 import org.cloudbus.cloudsim.util.Log;
 import org.cloudbus.cloudsim.vms.Vm;
 import org.cloudbus.cloudsim.cloudlets.Cloudlet;
 import org.cloudbus.cloudsim.core.*;
-import org.cloudbus.cloudsim.network.InfoPacket;
 import org.cloudbus.cloudsim.resources.File;
 import org.cloudbus.cloudsim.allocationpolicies.VmAllocationPolicy;
 import org.cloudbus.cloudsim.schedulers.cloudlet.CloudletScheduler;
@@ -214,7 +214,7 @@ public class DatacenterSimple extends CloudSimEntity implements Datacenter {
                 break;
 
             // Ping packet
-            case CloudSimTags.INFOPKT_SUBMIT:
+            case CloudSimTags.ICMP_PKT_SUBMIT:
                 processPingRequest(ev);
                 break;
 
@@ -351,12 +351,12 @@ public class DatacenterSimple extends CloudSimEntity implements Datacenter {
      * @post $none
      */
     protected void processPingRequest(SimEvent ev) {
-        InfoPacket pkt = (InfoPacket) ev.getData();
-        pkt.setTag(CloudSimTags.INFOPKT_RETURN);
-        pkt.setDestId(pkt.getSrcId());
+        IcmpPacket pkt = (IcmpPacket) ev.getData();
+        pkt.setTag(CloudSimTags.ICMP_PKT_RETURN);
+        pkt.setDestinationId(pkt.getSourceId());
 
         // sends back to the sender
-        sendNow(pkt.getSrcId(), CloudSimTags.INFOPKT_RETURN, pkt);
+        sendNow(pkt.getSourceId(), CloudSimTags.ICMP_PKT_RETURN, pkt);
     }
 
     /**

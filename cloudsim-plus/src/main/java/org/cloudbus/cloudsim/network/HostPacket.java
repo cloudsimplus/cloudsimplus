@@ -7,14 +7,14 @@
  */
 package org.cloudbus.cloudsim.network;
 
-import org.cloudbus.cloudsim.cloudlets.Cloudlet;
+import org.cloudbus.cloudsim.hosts.Host;
 
 /**
- * HostPacket represents a packet that travels through the virtual network
- * within a Host. It contains information about cloudlets which are
- * communicating.
+ * Represents a packet which travels from one {@link Host} to another.
+ * Each packet contains: IDs of the sender VM into the source Host and receiver VM into the destination Host which are
+ * communicating; the time at which it is sent and received; type and virtual IDs of tasks.
  *
- * <br>Please refer to following publication for more details:<br>
+ * <p>Please refer to following publication for more details:
  * <ul>
  * <li>
  * <a href="http://dx.doi.org/10.1109/UCC.2011.24">
@@ -24,129 +24,118 @@ import org.cloudbus.cloudsim.cloudlets.Cloudlet;
  * Press, USA), Melbourne, Australia, December 5-7, 2011.
  * </a>
  * </ul>
+ * </p>
  *
  * @author Saurabh Kumar Garg
  * @author Manoel Campos da Silva Filho
+ *
  * @since CloudSim Toolkit 1.0
  */
-public class HostPacket {
+public class HostPacket implements NetworkPacket {
 
     /**
-     * @see #getSenderVmId()
+     * Information about the virtual sender and receiver entities of the packet
+     * (the sender and receiver Cloudlet and their respective VMs).
      */
-    private final int senderVmId;
+    private final VmPacket vmPacket;
 
     /**
-     * @see #getReceiverVmId()
+     * Id of the sender host.
      */
-    private final int receiverVmId;
+    private int senderHostId;
 
     /**
-     * @see #getSenderCloudlet()
+     * Id of the receiver host.
      */
-    private final Cloudlet senderCloudlet;
+    private int receiverHostId;
 
     /**
-     * @see #getReceiverCloudlet()
-     */
-    private final Cloudlet receiverCloudlet;
-
-    /**
-     * @see #getDataLength()
-     */
-    private final double dataLength;
-
-    /**
-     * The time the packet was sent.
+     * @see #getSendTime()
      */
     private double sendTime;
 
     /**
-     * The time the packet was received.
+     * @see #getReceiveTime()
      */
     private double receiveTime;
 
     /**
-     * Creates a packet to be sent to to a VM inside the
-     * Host of the sender VM.
+     * Creates a new packet to be sent through the network between two hosts.
      *
-     * @param senderVmId id of the VM sending the packet
-     * @param receiverVmId id of the VM that has to receive the packet
-     * @param dataLength data length of the packet
-     * @param senderCloudlet cloudlet sending the packet
-     * @param receiverCloudlet cloudlet that has to receive the packet
+     * @param senderHostId The id of the host sending the packet
+     * @param pkt The host packet containing information of sender and
+     * receiver Cloudlets and their VMs.
      */
-    public HostPacket(
-            int senderVmId,
-            int receiverVmId,
-            double dataLength,
-            Cloudlet senderCloudlet,
-            Cloudlet receiverCloudlet) {
-        super();
-        this.senderVmId = senderVmId;
-        this.receiverVmId = receiverVmId;
-        this.dataLength = dataLength;
-        this.receiverCloudlet = receiverCloudlet;
-        this.senderCloudlet = senderCloudlet;
+    public HostPacket(int senderHostId, VmPacket pkt) {
+        this.vmPacket = pkt;
+        this.sendTime = pkt.getSendTime();
+        this.senderHostId = senderHostId;
     }
 
+    @Override
+    public long getSize() {
+        return vmPacket.getSize();
+    }
+
+    /**
+     * Gets the ID of the {@link Host} that this packet is coming from (the sender).
+     * @return
+     */
+    @Override
+    public int getSourceId() {
+        return senderHostId;
+    }
+
+    /**
+     * Sets the ID of the {@link Host} that this packet is coming from (the sender).
+     * @param senderHostId the source Host id to set
+     * @return
+     */
+    @Override
+    public void setSourceId(int senderHostId) {
+        this.senderHostId = senderHostId;
+    }
+
+    /**
+     * Gets the ID of the {@link Host} that the packet is going to.
+     * @return
+     */
+    @Override
+    public int getDestinationId() {
+        return receiverHostId;
+    }
+
+    /**
+     * Sets the ID of the {@link Host} that the packet is going to.
+     * @param receiverHostId the receiver Host id to set
+     * @return
+     */
+    @Override
+    public void setDestinationId(int receiverHostId) {
+        this.receiverHostId = receiverHostId;
+    }
+
+    @Override
     public double getSendTime() {
         return sendTime;
     }
 
+    @Override
     public void setSendTime(double sendTime) {
         this.sendTime = sendTime;
     }
 
+    @Override
     public double getReceiveTime() {
         return receiveTime;
     }
 
+    @Override
     public void setReceiveTime(double receiveTime) {
         this.receiveTime = receiveTime;
     }
 
-    /**
-     *
-     * @return id of the VM sending the packet.
-     * This is the VM where the {@link #getSenderCloudlet() sending cloudlet}
-     * is running.
-     */
-    public int getSenderVmId() {
-        return senderVmId;
-    }
-
-    /**
-     *
-     * @return id of the VM that has to receive the packet.
-     * This is the VM whwere th {@link #getReceiverCloudlet() receiver cloudlet}
-     * is running.
-     */
-    public int getReceiverVmId() {
-        return receiverVmId;
-    }
-
-    /**
-     *
-     * @return the cloudlet sending the packet.
-     */
-    public Cloudlet getSenderCloudlet() {
-        return senderCloudlet;
-    }
-
-    /**
-     * @return the cloudlet that has to receive the packet.
-     */
-    public Cloudlet getReceiverCloudlet() {
-        return receiverCloudlet;
-    }
-
-    /**
-     *
-     * @return the length of the data being sent,
-     * that represents the size of the packet's payload (in bytes).
-     */
-    public double getDataLength() {
-        return dataLength;
+    public VmPacket getVmPacket() {
+        return vmPacket;
     }
 }

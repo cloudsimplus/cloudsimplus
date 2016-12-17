@@ -11,7 +11,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import org.cloudbus.cloudsim.network.HostPacket;
+import org.cloudbus.cloudsim.network.VmPacket;
 
 /**
  * A task executed by a {@link NetworkCloudlet} that
@@ -66,7 +66,7 @@ import org.cloudbus.cloudsim.network.HostPacket;
  *
  */
 public class CloudletReceiveTask extends CloudletTask {
-    private final List<HostPacket> packetsReceived;
+    private final List<VmPacket> packetsReceived;
 
     /**
      * @see #getNumberOfExpectedPacketsToReceive()
@@ -96,7 +96,7 @@ public class CloudletReceiveTask extends CloudletTask {
      *
      * @param packet the packet received
      */
-    public void receivePacket(HostPacket packet) {
+    public void receivePacket(VmPacket packet) {
         packet.setReceiveTime(getCloudlet().getSimulation().clock());
         this.packetsReceived.add(packet);
         boolean finished = this.packetsReceived.size() >= numberOfExpectedPacketsToReceive;
@@ -107,7 +107,7 @@ public class CloudletReceiveTask extends CloudletTask {
      * Gets the list of packets received.
      * @return a read-only received packet list
      */
-    public List<HostPacket> getPacketsReceived() {
+    public List<VmPacket> getPacketsReceived() {
         return Collections.unmodifiableList(packetsReceived);
     }
 

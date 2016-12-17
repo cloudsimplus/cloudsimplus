@@ -10,7 +10,7 @@ package org.cloudbus.cloudsim.network.switches;
 import org.cloudbus.cloudsim.core.CloudSim;
 import org.cloudbus.cloudsim.core.events.SimEvent;
 import org.cloudbus.cloudsim.datacenters.network.NetworkDatacenter;
-import org.cloudbus.cloudsim.network.NetworkPacket;
+import org.cloudbus.cloudsim.network.HostPacket;
 
 /**
  * This class represents an Aggregate Switch in a Datacenter network. It
@@ -75,8 +75,8 @@ public class AggregateSwitch extends Switch {
     protected void processPacketDown(SimEvent ev) {
         super.processPacketDown(ev);
 
-        NetworkPacket netPkt = (NetworkPacket) ev.getData();
-        int receiverVmId = netPkt.getHostPacket().getReceiverVmId();
+        HostPacket netPkt = (HostPacket) ev.getData();
+        int receiverVmId = netPkt.getVmPacket().getDestinationId();
 
         // packet is coming from root so need to be sent to edgelevel swich
         // find the id for edgelevel switch
@@ -88,8 +88,8 @@ public class AggregateSwitch extends Switch {
     protected void processPacketUp(SimEvent ev) {
         super.processPacketUp(ev);
 
-        NetworkPacket netPkt = (NetworkPacket) ev.getData();
-        int receiverVmId = netPkt.getHostPacket().getReceiverVmId();
+        HostPacket netPkt = (HostPacket) ev.getData();
+        int receiverVmId = netPkt.getVmPacket().getDestinationId();
 
         // packet is coming from edge level router so need to be sent to
         // either root or another edge level swich
