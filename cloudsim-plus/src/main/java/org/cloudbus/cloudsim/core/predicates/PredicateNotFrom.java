@@ -49,7 +49,7 @@ public class PredicateNotFrom implements Predicate {
          * @see #ids
 	 */
 	@Override
-	public boolean match(SimEvent ev) {
+	public boolean test(SimEvent ev) {
 		int src = ev.getSource();
 		for (int id : ids) {
 			if (src == id) {

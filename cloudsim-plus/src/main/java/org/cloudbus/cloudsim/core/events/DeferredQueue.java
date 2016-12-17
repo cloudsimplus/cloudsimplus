@@ -92,6 +92,17 @@ public class DeferredQueue implements EventQueue {
         return list.isEmpty();
     }
 
+    /**
+     * Removes the event from the queue.
+     *
+     * @param event the event
+     * @return true, if successful
+     */
+    public boolean remove(SimEvent event) {
+        return list.remove(event);
+    }
+
+
     @Override
     public SimEvent first() throws NoSuchElementException {
 	    if(list.isEmpty())

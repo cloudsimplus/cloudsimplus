@@ -1,11 +1,12 @@
 package org.cloudbus.cloudsim.core.events;
 
+import org.cloudbus.cloudsim.core.CloudSimTags;
 import org.cloudbus.cloudsim.core.Simulation;
 import org.cloudsimplus.listeners.EventInfo;
 
 /**
- * An interface that represents a simulation event which is passed between the entities
- * in the simulation.
+ * Represents a simulation event which is passed between the entities
+ * in a specific {@link Simulation} instance.
  *
  * @author Manoel Campos da Silva Filho
  * @see CloudSimEvent
@@ -24,67 +25,73 @@ public interface SimEvent extends Comparable<SimEvent>, EventInfo {
     Type getType();
 
     /**
-     * Get the unique id number of the entity which received this event.
+     * Gets the unique id number of the entity which received this event.
      *
-     * @return the id number
+     * @return
      */
     int getDestination();
 
     /**
-     * Get the unique id number of the entity which scheduled this event.
+     * Gets the unique id number of the entity which scheduled this event.
      *
-     * @return the id number
+     * @return
      */
     int getSource();
 
     /**
-     * Get the simulation time that this event was scheduled.
+     * Gets the simulation time that this event was scheduled.
      *
-     * @return The simulation time
+     * @return
      */
     double eventTime();
 
     /**
-     * Get the simulation time that this event was removed from the queue for
-     * service.
+     * Gets the simulation time that this event was removed from the queue for service.
      *
-     * @return The simulation time
+     * @return
      */
     double endWaitingTime();
 
     /**
-     * Get the unique id number of the entity which scheduled this event.
+     * Gets the unique id number of the entity which scheduled this event.
      *
-     * @return the id number
+     * @return
      */
     int scheduledBy();
 
     /**
-     * Get the user-defined tag of this event.
+     * Gets the user-defined tag of this event.
+     * The meaning of such a tag depends on the entities that generate and receive the event.
+     * Usually it is defined from a constant value defined in {@link CloudSimTags}.
      *
-     * @return The tag
+     * @return
      */
     int getTag();
 
     /**
-     * Get the data passed in this event.
+     * Gets the data object passed in this event.
+     * The actual class of this data is defined by the entity that generates the event.
+     * The value defined for the {@link #getTag()} is used by an entity receiving the event
+     * to know what is the class of the data associated to the event.
+     * After checking what is the event tag, te destination entity then
+     * can perform a typecast to convert the data to the expected class.
      *
-     * @return A reference to the data
+     * @return a reference to the data object
      */
     Object getData();
 
     /**
-     * Set the source entity of this event.
+     * Sets the source entity of this event, that defines its sender.
      *
-     * @param source The unique id number of the source entity
+     * @param source the unique id number of the source entity
      * @return
      */
     SimEvent setSource(int source);
 
     /**
-     * Set the destination entity of this event.
+     * Sets the destination entity of this event, that defines its destination.
      *
-     * @param destination The unique id number of the destination entity
+     * @param destination the unique id number of the destination entity
      * @return
      */
     SimEvent setDestination(int destination);
@@ -97,14 +104,21 @@ public interface SimEvent extends Comparable<SimEvent>, EventInfo {
      * events are generated at the same time.
      * If two events have the same {@link #getTag()}, to know what event is greater than other (i.e.
      * that happens after other), the {@link #compareTo(SimEvent)} makes use of this field.
+     *
      * @return
      */
     long getSerial();
 
+    /**
+     * Sets the serial number that defines the order of received events when multiple
+     * events are generated at the same time.
+     *
+     * @param serial
+     */
     void setSerial(long serial);
 
     /**
-     * Gets the CloudSim instance that represents the simulation the Entity is related to.
+     * Gets the CloudSim instance that represents the simulation for with the Entity is related to.
      * @return
      */
     Simulation getSimulation();

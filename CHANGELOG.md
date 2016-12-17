@@ -6,6 +6,7 @@ Lists the main changes in the project.
 
 ## Added
 - Allowed to delay the submission of VMs by a `DatacenterBroker`, simulating the dynamic arrival of VMs (closes the feature request #23)
+- Renamed `Simulation`class methods `abruptallyTerminate` to `Simulation.abort` and attribute `numberOfUsers` to `numberOfBrokers`.
 
 
 ## [v0.8-beta.8] - 2016-12-12

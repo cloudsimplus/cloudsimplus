@@ -28,7 +28,7 @@ public class PredicateNone implements Predicate {
 	 * @return always false to indicate that no event is accepted
 	 */
 	@Override
-	public boolean match(SimEvent ev) {
+	public boolean test(SimEvent ev) {
 		return false;
 	}
 }

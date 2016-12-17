@@ -51,7 +51,7 @@ public class PredicateFrom implements Predicate {
      * @see #ids
 	 */
 	@Override
-	public boolean match(SimEvent ev) {
+	public boolean test(SimEvent ev) {
 		Integer srcId = ev.getSource();
         return Arrays.stream(ids).filter(srcId::equals).findFirst().isPresent();
 	}

@@ -29,7 +29,7 @@ public class PredicateAny implements Predicate {
      * @return always true to indicate that any received event is accepted
      */
     @Override
-    public boolean match(SimEvent ev) {
+    public boolean test(SimEvent ev) {
         return true;
     }
 

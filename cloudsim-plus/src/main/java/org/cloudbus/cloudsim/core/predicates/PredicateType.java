@@ -49,7 +49,7 @@ public class PredicateType implements Predicate {
          * @see #tags
 	 */
 	@Override
-	public boolean match(SimEvent ev) {
+	public boolean test(SimEvent ev) {
 		int tag = ev.getTag();
 		for (int tag2 : tags) {
 			if (tag == tag2) {

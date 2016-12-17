@@ -51,8 +51,8 @@ public class CloudCloudSimShutdown extends CloudSimEntity {
      */
     @Override
     public void processEvent(SimEvent ev) {
-        if (getSimulation().decrementNumberOfUsers() <= 0 || ev.getTag() == CloudSimTags.ABRUPT_END_OF_SIMULATION) {
-            getSimulation().abruptallyTerminate();
+        if (getSimulation().decrementNumberOfBrokers() <= 0 || ev.getTag() == CloudSimTags.ABRUPT_END_OF_SIMULATION) {
+            getSimulation().abort();
         }
     }
 

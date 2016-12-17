@@ -329,7 +329,7 @@ public abstract class CloudSimEntity implements SimEntity {
      * @param p The event selection predicate
      * @return The count of matching events
      */
-    public int numEventsWaiting(Predicate p) {
+    public long numEventsWaiting(Predicate p) {
         return simulation.waiting(id, p);
     }
 
@@ -338,7 +338,7 @@ public abstract class CloudSimEntity implements SimEntity {
      *
      * @return The count of events
      */
-    public int numEventsWaiting() {
+    public long numEventsWaiting() {
         return simulation.waiting(id, Simulation.SIM_ANY);
     }
 
@@ -358,18 +358,14 @@ public abstract class CloudSimEntity implements SimEntity {
     }
 
     /**
-     * Cancels the first event matching a predicate waiting in the entity's
-     * future queue.
+     * Cancels the first event from the future event queue that matches a given predicate
+     * and that was submitted by this entity, then removes it from the queue.
      *
-     * @param p The event selection predicate
-     * @return The number of events cancelled (0 or 1)
+     * @param p the event selection predicate
+     * @return the removed event or {@link SimEvent#NULL} if not found
      */
     public SimEvent cancelEvent(Predicate p) {
-        if (!simulation.isRunning()) {
-            return null;
-        }
-
-        return simulation.cancel(id, p);
+        return (simulation.isRunning() ? simulation.cancel(id, p) : SimEvent.NULL);
     }
 
     /**
