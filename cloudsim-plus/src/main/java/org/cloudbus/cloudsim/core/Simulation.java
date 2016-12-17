@@ -77,11 +77,11 @@ public interface Simulation {
     /**
      * Find first deferred event matching a predicate.
      *
-     * @param src Id of entity that scheduled the event
+     * @param dest Id of entity that the event has to be sent to
      * @param p the event selection predicate
      * @return the first matched event or {@link SimEvent#NULL} if not found
      */
-    SimEvent findFirstDeferred(int src, Predicate<SimEvent> p);
+    SimEvent findFirstDeferred(int dest, Predicate<SimEvent> p);
 
     /**
      * Gets a new copy of initial simulation Calendar.
@@ -267,7 +267,8 @@ public interface Simulation {
     boolean isRunning();
 
     /**
-     * Selects the first event from the deferred queue that matches a given predicate.
+     * Selects the first deferred event that matches a given predicate
+     * and removes it from the queue.
      *
      * @param dest Id of entity that the event has to be sent to
      * @param p the event selection predicate
@@ -422,7 +423,7 @@ public interface Simulation {
         @Override public double clock() {
             return 0;
         }
-        @Override public SimEvent findFirstDeferred(int src, Predicate<SimEvent> p) { return SimEvent.NULL; }
+        @Override public SimEvent findFirstDeferred(int dest, Predicate<SimEvent> p) { return SimEvent.NULL; }
         @Override public Calendar getCalendar() {
             return Calendar.getInstance();
         }

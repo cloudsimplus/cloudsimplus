@@ -417,6 +417,7 @@ public class CloudSim implements Simulation {
         } else {
             printMessage("Adding: " + e.getName());
         }
+
         e.start();
     }
 
@@ -459,10 +460,7 @@ public class CloudSim implements Simulation {
                 .filter(ent -> ent.getState() == SimEntity.State.RUNNABLE)
                 .collect(toList());
 
-        //dont use stream because the entities are being changed
-        for(SimEntity ent: runableEntities) {
-            ent.run();
-        }
+        runableEntities.forEach(SimEntity::run);
     }
 
     @Override
@@ -501,52 +499,32 @@ public class CloudSim implements Simulation {
 
     @Override
     public long waiting(int dest, Predicate<SimEvent> p) {
-        return filterEventsForDestinationEntity(deferred, p, dest).count();
+        return filterEventsToDestinationEntity(deferred, p, dest).count();
     }
 
     @Override
     public SimEvent select(int dest, Predicate<SimEvent> p) {
-        SimEvent evt = filterEventsForDestinationEntity(deferred, p, dest).findFirst().orElse(SimEvent.NULL);
+        SimEvent evt = findFirstDeferred(dest, p);
         deferred.remove(evt);
         return evt;
     }
 
+    @Override
+    public SimEvent findFirstDeferred(int dest, Predicate<SimEvent> p) {
+        return filterEventsToDestinationEntity(deferred, p, dest).findFirst().orElse(SimEvent.NULL);
+    }
+
     /**
-     * Gets a stream of events from a specific queue that match a given predicate
+     * Gets a stream of events inside a specific queue that match a given predicate
      * and are targeted to an specific entity.
      *
      * @param queue the queue to get the events from
      * @param p the event selection predicate
-     * @param dest Id of entity that scheduled the event
+     * @param dest Id of entity that the event has to be sent to
      * @return a Stream of events from the queue
      */
-    private Stream<SimEvent> filterEventsForDestinationEntity(EventQueue queue, Predicate<SimEvent> p, int dest) {
+    private Stream<SimEvent> filterEventsToDestinationEntity(EventQueue queue, Predicate<SimEvent> p, int dest) {
         return filterEvents(queue, p.and(e -> e.getDestination() == dest));
-    }
-
-    /**
-     * Gets a stream of events from a specific queue that match a given predicate.
-     *
-     * @param queue the queue to get the events from
-     * @param p the event selection predicate
-     * @return a Stream of events from the queue
-     */
-    private Stream<SimEvent> filterEvents(EventQueue queue, Predicate<SimEvent> p) {
-        return queue.stream().filter(p);
-    }
-
-    @Override
-    public SimEvent findFirstDeferred(int src, Predicate<SimEvent> p) {
-        SimEvent ev = null;
-        Iterator<SimEvent> iterator = deferred.iterator();
-        while (iterator.hasNext()) {
-            ev = iterator.next();
-            if (ev.getDestination() == src && p.test(ev)) {
-                break;
-            }
-        }
-
-        return ev;
     }
 
     @Override
@@ -558,22 +536,41 @@ public class CloudSim implements Simulation {
 
     @Override
     public boolean cancelAll(int src, Predicate<SimEvent> p) {
-        SimEvent ev = null;
-        int previousSize = future.size();
-        Iterator<SimEvent> iter = future.iterator();
-        while (iter.hasNext()) {
-            ev = iter.next();
-            if (ev.getSource() == src && p.test(ev)) {
-                iter.remove();
-            }
-        }
+        SimEvent ev;
+        final int previousSize = future.size();
+        List<SimEvent> cancelList = filterEventsFromSourceEntity(future, p, src).collect(toList());
+        future.removeAll(cancelList);
         return previousSize < future.size();
+    }
+
+    /**
+     * Gets a stream of events inside a specific queue that match a given predicate
+     * and from a source entity.
+     *
+     * @param queue the queue to get the events from
+     * @param p the event selection predicate
+     * @param src Id of entity that scheduled the event
+     * @return a Stream of events from the queue
+     */
+    private Stream<SimEvent> filterEventsFromSourceEntity(EventQueue queue, Predicate<SimEvent> p, int src) {
+        return filterEvents(queue, p.and(e -> e.getSource() == src));
+    }
+
+    /**
+     * Gets a stream of events inside a specific queue that match a given predicate.
+     *
+     * @param queue the queue to get the events from
+     * @param p the event selection predicate
+     * @return a Stream of events from the queue
+     */
+    private Stream<SimEvent> filterEvents(EventQueue queue, Predicate<SimEvent> p) {
+        return queue.stream().filter(p);
     }
 
     /**
      * Processes an event.
      *
-     * @param e the e
+     * @param e the event to be processed
      */
     private void processEvent(SimEvent e) {
         int dest, src;
@@ -638,11 +635,7 @@ public class CloudSim implements Simulation {
      */
     private void runStart() {
         running = true;
-        // Start all the entities
-        for (SimEntity ent : entities) {
-            ent.start();
-        }
-
+        entities.forEach(SimEntity::start);
         printMessage("Entities started.");
     }
 
@@ -737,7 +730,7 @@ public class CloudSim implements Simulation {
         }
 
         // this block allows termination of simulation at a specific time
-        if (terminationRequested() && clock >= terminateAt) {
+        if (isTerminationRequested() && clock >= terminateAt) {
             terminate();
             clock = terminateAt;
             return true;
@@ -759,7 +752,7 @@ public class CloudSim implements Simulation {
      * @see #pause(double)
      */
     public boolean doPause() {
-        if(running && pauseRequested()) {
+        if(running && isPauseRequested()) {
             paused=true;
             clock = pauseAt;
             onSimulationPausedListener.update(new EventInfoSimple(clock));
@@ -769,7 +762,7 @@ public class CloudSim implements Simulation {
         return false;
     }
 
-    private boolean pauseRequested() {
+    private boolean isPauseRequested() {
         return pauseAt > -1;
     }
 
@@ -786,18 +779,18 @@ public class CloudSim implements Simulation {
     }
 
     private boolean isThereFutureEvtsAndNextOneHappensAfterTimeToPause() {
-        return !future.isEmpty() && clock <= pauseAt && nextFutureEventHappensAfterTimeToPause();
+        return !future.isEmpty() && clock <= pauseAt && isNextFutureEventHappeningAfterTimeToPause();
     }
 
     private boolean isNotThereNextFutureEvtsAndIsTimeToPause() {
         return future.isEmpty() && clock >= pauseAt;
     }
 
-    private boolean terminationRequested() {
+    private boolean isTerminationRequested() {
         return terminateAt > 0.0;
     }
 
-    private boolean nextFutureEventHappensAfterTimeToPause() {
+    private boolean isNextFutureEventHappeningAfterTimeToPause() {
         return future.iterator().next().eventTime() >= pauseAt;
     }
 
