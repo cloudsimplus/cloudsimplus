@@ -1,10 +1,10 @@
 package org.cloudbus.cloudsim.cloudlets;
 
 import org.cloudbus.cloudsim.core.Delayable;
+import org.cloudbus.cloudsim.core.UniquelyIdentificable;
 import org.cloudbus.cloudsim.datacenters.Datacenter;
 import org.cloudbus.cloudsim.vms.Vm;
 import org.cloudbus.cloudsim.brokers.DatacenterBroker;
-import org.cloudbus.cloudsim.core.Identificable;
 import org.cloudbus.cloudsim.schedulers.cloudlet.CloudletScheduler;
 import org.cloudbus.cloudsim.utilizationmodels.UtilizationModel;
 import java.util.Collections;
@@ -22,7 +22,7 @@ import org.cloudsimplus.listeners.EventListener;
  *
  * @author Manoel Campos da Silva Filho
  */
-public interface Cloudlet extends Identificable, Delayable, Comparable<Cloudlet> {
+public interface Cloudlet extends UniquelyIdentificable, Delayable, Comparable<Cloudlet> {
   String NO_HISTORY_IS_RECORDED_FOR_CLOUDLET = "No history is recorded for Cloudlet #%d";
 
   /**
@@ -833,6 +833,7 @@ public interface Cloudlet extends Identificable, Delayable, Comparable<Cloudlet>
      * objects.
      */
     Cloudlet NULL = new Cloudlet() {
+        @Override public String getUid() { return ""; }
         @Override public boolean addRequiredFile(String fileName) { return false; }
         @Override public boolean addRequiredFiles(List<String> fileNames) { return false; }
         @Override public boolean deleteRequiredFile(String filename) { return false; }

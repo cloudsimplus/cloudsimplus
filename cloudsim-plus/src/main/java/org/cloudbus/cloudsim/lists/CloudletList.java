@@ -8,7 +8,10 @@
 package org.cloudbus.cloudsim.lists;
 
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
+import java.util.function.ToLongFunction;
+
 import org.cloudbus.cloudsim.cloudlets.Cloudlet;
 
 /**
@@ -39,11 +42,8 @@ public class CloudletList {
      * @post $none
      */
     public static void sort(List<? extends Cloudlet> cloudletList) {
-        Collections.sort(cloudletList, (Cloudlet a, Cloudlet b) -> {
-            Long aLen = a.getCloudletTotalLength();
-            Long bLen = b.getCloudletTotalLength();
-            return aLen.compareTo(bLen);
-        });
+        Comparator<Cloudlet> comparator = Comparator.comparingLong(Cloudlet::getCloudletTotalLength);
+        cloudletList.sort(comparator);
     }
 
 }

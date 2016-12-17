@@ -79,7 +79,7 @@ public class NetworkVmsExampleBagOfTasksApp extends NetworkVmExampleAbstract {
             //NetworkCloudlet 0 wait data from other cloudlets, while the other cloudlets send data
             if (i==0){
                 for(int j=1; j < NETCLOUDLETS_FOR_EACH_APP; j++) {
-                    task = new CloudletReceiveTask(taskStageId++, selectedVms.get(j+1).getId());
+                    task = new CloudletReceiveTask(taskStageId++, selectedVms.get(j+1));
                     task.setMemory(memory);
                     cloudlet.addTask(task);
                 }

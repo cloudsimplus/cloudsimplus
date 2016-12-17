@@ -151,7 +151,7 @@ public class VmSchedulerTimeSharedTest {
         vmScheduler = createVmScheduler(MIPS, 2);
         final double vmMips = MIPS / 4;
         Vm vm0 = VmSimpleTest.createVm(0, vmMips, 2);
-        vmScheduler.getVmsMigratingOut().add(vm0.getUid());
+        vmScheduler.addVmMigratingOut(vm0);
 
         List<Double> mipsShare = new ArrayList<>(1);
         mipsShare.add(vmMips);

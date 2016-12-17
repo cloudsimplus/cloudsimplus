@@ -102,7 +102,7 @@ public class NetworkVmsExampleWorkflowApp extends NetworkVmExampleAbstract {
      */
     private void addReceiveTask(NetworkCloudlet cloudlet, NetworkCloudlet sourceCloudlet) {
         CloudletReceiveTask task = new CloudletReceiveTask(
-                cloudlet.getTasks().size(), sourceCloudlet.getVm().getId());
+                cloudlet.getTasks().size(), sourceCloudlet.getVm());
         task.setMemory(NETCLOUDLET_RAM);
         task.setNumberOfExpectedPacketsToReceive(NUMBER_OF_PACKETS_TO_SEND);
         cloudlet.addTask(task);

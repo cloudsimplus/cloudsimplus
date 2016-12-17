@@ -9,7 +9,7 @@ import org.cloudbus.cloudsim.core.events.SimEvent;
  * @author Manoel Campos da Silva Filho
  * @see CloudSimEntity
  */
-public interface SimEntity extends Nameable, Cloneable, Runnable {
+public interface SimEntity extends Nameable, Cloneable, Runnable, Comparable<SimEntity> {
     /**
      * Checks if the entity already was started or not.
      * @return
@@ -82,6 +82,7 @@ public interface SimEntity extends Nameable, Cloneable, Runnable {
      * objects.
      */
     final SimEntity NULL = new SimEntity() {
+        @Override public int compareTo(SimEntity o) { return 0; }
         @Override public boolean isStarted() { return false; }
         @Override public Simulation getSimulation() { return Simulation.NULL; }
         @Override public SimEntity setSimulation(Simulation simulation) { return this; }

@@ -3,6 +3,7 @@ package org.cloudbus.cloudsim.schedulers.vm;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.cloudbus.cloudsim.hosts.Host;
 import org.cloudbus.cloudsim.resources.Pe;
@@ -124,7 +125,7 @@ public interface VmScheduler {
      *
      * @return
      */
-    Map<String, List<Pe>> getPeMap();
+    Map<Vm, List<Pe>> getPeMap();
 
     /**
      * Gets the list of PEs allocated for a VM.
@@ -143,18 +144,45 @@ public interface VmScheduler {
     double getTotalAllocatedMipsForVm(Vm vm);
 
     /**
-     * Gets the list of VMs migrating in.
+     * Gets a <b>read-only</b> list of VMs migrating in.
      *
      * @return
      */
-    List<String> getVmsMigratingIn();
+    Set<Vm> getVmsMigratingIn();
+
 
     /**
-     * Gets the list of VMs migrating out.
+     * Gets a <b>read-only</b> list of VMs migrating out.
      *
      * @return
      */
-    List<String> getVmsMigratingOut();
+    Set<Vm> getVmsMigratingOut();
+
+    /**
+     * Adds a {@link Vm} to the list of VMs migrating in.
+     * @param vm the vm to be added
+     * @return true if the VM wasn't into the list and was added, false otherwise
+     */
+    boolean addVmMigratingIn(Vm vm);
+
+    /**
+     * Adds a {@link Vm} to the list of VMs migrating out.
+     * @param vm the vm to be added
+     * @return true if the VM wasn't into the list and was added, false otherwise
+     */
+    boolean addVmMigratingOut(Vm vm);
+
+    /**
+     * Adds a {@link Vm} to the list of VMs migrating in.
+     * @param vm the vm to be added
+     */
+    boolean removeVmMigratingIn(Vm vm);
+
+    /**
+     * Adds a {@link Vm} to the list of VMs migrating out.
+     * @param vm the vm to be added
+     */
+    boolean removeVmMigratingOut(Vm vm);
 
     /**
      * Defines the percentage of Host's CPU usage increase when a
@@ -193,11 +221,15 @@ public interface VmScheduler {
         @Override public double getMaxAvailableMips() { return 0.0; }
         @Override public double getPeCapacity() { return 0.0; }
         @Override public <T extends Pe> List<T> getPeList() { return Collections.emptyList(); }
-        @Override public Map<String, List<Pe>> getPeMap() { return Collections.emptyMap(); }
+        @Override public Map<Vm, List<Pe>> getPeMap() { return Collections.emptyMap(); }
         @Override public List<Pe> getPesAllocatedForVM(Vm vm) { return Collections.emptyList(); }
         @Override public double getTotalAllocatedMipsForVm(Vm vm) { return 0.0; }
-        @Override public List<String> getVmsMigratingIn() { return Collections.emptyList(); }
-        @Override public List<String> getVmsMigratingOut() { return Collections.emptyList(); }
+        @Override public Set<Vm> getVmsMigratingIn() { return Collections.emptySet(); }
+        @Override public Set<Vm> getVmsMigratingOut() { return Collections.emptySet(); }
+        @Override public boolean addVmMigratingIn(Vm vm) { return false; }
+        @Override public boolean addVmMigratingOut(Vm vm) { return false; }
+        @Override public boolean removeVmMigratingIn(Vm vm) { return false; }
+        @Override public boolean removeVmMigratingOut(Vm vm) { return false; }
         @Override public boolean isSuitableForVm(Vm vm) { return false; }
         @Override public double getCpuOverheadDueToVmMigration() { return 0.0; }
         @Override public Host getHost() { return Host.NULL; }

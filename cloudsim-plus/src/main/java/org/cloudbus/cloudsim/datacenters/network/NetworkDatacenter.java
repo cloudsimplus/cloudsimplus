@@ -7,20 +7,19 @@
  */
 package org.cloudbus.cloudsim.datacenters.network;
 
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.Map.Entry;
 import java.util.stream.Collectors;
 
 import org.cloudbus.cloudsim.allocationpolicies.VmAllocationPolicy;
 import org.cloudbus.cloudsim.cloudlets.Cloudlet;
+import org.cloudbus.cloudsim.core.Simulation;
 import org.cloudbus.cloudsim.core.events.SimEvent;
 import org.cloudbus.cloudsim.datacenters.Datacenter;
 import org.cloudbus.cloudsim.datacenters.DatacenterCharacteristics;
 import org.cloudbus.cloudsim.datacenters.DatacenterSimple;
 import org.cloudbus.cloudsim.hosts.Host;
+import org.cloudbus.cloudsim.network.switches.AbstractSwitch;
 import org.cloudbus.cloudsim.network.switches.EdgeSwitch;
 import org.cloudbus.cloudsim.hosts.network.NetworkHost;
 import org.cloudbus.cloudsim.network.switches.Switch;
@@ -30,6 +29,8 @@ import org.cloudbus.cloudsim.core.CloudSimTags;
 import org.cloudbus.cloudsim.resources.FileStorage;
 import org.cloudbus.cloudsim.util.Log;
 import org.cloudbus.cloudsim.vms.Vm;
+
+import static java.util.stream.Collectors.toList;
 
 /**
  * NetworkDatacenter class is a {@link Datacenter} whose hostList are
@@ -57,22 +58,22 @@ public class NetworkDatacenter extends DatacenterSimple {
     /**
      * @see #getVmToSwitchMap()
      */
-    private final Map<Integer, Integer> vmToSwitchMap;
+    private final Map<Vm, Switch> vmToSwitchMap;
 
     /**
      * @see #getHostToSwitchMap()
      */
-    private final Map<Integer, Integer> hostToSwitchMap;
+    private final Map<Host, Switch> hostToSwitchMap;
 
     /**
      * @see #getSwitchMap()
      */
-    private final Map<Integer, Switch> switchMap;
+    private final List<Switch> switchMap;
 
     /**
      * @see #getVmToHostMap()
      */
-    private final Map<Integer, Integer> vmToHostMap;
+    private final Map<Vm, NetworkHost> vmToHostMap;
 
     /**
      * Creates a NetworkDatacenter with the given parameters.
@@ -89,7 +90,7 @@ public class NetworkDatacenter extends DatacenterSimple {
      * @post $none
      */
     public NetworkDatacenter(
-        CloudSim simulation,
+        Simulation simulation,
         DatacenterCharacteristics characteristics,
         VmAllocationPolicy vmAllocationPolicy)
     {
@@ -98,7 +99,7 @@ public class NetworkDatacenter extends DatacenterSimple {
         vmToSwitchMap = new HashMap<>();
         hostToSwitchMap = new HashMap<>();
         vmToHostMap = new HashMap<>();
-        switchMap = new HashMap<>();
+        switchMap = new ArrayList<>();
     }
 
     /**
@@ -135,36 +136,36 @@ public class NetworkDatacenter extends DatacenterSimple {
     }
 
     /**
-     * Gets a map of all Edge Switches in the Datacenter network. One can design
-     * similar functions for other type of switches.
+     * Gets a map of all Edge Switches in the Datacenter network, where each key is the switch id
+     * and each value is the switch itself.
+     * One can design similar functions for other type of switches.
      *
-     * @return a EdgeSwitch map, where each key is the switch id and each
-     * value it the switch itself.
+     * @return
      */
-    public Map<Integer, Switch> getEdgeSwitch() {
-        return switchMap.entrySet().stream()
-                .filter(entry -> entry.getValue().getLevel() == EdgeSwitch.LEVEL)
-                .collect(Collectors.toMap(Entry::getKey, Entry::getValue));
+    public List<Switch> getEdgeSwitch() {
+        return switchMap.stream()
+                .filter(sw -> sw.getLevel() == EdgeSwitch.LEVEL)
+                .collect(toList());
     }
 
     @Override
-    protected boolean processVmCreate(SimEvent ev, boolean ack) {
-        if(!super.processVmCreate(ev, ack))
+    protected boolean processVmCreate(SimEvent ev, boolean ackRequested) {
+        if(!super.processVmCreate(ev, ackRequested))
             return false;
 
         Vm vm = (Vm) ev.getData();
-        vmToSwitchMap.put(vm.getId(), ((NetworkHost) vm.getHost()).getEdgeSwitch().getId());
-        vmToHostMap.put(vm.getId(), vm.getHost().getId());
+        vmToSwitchMap.put(vm, ((NetworkHost) vm.getHost()).getEdgeSwitch());
+        vmToHostMap.put(vm, (NetworkHost)vm.getHost());
         Log.printLine(vm.getId() + " VM is created on " + vm.getHost().getId());
         return true;
     }
 
     /**
-     * Adds a {@link Switch} to the Datacenter.
-     * @param sw the Switch to be added
+     * Adds a {@link AbstractSwitch} to the Datacenter.
+     * @param sw the AbstractSwitch to be added
      */
     public void addSwitch(Switch sw){
-        switchMap.put(sw.getId(), sw);
+        switchMap.add(sw);
     }
 
     @Override
@@ -249,58 +250,57 @@ public class NetworkDatacenter extends DatacenterSimple {
     }
 
     /**
-     * Gets a map of switches switches where each key is a switch id and the
-     * corresponding value is the switch itself.
-     * @return a read-only map of Switches from the Datacenter
+     * Gets a <b>read-only</b> list of network Datacenter's switches.
+     * @return
      */
-    public Map<Integer, Switch> getSwitchMap() {
-        return Collections.unmodifiableMap(switchMap);
+    public List<Switch> getSwitchMap() {
+        return Collections.unmodifiableList(switchMap);
     }
 
     /**
-     * Gets a map between VMs and Switches, where each key is a VM id and the
-     * corresponding value is the id of the switch where the VM is connected to.
+     * Gets a map between VMs and Switches, where each key is a VM and the
+     * corresponding value is the switch where the VM is connected to.
      *
      * @return a read-only map of VMs connected to Switches
      */
-    public Map<Integer, Integer> getVmToSwitchMap() {
+    public Map<Vm, Switch> getVmToSwitchMap() {
         return Collections.unmodifiableMap(vmToSwitchMap);
     }
 
     /**
-     * Connects a VM to a given Switch.
+     * Connects a VM to a given AbstractSwitch.
      *
      * @param vm the VM to be connected
-     * @param sw the Switch to connect the VM to
+     * @param sw the AbstractSwitch to connect the VM to
      */
     public void addVmToSwitch(Vm vm, Switch sw){
-        vmToSwitchMap.put(vm.getId(), sw.getId());
+        vmToSwitchMap.put(vm, sw);
     }
 
     /**
-     * Gets a map between hosts and Switches, where each key is a host id and the
-     * corresponding value is the id of the switch where the host is connected
+     * Gets a map between hosts and Switches, where each key is a host and the
+     * corresponding value is the switch where the host is connected
      * to.
      *
      * @return a read-only map of Host connected to Switches
      */
-    public Map<Integer, Integer> getHostToSwitchMap() {
+    public Map<Host, Switch> getHostToSwitchMap() {
         return Collections.unmodifiableMap(hostToSwitchMap);
     }
 
     /**
-     * Connects a host to a given Switch.
+     * Connects a host to a given AbstractSwitch.
      *
      * @param host the host to be connected
-     * @param sw the Switch to connect the host to
+     * @param sw the AbstractSwitch to connect the host to
      */
     public void addHostToSwitch(Host host, Switch sw){
-        hostToSwitchMap.put(host.getId(), sw.getId());
+        hostToSwitchMap.put(host, sw);
     }
 
     /**
-     * Gets a map between VMs and Hosts, where each key is a VM id and the
-     * corresponding value is the id of the host where the VM is placed.
+     * Gets a map between VMs and Hosts, where each key is a VM and the
+     * corresponding value is the host where the VM is placed.
      *
      * @return a read-only map of VMs placed into Hosts
      *
@@ -308,18 +308,17 @@ public class NetworkDatacenter extends DatacenterSimple {
      * VMs into Hosts is dynamic. A VM can be migrated to another host
      * due to several reasons.
      */
-    public Map<Integer, Integer> getVmToHostMap() {
+    public Map<Vm, NetworkHost> getVmToHostMap() {
         return Collections.unmodifiableMap(vmToHostMap);
     }
 
     /**
      * Connects a VM to a given host.
-     *
-     * @param vm the VM to be connected
+     *  @param vm the VM to be connected
      * @param host the host to connect the VM to
      */
-    public void addVmToHost(Vm vm, Host host){
-        vmToHostMap.put(vm.getId(), host.getId());
+    public void addVmToHost(Vm vm, NetworkHost host){
+        vmToHostMap.put(vm, host);
     }
 
 }

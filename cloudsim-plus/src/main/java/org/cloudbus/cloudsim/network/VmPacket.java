@@ -33,17 +33,17 @@ import org.cloudbus.cloudsim.vms.Vm;
  *
  * @since CloudSim Toolkit 1.0
  */
-public class VmPacket implements NetworkPacket {
+public class VmPacket implements NetworkPacket<Vm> {
 
     /**
-     * @see #getSourceId()
+     * @see NetworkPacket#getSource()
      */
-    private int sourceVmId;
+    private Vm sourceVm;
 
     /**
-     * @see #getDestinationId()
+     * @see #getDestination()
      */
-    private int destinationVmId;
+    private Vm destinationVm;
 
     /**
      * @see #getSenderCloudlet()
@@ -73,22 +73,21 @@ public class VmPacket implements NetworkPacket {
     /**
      * Creates a packet to be sent to to a VM inside the
      * Host of the sender VM.
-     *
-     * @param sourceVmId id of the VM sending the packet
-     * @param destinationVmId id of the VM that has to receive the packet
+     *  @param sourceVm id of the VM sending the packet
+     * @param destinationVm id of the VM that has to receive the packet
      * @param size data length of the packet
      * @param senderCloudlet cloudlet sending the packet
      * @param receiverCloudlet cloudlet that has to receive the packet
      */
     public VmPacket(
-            int sourceVmId,
-            int destinationVmId,
-            long size,
-            Cloudlet senderCloudlet,
-            Cloudlet receiverCloudlet) {
+        Vm sourceVm,
+        Vm destinationVm,
+        long size,
+        Cloudlet senderCloudlet,
+        Cloudlet receiverCloudlet) {
         super();
-        this.sourceVmId = sourceVmId;
-        this.destinationVmId = destinationVmId;
+        this.sourceVm = sourceVm;
+        this.destinationVm = destinationVm;
         this.size = size;
         this.receiverCloudlet = receiverCloudlet;
         this.senderCloudlet = senderCloudlet;
@@ -115,15 +114,15 @@ public class VmPacket implements NetworkPacket {
     }
 
     /**
-     * Gets the id of the VM sending the packet.
+     * Gets the VM sending the packet.
      * This is the VM where the {@link #getSenderCloudlet() sending cloudlet}
      * is running.
      *
      * @return
      */
     @Override
-    public int getSourceId() {
-        return sourceVmId;
+    public Vm getSource() {
+        return sourceVm;
     }
 
     /**
@@ -134,8 +133,8 @@ public class VmPacket implements NetworkPacket {
      * @param sourceVmId the source VM id to set
      */
     @Override
-    public void setSourceId(int sourceVmId) {
-        this.sourceVmId = sourceVmId;
+    public void setSource(Vm sourceVmId) {
+        this.sourceVm = sourceVmId;
     }
 
     /**
@@ -146,8 +145,8 @@ public class VmPacket implements NetworkPacket {
      * @return
      */
     @Override
-    public int getDestinationId() {
-        return destinationVmId;
+    public Vm getDestination() {
+        return destinationVm;
     }
 
     /**
@@ -158,8 +157,8 @@ public class VmPacket implements NetworkPacket {
      * @param destinationVmId the destination VM id to set
      */
     @Override
-    public void setDestinationId(int destinationVmId) {
-        this.destinationVmId = destinationVmId;
+    public void setDestination(Vm destinationVmId) {
+        this.destinationVm = destinationVmId;
     }
 
     /**

@@ -7,6 +7,7 @@
  */
 package org.cloudbus.cloudsim.lists;
 
+import java.util.Comparator;
 import java.util.List;
 import org.cloudbus.cloudsim.vms.Vm;
 
@@ -68,10 +69,8 @@ public class VmList {
      * @param currentSimulationTime the current simulation time to get the current CPU utilization for each Vm
      */
     public static void sortByCpuUtilization(List<? extends Vm> vmList, double currentSimulationTime) {
-        vmList.sort((vm1, vm2) -> {
-            Double vm1Utilization = vm1.getTotalUtilizationOfCpuMips(currentSimulationTime);
-            Double vm2Utilization = vm2.getTotalUtilizationOfCpuMips(currentSimulationTime);
-            return vm2Utilization.compareTo(vm1Utilization);
-        });
+        Comparator<Vm> comparator =
+            Comparator.comparingDouble(vm -> vm.getTotalUtilizationOfCpuMips(currentSimulationTime));
+        vmList.sort(comparator.reversed());
     }
 }

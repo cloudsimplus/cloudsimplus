@@ -13,6 +13,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Objects;
 
+import org.cloudbus.cloudsim.core.UniquelyIdentificable;
 import org.cloudbus.cloudsim.datacenters.Datacenter;
 import org.cloudbus.cloudsim.vms.Vm;
 import org.cloudbus.cloudsim.brokers.DatacenterBroker;
@@ -884,6 +885,11 @@ public abstract class CloudletAbstract implements Cloudlet {
             return NOT_ASSIGNED;
         }
         return getExecutionInDatacenterInfoList().get(getLastExecutedDatacenterIndex()).arrivalTime;
+    }
+
+    @Override
+    public String getUid() {
+        return UniquelyIdentificable.getUid(broker.getId(), id);
     }
 
     @Override

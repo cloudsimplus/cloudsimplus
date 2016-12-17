@@ -16,6 +16,7 @@
 package org.cloudbus.cloudsim.network;
 
 import org.cloudbus.cloudsim.core.CloudSimTags;
+import org.cloudbus.cloudsim.core.SimEntity;
 
 import java.text.DecimalFormat;
 import java.util.ArrayList;
@@ -40,7 +41,7 @@ import java.util.Objects;
  * @author Chen-Khong Tham, National University of Singapore
  * @since CloudSim Toolkit 1.0
  */
-public class IcmpPacket implements NetworkPacket {
+public class IcmpPacket implements NetworkPacket<SimEntity> {
     /**
      * @see #getTag()
      */
@@ -62,24 +63,19 @@ public class IcmpPacket implements NetworkPacket {
     private final int packetId;
 
     /**
-     * The original sender id.
+     * The original sender.
      */
-    private int sourceId;
+    private SimEntity source;
 
     /**
-     * The destination id.
+     * The destination.
      */
-    private int destinationId;
+    private SimEntity destination;
 
     /**
-     * The last hop the packet gave.
+     * @see #getLastHop()
      */
-    private int lastHop;
-
-    /**
-     * The number of hops.
-     */
-    private int hopsNumber;
+    private SimEntity lastHop;
 
     /**
      * The level of service type.
@@ -95,7 +91,7 @@ public class IcmpPacket implements NetworkPacket {
      * The list with IDs of entities where the packet
      * traverses, such as Routers or Datacenters.
      */
-    private final List<Integer> entities;
+    private final List<SimEntity> entities;
 
     /**
      * A list containing the time the packet arrived at every entity it has traversed.
@@ -118,22 +114,22 @@ public class IcmpPacket implements NetworkPacket {
     private double receiveTime;
 
     /**
-     * Constructs a new Information packet.
+     * Constructs a new ICMP packet.
      *
      * @param name            Name of this packet
-     * @param packetID        The ID of this packet
+     * @param packetID        the ID of this packet
      * @param size            size of the packet
-     * @param srcID           The ID of the entity that sends out this packet
-     * @param destID          The ID of the entity to which this packet is destined
+     * @param source          the entity that sends out this packet
+     * @param destination     the entity to which this packet is destined
      * @param netServiceLevel the class of traffic this packet belongs to
      * @pre name != null
      * @post $none
      */
-    public IcmpPacket(String name, int packetID, long size, int srcID, int destID, int netServiceLevel) {
+    public IcmpPacket(String name, int packetID, long size, SimEntity source, SimEntity destination, int netServiceLevel) {
         this.name = name;
         packetId = packetID;
-        sourceId = srcID;
-        destinationId = destID;
+        this.source = source;
+        this.destination = destination;
         this.size = size;
         this.netServiceLevel = netServiceLevel;
         this.entities = new ArrayList<>();
@@ -141,10 +137,9 @@ public class IcmpPacket implements NetworkPacket {
         this.exitTimes = new ArrayList<>();
         this.baudRates = new ArrayList<>();
 
-        lastHop = sourceId;
+        lastHop = this.source;
         tag = CloudSimTags.ICMP_PKT_SUBMIT;
         bandwidth = -1;
-        hopsNumber = 0;
         num = new DecimalFormat("#0.000#");
     }
 
@@ -180,7 +175,7 @@ public class IcmpPacket implements NetworkPacket {
 
         String tab = "    ";  // 4 spaces
         for (int i = 0; i < entities.size(); i++) {
-            int resID = entities.get(i).intValue();
+            int resID = entities.get(i).getId();
             sb.append("Entity " + resID + "\t\t");
 
             String entry = getData(entryTimes, i);
@@ -242,23 +237,23 @@ public class IcmpPacket implements NetworkPacket {
     }
 
     @Override
-    public int getSourceId() {
-        return sourceId;
+    public SimEntity getSource() {
+        return source;
     }
 
     @Override
-    public void setSourceId(int sourceId) {
-        this.sourceId = sourceId;
+    public void setSource(SimEntity source) {
+        this.source = source;
     }
 
     @Override
-    public int getDestinationId() {
-        return destinationId;
+    public SimEntity getDestination() {
+        return destination;
     }
 
     @Override
-    public void setDestinationId(int destinationId) {
-        this.destinationId = destinationId;
+    public void setDestination(SimEntity destination) {
+        this.destination = destination;
     }
 
     @Override
@@ -291,7 +286,7 @@ public class IcmpPacket implements NetworkPacket {
      */
     public int getNumberOfHops() {
         int PAIR = 2;
-        return ((hopsNumber - PAIR) + 1) / PAIR;
+        return ((entities.size() - PAIR) + 1) / PAIR;
     }
 
     /**
@@ -334,13 +329,11 @@ public class IcmpPacket implements NetworkPacket {
      * called by network entities that count as hops, for instance Routers or
      * CloudResources. It should not be called by links etc.
      *
-     * @param id the id of the hop that this IcmpPacket is traversing
-     * @pre id > 0
+     * @param entity the id of the hop that this IcmpPacket is traversing
      * @post $none
      */
-    public void addHop(int id) {
-        hopsNumber++;
-        entities.add(id);
+    public void addHop(SimEntity entity) {
+        entities.add(entity);
     }
 
     /**
@@ -416,7 +409,7 @@ public class IcmpPacket implements NetworkPacket {
      * @pre $none
      * @post $none
      */
-    public List<Integer> getHopsList() {
+    public List<SimEntity> getHopsList() {
         return Collections.unmodifiableList(entities);
     }
 
@@ -444,25 +437,24 @@ public class IcmpPacket implements NetworkPacket {
     }
 
     /**
-     * Gets an entity ID from the last hop that this packet has traversed.
+     * Gets the entity that was the last hop where this packet has traversed.
      *
-     * @return an entity ID
+     * @return
      * @pre $none
      * @post $none
      */
-    public int getLastHop() {
+    public SimEntity getLastHop() {
         return lastHop;
     }
 
     /**
-     * Sets an entity ID from the last hop that this packet has traversed.
+     * Sets the entity that was the last hop where this packet has traversed.
      *
-     * @param lastHop an entity ID from the last hop
-     * @pre last > 0
+     * @param entity the entity to set as the last hop
      * @post $none
      */
-    public void setLastHop(int lastHop) {
-        this.lastHop = lastHop;
+    public void setLastHop(SimEntity entity) {
+        this.lastHop = entity;
     }
 
     /**

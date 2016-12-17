@@ -4,9 +4,12 @@ import java.util.*;
 
 import org.cloudbus.cloudsim.brokers.DatacenterBroker;
 import org.cloudbus.cloudsim.core.events.SimEvent;
+
 import java.util.function.Predicate;
+
 import org.cloudbus.cloudsim.core.predicates.PredicateAny;
 import org.cloudbus.cloudsim.core.predicates.PredicateNone;
+import org.cloudbus.cloudsim.datacenters.Datacenter;
 import org.cloudbus.cloudsim.network.topologies.NetworkTopology;
 import org.cloudsimplus.listeners.EventInfo;
 import org.cloudsimplus.listeners.EventListener;
@@ -51,7 +54,7 @@ public interface Simulation {
      * and was sent by a given entity, then removes it from the queue.
      *
      * @param src Id of entity that scheduled the event
-     * @param p the event selection predicate
+     * @param p   the event selection predicate
      * @return the removed event or {@link SimEvent#NULL} if not found
      */
     SimEvent cancel(int src, Predicate<SimEvent> p);
@@ -61,7 +64,7 @@ public interface Simulation {
      * and were sent by a given entity, then removes those ones from the queue.
      *
      * @param src Id of entity that scheduled the event
-     * @param p the event selection predicate
+     * @param p   the event selection predicate
      * @return true if at least one event has been cancelled; false otherwise
      */
     boolean cancelAll(int src, Predicate<SimEvent> p);
@@ -78,7 +81,7 @@ public interface Simulation {
      * Find first deferred event matching a predicate.
      *
      * @param dest Id of entity that the event has to be sent to
-     * @param p the event selection predicate
+     * @param p    the event selection predicate
      * @return the first matched event or {@link SimEvent#NULL} if not found
      */
     SimEvent findFirstDeferred(int dest, Predicate<SimEvent> p);
@@ -109,7 +112,7 @@ public interface Simulation {
      * @pre $none
      * @post $none
      */
-    Set<Integer> getDatacenterIdsList();
+    Set<Datacenter> getDatacenterList();
 
     /**
      * Get the entity with a given id.
@@ -179,7 +182,7 @@ public interface Simulation {
      * Sets the {@link EventListener} object that will be notified when the simulation is paused.
      * When this Listener is notified, it will receive an {@link EventInfo} informing
      * the time the pause occurred.
-     *
+     * <p>
      * <p>This object is just information about the event
      * that happened. In fact, it isn't generated an actual {@limk SimEvent} for a pause event
      * because there is not need for that.</p>
@@ -208,7 +211,7 @@ public interface Simulation {
     /**
      * Pauses an entity for some time.
      *
-     * @param src id of entity to be paused
+     * @param src   id of entity to be paused
      * @param delay the time period for which the entity will be inactive
      */
     void pauseEntity(int src, double delay);
@@ -216,7 +219,7 @@ public interface Simulation {
     /**
      * Holds an entity for some time.
      *
-     * @param src id of entity to be held
+     * @param src   id of entity to be held
      * @param delay How many seconds after the current time the entity has to be held
      */
     void holdEntity(int src, long delay);
@@ -258,7 +261,7 @@ public interface Simulation {
      * Even if the simulation {@link #isPaused() is paused},
      * the method returns true to indicate that the simulation is
      * in fact active yet.
-     *
+     * <p>
      * This method should be used by
      * entities to check if they should continue executing.
      *
@@ -271,7 +274,7 @@ public interface Simulation {
      * and removes it from the queue.
      *
      * @param dest Id of entity that the event has to be sent to
-     * @param p the event selection predicate
+     * @param p    the event selection predicate
      * @return the removed event or {@link SimEvent#NULL} if not found
      */
     SimEvent select(int dest, Predicate<SimEvent> p);
@@ -279,22 +282,22 @@ public interface Simulation {
     /**
      * Sends an event from one entity to another.
      *
-     * @param src Id of entity that scheduled the event
-     * @param dest Id of entity that the event will be sent to
+     * @param src   Id of entity that scheduled the event
+     * @param dest  Id of entity that the event will be sent to
      * @param delay How many seconds after the current simulation time the event should be sent
-     * @param tag the {@link SimEvent#getTag() tag} that classifies the event
-     * @param data the {@link SimEvent#getData() data} to be sent inside the event
+     * @param tag   the {@link SimEvent#getTag() tag} that classifies the event
+     * @param data  the {@link SimEvent#getData() data} to be sent inside the event
      */
     void send(int src, int dest, double delay, int tag, Object data);
 
     /**
      * Sends an event from one entity to another, adding it to the beginning of the queue in order to give priority to it.
      *
-     * @param src Id of entity that scheduled the event
-     * @param dest Id of entity that the event will be sent to
+     * @param src   Id of entity that scheduled the event
+     * @param dest  Id of entity that the event will be sent to
      * @param delay How many seconds after the current simulation time the event should be sent
-     * @param tag the {@link SimEvent#getTag() tag} that classifies the event
-     * @param data the {@link SimEvent#getData() data} to be sent inside the event
+     * @param tag   the {@link SimEvent#getTag() tag} that classifies the event
+     * @param data  the {@link SimEvent#getData() data} to be sent inside the event
      */
     void sendFirst(int src, int dest, double delay, int tag, Object data);
 
@@ -302,9 +305,9 @@ public interface Simulation {
      * Sends an event from one entity to another without delaying
      * the message.
      *
-     * @param src Id of entity that scheduled the event
+     * @param src  Id of entity that scheduled the event
      * @param dest Id of entity that the event will be sent to
-     * @param tag the {@link SimEvent#getTag() tag} that classifies the event
+     * @param tag  the {@link SimEvent#getTag() tag} that classifies the event
      * @param data the {@link SimEvent#getData() data} to be sent inside the event
      */
     void sendNow(int src, int dest, int tag, Object data);
@@ -319,7 +322,7 @@ public interface Simulation {
      *
      * @return the last clock time
      * @throws RuntimeException When the simulation already run once. If you paused the simulation and wants to resume it,
-     * you must use {@link #resume()} instead of {@link #start()}.
+     *                          you must use {@link #resume()} instead of {@link #start()}.
      * @pre $none
      * @post $none
      */
@@ -344,11 +347,10 @@ public interface Simulation {
     /**
      * Sets the state of an entity to {@link SimEntity.State#WAITING}, making it to wait for events that satisfy a given predicate.
      * Only such events will be passed to the entity. This is done to avoid unnecessary context switches.
-     *
-     * @param src Id of entity that scheduled the event
-     * @param p the event selection predicate
+     *  @param src entity that scheduled the event
+     * @param p   the event selection predicate
      */
-    void wait(int src, Predicate<SimEvent> p);
+    void wait(CloudSimEntity src, Predicate<SimEvent> p);
 
     /**
      * Removes an entity with and old name from the {@link #getEntitiesByName()} map
@@ -364,19 +366,21 @@ public interface Simulation {
      * match a given predicate.
      *
      * @param dest Id of entity that the event has to be sent to
-     * @param p the event selection predicate
+     * @param p    the event selection predicate
      * @return
      */
     long waiting(int dest, Predicate<SimEvent> p);
 
     /**
      * Gets the network topology used for Network simulations.
+     *
      * @return
      */
     NetworkTopology getNetworkTopology();
 
     /**
      * Sets the network topology used for Network simulations.
+     *
      * @param networkTopology the network topology to set
      */
     void setNetworkTopology(NetworkTopology networkTopology);
@@ -414,89 +418,208 @@ public interface Simulation {
     int decrementNumberOfBrokers();
 
     Simulation NULL = new Simulation() {
-        @Override public void abort() {}
-        @Override public void addEntity(CloudSimEntity e) {}
-        @Override public SimEvent cancel(int src, Predicate<SimEvent> p) { return SimEvent.NULL; }
-        @Override public boolean cancelAll(int src, Predicate<SimEvent> p) {
-            return false;
+        @Override
+        public void abort() {
         }
-        @Override public double clock() {
-            return 0;
+
+        @Override
+        public void addEntity(CloudSimEntity e) {
         }
-        @Override public SimEvent findFirstDeferred(int dest, Predicate<SimEvent> p) { return SimEvent.NULL; }
-        @Override public Calendar getCalendar() {
-            return Calendar.getInstance();
-        }
-        @Override public int getCloudInfoServiceEntityId() {
-            return 0;
-        }
-        @Override public Set<Integer> getDatacenterIdsList() {
-            return Collections.EMPTY_SET;
-        }
-        @Override public SimEntity getEntity(int id) { return SimEntity.NULL; }
-        @Override public SimEntity getEntity(String name) { return SimEntity.NULL; }
-        @Override public int getEntityId(String name) {
-            return 0;
-        }
-        @Override public List<SimEntity> getEntityList() {
-            return Collections.EMPTY_LIST;
-        }
-        @Override public String getEntityName(int entityId) {
-            return "";
-        }
-        @Override public double getMinTimeBetweenEvents() {
-            return 0;
-        }
-        @Override public int getNumEntities() {
-            return 0;
-        }
-        @Override public EventListener<SimEvent> getOnEventProcessingListener() {
-            return EventListener.NULL;
-        }
-        @Override public Simulation setOnSimulationPausedListener(EventListener<EventInfo> onSimulationPausedListener) { return this; }
-        @Override public EventListener<EventInfo> getOnSimulationPausedListener() { return EventListener.NULL; }
-        @Override public void holdEntity(int src, long delay) {}
-        @Override public boolean isPaused() {
-            return false;
-        }
-        @Override public void pauseEntity(int src, double delay) {}
-        @Override public boolean pause() {
-            return false;
-        }
-        @Override public boolean pause(double time) {
-            return false;
-        }
-        @Override public boolean resume() {
-            return false;
-        }
-        @Override public boolean isRunning() {
-            return false;
-        }
-        @Override public SimEvent select(int dest, Predicate<SimEvent> p) {
+
+        @Override
+        public SimEvent cancel(int src, Predicate<SimEvent> p) {
             return SimEvent.NULL;
         }
-        @Override public void send(int src, int dest, double delay, int tag, Object data) {}
-        @Override public void sendFirst(int src, int dest, double delay, int tag, Object data) {}
-        @Override public void sendNow(int src, int dest, int tag, Object data) {}
-        @Override public Simulation setOnEventProcessingListener(EventListener<SimEvent> onEventProcessingListener) { return this; }
-        @Override public double start() throws RuntimeException { return 0; }
-        @Override public boolean terminate() {
+
+        @Override
+        public boolean cancelAll(int src, Predicate<SimEvent> p) {
             return false;
         }
-        @Override public boolean terminateAt(double time) {
-            return false;
-        }
-        @Override public void wait(int src, Predicate<SimEvent> p) {}
-        @Override public long waiting(int dest, Predicate<SimEvent> p) {
+
+        @Override
+        public double clock() {
             return 0;
         }
-        @Override public NetworkTopology getNetworkTopology() { return NetworkTopology.NULL; }
-        @Override public void setNetworkTopology(NetworkTopology networkTopology) {}
-        @Override public Map<String, SimEntity> getEntitiesByName() { return Collections.emptyMap(); }
-        public int getNumberOfBrokers() { return 0; }
-        @Override public int incrementNumberOfBrokers() { return 0; }
-        @Override public int decrementNumberOfBrokers() { return 0; }
-        @Override public boolean updateEntityName(String oldName) {
+
+        @Override
+        public SimEvent findFirstDeferred(int dest, Predicate<SimEvent> p) {
+            return SimEvent.NULL;
+        }
+
+        @Override
+        public Calendar getCalendar() {
+            return Calendar.getInstance();
+        }
+
+        @Override
+        public int getCloudInfoServiceEntityId() {
+            return 0;
+        }
+
+        @Override
+        public Set<Datacenter> getDatacenterList() {
+            return Collections.EMPTY_SET;
+        }
+
+        @Override
+        public SimEntity getEntity(int id) {
+            return SimEntity.NULL;
+        }
+
+        @Override
+        public SimEntity getEntity(String name) {
+            return SimEntity.NULL;
+        }
+
+        @Override
+        public int getEntityId(String name) {
+            return 0;
+        }
+
+        @Override
+        public List<SimEntity> getEntityList() {
+            return Collections.EMPTY_LIST;
+        }
+
+        @Override
+        public String getEntityName(int entityId) {
+            return "";
+        }
+
+        @Override
+        public double getMinTimeBetweenEvents() {
+            return 0;
+        }
+
+        @Override
+        public int getNumEntities() {
+            return 0;
+        }
+
+        @Override
+        public EventListener<SimEvent> getOnEventProcessingListener() {
+            return EventListener.NULL;
+        }
+
+        @Override
+        public Simulation setOnSimulationPausedListener(EventListener<EventInfo> onSimulationPausedListener) {
+            return this;
+        }
+
+        @Override
+        public EventListener<EventInfo> getOnSimulationPausedListener() {
+            return EventListener.NULL;
+        }
+
+        @Override
+        public void holdEntity(int src, long delay) {
+        }
+
+        @Override
+        public boolean isPaused() {
+            return false;
+        }
+
+        @Override
+        public void pauseEntity(int src, double delay) {
+        }
+
+        @Override
+        public boolean pause() {
+            return false;
+        }
+
+        @Override
+        public boolean pause(double time) {
+            return false;
+        }
+
+        @Override
+        public boolean resume() {
+            return false;
+        }
+
+        @Override
+        public boolean isRunning() {
+            return false;
+        }
+
+        @Override
+        public SimEvent select(int dest, Predicate<SimEvent> p) {
+            return SimEvent.NULL;
+        }
+
+        @Override
+        public void send(int src, int dest, double delay, int tag, Object data) {
+        }
+
+        @Override
+        public void sendFirst(int src, int dest, double delay, int tag, Object data) {
+        }
+
+        @Override
+        public void sendNow(int src, int dest, int tag, Object data) {
+        }
+
+        @Override
+        public Simulation setOnEventProcessingListener(EventListener<SimEvent> onEventProcessingListener) {
+            return this;
+        }
+
+        @Override
+        public double start() throws RuntimeException {
+            return 0;
+        }
+
+        @Override
+        public boolean terminate() {
+            return false;
+        }
+
+        @Override
+        public boolean terminateAt(double time) {
+            return false;
+        }
+
+        @Override
+        public void wait(CloudSimEntity src, Predicate<SimEvent> p) {
+        }
+
+        @Override
+        public long waiting(int dest, Predicate<SimEvent> p) {
+            return 0;
+        }
+
+        @Override
+        public NetworkTopology getNetworkTopology() {
+            return NetworkTopology.NULL;
+        }
+
+        @Override
+        public void setNetworkTopology(NetworkTopology networkTopology) {
+        }
+
+        @Override
+        public Map<String, SimEntity> getEntitiesByName() {
+            return Collections.emptyMap();
+        }
+
+        public int getNumberOfBrokers() {
+            return 0;
+        }
+
+        @Override
+        public int incrementNumberOfBrokers() {
+            return 0;
+        }
+
+        @Override
+        public int decrementNumberOfBrokers() {
+            return 0;
+        }
+
+        @Override
+        public boolean updateEntityName(String oldName) {
             return false;
         }
     };

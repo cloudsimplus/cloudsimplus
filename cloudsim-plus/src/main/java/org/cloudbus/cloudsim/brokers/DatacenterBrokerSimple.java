@@ -8,6 +8,7 @@
 package org.cloudbus.cloudsim.brokers;
 
 import org.cloudbus.cloudsim.cloudlets.Cloudlet;
+import org.cloudbus.cloudsim.datacenters.Datacenter;
 import org.cloudbus.cloudsim.vms.Vm;
 
 import org.cloudbus.cloudsim.core.CloudSim;
@@ -45,8 +46,8 @@ public class DatacenterBrokerSimple extends DatacenterBrokerAbstract {
      * @return {@inheritDoc}
      */
     @Override
-    public int selectDatacenterForWaitingVms() {
-        return getDatacenterIdsList().get(0);
+    public Datacenter selectDatacenterForWaitingVms() {
+        return (getDatacenterList().isEmpty() ? Datacenter.NULL : getDatacenterList().get(0));
     }
 
     /**
@@ -56,14 +57,11 @@ public class DatacenterBrokerSimple extends DatacenterBrokerAbstract {
      * @return {@inheritDoc}
      */
     @Override
-    public int selectFallbackDatacenterForWaitingVms() {
-        for (int nextDatacenterId : getDatacenterIdsList()) {
-            if (!getDatacenterRequestedIdsList().contains(nextDatacenterId)) {
-                return nextDatacenterId;
-            }
-        }
-
-        return -1;
+    public Datacenter selectFallbackDatacenterForWaitingVms() {
+        return getDatacenterList().stream()
+            .filter(dc -> !getDatacenterRequestedList().contains(dc))
+            .findFirst()
+            .orElse(Datacenter.NULL);
     }
 
     /**

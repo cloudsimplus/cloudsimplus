@@ -73,7 +73,7 @@ public class CloudletSendTask extends CloudletTask {
         }
 
         VmPacket packet = new VmPacket(
-                getCloudlet().getVm().getId(), destinationCloudlet.getVm().getId(),
+                getCloudlet().getVm(), destinationCloudlet.getVm(),
                 dataLength, getCloudlet(), destinationCloudlet);
         packetsToSend.add(packet);
         return packet;

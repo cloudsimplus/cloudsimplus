@@ -69,21 +69,6 @@ public abstract class PeProvisioner {
     public abstract boolean allocateMipsForVm(Vm vm, double mips);
 
     /**
-     * Allocates a new virtual PE with a specific capacity for a given VM.
-     *
-     * @param vmUid the virtual machine for which the new virtual PE is being
-     * allocated
-     * @param mips the mipsCapacity to be allocated to the virtual PE of the given VM
-     *
-     * @return $true if the virtual PE could be allocated; $false otherwise
-     *
-     * @pre $none
-     * @post $none
-     * @see #allocateMipsForVm(Vm, double)
-     */
-    public abstract boolean allocateMipsForVm(String vmUid, double mips);
-
-    /**
      * Allocates a new set of virtual PEs with a specific capacity for a given
      * VM. The virtual PE to be added will use the total or partial mipsCapacity
      * capacity of the physical PE.

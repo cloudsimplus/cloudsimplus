@@ -72,6 +72,7 @@ public interface PowerHost extends HostDynamicWorkload {
      * objects.
      */
     PowerHost NULL = new PowerHost() {
+        @Override public int compareTo(Host o) { return 0; }
         @Override public double getEnergyLinearInterpolation(double fromUtilization, double toUtilization, double time) { return 0; }
         @Override public double getMaxPower() { return 0; }
         @Override public double getPower() { return 0; }

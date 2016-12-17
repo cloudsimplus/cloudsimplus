@@ -22,7 +22,7 @@ import org.cloudbus.cloudsim.provisioners.ResourceProvisioner;
  *
  * @author Manoel Campos da Silva Filho
  */
-public interface Host extends Identificable {
+public interface Host extends Identificable, Comparable<Host> {
 
     /**
      * Adds a VM migrating into the current host.
@@ -360,6 +360,7 @@ public interface Host extends Identificable {
      * objects.
      */
     Host NULL = new Host(){
+        @Override public int compareTo(Host o) { return 0; }
         @Override public void addMigratingInVm(Vm vm) {}
         @Override public boolean allocatePesForVm(Vm vm, List<Double> mipsShare) { return false;}
         @Override public void deallocatePesForVm(Vm vm) {}

@@ -8,6 +8,7 @@
 package org.cloudbus.cloudsim.network;
 
 import org.cloudbus.cloudsim.hosts.Host;
+import org.cloudbus.cloudsim.hosts.network.NetworkHost;
 
 /**
  * Represents a packet which travels from one {@link Host} to another.
@@ -31,7 +32,7 @@ import org.cloudbus.cloudsim.hosts.Host;
  *
  * @since CloudSim Toolkit 1.0
  */
-public class HostPacket implements NetworkPacket {
+public class HostPacket implements NetworkPacket<NetworkHost> {
 
     /**
      * Information about the virtual sender and receiver entities of the packet
@@ -42,12 +43,12 @@ public class HostPacket implements NetworkPacket {
     /**
      * Id of the sender host.
      */
-    private int senderHostId;
+    private NetworkHost senderHost;
 
     /**
      * Id of the receiver host.
      */
-    private int receiverHostId;
+    private NetworkHost receiverHost;
 
     /**
      * @see #getSendTime()
@@ -62,14 +63,13 @@ public class HostPacket implements NetworkPacket {
     /**
      * Creates a new packet to be sent through the network between two hosts.
      *
-     * @param senderHostId The id of the host sending the packet
-     * @param pkt The host packet containing information of sender and
-     * receiver Cloudlets and their VMs.
+     * @param senderHost The id of the host sending the packet
+     * @param vmPacket The vm packet containing information of sender and receiver Cloudlets and their VMs.
      */
-    public HostPacket(int senderHostId, VmPacket pkt) {
-        this.vmPacket = pkt;
-        this.sendTime = pkt.getSendTime();
-        this.senderHostId = senderHostId;
+    public HostPacket(NetworkHost senderHost, VmPacket vmPacket) {
+        this.vmPacket = vmPacket;
+        this.sendTime = vmPacket.getSendTime();
+        this.senderHost = senderHost;
     }
 
     @Override
@@ -82,18 +82,18 @@ public class HostPacket implements NetworkPacket {
      * @return
      */
     @Override
-    public int getSourceId() {
-        return senderHostId;
+    public NetworkHost getSource() {
+        return senderHost;
     }
 
     /**
      * Sets the ID of the {@link Host} that this packet is coming from (the sender).
-     * @param senderHostId the source Host id to set
+     * @param senderHost the source Host id to set
      * @return
      */
     @Override
-    public void setSourceId(int senderHostId) {
-        this.senderHostId = senderHostId;
+    public void setSource(NetworkHost senderHost) {
+        this.senderHost = senderHost;
     }
 
     /**
@@ -101,18 +101,18 @@ public class HostPacket implements NetworkPacket {
      * @return
      */
     @Override
-    public int getDestinationId() {
-        return receiverHostId;
+    public NetworkHost getDestination() {
+        return receiverHost;
     }
 
     /**
      * Sets the ID of the {@link Host} that the packet is going to.
-     * @param receiverHostId the receiver Host id to set
+     * @param receiverHost the receiver Host id to set
      * @return
      */
     @Override
-    public void setDestinationId(int receiverHostId) {
-        this.receiverHostId = receiverHostId;
+    public void setDestination(NetworkHost receiverHost) {
+        this.receiverHost = receiverHost;
     }
 
     @Override

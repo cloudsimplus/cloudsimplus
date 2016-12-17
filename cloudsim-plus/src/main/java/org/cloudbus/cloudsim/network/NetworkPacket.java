@@ -14,16 +14,20 @@
 
 package org.cloudbus.cloudsim.network;
 
+import org.cloudbus.cloudsim.core.Identificable;
+
 /**
  * Defines the structure for a network packet.
  *
  * @author Gokul Poduval
  * @author Chen-Khong Tham, National University of Singapore
  * @author Manoel Campos da Silva Filho
+ * @param <T> the class of objects involved in the packet transmission,
+ *           if they are Hosts, VMs, Switches, etc.
  *
  * @since CloudSim Toolkit 1.0
  */
-public interface NetworkPacket {
+public interface NetworkPacket<T extends Identificable> {
     /**
      * Gets the size of the packet.
      *
@@ -34,37 +38,36 @@ public interface NetworkPacket {
     long getSize();
 
     /**
-     * Gets the ID of the entity that this packet is coming from (the sender).
+     * Gets the entity that this packet is coming from (the sender).
      *
      * @return
      * @pre $none
      * @post $none
      */
-    int getSourceId();
+    T getSource();
 
     /**
-     * Sets the ID of the entity that this packet is coming from (the sender).
-     * @param sourceId the source ID to set
+     * Sets the entity that this packet is coming from (the sender).
+     * @param source the source ID to set
      */
-    void setSourceId(int sourceId);
+    void setSource(T source);
 
     /**
-     * Gets the ID of the entity that the packet is going to.
+     * Gets the entity that the packet is going to.
      *
      * @return
      * @pre $none
      * @post $none
      */
-    int getDestinationId();
+    T getDestination();
 
     /**
-     * Sets the ID of the entity that the packet is going to (the receiver).
+     * Sets the entity that the packet is going to (the receiver).
      *
-     * @param destinationId the destination ID to set
-     * @pre destinationId > 0
+     * @param destination the destination to set
      * @post $none
      */
-    void setDestinationId(int destinationId);
+    void setDestination(T destination);
 
     /**
      * Gets the time when the packet was sent.

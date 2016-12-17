@@ -8,6 +8,7 @@ package org.cloudbus.cloudsim.vms;
 
 import java.util.*;
 
+import org.cloudbus.cloudsim.core.UniquelyIdentificable;
 import org.cloudbus.cloudsim.util.Log;
 import org.cloudbus.cloudsim.brokers.DatacenterBroker;
 import org.cloudbus.cloudsim.cloudlets.Cloudlet;
@@ -302,18 +303,7 @@ public class VmSimple implements Vm {
 
     @Override
     public String getUid() {
-        return getUid(broker.getId(), id);
-    }
-
-    /**
-     * Generate unique string identifier of the VM.
-     *
-     * @param userId the user id
-     * @param vmId the vm id
-     * @return string uid
-     */
-    public static String getUid(int userId, int vmId) {
-        return userId + "-" + vmId;
+        return UniquelyIdentificable.getUid(broker.getId(), id);
     }
 
     @Override
@@ -647,17 +637,9 @@ public class VmSimple implements Vm {
         return this;
     }
 
-    /**
-     * <p>Compares this Vm with another one, considering
-     * the {@link #getTotalMipsCapacity() total MIPS capacity of the Vm's}.</p>
-     *
-     * @param o the Vm to be compared to
-     * @return {@inheritDoc }
-     * @see #getTotalMipsCapacity()
-     */
     @Override
     public int compareTo(Vm o) {
-        return Double.compare(this.getTotalMipsCapacity(), o.getTotalMipsCapacity());
+        return this.getUid().compareTo(o.getUid());
     }
 
     @Override

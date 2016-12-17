@@ -9,11 +9,10 @@ package org.cloudbus.cloudsim.allocationpolicies;
 
 import java.util.*;
 
+import org.cloudbus.cloudsim.core.UniquelyIdentificable;
 import org.cloudbus.cloudsim.hosts.Host;
-import org.cloudbus.cloudsim.hosts.power.PowerHost;
 import org.cloudbus.cloudsim.util.Log;
 import org.cloudbus.cloudsim.vms.Vm;
-import org.cloudbus.cloudsim.vms.VmSimple;
 
 /**
  * A VmAllocationPolicy implementation that chooses, as
@@ -57,7 +56,7 @@ public class VmAllocationPolicySimple extends VmAllocationPolicyAbstract {
         }
 
         // if this vm was already created
-        if (getVmHostMap().containsKey(vm.getUid())) {
+        if (getVmHostMap().containsKey(vm)) {
             return false;
         }
 
@@ -69,7 +68,7 @@ public class VmAllocationPolicySimple extends VmAllocationPolicyAbstract {
             final int hostFreePes = entry.getValue();
             if (host.vmCreate(vm)) {
                 mapVmToPm(vm, host);
-                getUsedPes().put(vm.getUid(), vm.getNumberOfPes());
+                getUsedPes().put(vm, vm.getNumberOfPes());
                 getHostFreePesMap().put(host, hostFreePes - vm.getNumberOfPes());
                 if(!hostsWhereVmCreationFailed.isEmpty()){
                     Log.printFormattedLine("[VmAllocationPolicy] VM #%d was successfully allocated to Host #%d", vm.getId(), host.getId());
@@ -104,7 +103,7 @@ public class VmAllocationPolicySimple extends VmAllocationPolicyAbstract {
     @Override
     public void deallocateHostForVm(Vm vm) {
         Host host = unmapVmFromPm(vm);
-        int pes = getUsedPes().remove(vm.getUid());
+        int pes = getUsedPes().remove(vm);
         if (host != Host.NULL) {
             host.destroyVm(vm);
             getHostFreePesMap().put(host, getHostFreePesMap().get(host) + pes);
@@ -113,12 +112,12 @@ public class VmAllocationPolicySimple extends VmAllocationPolicyAbstract {
 
     @Override
     public Host getHost(Vm vm) {
-        return getVmHostMap().get(vm.getUid());
+        return getVmHostMap().get(vm);
     }
 
     @Override
     public Host getHost(int vmId, int userId) {
-        return getVmHostMap().get(VmSimple.getUid(userId, vmId));
+        return getVmHostMap().get(UniquelyIdentificable.getUid(userId, vmId));
     }
 
     /**
@@ -141,7 +140,7 @@ public class VmAllocationPolicySimple extends VmAllocationPolicyAbstract {
 
         mapVmToPm(vm, host);
         final int requiredPes = vm.getNumberOfPes();
-        getUsedPes().put(vm.getUid(), requiredPes);
+        getUsedPes().put(vm, requiredPes);
         getHostFreePesMap().put(host, getHostFreePesMap().get(host) - requiredPes);
 
         Log.printFormattedLine(

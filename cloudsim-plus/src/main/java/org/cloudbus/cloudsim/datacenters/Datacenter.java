@@ -113,6 +113,7 @@ public interface Datacenter extends SimEntity {
      * {@link Datacenter} objects.
      */
     Datacenter NULL = new Datacenter() {
+        @Override public int compareTo(SimEntity o) { return 0; }
         @Override public int getId() {
             return -1;
         }

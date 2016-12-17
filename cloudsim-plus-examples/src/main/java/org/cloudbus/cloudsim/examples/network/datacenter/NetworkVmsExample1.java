@@ -165,7 +165,7 @@ public class NetworkVmsExample1 {
 
         for (NetworkHost host : datacenter.<NetworkHost>getHostList()) {
             int switchNum = host.getId() / edgeSwitches[0].getPorts();
-            edgeSwitches[switchNum].getHostList().put(host.getId(), host);
+            edgeSwitches[switchNum].connectHost(host);
             datacenter.addHostToSwitch(host, edgeSwitches[switchNum]);
             host.setEdgeSwitch(edgeSwitches[switchNum]);
         }
@@ -267,7 +267,7 @@ public class NetworkVmsExample1 {
      */
     private void addReceiveTask(NetworkCloudlet cloudlet, NetworkCloudlet sourceCloudlet) {
         CloudletReceiveTask task = new CloudletReceiveTask(
-                cloudlet.getTasks().size(), sourceCloudlet.getVm().getId());
+                cloudlet.getTasks().size(), sourceCloudlet.getVm());
         task.setMemory(TASK_RAM);
         task.setNumberOfExpectedPacketsToReceive(NUMBER_OF_PACKETS_TO_SEND);
         cloudlet.addTask(task);

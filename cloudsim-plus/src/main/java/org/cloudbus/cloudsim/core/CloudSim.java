@@ -11,6 +11,7 @@ import java.util.*;
 import java.util.stream.Stream;
 
 import org.cloudbus.cloudsim.core.events.*;
+import org.cloudbus.cloudsim.datacenters.Datacenter;
 import org.cloudbus.cloudsim.network.topologies.NetworkTopology;
 import org.cloudbus.cloudsim.util.Log;
 import java.util.function.Predicate;
@@ -114,9 +115,10 @@ public class CloudSim implements Simulation {
     private Map<String, SimEntity> entitiesByName;
 
     /**
-     * The wait predicates.
+     * A map of the predicate that defines the events that a given entity is waiting.
+     * Each key is the entity id and the value is the predicate.
      */
-    private Map<Integer, Predicate> waitPredicates;
+    private Map<SimEntity, Predicate> waitPredicates;
 
     /**
      * @see #isPaused()
@@ -337,8 +339,8 @@ public class CloudSim implements Simulation {
     }
 
     @Override
-    public Set<Integer> getDatacenterIdsList() {
-        return cis.getDatacenterIdsList();
+    public Set<Datacenter> getDatacenterList() {
+        return cis.getDatacenterList();
     }
 
     @Override
@@ -489,8 +491,8 @@ public class CloudSim implements Simulation {
     }
 
     @Override
-    public void wait(int src, Predicate<SimEvent> p) {
-        entities.get(src).setState(SimEntity.State.WAITING);
+    public void wait(CloudSimEntity src, Predicate<SimEvent> p) {
+        src.setState(SimEntity.State.WAITING);
         if (p != SIM_ANY) {
             // If a predicate has been used, store it in order to check incomming events that matches it
             waitPredicates.put(src, p);

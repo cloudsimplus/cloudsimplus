@@ -12,6 +12,7 @@ import java.util.Collections;
 import java.util.List;
 
 import org.cloudbus.cloudsim.network.VmPacket;
+import org.cloudbus.cloudsim.vms.Vm;
 
 /**
  * A task executed by a {@link NetworkCloudlet} that
@@ -74,9 +75,9 @@ public class CloudletReceiveTask extends CloudletTask {
     private long numberOfExpectedPacketsToReceive;
 
     /**
-     * @see #getSourceVmId()
+     * @see #getSourceVm()
      */
-    private final int sourceVmId;
+    private final Vm sourceVm;
 
     /**
      * Creates a new task.
@@ -84,10 +85,10 @@ public class CloudletReceiveTask extends CloudletTask {
      * @param id task id
      * @param sourceVm the Vm where it is expected to receive packets from
      */
-    public CloudletReceiveTask(int id, int sourceVm) {
+    public CloudletReceiveTask(int id, Vm sourceVm) {
         super(id);
         this.packetsReceived = new ArrayList<>();
-        this.sourceVmId = sourceVm;
+        this.sourceVm = sourceVm;
     }
 
     /**
@@ -115,8 +116,8 @@ public class CloudletReceiveTask extends CloudletTask {
      * Gets the Vm where it is expected to receive packets from.
      * @return
      */
-    public int getSourceVmId() {
-        return sourceVmId;
+    public Vm getSourceVm() {
+        return sourceVm;
     }
 
     /**

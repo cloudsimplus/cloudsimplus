@@ -7,6 +7,11 @@
  */
 package org.cloudbus.cloudsim.core;
 
+import org.cloudbus.cloudsim.core.events.SimEvent;
+import org.cloudbus.cloudsim.datacenters.Datacenter;
+import org.cloudbus.cloudsim.datacenters.DatacenterCharacteristics;
+import org.cloudbus.cloudsim.vms.Vm;
+
 /**
  * Contains various static command tags that indicate a type of action that
  * needs to be undertaken by CloudSim entities when they receive or send events.
@@ -72,37 +77,34 @@ public class CloudSimTags {
     public static final int EXPERIMENT = BASE + 1;
 
     /**
-     * Denotes a switches to be registered. This tag is normally used
+     * Denotes a request from a Datacenter to register itself. This tag is normally used
      * between {@link CloudInformationService} and Datacenter entities.
+     * When such a {@link SimEvent} is sent, the {@link SimEvent#getData()}
+     * must be a {@link Datacenter} object.
      */
     public static final int DATACENTER_REGISTRATION_REQUEST = BASE + 2;
 
     /**
-     * Denotes a switches to be registered, that can support advanced
-     * reservation. This tag is normally used between
+     * Denotes a request from a Datacenter to register itself, when such
+     * a Datacenter supports advanced reservation.
+     * This tag is normally used between
      * {@link CloudInformationService} and Datacenter entities.
+     * When such a {@link SimEvent} is sent, the {@link SimEvent#getData()}
+     * must be a {@link Datacenter} object.
      */
     public static final int DATACENTER_REGISTRATION_REQUEST_AR = BASE + 3;
 
     /**
-     * Denotes a list of all Datacenter's, including the ones that can support
-     * advanced reservation. This tag is normally used between
-     * {@link CloudInformationService} and CloudSim entities.
+     * Denotes a request from a broker to a {@link CloudInformationService} to get the list of all Datacenters,
+     * including the ones that can support advanced reservation.
      */
-    public static final int DATACENTER_LIST = BASE + 4;
+    public static final int DATACENTER_LIST_REQUEST = BASE + 4;
 
     /**
-     * Denotes a list of Datacenter's that only support advanced reservation. This
-     * tag is normally used between {@link CloudInformationService} and CloudSim
-     * entities.
+     * Denotes a request from a broker to a {@link CloudInformationService} to get a list containing just
+     * the Datacenters that support advanced reservation.
      */
-    public static final int DATACENTER_AR_LIST = BASE + 5;
-
-    /**
-     * Denotes Datacenter characteristics information. This tag is normally
-     * used between CloudSim and Datacenter entity.
-     */
-    public static final int DATACENTER_CHARACTERISTICS = BASE + 6;
+    public static final int DATACENTER_AR_LIST_REQUEST = BASE + 5;
 
     /**
      * Denotes cloud resource allocation policy. This tag is normally used
@@ -143,22 +145,17 @@ public class CloudSimTags {
     public static final int RETURN_ACC_STATISTICS_BY_CATEGORY = BASE + 12;
 
     /**
-     * Denotes a request to register a CloudResource entity to a regional
-     * {@link CloudInformationService} (CIS) entity.
+     * Denotes a request to register a {@link CloudInformationService} entity as a regional CIS.
+     * When such a {@link SimEvent} is sent, the {@link SimEvent#getData()}
+     * must be a {@link CloudInformationService} object.
      */
-    public static final int REGISTER_REGIONAL_GIS = BASE + 13;
+    public static final int REGISTER_REGIONAL_CIS = BASE + 13;
 
     /**
      * Denotes a request to get a list of other regional CIS entities from the
      * system CIS entity.
      */
-    public static final int REQUEST_REGIONAL_GIS = BASE + 14;
-
-    /**
-     * Denotes request for datacenter characteristics information. This tag
-     * is normally used between CloudSim and Datacenter entity.
-     */
-    public static final int DATACENTER_CHARACTERISTICS_REQUEST = BASE + 15;
+    public static final int REQUEST_REGIONAL_CIS = BASE + 14;
 
     /**
      * This tag is used by an entity to send ping requests.
@@ -231,14 +228,18 @@ public class CloudSimTags {
     public static final int CLOUDLET_MOVE_ACK = BASE + 30;
 
     /**
-     * Denotes a request to create a new VM in a {@link Datacenter} with
-     * acknowledgement information sent by the DatacenterSimple.
+     * Denotes a request to create a new VM in a {@link Datacenter}
+     * without requiring and acknowledgement to be sent back to the sender.
      */
     public static final int VM_CREATE = BASE + 31;
 
     /**
      * Denotes a request to create a new VM in a {@link Datacenter} with
-     * acknowledgement information sent by the DatacenterSimple.
+     * acknowledgement information sent by the Datacenter,
+     * where the {@link SimEvent#getData()} of the reply event
+     * is a {@link Vm} object.
+     * To check if the VM was in fact created inside the requested Datacenter
+     * one has only to call {@link Vm#isCreated()}.
      */
     public static final int VM_CREATE_ACK = BASE + 32;
 

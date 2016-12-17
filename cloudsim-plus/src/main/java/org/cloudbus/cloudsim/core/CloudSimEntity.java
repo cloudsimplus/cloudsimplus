@@ -398,7 +398,7 @@ public abstract class CloudSimEntity implements SimEntity {
             return;
         }
 
-        simulation.wait(id, p);
+        simulation.wait(this, p);
         state = State.WAITING;
     }
 
@@ -718,5 +718,10 @@ public abstract class CloudSimEntity implements SimEntity {
      */
     protected void setStarted(boolean started) {
         this.started = started;
+    }
+
+    @Override
+    public int compareTo(SimEntity o) {
+        return Integer.compare(this.getId(), o.getId());
     }
 }

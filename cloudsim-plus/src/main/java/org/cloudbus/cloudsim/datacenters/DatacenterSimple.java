@@ -67,7 +67,7 @@ public class DatacenterSimple extends CloudSimEntity implements Datacenter {
      * @post $none
      */
     public DatacenterSimple(
-        CloudSim simulation,
+        Simulation simulation,
         DatacenterCharacteristics characteristics,
         VmAllocationPolicy vmAllocationPolicy)
     {
@@ -117,7 +117,7 @@ public class DatacenterSimple extends CloudSimEntity implements Datacenter {
      */
     @Deprecated
     public DatacenterSimple(
-        CloudSim simulation,
+        Simulation simulation,
         DatacenterCharacteristics characteristics,
         VmAllocationPolicy vmAllocationPolicy,
         List<FileStorage> storageList,
@@ -137,12 +137,6 @@ public class DatacenterSimple extends CloudSimEntity implements Datacenter {
         int srcId;
 
         switch (ev.getTag()) {
-            // Resource characteristics inquiry
-            case CloudSimTags.DATACENTER_CHARACTERISTICS:
-                srcId = ((Integer) ev.getData());
-                sendNow(srcId, ev.getTag(), getCharacteristics());
-                break;
-
             // Resource dynamic info inquiry
             case CloudSimTags.RESOURCE_DYNAMICS:
                 srcId = ((Integer) ev.getData());
@@ -353,10 +347,10 @@ public class DatacenterSimple extends CloudSimEntity implements Datacenter {
     protected void processPingRequest(SimEvent ev) {
         IcmpPacket pkt = (IcmpPacket) ev.getData();
         pkt.setTag(CloudSimTags.ICMP_PKT_RETURN);
-        pkt.setDestinationId(pkt.getSourceId());
+        pkt.setDestination(pkt.getSource());
 
         // sends back to the sender
-        sendNow(pkt.getSourceId(), CloudSimTags.ICMP_PKT_RETURN, pkt);
+        sendNow(pkt.getSource().getId(), CloudSimTags.ICMP_PKT_RETURN, pkt);
     }
 
     /**
@@ -451,25 +445,20 @@ public class DatacenterSimple extends CloudSimEntity implements Datacenter {
      * the Broker.
      *
      * @param ev information about the event just happened
-     * @param ack indicates if the event's sender expects to receive an
+     * @param ackRequested indicates if the event's sender expects to receive an
      * acknowledge message when the event finishes to be processed
      * @return true if a host was allocated to the VM; false otherwise
      *
      * @pre ev != null
      * @post $none
      */
-    protected boolean processVmCreate(SimEvent ev, boolean ack) {
+    protected boolean processVmCreate(SimEvent ev, boolean ackRequested) {
         Vm vm = (Vm) ev.getData();
 
         boolean hostAllocatedForVm = getVmAllocationPolicy().allocateHostForVm(vm);
 
-        if (ack) {
-            int[] data = new int[3];
-            data[0] = getId();
-            data[1] = vm.getId();
-            data[2] = (hostAllocatedForVm ? CloudSimTags.TRUE : CloudSimTags.FALSE);
-            send(vm.getBroker().getId(), getSimulation().getMinTimeBetweenEvents(),
-                 CloudSimTags.VM_CREATE_ACK, data);
+        if (ackRequested) {
+            send(vm.getBroker().getId(), getSimulation().getMinTimeBetweenEvents(), CloudSimTags.VM_CREATE_ACK, vm);
         }
 
         if (hostAllocatedForVm) {
@@ -1103,7 +1092,7 @@ public class DatacenterSimple extends CloudSimEntity implements Datacenter {
         }
 
         // send the registration to CIS
-        sendNow(cisID, CloudSimTags.DATACENTER_REGISTRATION_REQUEST, getId());
+        sendNow(cisID, CloudSimTags.DATACENTER_REGISTRATION_REQUEST, this);
     }
 
     @Override

@@ -60,9 +60,9 @@ public abstract class PowerVmAllocationPolicyMigrationAbstract extends PowerVmAl
 
     /**
      * A map of CPU utilization history (in percentage) for each host, where
-     * each key is a host id and each value is the CPU utilization percentage history.
+     * each key is a hos and each value is the CPU utilization percentage history.
      */
-    private final Map<Integer, List<Double>> utilizationHistory = new HashMap<>();
+    private final Map<Host, List<Double>> utilizationHistory = new HashMap<>();
 
     /**
      * The metric history.
@@ -71,13 +71,13 @@ public abstract class PowerVmAllocationPolicyMigrationAbstract extends PowerVmAl
      * threshold, other it stores utilization threshold or predicted
      * utilization, that is very confusing.
      */
-    private final Map<Integer, List<Double>> metricHistory = new HashMap<>();
+    private final Map<Host, List<Double>> metricHistory = new HashMap<>();
 
     /**
      * The time when entries in each history list was added. All history lists
      * are updated at the same time.
      */
-    private final Map<Integer, List<Double>> timeHistory = new HashMap<>();
+    private final Map<Host, List<Double>> timeHistory = new HashMap<>();
 
     /**
      * The history of time spent in VM selection every time the optimization of
@@ -505,7 +505,7 @@ public abstract class PowerVmAllocationPolicyMigrationAbstract extends PowerVmAl
                         "Couldn't restore VM #%d on host #%d",
                         vm.getId(), host.getId()));
             }
-            getVmHostMap().put(vm.getUid(), host);
+            getVmHostMap().put(vm, host);
         }
     }
 
@@ -576,15 +576,14 @@ public abstract class PowerVmAllocationPolicyMigrationAbstract extends PowerVmAl
      */
     protected void addHistoryEntryIfAbsent(PowerHost host, double metric) {
         Simulation simulation = host.getSimulation();
-        final int hostId = host.getId();
-        getTimeHistory().putIfAbsent(hostId, new LinkedList<>());
-        getUtilizationHistory().putIfAbsent(hostId, new LinkedList<>());
-        getMetricHistory().putIfAbsent(hostId, new LinkedList<>());
+        getTimeHistory().putIfAbsent(host, new LinkedList<>());
+        getUtilizationHistory().putIfAbsent(host, new LinkedList<>());
+        getMetricHistory().putIfAbsent(host, new LinkedList<>());
 
-        if (!getTimeHistory().get(hostId).contains(simulation.clock())) {
-            getTimeHistory().get(hostId).add(simulation.clock());
-            getUtilizationHistory().get(hostId).add(host.getUtilizationOfCpu());
-            getMetricHistory().get(hostId).add(metric);
+        if (!getTimeHistory().get(host).contains(simulation.clock())) {
+            getTimeHistory().get(host).add(simulation.clock());
+            getUtilizationHistory().get(host).add(host.getUtilizationOfCpu());
+            getMetricHistory().get(host).add(metric);
         }
     }
 
@@ -620,7 +619,7 @@ public abstract class PowerVmAllocationPolicyMigrationAbstract extends PowerVmAl
      *
      * @return the utilization history
      */
-    public Map<Integer, List<Double>> getUtilizationHistory() {
+    public Map<Host, List<Double>> getUtilizationHistory() {
         return utilizationHistory;
     }
 
@@ -629,7 +628,7 @@ public abstract class PowerVmAllocationPolicyMigrationAbstract extends PowerVmAl
      *
      * @return the metric history
      */
-    public Map<Integer, List<Double>> getMetricHistory() {
+    public Map<Host, List<Double>> getMetricHistory() {
         return metricHistory;
     }
 
@@ -638,7 +637,7 @@ public abstract class PowerVmAllocationPolicyMigrationAbstract extends PowerVmAl
      *
      * @return the time history
      */
-    public Map<Integer, List<Double>> getTimeHistory() {
+    public Map<Host, List<Double>> getTimeHistory() {
         return timeHistory;
     }
 

@@ -2,7 +2,7 @@ package org.cloudbus.cloudsim.vms;
 
 import org.cloudbus.cloudsim.brokers.DatacenterBroker;
 import org.cloudbus.cloudsim.core.Delayable;
-import org.cloudbus.cloudsim.core.Identificable;
+import org.cloudbus.cloudsim.core.UniquelyIdentificable;
 import org.cloudbus.cloudsim.datacenters.Datacenter;
 import org.cloudbus.cloudsim.hosts.Host;
 import org.cloudbus.cloudsim.resources.*;
@@ -25,7 +25,7 @@ import org.cloudsimplus.listeners.HostToVmEventInfo;
  * @author Manoel Campos da Silva Filho
  * @since CloudSim Plus 1.0
  */
-public interface Vm extends Identificable, Delayable, Comparable<Vm> {
+public interface Vm extends UniquelyIdentificable, Delayable, Comparable<Vm> {
 
     /**
      * Adds a VM state history entry.
@@ -119,14 +119,6 @@ public interface Vm extends Identificable, Delayable, Comparable<Vm> {
      * @see #isCreated()
      */
     Host getHost();
-
-    /**
-     * Gets the Unique Identifier (UID) for the VM, that is compounded by the user id
-     * and VM id.
-     *
-     * @return string UID
-     */
-    String getUid();
 
     /**
      * Gets the individual MIPS capacity of any VM's PE, considering that all
