@@ -211,7 +211,7 @@ Log.printFormattedLine("Minimal Example finished!");
 
 And the results are more structured and clear, including the unit of some presented data, in order to allow better understanding. 
 The image below, for a simulation with two cloudlets (applications) gives you a preview. 
-![Simulation Results](simulation-results.png)
+![Simulation Results](https://github.com/manoelcampos/cloudsim-plus/raw/master/simulation-results.png)
 
 <p align="right"><a href="#top">:arrow_up:</a></p>
 
