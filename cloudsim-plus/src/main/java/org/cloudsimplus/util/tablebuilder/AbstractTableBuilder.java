@@ -153,7 +153,7 @@ public abstract class AbstractTableBuilder implements TableBuilder {
     protected abstract void printTableClosing();
 
     @Override
-    public TableBuilder addColumnList(String[] columnTitles) {
+    public TableBuilder addColumnList(String... columnTitles) {
         for(String column: columnTitles){
             addColumn(column);
         }

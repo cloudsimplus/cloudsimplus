@@ -220,14 +220,8 @@ public class NetworkDatacenter extends DatacenterSimple {
             }
 
             if (ack) {
-                int[] data = new int[3];
-                data[0] = getId();
-                data[1] = cl.getId();
-                data[2] = CloudSimTags.TRUE;
-
                 // unique tag = operation tag
-                int tag = CloudSimTags.CLOUDLET_SUBMIT_ACK;
-                sendNow(cl.getBroker().getId(), tag, data);
+                sendNow(cl.getBroker().getId(), CloudSimTags.CLOUDLET_SUBMIT_ACK, cl);
             }
         } catch (ClassCastException c) {
             Log.printLine(getName() + ".processCloudletSubmit(): " + "ClassCastException error.");

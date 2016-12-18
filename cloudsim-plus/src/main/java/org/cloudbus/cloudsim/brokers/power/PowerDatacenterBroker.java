@@ -12,6 +12,7 @@ import org.cloudbus.cloudsim.brokers.DatacenterBrokerSimple;
 import org.cloudbus.cloudsim.core.CloudSim;
 import org.cloudbus.cloudsim.core.CloudSimTags;
 import org.cloudbus.cloudsim.core.events.SimEvent;
+import org.cloudbus.cloudsim.vms.Vm;
 
 /**
  * A power-aware {@link DatacenterBrokerSimple}.
@@ -42,14 +43,11 @@ public class PowerDatacenterBroker extends DatacenterBrokerSimple {
 
 	@Override
 	protected boolean processVmCreateResponseFromDatacenter(SimEvent ev) {
-		int[] data = (int[]) ev.getData();
-		int result = data[2];
+        Vm vm = (Vm) ev.getData();
 
-		if (result != CloudSimTags.TRUE) {
-			int datacenterId = data[0];
-			int vmId = data[1];
-			throw new RuntimeException(getSimulation().clock() + ": " + getName() + ": Creation of VM #" + vmId
-					+ " failed in Datacenter #" + datacenterId);
+		if (!vm.isCreated()) {
+			throw new RuntimeException(getSimulation().clock() + ": " + getName() + ": Creation of VM #" + vm.getId()
+					+ " failed in Datacenter #" + vm.getHost().getDatacenter().getId());
 		}
 		return super.processVmCreateResponseFromDatacenter(ev);
 	}

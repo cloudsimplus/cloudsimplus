@@ -139,20 +139,18 @@ public class DatacenterSimple extends CloudSimEntity implements Datacenter {
         switch (ev.getTag()) {
             // Resource dynamic info inquiry
             case CloudSimTags.RESOURCE_DYNAMICS:
-                srcId = ((Integer) ev.getData());
+                srcId = (Integer) ev.getData();
                 sendNow(srcId, ev.getTag(), 0);
                 break;
 
             case CloudSimTags.RESOURCE_NUM_PE:
-                srcId = ((Integer) ev.getData());
-                int numPE = getCharacteristics().getNumberOfPes();
-                sendNow(srcId, ev.getTag(), numPE);
+                srcId = (Integer) ev.getData();
+                sendNow(srcId, ev.getTag(), getCharacteristics().getNumberOfPes());
                 break;
 
             case CloudSimTags.RESOURCE_NUM_FREE_PE:
-                srcId = ((Integer) ev.getData());
-                int freePesNumber = getCharacteristics().getNumberOfFreePes();
-                sendNow(srcId, ev.getTag(), freePesNumber);
+                srcId = (Integer) ev.getData();
+                sendNow(srcId, ev.getTag(), getCharacteristics().getNumberOfFreePes());
                 break;
 
             // New Cloudlet arrives
@@ -276,7 +274,7 @@ public class DatacenterSimple extends CloudSimEntity implements Datacenter {
         }
 
         String filename = (String) data[0];
-        int req_source = ((Integer) data[1]);
+        int req_source = (Integer) data[1];
         int tag;
 
         // check if this file can be deleted (do not delete is right now)
@@ -316,7 +314,7 @@ public class DatacenterSimple extends CloudSimEntity implements Datacenter {
 
         File file = (File) pack[0]; // get the file
         file.setMasterCopy(true); // set the file into a master copy
-        int sentFrom = ((Integer) pack[1]); // get sender ID
+        int sentFrom = (Integer) pack[1]; // get sender ID
 
         Object[] data = new Object[3];
         data[0] = file.getName();
@@ -453,16 +451,7 @@ public class DatacenterSimple extends CloudSimEntity implements Datacenter {
         }
 
         if (ack) {
-            int[] data = new int[3];
-            data[0] = getId();
-            data[1] = vm.getId();
-
-            if (result) {
-                data[2] = CloudSimTags.TRUE;
-            } else {
-                data[2] = CloudSimTags.FALSE;
-            }
-            sendNow(ev.getSource(), CloudSimTags.VM_CREATE_ACK, data);
+            sendNow(ev.getSource(), CloudSimTags.VM_CREATE_ACK, vm);
         }
 
         vm.setInMigration(false);

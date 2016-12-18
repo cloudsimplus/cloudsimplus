@@ -55,7 +55,7 @@ public interface TableBuilder {
      * @return The {@link TableBuilder} instance.
      * @see #addColumn(String)
      */
-    TableBuilder addColumnList(final String columnTitles[]);
+    TableBuilder addColumnList(final String... columnTitles);
 
     /**
      *
