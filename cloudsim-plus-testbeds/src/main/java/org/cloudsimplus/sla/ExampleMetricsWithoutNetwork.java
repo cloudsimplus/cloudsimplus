@@ -96,7 +96,7 @@ public final class ExampleMetricsWithoutNetwork {
     /**
      * Creates Vms
      *
-     * @param userId broker id
+     * @param broker broker
      * @param numberOfPes number of PEs for each VM to be created
      * @param numberOfVms number of VMs to create
      * @return list de vms
@@ -179,11 +179,11 @@ public final class ExampleMetricsWithoutNetwork {
      * @param cloudlets to calculate the response time
      * @return responseTimeCloudlet
      */
-    private double responseTimeCloudlet(List<Cloudlet> cloudlet) {
+    private double responseTimeCloudlet(List<Cloudlet> cloudlets) {
 
         double responseTime = 0;
-        for (Cloudlet cloudlets : cloudlet) {
-            responseTime = cloudlets.getFinishTime() - cloudlets.getDatacenterArrivalTime();
+        for (Cloudlet cloudlet : cloudlets) {
+            responseTime = cloudlet.getFinishTime() - cloudlet.getDatacenterArrivalTime();
         }
         return responseTime;
 
@@ -403,12 +403,12 @@ public final class ExampleMetricsWithoutNetwork {
 
     private void checkResponseTimeViolation(SlaMetric metric) {
         SlaMetricsMonitoring monitoring = new SlaMetricsMonitoring();
-        double minValue = 
+        double minValue =
                 metric.getDimensions().stream()
                     .filter(d -> d.isValueMin())
                     .map(d -> d.getValue())
                     .findFirst().orElse(Double.MIN_VALUE);
-        double maxValue = 
+        double maxValue =
                 metric.getDimensions().stream()
                     .filter(d -> d.isValueMax())
                     .map(d -> d.getValue())
@@ -428,13 +428,13 @@ public final class ExampleMetricsWithoutNetwork {
                 .filter(d -> d.isValueMin())
                 .map(d -> d.getValue())
                 .findFirst().orElse(Double.MIN_VALUE);
-        
-        double maxValue = 
+
+        double maxValue =
                 metric.getDimensions().stream()
                     .filter(d -> d.isValueMax())
                     .map(d -> d.getValue())
                     .findFirst().orElse(Double.MAX_VALUE);
-        
+
         if (cpuUtilization < minValue || cpuUtilization > maxValue) {
             monitoring.monitoringCpuUtilization(metric.getMetricName());
             printMetricDataViolated(metric);
@@ -444,18 +444,18 @@ public final class ExampleMetricsWithoutNetwork {
     }
 
     private void checkWaitTimeViolation(SlaMetric metric) {
-        SlaMetricsMonitoring monitoring = new SlaMetricsMonitoring();   
+        SlaMetricsMonitoring monitoring = new SlaMetricsMonitoring();
         double minValue = metric.getDimensions().stream()
                 .filter(d -> d.isValueMin())
                 .map(d -> d.getValue())
                 .findFirst().orElse(Double.MIN_VALUE);
-        
-        double maxValue = 
+
+        double maxValue =
                 metric.getDimensions().stream()
                     .filter(d -> d.isValueMax())
                     .map(d -> d.getValue())
                     .findFirst().orElse(Double.MAX_VALUE);
-        
+
         if (waitTimeCloudlet < minValue || waitTimeCloudlet > maxValue) {
             monitoring.monitoringWaitTime(metric.getMetricName());
             printMetricDataViolated(metric);

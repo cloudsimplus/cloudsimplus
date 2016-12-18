@@ -110,7 +110,7 @@ public class UtilizationModelArithmeticProgression implements UtilizationModel {
      * Sets the initial percentage of resource
      * that cloudlets using this UtilizationModel will require
      * when they start to execute.
-     * @param the initial utilization percentage (in scale is from 0 to 1, where 1 is 100%)
+     * @param initialUtilization initial utilization percentage (in scale is from 0 to 1, where 1 is 100%)
      */
     private void setInitialUtilization(double initialUtilization) {
         if(initialUtilization < 0 || initialUtilization > 1)

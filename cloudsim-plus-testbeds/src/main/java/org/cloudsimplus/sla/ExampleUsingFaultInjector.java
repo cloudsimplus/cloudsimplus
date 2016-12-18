@@ -90,7 +90,7 @@ public class ExampleUsingFaultInjector {
     /**
      * Creates Vms
      *
-     * @param userId broker id
+     * @param broker broker
      * @param numberOfPes number of PEs for each VM to be created
      * @param numberOfVms number of VMs to create
      * @return list de vms
@@ -205,13 +205,13 @@ public class ExampleUsingFaultInjector {
         //Inject Fault
         long seed = System.currentTimeMillis();
         PoissonProcess poisson = new PoissonProcess(0.2, seed);
-        
+
         UniformDistr failurePesRand = new UniformDistr(seed);
         for (int i = 0; i < datacenter0.getHostList().size(); i++) {
             for (Host host : datacenter0.getHostList()) {
                 if (poisson.haveKEventsHappened()) {
                     UniformDistr delayForFailureOfHostRandom = new UniformDistr(1, 10, seed + i);
-                    
+
                     //create a new intance of fault and start it.
                     HostFaultInjection fault = new HostFaultInjection(cloudsim);
                     fault.setNumberOfFailedPesRandom(failurePesRand);
@@ -227,8 +227,6 @@ public class ExampleUsingFaultInjector {
 
     /**
      * Creates the datacenter.
-     *
-     * @param name the name
      *
      * @return the datacenter
      */

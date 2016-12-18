@@ -207,8 +207,7 @@ public abstract class SimulationExperiment implements Runnable {
      */
 	protected void buildScenario() {
 		int numberOfCloudUsers = 1;
-		boolean traceEvents = false;
-		this.cloudsim = new CloudSim(traceEvents);
+		this.cloudsim = new CloudSim();
 
 		Datacenter datacenter0 = createDatacenter();
 		DatacenterBroker broker0 = createBrokerAndAddToList();

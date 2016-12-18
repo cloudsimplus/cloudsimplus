@@ -148,9 +148,7 @@ public class MigrationExample1 {
     public static void main(String[] args) {
         Log.printConcatLine("Starting ", MigrationExample1.class.getSimpleName(), "...");
 
-        int num_user = 2;   // number of cloud users
-        boolean trace_flag = false;  // mean trace events
-        simulation = new CloudSim(trace_flag);
+        simulation = new CloudSim();
 
         @SuppressWarnings("unused")
         Datacenter datacenter0 = createDatacenter();

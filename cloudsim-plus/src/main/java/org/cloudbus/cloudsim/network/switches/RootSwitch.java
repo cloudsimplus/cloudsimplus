@@ -58,7 +58,7 @@ public class RootSwitch extends AbstractSwitch {
      * The downlink bandwidth of RootSwitch in Megabits/s.
      * It also represents the uplink bandwidth of connected aggregation switches.
      */
-    public static final long DOWNLINK_BW = 40 * 1024 * 1024 * 1024; // 40000 Megabits (40 Gigabits)
+    public static final long DOWNLINK_BW = 40 * 1024 * 1024 * 1024L; // 40000 Megabits (40 Gigabits)
 
     /**
      * Instantiates a Root AbstractSwitch specifying what other switches are connected

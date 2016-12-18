@@ -86,8 +86,7 @@ public class CloudletExecutionTask extends CloudletTask {
     }
 
     /**
-     * Gets the execution length of the task (in MI),
-     * only used for tasks of the type {@link Type#EXECUTION}
+     * Gets the execution length of the task (in MI).
      *
      * @return
      */
@@ -96,8 +95,7 @@ public class CloudletExecutionTask extends CloudletTask {
     }
 
     /**
-     * Sets the execution length of the task (in MI),
-     * only used for tasks of the type {@link Type#EXECUTION}
+     * Sets the execution length of the task (in MI).
      *
      * @param length
      */

@@ -140,11 +140,7 @@ public class SwfWorkloadFormatExample1 {
     public SwfWorkloadFormatExample1() {
         Log.printConcatLine("Starting ", SwfWorkloadFormatExample1.class.getSimpleName(), "...");
 
-        int num_user = 1; // number of cloud users
-        Calendar calendar = Calendar.getInstance(); // Calendar whose fields have been initialized with the current date and time.
-        boolean trace_flag = false; // trace events
-
-        simulation = new CloudSim(trace_flag);
+        simulation = new CloudSim();
         try {
             broker = new DatacenterBrokerVmsWithMorePesFirst(simulation);
 

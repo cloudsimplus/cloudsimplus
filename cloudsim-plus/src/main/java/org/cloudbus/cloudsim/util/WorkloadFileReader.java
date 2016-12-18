@@ -86,46 +86,45 @@ public class WorkloadFileReader implements WorkloadModel {
      */
     private List<Cloudlet> jobs;
 
-    /* Index of fields from the Standard Workload Format. */
     /**
      * Field index of job number.
      */
-    private int JOB_NUM = 1 - 1;
+    private int JOB_NUM = 0;
 
     /**
      * Field index of submit time of a job.
      */
-    private int SUBMIT_TIME = 2 - 1;
+    private int SUBMIT_TIME = 1;
 
     /**
      * Field index of running time of a job.
      */
-    private final int RUN_TIME = 4 - 1;
+    private final int RUN_TIME = 3;
 
     /**
      * Field index of number of processors needed for a job.
      */
-    private final int NUM_PROC = 5 - 1;
+    private final int NUM_PROC = 4;
 
     /**
      * Field index of required number of processors.
      */
-    private int REQ_NUM_PROC = 8 - 1;
+    private int REQ_NUM_PROC = 7;
 
     /**
      * Field index of required running time.
      */
-    private int REQ_RUN_TIME = 9 - 1;
+    private int REQ_RUN_TIME = 8;
 
     /**
      * Field index of user who submitted the job.
      */
-    private final int USER_ID = 12 - 1;
+    private final int USER_ID = 11;
 
     /**
      * Field index of group of the user who submitted the job.
      */
-    private final int GROUP_ID = 13 - 1;
+    private final int GROUP_ID = 12;
 
     /**
      * Max number of fields in the trace file.

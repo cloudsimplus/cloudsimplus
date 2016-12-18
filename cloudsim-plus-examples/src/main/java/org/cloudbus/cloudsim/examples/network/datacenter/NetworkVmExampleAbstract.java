@@ -98,11 +98,7 @@ public abstract class NetworkVmExampleAbstract {
      */
     public NetworkVmExampleAbstract() {
         Log.printFormattedLine("Starting %s...", this.getClass().getSimpleName());
-        int num_user = 1; // number of cloud users
-        Calendar calendar = Calendar.getInstance();
-        boolean trace_flag = false;
-
-        simulation = new CloudSim(trace_flag);
+        simulation = new CloudSim();
 
         this.datacenter = createDatacenter();
         this.brokerList = createBrokerForEachApp();

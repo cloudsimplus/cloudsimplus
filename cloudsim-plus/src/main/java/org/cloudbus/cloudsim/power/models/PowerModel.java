@@ -7,6 +7,8 @@
  */
 package org.cloudbus.cloudsim.power.models;
 
+import org.cloudbus.cloudsim.hosts.power.PowerHost;
+
 /**
  * The PowerModel interface needs to be implemented in order to provide a model
  * of power consumption of hosts, depending on utilization of a critical system
@@ -15,7 +17,7 @@ package org.cloudbus.cloudsim.power.models;
  * Design Pattern in order to start avoiding {@link NullPointerException} when
  * using the {@link PowerModel#NULL} object instead of attributing {@code null} to
  * {@link PowerModel} variables.
- * 
+ *
  *
  * <br>If you are using any algorithms, policies or workload included in the
  * power package please cite the following paper:<br/>

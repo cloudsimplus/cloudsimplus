@@ -59,11 +59,9 @@ public class CloudSimExample3 {
 
         // First step: Initialize the CloudSim package. It should be called
         // before creating any entities.
-        int num_user = 1;   // number of cloud users
-        boolean trace_flag = false;  // mean trace events
 
         // Initialize the CloudSim library
-        simulation = new CloudSim(trace_flag);
+        simulation = new CloudSim();
 
         // Second step: Create Datacenters
         //Datacenters are the resource providers in CloudSim. We need at list one of them to run a CloudSim simulation

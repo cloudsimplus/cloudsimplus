@@ -123,10 +123,8 @@ public class DatacenterBrokerHeuristicExample {
         Log.printFormattedLine("Starting %s ...", getClass().getSimpleName());
         this.vmList = new ArrayList<>();
         this.cloudletList = new ArrayList<>();
-        int numberOfCloudUsers = 1;
-        boolean traceEvents = false;
 
-        simulation = new CloudSim(traceEvents);
+        simulation = new CloudSim();
 
         Datacenter datacenter0 = createDatacenter();
 

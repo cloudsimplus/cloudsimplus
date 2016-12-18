@@ -48,12 +48,6 @@ public class CloudSim implements Simulation {
     private static final int NOT_FOUND = -1;
 
     /**
-     * The id of CloudCloudSimShutdown entity.
-     */
-    @SuppressWarnings("unused")
-    private CloudCloudSimShutdown shutdown;
-
-    /**
      * @see #getNumberOfBrokers()
      */
     private int numberOfBrokers;
@@ -62,12 +56,6 @@ public class CloudSim implements Simulation {
      * The Cloud Information Service (CIS) entity.
      */
     private CloudInformationService cis;
-
-    /**
-     * The trace flag.
-     */
-    @SuppressWarnings("unused")
-    private boolean traceFlag = false;
 
     /**
      * The calendar.
@@ -156,7 +144,7 @@ public class CloudSim implements Simulation {
     private EventListener<EventInfo> onSimulationPausedListener;
 
     /**
-     * Creates a CloudSim simulation using a default calendar and that does not track events.
+     * Creates a CloudSim simulation using a default calendar.
      * <p>
      * Inside this method, it will create the following CloudSim entities:
      * <ul>
@@ -171,7 +159,7 @@ public class CloudSim implements Simulation {
      * @post $none
      */
     public CloudSim(){
-        this(null, false);
+        this(null);
     }
 
     /**
@@ -186,14 +174,13 @@ public class CloudSim implements Simulation {
      *
      * @param cal starting time for this simulation. If it is <tt>null</tt>,
      * then the time will be taken from <tt>Calendar.getInstance()</tt>
-     * @param traceFlag <tt>true</tt> if CloudSim trace need to be written
      * @throws RuntimeException
      *
      * @see CloudCloudSimShutdown
      * @see CloudInformationService
      * @post $none
      */
-    public CloudSim(Calendar cal, boolean traceFlag) throws RuntimeException {
+    public CloudSim(Calendar cal) throws RuntimeException {
         Log.printFormattedLine("Initialising CloudSim Plus %s...", CloudSim.CLOUDSIMPLUS_VERSION_STRING);
         this.numberOfBrokers = 0;
         this.entities = new ArrayList<>();
@@ -209,56 +196,8 @@ public class CloudSim implements Simulation {
         setOnEventProcessingListener(EventListener.NULL);
 
         // NOTE: the order for the below 3 lines are important
-        this.traceFlag = traceFlag;
-
         this.calendar = (Objects.isNull(calendar) ? Calendar.getInstance() : calendar);
-
-        // creates a CloudCloudSimShutdown object
-        this.shutdown = new CloudCloudSimShutdown(this);
         this.cis = new CloudInformationService(this);
-    }
-
-    /**
-     * Creates a CloudSim simulation with the given parameters and using a default Calendar.
-     * <p>
-     * Inside this method, it will create the following CloudSim entities:
-     * <ul>
-     * <li>CloudInformationService.
-     * <li>CloudCloudSimShutdown
-     * </ul>
-     * <p>
-     *
-     * @param traceFlag <tt>true</tt> if CloudSim trace need to be written
-     * @throws RuntimeException
-     *
-     * @see CloudCloudSimShutdown
-     * @see CloudInformationService
-     * @pre numUsers >= 0
-     * @post $none
-     */
-    public CloudSim(boolean traceFlag) throws RuntimeException {
-        this(null, traceFlag);
-    }
-
-    /**
-     * Creates a CloudSim simulation with the given parameters and that does not track events.
-     * <p>
-     * Inside this method, it will create the following CloudSim entities:
-     * <ul>
-     * <li>CloudInformationService.
-     * <li>CloudCloudSimShutdown
-     * </ul>
-     * <p>
-     *
-     * @param cal starting time for this simulation. If it is <tt>null</tt>,
-     * then the time will be taken from <tt>Calendar.getInstance()</tt>
-     * @see CloudCloudSimShutdown
-     * @see CloudInformationService
-     * @pre numUser >= 0
-     * @post $none
-     */
-    public CloudSim(Calendar cal){
-        this(cal, false);
     }
 
     /**
@@ -287,7 +226,7 @@ public class CloudSim implements Simulation {
      */
     @Deprecated
     public CloudSim(int numUser, Calendar cal, boolean traceFlag, double periodBetweenEvents) throws RuntimeException{
-        this(cal, traceFlag);
+        this(cal);
 
         if (periodBetweenEvents <= 0) {
             throw new IllegalArgumentException("The minimal time between events should be positive, but is:" + periodBetweenEvents);

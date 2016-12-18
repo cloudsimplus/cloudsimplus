@@ -53,7 +53,7 @@ public interface TableBuilder {
      *
      * @param columnTitles The titles of the columns
      * @return The {@link TableBuilder} instance.
-     * @see #addColumn(java.lang.String, java.lang.String)
+     * @see #addColumn(String)
      */
     TableBuilder addColumnList(final String columnTitles[]);
 
