@@ -5,7 +5,7 @@
 <p align="center">
 <b><a href="#overview">Overview</a></b>
 |
-<b><a href="#contributions">Exclusive Features</a></b>
+<b><a href="#exclusive-features">Exclusive Features</a></b>
 |
 <b><a href="#projects-modules">Modules</a></b>
 |
@@ -21,7 +21,7 @@
 |
 <b><a href="#differences">Differences from CloudSim</a></b>
 |
-<b><a href="#general-features">General Features</a></b>
+<b><a href="#general-features-of-the-simulator">General Features</a></b>
 |
 <b><a href="#publications">Publications</a></b>
 |
@@ -66,8 +66,6 @@ at [the Computer Science and Software Engineering Department](http://www.csse.un
 
 <p align="right"><a href="#top">:arrow_up:</a></p>
 
-
-<a id="contributions"></a>
 # Exclusive Features
 
 CloudSim Plus provides a lot of exclusive features, ranging from the most basic ones that are missing in CloudSim to advanced features that enable implementation of more realistic simulation scenarios. 
@@ -314,7 +312,6 @@ host.setRamProvisioner(new ResourceProvisionerSimple(new Ram(ram)))
 
 <p align="right"><a href="#top">:arrow_up:</a></p>
 
-<a id="general-features"></a>
 # General features of the simulator
 
   * Support for modeling and simulation of large scale Cloud computing data centers.
