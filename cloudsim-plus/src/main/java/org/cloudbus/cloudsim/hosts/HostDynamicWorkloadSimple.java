@@ -7,19 +7,18 @@
  */
 package org.cloudbus.cloudsim.hosts;
 
+import org.cloudbus.cloudsim.lists.PeList;
+import org.cloudbus.cloudsim.provisioners.ResourceProvisioner;
+import org.cloudbus.cloudsim.resources.Pe;
+import org.cloudbus.cloudsim.schedulers.vm.VmScheduler;
 import org.cloudbus.cloudsim.util.Log;
 import org.cloudbus.cloudsim.vms.Vm;
 import org.cloudbus.cloudsim.vms.VmStateHistoryEntry;
-import org.cloudbus.cloudsim.brokers.DatacenterBroker;
-import org.cloudbus.cloudsim.resources.Pe;
-import org.cloudbus.cloudsim.schedulers.vm.VmScheduler;
-import java.util.ArrayList;
+
 import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
-
-import org.cloudbus.cloudsim.lists.PeList;
-import org.cloudbus.cloudsim.provisioners.ResourceProvisioner;
+import java.util.stream.Collectors;
 
 /**
  * A host supporting dynamic workloads and performance degradation.
@@ -167,23 +166,12 @@ public class HostDynamicWorkloadSimple extends HostSimple implements HostDynamic
         return smallerTime;
     }
 
-    /**
-     * Gets the list of completed vms.
-     *
-     * @return the completed vms
-     */
     @Override
-    public List<Vm> getCompletedVms() {
-        List<Vm> vmsToRemove = new ArrayList<>();
-        for (Vm vm : getVmList()) {
-            if (vm.isInMigration()) {
-                continue;
-            }
-            if (vm.getCurrentRequestedTotalMips() == 0) {
-                vmsToRemove.add(vm);
-            }
-        }
-        return vmsToRemove;
+    public List<Vm> getFinishedVms() {
+        return getVmList().stream()
+            .filter(vm -> !vm.isInMigration())
+            .filter(vm -> vm.getCurrentRequestedTotalMips() == 0)
+            .collect(Collectors.toList());
     }
 
     /**

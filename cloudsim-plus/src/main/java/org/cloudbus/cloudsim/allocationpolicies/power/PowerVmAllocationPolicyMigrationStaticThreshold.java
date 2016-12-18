@@ -10,7 +10,6 @@ package org.cloudbus.cloudsim.allocationpolicies.power;
 
 import org.cloudbus.cloudsim.hosts.power.PowerHost;
 import org.cloudbus.cloudsim.selectionpolicies.power.PowerVmSelectionPolicy;
-import org.cloudbus.cloudsim.vms.Vm;
 
 /**
  * A VM allocation policy that uses a static CPU utilization threshold to detect host over

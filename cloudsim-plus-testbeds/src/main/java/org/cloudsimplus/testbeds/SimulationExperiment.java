@@ -124,11 +124,18 @@ public abstract class SimulationExperiment implements Runnable {
 	}
 
 	/**
-	 * Indicates if simulation results of the experiment have to be output or not.
+	 * Indicates if simulation results of the experiment don't have to be output.
 	 */
-	public boolean isVerbose() {
-		return verbose;
+	public boolean isNotVerbose() {
+		return !verbose;
 	}
+
+    /**
+     * Indicates if simulation results of the experiment have to be output.
+     */
+    public boolean isVerbose() {
+        return verbose;
+    }
 
 	/**
 	 * @see #getBrokerList()
@@ -164,7 +171,6 @@ public abstract class SimulationExperiment implements Runnable {
 	/**
 	 * Builds the simulation scenario and starts execution.
 	 *
-	 * @return the final solution
 	 * @throws RuntimeException
 	 */
 	@Override
@@ -179,15 +185,16 @@ public abstract class SimulationExperiment implements Runnable {
 
 
 	/**
-	 * Checks if {@link #isVerbose()} is true
+	 * Checks if {@link #isVerbose()}
 	 * in order to call {@link #printResults()}
 	 * to print the experiment results.
 	 *
 	 * @see #printResults()
 	 */
 	private void printResultsInternal(){
-		if(!isVerbose())
+		if(isNotVerbose()){
 			return;
+		}
 
 		printResults();
 	}

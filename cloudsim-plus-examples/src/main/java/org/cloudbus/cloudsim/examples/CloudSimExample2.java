@@ -9,7 +9,6 @@
 package org.cloudbus.cloudsim.examples;
 
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.List;
 import org.cloudbus.cloudsim.cloudlets.Cloudlet;
 

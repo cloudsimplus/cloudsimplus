@@ -159,8 +159,8 @@ public class NetworkCloudletSpaceSharedScheduler extends CloudletSchedulerSpaceS
 
         final List<VmPacket> receivedPkts = getPacketsSentToGivenTask(task);
         // Asumption: packet will not arrive in the same cycle
-        receivedPkts.forEach(pkt -> task.receivePacket(pkt));
-        receivedPkts.stream().forEach(pkt ->
+        receivedPkts.forEach(task::receivePacket);
+        receivedPkts.forEach(pkt ->
             Log.println(
                 Log.Level.DEBUG, getClass(), sourceCloudlet.getSimulation().clock(),
                 "Cloudlet %d in VM %d received pkt with %.0f bytes from Cloudlet %d in VM %d",

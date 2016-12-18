@@ -67,10 +67,8 @@ public class HostFaultInjection extends CloudSimEntity {
      *
      * @param simulation The CloudSim instance that represents the
      * simulation the Entity is related to
-     * @see
-     * #setDelayForFailureOfHostRandom(org.cloudbus.cloudsim.distributions.ContinuousDistribution)
-     * @see
-     * #setNumberOfFailedPesRandom(org.cloudbus.cloudsim.distributions.ContinuousDistribution)
+     * @see #setDelayForFailureOfHostRandom(org.cloudbus.cloudsim.distributions.ContinuousDistribution)
+     * @see #setNumberOfFailedPesRandom(org.cloudbus.cloudsim.distributions.ContinuousDistribution)
      */
     public HostFaultInjection(CloudSim simulation) {
         super(simulation);
@@ -181,7 +179,7 @@ public class HostFaultInjection extends CloudSimEntity {
         getSimulation().sendNow(
                 vm.getBroker().getId(), host.getDatacenter().getId(),
                 CloudSimTags.VM_DESTROY, vm);
-        
+
     }
 
     /**

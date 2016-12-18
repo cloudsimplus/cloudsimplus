@@ -48,11 +48,6 @@ public class CloudSim implements Simulation {
     private static final int NOT_FOUND = -1;
 
     /**
-     * @see #getNumberOfBrokers()
-     */
-    private int numberOfBrokers;
-
-    /**
      * The Cloud Information Service (CIS) entity.
      */
     private CloudInformationService cis;
@@ -145,15 +140,8 @@ public class CloudSim implements Simulation {
 
     /**
      * Creates a CloudSim simulation using a default calendar.
-     * <p>
-     * Inside this method, it will create the following CloudSim entities:
-     * <ul>
-     * <li>CloudInformationService.
-     * <li>CloudCloudSimShutdown
-     * </ul>
-     * <p>
+     * Internally it creates a CloudInformationService.
      *
-     * @see CloudCloudSimShutdown
      * @see CloudInformationService
      * @pre numUser >= 0
      * @post $none
@@ -164,25 +152,17 @@ public class CloudSim implements Simulation {
 
     /**
      * Creates a CloudSim simulation with the given parameters.
-     * <p>
-     * Inside this method, it will create the following CloudSim entities:
-     * <ul>
-     * <li>CloudInformationService.
-     * <li>CloudCloudSimShutdown
-     * </ul>
-     * <p>
+     * Internally it creates a CloudInformationService.
      *
      * @param cal starting time for this simulation. If it is <tt>null</tt>,
      * then the time will be taken from <tt>Calendar.getInstance()</tt>
      * @throws RuntimeException
      *
-     * @see CloudCloudSimShutdown
      * @see CloudInformationService
      * @post $none
      */
     public CloudSim(Calendar cal) throws RuntimeException {
         Log.printFormattedLine("Initialising CloudSim Plus %s...", CloudSim.CLOUDSIMPLUS_VERSION_STRING);
-        this.numberOfBrokers = 0;
         this.entities = new ArrayList<>();
         this.entitiesByName = new LinkedHashMap<>();
         this.future = new FutureQueue();
@@ -202,19 +182,13 @@ public class CloudSim implements Simulation {
 
     /**
      * Creates a CloudSim simulation with the given parameters.
-     * <p>
-     * Inside this method, it will create the following CloudSim entities:
-     * <ul>
-     * <li>CloudInformationService.
-     * <li>CloudCloudSimShutdown
-     * </ul>
-     * <p>
+     * Internally it creates a CloudInformationService.
      *
      * @param numUser this parameter is not being used anymore
      * @param cal starting time for this simulation. If it is <tt>null</tt>,
      * then the time will be taken from <tt>Calendar.getInstance()</tt>
-     * @param traceFlag <tt>true</tt> if CloudSim trace need to be written
-     * @param periodBetweenEvents - the minimal period between events. Events
+     * @param traceFlag this parameter is not being used anymore
+     * @param periodBetweenEvents the minimal period between events. Events
      * within shorter periods after the last event are discarded.
      * @see CloudInformationService
      * @pre numUser >= 0
@@ -477,7 +451,6 @@ public class CloudSim implements Simulation {
 
     @Override
     public boolean cancelAll(int src, Predicate<SimEvent> p) {
-        SimEvent ev;
         final int previousSize = future.size();
         List<SimEvent> cancelList = filterEventsFromSourceEntity(future, p, src).collect(toList());
         future.removeAll(cancelList);
@@ -502,7 +475,7 @@ public class CloudSim implements Simulation {
      *
      * @param queue the queue to get the events from
      * @param p the event selection predicate
-     * @return a Stream of events from the queue
+     * @return a Strem of events from the queue
      */
     private Stream<SimEvent> filterEvents(EventQueue queue, Predicate<SimEvent> p) {
         return queue.stream().filter(p);
@@ -541,12 +514,11 @@ public class CloudSim implements Simulation {
                 } else {
                     destEnt = entities.get(dest);
                     if (destEnt.getState() == SimEntity.State.WAITING) {
-                        Integer destObj = dest;
-                        Predicate<SimEvent> p = waitPredicates.get(destObj);
+                        Predicate<SimEvent> p = waitPredicates.get(destEnt);
                         if ((Objects.isNull(p)) || (e.getTag() == 9999) || p.test(e)) {
                             destEnt.setEventBuffer(new CloudSimEvent(e));
                             destEnt.setState(SimEntity.State.RUNNABLE);
-                            waitPredicates.remove(destObj);
+                            waitPredicates.remove(destEnt);
                         } else {
                             deferred.addEvent(e);
                         }
@@ -602,13 +574,14 @@ public class CloudSim implements Simulation {
 
     @Override
     public boolean resume() {
-        paused = false;
+        final boolean wasPaused = this.paused;
+        this.paused = false;
 
         if (pauseAt <= clock) {
             pauseAt = -1;
         }
 
-        return !paused;
+        return wasPaused;
     }
 
     @Override
@@ -812,19 +785,4 @@ public class CloudSim implements Simulation {
     public Map<String, SimEntity> getEntitiesByName() {
         return Collections.unmodifiableMap(entitiesByName);
     }
-
-    public int getNumberOfBrokers() {
-        return numberOfBrokers;
-    }
-
-    @Override
-    public int incrementNumberOfBrokers() {
-        return ++this.numberOfBrokers;
-    }
-
-    @Override
-    public int decrementNumberOfBrokers() {
-        return (this.numberOfBrokers == 0 ? this.numberOfBrokers : --this.numberOfBrokers);
-    }
-
 }

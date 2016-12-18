@@ -139,20 +139,15 @@ public class CloudletListenersExample1 {
     }
 
     /**
-     * Creates the listener object that will be notified when a cloudlet
+     * Creates the listener object, using Java 8 Lambda Expressions, that will be notified when a cloudlet
      * finishes running into a VM. All cloudlet will use this same listener.
      *
      * @see #createCloudlet(int, Vm, long)
      */
     private void createCloudletListener() {
-        this.onCloudletFinishListener = new EventListener<VmToCloudletEventInfo>() {
-            @Override
-            public void update(VmToCloudletEventInfo evt) {
-                Log.printFormattedLine(
-                        "\n\t#EventListener: Cloudlet %d finished running at Vm %d at time %.2f\n",
-                        evt.getCloudlet().getId(), evt.getVm().getId(), evt.getTime());
-            }
-        };
+        this.onCloudletFinishListener = evt -> Log.printFormattedLine(
+                "\n\t#EventListener: Cloudlet %d finished running at Vm %d at time %.2f\n",
+                evt.getCloudlet().getId(), evt.getVm().getId(), evt.getTime());
     }
 
     private void runSimulationAndPrintResults() {

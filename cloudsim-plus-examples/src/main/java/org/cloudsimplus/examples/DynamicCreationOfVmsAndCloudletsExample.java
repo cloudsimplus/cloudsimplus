@@ -56,28 +56,28 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * An example showing how to terminate the simulation when a condition is met, before its natural end.
- * The example creates 4 Cloudlets that will run sequentially using a {@link CloudletSchedulerSpaceShared}.
- * However, when the last Cloudlet reaches 50% of its execution,
- * the simulation will be interrupted. By this way, just 3 Cloudlets will finish.
+ * An example showing how to dynamically create VMs and Cloudlets during simulation
+ * executing using the exclusive CloudSim Plus {@link DatacenterBroker} implementations
+ * and Listener features. Using such features, <b>it is not required to create DatacenterBrokers in runtime
+ * in order to allow dynamic submission of VMs and Cloudlets.</b>
  *
  * <p>This example uses CloudSim Plus Listener features to intercept when
- * the second Cloudlet reaches 50% of its execution to then request
- * the simulation termination. This example uses the Java 8 Lambda Functions features
+ * the first Cloudlet finishes its execution to then request
+ * the creation of new VMs and Cloudlets. This example uses the Java 8 Lambda Functions features
  * to pass a listener to the mentioned Cloudlet, by means of the
- * {@link Cloudlet#setOnUpdateCloudletProcessingListener(EventListener)} method.
+ * {@link Cloudlet#setOnCloudletFinishEventListener(EventListener)} method.
  * However, the same feature can be used for Java 7 passing an anonymous class
  * that implements {@code EventListener<VmToCloudletEventInfo>}.</p>
  *
  * @author Manoel Campos da Silva Filho
  * @since CloudSim Plus 1.0
  *
- * @see CloudSim#terminate()
- * @see Cloudlet#setOnUpdateCloudletProcessingListener(EventListener)
+ * @see Cloudlet#setOnCloudletFinishEventListener(EventListener)
  * @see EventListener
  */
-public class TerminateSimulationAtGivenCondition {
+public class DynamicCreationOfVmsAndCloudletsExample {
     private final CloudSim simulation;
+    private final DatacenterBrokerSimple broker0;
     private List<Cloudlet> cloudletList;
     private List<Vm> vmList;
     private int numberOfCreatedCloudlets = 0;
@@ -89,39 +89,32 @@ public class TerminateSimulationAtGivenCondition {
      * @param args
      */
     public static void main(String[] args) {
-        new TerminateSimulationAtGivenCondition();
+        new DynamicCreationOfVmsAndCloudletsExample();
     }
 
     /**
      * Default constructor that builds the simulation.
      */
-    public TerminateSimulationAtGivenCondition() {
+    public DynamicCreationOfVmsAndCloudletsExample() {
         Log.printFormattedLine("Starting %s Example ...", getClass().getSimpleName());
-        this.vmList = new ArrayList<>();
-        this.cloudletList = new ArrayList<>();
         this.simulation = new CloudSim();
 
         Datacenter datacenter0 = createDatacenter();
 
-        /*
-        Creates a Broker accountable for submission of VMs and Cloudlets
-        on behalf of a given cloud user (customer).
-        */
-        DatacenterBroker broker0 = new DatacenterBrokerSimple(simulation);
+        /*Creates a Broker accountable for submission of VMs and Cloudlets
+        on behalf of a given cloud user (customer).*/
+        broker0 = new DatacenterBrokerSimple(simulation);
 
-        Vm vm0 = createVm(broker0);
-        this.vmList.add(vm0);
-        broker0.submitVmList(vmList);
+        final int vmsToCreate = 1;
+        final int cloudletsToCreateByVm = 2;
+        this.vmList = new ArrayList<>(vmsToCreate);
+        this.cloudletList = new ArrayList<>(vmsToCreate*cloudletsToCreateByVm);
+        createAndSubmitVmsAndCloudlets(vmsToCreate, cloudletsToCreateByVm);
 
-        for(int i = 0; i < 4; i++) {
-            Cloudlet cloudlet = createCloudlet(broker0, vm0);
-            this.cloudletList.add(cloudlet);
-        }
-
-        Cloudlet lastCloudlet = this.cloudletList.get(this.cloudletList.size()-1);
-        lastCloudlet.setOnUpdateCloudletProcessingListener(event -> onClouletProcessingUpdate(event));
-
-        broker0.submitCloudletList(cloudletList);
+        /* Assigns an EventListener to be notified when the first Cloudlets finishes executing
+        * and then dynamically create a new list of VMs and Cloudlets to submit to the broker.*/
+        Cloudlet cloudlet0 = this.cloudletList.get(0);
+        cloudlet0.setOnCloudletFinishEventListener(eventInfo -> submitNewVmsAndCloudletsToBroker(eventInfo));
 
         /* Starts the simulation and waits all cloudlets to be executed. */
         simulation.start();
@@ -133,23 +126,47 @@ public class TerminateSimulationAtGivenCondition {
         Log.printConcatLine(getClass().getSimpleName(), " Example finished!");
     }
 
-    /**
-     * Checks if the Cloudlet that had its processing updated reached 50% of execution.
-     * If so, request the simulation interruption.
-     * @param event object containing data about the happened event
-     */
-    private void onClouletProcessingUpdate(VmToCloudletEventInfo event) {
-        if(event.getCloudlet().getCloudletFinishedSoFar() >= event.getCloudlet().getCloudletLength()/2.0){
-            Log.printFormattedLine("Cloudlet %d reached 50% of execution. Intentionally requesting termination of the simulation at time %.2f",
-                event.getCloudlet().getId(), simulation.clock());
-            simulation.terminate();
+    private void createAndSubmitVmsAndCloudlets(int vmsToCreate, int cloudletsToCreateForEachVm) {
+        List<Vm> newVmList = new ArrayList<>(vmsToCreate);
+        List<Cloudlet> newCloudletList = new ArrayList<>(vmsToCreate*cloudletsToCreateForEachVm);
+        for (int i = 0; i < vmsToCreate; i++) {
+            Vm vm = createVm(broker0);
+            newVmList.add(vm);
+            for(int j = 0; j < cloudletsToCreateForEachVm; j++) {
+                Cloudlet cloudlet = createCloudlet(broker0, vm);
+                newCloudletList.add(cloudlet);
+            }
         }
+
+        this.vmList.addAll(newVmList);
+        this.cloudletList.addAll(newCloudletList);
+
+        broker0.submitVmList(newVmList);
+        broker0.submitCloudletList(newCloudletList);
+    }
+
+    /**
+     * Dynamically creates and submits a set of VMs to the broker when
+     * the first cloudlet finishes.
+     * @param eventInfo information about the fired event
+     */
+    private void submitNewVmsAndCloudletsToBroker(VmToCloudletEventInfo eventInfo) {
+        final int numberOfNewVms = 2;
+        final int numberOfCloudletsByVm = 4;
+        Log.printFormattedLine("\n\t#Cloudlet %d finished. Submitting %d new VMs to the broker\n",
+            eventInfo.getCloudlet().getId(), numberOfNewVms);
+
+        createAndSubmitVmsAndCloudlets(numberOfNewVms, numberOfCloudletsByVm);
+
     }
 
     private DatacenterSimple createDatacenter() {
-        List<Host> hostList = new ArrayList<>();
-        Host host0 = createHost();
-        hostList.add(host0);
+        final int numberOfHosts = 1;
+        List<Host> hostList = new ArrayList<>(numberOfHosts);
+        for (int i = 0; i < numberOfHosts; i++) {
+            Host host = createHost();
+            hostList.add(host);
+        }
 
         //Defines the characteristics of the data center
         double cost = 3.0; // the cost of using processing in this switches
@@ -173,11 +190,11 @@ public class TerminateSimulationAtGivenCondition {
         long storage = 1000000; // host storage (MB)
         long bw = 10000; //in Megabits/s
 
-        List<Pe> pesList = new ArrayList<>(); //List of CPU cores
-
-        /*Creates the Host's CPU cores and defines the provisioner
-        used to allocate each core for requesting VMs.*/
-        pesList.add(new PeSimple(0, new PeProvisionerSimple(mips)));
+        final int numberOfPes = 8;
+        List<Pe> pesList = new ArrayList<>(numberOfPes); //List of CPU cores
+        for (int i = 0; i < numberOfPes; i++) {
+            pesList.add(new PeSimple(i, new PeProvisionerSimple(mips)));
+        }
 
         return new HostSimple(numberOfCreatedHosts++, storage, pesList)
                 .setRamProvisioner(new ResourceProvisionerSimple(new Ram(ram)))
@@ -210,16 +227,13 @@ public class TerminateSimulationAtGivenCondition {
         //Sets the same utilization model for all these resources.
         UtilizationModel utilization = new UtilizationModelFull();
 
-        Cloudlet cloudlet
-                = new CloudletSimple(
-                        numberOfCreatedCloudlets++, length, numberOfCpuCores)
-                        .setCloudletFileSize(fileSize)
-                        .setCloudletOutputSize(outputSize)
-                        .setUtilizationModel(utilization)
-                        .setBroker(broker)
-                        .setVm(vm);
-
-        return cloudlet;
+        return new CloudletSimple(
+                numberOfCreatedCloudlets++, length, numberOfCpuCores)
+                .setCloudletFileSize(fileSize)
+                .setCloudletOutputSize(outputSize)
+                .setUtilizationModel(utilization)
+                .setBroker(broker)
+                .setVm(vm);
     }
 
 }

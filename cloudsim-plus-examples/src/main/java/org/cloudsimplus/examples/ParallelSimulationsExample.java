@@ -253,14 +253,11 @@ public class ParallelSimulationsExample {
         //Sets the same utilization model for all these resources.
         UtilizationModel utilization = new UtilizationModelFull();
 
-        Cloudlet cloudlet
-                = new CloudletSimple(cloudletId, length, numberOfCpuCores)
-                        .setCloudletFileSize(fileSize)
-                        .setCloudletOutputSize(outputSize)
-                        .setUtilizationModel(utilization)
-                        .setBroker(broker);
-
-        return cloudlet;
+        return new CloudletSimple(cloudletId, length, numberOfCpuCores)
+                .setCloudletFileSize(fileSize)
+                .setCloudletOutputSize(outputSize)
+                .setUtilizationModel(utilization)
+                .setBroker(broker);
     }
 
     /**

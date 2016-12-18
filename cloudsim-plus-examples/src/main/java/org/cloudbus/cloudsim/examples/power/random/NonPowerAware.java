@@ -61,7 +61,7 @@ public class NonPowerAware {
                 simulation, PowerDatacenterNonPowerAware.class, hostList,
                 new PowerVmAllocationPolicySimple());
 
-			datacenter.setDisableMigrations(true);
+			datacenter.setMigrationsEnabled(false);
 
 			broker.submitVmList(vmList);
 			broker.submitCloudletList(cloudletList);

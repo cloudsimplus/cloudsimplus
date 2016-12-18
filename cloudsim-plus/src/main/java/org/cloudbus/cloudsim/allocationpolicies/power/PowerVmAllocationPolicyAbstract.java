@@ -12,7 +12,6 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 
-import org.cloudbus.cloudsim.core.UniquelyIdentificable;
 import org.cloudbus.cloudsim.hosts.Host;
 import org.cloudbus.cloudsim.hosts.power.PowerHost;
 import org.cloudbus.cloudsim.util.Log;
@@ -89,16 +88,6 @@ public abstract class PowerVmAllocationPolicyAbstract extends VmAllocationPolicy
         if (!Objects.isNull(host)) {
             host.destroyVm(vm);
         }
-    }
-
-    @Override
-    public Host getHost(Vm vm) {
-        return getVmHostMap().get(vm);
-    }
-
-    @Override
-    public Host getHost(int vmId, int userId) {
-        return getVmHostMap().get(UniquelyIdentificable.getUid(userId, vmId));
     }
 
     /**

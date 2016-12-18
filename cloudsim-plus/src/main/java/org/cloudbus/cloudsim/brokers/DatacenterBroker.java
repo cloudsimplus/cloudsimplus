@@ -38,7 +38,7 @@ public interface DatacenterBroker extends SimEntity {
      * Gets the list of cloudlets submmited to the broker that are waiting to be created inside
      * some Vm yet.
      *
-     * @param <T>
+     * @param <T> the class of Cloudlets inside the list
      * @return the cloudlet waiting list
      */
     <T extends Cloudlet> List<T> getCloudletsWaitingList();
@@ -46,7 +46,7 @@ public interface DatacenterBroker extends SimEntity {
     /**
      * Gets the list of cloudlets that have finished executing.
      *
-     * @param <T>
+     * @param <T> the class of Cloudlets inside the list
      * @return the list of finished cloudlets
      */
     <T extends Cloudlet> List<T> getCloudletsFinishedList();
@@ -57,7 +57,7 @@ public interface DatacenterBroker extends SimEntity {
      * Gets the list of VMs submitted to the broker that are waiting to be created inside
      * some Datacenter yet.
      *
-     * @param <T>
+     * @param <T> the class of VMs inside the list
      * @return the list of waiting VMs
      */
     <T extends Vm> List<T> getVmsWaitingList();
@@ -65,7 +65,7 @@ public interface DatacenterBroker extends SimEntity {
     /**
      * Gets the list of VMs created by the broker.
      *
-     * @param <T>
+     * @param <T> the class of VMs inside the list
      * @return the list of created VMs
      */
     <T extends Vm> List<T> getVmsCreatedList();

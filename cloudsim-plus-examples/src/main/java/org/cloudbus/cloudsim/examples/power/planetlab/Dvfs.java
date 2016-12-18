@@ -30,17 +30,15 @@ public class Dvfs {
 	 * @throws IOException Signals that an I/O exception has occurred.
 	 */
 	public static void main(String[] args) throws IOException {
-		boolean enableOutput = true;
-		boolean outputToFile = false;
-		String inputFolder = Dvfs.class.getClassLoader().getResource("workload/planetlab").getPath();
+		String inputFolder = ResourceLoader.getResourceFolder(Dvfs.class, "workload/planetlab");
 		String outputFolder = "output";
 		String workload = "20110303"; // PlanetLab workload
 		String vmAllocationPolicy = "dvfs"; // DVFS policy without VM migrations
 		String vmSelectionPolicy = "";
 
 		new PlanetLabRunner(
-				enableOutput,
-				outputToFile,
+				true,
+				false,
 				inputFolder,
 				outputFolder,
 				workload,

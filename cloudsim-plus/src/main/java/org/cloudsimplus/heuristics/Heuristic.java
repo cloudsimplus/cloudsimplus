@@ -130,7 +130,7 @@ public interface Heuristic<S extends HeuristicSolution<?>> {
 	 *
 	 * @return the final solution
 	 * @see #getBestSolutionSoFar()
-	 * @todo @author manoelcampos Try to parallelize the solution finding in order
+	 * @TODO @author manoelcampos Try to parallelize the solution finding in order
 	 * to reduce search time. Maybe a Map-Reduce approach can be useful.
 	 */
 	S solve();
@@ -159,7 +159,7 @@ class HeuristicNull<S extends HeuristicSolution<?>> implements Heuristic<S> {
 	@Override public boolean isToStopSearch() { return false; }
     @Override public S getInitialSolution() { return (S)HeuristicSolution.NULL; }
     @Override public S getNeighborSolution() { return (S)HeuristicSolution.NULL; }
-    @Override  public S createNeighbor(S source) { return (S)HeuristicSolution.NULL; }
+    @Override public S createNeighbor(S source) { return (S)HeuristicSolution.NULL; }
     @Override public S solve() { return (S)HeuristicSolution.NULL; }
 	@Override public S getBestSolutionSoFar() { return (S)HeuristicSolution.NULL; }
 	@Override public int getNumberOfNeighborhoodSearchesByIteration() { return 0; }

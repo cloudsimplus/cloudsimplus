@@ -172,7 +172,7 @@ public class HarddriveStorage implements FileStorage {
     }
 
     private int getDeletedFilesTotalSize() {
-        return fileList.stream().filter(f -> f.isDeleted()).mapToInt(File::getSize).sum();
+        return fileList.stream().filter(File::isDeleted).mapToInt(File::getSize).sum();
     }
 
     @Override
@@ -370,12 +370,12 @@ public class HarddriveStorage implements FileStorage {
 
     @Override
     public double addFile(final List<File> list) {
-        double result = 0.0;
         if (Objects.isNull(list) || list.isEmpty()) {
             Log.printConcatLine(getName(), ".addFile(): Warning - list is empty.");
-            return result;
+            return 0.0;
         }
 
+        double result = 0.0;
         for (File file: list) {
             result += addFile(file);
         }

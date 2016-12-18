@@ -2,6 +2,7 @@ package org.cloudbus.cloudsim.util;
 
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.util.List;
 import org.cloudbus.cloudsim.cloudlets.Cloudlet;
 import org.junit.After;
@@ -22,39 +23,23 @@ public class WorkloadFileReaderTest {
      */
     private static final int NUMBER_OF_JOGS_AT_SWF_NASA_FILE = 18239;
 
-    @BeforeClass
-    public static void setUpBeforeClass() throws Exception {
-    }
-
-    @AfterClass
-    public static void tearDownAfterClass() throws Exception {
-    }
-
-    @Before
-    public void setUp() throws Exception {
-    }
-
-    @After
-    public void tearDown() throws Exception {
+    @Test
+    public void readGz() throws IOException {
+	    readFile(SWF_FILE+".gz", NUMBER_OF_JOGS_AT_SWF_LCG_FILE);
     }
 
     @Test
-    public void readGz() throws FileNotFoundException {
-	readFile(SWF_FILE+".gz", NUMBER_OF_JOGS_AT_SWF_LCG_FILE);
+    public void readSwf() throws IOException {
+	    readFile(SWF_FILE, NUMBER_OF_JOGS_AT_SWF_LCG_FILE);
     }
 
     @Test
-    public void readSwf() throws FileNotFoundException {
-	readFile(SWF_FILE, NUMBER_OF_JOGS_AT_SWF_LCG_FILE);
-    }
-
-    @Test
-    public void readZipWithTwoSwfFiles() throws FileNotFoundException {
-	readFile(ZIP_FILE,
+    public void readZipWithTwoSwfFiles() throws IOException {
+	    readFile(ZIP_FILE,
                 NUMBER_OF_JOGS_AT_SWF_LCG_FILE+NUMBER_OF_JOGS_AT_SWF_NASA_FILE);
     }
 
-    private void readFile(String fileNameWithoutPath, int numberOfJobs) throws FileNotFoundException {
+    private void readFile(String fileNameWithoutPath, int numberOfJobs) throws IOException {
         WorkloadModel r = new WorkloadFileReader("src"
                 + File.separator
                 + "test"

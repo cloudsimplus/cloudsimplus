@@ -39,9 +39,9 @@ public class NetworkVmsExampleBagOfTasksApp extends NetworkVmExampleAbstract {
     }
 
     /**
-     * @todo @author manoelcampos It isn't adding packets to send.
+     * @TODO @author manoelcampos It isn't adding packets to send.
      * See {@link CloudletSendTask#addPacket(Cloudlet, long)}
-     * @param broker
+     * @param broker the broker that the cloudlets will belong to
      * @return
      */
     @Override

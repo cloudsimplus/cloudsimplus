@@ -168,27 +168,27 @@ public class IcmpPacket implements NetworkPacket<SimEntity> {
         }
 
         int SIZE = 1000;   // number of chars
-        StringBuffer sb = new StringBuffer(SIZE);
-        sb.append("Ping information for " + name + "\n");
+        StringBuilder sb = new StringBuilder(SIZE);
+        sb.append("Ping information for ").append(name).append("\n");
         sb.append("Entity Name\tEntry Time\tExit Time\t Bandwidth\n");
         sb.append("----------------------------------------------------------\n");
 
         String tab = "    ";  // 4 spaces
         for (int i = 0; i < entities.size(); i++) {
             int resID = entities.get(i).getId();
-            sb.append("Entity " + resID + "\t\t");
+            sb.append("Entity ").append(resID).append("\t\t");
 
             String entry = getData(entryTimes, i);
             String exit = getData(exitTimes, i);
             String bw = getData(baudRates, i);
 
-            sb.append(entry + tab + tab + exit + tab + tab + bw + "\n");
+            sb.append(String.format("%s%s%s%s%s%s%s\n", entry, tab, tab, exit, tab, tab, bw));
         }
 
-        sb.append("\nRound Trip Time : " + num.format(getTotalResponseTime()));
+        sb.append("\nRound Trip Time : ").append(num.format(getTotalResponseTime()));
         sb.append(" seconds");
-        sb.append("\nNumber of Hops  : " + getNumberOfHops());
-        sb.append("\nBottleneck Bandwidth : " + bandwidth + " bits/s");
+        sb.append("\nNumber of Hops  : ").append(getNumberOfHops());
+        sb.append("\nBottleneck Bandwidth : ").append(bandwidth).append(" bits/s");
         return sb.toString();
     }
 
@@ -204,8 +204,7 @@ public class IcmpPacket implements NetworkPacket<SimEntity> {
     private String getData(List<Double> v, int index) {
         String result;
         try {
-            Double obj = v.get(index);
-            double id = obj;
+            double id = v.get(index);
             result = num.format(id);
         } catch (Exception e) {
             result = "    N/A";
@@ -301,16 +300,13 @@ public class IcmpPacket implements NetworkPacket<SimEntity> {
      * @post $none
      */
     public double getTotalResponseTime() {
-        double time = 0;
         try {
             double startTime = exitTimes.stream().findFirst().orElse(0.0);
             double receiveTime = entryTimes.stream().findFirst().orElse(0.0);
-            time = receiveTime - startTime;
+            return receiveTime - startTime;
         } catch (Exception e) {
-            time = 0;
+            return 0;
         }
-
-        return time;
     }
 
     /**

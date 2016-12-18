@@ -72,8 +72,7 @@ import org.cloudbus.cloudsim.resources.Ram;
  * notifications while the simulation is running. It also shows how to
  * reuse the same listener object to different VMs.
  *
- * @see
- * Vm#setOnHostAllocationListener(EventListener)
+ * @see Vm#setOnHostAllocationListener(EventListener)
  * @see Vm#setOnHostDeallocationListener(EventListener)
  * @see EventListener
  *
@@ -175,27 +174,23 @@ public class VmListenersExample2 {
      * @see #createVm(int)
      */
     private void createVmListeners() {
-        /*Creates the listener object that will be notified when a host is allocated to a VM.
-        All VMs will use this same listener.*/
-        this.onHostAllocationListener = new EventListener<HostToVmEventInfo>() {
-            @Override
-            public void update(HostToVmEventInfo evt) {
-                Log.printFormattedLine(
-                        "\t#EventListener: Host %d allocated to Vm %d at time %.2f",
-                        evt.getHost().getId(), evt.getVm().getId(), evt.getTime());
-            }
-        };
+        /*
+        Creates the listener object that will be notified when a host is allocated to a VM.
+        All VMs will use this same listener.
+        The Listener is created using Java 8 Lambda Expressions.
+        */
+        this.onHostAllocationListener = evt -> Log.printFormattedLine(
+                "\t#EventListener: Host %d allocated to Vm %d at time %.2f",
+                evt.getHost().getId(), evt.getVm().getId(), evt.getTime());
 
-        /*Creates the listener object that will be notified when a host is deallocated for a VM.
-        All VMs will use this same listener.*/
-        this.onHostDeallocationListener = new EventListener<HostToVmEventInfo>() {
-            @Override
-            public void update(HostToVmEventInfo evt) {
-                Log.printFormattedLine(
-                        "\t#EventListener: Vm %d moved/removed from Host %d at time %.2f",
-                        evt.getVm().getId(), evt.getHost().getId(), evt.getTime());
-            }
-        };
+        /*
+        Creates the listener object that will be notified when a host is deallocated for a VM.
+        All VMs will use this same listener.
+        The Listener is created using Java 8 Lambda Expressions.
+        */
+        this.onHostDeallocationListener = evt -> Log.printFormattedLine(
+                "\t#EventListener: Vm %d moved/removed from Host %d at time %.2f",
+                evt.getVm().getId(), evt.getHost().getId(), evt.getTime());
     }
 
     /**
@@ -236,14 +231,12 @@ public class VmListenersExample2 {
         long fileSize = 300;
         long outputSize = 300;
         UtilizationModel utilizationModel = new UtilizationModelFull();
-        Cloudlet cloudlet
-                = new CloudletSimple(id, length, VM_PES_NUMBER)
-                    .setCloudletFileSize(fileSize)
-                    .setCloudletOutputSize(outputSize)
-                    .setUtilizationModel(utilizationModel)
-                    .setBroker(broker)
-                    .setVm(vm);
-        return cloudlet;
+        return new CloudletSimple(id, length, VM_PES_NUMBER)
+            .setCloudletFileSize(fileSize)
+            .setCloudletOutputSize(outputSize)
+            .setUtilizationModel(utilizationModel)
+            .setBroker(broker)
+            .setVm(vm);
     }
 
     /**

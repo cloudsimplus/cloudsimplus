@@ -51,14 +51,14 @@ public interface CloudletToVmMappingHeuristic extends Heuristic<CloudletToVmMapp
     List<Vm> getVmList();
 
     /**
-     * Sets the list of cloudlets to be mapped to {@link #getVmList() available Vm's}.
-     * @param cloudletList
+     * Sets the list of Cloudlets to be mapped to {@link #getVmList() available Vm's}.
+     * @param cloudletList the list of Cloudlets to set
      */
     void setCloudletList(List<Cloudlet> cloudletList);
 
     /**
-     * Sets the list of available Vm's to host Cloudlets.
-     * @param vmList
+     * Sets the list of available VMs to host Cloudlets.
+     * @param vmList the list of VMs to set
      */
     void setVmList(List<Vm> vmList);
 
@@ -66,7 +66,7 @@ public interface CloudletToVmMappingHeuristic extends Heuristic<CloudletToVmMapp
      * A property that implements the Null Object Design Pattern for {@link Heuristic}
      * objects.
      */
-    public static final CloudletToVmMappingHeuristic NULL = new CloudletToVmMappingHeuristicNull();
+    CloudletToVmMappingHeuristic NULL = new CloudletToVmMappingHeuristicNull();
 }
 
 /**

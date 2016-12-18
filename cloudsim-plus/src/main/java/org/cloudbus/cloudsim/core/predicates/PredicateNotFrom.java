@@ -10,7 +10,11 @@ package org.cloudbus.cloudsim.core.predicates;
 
 import org.cloudbus.cloudsim.core.events.SimEvent;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 import java.util.function.Predicate;
+import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
 /**
@@ -26,7 +30,7 @@ public class PredicateNotFrom implements Predicate<SimEvent> {
     /**
      * The IDs of source entities to check if events were not sent from.
      */
-    private final IntStream ids;
+    private final List<Integer> ids;
 
     /**
      * Constructor used to select events that were not sent by a specific entity.
@@ -34,7 +38,8 @@ public class PredicateNotFrom implements Predicate<SimEvent> {
      * @param sourceId the id number of the source entity
      */
     public PredicateNotFrom(int sourceId) {
-        ids = IntStream.of(sourceId);
+        this.ids = new ArrayList<>(1);
+        this.ids.add(sourceId);
     }
 
     /**
@@ -43,7 +48,7 @@ public class PredicateNotFrom implements Predicate<SimEvent> {
      * @param sourceIds the set of id numbers of the source entities
      */
     public PredicateNotFrom(int[] sourceIds) {
-        ids = IntStream.of(sourceIds);
+        this.ids = Arrays.stream(sourceIds).boxed().collect(Collectors.<Integer>toList());
     }
 
     /**
@@ -55,7 +60,7 @@ public class PredicateNotFrom implements Predicate<SimEvent> {
      */
     @Override
     public boolean test(SimEvent ev) {
-        return ids.noneMatch(id -> id == ev.getSource());
+        return ids.stream().noneMatch(id -> id == ev.getSource());
     }
 
 }

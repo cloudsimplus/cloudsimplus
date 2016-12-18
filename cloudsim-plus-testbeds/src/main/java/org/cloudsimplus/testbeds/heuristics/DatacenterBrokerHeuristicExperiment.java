@@ -82,16 +82,12 @@ final class DatacenterBrokerHeuristicExperiment extends SimulationExperiment {
 
 
     /**
-     * Sets the array with Number of PEs for each VM to create.
-     * The length of the array defines the number of VMs to create.
-     * @param vmPesArray VMs PEs array to set
+     * @see #setVmPesArray(int[])
      */
     private int vmPesArray[];
 
     /**
-     * Sets the array with Number of PEs for each Cloudlet to create.
-     * The length of the array defines the number of Cloudlets to create.
-     * @param cloudletPesArray Cloudlets PEs array to set
+     * @see #setCloudletPesArray(int[])
      */
     private int cloudletPesArray[];
 
@@ -242,11 +238,25 @@ final class DatacenterBrokerHeuristicExperiment extends SimulationExperiment {
         return this;
     }
 
+    /**
+     * Sets the array with Number of PEs for each VM to create.
+     * The length of the array defines the number of VMs to create.
+     *
+     * @param vmPesArray VMs PEs array to set
+     * @return
+     */
     public DatacenterBrokerHeuristicExperiment setVmPesArray(int[] vmPesArray) {
         this.vmPesArray = vmPesArray;
         return this;
     }
 
+    /**
+     * Sets the array with Number of PEs for each Cloudlet to create.
+     * The length of the array defines the number of Cloudlets to create.
+     *
+     * @param cloudletPesArray Cloudlets PEs array to set
+     * @return
+     */
     public DatacenterBrokerHeuristicExperiment setCloudletPesArray(int[] cloudletPesArray) {
         this.cloudletPesArray = cloudletPesArray;
         return this;

@@ -19,7 +19,7 @@ public interface Pe {
     /**
      * Status of PEs.
      */
-    public enum Status {
+    enum Status {
         /** Denotes PE is FREE for allocation. */
         FREE,
 

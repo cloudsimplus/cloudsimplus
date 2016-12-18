@@ -23,11 +23,11 @@ public interface HostDynamicWorkload extends Host {
     void addStateHistoryEntry(double time, double allocatedMips, double requestedMips, boolean isActive);
 
     /**
-     * Gets the list of completed vms.
+     * Gets the list of VMs that finished executing.
      *
      * @return
      */
-    List<Vm> getCompletedVms();
+    List<Vm> getFinishedVms();
 
     /**
      * Gets the max utilization percentage among by all PEs.

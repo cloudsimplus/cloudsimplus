@@ -29,7 +29,7 @@ import org.cloudbus.cloudsim.core.Identificable;
  * @author Saurabh Kumar Garg
  * @since CloudSim Toolkit 1.0
  *
- * @todo @author manoelcampos Classes {@link CloudletTask}, {@link Cloudlet}
+ * @TODO @author manoelcampos Classes {@link CloudletTask}, {@link Cloudlet}
  * and {@link CloudletExecutionInfo} share a common set of attributes that would be defined by a common interface.
  */
 public abstract class CloudletTask implements Identificable {
@@ -99,7 +99,7 @@ public abstract class CloudletTask implements Identificable {
 
     /**
      * Sets the memory amount used by the task.
-     * @param memory
+     * @param memory the memory amount to set
      */
     public void setMemory(long memory) {
         this.memory = memory;
@@ -115,7 +115,7 @@ public abstract class CloudletTask implements Identificable {
 
     /**
      * Sets the time the task started executing.
-     * @param startTime
+     * @param startTime the start time to set
      */
     public void setStartTime(double startTime) {
         this.startTime = startTime;

@@ -8,8 +8,8 @@
 
 package org.cloudbus.cloudsim.selectionpolicies.power;
 
-import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.cloudbus.cloudsim.hosts.power.PowerHost;
 import org.cloudbus.cloudsim.vms.power.PowerVm;
@@ -49,13 +49,9 @@ public abstract class PowerVmSelectionPolicy {
 	 * @return the list of migratable VMs
 	 */
 	protected List<PowerVm> getMigratableVms(PowerHost host) {
-		List<PowerVm> migratableVms = new ArrayList<>();
-		for (PowerVm vm : host.<PowerVm> getVmList()) {
-			if (!vm.isInMigration()) {
-				migratableVms.add(vm);
-			}
-		}
-		return migratableVms;
+        return host.<PowerVm>getVmList().stream()
+            .filter(vm -> !vm.isInMigration())
+            .collect(Collectors.toList());
 	}
 
 }

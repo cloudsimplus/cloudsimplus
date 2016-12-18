@@ -54,7 +54,7 @@ public class PowerDatacenter extends DatacenterSimple {
     /**
      * Indicates if migrations are disabled or not.
      */
-    private boolean disableMigrations;
+    private boolean migrationsEnabled;
 
     /**
      * The last time submitted cloudlets were processed.
@@ -81,7 +81,7 @@ public class PowerDatacenter extends DatacenterSimple {
     {
         super(simulation, characteristics, vmAllocationPolicy);
         setPower(0.0);
-        setDisableMigrations(false);
+        setMigrationsEnabled(true);
         setCloudletSubmitted(-1);
         setMigrationCount(0);
     }
@@ -127,7 +127,7 @@ public class PowerDatacenter extends DatacenterSimple {
 
             double minTime = updateCloudetProcessingWithoutSchedulingFutureEvents();
 
-            if (!isDisableMigrations()) {
+            if (isMigrationsEnabled()) {
                 Map<Vm, Host> migrationMap =
                         getVmAllocationPolicy().optimizeAllocation(getVmList());
 
@@ -260,21 +260,22 @@ public class PowerDatacenter extends DatacenterSimple {
 
         checkCloudletsCompletionForAllHosts();
 
-        /**
-         * Remove completed VMs *
-         */
-        for (PowerHostSimple host : this.<PowerHostSimple>getHostList()) {
-            for (Vm vm : host.getCompletedVms()) {
-                getVmAllocationPolicy().deallocateHostForVm(vm);
-                getVmList().remove(vm);
-                Log.printLine("VM #" + vm.getId() + " has been deallocated from host #" + host.getId());
-            }
-        }
+        removeFinishedVmsFromEveryHost();
 
         Log.printLine();
 
         setLastProcessTime(currentTime);
         return minTime;
+    }
+
+    protected void removeFinishedVmsFromEveryHost() {
+        for (PowerHostSimple host : this.<PowerHostSimple>getHostList()) {
+            for (Vm vm : host.getFinishedVms()) {
+                getVmAllocationPolicy().deallocateHostForVm(vm);
+                getVmList().remove(vm);
+                Log.printLine("VM #" + vm.getId() + " has been deallocated from host #" + host.getId());
+            }
+        }
     }
 
     @Override
@@ -312,37 +313,30 @@ public class PowerDatacenter extends DatacenterSimple {
     }
 
     /**
-     * Checks if PowerDatacenter is in migration.
+     * Checks if PowerDatacenter has any VM in migration.
      *
-     * @return true, if PowerDatacenter is in migration; false otherwise
+     * @return
      */
     protected boolean isInMigration() {
-        boolean result = false;
-        for (Vm vm : getVmList()) {
-            if (vm.isInMigration()) {
-                result = true;
-                break;
-            }
-        }
-        return result;
+        return getVmList().stream().anyMatch(Vm::isInMigration);
     }
 
     /**
-     * Checks if migrations are disabled.
+     * Checks if migrations are enabled.
      *
-     * @return true, if migrations are disable; false otherwise
+     * @return true, if migrations are enable; false otherwise
      */
-    public boolean isDisableMigrations() {
-        return disableMigrations;
+    public boolean isMigrationsEnabled() {
+        return migrationsEnabled;
     }
 
     /**
-     * Disable or enable migrations.
+     * Enable or disable migrations.
      *
-     * @param disableMigrations true to disable migrations; false to enable
+     * @param enable true to enable migrations; false to disable
      */
-    public final PowerDatacenter setDisableMigrations(boolean disableMigrations) {
-        this.disableMigrations = disableMigrations;
+    public final PowerDatacenter setMigrationsEnabled(boolean enable) {
+        this.migrationsEnabled = enable;
         return this;
     }
 

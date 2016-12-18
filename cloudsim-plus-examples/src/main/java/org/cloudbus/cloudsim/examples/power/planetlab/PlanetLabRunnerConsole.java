@@ -27,7 +27,6 @@ public class PlanetLabRunnerConsole {
 	 */
 	public static void main(String[] args) throws IOException {
 		boolean enableOutput = false;
-		boolean outputToFile = true;
 		if (args[0].equals("1")) {
 			enableOutput = true;
 		}
@@ -47,7 +46,7 @@ public class PlanetLabRunnerConsole {
 
 		new PlanetLabRunner(
 				enableOutput,
-				outputToFile,
+            true,
 				inputFolder,
 				outputFolder,
 				workload,

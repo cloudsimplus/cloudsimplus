@@ -15,7 +15,7 @@ public interface SimEvent extends Comparable<SimEvent>, EventInfo {
     /**
      * Internal event types
      */
-    enum Type {NULL, SEND, HOLD_DONE, CREATE};
+    enum Type {NULL, SEND, HOLD_DONE, CREATE}
 
     /**
      * Gets the internal type
@@ -113,7 +113,7 @@ public interface SimEvent extends Comparable<SimEvent>, EventInfo {
      * Sets the serial number that defines the order of received events when multiple
      * events are generated at the same time.
      *
-     * @param serial
+     * @param serial the serial value to set
      */
     void setSerial(long serial);
 
@@ -129,7 +129,7 @@ public interface SimEvent extends Comparable<SimEvent>, EventInfo {
      * An attribute that implements the Null Object Design Pattern for {@link SimEvent}
      * objects.
      */
-    final SimEvent NULL = new SimEvent() {
+    SimEvent NULL = new SimEvent() {
         @Override public Type getType() { return Type.NULL; }
         @Override public int getDestination() { return 0; }
         @Override public int getSource() { return 0; }

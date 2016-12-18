@@ -18,7 +18,7 @@ package org.cloudbus.cloudsim.resources;
  * not considered in the simulation. So, time for file transfer is underestimated in the presence of
  * high network load.
  *
- * @todo See the warning in class documentation.
+ * @TODO See the warning in class documentation.
  *
  * @author Rodrigo N. Calheiros
  * @since CloudSim Toolkit 1.0

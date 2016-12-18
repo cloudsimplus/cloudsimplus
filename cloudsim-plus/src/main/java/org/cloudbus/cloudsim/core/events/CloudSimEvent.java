@@ -60,7 +60,7 @@ public final class CloudSimEvent implements SimEvent {
 
     /**
      * Creates a blank event.
-     * @param simulation
+     * @param simulation the simulation to which the event belongs to
      */
     public CloudSimEvent(CloudSim simulation) {
         this.simulation = simulation;
@@ -116,7 +116,7 @@ public final class CloudSimEvent implements SimEvent {
     /**
      * Sets the time that the event was removed from the queue to start service.
      *
-     * @param endWaitingTime
+     * @param endWaitingTime the end of waiting time to set
      */
     protected void setEndWaitingTime(double endWaitingTime) {
         this.endWaitingTime = endWaitingTime;

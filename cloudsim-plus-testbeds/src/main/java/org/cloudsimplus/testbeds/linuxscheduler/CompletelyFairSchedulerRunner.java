@@ -38,7 +38,7 @@ class CompletelyFairSchedulerRunner extends CloudletSchedulerRunner<CompletelyFa
     /**
      * Starts the execution of the experiments
      * the number of times defines in {@link #numberOfSimulationRuns}.
-     * @param args
+     * @param args command line arguments
      */
     public static void main(String[] args) {
         new CompletelyFairSchedulerRunner().run();

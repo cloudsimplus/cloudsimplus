@@ -156,14 +156,14 @@ public class PowerVm extends VmSimple {
      */
     public double getUtilizationMean() {
         if (!getUtilizationHistory().isEmpty()) {
-	        double mean = 0;
-	        int n = Math.min(MAX_HISTORY_ENTRIES, getUtilizationHistory().size());
-            for (int i = 0; i < n; i++) {
-                mean += getUtilizationHistory().get(i);
-            }
+	        final int maxNumOfEntriesToAverage = Math.min(MAX_HISTORY_ENTRIES, getUtilizationHistory().size());
+            final double usagePercentMean = getUtilizationHistory().stream()
+                .limit(maxNumOfEntriesToAverage)
+                .mapToDouble(usagePercent -> usagePercent)
+                .average()
+                .orElse(0);
 
-            mean /= n;
-	        return mean * getMips();
+            return usagePercentMean * getMips();
         }
 
         return 0;
@@ -176,15 +176,14 @@ public class PowerVm extends VmSimple {
      */
     public double getUtilizationVariance() {
         if (!getUtilizationHistory().isEmpty()) {
-	        double mean = getUtilizationMean();
-	        double variance = 0;
-	        int n = Math.min(MAX_HISTORY_ENTRIES, getUtilizationHistory().size());
-            for (int i = 0; i < n; i++) {
-                double tmp = getUtilizationHistory().get(i) * getMips() - mean;
-                variance += tmp * tmp;
-            }
-
-            return (variance / n);
+	        final double mean = getUtilizationMean();
+	        final int maxNumOfEntriesToAverage = Math.min(MAX_HISTORY_ENTRIES, getUtilizationHistory().size());
+            return getUtilizationHistory().stream()
+                .limit(maxNumOfEntriesToAverage)
+                .mapToDouble(usagePercent -> usagePercent * getMips())
+                .map(usageValue -> usageValue - mean)
+                .map(usageValue -> usageValue*usageValue)
+                .average().orElse(0);
         }
 
         return 0;

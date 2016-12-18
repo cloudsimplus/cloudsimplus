@@ -129,7 +129,7 @@ public class Processor implements ResourceCapacity {
      * exclusively by them.</p>
      *
      * @return the amount of available MIPS for each Processor PE.
-     * @todo Splitting the capacity of a CPU core among different applications
+     * @TODO Splitting the capacity of a CPU core among different applications
      * is not in fact possible. This was just an oversimplification
      * performed by the CloudletSchedulerTimeShared that may affect
      * other schedulers such as the CloudletSchedulerCompletelyFair
@@ -162,7 +162,7 @@ public class Processor implements ResourceCapacity {
 
     /**
      * Sets the number of {@link Pe Processing Elements (cores)} of the Processor
-     * @param numberOfPes
+     * @param numberOfPes the number of PEs to set
      */
     public final void setNumberOfPes(int numberOfPes) {
         if(numberOfPes < 0){
@@ -174,16 +174,14 @@ public class Processor implements ResourceCapacity {
     /**
      * Sets the individual MIPS capacity of each {@link Pe Processing Elements (cores)}.
      * @param newCapacity the new MIPS capacity of each PE
-     * @return true if the capacity is valid and was set, false otherwise
      * @pre newCapacity != null && newCapacity >= 0
      */
-    public final boolean setCapacity(long newCapacity) {
+    public final void setCapacity(long newCapacity) {
         if(newCapacity < 0) {
             throw new IllegalArgumentException("Capacity cannot be negative");
         }
 
         this.capacity = newCapacity;
-        return true;
     }
 
     /**

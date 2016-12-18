@@ -89,7 +89,6 @@ public class HostPacket implements NetworkPacket<NetworkHost> {
     /**
      * Sets the ID of the {@link Host} that this packet is coming from (the sender).
      * @param senderHost the source Host id to set
-     * @return
      */
     @Override
     public void setSource(NetworkHost senderHost) {
@@ -108,7 +107,6 @@ public class HostPacket implements NetworkPacket<NetworkHost> {
     /**
      * Sets the ID of the {@link Host} that the packet is going to.
      * @param receiverHost the receiver Host id to set
-     * @return
      */
     @Override
     public void setDestination(NetworkHost receiverHost) {

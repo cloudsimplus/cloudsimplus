@@ -7,8 +7,6 @@
  */
 package org.cloudbus.cloudsim.cloudlets.network;
 
-import org.cloudbus.cloudsim.cloudlets.Cloudlet;
-
 /**
  * A processing task that can be executed by a {@link NetworkCloudlet}
  * in a single {@link org.cloudbus.cloudsim.resources.Pe}.
@@ -31,7 +29,7 @@ import org.cloudbus.cloudsim.cloudlets.Cloudlet;
  *
  * @since CloudSim Toolkit 1.0
  *
- * @todo @author manoelcampos Each execution task must use just a single core.
+ * @TODO @author manoelcampos Each execution task must use just a single core.
  * It may represent a thread (so the name of the class would be changed).
  * By this way, a execution task should use only one core.
  * However, tasks may be executed in parallel (considering there are multiple cores)
@@ -97,7 +95,7 @@ public class CloudletExecutionTask extends CloudletTask {
     /**
      * Sets the execution length of the task (in MI).
      *
-     * @param length
+     * @param length the length to set
      */
     public void setLength(long length) {
         this.length = length;

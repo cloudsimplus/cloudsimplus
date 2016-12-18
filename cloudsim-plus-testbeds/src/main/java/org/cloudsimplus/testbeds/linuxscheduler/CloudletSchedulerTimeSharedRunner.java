@@ -34,7 +34,7 @@ public class CloudletSchedulerTimeSharedRunner extends CloudletSchedulerRunner<C
     /**
      * Starts the execution of the experiments
      * the number of times defines in {@link #numberOfSimulationRuns}.
-     * @param args
+     * @param args command line arguments
      */
     public static void main(String[] args) {
         new CloudletSchedulerTimeSharedRunner().run();

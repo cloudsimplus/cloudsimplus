@@ -1,6 +1,7 @@
 package org.cloudbus.cloudsim.examples.power.planetlab;
 
 import java.io.IOException;
+import java.util.Objects;
 
 /**
  * A simulation of a heterogeneous power aware data center that applies the Static Threshold (THR)
@@ -30,9 +31,10 @@ public class ThrMu {
 	 * @throws IOException Signals that an I/O exception has occurred.
 	 */
 	public static void main(String[] args) throws IOException {
-		boolean enableOutput = true;
-		boolean outputToFile = false;
-		String inputFolder = NonPowerAware.class.getClassLoader().getResource("workload/planetlab").getPath();
+		String inputFolder = ResourceLoader.getResourceFolder(NonPowerAware.class,"workload/planetlab");
+        if(Objects.isNull(inputFolder)){
+            inputFolder = "";
+        }
 		String outputFolder = "output";
 		String workload = "20110303"; // PlanetLab workload
 		String vmAllocationPolicy = "thr"; // Static Threshold (THR) VM allocation policy
@@ -40,8 +42,8 @@ public class ThrMu {
         double staticUtilizationThreshold = 0.8;
 
 		new PlanetLabRunner(
-				enableOutput,
-				outputToFile,
+            true,
+            false,
 				inputFolder,
 				outputFolder,
 				workload,

@@ -38,8 +38,8 @@ public class MadMu {
 		double safetyParameter = 2.5;
 
 		new RandomRunner(
-				enableOutput,
-				outputToFile,
+            true,
+            false,
 				inputFolder,
 				outputFolder,
 				workload,

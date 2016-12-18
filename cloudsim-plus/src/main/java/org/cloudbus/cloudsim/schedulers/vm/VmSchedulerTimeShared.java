@@ -110,7 +110,7 @@ public class VmSchedulerTimeShared extends VmSchedulerAbstract {
      * @param requestedMipsForVmPe the amount of MIPS requested by such a VM PE
      * @return the total MIPS allocated for the requested VM PE
      *
-     * @todo @author manoelcampos The method implementation must to be checked. See the comments inside.
+     * @TODO @author manoelcampos The method implementation must to be checked. See the comments inside.
      * Probably there was performed an oversimplification when implementing this method,
      * as it as made for CloudletSchedulerTimeShared class.
      *

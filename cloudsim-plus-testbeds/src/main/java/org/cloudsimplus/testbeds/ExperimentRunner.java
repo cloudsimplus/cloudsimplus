@@ -371,15 +371,17 @@ public abstract class ExperimentRunner<T extends SimulationExperiment> implement
 	protected UniformDistr createRandomGenAndAddSeedToList(int experimentIndex, double minValue, double maxValue) {
         UniformDistr prng;
 		if (isApplyAntitheticVariatesTechnique() &&
-        numberOfSimulationRuns > 1 && experimentIndex >= halfSimulationRuns()) {
+            numberOfSimulationRuns > 1 && experimentIndex >= halfSimulationRuns())
+		{
 			int previousExperiment = experimentIndex - halfSimulationRuns();
 
 			prng = new UniformDistr(minValue, maxValue, seeds.get(previousExperiment))
 							.setApplyAntitheticVariatesTechnique(true);
 		}
-
-		final long experimentSeed = getBaseSeed() + experimentIndex + 1;
-		prng = new UniformDistr(minValue, maxValue, experimentSeed);
+        else {
+            final long experimentSeed = getBaseSeed() + experimentIndex + 1;
+            prng = new UniformDistr(minValue, maxValue, experimentSeed);
+        }
         addSeed(prng.getSeed());
         return prng;
     }

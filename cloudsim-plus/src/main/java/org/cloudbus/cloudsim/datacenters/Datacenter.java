@@ -55,7 +55,7 @@ public interface Datacenter extends SimEntity {
     /**
      * Gets the list of VMs submitted to be ran in some host of this switches.
      *
-     * @param <T>
+     * @param <T> the class of VMs inside the list
      * @return the vm list
      */
     <T extends Vm> List<T> getVmList();

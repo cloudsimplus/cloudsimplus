@@ -43,7 +43,7 @@ public interface HostEventInfo extends EventInfo {
     /**
      * Sets the Host for which the event happened.
      *
-     * @param host
+     * @param host the Host to set
      */
     void setHost(Host host);
 }

@@ -7,28 +7,26 @@
  */
 package org.cloudbus.cloudsim.datacenters.network;
 
-import java.util.*;
-import java.util.Map.Entry;
-import java.util.stream.Collectors;
-
 import org.cloudbus.cloudsim.allocationpolicies.VmAllocationPolicy;
 import org.cloudbus.cloudsim.cloudlets.Cloudlet;
+import org.cloudbus.cloudsim.core.CloudSim;
+import org.cloudbus.cloudsim.core.CloudSimTags;
 import org.cloudbus.cloudsim.core.Simulation;
 import org.cloudbus.cloudsim.core.events.SimEvent;
 import org.cloudbus.cloudsim.datacenters.Datacenter;
 import org.cloudbus.cloudsim.datacenters.DatacenterCharacteristics;
 import org.cloudbus.cloudsim.datacenters.DatacenterSimple;
 import org.cloudbus.cloudsim.hosts.Host;
+import org.cloudbus.cloudsim.hosts.network.NetworkHost;
 import org.cloudbus.cloudsim.network.switches.AbstractSwitch;
 import org.cloudbus.cloudsim.network.switches.EdgeSwitch;
-import org.cloudbus.cloudsim.hosts.network.NetworkHost;
 import org.cloudbus.cloudsim.network.switches.Switch;
-import org.cloudbus.cloudsim.schedulers.cloudlet.CloudletScheduler;
-import org.cloudbus.cloudsim.core.CloudSim;
-import org.cloudbus.cloudsim.core.CloudSimTags;
 import org.cloudbus.cloudsim.resources.FileStorage;
+import org.cloudbus.cloudsim.schedulers.cloudlet.CloudletScheduler;
 import org.cloudbus.cloudsim.util.Log;
 import org.cloudbus.cloudsim.vms.Vm;
+
+import java.util.*;
 
 import static java.util.stream.Collectors.toList;
 
@@ -191,14 +189,9 @@ public class NetworkDatacenter extends DatacenterSimple {
                 // Hence, this might cause CloudSim to be hanged since waiting
                 // for this Cloudlet back.
                 if (ack) {
-                    int[] data = new int[3];
-                    data[0] = getId();
-                    data[1] = cl.getId();
-                    data[2] = CloudSimTags.FALSE;
-
                     // unique tag = operation tag
                     int tag = CloudSimTags.CLOUDLET_SUBMIT_ACK;
-                    sendNow(cl.getBroker().getId(), tag, data);
+                    sendNow(cl.getBroker().getId(), tag, cl);
                 }
 
                 sendNow(cl.getBroker().getId(), CloudSimTags.CLOUDLET_RETURN, cl);
@@ -214,9 +207,7 @@ public class NetworkDatacenter extends DatacenterSimple {
             // time to transfer the files
             double fileTransferTime = predictFileTransferTime(cl.getRequiredFiles());
 
-            Host host = getVmAllocationPolicy().getHost(cl.getVm().getId(), cl.getBroker().getId());
-            Vm vm = host.getVm(cl.getVm().getId(), cl.getBroker().getId());
-            CloudletScheduler scheduler = vm.getCloudletScheduler();
+            CloudletScheduler scheduler = cl.getVm().getCloudletScheduler();
             double estimatedFinishTime = scheduler.cloudletSubmit(cl, fileTransferTime);
 
             if (estimatedFinishTime > 0.0) { // if this cloudlet is in the exec
@@ -304,7 +295,7 @@ public class NetworkDatacenter extends DatacenterSimple {
      *
      * @return a read-only map of VMs placed into Hosts
      *
-     * @todo @author manoelcampos This mapping doesn't make sense, once the placement of
+     * @TODO @author manoelcampos This mapping doesn't make sense, once the placement of
      * VMs into Hosts is dynamic. A VM can be migrated to another host
      * due to several reasons.
      */

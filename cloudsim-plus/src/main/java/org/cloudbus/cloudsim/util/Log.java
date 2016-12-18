@@ -32,7 +32,7 @@ public class Log {
          * A log level for messages that will be shown only when the application
          * is run in debug mode.
          */
-        DEBUG};
+        DEBUG}
 
     /**
      * The Constant LINE_SEPARATOR.
@@ -53,7 +53,7 @@ public class Log {
     /**
      * Buffer to avoid creating new string builder upon every print.
      */
-    private static final StringBuilder buffer = new StringBuilder();
+    private static StringBuilder buffer = new StringBuilder();
 
     /**
      * Checks if application is running in debug mode.
@@ -114,9 +114,9 @@ public class Log {
      */
     public static void printConcat(Object... messages) {
         if (isEnabled()) {
-            buffer.setLength(0); // Clear the buffer
-            for (int i = 0; i < messages.length; i++) {
-                buffer.append(String.valueOf(messages[i]));
+            buffer = new StringBuilder(messages.length);
+            for (Object message : messages) {
+                buffer.append(String.valueOf(message));
             }
             print(buffer);
         }
@@ -130,9 +130,9 @@ public class Log {
      */
     public static void printConcatLine(Object... messages) {
         if (isEnabled()) {
-            buffer.setLength(0); // Clear the buffer
-            for (int i = 0; i < messages.length; i++) {
-                buffer.append(String.valueOf(messages[i]));
+            buffer = new StringBuilder(messages.length);
+            for (Object message : messages) {
+                buffer.append(String.valueOf(message));
             }
             printLine(buffer);
         }

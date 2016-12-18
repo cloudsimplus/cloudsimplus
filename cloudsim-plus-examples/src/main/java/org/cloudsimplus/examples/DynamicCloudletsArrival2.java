@@ -181,11 +181,10 @@ public class DynamicCloudletsArrival2 {
         int ram = 512; // vm memory (MB)
         long bw = 1000;
 
-        Vm vm = new VmSimple(id, mips, VM_PES_NUMBER)
+        return new VmSimple(id, mips, VM_PES_NUMBER)
                 .setBroker(broker)
                 .setRam(ram).setBw(bw).setSize(size)
                 .setCloudletScheduler(new CloudletSchedulerTimeShared());
-        return vm;
     }
 
     /**
@@ -202,14 +201,13 @@ public class DynamicCloudletsArrival2 {
         long length = 10000; //in number of Million Instructions (MI)
         int pesNumber = 1;
         UtilizationModel utilizationModel = new UtilizationModelFull();
-        Cloudlet cloudlet = new CloudletSimple(id, length, pesNumber)
+
+        return new CloudletSimple(id, length, pesNumber)
             .setCloudletFileSize(fileSize)
             .setCloudletOutputSize(outputSize)
             .setUtilizationModel(utilizationModel)
             .setBroker(broker)
             .setVm(vm);
-
-        return cloudlet;
     }
 
     /**

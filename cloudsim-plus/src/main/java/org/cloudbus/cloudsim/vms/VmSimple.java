@@ -31,7 +31,7 @@ import org.cloudbus.cloudsim.schedulers.cloudlet.CloudletScheduler;
  * @author Anton Beloglazov
  * @since CloudSim Toolkit 1.0
  *
- * @todo @author manoelcampos Instead of having the methods getRam, getUsedRam,
+ * @TODO @author manoelcampos Instead of having the methods getRam, getUsedRam,
  * getAvailableRam (and the same for other resources), it would be returned the
  * ResourceManageable object for each different kind of resource, in order to
  * allow the user to get the resource capacity, used and available capacity

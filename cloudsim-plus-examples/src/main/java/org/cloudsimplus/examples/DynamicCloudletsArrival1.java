@@ -182,12 +182,11 @@ public class DynamicCloudletsArrival1 {
         long size = 10000; // image size (MB)
         int ram = 512; // vm memory (MB)
         long bw = 1000;
-        Vm vm = new VmSimple(id, mips, VM_PES_NUMBER)
+
+        return new VmSimple(id, mips, VM_PES_NUMBER)
             .setRam(ram).setBw(bw).setSize(size)
             .setCloudletScheduler(new CloudletSchedulerTimeShared())
             .setBroker(broker);
-
-        return vm;
     }
 
     /**

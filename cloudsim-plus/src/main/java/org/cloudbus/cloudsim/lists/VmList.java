@@ -22,14 +22,14 @@ public class VmList {
     /**
      * Gets a {@link Vm} with a given id.
      *
-     * @param <T>
+     * @param <T> the class of VMs inside the list
      * @param id ID of required VM
      * @param vmList list of existing VMs
      * @return a Vm with the given ID or {@link Vm#NULL} if not found
      * @pre $none
      * @post $none
      *
-     * @todo It may be considered the use of a HashMap in order to improve VM
+     * @TODO It may be considered the use of a HashMap in order to improve VM
      * search, instead of a List. The map key can be the vm id and the value the
      * VM itself. However, it has to be assessed the feasibility to have VMs
      * with the same ID and the need to find VMs by its id and user id, as in

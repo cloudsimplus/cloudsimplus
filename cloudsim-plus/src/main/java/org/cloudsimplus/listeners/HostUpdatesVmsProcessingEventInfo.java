@@ -50,7 +50,7 @@ public class HostUpdatesVmsProcessingEventInfo extends HostEventInfoSimple  {
 
     /**
      * Sets the completion time of one next finishing cloudlet
-     * @param completionTimeOfNextFinishingCloudlet
+     * @param completionTimeOfNextFinishingCloudlet the completion time to set
      */
     public void setCompletionTimeOfNextFinishingCloudlet(double completionTimeOfNextFinishingCloudlet) {
         this.completionTimeOfNextFinishingCloudlet = completionTimeOfNextFinishingCloudlet;

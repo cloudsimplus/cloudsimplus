@@ -27,9 +27,10 @@ public class UtilizationModelPlanetLabInMemory implements UtilizationModel {
      * file.
      *
      * @param inputPath The path of a PlanetLab switches trace.
-     * @param schedulingInterval
+     * @param schedulingInterval the scheduling interval that defines the time interval in which precise utilization is be got
      * @throws NumberFormatException the number format exception
-     * @throws IOException Signals that an I/O exception has occurred.
+     * @throws IOException Signals that an I/O exception has occurred
+     * @see #getSchedulingInterval()
      */
     public UtilizationModelPlanetLabInMemory(String inputPath, double schedulingInterval)
             throws NumberFormatException,
@@ -50,10 +51,11 @@ public class UtilizationModelPlanetLabInMemory implements UtilizationModel {
      * data samples from a trace file.
      *
      * @param inputPath The path of a PlanetLab switches trace.
-     * @param schedulingInterval
+     * @param schedulingInterval the scheduling interval that defines the time interval in which precise utilization is be got
      * @param dataSamples number of samples in the file
      * @throws NumberFormatException the number format exception
      * @throws IOException Signals that an I/O exception has occurred.
+     * @see #setSchedulingInterval(double)
      */
     public UtilizationModelPlanetLabInMemory(String inputPath, double schedulingInterval, int dataSamples)
             throws NumberFormatException,
@@ -79,26 +81,33 @@ public class UtilizationModelPlanetLabInMemory implements UtilizationModel {
         double utilization1 = data[time1];
         double utilization2 = data[time2];
         double delta = (utilization2 - utilization1) / ((time2 - time1) * getSchedulingInterval());
-        double utilization = utilization1 + delta * (time - time1 * getSchedulingInterval());
-        return utilization;
+        return utilization1 + delta * (time - time1 * getSchedulingInterval());
 
     }
 
     /**
-     * Sets the scheduling interval.
+     * Gets the scheduling interval that defines the time interval in which precise utilization is be got.
+     * <p>That means if the {@link #getUtilization(double)} is called
+     * passing any time that is multiple of this scheduling interval,
+     * the utilization returned will be the value stored for that
+     * specific time. Otherwise, the value will be a mean
+     * of the beginning and the ending of the interval in which
+     * the given time is.</p>
      *
-     * @param schedulingInterval the new scheduling interval
-     */
-    public final void setSchedulingInterval(double schedulingInterval) {
-        this.schedulingInterval = schedulingInterval;
-    }
-
-    /**
-     * Gets the scheduling interval.
      *
      * @return the scheduling interval
      */
     public double getSchedulingInterval() {
         return schedulingInterval;
+    }
+
+    /**
+     * Sets the scheduling interval.
+     *
+     * @param schedulingInterval the scheduling interval to set
+     * @see #getSchedulingInterval()
+     */
+    public final void setSchedulingInterval(double schedulingInterval) {
+        this.schedulingInterval = schedulingInterval;
     }
 }

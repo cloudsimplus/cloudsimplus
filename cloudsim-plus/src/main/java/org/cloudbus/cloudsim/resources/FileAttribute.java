@@ -80,7 +80,7 @@ public class FileAttribute {
      * Creates a new FileAttribute object.
      *
      * @param file the file that this attribute object is related to
-     * @param fileSize
+     * @param fileSize the size for the File
      */
     public FileAttribute(final File file, final int fileSize) {
         this.file = file;
@@ -91,7 +91,7 @@ public class FileAttribute {
                 file.getDatacenter().getSimulation().getCalendar() :
                 Calendar.getInstance());
         Date date = cal.getTime();
-        creationTime = (Objects.isNull(date) ? 0 : date.getTime());
+        creationTime = date.getTime();
 
         ownerName = "";
         id = File.NOT_REGISTERED;
@@ -386,7 +386,7 @@ public class FileAttribute {
      * @param fileName the file name to be checked for validity
      * @return <tt>true</tt> if the file name is valid, <tt>false</tt> otherwise
      */
-    public static final boolean isValid(final String fileName) {
+    public static boolean isValid(final String fileName) {
         return (!Objects.isNull(fileName)) && !fileName.trim().isEmpty();
     }
 }

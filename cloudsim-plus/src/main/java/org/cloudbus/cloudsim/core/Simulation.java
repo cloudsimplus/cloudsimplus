@@ -2,7 +2,6 @@ package org.cloudbus.cloudsim.core;
 
 import java.util.*;
 
-import org.cloudbus.cloudsim.brokers.DatacenterBroker;
 import org.cloudbus.cloudsim.core.events.SimEvent;
 
 import java.util.function.Predicate;
@@ -252,7 +251,7 @@ public interface Simulation {
      * This method is called if one wants to resume the simulation that has
      * previously been paused.
      *
-     * @return if the simulation has been restarted or or otherwise.
+     * @return true if the simulation has been restarted or false if it wasn't paused.
      */
     boolean resume();
 
@@ -322,7 +321,7 @@ public interface Simulation {
      *
      * @return the last clock time
      * @throws RuntimeException When the simulation already run once. If you paused the simulation and wants to resume it,
-     *                          you must use {@link #resume()} instead of {@link #start()}.
+     *                          you must use {@link #resume()} instead of calling the current method.
      * @pre $none
      * @post $none
      */
@@ -392,31 +391,9 @@ public interface Simulation {
     Map<String, SimEntity> getEntitiesByName();
 
     /**
-     * Gets the number of {@link DatacenterBroker} created so far. It
-     * indicates that the internal {@link CloudCloudSimShutdown} must first
-     * wait for all broker entities's {@link CloudSimTags#END_OF_SIMULATION} signal before issuing
-     * a terminate signal to other entities.
-     *
-     * @return
+     * An attribute that implements the Null Object Design Pattern for {@link Simulation}
+     * objects.
      */
-    int getNumberOfBrokers();
-
-    /**
-     * Adds 1 to the number of {@link DatacenterBroker} created.
-     *
-     * @return the new value of {@link #getNumberOfBrokers()}
-     * @see #getNumberOfBrokers()
-     */
-    int incrementNumberOfBrokers();
-
-    /**
-     * Subtracts 1 from the number of {@link DatacenterBroker} created.
-     *
-     * @return the new value of {@link #getNumberOfBrokers()}
-     * @see #getNumberOfBrokers()
-     */
-    int decrementNumberOfBrokers();
-
     Simulation NULL = new Simulation() {
         @Override
         public void abort() {
@@ -608,15 +585,6 @@ public interface Simulation {
             return 0;
         }
 
-        @Override
-        public int incrementNumberOfBrokers() {
-            return 0;
-        }
-
-        @Override
-        public int decrementNumberOfBrokers() {
-            return 0;
-        }
 
         @Override
         public boolean updateEntityName(String oldName) {

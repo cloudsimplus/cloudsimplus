@@ -120,10 +120,7 @@ public class VmSchedulerSpaceShared extends VmSchedulerAbstract {
         getFreePesList().addAll(getPeAllocationMap().get(vm));
         getPeAllocationMap().remove(vm);
 
-        double totalMips = 0;
-        for (double mips : getMipsMapAllocated().get(vm)) {
-            totalMips += mips;
-        }
+        final double totalMips = getMipsMapAllocated().get(vm).stream().mapToDouble(mips -> mips).sum();
         setAvailableMips(getAvailableMips() + totalMips);
 
         getMipsMapAllocated().remove(vm);

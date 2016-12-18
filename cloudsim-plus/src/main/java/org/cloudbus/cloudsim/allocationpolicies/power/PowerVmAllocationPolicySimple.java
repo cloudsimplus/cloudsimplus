@@ -46,7 +46,7 @@ public class PowerVmAllocationPolicySimple extends PowerVmAllocationPolicyAbstra
      * The method in this VmAllocationPolicy doesn't perform any
      * VM placement optimization and, in fact, has no effect.
      *
-     * @param vmList
+     * @param vmList the list of VMs
      * @return an empty map to indicate that it never performs optimization
      */
     @Override

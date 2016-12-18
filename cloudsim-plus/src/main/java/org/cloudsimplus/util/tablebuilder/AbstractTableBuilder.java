@@ -107,16 +107,12 @@ public abstract class AbstractTableBuilder implements TableBuilder {
         printRowClosing();
     }
 
-    protected int getColumnLength(final List<Object> row, final int columnIndex) {
-        return row.get(columnIndex).toString().length();
-    }
-
     @Override
     public void print() {
         printTableOpenning();
         printTitle();
         printColumnHeaders();
-        getRows().stream().forEach(row -> printRow(row));
+        getRows().forEach(this::printRow);
         printTableClosing();
     }
 

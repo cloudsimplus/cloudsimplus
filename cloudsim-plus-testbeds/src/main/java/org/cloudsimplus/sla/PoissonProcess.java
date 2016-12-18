@@ -89,7 +89,7 @@ public class PoissonProcess {
     /**
      *
      * @return the probability to arrive {@link #getK() K} events in the current time.
-     * @see https://en.wikipedia.org/wiki/Poisson_distribution
+     * @see <a href="https://en.wikipedia.org/wiki/Poisson_distribution">Poisson distribution</a>
      */
     public double probabilityToArriveNextKEvents(){
         //computes the Probability Mass Function (PMF) of the Poisson distribution
@@ -200,8 +200,7 @@ public class PoissonProcess {
                 totalArrivedCustomers += poisson.getK();
                 if (showCustomerArrivals) {
                     System.out.printf(
-                        "%d customers arrived at minute %d\n",
-                        poisson.getK(), minute,  poisson.probabilityToArriveNextKEvents());
+                        "%d customers arrived at minute %d\n", poisson.getK(), minute);
                 }
             }
         }

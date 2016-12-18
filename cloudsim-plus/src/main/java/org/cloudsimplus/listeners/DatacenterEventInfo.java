@@ -43,7 +43,7 @@ public interface DatacenterEventInfo extends EventInfo {
     /**
      * Sets the Datacenter for which the event happened.
      *
-     * @param datacenter
+     * @param datacenter the Datacenter to set
      */
     void setDatacenter(Datacenter datacenter);
 }

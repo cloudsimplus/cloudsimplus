@@ -61,7 +61,7 @@ public class DatacenterToVmEventInfo extends VmEventInfoSimple implements Datace
 
     /**
      * Sets the Datacenter that caused the Vm event
-     * @param datacenter
+     * @param datacenter the Datacenter to set
      */
     @Override
     public final void setDatacenter(Datacenter datacenter) {

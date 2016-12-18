@@ -142,8 +142,7 @@ public abstract class CloudletSchedulerAbstract implements CloudletScheduler {
      *
      * @return the cloudlet execution list
      * @see #addCloudletToExecList(CloudletExecutionInfo)
-     * @see
-     * #removeCloudletFromExecListAndAddToFinishedList(CloudletExecutionInfo)
+     * @see #removeCloudletFromExecListAndAddToFinishedList(CloudletExecutionInfo)
      */
     protected List<CloudletExecutionInfo> getCloudletExecList() {
         return cloudletExecList;
@@ -359,13 +358,10 @@ public abstract class CloudletSchedulerAbstract implements CloudletScheduler {
             return true;
         }
 
-        if (changeStatusOfCloudletIntoList(
-                getCloudletWaitingList(), cloudletId,
-                c -> changeStatusOfCloudlet(c, Status.READY, Status.PAUSED)) != Cloudlet.NULL) {
-            return true;
-        }
+        return changeStatusOfCloudletIntoList(
+            getCloudletWaitingList(), cloudletId,
+            c -> changeStatusOfCloudlet(c, Status.READY, Status.PAUSED)) != Cloudlet.NULL;
 
-        return false;
     }
 
     @Override
@@ -519,14 +515,14 @@ public abstract class CloudletSchedulerAbstract implements CloudletScheduler {
      * stored in the {@link CloudletExecutionInfo#getFileTransferTime()}
      * attribute and is set when the Cloudlet is submitted to the scheduler.</p>
      *
-     * @param rcl
+     * @param rcl the Cloudlet to compute the total length
      * @param currentTime current simulation time
      * @return the total length across all PEs, in number of Instructions (I),
      * since the last time cloudlet was processed.
      *
      * @see #updateCloudletsProcessing(double)
      *
-     * @todo @author manoelcampos Shouldn't the processing update of a cloudlet
+     * @TODO @author manoelcampos Shouldn't the processing update of a cloudlet
      * consider the cloudlet's UtilizationModel of CPU? Commonly the utilization
      * model used is the UtilizationModelFull, that uses the CPU 100% all the
      * available time. However, if we have an utilization model that uses just
@@ -535,7 +531,7 @@ public abstract class CloudletSchedulerAbstract implements CloudletScheduler {
      * UtilizationModelArithmeticProgression instead of the
      * UtilizationModelFull.
      *
-     * @todo @author manoelcampos This method is being called 2 times more than
+     * @TODO @author manoelcampos This method is being called 2 times more than
      * required. Despite it is not causing any apparent issue, it has to be
      * investigated. For instance, for simulation time 2, with 2 cloudlets, the
      * method is being called 4 times instead of just 2 (1 for each cloudlet for

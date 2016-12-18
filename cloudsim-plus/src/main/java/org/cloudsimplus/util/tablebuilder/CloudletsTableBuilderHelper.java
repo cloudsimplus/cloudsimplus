@@ -65,7 +65,7 @@ public class CloudletsTableBuilderHelper {
         }
 
         createTableColumns();
-        cloudletList.stream().forEach(cloudlet -> addDataToRow(cloudlet, printer.newRow()));
+        cloudletList.forEach(cloudlet -> addDataToRow(cloudlet, printer.newRow()));
         printer.print();
     }
 

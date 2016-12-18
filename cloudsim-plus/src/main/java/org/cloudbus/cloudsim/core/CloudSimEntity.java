@@ -409,7 +409,7 @@ public abstract class CloudSimEntity implements SimEntity {
      * @return the simulation event
      */
     public SimEvent getNextEvent() {
-        return getNextEvent(simulation.SIM_ANY);
+        return getNextEvent(Simulation.SIM_ANY);
     }
 
     @Override
@@ -714,7 +714,8 @@ public abstract class CloudSimEntity implements SimEntity {
 
     /**
      * Defines if the entity has already started or not.
-     * @param started
+     *
+     * @param started the start state to set
      */
     protected void setStarted(boolean started) {
         this.started = started;

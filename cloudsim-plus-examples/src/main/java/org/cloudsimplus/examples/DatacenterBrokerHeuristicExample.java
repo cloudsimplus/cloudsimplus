@@ -261,14 +261,11 @@ public class DatacenterBrokerHeuristicExample {
         //Sets the same utilization model for all these resources.
         UtilizationModel utilization = new UtilizationModelFull();
 
-        Cloudlet cloudlet
-            = new CloudletSimple(numberOfCreatedCloudlets++, length, numberOfPes)
-            .setCloudletFileSize(fileSize)
-            .setCloudletOutputSize(outputSize)
-            .setUtilizationModel(utilization)
-            .setBroker(broker);
-
-        return cloudlet;
+        return new CloudletSimple(numberOfCreatedCloudlets++, length, numberOfPes)
+        .setCloudletFileSize(fileSize)
+        .setCloudletOutputSize(outputSize)
+        .setUtilizationModel(utilization)
+        .setBroker(broker);
     }
 
     private double computeRoudRobinMappingCost() {

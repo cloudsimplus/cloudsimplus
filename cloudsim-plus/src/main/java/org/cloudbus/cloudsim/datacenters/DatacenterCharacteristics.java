@@ -187,7 +187,7 @@ public interface DatacenterCharacteristics extends Identificable {
      *
      * @return current number of failed PMs the Datacenter has.
      */
-    int getNumberOfFailedHosts();
+    long getNumberOfFailedHosts();
 
     /**
      * Gets the total number of <tt>FREE</tt> or non-busy PEs for all PMs.
@@ -301,7 +301,7 @@ public interface DatacenterCharacteristics extends Identificable {
 
     /**
      * Sets the {@link Datacenter} that owns these characteristics
-     * @param datacenter
+     * @param datacenter the Datacenter to set
      */
     DatacenterCharacteristics setDatacenter(Datacenter datacenter);
 
@@ -342,7 +342,7 @@ public interface DatacenterCharacteristics extends Identificable {
         @Override public int getMips() { return 0; }
         @Override public int getMipsOfOnePe(int hostId, int peId) { return 0; }
         @Override public int getNumberOfBusyPes() { return 0; }
-        @Override public int getNumberOfFailedHosts() { return 0; }
+        @Override public long getNumberOfFailedHosts() { return 0; }
         @Override public int getNumberOfFreePes() { return 0; }
         @Override public int getNumberOfHosts() { return 0; }
         @Override public int getNumberOfPes() { return 0; }

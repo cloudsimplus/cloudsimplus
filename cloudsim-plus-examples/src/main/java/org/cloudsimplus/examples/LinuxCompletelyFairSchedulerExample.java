@@ -196,13 +196,11 @@ public class LinuxCompletelyFairSchedulerExample {
         //Sets the same utilization model for all these resources.
         UtilizationModel utilization = new UtilizationModelFull();
 
-        Cloudlet cloudlet
-            = new CloudletSimple(numberOfCreatedCloudlets++, CLOUDLET_LEN, CLOUDLET_PES)
-                .setCloudletFileSize(fileSize)
-                .setCloudletOutputSize(outputSize)
-                .setUtilizationModel(utilization)
-                .setBroker(broker);
-        return cloudlet;
+        return new CloudletSimple(numberOfCreatedCloudlets++, CLOUDLET_LEN, CLOUDLET_PES)
+            .setCloudletFileSize(fileSize)
+            .setCloudletOutputSize(outputSize)
+            .setUtilizationModel(utilization)
+            .setBroker(broker);
     }
 }
 

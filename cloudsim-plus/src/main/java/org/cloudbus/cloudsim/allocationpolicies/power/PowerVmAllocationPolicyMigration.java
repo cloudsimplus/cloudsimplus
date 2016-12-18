@@ -5,7 +5,6 @@ import org.cloudbus.cloudsim.hosts.Host;
 import org.cloudbus.cloudsim.hosts.power.PowerHost;
 import org.cloudbus.cloudsim.vms.Vm;
 
-import javax.xml.crypto.Data;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
@@ -70,8 +69,6 @@ public interface PowerVmAllocationPolicyMigration extends PowerVmAllocationPolic
         @Override public boolean allocateHostForVm(Vm vm) { return false; }
         @Override public boolean allocateHostForVm(Vm vm, Host host) { return false; }
         @Override public void deallocateHostForVm(Vm vm) {}
-        @Override public Host getHost(Vm vm) { return Host.NULL; }
-        @Override public Host getHost(int vmId, int userId) { return Host.NULL; }
         @Override public <T extends Host> List<T> getHostList() { return Collections.emptyList(); }
         @Override public Map<Vm, Host> optimizeAllocation(List<? extends Vm> vmList) { return Collections.emptyMap(); }
         @Override public boolean isHostOverUtilized(PowerHost host) { return false;}

@@ -44,7 +44,7 @@ public interface VmEventInfo extends EventInfo {
     /**
      * Sets the Vm for which the event happened.
      *
-     * @param vm
+     * @param vm the Vm to set
      */
     void setVm(Vm vm);
 }

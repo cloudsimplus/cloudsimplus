@@ -64,7 +64,7 @@ import java.util.List;
  *
  * @see CloudSim#terminateAt(double)
  */
-public class TerminateSimulationAtGivenTime {
+public class TerminateSimulationAtGivenTimeExample {
     private static final int TIME_TO_FINISH_SIMULATION = 21;
 
     private final CloudSim simulation;
@@ -79,13 +79,13 @@ public class TerminateSimulationAtGivenTime {
      * @param args
      */
     public static void main(String[] args) {
-        new TerminateSimulationAtGivenTime();
+        new TerminateSimulationAtGivenTimeExample();
     }
 
     /**
      * Default constructor that builds the simulation.
      */
-    public TerminateSimulationAtGivenTime() {
+    public TerminateSimulationAtGivenTimeExample() {
         Log.printFormattedLine("Starting %s Example ...", getClass().getSimpleName());
         this.vmList = new ArrayList<>();
         this.cloudletList = new ArrayList<>();
@@ -187,16 +187,13 @@ public class TerminateSimulationAtGivenTime {
         //Sets the same utilization model for all these resources.
         UtilizationModel utilization = new UtilizationModelFull();
 
-        Cloudlet cloudlet
-                = new CloudletSimple(
-                        numberOfCreatedCloudlets++, length, numberOfCpuCores)
-                        .setCloudletFileSize(fileSize)
-                        .setCloudletOutputSize(outputSize)
-                        .setUtilizationModel(utilization)
-                        .setBroker(broker)
-                        .setVm(vm);
-
-        return cloudlet;
+        return new CloudletSimple(
+                numberOfCreatedCloudlets++, length, numberOfCpuCores)
+                .setCloudletFileSize(fileSize)
+                .setCloudletOutputSize(outputSize)
+                .setUtilizationModel(utilization)
+                .setBroker(broker)
+                .setVm(vm);
     }
 
 }

@@ -19,7 +19,7 @@ import java.util.Random;
 /**
  * Implements a model, according to which a Cloudlet generates
  * random resource utilization every time frame.
- * 
+ *
  * @author Anton Beloglazov
  * @since CloudSim Toolkit 2.0
  */
@@ -36,17 +36,17 @@ public class UtilizationModelStochastic implements UtilizationModel {
 	 * Instantiates a new utilization model stochastic.
 	 */
 	public UtilizationModelStochastic() {
-		setHistory(new HashMap<Double, Double>());
+		setHistory(new HashMap<>());
 		setRandomGenerator(new Random());
 	}
 
 	/**
 	 * Instantiates a new utilization model stochastic.
-	 * 
+	 *
 	 * @param seed the seed
 	 */
 	public UtilizationModelStochastic(long seed) {
-		setHistory(new HashMap<Double, Double>());
+		setHistory(new HashMap<>());
 		setRandomGenerator(new Random(seed));
 	}
 
@@ -63,7 +63,7 @@ public class UtilizationModelStochastic implements UtilizationModel {
 
 	/**
 	 * Gets the utilization history.
-	 * 
+	 *
 	 * @return the history
 	 */
 	protected Map<Double, Double> getHistory() {
@@ -72,7 +72,7 @@ public class UtilizationModelStochastic implements UtilizationModel {
 
 	/**
 	 * Sets the utilization history.
-	 * 
+	 *
 	 * @param history the history
 	 */
 	protected final void setHistory(Map<Double, Double> history) {
@@ -81,7 +81,7 @@ public class UtilizationModelStochastic implements UtilizationModel {
 
 	/**
 	 * Save the utilization history to a file.
-	 * 
+	 *
 	 * @param filename the filename
 	 * @throws Exception the exception
 	 */
@@ -94,7 +94,7 @@ public class UtilizationModelStochastic implements UtilizationModel {
 
 	/**
 	 * Load an utilization history from a file.
-	 * 
+	 *
 	 * @param filename the filename
 	 * @throws Exception the exception
 	 */
@@ -108,7 +108,7 @@ public class UtilizationModelStochastic implements UtilizationModel {
 
 	/**
 	 * Sets the random generator.
-	 * 
+	 *
 	 * @param randomGenerator the new random generator
 	 */
 	public final void setRandomGenerator(Random randomGenerator) {
@@ -117,7 +117,7 @@ public class UtilizationModelStochastic implements UtilizationModel {
 
 	/**
 	 * Gets the random generator.
-	 * 
+	 *
 	 * @return the random generator
 	 */
 	public Random getRandomGenerator() {

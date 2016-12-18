@@ -158,9 +158,7 @@ public class ExampleCreateCloudletRandomly {
                 cloudlet.setSubmissionDelay(minute);
                 cloudletList.add(cloudlet);
 
-                System.out.printf(
-                        "%d cloudlets arrived at minute %d\n",
-                        poisson.getK(), minute, poisson.probabilityToArriveNextKEvents());
+                System.out.printf("%d cloudlets arrived at minute %d\n", poisson.getK(), minute);
             }
         }
 

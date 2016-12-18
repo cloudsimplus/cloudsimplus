@@ -264,13 +264,13 @@ public abstract class PowerVmAllocationPolicyMigrationAbstract extends PowerVmAl
      * @return true, if the host will be over utilized after VM placement; false
      * otherwise
      */
-    protected boolean isHostOverUtilizedAfterAllocation(PowerHost host, Vm vm) {
+    protected boolean isHostNotOverusedAfterAllocation(PowerHost host, Vm vm) {
         boolean isHostOverUtilizedAfterAllocation = true;
         if (host.vmCreate(vm)) {
             isHostOverUtilizedAfterAllocation = isHostOverUtilized(host);
             host.destroyVm(vm);
         }
-        return isHostOverUtilizedAfterAllocation;
+        return !isHostOverUtilizedAfterAllocation;
     }
 
     @Override
@@ -296,7 +296,7 @@ public abstract class PowerVmAllocationPolicyMigrationAbstract extends PowerVmAl
         return this.<PowerHost>getHostList().stream()
             .filter(h -> !excludedHosts.contains(h))
             .filter(h -> h.isSuitableForVm(vm))
-            .filter(h -> !isHostOverUtilizedAfterAllocation(h, vm))
+            .filter(h -> isHostNotOverusedAfterAllocation(h, vm))
             .filter(h -> getPowerAfterAllocation(h, vm) > 0)
             .min(hostPowerConsumptionComparator)
             .orElse(PowerHost.NULL);
@@ -439,35 +439,36 @@ public abstract class PowerVmAllocationPolicyMigrationAbstract extends PowerVmAl
         return this.<PowerHost>getHostList().stream()
             .filter(h -> !excludedHosts.contains(h))
             .filter(h -> h.getUtilizationOfCpu() > 0)
-            .filter(h -> !allVmsAreMigratingOutOrThereAreVmsMigratingIn(h))
+            .filter(h -> isNotAllVmsMigratingOutNorVmsAreMigratingIn(h))
             .min(Comparator.comparingDouble(HostDynamicWorkload::getUtilizationOfCpu))
             .orElse(PowerHost.NULL);
     }
 
     /**
-     * Checks if all VMs of a Host are migrating out or if there is at least one VM migrating in.
-     * In both cases, the given Host will not be selected as an underutilized Host at the current moment.
+     * Checks if all VMs of a Host are <b>NOT</b> migrating out nor there are VMs migrating in.
+     * If all VMs are migrating out or there is at least
+     * one VM migrating in, the given Host will not be selected as an underutilized Host at the current moment.
      *
      * @param host the host to check
      * @return
      */
-    protected boolean allVmsAreMigratingOutOrThereAreVmsMigratingIn(PowerHost host) {
+    protected boolean isNotAllVmsMigratingOutNorVmsAreMigratingIn(PowerHost host) {
         for (PowerVm vm : host.<PowerVm>getVmList()) {
             if (!vm.isInMigration()) { //VM is not in migration process (in or out)
                 //there is at least one VM that is not migrating anywhere (nor ir or out)
-                return false;
+                return true;
             }
 
             //If the VM is in migration process, checks if it is migrating into the host.
             //If it is not contained into the migratingIn list, it is migrating out.
             if (host.getVmsMigratingIn().contains(vm)) {
                 //there is at least one VM migrating into the host
-                return true;
+                return false;
             }
         }
 
         //all VMs are migrating out
-        return true;
+        return false;
     }
 
     /**
@@ -543,8 +544,7 @@ public abstract class PowerVmAllocationPolicyMigrationAbstract extends PowerVmAl
         double requestedTotalMips = vm.getCurrentRequestedTotalMips();
         double hostUtilizationMips = getUtilizationOfCpuMips(host);
         double hostPotentialUtilizationMips = hostUtilizationMips + requestedTotalMips;
-        final double pePotentialUtilization = hostPotentialUtilizationMips / host.getTotalMips();
-        return pePotentialUtilization;
+        return hostPotentialUtilizationMips / host.getTotalMips();
     }
 
     /**

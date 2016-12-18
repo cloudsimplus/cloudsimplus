@@ -38,8 +38,8 @@ public class ThrMu {
 		double utilizationThreshold = 0.8;
 
 		new RandomRunner(
-				enableOutput,
-				outputToFile,
+            true,
+            false,
 				inputFolder,
 				outputFolder,
 				workload,

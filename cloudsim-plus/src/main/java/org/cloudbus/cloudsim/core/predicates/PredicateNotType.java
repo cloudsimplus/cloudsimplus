@@ -10,7 +10,11 @@ package org.cloudbus.cloudsim.core.predicates;
 
 import org.cloudbus.cloudsim.core.events.SimEvent;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 import java.util.function.Predicate;
+import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
 /**
@@ -26,7 +30,7 @@ public class PredicateNotType implements Predicate<SimEvent> {
     /**
      * Array of tags to verify if the tag of received events doesn't correspond to.
      */
-    private final IntStream tags;
+    private final List<Integer> tags;
 
     /**
      * Constructor used to select events whose tags do not match a given tag.
@@ -34,7 +38,9 @@ public class PredicateNotType implements Predicate<SimEvent> {
      * @param tag An event {@link SimEvent#getTag() tag} value
      */
     public PredicateNotType(int tag) {
-        tags = IntStream.of(tag);
+        this.tags = new ArrayList<>(1);
+        this.tags.add(tag);
+
     }
 
     /**
@@ -43,7 +49,7 @@ public class PredicateNotType implements Predicate<SimEvent> {
      * @param tags the list of {@link SimEvent#getTag() tags}
      */
     public PredicateNotType(int[] tags) {
-        this.tags = IntStream.of(tags);
+        this.tags = Arrays.stream(tags).boxed().collect(Collectors.<Integer>toList());
     }
 
     /**
@@ -55,7 +61,7 @@ public class PredicateNotType implements Predicate<SimEvent> {
      */
     @Override
     public boolean test(SimEvent ev) {
-        return tags.noneMatch(tag -> tag == ev.getTag());
+        return tags.stream().noneMatch(tag -> tag == ev.getTag());
     }
 
 }

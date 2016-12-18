@@ -160,7 +160,7 @@ public abstract class VmAllocationPolicyAbstract implements VmAllocationPolicy {
         setHostFreePesMap(new HashMap<>(getHostList().size()));
         setVmTable(new HashMap<>());
         setUsedPes(new HashMap<>());
-        getHostList().stream().forEach(host -> hostFreePesMap.put(host, host.getNumberOfPes()));
+        getHostList().forEach(host -> hostFreePesMap.put(host, host.getNumberOfPes()));
     }
 
     /**

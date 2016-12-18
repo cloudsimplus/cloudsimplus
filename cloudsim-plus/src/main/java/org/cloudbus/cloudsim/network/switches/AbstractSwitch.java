@@ -208,7 +208,7 @@ public abstract class AbstractSwitch extends CloudSimEntity implements Switch {
     /**
      * Register a host that is connected to the switch.
      *
-     * @param ev
+     * @param ev the event containing the host to be registered
      */
     private void registerHost(SimEvent ev) {
         NetworkHost host = (NetworkHost) ev.getData();
@@ -235,7 +235,7 @@ public abstract class AbstractSwitch extends CloudSimEntity implements Switch {
      * method should be overridden by subclasses in other to process new defined
      * events.
      *
-     * @param ev
+     * @param ev the event to be processed
      */
     protected void processOtherEvent(SimEvent ev) {
     }

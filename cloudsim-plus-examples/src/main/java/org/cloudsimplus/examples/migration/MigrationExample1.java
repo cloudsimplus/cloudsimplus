@@ -292,7 +292,7 @@ public class MigrationExample1 {
                 HOST_UTILIZATION_THRESHOLD_FOR_VM_MIGRATION);
 
         PowerDatacenter dc = new PowerDatacenter(simulation, characteristics, allocationPolicy);
-        dc.setDisableMigrations(false).setSchedulingInterval(SCHEDULE_TIME_TO_PROCESS_DATACENTER_EVENTS);
+        dc.setMigrationsEnabled(true).setSchedulingInterval(SCHEDULE_TIME_TO_PROCESS_DATACENTER_EVENTS);
         return dc;
     }
 

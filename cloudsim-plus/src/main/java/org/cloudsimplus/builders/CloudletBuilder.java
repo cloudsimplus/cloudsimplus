@@ -134,12 +134,10 @@ public class CloudletBuilder extends Builder {
     }
 
     public Cloudlet getCloudletById(final int id) {
-        for (Cloudlet cloudlet : broker.getCloudletsWaitingList()) {
-            if (cloudlet.getId() == id) {
-                return cloudlet;
-            }
-        }
-        return Cloudlet.NULL;
+        return broker.getCloudletsWaitingList().stream()
+            .filter(cloudlet -> cloudlet.getId() == id)
+            .findFirst()
+            .orElse(Cloudlet.NULL);
     }
 
     public CloudletBuilder setOutputSize(long defaultOutputSize) {

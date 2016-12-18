@@ -67,7 +67,7 @@ public class NetworkHost extends HostSimple {
     private EdgeSwitch edgeSwitch;
 
     /**
-     * @todo What exactly is this bandwidth? Because it is redundant with the bw
+     * @TODO What exactly is this bandwidth? Because it is redundant with the bw
      * capacity defined in {@link Host#getBwProvisioner()}
      */
     public double bandwidth;
@@ -160,7 +160,7 @@ public class NetworkHost extends HostSimple {
      * It checks whether a packet belongs to a local VM or to a VM hosted on other machine.
      */
     private void sendAllPacketListsOfAllVms() {
-        getVmList().forEach(vm -> collectAllListsOfPacketsToSendFromVm(vm));
+        getVmList().forEach(this::collectAllListsOfPacketsToSendFromVm);
 
         boolean flag = false;
 

@@ -2,6 +2,8 @@ package org.cloudbus.cloudsim.examples.power.planetlab;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.Objects;
+
 import org.cloudbus.cloudsim.cloudlets.Cloudlet;
 
 import org.cloudbus.cloudsim.brokers.DatacenterBroker;
@@ -34,6 +36,7 @@ import org.cloudbus.cloudsim.allocationpolicies.power.PowerVmAllocationPolicySim
  * @since Jan 5, 2012
  */
 public class NonPowerAware {
+    private final static int NUMBER_OF_HOSTS = 800;
     private static CloudSim simulation;
 
     /**
@@ -45,8 +48,10 @@ public class NonPowerAware {
 	public static void main(String[] args) throws IOException {
 		String experimentName = "planetlab_npa";
 		String outputFolder = "output";
-		String inputFolder = NonPowerAware.class.getClassLoader().getResource("workload/planetlab/20110303")
-				.getPath();
+		String inputFolder = NonPowerAware.class.getClassLoader().getResource("workload/planetlab/20110303").getPath();
+        if(Objects.isNull(inputFolder)){
+            inputFolder = "";
+        }
 
 		Log.setDisabled(!Constants.ENABLE_OUTPUT);
 		Log.printLine("Starting " + experimentName);
@@ -58,14 +63,14 @@ public class NonPowerAware {
 
 			List<Cloudlet> cloudletList = PlanetLabHelper.createCloudletListPlanetLab(broker, inputFolder);
 			List<Vm> vmList = Helper.createVmList(broker, cloudletList.size());
-			List<PowerHost> hostList = Helper.createHostList(PlanetLabConstants.NUMBER_OF_HOSTS);
+			List<PowerHost> hostList = Helper.createHostList(NUMBER_OF_HOSTS);
 
 			PowerDatacenterNonPowerAware datacenter = (PowerDatacenterNonPowerAware) Helper.createDatacenter(
 			    simulation,
                 PowerDatacenterNonPowerAware.class, hostList,
                 new PowerVmAllocationPolicySimple());
 
-			datacenter.setDisableMigrations(true);
+			datacenter.setMigrationsEnabled(false);
 
 			broker.submitVmList(vmList);
 			broker.submitCloudletList(cloudletList);

@@ -28,8 +28,6 @@ public class IqrMc {
 	 * @throws IOException Signals that an I/O exception has occurred.
 	 */
 	public static void main(String[] args) throws IOException {
-		boolean enableOutput = true;
-		boolean outputToFile = false;
 		String inputFolder = "";
 		String outputFolder = "";
 		String workload = "random"; // Random workload
@@ -38,8 +36,8 @@ public class IqrMc {
         double safetyParameter = 1.5;
 
 		new RandomRunner(
-				enableOutput,
-				outputToFile,
+            true,
+            false,
 				inputFolder,
 				outputFolder,
 				workload,

@@ -321,8 +321,7 @@ public final class CloudletSchedulerCompletelyFair extends CloudletSchedulerTime
         //----------------------------------------------
         */
 
-        double result = super.processCloudletSubmit(rcl, fileTransferTime);
-        return result;
+        return super.processCloudletSubmit(rcl, fileTransferTime);
     }
 
     /**
@@ -334,11 +333,9 @@ public final class CloudletSchedulerCompletelyFair extends CloudletSchedulerTime
     @Override
     public double updateVmProcessing(double currentTime, List<Double> mipsShare) {
         super.updateVmProcessing(currentTime, mipsShare);
-        double nextExpiringTimeSlice = getCloudletExecList().stream()
+        return getCloudletExecList().stream()
                 .mapToDouble(CloudletExecutionInfo::getTimeSlice)
                 .min().orElse(Double.MAX_VALUE);
-        //System.out.printf("\tTime %.2f updateVmProcessing - Next expiring timeslice: %.2f\n", currentTime, nextExpiringTimeSlice);
-        return nextExpiringTimeSlice;
     }
 
     @Override

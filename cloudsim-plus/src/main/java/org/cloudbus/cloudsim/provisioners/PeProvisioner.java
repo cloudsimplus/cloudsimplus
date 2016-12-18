@@ -83,7 +83,7 @@ public abstract class PeProvisioner {
      *
      * @pre $none
      * @post $none
-     * @todo In this case, each PE can have a different capacity, what in many
+     * @TODO In this case, each PE can have a different capacity, what in many
      * places this situation is not considered, such as in the
      * {@link Vm}, {@link Pe} and {@link DatacenterCharacteristics} classes.
      */

@@ -38,7 +38,7 @@ import org.cloudbus.cloudsim.vms.Vm;
  *
  * @since CloudSim Toolkit 1.0
  *
- * @todo @author manoelcampos For how long will the task be waiting for packets?
+ * @TODO @author manoelcampos For how long will the task be waiting for packets?
  * The sender task has a defined amount of packets to send, but
  * the receiver doesn't have to know how many packets to wait for.
  * Considering a real distributed app such as a web app, the sender can be

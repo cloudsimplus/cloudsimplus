@@ -141,27 +141,24 @@ public class CloudletListenersExample2_ResourceUsageAlongTime {
     }
 
     /**
-     * Creates the listener object that will be notified when a cloudlet
+     * Creates the listener object, using Java 8 Lambda Expressions, that will be notified when a cloudlet
      * finishes running into a VM. All cloudlet will use this same listener.
      *
      * @see #createCloudlet(int, Vm, long)
      */
     private void createCloudletListener() {
-        this.onUpdateCloudletProcessingListener = new EventListener<VmToCloudletEventInfo>() {
-            @Override
-            public void update(VmToCloudletEventInfo evt) {
-                Cloudlet c = evt.getCloudlet();
-                double cpuUsage = c.getUtilizationModelCpu().getUtilization(evt.getTime())*100;
-                double ramUsage = c.getUtilizationModelRam().getUtilization(evt.getTime())*100;
-                double bwUsage  = c.getUtilizationModelBw().getUtilization(evt.getTime())*100;
-                Log.printFormattedLine(
-                        "\t#EventListener: Time %.0f: Updated Cloudlet %d execution inside Vm %d",
-                        evt.getTime(), c.getId(), evt.getVm().getId());
-                Log.printFormattedLine(
-                        "\tCurrent Cloudlet resource usage: CPU %3.0f%%, RAM %3.0f%%, BW %3.0f%%\n",
-                        cpuUsage,  ramUsage, bwUsage);
+        this.onUpdateCloudletProcessingListener = evt -> {
+            Cloudlet c = evt.getCloudlet();
+            double cpuUsage = c.getUtilizationModelCpu().getUtilization(evt.getTime())*100;
+            double ramUsage = c.getUtilizationModelRam().getUtilization(evt.getTime())*100;
+            double bwUsage  = c.getUtilizationModelBw().getUtilization(evt.getTime())*100;
+            Log.printFormattedLine(
+                    "\t#EventListener: Time %.0f: Updated Cloudlet %d execution inside Vm %d",
+                    evt.getTime(), c.getId(), evt.getVm().getId());
+            Log.printFormattedLine(
+                    "\tCurrent Cloudlet resource usage: CPU %3.0f%%, RAM %3.0f%%, BW %3.0f%%\n",
+                    cpuUsage,  ramUsage, bwUsage);
 
-            }
         };
     }
 

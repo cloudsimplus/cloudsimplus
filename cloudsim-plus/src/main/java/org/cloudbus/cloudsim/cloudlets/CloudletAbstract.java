@@ -133,7 +133,7 @@ public abstract class CloudletAbstract implements Cloudlet {
         this.id = cloudletId;
         this.netServiceLevel = 0;
         this.execStartTime = 0.0;
-        this.status = Status.CREATED;
+        this.status = Status.INSTANTIATED;
         this.priority = 0;
         this.setNumberOfPes(pesNumber);
         this.recordTransactionHistory = false;

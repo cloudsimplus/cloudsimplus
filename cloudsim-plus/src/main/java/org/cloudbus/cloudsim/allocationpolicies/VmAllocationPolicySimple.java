@@ -9,7 +9,6 @@ package org.cloudbus.cloudsim.allocationpolicies;
 
 import java.util.*;
 
-import org.cloudbus.cloudsim.core.UniquelyIdentificable;
 import org.cloudbus.cloudsim.hosts.Host;
 import org.cloudbus.cloudsim.util.Log;
 import org.cloudbus.cloudsim.vms.Vm;
@@ -91,13 +90,15 @@ public class VmAllocationPolicySimple extends VmAllocationPolicyAbstract {
      * @param ignoredHosts the list of hosts that have to be ignored when selecting the
      *                     host with less used PEs. These list can be, for instance,
      *                     the list of hosts that the creation of a given VM failed.
-     * @return
+     * @return an Entry where the key is the Host and the value is
+     * the number of used PEs if a Host is found, or an Entry with a {@link Host#NULL}
+     * key if not found
      */
     private Map.Entry<Host, Integer> getHostWithLessUsedPes(List<Host> ignoredHosts) {
         return getHostFreePesMap().entrySet().stream()
             .filter(entry -> !ignoredHosts.contains(entry.getKey()))
             .max(Comparator.comparing(Map.Entry::getValue))
-            .get();
+            .orElseGet(() -> new TreeMap.SimpleEntry<>(Host.NULL, 0));
     }
 
     @Override
@@ -110,21 +111,11 @@ public class VmAllocationPolicySimple extends VmAllocationPolicyAbstract {
         }
     }
 
-    @Override
-    public Host getHost(Vm vm) {
-        return getVmHostMap().get(vm);
-    }
-
-    @Override
-    public Host getHost(int vmId, int userId) {
-        return getVmHostMap().get(UniquelyIdentificable.getUid(userId, vmId));
-    }
-
     /**
      * The method in this VmAllocationPolicy doesn't perform any
      * VM placement optimization and, in fact, has no effect.
      *
-     * @param vmList
+     * @param vmList the list of VMs
      * @return an empty map to indicate that it never performs optimization
      */
     @Override

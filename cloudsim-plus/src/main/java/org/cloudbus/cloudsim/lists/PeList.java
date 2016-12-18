@@ -92,7 +92,7 @@ public class PeList {
     /**
      * Gets the first <tt>FREE</tt> PE.
      *
-     * @param <T>
+     * @param <T> the class of PEs inside the List
      * @param peList the PE list
      * @return the first free PE or null if not found
      * @pre $none

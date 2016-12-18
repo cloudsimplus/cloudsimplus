@@ -79,7 +79,7 @@ public interface PowerHost extends HostDynamicWorkload {
         @Override public PowerModel getPowerModel() { return PowerModel.NULL; }
         @Override public PowerHost setPowerModel(PowerModel powerModel) { return PowerHost.NULL; }
         @Override public void addStateHistoryEntry(double time, double allocatedMips, double requestedMips, boolean isActive) {}
-        @Override public List<Vm> getCompletedVms() { return Collections.EMPTY_LIST; }
+        @Override public List<Vm> getFinishedVms() { return Collections.EMPTY_LIST; }
         @Override public double getMaxUtilization() { return 0; }
         @Override public double getMaxUtilizationAmongVmsPes(Vm vm) { return 0; }
         @Override public double getPreviousUtilizationMips() { return 0; }
@@ -110,7 +110,7 @@ public interface PowerHost extends HostDynamicWorkload {
         @Override public long getStorageCapacity() { return 0; }
         @Override public double getTotalAllocatedMipsForVm(Vm vm) { return 0; }
         @Override public int getTotalMips() { return 0; }
-        @Override public Vm getVm(int vmId, int userId) { return Vm.NULL; }
+        @Override public Vm getVm(int vmId, int brokerId) { return Vm.NULL; }
         @Override public <T extends Vm> List<T> getVmList() { return Collections.EMPTY_LIST; }
         @Override public VmScheduler getVmScheduler() { return VmScheduler.NULL; }
         @Override public Host setVmScheduler(VmScheduler vmScheduler) { return Host.NULL; }

@@ -193,12 +193,12 @@ public interface Host extends Identificable, Comparable<Host> {
      * Gets a VM by its id and user.
      *
      * @param vmId the vm id
-     * @param userId ID of VM's owner
+     * @param brokerId ID of VM's owner
      * @return the virtual machine object, $null if not found
      * @pre $none
      * @post $none
      */
-    Vm getVm(int vmId, int userId);
+    Vm getVm(int vmId, int brokerId);
 
     /**
      * Gets the list of VMs assigned to the host.
@@ -381,7 +381,7 @@ public interface Host extends Identificable, Comparable<Host> {
         @Override public long getStorageCapacity() { return 0L; }
         @Override public double getTotalAllocatedMipsForVm(Vm vm) { return 0.0; }
         @Override public int getTotalMips() { return 0; }
-        @Override public Vm getVm(int vmId, int userId) { return Vm.NULL; }
+        @Override public Vm getVm(int vmId, int brokerId) { return Vm.NULL; }
         @Override public List<Vm> getVmList() { return Collections.emptyList(); }
         @Override public VmScheduler getVmScheduler() {return VmScheduler.NULL; }
         @Override public Host setVmScheduler(VmScheduler vmScheduler) { return Host.NULL; }

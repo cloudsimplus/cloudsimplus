@@ -47,7 +47,7 @@ public class RandomHelper {
 		UtilizationModel utilizationModelNull = new UtilizationModelZero();
 
 		for (int i = 0; i < cloudletsNumber; i++) {
-			CloudletSimple cloudlet = null;
+			CloudletSimple cloudlet;
 			if (seed == -1) {
 				cloudlet = new CloudletSimple(i,Constants.CLOUDLET_LENGTH, Constants.CLOUDLET_PES);
                 cloudlet

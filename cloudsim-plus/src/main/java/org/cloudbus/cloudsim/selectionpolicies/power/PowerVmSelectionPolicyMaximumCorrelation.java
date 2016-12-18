@@ -10,7 +10,6 @@ package org.cloudbus.cloudsim.selectionpolicies.power;
 
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Objects;
 
 import org.apache.commons.math3.linear.Array2DRowRealMatrix;
 import org.cloudbus.cloudsim.hosts.power.PowerHost;
@@ -123,7 +122,7 @@ public class PowerVmSelectionPolicyMaximumCorrelation extends PowerVmSelectionPo
     protected List<Double> getCorrelationCoefficients(final double[][] data) {
         int n = data.length;
         int m = data[0].length;
-        List<Double> correlationCoefficients = new LinkedList<Double>();
+        List<Double> correlationCoefficients = new LinkedList<>();
         for (int i = 0; i < n; i++) {
             double[][] x = new double[n - 1][m];
             int k = 0;

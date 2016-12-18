@@ -315,9 +315,9 @@ public class HostSimple implements Host {
     }
 
     @Override
-    public Vm getVm(int vmId, int userId) {
+    public Vm getVm(int vmId, int brokerId) {
         return getVmList().stream()
-            .filter(vm -> vm.getId() == vmId && vm.getBroker().getId() == userId)
+            .filter(vm -> vm.getId() == vmId && vm.getBroker().getId() == brokerId)
             .findFirst().orElse(Vm.NULL);
     }
 

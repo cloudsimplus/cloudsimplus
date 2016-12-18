@@ -35,14 +35,14 @@ import org.cloudbus.cloudsim.cloudlets.Cloudlet;
 public interface CloudletEventInfo {
 
     /**
-     *
-     * @return the cloudlet that has finished
+     * Gets the Cloudlet that has finished
+     * @return
      */
     Cloudlet getCloudlet();
 
     /**
-     * Sets the cloudlet that has finished
-     * @param cloudlet
+     * Sets the Cloudlet that has finished
+     * @param cloudlet the Cloudlet to set
      */
     void setCloudlet(Cloudlet cloudlet);
 
