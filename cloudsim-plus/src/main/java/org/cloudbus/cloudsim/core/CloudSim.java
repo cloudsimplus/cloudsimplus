@@ -8,14 +8,13 @@
 package org.cloudbus.cloudsim.core;
 
 import java.util.*;
+import java.util.stream.Stream;
 
-import org.cloudbus.cloudsim.core.events.CloudSimEvent;
-import org.cloudbus.cloudsim.core.events.DeferredQueue;
-import org.cloudbus.cloudsim.core.events.FutureQueue;
-import org.cloudbus.cloudsim.core.events.SimEvent;
+import org.cloudbus.cloudsim.core.events.*;
+import org.cloudbus.cloudsim.datacenters.Datacenter;
 import org.cloudbus.cloudsim.network.topologies.NetworkTopology;
 import org.cloudbus.cloudsim.util.Log;
-import org.cloudbus.cloudsim.core.predicates.Predicate;
+import java.util.function.Predicate;
 import org.cloudsimplus.listeners.EventInfo;
 import org.cloudsimplus.listeners.EventInfoSimple;
 import org.cloudsimplus.listeners.EventListener;
@@ -49,26 +48,9 @@ public class CloudSim implements Simulation {
     private static final int NOT_FOUND = -1;
 
     /**
-     * The id of CloudCloudSimShutdown entity.
-     */
-    @SuppressWarnings("unused")
-    private CloudCloudSimShutdown shutdown;
-
-    /**
-     * @see #getNumberOfUsers()
-     */
-    private int numberOfUsers;
-
-    /**
      * The Cloud Information Service (CIS) entity.
      */
     private CloudInformationService cis;
-
-    /**
-     * The trace flag.
-     */
-    @SuppressWarnings("unused")
-    private boolean traceFlag = false;
 
     /**
      * The calendar.
@@ -91,7 +73,7 @@ public class CloudSim implements Simulation {
     private List<CloudSimEntity> entities;
 
     /**
-     * The future event queue.
+     * The queue of events that will be sent in a future simulation time.
      */
     protected FutureQueue future;
 
@@ -116,9 +98,10 @@ public class CloudSim implements Simulation {
     private Map<String, SimEntity> entitiesByName;
 
     /**
-     * The wait predicates.
+     * A map of the predicate that defines the events that a given entity is waiting.
+     * Each key is the entity id and the value is the predicate.
      */
-    private Map<Integer, Predicate> waitPredicates;
+    private Map<SimEntity, Predicate> waitPredicates;
 
     /**
      * @see #isPaused()
@@ -133,9 +116,9 @@ public class CloudSim implements Simulation {
 
     /**
      * Indicates if an abrupt termination was requested.
-     * @see #abruptallyTerminate()
+     * @see #abort()
      */
-    private boolean abruptTerminate = false;
+    private boolean abort = false;
 
     /**
      * @see #getOnEventProcessingListener()
@@ -156,46 +139,30 @@ public class CloudSim implements Simulation {
     private EventListener<EventInfo> onSimulationPausedListener;
 
     /**
-     * Creates a CloudSim simulation using a default calendar and that does not track events.
-     * <p>
-     * Inside this method, it will create the following CloudSim entities:
-     * <ul>
-     * <li>CloudInformationService.
-     * <li>CloudCloudSimShutdown
-     * </ul>
-     * <p>
+     * Creates a CloudSim simulation using a default calendar.
+     * Internally it creates a CloudInformationService.
      *
-     * @see CloudCloudSimShutdown
      * @see CloudInformationService
      * @pre numUser >= 0
      * @post $none
      */
     public CloudSim(){
-        this(null, false);
+        this(null);
     }
 
     /**
      * Creates a CloudSim simulation with the given parameters.
-     * <p>
-     * Inside this method, it will create the following CloudSim entities:
-     * <ul>
-     * <li>CloudInformationService.
-     * <li>CloudCloudSimShutdown
-     * </ul>
-     * <p>
+     * Internally it creates a CloudInformationService.
      *
      * @param cal starting time for this simulation. If it is <tt>null</tt>,
      * then the time will be taken from <tt>Calendar.getInstance()</tt>
-     * @param traceFlag <tt>true</tt> if CloudSim trace need to be written
      * @throws RuntimeException
      *
-     * @see CloudCloudSimShutdown
      * @see CloudInformationService
      * @post $none
      */
-    public CloudSim(Calendar cal, boolean traceFlag) throws RuntimeException {
+    public CloudSim(Calendar cal) throws RuntimeException {
         Log.printFormattedLine("Initialising CloudSim Plus %s...", CloudSim.CLOUDSIMPLUS_VERSION_STRING);
-        this.numberOfUsers = 0;
         this.entities = new ArrayList<>();
         this.entitiesByName = new LinkedHashMap<>();
         this.future = new FutureQueue();
@@ -209,73 +176,19 @@ public class CloudSim implements Simulation {
         setOnEventProcessingListener(EventListener.NULL);
 
         // NOTE: the order for the below 3 lines are important
-        this.traceFlag = traceFlag;
-
         this.calendar = (Objects.isNull(calendar) ? Calendar.getInstance() : calendar);
-
-        // creates a CloudCloudSimShutdown object
-        this.shutdown = new CloudCloudSimShutdown(this);
         this.cis = new CloudInformationService(this);
     }
 
     /**
-     * Creates a CloudSim simulation with the given parameters and using a default Calendar.
-     * <p>
-     * Inside this method, it will create the following CloudSim entities:
-     * <ul>
-     * <li>CloudInformationService.
-     * <li>CloudCloudSimShutdown
-     * </ul>
-     * <p>
-     *
-     * @param traceFlag <tt>true</tt> if CloudSim trace need to be written
-     * @throws RuntimeException
-     *
-     * @see CloudCloudSimShutdown
-     * @see CloudInformationService
-     * @pre numUsers >= 0
-     * @post $none
-     */
-    public CloudSim(boolean traceFlag) throws RuntimeException {
-        this(null, traceFlag);
-    }
-
-    /**
-     * Creates a CloudSim simulation with the given parameters and that does not track events.
-     * <p>
-     * Inside this method, it will create the following CloudSim entities:
-     * <ul>
-     * <li>CloudInformationService.
-     * <li>CloudCloudSimShutdown
-     * </ul>
-     * <p>
-     *
-     * @param cal starting time for this simulation. If it is <tt>null</tt>,
-     * then the time will be taken from <tt>Calendar.getInstance()</tt>
-     * @see CloudCloudSimShutdown
-     * @see CloudInformationService
-     * @pre numUser >= 0
-     * @post $none
-     */
-    public CloudSim(Calendar cal){
-        this(cal, false);
-    }
-
-    /**
      * Creates a CloudSim simulation with the given parameters.
-     * <p>
-     * Inside this method, it will create the following CloudSim entities:
-     * <ul>
-     * <li>CloudInformationService.
-     * <li>CloudCloudSimShutdown
-     * </ul>
-     * <p>
+     * Internally it creates a CloudInformationService.
      *
      * @param numUser this parameter is not being used anymore
      * @param cal starting time for this simulation. If it is <tt>null</tt>,
      * then the time will be taken from <tt>Calendar.getInstance()</tt>
-     * @param traceFlag <tt>true</tt> if CloudSim trace need to be written
-     * @param periodBetweenEvents - the minimal period between events. Events
+     * @param traceFlag this parameter is not being used anymore
+     * @param periodBetweenEvents the minimal period between events. Events
      * within shorter periods after the last event are discarded.
      * @see CloudInformationService
      * @pre numUser >= 0
@@ -287,7 +200,7 @@ public class CloudSim implements Simulation {
      */
     @Deprecated
     public CloudSim(int numUser, Calendar cal, boolean traceFlag, double periodBetweenEvents) throws RuntimeException{
-        this(cal, traceFlag);
+        this(cal);
 
         if (periodBetweenEvents <= 0) {
             throw new IllegalArgumentException("The minimal time between events should be positive, but is:" + periodBetweenEvents);
@@ -339,8 +252,8 @@ public class CloudSim implements Simulation {
     }
 
     @Override
-    public Set<Integer> getDatacenterIdsList() {
-        return cis.getDatacenterIdsList();
+    public Set<Datacenter> getDatacenterList() {
+        return cis.getDatacenterList();
     }
 
     @Override
@@ -388,8 +301,7 @@ public class CloudSim implements Simulation {
         }
 
         if (e.getId() == -1) { // Only add once!
-            int id = entities.size();
-            e.setId(id);
+            e.setId(entities.size());
             entities.add(e);
             entitiesByName.put(e.getName(), e);
         }
@@ -420,6 +332,7 @@ public class CloudSim implements Simulation {
         } else {
             printMessage("Adding: " + e.getName());
         }
+
         e.start();
     }
 
@@ -462,10 +375,7 @@ public class CloudSim implements Simulation {
                 .filter(ent -> ent.getState() == SimEntity.State.RUNNABLE)
                 .collect(toList());
 
-        //dont use stream because the entities are being changed
-        for(SimEntity ent: runableEntities) {
-            ent.run();
-        }
+        runableEntities.forEach(SimEntity::run);
     }
 
     @Override
@@ -494,93 +404,91 @@ public class CloudSim implements Simulation {
     }
 
     @Override
-    public void wait(int src, Predicate p) {
-        entities.get(src).setState(SimEntity.State.WAITING);
+    public void wait(CloudSimEntity src, Predicate<SimEvent> p) {
+        src.setState(SimEntity.State.WAITING);
         if (p != SIM_ANY) {
-            // If a predicate has been used store it in order to check it
+            // If a predicate has been used, store it in order to check incomming events that matches it
             waitPredicates.put(src, p);
         }
     }
 
     @Override
-    public int waiting(int d, Predicate p) {
-        int count = 0;
-        SimEvent event;
-        Iterator<SimEvent> iterator = deferred.iterator();
-        while (iterator.hasNext()) {
-            event = iterator.next();
-            if ((event.getDestination() == d) && (p.match(event))) {
-                count++;
-            }
-        }
-        return count;
+    public long waiting(int dest, Predicate<SimEvent> p) {
+        return filterEventsToDestinationEntity(deferred, p, dest).count();
     }
 
     @Override
-    public SimEvent select(int src, Predicate p) {
-        SimEvent ev = null;
-        Iterator<SimEvent> iterator = deferred.iterator();
-        while (iterator.hasNext()) {
-            ev = iterator.next();
-            if (ev.getDestination() == src && p.match(ev)) {
-                iterator.remove();
-                break;
-            }
-        }
-        return ev;
+    public SimEvent select(int dest, Predicate<SimEvent> p) {
+        SimEvent evt = findFirstDeferred(dest, p);
+        deferred.remove(evt);
+        return evt;
     }
 
     @Override
-    public SimEvent findFirstDeferred(int src, Predicate p) {
-        SimEvent ev = null;
-        Iterator<SimEvent> iterator = deferred.iterator();
-        while (iterator.hasNext()) {
-            ev = iterator.next();
-            if (ev.getDestination() == src && p.match(ev)) {
-                break;
-            }
-        }
+    public SimEvent findFirstDeferred(int dest, Predicate<SimEvent> p) {
+        return filterEventsToDestinationEntity(deferred, p, dest).findFirst().orElse(SimEvent.NULL);
+    }
 
-        return ev;
+    /**
+     * Gets a stream of events inside a specific queue that match a given predicate
+     * and are targeted to an specific entity.
+     *
+     * @param queue the queue to get the events from
+     * @param p the event selection predicate
+     * @param dest Id of entity that the event has to be sent to
+     * @return a Stream of events from the queue
+     */
+    private Stream<SimEvent> filterEventsToDestinationEntity(EventQueue queue, Predicate<SimEvent> p, int dest) {
+        return filterEvents(queue, p.and(e -> e.getDestination() == dest));
     }
 
     @Override
-    public SimEvent cancel(int src, Predicate p) {
-        SimEvent ev = null;
-        Iterator<SimEvent> iter = future.iterator();
-        while (iter.hasNext()) {
-            ev = iter.next();
-            if (ev.getSource() == src && p.match(ev)) {
-                iter.remove();
-                break;
-            }
-        }
-
-        return ev;
+    public SimEvent cancel(int src, Predicate<SimEvent> p) {
+        SimEvent evt = future.stream().filter(p.and(e -> e.getSource() == src)).findFirst().orElse(SimEvent.NULL);
+        future.remove(evt);
+        return evt;
     }
 
     @Override
-    public boolean cancelAll(int src, Predicate p) {
-        SimEvent ev = null;
-        int previousSize = future.size();
-        Iterator<SimEvent> iter = future.iterator();
-        while (iter.hasNext()) {
-            ev = iter.next();
-            if (ev.getSource() == src && p.match(ev)) {
-                iter.remove();
-            }
-        }
+    public boolean cancelAll(int src, Predicate<SimEvent> p) {
+        final int previousSize = future.size();
+        List<SimEvent> cancelList = filterEventsFromSourceEntity(future, p, src).collect(toList());
+        future.removeAll(cancelList);
         return previousSize < future.size();
+    }
+
+    /**
+     * Gets a stream of events inside a specific queue that match a given predicate
+     * and from a source entity.
+     *
+     * @param queue the queue to get the events from
+     * @param p the event selection predicate
+     * @param src Id of entity that scheduled the event
+     * @return a Stream of events from the queue
+     */
+    private Stream<SimEvent> filterEventsFromSourceEntity(EventQueue queue, Predicate<SimEvent> p, int src) {
+        return filterEvents(queue, p.and(e -> e.getSource() == src));
+    }
+
+    /**
+     * Gets a stream of events inside a specific queue that match a given predicate.
+     *
+     * @param queue the queue to get the events from
+     * @param p the event selection predicate
+     * @return a Strem of events from the queue
+     */
+    private Stream<SimEvent> filterEvents(EventQueue queue, Predicate<SimEvent> p) {
+        return queue.stream().filter(p);
     }
 
     /**
      * Processes an event.
      *
-     * @param e the e
+     * @param e the event to be processed
      */
     private void processEvent(SimEvent e) {
         int dest, src;
-        CloudSimEntity dest_ent;
+        CloudSimEntity destEnt;
         // Update the system's clock
         if (e.eventTime() < clock) {
             throw new IllegalArgumentException("Past event detected.");
@@ -604,15 +512,13 @@ public class CloudSim implements Simulation {
                 if (dest < 0) {
                     throw new IllegalArgumentException("Attempt to send to a null entity detected.");
                 } else {
-                    int tag = e.getTag();
-                    dest_ent = entities.get(dest);
-                    if (dest_ent.getState() == SimEntity.State.WAITING) {
-                        Integer destObj = dest;
-                        Predicate p = waitPredicates.get(destObj);
-                        if ((Objects.isNull(p)) || (tag == 9999) || p.match(e)) {
-                            dest_ent.setEventBuffer(new CloudSimEvent(e));
-                            dest_ent.setState(SimEntity.State.RUNNABLE);
-                            waitPredicates.remove(destObj);
+                    destEnt = entities.get(dest);
+                    if (destEnt.getState() == SimEntity.State.WAITING) {
+                        Predicate<SimEvent> p = waitPredicates.get(destEnt);
+                        if ((Objects.isNull(p)) || (e.getTag() == 9999) || p.test(e)) {
+                            destEnt.setEventBuffer(new CloudSimEvent(e));
+                            destEnt.setState(SimEntity.State.RUNNABLE);
+                            waitPredicates.remove(destEnt);
                         } else {
                             deferred.addEvent(e);
                         }
@@ -642,11 +548,7 @@ public class CloudSim implements Simulation {
      */
     private void runStart() {
         running = true;
-        // Start all the entities
-        for (SimEntity ent : entities) {
-            ent.start();
-        }
-
+        entities.forEach(SimEntity::start);
         printMessage("Entities started.");
     }
 
@@ -672,13 +574,14 @@ public class CloudSim implements Simulation {
 
     @Override
     public boolean resume() {
-        paused = false;
+        final boolean wasPaused = this.paused;
+        this.paused = false;
 
         if (pauseAt <= clock) {
             pauseAt = -1;
         }
 
-        return !paused;
+        return wasPaused;
     }
 
     @Override
@@ -736,12 +639,12 @@ public class CloudSim implements Simulation {
     }
 
     private boolean isThereRequestToTerminateSimulationAndItWasAttended() {
-        if(abruptTerminate){
+        if(abort){
             return true;
         }
 
         // this block allows termination of simulation at a specific time
-        if (terminationRequested() && clock >= terminateAt) {
+        if (isTerminationRequested() && clock >= terminateAt) {
             terminate();
             clock = terminateAt;
             return true;
@@ -763,7 +666,7 @@ public class CloudSim implements Simulation {
      * @see #pause(double)
      */
     public boolean doPause() {
-        if(running && pauseRequested()) {
+        if(running && isPauseRequested()) {
             paused=true;
             clock = pauseAt;
             onSimulationPausedListener.update(new EventInfoSimple(clock));
@@ -773,7 +676,7 @@ public class CloudSim implements Simulation {
         return false;
     }
 
-    private boolean pauseRequested() {
+    private boolean isPauseRequested() {
         return pauseAt > -1;
     }
 
@@ -790,45 +693,39 @@ public class CloudSim implements Simulation {
     }
 
     private boolean isThereFutureEvtsAndNextOneHappensAfterTimeToPause() {
-        return !future.isEmpty() && clock <= pauseAt && nextFutureEventHappensAfterTimeToPause();
+        return !future.isEmpty() && clock <= pauseAt && isNextFutureEventHappeningAfterTimeToPause();
     }
 
     private boolean isNotThereNextFutureEvtsAndIsTimeToPause() {
         return future.isEmpty() && clock >= pauseAt;
     }
 
-    private boolean terminationRequested() {
+    private boolean isTerminationRequested() {
         return terminateAt > 0.0;
     }
 
-    private boolean nextFutureEventHappensAfterTimeToPause() {
+    private boolean isNextFutureEventHappeningAfterTimeToPause() {
         return future.iterator().next().eventTime() >= pauseAt;
     }
 
     /**
-     * Internal method that allows the entities to terminate. This method should
-     * <b>not</b> be used in user simulations.
+     * Finishes execution of running entities before terminating the simulation.
      */
     private void finishSimulation() {
         // Allow all entities to exit their body method
-        if (!abruptTerminate) {
-            for (CloudSimEntity ent : entities) {
-                if (ent.getState() != SimEntity.State.FINISHED) {
-                    ent.run();
-                }
-            }
+        if (!abort) {
+            entities.stream()
+                .filter(e -> e.getState() != SimEntity.State.FINISHED)
+                .forEach(SimEntity::run);
         }
 
-        for (SimEntity ent : entities) {
-            ent.shutdownEntity();
-        }
-
+        entities.forEach(SimEntity::shutdownEntity);
         running = false;
     }
 
     @Override
-    public void abruptallyTerminate() {
-        abruptTerminate = true;
+    public void abort() {
+        abort = true;
     }
 
     /**
@@ -888,20 +785,4 @@ public class CloudSim implements Simulation {
     public Map<String, SimEntity> getEntitiesByName() {
         return Collections.unmodifiableMap(entitiesByName);
     }
-
-    @Override
-    public int getNumberOfUsers() {
-        return numberOfUsers;
-    }
-
-    @Override
-    public int incrementNumberOfUsers() {
-        return ++this.numberOfUsers;
-    }
-
-    @Override
-    public int decrementNumberOfUsers() {
-        return (this.numberOfUsers == 0 ? this.numberOfUsers : --this.numberOfUsers);
-    }
-
 }

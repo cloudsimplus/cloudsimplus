@@ -1,6 +1,7 @@
 package org.cloudbus.cloudsim.examples.power.planetlab;
 
 import java.io.IOException;
+import java.util.Objects;
 
 /**
  * A simulation of a heterogeneous power aware data center that applies the Inter Quartile Range
@@ -30,9 +31,7 @@ public class IqrMc {
 	 * @throws IOException Signals that an I/O exception has occurred.
 	 */
 	public static void main(String[] args) throws IOException {
-		boolean enableOutput = true;
-		boolean outputToFile = false;
-		String inputFolder = IqrMc.class.getClassLoader().getResource("workload/planetlab").getPath();
+		String inputFolder =  ResourceLoader.getResourceFolder(IqrMc.class,"workload/planetlab");
 		String outputFolder = "output";
 		String workload = "20110303"; // PlanetLab workload
 		String vmAllocationPolicy = "iqr"; // Inter Quartile Range (IQR) VM allocation policy
@@ -40,8 +39,8 @@ public class IqrMc {
 		double safetyParameter = 1.5;
 
 		new PlanetLabRunner(
-				enableOutput,
-				outputToFile,
+            true,
+            false,
 				inputFolder,
 				outputFolder,
 				workload,

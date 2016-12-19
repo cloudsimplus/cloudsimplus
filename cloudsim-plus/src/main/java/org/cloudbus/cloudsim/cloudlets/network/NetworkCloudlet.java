@@ -12,7 +12,6 @@ import java.util.Collections;
 import java.util.List;
 
 import org.cloudbus.cloudsim.cloudlets.CloudletSimple;
-import org.cloudbus.cloudsim.schedulers.cloudlet.CloudletSchedulerSpaceShared;
 import org.cloudbus.cloudsim.utilizationmodels.UtilizationModel;
 
 /**
@@ -36,7 +35,7 @@ import org.cloudbus.cloudsim.utilizationmodels.UtilizationModel;
  * @author Saurabh Kumar Garg
  * @since CloudSim Toolkit 1.0
  *
- * @todo @author manoelcampos See how to implement the NULL pattern for this class.
+ * @TODO @author manoelcampos See how to implement the NULL pattern for this class.
  */
 public class NetworkCloudlet extends CloudletSimple {
 
@@ -49,11 +48,6 @@ public class NetworkCloudlet extends CloudletSimple {
      * All tasks which cloudlet execution.
      */
     private final List<CloudletTask> tasks;
-
-    /**
-     * @see #getAppCloudlet()
-     */
-    private AppCloudlet appCloudlet;
 
     /**
      * @see #getMemory()
@@ -80,15 +74,15 @@ public class NetworkCloudlet extends CloudletSimple {
     /**
      * Creates a NetworkCloudlet with the given parameters.
      *
-     * @param id
-     * @param cloudletLength
-     * @param pesNumber
-     * @param cloudletFileSize
-     * @param cloudletOutputSize
-     * @param memory
-     * @param utilizationModelCpu
-     * @param utilizationModelRam
-     * @param utilizationModelBw
+     * @param id the unique ID of this cloudlet
+     * @param cloudletLength the length or size (in MI) of this cloudlet to be executed in a VM
+     * @param pesNumber the pes number
+     * @param cloudletFileSize the file size (in bytes) of this cloudlet <tt>BEFORE</tt> submitting to a Datacenter
+     * @param cloudletOutputSize the file size (in bytes) of this cloudlet <tt>AFTER</tt> finish executing by a VM
+     * @param memory the amount of memory
+     * @param utilizationModelCpu the utilization model of CPU
+     * @param utilizationModelRam the utilization model of RAM
+     * @param utilizationModelBw  the utilization model of BW
      *
      * @deprecated Use the other available constructors with less parameters
      * and set the remaining ones using the respective setters.
@@ -116,25 +110,6 @@ public class NetworkCloudlet extends CloudletSimple {
         this.memory = memory;
     }
 
-    /**
-     * Gets the {@link AppCloudlet} that owns this NetworkCloudlet.
-     *
-     * @return
-     */
-    public AppCloudlet getAppCloudlet() {
-        return appCloudlet;
-    }
-
-    /**
-     * Set the {@link AppCloudlet} that owns this NetworkCloudlet.
-     *
-     * @param appCloudlet
-     */
-    public NetworkCloudlet setAppCloudlet(AppCloudlet appCloudlet) {
-        this.appCloudlet = appCloudlet;
-        return this;
-    }
-
     public double getNumberOfTasks() {
         return tasks.size();
     }
@@ -150,7 +125,7 @@ public class NetworkCloudlet extends CloudletSimple {
     /**
      * Gets the Cloudlet's RAM memory.
      *
-     * @todo Required, allocated, used memory? It doesn't appear to be used.
+     * @TODO Required, allocated, used memory? It doesn't appear to be used.
      */
     public long getMemory() {
         return memory;
@@ -235,7 +210,7 @@ public class NetworkCloudlet extends CloudletSimple {
 
     @Override
     public boolean isFinished() {
-        boolean allTasksFinished = tasks.stream().allMatch(t -> t.isFinished());
+        final boolean allTasksFinished = tasks.stream().allMatch(CloudletTask::isFinished);
         return super.isFinished() && allTasksFinished;
     }
 

@@ -11,7 +11,8 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import org.cloudbus.cloudsim.network.HostPacket;
+import org.cloudbus.cloudsim.network.VmPacket;
+import org.cloudbus.cloudsim.vms.Vm;
 
 /**
  * A task executed by a {@link NetworkCloudlet} that
@@ -37,7 +38,7 @@ import org.cloudbus.cloudsim.network.HostPacket;
  *
  * @since CloudSim Toolkit 1.0
  *
- * @todo @author manoelcampos For how long will the task be waiting for packets?
+ * @TODO @author manoelcampos For how long will the task be waiting for packets?
  * The sender task has a defined amount of packets to send, but
  * the receiver doesn't have to know how many packets to wait for.
  * Considering a real distributed app such as a web app, the sender can be
@@ -66,7 +67,7 @@ import org.cloudbus.cloudsim.network.HostPacket;
  *
  */
 public class CloudletReceiveTask extends CloudletTask {
-    private final List<HostPacket> packetsReceived;
+    private final List<VmPacket> packetsReceived;
 
     /**
      * @see #getNumberOfExpectedPacketsToReceive()
@@ -74,9 +75,9 @@ public class CloudletReceiveTask extends CloudletTask {
     private long numberOfExpectedPacketsToReceive;
 
     /**
-     * @see #getSourceVmId()
+     * @see #getSourceVm()
      */
-    private final int sourceVmId;
+    private final Vm sourceVm;
 
     /**
      * Creates a new task.
@@ -84,10 +85,10 @@ public class CloudletReceiveTask extends CloudletTask {
      * @param id task id
      * @param sourceVm the Vm where it is expected to receive packets from
      */
-    public CloudletReceiveTask(int id, int sourceVm) {
+    public CloudletReceiveTask(int id, Vm sourceVm) {
         super(id);
         this.packetsReceived = new ArrayList<>();
-        this.sourceVmId = sourceVm;
+        this.sourceVm = sourceVm;
     }
 
     /**
@@ -96,7 +97,7 @@ public class CloudletReceiveTask extends CloudletTask {
      *
      * @param packet the packet received
      */
-    public void receivePacket(HostPacket packet) {
+    public void receivePacket(VmPacket packet) {
         packet.setReceiveTime(getCloudlet().getSimulation().clock());
         this.packetsReceived.add(packet);
         boolean finished = this.packetsReceived.size() >= numberOfExpectedPacketsToReceive;
@@ -107,7 +108,7 @@ public class CloudletReceiveTask extends CloudletTask {
      * Gets the list of packets received.
      * @return a read-only received packet list
      */
-    public List<HostPacket> getPacketsReceived() {
+    public List<VmPacket> getPacketsReceived() {
         return Collections.unmodifiableList(packetsReceived);
     }
 
@@ -115,8 +116,8 @@ public class CloudletReceiveTask extends CloudletTask {
      * Gets the Vm where it is expected to receive packets from.
      * @return
      */
-    public int getSourceVmId() {
-        return sourceVmId;
+    public Vm getSourceVm() {
+        return sourceVm;
     }
 
     /**

@@ -192,7 +192,7 @@ public class File {
      * @param fileName the file name to be checked for validity
      * @return <tt>true</tt> if the file name is valid, <tt>false</tt> otherwise
      */
-    public static final boolean isValid(final String fileName) {
+    public static boolean isValid(final String fileName) {
         return FileAttribute.isValid(fileName);
     }
 
@@ -203,7 +203,7 @@ public class File {
      * @param file the file to be checked for validity
      * @return <tt>true</tt> if the file is valid, <tt>false</tt> otherwise
      */
-    public static final boolean isValid(final File file) {
+    public static boolean isValid(final File file) {
         return (!Objects.isNull(file)) && isValid(file.getName());
     }
 

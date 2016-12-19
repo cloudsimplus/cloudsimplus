@@ -142,20 +142,10 @@ public class PowerDatacenterNonPowerAware extends PowerDatacenter {
 
             checkCloudletsCompletionForAllHosts();
 
-            /**
-             * Remove completed VMs *
-             */
-            for (PowerHostSimple host : this.<PowerHostSimple>getHostList()) {
-                for (Vm vm : host.getCompletedVms()) {
-                    getVmAllocationPolicy().deallocateHostForVm(vm);
-                    getVmList().remove(vm);
-                    Log.printLine("VM #" + vm.getId() + " has been deallocated from host #" + host.getId());
-                }
-            }
-
+            removeFinishedVmsFromEveryHost();
             Log.printLine();
 
-            if (!isDisableMigrations()) {
+            if (isMigrationsEnabled()) {
                 Map<Vm, Host> migrationMap
                         = getVmAllocationPolicy().optimizeAllocation(getVmList());
 

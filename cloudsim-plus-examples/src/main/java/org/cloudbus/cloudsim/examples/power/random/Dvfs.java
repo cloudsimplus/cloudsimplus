@@ -29,8 +29,6 @@ public class Dvfs {
 	 * @throws IOException Signals that an I/O exception has occurred.
 	 */
 	public static void main(String[] args) throws IOException {
-		boolean enableOutput = true;
-		boolean outputToFile = false;
 		String inputFolder = "";
 		String outputFolder = "";
 		String workload = "random"; // Random workload
@@ -38,8 +36,8 @@ public class Dvfs {
 		String vmSelectionPolicy = "";
 
 		new RandomRunner(
-				enableOutput,
-				outputToFile,
+            true,
+            false,
 				inputFolder,
 				outputFolder,
 				workload,

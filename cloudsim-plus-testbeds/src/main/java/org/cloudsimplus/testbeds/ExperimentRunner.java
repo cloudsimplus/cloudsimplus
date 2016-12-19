@@ -1,8 +1,10 @@
 /**
- * CloudSim Plus: A highly-extensible and easier-to-use Framework for Modeling and Simulation of Cloud Computing Infrastructures and Services.
+ * CloudSim Plus: A highly-extensible and easier-to-use Framework for
+ * Modeling and Simulation of Cloud Computing Infrastructures and Services.
  * http://cloudsimplus.org
  *
- *     Copyright (C) 2015-2016  Universidade da Beira Interior (UBI, Portugal) and the Instituto Federal de Educação Ciência e Tecnologia do Tocantins (IFTO, Brazil).
+ *     Copyright (C) 2015-2016  Universidade da Beira Interior (UBI, Portugal) and
+ *     the Instituto Federal de Educação Ciência e Tecnologia do Tocantins (IFTO, Brazil).
  *
  *     This file is part of CloudSim Plus.
  *
@@ -369,15 +371,17 @@ public abstract class ExperimentRunner<T extends SimulationExperiment> implement
 	protected UniformDistr createRandomGenAndAddSeedToList(int experimentIndex, double minValue, double maxValue) {
         UniformDistr prng;
 		if (isApplyAntitheticVariatesTechnique() &&
-        numberOfSimulationRuns > 1 && experimentIndex >= halfSimulationRuns()) {
+            numberOfSimulationRuns > 1 && experimentIndex >= halfSimulationRuns())
+		{
 			int previousExperiment = experimentIndex - halfSimulationRuns();
 
 			prng = new UniformDistr(minValue, maxValue, seeds.get(previousExperiment))
 							.setApplyAntitheticVariatesTechnique(true);
 		}
-
-		final long experimentSeed = getBaseSeed() + experimentIndex + 1;
-		prng = new UniformDistr(minValue, maxValue, experimentSeed);
+        else {
+            final long experimentSeed = getBaseSeed() + experimentIndex + 1;
+            prng = new UniformDistr(minValue, maxValue, experimentSeed);
+        }
         addSeed(prng.getSeed());
         return prng;
     }

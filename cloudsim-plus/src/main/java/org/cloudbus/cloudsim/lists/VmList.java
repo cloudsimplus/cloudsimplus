@@ -7,6 +7,7 @@
  */
 package org.cloudbus.cloudsim.lists;
 
+import java.util.Comparator;
 import java.util.List;
 import org.cloudbus.cloudsim.vms.Vm;
 
@@ -21,14 +22,14 @@ public class VmList {
     /**
      * Gets a {@link Vm} with a given id.
      *
-     * @param <T>
+     * @param <T> the class of VMs inside the list
      * @param id ID of required VM
      * @param vmList list of existing VMs
      * @return a Vm with the given ID or {@link Vm#NULL} if not found
      * @pre $none
      * @post $none
      *
-     * @todo It may be considered the use of a HashMap in order to improve VM
+     * @TODO It may be considered the use of a HashMap in order to improve VM
      * search, instead of a List. The map key can be the vm id and the value the
      * VM itself. However, it has to be assessed the feasibility to have VMs
      * with the same ID and the need to find VMs by its id and user id, as in
@@ -68,10 +69,8 @@ public class VmList {
      * @param currentSimulationTime the current simulation time to get the current CPU utilization for each Vm
      */
     public static void sortByCpuUtilization(List<? extends Vm> vmList, double currentSimulationTime) {
-        vmList.sort((vm1, vm2) -> {
-            Double vm1Utilization = vm1.getTotalUtilizationOfCpuMips(currentSimulationTime);
-            Double vm2Utilization = vm2.getTotalUtilizationOfCpuMips(currentSimulationTime);
-            return vm2Utilization.compareTo(vm1Utilization);
-        });
+        Comparator<Vm> comparator =
+            Comparator.comparingDouble(vm -> vm.getTotalUtilizationOfCpuMips(currentSimulationTime));
+        vmList.sort(comparator.reversed());
     }
 }

@@ -10,53 +10,56 @@ package org.cloudbus.cloudsim.core.predicates;
 
 import org.cloudbus.cloudsim.core.events.SimEvent;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.function.Predicate;
+import java.util.stream.Collectors;
+
 /**
- * A predicate to select events with specific tags.
+ * A predicate to select events with specific {@link SimEvent#getTag() tags}.
  *
  * @author Marcos Dias de Assuncao
- * @since CloudSim Toolkit 1.0
  * @see PredicateNotType
  * @see Predicate
+ * @since CloudSim Toolkit 1.0
  */
-public class PredicateType implements Predicate {
+public class PredicateType implements Predicate<SimEvent> {
 
-	/** Array of tags to verify if the tag of received events correspond to. */
-	private final int[] tags;
+    /**
+     * Array of tags to verify if the tag of received events correspond to.
+     */
+    private final List<Integer> tags;
 
-	/**
-	 * Constructor used to select events with the given tag value.
-	 *
-	 * @param t1 an event tag value
-	 */
-	public PredicateType(int t1) {
-		tags = new int[] { t1 };
-	}
+    /**
+     * Constructor used to select events with the given tag value.
+     *
+     * @param tag an event {@link SimEvent#getTag() tag} value
+     */
+    public PredicateType(int tag) {
+        this.tags = new ArrayList<>(1);
+        this.tags.add(tag);
+    }
 
-	/**
-	 * Constructor used to select events with a tag value equal to any of the specified tags.
-	 *
-	 * @param tags the list of tags
-	 */
-	public PredicateType(int[] tags) {
-		this.tags = tags.clone();
-	}
+    /**
+     * Constructor used to select events with a tag value equal to any of the specified tags.
+     *
+     * @param tags the list of {@link SimEvent#getTag() tags}
+     */
+    public PredicateType(int[] tags) {
+        this.tags = Arrays.stream(tags).boxed().collect(Collectors.<Integer>toList());
+    }
 
-	/**
-	 * Matches any event that has one of the specified {@link #tags}.
-	 *
-	 * @param ev {@inheritDoc}
-	 * @return {@inheritDoc}
-         * @see #tags
-	 */
-	@Override
-	public boolean match(SimEvent ev) {
-		int tag = ev.getTag();
-		for (int tag2 : tags) {
-			if (tag == tag2) {
-				return true;
-			}
-		}
-		return false;
-	}
+    /**
+     * Matches any event that has one of the specified {@link #tags}.
+     *
+     * @param ev {@inheritDoc}
+     * @return {@inheritDoc}
+     * @see #tags
+     */
+    @Override
+    public boolean test(SimEvent ev) {
+        return tags.stream().anyMatch(tag -> tag == ev.getTag());
+    }
 
 }

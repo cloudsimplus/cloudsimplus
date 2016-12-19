@@ -1,10 +1,10 @@
 package org.cloudbus.cloudsim.cloudlets;
 
 import org.cloudbus.cloudsim.core.Delayable;
+import org.cloudbus.cloudsim.core.UniquelyIdentificable;
 import org.cloudbus.cloudsim.datacenters.Datacenter;
 import org.cloudbus.cloudsim.vms.Vm;
 import org.cloudbus.cloudsim.brokers.DatacenterBroker;
-import org.cloudbus.cloudsim.core.Identificable;
 import org.cloudbus.cloudsim.schedulers.cloudlet.CloudletScheduler;
 import org.cloudbus.cloudsim.utilizationmodels.UtilizationModel;
 import java.util.Collections;
@@ -22,7 +22,7 @@ import org.cloudsimplus.listeners.EventListener;
  *
  * @author Manoel Campos da Silva Filho
  */
-public interface Cloudlet extends Identificable, Delayable, Comparable<Cloudlet> {
+public interface Cloudlet extends UniquelyIdentificable, Delayable, Comparable<Cloudlet> {
   String NO_HISTORY_IS_RECORDED_FOR_CLOUDLET = "No history is recorded for Cloudlet #%d";
 
   /**
@@ -30,43 +30,51 @@ public interface Cloudlet extends Identificable, Delayable, Comparable<Cloudlet>
    */
   enum Status {
         /**
-         * The Cloudlet has been created and added to the CloudletList object.
+         * The Cloudlet has been just instantiated but not assigned to a Datacenter yet.
          */
-        CREATED,
+        INSTANTIATED,
+
         /**
-         * The Cloudlet has been assigned to a Datacenter object to be executed
-         * as planned.
+         * The Cloudlet has been assigned to a Datacenter to be executed as planned.
          */
         READY,
+
         /**
          * The Cloudlet has moved to a Vm.
          */
         QUEUED,
+
         /**
          * The Cloudlet is in execution in a Vm.
          */
         INEXEC,
+
         /**
          * The Cloudlet has been executed successfully.
          */
         SUCCESS,
+
         /**
          * The Cloudlet has failed.
          */
         FAILED,
+
         /**
          * The Cloudlet has been canceled.
          */
         CANCELED,
+
         /**
          * The Cloudlet has been paused. It can be resumed by changing the status
          * into <tt>RESUMED</tt>.
          */
         PAUSED,
+
         /**
          * The Cloudlet has been resumed from <tt>PAUSED</tt> state.
          */
         RESUMED,
+
         /**
          * The cloudlet has failed due to a resource failure.
          */
@@ -806,7 +814,7 @@ public interface Cloudlet extends Identificable, Delayable, Comparable<Cloudlet>
     /**
      * Sets the listener object that will be notified when a cloudlet finishes
      * its execution at a given {@link Vm}.
-     * @param onCloudletFinishEventListener
+     * @param onCloudletFinishEventListener the listener to set
      * @return
      */
     Cloudlet setOnCloudletFinishEventListener(EventListener<VmToCloudletEventInfo> onCloudletFinishEventListener);
@@ -833,6 +841,7 @@ public interface Cloudlet extends Identificable, Delayable, Comparable<Cloudlet>
      * objects.
      */
     Cloudlet NULL = new Cloudlet() {
+        @Override public String getUid() { return ""; }
         @Override public boolean addRequiredFile(String fileName) { return false; }
         @Override public boolean addRequiredFiles(List<String> fileNames) { return false; }
         @Override public boolean deleteRequiredFile(String filename) { return false; }
@@ -843,7 +852,7 @@ public interface Cloudlet extends Identificable, Delayable, Comparable<Cloudlet>
         @Override public long getCloudletFileSize() { return 0L; }
         @Override public long getCloudletFinishedSoFar() { return 0L; }
         @Override public long getCloudletFinishedSoFar(int datacenterId) { return 0L; }
-        @Override public String getCloudletHistory() { return ""; };
+        @Override public String getCloudletHistory() { return ""; }
         @Override public int getId() { return -1; }
         @Override public long getCloudletLength() { return 0L; }
         @Override public long getCloudletOutputSize() { return 0L; }

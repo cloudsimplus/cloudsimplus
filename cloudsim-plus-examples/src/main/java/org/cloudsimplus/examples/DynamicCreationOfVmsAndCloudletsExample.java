@@ -1,3 +1,26 @@
+/**
+ * CloudSim Plus: A highly-extensible and easier-to-use Framework for
+ * Modeling and Simulation of Cloud Computing Infrastructures and Services.
+ * http://cloudsimplus.org
+ *
+ *     Copyright (C) 2015-2016  Universidade da Beira Interior (UBI, Portugal) and
+ *     the Instituto Federal de Educação Ciência e Tecnologia do Tocantins (IFTO, Brazil).
+ *
+ *     This file is part of CloudSim Plus.
+ *
+ *     CloudSim Plus is free software: you can redistribute it and/or modify
+ *     it under the terms of the GNU General Public License as published by
+ *     the Free Software Foundation, either version 3 of the License, or
+ *     (at your option) any later version.
+ *
+ *     CloudSim Plus is distributed in the hope that it will be useful,
+ *     but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *     GNU General Public License for more details.
+ *
+ *     You should have received a copy of the GNU General Public License
+ *     along with CloudSim Plus. If not, see <http://www.gnu.org/licenses/>.
+ */
 package org.cloudsimplus.examples;
 
 import org.cloudbus.cloudsim.allocationpolicies.VmAllocationPolicySimple;
@@ -52,7 +75,7 @@ import java.util.List;
  * @see Cloudlet#setOnCloudletFinishEventListener(EventListener)
  * @see EventListener
  */
-public class DynamicCreationOfVmsAndCloudlets {
+public class DynamicCreationOfVmsAndCloudletsExample {
     private final CloudSim simulation;
     private final DatacenterBrokerSimple broker0;
     private List<Cloudlet> cloudletList;
@@ -66,13 +89,13 @@ public class DynamicCreationOfVmsAndCloudlets {
      * @param args
      */
     public static void main(String[] args) {
-        new DynamicCreationOfVmsAndCloudlets();
+        new DynamicCreationOfVmsAndCloudletsExample();
     }
 
     /**
      * Default constructor that builds the simulation.
      */
-    public DynamicCreationOfVmsAndCloudlets() {
+    public DynamicCreationOfVmsAndCloudletsExample() {
         Log.printFormattedLine("Starting %s Example ...", getClass().getSimpleName());
         this.simulation = new CloudSim();
 
@@ -125,7 +148,7 @@ public class DynamicCreationOfVmsAndCloudlets {
     /**
      * Dynamically creates and submits a set of VMs to the broker when
      * the first cloudlet finishes.
-     * @param eventInfo
+     * @param eventInfo information about the fired event
      */
     private void submitNewVmsAndCloudletsToBroker(VmToCloudletEventInfo eventInfo) {
         final int numberOfNewVms = 2;
@@ -204,15 +227,13 @@ public class DynamicCreationOfVmsAndCloudlets {
         //Sets the same utilization model for all these resources.
         UtilizationModel utilization = new UtilizationModelFull();
 
-        Cloudlet cloudlet
-                = new CloudletSimple(
-                        numberOfCreatedCloudlets++, length, numberOfCpuCores)
-                        .setCloudletFileSize(fileSize)
-                        .setCloudletOutputSize(outputSize)
-                        .setUtilizationModel(utilization)
-                        .setBroker(broker)
-                        .setVm(vm);
-        return cloudlet;
+        return new CloudletSimple(
+                numberOfCreatedCloudlets++, length, numberOfCpuCores)
+                .setCloudletFileSize(fileSize)
+                .setCloudletOutputSize(outputSize)
+                .setUtilizationModel(utilization)
+                .setBroker(broker)
+                .setVm(vm);
     }
 
 }

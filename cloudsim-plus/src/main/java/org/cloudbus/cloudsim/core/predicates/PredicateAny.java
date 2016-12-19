@@ -10,6 +10,8 @@ package org.cloudbus.cloudsim.core.predicates;
 
 import org.cloudbus.cloudsim.core.events.SimEvent;
 
+import java.util.function.Predicate;
+
 /**
  * A predicate which will match any event on the deferred event queue.
  * See the publicly accessible instance of this predicate in
@@ -19,17 +21,16 @@ import org.cloudbus.cloudsim.core.events.SimEvent;
  * @see Predicate
  * @since CloudSim Toolkit 1.0
  */
-public class PredicateAny implements Predicate {
+public class PredicateAny implements Predicate<SimEvent> {
 
     /**
-     * Considers there is no criteria to match an event,
-     * so any event received by the predicate will match.
+     * Considers that any event received by the predicate will match.
      *
      * @param ev {@inheritDoc}
      * @return always true to indicate that any received event is accepted
      */
     @Override
-    public boolean match(SimEvent ev) {
+    public boolean test(SimEvent ev) {
         return true;
     }
 

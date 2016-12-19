@@ -1,8 +1,10 @@
 /**
- * CloudSim Plus: A highly-extensible and easier-to-use Framework for Modeling and Simulation of Cloud Computing Infrastructures and Services.
+ * CloudSim Plus: A highly-extensible and easier-to-use Framework for
+ * Modeling and Simulation of Cloud Computing Infrastructures and Services.
  * http://cloudsimplus.org
  *
- *     Copyright (C) 2015-2016  Universidade da Beira Interior (UBI, Portugal) and the Instituto Federal de Educação Ciência e Tecnologia do Tocantins (IFTO, Brazil).
+ *     Copyright (C) 2015-2016  Universidade da Beira Interior (UBI, Portugal) and
+ *     the Instituto Federal de Educação Ciência e Tecnologia do Tocantins (IFTO, Brazil).
  *
  *     This file is part of CloudSim Plus.
  *
@@ -32,7 +34,7 @@ public class CloudletSchedulerTimeSharedRunner extends CloudletSchedulerRunner<C
     /**
      * Starts the execution of the experiments
      * the number of times defines in {@link #numberOfSimulationRuns}.
-     * @param args
+     * @param args command line arguments
      */
     public static void main(String[] args) {
         new CloudletSchedulerTimeSharedRunner().run();

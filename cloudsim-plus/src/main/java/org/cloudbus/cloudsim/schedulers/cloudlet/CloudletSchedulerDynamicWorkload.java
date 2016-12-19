@@ -49,7 +49,7 @@ public class CloudletSchedulerDynamicWorkload extends CloudletSchedulerTimeShare
     /**
      * The under allocated MIPS.
      */
-    private Map<String, Double> underAllocatedMips;
+    private Map<Cloudlet, Double> underAllocatedMips;
 
     /**
      * The cache of the previous time when the
@@ -194,10 +194,10 @@ public class CloudletSchedulerDynamicWorkload extends CloudletSchedulerTimeShare
      * doesn't make it clear too. The method doesn't appear to be used anywhere.
      */
     public void updateUnderAllocatedMipsForCloudlet(CloudletExecutionInfo rcl, double mips) {
-        if (getUnderAllocatedMips().containsKey(rcl.getUid())) {
-            mips += getUnderAllocatedMips().get(rcl.getUid());
+        if (getUnderAllocatedMips().containsKey(rcl.getCloudlet())) {
+            mips += getUnderAllocatedMips().get(rcl.getCloudlet());
         }
-        getUnderAllocatedMips().put(rcl.getUid(), mips);
+        getUnderAllocatedMips().put(rcl.getCloudlet(), mips);
     }
 
     /**
@@ -261,7 +261,7 @@ public class CloudletSchedulerDynamicWorkload extends CloudletSchedulerTimeShare
      *
      * @param underAllocatedMips the under allocated mips
      */
-    public final void setUnderAllocatedMips(Map<String, Double> underAllocatedMips) {
+    public final void setUnderAllocatedMips(Map<Cloudlet, Double> underAllocatedMips) {
         this.underAllocatedMips = underAllocatedMips;
     }
 
@@ -270,7 +270,7 @@ public class CloudletSchedulerDynamicWorkload extends CloudletSchedulerTimeShare
      *
      * @return the under allocated mips
      */
-    public Map<String, Double> getUnderAllocatedMips() {
+    public Map<Cloudlet, Double> getUnderAllocatedMips() {
         return underAllocatedMips;
     }
 

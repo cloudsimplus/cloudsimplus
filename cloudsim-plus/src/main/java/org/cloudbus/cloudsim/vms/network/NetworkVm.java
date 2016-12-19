@@ -11,7 +11,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.cloudbus.cloudsim.cloudlets.network.NetworkCloudlet;
-import org.cloudbus.cloudsim.network.HostPacket;
+import org.cloudbus.cloudsim.network.VmPacket;
 import org.cloudbus.cloudsim.vms.Vm;
 
 import org.cloudbus.cloudsim.vms.VmSimple;
@@ -41,7 +41,7 @@ import org.cloudbus.cloudsim.schedulers.cloudlet.CloudletScheduler;
  */
 public class NetworkVm extends VmSimple {
     private List<NetworkCloudlet> cloudletList;
-    private List<HostPacket> receivedPacketList;
+    private List<VmPacket> receivedPacketList;
     private boolean free;
     private double finishTime;
 
@@ -127,11 +127,11 @@ public class NetworkVm extends VmSimple {
     /**
      * List of packets received by the VM.
      */
-    public List<HostPacket> getReceivedPacketList() {
+    public List<VmPacket> getReceivedPacketList() {
         return receivedPacketList;
     }
 
-    public void setReceivedPacketList(List<HostPacket> receivedPacketList) {
+    public void setReceivedPacketList(List<VmPacket> receivedPacketList) {
         this.receivedPacketList = receivedPacketList;
     }
 

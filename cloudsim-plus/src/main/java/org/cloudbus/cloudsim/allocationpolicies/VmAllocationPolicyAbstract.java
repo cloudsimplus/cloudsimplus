@@ -14,7 +14,6 @@ import java.util.Objects;
 
 import org.cloudbus.cloudsim.datacenters.Datacenter;
 import org.cloudbus.cloudsim.hosts.Host;
-import org.cloudbus.cloudsim.hosts.power.PowerHost;
 import org.cloudbus.cloudsim.vms.Vm;
 import org.cloudsimplus.listeners.HostToVmEventInfo;
 
@@ -37,7 +36,7 @@ public abstract class VmAllocationPolicyAbstract implements VmAllocationPolicy {
     /**
      * @see #getVmHostMap()
      */
-    private Map<String, Host> vmTable;
+    private Map<Vm, Host> vmTable;
 
     /**
      * @see #getDatacenter()
@@ -50,7 +49,7 @@ public abstract class VmAllocationPolicyAbstract implements VmAllocationPolicy {
     /**
      * @see #getUsedPes()
      */
-    private Map<String, Integer> usedPes;
+    private Map<Vm, Integer> usedPes;
 
     /**
      * Creates a new VmAllocationPolicy object.
@@ -73,7 +72,7 @@ public abstract class VmAllocationPolicyAbstract implements VmAllocationPolicy {
      *
      * @return the VM map
      */
-    protected Map<String, Host> getVmHostMap() {
+    protected Map<Vm, Host> getVmHostMap() {
         return vmTable;
     }
 
@@ -82,7 +81,7 @@ public abstract class VmAllocationPolicyAbstract implements VmAllocationPolicy {
      *
      * @param vmTable the vm table
      */
-    protected final void setVmTable(Map<String, Host> vmTable) {
+    protected final void setVmTable(Map<Vm, Host> vmTable) {
         this.vmTable = vmTable;
     }
 
@@ -98,7 +97,7 @@ public abstract class VmAllocationPolicyAbstract implements VmAllocationPolicy {
             return;
         }
 
-        getVmHostMap().put(vm.getUid(), host);
+        getVmHostMap().put(vm, host);
         HostToVmEventInfo info =
             new HostToVmEventInfo(host.getSimulation().clock(), host, vm);
         vm.getOnHostAllocationListener().update(info);
@@ -118,7 +117,7 @@ public abstract class VmAllocationPolicyAbstract implements VmAllocationPolicy {
             return Host.NULL;
         }
 
-        Host host = getVmHostMap().remove(vm.getUid());
+        Host host = getVmHostMap().remove(vm);
         if(Objects.isNull(host)) {
             return Host.NULL;
         }
@@ -161,7 +160,7 @@ public abstract class VmAllocationPolicyAbstract implements VmAllocationPolicy {
         setHostFreePesMap(new HashMap<>(getHostList().size()));
         setVmTable(new HashMap<>());
         setUsedPes(new HashMap<>());
-        getHostList().stream().forEach(host -> hostFreePesMap.put(host, host.getNumberOfPes()));
+        getHostList().forEach(host -> hostFreePesMap.put(host, host.getNumberOfPes()));
     }
 
     /**
@@ -186,11 +185,11 @@ public abstract class VmAllocationPolicyAbstract implements VmAllocationPolicy {
 
     /**
      * Gets the map between each VM and the number of PEs used. The map key is a
-     * VM UID and the value is the number of used Pes for that VM.
+     * VM and the value is the number of used Pes for that VM.
      *
      * @return the used PEs map
      */
-    protected Map<String, Integer> getUsedPes() {
+    protected Map<Vm, Integer> getUsedPes() {
         return usedPes;
     }
 
@@ -199,7 +198,7 @@ public abstract class VmAllocationPolicyAbstract implements VmAllocationPolicy {
      *
      * @param usedPes the used pes
      */
-    protected final void setUsedPes(Map<String, Integer> usedPes) {
+    protected final void setUsedPes(Map<Vm, Integer> usedPes) {
         this.usedPes = usedPes;
     }
 }

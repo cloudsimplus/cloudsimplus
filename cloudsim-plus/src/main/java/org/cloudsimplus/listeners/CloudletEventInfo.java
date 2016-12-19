@@ -1,8 +1,10 @@
 /**
- * CloudSim Plus: A highly-extensible and easier-to-use Framework for Modeling and Simulation of Cloud Computing Infrastructures and Services.
+ * CloudSim Plus: A highly-extensible and easier-to-use Framework for
+ * Modeling and Simulation of Cloud Computing Infrastructures and Services.
  * http://cloudsimplus.org
  *
- *     Copyright (C) 2015-2016  Universidade da Beira Interior (UBI, Portugal) and the Instituto Federal de Educação Ciência e Tecnologia do Tocantins (IFTO, Brazil).
+ *     Copyright (C) 2015-2016  Universidade da Beira Interior (UBI, Portugal) and
+ *     the Instituto Federal de Educação Ciência e Tecnologia do Tocantins (IFTO, Brazil).
  *
  *     This file is part of CloudSim Plus.
  *
@@ -33,14 +35,14 @@ import org.cloudbus.cloudsim.cloudlets.Cloudlet;
 public interface CloudletEventInfo {
 
     /**
-     *
-     * @return the cloudlet that has finished
+     * Gets the Cloudlet that has finished
+     * @return
      */
     Cloudlet getCloudlet();
 
     /**
-     * Sets the cloudlet that has finished
-     * @param cloudlet
+     * Sets the Cloudlet that has finished
+     * @param cloudlet the Cloudlet to set
      */
     void setCloudlet(Cloudlet cloudlet);
 

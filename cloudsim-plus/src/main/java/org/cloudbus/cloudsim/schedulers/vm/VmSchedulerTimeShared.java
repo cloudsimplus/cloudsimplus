@@ -36,7 +36,7 @@ public class VmSchedulerTimeShared extends VmSchedulerAbstract {
     /**
      * @see #getMipsMapRequested()
      */
-    private Map<String, List<Double>> mipsMapRequested;
+    private Map<Vm, List<Double>> mipsMapRequested;
 
     /**
      * The number of host's PEs in use.
@@ -58,13 +58,13 @@ public class VmSchedulerTimeShared extends VmSchedulerAbstract {
          * @todo add the same to RAM and BW provisioners
          */
         if (vm.isInMigration()) {
-            if (!getVmsMigratingIn().contains(vm.getUid()) && !getVmsMigratingOut().contains(vm.getUid())) {
-                getVmsMigratingOut().add(vm.getUid());
+            if (!getVmsMigratingIn().contains(vm) && !getVmsMigratingOut().contains(vm)) {
+                addVmMigratingOut(vm);
             }
-        } else if (getVmsMigratingOut().contains(vm.getUid())) {
-            getVmsMigratingOut().remove(vm.getUid());
+        } else if (getVmsMigratingOut().contains(vm)) {
+            removeVmMigratingOut(vm);
         }
-        boolean result = updateMapOfRequestedMipsForVm(vm.getUid(), mipsShareRequested);
+        boolean result = updateMapOfRequestedMipsForVm(vm, mipsShareRequested);
 
         updatePesAllocationForAllVms();
         return result;
@@ -77,29 +77,28 @@ public class VmSchedulerTimeShared extends VmSchedulerAbstract {
     private void updatePesAllocationForAllVms() {
         clearAllocationOfPesForAllVms();
 
-        for (Map.Entry<String, List<Double>> entry : getMipsMapAllocated().entrySet()) {
-            final String vmUid = entry.getKey();
-            getPeMap().put(vmUid, new LinkedList<>());
-            allocatePesListForVm(entry, vmUid);
+        for (Map.Entry<Vm, List<Double>> entry : getMipsMapAllocated().entrySet()) {
+            final Vm vm = entry.getKey();
+            getPeMap().put(vm, new LinkedList<>());
+            allocatePesListForVm(entry, vm);
         }
     }
 
     /**
      * Allocates Host PEs for a given VM.
-     *
-     * @param entry an entry from the {@link #getMipsMapAllocated()} containing a VM UID and
+     * @param entry an entry from the {@link #getMipsMapAllocated()} containing a VM and
      *              the list of MIPS to be allocated for each VM PE
-     * @param vmUid the UID of the VM to allocate PEs for it
+     * @param vm the VM to allocate PEs for it
      */
-    private void allocatePesListForVm(Map.Entry<String, List<Double>> entry, String vmUid) {
+    private void allocatePesListForVm(Map.Entry<Vm, List<Double>> entry, Vm vm) {
         int vmPeId = -1;
         //Iterate over the list of MIPS requested by each VM PE
         for (double requestedMipsForVmPe : entry.getValue()) {
-            double allocatedMipsForVmPe = allocateMipsFromHostPesToGivenVirtualPe(vmUid, requestedMipsForVmPe);
+            double allocatedMipsForVmPe = allocateMipsFromHostPesToGivenVirtualPe(vm, requestedMipsForVmPe);
             if(requestedMipsForVmPe > 0.1 && allocatedMipsForVmPe <= 0.1){
                 Log.printFormattedLine(
                     "Vm %s is requiring a total of %.0f MIPS for its PE %d but the Host PEs currently don't have such an available MIPS amount. Only %.0f MIPS were allocated.",
-                    vmUid, requestedMipsForVmPe, vmPeId, allocatedMipsForVmPe);
+                    vm, requestedMipsForVmPe, vmPeId, allocatedMipsForVmPe);
             }
         }
     }
@@ -107,16 +106,16 @@ public class VmSchedulerTimeShared extends VmSchedulerAbstract {
     /**
      * Try to allocate MIPS from one or more Host PEs to a specific Virtual PE (PE of a VM).
      *
-     * @param vmUid the UID of the VM to try to find Host PEs for one of its Virtual PEs
+     * @param vm the VM to try to find Host PEs for one of its Virtual PEs
      * @param requestedMipsForVmPe the amount of MIPS requested by such a VM PE
      * @return the total MIPS allocated for the requested VM PE
      *
-     * @todo @author manoelcampos The method implementation must to be checked. See the comments inside.
+     * @TODO @author manoelcampos The method implementation must to be checked. See the comments inside.
      * Probably there was performed an oversimplification when implementing this method,
      * as it as made for CloudletSchedulerTimeShared class.
      *
      */
-    private double allocateMipsFromHostPesToGivenVirtualPe(String vmUid, final double requestedMipsForVmPe) {
+    private double allocateMipsFromHostPesToGivenVirtualPe(Vm vm, final double requestedMipsForVmPe) {
         if(requestedMipsForVmPe <= 0.1){
             return 0;
         }
@@ -143,7 +142,7 @@ public class VmSchedulerTimeShared extends VmSchedulerAbstract {
                  * https://support.rackspace.com/how-to/numa-vnuma-and-cpu-scheduling/
                  *
                  */
-                allocateMipsFromPeForVm(vmUid, selectedHostPe, requestedMipsForVmPe);
+                allocateMipsFromPeForVm(vm, selectedHostPe, requestedMipsForVmPe);
                 allocatedMipsForVmPe = requestedMipsForVmPe;
             } else {
                 /*
@@ -160,7 +159,7 @@ public class VmSchedulerTimeShared extends VmSchedulerAbstract {
 
                 //gets the available MIPS from Host PE before allocating it to the VM
                 allocatedMipsForVmPe += getAvailableMipsForHostPe(selectedHostPe);
-                allocateMipsFromPeForVm(vmUid, selectedHostPe, getAvailableMipsForHostPe(selectedHostPe));
+                allocateMipsFromPeForVm(vm, selectedHostPe, getAvailableMipsForHostPe(selectedHostPe));
                 if (requestedMipsForVmPe >= 0.1 && !hostPesIterator.hasNext()) {
                     break;
                 }
@@ -223,37 +222,37 @@ public class VmSchedulerTimeShared extends VmSchedulerAbstract {
     /**
      * Update the {@link #getMipsMapRequested()} with the list of MIPS requested by a given VM.
      *
-     * @param vmUid the VM uid
+     * @param vm the VM
      * @param mipsShareRequested the list of mips share requested by the vm
      * @return true if successful, false otherwise
      */
-    protected boolean updateMapOfRequestedMipsForVm(String vmUid, List<Double> mipsShareRequested) {
+    protected boolean updateMapOfRequestedMipsForVm(Vm vm, List<Double> mipsShareRequested) {
         double totalRequestedMips = getTotalCapacityToBeAllocatedToVm(mipsShareRequested);
         if (totalRequestedMips == 0) {
             return false;
         }
 
-        getMipsMapRequested().put(vmUid, mipsShareRequested);
+        getMipsMapRequested().put(vm, mipsShareRequested);
         setPesInUse(getPesInUse() + mipsShareRequested.size());
 
-        if (getVmsMigratingIn().contains(vmUid)) {
+        if (getVmsMigratingIn().contains(vm)) {
             // the destination host experience a percentage of CPU overhead due to migrating VM
             totalRequestedMips *= getCpuOverheadDueToVmMigration();
         }
 
         List<Double> mipsShareAllocated = new ArrayList<>();
         for (Double mipsRequested : mipsShareRequested) {
-            if (getVmsMigratingOut().contains(vmUid)) {
+            if (getVmsMigratingOut().contains(vm)) {
                 // performance degradation due to migration = 10% MIPS
                 mipsRequested *= 1 - getCpuOverheadDueToVmMigration();
-            } else if (getVmsMigratingIn().contains(vmUid)) {
+            } else if (getVmsMigratingIn().contains(vm)) {
                 // the destination host only experience 10% of the migrating VM's MIPS
                 mipsRequested *= getCpuOverheadDueToVmMigration();
             }
             mipsShareAllocated.add(mipsRequested);
         }
 
-        getMipsMapAllocated().put(vmUid, mipsShareAllocated);
+        getMipsMapAllocated().put(vm, mipsShareAllocated);
         setAvailableMips(getAvailableMips() - totalRequestedMips);
 
         return true;
@@ -262,18 +261,18 @@ public class VmSchedulerTimeShared extends VmSchedulerAbstract {
 
     /**
      * Allocates a given amount of MIPS from a specific PE for a given VM.
-     * @param vmUid the VM UID to allocate the MIPS from a given PE
+     * @param vm the VM to allocate the MIPS from a given PE
      * @param pe the PE that will have MIPS allocated to the VM
      * @param mipsToAllocate the amount of MIPS from the PE that have to be allocated to the VM
      */
-    private void allocateMipsFromPeForVm(String vmUid, Pe pe, double mipsToAllocate) {
-        pe.getPeProvisioner().allocateMipsForVm(vmUid, mipsToAllocate);
-        getPeMap().get(vmUid).add(pe);
+    private void allocateMipsFromPeForVm(Vm vm, Pe pe, double mipsToAllocate) {
+        pe.getPeProvisioner().allocateMipsForVm(vm, mipsToAllocate);
+        getPeMap().get(vm).add(pe);
     }
 
     @Override
     public void deallocatePesForVm(Vm vm) {
-        getMipsMapRequested().remove(vm.getUid());
+        getMipsMapRequested().remove(vm);
         setPesInUse(0);
         getMipsMapAllocated().clear();
         setAvailableMips(PeList.getTotalMips(getPeList()));
@@ -282,7 +281,7 @@ public class VmSchedulerTimeShared extends VmSchedulerAbstract {
             pe.getPeProvisioner().deallocateMipsForVm(vm);
         }
 
-        for (Map.Entry<String, List<Double>> entry : getMipsMapRequested().entrySet()) {
+        for (Map.Entry<Vm, List<Double>> entry : getMipsMapRequested().entrySet()) {
             updateMapOfRequestedMipsForVm(entry.getKey(), entry.getValue());
         }
 
@@ -337,7 +336,7 @@ public class VmSchedulerTimeShared extends VmSchedulerAbstract {
      *
      * @return
      */
-    protected Map<String, List<Double>> getMipsMapRequested() {
+    protected Map<Vm, List<Double>> getMipsMapRequested() {
         return mipsMapRequested;
     }
 
@@ -346,7 +345,7 @@ public class VmSchedulerTimeShared extends VmSchedulerAbstract {
      *
      * @param mipsMapRequested the mips map requested
      */
-    protected final void setMipsMapRequested(Map<String, List<Double>> mipsMapRequested) {
+    protected final void setMipsMapRequested(Map<Vm, List<Double>> mipsMapRequested) {
         this.mipsMapRequested = mipsMapRequested;
     }
 

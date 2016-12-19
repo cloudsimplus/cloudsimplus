@@ -1,8 +1,10 @@
 /**
- * CloudSim Plus: A highly-extensible and easier-to-use Framework for Modeling and Simulation of Cloud Computing Infrastructures and Services.
+ * CloudSim Plus: A highly-extensible and easier-to-use Framework for
+ * Modeling and Simulation of Cloud Computing Infrastructures and Services.
  * http://cloudsimplus.org
  *
- *     Copyright (C) 2015-2016  Universidade da Beira Interior (UBI, Portugal) and the Instituto Federal de Educação Ciência e Tecnologia do Tocantins (IFTO, Brazil).
+ *     Copyright (C) 2015-2016  Universidade da Beira Interior (UBI, Portugal) and
+ *     the Instituto Federal de Educação Ciência e Tecnologia do Tocantins (IFTO, Brazil).
  *
  *     This file is part of CloudSim Plus.
  *
@@ -54,8 +56,6 @@ import org.cloudbus.cloudsim.allocationpolicies.VmAllocationPolicySimple;
 import org.cloudbus.cloudsim.schedulers.vm.VmSchedulerTimeShared;
 import org.cloudbus.cloudsim.core.CloudSim;
 import org.cloudsimplus.listeners.EventListener;
-import org.cloudsimplus.listeners.DatacenterToVmEventInfo;
-import org.cloudsimplus.listeners.HostToVmEventInfo;
 import org.cloudbus.cloudsim.provisioners.PeProvisionerSimple;
 import org.cloudbus.cloudsim.resources.Bandwidth;
 import org.cloudbus.cloudsim.provisioners.ResourceProvisionerSimple;
@@ -154,36 +154,27 @@ public class VmListenersExample1 {
     private void createAndSubmitVms() {
         Vm vm0 = createVm(0);
 
-        /*Sets the listener to intercept allocation of a Host to the Vm.*/
-        vm0.setOnHostAllocationListener(new EventListener<HostToVmEventInfo>() {
-            @Override
-            public void update(HostToVmEventInfo evt) {
-                Log.printFormattedLine(
-                        "\n\t#EventListener: Host %d allocated to Vm %d at time %.2f\n",
-                        evt.getHost().getId(), evt.getVm().getId(), evt.getTime());
-            }
-        });
+        /* Sets the Listener to intercept allocation of a Host to the Vm.
+         * The Listener is created using Java 8 Lambda Expressions.
+        */
+        vm0.setOnHostAllocationListener(evt -> Log.printFormattedLine(
+                "\n\t#EventListener: Host %d allocated to Vm %d at time %.2f\n",
+                evt.getHost().getId(), evt.getVm().getId(), evt.getTime()));
 
-        /*Sets the listener to intercept deallocation of a Host for the Vm.*/
-        vm0.setOnHostDeallocationListener(new EventListener<HostToVmEventInfo>() {
-            @Override
-            public void update(HostToVmEventInfo evt) {
-                Log.printFormattedLine(
-                        "\n\t#EventListener: Vm %d moved/removed from Host %d at time %.2f\n",
-                        evt.getVm().getId(), evt.getHost().getId(), evt.getTime());
-            }
-        });
+        /* Sets the listener to intercept deallocation of a Host for the Vm.
+         * The Listener is created using Java 8 Lambda Expressions.
+        */
+        vm0.setOnHostDeallocationListener(evt -> Log.printFormattedLine(
+                "\n\t#EventListener: Vm %d moved/removed from Host %d at time %.2f\n",
+                evt.getVm().getId(), evt.getHost().getId(), evt.getTime()));
 
-        /*This VM will not be place due to lack of a suitable host.*/
+        /* This VM will not be place due to lack of a suitable host.
+         * The Listener is created using Java 8 Lambda Expressions.
+         */
         Vm vm1 = createVm(1);
-        vm1.setOnVmCreationFailureListener(new EventListener<DatacenterToVmEventInfo>() {
-            @Override
-            public void update(DatacenterToVmEventInfo evt) {
-                Log.printFormattedLine(
-                        "\n\t#EventListener: Vm %d could not be placed into any host of Datacenter %d at time %.2f due to lack of a host with enough resources.\n",
-                        evt.getVm().getId(), evt.getDatacenter().getId(), evt.getTime());
-            }
-        });
+        vm1.setOnVmCreationFailureListener(evt -> Log.printFormattedLine(
+                "\n\t#EventListener: Vm %d could not be placed into any host of Datacenter %d at time %.2f due to lack of a host with enough resources.\n",
+                evt.getVm().getId(), evt.getDatacenter().getId(), evt.getTime()));
 
         this.vmList.add(vm0);
         this.vmList.add(vm1);
@@ -202,11 +193,10 @@ public class VmListenersExample1 {
         int ram = 512; // vm memory (MB)
         long bw = 1000;
 
-        Vm vm = new VmSimple(id, mips, VM_PES_NUMBER)
+        return new VmSimple(id, mips, VM_PES_NUMBER)
             .setRam(ram).setBw(bw).setSize(size)
             .setCloudletScheduler(new CloudletSchedulerTimeShared())
             .setBroker(broker);
-        return vm;
     }
 
     /**
@@ -221,14 +211,12 @@ public class VmListenersExample1 {
         long fileSize = 300;
         long outputSize = 300;
         UtilizationModel utilizationModel = new UtilizationModelFull();
-        Cloudlet cloudlet
-                = new CloudletSimple(id, length, VM_PES_NUMBER)
-                    .setCloudletFileSize(fileSize)
-                    .setCloudletOutputSize(outputSize)
-                    .setUtilizationModel(utilizationModel)
-                    .setBroker(broker)
-                    .setVm(vm);
-        return cloudlet;
+        return new CloudletSimple(id, length, VM_PES_NUMBER)
+            .setCloudletFileSize(fileSize)
+            .setCloudletOutputSize(outputSize)
+            .setUtilizationModel(utilizationModel)
+            .setBroker(broker)
+            .setVm(vm);
     }
 
     /**

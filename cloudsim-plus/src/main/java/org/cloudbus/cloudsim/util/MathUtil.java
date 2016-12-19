@@ -10,7 +10,6 @@ package org.cloudbus.cloudsim.util;
 
 import java.util.Arrays;
 import java.util.List;
-import java.util.function.Function;
 
 import org.apache.commons.math3.stat.descriptive.DescriptiveStatistics;
 import org.apache.commons.math3.stat.regression.OLSMultipleLinearRegression;
@@ -31,7 +30,7 @@ public class MathUtil {
      * @return the double
      */
     public static double sum(final List<? extends Number> list) {
-        return list.stream().mapToDouble(n -> n.doubleValue()).sum();
+        return list.stream().mapToDouble(Number::doubleValue).sum();
     }
 
     /**
@@ -41,7 +40,7 @@ public class MathUtil {
      * @return the double[]
      */
     public static double[] listToArray(final List<? extends Number> list) {
-        return list.stream().mapToDouble(n->n.doubleValue()).toArray();
+        return list.stream().mapToDouble(Number::doubleValue).toArray();
     }
 
     /**
@@ -89,12 +88,7 @@ public class MathUtil {
      */
     public static DescriptiveStatistics getStatistics(final double[] list) {
         // Get a DescriptiveStatistics instance
-        DescriptiveStatistics stats = new DescriptiveStatistics();
-
-        // Add the data from the array
-        for (int i = 0; i < list.length; i++) {
-            stats.addValue(list[i]);
-        }
+        DescriptiveStatistics stats = new DescriptiveStatistics(list);
         return stats;
     }
 
@@ -253,12 +247,7 @@ public class MathUtil {
         double[] xW = new double[x.length];
         double[] yW = new double[y.length];
 
-        int numZeroWeigths = 0;
-        for (int i = 0; i < weigths.length; i++) {
-            if (weigths[i] <= 0) {
-                numZeroWeigths++;
-            }
-        }
+        long numZeroWeigths = Arrays.stream(weigths).filter(weigth -> weigth <= 0).count();
 
         for (int i = 0; i < x.length; i++) {
             if (numZeroWeigths >= 0.4 * weigths.length) {
@@ -311,10 +300,9 @@ public class MathUtil {
      */
     public static double[] getTricubeWeights(final int n) {
         double[] weights = new double[n];
-        double top = n - 1;
-        double spread = top;
+        double top = n - 1; //spread
         for (int i = 2; i < n; i++) {
-            double k = Math.pow(1 - Math.pow((top - i) / spread, 3), 3);
+            double k = Math.pow(1 - Math.pow((top - i) / top, 3), 3);
             if (k > 0) {
                 weights[i] = 1 / k;
             } else {

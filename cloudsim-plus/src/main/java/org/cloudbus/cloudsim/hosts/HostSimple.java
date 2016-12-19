@@ -188,10 +188,10 @@ public class HostSimple implements Host {
                         " failed by BW", vm.getId(), getId()));
             }
 
-            getVmScheduler().getVmsMigratingIn().add(vm.getUid());
+            getVmScheduler().addVmMigratingIn(vm);
             vm.setInMigration(true);
             if (!getVmScheduler().allocatePesForVm(vm, vm.getCurrentRequestedMips())) {
-                getVmScheduler().getVmsMigratingIn().remove(vm.getUid());
+                getVmScheduler().removeVmMigratingIn(vm);
                 vm.setInMigration(false);
                 throw new RuntimeException(
                     String.format(
@@ -212,7 +212,7 @@ public class HostSimple implements Host {
         deallocateResourcesOfVm(vm);
         getVmsMigratingIn().remove(vm);
         getVmList().remove(vm);
-        getVmScheduler().getVmsMigratingIn().remove(vm.getUid());
+        getVmScheduler().removeVmMigratingIn(vm);
         vm.setInMigration(false);
     }
 
@@ -222,9 +222,7 @@ public class HostSimple implements Host {
             if (!getVmList().contains(vm)) {
                 getVmList().add(vm);
             }
-            if (!getVmScheduler().getVmsMigratingIn().contains(vm.getUid())) {
-                getVmScheduler().getVmsMigratingIn().add(vm.getUid());
-            }
+            getVmScheduler().addVmMigratingIn(vm);
             getRamProvisioner().allocateResourceForVm(vm, vm.getCurrentRequestedRam());
             getBwProvisioner().allocateResourceForVm(vm, vm.getCurrentRequestedBw());
             getVmScheduler().allocatePesForVm(vm, vm.getCurrentRequestedMips());
@@ -317,9 +315,9 @@ public class HostSimple implements Host {
     }
 
     @Override
-    public Vm getVm(int vmId, int userId) {
+    public Vm getVm(int vmId, int brokerId) {
         return getVmList().stream()
-            .filter(vm -> vm.getId() == vmId && vm.getBroker().getId() == userId)
+            .filter(vm -> vm.getId() == vmId && vm.getBroker().getId() == brokerId)
             .findFirst().orElse(Vm.NULL);
     }
 
@@ -569,4 +567,8 @@ public class HostSimple implements Host {
         return this;
     }
 
+    @Override
+    public int compareTo(Host o) {
+        return Integer.compare(this.getId(), o.getId());
+    }
 }

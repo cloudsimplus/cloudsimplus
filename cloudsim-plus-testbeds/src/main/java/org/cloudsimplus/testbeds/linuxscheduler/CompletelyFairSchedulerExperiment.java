@@ -1,8 +1,10 @@
 /**
- * CloudSim Plus: A highly-extensible and easier-to-use Framework for Modeling and Simulation of Cloud Computing Infrastructures and Services.
+ * CloudSim Plus: A highly-extensible and easier-to-use Framework for
+ * Modeling and Simulation of Cloud Computing Infrastructures and Services.
  * http://cloudsimplus.org
  *
- *     Copyright (C) 2015-2016  Universidade da Beira Interior (UBI, Portugal) and the Instituto Federal de Educação Ciência e Tecnologia do Tocantins (IFTO, Brazil).
+ *     Copyright (C) 2015-2016  Universidade da Beira Interior (UBI, Portugal) and
+ *     the Instituto Federal de Educação Ciência e Tecnologia do Tocantins (IFTO, Brazil).
  *
  *     This file is part of CloudSim Plus.
  *
@@ -60,12 +62,10 @@ final class CompletelyFairSchedulerExperiment extends CloudletSchedulerExperimen
 
     @Override
     protected Supplier<Vm> getVmSupplier(DatacenterBroker broker) {
-        return () -> {
-            return new VmSimple(getNumberOfCreatedVms(), VM_MIPS, VM_PES)
-                    .setRam(VM_RAM).setBw(VM_BW).setSize(VM_STORAGE)
-                    .setCloudletScheduler(new CloudletSchedulerCompletelyFair())
-                    .setBroker(broker);
-        };
+        return () -> new VmSimple(getNumberOfCreatedVms(), VM_MIPS, VM_PES)
+                .setRam(VM_RAM).setBw(VM_BW).setSize(VM_STORAGE)
+                .setCloudletScheduler(new CloudletSchedulerCompletelyFair())
+                .setBroker(broker);
     }
 
 }

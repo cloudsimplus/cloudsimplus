@@ -19,6 +19,7 @@ import org.cloudbus.cloudsim.examples.power.RunnerAbstract;
  * @since Jan 5, 2012
  */
 public class PlanetLabRunner extends RunnerAbstract {
+    private final static int NUMBER_OF_HOSTS = 800;
 
     /**
 	 * Instantiates a new planet lab runner.
@@ -62,7 +63,7 @@ public class PlanetLabRunner extends RunnerAbstract {
 
 			cloudletList = PlanetLabHelper.createCloudletListPlanetLab(broker, inputFolder);
 			vmList = Helper.createVmList(broker, cloudletList.size());
-			hostList = Helper.createHostList(PlanetLabConstants.NUMBER_OF_HOSTS);
+			hostList = Helper.createHostList(NUMBER_OF_HOSTS);
 		} catch (Exception e) {
 			e.printStackTrace();
 			Log.printLine("The simulation has been terminated due to an unexpected error");

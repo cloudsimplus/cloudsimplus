@@ -216,9 +216,7 @@ public class BriteNetworkTopology implements NetworkTopology {
         if (networkEnabled) {
             try {
                 // add the network latency
-                double delay = delayMatrix.getDelay(map.get(srcID), map.get(destID));
-
-                return delay;
+                return delayMatrix.getDelay(map.get(srcID), map.get(destID));
             } catch (Exception e) {
                 // in case of error, just keep running and return 0.0
             }

@@ -11,7 +11,7 @@ package org.cloudbus.cloudsim.utilizationmodels;
  * The UtilizationModel interface needs to be implemented in order to provide a
  * fine-grained control over resource usage by a Cloudlet.
  * It also implements the Null Object Design
- * Pattern in order to start avoiding {@link NullPointerException} 
+ * Pattern in order to start avoiding {@link NullPointerException}
  * when using the {@link UtilizationModel#NULL} object instead
  * of attributing {@code null} to {@link UtilizationModel} variables.
  *
@@ -29,9 +29,7 @@ public interface UtilizationModel {
 
     /**
      * A property that implements the Null Object Design Pattern for {@link UtilizationModel}
-     * objects.
+     * objects using a Lambda Expression.
      */
-    UtilizationModel NULL = new UtilizationModel() {
-        @Override public double getUtilization(double time) { return 0.0; }
-    };
+    UtilizationModel NULL = time -> 0.0;
 }

@@ -104,13 +104,10 @@ public class CloudletSchedulerTimeShared extends CloudletSchedulerAbstract {
 
         // calculate the expected time for cloudlet completion
         // first: how many PEs do we have?
-        double remainingLength = cloudlet.getRemainingCloudletLength();
-        double estimatedFinishTime = getVm().getSimulation().clock()
-            + (remainingLength / (getProcessor().getCapacity()
+        return getVm().getSimulation().clock() +
+            (cloudlet.getRemainingCloudletLength() / (getProcessor().getCapacity()
             * cloudlet.getCloudlet().getNumberOfPes()));
-
-        return estimatedFinishTime;
-    };
+    }
 
 	@Override
     public double cloudletResume(int cloudletId) {

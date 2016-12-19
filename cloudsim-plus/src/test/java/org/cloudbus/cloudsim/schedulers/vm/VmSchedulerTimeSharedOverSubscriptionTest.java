@@ -19,8 +19,6 @@ import java.util.stream.IntStream;
 
 import org.cloudbus.cloudsim.lists.PeList;
 import org.cloudbus.cloudsim.provisioners.PeProvisionerSimple;
-import org.cloudbus.cloudsim.schedulers.vm.VmSchedulerAbstract;
-import org.cloudbus.cloudsim.schedulers.vm.VmSchedulerTimeSharedOverSubscription;
 import org.cloudbus.cloudsim.vms.Vm;
 import org.cloudbus.cloudsim.vms.VmSimple;
 import org.cloudbus.cloudsim.vms.VmSimpleTest;
@@ -93,39 +91,6 @@ public class VmSchedulerTimeSharedOverSubscriptionTest {
             vmScheduler.getMaxAvailableMips(),
             0);
         assertEquals(MIPS / 2 + MIPS / 8, vmScheduler.getTotalAllocatedMipsForVm(vm2), 0);
-
-        /*
-         List<Double> mipsShare3 = new ArrayList<>();
-         mipsShare3.add(HOST_MIPS);
-         mipsShare3.add(HOST_MIPS);
-
-         assertTrue(vmScheduler.updateMapOfRequestedMipsForVm(vm3, mipsShare3));
-
-         assertEquals(0, vmScheduler.getAvailableMips(), 0);
-         assertEquals(0, vmScheduler.getMaxAvailableMips(), 0);
-         assertEquals(HOST_MIPS / 4 - (HOST_MIPS / 4 + HOST_MIPS / 2 + HOST_MIPS / 8 + HOST_MIPS + HOST_MIPS - HOST_MIPS * 2) / 5,
-         vmScheduler.getTotalAllocatedMipsForVm(vm1), 0);
-         assertEquals(HOST_MIPS / 2 + HOST_MIPS / 8 - (HOST_MIPS / 4 + HOST_MIPS / 2 + HOST_MIPS / 8 + HOST_MIPS + HOST_MIPS - HOST_MIPS *
-         2) * 2 / 5, vmScheduler.getTotalAllocatedMipsForVm(vm2), 0);
-         assertEquals(HOST_MIPS * 2 - (HOST_MIPS / 4 + HOST_MIPS / 2 + HOST_MIPS / 8 + HOST_MIPS + HOST_MIPS - HOST_MIPS * 2) * 2 /
-         5, vmScheduler.getTotalAllocatedMipsForVm(vm3), 0);
-
-         vmScheduler.deallocatePesForVm(vm1);
-
-         assertEquals(0, vmScheduler.getAvailableMips(), 0);
-         assertEquals(0, vmScheduler.getMaxAvailableMips(), 0);
-         assertEquals(HOST_MIPS / 2 + HOST_MIPS / 8 - (HOST_MIPS / 2 + HOST_MIPS / 8 + HOST_MIPS + HOST_MIPS - HOST_MIPS * 2) * 2 /
-         4, vmScheduler.getTotalAllocatedMipsForVm(vm2), 0);
-         assertEquals(HOST_MIPS * 2 - (HOST_MIPS / 2 + HOST_MIPS / 8 + HOST_MIPS + HOST_MIPS - HOST_MIPS * 2) * 2 / 4,
-         vmScheduler.getTotalAllocatedMipsForVm(vm3), 0);
-
-         vmScheduler.deallocatePesForVm(vm3);
-
-         assertEquals(HOST_MIPS * 2 - HOST_MIPS / 2 - HOST_MIPS / 8, vmScheduler.getAvailableMips(), 0);
-         assertEquals(HOST_MIPS * 2 - HOST_MIPS / 2 - HOST_MIPS / 8, vmScheduler.getMaxAvailableMips(), 0);
-         assertEquals(0, vmScheduler.getTotalAllocatedMipsForVm(vm3), 0);
-
-         vmScheduler.deallocatePesForVm(vm2);*/
 
         vmScheduler.deallocatePesForAllVms();
 

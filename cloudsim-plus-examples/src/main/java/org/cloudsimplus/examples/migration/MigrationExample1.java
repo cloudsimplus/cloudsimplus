@@ -1,8 +1,10 @@
 /**
- * CloudSim Plus: A highly-extensible and easier-to-use Framework for Modeling and Simulation of Cloud Computing Infrastructures and Services.
+ * CloudSim Plus: A highly-extensible and easier-to-use Framework for
+ * Modeling and Simulation of Cloud Computing Infrastructures and Services.
  * http://cloudsimplus.org
  *
- *     Copyright (C) 2015-2016  Universidade da Beira Interior (UBI, Portugal) and the Instituto Federal de Educação Ciência e Tecnologia do Tocantins (IFTO, Brazil).
+ *     Copyright (C) 2015-2016  Universidade da Beira Interior (UBI, Portugal) and
+ *     the Instituto Federal de Educação Ciência e Tecnologia do Tocantins (IFTO, Brazil).
  *
  *     This file is part of CloudSim Plus.
  *
@@ -146,9 +148,7 @@ public class MigrationExample1 {
     public static void main(String[] args) {
         Log.printConcatLine("Starting ", MigrationExample1.class.getSimpleName(), "...");
 
-        int num_user = 2;   // number of cloud users
-        boolean trace_flag = false;  // mean trace events
-        simulation = new CloudSim(trace_flag);
+        simulation = new CloudSim();
 
         @SuppressWarnings("unused")
         Datacenter datacenter0 = createDatacenter();
@@ -292,7 +292,7 @@ public class MigrationExample1 {
                 HOST_UTILIZATION_THRESHOLD_FOR_VM_MIGRATION);
 
         PowerDatacenter dc = new PowerDatacenter(simulation, characteristics, allocationPolicy);
-        dc.setDisableMigrations(false).setSchedulingInterval(SCHEDULE_TIME_TO_PROCESS_DATACENTER_EVENTS);
+        dc.setMigrationsEnabled(true).setSchedulingInterval(SCHEDULE_TIME_TO_PROCESS_DATACENTER_EVENTS);
         return dc;
     }
 

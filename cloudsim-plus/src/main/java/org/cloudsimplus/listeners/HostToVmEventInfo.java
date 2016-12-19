@@ -1,8 +1,10 @@
 /**
- * CloudSim Plus: A highly-extensible and easier-to-use Framework for Modeling and Simulation of Cloud Computing Infrastructures and Services.
+ * CloudSim Plus: A highly-extensible and easier-to-use Framework for
+ * Modeling and Simulation of Cloud Computing Infrastructures and Services.
  * http://cloudsimplus.org
  *
- *     Copyright (C) 2015-2016  Universidade da Beira Interior (UBI, Portugal) and the Instituto Federal de Educação Ciência e Tecnologia do Tocantins (IFTO, Brazil).
+ *     Copyright (C) 2015-2016  Universidade da Beira Interior (UBI, Portugal) and
+ *     the Instituto Federal de Educação Ciência e Tecnologia do Tocantins (IFTO, Brazil).
  *
  *     This file is part of CloudSim Plus.
  *
@@ -51,7 +53,7 @@ public class HostToVmEventInfo extends VmEventInfoSimple implements HostEventInf
      * @param time the time the event was generated
      * @param host host where the Vm is placed
      * @param vm Vm that fired the event
-     * @todo probably the Host is redundant, since now there is a host
+     * @TODO probably the Host is redundant, since now there is a host
      * attribute inside the Vm
      */
     public HostToVmEventInfo(double time, Host host, Vm vm) {

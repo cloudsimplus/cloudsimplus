@@ -36,7 +36,7 @@ public class VmSchedulerSpaceShared extends VmSchedulerAbstract {
      * A map between each VM and its allocated PEs, where the key is a VM ID and
      * the value a list of PEs allocated to VM.
      */
-    private Map<String, List<Pe>> peAllocationMap;
+    private Map<Vm, List<Pe>> peAllocationMap;
 
     /**
      * The list of free PEs yet available in the host.
@@ -109,24 +109,21 @@ public class VmSchedulerSpaceShared extends VmSchedulerAbstract {
 
         getFreePesList().removeAll(selectedPes);
 
-        getPeAllocationMap().put(vm.getUid(), selectedPes);
-        getMipsMapAllocated().put(vm.getUid(), mipsShareRequested);
+        getPeAllocationMap().put(vm, selectedPes);
+        getMipsMapAllocated().put(vm, mipsShareRequested);
         setAvailableMips(getAvailableMips() - totalMips);
         return true;
     }
 
     @Override
     public void deallocatePesForVm(Vm vm) {
-        getFreePesList().addAll(getPeAllocationMap().get(vm.getUid()));
-        getPeAllocationMap().remove(vm.getUid());
+        getFreePesList().addAll(getPeAllocationMap().get(vm));
+        getPeAllocationMap().remove(vm);
 
-        double totalMips = 0;
-        for (double mips : getMipsMapAllocated().get(vm.getUid())) {
-            totalMips += mips;
-        }
+        final double totalMips = getMipsMapAllocated().get(vm).stream().mapToDouble(mips -> mips).sum();
         setAvailableMips(getAvailableMips() + totalMips);
 
-        getMipsMapAllocated().remove(vm.getUid());
+        getMipsMapAllocated().remove(vm);
     }
 
     /**
@@ -134,7 +131,7 @@ public class VmSchedulerSpaceShared extends VmSchedulerAbstract {
      *
      * @param peAllocationMap the pe allocation map
      */
-    protected final void setPeAllocationMap(Map<String, List<Pe>> peAllocationMap) {
+    protected final void setPeAllocationMap(Map<Vm, List<Pe>> peAllocationMap) {
         this.peAllocationMap = peAllocationMap;
     }
 
@@ -143,7 +140,7 @@ public class VmSchedulerSpaceShared extends VmSchedulerAbstract {
      *
      * @return the pe allocation map
      */
-    protected Map<String, List<Pe>> getPeAllocationMap() {
+    protected Map<Vm, List<Pe>> getPeAllocationMap() {
         return peAllocationMap;
     }
 

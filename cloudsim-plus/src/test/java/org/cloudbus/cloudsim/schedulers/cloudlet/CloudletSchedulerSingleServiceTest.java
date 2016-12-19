@@ -71,14 +71,14 @@ public class CloudletSchedulerSingleServiceTest {
                 .setUtilizationModel(utilizationModel);
         CloudletExecutionInfo rcl = new CloudletExecutionInfo(cloudlet);
 
-        Map<String, Double> underAllocatedMips = new HashMap<>();
+        Map<Cloudlet, Double> underAllocatedMips = new HashMap<>();
         assertEquals(underAllocatedMips, cloudletScheduler.getUnderAllocatedMips());
 
-        underAllocatedMips.put(rcl.getUid(), MIPS / 2);
+        underAllocatedMips.put(rcl.getCloudlet(), MIPS / 2);
         cloudletScheduler.updateUnderAllocatedMipsForCloudlet(rcl, MIPS / 2);
         assertEquals(underAllocatedMips, cloudletScheduler.getUnderAllocatedMips());
 
-        underAllocatedMips.put(rcl.getUid(), MIPS);
+        underAllocatedMips.put(rcl.getCloudlet(), MIPS);
         cloudletScheduler.updateUnderAllocatedMipsForCloudlet(rcl, MIPS / 2);
         assertEquals(underAllocatedMips, cloudletScheduler.getUnderAllocatedMips());
     }

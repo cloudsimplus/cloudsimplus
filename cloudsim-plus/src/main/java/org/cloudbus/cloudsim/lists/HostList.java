@@ -75,7 +75,7 @@ public class HostList {
     /**
      * Gets the first host with free PEs.
      *
-     * @param <T>
+     * @param <T> the class of Hosts inside the List
      * @param hostList the list of existing hosts
      * @return a Host object or <tt>null</tt> if not found
      * @pre $none
@@ -88,7 +88,7 @@ public class HostList {
     /**
      * Gets the first Host with a specified number of free PEs.
      *
-     * @param <T>
+     * @param <T> the class of Hosts inside the List
      * @param hostList the list of existing hosts
      * @param pesNumber the pes number
      * @return a Host object or <tt>null</tt> if not found

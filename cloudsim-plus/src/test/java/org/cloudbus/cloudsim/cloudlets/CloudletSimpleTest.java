@@ -480,9 +480,9 @@ public class CloudletSimpleTest {
     @Test
     public void testSetCloudletStatus() {
         CloudletSimple c = createCloudlet();
-        c.setCloudletStatus(CloudletSimple.Status.CREATED);
+        c.setCloudletStatus(CloudletSimple.Status.INSTANTIATED);
         //The status is the same of the current cloudlet status (the request has not effect)
-        Assert.assertFalse(c.setCloudletStatus(CloudletSimple.Status.CREATED));
+        Assert.assertFalse(c.setCloudletStatus(CloudletSimple.Status.INSTANTIATED));
 
         //Actually changing to a new status
         Assert.assertTrue(c.setCloudletStatus(CloudletSimple.Status.QUEUED));
@@ -599,8 +599,8 @@ public class CloudletSimpleTest {
     public void testGetCloudletStatusString() {
         CloudletSimple c = createCloudlet();
 
-        c.setCloudletStatus(CloudletSimple.Status.CREATED);
-        assertEquals("CREATED", c.getCloudletStatusString());
+        c.setCloudletStatus(CloudletSimple.Status.INSTANTIATED);
+        assertEquals("INSTANTIATED", c.getCloudletStatusString());
 
         c.setCloudletStatus(CloudletSimple.Status.READY);
         assertEquals("READY", c.getCloudletStatusString());

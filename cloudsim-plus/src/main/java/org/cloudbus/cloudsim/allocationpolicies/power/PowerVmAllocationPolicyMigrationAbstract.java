@@ -60,9 +60,9 @@ public abstract class PowerVmAllocationPolicyMigrationAbstract extends PowerVmAl
 
     /**
      * A map of CPU utilization history (in percentage) for each host, where
-     * each key is a host id and each value is the CPU utilization percentage history.
+     * each key is a hos and each value is the CPU utilization percentage history.
      */
-    private final Map<Integer, List<Double>> utilizationHistory = new HashMap<>();
+    private final Map<Host, List<Double>> utilizationHistory = new HashMap<>();
 
     /**
      * The metric history.
@@ -71,13 +71,13 @@ public abstract class PowerVmAllocationPolicyMigrationAbstract extends PowerVmAl
      * threshold, other it stores utilization threshold or predicted
      * utilization, that is very confusing.
      */
-    private final Map<Integer, List<Double>> metricHistory = new HashMap<>();
+    private final Map<Host, List<Double>> metricHistory = new HashMap<>();
 
     /**
      * The time when entries in each history list was added. All history lists
      * are updated at the same time.
      */
-    private final Map<Integer, List<Double>> timeHistory = new HashMap<>();
+    private final Map<Host, List<Double>> timeHistory = new HashMap<>();
 
     /**
      * The history of time spent in VM selection every time the optimization of
@@ -264,13 +264,13 @@ public abstract class PowerVmAllocationPolicyMigrationAbstract extends PowerVmAl
      * @return true, if the host will be over utilized after VM placement; false
      * otherwise
      */
-    protected boolean isHostOverUtilizedAfterAllocation(PowerHost host, Vm vm) {
+    protected boolean isHostNotOverusedAfterAllocation(PowerHost host, Vm vm) {
         boolean isHostOverUtilizedAfterAllocation = true;
         if (host.vmCreate(vm)) {
             isHostOverUtilizedAfterAllocation = isHostOverUtilized(host);
             host.destroyVm(vm);
         }
-        return isHostOverUtilizedAfterAllocation;
+        return !isHostOverUtilizedAfterAllocation;
     }
 
     @Override
@@ -296,7 +296,7 @@ public abstract class PowerVmAllocationPolicyMigrationAbstract extends PowerVmAl
         return this.<PowerHost>getHostList().stream()
             .filter(h -> !excludedHosts.contains(h))
             .filter(h -> h.isSuitableForVm(vm))
-            .filter(h -> !isHostOverUtilizedAfterAllocation(h, vm))
+            .filter(h -> isHostNotOverusedAfterAllocation(h, vm))
             .filter(h -> getPowerAfterAllocation(h, vm) > 0)
             .min(hostPowerConsumptionComparator)
             .orElse(PowerHost.NULL);
@@ -439,35 +439,36 @@ public abstract class PowerVmAllocationPolicyMigrationAbstract extends PowerVmAl
         return this.<PowerHost>getHostList().stream()
             .filter(h -> !excludedHosts.contains(h))
             .filter(h -> h.getUtilizationOfCpu() > 0)
-            .filter(h -> !allVmsAreMigratingOutOrThereAreVmsMigratingIn(h))
+            .filter(h -> isNotAllVmsMigratingOutNorVmsAreMigratingIn(h))
             .min(Comparator.comparingDouble(HostDynamicWorkload::getUtilizationOfCpu))
             .orElse(PowerHost.NULL);
     }
 
     /**
-     * Checks if all VMs of a Host are migrating out or if there is at least one VM migrating in.
-     * In both cases, the given Host will not be selected as an underutilized Host at the current moment.
+     * Checks if all VMs of a Host are <b>NOT</b> migrating out nor there are VMs migrating in.
+     * If all VMs are migrating out or there is at least
+     * one VM migrating in, the given Host will not be selected as an underutilized Host at the current moment.
      *
      * @param host the host to check
      * @return
      */
-    protected boolean allVmsAreMigratingOutOrThereAreVmsMigratingIn(PowerHost host) {
+    protected boolean isNotAllVmsMigratingOutNorVmsAreMigratingIn(PowerHost host) {
         for (PowerVm vm : host.<PowerVm>getVmList()) {
             if (!vm.isInMigration()) { //VM is not in migration process (in or out)
                 //there is at least one VM that is not migrating anywhere (nor ir or out)
-                return false;
+                return true;
             }
 
             //If the VM is in migration process, checks if it is migrating into the host.
             //If it is not contained into the migratingIn list, it is migrating out.
             if (host.getVmsMigratingIn().contains(vm)) {
                 //there is at least one VM migrating into the host
-                return true;
+                return false;
             }
         }
 
         //all VMs are migrating out
-        return true;
+        return false;
     }
 
     /**
@@ -505,7 +506,7 @@ public abstract class PowerVmAllocationPolicyMigrationAbstract extends PowerVmAl
                         "Couldn't restore VM #%d on host #%d",
                         vm.getId(), host.getId()));
             }
-            getVmHostMap().put(vm.getUid(), host);
+            getVmHostMap().put(vm, host);
         }
     }
 
@@ -543,8 +544,7 @@ public abstract class PowerVmAllocationPolicyMigrationAbstract extends PowerVmAl
         double requestedTotalMips = vm.getCurrentRequestedTotalMips();
         double hostUtilizationMips = getUtilizationOfCpuMips(host);
         double hostPotentialUtilizationMips = hostUtilizationMips + requestedTotalMips;
-        final double pePotentialUtilization = hostPotentialUtilizationMips / host.getTotalMips();
-        return pePotentialUtilization;
+        return hostPotentialUtilizationMips / host.getTotalMips();
     }
 
     /**
@@ -576,15 +576,14 @@ public abstract class PowerVmAllocationPolicyMigrationAbstract extends PowerVmAl
      */
     protected void addHistoryEntryIfAbsent(PowerHost host, double metric) {
         Simulation simulation = host.getSimulation();
-        final int hostId = host.getId();
-        getTimeHistory().putIfAbsent(hostId, new LinkedList<>());
-        getUtilizationHistory().putIfAbsent(hostId, new LinkedList<>());
-        getMetricHistory().putIfAbsent(hostId, new LinkedList<>());
+        getTimeHistory().putIfAbsent(host, new LinkedList<>());
+        getUtilizationHistory().putIfAbsent(host, new LinkedList<>());
+        getMetricHistory().putIfAbsent(host, new LinkedList<>());
 
-        if (!getTimeHistory().get(hostId).contains(simulation.clock())) {
-            getTimeHistory().get(hostId).add(simulation.clock());
-            getUtilizationHistory().get(hostId).add(host.getUtilizationOfCpu());
-            getMetricHistory().get(hostId).add(metric);
+        if (!getTimeHistory().get(host).contains(simulation.clock())) {
+            getTimeHistory().get(host).add(simulation.clock());
+            getUtilizationHistory().get(host).add(host.getUtilizationOfCpu());
+            getMetricHistory().get(host).add(metric);
         }
     }
 
@@ -620,7 +619,7 @@ public abstract class PowerVmAllocationPolicyMigrationAbstract extends PowerVmAl
      *
      * @return the utilization history
      */
-    public Map<Integer, List<Double>> getUtilizationHistory() {
+    public Map<Host, List<Double>> getUtilizationHistory() {
         return utilizationHistory;
     }
 
@@ -629,7 +628,7 @@ public abstract class PowerVmAllocationPolicyMigrationAbstract extends PowerVmAl
      *
      * @return the metric history
      */
-    public Map<Integer, List<Double>> getMetricHistory() {
+    public Map<Host, List<Double>> getMetricHistory() {
         return metricHistory;
     }
 
@@ -638,7 +637,7 @@ public abstract class PowerVmAllocationPolicyMigrationAbstract extends PowerVmAl
      *
      * @return the time history
      */
-    public Map<Integer, List<Double>> getTimeHistory() {
+    public Map<Host, List<Double>> getTimeHistory() {
         return timeHistory;
     }
 

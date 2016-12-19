@@ -22,17 +22,17 @@ public interface ContinuousDistribution {
      * implemented distribution.
      */
     double sample();
-    
+
     /**
      * @return the seed used to initialize the generator
      */
     long getSeed();
-    
+
     /**
      * A property that implements the Null Object Design Pattern for {@link ContinuousDistribution}
      * objects.
      */
-    public static final ContinuousDistribution NULL = new ContinuousDistribution() {
+    ContinuousDistribution NULL = new ContinuousDistribution() {
         @Override public double sample() { return 0.0; }
         @Override public long getSeed() { return 0; }
     };

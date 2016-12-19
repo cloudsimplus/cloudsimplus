@@ -59,28 +59,6 @@ public interface VmAllocationPolicy {
     void deallocateHostForVm(Vm vm);
 
     /**
-     * Get the host that is executing the given VM.
-     *
-     * @param vm the vm
-     * @return the Host with the given vmID; $null if not found
-     *
-     * @pre $none
-     * @post $none
-     */
-    Host getHost(Vm vm);
-
-    /**
-     * Get the host that is executing the given VM belonging to the given user.
-     *
-     * @param vmId the vm id
-     * @param userId the user id
-     * @return the Host with the given vmID and userID; $null if not found
-     * @pre $none
-     * @post $none
-     */
-    Host getHost(int vmId, int userId);
-
-    /**
      * Gets the list of Hosts available in a {@link Datacenter}, that will be
      * used by the Allocation Policy to place VMs.
      *
@@ -108,8 +86,6 @@ public interface VmAllocationPolicy {
         @Override public boolean allocateHostForVm(Vm vm){ return false; }
         @Override public boolean allocateHostForVm(Vm vm, Host host) { return false; }
         @Override public void deallocateHostForVm(Vm vm){}
-        @Override public Host getHost(Vm vm){ return Host.NULL; }
-        @Override public Host getHost(int vmId, int userId) { return Host.NULL; }
         @Override public List<Host> getHostList(){ return Collections.emptyList(); }
         @Override public Map<Vm, Host> optimizeAllocation(List<? extends Vm> vmList) { return Collections.emptyMap(); }
     };

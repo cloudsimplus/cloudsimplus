@@ -268,7 +268,7 @@ public interface CloudletScheduler extends Serializable {
 
     /**
      * Sets the Vm that will use the scheduler.
-     * @param vm
+     * @param vm the Vm to set
      */
     void setVm(Vm vm) ;
 
@@ -340,6 +340,6 @@ public interface CloudletScheduler extends Serializable {
         @Override  public int getUsedPes() { return 0; }
         @Override  public int getFreePes() { return 0; }
         @Override public boolean canAddCloudletToExecutionList(CloudletExecutionInfo cloudlet) { return false; }
-        @Override public List<CloudletExecutionInfo> getCloudletFinishedList() { return Collections.EMPTY_LIST; }
+        @Override public List<CloudletExecutionInfo> getCloudletFinishedList() { return Collections.<CloudletExecutionInfo>emptyList(); }
     };
 }

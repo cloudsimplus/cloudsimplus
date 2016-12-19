@@ -10,10 +10,11 @@ package org.cloudbus.cloudsim.network.switches;
 import org.cloudbus.cloudsim.core.CloudSim;
 import org.cloudbus.cloudsim.core.events.SimEvent;
 import org.cloudbus.cloudsim.datacenters.network.NetworkDatacenter;
-import org.cloudbus.cloudsim.network.NetworkPacket;
+import org.cloudbus.cloudsim.network.HostPacket;
+import org.cloudbus.cloudsim.vms.Vm;
 
 /**
- * This class represents an Aggregate Switch in a Datacenter network. It
+ * This class represents an Aggregate AbstractSwitch in a Datacenter network. It
  * interacts with other switches in order to exchange packets.
  *
  * <p>Please refer to following publication for more details:
@@ -33,7 +34,7 @@ import org.cloudbus.cloudsim.network.NetworkPacket;
  *
  * @since CloudSim Toolkit 1.0
  */
-public class AggregateSwitch extends Switch {
+public class AggregateSwitch extends AbstractSwitch {
     /**
      * The level (layer) of the switch in the network topology.
      */
@@ -56,7 +57,7 @@ public class AggregateSwitch extends Switch {
     public static final int PORTS = 1;
 
     /**
-     * Instantiates a Aggregate Switch specifying the switches that are
+     * Instantiates a Aggregate AbstractSwitch specifying the switches that are
      * connected to its downlink and uplink ports and corresponding bandwidths.
      *
      * @param simulation The CloudSim instance that represents the simulation the Entity is related to
@@ -75,43 +76,42 @@ public class AggregateSwitch extends Switch {
     protected void processPacketDown(SimEvent ev) {
         super.processPacketDown(ev);
 
-        NetworkPacket netPkt = (NetworkPacket) ev.getData();
-        int receiverVmId = netPkt.getHostPacket().getReceiverVmId();
+        HostPacket netPkt = (HostPacket) ev.getData();
+        Vm receiverVm = netPkt.getVmPacket().getDestination();
 
         // packet is coming from root so need to be sent to edgelevel swich
         // find the id for edgelevel switch
-        int switchId = getDatacenter().getVmToSwitchMap().get(receiverVmId);
-        addPacketToBeSentToDownlinkSwitch(switchId, netPkt);
+        Switch netSwitch = getDatacenter().getVmToSwitchMap().get(receiverVm);
+        addPacketToBeSentToDownlinkSwitch(netSwitch, netPkt);
     }
 
     @Override
     protected void processPacketUp(SimEvent ev) {
         super.processPacketUp(ev);
 
-        NetworkPacket netPkt = (NetworkPacket) ev.getData();
-        int receiverVmId = netPkt.getHostPacket().getReceiverVmId();
+        HostPacket netPkt = (HostPacket) ev.getData();
+        Vm receiverVm = netPkt.getVmPacket().getDestination();
 
         // packet is coming from edge level router so need to be sent to
         // either root or another edge level swich
         // find the id for edge level switch
-        int edgeSwitchId = getDatacenter().getVmToSwitchMap().get(receiverVmId);
-        if (findEdgeSwitch(edgeSwitchId)) {
-            addPacketToBeSentToDownlinkSwitch(edgeSwitchId, netPkt);
+        Switch edgeSwitch = getDatacenter().getVmToSwitchMap().get(receiverVm);
+        if (findConnectedEdgeSwitch(edgeSwitch)) {
+            addPacketToBeSentToDownlinkSwitch(edgeSwitch, netPkt);
         } else { // send to up
             Switch sw = getUplinkSwitches().get(0);
-            addPacketToBeSentToUplinkSwitch(sw.getId(), netPkt);
+            addPacketToBeSentToUplinkSwitch(sw, netPkt);
         }
     }
 
     /**
      * Checks if the Aggregate switch is connected to a given Edge switch.
-     * @param edgeSwitchId the id of the edge switch to check if the aggregate switch
+     * @param edgeSwitch the id of the edge switch to check if the aggregate switch
      * is connected to
      * @return true if the edge switch was found, false othersise
      */
-    private boolean findEdgeSwitch(int edgeSwitchId) {
-        return getDownlinkSwitches().stream()
-                    .anyMatch(edgeSw -> edgeSw.getId() == edgeSwitchId);
+    private boolean findConnectedEdgeSwitch(Switch edgeSwitch) {
+        return getDownlinkSwitches().stream().anyMatch(edgeSwitch::equals);
     }
 
     @Override

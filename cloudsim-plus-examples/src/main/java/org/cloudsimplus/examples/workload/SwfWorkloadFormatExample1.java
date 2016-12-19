@@ -1,8 +1,10 @@
 /**
- * CloudSim Plus: A highly-extensible and easier-to-use Framework for Modeling and Simulation of Cloud Computing Infrastructures and Services.
+ * CloudSim Plus: A highly-extensible and easier-to-use Framework for
+ * Modeling and Simulation of Cloud Computing Infrastructures and Services.
  * http://cloudsimplus.org
  *
- *     Copyright (C) 2015-2016  Universidade da Beira Interior (UBI, Portugal) and the Instituto Federal de Educação Ciência e Tecnologia do Tocantins (IFTO, Brazil).
+ *     Copyright (C) 2015-2016  Universidade da Beira Interior (UBI, Portugal) and
+ *     the Instituto Federal de Educação Ciência e Tecnologia do Tocantins (IFTO, Brazil).
  *
  *     This file is part of CloudSim Plus.
  *
@@ -29,12 +31,8 @@ package org.cloudsimplus.examples.workload;
  *
  * Copyright (c) 2009, The University of Melbourne, Australia
  */
-import java.io.FileNotFoundException;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.io.IOException;
+import java.util.*;
 import java.util.Map.Entry;
 
 import org.cloudbus.cloudsim.cloudlets.Cloudlet;
@@ -138,11 +136,7 @@ public class SwfWorkloadFormatExample1 {
     public SwfWorkloadFormatExample1() {
         Log.printConcatLine("Starting ", SwfWorkloadFormatExample1.class.getSimpleName(), "...");
 
-        int num_user = 1; // number of cloud users
-        Calendar calendar = Calendar.getInstance(); // Calendar whose fields have been initialized with the current date and time.
-        boolean trace_flag = false; // trace events
-
-        simulation = new CloudSim(trace_flag);
+        simulation = new CloudSim();
         try {
             broker = new DatacenterBrokerVmsWithMorePesFirst(simulation);
 
@@ -163,14 +157,14 @@ public class SwfWorkloadFormatExample1 {
             printCloudletList(newList);
 
             Log.printConcatLine(SwfWorkloadFormatExample1.class.getSimpleName(), " finished!");
-        } catch (FileNotFoundException e) {
+        } catch (IOException e) {
             Log.printConcatLine(e.getMessage());
         }
     }
 
     private void createOneVmForEachCloudlet(DatacenterBroker broker) {
         int vmId = -1;
-        vmlist = new ArrayList<Vm>();
+        vmlist = new ArrayList<>();
         for (Cloudlet cloudlet : this.cloudletList) {
             Vm vm = new VmSimple(++vmId, VM_MIPS, cloudlet.getNumberOfPes())
                 .setRam(VM_RAM).setBw(VM_BW).setSize(VM_SIZE)
@@ -183,11 +177,13 @@ public class SwfWorkloadFormatExample1 {
         Log.printConcatLine("#Created ", vmlist.size(), " VMs for the broker ", broker.getName());
     }
 
-    private void createCloudletsFromWorkloadFile() throws FileNotFoundException {
-        String fileName
-                = String.format("%s/%s",
-                        this.getClass().getClassLoader().getResource("workload/swf").getPath(),
-                        WORKLOAD_FILENAME);
+    private void createCloudletsFromWorkloadFile() throws IOException {
+        String path = this.getClass().getClassLoader().getResource("workload/swf").getPath();
+        if(Objects.isNull(path)){
+            path = "";
+        }
+
+        String fileName = String.format("%s/%s", path, WORKLOAD_FILENAME);
         WorkloadFileReader reader =
                 new WorkloadFileReader(fileName, CLOUDLETS_MIPS);
         reader.setMaxNumberOfLinesToRead(maximumNumberOfCloudletsToCreateFromTheWorkloadFile);
@@ -225,7 +221,7 @@ public class SwfWorkloadFormatExample1 {
      * @return
      */
     private List<Host> createHostsAccordingToVmRequirements() {
-        List<Host> hostList = new ArrayList<Host>();
+        List<Host> hostList = new ArrayList<>();
         Map<Integer, Integer> vmsPesCountMap = getMapWithNumberOfVmsGroupedByRequiredPesNumber();
         int numberOfPesRequiredByVms, numberOfVms, numberOfVmsRequiringUpToTheMinimumPesNumber = 0;
         int totalOfHosts = 0, totalOfPesOfAllHosts = 0;
@@ -310,7 +306,7 @@ public class SwfWorkloadFormatExample1 {
      * means there is 5 VMs that require 8 PEs.
      */
     private Map<Integer, Integer> getMapWithNumberOfVmsGroupedByRequiredPesNumber() {
-        Map<Integer, Integer> vmsPesCountMap = new HashMap<Integer, Integer>();
+        Map<Integer, Integer> vmsPesCountMap = new HashMap<>();
         for (Vm vm : vmlist) {
             final int pesNumber = vm.getNumberOfPes();
             //checks if the map already has an entry to the given pesNumber
@@ -363,7 +359,7 @@ public class SwfWorkloadFormatExample1 {
                     cloudlet.getId(),
                     cloudlet.getStatus().name(),
                     cloudlet.getDatacenterId(),
-                    cloudlet.getVm(),
+                    cloudlet.getVm().getId(),
                     cloudlet.getActualCPUTime(),
                     cloudlet.getExecStartTime(),
                     cloudlet.getFinishTime()

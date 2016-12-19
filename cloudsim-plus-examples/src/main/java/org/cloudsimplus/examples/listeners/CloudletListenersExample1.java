@@ -1,8 +1,10 @@
 /**
- * CloudSim Plus: A highly-extensible and easier-to-use Framework for Modeling and Simulation of Cloud Computing Infrastructures and Services.
+ * CloudSim Plus: A highly-extensible and easier-to-use Framework for
+ * Modeling and Simulation of Cloud Computing Infrastructures and Services.
  * http://cloudsimplus.org
  *
- *     Copyright (C) 2015-2016  Universidade da Beira Interior (UBI, Portugal) and the Instituto Federal de Educação Ciência e Tecnologia do Tocantins (IFTO, Brazil).
+ *     Copyright (C) 2015-2016  Universidade da Beira Interior (UBI, Portugal) and
+ *     the Instituto Federal de Educação Ciência e Tecnologia do Tocantins (IFTO, Brazil).
  *
  *     This file is part of CloudSim Plus.
  *
@@ -137,20 +139,15 @@ public class CloudletListenersExample1 {
     }
 
     /**
-     * Creates the listener object that will be notified when a cloudlet
+     * Creates the listener object, using Java 8 Lambda Expressions, that will be notified when a cloudlet
      * finishes running into a VM. All cloudlet will use this same listener.
      *
      * @see #createCloudlet(int, Vm, long)
      */
     private void createCloudletListener() {
-        this.onCloudletFinishListener = new EventListener<VmToCloudletEventInfo>() {
-            @Override
-            public void update(VmToCloudletEventInfo evt) {
-                Log.printFormattedLine(
-                        "\n\t#EventListener: Cloudlet %d finished running at Vm %d at time %.2f\n",
-                        evt.getCloudlet().getId(), evt.getVm().getId(), evt.getTime());
-            }
-        };
+        this.onCloudletFinishListener = evt -> Log.printFormattedLine(
+                "\n\t#EventListener: Cloudlet %d finished running at Vm %d at time %.2f\n",
+                evt.getCloudlet().getId(), evt.getVm().getId(), evt.getTime());
     }
 
     private void runSimulationAndPrintResults() {

@@ -1,8 +1,10 @@
 /**
- * CloudSim Plus: A highly-extensible and easier-to-use Framework for Modeling and Simulation of Cloud Computing Infrastructures and Services.
+ * CloudSim Plus: A highly-extensible and easier-to-use Framework for
+ * Modeling and Simulation of Cloud Computing Infrastructures and Services.
  * http://cloudsimplus.org
  *
- *     Copyright (C) 2015-2016  Universidade da Beira Interior (UBI, Portugal) and the Instituto Federal de Educação Ciência e Tecnologia do Tocantins (IFTO, Brazil).
+ *     Copyright (C) 2015-2016  Universidade da Beira Interior (UBI, Portugal) and
+ *     the Instituto Federal de Educação Ciência e Tecnologia do Tocantins (IFTO, Brazil).
  *
  *     This file is part of CloudSim Plus.
  *
@@ -113,7 +115,7 @@ public class CloudletToVmMappingSolution implements HeuristicSolution<Map<Cloudl
         if(recomputeCost){
 	        Map<Vm, List<Map.Entry<Cloudlet, Vm>>> cloudletsByVm =
 		        cloudletVmMap.entrySet().stream()
-			        .collect(Collectors.groupingBy(e -> e.getValue()));
+			        .collect(Collectors.groupingBy(Map.Entry::getValue));
 
 	        lastCost = cloudletsByVm.entrySet().stream()
 		        .mapToDouble(e-> getVmCost(e.getKey(), e.getValue()))
@@ -245,7 +247,8 @@ public class CloudletToVmMappingSolution implements HeuristicSolution<Map<Cloudl
         if(cloudletVmMap.size() == 1) {
             Optional<Map.Entry<Cloudlet, Vm>> opt =
                     cloudletVmMap.entrySet().stream().findFirst();
-            return new Map.Entry[]{opt.get()};
+
+            return opt.map(entry -> new Map.Entry[]{entry}).orElse(new Map.Entry[0]);
         }
 
         final int size = cloudletVmMap.entrySet().size();

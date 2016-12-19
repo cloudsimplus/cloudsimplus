@@ -1,8 +1,10 @@
-/**
- * CloudSim Plus: A highly-extensible and easier-to-use Framework for Modeling and Simulation of Cloud Computing Infrastructures and Services.
+/*
+ * CloudSim Plus: A highly-extensible and easier-to-use Framework for
+ * Modeling and Simulation of Cloud Computing Infrastructures and Services.
  * http://cloudsimplus.org
  *
- *     Copyright (C) 2015-2016  Universidade da Beira Interior (UBI, Portugal) and the Instituto Federal de Educação Ciência e Tecnologia do Tocantins (IFTO, Brazil).
+ *     Copyright (C) 2015-2016  Universidade da Beira Interior (UBI, Portugal) and
+ *     the Instituto Federal de Educação Ciência e Tecnologia do Tocantins (IFTO, Brazil).
  *
  *     This file is part of CloudSim Plus.
  *
@@ -105,16 +107,12 @@ public abstract class AbstractTableBuilder implements TableBuilder {
         printRowClosing();
     }
 
-    protected int getColumnLength(final List<Object> row, final int columnIndex) {
-        return row.get(columnIndex).toString().length();
-    }
-
     @Override
     public void print() {
         printTableOpenning();
         printTitle();
         printColumnHeaders();
-        getRows().stream().forEach(row -> printRow(row));
+        getRows().forEach(this::printRow);
         printTableClosing();
     }
 
@@ -155,7 +153,7 @@ public abstract class AbstractTableBuilder implements TableBuilder {
     protected abstract void printTableClosing();
 
     @Override
-    public TableBuilder addColumnList(String[] columnTitles) {
+    public TableBuilder addColumnList(String... columnTitles) {
         for(String column: columnTitles){
             addColumn(column);
         }

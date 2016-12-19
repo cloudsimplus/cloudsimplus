@@ -9,9 +9,9 @@ package org.cloudbus.cloudsim.core;
 
 import org.cloudbus.cloudsim.core.events.SimEvent;
 import org.cloudbus.cloudsim.util.Log;
-import org.cloudbus.cloudsim.core.predicates.Predicate;
 
 import java.util.Objects;
+import java.util.function.Predicate;
 
 /**
  * This class represents a simulation entity. An entity handles events and can
@@ -329,7 +329,7 @@ public abstract class CloudSimEntity implements SimEntity {
      * @param p The event selection predicate
      * @return The count of matching events
      */
-    public int numEventsWaiting(Predicate p) {
+    public long numEventsWaiting(Predicate<SimEvent> p) {
         return simulation.waiting(id, p);
     }
 
@@ -338,7 +338,7 @@ public abstract class CloudSimEntity implements SimEntity {
      *
      * @return The count of events
      */
-    public int numEventsWaiting() {
+    public long numEventsWaiting() {
         return simulation.waiting(id, Simulation.SIM_ANY);
     }
 
@@ -349,7 +349,7 @@ public abstract class CloudSimEntity implements SimEntity {
      * @param p The event selection predicate
      * @return the simulation event
      */
-    public SimEvent selectEvent(Predicate p) {
+    public SimEvent selectEvent(Predicate<SimEvent> p) {
         if (!simulation.isRunning()) {
             return null;
         }
@@ -358,18 +358,14 @@ public abstract class CloudSimEntity implements SimEntity {
     }
 
     /**
-     * Cancels the first event matching a predicate waiting in the entity's
-     * future queue.
+     * Cancels the first event from the future event queue that matches a given predicate
+     * and that was submitted by this entity, then removes it from the queue.
      *
-     * @param p The event selection predicate
-     * @return The number of events cancelled (0 or 1)
+     * @param p the event selection predicate
+     * @return the removed event or {@link SimEvent#NULL} if not found
      */
-    public SimEvent cancelEvent(Predicate p) {
-        if (!simulation.isRunning()) {
-            return null;
-        }
-
-        return simulation.cancel(id, p);
+    public SimEvent cancelEvent(Predicate<SimEvent> p) {
+        return (simulation.isRunning() ? simulation.cancel(id, p) : SimEvent.NULL);
     }
 
     /**
@@ -379,7 +375,7 @@ public abstract class CloudSimEntity implements SimEntity {
      * @param p The predicate to match
      * @return the simulation event
      */
-    public SimEvent getNextEvent(Predicate p) {
+    public SimEvent getNextEvent(Predicate<SimEvent> p) {
         if (!simulation.isRunning()) {
             return null;
         }
@@ -397,12 +393,12 @@ public abstract class CloudSimEntity implements SimEntity {
      *
      * @param p The predicate to match
      */
-    public void waitForEvent(Predicate p) {
+    public void waitForEvent(Predicate<SimEvent> p) {
         if (!simulation.isRunning()) {
             return;
         }
 
-        simulation.wait(id, p);
+        simulation.wait(this, p);
         state = State.WAITING;
     }
 
@@ -413,7 +409,7 @@ public abstract class CloudSimEntity implements SimEntity {
      * @return the simulation event
      */
     public SimEvent getNextEvent() {
-        return getNextEvent(simulation.SIM_ANY);
+        return getNextEvent(Simulation.SIM_ANY);
     }
 
     @Override
@@ -718,9 +714,15 @@ public abstract class CloudSimEntity implements SimEntity {
 
     /**
      * Defines if the entity has already started or not.
-     * @param started
+     *
+     * @param started the start state to set
      */
     protected void setStarted(boolean started) {
         this.started = started;
+    }
+
+    @Override
+    public int compareTo(SimEntity o) {
+        return Integer.compare(this.getId(), o.getId());
     }
 }

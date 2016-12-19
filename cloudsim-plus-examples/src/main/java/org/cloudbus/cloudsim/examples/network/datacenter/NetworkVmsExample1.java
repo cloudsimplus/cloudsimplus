@@ -2,10 +2,10 @@ package org.cloudbus.cloudsim.examples.network.datacenter;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Calendar;
 import java.util.List;
 
-import org.cloudbus.cloudsim.brokers.network.NetworkDatacenterBroker;
+import org.cloudbus.cloudsim.brokers.DatacenterBroker;
+import org.cloudbus.cloudsim.brokers.DatacenterBrokerSimple;
 import org.cloudbus.cloudsim.cloudlets.Cloudlet;
 import org.cloudbus.cloudsim.datacenters.DatacenterCharacteristics;
 import org.cloudbus.cloudsim.datacenters.DatacenterCharacteristicsSimple;
@@ -13,7 +13,6 @@ import org.cloudbus.cloudsim.hosts.Host;
 import org.cloudbus.cloudsim.util.Log;
 import org.cloudbus.cloudsim.allocationpolicies.VmAllocationPolicySimple;
 import org.cloudbus.cloudsim.core.CloudSim;
-import org.cloudbus.cloudsim.cloudlets.network.AppCloudlet;
 import org.cloudbus.cloudsim.cloudlets.network.CloudletExecutionTask;
 import org.cloudbus.cloudsim.cloudlets.network.CloudletReceiveTask;
 import org.cloudbus.cloudsim.cloudlets.network.CloudletSendTask;
@@ -67,7 +66,7 @@ public class NetworkVmsExample1 {
     private List<NetworkVm> vmList;
     private List<NetworkCloudlet> cloudletList;
     private NetworkDatacenter datacenter;
-    private NetworkDatacenterBroker broker;
+    private DatacenterBroker broker;
 
     private int currentNetworkCloudletId = -1;
 
@@ -76,14 +75,10 @@ public class NetworkVmsExample1 {
      */
     public NetworkVmsExample1() {
         Log.printFormattedLine("Starting %s...", this.getClass().getSimpleName());
-        int num_user = 1; // number of cloud users
-        Calendar calendar = Calendar.getInstance();
-        boolean trace_flag = false;
-
-        simulation = new CloudSim(trace_flag);
+        simulation = new CloudSim();
 
         this.datacenter = createDatacenter();
-        this.broker = new NetworkDatacenterBroker(simulation);
+        this.broker = new DatacenterBrokerSimple(simulation);
         this.vmList = new ArrayList<>();
 
         this.vmList.addAll(createAndSubmitVMs(broker));
@@ -169,7 +164,7 @@ public class NetworkVmsExample1 {
 
         for (NetworkHost host : datacenter.<NetworkHost>getHostList()) {
             int switchNum = host.getId() / edgeSwitches[0].getPorts();
-            edgeSwitches[switchNum].getHostList().put(host.getId(), host);
+            edgeSwitches[switchNum].connectHost(host);
             datacenter.addHostToSwitch(host, edgeSwitches[switchNum]);
             host.setEdgeSwitch(edgeSwitches[switchNum]);
         }
@@ -182,7 +177,7 @@ public class NetworkVmsExample1 {
      * @param broker The broker that will own the created VMs
      * @return the list of created VMs
      */
-    private List<NetworkVm> createAndSubmitVMs(NetworkDatacenterBroker broker) {
+    private List<NetworkVm> createAndSubmitVMs(DatacenterBroker broker) {
         final List<NetworkVm> list = new ArrayList<>();
         for (int i = 0; i < NUMBER_OF_HOSTS; i++) {
             NetworkVm vm = new NetworkVm (i, HOST_MIPS, HOST_PES);
@@ -199,12 +194,12 @@ public class NetworkVmsExample1 {
 
     /**
      * Creates a list of {@link NetworkCloudlet} that together represents the distributed
-     * processes of a given {@link AppCloudlet}.
+     * processes of a given fictitious application.
      *
      * @param broker broker to associate the NetworkCloudlets
      * @return the list of create NetworkCloudlets
      */
-    private List<NetworkCloudlet> createNetworkCloudlets(NetworkDatacenterBroker broker) {
+    private List<NetworkCloudlet> createNetworkCloudlets(DatacenterBroker broker) {
         NetworkCloudlet networkCloudletList[] = new NetworkCloudlet[2];
 
         for(int i = 0; i < networkCloudletList.length; i++){
@@ -230,7 +225,7 @@ public class NetworkVmsExample1 {
      * @param broker the broker that will own the create NetworkCloudlet
      * @return
      */
-    private NetworkCloudlet createNetworkCloudlet(NetworkVm vm, NetworkDatacenterBroker broker) {
+    private NetworkCloudlet createNetworkCloudlet(NetworkVm vm, DatacenterBroker broker) {
         UtilizationModel utilizationModel = new UtilizationModelFull();
         NetworkCloudlet netCloudlet = new NetworkCloudlet(++currentNetworkCloudletId, 1, HOST_PES);
         netCloudlet
@@ -271,7 +266,7 @@ public class NetworkVmsExample1 {
      */
     private void addReceiveTask(NetworkCloudlet cloudlet, NetworkCloudlet sourceCloudlet) {
         CloudletReceiveTask task = new CloudletReceiveTask(
-                cloudlet.getTasks().size(), sourceCloudlet.getVm().getId());
+                cloudlet.getTasks().size(), sourceCloudlet.getVm());
         task.setMemory(TASK_RAM);
         task.setNumberOfExpectedPacketsToReceive(NUMBER_OF_PACKETS_TO_SEND);
         cloudlet.addTask(task);

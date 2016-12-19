@@ -216,14 +216,8 @@ public class DatacenterCharacteristicsSimple implements DatacenterCharacteristic
     }
 
     @Override
-    public int getNumberOfFailedHosts() {
-        int numberOfFailedHosts = 0;
-        for (Host host : getHostList()) {
-            if (host.isFailed()) {
-                numberOfFailedHosts++;
-            }
-        }
-        return numberOfFailedHosts;
+    public long getNumberOfFailedHosts() {
+        return getHostList().stream().filter(Host::isFailed).count();
     }
 
     @Override

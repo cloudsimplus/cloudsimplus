@@ -51,16 +51,8 @@ public class GraphReaderBrite implements GraphReader {
 
         String lineSep = System.getProperty("line.separator");
         String nextLine;
-        StringBuffer sb = new StringBuffer();
 
         while ((nextLine = br.readLine()) != null) {
-            sb.append(nextLine);
-            //
-            // note:
-            // BufferedReader strips the EOL character.
-            //
-            sb.append(lineSep);
-
             // functionality to diferentiate between all the parsing-states
             // state that should just find the start of node-declaration
             if (state == PARSE_NOTHING) {

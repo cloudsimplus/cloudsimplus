@@ -7,12 +7,13 @@
  */
 package org.cloudbus.cloudsim.network.switches;
 
+import org.cloudbus.cloudsim.network.HostPacket;
 import org.cloudbus.cloudsim.util.Log;
 
 import org.cloudbus.cloudsim.core.CloudSim;
 import org.cloudbus.cloudsim.core.events.SimEvent;
 import org.cloudbus.cloudsim.datacenters.network.NetworkDatacenter;
-import org.cloudbus.cloudsim.network.NetworkPacket;
+import org.cloudbus.cloudsim.vms.Vm;
 
 /**
  * This class allows to simulate Root switch which connects Datacenters to
@@ -36,7 +37,7 @@ import org.cloudbus.cloudsim.network.NetworkPacket;
  *
  * @since CloudSim Toolkit 3.0
  */
-public class RootSwitch extends Switch {
+public class RootSwitch extends AbstractSwitch {
     /**
      * The level (layer) of the switch in the network topology.
      */
@@ -57,10 +58,10 @@ public class RootSwitch extends Switch {
      * The downlink bandwidth of RootSwitch in Megabits/s.
      * It also represents the uplink bandwidth of connected aggregation switches.
      */
-    public static final long DOWNLINK_BW = 40 * 1024 * 1024 * 1024; // 40000 Megabits (40 Gigabits)
+    public static final long DOWNLINK_BW = 40 * 1024 * 1024 * 1024L; // 40000 Megabits (40 Gigabits)
 
     /**
-     * Instantiates a Root Switch specifying what other switches are connected
+     * Instantiates a Root AbstractSwitch specifying what other switches are connected
      * to its downlink ports, and corresponding bandwidths.
      *
      * @param simulation The CloudSim instance that represents the simulation the Entity is related to
@@ -77,34 +78,35 @@ public class RootSwitch extends Switch {
     protected void processPacketUp(SimEvent ev) {
         super.processPacketUp(ev);
 
-        NetworkPacket netPkt = (NetworkPacket) ev.getData();
-        int receiverVmId = netPkt.getHostPacket().getReceiverVmId();
-        int edgeSwitchId = getDatacenter().getVmToSwitchMap().get(receiverVmId);
-        int aggSwitchId = findAggregateSwitchConnectedToGivenEdgeSwitch(edgeSwitchId);
+        HostPacket netPkt = (HostPacket) ev.getData();
+        Vm receiverVm = netPkt.getVmPacket().getDestination();
+        Switch edgeSwitch = getDatacenter().getVmToSwitchMap().get(receiverVm);
+        Switch aggSwitch = findAggregateSwitchConnectedToGivenEdgeSwitch(edgeSwitch);
 
-        if (aggSwitchId < 0) {
+        if (aggSwitch == Switch.NULL) {
             Log.printLine("No destination switch for this packet");
         } else {
-            addPacketToBeSentToDownlinkSwitch(aggSwitchId, netPkt);
+            addPacketToBeSentToDownlinkSwitch(aggSwitch, netPkt);
         }
     }
 
     /**
      * Finds which aggregate switch is connected to a given edge switch
-     * @param edgeSwitchId the id of the edge switch to find the aggregate switch
+     * @param edgeSwitch the id of the edge switch to find the aggregate switch
      * that it is connected to
      * @return the id of the aggregate switch that is connected to the given
-     * edge switch or -1 if not found.
+     * edge switch or {@link Switch#NULL} if not found.
      */
-    private int findAggregateSwitchConnectedToGivenEdgeSwitch(int edgeSwitchId) {
+    private Switch findAggregateSwitchConnectedToGivenEdgeSwitch(Switch edgeSwitch) {
         for (Switch aggregateSw : getDownlinkSwitches()) {
             for (Switch edgeSw : aggregateSw.getDownlinkSwitches()) {
-                if (edgeSw.getId() == edgeSwitchId) {
-                    return aggregateSw.getId();
+                if (edgeSw.getId() == edgeSwitch.getId()) {
+                    return aggregateSw;
                 }
             }
         }
-        return -1;
+
+        return Switch.NULL;
     }
 
     @Override

@@ -1,9 +1,11 @@
 package org.cloudbus.cloudsim.examples.power.planetlab;
 
 import java.io.File;
-import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
+
 import org.cloudbus.cloudsim.cloudlets.Cloudlet;
 
 import org.cloudbus.cloudsim.cloudlets.CloudletSimple;
@@ -35,10 +37,8 @@ public class PlanetLabHelper {
 	 * @param broker the broker
 	 * @param inputFolderName the input folder name
 	 * @return the list
-	 * @throws FileNotFoundException the file not found exception
 	 */
-	public static List<Cloudlet> createCloudletListPlanetLab(DatacenterBroker broker, String inputFolderName)
-			throws FileNotFoundException {
+	public static List<Cloudlet> createCloudletListPlanetLab(DatacenterBroker broker, String inputFolderName) {
 		List<Cloudlet> list = new ArrayList<>();
 
 		long fileSize = 300;
@@ -47,6 +47,9 @@ public class PlanetLabHelper {
 
 		File inputFolder = new File(inputFolderName);
 		File[] files = inputFolder.listFiles();
+        if(Objects.isNull(files)) {
+            return list;
+        }
 
 		for (int i = 0; i < files.length; i++) {
 			try {

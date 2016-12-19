@@ -1,8 +1,10 @@
 /**
- * CloudSim Plus: A highly-extensible and easier-to-use Framework for Modeling and Simulation of Cloud Computing Infrastructures and Services.
+ * CloudSim Plus: A highly-extensible and easier-to-use Framework for
+ * Modeling and Simulation of Cloud Computing Infrastructures and Services.
  * http://cloudsimplus.org
  *
- *     Copyright (C) 2015-2016  Universidade da Beira Interior (UBI, Portugal) and the Instituto Federal de Educação Ciência e Tecnologia do Tocantins (IFTO, Brazil).
+ *     Copyright (C) 2015-2016  Universidade da Beira Interior (UBI, Portugal) and
+ *     the Instituto Federal de Educação Ciência e Tecnologia do Tocantins (IFTO, Brazil).
  *
  *     This file is part of CloudSim Plus.
  *
@@ -48,7 +50,7 @@ public class HostUpdatesVmsProcessingEventInfo extends HostEventInfoSimple  {
 
     /**
      * Sets the completion time of one next finishing cloudlet
-     * @param completionTimeOfNextFinishingCloudlet
+     * @param completionTimeOfNextFinishingCloudlet the completion time to set
      */
     public void setCompletionTimeOfNextFinishingCloudlet(double completionTimeOfNextFinishingCloudlet) {
         this.completionTimeOfNextFinishingCloudlet = completionTimeOfNextFinishingCloudlet;

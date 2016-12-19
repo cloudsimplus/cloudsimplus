@@ -1,10 +1,9 @@
 package org.cloudbus.cloudsim.examples.network.datacenter;
 
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.List;
+import java.util.*;
 
-import org.cloudbus.cloudsim.brokers.network.NetworkDatacenterBroker;
+import org.cloudbus.cloudsim.brokers.DatacenterBroker;
+import org.cloudbus.cloudsim.brokers.DatacenterBrokerSimple;
 import org.cloudbus.cloudsim.cloudlets.Cloudlet;
 import org.cloudbus.cloudsim.datacenters.DatacenterCharacteristics;
 import org.cloudbus.cloudsim.datacenters.DatacenterCharacteristicsSimple;
@@ -16,7 +15,6 @@ import org.cloudbus.cloudsim.core.CloudSim;
 import org.cloudbus.cloudsim.distributions.UniformDistr;
 import org.cloudbus.cloudsim.lists.VmList;
 import org.cloudbus.cloudsim.network.switches.AggregateSwitch;
-import org.cloudbus.cloudsim.cloudlets.network.AppCloudlet;
 import org.cloudbus.cloudsim.network.switches.EdgeSwitch;
 import org.cloudbus.cloudsim.schedulers.cloudlet.network.NetworkCloudletSpaceSharedScheduler;
 import org.cloudbus.cloudsim.datacenters.network.NetworkDatacenter;
@@ -37,17 +35,16 @@ import org.cloudsimplus.util.tablebuilder.TextTableBuilder;
 /**
  * A base class for network simulation examples
  * using objects such as{@link NetworkDatacenter},
- * {@link NetworkHost}, {@link NetworkVm}
- * {@link AppCloudlet} and {@link NetworkCloudlet}.
+ * {@link NetworkHost}, {@link NetworkVm} and {@link NetworkCloudlet}.
  *
- * It provides some utilities methods to create
- * these simulation objects.
+ * The class simulate applications that are compounded by a list of
+ * {@link NetworkCloudlet}.
  *
  * @author Saurabh Kumar Garg
  * @author Rajkumar Buyya
  * @author Manoel Campos da Silva Filho
  */
-public abstract class NetworkVmsExampleAppCloudletAbstract {
+public abstract class NetworkVmExampleAbstract {
     public static final int MAX_VMS_PER_HOST = 2;
 
     public static final double COST = 3.0; // the cost of using processing in this resource
@@ -67,46 +64,51 @@ public abstract class NetworkVmsExampleAppCloudletAbstract {
     public static final long VM_BW = 1000;
     public static final int  VM_PES_NUMBER = HOST_PES / MAX_VMS_PER_HOST;
 
-    public static final int  NUMBER_OF_APP_CLOUDLETS = 1;
+    /**
+     * Number of fictitious applications to create.
+     * Each application is just a list of {@link  NetworkCloudlet}.
+     * @see #appMap
+     */
+    public static final int NUMBER_OF_APPS = 1;
 
     public static final int  NETCLOUDLET_PES_NUMBER = VM_PES_NUMBER;
     public static final int  NETCLOUDLET_EXECUTION_TASK_LENGTH = 4000;
     public static final int  NETCLOUDLET_FILE_SIZE = 300;
     public static final int  NETCLOUDLET_OUTPUT_SIZE = 300;
     public static final long NETCLOUDLET_RAM = 100;
-    private final CloudSim simulation;
 
-    private int currentAppCloudletId = -1;
+    private final CloudSim simulation;
 
     /**
      * @see #getVmList()
      */
     private List<NetworkVm> vmList;
     private NetworkDatacenter datacenter;
-    private List<NetworkDatacenterBroker> brokerList;
-    private List<AppCloudlet> appCloudletList;
+    private List<DatacenterBroker> brokerList;
+
+    /**
+     * A Map representing a list of cloudlets from different applications.
+     * Each key represents the ID of a fictitious that is composed of a list
+     * of {@link  NetworkCloudlet}.
+     */
+    private Map<Integer, List<NetworkCloudlet>> appMap;
 
     /**
      * Creates, starts, stops the simulation and shows results.
      */
-    public NetworkVmsExampleAppCloudletAbstract() {
+    public NetworkVmExampleAbstract() {
         Log.printFormattedLine("Starting %s...", this.getClass().getSimpleName());
-        int num_user = 1; // number of cloud users
-        Calendar calendar = Calendar.getInstance();
-        boolean trace_flag = false;
-
-        simulation = new CloudSim(trace_flag);
+        simulation = new CloudSim();
 
         this.datacenter = createDatacenter();
-        this.brokerList = createBrokerForEachAppCloudlet();
-        this.appCloudletList = new ArrayList<>();
+        this.brokerList = createBrokerForEachApp();
         this.vmList = new ArrayList<>();
+        this.appMap = new HashMap<>();
 
-        AppCloudlet app;
-        for(NetworkDatacenterBroker broker: this.brokerList){
+        int appId = -1;
+        for(DatacenterBroker broker: this.brokerList){
             this.vmList.addAll(createAndSubmitVMs(broker));
-            app = createAppCloudletAndSubmitToBroker(broker);
-            this.appCloudletList.add(app);
+            this.appMap.put(++appId, createAppAndSubmitToBroker(broker));
         }
 
         simulation.start();
@@ -115,18 +117,16 @@ public abstract class NetworkVmsExampleAppCloudletAbstract {
     }
 
     private void showSimulationResults() {
-        AppCloudlet app;
-        NetworkDatacenterBroker broker;
-        for(int i = 0; i < NUMBER_OF_APP_CLOUDLETS; i++){
+        DatacenterBroker broker;
+        for(int i = 0; i < NUMBER_OF_APPS; i++){
             broker = brokerList.get(i);
-            app = appCloudletList.get(i);
             List<Cloudlet> newList = broker.getCloudletsFinishedList();
-            String caption = broker.getName() + " - AppCloudlet " + app.getId();
+            String caption = broker.getName() + " - Application " + broker.getId();
             new CloudletsTableBuilderHelper(newList)
                     .setPrinter(new TextTableBuilder(caption))
                     .build();
             Log.printFormattedLine(
-                "Number of NetworkCloudlets for AppCloudlet %s: %d", app.getId(), newList.size());
+                "Number of NetworkCloudlets for Application %s: %d", broker.getId(), newList.size());
         }
 
         for(NetworkHost host: datacenter.<NetworkHost>getHostList()){
@@ -138,14 +138,15 @@ public abstract class NetworkVmsExampleAppCloudletAbstract {
     }
 
     /**
-     * Create a {@link NetworkDatacenterBroker} for each {@link AppCloudlet}.
+     * Create a {@link DatacenterBroker} for each each list of {@link NetworkCloudlet}
+     * that represents cloudlets that compose the same application.
      *
      * @return the list of created NetworkDatacenterBroker
      */
-    private  List<NetworkDatacenterBroker> createBrokerForEachAppCloudlet() {
-        List<NetworkDatacenterBroker> list = new ArrayList<>();
-        for(int i = 0; i < NUMBER_OF_APP_CLOUDLETS; i++){
-            list.add(new NetworkDatacenterBroker(simulation));
+    private  List<DatacenterBroker> createBrokerForEachApp() {
+        List<DatacenterBroker> list = new ArrayList<>();
+        for(int i = 0; i < NUMBER_OF_APPS; i++){
+            list.add(new DatacenterBrokerSimple(simulation));
         }
 
         return list;
@@ -212,7 +213,7 @@ public abstract class NetworkVmsExampleAppCloudletAbstract {
 
         for (NetworkHost host : datacenter.<NetworkHost>getHostList()) {
             int switchNum = host.getId() / edgeSwitches[0].getPorts();
-            edgeSwitches[switchNum].getHostList().put(host.getId(), host);
+            edgeSwitches[switchNum].connectHost(host);
             datacenter.addHostToSwitch(host, edgeSwitches[switchNum]);
             host.setEdgeSwitch(edgeSwitches[switchNum]);
         }
@@ -225,7 +226,7 @@ public abstract class NetworkVmsExampleAppCloudletAbstract {
      * @param broker The broker that will own the created VMs
      * @return the list of created VMs
      */
-    protected final List<NetworkVm> createAndSubmitVMs(NetworkDatacenterBroker broker) {
+    protected final List<NetworkVm> createAndSubmitVMs(DatacenterBroker broker) {
         final int numberOfVms = getDatacenterHostList().size() * MAX_VMS_PER_HOST;
         final List<NetworkVm> list = new ArrayList<>();
         for (int i = 0; i < numberOfVms; i++) {
@@ -248,14 +249,14 @@ public abstract class NetworkVmsExampleAppCloudletAbstract {
 
     /**
      * Randomly select a given number of VMs from the list of created VMs,
-     * to be used by the NetworkCloudlets of the given AppCloudlet.
+     * to be used by the NetworkCloudlets of the given application.
      *
      * @param broker the broker where to get the existing VM list
      * @param numberOfVmsToSelect number of VMs to selected from the existing list of VMs.
      * @return The list of randomly selected VMs
      */
-    protected List<NetworkVm> randomlySelectVmsForAppCloudlet(
-        NetworkDatacenterBroker broker, int numberOfVmsToSelect) {
+    protected List<NetworkVm> randomlySelectVmsForApp(
+        DatacenterBroker broker, int numberOfVmsToSelect) {
         List<NetworkVm> list = new ArrayList<>();
         int numOfExistingVms = this.vmList.size();
         UniformDistr rand = new UniformDistr(0, numOfExistingVms, 5);
@@ -280,33 +281,30 @@ public abstract class NetworkVmsExampleAppCloudletAbstract {
         return datacenter;
     }
 
-    public List<NetworkDatacenterBroker> getBrokerList() {
+    public List<DatacenterBroker> getBrokerList() {
         return brokerList;
     }
 
     /**
-     * Creates an {@link AppCloudlet} with a list of {@link NetworkCloudlet}'s
-     * and submit its NetworkCloudlets to a given Broker.
+     * Creates a list of {@link NetworkCloudlet}'s that represents
+     * a single application and then submit the created cloudlets to a given Broker.
      *
-     * @param broker the broker to submit the list of NetworkCloudlets of the
-     * AppCloudlet.
-     * @return the created AppCloudlet
+     * @param broker the broker to submit the list of NetworkCloudlets of the application
+     * @return the list of created  {@link NetworkCloudlet}'s
      */
-    protected final AppCloudlet createAppCloudletAndSubmitToBroker(NetworkDatacenterBroker broker) {
-        AppCloudlet app = new AppCloudlet(++currentAppCloudletId);
-        app.setNetworkCloudletList(createNetworkCloudlets(app, broker));
-        broker.submitCloudletList(app.getNetworkCloudletList());
-        return app;
+    protected final List<NetworkCloudlet> createAppAndSubmitToBroker(DatacenterBroker broker) {
+        List<NetworkCloudlet> list = createNetworkCloudlets(broker);
+        broker.submitCloudletList(list);
+        return list;
     }
 
     /**
      * Creates a list of {@link NetworkCloudlet} that together represents the distributed
-     * processes of a given {@link AppCloudlet}.
+     * processes of a given application.
      *
-     * @param app The AppCloudlet that the created NetworkCloudlets will belong to.
      * @param broker broker to associate the NetworkCloudlets
      * @return the list of create NetworkCloudlets
      */
-    protected abstract List<NetworkCloudlet> createNetworkCloudlets(AppCloudlet app, NetworkDatacenterBroker broker);
+    protected abstract List<NetworkCloudlet> createNetworkCloudlets(DatacenterBroker broker);
 
 }

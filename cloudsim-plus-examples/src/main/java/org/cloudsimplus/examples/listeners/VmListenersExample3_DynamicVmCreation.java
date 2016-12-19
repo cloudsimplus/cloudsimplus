@@ -1,8 +1,10 @@
 /**
- * CloudSim Plus: A highly-extensible and easier-to-use Framework for Modeling and Simulation of Cloud Computing Infrastructures and Services.
+ * CloudSim Plus: A highly-extensible and easier-to-use Framework for
+ * Modeling and Simulation of Cloud Computing Infrastructures and Services.
  * http://cloudsimplus.org
  *
- *     Copyright (C) 2015-2016  Universidade da Beira Interior (UBI, Portugal) and the Instituto Federal de Educação Ciência e Tecnologia do Tocantins (IFTO, Brazil).
+ *     Copyright (C) 2015-2016  Universidade da Beira Interior (UBI, Portugal) and
+ *     the Instituto Federal de Educação Ciência e Tecnologia do Tocantins (IFTO, Brazil).
  *
  *     This file is part of CloudSim Plus.
  *
@@ -71,8 +73,7 @@ import org.cloudbus.cloudsim.schedulers.vm.VmSchedulerSpaceShared;
  * is deallocated for a VM (in this case meaning that the VM has finished
  * executing) in order to place the next VM to run inside the host.
  *
- * @see
- * Vm#setOnHostDeallocationListener(EventListener)
+ * @see Vm#setOnHostDeallocationListener(EventListener)
  * @see EventListener
  *
  * @author Manoel Campos da Silva Filho
@@ -162,20 +163,20 @@ public class VmListenersExample3_DynamicVmCreation {
      * Creates the listener object that will be notified when a VM
      * is removed from a host (in this case meaning that it has finished executing
      * its cloudlets). All VMs will use this same listener.
+     *
+     * <p>The Listener is created using Java 8 Lambda Expressions.</p>
+     *
      * @see #createVm(int, DatacenterBroker)
      */
     private void createVmListener() {
-        this.onHostDeallocationListener = new EventListener<HostToVmEventInfo>() {
-            @Override
-            public void update(HostToVmEventInfo evt) {
-                numberOfFinishedVms++;
-                Log.printFormatted(
-                        "\t#EventListener: Vm %d finished running all its cloudlets at time %.0f. ",
-                        evt.getVm().getId(), evt.getTime());
-                Log.printFormattedLine("VMs finished so far: %d", numberOfFinishedVms);
+        this.onHostDeallocationListener = evt -> {
+            numberOfFinishedVms++;
+            Log.printFormatted(
+                    "\t#EventListener: Vm %d finished running all its cloudlets at time %.0f. ",
+                    evt.getVm().getId(), evt.getTime());
+            Log.printFormattedLine("VMs finished so far: %d", numberOfFinishedVms);
 
-                createNextVmIfNotReachedMaxNumberOfVms();
-            }
+            createNextVmIfNotReachedMaxNumberOfVms();
         };
     }
 
@@ -259,12 +260,11 @@ public class VmListenersExample3_DynamicVmCreation {
         long size = 10000; // image size (MB)
         int ram = 512; // vm memory (MB)
         long bw = 1000;
-        Vm vm = new VmSimple(id, mips, VM_PES_NUMBER)
+        return new VmSimple(id, mips, VM_PES_NUMBER)
             .setRam(ram).setBw(bw).setSize(size)
             .setCloudletScheduler(new CloudletSchedulerSpaceShared())
             .setBroker(broker)
             .setOnHostDeallocationListener(onHostDeallocationListener);
-        return vm;
     }
 
     /**
@@ -281,15 +281,13 @@ public class VmListenersExample3_DynamicVmCreation {
         long length = 10000; //in number of Million Instructions (MI)
         int pesNumber = 1;
         UtilizationModel utilizationModel = new UtilizationModelFull();
-        Cloudlet cloudlet
-                = new CloudletSimple(id, length, pesNumber)
-                      .setCloudletFileSize(fileSize)
-                      .setCloudletOutputSize(outputSize)
-                      .setUtilizationModel(utilizationModel)
-                      .setBroker(broker)
-                      .setVm(vm);
 
-        return cloudlet;
+        return new CloudletSimple(id, length, pesNumber)
+              .setCloudletFileSize(fileSize)
+              .setCloudletOutputSize(outputSize)
+              .setUtilizationModel(utilizationModel)
+              .setBroker(broker)
+              .setVm(vm);
     }
 
     /**

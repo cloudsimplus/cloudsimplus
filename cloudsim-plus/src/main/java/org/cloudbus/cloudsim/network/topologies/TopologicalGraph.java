@@ -101,19 +101,21 @@ public class TopologicalGraph {
 
     @Override
     public String toString() {
-        StringBuffer buffer = new StringBuffer();
+        StringBuilder buffer = new StringBuilder();
         buffer.append("topological-node-information: \n");
 
         for (TopologicalNode node : nodeList) {
-            buffer.append(node.getNodeID() + " | x is: " + node.getCoordinateX() + " y is: "
-                + node.getCoordinateY() + "\n");
+            buffer.append(
+                String.format("%d | x is: %d y is: %d\n",
+                node.getNodeID(), node.getCoordinateX(), node.getCoordinateY()));
         }
 
         buffer.append("\n\n node-link-information:\n");
 
         for (TopologicalLink link : linkList) {
-            buffer.append("from: " + link.getSrcNodeID() + " to: " + link.getDestNodeID() + " delay: "
-                + link.getLinkDelay() + "\n");
+            buffer.append(
+                String.format("from: %d to: %d delay: %.2f\n",
+                link.getSrcNodeID(), link.getDestNodeID(), link.getLinkDelay()));
         }
         return buffer.toString();
     }

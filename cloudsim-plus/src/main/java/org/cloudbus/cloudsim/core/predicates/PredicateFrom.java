@@ -10,20 +10,25 @@ package org.cloudbus.cloudsim.core.predicates;
 
 import org.cloudbus.cloudsim.core.events.SimEvent;
 
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
+import java.util.function.Predicate;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 /**
- * A predicate which selects events coming from specific entities.<br>
+ * A predicate which selects events coming from specific registered entities.<br>
  *
  * @author Marcos Dias de Assuncao
  * @since CloudSim Toolkit 1.0
  * @see PredicateNotFrom
  * @see Predicate
  */
-public class PredicateFrom implements Predicate {
+public class PredicateFrom implements Predicate<SimEvent> {
 
 	/** The IDs of source entities to check the reception of events from. */
-	private final int[] ids;
+	private final List<Integer> ids;
 
 	/**
 	 * Constructor used to select events that were sent by a specific entity.
@@ -31,8 +36,9 @@ public class PredicateFrom implements Predicate {
 	 * @param sourceId the id number of the source entity
 	 */
 	public PredicateFrom(int sourceId) {
-		ids = new int[] { sourceId };
-	}
+        this.ids = new ArrayList<>(1);
+        this.ids.add(sourceId);
+    }
 
 	/**
 	 * Constructor used to select events that were sent by any entity from a given set.
@@ -40,7 +46,7 @@ public class PredicateFrom implements Predicate {
 	 * @param sourceIds the set of id numbers of the source entities
 	 */
 	public PredicateFrom(int[] sourceIds) {
-		ids = sourceIds.clone();
+        this.ids = Arrays.stream(sourceIds).boxed().collect(Collectors.<Integer>toList());
 	}
 
 	/**
@@ -51,9 +57,8 @@ public class PredicateFrom implements Predicate {
      * @see #ids
 	 */
 	@Override
-	public boolean match(SimEvent ev) {
-		Integer srcId = ev.getSource();
-        return Arrays.stream(ids).filter(srcId::equals).findFirst().isPresent();
+	public boolean test(SimEvent ev) {
+        return ids.stream().anyMatch(id -> id == ev.getSource());
 	}
 
 }

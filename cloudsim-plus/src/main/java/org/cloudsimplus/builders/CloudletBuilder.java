@@ -1,8 +1,10 @@
 /**
- * CloudSim Plus: A highly-extensible and easier-to-use Framework for Modeling and Simulation of Cloud Computing Infrastructures and Services.
+ * CloudSim Plus: A highly-extensible and easier-to-use Framework for
+ * Modeling and Simulation of Cloud Computing Infrastructures and Services.
  * http://cloudsimplus.org
  *
- *     Copyright (C) 2015-2016  Universidade da Beira Interior (UBI, Portugal) and the Instituto Federal de Educação Ciência e Tecnologia do Tocantins (IFTO, Brazil).
+ *     Copyright (C) 2015-2016  Universidade da Beira Interior (UBI, Portugal) and
+ *     the Instituto Federal de Educação Ciência e Tecnologia do Tocantins (IFTO, Brazil).
  *
  *     This file is part of CloudSim Plus.
  *
@@ -132,12 +134,10 @@ public class CloudletBuilder extends Builder {
     }
 
     public Cloudlet getCloudletById(final int id) {
-        for (Cloudlet cloudlet : broker.getCloudletsWaitingList()) {
-            if (cloudlet.getId() == id) {
-                return cloudlet;
-            }
-        }
-        return Cloudlet.NULL;
+        return broker.getCloudletsWaitingList().stream()
+            .filter(cloudlet -> cloudlet.getId() == id)
+            .findFirst()
+            .orElse(Cloudlet.NULL);
     }
 
     public CloudletBuilder setOutputSize(long defaultOutputSize) {

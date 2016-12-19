@@ -25,7 +25,7 @@ import java.util.stream.Stream;
 public class DeferredQueue implements EventQueue {
 
 	/** The list of events. */
-	private final List<SimEvent> list = new LinkedList<SimEvent>();
+	private final List<SimEvent> list = new LinkedList<>();
 
 	/** The max time that an added event is scheduled. */
 	private double maxTime = -1;
@@ -91,6 +91,17 @@ public class DeferredQueue implements EventQueue {
     public boolean isEmpty() {
         return list.isEmpty();
     }
+
+    /**
+     * Removes the event from the queue.
+     *
+     * @param event the event
+     * @return true, if successful
+     */
+    public boolean remove(SimEvent event) {
+        return list.remove(event);
+    }
+
 
     @Override
     public SimEvent first() throws NoSuchElementException {

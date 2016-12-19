@@ -1,8 +1,10 @@
 /**
- * CloudSim Plus: A highly-extensible and easier-to-use Framework for Modeling and Simulation of Cloud Computing Infrastructures and Services.
+ * CloudSim Plus: A highly-extensible and easier-to-use Framework for
+ * Modeling and Simulation of Cloud Computing Infrastructures and Services.
  * http://cloudsimplus.org
  *
- *     Copyright (C) 2015-2016  Universidade da Beira Interior (UBI, Portugal) and the Instituto Federal de Educação Ciência e Tecnologia do Tocantins (IFTO, Brazil).
+ *     Copyright (C) 2015-2016  Universidade da Beira Interior (UBI, Portugal) and
+ *     the Instituto Federal de Educação Ciência e Tecnologia do Tocantins (IFTO, Brazil).
  *
  *     This file is part of CloudSim Plus.
  *
@@ -63,7 +65,7 @@ import org.cloudbus.cloudsim.resources.Ram;
  * @author Manoel Campos da Silva Filho
  * @since CloudSim Plus 1.0
  */
-public class TwoCloudletsAndOneTimeSharedVm {
+public class TwoCloudletsAndOneTimeSharedVmExample {
     private static List<Cloudlet> cloudletList;
     private static List<Vm> vmlist;
     private static CloudSim simulation;
@@ -74,7 +76,7 @@ public class TwoCloudletsAndOneTimeSharedVm {
      * @param args the args
      */
     public static void main(String[] args) {
-        Log.printFormattedLine("Starting %s ...", TwoCloudletsAndOneTimeSharedVm.class.getSimpleName());
+        Log.printFormattedLine("Starting %s ...", TwoCloudletsAndOneTimeSharedVmExample.class.getSimpleName());
 
         // First step: Initialize the CloudSim package. It should be called before creating any entities.
         int num_user = 1; // number of cloud users
@@ -144,7 +146,7 @@ public class TwoCloudletsAndOneTimeSharedVm {
         //Final step: Print results when simulation is over
         List<Cloudlet> newList = broker.getCloudletsFinishedList();
         new CloudletsTableBuilderHelper(newList).build();
-        Log.printFormattedLine("%s finished!", TwoCloudletsAndOneTimeSharedVm.class.getSimpleName());
+        Log.printFormattedLine("%s finished!", TwoCloudletsAndOneTimeSharedVmExample.class.getSimpleName());
     }
 
     /**

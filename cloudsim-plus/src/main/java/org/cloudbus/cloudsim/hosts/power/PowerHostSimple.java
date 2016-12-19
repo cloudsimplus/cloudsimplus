@@ -98,13 +98,11 @@ public class PowerHostSimple extends HostDynamicWorkloadSimple implements PowerH
      * @return the power consumption
      */
     protected double getPower(double utilization) {
-        double power = 0;
         try {
-            power = getPowerModel().getPower(utilization);
+            return getPowerModel().getPower(utilization);
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
-        return power;
     }
 
     /**
@@ -114,13 +112,11 @@ public class PowerHostSimple extends HostDynamicWorkloadSimple implements PowerH
      */
     @Override
     public double getMaxPower() {
-        double power = 0;
         try {
-            power = getPowerModel().getPower(1);
+            return getPowerModel().getPower(1);
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
-        return power;
     }
 
     /**

@@ -38,7 +38,7 @@ public interface DatacenterBroker extends SimEntity {
      * Gets the list of cloudlets submmited to the broker that are waiting to be created inside
      * some Vm yet.
      *
-     * @param <T>
+     * @param <T> the class of Cloudlets inside the list
      * @return the cloudlet waiting list
      */
     <T extends Cloudlet> List<T> getCloudletsWaitingList();
@@ -46,7 +46,7 @@ public interface DatacenterBroker extends SimEntity {
     /**
      * Gets the list of cloudlets that have finished executing.
      *
-     * @param <T>
+     * @param <T> the class of Cloudlets inside the list
      * @return the list of finished cloudlets
      */
     <T extends Cloudlet> List<T> getCloudletsFinishedList();
@@ -57,7 +57,7 @@ public interface DatacenterBroker extends SimEntity {
      * Gets the list of VMs submitted to the broker that are waiting to be created inside
      * some Datacenter yet.
      *
-     * @param <T>
+     * @param <T> the class of VMs inside the list
      * @return the list of waiting VMs
      */
     <T extends Vm> List<T> getVmsWaitingList();
@@ -65,7 +65,7 @@ public interface DatacenterBroker extends SimEntity {
     /**
      * Gets the list of VMs created by the broker.
      *
-     * @param <T>
+     * @param <T> the class of VMs inside the list
      * @return the list of created VMs
      */
     <T extends Vm> List<T> getVmsCreatedList();
@@ -145,10 +145,10 @@ public interface DatacenterBroker extends SimEntity {
      * Defines the policy to select a Datacenter to host a VM
      * that is waiting to be created.
      *
-     * @return id of the Datacenter selected to request the creating
-     * of waiting VMs or -1 if no suitable Datacenter was found
+     * @return the Datacenter selected to request the creating
+     * of waiting VMs or {@link Datacenter#NULL} if no suitable Datacenter was found
      */
-    int selectDatacenterForWaitingVms();
+    Datacenter selectDatacenterForWaitingVms();
 
     /**
      * Defines the policy to select a Datacenter to host a VM when
@@ -156,18 +156,19 @@ public interface DatacenterBroker extends SimEntity {
      * In this case, a different switches has to be selected to request
      * the creation of the remaining VMs in the waiting list.
      *
-     * @return id of the Datacenter selected to try creating
-     * the remaining VMs or -1 if no suitable Datacenter was found
+     * @return the Datacenter selected to try creating
+     * the remaining VMs or {@link Datacenter#NULL} if no suitable Datacenter was found
      *
      * @see #selectDatacenterForWaitingVms()
      */
-    int selectFallbackDatacenterForWaitingVms();
+    Datacenter selectFallbackDatacenterForWaitingVms();
 
 	/**
 	 * An attribute that implements the Null Object Design Pattern for {@link DatacenterBroker}
 	 * objects.
 	 */
 	DatacenterBroker NULL = new DatacenterBroker() {
+        @Override public int compareTo(SimEntity o) { return 0; }
         @Override public boolean isStarted() { return false; }
         @Override public Simulation getSimulation() { return Simulation.NULL; }
         @Override public SimEntity setSimulation(Simulation simulation) { return this;}
@@ -188,8 +189,8 @@ public interface DatacenterBroker extends SimEntity {
         @Override public void submitVmList(List<? extends Vm> list, double submissionDelay) {}
         @Override public boolean hasMoreCloudletsToBeExecuted() { return false; }
 		@Override public Vm selectVmForWaitingCloudlet(Cloudlet cloudlet) { return Vm.NULL; }
-		@Override public int selectDatacenterForWaitingVms() { return 0; }
-		@Override public int selectFallbackDatacenterForWaitingVms() { return 0; }
+		@Override public Datacenter selectDatacenterForWaitingVms() { return Datacenter.NULL; }
+		@Override public Datacenter selectFallbackDatacenterForWaitingVms() { return Datacenter.NULL; }
         @Override public void shutdownEntity() {}
         @Override public SimEntity setName(String newName) throws IllegalArgumentException { return this; }
     };

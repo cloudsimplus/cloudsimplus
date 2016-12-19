@@ -107,11 +107,9 @@ public class CloudletSchedulerSpaceShared extends CloudletSchedulerAbstract {
 		addCloudletToExecList(c);
 
 		// calculate the expected time for cloudlet completion
-		long remainingLength = c.getRemainingCloudletLength();
-		double estimatedFinishTime = getVm().getSimulation().clock()
-		        + (remainingLength / (getProcessor().getCapacity() * c.getCloudlet().getNumberOfPes()));
-
-		return estimatedFinishTime;
+        return getVm().getSimulation().clock() +
+                (c.getRemainingCloudletLength() /
+                (getProcessor().getCapacity() * c.getCloudlet().getNumberOfPes()));
 	}
 
     @Override

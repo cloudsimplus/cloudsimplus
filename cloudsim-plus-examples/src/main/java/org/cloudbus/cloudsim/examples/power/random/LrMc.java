@@ -28,8 +28,6 @@ public class LrMc {
 	 * @throws IOException Signals that an I/O exception has occurred.
 	 */
 	public static void main(String[] args) throws IOException {
-		boolean enableOutput = true;
-		boolean outputToFile = false;
 		String inputFolder = "";
 		String outputFolder = "";
 		String workload = "random"; // Random workload
@@ -38,8 +36,8 @@ public class LrMc {
         double safetyParameter = 1.2;
 
 		new RandomRunner(
-				enableOutput,
-				outputToFile,
+            true,
+            false,
 				inputFolder,
 				outputFolder,
 				workload,

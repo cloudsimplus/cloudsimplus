@@ -10,22 +10,22 @@ package org.cloudbus.cloudsim.power.models;
 
 /**
  * Implements a power model where the power consumption is linear to resource usage.
- * 
+ *
  * <br/>If you are using any algorithms, policies or workload included in the power package please cite
  * the following paper:<br/>
- * 
+ *
  * <ul>
  * <li><a href="http://dx.doi.org/10.1002/cpe.1867">Anton Beloglazov, and Rajkumar Buyya, "Optimal Online Deterministic Algorithms and Adaptive
  * Heuristics for Energy and Performance Efficient Dynamic Consolidation of Virtual Machines in
  * Cloud Data Centers", Concurrency and Computation: Practice and Experience (CCPE), Volume 24,
  * Issue 13, Pages: 1397-1420, John Wiley & Sons, Ltd, New York, USA, 2012</a>
  * </ul>
- * 
+ *
  * @author Anton Beloglazov
- * 
+ *
  * @author Anton Beloglazov
  * @since CloudSim Toolkit 2.0
- * @too the tree first attributes are being repeated among several classes.
+ * @TODO the tree first attributes are being repeated among several classes.
  * Thus, a better class hierarchy should be provided, such as an abstract class
  * implementing the PowerModel interface.
  */
@@ -38,14 +38,14 @@ public class PowerModelLinear implements PowerModel {
          * for each fraction of resource used. */
 	private double constant;
 
-	/** The static power consumption that is not dependent of resource usage. 
+	/** The static power consumption that is not dependent of resource usage.
          * It is the amount of energy consumed even when the host is idle.
          */
 	private double staticPower;
 
 	/**
 	 * Instantiates a new linear power model.
-	 * 
+	 *
 	 * @param maxPower the max power
 	 * @param staticPowerPercent the static power percent
 	 */
@@ -68,7 +68,7 @@ public class PowerModelLinear implements PowerModel {
 
 	/**
 	 * Gets the max power.
-	 * 
+	 *
 	 * @return the max power
 	 */
 	protected double getMaxPower() {
@@ -77,7 +77,7 @@ public class PowerModelLinear implements PowerModel {
 
 	/**
 	 * Sets the max power.
-	 * 
+	 *
 	 * @param maxPower the new max power
 	 */
 	protected void setMaxPower(double maxPower) {
@@ -86,7 +86,7 @@ public class PowerModelLinear implements PowerModel {
 
 	/**
 	 * Gets the constant.
-	 * 
+	 *
 	 * @return the constant
 	 */
 	protected double getConstant() {
@@ -95,7 +95,7 @@ public class PowerModelLinear implements PowerModel {
 
 	/**
 	 * Sets the constant.
-	 * 
+	 *
 	 * @param constant the new constant
 	 */
 	protected void setConstant(double constant) {
@@ -104,7 +104,7 @@ public class PowerModelLinear implements PowerModel {
 
 	/**
 	 * Gets the static power.
-	 * 
+	 *
 	 * @return the static power
 	 */
 	protected double getStaticPower() {
@@ -113,7 +113,7 @@ public class PowerModelLinear implements PowerModel {
 
 	/**
 	 * Sets the static power.
-	 * 
+	 *
 	 * @param staticPower the new static power
 	 */
 	protected void setStaticPower(double staticPower) {

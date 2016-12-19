@@ -1,8 +1,10 @@
 /**
- * CloudSim Plus: A highly-extensible and easier-to-use Framework for Modeling and Simulation of Cloud Computing Infrastructures and Services.
+ * CloudSim Plus: A highly-extensible and easier-to-use Framework for
+ * Modeling and Simulation of Cloud Computing Infrastructures and Services.
  * http://cloudsimplus.org
  *
- *     Copyright (C) 2015-2016  Universidade da Beira Interior (UBI, Portugal) and the Instituto Federal de Educação Ciência e Tecnologia do Tocantins (IFTO, Brazil).
+ *     Copyright (C) 2015-2016  Universidade da Beira Interior (UBI, Portugal) and
+ *     the Instituto Federal de Educação Ciência e Tecnologia do Tocantins (IFTO, Brazil).
  *
  *     This file is part of CloudSim Plus.
  *
@@ -24,7 +26,7 @@ package org.cloudsimplus.sla;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.cloudbus.cloudsim.brokers.network.NetworkDatacenterBroker;
+import org.cloudbus.cloudsim.brokers.DatacenterBrokerSimple;
 import org.cloudbus.cloudsim.cloudlets.Cloudlet;
 import org.cloudbus.cloudsim.datacenters.DatacenterCharacteristics;
 import org.cloudbus.cloudsim.datacenters.DatacenterCharacteristicsSimple;
@@ -153,7 +155,7 @@ public class NetworkVmsExampleWithMetrics {
         datacenter0 = createDatacenter();
 
         // Third step: Create Broker
-        NetworkDatacenterBroker broker = createBroker();
+        DatacenterBroker broker = new DatacenterBrokerSimple(cloudsim);
 
         vmlist = createVM(broker, 5);
 
@@ -254,40 +256,10 @@ public class NetworkVmsExampleWithMetrics {
 
         for (NetworkHost host : datacenter.<NetworkHost>getHostList()) {
             int switchNum = host.getId() / edgeSwitches[0].getPorts();
-            edgeSwitches[switchNum].getHostList().put(host.getId(), host);
+            edgeSwitches[switchNum].connectHost(host);
             datacenter.addHostToSwitch(host, edgeSwitches[switchNum]);
             host.setEdgeSwitch(edgeSwitches[switchNum]);
         }
     }
 
-    /**
-     * Creates the broker.
-     *
-     * @return the switches broker
-     */
-    private NetworkDatacenterBroker createBroker() {
-        return new NetworkDatacenterBroker(cloudsim);
-    }
 }
-
-/* private void totalCostPrice() {
- double memoryDataCenterVm, totalCost = 0;
- double bwDataCenterVm, miDataCenterVm, storageDataCenterVm;
- int numberOfVms = Datacenter().getCharacteristics().getHostList().size() * MAX_VMS_PER_HOST;
- for (NetworkVm vms : getVmList()) {
- memoryDataCenterVm = ((getDatacenter().getCharacteristics().getCostPerMem()) * vms.getRam() * numberOfVms);
- bwDataCenterVm = ((getDatacenter().getCharacteristics().getCostPerBw()) * vms.getBw() * numberOfVms);
- miDataCenterVm = ((getDatacenter().getCharacteristics().getCostPerMi()) * vms.getMips() * numberOfVms);
- storageDataCenterVm = ((getDatacenter().getCharacteristics().getCostPerStorage()) * vms.getSize() * numberOfVms);
-
- totalCost = memoryDataCenterVm + bwDataCenterVm + miDataCenterVm + storageDataCenterVm;
- }
- System.out.println("* Total Cost Price ******: " + totalCost);
- }
-
- */
-/*
- private void responseTimeCloudlet(NetworkCloudlet cloudlet) {
- double rt = cloudlet.getFinishTime() - cloudlet.getDatacenterArrivalTime();
- System.out.println("***** Tempo de resposta CLOUDLETS - " + rt);
- } */

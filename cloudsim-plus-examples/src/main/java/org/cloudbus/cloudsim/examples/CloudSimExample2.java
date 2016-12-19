@@ -9,7 +9,6 @@
 package org.cloudbus.cloudsim.examples;
 
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.List;
 import org.cloudbus.cloudsim.cloudlets.Cloudlet;
 
@@ -56,12 +55,9 @@ public class CloudSimExample2 {
 
         // First step: Initialize the CloudSim package. It should be called
         // before creating any entities.
-        int num_user = 1;   // number of cloud users
-        Calendar calendar = Calendar.getInstance();
-        boolean trace_flag = false;  // mean trace events
 
         // Initialize the CloudSim library
-        simulation = new CloudSim(trace_flag);
+        simulation = new CloudSim();
 
         // Second step: Create Datacenters
         //Datacenters are the resource providers in CloudSim. We need at list one of them to run a CloudSim simulation

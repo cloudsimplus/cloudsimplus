@@ -17,7 +17,7 @@ import java.util.Objects;
  * defined in terms of Millions Instructions Per Second (MIPS) rating.<p/>
  *
  * <b>ASSUMPTION:</b> All PEs under the same Machine have the same MIPS rating.
- * @todo This assumption is not being assured on different class (where other TODOs where introduced)
+ * @TODO This assumption is not being assured on different class (where other TODOs where introduced)
  *
  * @author Manzur Murshed
  * @author Rajkumar Buyya

@@ -1,3 +1,26 @@
+/**
+ * CloudSim Plus: A highly-extensible and easier-to-use Framework for
+ * Modeling and Simulation of Cloud Computing Infrastructures and Services.
+ * http://cloudsimplus.org
+ *
+ *     Copyright (C) 2015-2016  Universidade da Beira Interior (UBI, Portugal) and
+ *     the Instituto Federal de Educação Ciência e Tecnologia do Tocantins (IFTO, Brazil).
+ *
+ *     This file is part of CloudSim Plus.
+ *
+ *     CloudSim Plus is free software: you can redistribute it and/or modify
+ *     it under the terms of the GNU General Public License as published by
+ *     the Free Software Foundation, either version 3 of the License, or
+ *     (at your option) any later version.
+ *
+ *     CloudSim Plus is distributed in the hope that it will be useful,
+ *     but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *     GNU General Public License for more details.
+ *
+ *     You should have received a copy of the GNU General Public License
+ *     along with CloudSim Plus. If not, see <http://www.gnu.org/licenses/>.
+ */
 package org.cloudsimplus.examples;
 
 import org.cloudbus.cloudsim.allocationpolicies.VmAllocationPolicySimple;
@@ -25,35 +48,25 @@ import org.cloudbus.cloudsim.utilizationmodels.UtilizationModel;
 import org.cloudbus.cloudsim.utilizationmodels.UtilizationModelFull;
 import org.cloudbus.cloudsim.vms.Vm;
 import org.cloudbus.cloudsim.vms.VmSimple;
-import org.cloudsimplus.listeners.EventListener;
-import org.cloudsimplus.listeners.VmToCloudletEventInfo;
 import org.cloudsimplus.util.tablebuilder.CloudletsTableBuilderHelper;
 
 import java.util.ArrayList;
 import java.util.List;
 
 /**
- * An example showing how to terminate the simulation when a condition is met, before its natural end.
+ * An example showing how to terminate the simulation at a given time, before its natural end.
  * The example creates 4 Cloudlets that will run sequentially using a {@link CloudletSchedulerSpaceShared}.
- * However, when the last Cloudlet reaches 50% of its execution,
- * the simulation will be interrupted. By this way, just 3 Cloudlets will finish.
- *
- * <p>This example uses CloudSim Plus Listener features to intercept when
- * the second Cloudlet reaches 50% of its execution to then request
- * the simulation termination. This example uses the Java 8 Lambda Functions features
- * to pass a listener to the mentioned Cloudlet, by means of the
- * {@link Cloudlet#setOnUpdateCloudletProcessingListener(EventListener)} method.
- * However, the same feature can be used for Java 7 passing an anonymous class
- * that implements {@code EventListener<VmToCloudletEventInfo>}.</p>
+ * However, at the middle of the simulation, after just 2 of these 4 Cloudlets have finished,
+ * the simulation will be interrupeted, avoiding the other 2 Cloudlets to run.
  *
  * @author Manoel Campos da Silva Filho
  * @since CloudSim Plus 1.0
  *
- * @see CloudSim#terminate()
- * @see Cloudlet#setOnUpdateCloudletProcessingListener(EventListener)
- * @see EventListener
+ * @see CloudSim#terminateAt(double)
  */
-public class TerminateSimulationAtGivenCondition {
+public class TerminateSimulationAtGivenTimeExample {
+    private static final int TIME_TO_FINISH_SIMULATION = 21;
+
     private final CloudSim simulation;
     private List<Cloudlet> cloudletList;
     private List<Vm> vmList;
@@ -66,13 +79,13 @@ public class TerminateSimulationAtGivenCondition {
      * @param args
      */
     public static void main(String[] args) {
-        new TerminateSimulationAtGivenCondition();
+        new TerminateSimulationAtGivenTimeExample();
     }
 
     /**
      * Default constructor that builds the simulation.
      */
-    public TerminateSimulationAtGivenCondition() {
+    public TerminateSimulationAtGivenTimeExample() {
         Log.printFormattedLine("Starting %s Example ...", getClass().getSimpleName());
         this.vmList = new ArrayList<>();
         this.cloudletList = new ArrayList<>();
@@ -80,10 +93,8 @@ public class TerminateSimulationAtGivenCondition {
 
         Datacenter datacenter0 = createDatacenter();
 
-        /*
-        Creates a Broker accountable for submission of VMs and Cloudlets
-        on behalf of a given cloud user (customer).
-        */
+        /*Creates a Broker accountable for submission of VMs and Cloudlets
+        on behalf of a given cloud user (customer).*/
         DatacenterBroker broker0 = new DatacenterBrokerSimple(simulation);
 
         Vm vm0 = createVm(broker0);
@@ -94,11 +105,13 @@ public class TerminateSimulationAtGivenCondition {
             Cloudlet cloudlet = createCloudlet(broker0, vm0);
             this.cloudletList.add(cloudlet);
         }
-
-        Cloudlet lastCloudlet = this.cloudletList.get(this.cloudletList.size()-1);
-        lastCloudlet.setOnUpdateCloudletProcessingListener(event -> onClouletProcessingUpdate(event));
-
         broker0.submitCloudletList(cloudletList);
+
+        /* Schedule the simulation termination to the 21st second,
+         * after the 2 first Cloudlets have finished.
+         * By this way, the other 2 ones will not execute.
+         * */
+        simulation.terminateAt(TIME_TO_FINISH_SIMULATION);
 
         /* Starts the simulation and waits all cloudlets to be executed. */
         simulation.start();
@@ -108,19 +121,6 @@ public class TerminateSimulationAtGivenCondition {
         List<Cloudlet> finishedCloudlets = broker0.getCloudletsFinishedList();
         new CloudletsTableBuilderHelper(finishedCloudlets).build();
         Log.printConcatLine(getClass().getSimpleName(), " Example finished!");
-    }
-
-    /**
-     * Checks if the Cloudlet that had its processing updated reached 50% of execution.
-     * If so, request the simulation interruption.
-     * @param event object containing data about the happened event
-     */
-    private void onClouletProcessingUpdate(VmToCloudletEventInfo event) {
-        if(event.getCloudlet().getCloudletFinishedSoFar() >= event.getCloudlet().getCloudletLength()/2.0){
-            Log.printFormattedLine("Cloudlet %d reached 50% of execution. Intentionally requesting termination of the simulation at time %.2f",
-                event.getCloudlet().getId(), simulation.clock());
-            simulation.terminate();
-        }
     }
 
     private DatacenterSimple createDatacenter() {
@@ -187,16 +187,13 @@ public class TerminateSimulationAtGivenCondition {
         //Sets the same utilization model for all these resources.
         UtilizationModel utilization = new UtilizationModelFull();
 
-        Cloudlet cloudlet
-                = new CloudletSimple(
-                        numberOfCreatedCloudlets++, length, numberOfCpuCores)
-                        .setCloudletFileSize(fileSize)
-                        .setCloudletOutputSize(outputSize)
-                        .setUtilizationModel(utilization)
-                        .setBroker(broker)
-                        .setVm(vm);
-
-        return cloudlet;
+        return new CloudletSimple(
+                numberOfCreatedCloudlets++, length, numberOfCpuCores)
+                .setCloudletFileSize(fileSize)
+                .setCloudletOutputSize(outputSize)
+                .setUtilizationModel(utilization)
+                .setBroker(broker)
+                .setVm(vm);
     }
 
 }

@@ -1,8 +1,10 @@
 /**
- * CloudSim Plus: A highly-extensible and easier-to-use Framework for Modeling and Simulation of Cloud Computing Infrastructures and Services.
+ * CloudSim Plus: A highly-extensible and easier-to-use Framework for
+ * Modeling and Simulation of Cloud Computing Infrastructures and Services.
  * http://cloudsimplus.org
  *
- *     Copyright (C) 2015-2016  Universidade da Beira Interior (UBI, Portugal) and the Instituto Federal de Educação Ciência e Tecnologia do Tocantins (IFTO, Brazil).
+ *     Copyright (C) 2015-2016  Universidade da Beira Interior (UBI, Portugal) and
+ *     the Instituto Federal de Educação Ciência e Tecnologia do Tocantins (IFTO, Brazil).
  *
  *     This file is part of CloudSim Plus.
  *
@@ -121,10 +123,8 @@ public class DatacenterBrokerHeuristicExample {
         Log.printFormattedLine("Starting %s ...", getClass().getSimpleName());
         this.vmList = new ArrayList<>();
         this.cloudletList = new ArrayList<>();
-        int numberOfCloudUsers = 1;
-        boolean traceEvents = false;
 
-        simulation = new CloudSim(traceEvents);
+        simulation = new CloudSim();
 
         Datacenter datacenter0 = createDatacenter();
 
@@ -261,14 +261,11 @@ public class DatacenterBrokerHeuristicExample {
         //Sets the same utilization model for all these resources.
         UtilizationModel utilization = new UtilizationModelFull();
 
-        Cloudlet cloudlet
-            = new CloudletSimple(numberOfCreatedCloudlets++, length, numberOfPes)
-            .setCloudletFileSize(fileSize)
-            .setCloudletOutputSize(outputSize)
-            .setUtilizationModel(utilization)
-            .setBroker(broker);
-
-        return cloudlet;
+        return new CloudletSimple(numberOfCreatedCloudlets++, length, numberOfPes)
+        .setCloudletFileSize(fileSize)
+        .setCloudletOutputSize(outputSize)
+        .setUtilizationModel(utilization)
+        .setBroker(broker);
     }
 
     private double computeRoudRobinMappingCost() {

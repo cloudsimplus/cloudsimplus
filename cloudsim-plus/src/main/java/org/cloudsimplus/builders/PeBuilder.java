@@ -1,8 +1,10 @@
 /**
- * CloudSim Plus: A highly-extensible and easier-to-use Framework for Modeling and Simulation of Cloud Computing Infrastructures and Services.
+ * CloudSim Plus: A highly-extensible and easier-to-use Framework for
+ * Modeling and Simulation of Cloud Computing Infrastructures and Services.
  * http://cloudsimplus.org
  *
- *     Copyright (C) 2015-2016  Universidade da Beira Interior (UBI, Portugal) and the Instituto Federal de Educação Ciência e Tecnologia do Tocantins (IFTO, Brazil).
+ *     Copyright (C) 2015-2016  Universidade da Beira Interior (UBI, Portugal) and
+ *     the Instituto Federal de Educação Ciência e Tecnologia do Tocantins (IFTO, Brazil).
  *
  *     This file is part of CloudSim Plus.
  *
@@ -44,14 +46,12 @@ public class PeBuilder extends Builder {
             validateAmount(amount);
             List<Pe> peList = new ArrayList<>();
             Constructor cons =
-                    provisionerClass.getConstructor(new Class[]{double.class});
+                    provisionerClass.getConstructor(double.class);
             for (int i = 0; i < amount; i++) {
                 peList.add(new PeSimple(i, (PeProvisioner) cons.newInstance(mipsOfEachPe)));
             }
             return peList;
-        } catch (NoSuchMethodException | SecurityException ex) {
-            throw new RuntimeException("It wasn't possible to instantiate a list of Pe", ex);
-        } catch (InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException ex) {
+        } catch (NoSuchMethodException | SecurityException | InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException ex) {
             throw new RuntimeException("It wasn't possible to instantiate a list of Pe", ex);
         }
     }

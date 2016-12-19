@@ -1,8 +1,10 @@
 /**
- * CloudSim Plus: A highly-extensible and easier-to-use Framework for Modeling and Simulation of Cloud Computing Infrastructures and Services.
+ * CloudSim Plus: A highly-extensible and easier-to-use Framework for
+ * Modeling and Simulation of Cloud Computing Infrastructures and Services.
  * http://cloudsimplus.org
  *
- *     Copyright (C) 2015-2016  Universidade da Beira Interior (UBI, Portugal) and the Instituto Federal de Educação Ciência e Tecnologia do Tocantins (IFTO, Brazil).
+ *     Copyright (C) 2015-2016  Universidade da Beira Interior (UBI, Portugal) and
+ *     the Instituto Federal de Educação Ciência e Tecnologia do Tocantins (IFTO, Brazil).
  *
  *     This file is part of CloudSim Plus.
  *
@@ -70,7 +72,7 @@ import org.cloudbus.cloudsim.resources.Ram;
  * @author Manoel Campos da Silva Filho
  * @since CloudSim Plus 1.0
  */
-public class SharingHostPEsUsingVmSchedulerTimeShared {
+public class SharingHostPEsUsingVmSchedulerTimeSharedExample {
     /**
      * Capacity of each CPU core (in Million Instructions per Second).
      */
@@ -110,13 +112,13 @@ public class SharingHostPEsUsingVmSchedulerTimeShared {
      * @param args
      */
     public static void main(String[] args) {
-        new SharingHostPEsUsingVmSchedulerTimeShared();
+        new SharingHostPEsUsingVmSchedulerTimeSharedExample();
     }
 
     /**
      * Default constructor where the simulation is built.
      */
-    public SharingHostPEsUsingVmSchedulerTimeShared() {
+    public SharingHostPEsUsingVmSchedulerTimeSharedExample() {
         Log.printFormattedLine("Starting %s Example ...", getClass().getSimpleName());
         this.vmList = new ArrayList<>();
         this.cloudletList = new ArrayList<>();
@@ -216,15 +218,12 @@ public class SharingHostPEsUsingVmSchedulerTimeShared {
         //Sets the same utilization model for all these resources.
         UtilizationModel utilization = new UtilizationModelFull();
 
-        Cloudlet cloudlet
-            = new CloudletSimple(numberOfCreatedCloudlets++, CLOUDLET_LENGTH, numberOfCpuCores)
-                .setCloudletFileSize(fileSize)
-                .setCloudletOutputSize(outputSize)
-                .setUtilizationModel(utilization)
-                .setBroker(broker)
-                .setVm(vm);
-
-        return cloudlet;
+        return new CloudletSimple(numberOfCreatedCloudlets++, CLOUDLET_LENGTH, numberOfCpuCores)
+            .setCloudletFileSize(fileSize)
+            .setCloudletOutputSize(outputSize)
+            .setUtilizationModel(utilization)
+            .setBroker(broker)
+            .setVm(vm);
     }
 
 }

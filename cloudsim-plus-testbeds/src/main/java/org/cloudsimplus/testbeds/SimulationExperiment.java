@@ -1,8 +1,10 @@
 /**
- * CloudSim Plus: A highly-extensible and easier-to-use Framework for Modeling and Simulation of Cloud Computing Infrastructures and Services.
+ * CloudSim Plus: A highly-extensible and easier-to-use Framework for
+ * Modeling and Simulation of Cloud Computing Infrastructures and Services.
  * http://cloudsimplus.org
  *
- *     Copyright (C) 2015-2016  Universidade da Beira Interior (UBI, Portugal) and the Instituto Federal de Educação Ciência e Tecnologia do Tocantins (IFTO, Brazil).
+ *     Copyright (C) 2015-2016  Universidade da Beira Interior (UBI, Portugal) and
+ *     the Instituto Federal de Educação Ciência e Tecnologia do Tocantins (IFTO, Brazil).
  *
  *     This file is part of CloudSim Plus.
  *
@@ -122,11 +124,18 @@ public abstract class SimulationExperiment implements Runnable {
 	}
 
 	/**
-	 * Indicates if simulation results of the experiment have to be output or not.
+	 * Indicates if simulation results of the experiment don't have to be output.
 	 */
-	public boolean isVerbose() {
-		return verbose;
+	public boolean isNotVerbose() {
+		return !verbose;
 	}
+
+    /**
+     * Indicates if simulation results of the experiment have to be output.
+     */
+    public boolean isVerbose() {
+        return verbose;
+    }
 
 	/**
 	 * @see #getBrokerList()
@@ -162,7 +171,6 @@ public abstract class SimulationExperiment implements Runnable {
 	/**
 	 * Builds the simulation scenario and starts execution.
 	 *
-	 * @return the final solution
 	 * @throws RuntimeException
 	 */
 	@Override
@@ -177,15 +185,16 @@ public abstract class SimulationExperiment implements Runnable {
 
 
 	/**
-	 * Checks if {@link #isVerbose()} is true
+	 * Checks if {@link #isVerbose()}
 	 * in order to call {@link #printResults()}
 	 * to print the experiment results.
 	 *
 	 * @see #printResults()
 	 */
 	private void printResultsInternal(){
-		if(!isVerbose())
+		if(isNotVerbose()){
 			return;
+		}
 
 		printResults();
 	}
@@ -205,8 +214,7 @@ public abstract class SimulationExperiment implements Runnable {
      */
 	protected void buildScenario() {
 		int numberOfCloudUsers = 1;
-		boolean traceEvents = false;
-		this.cloudsim = new CloudSim(traceEvents);
+		this.cloudsim = new CloudSim();
 
 		Datacenter datacenter0 = createDatacenter();
 		DatacenterBroker broker0 = createBrokerAndAddToList();

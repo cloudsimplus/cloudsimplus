@@ -9,7 +9,7 @@ import org.cloudbus.cloudsim.core.events.SimEvent;
  * @author Manoel Campos da Silva Filho
  * @see CloudSimEntity
  */
-public interface SimEntity extends Nameable, Cloneable, Runnable {
+public interface SimEntity extends Nameable, Cloneable, Runnable, Comparable<SimEntity> {
     /**
      * Checks if the entity already was started or not.
      * @return
@@ -19,7 +19,7 @@ public interface SimEntity extends Nameable, Cloneable, Runnable {
     /**
      * Defines the event state.
      */
-    enum State {RUNNABLE, WAITING, HOLDING, FINISHED};
+    enum State {RUNNABLE, WAITING, HOLDING, FINISHED}
 
     /**
      * Gets the CloudSim instance that represents the simulation the Entity is related to.
@@ -81,7 +81,8 @@ public interface SimEntity extends Nameable, Cloneable, Runnable {
      * An attribute that implements the Null Object Design Pattern for {@link SimEntity}
      * objects.
      */
-    final SimEntity NULL = new SimEntity() {
+    SimEntity NULL = new SimEntity() {
+        @Override public int compareTo(SimEntity o) { return 0; }
         @Override public boolean isStarted() { return false; }
         @Override public Simulation getSimulation() { return Simulation.NULL; }
         @Override public SimEntity setSimulation(Simulation simulation) { return this; }

@@ -22,7 +22,7 @@ import org.cloudbus.cloudsim.provisioners.ResourceProvisioner;
  *
  * @author Manoel Campos da Silva Filho
  */
-public interface Host extends Identificable {
+public interface Host extends Identificable, Comparable<Host> {
 
     /**
      * Adds a VM migrating into the current host.
@@ -193,12 +193,12 @@ public interface Host extends Identificable {
      * Gets a VM by its id and user.
      *
      * @param vmId the vm id
-     * @param userId ID of VM's owner
+     * @param brokerId ID of VM's owner
      * @return the virtual machine object, $null if not found
      * @pre $none
      * @post $none
      */
-    Vm getVm(int vmId, int userId);
+    Vm getVm(int vmId, int brokerId);
 
     /**
      * Gets the list of VMs assigned to the host.
@@ -360,6 +360,7 @@ public interface Host extends Identificable {
      * objects.
      */
     Host NULL = new Host(){
+        @Override public int compareTo(Host o) { return 0; }
         @Override public void addMigratingInVm(Vm vm) {}
         @Override public boolean allocatePesForVm(Vm vm, List<Double> mipsShare) { return false;}
         @Override public void deallocatePesForVm(Vm vm) {}
@@ -380,7 +381,7 @@ public interface Host extends Identificable {
         @Override public long getStorageCapacity() { return 0L; }
         @Override public double getTotalAllocatedMipsForVm(Vm vm) { return 0.0; }
         @Override public int getTotalMips() { return 0; }
-        @Override public Vm getVm(int vmId, int userId) { return Vm.NULL; }
+        @Override public Vm getVm(int vmId, int brokerId) { return Vm.NULL; }
         @Override public List<Vm> getVmList() { return Collections.emptyList(); }
         @Override public VmScheduler getVmScheduler() {return VmScheduler.NULL; }
         @Override public Host setVmScheduler(VmScheduler vmScheduler) { return Host.NULL; }

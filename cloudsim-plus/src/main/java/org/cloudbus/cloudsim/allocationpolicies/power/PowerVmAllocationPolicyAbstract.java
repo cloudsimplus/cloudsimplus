@@ -15,10 +15,8 @@ import java.util.Objects;
 import org.cloudbus.cloudsim.hosts.Host;
 import org.cloudbus.cloudsim.hosts.power.PowerHost;
 import org.cloudbus.cloudsim.util.Log;
-import org.cloudbus.cloudsim.hosts.power.PowerHostSimple;
 import org.cloudbus.cloudsim.vms.Vm;
 import org.cloudbus.cloudsim.allocationpolicies.VmAllocationPolicyAbstract;
-import org.cloudbus.cloudsim.vms.VmSimple;
 import org.cloudbus.cloudsim.core.Simulation;
 
 /**
@@ -42,7 +40,7 @@ public abstract class PowerVmAllocationPolicyAbstract extends VmAllocationPolicy
     /**
      * @see #getVmHostMap()
      */
-    private final Map<String, Host> vmHostMap = new HashMap<>();
+    private final Map<Vm, Host> vmHostMap = new HashMap<>();
 
     /**
      * Creates a PowerVmAllocationPolicy.
@@ -65,7 +63,7 @@ public abstract class PowerVmAllocationPolicyAbstract extends VmAllocationPolicy
         }
 
         if (host.vmCreate(vm)) { // if vm has been successfully created in the host
-            getVmHostMap().put(vm.getUid(), host);
+            getVmHostMap().put(vm, host);
             Log.printFormattedLine(
                 "%.2f: VM #" + vm.getId() + " has been allocated to the host #" + host.getId(),
                 simulation.clock());
@@ -86,20 +84,10 @@ public abstract class PowerVmAllocationPolicyAbstract extends VmAllocationPolicy
 
     @Override
     public void deallocateHostForVm(Vm vm) {
-        Host host = getVmHostMap().remove(vm.getUid());
+        Host host = getVmHostMap().remove(vm);
         if (!Objects.isNull(host)) {
             host.destroyVm(vm);
         }
-    }
-
-    @Override
-    public Host getHost(Vm vm) {
-        return getVmHostMap().get(vm.getUid());
-    }
-
-    @Override
-    public Host getHost(int vmId, int userId) {
-        return getVmHostMap().get(VmSimple.getUid(userId, vmId));
     }
 
     /**
@@ -108,7 +96,7 @@ public abstract class PowerVmAllocationPolicyAbstract extends VmAllocationPolicy
      *
      * @return
      */
-    public Map<String, Host> getVmHostMap() {
+    public Map<Vm, Host> getVmHostMap() {
         return vmHostMap;
     }
 

@@ -21,15 +21,16 @@
  */
 package org.cloudbus.cloudsim.allocationpolicies.power;
 
+import java.util.Comparator;
 import java.util.List;
 import java.util.Set;
 
 import org.cloudbus.cloudsim.allocationpolicies.VmAllocationPolicy;
 import org.cloudbus.cloudsim.hosts.Host;
+import org.cloudbus.cloudsim.hosts.HostDynamicWorkload;
 import org.cloudbus.cloudsim.vms.Vm;
 import org.cloudbus.cloudsim.hosts.power.PowerHost;
 import org.cloudbus.cloudsim.hosts.power.PowerHostSimple;
-import org.cloudbus.cloudsim.allocationpolicies.power.PowerVmAllocationPolicyMigrationStaticThreshold;
 import org.cloudbus.cloudsim.selectionpolicies.power.PowerVmSelectionPolicy;
 
 /**
@@ -92,14 +93,14 @@ public class PowerVmAllocationPolicyMigrationWorstFitStaticThreshold extends Pow
         return this.<PowerHost>getHostList().stream()
             .filter(host -> !excludedHosts.contains(host))
             .filter(host -> host.isSuitableForVm(vm))
-            .filter(host -> !isHostOverUtilizedAfterAllocation(host, vm))
+            .filter(host -> isHostNotOverusedAfterAllocation(host, vm))
             .findFirst()
             .orElse(PowerHost.NULL);
     }
 
     /**
      * Gets the first under utilized host based on the {@link #getUnderUtilizationThreshold()}.
-     * @param excludedHosts
+     * @param excludedHosts the list of hosts to ignore
      * @return the first under utilized host or null if there isn't any one
      */
     @Override
@@ -113,8 +114,8 @@ public class PowerVmAllocationPolicyMigrationWorstFitStaticThreshold extends Pow
             .filter(h -> !excludedHosts.contains(h))
             .filter(h -> h.getUtilizationOfCpu() > 0)
             .filter(h -> h.getUtilizationOfCpu() < getUnderUtilizationThreshold())
-            .filter(h -> !allVmsAreMigratingOutOrThereAreVmsMigratingIn(h))
-            .min((h1, h2) -> Double.compare(h1.getUtilizationOfCpu(), h2.getUtilizationOfCpu()))
+            .filter(h -> isNotAllVmsMigratingOutNorVmsAreMigratingIn(h))
+            .min(Comparator.comparingDouble(HostDynamicWorkload::getUtilizationOfCpu))
             .orElse(PowerHost.NULL);
     }
 

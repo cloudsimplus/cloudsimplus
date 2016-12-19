@@ -1,6 +1,7 @@
 package org.cloudbus.cloudsim.examples.power.planetlab;
 
 import java.io.IOException;
+import java.util.Objects;
 
 /**
  * A simulation of a heterogeneous power aware data center that applies the Local Regression Robust
@@ -30,9 +31,7 @@ public class LrrMmt {
 	 * @throws IOException Signals that an I/O exception has occurred.
 	 */
 	public static void main(String[] args) throws IOException {
-		boolean enableOutput = true;
-		boolean outputToFile = false;
-		String inputFolder = LrrMmt.class.getClassLoader().getResource("workload/planetlab").getPath();
+		String inputFolder =  ResourceLoader.getResourceFolder(LrrMmt.class,"workload/planetlab");
 		String outputFolder = "output";
 		String workload = "20110303"; // PlanetLab workload
 		String vmAllocationPolicy = "lrr"; // Local Regression Robust (LRR) VM allocation policy
@@ -40,8 +39,8 @@ public class LrrMmt {
         double safetyParameter = 1.2;
 
 		new PlanetLabRunner(
-				enableOutput,
-				outputToFile,
+            true,
+            false,
 				inputFolder,
 				outputFolder,
 				workload,
