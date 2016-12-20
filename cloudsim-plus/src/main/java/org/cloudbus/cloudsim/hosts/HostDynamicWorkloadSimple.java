@@ -41,7 +41,7 @@ public class HostDynamicWorkloadSimple extends HostSimple implements HostDynamic
     /**
      * The host utilization state history.
      */
-    private final List<HostStateHistoryEntry> stateHistory = new LinkedList<>();
+    private final List<HostStateHistoryEntry> stateHistory;
 
     /**
      * Creates a host.
@@ -55,6 +55,7 @@ public class HostDynamicWorkloadSimple extends HostSimple implements HostDynamic
         super(id, storage, peList);
         setUtilizationMips(0);
         setPreviousUtilizationMips(0);
+        stateHistory = new LinkedList<>();
     }
 
     /**
@@ -157,11 +158,7 @@ public class HostDynamicWorkloadSimple extends HostSimple implements HostDynamic
             hostTotalRequestedMips += totalRequestedMips;
         }
 
-        addStateHistoryEntry(
-                currentTime,
-            getUtilizationOfCpuMips(),
-                hostTotalRequestedMips,
-                (getUtilizationOfCpuMips() > 0));
+        addStateHistoryEntry(currentTime, getUtilizationOfCpuMips(), hostTotalRequestedMips, (getUtilizationOfCpuMips() > 0));
 
         return smallerTime;
     }
@@ -299,11 +296,7 @@ public class HostDynamicWorkloadSimple extends HostSimple implements HostDynamic
      */
     @Override
     public void addStateHistoryEntry(double time, double allocatedMips, double requestedMips, boolean isActive) {
-        HostStateHistoryEntry newState = new HostStateHistoryEntry(
-                time,
-                allocatedMips,
-                requestedMips,
-                isActive);
+        HostStateHistoryEntry newState = new HostStateHistoryEntry(time, allocatedMips, requestedMips, isActive);
         if (!stateHistory.isEmpty()) {
             HostStateHistoryEntry previousState = stateHistory.get(stateHistory.size() - 1);
             if (previousState.getTime() == time) {
@@ -311,6 +304,7 @@ public class HostDynamicWorkloadSimple extends HostSimple implements HostDynamic
                 return;
             }
         }
+
         stateHistory.add(newState);
     }
 

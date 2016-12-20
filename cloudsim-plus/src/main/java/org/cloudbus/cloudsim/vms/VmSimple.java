@@ -91,7 +91,7 @@ public class VmSimple implements Vm {
     /**
      * @see #getStateHistory()
      */
-    private final List<VmStateHistoryEntry> stateHistory = new LinkedList<>();
+    private final List<VmStateHistoryEntry> stateHistory;
 
     /**
      * The VM's storage resource that represents the Vm size in disk.
@@ -171,6 +171,7 @@ public class VmSimple implements Vm {
         setVmm("Xen");
         this.simulation = Simulation.NULL;
         setCloudletScheduler(CloudletScheduler.NULL);
+        stateHistory = new LinkedList<>();
     }
 
     /**

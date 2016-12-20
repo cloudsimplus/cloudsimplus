@@ -53,7 +53,7 @@ public interface Datacenter extends SimEntity {
     VmAllocationPolicy getVmAllocationPolicy();
 
     /**
-     * Gets the list of VMs submitted to be ran in some host of this switches.
+     * Gets the list of VMs submitted to be ran in some host of this Datacenter.
      *
      * @param <T> the class of VMs inside the list
      * @return the vm list
