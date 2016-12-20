@@ -46,9 +46,9 @@ public class PowerVmAllocationPolicyMigrationWorstFitStaticThreshold extends Pow
 
     public PowerVmAllocationPolicyMigrationWorstFitStaticThreshold(
             PowerVmSelectionPolicy vmSelectionPolicy,
-            double utilizationThreshold)
+            double overUtilizationThreshold)
     {
-        super(vmSelectionPolicy, utilizationThreshold);
+        super(vmSelectionPolicy, overUtilizationThreshold);
     }
 
     /**

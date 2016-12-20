@@ -34,11 +34,7 @@ import java.util.List;
  * This class represents the metrics of a SLA contract.
  *
  * Follows the standard used by Amazon Cloudwatch as at in:
-<<<<<<< HEAD
  * <http://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/viewing_metrics_with_cloudwatch.html>
-=======
- * http://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/viewing_metrics_with_cloudwatch.html
->>>>>>> upstream/master
  *
  * @author raysaoliveira
  */

@@ -35,7 +35,7 @@
         "dimensions": [
             {
                 "name": "valueMin",
-                "value": 35,
+                "value": 30,
                 "unit" : "Percent"
                 
             },

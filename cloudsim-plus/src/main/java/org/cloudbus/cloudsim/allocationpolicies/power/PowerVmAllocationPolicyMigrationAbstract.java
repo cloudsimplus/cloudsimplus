@@ -46,8 +46,8 @@ public abstract class PowerVmAllocationPolicyMigrationAbstract extends PowerVmAl
     implements PowerVmAllocationPolicyMigration {
 
     /**@see #getUnderUtilizationThreshold() */
-    private double underUtilizationThreshold = 0.35;
-
+    private double underUtilizationThreshold = 0.3;
+  
     /**
      * The vm selection policy.
      */
@@ -140,7 +140,7 @@ public abstract class PowerVmAllocationPolicyMigrationAbstract extends PowerVmAl
 
         Map<Vm, Host> migrationMap = new HashMap<>();
         if(!overUtilizedHosts.isEmpty()){
-            Log.printLine("Reallocation of VMs from the over-utilized hosts:");
+            Log.printLine("Reallocation of VMs from the over-utilized hosts: ");
             ExecutionTimeMeasurer.start("optimizeAllocationVmReallocation");
             migrationMap =
                     getNewVmPlacement(vmsToMigrate, new HashSet<>(overUtilizedHosts));
@@ -719,10 +719,12 @@ public abstract class PowerVmAllocationPolicyMigrationAbstract extends PowerVmAl
         return getHostCpuUtilizationPercentage(host) < underThreshold;
     }
 
+    @Override
     public double getUnderUtilizationThreshold() {
         return underUtilizationThreshold;
     }
 
+    @Override
     public void setUnderUtilizationThreshold(double underUtilizationThreshold) {
         this.underUtilizationThreshold = underUtilizationThreshold;
     }
