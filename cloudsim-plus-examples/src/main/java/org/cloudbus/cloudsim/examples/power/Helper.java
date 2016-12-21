@@ -687,8 +687,8 @@ public class Helper {
             Log.print(indent + cloudlet.getId());
 
             if (cloudlet.getStatus() == CloudletSimple.Status.SUCCESS) {
-                Log.printLine(indent + "SUCCESS" + indent + indent + cloudlet.getDatacenterId() + indent
-                    + cloudlet.getVm() + indent + dft.format(cloudlet.getActualCPUTime()) + indent
+                Log.printLine(indent + "SUCCESS" + indent + indent + cloudlet.getLastDatacenter() + indent
+                    + cloudlet.getVm() + indent + dft.format(cloudlet.getActualCpuTime()) + indent
                     + dft.format(cloudlet.getExecStartTime()) + indent + indent
                     + dft.format(cloudlet.getFinishTime()));
             }

@@ -122,16 +122,16 @@ public class TwoCloudletsAndOneSpaceSharedVmExample {
         UtilizationModel utilizationModel = new UtilizationModelFull();
 
         Cloudlet cloudlet1 = new CloudletSimple(++id, length, pesNumber)
-            .setCloudletFileSize(fileSize)
-            .setCloudletOutputSize(outputSize)
+            .setFileSize(fileSize)
+            .setOutputSize(outputSize)
             .setUtilizationModel(utilizationModel)
             .setBroker(broker)
             .setVm(vm);
         cloudletList.add(cloudlet1);
 
         Cloudlet cloudlet2 = new CloudletSimple(++id, length, pesNumber)
-            .setCloudletFileSize(fileSize)
-            .setCloudletOutputSize(outputSize)
+            .setFileSize(fileSize)
+            .setOutputSize(outputSize)
             .setUtilizationModel(utilizationModel)
             .setBroker(broker)
             .setVm(vm);

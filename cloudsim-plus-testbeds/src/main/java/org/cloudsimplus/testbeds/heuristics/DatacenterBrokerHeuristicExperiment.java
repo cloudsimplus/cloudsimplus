@@ -150,8 +150,8 @@ final class DatacenterBrokerHeuristicExperiment extends SimulationExperiment {
             //Sets the same utilization model for all these resources.
             UtilizationModel utilization = new UtilizationModelFull();
             return new CloudletSimple(getNumberOfCreatedCloudlets(), length, cloudletPes)
-                .setCloudletFileSize(fileSize)
-                .setCloudletOutputSize(outputSize)
+                .setFileSize(fileSize)
+                .setOutputSize(outputSize)
                 .setUtilizationModel(utilization)
                 .setBroker(broker);
 

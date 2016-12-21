@@ -71,8 +71,8 @@ public class CloudletSimple extends CloudletAbstract {
         final UtilizationModel utilizationModelBw)
     {
             this(id, cloudletLength, pesNumber);
-            this.setCloudletFileSize(cloudletFileSize)
-                .setCloudletOutputSize(cloudletOutputSize)
+            this.setFileSize(cloudletFileSize)
+                .setOutputSize(cloudletOutputSize)
                 .setUtilizationModelCpu(utilizationModelCpu)
                 .setUtilizationModelRam(utilizationModelRam)
                 .setUtilizationModelBw(utilizationModelBw);

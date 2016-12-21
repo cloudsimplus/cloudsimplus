@@ -82,8 +82,8 @@ public class CloudletToVmMappingSolutionTest {
     private Cloudlet createCloudlet(int id, int numberOfPes){
         Cloudlet cloudlet =
             new CloudletSimple(id, 10000, numberOfPes)
-              .setCloudletFileSize(100)
-              .setCloudletOutputSize(100);
+              .setFileSize(100)
+              .setOutputSize(100);
         return cloudlet;
     }
 

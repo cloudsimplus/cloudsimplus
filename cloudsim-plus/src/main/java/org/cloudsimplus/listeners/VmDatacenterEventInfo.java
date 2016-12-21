@@ -33,6 +33,7 @@ import org.cloudbus.cloudsim.vms.Vm;
  * running inside a {@link Datacenter}.
  *
  * @author Manoel Campos da Silva Filho
+ * @since CloudSim Plus 1.0
  *
  * @see Vm#addOnVmCreationFailureListener(EventListener)
  */
@@ -67,5 +68,4 @@ public interface VmDatacenterEventInfo extends VmEventInfo, DatacenterEventInfo 
     static VmDatacenterEventInfo of(Vm vm) {
         return of(vm, vm.getHost().getDatacenter());
     }
-
 }

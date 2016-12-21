@@ -137,8 +137,8 @@ public class CloudSimExample7 {
 
         for (int i = 0; i < cloudlets; i++) {
             Cloudlet cloudlet = new CloudletSimple(idShift + i, length, pesNumber)
-                .setCloudletFileSize(fileSize)
-                .setCloudletOutputSize(outputSize)
+                .setFileSize(fileSize)
+                .setOutputSize(outputSize)
                 .setUtilizationModel(utilizationModel)
                 .setBroker(broker);
             list.add(cloudlet);

@@ -104,8 +104,8 @@ public class NetworkExample1 {
         Cloudlet cloudlet1 =
 
             new CloudletSimple(id, length, pesNumber)
-                .setCloudletFileSize(fileSize)
-                .setCloudletOutputSize(outputSize)
+                .setFileSize(fileSize)
+                .setOutputSize(outputSize)
                 .setUtilizationModel(utilizationModel)
                 .setBroker(broker);
 

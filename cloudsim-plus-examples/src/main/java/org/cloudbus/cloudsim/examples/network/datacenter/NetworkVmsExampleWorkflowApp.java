@@ -137,8 +137,8 @@ public class NetworkVmsExampleWorkflowApp extends NetworkVmExampleAbstract {
         NetworkCloudlet cloudlet = new NetworkCloudlet(++currentNetworkCloudletId, 1, NETCLOUDLET_PES_NUMBER);
         cloudlet
                 .setMemory(NETCLOUDLET_RAM)
-                .setCloudletFileSize(NETCLOUDLET_FILE_SIZE)
-                .setCloudletOutputSize(NETCLOUDLET_OUTPUT_SIZE)
+                .setFileSize(NETCLOUDLET_FILE_SIZE)
+                .setOutputSize(NETCLOUDLET_OUTPUT_SIZE)
                 .setUtilizationModel(utilizationModel)
                 .setBroker(broker)
                 .setVm(vm);

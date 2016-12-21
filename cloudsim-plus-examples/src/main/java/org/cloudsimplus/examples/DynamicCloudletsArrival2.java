@@ -203,8 +203,8 @@ public class DynamicCloudletsArrival2 {
         UtilizationModel utilizationModel = new UtilizationModelFull();
 
         return new CloudletSimple(id, length, pesNumber)
-            .setCloudletFileSize(fileSize)
-            .setCloudletOutputSize(outputSize)
+            .setFileSize(fileSize)
+            .setOutputSize(outputSize)
             .setUtilizationModel(utilizationModel)
             .setBroker(broker)
             .setVm(vm);

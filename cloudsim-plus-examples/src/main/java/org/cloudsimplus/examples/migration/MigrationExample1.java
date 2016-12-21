@@ -234,8 +234,8 @@ public class MigrationExample1 {
             Cloudlet c =
                 new CloudletSimple(
                     cloudletId, CLOUDLET_LENGHT, VM_PES_NUM)
-                    .setCloudletFileSize(CLOUDLET_FILESIZE)
-                    .setCloudletOutputSize(CLOUDLET_OUTPUTSIZE)
+                    .setFileSize(CLOUDLET_FILESIZE)
+                    .setOutputSize(CLOUDLET_OUTPUTSIZE)
                     .setUtilizationModelCpu(cpuUtilizationModel)
                     .setUtilizationModelRam(utilizationModelFull)
                     .setUtilizationModelBw(utilizationModelFull);

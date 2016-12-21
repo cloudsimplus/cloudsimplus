@@ -138,8 +138,8 @@ public class ExampleUsingFaultInjector {
 
         for (int i = 0; i < cloudlets; i++) {
             Cloudlet cloudlet = new CloudletSimple(i, length, CLOUDLET_PES)
-                    .setCloudletFileSize(fileSize)
-                    .setCloudletOutputSize(outputSize)
+                    .setFileSize(fileSize)
+                    .setOutputSize(outputSize)
                     .setUtilizationModel(utilizationModel)
                     .setBroker(broker);
             list.add(cloudlet);
@@ -226,9 +226,9 @@ public class ExampleUsingFaultInjector {
     }
 
     /**
-     * Creates the datacenter.
+     * Creates the dc.
      *
-     * @return the datacenter
+     * @return the dc
      */
     private Datacenter createDatacenter() {
         hostList = new ArrayList<>();

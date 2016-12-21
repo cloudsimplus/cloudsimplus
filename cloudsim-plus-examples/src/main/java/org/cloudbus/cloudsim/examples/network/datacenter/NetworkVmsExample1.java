@@ -230,8 +230,8 @@ public class NetworkVmsExample1 {
         NetworkCloudlet netCloudlet = new NetworkCloudlet(++currentNetworkCloudletId, 1, HOST_PES);
         netCloudlet
                 .setMemory(TASK_RAM)
-                .setCloudletFileSize(NETCLOUDLET_FILE_SIZE)
-                .setCloudletOutputSize(NETCLOUDLET_OUTPUT_SIZE)
+                .setFileSize(NETCLOUDLET_FILE_SIZE)
+                .setOutputSize(NETCLOUDLET_OUTPUT_SIZE)
                 .setUtilizationModel(utilizationModel);
         netCloudlet.setBroker(broker);
         netCloudlet.setVm(vm);

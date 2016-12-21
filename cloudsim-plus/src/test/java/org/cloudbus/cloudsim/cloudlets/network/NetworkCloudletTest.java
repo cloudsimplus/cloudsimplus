@@ -1,6 +1,5 @@
 package org.cloudbus.cloudsim.cloudlets.network;
 
-import org.cloudbus.cloudsim.cloudlets.network.NetworkCloudlet;
 import org.junit.Test;
 import static org.junit.Assert.*;
 import org.junit.Before;
@@ -30,8 +29,8 @@ public class NetworkCloudletTest {
     private NetworkCloudlet createNetworkCloudlet(int id) {
         NetworkCloudlet cloudlet = new NetworkCloudlet(id, LENGTH, PES);
         cloudlet.setMemory(RAM)
-            .setCloudletFileSize(FILE_SIZE)
-            .setCloudletOutputSize(OUTPUT_SIZE);
+            .setFileSize(FILE_SIZE)
+            .setOutputSize(OUTPUT_SIZE);
         return cloudlet;
     }
 

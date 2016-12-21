@@ -63,8 +63,8 @@ public class NetworkVmsExampleSimpleApp extends NetworkVmExampleAbstract {
             NetworkCloudlet cloudlet = new NetworkCloudlet(
                     ++currentNetworkCloudletId, networkCloudletLengthMI, pesNumber);
             cloudlet.setMemory(memory)
-                    .setCloudletFileSize(fileSize)
-                    .setCloudletOutputSize(outputSize)
+                    .setFileSize(fileSize)
+                    .setOutputSize(outputSize)
                     .setUtilizationModel(utilizationModel)
                     .setBroker(broker);
 

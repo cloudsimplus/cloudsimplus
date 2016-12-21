@@ -254,8 +254,8 @@ public class ParallelSimulationsExample {
         UtilizationModel utilization = new UtilizationModelFull();
 
         return new CloudletSimple(cloudletId, length, numberOfCpuCores)
-                .setCloudletFileSize(fileSize)
-                .setCloudletOutputSize(outputSize)
+                .setFileSize(fileSize)
+                .setOutputSize(outputSize)
                 .setUtilizationModel(utilization)
                 .setBroker(broker);
     }

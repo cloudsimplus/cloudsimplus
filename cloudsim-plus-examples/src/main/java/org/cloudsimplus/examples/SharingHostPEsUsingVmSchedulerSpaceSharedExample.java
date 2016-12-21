@@ -229,8 +229,8 @@ public class SharingHostPEsUsingVmSchedulerSpaceSharedExample {
         UtilizationModel utilization = new UtilizationModelFull();
 
         return new CloudletSimple(numberOfCreatedCloudlets++, CLOUDLET_LENGTH, numberOfCpuCores)
-            .setCloudletFileSize(fileSize)
-            .setCloudletOutputSize(outputSize)
+            .setFileSize(fileSize)
+            .setOutputSize(outputSize)
             .setUtilizationModel(utilization)
             .setBroker(broker)
             .setVm(vm);

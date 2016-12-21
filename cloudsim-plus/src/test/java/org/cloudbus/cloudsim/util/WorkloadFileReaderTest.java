@@ -1,14 +1,9 @@
 package org.cloudbus.cloudsim.util;
 
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.List;
 import org.cloudbus.cloudsim.cloudlets.Cloudlet;
-import org.junit.After;
-import org.junit.AfterClass;
-import org.junit.Before;
-import org.junit.BeforeClass;
 import org.junit.Test;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
@@ -54,7 +49,7 @@ public class WorkloadFileReaderTest {
                 fileNameWithoutPath, seconds);
 
         for (Cloudlet cloudlet : cloudletlist) {
-            assertTrue(cloudlet.getCloudletLength() > 0);
+            assertTrue(cloudlet.getLength() > 0);
         }
     }
 

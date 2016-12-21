@@ -69,7 +69,8 @@ public class CloudletSchedulerSpaceShared extends CloudletSchedulerAbstract {
 		* and has to be investigated.*/
 	    long remainingLengthAcrossPes = c.getRemainingCloudletLength();
 	    remainingLengthAcrossPes *= c.getCloudlet().getNumberOfPes();
-	    c.getCloudlet().setCloudletLength(remainingLengthAcrossPes);
+	    c.getCloudlet().setLength(remainingLengthAcrossPes);
+
         /*
          * A resumed cloudlet is not immediately added to the execution list.
          * It is queued so that the next time the scheduler process VM execution,
@@ -102,7 +103,7 @@ public class CloudletSchedulerSpaceShared extends CloudletSchedulerAbstract {
 		 * (you can see that the size is being multiplied by the
 		 * number of PEs).
 		 */
-		c.getCloudlet().setCloudletLength(remainingLenghtAcrossAllPes);
+		c.getCloudlet().setLength(remainingLenghtAcrossAllPes);
 
 		addCloudletToExecList(c);
 

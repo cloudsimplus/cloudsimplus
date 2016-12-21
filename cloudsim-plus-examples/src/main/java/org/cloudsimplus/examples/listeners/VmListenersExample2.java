@@ -231,8 +231,8 @@ public class VmListenersExample2 {
         long outputSize = 300;
         UtilizationModel utilizationModel = new UtilizationModelFull();
         return new CloudletSimple(id, length, VM_PES_NUMBER)
-            .setCloudletFileSize(fileSize)
-            .setCloudletOutputSize(outputSize)
+            .setFileSize(fileSize)
+            .setOutputSize(outputSize)
             .setUtilizationModel(utilizationModel)
             .setBroker(broker)
             .setVm(vm);

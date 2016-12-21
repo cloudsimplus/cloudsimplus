@@ -169,8 +169,8 @@ public class CloudletBuilder extends Builder {
             final int cloudletId = numberOfCreatedCloudlets++;
             Cloudlet cloudlet =
                     new CloudletSimple(cloudletId, length, pes)
-                    .setCloudletFileSize(fileSize)
-                    .setCloudletOutputSize(outputSize)
+                    .setFileSize(fileSize)
+                    .setOutputSize(outputSize)
                     .setUtilizationModelCpu(utilizationModelCpu)
                     .setUtilizationModelRam(utilizationModelRam)
                     .setUtilizationModelBw(utilizationModelBw)

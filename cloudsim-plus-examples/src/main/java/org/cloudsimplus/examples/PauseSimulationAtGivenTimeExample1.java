@@ -190,7 +190,7 @@ public class PauseSimulationAtGivenTimeExample1 {
      * @param event object containing data about the happened event
      */
     private void onClouletProcessingUpdate(CloudletVmEventInfo event) {
-        if(event.getCloudlet().getCloudletFinishedSoFar() >= event.getCloudlet().getCloudletLength()/2.0){
+        if(event.getCloudlet().getFinishedLengthSoFar() >= event.getCloudlet().getLength()/2.0){
             Log.printFormattedLine("Cloudlet %d reached 50% of execution. Intentionally requesting termination of the simulation at time %.2f",
                 event.getCloudlet().getId(), simulation.clock());
             simulation.terminate();
@@ -265,8 +265,8 @@ public class PauseSimulationAtGivenTimeExample1 {
 
         return new CloudletSimple(
                 numberOfCreatedCloudlets++, length, numberOfCpuCores)
-                .setCloudletFileSize(fileSize)
-                .setCloudletOutputSize(outputSize)
+                .setFileSize(fileSize)
+                .setOutputSize(outputSize)
                 .setUtilizationModel(utilization)
                 .setBroker(this.broker)
                 .setVm(vm);

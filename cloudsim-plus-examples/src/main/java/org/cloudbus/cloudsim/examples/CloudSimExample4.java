@@ -110,14 +110,14 @@ public class CloudSimExample4 {
             UtilizationModel utilizationModel = new UtilizationModelFull();
 
             Cloudlet cloudlet1 = new CloudletSimple(++cloudletId, length, pesNumber)
-                .setCloudletFileSize(fileSize)
-                .setCloudletOutputSize(outputSize)
+                .setFileSize(fileSize)
+                .setOutputSize(outputSize)
                 .setUtilizationModel(utilizationModel)
                 .setBroker(broker);
 
             Cloudlet cloudlet2 = new CloudletSimple(++cloudletId, length, pesNumber)
-                .setCloudletFileSize(fileSize)
-                .setCloudletOutputSize(outputSize)
+                .setFileSize(fileSize)
+                .setOutputSize(outputSize)
                 .setUtilizationModel(utilizationModel)
                 .setBroker(broker);
 

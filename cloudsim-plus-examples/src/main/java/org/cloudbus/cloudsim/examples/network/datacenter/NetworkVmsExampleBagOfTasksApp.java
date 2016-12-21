@@ -64,8 +64,8 @@ public class NetworkVmsExampleBagOfTasksApp extends NetworkVmExampleAbstract {
                             NETCLOUDLET_PES_NUMBER);
             cloudlet
                     .setMemory(memory)
-                    .setCloudletFileSize(NETCLOUDLET_FILE_SIZE)
-                    .setCloudletOutputSize(NETCLOUDLET_OUTPUT_SIZE)
+                    .setFileSize(NETCLOUDLET_FILE_SIZE)
+                    .setOutputSize(NETCLOUDLET_OUTPUT_SIZE)
                     .setUtilizationModel(utilizationModel)
                     .setBroker(broker)
                     .setVm(selectedVms.get(i));

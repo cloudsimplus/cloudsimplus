@@ -218,8 +218,8 @@ public class CloudletListenersExample1 {
         UtilizationModel utilizationModel = new UtilizationModelFull();
         Cloudlet cloudlet
             = new CloudletSimple(id, length, pesNumber)
-                    .setCloudletFileSize(fileSize)
-                    .setCloudletOutputSize(outputSize)
+                    .setFileSize(fileSize)
+                    .setOutputSize(outputSize)
                     .setUtilizationModel(utilizationModel)
                     .setBroker(broker)
                     .setVm(vm)

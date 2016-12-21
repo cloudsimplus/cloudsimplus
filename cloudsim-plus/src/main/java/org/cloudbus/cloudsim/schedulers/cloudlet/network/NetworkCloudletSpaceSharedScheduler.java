@@ -216,7 +216,7 @@ public class NetworkCloudletSpaceSharedScheduler extends CloudletSchedulerSpaceS
          * Each execution task is supposed to use just one PE.
          */
         CloudletExecutionTask task = (CloudletExecutionTask)netcl.getCurrentTask();
-        task.process(netcl.getCloudletFinishedSoFar());
+        task.process(netcl.getFinishedLengthSoFar());
 
         scheduleNextTaskExecution(netcl);
     }

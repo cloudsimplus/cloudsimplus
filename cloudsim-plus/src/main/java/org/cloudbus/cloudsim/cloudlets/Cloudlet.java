@@ -136,7 +136,7 @@ public interface Cloudlet extends UniquelyIdentificable, Delayable, Comparable<C
 
     /**
      * The total bandwidth (bw) cost for transferring the cloudlet by the
-     * network, according to the {@link #getCloudletFileSize()}.
+     * network, according to the {@link #getFileSize()}.
      *
      * @return the accumulated bw cost
      */
@@ -146,13 +146,12 @@ public interface Cloudlet extends UniquelyIdentificable, Delayable, Comparable<C
      * Gets the total execution time of this Cloudlet in a given Datacenter
      * ID.
      *
-     * @param datacenterId the Datacenter entity ID
+     * @param datacenter the Datacenter entity
      * @return the total execution time of this Cloudlet in the given Datacenter
      * or 0 if the Cloudlet was not executed there
-     * @pre resId >= 0
      * @post $result >= 0.0
      */
-    double getActualCPUTime(final int datacenterId);
+    double getActualCpuTime(final Datacenter datacenter);
 
     /**
      * Returns the total execution time of the Cloudlet in seconds.
@@ -162,7 +161,7 @@ public interface Cloudlet extends UniquelyIdentificable, Delayable, Comparable<C
      * @pre $none
      * @post $none
      */
-    double getActualCPUTime();
+    double getActualCpuTime();
 
     /**
      * Gets the input file size of this Cloudlet before execution (in bytes).
@@ -172,7 +171,7 @@ public interface Cloudlet extends UniquelyIdentificable, Delayable, Comparable<C
      * @pre $none
      * @post $result >= 1
      */
-    long getCloudletFileSize();
+    long getFileSize();
 
     /**
      * Gets the length of this Cloudlet that has been executed so far from the
@@ -184,7 +183,7 @@ public interface Cloudlet extends UniquelyIdentificable, Delayable, Comparable<C
      * @pre $none
      * @post $result >= 0.0
      */
-    long getCloudletFinishedSoFar();
+    long getFinishedLengthSoFar();
 
     /**
      * Gets the transaction history of this Cloudlet. The layout of this history
@@ -195,27 +194,7 @@ public interface Cloudlet extends UniquelyIdentificable, Delayable, Comparable<C
      * @pre $none
      * @post $result != null
      */
-    String getCloudletHistory();
-
-    /**
-     * Gets the execution length of this Cloudlet (in Million Instructions (MI))
-     * that will be executed in each defined PE.
-     *
-     * According to this length and the power of the VM processor (in
-     * Million Instruction Per Second - MIPS) where the cloudlet will be run,
-     * the cloudlet will take a given time to finish processing. For instance,
-     * for a cloudlet of 10000 MI running on a processor of 2000 MIPS, the
-     * cloudlet will spend 5 seconds using the processor in order to be
-     * completed (that may be uninterrupted or not, depending on the scheduling
-     * policy).
-     *
-     * @return the length of this Cloudlet
-     * @pre $none
-     * @post $result >= 0.0
-     * @see #getNumberOfPes()
-     * @see #getCloudletTotalLength()
-     */
-    long getCloudletLength();
+    String getHistory();
 
     /**
      * Gets the output file size of this Cloudlet after execution (in bytes).
@@ -227,7 +206,7 @@ public interface Cloudlet extends UniquelyIdentificable, Delayable, Comparable<C
      * @pre $none
      * @post $result >= 1
      */
-    long getCloudletOutputSize();
+    long getOutputSize();
 
     /**
      * Gets the execution status of this Cloudlet.
@@ -240,53 +219,34 @@ public interface Cloudlet extends UniquelyIdentificable, Delayable, Comparable<C
     Status getStatus();
 
     /**
-     * Gets the status code of this Cloudlet.
+     * Sets the parameters of the Datacenter where the Cloudlet is going to be
+     * executed. From the second time this method is called, every call makes the
+     * cloudlet to be migrated to the indicated Datacenter.
      *
-     * @return the status code of this Cloudlet
-     * @pre $none
-     * @post $result >= 0
-     * @deprecated Use the getter {@link #getStatus()} instead
+     * <p><b>NOTE</b>: This method <tt>should</tt> be called only by a {@link Datacenter} entity.</p>
+     *
+     * @param datacenter the Datacenter where the cloudlet will be executed
+     * @pre cost > 0.0
+     * @post $none
      */
-    @Deprecated
-    Status getCloudletStatus();
+    void assignToDatacenter(Datacenter datacenter);
 
     /**
      * Register the arrival time of this Cloudlet into a Datacenter to the
      * current simulation time and returns this time.
      *
-     * @return the arrived time set or {@link #NOT_ASSIGNED} if the cloudlet is not assigned to a switches
-     * @pre cloudlet is already assigned to a switches
+     * @return the arrived time set or {@link #NOT_ASSIGNED} if the cloudlet is not assigned to a Datacenter
+     * @pre cloudlet is already assigned to a Datacenter
      * @post $none
      */
-    double registerArrivalOfCloudletIntoDatacenter();
+    double registerArrivalInDatacenter();
 
     /**
-     * Gets the string representation of the current Cloudlet status code.
      *
-     * @return the Cloudlet status code as a string or <tt>null</tt> if the
-     * status code is unknown
-     * @pre $none
-     * @post $none
+     * @return true if the cloudlet has even been assigned to a Datacenter
+     * in order to run, false otherwise.
      */
-    String getCloudletStatusString();
-
-    /**
-     * Gets the total length (across all PEs) of this Cloudlet (in MI). It considers the
-     * {@link #getCloudletLength()} of the cloudlet will be executed in each Pe defined by
-     * {@link #getNumberOfPes()}.<br>
-     *
-     * For example, setting the cloudletLenght as 10000 MI and
-     * {@link #getNumberOfPes()} to 4, each Pe will execute 10000 MI. Thus, the
-     * entire cloudlet has a total length of 40000 MI.
-     *
-     *
-     * @return the total length of this Cloudlet (in MI)
-     *
-     * @see #setCloudletLength(long)
-     * @pre $none
-     * @post $result >= 0.0
-     */
-    long getCloudletTotalLength();
+    boolean isAssignedToDatacenter();
 
     /**
      * Gets the cost of each byte of bandwidth (bw) consumed.
@@ -305,16 +265,15 @@ public interface Cloudlet extends UniquelyIdentificable, Delayable, Comparable<C
     double getCostPerSec();
 
     /**
-     * Gets the cost running this Cloudlet in a given Datacenter ID.
+     * Gets the cost running this Cloudlet in a given Datacenter.
      *
-     * @param datacenterId the Datacenter entity ID
+     * @param datacenter the Datacenter entity
      * @return the cost associated with running this Cloudlet in the given Datacenter
      * or 0 if the Cloudlet was not executed there
      * not found
-     * @pre datacenterId >= 0
      * @post $result >= 0.0
      */
-    double getCostPerSec(final int datacenterId);
+    double getCostPerSec(final Datacenter datacenter);
 
 
     /**
@@ -343,7 +302,7 @@ public interface Cloudlet extends UniquelyIdentificable, Delayable, Comparable<C
      * Gets the time when this Cloudlet has completed executing in the latest Datacenter.
      * This time represents the simulation second when the cloudlet finished.
      *
-     * @return the finish or completion time of this Cloudlet; or <tt>-1</tt> if
+     * @return the finish or completion time of this Cloudlet; or {@link #NOT_ASSIGNED} if
      * not finished yet.
      * @pre $none
      */
@@ -354,21 +313,21 @@ public interface Cloudlet extends UniquelyIdentificable, Delayable, Comparable<C
      * Datacenter where it has executed.
      *
      * @return the arrival time or {@link #NOT_ASSIGNED} if
-     * the cloudlet has never been assigned to a switches
+     * the cloudlet has never been assigned to a Datacenter
      * @pre $none
      * @post $result >= 0.0
      */
-    double getDatacenterArrivalTime();
+    double getLastDatacenterArrivalTime();
 
     /**
      * Gets the arrival time of this Cloudlet in the given Datacenter.
      *
-     * @param datacenterId the Datacenter entity ID
-     * @return the submission time or 0 if the Cloudlet has never been executed in the given Datacenter
-     * @pre datacenterId >= 0
+     * @param datacenter the Datacenter entity
+     * @return the arrival time or {@link #NOT_ASSIGNED} if
+     * the cloudlet has never been assigned to a Datacenter
      * @post $result >= 0.0
      */
-    double getArrivalTime(final int datacenterId);
+    double getArrivalTime(final Datacenter datacenter);
 
     /**
      * Gets the priority of this Cloudlet for scheduling inside a Vm.
@@ -415,7 +374,7 @@ public interface Cloudlet extends UniquelyIdentificable, Delayable, Comparable<C
      *
      * @pre $none
      * @post $none
-     * @see #getCloudletTotalLength()
+     * @see #getTotalLength()
      */
     int getNumberOfPes();
 
@@ -430,13 +389,13 @@ public interface Cloudlet extends UniquelyIdentificable, Delayable, Comparable<C
     int getReservationId();
 
     /**
-     * Gets the ID of the latest {@link Datacenter} that has processed this Cloudlet.
+     * Gets the latest {@link Datacenter} where the Cloudlet was processed.
      *
-     * @return the Datacenter ID or <tt>{@link #NOT_ASSIGNED}</tt> if the Cloudlet
+     * @return the Datacenter or <tt>{@link Datacenter#NULL}</tt> if the Cloudlet
      * has not being processed yet.
      * @pre $none
      */
-    int getDatacenterId();
+    Datacenter getLastDatacenter();
 
     /**
      * Gets the utilization model that defines how the cloudlet will use the VM's
@@ -529,13 +488,12 @@ public interface Cloudlet extends UniquelyIdentificable, Delayable, Comparable<C
      * Gets the time of this Cloudlet resides in a given Datacenter (from
      * arrival time until departure time).
      *
-     * @param datacenterId a Datacenter entity ID
+     * @param datacenter a Datacenter entity
      * @return the time of this Cloudlet resides in the Datacenter
      * or 0 if the Cloudlet has never been executed there
-     * @pre datacenterId >= 0
      * @post $result >= 0.0
      */
-    double getWallClockTime(final int datacenterId);
+    double getWallClockTime(Datacenter datacenter);
 
     /**
      * Checks whether this Cloudlet is submitted by reserving or not.
@@ -557,32 +515,71 @@ public interface Cloudlet extends UniquelyIdentificable, Delayable, Comparable<C
     boolean isFinished();
 
     /**
+     * Gets the execution length of this Cloudlet (in Million Instructions (MI))
+     * that will be executed in each defined PE.
+     *
+     * <p>According to this length and the power of the VM processor (in
+     * Million Instruction Per Second - MIPS) where the cloudlet will be run,
+     * the cloudlet will take a given time to finish processing. For instance,
+     * for a cloudlet of 10000 MI running on a processor of 2000 MIPS, the
+     * cloudlet will spend 5 seconds using the processor in order to be
+     * completed (that may be uninterrupted or not, depending on the scheduling
+     * policy).
+     * </p>
+     *
+     * @return the length of this Cloudlet
+     * @pre $none
+     * @post $result >= 0.0
+     * @see #getNumberOfPes()
+     * @see #getTotalLength()
+     */
+    long getLength();
+
+    /**
      * Sets the execution length of this Cloudlet (in Million Instructions (MI))
      * that will be executed in each defined PE.
      *
-     * @param cloudletLength the length (in MI) of this Cloudlet to be executed in a Vm
+     * @param length the length (in MI) of this Cloudlet to be executed in a Vm
      * @return
      * @throws IllegalArgumentException when the given length is lower or equal to zero
      *
-     * @see #getCloudletTotalLength()
-     * @see #getCloudletLength()
-     * @pre cloudletLength > 0
+     * @see #getTotalLength()
+     * @see #getLength()
+     * @pre length > 0
      * @post $none
      */
-    Cloudlet setCloudletLength(final long cloudletLength);
+    Cloudlet setLength(final long length);
+
+    /**
+     * Gets the total length (across all PEs) of this Cloudlet (in MI). It considers the
+     * {@link #getLength()} of the cloudlet will be executed in each Pe defined by
+     * {@link #getNumberOfPes()}.
+     *
+     * <p>For example, setting the cloudletLenght as 10000 MI and
+     * {@link #getNumberOfPes()} to 4, each Pe will execute 10000 MI.
+     * Thus, the entire Cloudlet has a total length of 40000 MI.
+     * </p>
+     *
+     * @return the total length of this Cloudlet (in MI)
+     *
+     * @see #setLength(long)
+     * @pre $none
+     * @post $result >= 0.0
+     */
+    long getTotalLength();
 
     /**
      * Sets the input file size of this Cloudlet before execution (in bytes).
      * This size has to be considered the program + input data sizes.
      *
-     * @param cloudletFileSize the size to set (in bytes)
+     * @param fileSize the size to set (in bytes)
      * @return
      * @throws IllegalArgumentException when the given size is lower or equal to zero
      *
-     * @pre cloudletFileSize > 0
+     * @pre fileSize > 0
      * @post $none
      */
-    Cloudlet setCloudletFileSize(long cloudletFileSize);
+    Cloudlet setFileSize(long fileSize);
 
     /**
      * Sets the output file size of this Cloudlet after execution (in bytes).
@@ -590,26 +587,26 @@ public interface Cloudlet extends UniquelyIdentificable, Delayable, Comparable<C
      * that needs to be transferred thought the network to
      * simulate sending response data to the user.
      *
-     * @param cloudletOutputSize the output size to set (in bytes)
+     * @param outputSize the output size to set (in bytes)
      * @return
      * @throws IllegalArgumentException when the given size is lower or equal to zero
      * @pre $none
      * @post $result >= 1
      */
-    Cloudlet setCloudletOutputSize(long cloudletOutputSize);
+    Cloudlet setOutputSize(long outputSize);
 
     /**
-     * Sets the {@link #getStatus() execution status} of this Cloudlet.
+     * Sets the status of this Cloudlet.
      *
      * @param newStatus the status of this Cloudlet
      * @return true if the cloudlet status was changed,
      * i.e, if the newStatus is different from the current status; false otherwise
      * @post $none
      */
-    boolean setCloudletStatus(final Status newStatus);
+    boolean setStatus(final Status newStatus);
 
     /**
-     * Sets the {@link #getNetServiceLevel() Type of Service (ToS)} for sending this cloudlet over a
+     * Sets the Type of Service (ToS) for sending this cloudlet over a
      * network.
      *
      * @param netServiceLevel the new type of service (ToS) of this cloudlet
@@ -620,7 +617,7 @@ public interface Cloudlet extends UniquelyIdentificable, Delayable, Comparable<C
     boolean setNetServiceLevel(final int netServiceLevel);
 
     /**
-     * Sets the {@link #getNumberOfPes() number of PEs} required to run this Cloudlet. <br>
+     * Sets the number of PEs required to run this Cloudlet. <br>
      * NOTE: The Cloudlet length is computed only for 1 PE for simplicity. <br>
      * For example, consider a Cloudlet that has a length of 500 MI and requires
      * 2 PEs. This means each PE will execute 500 MI of this Cloudlet.
@@ -635,30 +632,13 @@ public interface Cloudlet extends UniquelyIdentificable, Delayable, Comparable<C
     Cloudlet setNumberOfPes(final int numberOfPes);
 
     /**
-     * Sets the {@link #getReservationId() id of the reservation} made for this cloudlet.
+     * Sets the id of the reservation made for this cloudlet.
      *
      * @param reservationId the reservation ID
      * @return <tt>true</tt> if the ID has successfully been set or
      * <tt>false</tt> otherwise.
      */
     boolean setReservationId(final int reservationId);
-
-    /**
-     * Sets the parameters of the Datacenter where the Cloudlet is going to be
-     * executed. <br>
-     * NOTE: This method <tt>should</tt> be called only by a resource entity,
-     * not the user or owner of this Cloudlet.
-     *
-     * @param datacenterId the id of Datacenter where the cloudlet will be executed
-     * @param costPerCpuSec the cost per second of running this Cloudlet on the Datacenter
-     * @param costPerByteOfBw the cost per byte of data transfer of the Datacenter
-     *
-     * @pre resourceID >= 0
-     * @pre cost > 0.0
-     * @post $none
-     */
-    void assignCloudletToDatacenter(
-            final int datacenterId, final double costPerCpuSec, final double costPerByteOfBw);
 
     /**
      * Sets a {@link DatacenterBroker} that represents the owner of the Cloudlet.
@@ -675,7 +655,7 @@ public interface Cloudlet extends UniquelyIdentificable, Delayable, Comparable<C
     DatacenterBroker getBroker();
 
     /**
-     * Sets the same utilization model for defining the usage of Bandwidth, CPU and RAM.
+     * Sets the <b>same utilization model</b> for defining the usage of Bandwidth, CPU and RAM.
      * To set different utilization models for each one of these resources, use the
      * respective setters.
      *
@@ -717,7 +697,7 @@ public interface Cloudlet extends UniquelyIdentificable, Delayable, Comparable<C
 
     /**
      * Sets the length of this Cloudlet that has been executed so far (in MI),
-     * according to the {@link #getCloudletLength()}.
+     * according to the {@link #getLength()}.
      * This method is used by ResCloudlet class when an application is decided to
      * cancel or to move this Cloudlet into different Datacenter.
      *
@@ -728,22 +708,22 @@ public interface Cloudlet extends UniquelyIdentificable, Delayable, Comparable<C
      * @pre length >= 0.0
      * @post $none
      */
-    boolean setCloudletFinishedSoFar(final long length);
+    boolean setFinishedLengthSoFar(final long length);
 
     /**
      * Gets the length of this Cloudlet that has been executed so far (in MI),
-     * according to the {@link #getCloudletLength()}.
+     * according to the {@link #getLength()}.
      * This method is useful when trying to move this Cloudlet
      * into different Datacenters or to cancel it.
      *
-     * @param datacenterId the Datacenter entity ID
+     * @param datacenter the Datacenter entity
      * @return the length of a partially executed Cloudlet; the full Cloudlet
      * length if it is completed; or 0 if the Cloudlet has never been executed
      * in the given Datacenter
      * @pre resId >= 0
      * @post $result >= 0.0
      */
-    long getCloudletFinishedSoFar(final int datacenterId);
+    long getFinishedLengthSoFar(Datacenter datacenter);
 
     /**
      * Sets the wall clock time the cloudlet spent
@@ -755,23 +735,16 @@ public interface Cloudlet extends UniquelyIdentificable, Delayable, Comparable<C
      *
      * @param wallTime the time of this Cloudlet resides in a Datacenter
      * (from arrival time until departure time).
-     * @param actualCPUTime the total execution time of this Cloudlet in a
+     * @param actualCpuTime the total execution time of this Cloudlet in a
      * Datacenter.
      * @return true if the submission time is valid and
-     * the cloudlet has already being assigned to a switches for execution
+     * the cloudlet has already being assigned to a Datacenter for execution
      *
      * @pre wallTime >= 0.0
      * @pre actualTime >= 0.0
      * @post $none
      */
-    boolean setWallClockTime(final double wallTime, final double actualCPUTime);
-
-    /**
-     *
-     * @return true if the cloudlet has even been assigned to a switches
-     * in order to run, false otherwise.
-     */
-    boolean isAssignedToDatacenter();
+    boolean setWallClockTime(final double wallTime, final double actualCpuTime);
 
     /**
      * Sets the {@link #getExecStartTime() latest execution start time} of this Cloudlet.
@@ -791,7 +764,7 @@ public interface Cloudlet extends UniquelyIdentificable, Delayable, Comparable<C
      * the processing of the Cloudlet is updated in its {@link Vm}.
      *
      * @param listener the listener to add
-     * @see #getCloudletFinishedSoFar()
+     * @see #getFinishedLengthSoFar()
      */
     Cloudlet addOnUpdateCloudletProcessingListener(EventListener<CloudletVmEventInfo> listener);
 
@@ -855,22 +828,20 @@ public interface Cloudlet extends UniquelyIdentificable, Delayable, Comparable<C
         @Override public boolean addRequiredFiles(List<String> fileNames) { return false; }
         @Override public boolean deleteRequiredFile(String filename) { return false; }
         @Override public double getAccumulatedBwCost() { return 0.0; }
-        @Override public double getActualCPUTime(int datacenterId) { return 0.0; }
-        @Override public double getActualCPUTime() { return 0.0; }
+        @Override public double getActualCpuTime(Datacenter datacenter) { return 0.0; }
+        @Override public double getActualCpuTime() { return 0.0; }
         @Override public int getPriority() { return 0; }
-        @Override public long getCloudletFileSize() { return 0L; }
-        @Override public long getCloudletFinishedSoFar() { return 0L; }
-        @Override public long getCloudletFinishedSoFar(int datacenterId) { return 0L; }
-        @Override public String getCloudletHistory() { return ""; }
+        @Override public long getFileSize() { return 0L; }
+        @Override public long getFinishedLengthSoFar() { return 0L; }
+        @Override public long getFinishedLengthSoFar(Datacenter datacenter) { return 0L; }
+        @Override public String getHistory() { return ""; }
         @Override public int getId() { return -1; }
-        @Override public long getCloudletLength() { return 0L; }
-        @Override public long getCloudletOutputSize() { return 0L; }
-        @Override public Status getCloudletStatus() { return Status.FAILED; }
-        @Override public String getCloudletStatusString() { return ""; }
-        @Override public long getCloudletTotalLength() { return 0L; }
+        @Override public long getLength() { return 0L; }
+        @Override public long getOutputSize() { return 0L; }
+        @Override public long getTotalLength() { return 0L; }
         @Override public double getCostPerBw(){ return 0.0; }
         @Override public double getCostPerSec(){ return 0.0; }
-        @Override public double getCostPerSec(int datacenterId) { return 0.0; }
+        @Override public double getCostPerSec(Datacenter datacenter) { return 0.0; }
         @Override public double getExecStartTime(){ return 0.0; }
         @Override public double getFinishTime(){ return 0.0; }
         @Override public int getNetServiceLevel(){ return 0; }
@@ -878,10 +849,10 @@ public interface Cloudlet extends UniquelyIdentificable, Delayable, Comparable<C
         @Override public double getTotalCost(){ return 0.0; }
         @Override public List<String> getRequiredFiles() { return Collections.emptyList();}
         @Override public int getReservationId() { return -1; }
-        @Override public int getDatacenterId() { return -1; }
-        @Override public Status getStatus() { return getCloudletStatus(); }
-        @Override public double getDatacenterArrivalTime() { return 0.0; }
-        @Override public double getArrivalTime(int datacenterId) { return 0.0; }
+        @Override public Datacenter getLastDatacenter() { return Datacenter.NULL; }
+        @Override public Status getStatus() { return Status.FAILED; }
+        @Override public double getLastDatacenterArrivalTime() { return 0.0; }
+        @Override public double getArrivalTime(Datacenter datacenter) { return 0.0; }
         @Override public UtilizationModel getUtilizationModelBw() { return UtilizationModel.NULL; }
         @Override public UtilizationModel getUtilizationModelCpu() { return UtilizationModel.NULL; }
         @Override public UtilizationModel getUtilizationModelRam() { return UtilizationModel.NULL; }
@@ -891,19 +862,19 @@ public interface Cloudlet extends UniquelyIdentificable, Delayable, Comparable<C
         @Override public Vm getVm() { return Vm.NULL; }
         @Override public double getWaitingTime() { return 0.0; }
         @Override public double getWallClockTimeInLastExecutedDatacenter() { return 0.0; }
-        @Override public double getWallClockTime(int datacenterId) { return 0.0; }
+        @Override public double getWallClockTime(Datacenter datacenter) { return 0.0; }
         @Override public boolean isReserved() { return false; }
         @Override public boolean isFinished() { return false; }
         @Override public boolean requiresFiles() { return false; }
         @Override public void setPriority(int priority) {}
-        @Override public Cloudlet setCloudletLength(long cloudletLength) { return Cloudlet.NULL; }
-        @Override public Cloudlet setCloudletFileSize(long cloudletFileSize) { return Cloudlet.NULL; }
-        @Override public Cloudlet setCloudletOutputSize(long cloudletOutputSize) { return Cloudlet.NULL; }
-        @Override public boolean setCloudletStatus(Status newStatus) { return false; }
+        @Override public Cloudlet setLength(long length) { return Cloudlet.NULL; }
+        @Override public Cloudlet setFileSize(long fileSize) { return Cloudlet.NULL; }
+        @Override public Cloudlet setOutputSize(long outputSize) { return Cloudlet.NULL; }
+        @Override public boolean setStatus(Status newStatus) { return false; }
         @Override public boolean setNetServiceLevel(int netServiceLevel) { return false; }
         @Override public Cloudlet setNumberOfPes(int numberOfPes) { return Cloudlet.NULL; }
         @Override public boolean setReservationId(int reservationId) { return false; }
-        @Override public void assignCloudletToDatacenter(int datacenterId, double costPerCpuSec, double costPerByteOfBw) {}
+        @Override public void assignToDatacenter(Datacenter datacenter) {}
         @Override public Cloudlet setBroker(DatacenterBroker broker) { return Cloudlet.NULL; }
         @Override public DatacenterBroker getBroker() { return DatacenterBroker.NULL; }
         @Override public Cloudlet setUtilizationModel(UtilizationModel utilizationModel) { return Cloudlet.NULL; }
@@ -924,9 +895,9 @@ public interface Cloudlet extends UniquelyIdentificable, Delayable, Comparable<C
         @Override public int compareTo(Cloudlet o) { return 0; }
         @Override public boolean isAssignedToDatacenter() { return false; }
         @Override public String toString() { return "Cloudlet.NULL"; }
-        @Override public boolean setCloudletFinishedSoFar(long length) { return false; }
-        @Override public boolean setWallClockTime(double wallTime, double actualCPUTime) { return false; }
+        @Override public boolean setFinishedLengthSoFar(long length) { return false; }
+        @Override public boolean setWallClockTime(double wallTime, double actualCpuTime) { return false; }
         @Override public void setExecStartTime(double clockTime) {}
-        @Override public double registerArrivalOfCloudletIntoDatacenter() { return -1; }
+        @Override public double registerArrivalInDatacenter() { return -1; }
     };
 }

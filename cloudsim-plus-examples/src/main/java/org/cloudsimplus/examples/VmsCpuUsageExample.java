@@ -40,7 +40,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * An example showing how to create a datacenter with two hosts and run
+ * An example showing how to create a dc with two hosts and run
  * two cloudlets on it. At the end, it shows the total CPU utilization of VMs
  * into a Datacenter.
  *
@@ -110,8 +110,8 @@ public class VmsCpuUsageExample {
         UtilizationModel utilizationModel = new UtilizationModelFull();
 
         Cloudlet cloudlet = new CloudletSimple(id, length, pesNumber);
-        cloudlet.setCloudletFileSize(fileSize)
-            .setCloudletOutputSize(outputSize)
+        cloudlet.setFileSize(fileSize)
+            .setOutputSize(outputSize)
             .setUtilizationModel(utilizationModel)
             .setBroker(broker);
         return cloudlet;

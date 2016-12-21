@@ -123,8 +123,8 @@ public class NetworkVmsExampleWithMetrics {
         for (int i = 0; i < cloudlets; i++) {
             NetworkCloudlet cloudlet = new NetworkCloudlet(i, length, pesNumber);
             cloudlet.setMemory(memory)
-                    .setCloudletFileSize(fileSize)
-                    .setCloudletOutputSize(outputSize)
+                    .setFileSize(fileSize)
+                    .setOutputSize(outputSize)
                     .setUtilizationModel(utilizationModel)
                     .setBroker(broker);
             list.add(cloudlet);
@@ -245,7 +245,7 @@ public class NetworkVmsExampleWithMetrics {
     /**
      * Creates internal Datacenter network.
      *
-     * @param datacenter datacenter where the network will be created
+     * @param datacenter dc where the network will be created
      */
     protected void createNetwork(NetworkDatacenter datacenter) {
         EdgeSwitch[] edgeSwitches = new EdgeSwitch[1];

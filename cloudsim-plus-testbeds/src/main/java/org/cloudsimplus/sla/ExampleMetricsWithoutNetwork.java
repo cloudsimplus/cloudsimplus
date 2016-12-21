@@ -145,8 +145,8 @@ public final class ExampleMetricsWithoutNetwork {
 
         for (int i = 0; i < cloudlets; i++) {
             Cloudlet cloudlet = new CloudletSimple(i, length, CLOUDLET_PES)
-                    .setCloudletFileSize(fileSize)
-                    .setCloudletOutputSize(outputSize)
+                    .setFileSize(fileSize)
+                    .setOutputSize(outputSize)
                     .setBroker(broker)
                     .setUtilizationModel(utilizationModel);
             list.add(cloudlet);
@@ -183,7 +183,7 @@ public final class ExampleMetricsWithoutNetwork {
 
         double responseTime = 0;
         for (Cloudlet cloudlet : cloudlets) {
-            responseTime = cloudlet.getFinishTime() - cloudlet.getDatacenterArrivalTime();
+            responseTime = cloudlet.getFinishTime() - cloudlet.getLastDatacenterArrivalTime();
         }
         return responseTime;
 
@@ -198,7 +198,7 @@ public final class ExampleMetricsWithoutNetwork {
     private double cpuUtilization(List<Cloudlet> cloudlet) {
         double cpuTime = 0;
         for (Cloudlet cloudlets : cloudlet) {
-            cpuTime += cloudlets.getActualCPUTime();
+            cpuTime += cloudlets.getActualCpuTime();
         }
         return (cpuTime * 100) / 100;
     }
@@ -319,7 +319,7 @@ public final class ExampleMetricsWithoutNetwork {
     /**
      * Creates the DATACENTER.
      *
-     * @return the datacenter
+     * @return the dc
      */
     private Datacenter createDatacenter() {
         hostList = new ArrayList<>();

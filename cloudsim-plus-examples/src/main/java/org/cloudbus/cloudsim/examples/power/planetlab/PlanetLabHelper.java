@@ -1,7 +1,6 @@
 package org.cloudbus.cloudsim.examples.power.planetlab;
 
 import java.io.File;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -59,8 +58,8 @@ public class PlanetLabHelper {
 								Constants.SCHEDULING_INTERVAL);
 				CloudletSimple cloudlet = new CloudletSimple(
                         i, Constants.CLOUDLET_LENGTH, Constants.CLOUDLET_PES);
-				cloudlet.setCloudletFileSize(fileSize)
-                        .setCloudletOutputSize(outputSize)
+				cloudlet.setFileSize(fileSize)
+                        .setOutputSize(outputSize)
 						.setUtilizationModelCpu(utilizationModelCPU)
                         .setUtilizationModelRam(utilizationModelNull)
                         .setUtilizationModelBw(utilizationModelNull);

@@ -106,7 +106,7 @@ public class CloudletSchedulerTimeSharedTest {
 
     private void createCloudletAndAddItToPausedList(CloudletSchedulerTimeShared instance, int cloudletId, long cloudletLength) {
         CloudletSimple cloudlet = CloudletSimpleTest.createCloudlet(cloudletId, cloudletLength, 1);
-        cloudlet.setCloudletStatus(Cloudlet.Status.PAUSED);
+        cloudlet.setStatus(Cloudlet.Status.PAUSED);
         instance.getCloudletPausedList().add(new CloudletExecutionInfo(cloudlet));
     }
 
@@ -241,7 +241,7 @@ public class CloudletSchedulerTimeSharedTest {
             createCloudletSchedulerWithMipsList(numberOfCloudlets, mips);
         for(int i = 0; i < numberOfCloudlets; i++) {
             Cloudlet c = CloudletSimpleTest.createCloudletWithOnePe(i, mips);
-            c.assignCloudletToDatacenter(0, 0, 0);
+            c.assignToDatacenter(0);
             instance.addCloudletToExecList(new CloudletExecutionInfo(c));
         }
 
@@ -271,7 +271,7 @@ public class CloudletSchedulerTimeSharedTest {
             createCloudletSchedulerWithMipsList(1, mips);
         for(int i = 0; i < numberOfCloudlets; i++) {
             Cloudlet c = CloudletSimpleTest.createCloudletWithOnePe(i, mips);
-            c.assignCloudletToDatacenter(0, 0, 0);
+            c.assignToDatacenter(0);
             instance.addCloudletToExecList(new CloudletExecutionInfo(c));
         }
 

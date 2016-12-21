@@ -126,14 +126,14 @@ public class CloudletExecutionInfo {
      */
     public CloudletExecutionInfo(Cloudlet cloudlet, long startTime) {
         this.cloudlet = cloudlet;
-        this.arrivalTime = cloudlet.registerArrivalOfCloudletIntoDatacenter();
+        this.arrivalTime = cloudlet.registerArrivalInDatacenter();
         this.finishedTime = Cloudlet.NOT_ASSIGNED;
         this.totalCompletionTime = 0.0;
         this.startExecTime = 0.0;
         this.virtualRuntime = 0;
 
         //In case a Cloudlet has been executed partially by some other Host
-        this.cloudletFinishedSoFar = cloudlet.getCloudletFinishedSoFar() * Consts.MILLION;
+        this.cloudletFinishedSoFar = cloudlet.getFinishedLengthSoFar() * Consts.MILLION;
     }
 
     /**
@@ -144,7 +144,7 @@ public class CloudletExecutionInfo {
      * @post $none
      */
     public long getCloudletLength() {
-        return cloudlet.getCloudletLength();
+        return cloudlet.getLength();
     }
 
     /**
@@ -170,7 +170,7 @@ public class CloudletExecutionInfo {
             double clock = cloudlet.getSimulation().clock();   // gets the current clock
 
             // sets Cloudlet's current status
-            cloudlet.setCloudletStatus(status);
+            cloudlet.setStatus(status);
 
             if (prevStatus == Cloudlet.Status.INEXEC && isNotRunning(status)) {
                 // then update the Cloudlet completion time
@@ -210,14 +210,14 @@ public class CloudletExecutionInfo {
 
     /**
      * Gets the remaining cloudlet length (in MI) that has to be execute yet,
-     * considering the {@link Cloudlet#getCloudletTotalLength()}.
+     * considering the {@link Cloudlet#getTotalLength()}.
      *
      * @return cloudlet length
      * @pre $none
      * @post $result >= 0
      */
     public long getRemainingCloudletLength() {
-        long length = cloudlet.getCloudletTotalLength() * Consts.MILLION - cloudletFinishedSoFar;
+        long length = cloudlet.getTotalLength() * Consts.MILLION - cloudletFinishedSoFar;
 
         // Remaining Cloudlet length can't be negative number.
         if (length < 0) {
@@ -249,12 +249,12 @@ public class CloudletExecutionInfo {
         long finishedLengthAcrossAllPes;
         //if (cloudlet.getCloudletTotalLength() * Consts.MILLION < cloudletFinishedSoFar) {
         if (cloudlet.getStatus() == Cloudlet.Status.SUCCESS) {
-            finishedLengthAcrossAllPes = cloudlet.getCloudletLength();
+            finishedLengthAcrossAllPes = cloudlet.getLength();
         } else {
             finishedLengthAcrossAllPes = cloudletFinishedSoFar / Consts.MILLION;
         }
 
-        cloudlet.setCloudletFinishedSoFar(finishedLengthAcrossAllPes);
+        cloudlet.setFinishedLengthSoFar(finishedLengthAcrossAllPes);
     }
 
     /**
@@ -272,10 +272,10 @@ public class CloudletExecutionInfo {
         this.cloudletFinishedSoFar += numberOfExecutedInstructions;
         this.cloudletFinishedSoFar =
                 Math.min(this.cloudletFinishedSoFar,
-                        cloudlet.getCloudletTotalLength()*Consts.MILLION);
+                        cloudlet.getTotalLength()*Consts.MILLION);
 
         double finishedSoFarByPeMI = cloudletFinishedSoFar  / cloudlet.getNumberOfPes() / Consts.MILLION;
-        cloudlet.setCloudletFinishedSoFar((long)finishedSoFarByPeMI);
+        cloudlet.setFinishedLengthSoFar((long)finishedSoFarByPeMI);
     }
 
     /**

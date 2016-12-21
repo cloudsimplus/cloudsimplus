@@ -358,9 +358,9 @@ public class SwfWorkloadFormatExample1 {
                     (i+1),
                     cloudlet.getId(),
                     cloudlet.getStatus().name(),
-                    cloudlet.getDatacenterId(),
+                    cloudlet.getLastDatacenter(),
                     cloudlet.getVm().getId(),
-                    cloudlet.getActualCPUTime(),
+                    cloudlet.getActualCpuTime(),
                     cloudlet.getExecStartTime(),
                     cloudlet.getFinishTime()
                 );

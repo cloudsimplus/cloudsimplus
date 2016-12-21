@@ -581,9 +581,7 @@ public class DatacenterSimple extends CloudSimEntity implements Datacenter {
             }
 
             // process this Cloudlet to this Datacenter
-            cl.assignCloudletToDatacenter(
-                    getId(), getCharacteristics().getCostPerSecond(),
-                    getCharacteristics().getCostPerBw());
+            cl.assignToDatacenter(this);
 
             submitCloudletToVm(cl, ack);
         } catch (ClassCastException c) {

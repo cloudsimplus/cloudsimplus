@@ -175,8 +175,8 @@ abstract class CloudletSchedulerExperiment extends SimulationExperiment {
             //Sets the same utilization model for all these resources.
             UtilizationModel utilization = new UtilizationModelFull();
             return new CloudletSimple(getNumberOfCreatedCloudlets(), CLOUDLET_LENGHT_MI, cloudletPes)
-                .setCloudletFileSize(fileSize)
-                .setCloudletOutputSize(outputSize)
+                .setFileSize(fileSize)
+                .setOutputSize(outputSize)
                 .setUtilizationModel(utilization)
                 .setBroker(broker);
         };

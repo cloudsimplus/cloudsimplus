@@ -170,8 +170,8 @@ public class CloudSimExample0 {
         Cloudlet cloudlet
                 = new CloudletSimple(
                         cloudletList.size(), length, numberOfCpuCores)
-                        .setCloudletFileSize(fileSize)
-                        .setCloudletOutputSize(outputSize)
+                        .setFileSize(fileSize)
+                        .setOutputSize(outputSize)
                         .setUtilizationModel(utilization)
                         .setBroker(broker)
                         .setVm(vm);

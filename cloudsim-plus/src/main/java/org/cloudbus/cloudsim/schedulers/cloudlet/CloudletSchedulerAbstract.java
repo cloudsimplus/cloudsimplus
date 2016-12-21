@@ -18,7 +18,6 @@ import org.cloudbus.cloudsim.cloudlets.Cloudlet.Status;
 import org.cloudbus.cloudsim.cloudlets.CloudletExecutionInfo;
 import org.cloudbus.cloudsim.util.Consts;
 import org.cloudbus.cloudsim.vms.Vm;
-import org.cloudsimplus.listeners.CloudletVmEventInfo;
 import org.cloudbus.cloudsim.resources.Processor;
 
 /**
@@ -566,7 +565,7 @@ public abstract class CloudletSchedulerAbstract implements CloudletScheduler {
     private boolean hasCloudletFileTransferTimePassed(CloudletExecutionInfo rcl, double currentTime) {
         return rcl.getFileTransferTime() == 0
                 || currentTime - rcl.getLastProcessingTime() > rcl.getFileTransferTime()
-                || rcl.getCloudlet().getCloudletFinishedSoFar() > 0;
+                || rcl.getCloudlet().getFinishedLengthSoFar() > 0;
     }
 
     /**

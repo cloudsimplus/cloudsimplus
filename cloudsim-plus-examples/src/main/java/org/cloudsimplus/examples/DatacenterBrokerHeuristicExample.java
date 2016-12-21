@@ -262,8 +262,8 @@ public class DatacenterBrokerHeuristicExample {
         UtilizationModel utilization = new UtilizationModelFull();
 
         return new CloudletSimple(numberOfCreatedCloudlets++, length, numberOfPes)
-        .setCloudletFileSize(fileSize)
-        .setCloudletOutputSize(outputSize)
+        .setFileSize(fileSize)
+        .setOutputSize(outputSize)
         .setUtilizationModel(utilization)
         .setBroker(broker);
     }
@@ -295,7 +295,7 @@ public class DatacenterBrokerHeuristicExample {
             System.out.printf(
                 "Cloudlet %3d (%d PEs, %6d MI) mapped to Vm %3d (%d PEs, %6.0f MIPS)\n",
                 e.getKey().getId(),
-                e.getKey().getNumberOfPes(), e.getKey().getCloudletLength(),
+                e.getKey().getNumberOfPes(), e.getKey().getLength(),
                 e.getValue().getId(),
                 e.getValue().getNumberOfPes(), e.getValue().getMips());
         }

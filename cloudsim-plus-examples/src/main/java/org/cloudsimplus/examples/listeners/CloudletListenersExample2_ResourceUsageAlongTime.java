@@ -235,8 +235,8 @@ public class CloudletListenersExample2_ResourceUsageAlongTime {
 
         Cloudlet cloudlet =
             new CloudletSimple(id, length, pesNumber)
-                .setCloudletFileSize(fileSize)
-                .setCloudletOutputSize(outputSize)
+                .setFileSize(fileSize)
+                .setOutputSize(outputSize)
                 .setUtilizationModelCpu(cpuUtilizationModel)
                 .setUtilizationModelRam(ramUtilizationModel)
                 .setUtilizationModelBw(bwUtilizationModel)

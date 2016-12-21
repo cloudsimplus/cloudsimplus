@@ -146,8 +146,8 @@ public class BasicFirstExample {
         for (int c = 0; c < CLOUDLETS; c++) {
             Cloudlet cloudlet =
                 new CloudletSimple(c, 10000, 2)
-                    .setCloudletFileSize(1024)
-                    .setCloudletOutputSize(1024)
+                    .setFileSize(1024)
+                    .setOutputSize(1024)
                     .setUtilizationModel(utilization)
                     .setBroker(broker0);
             cloudletList.add(cloudlet);

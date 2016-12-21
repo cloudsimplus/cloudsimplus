@@ -162,7 +162,7 @@ public final class CheckCloudletStartDelayForTransferRequiredFilesTest {
 			 * delay to transfer the cloudlet required files to the Vm.
 			 * The transfer time has to be implemented delaying the cloudlet processing
 			 * not increasing the cloudlet length.*/
-			assertEquals(String.format("Cloudlet %d", c.getId()), CLOUDLET_LENGTH, c.getCloudletLength(), 0.1);
+			assertEquals(String.format("Cloudlet %d", c.getId()), CLOUDLET_LENGTH, c.getLength(), 0.1);
 		}
 	    printCloudletsExecutionResults();
     }

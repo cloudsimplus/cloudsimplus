@@ -51,16 +51,16 @@ public class RandomHelper {
 			if (seed == -1) {
 				cloudlet = new CloudletSimple(i,Constants.CLOUDLET_LENGTH, Constants.CLOUDLET_PES);
                 cloudlet
-                        .setCloudletFileSize(fileSize)
-                        .setCloudletOutputSize(outputSize)
+                        .setFileSize(fileSize)
+                        .setOutputSize(outputSize)
 						.setUtilizationModelCpu(new UtilizationModelStochastic())
 						.setUtilizationModelRam(utilizationModelNull)
 						.setUtilizationModelBw(utilizationModelNull);
 			} else {
 				cloudlet = new CloudletSimple(i,Constants.CLOUDLET_LENGTH, Constants.CLOUDLET_PES);
                 cloudlet
-                        .setCloudletFileSize(fileSize)
-                        .setCloudletOutputSize(outputSize)
+                        .setFileSize(fileSize)
+                        .setOutputSize(outputSize)
 						.setUtilizationModelCpu(new UtilizationModelStochastic(seed*i))
 						.setUtilizationModelRam(utilizationModelNull)
 						.setUtilizationModelBw(utilizationModelNull);

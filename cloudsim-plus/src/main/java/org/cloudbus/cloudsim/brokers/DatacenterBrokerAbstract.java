@@ -536,7 +536,7 @@ public abstract class DatacenterBrokerAbstract extends CloudSimEntity implements
     /**
      * Gets the list of available datacenters.
      *
-     * @return the datacenter list
+     * @return the dc list
      */
     protected List<Datacenter> getDatacenterList() {
         return datacenterList;
@@ -545,7 +545,7 @@ public abstract class DatacenterBrokerAbstract extends CloudSimEntity implements
     /**
      * Sets the list of available datacenters.
      *
-     * @param datacenterList the new datacenter list
+     * @param datacenterList the new dc list
      */
     protected final void setDatacenterList(Set<Datacenter> datacenterList) {
         this.datacenterList = new ArrayList<>(datacenterList);
