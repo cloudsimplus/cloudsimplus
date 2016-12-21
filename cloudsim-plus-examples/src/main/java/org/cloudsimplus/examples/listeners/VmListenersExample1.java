@@ -70,9 +70,9 @@ import org.cloudbus.cloudsim.resources.Ram;
  * The example uses the new Vm listeners to get these
  * notifications while the simulation is running.
  *
- * @see Vm#setOnHostAllocationListener(EventListener)
- * @see Vm#setOnHostDeallocationListener(EventListener)
- * @see Vm#setOnVmCreationFailureListener(EventListener)
+ * @see Vm#addOnHostAllocationListener(EventListener)
+ * @see Vm#addOnHostDeallocationListener(EventListener)
+ * @see Vm#addOnVmCreationFailureListener(EventListener)
  * @see EventListener
  *
  * @author Manoel Campos da Silva Filho
@@ -111,7 +111,6 @@ public class VmListenersExample1 {
      * Default constructor that builds and starts the simulation.
      */
     public VmListenersExample1() {
-        int numberOfUsers = 1; // number of cloud users/customers (brokers)
         simulation = new CloudSim();
 
         this.hostList = new ArrayList<>();
@@ -157,24 +156,24 @@ public class VmListenersExample1 {
         /* Sets the Listener to intercept allocation of a Host to the Vm.
          * The Listener is created using Java 8 Lambda Expressions.
         */
-        vm0.setOnHostAllocationListener(evt -> Log.printFormattedLine(
+        vm0.addOnHostAllocationListener(eventInfo -> Log.printFormattedLine(
                 "\n\t#EventListener: Host %d allocated to Vm %d at time %.2f\n",
-                evt.getHost().getId(), evt.getVm().getId(), evt.getTime()));
+                eventInfo.getHost().getId(), eventInfo.getVm().getId(), eventInfo.getTime()));
 
         /* Sets the listener to intercept deallocation of a Host for the Vm.
          * The Listener is created using Java 8 Lambda Expressions.
         */
-        vm0.setOnHostDeallocationListener(evt -> Log.printFormattedLine(
+        vm0.addOnHostDeallocationListener(eventInfo -> Log.printFormattedLine(
                 "\n\t#EventListener: Vm %d moved/removed from Host %d at time %.2f\n",
-                evt.getVm().getId(), evt.getHost().getId(), evt.getTime()));
+                eventInfo.getVm().getId(), eventInfo.getHost().getId(), eventInfo.getTime()));
 
         /* This VM will not be place due to lack of a suitable host.
          * The Listener is created using Java 8 Lambda Expressions.
          */
         Vm vm1 = createVm(1);
-        vm1.setOnVmCreationFailureListener(evt -> Log.printFormattedLine(
+        vm1.addOnVmCreationFailureListener(eventInfo -> Log.printFormattedLine(
                 "\n\t#EventListener: Vm %d could not be placed into any host of Datacenter %d at time %.2f due to lack of a host with enough resources.\n",
-                evt.getVm().getId(), evt.getDatacenter().getId(), evt.getTime()));
+                eventInfo.getVm().getId(), eventInfo.getDatacenter().getId(), eventInfo.getTime()));
 
         this.vmList.add(vm0);
         this.vmList.add(vm1);

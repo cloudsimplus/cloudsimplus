@@ -18,7 +18,7 @@ import org.cloudbus.cloudsim.cloudlets.Cloudlet.Status;
 import org.cloudbus.cloudsim.cloudlets.CloudletExecutionInfo;
 import org.cloudbus.cloudsim.util.Consts;
 import org.cloudbus.cloudsim.vms.Vm;
-import org.cloudsimplus.listeners.VmToCloudletEventInfo;
+import org.cloudsimplus.listeners.CloudletVmEventInfo;
 import org.cloudbus.cloudsim.resources.Processor;
 
 /**
@@ -303,7 +303,8 @@ public abstract class CloudletSchedulerAbstract implements CloudletScheduler {
     public int getCloudletStatus(int cloudletId) {
         Optional<CloudletExecutionInfo> optional = findCloudletInAllLists(cloudletId);
         return optional
-                    .map(CloudletExecutionInfo::getCloudletStatus)
+                    .map(CloudletExecutionInfo::getCloudlet)
+                    .map(Cloudlet::getStatus)
                     .map(Status::ordinal)
                     .orElse(-1);
     }
@@ -490,10 +491,6 @@ public abstract class CloudletSchedulerAbstract implements CloudletScheduler {
         if (numberExecutedInstructions > 0) {
             rcl.setLastProcessingTime(currentTime);
         }
-
-        Cloudlet cloudlet = rcl.getCloudlet();
-        VmToCloudletEventInfo evt = new VmToCloudletEventInfo(currentTime, vm, cloudlet);
-        cloudlet.getOnUpdateCloudletProcessingListener().update(evt);
     }
 
     /**

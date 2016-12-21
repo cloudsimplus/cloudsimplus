@@ -49,7 +49,7 @@ import org.cloudbus.cloudsim.vms.Vm;
 import org.cloudbus.cloudsim.vms.VmSimple;
 import org.cloudsimplus.listeners.EventInfo;
 import org.cloudsimplus.listeners.EventListener;
-import org.cloudsimplus.listeners.VmToCloudletEventInfo;
+import org.cloudsimplus.listeners.CloudletVmEventInfo;
 import org.cloudsimplus.util.tablebuilder.CloudletsTableBuilderHelper;
 
 import java.util.ArrayList;
@@ -66,7 +66,7 @@ import java.util.List;
  * the simulation was paused, allowing to collect the desired data.
  * This example uses the Java 8 Lambda Functions features
  * to pass a listener to a {@link CloudSim} instance, by means of the
- * {@link CloudSim#setOnSimulationPausedListener(EventListener)} method.
+ * {@link CloudSim#addOnSimulationPausedListener(EventListener)} method.
  * However, the same feature can be used for Java 7 passing an anonymous class
  * that implements {@code EventListener<EventInfo>}.</p>
  *
@@ -74,7 +74,7 @@ import java.util.List;
  * @since CloudSim Plus 1.0
  *
  * @see CloudSim#pause(double)
- * @see CloudSim#setOnSimulationPausedListener(EventListener)
+ * @see CloudSim#addOnSimulationPausedListener(EventListener)
  * @see EventListener
  */
 public class PauseSimulationAtGivenTimeExample1 {
@@ -159,7 +159,7 @@ public class PauseSimulationAtGivenTimeExample1 {
         * that will be executed only when the simulation is paused.
         * */
         this.simulation
-            .setOnSimulationPausedListener(pauseInfo -> printCloudletsFinishedSoFarAndResumeSimulation(pauseInfo));
+            .addOnSimulationPausedListener(pauseInfo -> printCloudletsFinishedSoFarAndResumeSimulation(pauseInfo));
 
         /* Starts the simulation and waits all cloudlets to be executed. */
         this.simulation.start();
@@ -189,7 +189,7 @@ public class PauseSimulationAtGivenTimeExample1 {
      * If so, request the simulation interruption.
      * @param event object containing data about the happened event
      */
-    private void onClouletProcessingUpdate(VmToCloudletEventInfo event) {
+    private void onClouletProcessingUpdate(CloudletVmEventInfo event) {
         if(event.getCloudlet().getCloudletFinishedSoFar() >= event.getCloudlet().getCloudletLength()/2.0){
             Log.printFormattedLine("Cloudlet %d reached 50% of execution. Intentionally requesting termination of the simulation at time %.2f",
                 event.getCloudlet().getId(), simulation.clock());

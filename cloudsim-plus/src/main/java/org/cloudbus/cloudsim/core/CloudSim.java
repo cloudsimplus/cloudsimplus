@@ -16,7 +16,6 @@ import org.cloudbus.cloudsim.network.topologies.NetworkTopology;
 import org.cloudbus.cloudsim.util.Log;
 import java.util.function.Predicate;
 import org.cloudsimplus.listeners.EventInfo;
-import org.cloudsimplus.listeners.EventInfoSimple;
 import org.cloudsimplus.listeners.EventListener;
 
 import static java.util.stream.Collectors.toList;
@@ -121,11 +120,6 @@ public class CloudSim implements Simulation {
     private boolean abort = false;
 
     /**
-     * @see #getOnEventProcessingListener()
-     */
-    private EventListener<SimEvent> onEventProcessingListener = EventListener.NULL;
-
-    /**
      * Indicates if the simulation already run once.
      * If yes, it can't run again.
      * If you paused the simulation and wants to resume it,
@@ -133,10 +127,8 @@ public class CloudSim implements Simulation {
      */
     private boolean alreadyRunOnce;
 
-    /**
-     * @see #getOnSimulationPausedListener()
-     */
-    private EventListener<EventInfo> onSimulationPausedListener;
+    private List<EventListener<SimEvent>> onEventProcessingListeners;
+    private List<EventListener<EventInfo>> onSimulationPausedListeners;
 
     /**
      * Creates a CloudSim simulation using a default calendar.
@@ -172,10 +164,10 @@ public class CloudSim implements Simulation {
         this.clock = 0;
         this.running = false;
         this.alreadyRunOnce = false;
-        setOnSimulationPausedListener(EventListener.NULL);
-        setOnEventProcessingListener(EventListener.NULL);
+        this.onEventProcessingListeners = new ArrayList<>();
+        this.onSimulationPausedListeners = new ArrayList<>();
 
-        // NOTE: the order for the below 3 lines are important
+        // NOTE: the order for the lines below is important
         this.calendar = (Objects.isNull(calendar) ? Calendar.getInstance() : calendar);
         this.cis = new CloudInformationService(this);
     }
@@ -494,7 +486,7 @@ public class CloudSim implements Simulation {
             throw new IllegalArgumentException("Past event detected.");
         }
         clock = e.eventTime();
-        onEventProcessingListener.update(e);
+        notifyOnEventProcessingListeners(e);
 
         // Ok now process it
         switch (e.getType()) {
@@ -540,6 +532,14 @@ public class CloudSim implements Simulation {
             default:
                 break;
         }
+    }
+
+    /**
+     * Notifies all registered listeners when a {@link SimEvent} is processed by the simulation.
+     * @param e the processed event
+     */
+    private void notifyOnEventProcessingListeners(SimEvent e) {
+        onEventProcessingListeners.forEach(l -> l.update(e));
     }
 
     /**
@@ -669,11 +669,18 @@ public class CloudSim implements Simulation {
         if(running && isPauseRequested()) {
             paused=true;
             clock = pauseAt;
-            onSimulationPausedListener.update(new EventInfoSimple(clock));
+            notifyOnSimulationPausedListeners();
             return true;
         }
 
         return false;
+    }
+
+    /**
+     * Notifies all registered listeners when the simulation is paused.
+     */
+    private void notifyOnSimulationPausedListeners() {
+        onSimulationPausedListeners.forEach(l -> l.update(EventInfo.of(clock)));
     }
 
     private boolean isPauseRequested() {
@@ -743,31 +750,30 @@ public class CloudSim implements Simulation {
     }
 
     @Override
-    public EventListener<SimEvent> getOnEventProcessingListener() {
-        return onEventProcessingListener;
+    public boolean removeOnEventProcessingListener(EventListener<SimEvent> listener) {
+        return onEventProcessingListeners.remove(listener);
     }
 
     @Override
-    public final Simulation setOnSimulationPausedListener(EventListener<EventInfo> onSimulationPausedListener) {
-        if(Objects.isNull(onSimulationPausedListener)){
-            onSimulationPausedListener = EventListener.NULL;
+    public final Simulation addOnSimulationPausedListener(EventListener<EventInfo> listener) {
+        if(!Objects.isNull(listener)){
+            this.onSimulationPausedListeners.add(listener);
         }
-        this.onSimulationPausedListener = onSimulationPausedListener;
+
         return this;
     }
 
     @Override
-    public EventListener<EventInfo> getOnSimulationPausedListener() {
-        return this.onSimulationPausedListener;
+    public boolean removeOnSimulationPausedListener(EventListener<EventInfo> listener) {
+        return this.onSimulationPausedListeners.remove(listener);
     }
 
     @Override
-    public final Simulation setOnEventProcessingListener(EventListener<SimEvent> onEventProcessingListener) {
-        if(Objects.isNull(onEventProcessingListener)) {
-            onEventProcessingListener = EventListener.NULL;
+    public final Simulation addOnEventProcessingListener(EventListener<SimEvent> listener) {
+        if(!Objects.isNull(listener)) {
+            this.onEventProcessingListeners.add(listener);
         }
 
-        this.onEventProcessingListener = onEventProcessingListener;
         return this;
     }
 

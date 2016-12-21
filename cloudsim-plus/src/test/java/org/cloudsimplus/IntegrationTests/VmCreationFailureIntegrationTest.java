@@ -37,9 +37,9 @@ import org.cloudsimplus.builders.BrokerBuilderDecorator;
 import org.cloudsimplus.builders.HostBuilder;
 import org.cloudsimplus.builders.SimulationScenarioBuilder;
 import org.cloudbus.cloudsim.core.CloudSim;
-import org.cloudsimplus.listeners.DatacenterToVmEventInfo;
+import org.cloudsimplus.listeners.VmHostEventInfo;
+import org.cloudsimplus.listeners.VmDatacenterEventInfo;
 import org.cloudsimplus.listeners.EventListener;
-import org.cloudsimplus.listeners.HostToVmEventInfo;
 import org.cloudsimplus.util.tablebuilder.CloudletsTableBuilderHelper;
 import org.cloudbus.cloudsim.utilizationmodels.UtilizationModelFull;
 import org.junit.Test;
@@ -63,7 +63,7 @@ import org.junit.Before;
  * <p>The IT uses the new VM listeners to get notified when a host is allocated,
  * deallocated for a given VM and when a VM fails to be created due to lack of
  * host resources. It also relies on the new CloudSim
- * {@link CloudSim#getOnEventProcessingListener()} listener to be notified every time
+ * {@link CloudSim#removeOnEventProcessingListener()} listener to be notified every time
  * when any event is processed by CloudSim. By this way, it is possible to
  * verify, for instance, if the resource usage of a given host at a given time
  * is as expected.</p>
@@ -71,11 +71,11 @@ import org.junit.Before;
  * <i><b>NOTE</b>:See the profile section in the pom.xml for details of how to
  * run all tests, including Functional/Integration Tests in this package.</i>
  *
- * @see Vm#setOnHostAllocationListener(EventListener)
- * @see Vm#setOnHostDeallocationListener(EventListener)
- * @see Vm#setOnVmCreationFailureListener(EventListener)
- * @see CloudSim#setOnEventProcessingListener(EventListener)
- * @see Cloudlet#setOnCloudletFinishEventListener(EventListener)
+ * @see Vm#addOnHostAllocationListener(EventListener)
+ * @see Vm#addOnHostDeallocationListener(EventListener)
+ * @see Vm#addOnVmCreationFailureListener(EventListener)
+ * @see CloudSim#addOnEventProcessingListener(EventListener)
+ * @see Cloudlet#addOnCloudletFinishListener(EventListener)
  *
  * @author Manoel Campos da Silva Filho
  */
@@ -93,14 +93,14 @@ public final class VmCreationFailureIntegrationTest {
     private CloudSim simulation;
 
     /**
-     * A lambda function used by an {@link Vm#setOnHostAllocationListener(EventListener)}  }
+     * A lambda function used by an {@link Vm#addOnHostAllocationListener(EventListener)}  }
      * that will be called every time a Host is
      * allocated to a given VM. It tries to assert that the Host 0 was allocated
      * to the Vm 0 at the expected time.
      *
      * @param evt
      */
-    private void onHostAllocation(HostToVmEventInfo evt) {
+    private void onHostAllocation(VmHostEventInfo evt) {
         numberOfHostAllocations++;
         Log.printFormattedLine("# Host %s allocated to Vm %s at time %3.0f",
                 evt.getHost().getId(), evt.getVm().getId(), evt.getTime());
@@ -113,14 +113,14 @@ public final class VmCreationFailureIntegrationTest {
     }
 
     /**
-     * A lambda function used by an {@link Vm#setOnHostDeallocationListener(EventListener)}  }
+     * A lambda function used by an {@link Vm#addOnHostDeallocationListener(EventListener)}  }
      * that will be called every time a Host is
      * deallocated to a given VM. It tries to assert that the Host 0 was
      * deallocated to the Vm 0 at the expected time.
      *
      * @param evt
      */
-    private void onHostDeallocation(HostToVmEventInfo evt) {
+    private void onHostDeallocation(VmHostEventInfo evt) {
         numberOfHostDeallocations++;
         Log.printFormattedLine(
                 "# Vm %s moved/removed from Host %s at time %3.0f",
@@ -134,13 +134,13 @@ public final class VmCreationFailureIntegrationTest {
     }
 
     /**
-     * A lambda function used by an {@link Vm#setOnVmCreationFailureListener(EventListener)}  }
+     * A lambda function used by an {@link Vm#addOnVmCreationFailureListener(EventListener)}  }
      * that will be called every time a Vm failed to be created
      * due to lack of host resources.
      *
      * @param evt
      */
-    private void onVmCreationFailure(DatacenterToVmEventInfo evt) {
+    private void onVmCreationFailure(VmDatacenterEventInfo evt) {
         numberOfVmCreationFailures++;
         final int expectedVmId = 1;
 
@@ -171,7 +171,7 @@ public final class VmCreationFailureIntegrationTest {
 
 
     /**
-     * A lambda function used by an {@link Vm#setOnUpdateVmProcessingListener(EventListener)}  }
+     * A lambda function used by an {@link Vm#addOnUpdateVmProcessingListener(EventListener)}  }
      * that will be called every time the processing of a Vm is updated inside its host.
      * Considering there is only one Host and only 1 VM where its cloudlets use a
      * {@link UtilizationModelFull} for CPU utilization model,
@@ -179,7 +179,7 @@ public final class VmCreationFailureIntegrationTest {
      *
      * @param evt
      */
-    private void onUpdateVmProcessing(HostToVmEventInfo evt) {
+    private void onUpdateVmProcessing(VmHostEventInfo evt) {
         Log.printConcatLine(
             "- onUpdateVmProcessing at time ", evt.getTime(), " - vm: ",
             evt.getVm().getId(), " host ", evt.getHost().getId(), " available mips: ",
@@ -190,7 +190,7 @@ public final class VmCreationFailureIntegrationTest {
     @Before
     public void setUp() {
         simulation = new CloudSim();
-        simulation.setOnEventProcessingListener((evt) -> onEventProcessing(evt));
+        simulation.addOnEventProcessingListener((evt) -> onEventProcessing(evt));
         scenario = new SimulationScenarioBuilder(simulation);
         scenario.getDatacenterBuilder().createDatacenter(
                 new HostBuilder()

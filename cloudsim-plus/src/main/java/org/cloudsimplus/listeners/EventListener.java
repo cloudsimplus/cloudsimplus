@@ -23,28 +23,33 @@
  */
 package org.cloudsimplus.listeners;
 
+import org.cloudbus.cloudsim.cloudlets.Cloudlet;
 import org.cloudbus.cloudsim.vms.Vm;
 
 /**
  *
- * An interface to define observer objects that listen to specific changes in
- * the state of a given observable object, also called subject.
+ * An interface to define Observers (Listeners) that listen to specific changes in
+ * the state of a given observable object (Subject).
  * By this way, the EventListener gets notified when
  * the observed object has its state changed.
- * The interface was defined allowing the
- * subject object to have more than one state
- * to be observable. If the subject directly implements
- * this interface, it will allow only one kind of
- * state change to be observable.
- * If the subject has multiple state changes to be observed,
- * it can define multiple properties of the EventListener class
- * to allow this multiple events to be observable.
- * See interfaces such as {@link Vm}
- * to get an overview of how this interface can be used.
  *
- * @author Manoel Campos da Silva Filho
+ *
+ * <p>The interface was defined allowing the Subject object to have more than one state
+ * to be observable. If the subject directly implements
+ * this interface, it will allow only one kind of state change to be observable.
+ * If the Subject has multiple state changes to be observed,
+ * it can define multiple EventListener attributes
+ * to allow multiple events to be observed.
+ * </p>
+ *
+ * <p>Such Listeners are used for many simulation entities such as {@link Vm} and {@link Cloudlet}.
+ * Check the documentation of such interfaces that provides some Listeners.
+ * </p>
+ *
  * @param <T> The class of the object containing information to be given to the
  * listener when the expected event happens.
+ *
+ * @author Manoel Campos da Silva Filho
  * @since CloudSim Plus 1.0
  */
 @FunctionalInterface
@@ -55,9 +60,9 @@ public interface EventListener<T extends EventInfo> {
      * observation) has changed. This method has to be called by the observed
      * objects to notify its state change to the listener.
      *
-     * @param event The data about the happened event.
+     * @param info The data about the happened event.
      */
-    void update(T event);
+    void update(T info);
 
     /**
      * A implementation of Null Object pattern that makes nothing (it doesn't
@@ -65,5 +70,5 @@ public interface EventListener<T extends EventInfo> {
      * avoid NullPointerException's and checking everywhere if a listener object
      * is not null in order to call its methods.
      */
-    EventListener NULL = (EventListener<EventInfo>) (EventInfo evt) -> {};
+    EventListener NULL = (EventListener<EventInfo>) (EventInfo info) -> {};
 }

@@ -15,8 +15,6 @@ import org.cloudbus.cloudsim.datacenters.Datacenter;
 import org.cloudbus.cloudsim.util.Log;
 import org.cloudbus.cloudsim.vms.Vm;
 import org.cloudbus.cloudsim.core.*;
-import org.cloudsimplus.listeners.DatacenterToVmEventInfo;
-import org.cloudsimplus.listeners.VmToCloudletEventInfo;
 
 /**
  * An abstract class to be used as base for implementing a {@link DatacenterBroker}.
@@ -315,9 +313,7 @@ public abstract class DatacenterBrokerAbstract extends CloudSimEntity implements
      * @param datacenter id of the Datacenter where the request to create
      */
     protected void processFailedVmCreationInDatacenter(Vm vm, Datacenter datacenter) {
-        DatacenterToVmEventInfo info =
-                new DatacenterToVmEventInfo(getSimulation().clock(), datacenter, vm);
-        vm.getOnVmCreationFailureListener().update(info);
+        vm.notifyOnVmCreationFailureListeners(datacenter);
         Log.printConcatLine(getSimulation().clock(), ": ", getName(),
             ": Creation of VM #", vm, " failed in Datacenter #", datacenter);
     }
@@ -332,7 +328,6 @@ public abstract class DatacenterBrokerAbstract extends CloudSimEntity implements
     protected void processCloudletReturn(SimEvent ev) {
         Cloudlet cloudlet = (Cloudlet) ev.getData();
         getCloudletsFinishedList().add(cloudlet);
-        notifyCloudletFinishListener(cloudlet);
         Log.printFormattedLine("%.1f: %s: %s %d received", getSimulation().clock(), getName(), cloudlet.getClass().getSimpleName(), cloudlet.getId());
         cloudletsCreated--;
         if (getCloudletsWaitingList().isEmpty() && cloudletsCreated == 0) {
@@ -351,12 +346,6 @@ public abstract class DatacenterBrokerAbstract extends CloudSimEntity implements
     @Override
     public boolean hasMoreCloudletsToBeExecuted() {
         return getCloudletsWaitingList().size() > 0 && cloudletsCreated == 0;
-    }
-
-    protected void notifyCloudletFinishListener(Cloudlet cloudlet) {
-        VmToCloudletEventInfo info =
-                new VmToCloudletEventInfo(getSimulation().clock(), cloudlet.getVm(), cloudlet);
-        cloudlet.getOnCloudletFinishEventListener().update(info);
     }
 
     /**

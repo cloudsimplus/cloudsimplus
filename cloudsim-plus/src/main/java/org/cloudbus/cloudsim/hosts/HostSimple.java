@@ -146,22 +146,19 @@ public class HostSimple implements Host {
 
     @Override
     public double updateVmsProcessing(double currentTime) {
-        double completionTimeOfNextFinishingCloudlet = Double.MAX_VALUE;
+        double nextCloudletCompletionTime = Double.MAX_VALUE;
 
         for (Vm vm : getVmList()) {
             double time = vm.updateVmProcessing(
                     currentTime, getVmScheduler().getAllocatedMipsForVm(vm));
-            if (time < completionTimeOfNextFinishingCloudlet) {
-                completionTimeOfNextFinishingCloudlet = time;
+            if (time < nextCloudletCompletionTime) {
+                nextCloudletCompletionTime = time;
             }
         }
 
-        HostUpdatesVmsProcessingEventInfo eventInfo =
-                new HostUpdatesVmsProcessingEventInfo(currentTime, this);
-        eventInfo.setCompletionTimeOfNextFinishingCloudlet(completionTimeOfNextFinishingCloudlet);
-        onUpdateVmsProcessingListener.update(eventInfo);
-
-        return completionTimeOfNextFinishingCloudlet;
+        onUpdateVmsProcessingListener.update(
+            HostUpdatesVmsProcessingEventInfo.of(this, nextCloudletCompletionTime));
+        return nextCloudletCompletionTime;
     }
 
     @Override
@@ -270,6 +267,7 @@ public class HostSimple implements Host {
         getStorage().allocateResource(vm.getSize());
         getVmList().add(vm);
         vm.setHost(this);
+        vm.notifyOnHostAllocationListeners();
         return true;
     }
 
@@ -278,6 +276,7 @@ public class HostSimple implements Host {
         if (!Objects.isNull(vm)) {
             deallocateResourcesOfVm(vm);
             getVmList().remove(vm);
+            vm.notifyOnHostDeallocationListeners(this);
         }
     }
 

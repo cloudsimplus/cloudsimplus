@@ -82,12 +82,10 @@ public class CloudletTest {
         assertFalse(Cloudlet.NULL.setNetServiceLevel(0));
         assertFalse(Cloudlet.NULL.setReservationId(0));
         assertEquals(Cloudlet.NOT_ASSIGNED, Cloudlet.NULL.registerArrivalOfCloudletIntoDatacenter(), 0);
-        assertSame(EventListener.NULL, Cloudlet.NULL.getOnCloudletFinishEventListener());
+        assertFalse(Cloudlet.NULL.removeOnCloudletFinishListener(null));
         EventListener listener = EasyMock.createMock(EventListener.class);
         EasyMock.replay(listener);
-        Cloudlet.NULL.setOnCloudletFinishEventListener(listener);
-        assertSame(EventListener.NULL, Cloudlet.NULL.getOnCloudletFinishEventListener());
-
+        Cloudlet.NULL.addOnCloudletFinishListener(listener);
         Cloudlet.NULL.setSubmissionDelay(10);
         assertEquals(0, Cloudlet.NULL.getSubmissionDelay(), 0);
 

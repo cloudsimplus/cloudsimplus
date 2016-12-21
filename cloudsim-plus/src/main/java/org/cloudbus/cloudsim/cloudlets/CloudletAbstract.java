@@ -20,7 +20,7 @@ import org.cloudbus.cloudsim.brokers.DatacenterBroker;
 import org.cloudbus.cloudsim.core.Simulation;
 import org.cloudbus.cloudsim.utilizationmodels.UtilizationModel;
 import org.cloudsimplus.listeners.EventListener;
-import org.cloudsimplus.listeners.VmToCloudletEventInfo;
+import org.cloudsimplus.listeners.CloudletVmEventInfo;
 
 /**
  * A base class for {@link Cloudlet} implementations.
@@ -30,7 +30,9 @@ import org.cloudsimplus.listeners.VmToCloudletEventInfo;
  * @author Manoel Campos da Silva Filho
  */
 public abstract class CloudletAbstract implements Cloudlet {
-    /** @see #getId() */
+    /**
+     * @see #getId()
+     */
     private final int id;
     /**
      * Stores the operating system line separator.
@@ -46,27 +48,45 @@ public abstract class CloudletAbstract implements Cloudlet {
      * being migrated, this list will have only one item.
      */
     private final List<ExecutionInDatacenterInfo> executionInDatacenterInfoList;
-    /** @see #getBroker() */
+    /**
+     * @see #getBroker()
+     */
     private DatacenterBroker broker;
-    /** @see #getCloudletLength() */
+    /**
+     * @see #getCloudletLength()
+     */
     private long cloudletLength;
-    /** @see #getNumberOfPes() */
+    /**
+     * @see #getNumberOfPes()
+     */
     private int numberOfPes;
-    /** @see #getStatus() */
+    /**
+     * @see #getStatus()
+     */
     private Status status;
-    /** @see #getExecStartTime() */
+    /**
+     * @see #getExecStartTime()
+     */
     private double execStartTime;
     /**
      * @see #isRecordTransactionHistory()
      */
     private boolean recordTransactionHistory;
-    /** @see #getPriority() */
+    /**
+     * @see #getPriority()
+     */
     private int priority;
-    /** @see #getNetServiceLevel() */
+    /**
+     * @see #getNetServiceLevel()
+     */
     private int netServiceLevel;
-    /** @see #getVm() */
+    /**
+     * @see #getVm()
+     */
     private Vm vm;
-    /** @see #getRequiredFiles() */
+    /**
+     * @see #getRequiredFiles()
+     */
     private List<String> requiredFiles;
 
     /**
@@ -75,32 +95,49 @@ public abstract class CloudletAbstract implements Cloudlet {
      * value {@link #NOT_ASSIGNED} indicates the cloudlet has not been executed yet.
      */
     private int lastExecutedDatacenterIndex;
-    /** @see #getCloudletFileSize() */
+    /**
+     * @see #getCloudletFileSize()
+     */
     private long cloudletFileSize;
-    /** @see #getCloudletOutputSize() */
+    /**
+     * @see #getCloudletOutputSize()
+     */
     private long cloudletOutputSize;
-    /** @see #getFinishTime() */
+    /**
+     * @see #getFinishTime()
+     */
     private double finishTime;
-    /** @see #getReservationId() */
+    /**
+     * @see #getReservationId()
+     */
     private int reservationId = NOT_ASSIGNED;
     /**
      * The cloudlet transaction history.
      */
     private StringBuffer history;
-    /** @see #getCostPerBw() */
+    /**
+     * @see #getCostPerBw()
+     */
     private double costPerBw;
-    /** @see #getAccumulatedBwCost()  */
+    /**
+     * @see #getAccumulatedBwCost()
+     */
     private double accumulatedBwCost;
-    /** @see #getUtilizationModelCpu() */
+    /**
+     * @see #getUtilizationModelCpu()
+     */
     private UtilizationModel utilizationModelCpu;
-    /** @see #getUtilizationModelRam() */
+    /**
+     * @see #getUtilizationModelRam()
+     */
     private UtilizationModel utilizationModelRam;
-    /** @see #getUtilizationModelBw() */
+    /**
+     * @see #getUtilizationModelBw()
+     */
     private UtilizationModel utilizationModelBw;
-    /**@see #getOnCloudletFinishEventListener() */
-    private EventListener<VmToCloudletEventInfo> onCloudletFinishEventListener = EventListener.NULL;
-    /**@see #getOnUpdateCloudletProcessingListener() () */
-    private EventListener<VmToCloudletEventInfo> onUpdateCloudletProcessingListener = EventListener.NULL;
+
+    private List<EventListener<CloudletVmEventInfo>> onCloudletFinishListeners;
+    private List<EventListener<CloudletVmEventInfo>> onUpdateCloudletProcessingListeners;
     /**
      * @see #getSubmissionDelay()
      */
@@ -114,11 +151,11 @@ public abstract class CloudletAbstract implements Cloudlet {
     /**
      * Creates a Cloudlet with no priority and file size and output size equal to 1.
      *
-     * @param cloudletId id of the Cloudlet
+     * @param cloudletId     id of the Cloudlet
      * @param cloudletLength the length or size (in MI) of this cloudlet to be executed in a VM
-     * @param pesNumber number of PEs that Cloudlet will require
+     * @param pesNumber      number of PEs that Cloudlet will require
      */
-    protected CloudletAbstract(final int cloudletId, final long cloudletLength, final int pesNumber){
+    protected CloudletAbstract(final int cloudletId, final long cloudletLength, final int pesNumber) {
         /*
         Normally, a Cloudlet is only executed on a Datacenter without being
         migrated to others. Hence, to reduce memory consumption, set the
@@ -155,6 +192,8 @@ public abstract class CloudletAbstract implements Cloudlet {
         setUtilizationModelCpu(UtilizationModel.NULL);
         setUtilizationModelRam(UtilizationModel.NULL);
         setUtilizationModelBw(UtilizationModel.NULL);
+        onCloudletFinishListeners = new ArrayList<>();
+        onUpdateCloudletProcessingListeners = new ArrayList<>();
     }
 
     /**
@@ -208,18 +247,37 @@ public abstract class CloudletAbstract implements Cloudlet {
     }
 
     @Override
-    public EventListener<VmToCloudletEventInfo> getOnCloudletFinishEventListener() {
-        return onCloudletFinishEventListener;
+    public boolean removeOnUpdateCloudletProcessingListener(EventListener<CloudletVmEventInfo> listener) {
+        return this.onUpdateCloudletProcessingListeners.remove(listener);
     }
 
     @Override
-    public Cloudlet setOnCloudletFinishEventListener(EventListener<VmToCloudletEventInfo> onCloudletFinishEventListener) {
-        if(Objects.isNull(onCloudletFinishEventListener)) {
-            onCloudletFinishEventListener = EventListener.NULL;
+    public Cloudlet addOnUpdateCloudletProcessingListener(EventListener<CloudletVmEventInfo> listener) {
+        if (!Objects.isNull(listener)) {
+            this.onUpdateCloudletProcessingListeners.add(listener);
         }
 
-        this.onCloudletFinishEventListener = onCloudletFinishEventListener;
         return this;
+    }
+
+    @Override
+    public boolean removeOnCloudletFinishListener(EventListener<CloudletVmEventInfo> listener) {
+        return onCloudletFinishListeners.remove(listener);
+    }
+
+    @Override
+    public Cloudlet addOnCloudletFinishListener(EventListener<CloudletVmEventInfo> listener) {
+        if (!Objects.isNull(listener)) {
+            this.onCloudletFinishListeners.add(listener);
+        }
+
+        return this;
+    }
+
+    @Override
+    public void notifyOnCloudletProcessingListeners(double time) {
+        CloudletVmEventInfo info = CloudletVmEventInfo.of(time, this);
+        onUpdateCloudletProcessingListeners.forEach(l -> l.update(info));
     }
 
     @Override
@@ -331,7 +389,7 @@ public abstract class CloudletAbstract implements Cloudlet {
 
     @Override
     public boolean setCloudletFinishedSoFar(final long length) {
-        if(length > this.getCloudletLength())
+        if (length > this.getCloudletLength())
             throw new IllegalArgumentException(
                 String.format(
                     "The length parameter (%d) cannot be greater than the cloudletLength attribute (%d).",
@@ -345,7 +403,20 @@ public abstract class CloudletAbstract implements Cloudlet {
         res.finishedSoFar = length;
 
         write("Set the length's finished so far to %d", length);
+
+        notifyListenersIfCloudletIsFinished();
         return true;
+    }
+
+    /**
+     * Notifies all registered listeners about the termination of the Cloudlet
+     * if it in fact has finished.
+     */
+    private void notifyListenersIfCloudletIsFinished() {
+        if(isFinished()) {
+            CloudletVmEventInfo info = CloudletVmEventInfo.of(this);
+            onCloudletFinishListeners.forEach(l -> l.update(info));
+        }
     }
 
     @Override
@@ -402,7 +473,7 @@ public abstract class CloudletAbstract implements Cloudlet {
         datacenter.actualCPUTime = actualCPUTime;
 
         write("Sets the wall clock time to %s and the actual CPU time to %s",
-              num.format(wallTime), num.format(actualCPUTime));
+            num.format(wallTime), num.format(actualCPUTime));
 
         return true;
     }
@@ -419,8 +490,8 @@ public abstract class CloudletAbstract implements Cloudlet {
         }
 
         write("Sets Cloudlet status from %s to %s",
-              getCloudletStatusString(),
-              CloudletAbstract.getCloudletStatusString(newStatus));
+            getCloudletStatusString(),
+            CloudletAbstract.getCloudletStatusString(newStatus));
 
         this.status = newStatus;
         return true;
@@ -428,13 +499,15 @@ public abstract class CloudletAbstract implements Cloudlet {
 
     /**
      * Sets the {@link #getFinishTime() finish time} of this cloudlet in the latest Datacenter.
+     *
      * @param finishTime the finish time
      */
     protected final void setFinishTime(final double finishTime) {
         this.finishTime = finishTime;
     }
 
-    @Deprecated @Override
+    @Deprecated
+    @Override
     public Status getCloudletStatus() {
         return status;
     }
@@ -555,9 +628,9 @@ public abstract class CloudletAbstract implements Cloudlet {
      * Writes a formatted particular history transaction of this Cloudlet into a log.
      *
      * @param format the format of the Cloudlet's history transaction, according
-     * to the format parameter of {@link String#format(String, Object...)}
-     * @param args The list of values to be shown in the history,
-     * that are referenced by the format.
+     *               to the format parameter of {@link String#format(String, Object...)}
+     * @param args   The list of values to be shown in the history,
+     *               that are referenced by the format.
      * @pre format != null
      * @post $none
      * @see #write(String)
@@ -590,7 +663,7 @@ public abstract class CloudletAbstract implements Cloudlet {
 
     @Override
     public double getActualCPUTime() {
-        if(getFinishTime() == NOT_ASSIGNED)
+        if (getFinishTime() == NOT_ASSIGNED)
             return NOT_ASSIGNED;
 
         return getFinishTime() - getExecStartTime();
@@ -611,6 +684,7 @@ public abstract class CloudletAbstract implements Cloudlet {
 
     /**
      * Gets the total cost for using CPU on every Datacenter where the Cloudlet has executed.
+     *
      * @return
      */
     private double getTotalCpuCostForAllDatacenters() {
@@ -630,17 +704,16 @@ public abstract class CloudletAbstract implements Cloudlet {
      * @param requiredFiles the new list of required files
      */
     public final void setRequiredFiles(final List<String> requiredFiles) {
-        if(Objects.isNull(requiredFiles)) {
+        if (Objects.isNull(requiredFiles)) {
             this.requiredFiles = new LinkedList<>();
-        }
-        else {
+        } else {
             this.requiredFiles = requiredFiles;
         }
     }
 
     @Override
     public boolean addRequiredFile(final String fileName) {
-        if(getRequiredFiles().stream().anyMatch(s -> s.equals(fileName))){
+        if (getRequiredFiles().stream().anyMatch(s -> s.equals(fileName))) {
             return false;
         }
 
@@ -651,7 +724,7 @@ public abstract class CloudletAbstract implements Cloudlet {
     @Override
     public boolean addRequiredFiles(List<String> fileNames) {
         boolean atLeastOneFileAdded = false;
-        for(String fileName: fileNames){
+        for (String fileName : fileNames) {
             atLeastOneFileAdded |= addRequiredFile(fileName);
         }
         return atLeastOneFileAdded;
@@ -688,7 +761,7 @@ public abstract class CloudletAbstract implements Cloudlet {
 
     @Override
     public final Cloudlet setUtilizationModelCpu(final UtilizationModel utilizationModelCpu) {
-        if(Objects.isNull(utilizationModelCpu)) {
+        if (Objects.isNull(utilizationModelCpu)) {
             throw new IllegalArgumentException("The CPU utilization model cannot be null");
         }
         this.utilizationModelCpu = utilizationModelCpu;
@@ -702,7 +775,7 @@ public abstract class CloudletAbstract implements Cloudlet {
 
     @Override
     public final Cloudlet setUtilizationModelRam(final UtilizationModel utilizationModelRam) {
-        if(Objects.isNull(utilizationModelRam)) {
+        if (Objects.isNull(utilizationModelRam)) {
             throw new IllegalArgumentException("The RAM utilization model cannot be null");
         }
         this.utilizationModelRam = utilizationModelRam;
@@ -716,7 +789,7 @@ public abstract class CloudletAbstract implements Cloudlet {
 
     @Override
     public final Cloudlet setUtilizationModelBw(final UtilizationModel utilizationModelBw) {
-        if(Objects.isNull(utilizationModelBw)) {
+        if (Objects.isNull(utilizationModelBw)) {
             throw new IllegalArgumentException("The BW utilization model cannot be null");
         }
         this.utilizationModelBw = utilizationModelBw;
@@ -745,6 +818,7 @@ public abstract class CloudletAbstract implements Cloudlet {
 
     /**
      * Sets {@link #getCostPerBw() the cost of each byte of bandwidth (bw)} consumed.
+     *
      * @param costPerBw the new cost per bw to set
      */
     protected final void setCostPerBw(double costPerBw) {
@@ -758,6 +832,7 @@ public abstract class CloudletAbstract implements Cloudlet {
 
     /**
      * Sets the {@link #getAccumulatedBwCost() accumulated bw cost}.
+     *
      * @param accumulatedBwCost the accumulated bw cost to set
      */
     protected final void setAccumulatedBwCost(double accumulatedBwCost) {
@@ -765,24 +840,13 @@ public abstract class CloudletAbstract implements Cloudlet {
     }
 
     @Override
-    public EventListener<VmToCloudletEventInfo> getOnUpdateCloudletProcessingListener() {
-        return this.onUpdateCloudletProcessingListener;
-    }
-
-    @Override
-    public Cloudlet setOnUpdateCloudletProcessingListener(EventListener<VmToCloudletEventInfo> onUpdateCloudletProcessingListener) {
-        this.onUpdateCloudletProcessingListener = onUpdateCloudletProcessingListener;
-        return this;
-    }
-
-    @Override
     public double getSubmissionDelay() {
-       return this.submissionDelay;
+        return this.submissionDelay;
     }
 
     @Override
     public final void setSubmissionDelay(double submissionDelay) {
-        if(submissionDelay < 0) {
+        if (submissionDelay < 0) {
             return;
         }
         this.submissionDelay = submissionDelay;
@@ -814,8 +878,9 @@ public abstract class CloudletAbstract implements Cloudlet {
 
     /**
      * Indicates if Cloudlet transaction history is to be recorded or not.
-     * @see #getCloudletHistory()
+     *
      * @return
+     * @see #getCloudletHistory()
      */
     public boolean isRecordTransactionHistory() {
         return recordTransactionHistory;
@@ -825,7 +890,7 @@ public abstract class CloudletAbstract implements Cloudlet {
      * Sets the Cloudlet transaction history writing.
      *
      * @param recordTransactionHistory true enables transaction history writing,
-     * false disables.
+     *                                 false disables.
      */
     public void setRecordTransactionHistory(boolean recordTransactionHistory) {
         this.recordTransactionHistory = recordTransactionHistory;
@@ -835,13 +900,12 @@ public abstract class CloudletAbstract implements Cloudlet {
      * Sets the parameters of the Datacenter where the Cloudlet is going to be
      * executed. From the second time this method is called, every call make the
      * cloudlet to be migrated to the indicated Datacenter.<br>
-     *
+     * <p>
      * NOTE: This method <tt>should</tt> be called only by a resource entity,
      * not the user or owner of this Cloudlet.
      *
-     * @param datacenterId the id of Datacenter where the cloudlet will be executed
+     * @param datacenterId  the id of Datacenter where the cloudlet will be executed
      * @param costPerCpuSec the cost per second of running the cloudlet on the given Datacenter
-     *
      * @pre resourceID >= 0
      * @pre cost > 0.0
      * @post $none
@@ -855,7 +919,7 @@ public abstract class CloudletAbstract implements Cloudlet {
         // add into a list if moving to a new cloud switches
         getExecutionInDatacenterInfoList().add(datacenterInfo);
 
-        if(isRecordTransactionHistory()){
+        if (isRecordTransactionHistory()) {
             if (isAssignedToDatacenter()) {
                 final int id = getExecutionInDatacenterInfoList().get(getLastExecutedDatacenterIndex()).datacenterId;
                 final String name = getExecutionInDatacenterInfoList().get(getLastExecutedDatacenterIndex()).datacenterName;
@@ -864,7 +928,7 @@ public abstract class CloudletAbstract implements Cloudlet {
 
             } else {
                 write("Allocates this Cloudlet to %s (ID #%d) with cost = $%.2f/sec",
-                    datacenterInfo.datacenterName,  datacenterId, costPerCpuSec);
+                    datacenterInfo.datacenterName, datacenterId, costPerCpuSec);
             }
         }
 
@@ -873,7 +937,7 @@ public abstract class CloudletAbstract implements Cloudlet {
 
     @Override
     public void assignCloudletToDatacenter(
-            final int datacenterId, final double costPerCpuSec, final double costPerByteOfBw) {
+        final int datacenterId, final double costPerCpuSec, final double costPerByteOfBw) {
         assignCloudletToDatacenter(datacenterId, costPerCpuSec);
         this.setCostPerBw(costPerByteOfBw);
         setAccumulatedBwCost(costPerByteOfBw * getCloudletFileSize());

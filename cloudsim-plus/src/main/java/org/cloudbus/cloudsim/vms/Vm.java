@@ -10,9 +10,9 @@ import org.cloudbus.cloudsim.schedulers.cloudlet.CloudletScheduler;
 import java.util.Collections;
 import java.util.List;
 import org.cloudbus.cloudsim.core.Simulation;
-import org.cloudsimplus.listeners.DatacenterToVmEventInfo;
+import org.cloudsimplus.listeners.VmHostEventInfo;
+import org.cloudsimplus.listeners.VmDatacenterEventInfo;
 import org.cloudsimplus.listeners.EventListener;
-import org.cloudsimplus.listeners.HostToVmEventInfo;
 
 /**
  * An interface to be implemented by each class that provides basic
@@ -157,35 +157,99 @@ public interface Vm extends UniquelyIdentificable, Delayable, Comparable<Vm> {
      */
     <R extends ResourceManageable> ResourceManageable getResource(Class<R> resourceClass);
 
-
     /**
-     * Gets the listener object that will be notified when a {@link Host}
+     * Adds a listener object that will be notified when a {@link Host}
      * is allocated to the Vm, that is, when the Vm is placed into a
-     * given Host. The listener receives the placed Vm and the
-     * Host where it is placed.
+     * given Host.
      *
-     * @return the onHostAllocationListener
+     * @param listener the listener to add
+     * @return
      */
-    EventListener<HostToVmEventInfo> getOnHostAllocationListener();
+    Vm addOnHostAllocationListener(EventListener<VmHostEventInfo> listener);
 
     /**
-     * Gets the listener object that will be notified when a {@link Host}
-     * is deallocated to the Vm, that is, when the Vm is
-     * moved/removed from the Host is was placed. The listener receives
-     * the moved/removed Vm and the Host where it was placed.
+     * Adds a listener object that will be notified when the Vm is moved/removed from a {@link Host}.
      *
-     * @return the onHostDeallocationListener
+     * @param listener the listener to add
+     * @return
      */
-    EventListener<HostToVmEventInfo> getOnHostDeallocationListener();
+    Vm addOnHostDeallocationListener(EventListener<VmHostEventInfo> listener);
 
     /**
-     * Gets the listener object that will be notified when a Vm fail in
-     * being placed for lack of a {@link Host} in the {@link Datacenter}
-     * with enough resources.
+     * Adds a listener object that will be notified when the Vm fail in
+     * being placed for lack of a {@link Host} with enough resources in a specific {@link Datacenter}.
      *
-     * @return the onVmCreationFailureListener
+     * @param listener the listener to add
+     * @return
+     * @see #updateVmProcessing(double, java.util.List)
      */
-    EventListener<DatacenterToVmEventInfo> getOnVmCreationFailureListener();
+    Vm addOnVmCreationFailureListener(EventListener<VmDatacenterEventInfo> listener);
+
+    /**
+     * Adds a listener object that will be notified every time when
+     * the processing of the Vm is updated in its {@link Host}.
+     *
+     * @param listener the listener to seaddt
+     * @return
+     * @see #updateVmProcessing(double, java.util.List)
+     */
+    Vm addOnUpdateVmProcessingListener(EventListener<VmHostEventInfo> listener);
+
+    /**
+     * Notifies all registered listeners when a {@link Host} is allocated to the {@link Vm}.
+     *
+     * <p><b>This method is used just internally and must not be called directly.</b></p>
+     */
+    void notifyOnHostAllocationListeners();
+
+    /**
+     * Notifies all registered listeners when the {@link Vm} is moved/removed from a {@link Host}.
+     *
+     * <p><b>This method is used just internally and must not be called directly.</b></p>
+     * @param deallocatedHost the {@link Host} the {@link Vm} was moved/removed from
+     */
+    void notifyOnHostDeallocationListeners(Host deallocatedHost);
+
+    /**
+     * Notifies all registered listeners when the Vm fail in
+     * being placed for lack of a {@link Host} with enough resources in a specific {@link Datacenter}.
+     *
+     * <p><b>This method is used just internally and must not be called directly.</b></p>
+     * @param failedDatacenter the Datacenter where the VM creation failed
+     */
+    void notifyOnVmCreationFailureListeners(Datacenter failedDatacenter);
+
+    /**
+     * Removes a listener from the onUpdateVmProcessingListener List.
+     *
+     * @param listener the listener to remove
+     * @return true if the listener was found and removed, false otherwise
+     */
+    boolean removeOnUpdateVmProcessingListener(EventListener<VmHostEventInfo> listener);
+
+    /**
+     * Removes a listener from the onHostAllocationListener List.
+     *
+     * @param listener the listener to remove
+     * @return true if the listener was found and removed, false otherwise
+     */
+    boolean removeOnHostAllocationListener(EventListener<VmHostEventInfo> listener);
+
+    /**
+     * Removes a listener from the onHostDeallocationListener List.
+     *
+     * @param listener the listener to remove
+     * @return true if the listener was found and removed, false otherwise
+     */
+    boolean removeOnHostDeallocationListener(EventListener<VmHostEventInfo> listener);
+
+    /**
+     * Removes a listener from the onVmCreationFailureListener List.
+     *
+     * @param listener the listener to remove
+     * @return true if the listener was found and removed, false otherwise
+     */
+    boolean removeOnVmCreationFailureListener(EventListener<VmDatacenterEventInfo> listener);
 
     /**
      * Gets the RAM capacity in Megabytes.
@@ -310,51 +374,6 @@ public interface Vm extends UniquelyIdentificable, Delayable, Comparable<Vm> {
     void setHost(Host host);
 
     /**
-     * Sets the listener object that will be notified when a {@link Host}
-     * is allocated to the Vm, that is, when the Vm is placed into a
-     * given Host.
-     *
-     * @param onHostAllocationListener the listener to set
-     */
-    Vm setOnHostAllocationListener(EventListener<HostToVmEventInfo> onHostAllocationListener);
-
-    /**
-     * Sets the listener object that will be notified when a {@link Host}
-     * is deallocated to the Vm, that is, when the Vm is
-     * moved/removed from the Host it was placed.
-     *
-     * @param onHostDeallocationListener the listener to set
-     */
-    Vm setOnHostDeallocationListener(EventListener<HostToVmEventInfo> onHostDeallocationListener);
-
-    /**
-     * Sets the listener object that will be notified when the Vm fail in
-     * being placed for lack of a {@link Host} in the {@link Datacenter}
-     * with enough resources.
-     *
-     * @param onVmCreationFailureListener the listener to set
-     * @see #updateVmProcessing(double, java.util.List)
-     */
-    Vm setOnVmCreationFailureListener(EventListener<DatacenterToVmEventInfo> onVmCreationFailureListener);
-
-    /**
-     * Gets the listener object that will be notified every time when
-     * the processing of the Vm is updated in its {@link Host}.
-     *
-     * @return the onUpdateVmProcessingListener
-     */
-    EventListener<HostToVmEventInfo> getOnUpdateVmProcessingListener();
-
-    /**
-     * Sets the listener object that will be notified every time when
-     * the processing of the Vm is updated in its {@link Host}.
-     *
-     * @param onUpdateVmProcessingListener the listener to set
-     * @see #updateVmProcessing(double, java.util.List)
-     */
-    Vm setOnUpdateVmProcessingListener(EventListener<HostToVmEventInfo> onUpdateVmProcessingListener);
-
-    /**
      * Sets RAM capacity in Megabytes.
      *
      * @param ramCapacity new RAM capacity
@@ -448,9 +467,17 @@ public interface Vm extends UniquelyIdentificable, Delayable, Comparable<Vm> {
         @Override public int getId() { return -1; }
         @Override public double getMips() { return 0.0; }
         @Override public int getNumberOfPes() { return 0; }
-        @Override public EventListener<HostToVmEventInfo> getOnHostAllocationListener() { return EventListener.NULL; }
-        @Override public EventListener<HostToVmEventInfo> getOnHostDeallocationListener() { return EventListener.NULL; }
-        @Override public EventListener<DatacenterToVmEventInfo> getOnVmCreationFailureListener() { return EventListener.NULL; }
+        @Override public Vm addOnHostAllocationListener(EventListener<VmHostEventInfo> listener) { return Vm.NULL; }
+        @Override public Vm addOnHostDeallocationListener(EventListener<VmHostEventInfo> listener) { return Vm.NULL; }
+        @Override public Vm addOnVmCreationFailureListener(EventListener<VmDatacenterEventInfo> listener) { return Vm.NULL; }
+        @Override public Vm addOnUpdateVmProcessingListener(EventListener<VmHostEventInfo> listener) { return Vm.NULL; }
+        @Override public void notifyOnHostAllocationListeners() {}
+        @Override public void notifyOnHostDeallocationListeners(Host deallocatedHost) {}
+        @Override public void notifyOnVmCreationFailureListeners(Datacenter failedDatacenter) {}
+        @Override public boolean removeOnUpdateVmProcessingListener(EventListener<VmHostEventInfo> listener) { return false; }
+        @Override public boolean removeOnHostAllocationListener(EventListener<VmHostEventInfo> listener) { return false; }
+        @Override public boolean removeOnHostDeallocationListener(EventListener<VmHostEventInfo> listener) { return false; }
+        @Override public boolean removeOnVmCreationFailureListener(EventListener<VmDatacenterEventInfo> listener) { return false; }
         @Override public long getRam() { return 0; }
         @Override public long getSize(){ return 0; }
         @Override public List<VmStateHistoryEntry> getStateHistory() { return Collections.emptyList(); }
@@ -466,16 +493,11 @@ public interface Vm extends UniquelyIdentificable, Delayable, Comparable<Vm> {
         @Override public Vm setBw(long bwCapacity) { return Vm.NULL; }
         @Override public void setHost(Host host) {}
         @Override public void setInMigration(boolean inMigration) {}
-        @Override public Vm setOnHostAllocationListener(EventListener<HostToVmEventInfo> onHostAllocationListener) { return Vm.NULL; }
-        @Override public Vm setOnHostDeallocationListener(EventListener<HostToVmEventInfo> onHostDeallocationListener) { return Vm.NULL; }
-        @Override public Vm setOnVmCreationFailureListener(EventListener<DatacenterToVmEventInfo> onVmCreationFailureListener) { return Vm.NULL; }
         @Override public Vm setRam(long ramCapacity) { return Vm.NULL; }
         @Override public Vm setSize(long size) { return Vm.NULL; }
         @Override public double updateVmProcessing(double currentTime, List<Double> mipsShare){ return 0.0; }
         @Override public Vm setCloudletScheduler(CloudletScheduler cloudletScheduler) { return Vm.NULL; }
         @Override public <R extends ResourceManageable> ResourceManageable getResource(Class<R> resourceClass) { return ResourceManageable.NULL; }
-        @Override public EventListener<HostToVmEventInfo> getOnUpdateVmProcessingListener() { return EventListener.NULL; }
-        @Override public Vm setOnUpdateVmProcessingListener(EventListener<HostToVmEventInfo> onUpdateVmProcessingListener) { return Vm.NULL; }
         @Override public int compareTo(Vm o) { return 0; }
         @Override public double getTotalMipsCapacity() { return 0.0; }
         @Override public void setFailed(boolean failed){}

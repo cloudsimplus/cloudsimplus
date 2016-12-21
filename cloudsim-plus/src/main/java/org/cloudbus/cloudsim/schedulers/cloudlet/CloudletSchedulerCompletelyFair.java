@@ -352,7 +352,6 @@ public final class CloudletSchedulerCompletelyFair extends CloudletSchedulerTime
         double cloudletTimeSpan = currentTime - rcl.getLastProcessingTime();
         super.updateCloudletProcessing(rcl, currentTime);
 
-        //System.out.printf("\tCloudlet %d time span: %f - curTime %f last %f vruntime %f\n", rcl.getCloudletId(), cloudletTimeSpan, currentTime, rcl.getLastProcessingTime(), rcl.getVirtualRuntime());
         rcl.addVirtualRuntime(cloudletTimeSpan);
     }
 

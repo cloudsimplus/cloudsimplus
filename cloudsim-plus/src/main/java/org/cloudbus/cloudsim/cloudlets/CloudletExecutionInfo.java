@@ -7,13 +7,13 @@
  */
 package org.cloudbus.cloudsim.cloudlets;
 
+import org.cloudbus.cloudsim.datacenters.Datacenter;
 import org.cloudbus.cloudsim.util.Consts;
 import org.cloudbus.cloudsim.core.CloudSim;
-import org.cloudbus.cloudsim.resources.Pe;
 import org.cloudbus.cloudsim.schedulers.cloudlet.CloudletScheduler;
 
 /**
- * Stores execution information about a Cloudlet submitted to a Datacenter for
+ * Stores execution information about a {@link Cloudlet} submitted to a specific {@link Datacenter} for
  * processing. This class keeps track of the time for all activities in the
  * Datacenter for a specific Cloudlet. Before a Cloudlet exits the Datacenter,
  * it is RECOMMENDED to call this method {@link #finalizeCloudlet()}.
@@ -45,16 +45,12 @@ public class CloudletExecutionInfo {
 	private double fileTransferTime;
 
     /**
-     * The time the cloudlet arrived for execution
-     * inside a given Datacenter.
+     * @see #getCloudletArrivalTime()
      */
     private double arrivalTime;
 
     /**
-     * The time when the Cloudlet has finished completely
-     * (not just in a given Datacenter, but finished at all).
-     * If the cloudlet wasn't finished completely yet,
-     * the value is equals to {@link Cloudlet#NOT_ASSIGNED}.
+     * @see #getFinishTime()
      */
     private double finishedTime;
 
@@ -92,21 +88,6 @@ public class CloudletExecutionInfo {
     private double totalCompletionTime;
 
     /**
-     * The reservation start time (used by Advanced Reservation (AR) feature).
-     */
-    private final long reservationStartTime;
-
-    /**
-     * The reservation duration time (used by Advanced Reservation (AR) feature).
-     */
-    private final int reservationDuration;
-
-    /**
-     * The reservation id (used by Advanced Reservation (AR) feature).
-     */
-    private final int reservationId;
-
-    /**
      * @see #getVirtualRuntime()
      */
     private double virtualRuntime;
@@ -128,110 +109,31 @@ public class CloudletExecutionInfo {
      * @post $none
      */
     public CloudletExecutionInfo(Cloudlet cloudlet) {
-        this(cloudlet, 0, 0, Cloudlet.NOT_ASSIGNED);
+        this(cloudlet, 0);
     }
 
     /**
-     * Instantiates a new CloudletExecutionInfo object upon the arrival of a Cloudlet object.
-     * Use this constructor to store reserved Cloudlets, i.e. Cloudlets that
-     * done reservation before. The arriving time is determined by
-     * {@link org.cloudbus.cloudsim.core.CloudSim#clock()}.
+     * Instantiates a CloudletExecutionInfo object upon the arrival of a Cloudlet inside a Datacenter.
      *
-     * @param cloudlet a cloudlet object
-     * @param startTime a reservation start time. Can also be interpreted as
-     * starting time to execute this Cloudlet.
-     * @param duration a reservation reservationDuration time.
-     * Can also be interpreted as how long to execute this Cloudlet.
-     * @param reservationId a reservation ID that owns this Cloudlet
-     *
-     * @see CloudSim#clock()
+     * @param cloudlet the Cloudlet to store execution information from
+     * @param startTime a reservation start time, that can also be interpreted as
+     * starting time to execute this Cloudlet
      * @pre cloudlet != null
      * @pre startTime > 0
      * @pre duration > 0
-     * @pre reservID > 0
+     * @pre reservationId > 0
      * @post $none
      */
-    public CloudletExecutionInfo(Cloudlet cloudlet, long startTime, int duration, int reservationId) {
+    public CloudletExecutionInfo(Cloudlet cloudlet, long startTime) {
         this.cloudlet = cloudlet;
-        this.reservationStartTime = startTime;
-        this.reservationDuration = duration;
-        this.reservationId = reservationId;
         this.arrivalTime = cloudlet.registerArrivalOfCloudletIntoDatacenter();
-        this.finishedTime = Cloudlet.NOT_ASSIGNED;  // Cannot finish in this hourly slot.
+        this.finishedTime = Cloudlet.NOT_ASSIGNED;
         this.totalCompletionTime = 0.0;
         this.startExecTime = 0.0;
         this.virtualRuntime = 0;
 
-
-        //In case a Cloudlet has been executed partially by some other host
+        //In case a Cloudlet has been executed partially by some other Host
         this.cloudletFinishedSoFar = cloudlet.getCloudletFinishedSoFar() * Consts.MILLION;
-    }
-
-    /**
-     * Gets the Cloudlet or reservation start time.
-     *
-     * @return Cloudlet's starting time
-     * @pre $none
-     * @post $none
-     */
-    public long getReservationStartTime() {
-        return reservationStartTime;
-    }
-
-    /**
-     * Gets the reservation reservationDuration time.
-     *
-     * @return reservation reservationDuration time
-     * @pre $none
-     * @post $none
-     */
-    public int getDurationTime() {
-        return reservationDuration;
-    }
-
-    /**
-     * Gets the reservation ID that owns this Cloudlet.
-     *
-     * @return a reservation ID
-     * @pre $none
-     * @post $none
-     */
-    public int getReservationID() {
-        return reservationId;
-    }
-
-    /**
-     * Checks whether this Cloudlet is submitted by reserving or not.
-     *
-     * @return <tt>true</tt> if this Cloudlet has reserved before,
-     * <tt>false</tt> otherwise
-     * @pre $none
-     * @post $none
-     */
-    public boolean hasReserved() {
-        return (reservationId != Cloudlet.NOT_ASSIGNED);
-    }
-
-    /**
-     * Gets this Cloudlet entity Id.
-     *
-     * @return the Cloudlet entity Id
-     * @pre $none
-     * @post $none
-     */
-    public int getCloudletId() {
-        return cloudlet.getId();
-    }
-
-    /**
-     * Gets the user or owner of this Cloudlet.
-     *
-     * @return the Cloudlet's user Id
-     * @pre $none
-     * @post $none
-     */
-    public int getUserId() {
-        return cloudlet.getBroker().getId();
     }
 
     /**
@@ -243,28 +145,6 @@ public class CloudletExecutionInfo {
      */
     public long getCloudletLength() {
         return cloudlet.getCloudletLength();
-    }
-
-    /**
-     * Gets the total Cloudlet's length (across all PEs).
-     *
-     * @return total Cloudlet's length
-     * @pre $none
-     * @post $none
-     */
-    public long getCloudletTotalLength() {
-        return cloudlet.getCloudletTotalLength();
-    }
-
-    /**
-     * Gets the Cloudlet's class type.
-     *
-     * @return class type of the Cloudlet
-     * @pre $none
-     * @post $none
-     */
-    public int getCloudletClassType() {
-        return cloudlet.getPriority();
     }
 
     /**
@@ -324,41 +204,13 @@ public class CloudletExecutionInfo {
      * @param status The current cloudlet status
      * @return true if the cloudlet is NOT running, false if it is.
      */
-    protected static boolean isNotRunning(Cloudlet.Status status) {
+    private static boolean isNotRunning(Cloudlet.Status status) {
         return status == Cloudlet.Status.CANCELED || status == Cloudlet.Status.PAUSED || status == Cloudlet.Status.SUCCESS;
     }
 
     /**
-     * Gets the Cloudlet's execution start time.
-     *
-     * @return Cloudlet's execution start time
-     * @pre $none
-     * @post $none
-     */
-    public double getExecStartTime() {
-        return cloudlet.getExecStartTime();
-    }
-
-    /**
-     * Sets this Cloudlet's execution parameters. These parameters are set by
-     * the Datacenter before departure or sending back to the original
-     * Cloudlet's owner.
-     *
-     * @param wallClockTime the time of this Cloudlet resides in a Datacenter
-     * (from arrival time until departure time).
-     * @param actualCPUTime the total execution time of this Cloudlet in a
-     * Datacenter.
-     * @pre wallClockTime >= 0.0
-     * @pre actualCPUTime >= 0.0
-     * @post $none
-     */
-    public void setExecParam(double wallClockTime, double actualCPUTime) {
-        cloudlet.setWallClockTime(wallClockTime, actualCPUTime);
-    }
-
-    /**
      * Gets the remaining cloudlet length (in MI) that has to be execute yet,
-     * considering the {@link #getCloudletTotalLength()}.
+     * considering the {@link Cloudlet#getCloudletTotalLength()}.
      *
      * @return cloudlet length
      * @pre $none
@@ -427,7 +279,8 @@ public class CloudletExecutionInfo {
     }
 
     /**
-     * Gets arrival time of a cloudlet.
+     * Gets the time the cloudlet arrived for execution inside the Datacenter
+     * where this execution information is related to.
      *
      * @return arrival time
      * @pre $none
@@ -438,8 +291,22 @@ public class CloudletExecutionInfo {
     }
 
     /**
-     * Sets the finish time for this Cloudlet. If time is negative, then it is
-     * being ignored.
+     * Gets the time when the Cloudlet has finished completely
+     * (not just in a given Datacenter, but finished at all).
+     * If the cloudlet wasn't finished completely yet,
+     * the value is equals to {@link Cloudlet#NOT_ASSIGNED}.
+     *
+     * @return finish time of a cloudlet or <tt>-1.0</tt> if it cannot finish in
+     * this hourly slot
+     * @pre $none
+     * @post $result >= -1.0
+     */
+    public double getFinishTime() {
+        return finishedTime;
+    }
+
+    /**
+     * Sets the finish time for this Cloudlet. If time is negative, then it will be ignored.
      *
      * @param time finish time
      * @pre time >= 0.0
@@ -454,18 +321,6 @@ public class CloudletExecutionInfo {
     }
 
     /**
-     * Gets the Cloudlet's finish time.
-     *
-     * @return finish time of a cloudlet or <tt>-1.0</tt> if it cannot finish in
-     * this hourly slot
-     * @pre $none
-     * @post $result >= -1.0
-     */
-    public double getFinishTime() {
-        return finishedTime;
-    }
-
-    /**
      * Gets the Cloudlet for which the execution information is related to.
      *
      * @return cloudlet for this execution information object
@@ -477,23 +332,11 @@ public class CloudletExecutionInfo {
     }
 
     /**
-     * Gets the Cloudlet status.
-     *
-     * @return Cloudlet status
-     * @pre $none
-     * @post $none
+     * Gets the ID of the Cloudlet this execution info is related to.
+     * @return
      */
-    public Cloudlet.Status getCloudletStatus() {
-        return cloudlet.getStatus();
-    }
-
-    /**
-     * Get am Unique Identifier (UID) of the cloudlet.
-     *
-     * @return The UID
-     */
-    public String getUid() {
-        return getUserId() + "-" + getCloudletId();
+    public int getCloudletId(){
+        return cloudlet.getId();
     }
 
 	/**
@@ -518,19 +361,22 @@ public class CloudletExecutionInfo {
 	}
 
 	/**
-	 * Gets the last time this Cloudlet was processed in some CPU ({@link Pe}).
-	 * @return the last time this Cloudlet was processed or zero when it has never been processed yet
+	 * Gets the last time the Cloudlet was processed at the Datacenter
+     * where this execution information is related to.
+     *
+	 * @return the last time the Cloudlet was processed or zero when it has never been processed yet
 	 */
 	public double getLastProcessingTime() {
 		return lastProcessingTime;
 	}
 
 	/**
-	 * Sets the last time this Cloudlet was processed in some CPU ({@link Pe}).
+	 * Sets the last time this Cloudlet was processed at a Datacenter.
 	 * @param lastProcessingTime the last processing time to set
 	 */
 	public void setLastProcessingTime(double lastProcessingTime) {
 		this.lastProcessingTime = lastProcessingTime;
+        cloudlet.notifyOnCloudletProcessingListeners(lastProcessingTime);
 	}
 
     /**
@@ -595,13 +441,13 @@ public class CloudletExecutionInfo {
 
     @Override
     public String toString() {
-        return String.format("Cloudlet %d", getCloudletId());
+        return String.format("Cloudlet %d", cloudlet.getId());
     }
 
     @Override
     public boolean equals(Object obj) {
         return (obj instanceof CloudletExecutionInfo) &&
-               ((CloudletExecutionInfo)obj).getCloudletId() == this.getCloudletId();
+               ((CloudletExecutionInfo)obj).cloudlet.getId() == this.cloudlet.getId();
     }
 
     /**

@@ -10,7 +10,7 @@ import org.cloudbus.cloudsim.utilizationmodels.UtilizationModel;
 import java.util.Collections;
 import java.util.List;
 import org.cloudbus.cloudsim.core.Simulation;
-import org.cloudsimplus.listeners.VmToCloudletEventInfo;
+import org.cloudsimplus.listeners.CloudletVmEventInfo;
 import org.cloudsimplus.listeners.EventListener;
 
 /**
@@ -731,23 +731,6 @@ public interface Cloudlet extends UniquelyIdentificable, Delayable, Comparable<C
     boolean setCloudletFinishedSoFar(final long length);
 
     /**
-     * Gets the listener object that will be notified every time when
-     * the processing of the Cloudlet is updated in its {@link Vm}.
-     *
-     * @return the onUpdateVmProcessingListener
-     */
-    EventListener<VmToCloudletEventInfo> getOnUpdateCloudletProcessingListener();
-
-    /**
-     * Gets the listener object that will be notified every time when
-     * the processing of the Cloudlet is updated in its {@link Vm}.
-     *
-     * @param onUpdateCloudletProcessingListener the listener to set
-     * @see #setCloudletFinishedSoFar(long)
-     */
-    Cloudlet setOnUpdateCloudletProcessingListener(EventListener<VmToCloudletEventInfo> onUpdateCloudletProcessingListener);
-
-    /**
      * Gets the length of this Cloudlet that has been executed so far (in MI),
      * according to the {@link #getCloudletLength()}.
      * This method is useful when trying to move this Cloudlet
@@ -804,20 +787,47 @@ public interface Cloudlet extends UniquelyIdentificable, Delayable, Comparable<C
     void setExecStartTime(final double clockTime);
 
     /**
-     * Gets the listener object that will be notified when a cloudlet finishes
-     * its execution at a given {@link Vm}.
+     * Adds a listener object that will be notified every time when
+     * the processing of the Cloudlet is updated in its {@link Vm}.
      *
-     * @return the onCloudletFinishEventListener
+     * @param listener the listener to add
+     * @see #getCloudletFinishedSoFar()
      */
-    EventListener<VmToCloudletEventInfo> getOnCloudletFinishEventListener();
+    Cloudlet addOnUpdateCloudletProcessingListener(EventListener<CloudletVmEventInfo> listener);
 
     /**
-     * Sets the listener object that will be notified when a cloudlet finishes
+     * Removes a listener from the onUpdateCloudletProcessingListener List.
+     *
+     * @param listener the listener to remove
+     * @return true if the listener was found and removed, false otherwise
+     */
+    boolean removeOnUpdateCloudletProcessingListener(EventListener<CloudletVmEventInfo> listener);
+
+    /**
+     * Adds an OnCloudletFinishEventListener object that will be notified when a cloudlet finishes
      * its execution at a given {@link Vm}.
-     * @param onCloudletFinishEventListener the listener to set
+     *
+     * @param listener the listener to add
      * @return
      */
-    Cloudlet setOnCloudletFinishEventListener(EventListener<VmToCloudletEventInfo> onCloudletFinishEventListener);
+    Cloudlet addOnCloudletFinishListener(EventListener<CloudletVmEventInfo> listener);
+
+    /**
+     * Removes a listener from the onCloudletFinishEventListener List
+     *
+     * @param listener the listener to remove
+     * @return true if the listener was found and removed, false otherwise
+     * @see #addOnCloudletFinishListener(EventListener)
+     */
+    boolean removeOnCloudletFinishListener(EventListener<CloudletVmEventInfo> listener);
+
+    /**
+     * Notifies all registered listeners about the update on Cloudlet processing.
+     *
+     * <p><b>This method is used just internally and must not be called directly.</b></p>
+     * @param time the time the event happened
+     */
+    void notifyOnCloudletProcessingListeners(double time);
 
     /**
      * Gets the CloudSim instance that represents the simulation the Entity is related to.
@@ -835,9 +845,8 @@ public interface Cloudlet extends UniquelyIdentificable, Delayable, Comparable<C
      */
     Cloudlet setSimulation(Simulation simulation);
 
-
     /**
-     * A property that implements the Null Object Design Pattern for {@link Cloudlet}
+     * An attribute that implements the Null Object Design Pattern for {@link Cloudlet}
      * objects.
      */
     Cloudlet NULL = new Cloudlet() {
@@ -879,7 +888,7 @@ public interface Cloudlet extends UniquelyIdentificable, Delayable, Comparable<C
         @Override public double getUtilizationOfBw(double time) { return 0.0; }
         @Override public double getUtilizationOfCpu(double time) { return 0.0; }
         @Override public double getUtilizationOfRam(double time) { return 0.0; }
-        public Vm getVm() { return Vm.NULL; }
+        @Override public Vm getVm() { return Vm.NULL; }
         @Override public double getWaitingTime() { return 0.0; }
         @Override public double getWallClockTimeInLastExecutedDatacenter() { return 0.0; }
         @Override public double getWallClockTime(int datacenterId) { return 0.0; }
@@ -902,27 +911,22 @@ public interface Cloudlet extends UniquelyIdentificable, Delayable, Comparable<C
         @Override public Cloudlet setUtilizationModelCpu(UtilizationModel utilizationModelCpu) { return Cloudlet.NULL; }
         @Override public Cloudlet setUtilizationModelRam(UtilizationModel utilizationModelRam) { return Cloudlet.NULL; }
         @Override public Cloudlet setVm(Vm vm) { return Cloudlet.NULL; }
-        @Override public EventListener<VmToCloudletEventInfo> getOnCloudletFinishEventListener() { return EventListener.NULL;}
-        @Override public Cloudlet setOnCloudletFinishEventListener(EventListener<VmToCloudletEventInfo> onCloudletFinishEventListener) { return Cloudlet.NULL; }
+        @Override public boolean removeOnCloudletFinishListener(EventListener<CloudletVmEventInfo> listener) { return false;}
+        @Override public Cloudlet addOnCloudletFinishListener(EventListener<CloudletVmEventInfo> listener) { return Cloudlet.NULL; }
+        @Override public void notifyOnCloudletProcessingListeners(double time) {}
         @Override public Simulation getSimulation() { return Simulation.NULL; }
         @Override public Cloudlet setSimulation(Simulation simulation) { return this; }
-        @Override public EventListener<VmToCloudletEventInfo> getOnUpdateCloudletProcessingListener() { return EventListener.NULL; }
-        @Override public Cloudlet setOnUpdateCloudletProcessingListener(EventListener<VmToCloudletEventInfo> onUpdateCloudletProcessingListener) { return Cloudlet.NULL; }
+        @Override public boolean removeOnUpdateCloudletProcessingListener(EventListener<CloudletVmEventInfo> listener) { return false; }
+        @Override public Cloudlet addOnUpdateCloudletProcessingListener(EventListener<CloudletVmEventInfo> listener) { return Cloudlet.NULL; }
         @Override public double getSubmissionDelay() { return 0; }
         @Override public void setSubmissionDelay(double submissionDelay) {}
         @Override public boolean isBindToVm() { return false; }
         @Override public int compareTo(Cloudlet o) { return 0; }
         @Override public boolean isAssignedToDatacenter() { return false; }
         @Override public String toString() { return "Cloudlet.NULL"; }
-
-        /**
-        * @todo @author manoelcampos These methods shouldn't be public,
-        * but they are used by CloudletExecutionInfo class.
-        */
         @Override public boolean setCloudletFinishedSoFar(long length) { return false; }
         @Override public boolean setWallClockTime(double wallTime, double actualCPUTime) { return false; }
         @Override public void setExecStartTime(double clockTime) {}
         @Override public double registerArrivalOfCloudletIntoDatacenter() { return -1; }
-
     };
 }

@@ -33,5 +33,4 @@ public class PredicateAny implements Predicate<SimEvent> {
     public boolean test(SimEvent ev) {
         return true;
     }
-
 }

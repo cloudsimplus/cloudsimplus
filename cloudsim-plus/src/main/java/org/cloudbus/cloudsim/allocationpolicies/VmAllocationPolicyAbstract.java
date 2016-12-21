@@ -15,7 +15,7 @@ import java.util.Objects;
 import org.cloudbus.cloudsim.datacenters.Datacenter;
 import org.cloudbus.cloudsim.hosts.Host;
 import org.cloudbus.cloudsim.vms.Vm;
-import org.cloudsimplus.listeners.HostToVmEventInfo;
+import org.cloudsimplus.listeners.VmHostEventInfo;
 
 /**
  * An abstract class that represents the policy
@@ -98,9 +98,6 @@ public abstract class VmAllocationPolicyAbstract implements VmAllocationPolicy {
         }
 
         getVmHostMap().put(vm, host);
-        HostToVmEventInfo info =
-            new HostToVmEventInfo(host.getSimulation().clock(), host, vm);
-        vm.getOnHostAllocationListener().update(info);
     }
 
     /**
@@ -120,12 +117,6 @@ public abstract class VmAllocationPolicyAbstract implements VmAllocationPolicy {
         Host host = getVmHostMap().remove(vm);
         if(Objects.isNull(host)) {
             return Host.NULL;
-        }
-
-        if(host != Host.NULL) {
-            HostToVmEventInfo info =
-                new HostToVmEventInfo(host.getSimulation().clock(), host, vm);
-            vm.getOnHostDeallocationListener().update(info);
         }
 
         return host;

@@ -20,3 +20,6 @@ dependency-reduced-pom.xml
 .project
 .settings/
 bin/
+
+#NetBeans project files
+nbproject/

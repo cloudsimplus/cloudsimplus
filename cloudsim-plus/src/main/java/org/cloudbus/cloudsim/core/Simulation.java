@@ -170,41 +170,42 @@ public interface Simulation {
     int getNumEntities();
 
     /**
-     * Gets the {@link EventListener} object that will be notified when any event
-     * is processed by CloudSim.
+     * Removes a listener from the onEventProcessingListener List.
      *
-     * @return
+     * @param listener the listener to remove
+     * @return true if the listener was found and removed, false otherwise
      */
-    EventListener<SimEvent> getOnEventProcessingListener();
+    boolean removeOnEventProcessingListener(EventListener<SimEvent> listener);
 
     /**
-     * Sets the {@link EventListener} object that will be notified when the simulation is paused.
+     * Adds an {@link EventListener} object that will be notified when the simulation is paused.
      * When this Listener is notified, it will receive an {@link EventInfo} informing
      * the time the pause occurred.
-     * <p>
+     *
      * <p>This object is just information about the event
      * that happened. In fact, it isn't generated an actual {@limk SimEvent} for a pause event
      * because there is not need for that.</p>
      *
-     * @param onSimulationPausedListener the event listener to be set
+     * @param listener the event listener to add
      */
-    Simulation setOnSimulationPausedListener(EventListener<EventInfo> onSimulationPausedListener);
+    Simulation addOnSimulationPausedListener(EventListener<EventInfo> listener);
 
     /**
-     * Gets the {@link EventListener} object that will be notified when the simulation is paused.
+     * Removes a listener from the onSimulationPausedListener List.
      *
-     * @return
+     * @param listener the listener to remove
+     * @return true if the listener was found and removed, false otherwise
      */
-    EventListener<EventInfo> getOnSimulationPausedListener();
+     boolean removeOnSimulationPausedListener(EventListener<EventInfo> listener);
 
     /**
-     * Sets the {@link EventListener} object that will be notified when any event
+     * Adds a {@link EventListener} object that will be notified when any event
      * is processed by CloudSim. When this Listener is notified, it will receive
      * the {@link SimEvent} that was processed.
      *
-     * @param onEventProcessingListener the event listener to be set
+     * @param listener the event listener to add
      */
-    Simulation setOnEventProcessingListener(EventListener<SimEvent> onEventProcessingListener);
+    Simulation addOnEventProcessingListener(EventListener<SimEvent> listener);
 
 
     /**
@@ -395,202 +396,100 @@ public interface Simulation {
      * objects.
      */
     Simulation NULL = new Simulation() {
-        @Override
-        public void abort() {
-        }
-
-        @Override
-        public void addEntity(CloudSimEntity e) {
-        }
-
-        @Override
-        public SimEvent cancel(int src, Predicate<SimEvent> p) {
+        @Override public void abort() {}
+        @Override public void addEntity(CloudSimEntity e) {}
+        @Override public SimEvent cancel(int src, Predicate<SimEvent> p) {
             return SimEvent.NULL;
         }
-
-        @Override
-        public boolean cancelAll(int src, Predicate<SimEvent> p) {
+        @Override public boolean cancelAll(int src, Predicate<SimEvent> p) {
             return false;
         }
-
-        @Override
-        public double clock() {
+        @Override public double clock() {
             return 0;
         }
-
-        @Override
-        public SimEvent findFirstDeferred(int dest, Predicate<SimEvent> p) {
+        @Override public SimEvent findFirstDeferred(int dest, Predicate<SimEvent> p) {
             return SimEvent.NULL;
         }
-
-        @Override
-        public Calendar getCalendar() {
+        @Override public Calendar getCalendar() {
             return Calendar.getInstance();
         }
-
-        @Override
-        public int getCloudInfoServiceEntityId() {
+        @Override public int getCloudInfoServiceEntityId() {
             return 0;
         }
-
-        @Override
-        public Set<Datacenter> getDatacenterList() {
+        @Override public Set<Datacenter> getDatacenterList() {
             return Collections.EMPTY_SET;
         }
-
-        @Override
-        public SimEntity getEntity(int id) {
+        @Override public SimEntity getEntity(int id) {
             return SimEntity.NULL;
         }
-
-        @Override
-        public SimEntity getEntity(String name) {
+        @Override public SimEntity getEntity(String name) {
             return SimEntity.NULL;
         }
-
-        @Override
-        public int getEntityId(String name) {
+        @Override public int getEntityId(String name) {
             return 0;
         }
-
-        @Override
-        public List<SimEntity> getEntityList() {
+        @Override public List<SimEntity> getEntityList() {
             return Collections.EMPTY_LIST;
         }
-
-        @Override
-        public String getEntityName(int entityId) {
+        @Override public String getEntityName(int entityId) {
             return "";
         }
-
-        @Override
-        public double getMinTimeBetweenEvents() {
+        @Override public double getMinTimeBetweenEvents() {
             return 0;
         }
-
-        @Override
-        public int getNumEntities() {
+        @Override public int getNumEntities() {
             return 0;
         }
-
-        @Override
-        public EventListener<SimEvent> getOnEventProcessingListener() {
-            return EventListener.NULL;
-        }
-
-        @Override
-        public Simulation setOnSimulationPausedListener(EventListener<EventInfo> onSimulationPausedListener) {
-            return this;
-        }
-
-        @Override
-        public EventListener<EventInfo> getOnSimulationPausedListener() {
-            return EventListener.NULL;
-        }
-
-        @Override
-        public void holdEntity(int src, long delay) {
-        }
-
-        @Override
-        public boolean isPaused() {
+        @Override public boolean removeOnEventProcessingListener(EventListener<SimEvent> listener) { return false; }
+        @Override public Simulation addOnSimulationPausedListener(EventListener<EventInfo> listener) { return this; }
+        @Override public boolean removeOnSimulationPausedListener(EventListener<EventInfo> listener) {
             return false;
         }
-
-        @Override
-        public void pauseEntity(int src, double delay) {
-        }
-
-        @Override
-        public boolean pause() {
+        @Override public void holdEntity(int src, long delay) {}
+        @Override public boolean isPaused() {
             return false;
         }
-
-        @Override
-        public boolean pause(double time) {
+        @Override public void pauseEntity(int src, double delay) {}
+        @Override public boolean pause() {
             return false;
         }
-
-        @Override
-        public boolean resume() {
+        @Override public boolean pause(double time) {
             return false;
         }
-
-        @Override
-        public boolean isRunning() {
+        @Override public boolean resume() {
             return false;
         }
-
-        @Override
-        public SimEvent select(int dest, Predicate<SimEvent> p) {
+        @Override public boolean isRunning() {
+            return false;
+        }
+        @Override public SimEvent select(int dest, Predicate<SimEvent> p) {
             return SimEvent.NULL;
         }
-
-        @Override
-        public void send(int src, int dest, double delay, int tag, Object data) {
-        }
-
-        @Override
-        public void sendFirst(int src, int dest, double delay, int tag, Object data) {
-        }
-
-        @Override
-        public void sendNow(int src, int dest, int tag, Object data) {
-        }
-
-        @Override
-        public Simulation setOnEventProcessingListener(EventListener<SimEvent> onEventProcessingListener) {
-            return this;
-        }
-
-        @Override
-        public double start() throws RuntimeException {
-            return 0;
-        }
-
-        @Override
-        public boolean terminate() {
+        @Override public void send(int src, int dest, double delay, int tag, Object data) {}
+        @Override public void sendFirst(int src, int dest, double delay, int tag, Object data) {}
+        @Override public void sendNow(int src, int dest, int tag, Object data) {}
+        @Override public Simulation addOnEventProcessingListener(EventListener<SimEvent> listener) { return this; }
+        @Override public double start() throws RuntimeException { return 0; }
+        @Override public boolean terminate() {
             return false;
         }
-
-        @Override
-        public boolean terminateAt(double time) {
+        @Override public boolean terminateAt(double time) {
             return false;
         }
-
-        @Override
-        public void wait(CloudSimEntity src, Predicate<SimEvent> p) {
-        }
-
-        @Override
-        public long waiting(int dest, Predicate<SimEvent> p) {
+        @Override public void wait(CloudSimEntity src, Predicate<SimEvent> p) {}
+        @Override public long waiting(int dest, Predicate<SimEvent> p) {
             return 0;
         }
-
-        @Override
-        public NetworkTopology getNetworkTopology() {
+        @Override public NetworkTopology getNetworkTopology() {
             return NetworkTopology.NULL;
         }
-
-        @Override
-        public void setNetworkTopology(NetworkTopology networkTopology) {
-        }
-
-        @Override
-        public Map<String, SimEntity> getEntitiesByName() {
+        @Override public void setNetworkTopology(NetworkTopology networkTopology) {}
+        @Override public Map<String, SimEntity> getEntitiesByName() {
             return Collections.emptyMap();
         }
-
-        public int getNumberOfBrokers() {
-            return 0;
-        }
-
-
-        @Override
-        public boolean updateEntityName(String oldName) {
+        @Override public boolean updateEntityName(String oldName) {
             return false;
         }
     };
-
 
 }

@@ -21,9 +21,9 @@ import java.util.List;
 import org.cloudbus.cloudsim.core.CloudSim;
 import org.cloudbus.cloudsim.mocks.CloudSimMocker;
 import org.cloudbus.cloudsim.mocks.Mocks;
-import org.cloudsimplus.listeners.DatacenterToVmEventInfo;
+import org.cloudsimplus.listeners.VmDatacenterEventInfo;
 import org.cloudsimplus.listeners.EventListener;
-import org.cloudsimplus.listeners.HostToVmEventInfo;
+import org.cloudsimplus.listeners.VmHostEventInfo;
 import org.cloudbus.cloudsim.schedulers.cloudlet.CloudletScheduler;
 import org.cloudbus.cloudsim.schedulers.cloudlet.CloudletSchedulerTimeShared;
 import org.easymock.EasyMock;
@@ -220,39 +220,52 @@ public class VmSimpleTest {
     }
 
     @Test
-    public void testSetOnHostAllocationListener() {
-        vm.setOnHostAllocationListener(null);
-        assertEquals(EventListener.NULL, vm.getOnHostAllocationListener());
-        EventListener<HostToVmEventInfo> listener = (evt) -> {};
-        vm.setOnHostAllocationListener(listener);
-        assertEquals(listener, vm.getOnHostAllocationListener());
+    public void testRemoveOnHostAllocationListener() {
+        EventListener<VmHostEventInfo> listener = (info) -> {};
+        vm.addOnHostAllocationListener(listener);
+        assertTrue(vm.removeOnHostAllocationListener(listener));
     }
 
     @Test
-    public void testSetOnHostDeallocationListener() {
-        vm.setOnHostDeallocationListener(null);
-        assertEquals(EventListener.NULL, vm.getOnHostDeallocationListener());
-        EventListener<HostToVmEventInfo> listener = (evt) -> {};
-        vm.setOnHostDeallocationListener(listener);
-        assertEquals(listener, vm.getOnHostDeallocationListener());
+    public void testRemoveOnHostAllocationListener_Null() {
+        vm.addOnHostAllocationListener(null);
+        assertFalse(vm.removeOnHostAllocationListener(null));
     }
 
     @Test
-    public void testSetOnVmCreationFailureListener() {
-        vm.setOnVmCreationFailureListener(null);
-        assertEquals(EventListener.NULL, vm.getOnVmCreationFailureListener());
-        EventListener<DatacenterToVmEventInfo> listener = (evt) -> {};
-        vm.setOnVmCreationFailureListener(listener);
-        assertEquals(listener, vm.getOnVmCreationFailureListener());
+    public void testRemoveOnHostDeallocationListener_Null() {
+        assertFalse(vm.removeOnHostDeallocationListener(null));
     }
 
     @Test
-    public void testSetOnUpdateVmProcessingListener() {
-        vm.setOnUpdateVmProcessingListener(null);
-        assertEquals(EventListener.NULL, vm.getOnUpdateVmProcessingListener());
-        EventListener<HostToVmEventInfo> listener = (evt) -> {};
-        vm.setOnUpdateVmProcessingListener(listener);
-        assertEquals(listener, vm.getOnUpdateVmProcessingListener());
+    public void testRemoveOnHostDeallocationListener() {
+        EventListener<VmHostEventInfo> listener = (info) -> {};
+        vm.addOnHostDeallocationListener(listener);
+        assertTrue(vm.removeOnHostDeallocationListener(listener));
+    }
+
+    @Test
+    public void testRemoveOnVmCreationFailureListener_Null() {
+        assertFalse(vm.removeOnVmCreationFailureListener(null));
+    }
+
+    @Test
+    public void testRemoveOnVmCreationFailureListener() {
+        EventListener<VmDatacenterEventInfo> listener = (info) -> {};
+        vm.addOnVmCreationFailureListener(listener);
+        assertTrue(vm.removeOnVmCreationFailureListener(listener));
+    }
+
+    @Test
+    public void testRemoveOnUpdateVmProcessingListener_Null() {
+        assertFalse(vm.removeOnUpdateVmProcessingListener(null));
+    }
+
+    @Test
+    public void testRemoveOnUpdateVmProcessingListener() {
+        EventListener<VmHostEventInfo> listener = (info) -> {};
+        vm.addOnUpdateVmProcessingListener(listener);
+        assertTrue(vm.removeOnUpdateVmProcessingListener(listener));
     }
 
     @Test

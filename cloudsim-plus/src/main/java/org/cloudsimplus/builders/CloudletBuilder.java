@@ -33,8 +33,8 @@ import org.cloudbus.cloudsim.vms.Vm;
 import org.cloudbus.cloudsim.brokers.DatacenterBrokerSimple;
 import org.cloudbus.cloudsim.utilizationmodels.UtilizationModel;
 import org.cloudbus.cloudsim.utilizationmodels.UtilizationModelFull;
+import org.cloudsimplus.listeners.CloudletVmEventInfo;
 import org.cloudsimplus.listeners.EventListener;
-import org.cloudsimplus.listeners.VmToCloudletEventInfo;
 
 /**
  * A Builder class to create {@link Cloudlet} objects.
@@ -61,7 +61,7 @@ public class CloudletBuilder extends Builder {
     private final BrokerBuilderDecorator brokerBuilder;
     private final DatacenterBrokerSimple broker;
 
-    private EventListener<VmToCloudletEventInfo> onCloudletFinishEventListener = EventListener.NULL;
+    private EventListener<CloudletVmEventInfo> onCloudletFinishEventListener = EventListener.NULL;
 	private List<String> requiredFiles;
 
 	public CloudletBuilder(final BrokerBuilderDecorator brokerBuilder, final DatacenterBrokerSimple broker) {
@@ -175,7 +175,7 @@ public class CloudletBuilder extends Builder {
                     .setUtilizationModelRam(utilizationModelRam)
                     .setUtilizationModelBw(utilizationModelBw)
                     .setBroker(broker)
-                    .setOnCloudletFinishEventListener(onCloudletFinishEventListener);
+                    .addOnCloudletFinishListener(onCloudletFinishEventListener);
             cloudlet.addRequiredFiles(requiredFiles);
             localList.add(cloudlet);
         }
@@ -205,11 +205,11 @@ public class CloudletBuilder extends Builder {
         return brokerBuilder;
     }
 
-    public EventListener<VmToCloudletEventInfo> getOnCloudletFinishEventListener() {
+    public EventListener<CloudletVmEventInfo> getOnCloudletFinishEventListener() {
         return onCloudletFinishEventListener;
     }
 
-    public CloudletBuilder setOnCloudletFinishEventListener(EventListener<VmToCloudletEventInfo> defaultOnCloudletFinishEventListener) {
+    public CloudletBuilder setOnCloudletFinishEventListener(EventListener<CloudletVmEventInfo> defaultOnCloudletFinishEventListener) {
         this.onCloudletFinishEventListener = defaultOnCloudletFinishEventListener;
         return this;
     }

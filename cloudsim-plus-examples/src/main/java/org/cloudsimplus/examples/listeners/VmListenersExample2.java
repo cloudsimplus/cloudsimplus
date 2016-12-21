@@ -57,7 +57,7 @@ import org.cloudbus.cloudsim.allocationpolicies.VmAllocationPolicySimple;
 import org.cloudbus.cloudsim.schedulers.vm.VmSchedulerTimeShared;
 import org.cloudbus.cloudsim.core.CloudSim;
 import org.cloudsimplus.listeners.EventListener;
-import org.cloudsimplus.listeners.HostToVmEventInfo;
+import org.cloudsimplus.listeners.VmHostEventInfo;
 import org.cloudbus.cloudsim.provisioners.PeProvisionerSimple;
 import org.cloudbus.cloudsim.resources.Bandwidth;
 import org.cloudbus.cloudsim.provisioners.ResourceProvisionerSimple;
@@ -72,8 +72,8 @@ import org.cloudbus.cloudsim.resources.Ram;
  * notifications while the simulation is running. It also shows how to
  * reuse the same listener object to different VMs.
  *
- * @see Vm#setOnHostAllocationListener(EventListener)
- * @see Vm#setOnHostDeallocationListener(EventListener)
+ * @see Vm#addOnHostAllocationListener(EventListener)
+ * @see Vm#addOnHostDeallocationListener(EventListener)
  * @see EventListener
  *
  * @author Manoel Campos da Silva Filho
@@ -106,14 +106,14 @@ public class VmListenersExample2 {
      * a host is allocated for a VM. The same listener is used for all created VMs.
      * @see #createVmListeners()
      */
-    private EventListener<HostToVmEventInfo> onHostAllocationListener;
+    private EventListener<VmHostEventInfo> onHostAllocationListener;
 
     /**
      * The listener object that will be created in order to be notified when
      * a host is deallocated for a VM. The same listener is used for all created VMs.
      * @see #createVmListeners()
      */
-    private EventListener<HostToVmEventInfo> onHostDeallocationListener;
+    private EventListener<VmHostEventInfo> onHostDeallocationListener;
 
     /**
      * Starts the example execution, calling the class constructor\
@@ -135,7 +135,6 @@ public class VmListenersExample2 {
      * Default constructor that builds and starts the simulation.
      */
     public VmListenersExample2() {
-        int numberOfUsers = 1; // number of cloud users/customers (brokers)
         simulation = new CloudSim();
 
         this.hostList = new ArrayList<>();
@@ -179,9 +178,9 @@ public class VmListenersExample2 {
         All VMs will use this same listener.
         The Listener is created using Java 8 Lambda Expressions.
         */
-        this.onHostAllocationListener = evt -> Log.printFormattedLine(
+        this.onHostAllocationListener = eventInfo -> Log.printFormattedLine(
                 "\t#EventListener: Host %d allocated to Vm %d at time %.2f",
-                evt.getHost().getId(), evt.getVm().getId(), evt.getTime());
+                eventInfo.getHost().getId(), eventInfo.getVm().getId(), eventInfo.getTime());
 
         /*
         Creates the listener object that will be notified when a host is deallocated for a VM.
@@ -210,11 +209,11 @@ public class VmListenersExample2 {
             .setCloudletScheduler(new CloudletSchedulerTimeShared())
             .setBroker(broker);
 
-        /*Sets the listener to intercept allocation of a Host to the Vm.*/
-        vm.setOnHostAllocationListener(onHostAllocationListener);
+        /*Adds the listener to intercept allocation of a Host to the Vm.*/
+        vm.addOnHostAllocationListener(this.onHostAllocationListener);
 
-        /*Sets the listener to intercept deallocation of a Host for the Vm.*/
-        vm.setOnHostDeallocationListener(onHostDeallocationListener);
+        /*Adds the listener to intercept deallocation of a Host for the Vm.*/
+        vm.addOnHostDeallocationListener(this.onHostDeallocationListener);
 
         return vm;
     }

@@ -19,15 +19,15 @@ import org.cloudbus.cloudsim.utilizationmodels.UtilizationModel;
 
 import java.util.List;
 import org.cloudbus.cloudsim.core.CloudSim;
+import org.cloudsimplus.listeners.CloudletVmEventInfo;
 import org.cloudsimplus.listeners.EventListener;
-import org.cloudsimplus.listeners.VmToCloudletEventInfo;
 import org.easymock.EasyMock;
 import org.junit.Assert;
 
 import org.junit.Before;
 import org.junit.Test;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertSame;
+
+import static org.junit.Assert.*;
 
 /**
  * @author	Anton Beloglazov
@@ -72,12 +72,29 @@ public class CloudletSimpleTest {
     }
 
     @Test
-    public void testSetOnCloudletFinishEventListener() {
-        cloudlet.setOnCloudletFinishEventListener(null);
-        assertEquals(EventListener.NULL, cloudlet.getOnCloudletFinishEventListener());
-        EventListener<VmToCloudletEventInfo> listener = (evt) -> {};
-        cloudlet.setOnCloudletFinishEventListener(listener);
-        assertEquals(listener, cloudlet.getOnCloudletFinishEventListener());
+    public void testAddOnCloudletFinishEventListener() {
+        EventListener<CloudletVmEventInfo> listener = (info) -> {};
+        cloudlet.addOnCloudletFinishListener(listener);
+        assertTrue(cloudlet.removeOnCloudletFinishListener(listener));
+    }
+
+    @Test
+    public void testAddOnCloudletFinishEventListener_Null() {
+        cloudlet.addOnCloudletFinishListener(null);
+        assertFalse(cloudlet.removeOnCloudletFinishListener(null));
+    }
+
+    @Test
+    public void testRemoveOnCloudletFinishEventListener() {
+        EventListener<CloudletVmEventInfo> listener = (info) -> {};
+        cloudlet.addOnCloudletFinishListener(listener);
+        assertTrue(cloudlet.removeOnCloudletFinishListener(listener));
+    }
+
+    @Test
+    public void testRemoveOnCloudletFinishEventListener_Null() {
+        cloudlet.addOnCloudletFinishListener(null);
+        assertFalse(cloudlet.removeOnCloudletFinishListener(null));
     }
 
     @Test
@@ -234,9 +251,9 @@ public class CloudletSimpleTest {
 
         cloudlet.assignCloudletToDatacenter(0, 0);
         final long cloudletFinishedSoFar = cloudlet.getCloudletLength() / 2;
-        Assert.assertTrue(cloudlet.setCloudletFinishedSoFar(cloudletFinishedSoFar));
+        assertTrue(cloudlet.setCloudletFinishedSoFar(cloudletFinishedSoFar));
         assertEquals(cloudletFinishedSoFar, cloudlet.getCloudletFinishedSoFar(), 0);
-        Assert.assertFalse(cloudlet.setCloudletFinishedSoFar(-1));
+        assertFalse(cloudlet.setCloudletFinishedSoFar(-1));
         assertEquals(cloudletFinishedSoFar, cloudlet.getCloudletFinishedSoFar(), 0);
     }
 
@@ -273,10 +290,10 @@ public class CloudletSimpleTest {
         assertEquals(expected, cloudlet.getReservationId());
 
         expected = 5;
-        Assert.assertTrue(cloudlet.setReservationId(expected));
+        assertTrue(cloudlet.setReservationId(expected));
         Assert.assertEquals(expected, cloudlet.getReservationId());
 
-        Assert.assertFalse(cloudlet.setReservationId(-1));
+        assertFalse(cloudlet.setReservationId(-1));
         Assert.assertEquals(expected, cloudlet.getReservationId());
     }
 
@@ -330,25 +347,25 @@ public class CloudletSimpleTest {
     @Test
     public void testSetNetServiceLevel() {
         int valid = 1;
-        Assert.assertTrue(
+        assertTrue(
                 "Cloudlet.setNetServiceLevel should return true",
                 cloudlet.setNetServiceLevel(valid));
         assertEquals(valid, cloudlet.getNetServiceLevel());
 
         final int invalid0 = 0;
-        Assert.assertFalse(
+        assertFalse(
                 "Cloudlet.setNetServiceLevel should return false",
                 cloudlet.setNetServiceLevel(invalid0));
         assertEquals(valid, cloudlet.getNetServiceLevel());
 
         final int invalidNegative = -1;
-        Assert.assertFalse(
+        assertFalse(
                 "Cloudlet.setNetServiceLevel should return false",
                 cloudlet.setNetServiceLevel(invalidNegative));
         assertEquals(valid, cloudlet.getNetServiceLevel());
 
         valid = 2;
-        Assert.assertTrue(
+        assertTrue(
                 "Cloudlet.setNetServiceLevel should return true",
                 cloudlet.setNetServiceLevel(valid));
         assertEquals(valid, cloudlet.getNetServiceLevel());
@@ -468,13 +485,13 @@ public class CloudletSimpleTest {
         CloudletSimple c = createCloudlet();
 
         //Cloudlet has not assigned to a switches yet
-        Assert.assertFalse(c.setWallClockTime(1, 2));
+        assertFalse(c.setWallClockTime(1, 2));
 
         //Assign cloudlet to a switches
         final int resourceId = 1, cost = 1;
         c.assignCloudletToDatacenter(resourceId, cost);
 
-        Assert.assertTrue(c.setWallClockTime(1, 2));
+        assertTrue(c.setWallClockTime(1, 2));
     }
 
     @Test
@@ -482,17 +499,17 @@ public class CloudletSimpleTest {
         CloudletSimple c = createCloudlet();
         c.setCloudletStatus(CloudletSimple.Status.INSTANTIATED);
         //The status is the same of the current cloudlet status (the request has not effect)
-        Assert.assertFalse(c.setCloudletStatus(CloudletSimple.Status.INSTANTIATED));
+        assertFalse(c.setCloudletStatus(CloudletSimple.Status.INSTANTIATED));
 
         //Actually changing to a new status
-        Assert.assertTrue(c.setCloudletStatus(CloudletSimple.Status.QUEUED));
+        assertTrue(c.setCloudletStatus(CloudletSimple.Status.QUEUED));
 
         final CloudletSimple.Status newStatus = CloudletSimple.Status.CANCELED;
-        Assert.assertTrue(c.setCloudletStatus(newStatus));
+        assertTrue(c.setCloudletStatus(newStatus));
         assertEquals(newStatus, c.getStatus());
 
         //Trying to change to the same current status (the request has not effect)
-        Assert.assertFalse(c.setCloudletStatus(newStatus));
+        assertFalse(c.setCloudletStatus(newStatus));
     }
 
     @Test
@@ -500,9 +517,9 @@ public class CloudletSimpleTest {
         CloudletSimple c = createCloudlet();
         final String files[] = {"file1.txt", "file2.txt"};
         for (String file : files) {
-            Assert.assertTrue("Method file should be added",
+            assertTrue("Method file should be added",
                     c.addRequiredFile(file));  //file doesn't previously added
-            Assert.assertFalse("Method file shouldn't be added",
+            assertFalse("Method file shouldn't be added",
                     c.addRequiredFile(file)); //file already added
         }
     }
@@ -515,10 +532,10 @@ public class CloudletSimpleTest {
             c.addRequiredFile(file);
         }
 
-        Assert.assertFalse(c.deleteRequiredFile("file-inexistent.txt"));
+        assertFalse(c.deleteRequiredFile("file-inexistent.txt"));
         for (String file : files) {
-            Assert.assertTrue(c.deleteRequiredFile(file));
-            Assert.assertFalse(c.deleteRequiredFile(file)); //already deleted
+            assertTrue(c.deleteRequiredFile(file));
+            assertFalse(c.deleteRequiredFile(file)); //already deleted
         }
     }
 
@@ -533,7 +550,7 @@ public class CloudletSimpleTest {
             c.addRequiredFile(file);
         }
 
-        Assert.assertTrue(c.requiresFiles()); //it has required files
+        assertTrue(c.requiresFiles()); //it has required files
     }
 
     @Test
@@ -558,16 +575,16 @@ public class CloudletSimpleTest {
         final long length = 1000;
         CloudletSimple c = createCloudlet();
 
-        Assert.assertFalse(c.isFinished());
+        assertFalse(c.isFinished());
 
         final int resourceId = 1, cost = 1;
         c.assignCloudletToDatacenter(resourceId, cost);
         final long finishedSoFar = length / 10;
         c.setCloudletFinishedSoFar(finishedSoFar);
-        Assert.assertFalse(c.isFinished());
+        assertFalse(c.isFinished());
 
         c.setCloudletFinishedSoFar(length);
-        Assert.assertTrue(c.isFinished());
+        assertTrue(c.isFinished());
     }
 
     @Test
@@ -588,11 +605,11 @@ public class CloudletSimpleTest {
     @Test
     public void testHasReserved() {
         cloudlet.setReservationId(CloudletSimple.NOT_ASSIGNED);
-        Assert.assertFalse("Cloudlet.isReserved should be false", cloudlet.isReserved());
+        assertFalse("Cloudlet.isReserved should be false", cloudlet.isReserved());
 
         final int reservationId = 1;
         cloudlet.setReservationId(reservationId);
-        Assert.assertTrue("Cloudlet.isReserved should be true", cloudlet.isReserved());
+        assertTrue("Cloudlet.isReserved should be true", cloudlet.isReserved());
     }
 
     @Test
