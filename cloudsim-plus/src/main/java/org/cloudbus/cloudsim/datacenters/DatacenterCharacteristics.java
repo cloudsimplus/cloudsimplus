@@ -55,7 +55,7 @@ public interface DatacenterCharacteristics extends Identificable {
 
     /**
      * Gets the {@link Datacenter} that owns these characteristics
-     * @return the switches
+     * @return the sws
      */
     Datacenter getDatacenter();
 
@@ -115,7 +115,7 @@ public interface DatacenterCharacteristics extends Identificable {
     Host getHostWithFreePe(int peNumber);
 
     /**
-     * Gets the switches id.
+     * Gets the sws id.
      *
      * @return the id
      */
@@ -123,7 +123,7 @@ public interface DatacenterCharacteristics extends Identificable {
 
     /**
      * Gets the total MIPS rating, which is the sum of MIPS rating of all Hosts in
-     * the switches.
+     * the sws.
      *
      * @return the sum of MIPS ratings
      *
@@ -134,7 +134,7 @@ public interface DatacenterCharacteristics extends Identificable {
 
     /**
      * Gets Millions Instructions Per Second (MIPS) Rating of a Processing
-     * Element (Pe). It is essential to use this method when a switches is
+     * Element (Pe). It is essential to use this method when a sws is
      * made up of heterogenous PEs per PMs.
      *
      * @param hostId the machine ID
@@ -198,28 +198,28 @@ public interface DatacenterCharacteristics extends Identificable {
     String getResourceName();
 
     /**
-     * Gets the VMM in use in the switches.
+     * Gets the VMM in use in the sws.
      *
      * @return the VMM name
      */
     String getVmm();
 
     /**
-     * Checks whether all PMs of the switches are working properly or not.
+     * Checks whether all PMs of the sws are working properly or not.
      *
      * @return if all PMs are working, otherwise
      */
     boolean isWorking();
 
     /**
-     * Get the cost to use each each Megabit of bandwidth in the switches.
+     * Get the cost to use each each Megabit of bandwidth in the sws.
      *
      * @return the cost to use bw
      */
     double getCostPerBw();
 
     /**
-     * Get the cost to use each Megabyte of RAM in the switches.
+     * Get the cost to use each Megabyte of RAM in the sws.
      *
      * @return the cost to use RAM
      */
@@ -233,7 +233,7 @@ public interface DatacenterCharacteristics extends Identificable {
     double getCostPerSecond();
 
     /**
-     * Get the cost to use each Megabyte of storage in the switches.
+     * Get the cost to use each Megabyte of storage in the sws.
      *
      * @return the cost to use storage
      */
@@ -256,7 +256,7 @@ public interface DatacenterCharacteristics extends Identificable {
     DatacenterCharacteristics setCostPerBw(double costPerBw);
 
     /**
-     * Sets the cost to use each Megabyte of RAM in the switches.
+     * Sets the cost to use each Megabyte of RAM in the sws.
      *
      * @param costPerMem cost to use RAM
      * @pre costPerMem >= 0

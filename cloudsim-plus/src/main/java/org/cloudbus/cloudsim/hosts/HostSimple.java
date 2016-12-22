@@ -28,7 +28,7 @@ import org.cloudbus.cloudsim.resources.RawStorage;
  * (PM) inside a {@link Datacenter}. It executes actions related to management
  * of virtual machines (e.g., creation and destruction). A host has a defined
  * policy for provisioning memory and bw, as well as an allocation policy for
- * PEs to {@link Vm virtual machines}. A host is associated to a switches and
+ * PEs to {@link Vm virtual machines}. A host is associated to a sws and
  * can host virtual machines.
  *
  * @author Rodrigo N. Calheiros

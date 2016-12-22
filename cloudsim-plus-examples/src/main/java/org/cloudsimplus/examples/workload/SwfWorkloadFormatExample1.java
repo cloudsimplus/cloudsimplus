@@ -140,7 +140,7 @@ public class SwfWorkloadFormatExample1 {
         try {
             broker = new DatacenterBrokerVmsWithMorePesFirst(simulation);
 
-            /*Vms and cloudlets are created before the switches and host
+            /*Vms and cloudlets are created before the sws and host
             because the example is defining the hosts based on VM requirements
             and VMs are created based on cloudlet requirements.*/
             createCloudletsFromWorkloadFile();
@@ -197,9 +197,9 @@ public class SwfWorkloadFormatExample1 {
     }
 
     /**
-     * Creates the switches.
+     * Creates the sws.
      *
-     * @return the switches
+     * @return the sws
      */
     private Datacenter createDatacenterAndHostsBasedOnVmRequirements() {
         List<Host> hostList = createHostsAccordingToVmRequirements();

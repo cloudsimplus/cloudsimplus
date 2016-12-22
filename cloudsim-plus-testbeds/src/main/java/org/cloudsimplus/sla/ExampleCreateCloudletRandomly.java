@@ -244,7 +244,7 @@ public class ExampleCreateCloudletRandomly {
     /**
      * Creates the broker.
      *
-     * @return the switches broker
+     * @return the sws broker
      */
     private DatacenterBroker createBroker() {
         return new DatacenterBrokerSimple(cloudsim);

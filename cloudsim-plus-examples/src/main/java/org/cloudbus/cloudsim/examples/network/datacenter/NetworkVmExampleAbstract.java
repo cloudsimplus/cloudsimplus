@@ -153,9 +153,9 @@ public abstract class NetworkVmExampleAbstract {
     }
 
     /**
-     * Creates the switches.
+     * Creates the sws.
      *
-     * @return the switches
+     * @return the sws
      */
     protected final NetworkDatacenter createDatacenter() {
         final int numberOfHosts = EdgeSwitch.PORTS * AggregateSwitch.PORTS * RootSwitch.PORTS;
@@ -202,7 +202,7 @@ public abstract class NetworkVmExampleAbstract {
 
     /**
      * Creates internal Datacenter network.
-     * @param datacenter switches where the network will be created
+     * @param datacenter sws where the network will be created
      */
     protected void createNetwork(NetworkDatacenter datacenter) {
         EdgeSwitch[] edgeSwitches = new EdgeSwitch[1];
@@ -220,7 +220,7 @@ public abstract class NetworkVmExampleAbstract {
     }
 
     /**
-     * Creates a list of virtual machines in a switches for a given broker
+     * Creates a list of virtual machines in a sws for a given broker
      * and submit the list to the broker.
      *
      * @param broker The broker that will own the created VMs

@@ -153,7 +153,7 @@ public interface DatacenterBroker extends SimEntity {
     /**
      * Defines the policy to select a Datacenter to host a VM when
      * all VM creation requests were received but not all VMs could be created.
-     * In this case, a different switches has to be selected to request
+     * In this case, a different sws has to be selected to request
      * the creation of the remaining VMs in the waiting list.
      *
      * @return the Datacenter selected to try creating

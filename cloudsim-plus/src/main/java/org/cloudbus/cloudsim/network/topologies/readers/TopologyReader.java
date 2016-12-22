@@ -19,7 +19,7 @@ import java.io.IOException;
  * @author Thomas Hohnstein
  * @since CloudSim Toolkit 1.0
  */
-public interface GraphReader {
+public interface TopologyReader {
 
 	/**
 	 * Reads a file and creates an {@link TopologicalGraph} object.

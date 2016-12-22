@@ -116,7 +116,7 @@ public class Helper {
 	/**
 	 * Creates the broker.
 	 *
-	 * @return the switches broker
+	 * @return the sws broker
 	 */
 	public static DatacenterBroker createBroker(CloudSim simulation) {
 		DatacenterBroker broker = null;
@@ -130,13 +130,13 @@ public class Helper {
 	}
 
 	/**
-	 * Creates the switches.
+	 * Creates the sws.
 	 *
-	 * @param datacenterClass the switches class
+	 * @param datacenterClass the sws class
 	 * @param hostList the host list
 	 * @param vmAllocationPolicy the vm allocation policy
 	 *
-	 * @return the power switches
+	 * @return the power sws
 	 *
 	 * @throws Exception the exception
 	 */
@@ -217,7 +217,7 @@ public class Helper {
 	/**
 	 * Prints the results.
 	 *
-	 * @param datacenter the switches
+	 * @param datacenter the sws
      * @param vmList the List of VMs to get results from
 	 * @param lastClock the last clock
 	 * @param experimentName the experiment name

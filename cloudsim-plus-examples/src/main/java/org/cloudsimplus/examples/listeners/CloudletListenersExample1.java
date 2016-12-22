@@ -231,7 +231,7 @@ public class CloudletListenersExample1 {
     /**
      * Creates a Datacenter with pre-defined configuration.
      *
-     * @return the created switches
+     * @return the created sws
      */
     private Datacenter createDatacenter() {
         Host host = createHost(0);

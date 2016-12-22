@@ -4,10 +4,16 @@ Lists the main changes in the project.
 
 ## [Current Development Version]
 
+### Changed
+- Renamed the class `GraphReader` to `TopologyReader`.
+
 ## [v0.9-beta.1] - 2016-12-22
 
 ### Added
 - Allowed to delay the submission of VMs by a `DatacenterBroker`, simulating the dynamic arrival of VMs (closes the feature request #23)
+- Included extremelly helpful package documentation that can be viewed directly on your IDE or online [here](http://cloudsimplus.org/apidocs/).
+  Such a package documentation gives a general overview of the classes used to build a cloud simulation.
+
 
 ### Changed
 - Renamed `Simulation` class method `abruptallyTerminate` to `abort`.

@@ -33,13 +33,13 @@ import org.cloudbus.cloudsim.lists.VmList;
 public abstract class AbstractSwitch extends CloudSimEntity implements Switch {
 
     /**
-     * Map of packets sent to switches on the uplink, where each key is a switch
+     * Map of packets sent to sws on the uplink, where each key is a switch
      * and the corresponding value is the list of packets to sent to that switch.
      */
     private final Map<Switch, List<HostPacket>> uplinkSwitchPacketMap;
 
     /**
-     * Map of packets sent to switches on the downlink, where each key is a
+     * Map of packets sent to sws on the downlink, where each key is a
      * switch and the corresponding value is the list of packets to sent to that switch.
      */
     private final Map<Switch, List<HostPacket>> downlinkSwitchPacketMap;
@@ -50,12 +50,12 @@ public abstract class AbstractSwitch extends CloudSimEntity implements Switch {
     private final List<NetworkHost> hostList;
 
     /**
-     * List of uplink switches.
+     * List of uplink sws.
      */
     private final List<Switch> uplinkSwitches;
 
     /**
-     * List of downlink switches.
+     * List of downlink sws.
      */
     private final List<Switch> downlinkSwitches;
 
@@ -175,7 +175,7 @@ public abstract class AbstractSwitch extends CloudSimEntity implements Switch {
     }
 
     /**
-     * Sends a packet to switches connected through a downlink port.
+     * Sends a packet to sws connected through a downlink port.
      *
      * @param ev Event/packet to process
      */
@@ -191,7 +191,7 @@ public abstract class AbstractSwitch extends CloudSimEntity implements Switch {
     }
 
     /**
-     * Sends a packet to switches connected through a uplink port.
+     * Sends a packet to sws connected through a uplink port.
      *
      * @param ev Event/packet to process
      */

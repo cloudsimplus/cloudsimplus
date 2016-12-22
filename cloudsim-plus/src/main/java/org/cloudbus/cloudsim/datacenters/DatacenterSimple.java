@@ -57,7 +57,7 @@ public class DatacenterSimple extends CloudSimEntity implements Datacenter {
      * Creates a Datacenter.
      *
      * @param simulation The CloudSim instance that represents the simulation the Entity is related to
-     * @param characteristics the characteristics of the switches to be created
+     * @param characteristics the characteristics of the sws to be created
      * @param vmAllocationPolicy the policy to be used to allocate VMs into hosts
      * @throws IllegalArgumentException when this entity has <tt>zero</tt> number of PEs (Processing Elements).
      * <br>
@@ -100,11 +100,11 @@ public class DatacenterSimple extends CloudSimEntity implements Datacenter {
      * Creates a Datacenter with the given parameters.
      *
      * @param simulation The CloudSim instance that represents the simulation the Entity is related to
-     * @param characteristics the characteristics of the switches to be created
+     * @param characteristics the characteristics of the sws to be created
      * @param storageList a List of storage elements, for data simulation
      * @param vmAllocationPolicy the policy to be used to allocate VMs into hosts
      * @param schedulingInterval the scheduling interval to process each
-     * switches received event (in seconds)
+     * sws received event (in seconds)
      * @throws IllegalArgumentException when this entity has <tt>zero</tt> number of PEs (Processing Elements).
      * No PEs mean the Cloudlets can't be processed. A CloudResource must
      * contain one or more Machines. A Machine must contain one or more PEs.
@@ -909,7 +909,7 @@ public class DatacenterSimple extends CloudSimEntity implements Datacenter {
     }
 
     /**
-     * Checks whether the switches has the given file.
+     * Checks whether the sws has the given file.
      *
      * @param file a file to be searched
      * @return <tt>true</tt> if successful, <tt>false</tt> otherwise
@@ -922,7 +922,7 @@ public class DatacenterSimple extends CloudSimEntity implements Datacenter {
     }
 
     /**
-     * Checks whether the switches has the given file.
+     * Checks whether the sws has the given file.
      *
      * @param fileName a file name to be searched
      * @return <tt>true</tt> if successful, <tt>false</tt> otherwise
@@ -986,9 +986,9 @@ public class DatacenterSimple extends CloudSimEntity implements Datacenter {
     }
 
     /**
-     * Sets the switches characteristics.
+     * Sets the sws characteristics.
      *
-     * @param characteristics the new switches characteristics
+     * @param characteristics the new sws characteristics
      */
     protected final void setCharacteristics(DatacenterCharacteristics characteristics) {
         characteristics.setDatacenter(this);
@@ -1020,7 +1020,7 @@ public class DatacenterSimple extends CloudSimEntity implements Datacenter {
     }
 
     /**
-     * Sets the policy to be used by the switches to allocate VMs into hosts.
+     * Sets the policy to be used by the sws to allocate VMs into hosts.
      *
      * @param vmAllocationPolicy the new vm allocation policy
      */
@@ -1035,7 +1035,7 @@ public class DatacenterSimple extends CloudSimEntity implements Datacenter {
     }
 
     /**
-     * Gets the last time some cloudlet was processed in the switches.
+     * Gets the last time some cloudlet was processed in the sws.
      *
      * @return the last process time
      */
@@ -1044,7 +1044,7 @@ public class DatacenterSimple extends CloudSimEntity implements Datacenter {
     }
 
     /**
-     * Sets the last time some cloudlet was processed in the switches.
+     * Sets the last time some cloudlet was processed in the sws.
      *
      * @param lastProcessTime the new last process time
      */
@@ -1058,7 +1058,7 @@ public class DatacenterSimple extends CloudSimEntity implements Datacenter {
     }
 
     /**
-     * Sets the list of storage devices of the switches.
+     * Sets the list of storage devices of the sws.
      *
      * @param storageList the new storage list
      * @return
@@ -1091,7 +1091,7 @@ public class DatacenterSimple extends CloudSimEntity implements Datacenter {
     }
 
     /**
-     * Sets the list of VMs submitted to be ran in some host of this switches.
+     * Sets the list of VMs submitted to be ran in some host of this sws.
      *
      * @param <T> the class of VMs inside the list
      * @param vmList the new vm list

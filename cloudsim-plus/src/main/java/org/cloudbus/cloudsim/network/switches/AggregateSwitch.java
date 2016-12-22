@@ -15,7 +15,7 @@ import org.cloudbus.cloudsim.vms.Vm;
 
 /**
  * This class represents an Aggregate AbstractSwitch in a Datacenter network. It
- * interacts with other switches in order to exchange packets.
+ * interacts with other sws in order to exchange packets.
  *
  * <p>Please refer to following publication for more details:
  * <ul>
@@ -47,7 +47,7 @@ public class AggregateSwitch extends AbstractSwitch {
 
     /**
      * Default downlink bandwidth of {@link AggregateSwitch} in Megabits/s.
-     * It also represents the uplink bandwidth of connected edge switches.
+     * It also represents the uplink bandwidth of connected edge sws.
      */
     public static final long DOWNLINK_BW = 100 * 1024 * 1024; // 100 Megabits
     /**
@@ -57,7 +57,7 @@ public class AggregateSwitch extends AbstractSwitch {
     public static final int PORTS = 1;
 
     /**
-     * Instantiates a Aggregate AbstractSwitch specifying the switches that are
+     * Instantiates a Aggregate AbstractSwitch specifying the sws that are
      * connected to its downlink and uplink ports and corresponding bandwidths.
      *
      * @param simulation The CloudSim instance that represents the simulation the Entity is related to

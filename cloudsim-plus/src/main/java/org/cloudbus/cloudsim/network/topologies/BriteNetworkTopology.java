@@ -15,7 +15,7 @@ import java.util.Objects;
 
 import org.cloudbus.cloudsim.util.Log;
 import org.cloudbus.cloudsim.network.DelayMatrix;
-import org.cloudbus.cloudsim.network.topologies.readers.GraphReaderBrite;
+import org.cloudbus.cloudsim.network.topologies.readers.TopologyReaderBrite;
 
 /**
  * Implements a network layer by reading the topology from a file in the
@@ -90,7 +90,7 @@ public class BriteNetworkTopology implements NetworkTopology {
         this();
         Log.printConcatLine("Topology file: ", fileName);
         // try to find the file
-        GraphReaderBrite reader = new GraphReaderBrite();
+        TopologyReaderBrite reader = new TopologyReaderBrite();
         try {
             graph = reader.readGraphFile(fileName);
             generateMatrices();

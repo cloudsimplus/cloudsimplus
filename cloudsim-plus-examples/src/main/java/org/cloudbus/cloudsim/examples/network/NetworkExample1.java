@@ -40,7 +40,7 @@ import org.cloudbus.cloudsim.resources.Bandwidth;
 import org.cloudbus.cloudsim.resources.Ram;
 
 /**
- * A simple example showing how to create a switches with 1 host and a network
+ * A simple example showing how to create a sws with 1 host and a network
  * topology and and run 1 cloudlet on it.
  */
 public class NetworkExample1 {

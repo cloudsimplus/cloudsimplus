@@ -156,7 +156,7 @@ public final class ExampleMetricsWithoutNetwork {
 
     /**
      * Calculates the cost price of resources (processing, bw, memory, storage)
-     * of each or all of the switches VMs()
+     * of each or all of the sws VMs()
      *
      * @param vmlist
      */
@@ -368,7 +368,7 @@ public final class ExampleMetricsWithoutNetwork {
     /**
      * Creates the broker.
      *
-     * @return the switches broker
+     * @return the sws broker
      */
     private DatacenterBroker createBroker() {
         return new DatacenterBrokerSimple(cloudsim);

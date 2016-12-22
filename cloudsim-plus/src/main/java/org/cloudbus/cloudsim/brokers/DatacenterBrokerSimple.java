@@ -16,7 +16,7 @@ import org.cloudbus.cloudsim.core.CloudSim;
 /**
  *
  * <p><b>A simple implementation of {@link DatacenterBroker} that try to host customer's VMs
- * at the first switches found. If there isn't capacity in that one,
+ * at the first sws found. If there isn't capacity in that one,
  * it will try the other ones.</b></p>
  *
  * The selection of VMs for each cloudlet is based on a Round-Robin policy,
@@ -41,7 +41,7 @@ public class DatacenterBrokerSimple extends DatacenterBrokerAbstract {
 
     /**
      * {@inheritDoc}
-     * <br>It always selects the first switches from the switches list.
+     * <br>It always selects the first sws from the sws list.
      *
      * @return {@inheritDoc}
      */

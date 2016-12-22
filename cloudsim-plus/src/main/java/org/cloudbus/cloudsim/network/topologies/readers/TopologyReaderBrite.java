@@ -30,7 +30,7 @@ import java.util.StringTokenizer;
  * @author Thomas Hohnstein
  * @since CloudSim Toolkit 1.0
  */
-public class GraphReaderBrite implements GraphReader {
+public class TopologyReaderBrite implements TopologyReader {
     private static final int PARSE_NOTHING = 0;
     private static final int PARSE_NODES = 1;
     private static final int PARSE_EDGES = 2;

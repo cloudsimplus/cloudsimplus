@@ -164,10 +164,10 @@ public class SharingHostPEsUsingVmSchedulerTimeSharedExample {
         hostList.add(host0);
 
         //Defines the characteristics of the data center
-        double cost = 3.0; // the cost of using processing in this switches
-        double costPerMem = 0.05; // the cost of using memory in this switches
-        double costPerStorage = 0.001; // the cost of using storage in this switches
-        double costPerBw = 0.0; // the cost of using bw in this switches
+        double cost = 3.0; // the cost of using processing in this sws
+        double costPerMem = 0.05; // the cost of using memory in this sws
+        double costPerStorage = 0.001; // the cost of using storage in this sws
+        double costPerBw = 0.0; // the cost of using bw in this sws
 
         DatacenterCharacteristics characteristics =
             new DatacenterCharacteristicsSimple(hostList)
