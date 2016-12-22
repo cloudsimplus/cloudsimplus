@@ -16,7 +16,7 @@ package org.cloudbus.cloudsim.network;
  * @version 1.2, 6/20/2005
  * @since CloudSim Toolkit 1.0
  */
-public class FloydWarshall_Float {
+public class FloydWarshall {
 
     /**
      * Number of vertices (network nodes).
@@ -26,7 +26,7 @@ public class FloydWarshall_Float {
     /**
      * Matrices used in dynamic programming.
      */
-    private float[][] dk, dk_minus_one;
+    private double[][] dk, dk_minus_one;
 
     /**
      * The predecessor matrix. Matrix used by dynamic programming.
@@ -43,15 +43,15 @@ public class FloydWarshall_Float {
      *
      * @param numVertices number of network nodes
      */
-    public FloydWarshall_Float(int numVertices) {
+    public FloydWarshall(int numVertices) {
         this.numVertices = numVertices;
 
         // Initialize dk matrices.
-        dk = new float[numVertices][];
-        dk_minus_one = new float[numVertices][];
+        dk = new double[numVertices][];
+        dk_minus_one = new double[numVertices][];
         for (int i = 0; i < numVertices; i++) {
-            dk[i] = new float[numVertices];
-            dk_minus_one[i] = new float[numVertices];
+            dk[i] = new double[numVertices];
+            dk_minus_one[i] = new double[numVertices];
         }
 
         // Initialize pk matrices.
@@ -69,7 +69,7 @@ public class FloydWarshall_Float {
      * @param adjMatrix original delay matrix
      * @return the delay matrix
      */
-    public float[][] allPairsShortestPaths(float[][] adjMatrix) {
+    public double[][] allPairsShortestPaths(double[][] adjMatrix) {
         // dk_minus_one = weights when k = -1
         for (int i = 0; i < numVertices; i++) {
             for (int j = 0; j < numVertices; j++) {
@@ -77,7 +77,7 @@ public class FloydWarshall_Float {
                     dk_minus_one[i][j] = adjMatrix[i][j];
                     pk_minus_one[i][j] = i;
                 } else {
-                    dk_minus_one[i][j] = Float.MAX_VALUE;
+                    dk_minus_one[i][j] = Double.MAX_VALUE;
                     pk_minus_one[i][j] = -1;
                 }
                 // NOTE: we have set the value to infinity and will exploit

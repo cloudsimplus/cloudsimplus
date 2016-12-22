@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <actions>
         <action>
-            <actionName>CUSTOM-integration-tests</actionName>
+            <actionName>integration-tests</actionName>
             <displayName>integration-tests</displayName>
             <goals>
                 <goal>test</goal>

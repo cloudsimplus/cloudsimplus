@@ -22,7 +22,12 @@ import org.cloudbus.cloudsim.vms.Vm;
  * @author Anthony Sulistio
  * @since CloudSim Toolkit 1.0
  */
-public class CloudSimTags {
+public final class CloudSimTags {
+
+    /**
+     * Denotes the end of simulation.
+     */
+    public static final int END_OF_SIMULATION = -1;
 
     /**
      * Starting constant value for cloud-related tags. *
@@ -33,21 +38,6 @@ public class CloudSimTags {
      * Starting constant value for network-related tags. *
      */
     private static final int NETBASE = 100;
-
-    /**
-     * Denotes boolean <tt>true</tt> in <tt>int</tt> value.
-     */
-    public static final int TRUE = 1;
-
-    /**
-     * Denotes boolean <tt>false</tt> in <tt>int</tt> value.
-     */
-    public static final int FALSE = 0;
-
-    /**
-     * Denotes the end of simulation.
-     */
-    public static final int END_OF_SIMULATION = -1;
 
     /**
      * Denotes a request from a Datacenter to register itself. This tag is normally used
@@ -293,7 +283,6 @@ public class CloudSimTags {
      * Defines the tag that represents a host failure.
      */
     public static final int HOST_FAILURE = FAILURE + 1;
-
 
     /**
      * Private constructor to avoid instantiating such a class.

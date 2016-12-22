@@ -46,26 +46,20 @@ import java.util.function.Supplier;
  * @author Manoel Campos da Silva Filho
  */
 public abstract class SimulationExperiment implements Runnable {
-    public static final String VMM = "Xen";
 	protected final ExperimentRunner runner;
 	private final List<Cloudlet> cloudletList;
     private List<Vm> vmList;
     private List<Host> hostList;
-	/**
-	 * @see #getIndex()
-	 */
+    private List<DatacenterBroker> brokerList;
+
 	private final int index;
+    private int numberOfCreatedHosts;
+    private int numberOfCreatedCloudlets;
+    private int numberOfCreatedVms;
+    private boolean verbose;
 
-	/**
-	 * @see #getAfterExperimentFinish()
-	 */
-	private Consumer<? extends SimulationExperiment> afterExperimentFinish;
-
-	private int numberOfCreatedHosts = 0;
-    private int numberOfCreatedCloudlets = 0;
-    private int numberOfCreatedVms = 0;
-	private boolean verbose;
     private CloudSim cloudsim;
+    private Consumer<? extends SimulationExperiment> afterExperimentFinish;
 
     /**
 	 * Creates a simulation experiment.
@@ -83,6 +77,9 @@ public abstract class SimulationExperiment implements Runnable {
 		this.brokerList = new ArrayList<>();
         this.hostList = new ArrayList<>();
 		this.runner = runner;
+        this.numberOfCreatedHosts = 0;
+        this.numberOfCreatedCloudlets = 0;
+        this.numberOfCreatedVms = 0;
 
         //Defines an empty Consumer to avoid NullPointerException if an actual one is not set
 		afterExperimentFinish = exp -> {};
@@ -136,11 +133,6 @@ public abstract class SimulationExperiment implements Runnable {
     public boolean isVerbose() {
         return verbose;
     }
-
-	/**
-	 * @see #getBrokerList()
-	 */
-	private List<DatacenterBroker> brokerList;
 
     /**
      * Adds a Vm created by a {@link Supplier} function to the list of created Vms.

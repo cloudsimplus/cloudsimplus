@@ -69,8 +69,10 @@ public class NetworkHost extends HostSimple {
     /**
      * @TODO What exactly is this bandwidth? Because it is redundant with the bw
      * capacity defined in {@link Host#getBwProvisioner()}
+     *
+     * @see #getBandwidth()
      */
-    public double bandwidth;
+    private double bandwidth;
 
     /**
      * Creates a NetworkHost.
@@ -265,4 +267,11 @@ public class NetworkHost extends HostSimple {
         hostPacketsReceived.add(hostPacket);
     }
 
+    public double getBandwidth() {
+        return bandwidth;
+    }
+
+    public void setBandwidth(double bandwidth) {
+        this.bandwidth = bandwidth;
+    }
 }

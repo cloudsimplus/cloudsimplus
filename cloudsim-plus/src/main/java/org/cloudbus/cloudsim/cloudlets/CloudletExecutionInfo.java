@@ -33,6 +33,11 @@ import org.cloudbus.cloudsim.schedulers.cloudlet.CloudletScheduler;
  * @since CloudSim Toolkit 1.0
  */
 public class CloudletExecutionInfo {
+    /**
+     * A property that implements the Null Object Design Pattern for {@link CloudletExecutionInfo}
+     * objects.
+     */
+    public static final CloudletExecutionInfo NULL = new CloudletExecutionInfo(Cloudlet.NULL);
 
     /**
      * @see #getCloudlet()
@@ -449,11 +454,5 @@ public class CloudletExecutionInfo {
         return (obj instanceof CloudletExecutionInfo) &&
                ((CloudletExecutionInfo)obj).cloudlet.getId() == this.cloudlet.getId();
     }
-
-    /**
-     * A property that implements the Null Object Design Pattern for {@link CloudletExecutionInfo}
-     * objects.
-     */
-    public static final CloudletExecutionInfo NULL = new CloudletExecutionInfo(Cloudlet.NULL);
 
 }

@@ -186,6 +186,21 @@ public interface Cloudlet extends UniquelyIdentificable, Delayable, Comparable<C
     long getFinishedLengthSoFar();
 
     /**
+     * Gets the length of this Cloudlet that has been executed so far (in MI),
+     * according to the {@link #getLength()}.
+     * This method is useful when trying to move this Cloudlet
+     * into different Datacenters or to cancel it.
+     *
+     * @param datacenter the Datacenter entity
+     * @return the length of a partially executed Cloudlet; the full Cloudlet
+     * length if it is completed; or 0 if the Cloudlet has never been executed
+     * in the given Datacenter
+     * @pre resId >= 0
+     * @post $result >= 0.0
+     */
+    long getFinishedLengthSoFar(Datacenter datacenter);
+
+    /**
      * Gets the transaction history of this Cloudlet. The layout of this history
      * is in a readable table column with <tt>time</tt> and <tt>description</tt>
      * as headers.
@@ -709,21 +724,6 @@ public interface Cloudlet extends UniquelyIdentificable, Delayable, Comparable<C
      * @post $none
      */
     boolean setFinishedLengthSoFar(final long length);
-
-    /**
-     * Gets the length of this Cloudlet that has been executed so far (in MI),
-     * according to the {@link #getLength()}.
-     * This method is useful when trying to move this Cloudlet
-     * into different Datacenters or to cancel it.
-     *
-     * @param datacenter the Datacenter entity
-     * @return the length of a partially executed Cloudlet; the full Cloudlet
-     * length if it is completed; or 0 if the Cloudlet has never been executed
-     * in the given Datacenter
-     * @pre resId >= 0
-     * @post $result >= 0.0
-     */
-    long getFinishedLengthSoFar(Datacenter datacenter);
 
     /**
      * Sets the wall clock time the cloudlet spent

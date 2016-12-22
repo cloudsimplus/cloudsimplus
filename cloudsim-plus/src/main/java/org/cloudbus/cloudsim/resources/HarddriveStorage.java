@@ -356,8 +356,8 @@ public class HarddriveStorage implements FileStorage {
 
         // check if the same file name is alredy taken
         if (!contains(file.getName())) {
-            double seekTime = getSeekTime(file.getSize());
-            double transferTime = getTransferTime(file.getSize());
+            final double seekTime = getSeekTime(file.getSize());
+            final double transferTime = getTransferTime(file.getSize());
 
             fileList.add(file);               // add the file into the HD
             fileNameList.add(file.getName());     // add the name to the name list

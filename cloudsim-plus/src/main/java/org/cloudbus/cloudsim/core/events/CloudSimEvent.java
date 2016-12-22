@@ -27,7 +27,7 @@ public final class CloudSimEvent implements SimEvent {
      */
     private final Simulation simulation;
 
-    protected final Type type;
+    private final Type type;
 
     /**
      * The time that this event was scheduled, at which it should occur.
@@ -49,9 +49,9 @@ public final class CloudSimEvent implements SimEvent {
      */
     private int dest;
 
-    protected final int tag;
+    private final int tag;
 
-    protected final Object data;
+    private final Object data;
 
     /**
      * @see #getSerial()

@@ -16,32 +16,6 @@ import org.cloudbus.cloudsim.resources.Pe;
 public interface DatacenterCharacteristics extends Identificable {
 
     /**
-     * A resource that supports Advanced Reservation mechanisms.
-     */
-    int ADVANCE_RESERVATION = 4;
-
-    /**
-     * Assuming all PEs in a PM have the same rating. However, each PM has
-     * different rating to each other.
-     */
-    int OTHER_POLICY_DIFFERENT_RATING = 3;
-
-    /**
-     * Assuming all PEs in all PMs have the same rating.
-     */
-    int OTHER_POLICY_SAME_RATING = 2;
-
-    /**
-     * Spaced-shared CPU allocation policy using First Come First Serve (FCFS)
-     * algorithm.
-     */
-    int SPACE_SHARED = 1;
-
-    /**
-     * Time-shared CPU allocation policy using Round-Robin algorithm.
-     */
-    int TIME_SHARED = 0;
-    /**
      * The default Virtual Machine Monitor to be used if not one is set.
      */
     String DEFAULT_VMM = "Xen";
@@ -332,7 +306,8 @@ public interface DatacenterCharacteristics extends Identificable {
         @Override public DatacenterCharacteristics setCostPerSecond(double costPerSecond) { return DatacenterCharacteristics.NULL; }
         @Override public DatacenterCharacteristics setVmm(String vmm) { return DatacenterCharacteristics.NULL; }
         @Override public Datacenter getDatacenter() { return Datacenter.NULL; }
-        @Override public String getArchitecture() { return ""; }@Override public DatacenterCharacteristics setArchitecture(String architecture) { return DatacenterCharacteristics.NULL; }
+        @Override public String getArchitecture() { return ""; }
+        @Override public DatacenterCharacteristics setArchitecture(String architecture) { return DatacenterCharacteristics.NULL; }
         @Override public String getOs() { return ""; }
         @Override public DatacenterCharacteristics setOs(String os) { return DatacenterCharacteristics.NULL; }
         @Override public <T extends Host> List<T> getHostList() { return Collections.EMPTY_LIST; }

@@ -4,7 +4,7 @@
  * framework reliability for final users using it to create their
  * own simulations and to give more peace of mind for developers changing
  * the framework code.
- * 
+ *
  * @author Manoel Campos da Silva Filho
  */
-package org.cloudsimplus.IntegrationTests;
+package org.cloudsimplus.integrationtests;

@@ -20,29 +20,29 @@ import java.util.Iterator;
  * @author Thomas Hohnstein
  * @since CloudSim Toolkit 1.0
  */
-public class DelayMatrix_Float {
+public class DelayMatrix {
 
 	/**
 	 * Matrix holding delay information between any two nodes.
 	 */
-	protected float[][] mDelayMatrix;
+    private double[][] mDelayMatrix;
 
 	/**
 	 * Number of nodes in the distance-aware-topology.
 	 */
-	protected int mTotalNodeNum = 0;
+    private int mTotalNodeNum = 0;
 
-	public DelayMatrix_Float() {
-        mDelayMatrix = new float[0][0];
+	public DelayMatrix() {
+        mDelayMatrix = new double[0][0];
 	}
 
 	/**
-	 * Creates an correctly initialized Float-Delay-Matrix.
+	 * Creates an correctly initialized double-Delay-Matrix.
 	 *
 	 * @param graph the network topological graph
 	 * @param directed indicates if an directed matrix should be computed (true) or not (false)
 	 */
-	public DelayMatrix_Float(TopologicalGraph graph, boolean directed) {
+	public DelayMatrix(TopologicalGraph graph, boolean directed) {
 
 		// lets preinitialize the Delay-Matrix
 		createDelayMatrix(graph, directed);
@@ -58,7 +58,7 @@ public class DelayMatrix_Float {
 	 * @param destID the id of the destination node
 	 * @return the delay between the given two nodes
 	 */
-	public float getDelay(int srcID, int destID) {
+	public double getDelay(int srcID, int destID) {
 		// check the nodeIDs against internal array-boundarys
 		if (srcID > mTotalNodeNum || destID > mTotalNodeNum) {
 			throw new ArrayIndexOutOfBoundsException("srcID or destID is higher than highest stored node-ID!");
@@ -80,12 +80,12 @@ public class DelayMatrix_Float {
 		// number of nodes inside the network
 		mTotalNodeNum = graph.getNumberOfNodes();
 
-		mDelayMatrix = new float[mTotalNodeNum][mTotalNodeNum];
+		mDelayMatrix = new double[mTotalNodeNum][mTotalNodeNum];
 
 		// cleanup the complete distance-matrix with "0"s
 		for (int row = 0; row < mTotalNodeNum; ++row) {
 			for (int col = 0; col < mTotalNodeNum; ++col) {
-				mDelayMatrix[row][col] = Float.MAX_VALUE;
+				mDelayMatrix[row][col] = Double.MAX_VALUE;
 			}
 		}
 
@@ -109,7 +109,7 @@ public class DelayMatrix_Float {
 	 * Calculates the shortest path between all pairs of nodes.
 	 */
 	private void calculateShortestPath() {
-		FloydWarshall_Float floyd = new FloydWarshall_Float(mTotalNodeNum);
+		FloydWarshall floyd = new FloydWarshall(mTotalNodeNum);
 		mDelayMatrix = floyd.allPairsShortestPaths(mDelayMatrix);
 	}
 
@@ -128,7 +128,7 @@ public class DelayMatrix_Float {
 			buffer.append("\n").append(row);
 
 			for (int col = 0; col < mTotalNodeNum; ++col) {
-				if (mDelayMatrix[row][col] == Float.MAX_VALUE) {
+				if (mDelayMatrix[row][col] == Double.MAX_VALUE) {
 					buffer.append("\t-");
 				} else {
 					buffer.append("\t").append(mDelayMatrix[row][col]);

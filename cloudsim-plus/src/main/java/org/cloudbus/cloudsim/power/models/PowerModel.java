@@ -39,6 +39,12 @@ import org.cloudbus.cloudsim.hosts.power.PowerHost;
 public interface PowerModel {
 
     /**
+     * A property that implements the Null Object Design Pattern for {@link PowerHost}
+     * objects.
+     */
+    PowerModel NULL = (utilization) -> 0;
+
+    /**
      * Gets power consumption of the Power Model, according to the utilization
      * percentage of a critical resource, such as CPU.
      *
@@ -49,10 +55,4 @@ public interface PowerModel {
      * between [0 and 1]
      */
     double getPower(double utilization) throws IllegalArgumentException;
-
-    /**
-     * A property that implements the Null Object Design Pattern for {@link PowerHost}
-     * objects.
-     */
-    PowerModel NULL = (utilization) -> 0;
 }

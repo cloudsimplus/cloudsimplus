@@ -21,7 +21,7 @@ import org.apache.commons.math3.stat.regression.SimpleRegression;
  * @author Anton Beloglazov
  * @since CloudSim Toolkit 3.0
  */
-public class MathUtil {
+public final class MathUtil {
 
     /**
      * Sums a list of numbers.
@@ -349,5 +349,10 @@ public class MathUtil {
         }
         return result;
     }
+
+    /**
+     * A private constructor to avoid class instantiation.
+     */
+    private MathUtil(){}
 
 }

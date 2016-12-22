@@ -8,20 +8,20 @@ Lists the main changes in the project.
 - Allowed to delay the submission of VMs by a `DatacenterBroker`, simulating the dynamic arrival of VMs (closes the feature request #23)
 
 ### Changed
-- Renamed `Simulation`class methods `abruptallyTerminate` to `Simulation.abort` and attribute `numberOfUsers` to `numberOfBrokers`.
+- Renamed `Simulation` class method `abruptallyTerminate` to `abort`.
 - Renamed the class `HostPacket` to `VmPacket` because such a kind of packet is sent between VMs.
 - Renamed the class `NetworkPacket` to `HostPacket` because such a kind of packet is sent between Hosts.
 - Renamed the class `InfoPacket` to `IcmpPacket` because such a kind of packet is sent to simulate ping requests (ICMP protocol).
 - Classes `IcmpPacket`, `HostPacket` and `VmPacket` now implements the new interface `NetworkPacket`
-- Re-designed the event notification mechanisms that uses the `EventListener` class to enable researchers to get notifications
+- Re-designed event notification mechanisms that use the `EventListener` class to enable researchers to get notifications
   about some events during simulation execution. The changes are described below:
   - Classes renamed: `HostToVmEventInfo` to `VmHostEventInfo`, `DatacenterToVmEventInfo` to `VmDatacenterEventInfo`, 
-    `VmToCloudletEventInfo` to `CloudletVmEventInfo`
+    `VmToCloudletEventInfo` to `CloudletVmEventInfo`;
   - Methods `Vm.setOnHostAllocationListener`, `Vm.setOnHostDeallocationListener`, `Vm.setOnVmCreationFailureListener`, `Vm.setOnUpdateVmProcessingListener`, `Cloudlet.setOnUpdateCloudletProcessingListener`, `Cloudlet.setOnCloudletFinishListener`,
   `Simulation.setOnSimulationPausedListener`, `Simulation.setOnEventProcessingListener` and `Simulation.setOnEventProcessingListener`
-  were renamed, changing the prefix `set` to `add` because now it is possible to add multiple `EventListener`s to the same event 
-  that you want to be notified about. 
-  - Respective methods starting with the prefix `remove` were added for each one of the methods presented above,
+  were renamed, changing the prefix *set* to *add* because now it is possible to add multiple `EventListener`s to the same event 
+  that you want to be notified about;
+  - Respective methods starting with the prefix *remove* were added for each one of the methods presented above,
     allowing to remove (unregister) an `EventListener` from the list.
   
 

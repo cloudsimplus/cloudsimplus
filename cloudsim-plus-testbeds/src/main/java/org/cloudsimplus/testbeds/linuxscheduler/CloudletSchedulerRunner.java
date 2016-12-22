@@ -64,7 +64,7 @@ abstract class CloudletSchedulerRunner<T extends CloudletSchedulerExperiment> ex
      * the experiments. Such parameters are shared among all runners
      * that extends this class.
      */
-    public CloudletSchedulerRunner(){
+    CloudletSchedulerRunner(){
 	    /*
 	    Values used for CloudSim Plus Paper:
 	        NumberOfSimulationRuns: 1200

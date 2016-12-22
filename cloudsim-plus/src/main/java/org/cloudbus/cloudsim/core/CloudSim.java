@@ -32,19 +32,19 @@ import static java.util.stream.Collectors.toList;
 public class CloudSim implements Simulation {
 
     /**
-     * @see #getNetworkTopology()
-     */
-    private NetworkTopology networkTopology;
-
-    /**
-     * The CloudSim Plus current version.
+     * CloudSim Plus current version.
      */
     private static final String CLOUDSIMPLUS_VERSION_STRING = "1.0";
 
     /**
-     * The Constant NOT_FOUND.
+     * A constant to indicate that some entity was not found.
      */
     private static final int NOT_FOUND = -1;
+
+    /**
+     * @see #getNetworkTopology()
+     */
+    private NetworkTopology networkTopology;
 
     /**
      * The Cloud Information Service (CIS) entity.
@@ -74,12 +74,12 @@ public class CloudSim implements Simulation {
     /**
      * The queue of events that will be sent in a future simulation time.
      */
-    protected FutureQueue future;
+    private FutureQueue future;
 
     /**
      * The deferred event queue.
      */
-    protected DeferredQueue deferred;
+    private DeferredQueue deferred;
 
     /**
      * The current simulation clock.
@@ -153,7 +153,7 @@ public class CloudSim implements Simulation {
      * @see CloudInformationService
      * @post $none
      */
-    public CloudSim(Calendar cal) throws RuntimeException {
+    public CloudSim(Calendar cal) {
         Log.printFormattedLine("Initialising CloudSim Plus %s...", CloudSim.CLOUDSIMPLUS_VERSION_STRING);
         this.entities = new ArrayList<>();
         this.entitiesByName = new LinkedHashMap<>();
@@ -191,7 +191,7 @@ public class CloudSim implements Simulation {
      * This constructor will be removed in future versions.
      */
     @Deprecated
-    public CloudSim(int numUser, Calendar cal, boolean traceFlag, double periodBetweenEvents) throws RuntimeException{
+    public CloudSim(int numUser, Calendar cal, boolean traceFlag, double periodBetweenEvents) {
         this(cal);
 
         if (periodBetweenEvents <= 0) {
@@ -202,7 +202,7 @@ public class CloudSim implements Simulation {
     }
 
     @Override
-    public double start() throws RuntimeException {
+    public double start() {
         Log.printConcatLine("Starting CloudSim Plus version ", CLOUDSIMPLUS_VERSION_STRING);
         return run();
     }
@@ -607,7 +607,7 @@ public class CloudSim implements Simulation {
      * @throws RuntimeException when the simulation already run once. If you paused the simulation and wants to resume it,
      * you must use {@link #resume()} instead of {@link #start()}.
      */
-    private double run() throws RuntimeException {
+    private double run()  {
         if(alreadyRunOnce){
             throw new RuntimeException("You can't run a simulation that already run previously. If you paused the simulation and want to resume it, you should call resume().");
         }

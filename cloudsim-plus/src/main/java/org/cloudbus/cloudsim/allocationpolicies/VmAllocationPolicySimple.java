@@ -81,6 +81,23 @@ public class VmAllocationPolicySimple extends VmAllocationPolicyAbstract {
         return false;
     }
 
+    @Override
+    public boolean allocateHostForVm(Vm vm, Host host) {
+        if (!host.vmCreate(vm)) {
+            return false;
+        }
+
+        mapVmToPm(vm, host);
+        final int requiredPes = vm.getNumberOfPes();
+        getUsedPes().put(vm, requiredPes);
+        getHostFreePesMap().put(host, getHostFreePesMap().get(host) - requiredPes);
+
+        Log.printFormattedLine(
+            "%.2f: VM #%d has been allocated to the host #%d",
+            vm.getSimulation().clock(), vm.getId(), host.getId());
+        return true;
+    }
+
     /**
      * Gets the host from the {@link #getHostList()} that has
      * the less number of used PEs.
@@ -121,22 +138,5 @@ public class VmAllocationPolicySimple extends VmAllocationPolicyAbstract {
     @Override
     public Map<Vm, Host> optimizeAllocation(List<? extends Vm> vmList) {
         return Collections.EMPTY_MAP;
-    }
-
-    @Override
-    public boolean allocateHostForVm(Vm vm, Host host) {
-        if (!host.vmCreate(vm)) {
-            return false;
-        }
-
-        mapVmToPm(vm, host);
-        final int requiredPes = vm.getNumberOfPes();
-        getUsedPes().put(vm, requiredPes);
-        getHostFreePesMap().put(host, getHostFreePesMap().get(host) - requiredPes);
-
-        Log.printFormattedLine(
-                "%.2f: VM #%d has been allocated to the host #%d",
-                vm.getSimulation().clock(), vm.getId(), host.getId());
-        return true;
     }
 }

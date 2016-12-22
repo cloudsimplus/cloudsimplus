@@ -107,7 +107,7 @@ public interface ResourceProvisioner {
 
     /**
      * A property that implements the Null Object Design Pattern for
-     * ResourceProvisioner&lt;long&gt; objects.
+     * ResourceProvisioner objects.
      */
     ResourceProvisioner NULL = new ResourceProvisioner(){
         @Override public boolean allocateResourceForVm(Vm vm, long newTotalVmResource) { return false; }

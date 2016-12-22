@@ -56,7 +56,7 @@ final class CompletelyFairSchedulerExperiment extends CloudletSchedulerExperimen
      * @param runner The {@link ExperimentRunner} that is in charge
      *               of executing this experiment a defined number of times and to collect
      */
-    public CompletelyFairSchedulerExperiment(int index, CompletelyFairSchedulerRunner runner) {
+    CompletelyFairSchedulerExperiment(int index, CompletelyFairSchedulerRunner runner) {
         super(index, runner);
     }
 

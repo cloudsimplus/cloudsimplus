@@ -338,8 +338,8 @@ public interface CloudletScheduler extends Serializable {
         @Override public double updateVmProcessing(double currentTime, List<Double> mipsShare) { return 0.0; }
         @Override public Vm getVm() { return Vm.NULL; }
         @Override public void setVm(Vm vm) {}
-        @Override  public int getUsedPes() { return 0; }
-        @Override  public int getFreePes() { return 0; }
+        @Override public int getUsedPes() { return 0; }
+        @Override public int getFreePes() { return 0; }
         @Override public boolean canAddCloudletToExecutionList(CloudletExecutionInfo cloudlet) { return false; }
         @Override public List<CloudletExecutionInfo> getCloudletFinishedList() { return Collections.<CloudletExecutionInfo>emptyList(); }
     };

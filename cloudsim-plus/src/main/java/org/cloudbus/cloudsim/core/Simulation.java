@@ -326,7 +326,7 @@ public interface Simulation {
      * @pre $none
      * @post $none
      */
-    double start() throws RuntimeException;
+    double start();
 
     /**
      * Forces the termination of the simulation before it ends.

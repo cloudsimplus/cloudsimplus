@@ -158,16 +158,16 @@ public abstract class DatacenterBrokerAbstract extends CloudSimEntity implements
         Log.printLine();
     }
 
-    private void setSimulationInstanceForSubmittedCloudlets(List<? extends Cloudlet> list) {
-        for(Cloudlet cloudlet: list){
-            cloudlet.setSimulation(this.getSimulation());
-        }
-    }
-
     @Override
     public void submitCloudletList(List<? extends Cloudlet> list, double submissionDelay) {
         setDelayForSubmittedEntities(list, submissionDelay);
         submitCloudletList(list);
+    }
+
+    private void setSimulationInstanceForSubmittedCloudlets(List<? extends Cloudlet> list) {
+        for(Cloudlet cloudlet: list){
+            cloudlet.setSimulation(this.getSimulation());
+        }
     }
 
     /**

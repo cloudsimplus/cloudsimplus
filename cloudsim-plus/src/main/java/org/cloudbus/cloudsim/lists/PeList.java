@@ -20,7 +20,7 @@ import org.cloudbus.cloudsim.vms.Vm;
  * @author Anton Beloglazov
  * @since CloudSim Toolkit 2.0
  */
-public class PeList {
+public final class PeList {
 
     /**
      * Gets a {@link Pe} with a given id.
@@ -181,4 +181,8 @@ public class PeList {
         }
     }
 
+    /**
+     * A private constructor to avoid class instantiation.
+     */
+    private PeList(){}
 }

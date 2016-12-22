@@ -488,6 +488,11 @@ public abstract class CloudletAbstract implements Cloudlet {
     }
 
     @Override
+    public double getCostPerSec(final Datacenter datacenter) {
+        return getDatacenterInfo(datacenter).costPerSec;
+    }
+
+    @Override
     public double getWallClockTimeInLastExecutedDatacenter() {
         return getLastExecutionInDatacenterInfo().wallClockTime;
     }
@@ -495,11 +500,6 @@ public abstract class CloudletAbstract implements Cloudlet {
     @Override
     public double getActualCpuTime(final Datacenter datacenter) {
         return getDatacenterInfo(datacenter).actualCpuTime;
-    }
-
-    @Override
-    public double getCostPerSec(final Datacenter datacenter) {
-        return getDatacenterInfo(datacenter).costPerSec;
     }
 
     @Override
@@ -570,14 +570,14 @@ public abstract class CloudletAbstract implements Cloudlet {
             // Creates the transaction history of this Cloudlet
             history = new StringBuffer(1000);
             history.append("Time below denotes the simulation time.");
-            history.append(System.getProperty("line.separator"));
+            history.append(this.newline);
             history.append("Time (sec)       Description Cloudlet #").append(id);
-            history.append(System.getProperty("line.separator"));
+            history.append(this.newline);
             history.append("------------------------------------------");
-            history.append(System.getProperty("line.separator"));
+            history.append(this.newline);
             history.append(num.format(simulation.clock()));
             history.append("   Creates Cloudlet ID #").append(id);
-            history.append(System.getProperty("line.separator"));
+            history.append(this.newline);
         }
 
         history.append(num.format(simulation.clock()));
@@ -931,44 +931,44 @@ public abstract class CloudletAbstract implements Cloudlet {
      * execution history on each Datacenter is registered at {@link #getLastExecutionInDatacenterInfo()}
      */
     protected static class ExecutionInDatacenterInfo {
+        static final ExecutionInDatacenterInfo NULL = new ExecutionInDatacenterInfo();
+
         /**
          * Cloudlet's submission (arrival) time to a Datacenter
          * or {@link #NOT_ASSIGNED} if the Cloudlet was not assigned to a Datacenter yet.
          */
-        public double arrivalTime;
+        double arrivalTime;
 
         /**
          * The time this Cloudlet resides in a Datacenter (from arrival time
          * until departure time, that may include waiting time).
          */
-        public double wallClockTime;
+        double wallClockTime;
 
         /**
          * The total time the Cloudlet spent being executed in a Datacenter.
          */
-        public double actualCpuTime;
+        double actualCpuTime;
 
         /**
          * Cost per second a Datacenter charge to execute this Cloudlet.
          */
-        public double costPerSec;
+        double costPerSec;
 
         /**
          * Cloudlet's length finished so far (in MI).
          */
-        public long finishedSoFar;
+        long finishedSoFar;
+
 
         /**
          * a Datacenter where the Cloudlet will be executed
          */
-        public Datacenter dc;
+        Datacenter dc;
 
-
-        public ExecutionInDatacenterInfo(){
+        ExecutionInDatacenterInfo(){
             this.dc = Datacenter.NULL;
             this.arrivalTime = NOT_ASSIGNED;
         }
-
-        public static final ExecutionInDatacenterInfo NULL = new ExecutionInDatacenterInfo();
     }
 }

@@ -47,12 +47,12 @@ public class RootSwitch extends AbstractSwitch {
      * Default number of root switch ports that defines the number of
      * {@link AggregateSwitch} that can be connected to it.
      */
-    public static int PORTS = 1;
+    public static final int PORTS = 1;
 
     /**
      * Default switching delay in milliseconds.
      */
-    public static double SWITCHING_DELAY = 0.00285;
+    public static final double SWITCHING_DELAY = 0.00285;
 
     /**
      * The downlink bandwidth of RootSwitch in Megabits/s.

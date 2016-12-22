@@ -52,7 +52,7 @@ final class CloudletSchedulerTimeSharedExperiment extends CloudletSchedulerExper
      * @param runner The {@link ExperimentRunner} that is in charge
      *               of executing this experiment a defined number of times and to collect
      */
-    public CloudletSchedulerTimeSharedExperiment(int index, CloudletSchedulerTimeSharedRunner runner) {
+    CloudletSchedulerTimeSharedExperiment(int index, CloudletSchedulerTimeSharedRunner runner) {
         super(index, runner);
     }
 

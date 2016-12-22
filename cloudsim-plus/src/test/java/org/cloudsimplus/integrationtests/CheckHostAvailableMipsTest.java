@@ -21,7 +21,7 @@
  *     You should have received a copy of the GNU General Public License
  *     along with CloudSim Plus. If not, see <http://www.gnu.org/licenses/>.
  */
-package org.cloudsimplus.IntegrationTests;
+package org.cloudsimplus.integrationtests;
 
 import org.cloudbus.cloudsim.hosts.Host;
 import org.cloudbus.cloudsim.util.Log;

@@ -197,9 +197,9 @@ public class PowerDatacenter extends DatacenterSimple {
      * expected in this host
      */
     protected double updateCloudetProcessingWithoutSchedulingFutureEvents() {
-        double currentTime = getSimulation().clock();
         double minTime = Double.MAX_VALUE;
-        double timeDiff = currentTime - getLastProcessTime();
+        final double currentTime = getSimulation().clock();
+        final double timeDiff = currentTime - getLastProcessTime();
         double timeFrameDatacenterEnergy = 0.0;
 
         Log.printLine("\n\n--------------------------------------------------------------\n\n");
