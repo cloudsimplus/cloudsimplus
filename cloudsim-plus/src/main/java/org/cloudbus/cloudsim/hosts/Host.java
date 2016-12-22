@@ -99,7 +99,7 @@ public interface Host extends Identificable, Comparable<Host> {
     Host setBwProvisioner(ResourceProvisioner bwProvisioner);
 
     /**
-     * Gets the sws where the host is placed.
+     * Gets the Datacenter where the host is placed.
      *
      * @return the data center of the host
      */
@@ -262,7 +262,7 @@ public interface Host extends Identificable, Comparable<Host> {
     void removeMigratingInVm(Vm vm);
 
     /**
-     * Sets the sws where the host is placed.
+     * Sets the Datacenter where the host is placed.
      *
      * @param datacenter the new data center to move the host
      */

@@ -33,7 +33,7 @@ import org.cloudbus.cloudsim.lists.PeList;
 public class DatacenterCharacteristicsSimple implements DatacenterCharacteristics {
 
     /**
-     * The sws id -- setup when sws is created.
+     * The Datacenter id -- setup when Datacenter is created.
      */
     private int id;
 
@@ -48,7 +48,7 @@ public class DatacenterCharacteristicsSimple implements DatacenterCharacteristic
     private String os;
 
     /**
-     * The hosts owned by the sws.
+     * The hosts owned by the Datacenter.
      */
     private List<? extends Host> hostList;
 
@@ -64,7 +64,7 @@ public class DatacenterCharacteristicsSimple implements DatacenterCharacteristic
 
     /**
      * The Virtual Machine Monitor (VMM), also called hypervisor, used in the
-     * sws..
+     * Datacenter..
      */
     private String vmm;
 
@@ -92,7 +92,7 @@ public class DatacenterCharacteristicsSimple implements DatacenterCharacteristic
      * {@link #getVmm() VMM}. The costs for {@link #getCostPerBw() BW}, {@link #getCostPerMem()} () RAM}
      * and {@link #getCostPerStorage()} () Storage} are set to zero.
      *
-     * @param hostList list of {@link Host} in the sws
+     * @param hostList list of {@link Host} in the Datacenter
      *
      * @pre machineList != null
      * @post $none
@@ -116,15 +116,15 @@ public class DatacenterCharacteristicsSimple implements DatacenterCharacteristic
      * Creates a DatacenterCharacteristics. If the time zone is
      * invalid, then by default, it will be GMT+0.
      *
-     * @param architecture the architecture of the sws
-     * @param os the operating system used on the sws's PMs
+     * @param architecture the architecture of the Datacenter
+     * @param os the operating system used on the Datacenter's PMs
      * @param vmm the virtual machine monitor used
-     * @param hostList list of machines in the sws
+     * @param hostList list of machines in the Datacenter
      * @param timeZone local time zone of a user that owns this reservation.
      * Time zone should be of range [GMT-12 ... GMT+13]
-     * @param costPerSec the cost per sec of CPU use in the sws
-     * @param costPerMem the cost to use memory in the sws
-     * @param costPerStorage the cost to use storage in the sws
+     * @param costPerSec the cost per sec of CPU use in the Datacenter
+     * @param costPerMem the cost to use memory in the Datacenter
+     * @param costPerStorage the cost to use storage in the Datacenter
      * @param costPerBw the cost of each byte of bandwidth (bw) consumed
      *
      * @deprecated Use the other available constructors with less parameters
@@ -274,7 +274,7 @@ public class DatacenterCharacteristicsSimple implements DatacenterCharacteristic
     }
 
     /**
-     * Sets the sws id.
+     * Sets the Datacenter id.
      *
      * @param id the new id
      */

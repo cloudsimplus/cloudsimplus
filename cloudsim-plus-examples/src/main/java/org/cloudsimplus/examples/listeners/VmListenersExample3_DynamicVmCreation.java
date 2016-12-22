@@ -291,9 +291,9 @@ public class VmListenersExample3_DynamicVmCreation {
     }
 
     /**
-     * Creates a sws with pre-defined configuration.
+     * Creates a Datacenter with pre-defined configuration.
      *
-     * @return the created sws
+     * @return the created Datacenter
      */
     private Datacenter createDatacenter() {
         Host host = createHost(0);
@@ -301,7 +301,7 @@ public class VmListenersExample3_DynamicVmCreation {
 
         double cost = 3.0; // the cost of using processing in this resource
         double costPerMem = 0.05; // the cost of using memory in this resource
-        double costPerStorage = 0.001; // the cost of using storage in this sws
+        double costPerStorage = 0.001; // the cost of using storage in this Datacenter
         double costPerBw = 0.0; // the cost of using bw in this resource
 
         DatacenterCharacteristics characteristics =

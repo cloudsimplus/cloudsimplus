@@ -137,7 +137,7 @@ public final class CheckCloudletStartDelayForTransferRequiredFilesTest {
 	}
 
 	/**
-	 * List of files to be stored by the sws and that will be used
+	 * List of files to be stored by the Datacenter and that will be used
 	 * by the created cloudlet.
 	 */
 	private void createListOfFiles() {

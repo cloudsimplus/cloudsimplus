@@ -127,8 +127,9 @@ public class CloudletExecutionTask extends CloudletTask {
      * @return {@inheritDoc}
      */
     public boolean process(long totalExecutedLenghtSoFar) {
-        if(totalExecutedLenghtSoFar <= 0)
+        if(totalExecutedLenghtSoFar <= 0) {
             return false;
+        }
 
         this.totalExecutedLenght = Math.min(totalExecutedLenghtSoFar, length);
         setFinished(this.totalExecutedLenght == length);

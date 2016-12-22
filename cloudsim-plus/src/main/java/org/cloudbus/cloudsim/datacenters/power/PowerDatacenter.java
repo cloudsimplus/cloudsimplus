@@ -47,7 +47,7 @@ import org.cloudbus.cloudsim.resources.FileStorage;
 public class PowerDatacenter extends DatacenterSimple {
 
     /**
-     * The sws consumed power.
+     * The Datacenter consumed power.
      */
     private double power;
 
@@ -70,7 +70,7 @@ public class PowerDatacenter extends DatacenterSimple {
      * Creates a PowerDatacenter.
      *
      * @param simulation The CloudSim instance that represents the simulation the Entity is related to
-     * @param characteristics the characteristics of the sws to be created
+     * @param characteristics the characteristics of the Datacenter to be created
      * @param vmAllocationPolicy the policy to be used to allocate VMs into hosts
      *
      */
@@ -90,10 +90,10 @@ public class PowerDatacenter extends DatacenterSimple {
      * Creates a PowerDatacenter with the given parameters.
      *
      * @param simulation The CloudSim instance that represents the simulation the Entity is related to
-     * @param characteristics the characteristics of the sws to be created
+     * @param characteristics the characteristics of the Datacenter to be created
      * @param vmAllocationPolicy the policy to be used to allocate VMs into hosts
      * @param storageList a List of storage elements, for data simulation
-     * @param schedulingInterval the scheduling delay to process each sws received event
+     * @param schedulingInterval the scheduling delay to process each Datacenter received event
      *
      * @deprecated Use the other available constructors with less parameters
      * and set the remaining ones using the respective setters.

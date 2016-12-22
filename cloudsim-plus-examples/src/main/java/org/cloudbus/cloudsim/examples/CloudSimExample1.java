@@ -131,9 +131,9 @@ public class CloudSimExample1 {
     }
 
     /**
-     * Creates the sws.
+     * Creates the Datacenter.
      *
-     * @return the sws
+     * @return the Datacenter
      */
     private static DatacenterSimple createDatacenter() {
 
@@ -191,7 +191,7 @@ public class CloudSimExample1 {
     /**
      * Creates the broker.
      *
-     * @return the sws broker
+     * @return the Datacenter broker
      */
     private static DatacenterBroker createBroker() {
         return new DatacenterBrokerSimple(simulation);

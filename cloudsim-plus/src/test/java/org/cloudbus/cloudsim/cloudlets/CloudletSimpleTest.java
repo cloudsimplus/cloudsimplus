@@ -290,19 +290,6 @@ public class CloudletSimpleTest {
     }
 
     @Test
-    public void testSetReservationId() {
-        int expected = -1;
-        assertEquals(expected, cloudlet.getReservationId());
-
-        expected = 5;
-        assertTrue(cloudlet.setReservationId(expected));
-        Assert.assertEquals(expected, cloudlet.getReservationId());
-
-        assertFalse(cloudlet.setReservationId(-1));
-        Assert.assertEquals(expected, cloudlet.getReservationId());
-    }
-
-    @Test
     public void testSetValidCloudletLength() {
         final int expected = 1000;
         cloudlet.setLength(expected);
@@ -604,16 +591,6 @@ public class CloudletSimpleTest {
         final int one = 1;
         cloudlet.setPriority(one);
 	    Assert.assertEquals(one, cloudlet.getPriority());
-    }
-
-    @Test
-    public void testHasReserved() {
-        cloudlet.setReservationId(CloudletSimple.NOT_ASSIGNED);
-        assertFalse("Cloudlet.isReserved should be false", cloudlet.isReserved());
-
-        final int reservationId = 1;
-        cloudlet.setReservationId(reservationId);
-        assertTrue("Cloudlet.isReserved should be true", cloudlet.isReserved());
     }
 
     @Test

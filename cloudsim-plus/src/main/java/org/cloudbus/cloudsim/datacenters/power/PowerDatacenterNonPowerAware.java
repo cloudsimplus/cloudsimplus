@@ -43,10 +43,10 @@ import org.cloudbus.cloudsim.resources.FileStorage;
  */
 public class PowerDatacenterNonPowerAware extends PowerDatacenter {
     /**
-     * Creates a sws.
+     * Creates a Datacenter.
      *
      * @param simulation The CloudSim instance that represents the simulation the Entity is related to
-     * @param characteristics the sws characteristics
+     * @param characteristics the Datacenter characteristics
      * @param vmAllocationPolicy the vm provisioner
      *
      */
@@ -59,10 +59,10 @@ public class PowerDatacenterNonPowerAware extends PowerDatacenter {
     }
 
     /**
-     * Creates a sws with the given parameters.
+     * Creates a Datacenter with the given parameters.
      *
      * @param simulation The CloudSim instance that represents the simulation the Entity is related to
-     * @param characteristics the sws characteristics
+     * @param characteristics the Datacenter characteristics
      * @param vmAllocationPolicy the vm provisioner
      * @param storageList the storage list
      * @param schedulingInterval the scheduling interval

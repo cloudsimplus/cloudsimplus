@@ -7,7 +7,7 @@ import java.io.IOException;
 /**
  * Defines the resource utilization model based on a
  * <a href="https://www.planet-lab.org">PlanetLab</a>
- * sws trace file.
+ * Datacenter trace file.
  */
 public class UtilizationModelPlanetLabInMemory implements UtilizationModel {
 
@@ -26,7 +26,7 @@ public class UtilizationModelPlanetLabInMemory implements UtilizationModel {
      * Instantiates a new PlanetLab resource utilization model from a trace
      * file.
      *
-     * @param inputPath The path of a PlanetLab sws trace.
+     * @param inputPath The path of a PlanetLab Datacenter trace.
      * @param schedulingInterval the scheduling interval that defines the time interval in which precise utilization is be got
      * @throws NumberFormatException the number format exception
      * @throws IOException Signals that an I/O exception has occurred
@@ -50,7 +50,7 @@ public class UtilizationModelPlanetLabInMemory implements UtilizationModel {
      * Instantiates a new PlanetLab resource utilization model with variable
      * data samples from a trace file.
      *
-     * @param inputPath The path of a PlanetLab sws trace.
+     * @param inputPath The path of a PlanetLab Datacenter trace.
      * @param schedulingInterval the scheduling interval that defines the time interval in which precise utilization is be got
      * @param dataSamples number of samples in the file
      * @throws NumberFormatException the number format exception

@@ -82,9 +82,7 @@ public interface Cloudlet extends UniquelyIdentificable, Delayable, Comparable<C
     }
 
     /**
-     * Value to indicate that a given cloudlet resource was not assigned yet,
-     * such as a user or a VM to run the cloudlet.
-     * @see #getReservationId()
+     * Value to indicate that the cloudlet was not assigned to a Datacenter yet.
      */
     int NOT_ASSIGNED = -1;
 
@@ -394,16 +392,6 @@ public interface Cloudlet extends UniquelyIdentificable, Delayable, Comparable<C
     int getNumberOfPes();
 
     /**
-     * Gets the ID of a reservation made for this cloudlet.
-     *
-     * @return a reservation ID
-     * @pre $none
-     * @post $none
-     * @todo This attribute doesn't appear to be used
-     */
-    int getReservationId();
-
-    /**
      * Gets the latest {@link Datacenter} where the Cloudlet was processed.
      *
      * @return the Datacenter or <tt>{@link Datacenter#NULL}</tt> if the Cloudlet
@@ -509,15 +497,6 @@ public interface Cloudlet extends UniquelyIdentificable, Delayable, Comparable<C
      * @post $result >= 0.0
      */
     double getWallClockTime(Datacenter datacenter);
-
-    /**
-     * Checks whether this Cloudlet is submitted by reserving or not.
-     *
-     * @return <tt>true</tt> if this Cloudlet was reserved before,
-     * i.e, its {@link #getReservationId()} is not equals to {@link #NOT_ASSIGNED};
-     * <tt>false</tt> otherwise
-     */
-    boolean isReserved();
 
     /**
      * Checks whether this Cloudlet has finished executing or not.
@@ -645,15 +624,6 @@ public interface Cloudlet extends UniquelyIdentificable, Delayable, Comparable<C
      * @post $none
      */
     Cloudlet setNumberOfPes(final int numberOfPes);
-
-    /**
-     * Sets the id of the reservation made for this cloudlet.
-     *
-     * @param reservationId the reservation ID
-     * @return <tt>true</tt> if the ID has successfully been set or
-     * <tt>false</tt> otherwise.
-     */
-    boolean setReservationId(final int reservationId);
 
     /**
      * Sets a {@link DatacenterBroker} that represents the owner of the Cloudlet.
@@ -848,7 +818,6 @@ public interface Cloudlet extends UniquelyIdentificable, Delayable, Comparable<C
         @Override public int getNumberOfPes(){ return 0; }
         @Override public double getTotalCost(){ return 0.0; }
         @Override public List<String> getRequiredFiles() { return Collections.emptyList();}
-        @Override public int getReservationId() { return -1; }
         @Override public Datacenter getLastDatacenter() { return Datacenter.NULL; }
         @Override public Status getStatus() { return Status.FAILED; }
         @Override public double getLastDatacenterArrivalTime() { return 0.0; }
@@ -863,7 +832,6 @@ public interface Cloudlet extends UniquelyIdentificable, Delayable, Comparable<C
         @Override public double getWaitingTime() { return 0.0; }
         @Override public double getWallClockTimeInLastExecutedDatacenter() { return 0.0; }
         @Override public double getWallClockTime(Datacenter datacenter) { return 0.0; }
-        @Override public boolean isReserved() { return false; }
         @Override public boolean isFinished() { return false; }
         @Override public boolean requiresFiles() { return false; }
         @Override public void setPriority(int priority) {}
@@ -873,7 +841,6 @@ public interface Cloudlet extends UniquelyIdentificable, Delayable, Comparable<C
         @Override public boolean setStatus(Status newStatus) { return false; }
         @Override public boolean setNetServiceLevel(int netServiceLevel) { return false; }
         @Override public Cloudlet setNumberOfPes(int numberOfPes) { return Cloudlet.NULL; }
-        @Override public boolean setReservationId(int reservationId) { return false; }
         @Override public void assignToDatacenter(Datacenter datacenter) {}
         @Override public Cloudlet setBroker(DatacenterBroker broker) { return Cloudlet.NULL; }
         @Override public DatacenterBroker getBroker() { return DatacenterBroker.NULL; }

@@ -38,7 +38,7 @@ import org.cloudbus.cloudsim.resources.Bandwidth;
 import org.cloudbus.cloudsim.resources.Ram;
 
 /**
- * A simple example showing how to create a sws with 1 host and run 2
+ * A simple example showing how to create a Datacenter with 1 host and run 2
  * cloudlets on it. The cloudlets run in VMs with the same MIPS requirements.
  * The cloudlets will take the same time to complete the execution.
  */

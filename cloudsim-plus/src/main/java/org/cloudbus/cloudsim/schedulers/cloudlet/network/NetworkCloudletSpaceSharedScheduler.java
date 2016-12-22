@@ -58,7 +58,7 @@ public class NetworkCloudletSpaceSharedScheduler extends CloudletSchedulerSpaceS
     private final Map<Vm, List<VmPacket>> hostPacketsReceivedMap;
 
     /**
-     * The sws where the VM using this scheduler runs.
+     * The Datacenter where the VM using this scheduler runs.
      */
     private final NetworkDatacenter datacenter;
 
@@ -66,7 +66,7 @@ public class NetworkCloudletSpaceSharedScheduler extends CloudletSchedulerSpaceS
      * Creates a new CloudletSchedulerSpaceShared object. This method must be
      * invoked before starting the actual simulation.
      *
-     * @param datacenter the sws where the VM using this scheduler runs
+     * @param datacenter the Datacenter where the VM using this scheduler runs
      * @pre $none
      * @post $none
      */
@@ -226,7 +226,7 @@ public class NetworkCloudletSpaceSharedScheduler extends CloudletSchedulerSpaceS
      */
     private void scheduleNextTaskExecution(NetworkCloudlet cloudlet) {
         cloudlet.startNextTask(cloudlet.getSimulation().clock());
-        //sws.schedule(sws.getId(), 0.0001, CloudSimTags.VM_UPDATE_CLOUDLET_PROCESSING_EVENT);
+        //Datacenter.schedule(Datacenter.getId(), 0.0001, CloudSimTags.VM_UPDATE_CLOUDLET_PROCESSING_EVENT);
     }
 
     /**

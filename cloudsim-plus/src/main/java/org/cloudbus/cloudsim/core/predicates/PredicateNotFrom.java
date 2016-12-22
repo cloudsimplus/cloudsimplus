@@ -48,7 +48,7 @@ public class PredicateNotFrom implements Predicate<SimEvent> {
      * @param sourceIds the set of id numbers of the source entities
      */
     public PredicateNotFrom(int[] sourceIds) {
-        this.ids = Arrays.stream(sourceIds).boxed().collect(Collectors.<Integer>toList());
+        this.ids = Arrays.stream(sourceIds).boxed().collect(Collectors.toList());
     }
 
     /**

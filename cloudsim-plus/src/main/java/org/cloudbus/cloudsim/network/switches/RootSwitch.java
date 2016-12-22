@@ -17,7 +17,7 @@ import org.cloudbus.cloudsim.vms.Vm;
 
 /**
  * This class allows to simulate Root switch which connects Datacenters to
- * external network. It interacts with other sws in order to exchange
+ * external network. It interacts with other Datacenter in order to exchange
  * packets.
  *
  * <p>Please refer to following publication for more details:
@@ -56,12 +56,12 @@ public class RootSwitch extends AbstractSwitch {
 
     /**
      * The downlink bandwidth of RootSwitch in Megabits/s.
-     * It also represents the uplink bandwidth of connected aggregation sws.
+     * It also represents the uplink bandwidth of connected aggregation Datacenter.
      */
     public static final long DOWNLINK_BW = 40 * 1024 * 1024 * 1024L; // 40000 Megabits (40 Gigabits)
 
     /**
-     * Instantiates a Root AbstractSwitch specifying what other sws are connected
+     * Instantiates a Root AbstractSwitch specifying what other Datacenter are connected
      * to its downlink ports, and corresponding bandwidths.
      *
      * @param simulation The CloudSim instance that represents the simulation the Entity is related to

@@ -44,7 +44,7 @@ public abstract class CloudletAbstract implements Cloudlet {
     private final DecimalFormat num;
     /**
      * The list of every {@link Datacenter} where the cloudlet has been executed. In case
-     * it starts and finishes executing in a single sws, without
+     * it starts and finishes executing in a single Datacenter, without
      * being migrated, this list will have only one item.
      */
     private final List<ExecutionInDatacenterInfo> executionInDatacenterInfoList;
@@ -107,10 +107,6 @@ public abstract class CloudletAbstract implements Cloudlet {
      * @see #getFinishTime()
      */
     private double finishTime;
-    /**
-     * @see #getReservationId()
-     */
-    private int reservationId = NOT_ASSIGNED;
     /**
      * The cloudlet transaction history.
      */
@@ -244,25 +240,6 @@ public abstract class CloudletAbstract implements Cloudlet {
     public void notifyOnCloudletProcessingListeners(double time) {
         CloudletVmEventInfo info = CloudletVmEventInfo.of(time, this);
         onUpdateCloudletProcessingListeners.forEach(l -> l.update(info));
-    }
-
-    @Override
-    public boolean setReservationId(final int reservationId) {
-        if (reservationId <= 0) {
-            return false;
-        }
-        this.reservationId = reservationId;
-        return true;
-    }
-
-    @Override
-    public int getReservationId() {
-        return reservationId;
-    }
-
-    @Override
-    public boolean isReserved() {
-        return reservationId > NOT_ASSIGNED;
     }
 
     @Override
@@ -521,7 +498,7 @@ public abstract class CloudletAbstract implements Cloudlet {
      * Gets information about the cloudlet execution on a given Datacenter.
      *
      * @param datacenterId the Datacenter entity ID
-     * @return the Cloudlet execution information on the given sws
+     * @return the Cloudlet execution information on the given Datacenter
      * or {@link ExecutionInDatacenterInfo#NULL} if the Cloudlet has never been executed there
      * @pre dc >= 0
      * @post $none
@@ -536,7 +513,7 @@ public abstract class CloudletAbstract implements Cloudlet {
      * Gets information about the cloudlet execution on a given Datacenter.
      *
      * @param datacenter the Datacenter entity
-     * @return the Cloudlet execution information on the given sws
+     * @return the Cloudlet execution information on the given Datacenter
      * or {@link ExecutionInDatacenterInfo#NULL} if the Cloudlet has never been executed there
      * @pre dc >= 0
      * @post $none
@@ -866,7 +843,7 @@ public abstract class CloudletAbstract implements Cloudlet {
         dcInfo.dc = datacenter;
         dcInfo.costPerSec = datacenter.getCharacteristics().getCostPerSecond();
 
-        // add into a list if moving to a new cloud sws
+        // add into a list if moving to a new cloud Datacenter
         executionInDatacenterInfoList.add(dcInfo);
 
         if (isRecordTransactionHistory()) {

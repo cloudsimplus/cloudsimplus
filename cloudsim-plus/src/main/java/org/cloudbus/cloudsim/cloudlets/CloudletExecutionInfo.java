@@ -123,10 +123,9 @@ public class CloudletExecutionInfo {
      * @param cloudlet the Cloudlet to store execution information from
      * @param startTime a reservation start time, that can also be interpreted as
      * starting time to execute this Cloudlet
+     *
      * @pre cloudlet != null
      * @pre startTime > 0
-     * @pre duration > 0
-     * @pre reservationId > 0
      * @post $none
      */
     public CloudletExecutionInfo(Cloudlet cloudlet, long startTime) {

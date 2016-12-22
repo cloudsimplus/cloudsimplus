@@ -37,12 +37,6 @@ public class CloudInformationService extends CloudSimEntity {
     private final Set<Datacenter> datacenterList;
 
     /**
-     * A list containing only Datacenters with Advanced Reservation
-     * feature that are registered at the CIS.
-     */
-    private final Set<Datacenter> datacenterArList;
-
-    /**
      * List of all regional CIS.
      */
     private final Set<CloudInformationService> cisList;
@@ -57,7 +51,6 @@ public class CloudInformationService extends CloudSimEntity {
     CloudInformationService(CloudSim simulation) {
         super(simulation);
         datacenterList = new TreeSet<>();
-        datacenterArList = new TreeSet<>();
         cisList = new TreeSet<>();
     }
 
@@ -77,10 +70,7 @@ public class CloudInformationService extends CloudSimEntity {
             break;
 
             case CloudSimTags.REQUEST_REGIONAL_CIS:
-                // Get ID of an entity that sent this event
                 id = ev.getSource();
-
-                // Send the regional GIS list back to sender
                 super.send(id, 0, ev.getTag(), cisList);
             break;
 
@@ -88,27 +78,10 @@ public class CloudInformationService extends CloudSimEntity {
                 datacenterList.add((Datacenter) ev.getData());
             break;
 
-            case CloudSimTags.DATACENTER_REGISTRATION_REQUEST_AR:
-                datacenterList.add((Datacenter) ev.getData());
-                datacenterArList.add((Datacenter) ev.getData());
-            break;
-
             // A Broker is requesting a list of all datacenters.
             case CloudSimTags.DATACENTER_LIST_REQUEST:
-                // Get ID of an entity that sent this event
                 id = ev.getSource();
-
-                // Send the resource list back to the sender
                 super.send(id, 0, ev.getTag(), datacenterList);
-            break;
-
-            // A Broker is requesting for a list of all datacenters that support advanced reservation.
-            case CloudSimTags.DATACENTER_AR_LIST_REQUEST:
-                // Get ID of an entity that sent this event
-                id = ev.getSource();
-
-                // Send the resource AR list back to the sender
-                super.send(id, 0, ev.getTag(), datacenterArList);
             break;
 
             default:
@@ -134,35 +107,6 @@ public class CloudInformationService extends CloudSimEntity {
     }
 
     /**
-     * Gets the list of Datacenter that <b>only</b> support Advanced
-     * Reservation.
-     *
-     * @return
-     * @pre $none
-     * @post $none
-     */
-    public Set<Datacenter> getDatacenterArList() {
-        return datacenterArList;
-    }
-
-    /**
-     * Checks whether a given sws supports Advanced Reservation or not.
-     *
-     * @param datacenterId a sws ID
-     * @return <tt>true</tt> if the sws supports Advanced Reservation,
-     * <tt>false</tt> otherwise
-     * @pre id != null
-     * @post $none
-     */
-    public boolean datacenterSupportAR(Integer datacenterId) {
-        if (Objects.isNull(datacenterId) || datacenterId < 0) {
-            return false;
-        }
-
-        return datacenterExists(datacenterArList, datacenterId);
-    }
-
-    /**
      * Checks whether the given Datacenter ID exists or not.
      *
      * @param id a Datacenter id
@@ -179,11 +123,11 @@ public class CloudInformationService extends CloudSimEntity {
     }
 
     /**
-     * Checks whether a sws list contains a particular sws id.
+     * Checks whether a Datacenter list contains a particular Datacenter id.
      *
-     * @param list         list of sws id
-     * @param datacenterId a sws ID to find
-     * @return true if a sws is in the list, otherwise false
+     * @param list         list of Datacenter id
+     * @param datacenterId a Datacenter ID to find
+     * @return true if a Datacenter is in the list, otherwise false
      * @pre list != null
      * @pre id > 0
      * @post $none

@@ -22,7 +22,7 @@ import org.cloudbus.cloudsim.vms.Vm;
 
 /**
  * This class represents an Edge AbstractSwitch in a Datacenter network. It interacts
- * with other sws in order to exchange packets.
+ * with other Datacenter in order to exchange packets.
  *
  * <br>Please refer to following publication for more details:<br>
  * <ul>
@@ -65,7 +65,7 @@ public class EdgeSwitch extends AbstractSwitch {
     public static final double SWITCHING_DELAY = 0.00157;
 
     /**
-     * Instantiates a EdgeSwitch specifying sws that are connected to its
+     * Instantiates a EdgeSwitch specifying Datacenter that are connected to its
      * downlink and uplink ports, and corresponding bandwidths. In this switch,
      * downlink ports aren't connected to other switch but to hosts.
      *

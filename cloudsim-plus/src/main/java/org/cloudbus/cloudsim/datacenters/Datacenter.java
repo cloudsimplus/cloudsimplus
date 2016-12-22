@@ -45,7 +45,7 @@ public interface Datacenter extends SimEntity {
     Host getHost(final int index);
 
     /**
-     * Gets the policy to be used by the sws to allocate VMs into hosts.
+     * Gets the policy to be used by the Datacenter to allocate VMs into hosts.
      *
      * @return the VM allocation policy
      * @see VmAllocationPolicy
@@ -79,7 +79,7 @@ public interface Datacenter extends SimEntity {
 
     /**
      * Sets the scheduling delay to process each event received by the
-     * sws (in seconds).
+     * Datacenter (in seconds).
      *
      * @param schedulingInterval the new scheduling interval
      * @see #getSchedulingInterval()
@@ -88,21 +88,21 @@ public interface Datacenter extends SimEntity {
 
 
     /**
-     * Gets the sws characteristics.
+     * Gets the Datacenter characteristics.
      *
-     * @return the sws characteristics
+     * @return the Datacenter characteristics
      */
     DatacenterCharacteristics getCharacteristics();
 
     /**
-     * Gets a <b>read-only</b> list of storage devices of the sws.
+     * Gets a <b>read-only</b> list of storage devices of the Datacenter.
      *
      * @return the storage list
      */
     List<FileStorage> getStorageList();
 
     /**
-     * Sets the list of storage devices of the sws.
+     * Sets the list of storage devices of the Datacenter.
      *
      * @param storageList the new storage list
      */

@@ -46,7 +46,7 @@ public class PredicateFrom implements Predicate<SimEvent> {
 	 * @param sourceIds the set of id numbers of the source entities
 	 */
 	public PredicateFrom(int[] sourceIds) {
-        this.ids = Arrays.stream(sourceIds).boxed().collect(Collectors.<Integer>toList());
+        this.ids = Arrays.stream(sourceIds).boxed().collect(Collectors.toList());
 	}
 
 	/**

@@ -103,9 +103,9 @@ public class NetworkVmsExample1 {
     }
 
     /**
-     * Creates the sws.
+     * Creates the Datacenter.
      *
-     * @return the sws
+     * @return the Datacenter
      */
     private NetworkDatacenter createDatacenter() {
         List<Host> hostList = new ArrayList<>();
@@ -153,7 +153,7 @@ public class NetworkVmsExample1 {
 
     /**
      * Creates internal Datacenter network.
-     * @param datacenter sws where the network will be created
+     * @param datacenter Datacenter where the network will be created
      */
     private void createNetwork(NetworkDatacenter datacenter) {
         EdgeSwitch[] edgeSwitches = new EdgeSwitch[1];
@@ -171,7 +171,7 @@ public class NetworkVmsExample1 {
     }
 
     /**
-     * Creates a list of virtual machines in a sws for a given broker
+     * Creates a list of virtual machines in a Datacenter for a given broker
      * and submit the list to the broker.
      *
      * @param broker The broker that will own the created VMs

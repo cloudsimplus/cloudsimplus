@@ -150,9 +150,9 @@ public class TwoCloudletsAndOneSpaceSharedVmExample {
     }
 
     /**
-     * Creates the sws.
+     * Creates the Datacenter.
      *
-     * @return the sws
+     * @return the Datacenter
      */
     private static Datacenter createDatacenter() {
         // Here are the steps needed to create a DatacenterSimple:
@@ -210,7 +210,7 @@ public class TwoCloudletsAndOneSpaceSharedVmExample {
     /**
      * Creates the broker.
      *
-     * @return the sws broker
+     * @return the Datacenter broker
      */
     private static DatacenterBroker createBroker() {
         return new DatacenterBrokerSimple(simulation);

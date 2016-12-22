@@ -47,7 +47,7 @@ public class PredicateType implements Predicate<SimEvent> {
      * @param tags the list of {@link SimEvent#getTag() tags}
      */
     public PredicateType(int[] tags) {
-        this.tags = Arrays.stream(tags).boxed().collect(Collectors.<Integer>toList());
+        this.tags = Arrays.stream(tags).boxed().collect(Collectors.toList());
     }
 
     /**

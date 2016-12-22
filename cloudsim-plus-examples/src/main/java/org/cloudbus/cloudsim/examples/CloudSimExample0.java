@@ -61,7 +61,7 @@ public class CloudSimExample0 {
      * Default constructor that builds the simulation.
      */
     public CloudSimExample0() {
-        Log.printLine("Starting Minimal Example ...");
+        Log.printLine("Starting CloudSimExample0 ...");
         this.simulation = new CloudSim();
 
         Datacenter datacenter0 = createDatacenter();
@@ -88,7 +88,6 @@ public class CloudSimExample0 {
         broker0.submitVmList(vmList);
         broker0.submitCloudletList(cloudletList);
 
-
         /* Starts the simulation and waits all cloudlets to be executed. */
         simulation.start();
 
@@ -96,7 +95,7 @@ public class CloudSimExample0 {
         (you can use your own code here to print what you want from this cloudlet list)*/
         List<Cloudlet> finishedCloudlets = broker0.getCloudletsFinishedList();
         new CloudletsTableBuilderHelper(finishedCloudlets).build();
-        Log.printLine("Minimal Example finished!");
+        Log.printLine("CloudSimExample0 finished!");
     }
 
     private DatacenterSimple createDatacenter() {
@@ -107,10 +106,10 @@ public class CloudSimExample0 {
         }
 
         //Defines the characteristics of the data center
-        double cost = 3.0; // the cost of using processing in this sws
-        double costPerMem = 0.05; // the cost of using memory in this sws
-        double costPerStorage = 0.001; // the cost of using storage in this sws
-        double costPerBw = 0.0; // the cost of using bw in this sws
+        double cost = 3.0; // the cost of using processing in this Datacenter
+        double costPerMem = 0.05; // the cost of using memory in this Datacenter
+        double costPerStorage = 0.001; // the cost of using storage in this Datacenter
+        double costPerBw = 0.0; // the cost of using bw in this Datacenter
 
         DatacenterCharacteristics characteristics =
             new DatacenterCharacteristicsSimple(hostList)

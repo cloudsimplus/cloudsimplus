@@ -55,7 +55,7 @@ public interface DatacenterCharacteristics extends Identificable {
 
     /**
      * Gets the {@link Datacenter} that owns these characteristics
-     * @return the sws
+     * @return the Datacenter
      */
     Datacenter getDatacenter();
 
@@ -115,7 +115,7 @@ public interface DatacenterCharacteristics extends Identificable {
     Host getHostWithFreePe(int peNumber);
 
     /**
-     * Gets the sws id.
+     * Gets the Datacenter id.
      *
      * @return the id
      */
@@ -123,7 +123,7 @@ public interface DatacenterCharacteristics extends Identificable {
 
     /**
      * Gets the total MIPS rating, which is the sum of MIPS rating of all Hosts in
-     * the sws.
+     * the Datacenter.
      *
      * @return the sum of MIPS ratings
      *
@@ -134,7 +134,7 @@ public interface DatacenterCharacteristics extends Identificable {
 
     /**
      * Gets Millions Instructions Per Second (MIPS) Rating of a Processing
-     * Element (Pe). It is essential to use this method when a sws is
+     * Element (Pe). It is essential to use this method when a Datacenter is
      * made up of heterogenous PEs per PMs.
      *
      * @param hostId the machine ID
@@ -198,28 +198,28 @@ public interface DatacenterCharacteristics extends Identificable {
     String getResourceName();
 
     /**
-     * Gets the VMM in use in the sws.
+     * Gets the VMM in use in the Datacenter.
      *
      * @return the VMM name
      */
     String getVmm();
 
     /**
-     * Checks whether all PMs of the sws are working properly or not.
+     * Checks whether all PMs of the Datacenter are working properly or not.
      *
      * @return if all PMs are working, otherwise
      */
     boolean isWorking();
 
     /**
-     * Get the cost to use each each Megabit of bandwidth in the sws.
+     * Get the cost to use each each Megabit of bandwidth in the Datacenter.
      *
      * @return the cost to use bw
      */
     double getCostPerBw();
 
     /**
-     * Get the cost to use each Megabyte of RAM in the sws.
+     * Get the cost to use each Megabyte of RAM in the Datacenter.
      *
      * @return the cost to use RAM
      */
@@ -233,7 +233,7 @@ public interface DatacenterCharacteristics extends Identificable {
     double getCostPerSecond();
 
     /**
-     * Get the cost to use each Megabyte of storage in the sws.
+     * Get the cost to use each Megabyte of storage in the Datacenter.
      *
      * @return the cost to use storage
      */
@@ -256,7 +256,7 @@ public interface DatacenterCharacteristics extends Identificable {
     DatacenterCharacteristics setCostPerBw(double costPerBw);
 
     /**
-     * Sets the cost to use each Megabyte of RAM in the sws.
+     * Sets the cost to use each Megabyte of RAM in the Datacenter.
      *
      * @param costPerMem cost to use RAM
      * @pre costPerMem >= 0

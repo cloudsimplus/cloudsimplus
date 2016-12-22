@@ -69,7 +69,7 @@ public class NetworkVmsExampleWithMetrics {
     private final List<NetworkVm> vmlist;
 
     /**
-     * The sws
+     * The Datacenter
      */
     NetworkDatacenter datacenter0;
     private final CloudSim cloudsim;
@@ -186,7 +186,7 @@ public class NetworkVmsExampleWithMetrics {
     /**
      * Creates the NetworkDatacenter.
      *
-     * @return the sws
+     * @return the Datacenter
      */
     protected final NetworkDatacenter createDatacenter() {
         // Here are the steps needed to create a PowerDatacenter:

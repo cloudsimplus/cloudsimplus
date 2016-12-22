@@ -139,10 +139,10 @@ public class LinuxCompletelyFairSchedulerExample {
         }
 
         //Defines the characteristics of the data center
-        final double cost = 3.0; // the cost of using processing in this sws
-        final double costPerMem = 0.05; // the cost of using memory in this sws
-        final double costPerStorage = 0.001; // the cost of using storage in this sws
-        final double costPerBw = 0.0; // the cost of using bw in this sws
+        final double cost = 3.0; // the cost of using processing in this Datacenter
+        final double costPerMem = 0.05; // the cost of using memory in this Datacenter
+        final double costPerStorage = 0.001; // the cost of using storage in this Datacenter
+        final double costPerBw = 0.0; // the cost of using bw in this Datacenter
 
         DatacenterCharacteristics characteristics =
             new DatacenterCharacteristicsSimple(hostList)

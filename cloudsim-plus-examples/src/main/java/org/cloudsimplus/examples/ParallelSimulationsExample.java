@@ -169,10 +169,10 @@ public class ParallelSimulationsExample {
         List<Host> hostList = createHosts();
 
         //Defines the characteristics of the data center
-        double cost = 3.0; // the cost of using processing in this sws
-        double costPerMem = 0.05; // the cost of using memory in this sws
-        double costPerStorage = 0.001; // the cost of using storage in this sws
-        double costPerBw = 0.0; // the cost of using bw in this sws
+        double cost = 3.0; // the cost of using processing in this Datacenter
+        double costPerMem = 0.05; // the cost of using memory in this Datacenter
+        double costPerStorage = 0.001; // the cost of using storage in this Datacenter
+        double costPerBw = 0.0; // the cost of using bw in this Datacenter
 
         DatacenterCharacteristics characteristics =
             new DatacenterCharacteristicsSimple(hostList)

@@ -58,7 +58,6 @@ public class CloudletTest {
         assertEquals(0, Cloudlet.NULL.getNumberOfPes(), 0);
         assertEquals(0, Cloudlet.NULL.getTotalCost(), 0);
         assertTrue(Cloudlet.NULL.getRequiredFiles().isEmpty());
-        assertEquals(-1, Cloudlet.NULL.getReservationId());
         assertEquals(Datacenter.NULL, Cloudlet.NULL.getLastDatacenter());
         assertEquals(0, Cloudlet.NULL.getLastDatacenterArrivalTime(), 0);
         assertEquals(0, Cloudlet.NULL.getArrivalTime(Datacenter.NULL), 0);
@@ -73,14 +72,12 @@ public class CloudletTest {
         assertEquals(0, Cloudlet.NULL.getWaitingTime(), 0);
         assertEquals(0, Cloudlet.NULL.getWallClockTimeInLastExecutedDatacenter(), 0);
         assertEquals(0, Cloudlet.NULL.getWallClockTime(Datacenter.NULL), 0);
-        assertFalse(Cloudlet.NULL.isReserved());
         assertFalse(Cloudlet.NULL.isFinished());
         assertFalse(Cloudlet.NULL.requiresFiles());
         assertFalse(Cloudlet.NULL.setStatus(Cloudlet.Status.SUCCESS));
         Cloudlet.NULL.setExecStartTime(100);
         assertEquals(0, Cloudlet.NULL.getExecStartTime(), 0);
         assertFalse(Cloudlet.NULL.setNetServiceLevel(0));
-        assertFalse(Cloudlet.NULL.setReservationId(0));
         assertEquals(Cloudlet.NOT_ASSIGNED, Cloudlet.NULL.registerArrivalInDatacenter(), 0);
         assertFalse(Cloudlet.NULL.removeOnCloudletFinishListener(null));
         EventListener listener = EasyMock.createMock(EventListener.class);

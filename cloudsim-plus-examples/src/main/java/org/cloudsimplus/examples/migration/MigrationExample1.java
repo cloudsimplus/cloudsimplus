@@ -58,7 +58,7 @@ import org.cloudbus.cloudsim.resources.Ram;
 import org.cloudsimplus.util.tablebuilder.CloudletsTableBuilderHelper;
 
 /**
- * <p>An example showing how to create 1 sws with 3 hosts,
+ * <p>An example showing how to create 1 Datacenter with 3 hosts,
  * 1 VM by host and 1 cloudlet by VM and perform VM migration based on
  * a custom VmAllocationPolicy that migrates VMs based on
  * {@link PowerVmAllocationPolicyMigrationWorstFitStaticThreshold

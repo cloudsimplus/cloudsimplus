@@ -341,6 +341,6 @@ public interface CloudletScheduler extends Serializable {
         @Override public int getUsedPes() { return 0; }
         @Override public int getFreePes() { return 0; }
         @Override public boolean canAddCloudletToExecutionList(CloudletExecutionInfo cloudlet) { return false; }
-        @Override public List<CloudletExecutionInfo> getCloudletFinishedList() { return Collections.<CloudletExecutionInfo>emptyList(); }
+        @Override public List<CloudletExecutionInfo> getCloudletFinishedList() { return Collections.emptyList(); }
     };
 }

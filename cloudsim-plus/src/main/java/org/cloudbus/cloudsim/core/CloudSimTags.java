@@ -48,26 +48,10 @@ public final class CloudSimTags {
     public static final int DATACENTER_REGISTRATION_REQUEST = BASE + 2;
 
     /**
-     * Denotes a request from a Datacenter to register itself, when such
-     * a Datacenter supports advanced reservation.
-     * This tag is normally used between
-     * {@link CloudInformationService} and Datacenter entities.
-     * When such a {@link SimEvent} is sent, the {@link SimEvent#getData()}
-     * must be a {@link Datacenter} object.
-     */
-    public static final int DATACENTER_REGISTRATION_REQUEST_AR = BASE + 3;
-
-    /**
      * Denotes a request from a broker to a {@link CloudInformationService} to get the list of all Datacenters,
      * including the ones that can support advanced reservation.
      */
     public static final int DATACENTER_LIST_REQUEST = BASE + 4;
-
-    /**
-     * Denotes a request from a broker to a {@link CloudInformationService} to get a list containing just
-     * the Datacenters that support advanced reservation.
-     */
-    public static final int DATACENTER_AR_LIST_REQUEST = BASE + 5;
 
     /**
      * Denotes cloud resource allocation policy. This tag is normally used

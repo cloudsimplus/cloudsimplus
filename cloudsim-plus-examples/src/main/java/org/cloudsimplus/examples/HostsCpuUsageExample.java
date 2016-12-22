@@ -149,7 +149,7 @@ public class HostsCpuUsageExample {
     }
 
     /**
-     * Shows CPU utilization of all hosts into a given sws.
+     * Shows CPU utilization of all hosts into a given Datacenter.
      */
     private void showCpuUtilizationForAllHosts() {
         Log.printLine("\nHosts CPU utilization history for the entire simulation period");
