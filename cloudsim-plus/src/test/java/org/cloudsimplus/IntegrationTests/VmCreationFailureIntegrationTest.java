@@ -63,7 +63,7 @@ import org.junit.Before;
  * <p>The IT uses the new VM listeners to get notified when a host is allocated,
  * deallocated for a given VM and when a VM fails to be created due to lack of
  * host resources. It also relies on the new CloudSim
- * {@link CloudSim#removeOnEventProcessingListener()} listener to be notified every time
+ * {@link CloudSim#addOnEventProcessingListener(EventListener) process event listener} to be notified every time
  * when any event is processed by CloudSim. By this way, it is possible to
  * verify, for instance, if the resource usage of a given host at a given time
  * is as expected.</p>
@@ -151,7 +151,7 @@ public final class VmCreationFailureIntegrationTest {
     }
 
     /**
-     * A lambda function used by an {@link CloudSim#onEventProcessingListener}
+     * A lambda function used by an {@link CloudSim#onEventProcessingListeners}
      * that will be called every time an event is processed by {@link CloudSim}.
      * @param evt
      */
@@ -261,7 +261,7 @@ public final class VmCreationFailureIntegrationTest {
         assertEquals("cloudlet.getFinishTime", results.getExpectedFinishTime(), results.getCloudlet().getFinishTime(), 0.2);
         assertEquals(0, results.getCloudlet().getVm().getId(), 0);
         assertEquals("Cloudlet wasn't executed at the expected Datacenter",
-                2, results.getCloudlet().getLastDatacenter(), 0);
+                2, results.getCloudlet().getLastDatacenter().getId(), 0);
         assertEquals(Cloudlet.Status.SUCCESS, results.getCloudlet().getStatus());
     }
 

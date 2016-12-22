@@ -200,9 +200,7 @@ public class NetworkDatacenter extends DatacenterSimple {
             }
 
             // process this Cloudlet to this Datacenter
-            cl.assignToDatacenter(
-                    getId()
-            );
+            cl.assignToDatacenter(this);
 
             // time to transfer the files
             double fileTransferTime = predictFileTransferTime(cl.getRequiredFiles());

@@ -6,8 +6,8 @@ import org.easymock.EasyMock;
 import org.easymock.IExpectationSetters;
 
 /**
- * A class that provides a set of methods to cloudsim the {@link CloudSim} class
- * using {@link EasyMock}. Each method in this class provides a cloudsim for a
+ * A class that provides a set of methods to mock the {@link CloudSim} class
+ * using {@link EasyMock}. Each method in this class provides a mock for a
  * method with the same name in the CloudSim class.
  *
  * @author Manoel Campos da Silva Filho
@@ -16,7 +16,7 @@ public final class CloudSimMocker {
     /**
      * The created CloudSim mock object.
      */
-    private final CloudSim cloudsim;
+    private final CloudSim mock;
 
     /**
      * Creates a CloudSim mock object. It requires a {@link Consumer} object as
@@ -29,7 +29,7 @@ public final class CloudSimMocker {
      * <br>
      * {@code CloudSimMocker.createMock(mocker -> mocker.clock(10).getEntityName(1));}
      * </p>
-     * This example will cloudsim the static methods clock and getEntityName
+     * This example will mock the static methods clock and getEntityName
      * from CloudSim class, making it return 10 and 1, respectively.
      *
      * <p>
@@ -48,23 +48,23 @@ public final class CloudSimMocker {
      * mocked CloudSim class.</p>
      *
      * @param consumer
-     * @return the created CloudSim cloudsim object
+     * @return the created CloudSim mock object
      */
     public static CloudSim createMock(Consumer<CloudSimMocker> consumer) {
         CloudSimMocker mocker = new CloudSimMocker();
         consumer.accept(mocker);
-        CloudSimMocker.replay(mocker.cloudsim);
-        return mocker.cloudsim;
+        CloudSimMocker.replay(mocker.mock);
+        return mocker.mock;
     }
 
     /**
-     * Instantiates a CloudSimMocker that creates a {@link CloudSim} cloudsim
+     * Instantiates a CloudSimMocker that creates a {@link CloudSim} mock
      * object. The constructor is used just internally by the
      * {@link #createMock(java.util.function.Consumer)} method to create a
      * Mocker object.
      */
     private CloudSimMocker() {
-        this.cloudsim = EasyMock.createMock(CloudSim.class);
+        this.mock = EasyMock.createMock(CloudSim.class);
     }
 
     /**
@@ -77,14 +77,28 @@ public final class CloudSimMocker {
      */
     public IExpectationSetters<Double> clock(final double clockTimeToReturn) {
         return EasyMock
-                .expect(cloudsim.clock())
+                .expect(mock.clock())
                 .andReturn(clockTimeToReturn);
+    }
+
+    /**
+     * Makes the {@link CloudSim#getMinTimeBetweenEvents()} method from the mocked CloudSim class
+     * to return a given value.
+     *
+     * @param clockTimeToReturn the value that the {@link CloudSim#getMinTimeBetweenEvents()}
+     * method must return
+     * @return
+     */
+    public IExpectationSetters<Double> getMinTimeBetweenEvents(final double clockTimeToReturn) {
+        return EasyMock
+            .expect(mock.getMinTimeBetweenEvents())
+            .andReturn(clockTimeToReturn);
     }
 
     public IExpectationSetters<String> getEntityName(final int datacenterId) {
         return EasyMock
-                .expect(cloudsim.getEntityName(datacenterId))
-                .andReturn("switches" + datacenterId);
+                .expect(mock.getEntityName(datacenterId))
+                .andReturn("datacenter" + datacenterId);
     }
 
     /**

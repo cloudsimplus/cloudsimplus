@@ -67,9 +67,9 @@ public class CloudletSchedulerSpaceShared extends CloudletSchedulerAbstract {
 		* to be executed by each cloudlet PE. However, this code inherited from CloudSim
 		* changes to length to the total length across all PEs, what is very strange
 		* and has to be investigated.*/
-	    long remainingLengthAcrossPes = c.getRemainingCloudletLength();
-	    remainingLengthAcrossPes *= c.getCloudlet().getNumberOfPes();
-	    c.getCloudlet().setLength(remainingLengthAcrossPes);
+        long remainingLengthAcrossPes = c.getRemainingCloudletLength();
+        remainingLengthAcrossPes *= c.getCloudlet().getNumberOfPes();
+        c.getCloudlet().setLength(remainingLengthAcrossPes);
 
         /*
          * A resumed cloudlet is not immediately added to the execution list.

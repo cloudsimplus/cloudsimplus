@@ -113,10 +113,8 @@ public interface Datacenter extends SimEntity {
      * {@link Datacenter} objects.
      */
     Datacenter NULL = new Datacenter() {
+        @Override public int getId() { return -1; }
         @Override public int compareTo(SimEntity o) { return 0; }
-        @Override public int getId() {
-            return -1;
-        }
         @Override public String getName() { return ""; }
         @Override public int addFile(File file) {
             return 0;

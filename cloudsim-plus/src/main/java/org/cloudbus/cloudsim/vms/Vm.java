@@ -450,6 +450,7 @@ public interface Vm extends UniquelyIdentificable, Delayable, Comparable<Vm> {
      * objects.
      */
     Vm NULL = new Vm() {
+        @Override public int getId() { return -1; }
         @Override public double getSubmissionDelay() { return 0; }
         @Override public void setSubmissionDelay(double submissionDelay) {}
         @Override public void addStateHistoryEntry(VmStateHistoryEntry entry) {}
@@ -464,7 +465,6 @@ public interface Vm extends UniquelyIdentificable, Delayable, Comparable<Vm> {
         @Override public long getCurrentRequestedRam() { return 0; }
         @Override public double getCurrentRequestedTotalMips() { return 0.0; }
         @Override public Host getHost() { return Host.NULL; }
-        @Override public int getId() { return -1; }
         @Override public double getMips() { return 0.0; }
         @Override public int getNumberOfPes() { return 0; }
         @Override public Vm addOnHostAllocationListener(EventListener<VmHostEventInfo> listener) { return Vm.NULL; }

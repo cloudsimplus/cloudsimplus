@@ -823,6 +823,7 @@ public interface Cloudlet extends UniquelyIdentificable, Delayable, Comparable<C
      * objects.
      */
     Cloudlet NULL = new Cloudlet() {
+        @Override public int getId() { return -1; }
         @Override public String getUid() { return ""; }
         @Override public boolean addRequiredFile(String fileName) { return false; }
         @Override public boolean addRequiredFiles(List<String> fileNames) { return false; }
@@ -835,7 +836,6 @@ public interface Cloudlet extends UniquelyIdentificable, Delayable, Comparable<C
         @Override public long getFinishedLengthSoFar() { return 0L; }
         @Override public long getFinishedLengthSoFar(Datacenter datacenter) { return 0L; }
         @Override public String getHistory() { return ""; }
-        @Override public int getId() { return -1; }
         @Override public long getLength() { return 0L; }
         @Override public long getOutputSize() { return 0L; }
         @Override public long getTotalLength() { return 0L; }

@@ -1,6 +1,7 @@
 package org.cloudbus.cloudsim.cloudlets;
 
 import org.cloudbus.cloudsim.brokers.DatacenterBroker;
+import org.cloudbus.cloudsim.datacenters.Datacenter;
 import org.cloudbus.cloudsim.vms.Vm;
 import org.cloudbus.cloudsim.vms.VmSimpleTest;
 import org.cloudsimplus.listeners.EventListener;
@@ -36,7 +37,7 @@ public class CloudletTest {
         assertFalse(Cloudlet.NULL.addRequiredFile(""));
         assertFalse(Cloudlet.NULL.deleteRequiredFile(""));
         assertEquals(0, Cloudlet.NULL.getAccumulatedBwCost(), 0);
-        assertEquals(0, Cloudlet.NULL.getActualCpuTime(0), 0);
+        assertEquals(0, Cloudlet.NULL.getActualCpuTime(Datacenter.NULL), 0);
         assertEquals(0, Cloudlet.NULL.getActualCpuTime(), 0);
         assertEquals(0, Cloudlet.NULL.getPriority(), 0);
         assertEquals(0, Cloudlet.NULL.getFileSize(), 0);
@@ -51,16 +52,16 @@ public class CloudletTest {
         assertEquals(0, Cloudlet.NULL.getTotalLength(), 0);
         assertEquals(0, Cloudlet.NULL.getCostPerBw(), 0);
         assertEquals(0, Cloudlet.NULL.getCostPerSec(), 0);
-        assertEquals(0, Cloudlet.NULL.getCostPerSec(0), 0);
+        assertEquals(0, Cloudlet.NULL.getCostPerSec(Datacenter.NULL), 0);
         assertEquals(0, Cloudlet.NULL.getExecStartTime(), 0);
         assertEquals(0, Cloudlet.NULL.getNetServiceLevel(), 0);
         assertEquals(0, Cloudlet.NULL.getNumberOfPes(), 0);
         assertEquals(0, Cloudlet.NULL.getTotalCost(), 0);
         assertTrue(Cloudlet.NULL.getRequiredFiles().isEmpty());
         assertEquals(-1, Cloudlet.NULL.getReservationId());
-        assertEquals(-1, Cloudlet.NULL.getLastDatacenter());
+        assertEquals(Datacenter.NULL, Cloudlet.NULL.getLastDatacenter());
         assertEquals(0, Cloudlet.NULL.getLastDatacenterArrivalTime(), 0);
-        assertEquals(0, Cloudlet.NULL.getArrivalTime(0), 0);
+        assertEquals(0, Cloudlet.NULL.getArrivalTime(Datacenter.NULL), 0);
         assertSame(DatacenterBroker.NULL, Cloudlet.NULL.getBroker());
         assertSame(UtilizationModel.NULL, Cloudlet.NULL.getUtilizationModelBw());
         assertSame(UtilizationModel.NULL, Cloudlet.NULL.getUtilizationModelCpu());
@@ -71,7 +72,7 @@ public class CloudletTest {
         assertEquals(Vm.NULL, Cloudlet.NULL.getVm());
         assertEquals(0, Cloudlet.NULL.getWaitingTime(), 0);
         assertEquals(0, Cloudlet.NULL.getWallClockTimeInLastExecutedDatacenter(), 0);
-        assertEquals(0, Cloudlet.NULL.getWallClockTime(0), 0);
+        assertEquals(0, Cloudlet.NULL.getWallClockTime(Datacenter.NULL), 0);
         assertFalse(Cloudlet.NULL.isReserved());
         assertFalse(Cloudlet.NULL.isFinished());
         assertFalse(Cloudlet.NULL.requiresFiles());
@@ -88,11 +89,10 @@ public class CloudletTest {
         Cloudlet.NULL.setSubmissionDelay(10);
         assertEquals(0, Cloudlet.NULL.getSubmissionDelay(), 0);
 
-        assertEquals(-1, Cloudlet.NULL.getLastDatacenter());
         assertEquals(0, Cloudlet.NULL.getCostPerSec(), 0);
 
-        Cloudlet.NULL.assignToDatacenter(1);
-        assertEquals(-1, Cloudlet.NULL.getLastDatacenter());
+        Cloudlet.NULL.assignToDatacenter(Datacenter.NULL);
+        assertEquals(Datacenter.NULL, Cloudlet.NULL.getLastDatacenter());
         assertEquals(0, Cloudlet.NULL.getCostPerSec(), 0);
         assertEquals(0, Cloudlet.NULL.getCostPerBw(), 0);
 

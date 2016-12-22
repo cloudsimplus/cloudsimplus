@@ -6,6 +6,7 @@ import org.cloudbus.cloudsim.cloudlets.Cloudlet;
 import org.cloudbus.cloudsim.cloudlets.CloudletExecutionInfo;
 import org.cloudbus.cloudsim.cloudlets.CloudletSimple;
 import org.cloudbus.cloudsim.cloudlets.CloudletSimpleTest;
+import org.cloudbus.cloudsim.datacenters.Datacenter;
 import org.cloudbus.cloudsim.utilizationmodels.UtilizationModel;
 import org.cloudbus.cloudsim.utilizationmodels.UtilizationModelArithmeticProgression;
 import org.easymock.EasyMock;
@@ -241,7 +242,7 @@ public class CloudletSchedulerTimeSharedTest {
             createCloudletSchedulerWithMipsList(numberOfCloudlets, mips);
         for(int i = 0; i < numberOfCloudlets; i++) {
             Cloudlet c = CloudletSimpleTest.createCloudletWithOnePe(i, mips);
-            c.assignToDatacenter(0);
+            c.assignToDatacenter(Datacenter.NULL);
             instance.addCloudletToExecList(new CloudletExecutionInfo(c));
         }
 
@@ -271,7 +272,7 @@ public class CloudletSchedulerTimeSharedTest {
             createCloudletSchedulerWithMipsList(1, mips);
         for(int i = 0; i < numberOfCloudlets; i++) {
             Cloudlet c = CloudletSimpleTest.createCloudletWithOnePe(i, mips);
-            c.assignToDatacenter(0);
+            c.assignToDatacenter(Datacenter.NULL);
             instance.addCloudletToExecList(new CloudletExecutionInfo(c));
         }
 

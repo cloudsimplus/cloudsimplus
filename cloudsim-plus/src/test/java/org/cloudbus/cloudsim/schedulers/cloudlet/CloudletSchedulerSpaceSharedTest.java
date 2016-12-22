@@ -1,11 +1,15 @@
 package org.cloudbus.cloudsim.schedulers.cloudlet;
 
+import java.util.Arrays;
 import java.util.List;
 import org.cloudbus.cloudsim.cloudlets.Cloudlet;
 import org.cloudbus.cloudsim.cloudlets.CloudletExecutionInfo;
 import org.cloudbus.cloudsim.cloudlets.CloudletSimpleTest;
 import org.cloudbus.cloudsim.core.CloudSim;
 import org.cloudbus.cloudsim.mocks.CloudSimMocker;
+import org.cloudbus.cloudsim.vms.Vm;
+import org.cloudbus.cloudsim.vms.VmSimple;
+import org.cloudbus.cloudsim.vms.VmSimpleTest;
 import org.junit.Test;
 import static org.junit.Assert.*;
 import org.junit.Ignore;
@@ -30,6 +34,31 @@ public class CloudletSchedulerSpaceSharedTest {
         instance.cloudletFinish(rcl);
         assertEquals(Cloudlet.Status.SUCCESS, c.getStatus());
         CloudSimMocker.verify(cloudsim);
+    }
+
+    @Test
+    public void testCloudletResume_CloudletLengthNotChangedAfterResumeAndMovingToWaitList(){
+        final double mips = 1000;
+        final long cloudletLen = 10000;
+        CloudSim cloudsim = CloudSimMocker.createMock(mocker -> {
+            mocker.clock(0).anyTimes();
+            mocker.getMinTimeBetweenEvents(0).anyTimes();
+        });
+
+        CloudletSchedulerSpaceShared instance = new CloudletSchedulerSpaceShared();
+        Vm vm = new VmSimple(0, mips, 1);
+        vm.setSimulation(cloudsim);
+        instance.setVm(vm);
+        List<Double> mipsList = Arrays.asList(mips);
+        instance.setCurrentMipsShare(mipsList);
+
+        Cloudlet cloudlet = CloudletSimpleTest.createCloudlet(0, cloudletLen, 1);
+        instance.cloudletSubmit(cloudlet);
+        instance.updateVmProcessing(2, mipsList);
+        assertEquals(cloudletLen, cloudlet.getLength());
+        instance.cloudletPause(cloudlet.getId());
+        instance.cloudletResume(cloudlet.getId());
+        assertEquals(cloudletLen, cloudlet.getLength());
     }
 
     @Test
