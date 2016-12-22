@@ -400,8 +400,9 @@ public interface Vm extends UniquelyIdentificable, Delayable, Comparable<Vm> {
      * @param currentTime current simulation time
      * @param mipsShare list with MIPS share of each Pe available to the
      * scheduler
-     * @return predicted completion time of the earliest finishing
-     * cloudlet, or {@link Double#MAX_VALUE} if there is no next events
+     * @return the predicted completion time of the earliest finishing cloudlet
+     * (that is a future simulation time),
+     * or {@link Double#MAX_VALUE} if there is no next Cloudlet to execute
      * @pre currentTime >= 0
      * @post $none
      */

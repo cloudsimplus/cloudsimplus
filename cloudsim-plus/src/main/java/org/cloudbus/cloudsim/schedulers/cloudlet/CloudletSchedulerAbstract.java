@@ -451,6 +451,7 @@ public abstract class CloudletSchedulerAbstract implements CloudletScheduler {
     @Override
     public double updateVmProcessing(double currentTime, List<Double> mipsShare) {
         setCurrentMipsShare(mipsShare);
+
         // no more cloudlets in this scheduler
         if (getCloudletExecList().isEmpty() && getCloudletWaitingList().isEmpty()) {
             setPreviousTime(currentTime);
@@ -461,9 +462,10 @@ public abstract class CloudletSchedulerAbstract implements CloudletScheduler {
         removeFinishedCloudletsFromExecutionListAndAddToFinishedList();
         moveNextCloudletsFromWaitingToExecList();
 
-        double nextEvent = getEstimatedFinishTimeOfSoonerFinishingCloudlet(currentTime);
+        double nextSimulationTime = getEstimatedFinishTimeOfSoonerFinishingCloudlet(currentTime);
         setPreviousTime(currentTime);
-        return nextEvent;
+
+        return nextSimulationTime;
     }
 
     /**
@@ -632,12 +634,10 @@ public abstract class CloudletSchedulerAbstract implements CloudletScheduler {
     }
 
     /**
-     * Gets the estimated finish time of the Cloudlet that is expected to finish
-     * executing sooner than all other ones that are executing on the VM using
-     * this scheduler.
+     * Gets the estimated time, considering the current time, that a next Cloudlet is expected to finish.
      *
      * @param currentTime current simulation time
-     * @return the estimated finish time of sooner finishing cloudlet
+     * @return the estimated finish time of sooner finishing cloudlet, that represents a future simulation time
      */
     protected double getEstimatedFinishTimeOfSoonerFinishingCloudlet(double currentTime) {
         return getCloudletExecList()
@@ -647,13 +647,13 @@ public abstract class CloudletSchedulerAbstract implements CloudletScheduler {
     }
 
     /**
-     * Gets the estimated time when a given cloudlet is supposed to finish
+     * Gets the estimated time, considering the current time, when a given cloudlet is supposed to finish
      * executing. It considers the amount of Vm PES and the sum of PEs required
      * by all VMs running inside the VM.
      *
      * @param rcl cloudlet to get the estimated finish time
      * @param currentTime current simulation time
-     * @return the estimated finish time of the given cloudlet
+     * @return the estimated finish time of the given cloudlet, that represents a future simulation time
      */
     protected double getEstimatedFinishTimeOfCloudlet(CloudletExecutionInfo rcl, double currentTime) {
         double estimatedFinishTime = currentTime
@@ -665,7 +665,6 @@ public abstract class CloudletSchedulerAbstract implements CloudletScheduler {
         }
 
         return estimatedFinishTime;
-        //return (rcl.getRemainingCloudletLength() == 0 ? estimatedFinishTime+rcl.getFileTransferTime() : estimatedFinishTime);
     }
 
     /**

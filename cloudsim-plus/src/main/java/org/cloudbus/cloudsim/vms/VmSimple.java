@@ -214,13 +214,13 @@ public class VmSimple implements Vm {
 
     @Override
     public double updateVmProcessing(double currentTime, List<Double> mipsShare) {
-        if (!Objects.isNull(mipsShare)) {
-            double result = getCloudletScheduler().updateVmProcessing(currentTime, mipsShare);
-            notifyOnUpdateVmProcessing();
-            return result;
+        if (Objects.isNull(mipsShare)) {
+            return Double.MAX_VALUE;
         }
 
-        return Double.MAX_VALUE;
+        final double nextSimulationTime = getCloudletScheduler().updateVmProcessing(currentTime, mipsShare);
+        notifyOnUpdateVmProcessing();
+        return nextSimulationTime;
     }
 
     @Override

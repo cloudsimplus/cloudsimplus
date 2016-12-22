@@ -211,7 +211,9 @@ public class NetworkDatacenter extends DatacenterSimple {
             if (estimatedFinishTime > 0.0) { // if this cloudlet is in the exec
                 // time to process the cloudlet
                 estimatedFinishTime += fileTransferTime;
-                send(getId(), estimatedFinishTime, CloudSimTags.VM_UPDATE_CLOUDLET_PROCESSING_EVENT);
+                send(getId(),
+                    getCloudletProcessingUpdateInterval(estimatedFinishTime),
+                    CloudSimTags.VM_UPDATE_CLOUDLET_PROCESSING_EVENT);
 
                 // event to update the stages
                 send(getId(), 0.0001, CloudSimTags.VM_UPDATE_CLOUDLET_PROCESSING_EVENT);

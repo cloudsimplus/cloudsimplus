@@ -146,19 +146,15 @@ public class HostSimple implements Host {
 
     @Override
     public double updateVmsProcessing(double currentTime) {
-        double nextCloudletCompletionTime = Double.MAX_VALUE;
-
+        double nextSimulationTime = Double.MAX_VALUE;
         for (Vm vm : getVmList()) {
-            double time = vm.updateVmProcessing(
-                    currentTime, getVmScheduler().getAllocatedMipsForVm(vm));
-            if (time < nextCloudletCompletionTime) {
-                nextCloudletCompletionTime = time;
-            }
+            double time = vm.updateVmProcessing(currentTime, getVmScheduler().getAllocatedMipsForVm(vm));
+            nextSimulationTime = Math.min(time, nextSimulationTime);
         }
 
         onUpdateVmsProcessingListener.update(
-            HostUpdatesVmsProcessingEventInfo.of(this, nextCloudletCompletionTime));
-        return nextCloudletCompletionTime;
+            HostUpdatesVmsProcessingEventInfo.of(this, nextSimulationTime));
+        return nextSimulationTime;
     }
 
     @Override
