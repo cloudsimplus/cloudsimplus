@@ -4,6 +4,8 @@ Lists the main changes in the project.
 
 ## [Current Development Version]
 
+## [v0.9-beta.1] - 2016-12-22
+
 ### Added
 - Allowed to delay the submission of VMs by a `DatacenterBroker`, simulating the dynamic arrival of VMs (closes the feature request #23)
 
