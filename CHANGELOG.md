@@ -20,7 +20,7 @@ Lists the main changes in the project.
 - Renamed the class `HostPacket` to `VmPacket` because such a kind of packet is sent between VMs.
 - Renamed the class `NetworkPacket` to `HostPacket` because such a kind of packet is sent between Hosts.
 - Renamed the class `InfoPacket` to `IcmpPacket` because such a kind of packet is sent to simulate ping requests (ICMP protocol).
-- Classes `IcmpPacket`, `HostPacket` and `VmPacket` now implements the new interface `NetworkPacket`
+- Classes `IcmpPacket`, `HostPacket` and `VmPacket` now implement the new interface `NetworkPacket`
 - Re-designed event notification mechanisms that use the `EventListener` class to enable researchers to get notifications
   about some events during simulation execution. The changes are described below:
   - Classes renamed: `HostToVmEventInfo` to `VmHostEventInfo`, `DatacenterToVmEventInfo` to `VmDatacenterEventInfo`, 

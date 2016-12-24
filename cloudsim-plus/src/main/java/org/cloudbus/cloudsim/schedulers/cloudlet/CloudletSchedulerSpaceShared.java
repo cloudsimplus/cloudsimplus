@@ -80,22 +80,6 @@ public class CloudletSchedulerSpaceShared extends CloudletSchedulerAbstract {
 	 * @return the time the cloudlet is expected to finish
 	 */
 	private double movePausedCloudletToExecList(CloudletExecutionInfo c) {
-		long remainingLenghtAcrossAllPes = c.getRemainingCloudletLength();
-		remainingLenghtAcrossAllPes *= c.getCloudlet().getNumberOfPes();
-
-		/**
-		 * @todo @author manoelcampos It's very strange
-		 * to change the cloudlet length that is
-		 * defined by the user. And in the documentation
-		 * of the attribute, it is supposed to be the length
-		 * that will be executed in each cloudlet PE,
-		 * not the length sum across all existing PEs,
-		 * as it is being changed here
-		 * (you can see that the size is being multiplied by the
-		 * number of PEs).
-		 */
-		c.getCloudlet().setLength(remainingLenghtAcrossAllPes);
-
 		addCloudletToExecList(c);
 
 		// calculate the expected time for cloudlet completion
