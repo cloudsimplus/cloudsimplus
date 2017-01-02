@@ -948,4 +948,24 @@ public abstract class CloudletAbstract implements Cloudlet {
             this.arrivalTime = NOT_ASSIGNED;
         }
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof CloudletAbstract)) return false;
+
+        CloudletAbstract that = (CloudletAbstract) o;
+
+        if (id != that.id) return false;
+        if (!broker.equals(that.broker)) return false;
+        return simulation.equals(that.simulation);
+    }
+
+    @Override
+    public int hashCode() {
+        int result = id;
+        result = 31 * result + broker.hashCode();
+        result = 31 * result + simulation.hashCode();
+        return result;
+    }
 }

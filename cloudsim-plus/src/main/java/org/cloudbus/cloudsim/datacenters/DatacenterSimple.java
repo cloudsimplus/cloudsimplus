@@ -1124,4 +1124,24 @@ public class DatacenterSimple extends CloudSimEntity implements Datacenter {
     public String toString() {
         return String.format("Datacenter %d", getId());
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        if (!super.equals(o)) return false;
+
+        DatacenterSimple that = (DatacenterSimple) o;
+
+        if (!characteristics.equals(that.characteristics)) return false;
+        return vmList.equals(that.vmList);
+    }
+
+    @Override
+    public int hashCode() {
+        int result = super.hashCode();
+        result = 31 * result + characteristics.hashCode();
+        result = 31 * result + vmList.hashCode();
+        return result;
+    }
 }

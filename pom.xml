@@ -6,7 +6,7 @@
     <version>1.0</version>
     <packaging>pom</packaging>
 
-    <name>CloudSim Plus Modules: Src, Examples, Testbeds, Benchmarks</name>
+    <name>CloudSim Plus Modules: API, Examples, Testbeds, Benchmarks</name>
     <description>CloudSim++ A CloudSim fork for Modeling and Simulation of Cloud Computing Infrastructures and Services that focuses on reusability principles and other ones such as DRY, KISS, SOLID and Design Patterns</description>
     <url>http://cloudsimplus.org</url>
 
@@ -102,10 +102,7 @@
                     <version>3.11.0</version>
                     <configuration>
                         <organisation>manoelcampos</organisation>
-                        <projectId>586aa06341aba10015ec8099</projectId>
-                        <updatePropertiesAfterCreate>false</updatePropertiesAfterCreate>
-                        <mergeAfterCreate>true</mergeAfterCreate>
-                        <licenseCheckBreakByUnknown>false</licenseCheckBreakByUnknown>
+                        <projectId>586ad564cf4f52001236d935</projectId>
                     </configuration>
                     <!--
                     The plugin is just being executed when the repository is pushed to travis-ci.org

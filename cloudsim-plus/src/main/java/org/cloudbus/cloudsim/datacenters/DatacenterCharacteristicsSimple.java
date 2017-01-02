@@ -363,4 +363,5 @@ public class DatacenterCharacteristicsSimple implements DatacenterCharacteristic
         this.setId(datacenter.getId());
         return this;
     }
+
 }

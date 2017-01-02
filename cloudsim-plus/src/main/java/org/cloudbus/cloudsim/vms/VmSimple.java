@@ -632,18 +632,35 @@ public class VmSimple implements Vm {
         return this;
     }
 
+    /**
+     * Compare this Vm with another one based on {@link #getTotalMipsCapacity()}.
+     *
+     * @param o the Vm to compare to
+     * @return {@inheritDoc}
+     */
     @Override
     public int compareTo(Vm o) {
-        return Integer.compare(getId(), o.getId());
+        return Double.compare(getTotalMipsCapacity(), o.getTotalMipsCapacity());
     }
 
     @Override
-    public boolean equals(Object obj) {
-        if(!(obj instanceof Vm)){
-            return false;
-        }
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
 
-        return this.getId() == ((Vm) obj).getId();
+        VmSimple vmSimple = (VmSimple) o;
+
+        if (id != vmSimple.id) return false;
+        if (!broker.equals(vmSimple.broker)) return false;
+        return simulation.equals(vmSimple.simulation);
+    }
+
+    @Override
+    public int hashCode() {
+        int result = id;
+        result = 31 * result + broker.hashCode();
+        result = 31 * result + simulation.hashCode();
+        return result;
     }
 
     @Override

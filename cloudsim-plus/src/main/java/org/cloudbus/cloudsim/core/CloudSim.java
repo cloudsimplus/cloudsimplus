@@ -32,6 +32,7 @@ import static java.util.stream.Collectors.toList;
 public class CloudSim implements Simulation {
 
     /**
+
      * CloudSim Plus current version.
      */
     private static final String CLOUDSIMPLUS_VERSION_STRING = "1.0";
@@ -823,5 +824,28 @@ public class CloudSim implements Simulation {
     @Override
     public Map<String, SimEntity> getEntitiesByName() {
         return Collections.unmodifiableMap(entitiesByName);
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        CloudSim cloudSim = (CloudSim) o;
+
+        if (Double.compare(cloudSim.clock, clock) != 0) return false;
+        if (!cis.equals(cloudSim.cis)) return false;
+        return calendar.equals(cloudSim.calendar);
+    }
+
+    @Override
+    public int hashCode() {
+        int result;
+        long temp;
+        result = cis.hashCode();
+        result = 31 * result + calendar.hashCode();
+        temp = Double.doubleToLongBits(clock);
+        result = 31 * result + (int) (temp ^ (temp >>> 32));
+        return result;
     }
 }
