@@ -1,5 +1,7 @@
 package org.cloudbus.cloudsim.examples.power.planetlab;
 
+import org.cloudbus.cloudsim.util.ResourceLoader;
+
 import java.io.IOException;
 import java.util.Objects;
 
@@ -31,7 +33,7 @@ public class ThrMu {
 	 * @throws IOException Signals that an I/O exception has occurred.
 	 */
 	public static void main(String[] args) throws IOException {
-		String inputFolder = ResourceLoader.getResourceFolder(NonPowerAware.class,"workload/planetlab");
+		String inputFolder = ResourceLoader.getResourcePath(NonPowerAware.class,"workload/planetlab");
         if(Objects.isNull(inputFolder)){
             inputFolder = "";
         }

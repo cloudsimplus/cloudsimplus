@@ -1,5 +1,7 @@
 package org.cloudbus.cloudsim.examples.power.planetlab;
 
+import org.cloudbus.cloudsim.util.ResourceLoader;
+
 import java.io.IOException;
 
 /**
@@ -30,7 +32,7 @@ public class Dvfs {
 	 * @throws IOException Signals that an I/O exception has occurred.
 	 */
 	public static void main(String[] args) throws IOException {
-		String inputFolder = ResourceLoader.getResourceFolder(Dvfs.class, "workload/planetlab");
+		String inputFolder = ResourceLoader.getResourcePath(Dvfs.class, "workload/planetlab");
 		String outputFolder = "output";
 		String workload = "20110303"; // PlanetLab workload
 		String vmAllocationPolicy = "dvfs"; // DVFS policy without VM migrations

@@ -8,6 +8,7 @@ import org.cloudbus.cloudsim.cloudlets.Cloudlet;
 
 import org.cloudbus.cloudsim.brokers.DatacenterBroker;
 import org.cloudbus.cloudsim.util.Log;
+import org.cloudbus.cloudsim.util.ResourceLoader;
 import org.cloudbus.cloudsim.vms.Vm;
 import org.cloudbus.cloudsim.core.CloudSim;
 import org.cloudbus.cloudsim.examples.power.Constants;
@@ -48,7 +49,7 @@ public class NonPowerAware {
 	public static void main(String[] args) throws IOException {
 		String experimentName = "planetlab_npa";
 		String outputFolder = "output";
-		String inputFolder = NonPowerAware.class.getClassLoader().getResource("workload/planetlab/20110303").getPath();
+        String inputFolder =  ResourceLoader.getResourcePath(NonPowerAware.class,"workload/planetlab/20110303");
         if(Objects.isNull(inputFolder)){
             inputFolder = "";
         }

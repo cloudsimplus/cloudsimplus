@@ -123,10 +123,11 @@ public class LoadBalancerByVmHorizontalScalingExample {
     private List<Host> hostList;
     private List<Vm> vmList;
     private List<Cloudlet> cloudletList;
+
     /**
      * Different lengths that will be randomly assigned to created Cloudlets.
      */
-    private static final long[] CLOUDLET_LENGTHS = {1000, 2000, 5000, 8000, 1000, 15000, 10000};
+    private static final long[] CLOUDLET_LENGTHS = {2000, 4000, 10000, 16000, 2000, 30000, 20000};
     private ContinuousDistribution rand;
 
     private int createdCloudlets;
@@ -253,20 +254,6 @@ public class LoadBalancerByVmHorizontalScalingExample {
     }
 
     /**
-     * Creates a Vm object.
-     *
-     * @return the create Vm
-     */
-    private Vm createVm() {
-        final int id = createsVms++;
-        Vm vm = new VmSimple(id, 1000, 2)
-            .setRam(512).setBw(1000).setSize(10000).setBroker(broker0)
-            .setCloudletScheduler(new CloudletSchedulerTimeShared());
-
-        return vm;
-    }
-
-    /**
      * Creates a {@link HorizontalVmScaling} object for a given VM.
      *
      * @param vm the VM in which the Horizontal Scaling will be created
@@ -278,6 +265,20 @@ public class LoadBalancerByVmHorizontalScalingExample {
             .setOverloadPredicate(this::isVmOverloaded)
             .setVmSupplier(this::createVm);
         vm.setHorizontalScaling(horizontalScaling);
+    }
+
+    /**
+     * Creates a Vm object.
+     *
+     * @return the created Vm
+     */
+    private Vm createVm() {
+        final int id = createsVms++;
+        Vm vm = new VmSimple(id, 1000, 2)
+            .setRam(512).setBw(1000).setSize(10000).setBroker(broker0)
+            .setCloudletScheduler(new CloudletSchedulerTimeShared());
+
+        return vm;
     }
 
     /**

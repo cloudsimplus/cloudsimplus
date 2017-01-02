@@ -1,7 +1,8 @@
 package org.cloudbus.cloudsim.examples.power.planetlab;
 
+import org.cloudbus.cloudsim.util.ResourceLoader;
+
 import java.io.IOException;
-import java.util.Objects;
 
 /**
  * A simulation of a heterogeneous power aware data center that applies the Median Absolute
@@ -31,7 +32,7 @@ public class MadMc {
 	 * @throws IOException Signals that an I/O exception has occurred.
 	 */
 	public static void main(String[] args) throws IOException {
-		String inputFolder =  ResourceLoader.getResourceFolder(MadMc.class,"workload/planetlab");
+		String inputFolder =  ResourceLoader.getResourcePath(MadMc.class,"workload/planetlab");
 		String outputFolder = "output";
 		String workload = "20110303"; // PlanetLab workload
 		String vmAllocationPolicy = "mad"; // Median Absolute Deviation (MAD) VM allocation policy
