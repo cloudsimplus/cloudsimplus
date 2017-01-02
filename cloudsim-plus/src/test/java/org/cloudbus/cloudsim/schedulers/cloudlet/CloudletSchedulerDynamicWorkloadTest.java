@@ -21,6 +21,7 @@ import java.util.List;
 import java.util.Map;
 import org.cloudbus.cloudsim.cloudlets.CloudletSimple;
 import org.cloudbus.cloudsim.cloudlets.CloudletExecutionInfo;
+import org.cloudbus.cloudsim.vms.VmSimple;
 import org.easymock.EasyMock;
 
 import org.junit.Before;
@@ -35,7 +36,7 @@ import static org.junit.Assert.assertTrue;
  * @author	Anton Beloglazov
  * @since	CloudSim Toolkit 2.0
  */
-public class CloudletSchedulerSingleServiceTest {
+public class CloudletSchedulerDynamicWorkloadTest {
     private static final double MIN_UTILIZATION_PERCENT = 0.10;
     private static final double MAX_UTILIZATION_PERCENT = 0.90;
     private static final long CLOUDLET_LENGTH = 1000;
@@ -50,6 +51,7 @@ public class CloudletSchedulerSingleServiceTest {
     @Before
     public void setUp() throws Exception {
         cloudletScheduler = new CloudletSchedulerDynamicWorkload(MIPS, PES_NUMBER);
+        cloudletScheduler.setVm(new VmSimple(0, MIPS, PES_NUMBER));
     }
 
     @Test
