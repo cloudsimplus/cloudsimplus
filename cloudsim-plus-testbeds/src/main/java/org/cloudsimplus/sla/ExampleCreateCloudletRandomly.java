@@ -186,8 +186,8 @@ public class ExampleCreateCloudletRandomly {
         int pesNumber = 1;
         UtilizationModel utilizationModel = new UtilizationModelFull();
         Cloudlet cloudlet = new CloudletSimple(cloudletId, length, pesNumber)
-                .setCloudletFileSize(fileSize)
-                .setCloudletOutputSize(outputSize)
+                .setFileSize(fileSize)
+                .setOutputSize(outputSize)
                 .setBroker(broker)
                 .setUtilizationModel(utilizationModel);
         return cloudlet;
@@ -244,7 +244,7 @@ public class ExampleCreateCloudletRandomly {
     /**
      * Creates the broker.
      *
-     * @return the switches broker
+     * @return the Datacenter broker
      */
     private DatacenterBroker createBroker() {
         return new DatacenterBrokerSimple(cloudsim);

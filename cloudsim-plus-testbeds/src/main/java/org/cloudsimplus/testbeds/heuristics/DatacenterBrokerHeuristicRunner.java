@@ -125,7 +125,7 @@ final class DatacenterBrokerHeuristicRunner extends ExperimentRunner<DatacenterB
             .run();
     }
 
-    public DatacenterBrokerHeuristicRunner(){
+    DatacenterBrokerHeuristicRunner(){
 		super();
 		experimentCosts = new ArrayList<>();
 	    runtimeStats = new SummaryStatistics();

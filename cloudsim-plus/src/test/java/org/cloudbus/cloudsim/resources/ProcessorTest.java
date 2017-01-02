@@ -41,8 +41,8 @@ public class ProcessorTest {
     private Cloudlet createMockCloudlet(int numberOfCloudlets) {
         Cloudlet cloudlet = EasyMock.createMock(Cloudlet.class);
         EasyMock.expect(cloudlet.getNumberOfPes()).andReturn(1).times(numberOfCloudlets*2);
-        EasyMock.expect(cloudlet.registerArrivalOfCloudletIntoDatacenter()).andReturn(0.0).times(numberOfCloudlets);
-        EasyMock.expect(cloudlet.getCloudletFinishedSoFar()).andReturn(0L).times(numberOfCloudlets);
+        EasyMock.expect(cloudlet.registerArrivalInDatacenter()).andReturn(0.0).times(numberOfCloudlets);
+        EasyMock.expect(cloudlet.getFinishedLengthSoFar()).andReturn(0L).times(numberOfCloudlets);
         EasyMock.replay(cloudlet);
         return cloudlet;
     }

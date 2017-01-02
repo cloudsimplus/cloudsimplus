@@ -58,7 +58,7 @@ public class DatacenterSimple extends CloudSimEntity implements Datacenter {
      * Creates a Datacenter.
      *
      * @param simulation The CloudSim instance that represents the simulation the Entity is related to
-     * @param characteristics the characteristics of the switches to be created
+     * @param characteristics the characteristics of the Datacenter to be created
      * @param vmAllocationPolicy the policy to be used to allocate VMs into hosts
      * @throws IllegalArgumentException when this entity has <tt>zero</tt> number of PEs (Processing Elements).
      * <br>
@@ -101,11 +101,11 @@ public class DatacenterSimple extends CloudSimEntity implements Datacenter {
      * Creates a Datacenter with the given parameters.
      *
      * @param simulation The CloudSim instance that represents the simulation the Entity is related to
-     * @param characteristics the characteristics of the switches to be created
+     * @param characteristics the characteristics of the Datacenter to be created
      * @param storageList a List of storage elements, for data simulation
      * @param vmAllocationPolicy the policy to be used to allocate VMs into hosts
      * @param schedulingInterval the scheduling interval to process each
-     * switches received event (in seconds)
+     * Datacenter received event (in seconds)
      * @throws IllegalArgumentException when this entity has <tt>zero</tt> number of PEs (Processing Elements).
      * No PEs mean the Cloudlets can't be processed. A CloudResource must
      * contain one or more Machines. A Machine must contain one or more PEs.
@@ -135,126 +135,151 @@ public class DatacenterSimple extends CloudSimEntity implements Datacenter {
 
     @Override
     public void processEvent(SimEvent ev) {
-        int srcId;
+        int processed = 0;
+        processed += processCloudletEvents(ev);
+        processed += processVmEvents(ev);
+        processed += processDatacenterEvents(ev);
+        processed += processNetworkEvents(ev);
 
+        if(processed == 0){
+            processOtherEvent(ev);
+        }
+    }
+
+    private int processNetworkEvents(SimEvent ev) {
         switch (ev.getTag()) {
-            // Resource dynamic info inquiry
+            case CloudSimTags.ICMP_PKT_SUBMIT:
+                processPingRequest(ev);
+                return 1;
+        }
+
+        return 0;
+    }
+
+    private int processDatacenterEvents(SimEvent ev) {
+        int srcId;// Resource dynamic info inquiry
+        switch (ev.getTag()) {
             case CloudSimTags.RESOURCE_DYNAMICS:
                 srcId = (Integer) ev.getData();
                 sendNow(srcId, ev.getTag(), 0);
-                break;
+                return 1;
 
             case CloudSimTags.RESOURCE_NUM_PE:
                 srcId = (Integer) ev.getData();
                 sendNow(srcId, ev.getTag(), getCharacteristics().getNumberOfPes());
-                break;
+                return 1;
 
             case CloudSimTags.RESOURCE_NUM_FREE_PE:
                 srcId = (Integer) ev.getData();
                 sendNow(srcId, ev.getTag(), getCharacteristics().getNumberOfFreePes());
-                break;
+                return 1;
+        }
 
+        return 0;
+    }
+
+    private int processVmEvents(SimEvent ev) {
+        switch (ev.getTag()) {
+            case CloudSimTags.VM_CREATE:
+                processVmCreate(ev, false);
+                return 1;
+
+            case CloudSimTags.VM_CREATE_ACK:
+                processVmCreate(ev, true);
+                return 1;
+
+            case CloudSimTags.VM_DESTROY:
+                processVmDestroy(ev, false);
+                return 1;
+
+            case CloudSimTags.VM_DESTROY_ACK:
+                processVmDestroy(ev, true);
+                return 1;
+
+            case CloudSimTags.VM_MIGRATE:
+                processVmMigrate(ev, false);
+                return 1;
+
+            case CloudSimTags.VM_MIGRATE_ACK:
+                processVmMigrate(ev, true);
+                return 1;
+
+            case CloudSimTags.VM_DATA_ADD:
+                processDataAdd(ev, false);
+                return 1;
+
+            case CloudSimTags.VM_DATA_ADD_ACK:
+                processDataAdd(ev, true);
+                return 1;
+
+            case CloudSimTags.VM_DATA_DEL:
+                processDataDelete(ev, false);
+                return 1;
+
+            case CloudSimTags.VM_DATA_DEL_ACK:
+                processDataDelete(ev, true);
+                return 1;
+
+            case CloudSimTags.VM_UPDATE_CLOUDLET_PROCESSING_EVENT:
+                updateCloudletProcessing();
+                checkCloudletsCompletionForAllHosts();
+                return 1;
+        }
+
+        return 0;
+    }
+
+    private int processCloudletEvents(SimEvent ev) {
+        switch (ev.getTag()) {
             // New Cloudlet arrives
             case CloudSimTags.CLOUDLET_SUBMIT:
                 processCloudletSubmit(ev, false);
-                break;
+                return 1;
 
             // New Cloudlet arrives, but the sender asks for an ack
             case CloudSimTags.CLOUDLET_SUBMIT_ACK:
                 processCloudletSubmit(ev, true);
-                break;
+                return 1;
 
             // Cancels a previously submitted Cloudlet
             case CloudSimTags.CLOUDLET_CANCEL:
                 processCloudlet(ev, CloudSimTags.CLOUDLET_CANCEL);
-                break;
+                return 1;
 
             // Pauses a previously submitted Cloudlet
             case CloudSimTags.CLOUDLET_PAUSE:
                 processCloudlet(ev, CloudSimTags.CLOUDLET_PAUSE);
-                break;
+                return 1;
 
             // Pauses a previously submitted Cloudlet, but the sender
             // asks for an acknowledgement
             case CloudSimTags.CLOUDLET_PAUSE_ACK:
                 processCloudlet(ev, CloudSimTags.CLOUDLET_PAUSE_ACK);
-                break;
+                return 1;
 
             // Resumes a previously submitted Cloudlet
             case CloudSimTags.CLOUDLET_RESUME:
                 processCloudlet(ev, CloudSimTags.CLOUDLET_RESUME);
-                break;
+                return 1;
 
             // Resumes a previously submitted Cloudlet, but the sender
             // asks for an acknowledgement
             case CloudSimTags.CLOUDLET_RESUME_ACK:
                 processCloudlet(ev, CloudSimTags.CLOUDLET_RESUME_ACK);
-                break;
+                return 1;
 
             // Moves a previously submitted Cloudlet to a different Datacenter
             case CloudSimTags.CLOUDLET_MOVE:
                 processCloudletMove((Object[]) ev.getData(), CloudSimTags.CLOUDLET_MOVE);
-                break;
+                return 1;
 
             // Moves a previously submitted Cloudlet to a different Datacenter
             case CloudSimTags.CLOUDLET_MOVE_ACK:
                 processCloudletMove((Object[]) ev.getData(), CloudSimTags.CLOUDLET_MOVE_ACK);
-                break;
-
-            case CloudSimTags.ICMP_PKT_SUBMIT:
-                processPingRequest(ev);
-                break;
-
-            case CloudSimTags.VM_CREATE:
-                processVmCreate(ev, false);
-                break;
-
-            case CloudSimTags.VM_CREATE_ACK:
-                processVmCreate(ev, true);
-                break;
-
-            case CloudSimTags.VM_DESTROY:
-                processVmDestroy(ev, false);
-                break;
-
-            case CloudSimTags.VM_DESTROY_ACK:
-                processVmDestroy(ev, true);
-                break;
-
-            case CloudSimTags.VM_MIGRATE:
-                processVmMigrate(ev, false);
-                break;
-
-            case CloudSimTags.VM_MIGRATE_ACK:
-                processVmMigrate(ev, true);
-                break;
-
-            case CloudSimTags.VM_DATA_ADD:
-                processDataAdd(ev, false);
-                break;
-
-            case CloudSimTags.VM_DATA_ADD_ACK:
-                processDataAdd(ev, true);
-                break;
-
-            case CloudSimTags.VM_DATA_DEL:
-                processDataDelete(ev, false);
-                break;
-
-            case CloudSimTags.VM_DATA_DEL_ACK:
-                processDataDelete(ev, true);
-                break;
-
-            case CloudSimTags.VM_UPDATE_CLOUDLET_PROCESSING_EVENT:
-                updateCloudletProcessing();
-                checkCloudletsCompletionForAllHosts();
-                break;
-
-            // other unknown tags are processed by this method
-            default:
-                processOtherEvent(ev);
-                break;
+                return 1;
         }
+
+        return 0;
     }
 
     /**
@@ -582,9 +607,7 @@ public class DatacenterSimple extends CloudSimEntity implements Datacenter {
             }
 
             // process this Cloudlet to this Datacenter
-            cl.assignCloudletToDatacenter(
-                    getId(), getCharacteristics().getCostPerSecond(),
-                    getCharacteristics().getCostPerBw());
+            cl.assignToDatacenter(this);
 
             submitCloudletToVm(cl, ack);
         } catch (ClassCastException c) {
@@ -599,7 +622,7 @@ public class DatacenterSimple extends CloudSimEntity implements Datacenter {
     }
 
     /**
-     * Submits a cloudlet to be executed inside its bound VM.
+     * Submits a cloudlet to be executed inside its bind VM.
      *
      * @param cl the cloudlet to the executed
      * @param ack indicates if the Broker is waiting for an ACK after the Datacenter
@@ -614,10 +637,29 @@ public class DatacenterSimple extends CloudSimEntity implements Datacenter {
 
         // if this cloudlet is in the exec queue
         if (estimatedFinishTime > 0.0 && !Double.isInfinite(estimatedFinishTime)) {
-            send(getId(), estimatedFinishTime, CloudSimTags.VM_UPDATE_CLOUDLET_PROCESSING_EVENT);
+            send(getId(),
+                getCloudletProcessingUpdateInterval(estimatedFinishTime),
+                CloudSimTags.VM_UPDATE_CLOUDLET_PROCESSING_EVENT);
         }
 
         sendCloudletSubmitAckToBroker(ack, cl, true);
+    }
+
+    /**
+     * Gets the time when the next update of cloudlets has to be performed.
+     *
+     * @param completionTimeNextFinishingCloudlet the predicted completion time of the earliest finishing cloudlet
+     * (that is a future simulation time), or {@link Double#MAX_VALUE} if there is no next Cloudlet to execute
+     * @return the minimum value between the {@link #getSchedulingInterval()} and the given time (if the scheduling interval
+     * is enable, that is, is greate than 0), that represents when the next update of Cloudlets processing
+     * has to be performed
+     *
+     * @see #updateCloudletProcessing()
+     */
+    protected double getCloudletProcessingUpdateInterval(double completionTimeNextFinishingCloudlet){
+        return (schedulingInterval == 0 ?
+            completionTimeNextFinishingCloudlet :
+            Math.min(completionTimeNextFinishingCloudlet, schedulingInterval));
     }
 
     /**
@@ -709,14 +751,16 @@ public class DatacenterSimple extends CloudSimEntity implements Datacenter {
      * @post $none
      */
     protected void processCloudletResume(Cloudlet cloudlet, boolean ack) {
-        double eventTime = cloudlet.getVm()
+        final double estimatedFinishTime = cloudlet.getVm()
                 .getCloudletScheduler().cloudletResume(cloudlet.getId());
 
         boolean status = false;
-        if (eventTime > 0.0) { // if this cloudlet is in the exec queue
+        if (estimatedFinishTime > 0.0) { // if this cloudlet is in the exec queue
             status = true;
-            if (eventTime > getSimulation().clock()) {
-                schedule(getId(), eventTime, CloudSimTags.VM_UPDATE_CLOUDLET_PROCESSING_EVENT);
+            if (estimatedFinishTime > getSimulation().clock()) {
+                schedule(getId(),
+                    getCloudletProcessingUpdateInterval(estimatedFinishTime),
+                    CloudSimTags.VM_UPDATE_CLOUDLET_PROCESSING_EVENT);
             }
         }
 
@@ -768,9 +812,11 @@ public class DatacenterSimple extends CloudSimEntity implements Datacenter {
         if (!isTimeToUpdateCloudletsProcessing())
             return;
 
-        double delay = updateVmsProcessingOfAllHosts();
-        if (delay != Double.MAX_VALUE) {
-            schedule(getId(), delay, CloudSimTags.VM_UPDATE_CLOUDLET_PROCESSING_EVENT);
+        final double nextSimulationTime = updateVmsProcessingOfAllHosts();
+        if (nextSimulationTime != Double.MAX_VALUE) {
+            schedule(getId(),
+                getCloudletProcessingUpdateInterval(nextSimulationTime),
+                CloudSimTags.VM_UPDATE_CLOUDLET_PROCESSING_EVENT);
         }
         setLastProcessTime(getSimulation().clock());
     }
@@ -784,34 +830,31 @@ public class DatacenterSimple extends CloudSimEntity implements Datacenter {
     }
 
     /**
-     * Updates the processing of VMs of all active hosts.
+     * Updates the processing of VMs inside all active hosts,
+     * that makes the processing of cloudlets inside such VMs to be updated.
      *
-     * @return the time to wait before updating the processing of running cloudlets or
-     * {@link Double#MAX_VALUE} if there isn't any cloudlet running anymore.
+     * @return the predicted completion time of the earliest finishing cloudlet
+     * (that is a future simulation time),
+     * or {@link Double#MAX_VALUE} if there is no next Cloudlet to execute
+     *
      */
     protected double updateVmsProcessingOfAllHosts() {
         List<? extends Host> list = getVmAllocationPolicy().getHostList();
-        double completionTimeOfNextFinishingCloudlet = Double.MAX_VALUE;
+        double nextSimulationTime = Double.MAX_VALUE;
         for (Host host : list) {
-            // inform VMs to update processing
             double time = host.updateVmsProcessing(getSimulation().clock());
-            // what time do we expect that the next cloudlet will finish?
-            completionTimeOfNextFinishingCloudlet = Math.min(time, completionTimeOfNextFinishingCloudlet);
+            nextSimulationTime = Math.min(time, nextSimulationTime);
         }
 
         // Guarantees a minimal interval before scheduling the event
         final double minTimeBetweenEvents = getSimulation().clock()+getSimulation().getMinTimeBetweenEvents()+0.01;
-        if (completionTimeOfNextFinishingCloudlet < minTimeBetweenEvents) {
-            completionTimeOfNextFinishingCloudlet = minTimeBetweenEvents;
+        nextSimulationTime = Math.max(nextSimulationTime, minTimeBetweenEvents);
+
+        if (nextSimulationTime == Double.MAX_VALUE) {
+            return nextSimulationTime;
         }
 
-        if (completionTimeOfNextFinishingCloudlet == Double.MAX_VALUE) {
-            return completionTimeOfNextFinishingCloudlet;
-        }
-
-        return getSchedulingInterval() > 0
-            ? getSchedulingInterval()
-            : completionTimeOfNextFinishingCloudlet - getSimulation().clock();
+        return nextSimulationTime;
     }
 
     /**
@@ -867,7 +910,7 @@ public class DatacenterSimple extends CloudSimEntity implements Datacenter {
     }
 
     /**
-     * Checks whether the switches has the given file.
+     * Checks whether the Datacenter has the given file.
      *
      * @param file a file to be searched
      * @return <tt>true</tt> if successful, <tt>false</tt> otherwise
@@ -880,7 +923,7 @@ public class DatacenterSimple extends CloudSimEntity implements Datacenter {
     }
 
     /**
-     * Checks whether the switches has the given file.
+     * Checks whether the Datacenter has the given file.
      *
      * @param fileName a file name to be searched
      * @return <tt>true</tt> if successful, <tt>false</tt> otherwise
@@ -944,9 +987,9 @@ public class DatacenterSimple extends CloudSimEntity implements Datacenter {
     }
 
     /**
-     * Sets the switches characteristics.
+     * Sets the Datacenter characteristics.
      *
-     * @param characteristics the new switches characteristics
+     * @param characteristics the new Datacenter characteristics
      */
     protected final void setCharacteristics(DatacenterCharacteristics characteristics) {
         characteristics.setDatacenter(this);
@@ -978,7 +1021,7 @@ public class DatacenterSimple extends CloudSimEntity implements Datacenter {
     }
 
     /**
-     * Sets the policy to be used by the switches to allocate VMs into hosts.
+     * Sets the policy to be used by the Datacenter to allocate VMs into hosts.
      *
      * @param vmAllocationPolicy the new vm allocation policy
      */
@@ -993,7 +1036,7 @@ public class DatacenterSimple extends CloudSimEntity implements Datacenter {
     }
 
     /**
-     * Gets the last time some cloudlet was processed in the switches.
+     * Gets the last time some cloudlet was processed in the Datacenter.
      *
      * @return the last process time
      */
@@ -1002,7 +1045,7 @@ public class DatacenterSimple extends CloudSimEntity implements Datacenter {
     }
 
     /**
-     * Sets the last time some cloudlet was processed in the switches.
+     * Sets the last time some cloudlet was processed in the Datacenter.
      *
      * @param lastProcessTime the new last process time
      */
@@ -1016,7 +1059,7 @@ public class DatacenterSimple extends CloudSimEntity implements Datacenter {
     }
 
     /**
-     * Sets the list of storage devices of the switches.
+     * Sets the list of storage devices of the Datacenter.
      *
      * @param storageList the new storage list
      * @return
@@ -1049,7 +1092,7 @@ public class DatacenterSimple extends CloudSimEntity implements Datacenter {
     }
 
     /**
-     * Sets the list of VMs submitted to be ran in some host of this switches.
+     * Sets the list of VMs submitted to be ran in some host of this Datacenter.
      *
      * @param <T> the class of VMs inside the list
      * @param vmList the new vm list

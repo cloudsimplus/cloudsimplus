@@ -26,25 +26,21 @@ package org.cloudsimplus.listeners;
 import org.cloudbus.cloudsim.vms.Vm;
 
 /**
- * An {@link EventInfo} interface that stores data to be passed
+ * An interface that represents data to be passed
  * to {@link EventListener} objects that are registered to be notified
- * about events happened for a given {@link Vm}.
+ * when some events happen for a given {@link Vm}.
  *
  * @author Manoel Campos da Silva Filho
  * @since CloudSim Plus 1.0
+ *
+ * @see VmDatacenterEventInfo
+ * @see CloudletVmEventInfo
  */
 public interface VmEventInfo extends EventInfo {
 
     /**
-     *
-     * @return the Vm for which the event happened
+     * Gets the {@link Vm} for which the event happened.
+     * @return
      */
     Vm getVm();
-
-    /**
-     * Sets the Vm for which the event happened.
-     *
-     * @param vm the Vm to set
-     */
-    void setVm(Vm vm);
 }

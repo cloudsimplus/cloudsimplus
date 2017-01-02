@@ -15,13 +15,13 @@ import org.cloudbus.cloudsim.core.CloudSim;
 
 /**
  *
- * <p><b>A simple implementation of {@link DatacenterBroker} that try to host customer's VMs
- * at the first switches found. If there isn't capacity in that one,
- * it will try the other ones.</b></p>
+ * A simple implementation of {@link DatacenterBroker} that try to host customer's VMs
+ * at the first Datacenter found. If there isn't capacity in that one,
+ * it will try the other ones.
  *
- * The selection of VMs for each cloudlet is based on a Round-Robin policy,
+ * <p>The selection of VMs for each cloudlet is based on a Round-Robin policy,
  * cyclically selecting the next VM from the broker VM list for each requesting
- * cloudlet.
+ * cloudlet.</p>
  *
  * @author Rodrigo N. Calheiros
  * @author Anton Beloglazov
@@ -41,7 +41,7 @@ public class DatacenterBrokerSimple extends DatacenterBrokerAbstract {
 
     /**
      * {@inheritDoc}
-     * <br>It always selects the first switches from the switches list.
+     * <br>It always selects the first Datacenter from the Datacenter list.
      *
      * @return {@inheritDoc}
      */
@@ -92,8 +92,12 @@ public class DatacenterBrokerSimple extends DatacenterBrokerAbstract {
      * @return the index of the next VM to bind a cloudlet to
      */
     protected int getNextVmIndex() {
-        int vmIndex = getVmsCreatedList().indexOf(getLastSelectedVm());
-        return (vmIndex == -1 ? 0 : (vmIndex + 1) % getVmsCreatedList().size());
+        if(getVmsCreatedList().isEmpty()) {
+            return -1;
+        }
+
+        final int vmIndex = getVmsCreatedList().indexOf(getLastSelectedVm());
+        return (vmIndex + 1) % getVmsCreatedList().size();
     }
 
 }

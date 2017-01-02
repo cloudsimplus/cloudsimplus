@@ -22,7 +22,12 @@ import org.cloudbus.cloudsim.vms.Vm;
  * @author Anthony Sulistio
  * @since CloudSim Toolkit 1.0
  */
-public class CloudSimTags {
+public final class CloudSimTags {
+
+    /**
+     * Denotes the end of simulation.
+     */
+    public static final int END_OF_SIMULATION = -1;
 
     /**
      * Starting constant value for cloud-related tags. *
@@ -35,21 +40,6 @@ public class CloudSimTags {
     private static final int NETBASE = 100;
 
     /**
-     * Denotes boolean <tt>true</tt> in <tt>int</tt> value.
-     */
-    public static final int TRUE = 1;
-
-    /**
-     * Denotes boolean <tt>false</tt> in <tt>int</tt> value.
-     */
-    public static final int FALSE = 0;
-
-    /**
-     * Denotes the end of simulation.
-     */
-    public static final int END_OF_SIMULATION = -1;
-
-    /**
      * Denotes a request from a Datacenter to register itself. This tag is normally used
      * between {@link CloudInformationService} and Datacenter entities.
      * When such a {@link SimEvent} is sent, the {@link SimEvent#getData()}
@@ -58,26 +48,10 @@ public class CloudSimTags {
     public static final int DATACENTER_REGISTRATION_REQUEST = BASE + 2;
 
     /**
-     * Denotes a request from a Datacenter to register itself, when such
-     * a Datacenter supports advanced reservation.
-     * This tag is normally used between
-     * {@link CloudInformationService} and Datacenter entities.
-     * When such a {@link SimEvent} is sent, the {@link SimEvent#getData()}
-     * must be a {@link Datacenter} object.
-     */
-    public static final int DATACENTER_REGISTRATION_REQUEST_AR = BASE + 3;
-
-    /**
      * Denotes a request from a broker to a {@link CloudInformationService} to get the list of all Datacenters,
      * including the ones that can support advanced reservation.
      */
     public static final int DATACENTER_LIST_REQUEST = BASE + 4;
-
-    /**
-     * Denotes a request from a broker to a {@link CloudInformationService} to get a list containing just
-     * the Datacenters that support advanced reservation.
-     */
-    public static final int DATACENTER_AR_LIST_REQUEST = BASE + 5;
 
     /**
      * Denotes cloud resource allocation policy. This tag is normally used
@@ -293,7 +267,6 @@ public class CloudSimTags {
      * Defines the tag that represents a host failure.
      */
     public static final int HOST_FAILURE = FAILURE + 1;
-
 
     /**
      * Private constructor to avoid instantiating such a class.

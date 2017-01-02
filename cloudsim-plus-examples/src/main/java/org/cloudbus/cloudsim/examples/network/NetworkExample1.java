@@ -40,20 +40,24 @@ import org.cloudbus.cloudsim.resources.Bandwidth;
 import org.cloudbus.cloudsim.resources.Ram;
 
 /**
- * A simple example showing how to create a switches with 1 host and a network
+ * A simple example showing how to create a Datacenter with 1 host and a network
  * topology and and run 1 cloudlet on it.
  */
 public class NetworkExample1 {
-    private static List<Cloudlet> cloudletList;
-    private static List<Vm> vmlist;
-    private static CloudSim simulation;
+    private List<Cloudlet> cloudletList;
+    private List<Vm> vmlist;
+    private CloudSim simulation;
 
     /**
-     * Creates main() to run this example
+     * Starts the example.
      *
      * @param args
      */
     public static void main(String[] args) {
+        new NetworkExample1();
+    }
+
+    public NetworkExample1() {
         Log.printFormattedLine("Starting %s...", NetworkExample1.class.getSimpleName());
         // First step: Initialize the CloudSim package. It should be called
         // before creating any entities.
@@ -104,8 +108,8 @@ public class NetworkExample1 {
         Cloudlet cloudlet1 =
 
             new CloudletSimple(id, length, pesNumber)
-                .setCloudletFileSize(fileSize)
-                .setCloudletOutputSize(outputSize)
+                .setFileSize(fileSize)
+                .setOutputSize(outputSize)
                 .setUtilizationModel(utilizationModel)
                 .setBroker(broker);
 
@@ -138,7 +142,7 @@ public class NetworkExample1 {
         Log.printFormattedLine("%s finished!", NetworkExample1.class.getSimpleName());
     }
 
-    private static Datacenter createDatacenter() {
+    private Datacenter createDatacenter() {
         // Here are the steps needed to create a DatacenterSimple:
         // 1. We need to create a list to store
         //    our machine
@@ -187,7 +191,7 @@ public class NetworkExample1 {
 
     //We strongly encourage users to develop their own broker policies, to submit vms and cloudlets according
     //to the specific rules of the simulated scenario
-    private static DatacenterBroker createBroker() {
+    private DatacenterBroker createBroker() {
         return new DatacenterBrokerSimple(simulation);
     }
 }

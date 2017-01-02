@@ -139,10 +139,10 @@ public class LinuxCompletelyFairSchedulerExample {
         }
 
         //Defines the characteristics of the data center
-        final double cost = 3.0; // the cost of using processing in this switches
-        final double costPerMem = 0.05; // the cost of using memory in this switches
-        final double costPerStorage = 0.001; // the cost of using storage in this switches
-        final double costPerBw = 0.0; // the cost of using bw in this switches
+        final double cost = 3.0; // the cost of using processing in this Datacenter
+        final double costPerMem = 0.05; // the cost of using memory in this Datacenter
+        final double costPerStorage = 0.001; // the cost of using storage in this Datacenter
+        final double costPerBw = 0.0; // the cost of using bw in this Datacenter
 
         DatacenterCharacteristics characteristics =
             new DatacenterCharacteristicsSimple(hostList)
@@ -197,8 +197,8 @@ public class LinuxCompletelyFairSchedulerExample {
         UtilizationModel utilization = new UtilizationModelFull();
 
         return new CloudletSimple(numberOfCreatedCloudlets++, CLOUDLET_LEN, CLOUDLET_PES)
-            .setCloudletFileSize(fileSize)
-            .setCloudletOutputSize(outputSize)
+            .setFileSize(fileSize)
+            .setOutputSize(outputSize)
             .setUtilizationModel(utilization)
             .setBroker(broker);
     }

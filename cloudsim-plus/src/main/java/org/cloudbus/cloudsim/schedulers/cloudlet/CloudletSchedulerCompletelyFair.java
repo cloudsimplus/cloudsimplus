@@ -132,7 +132,7 @@ public final class CloudletSchedulerCompletelyFair extends CloudletSchedulerTime
 	 *
 	 * <p>As lower is the latency, more responsive a real operating
 	 * system will be perceived by users, at the cost or more
-	 * frequent CPU context switches (that reduces CPU throughput).
+	 * frequent CPU context Datacenter (that reduces CPU throughput).
 	 * <b>However, CPU context switch overhead is not being considered.</b>
 	 * </p>
 	 * @return
@@ -265,7 +265,7 @@ public final class CloudletSchedulerCompletelyFair extends CloudletSchedulerTime
 	 * Cloudlet to execute.
 	 *
 	 * <p>This minimum value is used to reduce the frequency
-	 * of CPU context switches, that degrade CPU throughput.
+	 * of CPU context Datacenter, that degrade CPU throughput.
 	 * <b>However, CPU context switch overhead is not being considered.</b>
 	 * By this way, it just ensures that each Cloudlet will not use the CPU
 	 * for less than the minimum granularity.</p>
@@ -352,7 +352,6 @@ public final class CloudletSchedulerCompletelyFair extends CloudletSchedulerTime
         double cloudletTimeSpan = currentTime - rcl.getLastProcessingTime();
         super.updateCloudletProcessing(rcl, currentTime);
 
-        //System.out.printf("\tCloudlet %d time span: %f - curTime %f last %f vruntime %f\n", rcl.getCloudletId(), cloudletTimeSpan, currentTime, rcl.getLastProcessingTime(), rcl.getVirtualRuntime());
         rcl.addVirtualRuntime(cloudletTimeSpan);
     }
 

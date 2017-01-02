@@ -28,7 +28,7 @@ import org.cloudbus.cloudsim.resources.RawStorage;
  * (PM) inside a {@link Datacenter}. It executes actions related to management
  * of virtual machines (e.g., creation and destruction). A host has a defined
  * policy for provisioning memory and bw, as well as an allocation policy for
- * PEs to {@link Vm virtual machines}. A host is associated to a switches and
+ * PEs to {@link Vm virtual machines}. A host is associated to a Datacenter and
  * can host virtual machines.
  *
  * @author Rodrigo N. Calheiros
@@ -146,22 +146,15 @@ public class HostSimple implements Host {
 
     @Override
     public double updateVmsProcessing(double currentTime) {
-        double completionTimeOfNextFinishingCloudlet = Double.MAX_VALUE;
-
+        double nextSimulationTime = Double.MAX_VALUE;
         for (Vm vm : getVmList()) {
-            double time = vm.updateVmProcessing(
-                    currentTime, getVmScheduler().getAllocatedMipsForVm(vm));
-            if (time < completionTimeOfNextFinishingCloudlet) {
-                completionTimeOfNextFinishingCloudlet = time;
-            }
+            double time = vm.updateVmProcessing(currentTime, getVmScheduler().getAllocatedMipsForVm(vm));
+            nextSimulationTime = Math.min(time, nextSimulationTime);
         }
 
-        HostUpdatesVmsProcessingEventInfo eventInfo =
-                new HostUpdatesVmsProcessingEventInfo(currentTime, this);
-        eventInfo.setCompletionTimeOfNextFinishingCloudlet(completionTimeOfNextFinishingCloudlet);
-        onUpdateVmsProcessingListener.update(eventInfo);
-
-        return completionTimeOfNextFinishingCloudlet;
+        onUpdateVmsProcessingListener.update(
+            HostUpdatesVmsProcessingEventInfo.of(this, nextSimulationTime));
+        return nextSimulationTime;
     }
 
     @Override
@@ -270,6 +263,7 @@ public class HostSimple implements Host {
         getStorage().allocateResource(vm.getSize());
         getVmList().add(vm);
         vm.setHost(this);
+        vm.notifyOnHostAllocationListeners();
         return true;
     }
 
@@ -278,6 +272,7 @@ public class HostSimple implements Host {
         if (!Objects.isNull(vm)) {
             deallocateResourcesOfVm(vm);
             getVmList().remove(vm);
+            vm.notifyOnHostDeallocationListeners(this);
         }
     }
 

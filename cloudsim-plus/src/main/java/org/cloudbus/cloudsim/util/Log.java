@@ -19,7 +19,7 @@ import java.util.Objects;
  * @author Anton Beloglazov
  * @since CloudSim Toolkit 2.0
  */
-public class Log {
+public final class Log {
     /**
      * An enum that may be used to define the level (type)
      * of a log message.
@@ -108,6 +108,15 @@ public class Log {
     }
 
     /**
+     * Prints the message passed as a non-String object and a new line.
+     *
+     * @param message the message
+     */
+    public static void printLine(Object message) {
+        printLine(String.valueOf(message));
+    }
+
+    /**
      * Prints the concatenated text representation of the arguments.
      *
      * @param messages the messages to print
@@ -139,15 +148,6 @@ public class Log {
     }
 
     /**
-     * Prints the message passed as a non-String object and a new line.
-     *
-     * @param message the message
-     */
-    public static void printLine(Object message) {
-        printLine(String.valueOf(message));
-    }
-
-    /**
      * Prints a string formated as in String.printFormatted().
      *
      * @param format the printFormatted
@@ -174,26 +174,26 @@ public class Log {
      * the specified level
      *
      * @param level the level that define the kind of message
-     * @param _class Class that is asking to print a message (where the print method
+     * @param klass Class that is asking to print a message (where the print method
      * is being called)
      * @param time current simulation time
      * @param format the printFormatted
      * @param args the args
      */
-    public static void println(Level level, Class _class, double time, String format, Object... args) {
+    public static void println(Level level, Class klass, double time, String format, Object... args) {
         if((level == Level.DEBUG && isDebug()) || (level != Level.DEBUG)){
             String msg = String.format(format, args);
-            printFormattedLine("Time %.1f %s/%s\n   %s", time, level.name(), _class.getSimpleName(), msg);
+            printFormattedLine("Time %.1f %s/%s\n   %s", time, level.name(), klass.getSimpleName(), msg);
         }
     }
 
     /**
      * Sets the output stream.
      *
-     * @param _output the new output
+     * @param newOutput the new output
      */
-    public static void setOutput(OutputStream _output) {
-        output = _output;
+    public static void setOutput(OutputStream newOutput) {
+        output = newOutput;
     }
 
     /**
@@ -254,4 +254,8 @@ public class Log {
     }
 
 
+    /**
+     * A private constructor to avoid class instantiation.
+     */
+    private Log(){}
 }

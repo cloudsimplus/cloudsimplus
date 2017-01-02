@@ -99,7 +99,7 @@ public interface Host extends Identificable, Comparable<Host> {
     Host setBwProvisioner(ResourceProvisioner bwProvisioner);
 
     /**
-     * Gets the switches where the host is placed.
+     * Gets the Datacenter where the host is placed.
      *
      * @return the data center of the host
      */
@@ -262,7 +262,7 @@ public interface Host extends Identificable, Comparable<Host> {
     void removeMigratingInVm(Vm vm);
 
     /**
-     * Sets the switches where the host is placed.
+     * Sets the Datacenter where the host is placed.
      *
      * @param datacenter the new data center to move the host
      */
@@ -281,11 +281,13 @@ public interface Host extends Identificable, Comparable<Host> {
     boolean setPeStatus(int peId, Pe.Status status);
 
     /**
-     * Requests updating of cloudlets' processing in VMs running in this host.
+     * Updates the processing of VMs running on this Host,
+     * that makes the processing of cloudlets inside such VMs to be updated.
      *
      * @param currentTime the current time
-     * @return expected time of completion of the next cloudlet in all VMs in this host or
-     *         {@link Double#MAX_VALUE} if there is no future events expected in this host
+     * @return the predicted completion time of the earliest finishing cloudlet
+     * (that is a future simulation time),
+     * or {@link Double#MAX_VALUE} if there is no next Cloudlet to execute
      * @pre currentTime >= 0.0
      * @post $none
      */

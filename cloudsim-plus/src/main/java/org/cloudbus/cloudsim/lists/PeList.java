@@ -20,7 +20,7 @@ import org.cloudbus.cloudsim.vms.Vm;
  * @author Anton Beloglazov
  * @since CloudSim Toolkit 2.0
  */
-public class PeList {
+public final class PeList {
 
     /**
      * Gets a {@link Pe} with a given id.
@@ -162,7 +162,6 @@ public class PeList {
      */
     public static void setStatusFailed(List<? extends Pe> peList, int hostId, boolean failed) {
         String status = (failed ? "FAILED" : "WORKING");
-        Log.printConcatLine("Host ", hostId, " is ", status);
         setStatusFailed(peList, failed);
     }
 
@@ -181,4 +180,8 @@ public class PeList {
         }
     }
 
+    /**
+     * A private constructor to avoid class instantiation.
+     */
+    private PeList(){}
 }

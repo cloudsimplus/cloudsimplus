@@ -16,7 +16,6 @@ import org.cloudbus.cloudsim.network.topologies.NetworkTopology;
 import org.cloudbus.cloudsim.util.Log;
 import java.util.function.Predicate;
 import org.cloudsimplus.listeners.EventInfo;
-import org.cloudsimplus.listeners.EventInfoSimple;
 import org.cloudsimplus.listeners.EventListener;
 
 import static java.util.stream.Collectors.toList;
@@ -33,19 +32,19 @@ import static java.util.stream.Collectors.toList;
 public class CloudSim implements Simulation {
 
     /**
-     * @see #getNetworkTopology()
-     */
-    private NetworkTopology networkTopology;
-
-    /**
-     * The CloudSim Plus current version.
+     * CloudSim Plus current version.
      */
     private static final String CLOUDSIMPLUS_VERSION_STRING = "1.0";
 
     /**
-     * The Constant NOT_FOUND.
+     * A constant to indicate that some entity was not found.
      */
     private static final int NOT_FOUND = -1;
+
+    /**
+     * @see #getNetworkTopology()
+     */
+    private NetworkTopology networkTopology;
 
     /**
      * The Cloud Information Service (CIS) entity.
@@ -75,12 +74,12 @@ public class CloudSim implements Simulation {
     /**
      * The queue of events that will be sent in a future simulation time.
      */
-    protected FutureQueue future;
+    private FutureQueue future;
 
     /**
      * The deferred event queue.
      */
-    protected DeferredQueue deferred;
+    private DeferredQueue deferred;
 
     /**
      * The current simulation clock.
@@ -121,11 +120,6 @@ public class CloudSim implements Simulation {
     private boolean abort = false;
 
     /**
-     * @see #getOnEventProcessingListener()
-     */
-    private EventListener<SimEvent> onEventProcessingListener = EventListener.NULL;
-
-    /**
      * Indicates if the simulation already run once.
      * If yes, it can't run again.
      * If you paused the simulation and wants to resume it,
@@ -133,10 +127,9 @@ public class CloudSim implements Simulation {
      */
     private boolean alreadyRunOnce;
 
-    /**
-     * @see #getOnSimulationPausedListener()
-     */
-    private EventListener<EventInfo> onSimulationPausedListener;
+    private List<EventListener<SimEvent>> onEventProcessingListeners;
+    private List<EventListener<EventInfo>> onSimulationPausedListeners;
+    private List<EventListener<EventInfo>> onClockTickListeners;
 
     /**
      * Creates a CloudSim simulation using a default calendar.
@@ -161,7 +154,7 @@ public class CloudSim implements Simulation {
      * @see CloudInformationService
      * @post $none
      */
-    public CloudSim(Calendar cal) throws RuntimeException {
+    public CloudSim(Calendar cal) {
         Log.printFormattedLine("Initialising CloudSim Plus %s...", CloudSim.CLOUDSIMPLUS_VERSION_STRING);
         this.entities = new ArrayList<>();
         this.entitiesByName = new LinkedHashMap<>();
@@ -172,10 +165,11 @@ public class CloudSim implements Simulation {
         this.clock = 0;
         this.running = false;
         this.alreadyRunOnce = false;
-        setOnSimulationPausedListener(EventListener.NULL);
-        setOnEventProcessingListener(EventListener.NULL);
+        this.onEventProcessingListeners = new ArrayList<>();
+        this.onSimulationPausedListeners = new ArrayList<>();
+        this.onClockTickListeners = new ArrayList<>();
 
-        // NOTE: the order for the below 3 lines are important
+        // NOTE: the order for the lines below is important
         this.calendar = (Objects.isNull(calendar) ? Calendar.getInstance() : calendar);
         this.cis = new CloudInformationService(this);
     }
@@ -199,7 +193,7 @@ public class CloudSim implements Simulation {
      * This constructor will be removed in future versions.
      */
     @Deprecated
-    public CloudSim(int numUser, Calendar cal, boolean traceFlag, double periodBetweenEvents) throws RuntimeException{
+    public CloudSim(int numUser, Calendar cal, boolean traceFlag, double periodBetweenEvents) {
         this(cal);
 
         if (periodBetweenEvents <= 0) {
@@ -210,7 +204,7 @@ public class CloudSim implements Simulation {
     }
 
     @Override
-    public double start() throws RuntimeException {
+    public double start() {
         Log.printConcatLine("Starting CloudSim Plus version ", CLOUDSIMPLUS_VERSION_STRING);
         return run();
     }
@@ -259,6 +253,24 @@ public class CloudSim implements Simulation {
     @Override
     public double clock() {
         return clock;
+    }
+
+    private void setClock(final double newTime){
+        final double oldTime = clock;
+        this.clock = newTime;
+        notifyOnClockTickListenersIfClockChanged(oldTime, newTime);
+    }
+
+    /**
+     * Notifies all Listeners of onClockTick event when the simulation clock changes.
+     * @param oldClock the previous simulation clock time
+     * @param newClock the new simulation clock time (that can be equals to the old time)
+     */
+    private void notifyOnClockTickListenersIfClockChanged(double oldClock, double newClock) {
+        if((long)newClock > (long)oldClock || (oldClock == 0 && newClock > 0) ){
+            EventInfo info = EventInfo.of(newClock);
+            onClockTickListeners.forEach(l -> l.update(info));
+        }
     }
 
     @Override
@@ -493,8 +505,8 @@ public class CloudSim implements Simulation {
         if (e.eventTime() < clock) {
             throw new IllegalArgumentException("Past event detected.");
         }
-        clock = e.eventTime();
-        onEventProcessingListener.update(e);
+        setClock(e.eventTime());
+        notifyOnEventProcessingListeners(e);
 
         // Ok now process it
         switch (e.getType()) {
@@ -540,6 +552,14 @@ public class CloudSim implements Simulation {
             default:
                 break;
         }
+    }
+
+    /**
+     * Notifies all registered listeners when a {@link SimEvent} is processed by the simulation.
+     * @param e the processed event
+     */
+    private void notifyOnEventProcessingListeners(SimEvent e) {
+        onEventProcessingListeners.forEach(l -> l.update(e));
     }
 
     /**
@@ -607,7 +627,7 @@ public class CloudSim implements Simulation {
      * @throws RuntimeException when the simulation already run once. If you paused the simulation and wants to resume it,
      * you must use {@link #resume()} instead of {@link #start()}.
      */
-    private double run() throws RuntimeException {
+    private double run()  {
         if(alreadyRunOnce){
             throw new RuntimeException("You can't run a simulation that already run previously. If you paused the simulation and want to resume it, you should call resume().");
         }
@@ -646,7 +666,7 @@ public class CloudSim implements Simulation {
         // this block allows termination of simulation at a specific time
         if (isTerminationRequested() && clock >= terminateAt) {
             terminate();
-            clock = terminateAt;
+            setClock(terminateAt);
             return true;
         }
 
@@ -668,12 +688,19 @@ public class CloudSim implements Simulation {
     public boolean doPause() {
         if(running && isPauseRequested()) {
             paused=true;
-            clock = pauseAt;
-            onSimulationPausedListener.update(new EventInfoSimple(clock));
+            setClock(pauseAt);
+            notifyOnSimulationPausedListeners();
             return true;
         }
 
         return false;
+    }
+
+    /**
+     * Notifies all registered listeners when the simulation is paused.
+     */
+    private void notifyOnSimulationPausedListeners() {
+        onSimulationPausedListeners.forEach(l -> l.update(EventInfo.of(clock)));
     }
 
     private boolean isPauseRequested() {
@@ -743,32 +770,44 @@ public class CloudSim implements Simulation {
     }
 
     @Override
-    public EventListener<SimEvent> getOnEventProcessingListener() {
-        return onEventProcessingListener;
+    public boolean removeOnEventProcessingListener(EventListener<SimEvent> listener) {
+        return onEventProcessingListeners.remove(listener);
     }
 
     @Override
-    public final Simulation setOnSimulationPausedListener(EventListener<EventInfo> onSimulationPausedListener) {
-        if(Objects.isNull(onSimulationPausedListener)){
-            onSimulationPausedListener = EventListener.NULL;
+    public final Simulation addOnSimulationPausedListener(EventListener<EventInfo> listener) {
+        if(!Objects.isNull(listener)){
+            this.onSimulationPausedListeners.add(listener);
         }
-        this.onSimulationPausedListener = onSimulationPausedListener;
+
         return this;
     }
 
     @Override
-    public EventListener<EventInfo> getOnSimulationPausedListener() {
-        return this.onSimulationPausedListener;
+    public boolean removeOnSimulationPausedListener(EventListener<EventInfo> listener) {
+        return this.onSimulationPausedListeners.remove(listener);
     }
 
     @Override
-    public final Simulation setOnEventProcessingListener(EventListener<SimEvent> onEventProcessingListener) {
-        if(Objects.isNull(onEventProcessingListener)) {
-            onEventProcessingListener = EventListener.NULL;
+    public final Simulation addOnEventProcessingListener(EventListener<SimEvent> listener) {
+        if(!Objects.isNull(listener)) {
+            this.onEventProcessingListeners.add(listener);
         }
 
-        this.onEventProcessingListener = onEventProcessingListener;
         return this;
+    }
+
+    @Override
+    public Simulation addOnClockTickListener(EventListener<EventInfo> listener) {
+        if(!Objects.isNull(listener)) {
+            onClockTickListeners.add(listener);
+        }
+        return this;
+    }
+
+    @Override
+    public boolean removeOnClockTickListener(EventListener<EventInfo> listener) {
+        return onClockTickListeners.remove(listener);
     }
 
     @Override

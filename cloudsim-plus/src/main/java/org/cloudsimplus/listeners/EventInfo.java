@@ -23,17 +23,33 @@
  */
 package org.cloudsimplus.listeners;
 
+import org.cloudbus.cloudsim.cloudlets.Cloudlet;
+import org.cloudbus.cloudsim.datacenters.Datacenter;
+import org.cloudbus.cloudsim.hosts.Host;
+import org.cloudbus.cloudsim.vms.Vm;
+
 /**
- * An interface which defines the basic methods
- * that an object representing data about
- * a happened event must have.
+ * A general interface that represents data to be passed
+ * to {@link EventListener} objects that are registered to be notified
+ * when some events happen for a given simulation entity such as
+ * a {@link Datacenter}, {@link Host}, {@link Vm}, {@link Cloudlet} and so on.
  *
- * Classes implementing this interface are to
- * pass information about an happened event to an {@link EventListener}
- * object.
+ * <p>There is not implementing class for such interfaces because
+ * instances of them are just Data Type Objects (DTO) that just store
+ * data and do not have business rules.
+ * Each interface that extends this one has a {@code getInstance()} method
+ * to create an object from that interface.
+ * Such method uses the JDK8 static methods for interfaces to provide such
+ * a feature e reduce the number of classes, providing a simpler design.
+ * </p>
  *
  * @author Manoel Campos da Silva Filho
  * @since CloudSim Plus 1.0
+ *
+ * @see DatacenterEventInfo
+ * @see HostEventInfo
+ * @see VmEventInfo
+ * @see CloudletEventInfo
  */
 public interface EventInfo {
     /**
@@ -42,4 +58,15 @@ public interface EventInfo {
      * @return
      */
    double getTime();
+
+    /**
+     * Gets a EventInfo instance from the given parameters.
+     *
+     * @param time the time the event happened
+     */
+   static EventInfo of(double time){
+       return new EventInfo() {
+           @Override public double getTime() { return time; }
+       };
+   }
 }

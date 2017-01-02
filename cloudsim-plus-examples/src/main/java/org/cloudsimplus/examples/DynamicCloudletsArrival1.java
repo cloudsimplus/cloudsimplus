@@ -204,8 +204,8 @@ public class DynamicCloudletsArrival1 {
         int pesNumber = 1;
         UtilizationModel utilizationModel = new UtilizationModelFull();
         Cloudlet cloudlet = new CloudletSimple(id, length, pesNumber)
-            .setCloudletFileSize(fileSize)
-            .setCloudletOutputSize(outputSize)
+            .setFileSize(fileSize)
+            .setOutputSize(outputSize)
             .setUtilizationModel(utilizationModel)
             .setBroker(broker)
             .setVm(vm);
@@ -214,9 +214,9 @@ public class DynamicCloudletsArrival1 {
     }
 
     /**
-     * Creates a switches with pre-defined configuration.
+     * Creates a Datacenter with pre-defined configuration.
      *
-     * @return the created switches
+     * @return the created Datacenter
      */
     private Datacenter createDatacenter() {
         Host host = createHost(0);
@@ -224,7 +224,7 @@ public class DynamicCloudletsArrival1 {
 
         double cost = 3.0; // the cost of using processing in this resource
         double costPerMem = 0.05; // the cost of using memory in this resource
-        double costPerStorage = 0.001; // the cost of using storage in this switches
+        double costPerStorage = 0.001; // the cost of using storage in this Datacenter
         double costPerBw = 0.0; // the cost of using bw in this resource
 
         DatacenterCharacteristics characteristics =

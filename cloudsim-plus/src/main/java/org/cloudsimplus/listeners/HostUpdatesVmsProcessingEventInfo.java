@@ -23,38 +23,39 @@
  */
 package org.cloudsimplus.listeners;
 
+import org.cloudbus.cloudsim.cloudlets.Cloudlet;
 import org.cloudbus.cloudsim.hosts.Host;
 
 /**
- * An {@link EventInfo} class that stores data to be passed
+ * An interface that represents data to be passed
  * to {@link EventListener} objects that are registered to be notified
- * when a Host updates the processing of all its VMs.
+ * after a Host updates the processing of its VMs.
  *
- * @see Host#getOnUpdateVmsProcessingListener()
  * @author Manoel Campos da Silva Filho
  * @since CloudSim Plus 1.0
+ *
+ * @see Host#getOnUpdateVmsProcessingListener()
  */
-public class HostUpdatesVmsProcessingEventInfo extends HostEventInfoSimple  {
-    private double completionTimeOfNextFinishingCloudlet;
-
-    public HostUpdatesVmsProcessingEventInfo(double time, Host host) {
-        super(time, host);
-    }
+public interface HostUpdatesVmsProcessingEventInfo extends HostEventInfo  {
+    /**
+     * Gets the expected completion time of the next finishing cloudlet.
+     * @return
+     */
+    double getNextCloudletCompletionTime();
 
     /**
-     * @return the completion time of one next finishing cloudlet
+     * Gets a HostUpdatesVmsProcessingEventInfo instance from the given parameters.
+     * The {@link #getTime()} is the current simulation time.
+     *
+     * @param host the {@link Host} where the event happened
+     * @param nextCloudletCompletionTime the expected time for completion of the next {@link Cloudlet}
      */
-    public double getCompletionTimeOfNextFinishingCloudlet() {
-        return completionTimeOfNextFinishingCloudlet;
+    static HostUpdatesVmsProcessingEventInfo of(Host host, double nextCloudletCompletionTime) {
+        final double time = host.getSimulation().clock();
+        return new HostUpdatesVmsProcessingEventInfo() {
+            @Override public double getNextCloudletCompletionTime() { return nextCloudletCompletionTime; }
+            @Override public Host getHost() { return host; }
+            @Override public double getTime() { return time; }
+        };
     }
-
-    /**
-     * Sets the completion time of one next finishing cloudlet
-     * @param completionTimeOfNextFinishingCloudlet the completion time to set
-     */
-    public void setCompletionTimeOfNextFinishingCloudlet(double completionTimeOfNextFinishingCloudlet) {
-        this.completionTimeOfNextFinishingCloudlet = completionTimeOfNextFinishingCloudlet;
-    }
-
-
 }

@@ -53,17 +53,17 @@ public class VmTest {
 
         assertEquals(Host.NULL, instance.getHost());
 
-        instance.setOnHostAllocationListener(null);
-        assertEquals(EventListener.NULL, instance.getOnHostAllocationListener());
+        instance.addOnHostAllocationListener(null);
+        assertFalse(instance.removeOnHostAllocationListener(null));
 
-        instance.setOnHostDeallocationListener(null);
-        assertEquals(EventListener.NULL, instance.getOnHostDeallocationListener());
+        instance.addOnHostDeallocationListener(null);
+        assertFalse(instance.removeOnHostDeallocationListener(null));
 
-        instance.setOnVmCreationFailureListener(null);
-        assertEquals(EventListener.NULL, instance.getOnVmCreationFailureListener());
+        instance.addOnVmCreationFailureListener(null);
+        assertFalse(instance.removeOnVmCreationFailureListener(null));
 
-        instance.setOnUpdateVmProcessingListener(null);
-        assertEquals(EventListener.NULL, instance.getOnUpdateVmProcessingListener());
+        instance.addOnUpdateVmProcessingListener(null);
+        assertFalse(instance.removeOnUpdateVmProcessingListener(null));
 
         instance.setRam(1000);
         assertEquals(0, instance.getRam());

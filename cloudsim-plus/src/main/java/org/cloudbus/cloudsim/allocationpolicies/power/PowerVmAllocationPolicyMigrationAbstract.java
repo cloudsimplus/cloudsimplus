@@ -575,11 +575,11 @@ public abstract class PowerVmAllocationPolicyMigrationAbstract extends PowerVmAl
      * @param metric the metric to be added to the metric history map
      */
     protected void addHistoryEntryIfAbsent(PowerHost host, double metric) {
-        Simulation simulation = host.getSimulation();
         getTimeHistory().putIfAbsent(host, new LinkedList<>());
         getUtilizationHistory().putIfAbsent(host, new LinkedList<>());
         getMetricHistory().putIfAbsent(host, new LinkedList<>());
 
+        Simulation simulation = host.getSimulation();
         if (!getTimeHistory().get(host).contains(simulation.clock())) {
             getTimeHistory().get(host).add(simulation.clock());
             getUtilizationHistory().get(host).add(host.getUtilizationOfCpu());

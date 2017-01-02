@@ -253,8 +253,9 @@ public interface CloudletScheduler extends Serializable {
      *
      * @param currentTime current simulation time
      * @param mipsShare list with MIPS share of each Pe available to the scheduler
-     * @return the predicted completion time of the earliest finishing cloudlet,
-     * or {@link Double#MAX_VALUE} if there is no next events
+     * @return the predicted completion time of the earliest finishing cloudlet
+     * (that is a future simulation time),
+     * or {@link Double#MAX_VALUE} if there is no next Cloudlet to execute
      * @pre currentTime >= 0
      * @post $none
      */
@@ -337,9 +338,9 @@ public interface CloudletScheduler extends Serializable {
         @Override public double updateVmProcessing(double currentTime, List<Double> mipsShare) { return 0.0; }
         @Override public Vm getVm() { return Vm.NULL; }
         @Override public void setVm(Vm vm) {}
-        @Override  public int getUsedPes() { return 0; }
-        @Override  public int getFreePes() { return 0; }
+        @Override public int getUsedPes() { return 0; }
+        @Override public int getFreePes() { return 0; }
         @Override public boolean canAddCloudletToExecutionList(CloudletExecutionInfo cloudlet) { return false; }
-        @Override public List<CloudletExecutionInfo> getCloudletFinishedList() { return Collections.<CloudletExecutionInfo>emptyList(); }
+        @Override public List<CloudletExecutionInfo> getCloudletFinishedList() { return Collections.emptyList(); }
     };
 }

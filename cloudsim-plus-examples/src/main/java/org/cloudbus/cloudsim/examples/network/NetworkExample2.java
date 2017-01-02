@@ -44,16 +44,20 @@ import org.cloudbus.cloudsim.resources.Ram;
  * network topology each and run 2 cloudlets on them.
  */
 public class NetworkExample2 {
-    private static List<Cloudlet> cloudletList;
-    private static List<Vm> vmlist;
-    private static CloudSim simulation;
+    private List<Cloudlet> cloudletList;
+    private List<Vm> vmlist;
+    private CloudSim simulation;
 
     /**
-     * Creates main() to run this example
+     * Starts the example.
      *
      * @param args
      */
     public static void main(String[] args) {
+        new NetworkExample2();
+    }
+
+    public NetworkExample2() {
         Log.printFormattedLine("Starting %s...", NetworkExample2.class.getSimpleName());
         // First step: Initialize the CloudSim package. It should be called
         // before creating any entities.
@@ -111,15 +115,15 @@ public class NetworkExample2 {
 
         Cloudlet cloudlet1 =
             new CloudletSimple(++id, length, pesNumber)
-                .setCloudletFileSize(fileSize)
-                .setCloudletOutputSize(outputSize)
+                .setFileSize(fileSize)
+                .setOutputSize(outputSize)
                 .setUtilizationModel(utilizationModel)
                 .setBroker(broker);
 
         Cloudlet cloudlet2 =
             new CloudletSimple(++id, length, pesNumber)
-                .setCloudletFileSize(fileSize)
-                .setCloudletOutputSize(outputSize)
+                .setFileSize(fileSize)
+                .setOutputSize(outputSize)
                 .setUtilizationModel(utilizationModel)
                 .setBroker(broker);
 
@@ -162,7 +166,7 @@ public class NetworkExample2 {
         Log.printFormattedLine("%s finished!", NetworkExample2.class.getSimpleName());
     }
 
-    private static Datacenter createDatacenter() {
+    private Datacenter createDatacenter() {
         // Here are the steps needed to create a DatacenterSimple:
         // 1. We need to create a list to store
         //    our machine
@@ -211,7 +215,7 @@ public class NetworkExample2 {
 
     //We strongly encourage users to develop their own broker policies, to submit vms and cloudlets according
     //to the specific rules of the simulated scenario
-    private static DatacenterBroker createBroker() {
+    private DatacenterBroker createBroker() {
         return new DatacenterBrokerSimple(simulation);
     }
 }

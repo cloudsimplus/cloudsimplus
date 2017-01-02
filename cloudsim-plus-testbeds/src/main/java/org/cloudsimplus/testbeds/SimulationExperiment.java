@@ -46,26 +46,20 @@ import java.util.function.Supplier;
  * @author Manoel Campos da Silva Filho
  */
 public abstract class SimulationExperiment implements Runnable {
-    public static final String VMM = "Xen";
 	protected final ExperimentRunner runner;
 	private final List<Cloudlet> cloudletList;
     private List<Vm> vmList;
     private List<Host> hostList;
-	/**
-	 * @see #getIndex()
-	 */
+    private List<DatacenterBroker> brokerList;
+
 	private final int index;
+    private int numberOfCreatedHosts;
+    private int numberOfCreatedCloudlets;
+    private int numberOfCreatedVms;
+    private boolean verbose;
 
-	/**
-	 * @see #getAfterExperimentFinish()
-	 */
-	private Consumer<? extends SimulationExperiment> afterExperimentFinish;
-
-	private int numberOfCreatedHosts = 0;
-    private int numberOfCreatedCloudlets = 0;
-    private int numberOfCreatedVms = 0;
-	private boolean verbose;
     private CloudSim cloudsim;
+    private Consumer<? extends SimulationExperiment> afterExperimentFinish;
 
     /**
 	 * Creates a simulation experiment.
@@ -83,6 +77,9 @@ public abstract class SimulationExperiment implements Runnable {
 		this.brokerList = new ArrayList<>();
         this.hostList = new ArrayList<>();
 		this.runner = runner;
+        this.numberOfCreatedHosts = 0;
+        this.numberOfCreatedCloudlets = 0;
+        this.numberOfCreatedVms = 0;
 
         //Defines an empty Consumer to avoid NullPointerException if an actual one is not set
 		afterExperimentFinish = exp -> {};
@@ -136,11 +133,6 @@ public abstract class SimulationExperiment implements Runnable {
     public boolean isVerbose() {
         return verbose;
     }
-
-	/**
-	 * @see #getBrokerList()
-	 */
-	private List<DatacenterBroker> brokerList;
 
     /**
      * Adds a Vm created by a {@link Supplier} function to the list of created Vms.
@@ -271,10 +263,10 @@ public abstract class SimulationExperiment implements Runnable {
     private DatacenterSimple createDatacenter() {
         createHosts();
 		//Defines the characteristics of the data center
-		double cost = 3.0; // the cost of using processing in this switches
-		double costPerMem = 0.05; // the cost of using memory in this switches
-		double costPerStorage = 0.001; // the cost of using storage in this switches
-		double costPerBw = 0.0; // the cost of using bw in this switches
+		double cost = 3.0; // the cost of using processing in this Datacenter
+		double costPerMem = 0.05; // the cost of using memory in this Datacenter
+		double costPerStorage = 0.001; // the cost of using storage in this Datacenter
+		double costPerBw = 0.0; // the cost of using bw in this Datacenter
         List<FileStorage> storageList = new ArrayList<>(); // we are not adding SAN devices by now
         DatacenterCharacteristics characteristics =
             new DatacenterCharacteristicsSimple(hostList)

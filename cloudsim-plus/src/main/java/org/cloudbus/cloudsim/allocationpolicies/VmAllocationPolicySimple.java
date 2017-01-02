@@ -67,7 +67,7 @@ public class VmAllocationPolicySimple extends VmAllocationPolicyAbstract {
             final int hostFreePes = entry.getValue();
             if (host.vmCreate(vm)) {
                 mapVmToPm(vm, host);
-                getUsedPes().put(vm, vm.getNumberOfPes());
+                addUsedPes(vm);
                 getHostFreePesMap().put(host, hostFreePes - vm.getNumberOfPes());
                 if(!hostsWhereVmCreationFailed.isEmpty()){
                     Log.printFormattedLine("[VmAllocationPolicy] VM #%d was successfully allocated to Host #%d", vm.getId(), host.getId());
@@ -79,6 +79,23 @@ public class VmAllocationPolicySimple extends VmAllocationPolicyAbstract {
         }
 
         return false;
+    }
+
+    @Override
+    public boolean allocateHostForVm(Vm vm, Host host) {
+        if (!host.vmCreate(vm)) {
+            return false;
+        }
+
+        mapVmToPm(vm, host);
+        final int requiredPes = vm.getNumberOfPes();
+        addUsedPes(vm);
+        getHostFreePesMap().put(host, getHostFreePesMap().get(host) - requiredPes);
+
+        Log.printFormattedLine(
+            "%.2f: VM #%d has been allocated to the host #%d",
+            vm.getSimulation().clock(), vm.getId(), host.getId());
+        return true;
     }
 
     /**
@@ -104,7 +121,7 @@ public class VmAllocationPolicySimple extends VmAllocationPolicyAbstract {
     @Override
     public void deallocateHostForVm(Vm vm) {
         Host host = unmapVmFromPm(vm);
-        int pes = getUsedPes().remove(vm);
+        int pes = removeUsedPes(vm);
         if (host != Host.NULL) {
             host.destroyVm(vm);
             getHostFreePesMap().put(host, getHostFreePesMap().get(host) + pes);
@@ -121,22 +138,5 @@ public class VmAllocationPolicySimple extends VmAllocationPolicyAbstract {
     @Override
     public Map<Vm, Host> optimizeAllocation(List<? extends Vm> vmList) {
         return Collections.EMPTY_MAP;
-    }
-
-    @Override
-    public boolean allocateHostForVm(Vm vm, Host host) {
-        if (!host.vmCreate(vm)) {
-            return false;
-        }
-
-        mapVmToPm(vm, host);
-        final int requiredPes = vm.getNumberOfPes();
-        getUsedPes().put(vm, requiredPes);
-        getHostFreePesMap().put(host, getHostFreePesMap().get(host) - requiredPes);
-
-        Log.printFormattedLine(
-                "%.2f: VM #%d has been allocated to the host #%d",
-                vm.getSimulation().clock(), vm.getId(), host.getId());
-        return true;
     }
 }

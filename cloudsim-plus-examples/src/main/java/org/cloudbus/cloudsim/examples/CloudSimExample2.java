@@ -38,19 +38,23 @@ import org.cloudbus.cloudsim.resources.Bandwidth;
 import org.cloudbus.cloudsim.resources.Ram;
 
 /**
- * A simple example showing how to create a switches with 1 host and run 2
+ * A simple example showing how to create a Datacenter with 1 host and run 2
  * cloudlets on it. The cloudlets run in VMs with the same MIPS requirements.
  * The cloudlets will take the same time to complete the execution.
  */
 public class CloudSimExample2 {
-    private static List<Cloudlet> cloudletList;
-    private static List<Vm> vmlist;
+    private List<Cloudlet> cloudletList;
+    private List<Vm> vmlist;
     /**
-     * Creates main() to run this example
+     * Starts the example.
      *
      * @param args
      */
     public static void main(String[] args) {
+        new CloudSimExample2();
+    }
+
+    public CloudSimExample2() {
         Log.printFormattedLine("Starting %s...", CloudSimExample2.class.getSimpleName());
 
         // First step: Initialize the CloudSim package. It should be called
@@ -109,15 +113,15 @@ public class CloudSimExample2 {
 
         Cloudlet cloudlet1 =
             new CloudletSimple(++id, length, pesNumber)
-                .setCloudletFileSize(fileSize)
-                .setCloudletOutputSize(outputSize)
+                .setFileSize(fileSize)
+                .setOutputSize(outputSize)
                 .setUtilizationModel(utilizationModel)
                 .setBroker(broker);
 
         Cloudlet cloudlet2 =
             new CloudletSimple(++id, length, pesNumber)
-                .setCloudletFileSize(fileSize)
-                .setCloudletOutputSize(outputSize)
+                .setFileSize(fileSize)
+                .setOutputSize(outputSize)
                 .setUtilizationModel(utilizationModel)
                 .setBroker(broker);
 
@@ -143,9 +147,9 @@ public class CloudSimExample2 {
         Log.printFormattedLine("%s finished!", CloudSimExample2.class.getSimpleName());
     }
 
-    private static CloudSim simulation;
+    private CloudSim simulation;
 
-    private static DatacenterSimple createDatacenter() {
+    private DatacenterSimple createDatacenter() {
         // Here are the steps needed to create a DatacenterSimple:
         // 1. We need to create a list to store
         //    our machine
@@ -200,7 +204,7 @@ public class CloudSimExample2 {
     to submit vms and cloudlets according
     to the specific rules of the simulated scenario
     */
-    private static DatacenterBroker createBroker() {
+    private DatacenterBroker createBroker() {
         return new DatacenterBrokerSimple(simulation);
     }
 }

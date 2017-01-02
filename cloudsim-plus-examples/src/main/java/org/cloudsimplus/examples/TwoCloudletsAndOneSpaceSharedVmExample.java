@@ -122,16 +122,16 @@ public class TwoCloudletsAndOneSpaceSharedVmExample {
         UtilizationModel utilizationModel = new UtilizationModelFull();
 
         Cloudlet cloudlet1 = new CloudletSimple(++id, length, pesNumber)
-            .setCloudletFileSize(fileSize)
-            .setCloudletOutputSize(outputSize)
+            .setFileSize(fileSize)
+            .setOutputSize(outputSize)
             .setUtilizationModel(utilizationModel)
             .setBroker(broker)
             .setVm(vm);
         cloudletList.add(cloudlet1);
 
         Cloudlet cloudlet2 = new CloudletSimple(++id, length, pesNumber)
-            .setCloudletFileSize(fileSize)
-            .setCloudletOutputSize(outputSize)
+            .setFileSize(fileSize)
+            .setOutputSize(outputSize)
             .setUtilizationModel(utilizationModel)
             .setBroker(broker)
             .setVm(vm);
@@ -150,9 +150,9 @@ public class TwoCloudletsAndOneSpaceSharedVmExample {
     }
 
     /**
-     * Creates the switches.
+     * Creates the Datacenter.
      *
-     * @return the switches
+     * @return the Datacenter
      */
     private static Datacenter createDatacenter() {
         // Here are the steps needed to create a DatacenterSimple:
@@ -210,7 +210,7 @@ public class TwoCloudletsAndOneSpaceSharedVmExample {
     /**
      * Creates the broker.
      *
-     * @return the switches broker
+     * @return the Datacenter broker
      */
     private static DatacenterBroker createBroker() {
         return new DatacenterBrokerSimple(simulation);

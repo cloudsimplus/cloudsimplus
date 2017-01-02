@@ -62,14 +62,6 @@ public class CloudletSchedulerSpaceShared extends CloudletSchedulerAbstract {
         }
 
         // No enough free PEs: go to the waiting queue
-		/*
-		* @todo @author manoelcampos The cloudlet length is the lenght in MI
-		* to be executed by each cloudlet PE. However, this code inherited from CloudSim
-		* changes to length to the total length across all PEs, what is very strange
-		* and has to be investigated.*/
-	    long remainingLengthAcrossPes = c.getRemainingCloudletLength();
-	    remainingLengthAcrossPes *= c.getCloudlet().getNumberOfPes();
-	    c.getCloudlet().setCloudletLength(remainingLengthAcrossPes);
         /*
          * A resumed cloudlet is not immediately added to the execution list.
          * It is queued so that the next time the scheduler process VM execution,
@@ -88,22 +80,6 @@ public class CloudletSchedulerSpaceShared extends CloudletSchedulerAbstract {
 	 * @return the time the cloudlet is expected to finish
 	 */
 	private double movePausedCloudletToExecList(CloudletExecutionInfo c) {
-		long remainingLenghtAcrossAllPes = c.getRemainingCloudletLength();
-		remainingLenghtAcrossAllPes *= c.getCloudlet().getNumberOfPes();
-
-		/**
-		 * @todo @author manoelcampos It's very strange
-		 * to change the cloudlet length that is
-		 * defined by the user. And in the documentation
-		 * of the attribute, it is supposed to be the length
-		 * that will be executed in each cloudlet PE,
-		 * not the length sum across all existing PEs,
-		 * as it is being changed here
-		 * (you can see that the size is being multiplied by the
-		 * number of PEs).
-		 */
-		c.getCloudlet().setCloudletLength(remainingLenghtAcrossAllPes);
-
 		addCloudletToExecList(c);
 
 		// calculate the expected time for cloudlet completion

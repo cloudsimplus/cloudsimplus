@@ -3,7 +3,7 @@
  * as different kinds of {@link org.cloudbus.cloudsim.network.switches.AbstractSwitch}
  * and also the {@link org.cloudbus.cloudsim.network.topologies.NetworkTopology}
  * that can be specified in some standard file format and read
- * using a implementation of {@link org.cloudbus.cloudsim.network.topologies.readers.GraphReader}.
+ * using a implementation of {@link org.cloudbus.cloudsim.network.topologies.readers.TopologyReader}.
  *
  * <p>It also provides class to enable simulation of network package transmission.
  * For more information about the network moduule, please refer to following publication:

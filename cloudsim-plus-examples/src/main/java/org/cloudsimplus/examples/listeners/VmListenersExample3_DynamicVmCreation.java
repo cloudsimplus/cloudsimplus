@@ -55,7 +55,7 @@ import org.cloudbus.cloudsim.vms.VmSimple;
 import org.cloudbus.cloudsim.allocationpolicies.VmAllocationPolicySimple;
 import org.cloudbus.cloudsim.core.CloudSim;
 import org.cloudsimplus.listeners.EventListener;
-import org.cloudsimplus.listeners.HostToVmEventInfo;
+import org.cloudsimplus.listeners.VmHostEventInfo;
 import org.cloudbus.cloudsim.provisioners.PeProvisionerSimple;
 import org.cloudbus.cloudsim.resources.Bandwidth;
 import org.cloudbus.cloudsim.provisioners.ResourceProvisionerSimple;
@@ -73,7 +73,7 @@ import org.cloudbus.cloudsim.schedulers.vm.VmSchedulerSpaceShared;
  * is deallocated for a VM (in this case meaning that the VM has finished
  * executing) in order to place the next VM to run inside the host.
  *
- * @see Vm#setOnHostDeallocationListener(EventListener)
+ * @see Vm#addOnHostDeallocationListener(EventListener)
  * @see EventListener
  *
  * @author Manoel Campos da Silva Filho
@@ -117,7 +117,7 @@ public class VmListenersExample3_DynamicVmCreation {
      * a host is deallocated for a VM. The same listener is used for all created VMs.
      * @see #createVmListener()
      */
-    private EventListener<HostToVmEventInfo> onHostDeallocationListener;
+    private final EventListener<VmHostEventInfo> onHostDeallocationListener;
 
     /**
      * Starts the example execution, calling the class constructor\
@@ -135,7 +135,6 @@ public class VmListenersExample3_DynamicVmCreation {
      * Default constructor that builds and starts the simulation.
      */
     public VmListenersExample3_DynamicVmCreation() {
-        int numberOfUsers = 1; // number of cloud users/customers (brokers)
         simulation = new CloudSim();
 
         this.hostList = new ArrayList<>();
@@ -144,7 +143,7 @@ public class VmListenersExample3_DynamicVmCreation {
         this.cloudletList = new ArrayList<>();
         this.datacenter = createDatacenter();
 
-        createVmListener();
+        this.onHostDeallocationListener = createVmListener();
 
         //Creates the first VM and its cloudlets
         createAndSubmitVmForNewBroker();
@@ -166,14 +165,15 @@ public class VmListenersExample3_DynamicVmCreation {
      *
      * <p>The Listener is created using Java 8 Lambda Expressions.</p>
      *
+     * @return the created Listener
      * @see #createVm(int, DatacenterBroker)
      */
-    private void createVmListener() {
-        this.onHostDeallocationListener = evt -> {
+    private EventListener<VmHostEventInfo> createVmListener() {
+        return eventInfo -> {
             numberOfFinishedVms++;
             Log.printFormatted(
                     "\t#EventListener: Vm %d finished running all its cloudlets at time %.0f. ",
-                    evt.getVm().getId(), evt.getTime());
+                    eventInfo.getVm().getId(), eventInfo.getTime());
             Log.printFormattedLine("VMs finished so far: %d", numberOfFinishedVms);
 
             createNextVmIfNotReachedMaxNumberOfVms();
@@ -264,7 +264,7 @@ public class VmListenersExample3_DynamicVmCreation {
             .setRam(ram).setBw(bw).setSize(size)
             .setCloudletScheduler(new CloudletSchedulerSpaceShared())
             .setBroker(broker)
-            .setOnHostDeallocationListener(onHostDeallocationListener);
+            .addOnHostDeallocationListener(this.onHostDeallocationListener);
     }
 
     /**
@@ -283,17 +283,17 @@ public class VmListenersExample3_DynamicVmCreation {
         UtilizationModel utilizationModel = new UtilizationModelFull();
 
         return new CloudletSimple(id, length, pesNumber)
-              .setCloudletFileSize(fileSize)
-              .setCloudletOutputSize(outputSize)
+              .setFileSize(fileSize)
+              .setOutputSize(outputSize)
               .setUtilizationModel(utilizationModel)
               .setBroker(broker)
               .setVm(vm);
     }
 
     /**
-     * Creates a switches with pre-defined configuration.
+     * Creates a Datacenter with pre-defined configuration.
      *
-     * @return the created switches
+     * @return the created Datacenter
      */
     private Datacenter createDatacenter() {
         Host host = createHost(0);
@@ -301,7 +301,7 @@ public class VmListenersExample3_DynamicVmCreation {
 
         double cost = 3.0; // the cost of using processing in this resource
         double costPerMem = 0.05; // the cost of using memory in this resource
-        double costPerStorage = 0.001; // the cost of using storage in this switches
+        double costPerStorage = 0.001; // the cost of using storage in this Datacenter
         double costPerBw = 0.0; // the cost of using bw in this resource
 
         DatacenterCharacteristics characteristics =

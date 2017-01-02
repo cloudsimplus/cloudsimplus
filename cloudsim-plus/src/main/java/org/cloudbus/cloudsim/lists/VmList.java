@@ -17,7 +17,7 @@ import org.cloudbus.cloudsim.vms.Vm;
  * @author Anton Beloglazov
  * @since CloudSim Toolkit 2.0
  */
-public class VmList {
+public final class VmList {
 
     /**
      * Gets a {@link Vm} with a given id.
@@ -73,4 +73,10 @@ public class VmList {
             Comparator.comparingDouble(vm -> vm.getTotalUtilizationOfCpuMips(currentSimulationTime));
         vmList.sort(comparator.reversed());
     }
+
+    /**
+     * A private constructor to avoid instantiating the class.
+     */
+    private VmList(){}
+
 }

@@ -408,7 +408,7 @@ public class File {
 
     /**
      * Sets the current transaction time (in second) of this file. This transaction time can be
-     * related to the operation of adding, deleting or getting the file on a switches's storage.
+     * related to the operation of adding, deleting or getting the file on a Datacenter's storage.
      *
      * @param time the transaction time (in second)
      * @return <tt>true</tt> if successful, <tt>false</tt> otherwise
@@ -436,12 +436,12 @@ public class File {
         return getName();
     }
     /**
-     * Sets the switches that will store the file.
+     * Sets the Datacenter that will store the file.
      * When the file is added to a {@link FileStorage}
      * and such a storage is attached to a Datacenter,
      * the Datacenter sets itself for all files of that storage.
      *
-     * @param datacenter the switches that will store the file
+     * @param datacenter the Datacenter that will store the file
      * @return
      */
     public final File setDatacenter(Datacenter datacenter) {
@@ -454,7 +454,7 @@ public class File {
     }
 
     /**
-     * Gets the switches that stores the file.
+     * Gets the Datacenter that stores the file.
      * @return
      */
     public Datacenter getDatacenter() {

@@ -4,15 +4,47 @@ Lists the main changes in the project.
 
 ## [Current Development Version]
 
-### Added
-- Allowed to delay the submission of VMs by a `DatacenterBroker`, simulating the dynamic arrival of VMs (closes the feature request #23)
+### Addedd
+- Added the methods addOnClockTickListener and removeOnClockTickListener to Simulation interface to allow defining a Listener to be notified every time the simulation clock advances.
+- Added methods addOnClockTickListener() and removeOnClockTickListener() in Simulation interface in order to add
+  and remove listeners for the new OnclockTick event, that is fired every time that the simulation clock 
+  advances.
+- Added Vm.getTotalUtilizationOfCpu() to get Vm's CPU utilization percentage for the current simulation time.
+- Added Broker.submitVm and Broker.submitCloudlet to add a single Vm or Cloudlet to a broker.
+- Introduced a `VmScaling` interface and a `HorizontalVmScalingSimple` class,
+  inside the [autoscaling package](cloudsim-plus/src/main/java/org/cloudsimplus/autoscaling), that provides a horizontal scaling mechanism
+  for VMs, allowing dynamic creation of VMs according to an overload condition. Such a condition is defined
+  by a predicate that can check different VM resources usage such as CPU, RAM or BW.
+  See the new [LoadBalancerByVmHorizontalScalingExample](cloudsim-plus-examples/src/main/java/org/cloudsimplus/examples/LoadBalancerByVmHorizontalScalingExample.java) for a usage example.
 
 ### Changed
-- Renamed `Simulation`class methods `abruptallyTerminate` to `Simulation.abort` and attribute `numberOfUsers` to `numberOfBrokers`.
+- Renamed the class `GraphReader` to `TopologyReader`.
+
+## [v0.9-beta.1] - 2016-12-22
+
+### Added
+- Allowed to delay the submission of VMs by a `DatacenterBroker`, simulating the dynamic arrival of VMs (closes the feature request #23)
+- Included extremelly helpful package documentation that can be viewed directly on your IDE or online [here](http://cloudsimplus.org/apidocs/).
+  Such a package documentation gives a general overview of the classes used to build a cloud simulation.
+
+
+### Changed
+- Renamed `Simulation` class method `abruptallyTerminate` to `abort`.
 - Renamed the class `HostPacket` to `VmPacket` because such a kind of packet is sent between VMs.
 - Renamed the class `NetworkPacket` to `HostPacket` because such a kind of packet is sent between Hosts.
 - Renamed the class `InfoPacket` to `IcmpPacket` because such a kind of packet is sent to simulate ping requests (ICMP protocol).
-- Classes `IcmpPacket`, `HostPacket` and `VmPacket` now implements the new interface `NetworkPacket`
+- Classes `IcmpPacket`, `HostPacket` and `VmPacket` now implement the new interface `NetworkPacket`
+- Re-designed event notification mechanisms that use the `EventListener` class to enable researchers to get notifications
+  about some events during simulation execution. The changes are described below:
+  - Classes renamed: `HostToVmEventInfo` to `VmHostEventInfo`, `DatacenterToVmEventInfo` to `VmDatacenterEventInfo`, 
+    `VmToCloudletEventInfo` to `CloudletVmEventInfo`;
+  - Methods `Vm.setOnHostAllocationListener`, `Vm.setOnHostDeallocationListener`, `Vm.setOnVmCreationFailureListener`, `Vm.setOnUpdateVmProcessingListener`, `Cloudlet.setOnUpdateCloudletProcessingListener`, `Cloudlet.setOnCloudletFinishListener`,
+  `Simulation.setOnSimulationPausedListener`, `Simulation.setOnEventProcessingListener` and `Simulation.setOnEventProcessingListener`
+  were renamed, changing the prefix *set* to *add* because now it is possible to add multiple `EventListener`s to the same event 
+  that you want to be notified about;
+  - Respective methods starting with the prefix *remove* were added for each one of the methods presented above,
+    allowing to remove (unregister) an `EventListener` from the list.
+  
 
 ## [v0.8-beta.8] - 2016-12-12
 

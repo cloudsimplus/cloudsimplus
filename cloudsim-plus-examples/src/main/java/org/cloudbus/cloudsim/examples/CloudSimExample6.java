@@ -41,16 +41,20 @@ import org.cloudbus.cloudsim.resources.Ram;
  * An example showing how to create scalable simulations.
  */
 public class CloudSimExample6 {
-    private static List<Cloudlet> cloudletList;
-    private static List<Vm> vmlist;
-    private static CloudSim simulation;
+    private List<Cloudlet> cloudletList;
+    private List<Vm> vmlist;
+    private CloudSim simulation;
 
     /**
-     * Creates main() to run this example
+     * Starts the example.
      *
      * @param args
      */
     public static void main(String[] args) {
+        new CloudSimExample6();
+    }
+
+    public CloudSimExample6(){
         Log.printFormattedLine("Starting %s...", CloudSimExample6.class.getSimpleName());
         // First step: Initialize the CloudSim package. It should be called
         // before creating any entities.
@@ -85,7 +89,7 @@ public class CloudSimExample6 {
         Log.printFormattedLine("%s finished!", CloudSimExample6.class.getSimpleName());
     }
 
-    private static List<Vm> createVM(DatacenterBroker broker, int vms) {
+    private List<Vm> createVM(DatacenterBroker broker, int vms) {
         //Creates a container to store VMs. This list is passed to the broker later
         List<Vm> list = new ArrayList<>(vms);
 
@@ -112,7 +116,7 @@ public class CloudSimExample6 {
         return list;
     }
 
-    private static List<Cloudlet> createCloudlet(DatacenterBroker broker, int cloudlets) {
+    private List<Cloudlet> createCloudlet(DatacenterBroker broker, int cloudlets) {
         // Creates a container to store Cloudlets
         List<Cloudlet> list = new ArrayList<>(cloudlets);
 
@@ -125,8 +129,8 @@ public class CloudSimExample6 {
 
         for (int i = 0; i < cloudlets; i++) {
             Cloudlet cloudlet = new CloudletSimple(i, length, pesNumber)
-                            .setCloudletFileSize(fileSize)
-                            .setCloudletOutputSize(outputSize)
+                            .setFileSize(fileSize)
+                            .setOutputSize(outputSize)
                             .setUtilizationModel(utilizationModel)
                             .setBroker(broker);
             list.add(cloudlet);
@@ -135,7 +139,7 @@ public class CloudSimExample6 {
         return list;
     }
 
-    private static Datacenter createDatacenter() {
+    private Datacenter createDatacenter() {
         // Here are the steps needed to create a DatacenterSimple:
         // 1. We need to create a list to store one or more
         //    Machines
@@ -202,7 +206,7 @@ public class CloudSimExample6 {
 
     //We strongly encourage users to develop their own broker policies, to submit vms and cloudlets according
     //to the specific rules of the simulated scenario
-    private static DatacenterBroker createBroker() {
+    private DatacenterBroker createBroker() {
         return new DatacenterBrokerSimple(simulation);
     }
 }

@@ -48,8 +48,8 @@ import org.cloudbus.cloudsim.utilizationmodels.UtilizationModel;
 import org.cloudbus.cloudsim.utilizationmodels.UtilizationModelFull;
 import org.cloudbus.cloudsim.vms.Vm;
 import org.cloudbus.cloudsim.vms.VmSimple;
+import org.cloudsimplus.listeners.CloudletVmEventInfo;
 import org.cloudsimplus.listeners.EventListener;
-import org.cloudsimplus.listeners.VmToCloudletEventInfo;
 import org.cloudsimplus.util.tablebuilder.CloudletsTableBuilderHelper;
 
 import java.util.ArrayList;
@@ -65,15 +65,15 @@ import java.util.List;
  * the second Cloudlet reaches 50% of its execution to then request
  * the simulation termination. This example uses the Java 8 Lambda Functions features
  * to pass a listener to the mentioned Cloudlet, by means of the
- * {@link Cloudlet#setOnUpdateCloudletProcessingListener(EventListener)} method.
+ * {@link Cloudlet#addOnUpdateCloudletProcessingListener(EventListener)} method.
  * However, the same feature can be used for Java 7 passing an anonymous class
- * that implements {@code EventListener<VmToCloudletEventInfo>}.</p>
+ * that implements {@code EventListener<CloudletVmEventInfo>}.</p>
  *
  * @author Manoel Campos da Silva Filho
  * @since CloudSim Plus 1.0
  *
  * @see CloudSim#terminate()
- * @see Cloudlet#setOnUpdateCloudletProcessingListener(EventListener)
+ * @see Cloudlet#addOnUpdateCloudletProcessingListener(EventListener)
  * @see EventListener
  */
 public class TerminateSimulationAtGivenConditionExample {
@@ -119,7 +119,7 @@ public class TerminateSimulationAtGivenConditionExample {
         }
 
         Cloudlet lastCloudlet = this.cloudletList.get(this.cloudletList.size()-1);
-        lastCloudlet.setOnUpdateCloudletProcessingListener(event -> onClouletProcessingUpdate(event));
+        lastCloudlet.addOnUpdateCloudletProcessingListener(event -> onClouletProcessingUpdate(event));
 
         broker0.submitCloudletList(cloudletList);
 
@@ -138,8 +138,8 @@ public class TerminateSimulationAtGivenConditionExample {
      * If so, request the simulation interruption.
      * @param event object containing data about the happened event
      */
-    private void onClouletProcessingUpdate(VmToCloudletEventInfo event) {
-        if(event.getCloudlet().getCloudletFinishedSoFar() >= event.getCloudlet().getCloudletLength()/2.0){
+    private void onClouletProcessingUpdate(CloudletVmEventInfo event) {
+        if(event.getCloudlet().getFinishedLengthSoFar() >= event.getCloudlet().getLength()/2.0){
             Log.printFormattedLine("Cloudlet %d reached 50% of execution. Intentionally requesting termination of the simulation at time %.2f",
                 event.getCloudlet().getId(), simulation.clock());
             simulation.terminate();
@@ -152,10 +152,10 @@ public class TerminateSimulationAtGivenConditionExample {
         hostList.add(host0);
 
         //Defines the characteristics of the data center
-        double cost = 3.0; // the cost of using processing in this switches
-        double costPerMem = 0.05; // the cost of using memory in this switches
-        double costPerStorage = 0.001; // the cost of using storage in this switches
-        double costPerBw = 0.0; // the cost of using bw in this switches
+        double cost = 3.0; // the cost of using processing in this Datacenter
+        double costPerMem = 0.05; // the cost of using memory in this Datacenter
+        double costPerStorage = 0.001; // the cost of using storage in this Datacenter
+        double costPerBw = 0.0; // the cost of using bw in this Datacenter
 
         DatacenterCharacteristics characteristics =
             new DatacenterCharacteristicsSimple(hostList)
@@ -212,8 +212,8 @@ public class TerminateSimulationAtGivenConditionExample {
 
         return new CloudletSimple(
                 numberOfCreatedCloudlets++, length, numberOfCpuCores)
-                .setCloudletFileSize(fileSize)
-                .setCloudletOutputSize(outputSize)
+                .setFileSize(fileSize)
+                .setOutputSize(outputSize)
                 .setUtilizationModel(utilization)
                 .setBroker(broker)
                 .setVm(vm);

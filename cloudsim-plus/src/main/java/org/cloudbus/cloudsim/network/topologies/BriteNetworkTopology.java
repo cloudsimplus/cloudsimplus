@@ -14,8 +14,8 @@ import java.util.Map;
 import java.util.Objects;
 
 import org.cloudbus.cloudsim.util.Log;
-import org.cloudbus.cloudsim.network.DelayMatrix_Float;
-import org.cloudbus.cloudsim.network.topologies.readers.GraphReaderBrite;
+import org.cloudbus.cloudsim.network.DelayMatrix;
+import org.cloudbus.cloudsim.network.topologies.readers.TopologyReaderBrite;
 
 /**
  * Implements a network layer by reading the topology from a file in the
@@ -47,7 +47,7 @@ public class BriteNetworkTopology implements NetworkTopology {
     /**
      * A matrix containing the delay between every pair of nodes in the network.
      */
-    private DelayMatrix_Float delayMatrix;
+    private DelayMatrix delayMatrix;
 
     /**
      * A matrix containing the bandwidth between every pair of nodes in the
@@ -74,7 +74,7 @@ public class BriteNetworkTopology implements NetworkTopology {
         map = new HashMap<>();
         bwMatrix = new double[0][0];
         graph = new TopologicalGraph();
-        delayMatrix = new DelayMatrix_Float();
+        delayMatrix = new DelayMatrix();
     }
 
     /**
@@ -90,7 +90,7 @@ public class BriteNetworkTopology implements NetworkTopology {
         this();
         Log.printConcatLine("Topology file: ", fileName);
         // try to find the file
-        GraphReaderBrite reader = new GraphReaderBrite();
+        TopologyReaderBrite reader = new TopologyReaderBrite();
         try {
             graph = reader.readGraphFile(fileName);
             generateMatrices();
@@ -105,7 +105,7 @@ public class BriteNetworkTopology implements NetworkTopology {
      */
     private void generateMatrices() {
         // creates the delay matrix
-        delayMatrix = new DelayMatrix_Float(getTopologycalGraph(), false);
+        delayMatrix = new DelayMatrix(getTopologycalGraph(), false);
 
         // creates the bw matrix
         bwMatrix = createBwMatrix(getTopologycalGraph(), false);

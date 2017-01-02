@@ -46,7 +46,7 @@ public interface Datacenter extends SimEntity {
 
 
     /**
-     * Gets the policy to be used by the switches to allocate VMs into hosts.
+     * Gets the policy to be used by the Datacenter to allocate VMs into hosts.
      *
      * @return the VM allocation policy
      * @see VmAllocationPolicy
@@ -54,7 +54,7 @@ public interface Datacenter extends SimEntity {
     VmAllocationPolicy getVmAllocationPolicy();
 
     /**
-     * Gets the list of VMs submitted to be ran in some host of this switches.
+     * Gets the list of VMs submitted to be ran in some host of this Datacenter.
      *
      * @param <T> the class of VMs inside the list
      * @return the vm list
@@ -69,7 +69,7 @@ public interface Datacenter extends SimEntity {
      * will be updated. For instance, if it is set a interval of 10 seconds, the
      * processing of cloudlets will be updated at every 10 seconds. By this way,
      * trying to get the amount of instructions the cloudlet has executed after
-     * 5 seconds, by means of {@link Cloudlet#getCloudletFinishedSoFar(int)}, it
+     * 5 seconds, by means of {@link Cloudlet#getFinishedLengthSoFar(Datacenter)}, it
      * will not return an updated value. By this way, one should set the
      * scheduling interval to 5 to get an updated result. As longer is the
      * interval, faster will be the simulation execution.
@@ -80,7 +80,7 @@ public interface Datacenter extends SimEntity {
 
     /**
      * Sets the scheduling delay to process each event received by the
-     * switches (in seconds).
+     * Datacenter (in seconds).
      *
      * @param schedulingInterval the new scheduling interval
      * @see #getSchedulingInterval()
@@ -89,21 +89,21 @@ public interface Datacenter extends SimEntity {
 
 
     /**
-     * Gets the switches characteristics.
+     * Gets the Datacenter characteristics.
      *
-     * @return the switches characteristics
+     * @return the Datacenter characteristics
      */
     DatacenterCharacteristics getCharacteristics();
 
     /**
-     * Gets a <b>read-only</b> list of storage devices of the switches.
+     * Gets a <b>read-only</b> list of storage devices of the Datacenter.
      *
      * @return the storage list
      */
     List<FileStorage> getStorageList();
 
     /**
-     * Sets the list of storage devices of the switches.
+     * Sets the list of storage devices of the Datacenter.
      *
      * @param storageList the new storage list
      * @return 
@@ -115,10 +115,8 @@ public interface Datacenter extends SimEntity {
      * {@link Datacenter} objects.
      */
     Datacenter NULL = new Datacenter() {
+        @Override public int getId() { return -1; }
         @Override public int compareTo(SimEntity o) { return 0; }
-        @Override public int getId() {
-            return -1;
-        }
         @Override public String getName() { return ""; }
         @Override public int addFile(File file) {
             return 0;

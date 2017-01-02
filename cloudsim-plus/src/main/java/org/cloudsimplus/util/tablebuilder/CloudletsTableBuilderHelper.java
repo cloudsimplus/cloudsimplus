@@ -98,11 +98,11 @@ public class CloudletsTableBuilderHelper {
         row.add(datacenter.getId());
         row.add(host.getId());
         row.add(vm.getId());
-        row.add(cloudlet.getCloudletLength());
+        row.add(cloudlet.getLength());
         row.add(cloudlet.getNumberOfPes());
         row.add((int)cloudlet.getExecStartTime());
         row.add((int)cloudlet.getFinishTime());
-        row.add(cloudlet.getActualCPUTime());
+        row.add(cloudlet.getActualCpuTime());
     }
 
     public final CloudletsTableBuilderHelper setPrinter(TableBuilder printer) {

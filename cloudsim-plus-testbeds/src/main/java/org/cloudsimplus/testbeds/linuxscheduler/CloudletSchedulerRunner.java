@@ -64,7 +64,7 @@ abstract class CloudletSchedulerRunner<T extends CloudletSchedulerExperiment> ex
      * the experiments. Such parameters are shared among all runners
      * that extends this class.
      */
-    public CloudletSchedulerRunner(){
+    CloudletSchedulerRunner(){
 	    /*
 	    Values used for CloudSim Plus Paper:
 	        NumberOfSimulationRuns: 1200
@@ -122,7 +122,7 @@ abstract class CloudletSchedulerRunner<T extends CloudletSchedulerExperiment> ex
     protected void afterExperimentFinish(T experiment){
         Consumer<DatacenterBroker> addExperimentStatisticsToLists = broker -> {
             Double average = broker.getCloudletsFinishedList().stream()
-                .mapToDouble(Cloudlet::getActualCPUTime)
+                .mapToDouble(Cloudlet::getActualCpuTime)
                 .average()
                 .orElse(0.0);
             cloudletsCompletionTimeMeans.add(average);

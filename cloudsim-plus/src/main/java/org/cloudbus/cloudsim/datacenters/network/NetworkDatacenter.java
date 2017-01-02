@@ -77,7 +77,7 @@ public class NetworkDatacenter extends DatacenterSimple {
      * Creates a NetworkDatacenter with the given parameters.
      *
      * @param simulation The CloudSim instance that represents the simulation the Entity is related to
-     * @param characteristics the characteristics of the switches to be created
+     * @param characteristics the characteristics of the Datacenter to be created
      * @param vmAllocationPolicy the policy to be used to allocate VMs into hosts
      *
      * @throws IllegalArgumentException when this entity has <tt>zero</tt> number of PEs (Processing Elements).
@@ -104,10 +104,10 @@ public class NetworkDatacenter extends DatacenterSimple {
      * Creates a NetworkDatacenter with the given parameters.
      *
      * @param simulation The CloudSim instance that represents the simulation the Entity is related to
-     * @param characteristics the characteristics of the switches to be created
+     * @param characteristics the characteristics of the Datacenter to be created
      * @param vmAllocationPolicy the policy to be used to allocate VMs into hosts
      * @param storageList a List of storage elements, for data simulation
-     * @param schedulingInterval the scheduling delay to process each switches received event
+     * @param schedulingInterval the scheduling delay to process each Datacenter received event
      *
      * @throws IllegalArgumentException when this entity has <tt>zero</tt> number of PEs (Processing Elements).
      * <br>
@@ -136,7 +136,7 @@ public class NetworkDatacenter extends DatacenterSimple {
     /**
      * Gets a map of all Edge Switches in the Datacenter network, where each key is the switch id
      * and each value is the switch itself.
-     * One can design similar functions for other type of switches.
+     * One can design similar functions for other type of Datacenter.
      *
      * @return
      */
@@ -200,9 +200,7 @@ public class NetworkDatacenter extends DatacenterSimple {
             }
 
             // process this Cloudlet to this Datacenter
-            cl.assignCloudletToDatacenter(
-                    getId(), getCharacteristics().getCostPerSecond(),
-                    getCharacteristics().getCostPerBw());
+            cl.assignToDatacenter(this);
 
             // time to transfer the files
             double fileTransferTime = predictFileTransferTime(cl.getRequiredFiles());
@@ -213,7 +211,9 @@ public class NetworkDatacenter extends DatacenterSimple {
             if (estimatedFinishTime > 0.0) { // if this cloudlet is in the exec
                 // time to process the cloudlet
                 estimatedFinishTime += fileTransferTime;
-                send(getId(), estimatedFinishTime, CloudSimTags.VM_UPDATE_CLOUDLET_PROCESSING_EVENT);
+                send(getId(),
+                    getCloudletProcessingUpdateInterval(estimatedFinishTime),
+                    CloudSimTags.VM_UPDATE_CLOUDLET_PROCESSING_EVENT);
 
                 // event to update the stages
                 send(getId(), 0.0001, CloudSimTags.VM_UPDATE_CLOUDLET_PROCESSING_EVENT);
@@ -235,7 +235,7 @@ public class NetworkDatacenter extends DatacenterSimple {
     }
 
     /**
-     * Gets a <b>read-only</b> list of network Datacenter's switches.
+     * Gets a <b>read-only</b> list of network Datacenter's Datacenter.
      * @return
      */
     public List<Switch> getSwitchMap() {

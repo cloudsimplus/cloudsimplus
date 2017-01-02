@@ -48,8 +48,8 @@ import org.cloudbus.cloudsim.utilizationmodels.UtilizationModel;
 import org.cloudbus.cloudsim.utilizationmodels.UtilizationModelFull;
 import org.cloudbus.cloudsim.vms.Vm;
 import org.cloudbus.cloudsim.vms.VmSimple;
+import org.cloudsimplus.listeners.CloudletVmEventInfo;
 import org.cloudsimplus.listeners.EventListener;
-import org.cloudsimplus.listeners.VmToCloudletEventInfo;
 import org.cloudsimplus.util.tablebuilder.CloudletsTableBuilderHelper;
 
 import java.util.ArrayList;
@@ -65,14 +65,14 @@ import java.util.List;
  * the first Cloudlet finishes its execution to then request
  * the creation of new VMs and Cloudlets. This example uses the Java 8 Lambda Functions features
  * to pass a listener to the mentioned Cloudlet, by means of the
- * {@link Cloudlet#setOnCloudletFinishEventListener(EventListener)} method.
+ * {@link Cloudlet#addOnCloudletFinishListener(EventListener)} method.
  * However, the same feature can be used for Java 7 passing an anonymous class
- * that implements {@code EventListener<VmToCloudletEventInfo>}.</p>
+ * that implements {@code EventListener<CloudletVmEventInfo>}.</p>
  *
  * @author Manoel Campos da Silva Filho
  * @since CloudSim Plus 1.0
  *
- * @see Cloudlet#setOnCloudletFinishEventListener(EventListener)
+ * @see Cloudlet#addOnCloudletFinishListener(EventListener)
  * @see EventListener
  */
 public class DynamicCreationOfVmsAndCloudletsExample {
@@ -114,7 +114,7 @@ public class DynamicCreationOfVmsAndCloudletsExample {
         /* Assigns an EventListener to be notified when the first Cloudlets finishes executing
         * and then dynamically create a new list of VMs and Cloudlets to submit to the broker.*/
         Cloudlet cloudlet0 = this.cloudletList.get(0);
-        cloudlet0.setOnCloudletFinishEventListener(eventInfo -> submitNewVmsAndCloudletsToBroker(eventInfo));
+        cloudlet0.addOnCloudletFinishListener(eventInfo -> submitNewVmsAndCloudletsToBroker(eventInfo));
 
         /* Starts the simulation and waits all cloudlets to be executed. */
         simulation.start();
@@ -150,7 +150,7 @@ public class DynamicCreationOfVmsAndCloudletsExample {
      * the first cloudlet finishes.
      * @param eventInfo information about the fired event
      */
-    private void submitNewVmsAndCloudletsToBroker(VmToCloudletEventInfo eventInfo) {
+    private void submitNewVmsAndCloudletsToBroker(CloudletVmEventInfo eventInfo) {
         final int numberOfNewVms = 2;
         final int numberOfCloudletsByVm = 4;
         Log.printFormattedLine("\n\t#Cloudlet %d finished. Submitting %d new VMs to the broker\n",
@@ -169,10 +169,10 @@ public class DynamicCreationOfVmsAndCloudletsExample {
         }
 
         //Defines the characteristics of the data center
-        double cost = 3.0; // the cost of using processing in this switches
-        double costPerMem = 0.05; // the cost of using memory in this switches
-        double costPerStorage = 0.001; // the cost of using storage in this switches
-        double costPerBw = 0.0; // the cost of using bw in this switches
+        double cost = 3.0; // the cost of using processing in this Datacenter
+        double costPerMem = 0.05; // the cost of using memory in this Datacenter
+        double costPerStorage = 0.001; // the cost of using storage in this Datacenter
+        double costPerBw = 0.0; // the cost of using bw in this Datacenter
 
         DatacenterCharacteristics characteristics =
             new DatacenterCharacteristicsSimple(hostList)
@@ -229,8 +229,8 @@ public class DynamicCreationOfVmsAndCloudletsExample {
 
         return new CloudletSimple(
                 numberOfCreatedCloudlets++, length, numberOfCpuCores)
-                .setCloudletFileSize(fileSize)
-                .setCloudletOutputSize(outputSize)
+                .setFileSize(fileSize)
+                .setOutputSize(outputSize)
                 .setUtilizationModel(utilization)
                 .setBroker(broker)
                 .setVm(vm);

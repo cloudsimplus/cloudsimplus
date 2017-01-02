@@ -105,7 +105,7 @@ public class VmSchedulerSpaceShared extends VmSchedulerAbstract {
             return false;
         }
 
-        double totalMips = mipsShareRequested.stream().reduce(0.0, Double::sum);
+        final double totalMips = mipsShareRequested.stream().reduce(0.0, Double::sum);
 
         getFreePesList().removeAll(selectedPes);
 

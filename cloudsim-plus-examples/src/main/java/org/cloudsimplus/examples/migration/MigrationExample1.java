@@ -58,7 +58,7 @@ import org.cloudbus.cloudsim.resources.Ram;
 import org.cloudsimplus.util.tablebuilder.CloudletsTableBuilderHelper;
 
 /**
- * <p>An example showing how to create 1 switches with 3 hosts,
+ * <p>An example showing how to create 1 Datacenter with 3 hosts,
  * 1 VM by host and 1 cloudlet by VM and perform VM migration based on
  * a custom VmAllocationPolicy that migrates VMs based on
  * {@link PowerVmAllocationPolicyMigrationWorstFitStaticThreshold
@@ -234,8 +234,8 @@ public class MigrationExample1 {
             Cloudlet c =
                 new CloudletSimple(
                     cloudletId, CLOUDLET_LENGHT, VM_PES_NUM)
-                    .setCloudletFileSize(CLOUDLET_FILESIZE)
-                    .setCloudletOutputSize(CLOUDLET_OUTPUTSIZE)
+                    .setFileSize(CLOUDLET_FILESIZE)
+                    .setOutputSize(CLOUDLET_OUTPUTSIZE)
                     .setUtilizationModelCpu(cpuUtilizationModel)
                     .setUtilizationModelRam(utilizationModelFull)
                     .setUtilizationModelBw(utilizationModelFull);

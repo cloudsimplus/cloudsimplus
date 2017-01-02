@@ -33,6 +33,9 @@ import org.cloudbus.cloudsim.allocationpolicies.VmAllocationPolicySimple;
 import org.cloudbus.cloudsim.schedulers.vm.VmSchedulerTimeShared;
 import org.cloudbus.cloudsim.core.CloudSim;
 import org.cloudbus.cloudsim.core.CloudSimEntity;
+import org.cloudsimplus.examples.DynamicCloudletsArrival1;
+import org.cloudsimplus.examples.DynamicCloudletsArrival2;
+import org.cloudsimplus.examples.DynamicCreationOfVmsAndCloudletsExample;
 import org.cloudsimplus.util.tablebuilder.CloudletsTableBuilderHelper;
 import org.cloudbus.cloudsim.provisioners.PeProvisionerSimple;
 import org.cloudbus.cloudsim.provisioners.ResourceProvisionerSimple;
@@ -47,6 +50,15 @@ import org.cloudbus.cloudsim.resources.Ram;
  * for a given simulation time.
  * When the requested time arrives, the {@link EntityManager} will be notified to
  * create the requested Broker, including its VMs and Cloudlets.
+ *
+ * <p>For a example of how to dynamically create VMs and Cloudlets
+ * without the need to create a new broker, check the examples below:
+ * <ul>
+ *  <li>{@link DynamicCloudletsArrival1}</li>
+ *  <li>{@link DynamicCloudletsArrival2}</li>
+ *  <li>{@link DynamicCreationOfVmsAndCloudletsExample}</li>
+ * </ul>
+ * </p>
  */
 public class CloudSimExample7 {
     private List<Cloudlet> cloudletList;
@@ -54,7 +66,7 @@ public class CloudSimExample7 {
     private CloudSim simulation;
 
     /**
-     * Executes the example.
+     * Starts the example.
      *
      * @param args
      */
@@ -137,8 +149,8 @@ public class CloudSimExample7 {
 
         for (int i = 0; i < cloudlets; i++) {
             Cloudlet cloudlet = new CloudletSimple(idShift + i, length, pesNumber)
-                .setCloudletFileSize(fileSize)
-                .setCloudletOutputSize(outputSize)
+                .setFileSize(fileSize)
+                .setOutputSize(outputSize)
                 .setUtilizationModel(utilizationModel)
                 .setBroker(broker);
             list.add(cloudlet);

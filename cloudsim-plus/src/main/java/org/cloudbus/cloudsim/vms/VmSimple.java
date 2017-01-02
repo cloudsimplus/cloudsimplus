@@ -9,14 +9,16 @@ package org.cloudbus.cloudsim.vms;
 import java.util.*;
 
 import org.cloudbus.cloudsim.core.UniquelyIdentificable;
+import org.cloudbus.cloudsim.datacenters.Datacenter;
 import org.cloudbus.cloudsim.util.Log;
 import org.cloudbus.cloudsim.brokers.DatacenterBroker;
 import org.cloudbus.cloudsim.cloudlets.Cloudlet;
 import org.cloudbus.cloudsim.core.Simulation;
 import org.cloudbus.cloudsim.hosts.Host;
-import org.cloudsimplus.listeners.DatacenterToVmEventInfo;
+import org.cloudsimplus.autoscaling.VmScaling;
+import org.cloudsimplus.listeners.VmHostEventInfo;
+import org.cloudsimplus.listeners.VmDatacenterEventInfo;
 import org.cloudsimplus.listeners.EventListener;
-import org.cloudsimplus.listeners.HostToVmEventInfo;
 import org.cloudbus.cloudsim.resources.*;
 import org.cloudbus.cloudsim.schedulers.cloudlet.CloudletScheduler;
 
@@ -38,6 +40,7 @@ import org.cloudbus.cloudsim.schedulers.cloudlet.CloudletScheduler;
  * without defining a specific method for each one.
  */
 public class VmSimple implements Vm {
+    private VmScaling horizontalScaling;
     private boolean failed;
 
     /**
@@ -91,7 +94,7 @@ public class VmSimple implements Vm {
     /**
      * @see #getStateHistory()
      */
-    private final List<VmStateHistoryEntry> stateHistory = new LinkedList<>();
+    private final List<VmStateHistoryEntry> stateHistory;
 
     /**
      * The VM's storage resource that represents the Vm size in disk.
@@ -116,25 +119,10 @@ public class VmSimple implements Vm {
      */
     private double submissionDelay;
 
-    /**
-     * @see #getOnHostAllocationListener()
-     */
-    private EventListener<HostToVmEventInfo> onHostAllocationListener = EventListener.NULL;
-
-    /**
-     * @see #getOnHostDeallocationListener()
-     */
-    private EventListener<HostToVmEventInfo> onHostDeallocationListener = EventListener.NULL;
-
-    /**
-     * @see #getOnVmCreationFailureListener()
-     */
-    private EventListener<DatacenterToVmEventInfo> onVmCreationFailureListener = EventListener.NULL;
-
-    /**
-     * @see #getOnUpdateVmProcessingListener()
-     */
-    private EventListener<HostToVmEventInfo> onUpdateVmProcessingListener = EventListener.NULL;
+    private List<EventListener<VmHostEventInfo>> onHostAllocationListeners;
+    private List<EventListener<VmHostEventInfo>> onHostDeallocationListeners;
+    private List<EventListener<VmHostEventInfo>> onUpdateVmProcessingListeners;
+    private List<EventListener<VmDatacenterEventInfo>> onVmCreationFailureListeners;
 
     /**
      * @see #getSimulation()
@@ -171,6 +159,13 @@ public class VmSimple implements Vm {
         setVmm("Xen");
         this.simulation = Simulation.NULL;
         setCloudletScheduler(CloudletScheduler.NULL);
+        stateHistory = new LinkedList<>();
+
+        this.onHostAllocationListeners = new ArrayList<>();
+        this.onHostDeallocationListeners = new ArrayList<>();
+        this.onVmCreationFailureListeners = new ArrayList<>();
+        this.onUpdateVmProcessingListeners = new ArrayList<>();
+        this.horizontalScaling = VmScaling.NULL;
     }
 
     /**
@@ -222,14 +217,13 @@ public class VmSimple implements Vm {
 
     @Override
     public double updateVmProcessing(double currentTime, List<Double> mipsShare) {
-        if (!Objects.isNull(mipsShare)) {
-            double result = getCloudletScheduler().updateVmProcessing(currentTime, mipsShare);
-            HostToVmEventInfo info = new HostToVmEventInfo(currentTime, host, this);
-            onUpdateVmProcessingListener.update(info);
-            return result;
+        if (Objects.isNull(mipsShare)) {
+            return Double.MAX_VALUE;
         }
 
-        return Double.MAX_VALUE;
+        final double nextSimulationTime = getCloudletScheduler().updateVmProcessing(currentTime, mipsShare);
+        notifyOnUpdateVmProcessing();
+        return nextSimulationTime;
     }
 
     @Override
@@ -271,6 +265,11 @@ public class VmSimple implements Vm {
         }
 
         return (int) (getCloudletScheduler().getCurrentRequestedUtilizationOfRam() * getRam());
+    }
+
+    @Override
+    public double getTotalUtilizationOfCpu() {
+        return getTotalUtilizationOfCpu(simulation.clock());
     }
 
     @Override
@@ -573,33 +572,31 @@ public class VmSimple implements Vm {
     }
 
     @Override
-    public Vm setOnHostAllocationListener(EventListener<HostToVmEventInfo> onHostAllocationListener) {
-        if (Objects.isNull(onHostAllocationListener)) {
-            onHostAllocationListener = EventListener.NULL;
+    public Vm addOnHostAllocationListener(EventListener<VmHostEventInfo> listener) {
+        if (!Objects.isNull(listener)) {
+            this.onHostAllocationListeners.add(listener);
         }
 
-        this.onHostAllocationListener = onHostAllocationListener;
         return this;
     }
 
     @Override
-    public Vm setOnHostDeallocationListener(EventListener<HostToVmEventInfo> onHostDeallocationListener) {
-        if (Objects.isNull(onHostDeallocationListener)) {
-            onHostDeallocationListener = EventListener.NULL;
+    public Vm addOnHostDeallocationListener(EventListener<VmHostEventInfo> listener) {
+        if (!Objects.isNull(listener)) {
+            this.onHostDeallocationListeners.add(listener);
         }
 
-        this.onHostDeallocationListener = onHostDeallocationListener;
         return this;
     }
 
     @Override
-    public EventListener<HostToVmEventInfo> getOnHostAllocationListener() {
-        return onHostAllocationListener;
+    public boolean removeOnHostAllocationListener(EventListener<VmHostEventInfo> listener) {
+        return onHostAllocationListeners.remove(listener);
     }
 
     @Override
-    public EventListener<HostToVmEventInfo> getOnHostDeallocationListener() {
-        return onHostDeallocationListener;
+    public boolean removeOnHostDeallocationListener(EventListener<VmHostEventInfo> listener) {
+        return onHostDeallocationListeners.remove(listener);
     }
 
     @Override
@@ -608,38 +605,45 @@ public class VmSimple implements Vm {
     }
 
     @Override
-    public EventListener<DatacenterToVmEventInfo> getOnVmCreationFailureListener() {
-        return onVmCreationFailureListener;
+    public boolean removeOnVmCreationFailureListener(EventListener<VmDatacenterEventInfo> listener) {
+        return onVmCreationFailureListeners.remove(listener);
     }
 
     @Override
-    public Vm setOnVmCreationFailureListener(EventListener<DatacenterToVmEventInfo> onVmCreationFailureListener) {
-        if (Objects.isNull(onVmCreationFailureListener)) {
-            onVmCreationFailureListener = EventListener.NULL;
+    public Vm addOnVmCreationFailureListener(EventListener<VmDatacenterEventInfo> listener) {
+        if (!Objects.isNull(listener)) {
+            this.onVmCreationFailureListeners.add(listener);
         }
 
-        this.onVmCreationFailureListener = onVmCreationFailureListener;
         return this;
     }
 
     @Override
-    public EventListener<HostToVmEventInfo> getOnUpdateVmProcessingListener() {
-        return onUpdateVmProcessingListener;
+    public boolean removeOnUpdateVmProcessingListener(EventListener<VmHostEventInfo> listener) {
+        return onUpdateVmProcessingListeners.remove(listener);
     }
 
     @Override
-    public Vm setOnUpdateVmProcessingListener(EventListener<HostToVmEventInfo> onUpdateVmProcessingListener) {
-        if (Objects.isNull(onUpdateVmProcessingListener)) {
-            onUpdateVmProcessingListener = EventListener.NULL;
+    public Vm addOnUpdateVmProcessingListener(EventListener<VmHostEventInfo> listener) {
+        if (!Objects.isNull(listener)) {
+            this.onUpdateVmProcessingListeners.add(listener);
         }
 
-        this.onUpdateVmProcessingListener = onUpdateVmProcessingListener;
         return this;
     }
 
     @Override
     public int compareTo(Vm o) {
-        return this.getUid().compareTo(o.getUid());
+        return Integer.compare(getId(), o.getId());
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if(!(obj instanceof Vm)){
+            return false;
+        }
+
+        return this.getId() == ((Vm) obj).getId();
     }
 
     @Override
@@ -684,5 +688,60 @@ public class VmSimple implements Vm {
             return;
         }
         this.submissionDelay = submissionDelay;
+    }
+
+    @Override
+    public void notifyOnHostAllocationListeners() {
+        VmHostEventInfo info = VmHostEventInfo.of(this);
+        onHostAllocationListeners.forEach(l -> l.update(info));
+    }
+
+    @Override
+    public void notifyOnHostDeallocationListeners(Host deallocatedHost) {
+        if(Objects.isNull(deallocatedHost)){
+            return;
+        }
+
+        VmHostEventInfo info = VmHostEventInfo.of(this, deallocatedHost);
+        onHostDeallocationListeners.forEach(l -> l.update(info));
+    }
+
+    /**
+         * Notifies all registered listeners when the processing of the Vm is updated in its {@link Host}.
+         */
+    public void notifyOnUpdateVmProcessing() {
+        VmHostEventInfo info = VmHostEventInfo.of(this);
+        onUpdateVmProcessingListeners.forEach(l -> l.update(info));
+    }
+
+    @Override
+    public void notifyOnVmCreationFailureListeners(Datacenter failedDatacenter) {
+        if(Objects.isNull(failedDatacenter)){
+            return;
+        }
+
+        VmDatacenterEventInfo info = VmDatacenterEventInfo.of(this, failedDatacenter);
+        onVmCreationFailureListeners.forEach(l -> l.update(info));
+    }
+
+
+    @Override
+    public VmScaling getHorizontalScaling() {
+        return horizontalScaling;
+    }
+
+    @Override
+    public Vm setHorizontalScaling(VmScaling horizontalScaling) throws IllegalArgumentException {
+        if(horizontalScaling.getVm() != null && horizontalScaling.getVm() != Vm.NULL && horizontalScaling.getVm() != this){
+            throw new IllegalArgumentException(
+                "The horizontalScaling given already is linked to a Vm. " +
+                "Each Vm must have its own scaling object or no scaling at all. " +
+                "A new scaling has to be provided to this Vm.");
+        }
+
+        this.horizontalScaling = (Objects.isNull(horizontalScaling) ? VmScaling.NULL : horizontalScaling);
+        this.horizontalScaling.setVm(this);
+        this.addOnUpdateVmProcessingListener(listener -> this.horizontalScaling.scaleIfOverloaded(listener.getTime()));
+        return this;
     }
 }

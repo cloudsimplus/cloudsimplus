@@ -16,32 +16,6 @@ import org.cloudbus.cloudsim.resources.Pe;
 public interface DatacenterCharacteristics extends Identificable {
 
     /**
-     * A resource that supports Advanced Reservation mechanisms.
-     */
-    int ADVANCE_RESERVATION = 4;
-
-    /**
-     * Assuming all PEs in a PM have the same rating. However, each PM has
-     * different rating to each other.
-     */
-    int OTHER_POLICY_DIFFERENT_RATING = 3;
-
-    /**
-     * Assuming all PEs in all PMs have the same rating.
-     */
-    int OTHER_POLICY_SAME_RATING = 2;
-
-    /**
-     * Spaced-shared CPU allocation policy using First Come First Serve (FCFS)
-     * algorithm.
-     */
-    int SPACE_SHARED = 1;
-
-    /**
-     * Time-shared CPU allocation policy using Round-Robin algorithm.
-     */
-    int TIME_SHARED = 0;
-    /**
      * The default Virtual Machine Monitor to be used if not one is set.
      */
     String DEFAULT_VMM = "Xen";
@@ -81,7 +55,7 @@ public interface DatacenterCharacteristics extends Identificable {
 
     /**
      * Gets the {@link Datacenter} that owns these characteristics
-     * @return the switches
+     * @return the Datacenter
      */
     Datacenter getDatacenter();
 
@@ -141,7 +115,7 @@ public interface DatacenterCharacteristics extends Identificable {
     Host getHostWithFreePe(int peNumber);
 
     /**
-     * Gets the switches id.
+     * Gets the Datacenter id.
      *
      * @return the id
      */
@@ -149,7 +123,7 @@ public interface DatacenterCharacteristics extends Identificable {
 
     /**
      * Gets the total MIPS rating, which is the sum of MIPS rating of all Hosts in
-     * the switches.
+     * the Datacenter.
      *
      * @return the sum of MIPS ratings
      *
@@ -160,7 +134,7 @@ public interface DatacenterCharacteristics extends Identificable {
 
     /**
      * Gets Millions Instructions Per Second (MIPS) Rating of a Processing
-     * Element (Pe). It is essential to use this method when a switches is
+     * Element (Pe). It is essential to use this method when a Datacenter is
      * made up of heterogenous PEs per PMs.
      *
      * @param hostId the machine ID
@@ -224,28 +198,28 @@ public interface DatacenterCharacteristics extends Identificable {
     String getResourceName();
 
     /**
-     * Gets the VMM in use in the switches.
+     * Gets the VMM in use in the Datacenter.
      *
      * @return the VMM name
      */
     String getVmm();
 
     /**
-     * Checks whether all PMs of the switches are working properly or not.
+     * Checks whether all PMs of the Datacenter are working properly or not.
      *
      * @return if all PMs are working, otherwise
      */
     boolean isWorking();
 
     /**
-     * Get the cost to use each each Megabit of bandwidth in the switches.
+     * Get the cost to use each each Megabit of bandwidth in the Datacenter.
      *
      * @return the cost to use bw
      */
     double getCostPerBw();
 
     /**
-     * Get the cost to use each Megabyte of RAM in the switches.
+     * Get the cost to use each Megabyte of RAM in the Datacenter.
      *
      * @return the cost to use RAM
      */
@@ -259,7 +233,7 @@ public interface DatacenterCharacteristics extends Identificable {
     double getCostPerSecond();
 
     /**
-     * Get the cost to use each Megabyte of storage in the switches.
+     * Get the cost to use each Megabyte of storage in the Datacenter.
      *
      * @return the cost to use storage
      */
@@ -282,7 +256,7 @@ public interface DatacenterCharacteristics extends Identificable {
     DatacenterCharacteristics setCostPerBw(double costPerBw);
 
     /**
-     * Sets the cost to use each Megabyte of RAM in the switches.
+     * Sets the cost to use each Megabyte of RAM in the Datacenter.
      *
      * @param costPerMem cost to use RAM
      * @pre costPerMem >= 0
@@ -332,7 +306,8 @@ public interface DatacenterCharacteristics extends Identificable {
         @Override public DatacenterCharacteristics setCostPerSecond(double costPerSecond) { return DatacenterCharacteristics.NULL; }
         @Override public DatacenterCharacteristics setVmm(String vmm) { return DatacenterCharacteristics.NULL; }
         @Override public Datacenter getDatacenter() { return Datacenter.NULL; }
-        @Override public String getArchitecture() { return ""; }@Override public DatacenterCharacteristics setArchitecture(String architecture) { return DatacenterCharacteristics.NULL; }
+        @Override public String getArchitecture() { return ""; }
+        @Override public DatacenterCharacteristics setArchitecture(String architecture) { return DatacenterCharacteristics.NULL; }
         @Override public String getOs() { return ""; }
         @Override public DatacenterCharacteristics setOs(String os) { return DatacenterCharacteristics.NULL; }
         @Override public <T extends Host> List<T> getHostList() { return Collections.EMPTY_LIST; }

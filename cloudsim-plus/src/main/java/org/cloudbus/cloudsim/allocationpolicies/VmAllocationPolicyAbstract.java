@@ -15,7 +15,7 @@ import java.util.Objects;
 import org.cloudbus.cloudsim.datacenters.Datacenter;
 import org.cloudbus.cloudsim.hosts.Host;
 import org.cloudbus.cloudsim.vms.Vm;
-import org.cloudsimplus.listeners.HostToVmEventInfo;
+import org.cloudsimplus.listeners.VmHostEventInfo;
 
 /**
  * An abstract class that represents the policy
@@ -98,9 +98,6 @@ public abstract class VmAllocationPolicyAbstract implements VmAllocationPolicy {
         }
 
         getVmHostMap().put(vm, host);
-        HostToVmEventInfo info =
-            new HostToVmEventInfo(host.getSimulation().clock(), host, vm);
-        vm.getOnHostAllocationListener().update(info);
     }
 
     /**
@@ -122,12 +119,6 @@ public abstract class VmAllocationPolicyAbstract implements VmAllocationPolicy {
             return Host.NULL;
         }
 
-        if(host != Host.NULL) {
-            HostToVmEventInfo info =
-                new HostToVmEventInfo(host.getSimulation().clock(), host, vm);
-            vm.getOnHostDeallocationListener().update(info);
-        }
-
         return host;
     }
 
@@ -141,7 +132,7 @@ public abstract class VmAllocationPolicyAbstract implements VmAllocationPolicy {
      * @param datacenter the Datacenter to set
      */
     @Override
-    public void setDatacenter(Datacenter datacenter){
+    public final void setDatacenter(Datacenter datacenter){
         if(Objects.isNull(datacenter)){
             datacenter = Datacenter.NULL;
         }
@@ -194,11 +185,29 @@ public abstract class VmAllocationPolicyAbstract implements VmAllocationPolicy {
     }
 
     /**
+     * Adds number used PEs for a Vm to the map between each VM and the number of PEs used.
+     * @param vm the VM to add the number of used PEs to the map
+     */
+    protected void addUsedPes(Vm vm) {
+        usedPes.put(vm, vm.getNumberOfPes());
+    }
+
+    /**
+     * Removes the used PEs for a Vm from the map between each VM and the number of PEs used.
+     * @return the used PEs number
+     */
+    protected int removeUsedPes(Vm vm) {
+        final Integer pes = usedPes.remove(vm);
+        return (pes == null ? 0 : pes);
+    }
+
+    /**
      * Sets the used pes.
      *
      * @param usedPes the used pes
      */
     protected final void setUsedPes(Map<Vm, Integer> usedPes) {
+        Objects.requireNonNull(usedPes);
         this.usedPes = usedPes;
     }
 }

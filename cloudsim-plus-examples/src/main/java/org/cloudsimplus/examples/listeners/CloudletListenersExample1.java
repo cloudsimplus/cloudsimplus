@@ -55,7 +55,7 @@ import org.cloudbus.cloudsim.vms.VmSimple;
 import org.cloudbus.cloudsim.allocationpolicies.VmAllocationPolicySimple;
 import org.cloudbus.cloudsim.schedulers.vm.VmSchedulerTimeShared;
 import org.cloudbus.cloudsim.core.CloudSim;
-import org.cloudsimplus.listeners.VmToCloudletEventInfo;
+import org.cloudsimplus.listeners.CloudletVmEventInfo;
 import org.cloudsimplus.listeners.EventListener;
 import org.cloudbus.cloudsim.provisioners.PeProvisionerSimple;
 import org.cloudbus.cloudsim.resources.Bandwidth;
@@ -70,7 +70,7 @@ import org.cloudbus.cloudsim.schedulers.cloudlet.CloudletSchedulerSpaceShared;
  * The example uses the new Cloudlet listeners to get these
  * notifications while the simulation is running.
  *
- * @see Cloudlet#setOnCloudletFinishEventListener(EventListener)
+ * @see Cloudlet#addOnCloudletFinishListener(EventListener)
  * @see EventListener
  *
  * @author Manoel Campos da Silva Filho
@@ -104,7 +104,7 @@ public class CloudletListenersExample1 {
      *
      * @see #createCloudletListener()
      */
-    private EventListener<VmToCloudletEventInfo> onCloudletFinishListener;
+    private final EventListener<CloudletVmEventInfo> onCloudletFinishListener;
 
     /**
      * Starts the example execution, calling the class constructor\
@@ -122,7 +122,6 @@ public class CloudletListenersExample1 {
      * Default constructor that builds and starts the simulation.
      */
     public CloudletListenersExample1() {
-        int numberOfUsers = 1; // number of cloud users/customers (brokers)
         simulation = new CloudSim();
 
         this.hostList = new ArrayList<>();
@@ -131,7 +130,7 @@ public class CloudletListenersExample1 {
         this.datacenter = createDatacenter();
         this.broker = new DatacenterBrokerSimple(simulation);
 
-        createCloudletListener();
+        this.onCloudletFinishListener = createCloudletListener();
         createAndSubmitVms();
         createAndSubmitCloudlets(this.vmList.get(0));
 
@@ -142,12 +141,13 @@ public class CloudletListenersExample1 {
      * Creates the listener object, using Java 8 Lambda Expressions, that will be notified when a cloudlet
      * finishes running into a VM. All cloudlet will use this same listener.
      *
+     * @return the created Listener
      * @see #createCloudlet(int, Vm, long)
      */
-    private void createCloudletListener() {
-        this.onCloudletFinishListener = evt -> Log.printFormattedLine(
+    private EventListener<CloudletVmEventInfo> createCloudletListener() {
+        return eventInfo -> Log.printFormattedLine(
                 "\n\t#EventListener: Cloudlet %d finished running at Vm %d at time %.2f\n",
-                evt.getCloudlet().getId(), evt.getVm().getId(), evt.getTime());
+                eventInfo.getCloudlet().getId(), eventInfo.getVm().getId(), eventInfo.getTime());
     }
 
     private void runSimulationAndPrintResults() {
@@ -218,37 +218,26 @@ public class CloudletListenersExample1 {
         UtilizationModel utilizationModel = new UtilizationModelFull();
         Cloudlet cloudlet
             = new CloudletSimple(id, length, pesNumber)
-                    .setCloudletFileSize(fileSize)
-                    .setCloudletOutputSize(outputSize)
+                    .setFileSize(fileSize)
+                    .setOutputSize(outputSize)
                     .setUtilizationModel(utilizationModel)
                     .setBroker(broker)
                     .setVm(vm)
-                    .setOnCloudletFinishEventListener(onCloudletFinishListener);
+                    .addOnCloudletFinishListener(this.onCloudletFinishListener);
 
         return cloudlet;
     }
 
     /**
-     * Creates a switches with pre-defined configuration.
+     * Creates a Datacenter with pre-defined configuration.
      *
-     * @return the created switches
+     * @return the created Datacenter
      */
     private Datacenter createDatacenter() {
         Host host = createHost(0);
         hostList.add(host);
 
-        double cost = 3.0; // the cost of using processing in this resource
-        double costPerMem = 0.05; // the cost of using memory in this resource
-        double costPerStorage = 0.001; // the cost of using storage in this switches
-        double costPerBw = 0.0; // the cost of using bw in this resource
-
-        DatacenterCharacteristics characteristics =
-            new DatacenterCharacteristicsSimple(hostList)
-                .setCostPerSecond(cost)
-                .setCostPerMem(costPerMem)
-                .setCostPerStorage(costPerStorage)
-                .setCostPerBw(costPerBw);
-
+        DatacenterCharacteristics characteristics = new DatacenterCharacteristicsSimple(hostList);
         return new DatacenterSimple(simulation, characteristics, new VmAllocationPolicySimple());
     }
 

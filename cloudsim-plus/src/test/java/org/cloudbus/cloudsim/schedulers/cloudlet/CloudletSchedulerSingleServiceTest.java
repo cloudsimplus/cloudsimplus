@@ -8,6 +8,7 @@
 package org.cloudbus.cloudsim.schedulers.cloudlet;
 
 import org.cloudbus.cloudsim.cloudlets.Cloudlet;
+import org.cloudbus.cloudsim.datacenters.Datacenter;
 import org.cloudbus.cloudsim.utilizationmodels.UtilizationModelStochastic;
 import org.cloudbus.cloudsim.utilizationmodels.UtilizationModel;
 import static org.easymock.EasyMock.expect;
@@ -66,8 +67,8 @@ public class CloudletSchedulerSingleServiceTest {
         UtilizationModelStochastic utilizationModel = new UtilizationModelStochastic();
         Cloudlet cloudlet =
             new CloudletSimple(0, CLOUDLET_LENGTH, PES_NUMBER)
-                .setCloudletFileSize(CLOUDLET_FILE_SIZE)
-                .setCloudletOutputSize(CLOUDLET_OUTPUT_SIZE)
+                .setFileSize(CLOUDLET_FILE_SIZE)
+                .setOutputSize(CLOUDLET_OUTPUT_SIZE)
                 .setUtilizationModel(utilizationModel);
         CloudletExecutionInfo rcl = new CloudletExecutionInfo(cloudlet);
 
@@ -88,10 +89,10 @@ public class CloudletSchedulerSingleServiceTest {
         UtilizationModelStochastic utilizationModel = new UtilizationModelStochastic();
         Cloudlet cloudlet =
             new CloudletSimple(0, CLOUDLET_LENGTH, PES_NUMBER)
-                .setCloudletFileSize(CLOUDLET_FILE_SIZE)
-                .setCloudletOutputSize(CLOUDLET_OUTPUT_SIZE)
+                .setFileSize(CLOUDLET_FILE_SIZE)
+                .setOutputSize(CLOUDLET_OUTPUT_SIZE)
                 .setUtilizationModel(utilizationModel);
-        cloudlet.assignCloudletToDatacenter(0, 0, 0);
+        cloudlet.assignToDatacenter(Datacenter.NULL);
 
         List<Double> mipsShare = new ArrayList<>();
         mipsShare.add(MIPS);
@@ -118,10 +119,10 @@ public class CloudletSchedulerSingleServiceTest {
         UtilizationModelStochastic utilizationModel = new UtilizationModelStochastic();
         Cloudlet cloudlet =
             new CloudletSimple(0, CLOUDLET_LENGTH, PES_NUMBER)
-                .setCloudletFileSize(CLOUDLET_FILE_SIZE)
-                .setCloudletOutputSize(CLOUDLET_OUTPUT_SIZE)
+                .setFileSize(CLOUDLET_FILE_SIZE)
+                .setOutputSize(CLOUDLET_OUTPUT_SIZE)
                 .setUtilizationModel(utilizationModel);
-        cloudlet.assignCloudletToDatacenter(0, 0, 0);
+        cloudlet.assignToDatacenter(Datacenter.NULL);
 
         List<Double> mipsShare = new ArrayList<>();
         mipsShare.add(MIPS);
@@ -144,10 +145,10 @@ public class CloudletSchedulerSingleServiceTest {
         UtilizationModelStochastic utilizationModel = new UtilizationModelStochastic();
         Cloudlet cloudlet =
             new CloudletSimple(0, CLOUDLET_LENGTH, PES_NUMBER)
-                .setCloudletFileSize(CLOUDLET_FILE_SIZE)
-                .setCloudletOutputSize(CLOUDLET_OUTPUT_SIZE)
+                .setFileSize(CLOUDLET_FILE_SIZE)
+                .setOutputSize(CLOUDLET_OUTPUT_SIZE)
                 .setUtilizationModel(utilizationModel);
-        cloudlet.assignCloudletToDatacenter(0, 0, 0);
+        cloudlet.assignToDatacenter(Datacenter.NULL);
 
         List<Double> mipsShare = new ArrayList<>();
         mipsShare.add(MIPS);
@@ -177,10 +178,10 @@ public class CloudletSchedulerSingleServiceTest {
         UtilizationModelStochastic utilizationModel = new UtilizationModelStochastic();
         Cloudlet cloudlet =
             new CloudletSimple(0, CLOUDLET_LENGTH, PES_NUMBER)
-                .setCloudletFileSize(CLOUDLET_FILE_SIZE)
-                .setCloudletOutputSize(CLOUDLET_OUTPUT_SIZE)
+                .setFileSize(CLOUDLET_FILE_SIZE)
+                .setOutputSize(CLOUDLET_OUTPUT_SIZE)
                 .setUtilizationModel(utilizationModel);
-        cloudlet.assignCloudletToDatacenter(0, 0, 0);
+        cloudlet.assignToDatacenter(Datacenter.NULL);
         CloudletExecutionInfo rgl = new CloudletExecutionInfo(cloudlet);
 
         List<Double> mipsShare = new ArrayList<>();
@@ -218,10 +219,10 @@ public class CloudletSchedulerSingleServiceTest {
     public void testGetEstimatedFinishTime(UtilizationModel utilizationModel) {
         Cloudlet cloudlet =
             new CloudletSimple(0, CLOUDLET_LENGTH, PES_NUMBER)
-                .setCloudletFileSize(CLOUDLET_FILE_SIZE)
-                .setCloudletOutputSize(CLOUDLET_OUTPUT_SIZE)
+                .setFileSize(CLOUDLET_FILE_SIZE)
+                .setOutputSize(CLOUDLET_OUTPUT_SIZE)
                 .setUtilizationModel(utilizationModel);
-        cloudlet.assignCloudletToDatacenter(0, 0, 0);
+        cloudlet.assignToDatacenter(Datacenter.NULL);
         CloudletExecutionInfo rgl = new CloudletExecutionInfo(cloudlet);
 
         List<Double> mipsShare = new ArrayList<>();
@@ -270,10 +271,10 @@ public class CloudletSchedulerSingleServiceTest {
     public void testCloudletSubmit(UtilizationModel utilizationModel) {
         Cloudlet cloudlet =
             new CloudletSimple(0, CLOUDLET_LENGTH, PES_NUMBER)
-                .setCloudletFileSize(CLOUDLET_FILE_SIZE)
-                .setCloudletOutputSize(CLOUDLET_OUTPUT_SIZE)
+                .setFileSize(CLOUDLET_FILE_SIZE)
+                .setOutputSize(CLOUDLET_OUTPUT_SIZE)
                 .setUtilizationModel(utilizationModel);
-        cloudlet.assignCloudletToDatacenter(0, 0, 0);
+        cloudlet.assignToDatacenter(Datacenter.NULL);
 
         List<Double> mipsShare = new ArrayList<>();
         mipsShare.add(MIPS / 4);
@@ -346,10 +347,10 @@ public class CloudletSchedulerSingleServiceTest {
     public void testUpdateVmProcessing(UtilizationModel utilizationModel) {
         Cloudlet cloudlet =
             new CloudletSimple(0, CLOUDLET_LENGTH, PES_NUMBER)
-                .setCloudletFileSize(CLOUDLET_FILE_SIZE)
-                .setCloudletOutputSize(CLOUDLET_OUTPUT_SIZE)
+                .setFileSize(CLOUDLET_FILE_SIZE)
+                .setOutputSize(CLOUDLET_OUTPUT_SIZE)
                 .setUtilizationModel(utilizationModel);
-        cloudlet.assignCloudletToDatacenter(0, 0, 0);
+        cloudlet.assignToDatacenter(Datacenter.NULL);
 
         List<Double> mipsShare = new ArrayList<>();
         mipsShare.add(MIPS / 4);

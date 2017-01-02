@@ -102,8 +102,8 @@ public class NetworkCloudlet extends CloudletSimple {
             UtilizationModel utilizationModelBw)
     {
         this(id, cloudletLength, pesNumber);
-        this.setCloudletFileSize(cloudletFileSize)
-            .setCloudletOutputSize(cloudletOutputSize)
+        this.setFileSize(cloudletFileSize)
+            .setOutputSize(cloudletOutputSize)
             .setUtilizationModelCpu(utilizationModelCpu)
             .setUtilizationModelRam(utilizationModelRam)
             .setUtilizationModelBw(utilizationModelBw);
@@ -221,7 +221,7 @@ public class NetworkCloudlet extends CloudletSimple {
      * @return the length sum of all {@link CloudletExecutionTask}'s
      */
     @Override
-    public long getCloudletLength() {
+    public long getLength() {
         return getTasks().stream()
                 .filter(t -> t instanceof CloudletExecutionTask)
                 .mapToLong(t -> ((CloudletExecutionTask)t).getLength())
@@ -229,8 +229,8 @@ public class NetworkCloudlet extends CloudletSimple {
     }
 
     @Override
-    public boolean setCloudletFinishedSoFar(long length) {
-        return super.setCloudletFinishedSoFar(length);
+    public boolean setFinishedLengthSoFar(long length) {
+        return super.setFinishedLengthSoFar(length);
     }
 
     /**

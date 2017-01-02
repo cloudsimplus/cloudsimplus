@@ -76,7 +76,7 @@
                         <version>2.19.1</version>
                         <configuration>
                             <excludes>
-                                <exclude>**/IntegrationTests/*.java</exclude>
+                                <exclude>**/integrationtests/*.java</exclude>
                             </excludes>
                         </configuration>
                     </plugin>

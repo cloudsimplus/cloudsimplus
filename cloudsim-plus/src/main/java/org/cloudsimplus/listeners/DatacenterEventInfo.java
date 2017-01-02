@@ -26,24 +26,20 @@ package org.cloudsimplus.listeners;
 import org.cloudbus.cloudsim.datacenters.Datacenter;
 
 /**
- * An {@link EventInfo} interface that stores data to be passed
+ * An interface that represent data to be passed
  * to {@link EventListener} objects that are registered to be notified
- * about events happened for a given {@link Datacenter}.
+ * when some events happen for a given {@link Datacenter}.
  *
  * @author Manoel Campos da Silva Filho
+ * @since CloudSim Plus 1.0
+ *
+ * @see VmDatacenterEventInfo
  */
 public interface DatacenterEventInfo extends EventInfo {
 
     /**
-     *
-     * @return the Datacenter for which the event happened
+     * Gets the {@link Datacenter} for which the event happened.
+     * @return
      */
     Datacenter getDatacenter();
-
-    /**
-     * Sets the Datacenter for which the event happened.
-     *
-     * @param datacenter the Datacenter to set
-     */
-    void setDatacenter(Datacenter datacenter);
 }

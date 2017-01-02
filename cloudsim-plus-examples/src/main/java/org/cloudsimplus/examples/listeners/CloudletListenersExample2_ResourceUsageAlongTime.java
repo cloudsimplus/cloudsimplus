@@ -31,6 +31,7 @@ package org.cloudsimplus.examples.listeners;
  *
  * Copyright (c) 2009, The University of Melbourne, Australia
  */
+import org.cloudsimplus.listeners.CloudletVmEventInfo;
 import org.cloudsimplus.util.tablebuilder.CloudletsTableBuilderHelper;
 import java.util.ArrayList;
 import java.util.List;
@@ -53,7 +54,6 @@ import org.cloudbus.cloudsim.vms.VmSimple;
 import org.cloudbus.cloudsim.allocationpolicies.VmAllocationPolicySimple;
 import org.cloudbus.cloudsim.schedulers.vm.VmSchedulerTimeShared;
 import org.cloudbus.cloudsim.core.CloudSim;
-import org.cloudsimplus.listeners.VmToCloudletEventInfo;
 import org.cloudsimplus.listeners.EventListener;
 import org.cloudbus.cloudsim.provisioners.PeProvisionerSimple;
 import org.cloudbus.cloudsim.resources.Bandwidth;
@@ -70,7 +70,7 @@ import org.cloudbus.cloudsim.utilizationmodels.UtilizationModelStochastic;
  * The example uses the {@link UtilizationModelStochastic}
  * to define that the usage of CPU, RAM and Bandwidth is random.
  *
- * @see Cloudlet#setOnUpdateCloudletProcessingListener(EventListener)
+ * @see Cloudlet#addOnUpdateCloudletProcessingListener(EventListener)
  * @see EventListener
  *
  * @author Manoel Campos da Silva Filho
@@ -106,7 +106,7 @@ public class CloudletListenersExample2_ResourceUsageAlongTime {
      *
      * @see #createCloudletListener()
      */
-    private EventListener<VmToCloudletEventInfo> onUpdateCloudletProcessingListener;
+    private final EventListener<CloudletVmEventInfo> onUpdateCloudletProcessingListener;
 
     /**
      * Starts the example execution, calling the class constructor\
@@ -124,7 +124,6 @@ public class CloudletListenersExample2_ResourceUsageAlongTime {
      * Default constructor that builds and starts the simulation.
      */
     public CloudletListenersExample2_ResourceUsageAlongTime() {
-        int numberOfUsers = 1; // number of cloud users/customers (brokers)
         simulation = new CloudSim();
 
         this.hostList = new ArrayList<>();
@@ -133,7 +132,7 @@ public class CloudletListenersExample2_ResourceUsageAlongTime {
         this.datacenter = createDatacenter();
         this.broker = new DatacenterBrokerSimple(simulation);
 
-        createCloudletListener();
+        this.onUpdateCloudletProcessingListener = createCloudletListener();
         createAndSubmitVms();
         createAndSubmitCloudlets(this.vmList.get(0));
 
@@ -144,17 +143,18 @@ public class CloudletListenersExample2_ResourceUsageAlongTime {
      * Creates the listener object, using Java 8 Lambda Expressions, that will be notified when a cloudlet
      * finishes running into a VM. All cloudlet will use this same listener.
      *
+     * @return the created Listener
      * @see #createCloudlet(int, Vm, long)
      */
-    private void createCloudletListener() {
-        this.onUpdateCloudletProcessingListener = evt -> {
-            Cloudlet c = evt.getCloudlet();
-            double cpuUsage = c.getUtilizationModelCpu().getUtilization(evt.getTime())*100;
-            double ramUsage = c.getUtilizationModelRam().getUtilization(evt.getTime())*100;
-            double bwUsage  = c.getUtilizationModelBw().getUtilization(evt.getTime())*100;
+    private EventListener<CloudletVmEventInfo> createCloudletListener() {
+        return eventInfo -> {
+            Cloudlet c = eventInfo.getCloudlet();
+            double cpuUsage = c.getUtilizationModelCpu().getUtilization(eventInfo.getTime())*100;
+            double ramUsage = c.getUtilizationModelRam().getUtilization(eventInfo.getTime())*100;
+            double bwUsage  = c.getUtilizationModelBw().getUtilization(eventInfo.getTime())*100;
             Log.printFormattedLine(
                     "\t#EventListener: Time %.0f: Updated Cloudlet %d execution inside Vm %d",
-                    evt.getTime(), c.getId(), evt.getVm().getId());
+                    eventInfo.getTime(), c.getId(), eventInfo.getVm().getId());
             Log.printFormattedLine(
                     "\tCurrent Cloudlet resource usage: CPU %3.0f%%, RAM %3.0f%%, BW %3.0f%%\n",
                     cpuUsage,  ramUsage, bwUsage);
@@ -235,22 +235,22 @@ public class CloudletListenersExample2_ResourceUsageAlongTime {
 
         Cloudlet cloudlet =
             new CloudletSimple(id, length, pesNumber)
-                .setCloudletFileSize(fileSize)
-                .setCloudletOutputSize(outputSize)
+                .setFileSize(fileSize)
+                .setOutputSize(outputSize)
                 .setUtilizationModelCpu(cpuUtilizationModel)
                 .setUtilizationModelRam(ramUtilizationModel)
                 .setUtilizationModelBw(bwUtilizationModel)
                 .setBroker(broker)
                 .setVm(vm)
-                .setOnUpdateCloudletProcessingListener(onUpdateCloudletProcessingListener);
+                .addOnUpdateCloudletProcessingListener(this.onUpdateCloudletProcessingListener);
 
         return cloudlet;
     }
 
     /**
-     * Creates a switches with pre-defined configuration.
+     * Creates a Datacenter with pre-defined configuration.
      *
-     * @return the created switches
+     * @return the created Datacenter
      */
     private Datacenter createDatacenter() {
         Host host = createHost(0);
@@ -258,7 +258,7 @@ public class CloudletListenersExample2_ResourceUsageAlongTime {
 
         double cost = 3.0; // the cost of using processing in this resource
         double costPerMem = 0.05; // the cost of using memory in this resource
-        double costPerStorage = 0.001; // the cost of using storage in this switches
+        double costPerStorage = 0.001; // the cost of using storage in this Datacenter
         double costPerBw = 0.0; // the cost of using bw in this resource
 
         DatacenterCharacteristics characteristics =

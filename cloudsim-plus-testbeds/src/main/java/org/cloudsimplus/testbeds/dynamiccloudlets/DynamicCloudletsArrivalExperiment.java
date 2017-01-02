@@ -49,7 +49,7 @@ final class DynamicCloudletsArrivalExperiment extends SimulationExperiment {
 	 * of executing this experiment a defined number of times and to collect
 	 * data for statistical analysis.
 	 */
-	public DynamicCloudletsArrivalExperiment(int index, DynamicCloudletsArrivalRunner runner) {
+	DynamicCloudletsArrivalExperiment(int index, DynamicCloudletsArrivalRunner runner) {
 		super(index, runner);
 	}
 

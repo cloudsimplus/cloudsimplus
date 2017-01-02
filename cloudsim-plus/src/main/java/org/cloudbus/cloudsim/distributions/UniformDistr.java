@@ -67,6 +67,11 @@ public class UniformDistr extends ContinuousDistributionAbstract {
         applyAntitheticVariatesTechnique = false;
     }
 
+    @Override
+    public double sample() {
+        return (applyAntitheticVariatesTechnique ? 1 - super.sample() : super.sample());
+    }
+
     /**
      * Generates a new pseudo random number based on the generator and values
      * provided as parameters.
@@ -121,11 +126,6 @@ public class UniformDistr extends ContinuousDistributionAbstract {
     public UniformDistr setApplyAntitheticVariatesTechnique(boolean applyAntitheticVariatesTechnique) {
         this.applyAntitheticVariatesTechnique = applyAntitheticVariatesTechnique;
 	    return this;
-    }
-
-    @Override
-    public double sample() {
-        return (applyAntitheticVariatesTechnique ? 1 - super.sample() : super.sample());
     }
 
 }

@@ -116,7 +116,7 @@ public class Helper {
 	/**
 	 * Creates the broker.
 	 *
-	 * @return the switches broker
+	 * @return the Datacenter broker
 	 */
 	public static DatacenterBroker createBroker(CloudSim simulation) {
 		DatacenterBroker broker = null;
@@ -130,13 +130,13 @@ public class Helper {
 	}
 
 	/**
-	 * Creates the switches.
+	 * Creates the Datacenter.
 	 *
-	 * @param datacenterClass the switches class
+	 * @param datacenterClass the Datacenter class
 	 * @param hostList the host list
 	 * @param vmAllocationPolicy the vm allocation policy
 	 *
-	 * @return the power switches
+	 * @return the power Datacenter
 	 *
 	 * @throws Exception the exception
 	 */
@@ -217,7 +217,7 @@ public class Helper {
 	/**
 	 * Prints the results.
 	 *
-	 * @param datacenter the switches
+	 * @param datacenter the Datacenter
      * @param vmList the List of VMs to get results from
 	 * @param lastClock the last clock
 	 * @param experimentName the experiment name
@@ -687,8 +687,8 @@ public class Helper {
             Log.print(indent + cloudlet.getId());
 
             if (cloudlet.getStatus() == CloudletSimple.Status.SUCCESS) {
-                Log.printLine(indent + "SUCCESS" + indent + indent + cloudlet.getDatacenterId() + indent
-                    + cloudlet.getVm() + indent + dft.format(cloudlet.getActualCPUTime()) + indent
+                Log.printLine(indent + "SUCCESS" + indent + indent + cloudlet.getLastDatacenter() + indent
+                    + cloudlet.getVm() + indent + dft.format(cloudlet.getActualCpuTime()) + indent
                     + dft.format(cloudlet.getExecStartTime()) + indent + indent
                     + dft.format(cloudlet.getFinishTime()));
             }

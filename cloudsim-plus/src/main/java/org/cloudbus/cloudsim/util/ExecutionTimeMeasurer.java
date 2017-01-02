@@ -17,7 +17,7 @@ import java.util.Map;
  * @author Anton Beloglazov
  * @since CloudSim Toolkit 3.0
  */
-public class ExecutionTimeMeasurer {
+public final class ExecutionTimeMeasurer {
 
     /**
      * A map of execution start times where each key
@@ -26,7 +26,7 @@ public class ExecutionTimeMeasurer {
      * Usually, this name is the method/process name, making
      * it easy to identify the execution start times into the map.
      */
-    private final static Map<String, Long> executionStartTimes = new HashMap<>();
+    private static final Map<String, Long> executionStartTimes = new HashMap<>();
 
     /**
      * Starts measuring the execution time of a method/process.
@@ -62,5 +62,10 @@ public class ExecutionTimeMeasurer {
     public static Map<String, Long> getExecutionStartTimes() {
         return executionStartTimes;
     }
+
+    /**
+     * A private constructor to avoid class instantiation.
+     */
+    private ExecutionTimeMeasurer(){}
 
 }

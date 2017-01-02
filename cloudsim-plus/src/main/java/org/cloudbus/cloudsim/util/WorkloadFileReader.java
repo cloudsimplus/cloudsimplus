@@ -51,7 +51,7 @@ import org.cloudbus.cloudsim.utilizationmodels.UtilizationModelFull;
  * when running the simulation.
  * <li>The default Cloudlet file size for sending to and receiving from a Datacenter is
  * {@link DataCloudTags#DEFAULT_MTU}. However, you can
- * specify the file size by using {@link Cloudlet#setCloudletFileSize(long)}.
+ * specify the file size by using {@link Cloudlet#setFileSize(long)}.
  * <li>A job run time is only for 1 PE <tt>not</tt> the total number of
  * allocated PEs. Therefore, a Cloudlet length is also calculated for 1 PE.<br>
  * For example, job #1 in the trace has a run time of 100 seconds for 2
@@ -64,7 +64,7 @@ import org.cloudbus.cloudsim.utilizationmodels.UtilizationModelFull;
  * @author Marcos Dias de Assuncao
  * @todo The last item in the list above is not true. The cloudlet length is not
  * divided by the number of PEs. If there is more than 1 PE, all PEs run the
- * same number of MI as specified in the {@link Cloudlet#getCloudletLength()}
+ * same number of MI as specified in the {@link Cloudlet#getLength()}
  * attribute. See {@link Cloudlet#setNumberOfPes(int)} method documentation.
  * @see WorkloadModel
  */
@@ -308,7 +308,7 @@ public class WorkloadFileReader implements WorkloadModel {
      * @param id         a Cloudlet ID
      * @param submitTime Cloudlet's submit time
      * @param runTime    The number of seconds the Cloudlet has to run. Considering
-     *                   that and the {@link #rating}, the {@link Cloudlet#getCloudletLength()} is
+     *                   that and the {@link #rating}, the {@link Cloudlet#getLength()} is
      *                   computed.
      * @param numProc    number of Cloudlet's PEs
      * @param userID     user id
@@ -330,8 +330,8 @@ public class WorkloadFileReader implements WorkloadModel {
         final int len = runTime * rating;
         UtilizationModel utilizationModel = new UtilizationModelFull();
         final Cloudlet cloudlet = new CloudletSimple(id, len, numProc)
-            .setCloudletFileSize(DataCloudTags.DEFAULT_MTU)
-            .setCloudletOutputSize(DataCloudTags.DEFAULT_MTU)
+            .setFileSize(DataCloudTags.DEFAULT_MTU)
+            .setOutputSize(DataCloudTags.DEFAULT_MTU)
             .setUtilizationModel(utilizationModel);
         jobs.add(cloudlet);
     }

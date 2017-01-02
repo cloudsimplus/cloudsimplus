@@ -14,7 +14,7 @@ import org.cloudsimplus.heuristics.Heuristic;
  * to get a suboptimal mapping among submitted cloudlets and Vm's.
  * Such heuristic can be, for instance, the {@link org.cloudsimplus.heuristics.CloudletToVmMappingSimulatedAnnealing}
  * that implements a Simulated Annealing algorithm.
- * The Broker then places the submitted Vm's at the first switches found.
+ * The Broker then places the submitted Vm's at the first Datacenter found.
  * If there isn't capacity in that one, it will try the other ones.</p>
  *
  * @author Manoel Campos da Silva Filho
