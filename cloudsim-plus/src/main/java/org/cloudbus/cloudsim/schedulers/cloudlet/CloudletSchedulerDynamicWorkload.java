@@ -17,18 +17,27 @@ import org.cloudbus.cloudsim.resources.Processor;
 /**
  * CloudletSchedulerDynamicWorkload implements a policy of scheduling performed
  * by a virtual machine to run its {@link Cloudlet Cloudlets}, assuming there is
- * just one cloudlet which is working as an online service. It extends a
- * TimeShared policy, but in fact, considering that there is just one cloudlet
- * for the VM using this scheduler, the cloudlet will not compete for CPU with
- * other ones. Each VM has to have its own instance of a CloudletScheduler.
+ * just one cloudlet which is working as an online service.
+ *
+ * <p>It extends a TimeShared policy, but in fact, considering that there is just one cloudlet
+ * for the VM using this scheduler. By this way, such a cloudlet will not compete for CPU with
+ * other ones. Each VM must have its own instance of a CloudletScheduler.</p>
  *
  * @author Anton Beloglazov
- * @todo @author manoelcampos The name of the class doesn't represent its goal. A clearer name would
- * be CloudletSchedulerSingleService, the same as its Test class
- * @todo @author manoelcampos The class has some duplicated code from the
- * super class.
+ *
  * @since CloudSim Toolkit 2.0
+ * @deprecated It is not clear the reason of this class to exist. If one need to simulate
+ * the execution of a cloudlet that will not compete for CPU with other cloudlets,
+ * then he/she should just submit a single cloudlet to a given VM instead
+ * of using a specific scheduler for that goal.
+ * This class just has a lot of duplicated code from its superclass and should be
+ * deleted. The implementation of some methods such as getTotalCurrentRequestedMipsForCloudlet, getTotalCurrentAvailableMipsForCloudlet,
+ * getTotalCurrentAllocatedMipsForCloudlet and getTotalCurrentMips getTotalMips can be used as a model
+ * for providing the same implementations in the CloudletSchedulerTimeShared and CloudletSchedulerSpaceShared
+ * classes where such methods usually don't have an actual implementation, just returning
+ * a default value.
  */
+@Deprecated()
 public class CloudletSchedulerDynamicWorkload extends CloudletSchedulerTimeShared {
 
     /**
@@ -166,7 +175,7 @@ public class CloudletSchedulerDynamicWorkload extends CloudletSchedulerTimeShare
     public double getTotalCurrentAvailableMipsForCloudlet(CloudletExecutionInfo rcl, List<Double> mipsShare) {
         double totalCurrentMips = 0.0;
         if (!Objects.isNull(mipsShare)) {
-            int neededPEs = rcl.getCloudlet().getNumberOfPes();
+            int neededPEs = rcl.getNumberOfPes();
             for (double mips : mipsShare) {
                 totalCurrentMips += mips;
                 neededPEs--;

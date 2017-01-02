@@ -247,14 +247,15 @@ public abstract class CloudletSchedulerAbstract implements CloudletScheduler {
         cloudlet.setCloudletStatus(Cloudlet.Status.INEXEC);
         cloudlet.setLastProcessingTime(getVm().getSimulation().clock());
         cloudletExecList.add(cloudlet);
-        addUsedPes(cloudlet.getCloudlet().getNumberOfPes());
+        addUsedPes(cloudlet.getNumberOfPes());
     }
 
     @Override
     public double getTotalUtilizationOfCpu(double time) {
         return getCloudletExecList().stream()
-            .mapToDouble(rcl -> rcl.getCloudlet().getUtilizationOfCpu(time))
-            .sum();
+            .map(CloudletExecutionInfo::getCloudlet)
+            .mapToDouble(c -> c.getUtilizationOfCpu(time)*c.getNumberOfPes())
+            .sum() / vm.getNumberOfPes();
     }
 
     @Override
@@ -547,7 +548,7 @@ public abstract class CloudletSchedulerAbstract implements CloudletScheduler {
         }
 
         double executedInstructions
-                = (processor.getAvailableMipsByPe() * rcl.getCloudlet().getNumberOfPes()
+                = (processor.getAvailableMipsByPe() * rcl.getNumberOfPes()
                 * actualProcessingTime * Consts.MILLION);
         //Log.println(Log.Level.DEBUG, getClass(), currentTime, "Cloudlet: %d Processing time: %.2f Last processed time: %.2f Actual process time: %.2f MI so far: %d",  rcl.getCloudletId(), currentTime, rcl.getLastProcessingTime(),  actualProcessingTime, rcl.getCloudlet().getCloudletFinishedSoFar());
 
@@ -617,7 +618,7 @@ public abstract class CloudletSchedulerAbstract implements CloudletScheduler {
      * list.
      */
     protected boolean removeCloudletFromExecList(CloudletExecutionInfo cloudlet) {
-        removeUsedPes(cloudlet.getCloudlet().getNumberOfPes());
+        removeUsedPes(cloudlet.getNumberOfPes());
         return cloudletExecList.remove(cloudlet);
     }
 
@@ -658,7 +659,7 @@ public abstract class CloudletSchedulerAbstract implements CloudletScheduler {
     protected double getEstimatedFinishTimeOfCloudlet(CloudletExecutionInfo rcl, double currentTime) {
         double estimatedFinishTime = currentTime
                 + (rcl.getRemainingCloudletLength()
-                / (processor.getAvailableMipsByPe() * rcl.getCloudlet().getNumberOfPes()));
+                / (processor.getAvailableMipsByPe() * rcl.getNumberOfPes()));
 
         if (estimatedFinishTime - currentTime < getVm().getSimulation().getMinTimeBetweenEvents()) {
             estimatedFinishTime = currentTime + getVm().getSimulation().getMinTimeBetweenEvents();
@@ -704,7 +705,7 @@ public abstract class CloudletSchedulerAbstract implements CloudletScheduler {
      * @return true if there is the amount of free PEs, false otherwise
      */
     protected boolean isThereEnoughFreePesForCloudlet(CloudletExecutionInfo c) {
-        return processor.getNumberOfPes() - usedPes >= c.getCloudlet().getNumberOfPes();
+        return processor.getNumberOfPes() - usedPes >= c.getNumberOfPes();
     }
 
     /**

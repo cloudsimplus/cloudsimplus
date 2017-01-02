@@ -151,6 +151,10 @@ public class CloudletExecutionInfo {
         return cloudlet.getLength();
     }
 
+    public int getNumberOfPes(){
+        return cloudlet.getNumberOfPes();
+    }
+
     /**
      * Sets the Cloudlet status.
      *

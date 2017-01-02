@@ -6,10 +6,10 @@ import org.cloudbus.cloudsim.cloudlets.Cloudlet;
 import org.cloudbus.cloudsim.cloudlets.CloudletExecutionInfo;
 import org.cloudbus.cloudsim.cloudlets.CloudletSimpleTest;
 import org.cloudbus.cloudsim.core.CloudSim;
+import org.cloudbus.cloudsim.datacenters.Datacenter;
 import org.cloudbus.cloudsim.mocks.CloudSimMocker;
 import org.cloudbus.cloudsim.vms.Vm;
 import org.cloudbus.cloudsim.vms.VmSimple;
-import org.cloudbus.cloudsim.vms.VmSimpleTest;
 import org.junit.Test;
 import static org.junit.Assert.*;
 import org.junit.Ignore;
@@ -339,8 +339,7 @@ public class CloudletSchedulerSpaceSharedTest {
             instance.getCloudletExecList()
                     .stream()
                     .map(CloudletExecutionInfo::getCloudlet)
-                    .filter(c->c.equals(cloudlet))
-                    .findFirst().isPresent());
+                    .anyMatch(c->c.equals(cloudlet)));
     }
 
     @Test
@@ -351,8 +350,7 @@ public class CloudletSchedulerSpaceSharedTest {
         assertTrue(
             instance.getCloudletExecList()
                     .stream()
-                    .filter(c->c.equals(cloudlet))
-                    .findFirst().isPresent());
+                    .anyMatch(c->c.equals(cloudlet)));
     }
 
     @Test
@@ -413,4 +411,156 @@ public class CloudletSchedulerSpaceSharedTest {
         assertEquals(expResult, result, 0.0);
     }
 
+    /**
+     * Submits 4 cloudlets that require one PE each one,
+     * but since there is just 2 VM PEs, just 2 cloudlets
+     * will be added to exec list.
+     */
+    @Test
+    public void testGetTotalUtilizationOfCpu_MoreCloudletsThanPes() {
+        final long mips = 1000;
+        final int numberOfPes = 2;
+        final int numberOfCloudlets = 4;
+
+        CloudletSchedulerSpaceShared instance = newSchedulerWithSingleCoreRunningCloudlets(mips, numberOfPes, numberOfCloudlets);
+
+        final double expected = 1;
+        assertEquals(expected, instance.getTotalUtilizationOfCpu(0), 0);
+    }
+
+    @Test
+    public void testGetTotalUtilizationOfCpu_OnePeForEachCloudlet() {
+        final long mips = 1000;
+        final int numberOfPes = 2;
+        final int numberOfCloudlets = numberOfPes;
+
+        CloudletSchedulerSpaceShared instance = newSchedulerWithSingleCoreRunningCloudlets(mips, numberOfPes, numberOfCloudlets);
+
+        final double expected = 1;
+        assertEquals(expected, instance.getTotalUtilizationOfCpu(0), 0);
+    }
+
+    @Test
+    public void testGetTotalUtilizationOfCpu_LessCloudletsThanPesHalfUsage() {
+        final long mips = 1000;
+        final int numberOfPes = 4;
+        final int numberOfCloudlets = 2;
+
+        CloudletSchedulerSpaceShared instance = newSchedulerWithSingleCoreRunningCloudlets(mips, numberOfPes, numberOfCloudlets);
+
+        final double expected = 0.5;
+        assertEquals(expected, instance.getTotalUtilizationOfCpu(0), 0);
+    }
+
+    @Test
+    public void testGetTotalUtilizationOfCpu_LessCloudletsThanPesThreeThirdUsage() {
+        final long mips = 1000;
+        final int numberOfPes = 4;
+        final int numberOfCloudlets = 3;
+
+        CloudletSchedulerSpaceShared instance = newSchedulerWithSingleCoreRunningCloudlets(mips, numberOfPes, numberOfCloudlets);
+
+        final double expected = 0.75;
+        assertEquals(expected, instance.getTotalUtilizationOfCpu(0), 0);
+    }
+
+    @Test
+    public void testGetTotalUtilizationOfCpu_LessCloudletsThanPesNotFullUsage() {
+        final long mips = 1000;
+        final int numberOfPes = 5;
+        final int numberOfCloudlets = 4;
+
+        CloudletSchedulerSpaceShared instance = newSchedulerWithSingleCoreRunningCloudlets(mips, numberOfPes, numberOfCloudlets);
+
+        final double expected = 0.8;
+        assertEquals(expected, instance.getTotalUtilizationOfCpu(0), 0);
+    }
+
+    @Test
+    public void testGetTotalUtilizationOfCpu_DualPesCloudlets_FullUsage() {
+        final long mips = 1000;
+        final int numberOfVmPes = 4;
+        final int numberOfCloudletPes = 2;
+        final int numberOfCloudlets = 2;
+
+        CloudletSchedulerSpaceShared instance = newSchedulerWithRunningCloudlets(mips, numberOfVmPes, numberOfCloudlets, numberOfCloudletPes);
+
+        final double expected = 1;
+        assertEquals(expected, instance.getTotalUtilizationOfCpu(0), 0);
+    }
+
+    /**
+     * Submits 3 cloudlets that require 2 PEs each one, totalling 6 required PES.
+     * However, since there is just 4 VM PEs, just 2 cloudlets
+     * will be added to exec list.
+     */
+    @Test
+    public void testGetTotalUtilizationOfCpu_DualPesCloudlets() {
+        final long mips = 1000;
+        final int numberOfVmPes = 4;
+        final int numberOfCloudlets = 3;
+        final int numberOfCloudletPes = 2;
+
+        CloudletSchedulerSpaceShared instance = newSchedulerWithRunningCloudlets(mips, numberOfVmPes, numberOfCloudlets, numberOfCloudletPes);
+
+        final double expected = 1;
+        assertEquals(expected, instance.getTotalUtilizationOfCpu(0), 0);
+    }
+
+    /**
+     * Submits 3 cloudlets that require 2 PEs each one, totalling 6 required PES.
+     * However, since there is just 3 VM PEs, just 1 Cloudlet
+     * will be added to exec list, that will use 2 of the 3 VM PEs.
+     */
+    @Test
+    public void testGetTotalUtilizationOfCpu_DualPesCloudlets_NotEnoughVmPes() {
+        final long mips = 1000;
+        final int numberOfVmPes = 3;
+        final int numberOfCloudlets = 3;
+        final int numberOfCloudletPes = 2;
+
+        CloudletSchedulerSpaceShared instance = newSchedulerWithRunningCloudlets(mips, numberOfVmPes, numberOfCloudlets, numberOfCloudletPes);
+
+        final double expected = 0.666;
+        assertEquals(expected, instance.getTotalUtilizationOfCpu(0), 0.001);
+    }
+
+    private CloudletSchedulerSpaceShared createCloudletSchedulerWithMipsList(int numberOfPes, double mipsOfEachPe) {
+        CloudletSchedulerSpaceShared instance = new CloudletSchedulerSpaceShared();
+        List<Double> mipsList = CloudletSchedulerUtil.createMipsList(numberOfPes, mipsOfEachPe);
+        instance.setCurrentMipsShare(mipsList);
+        instance.setVm(new VmSimple(0, mipsOfEachPe, numberOfPes));
+        return instance;
+    }
+
+    /**
+     * Creates a scheduler with a list of running cloudlets, where each Cloudlet has just one PE.
+     *
+     * @param mips the MIPS capacity of each PE from the VM's scheduler
+     * @param numberOfVmPes number of PEs of the VM's scheduler
+     * @param numberOfCloudlets number of Cloudlets to create
+     * @return the new scheduler
+     */
+    private CloudletSchedulerSpaceShared newSchedulerWithSingleCoreRunningCloudlets(long mips, int numberOfVmPes, int numberOfCloudlets) {
+        return newSchedulerWithRunningCloudlets(mips, numberOfVmPes, numberOfCloudlets, 1);
+    }
+
+    /**
+     * Creates a scheduler with a list of running cloudlets.
+     * @param mips the MIPS capacity of each PE from the VM's scheduler
+     * @param numberOfVmPes number of PEs of the VM's scheduler
+     * @param numberOfCloudlets number of Cloudlets to create
+     * @param numberOfCloudletPes the number of PEs for each Cloudlet
+     * @return the new scheduler
+     */
+    private CloudletSchedulerSpaceShared newSchedulerWithRunningCloudlets(long mips, int numberOfVmPes, int numberOfCloudlets, int numberOfCloudletPes) {
+        CloudletSchedulerSpaceShared instance = createCloudletSchedulerWithMipsList(numberOfVmPes, mips);
+
+        for(int i = 0; i < numberOfCloudlets; i++) {
+            Cloudlet c = CloudletSimpleTest.createCloudlet(i, mips, numberOfCloudletPes);
+            c.assignToDatacenter(Datacenter.NULL);
+            instance.cloudletSubmit(c);
+        }
+        return instance;
+    }
 }
