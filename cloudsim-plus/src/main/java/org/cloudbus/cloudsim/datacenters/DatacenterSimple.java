@@ -19,6 +19,7 @@ import org.cloudbus.cloudsim.allocationpolicies.VmAllocationPolicy;
 import org.cloudbus.cloudsim.schedulers.cloudlet.CloudletScheduler;
 
 import java.util.*;
+import org.cloudbus.cloudsim.hosts.power.PowerHost;
 
 import org.cloudbus.cloudsim.resources.FileStorage;
 
@@ -1081,4 +1082,5 @@ public class DatacenterSimple extends CloudSimEntity implements Datacenter {
     public String toString() {
         return String.format("Datacenter %d", getId());
     }
+
 }
