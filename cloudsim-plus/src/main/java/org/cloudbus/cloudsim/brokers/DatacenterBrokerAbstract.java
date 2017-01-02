@@ -140,9 +140,6 @@ public abstract class DatacenterBrokerAbstract extends CloudSimEntity implements
     @Override
     public void submitVmList(List<? extends Vm> list) {
         setSimulationInstanceForSubmittedVms(list);
-        List<Vm> duplicated = list.stream()
-            .filter(vm -> vmsWaitingList.indexOf(vm) != -1)
-            .collect(toList());
         vmsWaitingList.addAll(list);
 
         if(isStarted()){
