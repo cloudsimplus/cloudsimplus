@@ -42,16 +42,20 @@ import org.cloudbus.cloudsim.resources.Ram;
  * 2 cloudlets on them.
  */
 public class CloudSimExample4 {
-    private static List<Cloudlet> cloudletList;
-    private static List<Vm> vmlist;
-    private static CloudSim simulation;
+    private List<Cloudlet> cloudletList;
+    private List<Vm> vmlist;
+    private CloudSim simulation;
 
     /**
-     * Creates main() to run this example
+     * Starts the example.
      *
      * @param args
      */
     public static void main(String[] args) {
+        new CloudSimExample4();
+    }
+
+    public CloudSimExample4() {
         Log.printFormattedLine("Starting %s...", CloudSimExample4.class.getSimpleName());
         try {
             // First step: Initialize the CloudSim package. It should be called
@@ -145,7 +149,7 @@ public class CloudSimExample4 {
         }
     }
 
-    private static DatacenterSimple createDatacenter() {
+    private DatacenterSimple createDatacenter() {
         // Here are the steps needed to create a DatacenterSimple:
         // 1. We need to create a list to store
         //    our machine
@@ -195,7 +199,7 @@ public class CloudSimExample4 {
 
     //We strongly encourage users to develop their own broker policies, to submit vms and cloudlets according
     //to the specific rules of the simulated scenario
-    private static DatacenterBroker createBroker() {
+    private DatacenterBroker createBroker() {
         return new DatacenterBrokerSimple(simulation);
     }
 }

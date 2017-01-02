@@ -45,16 +45,20 @@ import org.cloudbus.cloudsim.resources.Ram;
  * describing the links, links are inserted in the code.
  */
 public class NetworkExample4 {
-    private static List<Cloudlet> cloudletList;
-    private static List<Vm> vmlist;
-    private static CloudSim simulation;
+    private List<Cloudlet> cloudletList;
+    private List<Vm> vmlist;
+    private CloudSim simulation;
 
     /**
-     * Creates main() to run this example
+     * Starts the example.
      *
      * @param args
      */
     public static void main(String[] args) {
+        new NetworkExample4();
+    }
+
+    public NetworkExample4() {
         Log.printFormattedLine("Starting %s...", NetworkExample4.class.getSimpleName());
         // First step: Initialize the CloudSim package. It should be called
         // before creating any entities.
@@ -131,7 +135,7 @@ public class NetworkExample4 {
         Log.printFormattedLine("%s finished!", NetworkExample4.class.getSimpleName());
     }
 
-    private static Datacenter createDatacenter() {
+    private Datacenter createDatacenter() {
         // Here are the steps needed to create a DatacenterSimple:
         // 1. We need to create a list to store
         //    our machine
@@ -180,7 +184,7 @@ public class NetworkExample4 {
 
     //We strongly encourage users to develop their own broker policies, to submit vms and cloudlets according
     //to the specific rules of the simulated scenario
-    private static DatacenterBroker createBroker() {
+    private DatacenterBroker createBroker() {
         return new DatacenterBrokerSimple(simulation);
     }
 }

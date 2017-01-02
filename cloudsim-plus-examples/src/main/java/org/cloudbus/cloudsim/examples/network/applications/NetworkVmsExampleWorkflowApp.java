@@ -1,4 +1,4 @@
-package org.cloudbus.cloudsim.examples.network.datacenter;
+package org.cloudbus.cloudsim.examples.network.applications;
 
 import java.util.Arrays;
 import java.util.List;

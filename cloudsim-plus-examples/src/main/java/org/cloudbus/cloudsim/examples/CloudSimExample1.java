@@ -43,19 +43,21 @@ import org.cloudbus.cloudsim.resources.Ram;
  * cloudlet on it.
  */
 public class CloudSimExample1 {
-    private static List<Cloudlet> cloudletList;
-    private static List<Vm> vmlist;
-    private static CloudSim simulation;
+    private List<Cloudlet> cloudletList;
+    private List<Vm> vmlist;
+    private CloudSim simulation;
 
     /**
-     * Creates main() to run this example.
+     * Starts the example.
      *
      * @param args the args
      */
-    @SuppressWarnings("unused")
     public static void main(String[] args) {
-        Log.printFormattedLine("Starting %s ...", CloudSimExample1.class.getSimpleName());
+        new CloudSimExample1();
+    }
 
+    public CloudSimExample1() {
+        Log.printFormattedLine("Starting %s ...", CloudSimExample1.class.getSimpleName());
         try {
             // First step: Initialize the CloudSim package. It should be called before creating any entities.
 
@@ -135,7 +137,7 @@ public class CloudSimExample1 {
      *
      * @return the Datacenter
      */
-    private static DatacenterSimple createDatacenter() {
+    private DatacenterSimple createDatacenter() {
 
         // Here are the steps needed to create a DatacenterSimple:
         // 1. We need to create a list to store
@@ -193,7 +195,7 @@ public class CloudSimExample1 {
      *
      * @return the Datacenter broker
      */
-    private static DatacenterBroker createBroker() {
+    private DatacenterBroker createBroker() {
         return new DatacenterBrokerSimple(simulation);
     }
 

@@ -50,7 +50,7 @@ public class CloudSimExample0 {
     private int numberOfCreatedHosts = 0;
 
     /**
-     * Starts the simulation.
+     * Starts the example.
      * @param args
      */
     public static void main(String[] args) {

@@ -43,18 +43,22 @@ import org.cloudsimplus.util.tablebuilder.TextTableBuilder;
  * cloudlets of 2 users on them.
  */
 public class CloudSimExample5 {
-    private static List<Cloudlet> cloudletList1;
-    private static List<Cloudlet> cloudletList2;
-    private static List<Vm> vmlist1;
-    private static List<Vm> vmlist2;
-    private static CloudSim simulation;
+    private List<Cloudlet> cloudletList1;
+    private List<Cloudlet> cloudletList2;
+    private List<Vm> vmlist1;
+    private List<Vm> vmlist2;
+    private CloudSim simulation;
 
     /**
-     * Creates main() to run this example
+     * Starts the example.
      *
      * @param args
      */
     public static void main(String[] args) {
+        new CloudSimExample5();
+    }
+
+    public CloudSimExample5() {
         Log.printFormattedLine("Starting %s...", CloudSimExample5.class.getSimpleName());
         // First step: Initialize the CloudSim package. It should be called
         // before creating any entities.
@@ -147,15 +151,15 @@ public class CloudSimExample5 {
         List<Cloudlet> newList2 = broker2.getCloudletsFinishedList();
 
         new CloudletsTableBuilderHelper(newList1)
-                .setPrinter(new TextTableBuilder("User " + broker1))
+                .setPrinter(new TextTableBuilder(broker1.getName()))
                 .build();
         new CloudletsTableBuilderHelper(newList2)
-                .setPrinter(new TextTableBuilder("User " + broker2))
+                .setPrinter(new TextTableBuilder(broker2.getName()))
                 .build();
         Log.printFormattedLine("%s finished!", CloudSimExample5.class.getSimpleName());
     }
 
-    private static Datacenter createDatacenter() {
+    private Datacenter createDatacenter() {
         // Here are the steps needed to create a DatacenterSimple:
         // 1. We need to create a list to store
         //    our machine
@@ -204,7 +208,7 @@ public class CloudSimExample5 {
 
     //We strongly encourage users to develop their own broker policies, to submit vms and cloudlets according
     //to the specific rules of the simulated scenario
-    private static DatacenterBroker createBroker(int id) {
+    private DatacenterBroker createBroker(int id) {
         return new DatacenterBrokerSimple(simulation);
     }
 }

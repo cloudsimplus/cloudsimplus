@@ -1,4 +1,4 @@
-package org.cloudbus.cloudsim.examples.network.datacenter;
+package org.cloudbus.cloudsim.examples.network.applications;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -61,6 +61,7 @@ public class NetworkVmsExample1 {
     private static final long PACKET_DATA_LENGTH_IN_BYTES = 1000;
     private static final int NUMBER_OF_PACKETS_TO_SEND = 1;
     public static final long  TASK_RAM = 100;
+
     private final CloudSim simulation;
 
     private List<NetworkVm> vmList;
@@ -69,6 +70,15 @@ public class NetworkVmsExample1 {
     private DatacenterBroker broker;
 
     private int currentNetworkCloudletId = -1;
+
+    /**
+     * Starts the execution of the example.
+     *
+     * @param args command line arguments
+     */
+    public static void main(String[] args) {
+        new NetworkVmsExample1();
+    }
 
     /**
      * Creates, starts, stops the simulation and shows results.
@@ -282,15 +292,6 @@ public class NetworkVmsExample1 {
                 netCloudlet.getTasks().size(), NETCLOUDLET_EXECUTION_TASK_LENGTH);
         task.setMemory(TASK_RAM);
         netCloudlet.addTask(task);
-    }
-
-    /**
-     * Starts the execution of the example.
-     *
-     * @param args command line arguments
-     */
-    public static void main(String[] args) {
-        new NetworkVmsExample1();
     }
 
 
