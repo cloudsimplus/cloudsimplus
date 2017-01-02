@@ -140,11 +140,6 @@ public abstract class CloudletAbstract implements Cloudlet {
     private double submissionDelay;
 
     /**
-     * @see #getSimulation()
-     */
-    private Simulation simulation;
-
-    /**
      * Creates a Cloudlet with no priority and file size and output size equal to 1.
      *
      * @param cloudletId     id of the Cloudlet
@@ -173,7 +168,6 @@ public abstract class CloudletAbstract implements Cloudlet {
 
         this.lastExecutedDatacenterIndex = NOT_ASSIGNED;
         setBroker(DatacenterBroker.NULL);
-        this.simulation = Simulation.NULL;
         setFinishTime(NOT_ASSIGNED);    // meaning this Cloudlet hasn't finished yet
         setVm(Vm.NULL);
 
@@ -431,7 +425,7 @@ public abstract class CloudletAbstract implements Cloudlet {
         }
 
         if (newStatus == Status.SUCCESS) {
-            setFinishTime(simulation.clock());
+            setFinishTime(getSimulation().clock());
         }
 
         write("Sets Cloudlet status from %s to %s", status.name(), newStatus.name());
@@ -552,12 +546,12 @@ public abstract class CloudletAbstract implements Cloudlet {
             history.append(this.newline);
             history.append("------------------------------------------");
             history.append(this.newline);
-            history.append(num.format(simulation.clock()));
+            history.append(num.format(getSimulation().clock()));
             history.append("   Creates Cloudlet ID #").append(id);
             history.append(this.newline);
         }
 
-        history.append(num.format(simulation.clock()));
+        history.append(num.format(getSimulation().clock()));
         history.append("   ").append(str).append(newline);
     }
 
@@ -871,7 +865,7 @@ public abstract class CloudletAbstract implements Cloudlet {
         }
 
         final ExecutionInDatacenterInfo dcInfo = executionInDatacenterInfoList.get(lastExecutedDatacenterIndex);
-        dcInfo.arrivalTime = simulation.clock();
+        dcInfo.arrivalTime = getSimulation().clock();
 
         return dcInfo.arrivalTime;
     }
@@ -893,13 +887,7 @@ public abstract class CloudletAbstract implements Cloudlet {
 
     @Override
     public Simulation getSimulation() {
-        return this.simulation;
-    }
-
-    @Override
-    public Cloudlet setSimulation(Simulation simulation) {
-        this.simulation = simulation;
-        return this;
+        return broker.getSimulation();
     }
 
     /**
@@ -957,15 +945,13 @@ public abstract class CloudletAbstract implements Cloudlet {
         CloudletAbstract that = (CloudletAbstract) o;
 
         if (id != that.id) return false;
-        if (!broker.equals(that.broker)) return false;
-        return simulation.equals(that.simulation);
+        return broker.equals(that.broker);
     }
 
     @Override
     public int hashCode() {
         int result = id;
         result = 31 * result + broker.hashCode();
-        result = 31 * result + simulation.hashCode();
         return result;
     }
 }

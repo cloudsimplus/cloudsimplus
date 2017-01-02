@@ -2,12 +2,15 @@ package org.cloudbus.cloudsim.schedulers.cloudlet;
 
 import java.util.Arrays;
 import java.util.List;
+
+import org.cloudbus.cloudsim.brokers.DatacenterBrokerSimple;
 import org.cloudbus.cloudsim.cloudlets.Cloudlet;
 import org.cloudbus.cloudsim.cloudlets.CloudletExecutionInfo;
 import org.cloudbus.cloudsim.cloudlets.CloudletSimpleTest;
 import org.cloudbus.cloudsim.core.CloudSim;
 import org.cloudbus.cloudsim.datacenters.Datacenter;
 import org.cloudbus.cloudsim.mocks.CloudSimMocker;
+import org.cloudbus.cloudsim.mocks.Mocks;
 import org.cloudbus.cloudsim.vms.Vm;
 import org.cloudbus.cloudsim.vms.VmSimple;
 import org.junit.Test;
@@ -28,7 +31,7 @@ public class CloudletSchedulerSpaceSharedTest {
         CloudSim cloudsim = CloudSimMocker.createMock(
                 mocker -> mocker.clock(clockMethodReturnValue).times(expectedClockCalls));
         Cloudlet c = CloudletSimpleTest.createCloudlet(0, 1000, 1);
-        c.setSimulation(cloudsim);
+        c.setBroker(Mocks.createMockBroker(cloudsim));
         CloudletExecutionInfo rcl = new CloudletExecutionInfo(c);
         CloudletSchedulerSpaceShared instance = new CloudletSchedulerSpaceShared();
         instance.cloudletFinish(rcl);
@@ -47,7 +50,7 @@ public class CloudletSchedulerSpaceSharedTest {
 
         CloudletSchedulerSpaceShared instance = new CloudletSchedulerSpaceShared();
         Vm vm = new VmSimple(0, mips, 1);
-        vm.setSimulation(cloudsim);
+        vm.setBroker(Mocks.createMockBroker(cloudsim));
         instance.setVm(vm);
         List<Double> mipsList = Arrays.asList(mips);
         instance.setCurrentMipsShare(mipsList);
@@ -68,7 +71,7 @@ public class CloudletSchedulerSpaceSharedTest {
         CloudSim cloudsim = CloudSimMocker.createMock(
                 mocker -> mocker.clock(clockMethodReturnValue).times(expectedClockCalls));
         Cloudlet cloudlet = CloudletSimpleTest.createCloudlet(0, 1000, 1);
-        cloudlet.setSimulation(cloudsim);
+        cloudlet.setBroker(Mocks.createMockBroker(cloudsim));
         CloudletExecutionInfo rcl = new CloudletExecutionInfo(cloudlet);
         CloudletSchedulerSpaceShared instance = new CloudletSchedulerSpaceShared();
         instance.cloudletFinish(rcl);

@@ -125,11 +125,6 @@ public class VmSimple implements Vm {
     private List<EventListener<VmDatacenterEventInfo>> onVmCreationFailureListeners;
 
     /**
-     * @see #getSimulation()
-     */
-    private Simulation simulation;
-
-    /**
      * Creates a Vm with 1024 MB of RAM, 1000 Megabits/s of Bandwidth and 1024 MB of Storage Size.
      *
      * To change these values, use the respective setters. While the Vm {@link #isCreated()
@@ -157,7 +152,6 @@ public class VmSimple implements Vm {
         setStorage(new RawStorage(1024));
         setSubmissionDelay(0);
         setVmm("Xen");
-        this.simulation = Simulation.NULL;
         setCloudletScheduler(CloudletScheduler.NULL);
         stateHistory = new LinkedList<>();
 
@@ -269,7 +263,7 @@ public class VmSimple implements Vm {
 
     @Override
     public double getTotalUtilizationOfCpu() {
-        return getTotalUtilizationOfCpu(simulation.clock());
+        return getTotalUtilizationOfCpu(getSimulation().clock());
     }
 
     @Override
@@ -651,15 +645,13 @@ public class VmSimple implements Vm {
         VmSimple vmSimple = (VmSimple) o;
 
         if (id != vmSimple.id) return false;
-        if (!broker.equals(vmSimple.broker)) return false;
-        return simulation.equals(vmSimple.simulation);
+        return broker.equals(vmSimple.broker);
     }
 
     @Override
     public int hashCode() {
         int result = id;
         result = 31 * result + broker.hashCode();
-        result = 31 * result + simulation.hashCode();
         return result;
     }
 
@@ -684,15 +676,8 @@ public class VmSimple implements Vm {
 
     @Override
     public Simulation getSimulation() {
-        return this.simulation;
+        return broker.getSimulation();
     }
-
-    @Override
-    public Vm setSimulation(Simulation simulation) {
-        this.simulation = simulation;
-        return this;
-    }
-
 
     @Override
     public double getSubmissionDelay() {

@@ -139,7 +139,6 @@ public abstract class DatacenterBrokerAbstract extends CloudSimEntity implements
      */
     @Override
     public void submitVmList(List<? extends Vm> list) {
-        setSimulationInstanceForSubmittedVms(list);
         vmsWaitingList.addAll(list);
 
         if(isStarted()){
@@ -164,10 +163,6 @@ public abstract class DatacenterBrokerAbstract extends CloudSimEntity implements
         submitCloudletList(newList);
     }
 
-    private void setSimulationInstanceForSubmittedVms(List<? extends Vm> list) {
-        list.forEach(vm -> vm.setSimulation(this.getSimulation()));
-    }
-
     /**
      * {@inheritDoc}
      * <p>If the entity already started (the simulation is running),
@@ -184,7 +179,6 @@ public abstract class DatacenterBrokerAbstract extends CloudSimEntity implements
      */
     @Override
     public void submitCloudletList(List<? extends Cloudlet> list) {
-        setSimulationInstanceForSubmittedCloudlets(list);
         getCloudletsWaitingList().addAll(list);
         Log.printFormattedLine(
             "%.2f: %s: List of %d Cloudlets submitted to the broker during simulation execution.",
@@ -199,12 +193,6 @@ public abstract class DatacenterBrokerAbstract extends CloudSimEntity implements
     public void submitCloudletList(List<? extends Cloudlet> list, double submissionDelay) {
         setDelayForEntitiesWithNoDelay(list, submissionDelay);
         submitCloudletList(list);
-    }
-
-    private void setSimulationInstanceForSubmittedCloudlets(List<? extends Cloudlet> list) {
-        for(Cloudlet cloudlet: list){
-            cloudlet.setSimulation(this.getSimulation());
-        }
     }
 
     /**
