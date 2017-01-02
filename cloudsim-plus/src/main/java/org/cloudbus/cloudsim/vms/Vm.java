@@ -1,6 +1,7 @@
 package org.cloudbus.cloudsim.vms;
 
 import org.cloudbus.cloudsim.brokers.DatacenterBroker;
+import org.cloudsimplus.autoscaling.HorizontalVmScaling;
 import org.cloudbus.cloudsim.core.Delayable;
 import org.cloudbus.cloudsim.core.UniquelyIdentificable;
 import org.cloudbus.cloudsim.datacenters.Datacenter;
@@ -9,7 +10,10 @@ import org.cloudbus.cloudsim.resources.*;
 import org.cloudbus.cloudsim.schedulers.cloudlet.CloudletScheduler;
 import java.util.Collections;
 import java.util.List;
+import java.util.function.Predicate;
+
 import org.cloudbus.cloudsim.core.Simulation;
+import org.cloudsimplus.autoscaling.VmScaling;
 import org.cloudsimplus.listeners.VmHostEventInfo;
 import org.cloudsimplus.listeners.VmDatacenterEventInfo;
 import org.cloudsimplus.listeners.EventListener;
@@ -278,13 +282,21 @@ public interface Vm extends UniquelyIdentificable, Delayable, Comparable<Vm> {
     List<VmStateHistoryEntry> getStateHistory();
 
     /**
-     * Gets total CPU utilization percentage of all clouddlets running on this
-     * VM at the given time
+     * Gets total CPU utilization percentage of all Clouddlets running on this
+     * VM at the given time.
      *
      * @param time the time
      * @return total utilization percentage
      */
     double getTotalUtilizationOfCpu(double time);
+
+    /**
+     * Gets total CPU utilization percentage of all Clouddlets running on this
+     * VM at the current simulation time.
+     *
+     * @return total utilization percentage fort the current time
+     */
+    double getTotalUtilizationOfCpu();
 
     /**
      * Gets the total CPU utilization of all cloudlets running on this VM at the
@@ -447,6 +459,33 @@ public interface Vm extends UniquelyIdentificable, Delayable, Comparable<Vm> {
 
 
     /**
+     * Gets the {@link HorizontalVmScaling} that will check if the Vm is overloaded,
+     * based on some conditions defined by a {@link Predicate} given
+     * to the HorizontalVmScaling.
+     *
+     * <p><b>If no HorizontalVmScaling is set, the {@link #getBroker() Broker} will not dynamically
+     * create VMs to balance arrived Cloudlets.</b></p>
+     *
+     * @return
+     */
+    VmScaling getHorizontalScaling();
+
+    /**
+     * Sets the {@link HorizontalVmScaling} that will check if the Vm is overloaded,
+     * based on some conditions defined by a {@link Predicate} given
+     * to the HorizontalVmScaling.
+     *
+     * <p><b>If no HorizontalVmScaling is set, the {@link #getBroker() Broker} will not dynamically
+     * create VMs to balance arrived Cloudlets.</b></p>
+     *
+     * @param horizontalScaling the HorizontalVmScaling to set
+     * @return
+     * @throws IllegalArgumentException if the given Vm Scaling already is linked to a Vm. Each VM must have
+     * its own scaling object.
+     */
+    Vm setHorizontalScaling(VmScaling horizontalScaling) throws IllegalArgumentException;
+
+    /**
      * An attribute that implements the Null Object Design Pattern for {@link Vm}
      * objects.
      */
@@ -483,6 +522,7 @@ public interface Vm extends UniquelyIdentificable, Delayable, Comparable<Vm> {
         @Override public long getSize(){ return 0; }
         @Override public List<VmStateHistoryEntry> getStateHistory() { return Collections.emptyList(); }
         @Override public double getTotalUtilizationOfCpu(double time) { return 0.0; }
+        @Override public double getTotalUtilizationOfCpu() { return 0; }
         @Override public double getTotalUtilizationOfCpuMips(double time) { return 0.0; }
         @Override public String getUid(){ return ""; }
         @Override public DatacenterBroker getBroker() { return DatacenterBroker.NULL; }
@@ -506,5 +546,7 @@ public interface Vm extends UniquelyIdentificable, Delayable, Comparable<Vm> {
         @Override public Simulation getSimulation() { return Simulation.NULL; }
         @Override public Vm setSimulation(Simulation simulation) { return this; }
         @Override public String toString() { return "Vm.NULL"; }
+        @Override public VmScaling getHorizontalScaling(){ return VmScaling.NULL; }
+        @Override public Vm setHorizontalScaling(VmScaling horizontalScaling) throws IllegalArgumentException { return this; }
     };
 }

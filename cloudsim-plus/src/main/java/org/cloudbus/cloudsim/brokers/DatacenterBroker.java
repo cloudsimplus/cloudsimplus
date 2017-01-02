@@ -2,6 +2,7 @@ package org.cloudbus.cloudsim.brokers;
 
 import java.util.Collections;
 import java.util.List;
+
 import org.cloudbus.cloudsim.cloudlets.Cloudlet;
 import org.cloudbus.cloudsim.datacenters.Datacenter;
 import org.cloudbus.cloudsim.vms.Vm;
@@ -54,7 +55,7 @@ public interface DatacenterBroker extends SimEntity {
     Vm getWaitingVm(final int index);
 
     /**
-     * Gets the list of VMs submitted to the broker that are waiting to be created inside
+     * Gets a List of VMs submitted to the broker that are waiting to be created inside
      * some Datacenter yet.
      *
      * @param <T> the class of VMs inside the list
@@ -71,6 +72,20 @@ public interface DatacenterBroker extends SimEntity {
     <T extends Vm> List<T> getVmsCreatedList();
 
     /**
+     * Submits a single {@link Vm} to the broker.
+     *
+     * @param vm the Vm to be submitted
+     */
+    void submitVm(Vm vm);
+
+    /**
+     * Submits a single {@link Cloudlet} to the broker.
+     *
+     * @param cloudlet the Cloudlet to be submitted
+     */
+    void submitCloudlet(Cloudlet cloudlet);
+
+    /**
      * Sends a list of cloudlets for the broker to request its creation inside some VM, following the submission delay
      * specified in each cloudlet (if any).
      * All cloudlets will be added to the {@link #getCloudletsWaitingList()}.
@@ -84,6 +99,7 @@ public interface DatacenterBroker extends SimEntity {
 
     /**
      * Sends a list of cloudlets for the broker that their creation inside some VM will be requested just after a given delay.
+     * Just the Cloudlets that don't have a delay already assigned will have its submission delay changed.
      * All cloudlets will be added to the {@link #getCloudletsWaitingList()},
      * setting their submission delay to the specified value.
      *
@@ -110,6 +126,7 @@ public interface DatacenterBroker extends SimEntity {
 
     /**
      * Sends a list of VMs for the broker that their creation inside some Host will be requested just after a given delay.
+     * Just the VMs that don't have a delay already assigned will have its submission delay changed.
      * All VMs will be added to the {@link #getVmsWaitingList()},
      * setting their submission delay to the specified value.
      *
@@ -183,7 +200,9 @@ public interface DatacenterBroker extends SimEntity {
 		@Override public Vm getWaitingVm(int index) { return Vm.NULL; }
 		@Override public <T extends Vm> List<T> getVmsWaitingList() { return Collections.emptyList(); }
 		@Override public <T extends Vm> List<T> getVmsCreatedList() { return Collections.emptyList(); }
-		@Override public void submitCloudletList(List<? extends Cloudlet> list) {}
+        @Override public void submitVm(Vm vm) {}
+        @Override public void submitCloudlet(Cloudlet cloudlet) {}
+        @Override public void submitCloudletList(List<? extends Cloudlet> list) {}
 		@Override public void submitCloudletList(List<? extends Cloudlet> list, double submissionDelay) {}
 		@Override public void submitVmList(List<? extends Vm> list) {}
         @Override public void submitVmList(List<? extends Vm> list, double submissionDelay) {}
@@ -191,7 +210,14 @@ public interface DatacenterBroker extends SimEntity {
 		@Override public Vm selectVmForWaitingCloudlet(Cloudlet cloudlet) { return Vm.NULL; }
 		@Override public Datacenter selectDatacenterForWaitingVms() { return Datacenter.NULL; }
 		@Override public Datacenter selectFallbackDatacenterForWaitingVms() { return Datacenter.NULL; }
+        @Override public long getNumberOfCloudletCreationRequests() { return 0; }
         @Override public void shutdownEntity() {}
         @Override public SimEntity setName(String newName) throws IllegalArgumentException { return this; }
     };
+
+    /**
+     * Gets the total number of Cloudlet creation requests received up to now.
+     * @return
+     */
+    long getNumberOfCloudletCreationRequests();
 }

@@ -162,7 +162,6 @@ public final class PeList {
      */
     public static void setStatusFailed(List<? extends Pe> peList, int hostId, boolean failed) {
         String status = (failed ? "FAILED" : "WORKING");
-        Log.printConcatLine("Host ", hostId, " is ", status);
         setStatusFailed(peList, failed);
     }
 

@@ -80,7 +80,7 @@ import java.util.List;
 public class PauseSimulationAtGivenTimeExample1 {
     /**
      * The interval in which the Datacenter will schedule events.
-     * As lower is this interval, sooner the processing ofCloudlets inside VMs
+     * As lower is this interval, sooner the processing of VMs and Cloudlets
      * is updated and you will get more notifications about the simulation execution.
      * However, as higher is this value, it can affect the simulation performance.
      *

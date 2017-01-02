@@ -207,6 +207,24 @@ public interface Simulation {
      */
     Simulation addOnEventProcessingListener(EventListener<SimEvent> listener);
 
+    /**
+     * Adds a {@link EventListener} object that will be notified every time when the
+     * simulation clock advances. Notifications are sent in a second interval to avoid notification flood.
+     * Thus, if the clock changes, for instance, from 1.0, to 1.1, 2.0, 2.1, 2.2, 2.5 and then 3.2,
+     * notifications will just be sent for the times 1, 2 and 3 that represent the integer
+     * part of the simulation time.
+     *
+     * @param listener the event listener to add
+     */
+    Simulation addOnClockTickListener(EventListener<EventInfo> listener);
+
+    /**
+     * Removes a listener from the onClockTickListener List.
+     *
+     * @param listener the listener to remove
+     * @return true if the listener was found and removed, false otherwise
+     */
+    boolean removeOnClockTickListener(EventListener<EventInfo> listener);
 
     /**
      * Pauses an entity for some time.
@@ -469,6 +487,8 @@ public interface Simulation {
         @Override public void sendFirst(int src, int dest, double delay, int tag, Object data) {}
         @Override public void sendNow(int src, int dest, int tag, Object data) {}
         @Override public Simulation addOnEventProcessingListener(EventListener<SimEvent> listener) { return this; }
+        @Override public Simulation addOnClockTickListener(EventListener<EventInfo> listener) { return this; }
+        @Override public boolean removeOnClockTickListener(EventListener<EventInfo> listener) { return false; }
         @Override public double start() throws RuntimeException { return 0; }
         @Override public boolean terminate() {
             return false;

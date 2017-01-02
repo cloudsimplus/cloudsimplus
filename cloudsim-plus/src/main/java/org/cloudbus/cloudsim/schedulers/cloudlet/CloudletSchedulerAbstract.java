@@ -253,8 +253,8 @@ public abstract class CloudletSchedulerAbstract implements CloudletScheduler {
     @Override
     public double getTotalUtilizationOfCpu(double time) {
         return getCloudletExecList().stream()
-                .mapToDouble(rcl -> rcl.getCloudlet().getUtilizationOfCpu(time))
-                .sum();
+            .mapToDouble(rcl -> rcl.getCloudlet().getUtilizationOfCpu(time))
+            .sum();
     }
 
     @Override

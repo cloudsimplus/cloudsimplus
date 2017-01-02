@@ -4,6 +4,19 @@ Lists the main changes in the project.
 
 ## [Current Development Version]
 
+### Addedd
+- Added the methods addOnClockTickListener and removeOnClockTickListener to Simulation interface to allow defining a Listener to be notified every time the simulation clock advances.
+- Added methods addOnClockTickListener() and removeOnClockTickListener() in Simulation interface in order to add
+  and remove listeners for the new OnclockTick event, that is fired every time that the simulation clock 
+  advances.
+- Added Vm.getTotalUtilizationOfCpu() to get Vm's CPU utilization percentage for the current simulation time.
+- Added Broker.submitVm and Broker.submitCloudlet to add a single Vm or Cloudlet to a broker.
+- Introduced a `VmScaling` interface and a `HorizontalVmScalingSimple` class,
+  inside the [autoscaling package](cloudsim-plus/src/main/java/org/cloudsimplus/autoscaling), that provides a horizontal scaling mechanism
+  for VMs, allowing dynamic creation of VMs according to an overload condition. Such a condition is defined
+  by a predicate that can check different VM resources usage such as CPU, RAM or BW.
+  See the new [LoadBalancerByVmHorizontalScalingExample](cloudsim-plus-examples/src/main/java/org/cloudsimplus/examples/LoadBalancerByVmHorizontalScalingExample.java) for a usage example.
+
 ### Changed
 - Renamed the class `GraphReader` to `TopologyReader`.
 

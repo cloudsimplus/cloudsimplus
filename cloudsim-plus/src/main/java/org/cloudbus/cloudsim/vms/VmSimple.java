@@ -15,6 +15,7 @@ import org.cloudbus.cloudsim.brokers.DatacenterBroker;
 import org.cloudbus.cloudsim.cloudlets.Cloudlet;
 import org.cloudbus.cloudsim.core.Simulation;
 import org.cloudbus.cloudsim.hosts.Host;
+import org.cloudsimplus.autoscaling.VmScaling;
 import org.cloudsimplus.listeners.VmHostEventInfo;
 import org.cloudsimplus.listeners.VmDatacenterEventInfo;
 import org.cloudsimplus.listeners.EventListener;
@@ -39,6 +40,7 @@ import org.cloudbus.cloudsim.schedulers.cloudlet.CloudletScheduler;
  * without defining a specific method for each one.
  */
 public class VmSimple implements Vm {
+    private VmScaling horizontalScaling;
     private boolean failed;
 
     /**
@@ -163,6 +165,7 @@ public class VmSimple implements Vm {
         this.onHostDeallocationListeners = new ArrayList<>();
         this.onVmCreationFailureListeners = new ArrayList<>();
         this.onUpdateVmProcessingListeners = new ArrayList<>();
+        this.horizontalScaling = VmScaling.NULL;
     }
 
     /**
@@ -262,6 +265,11 @@ public class VmSimple implements Vm {
         }
 
         return (int) (getCloudletScheduler().getCurrentRequestedUtilizationOfRam() * getRam());
+    }
+
+    @Override
+    public double getTotalUtilizationOfCpu() {
+        return getTotalUtilizationOfCpu(simulation.clock());
     }
 
     @Override
@@ -626,7 +634,16 @@ public class VmSimple implements Vm {
 
     @Override
     public int compareTo(Vm o) {
-        return this.getUid().compareTo(o.getUid());
+        return Integer.compare(getId(), o.getId());
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if(!(obj instanceof Vm)){
+            return false;
+        }
+
+        return this.getId() == ((Vm) obj).getId();
     }
 
     @Override
@@ -705,5 +722,26 @@ public class VmSimple implements Vm {
 
         VmDatacenterEventInfo info = VmDatacenterEventInfo.of(this, failedDatacenter);
         onVmCreationFailureListeners.forEach(l -> l.update(info));
+    }
+
+
+    @Override
+    public VmScaling getHorizontalScaling() {
+        return horizontalScaling;
+    }
+
+    @Override
+    public Vm setHorizontalScaling(VmScaling horizontalScaling) throws IllegalArgumentException {
+        if(horizontalScaling.getVm() != null && horizontalScaling.getVm() != Vm.NULL && horizontalScaling.getVm() != this){
+            throw new IllegalArgumentException(
+                "The horizontalScaling given already is linked to a Vm. " +
+                "Each Vm must have its own scaling object or no scaling at all. " +
+                "A new scaling has to be provided to this Vm.");
+        }
+
+        this.horizontalScaling = (Objects.isNull(horizontalScaling) ? VmScaling.NULL : horizontalScaling);
+        this.horizontalScaling.setVm(this);
+        this.addOnUpdateVmProcessingListener(listener -> this.horizontalScaling.scaleIfOverloaded(listener.getTime()));
+        return this;
     }
 }

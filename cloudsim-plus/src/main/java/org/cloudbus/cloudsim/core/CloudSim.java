@@ -129,6 +129,7 @@ public class CloudSim implements Simulation {
 
     private List<EventListener<SimEvent>> onEventProcessingListeners;
     private List<EventListener<EventInfo>> onSimulationPausedListeners;
+    private List<EventListener<EventInfo>> onClockTickListeners;
 
     /**
      * Creates a CloudSim simulation using a default calendar.
@@ -166,6 +167,7 @@ public class CloudSim implements Simulation {
         this.alreadyRunOnce = false;
         this.onEventProcessingListeners = new ArrayList<>();
         this.onSimulationPausedListeners = new ArrayList<>();
+        this.onClockTickListeners = new ArrayList<>();
 
         // NOTE: the order for the lines below is important
         this.calendar = (Objects.isNull(calendar) ? Calendar.getInstance() : calendar);
@@ -251,6 +253,24 @@ public class CloudSim implements Simulation {
     @Override
     public double clock() {
         return clock;
+    }
+
+    private void setClock(final double newTime){
+        final double oldTime = clock;
+        this.clock = newTime;
+        notifyOnClockTickListenersIfClockChanged(oldTime, newTime);
+    }
+
+    /**
+     * Notifies all Listeners of onClockTick event when the simulation clock changes.
+     * @param oldClock the previous simulation clock time
+     * @param newClock the new simulation clock time (that can be equals to the old time)
+     */
+    private void notifyOnClockTickListenersIfClockChanged(double oldClock, double newClock) {
+        if((long)newClock > (long)oldClock || (oldClock == 0 && newClock > 0) ){
+            EventInfo info = EventInfo.of(newClock);
+            onClockTickListeners.forEach(l -> l.update(info));
+        }
     }
 
     @Override
@@ -485,7 +505,7 @@ public class CloudSim implements Simulation {
         if (e.eventTime() < clock) {
             throw new IllegalArgumentException("Past event detected.");
         }
-        clock = e.eventTime();
+        setClock(e.eventTime());
         notifyOnEventProcessingListeners(e);
 
         // Ok now process it
@@ -646,7 +666,7 @@ public class CloudSim implements Simulation {
         // this block allows termination of simulation at a specific time
         if (isTerminationRequested() && clock >= terminateAt) {
             terminate();
-            clock = terminateAt;
+            setClock(terminateAt);
             return true;
         }
 
@@ -668,7 +688,7 @@ public class CloudSim implements Simulation {
     public boolean doPause() {
         if(running && isPauseRequested()) {
             paused=true;
-            clock = pauseAt;
+            setClock(pauseAt);
             notifyOnSimulationPausedListeners();
             return true;
         }
@@ -775,6 +795,19 @@ public class CloudSim implements Simulation {
         }
 
         return this;
+    }
+
+    @Override
+    public Simulation addOnClockTickListener(EventListener<EventInfo> listener) {
+        if(!Objects.isNull(listener)) {
+            onClockTickListeners.add(listener);
+        }
+        return this;
+    }
+
+    @Override
+    public boolean removeOnClockTickListener(EventListener<EventInfo> listener) {
+        return onClockTickListeners.remove(listener);
     }
 
     @Override
