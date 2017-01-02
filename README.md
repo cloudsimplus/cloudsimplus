@@ -110,7 +110,6 @@ CloudSim Plus has a simpler structure that can be understood right away. It cons
 - [cloudsim-plus-benchmarks](cloudsim-plus-benchmarks): a new module used just internally to implement micro benchmarks using the 
   [Java Microbenchmark Harness framework (JMH)](http://openjdk.java.net/projects/code-tools/jmh/) to enable measuring critical methods of the 
   CloudSim Plus API that have a high impact in the simulation framework performance.
-- [distribution](distribution): a module used just to build jar files for distribution of packaged CloudSim Plus binaries, documentation and source code.   
 
 <p align="right"><a href="#top">:arrow_up:</a></p>
 
