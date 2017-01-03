@@ -12,7 +12,7 @@ import org.cloudbus.cloudsim.cloudlets.Cloudlet;
 import org.cloudbus.cloudsim.cloudlets.CloudletExecutionInfo;
 
 import org.cloudbus.cloudsim.resources.Processor;
-import org.cloudbus.cloudsim.util.Consts;
+import org.cloudbus.cloudsim.util.Conversion;
 
 /**
  * CloudletSchedulerTimeShared implements a policy of scheduling performed by a
@@ -170,7 +170,7 @@ public class CloudletSchedulerTimeShared extends CloudletSchedulerAbstract {
          */
         final double cloudletsPesNumber = getTotalPesFromAllRunningCloudlets();
         final double peCapacityPercentForEachCloudlet =
-            cloudletsPesNumber > getVm().getNumberOfPes() ? getVm().getNumberOfPes() / cloudletsPesNumber : Consts.HUNDRED_PERCENT;
+            cloudletsPesNumber > getVm().getNumberOfPes() ? getVm().getNumberOfPes() / cloudletsPesNumber : Conversion.HUNDRED_PERCENT;
         return  vmTotalCpuUsagePercent * peCapacityPercentForEachCloudlet;
     }
 

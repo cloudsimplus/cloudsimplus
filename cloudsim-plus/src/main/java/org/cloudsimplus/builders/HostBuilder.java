@@ -27,10 +27,11 @@ import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.List;
-import org.cloudbus.cloudsim.util.Consts;
+
 import org.cloudbus.cloudsim.hosts.Host;
 import org.cloudbus.cloudsim.hosts.HostSimple;
 import org.cloudbus.cloudsim.schedulers.vm.VmScheduler;
+import org.cloudbus.cloudsim.util.Conversion;
 import org.cloudsimplus.listeners.EventListener;
 import org.cloudsimplus.listeners.HostUpdatesVmsProcessingEventInfo;
 import org.cloudbus.cloudsim.resources.Pe;
@@ -50,7 +51,7 @@ public class HostBuilder extends Builder {
     private double mips = 2000;
     private int    pes = 1;
     private long   bw = 10000;
-    private long   storage = Consts.MILLION;
+    private long   storage = Conversion.MILLION;
     private long   ram = 1024;
     private Class<? extends VmSchedulerAbstract> vmSchedulerClass = VmSchedulerTimeShared.class;
     private EventListener<HostUpdatesVmsProcessingEventInfo> onUpdateVmsProcessingListener = EventListener.NULL;

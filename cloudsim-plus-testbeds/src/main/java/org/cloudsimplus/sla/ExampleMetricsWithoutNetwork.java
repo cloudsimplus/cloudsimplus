@@ -107,8 +107,8 @@ public final class ExampleMetricsWithoutNetwork {
 
         //VM Parameters
         int vmid = 0;
-        long size = 10000; //image size (MB)
-        int ram = 512; //vm memory (MB)
+        long size = 10000; //image size (MEGABYTE)
+        int ram = 512; //vm memory (MEGABYTE)
         int mips = 1000;
         long bw = 1000;
 
@@ -326,7 +326,7 @@ public final class ExampleMetricsWithoutNetwork {
 
         int mips = 10000;
         int hostId = 0;
-        int ram = 8192; // host memory (MB)
+        int ram = 8192; // host memory (MEGABYTE)
         long storage = 1000000; // host storage
         long bw = 100000;
 

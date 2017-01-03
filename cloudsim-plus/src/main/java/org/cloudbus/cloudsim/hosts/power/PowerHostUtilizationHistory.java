@@ -40,7 +40,7 @@ public class PowerHostUtilizationHistory extends PowerHostSimple {
      * Creates a PowerHostUtilizationHistory.
      *
      * @param id the host id
-     * @param storage the storage capacity in MB
+     * @param storage the storage capacity in MEGABYTE
      * @param peList the host's PEs list
      */
     public PowerHostUtilizationHistory(int id, long storage, List<Pe> peList) {
@@ -51,9 +51,9 @@ public class PowerHostUtilizationHistory extends PowerHostSimple {
 	 * Creates a PowerHostUtilizationHistory with the given parameters.
 	 *
 	 * @param id the host id
-     * @param ramProvisioner the ram provisioner with capacity in MB
+     * @param ramProvisioner the ram provisioner with capacity in MEGABYTE
      * @param bwProvisioner the bw provisioner with capacity in Megabits/s
-     * @param storage the storage capacity in MB
+     * @param storage the storage capacity in MEGABYTE
 	 * @param peList the host's PEs list
 	 * @param vmScheduler the vm scheduler
 	 * @param powerModel the power consumption model

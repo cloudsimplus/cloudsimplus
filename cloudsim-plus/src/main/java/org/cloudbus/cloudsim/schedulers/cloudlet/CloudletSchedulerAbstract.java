@@ -16,7 +16,7 @@ import java.util.stream.Stream;
 import org.cloudbus.cloudsim.cloudlets.Cloudlet;
 import org.cloudbus.cloudsim.cloudlets.Cloudlet.Status;
 import org.cloudbus.cloudsim.cloudlets.CloudletExecutionInfo;
-import org.cloudbus.cloudsim.util.Consts;
+import org.cloudbus.cloudsim.util.Conversion;
 import org.cloudbus.cloudsim.vms.Vm;
 import org.cloudbus.cloudsim.resources.Processor;
 
@@ -549,7 +549,7 @@ public abstract class CloudletSchedulerAbstract implements CloudletScheduler {
 
         double executedInstructions
                 = (processor.getAvailableMipsByPe() * rcl.getNumberOfPes()
-                * actualProcessingTime * Consts.MILLION);
+                * actualProcessingTime * Conversion.MILLION);
         //Log.println(Log.Level.DEBUG, getClass(), currentTime, "Cloudlet: %d Processing time: %.2f Last processed time: %.2f Actual process time: %.2f MI so far: %d",  rcl.getCloudletId(), currentTime, rcl.getLastProcessingTime(),  actualProcessingTime, rcl.getCloudlet().getCloudletFinishedSoFar());
 
         return (long) executedInstructions;

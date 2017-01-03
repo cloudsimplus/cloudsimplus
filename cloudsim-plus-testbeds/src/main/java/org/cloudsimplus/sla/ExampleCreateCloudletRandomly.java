@@ -107,8 +107,8 @@ public class ExampleCreateCloudletRandomly {
         //Creates a container to store VMs. This list is passed to the broker later
         List<Vm> list = new ArrayList<>(vms);
         //VM Parameters
-        long size = 10000; //image size (MB)
-        int ram = 512; //vm memory (MB)
+        long size = 10000; //image size (MEGABYTE)
+        int ram = 512; //vm memory (MEGABYTE)
         int mips = 1000;
         long bw = 1000;
         int pesNumber = 1; //number of cpus
@@ -210,7 +210,7 @@ public class ExampleCreateCloudletRandomly {
         // 4. Create Host with its id and list of PEs and add them to the list
         // of machines
         int hostId = 0;
-        int ram = 1000000; // host memory (MB)
+        int ram = 1000000; // host memory (MEGABYTE)
         long storage = 100000000; // host storage
         long bw = 3000000;
 

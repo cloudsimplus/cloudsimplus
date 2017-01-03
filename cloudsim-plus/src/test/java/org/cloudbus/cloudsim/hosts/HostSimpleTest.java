@@ -9,7 +9,7 @@ package org.cloudbus.cloudsim.hosts;
 
 import org.cloudbus.cloudsim.core.CloudSim;
 import org.cloudbus.cloudsim.mocks.CloudSimMocker;
-import org.cloudbus.cloudsim.util.Consts;
+import org.cloudbus.cloudsim.util.Conversion;
 import org.cloudbus.cloudsim.vms.Vm;
 import org.cloudbus.cloudsim.vms.VmSimple;
 import org.cloudbus.cloudsim.vms.VmSimpleTest;
@@ -49,7 +49,7 @@ import static org.junit.Assert.assertTrue;
  */
 public class HostSimpleTest {
     private static final int ID = 0;
-    private static final long STORAGE = Consts.MILLION;
+    private static final long STORAGE = Conversion.MILLION;
     private static final long HALF_STORAGE = STORAGE / 2;
     private static final long A_QUARTER_STORAGE = STORAGE / 4;
     private static final long RAM = 1024;

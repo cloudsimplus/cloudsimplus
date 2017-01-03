@@ -114,9 +114,9 @@ public abstract class AbstractSwitch extends CloudSimEntity implements Switch {
 
     /**
      * Converts any value in bytes to bits,
-     * doesn't matter if the unit is Kilobytes (KB), Megabytes (MB), Gigabytes (GB), etc.
+     * doesn't matter if the unit is Kilobytes (KILOBYTE), Megabytes (MEGABYTE), Gigabytes (GB), etc.
      *
-     * @param bytes the value in byte (KB, MB, GB , etc)
+     * @param bytes the value in byte (KILOBYTE, MEGABYTE, GB , etc)
      * @return the value in bits, following the same unit
      * of the input param. For instance, if it is given
      * a value in Megabytes it will be converted to Megabits,
@@ -196,11 +196,8 @@ public abstract class AbstractSwitch extends CloudSimEntity implements Switch {
      * @param ev Event/packet to process
      */
     protected void processPacketUp(SimEvent ev) {
-        // packet coming from down level router.
-        // has to be sent up.
-        // check which switch to forward to
-        // add packet in the switch list
-        //
+        // packet coming from down level router has to be sent up.
+        // check which switch to forward to and add packet in the switch list
         getSimulation().cancelAll(getId(), new PredicateType(CloudSimTags.NETWORK_EVENT_SEND));
         schedule(getId(), switchingDelay, CloudSimTags.NETWORK_EVENT_SEND);
     }

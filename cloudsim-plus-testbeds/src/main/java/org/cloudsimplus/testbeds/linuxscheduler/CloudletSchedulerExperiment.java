@@ -82,8 +82,8 @@ abstract class CloudletSchedulerExperiment extends SimulationExperiment {
     public static final int HOST_PES = 32;
     public static final int VM_PES = HOST_PES;
     public static final double VM_MIPS = 1000;
-    public static final long VM_STORAGE = 10000; // vm image size (MB)
-    public static final int VM_RAM = 512; // vm memory (MB)
+    public static final long VM_STORAGE = 10000; // vm image size (MEGABYTE)
+    public static final int VM_RAM = 512; // vm memory (MEGABYTE)
     public static final long VM_BW = 1000; // vm bandwidth
     public static final int MAX_CLOUDLET_PES = VM_PES/8 + 1;
     public static final int HOSTS_TO_CREATE = 1;
@@ -124,8 +124,8 @@ abstract class CloudletSchedulerExperiment extends SimulationExperiment {
 
     private Host getHostSupplier() {
         int mips = 1000; // capacity of each CPU core (in Million Instructions per Second)
-        long ram = 2048; // host memory (MB)
-        long storage = 1000000; // host storage (MB)
+        long ram = 2048; // host memory (MEGABYTE)
+        long storage = 1000000; // host storage (MEGABYTE)
         long bw = 10000; //Megabits/s
         List<Pe> peList = new ArrayList<>();
         for (int i = 0; i < HOST_PES; i++) {

@@ -8,9 +8,9 @@
 package org.cloudbus.cloudsim.cloudlets;
 
 import org.cloudbus.cloudsim.datacenters.Datacenter;
-import org.cloudbus.cloudsim.util.Consts;
 import org.cloudbus.cloudsim.core.CloudSim;
 import org.cloudbus.cloudsim.schedulers.cloudlet.CloudletScheduler;
+import org.cloudbus.cloudsim.util.Conversion;
 
 /**
  * Stores execution information about a {@link Cloudlet} submitted to a specific {@link Datacenter} for
@@ -137,7 +137,7 @@ public class CloudletExecutionInfo {
         this.virtualRuntime = 0;
 
         //In case a Cloudlet has been executed partially by some other Host
-        this.cloudletFinishedSoFar = cloudlet.getFinishedLengthSoFar() * Consts.MILLION;
+        this.cloudletFinishedSoFar = cloudlet.getFinishedLengthSoFar() * Conversion.MILLION;
     }
 
     /**
@@ -225,14 +225,14 @@ public class CloudletExecutionInfo {
      * @post $result >= 0
      */
     public long getRemainingCloudletLength() {
-        long length = cloudlet.getTotalLength() * Consts.MILLION - cloudletFinishedSoFar;
+        long length = cloudlet.getTotalLength() * Conversion.MILLION - cloudletFinishedSoFar;
 
         // Remaining Cloudlet length can't be negative number.
         if (length < 0) {
             return 0;
         }
 
-        return (long) Math.floor(length / Consts.MILLION);
+        return (long) Math.floor(length / Conversion.MILLION);
     }
 
     /**
@@ -259,7 +259,7 @@ public class CloudletExecutionInfo {
         if (cloudlet.getStatus() == Cloudlet.Status.SUCCESS) {
             finishedLengthAcrossAllPes = cloudlet.getLength();
         } else {
-            finishedLengthAcrossAllPes = cloudletFinishedSoFar / Consts.MILLION;
+            finishedLengthAcrossAllPes = cloudletFinishedSoFar / Conversion.MILLION;
         }
 
         cloudlet.setFinishedLengthSoFar(finishedLengthAcrossAllPes);
@@ -280,9 +280,9 @@ public class CloudletExecutionInfo {
         this.cloudletFinishedSoFar += numberOfExecutedInstructions;
         this.cloudletFinishedSoFar =
                 Math.min(this.cloudletFinishedSoFar,
-                        cloudlet.getTotalLength()*Consts.MILLION);
+                        cloudlet.getTotalLength()* Conversion.MILLION);
 
-        double finishedSoFarByPeMI = cloudletFinishedSoFar  / cloudlet.getNumberOfPes() / Consts.MILLION;
+        double finishedSoFarByPeMI = cloudletFinishedSoFar  / cloudlet.getNumberOfPes() / Conversion.MILLION;
         cloudlet.setFinishedLengthSoFar((long)finishedSoFarByPeMI);
     }
 

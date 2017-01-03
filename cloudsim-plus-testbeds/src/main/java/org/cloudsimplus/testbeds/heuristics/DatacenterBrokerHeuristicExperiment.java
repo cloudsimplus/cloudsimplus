@@ -177,8 +177,8 @@ final class DatacenterBrokerHeuristicExperiment extends SimulationExperiment {
     private Supplier<Vm> getVmSupplier(DatacenterBroker broker, int vmPes) {
         return () -> {
             double mips = 1000;
-            long storage = 10000; // vm image size (MB)
-            int ram = 512; // vm memory (MB)
+            long storage = 10000; // vm image size (MEGABYTE)
+            int ram = 512; // vm memory (MEGABYTE)
             long bw = 1000; // vm bandwidth
             return new VmSimple(getNumberOfCreatedVms(), mips, vmPes)
                 .setRam(ram).setBw(bw).setSize(storage)
@@ -196,7 +196,7 @@ final class DatacenterBrokerHeuristicExperiment extends SimulationExperiment {
 
     private Host createHost() {
         int mips = 1000;
-        int ram = 2048; // MB
+        int ram = 2048; // MEGABYTE
         long storage = 1000000;
         long bw = 10000;
         List<Pe> peList = new ArrayList<>();

@@ -7,7 +7,7 @@
  */
 package org.cloudbus.cloudsim.hosts;
 
-import org.cloudbus.cloudsim.util.Consts;
+import org.cloudbus.cloudsim.util.Conversion;
 import org.cloudbus.cloudsim.vms.Vm;
 import org.cloudbus.cloudsim.vms.VmSimpleTest;
 import org.cloudbus.cloudsim.resources.Pe;
@@ -31,7 +31,7 @@ import static org.junit.Assert.assertTrue;
  */
 public class HostDynamicWorkloadTest {
     private static final int ID = 0;
-    private static final long STORAGE = Consts.MILLION;
+    private static final long STORAGE = Conversion.MILLION;
     private static final long RAM = 1024;
     private static final long BW = 10000;
     private static final double MIPS = 1000;

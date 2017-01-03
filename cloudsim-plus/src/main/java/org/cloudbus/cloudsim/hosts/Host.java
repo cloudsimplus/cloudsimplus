@@ -1,4 +1,4 @@
-package org.cloudbus.cloudsim.hosts;
+ package org.cloudbus.cloudsim.hosts;
 
 import org.cloudbus.cloudsim.vms.Vm;
 import org.cloudbus.cloudsim.core.Identificable;
@@ -92,7 +92,7 @@ public interface Host extends Identificable, Comparable<Host> {
     ResourceProvisioner getBwProvisioner();
 
     /**
-     * Sets the bandwidth(BW) provisioner with capacity in Megabits/s.
+     * Sets the bandwidth (BW) provisioner with capacity in Megabits/s.
      *
      * @param bwProvisioner the new bw provisioner
      */

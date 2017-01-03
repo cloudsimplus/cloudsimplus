@@ -29,7 +29,7 @@ import org.cloudbus.cloudsim.core.Identificable;
  */
 public interface NetworkPacket<T extends Identificable> {
     /**
-     * Gets the size of the packet.
+     * Gets the size of the packet in bytes.
      *
      * @return
      * @pre $none
@@ -92,5 +92,4 @@ public interface NetworkPacket<T extends Identificable> {
      * @param time the time to set
      */
     void setReceiveTime(double time);
-
 }

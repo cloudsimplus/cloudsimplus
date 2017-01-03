@@ -139,8 +139,8 @@ public class HostsCpuUsageExample {
     }
 
     private Vm createVm(int pesNumber, double mips, int id) {
-        long size = 10000; //image size (MB)
-        int ram = 2048; //vm memory (MB)
+        long size = 10000; //image size (MEGABYTE)
+        int ram = 2048; //vm memory (MEGABYTE)
         long bw = 1000;
         return new VmSimple(id, mips, pesNumber)
             .setRam(ram).setBw(bw).setSize(size)
@@ -190,8 +190,8 @@ public class HostsCpuUsageExample {
             peList.add(new PeSimple(i, new PeProvisionerSimple(mips)));
         }
 
-        long ram = 2048; //host memory (MB)
-        long storage = 1000000; //host storage (MB)
+        long ram = 2048; //host memory (MEGABYTE)
+        long storage = 1000000; //host storage (MEGABYTE)
         long bw = 10000; //Megabits/s
 
         HostDynamicWorkloadSimple host = new HostDynamicWorkloadSimple(++hostId, storage, peList);

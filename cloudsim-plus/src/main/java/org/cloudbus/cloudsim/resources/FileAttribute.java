@@ -11,7 +11,7 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.Objects;
 
-import org.cloudbus.cloudsim.util.Consts;
+import org.cloudbus.cloudsim.util.Conversion;
 import org.cloudbus.cloudsim.util.DataCloudTags;
 
 
@@ -225,7 +225,7 @@ public class FileAttribute {
      * @return the file size (in bytes)
      */
     public int getFileSizeInByte() {
-        return fileSize * Consts.MILLION;   // 1e6
+        return fileSize * Conversion.MILLION;   // 1e6
         // return size * 1048576; // 1e6 - more accurate
     }
 

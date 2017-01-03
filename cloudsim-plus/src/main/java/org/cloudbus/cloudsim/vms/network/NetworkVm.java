@@ -46,7 +46,7 @@ public class NetworkVm extends VmSimple {
     private double finishTime;
 
     /**
-     * Creates a NetworkVm with 1024 MB of RAM, 1000 Megabits/s of Bandwidth and 1024 MB of Storage Size.
+     * Creates a NetworkVm with 1024 MEGABYTE of RAM, 1000 Megabits/s of Bandwidth and 1024 MEGABYTE of Storage Size.
      *
      * To change these values, use the respective setters. While the Vm {@link #isCreated()
      * is not created inside a Host}, such values can be changed freely.
