@@ -96,9 +96,9 @@ public abstract class PowerVmAllocationPolicyMigrationDynamicUpperThresholdAbstr
      * @param safetyParameter the new safety parameter
      */
     protected final void setSafetyParameter(double safetyParameter) {
-        if (safetyParameter < 0 || safetyParameter > 1) {
+        if (safetyParameter < 0) {
             throw new IllegalArgumentException(
-                "The safety parameter must be between [0 and 1].");
+                "The safety parameter must be a positive value. It is a percentage value in scale from 0 to 1, where for instance 1 means 100% and 1.5 means 150%.");
         }
         this.safetyParameter = safetyParameter;
     }

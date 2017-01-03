@@ -31,7 +31,8 @@ public interface PowerVmAllocationPolicyMigrationDynamicUpperThreshold extends P
     PowerVmAllocationPolicyMigration getFallbackVmAllocationPolicy();
 
     /**
-     * Gets the safety parameter for the over utilization threshold in percentage (at scale from 0 to 1).
+     * Gets the safety parameter for the over utilization threshold in percentage, at scale from 0 to 1.
+     * For instance, a value 1 means 100% while 1.5 means 150%.
      * It is a tuning parameter used by the allocation policy to define
      * when a host is overloaded. The overload detection is based
      * on a dynamic defined host utilization threshold.

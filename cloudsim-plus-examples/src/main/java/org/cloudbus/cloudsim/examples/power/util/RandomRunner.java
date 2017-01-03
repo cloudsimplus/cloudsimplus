@@ -1,11 +1,9 @@
-package org.cloudbus.cloudsim.examples.power.planetlab;
+package org.cloudbus.cloudsim.examples.power.util;
 
 import org.cloudbus.cloudsim.util.Log;
-import org.cloudbus.cloudsim.examples.power.Helper;
-import org.cloudbus.cloudsim.examples.power.RunnerAbstract;
 
 /**
- * The example runner for the PlanetLab workload.
+ * The example runner for the random workload.
  *
  * If you are using any algorithms, policies or workload included in the power package please cite
  * the following paper:
@@ -18,24 +16,20 @@ import org.cloudbus.cloudsim.examples.power.RunnerAbstract;
  * @author Anton Beloglazov
  * @since Jan 5, 2012
  */
-public class PlanetLabRunner extends RunnerAbstract {
-    private final static int NUMBER_OF_HOSTS = 800;
-
+public final class RandomRunner extends RunnerAbstract {
     /**
-	 * Instantiates a new planet lab runner.
-	 *
-	 * @param enableOutput the enable output
-	 * @param outputToFile the output to file
-	 * @param inputFolder the input folder
-	 * @param outputFolder the output folder
-	 * @param workload the workload
-	 * @param vmAllocationPolicy the vm allocation policy
-	 * @param vmSelectionPolicy the vm selection policy
+	 * @param enableOutput
+	 * @param outputToFile
+	 * @param inputFolder
+	 * @param outputFolder
+	 * @param workload
+	 * @param vmAllocationPolicy
+	 * @param vmSelectionPolicy
      * @param safetyParameterOrUtilizationThreshold a double value to be passed to the specific
      *                               PowerVmSelectionPolicy being created, which the meaning depends
      *                               on that policy.
 	 */
-	public PlanetLabRunner(
+	public RandomRunner(
 			boolean enableOutput,
 			boolean outputToFile,
 			String inputFolder,
@@ -43,7 +37,8 @@ public class PlanetLabRunner extends RunnerAbstract {
 			String workload,
 			String vmAllocationPolicy,
 			String vmSelectionPolicy,
-			double safetyParameterOrUtilizationThreshold) {
+			double safetyParameterOrUtilizationThreshold)
+    {
 		super(
 				enableOutput,
 				outputToFile,
@@ -52,18 +47,18 @@ public class PlanetLabRunner extends RunnerAbstract {
 				workload,
 				vmAllocationPolicy,
 				vmSelectionPolicy,
-            safetyParameterOrUtilizationThreshold);
+				safetyParameterOrUtilizationThreshold);
 	}
 
 	@Override
 	protected void init(String inputFolder) {
 		try {
-		    super.init(inputFolder);
-			broker = Helper.createBroker(getSimulation());
+            super.init(inputFolder);
 
-			cloudletList = PlanetLabHelper.createCloudletListPlanetLab(broker, inputFolder);
+			broker = Helper.createBroker(getSimulation());
+			cloudletList = RandomHelper.createCloudletList(broker, RandomConstants.NUMBER_OF_VMS);
 			vmList = Helper.createVmList(broker, cloudletList.size());
-			hostList = Helper.createHostList(NUMBER_OF_HOSTS);
+			hostList = Helper.createHostList(RandomConstants.NUMBER_OF_HOSTS);
 		} catch (Exception e) {
 			e.printStackTrace();
 			Log.printLine("The simulation has been terminated due to an unexpected error");

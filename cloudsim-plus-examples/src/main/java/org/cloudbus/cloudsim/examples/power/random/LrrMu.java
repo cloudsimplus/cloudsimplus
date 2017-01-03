@@ -1,5 +1,7 @@
 package org.cloudbus.cloudsim.examples.power.random;
 
+import org.cloudbus.cloudsim.examples.power.util.RandomRunner;
+
 import java.io.IOException;
 
 /**
