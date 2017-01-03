@@ -41,7 +41,7 @@ import org.cloudsimplus.util.tablebuilder.CloudletsTableBuilderHelper;
  *
  * @author raysaoliveira
  */
-public final class MigrationWhenAFaultHappensExample {
+public final class MigrationWhenHostFaultHappensExample {
 
     private static final int SCHEDULE_TIME_TO_PROCESS_DATACENTER_EVENTS = 5;
 
@@ -93,7 +93,7 @@ public final class MigrationWhenAFaultHappensExample {
     private List<Vm> vmlist = new ArrayList<>();
     private CloudSim simulation;
 
-    public MigrationWhenAFaultHappensExample() {
+    public MigrationWhenHostFaultHappensExample() {
         Log.printConcatLine("Starting ", VmMigrationWhenCpuMetricIsViolatedExample.class.getSimpleName(), "...");
 
         simulation = new CloudSim();
@@ -122,7 +122,7 @@ public final class MigrationWhenAFaultHappensExample {
      * @param args
      */
     public static void main(String[] args) {
-        new MigrationWhenAFaultHappensExample();
+        new MigrationWhenHostFaultHappensExample();
     }
 
     /**
