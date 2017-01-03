@@ -102,7 +102,6 @@
                     <version>3.11.0</version>
                     <configuration>
                         <organisation>manoelcampos</organisation>
-                        <projectId>586ad564cf4f52001236d935</projectId>
                     </configuration>
                     <!--
                     The plugin is just being executed when the repository is pushed to travis-ci.org
