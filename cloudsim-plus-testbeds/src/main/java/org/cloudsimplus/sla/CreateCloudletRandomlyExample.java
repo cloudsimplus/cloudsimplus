@@ -63,7 +63,7 @@ import org.cloudbus.cloudsim.utilizationmodels.UtilizationModelFull;
  * 
  * @author raysaoliveira
  */
-public class ExampleCreateCloudletRandomly {
+public class CreateCloudletRandomlyExample {
 
     /**
      * List of Cloudlet .
@@ -126,12 +126,12 @@ public class ExampleCreateCloudletRandomly {
     public static void main(String[] args) {
         Log.printFormattedLine(" Starting... ");
         for (int i = 0; i < NUMBER_OF_SIMULATIONS; i++) {
-            new ExampleCreateCloudletRandomly();
+            new CreateCloudletRandomlyExample();
         }
         Log.printFormattedLine("... finished!");
     }
 
-    public ExampleCreateCloudletRandomly() {
+    public CreateCloudletRandomlyExample() {
         int num_user = 1; // number of cloud users
 
         this.cloudsim = new CloudSim();
