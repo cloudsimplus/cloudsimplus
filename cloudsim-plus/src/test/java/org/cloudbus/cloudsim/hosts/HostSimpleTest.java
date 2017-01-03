@@ -7,6 +7,8 @@
  */
 package org.cloudbus.cloudsim.hosts;
 
+import org.cloudbus.cloudsim.core.CloudSim;
+import org.cloudbus.cloudsim.mocks.CloudSimMocker;
 import org.cloudbus.cloudsim.util.Consts;
 import org.cloudbus.cloudsim.vms.Vm;
 import org.cloudbus.cloudsim.vms.VmSimple;
@@ -428,7 +430,8 @@ public class HostSimpleTest {
 
     @Test
     public void testVmDestroy() {
-        DatacenterBroker broker = Mocks.createMockBroker(0, 8);
+        CloudSim cloudsim = CloudSimMocker.createMock(mocker -> mocker.clock(0).times(2));
+        DatacenterBroker broker = Mocks.createMockBroker(cloudsim);
         VmSimple vm = VmSimpleTest.createVm(
                 0, MIPS, 1, RAM / 2, BW / 2, STORAGE,
                 new CloudletSchedulerDynamicWorkload(MIPS, 1));
@@ -446,7 +449,8 @@ public class HostSimpleTest {
 
     @Test
     public void testVmDestroyAll() {
-        DatacenterBroker broker = Mocks.createMockBroker(0, 6);
+        CloudSim cloudsim = CloudSimMocker.createMock(mocker -> mocker.clock(0).times(2));
+        DatacenterBroker broker = Mocks.createMockBroker(cloudsim);
         VmSimple vm0 = VmSimpleTest.createVm(
                 0, MIPS, 1, RAM / 2, BW / 2, HALF_STORAGE,
                 new CloudletSchedulerDynamicWorkload(MIPS, 1));

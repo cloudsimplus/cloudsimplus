@@ -6,7 +6,7 @@
     <version>1.0</version>
     <packaging>pom</packaging>
 
-    <name>CloudSim Plus Modules: Src, Examples, Testbeds, Benchmarks</name>
+    <name>CloudSim Plus Modules: API, Examples, Testbeds, Benchmarks</name>
     <description>CloudSim++ A CloudSim fork for Modeling and Simulation of Cloud Computing Infrastructures and Services that focuses on reusability principles and other ones such as DRY, KISS, SOLID and Design Patterns</description>
     <url>http://cloudsimplus.org</url>
 
@@ -39,6 +39,7 @@
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <javac.target>1.8</javac.target>
         <license.dir>${project.basedir}</license.dir>
     </properties>
 
@@ -47,7 +48,6 @@
         <module>cloudsim-plus-examples</module>
 		<module>cloudsim-plus-benchmarks</module>
 		<module>cloudsim-plus-testbeds</module>
-        <module>distribution</module>
     </modules>
 
     <build>
@@ -58,8 +58,8 @@
                     <artifactId>maven-compiler-plugin</artifactId>
                     <version>3.6.0</version>
                     <configuration>
-                        <source>1.8</source>
-                        <target>1.8</target>
+                        <source>${javac.target}</source>
+                        <target>${javac.target}</target>
                     </configuration>
                 </plugin>
 
@@ -101,8 +101,8 @@
                     <artifactId>versioneye-maven-plugin</artifactId>
                     <version>3.11.0</version>
                     <configuration>
-                        <!-- ID of the project at http://versioneye.com -->
-                        <projectId>5841f4dfb1c38c0aa1cd46f1</projectId>
+                        <organisation>manoelcampos</organisation>
+                        <projectId>586ad564cf4f52001236d935</projectId>
                     </configuration>
                     <!--
                     The plugin is just being executed when the repository is pushed to travis-ci.org
@@ -243,11 +243,6 @@
             <dependency>
                 <groupId>${project.groupId}</groupId>
                 <artifactId>cloudsim-plus-examples</artifactId>
-                <version>${project.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>${project.groupId}</groupId>
-                <artifactId>distribution</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>

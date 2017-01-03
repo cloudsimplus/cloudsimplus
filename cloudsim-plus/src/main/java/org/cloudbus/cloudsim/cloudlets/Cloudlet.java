@@ -780,15 +780,6 @@ public interface Cloudlet extends UniquelyIdentificable, Delayable, Comparable<C
     Simulation getSimulation();
 
     /**
-     * Sets the CloudSim instance that represents the simulation the Entity is related to.
-     * Such attribute has to be set by the {@link DatacenterBroker} that creates
-     * the Cloudlet on behalf of its owner.
-     * @param simulation The CloudSim instance that represents the simulation the Entity is related to
-     * @return
-     */
-    Cloudlet setSimulation(Simulation simulation);
-
-    /**
      * An attribute that implements the Null Object Design Pattern for {@link Cloudlet}
      * objects.
      */
@@ -853,7 +844,6 @@ public interface Cloudlet extends UniquelyIdentificable, Delayable, Comparable<C
         @Override public Cloudlet addOnCloudletFinishListener(EventListener<CloudletVmEventInfo> listener) { return Cloudlet.NULL; }
         @Override public void notifyOnCloudletProcessingListeners(double time) {}
         @Override public Simulation getSimulation() { return Simulation.NULL; }
-        @Override public Cloudlet setSimulation(Simulation simulation) { return this; }
         @Override public boolean removeOnUpdateCloudletProcessingListener(EventListener<CloudletVmEventInfo> listener) { return false; }
         @Override public Cloudlet addOnUpdateCloudletProcessingListener(EventListener<CloudletVmEventInfo> listener) { return Cloudlet.NULL; }
         @Override public double getSubmissionDelay() { return 0; }

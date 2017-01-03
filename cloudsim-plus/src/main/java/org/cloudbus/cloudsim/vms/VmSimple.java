@@ -125,11 +125,6 @@ public class VmSimple implements Vm {
     private List<EventListener<VmDatacenterEventInfo>> onVmCreationFailureListeners;
 
     /**
-     * @see #getSimulation()
-     */
-    private Simulation simulation;
-
-    /**
      * Creates a Vm with 1024 MB of RAM, 1000 Megabits/s of Bandwidth and 1024 MB of Storage Size.
      *
      * To change these values, use the respective setters. While the Vm {@link #isCreated()
@@ -157,7 +152,6 @@ public class VmSimple implements Vm {
         setStorage(new RawStorage(1024));
         setSubmissionDelay(0);
         setVmm("Xen");
-        this.simulation = Simulation.NULL;
         setCloudletScheduler(CloudletScheduler.NULL);
         stateHistory = new LinkedList<>();
 
@@ -269,7 +263,7 @@ public class VmSimple implements Vm {
 
     @Override
     public double getTotalUtilizationOfCpu() {
-        return getTotalUtilizationOfCpu(simulation.clock());
+        return getTotalUtilizationOfCpu(getSimulation().clock());
     }
 
     @Override
@@ -632,18 +626,33 @@ public class VmSimple implements Vm {
         return this;
     }
 
+    /**
+     * Compare this Vm with another one based on {@link #getTotalMipsCapacity()}.
+     *
+     * @param o the Vm to compare to
+     * @return {@inheritDoc}
+     */
     @Override
     public int compareTo(Vm o) {
-        return Integer.compare(getId(), o.getId());
+        return Double.compare(getTotalMipsCapacity(), o.getTotalMipsCapacity());
     }
 
     @Override
-    public boolean equals(Object obj) {
-        if(!(obj instanceof Vm)){
-            return false;
-        }
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
 
-        return this.getId() == ((Vm) obj).getId();
+        VmSimple vmSimple = (VmSimple) o;
+
+        if (id != vmSimple.id) return false;
+        return broker.equals(vmSimple.broker);
+    }
+
+    @Override
+    public int hashCode() {
+        int result = id;
+        result = 31 * result + broker.hashCode();
+        return result;
     }
 
     @Override
@@ -667,15 +676,8 @@ public class VmSimple implements Vm {
 
     @Override
     public Simulation getSimulation() {
-        return this.simulation;
+        return broker.getSimulation();
     }
-
-    @Override
-    public Vm setSimulation(Simulation simulation) {
-        this.simulation = simulation;
-        return this;
-    }
-
 
     @Override
     public double getSubmissionDelay() {

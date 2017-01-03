@@ -1,6 +1,5 @@
 package org.cloudsimplus.migration;
 
-import com.apple.eio.FileManager;
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.List;
@@ -93,7 +92,7 @@ public class VmMigrationWhenCpuMetricIsViolatedExample {
     /**
      * The file containing the SLA Contract in JSON format.
      */
-    public static final String METRICS_FILE =  ResourceLoader.getResourcePath(VmMigrationWhenCpuMetricIsViolatedExample.class, "SlaMetrics.json");
+  //  public static final String METRICS_FILE =  ResourceLoader.getResourcePath(VmMigrationWhenCpuMetricIsViolatedExample.class, "SlaMetrics.json");
     /**
      * Attributes with minimum and maximum values of the CPU Utilization metric
      * to be set for allocation policy.
@@ -112,7 +111,7 @@ public class VmMigrationWhenCpuMetricIsViolatedExample {
                 = new VmMigrationWhenCpuMetricIsViolatedExample();
         simulation = new CloudSim();
 
-        migration.searchCpuUtilizationMetricInSlaContract();
+//        migration.searchCpuUtilizationMetricInSlaContract();
 
         @SuppressWarnings("unused")
         Datacenter datacenter0 = createDatacenter();
@@ -297,7 +296,7 @@ public class VmMigrationWhenCpuMetricIsViolatedExample {
         return new DatacenterBrokerSimple(simulation);
     }
 
-    private void searchCpuUtilizationMetricInSlaContract() throws FileNotFoundException {
+    /*private void searchCpuUtilizationMetricInSlaContract() throws FileNotFoundException {
         SlaReader reader = new SlaReader(METRICS_FILE);
         List<SlaMetric> metrics = reader.getContract().getMetrics();
         metrics.stream()
@@ -305,7 +304,7 @@ public class VmMigrationWhenCpuMetricIsViolatedExample {
                 .findFirst()
                 .ifPresent(this::getCpuUtizationThresold);
 
-    }
+    }*/
 
     private void getCpuUtizationThresold(SlaMetric metric) {
         double minValue = metric.getDimensions().stream()

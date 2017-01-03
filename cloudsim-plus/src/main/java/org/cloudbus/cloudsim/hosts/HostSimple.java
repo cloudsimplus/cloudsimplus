@@ -562,8 +562,32 @@ public class HostSimple implements Host {
         return this;
     }
 
+    /**
+     * Compare this Host with another one based on {@link #getTotalMips()}.
+     *
+     * @param o the Host to compare to
+     * @return {@inheritDoc}
+     */
     @Override
     public int compareTo(Host o) {
-        return Integer.compare(this.getId(), o.getId());
+        return Double.compare(getTotalMips(), o.getTotalMips());
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        HostSimple that = (HostSimple) o;
+
+        if (id != that.id) return false;
+        return simulation.equals(that.simulation);
+    }
+
+    @Override
+    public int hashCode() {
+        int result = id;
+        result = 31 * result + simulation.hashCode();
+        return result;
     }
 }

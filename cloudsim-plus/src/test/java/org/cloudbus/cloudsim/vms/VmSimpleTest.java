@@ -42,8 +42,8 @@ import static org.junit.Assert.assertTrue;
  */
 public class VmSimpleTest {
 
+    private static final int BROKER_ID = 0;
     private static final int ID = 1;
-    private static final int USER_ID = 1;
     private static final double MIPS = 1000;
     private static final int PES_NUMBER = 2;
     private static final int RAM = 1024;
@@ -56,11 +56,11 @@ public class VmSimpleTest {
     @Before
     public void setUp() throws Exception {
         vmScheduler = new CloudletSchedulerDynamicWorkload(MIPS, PES_NUMBER);
-        DatacenterBroker broker = Mocks.createMockBroker(USER_ID, 2);
+        CloudSim cloudsim = CloudSimMocker.createMock(mocker -> mocker.clock(0));
+        DatacenterBroker broker = Mocks.createMockBroker(cloudsim);
         vm = VmSimpleTest.createVm(vmScheduler);
         vm.setBroker(broker);
     }
-
 
     /**
      * Creates a VM with the 1 PE and half mips capacity defined in
@@ -127,11 +127,12 @@ public class VmSimpleTest {
             final CloudletScheduler scheduler)
     {
         CloudSim cloudsim = CloudSimMocker.createMock(mocker -> mocker.clock(0).anyTimes());
+        DatacenterBroker broker = Mocks.createMockBroker(cloudsim);
         VmSimple vm = new VmSimple(vmId, mips, numberOfPes);
         vm.setRam(ram).setBw(bw)
                 .setSize(storage)
                 .setCloudletScheduler(scheduler)
-                .setSimulation(cloudsim);
+                .setBroker(broker);
         return vm;
     }
 
@@ -320,7 +321,7 @@ public class VmSimpleTest {
 
     @Test
     public void testGetUid() {
-        assertEquals(USER_ID + "-" + ID, vm.getUid());
+        assertEquals(BROKER_ID + "-" + ID, vm.getUid());
     }
 
     @Test

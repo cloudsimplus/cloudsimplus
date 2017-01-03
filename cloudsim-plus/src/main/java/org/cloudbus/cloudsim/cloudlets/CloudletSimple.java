@@ -83,9 +83,17 @@ public class CloudletSimple extends CloudletAbstract {
         return String.format("Cloudlet %d", getId());
     }
 
+    /**
+     * Compare this Cloudlet with another one based on {@link #getLength()}.
+     *
+     * @param o the Cloudlet to compare to
+     * @return {@inheritDoc}
+     */
     @Override
     public int compareTo(Cloudlet o) {
-        return this.getUid().compareTo(o.getUid());
+        return Double.compare(getLength(), o.getLength());
     }
+
+
 
 }

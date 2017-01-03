@@ -449,16 +449,6 @@ public interface Vm extends UniquelyIdentificable, Delayable, Comparable<Vm> {
     Simulation getSimulation();
 
     /**
-     * Sets the CloudSim instance that represents the simulation the Entity is related to.
-     * Such attribute has to be set by the {@link DatacenterBroker} that creates
-     * the Vm on behalf of its owner.
-     * @param simulation The CloudSim instance that represents the simulation the Entity is related to
-     * @return
-     */
-    Vm setSimulation(Simulation simulation);
-
-
-    /**
      * Gets the {@link HorizontalVmScaling} that will check if the Vm is overloaded,
      * based on some conditions defined by a {@link Predicate} given
      * to the HorizontalVmScaling.
@@ -544,7 +534,6 @@ public interface Vm extends UniquelyIdentificable, Delayable, Comparable<Vm> {
         @Override public void setFailed(boolean failed){}
         @Override public boolean isFailed() { return false; }
         @Override public Simulation getSimulation() { return Simulation.NULL; }
-        @Override public Vm setSimulation(Simulation simulation) { return this; }
         @Override public String toString() { return "Vm.NULL"; }
         @Override public VmScaling getHorizontalScaling(){ return VmScaling.NULL; }
         @Override public Vm setHorizontalScaling(VmScaling horizontalScaling) throws IllegalArgumentException { return this; }
