@@ -21,30 +21,25 @@
  *     You should have received a copy of the GNU General Public License
  *     along with CloudSim Plus. If not, see <http://www.gnu.org/licenses/>.
  */
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package org.cloudsimplus.sla;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import org.cloudbus.cloudsim.brokers.DatacenterBrokerSimple;
 import org.cloudbus.cloudsim.cloudlets.Cloudlet;
-import org.cloudbus.cloudsim.cloudlets.CloudletSimple;
-import org.cloudbus.cloudsim.datacenters.Datacenter;
 import org.cloudbus.cloudsim.datacenters.DatacenterCharacteristics;
 import org.cloudbus.cloudsim.datacenters.DatacenterCharacteristicsSimple;
-import org.cloudbus.cloudsim.datacenters.DatacenterSimple;
 import org.cloudbus.cloudsim.hosts.Host;
-import org.cloudbus.cloudsim.hosts.HostSimple;
 import org.cloudbus.cloudsim.util.Log;
-import org.cloudbus.cloudsim.vms.Vm;
-import org.cloudbus.cloudsim.vms.VmSimple;
 import org.cloudbus.cloudsim.allocationpolicies.VmAllocationPolicySimple;
 import org.cloudbus.cloudsim.brokers.DatacenterBroker;
-import org.cloudbus.cloudsim.brokers.DatacenterBrokerSimple;
 import org.cloudbus.cloudsim.core.CloudSim;
+import org.cloudbus.cloudsim.network.switches.EdgeSwitch;
+import org.cloudbus.cloudsim.cloudlets.network.NetworkCloudlet;
+import org.cloudbus.cloudsim.datacenters.network.NetworkDatacenter;
+import org.cloudbus.cloudsim.hosts.network.NetworkHost;
+import org.cloudbus.cloudsim.vms.network.NetworkVm;
 import org.cloudbus.cloudsim.provisioners.PeProvisionerSimple;
 import org.cloudbus.cloudsim.provisioners.ResourceProvisionerSimple;
 import org.cloudbus.cloudsim.resources.Bandwidth;
@@ -58,142 +53,141 @@ import org.cloudbus.cloudsim.utilizationmodels.UtilizationModel;
 import org.cloudbus.cloudsim.utilizationmodels.UtilizationModelFull;
 
 /**
- *
  * @author raysaoliveira
- *
- * This simple example show how to create cloudlets randomly using poisson
- * distribution.
  */
-public class ExampleCreateCloudletRandomly {
+public class NetworkVmsWithMetricsExample {
 
     /**
-     * List of Cloudlet .
+     * The cloudlet list.
      */
-    private final List<Cloudlet> cloudletList;
+    private final List<NetworkCloudlet> cloudletList;
 
     /**
-     * List of Vms
+     * The vmlist.
      */
-    private final List<Vm> vmlist;
+    private final List<NetworkVm> vmlist;
 
     /**
-     * Average number of customers that arrives per minute. The value of 0.4
-     * customers per minute means that 1 customer will arrive at every 2.5
-     * minutes. It means that 1 minute / 0.4 customer per minute = 1 customer at
-     * every 2.5 minutes. This is the interarrival time (in average).
+     * The Datacenter
      */
-    private static final double MEAN_CUSTOMERS_ARRIVAL_PER_MINUTE = 0.4;
-
-    /**
-     * Number of simulations to run.
-     */
-    private static final int NUMBER_OF_SIMULATIONS = 1;
-
-    /**
-     * The maximum time that a Cloudlet can arrive. Between the first simulation
-     * minute and this time, different Cloudlets can arrive.
-     */
-    private final int MAX_TIME_FOR_CLOUDLET_ARRIVAL = 100;
+    NetworkDatacenter datacenter0;
     private final CloudSim cloudsim;
 
     /**
-     * Create Vms
+     * Create NetworkVms
      *
-     * @param broker
-     * @param vms
+     * @param broker the broker that acts on behalf of a user
+     * @param vms number of VMs to create
      * @return list de vms
      */
-    private List<Vm> createVM(DatacenterBroker broker, int vms) {
+    private List<NetworkVm> createVM(DatacenterBroker broker, int vms) {
         //Creates a container to store VMs. This list is passed to the broker later
-        List<Vm> list = new ArrayList<>(vms);
+        List<NetworkVm> list = new ArrayList<>(vms);
         //VM Parameters
         long size = 10000; //image size (MEGABYTE)
         int ram = 512; //vm memory (MEGABYTE)
         int mips = 1000;
         long bw = 1000;
         int pesNumber = 1; //number of cpus
-        String vmm = "Xen"; //VMM name
 
         for (int i = 0; i < vms; i++) {
-            Vm vm = new VmSimple(i, mips, pesNumber)
+            NetworkVm vm = new NetworkVm(i, mips, pesNumber);
+            vm.setRam(ram)
+                    .setBw(bw).setSize(size)
                     .setBroker(broker)
-                    .setRam(ram).setBw(bw).setSize(size)
                     .setCloudletScheduler(new CloudletSchedulerTimeShared());
             list.add(vm);
         }
         return list;
     }
 
-    public static void main(String[] args) {
-        Log.printFormattedLine(" Starting... ");
-        for (int i = 0; i < NUMBER_OF_SIMULATIONS; i++) {
-            new ExampleCreateCloudletRandomly();
+    /**
+     * Create NetworkCloudlets
+     *
+     * @param broker
+     * @param cloudlets
+     * @return
+     */
+    private List<NetworkCloudlet> createCloudlet(DatacenterBroker broker, int cloudlets) {
+        // Creates a container to store Cloudlets
+        List<NetworkCloudlet> list = new ArrayList<>(cloudlets);
+        //cloudlet parameters
+        long length = 1000;
+        int pesNumber = 1;
+        long fileSize = 300;
+        long outputSize = 300;
+        long memory = 512;
+        UtilizationModel utilizationModel = new UtilizationModelFull();
+
+        for (int i = 0; i < cloudlets; i++) {
+            NetworkCloudlet cloudlet = new NetworkCloudlet(i, length, pesNumber);
+            cloudlet.setMemory(memory)
+                    .setFileSize(fileSize)
+                    .setOutputSize(outputSize)
+                    .setUtilizationModel(utilizationModel)
+                    .setBroker(broker);
+            list.add(cloudlet);
         }
-        Log.printFormattedLine("... finished!");
+        return list;
     }
 
-    public ExampleCreateCloudletRandomly() {
-        int num_user = 1; // number of cloud users
+    /**
+     * main
+     *
+     * @param args
+     */
+    public static void main(String[] args) {
+        Log.printFormattedLine(" Starting... ");
+        try {
+            new NetworkVmsWithMetricsExample();
+        } catch (Exception e) {
+            Log.printFormattedLine("Simulation finished due to unexpected error: %s", e);
+        }
+    }
 
-        this.cloudsim = new CloudSim();
+    private NetworkVmsWithMetricsExample() {
+        // First step: Initialize the CloudSim package. It should be called before creating any entities.
+        int num_user = 1; // number of cloud users
+        cloudsim = new CloudSim();
 
         // Second step: Create Datacenters
-        Datacenter datacenter0 = createDatacenter();
+        datacenter0 = createDatacenter();
 
         // Third step: Create Broker
-        DatacenterBroker broker = createBroker();
+        DatacenterBroker broker = new DatacenterBrokerSimple(cloudsim);
 
-        //create cloudlet randomly
-        cloudletList = new ArrayList<>();
-        long seed = System.currentTimeMillis();
-        //creates a poisson process that checks the arrival of 1 (k) cloudlet
-        //1 is the default value for k
-        PoissonProcess poisson = new PoissonProcess(MEAN_CUSTOMERS_ARRIVAL_PER_MINUTE, seed);
-        int totalArrivedCustomers = 0;
-        int cloudletId = 0;
-        for (int minute = 0; minute < MAX_TIME_FOR_CLOUDLET_ARRIVAL; minute++) {
-            if (poisson.haveKEventsHappened()) { //Have k Cloudlets arrived?
-                totalArrivedCustomers += poisson.getK();
-                Cloudlet cloudlet = createCloudlet(cloudletId++, broker);
-                cloudlet.setSubmissionDelay(minute);
-                cloudletList.add(cloudlet);
-
-                System.out.printf("%d cloudlets arrived at minute %d\n", poisson.getK(), minute);
-            }
-        }
-
-        System.out.printf("\n\t%d cloudlets have arrived\n", totalArrivedCustomers);
-
-        broker.submitCloudletList(cloudletList);
-
-        vmlist = createVM(broker, totalArrivedCustomers);
+        vmlist = createVM(broker, 5);
 
         // submit vm list to the broker
         broker.submitVmList(vmlist);
 
+        /* Fifth step: Read Cloudlets from workload external file in the swf format
+         WorkloadFileReader workloadFileReader = new WorkloadFileReader("src/main/java/org/cloudbus/cloudsim/examples/sla/UniLu-Gaia-2014-2.swf", 1);
+         cloudletList = workloadFileReader.generateWorkload().subList(0, 1000);
+         for (Cloudlet cloudlet : cloudletList) {
+         cloudlet.setBroker(brokerId);
+         } */
+        cloudletList = createCloudlet(broker, 10);
+
+        // submit cloudlet list to the broker
+        broker.submitCloudletList(cloudletList);
+
+        // Sixth step: Starts the simulation
         cloudsim.start();
 
         //Final step: Print results when simulation is over
         List<Cloudlet> newList = broker.getCloudletsFinishedList();
         new CloudletsTableBuilderHelper(newList).build();
 
+        Log.printFormattedLine("... finished!");
     }
 
-    private Cloudlet createCloudlet(int cloudletId, DatacenterBroker broker) {
-        long length = 1000;
-        long fileSize = 300;
-        long outputSize = 300;
-        int pesNumber = 1;
-        UtilizationModel utilizationModel = new UtilizationModelFull();
-        Cloudlet cloudlet = new CloudletSimple(cloudletId, length, pesNumber)
-                .setFileSize(fileSize)
-                .setOutputSize(outputSize)
-                .setBroker(broker)
-                .setUtilizationModel(utilizationModel);
-        return cloudlet;
-    }
-
-    private Datacenter createDatacenter() {
+    /**
+     * Creates the NetworkDatacenter.
+     *
+     * @return the Datacenter
+     */
+    protected final NetworkDatacenter createDatacenter() {
         // Here are the steps needed to create a PowerDatacenter:
         // 1. We need to create a list to store
         // our machine
@@ -203,19 +197,20 @@ public class ExampleCreateCloudletRandomly {
         // In this example, it will have only one core.
         List<Pe> peList = new ArrayList<>();
 
-        int mips = 30000000;
+        int mips = 8000;
 
         // 3. Create PEs and add these into a list.
         peList.add(new PeSimple(0, new PeProvisionerSimple(mips))); // need to store Pe id and MIPS Rating
+
         // 4. Create Host with its id and list of PEs and add them to the list
         // of machines
         int hostId = 0;
-        int ram = 1000000; // host memory (MEGABYTE)
-        long storage = 100000000; // host storage
-        long bw = 3000000;
+        int ram = 4096; // host memory (MEGABYTE)
+        long storage = 1000000; // host storage
+        long bw = 10000;
 
-        Host host = new HostSimple(hostId++, storage, peList)
-                .setRamProvisioner(new ResourceProvisionerSimple(new Ram(ram)))
+        Host host = new NetworkHost(hostId, storage, peList);
+        host.setRamProvisioner(new ResourceProvisionerSimple(new Ram(ram)))
                 .setBwProvisioner(new ResourceProvisionerSimple(new Bandwidth(bw)))
                 .setVmScheduler(new VmSchedulerTimeShared());
 
@@ -231,30 +226,38 @@ public class ExampleCreateCloudletRandomly {
         // resource
         double costPerBw = 0.0; // the cost of using bw in this resource
 
-        DatacenterCharacteristics characteristics =
-                new DatacenterCharacteristicsSimple(hostList)
+        DatacenterCharacteristics characteristics
+                = new DatacenterCharacteristicsSimple(hostList)
                 .setCostPerSecond(cost)
                 .setCostPerMem(costPerMem)
                 .setCostPerStorage(costPerStorage)
                 .setCostPerBw(costPerBw);
 
-        return new DatacenterSimple(cloudsim, characteristics, new VmAllocationPolicySimple());
+        // 6. Finally, we need to create a PowerDatacenter object.
+        NetworkDatacenter datacenter
+                = new NetworkDatacenter(
+                        cloudsim, characteristics, new VmAllocationPolicySimple());
+        createNetwork(datacenter);
+        return datacenter;
     }
 
     /**
-     * Creates the broker.
+     * Creates internal Datacenter network.
      *
-     * @return the Datacenter broker
+     * @param datacenter dc where the network will be created
      */
-    private DatacenterBroker createBroker() {
-        return new DatacenterBrokerSimple(cloudsim);
-    }
+    protected void createNetwork(NetworkDatacenter datacenter) {
+        EdgeSwitch[] edgeSwitches = new EdgeSwitch[1];
+        for (int i = 0; i < edgeSwitches.length; i++) {
+            edgeSwitches[i] = new EdgeSwitch(cloudsim, datacenter);
+            datacenter.addSwitch(edgeSwitches[i]);
+        }
 
-    /**
-     * @return the MAX_TIME_FOR_CLOUDLET_ARRIVAL
-     */
-    public int getMAX_TIME_FOR_CLOUDLET_ARRIVAL() {
-        return MAX_TIME_FOR_CLOUDLET_ARRIVAL;
+        for (NetworkHost host : datacenter.<NetworkHost>getHostList()) {
+            int switchNum = host.getId() / edgeSwitches[0].getPorts();
+            edgeSwitches[switchNum].connectHost(host);
+            host.setEdgeSwitch(edgeSwitches[switchNum]);
+        }
     }
 
 }

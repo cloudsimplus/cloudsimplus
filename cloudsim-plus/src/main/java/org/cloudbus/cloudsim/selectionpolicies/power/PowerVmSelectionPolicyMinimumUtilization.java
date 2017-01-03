@@ -46,7 +46,7 @@ public class PowerVmSelectionPolicyMinimumUtilization extends PowerVmSelectionPo
 				continue;
 			}
 			double metric = vm.getTotalUtilizationOfCpuMips(host.getSimulation().clock()) / vm.getMips();
-			if (metric < minMetric) {
+                        if (metric < minMetric) {
 				minMetric = metric;
 				vmToMigrate = vm;
 			}

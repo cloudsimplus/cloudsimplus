@@ -38,7 +38,6 @@ import org.cloudbus.cloudsim.vms.Vm;
 public class VmCost {
 
     private Vm vm;
-    private Datacenter datacenter;
 
     public VmCost(Vm vm) {
         this.vm = vm;
@@ -54,29 +53,33 @@ public class VmCost {
     /**
      * Return the cost of memory
      *
-     * @return getVmMemoryCost
+     * @return getMemoryCost
      */
-    public double getVmMemoryCost() {
-        return (datacenter.getCharacteristics().getCostPerMem() * vm.getRam());
+    public double getMemoryCost() {
+        return (getDatacenter().getCharacteristics().getCostPerMem() * vm.getRam());
+    }
+
+    private Datacenter getDatacenter() {
+        return vm.getHost().getDatacenter();
     }
 
     /**
      * Return the cost of BW
      *
-     * @return getVmBwCost
+     * @return getBwCost
      */
-    public double getVmBwCost() {
-        return datacenter.getCharacteristics().getCostPerBw() * vm.getBw();
+    public double getBwCost() {
+        return getDatacenter().getCharacteristics().getCostPerBw() * vm.getBw();
     }
 
     /**
      * Return the cost of processing for a given host
      *
-     * @return getVmProcessingCost
+     * @return getProcessingCost
      */
-    public double getVmProcessingCost() {
+    public double getProcessingCost() {
         double hostMips = vm.getHost().getPeList().stream().findFirst().map(pe -> pe.getMips()).orElse(0);
-        double costPerMI = (hostMips > 0 ? datacenter.getCharacteristics().getCostPerSecond()/hostMips : 0);
+        double costPerMI = (hostMips > 0 ? getDatacenter().getCharacteristics().getCostPerSecond()/hostMips : 0.0);
 
         return costPerMI * getVm().getMips() * getVm().getNumberOfPes();
     }
@@ -84,10 +87,10 @@ public class VmCost {
     /**
      * Return the cost of storage
      *
-     * @return getVmStorageCost
+     * @return getStorageCost
      */
-    public double getVmStorageCost() {
-        return datacenter.getCharacteristics().getCostPerStorage() * vm.getSize();
+    public double getStorageCost() {
+        return getDatacenter().getCharacteristics().getCostPerStorage() * vm.getSize();
     }
 
     /**
@@ -96,8 +99,8 @@ public class VmCost {
      *
      * @return
      */
-    public double getVmTotalCost() {
-        return getVmProcessingCost() + getVmStorageCost() + getVmMemoryCost() + getVmBwCost();
+    public double getTotalCost() {
+        return getProcessingCost() + getStorageCost() + getMemoryCost() + getBwCost();
     }
 
     /**

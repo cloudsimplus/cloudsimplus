@@ -63,7 +63,7 @@ import org.cloudbus.cloudsim.utilizationmodels.UtilizationModelFull;
  *
  * @author raysaoliveira
  */
-public class ExampleUsingFaultInjector {
+public class HostFaultInjectionExample {
 
     private static final int HOSTS_NUMBER = 3;
     private static final int HOST_PES = 5;
@@ -154,10 +154,10 @@ public class ExampleUsingFaultInjector {
      */
     public static void main(String[] args) {
         Log.printFormattedLine(" Starting... ");
-        new ExampleUsingFaultInjector();
+        new HostFaultInjectionExample();
     }
 
-    public ExampleUsingFaultInjector() {
+    public HostFaultInjectionExample() {
         //  Initialize the CloudSim package.
         int num_user = 1; // number of cloud users
         this.cloudsim = new CloudSim();
@@ -166,6 +166,7 @@ public class ExampleUsingFaultInjector {
         //Create Datacenters
         Datacenter datacenter0 = createDatacenter();
 
+        //fault injection
         createFaultInjectionForHosts(datacenter0);
 
         //Create Broker
@@ -200,8 +201,12 @@ public class ExampleUsingFaultInjector {
         new CloudletsTableBuilderHelper(newList).build();
         Log.printFormattedLine("... finished!");
     }
-
-    public void createFaultInjectionForHosts(Datacenter datacenter0) {
+    
+    /**
+     * Creates the fault injection for host
+     * @param datacenter0 
+     */
+    private void createFaultInjectionForHosts(Datacenter datacenter0) {
         //Inject Fault
         long seed = System.currentTimeMillis();
         PoissonProcess poisson = new PoissonProcess(0.2, seed);

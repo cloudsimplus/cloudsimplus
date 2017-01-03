@@ -44,6 +44,7 @@ public interface Datacenter extends SimEntity {
 
     Host getHost(final int index);
 
+
     /**
      * Gets the policy to be used by the Datacenter to allocate VMs into hosts.
      *
@@ -105,6 +106,7 @@ public interface Datacenter extends SimEntity {
      * Sets the list of storage devices of the Datacenter.
      *
      * @param storageList the new storage list
+     * @return 
      */
     Datacenter setStorageList(List<FileStorage> storageList);
 

@@ -33,7 +33,7 @@ package org.cloudsimplus.sla.readJsonFile;
  * 
  * Each dimension contains the name of the metric, the minimum and maximum 
  * acceptable value, and the metric unit. 
- * See: http://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/viewing_metrics_with_cloudwatch.html
+ * See: <http://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/viewing_metrics_with_cloudwatch.html>
  * 
  * @author raysaoliveira
  */

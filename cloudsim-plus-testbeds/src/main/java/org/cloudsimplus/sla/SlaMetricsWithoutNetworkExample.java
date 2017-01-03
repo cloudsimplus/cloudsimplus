@@ -49,24 +49,24 @@ import org.cloudbus.cloudsim.provisioners.ResourceProvisionerSimple;
 import org.cloudbus.cloudsim.resources.Bandwidth;
 import org.cloudbus.cloudsim.resources.PeSimple;
 import org.cloudbus.cloudsim.resources.Ram;
+import org.cloudbus.cloudsim.util.ResourceLoader;
 import org.cloudsimplus.util.tablebuilder.CloudletsTableBuilderHelper;
 import org.cloudbus.cloudsim.utilizationmodels.UtilizationModel;
 import org.cloudbus.cloudsim.utilizationmodels.UtilizationModelFull;
+import org.cloudsimplus.migration.VmMigrationWhenCpuMetricIsViolatedExample;
 import org.cloudsimplus.sla.readJsonFile.SlaMetricDimension;
 import org.cloudsimplus.sla.readJsonFile.SlaMetric;
 import org.cloudsimplus.sla.readJsonFile.SlaReader;
 
 /**
- *
- * @author RaysaOliveira
- *
  * This example show an simple example using metrics of quality of service
  * without network.
+ * 
+ * @author RaysaOliveira
  */
-public final class ExampleMetricsWithoutNetwork {
+public final class SlaMetricsWithoutNetworkExample {
 
-    private static final String METRICS_FILE = "/Users/raysaoliveira/Desktop/TeseMestradoEngInformatica/cloudsim-plus/cloudsim-plus-testbeds/src/main/java/org/cloudsimplus/sla/readJsonFile/SlaMetrics.json";
-
+    private static final String METRICS_FILE = ResourceLoader.getResourcePath(VmMigrationWhenCpuMetricIsViolatedExample.class, "SlaMetrics.json");
     private static final int HOSTS_NUMBER = 3;
     private static final int HOST_PES = 5;
     private static final int VM_PES1 = 2;
@@ -75,7 +75,7 @@ public final class ExampleMetricsWithoutNetwork {
     private static final int CLOUDLETS_NUMBER = HOSTS_NUMBER * TOTAL_VM_PES;
     private static final int CLOUDLET_PES = 1;
 
-    private static List<Host> hostList;
+    private List<Host> hostList;
     private int lastCreatedVmId = 0;
 
     /**
@@ -160,17 +160,16 @@ public final class ExampleMetricsWithoutNetwork {
      *
      * @param vmlist
      */
-    private void totalCostPrice(List<Vm> vmlist) {
+    private double totalCostPrice(List<Vm> vmlist) {
 
         VmCost vmCost;
         double totalCost = 0.0;
         for (Vm vm : vmlist) {
             vmCost = new VmCost(vm);
-            totalCost = vmCost.getVmTotalCost();
-
+            totalCost = vmCost.getTotalCost();
         }
-        System.out.println("Total cost (memory, bw, processing, storage)"
-                + " of  all VMs in the Datacenter is: " + totalCost);
+        return totalCost;
+        
     }
 
     /**
@@ -243,10 +242,10 @@ public final class ExampleMetricsWithoutNetwork {
      }*/
     public static void main(String[] args) throws FileNotFoundException {
         Log.printFormattedLine(" Starting... ");
-        new ExampleMetricsWithoutNetwork();
+        new SlaMetricsWithoutNetworkExample();
     }
 
-    public ExampleMetricsWithoutNetwork() throws FileNotFoundException {
+    public SlaMetricsWithoutNetworkExample() throws FileNotFoundException {
         //  Initialize the CloudSim package.
         int num_user = 1; // number of cloud users
         cloudsim = new CloudSim();
@@ -271,15 +270,8 @@ public final class ExampleMetricsWithoutNetwork {
 
         // Sixth step: Starts the simulation
         cloudsim.start();
-        /*for(Host h: datacenter0.getHostList()){
-         System.out.println("->>>>>> " + h);
-         for(Pe pe: h.getPeList()){
-         System.out.println("->>> " + pe.getMips());
-         }
-         }
-         totalCostPrice(vmlist);*/
-
-        System.out.println("______________________________________________________");
+       
+        System.out.println("________________________________________________________________");
         System.out.println("\n\t\t - System Métrics - \n ");
 
         //responseTime
@@ -300,14 +292,15 @@ public final class ExampleMetricsWithoutNetwork {
         System.out.printf("\t** Wait Time - %.2f %n", waitTimeCloudlet);
 
         // total cost
-        //totalCostPrice(vmlist);
-        System.out.println("______________________________________________________");
+        double totalCost = totalCostPrice(vmlist);
+        System.out.println("\t** Total cost (memory, bw, processing, storage) - " + totalCost);
+        System.out.println("________________________________________________________________");
 
-        System.out.println("______________________________________________________");
+        System.out.println("________________________________________________________________");
         System.out.println("\n\t\t - Metric monitoring - \n\t\t(violated or not violated)  \n ");
 
         checkSlaViolations();
-        System.out.println("______________________________________________________");
+        System.out.println("________________________________________________________________");
 
         //Final step: Print results when simulation is over
         List<Cloudlet> newList = broker.getCloudletsFinishedList();

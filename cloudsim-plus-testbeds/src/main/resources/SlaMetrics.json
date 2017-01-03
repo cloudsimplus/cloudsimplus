@@ -35,13 +35,13 @@
         "dimensions": [
             {
                 "name": "valueMin",
-                "value": 60,
+                "value": 30,
                 "unit" : "Percent"
                 
             },
             {
                 "name": "valueMax",
-                "value": 95,
+                "value": 90,
                 "unit" : "Percent"
             }
         ]
