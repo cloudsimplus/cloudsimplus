@@ -32,7 +32,7 @@ import org.cloudbus.cloudsim.utilizationmodels.UtilizationModelArithmeticProgres
 import org.cloudbus.cloudsim.utilizationmodels.UtilizationModelFull;
 import org.cloudbus.cloudsim.vms.Vm;
 import org.cloudbus.cloudsim.vms.power.PowerVm;
-import org.cloudsimplus.sla.HostFaultInjection;
+import org.cloudsimplus.sla.HostFaultInjectionExample;
 import org.cloudsimplus.sla.PoissonProcess;
 import org.cloudsimplus.util.tablebuilder.CloudletsTableBuilderHelper;
 
@@ -135,7 +135,7 @@ public class MigrationWhenAFaultHappensExample {
                     UniformDistr delayForFailureOfHostRandom = new UniformDistr(1, 10, seed++);
 
                     //create a new intance of fault and start it.
-                    HostFaultInjection fault = new HostFaultInjection(simulation);
+                    HostFaultInjectionExample fault = new HostFaultInjectionExample(simulation);
                     fault.setNumberOfFailedPesRandom(failurePesRand);
                     fault.setDelayForFailureOfHostRandom(delayForFailureOfHostRandom);
                     fault.setHost(host);

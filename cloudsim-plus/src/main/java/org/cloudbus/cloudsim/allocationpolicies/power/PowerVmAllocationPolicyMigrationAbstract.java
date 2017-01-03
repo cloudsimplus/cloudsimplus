@@ -46,7 +46,7 @@ public abstract class PowerVmAllocationPolicyMigrationAbstract extends PowerVmAl
     implements PowerVmAllocationPolicyMigration {
 
     /**@see #getUnderUtilizationThreshold() */
-    private double underUtilizationThreshold = 0.3;
+    private double underUtilizationThreshold = 0.35;
   
     /**
      * The vm selection policy.

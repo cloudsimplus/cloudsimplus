@@ -53,9 +53,9 @@ public class VmCost {
     /**
      * Return the cost of memory
      *
-     * @return getVmMemoryCost
+     * @return getMemoryCost
      */
-    public double getVmMemoryCost() {
+    public double getMemoryCost() {
         return (getDatacenter().getCharacteristics().getCostPerMem() * vm.getRam());
     }
 
@@ -66,18 +66,18 @@ public class VmCost {
     /**
      * Return the cost of BW
      *
-     * @return getVmBwCost
+     * @return getBwCost
      */
-    public double getVmBwCost() {
+    public double getBwCost() {
         return getDatacenter().getCharacteristics().getCostPerBw() * vm.getBw();
     }
 
     /**
      * Return the cost of processing for a given host
      *
-     * @return getVmProcessingCost
+     * @return getProcessingCost
      */
-    public double getVmProcessingCost() {
+    public double getProcessingCost() {
         double hostMips = vm.getHost().getPeList().stream().findFirst().map(pe -> pe.getMips()).orElse(0);
         double costPerMI = (hostMips > 0 ? getDatacenter().getCharacteristics().getCostPerSecond()/hostMips : 0.0);
 
@@ -87,9 +87,9 @@ public class VmCost {
     /**
      * Return the cost of storage
      *
-     * @return getVmStorageCost
+     * @return getStorageCost
      */
-    public double getVmStorageCost() {
+    public double getStorageCost() {
         return getDatacenter().getCharacteristics().getCostPerStorage() * vm.getSize();
     }
 
@@ -99,8 +99,8 @@ public class VmCost {
      *
      * @return
      */
-    public double getVmTotalCost() {
-        return getVmProcessingCost() + getVmStorageCost() + getVmMemoryCost() + getVmBwCost();
+    public double getTotalCost() {
+        return getProcessingCost() + getStorageCost() + getMemoryCost() + getBwCost();
     }
 
     /**

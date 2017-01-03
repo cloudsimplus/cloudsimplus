@@ -63,7 +63,7 @@ import org.cloudsimplus.sla.readJsonFile.SlaReader;
  * This example show an simple example using metrics of quality of service
  * without network.
  */
-public final class ExampleMetricsWithoutNetwork {
+public final class SlaMetricsWithoutNetworkExample {
 
     private static final String METRICS_FILE = "/Users/raysaoliveira/Desktop/TeseMestradoEngInformatica/cloudsim-plus/cloudsim-plus-testbeds/src/main/java/org/cloudsimplus/sla/readJsonFile/SlaMetrics.json";
 
@@ -166,7 +166,7 @@ public final class ExampleMetricsWithoutNetwork {
         double totalCost = 0.0;
         for (Vm vm : vmlist) {
             vmCost = new VmCost(vm);
-            totalCost = vmCost.getVmTotalCost();
+            totalCost = vmCost.getTotalCost();
         }
         return totalCost;
         
@@ -242,10 +242,10 @@ public final class ExampleMetricsWithoutNetwork {
      }*/
     public static void main(String[] args) throws FileNotFoundException {
         Log.printFormattedLine(" Starting... ");
-        new ExampleMetricsWithoutNetwork();
+        new SlaMetricsWithoutNetworkExample();
     }
 
-    public ExampleMetricsWithoutNetwork() throws FileNotFoundException {
+    public SlaMetricsWithoutNetworkExample() throws FileNotFoundException {
         //  Initialize the CloudSim package.
         int num_user = 1; // number of cloud users
         cloudsim = new CloudSim();

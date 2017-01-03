@@ -218,7 +218,7 @@ public class ExampleUsingFaultInjector {
                     UniformDistr delayForFailureOfHostRandom = new UniformDistr(1, 10, seed + i);
 
                     //create a new intance of fault and start it.
-                    HostFaultInjection fault = new HostFaultInjection(cloudsim);
+                    HostFaultInjectionExample fault = new HostFaultInjectionExample(cloudsim);
                     fault.setNumberOfFailedPesRandom(failurePesRand);
                     fault.setDelayForFailureOfHostRandom(delayForFailureOfHostRandom);
                     fault.setHost(host);

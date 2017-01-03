@@ -53,7 +53,7 @@ import org.cloudbus.cloudsim.resources.Pe;
  * @author raysaoliveira
  *
  */
-public class HostFaultInjection extends CloudSimEntity {
+public class HostFaultInjectionExample extends CloudSimEntity {
 
     private Host host;
     private ContinuousDistribution numberOfFailedPesRandom;
@@ -70,7 +70,7 @@ public class HostFaultInjection extends CloudSimEntity {
      * @see #setDelayForFailureOfHostRandom(org.cloudbus.cloudsim.distributions.ContinuousDistribution)
      * @see #setNumberOfFailedPesRandom(org.cloudbus.cloudsim.distributions.ContinuousDistribution)
      */
-    public HostFaultInjection(CloudSim simulation) {
+    public HostFaultInjectionExample(CloudSim simulation) {
         super(simulation);
         this.numberOfFailedPesRandom = new UniformDistr();
         this.delayForFailureOfHostRandom = new UniformDistr();
