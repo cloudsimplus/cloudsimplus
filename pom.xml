@@ -102,7 +102,6 @@
                     <version>3.11.0</version>
                     <configuration>
                         <organisation>manoelcampos</organisation>
-                        <projectId>586ad564cf4f52001236d935</projectId>
                     </configuration>
                     <!--
                     The plugin is just being executed when the repository is pushed to travis-ci.org
@@ -231,28 +230,13 @@
     <dependencyManagement>
         <dependencies>
             <dependency>
-                <groupId>${project.groupId}</groupId>
-                <artifactId>cloudsim-plus-modules</artifactId>
-                <version>${project.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>${project.groupId}</groupId>
-                <artifactId>cloudsim-plus</artifactId>
-                <version>${project.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>${project.groupId}</groupId>
-                <artifactId>cloudsim-plus-examples</artifactId>
-                <version>${project.version}</version>
-            </dependency>
-            <dependency>
                 <groupId>junit</groupId>
                 <artifactId>junit</artifactId>
                 <version>4.12</version>
                 <scope>test</scope>
             </dependency>
 
-            <!-- EasyMock framework for creation of mock objects in Unit Tests -->
+            <!-- EasyMock framework for creation of mock objects for Unit Tests -->
             <dependency>
                 <groupId>org.easymock</groupId>
                 <artifactId>easymock</artifactId>
@@ -265,7 +249,7 @@
                 <version>3.2</version>
                 <scope>test</scope>
             </dependency>
-            <!-- ============================================= -->
+            <!-- ============================================================= -->
         </dependencies>
     </dependencyManagement>
 </project>

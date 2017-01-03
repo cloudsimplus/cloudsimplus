@@ -81,11 +81,6 @@ THE POSSIBILITY OF SUCH DAMAGE.
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 
         <!--
-            Java source/target to use for compilation.
-          -->
-        <javac.target>1.8</javac.target>
-
-        <!--
             Name of the benchmark Uber-JAR to generate.
           -->
         <uberjar.name>${project.build.finalName}-uber</uberjar.name>
