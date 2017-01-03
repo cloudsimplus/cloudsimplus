@@ -90,7 +90,7 @@ public final class MigrationWhenAFaultHappensExample {
     private static final int NUMBER_OF_VMS_TO_CREATE = NUMBER_OF_HOSTS_TO_CREATE + 1;
     private static final int NUMBER_OF_CLOUDLETS_TO_CREATE_BY_VM = 1;
 
-    private final List<Vm> vmlist = new ArrayList<>();
+    private List<Vm> vmlist = new ArrayList<>();
     private CloudSim simulation;
 
     public MigrationWhenAFaultHappensExample() {
