@@ -96,7 +96,7 @@ public class MigrationExample1 {
 
     private static final int    HOST_MIPS_BY_PE = 1000;
     private static final int    HOST_NUMBER_OF_PES = 2;
-    private static final long   HOST_RAM = 500000; //host memory (MB)
+    private static final long   HOST_RAM = 500000; //host memory (MEGABYTE)
     private static final long   HOST_STORAGE = 1000000; //host storage
     private static final long   HOST_BW = 100000000L;
 
@@ -107,8 +107,8 @@ public class MigrationExample1 {
     private static final double HOST_UTILIZATION_THRESHOLD_FOR_VM_MIGRATION = 0.7;
 
     private static final int    VM_MIPS = 1000;
-    private static final long   VM_SIZE = 1000; //image size (MB)
-    private static final int    VM_RAM = 10000; //vm memory (MB)
+    private static final long   VM_SIZE = 1000; //image size (MEGABYTE)
+    private static final int    VM_RAM = 10000; //vm memory (MEGABYTE)
     private static final long   VM_BW = 100000;
     private static final int    VM_PES_NUM = 1; //number of cpus
 

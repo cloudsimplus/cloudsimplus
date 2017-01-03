@@ -133,8 +133,8 @@ public class VmsCpuUsageExample {
     }
 
     private Vm createVm(int pesNumber, int mips, int id) {
-        long size = 10000; //image size (MB)
-        int ram = 2048; //vm memory (MB)
+        long size = 10000; //image size (MEGABYTE)
+        int ram = 2048; //vm memory (MEGABYTE)
         long bw = 1000;
 
         //create two VMs
@@ -205,7 +205,7 @@ public class VmsCpuUsageExample {
         }
 
         //4. Create Hosts with its id and list of PEs and add them to the list of machines
-        int ram = 2048; //host memory (MB)
+        int ram = 2048; //host memory (MEGABYTE)
         long storage = 1000000; //host storage
         int bw = 10000;
 

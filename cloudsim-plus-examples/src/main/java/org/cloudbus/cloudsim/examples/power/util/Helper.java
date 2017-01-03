@@ -1,4 +1,4 @@
-package org.cloudbus.cloudsim.examples.power;
+package org.cloudbus.cloudsim.examples.power.util;
 
 import java.io.BufferedWriter;
 import java.io.File;
@@ -44,19 +44,21 @@ import org.cloudbus.cloudsim.schedulers.cloudlet.CloudletScheduler;
 import org.cloudbus.cloudsim.util.MathUtil;
 
 /**
- * The Class Helper.
+ * A class to help creating simulation objects for the power-aware simulation examples, printing simulation data
+ * and collecting some metrics.
  *
- * If you are using any algorithms, policies or workload included in the power package, please cite
+ * <p>If you are using any algorithms, policies or workload included in the power package, please cite
  * the following paper:
- *
+ * <br>
  * Anton Beloglazov, and Rajkumar Buyya, "Optimal Online Deterministic Algorithms and Adaptive
  * Heuristics for Energy and Performance Efficient Dynamic Consolidation of Virtual Machines in
  * Cloud Data Centers", Concurrency and Computation: Practice and Experience (CCPE), Volume 24,
  * Issue 13, Pages: 1397-1420, John Wiley & Sons, Ltd, New York, USA, 2012
+ * </p>
  *
  * @author Anton Beloglazov
  */
-public class Helper {
+public final class Helper {
 
 	/**
 	 * Creates the vm list.
@@ -729,4 +731,8 @@ public class Helper {
 		}
 	}
 
+    /**
+     * An private constructor to avoid class instantiation.
+     */
+	private Helper(){}
 }

@@ -18,6 +18,7 @@ import org.cloudbus.cloudsim.datacenters.network.NetworkDatacenter;
 import org.cloudbus.cloudsim.hosts.Host;
 import org.cloudbus.cloudsim.hosts.network.NetworkHost;
 import org.cloudbus.cloudsim.network.HostPacket;
+import org.cloudbus.cloudsim.util.Conversion;
 import org.cloudbus.cloudsim.vms.Vm;
 
 /**
@@ -51,7 +52,7 @@ public class EdgeSwitch extends AbstractSwitch {
      * Default downlink bandwidth of EdgeSwitch in Megabits/s.
      * It also represents the uplink bandwidth of connected hosts.
      */
-    public static final long DOWNLINK_BW = 100 * 1024 * 1024;
+    public static final long DOWNLINK_BW = 100 * 8;
 
     /**
      * Default number of ports that defines the number of
@@ -86,9 +87,9 @@ public class EdgeSwitch extends AbstractSwitch {
         super.processPacketDown(ev);
 
         HostPacket netPkt = (HostPacket) ev.getData();
-        Vm recvVm = netPkt.getVmPacket().getDestination();
-        // packet is to be recieved by host
-        NetworkHost host = getDatacenter().getVmToHostMap().get(recvVm);
+        Vm receiverVm = netPkt.getVmPacket().getDestination();
+        // packet is to be received by host
+        NetworkHost host = getVmHost(receiverVm);
         netPkt.setDestination(host);
         getPacketToHostMap().putIfAbsent(host, new ArrayList<>());
         getPacketToHostMap().get(host).add(netPkt);
@@ -98,17 +99,17 @@ public class EdgeSwitch extends AbstractSwitch {
     protected void processPacketUp(SimEvent ev) {
         super.processPacketUp(ev);
 
-        HostPacket netPkt = (HostPacket) ev.getData();
-        Vm receiverVm = netPkt.getVmPacket().getDestination();
+        HostPacket hostPkt = (HostPacket) ev.getData();
+        Vm receiverVm = hostPkt.getVmPacket().getDestination();
 
-        // packet is recieved from host
+        // packet is received from host
         // packet is to be sent to aggregate level or to another host in the same level
-        NetworkHost host = getDatacenter().getVmToHostMap().get(receiverVm);
-        netPkt.setDestination(host);
+        NetworkHost host = getVmHost(receiverVm);
+        hostPkt.setDestination(host);
 
         // packet needs to go to a host which is connected directly to switch
         if (!Objects.isNull(host)) {
-            addPacketToBeSentToHost(host, netPkt);
+            addPacketToBeSentToHost(host, hostPkt);
             return;
         }
 
@@ -118,40 +119,7 @@ public class EdgeSwitch extends AbstractSwitch {
          * If there are more than one Aggregate level switch, the following code has to be modified.
         */
         Switch sw = getUplinkSwitches().get(0);
-        addPacketToBeSentToUplinkSwitch(sw, netPkt);
-    }
-
-    @Override
-    protected void processPacketForward(SimEvent ev) {
-        /**
-         * @todo @author manoelcampos these methods below appear
-         * to have duplicated code from methods with the same name in
-         * the super class.
-         */
-        forwardPacketsToUplinkSwitches();
-        forwardPacketsToHosts();
-    }
-
-    private void forwardPacketsToHosts() {
-        for (NetworkHost host : getPacketToHostMap().keySet()) {
-            List<HostPacket> packetList = getHostPacketList(host);
-            for (HostPacket pkt: packetList) {
-                double delay = networkDelayForPacketTransmission(pkt, getDownlinkBandwidth(), packetList);
-                this.send(getId(), delay, CloudSimTags.NETWORK_EVENT_HOST, pkt);
-            }
-            packetList.clear();
-        }
-    }
-
-    private void forwardPacketsToUplinkSwitches() {
-        for (Switch destinationSwitch : getUplinkSwitchPacketMap().keySet()) {
-            List<HostPacket> packetList = getUplinkSwitchPacketList(destinationSwitch);
-            for(HostPacket netPkt: packetList) {
-                double delay = networkDelayForPacketTransmission(netPkt, getUplinkBandwidth(), packetList);
-                this.send(destinationSwitch.getId(), delay, CloudSimTags.NETWORK_EVENT_UP, netPkt);
-            }
-            packetList.clear();
-        }
+        addPacketToBeSentToUplinkSwitch(sw, hostPkt);
     }
 
     @Override

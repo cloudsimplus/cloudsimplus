@@ -257,8 +257,8 @@ public class VmListenersExample3_DynamicVmCreation {
      */
     private Vm createVm(int id, DatacenterBroker broker) {
         int mips = 1000;
-        long size = 10000; // image size (MB)
-        int ram = 512; // vm memory (MB)
+        long size = 10000; // image size (MEGABYTE)
+        int ram = 512; // vm memory (MEGABYTE)
         long bw = 1000;
         return new VmSimple(id, mips, VM_PES_NUMBER)
             .setRam(ram).setBw(bw).setSize(size)
@@ -327,8 +327,8 @@ public class VmListenersExample3_DynamicVmCreation {
             peList.add(new PeSimple(i, new PeProvisionerSimple(mips)));
         }
 
-        long ram = 2048; // host memory (MB)
-        long storage = 1000000; // host storage (MB)
+        long ram = 2048; // host memory (MEGABYTE)
+        long storage = 1000000; // host storage (MEGABYTE)
         long bw = 10000; //Megabits/s
 
         return new HostSimple(id, storage, peList)

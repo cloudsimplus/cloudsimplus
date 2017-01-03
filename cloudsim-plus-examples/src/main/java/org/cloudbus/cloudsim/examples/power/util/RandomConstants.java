@@ -1,4 +1,4 @@
-package org.cloudbus.cloudsim.examples.power.random;
+package org.cloudbus.cloudsim.examples.power.util;
 
 /**
  * If you are using any algorithms, policies or workload included in the power package please cite
@@ -12,7 +12,7 @@ package org.cloudbus.cloudsim.examples.power.random;
  * @author Anton Beloglazov
  * @since Jan 5, 2012
  */
-public class RandomConstants {
+public final class RandomConstants {
 
 	public final static int NUMBER_OF_VMS = 50;
 
@@ -24,5 +24,4 @@ public class RandomConstants {
      * A private constructor to avoid the class to be instantiated.
      */
 	private RandomConstants(){}
-
 }

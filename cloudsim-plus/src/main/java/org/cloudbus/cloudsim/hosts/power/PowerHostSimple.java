@@ -44,7 +44,7 @@ public class PowerHostSimple extends HostDynamicWorkloadSimple implements PowerH
      * Creates a PowerHost with the given parameters.
      *
      * @param id the id of the host
-     * @param storage the storage capacity in MB
+     * @param storage the storage capacity in MEGABYTE
      * @param peList the host's PEs list
      *
      */
@@ -57,9 +57,9 @@ public class PowerHostSimple extends HostDynamicWorkloadSimple implements PowerH
      * Creates a PowerHost with the given parameters.
      *
      * @param id the id of the host
-     * @param ramProvisioner the ram provisioner with capacity in MB
+     * @param ramProvisioner the ram provisioner with capacity in MEGABYTE
      * @param bwProvisioner the bw provisioner with capacity in Megabits/s
-     * @param storage the storage capacity in MB
+     * @param storage the storage capacity in MEGABYTE
      * @param peList the host's PEs list
      * @param vmScheduler the VM scheduler
      * @param powerModel the model of power consumption

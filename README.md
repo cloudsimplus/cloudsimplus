@@ -327,8 +327,8 @@ host.setRamProvisioner(new ResourceProvisionerSimple(new Ram(ram)))
 <a id="publications"></a>
 # CloudSim Plus Publications
 
-  * Coming soon.
-
+  * A paper was approved in a top conference and we are just waiting publication to provide a link to the paper.
+  * Other papers are in writing process.
   
 <p align="right"><a href="#top">:arrow_up:</a></p>
   

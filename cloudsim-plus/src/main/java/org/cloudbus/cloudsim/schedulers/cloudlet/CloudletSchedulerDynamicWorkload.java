@@ -9,10 +9,10 @@ package org.cloudbus.cloudsim.schedulers.cloudlet;
 import java.util.*;
 
 import org.cloudbus.cloudsim.cloudlets.Cloudlet;
-import org.cloudbus.cloudsim.util.Consts;
 import org.cloudbus.cloudsim.cloudlets.CloudletExecutionInfo;
 
 import org.cloudbus.cloudsim.resources.Processor;
+import org.cloudbus.cloudsim.util.Conversion;
 
 /**
  * CloudletSchedulerDynamicWorkload implements a policy of scheduling performed
@@ -98,7 +98,7 @@ public class CloudletSchedulerDynamicWorkload extends CloudletSchedulerTimeShare
 
         for (CloudletExecutionInfo rcl : getCloudletExecList()) {
             rcl.updateCloudletFinishedSoFar((long) (timeSpan(currentTime)
-                * getTotalCurrentAllocatedMipsForCloudlet(rcl, getPreviousTime()) * Consts.MILLION));
+                * getTotalCurrentAllocatedMipsForCloudlet(rcl, getPreviousTime()) * Conversion.MILLION));
 
             if (rcl.getCloudlet().isFinished()) { // finished: remove from the list
                 cloudletsToFinish.add(rcl);

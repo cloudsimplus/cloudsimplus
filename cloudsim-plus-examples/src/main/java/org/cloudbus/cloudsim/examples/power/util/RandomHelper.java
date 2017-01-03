@@ -1,7 +1,7 @@
 /*
  *
  */
-package org.cloudbus.cloudsim.examples.power.random;
+package org.cloudbus.cloudsim.examples.power.util;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -12,7 +12,6 @@ import org.cloudbus.cloudsim.brokers.DatacenterBroker;
 import org.cloudbus.cloudsim.utilizationmodels.UtilizationModel;
 import org.cloudbus.cloudsim.utilizationmodels.UtilizationModelZero;
 import org.cloudbus.cloudsim.utilizationmodels.UtilizationModelStochastic;
-import org.cloudbus.cloudsim.examples.power.Constants;
 
 /**
  * The Helper class for the random workload.
@@ -28,7 +27,7 @@ import org.cloudbus.cloudsim.examples.power.Constants;
  * @author Anton Beloglazov
  * @since Jan 5, 2012
  */
-public class RandomHelper {
+public final class RandomHelper {
 
 	/**
 	 * Creates the cloudlet list.
@@ -74,4 +73,8 @@ public class RandomHelper {
 		return list;
 	}
 
+    /**
+     * A private constructor to avoid class instantiation.
+     */
+	private RandomHelper(){}
 }

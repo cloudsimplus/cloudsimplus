@@ -41,6 +41,15 @@ import org.cloudbus.cloudsim.vms.Vm;
  *
  * @author Saurabh Kumar Garg
  * @author Manoel Campos da Silva Filho
+ * @todo @author manoelcampos The NetworkCloudletTimeSharedScheduler was delete because
+ * it was just dupliating code from the super class. This scheduler in fact is dealing
+ * with task scheduling but it not define that such tasks will be execute in a space-shared
+ * manner. Just the Cloudlets are executed in this way. Thus, it doesn't make sense
+ * to have these Cloudlets' tasks scheduling inside a specific space-shared scheduler.
+ * And the tasks will just be processed if this specific scheduler is used,
+ * what doesn't make sense and will just confuse users.
+ * The tasks processing inside the {@link #updateCloudletProcessing(CloudletExecutionInfo, double)} maybe should be placed
+ * elsewhere, such as inside the NetworkVm.updateVmProcessing() method.
  *
  * @since CloudSim Toolkit 3.0
  *
@@ -129,7 +138,7 @@ public class NetworkCloudletSpaceSharedScheduler extends CloudletSchedulerSpaceS
         Log.println(Log.Level.DEBUG, getClass(), sourceCloudlet.getSimulation().clock(),
                 "%d pkts added to be sent from cloudlet %d in VM %d",
                 dataTask.getPacketsToSend().size(), sourceCloudlet.getId(),
-                sourceCloudlet.getVm());
+                sourceCloudlet.getVm().getId());
 
         packetsToSendFromVmOfCloudlet.addAll(dataTask.getPacketsToSend(sourceCloudlet.getSimulation().clock()));
 
@@ -179,7 +188,7 @@ public class NetworkCloudletSpaceSharedScheduler extends CloudletSchedulerSpaceS
 
         /**
          * @todo @author manoelcampos The task has to wait the reception
-         * of the expected packets just after a given timeout.
+         * of the expected packets up to a given timeout.
          * After that, the task has to stop waiting and fail.
          */
         scheduleNextTaskExecution(sourceCloudlet);
@@ -225,7 +234,7 @@ public class NetworkCloudletSpaceSharedScheduler extends CloudletSchedulerSpaceS
      * Schedules the execution of the next task of a given cloudlet.
      */
     private void scheduleNextTaskExecution(NetworkCloudlet cloudlet) {
-        cloudlet.startNextTask(cloudlet.getSimulation().clock());
+        cloudlet.startNextTaskIfCurrentIsFinished(cloudlet.getSimulation().clock());
         //Datacenter.schedule(Datacenter.getId(), 0.0001, CloudSimTags.VM_UPDATE_CLOUDLET_PROCESSING_EVENT);
     }
 

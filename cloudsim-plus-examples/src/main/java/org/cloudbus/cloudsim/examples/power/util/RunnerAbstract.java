@@ -1,4 +1,4 @@
-package org.cloudbus.cloudsim.examples.power;
+package org.cloudbus.cloudsim.examples.power.util;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -27,15 +27,16 @@ import org.cloudbus.cloudsim.selectionpolicies.power.PowerVmSelectionPolicyMinim
 import org.cloudbus.cloudsim.selectionpolicies.power.PowerVmSelectionPolicyRandomSelection;
 
 /**
- * The Class RunnerAbstract.
+ * An abstract class to provide base methods to enable running simulation examples.
  * <p>
  * If you are using any algorithms, policies or workload included in the power package, please cite
  * the following paper:
- * <p>
+ * <br>
  * Anton Beloglazov, and Rajkumar Buyya, "Optimal Online Deterministic Algorithms and Adaptive
  * Heuristics for Energy and Performance Efficient Dynamic Consolidation of Virtual Machines in
  * Cloud Data Centers", Concurrency and Computation: Practice and Experience (CCPE), Volume 24,
  * Issue 13, Pages: 1397-1420, John Wiley & Sons, Ltd, New York, USA, 2012
+ * </p>
  *
  * @author Anton Beloglazov
  */

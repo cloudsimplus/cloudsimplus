@@ -13,7 +13,7 @@ import static org.junit.Assert.fail;
 
 import java.util.ArrayList;
 import java.util.List;
-import org.cloudbus.cloudsim.util.Consts;
+
 import org.cloudbus.cloudsim.resources.Pe;
 import org.cloudbus.cloudsim.resources.PeSimple;
 import org.cloudbus.cloudsim.schedulers.vm.VmSchedulerTimeShared;
@@ -22,6 +22,7 @@ import org.cloudbus.cloudsim.provisioners.PeProvisionerSimple;
 import org.cloudbus.cloudsim.provisioners.ResourceProvisionerSimple;
 import org.cloudbus.cloudsim.resources.Bandwidth;
 import org.cloudbus.cloudsim.resources.Ram;
+import org.cloudbus.cloudsim.util.Conversion;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -36,7 +37,7 @@ public class PowerHostTest {
     private static final double MAX_POWER = 200;
     private static final double STATIC_POWER_PERCENT = 0.3;
     private static final double TIME = 10;
-    private static final long STORAGE = Consts.MILLION;
+    private static final long STORAGE = Conversion.MILLION;
 
 
     private PowerHostSimple host;

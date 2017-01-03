@@ -1,6 +1,8 @@
 package org.cloudbus.cloudsim.examples.power.planetlab;
 
 import java.io.IOException;
+
+import org.cloudbus.cloudsim.examples.power.util.PlanetLabRunner;
 import org.cloudbus.cloudsim.util.ResourceLoader;
 
 /**

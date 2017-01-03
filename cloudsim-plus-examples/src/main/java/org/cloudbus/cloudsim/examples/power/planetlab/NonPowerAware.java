@@ -7,12 +7,13 @@ import java.util.Objects;
 import org.cloudbus.cloudsim.cloudlets.Cloudlet;
 
 import org.cloudbus.cloudsim.brokers.DatacenterBroker;
+import org.cloudbus.cloudsim.examples.power.util.PlanetLabHelper;
 import org.cloudbus.cloudsim.util.Log;
 import org.cloudbus.cloudsim.util.ResourceLoader;
 import org.cloudbus.cloudsim.vms.Vm;
 import org.cloudbus.cloudsim.core.CloudSim;
-import org.cloudbus.cloudsim.examples.power.Constants;
-import org.cloudbus.cloudsim.examples.power.Helper;
+import org.cloudbus.cloudsim.examples.power.util.Constants;
+import org.cloudbus.cloudsim.examples.power.util.Helper;
 import org.cloudbus.cloudsim.datacenters.power.PowerDatacenterNonPowerAware;
 import org.cloudbus.cloudsim.hosts.power.PowerHost;
 import org.cloudbus.cloudsim.allocationpolicies.power.PowerVmAllocationPolicySimple;

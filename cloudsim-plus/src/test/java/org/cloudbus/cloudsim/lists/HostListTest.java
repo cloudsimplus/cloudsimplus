@@ -5,7 +5,6 @@ import java.util.List;
 import java.util.stream.IntStream;
 
 import org.cloudbus.cloudsim.hosts.Host;
-import org.cloudbus.cloudsim.util.Consts;
 import org.cloudbus.cloudsim.hosts.HostSimple;
 import org.cloudbus.cloudsim.hosts.HostSimpleTest;
 import org.cloudbus.cloudsim.hosts.network.NetworkHost;
@@ -15,6 +14,7 @@ import org.cloudbus.cloudsim.resources.Pe;
 import org.cloudbus.cloudsim.resources.Pe.Status;
 import org.cloudbus.cloudsim.resources.Ram;
 import org.cloudbus.cloudsim.schedulers.vm.VmSchedulerTimeShared;
+import org.cloudbus.cloudsim.util.Conversion;
 import org.junit.Test;
 import static org.junit.Assert.*;
 import org.junit.Before;
@@ -29,7 +29,7 @@ public class HostListTest {
     private static final long RAM = 1024;
     private static final long BW = 10000;
     private static final double MIPS = 1000;
-    private static final long STORAGE = Consts.MILLION;
+    private static final long STORAGE = Conversion.MILLION;
 
     private List<HostSimple> hostSimpleList;
     private List<NetworkHost> networkHostList;

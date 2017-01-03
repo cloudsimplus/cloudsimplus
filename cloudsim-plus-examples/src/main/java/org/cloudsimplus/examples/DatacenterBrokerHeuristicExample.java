@@ -223,7 +223,7 @@ public class DatacenterBrokerHeuristicExample {
 
     private Host createHost() {
         int  mips = 1000; // capacity of each CPU core (in Million Instructions per Second)
-        int  ram = 2048; // host memory (MB)
+        int  ram = 2048; // host memory (MEGABYTE)
         long storage = 1000000; // host storage
         long bw = 10000;
 
@@ -241,8 +241,8 @@ public class DatacenterBrokerHeuristicExample {
 
     private Vm createVm(DatacenterBroker broker, int pesNumber) {
         double mips = 1000;
-        long   storage = 10000; // vm image size (MB)
-        int    ram = 512; // vm memory (MB)
+        long   storage = 10000; // vm image size (MEGABYTE)
+        int    ram = 512; // vm memory (MEGABYTE)
         long   bw = 1000; // vm bandwidth
 
         return new VmSimple(numberOfCreatedVms++, mips, pesNumber)

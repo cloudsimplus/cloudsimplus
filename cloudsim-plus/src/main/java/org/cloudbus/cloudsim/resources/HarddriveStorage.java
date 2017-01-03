@@ -24,7 +24,7 @@ import org.cloudbus.cloudsim.distributions.ContinuousDistribution;
  * <ul>
  *   <li>latency = 4.17 ms</li>
  *   <li>avg seek time = 9 m/s</li>
- *   <li>max transfer rate = 133 MB/sec</li>
+ *   <li>max transfer rate = 133 MEGABYTE/sec</li>
  * </ul>
  *
  * @author Uros Cibej
@@ -117,7 +117,7 @@ public class HarddriveStorage implements FileStorage {
 
         latency = 0.00417;     // 4.17 ms in seconds
         avgSeekTime = 0.009;   // 9 ms
-        maxTransferRate = 133; // in MB/sec
+        maxTransferRate = 133; // in MEGABYTE/sec
     }
 
     @Override
@@ -295,10 +295,10 @@ public class HarddriveStorage implements FileStorage {
     }
 
     /**
-     * Get the seek time for a file with the defined size. Given a file size in MB, this method
+     * Get the seek time for a file with the defined size. Given a file size in MEGABYTE, this method
      * returns a seek time for the file in seconds.
      *
-     * @param fileSize the size of a file in MB
+     * @param fileSize the size of a file in MEGABYTE
      * @return the seek time in seconds
      */
     private double getSeekTime(final int fileSize) {

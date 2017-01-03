@@ -190,8 +190,8 @@ public class SharingHostPEsUsingVmSchedulerSpaceSharedExample {
     }
 
     private Host createHost() {
-        long ram = 2048; // host memory (MB)
-        long storage = 1000000; // host storage (MB)
+        long ram = 2048; // host memory (MEGABYTE)
+        long storage = 1000000; // host storage (MEGABYTE)
         long bw = 10000; //Megabits/s
 
         List<Pe> peList = new ArrayList<>();
@@ -209,8 +209,8 @@ public class SharingHostPEsUsingVmSchedulerSpaceSharedExample {
     }
 
     private Vm createVm(DatacenterBroker broker, double mips, int pesNumber) {
-        long storage = 10000; // vm image size (MB)
-        int  ram = 512; // vm memory (MB)
+        long storage = 10000; // vm image size (MEGABYTE)
+        int  ram = 512; // vm memory (MEGABYTE)
         long bw = 1000; // vm bandwidth
 
         return new VmSimple(numberOfCreatedVms++, mips, pesNumber)

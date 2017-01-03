@@ -1,4 +1,4 @@
-package org.cloudbus.cloudsim.examples.power.planetlab;
+package org.cloudbus.cloudsim.examples.power.util;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -12,7 +12,7 @@ import org.cloudbus.cloudsim.brokers.DatacenterBroker;
 import org.cloudbus.cloudsim.utilizationmodels.UtilizationModel;
 import org.cloudbus.cloudsim.utilizationmodels.UtilizationModelZero;
 import org.cloudbus.cloudsim.utilizationmodels.UtilizationModelPlanetLabInMemory;
-import org.cloudbus.cloudsim.examples.power.Constants;
+import org.cloudbus.cloudsim.examples.power.util.Constants;
 
 /**
  * A helper class for the running examples for the PlanetLab workload.
@@ -28,7 +28,7 @@ import org.cloudbus.cloudsim.examples.power.Constants;
  * @author Anton Beloglazov
  * @since Jan 5, 2012
  */
-public class PlanetLabHelper {
+public final class PlanetLabHelper {
 
 	/**
 	 * Creates the cloudlet list planet lab.
@@ -74,5 +74,10 @@ public class PlanetLabHelper {
 
 		return list;
 	}
+
+    /**
+     * A private constructor to avoid class instantiation.
+     */
+	private PlanetLabHelper(){}
 
 }

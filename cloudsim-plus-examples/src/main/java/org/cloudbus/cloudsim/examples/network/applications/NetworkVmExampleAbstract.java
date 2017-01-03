@@ -54,13 +54,13 @@ public abstract class NetworkVmExampleAbstract {
 
     public static final int  HOST_MIPS = 1000;
     public static final int  HOST_PES = 8;
-    public static final int  HOST_RAM = 2048; // host memory (MB)
+    public static final int  HOST_RAM = 2048; // host memory (MEGABYTE)
     public static final long HOST_STORAGE = 1000000; // host storage
     public static final long HOST_BW = 10000;
 
     public static final int  VM_MIPS = 1000;
-    public static final long VM_SIZE = 10000; // image size (MB)
-    public static final int  VM_RAM = 512; // vm memory (MB)
+    public static final long VM_SIZE = 10000; // image size (MEGABYTE)
+    public static final int  VM_RAM = 512; // vm memory (MEGABYTE)
     public static final long VM_BW = 1000;
     public static final int  VM_PES_NUMBER = HOST_PES / MAX_VMS_PER_HOST;
 
@@ -214,7 +214,6 @@ public abstract class NetworkVmExampleAbstract {
         for (NetworkHost host : datacenter.<NetworkHost>getHostList()) {
             int switchNum = host.getId() / edgeSwitches[0].getPorts();
             edgeSwitches[switchNum].connectHost(host);
-            datacenter.addHostToSwitch(host, edgeSwitches[switchNum]);
             host.setEdgeSwitch(edgeSwitches[switchNum]);
         }
     }

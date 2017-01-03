@@ -83,9 +83,9 @@ public class NetworkExample3 {
 
         //VM description
         int vmid = -1;
-        long size = 10000; //image size (MB)
+        long size = 10000; //image size (MEGABYTE)
         int mips = 250;
-        int ram = 512; //vm memory (MB)
+        int ram = 512; //vm memory (MEGABYTE)
         long bw = 1000;
         int pesNumber = 1; //number of cpus
 
@@ -197,7 +197,7 @@ public class NetworkExample3 {
 
         //4. Create HostSimple with its id and list of PEs and add them to the list of machines
         int hostId = 0;
-        int ram = 2048; //host memory (MB)
+        int ram = 2048; //host memory (MEGABYTE)
         long storage = 1000000; //host storage
         long bw = 10000;
 

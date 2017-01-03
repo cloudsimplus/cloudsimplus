@@ -33,14 +33,14 @@ public interface FileStorage extends Resource {
     /**
      * Gets the maximum transfer rate of the storage in MByte/sec.
      *
-     * @return the maximum transfer rate in MB/sec
+     * @return the maximum transfer rate in MEGABYTE/sec
      */
     double getMaxTransferRate();
 
     /**
      * Sets the maximum transfer rate of this storage system in MByte/sec.
      *
-     * @param rate the maximum transfer rate in MB/sec
+     * @param rate the maximum transfer rate in MEGABYTE/sec
      * @return <tt>true</tt> if the values is greater than zero and was set successfully,
      * <tt>false</tt> otherwise
      */
@@ -56,7 +56,7 @@ public interface FileStorage extends Resource {
     /**
      * Makes reservation of space on the storage to store a file.
      *
-     * @param fileSize the size to be reserved in MB
+     * @param fileSize the size to be reserved in MEGABYTE
      * @return <tt>true</tt> if reservation succeeded, <tt>false</tt> otherwise
      */
     boolean reserveSpace(int fileSize);

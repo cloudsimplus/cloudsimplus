@@ -195,8 +195,8 @@ public class ParallelSimulationsExample {
 
     private Host createHost(int hostId) {
         int  mips = 1000; // capacity of each CPU core (in Million Instructions per Second)
-        long  ram = 2048; // host memory (MB)
-        long storage = 1000000; // host storage (MB)
+        long  ram = 2048; // host memory (MEGABYTE)
+        long storage = 1000000; // host storage (MEGABYTE)
         long bw = 10000; //in Megabits/s
         final int numberOfPes = 4;
 
@@ -222,8 +222,8 @@ public class ParallelSimulationsExample {
 
     private Vm createVm(DatacenterBroker broker, int vmId) {
         double mips = 1000;
-        long   storage = 10000; // vm image size (MB)
-        int    ram = 512; // vm memory (MB)
+        long   storage = 10000; // vm image size (MEGABYTE)
+        int    ram = 512; // vm memory (MEGABYTE)
         long   bw = 1000; // vm bandwidth (Megabits/s)
         int    pesNumber = 2; // number of CPU cores
 
