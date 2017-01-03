@@ -9,7 +9,10 @@
     <artifactId>cloudsim-plus-examples</artifactId>
     <name>CloudSim Plus Examples</name>
     <description>
-        Ready-to-run examples of how to use CloudSim++ API.
+        Ready-to-run examples of how to use CloudSim Plus API.
+        It is an excellent start point to learn how to implement cloud computing
+        simulations using CloudSim Plus.
+        All examples of CloudSim Plus exclusive features are inside the org.cloudsimplus.examples package.
         Each Java class with a main method is a different example.
     </description>
 

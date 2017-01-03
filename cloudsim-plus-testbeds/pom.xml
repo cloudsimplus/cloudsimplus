@@ -9,7 +9,7 @@
     <artifactId>cloudsim-plus-testbeds</artifactId>
     <name>CloudSim Plus Testbeds</name>
     <description>
-        A set of more complex and comprehensive testbeds used to assess
+        A set of more complex and comprehensive CloudSim Plus testbeds used to assess
 		implementation of algorithms for different purposes such as
 		mapping of Cloudlets to VMs, allocation and scheduling policies,
 		resource utilization models or VM placement and migration
