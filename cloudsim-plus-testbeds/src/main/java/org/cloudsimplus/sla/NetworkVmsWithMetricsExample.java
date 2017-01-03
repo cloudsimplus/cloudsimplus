@@ -53,10 +53,9 @@ import org.cloudbus.cloudsim.utilizationmodels.UtilizationModel;
 import org.cloudbus.cloudsim.utilizationmodels.UtilizationModelFull;
 
 /**
- *
  * @author raysaoliveira
  */
-public class NetworkVmsExampleWithMetrics {
+public class NetworkVmsWithMetricsExample {
 
     /**
      * The cloudlet list.
@@ -140,13 +139,13 @@ public class NetworkVmsExampleWithMetrics {
     public static void main(String[] args) {
         Log.printFormattedLine(" Starting... ");
         try {
-            new NetworkVmsExampleWithMetrics();
+            new NetworkVmsWithMetricsExample();
         } catch (Exception e) {
             Log.printFormattedLine("Simulation finished due to unexpected error: %s", e);
         }
     }
 
-    private NetworkVmsExampleWithMetrics() {
+    private NetworkVmsWithMetricsExample() {
         // First step: Initialize the CloudSim package. It should be called before creating any entities.
         int num_user = 1; // number of cloud users
         cloudsim = new CloudSim();

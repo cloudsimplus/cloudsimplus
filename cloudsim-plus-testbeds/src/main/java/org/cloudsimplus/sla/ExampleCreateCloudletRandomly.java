@@ -58,11 +58,10 @@ import org.cloudbus.cloudsim.utilizationmodels.UtilizationModel;
 import org.cloudbus.cloudsim.utilizationmodels.UtilizationModelFull;
 
 /**
- *
- * @author raysaoliveira
- *
  * This simple example show how to create cloudlets randomly using poisson
  * distribution.
+ * 
+ * @author raysaoliveira
  */
 public class ExampleCreateCloudletRandomly {
 

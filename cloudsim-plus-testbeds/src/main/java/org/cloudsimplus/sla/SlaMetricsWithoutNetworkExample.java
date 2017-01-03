@@ -49,24 +49,24 @@ import org.cloudbus.cloudsim.provisioners.ResourceProvisionerSimple;
 import org.cloudbus.cloudsim.resources.Bandwidth;
 import org.cloudbus.cloudsim.resources.PeSimple;
 import org.cloudbus.cloudsim.resources.Ram;
+import org.cloudbus.cloudsim.util.ResourceLoader;
 import org.cloudsimplus.util.tablebuilder.CloudletsTableBuilderHelper;
 import org.cloudbus.cloudsim.utilizationmodels.UtilizationModel;
 import org.cloudbus.cloudsim.utilizationmodels.UtilizationModelFull;
+import org.cloudsimplus.migration.VmMigrationWhenCpuMetricIsViolatedExample;
 import org.cloudsimplus.sla.readJsonFile.SlaMetricDimension;
 import org.cloudsimplus.sla.readJsonFile.SlaMetric;
 import org.cloudsimplus.sla.readJsonFile.SlaReader;
 
 /**
- *
- * @author RaysaOliveira
- *
  * This example show an simple example using metrics of quality of service
  * without network.
+ * 
+ * @author RaysaOliveira
  */
 public final class SlaMetricsWithoutNetworkExample {
 
-    private static final String METRICS_FILE = "/Users/raysaoliveira/Desktop/TeseMestradoEngInformatica/cloudsim-plus/cloudsim-plus-testbeds/src/main/java/org/cloudsimplus/sla/readJsonFile/SlaMetrics.json";
-
+    private static final String METRICS_FILE = ResourceLoader.getResourcePath(VmMigrationWhenCpuMetricIsViolatedExample.class, "SlaMetrics.json");
     private static final int HOSTS_NUMBER = 3;
     private static final int HOST_PES = 5;
     private static final int VM_PES1 = 2;
@@ -75,7 +75,7 @@ public final class SlaMetricsWithoutNetworkExample {
     private static final int CLOUDLETS_NUMBER = HOSTS_NUMBER * TOTAL_VM_PES;
     private static final int CLOUDLET_PES = 1;
 
-    private static List<Host> hostList;
+    private List<Host> hostList;
     private int lastCreatedVmId = 0;
 
     /**
