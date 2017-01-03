@@ -168,7 +168,6 @@ public class NetworkVmsExample1 {
         for (NetworkHost host : datacenter.<NetworkHost>getHostList()) {
             int switchNum = host.getId() / edgeSwitches[0].getPorts();
             edgeSwitches[switchNum].connectHost(host);
-            datacenter.addHostToSwitch(host, edgeSwitches[switchNum]);
             host.setEdgeSwitch(edgeSwitches[switchNum]);
         }
     }

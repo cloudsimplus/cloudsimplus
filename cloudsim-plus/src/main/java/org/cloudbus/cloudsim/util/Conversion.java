@@ -32,6 +32,12 @@ public final class Conversion {
     public static final double MEGABYTE = KILOBYTE * KILOBYTE;
 
     /**
+     * The value of 1 GibaByte in Bytes.
+     * @see #MEGABYTE
+     */
+    public static final double GIBABYTE = MEGABYTE * MEGABYTE;
+
+    /**
      * Converts a value in bytes to MegaBytes (MB)
      * @param bytes the value in bytes
      * @return the value in MegaBytes (MB)
@@ -46,7 +52,18 @@ public final class Conversion {
      * @return the value in Megabites (Mb)
      */
     public static double bytesToMegaBites(double bytes){
-        return bytesToMegaBytes(bytes) * 8;
+        return bytesToBites(bytesToMegaBytes(bytes));
+    }
+
+    /**
+     * Converts any value in bytes to bits,
+     * doesn't matter if the unit is Kilobytes (KILOBYTE), Megabytes (MEGABYTE), Gigabytes (GB), etc.
+     *
+     * @param bytes the value in bytes, KB, MB, GB, etc
+     * @return the value in bites, Kbits, Mbits, Gbits and so on, according to the given value
+     */
+    public static double bytesToBites(double bytes){
+        return bytes * 8;
     }
 
     /**

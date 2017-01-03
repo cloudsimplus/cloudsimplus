@@ -202,14 +202,14 @@ public class NetworkHost extends HostSimple {
      */
     private void sendPacketsToExternalVms() {
         final double availableBwByPacket = getBandwidthByPacket(packetsToSendForExternalVms.size());
-        for (HostPacket netPkt : packetsToSendForExternalVms) {
-            double delay = Conversion.bytesToMegaBites(netPkt.getVmPacket().getSize()) / availableBwByPacket;
-            totalDataTransferBytes += netPkt.getVmPacket().getSize();
+        for (HostPacket hostPkt : packetsToSendForExternalVms) {
+            double delay = Conversion.bytesToMegaBites(hostPkt.getVmPacket().getSize()) / availableBwByPacket;
+            totalDataTransferBytes += hostPkt.getVmPacket().getSize();
 
             // send to Datacenter with delay
             getSimulation().send(
                     getDatacenter().getId(), getEdgeSwitch().getId(),
-                    delay, CloudSimTags.NETWORK_EVENT_UP, netPkt);
+                    delay, CloudSimTags.NETWORK_EVENT_UP, hostPkt);
         }
 
         packetsToSendForExternalVms.clear();

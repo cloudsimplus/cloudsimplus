@@ -18,10 +18,6 @@ import java.util.Map;
  * @author Manoel Campos da Silva Filho
  */
 public interface Switch extends Identificable {
-    /**
-     * The value of 1 Kilobyte in bytes.
-     */
-    int KILOBYTE = 1024;
 
     /**
      *

@@ -7,7 +7,9 @@
  */
 package org.cloudbus.cloudsim.network.switches;
 
+import org.cloudbus.cloudsim.hosts.network.NetworkHost;
 import org.cloudbus.cloudsim.network.HostPacket;
+import org.cloudbus.cloudsim.util.Conversion;
 import org.cloudbus.cloudsim.util.Log;
 
 import org.cloudbus.cloudsim.core.CloudSim;
@@ -58,7 +60,7 @@ public class RootSwitch extends AbstractSwitch {
      * The downlink bandwidth of RootSwitch in Megabits/s.
      * It also represents the uplink bandwidth of connected aggregation Datacenter.
      */
-    public static final long DOWNLINK_BW = 40 * 1024 * 1024 * 1024L; // 40000 Megabits (40 Gigabits)
+    public static final long DOWNLINK_BW = (long) Conversion.GIBABYTE * 40 * 8; // 40000 Megabits (40 Gigabits)
 
     /**
      * Instantiates a Root AbstractSwitch specifying what other Datacenter are connected
@@ -80,7 +82,7 @@ public class RootSwitch extends AbstractSwitch {
 
         HostPacket netPkt = (HostPacket) ev.getData();
         Vm receiverVm = netPkt.getVmPacket().getDestination();
-        Switch edgeSwitch = getDatacenter().getVmToSwitchMap().get(receiverVm);
+        Switch edgeSwitch = getVmEdgeSwitch(receiverVm);
         Switch aggSwitch = findAggregateSwitchConnectedToGivenEdgeSwitch(edgeSwitch);
 
         if (aggSwitch == Switch.NULL) {

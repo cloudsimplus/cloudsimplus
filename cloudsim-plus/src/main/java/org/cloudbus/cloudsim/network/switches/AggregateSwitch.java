@@ -11,6 +11,7 @@ import org.cloudbus.cloudsim.core.CloudSim;
 import org.cloudbus.cloudsim.core.events.SimEvent;
 import org.cloudbus.cloudsim.datacenters.network.NetworkDatacenter;
 import org.cloudbus.cloudsim.network.HostPacket;
+import org.cloudbus.cloudsim.util.Conversion;
 import org.cloudbus.cloudsim.vms.Vm;
 
 /**
@@ -49,7 +50,7 @@ public class AggregateSwitch extends AbstractSwitch {
      * Default downlink bandwidth of {@link AggregateSwitch} in Megabits/s.
      * It also represents the uplink bandwidth of connected edge Datacenter.
      */
-    public static final long DOWNLINK_BW = 100 * 1024 * 1024; // 100 Megabits
+    public static final long DOWNLINK_BW =  (long) Conversion.MEGABYTE * 100 * 8;
     /**
      * Default number of aggregation switch ports that defines the number of
      * {@link EdgeSwitch} that can be connected to it.
@@ -81,7 +82,7 @@ public class AggregateSwitch extends AbstractSwitch {
 
         // packet is coming from root so need to be sent to edgelevel swich
         // find the id for edgelevel switch
-        Switch netSwitch = getDatacenter().getVmToSwitchMap().get(receiverVm);
+        Switch netSwitch = getVmEdgeSwitch(receiverVm);
         addPacketToBeSentToDownlinkSwitch(netSwitch, netPkt);
     }
 
@@ -95,7 +96,7 @@ public class AggregateSwitch extends AbstractSwitch {
         // packet is coming from edge level router so need to be sent to
         // either root or another edge level swich
         // find the id for edge level switch
-        Switch edgeSwitch = getDatacenter().getVmToSwitchMap().get(receiverVm);
+        Switch edgeSwitch = getVmEdgeSwitch(receiverVm);
         if (findConnectedEdgeSwitch(edgeSwitch)) {
             addPacketToBeSentToDownlinkSwitch(edgeSwitch, netPkt);
         } else { // send to up

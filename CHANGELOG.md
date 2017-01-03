@@ -13,10 +13,10 @@ Lists the main changes in the project.
 - Added `Vm.getTotalUtilizationOfCpu()` to get Vm's CPU utilization percentage for the current simulation time.
 - Added `Broker.submitVm` and `Broker.submitCloudlet` to add a single Vm or Cloudlet to a broker.
 - Introduced a `VmScaling` interface and a `HorizontalVmScalingSimple` class,
-  inside the [autoscaling package](cloudsim-plus/src/main/java/org/cloudsimplus/autoscaling), that provides a horizontal scaling mechanism
+  inside the [autoscaling package](/cloudsim-plus/src/main/java/org/cloudsimplus/autoscaling), that provides a horizontal scaling mechanism
   for VMs, allowing dynamic creation of VMs according to an overload condition. Such a condition is defined
   by a predicate that can check different VM resources usage such as CPU, RAM or BW.
-  See the new [LoadBalancerByVmHorizontalScalingExample](cloudsim-plus-examples/src/main/java/org/cloudsimplus/examples/LoadBalancerByVmHorizontalScalingExample.java) for a usage example.
+  See the new [LoadBalancerByVmHorizontalScalingExample](/cloudsim-plus-examples/src/main/java/org/cloudsimplus/examples/LoadBalancerByVmHorizontalScalingExample.java) for a usage example.
 
 ### Changed
 - Renamed the class `GraphReader` to `TopologyReader`.
