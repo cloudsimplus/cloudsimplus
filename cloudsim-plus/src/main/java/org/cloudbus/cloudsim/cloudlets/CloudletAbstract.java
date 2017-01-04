@@ -324,17 +324,11 @@ public abstract class CloudletAbstract implements Cloudlet {
 
     @Override
     public boolean setFinishedLengthSoFar(final long length) {
-        if (length > this.getLength())
-            throw new IllegalArgumentException(
-                String.format(
-                    "The length parameter (%d) cannot be greater than the cloudletLength attribute (%d).",
-                    length, this.getLength()));
-
         if (length < 0.0 || executionInDatacenterInfoList.isEmpty()) {
             return false;
         }
 
-        getLastExecutionInDatacenterInfo().finishedSoFar = length;
+        getLastExecutionInDatacenterInfo().finishedSoFar = Math.min(length, this.getLength());
 
         write("Set the length's finished so far to %d", length);
 

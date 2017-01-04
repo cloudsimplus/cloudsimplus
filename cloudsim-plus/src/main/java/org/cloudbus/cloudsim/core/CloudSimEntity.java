@@ -120,14 +120,7 @@ public abstract class CloudSimEntity implements SimEntity {
         simulation.send(id, dest, delay, tag, data);
     }
 
-    /**
-     * Sends an event to another entity by id number and with <b>no</b> data.
-     * Note that the tag <code>9999</code> is reserved.
-     *
-     * @param dest  The unique id number of the destination entity
-     * @param delay How many seconds after the current simulation time the event should be sent
-     * @param tag   An user-defined number representing the type of event.
-     */
+    @Override
     public void schedule(int dest, double delay, int tag) {
         schedule(dest, delay, tag, null);
     }

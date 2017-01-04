@@ -60,15 +60,12 @@ public class CloudletExecutionInfo {
     private double finishedTime;
 
     /**
-     * The total length of Cloudlet finished so far in number of Instructions (I).
-     * The attribute stores past the execution length of the cloudlet
+     * The length of Cloudlet finished so far in number of Instructions (I).
+     * The attribute stores the execution length of the cloudlet
      * in previous datacenters. Thus, it represents the actual executed
-     * length of the cloudlet (not just the executed length
-     * in the current Datacenter).
-     * It considers the sum of instructions executed in every
-     * PE of the cloudlet.
+     * length of the cloudlet (not just the executed length in the current Datacenter).
      */
-    private long cloudletFinishedSoFar;
+    private long instructionsFinishedSoFar;
 
     /**
      * Latest cloudlet execution start time in the current Datacenter.
@@ -137,7 +134,7 @@ public class CloudletExecutionInfo {
         this.virtualRuntime = 0;
 
         //In case a Cloudlet has been executed partially by some other Host
-        this.cloudletFinishedSoFar = cloudlet.getFinishedLengthSoFar() * Conversion.MILLION;
+        this.instructionsFinishedSoFar = cloudlet.getFinishedLengthSoFar() * Conversion.MILLION;
     }
 
     /**
@@ -225,7 +222,7 @@ public class CloudletExecutionInfo {
      * @post $result >= 0
      */
     public long getRemainingCloudletLength() {
-        long length = cloudlet.getTotalLength() * Conversion.MILLION - cloudletFinishedSoFar;
+        long length = cloudlet.getTotalLength() * Conversion.MILLION - instructionsFinishedSoFar;
 
         // Remaining Cloudlet length can't be negative number.
         if (length < 0) {
@@ -255,11 +252,11 @@ public class CloudletExecutionInfo {
         cloudlet.setWallClockTime(wallClockTime, totalCompletionTime);
 
         long finishedLengthAcrossAllPes;
-        //if (cloudlet.getCloudletTotalLength() * Consts.MILLION < cloudletFinishedSoFar) {
+        //if (cloudlet.getCloudletTotalLength() * Consts.MILLION < instructionsFinishedSoFar) {
         if (cloudlet.getStatus() == Cloudlet.Status.SUCCESS) {
             finishedLengthAcrossAllPes = cloudlet.getLength();
         } else {
-            finishedLengthAcrossAllPes = cloudletFinishedSoFar / Conversion.MILLION;
+            finishedLengthAcrossAllPes = instructionsFinishedSoFar / Conversion.MILLION;
         }
 
         cloudlet.setFinishedLengthSoFar(finishedLengthAcrossAllPes);
@@ -269,7 +266,7 @@ public class CloudletExecutionInfo {
      * Updates the length of cloudlet that has already been completed.
      *
      * @param numberOfExecutedInstructions amount of instructions just executed, to be
-     * added to the {@link #cloudletFinishedSoFar}, in number of Instructions (I)
+     * added to the {@link #instructionsFinishedSoFar}, in number of Instructions (I)
      * @pre length >= 0.0
      * @post $none
      */
@@ -277,12 +274,11 @@ public class CloudletExecutionInfo {
         if(numberOfExecutedInstructions <= 0)
             return;
 
-        this.cloudletFinishedSoFar += numberOfExecutedInstructions;
-        this.cloudletFinishedSoFar =
-                Math.min(this.cloudletFinishedSoFar,
-                        cloudlet.getTotalLength()* Conversion.MILLION);
+        this.instructionsFinishedSoFar += numberOfExecutedInstructions;
+        this.instructionsFinishedSoFar =
+                Math.min(this.instructionsFinishedSoFar, cloudlet.getTotalLength()* Conversion.MILLION);
 
-        double finishedSoFarByPeMI = cloudletFinishedSoFar  / cloudlet.getNumberOfPes() / Conversion.MILLION;
+        final double finishedSoFarByPeMI = instructionsFinishedSoFar / Conversion.MILLION;
         cloudlet.setFinishedLengthSoFar((long)finishedSoFarByPeMI);
     }
 

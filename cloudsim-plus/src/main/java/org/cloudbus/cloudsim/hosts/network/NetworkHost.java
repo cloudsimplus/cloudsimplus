@@ -139,21 +139,30 @@ public class NetworkHost extends HostSimple {
      */
     private void receivePackets() {
         try{
-            for (HostPacket netPkt : hostPacketsReceived) {
-                netPkt.getVmPacket().setReceiveTime(getSimulation().clock());
+            for (HostPacket hostPkt : hostPacketsReceived) {
+                hostPkt.getVmPacket().setReceiveTime(getSimulation().clock());
 
-                Vm vm = VmList.getById(getVmList(), netPkt.getVmPacket().getDestination().getId());
-                NetworkCloudletSpaceSharedScheduler sched = getCloudletScheduler(vm);
+                //Checks if the destinationVm is inside this host
+                Vm destinationVm = VmList.getById(getVmList(), hostPkt.getVmPacket().getDestination().getId());
+                if(destinationVm.equals(Vm.NULL)){
+                    Log.println(
+                        Log.Level.ERROR, getClass(), getSimulation().clock(),
+                        "Destination VM %d was not found inside the Host %d",
+                        hostPkt.getVmPacket().getDestination().getId(), getId());
+                    return;
+                }
 
-                sched.addPacketToListOfPacketsSentFromVm(netPkt.getVmPacket());
+                NetworkCloudletSpaceSharedScheduler sched = getVmCloudletScheduler(destinationVm);
+
+                sched.addPacketToListOfPacketsSentFromVm(hostPkt.getVmPacket());
                 Log.println(
                     Log.Level.DEBUG, getClass(), getSimulation().clock(),
-                    "Host %d received pkt with %.0f bytes from Cloudlet %d in VM %d and fowarded it to Cloudlet %d in VM %d",
-                    getId(), netPkt.getVmPacket().getSize(),
-                    netPkt.getVmPacket().getSenderCloudlet().getId(),
-                    netPkt.getVmPacket().getSource(),
-                    netPkt.getVmPacket().getReceiverCloudlet().getId(),
-                    netPkt.getVmPacket().getDestination());
+                    "Host %d received pkt with %d bytes from Cloudlet %d in VM %d and forwarded it to Cloudlet %d in VM %d",
+                    getId(), hostPkt.getVmPacket().getSize(),
+                    hostPkt.getVmPacket().getSenderCloudlet().getId(),
+                    hostPkt.getVmPacket().getSource().getId(),
+                    hostPkt.getVmPacket().getReceiverCloudlet().getId(),
+                    hostPkt.getVmPacket().getDestination().getId());
             }
 
             hostPacketsReceived.clear();
@@ -183,7 +192,7 @@ public class NetworkHost extends HostSimple {
             hostPkt.getVmPacket().setReceiveTime(getSimulation().clock());
             // insert the packet in receivedlist
             Vm destinationVm = hostPkt.getVmPacket().getDestination();
-            getCloudletScheduler(destinationVm).addPacketToListOfPacketsSentFromVm(hostPkt.getVmPacket());
+            getVmCloudletScheduler(destinationVm).addPacketToListOfPacketsSentFromVm(hostPkt.getVmPacket());
         }
 
         if (!packetsToSendForLocalVms.isEmpty()) {
@@ -226,7 +235,7 @@ public class NetworkHost extends HostSimple {
         return numberOfPackets == 0 ? bandwidth : bandwidth / numberOfPackets;
     }
 
-    private NetworkCloudletSpaceSharedScheduler getCloudletScheduler(Vm vm) {
+    private NetworkCloudletSpaceSharedScheduler getVmCloudletScheduler(Vm vm) {
         return (NetworkCloudletSpaceSharedScheduler) vm.getCloudletScheduler();
     }
 
@@ -238,31 +247,45 @@ public class NetworkHost extends HostSimple {
      * @todo @author manoelcampos The class forces the use of a NetworkCloudletSpaceSharedScheduler, what
      * doesn't make sense and will cause runtime class cast exception if a different one is used.
      */
-    protected void collectAllListsOfPacketsToSendFromVm(Vm sourceVm) {
-        NetworkCloudletSpaceSharedScheduler sched = getCloudletScheduler(sourceVm);
-        for (Entry<Vm, List<VmPacket>> es : sched.getHostPacketsToSendMap().entrySet()) {
-            collectListOfPacketToSendFromVm(es);
+    private void collectAllListsOfPacketsToSendFromVm(Vm sourceVm) {
+        NetworkCloudletSpaceSharedScheduler sched = getVmCloudletScheduler(sourceVm);
+        for (Entry<Vm, List<VmPacket>> entry : sched.getHostPacketsToSendMap().entrySet()) {
+            collectListOfPacketsToSendFromVm(entry);
         }
     }
 
     /**
-     * Collects all packets of a specific packet list of a given Vm
+     * Collects all packets of a specific packet list from a given Vm
      * in order to get them together to be sent.
      *
-     * @param es The Map entry from a packet map where the key is the
-     * sender VM id and the value is a list of packets to send
+     * @param entry the Map entry from a packet map where the key is the
+     * sender VM and the value is a list of packets to send
+     * @see #collectAllListsOfPacketsToSendFromVm(Vm)
      */
-    protected void collectListOfPacketToSendFromVm(Entry<Vm, List<VmPacket>> es) {
-        List<VmPacket> vmPktList = es.getValue();
+    private void collectListOfPacketsToSendFromVm(Entry<Vm, List<VmPacket>> entry) {
+        List<VmPacket> vmPktList = entry.getValue();
         for (VmPacket vmPkt : vmPktList) {
-            HostPacket hostPkt = new HostPacket(this, vmPkt);
-            //Checks if the VM is inside this Host
-            Vm receiverVm = VmList.getById(this.getVmList(), vmPkt.getDestination().getId());
-            if (receiverVm != Vm.NULL) {
-                packetsToSendForLocalVms.add(hostPkt);
-            } else {
-                packetsToSendForExternalVms.add(hostPkt);
-            }
+            collectPacketToSendFromVm(vmPkt);
+        }
+
+        vmPktList.clear();
+    }
+
+    /**
+     * Collects a specific packet from a given Vm
+     * in order to get it together with other packets to be sent.
+     *
+     * @param vmPkt a packet to be sent from a Vm to another one
+     * @see #collectListOfPacketsToSendFromVm(Entry)
+     */
+    private void collectPacketToSendFromVm(VmPacket vmPkt) {
+        HostPacket hostPkt = new HostPacket(this, vmPkt);
+        //Checks if the VM is inside this Host
+        Vm receiverVm = VmList.getById(this.getVmList(), vmPkt.getDestination().getId());
+        if (receiverVm != Vm.NULL) {
+            packetsToSendForLocalVms.add(hostPkt);
+        } else {
+            packetsToSendForExternalVms.add(hostPkt);
         }
     }
 

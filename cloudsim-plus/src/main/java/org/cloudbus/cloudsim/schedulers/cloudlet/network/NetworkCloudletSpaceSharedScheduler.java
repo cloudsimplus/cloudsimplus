@@ -14,6 +14,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+import org.cloudbus.cloudsim.core.CloudSimTags;
+import org.cloudbus.cloudsim.datacenters.Datacenter;
 import org.cloudbus.cloudsim.network.VmPacket;
 import org.cloudbus.cloudsim.util.Log;
 
@@ -21,7 +23,6 @@ import org.cloudbus.cloudsim.cloudlets.network.CloudletExecutionTask;
 import org.cloudbus.cloudsim.cloudlets.network.CloudletReceiveTask;
 import org.cloudbus.cloudsim.cloudlets.network.CloudletSendTask;
 import org.cloudbus.cloudsim.cloudlets.network.NetworkCloudlet;
-import org.cloudbus.cloudsim.datacenters.network.NetworkDatacenter;
 import org.cloudbus.cloudsim.schedulers.cloudlet.CloudletSchedulerSpaceShared;
 import org.cloudbus.cloudsim.cloudlets.CloudletExecutionInfo;
 import org.cloudbus.cloudsim.vms.Vm;
@@ -67,37 +68,20 @@ public class NetworkCloudletSpaceSharedScheduler extends CloudletSchedulerSpaceS
     private final Map<Vm, List<VmPacket>> hostPacketsReceivedMap;
 
     /**
-     * The Datacenter where the VM using this scheduler runs.
-     */
-    private final NetworkDatacenter datacenter;
-
-    /**
      * Creates a new CloudletSchedulerSpaceShared object. This method must be
      * invoked before starting the actual simulation.
      *
-     * @param datacenter the Datacenter where the VM using this scheduler runs
      * @pre $none
      * @post $none
      */
-    public NetworkCloudletSpaceSharedScheduler(NetworkDatacenter datacenter) {
+    public NetworkCloudletSpaceSharedScheduler() {
         super();
-        this.datacenter = datacenter;
         hostPacketsToSendMap = new HashMap<>();
         hostPacketsReceivedMap = new HashMap<>();
     }
 
     @Override
     public void updateCloudletProcessing(CloudletExecutionInfo rcl, double currentTime) {
-        /**
-         * @todo @author manoelcampos
-         * The error of not sending and receiving packets is in this method.
-         * It is not advancing for the next task.
-         * The Cloudlet.isFinished just considers the execution tasks,
-         * without considering if all tasks were finished.
-         * After all, a NetworkCloudlet may not have an
-         * execution task, but just send or receive tasks.
-         */
-
         NetworkCloudlet netcl = (NetworkCloudlet) rcl.getCloudlet();
 
         if (netcl.isFinished()) {
@@ -109,9 +93,11 @@ public class NetworkCloudletSpaceSharedScheduler extends CloudletSchedulerSpaceS
          * including these if's for each type of task.
          */
         if ((netcl.getCurrentTaskNum() == -1)) {
-            scheduleNextTaskExecution(netcl);
+            scheduleNextTaskIfCurrentIsFinished(netcl);
+            return;
         }
-        else if (netcl.getCurrentTask() instanceof CloudletExecutionTask) {
+
+        if (netcl.getCurrentTask() instanceof CloudletExecutionTask) {
             super.updateCloudletProcessing(rcl, currentTime);
             updateExecutionTask(rcl, currentTime);
         }
@@ -121,6 +107,8 @@ public class NetworkCloudletSpaceSharedScheduler extends CloudletSchedulerSpaceS
         else if (netcl.getCurrentTask() instanceof CloudletReceiveTask) {
             receivePackets(netcl);
         }
+
+        setPreviousTime(currentTime);
     }
 
     /**
@@ -143,7 +131,7 @@ public class NetworkCloudletSpaceSharedScheduler extends CloudletSchedulerSpaceS
         packetsToSendFromVmOfCloudlet.addAll(dataTask.getPacketsToSend(sourceCloudlet.getSimulation().clock()));
 
         hostPacketsToSendMap.put(sourceCloudlet.getVm(), packetsToSendFromVmOfCloudlet);
-        scheduleNextTaskExecution(sourceCloudlet);
+        scheduleNextTaskIfCurrentIsFinished(sourceCloudlet);
     }
 
     /**
@@ -172,12 +160,12 @@ public class NetworkCloudletSpaceSharedScheduler extends CloudletSchedulerSpaceS
         receivedPkts.forEach(pkt ->
             Log.println(
                 Log.Level.DEBUG, getClass(), sourceCloudlet.getSimulation().clock(),
-                "Cloudlet %d in VM %d received pkt with %.0f bytes from Cloudlet %d in VM %d",
+                "Cloudlet %d in VM %d received pkt with %d bytes from Cloudlet %d in VM %d",
                 pkt.getReceiverCloudlet().getId(),
-                pkt.getDestination(),
+                pkt.getDestination().getId(),
                 pkt.getSize(),
                 pkt.getSenderCloudlet().getId(),
-                pkt.getSource())
+                pkt.getSource().getId())
         );
 
 
@@ -191,7 +179,7 @@ public class NetworkCloudletSpaceSharedScheduler extends CloudletSchedulerSpaceS
          * of the expected packets up to a given timeout.
          * After that, the task has to stop waiting and fail.
          */
-        scheduleNextTaskExecution(sourceCloudlet);
+        scheduleNextTaskIfCurrentIsFinished(sourceCloudlet);
     }
 
     /**
@@ -227,15 +215,19 @@ public class NetworkCloudletSpaceSharedScheduler extends CloudletSchedulerSpaceS
         CloudletExecutionTask task = (CloudletExecutionTask)netcl.getCurrentTask();
         task.process(netcl.getFinishedLengthSoFar());
 
-        scheduleNextTaskExecution(netcl);
+        scheduleNextTaskIfCurrentIsFinished(netcl);
     }
 
     /**
      * Schedules the execution of the next task of a given cloudlet.
      */
-    private void scheduleNextTaskExecution(NetworkCloudlet cloudlet) {
-        cloudlet.startNextTaskIfCurrentIsFinished(cloudlet.getSimulation().clock());
-        //Datacenter.schedule(Datacenter.getId(), 0.0001, CloudSimTags.VM_UPDATE_CLOUDLET_PROCESSING_EVENT);
+    private void scheduleNextTaskIfCurrentIsFinished(NetworkCloudlet cloudlet) {
+        if(!cloudlet.startNextTaskIfCurrentIsFinished(cloudlet.getSimulation().clock())){
+            return;
+        }
+
+        Datacenter dc = getVm().getHost().getDatacenter();
+        dc.schedule(dc.getId(), dc.getSimulation().getMinTimeBetweenEvents(), CloudSimTags.VM_UPDATE_CLOUDLET_PROCESSING_EVENT);
     }
 
     /**

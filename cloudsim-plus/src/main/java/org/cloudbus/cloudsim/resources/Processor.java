@@ -137,9 +137,12 @@ public class Processor implements ResourceCapacity {
      */
     public double getAvailableMipsByPe(){
         final int totalPesOfAllExecCloudlets = totalPesOfAllExecCloudlets();
-        if(totalPesOfAllExecCloudlets > getNumberOfPes())
+        if(totalPesOfAllExecCloudlets > getNumberOfPes()) {
             return getTotalMipsCapacity() / totalPesOfAllExecCloudlets;
-        else return getTotalMipsCapacity() / getNumberOfPes();
+        }
+        else {
+            return getCapacity();
+        }
     }
 
     /**

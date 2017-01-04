@@ -266,10 +266,12 @@ public class CloudletSimpleTest {
         assertEquals(cloudletFinishedSoFar, cloudlet.getFinishedLengthSoFar(), 0);
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void testSetCloudletFinishedSoFar_lengthParamGreaterThanCloudletLength() {
         CloudletSimple cloudlet = createCloudlet();
-        cloudlet.setFinishedLengthSoFar(cloudlet.getLength()+1);
+        long expected = cloudlet.getLength();
+        cloudlet.setFinishedLengthSoFar(expected*2);
+        assertEquals(expected, cloudlet.getLength(), 0);
     }
 
     @Test
