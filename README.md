@@ -83,6 +83,7 @@ CloudSim Plus provides a lot of exclusive features, ranging from the most basic 
   [Tabu Search](http://en.wikipedia.org/wiki/Tabu_search), [Simulated Annealing](http://en.wikipedia.org/wiki/Simulated_annealing), 
   [Ant Colony Systems](http://en.wikipedia.org/wiki/Ant_colony_optimization_algorithms) and so on. See an [example using Simulated Annealing here](/cloudsim-plus-examples/src/main/java/org/cloudsimplus/examples/DatacenterBrokerHeuristicExample.java).
 - [Implementation of the Completely Fair Scheduler](/cloudsim-plus-examples/src/main/java/org/cloudsimplus/examples/LinuxCompletelyFairSchedulerExample.java) used in recent version of the Linux Kernel.
+- Commpletely re-designed and reusable Network module. Totally refactored network examples to make them clear and easy to change (see issue #49).
 - Simpler constructors to instantiate simulation objects, making it less confusing to use the framework. It applies the Convention over Configuration principle (CoC) to ask just mandatory parameters when instantiating objects (see issue #30 for more details).
 - Throughout documentation update, improvement and extension.
 - Improved class hierarchy, modules and package structure that is easier to understand and follows the Separation of Concerns principle (SoC).
