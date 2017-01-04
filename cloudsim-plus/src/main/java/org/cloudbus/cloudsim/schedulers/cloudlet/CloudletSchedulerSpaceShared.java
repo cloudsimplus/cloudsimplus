@@ -17,15 +17,16 @@ import org.cloudbus.cloudsim.resources.Processor;
 
 /**
  * CloudletSchedulerSpaceShared implements a policy of scheduling performed by a
- * virtual machine to run its {@link Cloudlet Cloudlets}. It considers there will
- * be only one Cloudlet per VM. Other Cloudlets will be in a waiting list. It also
- * considers that the time to transfer Cloudlets to the Vm happens before Cloudlet
- * starts executing. I.e., even though Cloudlets must wait for CPU, data transfer
- * happens as soon as Cloudlets are submitted.
+ * virtual machine to run its {@link Cloudlet Cloudlets}. It considers there
+ * will be only one Cloudlet per VM. Other Cloudlets will be in a waiting list.
+ * It also considers that the time to transfer Cloudlets to the Vm happens
+ * before Cloudlet starts executing. I.e., even though Cloudlets must wait for
+ * CPU, data transfer happens as soon as Cloudlets are submitted.
  *
- * <p><b>This scheduler does not consider Cloudlets priorities to
- * define execution order. If actual priorities are defined for Cloudlets, they
- * are just ignored by the scheduler.</b></p>
+ * <p>
+ * <b>This scheduler does not consider Cloudlets priorities to define execution
+ * order. If actual priorities are defined for Cloudlets, they are just ignored
+ * by the scheduler.</b></p>
  *
  * @author Rodrigo N. Calheiros
  * @author Anton Beloglazov
@@ -47,7 +48,7 @@ public class CloudletSchedulerSpaceShared extends CloudletSchedulerAbstract {
 
     @Override
     public double cloudletResume(int cloudletId) {
-	    Optional<CloudletExecutionInfo> optional = findCloudletInList(cloudletId, getCloudletPausedList());
+        Optional<CloudletExecutionInfo> optional = findCloudletInList(cloudletId, getCloudletPausedList());
         if (!optional.isPresent()) {
             // not found in the paused list: either it is in in the queue, executing or not exist
             return 0.0;
@@ -58,7 +59,7 @@ public class CloudletSchedulerSpaceShared extends CloudletSchedulerAbstract {
 
         // it can go to the exec list
         if (isThereEnoughFreePesForCloudlet(c)) {
-	        return movePausedCloudletToExecList(c);
+            return movePausedCloudletToExecList(c);
         }
 
         // No enough free PEs: go to the waiting queue
@@ -68,25 +69,21 @@ public class CloudletSchedulerSpaceShared extends CloudletSchedulerAbstract {
          * the cloudlet may have the opportunity to run.
          * It goes to the end of the waiting list because other cloudlets
          * could be waiting longer and have priority to execute.
-        */
-	    addCloudletToWaitingList(c);
+         */
+        addCloudletToWaitingList(c);
         return 0.0;
     }
 
-	/**
-	 * Moves a paused cloudlet to the execution list.
-	 *
-	 * @param c the cloudlet to be moved
-	 * @return the time the cloudlet is expected to finish
-	 */
-	private double movePausedCloudletToExecList(CloudletExecutionInfo c) {
-		addCloudletToExecList(c);
-
-		// calculate the expected time for cloudlet completion
-        return getVm().getSimulation().clock() +
-                (c.getRemainingCloudletLength() /
-                (getProcessor().getCapacity() * c.getNumberOfPes()));
-	}
+    /**
+     * Moves a paused cloudlet to the execution list.
+     *
+     * @param c the cloudlet to be moved
+     * @return the time the cloudlet is expected to finish
+     */
+    private double movePausedCloudletToExecList(CloudletExecutionInfo c) {
+        addCloudletToExecList(c);
+        return getEstimatedFinishTimeOfCloudlet(c, getVm().getSimulation().clock());
+    }
 
     @Override
     public List<Double> getCurrentRequestedMips() {
@@ -95,9 +92,9 @@ public class CloudletSchedulerSpaceShared extends CloudletSchedulerAbstract {
 
     /**
      * {@inheritDoc}
-     * <p>It doesn't consider the given Cloudlet because the scheduler
-     * ensures that the Cloudlet will use all required PEs until it
-     * finishes executing. </p>
+     * <p>
+     * It doesn't consider the given Cloudlet because the scheduler ensures that
+     * the Cloudlet will use all required PEs until it finishes executing. </p>
      *
      * @param rcl {@inheritDoc}
      * @param mipsShare {@inheritDoc}
@@ -133,15 +130,15 @@ public class CloudletSchedulerSpaceShared extends CloudletSchedulerAbstract {
     }
 
     /**
-	 * The space-shared scheduler <b>does not</b> share the CPU time between executing cloudlets.
-	 * Each CPU ({@link Pe}) is used by another Cloudlet just when the previous Cloudlet
-	 * using it has finished executing completely.
-	 * By this way, if there are more Cloudlets than PEs, some Cloudlet
-	 * will not be allowed to start executing immediately.
-	 *
+     * The space-shared scheduler <b>does not</b> share the CPU time between
+     * executing cloudlets. Each CPU ({@link Pe}) is used by another Cloudlet
+     * just when the previous Cloudlet using it has finished executing
+     * completely. By this way, if there are more Cloudlets than PEs, some
+     * Cloudlet will not be allowed to start executing immediately.
+     *
      * @param cloudlet {@inheritDoc}
-	 * @return {@inheritDoc}
-	 */
+     * @return {@inheritDoc}
+     */
     @Override
     public boolean canAddCloudletToExecutionList(CloudletExecutionInfo cloudlet) {
         return isThereEnoughFreePesForCloudlet(cloudlet);

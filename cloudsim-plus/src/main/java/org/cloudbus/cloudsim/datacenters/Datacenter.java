@@ -106,7 +106,11 @@ public interface Datacenter extends SimEntity {
      * Sets the list of storage devices of the Datacenter.
      *
      * @param storageList the new storage list
+<<<<<<< HEAD
+     * @return 
+=======
      * @return
+>>>>>>> upstream/master
      */
     Datacenter setStorageList(List<FileStorage> storageList);
 

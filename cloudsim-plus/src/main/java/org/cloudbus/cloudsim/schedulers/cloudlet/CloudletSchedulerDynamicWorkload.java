@@ -12,7 +12,6 @@ import org.cloudbus.cloudsim.cloudlets.Cloudlet;
 import org.cloudbus.cloudsim.cloudlets.CloudletExecutionInfo;
 
 import org.cloudbus.cloudsim.resources.Processor;
-import org.cloudbus.cloudsim.util.Conversion;
 
 /**
  * CloudletSchedulerDynamicWorkload implements a policy of scheduling performed
@@ -97,15 +96,14 @@ public class CloudletSchedulerDynamicWorkload extends CloudletSchedulerTimeShare
         List<CloudletExecutionInfo> cloudletsToFinish = new ArrayList<>();
 
         for (CloudletExecutionInfo rcl : getCloudletExecList()) {
-            rcl.updateCloudletFinishedSoFar((long) (timeSpan(currentTime)
-                * getTotalCurrentAllocatedMipsForCloudlet(rcl, getPreviousTime()) * Conversion.MILLION));
+            rcl.updateCloudletFinishedSoFar(cloudletExecutedInstructionsForElapsedTime(rcl, currentTime));
 
-            if (rcl.getCloudlet().isFinished()) { // finished: remove from the list
+            if (rcl.getCloudlet().isFinished()) {
                 cloudletsToFinish.add(rcl);
-            } else { // not finish: estimate the finish time
-                double estimatedFinishTime = getEstimatedFinishTime(rcl, currentTime);
-                if (estimatedFinishTime - currentTime < getVm().getSimulation().getMinTimeBetweenEvents()) {
-                    estimatedFinishTime = currentTime + getVm().getSimulation().getMinTimeBetweenEvents();
+            } else { 
+                double estimatedFinishTime = getEstimatedFinishTimeOfCloudlet(rcl, currentTime);
+                if (estimatedFinishTime < getVm().getSimulation().getMinTimeBetweenEvents()) {
+                    estimatedFinishTime =  getVm().getSimulation().getMinTimeBetweenEvents();
                 }
                 if (estimatedFinishTime < nextEvent) {
                     nextEvent = estimatedFinishTime;
@@ -131,20 +129,7 @@ public class CloudletSchedulerDynamicWorkload extends CloudletSchedulerTimeShare
     public double cloudletSubmit(Cloudlet cl, double fileTransferTime) {
         CloudletExecutionInfo rcl = new CloudletExecutionInfo(cl);
         addCloudletToExecList(rcl);
-        return getEstimatedFinishTime(rcl, getPreviousTime());
-    }
-
-    /**
-     * Get the estimated completion time of a given cloudlet.
-     *
-     * @param rcl  the cloudlet
-     * @param time the time
-     * @return the estimated finish time
-     */
-    public double getEstimatedFinishTime(CloudletExecutionInfo rcl, double time) {
-        return time +
-            ((rcl.getRemainingCloudletLength()) /
-                getTotalCurrentAllocatedMipsForCloudlet(rcl, time));
+        return getEstimatedFinishTimeOfCloudlet(rcl, getPreviousTime());
     }
 
     @Override
