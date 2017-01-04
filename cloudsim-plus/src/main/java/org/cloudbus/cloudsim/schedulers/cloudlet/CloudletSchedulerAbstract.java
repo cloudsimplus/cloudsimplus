@@ -488,7 +488,7 @@ public abstract class CloudletSchedulerAbstract implements CloudletScheduler {
      *
      */
     protected void updateCloudletProcessing(CloudletExecutionInfo rcl, double currentTime) {
-        long numberExecutedInstructions = cloudletExecutedLengthForElapsedTime(rcl, currentTime);
+        long numberExecutedInstructions = cloudletExecutedInstructionsForElapsedTime(rcl, currentTime);
         rcl.updateCloudletFinishedSoFar(numberExecutedInstructions);
         if (numberExecutedInstructions > 0) {
             rcl.setLastProcessingTime(currentTime);
@@ -519,22 +519,13 @@ public abstract class CloudletSchedulerAbstract implements CloudletScheduler {
      *
      * @see #updateCloudletsProcessing(double)
      *
-     * @TODO @author manoelcampos Shouldn't the processing update of a cloudlet
-     * consider the cloudlet's UtilizationModel of CPU? Commonly the utilization
-     * model used is the UtilizationModelFull, that uses the CPU 100% all the
-     * available time. However, if we have an utilization model that uses just
-     * 10% of CPU, the cloudlet will last 10 times more to finish. It has to be
-     * checked how the MigrationExample1 works, once it uses the
-     * UtilizationModelArithmeticProgression instead of the
-     * UtilizationModelFull.
-     *
      * @TODO @author manoelcampos This method is being called 2 times more than
      * required. Despite it is not causing any apparent issue, it has to be
      * investigated. For instance, for simulation time 2, with 2 cloudlets, the
      * method is being called 4 times instead of just 2 (1 for each cloudlet for
      * that time).
      */
-    protected long cloudletExecutedLengthForElapsedTime(CloudletExecutionInfo rcl, double currentTime) {
+    protected long cloudletExecutedInstructionsForElapsedTime(CloudletExecutionInfo rcl, double currentTime) {
         /* The time the Cloudlet spent executing in fact, since the last time Cloudlet update was
          * called by the scheduler. If it is zero, indicates that the Cloudlet didn't use
          * the CPU in this time span, because it is waiting for its required files
@@ -543,7 +534,9 @@ public abstract class CloudletSchedulerAbstract implements CloudletScheduler {
         final double actualProcessingTime = (hasCloudletFileTransferTimePassed(rcl, currentTime) ? timeSpan(currentTime) : 0);
 
         //Log.println(Log.Level.DEBUG, getClass(), currentTime, "Cloudlet: %d Processing time: %.2f Last processed time: %.2f Actual process time: %.2f MI so far: %d",  rcl.getCloudletId(), currentTime, rcl.getLastProcessingTime(),  actualProcessingTime, rcl.getCloudlet().getCloudletFinishedSoFar());
-        return (long) (processor.getAvailableMipsByPe() * actualProcessingTime * Conversion.MILLION);
+        return (long) (processor.getAvailableMipsByPe() * 
+                rcl.getCloudlet().getUtilizationOfCpu(currentTime) * 
+                actualProcessingTime * Conversion.MILLION);
     }
 
     /**
@@ -639,21 +632,25 @@ public abstract class CloudletSchedulerAbstract implements CloudletScheduler {
     }
 
     /**
-     * Gets the estimated time, considering the current time, when a given cloudlet is supposed to finish
+     * Gets the estimated time when a given cloudlet is supposed to finish
      * executing. It considers the amount of Vm PES and the sum of PEs required
      * by all VMs running inside the VM.
+     * 
+     * <p>The estimated time is not a future simulation time
+     * but a time interval that the Cloudlet is expected to finish.</p>
      *
      * @param rcl cloudlet to get the estimated finish time
      * @param currentTime current simulation time
-     * @return the estimated finish time of the given cloudlet, that represents a future simulation time
+     * @return the estimated finish time of the given cloudlet
      */
     protected double getEstimatedFinishTimeOfCloudlet(CloudletExecutionInfo rcl, double currentTime) {
-        double estimatedFinishTime = currentTime
-                + (rcl.getRemainingCloudletLength()
-                / (processor.getAvailableMipsByPe() * rcl.getNumberOfPes()));
+        final double mips = (processor.getAvailableMipsByPe() *
+                rcl.getCloudlet().getUtilizationOfCpu(currentTime));
+        double estimatedFinishTime = 
+                rcl.getRemainingCloudletLength() / mips;
 
-        if (estimatedFinishTime - currentTime < getVm().getSimulation().getMinTimeBetweenEvents()) {
-            estimatedFinishTime = currentTime + getVm().getSimulation().getMinTimeBetweenEvents();
+        if (estimatedFinishTime < getVm().getSimulation().getMinTimeBetweenEvents()) {
+            estimatedFinishTime =  getVm().getSimulation().getMinTimeBetweenEvents();
         }
 
         return estimatedFinishTime;

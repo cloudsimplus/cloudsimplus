@@ -215,21 +215,15 @@ public class CloudletExecutionInfo {
 
     /**
      * Gets the remaining cloudlet length (in MI) that has to be execute yet,
-     * considering the {@link Cloudlet#getTotalLength()}.
+     * considering the {@link Cloudlet#getLength()}.
      *
-     * @return cloudlet length
+     * @return cloudlet length in MI
      * @pre $none
      * @post $result >= 0
      */
     public long getRemainingCloudletLength() {
-        long length = cloudlet.getTotalLength() * Conversion.MILLION - instructionsFinishedSoFar;
-
-        // Remaining Cloudlet length can't be negative number.
-        if (length < 0) {
-            return 0;
-        }
-
-        return (long) Math.floor(length / Conversion.MILLION);
+        final long remainingMI = cloudlet.getLength() - (instructionsFinishedSoFar / (long)Conversion.MILLION);
+        return (remainingMI < 0 ? 0 : remainingMI);
     }
 
     /**
@@ -276,7 +270,7 @@ public class CloudletExecutionInfo {
 
         this.instructionsFinishedSoFar += numberOfExecutedInstructions;
         this.instructionsFinishedSoFar =
-                Math.min(this.instructionsFinishedSoFar, cloudlet.getTotalLength()* Conversion.MILLION);
+                Math.min(this.instructionsFinishedSoFar, cloudlet.getLength()*Conversion.MILLION);
 
         final double finishedSoFarByPeMI = instructionsFinishedSoFar / Conversion.MILLION;
         cloudlet.setFinishedLengthSoFar((long)finishedSoFarByPeMI);

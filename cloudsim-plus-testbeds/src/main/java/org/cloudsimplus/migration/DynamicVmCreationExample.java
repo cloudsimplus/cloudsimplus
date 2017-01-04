@@ -78,7 +78,7 @@ public class DynamicVmCreationExample {
         vmlist = new ArrayList<>();
         vmlist.addAll(createVM(broker, VM_PES1, 1));
         vmlist.addAll(createVM(broker, VM_PES2, 1));
-        //vmlist.addAll(createVM(broker, VM_PES2, 1));
+        vmlist.addAll(createVM(broker, VM_PES2, 1));
 
         broker.submitVmList(vmlist);
 

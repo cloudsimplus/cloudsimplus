@@ -37,13 +37,15 @@ import static org.junit.Assert.assertTrue;
  * @since	CloudSim Toolkit 2.0
  */
 public class CloudletSchedulerDynamicWorkloadTest {
-    private static final double MIN_UTILIZATION_PERCENT = 0.10;
-    private static final double MAX_UTILIZATION_PERCENT = 0.90;
+    private static final double MIN_USAGE_PERCENT = 0.10;
+    private static final double MAX_USAGE_PERCENT = 0.90;
     private static final long CLOUDLET_LENGTH = 1000;
     private static final long CLOUDLET_FILE_SIZE = 300;
     private static final long CLOUDLET_OUTPUT_SIZE = 300;
 
     private static final double MIPS = CLOUDLET_LENGTH;
+    private static final double HALF_MIPS = MIPS/2;    
+    private static final double QUARTER_MIPS = MIPS/4;    
     private static final int PES_NUMBER = 2;
 
     private CloudletSchedulerDynamicWorkload cloudletScheduler;
@@ -77,12 +79,12 @@ public class CloudletSchedulerDynamicWorkloadTest {
         Map<Cloudlet, Double> underAllocatedMips = new HashMap<>();
         assertEquals(underAllocatedMips, cloudletScheduler.getUnderAllocatedMips());
 
-        underAllocatedMips.put(rcl.getCloudlet(), MIPS / 2);
-        cloudletScheduler.updateUnderAllocatedMipsForCloudlet(rcl, MIPS / 2);
+        underAllocatedMips.put(rcl.getCloudlet(), HALF_MIPS);
+        cloudletScheduler.updateUnderAllocatedMipsForCloudlet(rcl, HALF_MIPS);
         assertEquals(underAllocatedMips, cloudletScheduler.getUnderAllocatedMips());
 
         underAllocatedMips.put(rcl.getCloudlet(), MIPS);
-        cloudletScheduler.updateUnderAllocatedMipsForCloudlet(rcl, MIPS / 2);
+        cloudletScheduler.updateUnderAllocatedMipsForCloudlet(rcl, HALF_MIPS);
         assertEquals(underAllocatedMips, cloudletScheduler.getUnderAllocatedMips());
     }
 
@@ -96,9 +98,7 @@ public class CloudletSchedulerDynamicWorkloadTest {
                 .setUtilizationModel(utilizationModel);
         cloudlet.assignToDatacenter(Datacenter.NULL);
 
-        List<Double> mipsShare = new ArrayList<>();
-        mipsShare.add(MIPS);
-        mipsShare.add(MIPS);
+        List<Double> mipsShare = createMipsShare(2,MIPS);
         cloudletScheduler.setCurrentMipsShare(mipsShare);
 
         assertEquals(mipsShare.size(), cloudletScheduler.getCurrentMipsShare().size(), 0);
@@ -109,10 +109,7 @@ public class CloudletSchedulerDynamicWorkloadTest {
 
         cloudletScheduler.cloudletSubmit(cloudlet);
 
-        List<Double> requestedMips = new ArrayList<>();
-        requestedMips.add(MIPS * utilization);
-        requestedMips.add(MIPS * utilization);
-
+        List<Double> requestedMips = createMipsShare(2,MIPS * utilization);
         assertEquals(requestedMips, cloudletScheduler.getCurrentRequestedMips());
     }
 
@@ -126,9 +123,7 @@ public class CloudletSchedulerDynamicWorkloadTest {
                 .setUtilizationModel(utilizationModel);
         cloudlet.assignToDatacenter(Datacenter.NULL);
 
-        List<Double> mipsShare = new ArrayList<>();
-        mipsShare.add(MIPS);
-        mipsShare.add(MIPS);
+        List<Double> mipsShare = createMipsShare(2,MIPS);
         cloudletScheduler.setCurrentMipsShare(mipsShare);
 
         assertEquals(mipsShare.size(), cloudletScheduler.getCurrentMipsShare().size(), 0);
@@ -138,7 +133,6 @@ public class CloudletSchedulerDynamicWorkloadTest {
         double utilization = utilizationModel.getUtilization(0);
 
         cloudletScheduler.cloudletSubmit(cloudlet, 0);
-
         assertEquals(utilization, cloudletScheduler.getTotalUtilizationOfCpu(0), 0);
     }
 
@@ -152,9 +146,7 @@ public class CloudletSchedulerDynamicWorkloadTest {
                 .setUtilizationModel(utilizationModel);
         cloudlet.assignToDatacenter(Datacenter.NULL);
 
-        List<Double> mipsShare = new ArrayList<>();
-        mipsShare.add(MIPS);
-        mipsShare.add(MIPS);
+        List<Double> mipsShare = createMipsShare(2,MIPS);
         cloudletScheduler.setCurrentMipsShare(mipsShare);
 
         cloudletScheduler.cloudletSubmit(cloudlet, 0);
@@ -167,12 +159,10 @@ public class CloudletSchedulerDynamicWorkloadTest {
 
     @Test
     public void testGetTotalCurrentMips() {
-        List<Double> mipsShare = new ArrayList<>();
-        mipsShare.add(MIPS / 4);
-        mipsShare.add(MIPS / 4);
+        List<Double> mipsShare = createMipsShare(2,QUARTER_MIPS);
         cloudletScheduler.setCurrentMipsShare(mipsShare);
 
-        assertEquals(MIPS / 2, cloudletScheduler.getTotalCurrentMips(), 0);
+        assertEquals(HALF_MIPS, cloudletScheduler.getTotalCurrentMips(), 0);
     }
 
     @Test
@@ -186,22 +176,16 @@ public class CloudletSchedulerDynamicWorkloadTest {
         cloudlet.assignToDatacenter(Datacenter.NULL);
         CloudletExecutionInfo rgl = new CloudletExecutionInfo(cloudlet);
 
-        List<Double> mipsShare = new ArrayList<>();
-        mipsShare.add(MIPS / 4);
-        mipsShare.add(MIPS / 4);
-        mipsShare.add(MIPS / 4);
-        mipsShare.add(MIPS / 4);
+        List<Double> mipsShare = createMipsShare(4, QUARTER_MIPS);
 
-        assertEquals(MIPS / 4.0 * PES_NUMBER,
+        assertEquals(QUARTER_MIPS * PES_NUMBER,
                 cloudletScheduler.getTotalCurrentAvailableMipsForCloudlet(rgl, mipsShare), 0);
     }
 
     @Test
     public void testGetEstimatedFinishTimeLowUtilization() {
         UtilizationModel utilizationModel = createMock(UtilizationModel.class);
-        expect(utilizationModel.getUtilization(0))
-                .andReturn(MIN_UTILIZATION_PERCENT)
-                .anyTimes();
+        expect(utilizationModel.getUtilization(0)).andReturn(MIN_USAGE_PERCENT).anyTimes();
         replay(utilizationModel);
         testGetEstimatedFinishTime(utilizationModel);
         verify(utilizationModel);
@@ -210,9 +194,7 @@ public class CloudletSchedulerDynamicWorkloadTest {
     @Test
     public void testGetEstimatedFinishTimeHighUtilization() {
         UtilizationModel utilizationModel = createMock(UtilizationModel.class);
-        expect(utilizationModel.getUtilization(0))
-                .andReturn(0.91)
-                .anyTimes();
+        expect(utilizationModel.getUtilization(0)).andReturn(0.91).anyTimes();
         replay(utilizationModel);
         testGetEstimatedFinishTime(utilizationModel);
         verify(utilizationModel);
@@ -227,23 +209,14 @@ public class CloudletSchedulerDynamicWorkloadTest {
         cloudlet.assignToDatacenter(Datacenter.NULL);
         CloudletExecutionInfo rgl = new CloudletExecutionInfo(cloudlet);
 
-        List<Double> mipsShare = new ArrayList<>();
-        mipsShare.add(MIPS / 4);
-        mipsShare.add(MIPS / 4);
-        mipsShare.add(MIPS / 4);
-        mipsShare.add(MIPS / 4);
-
+        List<Double> mipsShare = createMipsShare(4, QUARTER_MIPS);
         cloudletScheduler.setCurrentMipsShare(mipsShare);
 
         double utilization = utilizationModel.getUtilization(0);
-        double totalCurrentMipsForCloudlet = MIPS / 4 * PES_NUMBER;
-        double requestedMips = (int) (utilization * PES_NUMBER * MIPS);
-        if (requestedMips > totalCurrentMipsForCloudlet) {
-            requestedMips = totalCurrentMipsForCloudlet;
-        }
+        double requestedMips = getRequestedMips(utilization,QUARTER_MIPS);
 
-        double expectedFinishTime = (double) CLOUDLET_LENGTH * PES_NUMBER / requestedMips;
-        double actualFinishTime = cloudletScheduler.getEstimatedFinishTime(rgl, 0);
+        double expectedFinishTime = (double) CLOUDLET_LENGTH / requestedMips;
+        double actualFinishTime = cloudletScheduler.getEstimatedFinishTimeOfCloudlet(rgl, 0);
 
         assertEquals(expectedFinishTime, actualFinishTime, 0);
     }
@@ -251,9 +224,7 @@ public class CloudletSchedulerDynamicWorkloadTest {
     @Test
     public void testCloudletSubmitLowUtilization() {
         UtilizationModel utilizationModel = createMock(UtilizationModel.class);
-        expect(utilizationModel.getUtilization(0))
-                .andReturn(MIN_UTILIZATION_PERCENT)
-                .anyTimes();
+        expect(utilizationModel.getUtilization(0)).andReturn(MIN_USAGE_PERCENT).anyTimes();
         replay(utilizationModel);
         testCloudletSubmit(utilizationModel);
         verify(utilizationModel);
@@ -262,9 +233,7 @@ public class CloudletSchedulerDynamicWorkloadTest {
     @Test
     public void testCloudletSubmitHighUtilization() {
         UtilizationModel utilizationModel = createMock(UtilizationModel.class);
-        expect(utilizationModel.getUtilization(0))
-                .andReturn(0.91)
-                .anyTimes();
+        expect(utilizationModel.getUtilization(0)).andReturn(0.91).anyTimes();
         replay(utilizationModel);
         testCloudletSubmit(utilizationModel);
         verify(utilizationModel);
@@ -278,71 +247,54 @@ public class CloudletSchedulerDynamicWorkloadTest {
                 .setUtilizationModel(utilizationModel);
         cloudlet.assignToDatacenter(Datacenter.NULL);
 
-        List<Double> mipsShare = new ArrayList<>();
-        mipsShare.add(MIPS / 4);
-        mipsShare.add(MIPS / 4);
-        mipsShare.add(MIPS / 4);
-        mipsShare.add(MIPS / 4);
+        List<Double> mipsShare = createMipsShare(4, QUARTER_MIPS);
 
         cloudletScheduler.setCurrentMipsShare(mipsShare);
 
         double utilization = utilizationModel.getUtilization(0);
-        double totalCurrentMipsForCloudlet = MIPS / 4 * PES_NUMBER;
-        double requestedMips = (int) (utilization * PES_NUMBER * MIPS);
-        if (requestedMips > totalCurrentMipsForCloudlet) {
-            requestedMips = totalCurrentMipsForCloudlet;
-        }
+        double requestedMips = getRequestedMips(utilization,QUARTER_MIPS);
 
-        double expectedFinishTime = (double) CLOUDLET_LENGTH * PES_NUMBER / requestedMips;
+        double expectedFinishTime = (double) CLOUDLET_LENGTH / requestedMips;
         double actualFinishTime = cloudletScheduler.cloudletSubmit(cloudlet);
+        assertEquals(expectedFinishTime, actualFinishTime, 0.3);
+    }
 
-        assertEquals(expectedFinishTime, actualFinishTime, 0);
+    private List<Double> createMipsShare(int pes, double mips) {
+        List<Double> mipsShare = new ArrayList<>(pes);
+        for(int i = 0; i < pes; i++){
+            mipsShare.add(mips);
+        }
+        return mipsShare;
     }
 
     @Test
     public void testUpdateVmProcessingLowUtilization() {
         UtilizationModel utilizationModel = createMock(UtilizationModel.class);
-        expect(utilizationModel.getUtilization(EasyMock.anyDouble())).andReturn(MIN_UTILIZATION_PERCENT).anyTimes();
+        expect(utilizationModel.getUtilization(EasyMock.anyDouble())).andReturn(MIN_USAGE_PERCENT).anyTimes();
         replay(utilizationModel);
-
         testUpdateVmProcessing(utilizationModel);
     }
 
     @Test
     public void testUpdateVmProcessingHighUtilization() {
+        final double usage = 0.91;
         UtilizationModel utilizationModel = createMock(UtilizationModel.class);
-
-        expect(utilizationModel.getUtilization(0))
-                .andReturn(0.91)
-                .anyTimes();
-
-        expect(utilizationModel.getUtilization(1.0))
-                .andReturn(0.91)
-                .anyTimes();
-
+        expect(utilizationModel.getUtilization(0)).andReturn(usage).anyTimes();
+        expect(utilizationModel.getUtilization(1.0)).andReturn(usage).anyTimes();
+        expect(utilizationModel.getUtilization(CLOUDLET_LENGTH)).andReturn(usage).anyTimes();
         replay(utilizationModel);
-
         testUpdateVmProcessing(utilizationModel);
-
         verify(utilizationModel);
     }
 
     @Test
     public void testUpdateVmProcessingLowAndHighUtilization() {
         UtilizationModel utilizationModel = createMock(UtilizationModel.class);
-
-        expect(utilizationModel.getUtilization(0))
-                .andReturn(MIN_UTILIZATION_PERCENT)
-                .anyTimes();
-
-        expect(utilizationModel.getUtilization(1.0))
-                .andReturn(MAX_UTILIZATION_PERCENT)
-                .anyTimes();
-
+        expect(utilizationModel.getUtilization(0)).andReturn(MIN_USAGE_PERCENT).anyTimes();
+        expect(utilizationModel.getUtilization(1.0)).andReturn(MAX_USAGE_PERCENT).anyTimes();
+        expect(utilizationModel.getUtilization(CLOUDLET_LENGTH)).andReturn(MAX_USAGE_PERCENT).anyTimes();
         replay(utilizationModel);
-
         testUpdateVmProcessing(utilizationModel);
-
         verify(utilizationModel);
     }
 
@@ -353,42 +305,33 @@ public class CloudletSchedulerDynamicWorkloadTest {
                 .setOutputSize(CLOUDLET_OUTPUT_SIZE)
                 .setUtilizationModel(utilizationModel);
         cloudlet.assignToDatacenter(Datacenter.NULL);
-
-        List<Double> mipsShare = new ArrayList<>();
-        mipsShare.add(MIPS / 4);
-        mipsShare.add(MIPS / 4);
-        mipsShare.add(MIPS / 4);
-        mipsShare.add(MIPS / 4);
+        
+        List<Double> mipsShare = createMipsShare(4, QUARTER_MIPS);
 
         cloudletScheduler.setCurrentMipsShare(mipsShare);
         cloudletScheduler.cloudletSubmit(cloudlet);
-        double totalCurrentMipsForCloudlet = MIPS / 4 * PES_NUMBER;
 
         double utilization1 = utilizationModel.getUtilization(0);
-        double requestedMips1 = (int) (utilization1 * PES_NUMBER * MIPS);
-        if (requestedMips1 > totalCurrentMipsForCloudlet) {
-            requestedMips1 = totalCurrentMipsForCloudlet;
-        }
+        double requestedMips1 = getRequestedMips(utilization1,QUARTER_MIPS);
 
-        double expectedCompletiontime1 = ((double) CLOUDLET_LENGTH * PES_NUMBER) / requestedMips1;
+        double expectedCompletiontime1 = ((double) CLOUDLET_LENGTH) / requestedMips1;
         double actualCompletionTime1 = cloudletScheduler.updateVmProcessing(0, mipsShare);
-        assertEquals(expectedCompletiontime1, actualCompletionTime1, 0);
+        assertEquals(expectedCompletiontime1, actualCompletionTime1, 0.1);
 
         double utilization2 = utilizationModel.getUtilization(1);
-        double requestedMips2 = (int) (utilization2 * PES_NUMBER * MIPS);
-        if (requestedMips2 > totalCurrentMipsForCloudlet) {
-            requestedMips2 = totalCurrentMipsForCloudlet;
-        }
+        double requestedMips2 = getRequestedMips(utilization2,QUARTER_MIPS);
 
-        double expectedCompletiontime2 = 1.0 + ((CLOUDLET_LENGTH * PES_NUMBER - requestedMips1 * 1)) / requestedMips2;
+        double expectedCompletiontime2 = ((CLOUDLET_LENGTH - requestedMips2 * 1)) / requestedMips2;
         double actualCompletionTime2 = cloudletScheduler.updateVmProcessing(1, mipsShare);
-        assertEquals(expectedCompletiontime2, actualCompletionTime2, 0);
-
+        assertEquals(expectedCompletiontime2, actualCompletionTime2, 0.2);
         assertFalse(cloudletScheduler.hasFinishedCloudlets());
-
         assertEquals(Double.MAX_VALUE, cloudletScheduler.updateVmProcessing(CLOUDLET_LENGTH, mipsShare), 0);
-
         assertTrue(cloudletScheduler.hasFinishedCloudlets());
+    }
+
+    private double getRequestedMips(double utilizationPercent, double mips) {
+        final double requestedMips = utilizationPercent * mips;
+        return Math.min(requestedMips, mips);
     }
 
 }
