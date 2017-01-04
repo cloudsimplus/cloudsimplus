@@ -234,7 +234,7 @@ public abstract class NetworkVmExampleAbstract {
               .setBw(VM_BW)
               .setSize(VM_SIZE)
               .setBroker(broker)
-              .setCloudletScheduler(new NetworkCloudletSpaceSharedScheduler(datacenter));
+              .setCloudletScheduler(new NetworkCloudletSpaceSharedScheduler());
             list.add(vm);
         }
 

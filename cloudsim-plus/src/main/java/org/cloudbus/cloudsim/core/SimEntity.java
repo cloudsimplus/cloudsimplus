@@ -47,6 +47,16 @@ public interface SimEntity extends Nameable, Cloneable, Runnable, Comparable<Sim
     void processEvent(SimEvent ev);
 
     /**
+     * Sends an event to another entity by id number and with <b>no</b> data.
+     * Note that the tag <code>9999</code> is reserved.
+     *
+     * @param dest  The unique id number of the destination entity
+     * @param delay How many seconds after the current simulation time the event should be sent
+     * @param tag   An user-defined number representing the type of event.
+     */
+    void schedule(int dest, double delay, int tag);
+
+    /**
      * The run loop to process events fired during the simulation. The events
      * that will be processed are defined in the
      * {@link #processEvent(SimEvent)} method.
@@ -87,6 +97,7 @@ public interface SimEntity extends Nameable, Cloneable, Runnable, Comparable<Sim
         @Override public Simulation getSimulation() { return Simulation.NULL; }
         @Override public SimEntity setSimulation(Simulation simulation) { return this; }
         @Override public void processEvent(SimEvent ev) {}
+        @Override public void schedule(int dest, double delay, int tag) {}
         @Override public void run() {}
         @Override public void start() {}
         @Override public void shutdownEntity() {}

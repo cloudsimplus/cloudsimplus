@@ -488,7 +488,7 @@ public abstract class CloudletSchedulerAbstract implements CloudletScheduler {
      *
      */
     protected void updateCloudletProcessing(CloudletExecutionInfo rcl, double currentTime) {
-        long numberExecutedInstructions = cloudletExecutionTotalLengthForElapsedTime(rcl, currentTime);
+        long numberExecutedInstructions = cloudletExecutedLengthForElapsedTime(rcl, currentTime);
         rcl.updateCloudletFinishedSoFar(numberExecutedInstructions);
         if (numberExecutedInstructions > 0) {
             rcl.setLastProcessingTime(currentTime);
@@ -496,10 +496,9 @@ public abstract class CloudletSchedulerAbstract implements CloudletScheduler {
     }
 
     /**
-     * Computes the total length of a given cloudlet (across all PEs), in number
+     * Computes the length of a given cloudlet, in number
      * of Instructions (I), that has been executed since the last time cloudlet
-     * processing was updated. This length is considered as the sum of executed
-     * length in each Cloudlet PE.
+     * processing was updated.
      *
      * <p>
      * This method considers the delay for actually starting the Cloudlet
@@ -514,10 +513,9 @@ public abstract class CloudletSchedulerAbstract implements CloudletScheduler {
      * stored in the {@link CloudletExecutionInfo#getFileTransferTime()}
      * attribute and is set when the Cloudlet is submitted to the scheduler.</p>
      *
-     * @param rcl the Cloudlet to compute the total length
+     * @param rcl the Cloudlet to compute the executed length
      * @param currentTime current simulation time
-     * @return the total length across all PEs, in number of Instructions (I),
-     * since the last time cloudlet was processed.
+     * @return the executed length, in number of Instructions (I), since the last time cloudlet was processed.
      *
      * @see #updateCloudletsProcessing(double)
      *
@@ -536,23 +534,16 @@ public abstract class CloudletSchedulerAbstract implements CloudletScheduler {
      * method is being called 4 times instead of just 2 (1 for each cloudlet for
      * that time).
      */
-    protected long cloudletExecutionTotalLengthForElapsedTime(CloudletExecutionInfo rcl, double currentTime) {
+    protected long cloudletExecutedLengthForElapsedTime(CloudletExecutionInfo rcl, double currentTime) {
         /* The time the Cloudlet spent executing in fact, since the last time Cloudlet update was
          * called by the scheduler. If it is zero, indicates that the Cloudlet didn't use
          * the CPU in this time span, because it is waiting for its required files
-         * to be achired from the Datacenter storage.
-         * */
-        double actualProcessingTime = 0;
-        if (hasCloudletFileTransferTimePassed(rcl, currentTime)) {
-            actualProcessingTime = timeSpan(currentTime);
-        }
+         * to be acquired from the Datacenter storage.
+         */
+        final double actualProcessingTime = (hasCloudletFileTransferTimePassed(rcl, currentTime) ? timeSpan(currentTime) : 0);
 
-        double executedInstructions
-                = (processor.getAvailableMipsByPe() * rcl.getNumberOfPes()
-                * actualProcessingTime * Conversion.MILLION);
         //Log.println(Log.Level.DEBUG, getClass(), currentTime, "Cloudlet: %d Processing time: %.2f Last processed time: %.2f Actual process time: %.2f MI so far: %d",  rcl.getCloudletId(), currentTime, rcl.getLastProcessingTime(),  actualProcessingTime, rcl.getCloudlet().getCloudletFinishedSoFar());
-
-        return (long) executedInstructions;
+        return (long) (processor.getAvailableMipsByPe() * actualProcessingTime * Conversion.MILLION);
     }
 
     /**
@@ -581,7 +572,7 @@ public abstract class CloudletSchedulerAbstract implements CloudletScheduler {
      * @return
      */
     protected double timeSpan(double currentTime) {
-        return Math.floor(currentTime) - Math.floor(getPreviousTime());
+        return Math.floor(currentTime) - Math.floor(previousTime);
     }
 
     /**

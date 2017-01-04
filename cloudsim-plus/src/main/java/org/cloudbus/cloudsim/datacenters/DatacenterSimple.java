@@ -825,7 +825,7 @@ public class DatacenterSimple extends CloudSimEntity implements Datacenter {
         // R: for term is to allow loop at simulation start. Otherwise, one initial
         // simulation step is skipped and schedulers are not properly initialized
         return getSimulation().clock() < 0.111 ||
-               getSimulation().clock() > getLastProcessTime() + getSimulation().getMinTimeBetweenEvents();
+               getSimulation().clock() >= getLastProcessTime() + getSimulation().getMinTimeBetweenEvents();
     }
 
     /**

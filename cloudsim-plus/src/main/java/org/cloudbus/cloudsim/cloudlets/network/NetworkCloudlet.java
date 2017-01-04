@@ -166,18 +166,20 @@ public class NetworkCloudlet extends CloudletSimple {
      * to start executing it, if the current task is finished.
      *
      * @param nextTaskStartTime the time that the next task will start
-     * @return the next task or null if there isn't any next one
+     * @return true if the current task finished and the next one was started, false otherwise
      */
-    public CloudletTask startNextTaskIfCurrentIsFinished(double nextTaskStartTime){
+    public boolean startNextTaskIfCurrentIsFinished(double nextTaskStartTime){
         /**
          * @todo @author manoelcampos CloudletTask should implement
          * Null Object Pattern to avoid these null checks.
          */
         CloudletTask nextTask = getNextTaskIfCurrentIfFinished();
-        if(nextTask != null){
-            nextTask.setStartTime(nextTaskStartTime);
+        if(nextTask == null){
+            return false;
         }
-        return nextTask;
+
+        nextTask.setStartTime(nextTaskStartTime);
+        return true;
     }
 
     /**

@@ -106,7 +106,11 @@ public interface Datacenter extends SimEntity {
      * Sets the list of storage devices of the Datacenter.
      *
      * @param storageList the new storage list
+<<<<<<< HEAD
      * @return 
+=======
+     * @return
+>>>>>>> upstream/master
      */
     Datacenter setStorageList(List<FileStorage> storageList);
 
@@ -146,6 +150,7 @@ public interface Datacenter extends SimEntity {
         @Override public Simulation getSimulation() { return Simulation.NULL; }
         @Override public SimEntity setSimulation(Simulation simulation) { return this; }
         @Override public void processEvent(SimEvent ev) {}
+        @Override public void schedule(int dest, double delay, int tag) {}
         @Override public void run() {}
         @Override public void start() {}
         @Override public void shutdownEntity() {}

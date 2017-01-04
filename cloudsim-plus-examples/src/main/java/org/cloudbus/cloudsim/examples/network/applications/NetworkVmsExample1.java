@@ -1,7 +1,6 @@
 package org.cloudbus.cloudsim.examples.network.applications;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 import org.cloudbus.cloudsim.brokers.DatacenterBroker;
@@ -60,7 +59,7 @@ public class NetworkVmsExample1 {
     private static final int  CLOUDLET_OUTPUT_SIZE = 300;
     private static final long PACKET_DATA_LENGTH_IN_BYTES = 1000;
     private static final int  NUMBER_OF_PACKETS_TO_SEND = 1;
-    private static final long  TASK_RAM = 100;
+    private static final long TASK_RAM = 100;
 
     private final CloudSim simulation;
 
@@ -193,7 +192,7 @@ public class NetworkVmsExample1 {
     private NetworkVm createVm(int id, DatacenterBroker broker) {
         NetworkVm vm = new NetworkVm (id, HOST_MIPS, HOST_PES);
         vm.setRam(HOST_RAM).setBw(HOST_BW).setSize(HOST_STORAGE)
-            .setCloudletScheduler(new NetworkCloudletSpaceSharedScheduler(datacenter))
+            .setCloudletScheduler(new NetworkCloudletSpaceSharedScheduler())
             .setBroker(broker);
         return vm;
     }
@@ -219,7 +218,7 @@ public class NetworkVmsExample1 {
 
         //NetworkCloudlet 1 Tasks
         addReceiveTask(networkCloudletList.get(1), networkCloudletList.get(0));
-        //addExecutionTask(networkCloudletList.get(1));
+        addExecutionTask(networkCloudletList.get(1));
 
         return networkCloudletList;
     }

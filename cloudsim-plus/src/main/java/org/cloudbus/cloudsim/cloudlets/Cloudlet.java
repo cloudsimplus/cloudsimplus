@@ -172,33 +172,6 @@ public interface Cloudlet extends UniquelyIdentificable, Delayable, Comparable<C
     long getFileSize();
 
     /**
-     * Gets the length of this Cloudlet that has been executed so far from the
-     * latest Datacenter (in MI). This method is useful when trying to move this
-     * Cloudlet into different Datacenter or to cancel it.
-     *
-     * @return the length of a partially executed Cloudlet, or the full Cloudlet
-     * length if it is completed
-     * @pre $none
-     * @post $result >= 0.0
-     */
-    long getFinishedLengthSoFar();
-
-    /**
-     * Gets the length of this Cloudlet that has been executed so far (in MI),
-     * according to the {@link #getLength()}.
-     * This method is useful when trying to move this Cloudlet
-     * into different Datacenters or to cancel it.
-     *
-     * @param datacenter the Datacenter entity
-     * @return the length of a partially executed Cloudlet; the full Cloudlet
-     * length if it is completed; or 0 if the Cloudlet has never been executed
-     * in the given Datacenter
-     * @pre resId >= 0
-     * @post $result >= 0.0
-     */
-    long getFinishedLengthSoFar(Datacenter datacenter);
-
-    /**
      * Gets the transaction history of this Cloudlet. The layout of this history
      * is in a readable table column with <tt>time</tt> and <tt>description</tt>
      * as headers.
@@ -509,60 +482,6 @@ public interface Cloudlet extends UniquelyIdentificable, Delayable, Comparable<C
     boolean isFinished();
 
     /**
-     * Gets the execution length of this Cloudlet (in Million Instructions (MI))
-     * that will be executed in each defined PE.
-     *
-     * <p>According to this length and the power of the VM processor (in
-     * Million Instruction Per Second - MIPS) where the cloudlet will be run,
-     * the cloudlet will take a given time to finish processing. For instance,
-     * for a cloudlet of 10000 MI running on a processor of 2000 MIPS, the
-     * cloudlet will spend 5 seconds using the processor in order to be
-     * completed (that may be uninterrupted or not, depending on the scheduling
-     * policy).
-     * </p>
-     *
-     * @return the length of this Cloudlet
-     * @pre $none
-     * @post $result >= 0.0
-     * @see #getNumberOfPes()
-     * @see #getTotalLength()
-     */
-    long getLength();
-
-    /**
-     * Sets the execution length of this Cloudlet (in Million Instructions (MI))
-     * that will be executed in each defined PE.
-     *
-     * @param length the length (in MI) of this Cloudlet to be executed in a Vm
-     * @return
-     * @throws IllegalArgumentException when the given length is lower or equal to zero
-     *
-     * @see #getTotalLength()
-     * @see #getLength()
-     * @pre length > 0
-     * @post $none
-     */
-    Cloudlet setLength(final long length);
-
-    /**
-     * Gets the total length (across all PEs) of this Cloudlet (in MI). It considers the
-     * {@link #getLength()} of the cloudlet will be executed in each Pe defined by
-     * {@link #getNumberOfPes()}.
-     *
-     * <p>For example, setting the cloudletLenght as 10000 MI and
-     * {@link #getNumberOfPes()} to 4, each Pe will execute 10000 MI.
-     * Thus, the entire Cloudlet has a total length of 40000 MI.
-     * </p>
-     *
-     * @return the total length of this Cloudlet (in MI)
-     *
-     * @see #setLength(long)
-     * @pre $none
-     * @post $result >= 0.0
-     */
-    long getTotalLength();
-
-    /**
      * Sets the input file size of this Cloudlet before execution (in bytes).
      * This size has to be considered the program + input data sizes.
      *
@@ -681,10 +600,90 @@ public interface Cloudlet extends UniquelyIdentificable, Delayable, Comparable<C
     Cloudlet setVm(final Vm vm);
 
     /**
+     * Gets the execution length of this Cloudlet (in Million Instructions (MI))
+     * that will be executed in each defined PE.
+     *
+     * <p>According to this length and the power of the VM processor (in
+     * Million Instruction Per Second - MIPS) where the cloudlet will be run,
+     * the cloudlet will take a given time to finish processing. For instance,
+     * for a cloudlet of 10000 MI running on a processor of 2000 MIPS, the
+     * cloudlet will spend 5 seconds using the processor in order to be
+     * completed (that may be uninterrupted or not, depending on the scheduling
+     * policy).
+     * </p>
+     *
+     * @return the length of this Cloudlet
+     * @pre $none
+     * @post $result >= 0.0
+     * @see #getTotalLength()
+     * @see #getNumberOfPes()
+     */
+    long getLength();
+
+    /**
+     * Sets the execution length of this Cloudlet (in Million Instructions (MI))
+     * that will be executed in each defined PE.
+     *
+     * @param length the length (in MI) of this Cloudlet to be executed in a Vm
+     * @return
+     * @throws IllegalArgumentException when the given length is lower or equal to zero
+     *
+     * @see #getLength()
+     * @see #getTotalLength()
+     * @pre length > 0
+     * @post $none
+     */
+    Cloudlet setLength(final long length);
+
+    /**
+     * Gets the total length (across all PEs) of this Cloudlet (in MI). It considers the
+     * {@link #getLength()} of the cloudlet will be executed in each Pe defined by
+     * {@link #getNumberOfPes()}.
+     *
+     * <p>For example, setting the cloudletLenght as 10000 MI and
+     * {@link #getNumberOfPes()} to 4, each Pe will execute 10000 MI.
+     * Thus, the entire Cloudlet has a total length of 40000 MI.
+     * </p>
+     *
+     * @return the total length of this Cloudlet (in MI)
+     *
+     * @see #getNumberOfPes()
+     * @see #getLength()
+     * @pre $none
+     * @post $result >= 0.0
+     */
+    long getTotalLength();
+
+    /**
+     * Gets the length of this Cloudlet that has been executed so far from the
+     * latest Datacenter (in MI). This method is useful when trying to move this
+     * Cloudlet into different Datacenter or to cancel it.
+     *
+     * @return the length of a partially executed Cloudlet, or the full Cloudlet
+     * length if it is completed
+     * @pre $none
+     * @post $result >= 0.0
+     */
+    long getFinishedLengthSoFar();
+
+    /**
+     * Gets the length of this Cloudlet that has been executed so far (in MI),
+     * according to the {@link #getLength()}.
+     * This method is useful when trying to move this Cloudlet
+     * into different Datacenters or to cancel it.
+     *
+     * @param datacenter the Datacenter entity
+     * @return the length of a partially executed Cloudlet; the full Cloudlet
+     * length if it is completed; or 0 if the Cloudlet has never been executed
+     * in the given Datacenter
+     * @pre resId >= 0
+     * @post $result >= 0.0
+     */
+    long getFinishedLengthSoFar(Datacenter datacenter);
+
+    /**
      * Sets the length of this Cloudlet that has been executed so far (in MI),
      * according to the {@link #getLength()}.
-     * This method is used by ResCloudlet class when an application is decided to
-     * cancel or to move this Cloudlet into different Datacenter.
      *
      * @param length executed length of this Cloudlet (in MI)
      * @return true if the length is valid and the cloudlet already has assigned

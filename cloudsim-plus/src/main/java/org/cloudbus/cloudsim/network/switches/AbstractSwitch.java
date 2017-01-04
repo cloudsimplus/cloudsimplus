@@ -143,10 +143,9 @@ public abstract class AbstractSwitch extends CloudSimEntity implements Switch {
      * @param ev The packet sent.
      */
     protected void processHostPacket(SimEvent ev) {
-        // Send packet to host
-        HostPacket netPkt = (HostPacket) ev.getData();
-        NetworkHost host = netPkt.getDestination();
-        host.addReceivedNetworkPacket(netPkt);
+        HostPacket pkt = (HostPacket) ev.getData();
+        NetworkHost host = pkt.getDestination();
+        host.addReceivedNetworkPacket(pkt);
     }
 
     /**
@@ -197,20 +196,6 @@ public abstract class AbstractSwitch extends CloudSimEntity implements Switch {
     }
 
     /**
-     * Process a received packet.
-     *
-     * @param ev The packet received.
-     */
-    protected void processPacket(SimEvent ev) {
-        // send packet to itself with switching delay (discarding other)
-        getSimulation().cancelAll(getId(), new PredicateType(CloudSimTags.NETWORK_EVENT_UP));
-        schedule(getId(), switchingDelay, CloudSimTags.NETWORK_EVENT_UP);
-        packetList.add((HostPacket) ev.getData());
-
-        // add the packet in the list
-    }
-
-    /**
      * Process non-default received events that aren't processed by the
      * {@link #processEvent(SimEvent)} method. This
      * method should be overridden by subclasses in other to process new defined
@@ -249,7 +234,7 @@ public abstract class AbstractSwitch extends CloudSimEntity implements Switch {
     }
 
     /**
-     * Gets the list of packets to be sent to each Uplink AbstractSwitch
+     * Gets the list of packets to be sent to each Uplink Switch
      * and forward them.
      *
      * @see #uplinkSwitchPacketMap

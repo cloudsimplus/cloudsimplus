@@ -91,8 +91,7 @@ public class EdgeSwitch extends AbstractSwitch {
         // packet is to be received by host
         NetworkHost host = getVmHost(receiverVm);
         netPkt.setDestination(host);
-        getPacketToHostMap().putIfAbsent(host, new ArrayList<>());
-        getPacketToHostMap().get(host).add(netPkt);
+        addPacketToBeSentToHost(host, netPkt);
     }
 
     @Override
@@ -115,11 +114,11 @@ public class EdgeSwitch extends AbstractSwitch {
 
         // otherwise, packet is to be sent to upper switch
         /**
-         * @todo ASSUMPTION: EACH EDGE is connected to one aggregate level switch.
-         * If there are more than one Aggregate level switch, the following code has to be modified.
+         * ASSUMPTION: Each Edge is connected to one Aggregate Switch.
+         * If there are more than one Aggregate Switch, the following code has to be modified.
         */
-        Switch sw = getUplinkSwitches().get(0);
-        addPacketToBeSentToUplinkSwitch(sw, hostPkt);
+        Switch aggregateSwitch = getUplinkSwitches().get(0);
+        addPacketToBeSentToUplinkSwitch(aggregateSwitch, hostPkt);
     }
 
     @Override
