@@ -16,7 +16,7 @@ import java.util.stream.Stream;
 import org.cloudbus.cloudsim.cloudlets.Cloudlet;
 import org.cloudbus.cloudsim.cloudlets.Cloudlet.Status;
 import org.cloudbus.cloudsim.cloudlets.CloudletExecutionInfo;
-import org.cloudbus.cloudsim.schedulers.PacketScheduler;
+import org.cloudbus.cloudsim.schedulers.cloudlet.network.PacketScheduler;
 import org.cloudbus.cloudsim.util.Conversion;
 import org.cloudbus.cloudsim.vms.Vm;
 import org.cloudbus.cloudsim.resources.Processor;

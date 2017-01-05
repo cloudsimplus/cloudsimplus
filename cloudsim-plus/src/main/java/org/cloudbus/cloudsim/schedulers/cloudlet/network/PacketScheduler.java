@@ -1,6 +1,8 @@
-package org.cloudbus.cloudsim.schedulers;
+package org.cloudbus.cloudsim.schedulers.cloudlet.network;
 
 import org.cloudbus.cloudsim.cloudlets.Cloudlet;
+import org.cloudbus.cloudsim.cloudlets.network.CloudletExecutionTask;
+import org.cloudbus.cloudsim.cloudlets.network.CloudletTask;
 import org.cloudbus.cloudsim.cloudlets.network.NetworkCloudlet;
 import org.cloudbus.cloudsim.datacenters.network.NetworkDatacenter;
 import org.cloudbus.cloudsim.hosts.network.NetworkHost;
@@ -13,9 +15,11 @@ import java.util.Collections;
 import java.util.List;
 
 /**
- * Provides the functionalities to enable a {@link CloudletScheduler} to process
- * {@link VmPacket}s to be sent from the {@link Vm} of the scheduler to other ones or
- * to be received by that {@link Vm} from other ones.
+ * Provides the functionalities to enable a {@link CloudletScheduler} to
+ * send {@link VmPacket}s from the {@link Vm} of the scheduler to other ones or
+ * to receive {@link VmPacket}s sent from other VMs to that {@link Vm}.
+ * The packet dispatching is performed by processing {@link CloudletTask}s
+ * inside a {@link NetworkCloudlet}.
  *
  * <p>A researcher creating its own simulations using CloudSim Plus usually doesn't have to
  * care about this class, since even creating network-enabled simulations using objects
@@ -36,6 +40,9 @@ public interface PacketScheduler {
 
     /**
      * Sets the Vm that the PacketScheduler will sent packets from or receive packets to.
+     * It is not required to manually set a Vm for the PacketScheduler,
+     * since the {@link NetworkHost} does it when it creates a Vm.
+     *
      * @param vm the Vm to set
      */
     void setVm(Vm vm);

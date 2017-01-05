@@ -9,12 +9,11 @@ package org.cloudbus.cloudsim.hosts.network;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 
 import org.cloudbus.cloudsim.hosts.Host;
 import org.cloudbus.cloudsim.hosts.HostSimple;
 import org.cloudbus.cloudsim.network.HostPacket;
-import org.cloudbus.cloudsim.schedulers.PacketScheduler;
+import org.cloudbus.cloudsim.schedulers.cloudlet.network.PacketScheduler;
 import org.cloudbus.cloudsim.schedulers.cloudlet.CloudletScheduler;
 import org.cloudbus.cloudsim.schedulers.cloudlet.network.PacketSchedulerSimple;
 import org.cloudbus.cloudsim.util.Conversion;

@@ -6,7 +6,7 @@ import java.util.List;
 import org.cloudbus.cloudsim.cloudlets.Cloudlet;
 import org.cloudbus.cloudsim.cloudlets.CloudletExecutionInfo;
 import org.cloudbus.cloudsim.network.VmPacket;
-import org.cloudbus.cloudsim.schedulers.PacketScheduler;
+import org.cloudbus.cloudsim.schedulers.cloudlet.network.PacketScheduler;
 import org.cloudbus.cloudsim.vms.Vm;
 import org.cloudbus.cloudsim.core.CloudSimTags;
 import org.cloudbus.cloudsim.datacenters.DatacenterSimple;
