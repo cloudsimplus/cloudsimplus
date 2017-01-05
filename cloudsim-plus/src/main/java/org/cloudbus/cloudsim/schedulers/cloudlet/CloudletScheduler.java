@@ -289,6 +289,10 @@ public interface CloudletScheduler extends Serializable {
 
     /**
      * Sets the Vm that will use the scheduler.
+     * It is not required to manually set a Vm for the scheduler,
+     * since a {@link Vm} sets itself to the scheduler when the scheduler
+     * is assigned to the Vm.
+     *
      * @param vm the Vm to set
      * @throws IllegalArgumentException when the scheduler already is assigned to another Vm, since
      * each Vm must have its own scheduler

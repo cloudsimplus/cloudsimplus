@@ -421,7 +421,8 @@ public interface Vm extends UniquelyIdentificable, Delayable, Comparable<Vm> {
     double updateVmProcessing(double currentTime, List<Double> mipsShare);
 
     /**
-     * Sets the Cloudlet scheduler the VM uses to schedule cloudlets execution.
+     * Sets the Cloudlet scheduler the Vm uses to schedule cloudlets execution.
+     * It also sets the Vm itself to the given scheduler.
      *
      * @param cloudletScheduler the cloudlet scheduler to set
      * @return

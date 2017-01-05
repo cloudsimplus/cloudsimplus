@@ -218,6 +218,7 @@ public interface Host extends Identificable, Comparable<Host> {
     /**
      * Sets the policy for allocation of host PEs to VMs in order to schedule VM
      * execution. The host also sets itself to the given scheduler.
+     * It also sets the Host itself to the given scheduler.
      *
      * @param vmScheduler the vm scheduler to set
      */
