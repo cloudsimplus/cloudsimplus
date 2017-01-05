@@ -6,7 +6,7 @@ Lists the main changes in the project.
 
 ## [v0.9-beta.2] - 2017-01-04
 
-### Addedd
+### Added
 - Introduced a `VmScaling` interface and a `HorizontalVmScalingSimple` class,
   inside the [autoscaling package](/cloudsim-plus/src/main/java/org/cloudsimplus/autoscaling), that provides a horizontal scaling mechanism
   for VMs, allowing dynamic creation of VMs according to an overload condition. Such a condition is defined
@@ -21,11 +21,11 @@ Lists the main changes in the project.
 ### Changed
 - Renamed the class `GraphReader` to `TopologyReader`.
 - Network module was almost totally refactored and redesigned to provide a module that just works.
-  The module was not reusasble at all and had a huge amount of duplicated code. Some classes
+  The module was not reusasble at all and it had a huge amount of duplicated code. Some classes
   such as Switch were just an entire copy from each other.
   The packet classes relied on ID to identify the sender and receiver entities and it was
   very difficult to know if a given packet class was storing the ID of a Host, Vm or Cloudlet.
-  Now the packets uses actual objects such as Host, Vm and Cloudlet to make clear
+  Now the packets use actual objects such as Host, Vm and Cloudlet to make clear
   what kind of entities are communicating.
 - The network examples were just confusing and useless. They have been completely refactored
   and redesigned in order to provide a clear and understandable code that can in fact be reusable.

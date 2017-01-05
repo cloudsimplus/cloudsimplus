@@ -488,9 +488,9 @@ public abstract class CloudletSchedulerAbstract implements CloudletScheduler {
      *
      */
     protected void updateCloudletProcessing(CloudletExecutionInfo rcl, double currentTime) {
-        long numberExecutedInstructions = cloudletExecutedInstructionsForElapsedTime(rcl, currentTime);
-        rcl.updateCloudletFinishedSoFar(numberExecutedInstructions);
-        if (numberExecutedInstructions > 0) {
+        long executedInstructions = cloudletExecutedInstructionsForElapsedTime(rcl, currentTime);
+        rcl.updateCloudletFinishedSoFar(executedInstructions);
+        if (executedInstructions > 0) {
             rcl.setLastProcessingTime(currentTime);
         }
     }
@@ -534,8 +534,8 @@ public abstract class CloudletSchedulerAbstract implements CloudletScheduler {
         final double actualProcessingTime = (hasCloudletFileTransferTimePassed(rcl, currentTime) ? timeSpan(currentTime) : 0);
 
         //Log.println(Log.Level.DEBUG, getClass(), currentTime, "Cloudlet: %d Processing time: %.2f Last processed time: %.2f Actual process time: %.2f MI so far: %d",  rcl.getCloudletId(), currentTime, rcl.getLastProcessingTime(),  actualProcessingTime, rcl.getCloudlet().getCloudletFinishedSoFar());
-        return (long) (processor.getAvailableMipsByPe() * 
-                rcl.getCloudlet().getUtilizationOfCpu(currentTime) * 
+        return (long) (processor.getAvailableMipsByPe() *
+                rcl.getCloudlet().getUtilizationOfCpu(currentTime) *
                 actualProcessingTime * Conversion.MILLION);
     }
 
@@ -635,7 +635,7 @@ public abstract class CloudletSchedulerAbstract implements CloudletScheduler {
      * Gets the estimated time when a given cloudlet is supposed to finish
      * executing. It considers the amount of Vm PES and the sum of PEs required
      * by all VMs running inside the VM.
-     * 
+     *
      * <p>The estimated time is not a future simulation time
      * but a time interval that the Cloudlet is expected to finish.</p>
      *
@@ -646,7 +646,7 @@ public abstract class CloudletSchedulerAbstract implements CloudletScheduler {
     protected double getEstimatedFinishTimeOfCloudlet(CloudletExecutionInfo rcl, double currentTime) {
         final double mips = (processor.getAvailableMipsByPe() *
                 rcl.getCloudlet().getUtilizationOfCpu(currentTime));
-        double estimatedFinishTime = 
+        double estimatedFinishTime =
                 rcl.getRemainingCloudletLength() / mips;
 
         if (estimatedFinishTime < getVm().getSimulation().getMinTimeBetweenEvents()) {
@@ -740,7 +740,19 @@ public abstract class CloudletSchedulerAbstract implements CloudletScheduler {
 
     @Override
     public void setVm(Vm vm) {
+        if(Objects.isNull(vm)){
+            throw new NullPointerException("The vm parameter cannot be null.");
+        }
+
+        if(isVmAssigned() && !vm.equals(this.vm)){
+            throw new IllegalArgumentException("CloudletScheduler already has a Vm assigned to it. Each Vm must have its own CloudletScheduler instance.");
+        }
+
         this.vm = vm;
+    }
+
+    private boolean isVmAssigned() {
+        return !Objects.isNull(vm) && this.vm != Vm.NULL;
     }
 
     @Override

@@ -94,7 +94,7 @@ CloudSim Plus provides a lot of exclusive features, ranging from the most basic 
 
 # Project's Modules
 
-CloudSim Plus has a simpler structure that can be understood right away. It consists of 5 modules, 2 of which are new, as presented below.
+CloudSim Plus has a simpler structure that can be understood right away. It consists of 4 modules, 2 of which are new, as presented below.
 
 - [cloudsim-plus](cloudsim-plus): the CloudSim Plus cloud simulation framework API that is used by all other modules. 
   It is the main module that contains the simulation framework implementation and is the only
@@ -116,7 +116,7 @@ CloudSim Plus has a simpler structure that can be understood right away. It cons
 
 
 # How to use CloudSim Plus 
-CloudSim Plus is a Maven project with some modules. The easier way to use the project is relying on some IDE such as NetBeans, Eclipse or IntelliJ IDEA. 
+CloudSim Plus is a Maven project with some modules. The easiest way to use the project is relying on some IDE such as NetBeans, Eclipse or IntelliJ IDEA. 
 Accordingly, you can just check the gif below or see the complete instructions in the next sub-sections.
 
 ![Download and running CloudSim Plus Example using NetBeans](https://github.com/manoelcampos/cloudsim-plus/raw/master/cloudsim-plus-netbeans.gif)
@@ -125,7 +125,7 @@ There is a high quality video version of this gif available in [YouTube](https:/
 
 But if you are such a "terminal person", the sub-section below shows the instructions.
 
-## By means of command line (if you don't like or don't want to use an IDE)
+## By means of command line
 Considering that you have [git](https://git-scm.com) and [maven](http://maven.apache.org) installed on your operating system, 
 download the project source by cloning the repositosy using the command `git clone https://github.com/manoelcampos/cloudsim-plus.git` 
 at a terminal. 
@@ -140,8 +140,8 @@ The script checks if it is required to build the project, using maven in this ca
 To see what examples are available, just navigate through the [examples directory](/cloudsim-plus-examples/src/main/java/).
 To see more script options, run it without any parameter.  
  
-## By means of an IDE (the easier way to just take a look or to create your own simulations)
-The easier way to use the project is relying on some IDE such as [NetBeans](http://netbeans.org), [Eclipse](http://eclipse.org) 
+## By means of an IDE
+The easiest way to use the project is relying on some IDE such as [NetBeans](http://netbeans.org), [Eclipse](http://eclipse.org) 
 or [IntelliJ IDEA](http://jetbrains.com/idea/).
 Below are the steps to start using the project:
 

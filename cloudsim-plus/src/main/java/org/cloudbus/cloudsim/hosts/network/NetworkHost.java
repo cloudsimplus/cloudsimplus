@@ -177,7 +177,7 @@ public class NetworkHost extends HostSimple {
      * It checks whether a packet belongs to a local VM or to a VM hosted on other machine.
      */
     private void sendAllPacketListsOfAllVms() {
-        getVmList().forEach(this::collectAllListsOfPacketsToSendFromVm);
+        getVmList().forEach(this::collectListOfPacketsToSendFromVm);
         sendPacketsToLocalVms();
         sendPacketsToExternalVms();
     }
@@ -240,35 +240,19 @@ public class NetworkHost extends HostSimple {
     }
 
     /**
-     * Collects all lists of packets of a given Vm
+     * Collects all packets of a specific packet list from a Vm
      * in order to get them together to be sent.
      *
      * @param sourceVm the VM from where the packets will be sent
      * @todo @author manoelcampos The class forces the use of a NetworkCloudletSpaceSharedScheduler, what
-     * doesn't make sense and will cause runtime class cast exception if a different one is used.
      */
-    private void collectAllListsOfPacketsToSendFromVm(Vm sourceVm) {
+    private void collectListOfPacketsToSendFromVm(Vm sourceVm) {
         NetworkCloudletSpaceSharedScheduler sched = getVmCloudletScheduler(sourceVm);
-        for (Entry<Vm, List<VmPacket>> entry : sched.getHostPacketsToSendMap().entrySet()) {
-            collectListOfPacketsToSendFromVm(entry);
-        }
-    }
-
-    /**
-     * Collects all packets of a specific packet list from a given Vm
-     * in order to get them together to be sent.
-     *
-     * @param entry the Map entry from a packet map where the key is the
-     * sender VM and the value is a list of packets to send
-     * @see #collectAllListsOfPacketsToSendFromVm(Vm)
-     */
-    private void collectListOfPacketsToSendFromVm(Entry<Vm, List<VmPacket>> entry) {
-        List<VmPacket> vmPktList = entry.getValue();
-        for (VmPacket vmPkt : vmPktList) {
+        for (VmPacket vmPkt : sched.getVmPacketsToSend()) {
             collectPacketToSendFromVm(vmPkt);
         }
 
-        vmPktList.clear();
+        sched.getVmPacketsToSend().clear();
     }
 
     /**
@@ -276,7 +260,7 @@ public class NetworkHost extends HostSimple {
      * in order to get it together with other packets to be sent.
      *
      * @param vmPkt a packet to be sent from a Vm to another one
-     * @see #collectListOfPacketsToSendFromVm(Entry)
+     * @see #collectListOfPacketsToSendFromVm(Vm)
      */
     private void collectPacketToSendFromVm(VmPacket vmPkt) {
         HostPacket hostPkt = new HostPacket(this, vmPkt);

@@ -33,39 +33,26 @@ import org.cloudbus.cloudsim.vms.Vm;
  * It also schedules the network communication among the cloudlets,
  * managing the time a cloudlet stays blocked waiting
  * the response of a network package sent to another cloudlet.
- * It consider that there will be only one cloudlet per VM. Other cloudlets will be in a waiting list.
- * We consider that file transfer from cloudlets waiting happens before cloudlet
- * execution. I.e., even though cloudlets must wait for CPU, data transfer
- * happens as soon as cloudlets are submitted.
  *
- * Each VM has to have its own instance of a CloudletScheduler.
+ * <p>Each VM must have its own instance of a CloudletScheduler.</p>
  *
  * @author Saurabh Kumar Garg
  * @author Manoel Campos da Silva Filho
- * @todo @author manoelcampos The NetworkCloudletTimeSharedScheduler was delete because
- * it was just dupliating code from the super class. This scheduler in fact is dealing
- * with task scheduling but it not define that such tasks will be execute in a space-shared
- * manner. Just the Cloudlets are executed in this way. Thus, it doesn't make sense
- * to have these Cloudlets' tasks scheduling inside a specific space-shared scheduler.
- * And the tasks will just be processed if this specific scheduler is used,
- * what doesn't make sense and will just confuse users.
- * The tasks processing inside the {@link #updateCloudletProcessing(CloudletExecutionInfo, double)} maybe should be placed
- * elsewhere, such as inside the NetworkVm.updateVmProcessing() method.
  *
  * @since CloudSim Toolkit 3.0
  *
  */
 public class NetworkCloudletSpaceSharedScheduler extends CloudletSchedulerSpaceShared {
     /**
-     * @see #getHostPacketsToSendMap()
+     * @see #getVmPacketsToSend()
      */
-    private final Map<Vm, List<VmPacket>> hostPacketsToSendMap;
+    private final List<VmPacket> vmPacketsToSend;
 
     /**
      * A map of {@link VmPacket}'s received, where each key is the
      * sender VM and each value is the list of packets sent by that VM.
      */
-    private final Map<Vm, List<VmPacket>> hostPacketsReceivedMap;
+    private final Map<Vm, List<VmPacket>> vmPacketsReceivedMap;
 
     /**
      * Creates a new CloudletSchedulerSpaceShared object. This method must be
@@ -76,8 +63,8 @@ public class NetworkCloudletSpaceSharedScheduler extends CloudletSchedulerSpaceS
      */
     public NetworkCloudletSpaceSharedScheduler() {
         super();
-        hostPacketsToSendMap = new HashMap<>();
-        hostPacketsReceivedMap = new HashMap<>();
+        vmPacketsToSend = new ArrayList<>();
+        vmPacketsReceivedMap = new HashMap<>();
     }
 
     @Override
@@ -92,7 +79,7 @@ public class NetworkCloudletSpaceSharedScheduler extends CloudletSchedulerSpaceS
          * @todo @author manoelcampos It should be used polymorphism to avoid
          * including these if's for each type of task.
          */
-        if ((netcl.getCurrentTaskNum() == -1)) {
+        if (!netcl.isTasksStarted()) {
             scheduleNextTaskIfCurrentIsFinished(netcl);
             return;
         }
@@ -120,29 +107,13 @@ public class NetworkCloudletSpaceSharedScheduler extends CloudletSchedulerSpaceS
      */
     protected void addPacketsToBeSentFromVm(NetworkCloudlet sourceCloudlet) {
         CloudletSendTask dataTask = (CloudletSendTask)sourceCloudlet.getCurrentTask();
-        final List<VmPacket> packetsToSendFromVmOfCloudlet =
-                getListOfPacketsToBeSentFromVm(sourceCloudlet.getVm());
-
         Log.println(Log.Level.DEBUG, getClass(), sourceCloudlet.getSimulation().clock(),
                 "%d pkts added to be sent from cloudlet %d in VM %d",
                 dataTask.getPacketsToSend().size(), sourceCloudlet.getId(),
                 sourceCloudlet.getVm().getId());
 
-        packetsToSendFromVmOfCloudlet.addAll(dataTask.getPacketsToSend(sourceCloudlet.getSimulation().clock()));
-
-        hostPacketsToSendMap.put(sourceCloudlet.getVm(), packetsToSendFromVmOfCloudlet);
+        vmPacketsToSend.addAll(dataTask.getPacketsToSend(sourceCloudlet.getSimulation().clock()));
         scheduleNextTaskIfCurrentIsFinished(sourceCloudlet);
-    }
-
-    /**
-     * Gets the list of packets to be sent from a given VM.
-     * @param sourceVm the source VM where the list of packets to send will
-     * be obtained
-     * @return
-     */
-    protected List<VmPacket> getListOfPacketsToBeSentFromVm(Vm sourceVm) {
-        hostPacketsToSendMap.putIfAbsent(sourceVm, new ArrayList<>());
-        return hostPacketsToSendMap.get(sourceVm);
     }
 
     /**
@@ -204,10 +175,6 @@ public class NetworkCloudletSpaceSharedScheduler extends CloudletSchedulerSpaceS
                 "This method has to be called only when the current task of the NetworkCloudlet, inside the given ResCloudlet, is a CloudletExecutionTask");
 
         /**
-         * @todo @author manoelcampos The method updates the execution
-         * length of the task, considering the NetworkCloudlet
-         * has only 1 execution task.
-         *
          * @todo @author manoelcampos It has to be checked if the task execution
          * is considering only one cloudlet PE our all PEs.
          * Each execution task is supposed to use just one PE.
@@ -231,13 +198,12 @@ public class NetworkCloudletSpaceSharedScheduler extends CloudletSchedulerSpaceS
     }
 
     /**
-     * Gets the map of {@link VmPacket}'s to send, where each key is the sending VM
-     * and each value is the list of packets to send.
+     * Gets the list of {@link VmPacket}'s to send from the Vm of this scheduler.
      *
-     * @return a ready-only map of {@link VmPacket}'s to send
+     * @return the list of {@link VmPacket}'s to send
      */
-    public Map<Vm, List<VmPacket>> getHostPacketsToSendMap() {
-        return Collections.unmodifiableMap(hostPacketsToSendMap);
+    public List<VmPacket> getVmPacketsToSend() {
+        return vmPacketsToSend;
     }
 
     /**
@@ -247,8 +213,8 @@ public class NetworkCloudletSpaceSharedScheduler extends CloudletSchedulerSpaceS
      * @return the list of packets sent from the given VM
      */
     public List<VmPacket> getListOfPacketsSentFromVm(Vm sourceVm){
-        hostPacketsReceivedMap.putIfAbsent(sourceVm, new ArrayList<>());
-        return hostPacketsReceivedMap.get(sourceVm);
+        vmPacketsReceivedMap.putIfAbsent(sourceVm, new ArrayList<>());
+        return vmPacketsReceivedMap.get(sourceVm);
     }
 
     /**
@@ -261,6 +227,4 @@ public class NetworkCloudletSpaceSharedScheduler extends CloudletSchedulerSpaceS
     public boolean addPacketToListOfPacketsSentFromVm(VmPacket pkt){
         return getListOfPacketsSentFromVm(pkt.getSource()).add(pkt);
     }
-
-
 }
