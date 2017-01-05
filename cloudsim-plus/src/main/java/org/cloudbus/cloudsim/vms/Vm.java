@@ -444,7 +444,6 @@ public interface Vm extends UniquelyIdentificable, Delayable, Comparable<Vm> {
     /**
      * Gets the CloudSim instance that represents the simulation the Entity is related to.
      * @return
-     * @see #setSimulation(Simulation)
      */
     Simulation getSimulation();
 

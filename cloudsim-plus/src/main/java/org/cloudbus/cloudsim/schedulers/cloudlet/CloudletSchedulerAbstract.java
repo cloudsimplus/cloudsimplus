@@ -16,6 +16,7 @@ import java.util.stream.Stream;
 import org.cloudbus.cloudsim.cloudlets.Cloudlet;
 import org.cloudbus.cloudsim.cloudlets.Cloudlet.Status;
 import org.cloudbus.cloudsim.cloudlets.CloudletExecutionInfo;
+import org.cloudbus.cloudsim.schedulers.PacketScheduler;
 import org.cloudbus.cloudsim.util.Conversion;
 import org.cloudbus.cloudsim.vms.Vm;
 import org.cloudbus.cloudsim.resources.Processor;
@@ -33,6 +34,10 @@ import org.cloudbus.cloudsim.resources.Processor;
  * @since CloudSim Toolkit 1.0
  */
 public abstract class CloudletSchedulerAbstract implements CloudletScheduler {
+    /**
+     * @see #getPacketScheduler()
+     */
+    private PacketScheduler packetScheduler;
 
     /**
      * @see #getProcessor()
@@ -102,6 +107,7 @@ public abstract class CloudletSchedulerAbstract implements CloudletScheduler {
         cloudletFailedList = new ArrayList<>();
         cloudletWaitingList = new ArrayList<>();
         currentMipsShare = new ArrayList<>();
+        packetScheduler = PacketScheduler.NULL;
     }
 
     @Override
@@ -476,7 +482,24 @@ public abstract class CloudletSchedulerAbstract implements CloudletScheduler {
      * @param currentTime current simulation time
      */
     private void updateCloudletsProcessing(double currentTime) {
-        getCloudletExecList().forEach(rcl -> updateCloudletProcessing(rcl, currentTime));
+        getCloudletExecList().forEach(rcl -> updateCloudletProcessingAndPacketsDispatch(rcl, currentTime));
+    }
+
+    /**
+     * Updates the processing of a specific cloudlet of the Vm using this
+     * scheduler and packets that such a Cloudlet has to send or to receive
+     * (if the CloudletScheduler has a {@link PacketScheduler} assigned to it).
+     *
+     * @param rcl The cloudlet to be its processing updated
+     * @param currentTime current simulation time
+     *
+     */
+    private void updateCloudletProcessingAndPacketsDispatch(CloudletExecutionInfo rcl, double currentTime) {
+        if(packetScheduler.isTimeToUpdateCloudletProcessing(rcl.getCloudlet())) {
+            updateCloudletProcessing(rcl, currentTime);
+        }
+
+        packetScheduler.processCloudletPackets(rcl.getCloudlet(), currentTime);
     }
 
     /**
@@ -576,7 +599,7 @@ public abstract class CloudletSchedulerAbstract implements CloudletScheduler {
      * @return the number of finished cloudlets removed from the
      * {@link #getCloudletExecList() execution list}
      */
-    protected int removeFinishedCloudletsFromExecutionListAndAddToFinishedList() {
+    private int removeFinishedCloudletsFromExecutionListAndAddToFinishedList() {
         List<CloudletExecutionInfo> finishedCloudlets
                 = getCloudletExecList().stream()
                 .filter(c -> c.getCloudlet().isFinished())
@@ -589,7 +612,7 @@ public abstract class CloudletSchedulerAbstract implements CloudletScheduler {
         return finishedCloudlets.size();
     }
 
-    protected void removeCloudletFromExecListAndAddToFinishedList(CloudletExecutionInfo cloudlet) {
+    private void removeCloudletFromExecListAndAddToFinishedList(CloudletExecutionInfo cloudlet) {
         setCloudletFinishTimeAndAddToFinishedList(cloudlet);
         removeCloudletFromExecList(cloudlet);
     }
@@ -612,7 +635,7 @@ public abstract class CloudletSchedulerAbstract implements CloudletScheduler {
      *
      * @param rcl the cloudlet to set the finish time
      */
-    protected void setCloudletFinishTimeAndAddToFinishedList(CloudletExecutionInfo rcl) {
+    private void setCloudletFinishTimeAndAddToFinishedList(CloudletExecutionInfo rcl) {
         final double clock = getVm().getSimulation().clock();
         rcl.setFinishTime(clock);
         cloudletFinish(rcl);
@@ -796,4 +819,19 @@ public abstract class CloudletSchedulerAbstract implements CloudletScheduler {
         this.usedPes -= usedPesToRemove;
     }
 
+    @Override
+    public PacketScheduler getPacketScheduler() {
+        return packetScheduler;
+    }
+
+    @Override
+    public void setPacketScheduler(PacketScheduler packetScheduler) {
+        this.packetScheduler = (Objects.isNull(packetScheduler) ? PacketScheduler.NULL : packetScheduler);
+        this.packetScheduler.setVm(vm);
+    }
+
+    @Override
+    public boolean isTherePacketScheduler() {
+        return !(Objects.isNull(packetScheduler) || packetScheduler == PacketScheduler.NULL);
+    }
 }

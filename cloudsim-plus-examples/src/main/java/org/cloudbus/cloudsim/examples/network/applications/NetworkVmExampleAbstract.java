@@ -8,6 +8,7 @@ import org.cloudbus.cloudsim.cloudlets.Cloudlet;
 import org.cloudbus.cloudsim.datacenters.DatacenterCharacteristics;
 import org.cloudbus.cloudsim.datacenters.DatacenterCharacteristicsSimple;
 import org.cloudbus.cloudsim.hosts.Host;
+import org.cloudbus.cloudsim.schedulers.cloudlet.CloudletSchedulerTimeShared;
 import org.cloudbus.cloudsim.util.Log;
 import org.cloudbus.cloudsim.vms.Vm;
 import org.cloudbus.cloudsim.allocationpolicies.VmAllocationPolicySimple;
@@ -16,7 +17,6 @@ import org.cloudbus.cloudsim.distributions.UniformDistr;
 import org.cloudbus.cloudsim.lists.VmList;
 import org.cloudbus.cloudsim.network.switches.AggregateSwitch;
 import org.cloudbus.cloudsim.network.switches.EdgeSwitch;
-import org.cloudbus.cloudsim.schedulers.cloudlet.network.NetworkCloudletSpaceSharedScheduler;
 import org.cloudbus.cloudsim.datacenters.network.NetworkDatacenter;
 import org.cloudbus.cloudsim.hosts.network.NetworkHost;
 import org.cloudbus.cloudsim.vms.network.NetworkVm;
@@ -234,7 +234,7 @@ public abstract class NetworkVmExampleAbstract {
               .setBw(VM_BW)
               .setSize(VM_SIZE)
               .setBroker(broker)
-              .setCloudletScheduler(new NetworkCloudletSpaceSharedScheduler());
+              .setCloudletScheduler(new CloudletSchedulerTimeShared());
             list.add(vm);
         }
 

@@ -9,16 +9,18 @@ package org.cloudbus.cloudsim.hosts.network;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map.Entry;
+import java.util.Objects;
 
 import org.cloudbus.cloudsim.hosts.Host;
 import org.cloudbus.cloudsim.hosts.HostSimple;
 import org.cloudbus.cloudsim.network.HostPacket;
+import org.cloudbus.cloudsim.schedulers.PacketScheduler;
+import org.cloudbus.cloudsim.schedulers.cloudlet.CloudletScheduler;
+import org.cloudbus.cloudsim.schedulers.cloudlet.network.PacketSchedulerSimple;
 import org.cloudbus.cloudsim.util.Conversion;
 import org.cloudbus.cloudsim.util.Log;
 import org.cloudbus.cloudsim.network.switches.EdgeSwitch;
 import org.cloudbus.cloudsim.network.VmPacket;
-import org.cloudbus.cloudsim.schedulers.cloudlet.network.NetworkCloudletSpaceSharedScheduler;
 import org.cloudbus.cloudsim.resources.Pe;
 import org.cloudbus.cloudsim.schedulers.vm.VmScheduler;
 import org.cloudbus.cloudsim.vms.Vm;
@@ -152,9 +154,8 @@ public class NetworkHost extends HostSimple {
                     return;
                 }
 
-                NetworkCloudletSpaceSharedScheduler sched = getVmCloudletScheduler(destinationVm);
-
-                sched.addPacketToListOfPacketsSentFromVm(hostPkt.getVmPacket());
+                PacketScheduler packetScheduler = getVmPacketScheduler(destinationVm);
+                packetScheduler.addPacketToListOfPacketsSentFromVm(hostPkt.getVmPacket());
                 Log.println(
                     Log.Level.DEBUG, getClass(), getSimulation().clock(),
                     "Host %d received pkt with %d bytes from Cloudlet %d in VM %d and forwarded it to Cloudlet %d in VM %d",
@@ -192,7 +193,7 @@ public class NetworkHost extends HostSimple {
             hostPkt.getVmPacket().setReceiveTime(getSimulation().clock());
             // insert the packet in receivedlist
             Vm destinationVm = hostPkt.getVmPacket().getDestination();
-            getVmCloudletScheduler(destinationVm).addPacketToListOfPacketsSentFromVm(hostPkt.getVmPacket());
+            getVmPacketScheduler(destinationVm).addPacketToListOfPacketsSentFromVm(hostPkt.getVmPacket());
         }
 
         if (!packetsToSendForLocalVms.isEmpty()) {
@@ -235,8 +236,30 @@ public class NetworkHost extends HostSimple {
         return numberOfPackets == 0 ? bandwidth : bandwidth / numberOfPackets;
     }
 
-    private NetworkCloudletSpaceSharedScheduler getVmCloudletScheduler(Vm vm) {
-        return (NetworkCloudletSpaceSharedScheduler) vm.getCloudletScheduler();
+    private PacketScheduler getVmPacketScheduler(Vm vm) {
+        return vm.getCloudletScheduler().getPacketScheduler();
+    }
+
+    /**
+     * {@inheritDoc}
+     *
+     * <p><b>It also creates and sets a {@link PacketScheduler} for each
+     * Vm that doesn't have one already.</b></p>
+     * @param vm {@inheritDoc}
+     * @return {@inheritDoc}
+     */
+    @Override
+    public boolean vmCreate(Vm vm) {
+        final boolean isVmCreated = super.vmCreate(vm);
+        setPacketScheduler(vm);
+        return isVmCreated;
+    }
+
+    private void setPacketScheduler(Vm vm) {
+        CloudletScheduler cs = vm.getCloudletScheduler();
+        if(!cs.isTherePacketScheduler()){
+            cs.setPacketScheduler(new PacketSchedulerSimple());
+        }
     }
 
     /**
@@ -244,15 +267,14 @@ public class NetworkHost extends HostSimple {
      * in order to get them together to be sent.
      *
      * @param sourceVm the VM from where the packets will be sent
-     * @todo @author manoelcampos The class forces the use of a NetworkCloudletSpaceSharedScheduler, what
      */
     private void collectListOfPacketsToSendFromVm(Vm sourceVm) {
-        NetworkCloudletSpaceSharedScheduler sched = getVmCloudletScheduler(sourceVm);
-        for (VmPacket vmPkt : sched.getVmPacketsToSend()) {
+        PacketScheduler packetScheduler = getVmPacketScheduler(sourceVm);
+        for (VmPacket vmPkt : packetScheduler.getVmPacketsToSend()) {
             collectPacketToSendFromVm(vmPkt);
         }
 
-        sched.getVmPacketsToSend().clear();
+        packetScheduler.clearVmPacketsToSend();
     }
 
     /**
