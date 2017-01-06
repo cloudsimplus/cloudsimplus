@@ -31,12 +31,12 @@ import org.cloudbus.cloudsim.vms.VmSimple;
 import org.cloudbus.cloudsim.allocationpolicies.VmAllocationPolicySimple;
 import org.cloudbus.cloudsim.schedulers.vm.VmSchedulerSpaceShared;
 import org.cloudbus.cloudsim.core.CloudSim;
-import org.cloudsimplus.util.tablebuilder.CloudletsTableBuilderHelper;
+import org.cloudsimplus.builders.tables.CloudletsTableBuilderHelper;
 import org.cloudbus.cloudsim.provisioners.PeProvisionerSimple;
 import org.cloudbus.cloudsim.provisioners.ResourceProvisionerSimple;
 import org.cloudbus.cloudsim.resources.Bandwidth;
 import org.cloudbus.cloudsim.resources.Ram;
-import org.cloudsimplus.util.tablebuilder.TextTableBuilder;
+import org.cloudsimplus.builders.tables.TextTableBuilder;
 
 /**
  * A simple example showing how to create 2 datacenters with 1 host each and run

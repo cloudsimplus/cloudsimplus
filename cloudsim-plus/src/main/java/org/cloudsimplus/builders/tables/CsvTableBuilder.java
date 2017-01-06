@@ -21,35 +21,50 @@
  *     You should have received a copy of the GNU General Public License
  *     along with CloudSim Plus. If not, see <http://www.gnu.org/licenses/>.
  */
-package org.cloudsimplus.util.tablebuilder;
+package org.cloudsimplus.builders.tables;
+
+import org.cloudbus.cloudsim.util.Log;
 
 /**
- * A column of an CSV table. The class generates the CSV code
- * that represents a column in a CSV table.
+ * Prints a table from a given data set, using a Comma Separated Text (CSV) format.
  *
  * @author Manoel Campos da Silva Filho
  * @since CloudSim Plus 1.0
  */
-public class CsvTableColumn extends AbstractTableColumn {
+public class CsvTableBuilder extends AbstractTableBuilder {
+    public CsvTableBuilder() {
+        super();
+    }
 
-    public CsvTableColumn(TableBuilder table, String title) {
-        super(table, title);
-        this.setColumnSeparator(";");
+    public CsvTableBuilder(final String title) {
+        super(title);
     }
 
     @Override
-    protected String generateHeader(String title) {
-        if(isLastColumn())
-            return title;
-        return String.format("%s%s", title, getColumnSeparator());
+    public void printTitle() {}
+
+    @Override
+    public void printTableOpenning(){}
+
+    @Override
+    public void printTableClosing(){}
+
+    @Override
+    protected void printRowOpenning() {}
+
+    @Override
+    protected void printRowClosing() {
+        Log.printLine();
+    }
+
+    public String getLineSeparator() {
+        return "";
     }
 
     @Override
-    public String generateData(Object data) {
-        if(isLastColumn())
-            return super.generateData(data);
-        return String.format("%s%s", super.generateData(data), getColumnSeparator());
+    public TableColumn addColumn(String columnTitle) {
+        TableColumn col = new CsvTableColumn(this, columnTitle);
+        getColumns().add(col);
+        return col;
     }
-
-
 }

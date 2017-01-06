@@ -29,8 +29,8 @@ import org.cloudbus.cloudsim.resources.Pe;
 import org.cloudbus.cloudsim.resources.PeSimple;
 import org.cloudbus.cloudsim.resources.Ram;
 import org.cloudbus.cloudsim.schedulers.vm.VmSchedulerTimeShared;
-import org.cloudsimplus.util.tablebuilder.CloudletsTableBuilderHelper;
-import org.cloudsimplus.util.tablebuilder.TextTableBuilder;
+import org.cloudsimplus.builders.tables.CloudletsTableBuilderHelper;
+import org.cloudsimplus.builders.tables.TextTableBuilder;
 
 /**
  * A base class for network simulation examples

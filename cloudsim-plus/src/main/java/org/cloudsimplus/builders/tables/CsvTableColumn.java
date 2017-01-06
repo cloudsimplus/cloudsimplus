@@ -21,32 +21,35 @@
  *     You should have received a copy of the GNU General Public License
  *     along with CloudSim Plus. If not, see <http://www.gnu.org/licenses/>.
  */
-package org.cloudsimplus.util.tablebuilder;
-
-import org.cloudbus.cloudsim.cloudlets.Cloudlet;
-
-import java.util.List;
+package org.cloudsimplus.builders.tables;
 
 /**
- * A helper class to print cloudlets results as a table, including the Cloudlet priority value.
+ * A column of an CSV table. The class generates the CSV code
+ * that represents a column in a CSV table.
  *
  * @author Manoel Campos da Silva Filho
  * @since CloudSim Plus 1.0
  */
-public class PriorityCloudletsTableBuilderHelper extends CloudletsTableBuilderHelper {
-    public PriorityCloudletsTableBuilderHelper(List<? extends Cloudlet> list) {
-        super(list);
+public class CsvTableColumn extends AbstractTableColumn {
+
+    public CsvTableColumn(TableBuilder table, String title) {
+        super(table, title);
+        this.setColumnSeparator(";");
     }
 
     @Override
-    protected void createTableColumns() {
-        super.createTableColumns();
-        getPrinter().addColumn("Priority");
+    protected String generateHeader(String title) {
+        if(isLastColumn())
+            return title;
+        return String.format("%s%s", title, getColumnSeparator());
     }
 
     @Override
-    protected void addDataToRow(Cloudlet cloudlet, List<Object> row) {
-        super.addDataToRow(cloudlet, row);
-        row.add(cloudlet.getPriority());
+    public String generateData(Object data) {
+        if(isLastColumn())
+            return super.generateData(data);
+        return String.format("%s%s", super.generateData(data), getColumnSeparator());
     }
+
+
 }

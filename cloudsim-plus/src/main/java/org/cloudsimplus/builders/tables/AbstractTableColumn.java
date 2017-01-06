@@ -21,7 +21,7 @@
  *     You should have received a copy of the GNU General Public License
  *     along with CloudSim Plus. If not, see <http://www.gnu.org/licenses/>.
  */
-package org.cloudsimplus.util.tablebuilder;
+package org.cloudsimplus.builders.tables;
 
 /**
  * A column of a table to be generated using a {@link TableBuilder} class.
@@ -29,29 +29,29 @@ package org.cloudsimplus.util.tablebuilder;
  */
 public abstract class AbstractTableColumn implements TableColumn {
     /**
-     * @see #getTitle() 
+     * @see #getTitle()
      */
     private String title;
-    
+
     /**
-     * @see #getSubTitle() 
+     * @see #getSubTitle()
      */
     private String subTitle;
-    
+
     /**
-     * @see #getFormat() 
+     * @see #getFormat()
      */
     private String format;
-    
+
     /**
-     * @see #getTable() 
+     * @see #getTable()
      */
     private TableBuilder table;
-    
+
     /**
-     * @see #getColumnSeparator() 
+     * @see #getColumnSeparator()
      */
-    private String columnSeparator;    
+    private String columnSeparator;
 
     /**
      * Creates a column with a specific title.
@@ -67,7 +67,7 @@ public abstract class AbstractTableColumn implements TableColumn {
     }
 
     /**
-     * 
+     *
      * @return The title to be displayed at the top of the column.
      */
     @Override
@@ -82,7 +82,7 @@ public abstract class AbstractTableColumn implements TableColumn {
     }
 
     /**
-     * 
+     *
      * @return The subtitle to be displayed below the title of the column (optional).
      */
     @Override
@@ -97,7 +97,7 @@ public abstract class AbstractTableColumn implements TableColumn {
     }
 
     /**
-     * 
+     *
      * @return The format to be used to display the content of the column,
      * according to the {@link String#format(java.lang.String, java.lang.Object...)} (optional).
      */
@@ -111,31 +111,31 @@ public abstract class AbstractTableColumn implements TableColumn {
         this.format = format;
         return this;
     }
-    
+
     @Override
     public String toString() {
         return getTitle();
-    }    
+    }
 
     /**
-     * 
+     *
      * @return The table that the column belongs to.
      */
     @Override
     public TableBuilder getTable() {
         return table;
     }
-    
-    
+
+
     @Override
     public AbstractTableColumn setTable(TableBuilder table) {
         this.table = table;
         return this;
     }
-    
+
     /**
      * Generates the string that represents the data of the column,
-     * formatted according to the {@link #getFormat() format}. 
+     * formatted according to the {@link #getFormat() format}.
      * @param data The data of the column to be formatted
      * @return a string containing the formatted column data
      */
@@ -143,13 +143,13 @@ public abstract class AbstractTableColumn implements TableColumn {
     public String generateData(final Object data){
         if(format.trim().isEmpty())
             return String.valueOf(data);
-        
-        return String.format(format, data);        
+
+        return String.format(format, data);
     }
-    
+
     /**
      * Generates a header for the column, either for the title or subtitle header.
-     * 
+     *
      * @param title header title or subtitle
      * @return the generated header string
      */
@@ -164,7 +164,7 @@ public abstract class AbstractTableColumn implements TableColumn {
     public String generateSubtitleHeader() {
         return generateHeader(subTitle);
     }
-    
+
     @Override
     public String getColumnSeparator(){
         return columnSeparator;
@@ -175,16 +175,16 @@ public abstract class AbstractTableColumn implements TableColumn {
         this.columnSeparator = columnSeparator;
         return this;
     }
-    
+
     /**
-     * 
+     *
      * @return The index of the current column into the
      * column list of the {@link #getTable() TableBuilder}.
      */
     protected int getIndex() {
         return getTable().getColumns().indexOf(this);
     }
-    
+
     /**
      * Indicates if the current column is the last one
      * in the column list of the {@link #getTable() TableBuilder}.

@@ -1,7 +1,7 @@
 package org.cloudbus.cloudsim.examples;
 
 import org.cloudbus.cloudsim.schedulers.cloudlet.CloudletSchedulerTimeShared;
-import org.cloudsimplus.util.tablebuilder.CloudletsTableBuilderHelper;
+import org.cloudsimplus.builders.tables.CloudletsTableBuilderHelper;
 import java.util.ArrayList;
 import java.util.List;
 

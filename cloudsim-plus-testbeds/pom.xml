@@ -35,6 +35,32 @@
         </license>
     </licenses>
 
+    <developers>
+        <developer>
+            <name>Manoel Campos da Silva Filho</name>
+            <email>manoelcampos@gmail.com</email>
+            <organization>Instituto Federal de Educação Ciência e Tecnologia do Tocantins (IFTO)</organization>
+            <organizationUrl>http://www.ifto.edu.br</organizationUrl>
+        </developer>
+        <developer>
+            <name>Raysa Oliveira</name>
+            <email>oliveira.raysa@gmail.com</email>
+            <organization>Universidade da Beira Interior (UBI)</organization>
+            <organizationUrl>http://www.ubi.pt</organizationUrl>
+        </developer>
+    </developers>
+
+    <scm>
+        <connection>scm:git:git@github.com:manoelcampos/cloudsim-plus.git</connection>
+        <developerConnection>scm:git:git@github.com:manoelcampos/cloudsim-plus.git</developerConnection>
+        <url>git@github.com:manoelcampos/cloudsim-plus.git</url>
+    </scm>
+
+    <issueManagement>
+        <url>http://github.com/manoelcampos/cloudsim-plus/issues</url>
+        <system>GitHub Issues</system>
+    </issueManagement>
+
     <properties>
         <!-- Directory where is the license file to be used by the com.mycila.maven-license-plugin -->
         <license.dir>${project.parent.basedir}</license.dir>

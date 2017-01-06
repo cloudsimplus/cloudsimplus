@@ -21,50 +21,35 @@
  *     You should have received a copy of the GNU General Public License
  *     along with CloudSim Plus. If not, see <http://www.gnu.org/licenses/>.
  */
-package org.cloudsimplus.util.tablebuilder;
-
-import org.cloudbus.cloudsim.util.Log;
+package org.cloudsimplus.builders.tables;
 
 /**
- * Prints a table from a given data set, using a Comma Separated Text (CSV) format.
+ * A column of an HTML table. The class generates the HTML code
+ * that represents a column in a HTML table.
  *
  * @author Manoel Campos da Silva Filho
  * @since CloudSim Plus 1.0
  */
-public class CsvTableBuilder extends AbstractTableBuilder {
-    public CsvTableBuilder() {
-        super();
+public class HtmlTableColumn extends AbstractTableColumn {
+
+    public HtmlTableColumn(TableBuilder table, String title) {
+        super(table, title);
     }
 
-    public CsvTableBuilder(final String title) {
-        super(title);
-    }
-
-    @Override
-    public void printTitle() {}
-
-    @Override
-    public void printTableOpenning(){}
-
-    @Override
-    public void printTableClosing(){}
-
-    @Override
-    protected void printRowOpenning() {}
-
-    @Override
-    protected void printRowClosing() {
-        Log.printLine();
-    }
-
-    public String getLineSeparator() {
-        return "";
+    private String identLine(int columnIndex) {
+        return columnIndex == 0 ? "    " : "";
     }
 
     @Override
-    public TableColumn addColumn(String columnTitle) {
-        TableColumn col = new CsvTableColumn(this, columnTitle);
-        getColumns().add(col);
-        return col;
+    protected String generateHeader(String title) {
+        final int index = getTable().getColumns().indexOf(this);
+        return String.format("%s<th>%s</th>", identLine(index), title);
     }
+
+    @Override
+    public String generateData(Object data) {
+        final int index = getTable().getColumns().indexOf(this);
+        return String.format("%s<td>%s</td>", identLine(index), super.generateData(data));
+    }
+
 }

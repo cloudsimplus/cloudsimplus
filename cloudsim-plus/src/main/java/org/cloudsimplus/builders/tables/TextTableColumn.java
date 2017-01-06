@@ -21,35 +21,42 @@
  *     You should have received a copy of the GNU General Public License
  *     along with CloudSim Plus. If not, see <http://www.gnu.org/licenses/>.
  */
-package org.cloudsimplus.util.tablebuilder;
+package org.cloudsimplus.builders.tables;
 
 /**
- * A column of an HTML table. The class generates the HTML code
- * that represents a column in a HTML table.
+ * A column of an text (ASCII) table. The class generates the string
+ * that represents a column in a text table.
  *
  * @author Manoel Campos da Silva Filho
  * @since CloudSim Plus 1.0
  */
-public class HtmlTableColumn extends AbstractTableColumn {
+public class TextTableColumn extends CsvTableColumn {
 
-    public HtmlTableColumn(TableBuilder table, String title) {
+    public TextTableColumn(TableBuilder table, String title) {
         super(table, title);
-    }
-
-    private String identLine(int columnIndex) {
-        return columnIndex == 0 ? "    " : "";
-    }
-
-    @Override
-    protected String generateHeader(String title) {
-        final int index = getTable().getColumns().indexOf(this);
-        return String.format("%s<th>%s</th>", identLine(index), title);
+        setColumnSeparator("|");
     }
 
     @Override
     public String generateData(Object data) {
-        final int index = getTable().getColumns().indexOf(this);
-        return String.format("%s<td>%s</td>", identLine(index), super.generateData(data));
+        return alignStringRight(super.generateData(data));
     }
+
+    /**
+     * Align a string to the right side, based on the length of the title
+     * header of the column.
+     * @param str the string to be aligned
+     * @return the aligned string
+     */
+    private String alignStringRight(String str) {
+        final String fmt = String.format("%%%ds", generateTitleHeader().length());
+        return String.format(fmt, str);
+    }
+
+    @Override
+    public String generateSubtitleHeader() {
+        return alignStringRight(super.generateSubtitleHeader());
+    }
+
 
 }

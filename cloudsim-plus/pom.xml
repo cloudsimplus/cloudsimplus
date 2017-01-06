@@ -8,11 +8,11 @@
     </parent>
     <artifactId>cloudsim-plus</artifactId>
     <name>CloudSim Plus API</name>
-    <description>CloudSim Plus: A CloudSim fork for Modeling and Simulation of Cloud Computing Infrastructures and Services that focuses on reusability principles and other ones such as DRY, KISS, SOLID and Design Patterns</description>
+    <description>CloudSim Plus: A modern, highly extensible and easier-to-use Java 8 Framework for Modeling and Simulation of Cloud Computing Infrastructures and Services</description>
     <url>http://cloudsimplus.org</url>
 
     <organization>
-        <name>Systems, Security and Image Communication Lab, Instituto de Telecomunicações (IT), Universidade da Beira Interior (UBI), Instituto Federal de Educação Ciência e Tecnologia do Tocantins (IFTO)</name>
+        <name>Systems, Security and Image Communication Lab - Instituto de Telecomunicações (IT) - Universidade da Beira Interior (UBI) - Instituto Federal de Educação Ciência e Tecnologia do Tocantins (IFTO)</name>
         <url>http://www.it.pt/MSP-Cv http://www.it.pt http://www.ubi.pt http://www.ifto.edu.br</url>
     </organization>
 
@@ -37,6 +37,12 @@
             <organization>Instituto Federal de Educação Ciência e Tecnologia do Tocantins (IFTO)</organization>
             <organizationUrl>http://www.ifto.edu.br</organizationUrl>
         </developer>
+        <developer>
+            <name>Raysa Oliveira</name>
+            <email>oliveira.raysa@gmail.com</email>
+            <organization>Universidade da Beira Interior (UBI)</organization>
+            <organizationUrl>http://www.ubi.pt</organizationUrl>
+        </developer>
     </developers>
 
     <scm>
@@ -44,6 +50,12 @@
         <developerConnection>scm:git:git@github.com:manoelcampos/cloudsim-plus.git</developerConnection>
         <url>git@github.com:manoelcampos/cloudsim-plus.git</url>
     </scm>
+
+    <issueManagement>
+        <url>http://github.com/manoelcampos/cloudsim-plus/issues</url>
+        <system>GitHub Issues</system>
+    </issueManagement>
+
 
     <profiles>
         <!-- The profiles 'default' and 'integration-tests' are specified to allow
@@ -140,11 +152,117 @@
                 </plugins>
             </build>
         </profile>
+
+        <profile>
+            <!--
+             A profile used to execute all goals required to deploy
+             the project to the Maven Central.
+             To execute use: mvn clean deploy -P mvncentral
+             -->
+            <id>mvncentral</id>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-source-plugin</artifactId>
+                        <version>3.0.1</version>
+                        <executions>
+                            <execution>
+                                <id>attach-sources</id>
+                                <goals>
+                                    <goal>jar-no-fork</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                    </plugin>
+
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-javadoc-plugin</artifactId>
+                        <version>2.10.4</version>
+                        <executions>
+                            <execution>
+                                <id>attach-javadocs</id>
+                                <goals>
+                                    <goal>jar</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+
+                        <configuration>
+                            <!-- <failOnError>false</failOnError> -->
+                            <tags>
+                                <direction>
+                                    <name>pre</name>
+                                    <placement>a</placement>
+                                    <head>Precondition:</head>
+                                </direction>
+                                <direction>
+                                    <name>post</name>
+                                    <placement>a</placement>
+                                    <head>Postcondition:</head>
+                                </direction>
+                            </tags>
+                        </configuration>
+                    </plugin>
+
+                    <!--
+                     Signs the generated jar using GPG, as required for deploying at the Maven Central.
+                     Configurations are defined into the local repo settings.xml
+                    -->
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-gpg-plugin</artifactId>
+                        <version>1.6</version>
+                        <executions>
+                            <execution>
+                                <id>sign-artifacts</id>
+                                <phase>verify</phase>
+                                <goals>
+                                    <goal>sign</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                    </plugin>
+
+                    <!--
+                    Plugin to deploy to the maven central using a Sonatype account.
+                    Credentials are defined into the local repo settings.xml
+                    -->
+                    <plugin>
+                        <groupId>org.sonatype.plugins</groupId>
+                        <artifactId>nexus-staging-maven-plugin</artifactId>
+                        <version>1.6.7</version>
+                        <extensions>true</extensions>
+                        <configuration>
+                            <serverId>ossrh</serverId>
+                            <nexusUrl>https://oss.sonatype.org/</nexusUrl>
+                            <autoReleaseAfterClose>false</autoReleaseAfterClose>
+                        </configuration>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
     </profiles>
+
+    <!--
+     URLs to deploy the project at the Maven Central (http://mvnrepository.com)
+     using a Sonatype account (http://central.sonatype.org)
+    -->
+    <distributionManagement>
+        <snapshotRepository>
+            <id>ossrh</id>
+            <url>https://oss.sonatype.org/content/repositories/snapshots</url>
+        </snapshotRepository>
+        <repository>
+            <id>ossrh</id>
+            <url>https://oss.sonatype.org/service/local/staging/deploy/maven2/</url>
+        </repository>
+    </distributionManagement>
 
     <build>
         <plugins>
-			<plugin>
+            <plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-jar-plugin</artifactId>
 				<version>3.0.2</version>
@@ -165,55 +283,10 @@
 					</archive>
 				</configuration>
 			</plugin>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-javadoc-plugin</artifactId>
-                <version>2.10.4</version>
-                <executions>
-                    <execution>
-                        <id>docs</id>
-                        <phase>prepare-package</phase>
-                        <goals>
-                            <goal>jar</goal>
-                        </goals>
-                    </execution>
-                </executions>
-
-                <configuration>
-                    <!-- <failOnError>false</failOnError> -->
-                    <tags>
-                        <direction>
-                            <name>pre</name>
-                            <placement>a</placement>
-                            <head>Precondition:</head>
-                        </direction>
-                        <direction>
-                            <name>post</name>
-                            <placement>a</placement>
-                            <head>Postcondition:</head>
-                        </direction>
-                    </tags>
-                </configuration>
-            </plugin>
 
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
-            </plugin>
-
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-source-plugin</artifactId>
-                <version>3.0.1</version>
-                <executions>
-                    <execution>
-                        <id>attach-sources</id>
-                        <goals>
-                            <goal>jar</goal>
-                            <goal>test-jar</goal>
-                        </goals>
-                    </execution>
-                </executions>
             </plugin>
 
             <!--
@@ -278,6 +351,15 @@
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-javadoc-plugin</artifactId>
                 <version>2.10.4</version>
+                <reportSets>
+                    <!-- https://maven.apache.org/plugins/maven-javadoc-plugin/examples/javadoc-nofork.html -->
+                    <reportSet>
+                        <reports>
+                            <report>javadoc-no-fork</report>
+                            <report>test-javadoc-no-fork</report>
+                        </reports>
+                    </reportSet>
+                </reportSets>
             </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>

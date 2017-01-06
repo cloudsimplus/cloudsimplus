@@ -1,9 +1,9 @@
 /**
- * Provides {@link org.cloudsimplus.util.tablebuilder.TableBuilder} classes
+ * Provides {@link org.cloudsimplus.builders.tables.TableBuilder} classes
  * that are used to format simulation results in different and structured ways such as
  * ASCII, CSV or HTML tables. Such tables can even be used by external softwares to process simulation results.
  *
- * <p>All the examples use some {@link org.cloudsimplus.util.tablebuilder.TableBuilder}
+ * <p>All the examples use some {@link org.cloudsimplus.builders.tables.TableBuilder}
  * implementation to print simulation results.</p>
  *
  * <p>The classes and interfaces provided allow creating custom TableBuilders
@@ -12,4 +12,4 @@
  *
  * @author Manoel Campos da Silva Filho
  */
-package org.cloudsimplus.util.tablebuilder;
+package org.cloudsimplus.builders.tables;

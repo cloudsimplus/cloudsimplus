@@ -21,7 +21,7 @@
  *     You should have received a copy of the GNU General Public License
  *     along with CloudSim Plus. If not, see <http://www.gnu.org/licenses/>.
  */
-package org.cloudsimplus.util.tablebuilder;
+package org.cloudsimplus.builders.tables;
 
 import java.util.List;
 

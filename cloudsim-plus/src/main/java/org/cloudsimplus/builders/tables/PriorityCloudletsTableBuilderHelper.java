@@ -21,58 +21,32 @@
  *     You should have received a copy of the GNU General Public License
  *     along with CloudSim Plus. If not, see <http://www.gnu.org/licenses/>.
  */
-package org.cloudsimplus.util.tablebuilder;
+package org.cloudsimplus.builders.tables;
 
-import org.cloudbus.cloudsim.util.Log;
+import org.cloudbus.cloudsim.cloudlets.Cloudlet;
+
+import java.util.List;
 
 /**
- * A generator of HTML tables.
+ * A helper class to print cloudlets results as a table, including the Cloudlet priority value.
  *
  * @author Manoel Campos da Silva Filho
  * @since CloudSim Plus 1.0
  */
-public class HtmlTableBuilder extends AbstractTableBuilder {
-    public HtmlTableBuilder() {
-        super();
-    }
-
-    /**
-     * Creates an TableBuilder
-     * @param title Title of the table
-     */
-    public HtmlTableBuilder(final String title) {
-        super(title);
+public class PriorityCloudletsTableBuilderHelper extends CloudletsTableBuilderHelper {
+    public PriorityCloudletsTableBuilderHelper(List<? extends Cloudlet> list) {
+        super(list);
     }
 
     @Override
-    protected void printTableOpenning() {
-        Log.printLine("\n<table>");
+    protected void createTableColumns() {
+        super.createTableColumns();
+        getPrinter().addColumn("Priority");
     }
 
     @Override
-    protected void printTitle() {
-        Log.printFormatted("  <caption>%s</caption>\n", getTitle());
-    }
-
-    @Override
-    protected void printRowOpenning() {
-        Log.printLine("  <tr>");
-    }
-
-    @Override
-    protected void printRowClosing() {
-        Log.printLine("\n  </tr>");
-    }
-
-    @Override
-    protected void printTableClosing() {
-        Log.printLine("</table>\n");
-    }
-
-    @Override
-    public TableColumn addColumn(String columnTitle) {
-        TableColumn col = new HtmlTableColumn(this, columnTitle);
-        getColumns().add(col);
-        return col;
+    protected void addDataToRow(Cloudlet cloudlet, List<Object> row) {
+        super.addDataToRow(cloudlet, row);
+        row.add(cloudlet.getPriority());
     }
 }

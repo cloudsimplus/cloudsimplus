@@ -58,7 +58,7 @@ import org.cloudbus.cloudsim.vms.Vm;
 import org.cloudbus.cloudsim.vms.power.PowerVm;
 import org.cloudsimplus.sla.readJsonFile.SlaMetric;
 import org.cloudsimplus.sla.readJsonFile.SlaReader;
-import org.cloudsimplus.util.tablebuilder.CloudletsTableBuilderHelper;
+import org.cloudsimplus.builders.tables.CloudletsTableBuilderHelper;
 
 /**
  * This example shows how to do a migration using CpuUtilization threshold
@@ -86,7 +86,7 @@ public final class VmMigrationWhenCpuMetricIsViolatedExample {
     private static final long CLOUDLET_LENGHT = 20000;
     private static final long CLOUDLET_FILESIZE = 300;
     private static final long CLOUDLET_OUTPUTSIZE = 300;
-   
+
     /**
      * The percentage of CPU that a cloudlet will use when it starts executing
      * (in scale from 0 to 1, where 1 is 100%). For each cloudlet create, this
@@ -147,7 +147,7 @@ public final class VmMigrationWhenCpuMetricIsViolatedExample {
 
         new CloudletsTableBuilderHelper(broker.getCloudletsFinishedList()).build();
 
-        Log.printConcatLine(VmMigrationWhenCpuMetricIsViolatedExample.class.getSimpleName(), " finished!");    
+        Log.printConcatLine(VmMigrationWhenCpuMetricIsViolatedExample.class.getSimpleName(), " finished!");
     }
 
     public void createAndSubmitCloudlets(DatacenterBroker broker) {

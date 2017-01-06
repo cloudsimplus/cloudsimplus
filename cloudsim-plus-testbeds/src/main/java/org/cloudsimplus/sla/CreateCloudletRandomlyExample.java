@@ -53,14 +53,14 @@ import org.cloudbus.cloudsim.resources.PeSimple;
 import org.cloudbus.cloudsim.resources.Ram;
 import org.cloudbus.cloudsim.schedulers.cloudlet.CloudletSchedulerTimeShared;
 import org.cloudbus.cloudsim.schedulers.vm.VmSchedulerTimeShared;
-import org.cloudsimplus.util.tablebuilder.CloudletsTableBuilderHelper;
+import org.cloudsimplus.builders.tables.CloudletsTableBuilderHelper;
 import org.cloudbus.cloudsim.utilizationmodels.UtilizationModel;
 import org.cloudbus.cloudsim.utilizationmodels.UtilizationModelFull;
 
 /**
  * This simple example show how to create cloudlets randomly using poisson
  * distribution.
- * 
+ *
  * @author raysaoliveira
  */
 public class CreateCloudletRandomlyExample {

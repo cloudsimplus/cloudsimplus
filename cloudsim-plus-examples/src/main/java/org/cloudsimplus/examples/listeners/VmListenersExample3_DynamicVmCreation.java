@@ -31,8 +31,8 @@ package org.cloudsimplus.examples.listeners;
  *
  * Copyright (c) 2009, The University of Melbourne, Australia
  */
-import org.cloudsimplus.util.tablebuilder.CloudletsTableBuilderHelper;
-import org.cloudsimplus.util.tablebuilder.TextTableBuilder;
+import org.cloudsimplus.builders.tables.CloudletsTableBuilderHelper;
+import org.cloudsimplus.builders.tables.TextTableBuilder;
 import java.util.ArrayList;
 import java.util.List;
 import org.cloudbus.cloudsim.cloudlets.Cloudlet;
