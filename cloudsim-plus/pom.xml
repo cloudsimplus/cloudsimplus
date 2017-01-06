@@ -158,9 +158,9 @@
             <!--
              A profile used to execute all goals required to deploy
              the project to the Maven Central.
-             To execute use: mvn clean deploy -P mvncentral
+             To execute use: mvn clean deploy -P all
              -->
-            <id>mvncentral</id>
+            <id>all</id>
             <build>
                 <plugins>
                     <plugin>
