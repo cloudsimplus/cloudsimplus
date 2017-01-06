@@ -1,12 +1,10 @@
 <?xml version="1.0"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
-    <parent>
-        <groupId>org.cloudsimplus</groupId>
-        <artifactId>cloudsim-plus-package</artifactId>
-        <version>1.0</version>
-    </parent>
+
+    <groupId>org.cloudsimplus</groupId>
     <artifactId>cloudsim-plus</artifactId>
+    <version>1.0</version>
     <name>CloudSim Plus API</name>
     <description>CloudSim Plus: A modern, highly extensible and easier-to-use Java 8 Framework for Modeling and Simulation of Cloud Computing Infrastructures and Services</description>
     <url>http://cloudsimplus.org</url>
@@ -26,8 +24,9 @@
     </licenses>
 
     <properties>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <!-- Directory where is the license file to be used by the com.mycila.maven-license-plugin -->
-        <license.dir>${project.parent.basedir}</license.dir>
+        <license.dir>..</license.dir>
     </properties>
 
     <developers>
@@ -95,6 +94,7 @@
                     <plugin>
                         <groupId>org.apache.maven.plugins</groupId>
                         <artifactId>maven-javadoc-plugin</artifactId>
+                        <version>2.10.4</version>
                         <configuration>
                             <!-- Switch OFF the doclint in Java 8 -->
                             <additionalparam>-Xdoclint:none</additionalparam>
@@ -105,6 +105,7 @@
                     <plugin>
                         <groupId>com.mycila.maven-license-plugin</groupId>
                         <artifactId>maven-license-plugin</artifactId>
+                        <version>1.10.b1</version>
                         <configuration>
                             <header>${license.dir}/source-header.txt</header>
                         </configuration>
@@ -237,7 +238,7 @@
                         <configuration>
                             <serverId>ossrh</serverId>
                             <nexusUrl>https://oss.sonatype.org/</nexusUrl>
-                            <autoReleaseAfterClose>false</autoReleaseAfterClose>
+                            <autoReleaseAfterClose>true</autoReleaseAfterClose>
                         </configuration>
                     </plugin>
                 </plugins>
@@ -287,6 +288,11 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
+                <version>3.6.0</version>
+                <configuration>
+                    <source>1.8</source>
+                    <target>1.8</target>
+                </configuration>
             </plugin>
 
             <!--
@@ -297,6 +303,7 @@
             <plugin>
                 <groupId>org.jacoco</groupId>
                 <artifactId>jacoco-maven-plugin</artifactId>
+                <version>0.7.7.201606060606</version>
                 <executions>
                     <execution>
                         <id>prepare-agent</id>
@@ -312,6 +319,133 @@
                         </goals>
                     </execution>
                 </executions>
+            </plugin>
+
+            <!--
+            Checks out-of-date dependencies and License violations: http://versioneye.com
+            The plugin automatically collect dependencies information and submit to the
+            project on its website.
+            It requires an API key that can be defined in an environment variable: export VERSIONEYE_API_KEY=value
+            For manual update execute: mvn versioneye:update
+            -->
+            <plugin>
+                <groupId>com.versioneye</groupId>
+                <artifactId>versioneye-maven-plugin</artifactId>
+                <version>3.11.0</version>
+                <configuration>
+                    <organisation>manoelcampos</organisation>
+                </configuration>
+                <!--
+                The plugin is just being executed when the repository is pushed to travis-ci.org
+                in order to speed up local build.
+                See the .travis.yml file to check the command line being executed.
+                -->
+                <!--<executions><execution><goals><goal>update</goal></goals></execution></executions>-->
+            </plugin>
+
+            <!--
+            Adds License Information to project source and binaries using com.mycila.maven-license-plugin.
+            https://dzone.com/articles/adding-license-information.
+
+            To add missing license information for source files run:
+            mvn license:format
+            -->
+            <plugin>
+                <groupId>com.mycila.maven-license-plugin</groupId>
+                <artifactId>maven-license-plugin</artifactId>
+                <version>1.10.b1</version>
+                <inherited>true</inherited>
+                <configuration>
+                    <header>${license.dir}/source-header.txt</header>
+                    <aggregate>true</aggregate>
+                    <properties>
+                        <project>${project.name}</project>
+                        <founder>${project.organization.name}</founder>
+                        <year>${project.inceptionYear}</year>
+                        <website>${project.url}</website>
+                    </properties>
+
+                    <strictCheck>true</strictCheck>
+                    <failIfMissing>false</failIfMissing>
+
+                    <includes>
+                        <include>**/src/main/java/**/*.java</include>
+                        <include>**/src/test/java/**/*.java</include>
+
+                        <!-- CloudSim Plus exclusive files that are inside CloudSim packages -->
+                        <include>**/src/main/java/**/CloudletSchedulerCompletelyFair.java</include>
+                        <include>**/src/main/java/**/VmAllocationPolicy.java</include>
+                        <include>**/src/main/java/**/PowerVmAllocationPolicy.java</include>
+                        <include>**/src/main/java/**/PowerVmAllocationPolicyMigration.java</include>
+                        <include>**/src/main/java/**/PowerVmAllocationPolicyMigrationDynamicUpperThreshold.java</include>
+                        <include>**/src/main/java/**/VmAllocationPolicyMigrationWorstFitStaticThreshold.java</include>
+                        <include>**/src/main/java/**/DatacenterBroker.java</include>
+                        <include>**/src/main/java/**/DatacenterBroker.java</include>
+                        <include>**/src/main/java/**/Cloudlet.java</include>
+                        <include>**/src/main/java/**/Simulation.java</include>
+                        <include>**/src/main/java/**/SimEntity.java</include>
+                        <include>**/src/main/java/**/SimEvent.java</include>
+                        <include>**/src/main/java/**/EventQueue.java</include>
+                        <include>**/src/main/java/**/Identificable.java</include>
+                        <include>**/src/main/java/**/Nameable.java</include>
+                        <include>**/src/main/java/**/Datacenter.java</include>
+                        <include>**/src/main/java/**/DatacenterCharacteristics.java</include>
+                        <include>**/src/main/java/**/Host.java</include>
+                        <include>**/src/main/java/**/PowerHost.java</include>
+                        <include>**/src/main/java/**/HostDynamicWorkload.java</include>
+                        <include>**/src/main/java/**/NetworkTopology.java</include>
+                        <include>**/src/main/java/**/ResourceManageable.java</include>
+                        <include>**/src/main/java/**/ResourceCapacity.java</include>
+                        <include>**/src/main/java/**/Resource.java</include>
+                        <include>**/src/main/java/**/RawStorage.java</include>
+                        <include>**/src/main/java/**/Ram.java</include>
+                        <include>**/src/main/java/**/Bandwidth.java</include>
+                        <include>**/src/main/java/**/Processor.java</include>
+                        <include>**/src/main/java/**/Pe.java</include>
+                        <include>**/src/main/java/**/VmScheduler.java</include>
+                        <include>**/src/main/java/**/CloudletScheduler.java</include>
+                        <include>**/src/main/java/**/UtilizationModelArithmeticProgression.java</include>
+                        <include>**/src/main/java/**/Vm.java</include>
+                    </includes>
+                    <excludes>
+                        <exclude>**/package-info.java</exclude>
+                        <exclude>**/src/test/resources/**</exclude>
+                        <exclude>**/src/main/resources/**</exclude>
+                        <exclude>**/*.md</exclude>
+                        <exclude>**/*.properties</exclude>
+                        <exclude>**/*.uml</exclude>
+                        <exclude>**/*.iml</exclude>
+                        <exclude>**/nbactions.xml</exclude>
+
+                        <!-- Ignored just temporarily while the implementation is not included in the cloudsim
+                        main module-->
+                        <exclude>cloudsim-plus-testbeds/src/main/java/org/cloudsimplus/sla/**</exclude>
+
+                        <!-- Ignore the org.cloudbus packages from CloudSim -->
+                        <exclude>**/src/main/java/org/cloudbus/**</exclude>
+                        <exclude>**/src/test/java/org/cloudbus/**</exclude>
+                    </excludes>
+                </configuration>
+                <executions>
+                    <execution>
+                        <goals>
+                            <!--
+                            Checks for missing license header in source files.
+                            You can use "format" to add missing headers or
+                            call manually using: mvn license:format
+                            -->
+                            <goal>check</goal>
+                        </goals>
+                        <phase>process-sources</phase>
+                    </execution>
+                </executions>
+                <dependencies>
+                    <dependency>
+                        <groupId>com.mycila</groupId>
+                        <artifactId>licenses</artifactId>
+                        <version>1</version>
+                    </dependency>
+                </dependencies>
             </plugin>
         </plugins>
     </build>
@@ -332,16 +466,21 @@
         <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
+            <version>4.12</version>
             <scope>test</scope>
             <type>jar</type>
         </dependency>
         <dependency>
             <groupId>org.easymock</groupId>
             <artifactId>easymock</artifactId>
+            <version>3.4</version>
+            <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>org.easymock</groupId>
             <artifactId>easymockclassextension</artifactId>
+            <version>3.2</version>
+            <scope>test</scope>
         </dependency>
     </dependencies>
 

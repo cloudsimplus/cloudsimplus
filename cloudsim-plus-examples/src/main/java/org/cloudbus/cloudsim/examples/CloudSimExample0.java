@@ -105,27 +105,15 @@ public class CloudSimExample0 {
             hostList.add(host);
         }
 
-        //Defines the characteristics of the data center
-        double cost = 3.0; // the cost of using processing in this Datacenter
-        double costPerMem = 0.05; // the cost of using memory in this Datacenter
-        double costPerStorage = 0.001; // the cost of using storage in this Datacenter
-        double costPerBw = 0.0; // the cost of using bw in this Datacenter
-
-        DatacenterCharacteristics characteristics =
-            new DatacenterCharacteristicsSimple(hostList)
-                .setCostPerSecond(cost)
-                .setCostPerMem(costPerMem)
-                .setCostPerStorage(costPerStorage)
-                .setCostPerBw(costPerBw);
-
+        DatacenterCharacteristics characteristics = new DatacenterCharacteristicsSimple(hostList);
         return new DatacenterSimple(simulation, characteristics, new VmAllocationPolicySimple());
     }
 
     private Host createHost() {
-        int  mips = 1000; // capacity of each CPU core (in Million Instructions per Second)
-        long  ram = 2048; // host memory (MEGABYTE)
-        long storage = 1000000; // host storage (MEGABYTE)
-        long bw = 10000; //in Megabits/s
+        final int  mips = 1000; // capacity of each CPU core (in Million Instructions per Second)
+        final long  ram = 2048; // host memory (MEGABYTE)
+        final long storage = 1000000; // host storage (MEGABYTE)
+        final long bw = 10000; //in Megabits/s
 
         List<Pe> pesList = new ArrayList<>(); //List of CPU cores
 
@@ -142,11 +130,11 @@ public class CloudSimExample0 {
     }
 
     private Vm createVm(DatacenterBroker broker) {
-        double mips = 1000;
-        long   storage = 10000; // vm image size (MEGABYTE)
-        int    ram = 512; // vm memory (MEGABYTE)
-        long   bw = 1000; // vm bandwidth (Megabits/s)
-        int    pesNumber = 2; // number of CPU cores
+        final double mips = 1000;
+        final long   storage = 10000; // vm image size (MEGABYTE)
+        final int    ram = 512; // vm memory (MEGABYTE)
+        final long   bw = 1000; // vm bandwidth (Megabits/s)
+        final int    pesNumber = 2; // number of CPU cores
 
         return new VmSimple(vmList.size(), mips, pesNumber)
                 .setBroker(broker)
@@ -157,10 +145,10 @@ public class CloudSimExample0 {
     }
 
     private Cloudlet createCloudlet(DatacenterBroker broker, Vm vm) {
-        long length = 10000; //in Million Structions (MI)
-        long fileSize = 300; //Size (in bytes) before execution
-        long outputSize = 300; //Size (in bytes) after execution
-        int  numberOfCpuCores = vm.getNumberOfPes(); //cloudlet will use all the VM's CPU cores
+        final long length = 10000; //in Million Structions (MI)
+        final long fileSize = 300; //Size (in bytes) before execution
+        final long outputSize = 300; //Size (in bytes) after execution
+        final int  numberOfCpuCores = vm.getNumberOfPes(); //cloudlet will use all the VM's CPU cores
 
         //Defines how CPU, RAM and Bandwidth resources are used
         //Sets the same utilization model for all these resources.
