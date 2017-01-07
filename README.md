@@ -215,13 +215,16 @@ Datacenter dc0 = new DatacenterSimple(cloudsim, characts, vmAllocationPolicy);
 //Creates VMs to run applications.
 Vm vm0 = new VmSimple(0, 1000, 1);
 vm0.setRam(1000).setBw(1000).setSize(1000);
-vm0.setBroker(broker0).setCloudletScheduler(new CloudletSchedulerTimeShared());
+vm0.setBroker(broker0).setCloudletScheduler(new CloudletSchedulerSpaceShared());
 vmList.add(vm0);
 
 /*Creates Cloudlets that represent applications to be run inside a VM.*/
 Cloudlet c0 = new CloudletSimple(0, 10000, 1);
 c0.setBroker(broker0).setUtilizationModel(new UtilizationModelFull());
 cloudlets.add(c0);
+Cloudlet c1 = new CloudletSimple(1, 10000, 1);
+c1.setBroker(broker0).setUtilizationModel(new UtilizationModelFull());
+cloudlets.add(c1);
 
 broker0.submitVmList(vmList);
 broker0.submitCloudletList(cloudlets);
