@@ -191,20 +191,17 @@ new exclusive features and advanced scenarios, can be found [here](cloudsim-plus
 //Creates a CloudSim object to initialize the simulation.
 CloudSim cloudsim = new CloudSim();
 
-/*Creates a Broker thta will act on behalf of a given cloud user (customer).*/
+/*Creates a Broker that will act on behalf of a cloud user (customer).*/
 DatacenterBroker broker0 = new DatacenterBrokerSimple(cloudsim);
-
-List<Vm> vmList = new ArrayList<>(1);
-List<Cloudlet> cloudlets = new ArrayList<>(1);
 
 //Creates a list of Hosts, each host with a specific list of CPU cors (PEs).
 List<Host> hostList = new ArrayList<>(1);
 List<Pe> hostPes = new ArrayList<>(1);
 hostPes.add(new PeSimple(0, new PeProvisionerSimple(20000)));
 Host host0 = new HostSimple(0, 100000, hostPes);
-host0.setRamProvisioner(new ResourceProvisionerSimple(new Ram(10000)));
-host0.setBwProvisioner(new ResourceProvisionerSimple(new Bandwidth(100000)));
-host0.setVmScheduler(new VmSchedulerSpaceShared());
+host0.setRamProvisioner(new ResourceProvisionerSimple(new Ram(10000)))
+     .setBwProvisioner(new ResourceProvisionerSimple(new Bandwidth(100000)));
+     .setVmScheduler(new VmSchedulerSpaceShared());
 hostList.add(host0);
 
 //Creates a Datacenter with a list of Hosts 
@@ -213,26 +210,27 @@ VmAllocationPolicy vmAllocationPolicy = new VmAllocationPolicySimple();
 Datacenter dc0 = new DatacenterSimple(cloudsim, characts, vmAllocationPolicy);
 
 //Creates VMs to run applications.
+List<Vm> vmList = new ArrayList<>(1);
 Vm vm0 = new VmSimple(0, 1000, 1);
-vm0.setRam(1000).setBw(1000).setSize(1000);
-vm0.setBroker(broker0).setCloudletScheduler(new CloudletSchedulerSpaceShared());
+vm0.setRam(1000).setBw(1000).setSize(1000)
+   .setBroker(broker0)
+   .setCloudletScheduler(new CloudletSchedulerSpaceShared());
 vmList.add(vm0);
 
-/*Creates Cloudlets that represent applications to be run inside a VM.*/
-Cloudlet c0 = new CloudletSimple(0, 10000, 1);
-c0.setBroker(broker0).setUtilizationModel(new UtilizationModelFull());
-cloudlets.add(c0);
-Cloudlet c1 = new CloudletSimple(1, 10000, 1);
-c1.setBroker(broker0).setUtilizationModel(new UtilizationModelFull());
-cloudlets.add(c1);
+//Creates Cloudlets that represent applications to be run inside a VM.
+List<Cloudlet> cloudlets = new ArrayList<>(1);
+Cloudlet cloudlet0 = new CloudletSimple(0, 10000, 1);
+cloudlet0.setBroker(broker0).setUtilizationModel(new UtilizationModelFull());
+cloudlets.add(cloudlet0);
+Cloudlet cloudlet1 = new CloudletSimple(1, 10000, 1);
+cloudlet1.setBroker(broker0).setUtilizationModel(new UtilizationModelFull());
+cloudlets.add(cloudlet1);
 
 broker0.submitVmList(vmList);
 broker0.submitCloudletList(cloudlets);
 
-/*
-Starts the simulation and waits all cloudlets to be executed, automatically
-stopping when there is no more events to process.
-*/
+/*Starts the simulation and waits all cloudlets to be executed, automatically
+stopping when there is no more events to process.*/
 cloudsim.start();
 
 /*Prints results when the simulation is over
