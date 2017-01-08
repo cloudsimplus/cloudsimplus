@@ -10,7 +10,7 @@ To generate the Sphinx documentation to publish at the ReadTheDocs, considering 
 #Install pip to download python packages (can also be installed via package managers in Linux and macOS)
 sudo curl https://bootstrap.pypa.io/get-pip.py | python
 
-#Install sphinx and its build tools to converte rst documents to html, epub and other formats
+#Install sphinx and its build tools to convert rst documents to html, latex, epub and other formats
 pip install sphinx sphinx-autobuild 
 
 #Install a Sphinx extension to parse javadocs comments inside Java files and generate rst files for Sphinx
