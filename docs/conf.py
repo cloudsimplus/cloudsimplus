@@ -48,7 +48,7 @@ master_doc = 'index'
 
 # General information about the project.
 project = 'CloudSim Plus'
-copyright = '2017, Manoel C. Silva Filho, Raysa L. Oliveira, Claudio C. Monteiro, Pedro R. M. Inácio, Mário M. Freire'
+copyright = '2017, Manoel C. Silva Filho, Raysa L. Oliveira, Claudio C. Monteiro, Pedro R. M. Inacio, Mario M. Freire'
 author = 'Manoel C. Silva Filho, Raysa L. Oliveira, Claudio C. Monteiro, Pedro R. M. Inácio, Mário M. Freire'
 
 # The version info for the project you're documenting, acts as replacement for
