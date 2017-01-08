@@ -9,7 +9,7 @@
 CloudletToVmMappingHeuristic
 ============================
 
-.. java:package:: org.cloudsimplus.heuristics
+.. java:package:: PackageDeclaration
    :noindex:
 
 .. java:type:: public interface CloudletToVmMappingHeuristic extends Heuristic<CloudletToVmMappingSolution>

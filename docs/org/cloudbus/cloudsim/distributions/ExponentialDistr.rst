@@ -3,7 +3,7 @@
 ExponentialDistr
 ================
 
-.. java:package:: org.cloudbus.cloudsim.distributions
+.. java:package:: PackageDeclaration
    :noindex:
 
 .. java:type:: public class ExponentialDistr extends ContinuousDistributionAbstract

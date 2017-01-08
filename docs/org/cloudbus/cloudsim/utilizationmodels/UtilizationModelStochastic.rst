@@ -15,7 +15,7 @@
 UtilizationModelStochastic
 ==========================
 
-.. java:package:: org.cloudbus.cloudsim.utilizationmodels
+.. java:package:: PackageDeclaration
    :noindex:
 
 .. java:type:: public class UtilizationModelStochastic implements UtilizationModel

@@ -5,7 +5,7 @@
 HostPacket
 ==========
 
-.. java:package:: org.cloudbus.cloudsim.network
+.. java:package:: PackageDeclaration
    :noindex:
 
 .. java:type:: public class HostPacket implements NetworkPacket<NetworkHost>

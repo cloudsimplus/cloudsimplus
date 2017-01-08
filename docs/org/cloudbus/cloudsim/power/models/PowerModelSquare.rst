@@ -1,7 +1,7 @@
 PowerModelSquare
 ================
 
-.. java:package:: org.cloudbus.cloudsim.power.models
+.. java:package:: PackageDeclaration
    :noindex:
 
 .. java:type:: public class PowerModelSquare implements PowerModel

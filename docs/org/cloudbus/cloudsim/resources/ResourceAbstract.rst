@@ -3,7 +3,7 @@
 ResourceAbstract
 ================
 
-.. java:package:: org.cloudbus.cloudsim.resources
+.. java:package:: PackageDeclaration
    :noindex:
 
 .. java:type:: public abstract class ResourceAbstract implements ResourceManageable

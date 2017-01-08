@@ -11,7 +11,7 @@
 PowerVmSelectionPolicy
 ======================
 
-.. java:package:: org.cloudbus.cloudsim.selectionpolicies.power
+.. java:package:: PackageDeclaration
    :noindex:
 
 .. java:type:: public abstract class PowerVmSelectionPolicy

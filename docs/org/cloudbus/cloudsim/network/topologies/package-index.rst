@@ -7,8 +7,4 @@ org.cloudbus.cloudsim.network.topologies
    :maxdepth: 1
 
    BriteNetworkTopology
-   NetworkTopology
-   TopologicalGraph
-   TopologicalLink
-   TopologicalNode
 

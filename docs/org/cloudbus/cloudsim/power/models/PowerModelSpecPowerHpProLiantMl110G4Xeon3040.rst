@@ -1,7 +1,7 @@
 PowerModelSpecPowerHpProLiantMl110G4Xeon3040
 ============================================
 
-.. java:package:: org.cloudbus.cloudsim.power.models
+.. java:package:: PackageDeclaration
    :noindex:
 
 .. java:type:: public class PowerModelSpecPowerHpProLiantMl110G4Xeon3040 extends PowerModelSpecPower

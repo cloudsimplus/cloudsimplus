@@ -1,7 +1,7 @@
 HtmlTableColumn
 ===============
 
-.. java:package:: org.cloudsimplus.builders.tables
+.. java:package:: PackageDeclaration
    :noindex:
 
 .. java:type:: public class HtmlTableColumn extends AbstractTableColumn

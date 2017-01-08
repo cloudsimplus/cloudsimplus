@@ -7,9 +7,4 @@ org.cloudbus.cloudsim.schedulers.cloudlet
    :maxdepth: 1
 
    CloudletScheduler
-   CloudletSchedulerAbstract
-   CloudletSchedulerCompletelyFair
-   CloudletSchedulerDynamicWorkload
-   CloudletSchedulerSpaceShared
-   CloudletSchedulerTimeShared
 

@@ -9,7 +9,7 @@
 CloudletExecutionInfo
 =====================
 
-.. java:package:: org.cloudbus.cloudsim.cloudlets
+.. java:package:: PackageDeclaration
    :noindex:
 
 .. java:type:: public class CloudletExecutionInfo

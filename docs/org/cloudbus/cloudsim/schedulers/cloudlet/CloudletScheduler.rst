@@ -23,7 +23,7 @@
 CloudletScheduler
 =================
 
-.. java:package:: org.cloudbus.cloudsim.schedulers.cloudlet
+.. java:package:: PackageDeclaration
    :noindex:
 
 .. java:type:: public interface CloudletScheduler extends Serializable
@@ -348,8 +348,8 @@ setVm
    Sets the Vm that will use the scheduler. It is not required to manually set a Vm for the scheduler, since a \ :java:ref:`Vm`\  sets itself to the scheduler when the scheduler is assigned to the Vm.
 
    :param vm: the Vm to set
-   :throws IllegalArgumentException: when the scheduler already is assigned to another Vm, since each Vm must have its own scheduler
    :throws NullPointerException: when the vm parameter is null
+   :throws IllegalArgumentException: when the scheduler already is assigned to another Vm, since each Vm must have its own scheduler
 
 updateVmProcessing
 ^^^^^^^^^^^^^^^^^^

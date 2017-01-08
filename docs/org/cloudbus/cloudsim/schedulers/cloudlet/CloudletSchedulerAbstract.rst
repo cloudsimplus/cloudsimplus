@@ -23,7 +23,7 @@
 CloudletSchedulerAbstract
 =========================
 
-.. java:package:: org.cloudbus.cloudsim.schedulers.cloudlet
+.. java:package:: PackageDeclaration
    :noindex:
 
 .. java:type:: public abstract class CloudletSchedulerAbstract implements CloudletScheduler

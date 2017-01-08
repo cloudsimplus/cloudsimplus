@@ -25,7 +25,7 @@
 Cloudlet
 ========
 
-.. java:package:: org.cloudbus.cloudsim.cloudlets
+.. java:package:: PackageDeclaration
    :noindex:
 
 .. java:type:: public interface Cloudlet extends UniquelyIdentificable, Delayable, Comparable<Cloudlet>

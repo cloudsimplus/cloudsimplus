@@ -1,7 +1,7 @@
 Ram
 ===
 
-.. java:package:: org.cloudbus.cloudsim.resources
+.. java:package:: PackageDeclaration
    :noindex:
 
 .. java:type:: public final class Ram extends ResourceAbstract

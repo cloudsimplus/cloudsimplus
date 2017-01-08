@@ -11,7 +11,7 @@
 CloudletsTableBuilderHelper
 ===========================
 
-.. java:package:: org.cloudsimplus.builders.tables
+.. java:package:: PackageDeclaration
    :noindex:
 
 .. java:type:: public class CloudletsTableBuilderHelper

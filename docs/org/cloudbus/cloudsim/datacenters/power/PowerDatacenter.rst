@@ -33,7 +33,7 @@
 PowerDatacenter
 ===============
 
-.. java:package:: org.cloudbus.cloudsim.datacenters.power
+.. java:package:: PackageDeclaration
    :noindex:
 
 .. java:type:: public class PowerDatacenter extends DatacenterSimple

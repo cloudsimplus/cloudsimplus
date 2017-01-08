@@ -6,6 +6,5 @@ org.cloudbus.cloudsim.network.topologies.readers
 .. toctree::
    :maxdepth: 1
 
-   TopologyReader
    TopologyReaderBrite
 

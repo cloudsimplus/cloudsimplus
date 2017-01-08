@@ -6,7 +6,5 @@ org.cloudbus.cloudsim.allocationpolicies
 .. toctree::
    :maxdepth: 1
 
-   VmAllocationPolicy
-   VmAllocationPolicyAbstract
    VmAllocationPolicySimple
 

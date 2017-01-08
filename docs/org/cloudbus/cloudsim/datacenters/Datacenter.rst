@@ -23,7 +23,7 @@
 Datacenter
 ==========
 
-.. java:package:: org.cloudbus.cloudsim.datacenters
+.. java:package:: PackageDeclaration
    :noindex:
 
 .. java:type:: public interface Datacenter extends SimEntity

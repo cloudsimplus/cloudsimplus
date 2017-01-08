@@ -7,5 +7,4 @@ org.cloudbus.cloudsim.schedulers.cloudlet.network
    :maxdepth: 1
 
    PacketScheduler
-   PacketSchedulerSimple
 

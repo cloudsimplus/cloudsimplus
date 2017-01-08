@@ -15,7 +15,7 @@
 PowerVmAllocationPolicyMigration
 ================================
 
-.. java:package:: org.cloudbus.cloudsim.allocationpolicies.power
+.. java:package:: PackageDeclaration
    :noindex:
 
 .. java:type:: public interface PowerVmAllocationPolicyMigration extends PowerVmAllocationPolicy

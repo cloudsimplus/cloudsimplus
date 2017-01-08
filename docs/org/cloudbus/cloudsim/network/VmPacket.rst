@@ -7,7 +7,7 @@
 VmPacket
 ========
 
-.. java:package:: org.cloudbus.cloudsim.network
+.. java:package:: PackageDeclaration
    :noindex:
 
 .. java:type:: public class VmPacket implements NetworkPacket<Vm>

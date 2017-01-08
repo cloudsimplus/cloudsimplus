@@ -7,8 +7,4 @@ org.cloudbus.cloudsim.schedulers.vm
    :maxdepth: 1
 
    VmScheduler
-   VmSchedulerAbstract
-   VmSchedulerSpaceShared
-   VmSchedulerTimeShared
-   VmSchedulerTimeSharedOverSubscription
 

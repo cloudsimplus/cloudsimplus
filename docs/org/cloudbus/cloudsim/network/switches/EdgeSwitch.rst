@@ -25,7 +25,7 @@
 EdgeSwitch
 ==========
 
-.. java:package:: org.cloudbus.cloudsim.network.switches
+.. java:package:: PackageDeclaration
    :noindex:
 
 .. java:type:: public class EdgeSwitch extends AbstractSwitch

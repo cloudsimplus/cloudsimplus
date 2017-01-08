@@ -17,7 +17,7 @@
 DatacenterBrokerHeuristic
 =========================
 
-.. java:package:: org.cloudbus.cloudsim.brokers
+.. java:package:: PackageDeclaration
    :noindex:
 
 .. java:type:: public class DatacenterBrokerHeuristic extends DatacenterBrokerSimple

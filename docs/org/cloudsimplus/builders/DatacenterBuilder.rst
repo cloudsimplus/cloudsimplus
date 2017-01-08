@@ -21,7 +21,7 @@
 DatacenterBuilder
 =================
 
-.. java:package:: org.cloudsimplus.builders
+.. java:package:: PackageDeclaration
    :noindex:
 
 .. java:type:: public class DatacenterBuilder extends Builder

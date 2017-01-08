@@ -5,7 +5,7 @@
 PowerVmAllocationPolicyMigrationLocalRegressionRobust
 =====================================================
 
-.. java:package:: org.cloudbus.cloudsim.allocationpolicies.power
+.. java:package:: PackageDeclaration
    :noindex:
 
 .. java:type:: public class PowerVmAllocationPolicyMigrationLocalRegressionRobust extends PowerVmAllocationPolicyMigrationLocalRegression

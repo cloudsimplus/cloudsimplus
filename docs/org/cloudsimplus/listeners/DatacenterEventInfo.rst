@@ -3,7 +3,7 @@
 DatacenterEventInfo
 ===================
 
-.. java:package:: org.cloudsimplus.listeners
+.. java:package:: PackageDeclaration
    :noindex:
 
 .. java:type:: public interface DatacenterEventInfo extends EventInfo

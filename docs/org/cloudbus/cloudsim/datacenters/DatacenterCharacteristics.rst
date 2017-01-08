@@ -11,7 +11,7 @@
 DatacenterCharacteristics
 =========================
 
-.. java:package:: org.cloudbus.cloudsim.datacenters
+.. java:package:: PackageDeclaration
    :noindex:
 
 .. java:type:: public interface DatacenterCharacteristics extends Identificable

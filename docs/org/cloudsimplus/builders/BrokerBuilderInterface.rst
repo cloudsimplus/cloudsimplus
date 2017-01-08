@@ -7,7 +7,7 @@
 BrokerBuilderInterface
 ======================
 
-.. java:package:: org.cloudsimplus.builders
+.. java:package:: PackageDeclaration
    :noindex:
 
 .. java:type:: public interface BrokerBuilderInterface

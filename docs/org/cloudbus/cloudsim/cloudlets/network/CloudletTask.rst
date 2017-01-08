@@ -7,7 +7,7 @@
 CloudletTask
 ============
 
-.. java:package:: org.cloudbus.cloudsim.cloudlets.network
+.. java:package:: PackageDeclaration
    :noindex:
 
 .. java:type:: public abstract class CloudletTask implements Identificable

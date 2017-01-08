@@ -15,7 +15,7 @@
 HorizontalVmScalingSimple
 =========================
 
-.. java:package:: org.cloudsimplus.autoscaling
+.. java:package:: PackageDeclaration
    :noindex:
 
 .. java:type:: public class HorizontalVmScalingSimple implements HorizontalVmScaling

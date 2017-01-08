@@ -1,7 +1,7 @@
 PowerModelLinear
 ================
 
-.. java:package:: org.cloudbus.cloudsim.power.models
+.. java:package:: PackageDeclaration
    :noindex:
 
 .. java:type:: public class PowerModelLinear implements PowerModel

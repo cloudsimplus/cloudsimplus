@@ -21,7 +21,7 @@
 Switch
 ======
 
-.. java:package:: org.cloudbus.cloudsim.network.switches
+.. java:package:: PackageDeclaration
    :noindex:
 
 .. java:type:: public interface Switch extends Identificable

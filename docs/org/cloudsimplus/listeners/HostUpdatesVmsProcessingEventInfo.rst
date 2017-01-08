@@ -5,7 +5,7 @@
 HostUpdatesVmsProcessingEventInfo
 =================================
 
-.. java:package:: org.cloudsimplus.listeners
+.. java:package:: PackageDeclaration
    :noindex:
 
 .. java:type:: public interface HostUpdatesVmsProcessingEventInfo extends HostEventInfo

@@ -9,7 +9,7 @@
 HeuristicAbstract
 =================
 
-.. java:package:: org.cloudsimplus.heuristics
+.. java:package:: PackageDeclaration
    :noindex:
 
 .. java:type:: public abstract class HeuristicAbstract<S extends HeuristicSolution<?>> implements Heuristic<S>

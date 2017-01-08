@@ -1,7 +1,7 @@
 PowerModelSqrt
 ==============
 
-.. java:package:: org.cloudbus.cloudsim.power.models
+.. java:package:: PackageDeclaration
    :noindex:
 
 .. java:type:: public class PowerModelSqrt implements PowerModel

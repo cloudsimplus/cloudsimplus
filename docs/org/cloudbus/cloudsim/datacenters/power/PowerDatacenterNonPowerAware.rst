@@ -27,7 +27,7 @@
 PowerDatacenterNonPowerAware
 ============================
 
-.. java:package:: org.cloudbus.cloudsim.datacenters.power
+.. java:package:: PackageDeclaration
    :noindex:
 
 .. java:type:: public class PowerDatacenterNonPowerAware extends PowerDatacenter

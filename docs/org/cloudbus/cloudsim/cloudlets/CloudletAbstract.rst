@@ -27,7 +27,7 @@
 CloudletAbstract
 ================
 
-.. java:package:: org.cloudbus.cloudsim.cloudlets
+.. java:package:: PackageDeclaration
    :noindex:
 
 .. java:type:: public abstract class CloudletAbstract implements Cloudlet

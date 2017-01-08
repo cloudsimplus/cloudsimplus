@@ -1,7 +1,7 @@
 UtilizationModelFull
 ====================
 
-.. java:package:: org.cloudbus.cloudsim.utilizationmodels
+.. java:package:: PackageDeclaration
    :noindex:
 
 .. java:type:: public class UtilizationModelFull implements UtilizationModel

@@ -7,8 +7,4 @@ org.cloudbus.cloudsim.selectionpolicies.power
    :maxdepth: 1
 
    PowerVmSelectionPolicy
-   PowerVmSelectionPolicyMaximumCorrelation
-   PowerVmSelectionPolicyMinimumMigrationTime
-   PowerVmSelectionPolicyMinimumUtilization
-   PowerVmSelectionPolicyRandomSelection
 

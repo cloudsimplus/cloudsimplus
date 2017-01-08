@@ -5,7 +5,7 @@
 EventListener
 =============
 
-.. java:package:: org.cloudsimplus.listeners
+.. java:package:: PackageDeclaration
    :noindex:
 
 .. java:type:: @FunctionalInterface public interface EventListener<T extends EventInfo>

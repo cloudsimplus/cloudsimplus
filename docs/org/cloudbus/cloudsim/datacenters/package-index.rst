@@ -7,7 +7,4 @@ org.cloudbus.cloudsim.datacenters
    :maxdepth: 1
 
    Datacenter
-   DatacenterCharacteristics
-   DatacenterCharacteristicsSimple
-   DatacenterSimple
 

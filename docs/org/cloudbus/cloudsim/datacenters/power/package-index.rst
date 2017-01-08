@@ -6,6 +6,5 @@ org.cloudbus.cloudsim.datacenters.power
 .. toctree::
    :maxdepth: 1
 
-   PowerDatacenter
    PowerDatacenterNonPowerAware
 

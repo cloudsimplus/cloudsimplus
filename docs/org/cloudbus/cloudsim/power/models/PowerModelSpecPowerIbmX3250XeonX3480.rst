@@ -1,7 +1,7 @@
 PowerModelSpecPowerIbmX3250XeonX3480
 ====================================
 
-.. java:package:: org.cloudbus.cloudsim.power.models
+.. java:package:: PackageDeclaration
    :noindex:
 
 .. java:type:: public class PowerModelSpecPowerIbmX3250XeonX3480 extends PowerModelSpecPower

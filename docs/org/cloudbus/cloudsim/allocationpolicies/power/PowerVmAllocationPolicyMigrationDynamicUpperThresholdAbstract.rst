@@ -9,7 +9,7 @@
 PowerVmAllocationPolicyMigrationDynamicUpperThresholdAbstract
 =============================================================
 
-.. java:package:: org.cloudbus.cloudsim.allocationpolicies.power
+.. java:package:: PackageDeclaration
    :noindex:
 
 .. java:type:: public abstract class PowerVmAllocationPolicyMigrationDynamicUpperThresholdAbstract extends PowerVmAllocationPolicyMigrationAbstract implements PowerVmAllocationPolicyMigrationDynamicUpperThreshold

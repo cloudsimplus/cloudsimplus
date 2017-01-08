@@ -7,7 +7,7 @@
 CloudletToVmMappingSolution
 ===========================
 
-.. java:package:: org.cloudsimplus.heuristics
+.. java:package:: PackageDeclaration
    :noindex:
 
 .. java:type:: public class CloudletToVmMappingSolution implements HeuristicSolution<Map<Cloudlet, Vm>>

@@ -3,7 +3,7 @@
 SimEntity
 =========
 
-.. java:package:: org.cloudbus.cloudsim.core
+.. java:package:: PackageDeclaration
    :noindex:
 
 .. java:type:: public interface SimEntity extends Nameable, Cloneable, Runnable, Comparable<SimEntity>

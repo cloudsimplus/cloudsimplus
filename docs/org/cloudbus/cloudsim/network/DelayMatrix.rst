@@ -7,7 +7,7 @@
 DelayMatrix
 ===========
 
-.. java:package:: org.cloudbus.cloudsim.network
+.. java:package:: PackageDeclaration
    :noindex:
 
 .. java:type:: public class DelayMatrix

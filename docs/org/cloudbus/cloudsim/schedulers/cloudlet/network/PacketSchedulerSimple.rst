@@ -23,7 +23,7 @@
 PacketSchedulerSimple
 =====================
 
-.. java:package:: org.cloudbus.cloudsim.schedulers.cloudlet.network
+.. java:package:: PackageDeclaration
    :noindex:
 
 .. java:type:: public class PacketSchedulerSimple implements PacketScheduler

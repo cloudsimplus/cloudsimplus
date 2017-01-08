@@ -1,7 +1,7 @@
 ResourceManageable
 ==================
 
-.. java:package:: org.cloudbus.cloudsim.resources
+.. java:package:: PackageDeclaration
    :noindex:
 
 .. java:type:: public interface ResourceManageable extends Resource

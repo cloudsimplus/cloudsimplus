@@ -1,7 +1,7 @@
 NetworkTopology
 ===============
 
-.. java:package:: org.cloudbus.cloudsim.network.topologies
+.. java:package:: PackageDeclaration
    :noindex:
 
 .. java:type:: public interface NetworkTopology

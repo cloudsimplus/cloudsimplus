@@ -7,8 +7,4 @@ org.cloudbus.cloudsim.hosts
    :maxdepth: 1
 
    Host
-   HostDynamicWorkload
-   HostDynamicWorkloadSimple
-   HostSimple
-   HostStateHistoryEntry
 

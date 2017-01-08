@@ -7,7 +7,7 @@
 HostList
 ========
 
-.. java:package:: org.cloudbus.cloudsim.lists
+.. java:package:: PackageDeclaration
    :noindex:
 
 .. java:type:: public final class HostList

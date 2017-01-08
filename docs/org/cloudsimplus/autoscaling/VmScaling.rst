@@ -7,7 +7,7 @@
 VmScaling
 =========
 
-.. java:package:: org.cloudsimplus.autoscaling
+.. java:package:: PackageDeclaration
    :noindex:
 
 .. java:type:: public interface VmScaling

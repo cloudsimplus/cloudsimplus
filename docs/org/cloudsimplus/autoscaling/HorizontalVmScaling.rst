@@ -9,7 +9,7 @@
 HorizontalVmScaling
 ===================
 
-.. java:package:: org.cloudsimplus.autoscaling
+.. java:package:: PackageDeclaration
    :noindex:
 
 .. java:type:: public interface HorizontalVmScaling extends VmScaling

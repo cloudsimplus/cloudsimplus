@@ -6,7 +6,5 @@ org.cloudbus.cloudsim.lists
 .. toctree::
    :maxdepth: 1
 
-   HostList
-   PeList
    VmList
 

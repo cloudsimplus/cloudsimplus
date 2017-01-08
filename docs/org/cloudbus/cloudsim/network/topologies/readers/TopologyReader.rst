@@ -5,7 +5,7 @@
 TopologyReader
 ==============
 
-.. java:package:: org.cloudbus.cloudsim.network.topologies.readers
+.. java:package:: PackageDeclaration
    :noindex:
 
 .. java:type:: public interface TopologyReader

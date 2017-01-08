@@ -7,7 +7,7 @@
 UtilizationModelPlanetLabInMemory
 =================================
 
-.. java:package:: org.cloudbus.cloudsim.utilizationmodels
+.. java:package:: PackageDeclaration
    :noindex:
 
 .. java:type:: public class UtilizationModelPlanetLabInMemory implements UtilizationModel
@@ -26,8 +26,8 @@ UtilizationModelPlanetLabInMemory
 
    :param inputPath: The path of a PlanetLab Datacenter trace.
    :param schedulingInterval: the scheduling interval that defines the time interval in which precise utilization is be got
-   :throws IOException: Signals that an I/O exception has occurred
    :throws NumberFormatException: the number format exception
+   :throws IOException: Signals that an I/O exception has occurred
 
    **See also:** :java:ref:`.getSchedulingInterval()`
 
@@ -42,8 +42,8 @@ UtilizationModelPlanetLabInMemory
    :param inputPath: The path of a PlanetLab Datacenter trace.
    :param schedulingInterval: the scheduling interval that defines the time interval in which precise utilization is be got
    :param dataSamples: number of samples in the file
-   :throws IOException: Signals that an I/O exception has occurred.
    :throws NumberFormatException: the number format exception
+   :throws IOException: Signals that an I/O exception has occurred.
 
    **See also:** :java:ref:`.setSchedulingInterval(double)`
 

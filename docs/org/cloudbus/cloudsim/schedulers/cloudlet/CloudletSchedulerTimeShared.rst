@@ -9,7 +9,7 @@
 CloudletSchedulerTimeShared
 ===========================
 
-.. java:package:: org.cloudbus.cloudsim.schedulers.cloudlet
+.. java:package:: PackageDeclaration
    :noindex:
 
 .. java:type:: public class CloudletSchedulerTimeShared extends CloudletSchedulerAbstract

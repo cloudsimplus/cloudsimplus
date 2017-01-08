@@ -15,7 +15,7 @@
 DatacenterCharacteristicsSimple
 ===============================
 
-.. java:package:: org.cloudbus.cloudsim.datacenters
+.. java:package:: PackageDeclaration
    :noindex:
 
 .. java:type:: public class DatacenterCharacteristicsSimple implements DatacenterCharacteristics

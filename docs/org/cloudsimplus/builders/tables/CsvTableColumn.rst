@@ -1,7 +1,7 @@
 CsvTableColumn
 ==============
 
-.. java:package:: org.cloudsimplus.builders.tables
+.. java:package:: PackageDeclaration
    :noindex:
 
 .. java:type:: public class CsvTableColumn extends AbstractTableColumn

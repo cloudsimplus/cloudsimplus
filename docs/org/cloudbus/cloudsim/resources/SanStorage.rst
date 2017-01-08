@@ -1,7 +1,7 @@
 SanStorage
 ==========
 
-.. java:package:: org.cloudbus.cloudsim.resources
+.. java:package:: PackageDeclaration
    :noindex:
 
 .. java:type:: public class SanStorage extends HarddriveStorage

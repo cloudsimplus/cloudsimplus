@@ -9,7 +9,7 @@
 CloudSimEvent
 =============
 
-.. java:package:: org.cloudbus.cloudsim.core.events
+.. java:package:: PackageDeclaration
    :noindex:
 
 .. java:type:: public final class CloudSimEvent implements SimEvent

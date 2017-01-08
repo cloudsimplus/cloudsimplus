@@ -27,7 +27,7 @@
 CloudletAbstract.ExecutionInDatacenterInfo
 ==========================================
 
-.. java:package:: org.cloudbus.cloudsim.cloudlets
+.. java:package:: PackageDeclaration
    :noindex:
 
 .. java:type:: protected static class ExecutionInDatacenterInfo

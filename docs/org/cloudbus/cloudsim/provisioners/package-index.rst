@@ -7,8 +7,4 @@ org.cloudbus.cloudsim.provisioners
    :maxdepth: 1
 
    AbstractResourceProvisioner
-   PeProvisioner
-   PeProvisionerSimple
-   ResourceProvisioner
-   ResourceProvisionerSimple
 

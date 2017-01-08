@@ -7,6 +7,4 @@ org.cloudbus.cloudsim.vms
    :maxdepth: 1
 
    Vm
-   VmSimple
-   VmStateHistoryEntry
 

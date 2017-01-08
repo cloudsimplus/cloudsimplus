@@ -37,7 +37,7 @@
 WorkloadFileReader
 ==================
 
-.. java:package:: org.cloudbus.cloudsim.util
+.. java:package:: PackageDeclaration
    :noindex:
 
 .. java:type:: public class WorkloadFileReader implements WorkloadModel

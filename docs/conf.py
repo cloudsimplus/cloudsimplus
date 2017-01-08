@@ -48,8 +48,8 @@ master_doc = 'index'
 
 # General information about the project.
 project = 'CloudSim Plus'
-copyright = '2017, Manoel Campos da Silva Filho, Raysa da Luz Oliveira'
-author = 'Manoel Campos da Silva Filho, Raysa da Luz Oliveira'
+copyright = '2017, Manoel C. Silva Filho, Raysa L. Oliveira, Claudio C. Monteiro, Pedro R. M. Inácio, Mário M. Freire'
+author = 'Manoel C. Silva Filho, Raysa L. Oliveira, Claudio C. Monteiro, Pedro R. M. Inácio, Mário M. Freire'
 
 # The version info for the project you're documenting, acts as replacement for
 # |version| and |release|, also used in various other places throughout the
@@ -89,7 +89,9 @@ on_rtd = os.environ.get('READTHEDOCS') == 'True'
 if on_rtd:
     html_theme = 'default'
 else:
-    html_theme = 'nature'
+    import sphinx_rtd_theme
+    html_theme = "sphinx_rtd_theme"
+    html_theme_path = [sphinx_rtd_theme.get_html_theme_path()]    
 
 # Theme options are theme-specific and customize the look and feel of a theme
 # further.  For a list of options available for each theme, see the

@@ -21,7 +21,7 @@
 VmSchedulerTimeShared
 =====================
 
-.. java:package:: org.cloudbus.cloudsim.schedulers.vm
+.. java:package:: PackageDeclaration
    :noindex:
 
 .. java:type:: public class VmSchedulerTimeShared extends VmSchedulerAbstract

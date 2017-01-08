@@ -19,7 +19,7 @@
 PowerVmAllocationPolicyAbstract
 ===============================
 
-.. java:package:: org.cloudbus.cloudsim.allocationpolicies.power
+.. java:package:: PackageDeclaration
    :noindex:
 
 .. java:type:: public abstract class PowerVmAllocationPolicyAbstract extends VmAllocationPolicyAbstract implements PowerVmAllocationPolicy

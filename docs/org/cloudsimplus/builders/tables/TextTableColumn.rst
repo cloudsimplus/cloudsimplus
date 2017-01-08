@@ -1,7 +1,7 @@
 TextTableColumn
 ===============
 
-.. java:package:: org.cloudsimplus.builders.tables
+.. java:package:: PackageDeclaration
    :noindex:
 
 .. java:type:: public class TextTableColumn extends CsvTableColumn

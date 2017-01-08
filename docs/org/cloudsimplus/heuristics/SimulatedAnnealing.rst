@@ -3,7 +3,7 @@
 SimulatedAnnealing
 ==================
 
-.. java:package:: org.cloudsimplus.heuristics
+.. java:package:: PackageDeclaration
    :noindex:
 
 .. java:type:: public abstract class SimulatedAnnealing<S extends HeuristicSolution<?>> extends HeuristicAbstract<S>

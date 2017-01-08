@@ -33,7 +33,7 @@
 HostBuilder
 ===========
 
-.. java:package:: org.cloudsimplus.builders
+.. java:package:: PackageDeclaration
    :noindex:
 
 .. java:type:: public class HostBuilder extends Builder

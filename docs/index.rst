@@ -10,11 +10,12 @@ Welcome to CloudSim Plus's documentation!
    :maxdepth: 2
    :caption: Contents:
 
+   packages.rst
+
 
 
 Indices and tables
 ==================
 
 * :ref:`genindex`
-* :ref:`modindex`
 * :ref:`search`

@@ -11,7 +11,7 @@
 NetworkCloudlet
 ===============
 
-.. java:package:: org.cloudbus.cloudsim.cloudlets.network
+.. java:package:: PackageDeclaration
    :noindex:
 
 .. java:type:: public class NetworkCloudlet extends CloudletSimple

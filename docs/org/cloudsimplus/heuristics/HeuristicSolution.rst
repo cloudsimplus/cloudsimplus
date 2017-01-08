@@ -1,7 +1,7 @@
 HeuristicSolution
 =================
 
-.. java:package:: org.cloudsimplus.heuristics
+.. java:package:: PackageDeclaration
    :noindex:
 
 .. java:type:: public interface HeuristicSolution<T> extends Comparable<HeuristicSolution<T>>

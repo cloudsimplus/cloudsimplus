@@ -11,7 +11,7 @@
 FileAttribute
 =============
 
-.. java:package:: org.cloudbus.cloudsim.resources
+.. java:package:: PackageDeclaration
    :noindex:
 
 .. java:type:: public class FileAttribute

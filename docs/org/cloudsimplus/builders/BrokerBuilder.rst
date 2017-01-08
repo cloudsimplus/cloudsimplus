@@ -9,7 +9,7 @@
 BrokerBuilder
 =============
 
-.. java:package:: org.cloudsimplus.builders
+.. java:package:: PackageDeclaration
    :noindex:
 
 .. java:type:: public class BrokerBuilder extends Builder implements BrokerBuilderInterface

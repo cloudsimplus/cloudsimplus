@@ -5,7 +5,7 @@
 TextTableBuilder
 ================
 
-.. java:package:: org.cloudsimplus.builders.tables
+.. java:package:: PackageDeclaration
    :noindex:
 
 .. java:type:: public class TextTableBuilder extends CsvTableBuilder

@@ -3,7 +3,7 @@
 ResourceLoader
 ==============
 
-.. java:package:: org.cloudbus.cloudsim.util
+.. java:package:: PackageDeclaration
    :noindex:
 
 .. java:type:: public final class ResourceLoader

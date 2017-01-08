@@ -25,7 +25,7 @@
 Cloudlet.Status
 ===============
 
-.. java:package:: org.cloudbus.cloudsim.cloudlets
+.. java:package:: PackageDeclaration
    :noindex:
 
 .. java:type::  enum Status

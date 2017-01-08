@@ -7,7 +7,7 @@
 AbstractTableBuilder
 ====================
 
-.. java:package:: org.cloudsimplus.builders.tables
+.. java:package:: PackageDeclaration
    :noindex:
 
 .. java:type:: public abstract class AbstractTableBuilder implements TableBuilder

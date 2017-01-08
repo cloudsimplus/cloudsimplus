@@ -9,7 +9,7 @@
 PeProvisioner
 =============
 
-.. java:package:: org.cloudbus.cloudsim.provisioners
+.. java:package:: PackageDeclaration
    :noindex:
 
 .. java:type:: public abstract class PeProvisioner

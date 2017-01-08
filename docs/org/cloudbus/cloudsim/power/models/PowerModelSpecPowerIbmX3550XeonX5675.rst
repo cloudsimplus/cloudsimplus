@@ -1,7 +1,7 @@
 PowerModelSpecPowerIbmX3550XeonX5675
 ====================================
 
-.. java:package:: org.cloudbus.cloudsim.power.models
+.. java:package:: PackageDeclaration
    :noindex:
 
 .. java:type:: public class PowerModelSpecPowerIbmX3550XeonX5675 extends PowerModelSpecPower

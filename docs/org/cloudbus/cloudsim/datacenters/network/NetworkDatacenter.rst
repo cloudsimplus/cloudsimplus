@@ -33,7 +33,7 @@
 NetworkDatacenter
 =================
 
-.. java:package:: org.cloudbus.cloudsim.datacenters.network
+.. java:package:: PackageDeclaration
    :noindex:
 
 .. java:type:: public class NetworkDatacenter extends DatacenterSimple

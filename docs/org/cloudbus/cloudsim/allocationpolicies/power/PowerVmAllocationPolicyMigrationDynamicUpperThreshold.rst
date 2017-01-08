@@ -5,7 +5,7 @@
 PowerVmAllocationPolicyMigrationDynamicUpperThreshold
 =====================================================
 
-.. java:package:: org.cloudbus.cloudsim.allocationpolicies.power
+.. java:package:: PackageDeclaration
    :noindex:
 
 .. java:type:: public interface PowerVmAllocationPolicyMigrationDynamicUpperThreshold extends PowerVmAllocationPolicyMigration

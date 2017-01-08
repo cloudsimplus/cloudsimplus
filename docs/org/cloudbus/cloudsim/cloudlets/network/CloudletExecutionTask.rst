@@ -1,7 +1,7 @@
 CloudletExecutionTask
 =====================
 
-.. java:package:: org.cloudbus.cloudsim.cloudlets.network
+.. java:package:: PackageDeclaration
    :noindex:
 
 .. java:type:: public class CloudletExecutionTask extends CloudletTask

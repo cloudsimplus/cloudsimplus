@@ -9,7 +9,7 @@
 PowerVmSelectionPolicyMinimumMigrationTime
 ==========================================
 
-.. java:package:: org.cloudbus.cloudsim.selectionpolicies.power
+.. java:package:: PackageDeclaration
    :noindex:
 
 .. java:type:: public class PowerVmSelectionPolicyMinimumMigrationTime extends PowerVmSelectionPolicy

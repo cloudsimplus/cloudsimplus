@@ -7,7 +7,7 @@
 PowerVmAllocationPolicyMigrationInterQuartileRange
 ==================================================
 
-.. java:package:: org.cloudbus.cloudsim.allocationpolicies.power
+.. java:package:: PackageDeclaration
    :noindex:
 
 .. java:type:: public class PowerVmAllocationPolicyMigrationInterQuartileRange extends PowerVmAllocationPolicyMigrationDynamicUpperThresholdAbstract

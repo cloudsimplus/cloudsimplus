@@ -29,7 +29,7 @@
 PowerHost
 =========
 
-.. java:package:: org.cloudbus.cloudsim.hosts.power
+.. java:package:: PackageDeclaration
    :noindex:
 
 .. java:type:: public interface PowerHost extends HostDynamicWorkload

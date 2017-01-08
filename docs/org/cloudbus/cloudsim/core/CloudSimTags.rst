@@ -9,7 +9,7 @@
 CloudSimTags
 ============
 
-.. java:package:: org.cloudbus.cloudsim.core
+.. java:package:: PackageDeclaration
    :noindex:
 
 .. java:type:: public final class CloudSimTags

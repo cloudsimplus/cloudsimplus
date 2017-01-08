@@ -11,7 +11,7 @@
 PowerVmAllocationPolicy
 =======================
 
-.. java:package:: org.cloudbus.cloudsim.allocationpolicies.power
+.. java:package:: PackageDeclaration
    :noindex:
 
 .. java:type:: public interface PowerVmAllocationPolicy extends VmAllocationPolicy

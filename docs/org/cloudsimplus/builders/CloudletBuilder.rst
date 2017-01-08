@@ -23,7 +23,7 @@
 CloudletBuilder
 ===============
 
-.. java:package:: org.cloudsimplus.builders
+.. java:package:: PackageDeclaration
    :noindex:
 
 .. java:type:: public class CloudletBuilder extends Builder

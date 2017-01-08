@@ -15,7 +15,7 @@
 PowerVmSelectionPolicyMaximumCorrelation
 ========================================
 
-.. java:package:: org.cloudbus.cloudsim.selectionpolicies.power
+.. java:package:: PackageDeclaration
    :noindex:
 
 .. java:type:: public class PowerVmSelectionPolicyMaximumCorrelation extends PowerVmSelectionPolicy

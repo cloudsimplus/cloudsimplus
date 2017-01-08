@@ -1,7 +1,7 @@
 TopologicalNode
 ===============
 
-.. java:package:: org.cloudbus.cloudsim.network.topologies
+.. java:package:: PackageDeclaration
    :noindex:
 
 .. java:type:: public class TopologicalNode

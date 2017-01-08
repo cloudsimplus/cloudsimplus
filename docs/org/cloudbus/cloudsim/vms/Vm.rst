@@ -31,7 +31,7 @@
 Vm
 ==
 
-.. java:package:: org.cloudbus.cloudsim.vms
+.. java:package:: PackageDeclaration
    :noindex:
 
 .. java:type:: public interface Vm extends UniquelyIdentificable, Delayable, Comparable<Vm>
