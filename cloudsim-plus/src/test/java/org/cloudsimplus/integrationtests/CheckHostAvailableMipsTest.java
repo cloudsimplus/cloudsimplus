@@ -128,7 +128,7 @@ public final class CheckHostAvailableMipsTest {
             brokerBuilder.getVmBuilder()
                     .setRam(1000).setBw(100000)
                     .setPes(VM_PES).setMips(VM_MIPS).setSize(50000)
-                    .setCloudletScheduler(new CloudletSchedulerDynamicWorkload(VM_MIPS,VM_PES))
+                    .setCloudletSchedulerSupplier(() -> new CloudletSchedulerDynamicWorkload(VM_MIPS, VM_PES))
                     .createAndSubmitOneVm();
 
             final long cloudletLength = (i == 0 ? CLOUDLET_LENGTH : CLOUDLET_LENGTH/2);

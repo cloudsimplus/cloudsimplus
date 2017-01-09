@@ -26,6 +26,7 @@ package org.cloudsimplus.builders;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import java.util.function.Supplier;
 
 import org.cloudbus.cloudsim.schedulers.cloudlet.CloudletSchedulerSpaceShared;
 import org.cloudbus.cloudsim.brokers.DatacenterBrokerSimple;
@@ -43,7 +44,7 @@ import org.cloudbus.cloudsim.schedulers.cloudlet.CloudletScheduler;
  * @since CloudSim Plus 1.0
  */
 public class VmBuilder {
-    private CloudletScheduler cloudletScheduler;
+    private Supplier<CloudletScheduler> cloudletSchedulerSupplier;
     private long size = 10000;
     private int  ram = 512;
     private double  mips = 1000;
@@ -67,7 +68,7 @@ public class VmBuilder {
         this.onHostDeallocationListener = EventListener.NULL;
         this.onVmCreationFailureListener = EventListener.NULL;
         this.onUpdateVmProcessingListener = EventListener.NULL;
-        this.cloudletScheduler = new CloudletSchedulerSpaceShared();
+        this.cloudletSchedulerSupplier = () -> CloudletScheduler.NULL;
     }
 
     public VmBuilder setOnHostDeallocationListener(final EventListener<VmHostEventInfo> onHostDeallocationListener) {
@@ -114,7 +115,7 @@ public class VmBuilder {
         for (int i = 0; i < amount; i++) {
             Vm vm = new VmSimple(numberOfCreatedVms++, mips, pes)
                     .setRam(ram).setBw(bw).setSize(size)
-                    .setCloudletScheduler(cloudletScheduler)
+                    .setCloudletScheduler(cloudletSchedulerSupplier.get())
                     .setBroker(broker)
                     .addOnHostAllocationListener(onHostAllocationListener)
                     .addOnHostDeallocationListener(onHostDeallocationListener)
@@ -161,13 +162,15 @@ public class VmBuilder {
         return pes;
     }
 
-    public CloudletScheduler getCloudletSchedulerClass() {
-        return cloudletScheduler;
-    }
-
-    public VmBuilder setCloudletScheduler(
-            CloudletScheduler defaultCloudletScheduler) {
-        this.cloudletScheduler = defaultCloudletScheduler;
+    /**
+     * Sets a {@link Supplier} that is accountable to create CloudletScheduler
+     * for requested VMs.
+     *
+     * @param cloudletSchedulerSupplier the CloudletScheduler Supplier to set
+     * @return
+     */
+    public VmBuilder setCloudletSchedulerSupplier(Supplier<CloudletScheduler> cloudletSchedulerSupplier) {
+        this.cloudletSchedulerSupplier = cloudletSchedulerSupplier;
         return this;
     }
 
