@@ -37,7 +37,7 @@ import java.util.function.Supplier;
  * {@link DatacenterBroker} are overloaded or not based on the overall resource
  * utilization of all such VMs.
  *
- * <p>The condition in fact hsa to be defined by the user of this class,
+ * <p>The condition in fact has to be defined by the user of this class,
  * by providing a {@link Predicate} using the {@link #setOverloadPredicate(Predicate)} method.</p>
  *
  * @author Manoel Campos da Silva Filho
