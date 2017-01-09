@@ -90,6 +90,13 @@ public interface CloudletScheduler extends Serializable {
     double cloudletSubmit(Cloudlet cl);
 
     /**
+     * Gets a <b>read-only</b> List of cloudlets being executed on the VM.
+     *
+     * @return the cloudlet execution list
+     */
+    List<CloudletExecutionInfo> getCloudletExecList();
+
+    /**
      * Gets a list of finished cloudlets.
      *
      * @return the cloudlet finished list
@@ -348,6 +355,7 @@ public interface CloudletScheduler extends Serializable {
         @Override public double cloudletResume(int cloudletId) { return 0.0; }
         @Override public double cloudletSubmit(Cloudlet cl, double fileTransferTime){ return 0.0; }
         @Override public double cloudletSubmit(Cloudlet cl) { return 0.0; }
+        @Override public List<CloudletExecutionInfo> getCloudletExecList() { return Collections.emptyList(); }
         @Override public int getCloudletStatus(int cloudletId) { return 0; }
         @Override public List<Double> getCurrentMipsShare() { return Collections.emptyList(); }
         @Override public List<Double> getCurrentRequestedMips() { return Collections.emptyList(); }

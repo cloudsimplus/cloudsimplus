@@ -142,15 +142,9 @@ public abstract class CloudletSchedulerAbstract implements CloudletScheduler {
         return currentMipsShare;
     }
 
-    /**
-     * Gets a List of cloudlets being executed on the VM.
-     *
-     * @return the cloudlet execution list
-     * @see #addCloudletToExecList(CloudletExecutionInfo)
-     * @see #removeCloudletFromExecListAndAddToFinishedList(CloudletExecutionInfo)
-     */
-    protected List<CloudletExecutionInfo> getCloudletExecList() {
-        return cloudletExecList;
+    @Override
+    public List<CloudletExecutionInfo> getCloudletExecList() {
+        return Collections.unmodifiableList(cloudletExecList);
     }
 
     protected final void setCloudletWaitingList(List<CloudletExecutionInfo> cloudletWaitingList) {
@@ -360,7 +354,7 @@ public abstract class CloudletSchedulerAbstract implements CloudletScheduler {
     @Override
     public boolean cloudletPause(int cloudletId) {
         if (changeStatusOfCloudletIntoList(
-                getCloudletExecList(), cloudletId,
+                cloudletExecList, cloudletId,
                 c -> changeStatusOfCloudlet(c, Status.INEXEC, Status.PAUSED)) != Cloudlet.NULL) {
             return true;
         }
@@ -380,7 +374,7 @@ public abstract class CloudletSchedulerAbstract implements CloudletScheduler {
         }
 
         cloudlet = changeStatusOfCloudletIntoList(
-                getCloudletExecList(), cloudletId,
+                cloudletExecList, cloudletId,
                 c -> changeStatusOfCloudlet(c, Status.INEXEC, Status.CANCELED));
         if (cloudlet != Cloudlet.NULL) {
             return cloudlet;

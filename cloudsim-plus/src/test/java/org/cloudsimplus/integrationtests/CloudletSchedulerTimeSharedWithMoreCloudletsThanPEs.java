@@ -84,7 +84,7 @@ public final class CloudletSchedulerTimeSharedWithMoreCloudletsThanPEs {
         brokerBuilder.getVmBuilder()
             .setRam(1000).setBw(100000)
             .setPes(VM_PES).setMips(VM_MIPS).setSize(50000)
-            .setCloudletScheduler(new CloudletSchedulerTimeShared())
+            .setCloudletSchedulerSupplier(() -> new CloudletSchedulerTimeShared())
             .createAndSubmitVms(NUMBER_OF_VMS);
 
         brokerBuilder.getCloudletBuilder()

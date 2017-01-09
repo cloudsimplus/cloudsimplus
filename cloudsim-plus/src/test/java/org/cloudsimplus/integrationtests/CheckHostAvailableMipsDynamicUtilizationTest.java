@@ -103,7 +103,7 @@ public final class CheckHostAvailableMipsDynamicUtilizationTest {
         brokerBuilder.getVmBuilder()
                 .setRam(1000).setBw(100000)
                 .setPes(VM_PES).setMips(VM_MIPS).setSize(50000)
-                .setCloudletScheduler(new CloudletSchedulerDynamicWorkload(VM_MIPS,VM_PES))
+                .setCloudletSchedulerSupplier(() -> new CloudletSchedulerDynamicWorkload(VM_MIPS,VM_PES))
                 .createAndSubmitVms(NUMBER_OF_VMS);
 
         utilizationModel = new UtilizationModelArithmeticProgression(0.0, 0.25);

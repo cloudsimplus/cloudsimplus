@@ -2,7 +2,7 @@
 
 This directory contains configuration files to generate CloudSim Plus documentation using [Sphinx](http://sphinx-doc.org),
 in order to provide not just javadoc documentation, but complete user guides to be published at [ReadTheDocs site](http://cloudsimplus.readthedocs.io)
-to provide pretty-looking, versioned and searcheable documentation.
+in a pretty-looking, versioned and searcheable way.
 
 To generate the Sphinx documentation to publish at the ReadTheDocs, considering you have python installed, you can execute the commands below to install the additional tools:
 

@@ -206,7 +206,7 @@ public final class VmCreationFailureIntegrationTest {
         brokerBuilder.getVmBuilder()
                 .setRam(512).setBw(1000)
                 .setPes(1).setMips(1000).setSize(10000)
-                .setCloudletScheduler(new CloudletSchedulerSpaceShared())
+                .setCloudletSchedulerSupplier(() -> new CloudletSchedulerSpaceShared())
                 .setOnHostAllocationListener(evt -> onHostAllocation(evt))
                 .setOnHostDeallocationListener(evt -> onHostDeallocation(evt))
                 .setOnVmCreationFilatureListenerForAllVms(evt -> onVmCreationFailure(evt))

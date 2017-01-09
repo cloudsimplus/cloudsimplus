@@ -110,10 +110,12 @@ public final class CheckCloudletStartDelayForTransferRequiredFilesTest {
         brokerBuilder.getVmBuilder()
                 .setRam(1000).setBw(100000)
                 .setPes(VM_PES).setMips(VM_MIPS).setSize(50000)
-                .setCloudletScheduler(new CloudletSchedulerSpaceShared())
+                .setCloudletSchedulerSupplier(() -> new CloudletSchedulerSpaceShared())
                 .createAndSubmitOneVm();
 
-		brokerBuilder.getVmBuilder().setCloudletScheduler(new CloudletSchedulerTimeShared()).createAndSubmitOneVm();
+		brokerBuilder.getVmBuilder()
+            .setCloudletSchedulerSupplier(() -> new CloudletSchedulerTimeShared())
+            .createAndSubmitOneVm();
 
         brokerBuilder.getCloudletBuilder()
                 .setLength(CLOUDLET_LENGTH)
