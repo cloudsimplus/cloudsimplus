@@ -74,6 +74,57 @@ public class NetworkVmsWithMetricsExample {
     private final CloudSim cloudsim;
 
     /**
+     * main
+     *
+     * @param args
+     */
+    public static void main(String[] args) {
+        Log.printFormattedLine(" Starting... ");
+       // try {
+            new NetworkVmsWithMetricsExample();
+      //  } catch (Exception e) {
+    //        Log.printFormattedLine("Simulation finished due to unexpected error: %s", e);
+   //     }
+    }
+
+    private NetworkVmsWithMetricsExample() {
+        // First step: Initialize the CloudSim package. It should be called before creating any entities.
+        int num_user = 1; // number of cloud users
+        cloudsim = new CloudSim();
+
+        // Second step: Create Datacenters
+        datacenter0 = createDatacenter();
+
+        // Third step: Create Broker
+        DatacenterBroker broker = new DatacenterBrokerSimple(cloudsim);
+
+        vmlist = createVM(broker, 5);
+
+        // submit vm list to the broker
+        broker.submitVmList(vmlist);
+
+        /* Fifth step: Read Cloudlets from workload external file in the swf format
+         WorkloadFileReader workloadFileReader = new WorkloadFileReader("src/main/java/org/cloudbus/cloudsim/examples/sla/UniLu-Gaia-2014-2.swf", 1);
+         cloudletList = workloadFileReader.generateWorkload().subList(0, 1000);
+         for (Cloudlet cloudlet : cloudletList) {
+         cloudlet.setBroker(brokerId);
+         } */
+        cloudletList = createCloudlet(broker, 10);
+
+        // submit cloudlet list to the broker
+        broker.submitCloudletList(cloudletList);
+
+        // Sixth step: Starts the simulation
+        cloudsim.start();
+
+        //Final step: Print results when simulation is over
+        List<Cloudlet> newList = broker.getCloudletsFinishedList();
+        new CloudletsTableBuilderHelper(newList).build();
+
+        Log.printFormattedLine("... finished!");
+    }
+    
+    /**
      * Create NetworkVms
      *
      * @param broker the broker that acts on behalf of a user
@@ -129,57 +180,6 @@ public class NetworkVmsWithMetricsExample {
             list.add(cloudlet);
         }
         return list;
-    }
-
-    /**
-     * main
-     *
-     * @param args
-     */
-    public static void main(String[] args) {
-        Log.printFormattedLine(" Starting... ");
-        try {
-            new NetworkVmsWithMetricsExample();
-        } catch (Exception e) {
-            Log.printFormattedLine("Simulation finished due to unexpected error: %s", e);
-        }
-    }
-
-    private NetworkVmsWithMetricsExample() {
-        // First step: Initialize the CloudSim package. It should be called before creating any entities.
-        int num_user = 1; // number of cloud users
-        cloudsim = new CloudSim();
-
-        // Second step: Create Datacenters
-        datacenter0 = createDatacenter();
-
-        // Third step: Create Broker
-        DatacenterBroker broker = new DatacenterBrokerSimple(cloudsim);
-
-        vmlist = createVM(broker, 5);
-
-        // submit vm list to the broker
-        broker.submitVmList(vmlist);
-
-        /* Fifth step: Read Cloudlets from workload external file in the swf format
-         WorkloadFileReader workloadFileReader = new WorkloadFileReader("src/main/java/org/cloudbus/cloudsim/examples/sla/UniLu-Gaia-2014-2.swf", 1);
-         cloudletList = workloadFileReader.generateWorkload().subList(0, 1000);
-         for (Cloudlet cloudlet : cloudletList) {
-         cloudlet.setBroker(brokerId);
-         } */
-        cloudletList = createCloudlet(broker, 10);
-
-        // submit cloudlet list to the broker
-        broker.submitCloudletList(cloudletList);
-
-        // Sixth step: Starts the simulation
-        cloudsim.start();
-
-        //Final step: Print results when simulation is over
-        List<Cloudlet> newList = broker.getCloudletsFinishedList();
-        new CloudletsTableBuilderHelper(newList).build();
-
-        Log.printFormattedLine("... finished!");
     }
 
     /**

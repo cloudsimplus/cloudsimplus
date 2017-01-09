@@ -28,9 +28,7 @@ import org.cloudbus.cloudsim.resources.Pe;
 import org.cloudbus.cloudsim.resources.PeSimple;
 import org.cloudbus.cloudsim.resources.Ram;
 import org.cloudbus.cloudsim.schedulers.cloudlet.CloudletSchedulerSpaceShared;
-import org.cloudbus.cloudsim.schedulers.cloudlet.CloudletSchedulerTimeShared;
 import org.cloudbus.cloudsim.schedulers.vm.VmSchedulerSpaceShared;
-import org.cloudbus.cloudsim.schedulers.vm.VmSchedulerTimeShared;
 import org.cloudbus.cloudsim.util.Log;
 import org.cloudbus.cloudsim.utilizationmodels.UtilizationModel;
 import org.cloudbus.cloudsim.utilizationmodels.UtilizationModelFull;
@@ -39,7 +37,7 @@ import org.cloudbus.cloudsim.vms.VmSimple;
 import org.cloudsimplus.util.tablebuilder.CloudletsTableBuilderHelper;
 
 /**
- * This class creates VMs dinamically in runtime.
+ * An example that creates VMs dinamically in runtime.
  * 
  * @author raysaoliveira
  */
