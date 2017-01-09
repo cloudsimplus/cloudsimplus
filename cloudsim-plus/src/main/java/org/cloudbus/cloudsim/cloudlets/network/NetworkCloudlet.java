@@ -40,7 +40,7 @@ import org.cloudbus.cloudsim.utilizationmodels.UtilizationModel;
 public class NetworkCloudlet extends CloudletSimple {
 
     /**
-     * @see #getCurrentTaskNum()
+     * The index of the active running task or -1 if no task has started yet.
      */
     private int currentTaskNum;
 
@@ -142,23 +142,12 @@ public class NetworkCloudlet extends CloudletSimple {
     }
 
     /**
-     * Gets the index of the current task being executed.
+     * Checks if the some Cloudlet Task has started yet.
      *
-     * @return return the current task number if the Cloudlet started executing,
-     * -1 if the Cloudlet hasn't started executing or the number of tasks if all
-     * tasks have finished executing.
+     * @return true if some task has started, false otherwise
      */
-    public int getCurrentTaskNum() {
-        return currentTaskNum;
-    }
-
-    /**
-     * Indicates if the NetworkCloudlet is executing
-     * its last task.
-     * @return
-     */
-    public boolean isTheLastTask(){
-        return getCurrentTaskNum() >= tasks.size() - 1;
+    public boolean isTasksStarted() {
+        return currentTaskNum > -1;
     }
 
     /**

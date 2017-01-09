@@ -214,7 +214,11 @@ public abstract class VmSchedulerAbstract implements VmScheduler {
     @Override
     public VmScheduler setHost(Host host) {
         if(Objects.isNull(host)){
-            host = Host.NULL;
+            throw new NullPointerException("The host parameter cannot be null.");
+        }
+
+        if(isHostAssigned() && !host.equals(this.host)){
+            throw new IllegalArgumentException("VmScheduler already has a Host assigned to it. Each Host must have its own VmScheduler instance.");
         }
 
         this.host = host;
@@ -224,6 +228,10 @@ public abstract class VmSchedulerAbstract implements VmScheduler {
         setAvailableMips(PeList.getTotalMips(getPeList()));
 
         return this;
+    }
+
+    private boolean isHostAssigned() {
+        return !Objects.isNull(host) && this.host != Host.NULL;
     }
 
     @Override

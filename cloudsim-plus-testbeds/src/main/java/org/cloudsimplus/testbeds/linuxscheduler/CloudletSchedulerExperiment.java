@@ -46,7 +46,7 @@ import org.cloudbus.cloudsim.utilizationmodels.UtilizationModelFull;
 import org.cloudbus.cloudsim.vms.Vm;
 import org.cloudsimplus.testbeds.ExperimentRunner;
 import org.cloudsimplus.testbeds.SimulationExperiment;
-import org.cloudsimplus.util.tablebuilder.PriorityCloudletsTableBuilderHelper;
+import org.cloudsimplus.builders.tables.PriorityCloudletsTableBuilderHelper;
 import org.cloudbus.cloudsim.schedulers.cloudlet.CloudletSchedulerCompletelyFair;
 
 import java.util.ArrayList;

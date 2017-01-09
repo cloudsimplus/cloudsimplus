@@ -58,7 +58,7 @@ import org.cloudbus.cloudsim.vms.Vm;
 import org.cloudbus.cloudsim.vms.power.PowerVm;
 import org.cloudsimplus.sla.HostFaultInjection;
 import org.cloudsimplus.sla.PoissonProcess;
-import org.cloudsimplus.util.tablebuilder.CloudletsTableBuilderHelper;
+import org.cloudsimplus.builders.tables.CloudletsTableBuilderHelper;
 
 /**
  * This example migrates the vm when a fault happens.

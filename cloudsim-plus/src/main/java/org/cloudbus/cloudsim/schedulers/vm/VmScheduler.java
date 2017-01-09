@@ -204,9 +204,11 @@ public interface VmScheduler {
      * A host for the VmScheduler is set when the VmScheduler is set to a given host.
      * Thus, the host is in charge to set itself to a VmScheduler.
      * @param host the host to be set
+     * @throws IllegalArgumentException when the scheduler already is assigned to another Host, since
+     * each Host must have its own scheduler
+     * @throws NullPointerException when the host parameter is null
      */
     VmScheduler setHost(Host host);
-
 
     /**
      * A property that implements the Null Object Design Pattern for {@link VmScheduler}

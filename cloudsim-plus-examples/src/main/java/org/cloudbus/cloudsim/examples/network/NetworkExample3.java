@@ -26,6 +26,7 @@ import org.cloudbus.cloudsim.hosts.HostSimple;
 import org.cloudbus.cloudsim.util.Log;
 import org.cloudbus.cloudsim.resources.Pe;
 import org.cloudbus.cloudsim.resources.PeSimple;
+import org.cloudbus.cloudsim.util.ResourceLoader;
 import org.cloudbus.cloudsim.utilizationmodels.UtilizationModel;
 import org.cloudbus.cloudsim.utilizationmodels.UtilizationModelFull;
 import org.cloudbus.cloudsim.vms.Vm;
@@ -33,8 +34,8 @@ import org.cloudbus.cloudsim.vms.VmSimple;
 import org.cloudbus.cloudsim.allocationpolicies.VmAllocationPolicySimple;
 import org.cloudbus.cloudsim.schedulers.vm.VmSchedulerSpaceShared;
 import org.cloudbus.cloudsim.core.CloudSim;
-import org.cloudsimplus.util.tablebuilder.CloudletsTableBuilderHelper;
-import org.cloudsimplus.util.tablebuilder.TextTableBuilder;
+import org.cloudsimplus.builders.tables.CloudletsTableBuilderHelper;
+import org.cloudsimplus.builders.tables.TextTableBuilder;
 import org.cloudbus.cloudsim.provisioners.PeProvisionerSimple;
 import org.cloudbus.cloudsim.provisioners.ResourceProvisionerSimple;
 import org.cloudbus.cloudsim.resources.Bandwidth;
@@ -144,7 +145,8 @@ public class NetworkExample3 {
 
         //Sixth step: configure network
         //load the network topology file
-        NetworkTopology networkTopology = new BriteNetworkTopology("topology.brite");
+        NetworkTopology networkTopology =
+            new BriteNetworkTopology(ResourceLoader.getResourcePath(getClass(), "topology.brite"));
         simulation.setNetworkTopology(networkTopology);
 
         //maps CloudSim entities to BRITE entities

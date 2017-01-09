@@ -51,7 +51,7 @@ import org.cloudbus.cloudsim.resources.Bandwidth;
 import org.cloudbus.cloudsim.provisioners.ResourceProvisionerSimple;
 import org.cloudbus.cloudsim.resources.Ram;
 import org.cloudbus.cloudsim.schedulers.cloudlet.CloudletSchedulerCompletelyFair;
-import org.cloudsimplus.util.tablebuilder.PriorityCloudletsTableBuilderHelper;
+import org.cloudsimplus.builders.tables.PriorityCloudletsTableBuilderHelper;
 
 /**
  * An example that uses an implementation of the {@link CloudletSchedulerCompletelyFair Completely Fair Scheduler}

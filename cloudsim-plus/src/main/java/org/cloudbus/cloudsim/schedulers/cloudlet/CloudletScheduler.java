@@ -5,10 +5,11 @@ import java.util.Collections;
 import java.util.List;
 import org.cloudbus.cloudsim.cloudlets.Cloudlet;
 import org.cloudbus.cloudsim.cloudlets.CloudletExecutionInfo;
+import org.cloudbus.cloudsim.network.VmPacket;
+import org.cloudbus.cloudsim.schedulers.cloudlet.network.PacketScheduler;
 import org.cloudbus.cloudsim.vms.Vm;
 import org.cloudbus.cloudsim.core.CloudSimTags;
 import org.cloudbus.cloudsim.datacenters.DatacenterSimple;
-import org.cloudbus.cloudsim.schedulers.cloudlet.network.NetworkCloudletSpaceSharedScheduler;
 import org.cloudbus.cloudsim.resources.Pe;
 
 /**
@@ -173,16 +174,6 @@ public interface CloudletScheduler extends Serializable {
      * @param rcl the rcl
      * @param mipsShare the mips share
      * @return the total current mips available for each Cloudlet PE
-     *
-     * @todo In fact, this method is returning different data depending
-     * of the subclass. It is expected that the way the method use to compute
-     * the resulting value can be different in every subclass,
-     * but is not supposed that each subclass returns a complete different
-     * result for the same method of the superclass.
-     * In some class such as {@link NetworkCloudletSpaceSharedScheduler},
-     * the method returns the average MIPS for the available PEs,
-     * in other classes such as {@link CloudletSchedulerDynamicWorkload} it returns
-     * the MIPS' sum of all PEs.
      */
     double getTotalCurrentAvailableMipsForCloudlet(CloudletExecutionInfo rcl, List<Double> mipsShare);
 
@@ -213,6 +204,35 @@ public interface CloudletScheduler extends Serializable {
      * @post $none
      */
     boolean hasFinishedCloudlets();
+
+    /**
+     * Gets the {@link PacketScheduler} that will be used by this CloudletScheduler to process
+     * {@link VmPacket}s to be sent or received by the Vm that is assigned to the
+     * current CloudletScheduler.
+     *
+     * @return the PacketScheduler for this CloudletScheduler or {@link PacketScheduler#NULL} if this scheduler
+     * will not deal with packets transmission.
+     */
+    PacketScheduler getPacketScheduler();
+
+    /**
+     * Sets the {@link PacketScheduler} that will be used by this CloudletScheduler to process
+     * {@link VmPacket}s to be sent or received by the Vm that is assigned to the
+     * current CloudletScheduler. The Vm from the CloudletScheduler is also set to the PacketScheduler.
+     *
+     * <p><b>This attribute usually doesn't need to be set manually. See the note at the {@link PacketScheduler} interface for more details.</b></p>
+     *
+     * @param packetScheduler the PacketScheduler to set for this CloudletScheduler or {@link PacketScheduler#NULL} if this scheduler
+     * will not deal with packets transmission.
+     */
+    void setPacketScheduler(PacketScheduler packetScheduler);
+
+    /**
+     * Checks if there is a packet scheduler assigned to this CloudletScheduler
+     * in order to enable dispatching packets from and to the Vm of this CloudletScheduler.
+     * @return
+     */
+    boolean isTherePacketScheduler();
 
     /**
      * Returns one cloudlet to migrate to another Vm.
@@ -269,7 +289,14 @@ public interface CloudletScheduler extends Serializable {
 
     /**
      * Sets the Vm that will use the scheduler.
+     * It is not required to manually set a Vm for the scheduler,
+     * since a {@link Vm} sets itself to the scheduler when the scheduler
+     * is assigned to the Vm.
+     *
      * @param vm the Vm to set
+     * @throws IllegalArgumentException when the scheduler already is assigned to another Vm, since
+     * each Vm must have its own scheduler
+     * @throws NullPointerException when the vm parameter is null
      */
     void setVm(Vm vm) ;
 
@@ -333,7 +360,10 @@ public interface CloudletScheduler extends Serializable {
         @Override public double getTotalCurrentRequestedMipsForCloudlet(CloudletExecutionInfo rcl, double time) { return 0.0; }
         @Override public double getTotalUtilizationOfCpu(double time) { return 0.0; }
         @Override public boolean hasFinishedCloudlets() { return false; }
-	    @Override public Cloudlet getCloudletToMigrate() { return Cloudlet.NULL; }
+        @Override public PacketScheduler getPacketScheduler() { return PacketScheduler.NULL; }
+        @Override public void setPacketScheduler(PacketScheduler packetScheduler) {}
+        @Override public boolean isTherePacketScheduler() { return false; }
+        @Override public Cloudlet getCloudletToMigrate() { return Cloudlet.NULL; }
         @Override public int runningCloudletsNumber() { return 0; }
         @Override public double updateVmProcessing(double currentTime, List<Double> mipsShare) { return 0.0; }
         @Override public Vm getVm() { return Vm.NULL; }

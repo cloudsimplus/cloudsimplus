@@ -9,6 +9,7 @@ import org.cloudbus.cloudsim.cloudlets.Cloudlet;
 import org.cloudbus.cloudsim.datacenters.DatacenterCharacteristics;
 import org.cloudbus.cloudsim.datacenters.DatacenterCharacteristicsSimple;
 import org.cloudbus.cloudsim.hosts.Host;
+import org.cloudbus.cloudsim.schedulers.cloudlet.CloudletSchedulerTimeShared;
 import org.cloudbus.cloudsim.util.Log;
 import org.cloudbus.cloudsim.allocationpolicies.VmAllocationPolicySimple;
 import org.cloudbus.cloudsim.core.CloudSim;
@@ -17,7 +18,6 @@ import org.cloudbus.cloudsim.cloudlets.network.CloudletReceiveTask;
 import org.cloudbus.cloudsim.cloudlets.network.CloudletSendTask;
 import org.cloudbus.cloudsim.cloudlets.network.CloudletTask;
 import org.cloudbus.cloudsim.network.switches.EdgeSwitch;
-import org.cloudbus.cloudsim.schedulers.cloudlet.network.NetworkCloudletSpaceSharedScheduler;
 import org.cloudbus.cloudsim.datacenters.network.NetworkDatacenter;
 import org.cloudbus.cloudsim.hosts.network.NetworkHost;
 import org.cloudbus.cloudsim.vms.network.NetworkVm;
@@ -30,7 +30,7 @@ import org.cloudbus.cloudsim.resources.Pe;
 import org.cloudbus.cloudsim.resources.PeSimple;
 import org.cloudbus.cloudsim.resources.Ram;
 import org.cloudbus.cloudsim.schedulers.vm.VmSchedulerTimeShared;
-import org.cloudsimplus.util.tablebuilder.CloudletsTableBuilderHelper;
+import org.cloudsimplus.builders.tables.CloudletsTableBuilderHelper;
 import org.cloudbus.cloudsim.utilizationmodels.UtilizationModel;
 import org.cloudbus.cloudsim.utilizationmodels.UtilizationModelFull;
 
@@ -102,7 +102,7 @@ public class NetworkVmsExample1 {
         new CloudletsTableBuilderHelper(newList).build();
 
         for(NetworkHost host: datacenter.<NetworkHost>getHostList()){
-            Log.printFormatted("\nHost %d data transfered: %d bytes",
+            Log.printFormatted("\nHost %d data transferred: %d bytes",
                     host.getId(), host.getTotalDataTransferBytes());
         }
 
@@ -192,7 +192,7 @@ public class NetworkVmsExample1 {
     private NetworkVm createVm(int id, DatacenterBroker broker) {
         NetworkVm vm = new NetworkVm (id, HOST_MIPS, HOST_PES);
         vm.setRam(HOST_RAM).setBw(HOST_BW).setSize(HOST_STORAGE)
-            .setCloudletScheduler(new NetworkCloudletSpaceSharedScheduler())
+            .setCloudletScheduler(new CloudletSchedulerTimeShared())
             .setBroker(broker);
         return vm;
     }

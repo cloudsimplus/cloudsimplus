@@ -1,6 +1,7 @@
 <a id="top"></a>
 
-[![Build Status](https://img.shields.io/travis/manoelcampos/cloudsim-plus/master.svg)](https://travis-ci.org/manoelcampos/cloudsim-plus) [![Dependency Status](https://www.versioneye.com/user/projects/586ad564cf4f52001236d935/badge.svg?style=flat-square)](https://www.versioneye.com/user/projects/586ad564cf4f52001236d935) [![Codacy Badge](https://api.codacy.com/project/badge/Grade/3f132b184d5e475dbbcd356ee84499fc)](https://www.codacy.com/app/manoelcampos/cloudsim-plus?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=manoelcampos/cloudsim-plus&amp;utm_campaign=Badge_Grade) [![Codacy Badge](https://api.codacy.com/project/badge/Coverage/3f132b184d5e475dbbcd356ee84499fc)](https://www.codacy.com/app/manoelcampos/cloudsim-plus?utm_source=github.com&utm_medium=referral&utm_content=manoelcampos/cloudsim-plus&utm_campaign=Badge_Coverage) [![GPL licensed](https://img.shields.io/badge/license-GPL-blue.svg)](http://www.gnu.org/licenses/gpl-3.0)
+[![Build Status](https://img.shields.io/travis/manoelcampos/cloudsim-plus/master.svg)](https://travis-ci.org/manoelcampos/cloudsim-plus) [![Dependency Status](https://www.versioneye.com/user/projects/586ad564cf4f52001236d935/badge.svg?style=flat-square)](https://www.versioneye.com/user/projects/586ad564cf4f52001236d935) [![Codacy Badge](https://api.codacy.com/project/badge/Grade/3f132b184d5e475dbbcd356ee84499fc)](https://www.codacy.com/app/manoelcampos/cloudsim-plus?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=manoelcampos/cloudsim-plus&amp;utm_campaign=Badge_Grade) [![Codacy Badge](https://api.codacy.com/project/badge/Coverage/3f132b184d5e475dbbcd356ee84499fc)](https://www.codacy.com/app/manoelcampos/cloudsim-plus?utm_source=github.com&utm_medium=referral&utm_content=manoelcampos/cloudsim-plus&utm_campaign=Badge_Coverage) [![Maven Central](https://maven-badges.herokuapp.com/maven-central/org.cloudsimplus/cloudsim-plus/badge.svg)](https://maven-badges.herokuapp.com/maven-central/org.cloudsimplus/cloudsim-plus) [![Documentation Status](https://readthedocs.org/projects/cloudsimplus/badge/?version=latest)](http://cloudsimplus.readthedocs.io/en/latest/?badge=latest) [![GPL licensed](https://img.shields.io/badge/license-GPL-blue.svg)](http://www.gnu.org/licenses/gpl-3.0)
+
 
 <p align="center">
 <b><a href="#overview">Overview</a></b>
@@ -11,7 +12,7 @@
 |
 <b><a href="#how-to-use-cloudsim-plus">How to use</a></b>
 |
-<b><a href="#a-minimal-simulation-example">Examples</a></b>
+<b><a href="#a-minimal-and-complete-simulation-example">Examples</a></b>
 |
 <b><a href="#documentation-and-help">Docs and Help</a></b>
 |
@@ -70,6 +71,7 @@ at [the Computer Science and Software Engineering Department](http://www.csse.un
 
 CloudSim Plus provides a lot of exclusive features, ranging from the most basic ones that are missing in CloudSim to advanced features that enable implementation of more realistic simulation scenarios. 
 
+- It is far easier to use. A complete and easy-to-understand simulation scenario can be built in some few lines. Check the [Examples section](#a-minimal-and-complete-simulation-example).
 - [Horizontal VM scaling](cloudsim-plus-examples/src/main/java/org/cloudsimplus/examples/LoadBalancerByVmHorizontalScalingExample.java), allowing dynamic creation of VMs according to an overload condition. Such a condition is defined by a predicate that can check different VM resources usage such as CPU, RAM or BW.
 - [Parallel execution of simulations](cloudsim-plus-examples/src/main/java/org/cloudsimplus/examples/ParallelSimulationsExample.java), allowing several simulations to be run simultaneously, in a isolated way, inside a multi-core computer.
 - [Listeners](/cloudsim-plus-examples/src/main/java/org/cloudsimplus/examples/listeners/) objects to enable simulation monitoring.
@@ -83,7 +85,7 @@ CloudSim Plus provides a lot of exclusive features, ranging from the most basic 
   [Tabu Search](http://en.wikipedia.org/wiki/Tabu_search), [Simulated Annealing](http://en.wikipedia.org/wiki/Simulated_annealing), 
   [Ant Colony Systems](http://en.wikipedia.org/wiki/Ant_colony_optimization_algorithms) and so on. See an [example using Simulated Annealing here](/cloudsim-plus-examples/src/main/java/org/cloudsimplus/examples/DatacenterBrokerHeuristicExample.java).
 - [Implementation of the Completely Fair Scheduler](/cloudsim-plus-examples/src/main/java/org/cloudsimplus/examples/LinuxCompletelyFairSchedulerExample.java) used in recent version of the Linux Kernel.
-- Commpletely re-designed and reusable Network module. Totally refactored network examples to make them clear and easy to change (see issue #49).
+- Completely re-designed and reusable Network module. Totally refactored network examples to make them clear and easy to change (see issue #49).
 - Simpler constructors to instantiate simulation objects, making it less confusing to use the framework. It applies the Convention over Configuration principle (CoC) to ask just mandatory parameters when instantiating objects (see issue #30 for more details).
 - Throughout documentation update, improvement and extension.
 - Improved class hierarchy, modules and package structure that is easier to understand and follows the Separation of Concerns principle (SoC).
@@ -94,7 +96,7 @@ CloudSim Plus provides a lot of exclusive features, ranging from the most basic 
 
 # Project's Modules
 
-CloudSim Plus has a simpler structure that can be understood right away. It consists of 5 modules, 2 of which are new, as presented below.
+CloudSim Plus has a simpler structure that can be understood right away. It consists of 4 modules, 2 of which are new, as presented below.
 
 - [cloudsim-plus](cloudsim-plus): the CloudSim Plus cloud simulation framework API that is used by all other modules. 
   It is the main module that contains the simulation framework implementation and is the only
@@ -116,16 +118,13 @@ CloudSim Plus has a simpler structure that can be understood right away. It cons
 
 
 # How to use CloudSim Plus 
-CloudSim Plus is a Maven project with some modules. The easier way to use the project is relying on some IDE such as NetBeans, Eclipse or IntelliJ IDEA. 
-Accordingly, you can just check the gif below or see the complete instructions in the next sub-sections.
+There are 3 ways to use CloudSim Plus. It can be downloaded and executed directly from some IDE or from the command line. Since it is a Maven project available at [Maven Central](https://maven-badges.herokuapp.com/maven-central/org.cloudsimplus/cloudsim-plus), you also include it as a dependency inside your own project.
 
-![Download and running CloudSim Plus Example using NetBeans](https://github.com/manoelcampos/cloudsim-plus/raw/master/cloudsim-plus-netbeans.gif)
+You can watch the video below ([high quality version here](https://youtu.be/hvFJtvrkCNI)) or follow the instructions in one of the next subsections.
 
-There is a high quality video version of this gif available in [YouTube](https://youtu.be/hvFJtvrkCNI).
+![Downloading CloudSim Plus and running Examples using NetBeans](https://github.com/manoelcampos/cloudsim-plus/raw/master/cloudsim-plus-netbeans.gif)
 
-But if you are such a "terminal person", the sub-section below shows the instructions.
-
-## By means of command line (if you don't like or don't want to use an IDE)
+## By means of command line
 Considering that you have [git](https://git-scm.com) and [maven](http://maven.apache.org) installed on your operating system, 
 download the project source by cloning the repositosy using the command `git clone https://github.com/manoelcampos/cloudsim-plus.git` 
 at a terminal. 
@@ -140,8 +139,8 @@ The script checks if it is required to build the project, using maven in this ca
 To see what examples are available, just navigate through the [examples directory](/cloudsim-plus-examples/src/main/java/).
 To see more script options, run it without any parameter.  
  
-## By means of an IDE (the easier way to just take a look or to create your own simulations)
-The easier way to use the project is relying on some IDE such as [NetBeans](http://netbeans.org), [Eclipse](http://eclipse.org) 
+## By means of an IDE
+The easiest way to use the project is relying on some IDE such as [NetBeans](http://netbeans.org), [Eclipse](http://eclipse.org) 
 or [IntelliJ IDEA](http://jetbrains.com/idea/).
 Below are the steps to start using the project:
 
@@ -158,59 +157,88 @@ at a terminal.
   You can run any one of the classes in this package to get a specific example. 
 - If you want to build your own simulations, the easiest way is to create another class inside this module.
 
+## Adding it as as maven dependency into your own project
+
+You can add CloudSim Plus API module, that is the only one required to build simulations, as a dependency inside the pom.xml file or your own maven project,
+as presened below (check if the informed version is the latest one). By this way you can start building your simulations from the scratch.
+
+```xml
+<dependency>
+    <groupId>org.cloudsimplus</groupId>
+    <artifactId>cloudsim-plus</artifactId>
+    <version>1.0</version>
+</dependency>
+```
+
+
 <p align="right"><a href="#top">:arrow_up:</a></p>
 
-# A minimal simulation example
+# A minimal and complete simulation example
 
-The construction of a scenario to simulate the infrastructure of a Cloud provider is not so minimal. 
-In order to build such a simulation you have to create, at least: 
+In order to build a simulation scenario you have to create, at least: 
 - a datacenter with a list of physical machines (Hosts); 
 - a broker that allows submission of VMs and Cloudlets to be executed, on behalf of a given customer, into the cloud infrastructure; 
 - a list of customer's virtual machines (VMs); 
 - and a list of customer's cloudlets (objects that model resource requirements of different applications).
 
-By this way, the main code used to build such a simulation scenario can be as below. 
-This is simply the code of the constructor method. 
-The complete example is available
+Due to the simplificy provided by CloudSim Plus, all the code to create a minmal simulation scenario can be as simple as presented below.
+A more adequate and reusable example is available
 [here](/cloudsim-plus-examples/src/main/java/org/cloudsimplus/examples/BasicFirstExample.java),
 together with [other examples](cloudsim-plus-examples). Specific examples of CloudSim Plus, showing several
 new exclusive features and advanced scenarios, can be found [here](cloudsim-plus-examples/src/main/java/org/cloudsimplus/examples/). 
 
 ```java
-this.vmList = new ArrayList<>();
-this.cloudletList = new ArrayList<>();
-
 //Creates a CloudSim object to initialize the simulation.
-CloudSim simulation = new CloudSim();
+CloudSim cloudsim = new CloudSim();
 
-Datacenter datacenter0 = createDatacenter(simulation);
+/*Creates a Broker that will act on behalf of a cloud user (customer).*/
+DatacenterBroker broker0 = new DatacenterBrokerSimple(cloudsim);
 
-/*Creates a Broker accountable for submission of VMs and Cloudlets
-on behalf of a given cloud user (customer).*/
-DatacenterBroker broker0 = new DatacenterBrokerSimple(simulation);
+//Creates a list of Hosts, each host with a specific list of CPU cors (PEs).
+List<Host> hostList = new ArrayList<>(1);
+List<Pe> hostPes = new ArrayList<>(1);
+hostPes.add(new PeSimple(0, new PeProvisionerSimple(20000)));
+Host host0 = new HostSimple(0, 100000, hostPes);
+host0.setRamProvisioner(new ResourceProvisionerSimple(new Ram(10000)))
+     .setBwProvisioner(new ResourceProvisionerSimple(new Bandwidth(100000)));
+     .setVmScheduler(new VmSchedulerSpaceShared());
+hostList.add(host0);
 
-Vm vm0 = createVm(broker0);
-this.vmList.add(vm0);
+//Creates a Datacenter with a list of Hosts 
+DatacenterCharacteristics characts = new DatacenterCharacteristicsSimple(hostList);
+VmAllocationPolicy vmAllocationPolicy = new VmAllocationPolicySimple();
+Datacenter dc0 = new DatacenterSimple(cloudsim, characts, vmAllocationPolicy);
+
+//Creates VMs to run applications.
+List<Vm> vmList = new ArrayList<>(1);
+Vm vm0 = new VmSimple(0, 1000, 1);
+vm0.setRam(1000).setBw(1000).setSize(1000)
+   .setBroker(broker0)
+   .setCloudletScheduler(new CloudletSchedulerSpaceShared());
+vmList.add(vm0);
+
+//Creates Cloudlets that represent applications to be run inside a VM.
+List<Cloudlet> cloudlets = new ArrayList<>(1);
+Cloudlet cloudlet0 = new CloudletSimple(0, 10000, 1);
+cloudlet0.setBroker(broker0).setUtilizationModel(new UtilizationModelFull());
+cloudlets.add(cloudlet0);
+Cloudlet cloudlet1 = new CloudletSimple(1, 10000, 1);
+cloudlet1.setBroker(broker0).setUtilizationModel(new UtilizationModelFull());
+cloudlets.add(cloudlet1);
+
 broker0.submitVmList(vmList);
+broker0.submitCloudletList(cloudlets);
 
-/*Creates Cloudlets that represent applications to be run inside a VM.*/
-Cloudlet cloudlet0 = createCloudlet(broker0, vm0);
-this.cloudletList.add(cloudlet0);
-Cloudlet cloudlet1 = createCloudlet(broker0, vm0);
-this.cloudletList.add(cloudlet1);
-broker0.submitCloudletList(cloudletList);
-
-/*Starts the simulation and waits all cloudlets to be executed*/
-simulation.start();
+/*Starts the simulation and waits all cloudlets to be executed, automatically
+stopping when there is no more events to process.*/
+cloudsim.start();
 
 /*Prints results when the simulation is over
 (you can use your own code here to print what you want from this cloudlet list)*/
-List<Cloudlet> finishedCloudlets = broker0.getCloudletsFinishedList();
-new CloudletsTableBuilderHelper(finishedCloudlets).build();
-Log.printFormattedLine("Minimal Example finished!");
+new CloudletsTableBuilderHelper(broker0.getCloudletsFinishedList()).build();
 ```
 
-And the results are more structured and clear, including the unit of some presented data, in order to allow better understanding. 
+The presented results are more structured and clear, including the unit of some presented data, in order to allow better understanding. 
 The image below, for a simulation with two cloudlets (applications) gives you a preview. 
 ![Simulation Results](https://github.com/manoelcampos/cloudsim-plus/raw/master/simulation-results.png)
 

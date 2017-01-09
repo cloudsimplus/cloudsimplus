@@ -16,6 +16,7 @@ import java.util.stream.Stream;
 import org.cloudbus.cloudsim.cloudlets.Cloudlet;
 import org.cloudbus.cloudsim.cloudlets.Cloudlet.Status;
 import org.cloudbus.cloudsim.cloudlets.CloudletExecutionInfo;
+import org.cloudbus.cloudsim.schedulers.cloudlet.network.PacketScheduler;
 import org.cloudbus.cloudsim.util.Conversion;
 import org.cloudbus.cloudsim.vms.Vm;
 import org.cloudbus.cloudsim.resources.Processor;
@@ -33,6 +34,10 @@ import org.cloudbus.cloudsim.resources.Processor;
  * @since CloudSim Toolkit 1.0
  */
 public abstract class CloudletSchedulerAbstract implements CloudletScheduler {
+    /**
+     * @see #getPacketScheduler()
+     */
+    private PacketScheduler packetScheduler;
 
     /**
      * @see #getProcessor()
@@ -102,6 +107,7 @@ public abstract class CloudletSchedulerAbstract implements CloudletScheduler {
         cloudletFailedList = new ArrayList<>();
         cloudletWaitingList = new ArrayList<>();
         currentMipsShare = new ArrayList<>();
+        packetScheduler = PacketScheduler.NULL;
     }
 
     @Override
@@ -476,7 +482,24 @@ public abstract class CloudletSchedulerAbstract implements CloudletScheduler {
      * @param currentTime current simulation time
      */
     private void updateCloudletsProcessing(double currentTime) {
-        getCloudletExecList().forEach(rcl -> updateCloudletProcessing(rcl, currentTime));
+        getCloudletExecList().forEach(rcl -> updateCloudletProcessingAndPacketsDispatch(rcl, currentTime));
+    }
+
+    /**
+     * Updates the processing of a specific cloudlet of the Vm using this
+     * scheduler and packets that such a Cloudlet has to send or to receive
+     * (if the CloudletScheduler has a {@link PacketScheduler} assigned to it).
+     *
+     * @param rcl The cloudlet to be its processing updated
+     * @param currentTime current simulation time
+     *
+     */
+    private void updateCloudletProcessingAndPacketsDispatch(CloudletExecutionInfo rcl, double currentTime) {
+        if(packetScheduler.isTimeToUpdateCloudletProcessing(rcl.getCloudlet())) {
+            updateCloudletProcessing(rcl, currentTime);
+        }
+
+        packetScheduler.processCloudletPackets(rcl.getCloudlet(), currentTime);
     }
 
     /**
@@ -488,9 +511,9 @@ public abstract class CloudletSchedulerAbstract implements CloudletScheduler {
      *
      */
     protected void updateCloudletProcessing(CloudletExecutionInfo rcl, double currentTime) {
-        long numberExecutedInstructions = cloudletExecutedInstructionsForElapsedTime(rcl, currentTime);
-        rcl.updateCloudletFinishedSoFar(numberExecutedInstructions);
-        if (numberExecutedInstructions > 0) {
+        long executedInstructions = cloudletExecutedInstructionsForElapsedTime(rcl, currentTime);
+        rcl.updateCloudletFinishedSoFar(executedInstructions);
+        if (executedInstructions > 0) {
             rcl.setLastProcessingTime(currentTime);
         }
     }
@@ -534,8 +557,8 @@ public abstract class CloudletSchedulerAbstract implements CloudletScheduler {
         final double actualProcessingTime = (hasCloudletFileTransferTimePassed(rcl, currentTime) ? timeSpan(currentTime) : 0);
 
         //Log.println(Log.Level.DEBUG, getClass(), currentTime, "Cloudlet: %d Processing time: %.2f Last processed time: %.2f Actual process time: %.2f MI so far: %d",  rcl.getCloudletId(), currentTime, rcl.getLastProcessingTime(),  actualProcessingTime, rcl.getCloudlet().getCloudletFinishedSoFar());
-        return (long) (processor.getAvailableMipsByPe() * 
-                rcl.getCloudlet().getUtilizationOfCpu(currentTime) * 
+        return (long) (processor.getAvailableMipsByPe() *
+                rcl.getCloudlet().getUtilizationOfCpu(currentTime) *
                 actualProcessingTime * Conversion.MILLION);
     }
 
@@ -576,7 +599,7 @@ public abstract class CloudletSchedulerAbstract implements CloudletScheduler {
      * @return the number of finished cloudlets removed from the
      * {@link #getCloudletExecList() execution list}
      */
-    protected int removeFinishedCloudletsFromExecutionListAndAddToFinishedList() {
+    private int removeFinishedCloudletsFromExecutionListAndAddToFinishedList() {
         List<CloudletExecutionInfo> finishedCloudlets
                 = getCloudletExecList().stream()
                 .filter(c -> c.getCloudlet().isFinished())
@@ -589,7 +612,7 @@ public abstract class CloudletSchedulerAbstract implements CloudletScheduler {
         return finishedCloudlets.size();
     }
 
-    protected void removeCloudletFromExecListAndAddToFinishedList(CloudletExecutionInfo cloudlet) {
+    private void removeCloudletFromExecListAndAddToFinishedList(CloudletExecutionInfo cloudlet) {
         setCloudletFinishTimeAndAddToFinishedList(cloudlet);
         removeCloudletFromExecList(cloudlet);
     }
@@ -612,7 +635,7 @@ public abstract class CloudletSchedulerAbstract implements CloudletScheduler {
      *
      * @param rcl the cloudlet to set the finish time
      */
-    protected void setCloudletFinishTimeAndAddToFinishedList(CloudletExecutionInfo rcl) {
+    private void setCloudletFinishTimeAndAddToFinishedList(CloudletExecutionInfo rcl) {
         final double clock = getVm().getSimulation().clock();
         rcl.setFinishTime(clock);
         cloudletFinish(rcl);
@@ -639,6 +662,9 @@ public abstract class CloudletSchedulerAbstract implements CloudletScheduler {
      * <p>The estimated time is not a future simulation time
      * but a time interval that the Cloudlet is expected to finish.</p>
      *
+     * <p>The estimated time is not a future simulation time
+     * but a time interval that the Cloudlet is expected to finish.</p>
+     *
      * @param rcl cloudlet to get the estimated finish time
      * @param currentTime current simulation time
      * @return the estimated finish time of the given cloudlet
@@ -646,7 +672,7 @@ public abstract class CloudletSchedulerAbstract implements CloudletScheduler {
     protected double getEstimatedFinishTimeOfCloudlet(CloudletExecutionInfo rcl, double currentTime) {
         final double mips = (processor.getAvailableMipsByPe() *
                 rcl.getCloudlet().getUtilizationOfCpu(currentTime));
-        double estimatedFinishTime = 
+        double estimatedFinishTime =
                 rcl.getRemainingCloudletLength() / mips;
 
         if (estimatedFinishTime < getVm().getSimulation().getMinTimeBetweenEvents()) {
@@ -740,7 +766,19 @@ public abstract class CloudletSchedulerAbstract implements CloudletScheduler {
 
     @Override
     public void setVm(Vm vm) {
+        if(Objects.isNull(vm)){
+            throw new NullPointerException("The vm parameter cannot be null.");
+        }
+
+        if(isVmAssigned() && !vm.equals(this.vm)){
+            throw new IllegalArgumentException("CloudletScheduler already has a Vm assigned to it. Each Vm must have its own CloudletScheduler instance.");
+        }
+
         this.vm = vm;
+    }
+
+    private boolean isVmAssigned() {
+        return !Objects.isNull(vm) && this.vm != Vm.NULL;
     }
 
     @Override
@@ -784,4 +822,19 @@ public abstract class CloudletSchedulerAbstract implements CloudletScheduler {
         this.usedPes -= usedPesToRemove;
     }
 
+    @Override
+    public PacketScheduler getPacketScheduler() {
+        return packetScheduler;
+    }
+
+    @Override
+    public void setPacketScheduler(PacketScheduler packetScheduler) {
+        this.packetScheduler = (Objects.isNull(packetScheduler) ? PacketScheduler.NULL : packetScheduler);
+        this.packetScheduler.setVm(vm);
+    }
+
+    @Override
+    public boolean isTherePacketScheduler() {
+        return !(Objects.isNull(packetScheduler) || packetScheduler == PacketScheduler.NULL);
+    }
 }

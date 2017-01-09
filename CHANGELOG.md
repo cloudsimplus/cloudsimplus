@@ -4,9 +4,24 @@ Lists the main changes in the project.
 
 ## [Current Development Version]
 
+- xxxxx
+
+## [v1.0.0] - 2017-01-06
+
+### Changed
+- Removed the `NetworkCloudletSchedulerSpaceShared` and moved the specific code that was dealing with packets forwarding to the new
+`PacketSchedulerSimple` class. The network examples just worked with the `NetworkCloudletSchedulerSpaceShared` and providing such
+a class also required other schedulers such as a `NetworkCloudletSchedulerTimeShared` to include the same packets forwarding code.
+Further, there was no way to force the developer to use such specific schedulers for network examples
+and using a different one caused runtime errors. With the new `PacketSchedulerSimple` class, there is no
+need to use a specific scheduler such as the `NetworkCloudletSchedulerSpaceShared`. Just
+a regular one like the `CloudletSchedulerSpaceShared` or any other works accordingly.
+The developer doesn't even have to create instances of the new `PacketSchedulerSimple`, since
+a `NetworkHost` does this job automatically (closes #57.)
+
 ## [v0.9-beta.2] - 2017-01-04
 
-### Addedd
+### Added
 - Introduced a `VmScaling` interface and a `HorizontalVmScalingSimple` class,
   inside the [autoscaling package](/cloudsim-plus/src/main/java/org/cloudsimplus/autoscaling), that provides a horizontal scaling mechanism
   for VMs, allowing dynamic creation of VMs according to an overload condition. Such a condition is defined
@@ -21,11 +36,11 @@ Lists the main changes in the project.
 ### Changed
 - Renamed the class `GraphReader` to `TopologyReader`.
 - Network module was almost totally refactored and redesigned to provide a module that just works.
-  The module was not reusasble at all and had a huge amount of duplicated code. Some classes
+  The module was not reusasble at all and it had a huge amount of duplicated code. Some classes
   such as Switch were just an entire copy from each other.
   The packet classes relied on ID to identify the sender and receiver entities and it was
   very difficult to know if a given packet class was storing the ID of a Host, Vm or Cloudlet.
-  Now the packets uses actual objects such as Host, Vm and Cloudlet to make clear
+  Now the packets use actual objects such as Host, Vm and Cloudlet to make clear
   what kind of entities are communicating.
 - The network examples were just confusing and useless. They have been completely refactored
   and redesigned in order to provide a clear and understandable code that can in fact be reusable.

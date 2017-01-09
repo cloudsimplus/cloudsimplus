@@ -34,7 +34,7 @@ import org.cloudbus.cloudsim.utilizationmodels.UtilizationModel;
 import org.cloudbus.cloudsim.utilizationmodels.UtilizationModelFull;
 import org.cloudbus.cloudsim.vms.Vm;
 import org.cloudbus.cloudsim.vms.VmSimple;
-import org.cloudsimplus.util.tablebuilder.CloudletsTableBuilderHelper;
+import org.cloudsimplus.builders.tables.CloudletsTableBuilderHelper;
 
 /**
  * An example that creates VMs dinamically in runtime.
@@ -49,7 +49,6 @@ public class DynamicVmCreationExample {
     private static final int VM_PES2 = 4;
     private static final int CLOUDLETS_NUMBER = 3;
     private static final int CLOUDLET_PES = 4;
-  
     private int lastCreatedVmId = 0;
 
     private final List<Host> hostList;
@@ -58,8 +57,7 @@ public class DynamicVmCreationExample {
 
     private double responseTimeCloudlet;
     private final CloudSim cloudsim;
-    
- 
+
     public static void main(String[] args) throws FileNotFoundException, IOException {
         Log.printFormattedLine(" Starting... ");
         new DynamicVmCreationExample();
@@ -81,8 +79,6 @@ public class DynamicVmCreationExample {
         broker.submitVmList(vmlist);
 
         cloudletList = createCloudlet(broker, CLOUDLETS_NUMBER);
-
-        
        /* WorkloadFileReader workloadFileReader = new WorkloadFileReader("/Users/raysaoliveira/Desktop/TeseMestradoEngInformatica/cloudsim-plus/cloudsim-plus-testbeds/src/main/java/org/cloudsimplus/sla/UniLu-Gaia-2014-2.swf", 1);
         cloudletList = workloadFileReader.generateWorkload().subList(0, 1000);
         for (Cloudlet cloudlet : cloudletList) {
@@ -90,7 +86,6 @@ public class DynamicVmCreationExample {
             cloudlet.setLength(5000);
         }
         */
-        
         broker.submitCloudletList(cloudletList);
 
         cloudsim.start();
@@ -135,7 +130,7 @@ public class DynamicVmCreationExample {
         return new DatacenterSimple(cloudsim, characteristics,
                 new VmAllocationPolicySimple());
     }
-    
+
     /**
      * Creates Vms
      *
@@ -170,11 +165,11 @@ public class DynamicVmCreationExample {
     public List<Pe> createHostPesList(int hostPes, int mips) {
         List<Pe> peList = new ArrayList<>();
         for (int i = 0; i < hostPes; i++) {
-            peList.add(new PeSimple(i, new PeProvisionerSimple(mips))); 
+            peList.add(new PeSimple(i, new PeProvisionerSimple(mips)));
         }
         return peList;
     }
-    
+
    /**
      * Creates cloudlets
      *
@@ -198,7 +193,6 @@ public class DynamicVmCreationExample {
                     .setOutputSize(outputSize)
                     .setUtilizationModel(utilizationModel)
                     .setBroker(broker);
-            
             list.add(cloudlet);
         }
         return list;
@@ -219,7 +213,6 @@ public class DynamicVmCreationExample {
         return responseTime;
 
     }
-    
 
     /**
      * @return the responseTimeCloudlet

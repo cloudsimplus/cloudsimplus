@@ -54,7 +54,7 @@ import org.cloudbus.cloudsim.provisioners.ResourceProvisionerSimple;
 import org.cloudbus.cloudsim.resources.Bandwidth;
 import org.cloudbus.cloudsim.resources.PeSimple;
 import org.cloudbus.cloudsim.resources.Ram;
-import org.cloudsimplus.util.tablebuilder.CloudletsTableBuilderHelper;
+import org.cloudsimplus.builders.tables.CloudletsTableBuilderHelper;
 import org.cloudbus.cloudsim.utilizationmodels.UtilizationModel;
 import org.cloudbus.cloudsim.utilizationmodels.UtilizationModelFull;
 
@@ -201,10 +201,10 @@ public class HostFaultInjectionExample {
         new CloudletsTableBuilderHelper(newList).build();
         Log.printFormattedLine("... finished!");
     }
-    
+
     /**
      * Creates the fault injection for host
-     * @param datacenter0 
+     * @param datacenter0
      */
     private void createFaultInjectionForHosts(Datacenter datacenter0) {
         //Inject Fault

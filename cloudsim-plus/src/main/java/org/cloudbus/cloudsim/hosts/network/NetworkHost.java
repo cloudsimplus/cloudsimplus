@@ -9,16 +9,17 @@ package org.cloudbus.cloudsim.hosts.network;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map.Entry;
 
 import org.cloudbus.cloudsim.hosts.Host;
 import org.cloudbus.cloudsim.hosts.HostSimple;
 import org.cloudbus.cloudsim.network.HostPacket;
+import org.cloudbus.cloudsim.schedulers.cloudlet.network.PacketScheduler;
+import org.cloudbus.cloudsim.schedulers.cloudlet.CloudletScheduler;
+import org.cloudbus.cloudsim.schedulers.cloudlet.network.PacketSchedulerSimple;
 import org.cloudbus.cloudsim.util.Conversion;
 import org.cloudbus.cloudsim.util.Log;
 import org.cloudbus.cloudsim.network.switches.EdgeSwitch;
 import org.cloudbus.cloudsim.network.VmPacket;
-import org.cloudbus.cloudsim.schedulers.cloudlet.network.NetworkCloudletSpaceSharedScheduler;
 import org.cloudbus.cloudsim.resources.Pe;
 import org.cloudbus.cloudsim.schedulers.vm.VmScheduler;
 import org.cloudbus.cloudsim.vms.Vm;
@@ -152,9 +153,8 @@ public class NetworkHost extends HostSimple {
                     return;
                 }
 
-                NetworkCloudletSpaceSharedScheduler sched = getVmCloudletScheduler(destinationVm);
-
-                sched.addPacketToListOfPacketsSentFromVm(hostPkt.getVmPacket());
+                PacketScheduler packetScheduler = getVmPacketScheduler(destinationVm);
+                packetScheduler.addPacketToListOfPacketsSentFromVm(hostPkt.getVmPacket());
                 Log.println(
                     Log.Level.DEBUG, getClass(), getSimulation().clock(),
                     "Host %d received pkt with %d bytes from Cloudlet %d in VM %d and forwarded it to Cloudlet %d in VM %d",
@@ -177,7 +177,7 @@ public class NetworkHost extends HostSimple {
      * It checks whether a packet belongs to a local VM or to a VM hosted on other machine.
      */
     private void sendAllPacketListsOfAllVms() {
-        getVmList().forEach(this::collectAllListsOfPacketsToSendFromVm);
+        getVmList().forEach(this::collectListOfPacketsToSendFromVm);
         sendPacketsToLocalVms();
         sendPacketsToExternalVms();
     }
@@ -192,7 +192,7 @@ public class NetworkHost extends HostSimple {
             hostPkt.getVmPacket().setReceiveTime(getSimulation().clock());
             // insert the packet in receivedlist
             Vm destinationVm = hostPkt.getVmPacket().getDestination();
-            getVmCloudletScheduler(destinationVm).addPacketToListOfPacketsSentFromVm(hostPkt.getVmPacket());
+            getVmPacketScheduler(destinationVm).addPacketToListOfPacketsSentFromVm(hostPkt.getVmPacket());
         }
 
         if (!packetsToSendForLocalVms.isEmpty()) {
@@ -235,40 +235,45 @@ public class NetworkHost extends HostSimple {
         return numberOfPackets == 0 ? bandwidth : bandwidth / numberOfPackets;
     }
 
-    private NetworkCloudletSpaceSharedScheduler getVmCloudletScheduler(Vm vm) {
-        return (NetworkCloudletSpaceSharedScheduler) vm.getCloudletScheduler();
+    private PacketScheduler getVmPacketScheduler(Vm vm) {
+        return vm.getCloudletScheduler().getPacketScheduler();
     }
 
     /**
-     * Collects all lists of packets of a given Vm
+     * {@inheritDoc}
+     *
+     * <p><b>It also creates and sets a {@link PacketScheduler} for each
+     * Vm that doesn't have one already.</b></p>
+     * @param vm {@inheritDoc}
+     * @return {@inheritDoc}
+     */
+    @Override
+    public boolean vmCreate(Vm vm) {
+        final boolean isVmCreated = super.vmCreate(vm);
+        setPacketScheduler(vm);
+        return isVmCreated;
+    }
+
+    private void setPacketScheduler(Vm vm) {
+        CloudletScheduler cs = vm.getCloudletScheduler();
+        if(!cs.isTherePacketScheduler()){
+            cs.setPacketScheduler(new PacketSchedulerSimple());
+        }
+    }
+
+    /**
+     * Collects all packets of a specific packet list from a Vm
      * in order to get them together to be sent.
      *
      * @param sourceVm the VM from where the packets will be sent
-     * @todo @author manoelcampos The class forces the use of a NetworkCloudletSpaceSharedScheduler, what
-     * doesn't make sense and will cause runtime class cast exception if a different one is used.
      */
-    private void collectAllListsOfPacketsToSendFromVm(Vm sourceVm) {
-        NetworkCloudletSpaceSharedScheduler sched = getVmCloudletScheduler(sourceVm);
-        for (Entry<Vm, List<VmPacket>> entry : sched.getHostPacketsToSendMap().entrySet()) {
-            collectListOfPacketsToSendFromVm(entry);
-        }
-    }
-
-    /**
-     * Collects all packets of a specific packet list from a given Vm
-     * in order to get them together to be sent.
-     *
-     * @param entry the Map entry from a packet map where the key is the
-     * sender VM and the value is a list of packets to send
-     * @see #collectAllListsOfPacketsToSendFromVm(Vm)
-     */
-    private void collectListOfPacketsToSendFromVm(Entry<Vm, List<VmPacket>> entry) {
-        List<VmPacket> vmPktList = entry.getValue();
-        for (VmPacket vmPkt : vmPktList) {
+    private void collectListOfPacketsToSendFromVm(Vm sourceVm) {
+        PacketScheduler packetScheduler = getVmPacketScheduler(sourceVm);
+        for (VmPacket vmPkt : packetScheduler.getVmPacketsToSend()) {
             collectPacketToSendFromVm(vmPkt);
         }
 
-        vmPktList.clear();
+        packetScheduler.clearVmPacketsToSend();
     }
 
     /**
@@ -276,7 +281,7 @@ public class NetworkHost extends HostSimple {
      * in order to get it together with other packets to be sent.
      *
      * @param vmPkt a packet to be sent from a Vm to another one
-     * @see #collectListOfPacketsToSendFromVm(Entry)
+     * @see #collectListOfPacketsToSendFromVm(Vm)
      */
     private void collectPacketToSendFromVm(VmPacket vmPkt) {
         HostPacket hostPkt = new HostPacket(this, vmPkt);

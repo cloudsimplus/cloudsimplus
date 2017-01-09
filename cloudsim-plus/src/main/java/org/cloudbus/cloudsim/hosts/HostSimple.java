@@ -254,7 +254,7 @@ public class HostSimple implements Host {
 
         if (!getVmScheduler().allocatePesForVm(vm, vm.getCurrentRequestedMips())) {
             Log.printConcatLine("[VmAllocationPolicy] Allocation of VM #", vm.getId(), " to Host #", getId(),
-                    " failed by MIPS");
+                    " failed by PEs");
             getRamProvisioner().deallocateResourceForVm(vm);
             getBwProvisioner().deallocateResourceForVm(vm);
             return false;

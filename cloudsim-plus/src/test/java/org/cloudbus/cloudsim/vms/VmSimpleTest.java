@@ -176,7 +176,6 @@ public class VmSimpleTest {
 
     @Test
     public void testAddStateHistoryEntry_addEntryToEmptyList(){
-        Vm vm = VmSimpleTest.createVm(vmScheduler);
         double time=0, allocatedMips=1000, requestedMips=100;
         boolean inMigration = false;
         assertTrue(vm.getStateHistory().isEmpty());
@@ -188,7 +187,6 @@ public class VmSimpleTest {
 
     @Test
     public void testAddStateHistoryEntry_checkAddedEntryValues(){
-        Vm vm = VmSimpleTest.createVm(vmScheduler);
         VmStateHistoryEntry entry = new VmStateHistoryEntry(0, 1000, 100, false);
         vm.addStateHistoryEntry(entry);
         assertEquals(entry, vm.getStateHistory().get(vm.getStateHistory().size()-1));
@@ -196,7 +194,6 @@ public class VmSimpleTest {
 
     @Test
     public void testAddStateHistoryEntry_tryToAddEntryWithSameTime(){
-        Vm vm = VmSimpleTest.createVm(vmScheduler);
         VmStateHistoryEntry entry = new VmStateHistoryEntry(0, 1000, 100, false);
         vm.addStateHistoryEntry(entry);
         assertEquals(1, vm.getStateHistory().size());
@@ -206,7 +203,6 @@ public class VmSimpleTest {
 
     @Test
     public void testAddStateHistoryEntry_changeAddedEntry(){
-        Vm vm = VmSimpleTest.createVm(vmScheduler);
         VmStateHistoryEntry entry = new VmStateHistoryEntry(0, 1000, 100, false);
         vm.addStateHistoryEntry(entry);
         entry.setInMigration(true);

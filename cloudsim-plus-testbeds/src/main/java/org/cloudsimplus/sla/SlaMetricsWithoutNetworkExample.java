@@ -50,7 +50,7 @@ import org.cloudbus.cloudsim.resources.Bandwidth;
 import org.cloudbus.cloudsim.resources.PeSimple;
 import org.cloudbus.cloudsim.resources.Ram;
 import org.cloudbus.cloudsim.util.ResourceLoader;
-import org.cloudsimplus.util.tablebuilder.CloudletsTableBuilderHelper;
+import org.cloudsimplus.builders.tables.CloudletsTableBuilderHelper;
 import org.cloudbus.cloudsim.utilizationmodels.UtilizationModel;
 import org.cloudbus.cloudsim.utilizationmodels.UtilizationModelFull;
 import org.cloudsimplus.migration.VmMigrationWhenCpuMetricIsViolatedExample;
@@ -61,7 +61,7 @@ import org.cloudsimplus.sla.readJsonFile.SlaReader;
 /**
  * This example show an simple example using metrics of quality of service
  * without network.
- * 
+ *
  * @author RaysaOliveira
  */
 public final class SlaMetricsWithoutNetworkExample {
@@ -169,7 +169,7 @@ public final class SlaMetricsWithoutNetworkExample {
             totalCost = vmCost.getTotalCost();
         }
         return totalCost;
-        
+
     }
 
     /**
@@ -270,7 +270,7 @@ public final class SlaMetricsWithoutNetworkExample {
 
         // Sixth step: Starts the simulation
         cloudsim.start();
-       
+
         System.out.println("________________________________________________________________");
         System.out.println("\n\t\t - System Métrics - \n ");
 
