@@ -354,7 +354,7 @@ public abstract class CloudletSchedulerAbstract implements CloudletScheduler {
     @Override
     public boolean cloudletPause(int cloudletId) {
         if (changeStatusOfCloudletIntoList(
-                getCloudletExecList(), cloudletId,
+                cloudletExecList, cloudletId,
                 c -> changeStatusOfCloudlet(c, Status.INEXEC, Status.PAUSED)) != Cloudlet.NULL) {
             return true;
         }
@@ -374,7 +374,7 @@ public abstract class CloudletSchedulerAbstract implements CloudletScheduler {
         }
 
         cloudlet = changeStatusOfCloudletIntoList(
-                getCloudletExecList(), cloudletId,
+                cloudletExecList, cloudletId,
                 c -> changeStatusOfCloudlet(c, Status.INEXEC, Status.CANCELED));
         if (cloudlet != Cloudlet.NULL) {
             return cloudlet;
