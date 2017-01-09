@@ -235,11 +235,6 @@ public final class SlaMetricsWithoutNetworkExample {
         return waitTime;
     }
 
-    /*
-     public static double throughput() {
-     //pegar o dowlink BW do edge, pois as Vms estao conectadas nele
-     return 1;
-     }*/
     public static void main(String[] args) throws FileNotFoundException {
         Log.printFormattedLine(" Starting... ");
         new SlaMetricsWithoutNetworkExample();

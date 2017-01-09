@@ -1,28 +1,31 @@
 /**
- * CloudSim Plus: A highly-extensible and easier-to-use Framework for
- * Modeling and Simulation of Cloud Computing Infrastructures and Services.
+ * CloudSim Plus: A highly-extensible and easier-to-use Framework for Modeling
+ * and Simulation of Cloud Computing Infrastructures and Services.
  * http://cloudsimplus.org
  *
- *     Copyright (C) 2015-2016  Universidade da Beira Interior (UBI, Portugal) and
- *     the Instituto Federal de Educação Ciência e Tecnologia do Tocantins (IFTO, Brazil).
+ * Copyright (C) 2015-2016 Universidade da Beira Interior (UBI, Portugal) and
+ * the Instituto Federal de Educação Ciência e Tecnologia do Tocantins (IFTO,
+ * Brazil).
  *
- *     This file is part of CloudSim Plus.
+ * This file is part of CloudSim Plus.
  *
- *     CloudSim Plus is free software: you can redistribute it and/or modify
- *     it under the terms of the GNU General Public License as published by
- *     the Free Software Foundation, either version 3 of the License, or
- *     (at your option) any later version.
+ * CloudSim Plus is free software: you can redistribute it and/or modify it
+ * under the terms of the GNU General Public License as published by the Free
+ * Software Foundation, either version 3 of the License, or (at your option) any
+ * later version.
  *
- *     CloudSim Plus is distributed in the hope that it will be useful,
- *     but WITHOUT ANY WARRANTY; without even the implied warranty of
- *     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *     GNU General Public License for more details.
+ * CloudSim Plus is distributed in the hope that it will be useful, but WITHOUT
+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+ * FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
+ * details.
  *
- *     You should have received a copy of the GNU General Public License
- *     along with CloudSim Plus. If not, see <http://www.gnu.org/licenses/>.
+ * You should have received a copy of the GNU General Public License along with
+ * CloudSim Plus. If not, see <http://www.gnu.org/licenses/>.
  */
 package org.cloudsimplus.sla;
 
+import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -39,6 +42,7 @@ import org.cloudbus.cloudsim.network.switches.EdgeSwitch;
 import org.cloudbus.cloudsim.cloudlets.network.NetworkCloudlet;
 import org.cloudbus.cloudsim.datacenters.network.NetworkDatacenter;
 import org.cloudbus.cloudsim.hosts.network.NetworkHost;
+import org.cloudbus.cloudsim.network.switches.Switch;
 import org.cloudbus.cloudsim.vms.network.NetworkVm;
 import org.cloudbus.cloudsim.provisioners.PeProvisionerSimple;
 import org.cloudbus.cloudsim.provisioners.ResourceProvisionerSimple;
@@ -48,11 +52,14 @@ import org.cloudbus.cloudsim.resources.PeSimple;
 import org.cloudbus.cloudsim.resources.Ram;
 import org.cloudbus.cloudsim.schedulers.cloudlet.CloudletSchedulerTimeShared;
 import org.cloudbus.cloudsim.schedulers.vm.VmSchedulerTimeShared;
+import org.cloudbus.cloudsim.util.WorkloadFileReader;
 import org.cloudsimplus.builders.tables.CloudletsTableBuilderHelper;
 import org.cloudbus.cloudsim.utilizationmodels.UtilizationModel;
 import org.cloudbus.cloudsim.utilizationmodels.UtilizationModelFull;
 
 /**
+ * An example showing how to create throughput metric in the NetworkDatacenter.
+ * 
  * @author raysaoliveira
  */
 public class NetworkVmsWithMetricsExample {
@@ -80,50 +87,53 @@ public class NetworkVmsWithMetricsExample {
      */
     public static void main(String[] args) {
         Log.printFormattedLine(" Starting... ");
-       // try {
+        try {
             new NetworkVmsWithMetricsExample();
-      //  } catch (Exception e) {
-    //        Log.printFormattedLine("Simulation finished due to unexpected error: %s", e);
-   //     }
+        } catch (Exception e) {
+            Log.printFormattedLine("Simulation finished due to unexpected error: %s", e);
+        }
     }
 
-    private NetworkVmsWithMetricsExample() {
-        // First step: Initialize the CloudSim package. It should be called before creating any entities.
-        int num_user = 1; // number of cloud users
+    private NetworkVmsWithMetricsExample() throws FileNotFoundException, IOException {
         cloudsim = new CloudSim();
-
-        // Second step: Create Datacenters
+        
         datacenter0 = createDatacenter();
 
-        // Third step: Create Broker
         DatacenterBroker broker = new DatacenterBrokerSimple(cloudsim);
 
         vmlist = createVM(broker, 5);
-
-        // submit vm list to the broker
         broker.submitVmList(vmlist);
-
-        /* Fifth step: Read Cloudlets from workload external file in the swf format
-         WorkloadFileReader workloadFileReader = new WorkloadFileReader("src/main/java/org/cloudbus/cloudsim/examples/sla/UniLu-Gaia-2014-2.swf", 1);
-         cloudletList = workloadFileReader.generateWorkload().subList(0, 1000);
-         for (Cloudlet cloudlet : cloudletList) {
-         cloudlet.setBroker(brokerId);
-         } */
+     
         cloudletList = createCloudlet(broker, 10);
-
-        // submit cloudlet list to the broker
         broker.submitCloudletList(cloudletList);
 
-        // Sixth step: Starts the simulation
         cloudsim.start();
+      
+        double throughput = throughput(datacenter0, cloudsim);
+        System.out.println("\n-------------------------------------------");
+        System.out.println("\t Throughput : " + throughput);
 
-        //Final step: Print results when simulation is over
         List<Cloudlet> newList = broker.getCloudletsFinishedList();
         new CloudletsTableBuilderHelper(newList).build();
 
         Log.printFormattedLine("... finished!");
     }
-    
+
+    /**
+     * Calculates the throughput of the NetworkDatacenter
+     * @param datacenter
+     * @param simulation
+     * @return throughput
+     */
+    private double throughput(NetworkDatacenter datacenter, CloudSim simulation) {
+        double downlinkBw = 0.0;
+        for (Switch edgeSwitch : datacenter.getEdgeSwitch()) {
+            downlinkBw = edgeSwitch.getDownlinkBandwidth() / simulation.clock();
+        }
+        
+        return downlinkBw;
+    }
+
     /**
      * Create NetworkVms
      *
@@ -216,22 +226,8 @@ public class NetworkVmsWithMetricsExample {
 
         hostList.add(host);
 
-        // 5. Create a DatacenterCharacteristics object that stores the
-        // properties of a data center: architecture, OS, list of
-        // Machines, allocation policy: time- or space-shared, time zone
-        // and its price (G$/Pe time unit).
-        double cost = 3.0; // the cost of using processing in this resource
-        double costPerMem = 0.05; // the cost of using memory in this resource
-        double costPerStorage = 0.001; // the cost of using storage in this
-        // resource
-        double costPerBw = 0.0; // the cost of using bw in this resource
-
         DatacenterCharacteristics characteristics
-                = new DatacenterCharacteristicsSimple(hostList)
-                .setCostPerSecond(cost)
-                .setCostPerMem(costPerMem)
-                .setCostPerStorage(costPerStorage)
-                .setCostPerBw(costPerBw);
+                = new DatacenterCharacteristicsSimple(hostList);
 
         // 6. Finally, we need to create a PowerDatacenter object.
         NetworkDatacenter datacenter
