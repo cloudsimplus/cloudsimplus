@@ -11,7 +11,7 @@
 CloudletReceiveTask
 ===================
 
-.. java:package:: PackageDeclaration
+.. java:package:: org.cloudbus.cloudsim.cloudlets.network
    :noindex:
 
 .. java:type:: public class CloudletReceiveTask extends CloudletTask

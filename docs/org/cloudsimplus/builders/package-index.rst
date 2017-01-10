@@ -1,34 +1,27 @@
 org.cloudsimplus.builders
 =========================
 
-.. java:package:: org.cloudsimplus.builders
+Provides \ :java:ref:`org.cloudsimplus.builders.Builder`\  classes that implement the \ `Builder Design Pattern <https://en.wikipedia.org/wiki/Builder_pattern>`_\  to allow instantiating multiple simulation objects more easily.
 
-/**
- * CloudSim Plus: A highly-extensible and easier-to-use Framework for
- * Modeling and Simulation of Cloud Computing Infrastructures and Services.
- * http://cloudsimplus.org
- *
- *     Copyright (C) 2015-2016  Universidade da Beira Interior (UBI, Portugal) and
- *     the Instituto Federal de Educação Ciência e Tecnologia do Tocantins (IFTO, Brazil).
- *
- *     This file is part of CloudSim Plus.
- *
- *     CloudSim Plus is free software: you can redistribute it and/or modify
- *     it under the terms of the GNU General Public License as published by
- *     the Free Software Foundation, either version 3 of the License, or
- *     (at your option) any later version.
- *
- *     CloudSim Plus is distributed in the hope that it will be useful,
- *     but WITHOUT ANY WARRANTY; without even the implied warranty of
- *     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *     GNU General Public License for more details.
- *
- *     You should have received a copy of the GNU General Public License
- *     along with CloudSim Plus. If not, see <http://www.gnu.org/licenses/>.
- */
+Since that creating and setting up some simulation objects such as a \ :java:ref:`org.cloudbus.cloudsim.datacenters.Datacenter`\  requires a considerable amount of code, that usually becomes duplicated along different simulations, the builder classes work as object factories that make it easier to create multiple simulation objects with the same configuration.
+
+The builders allow to set the parameters for creating a given object such as a Host, and then, after all parameters are set, a single class can create as many objects with the same configuration as desired.
+
+:author: Manoel Campos da Silva Filho
+
+.. java:package:: org.cloudsimplus.builders
 
 .. toctree::
    :maxdepth: 1
 
+   BrokerBuilder
+   BrokerBuilderDecorator
+   BrokerBuilderInterface
+   Builder
+   CloudletBuilder
+   DatacenterBuilder
    HostBuilder
+   PeBuilder
+   SimulationScenarioBuilder
+   VmBuilder
 

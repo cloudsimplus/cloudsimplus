@@ -7,7 +7,7 @@
 SimEvent.Type
 =============
 
-.. java:package:: PackageDeclaration
+.. java:package:: org.cloudbus.cloudsim.core.events
    :noindex:
 
 .. java:type::  enum Type

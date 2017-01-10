@@ -3,7 +3,7 @@
 WeibullDistr
 ============
 
-.. java:package:: PackageDeclaration
+.. java:package:: org.cloudbus.cloudsim.distributions
    :noindex:
 
 .. java:type:: public class WeibullDistr extends ContinuousDistributionAbstract

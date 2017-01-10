@@ -31,7 +31,7 @@
 AbstractSwitch
 ==============
 
-.. java:package:: PackageDeclaration
+.. java:package:: org.cloudbus.cloudsim.network.switches
    :noindex:
 
 .. java:type:: public abstract class AbstractSwitch extends CloudSimEntity implements Switch

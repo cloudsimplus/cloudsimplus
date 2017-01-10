@@ -3,7 +3,7 @@
 ParetoDistr
 ===========
 
-.. java:package:: PackageDeclaration
+.. java:package:: org.cloudbus.cloudsim.distributions
    :noindex:
 
 .. java:type:: public class ParetoDistr extends ContinuousDistributionAbstract

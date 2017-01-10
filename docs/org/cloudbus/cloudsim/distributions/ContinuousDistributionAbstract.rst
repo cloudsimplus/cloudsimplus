@@ -3,7 +3,7 @@
 ContinuousDistributionAbstract
 ==============================
 
-.. java:package:: PackageDeclaration
+.. java:package:: org.cloudbus.cloudsim.distributions
    :noindex:
 
 .. java:type:: public abstract class ContinuousDistributionAbstract implements ContinuousDistribution

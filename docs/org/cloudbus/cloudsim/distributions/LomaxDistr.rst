@@ -1,7 +1,7 @@
 LomaxDistr
 ==========
 
-.. java:package:: PackageDeclaration
+.. java:package:: org.cloudbus.cloudsim.distributions
    :noindex:
 
 .. java:type:: public class LomaxDistr extends ParetoDistr

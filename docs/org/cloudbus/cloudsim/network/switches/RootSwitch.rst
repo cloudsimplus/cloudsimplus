@@ -17,7 +17,7 @@
 RootSwitch
 ==========
 
-.. java:package:: PackageDeclaration
+.. java:package:: org.cloudbus.cloudsim.network.switches
    :noindex:
 
 .. java:type:: public class RootSwitch extends AbstractSwitch

@@ -5,7 +5,7 @@
 Pe.Status
 =========
 
-.. java:package:: PackageDeclaration
+.. java:package:: org.cloudbus.cloudsim.resources
    :noindex:
 
 .. java:type::  enum Status

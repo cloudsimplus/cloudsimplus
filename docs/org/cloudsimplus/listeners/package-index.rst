@@ -1,34 +1,36 @@
 org.cloudsimplus.listeners
 ==========================
 
-.. java:package:: org.cloudsimplus.listeners
+Provides \ :java:ref:`org.cloudsimplus.listeners.EventListener`\  implementations to enable event notifications during simulation execution.
 
-/**
- * CloudSim Plus: A highly-extensible and easier-to-use Framework for
- * Modeling and Simulation of Cloud Computing Infrastructures and Services.
- * http://cloudsimplus.org
- *
- *     Copyright (C) 2015-2016  Universidade da Beira Interior (UBI, Portugal) and
- *     the Instituto Federal de Educação Ciência e Tecnologia do Tocantins (IFTO, Brazil).
- *
- *     This file is part of CloudSim Plus.
- *
- *     CloudSim Plus is free software: you can redistribute it and/or modify
- *     it under the terms of the GNU General Public License as published by
- *     the Free Software Foundation, either version 3 of the License, or
- *     (at your option) any later version.
- *
- *     CloudSim Plus is distributed in the hope that it will be useful,
- *     but WITHOUT ANY WARRANTY; without even the implied warranty of
- *     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *     GNU General Public License for more details.
- *
- *     You should have received a copy of the GNU General Public License
- *     along with CloudSim Plus. If not, see <http://www.gnu.org/licenses/>.
- */
+These notifications are related to changes in the state of simulation entities. The listeners enable, for instance, notifying when:
+
+..
+
+* a Host updates the processing of its VMs, it is allocated to a Vm or it is deallocated from a Vm;
+* a Vm has its processing updated or fails to be placed at a Host due to lack of resources;
+* a Cloudlet has its processing updated, it finishes its execution inside a Vm;
+* a simulation processes any kind of event.
+
+These listeners were implemented using Java 8 functional interfaces, enabling the use of \ `Lambda Expressions <http://www.oracle.com/webfolder/technetwork/tutorials/obe/java/Lambda-QuickStart/index.html>`_\  that allow a function reference to be passed as parameter to another function. Such a reference will be used to automatically call the function every time the listened event is fired. Researchers developing using just Java 7 features can also use these listeners in the old-way by passing an anonymous class to them.
+
+Listeners allow developers to perform specific tasks when different events happen and can be largely used for monitoring purposes, metrics collection and dynamic creation of objects, such as VMs and Cloudlets, at runtime.
+
+:author: Manoel Campos da Silva Filho
+
+.. java:package:: org.cloudsimplus.listeners
 
 .. toctree::
    :maxdepth: 1
 
+   CloudletEventInfo
+   CloudletVmEventInfo
+   DatacenterEventInfo
    EventInfo
+   EventListener
+   HostEventInfo
+   HostUpdatesVmsProcessingEventInfo
+   VmDatacenterEventInfo
+   VmEventInfo
+   VmHostEventInfo
 

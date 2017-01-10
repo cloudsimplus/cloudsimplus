@@ -1,7 +1,7 @@
 ContinuousDistribution
 ======================
 
-.. java:package:: PackageDeclaration
+.. java:package:: org.cloudbus.cloudsim.distributions
    :noindex:
 
 .. java:type:: public interface ContinuousDistribution

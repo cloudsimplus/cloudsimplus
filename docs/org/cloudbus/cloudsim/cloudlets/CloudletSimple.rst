@@ -7,7 +7,7 @@
 CloudletSimple
 ==============
 
-.. java:package:: PackageDeclaration
+.. java:package:: org.cloudbus.cloudsim.cloudlets
    :noindex:
 
 .. java:type:: public class CloudletSimple extends CloudletAbstract

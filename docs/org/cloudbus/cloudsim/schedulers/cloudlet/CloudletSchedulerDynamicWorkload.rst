@@ -7,7 +7,7 @@
 CloudletSchedulerDynamicWorkload
 ================================
 
-.. java:package:: PackageDeclaration
+.. java:package:: org.cloudbus.cloudsim.schedulers.cloudlet
    :noindex:
 
 .. java:type:: @Deprecated public class CloudletSchedulerDynamicWorkload extends CloudletSchedulerTimeShared

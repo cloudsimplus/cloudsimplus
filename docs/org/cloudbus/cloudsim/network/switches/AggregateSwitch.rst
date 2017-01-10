@@ -13,7 +13,7 @@
 AggregateSwitch
 ===============
 
-.. java:package:: PackageDeclaration
+.. java:package:: org.cloudbus.cloudsim.network.switches
    :noindex:
 
 .. java:type:: public class AggregateSwitch extends AbstractSwitch

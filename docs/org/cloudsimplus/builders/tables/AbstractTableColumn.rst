@@ -1,7 +1,7 @@
 AbstractTableColumn
 ===================
 
-.. java:package:: PackageDeclaration
+.. java:package:: org.cloudsimplus.builders.tables
    :noindex:
 
 .. java:type:: public abstract class AbstractTableColumn implements TableColumn

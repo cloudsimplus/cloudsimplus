@@ -5,7 +5,7 @@
 ResourceProvisionerSimple
 =========================
 
-.. java:package:: PackageDeclaration
+.. java:package:: org.cloudbus.cloudsim.provisioners
    :noindex:
 
 .. java:type:: public class ResourceProvisionerSimple extends AbstractResourceProvisioner

@@ -1,7 +1,7 @@
 HeuristicNull
 =============
 
-.. java:package:: PackageDeclaration
+.. java:package:: org.cloudsimplus.heuristics
    :noindex:
 
 .. java:type::  class HeuristicNull<S extends HeuristicSolution<?>> implements Heuristic<S>

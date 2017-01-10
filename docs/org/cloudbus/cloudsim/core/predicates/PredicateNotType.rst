@@ -15,7 +15,7 @@
 PredicateNotType
 ================
 
-.. java:package:: PackageDeclaration
+.. java:package:: org.cloudbus.cloudsim.core.predicates
    :noindex:
 
 .. java:type:: public class PredicateNotType implements Predicate<SimEvent>

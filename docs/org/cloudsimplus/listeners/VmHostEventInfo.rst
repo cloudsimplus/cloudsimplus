@@ -5,7 +5,7 @@
 VmHostEventInfo
 ===============
 
-.. java:package:: PackageDeclaration
+.. java:package:: org.cloudsimplus.listeners
    :noindex:
 
 .. java:type:: public interface VmHostEventInfo extends VmEventInfo, HostEventInfo

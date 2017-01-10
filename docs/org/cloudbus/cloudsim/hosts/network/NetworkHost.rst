@@ -39,7 +39,7 @@
 NetworkHost
 ===========
 
-.. java:package:: PackageDeclaration
+.. java:package:: org.cloudbus.cloudsim.hosts.network
    :noindex:
 
 .. java:type:: public class NetworkHost extends HostSimple

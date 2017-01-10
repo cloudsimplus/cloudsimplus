@@ -7,7 +7,7 @@
 EventQueue
 ==========
 
-.. java:package:: PackageDeclaration
+.. java:package:: org.cloudbus.cloudsim.core.events
    :noindex:
 
 .. java:type:: public interface EventQueue

@@ -5,7 +5,7 @@
 UniformDistr
 ============
 
-.. java:package:: PackageDeclaration
+.. java:package:: org.cloudbus.cloudsim.distributions
    :noindex:
 
 .. java:type:: public class UniformDistr extends ContinuousDistributionAbstract

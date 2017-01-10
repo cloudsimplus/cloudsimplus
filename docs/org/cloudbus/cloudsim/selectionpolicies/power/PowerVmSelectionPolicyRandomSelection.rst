@@ -11,7 +11,7 @@
 PowerVmSelectionPolicyRandomSelection
 =====================================
 
-.. java:package:: PackageDeclaration
+.. java:package:: org.cloudbus.cloudsim.selectionpolicies.power
    :noindex:
 
 .. java:type:: public class PowerVmSelectionPolicyRandomSelection extends PowerVmSelectionPolicy

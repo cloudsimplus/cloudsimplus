@@ -7,7 +7,7 @@
 CloudInformationService
 =======================
 
-.. java:package:: PackageDeclaration
+.. java:package:: org.cloudbus.cloudsim.core
    :noindex:
 
 .. java:type:: public class CloudInformationService extends CloudSimEntity

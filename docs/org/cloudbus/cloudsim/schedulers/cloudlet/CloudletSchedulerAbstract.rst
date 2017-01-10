@@ -23,7 +23,7 @@
 CloudletSchedulerAbstract
 =========================
 
-.. java:package:: PackageDeclaration
+.. java:package:: org.cloudbus.cloudsim.schedulers.cloudlet
    :noindex:
 
 .. java:type:: public abstract class CloudletSchedulerAbstract implements CloudletScheduler
@@ -150,14 +150,8 @@ findSuitableWaitingCloudletToStartExecutingAndRemoveIt
 getCloudletExecList
 ^^^^^^^^^^^^^^^^^^^
 
-.. java:method:: protected List<CloudletExecutionInfo> getCloudletExecList()
+.. java:method:: @Override public List<CloudletExecutionInfo> getCloudletExecList()
    :outertype: CloudletSchedulerAbstract
-
-   Gets a List of cloudlets being executed on the VM.
-
-   :return: the cloudlet execution list
-
-   **See also:** :java:ref:`.addCloudletToExecList(CloudletExecutionInfo)`, :java:ref:`.removeCloudletFromExecListAndAddToFinishedList(CloudletExecutionInfo)`
 
 getCloudletFailedList
 ^^^^^^^^^^^^^^^^^^^^^

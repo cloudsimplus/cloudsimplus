@@ -13,7 +13,7 @@
 PowerHostSimple
 ===============
 
-.. java:package:: PackageDeclaration
+.. java:package:: org.cloudbus.cloudsim.hosts.power
    :noindex:
 
 .. java:type:: public class PowerHostSimple extends HostDynamicWorkloadSimple implements PowerHost

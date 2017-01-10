@@ -1,7 +1,7 @@
 PowerModelSpecPower
 ===================
 
-.. java:package:: PackageDeclaration
+.. java:package:: org.cloudbus.cloudsim.power.models
    :noindex:
 
 .. java:type:: public abstract class PowerModelSpecPower implements PowerModel

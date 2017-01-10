@@ -20,4 +20,4 @@ help:
 	@$(SPHINXBUILD) -M $@ "$(SOURCEDIR)" "$(BUILDDIR)" $(SPHINXOPTS) $(O)
 
 javadoc:
-	javasphinx-apidoc -v -f -o . ../cloudsim-plus/src/main/java/org/cloudbus/cloudsim/lists
+	javasphinx-apidoc -v -f -t "Packages Javadoc" -o . ../cloudsim-plus/src/main/java/

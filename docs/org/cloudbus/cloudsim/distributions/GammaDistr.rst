@@ -3,7 +3,7 @@
 GammaDistr
 ==========
 
-.. java:package:: PackageDeclaration
+.. java:package:: org.cloudbus.cloudsim.distributions
    :noindex:
 
 .. java:type:: public class GammaDistr extends ContinuousDistributionAbstract

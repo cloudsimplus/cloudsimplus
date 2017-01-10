@@ -5,7 +5,7 @@
 PeSimple
 ========
 
-.. java:package:: PackageDeclaration
+.. java:package:: org.cloudbus.cloudsim.resources
    :noindex:
 
 .. java:type:: public class PeSimple implements Pe

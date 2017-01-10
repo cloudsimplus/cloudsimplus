@@ -1,7 +1,7 @@
 UtilizationModelZero
 ====================
 
-.. java:package:: PackageDeclaration
+.. java:package:: org.cloudbus.cloudsim.utilizationmodels
    :noindex:
 
 .. java:type:: public class UtilizationModelZero implements UtilizationModel

@@ -23,7 +23,7 @@
 CloudletScheduler
 =================
 
-.. java:package:: PackageDeclaration
+.. java:package:: org.cloudbus.cloudsim.schedulers.cloudlet
    :noindex:
 
 .. java:type:: public interface CloudletScheduler extends Serializable
@@ -126,6 +126,16 @@ cloudletSubmit
 
    :param cl: the submited cloudlet
    :return: expected finish time of this cloudlet (considering the time to transfer required files from the Datacenter to the Vm), or 0 if it is in a waiting queue
+
+getCloudletExecList
+^^^^^^^^^^^^^^^^^^^
+
+.. java:method::  List<CloudletExecutionInfo> getCloudletExecList()
+   :outertype: CloudletScheduler
+
+   Gets a \ **read-only**\  List of cloudlets being executed on the VM.
+
+   :return: the cloudlet execution list
 
 getCloudletFinishedList
 ^^^^^^^^^^^^^^^^^^^^^^^

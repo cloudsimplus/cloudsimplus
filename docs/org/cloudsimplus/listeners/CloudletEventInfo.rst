@@ -3,7 +3,7 @@
 CloudletEventInfo
 =================
 
-.. java:package:: PackageDeclaration
+.. java:package:: org.cloudsimplus.listeners
    :noindex:
 
 .. java:type:: public interface CloudletEventInfo extends EventInfo
