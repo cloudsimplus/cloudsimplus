@@ -136,7 +136,7 @@ latex_elements = {
 #  author, documentclass [howto, manual, or own class]).
 latex_documents = [
     (master_doc, 'CloudSimPlus.tex', 'CloudSim Plus Documentation',
-     'Manoel Campos da Silva Filho, Raysa da Luz Oliveira', 'manual'),
+     u'Manoel C. Silva Filho, Raysa L. Oliveira, Claudio C. Monteiro, Pedro R. M. Inácio, Mário M. Freire', 'manual'),
 ]
 
 
