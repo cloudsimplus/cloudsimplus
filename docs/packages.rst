@@ -1,5 +1,5 @@
-Packages Javadoc
-================
+Javadocs
+========
 
 .. toctree::
    :maxdepth: 2

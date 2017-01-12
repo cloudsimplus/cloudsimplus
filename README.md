@@ -258,6 +258,7 @@ A Google Group forum is also available at <https://groups.google.com/group/cloud
 <p align="right"><a href="#top">:arrow_up:</a></p>
 
 <a id="why-care"></a>
+
 # Why should I care about this CloudSim fork? I just want to build my simulations. :neutral_face:
 Well, the design of the tool has a direct impact when you need to extend it in order to include some feature required for your simulations. 
 The simulator provides a set of classes such as `VmSchedulers`s, `CloudletScheduler`s, `VmAllocationPolicy`s, `ResourceProvisioner`s, 
@@ -280,6 +281,7 @@ By this way, we think those problems are enough reasons that show the need of a 
 <p align="right"><a href="#top">:arrow_up:</a></p>
 
 <a id="why-another-fork"></a>
+
 # But why another CloudSim fork? :unamused:
 We know what you are thinking: it would be better to pull a request to the original CloudSim repository 
 in order to really contribute to the project, benefiting everybody.
@@ -294,6 +296,7 @@ And unfortunately, there are several months of hard work that would need to be r
 <p align="right"><a href="#top">:arrow_up:</a></p>
 
 <a id="differences"></a>
+
 # What are the practical differences of using CloudSim Plus instead of CloudSim? How can I update my simulations in order to use CloudSim Plus?
 
 To update your simulations to use the new CloudSim Plus you have to change the way that some objects are instantiated, because 
@@ -353,6 +356,7 @@ host.setRamProvisioner(new ResourceProvisionerSimple(new Ram(ram)))
 <p align="right"><a href="#top">:arrow_up:</a></p>
 
 <a id="publications"></a>
+
 # CloudSim Plus Publications
 
   * A paper was approved in a top conference and we are just waiting publication to provide a link to the paper.
