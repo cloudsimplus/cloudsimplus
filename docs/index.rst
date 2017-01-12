@@ -7,9 +7,11 @@ Welcome to CloudSim Plus's documentation!
 =========================================
 
 .. toctree::
-   :maxdepth: 2
+   :maxdepth: 1
    :caption: Contents:
 
+   FAQ.rst
+   syncing-you-fork.rst
    packages.rst
 
 

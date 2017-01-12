@@ -1,6 +1,6 @@
 <a id="top"></a>
 
-[![Build Status](https://img.shields.io/travis/manoelcampos/cloudsim-plus/master.svg)](https://travis-ci.org/manoelcampos/cloudsim-plus) [![Dependency Status](https://www.versioneye.com/user/projects/586ad564cf4f52001236d935/badge.svg?style=flat-square)](https://www.versioneye.com/user/projects/586ad564cf4f52001236d935) [![Codacy Badge](https://api.codacy.com/project/badge/Grade/3f132b184d5e475dbbcd356ee84499fc)](https://www.codacy.com/app/manoelcampos/cloudsim-plus?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=manoelcampos/cloudsim-plus&amp;utm_campaign=Badge_Grade) [![Codacy Badge](https://api.codacy.com/project/badge/Coverage/3f132b184d5e475dbbcd356ee84499fc)](https://www.codacy.com/app/manoelcampos/cloudsim-plus?utm_source=github.com&utm_medium=referral&utm_content=manoelcampos/cloudsim-plus&utm_campaign=Badge_Coverage) [![Maven Central](https://maven-badges.herokuapp.com/maven-central/org.cloudsimplus/cloudsim-plus/badge.svg)](https://maven-badges.herokuapp.com/maven-central/org.cloudsimplus/cloudsim-plus) [![Documentation Status](https://readthedocs.org/projects/cloudsimplus/badge/?version=latest)](http://cloudsimplus.readthedocs.io/en/latest/?badge=latest) [![GPL licensed](https://img.shields.io/badge/license-GPL-blue.svg)](http://www.gnu.org/licenses/gpl-3.0)
+[![Build Status](https://img.shields.io/travis/manoelcampos/cloudsim-plus/master.svg)](https://travis-ci.org/manoelcampos/cloudsim-plus) [![Dependency Status](https://www.versioneye.com/user/projects/587716de34054a001687683a/badge.svg?style=flat-square)](https://www.versioneye.com/user/projects/587716de34054a001687683a) [![Codacy Badge](https://api.codacy.com/project/badge/Grade/3f132b184d5e475dbbcd356ee84499fc)](https://www.codacy.com/app/manoelcampos/cloudsim-plus?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=manoelcampos/cloudsim-plus&amp;utm_campaign=Badge_Grade) [![Codacy Badge](https://api.codacy.com/project/badge/Coverage/3f132b184d5e475dbbcd356ee84499fc)](https://www.codacy.com/app/manoelcampos/cloudsim-plus?utm_source=github.com&utm_medium=referral&utm_content=manoelcampos/cloudsim-plus&utm_campaign=Badge_Coverage) [![Maven Central](https://maven-badges.herokuapp.com/maven-central/org.cloudsimplus/cloudsim-plus/badge.svg)](https://maven-badges.herokuapp.com/maven-central/org.cloudsimplus/cloudsim-plus) [![Documentation Status](https://readthedocs.org/projects/cloudsimplus/badge/?version=latest)](http://cloudsimplus.rtfd.io/en/latest/?badge=latest) [![GPL licensed](https://img.shields.io/badge/license-GPL-blue.svg)](http://www.gnu.org/licenses/gpl-3.0)
 
 
 <p align="center">
@@ -248,11 +248,10 @@ The image below, for a simulation with two cloudlets (applications) gives you a 
 The project documentation originated from CloudSim was entirely updated and extended. 
 You can see the javadoc documentation for classes and their elements directly on your IDE.
 
-The JavaDoc documentation is available online at <http://cloudsimplus.org/apidocs/>. 
-CloudSim Plus extends the documentation of classes and interfaces and also includes extremelly helpful
-package documentation that can be viewed directly on your IDE or at the home page of the link provided above.
+The documentation is available online at [ReadTheDocs](http://cloudsimplus.rtfd.io/en/latest/?badge=latest), that includes a FAQ and guides.
+CloudSim Plus has extended documentation of classes and interfaces and also includes extremelly helpful
+package documentation that can be viewed directly on your IDE or at the link provided above.
 Such a package documentation gives a general overview of the classes used to build a cloud simulation.
-There is also a [Wiki page](https://github.com/manoelcampos/cloudsim-plus/wiki) with additional information such as a FAQ list.  
 
 A Google Group forum is also available at <https://groups.google.com/group/cloudsim-plus>
 

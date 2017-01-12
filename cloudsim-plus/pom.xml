@@ -303,7 +303,7 @@
             <plugin>
                 <groupId>org.jacoco</groupId>
                 <artifactId>jacoco-maven-plugin</artifactId>
-                <version>0.7.7.201606060606</version>
+                <version>0.7.8</version>
                 <executions>
                     <execution>
                         <id>prepare-agent</id>
@@ -334,6 +334,7 @@
                 <version>3.11.0</version>
                 <configuration>
                     <organisation>manoelcampos</organisation>
+                    <projectId>587716de34054a001687683a</projectId>
                 </configuration>
                 <!--
                 The plugin is just being executed when the repository is pushed to travis-ci.org
