@@ -366,6 +366,10 @@
                         <website>${project.url}</website>
                     </properties>
 
+                    <mapping>
+                        <java>SLASHSTAR_STYLE</java>
+                    </mapping>
+
                     <strictCheck>true</strictCheck>
                     <failIfMissing>false</failIfMissing>
 
@@ -417,6 +421,7 @@
                         <exclude>**/*.uml</exclude>
                         <exclude>**/*.iml</exclude>
                         <exclude>**/nbactions.xml</exclude>
+                        <exclude>**/src/main/resources/**</exclude>
 
                         <!-- Ignored just temporarily while the implementation is not included in the cloudsim
                         main module-->

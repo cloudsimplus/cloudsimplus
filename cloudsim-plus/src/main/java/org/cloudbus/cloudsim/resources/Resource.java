@@ -8,6 +8,7 @@ package org.cloudbus.cloudsim.resources;
  * in their constructors.
  *
  * @author Manoel Campos da Silva Filho
+ * @since CloudSim Plus 1.0
  */
 public interface Resource extends ResourceCapacity {
     /**

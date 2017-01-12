@@ -119,6 +119,16 @@
                 <version>1.10.b1</version>
                 <configuration>
                     <header>${license.dir}/source-header.txt</header>
+                    <mapping>
+                        <java>SLASHSTAR_STYLE</java>
+                    </mapping>
+
+                    <strictCheck>true</strictCheck>
+                    <failIfMissing>false</failIfMissing>
+                    <excludes>
+                        <exclude>**/src/main/resources/**</exclude>
+                        <exclude>**/src/main/java/org/cloudbus/**</exclude>
+                    </excludes>
                 </configuration>
             </plugin>
         </plugins>

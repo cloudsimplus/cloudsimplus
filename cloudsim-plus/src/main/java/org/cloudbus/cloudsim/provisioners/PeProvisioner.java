@@ -14,7 +14,6 @@ import org.cloudbus.cloudsim.resources.Pe;
 import org.cloudbus.cloudsim.vms.Vm;
 
 /**
- * /**
  * PeProvisioner is an abstract class that represents the provisioning policy
  * used by a host to allocate its PEs to virtual machines inside it. It gets a
  * physical PE and manage it in order to provide this PE as virtual PEs for VMs.

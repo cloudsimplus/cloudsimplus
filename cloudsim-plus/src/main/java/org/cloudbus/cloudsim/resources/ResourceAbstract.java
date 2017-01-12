@@ -12,7 +12,7 @@ import org.cloudbus.cloudsim.vms.Vm;
  * required resource (see {@link Vm#getResource(java.lang.Class)}).
  *
  * @author Manoel Campos da Silva Filho
- * @since CloudSim Toolkit 3.0.4
+ * @since CloudSim Plus 1.0
  */
 public abstract class ResourceAbstract implements ResourceManageable {
     /** @see #getCapacity() */

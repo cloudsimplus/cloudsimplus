@@ -1,4 +1,4 @@
-/**
+/*
  * CloudSim Plus: A highly-extensible and easier-to-use Framework for
  * Modeling and Simulation of Cloud Computing Infrastructures and Services.
  * http://cloudsimplus.org
@@ -44,13 +44,11 @@ public interface VmScaling {
      * An attribute that implements the Null Object Design Pattern for {@link HorizontalVmScaling}
      * objects.
      */
-    VmScaling NULL = new HorizontalVmScaling() {
+    VmScaling NULL = new VmScaling() {
         @Override public Vm getVm() { return Vm.NULL; }
         @Override public VmScaling setVm(Vm vm) { return this; }
-        @Override public Supplier<Vm> getVmSupplier() { return () -> Vm.NULL; }
-        @Override public VmScaling setVmSupplier(Supplier<Vm> supplier) { return this; }
         @Override public Predicate<Vm> getOverloadPredicate() { return FALSE_PREDICATE; }
-        @Override public HorizontalVmScaling setOverloadPredicate(Predicate<Vm> predicate) { return this; }
+        @Override public VmScaling setOverloadPredicate(Predicate<Vm> predicate) { return this; }
         @Override public void scaleIfOverloaded(double time) {}
     };
 
@@ -92,10 +90,10 @@ public interface VmScaling {
      *                  based on Vm's {@link Vm#getTotalUtilizationOfCpu(double)} CPU usage}.
      * @return
      */
-    HorizontalVmScaling setOverloadPredicate(Predicate<Vm> predicate);
+    VmScaling setOverloadPredicate(Predicate<Vm> predicate);
 
     /**
-     * Performs the horizontal or vertical scale if the Vm is overloaded.
+     * Performs the {@link HorizontalVmScaling horizontal} or {@link VerticalVmScaling vertical} scale if the Vm is overloaded.
      * The type of scale depends on implementing classes.
      *
      * @param time current simulation time

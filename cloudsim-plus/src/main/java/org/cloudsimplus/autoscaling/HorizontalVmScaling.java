@@ -1,4 +1,4 @@
-/**
+/*
  * CloudSim Plus: A highly-extensible and easier-to-use Framework for
  * Modeling and Simulation of Cloud Computing Infrastructures and Services.
  * http://cloudsimplus.org
@@ -30,8 +30,8 @@ import org.cloudbus.cloudsim.vms.Vm;
 import java.util.function.Supplier;
 
 /**
- * A Vm <a href="https://en.wikipedia.org/wiki/Scalability#Horizontal_and_vertical_scaling">Horizontal Scaling</a> mechanism used by a {@link DatacenterBroker}
- * to dynamically create or destroy VMs according to the arrival or termination of
+ * A Vm <a href="https://en.wikipedia.org/wiki/Scalability#Horizontal_and_vertical_scaling">Horizontal Scaling</a> mechanism
+ * used by a {@link DatacenterBroker} to dynamically create or destroy VMs according to the arrival or termination of
  * Cloudlets, in order to enable load balancing.
  *
  * <p>Since Cloudlets can be created and submitted to a broker in runtime,
@@ -42,6 +42,9 @@ import java.util.function.Supplier;
  *
  * @author Manoel Campos da Silva Filho
  * @since CloudSim Plus 1.0
+ * @todo The mechanism to destroy created VMs that are not required anymore is not implemented yet.
+ * To implement the down scaling, a new underload predicate and a scaleIfUnderloaded method should
+ * be introduced.
  */
 public interface HorizontalVmScaling extends VmScaling {
 
@@ -56,10 +59,11 @@ public interface HorizontalVmScaling extends VmScaling {
     /**
      * Sets a {@link Supplier} that will be used to create VMs when
      * the Load Balancer detects that the Broker's VMs are overloaded.
+     *
      * @param supplier the supplier to set
      * @return
      */
-    VmScaling setVmSupplier(Supplier<Vm> supplier);
+    HorizontalVmScaling setVmSupplier(Supplier<Vm> supplier);
 
     /**
      * Performs the horizontal scale if the Vm is overloaded, according to the {@link #getOverloadPredicate()} predicate.
@@ -73,5 +77,4 @@ public interface HorizontalVmScaling extends VmScaling {
      * @param time current simulation time
      */
     @Override void scaleIfOverloaded(double time);
-
 }
