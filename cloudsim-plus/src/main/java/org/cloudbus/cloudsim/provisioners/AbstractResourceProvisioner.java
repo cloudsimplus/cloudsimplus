@@ -12,6 +12,9 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 
+import org.cloudbus.cloudsim.resources.Bandwidth;
+import org.cloudbus.cloudsim.resources.Pe;
+import org.cloudbus.cloudsim.resources.Ram;
 import org.cloudbus.cloudsim.vms.Vm;
 import org.cloudbus.cloudsim.resources.ResourceManageable;
 
@@ -27,14 +30,27 @@ import org.cloudbus.cloudsim.resources.ResourceManageable;
  */
 public abstract class AbstractResourceProvisioner implements ResourceProvisioner {
     /**
-     * The resource being managed for the provisioner, such as RAM, BW or CPU.
+     * @see #getResource()
      */
-    private final ResourceManageable resource;
+    private ResourceManageable resource;
 
-    /** The VM resource allocation map, where each key is a VM and each value
-     * is the amount of resource allocated to that VM. */
+    /** @see #getResourceAllocationMap()  */
     private final Map<Vm, Long> resourceAllocationMap;
-    private final Class<? extends ResourceManageable> resourceClass;
+
+    /**
+     * @see #getResourceClass()
+     */
+    private Class<? extends ResourceManageable> resourceClass;
+
+    /**
+     * Creates a new ResourceManageable Provisioner for which the {@link #getResource() resource}
+     * must be set further.
+     *
+     * @post $none
+     */
+    protected AbstractResourceProvisioner() {
+        this(ResourceManageable.NULL);
+    }
 
     /**
      * Creates a new ResourceManageable Provisioner.
@@ -43,12 +59,7 @@ public abstract class AbstractResourceProvisioner implements ResourceProvisioner
      * @post $none
      */
     public AbstractResourceProvisioner(final ResourceManageable resource) {
-        if(Objects.isNull(resource)){
-            throw new IllegalArgumentException("Resource cannot be null");
-        }
-
-        this.resource = resource;
-        this.resourceClass = resource.getClass();
+        this.setResource(resource);
         this.resourceAllocationMap = new HashMap<>();
     }
 
@@ -75,21 +86,31 @@ public abstract class AbstractResourceProvisioner implements ResourceProvisioner
     protected abstract long deallocateResourceForVmSettingAllocationMapEntryToZero(Vm vm);
 
     /**
-     * @return the resource
+     * Gets the resource being managed for the provisioner, such as {@link Ram}, {@link Pe}, {@link Bandwidth}, etc.
+     * @return the resource managed by this provisioner
      */
     protected ResourceManageable getResource() {
         return resource;
     }
 
+    protected final void setResource(ResourceManageable resource) {
+        Objects.requireNonNull(resource);
+        this.resource = resource;
+        this.resourceClass = resource.getClass();
+    }
+
     /**
-     * @return the resourceClass
+     * Gets the class of the resource that this provisioner manages.
+     * @return the resource class
      */
     protected Class<? extends ResourceManageable> getResourceClass() {
         return resourceClass;
     }
 
     /**
-     * @return the resourceAllocationMap
+     * Gets the VM resource allocation map, where each key is a VM and each value
+     * is the amount of resource allocated to that VM.
+     * @return the resource allocation Map
      */
     protected Map<Vm, Long> getResourceAllocationMap() {
         return resourceAllocationMap;

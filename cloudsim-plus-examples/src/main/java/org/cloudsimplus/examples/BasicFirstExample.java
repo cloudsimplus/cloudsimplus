@@ -106,7 +106,7 @@ public class BasicFirstExample {
         for(int h = 0; h < HOSTS; h++) {
             List<Pe> pesList = new ArrayList<>(HOST_PES);
             for (int p = 0; p < HOST_PES; p++) {
-                pesList.add(new PeSimple(p, new PeProvisionerSimple(1000)));
+                pesList.add(new PeSimple(1000, new PeProvisionerSimple()));
             }
 
             ResourceProvisioner ramProvisioner = new ResourceProvisionerSimple(new Ram(2048));

@@ -14,7 +14,7 @@ import org.cloudbus.cloudsim.resources.PeSimple;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.IntStream;
+import java.util.stream.LongStream;
 
 import org.cloudbus.cloudsim.vms.Vm;
 import org.cloudbus.cloudsim.vms.VmSimpleTest;
@@ -23,6 +23,7 @@ import org.cloudbus.cloudsim.lists.PeList;
 import org.cloudbus.cloudsim.provisioners.PeProvisionerSimple;
 import org.junit.Before;
 import org.junit.Test;
+
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertSame;
@@ -48,7 +49,7 @@ public class VmSchedulerTimeSharedTest {
 
     private VmScheduler createVmScheduler(double mips, int pesNumber) {
         List<Pe> peList = new ArrayList<>(pesNumber);
-        IntStream.range(0, pesNumber).forEach(i -> peList.add(new PeSimple(i, new PeProvisionerSimple(mips))));
+        LongStream.range(0, pesNumber).forEach(i -> peList.add(new PeSimple(mips, new PeProvisionerSimple())));
         Host host = new HostSimple(1, 1000, peList);
         return new VmSchedulerTimeShared().setHost(host);
     }

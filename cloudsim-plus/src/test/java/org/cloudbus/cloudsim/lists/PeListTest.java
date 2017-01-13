@@ -20,7 +20,6 @@ import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertTrue;
 
@@ -31,14 +30,16 @@ import static org.junit.Assert.assertTrue;
 public class PeListTest {
 
     private static final double MIPS = 1000;
+    private static final long ONE_THIRD_MIPS = (long)(MIPS / 3.0);
+    private static final long ONE_FIFTH_MIPS = (long)(MIPS / 5.0);
     private List<Pe> peList;
 
     @Before
     public void setUp() throws Exception {
         peList = new ArrayList<>();
 
-        peList.add(new PeSimple(0, new PeProvisionerSimple(MIPS)));
-        peList.add(new PeSimple(1, new PeProvisionerSimple(MIPS)));
+    peList.add(new PeSimple(0, MIPS, new PeProvisionerSimple()));
+        peList.add(new PeSimple(1, MIPS, new PeProvisionerSimple()));
     }
 
     @Test
@@ -103,22 +104,22 @@ public class PeListTest {
         Vm vm0 = VmSimpleTest.createVm(0, MIPS / 2, 1);
         Vm vm1 = VmSimpleTest.createVm(1, MIPS / 2, 1);
 
-        assertTrue(peList.get(0).getPeProvisioner().allocateMipsForVm(vm0, MIPS / 3));
-        assertTrue(peList.get(1).getPeProvisioner().allocateMipsForVm(vm1, MIPS / 5));
+        assertTrue(peList.get(0).getPeProvisioner().allocateResourceForVm(vm0, ONE_THIRD_MIPS));
+        assertTrue(peList.get(1).getPeProvisioner().allocateResourceForVm(vm1, ONE_FIFTH_MIPS));
 
-        assertEquals((MIPS / 3) / MIPS, PeList.getMaxUtilization(peList), 0.001);
+        assertEquals(ONE_THIRD_MIPS / MIPS, PeList.getMaxUtilization(peList), 0.001);
     }
 
     @Test
     public void testGetMaxUtilizationAmongVmsPes() {
-        Vm vm0 = VmSimpleTest.createVm(0, MIPS / 2, 1);
-        Vm vm1 = VmSimpleTest.createVm(1, MIPS / 2, 1);
+        Vm vm0 = VmSimpleTest.createVm(0, MIPS / 2.0, 1);
+        Vm vm1 = VmSimpleTest.createVm(1, MIPS / 2.0, 1);
 
-        assertTrue(peList.get(0).getPeProvisioner().allocateMipsForVm(vm0, MIPS / 3));
-        assertTrue(peList.get(1).getPeProvisioner().allocateMipsForVm(vm1, MIPS / 5));
+        assertTrue(peList.get(0).getPeProvisioner().allocateResourceForVm(vm0, ONE_THIRD_MIPS));
+        assertTrue(peList.get(1).getPeProvisioner().allocateResourceForVm(vm1, ONE_FIFTH_MIPS));
 
-        assertEquals((MIPS / 3) / MIPS, PeList.getMaxUtilizationAmongVmsPes(peList, vm0), 0.001);
-        assertEquals((MIPS / 5) / MIPS, PeList.getMaxUtilizationAmongVmsPes(peList, vm1), 0.001);
+        assertEquals(ONE_THIRD_MIPS / MIPS, PeList.getMaxUtilizationAmongVmsPes(peList, vm0), 0.001);
+        assertEquals(ONE_FIFTH_MIPS / MIPS, PeList.getMaxUtilizationAmongVmsPes(peList, vm1), 0.001);
     }
 
 }

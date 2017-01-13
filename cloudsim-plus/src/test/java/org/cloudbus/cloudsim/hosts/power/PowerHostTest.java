@@ -33,7 +33,7 @@ import org.junit.Test;
 public class PowerHostTest {
     private static final long RAM = 1024;
     private static final long BW = 10000;
-    private static final double MIPS = 1000;
+    private static final long MIPS = 1000;
     private static final double MAX_POWER = 200;
     private static final double STATIC_POWER_PERCENT = 0.3;
     private static final double TIME = 10;
@@ -45,7 +45,7 @@ public class PowerHostTest {
     public static PowerHostSimple createPowerHost(final int hostId, final int numberOfPes) {
         final List<Pe> peList = new ArrayList<>(numberOfPes);
         for(int i = 0; i < numberOfPes; i++)
-            peList.add(new PeSimple(i, new PeProvisionerSimple(MIPS)));
+            peList.add(new PeSimple(MIPS, new PeProvisionerSimple()));
 
         PowerHostSimple host = new PowerHostSimple(hostId, STORAGE, peList);
         host.setPowerModel(new PowerModelLinear(MAX_POWER, STATIC_POWER_PERCENT))

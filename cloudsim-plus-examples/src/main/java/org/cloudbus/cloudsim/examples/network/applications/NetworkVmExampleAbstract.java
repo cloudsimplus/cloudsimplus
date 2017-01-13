@@ -189,13 +189,13 @@ public abstract class NetworkVmExampleAbstract {
         return newDatacenter;
     }
 
-    public List<Pe> createPEs(final int numberOfPEs, final int mips) {
+    public List<Pe> createPEs(final int numberOfPEs, final long mips) {
         // 2. A Machine contains one or more PEs or CPUs/Cores.
         // In this example, it will have only one core.
         // 3. Create PEs and add these into an object of PowerPeList.
         List<Pe> peList = new ArrayList<>();
         for (int i = 0; i < numberOfPEs; i++) {
-            peList.add(new PeSimple(i, new PeProvisionerSimple(mips)));
+            peList.add(new PeSimple(mips, new PeProvisionerSimple()));
         }
         return peList;
     }

@@ -222,8 +222,8 @@ public class CloudletExecutionInfo {
      * @post $result >= 0
      */
     public long getRemainingCloudletLength() {
-        final long remainingMI = cloudlet.getLength() - (instructionsFinishedSoFar / (long)Conversion.MILLION);
-        return (remainingMI < 0 ? 0 : remainingMI);
+        final double remainingMI = cloudlet.getLength() - (instructionsFinishedSoFar / (double)Conversion.MILLION);
+        return (remainingMI < 0 ? 0 : (long)remainingMI);
     }
 
     /**

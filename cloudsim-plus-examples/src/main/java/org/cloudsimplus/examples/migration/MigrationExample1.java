@@ -311,7 +311,7 @@ public class MigrationExample1 {
      * returns an empty list when using  {@link PowerDatacenter},
      * {@link PowerHost} and {@link PowerVm}.
      */
-    public static PowerHostUtilizationHistory createHost(int id, int numberOfPes, double mipsByPe) {
+    public static PowerHostUtilizationHistory createHost(int id, int numberOfPes, long mipsByPe) {
             List<Pe> peList = createPeList(numberOfPes, mipsByPe);
             PowerHostUtilizationHistory host = new PowerHostUtilizationHistory(id, HOST_STORAGE, peList);
             host.setPowerModel(new PowerModelLinear(1000, 0.7))
@@ -321,10 +321,10 @@ public class MigrationExample1 {
             return host;
     }
 
-    public static List<Pe> createPeList(int numberOfPEs, double mips) {
+    public static List<Pe> createPeList(int numberOfPEs, long mips) {
         List<Pe> list = new ArrayList<>(numberOfPEs);
         for(int i = 0; i < numberOfPEs; i++) {
-            list.add(new PeSimple(i, new PeProvisionerSimple(mips)));
+            list.add(new PeSimple(mips, new PeProvisionerSimple()));
         }
         return list;
     }

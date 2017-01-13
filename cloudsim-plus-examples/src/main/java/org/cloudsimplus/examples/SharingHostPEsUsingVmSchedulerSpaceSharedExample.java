@@ -85,7 +85,7 @@ public class SharingHostPEsUsingVmSchedulerSpaceSharedExample {
     /**
      * Capacity of each CPU core (in Million Instructions per Second).
      */
-    private static final double HOST_MIPS = 1000;
+    private static final long HOST_MIPS = 1000;
     /**
      * Number of processor elements (CPU cores) of each host.
      */
@@ -94,7 +94,7 @@ public class SharingHostPEsUsingVmSchedulerSpaceSharedExample {
     /**
      * The total MIPS capacity across all the Host PEs.
      */
-    private static final double HOST_TOTAL_MIPS_CAPACITY = HOST_MIPS*HOST_PES_NUM;
+    private static final long HOST_TOTAL_MIPS_CAPACITY = HOST_MIPS*HOST_PES_NUM;
 
     /**
      * The length of each created cloudlet in Million Instructions (MI).
@@ -106,7 +106,7 @@ public class SharingHostPEsUsingVmSchedulerSpaceSharedExample {
      */
     private static final int NUMBER_OF_VMS = HOST_PES_NUM*2;
 
-    private static final double VM_MIPS = HOST_TOTAL_MIPS_CAPACITY/NUMBER_OF_VMS;
+    private static final long VM_MIPS = HOST_TOTAL_MIPS_CAPACITY/NUMBER_OF_VMS;
     private final CloudSim simulation;
 
 
@@ -128,7 +128,7 @@ public class SharingHostPEsUsingVmSchedulerSpaceSharedExample {
      * Default constructor where the simulation is built.
      */
     public SharingHostPEsUsingVmSchedulerSpaceSharedExample() {
-        Log.printFormattedLine("Starting %s Example ...", getClass().getSimpleName());
+        Log.printFormattedLine("Starting %s ...", getClass().getSimpleName());
         this.vmList = new ArrayList<>();
         this.cloudletList = new ArrayList<>();
         //Number of cloud customers
@@ -151,7 +151,7 @@ public class SharingHostPEsUsingVmSchedulerSpaceSharedExample {
         (you can use your own code here to print what you want from this cloudlet list)*/
         List<Cloudlet> finishedCloudlets = broker0.getCloudletsFinishedList();
         new CloudletsTableBuilderHelper(finishedCloudlets).build();
-        Log.printFormattedLine("%s Example finished!", getClass().getSimpleName());
+        Log.printFormattedLine("%s finished!", getClass().getSimpleName());
     }
 
     private void createAndSubmitVmsAndCloudlets(DatacenterBroker broker0) {
@@ -198,7 +198,7 @@ public class SharingHostPEsUsingVmSchedulerSpaceSharedExample {
         /*Creates the Host's CPU cores and defines the provisioner
         used to allocate each core for requesting VMs.*/
         for(int i = 0; i < HOST_PES_NUM; i++){
-            peList.add(new PeSimple(i, new PeProvisionerSimple(HOST_MIPS)));
+            peList.add(new PeSimple(HOST_MIPS, new PeProvisionerSimple()));
         }
 
        return new HostSimple(numberOfCreatedHosts++, storage, peList)
@@ -208,7 +208,7 @@ public class SharingHostPEsUsingVmSchedulerSpaceSharedExample {
 
     }
 
-    private Vm createVm(DatacenterBroker broker, double mips, int pesNumber) {
+    private Vm createVm(DatacenterBroker broker, long mips, int pesNumber) {
         long storage = 10000; // vm image size (MEGABYTE)
         int  ram = 512; // vm memory (MEGABYTE)
         long bw = 1000; // vm bandwidth

@@ -187,7 +187,7 @@ public interface Host extends Identificable, Comparable<Host> {
      *
      * @return the total mips
      */
-    int getTotalMips();
+    long getTotalMips();
 
     /**
      * Gets a VM by its id and user.
@@ -383,7 +383,7 @@ public interface Host extends Identificable, Comparable<Host> {
         @Override public Host setRamProvisioner(ResourceProvisioner ramProvisioner) { return Host.NULL; }
         @Override public long getStorageCapacity() { return 0L; }
         @Override public double getTotalAllocatedMipsForVm(Vm vm) { return 0.0; }
-        @Override public int getTotalMips() { return 0; }
+        @Override public long getTotalMips() { return 0; }
         @Override public Vm getVm(int vmId, int brokerId) { return Vm.NULL; }
         @Override public List<Vm> getVmList() { return Collections.emptyList(); }
         @Override public VmScheduler getVmScheduler() {return VmScheduler.NULL; }

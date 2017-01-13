@@ -30,8 +30,6 @@ public class VmTest {
         assertEquals(0, instance.getMips(), 0);
         assertEquals(0, instance.getNumberOfPes());
 
-        assertEquals(ResourceManageable.NULL, instance.getResource(null));
-
         assertEquals(0, instance.getTotalUtilizationOfCpu(0), 0);
         assertEquals(0, instance.getTotalUtilizationOfCpuMips(0), 0);
 

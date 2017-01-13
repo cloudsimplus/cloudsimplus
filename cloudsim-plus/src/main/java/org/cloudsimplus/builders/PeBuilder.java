@@ -27,9 +27,10 @@ import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.List;
+
+import org.cloudbus.cloudsim.provisioners.PeProvisioner;
 import org.cloudbus.cloudsim.resources.Pe;
 import org.cloudbus.cloudsim.resources.PeSimple;
-import org.cloudbus.cloudsim.provisioners.PeProvisioner;
 import org.cloudbus.cloudsim.provisioners.PeProvisionerSimple;
 
 /**
@@ -41,14 +42,14 @@ import org.cloudbus.cloudsim.provisioners.PeProvisionerSimple;
 public class PeBuilder extends Builder {
     private Class<? extends PeProvisioner> provisionerClass = PeProvisionerSimple.class;
 
-    public List<Pe> create(final int amount, final double mipsOfEachPe) {
+    public List<Pe> create(final double amount, final double mipsOfEachPe) {
         try {
             validateAmount(amount);
             List<Pe> peList = new ArrayList<>();
             Constructor cons =
-                    provisionerClass.getConstructor(double.class);
+                    provisionerClass.getConstructor();
             for (int i = 0; i < amount; i++) {
-                peList.add(new PeSimple(i, (PeProvisioner) cons.newInstance(mipsOfEachPe)));
+                peList.add(new PeSimple(mipsOfEachPe, (PeProvisioner) cons.newInstance()));
             }
             return peList;
         } catch (NoSuchMethodException | SecurityException | InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException ex) {

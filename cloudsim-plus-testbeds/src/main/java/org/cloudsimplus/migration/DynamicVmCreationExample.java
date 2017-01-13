@@ -190,10 +190,10 @@ public class DynamicVmCreationExample {
         return list;
     }
 
-    public List<Pe> createHostPesList(int hostPes, int mips) {
+    public List<Pe> createHostPesList(int hostPes, long mips) {
         List<Pe> peList = new ArrayList<>();
         for (int i = 0; i < hostPes; i++) {
-            peList.add(new PeSimple(i, new PeProvisionerSimple(mips)));
+            peList.add(new PeSimple(mips, new PeProvisionerSimple()));
         }
         return peList;
     }

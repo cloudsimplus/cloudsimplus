@@ -66,9 +66,9 @@ import org.cloudbus.cloudsim.resources.Ram;
  * @since CloudSim Plus 1.0
  */
 public class TwoCloudletsAndOneTimeSharedVmExample {
-    private static List<Cloudlet> cloudletList;
-    private static List<Vm> vmlist;
-    private static CloudSim simulation;
+    private List<Cloudlet> cloudletList;
+    private List<Vm> vmlist;
+    private CloudSim simulation;
 
     /**
      * Creates main() to run this example.
@@ -76,7 +76,11 @@ public class TwoCloudletsAndOneTimeSharedVmExample {
      * @param args the args
      */
     public static void main(String[] args) {
-        Log.printFormattedLine("Starting %s ...", TwoCloudletsAndOneTimeSharedVmExample.class.getSimpleName());
+        new TwoCloudletsAndOneTimeSharedVmExample();
+    }
+
+    public TwoCloudletsAndOneTimeSharedVmExample(){
+        Log.printFormattedLine("Starting %s ...", getClass().getSimpleName());
 
         // First step: Initialize the CloudSim package. It should be called before creating any entities.
         int num_user = 1; // number of cloud users
@@ -88,7 +92,7 @@ public class TwoCloudletsAndOneTimeSharedVmExample {
         Datacenter datacenter0 = createDatacenter();
 
         // Third step: Create Broker
-        DatacenterBroker broker = createBroker();
+        DatacenterBroker broker = new DatacenterBrokerSimple(simulation);
 
         // Fourth step: Create one virtual machine
         vmlist = new ArrayList<>();
@@ -122,11 +126,11 @@ public class TwoCloudletsAndOneTimeSharedVmExample {
         UtilizationModel utilizationModel = new UtilizationModelFull();
 
         Cloudlet cloudlet1 = new CloudletSimple(++id, length, pesNumber)
-                    .setFileSize(fileSize)
-                    .setOutputSize(outputSize)
-                    .setUtilizationModel(utilizationModel)
-                    .setBroker(broker)
-                    .setVm(vm);
+            .setFileSize(fileSize)
+            .setOutputSize(outputSize)
+            .setUtilizationModel(utilizationModel)
+            .setBroker(broker)
+            .setVm(vm);
         cloudletList.add(cloudlet1);
 
         Cloudlet cloudlet2 = new CloudletSimple(++id, length, pesNumber)
@@ -146,7 +150,7 @@ public class TwoCloudletsAndOneTimeSharedVmExample {
         //Final step: Print results when simulation is over
         List<Cloudlet> newList = broker.getCloudletsFinishedList();
         new CloudletsTableBuilderHelper(newList).build();
-        Log.printFormattedLine("%s finished!", TwoCloudletsAndOneTimeSharedVmExample.class.getSimpleName());
+        Log.printFormattedLine("%s finished!", getClass().getSimpleName());
     }
 
     /**
@@ -154,7 +158,7 @@ public class TwoCloudletsAndOneTimeSharedVmExample {
      *
      * @return the Datacenter
      */
-    private static Datacenter createDatacenter() {
+    private Datacenter createDatacenter() {
         // Here are the steps needed to create a DatacenterSimple:
         // 1. We need to create a list to store
         // our machine
@@ -164,10 +168,10 @@ public class TwoCloudletsAndOneTimeSharedVmExample {
         // In this example, it will have only one core.
         List<Pe> peList = new ArrayList<>();
 
-        int mips = 1000;
+        long mips = 1000;
 
         // 3. Create PEs and add these into a list.
-        peList.add(new PeSimple(0, new PeProvisionerSimple(mips)));
+        peList.add(new PeSimple(mips, new PeProvisionerSimple()));
 
         // 4. Create HostSimple with its id and list of PEs and add them to the list
         // of machines
@@ -203,18 +207,6 @@ public class TwoCloudletsAndOneTimeSharedVmExample {
 
         // 6. Finally, we need to create a DatacenterSimple object.
         return new DatacenterSimple(simulation, characteristics, new VmAllocationPolicySimple());
-    }
-
-    // We strongly encourage users to develop their own broker policies, to
-    // submit vms and cloudlets according
-    // to the specific rules of the simulated scenario
-    /**
-     * Creates the broker.
-     *
-     * @return the Datacenter broker
-     */
-    private static DatacenterBroker createBroker() {
-        return new DatacenterBrokerSimple(simulation);
     }
 
 }

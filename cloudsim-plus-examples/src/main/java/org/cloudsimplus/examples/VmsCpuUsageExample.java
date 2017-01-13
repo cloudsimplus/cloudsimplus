@@ -84,7 +84,7 @@ public class VmsCpuUsageExample {
     }
 
     public VmsCpuUsageExample() {
-        Log.printLine("Starting VmsCpuUsageExample...");
+        Log.printFormattedLine("Starting %s ...", getClass().getSimpleName());
         CloudSim simulation = new CloudSim();
 
         @SuppressWarnings("unused")
@@ -115,7 +115,7 @@ public class VmsCpuUsageExample {
 
         showCpuUtilizationForAllVms(finishTime);
 
-        Log.printLine("VmsCpuUsageExample finished!");
+        Log.printFormattedLine("%s finished!", getClass().getSimpleName());
     }
 
     private Cloudlet createCloudlet(int pesNumber, int id) {
@@ -198,10 +198,10 @@ public class VmsCpuUsageExample {
         return new DatacenterSimple(simulation, characteristics, new VmAllocationPolicySimple());
     }
 
-    private static Host createHost(int pesNumber, double mips, int hostId) {
+    private static Host createHost(int pesNumber, long mips, int hostId) {
         List<Pe> peList = new ArrayList<>();
         for (int i = 0; i < pesNumber; i++) {
-            peList.add(new PeSimple(i, new PeProvisionerSimple(mips)));
+            peList.add(new PeSimple(mips, new PeProvisionerSimple()));
         }
 
         //4. Create Hosts with its id and list of PEs and add them to the list of machines

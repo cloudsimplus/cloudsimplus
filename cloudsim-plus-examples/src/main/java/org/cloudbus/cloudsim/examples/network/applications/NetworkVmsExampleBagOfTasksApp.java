@@ -25,10 +25,6 @@ import org.cloudbus.cloudsim.utilizationmodels.UtilizationModelFull;
  */
 public class NetworkVmsExampleBagOfTasksApp extends NetworkVmExampleAbstract {
 
-    public NetworkVmsExampleBagOfTasksApp(){
-        super();
-    }
-
     /**
      * Starts the execution of the example.
      *
@@ -36,6 +32,10 @@ public class NetworkVmsExampleBagOfTasksApp extends NetworkVmExampleAbstract {
      */
     public static void main(String[] args) {
         new NetworkVmsExampleBagOfTasksApp();
+    }
+
+    public NetworkVmsExampleBagOfTasksApp(){
+        super();
     }
 
     /**

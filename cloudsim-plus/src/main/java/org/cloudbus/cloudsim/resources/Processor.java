@@ -37,7 +37,7 @@ public class Processor implements ResourceCapacity {
      * @param individualPeCapacity capacity of each {@link Pe Processing Elements (cores)}
      * @param numberOfPes number of {@link Pe Processing Elements (cores)}
      */
-    public Processor(long individualPeCapacity, int numberOfPes) {
+    public Processor(double individualPeCapacity, int numberOfPes) {
         cloudletExecList = new ArrayList<>();
         setCapacity(individualPeCapacity);
         setNumberOfPes(numberOfPes);
@@ -55,14 +55,14 @@ public class Processor implements ResourceCapacity {
      * @return the new processor
      */
     public static Processor fromMipsList(List<Double> mipsList,
-            List<CloudletExecutionInfo> cloudletExecList) {
+                                         List<CloudletExecutionInfo> cloudletExecList) {
         if(Objects.isNull(mipsList)){
             throw new IllegalArgumentException("The mipsList cannot be null.");
         }
 
         mipsList = getNonZeroMipsElements(mipsList);
 
-        double peMips = 0.0;
+        double peMips = 0;
         if(!mipsList.isEmpty()){
             peMips = mipsList.get(0);
 
@@ -74,7 +74,7 @@ public class Processor implements ResourceCapacity {
             }
         }
 
-        Processor p = new Processor((long)peMips, mipsList.size());
+        Processor p = new Processor(peMips, mipsList.size());
         p.cloudletExecList = cloudletExecList;
         return p;
     }
@@ -179,12 +179,12 @@ public class Processor implements ResourceCapacity {
      * @param newCapacity the new MIPS capacity of each PE
      * @pre newCapacity != null && newCapacity >= 0
      */
-    public final void setCapacity(long newCapacity) {
+    public final void setCapacity(double newCapacity) {
         if(newCapacity < 0) {
             throw new IllegalArgumentException("Capacity cannot be negative");
         }
 
-        this.capacity = newCapacity;
+        this.capacity = (long)newCapacity;
     }
 
     /**

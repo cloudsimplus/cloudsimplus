@@ -45,7 +45,7 @@ public class CloudletSchedulerDynamicWorkload extends CloudletSchedulerTimeShare
      *
      * @todo Despite of the class considers that all PEs have the same capacity,
      * it accepts a list of PEs with different MIPS at the method
-     * {@link #updateVmProcessing(double, java.util.List) }
+     * {@link CloudletScheduler#updateVmProcessing(double, List) }
      */
     private double mips;
 
@@ -100,7 +100,7 @@ public class CloudletSchedulerDynamicWorkload extends CloudletSchedulerTimeShare
 
             if (rcl.getCloudlet().isFinished()) {
                 cloudletsToFinish.add(rcl);
-            } else { 
+            } else {
                 double estimatedFinishTime = getEstimatedFinishTimeOfCloudlet(rcl, currentTime);
                 if (estimatedFinishTime < getVm().getSimulation().getMinTimeBetweenEvents()) {
                     estimatedFinishTime =  getVm().getSimulation().getMinTimeBetweenEvents();
@@ -139,7 +139,7 @@ public class CloudletSchedulerDynamicWorkload extends CloudletSchedulerTimeShare
         }
         List<Double> currentMips = new ArrayList<>();
         double totalMips = getTotalUtilizationOfCpu(getPreviousTime()) * getTotalMips();
-        double mipsForPe = totalMips / getNumberOfPes();
+        double mipsForPe = (long)(totalMips / getNumberOfPes());
 
         for (int i = 0; i < getNumberOfPes(); i++) {
             currentMips.add(mipsForPe);

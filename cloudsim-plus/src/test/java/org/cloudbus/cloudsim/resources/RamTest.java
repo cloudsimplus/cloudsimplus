@@ -350,11 +350,11 @@ public class RamTest {
 
         //increase available resource
         amountToSum = QUARTER_OF_CAPACITY;
-        int totalAvailable = 0;
+        long totalAvailable = 0;
         for(int i = 1; i <= 4; i++) {
             totalAvailable += amountToSum;
             assertTrue(instance.sumAvailableResource(amountToSum));
-            assertEquals((long)totalAvailable, instance.getAvailableResource());
+            assertEquals(totalAvailable, instance.getAvailableResource());
         }
 
         assertFalse(instance.sumAvailableResource(amountToSum));

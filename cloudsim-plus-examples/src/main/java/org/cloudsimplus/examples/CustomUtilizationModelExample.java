@@ -86,7 +86,7 @@ public class CustomUtilizationModelExample {
      * Default constructor that builds the simulation.
      */
     public CustomUtilizationModelExample() {
-        Log.printLine("Starting CustomUtilizationModel ...");
+        Log.printFormattedLine("Starting %s ...", getClass().getSimpleName());
         this.simulation = new CloudSim();
 
         Datacenter datacenter0 = createDatacenter();
@@ -120,7 +120,7 @@ public class CustomUtilizationModelExample {
         (you can use your own code here to print what you want from this cloudlet list)*/
         List<Cloudlet> finishedCloudlets = broker0.getCloudletsFinishedList();
         new CloudletsTableBuilderHelper(finishedCloudlets).build();
-        Log.printLine("CustomUtilizationModel finished!");
+        Log.printFormattedLine("%s finished!", getClass().getSimpleName());
     }
 
     private DatacenterSimple createDatacenter() {
@@ -147,7 +147,7 @@ public class CustomUtilizationModelExample {
     }
 
     private Host createHost() {
-        int  mips = 1000; // capacity of each CPU core (in Million Instructions per Second)
+        long  mips = 1000; // capacity of each CPU core (in Million Instructions per Second)
         long  ram = 2048; // host memory (MEGABYTE)
         long storage = 1000000; // host storage (MEGABYTE)
         long bw = 10000; //in Megabits/s
@@ -157,7 +157,7 @@ public class CustomUtilizationModelExample {
         /*Creates the Host's CPU cores and defines the provisioner
         used to allocate each core for requesting VMs.*/
         for (int i = 0; i < 2; i++) {
-            pesList.add(new PeSimple(i, new PeProvisionerSimple(mips)));
+            pesList.add(new PeSimple(mips, new PeProvisionerSimple()));
         }
 
         return new HostSimple(numberOfCreatedHosts++, storage, pesList)
@@ -167,7 +167,7 @@ public class CustomUtilizationModelExample {
     }
 
     private Vm createVm(DatacenterBroker broker) {
-        double mips = 1000;
+        long   mips = 1000;
         long   storage = 10000; // vm image size (MEGABYTE)
         int    ram = 512; // vm memory (MEGABYTE)
         long   bw = 1000; // vm bandwidth (Megabits/s)

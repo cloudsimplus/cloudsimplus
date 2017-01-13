@@ -59,7 +59,7 @@ public class NetworkExample1 {
     }
 
     public NetworkExample1() {
-        Log.printFormattedLine("Starting %s...", NetworkExample1.class.getSimpleName());
+        Log.printFormattedLine("Starting %s...", getClass().getSimpleName());
         // First step: Initialize the CloudSim package. It should be called
         // before creating any entities.
 
@@ -141,7 +141,7 @@ public class NetworkExample1 {
         // Final step: Print results when simulation is over
         List<Cloudlet> newList = broker.getCloudletsFinishedList();
         new CloudletsTableBuilderHelper(newList).build();
-        Log.printFormattedLine("%s finished!", NetworkExample1.class.getSimpleName());
+        Log.printFormattedLine("%s finished!", getClass().getSimpleName());
     }
 
     private Datacenter createDatacenter() {
@@ -154,10 +154,10 @@ public class NetworkExample1 {
         // In this example, it will have only one core.
         List<Pe> peList = new ArrayList<>();
 
-        int mips = 1000;
+        long mips = 1000;
 
         // 3. Create PEs and add these into a list.
-        peList.add(new PeSimple(0, new PeProvisionerSimple(mips))); // need to store Pe id and MIPS Rating
+        peList.add(new PeSimple(mips, new PeProvisionerSimple())); // need to store Pe id and MIPS Rating
 
         //4. Create HostSimple with its id and list of PEs and add them to the list of machines
         int hostId = 0;

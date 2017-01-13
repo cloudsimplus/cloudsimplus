@@ -16,12 +16,11 @@ import static org.junit.Assert.*;
  */
 public class PowerVmListTest {
     private static final int USER_ID=0;
-    private static final double MIPS=1000;
+    private static final long MIPS=1000;
     private static final int PES=1;
     private static final int RAM=512;
     private static final long BW=1000;
     private static final int STORAGE=1024;
-    private static final String VMM="Xen";
     private static final int NUMBER_OF_VMS = 10;
     private static final int TIME = 0;
 

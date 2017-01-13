@@ -22,7 +22,7 @@ import org.junit.Ignore;
  * @author Manoel Campos da Silva Filho
  */
 public class CloudletSchedulerSpaceSharedTest {
-    private static final double SCHEDULER_MIPS = 1000;
+    private static final long SCHEDULER_MIPS = 1000;
 
     @Test
     public void testCloudletFinish_CheckCloudletWasSetToFinished() {
@@ -128,7 +128,7 @@ public class CloudletSchedulerSpaceSharedTest {
     @Test
     public void testCloudletSubmit_VerifyIfCloudletWasAddedToExecListByCheckingSubmitReturnValue() {
         final int pes = 1;
-        final long cloudletLen = (long)SCHEDULER_MIPS;
+        final long cloudletLen = SCHEDULER_MIPS;
         final double fileTransferTime = 0.0;
 
         Cloudlet cloudlet = CloudletSimpleTest.createCloudlet0(cloudletLen, pes);
@@ -145,7 +145,7 @@ public class CloudletSchedulerSpaceSharedTest {
     @Test
     public void testCloudletSubmit_VerifyIfCloudletWasAddedToExecListByCheckingSuchList() {
         final int pes = 1;
-        final long cloudletLen = (long)SCHEDULER_MIPS;
+        final long cloudletLen = SCHEDULER_MIPS;
         final double fileTransferTime = 0.0;
 
         Cloudlet cloudlet = CloudletSimpleTest.createCloudlet0(cloudletLen, pes);
@@ -160,7 +160,7 @@ public class CloudletSchedulerSpaceSharedTest {
     @Test
     public void testCloudletSubmit_WhenThereAreMoreCloudletsThanPes_VerifyThatSubmitedCloudletWasAddedToWaitListByCheckingSubmitReturnValue() {
         final int pes = 1;
-        final long cloudletLen = (long)SCHEDULER_MIPS;
+        final long cloudletLen = SCHEDULER_MIPS;
         final double fileTransferTime = 0.0;
 
         Cloudlet cloudlet0 = CloudletSimpleTest.createCloudlet(0, cloudletLen, pes);
@@ -178,7 +178,7 @@ public class CloudletSchedulerSpaceSharedTest {
     @Test
     public void testCloudletSubmit_WhenThereAreMoreCloudletsThanPes_VerifyThatSubmitedCloudletWasAddedToWaitListByCheckingSuchList() {
         final int pes = 1;
-        final long cloudletLen = (long)SCHEDULER_MIPS;
+        final long cloudletLen = SCHEDULER_MIPS;
         final double fileTransferTime = 0.0;
 
         Cloudlet cloudlet0 = CloudletSimpleTest.createCloudlet(0, cloudletLen, pes);
@@ -528,7 +528,7 @@ public class CloudletSchedulerSpaceSharedTest {
         assertEquals(expected, instance.getTotalUtilizationOfCpu(0), 0.001);
     }
 
-    private CloudletSchedulerSpaceShared createCloudletSchedulerWithMipsList(int numberOfPes, double mipsOfEachPe) {
+    private CloudletSchedulerSpaceShared createCloudletSchedulerWithMipsList(int numberOfPes, long mipsOfEachPe) {
         CloudletSchedulerSpaceShared instance = new CloudletSchedulerSpaceShared();
         List<Double> mipsList = CloudletSchedulerUtil.createMipsList(numberOfPes, mipsOfEachPe);
         instance.setCurrentMipsShare(mipsList);

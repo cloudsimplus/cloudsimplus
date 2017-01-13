@@ -23,6 +23,8 @@ import org.cloudbus.cloudsim.lists.PeList;
 import org.cloudbus.cloudsim.provisioners.ResourceProvisioner;
 import org.cloudbus.cloudsim.resources.RawStorage;
 
+import static java.util.stream.Collectors.toList;
+
 /**
  * A Host class that implements the most basic features of a Physical Machine
  * (PM) inside a {@link Datacenter}. It executes actions related to management
@@ -327,7 +329,7 @@ public class HostSimple implements Host {
     }
 
     @Override
-    public int getTotalMips() {
+    public long getTotalMips() {
         return PeList.getTotalMips(getPeList());
     }
 
@@ -443,6 +445,13 @@ public class HostSimple implements Host {
             peList = new ArrayList<>();
         }
         this.peList = peList;
+
+        int id = this.peList.stream().filter(pe -> pe.getId() > 0).mapToInt(Pe::getId).max().orElse(-1);
+        List<Pe> pesWithoutIds = this.peList.stream().filter(pe -> pe.getId() < 0).collect(toList());
+        for(Pe pe: pesWithoutIds){
+            pe.setId(++id);
+        }
+
         return this;
     }
 

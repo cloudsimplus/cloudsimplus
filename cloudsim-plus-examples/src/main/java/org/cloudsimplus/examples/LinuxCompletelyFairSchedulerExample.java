@@ -64,11 +64,11 @@ import org.cloudsimplus.builders.tables.PriorityCloudletsTableBuilderHelper;
  */
 public class LinuxCompletelyFairSchedulerExample {
     private static final int HOSTS_NUMBER = 1;
-    private static final double HOST_MIPS = 1000; //in MIPS
+    private static final long HOST_MIPS = 1000;
     private static final int HOST_PES = 3;
     private static final int VMS_NUMBER = 1;
     private static final int VM_PES = HOST_PES;
-    private static final double VM_MIPS = HOST_MIPS;
+    private static final long VM_MIPS = HOST_MIPS;
     private static final int CLOUDLETS_NUMBER = HOST_PES*2;
     private static final int CLOUDLET_PES = 1;
     private static final int CLOUDLET_LEN = 10000; //in MI
@@ -168,10 +168,10 @@ public class LinuxCompletelyFairSchedulerExample {
 
     }
 
-    private List<Pe> createHostPesList(double mips) {
+    private List<Pe> createHostPesList(long mips) {
         List<Pe> cpuCoresList = new ArrayList<>(HOST_PES);
         for(int i = 0; i < HOST_PES; i++){
-            cpuCoresList.add(new PeSimple(i, new PeProvisionerSimple(mips)));
+            cpuCoresList.add(new PeSimple(mips, new PeProvisionerSimple()));
         }
 
         return cpuCoresList;

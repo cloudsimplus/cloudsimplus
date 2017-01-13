@@ -96,7 +96,7 @@ public class TerminateSimulationAtGivenConditionExample {
      * Default constructor that builds the simulation.
      */
     public TerminateSimulationAtGivenConditionExample() {
-        Log.printFormattedLine("Starting %s Example ...", getClass().getSimpleName());
+        Log.printFormattedLine("Starting %s ...", getClass().getSimpleName());
         this.vmList = new ArrayList<>();
         this.cloudletList = new ArrayList<>();
         this.simulation = new CloudSim();
@@ -130,7 +130,7 @@ public class TerminateSimulationAtGivenConditionExample {
         (you can use your own code here to print what you want from this cloudlet list)*/
         List<Cloudlet> finishedCloudlets = broker0.getCloudletsFinishedList();
         new CloudletsTableBuilderHelper(finishedCloudlets).build();
-        Log.printConcatLine(getClass().getSimpleName(), " Example finished!");
+        Log.printConcatLine(getClass().getSimpleName(), " finished!");
     }
 
     /**
@@ -168,7 +168,7 @@ public class TerminateSimulationAtGivenConditionExample {
     }
 
     private Host createHost() {
-        int  mips = 1000; // capacity of each CPU core (in Million Instructions per Second)
+        long  mips = 1000; // capacity of each CPU core (in Million Instructions per Second)
         long  ram = 2048; // host memory (MEGABYTE)
         long storage = 1000000; // host storage (MEGABYTE)
         long bw = 10000; //in Megabits/s
@@ -177,7 +177,7 @@ public class TerminateSimulationAtGivenConditionExample {
 
         /*Creates the Host's CPU cores and defines the provisioner
         used to allocate each core for requesting VMs.*/
-        pesList.add(new PeSimple(0, new PeProvisionerSimple(mips)));
+        pesList.add(new PeSimple(mips, new PeProvisionerSimple()));
 
         return new HostSimple(numberOfCreatedHosts++, storage, pesList)
                 .setRamProvisioner(new ResourceProvisionerSimple(new Ram(ram)))
@@ -186,7 +186,7 @@ public class TerminateSimulationAtGivenConditionExample {
     }
 
     private Vm createVm(DatacenterBroker broker) {
-        double mips = 1000;
+        long mips = 1000;
         long   storage = 10000; // vm image size (MEGABYTE)
         int    ram = 512; // vm memory (MEGABYTE)
         long   bw = 1000; // vm bandwidth (Megabits/s)

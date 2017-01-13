@@ -147,8 +147,8 @@ public class HostListTest {
         List<HostSimple> list = createHostSimpleList(NUMBER_OF_HOSTS, numberOfFreePes);
         HostSimple host0 = list.get(0);
         assertEquals(host0, HostList.getHostWithFreePe(list, numberOfFreePes));
-
         host0.setPeStatus(0, Status.BUSY);
+
         HostSimple host1 = list.get(1);
         assertEquals(host1, HostList.getHostWithFreePe(list, numberOfFreePes));
     }

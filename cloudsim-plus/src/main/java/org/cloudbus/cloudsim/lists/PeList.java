@@ -10,7 +10,6 @@ package org.cloudbus.cloudsim.lists;
 import java.util.List;
 
 import org.cloudbus.cloudsim.provisioners.PeProvisioner;
-import org.cloudbus.cloudsim.util.Log;
 import org.cloudbus.cloudsim.resources.Pe;
 import org.cloudbus.cloudsim.vms.Vm;
 
@@ -44,9 +43,9 @@ public final class PeList {
      * @pre id >= 0
      * @post $none
      */
-    public static int getMips(List<? extends Pe> peList, int id) {
+    public static long getMips(List<? extends Pe> peList, int id) {
         Pe pe = getById(peList, id);
-        return (pe == Pe.NULL ? -1 : pe.getMips());
+        return (pe == Pe.NULL ? -1 : pe.getCapacity());
     }
 
     /**
@@ -57,8 +56,8 @@ public final class PeList {
      * @pre $none
      * @post $none
      */
-    public static int getTotalMips(List<? extends Pe> peList) {
-        return peList.stream().mapToInt(Pe::getMips).sum();
+    public static long getTotalMips(List<? extends Pe> peList) {
+        return peList.stream().mapToLong(Pe::getCapacity).sum();
     }
 
     /**
@@ -84,7 +83,7 @@ public final class PeList {
     public static double getMaxUtilizationAmongVmsPes(List<? extends Pe> peList, Vm vm) {
         return peList.stream()
             .map(Pe::getPeProvisioner)
-            .filter(pv -> !pv.getAllocatedMipsForVm(vm).isEmpty())
+            .filter(pv -> pv.getAllocatedResourceForVm(vm) > 0)
             .mapToDouble(PeProvisioner::getUtilization)
             .max().orElse(0);
     }

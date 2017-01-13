@@ -98,16 +98,14 @@ public class DynamicCloudletsArrival2 {
      * @param args command line parameters
      */
     public static void main(String[] args) {
-        Log.printFormattedLine("Starting %s ...", DynamicCloudletsArrival2.class.getSimpleName());
         new DynamicCloudletsArrival2();
-        Log.printFormattedLine("%s finished!", DynamicCloudletsArrival2.class.getSimpleName());
     }
 
     /**
      * Default constructor that builds and starts the simulation.
      */
     public DynamicCloudletsArrival2() {
-        int numberOfUsers = 1; // number of cloud users/customers (brokers)
+        Log.printFormattedLine("Starting %s ...", getClass().getSimpleName());
         simulation = new CloudSim();
 
         this.hostList = new ArrayList<>();
@@ -119,6 +117,7 @@ public class DynamicCloudletsArrival2 {
         createAndSubmitVmAndCloudlets();
 
         runSimulationAndPrintResults();
+        Log.printFormattedLine("%s finished!", getClass().getSimpleName());
     }
 
     private void runSimulationAndPrintResults() {
@@ -242,9 +241,9 @@ public class DynamicCloudletsArrival2 {
      */
     private Host createHost(int id) {
         List<Pe> peList = new ArrayList<>();
-        int mips = 1000;
+        long mips = 1000;
         for(int i = 0; i < HOST_PES_NUMBER; i++){
-            peList.add(new PeSimple(i, new PeProvisionerSimple(mips)));
+            peList.add(new PeSimple(mips, new PeProvisionerSimple()));
         }
         long ram = 2048; // host memory (MEGABYTE)
         long storage = 1000000; // host storage (MEGABYTE)

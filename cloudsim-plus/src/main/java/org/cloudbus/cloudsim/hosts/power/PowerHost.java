@@ -109,7 +109,7 @@ public interface PowerHost extends HostDynamicWorkload {
         @Override public Host setRamProvisioner(ResourceProvisioner ramProvisioner) { return Host.NULL; }
         @Override public long getStorageCapacity() { return 0; }
         @Override public double getTotalAllocatedMipsForVm(Vm vm) { return 0; }
-        @Override public int getTotalMips() { return 0; }
+        @Override public long getTotalMips() { return 0; }
         @Override public Vm getVm(int vmId, int brokerId) { return Vm.NULL; }
         @Override public <T extends Vm> List<T> getVmList() { return Collections.EMPTY_LIST; }
         @Override public VmScheduler getVmScheduler() { return VmScheduler.NULL; }

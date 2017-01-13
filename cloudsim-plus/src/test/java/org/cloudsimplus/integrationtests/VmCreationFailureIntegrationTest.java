@@ -48,11 +48,10 @@ import org.junit.Before;
 
 /**
  *
- * <p>An Integration Test (IT) to check a simulation scenario with 1 PM that has
+ * An Integration Test (IT) to check a simulation scenario with 1 PM that has
  * capacity to host just 1 of the user's VMs. Two cloudlets are submitted to the
- * same VM and run using the SpaceShared CloudletScheduler.</p>
- *
- * The Integration Test performs several tests that aren't describe here in
+ * same VM and run using the SpaceShared CloudletScheduler.
+ * The Integration Test performs several tests that aren't described here in
  * order to avoid the documentation being out-of-date in case the IT is changed.
  *
  * <p>To see what verifications are being performed, take a look at methods such as
@@ -261,7 +260,7 @@ public final class VmCreationFailureIntegrationTest {
         assertEquals("cloudlet.getFinishTime", results.getExpectedFinishTime(), results.getCloudlet().getFinishTime(), 0.2);
         assertEquals(0, results.getCloudlet().getVm().getId(), 0);
         assertEquals("Cloudlet wasn't executed at the expected Datacenter",
-                2, results.getCloudlet().getLastDatacenter().getId(), 0);
+                1, results.getCloudlet().getLastDatacenter().getId(), 0);
         assertEquals(Cloudlet.Status.SUCCESS, results.getCloudlet().getStatus());
     }
 

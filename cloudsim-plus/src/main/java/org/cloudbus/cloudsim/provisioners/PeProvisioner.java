@@ -1,140 +1,63 @@
-/*
- * Title:        CloudSim Toolkit
- * Description:  CloudSim (Cloud Simulation) Toolkit for Modeling and Simulation of Clouds
- * Licence:      GPL - http://www.gnu.org/copyleft/gpl.html
- *
- * Copyright (c) 2009-2012, The University of Melbourne, Australia
- */
 package org.cloudbus.cloudsim.provisioners;
-
-import java.util.List;
-import org.cloudbus.cloudsim.datacenters.DatacenterCharacteristics;
 
 import org.cloudbus.cloudsim.resources.Pe;
 import org.cloudbus.cloudsim.vms.Vm;
 
 /**
- * PeProvisioner is an abstract class that represents the provisioning policy
- * used by a host to allocate its PEs to virtual machines inside it. It gets a
- * physical PE and manage it in order to provide this PE as virtual PEs for VMs.
- * In that way, a given PE might be shared among different VMs. Each host's PE
- * has to have its own instance of a PeProvisioner. When extending this class,
- * care must be taken to guarantee that the field availableMips will always
- * contain the amount of free mipsCapacity available for future allocations.
+ * A class that represents the provisioning policy
+ * used by a host to allocate its PEs to virtual machines inside it.
+ * It gets a physical PE and manage it in order to provide this PE as virtual PEs for VMs.
+ * In that way, a given PE might be shared among different VMs.
  *
- * @author Anton Beloglazov
- * @since CloudSim Toolkit 2.0
+ * @author Manoel Campos da Silva Filho
+ * @since CloudSim Plus 1.1
  */
-public abstract class PeProvisioner {
+public interface PeProvisioner extends ResourceProvisioner {
 
     /**
-     * @see #getMipsCapacity()
-     */
-    private double mipsCapacity;
-
-    /**
-     * The available mipsCapacity.
-     */
-    private double availableMips;
-
-    /**
-     * Creates a new PeProvisioner.
+     * Sets the {@link Pe} that this provisioner will manage.
      *
-     * @param mipsCapacity The total mipsCapacity capacity of the PE that the provisioner can
-     * allocate to VMs
-     *
-     * @pre mipsCapacity>=0
-     * @post $none
+     * @param pe the Pe to set
      */
-    public PeProvisioner(double mipsCapacity) {
-        setMipsCapacity(mipsCapacity);
-        setAvailableMips(mipsCapacity);
-    }
+    void setPe(Pe pe);
 
     /**
-     * Allocates a new virtual PE with a specific capacity for a given VM. The
-     * virtual PE to be added will use the total or partial mipsCapacity capacity of the
+     * Allocates an amount of MIPS from the physical Pe to a new virtual PE for a given VM.
+     * The virtual PE to be added will use the total or partial MIPS capacity of the
      * physical PE.
      *
-     * @param vm the virtual machine for which the new virtual PE is being
-     * allocated
-     * @param mips the mipsCapacity to be allocated to the virtual PE of the given VM
-     *
+     * @param vm the virtual machine for which the new virtual PE is being allocated
+     * @param mips the MIPS to be allocated to the virtual PE of the given VM
      * @return $true if the virtual PE could be allocated; $false otherwise
      *
      * @pre $none
      * @post $none
      */
-    public abstract boolean allocateMipsForVm(Vm vm, double mips);
+    @Override
+    boolean allocateResourceForVm(Vm vm, long mips);
 
     /**
-     * Allocates a new set of virtual PEs with a specific capacity for a given
-     * VM. The virtual PE to be added will use the total or partial mipsCapacity
-     * capacity of the physical PE.
+     * Gets the amount of allocated MIPS from the physical Pe to a virtual PE of a VM.
      *
-     * @param vm the virtual machine for which the new virtual PE is being
-     * allocated
-     * @param mips the list of mipsCapacity capacity of each virtual PE to be allocated
-     * to the VM
-     *
-     * @return $true if the set of virtual PEs could be allocated; $false
-     * otherwise
-     *
-     * @pre $none
-     * @post $none
-     * @TODO In this case, each PE can have a different capacity, what in many
-     * places this situation is not considered, such as in the
-     * {@link Vm}, {@link Pe} and {@link DatacenterCharacteristics} classes.
-     */
-    public abstract boolean allocateMipsForVm(Vm vm, List<Double> mips);
-
-    /**
-     * Gets the list of allocated virtual PEs' MIPS for a given VM.
-     *
-     * @param vm the virtual machine the get the list of allocated virtual PEs'
-     * MIPS
-     *
-     * @return list of allocated virtual PEs' MIPS
+     * @param vm the virtual machine to get the allocated virtual Pe MIPS
+     * @return the allocated virtual Pe MIPS
      *
      * @pre $none
      * @post $none
      */
-    public abstract List<Double> getAllocatedMipsForVm(Vm vm);
+    @Override
+    long getAllocatedResourceForVm(Vm vm);
 
     /**
-     * Gets total allocated MIPS for a given VM for all PEs.
+     * Releases the virtual Pe allocated to a given VM.
      *
-     * @param vm the virtual machine the get the total allocated MIPS capacity
-     *
-     * @return total allocated MIPS
-     *
-     * @pre $none
-     * @post $none
-     */
-    public abstract double getTotalAllocatedMipsForVm(Vm vm);
-
-    /**
-     * Gets the MIPS capacity of a virtual Pe allocated to a given VM.
-     *
-     * @param vm virtual machine to get a given virtual PE capacity
-     * @param peId the virtual pe id
-     *
-     * @return allocated MIPS for the virtual PE
-     *
-     * @pre $none
-     * @post $none
-     */
-    public abstract double getAllocatedMipsForVmByVirtualPeId(Vm vm, int peId);
-
-    /**
-     * Releases all virtual PEs allocated to a given VM.
-     *
-     * @param vm the vm
+     * @param vm the vm to release the virtual Pe
      *
      * @pre $none
      * @post none
      */
-    public abstract void deallocateMipsForVm(Vm vm);
+    @Override
+    boolean deallocateResourceForVm(Vm vm);
 
     /**
      * Releases all virtual PEs allocated to all VMs.
@@ -142,86 +65,38 @@ public abstract class PeProvisioner {
      * @pre $none
      * @post none
      */
-    public void deallocateMipsForAllVms() {
-        setAvailableMips(getMipsCapacity());
-    }
+    @Override
+    void deallocateResourceForAllVms();
 
     /**
-     * Gets the total MIPS capacity of the PE that the provisioner can allocate to
-     * VMs.
-     *
-     * @return
-     */
-    public double getMipsCapacity() {
-        return mipsCapacity;
-    }
-
-    /**
-     * Sets the total MIPS capacity of the PE that the provisioner can allocate to
-     * VMs.
-     *
-     * @param mipsCapacity the MIPS capacity to set
-     * @return true if mipsCapacity > 0, false otherwise
-     */
-    public final boolean setMipsCapacity(double mipsCapacity) {
-        if (mipsCapacity <= 0) {
-            return false;
-        }
-
-        this.mipsCapacity = mipsCapacity;
-        return true;
-    }
-
-    /**
-     * Gets the available MIPS in the PE.
-     *
-     * @return available MIPS
-     *
-     * @pre $none
-     * @post $none
-     */
-    public double getAvailableMips() {
-        return availableMips;
-    }
-
-    /**
-     * Sets the available MIPS in the PE.
-     *
-     * @param availableMips the availableMips to set
-     * @return true if availableMips >= 0, false otherwise
-     */
-    protected final boolean setAvailableMips(double availableMips) {
-        if (availableMips < 0) {
-            return false;
-        }
-        if (availableMips > mipsCapacity) {
-            availableMips = mipsCapacity;
-        }
-
-        this.availableMips = availableMips;
-        return true;
-    }
-
-    /**
-     * Gets the total allocated MIPS.
+     * Gets the total allocated MIPS from the physical Pe.
      *
      * @return the total allocated MIPS
      */
-    public double getTotalAllocatedMips() {
-        double totalAllocatedMips = getMipsCapacity() - getAvailableMips();
-        if (totalAllocatedMips > 0) {
-            return totalAllocatedMips;
-        }
-        return 0;
-    }
+    @Override
+    long getTotalAllocatedResource();
 
     /**
-     * Gets the utilization of the Pe in percents.
+     * Gets the utilization percentage of the Pe in scale from 0 to 1.
      *
-     * @return the utilization
+     * @return the utilization percentage from 0 to 1
      */
-    public double getUtilization() {
-        return getTotalAllocatedMips() / getMipsCapacity();
-    }
+    double getUtilization();
 
+    /**
+     * A property that implements the Null Object Design Pattern for
+     * PeProvisioner objects.
+     */
+    PeProvisioner NULL = new PeProvisioner(){
+        @Override public void setPe(Pe pe) {}
+        @Override public boolean allocateResourceForVm(Vm vm, long newTotalVmResource) { return false; }
+        @Override public long getAllocatedResourceForVm(Vm vm) { return 0; }
+        @Override public long getTotalAllocatedResource() { return 0; }
+        @Override public double getUtilization() { return 0; }
+        @Override public boolean deallocateResourceForVm(Vm vm) { return false; }
+        @Override public void deallocateResourceForAllVms() {}
+        @Override public boolean isSuitableForVm(Vm vm, long newVmTotalAllocatedResource) { return false; }
+        @Override public long getCapacity() { return 0; }
+        @Override public long getAvailableResource() { return 0; }
+    };
 }

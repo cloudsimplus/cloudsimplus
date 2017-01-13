@@ -55,7 +55,7 @@ public class CloudSimExample2 {
     }
 
     public CloudSimExample2() {
-        Log.printFormattedLine("Starting %s...", CloudSimExample2.class.getSimpleName());
+        Log.printFormattedLine("Starting %s...", getClass().getSimpleName());
 
         // First step: Initialize the CloudSim package. It should be called
         // before creating any entities.
@@ -69,7 +69,7 @@ public class CloudSimExample2 {
         DatacenterSimple datacenter0 = createDatacenter();
 
         //Third step: Create Broker
-        DatacenterBroker broker = createBroker();
+        DatacenterBroker broker = new DatacenterBrokerSimple(simulation);
 
         //Fourth step: Create one virtual machine
         vmlist = new ArrayList<>();
@@ -144,7 +144,7 @@ public class CloudSimExample2 {
         List<Cloudlet> newList = broker.getCloudletsFinishedList();
 
         new CloudletsTableBuilderHelper(newList).build();
-        Log.printFormattedLine("%s finished!", CloudSimExample2.class.getSimpleName());
+        Log.printFormattedLine("%s finished!", getClass().getSimpleName());
     }
 
     private CloudSim simulation;
@@ -159,10 +159,10 @@ public class CloudSimExample2 {
         // In this example, it will have only one core.
         List<Pe> peList = new ArrayList<>();
 
-        int mips = 1000;
+        long mips = 1000;
 
         // 3. Create PEs and add these into a list.
-        peList.add(new PeSimple(0, new PeProvisionerSimple(mips))); // need to store Pe id and MIPS Rating
+        peList.add(new PeSimple(mips, new PeProvisionerSimple())); // need to store Pe id and MIPS Rating
 
         //4. Create Host with its id and list of PEs and add them to the list of machines
         int hostId = 0;
@@ -199,12 +199,4 @@ public class CloudSimExample2 {
         return datacenter;
     }
 
-    /*
-    We strongly encourage users to develop their own broker policies,
-    to submit vms and cloudlets according
-    to the specific rules of the simulated scenario
-    */
-    private DatacenterBroker createBroker() {
-        return new DatacenterBrokerSimple(simulation);
-    }
 }

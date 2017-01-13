@@ -160,30 +160,21 @@ public class CloudSimExample7 {
     }
 
     private Datacenter createDatacenter() {
-        // Here are the steps needed to create a DatacenterSimple:
-        // 1. We need to create a list to store one or more
-        //    Machines
         List<Host> hostList = new ArrayList<>();
 
-        // 2. A Machine contains one or more PEs or CPUs/Cores. Therefore, should
-        //    create a list to store these PEs before creating
-        //    a Machine.
+        long mips = 1000;
         List<Pe> peList1 = new ArrayList<>();
 
-        int mips = 1000;
 
         // 3. Create PEs and add these into the list.
         //for a quad-core machine, a list of 4 PEs is required:
-        peList1.add(new PeSimple(0, new PeProvisionerSimple(mips)));
-        peList1.add(new PeSimple(1, new PeProvisionerSimple(mips)));
-        peList1.add(new PeSimple(2, new PeProvisionerSimple(mips)));
-        peList1.add(new PeSimple(3, new PeProvisionerSimple(mips)));
+        for(int i = 0; i < 4; i++)
+            peList1.add(new PeSimple(mips, new PeProvisionerSimple()));
 
         //Another list, for a dual-core machine
         List<Pe> peList2 = new ArrayList<>();
-
-        peList2.add(new PeSimple(0, new PeProvisionerSimple(mips)));
-        peList2.add(new PeSimple(1, new PeProvisionerSimple(mips)));
+        for(int i = 0; i < 2; i++)
+            peList2.add(new PeSimple(mips, new PeProvisionerSimple()));
 
         //4. Create Hosts with its id and list of PEs and add them to the list of machines
         int hostId = -1;

@@ -118,7 +118,7 @@ public class PauseSimulationAtGivenTimeExample1 {
      * Default constructor that builds the simulation.
      */
     public PauseSimulationAtGivenTimeExample1() {
-        Log.printFormattedLine("Starting %s Example ...", getClass().getSimpleName());
+        Log.printFormattedLine("Starting %s ...", getClass().getSimpleName());
         this.vmList = new ArrayList<>();
         this.cloudletList = new ArrayList<>();
         this.simulation = new CloudSim();
@@ -168,7 +168,7 @@ public class PauseSimulationAtGivenTimeExample1 {
         (you can use your own code here to print what you want from this cloudlet list)*/
         printsListOfFinishedCloudlets("Finished cloudlets after simulation is complete");
 
-        Log.printConcatLine(getClass().getSimpleName(), " Example finished!");
+        Log.printConcatLine(getClass().getSimpleName(), " finished!");
     }
 
     private void printCloudletsFinishedSoFarAndResumeSimulation(EventInfo pauseInfo) {
@@ -221,8 +221,8 @@ public class PauseSimulationAtGivenTimeExample1 {
     }
 
     private Host createHost() {
-        int  mips = 1000; // capacity of each CPU core (in Million Instructions per Second)
-        long  ram = 2048; // host memory (MEGABYTE)
+        long mips = 1000; // capacity of each CPU core (in Million Instructions per Second)
+        long ram = 2048; // host memory (MEGABYTE)
         long storage = 1000000; // host storage (MEGABYTE)
         long bw = 10000; //in Megabits/s
 
@@ -230,7 +230,7 @@ public class PauseSimulationAtGivenTimeExample1 {
 
         /*Creates the Host's CPU cores and defines the provisioner
         used to allocate each core for requesting VMs.*/
-        pesList.add(new PeSimple(0, new PeProvisionerSimple(mips)));
+        pesList.add(new PeSimple(mips, new PeProvisionerSimple()));
 
         return new HostSimple(numberOfCreatedHosts++, storage, pesList)
                 .setRamProvisioner(new ResourceProvisionerSimple(new Ram(ram)))
@@ -239,7 +239,7 @@ public class PauseSimulationAtGivenTimeExample1 {
     }
 
     private Vm createVm() {
-        double mips = 1000;
+        long   mips = 1000;
         long   storage = 10000; // vm image size (MEGABYTE)
         int    ram = 512; // vm memory (MEGABYTE)
         long   bw = 1000; // vm bandwidth (Megabits/s)

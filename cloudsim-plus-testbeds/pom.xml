@@ -4,7 +4,7 @@
 
     <groupId>org.cloudsimplus</groupId>
     <artifactId>cloudsim-plus-testbeds</artifactId>
-    <version>1.0</version>
+    <version>1.1.0</version>
     <name>CloudSim Plus Testbeds</name>
     <description>
         A set of more complex and comprehensive CloudSim Plus testbeds used to assess
@@ -117,7 +117,7 @@
         <dependency>
             <groupId>org.cloudsimplus</groupId>
             <artifactId>cloudsim-plus</artifactId>
-            <version>1.0</version>
+            <version>${project.version}</version>
         </dependency>
         <dependency>
             <groupId>com.googlecode.json-simple</groupId>

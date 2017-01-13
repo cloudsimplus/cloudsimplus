@@ -9,8 +9,8 @@ package org.cloudbus.cloudsim.schedulers.vm;
 import java.util.*;
 
 import org.cloudbus.cloudsim.hosts.Host;
-import org.cloudbus.cloudsim.util.Log;
 import org.cloudbus.cloudsim.provisioners.PeProvisioner;
+import org.cloudbus.cloudsim.util.Log;
 import org.cloudbus.cloudsim.resources.Pe;
 import org.cloudbus.cloudsim.vms.Vm;
 
@@ -73,12 +73,11 @@ public abstract class VmSchedulerAbstract implements VmScheduler {
     public void deallocatePesForAllVms() {
         getMipsMapAllocated().clear();
         setAvailableMips(PeList.getTotalMips(getPeList()));
-        getPeList().forEach(pe -> pe.getPeProvisioner().deallocateMipsForAllVms());
+        getPeList().forEach(pe -> pe.getPeProvisioner().deallocateResourceForAllVms());
     }
 
     @Override
     public List<Pe> getPesAllocatedForVM(Vm vm) {
-        getPeMap().putIfAbsent(vm, new ArrayList<>());
         return getPeMap().get(vm);
     }
 
@@ -90,7 +89,7 @@ public abstract class VmSchedulerAbstract implements VmScheduler {
 
     @Override
     public double getTotalAllocatedMipsForVm(Vm vm) {
-        return getAllocatedMipsForVm(vm).stream().reduce(0.0, Double::sum);
+        return getAllocatedMipsForVm(vm).stream().mapToDouble(v -> v).sum();
     }
 
     @Override
@@ -102,18 +101,18 @@ public abstract class VmSchedulerAbstract implements VmScheduler {
 
         return getPeList().stream()
                     .map(Pe::getPeProvisioner)
-                    .mapToDouble(PeProvisioner::getAvailableMips)
+                    .mapToDouble(PeProvisioner::getAvailableResource)
                     .max().orElse(0.0);
     }
 
     @Override
-    public double getPeCapacity() {
+    public long getPeCapacity() {
         if (getPeList().isEmpty()) {
             Log.printLine("Pe list is empty");
             return 0;
         }
 
-        return getPeList().get(0).getMips();
+        return getPeList().get(0).getCapacity();
     }
 
     @Override
@@ -213,11 +212,9 @@ public abstract class VmSchedulerAbstract implements VmScheduler {
 
     @Override
     public VmScheduler setHost(Host host) {
-        if(Objects.isNull(host)){
-            throw new NullPointerException("The host parameter cannot be null.");
-        }
+        Objects.requireNonNull(host);
 
-        if(isHostAssigned() && !host.equals(this.host)){
+        if(isOtherHostAssigned(host)){
             throw new IllegalArgumentException("VmScheduler already has a Host assigned to it. Each Host must have its own VmScheduler instance.");
         }
 
@@ -230,8 +227,16 @@ public abstract class VmSchedulerAbstract implements VmScheduler {
         return this;
     }
 
-    private boolean isHostAssigned() {
-        return !Objects.isNull(host) && this.host != Host.NULL;
+
+    /**
+     * Checks if the {@link VmScheduler} has a {@link Host} assigned that is
+     * different from the given one
+     *
+     * @param host the Host to check if assigned scheduler's Host is different from
+     * @return
+     */
+    private boolean isOtherHostAssigned(Host host) {
+        return !Objects.isNull(this.host) && this.host != Host.NULL && !host.equals(this.host);
     }
 
     @Override
