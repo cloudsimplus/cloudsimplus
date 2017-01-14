@@ -1,9 +1,18 @@
+/*
+ * Title:        CloudSim Toolkit
+ * Description:  CloudSim (Cloud Simulation) Toolkit for Modeling and Simulation of Clouds
+ * Licence:      GPL - http://www.gnu.org/copyleft/gpl.html
+ *
+ * Copyright (c) 2009-2012, The University of Melbourne, Australia
+ */
 package org.cloudbus.cloudsim.resources;
 
 /**
  * An interface to represent a physical or virtual resource (like RAM, CPU or
  * Bandwidth) with features to manage resource capacity and allocation.
  *
+ * @author Uros Cibej
+ * @author Anthony Sulistio
  * @author Manoel Campos da Silva Filho
  * @since CloudSim Plus 1.0
  */

@@ -1,3 +1,10 @@
+/*
+ * Title:        CloudSim Toolkit
+ * Description:  CloudSim (Cloud Simulation) Toolkit for Modeling and Simulation of Clouds
+ * Licence:      GPL - http://www.gnu.org/copyleft/gpl.html
+ *
+ * Copyright (c) 2009-2012, The University of Melbourne, Australia
+ */
 package org.cloudbus.cloudsim.schedulers.cloudlet.network;
 
 import org.cloudbus.cloudsim.cloudlets.Cloudlet;
@@ -28,6 +35,7 @@ import java.util.List;
  * the current interface and attach them to the {@link CloudletScheduler}
  * that every Vm is using, doesn't matter what kind of scheduler it is.</p>
  *
+ * @author Saurabh Kumar Garg
  * @author Manoel Campos da Silva Filho
  * @since CloudSim Plus 1.0
  */

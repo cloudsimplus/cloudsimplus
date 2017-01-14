@@ -1,3 +1,10 @@
+/*
+ * Title:        CloudSim Toolkit
+ * Description:  CloudSim (Cloud Simulation) Toolkit for Modeling and Simulation of Clouds
+ * Licence:      GPL - http://www.gnu.org/copyleft/gpl.html
+ *
+ * Copyright (c) 2009-2012, The University of Melbourne, Australia
+ */
 package org.cloudbus.cloudsim.datacenters;
 
 import org.cloudbus.cloudsim.hosts.Host;
@@ -20,7 +27,10 @@ import org.cloudbus.cloudsim.core.Simulation;
  * {@link Datacenter#NULL} object instead of attributing {@code null} to
  * {@link Datacenter} variables.
  *
+ * @author Rodrigo N. Calheiros
+ * @author Anton Beloglazov
  * @author Manoel Campos da Silva Filho
+ * @since CloudSim Plus 1.0
  */
 public interface Datacenter extends SimEntity {
 
@@ -107,7 +117,7 @@ public interface Datacenter extends SimEntity {
      *
      * @param storageList the new storage list
 <<<<<<< HEAD
-     * @return 
+     * @return
 =======
      * @return
 >>>>>>> upstream/master

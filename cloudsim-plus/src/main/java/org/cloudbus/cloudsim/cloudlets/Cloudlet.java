@@ -1,3 +1,9 @@
+/*
+ * Title: CloudSim Toolkit Description: CloudSim (Cloud Simulation) Toolkit for Modeling and
+ * Simulation of Clouds Licence: GPL - http://www.gnu.org/copyleft/gpl.html
+ *
+ * Copyright (c) 2009-2012, The University of Melbourne, Australia
+ */
 package org.cloudbus.cloudsim.cloudlets;
 
 import org.cloudbus.cloudsim.core.Delayable;
@@ -20,7 +26,10 @@ import org.cloudsimplus.listeners.EventListener;
  * when using the {@link Cloudlet#NULL} object instead
  * of attributing {@code null} to {@link Cloudlet} variables.
  *
+ * @author Rodrigo N. Calheiros
+ * @author Anton Beloglazov
  * @author Manoel Campos da Silva Filho
+ * @since CloudSim Plus 1.0
  */
 public interface Cloudlet extends UniquelyIdentificable, Delayable, Comparable<Cloudlet> {
   String NO_HISTORY_IS_RECORDED_FOR_CLOUDLET = "No history is recorded for Cloudlet #%d";
@@ -779,7 +788,7 @@ public interface Cloudlet extends UniquelyIdentificable, Delayable, Comparable<C
     Simulation getSimulation();
 
     double getResponseTime();
-    
+
     /**
      * An attribute that implements the Null Object Design Pattern for {@link Cloudlet}
      * objects.

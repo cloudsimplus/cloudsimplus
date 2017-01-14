@@ -1,3 +1,10 @@
+/*
+ * Title:        CloudSim Toolkit
+ * Description:  CloudSim (Cloud Simulation) Toolkit for Modeling and Simulation of Clouds
+ * Licence:      GPL - http://www.gnu.org/copyleft/gpl.html
+ *
+ * Copyright (c) 2009-2012, The University of Melbourne, Australia
+ */
 package org.cloudbus.cloudsim.resources;
 
 /**
@@ -7,6 +14,8 @@ package org.cloudbus.cloudsim.resources;
  * are supposed to define the capacity and amount of allocated resource
  * in their constructors.
  *
+ * @author Uros Cibej
+ * @author Anthony Sulistio
  * @author Manoel Campos da Silva Filho
  * @since CloudSim Plus 1.0
  */
@@ -39,7 +48,7 @@ public interface Resource extends ResourceCapacity {
     boolean isResourceAmountAvailable(long amountToCheck);
 
     /**
-     * Checks if the storage is full or not.
+     * Checks if the resource is full or not.
      *
      * @return <tt>true</tt> if the storage is full, <tt>false</tt> otherwise
      */

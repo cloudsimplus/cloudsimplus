@@ -197,7 +197,7 @@ DatacenterBroker broker0 = new DatacenterBrokerSimple(cloudsim);
 //Creates a list of Hosts, each host with a specific list of CPU cors (PEs).
 List<Host> hostList = new ArrayList<>(1);
 List<Pe> hostPes = new ArrayList<>(1);
-hostPes.add(new PeSimple(0, new PeProvisionerSimple(20000)));
+hostPes.add(new PeSimple(20000, new PeProvisionerSimple()));
 Host host0 = new HostSimple(0, 100000, hostPes);
 host0.setRamProvisioner(new ResourceProvisionerSimple(new Ram(10000)))
      .setBwProvisioner(new ResourceProvisionerSimple(new Bandwidth(100000)));

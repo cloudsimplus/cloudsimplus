@@ -1,16 +1,24 @@
+/*
+ * Title:        CloudSim Toolkit
+ * Description:  CloudSim (Cloud Simulation) Toolkit for Modeling and Simulation of Clouds
+ * Licence:      GPL - http://www.gnu.org/copyleft/gpl.html
+ *
+ * Copyright (c) 2009-2012, The University of Melbourne, Australia
+ */
 package org.cloudbus.cloudsim.resources;
 
-import org.cloudbus.cloudsim.vms.Vm;
-
 /**
- * A class that represent simple resources such as RAM, CPU or Bandwidth,
- * storing, for instance, its capacity and amount of free available resource.
- * The class is abstract just to ensure there will be an specific subclass
+ * A class that represents simple resources such as RAM, CPU, Bandwidth or Pe,
+ * storing, for instance, the resource capacity and amount of free available resource.
+ *
+ * <p>The class is abstract just to ensure there will be an specific subclass
  * for each kind of resource, allowing to differentiate, for instance,
  * a RAM resource instance from a BW resource instance.
  * The VM class also relies on this differentiation for generically getting a
- * required resource (see {@link Vm#getResource(Class)}).
+ * required resource.</p>
  *
+ * @author Uros Cibej
+ * @author Anthony Sulistio
  * @author Manoel Campos da Silva Filho
  * @since CloudSim Plus 1.0
  */

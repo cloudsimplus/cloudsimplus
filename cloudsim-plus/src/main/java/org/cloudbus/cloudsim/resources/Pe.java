@@ -1,3 +1,10 @@
+/*
+ * Title:        CloudSim Toolkit
+ * Description:  CloudSim (Cloud Simulation) Toolkit for Modeling and Simulation of Clouds
+ * Licence:      GPL - http://www.gnu.org/copyleft/gpl.html
+ *
+ * Copyright (c) 2009-2012, The University of Melbourne, Australia
+ */
 package org.cloudbus.cloudsim.resources;
 
 import org.cloudbus.cloudsim.core.Identificable;
@@ -14,6 +21,8 @@ import org.cloudbus.cloudsim.provisioners.PeProvisionerSimple;
  * using the {@link Pe#NULL} object instead of attributing {@code null} to
  * {@link Pe} variables.</p>
  *
+ * @author Manzur Murshed
+ * @author Rajkumar Buyya
  * @author Manoel Campos da Silva Filho
  * @since CloudSim Plus 1.0
  */

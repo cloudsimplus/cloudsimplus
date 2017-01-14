@@ -1,3 +1,10 @@
+/*
+ * Title:        CloudSim Toolkit
+ * Description:  CloudSim (Cloud Simulation) Toolkit for Modeling and Simulation of Clouds
+ * Licence:      GPL - http://www.gnu.org/copyleft/gpl.html
+ *
+ * Copyright (c) 2009-2012, The University of Melbourne, Australia
+ */
 package org.cloudbus.cloudsim.hosts.power;
 
 import java.util.Collections;
@@ -23,8 +30,9 @@ import org.cloudbus.cloudsim.schedulers.vm.VmScheduler;
  * using the {@link PowerHost#NULL} object instead of attributing {@code null} to
  * {@link PowerHost} variables.
  *
- *
+ * @author Anton Beloglazov
  * @author Manoel Campos da Silva Filho
+ * @since CloudSim Plus 1.0
  */
 public interface PowerHost extends HostDynamicWorkload {
     /**

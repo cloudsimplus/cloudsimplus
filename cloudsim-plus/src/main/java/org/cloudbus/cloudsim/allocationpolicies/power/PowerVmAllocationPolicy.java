@@ -1,3 +1,10 @@
+/*
+ * Title:        CloudSim Toolkit
+ * Description:  CloudSim (Cloud Simulation) Toolkit for Modeling and Simulation of Clouds
+ * Licence:      GPL - http://www.gnu.org/copyleft/gpl.html
+ *
+ * Copyright (c) 2009-2012, The University of Melbourne, Australia
+ */
 package org.cloudbus.cloudsim.allocationpolicies.power;
 
 import org.cloudbus.cloudsim.datacenters.power.PowerDatacenter;
@@ -11,7 +18,9 @@ import org.cloudbus.cloudsim.vms.power.PowerVm;
  * a {@link PowerDatacenter} to choose a {@link PowerHost} to place or migrate a
  * given {@link PowerVm} considering the Host power consumption.
  *
+ * @author Anton Beloglazov
  * @author Manoel Campos da Silva Filho
+ * @since CloudSim Plus 1.0
  */
 public interface PowerVmAllocationPolicy extends VmAllocationPolicy{
     /**

@@ -35,7 +35,6 @@ import org.cloudbus.cloudsim.vms.Vm;
  * @author Manoel Campos da Silva Filho
  *
  * @since CloudSim Plus 1.0
- *
  */
 public class PacketSchedulerSimple implements PacketScheduler {
     /**

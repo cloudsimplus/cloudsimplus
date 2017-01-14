@@ -1,3 +1,10 @@
+/*
+ * Title:        CloudSim Toolkit
+ * Description:  CloudSim (Cloud Simulation) Toolkit for Modeling and Simulation of Clouds
+ * Licence:      GPL - http://www.gnu.org/copyleft/gpl.html
+ *
+ * Copyright (c) 2009-2012, The University of Melbourne, Australia
+ */
 package org.cloudbus.cloudsim.schedulers.vm;
 
 import java.util.Collections;
@@ -18,7 +25,10 @@ import org.cloudbus.cloudsim.resources.Resource;
  * when using the {@link VmScheduler#NULL} object instead
  * of attributing {@code null} to {@link VmScheduler} variables.
  *
+ * @author Rodrigo N. Calheiros
+ * @author Anton Beloglazov
  * @author Manoel Campos da Silva Filho
+ * @since CloudSim Plus 1.0
  */
 public interface VmScheduler {
     /**

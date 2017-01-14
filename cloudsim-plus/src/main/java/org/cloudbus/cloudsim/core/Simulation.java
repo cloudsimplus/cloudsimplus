@@ -1,3 +1,9 @@
+/*
+ * Title: CloudSim Toolkit Description: CloudSim (Cloud Simulation) Toolkit for Modeling and
+ * Simulation of Clouds Licence: GPL - http://www.gnu.org/copyleft/gpl.html
+ *
+ * Copyright (c) 2009-2012, The University of Melbourne, Australia
+ */
 package org.cloudbus.cloudsim.core;
 
 import java.util.*;
@@ -17,8 +23,11 @@ import org.cloudsimplus.listeners.EventListener;
  * An interface to be implemented by a class that manages simulation
  * execution, controlling all the simulation lifecycle.
  *
+ * @author Rodrigo N. Calheiros
+ * @author Anton Beloglazov
  * @author Manoel Campos da Silva Filho
  * @see CloudSim
+ * @since CloudSim Plus 1.0
  */
 public interface Simulation {
     /**

@@ -1,3 +1,10 @@
+/*
+ * Title:        CloudSim Toolkit
+ * Description:  CloudSim (Cloud Simulation) Toolkit for Modeling and Simulation of Clouds
+ * Licence:      GPL - http://www.gnu.org/copyleft/gpl.html
+ *
+ * Copyright (c) 2009-2012, The University of Melbourne, Australia
+ */
 package org.cloudbus.cloudsim.allocationpolicies.power;
 
 import org.cloudbus.cloudsim.datacenters.Datacenter;
@@ -13,7 +20,9 @@ import java.util.Map;
  * An interface to be implemented by VM allocation policy for power-aware VMs
  * that detects {@link PowerHost} under and over CPU utilization.
  *
+ * @author Anton Beloglazov
  * @author Manoel Campos da Silva Filho
+ * @since CloudSim Plus 1.0
  */
 public interface PowerVmAllocationPolicyMigration extends PowerVmAllocationPolicy {
     /**
