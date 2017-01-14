@@ -49,14 +49,9 @@ import org.cloudbus.cloudsim.provisioners.ResourceProvisionerSimple;
 import org.cloudbus.cloudsim.resources.Bandwidth;
 import org.cloudbus.cloudsim.resources.PeSimple;
 import org.cloudbus.cloudsim.resources.Ram;
-import org.cloudbus.cloudsim.util.ResourceLoader;
 import org.cloudsimplus.builders.tables.CloudletsTableBuilderHelper;
 import org.cloudbus.cloudsim.utilizationmodels.UtilizationModel;
 import org.cloudbus.cloudsim.utilizationmodels.UtilizationModelFull;
-import org.cloudsimplus.migration.VmMigrationWhenCpuMetricIsViolatedExample;
-import org.cloudsimplus.sla.readJsonFile.SlaMetricDimension;
-import org.cloudsimplus.sla.readJsonFile.SlaMetric;
-import org.cloudsimplus.sla.readJsonFile.SlaReader;
 
 /**
  * This example show an simple example using metrics of quality of service
@@ -66,7 +61,6 @@ import org.cloudsimplus.sla.readJsonFile.SlaReader;
  */
 public final class SlaMetricsWithoutNetworkExample {
 
-    private static final String METRICS_FILE = ResourceLoader.getResourcePath(VmMigrationWhenCpuMetricIsViolatedExample.class, "SlaMetrics.json");
     private static final int HOSTS_NUMBER = 3;
     private static final int HOST_PES = 5;
     private static final int VM_PES1 = 2;
@@ -178,13 +172,14 @@ public final class SlaMetricsWithoutNetworkExample {
      * @param cloudlets to calculate the response time
      * @return responseTimeCloudlet
      */
-    private double responseTimeCloudlet(List<Cloudlet> cloudlets) {
+    private double responseTimeCloudletAverage(List<Cloudlet> cloudlets) {
 
-        double responseTime = 0;
+        double responseTime = 0, quant =0;
         for (Cloudlet cloudlet : cloudlets) {
-            responseTime = cloudlet.getFinishTime() - cloudlet.getLastDatacenterArrivalTime();
+            responseTime += cloudlet.getFinishTime() - cloudlet.getLastDatacenterArrivalTime();
+            quant = cloudletList.size();
         }
-        return responseTime;
+        return responseTime/quant;
 
     }
 
@@ -225,14 +220,15 @@ public final class SlaMetricsWithoutNetworkExample {
      * Shows the wait time of cloudlets
      *
      * @param cloudlet list of cloudlets
-     * @return the waitTime
+     * @return the waitTimeAverage
      */
-    public double waitTime(List<Cloudlet> cloudlet) {
-        double waitTime = 0;
+    public double waitTimeAverage(List<Cloudlet> cloudlet) {
+        double waitTime = 0, quant = 0;
         for (Cloudlet cloudlets : cloudlet) {
             waitTime += cloudlets.getWaitingTime();
+            quant++;
         }
-        return waitTime;
+        return waitTime/quant;
     }
 
     public static void main(String[] args) throws FileNotFoundException {
@@ -241,8 +237,6 @@ public final class SlaMetricsWithoutNetworkExample {
     }
 
     public SlaMetricsWithoutNetworkExample() throws FileNotFoundException {
-        //  Initialize the CloudSim package.
-        int num_user = 1; // number of cloud users
         cloudsim = new CloudSim();
 
         //Create Datacenters
@@ -270,8 +264,8 @@ public final class SlaMetricsWithoutNetworkExample {
         System.out.println("\n\t\t - System Métrics - \n ");
 
         //responseTime
-        responseTimeCloudlet = responseTimeCloudlet(cloudletList);
-        System.out.printf("\t** Response Time of Cloudlets - %.2f %n", responseTimeCloudlet);
+        responseTimeCloudlet = responseTimeCloudletAverage(cloudletList);
+        System.out.printf("\t** Response Time of Cloudlets (average) - %.2f %n", responseTimeCloudlet);
 
         //cpu time
         cpuUtilization = cpuUtilization(cloudletList);
@@ -283,18 +277,14 @@ public final class SlaMetricsWithoutNetworkExample {
         System.out.printf("\t** Utilization Resources %%  (Bw-CPU-Ram) - %.2f %n", utilizationresources);
 
         //wait time
-        waitTimeCloudlet = waitTime(cloudletList);
-        System.out.printf("\t** Wait Time - %.2f %n", waitTimeCloudlet);
+        waitTimeCloudlet = waitTimeAverage(cloudletList);
+        System.out.printf("\t** Wait Time (average) - %.2f %n", waitTimeCloudlet);
 
         // total cost
         double totalCost = totalCostPrice(vmlist);
         System.out.println("\t** Total cost (memory, bw, processing, storage) - " + totalCost);
         System.out.println("________________________________________________________________");
 
-        System.out.println("________________________________________________________________");
-        System.out.println("\n\t\t - Metric monitoring - \n\t\t(violated or not violated)  \n ");
-
-        checkSlaViolations();
         System.out.println("________________________________________________________________");
 
         //Final step: Print results when simulation is over
@@ -360,103 +350,6 @@ public final class SlaMetricsWithoutNetworkExample {
      */
     private DatacenterBroker createBroker() {
         return new DatacenterBrokerSimple(cloudsim);
-    }
-
-    /**
-     * @return the responseTimeCloudlet
-     */
-    public double getResponseTime() {
-        return responseTimeCloudlet;
-    }
-
-    private void checkSlaViolations() throws FileNotFoundException {
-        SlaReader reader = new SlaReader(METRICS_FILE);
-        List<SlaMetric> metrics = reader.getContract().getMetrics();
-        metrics.stream()
-                .filter(m -> m.isReponseTime())
-                .findFirst()
-                .ifPresent(this::checkResponseTimeViolation);
-
-        metrics.stream()
-                .filter(m -> m.isCpuUtilization())
-                .findFirst()
-                .ifPresent(this::checkCpuUtilizationViolation);
-
-        metrics.stream()
-                .filter(m -> m.isWaitTime())
-                .findFirst()
-                .ifPresent(this::checkWaitTimeViolation);
-
-    }
-
-    private void checkResponseTimeViolation(SlaMetric metric) {
-        SlaMetricsMonitoring monitoring = new SlaMetricsMonitoring();
-        double minValue =
-                metric.getDimensions().stream()
-                    .filter(d -> d.isValueMin())
-                    .map(d -> d.getValue())
-                    .findFirst().orElse(Double.MIN_VALUE);
-        double maxValue =
-                metric.getDimensions().stream()
-                    .filter(d -> d.isValueMax())
-                    .map(d -> d.getValue())
-                    .findFirst().orElse(Double.MAX_VALUE);
-
-        if (responseTimeCloudlet > maxValue) {
-            monitoring.monitoringResponseTime(metric.getMetricName());
-            printMetricDataViolated(metric);
-        } else {
-            System.out.println("\n* The metric: " + metric.getMetricName()+ " was not violated!! ");
-        }
-    }
-
-    private void checkCpuUtilizationViolation(SlaMetric metric) {
-        SlaMetricsMonitoring monitoring = new SlaMetricsMonitoring();
-        double minValue = metric.getDimensions().stream()
-                .filter(d -> d.isValueMin())
-                .map(d -> d.getValue())
-                .findFirst().orElse(Double.MIN_VALUE);
-
-        double maxValue =
-                metric.getDimensions().stream()
-                    .filter(d -> d.isValueMax())
-                    .map(d -> d.getValue())
-                    .findFirst().orElse(Double.MAX_VALUE);
-
-        if (cpuUtilization < minValue || cpuUtilization > maxValue) {
-            monitoring.monitoringCpuUtilization(metric.getMetricName());
-            printMetricDataViolated(metric);
-        } else {
-            System.out.println("\n* The metric: " + metric.getMetricName() + " was not violated!! ");
-        }
-    }
-
-    private void checkWaitTimeViolation(SlaMetric metric) {
-        SlaMetricsMonitoring monitoring = new SlaMetricsMonitoring();
-        double minValue = metric.getDimensions().stream()
-                .filter(d -> d.isValueMin())
-                .map(d -> d.getValue())
-                .findFirst().orElse(Double.MIN_VALUE);
-
-        double maxValue =
-                metric.getDimensions().stream()
-                    .filter(d -> d.isValueMax())
-                    .map(d -> d.getValue())
-                    .findFirst().orElse(Double.MAX_VALUE);
-
-        if (waitTimeCloudlet < minValue || waitTimeCloudlet > maxValue) {
-            monitoring.monitoringWaitTime(metric.getMetricName());
-            printMetricDataViolated(metric);
-        } else {
-            System.out.println("\n* The metric: " + metric.getMetricName() + " was not violated!! ");
-        }
-    }
-
-    private void printMetricDataViolated(SlaMetric metric) {
-        System.out.println("\n\tName: " + metric.getMetricName());
-        for(SlaMetricDimension d: metric.getDimensions()){
-            System.out.printf("\t%s acceptable for this metric: %.2f\n", d.getName(), d.getValue());
-        }
     }
 
     /**

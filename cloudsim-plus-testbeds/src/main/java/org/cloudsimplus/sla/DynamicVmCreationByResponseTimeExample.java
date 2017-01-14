@@ -1,9 +1,4 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
-package org.cloudsimplus.migration;
+package org.cloudsimplus.sla;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -32,12 +27,11 @@ import org.cloudbus.cloudsim.resources.Bandwidth;
 import org.cloudbus.cloudsim.resources.Pe;
 import org.cloudbus.cloudsim.resources.PeSimple;
 import org.cloudbus.cloudsim.resources.Ram;
-import org.cloudbus.cloudsim.schedulers.cloudlet.CloudletSchedulerSpaceShared;
 import org.cloudbus.cloudsim.schedulers.cloudlet.CloudletSchedulerTimeShared;
 import org.cloudbus.cloudsim.schedulers.vm.VmScheduler;
-import org.cloudbus.cloudsim.schedulers.vm.VmSchedulerSpaceShared;
 import org.cloudbus.cloudsim.schedulers.vm.VmSchedulerTimeShared;
 import org.cloudbus.cloudsim.util.Log;
+import org.cloudbus.cloudsim.util.ResourceLoader;
 import org.cloudbus.cloudsim.utilizationmodels.UtilizationModel;
 import org.cloudbus.cloudsim.utilizationmodels.UtilizationModelFull;
 import org.cloudbus.cloudsim.vms.Vm;
@@ -46,9 +40,11 @@ import org.cloudsimplus.autoscaling.HorizontalVmScalingSimple;
 import org.cloudsimplus.autoscaling.VmScaling;
 import org.cloudsimplus.builders.tables.CloudletsTableBuilderHelper;
 import org.cloudsimplus.listeners.EventInfo;
+import org.cloudsimplus.migration.VmMigrationWhenCpuMetricIsViolatedExample;
 
 /**
- * An example that creates VMs dinamically in runtime.
+ * An example that creates VMs dinamically in runtime, respecting the response
+ * time limit.
  *
  * @author raysaoliveira
  */
@@ -80,8 +76,13 @@ public class DynamicVmCreationByResponseTimeExample {
     private int createdCloudlets;
     private int createsVms;
 
-    private double responseTimeCloudlet;
- 
+    /**
+     * The file containing the SLA Contract in JSON format.
+     */
+    public static final String METRICS_FILE = ResourceLoader.getResourcePath(VmMigrationWhenCpuMetricIsViolatedExample.class, "SlaMetrics.json");
+    private double responseTimeSlaContract;
+    private final double cpuUtilizationSlaContract;
+
     public static void main(String[] args) throws FileNotFoundException, IOException {
         Log.printFormattedLine(" Starting... ");
         new DynamicVmCreationByResponseTimeExample();
@@ -97,6 +98,12 @@ public class DynamicVmCreationByResponseTimeExample {
 
         simulation = new CloudSim();
 
+        TakeTheMetricsValuesOfSlaContract values = new TakeTheMetricsValuesOfSlaContract(METRICS_FILE);
+        values.setMetricsFile(METRICS_FILE);
+        values.checkSlaViolations();
+        responseTimeSlaContract = values.getMaxValueResponseTime();
+        cpuUtilizationSlaContract = values.getMaxValueCpuUtilization();
+
         simulation.addOnClockTickListener(this::createNewCloudlets);
 
         createDatacenter();
@@ -109,13 +116,6 @@ public class DynamicVmCreationByResponseTimeExample {
         broker0.submitCloudletList(cloudletList);
 
         simulation.start();
-
-        System.out.println("________________________________________________________________");
-        System.out.println("\n\t\t - System Metrics - \n ");
-
-        //responseTime
-        responseTimeCloudlet = responseTimeCloudlet(cloudletList);
-        System.out.printf("\t** Response Time of Cloudlets %.2f %n", responseTimeCloudlet);
 
         printSimulationResults();
     }
@@ -236,22 +236,33 @@ public class DynamicVmCreationByResponseTimeExample {
         horizontalScaling
                 .setOverloadPredicate(this::isVmOverloaded)
                 .setVmSupplier(this::createVm);
+        
         vm.setHorizontalScaling(horizontalScaling);
     }
 
     /**
      * A {@link Predicate} that checks if a given VM is overloaded or not based
-     * on upper CPU utilization threshold. A reference to this method is
-     * assigned to each Horizontal VM Scaling created.
+     * on response time max value. A reference to this method is assigned to
+     * each Horizontal VM Scaling created.
      *
      * @param vm the VM to check if it is overloaded
      * @return true if the VM is overloaded, false otherwise
      * @see #createHorizontalVmScaling(Vm)
      */
     private boolean isVmOverloaded(Vm vm) {
-        return vm.getTotalUtilizationOfCpu() > 0.7;
+        double SumResponseTime = 0, averageResponseTime = 0;
+        int finishedCloudlets = 0;
+
+        for (Cloudlet c : vm.getBroker().getCloudletsFinishedList()) {
+            SumResponseTime += c.getResponseTime();
+        }
+
+        finishedCloudlets = vm.getBroker().getCloudletsFinishedList().size();
+        averageResponseTime = SumResponseTime / finishedCloudlets;
+        System.out.println("\n\n\t RT: " + averageResponseTime);
+        return averageResponseTime > getResponseTimeSlaContract();
     }
-    
+
     private void printSimulationResults() {
         List<Cloudlet> finishedCloudlets = broker0.getCloudletsFinishedList();
         Comparator<Cloudlet> sortByVmId = comparingDouble(c -> c.getVm().getId());
@@ -261,26 +272,24 @@ public class DynamicVmCreationByResponseTimeExample {
         new CloudletsTableBuilderHelper(finishedCloudlets).build();
     }
 
-
     /**
-     * Shows the response time of cloudlets
-     *
-     * @param cloudlets to calculate the response time
-     * @return responseTimeCloudlet
+     * @return the responseTimeSlaContract
      */
-    private double responseTimeCloudlet(List<Cloudlet> cloudlets) {
-        double responseTime = 0;
-        for (Cloudlet cloudlet : cloudlets) {
-            responseTime = cloudlet.getFinishTime() - cloudlet.getLastDatacenterArrivalTime();
-        }
-        return responseTime;
-
+    public double getResponseTimeSlaContract() {
+        return responseTimeSlaContract;
     }
 
     /**
-     * @return the responseTimeCloudlet
+     * @param responseTimeSlaContract the responseTimeSlaContract to set
      */
-    public double getResponseTime() {
-        return responseTimeCloudlet;
+    public void setResponseTimeSlaContract(double responseTimeSlaContract) {
+        this.responseTimeSlaContract = responseTimeSlaContract;
+    }
+
+    /**
+     * @return the cpuUtilizationSlaContract
+     */
+    public double getCpuUtilizationSlaContract() {
+        return cpuUtilizationSlaContract;
     }
 }
