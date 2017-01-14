@@ -331,10 +331,10 @@
             <plugin>
                 <groupId>com.versioneye</groupId>
                 <artifactId>versioneye-maven-plugin</artifactId>
-                <version>3.11.0</version>
+                <version>3.11.1</version>
                 <configuration>
                     <organisation>manoelcampos</organisation>
-                    <projectId>587716de34054a001687683a</projectId>
+                    <projectId>587a137d2ef9ab000eff9d41</projectId>
                 </configuration>
                 <!--
                 The plugin is just being executed when the repository is pushed to travis-ci.org
