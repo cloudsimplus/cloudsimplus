@@ -102,7 +102,7 @@ public final class Helper {
 
                 List<Pe> peList = new ArrayList<>();
                 for (int j = 0; j < Constants.HOST_PES[hostType]; j++) {
-                        peList.add(new PeSimple(j, new PeProvisionerSimple(Constants.HOST_MIPS[hostType])));
+                        peList.add(new PeSimple(Constants.HOST_MIPS[hostType], new PeProvisionerSimple()));
                 }
 
                 PowerHost host = new PowerHostUtilizationHistory(i, Constants.HOST_STORAGE, peList);

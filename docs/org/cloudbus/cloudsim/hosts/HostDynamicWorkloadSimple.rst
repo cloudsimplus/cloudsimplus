@@ -23,7 +23,7 @@
 HostDynamicWorkloadSimple
 =========================
 
-.. java:package:: PackageDeclaration
+.. java:package:: org.cloudbus.cloudsim.hosts
    :noindex:
 
 .. java:type:: public class HostDynamicWorkloadSimple extends HostSimple implements HostDynamicWorkload

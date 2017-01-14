@@ -1,4 +1,4 @@
-/**
+/*
  * CloudSim Plus: A highly-extensible and easier-to-use Framework for
  * Modeling and Simulation of Cloud Computing Infrastructures and Services.
  * http://cloudsimplus.org
@@ -81,7 +81,7 @@ public class HorizontalVmScalingSimple implements HorizontalVmScaling {
     }
 
     @Override
-    public final VmScaling setVmSupplier(Supplier<Vm> supplier) {
+    public final HorizontalVmScaling setVmSupplier(Supplier<Vm> supplier) {
         this.vmSupplier = (Objects.isNull(supplier) ? () -> Vm.NULL : supplier);
         return this;
     }
@@ -92,7 +92,7 @@ public class HorizontalVmScalingSimple implements HorizontalVmScaling {
     }
 
     @Override
-    public final HorizontalVmScaling setOverloadPredicate(Predicate<Vm> predicate) {
+    public final VmScaling setOverloadPredicate(Predicate<Vm> predicate) {
         this.overloadPredicate = Objects.isNull(predicate) ? FALSE_PREDICATE : predicate;
         return this;
     }

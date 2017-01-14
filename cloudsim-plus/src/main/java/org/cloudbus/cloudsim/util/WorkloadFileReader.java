@@ -39,6 +39,7 @@ import org.cloudbus.cloudsim.utilizationmodels.UtilizationModelFull;
  * <li> {@link #setComment(String)}
  * <li> {@link #setField(int, int, int, int, int)}
  * </ul>
+ *
  * <p>
  * <b>NOTES:</b>
  * <ul>

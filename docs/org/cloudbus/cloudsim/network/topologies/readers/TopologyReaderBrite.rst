@@ -15,7 +15,7 @@
 TopologyReaderBrite
 ===================
 
-.. java:package:: PackageDeclaration
+.. java:package:: org.cloudbus.cloudsim.network.topologies.readers
    :noindex:
 
 .. java:type:: public class TopologyReaderBrite implements TopologyReader

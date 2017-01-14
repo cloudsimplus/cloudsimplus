@@ -16,7 +16,7 @@ import static org.junit.Assert.*;
  * @author Manoel Campos da Silva Filho
  */
 public class ProcessorTest {
-    private static final long PE_MIPS = 1000;
+    private static final double PE_MIPS = 1000;
     private static final int NUMBER_OF_PES = 2;
 
     @Test
@@ -58,7 +58,7 @@ public class ProcessorTest {
     private List<Double> createMipsList(int numberOfPes) {
         List<Double> mipsList = new ArrayList<>();
         for(int i = 0; i < numberOfPes; i++) {
-            mipsList.add((double) PE_MIPS);
+            mipsList.add(PE_MIPS);
         }
         return mipsList;
     }
@@ -66,7 +66,7 @@ public class ProcessorTest {
     @Test
     public void testGetTotalMipsCapacity() {
         Processor instance = createDefaultProcessor();
-        long expResult = PE_MIPS * NUMBER_OF_PES;
+        double expResult = PE_MIPS * NUMBER_OF_PES;
         assertEquals(expResult, instance.getTotalMipsCapacity(), 0);
     }
 
@@ -81,7 +81,7 @@ public class ProcessorTest {
     @Test
     public void testGetCapacity() {
         Processor instance = createDefaultProcessor();
-        long expResult = PE_MIPS;
+        long expResult = (long)PE_MIPS;
         assertEquals(expResult, instance.getCapacity());
     }
 
@@ -111,7 +111,7 @@ public class ProcessorTest {
 
     @Test
     public void testSetCapacity() {
-        long expResult = PE_MIPS*2;
+        long expResult = (long)PE_MIPS*2;
         Processor instance = createDefaultProcessor();
         instance.setCapacity(expResult);
         assertEquals(expResult, instance.getCapacity(), 0.0);

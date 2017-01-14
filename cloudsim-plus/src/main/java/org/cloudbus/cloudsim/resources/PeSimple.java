@@ -17,13 +17,13 @@ import java.util.Objects;
  * defined in terms of Millions Instructions Per Second (MIPS) rating.<p/>
  *
  * <b>ASSUMPTION:</b> All PEs under the same Machine have the same MIPS rating.
- * @TODO This assumption is not being assured on different classes (where other TODOs where introduced)
+ * @TODO This assumption is not being assured on different classes (where other TODOs were included)
  *
  * @author Manzur Murshed
  * @author Rajkumar Buyya
  * @since CloudSim Toolkit 1.0
  */
-public class PeSimple implements Pe {
+public class PeSimple extends ResourceAbstract implements Pe {
     /** @see #getId()  */
     private int id;
 
@@ -35,15 +35,16 @@ public class PeSimple implements Pe {
 
     /**
      * Instantiates a new PE object.
+     * The id of the PE is just set when a List of PEs is assigned to a Host.
      *
-     * @param id the PE ID
-     * @param peProvisioner the PE provisioner
-     * @pre id >= 0
+     * @param mipsCapacity the capacity of the PE in MIPS (Million Instructions per Second)
+     * @param peProvisioner the provisioner that will manage the allocation of this physical Pe for VMs
      * @pre peProvisioner != null
      * @post $none
      */
-    public PeSimple(int id, PeProvisioner peProvisioner) {
-        setId(id);
+    public PeSimple(double mipsCapacity, PeProvisioner peProvisioner) {
+        super((long)mipsCapacity);
+        setId(-1);
         setPeProvisioner(peProvisioner);
 
         // when created it should be set to FREE, i.e. available for use.
@@ -51,56 +52,30 @@ public class PeSimple implements Pe {
     }
 
     /**
-     * Sets the {@link #getId()}.
+     * Instantiates a new PE object defining a given id.
+     * The id of the PE is just set when a List of PEs is assigned to a Host.
      *
-     * @param id the new PE id
+     * @param id the PE id
+     * @param mipsCapacity the capacity of the PE in MIPS (Million Instructions per Second)
+     * @param peProvisioner the provisioner that will manage the allocation of this physical Pe for VMs
+     * @pre peProvisioner != null
+     * @post $none
      */
-    protected final void setId(int id) {
+    public PeSimple(int id, double mipsCapacity, PeProvisioner peProvisioner) {
+        this(mipsCapacity, peProvisioner);
+        this.setId(id);
+    }
+
+    @Override
+    public final void setId(int id) {
         this.id = id;
     }
 
-    /**
-     * Gets the PE id.
-     *
-     * @return the PE id
-     */
     @Override
     public int getId() {
         return id;
     }
 
-    /**
-     * Sets the MIPS Rating of this PE.
-     *
-     * @param d the mips
-     * @return true if MIPS > 0, false otherwise
-     * @pre mips >= 0
-     * @post $none
-     */
-    @Override
-    public boolean setMips(double d) {
-        return getPeProvisioner().setMipsCapacity(d);
-    }
-
-    /**
-     * Gets the MIPS Rating of this Pe.
-     *
-     * @return the MIPS Rating
-     * @pre $none
-     * @post $result >= 0
-     */
-    @Override
-    public int getMips() {
-        return (int) getPeProvisioner().getMipsCapacity();
-    }
-
-    /**
-     * Gets the status of the PE.
-     *
-     * @return the PE status
-     * @pre $none
-     * @post $none
-     */
     @Override
     public Status getStatus() {
         return status;
@@ -112,17 +87,17 @@ public class PeSimple implements Pe {
         return true;
     }
 
-    /**
-     * Sets the {@link #getPeProvisioner()} that manages the allocation
-     * of this physical PE to virtual machines.
-     *
-     * @param peProvisioner the new PE provisioner
-     */
-    protected final void setPeProvisioner(PeProvisioner peProvisioner) {
-        if(Objects.isNull(peProvisioner)) {
-            throw new IllegalArgumentException("The peProvisioner of a Pe cannot be null");
-        }
+    @Override
+    public boolean setCapacity(double mipsCapacity) {
+        return setCapacity((long)mipsCapacity);
+    }
+
+    @Override
+    public final Pe setPeProvisioner(PeProvisioner peProvisioner) {
+        Objects.requireNonNull(peProvisioner);
         this.peProvisioner = peProvisioner;
+        this.peProvisioner.setPe(this);
+        return this;
     }
 
     /**
@@ -136,4 +111,8 @@ public class PeSimple implements Pe {
         return peProvisioner;
     }
 
+    @Override
+    public String toString() {
+        return String.valueOf(getId());
+    }
 }

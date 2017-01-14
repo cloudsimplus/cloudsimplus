@@ -17,7 +17,7 @@
 DatacenterBroker
 ================
 
-.. java:package:: PackageDeclaration
+.. java:package:: org.cloudbus.cloudsim.brokers
    :noindex:
 
 .. java:type:: public interface DatacenterBroker extends SimEntity

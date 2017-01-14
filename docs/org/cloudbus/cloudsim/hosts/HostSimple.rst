@@ -31,7 +31,7 @@
 HostSimple
 ==========
 
-.. java:package:: PackageDeclaration
+.. java:package:: org.cloudbus.cloudsim.hosts
    :noindex:
 
 .. java:type:: public class HostSimple implements Host

@@ -25,7 +25,7 @@
 PacketScheduler
 ===============
 
-.. java:package:: PackageDeclaration
+.. java:package:: org.cloudbus.cloudsim.schedulers.cloudlet.network
    :noindex:
 
 .. java:type:: public interface PacketScheduler

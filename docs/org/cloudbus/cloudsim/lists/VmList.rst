@@ -7,7 +7,7 @@
 VmList
 ======
 
-.. java:package:: PackageDeclaration
+.. java:package:: org.cloudbus.cloudsim.lists
    :noindex:
 
 .. java:type:: public final class VmList

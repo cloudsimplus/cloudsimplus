@@ -145,10 +145,10 @@ public class NetworkVmsExample1 {
             .setVmScheduler(new VmSchedulerTimeShared());
     }
 
-    private List<Pe> createPEs(final int numberOfPEs, final int mips) {
+    private List<Pe> createPEs(final int numberOfPEs, final long mips) {
         List<Pe> peList = new ArrayList<>();
         for (int i = 0; i < numberOfPEs; i++) {
-            peList.add(new PeSimple(i, new PeProvisionerSimple(mips)));
+            peList.add(new PeSimple(mips, new PeProvisionerSimple()));
         }
         return peList;
     }

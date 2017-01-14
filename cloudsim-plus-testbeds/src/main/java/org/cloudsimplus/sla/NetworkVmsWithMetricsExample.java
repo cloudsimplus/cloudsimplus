@@ -209,7 +209,7 @@ public class NetworkVmsWithMetricsExample {
         int mips = 8000;
 
         // 3. Create PEs and add these into a list.
-        peList.add(new PeSimple(0, new PeProvisionerSimple(mips))); // need to store Pe id and MIPS Rating
+        peList.add(new PeSimple(mips, new PeProvisionerSimple())); // need to store Pe id and MIPS Rating
 
         // 4. Create Host with its id and list of PEs and add them to the list
         // of machines

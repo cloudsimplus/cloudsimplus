@@ -17,7 +17,7 @@
 VmAllocationPolicyAbstract
 ==========================
 
-.. java:package:: PackageDeclaration
+.. java:package:: org.cloudbus.cloudsim.allocationpolicies
    :noindex:
 
 .. java:type:: public abstract class VmAllocationPolicyAbstract implements VmAllocationPolicy

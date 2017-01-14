@@ -1,4 +1,4 @@
-/**
+/*
  * CloudSim Plus: A highly-extensible and easier-to-use Framework for
  * Modeling and Simulation of Cloud Computing Infrastructures and Services.
  * http://cloudsimplus.org
@@ -66,9 +66,9 @@ import org.cloudbus.cloudsim.resources.Ram;
  * @since CloudSim Plus 1.0
  */
 public class TwoCloudletsAndOneSpaceSharedVmExample {
-    private static List<Cloudlet> cloudletList;
-    private static List<Vm> vmlist;
-    private static CloudSim simulation;
+    private List<Cloudlet> cloudletList;
+    private List<Vm> vmlist;
+    private CloudSim simulation;
 
     /**
      * Creates main() to run this example.
@@ -76,7 +76,11 @@ public class TwoCloudletsAndOneSpaceSharedVmExample {
      * @param args the args
      */
     public static void main(String[] args) {
-        Log.printFormattedLine("Starting %s ...", TwoCloudletsAndOneSpaceSharedVmExample.class.getSimpleName());
+        new TwoCloudletsAndOneSpaceSharedVmExample();
+    }
+
+    public TwoCloudletsAndOneSpaceSharedVmExample(){
+        Log.printFormattedLine("Starting %s ...", getClass().getSimpleName());
 
         // First step: Initialize the CloudSim package. It should be called before creating any entities.
         int num_user = 1; // number of cloud users
@@ -89,7 +93,7 @@ public class TwoCloudletsAndOneSpaceSharedVmExample {
         Datacenter datacenter0 = createDatacenter();
 
         // Third step: Create Broker
-        DatacenterBroker broker = createBroker();
+        DatacenterBroker broker = new DatacenterBrokerSimple(simulation);
 
         // Fourth step: Create one virtual machine
         vmlist = new ArrayList<>();
@@ -146,15 +150,14 @@ public class TwoCloudletsAndOneSpaceSharedVmExample {
         //Final step: Print results when simulation is over
         List<Cloudlet> newList = broker.getCloudletsFinishedList();
         new CloudletsTableBuilderHelper(newList).build();
-        Log.printFormattedLine("%s finished!", TwoCloudletsAndOneSpaceSharedVmExample.class.getSimpleName());
+        Log.printFormattedLine("%s finished!", getClass().getSimpleName());
     }
-
     /**
      * Creates the Datacenter.
      *
      * @return the Datacenter
      */
-    private static Datacenter createDatacenter() {
+    private Datacenter createDatacenter() {
         // Here are the steps needed to create a DatacenterSimple:
         // 1. We need to create a list to store
         // our machine
@@ -164,10 +167,10 @@ public class TwoCloudletsAndOneSpaceSharedVmExample {
         // In this example, it will have only one core.
         List<Pe> peList = new ArrayList<>();
 
-        int mips = 1000;
+        long mips = 1000;
 
         // 3. Create PEs and add these into a list.
-        peList.add(new PeSimple(0, new PeProvisionerSimple(mips))); // need to store Pe id and MIPS Rating
+        peList.add(new PeSimple(mips, new PeProvisionerSimple())); // need to store Pe id and MIPS Rating
 
         // 4. Create HostSimple with its id and list of PEs and add them to the list
         // of machines
@@ -202,18 +205,6 @@ public class TwoCloudletsAndOneSpaceSharedVmExample {
 
         // 6. Finally, we need to create a DatacenterSimple object.
         return new DatacenterSimple(simulation, characteristics, new VmAllocationPolicySimple());
-    }
-
-    // We strongly encourage users to develop their own broker policies, to
-    // submit vms and cloudlets according
-    // to the specific rules of the simulated scenario
-    /**
-     * Creates the broker.
-     *
-     * @return the Datacenter broker
-     */
-    private static DatacenterBroker createBroker() {
-        return new DatacenterBrokerSimple(simulation);
     }
 
 }

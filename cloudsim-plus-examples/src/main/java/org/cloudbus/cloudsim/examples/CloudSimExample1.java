@@ -57,7 +57,7 @@ public class CloudSimExample1 {
     }
 
     public CloudSimExample1() {
-        Log.printFormattedLine("Starting %s ...", CloudSimExample1.class.getSimpleName());
+        Log.printFormattedLine("Starting %s ...", getClass().getSimpleName());
         try {
             // First step: Initialize the CloudSim package. It should be called before creating any entities.
 
@@ -72,7 +72,7 @@ public class CloudSimExample1 {
             Datacenter datacenter0 = createDatacenter();
 
             // Third step: Create Broker
-            DatacenterBroker broker = createBroker();
+            DatacenterBroker broker = new DatacenterBrokerSimple(simulation);
 
             // Fourth step: Create one virtual machine
             vmlist = new ArrayList<>();
@@ -126,7 +126,7 @@ public class CloudSimExample1 {
             //Final step: Print results when simulation is over
             List<Cloudlet> newList = broker.getCloudletsFinishedList();
             new CloudletsTableBuilderHelper(newList).build();
-            Log.printFormattedLine("%s finished!", CloudSimExample1.class.getSimpleName());
+            Log.printFormattedLine("%s finished!", getClass().getSimpleName());
         } catch (RuntimeException e) {
             Log.printFormattedLine("Simulation finished due to unexpected error: %s", e);
         }
@@ -151,7 +151,7 @@ public class CloudSimExample1 {
         int mips = 1000;
 
         // 3. Create PEs and add these into a list.
-        peList.add(new PeSimple(0, new PeProvisionerSimple(mips))); // need to store Pe id and MIPS Rating
+        peList.add(new PeSimple(mips, new PeProvisionerSimple())); // need to store Pe id and MIPS Rating
 
         // 4. Create Host with its id and list of PEs and add them to the list
         // of machines
@@ -185,18 +185,6 @@ public class CloudSimExample1 {
 
         // 6. Finally, we need to create a DatacenterSimple object.
         return new DatacenterSimple(simulation, characteristics, new VmAllocationPolicySimple());
-    }
-
-    // We strongly encourage users to develop their own broker policies, to
-    // submit vms and cloudlets according
-    // to the specific rules of the simulated scenario
-    /**
-     * Creates the broker.
-     *
-     * @return the Datacenter broker
-     */
-    private DatacenterBroker createBroker() {
-        return new DatacenterBrokerSimple(simulation);
     }
 
 }

@@ -11,7 +11,7 @@
 AbstractResourceProvisioner
 ===========================
 
-.. java:package:: PackageDeclaration
+.. java:package:: org.cloudbus.cloudsim.provisioners
    :noindex:
 
 .. java:type:: public abstract class AbstractResourceProvisioner implements ResourceProvisioner

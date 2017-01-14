@@ -12,6 +12,7 @@ import org.cloudbus.cloudsim.cloudlets.Cloudlet;
 import org.cloudbus.cloudsim.cloudlets.CloudletExecutionInfo;
 
 import org.cloudbus.cloudsim.resources.Processor;
+import org.cloudbus.cloudsim.schedulers.vm.VmScheduler;
 import org.cloudbus.cloudsim.util.Conversion;
 
 /**
@@ -25,16 +26,24 @@ import org.cloudbus.cloudsim.util.Conversion;
  * <p>
  * It also does not perform a preemption process in order to move running
  * Cloudlets to the waiting list in order to make room for other already waiting
- * Cloudlets to run. It just considers there is not waiting Cloudlet,
+ * Cloudlets to run. It just imposes there is not waiting Cloudlet,
  * <b>oversimplifying</b> the problem considering that for a given simulation
  * second <tt>t</tt>, the total processing capacity of the processor cores (in
  * MIPS) is equally divided by the applications that are using them.
- * <b>This in fact is not possible, once just one application can use a CPU core
- * at a time.</b>
+ * </p>
  *
- * However, since this CloudletScheduler implementation do not account for the
+ * <p>In processors enabled with <a href="https://en.wikipedia.org/wiki/Hyper-threading">Hyper-threading technology (HT)</a>,
+ * it is possible to run up to 2 processes at the same physical CPU core.
+ * However, usually just the Host operating system scheduler (a {@link VmScheduler} assigned to a Host)
+ * has direct knowledge of HT to accordingly schedule up to 2 processes to the same physical CPU core.
+ * Further, this scheduler implementation
+ * oversimplifies a possible HT for the virtual PEs, allowing that more than 2 processes to run at the same core.</p>
+ *
+ * <p>Since this CloudletScheduler implementation does not account for the
  * <a href="https://en.wikipedia.org/wiki/Context_switch">context switch</a>
- * overhead, the only impact of this oversimplification is that if there are
+ * overhead, this oversimplification impacts tasks completion by penalizing
+ * equally all the Cloudlets that are running on the same CPU core.
+ * Other impact is that, if there are
  * Cloudlets of the same length running in the same PEs, they will finish
  * exactly at the same time. On the other hand, on a real time-shared scheduler
  * these Cloudlets will finish almost in the same time.
@@ -51,7 +60,7 @@ import org.cloudbus.cloudsim.util.Conversion;
  * Time (second): 00 01 02 03 04 05<br>
  * Cloudlet (id): C0 C1 C0 C1 C0 C1<br>
  *
- * As one can see, in a real time-shared scheduler that do not define priorities
+ * As one can see, in a real time-shared scheduler that does not define priorities
  * for applications, the 2 Cloudlets will in fact finish in different times. In
  * this example, one Cloudlet will finish 1 second after the other.
  * </p>

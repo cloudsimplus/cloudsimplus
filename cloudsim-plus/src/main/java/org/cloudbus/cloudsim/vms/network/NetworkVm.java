@@ -59,7 +59,7 @@ public class NetworkVm extends VmSimple {
      * @pre numberOfPes > 0
      * @post $none
      */
-    public NetworkVm(int id, double mipsCapacity, int numberOfPes) {
+    public NetworkVm(int id, long mipsCapacity, int numberOfPes) {
         super(id, mipsCapacity, numberOfPes);
         cloudletList = new ArrayList<>();
     }
@@ -86,7 +86,7 @@ public class NetworkVm extends VmSimple {
     public NetworkVm(
             int id,
             DatacenterBroker broker,
-            double mipsCapacity,
+            long mipsCapacity,
             int numberOfPes,
             int ramCapacity,
             long bwCapacity,

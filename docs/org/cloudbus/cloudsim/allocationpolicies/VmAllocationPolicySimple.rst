@@ -7,7 +7,7 @@
 VmAllocationPolicySimple
 ========================
 
-.. java:package:: PackageDeclaration
+.. java:package:: org.cloudbus.cloudsim.allocationpolicies
    :noindex:
 
 .. java:type:: public class VmAllocationPolicySimple extends VmAllocationPolicyAbstract

@@ -4,7 +4,7 @@
 
     <groupId>org.cloudsimplus</groupId>
     <artifactId>cloudsim-plus</artifactId>
-    <version>1.0</version>
+    <version>1.1.0</version>
     <name>CloudSim Plus API</name>
     <description>CloudSim Plus: A modern, highly extensible and easier-to-use Java 8 Framework for Modeling and Simulation of Cloud Computing Infrastructures and Services</description>
     <url>http://cloudsimplus.org</url>
@@ -303,7 +303,7 @@
             <plugin>
                 <groupId>org.jacoco</groupId>
                 <artifactId>jacoco-maven-plugin</artifactId>
-                <version>0.7.7.201606060606</version>
+                <version>0.7.8</version>
                 <executions>
                     <execution>
                         <id>prepare-agent</id>
@@ -334,6 +334,7 @@
                 <version>3.11.0</version>
                 <configuration>
                     <organisation>manoelcampos</organisation>
+                    <projectId>587716de34054a001687683a</projectId>
                 </configuration>
                 <!--
                 The plugin is just being executed when the repository is pushed to travis-ci.org
@@ -364,6 +365,10 @@
                         <year>${project.inceptionYear}</year>
                         <website>${project.url}</website>
                     </properties>
+
+                    <mapping>
+                        <java>SLASHSTAR_STYLE</java>
+                    </mapping>
 
                     <strictCheck>true</strictCheck>
                     <failIfMissing>false</failIfMissing>
@@ -416,6 +421,7 @@
                         <exclude>**/*.uml</exclude>
                         <exclude>**/*.iml</exclude>
                         <exclude>**/nbactions.xml</exclude>
+                        <exclude>**/src/main/resources/**</exclude>
 
                         <!-- Ignored just temporarily while the implementation is not included in the cloudsim
                         main module-->

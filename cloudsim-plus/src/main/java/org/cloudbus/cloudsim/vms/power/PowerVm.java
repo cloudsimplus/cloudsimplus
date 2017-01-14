@@ -73,7 +73,7 @@ public class PowerVm extends VmSimple {
      * @pre numberOfPes > 0
      * @post $none
      */
-    public PowerVm(int id, double mipsCapacity, int numberOfPes) {
+    public PowerVm(int id, long mipsCapacity, int numberOfPes) {
         super(id, mipsCapacity, numberOfPes);
         setSchedulingInterval(0);
     }
@@ -101,7 +101,7 @@ public class PowerVm extends VmSimple {
     public PowerVm(
             final int id,
             final DatacenterBroker broker,
-            final double mipsCapacity,
+            final long mipsCapacity,
             final int numberOfPes,
             final int ramCapacity,
             final long bwCapacity,

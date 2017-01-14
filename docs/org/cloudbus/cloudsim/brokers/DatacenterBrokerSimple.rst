@@ -9,7 +9,7 @@
 DatacenterBrokerSimple
 ======================
 
-.. java:package:: PackageDeclaration
+.. java:package:: org.cloudbus.cloudsim.brokers
    :noindex:
 
 .. java:type:: public class DatacenterBrokerSimple extends DatacenterBrokerAbstract

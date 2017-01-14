@@ -1,4 +1,4 @@
-/**
+/*
  * CloudSim Plus: A highly-extensible and easier-to-use Framework for
  * Modeling and Simulation of Cloud Computing Infrastructures and Services.
  * http://cloudsimplus.org
@@ -222,7 +222,7 @@ public class DatacenterBrokerHeuristicExample {
     }
 
     private Host createHost() {
-        int  mips = 1000; // capacity of each CPU core (in Million Instructions per Second)
+        long mips = 1000; // capacity of each CPU core (in Million Instructions per Second)
         int  ram = 2048; // host memory (MEGABYTE)
         long storage = 1000000; // host storage
         long bw = 10000;
@@ -231,7 +231,7 @@ public class DatacenterBrokerHeuristicExample {
         /*Creates the Host's CPU cores and defines the provisioner
         used to allocate each core for requesting VMs.*/
         for(int i = 0; i < 8; i++)
-            peList.add(new PeSimple(i, new PeProvisionerSimple(mips)));
+            peList.add(new PeSimple(mips, new PeProvisionerSimple()));
 
        return new HostSimple(numberOfCreatedHosts++, storage, peList)
             .setRamProvisioner(new ResourceProvisionerSimple(new Ram(ram)))
@@ -240,7 +240,7 @@ public class DatacenterBrokerHeuristicExample {
     }
 
     private Vm createVm(DatacenterBroker broker, int pesNumber) {
-        double mips = 1000;
+        long mips = 1000;
         long   storage = 10000; // vm image size (MEGABYTE)
         int    ram = 512; // vm memory (MEGABYTE)
         long   bw = 1000; // vm bandwidth

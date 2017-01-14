@@ -44,8 +44,8 @@ public class CloudletSchedulerDynamicWorkloadTest {
     private static final long CLOUDLET_OUTPUT_SIZE = 300;
 
     private static final double MIPS = CLOUDLET_LENGTH;
-    private static final double HALF_MIPS = MIPS/2;    
-    private static final double QUARTER_MIPS = MIPS/4;    
+    private static final double HALF_MIPS = MIPS/2;
+    private static final double QUARTER_MIPS = MIPS/4;
     private static final int PES_NUMBER = 2;
 
     private CloudletSchedulerDynamicWorkload cloudletScheduler;
@@ -109,7 +109,7 @@ public class CloudletSchedulerDynamicWorkloadTest {
 
         cloudletScheduler.cloudletSubmit(cloudlet);
 
-        List<Double> requestedMips = createMipsShare(2,MIPS * utilization);
+        List<Double> requestedMips = createMipsShare(2, (long)(MIPS * utilization));
         assertEquals(requestedMips, cloudletScheduler.getCurrentRequestedMips());
     }
 
@@ -259,7 +259,7 @@ public class CloudletSchedulerDynamicWorkloadTest {
         assertEquals(expectedFinishTime, actualFinishTime, 0.3);
     }
 
-    private List<Double> createMipsShare(int pes, double mips) {
+    private List<Double> createMipsShare(int pes, final double mips) {
         List<Double> mipsShare = new ArrayList<>(pes);
         for(int i = 0; i < pes; i++){
             mipsShare.add(mips);
@@ -305,7 +305,7 @@ public class CloudletSchedulerDynamicWorkloadTest {
                 .setOutputSize(CLOUDLET_OUTPUT_SIZE)
                 .setUtilizationModel(utilizationModel);
         cloudlet.assignToDatacenter(Datacenter.NULL);
-        
+
         List<Double> mipsShare = createMipsShare(4, QUARTER_MIPS);
 
         cloudletScheduler.setCurrentMipsShare(mipsShare);

@@ -10,6 +10,7 @@ import java.util.*;
 
 import org.cloudbus.cloudsim.core.UniquelyIdentificable;
 import org.cloudbus.cloudsim.datacenters.Datacenter;
+import org.cloudbus.cloudsim.provisioners.PeProvisioner;
 import org.cloudbus.cloudsim.util.Log;
 import org.cloudbus.cloudsim.brokers.DatacenterBroker;
 import org.cloudbus.cloudsim.cloudlets.Cloudlet;
@@ -86,10 +87,12 @@ public class VmSimple implements Vm {
     private boolean created;
 
     /**
-     * The map of resources the VM has. Each key is the class of a given VM
-     * resource and each value is the resource itself.
+     * A list of resources the VM has, that represent virtual resources corresponding to physical resources
+     * from the Host where the VM is placed.
+     *
+     * @see #getResource(Class)
      */
-    private final Map<Class<? extends ResourceManageable>, ResourceManageable> resources;
+    private final List<ResourceManageable> resources;
 
     /**
      * @see #getStateHistory()
@@ -138,8 +141,8 @@ public class VmSimple implements Vm {
      * @pre numberOfPes > 0
      * @post $none
      */
-    public VmSimple(int id, double mipsCapacity, int numberOfPes) {
-        this.resources = new HashMap<>();
+    public VmSimple(int id, long mipsCapacity, int numberOfPes) {
+        this.resources = new ArrayList<>(4);
         setInMigration(false);
         setHost(Host.NULL);
 
@@ -147,9 +150,11 @@ public class VmSimple implements Vm {
         setBroker(DatacenterBroker.NULL);
         setMips(mipsCapacity);
         setNumberOfPes(numberOfPes);
+
         setRam(new Ram(1024));
         setBw(new Bandwidth(1000));
         setStorage(new RawStorage(1024));
+
         setSubmissionDelay(0);
         setVmm("Xen");
         setCloudletScheduler(CloudletScheduler.NULL);
@@ -160,6 +165,28 @@ public class VmSimple implements Vm {
         this.onVmCreationFailureListeners = new ArrayList<>();
         this.onUpdateVmProcessingListeners = new ArrayList<>();
         this.horizontalScaling = VmScaling.NULL;
+    }
+
+    /**
+     * Creates a Vm with 1024 MEGABYTE of RAM, 1000 Megabits/s of Bandwidth and 1024 MEGABYTE of Storage Size.
+     *
+     * To change these values, use the respective setters. While the Vm {@link #isCreated()
+     * is being instantiated}, such values can be changed freely.
+     *
+     * <p>It receives the amount of MIPS as a double value but converts it internally
+     * to a long. The method is just provided as a handy-way to create a Vm
+     * using a double value for MIPS that usually is generated from some computations.</p>
+     *
+     * @param id unique ID of the VM
+     * @param mipsCapacity the mips capacity of each Vm {@link Pe}
+     * @param numberOfPes amount of {@link Pe} (CPU cores)
+     *
+     * @pre id >= 0
+     * @pre numberOfPes > 0
+     * @post $none
+     */
+    public VmSimple(int id, double mipsCapacity, int numberOfPes) {
+        this(id, (long)mipsCapacity, numberOfPes);
     }
 
     /**
@@ -192,7 +219,7 @@ public class VmSimple implements Vm {
     public VmSimple(
             int id,
             DatacenterBroker broker,
-            double mipsCapacity,
+            long mipsCapacity,
             int numberOfPes,
             long ramCapacity,
             long bwCapacity,
@@ -367,11 +394,9 @@ public class VmSimple implements Vm {
      * @param ram the Ram resource to set
      */
     private void setRam(Ram ram) {
-        if(Objects.isNull(ram)){
-            throw new NullPointerException("Vm RAM cannot be null");
-        }
+        Objects.requireNonNull(ram);
         this.ram = ram;
-        resources.put(Ram.class, ram);
+        resources.add(ram);
     }
 
     @Override
@@ -394,11 +419,9 @@ public class VmSimple implements Vm {
      * @param bw the Bandwidth resource to set
      */
     private void setBw(Bandwidth bw){
-        if(Objects.isNull(bw)){
-            throw new NullPointerException("Vm Bandwidth cannot be null");
-        }
+        Objects.requireNonNull(bw);
         this.bw = bw;
-        resources.put(Bandwidth.class, bw);
+        resources.add(bw);
     }
 
     @Override
@@ -420,11 +443,9 @@ public class VmSimple implements Vm {
      * @param storage the RawStorage resource to set
      */
     private void setStorage(RawStorage storage){
-        if(Objects.isNull(storage)){
-            throw new NullPointerException("Vm Storage cannot be null");
-        }
+        Objects.requireNonNull(storage);
         this.storage = storage;
-        resources.put(RawStorage.class, storage);
+        resources.add(storage);
     }
 
     @Override
@@ -551,18 +572,43 @@ public class VmSimple implements Vm {
         getStateHistory().add(entry);
     }
 
-    /**
-     * @todo The method has to be tested with different instances of
-     * ResourceManageable, with children in different levels of the class
-     * hierarchy.
-     * @param resourceClass the class of the resource to be got
-     * @return
-     */
     @Override
-    public <R extends ResourceManageable>
-            ResourceManageable getResource(Class<R> resourceClass) {
-        //reference: http://stackoverflow.com/questions/2284949/how-do-i-declare-a-member-with-multiple-generic-types-that-have-non-trivial-rela
-        return resources.get(resourceClass);
+    public void allocateResource(Class<? extends ResourceManageable> resourceClass, long newTotalResourceAmount) {
+        getResource(resourceClass).allocateResource(newTotalResourceAmount);
+    }
+
+    @Override
+    public void deallocateResource(Class<? extends ResourceManageable> resourceClass) {
+        getResource(resourceClass).deallocateAllResources();
+    }
+
+    /**
+     * Gets a given Vm {@link Resource}, such as {@link Ram} or {@link Bandwidth},
+     * from a corresponding physical resource from the Host that the VM is placed into.
+     *
+     * <p>The allocation of Host {@link Pe}s for a VM is performed by the
+     * {@link PeProvisioner} assigned to each Pe. The VM doesn't store
+     * any data about processor allocation.</p>
+     *
+     * @param resourceClass the class of VM resource to get
+     * @return the Vm {@link Resource} corresponding to the given class
+     */
+    private ResourceManageable getResource(Class<? extends ResourceManageable> resourceClass) {
+        return resources.stream()
+            .filter(r -> isObjectSubClassOf(r, resourceClass))
+            .findFirst()
+            .orElse(ResourceManageable.NULL);
+    }
+
+
+    /**
+     * Checks if a given object is instance of a given class.
+     * @param object the object to check
+     * @param classWanted the class to verify if the object is instance of
+     * @return true if the object is instance of the given class, false otherwise
+     */
+    private boolean isObjectSubClassOf(Object object, Class classWanted) {
+        return classWanted.isAssignableFrom(object.getClass());
     }
 
     @Override

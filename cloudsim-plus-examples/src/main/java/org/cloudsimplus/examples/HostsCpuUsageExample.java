@@ -1,4 +1,4 @@
-/**
+/*
  * CloudSim Plus: A highly-extensible and easier-to-use Framework for
  * Modeling and Simulation of Cloud Computing Infrastructures and Services.
  * http://cloudsimplus.org
@@ -85,7 +85,7 @@ public class HostsCpuUsageExample {
     }
 
     public HostsCpuUsageExample(){
-        Log.printFormattedLine("Starting %s...", HostsCpuUsageExample.class.getSimpleName());
+        Log.printFormattedLine("Starting %s...", getClass().getSimpleName());
 
         simulation = new CloudSim();
 
@@ -122,7 +122,7 @@ public class HostsCpuUsageExample {
 
         showCpuUtilizationForAllHosts();
 
-        Log.printFormattedLine("%s finished!", HostsCpuUsageExample.class.getSimpleName());
+        Log.printFormattedLine("%s finished!", getClass().getSimpleName());
     }
 
     private Cloudlet createCloudlet(int pesNumber, int id) {
@@ -138,7 +138,7 @@ public class HostsCpuUsageExample {
             .setBroker(broker);
     }
 
-    private Vm createVm(int pesNumber, double mips, int id) {
+    private Vm createVm(int pesNumber, long mips, int id) {
         long size = 10000; //image size (MEGABYTE)
         int ram = 2048; //vm memory (MEGABYTE)
         long bw = 1000;
@@ -184,10 +184,10 @@ public class HostsCpuUsageExample {
         return new DatacenterSimple(simulation, characteristics, new VmAllocationPolicySimple());
     }
 
-    private HostDynamicWorkloadSimple createHosts(int pesNumber, int mips, int hostId) {
+    private HostDynamicWorkloadSimple createHosts(int pesNumber, long mips, int hostId) {
         List<Pe> peList = new ArrayList<>();
         for (int i = 0; i < pesNumber; i++) {
-            peList.add(new PeSimple(i, new PeProvisionerSimple(mips)));
+            peList.add(new PeSimple(mips, new PeProvisionerSimple()));
         }
 
         long ram = 2048; //host memory (MEGABYTE)

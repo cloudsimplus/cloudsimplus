@@ -1,4 +1,4 @@
-/**
+/*
  * CloudSim Plus: A highly-extensible and easier-to-use Framework for
  * Modeling and Simulation of Cloud Computing Infrastructures and Services.
  * http://cloudsimplus.org
@@ -24,6 +24,7 @@
 package org.cloudsimplus.integrationtests;
 
 import org.cloudbus.cloudsim.hosts.Host;
+import org.cloudbus.cloudsim.schedulers.cloudlet.CloudletSchedulerTimeShared;
 import org.cloudbus.cloudsim.util.Log;
 import org.cloudbus.cloudsim.brokers.DatacenterBroker;
 import org.cloudsimplus.builders.BrokerBuilderDecorator;
@@ -45,26 +46,29 @@ import org.junit.Before;
 /**
  *
  * An Integration Test (IT) running a simulation scenario with 1 PM, 2 VMs
- * and 1 cloudlet in each VM. The cloudlets use a UtilizationModelFull for
+ * and 1 Cloudlet in each VM. The Cloudlets use a UtilizationModelFull for
  * CPU usage. The IT checks if the amount of available
  * CPU of the host is as expected along the simulation time.
- * It is created one broker for each VM and one VM finishes executing
+ *
+ * <p>It is created one broker for each VM and one VM finishes executing
  * prior to the other. By this way, the IT checks if the CPU used by the
- * finished VM is freed on the host. Creating the VMs for the same broker
+ * finished VM is freed on the host.</p>
+ *
+ * <p>Creating the VMs for the same broker
  * doesn't make the finished VM to be automatically destroyed.
  * In this case, only after all user VMs are finished that they are
- * destroyed in order to free resources.
+ * destroyed in order to free resources.</p>
  *
  * @author Manoel Campos da Silva Filho
  */
 public final class CheckHostAvailableMipsTest {
-    private static final int HOST_MIPS = 1000;
+    private static final double HOST_MIPS = 1000;
     private static final int HOST_PES = 5;
     private static final int NUMBER_OF_VMS = 2;
-    private static final int VM_MIPS = HOST_MIPS;
+    private static final double VM_MIPS = HOST_MIPS;
     private static final int VM_PES = HOST_PES/NUMBER_OF_VMS;
     private static final int CLOUDLET_PES = VM_PES;
-    private static final int CLOUDLET_LENGTH = HOST_MIPS*10;
+    private static final long CLOUDLET_LENGTH = (long)HOST_MIPS*10;
     private static final int NUMBER_OF_CLOUDLETS = NUMBER_OF_VMS;
 
     private SimulationScenarioBuilder scenario;
@@ -88,11 +92,12 @@ public final class CheckHostAvailableMipsTest {
 
         /*After 10 seconds all VMs finish and
         all host capacity will be free*/
-        if(time > 10)
+        if(time > 10) {
             expectedAvailableHostMips = hostCapacity;
-        /*After 5 seconds, one VM finishes and
+        }
+        /*After 6 seconds, one VM finishes and
         its used capacity will be free*/
-        else if(time > 5){
+        else if(time > 6){
             expectedAvailableHostMips += VM_MIPS*VM_PES;
         }
 
@@ -128,7 +133,7 @@ public final class CheckHostAvailableMipsTest {
             brokerBuilder.getVmBuilder()
                     .setRam(1000).setBw(100000)
                     .setPes(VM_PES).setMips(VM_MIPS).setSize(50000)
-                    .setCloudletSchedulerSupplier(() -> new CloudletSchedulerDynamicWorkload(VM_MIPS, VM_PES))
+                    .setCloudletSchedulerSupplier(() -> new CloudletSchedulerTimeShared())
                     .createAndSubmitOneVm();
 
             final long cloudletLength = (i == 0 ? CLOUDLET_LENGTH : CLOUDLET_LENGTH/2);

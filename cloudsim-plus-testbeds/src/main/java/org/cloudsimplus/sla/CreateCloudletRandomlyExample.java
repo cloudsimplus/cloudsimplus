@@ -202,10 +202,10 @@ public class CreateCloudletRandomlyExample {
         // In this example, it will have only one core.
         List<Pe> peList = new ArrayList<>();
 
-        int mips = 30000000;
+        long mips = 30000000;
 
         // 3. Create PEs and add these into a list.
-        peList.add(new PeSimple(0, new PeProvisionerSimple(mips))); // need to store Pe id and MIPS Rating
+        peList.add(new PeSimple(mips, new PeProvisionerSimple())); // need to store Pe id and MIPS Rating
         // 4. Create Host with its id and list of PEs and add them to the list
         // of machines
         int hostId = 0;

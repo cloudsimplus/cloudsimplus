@@ -1,34 +1,29 @@
 org.cloudsimplus.builders.tables
 ================================
 
-.. java:package:: org.cloudsimplus.builders.tables
+Provides \ :java:ref:`org.cloudsimplus.builders.tables.TableBuilder`\  classes that are used to format simulation results in different and structured ways such as ASCII, CSV or HTML tables. Such tables can even be used by external softwares to process simulation results.
 
-/**
- * CloudSim Plus: A highly-extensible and easier-to-use Framework for
- * Modeling and Simulation of Cloud Computing Infrastructures and Services.
- * http://cloudsimplus.org
- *
- *     Copyright (C) 2015-2016  Universidade da Beira Interior (UBI, Portugal) and
- *     the Instituto Federal de Educação Ciência e Tecnologia do Tocantins (IFTO, Brazil).
- *
- *     This file is part of CloudSim Plus.
- *
- *     CloudSim Plus is free software: you can redistribute it and/or modify
- *     it under the terms of the GNU General Public License as published by
- *     the Free Software Foundation, either version 3 of the License, or
- *     (at your option) any later version.
- *
- *     CloudSim Plus is distributed in the hope that it will be useful,
- *     but WITHOUT ANY WARRANTY; without even the implied warranty of
- *     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *     GNU General Public License for more details.
- *
- *     You should have received a copy of the GNU General Public License
- *     along with CloudSim Plus. If not, see <http://www.gnu.org/licenses/>.
- */
+All the examples use some \ :java:ref:`org.cloudsimplus.builders.tables.TableBuilder`\  implementation to print simulation results.
+
+The classes and interfaces provided allow creating custom TableBuilders to add, change or remove columns from the results, to sort rows, to filter, and so on.
+
+:author: Manoel Campos da Silva Filho
+
+.. java:package:: org.cloudsimplus.builders.tables
 
 .. toctree::
    :maxdepth: 1
 
+   AbstractTableBuilder
+   AbstractTableColumn
+   CloudletsTableBuilderHelper
+   CsvTableBuilder
+   CsvTableColumn
+   HtmlTableBuilder
+   HtmlTableColumn
    PriorityCloudletsTableBuilderHelper
+   TableBuilder
+   TableColumn
+   TextTableBuilder
+   TextTableColumn
 

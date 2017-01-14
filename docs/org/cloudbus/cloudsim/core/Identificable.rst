@@ -1,7 +1,7 @@
 Identificable
 =============
 
-.. java:package:: PackageDeclaration
+.. java:package:: org.cloudbus.cloudsim.core
    :noindex:
 
 .. java:type:: public interface Identificable

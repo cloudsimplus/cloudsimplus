@@ -1,34 +1,26 @@
 org.cloudsimplus.heuristics
 ===========================
 
-.. java:package:: org.cloudsimplus.heuristics
+Provides a set of interfaces and classes to develop heuristics to find sub-optimal solutions for problems, considering some utility function that has to be minimized or maximized. Such a function is also called a fitness function and as higher is the fitness better the found solution is.
 
-/**
- * CloudSim Plus: A highly-extensible and easier-to-use Framework for
- * Modeling and Simulation of Cloud Computing Infrastructures and Services.
- * http://cloudsimplus.org
- *
- *     Copyright (C) 2015-2016  Universidade da Beira Interior (UBI, Portugal) and
- *     the Instituto Federal de Educação Ciência e Tecnologia do Tocantins (IFTO, Brazil).
- *
- *     This file is part of CloudSim Plus.
- *
- *     CloudSim Plus is free software: you can redistribute it and/or modify
- *     it under the terms of the GNU General Public License as published by
- *     the Free Software Foundation, either version 3 of the License, or
- *     (at your option) any later version.
- *
- *     CloudSim Plus is distributed in the hope that it will be useful,
- *     but WITHOUT ANY WARRANTY; without even the implied warranty of
- *     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *     GNU General Public License for more details.
- *
- *     You should have received a copy of the GNU General Public License
- *     along with CloudSim Plus. If not, see <http://www.gnu.org/licenses/>.
- */
+Different heuristics include \ `Simulated Annealing <http://en.wikipedia.org/wiki/Simulated_annealing>`_\ , \ `Tabu Search <http://en.wikipedia.org/wiki/Tabu_search>`_\  and \ `Ant Colony Optimization <http://en.wikipedia.org/wiki/Ant_colony_optimization_algorithms>`_\ .
+
+The first introduced heuristic is the \ :java:ref:`org.cloudsimplus.heuristics.CloudletToVmMappingSimulatedAnnealing`\  that is used by a \ :java:ref:`org.cloudbus.cloudsim.brokers.DatacenterBrokerHeuristic`\  to map Cloudlets to VMs.
+
+:author: Manoel Campos da Silva Filho
+
+.. java:package:: org.cloudsimplus.heuristics
 
 .. toctree::
    :maxdepth: 1
 
+   CloudletToVmMappingHeuristic
+   CloudletToVmMappingHeuristicNull
+   CloudletToVmMappingSimulatedAnnealing
    CloudletToVmMappingSolution
+   Heuristic
+   HeuristicAbstract
+   HeuristicNull
+   HeuristicSolution
+   SimulatedAnnealing
 

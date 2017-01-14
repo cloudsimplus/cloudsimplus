@@ -13,7 +13,7 @@
 VmAllocationPolicy
 ==================
 
-.. java:package:: PackageDeclaration
+.. java:package:: org.cloudbus.cloudsim.allocationpolicies
    :noindex:
 
 .. java:type:: public interface VmAllocationPolicy

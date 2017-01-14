@@ -59,7 +59,7 @@ public class CloudSimExample3 {
     }
 
     public CloudSimExample3() {
-        Log.printFormattedLine("Starting %s..", CloudSimExample3.class.getSimpleName());
+        Log.printFormattedLine("Starting %s..", getClass().getSimpleName());
 
         // First step: Initialize the CloudSim package. It should be called
         // before creating any entities.
@@ -73,7 +73,7 @@ public class CloudSimExample3 {
         Datacenter datacenter0 = createDatacenter();
 
         //Third step: Create Broker
-        DatacenterBroker broker = createBroker();
+        DatacenterBroker broker = new DatacenterBrokerSimple(simulation);
 
         //Fourth step: Create one virtual machine
         vmlist = new ArrayList<>();
@@ -148,7 +148,7 @@ public class CloudSimExample3 {
         List<Cloudlet> newList = broker.getCloudletsFinishedList();
 
         new CloudletsTableBuilderHelper(newList).build();
-        Log.printFormattedLine("%s finished!", CloudSimExample3.class.getSimpleName());
+        Log.printFormattedLine("%s finished!", getClass().getSimpleName());
     }
 
     private DatacenterSimple createDatacenter() {
@@ -157,14 +157,13 @@ public class CloudSimExample3 {
         //    our machine
         List<Host> hostList = new ArrayList<>();
 
+        long mips = 1000;
+
         // 2. A Machine contains one or more PEs or CPUs/Cores.
         // In this example, it will have only one core.
-        List<Pe> peList = new ArrayList<>();
-
-        int mips = 1000;
-
+        List<Pe> peList0 = new ArrayList<>();
         // 3. Create PEs and add these into a list.
-        peList.add(new PeSimple(0, new PeProvisionerSimple(mips))); // need to store Pe id and MIPS Rating
+        peList0.add(new PeSimple(mips, new PeProvisionerSimple())); // need to store Pe id and MIPS Rating
 
         //4. Create Hosts with its id and list of PEs and add them to the list of machines
         int hostId = -1;
@@ -172,21 +171,21 @@ public class CloudSimExample3 {
         long storage = 1000000; //host storage
         long bw = 10000;
 
-        Host host = new HostSimple(++hostId, storage, peList)
+        Host host0 = new HostSimple(++hostId, storage, peList0)
             .setRamProvisioner(new ResourceProvisionerSimple(new Ram(ram)))
             .setBwProvisioner(new ResourceProvisionerSimple(new Bandwidth(bw)))
             .setVmScheduler(new VmSchedulerTimeShared());
-        hostList.add(host);
+        hostList.add(host0);
 
         //create another machine in the Data center
-        List<Pe> peList2 = new ArrayList<>();
-        peList2.add(new PeSimple(0, new PeProvisionerSimple(mips)));
+        List<Pe> peList1 = new ArrayList<>();
+        peList1.add(new PeSimple(mips, new PeProvisionerSimple()));
 
-        Host hos2t = new HostSimple(++hostId, storage, peList2)
+        Host host1 = new HostSimple(++hostId, storage, peList1)
             .setRamProvisioner(new ResourceProvisionerSimple(new Ram(ram)))
             .setBwProvisioner(new ResourceProvisionerSimple(new Bandwidth(bw)))
             .setVmScheduler(new VmSchedulerTimeShared());
-        hostList.add(host);
+        hostList.add(host1);
 
         // 5. Create a DatacenterCharacteristics object that stores the
         //    properties of a data center: architecture, OS, list of
@@ -208,9 +207,4 @@ public class CloudSimExample3 {
         return new DatacenterSimple(simulation, characteristics, new VmAllocationPolicySimple());
     }
 
-    //We strongly encourage users to develop their own broker policies, to submit vms and cloudlets according
-    //to the specific rules of the simulated scenario
-    private DatacenterBroker createBroker() {
-        return new DatacenterBrokerSimple(simulation);
-    }
 }

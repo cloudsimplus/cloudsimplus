@@ -3,7 +3,7 @@
 NetworkPacket
 =============
 
-.. java:package:: PackageDeclaration
+.. java:package:: org.cloudbus.cloudsim.network
    :noindex:
 
 .. java:type:: public interface NetworkPacket<T extends Identificable>

@@ -62,7 +62,7 @@ public class CloudletSchedulerTimeSharedTest {
     @Test
     public void testGetCloudletWaitingList_EmptyAfterResumingCloudlet() {
         final long cloudletLength = 1000;
-        final double mips = cloudletLength;
+        final long mips = cloudletLength;
         CloudletSchedulerTimeShared instance = createCloudletSchedulerWithMipsList(1, mips);
         final int cloudletId = 0;
         createCloudletAndAddItToPausedList(instance, cloudletId, cloudletLength);
@@ -86,7 +86,7 @@ public class CloudletSchedulerTimeSharedTest {
     public void testCloudletResume_CloudletInPausedList() {
         final int cloudletId = 1;
         final int schedulerPes = 1;
-        final double mips = 1000;
+        final long mips = 1000;
         final long cloudletLength = 10000;
         CloudletSchedulerTimeShared instance =
                 createCloudletSchedulerWithMipsList(schedulerPes, mips);
@@ -98,7 +98,7 @@ public class CloudletSchedulerTimeSharedTest {
         assertEquals(expResult, result, 0.0);
     }
 
-    private CloudletSchedulerTimeShared createCloudletSchedulerWithMipsList(int numberOfPes, double mipsOfEachPe) {
+    private CloudletSchedulerTimeShared createCloudletSchedulerWithMipsList(int numberOfPes, long mipsOfEachPe) {
         CloudletSchedulerTimeShared instance = new CloudletSchedulerTimeShared();
         List<Double> mipsList = CloudletSchedulerUtil.createMipsList(numberOfPes, mipsOfEachPe);
         instance.setCurrentMipsShare(mipsList);
@@ -125,7 +125,7 @@ public class CloudletSchedulerTimeSharedTest {
     public void testIsThereEnoughFreePesForCloudlet_WhenThereIsOneRunningCloudlet() {
         final int cloudletPes = 1;
         final int schedulerPes = 2;
-        final double schedulerMips = 1000;
+        final long schedulerMips = 1000;
         Cloudlet cloudlet0 = CloudletSimpleTest.createCloudlet(0, cloudletPes);
         CloudletSchedulerTimeShared instance = createCloudletSchedulerWithMipsList(schedulerPes, schedulerMips);
         instance.cloudletSubmit(cloudlet0);
@@ -143,8 +143,8 @@ public class CloudletSchedulerTimeSharedTest {
 
     @Test
     public void testGetTotalCurrentAvailableMipsForCloudlet_OneCloudlet() {
-        final double mips = 1000.0;
-        final long cloudletLen = (long)mips;
+        final long mips = 1000;
+        final long cloudletLen = mips;
         final int cloudletPes = 2;
         final int schedulerPes = 4;
         CloudletExecutionInfo cloudlet =

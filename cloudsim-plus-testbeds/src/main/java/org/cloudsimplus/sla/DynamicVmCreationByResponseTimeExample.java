@@ -36,6 +36,7 @@ import org.cloudbus.cloudsim.utilizationmodels.UtilizationModel;
 import org.cloudbus.cloudsim.utilizationmodels.UtilizationModelFull;
 import org.cloudbus.cloudsim.vms.Vm;
 import org.cloudbus.cloudsim.vms.VmSimple;
+import org.cloudsimplus.autoscaling.HorizontalVmScaling;
 import org.cloudsimplus.autoscaling.HorizontalVmScalingSimple;
 import org.cloudsimplus.autoscaling.VmScaling;
 import org.cloudsimplus.builders.tables.CloudletsTableBuilderHelper;
@@ -179,7 +180,7 @@ public class DynamicVmCreationByResponseTimeExample {
     private Host createHost() {
         List<Pe> pesList = new ArrayList<>(HOST_PES);
         for (int i = 0; i < HOST_PES; i++) {
-            pesList.add(new PeSimple(i, new PeProvisionerSimple(1000)));
+            pesList.add(new PeSimple(1000, new PeProvisionerSimple()));
         }
 
         ResourceProvisioner ramProvisioner = new ResourceProvisionerSimple(new Ram(20480));
@@ -232,10 +233,10 @@ public class DynamicVmCreationByResponseTimeExample {
      * @see #createListOfScalableVms(int)
      */
     private void createHorizontalVmScaling(Vm vm) {
-        VmScaling horizontalScaling = new HorizontalVmScalingSimple();
+        HorizontalVmScaling horizontalScaling = new HorizontalVmScalingSimple();
         horizontalScaling
-                .setOverloadPredicate(this::isVmOverloaded)
-                .setVmSupplier(this::createVm);
+                .setVmSupplier(this::createVm)
+                .setOverloadPredicate(this::isVmOverloaded);
         
         vm.setHorizontalScaling(horizontalScaling);
     }

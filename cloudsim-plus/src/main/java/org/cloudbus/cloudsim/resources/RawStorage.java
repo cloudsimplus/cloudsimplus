@@ -6,6 +6,7 @@ package org.cloudbus.cloudsim.resources;
  * file inclusion or deletion.
  *
  * @author Manoel Campos da Silva Filho
+ * @since CloudSim Plus 1.0
  */
 public final class RawStorage extends ResourceAbstract {
     /**

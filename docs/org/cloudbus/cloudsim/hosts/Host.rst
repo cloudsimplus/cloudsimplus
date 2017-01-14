@@ -23,7 +23,7 @@
 Host
 ====
 
-.. java:package:: PackageDeclaration
+.. java:package:: org.cloudbus.cloudsim.hosts
    :noindex:
 
 .. java:type:: public interface Host extends Identificable, Comparable<Host>

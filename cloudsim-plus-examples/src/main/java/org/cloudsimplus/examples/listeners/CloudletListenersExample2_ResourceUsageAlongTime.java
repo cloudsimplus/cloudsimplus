@@ -1,4 +1,4 @@
-/**
+/*
  * CloudSim Plus: A highly-extensible and easier-to-use Framework for
  * Modeling and Simulation of Cloud Computing Infrastructures and Services.
  * http://cloudsimplus.org
@@ -281,9 +281,9 @@ public class CloudletListenersExample2_ResourceUsageAlongTime {
      */
     private Host createHost(int id) {
         List<Pe> peList = new ArrayList<>();
-        int mips = 1000;
+        long mips = 1000;
         for(int i = 0; i < HOST_PES_NUMBER; i++){
-            peList.add(new PeSimple(i, new PeProvisionerSimple(mips)));
+            peList.add(new PeSimple(mips, new PeProvisionerSimple()));
         }
         long ram = 2048; // host memory (MEGABYTE)
         long storage = 1000000; // host storage (MEGABYTE)

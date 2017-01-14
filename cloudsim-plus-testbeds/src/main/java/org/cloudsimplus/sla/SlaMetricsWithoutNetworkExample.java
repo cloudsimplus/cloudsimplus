@@ -338,7 +338,7 @@ public final class SlaMetricsWithoutNetworkExample {
     public List<Pe> createHostPesList(int hostPes, int mips) {
         List<Pe> peList = new ArrayList<>();
         for (int i = 0; i < hostPes; i++) {
-            peList.add(new PeSimple(i, new PeProvisionerSimple(mips))); // need to store Pe id and MIPS Rating
+            peList.add(new PeSimple(mips, new PeProvisionerSimple())); // need to store Pe id and MIPS Rating
         }
         return peList;
     }

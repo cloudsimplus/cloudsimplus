@@ -15,7 +15,7 @@
 FutureQueue
 ===========
 
-.. java:package:: PackageDeclaration
+.. java:package:: org.cloudbus.cloudsim.core.events
    :noindex:
 
 .. java:type:: public class FutureQueue implements EventQueue

@@ -1,4 +1,4 @@
-/**
+/*
  * CloudSim Plus: A highly-extensible and easier-to-use Framework for
  * Modeling and Simulation of Cloud Computing Infrastructures and Services.
  * http://cloudsimplus.org
@@ -286,10 +286,10 @@ public class SwfWorkloadFormatExample1 {
         return list;
     }
 
-    private List<Pe> createPeList(int numberOfPes, double mips) {
+    private List<Pe> createPeList(int numberOfPes, long mips) {
         List<Pe> peList = new ArrayList<>();
         for (int i = 0; i < numberOfPes; i++) {
-            peList.add(new PeSimple(i, new PeProvisionerSimple(mips)));
+            peList.add(new PeSimple(mips, new PeProvisionerSimple()));
         }
 
         return peList;

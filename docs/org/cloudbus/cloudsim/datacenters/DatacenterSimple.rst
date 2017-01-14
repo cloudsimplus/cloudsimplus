@@ -23,7 +23,7 @@
 DatacenterSimple
 ================
 
-.. java:package:: PackageDeclaration
+.. java:package:: org.cloudbus.cloudsim.datacenters
    :noindex:
 
 .. java:type:: public class DatacenterSimple extends CloudSimEntity implements Datacenter

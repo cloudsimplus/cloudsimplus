@@ -11,6 +11,8 @@ package org.cloudbus.cloudsim.provisioners;
 import org.cloudbus.cloudsim.vms.Vm;
 import org.cloudbus.cloudsim.resources.ResourceManageable;
 
+import java.util.Objects;
+
 /**
  * ResourceProvisionerSimple is an extension of {@link AbstractResourceProvisioner}
  * which uses a best-effort policy to allocate a resource to VMs:
@@ -24,9 +26,9 @@ import org.cloudbus.cloudsim.resources.ResourceManageable;
  */
 public class ResourceProvisionerSimple extends AbstractResourceProvisioner {
     /**
-     * Creates a new ResourceManageable Provisioner.
+     * Creates a new ResourceProvisionerSimple.
      *
-     * @param resource The resource to be managed by the provisioner
+     * @param resource the resource to be managed by the provisioner
      * @post $none
      */
     public ResourceProvisionerSimple(ResourceManageable resource) {
@@ -35,11 +37,12 @@ public class ResourceProvisionerSimple extends AbstractResourceProvisioner {
 
     @Override
     public boolean allocateResourceForVm(Vm vm, long newTotalVmResource) {
+        Objects.requireNonNull(vm);
         if (isSuitableForVm(vm, newTotalVmResource)) {
             deallocateResourceForVm(vm);
             getResource().allocateResource(newTotalVmResource);
             getResourceAllocationMap().put(vm, newTotalVmResource);
-            vm.getResource(getResourceClass()).allocateResource(newTotalVmResource);
+            vm.allocateResource(getResourceClass(), newTotalVmResource);
             return true;
         }
 
@@ -59,13 +62,12 @@ public class ResourceProvisionerSimple extends AbstractResourceProvisioner {
             final long vmAllocatedResource = getResourceAllocationMap().get(vm);
             getResourceAllocationMap().put(vm, 0L);
             getResource().deallocateResource(vmAllocatedResource);
-            vm.getResource(getResourceClass()).deallocateAllResources();
+            vm.deallocateResource(getResourceClass());
             return vmAllocatedResource;
         }
 
         return 0;
     }
-
 
     @Override
     public boolean isSuitableForVm(Vm vm, long newVmTotalAllocatedResource) {

@@ -11,7 +11,7 @@
 DatacenterBrokerAbstract
 ========================
 
-.. java:package:: PackageDeclaration
+.. java:package:: org.cloudbus.cloudsim.brokers
    :noindex:
 
 .. java:type:: public abstract class DatacenterBrokerAbstract extends CloudSimEntity implements DatacenterBroker

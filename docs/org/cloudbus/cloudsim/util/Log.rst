@@ -9,7 +9,7 @@
 Log
 ===
 
-.. java:package:: PackageDeclaration
+.. java:package:: org.cloudbus.cloudsim.util
    :noindex:
 
 .. java:type:: public final class Log

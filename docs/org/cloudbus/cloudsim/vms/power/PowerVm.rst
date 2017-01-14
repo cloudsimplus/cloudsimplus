@@ -17,7 +17,7 @@
 PowerVm
 =======
 
-.. java:package:: PackageDeclaration
+.. java:package:: org.cloudbus.cloudsim.vms.power
    :noindex:
 
 .. java:type:: public class PowerVm extends VmSimple

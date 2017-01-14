@@ -32,10 +32,6 @@ public class NetworkVmsExampleWorkflowApp extends NetworkVmExampleAbstract {
     private static final long NUMBER_OF_PACKETS_TO_SEND = 100;
     private int currentNetworkCloudletId = -1;
 
-    public NetworkVmsExampleWorkflowApp(){
-        super();
-    }
-
     /**
      * Starts the execution of the example.
      *
@@ -43,6 +39,10 @@ public class NetworkVmsExampleWorkflowApp extends NetworkVmExampleAbstract {
      */
     public static void main(String[] args) {
         new NetworkVmsExampleWorkflowApp();
+    }
+
+    public NetworkVmsExampleWorkflowApp(){
+        super();
     }
 
     @Override

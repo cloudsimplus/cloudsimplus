@@ -7,7 +7,7 @@
 UtilizationModelPlanetLabInMemory
 =================================
 
-.. java:package:: PackageDeclaration
+.. java:package:: org.cloudbus.cloudsim.utilizationmodels
    :noindex:
 
 .. java:type:: public class UtilizationModelPlanetLabInMemory implements UtilizationModel

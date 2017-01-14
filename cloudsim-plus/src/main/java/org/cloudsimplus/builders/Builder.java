@@ -1,4 +1,4 @@
-/**
+/*
  * CloudSim Plus: A highly-extensible and easier-to-use Framework for
  * Modeling and Simulation of Cloud Computing Infrastructures and Services.
  * http://cloudsimplus.org
@@ -45,8 +45,8 @@ import org.cloudbus.cloudsim.vms.Vm;
  * @since CloudSim Plus 1.0
  */
 public abstract class Builder {
-    public void validateAmount(final int amount){
+    public void validateAmount(final double amount){
         if(amount <= 0)
-            throw new RuntimeException("The amount has to be greather than 0.");
+            throw new RuntimeException("The amount has to be greater than 0.");
     }
 }

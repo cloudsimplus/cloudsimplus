@@ -177,7 +177,7 @@ public class DatacenterCharacteristicsSimple implements DatacenterCharacteristic
     }
 
     @Override
-    public int getMipsOfOnePe(int hostId, int peId) {
+    public long getMipsOfOnePe(int hostId, int peId) {
         if (getHostList().isEmpty()) {
             return -1;
         }
@@ -186,8 +186,8 @@ public class DatacenterCharacteristicsSimple implements DatacenterCharacteristic
     }
 
     @Override
-    public int getMips() {
-        return getHostList().stream().mapToInt(Host::getTotalMips).sum();
+    public long getMips() {
+        return getHostList().stream().mapToLong(Host::getTotalMips).sum();
     }
 
     @Override

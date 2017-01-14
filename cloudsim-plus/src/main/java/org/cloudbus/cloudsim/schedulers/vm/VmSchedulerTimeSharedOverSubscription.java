@@ -54,7 +54,7 @@ public class VmSchedulerTimeSharedOverSubscription extends VmSchedulerTimeShared
         // the request to the PE's capacity
         List<Double> mipsShareRequestedCapped = new ArrayList<>();
         double peMips = getPeCapacity();
-        for (Double mips : mipsShareRequested) {
+        for (double mips : mipsShareRequested) {
             if (mips > peMips) {
                 mipsShareRequestedCapped.add(peMips);
                 totalRequestedMips += peMips;
@@ -74,7 +74,7 @@ public class VmSchedulerTimeSharedOverSubscription extends VmSchedulerTimeShared
 
         if (getAvailableMips() >= totalRequestedMips) {
             List<Double> mipsShareAllocated = new ArrayList<>();
-            for (Double mipsRequested : mipsShareRequestedCapped) {
+            for (double mipsRequested : mipsShareRequestedCapped) {
                 if (getVmsMigratingOut().contains(vm)) {
                     // performance degradation due to migration = 10% MIPS
                     mipsRequested *= 0.9;
@@ -110,7 +110,7 @@ public class VmSchedulerTimeSharedOverSubscription extends VmSchedulerTimeShared
             List<Double> mipsShareRequested = entry.getValue();
             List<Double> mipsShareRequestedCapped = new ArrayList<>();
             double peMips = getPeCapacity();
-            for (Double mips : mipsShareRequested) {
+            for (double mips : mipsShareRequested) {
                 if (mips > peMips) {
                     mipsShareRequestedCapped.add(peMips);
                     requiredMipsByThisVm += peMips;
@@ -141,7 +141,7 @@ public class VmSchedulerTimeSharedOverSubscription extends VmSchedulerTimeShared
             List<Double> requestedMips = entry.getValue();
 
             List<Double> updatedMipsAllocation = new ArrayList<>();
-            for (Double mips : requestedMips) {
+            for (double mips : requestedMips) {
                 if (getVmsMigratingOut().contains(vm)) {
                     // the original amount is scaled
                     mips *= scalingFactor;
@@ -156,7 +156,7 @@ public class VmSchedulerTimeSharedOverSubscription extends VmSchedulerTimeShared
                     mips *= scalingFactor;
                 }
 
-                updatedMipsAllocation.add(Math.floor(mips));
+                updatedMipsAllocation.add(mips);
             }
 
             // add in the new map

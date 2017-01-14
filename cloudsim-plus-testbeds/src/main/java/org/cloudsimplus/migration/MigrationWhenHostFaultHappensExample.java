@@ -48,6 +48,7 @@ import org.cloudbus.cloudsim.resources.Pe;
 import org.cloudbus.cloudsim.resources.PeSimple;
 import org.cloudbus.cloudsim.resources.Ram;
 import org.cloudbus.cloudsim.schedulers.cloudlet.CloudletSchedulerDynamicWorkload;
+import org.cloudbus.cloudsim.schedulers.vm.VmSchedulerSpaceShared;
 import org.cloudbus.cloudsim.schedulers.vm.VmSchedulerTimeShared;
 import org.cloudbus.cloudsim.selectionpolicies.power.PowerVmSelectionPolicyMinimumUtilization;
 import org.cloudbus.cloudsim.util.Log;
@@ -321,7 +322,7 @@ public final class MigrationWhenHostFaultHappensExample {
      * when using null     {@link PowerDatacenter},
      * {@link PowerHost} and {@link PowerVm}.
      */
-    public PowerHostUtilizationHistory createHost(int id, int numberOfPes, double mipsByPe) {
+    public PowerHostUtilizationHistory createHost(int id, int numberOfPes, long mipsByPe) {
         List<Pe> peList = createPeList(numberOfPes, mipsByPe);
         PowerHostUtilizationHistory host = new PowerHostUtilizationHistory(id, HOST_STORAGE, peList);
         host.setPowerModel(new PowerModelLinear(1000, 0.7))
@@ -331,10 +332,10 @@ public final class MigrationWhenHostFaultHappensExample {
         return host;
     }
 
-    public List<Pe> createPeList(int numberOfPEs, double mips) {
+    public List<Pe> createPeList(int numberOfPEs, long mips) {
         List<Pe> list = new ArrayList<>(numberOfPEs);
         for (int i = 0; i < numberOfPEs; i++) {
-            list.add(new PeSimple(i, new PeProvisionerSimple(mips)));
+            list.add(new PeSimple(mips, new PeProvisionerSimple()));
         }
         return list;
     }

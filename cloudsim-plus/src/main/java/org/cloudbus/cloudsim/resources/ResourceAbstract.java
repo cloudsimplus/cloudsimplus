@@ -9,10 +9,10 @@ import org.cloudbus.cloudsim.vms.Vm;
  * for each kind of resource, allowing to differentiate, for instance,
  * a RAM resource instance from a BW resource instance.
  * The VM class also relies on this differentiation for generically getting a
- * required resource (see {@link Vm#getResource(java.lang.Class)}).
+ * required resource (see {@link Vm#getResource(Class)}).
  *
  * @author Manoel Campos da Silva Filho
- * @since CloudSim Toolkit 3.0.4
+ * @since CloudSim Plus 1.0
  */
 public abstract class ResourceAbstract implements ResourceManageable {
     /** @see #getCapacity() */

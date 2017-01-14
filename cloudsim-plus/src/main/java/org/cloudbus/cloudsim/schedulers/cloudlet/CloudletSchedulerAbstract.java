@@ -695,7 +695,7 @@ public abstract class CloudletSchedulerAbstract implements CloudletScheduler {
      *
      * <p>
      * This method is called internally by the
-     * {@link #updateVmProcessing(double, java.util.List)} one.</p>
+     * {@link CloudletScheduler#updateVmProcessing(double, List)} one.</p>
      *
      * @pre currentTime >= 0
      * @post $none
@@ -747,7 +747,7 @@ public abstract class CloudletSchedulerAbstract implements CloudletScheduler {
      * represent the last CPU capacity assigned to the scheduler.
      *
      * @return
-     * @see #updateVmProcessing(double, java.util.List)
+     * @see CloudletScheduler#updateVmProcessing(double, List)
      */
     protected Processor getProcessor() {
         return processor;
@@ -760,19 +760,24 @@ public abstract class CloudletSchedulerAbstract implements CloudletScheduler {
 
     @Override
     public void setVm(Vm vm) {
-        if(Objects.isNull(vm)){
-            throw new NullPointerException("The vm parameter cannot be null.");
-        }
+        Objects.requireNonNull(vm);
 
-        if(isVmAssigned() && !vm.equals(this.vm)){
+        if(isOtherVmAssigned(vm)){
             throw new IllegalArgumentException("CloudletScheduler already has a Vm assigned to it. Each Vm must have its own CloudletScheduler instance.");
         }
 
         this.vm = vm;
     }
 
-    private boolean isVmAssigned() {
-        return !Objects.isNull(vm) && this.vm != Vm.NULL;
+    /**
+     * Checks if the {@link CloudletScheduler} has a {@link Vm} assigned that is
+     * different from the given one
+     *
+     * @param vm the Vm to check if assigned scheduler's Vm is different from
+     * @return
+     */
+    private boolean isOtherVmAssigned(Vm vm) {
+        return !Objects.isNull(this.vm) && this.vm != Vm.NULL && !vm.equals(this.vm);
     }
 
     @Override

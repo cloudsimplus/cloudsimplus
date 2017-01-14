@@ -5,7 +5,7 @@
 PredicateAny
 ============
 
-.. java:package:: PackageDeclaration
+.. java:package:: org.cloudbus.cloudsim.core.predicates
    :noindex:
 
 .. java:type:: public class PredicateAny implements Predicate<SimEvent>

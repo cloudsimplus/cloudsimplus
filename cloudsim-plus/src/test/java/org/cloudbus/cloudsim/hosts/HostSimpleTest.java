@@ -91,7 +91,7 @@ public class HostSimpleTest {
     public static final List<Pe> createPes(final int numberOfPes, final double mips) {
         final List<Pe> peList = new ArrayList<>(numberOfPes);
         for (int i = 0; i < numberOfPes; i++) {
-            peList.add(new PeSimple(i, new PeProvisionerSimple(mips)));
+            peList.add(new PeSimple(mips, new PeProvisionerSimple()));
         }
         return peList;
     }

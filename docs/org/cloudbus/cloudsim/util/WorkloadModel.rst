@@ -7,7 +7,7 @@
 WorkloadModel
 =============
 
-.. java:package:: PackageDeclaration
+.. java:package:: org.cloudbus.cloudsim.util
    :noindex:
 
 .. java:type:: public interface WorkloadModel

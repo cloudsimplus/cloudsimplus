@@ -121,7 +121,7 @@ public class HostDynamicWorkloadSimple extends HostSimple implements HostDynamic
                 StringBuilder pesString = new StringBuilder();
                 for (Pe pe : pes) {
                     pesString.append(String.format(" PE #" + pe.getId() + ": %.2f.", pe.getPeProvisioner()
-                            .getTotalAllocatedMipsForVm(vm)));
+                            .getAllocatedResourceForVm(vm)));
                 }
                 Log.printFormattedLine(
                         "%.2f: [Host #" + getId() + "] MIPS for VM #" + vm.getId() + " by PEs ("

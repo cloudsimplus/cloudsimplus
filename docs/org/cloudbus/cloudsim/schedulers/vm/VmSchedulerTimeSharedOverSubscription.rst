@@ -15,7 +15,7 @@
 VmSchedulerTimeSharedOverSubscription
 =====================================
 
-.. java:package:: PackageDeclaration
+.. java:package:: org.cloudbus.cloudsim.schedulers.vm
    :noindex:
 
 .. java:type:: public class VmSchedulerTimeSharedOverSubscription extends VmSchedulerTimeShared

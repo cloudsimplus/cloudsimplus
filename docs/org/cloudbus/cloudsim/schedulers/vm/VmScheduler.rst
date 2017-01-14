@@ -17,7 +17,7 @@
 VmScheduler
 ===========
 
-.. java:package:: PackageDeclaration
+.. java:package:: org.cloudbus.cloudsim.schedulers.vm
    :noindex:
 
 .. java:type:: public interface VmScheduler

@@ -3,7 +3,7 @@
 SimEntity.State
 ===============
 
-.. java:package:: PackageDeclaration
+.. java:package:: org.cloudbus.cloudsim.core
    :noindex:
 
 .. java:type::  enum State

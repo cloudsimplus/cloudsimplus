@@ -1,7 +1,7 @@
 TopologicalLink
 ===============
 
-.. java:package:: PackageDeclaration
+.. java:package:: org.cloudbus.cloudsim.network.topologies
    :noindex:
 
 .. java:type:: public class TopologicalLink

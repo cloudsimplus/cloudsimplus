@@ -152,14 +152,18 @@ public interface Vm extends UniquelyIdentificable, Delayable, Comparable<Vm> {
     double getTotalMipsCapacity();
 
     /**
-     * Gets a given Vm {@link Resource}, such as {@link Ram} or {@link Bandwidth},
-     * from the class of the resource to get.
+     * Changes the allocation of a given resource for a VM.
+     * The old allocated amount will be changed to the new given amount.
+     *  @param resourceClass the class of the resource to change the allocation
+     * @param newTotalResourceAmount the new amount to change the current allocation to*/
+    void allocateResource(Class<? extends ResourceManageable> resourceClass, long newTotalResourceAmount);
+
+    /**
+     * Removes the entire amount of a given resource allocated to VM.
      *
-     * @param resourceClass the class of the resource to get
-     * @param <R> generic type that defines the class of resources that can be got
-     * @return the Vm {@link Resource} corresponding to the given class
+     * @param resourceClass the class of the resource to deallocate from the VM
      */
-    <R extends ResourceManageable> ResourceManageable getResource(Class<R> resourceClass);
+    void deallocateResource(Class<? extends ResourceManageable> resourceClass);
 
     /**
      * Adds a listener object that will be notified when a {@link Host}
@@ -495,7 +499,7 @@ public interface Vm extends UniquelyIdentificable, Delayable, Comparable<Vm> {
         @Override public long getCurrentRequestedRam() { return 0; }
         @Override public double getCurrentRequestedTotalMips() { return 0.0; }
         @Override public Host getHost() { return Host.NULL; }
-        @Override public double getMips() { return 0.0; }
+        @Override public double getMips() { return 0; }
         @Override public int getNumberOfPes() { return 0; }
         @Override public Vm addOnHostAllocationListener(EventListener<VmHostEventInfo> listener) { return Vm.NULL; }
         @Override public Vm addOnHostDeallocationListener(EventListener<VmHostEventInfo> listener) { return Vm.NULL; }
@@ -528,9 +532,10 @@ public interface Vm extends UniquelyIdentificable, Delayable, Comparable<Vm> {
         @Override public Vm setSize(long size) { return Vm.NULL; }
         @Override public double updateVmProcessing(double currentTime, List<Double> mipsShare){ return 0.0; }
         @Override public Vm setCloudletScheduler(CloudletScheduler cloudletScheduler) { return Vm.NULL; }
-        @Override public <R extends ResourceManageable> ResourceManageable getResource(Class<R> resourceClass) { return ResourceManageable.NULL; }
         @Override public int compareTo(Vm o) { return 0; }
         @Override public double getTotalMipsCapacity() { return 0.0; }
+        @Override public void allocateResource(Class<? extends ResourceManageable> resourceClass, long newTotalResourceAmount) {}
+        @Override public void deallocateResource(Class<? extends ResourceManageable> resourceClass) {}
         @Override public void setFailed(boolean failed){}
         @Override public boolean isFailed() { return false; }
         @Override public Simulation getSimulation() { return Simulation.NULL; }

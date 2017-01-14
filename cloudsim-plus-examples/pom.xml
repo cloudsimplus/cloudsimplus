@@ -4,7 +4,7 @@
 
     <groupId>org.cloudsimplus</groupId>
     <artifactId>cloudsim-plus-examples</artifactId>
-    <version>1.0</version>
+    <version>1.1.0</version>
     <name>CloudSim Plus Examples</name>
     <description>
         Ready-to-run examples of how to use CloudSim Plus API.
@@ -53,6 +53,7 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <!-- Directory where is the license file to be used by the com.mycila.maven-license-plugin -->
         <license.dir>..</license.dir>
+        <version>1.1.0</version>
     </properties>
 
     <build>
@@ -119,6 +120,16 @@
                 <version>1.10.b1</version>
                 <configuration>
                     <header>${license.dir}/source-header.txt</header>
+                    <mapping>
+                        <java>SLASHSTAR_STYLE</java>
+                    </mapping>
+
+                    <strictCheck>true</strictCheck>
+                    <failIfMissing>false</failIfMissing>
+                    <excludes>
+                        <exclude>**/src/main/resources/**</exclude>
+                        <exclude>**/src/main/java/org/cloudbus/**</exclude>
+                    </excludes>
                 </configuration>
             </plugin>
         </plugins>
@@ -128,7 +139,7 @@
         <dependency>
             <groupId>org.cloudsimplus</groupId>
             <artifactId>cloudsim-plus</artifactId>
-            <version>1.0</version>
+            <version>${project.version}</version>
         </dependency>
     </dependencies>
 </project>

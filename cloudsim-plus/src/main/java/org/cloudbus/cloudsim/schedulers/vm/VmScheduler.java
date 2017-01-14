@@ -108,7 +108,7 @@ public interface VmScheduler {
      * shown doesn't be assured. The peList received by the VmScheduler can be
      * heterogeneous PEs.
      */
-    double getPeCapacity();
+    long getPeCapacity();
 
     /**
      * Gets the list of PEs from the Host.
@@ -221,7 +221,7 @@ public interface VmScheduler {
         @Override public List<Double> getAllocatedMipsForVm(Vm vm) { return Collections.emptyList(); }
         @Override public double getAvailableMips() { return 0.0; }
         @Override public double getMaxAvailableMips() { return 0.0; }
-        @Override public double getPeCapacity() { return 0.0; }
+        @Override public long getPeCapacity() { return 0; }
         @Override public <T extends Pe> List<T> getPeList() { return Collections.emptyList(); }
         @Override public Map<Vm, List<Pe>> getPeMap() { return Collections.emptyMap(); }
         @Override public List<Pe> getPesAllocatedForVM(Vm vm) { return Collections.emptyList(); }

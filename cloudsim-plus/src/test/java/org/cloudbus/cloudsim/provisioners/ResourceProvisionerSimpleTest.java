@@ -47,7 +47,7 @@ public class ResourceProvisionerSimpleTest {
         return new ResourceProvisionerSimple(resource);
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test(expected = NullPointerException.class)
     public void testCreateProvisioner_null() {
         createSimpleProvisioner(null);
     }

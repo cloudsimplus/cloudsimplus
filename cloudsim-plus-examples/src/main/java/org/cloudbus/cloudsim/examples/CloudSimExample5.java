@@ -59,7 +59,7 @@ public class CloudSimExample5 {
     }
 
     public CloudSimExample5() {
-        Log.printFormattedLine("Starting %s...", CloudSimExample5.class.getSimpleName());
+        Log.printFormattedLine("Starting %s...", getClass().getSimpleName());
         // First step: Initialize the CloudSim package. It should be called
         // before creating any entities.
 
@@ -74,8 +74,8 @@ public class CloudSimExample5 {
         Datacenter datacenter1 = createDatacenter();
 
         //Third step: Create Brokers
-        DatacenterBroker broker1 = createBroker(1);
-        DatacenterBroker broker2 = createBroker(2);
+        DatacenterBroker broker1 = new DatacenterBrokerSimple(simulation);
+        DatacenterBroker broker2 = new DatacenterBrokerSimple(simulation);
 
         //Fourth step: Create one virtual machine for each broker/user
         vmlist1 = new ArrayList<>();
@@ -156,7 +156,7 @@ public class CloudSimExample5 {
         new CloudletsTableBuilderHelper(newList2)
                 .setPrinter(new TextTableBuilder(broker2.getName()))
                 .build();
-        Log.printFormattedLine("%s finished!", CloudSimExample5.class.getSimpleName());
+        Log.printFormattedLine("%s finished!", getClass().getSimpleName());
     }
 
     private Datacenter createDatacenter() {
@@ -169,10 +169,10 @@ public class CloudSimExample5 {
         // In this example, it will have only one core.
         List<Pe> peList = new ArrayList<>();
 
-        int mips = 1000;
+        long mips = 1000;
 
         // 3. Create PEs and add these into a list.
-        peList.add(new PeSimple(0, new PeProvisionerSimple(mips))); // need to store Pe id and MIPS Rating
+        peList.add(new PeSimple(mips, new PeProvisionerSimple())); // need to store Pe id and MIPS Rating
 
         //4. Create HostSimple with its id and list of PEs and add them to the list of machines
         int hostId = 0;
@@ -206,9 +206,4 @@ public class CloudSimExample5 {
         return new DatacenterSimple(simulation, characteristics, new VmAllocationPolicySimple());
     }
 
-    //We strongly encourage users to develop their own broker policies, to submit vms and cloudlets according
-    //to the specific rules of the simulated scenario
-    private DatacenterBroker createBroker(int id) {
-        return new DatacenterBrokerSimple(simulation);
-    }
 }

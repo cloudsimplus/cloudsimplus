@@ -9,7 +9,7 @@
 CloudletToVmMappingSimulatedAnnealing
 =====================================
 
-.. java:package:: PackageDeclaration
+.. java:package:: org.cloudsimplus.heuristics
    :noindex:
 
 .. java:type:: public class CloudletToVmMappingSimulatedAnnealing extends SimulatedAnnealing<CloudletToVmMappingSolution> implements CloudletToVmMappingHeuristic

@@ -15,7 +15,7 @@ import org.cloudbus.cloudsim.resources.PeSimple;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.IntStream;
+import java.util.stream.LongStream;
 
 import org.cloudbus.cloudsim.lists.PeList;
 import org.cloudbus.cloudsim.provisioners.PeProvisionerSimple;
@@ -49,7 +49,7 @@ public class VmSchedulerTimeSharedOverSubscriptionTest {
 
     private VmSchedulerTimeSharedOverSubscription createVmScheduler(double mips, int pesNumber) {
         List<Pe> peList = new ArrayList<>(pesNumber);
-        IntStream.range(0, pesNumber).forEach(i -> peList.add(new PeSimple(i, new PeProvisionerSimple(mips))));
+        LongStream.range(0, pesNumber).forEach(i -> peList.add(new PeSimple(mips, new PeProvisionerSimple())));
         Host host = new HostSimple(1, 1000, peList);
         VmSchedulerTimeSharedOverSubscription scheduler = new VmSchedulerTimeSharedOverSubscription();
         scheduler.setHost(host);
@@ -170,7 +170,7 @@ public class VmSchedulerTimeSharedOverSubscriptionTest {
 
         assertTrue(vmScheduler.allocatePesForVm(vm4, mipsShare4));
         assertEquals(0, vmScheduler.getAvailableMips(), 0);
-        assertEquals(1674, vmScheduler.getTotalAllocatedMipsForVm(vm4), 0);
+        assertEquals(1674, vmScheduler.getTotalAllocatedMipsForVm(vm4), 0.7);
 
         vmScheduler.deallocatePesForAllVms();
 
@@ -206,9 +206,9 @@ public class VmSchedulerTimeSharedOverSubscriptionTest {
 
         assertTrue(vmScheduler.allocatePesForVm(vm3, mipsShare3));
         assertEquals(0, vmScheduler.getAvailableMips(), 0);
-        assertEquals(333, vmScheduler.getTotalAllocatedMipsForVm(vm1), 0);
-        assertEquals(333, vmScheduler.getTotalAllocatedMipsForVm(vm2), 0);
-        assertEquals(333, vmScheduler.getTotalAllocatedMipsForVm(vm3), 0);
+        assertEquals(333, vmScheduler.getTotalAllocatedMipsForVm(vm1), 0.4);
+        assertEquals(333, vmScheduler.getTotalAllocatedMipsForVm(vm2), 0.4);
+        assertEquals(333, vmScheduler.getTotalAllocatedMipsForVm(vm3), 0.4);
 
         vmScheduler.deallocatePesForAllVms();
 

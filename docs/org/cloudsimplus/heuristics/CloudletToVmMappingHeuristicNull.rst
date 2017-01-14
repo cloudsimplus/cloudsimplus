@@ -9,7 +9,7 @@
 CloudletToVmMappingHeuristicNull
 ================================
 
-.. java:package:: PackageDeclaration
+.. java:package:: org.cloudsimplus.heuristics
    :noindex:
 
 .. java:type::  class CloudletToVmMappingHeuristicNull extends HeuristicNull<CloudletToVmMappingSolution> implements CloudletToVmMappingHeuristic

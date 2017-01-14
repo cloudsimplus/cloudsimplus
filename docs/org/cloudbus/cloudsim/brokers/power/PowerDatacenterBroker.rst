@@ -11,7 +11,7 @@
 PowerDatacenterBroker
 =====================
 
-.. java:package:: PackageDeclaration
+.. java:package:: org.cloudbus.cloudsim.brokers.power
    :noindex:
 
 .. java:type:: public class PowerDatacenterBroker extends DatacenterBrokerSimple

@@ -1,4 +1,4 @@
-/**
+/*
  * CloudSim Plus: A highly-extensible and easier-to-use Framework for
  * Modeling and Simulation of Cloud Computing Infrastructures and Services.
  * http://cloudsimplus.org
@@ -96,7 +96,7 @@ public class DynamicCreationOfVmsAndCloudletsExample {
      * Default constructor that builds the simulation.
      */
     public DynamicCreationOfVmsAndCloudletsExample() {
-        Log.printFormattedLine("Starting %s Example ...", getClass().getSimpleName());
+        Log.printFormattedLine("Starting %s ...", getClass().getSimpleName());
         this.simulation = new CloudSim();
 
         Datacenter datacenter0 = createDatacenter();
@@ -123,7 +123,7 @@ public class DynamicCreationOfVmsAndCloudletsExample {
         (you can use your own code here to print what you want from this cloudlet list)*/
         List<Cloudlet> finishedCloudlets = broker0.getCloudletsFinishedList();
         new CloudletsTableBuilderHelper(finishedCloudlets).build();
-        Log.printConcatLine(getClass().getSimpleName(), " Example finished!");
+        Log.printConcatLine(getClass().getSimpleName(), " finished!");
     }
 
     private void createAndSubmitVmsAndCloudlets(int vmsToCreate, int cloudletsToCreateForEachVm) {
@@ -185,7 +185,7 @@ public class DynamicCreationOfVmsAndCloudletsExample {
     }
 
     private Host createHost() {
-        int  mips = 1000; // capacity of each CPU core (in Million Instructions per Second)
+        long  mips = 1000; // capacity of each CPU core (in Million Instructions per Second)
         long  ram = 2048; // host memory (MEGABYTE)
         long storage = 1000000; // host storage (MEGABYTE)
         long bw = 10000; //in Megabits/s
@@ -193,7 +193,7 @@ public class DynamicCreationOfVmsAndCloudletsExample {
         final int numberOfPes = 8;
         List<Pe> pesList = new ArrayList<>(numberOfPes); //List of CPU cores
         for (int i = 0; i < numberOfPes; i++) {
-            pesList.add(new PeSimple(i, new PeProvisionerSimple(mips)));
+            pesList.add(new PeSimple(mips, new PeProvisionerSimple()));
         }
 
         return new HostSimple(numberOfCreatedHosts++, storage, pesList)
@@ -203,7 +203,7 @@ public class DynamicCreationOfVmsAndCloudletsExample {
     }
 
     private Vm createVm(DatacenterBroker broker) {
-        double mips = 1000;
+        long   mips = 1000;
         long   storage = 10000; // vm image size (MEGABYTE)
         int    ram = 512; // vm memory (MEGABYTE)
         long   bw = 1000; // vm bandwidth (Megabits/s)

@@ -38,7 +38,7 @@ import org.cloudbus.cloudsim.resources.Bandwidth;
 import org.cloudbus.cloudsim.resources.Ram;
 
 /**
- * An example showing how to create scalable simulations.
+ * An example creating a simulation with an greater number of VMs and Cloudlets.
  */
 public class CloudSimExample6 {
     private List<Cloudlet> cloudletList;
@@ -55,7 +55,7 @@ public class CloudSimExample6 {
     }
 
     public CloudSimExample6(){
-        Log.printFormattedLine("Starting %s...", CloudSimExample6.class.getSimpleName());
+        Log.printFormattedLine("Starting %s...", getClass().getSimpleName());
         // First step: Initialize the CloudSim package. It should be called
         // before creating any entities.
 
@@ -70,10 +70,10 @@ public class CloudSimExample6 {
         Datacenter datacenter1 = createDatacenter();
 
         //Third step: Create Broker
-        DatacenterBroker broker = createBroker();
+        DatacenterBroker broker = new DatacenterBrokerSimple(simulation);
 
         //Fourth step: Create VMs and Cloudlets and send them to broker
-        vmlist = createVM(broker, 20); //creating 20 vms
+        vmlist = createVm(broker, 20); //creating 20 vms
         cloudletList = createCloudlet(broker, 40); // creating 40 cloudlets
 
         broker.submitVmList(vmlist);
@@ -86,10 +86,10 @@ public class CloudSimExample6 {
         List<Cloudlet> newList = broker.getCloudletsFinishedList();
 
         new CloudletsTableBuilderHelper(newList).build();
-        Log.printFormattedLine("%s finished!", CloudSimExample6.class.getSimpleName());
+        Log.printFormattedLine("%s finished!", getClass().getSimpleName());
     }
 
-    private List<Vm> createVM(DatacenterBroker broker, int vms) {
+    private List<Vm> createVm(DatacenterBroker broker, int vms) {
         //Creates a container to store VMs. This list is passed to the broker later
         List<Vm> list = new ArrayList<>(vms);
 
@@ -150,20 +150,17 @@ public class CloudSimExample6 {
         //    a Machine.
         List<Pe> peList1 = new ArrayList<>();
 
-        int mips = 1000;
+        long mips = 1000;
 
         // 3. Create PEs and add these into the list.
         //for a quad-core machine, a list of 4 PEs is required:
-        peList1.add(new PeSimple(0, new PeProvisionerSimple(mips))); // need to store Pe id and MIPS Rating
-        peList1.add(new PeSimple(1, new PeProvisionerSimple(mips)));
-        peList1.add(new PeSimple(2, new PeProvisionerSimple(mips)));
-        peList1.add(new PeSimple(3, new PeProvisionerSimple(mips)));
+        for(int i = 0; i < 4; i++)
+            peList1.add(new PeSimple(mips, new PeProvisionerSimple()));
 
         //Another list, for a dual-core machine
         List<Pe> peList2 = new ArrayList<>();
-
-        peList2.add(new PeSimple(0, new PeProvisionerSimple(mips)));
-        peList2.add(new PeSimple(1, new PeProvisionerSimple(mips)));
+        for(int i = 0; i < 2; i++)
+            peList2.add(new PeSimple(mips, new PeProvisionerSimple()));
 
         //4. Create Hosts with its id and list of PEs and add them to the list of machines
         int hostId = -1;
@@ -204,9 +201,4 @@ public class CloudSimExample6 {
         return new DatacenterSimple(simulation, characteristics, new VmAllocationPolicySimple());
     }
 
-    //We strongly encourage users to develop their own broker policies, to submit vms and cloudlets according
-    //to the specific rules of the simulated scenario
-    private DatacenterBroker createBroker() {
-        return new DatacenterBrokerSimple(simulation);
-    }
 }

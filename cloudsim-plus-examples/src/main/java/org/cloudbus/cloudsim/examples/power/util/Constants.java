@@ -64,7 +64,7 @@ public final class Constants {
     /**
      * The PEs capacity of each host defined by {@link #HOST_TYPES}.
      */
-    public final static int[] HOST_MIPS = {1860, 2660};
+    public final static long[] HOST_MIPS = {1860, 2660};
 
     /**
      * The number of PEs of each host defined by {@link #HOST_TYPES}.

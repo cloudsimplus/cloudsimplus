@@ -1,21 +1,23 @@
 package org.cloudbus.cloudsim.resources;
 
+import org.cloudbus.cloudsim.core.Identificable;
 import org.cloudbus.cloudsim.provisioners.PeProvisioner;
 import org.cloudbus.cloudsim.provisioners.PeProvisionerSimple;
 
 /**
- * <p>A interface to be implemented by each class that provides
+ * A interface to be implemented by each class that provides
  * the basic features of a virtual or physical Processing Element (PE)
- * of a PM or VM. Each Pe represents a  virtual or physical processor core.</p>
+ * of a PM or VM. Each Pe represents a  virtual or physical processor core.
  *
- * It also implements the Null Object
+ * <p>It also implements the Null Object
  * Design Pattern in order to start avoiding {@link NullPointerException} when
  * using the {@link Pe#NULL} object instead of attributing {@code null} to
- * {@link Pe} variables.
+ * {@link Pe} variables.</p>
  *
  * @author Manoel Campos da Silva Filho
+ * @since CloudSim Plus 1.0
  */
-public interface Pe {
+public interface Pe extends Identificable, ResourceManageable {
     /**
      * Status of PEs.
      */
@@ -34,20 +36,50 @@ public interface Pe {
     }
 
     /**
-     * Gets the PE id.
+     * Gets the capacity of this Pe in MIPS (Million Instructions Per Second).
      *
-     * @return the PE id
-     */
-    int getId();
-
-    /**
-     * Gets the MIPS Rating of this Pe.
-     *
-     * @return the MIPS Rating
+     * @return the MIPS capacity
      * @pre $none
      * @post $result >= 0
      */
-    int getMips();
+    @Override
+    long getCapacity();
+
+    /**
+     * Sets the capacity of this Pe in MIPS (Million Instructions Per Second).
+     *
+     * @param mipsCapacity the MIPS capacity to set
+     * @return true if mipsCapacity > 0, false otherwise
+     * @pre mipsCapacity >= 0
+     * @post $none
+     */
+    @Override
+    boolean setCapacity(long mipsCapacity);
+
+    /**
+     * Sets the capacity of this Pe in MIPS (Million Instructions Per Second).
+     *
+     * <p>It receives the amount of MIPS as a double value but converts it internally
+     * to a long. The method is just provided as a handy-way to define the PE
+     * capacity using a double value that usually is generated from some computations.</p>
+     *
+     * @param mipsCapacity the MIPS capacity to set
+     * @return true if mipsCapacity > 0, false otherwise
+     * @pre mipsCapacity >= 0
+     * @post $none
+     */
+    boolean setCapacity(double mipsCapacity);
+
+    /**
+     * Sets the {@link #getPeProvisioner()} that manages the allocation
+     * of this physical PE to virtual machines.
+     * This method is automatically called when a {@link PeProvisioner} is created
+     * passing a Pe instance. Thus, the PeProvisioner for a Pe doesn't have to be
+     * set manually.
+     *
+     * @param peProvisioner the new PE provisioner
+     */
+    Pe setPeProvisioner(PeProvisioner peProvisioner);
 
     /**
      * Gets the PE provisioner that manages the allocation
@@ -67,14 +99,11 @@ public interface Pe {
     Status getStatus();
 
     /**
-     * Sets the MIPS Rating of this PE.
+     * Sets the {@link #getId()}.
      *
-     * @param d the mips
-     * @return true if MIPS > 0, false otherwise
-     * @pre mips >= 0
-     * @post $none
+     * @param id the new PE id
      */
-    boolean setMips(double d);
+    void setId(int id);
 
     /**
      * Sets the {@link #getStatus() status} of the PE.
@@ -87,15 +116,28 @@ public interface Pe {
     boolean setStatus(Status status);
 
     /**
-     * A property that implements the Null Object Design Pattern for {@link Pe}
+     * An attribute that implements the Null Object Design Pattern for {@link Pe}
      * objects.
      */
     Pe NULL = new Pe(){
+        @Override public long getAvailableResource() { return 0; }
+        @Override public long getAllocatedResource() { return 0; }
+        @Override public boolean isResourceAmountAvailable(long amountToCheck) { return false; }
+        @Override public boolean isFull() { return false; }
         @Override public int getId(){ return -1; }
-        @Override public int getMips() { return 0; }
-        @Override public PeProvisioner getPeProvisioner() { return new PeProvisionerSimple(0); }
+        @Override public long getCapacity() { return 0; }
+        @Override public PeProvisioner getPeProvisioner() { return new PeProvisionerSimple(); }
         @Override public Status getStatus() { return Status.FAILED; }
-        @Override public boolean setMips(double d){ return false; }
+        @Override public void setId(int id) {}
+        @Override public boolean setCapacity(long mipsCapacity){ return false; }
+        @Override public boolean setCapacity(double mipsCapacity) { return false; }
+        @Override public Pe setPeProvisioner(PeProvisioner peProvisioner) { return Pe.NULL; }
+        @Override public boolean allocateResource(long amountToAllocate) { return false; }
+        @Override public boolean setAllocatedResource(long newTotalAllocatedResource) { return false; }
+        @Override public boolean deallocateResource(long amountToDeallocate) { return false; }
+        @Override public long deallocateAllResources() { return 0; }
+        @Override public boolean isResourceAmountBeingUsed(long amountToCheck) { return false; }
+        @Override public boolean isSuitable(long newTotalAllocatedResource) { return false; }
         @Override public boolean setStatus(Status status) { return false; }
     };
 }

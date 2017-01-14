@@ -5,7 +5,7 @@
 HostDynamicWorkload
 ===================
 
-.. java:package:: PackageDeclaration
+.. java:package:: org.cloudbus.cloudsim.hosts
    :noindex:
 
 .. java:type:: public interface HostDynamicWorkload extends Host

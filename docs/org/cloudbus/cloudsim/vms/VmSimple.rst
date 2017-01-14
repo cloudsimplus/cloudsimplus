@@ -25,7 +25,7 @@
 VmSimple
 ========
 
-.. java:package:: PackageDeclaration
+.. java:package:: org.cloudbus.cloudsim.vms
    :noindex:
 
 .. java:type:: public class VmSimple implements Vm

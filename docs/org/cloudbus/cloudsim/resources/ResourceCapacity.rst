@@ -1,7 +1,7 @@
 ResourceCapacity
 ================
 
-.. java:package:: PackageDeclaration
+.. java:package:: org.cloudbus.cloudsim.resources
    :noindex:
 
 .. java:type:: public interface ResourceCapacity

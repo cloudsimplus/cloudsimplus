@@ -19,7 +19,7 @@
 NetworkVm
 =========
 
-.. java:package:: PackageDeclaration
+.. java:package:: org.cloudbus.cloudsim.vms.network
    :noindex:
 
 .. java:type:: public class NetworkVm extends VmSimple

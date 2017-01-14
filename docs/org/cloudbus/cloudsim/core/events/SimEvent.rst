@@ -7,7 +7,7 @@
 SimEvent
 ========
 
-.. java:package:: PackageDeclaration
+.. java:package:: org.cloudbus.cloudsim.core.events
    :noindex:
 
 .. java:type:: public interface SimEvent extends Comparable<SimEvent>, EventInfo

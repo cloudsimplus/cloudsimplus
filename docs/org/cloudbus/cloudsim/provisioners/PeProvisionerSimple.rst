@@ -11,7 +11,7 @@
 PeProvisionerSimple
 ===================
 
-.. java:package:: PackageDeclaration
+.. java:package:: org.cloudbus.cloudsim.provisioners
    :noindex:
 
 .. java:type:: public class PeProvisionerSimple extends PeProvisioner

@@ -9,7 +9,7 @@
 CloudletSchedulerCompletelyFair
 ===============================
 
-.. java:package:: PackageDeclaration
+.. java:package:: org.cloudbus.cloudsim.schedulers.cloudlet
    :noindex:
 
 .. java:type:: public final class CloudletSchedulerCompletelyFair extends CloudletSchedulerTimeShared

@@ -1,4 +1,4 @@
-/**
+/*
  * CloudSim Plus: A highly-extensible and easier-to-use Framework for
  * Modeling and Simulation of Cloud Computing Infrastructures and Services.
  * http://cloudsimplus.org
@@ -28,7 +28,6 @@ import java.util.List;
 import java.util.Objects;
 import java.util.function.Supplier;
 
-import org.cloudbus.cloudsim.schedulers.cloudlet.CloudletSchedulerSpaceShared;
 import org.cloudbus.cloudsim.brokers.DatacenterBrokerSimple;
 import org.cloudbus.cloudsim.vms.Vm;
 import org.cloudbus.cloudsim.vms.VmSimple;
@@ -46,8 +45,8 @@ import org.cloudbus.cloudsim.schedulers.cloudlet.CloudletScheduler;
 public class VmBuilder {
     private Supplier<CloudletScheduler> cloudletSchedulerSupplier;
     private long size = 10000;
-    private int  ram = 512;
-    private double  mips = 1000;
+    private long  ram = 512;
+    private double mips = 1000;
     private long bw = 1000;
     private int  pes = 1;
     private int numberOfCreatedVms;
@@ -150,7 +149,7 @@ public class VmBuilder {
         return broker.getVmsWaitingList();
     }
 
-    public int getRam() {
+    public long getRam() {
         return ram;
     }
 

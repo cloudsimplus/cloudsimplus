@@ -81,8 +81,8 @@ public class VmSchedulerSpaceShared extends VmSchedulerAbstract {
         List<Pe> selectedPes = new ArrayList<>();
         Iterator<Pe> peIterator = getFreePesList().iterator();
         Pe pe = peIterator.next();
-        for (Double mips : vmRequestedMipsShare) {
-            if (mips <= pe.getMips()) {
+        for (double mips : vmRequestedMipsShare) {
+            if (mips <= pe.getCapacity()) {
                 selectedPes.add(pe);
                 if (!peIterator.hasNext()) {
                     break;
@@ -105,7 +105,7 @@ public class VmSchedulerSpaceShared extends VmSchedulerAbstract {
             return false;
         }
 
-        final double totalMips = mipsShareRequested.stream().reduce(0.0, Double::sum);
+        final double totalMips = mipsShareRequested.stream().mapToDouble(m -> m).sum();
 
         getFreePesList().removeAll(selectedPes);
 

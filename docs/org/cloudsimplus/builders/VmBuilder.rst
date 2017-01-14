@@ -4,6 +4,8 @@
 
 .. java:import:: java.util Objects
 
+.. java:import:: java.util.function Supplier
+
 .. java:import:: org.cloudbus.cloudsim.schedulers.cloudlet CloudletSchedulerSpaceShared
 
 .. java:import:: org.cloudbus.cloudsim.brokers DatacenterBrokerSimple
@@ -23,7 +25,7 @@
 VmBuilder
 =========
 
-.. java:package:: PackageDeclaration
+.. java:package:: org.cloudsimplus.builders
    :noindex:
 
 .. java:type:: public class VmBuilder
@@ -58,12 +60,6 @@ getBw
 ^^^^^
 
 .. java:method:: public long getBw()
-   :outertype: VmBuilder
-
-getCloudletSchedulerClass
-^^^^^^^^^^^^^^^^^^^^^^^^^
-
-.. java:method:: public CloudletScheduler getCloudletSchedulerClass()
    :outertype: VmBuilder
 
 getMips
@@ -114,11 +110,15 @@ setBw
 .. java:method:: public VmBuilder setBw(long defaultBW)
    :outertype: VmBuilder
 
-setCloudletScheduler
-^^^^^^^^^^^^^^^^^^^^
+setCloudletSchedulerSupplier
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-.. java:method:: public VmBuilder setCloudletScheduler(CloudletScheduler defaultCloudletScheduler)
+.. java:method:: public VmBuilder setCloudletSchedulerSupplier(Supplier<CloudletScheduler> cloudletSchedulerSupplier)
    :outertype: VmBuilder
+
+   Sets a \ :java:ref:`Supplier`\  that is accountable to create CloudletScheduler for requested VMs.
+
+   :param cloudletSchedulerSupplier: the CloudletScheduler Supplier to set
 
 setMips
 ^^^^^^^

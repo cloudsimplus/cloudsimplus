@@ -130,7 +130,7 @@ public interface DatacenterCharacteristics extends Identificable {
      * @pre $none
      * @post $result >= 0
      */
-    int getMips();
+    long getMips();
 
     /**
      * Gets Millions Instructions Per Second (MIPS) Rating of a Processing
@@ -145,7 +145,7 @@ public interface DatacenterCharacteristics extends Identificable {
      * @pre peID >= 0
      * @post $result >= -1
      */
-    int getMipsOfOnePe(int hostId, int peId);
+    long getMipsOfOnePe(int hostId, int peId);
 
     /**
      * Gets the total number of <tt>BUSY</tt> PEs for all PMs.
@@ -314,8 +314,8 @@ public interface DatacenterCharacteristics extends Identificable {
         @Override public Host getHostWithFreePe() { return Host.NULL; }
         @Override public Host getHostWithFreePe(int peNumber) { return Host.NULL; }
         @Override public int getId() { return 0; }
-        @Override public int getMips() { return 0; }
-        @Override public int getMipsOfOnePe(int hostId, int peId) { return 0; }
+        @Override public long getMips() { return 0; }
+        @Override public long getMipsOfOnePe(int hostId, int peId) { return 0; }
         @Override public int getNumberOfBusyPes() { return 0; }
         @Override public long getNumberOfFailedHosts() { return 0; }
         @Override public int getNumberOfFreePes() { return 0; }

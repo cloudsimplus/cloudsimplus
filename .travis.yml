@@ -1,13 +1,8 @@
 language: java
-#The package distribution is being ignored from the build process at the Travis Service
-#because it uses the other cloudsim projects as maven dependencies.
-#However, the public Travis repositories only search fro dependencies at the Maven Central,
-#ignoring the existing local ones. That causes the build to fail, once CloudSim
-#is not at the Maven Central
-install: mvn install -DskipTests=true -Dmaven.javadoc.skip=true -B -V -pl cloudsim-plus,cloudsim-plus-examples
-script: mvn clean package -pl cloudsim-plus,cloudsim-plus-examples
+install: mvn install -B -V -pl cloudsim-plus,cloudsim-plus-examples
+script: mvn clean package
 after_success:
-  - mvn clean test -Dintegration_tests=true jacoco:report
+  - mvn clean test -Dintegration-tests=true jacoco:report
   - mvn versioneye:update 
 jdk:
   - oraclejdk8 

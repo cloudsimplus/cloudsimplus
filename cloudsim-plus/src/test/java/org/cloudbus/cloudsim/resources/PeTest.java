@@ -7,10 +7,10 @@
  */
 package org.cloudbus.cloudsim.resources;
 
-import org.cloudbus.cloudsim.provisioners.PeProvisioner;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertSame;
 
+import org.cloudbus.cloudsim.provisioners.PeProvisioner;
 import org.cloudbus.cloudsim.provisioners.PeProvisionerSimple;
 import org.cloudbus.cloudsim.resources.Pe.Status;
 import static org.junit.Assert.assertFalse;
@@ -28,12 +28,12 @@ public class PeTest {
 
     @Before
     public void setUp() throws Exception {
-        peProvisioner = new PeProvisionerSimple(MIPS);
+        peProvisioner = new PeProvisionerSimple();
     }
 
     private PeSimple createPe() {
-        peProvisioner = new PeProvisionerSimple(MIPS);
-        return new PeSimple(0, peProvisioner);
+        peProvisioner = new PeProvisionerSimple();
+        return new PeSimple(0, MIPS, peProvisioner);
     }
 
     private PeSimple createPe(PeProvisioner peProvisioner) {
@@ -44,7 +44,7 @@ public class PeTest {
     public void testGetPeProvisioner() {
         PeSimple pe = createPe();
         assertSame(peProvisioner, pe.getPeProvisioner());
-        assertEquals(MIPS, pe.getPeProvisioner().getAvailableMips(), 0);
+        assertEquals(MIPS, pe.getPeProvisioner().getAvailableResource(), 0);
     }
 
     @Test
@@ -58,9 +58,9 @@ public class PeTest {
     @Test
     public void testSetMips() {
         PeSimple pe = createPe();
-        assertEquals(MIPS, pe.getMips(), 0);
-        pe.setMips(MIPS / 2);
-        assertEquals(MIPS / 2, pe.getMips(), 0);
+        assertEquals(MIPS, pe.getCapacity(), 0);
+        pe.setCapacity(MIPS / 2);
+        assertEquals(MIPS / 2, pe.getCapacity(), 0);
     }
 
     @Test
@@ -75,13 +75,13 @@ public class PeTest {
         assertEquals(PeSimple.Status.FREE, pe.getStatus());
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test(expected = NullPointerException.class)
     public void testSetPeProvisioner_null() {
         PeSimple pe = createPe();
         pe.setPeProvisioner(null);
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test(expected = NullPointerException.class)
     public void testNewPe_nullPeProvisioner() {
         createPe(null);
     }
@@ -89,10 +89,10 @@ public class PeTest {
     @Test
     public void testNullObject(){
         assertEquals(-1, Pe.NULL.getId(), 0);
-        assertEquals(0, Pe.NULL.getMips(), 0);
+        assertEquals(0, Pe.NULL.getCapacity(), 0);
         assertEquals(Status.FAILED, Pe.NULL.getStatus());
-        assertFalse(Pe.NULL.setMips(1000));
-        assertEquals(0, Pe.NULL.getPeProvisioner().getMipsCapacity(), 0);
+        assertFalse(Pe.NULL.setCapacity(1000));
+        assertEquals(0, Pe.NULL.getCapacity(), 0);
 
         //setters haven't any effect on Null Object Design Pattern
         Pe.NULL.setStatus(Status.FREE);
