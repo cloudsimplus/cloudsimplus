@@ -948,4 +948,9 @@ public abstract class CloudletAbstract implements Cloudlet {
         result = 31 * result + broker.hashCode();
         return result;
     }
+    
+    @Override
+    public double getResponseTime(){
+        return getFinishTime() - getLastDatacenterArrivalTime();
+    }
 }

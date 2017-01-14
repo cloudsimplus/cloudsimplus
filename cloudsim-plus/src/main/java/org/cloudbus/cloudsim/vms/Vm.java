@@ -295,19 +295,19 @@ public interface Vm extends UniquelyIdentificable, Delayable, Comparable<Vm> {
     double getTotalUtilizationOfCpu(double time);
 
     /**
-     * Gets total CPU utilization percentage of all Clouddlets running on this
+     * Gets total CPU utilization percentage (in scale from 0 to 1) of all Clouddlets running on this
      * VM at the current simulation time.
      *
-     * @return total utilization percentage fort the current time
+     * @return total utilization percentage for the current time, in scale from 0 to 1
      */
     double getTotalUtilizationOfCpu();
 
     /**
-     * Gets the total CPU utilization of all cloudlets running on this VM at the
+     * Gets the total CPU utilization (in scale from 0 to 1) of all cloudlets running on this VM at the
      * given time (in MIPS).
      *
      * @param time the time
-     * @return total cpu utilization in MIPS
+     * @return total cpu utilization in MIPS, in scale from 0 to 1
      * @see #getTotalUtilizationOfCpu(double)
      *
      */

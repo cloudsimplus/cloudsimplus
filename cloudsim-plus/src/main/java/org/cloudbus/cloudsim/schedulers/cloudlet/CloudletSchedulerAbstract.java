@@ -652,6 +652,9 @@ public abstract class CloudletSchedulerAbstract implements CloudletScheduler {
      * Gets the estimated time when a given cloudlet is supposed to finish
      * executing. It considers the amount of Vm PES and the sum of PEs required
      * by all VMs running inside the VM.
+     * 
+     * <p>The estimated time is not a future simulation time
+     * but a time interval that the Cloudlet is expected to finish.</p>
      *
      * <p>The estimated time is not a future simulation time
      * but a time interval that the Cloudlet is expected to finish.</p>

@@ -78,8 +78,13 @@ public class VmCost {
      * @return getProcessingCost
      */
     public double getProcessingCost() {
-        double hostMips = vm.getHost().getPeList().stream().findFirst().map(pe -> pe.getCapacity()).orElse(0);
-        double costPerMI = (hostMips > 0 ? getDatacenter().getCharacteristics().getCostPerSecond()/hostMips : 0.0);
+        double hostMips = vm.getHost().getPeList().stream()
+                .findFirst()
+                .map(pe -> pe.getCapacity())
+                .orElse(0L);
+        double costPerMI = (hostMips > 0 ? 
+                getDatacenter().getCharacteristics().getCostPerSecond()/hostMips : 
+                0.0);
 
         return costPerMI * getVm().getMips() * getVm().getNumberOfPes();
     }
