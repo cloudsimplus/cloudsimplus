@@ -60,14 +60,14 @@ scaleIfOverloaded
 .. java:method::  void scaleIfOverloaded(double time)
    :outertype: VmScaling
 
-   Performs the horizontal or vertical scale if the Vm is overloaded. The type of scale depends on implementing classes.
+   Performs the \ :java:ref:`horizontal <HorizontalVmScaling>`\  or \ :java:ref:`vertical <VerticalVmScaling>`\  scale if the Vm is overloaded. The type of scale depends on implementing classes.
 
    :param time: current simulation time
 
 setOverloadPredicate
 ^^^^^^^^^^^^^^^^^^^^
 
-.. java:method::  HorizontalVmScaling setOverloadPredicate(Predicate<Vm> predicate)
+.. java:method::  VmScaling setOverloadPredicate(Predicate<Vm> predicate)
    :outertype: VmScaling
 
    Sets a \ :java:ref:`Predicate`\  that defines when \ :java:ref:`Vm <getVm()>`\  is overloaded or not, that will make the Vm's broker to dynamically create a new Vm to balance the load of new arrived Cloudlets.

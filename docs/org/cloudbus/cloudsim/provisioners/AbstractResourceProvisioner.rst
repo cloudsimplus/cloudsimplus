@@ -4,6 +4,12 @@
 
 .. java:import:: java.util Objects
 
+.. java:import:: org.cloudbus.cloudsim.resources Bandwidth
+
+.. java:import:: org.cloudbus.cloudsim.resources Pe
+
+.. java:import:: org.cloudbus.cloudsim.resources Ram
+
 .. java:import:: org.cloudbus.cloudsim.vms Vm
 
 .. java:import:: org.cloudbus.cloudsim.resources ResourceManageable
@@ -24,6 +30,14 @@ AbstractResourceProvisioner
 
 Constructors
 ------------
+AbstractResourceProvisioner
+^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+.. java:constructor:: protected AbstractResourceProvisioner()
+   :outertype: AbstractResourceProvisioner
+
+   Creates a new ResourceManageable Provisioner for which the \ :java:ref:`resource <getResource()>`\  must be set further.
+
 AbstractResourceProvisioner
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
@@ -77,7 +91,9 @@ getResource
 .. java:method:: protected ResourceManageable getResource()
    :outertype: AbstractResourceProvisioner
 
-   :return: the resource
+   Gets the resource being managed for the provisioner, such as \ :java:ref:`Ram`\ , \ :java:ref:`Pe`\ , \ :java:ref:`Bandwidth`\ , etc.
+
+   :return: the resource managed by this provisioner
 
 getResourceAllocationMap
 ^^^^^^^^^^^^^^^^^^^^^^^^
@@ -85,7 +101,9 @@ getResourceAllocationMap
 .. java:method:: protected Map<Vm, Long> getResourceAllocationMap()
    :outertype: AbstractResourceProvisioner
 
-   :return: the resourceAllocationMap
+   Gets the VM resource allocation map, where each key is a VM and each value is the amount of resource allocated to that VM.
+
+   :return: the resource allocation Map
 
 getResourceClass
 ^^^^^^^^^^^^^^^^
@@ -93,11 +111,19 @@ getResourceClass
 .. java:method:: protected Class<? extends ResourceManageable> getResourceClass()
    :outertype: AbstractResourceProvisioner
 
-   :return: the resourceClass
+   Gets the class of the resource that this provisioner manages.
+
+   :return: the resource class
 
 getTotalAllocatedResource
 ^^^^^^^^^^^^^^^^^^^^^^^^^
 
 .. java:method:: @Override public long getTotalAllocatedResource()
+   :outertype: AbstractResourceProvisioner
+
+setResource
+^^^^^^^^^^^
+
+.. java:method:: protected final void setResource(ResourceManageable resource)
    :outertype: AbstractResourceProvisioner
 

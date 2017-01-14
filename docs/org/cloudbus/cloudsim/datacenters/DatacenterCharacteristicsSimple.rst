@@ -119,13 +119,13 @@ getId
 getMips
 ^^^^^^^
 
-.. java:method:: @Override public int getMips()
+.. java:method:: @Override public long getMips()
    :outertype: DatacenterCharacteristicsSimple
 
 getMipsOfOnePe
 ^^^^^^^^^^^^^^
 
-.. java:method:: @Override public int getMipsOfOnePe(int hostId, int peId)
+.. java:method:: @Override public long getMipsOfOnePe(int hostId, int peId)
    :outertype: DatacenterCharacteristicsSimple
 
 getNumberOfBusyPes

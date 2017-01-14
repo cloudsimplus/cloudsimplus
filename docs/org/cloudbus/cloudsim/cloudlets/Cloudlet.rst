@@ -355,6 +355,12 @@ getRequiredFiles
 
    :return: the required files
 
+getResponseTime
+^^^^^^^^^^^^^^^
+
+.. java:method::  double getResponseTime()
+   :outertype: Cloudlet
+
 getSimulation
 ^^^^^^^^^^^^^
 

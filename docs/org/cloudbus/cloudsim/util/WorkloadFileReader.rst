@@ -75,7 +75,6 @@ WorkloadFileReader
 
    :param fileName: the workload trace filename in one of the following formats: \ *ASCII text, zip, gz.*\
    :param rating: the cloudlet's PE rating (in MIPS), considering that all PEs of a cloudlet have the same rate
-   :throws FileNotFoundException:
    :throws IllegalArgumentException: This happens for the following conditions:
 
    ..
@@ -84,6 +83,7 @@ WorkloadFileReader
    * the resource PE rating <= 0
 
    @pre fileName != null
+   :throws FileNotFoundException:
 
 Methods
 -------

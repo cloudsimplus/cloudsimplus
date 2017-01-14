@@ -47,7 +47,7 @@ Constructors
 PowerVm
 ^^^^^^^
 
-.. java:constructor:: public PowerVm(int id, double mipsCapacity, int numberOfPes)
+.. java:constructor:: public PowerVm(int id, long mipsCapacity, int numberOfPes)
    :outertype: PowerVm
 
    Creates a Vm with 1024 MEGABYTE of RAM, 1000 Megabits/s of Bandwidth and 1024 MEGABYTE of Storage Size. To change these values, use the respective setters. While the Vm \ :java:ref:`is not created inside a Host <isCreated()>`\ , such values can be changed freely.
@@ -59,7 +59,7 @@ PowerVm
 PowerVm
 ^^^^^^^
 
-.. java:constructor:: @Deprecated public PowerVm(int id, DatacenterBroker broker, double mipsCapacity, int numberOfPes, int ramCapacity, long bwCapacity, long size, int priority, String vmm, CloudletScheduler cloudletScheduler, double schedulingInterval)
+.. java:constructor:: @Deprecated public PowerVm(int id, DatacenterBroker broker, long mipsCapacity, int numberOfPes, int ramCapacity, long bwCapacity, long size, int priority, String vmm, CloudletScheduler cloudletScheduler, double schedulingInterval)
    :outertype: PowerVm
 
    Instantiates a new PowerVm.

@@ -1,8 +1,8 @@
 .. java:import:: org.cloudbus.cloudsim.hosts Host
 
-.. java:import:: org.cloudbus.cloudsim.util Log
-
 .. java:import:: org.cloudbus.cloudsim.provisioners PeProvisioner
+
+.. java:import:: org.cloudbus.cloudsim.util Log
 
 .. java:import:: org.cloudbus.cloudsim.resources Pe
 
@@ -89,7 +89,7 @@ getMipsMapAllocated
 getPeCapacity
 ^^^^^^^^^^^^^
 
-.. java:method:: @Override public double getPeCapacity()
+.. java:method:: @Override public long getPeCapacity()
    :outertype: VmSchedulerAbstract
 
 getPeList

@@ -221,6 +221,8 @@ getEstimatedFinishTimeOfCloudlet
 
    The estimated time is not a future simulation time but a time interval that the Cloudlet is expected to finish.
 
+   The estimated time is not a future simulation time but a time interval that the Cloudlet is expected to finish.
+
    :param rcl: cloudlet to get the estimated finish time
    :param currentTime: current simulation time
    :return: the estimated finish time of the given cloudlet
@@ -264,7 +266,7 @@ getProcessor
 
    Processor object created every time the processing of VMs is executed. It represent the last CPU capacity assigned to the scheduler.
 
-   **See also:** :java:ref:`.updateVmProcessing(double,java.util.List)`
+   **See also:** :java:ref:`CloudletScheduler.updateVmProcessing(double,List)`
 
 getTotalUtilizationOfCpu
 ^^^^^^^^^^^^^^^^^^^^^^^^
@@ -315,7 +317,7 @@ moveNextCloudletsFromWaitingToExecList
 
    /** Selects the next Cloudlets in the waiting list to move to the execution list in order to start executing them. While there is enough free PEs, the method try to find a suitable Cloudlet in the list, until it reaches the end of such a list. The method might also exchange some cloudlets in the execution list with some in the waiting list. Thus, some running cloudlets may be preempted to give opportunity to previously waiting cloudlets to run. This is a process called \ `context switch <https://en.wikipedia.org/wiki/Context_switch>`_\ . However, each CloudletScheduler implementation decides how such a process is implemented. For instance, Space-Shared schedulers may just perform context switch just after currently running Cloudlets completely finish executing.
 
-   This method is called internally by the \ :java:ref:`updateVmProcessing(double,java.util.List)`\  one.
+   This method is called internally by the \ :java:ref:`CloudletScheduler.updateVmProcessing(double,List)`\  one.
 
 processCloudletSubmit
 ^^^^^^^^^^^^^^^^^^^^^

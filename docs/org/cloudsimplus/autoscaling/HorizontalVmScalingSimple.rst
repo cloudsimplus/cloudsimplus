@@ -22,7 +22,7 @@ HorizontalVmScalingSimple
 
    A \ :java:ref:`HorizontalVmScaling`\  implementation that allows defining that the VMs from a given \ :java:ref:`DatacenterBroker`\  are overloaded or not based on the overall resource utilization of all such VMs.
 
-   The condition in fact hsa to be defined by the user of this class, by providing a \ :java:ref:`Predicate`\  using the \ :java:ref:`setOverloadPredicate(Predicate)`\  method.
+   The condition in fact has to be defined by the user of this class, by providing a \ :java:ref:`Predicate`\  using the \ :java:ref:`setOverloadPredicate(Predicate)`\  method.
 
    :author: Manoel Campos da Silva Filho
 
@@ -72,7 +72,7 @@ scaleIfOverloaded
 setOverloadPredicate
 ^^^^^^^^^^^^^^^^^^^^
 
-.. java:method:: @Override public final HorizontalVmScaling setOverloadPredicate(Predicate<Vm> predicate)
+.. java:method:: @Override public final VmScaling setOverloadPredicate(Predicate<Vm> predicate)
    :outertype: HorizontalVmScalingSimple
 
 setVm
@@ -84,6 +84,6 @@ setVm
 setVmSupplier
 ^^^^^^^^^^^^^
 
-.. java:method:: @Override public final VmScaling setVmSupplier(Supplier<Vm> supplier)
+.. java:method:: @Override public final HorizontalVmScaling setVmSupplier(Supplier<Vm> supplier)
    :outertype: HorizontalVmScalingSimple
 

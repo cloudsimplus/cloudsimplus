@@ -1,3 +1,5 @@
+.. java:import:: org.cloudbus.cloudsim.core Identificable
+
 .. java:import:: org.cloudbus.cloudsim.provisioners PeProvisioner
 
 .. java:import:: org.cloudbus.cloudsim.provisioners PeProvisionerSimple
@@ -8,7 +10,7 @@ Pe
 .. java:package:: org.cloudbus.cloudsim.resources
    :noindex:
 
-.. java:type:: public interface Pe
+.. java:type:: public interface Pe extends Identificable, ResourceManageable
 
    A interface to be implemented by each class that provides the basic features of a virtual or physical Processing Element (PE) of a PM or VM. Each Pe represents a virtual or physical processor core.
 
@@ -24,29 +26,19 @@ NULL
 .. java:field::  Pe NULL
    :outertype: Pe
 
-   A property that implements the Null Object Design Pattern for \ :java:ref:`Pe`\  objects.
+   An attribute that implements the Null Object Design Pattern for \ :java:ref:`Pe`\  objects.
 
 Methods
 -------
-getId
-^^^^^
+getCapacity
+^^^^^^^^^^^
 
-.. java:method::  int getId()
+.. java:method:: @Override  long getCapacity()
    :outertype: Pe
 
-   Gets the PE id.
+   Gets the capacity of this Pe in MIPS (Million Instructions Per Second).
 
-   :return: the PE id
-
-getMips
-^^^^^^^
-
-.. java:method::  int getMips()
-   :outertype: Pe
-
-   Gets the MIPS Rating of this Pe.
-
-   :return: the MIPS Rating
+   :return: the MIPS capacity
 
 getPeProvisioner
 ^^^^^^^^^^^^^^^^
@@ -68,16 +60,49 @@ getStatus
 
    :return: the PE status
 
-setMips
-^^^^^^^
+setCapacity
+^^^^^^^^^^^
 
-.. java:method::  boolean setMips(double d)
+.. java:method:: @Override  boolean setCapacity(long mipsCapacity)
    :outertype: Pe
 
-   Sets the MIPS Rating of this PE.
+   Sets the capacity of this Pe in MIPS (Million Instructions Per Second).
 
-   :param d: the mips
-   :return: true if MIPS > 0, false otherwise
+   :param mipsCapacity: the MIPS capacity to set
+   :return: true if mipsCapacity > 0, false otherwise
+
+setCapacity
+^^^^^^^^^^^
+
+.. java:method::  boolean setCapacity(double mipsCapacity)
+   :outertype: Pe
+
+   Sets the capacity of this Pe in MIPS (Million Instructions Per Second).
+
+   It receives the amount of MIPS as a double value but converts it internally to a long. The method is just provided as a handy-way to define the PE capacity using a double value that usually is generated from some computations.
+
+   :param mipsCapacity: the MIPS capacity to set
+   :return: true if mipsCapacity > 0, false otherwise
+
+setId
+^^^^^
+
+.. java:method::  void setId(int id)
+   :outertype: Pe
+
+   Sets the \ :java:ref:`getId()`\ .
+
+   :param id: the new PE id
+
+setPeProvisioner
+^^^^^^^^^^^^^^^^
+
+.. java:method::  Pe setPeProvisioner(PeProvisioner peProvisioner)
+   :outertype: Pe
+
+   Sets the \ :java:ref:`getPeProvisioner()`\  that manages the allocation of this physical PE to virtual machines. This method is automatically called when a \ :java:ref:`PeProvisioner`\  is created passing a Pe instance. Thus, the PeProvisioner for a Pe doesn't have to be set manually.
+
+   :param peProvisioner: the new PE provisioner
 
 setStatus
 ^^^^^^^^^

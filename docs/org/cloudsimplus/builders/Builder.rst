@@ -25,6 +25,6 @@ Methods
 validateAmount
 ^^^^^^^^^^^^^^
 
-.. java:method:: public void validateAmount(int amount)
+.. java:method:: public void validateAmount(double amount)
    :outertype: Builder
 

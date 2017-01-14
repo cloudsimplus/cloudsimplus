@@ -6,11 +6,11 @@
 
 .. java:import:: java.util List
 
+.. java:import:: org.cloudbus.cloudsim.provisioners PeProvisioner
+
 .. java:import:: org.cloudbus.cloudsim.resources Pe
 
 .. java:import:: org.cloudbus.cloudsim.resources PeSimple
-
-.. java:import:: org.cloudbus.cloudsim.provisioners PeProvisioner
 
 .. java:import:: org.cloudbus.cloudsim.provisioners PeProvisionerSimple
 
@@ -31,7 +31,7 @@ Methods
 create
 ^^^^^^
 
-.. java:method:: public List<Pe> create(int amount, double mipsOfEachPe)
+.. java:method:: public List<Pe> create(double amount, double mipsOfEachPe)
    :outertype: PeBuilder
 
 getProvisionerClass

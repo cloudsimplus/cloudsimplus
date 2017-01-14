@@ -238,6 +238,12 @@ getRequiredFiles
 .. java:method:: @Override public List<String> getRequiredFiles()
    :outertype: CloudletAbstract
 
+getResponseTime
+^^^^^^^^^^^^^^^
+
+.. java:method:: @Override public double getResponseTime()
+   :outertype: CloudletAbstract
+
 getSimulation
 ^^^^^^^^^^^^^
 

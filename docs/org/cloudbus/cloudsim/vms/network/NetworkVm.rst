@@ -39,7 +39,7 @@ Constructors
 NetworkVm
 ^^^^^^^^^
 
-.. java:constructor:: public NetworkVm(int id, double mipsCapacity, int numberOfPes)
+.. java:constructor:: public NetworkVm(int id, long mipsCapacity, int numberOfPes)
    :outertype: NetworkVm
 
    Creates a NetworkVm with 1024 MEGABYTE of RAM, 1000 Megabits/s of Bandwidth and 1024 MEGABYTE of Storage Size. To change these values, use the respective setters. While the Vm \ :java:ref:`is not created inside a Host <isCreated()>`\ , such values can be changed freely.
@@ -51,7 +51,7 @@ NetworkVm
 NetworkVm
 ^^^^^^^^^
 
-.. java:constructor:: @Deprecated public NetworkVm(int id, DatacenterBroker broker, double mipsCapacity, int numberOfPes, int ramCapacity, long bwCapacity, long size, String vmm, CloudletScheduler cloudletScheduler)
+.. java:constructor:: @Deprecated public NetworkVm(int id, DatacenterBroker broker, long mipsCapacity, int numberOfPes, int ramCapacity, long bwCapacity, long size, String vmm, CloudletScheduler cloudletScheduler)
    :outertype: NetworkVm
 
    Creates a NetworkVm with the given parameters.

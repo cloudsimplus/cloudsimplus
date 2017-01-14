@@ -2,6 +2,8 @@
 
 .. java:import:: org.cloudbus.cloudsim.datacenters Datacenter
 
+.. java:import:: org.cloudbus.cloudsim.provisioners PeProvisioner
+
 .. java:import:: org.cloudbus.cloudsim.util Log
 
 .. java:import:: org.cloudbus.cloudsim.brokers DatacenterBroker
@@ -39,7 +41,7 @@ Constructors
 VmSimple
 ^^^^^^^^
 
-.. java:constructor:: public VmSimple(int id, double mipsCapacity, int numberOfPes)
+.. java:constructor:: public VmSimple(int id, long mipsCapacity, int numberOfPes)
    :outertype: VmSimple
 
    Creates a Vm with 1024 MEGABYTE of RAM, 1000 Megabits/s of Bandwidth and 1024 MEGABYTE of Storage Size. To change these values, use the respective setters. While the Vm \ :java:ref:`is being instantiated <isCreated()>`\ , such values can be changed freely.
@@ -51,7 +53,21 @@ VmSimple
 VmSimple
 ^^^^^^^^
 
-.. java:constructor:: @Deprecated public VmSimple(int id, DatacenterBroker broker, double mipsCapacity, int numberOfPes, long ramCapacity, long bwCapacity, long size, String vmm, CloudletScheduler cloudletScheduler)
+.. java:constructor:: public VmSimple(int id, double mipsCapacity, int numberOfPes)
+   :outertype: VmSimple
+
+   Creates a Vm with 1024 MEGABYTE of RAM, 1000 Megabits/s of Bandwidth and 1024 MEGABYTE of Storage Size. To change these values, use the respective setters. While the Vm \ :java:ref:`is being instantiated <isCreated()>`\ , such values can be changed freely.
+
+   It receives the amount of MIPS as a double value but converts it internally to a long. The method is just provided as a handy-way to create a Vm using a double value for MIPS that usually is generated from some computations.
+
+   :param id: unique ID of the VM
+   :param mipsCapacity: the mips capacity of each Vm \ :java:ref:`Pe`\
+   :param numberOfPes: amount of \ :java:ref:`Pe`\  (CPU cores)
+
+VmSimple
+^^^^^^^^
+
+.. java:constructor:: @Deprecated public VmSimple(int id, DatacenterBroker broker, long mipsCapacity, int numberOfPes, long ramCapacity, long bwCapacity, long size, String vmm, CloudletScheduler cloudletScheduler)
    :outertype: VmSimple
 
    Creates a Vm with the given parameters.
@@ -98,6 +114,12 @@ addStateHistoryEntry
 .. java:method:: @Override public void addStateHistoryEntry(VmStateHistoryEntry entry)
    :outertype: VmSimple
 
+allocateResource
+^^^^^^^^^^^^^^^^
+
+.. java:method:: @Override public void allocateResource(Class<? extends ResourceManageable> resourceClass, long newTotalResourceAmount)
+   :outertype: VmSimple
+
 compareTo
 ^^^^^^^^^
 
@@ -108,6 +130,12 @@ compareTo
 
    :param o: the Vm to compare to
    :return: {@inheritDoc}
+
+deallocateResource
+^^^^^^^^^^^^^^^^^^
+
+.. java:method:: @Override public void deallocateResource(Class<? extends ResourceManageable> resourceClass)
+   :outertype: VmSimple
 
 equals
 ^^^^^^
@@ -222,14 +250,6 @@ getRam
 
 .. java:method:: @Override public long getRam()
    :outertype: VmSimple
-
-getResource
-^^^^^^^^^^^
-
-.. java:method:: @Override public <R extends ResourceManageable> ResourceManageable getResource(Class<R> resourceClass)
-   :outertype: VmSimple
-
-   :param resourceClass: the class of the resource to be got
 
 getSimulation
 ^^^^^^^^^^^^^
