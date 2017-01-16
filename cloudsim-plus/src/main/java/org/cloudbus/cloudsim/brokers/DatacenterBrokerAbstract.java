@@ -8,6 +8,8 @@
 package org.cloudbus.cloudsim.brokers;
 
 import java.util.*;
+import java.util.function.Function;
+import java.util.function.Supplier;
 
 import org.cloudbus.cloudsim.cloudlets.Cloudlet;
 import org.cloudbus.cloudsim.core.events.SimEvent;
@@ -16,6 +18,7 @@ import org.cloudbus.cloudsim.util.Log;
 import org.cloudbus.cloudsim.vms.Vm;
 import org.cloudbus.cloudsim.core.*;
 import org.cloudsimplus.autoscaling.VerticalVmScaling;
+
 
 /**
  * An abstract class to be used as base for implementing a {@link DatacenterBroker}.
@@ -61,6 +64,10 @@ public abstract class DatacenterBrokerAbstract extends CloudSimEntity implements
      * it wasn't requested to be created yet.
      */
     private Map<Cloudlet,Datacenter> cloudletCreationRequestsMap;
+
+    private Supplier<Datacenter> datacenterSupplier;
+    private Supplier<Datacenter> fallbackDatacenterSupplier;
+    private Function<Cloudlet, Vm> vmMapper;
 
     /**
      * @see #getCloudletsFinishedList()
@@ -116,6 +123,9 @@ public abstract class DatacenterBrokerAbstract extends CloudSimEntity implements
         cloudletCreationRequestsMap = new HashMap<>();
         vmsToDatacentersMap = new HashMap<>();
         lastSelectedVm = Vm.NULL;
+        datacenterSupplier = () -> Datacenter.NULL;
+        fallbackDatacenterSupplier = datacenterSupplier;
+        vmMapper = (cloudlet) -> Vm.NULL;
     }
 
     @Override
@@ -134,7 +144,7 @@ public abstract class DatacenterBrokerAbstract extends CloudSimEntity implements
      * the simulation has started. This avoid the developer to
      * dynamically create brokers just to create VMs or Cloudlets during
      * simulation execution.</p>
-     * @param {@inheritDoc}
+     * @param list {@inheritDoc}
      */
     @Override
     public void submitVmList(List<? extends Vm> list) {
@@ -307,7 +317,7 @@ public abstract class DatacenterBrokerAbstract extends CloudSimEntity implements
      * in the waiting list.
      */
     protected void requestCreationOfWaitingVmsToFallbackDatacenter() {
-        final Datacenter nextDatacenter = selectFallbackDatacenterForWaitingVms();
+        final Datacenter nextDatacenter = fallbackDatacenterSupplier.get();
         if (nextDatacenter != Datacenter.NULL) {
             clearVmCreationRequestsMapToTryNextDatacenter();
             requestDatacenterToCreateWaitingVms(nextDatacenter);
@@ -422,15 +432,16 @@ public abstract class DatacenterBrokerAbstract extends CloudSimEntity implements
     }
 
     /**
-     * Request the {@link #selectDatacenterForWaitingVms() next Datacenter in the list} to create the VM in the
-     * {@link #getVmsWaitingList() VM waiting list}.
+     * Request the creation of VMs in the
+     * {@link #getVmsWaitingList() VM waiting list}
+     * inside some Datacenter.
      *
      * @pre $none
      * @post $none
      * @see #submitVmList(java.util.List)
      */
     protected void requestDatacenterToCreateWaitingVms() {
-        requestDatacenterToCreateWaitingVms(selectDatacenterForWaitingVms());
+        requestDatacenterToCreateWaitingVms(datacenterSupplier.get());
     }
 
     /**
@@ -480,7 +491,8 @@ public abstract class DatacenterBrokerAbstract extends CloudSimEntity implements
                 continue;
             }
 
-            lastSelectedVm = selectVmForWaitingCloudlet(cloudlet);
+            //selects a VM for the given Cloudlet
+            lastSelectedVm = vmMapper.apply(cloudlet);
             if (lastSelectedVm == Vm.NULL) {
                 // vm was not created
                 Log.printFormattedLine(
@@ -663,4 +675,21 @@ public abstract class DatacenterBrokerAbstract extends CloudSimEntity implements
         return cloudletCreationRequestsMap.size();
     }
 
+    @Override
+    public final void setDatacenterSupplier(Supplier<Datacenter> datacenterSupplier) {
+        Objects.requireNonNull(datacenterSupplier);
+        this.datacenterSupplier = datacenterSupplier;
+    }
+
+    @Override
+    public final void setFallbackDatacenterSupplier(Supplier<Datacenter> fallbackDatacenterSupplier) {
+        Objects.requireNonNull(fallbackDatacenterSupplier);
+        this.fallbackDatacenterSupplier = fallbackDatacenterSupplier;
+    }
+
+    @Override
+    public final void setVmMapper(Function<Cloudlet, Vm> vmMapper) {
+        Objects.requireNonNull(vmMapper);
+        this.vmMapper = vmMapper;
+    }
 }
