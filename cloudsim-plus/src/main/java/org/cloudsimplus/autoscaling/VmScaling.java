@@ -26,7 +26,6 @@ package org.cloudsimplus.autoscaling;
 import org.cloudbus.cloudsim.vms.Vm;
 
 import java.util.function.Predicate;
-import java.util.function.Supplier;
 
 /**
  * An interface to allow implementing <a href="https://en.wikipedia.org/wiki/Scalability#Horizontal_and_vertical_scaling">horizontal and vertical scaling</a> of VMs.
@@ -41,7 +40,7 @@ public interface VmScaling {
     Predicate<Vm> FALSE_PREDICATE = (vm) -> false;
 
     /**
-     * An attribute that implements the Null Object Design Pattern for {@link HorizontalVmScaling}
+     * An attribute that implements the Null Object Design Pattern for {@link VmScaling}
      * objects.
      */
     VmScaling NULL = new VmScaling() {
@@ -49,7 +48,7 @@ public interface VmScaling {
         @Override public VmScaling setVm(Vm vm) { return this; }
         @Override public Predicate<Vm> getOverloadPredicate() { return FALSE_PREDICATE; }
         @Override public VmScaling setOverloadPredicate(Predicate<Vm> predicate) { return this; }
-        @Override public void scaleIfOverloaded(double time) {}
+        @Override public boolean requestUpScalingIfOverloaded(double time) { return false; }
     };
 
     /**
@@ -62,6 +61,8 @@ public interface VmScaling {
      * Sets a {@link Vm} to this Load Balancer. The broker will call this Load Balancer
      * in order to balance load when its Vm is over utilized.
      *
+     * <p>When the VmScaling is assigned to a Vm, the Vm sets itself to the VmScaling object,
+     * creating an association between the two objects.</b></p>
      * @param vm the Vm to set
      * @return
      */
@@ -93,10 +94,12 @@ public interface VmScaling {
     VmScaling setOverloadPredicate(Predicate<Vm> predicate);
 
     /**
-     * Performs the {@link HorizontalVmScaling horizontal} or {@link VerticalVmScaling vertical} scale if the Vm is overloaded.
-     * The type of scale depends on implementing classes.
+     * Requests a {@link HorizontalVmScaling horizontal} or {@link VerticalVmScaling vertical} scale if the Vm is overloaded.
+     * The type of scale depends on implementing classes. The scaling request will be sent to the broker only
+     * if the {@link #getOverloadPredicate()} returns true.
      *
      * @param time current simulation time
+     * @return true if the Vm is overloaded and and up scaling request was sent to the broker, false otherwise
      */
-    void scaleIfOverloaded(double time);
+    boolean requestUpScalingIfOverloaded(double time);
 }

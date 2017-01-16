@@ -12,6 +12,7 @@ import java.util.*;
 import org.cloudbus.cloudsim.hosts.Host;
 import org.cloudbus.cloudsim.util.Log;
 import org.cloudbus.cloudsim.vms.Vm;
+import org.cloudsimplus.autoscaling.VerticalVmScaling;
 
 /**
  * A VmAllocationPolicy implementation that chooses, as
@@ -79,6 +80,13 @@ public class VmAllocationPolicySimple extends VmAllocationPolicyAbstract {
         }
 
         return false;
+    }
+
+    @Override
+    public boolean scaleVmVertically(VerticalVmScaling scaling) {
+        Host host = scaling.getVm().getHost();
+        host.getRamProvisioner();
+        throw new UnsupportedOperationException("Method not implemented yet");
     }
 
     @Override

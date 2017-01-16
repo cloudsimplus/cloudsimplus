@@ -18,12 +18,16 @@ import org.cloudbus.cloudsim.vms.Vm;
 import org.cloudbus.cloudsim.resources.Resource;
 
 /**
- * An interface to be implemented by VmScheduler objects in order to provide
- * scheduling algorithms that allocate host's PEs for VMs running on it.
- * It also implements the Null Object Design
+ * An interface that represents the policy used by a
+ * Virtual Machine Monitor (VMM) to share processing power of a PM among VMs
+ * running in a host.  Each host has to use is own instance of a
+ * VmScheduler that will so schedule the allocation of host's PEs for
+ * VMs running on it.
+ *
+ * <p>It also implements the Null Object Design
  * Pattern in order to start avoiding {@link NullPointerException}
  * when using the {@link VmScheduler#NULL} object instead
- * of attributing {@code null} to {@link VmScheduler} variables.
+ * of attributing {@code null} to {@link VmScheduler} variables.</p>
  *
  * @author Rodrigo N. Calheiros
  * @author Anton Beloglazov

@@ -15,8 +15,7 @@ import org.cloudbus.cloudsim.datacenters.Datacenter;
 import org.cloudbus.cloudsim.util.Log;
 import org.cloudbus.cloudsim.vms.Vm;
 import org.cloudbus.cloudsim.core.*;
-
-import static java.util.stream.Collectors.toList;
+import org.cloudsimplus.autoscaling.VerticalVmScaling;
 
 /**
  * An abstract class to be used as base for implementing a {@link DatacenterBroker}.
@@ -228,6 +227,9 @@ public abstract class DatacenterBrokerAbstract extends CloudSimEntity implements
             case CloudSimTags.VM_CREATE_ACK:
                 processVmCreateResponseFromDatacenter(ev);
             break;
+            case CloudSimTags.VM_VERTICAL_SCALING:
+                requestVmVerticalScaling(ev);
+            break;
             case CloudSimTags.CLOUDLET_RETURN:
                 processCloudletReturn(ev);
             break;
@@ -238,6 +240,15 @@ public abstract class DatacenterBrokerAbstract extends CloudSimEntity implements
                 processOtherEvent(ev);
             break;
         }
+    }
+
+    private void requestVmVerticalScaling(SimEvent ev){
+        if(!(ev instanceof VerticalVmScaling)){
+            return;
+        }
+
+        VerticalVmScaling scaling = (VerticalVmScaling)ev;
+        getSimulation().sendNow(ev.getSource(), scaling.getVm().getHost().getDatacenter().getId(), CloudSimTags.VM_VERTICAL_SCALING, ev.getData());
     }
 
     /**
@@ -282,7 +293,7 @@ public abstract class DatacenterBrokerAbstract extends CloudSimEntity implements
         if (getVmsWaitingList().isEmpty()) {
             requestDatacentersToCreateWaitingCloudlets();
         } else if (getVmCreationRequests() == getVmCreationAcks()) {
-            requestCreationOfWaitingVmsToNextDatacenter();
+            requestCreationOfWaitingVmsToFallbackDatacenter();
         }
 
         return vmCreated;
@@ -295,7 +306,7 @@ public abstract class DatacenterBrokerAbstract extends CloudSimEntity implements
      * another Datacenter to request the creation of the VMs
      * in the waiting list.
      */
-    protected void requestCreationOfWaitingVmsToNextDatacenter() {
+    protected void requestCreationOfWaitingVmsToFallbackDatacenter() {
         final Datacenter nextDatacenter = selectFallbackDatacenterForWaitingVms();
         if (nextDatacenter != Datacenter.NULL) {
             clearVmCreationRequestsMapToTryNextDatacenter();

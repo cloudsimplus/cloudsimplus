@@ -20,6 +20,7 @@ import java.util.List;
 import java.util.function.Predicate;
 
 import org.cloudbus.cloudsim.core.Simulation;
+import org.cloudsimplus.autoscaling.VerticalVmScaling;
 import org.cloudsimplus.autoscaling.VmScaling;
 import org.cloudsimplus.listeners.VmHostEventInfo;
 import org.cloudsimplus.listeners.VmDatacenterEventInfo;
@@ -364,7 +365,6 @@ public interface Vm extends UniquelyIdentificable, Delayable, Comparable<Vm> {
      */
     void setCreated(boolean created);
 
-
     /**
      * Checks if the VM is in migration process or not.
      *
@@ -462,31 +462,68 @@ public interface Vm extends UniquelyIdentificable, Delayable, Comparable<Vm> {
     Simulation getSimulation();
 
     /**
-     * Gets the {@link HorizontalVmScaling} that will check if the Vm is overloaded,
+     * Gets a {@link HorizontalVmScaling} that will check if the Vm is overloaded,
      * based on some conditions defined by a {@link Predicate} given
-     * to the HorizontalVmScaling.
+     * to the HorizontalVmScaling, and then request the creation of new VMs
+     * to horizontally scale the Vm.
      *
      * <p><b>If no HorizontalVmScaling is set, the {@link #getBroker() Broker} will not dynamically
      * create VMs to balance arrived Cloudlets.</b></p>
      *
      * @return
      */
-    VmScaling getHorizontalScaling();
+    HorizontalVmScaling getHorizontalScaling();
 
     /**
-     * Sets the {@link HorizontalVmScaling} that will check if the Vm is overloaded,
+     * Sets a {@link HorizontalVmScaling} that will check if the Vm is overloaded,
      * based on some conditions defined by a {@link Predicate} given
-     * to the HorizontalVmScaling.
-     *
-     * <p><b>If no HorizontalVmScaling is set, the {@link #getBroker() Broker} will not dynamically
-     * create VMs to balance arrived Cloudlets.</b></p>
+     * to the HorizontalVmScaling, and then request the creation of new VMs
+     * to horizontally scale the Vm.
      *
      * @param horizontalScaling the HorizontalVmScaling to set
      * @return
-     * @throws IllegalArgumentException if the given Vm Scaling already is linked to a Vm. Each VM must have
-     * its own scaling object.
+     * @throws IllegalArgumentException if the given VmScaling is already linked to a Vm. Each VM must have
+     * its own HorizontalVmScaling object or none at all.
      */
-    Vm setHorizontalScaling(VmScaling horizontalScaling) throws IllegalArgumentException;
+    Vm setHorizontalScaling(HorizontalVmScaling horizontalScaling) throws IllegalArgumentException;
+
+    /**
+     * Sets a {@link VerticalVmScaling} that will check if the Vm's RAM is overloaded,
+     * based on some conditions defined by a {@link Predicate} given
+     * to the VerticalVmScaling, and then request the RAM up scaling.
+     *
+     * @param ramVerticalScaling the VerticalVmScaling to set
+     * @return
+     * @throws IllegalArgumentException if the given VmScaling is already linked to a Vm. Each VM must have
+     * its own VerticalVmScaling objects or none at all.
+     */
+    Vm setRamVerticalScaling(VerticalVmScaling ramVerticalScaling) throws IllegalArgumentException;
+
+    /**
+     * Sets a {@link VerticalVmScaling} that will check if the Vm's Bandwidth is overloaded,
+     * based on some conditions defined by a {@link Predicate} given
+     * to the VerticalVmScaling, and then request the BW up scaling.
+     *
+     * @param bwVerticalScaling the VerticalVmScaling to set
+     * @return
+     * @throws IllegalArgumentException if the given VmScaling is already linked to a Vm. Each VM must have
+     * its own VerticalVmScaling objects or none at all.
+     */
+    Vm setBwVerticalScaling(VerticalVmScaling bwVerticalScaling) throws IllegalArgumentException;
+
+    /**
+     * Gets a {@link VerticalVmScaling} that will check if the Vm's RAM is overloaded,
+     * based on some conditions defined by a {@link Predicate} given
+     * to the VerticalVmScaling, and then request the RAM up scaling.
+     */
+    VerticalVmScaling getRamVerticalScaling();
+
+    /**
+     * Gets a {@link VerticalVmScaling} that will check if the Vm's Bandwidth is overloaded,
+     * based on some conditions defined by a {@link Predicate} given
+     * to the VerticalVmScaling, and then request the BW up scaling.
+     */
+    VerticalVmScaling getBwVerticalScaling();
 
     /**
      * An attribute that implements the Null Object Design Pattern for {@link Vm}
@@ -510,10 +547,10 @@ public interface Vm extends UniquelyIdentificable, Delayable, Comparable<Vm> {
         @Override public Host getHost() { return Host.NULL; }
         @Override public double getMips() { return 0; }
         @Override public int getNumberOfPes() { return 0; }
-        @Override public Vm addOnHostAllocationListener(EventListener<VmHostEventInfo> listener) { return Vm.NULL; }
-        @Override public Vm addOnHostDeallocationListener(EventListener<VmHostEventInfo> listener) { return Vm.NULL; }
-        @Override public Vm addOnVmCreationFailureListener(EventListener<VmDatacenterEventInfo> listener) { return Vm.NULL; }
-        @Override public Vm addOnUpdateVmProcessingListener(EventListener<VmHostEventInfo> listener) { return Vm.NULL; }
+        @Override public Vm addOnHostAllocationListener(EventListener<VmHostEventInfo> listener) { return this; }
+        @Override public Vm addOnHostDeallocationListener(EventListener<VmHostEventInfo> listener) { return this; }
+        @Override public Vm addOnVmCreationFailureListener(EventListener<VmDatacenterEventInfo> listener) { return this; }
+        @Override public Vm addOnUpdateVmProcessingListener(EventListener<VmHostEventInfo> listener) { return this; }
         @Override public void notifyOnHostAllocationListeners() {}
         @Override public void notifyOnHostDeallocationListeners(Host deallocatedHost) {}
         @Override public void notifyOnVmCreationFailureListeners(Datacenter failedDatacenter) {}
@@ -529,18 +566,18 @@ public interface Vm extends UniquelyIdentificable, Delayable, Comparable<Vm> {
         @Override public double getTotalUtilizationOfCpuMips(double time) { return 0.0; }
         @Override public String getUid(){ return ""; }
         @Override public DatacenterBroker getBroker() { return DatacenterBroker.NULL; }
-        @Override public Vm setBroker(DatacenterBroker broker) { return Vm.NULL; }
+        @Override public Vm setBroker(DatacenterBroker broker) { return this; }
         @Override public String getVmm() { return ""; }
         @Override public boolean isCreated() { return false; }
         @Override public boolean isInMigration() { return false; }
         @Override public void setCreated(boolean created){}
-        @Override public Vm setBw(long bwCapacity) { return Vm.NULL; }
+        @Override public Vm setBw(long bwCapacity) { return this; }
         @Override public void setHost(Host host) {}
         @Override public void setInMigration(boolean inMigration) {}
-        @Override public Vm setRam(long ramCapacity) { return Vm.NULL; }
-        @Override public Vm setSize(long size) { return Vm.NULL; }
+        @Override public Vm setRam(long ramCapacity) { return this; }
+        @Override public Vm setSize(long size) { return this; }
         @Override public double updateVmProcessing(double currentTime, List<Double> mipsShare){ return 0.0; }
-        @Override public Vm setCloudletScheduler(CloudletScheduler cloudletScheduler) { return Vm.NULL; }
+        @Override public Vm setCloudletScheduler(CloudletScheduler cloudletScheduler) { return this; }
         @Override public int compareTo(Vm o) { return 0; }
         @Override public double getTotalMipsCapacity() { return 0.0; }
         @Override public void allocateResource(Class<? extends ResourceManageable> resourceClass, long newTotalResourceAmount) {}
@@ -549,7 +586,11 @@ public interface Vm extends UniquelyIdentificable, Delayable, Comparable<Vm> {
         @Override public boolean isFailed() { return false; }
         @Override public Simulation getSimulation() { return Simulation.NULL; }
         @Override public String toString() { return "Vm.NULL"; }
-        @Override public VmScaling getHorizontalScaling(){ return VmScaling.NULL; }
-        @Override public Vm setHorizontalScaling(VmScaling horizontalScaling) throws IllegalArgumentException { return this; }
+        @Override public HorizontalVmScaling getHorizontalScaling(){ return HorizontalVmScaling.NULL; }
+        @Override public Vm setHorizontalScaling(HorizontalVmScaling horizontalScaling) throws IllegalArgumentException { return this; }
+        @Override public Vm setRamVerticalScaling(VerticalVmScaling ramVerticalScaling) throws IllegalArgumentException { return this; }
+        @Override public Vm setBwVerticalScaling(VerticalVmScaling bwVerticalScaling) throws IllegalArgumentException { return this; }
+        @Override public VerticalVmScaling getRamVerticalScaling() { return VerticalVmScaling.NULL; }
+        @Override public VerticalVmScaling getBwVerticalScaling() { return VerticalVmScaling.NULL; }
     };
 }

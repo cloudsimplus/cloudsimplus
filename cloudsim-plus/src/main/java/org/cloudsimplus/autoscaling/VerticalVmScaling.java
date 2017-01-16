@@ -25,6 +25,13 @@ package org.cloudsimplus.autoscaling;
 
 import org.cloudbus.cloudsim.brokers.DatacenterBroker;
 import org.cloudbus.cloudsim.datacenters.Datacenter;
+import org.cloudbus.cloudsim.resources.Bandwidth;
+import org.cloudbus.cloudsim.resources.Pe;
+import org.cloudbus.cloudsim.resources.Ram;
+import org.cloudbus.cloudsim.resources.ResourceManageable;
+import org.cloudbus.cloudsim.vms.Vm;
+
+import java.util.function.Predicate;
 
 /**
  * A Vm <a href="https://en.wikipedia.org/wiki/Scalability#Horizontal_and_vertical_scaling">Vertical Scaling</a> mechanism
@@ -36,6 +43,21 @@ import org.cloudbus.cloudsim.datacenters.Datacenter;
  * @since CloudSim Plus 1.1
  */
 public interface VerticalVmScaling extends VmScaling {
+    /**
+     * Gets the class of Vm resource that this scaling object will request up or down scaling.
+     * Such a class can be {@link Ram}.class, {@link Bandwidth}.class or {@link Pe}.class.
+     * @return
+     */
+    Class<ResourceManageable> getResourceClassToScale();
+
+    /**
+     * Sets the class of Vm resource that this scaling object will request up or down scaling.
+     * Such a class can be {@link Ram}.class, {@link Bandwidth}.class or {@link Pe}.class.
+     * @param resourceClassToScale the resource class to set
+     * @return
+     */
+    VerticalVmScaling setResourceClassToScale(Class<ResourceManageable> resourceClassToScale);
+
     /**
      * Gets the factor that will be used to scale a Vm resource up or down,
      * whether if such a resource is over or underloaded, according to the
@@ -76,6 +98,23 @@ public interface VerticalVmScaling extends VmScaling {
      * @param time current simulation time
      * @see #getScalingFactor()
      */
-    @Override void scaleIfOverloaded(double time);
+    @Override
+    boolean requestUpScalingIfOverloaded(double time);
+
+    /**
+     * An attribute that implements the Null Object Design Pattern for {@link VerticalVmScaling}
+     * objects.
+     */
+    VerticalVmScaling NULL = new VerticalVmScaling() {
+        @Override public Class<ResourceManageable> getResourceClassToScale() { return ResourceManageable.class; }
+        @Override public VerticalVmScaling setResourceClassToScale(Class<ResourceManageable> resourceClassToScale) { return this; }
+        @Override public double getScalingFactor() { return 0; }
+        @Override public VerticalVmScaling setScalingFactor(double scalingFactor) { return this; }
+        @Override public boolean requestUpScalingIfOverloaded(double time) {}
+        @Override public Vm getVm() { return Vm.NULL; }
+        @Override public VmScaling setVm(Vm vm) { return this; }
+        @Override public Predicate<Vm> getOverloadPredicate() { return vm -> false; }
+        @Override public VmScaling setOverloadPredicate(Predicate<Vm> predicate) { return this; }
+    };
 
 }

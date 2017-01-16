@@ -16,6 +16,8 @@ import org.cloudbus.cloudsim.brokers.DatacenterBroker;
 import org.cloudbus.cloudsim.cloudlets.Cloudlet;
 import org.cloudbus.cloudsim.core.Simulation;
 import org.cloudbus.cloudsim.hosts.Host;
+import org.cloudsimplus.autoscaling.HorizontalVmScaling;
+import org.cloudsimplus.autoscaling.VerticalVmScaling;
 import org.cloudsimplus.autoscaling.VmScaling;
 import org.cloudsimplus.listeners.VmHostEventInfo;
 import org.cloudsimplus.listeners.VmDatacenterEventInfo;
@@ -41,7 +43,7 @@ import org.cloudbus.cloudsim.schedulers.cloudlet.CloudletScheduler;
  * without defining a specific method for each one.
  */
 public class VmSimple implements Vm {
-    private VmScaling horizontalScaling;
+    private HorizontalVmScaling horizontalScaling;
     private boolean failed;
 
     /**
@@ -126,6 +128,8 @@ public class VmSimple implements Vm {
     private List<EventListener<VmHostEventInfo>> onHostDeallocationListeners;
     private List<EventListener<VmHostEventInfo>> onUpdateVmProcessingListeners;
     private List<EventListener<VmDatacenterEventInfo>> onVmCreationFailureListeners;
+    private VerticalVmScaling ramVerticalScaling;
+    private VerticalVmScaling bwVerticalScaling;
 
     /**
      * Creates a Vm with 1024 MEGABYTE of RAM, 1000 Megabits/s of Bandwidth and 1024 MEGABYTE of Storage Size.
@@ -164,7 +168,9 @@ public class VmSimple implements Vm {
         this.onHostDeallocationListeners = new ArrayList<>();
         this.onVmCreationFailureListeners = new ArrayList<>();
         this.onUpdateVmProcessingListeners = new ArrayList<>();
-        this.horizontalScaling = VmScaling.NULL;
+        this.setHorizontalScaling(HorizontalVmScaling.NULL);
+        this.setRamVerticalScaling(VerticalVmScaling.NULL);
+        this.setBwVerticalScaling(VerticalVmScaling.NULL);
     }
 
     /**
@@ -774,22 +780,51 @@ public class VmSimple implements Vm {
 
 
     @Override
-    public VmScaling getHorizontalScaling() {
+    public HorizontalVmScaling getHorizontalScaling() {
         return horizontalScaling;
     }
 
     @Override
-    public Vm setHorizontalScaling(VmScaling horizontalScaling) throws IllegalArgumentException {
-        if(horizontalScaling.getVm() != null && horizontalScaling.getVm() != Vm.NULL && horizontalScaling.getVm() != this){
+    public final Vm setHorizontalScaling(HorizontalVmScaling horizontalScaling) throws IllegalArgumentException {
+        this.horizontalScaling = validateAndConfigureVmScaling(horizontalScaling, HorizontalVmScaling.NULL);
+        return this;
+    }
+
+    @Override
+    public final Vm setRamVerticalScaling(VerticalVmScaling ramVerticalScaling) throws IllegalArgumentException {
+        this.ramVerticalScaling = validateAndConfigureVmScaling(ramVerticalScaling, VerticalVmScaling.NULL);
+        return this;
+    }
+
+    @Override
+    public final Vm setBwVerticalScaling(VerticalVmScaling bwVerticalScaling) throws IllegalArgumentException {
+        this.bwVerticalScaling = validateAndConfigureVmScaling(bwVerticalScaling, VerticalVmScaling.NULL);
+        return this;
+    }
+
+    @Override
+    public VerticalVmScaling getRamVerticalScaling() {
+        return ramVerticalScaling;
+    }
+
+    @Override
+    public VerticalVmScaling getBwVerticalScaling() {
+        return bwVerticalScaling;
+    }
+
+    private <T extends VmScaling> T validateAndConfigureVmScaling(T vmScaling, T defaultValue) {
+        final T result = Objects.isNull(vmScaling) ? defaultValue : vmScaling;
+
+        if(vmScaling.getVm() != null && vmScaling.getVm() != Vm.NULL && vmScaling.getVm() != this){
+            String name = defaultValue.getClass().getSimpleName();
             throw new IllegalArgumentException(
-                "The horizontalScaling given already is linked to a Vm. " +
-                "Each Vm must have its own scaling object or no scaling at all. " +
-                "A new scaling has to be provided to this Vm.");
+                "The "+name+" given already is linked to a Vm. " +
+                    "Each Vm must have its own "+name+" objects or none at all. " +
+                    "A new scaling has to be provided to this Vm.");
         }
 
-        this.horizontalScaling = (Objects.isNull(horizontalScaling) ? VmScaling.NULL : horizontalScaling);
-        this.horizontalScaling.setVm(this);
-        this.addOnUpdateVmProcessingListener(listener -> this.horizontalScaling.scaleIfOverloaded(listener.getTime()));
-        return this;
+        result.setVm(this);
+        this.addOnUpdateVmProcessingListener(listener -> result.requestUpScalingIfOverloaded(listener.getTime()));
+        return result;
     }
 }

@@ -21,6 +21,7 @@ import org.cloudbus.cloudsim.schedulers.cloudlet.CloudletScheduler;
 import java.util.*;
 
 import org.cloudbus.cloudsim.resources.FileStorage;
+import org.cloudsimplus.autoscaling.VerticalVmScaling;
 
 /**
  * Implements the basic features of a Virtualized Cloud Datacenter. It deals
@@ -182,43 +183,36 @@ public class DatacenterSimple extends CloudSimEntity implements Datacenter {
             case CloudSimTags.VM_CREATE:
                 processVmCreate(ev, false);
                 return 1;
-
             case CloudSimTags.VM_CREATE_ACK:
                 processVmCreate(ev, true);
                 return 1;
-
+            case CloudSimTags.VM_VERTICAL_SCALING:
+                requestVmVerticalScaling(ev);
+                return 1;
             case CloudSimTags.VM_DESTROY:
                 processVmDestroy(ev, false);
                 return 1;
-
             case CloudSimTags.VM_DESTROY_ACK:
                 processVmDestroy(ev, true);
                 return 1;
-
             case CloudSimTags.VM_MIGRATE:
                 processVmMigrate(ev, false);
                 return 1;
-
             case CloudSimTags.VM_MIGRATE_ACK:
                 processVmMigrate(ev, true);
                 return 1;
-
             case CloudSimTags.VM_DATA_ADD:
                 processDataAdd(ev, false);
                 return 1;
-
             case CloudSimTags.VM_DATA_ADD_ACK:
                 processDataAdd(ev, true);
                 return 1;
-
             case CloudSimTags.VM_DATA_DEL:
                 processDataDelete(ev, false);
                 return 1;
-
             case CloudSimTags.VM_DATA_DEL_ACK:
                 processDataDelete(ev, true);
                 return 1;
-
             case CloudSimTags.VM_UPDATE_CLOUDLET_PROCESSING_EVENT:
                 updateCloudletProcessing();
                 checkCloudletsCompletionForAllHosts();
@@ -226,6 +220,14 @@ public class DatacenterSimple extends CloudSimEntity implements Datacenter {
         }
 
         return 0;
+    }
+
+    private void requestVmVerticalScaling(SimEvent ev) {
+        if(!(ev instanceof VerticalVmScaling)){
+            return;
+        }
+
+        getVmAllocationPolicy().scaleVmVertically((VerticalVmScaling)ev);
     }
 
     private int processCloudletEvents(SimEvent ev) {

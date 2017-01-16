@@ -24,7 +24,6 @@
 package org.cloudsimplus.autoscaling;
 
 import org.cloudbus.cloudsim.brokers.DatacenterBroker;
-import org.cloudbus.cloudsim.datacenters.Datacenter;
 import org.cloudbus.cloudsim.util.Log;
 import org.cloudbus.cloudsim.vms.Vm;
 
@@ -33,9 +32,12 @@ import java.util.function.Predicate;
 import java.util.function.Supplier;
 
 /**
- * A {@link HorizontalVmScaling} implementation that allows defining that the VMs from a given
- * {@link DatacenterBroker} are overloaded or not based on the overall resource
- * utilization of all such VMs.
+ * A {@link HorizontalVmScaling} implementation that allows defining the condition
+ * to identify an overloaded VM based on any desired criteria, such as
+ * current RAM, CPU and/or Bandwidth utilization.
+ * A {@link DatacenterBroker} thus monitors the VMs that have
+ * an HorizontalVmScaling object in order to create or destroy VMs
+ * on demand..
  *
  * <p>The condition in fact has to be defined by the user of this class,
  * by providing a {@link Predicate} using the {@link #setOverloadPredicate(Predicate)} method.</p>
@@ -43,7 +45,9 @@ import java.util.function.Supplier;
  * @author Manoel Campos da Silva Filho
  * @since CloudSim Plus 1.0
  */
-public class HorizontalVmScalingSimple implements HorizontalVmScaling {
+public class HorizontalVmScalingSimple extends VmScalingAbstract implements HorizontalVmScaling {
+    private Supplier<Vm> vmSupplier;
+
     /**
      * The last number of cloudlet creation requests
      * received by the broker. This is not related to the VM,
@@ -51,28 +55,9 @@ public class HorizontalVmScalingSimple implements HorizontalVmScaling {
      */
     private long cloudletCreationRequests;
 
-    /**
-     * Last time the scheduler checked for VM overload.
-     */
-    private double lastProcessingTime;
-    private Vm vm;
-    private Predicate<Vm> overloadPredicate;
-    private Supplier<Vm> vmSupplier;
-
     public HorizontalVmScalingSimple(){
-        this.overloadPredicate = VmScaling.FALSE_PREDICATE;
+        super();
         this.vmSupplier = () -> Vm.NULL;
-    }
-
-    @Override
-    public Vm getVm() {
-        return vm;
-    }
-
-    @Override
-    public VmScaling setVm(Vm vm) {
-        this.vm = Objects.isNull(vm) ? Vm.NULL : vm;
-        return this;
     }
 
     @Override
@@ -87,43 +72,20 @@ public class HorizontalVmScalingSimple implements HorizontalVmScaling {
     }
 
     @Override
-    public Predicate<Vm> getOverloadPredicate() {
-        return overloadPredicate;
-    }
-
-    @Override
-    public final VmScaling setOverloadPredicate(Predicate<Vm> predicate) {
-        this.overloadPredicate = Objects.isNull(predicate) ? FALSE_PREDICATE : predicate;
-        return this;
-    }
-
-    /**
-     * {@inheritDoc}
-     *
-     * <p><b>The method will check the need to create a new
-     * VM at the time interval defined by the {@link Datacenter#getSchedulingInterval()}.
-     * A VM creation request is only sent when the VM is overloaded and
-     * new Cloudlets were submitted to the broker.
-     * </b></p>
-     * @param time {@inheritDoc}
-     */
-    @Override
-    public void scaleIfOverloaded(double time) {
-        if(!isTimeToCheckOverload(time)) {
-            return;
+    protected boolean requestUpScaling(double time) {
+        if(!isNewCloudletsArrived()){
+            return false;
         }
 
-        if (overloadPredicate.test(vm) && isNewCloudletsArrived()) {
-            final double vmCpuUsagerPercent = vm.getTotalUtilizationOfCpu() * 100;
-            Vm newVm = getVmSupplier().get();
-            Log.printFormattedLine(
-                "\t%.2f: %s%d: Requesting creation of Vm %d to receive new Cloudlets in order to balance load of Vm %d. Vm %d CPU usage is %.2f%%",
-                time, getClass().getSimpleName(), vm.getId(), newVm.getId(), vm.getId(), vm.getId(), vmCpuUsagerPercent);
-            vm.getBroker().submitVm(newVm);
-        }
+        final double vmCpuUsagerPercent = getVm().getTotalUtilizationOfCpu() * 100;
+        Vm newVm = getVmSupplier().get();
+        Log.printFormattedLine(
+            "\t%.2f: %s%d: Requesting creation of Vm %d to receive new Cloudlets in order to balance load of Vm %d. Vm %d CPU usage is %.2f%%",
+            time, getClass().getSimpleName(), getVm().getId(), newVm.getId(), getVm().getId(), getVm().getId(), vmCpuUsagerPercent);
+        getVm().getBroker().submitVm(newVm);
 
-        cloudletCreationRequests = vm.getBroker().getNumberOfCloudletCreationRequests();
-        lastProcessingTime = time;
+        cloudletCreationRequests = getVm().getBroker().getNumberOfCloudletCreationRequests();
+        return true;
     }
 
     /**
@@ -132,11 +94,6 @@ public class HorizontalVmScalingSimple implements HorizontalVmScaling {
      * @return
      */
     private boolean isNewCloudletsArrived(){
-        return vm.getBroker().getNumberOfCloudletCreationRequests() > cloudletCreationRequests;
+        return getVm().getBroker().getNumberOfCloudletCreationRequests() > cloudletCreationRequests;
     }
-
-    private boolean isTimeToCheckOverload(double time) {
-        return time > lastProcessingTime && (long) time % vm.getHost().getDatacenter().getSchedulingInterval() == 0;
-    }
-
 }

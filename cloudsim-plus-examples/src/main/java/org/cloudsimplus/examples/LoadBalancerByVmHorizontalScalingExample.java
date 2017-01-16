@@ -55,7 +55,6 @@ import org.cloudbus.cloudsim.utilizationmodels.UtilizationModel;
 import org.cloudbus.cloudsim.utilizationmodels.UtilizationModelFull;
 import org.cloudbus.cloudsim.vms.Vm;
 import org.cloudbus.cloudsim.vms.VmSimple;
-import org.cloudsimplus.autoscaling.VmScaling;
 import org.cloudsimplus.listeners.EventInfo;
 import org.cloudsimplus.listeners.EventListener;
 import org.cloudsimplus.builders.tables.CloudletsTableBuilderHelper;
@@ -265,6 +264,7 @@ public class LoadBalancerByVmHorizontalScalingExample {
              .setVmSupplier(this::createVm)
              .setOverloadPredicate(this::isVmOverloaded);
         vm.setHorizontalScaling(horizontalScaling);
+
     }
 
     /**
