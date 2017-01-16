@@ -1,3 +1,9 @@
+/*
+ * Title: CloudSim Toolkit Description: CloudSim (Cloud Simulation) Toolkit for Modeling and
+ * Simulation of Clouds Licence: GPL - http://www.gnu.org/copyleft/gpl.html
+ *
+ * Copyright (c) 2009-2012, The University of Melbourne, Australia
+ */
 package org.cloudbus.cloudsim.core;
 
 import org.cloudbus.cloudsim.core.events.SimEvent;
@@ -6,8 +12,10 @@ import org.cloudbus.cloudsim.core.events.SimEvent;
  * An interface that represents a simulation entity. An entity handles events and can
  * send events to other entities.
  *
+ * @author Marcos Dias de Assuncao
  * @author Manoel Campos da Silva Filho
  * @see CloudSimEntity
+ * @since CloudSim Plus 1.0
  */
 public interface SimEntity extends Nameable, Cloneable, Runnable, Comparable<SimEntity> {
     /**

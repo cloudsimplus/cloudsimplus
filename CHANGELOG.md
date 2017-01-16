@@ -6,6 +6,23 @@ Lists the main changes in the project.
 
 - xxxxx
 
+## [v1.1.0] - 2017-01-14
+
+### Fixed
+
+- Closed Isssue #60
+- Fixed the issue of allocating the same physical PE for multiple Virtual PEs inside the VmSchedulerTimeShared class.
+
+### Changed
+
+- Changed the signature of the PeSimple constructor that now requires the PE MIPS capacity instead of an ID,
+  because it is in fact an attribute that must belong to a PE. The PE is the one that has a MIPS capacity.
+  If a PE ID is not defined, when a PE list is assigned to a Host, the host automatically defines the IDs.
+- The PeProvisionerSimple constructor doesn't require any parameter anymore. It internally creates
+  an association with the PE that receives the PeProvisioner instance when a Pe is created.
+- All the duplicated code inside the PeProvisioner and PeProvisionerSimple were removed.
+  The PeProvisionerSimple class now extends the ResourceProvisionerSimple and the PeProvisioner is now an interface.
+
 ## [v1.0.0] - 2017-01-06
 
 ### Changed

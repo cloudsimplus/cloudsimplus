@@ -37,7 +37,7 @@ Processor
 Processor
 ^^^^^^^^^
 
-.. java:constructor:: public Processor(long individualPeCapacity, int numberOfPes)
+.. java:constructor:: public Processor(double individualPeCapacity, int numberOfPes)
    :outertype: Processor
 
    Instantiates a Processor.
@@ -117,7 +117,7 @@ getTotalMipsCapacity
 setCapacity
 ^^^^^^^^^^^
 
-.. java:method:: public final void setCapacity(long newCapacity)
+.. java:method:: public final void setCapacity(double newCapacity)
    :outertype: Processor
 
    Sets the individual MIPS capacity of each \ :java:ref:`Processing Elements (cores) <Pe>`\ .

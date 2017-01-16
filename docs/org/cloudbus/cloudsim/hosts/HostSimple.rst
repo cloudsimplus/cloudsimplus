@@ -257,7 +257,7 @@ getTotalAllocatedMipsForVm
 getTotalMips
 ^^^^^^^^^^^^
 
-.. java:method:: @Override public int getTotalMips()
+.. java:method:: @Override public long getTotalMips()
    :outertype: HostSimple
 
 getVm

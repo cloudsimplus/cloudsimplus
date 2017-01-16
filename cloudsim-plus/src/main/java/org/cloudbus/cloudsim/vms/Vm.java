@@ -1,3 +1,10 @@
+/*
+ * Title:        CloudSim Toolkit
+ * Description:  CloudSim (Cloud Simulation) Toolkit for Modeling and Simulation of Clouds
+ * Licence:      GPL - http://www.gnu.org/copyleft/gpl.html
+ *
+ * Copyright (c) 2009-2012, The University of Melbourne, Australia
+ */
 package org.cloudbus.cloudsim.vms;
 
 import org.cloudbus.cloudsim.brokers.DatacenterBroker;
@@ -26,6 +33,8 @@ import org.cloudsimplus.listeners.EventListener;
  * using the {@link Vm#NULL} object instead of attributing {@code null} to
  * {@link Vm} variables.
  *
+ * @author Rodrigo N. Calheiros
+ * @author Anton Beloglazov
  * @author Manoel Campos da Silva Filho
  * @since CloudSim Plus 1.0
  */

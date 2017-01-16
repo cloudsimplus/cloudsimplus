@@ -1,3 +1,5 @@
+.. java:import:: org.cloudbus.cloudsim.core Identificable
+
 .. java:import:: org.cloudbus.cloudsim.provisioners PeProvisioner
 
 .. java:import:: org.cloudbus.cloudsim.provisioners PeProvisionerSimple

@@ -1,3 +1,9 @@
+/*
+ * Title: CloudSim Toolkit Description: CloudSim (Cloud Simulation) Toolkit for Modeling and
+ * Simulation of Clouds Licence: GPL - http://www.gnu.org/copyleft/gpl.html
+ *
+ * Copyright (c) 2009-2012, The University of Melbourne, Australia
+ */
 package org.cloudbus.cloudsim.core.events;
 
 import java.util.Iterator;
@@ -7,7 +13,9 @@ import java.util.stream.Stream;
 /**
  * An interface to be implemented by event queues.
  *
+ * @author Marcos Dias de Assuncao
  * @author Manoel Campos da Silva Filho
+ * @since CloudSim Plus 1.0
  */
 public interface EventQueue {
     /**

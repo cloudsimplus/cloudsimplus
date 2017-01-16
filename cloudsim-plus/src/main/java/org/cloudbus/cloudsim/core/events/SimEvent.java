@@ -1,3 +1,9 @@
+/*
+ * Title: CloudSim Toolkit Description: CloudSim (Cloud Simulation) Toolkit for Modeling and
+ * Simulation of Clouds Licence: GPL - http://www.gnu.org/copyleft/gpl.html
+ *
+ * Copyright (c) 2009-2012, The University of Melbourne, Australia
+ */
 package org.cloudbus.cloudsim.core.events;
 
 import org.cloudbus.cloudsim.core.CloudSimTags;
@@ -8,8 +14,10 @@ import org.cloudsimplus.listeners.EventInfo;
  * Represents a simulation event which is passed between the entities
  * in a specific {@link Simulation} instance.
  *
+ * @author Costas Simatos
  * @author Manoel Campos da Silva Filho
  * @see CloudSimEvent
+ * @since CloudSim Plus 1.0
  */
 public interface SimEvent extends Comparable<SimEvent>, EventInfo {
     /**

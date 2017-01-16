@@ -106,6 +106,27 @@ addStateHistoryEntry
 
    :param entry: the data about the state of the VM at given time
 
+allocateResource
+^^^^^^^^^^^^^^^^
+
+.. java:method::  void allocateResource(Class<? extends ResourceManageable> resourceClass, long newTotalResourceAmount)
+   :outertype: Vm
+
+   Changes the allocation of a given resource for a VM. The old allocated amount will be changed to the new given amount.
+
+   :param resourceClass: the class of the resource to change the allocation
+   :param newTotalResourceAmount: the new amount to change the current allocation to
+
+deallocateResource
+^^^^^^^^^^^^^^^^^^
+
+.. java:method::  void deallocateResource(Class<? extends ResourceManageable> resourceClass)
+   :outertype: Vm
+
+   Removes the entire amount of a given resource allocated to VM.
+
+   :param resourceClass: the class of the resource to deallocate from the VM
+
 getBroker
 ^^^^^^^^^
 
@@ -275,18 +296,6 @@ getRam
 
    :return: the RAM capacity
 
-getResource
-^^^^^^^^^^^
-
-.. java:method::  <R extends ResourceManageable> ResourceManageable getResource(Class<R> resourceClass)
-   :outertype: Vm
-
-   Gets a given Vm \ :java:ref:`Resource`\ , such as \ :java:ref:`Ram`\  or \ :java:ref:`Bandwidth`\ , from the class of the resource to get.
-
-   :param resourceClass: the class of the resource to get
-   :param <R>: generic type that defines the class of resources that can be got
-   :return: the Vm \ :java:ref:`Resource`\  corresponding to the given class
-
 getSimulation
 ^^^^^^^^^^^^^
 
@@ -344,9 +353,9 @@ getTotalUtilizationOfCpu
 .. java:method::  double getTotalUtilizationOfCpu()
    :outertype: Vm
 
-   Gets total CPU utilization percentage of all Clouddlets running on this VM at the current simulation time.
+   Gets total CPU utilization percentage (in scale from 0 to 1) of all Clouddlets running on this VM at the current simulation time.
 
-   :return: total utilization percentage fort the current time
+   :return: total utilization percentage for the current time, in scale from 0 to 1
 
 getTotalUtilizationOfCpuMips
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -354,10 +363,10 @@ getTotalUtilizationOfCpuMips
 .. java:method::  double getTotalUtilizationOfCpuMips(double time)
    :outertype: Vm
 
-   Gets the total CPU utilization of all cloudlets running on this VM at the given time (in MIPS).
+   Gets the total CPU utilization (in scale from 0 to 1) of all cloudlets running on this VM at the given time (in MIPS).
 
    :param time: the time
-   :return: total cpu utilization in MIPS
+   :return: total cpu utilization in MIPS, in scale from 0 to 1
 
    **See also:** :java:ref:`.getTotalUtilizationOfCpu(double)`
 

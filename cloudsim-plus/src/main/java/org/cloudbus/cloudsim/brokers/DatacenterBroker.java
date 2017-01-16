@@ -1,3 +1,9 @@
+/*
+ * Title: CloudSim Toolkit Description: CloudSim (Cloud Simulation) Toolkit for Modeling and
+ * Simulation of Clouds Licence: GPL - http://www.gnu.org/copyleft/gpl.html
+ *
+ * Copyright (c) 2009-2012, The University of Melbourne, Australia
+ */
 package org.cloudbus.cloudsim.brokers;
 
 import java.util.Collections;
@@ -20,7 +26,10 @@ import org.cloudbus.cloudsim.core.Simulation;
  * A broker implements the policies for selecting a VM to run a Cloudlet
  * and a Datacenter to run the submitted VMs.
  *
+ * @author Rodrigo N. Calheiros
+ * @author Anton Beloglazov
  * @author Manoel Campos da Silva Filho
+ * @since CloudSim Plus 1.0
  */
 public interface DatacenterBroker extends SimEntity {
     /**

@@ -2,8 +2,6 @@
 
 .. java:import:: org.cloudbus.cloudsim.provisioners PeProvisioner
 
-.. java:import:: org.cloudbus.cloudsim.util Log
-
 .. java:import:: org.cloudbus.cloudsim.resources Pe
 
 .. java:import:: org.cloudbus.cloudsim.vms Vm
@@ -72,7 +70,7 @@ getMaxUtilizationAmongVmsPes
 getMips
 ^^^^^^^
 
-.. java:method:: public static int getMips(List<? extends Pe> peList, int id)
+.. java:method:: public static long getMips(List<? extends Pe> peList, int id)
    :outertype: PeList
 
    Gets MIPS Rating of a PE with a given ID.
@@ -106,7 +104,7 @@ getNumberOfFreePes
 getTotalMips
 ^^^^^^^^^^^^
 
-.. java:method:: public static int getTotalMips(List<? extends Pe> peList)
+.. java:method:: public static long getTotalMips(List<? extends Pe> peList)
    :outertype: PeList
 
    Gets total MIPS Rating for all PEs.

@@ -1,6 +1,6 @@
 <a id="top"></a>
 
-[![Build Status](https://img.shields.io/travis/manoelcampos/cloudsim-plus/master.svg)](https://travis-ci.org/manoelcampos/cloudsim-plus) [![Dependency Status](https://www.versioneye.com/user/projects/587716de34054a001687683a/badge.svg?style=flat-square)](https://www.versioneye.com/user/projects/587716de34054a001687683a) [![Codacy Badge](https://api.codacy.com/project/badge/Grade/3f132b184d5e475dbbcd356ee84499fc)](https://www.codacy.com/app/manoelcampos/cloudsim-plus?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=manoelcampos/cloudsim-plus&amp;utm_campaign=Badge_Grade) [![Codacy Badge](https://api.codacy.com/project/badge/Coverage/3f132b184d5e475dbbcd356ee84499fc)](https://www.codacy.com/app/manoelcampos/cloudsim-plus?utm_source=github.com&utm_medium=referral&utm_content=manoelcampos/cloudsim-plus&utm_campaign=Badge_Coverage) [![Maven Central](https://maven-badges.herokuapp.com/maven-central/org.cloudsimplus/cloudsim-plus/badge.svg)](https://maven-badges.herokuapp.com/maven-central/org.cloudsimplus/cloudsim-plus) [![Documentation Status](https://readthedocs.org/projects/cloudsimplus/badge/?version=latest)](http://cloudsimplus.rtfd.io/en/latest/?badge=latest) [![GPL licensed](https://img.shields.io/badge/license-GPL-blue.svg)](http://www.gnu.org/licenses/gpl-3.0)
+[![Build Status](https://img.shields.io/travis/manoelcampos/cloudsim-plus/master.svg)](https://travis-ci.org/manoelcampos/cloudsim-plus) [![Dependency Status](https://www.versioneye.com/user/projects/587a137d2ef9ab000eff9d41/badge.svg?style=flat-square)](https://www.versioneye.com/user/projects/587a137d2ef9ab000eff9d41) [![Codacy Badge](https://api.codacy.com/project/badge/Grade/3f132b184d5e475dbbcd356ee84499fc)](https://www.codacy.com/app/manoelcampos/cloudsim-plus?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=manoelcampos/cloudsim-plus&amp;utm_campaign=Badge_Grade) [![Codacy Badge](https://api.codacy.com/project/badge/Coverage/3f132b184d5e475dbbcd356ee84499fc)](https://www.codacy.com/app/manoelcampos/cloudsim-plus?utm_source=github.com&utm_medium=referral&utm_content=manoelcampos/cloudsim-plus&utm_campaign=Badge_Coverage) [![Maven Central](https://maven-badges.herokuapp.com/maven-central/org.cloudsimplus/cloudsim-plus/badge.svg)](https://maven-badges.herokuapp.com/maven-central/org.cloudsimplus/cloudsim-plus) [![Documentation Status](https://readthedocs.org/projects/cloudsimplus/badge/?version=latest)](http://cloudsimplus.rtfd.io/en/latest/?badge=latest) [![GPL licensed](https://img.shields.io/badge/license-GPL-blue.svg)](http://www.gnu.org/licenses/gpl-3.0)
 
 
 <p align="center">
@@ -166,7 +166,7 @@ as presened below (check if the informed version is the latest one). By this way
 <dependency>
     <groupId>org.cloudsimplus</groupId>
     <artifactId>cloudsim-plus</artifactId>
-    <version>1.0</version>
+    <version>1.1.0</version>
 </dependency>
 ```
 
@@ -197,7 +197,7 @@ DatacenterBroker broker0 = new DatacenterBrokerSimple(cloudsim);
 //Creates a list of Hosts, each host with a specific list of CPU cors (PEs).
 List<Host> hostList = new ArrayList<>(1);
 List<Pe> hostPes = new ArrayList<>(1);
-hostPes.add(new PeSimple(0, new PeProvisionerSimple(20000)));
+hostPes.add(new PeSimple(20000, new PeProvisionerSimple()));
 Host host0 = new HostSimple(0, 100000, hostPes);
 host0.setRamProvisioner(new ResourceProvisionerSimple(new Ram(10000)))
      .setBwProvisioner(new ResourceProvisionerSimple(new Bandwidth(100000)));

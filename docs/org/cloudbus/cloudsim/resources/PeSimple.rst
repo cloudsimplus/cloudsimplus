@@ -8,7 +8,7 @@ PeSimple
 .. java:package:: org.cloudbus.cloudsim.resources
    :noindex:
 
-.. java:type:: public class PeSimple implements Pe
+.. java:type:: public class PeSimple extends ResourceAbstract implements Pe
 
    Pe (Processing Element) class represents a CPU core of a physical machine (PM), defined in terms of Millions Instructions Per Second (MIPS) rating.
 
@@ -21,13 +21,25 @@ Constructors
 PeSimple
 ^^^^^^^^
 
-.. java:constructor:: public PeSimple(int id, PeProvisioner peProvisioner)
+.. java:constructor:: public PeSimple(double mipsCapacity, PeProvisioner peProvisioner)
    :outertype: PeSimple
 
-   Instantiates a new PE object.
+   Instantiates a new PE object. The id of the PE is just set when a List of PEs is assigned to a Host.
 
-   :param id: the PE ID
-   :param peProvisioner: the PE provisioner
+   :param mipsCapacity: the capacity of the PE in MIPS (Million Instructions per Second)
+   :param peProvisioner: the provisioner that will manage the allocation of this physical Pe for VMs
+
+PeSimple
+^^^^^^^^
+
+.. java:constructor:: public PeSimple(int id, double mipsCapacity, PeProvisioner peProvisioner)
+   :outertype: PeSimple
+
+   Instantiates a new PE object defining a given id. The id of the PE is just set when a List of PEs is assigned to a Host.
+
+   :param id: the PE id
+   :param mipsCapacity: the capacity of the PE in MIPS (Million Instructions per Second)
+   :param peProvisioner: the provisioner that will manage the allocation of this physical Pe for VMs
 
 Methods
 -------
@@ -36,20 +48,6 @@ getId
 
 .. java:method:: @Override public int getId()
    :outertype: PeSimple
-
-   Gets the PE id.
-
-   :return: the PE id
-
-getMips
-^^^^^^^
-
-.. java:method:: @Override public int getMips()
-   :outertype: PeSimple
-
-   Gets the MIPS Rating of this Pe.
-
-   :return: the MIPS Rating
 
 getPeProvisioner
 ^^^^^^^^^^^^^^^^
@@ -67,44 +65,33 @@ getStatus
 .. java:method:: @Override public Status getStatus()
    :outertype: PeSimple
 
-   Gets the status of the PE.
+setCapacity
+^^^^^^^^^^^
 
-   :return: the PE status
+.. java:method:: @Override public boolean setCapacity(double mipsCapacity)
+   :outertype: PeSimple
 
 setId
 ^^^^^
 
-.. java:method:: protected final void setId(int id)
+.. java:method:: @Override public final void setId(int id)
    :outertype: PeSimple
-
-   Sets the \ :java:ref:`getId()`\ .
-
-   :param id: the new PE id
-
-setMips
-^^^^^^^
-
-.. java:method:: @Override public boolean setMips(double d)
-   :outertype: PeSimple
-
-   Sets the MIPS Rating of this PE.
-
-   :param d: the mips
-   :return: true if MIPS > 0, false otherwise
 
 setPeProvisioner
 ^^^^^^^^^^^^^^^^
 
-.. java:method:: protected final void setPeProvisioner(PeProvisioner peProvisioner)
+.. java:method:: @Override public final Pe setPeProvisioner(PeProvisioner peProvisioner)
    :outertype: PeSimple
-
-   Sets the \ :java:ref:`getPeProvisioner()`\  that manages the allocation of this physical PE to virtual machines.
-
-   :param peProvisioner: the new PE provisioner
 
 setStatus
 ^^^^^^^^^
 
 .. java:method:: @Override public final boolean setStatus(Status status)
+   :outertype: PeSimple
+
+toString
+^^^^^^^^
+
+.. java:method:: @Override public String toString()
    :outertype: PeSimple
 

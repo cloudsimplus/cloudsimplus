@@ -1,4 +1,11 @@
- package org.cloudbus.cloudsim.hosts;
+/*
+ * Title:        CloudSim Toolkit
+ * Description:  CloudSim (Cloud Simulation) Toolkit for Modeling and Simulation of Clouds
+ * Licence:      GPL - http://www.gnu.org/copyleft/gpl.html
+ *
+ * Copyright (c) 2009-2012, The University of Melbourne, Australia
+ */
+package org.cloudbus.cloudsim.hosts;
 
 import org.cloudbus.cloudsim.vms.Vm;
 import org.cloudbus.cloudsim.core.Identificable;
@@ -20,7 +27,10 @@ import org.cloudbus.cloudsim.provisioners.ResourceProvisioner;
  * when using the {@link Host#NULL} object instead
  * of attributing {@code null} to {@link Host} variables.
  *
+ * @author Rodrigo N. Calheiros
+ * @author Anton Beloglazov
  * @author Manoel Campos da Silva Filho
+ * @since CloudSim Plus 1.0
  */
 public interface Host extends Identificable, Comparable<Host> {
 

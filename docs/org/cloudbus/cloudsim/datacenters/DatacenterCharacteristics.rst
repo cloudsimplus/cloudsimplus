@@ -169,7 +169,7 @@ getId
 getMips
 ^^^^^^^
 
-.. java:method::  int getMips()
+.. java:method::  long getMips()
    :outertype: DatacenterCharacteristics
 
    Gets the total MIPS rating, which is the sum of MIPS rating of all Hosts in the Datacenter.
@@ -179,7 +179,7 @@ getMips
 getMipsOfOnePe
 ^^^^^^^^^^^^^^
 
-.. java:method::  int getMipsOfOnePe(int hostId, int peId)
+.. java:method::  long getMipsOfOnePe(int hostId, int peId)
    :outertype: DatacenterCharacteristics
 
    Gets Millions Instructions Per Second (MIPS) Rating of a Processing Element (Pe). It is essential to use this method when a Datacenter is made up of heterogenous PEs per PMs.

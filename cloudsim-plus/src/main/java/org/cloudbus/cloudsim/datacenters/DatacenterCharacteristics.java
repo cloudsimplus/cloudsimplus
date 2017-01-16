@@ -1,3 +1,10 @@
+/*
+ * Title:        CloudSim Toolkit
+ * Description:  CloudSim (Cloud Simulation) Toolkit for Modeling and Simulation of Clouds
+ * Licence:      GPL - http://www.gnu.org/copyleft/gpl.html
+ *
+ * Copyright (c) 2009-2012, The University of Melbourne, Australia
+ */
 package org.cloudbus.cloudsim.datacenters;
 
 import java.util.Collections;
@@ -11,7 +18,12 @@ import org.cloudbus.cloudsim.resources.Pe;
  * An interface to be implemented by each class that represents
  * the physical characteristics of a Datacenter.
  *
+ * @author Manzur Murshed
+ * @author Rajkumar Buyya
+ * @author Rodrigo N. Calheiros
+ * @author Anton Beloglazov
  * @author Manoel Campos da Silva Filho
+ * @since CloudSim Plus 1.0
  */
 public interface DatacenterCharacteristics extends Identificable {
 

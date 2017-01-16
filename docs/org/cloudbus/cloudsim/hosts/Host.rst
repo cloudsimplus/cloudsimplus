@@ -271,7 +271,7 @@ getTotalAllocatedMipsForVm
 getTotalMips
 ^^^^^^^^^^^^
 
-.. java:method::  int getTotalMips()
+.. java:method::  long getTotalMips()
    :outertype: Host
 
    Gets the total mips.

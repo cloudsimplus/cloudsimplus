@@ -1,5 +1,5 @@
 /*
- * CloudSim Plus: A highly-extensible and easier-to-use Framework for
+ * CloudSim Plus: A modern, highly-extensible and easier-to-use Framework for
  * Modeling and Simulation of Cloud Computing Infrastructures and Services.
  * http://cloudsimplus.org
  *

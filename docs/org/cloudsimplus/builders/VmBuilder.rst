@@ -6,8 +6,6 @@
 
 .. java:import:: java.util.function Supplier
 
-.. java:import:: org.cloudbus.cloudsim.schedulers.cloudlet CloudletSchedulerSpaceShared
-
 .. java:import:: org.cloudbus.cloudsim.brokers DatacenterBrokerSimple
 
 .. java:import:: org.cloudbus.cloudsim.vms Vm
@@ -83,7 +81,7 @@ getPes
 getRam
 ^^^^^^
 
-.. java:method:: public int getRam()
+.. java:method:: public long getRam()
    :outertype: VmBuilder
 
 getSize

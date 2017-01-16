@@ -45,7 +45,7 @@ scaleIfOverloaded
 setVmSupplier
 ^^^^^^^^^^^^^
 
-.. java:method::  VmScaling setVmSupplier(Supplier<Vm> supplier)
+.. java:method::  HorizontalVmScaling setVmSupplier(Supplier<Vm> supplier)
    :outertype: HorizontalVmScaling
 
    Sets a \ :java:ref:`Supplier`\  that will be used to create VMs when the Load Balancer detects that the Broker's VMs are overloaded.

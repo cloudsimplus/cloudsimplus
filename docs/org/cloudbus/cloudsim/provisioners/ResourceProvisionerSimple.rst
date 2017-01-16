@@ -2,6 +2,8 @@
 
 .. java:import:: org.cloudbus.cloudsim.resources ResourceManageable
 
+.. java:import:: java.util Objects
+
 ResourceProvisionerSimple
 =========================
 
@@ -22,9 +24,9 @@ ResourceProvisionerSimple
 .. java:constructor:: public ResourceProvisionerSimple(ResourceManageable resource)
    :outertype: ResourceProvisionerSimple
 
-   Creates a new ResourceManageable Provisioner.
+   Creates a new ResourceProvisionerSimple.
 
-   :param resource: The resource to be managed by the provisioner
+   :param resource: the resource to be managed by the provisioner
 
 Methods
 -------
