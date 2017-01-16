@@ -2,6 +2,8 @@ package org.cloudbus.cloudsim.brokers;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.function.Function;
+import java.util.function.Supplier;
 
 import org.cloudbus.cloudsim.cloudlets.Cloudlet;
 import org.cloudbus.cloudsim.datacenters.Datacenter;
@@ -148,43 +150,48 @@ public interface DatacenterBroker extends SimEntity {
      */
     boolean hasMoreCloudletsToBeExecuted();
 
-    /**
-     * Defines the policy to select a VM to host a given cloudlet
-     * that is waiting to be created.
-     *
-     * @param cloudlet the cloudlet that needs a VM to be placed into
-     * @return the selected Vm for the cloudlet or {@link Vm#NULL} if
-     * no suitable VM was found
-     */
-    Vm selectVmForWaitingCloudlet(Cloudlet cloudlet);
 
     /**
-     * Defines the policy to select a Datacenter to host a VM
-     * that is waiting to be created.
-     *
-     * @return the Datacenter selected to request the creating
-     * of waiting VMs or {@link Datacenter#NULL} if no suitable Datacenter was found
+     * Sets the {@link Supplier} that selects and returns a Datacenter
+     * to place submitted VMs.
+     * 
+     * <p>The supplier defines the policy to select a Datacenter to host a VM
+     * that is waiting to be created.</p>
+     * 
+     * @param datacenterSupplier the datacenterSupplier to set
      */
-    Datacenter selectDatacenterForWaitingVms();
+    void setDatacenterSupplier(Supplier<Datacenter> datacenterSupplier);
 
     /**
-     * Defines the policy to select a Datacenter to host a VM when
+     * Sets the {@link Supplier} that selects and returns a fallback Datacenter
+     * to place submitted VMs when the Datacenter selected
+     * by the {@link #setDatacenterSupplier(java.util.function.Supplier) Datacenter Supplier}
+     * failed to create all requested VMs.
+     * 
+     * <p>The supplier defines the policy to select a Datacenter to host a VM when
      * all VM creation requests were received but not all VMs could be created.
      * In this case, a different Datacenter has to be selected to request
-     * the creation of the remaining VMs in the waiting list.
-     *
-     * @return the Datacenter selected to try creating
-     * the remaining VMs or {@link Datacenter#NULL} if no suitable Datacenter was found
-     *
-     * @see #selectDatacenterForWaitingVms()
+     * the creation of the remaining VMs in the waiting list.</p>
+     * 
+     * @param fallbackDatacenterSupplier the fallbackDatacenterSupplier to set
      */
-    Datacenter selectFallbackDatacenterForWaitingVms();
+    void setFallbackDatacenterSupplier(Supplier<Datacenter> fallbackDatacenterSupplier);
+    
+    /**
+     * Sets a {@link Function} that maps a given Cloudlet to a Vm.
+     * It defines the policy used to select a Vm to host a Cloudlet
+     * that is waiting to be created.
+     *
+     * @param vmMapper the Vm mapper function to set
+     */
+    void setVmMapper(Function<Cloudlet, Vm> vmMapper);
+    
 
 	/**
 	 * An attribute that implements the Null Object Design Pattern for {@link DatacenterBroker}
 	 * objects.
 	 */
-	DatacenterBroker NULL = new DatacenterBroker() {
+	DatacenterBroker NULL = new DatacenterBroker()  {
         @Override public int compareTo(SimEntity o) { return 0; }
         @Override public boolean isStarted() { return false; }
         @Override public Simulation getSimulation() { return Simulation.NULL; }
@@ -208,12 +215,13 @@ public interface DatacenterBroker extends SimEntity {
 		@Override public void submitVmList(List<? extends Vm> list) {}
         @Override public void submitVmList(List<? extends Vm> list, double submissionDelay) {}
         @Override public boolean hasMoreCloudletsToBeExecuted() { return false; }
-		@Override public Vm selectVmForWaitingCloudlet(Cloudlet cloudlet) { return Vm.NULL; }
-		@Override public Datacenter selectDatacenterForWaitingVms() { return Datacenter.NULL; }
-		@Override public Datacenter selectFallbackDatacenterForWaitingVms() { return Datacenter.NULL; }
         @Override public long getNumberOfCloudletCreationRequests() { return 0; }
         @Override public void shutdownEntity() {}
         @Override public SimEntity setName(String newName) throws IllegalArgumentException { return this; }
+
+        @Override public void setDatacenterSupplier(Supplier<Datacenter> datacenterSupplier) {}
+        @Override public void setFallbackDatacenterSupplier(Supplier<Datacenter> fallbackDatacenterSupplier) {}
+        @Override public void setVmMapper(Function<Cloudlet, Vm> vmMapper) {}
     };
 
     /**

@@ -38,10 +38,12 @@ import org.cloudbus.cloudsim.vms.Vm;
 import org.cloudbus.cloudsim.vms.VmSimple;
 import org.cloudsimplus.autoscaling.HorizontalVmScaling;
 import org.cloudsimplus.autoscaling.HorizontalVmScalingSimple;
-import org.cloudsimplus.autoscaling.VmScaling;
 import org.cloudsimplus.builders.tables.CloudletsTableBuilderHelper;
 import org.cloudsimplus.listeners.EventInfo;
 import org.cloudsimplus.migration.VmMigrationWhenCpuMetricIsViolatedExample;
+import org.cloudsimplus.sla.readJsonFile.CpuUtilization;
+import org.cloudsimplus.sla.readJsonFile.ResponseTime;
+import org.cloudsimplus.sla.readJsonFile.SlaReader;
 
 /**
  * An example that creates VMs dinamically in runtime, respecting the response
@@ -99,16 +101,21 @@ public class DynamicVmCreationByResponseTimeExample {
 
         simulation = new CloudSim();
 
-        TakeTheMetricsValuesOfSlaContract values = new TakeTheMetricsValuesOfSlaContract(METRICS_FILE);
-        values.setMetricsFile(METRICS_FILE);
-        values.checkSlaViolations();
-        responseTimeSlaContract = values.getMaxValueResponseTime();
-        cpuUtilizationSlaContract = values.getMaxValueCpuUtilization();
+        
+        SlaReader slaReader = new SlaReader(METRICS_FILE);
+        ResponseTime rt = new ResponseTime(slaReader);
+        rt.checkResponseTimeSlaContract();
+        responseTimeSlaContract = rt.getMaxValueResponseTime();
+        
+        CpuUtilization cpu = new CpuUtilization(slaReader);
+        cpu.checkCpuUtilizationSlaContract();
+        cpuUtilizationSlaContract = cpu.getMaxValueCpuUtilization();
 
         simulation.addOnClockTickListener(this::createNewCloudlets);
 
         createDatacenter();
         broker0 = new DatacenterBrokerSimple(simulation);
+        broker0.setVmMapper(this::selectVmForCloudlet);
 
         vmList.addAll(createListOfScalableVms(VMS));
 
@@ -119,6 +126,16 @@ public class DynamicVmCreationByResponseTimeExample {
         simulation.start();
 
         printSimulationResults();
+    }
+    
+    /**
+     * Selects a VM to run a Cloudlet that will minimize the Cloudlet response time.
+     * @param cloudlet the Cloudlet to select a VM to
+     * @return the selected Vm
+     */
+    private Vm selectVmForCloudlet(Cloudlet cloudlet){
+        //@todo o método nao esta implementado ainda
+        return null;
     }
 
     /**
