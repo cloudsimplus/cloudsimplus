@@ -26,6 +26,8 @@ package org.cloudsimplus.sla.readJsonFile;
 import com.google.gson.Gson;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
+import org.cloudbus.cloudsim.util.ResourceLoader;
+import org.cloudsimplus.migration.VmMigrationWhenCpuMetricIsViolatedExample;
 
 /**
  * This class read the sla agreements in json format.
@@ -44,15 +46,15 @@ public class SlaReader {
     
     private final SlaContract contract;
 
+
     public SlaReader(String slaFileName) throws FileNotFoundException{
         Gson gson = new Gson();
         this.contract = gson.fromJson(
                 new FileReader(slaFileName), SlaContract.class);
     }
-
     
     public static void main(String[] args) throws FileNotFoundException {
-        final String file = "/Users/raysaoliveira/Desktop/TeseMestradoEngInformatica/cloudsim-plus/cloudsim-plus-testbeds/src/main/java/org/cloudsimplus/sla/readJsonFile/SlaMetrics.json";
+        final String file = ResourceLoader.getResourcePath(VmMigrationWhenCpuMetricIsViolatedExample.class, "SlaMetrics.json");
         SlaReader reader = new SlaReader(file);
         for(SlaMetric m: reader.getContract().getMetrics()){
             System.out.println(m);
