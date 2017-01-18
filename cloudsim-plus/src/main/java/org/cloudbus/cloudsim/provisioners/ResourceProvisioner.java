@@ -8,6 +8,10 @@
 
 package org.cloudbus.cloudsim.provisioners;
 
+import org.cloudbus.cloudsim.resources.Bandwidth;
+import org.cloudbus.cloudsim.resources.Pe;
+import org.cloudbus.cloudsim.resources.Ram;
+import org.cloudbus.cloudsim.resources.ResourceManageable;
 import org.cloudbus.cloudsim.vms.Vm;
 
 /**
@@ -41,6 +45,25 @@ public interface ResourceProvisioner {
      * @post $none
      */
     boolean allocateResourceForVm(Vm vm, long newTotalVmResource);
+
+    /**
+     * Allocates an amount of resource for a given VM (if the resource
+     * was never been allocated before) or change the current allocation.
+     *
+     * <p>This method is just a shorthand to avoid explicitly converting
+     * a double to long.</p>
+     *
+     * @param vm the virtual machine for which the resource is being allocated
+     * @param newTotalVmResource the new total amount of resource to allocate to the VM,
+     * changing the allocate resource to this new amount. It doesn't increase
+     * the current allocated VM resource by the given amount, instead,
+     * it changes the VM allocated resource to that specific amount
+     * @return $true if the resource could be allocated; $false otherwise
+     * @see #allocateResourceForVm(Vm, long)
+     */
+    default boolean allocateResourceForVm(Vm vm, double newTotalVmResource){
+        return allocateResourceForVm(vm, (long)newTotalVmResource);
+    }
 
     /**
      * Gets the amount of allocated resource for a given VM
@@ -91,6 +114,12 @@ public interface ResourceProvisioner {
     boolean isSuitableForVm(Vm vm, long newVmTotalAllocatedResource);
 
     /**
+     * Gets the resource being managed for the provisioner, such as {@link Ram}, {@link Pe}, {@link Bandwidth}, etc.
+     * @return the resource managed by this provisioner
+     */
+    ResourceManageable getResource();
+
+    /**
      * Gets the total capacity of the resource from the host that the provisioner manages.
      *
      * @return the total resource capacity
@@ -116,6 +145,7 @@ public interface ResourceProvisioner {
         @Override public boolean deallocateResourceForVm(Vm vm) { return false; }
         @Override public void deallocateResourceForAllVms() {}
         @Override public boolean isSuitableForVm(Vm vm, long newVmTotalAllocatedResource) { return false; }
+        @Override public ResourceManageable getResource() { return ResourceManageable.NULL; }
         @Override public long getCapacity() { return 0; }
         @Override public long getAvailableResource() { return 0; }
     };

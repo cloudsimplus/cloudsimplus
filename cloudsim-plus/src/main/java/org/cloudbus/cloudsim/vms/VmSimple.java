@@ -10,7 +10,6 @@ import java.util.*;
 
 import org.cloudbus.cloudsim.core.UniquelyIdentificable;
 import org.cloudbus.cloudsim.datacenters.Datacenter;
-import org.cloudbus.cloudsim.provisioners.PeProvisioner;
 import org.cloudbus.cloudsim.util.Log;
 import org.cloudbus.cloudsim.brokers.DatacenterBroker;
 import org.cloudbus.cloudsim.cloudlets.Cloudlet;
@@ -88,13 +87,7 @@ public class VmSimple implements Vm {
      */
     private boolean created;
 
-    /**
-     * A list of resources the VM has, that represent virtual resources corresponding to physical resources
-     * from the Host where the VM is placed.
-     *
-     * @see #getResource(Class)
-     */
-    private final List<ResourceManageable> resources;
+    private List<ResourceManageable> resources;
 
     /**
      * @see #getStateHistory()
@@ -279,24 +272,29 @@ public class VmSimple implements Vm {
     @Override
     public long getCurrentRequestedBw() {
         if (!isCreated()) {
-            return getBw();
+            return getBw().getCapacity();
         }
 
-        return (long) (getCloudletScheduler().getCurrentRequestedUtilizationOfBw() * getBw());
+        return (long) (getCloudletScheduler().getCurrentRequestedUtilizationOfBw() * getBw().getCapacity());
     }
 
     @Override
     public long getCurrentRequestedRam() {
         if (!isCreated()) {
-            return getRam();
+            return getRam().getCapacity();
         }
 
-        return (int) (getCloudletScheduler().getCurrentRequestedUtilizationOfRam() * getRam());
+        return (long) (getCloudletScheduler().getCurrentRequestedUtilizationOfRam() * getRam().getCapacity());
     }
 
     @Override
     public double getTotalUtilizationOfCpu() {
         return getTotalUtilizationOfCpu(getSimulation().clock());
+    }
+
+    @Override
+    public double getTotalUtilizationOfRam() {
+        return ram.getUtilization();
     }
 
     @Override
@@ -391,8 +389,8 @@ public class VmSimple implements Vm {
     }
 
     @Override
-    public long getRam() {
-        return ram.getCapacity();
+    public Resource getRam() {
+        return ram;
     }
 
     /**
@@ -402,7 +400,6 @@ public class VmSimple implements Vm {
     private void setRam(Ram ram) {
         Objects.requireNonNull(ram);
         this.ram = ram;
-        resources.add(ram);
     }
 
     @Override
@@ -416,8 +413,8 @@ public class VmSimple implements Vm {
     }
 
     @Override
-    public long getBw() {
-        return bw.getCapacity();
+    public Resource getBw() {
+        return bw;
     }
 
     /**
@@ -427,7 +424,6 @@ public class VmSimple implements Vm {
     private void setBw(Bandwidth bw){
         Objects.requireNonNull(bw);
         this.bw = bw;
-        resources.add(bw);
     }
 
     @Override
@@ -440,8 +436,8 @@ public class VmSimple implements Vm {
     }
 
     @Override
-    public long getSize() {
-        return storage.getCapacity();
+    public Resource getStorage() {
+        return storage;
     }
 
     /**
@@ -451,7 +447,6 @@ public class VmSimple implements Vm {
     private void setStorage(RawStorage storage){
         Objects.requireNonNull(storage);
         this.storage = storage;
-        resources.add(storage);
     }
 
     @Override
@@ -524,7 +519,7 @@ public class VmSimple implements Vm {
      * Gets the current allocated storage size.
      *
      * @return the current allocated size
-     * @see #getSize()
+     * @see Vm#getStorage()
      */
     @Override
     public long getCurrentAllocatedSize() {
@@ -588,33 +583,13 @@ public class VmSimple implements Vm {
         getResource(resourceClass).deallocateAllResources();
     }
 
-    /**
-     * Gets a given Vm {@link Resource}, such as {@link Ram} or {@link Bandwidth},
-     * from a corresponding physical resource from the Host that the VM is placed into.
-     *
-     * <p>The allocation of Host {@link Pe}s for a VM is performed by the
-     * {@link PeProvisioner} assigned to each Pe. The VM doesn't store
-     * any data about processor allocation.</p>
-     *
-     * @param resourceClass the class of VM resource to get
-     * @return the Vm {@link Resource} corresponding to the given class
-     */
-    private ResourceManageable getResource(Class<? extends ResourceManageable> resourceClass) {
-        return resources.stream()
-            .filter(r -> isObjectSubClassOf(r, resourceClass))
-            .findFirst()
-            .orElse(ResourceManageable.NULL);
-    }
+    @Override
+    public List<ResourceManageable> getResources() {
+        if(getSimulation().isRunning() && resources.isEmpty()){
+            resources = Arrays.asList(ram, bw, storage);
+        }
 
-
-    /**
-     * Checks if a given object is instance of a given class.
-     * @param object the object to check
-     * @param classWanted the class to verify if the object is instance of
-     * @return true if the object is instance of the given class, false otherwise
-     */
-    private boolean isObjectSubClassOf(Object object, Class classWanted) {
-        return classWanted.isAssignableFrom(object.getClass());
+        return Collections.unmodifiableList(resources);
     }
 
     @Override
@@ -827,4 +802,5 @@ public class VmSimple implements Vm {
         this.addOnUpdateVmProcessingListener(listener -> result.requestUpScalingIfOverloaded(listener.getTime()));
         return result;
     }
+
 }

@@ -171,7 +171,7 @@ public class VmSimpleTest {
     @Test
     public void testSetRam() {
         vm.setRam(RAM / 2);
-        assertEquals(RAM / 2, vm.getRam(), 0);
+        assertEquals(RAM / 2, vm.getRam().getCapacity(), 0);
     }
 
     @Test
@@ -213,7 +213,7 @@ public class VmSimpleTest {
     @Test
     public void testSetBw() {
         vm.setBw(BW / 2);
-        assertEquals(BW / 2, vm.getBw(), 0);
+        assertEquals(BW / 2, vm.getBw().getCapacity(), 0);
     }
 
     @Test
@@ -282,7 +282,7 @@ public class VmSimpleTest {
 
     @Test
     public void testGetSize() {
-        assertEquals(SIZE, vm.getSize());
+        assertEquals(SIZE, vm.getStorage());
     }
 
     @Test

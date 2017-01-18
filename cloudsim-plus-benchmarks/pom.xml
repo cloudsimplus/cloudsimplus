@@ -35,7 +35,7 @@ THE POSSIBILITY OF SUCH DAMAGE.
 
     <groupId>org.cloudsimplus</groupId>
     <artifactId>cloudsim-plus-benchmarks</artifactId>
-    <version>1.1.0</version>
+    <version>1.2.0</version>
     <name>CloudSim Plus Benchmarks</name>
     <description>A module containing benchmarks created using JMH (Java Microbenchmark Harness framework) to assess CloudSim Plus performance</description>
     <url>http://cloudsimplus.org</url>

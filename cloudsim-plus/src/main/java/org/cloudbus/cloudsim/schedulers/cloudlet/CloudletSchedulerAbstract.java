@@ -16,8 +16,11 @@ import java.util.stream.Stream;
 import org.cloudbus.cloudsim.cloudlets.Cloudlet;
 import org.cloudbus.cloudsim.cloudlets.Cloudlet.Status;
 import org.cloudbus.cloudsim.cloudlets.CloudletExecutionInfo;
+import org.cloudbus.cloudsim.resources.Ram;
+import org.cloudbus.cloudsim.resources.ResourceManageable;
 import org.cloudbus.cloudsim.schedulers.cloudlet.network.PacketScheduler;
 import org.cloudbus.cloudsim.util.Conversion;
+import org.cloudbus.cloudsim.utilizationmodels.UtilizationModel;
 import org.cloudbus.cloudsim.vms.Vm;
 import org.cloudbus.cloudsim.resources.Processor;
 
@@ -461,6 +464,7 @@ public abstract class CloudletSchedulerAbstract implements CloudletScheduler {
 
         updateCloudletsProcessing(currentTime);
         removeFinishedCloudletsFromExecutionListAndAddToFinishedList();
+        updateVmRamUsage();
         moveNextCloudletsFromWaitingToExecList();
 
         double nextSimulationTime = getEstimatedFinishTimeOfSoonerFinishingCloudlet(currentTime);
@@ -477,6 +481,20 @@ public abstract class CloudletSchedulerAbstract implements CloudletScheduler {
      */
     private void updateCloudletsProcessing(double currentTime) {
         getCloudletExecList().forEach(rcl -> updateCloudletProcessingAndPacketsDispatch(rcl, currentTime));
+    }
+
+    /**
+     * Updates the VM usage of RAM, based on the current utilization of all
+     * its running Cloudlets, that depends on the {@link Cloudlet#getUtilizationModelRam()}.
+     */
+    private void updateVmRamUsage() {
+        ResourceManageable ram = vm.getResource(Ram.class);
+        final double totalRamUsagePercent = getCloudletExecList().stream()
+            .map(CloudletExecutionInfo::getCloudlet)
+            .map(Cloudlet::getUtilizationModelRam)
+            .mapToDouble(UtilizationModel::getUtilization)
+            .sum();
+        ram.setAllocatedResource(totalRamUsagePercent*ram.getCapacity());
     }
 
     /**
@@ -652,7 +670,7 @@ public abstract class CloudletSchedulerAbstract implements CloudletScheduler {
      * Gets the estimated time when a given cloudlet is supposed to finish
      * executing. It considers the amount of Vm PES and the sum of PEs required
      * by all VMs running inside the VM.
-     * 
+     *
      * <p>The estimated time is not a future simulation time
      * but a time interval that the Cloudlet is expected to finish.</p>
      *

@@ -686,11 +686,7 @@ public abstract class CloudletAbstract implements Cloudlet {
 
     @Override
     public final Cloudlet setUtilizationModelCpu(final UtilizationModel utilizationModelCpu) {
-        if (Objects.isNull(utilizationModelCpu)) {
-            this.utilizationModelCpu = UtilizationModel.NULL;
-        }
-        else this.utilizationModelCpu = utilizationModelCpu;
-
+        this.utilizationModelCpu = Objects.isNull(utilizationModelCpu) ? UtilizationModel.NULL : utilizationModelCpu;
         return this;
     }
 
@@ -701,11 +697,7 @@ public abstract class CloudletAbstract implements Cloudlet {
 
     @Override
     public final Cloudlet setUtilizationModelRam(final UtilizationModel utilizationModelRam) {
-        if (Objects.isNull(utilizationModelRam)) {
-            this.utilizationModelRam = UtilizationModel.NULL;
-        }
-        else this.utilizationModelRam = utilizationModelRam;
-
+        this.utilizationModelRam = Objects.isNull(utilizationModelRam) ? UtilizationModel.NULL : utilizationModelRam;
         return this;
     }
 
@@ -716,11 +708,7 @@ public abstract class CloudletAbstract implements Cloudlet {
 
     @Override
     public final Cloudlet setUtilizationModelBw(final UtilizationModel utilizationModelBw) {
-        if (Objects.isNull(utilizationModelBw)) {
-            this.utilizationModelBw = UtilizationModel.NULL;
-        }
-        else this.utilizationModelBw = utilizationModelBw;
-
+        this.utilizationModelBw = Objects.isNull(utilizationModelBw) ? UtilizationModel.NULL : utilizationModelBw;
         return this;
     }
 
@@ -948,7 +936,7 @@ public abstract class CloudletAbstract implements Cloudlet {
         result = 31 * result + broker.hashCode();
         return result;
     }
-    
+
     @Override
     public double getResponseTime(){
         return getFinishTime() - getLastDatacenterArrivalTime();

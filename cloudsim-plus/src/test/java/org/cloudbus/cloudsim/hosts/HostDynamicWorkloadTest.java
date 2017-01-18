@@ -8,7 +8,6 @@
 package org.cloudbus.cloudsim.hosts;
 
 import org.cloudbus.cloudsim.util.Conversion;
-import org.cloudbus.cloudsim.util.MathUtil;
 import org.cloudbus.cloudsim.vms.Vm;
 import org.cloudbus.cloudsim.vms.VmSimpleTest;
 import org.cloudbus.cloudsim.resources.Pe;

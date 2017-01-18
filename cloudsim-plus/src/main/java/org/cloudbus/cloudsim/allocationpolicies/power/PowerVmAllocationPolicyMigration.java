@@ -11,6 +11,7 @@ import org.cloudbus.cloudsim.datacenters.Datacenter;
 import org.cloudbus.cloudsim.hosts.Host;
 import org.cloudbus.cloudsim.hosts.power.PowerHost;
 import org.cloudbus.cloudsim.vms.Vm;
+import org.cloudsimplus.autoscaling.VerticalVmScaling;
 
 import java.util.Collections;
 import java.util.List;
@@ -76,6 +77,7 @@ public interface PowerVmAllocationPolicyMigration extends PowerVmAllocationPolic
         @Override public Datacenter getDatacenter() { return Datacenter.NULL; }
         @Override public void setDatacenter(Datacenter datacenter) {}
         @Override public boolean allocateHostForVm(Vm vm) { return false; }
+        @Override public boolean scaleVmVertically(VerticalVmScaling scaling) { return false; }
         @Override public boolean allocateHostForVm(Vm vm, Host host) { return false; }
         @Override public void deallocateHostForVm(Vm vm) {}
         @Override public <T extends Host> List<T> getHostList() { return Collections.emptyList(); }

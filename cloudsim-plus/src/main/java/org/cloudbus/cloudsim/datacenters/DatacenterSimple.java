@@ -92,9 +92,7 @@ public class DatacenterSimple extends CloudSimEntity implements Datacenter {
     }
 
     private void setSimulationInstanceForHosts(DatacenterCharacteristics characteristics) {
-        for(Host host: characteristics.getHostList()){
-            host.setSimulation(getSimulation());
-        }
+        characteristics.getHostList().forEach(host -> host.setSimulation(getSimulation()));
     }
 
     /**
@@ -223,11 +221,11 @@ public class DatacenterSimple extends CloudSimEntity implements Datacenter {
     }
 
     private void requestVmVerticalScaling(SimEvent ev) {
-        if(!(ev instanceof VerticalVmScaling)){
+        if(!(ev.getData() instanceof VerticalVmScaling)){
             return;
         }
 
-        getVmAllocationPolicy().scaleVmVertically((VerticalVmScaling)ev);
+        getVmAllocationPolicy().scaleVmVertically((VerticalVmScaling)ev.getData());
     }
 
     private int processCloudletEvents(SimEvent ev) {

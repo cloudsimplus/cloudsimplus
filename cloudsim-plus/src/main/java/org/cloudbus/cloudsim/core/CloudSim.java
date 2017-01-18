@@ -256,10 +256,15 @@ public class CloudSim implements Simulation {
         return clock;
     }
 
-    private void setClock(final double newTime){
+    /**
+     * Updates the simulation clock
+     * @param newTime simulation time to set
+     * @return the old simulation time
+     */
+    private double setClock(final double newTime){
         final double oldTime = clock;
         this.clock = newTime;
-        notifyOnClockTickListenersIfClockChanged(oldTime, newTime);
+        return oldTime;
     }
 
     /**
@@ -506,8 +511,7 @@ public class CloudSim implements Simulation {
         if (e.eventTime() < clock) {
             throw new IllegalArgumentException("Past event detected.");
         }
-        setClock(e.eventTime());
-        notifyOnEventProcessingListeners(e);
+        final double oldClock = setClock(e.eventTime());
 
         // Ok now process it
         switch (e.getType()) {
@@ -553,6 +557,9 @@ public class CloudSim implements Simulation {
             default:
                 break;
         }
+
+        notifyOnClockTickListenersIfClockChanged(oldClock, clock);
+        notifyOnEventProcessingListeners(e);
     }
 
     /**

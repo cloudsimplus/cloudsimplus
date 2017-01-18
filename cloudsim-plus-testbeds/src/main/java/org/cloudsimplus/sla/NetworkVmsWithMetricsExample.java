@@ -57,7 +57,7 @@ import org.cloudbus.cloudsim.utilizationmodels.UtilizationModelFull;
 
 /**
  * An example showing how to create throughput metric in the NetworkDatacenter.
- * 
+ *
  * @author raysaoliveira
  */
 public class NetworkVmsWithMetricsExample {
@@ -94,19 +94,19 @@ public class NetworkVmsWithMetricsExample {
 
     private NetworkVmsWithMetricsExample() throws FileNotFoundException, IOException {
         cloudsim = new CloudSim();
-        
+
         datacenter0 = createDatacenter();
 
         DatacenterBroker broker = new DatacenterBrokerSimple(cloudsim);
 
         vmlist = createVM(broker, 5);
         broker.submitVmList(vmlist);
-     
+
         cloudletList = createCloudlet(broker, 10);
         broker.submitCloudletList(cloudletList);
 
         cloudsim.start();
-      
+
         double throughput = throughput(datacenter0, cloudsim);
         System.out.println("\n-------------------------------------------");
         System.out.println("\t Throughput : " + throughput);
@@ -128,7 +128,7 @@ public class NetworkVmsWithMetricsExample {
         for (Switch edgeSwitch : datacenter.getEdgeSwitch()) {
             downlinkBw = edgeSwitch.getDownlinkBandwidth() / simulation.clock();
         }
-        
+
         return downlinkBw;
     }
 

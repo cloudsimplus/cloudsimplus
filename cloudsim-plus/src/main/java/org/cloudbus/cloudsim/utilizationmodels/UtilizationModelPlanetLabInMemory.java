@@ -9,7 +9,7 @@ import java.io.IOException;
  * <a href="https://www.planet-lab.org">PlanetLab</a>
  * Datacenter trace file.
  */
-public class UtilizationModelPlanetLabInMemory implements UtilizationModel {
+public class UtilizationModelPlanetLabInMemory extends UtilizationModelAbstract {
 
     /**
      * The scheduling interval.
@@ -33,8 +33,9 @@ public class UtilizationModelPlanetLabInMemory implements UtilizationModel {
      * @see #getSchedulingInterval()
      */
     public UtilizationModelPlanetLabInMemory(String inputPath, double schedulingInterval)
-            throws NumberFormatException,
-            IOException {
+            throws NumberFormatException, IOException
+    {
+        super();
         data = new double[289];
         setSchedulingInterval(schedulingInterval);
         try (BufferedReader input = new BufferedReader(new FileReader(inputPath))) {
@@ -58,8 +59,9 @@ public class UtilizationModelPlanetLabInMemory implements UtilizationModel {
      * @see #setSchedulingInterval(double)
      */
     public UtilizationModelPlanetLabInMemory(String inputPath, double schedulingInterval, int dataSamples)
-            throws NumberFormatException,
-            IOException {
+            throws NumberFormatException, IOException
+    {
+        super();
         setSchedulingInterval(schedulingInterval);
         data = new double[dataSamples];
         try (BufferedReader input = new BufferedReader(new FileReader(inputPath))) {

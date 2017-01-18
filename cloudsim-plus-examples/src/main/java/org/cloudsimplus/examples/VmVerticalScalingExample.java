@@ -26,15 +26,10 @@ package org.cloudsimplus.examples;
 import org.cloudbus.cloudsim.allocationpolicies.VmAllocationPolicySimple;
 import org.cloudbus.cloudsim.brokers.DatacenterBroker;
 import org.cloudbus.cloudsim.brokers.DatacenterBrokerSimple;
-import org.cloudbus.cloudsim.core.Simulation;
-import org.cloudbus.cloudsim.distributions.ContinuousDistribution;
-import org.cloudbus.cloudsim.distributions.UniformDistr;
-import org.cloudbus.cloudsim.schedulers.cloudlet.CloudletSchedulerTimeShared;
-import org.cloudsimplus.autoscaling.HorizontalVmScaling;
-import org.cloudsimplus.autoscaling.HorizontalVmScalingSimple;
 import org.cloudbus.cloudsim.cloudlets.Cloudlet;
 import org.cloudbus.cloudsim.cloudlets.CloudletSimple;
 import org.cloudbus.cloudsim.core.CloudSim;
+import org.cloudbus.cloudsim.core.Simulation;
 import org.cloudbus.cloudsim.datacenters.Datacenter;
 import org.cloudbus.cloudsim.datacenters.DatacenterCharacteristics;
 import org.cloudbus.cloudsim.datacenters.DatacenterCharacteristicsSimple;
@@ -48,16 +43,21 @@ import org.cloudbus.cloudsim.resources.Bandwidth;
 import org.cloudbus.cloudsim.resources.Pe;
 import org.cloudbus.cloudsim.resources.PeSimple;
 import org.cloudbus.cloudsim.resources.Ram;
+import org.cloudbus.cloudsim.schedulers.cloudlet.CloudletSchedulerTimeShared;
 import org.cloudbus.cloudsim.schedulers.vm.VmScheduler;
 import org.cloudbus.cloudsim.schedulers.vm.VmSchedulerTimeShared;
 import org.cloudbus.cloudsim.util.Log;
 import org.cloudbus.cloudsim.utilizationmodels.UtilizationModel;
+import org.cloudbus.cloudsim.utilizationmodels.UtilizationModelArithmeticProgression;
 import org.cloudbus.cloudsim.utilizationmodels.UtilizationModelFull;
 import org.cloudbus.cloudsim.vms.Vm;
 import org.cloudbus.cloudsim.vms.VmSimple;
+import org.cloudsimplus.autoscaling.HorizontalVmScaling;
+import org.cloudsimplus.autoscaling.VerticalVmScaling;
+import org.cloudsimplus.autoscaling.VerticalVmScalingSimple;
+import org.cloudsimplus.builders.tables.CloudletsTableBuilderHelper;
 import org.cloudsimplus.listeners.EventInfo;
 import org.cloudsimplus.listeners.EventListener;
-import org.cloudsimplus.builders.tables.CloudletsTableBuilderHelper;
 
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -67,15 +67,14 @@ import java.util.function.Predicate;
 import static java.util.Comparator.comparingDouble;
 
 /**
- * An example that balances load by dynamically creating VMs according
- * to the arrival of Cloudlets.
- *  Cloudlets are {@link #createNewCloudlets(EventInfo) dynamically created and submitted to the broker
- * at specific time intervals}.
- * A {@link HorizontalVmScalingSimple}
+ * An example that scale VM RAM up, according to the arrival of Cloudlets.
+ * It is used a {@link UtilizationModelArithmeticProgression} object to
+ * define Vm RAM usage that will increment along the time.
+ * A {@link VerticalVmScaling}
  * is set to each {@link #createListOfScalableVms(int) initially created VM},
  * that will check at {@link #SCHEDULING_INTERVAL specific time intervals}
- * if the VM {@link #isVmOverloaded(Vm) is overloaded or not} to then
- * request the creation of a new VM to attend the arriving Cloudlets.
+ * if a VM RAM {@link #isVmRamOverloaded(Vm) is overloaded or not} to then
+ * request the RAM to be scaled up.
  *
  * <p>The example uses the CloudSim Plus {@link EventListener} feature
  * to enable monitoring the simulation and dynamically creating objects such as Cloudlets and VMs.
@@ -86,9 +85,9 @@ import static java.util.Comparator.comparingDouble;
  * </p>
  *
  * @author Manoel Campos da Silva Filho
- * @since CloudSim Plus 1.0
+ * @since CloudSim Plus 1.2
  */
-public class LoadBalancerByVmHorizontalScalingExample {
+public class VmVerticalScalingExample {
     /**
      * The interval in which the Datacenter will schedule events.
      * As lower is this interval, sooner the processing of VMs and Cloudlets
@@ -105,50 +104,40 @@ public class LoadBalancerByVmHorizontalScalingExample {
      * has to be trade-off.
      * For more details, see {@link Datacenter#getSchedulingInterval()}.</p>
     */
-    private static final int SCHEDULING_INTERVAL = 5;
+    private static final int SCHEDULING_INTERVAL = 10;
 
-    /**
-     * The interval to request the creation of new Cloudlets.
-     */
-    private static final int CLOUDLETS_CREATION_INTERVAL = SCHEDULING_INTERVAL * 2;
-
-    private static final int HOSTS = 50;
-    private static final int HOST_PES = 32;
-    private static final int VMS = 4;
-    private static final int CLOUDLETS = 6;
+    private static final int HOSTS = 1;
+    private static final int HOST_PES = 4;
+    private static final int VMS = 1;
+    private static final int CLOUDLETS = 2;
     private final CloudSim simulation;
     private DatacenterBroker broker0;
     private List<Host> hostList;
     private List<Vm> vmList;
     private List<Cloudlet> cloudletList;
 
-    /**
-     * Different lengths that will be randomly assigned to created Cloudlets.
-     */
-    private static final long[] CLOUDLET_LENGTHS = {2000, 4000, 10000, 16000, 2000, 30000, 20000};
-    private ContinuousDistribution rand;
+    private static final long CLOUDLET_LENGTH = 200_000;
 
     private int createdCloudlets;
     private int createsVms;
 
     public static void main(String[] args) {
-        new LoadBalancerByVmHorizontalScalingExample();
+        new VmVerticalScalingExample();
     }
 
     /**
      * Default constructor that builds the simulation scenario and starts the simulation.
      */
-    public LoadBalancerByVmHorizontalScalingExample() {
+    public VmVerticalScalingExample() {
         /*You can remove the seed to get a dynamic one, based on current computer time.
         * With a dynamic seed you will get different results at each simulation run.*/
         final long seed = 1;
-        rand = new UniformDistr(0, CLOUDLET_LENGTHS.length, seed);
         hostList = new ArrayList<>(HOSTS);
         vmList = new ArrayList<>(VMS);
         cloudletList = new ArrayList<>(CLOUDLETS);
 
         simulation = new CloudSim();
-        simulation.addOnClockTickListener(this::createNewCloudlets);
+        simulation.addOnClockTickListener(this::onClockTickListener);
 
         createDatacenter();
         broker0 = new DatacenterBrokerSimple(simulation);
@@ -164,6 +153,15 @@ public class LoadBalancerByVmHorizontalScalingExample {
         printSimulationResults();
     }
 
+    private void onClockTickListener(EventInfo eventInfo) {
+        vmList.stream().forEach(vm -> {
+            Log.printFormatted("\t\tTime %3.0f: Vm %d Ram Usage: %6.2f%%",
+                eventInfo.getTime(), vm.getId(), vm.getTotalUtilizationOfRam()*100.0);
+            Log.printFormattedLine(" | Host Ram Allocation: %6.2f%%",
+                vm.getHost().getRam().getUtilization()*100.0);
+        });
+    }
+
     private void printSimulationResults() {
         List<Cloudlet> finishedCloudlets = broker0.getCloudletsFinishedList();
         Comparator<Cloudlet> sortByVmId = comparingDouble(c -> c.getVm().getId());
@@ -174,33 +172,16 @@ public class LoadBalancerByVmHorizontalScalingExample {
     }
 
     private void createCloudletList() {
+        UtilizationModel ramUtilizationModel =
+            new UtilizationModelArithmeticProgression(0, 0.2);
         for (int i = 0; i < CLOUDLETS; i++) {
-            cloudletList.add(createCloudlet());
+            cloudletList.add(createCloudlet(ramUtilizationModel));
         }
-    }
 
-    /**
-     * Creates new Cloudlets at every 10 seconds up to the 50th simulation second.
-     * A reference to this method is set as the {@link EventListener}
-     * to the {@link Simulation#addOnClockTickListener(EventListener)}.
-     * The method is then called every time the simulation clock advances.
-     *
-     * @param eventInfo the information about the OnClockTick event that has happened
-     */
-    private void createNewCloudlets(EventInfo eventInfo) {
-        final long time = (long) eventInfo.getTime();
-        if (time % CLOUDLETS_CREATION_INTERVAL == 0 && time <= 50) {
-            final int numberOfCloudlets = 4;
-            Log.printFormattedLine("\t#Creating %d Cloudlets at time %d.", numberOfCloudlets, time);
-            List<Cloudlet> newCloudlets = new ArrayList<>(numberOfCloudlets);
-            for (int i = 0; i < numberOfCloudlets; i++) {
-                Cloudlet cloudlet = createCloudlet();
-                cloudletList.add(cloudlet);
-                newCloudlets.add(cloudlet);
-            }
-
-            broker0.submitCloudletList(newCloudlets);
-        }
+        ramUtilizationModel =
+            new UtilizationModelArithmeticProgression(0.01, 0.2)
+                .setMaxResourceUsagePercentage(0.8);
+        cloudletList.get(0).setUtilizationModelRam(ramUtilizationModel);
     }
 
     /**
@@ -238,13 +219,13 @@ public class LoadBalancerByVmHorizontalScalingExample {
      *
      * @param numberOfVms number of VMs to create
      * @return the list of scalable VMs
-     * @see #createHorizontalVmScaling(Vm)
+     * @see #createVerticalVmScaling(Vm)
      */
     private List<Vm> createListOfScalableVms(final int numberOfVms) {
         List<Vm> newList = new ArrayList<>(numberOfVms);
         for (int i = 0; i < numberOfVms; i++) {
             Vm vm = createVm();
-            createHorizontalVmScaling(vm);
+            createVerticalVmScaling(vm);
             newList.add(vm);
         }
 
@@ -252,18 +233,27 @@ public class LoadBalancerByVmHorizontalScalingExample {
     }
 
     /**
-     * Creates a {@link HorizontalVmScaling} object for a given VM.
+     * Creates a {@link VerticalVmScaling} object for a given VM.
      *
-     * @param vm the VM in which the Horizontal Scaling will be created
+     * @param vm the VM in which the VerticalVmScaling will be created
      * @see #createListOfScalableVms(int)
      */
-    private void createHorizontalVmScaling(Vm vm) {
-        HorizontalVmScaling horizontalScaling = new HorizontalVmScalingSimple();
-        horizontalScaling
-             .setVmSupplier(this::createVm)
-             .setOverloadPredicate(this::isVmOverloaded);
-        vm.setHorizontalScaling(horizontalScaling);
+    private void createVerticalVmScaling(Vm vm) {
+        VerticalVmScaling verticalScaling = new VerticalVmScalingSimple(Ram.class, 1);
+        verticalScaling.setOverloadPredicate(this::isVmRamOverloaded);
+        vm.setRamVerticalScaling(verticalScaling);
+    }
 
+    /**
+     * A {@link Predicate} that checks if a given VM is overloaded or not based on upper CPU utilization threshold.
+     * A reference to this method is assigned to each Horizontal VM Scaling created.
+     *
+     * @param vm the VM to check if it is overloaded
+     * @return true if the VM is overloaded, false otherwise
+     * @see #createVerticalVmScaling(Vm)
+     */
+    private boolean isVmRamOverloaded(Vm vm) {
+        return vm.getTotalUtilizationOfRam() > 0.7;
     }
 
     /**
@@ -274,33 +264,22 @@ public class LoadBalancerByVmHorizontalScalingExample {
     private Vm createVm() {
         final int id = createsVms++;
         Vm vm = new VmSimple(id, 1000, 2)
-            .setRam(512).setBw(1000).setSize(10000).setBroker(broker0)
+            .setRam(1000).setBw(1000).setSize(10000).setBroker(broker0)
             .setCloudletScheduler(new CloudletSchedulerTimeShared());
 
         return vm;
     }
 
-    /**
-     * A {@link Predicate} that checks if a given VM is overloaded or not based on upper CPU utilization threshold.
-     * A reference to this method is assigned to each Horizontal VM Scaling created.
-     *
-     * @param vm the VM to check if it is overloaded
-     * @return true if the VM is overloaded, false otherwise
-     * @see #createHorizontalVmScaling(Vm)
-     */
-    private boolean isVmOverloaded(Vm vm) {
-        return vm.getTotalUtilizationOfCpu() > 0.7;
-    }
-
-    private Cloudlet createCloudlet() {
+    private Cloudlet createCloudlet(UtilizationModel ramUtilizationModel) {
         final int id = createdCloudlets++;
         //randomly selects a length for the cloudlet
-        final long length = CLOUDLET_LENGTHS[(int) rand.sample()];
-        UtilizationModel utilization = new UtilizationModelFull();
-        return new CloudletSimple(id, length, 2)
+        UtilizationModel utilizationFull = new UtilizationModelFull();
+        return new CloudletSimple(id, CLOUDLET_LENGTH, 1)
             .setFileSize(1024)
             .setOutputSize(1024)
-            .setUtilizationModel(utilization)
+            .setUtilizationModelBw(utilizationFull)
+            .setUtilizationModelCpu(utilizationFull)
+            .setUtilizationModelRam(ramUtilizationModel)
             .setBroker(broker0);
     }
 }

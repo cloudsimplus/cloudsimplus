@@ -83,13 +83,6 @@ public class VmAllocationPolicySimple extends VmAllocationPolicyAbstract {
     }
 
     @Override
-    public boolean scaleVmVertically(VerticalVmScaling scaling) {
-        Host host = scaling.getVm().getHost();
-        host.getRamProvisioner();
-        throw new UnsupportedOperationException("Method not implemented yet");
-    }
-
-    @Override
     public boolean allocateHostForVm(Vm vm, Host host) {
         if (!host.vmCreate(vm)) {
             return false;

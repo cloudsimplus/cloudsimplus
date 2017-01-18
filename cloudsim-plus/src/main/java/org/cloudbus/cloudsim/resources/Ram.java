@@ -24,12 +24,13 @@
 package org.cloudbus.cloudsim.resources;
 
 /**
- * Represents the RAM capacity of a PM or VM in Mebabytes.
+ * Represents the RAM resource of a PM or VM in Mebabytes.
+ * Such a class allows managing the RAM capacity and allocation.
  *
  * @author Manoel Campos da Silva Filho
  * @since CloudSim Plus 1.0
  */
-public final class Ram extends ResourceAbstract {
+public final class Ram extends ResourceManageableAbstract {
     /**
      * Creates a new RAM resource.
      * @param capacity the RAM capacity in Megabytes

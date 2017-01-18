@@ -12,9 +12,6 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 
-import org.cloudbus.cloudsim.resources.Bandwidth;
-import org.cloudbus.cloudsim.resources.Pe;
-import org.cloudbus.cloudsim.resources.Ram;
 import org.cloudbus.cloudsim.vms.Vm;
 import org.cloudbus.cloudsim.resources.ResourceManageable;
 
@@ -28,7 +25,7 @@ import org.cloudbus.cloudsim.resources.ResourceManageable;
  * @author Manoel Campos da Silva Filho
  * @since 3.0.4
  */
-public abstract class AbstractResourceProvisioner implements ResourceProvisioner {
+public abstract class ResourceProvisionerAbstract implements ResourceProvisioner {
     /**
      * @see #getResource()
      */
@@ -48,7 +45,7 @@ public abstract class AbstractResourceProvisioner implements ResourceProvisioner
      *
      * @post $none
      */
-    protected AbstractResourceProvisioner() {
+    protected ResourceProvisionerAbstract() {
         this(ResourceManageable.NULL);
     }
 
@@ -58,7 +55,7 @@ public abstract class AbstractResourceProvisioner implements ResourceProvisioner
      * @param resource The resource to be managed by the provisioner
      * @post $none
      */
-    public AbstractResourceProvisioner(final ResourceManageable resource) {
+    public ResourceProvisionerAbstract(final ResourceManageable resource) {
         this.setResource(resource);
         this.resourceAllocationMap = new HashMap<>();
     }
@@ -85,11 +82,8 @@ public abstract class AbstractResourceProvisioner implements ResourceProvisioner
      */
     protected abstract long deallocateResourceForVmSettingAllocationMapEntryToZero(Vm vm);
 
-    /**
-     * Gets the resource being managed for the provisioner, such as {@link Ram}, {@link Pe}, {@link Bandwidth}, etc.
-     * @return the resource managed by this provisioner
-     */
-    protected ResourceManageable getResource() {
+    @Override
+    public ResourceManageable getResource() {
         return resource;
     }
 

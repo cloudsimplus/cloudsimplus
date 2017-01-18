@@ -22,7 +22,7 @@ import java.util.Objects;
  */
 public class VerticalVmScalingSimple extends VmScalingAbstract implements VerticalVmScaling {
     private double scalingFactor;
-    private Class<ResourceManageable> resourceClassToScale;
+    private Class<? extends ResourceManageable> resourceClassToScale;
 
     /**
      * Creates a VerticalVmScaling.
@@ -32,20 +32,21 @@ public class VerticalVmScalingSimple extends VmScalingAbstract implements Vertic
      * @param scalingFactor the factor that will be used to scale a Vm resource up or down,
      * whether if such a resource is over or underloaded, according to the
      * defined predicates (a percentage value in scale from 0 to 1).
+     * In the case of up scaling, the value 1 will scale the resource in 100%, doubling its capacity.
      */
-    public VerticalVmScalingSimple(Class<ResourceManageable> resourceClassToScale, double scalingFactor){
+    public VerticalVmScalingSimple(Class<? extends ResourceManageable> resourceClassToScale, double scalingFactor){
         super();
         this.setResourceClassToScale(resourceClassToScale);
         this.setScalingFactor(scalingFactor);
     }
 
     @Override
-    public Class<ResourceManageable> getResourceClassToScale() {
+    public Class<? extends ResourceManageable> getResourceClassToScale() {
         return this.resourceClassToScale;
     }
 
     @Override
-    public final VerticalVmScaling setResourceClassToScale(Class<ResourceManageable> resourceClassToScale) {
+    public final VerticalVmScaling setResourceClassToScale(Class<? extends ResourceManageable> resourceClassToScale) {
         Objects.requireNonNull(resourceClassToScale);
         this.resourceClassToScale = resourceClassToScale;
         return this;

@@ -23,6 +23,8 @@
  */
 package org.cloudbus.cloudsim.utilizationmodels;
 
+import org.cloudbus.cloudsim.util.Conversion;
+
 /**
  * An Cloudlet {@link UtilizationModel} that uses Arithmetic Progression
  * to increases the utilization of the related resource along the simulation time.
@@ -30,32 +32,29 @@ package org.cloudbus.cloudsim.utilizationmodels;
  * @author Manoel Campos da Silva Filho
  * @since CloudSim Plus 1.0
  */
-public class UtilizationModelArithmeticProgression implements UtilizationModel {
+public class UtilizationModelArithmeticProgression extends UtilizationModelAbstract {
     /**
      * The value that represents 1%, taking a scale from 0 to 1, where 1 is 100%.
      */
     public static final double ONE_PERCENT = 0.1;
 
-    /**
-     * The value that represents 100%, taking a scale from 0 to 1.
-     */
-    public static final double HUNDRED_PERCENT = 1;
-
     /**@see #getUtilizationPercentageIncrementPerSecond() */
-    private double utilizationPercentageIncrementPerSecond = ONE_PERCENT;
+    private double utilizationPercentageIncrementPerSecond;
 
     /** @see #getInitialUtilization()  */
     private double initialUtilization = 0;
 
     /** @see #getMaxResourceUsagePercentage() */
-    private double maxResourceUsagePercentage = HUNDRED_PERCENT;
+    private double maxResourceUsagePercentage;
 
     public UtilizationModelArithmeticProgression() {
+        super();
     }
 
-    public UtilizationModelArithmeticProgression(
-            final double utilizationPercentageIncrementPerSecond) {
+    public UtilizationModelArithmeticProgression(final double utilizationPercentageIncrementPerSecond) {
         this();
+        maxResourceUsagePercentage = Conversion.HUNDRED_PERCENT;
+        this.utilizationPercentageIncrementPerSecond = ONE_PERCENT;
         setUtilizationPercentageIncrementPerSecond(utilizationPercentageIncrementPerSecond);
     }
 
@@ -154,9 +153,10 @@ public class UtilizationModelArithmeticProgression implements UtilizationModel {
      * Sets the maximum percentage of resource of resource that will be used.
      * @param maxResourceUsagePercentage the maximum resource usage percentage (in scale from ]0 to 1], where 1 is equals 100%)
      */
-    public void setMaxResourceUsagePercentage(double maxResourceUsagePercentage) {
+    public UtilizationModelArithmeticProgression setMaxResourceUsagePercentage(double maxResourceUsagePercentage) {
         if(maxResourceUsagePercentage <= 0 || maxResourceUsagePercentage > 1)
            throw new IllegalArgumentException("maxResourceUsagePercentagen must to be a percentage value between ]0 and 1]");
         this.maxResourceUsagePercentage = maxResourceUsagePercentage;
+        return this;
     }
 }

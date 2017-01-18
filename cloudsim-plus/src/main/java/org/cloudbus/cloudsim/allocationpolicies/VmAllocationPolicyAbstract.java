@@ -14,8 +14,11 @@ import java.util.Objects;
 
 import org.cloudbus.cloudsim.datacenters.Datacenter;
 import org.cloudbus.cloudsim.hosts.Host;
+import org.cloudbus.cloudsim.provisioners.ResourceProvisioner;
+import org.cloudbus.cloudsim.resources.ResourceManageable;
+import org.cloudbus.cloudsim.util.Log;
 import org.cloudbus.cloudsim.vms.Vm;
-import org.cloudsimplus.listeners.VmHostEventInfo;
+import org.cloudsimplus.autoscaling.VerticalVmScaling;
 
 /**
  * An abstract class that represents the policy
@@ -210,4 +213,45 @@ public abstract class VmAllocationPolicyAbstract implements VmAllocationPolicy {
         Objects.requireNonNull(usedPes);
         this.usedPes = usedPes;
     }
+
+    @Override
+    public boolean scaleVmVertically(VerticalVmScaling scaling) {
+        final Class<? extends ResourceManageable> resourceClass = scaling.getResourceClassToScale();
+        final ResourceManageable hostResource = scaling.getVm().getHost().getResource(resourceClass);
+        final ResourceManageable vmResource = scaling.getVm().getResource(resourceClass);
+        final double extraAmountToAllocate = vmResource.getCapacity()*scaling.getScalingFactor();
+        if(!hostResource.isResourceAmountAvailable(extraAmountToAllocate)) {
+            return false;
+        }
+
+        final ResourceProvisioner provisioner = scaling.getVm().getHost().getProvisioner(resourceClass);
+        final double previousVmResourceCapacity = vmResource.getCapacity();
+        final double newTotalVmResource = previousVmResourceCapacity + extraAmountToAllocate;
+        if(!provisioner.allocateResourceForVm(scaling.getVm(), newTotalVmResource)){
+            Log.printFormattedLine(
+                "%.2f: %s: Vm %d requested more %d of %s capacity but the Host %d has just %d of available %s",
+                scaling.getVm().getSimulation().clock(),
+                scaling.getClass().getSimpleName(),
+                scaling.getVm().getId(), scaling.getVm().getResource(resourceClass).getCapacity(),
+                resourceClass.getSimpleName(), scaling.getVm().getHost().getId(),
+                hostResource.getAvailableResource());
+            return false;
+        }
+
+        /*@todo the Vm resource utilization is not being updated.
+        * At the CloudletScheduler.updateCloudletsProcessing
+        * the VM resources must be updated in order to allow
+        * getting the usage directly from the
+        * resource instance.*/
+        vmResource.setCapacity((long)newTotalVmResource);
+        Log.printFormattedLine(
+            "%.2f: %s: %.0f more %s allocated to Vm %d: new capacity is %d. Current resource usage is %.2f%%",
+            scaling.getVm().getSimulation().clock(),
+            scaling.getClass().getSimpleName(),
+            extraAmountToAllocate, resourceClass.getSimpleName(),
+            scaling.getVm().getId(), vmResource.getAvailableResource(),
+            vmResource.getUtilization()*100);
+        return true;
+    }
+
 }

@@ -14,7 +14,7 @@ import org.cloudbus.cloudsim.resources.ResourceManageable;
 import java.util.Objects;
 
 /**
- * ResourceProvisionerSimple is an extension of {@link AbstractResourceProvisioner}
+ * ResourceProvisionerSimple is a {@link ResourceProvisioner} implementation
  * which uses a best-effort policy to allocate a resource to VMs:
  * if there is available amount of the resource on the host, it allocates;
  * otherwise, it fails.
@@ -24,7 +24,7 @@ import java.util.Objects;
  * @author Manoel Campos da Silva Filho
  * @since 3.0.4
  */
-public class ResourceProvisionerSimple extends AbstractResourceProvisioner {
+public class ResourceProvisionerSimple extends ResourceProvisionerAbstract {
     /**
      * Creates a new ResourceProvisionerSimple.
      *
@@ -47,6 +47,11 @@ public class ResourceProvisionerSimple extends AbstractResourceProvisioner {
         }
 
         return false;
+    }
+
+    @Override
+    public boolean allocateResourceForVm(Vm vm, double newTotalVmResource) {
+        return allocateResourceForVm(vm, (long)newTotalVmResource);
     }
 
     @Override

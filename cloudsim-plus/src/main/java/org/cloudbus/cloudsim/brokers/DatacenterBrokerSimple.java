@@ -14,11 +14,10 @@ import org.cloudbus.cloudsim.vms.Vm;
 import org.cloudbus.cloudsim.core.CloudSim;
 
 /**
- *
  * A simple implementation of {@link DatacenterBroker} that try to host customer's VMs
  * at the first Datacenter found. If there isn't capacity in that one,
  * it will try the other ones.
- *
+ * <p>
  * <p>The selection of VMs for each cloudlet is based on a Round-Robin policy,
  * cyclically selecting the next VM from the broker VM list for each requesting
  * cloudlet.</p>
@@ -56,8 +55,9 @@ public class DatacenterBrokerSimple extends DatacenterBrokerAbstract {
     /**
      * Defines the policy to select a fallback Datacenter to Host a VM
      * when a previous selected Datacenter failed to create the requested VMs.
-     *
+     * <p>
      * <p>It gets the first Datacenter that has not been tried yet.</p>
+     *
      * @return the Datacenter selected to try creating
      * the remaining VMs or {@link Datacenter#NULL} if no suitable Datacenter was found
      */
@@ -96,7 +96,7 @@ public class DatacenterBrokerSimple extends DatacenterBrokerAbstract {
      * @return the index of the next VM to bind a cloudlet to
      */
     private int getNextVmIndex() {
-        if(getVmsCreatedList().isEmpty()) {
+        if (getVmsCreatedList().isEmpty()) {
             return -1;
         }
 

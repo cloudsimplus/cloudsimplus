@@ -4,7 +4,18 @@ Lists the main changes in the project.
 
 ## [Current Development Version]
 
-- xxxxx
+### Added
+
+- double getUtilization() method in the UtilizationModel class to get the utilization percentage of a given resource
+  at the current simulation time.
+- double getTotalUtilizationOfRam() in the Vm class to get the percentage of RAM utilization from a Vm.
+  The RAM utilization is get from the current running Cloudlets of the CloudletScheduler used for the Vm.
+- Vertical Scaling mechamnism for VM resources such as Ram, Bandwidth and PEs (CPUs).
+
+### Changed
+
+- Changed the methods getRam(), getBw() and getSize() from Vm interface to instead of returning a long value that represents the resource capacity,
+  to return an actual Resource object that provides information about the capacity and usage. The method getSize() was renamed to getStorage().
 
 ## [v1.1.0] - 2017-01-14
 

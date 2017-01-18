@@ -124,12 +124,12 @@ public class DynamicVmCreationByResponseTimeExample {
 
         simulation = new CloudSim();
 
-        
+
         SlaReader slaReader = new SlaReader(METRICS_FILE);
         ResponseTime rt = new ResponseTime(slaReader);
         rt.checkResponseTimeSlaContract();
         responseTimeSlaContract = rt.getMaxValueResponseTime();
-        
+
         CpuUtilization cpu = new CpuUtilization(slaReader);
         cpu.checkCpuUtilizationSlaContract();
         cpuUtilizationSlaContract = cpu.getMaxValueCpuUtilization();
@@ -150,7 +150,7 @@ public class DynamicVmCreationByResponseTimeExample {
 
         printSimulationResults();
     }
-    
+
     /**
      * Selects a VM to run a Cloudlet that will minimize the Cloudlet response time.
      * @param cloudlet the Cloudlet to select a VM to
@@ -277,7 +277,7 @@ public class DynamicVmCreationByResponseTimeExample {
         horizontalScaling
                 .setVmSupplier(this::createVm)
                 .setOverloadPredicate(this::isVmOverloaded);
-        
+
         vm.setHorizontalScaling(horizontalScaling);
     }
 

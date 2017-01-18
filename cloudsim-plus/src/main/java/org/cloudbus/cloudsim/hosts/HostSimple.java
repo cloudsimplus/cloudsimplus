@@ -6,22 +6,19 @@
  */
 package org.cloudbus.cloudsim.hosts;
 
+import org.cloudbus.cloudsim.resources.*;
 import org.cloudbus.cloudsim.util.Log;
 import org.cloudbus.cloudsim.vms.Vm;
 import org.cloudbus.cloudsim.datacenters.Datacenter;
-import org.cloudbus.cloudsim.resources.Pe;
 import org.cloudbus.cloudsim.schedulers.vm.VmScheduler;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
 
-import org.cloudbus.cloudsim.core.CloudSimTags;
+import java.util.*;
+
 import org.cloudbus.cloudsim.core.Simulation;
 import org.cloudsimplus.listeners.EventListener;
 import org.cloudsimplus.listeners.HostUpdatesVmsProcessingEventInfo;
 import org.cloudbus.cloudsim.lists.PeList;
 import org.cloudbus.cloudsim.provisioners.ResourceProvisioner;
-import org.cloudbus.cloudsim.resources.RawStorage;
 
 import static java.util.stream.Collectors.toList;
 
@@ -97,6 +94,15 @@ public class HostSimple implements Host {
     private Simulation simulation;
 
     /**
+     * A list of resources the VM has, that represent virtual resources corresponding to physical resources
+     * from the Host where the VM is placed.
+     *
+     * @see #getResource(Class)
+     */
+    private List<ResourceManageable> resources;
+    private List<ResourceProvisioner> provisioners;
+
+    /**
      * Creates a Host.
      *
      * @param id the host id
@@ -105,6 +111,7 @@ public class HostSimple implements Host {
      */
     public HostSimple(int id, long storageCapacity,  List<Pe> peList) {
         setId(id);
+        this.setSimulation(Simulation.NULL);
         setRamProvisioner(ResourceProvisioner.NULL);
         setBwProvisioner(ResourceProvisioner.NULL);
         setVmScheduler(VmScheduler.NULL);
@@ -112,8 +119,9 @@ public class HostSimple implements Host {
         setPeList(peList);
         setFailed(false);
         setDatacenter(Datacenter.NULL);
-        this.simulation = Simulation.NULL;
         this.onUpdateVmsProcessingListener = EventListener.NULL;
+        this.resources = new ArrayList();
+        this.provisioners = new ArrayList();
     }
 
     /**
@@ -162,7 +170,7 @@ public class HostSimple implements Host {
     @Override
     public void addMigratingInVm(Vm vm) {
         if (!getVmsMigratingIn().contains(vm)) {
-            if (!storage.isResourceAmountAvailable(vm.getSize())) {
+            if (!storage.isResourceAmountAvailable(vm.getStorage())) {
                 throw new RuntimeException(
                     String.format(
                         "[VmScheduler.addMigratingInVm] Allocation of VM #%d to Host #%d" +
@@ -194,7 +202,7 @@ public class HostSimple implements Host {
                         " failed by MIPS", vm.getId(),  getId()));
             }
 
-            getStorage().allocateResource(vm.getSize());
+            storage.allocateResource(vm.getStorage());
 
             getVmsMigratingIn().add(vm);
             updateVmsProcessing(simulation.clock());
@@ -221,7 +229,7 @@ public class HostSimple implements Host {
             getRamProvisioner().allocateResourceForVm(vm, vm.getCurrentRequestedRam());
             getBwProvisioner().allocateResourceForVm(vm, vm.getCurrentRequestedBw());
             getVmScheduler().allocatePesForVm(vm, vm.getCurrentRequestedMips());
-            getStorage().allocateResource(vm.getSize());
+            storage.allocateResource(vm.getStorage());
         }
     }
 
@@ -235,7 +243,7 @@ public class HostSimple implements Host {
 
     @Override
     public boolean vmCreate(Vm vm) {
-        if (!storage.isResourceAmountAvailable(vm.getSize())) {
+        if (!storage.isResourceAmountAvailable(vm.getStorage())) {
             Log.printConcatLine("[VmAllocationPolicy] Allocation of VM #", vm.getId(), " to Host #", getId(),
                     " failed by storage");
             return false;
@@ -262,7 +270,7 @@ public class HostSimple implements Host {
             return false;
         }
 
-        getStorage().allocateResource(vm.getSize());
+        storage.allocateResource(vm.getStorage());
         getVmList().add(vm);
         vm.setHost(this);
         vm.notifyOnHostAllocationListeners();
@@ -288,7 +296,7 @@ public class HostSimple implements Host {
         getRamProvisioner().deallocateResourceForVm(vm);
         getBwProvisioner().deallocateResourceForVm(vm);
         getVmScheduler().deallocatePesForVm(vm);
-        getStorage().deallocateResource(vm.getSize());
+        storage.deallocateResource(vm.getStorage());
     }
 
     @Override
@@ -296,7 +304,7 @@ public class HostSimple implements Host {
         deallocateResourcesOfAllVms();
         for (Vm vm : getVmList()) {
             vm.setCreated(false);
-            getStorage().deallocateResource(vm.getSize());
+            storage.deallocateResource(vm.getStorage());
         }
 
         getVmList().clear();
@@ -364,18 +372,18 @@ public class HostSimple implements Host {
     }
 
     @Override
-    public long getBwCapacity() {
-        return getBwProvisioner().getCapacity();
+    public Resource getBw() {
+        return getBwProvisioner().getResource();
     }
 
     @Override
-    public long getRamCapacity() {
-        return getRamProvisioner().getCapacity();
+    public Resource getRam() {
+        return getRamProvisioner().getResource();
     }
 
     @Override
-    public long getStorageCapacity() {
-        return getStorage().getCapacity();
+    public Resource getStorage() {
+        return storage;
     }
 
     @Override
@@ -399,8 +407,15 @@ public class HostSimple implements Host {
 
     @Override
     public final Host setRamProvisioner(ResourceProvisioner ramProvisioner) {
+        checkSimulationIsRunningAndAttemptedToChangeHost("RAM");
         this.ramProvisioner = ramProvisioner;
         return this;
+    }
+
+    private void checkSimulationIsRunningAndAttemptedToChangeHost(String resourceName) {
+        if(simulation.isRunning()){
+            throw new UnsupportedOperationException("It is not allowed to change a Host "+resourceName+" after the simulation started.");
+        }
     }
 
     @Override
@@ -410,6 +425,7 @@ public class HostSimple implements Host {
 
     @Override
     public final Host setBwProvisioner(ResourceProvisioner bwProvisioner) {
+        checkSimulationIsRunningAndAttemptedToChangeHost("BW");
         this.bwProvisioner = bwProvisioner;
         return this;
     }
@@ -441,10 +457,8 @@ public class HostSimple implements Host {
      * @param peList the new pe list
      */
     protected final Host setPeList(List<Pe> peList) {
-        if(Objects.isNull(peList)){
-            peList = new ArrayList<>();
-        }
-        this.peList = peList;
+        checkSimulationIsRunningAndAttemptedToChangeHost("List of PE");
+        this.peList = Objects.isNull(peList) ? new ArrayList<>() : peList;
 
         int id = this.peList.stream().filter(pe -> pe.getId() > 0).mapToInt(Pe::getId).max().orElse(-1);
         List<Pe> pesWithoutIds = this.peList.stream().filter(pe -> pe.getId() < 0).collect(toList());
@@ -472,26 +486,6 @@ public class HostSimple implements Host {
         return true;
     }
 
-    /**
-     * Checks if the the host is failed and
-     * sets all its Vm' to failed.
-     */
-    public void setVmsToFailedWhenHostIsFailed() {
-        if(!this.failed)
-            return;
-
-        for (Vm vm : getVmList()) {
-            vm.setFailed(true);
-            /*
-            As the broker is expected to request vm creation and destruction,
-            it is set here as the sender of the vm destroy request.
-            */
-            simulation.sendNow(
-                vm.getBroker().getId(), getDatacenter().getId(),
-                CloudSimTags.VM_DESTROY, vm);
-        }
-    }
-
     @Override
     public boolean setPeStatus(int peId, Pe.Status status) {
         return PeList.setPeStatus(getPeList(), peId, status);
@@ -509,18 +503,8 @@ public class HostSimple implements Host {
 
     @Override
     public void setDatacenter(Datacenter datacenter) {
+        checkSimulationIsRunningAndAttemptedToChangeHost("Datacenter");
         this.datacenter = datacenter;
-    }
-
-    /**
-     * @see #getStorage()
-     */ /**
-     * Gets the storage device of the host with capacity in Megabytes.
-     *
-     * @return the storage device
-     */
-    protected RawStorage getStorage() {
-        return storage;
     }
 
     @Override
@@ -535,11 +519,7 @@ public class HostSimple implements Host {
 
     @Override
     public Host setOnUpdateVmsProcessingListener(EventListener<HostUpdatesVmsProcessingEventInfo> onUpdateVmsProcessingListener) {
-        if (Objects.isNull(onUpdateVmsProcessingListener)) {
-            onUpdateVmsProcessingListener = EventListener.NULL;
-        }
-
-        this.onUpdateVmsProcessingListener = onUpdateVmsProcessingListener;
+        this.onUpdateVmsProcessingListener = Objects.isNull(onUpdateVmsProcessingListener) ? EventListener.NULL : onUpdateVmsProcessingListener;
         return this;
     }
 
@@ -556,6 +536,7 @@ public class HostSimple implements Host {
     }
 
     private Host setStorage(long size) {
+        checkSimulationIsRunningAndAttemptedToChangeHost("Storage");
         this.storage = new RawStorage(size);
         return this;
     }
@@ -566,7 +547,7 @@ public class HostSimple implements Host {
     }
 
     @Override
-    public Host setSimulation(Simulation simulation) {
+    public final Host setSimulation(Simulation simulation) {
         this.simulation = simulation;
         return this;
     }
@@ -598,5 +579,25 @@ public class HostSimple implements Host {
         int result = id;
         result = 31 * result + simulation.hashCode();
         return result;
+    }
+
+    @Override
+    public List<ResourceManageable> getResources() {
+        if(simulation.isRunning() && resources.isEmpty()){
+            resources = Arrays.asList(ramProvisioner.getResource(), bwProvisioner.getResource());
+        }
+        return Collections.unmodifiableList(resources);
+    }
+
+    @Override
+    public ResourceProvisioner getProvisioner(Class<? extends ResourceManageable> resourceClass) {
+        if(simulation.isRunning() && provisioners.isEmpty()){
+            provisioners = Arrays.asList(ramProvisioner, bwProvisioner);
+        }
+
+        return provisioners.stream()
+            .filter(r -> Resourceful.isObjectSubClassOf(r.getResource(), resourceClass))
+            .findFirst()
+            .orElse(ResourceProvisioner.NULL);
     }
 }

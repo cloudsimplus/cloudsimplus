@@ -117,7 +117,7 @@ public final class VmMigrationWhenCpuMetricIsViolatedExample {
      * The file containing the SLA Contract in JSON format.
      */
     public static final String METRICS_FILE = ResourceLoader.getResourcePath(VmMigrationWhenCpuMetricIsViolatedExample.class, "SlaMetrics.json");
-    
+
     /**
      * Attributes with minimum and maximum values of the CPU Utilization metric
      * to be set for allocation policy.
@@ -323,19 +323,19 @@ public final class VmMigrationWhenCpuMetricIsViolatedExample {
 
     }
 
-    private void getCpuUtilizationThreshold(SlaMetric metric) {   
+    private void getCpuUtilizationThreshold(SlaMetric metric) {
         double minValue
                 = metric.getDimensions().stream()
                 .filter(d -> d.isValueMin())
                 .map(d -> d.getValue())
                 .findFirst().orElse(Double.MIN_VALUE);
-        
+
         double maxValue
                 = metric.getDimensions().stream()
                 .filter(d -> d.isValueMax())
                 .map(d -> d.getValue())
                 .findFirst().orElse(Double.MAX_VALUE);
-        
+
         underCpuUtilizationThreshold = minValue / 100;
         overCpuUtilizationThreshold = maxValue / 100;
 

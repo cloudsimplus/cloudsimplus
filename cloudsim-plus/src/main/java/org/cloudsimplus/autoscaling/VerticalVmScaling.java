@@ -48,7 +48,7 @@ public interface VerticalVmScaling extends VmScaling {
      * Such a class can be {@link Ram}.class, {@link Bandwidth}.class or {@link Pe}.class.
      * @return
      */
-    Class<ResourceManageable> getResourceClassToScale();
+    Class<? extends ResourceManageable> getResourceClassToScale();
 
     /**
      * Sets the class of Vm resource that this scaling object will request up or down scaling.
@@ -56,7 +56,7 @@ public interface VerticalVmScaling extends VmScaling {
      * @param resourceClassToScale the resource class to set
      * @return
      */
-    VerticalVmScaling setResourceClassToScale(Class<ResourceManageable> resourceClassToScale);
+    VerticalVmScaling setResourceClassToScale(Class<? extends ResourceManageable> resourceClassToScale);
 
     /**
      * Gets the factor that will be used to scale a Vm resource up or down,
@@ -106,11 +106,11 @@ public interface VerticalVmScaling extends VmScaling {
      * objects.
      */
     VerticalVmScaling NULL = new VerticalVmScaling() {
-        @Override public Class<ResourceManageable> getResourceClassToScale() { return ResourceManageable.class; }
-        @Override public VerticalVmScaling setResourceClassToScale(Class<ResourceManageable> resourceClassToScale) { return this; }
+        @Override public Class<? extends ResourceManageable> getResourceClassToScale() { return ResourceManageable.class; }
+        @Override public VerticalVmScaling setResourceClassToScale(Class<? extends ResourceManageable> resourceClassToScale) { return this; }
         @Override public double getScalingFactor() { return 0; }
         @Override public VerticalVmScaling setScalingFactor(double scalingFactor) { return this; }
-        @Override public boolean requestUpScalingIfOverloaded(double time) {}
+        @Override public boolean requestUpScalingIfOverloaded(double time) { return false; }
         @Override public Vm getVm() { return Vm.NULL; }
         @Override public VmScaling setVm(Vm vm) { return this; }
         @Override public Predicate<Vm> getOverloadPredicate() { return vm -> false; }

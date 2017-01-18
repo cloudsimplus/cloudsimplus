@@ -10,6 +10,7 @@ package org.cloudbus.cloudsim.allocationpolicies.power;
 
 import org.cloudbus.cloudsim.hosts.power.PowerHost;
 import org.cloudbus.cloudsim.hosts.power.PowerHostUtilizationHistory;
+import org.cloudbus.cloudsim.resources.Resource;
 import org.cloudbus.cloudsim.selectionpolicies.power.PowerVmSelectionPolicy;
 import org.cloudbus.cloudsim.vms.Vm;
 import org.cloudbus.cloudsim.util.MathUtil;
@@ -142,8 +143,11 @@ public class PowerVmAllocationPolicyMigrationLocalRegression extends PowerVmAllo
      * @return the maximum vm migration time
      */
     protected double getMaximumVmMigrationTime(PowerHost host) {
-        final double maxRam = host.getVmList().stream().mapToDouble(Vm::getRam).max().orElse(0);
-        return maxRam / (host.getBwCapacity() / (2 * 8));
+        //@todo It must compute the migration time based on the current RAM usage, not the capacity.
+        final double maxRam = host.getVmList().stream()
+            .map(Vm::getRam)
+            .mapToDouble(Resource::getCapacity).max().orElse(0);
+        return maxRam / (host.getBw().getCapacity() / (2 * 8));
     }
 
     /**

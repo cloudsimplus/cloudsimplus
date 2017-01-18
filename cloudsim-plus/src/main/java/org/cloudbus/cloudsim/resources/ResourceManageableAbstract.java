@@ -22,21 +22,21 @@ package org.cloudbus.cloudsim.resources;
  * @author Manoel Campos da Silva Filho
  * @since CloudSim Plus 1.0
  */
-public abstract class ResourceAbstract implements ResourceManageable {
+public abstract class ResourceManageableAbstract implements ResourceManageable {
     /** @see #getCapacity() */
     private long capacity;
 
     /** @see #getAvailableResource() */
     private long availableResource;
 
-    public ResourceAbstract(final long capacity) {
+    public ResourceManageableAbstract(final long capacity) {
         if(!isCapacityValid(capacity))
             throw new IllegalArgumentException("Capacity cannot be negative");
 
         initCapacityAndAvailableResource(capacity);
     }
 
-    private boolean isCapacityValid(final long capacity) throws IllegalArgumentException {
+    private boolean isCapacityValid(final long capacity) {
         return capacity >= 0;
     }
 
@@ -142,6 +142,11 @@ public abstract class ResourceAbstract implements ResourceManageable {
     @Override
     public boolean isResourceAmountAvailable(final long amountToCheck) {
         return getAvailableResource() >= amountToCheck;
+    }
+
+    @Override
+    public boolean isResourceAmountAvailable(double amountToCheck) {
+        return isResourceAmountAvailable((long)amountToCheck);
     }
 
     @Override

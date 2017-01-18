@@ -149,15 +149,15 @@ public class PowerDatacenter extends DatacenterSimple {
                     targetHost.addMigratingInVm(migrate.getKey());
                     incrementMigrationCount();
 
-                    /**
-                     * VM migration delay = RAM / bandwidth *
-                     */
-                                            // we use BW / 2 to model BW available for migration purposes, the other
-                    // half of BW is for VM communication
-                    // around 16 seconds for 1024 MEGABYTE using 1 Gbit/s network
+                    //VM migration delay = RAM / bandwidth
+                    /*We use BW / 2 to model BW available for migration purposes, the other
+                    half of BW is for VM communication
+                    around 16 seconds for 1024 MEGABYTE using 1 Gbit/s network
+                    */
+                    //@todo this computation is different from PowerDatacenterNonPowerAware and probably is duplicated with other Datacenters
                     send(
                         getId(),
-                        migrate.getKey().getRam() / ((double) targetHost.getBwCapacity() / (2 * 8000)),
+                        migrate.getKey().getRam().getCapacity() / ((double) targetHost.getBw().getCapacity() / (2 * 8000)),
                         CloudSimTags.VM_MIGRATE, migrate);
                 }
             }

@@ -481,6 +481,11 @@ public class HarddriveStorage implements FileStorage {
     }
 
     @Override
+    public boolean isResourceAmountAvailable(double amountToCheck) {
+        return isResourceAmountAvailable((long)amountToCheck);
+    }
+
+    @Override
     public boolean isFull() {
         return storage.isFull();
     }

@@ -73,7 +73,7 @@ public class VmAllocationPolicySimpleTest {
         Host secondHostWithLessPes = policy.getDatacenter().getHostList().get(3);
         Vm vm = VmSimpleTest.createVm(
             0, 1000, 2, 1, 1,
-            secondHostWithLessPes.getStorageCapacity(), CloudletScheduler.NULL);
+            secondHostWithLessPes.getStorage().getCapacity(), CloudletScheduler.NULL);
         assertTrue(policy.allocateHostForVm(vm));
 
         Host allocatedHostForVm = policy.getVmHostMap().get(vm);

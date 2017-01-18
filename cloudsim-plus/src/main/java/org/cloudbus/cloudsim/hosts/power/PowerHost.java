@@ -15,6 +15,8 @@ import org.cloudbus.cloudsim.datacenters.Datacenter;
 import org.cloudbus.cloudsim.hosts.Host;
 import org.cloudbus.cloudsim.hosts.HostDynamicWorkload;
 import org.cloudbus.cloudsim.hosts.HostStateHistoryEntry;
+import org.cloudbus.cloudsim.resources.Resource;
+import org.cloudbus.cloudsim.resources.ResourceManageable;
 import org.cloudbus.cloudsim.vms.Vm;
 import org.cloudsimplus.listeners.EventListener;
 import org.cloudsimplus.listeners.HostUpdatesVmsProcessingEventInfo;
@@ -80,6 +82,7 @@ public interface PowerHost extends HostDynamicWorkload {
      * objects.
      */
     PowerHost NULL = new PowerHost() {
+        @Override public List<ResourceManageable> getResources() { return Collections.emptyList(); }
         @Override public int compareTo(Host o) { return 0; }
         @Override public double getEnergyLinearInterpolation(double fromUtilization, double toUtilization, double time) { return 0; }
         @Override public double getMaxPower() { return 0; }
@@ -104,7 +107,7 @@ public interface PowerHost extends HostDynamicWorkload {
         @Override public List<Double> getAllocatedMipsForVm(Vm vm) { return Collections.EMPTY_LIST; }
         @Override public double getAvailableMips() { return 0; }
         @Override public long getAvailableStorage() { return 0; }
-        @Override public long getBwCapacity() { return 0; }
+        @Override public Resource getBw() { return Resource.NULL; }
         @Override public ResourceProvisioner getBwProvisioner() { return ResourceProvisioner.NULL; }
         @Override public Host setBwProvisioner(ResourceProvisioner bwProvisioner) { return Host.NULL; }
         @Override public Datacenter getDatacenter() { return Datacenter.NULL; }
@@ -112,10 +115,10 @@ public interface PowerHost extends HostDynamicWorkload {
         @Override public int getNumberOfFreePes() { return 0; }
         @Override public int getNumberOfPes() { return 0; }
         @Override public List<Pe> getPeList() { return Collections.EMPTY_LIST; }
-        @Override public long getRamCapacity() { return 0; }
+        @Override public Resource getRam() { return Resource.NULL; }
         @Override public ResourceProvisioner getRamProvisioner() { return ResourceProvisioner.NULL; }
         @Override public Host setRamProvisioner(ResourceProvisioner ramProvisioner) { return Host.NULL; }
-        @Override public long getStorageCapacity() { return 0; }
+        @Override public Resource getStorage() { return Resource.NULL; }
         @Override public double getTotalAllocatedMipsForVm(Vm vm) { return 0; }
         @Override public long getTotalMips() { return 0; }
         @Override public Vm getVm(int vmId, int brokerId) { return Vm.NULL; }
@@ -131,6 +134,7 @@ public interface PowerHost extends HostDynamicWorkload {
         @Override public boolean setFailed(boolean failed) { return false; }
         @Override public Simulation getSimulation() { return Simulation.NULL; }
         @Override public Host setSimulation(Simulation simulation) { return this; }
+        @Override public ResourceProvisioner getProvisioner(Class<? extends ResourceManageable> resourceClass) { return ResourceProvisioner.NULL; }
         @Override public boolean setPeStatus(int peId, Pe.Status status) { return false; }
         @Override public boolean vmCreate(Vm vm) { return false; }
         @Override public void destroyVm(Vm vm) {}

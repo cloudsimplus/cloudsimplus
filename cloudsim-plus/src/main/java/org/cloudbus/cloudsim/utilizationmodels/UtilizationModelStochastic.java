@@ -23,7 +23,7 @@ import java.util.Random;
  * @author Anton Beloglazov
  * @since CloudSim Toolkit 2.0
  */
-public class UtilizationModelStochastic implements UtilizationModel {
+public class UtilizationModelStochastic extends UtilizationModelAbstract {
 
 	/** The random generator. */
 	private Random randomGenerator;
@@ -36,6 +36,7 @@ public class UtilizationModelStochastic implements UtilizationModel {
 	 * Instantiates a new utilization model stochastic.
 	 */
 	public UtilizationModelStochastic() {
+	    super();
 		setHistory(new HashMap<>());
 		setRandomGenerator(new Random());
 	}
@@ -46,6 +47,7 @@ public class UtilizationModelStochastic implements UtilizationModel {
 	 * @param seed the seed
 	 */
 	public UtilizationModelStochastic(long seed) {
+        super();
 		setHistory(new HashMap<>());
 		setRandomGenerator(new Random(seed));
 	}
@@ -61,7 +63,7 @@ public class UtilizationModelStochastic implements UtilizationModel {
 		return utilization;
 	}
 
-	/**
+    /**
 	 * Gets the utilization history.
 	 *
 	 * @return the history
