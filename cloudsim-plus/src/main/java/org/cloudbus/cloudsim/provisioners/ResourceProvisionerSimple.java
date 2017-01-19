@@ -36,13 +36,22 @@ public class ResourceProvisionerSimple extends ResourceProvisionerAbstract {
     }
 
     @Override
-    public boolean allocateResourceForVm(Vm vm, long newTotalVmResource) {
+    public boolean allocateResourceForVm(Vm vm, long newTotalVmResourceCapacity) {
         Objects.requireNonNull(vm);
-        if (isSuitableForVm(vm, newTotalVmResource)) {
-            deallocateResourceForVm(vm);
-            getResource().allocateResource(newTotalVmResource);
-            getResourceAllocationMap().put(vm, newTotalVmResource);
-            vm.allocateResource(getResourceClass(), newTotalVmResource);
+        if (isSuitableForVm(vm, newTotalVmResourceCapacity)) {
+            final long previousVmResourceAllocation = vm.getResource(getResourceClass()).getAllocatedResource();
+            if (getResourceAllocationMap().containsKey(vm)) {
+                //Deallocates any amount of the resource assigned to the Vm in order to allocate a new capacity
+                deallocateResourceForVm(vm);
+            }
+
+            if(!vm.getResource(getResourceClass()).setCapacity(newTotalVmResourceCapacity)){
+                return false;
+            }
+            //Allocates the requested resource from the physical resource
+            getResource().allocateResource(newTotalVmResourceCapacity);
+            getResourceAllocationMap().put(vm, newTotalVmResourceCapacity);
+            vm.getResource(getResourceClass()).setAllocatedResource(previousVmResourceAllocation);
             return true;
         }
 
@@ -66,8 +75,11 @@ public class ResourceProvisionerSimple extends ResourceProvisionerAbstract {
         if (getResourceAllocationMap().containsKey(vm)) {
             final long vmAllocatedResource = getResourceAllocationMap().get(vm);
             getResourceAllocationMap().put(vm, 0L);
-            getResource().deallocateResource(vmAllocatedResource);
+            //Deallocates the virtual resource the VM was using
             vm.deallocateResource(getResourceClass());
+
+            //Deallocates the virtual resource from the physical resource
+            getResource().deallocateResource(vmAllocatedResource);
             return vmAllocatedResource;
         }
 

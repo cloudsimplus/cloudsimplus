@@ -6,16 +6,31 @@ Lists the main changes in the project.
 
 ### Added
 
+- [Vertical VM Scaling Mechanism](/cloudsim-plus-examples/src/main/java/org/cloudsimplus/examples/VerticalVmScalingExample.java) 
+  for VM resources such as Ram, Bandwidth and PEs (CPUs).
 - double getUtilization() method in the UtilizationModel class to get the utilization percentage of a given resource
   at the current simulation time.
-- double getTotalUtilizationOfRam() in the Vm class to get the percentage of RAM utilization from a Vm.
-  The RAM utilization is get from the current running Cloudlets of the CloudletScheduler used for the Vm.
-- Vertical Scaling mechamnism for VM resources such as Ram, Bandwidth and PEs (CPUs).
+- Methods getUtilizationOfRam(), getUtilizationOfBW(), getUtilizationOfCpu() added to Cloudlet in order
+  to get utilization percentage of RAM, BW and CPU, respectivelly, for the current simulation time.
+- UtilizationModel.Unit enum to define the measure unit in which a Cloudlet resource, to which a UtilizationModel is associated to,
+  will be used. The enum values can be PERCENTAGE or ABSOLUTE, that respectivelly defines that the Cloudlet resource usage
+  will be in percentage or absolute values. The existing UtilizationModels continue to define the value in percentage,
+  as describe in their documentation. The UtilizationModelArithmeticProgression allows setting a diferent unit
+  for such an UtilizationModel.
+
 
 ### Changed
 
-- Changed the methods getRam(), getBw() and getSize() from Vm interface to instead of returning a long value that represents the resource capacity,
+- Changed the methods `getRam()`, `getBw()` and `getSize()` from Vm interface to instead of returning a long value that represents the resource capacity,
   to return an actual Resource object that provides information about the capacity and usage. The method getSize() was renamed to getStorage().
+- Changed the methods `getRamCapacity()`, `getBwCapacity()` and `getStorageCapacity()` from Host interface to instead of returning a long value that represents the resource capacity, to return an actual Resource object that provides information about the capacity and usage. The methods were renamed, removing the "Capacity" suffix.
+
+- The `DatacenterBroker` interfaces now allows using Java 8 Lambda Expressions to define selection policies.
+  - It provides a functional way of defining the policies to select a Datacenter to host a Vm, a fallback Datacenter when the creation of requested VMs failed in the previous   selected Datacenter and to select a VM to run a Cloudlet.
+  - The DatacenterBrokerSimple is yet selecting the first Datacenter to place VMs and uses a round-robin policy to select a VM to run the Cloudlets. If such behaviours needs to be changed, it is not required to create a new DatacenterBroker class. 
+  - Since there are 3 selection policies to override (the selection of default datacenter, fallback datacenter and VM), the combination of different implementations for these 3 policies will require creation of several DatacenterBroker implementations that will be impossible to maintain.
+  - As an example, consider that you have 3 different implementations for these 3 policies and you want to make all the possible combinations of these policies. That will require you to create 27 different implementations of a DatacenterBroker (3 policies ^ 3 implementations for each one).
+  - Using the new functional implementation there is no need to create a new DatacenterBroker class and the implementations can be exchanged just using the new `setDatacenterSupplier`, `setFallbackDatacenterSupplier` and `setVmMapper` methods, passing a Lambda Expression to them.
 
 ## [v1.1.0] - 2017-01-14
 

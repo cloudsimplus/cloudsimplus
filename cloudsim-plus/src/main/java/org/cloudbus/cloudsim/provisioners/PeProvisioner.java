@@ -28,14 +28,14 @@ public interface PeProvisioner extends ResourceProvisioner {
      * physical PE.
      *
      * @param vm the virtual machine for which the new virtual PE is being allocated
-     * @param mips the MIPS to be allocated to the virtual PE of the given VM
+     * @param mipsCapacity the MIPS to be allocated to the virtual PE of the given VM
      * @return $true if the virtual PE could be allocated; $false otherwise
      *
      * @pre $none
      * @post $none
      */
     @Override
-    boolean allocateResourceForVm(Vm vm, long mips);
+    boolean allocateResourceForVm(Vm vm, long mipsCapacity);
 
     /**
      * Gets the amount of allocated MIPS from the physical Pe to a virtual PE of a VM.
@@ -90,7 +90,7 @@ public interface PeProvisioner extends ResourceProvisioner {
      */
     PeProvisioner NULL = new PeProvisioner(){
         @Override public void setPe(Pe pe) {}
-        @Override public boolean allocateResourceForVm(Vm vm, long newTotalVmResource) { return false; }
+        @Override public boolean allocateResourceForVm(Vm vm, long newTotalVmResourceCapacity) { return false; }
         @Override public boolean allocateResourceForVm(Vm vm, double newTotalVmResource) { return false; }
         @Override public long getAllocatedResourceForVm(Vm vm) { return 0; }
         @Override public long getTotalAllocatedResource() { return 0; }

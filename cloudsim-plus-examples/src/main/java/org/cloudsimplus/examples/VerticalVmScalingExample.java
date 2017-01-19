@@ -87,7 +87,7 @@ import static java.util.Comparator.comparingDouble;
  * @author Manoel Campos da Silva Filho
  * @since CloudSim Plus 1.2
  */
-public class VmVerticalScalingExample {
+public class VerticalVmScalingExample {
     /**
      * The interval in which the Datacenter will schedule events.
      * As lower is this interval, sooner the processing of VMs and Cloudlets
@@ -110,6 +110,7 @@ public class VmVerticalScalingExample {
     private static final int HOST_PES = 4;
     private static final int VMS = 1;
     private static final int CLOUDLETS = 2;
+    public static final int VM_RAM = 1000;
     private final CloudSim simulation;
     private DatacenterBroker broker0;
     private List<Host> hostList;
@@ -122,13 +123,13 @@ public class VmVerticalScalingExample {
     private int createsVms;
 
     public static void main(String[] args) {
-        new VmVerticalScalingExample();
+        new VerticalVmScalingExample();
     }
 
     /**
      * Default constructor that builds the simulation scenario and starts the simulation.
      */
-    public VmVerticalScalingExample() {
+    public VerticalVmScalingExample() {
         /*You can remove the seed to get a dynamic one, based on current computer time.
         * With a dynamic seed you will get different results at each simulation run.*/
         final long seed = 1;
@@ -155,10 +156,13 @@ public class VmVerticalScalingExample {
 
     private void onClockTickListener(EventInfo eventInfo) {
         vmList.stream().forEach(vm -> {
-            Log.printFormatted("\t\tTime %3.0f: Vm %d Ram Usage: %6.2f%%",
-                eventInfo.getTime(), vm.getId(), vm.getTotalUtilizationOfRam()*100.0);
-            Log.printFormattedLine(" | Host Ram Allocation: %6.2f%%",
-                vm.getHost().getRam().getUtilization()*100.0);
+            Log.printFormatted("\t\tTime %6.1f: Vm %d Ram Usage: %6.2f%% (%4d of %4d MB)",
+                eventInfo.getTime(), vm.getId(), vm.getRam().getPercentUtilization()*100.0,
+                vm.getRam().getAllocatedResource(), vm.getRam().getCapacity());
+            Log.printFormattedLine(" | Host Ram Allocation: %6.2f%% (%5d of %5d MB)",
+                vm.getHost().getRam().getPercentUtilization()*100,
+                vm.getHost().getRam().getAllocatedResource(),
+                vm.getHost().getRam().getCapacity());
         });
     }
 
@@ -172,16 +176,19 @@ public class VmVerticalScalingExample {
     }
 
     private void createCloudletList() {
-        UtilizationModel ramUtilizationModel =
-            new UtilizationModelArithmeticProgression(0, 0.2);
+        UtilizationModelArithmeticProgression ramModel =
+            new UtilizationModelArithmeticProgression(UtilizationModel.Unit.ABSOLUTE);
+        ramModel.setInitialUtilization(200)
+                .setUtilizationIncrementPerSecond(0);
         for (int i = 0; i < CLOUDLETS; i++) {
-            cloudletList.add(createCloudlet(ramUtilizationModel));
+            cloudletList.add(createCloudlet(ramModel));
         }
 
-        ramUtilizationModel =
-            new UtilizationModelArithmeticProgression(0.01, 0.2)
-                .setMaxResourceUsagePercentage(0.8);
-        cloudletList.get(0).setUtilizationModelRam(ramUtilizationModel);
+        ramModel = new UtilizationModelArithmeticProgression(UtilizationModel.Unit.ABSOLUTE);
+        ramModel.setInitialUtilization(200)
+                .setUtilizationIncrementPerSecond(20)
+                .setMaxResourceUtilization(2000);
+        cloudletList.get(0).setUtilizationModelRam(ramModel);
     }
 
     /**
@@ -203,7 +210,7 @@ public class VmVerticalScalingExample {
             pesList.add(new PeSimple(1000, new PeProvisionerSimple()));
         }
 
-        ResourceProvisioner ramProvisioner = new ResourceProvisionerSimple(new Ram(20480));
+        ResourceProvisioner ramProvisioner = new ResourceProvisionerSimple(new Ram(20000));
         ResourceProvisioner bwProvisioner = new ResourceProvisionerSimple(new Bandwidth(100000));
         VmScheduler vmScheduler = new VmSchedulerTimeShared();
         final int id = hostList.size();
@@ -239,7 +246,7 @@ public class VmVerticalScalingExample {
      * @see #createListOfScalableVms(int)
      */
     private void createVerticalVmScaling(Vm vm) {
-        VerticalVmScaling verticalScaling = new VerticalVmScalingSimple(Ram.class, 1);
+        VerticalVmScaling verticalScaling = new VerticalVmScalingSimple(Ram.class, 0.5);
         verticalScaling.setOverloadPredicate(this::isVmRamOverloaded);
         vm.setRamVerticalScaling(verticalScaling);
     }
@@ -253,7 +260,7 @@ public class VmVerticalScalingExample {
      * @see #createVerticalVmScaling(Vm)
      */
     private boolean isVmRamOverloaded(Vm vm) {
-        return vm.getTotalUtilizationOfRam() > 0.7;
+        return vm.getRam().getPercentUtilization() > 0.7;
     }
 
     /**
@@ -264,7 +271,7 @@ public class VmVerticalScalingExample {
     private Vm createVm() {
         final int id = createsVms++;
         Vm vm = new VmSimple(id, 1000, 2)
-            .setRam(1000).setBw(1000).setSize(10000).setBroker(broker0)
+            .setRam(VM_RAM).setBw(1000).setSize(10000).setBroker(broker0)
             .setCloudletScheduler(new CloudletSchedulerTimeShared());
 
         return vm;

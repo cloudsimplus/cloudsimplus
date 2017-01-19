@@ -8,19 +8,22 @@
 
 package org.cloudbus.cloudsim.selectionpolicies.power;
 
-import java.util.List;
-
 import org.cloudbus.cloudsim.hosts.power.PowerHost;
-import org.cloudbus.cloudsim.vms.power.PowerVm;
 import org.cloudbus.cloudsim.vms.Vm;
+import org.cloudbus.cloudsim.vms.power.PowerVm;
+
+import java.util.Comparator;
+import java.util.List;
+import java.util.Optional;
+import java.util.function.Predicate;
 
 /**
  * A VM selection policy that selects for migration the VM with Minimum Utilization (MU)
  * of CPU.
- *
+ * <p>
  * <br/>If you are using any algorithms, policies or workload included in the power package please cite
  * the following paper:<br/>
- *
+ * <p>
  * <ul>
  * <li><a href="http://dx.doi.org/10.1002/cpe.1867">Anton Beloglazov, and Rajkumar Buyya, "Optimal Online Deterministic Algorithms and Adaptive
  * Heuristics for Energy and Performance Efficient Dynamic Consolidation of Virtual Machines in
@@ -32,27 +35,18 @@ import org.cloudbus.cloudsim.vms.Vm;
  * @since CloudSim Toolkit 3.0
  */
 public class PowerVmSelectionPolicyMinimumUtilization extends PowerVmSelectionPolicy {
-	@Override
-	public Vm getVmToMigrate(PowerHost host) {
-		List<PowerVm> migratableVms = getMigratableVms(host);
-		if (migratableVms.isEmpty()) {
-			return Vm.NULL;
-		}
+    @Override
+    public Vm getVmToMigrate(PowerHost host) {
+        List<? extends Vm> migratableVms = getMigratableVms(host);
+        if (migratableVms.isEmpty()) {
+            return Vm.NULL;
+        }
 
-		Vm vmToMigrate = Vm.NULL;
-		double minMetric = Double.MAX_VALUE;
-		for (Vm vm : migratableVms) {
-			if (vm.isInMigration()) {
-				continue;
-			}
-			double metric = vm.getTotalUtilizationOfCpuMips(host.getSimulation().clock()) / vm.getMips();
-                        if (metric < minMetric) {
-				minMetric = metric;
-				vmToMigrate = vm;
-			}
-		}
-
-		return vmToMigrate;
-	}
+        final Predicate<Vm> inMigration = Vm::isInMigration;
+        Optional<? extends Vm> optional = migratableVms.stream()
+            .filter(inMigration.negate())
+            .min(Comparator.comparingDouble(vm -> vm.getTotalUtilizationOfCpuMips(host.getSimulation().clock()) / vm.getTotalMipsCapacity()));
+        return (optional.isPresent() ? optional.get() : Vm.NULL);
+    }
 
 }

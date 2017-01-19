@@ -29,7 +29,7 @@ public class PowerVmListTest {
         IntStream.range(0, NUMBER_OF_VMS)
                 .forEach(i -> {
                     list[i] = EasyMock.createMock(CloudletScheduler.class);
-                    EasyMock.expect(list[i].getTotalUtilizationOfCpu(TIME))
+                    EasyMock.expect(list[i].getRequestedCpuPercentUtilization(TIME))
                             .andReturn(
                                     expectedCpuUtilizationPercentageForVm(
                                             i, ascendingCpuUtilization))

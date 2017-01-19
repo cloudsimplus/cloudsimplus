@@ -289,7 +289,7 @@ public class LoadBalancerByVmHorizontalScalingExample {
      * @see #createHorizontalVmScaling(Vm)
      */
     private boolean isVmOverloaded(Vm vm) {
-        return vm.getTotalUtilizationOfCpu() > 0.7;
+        return vm.getCurrentCpuPercentUse() > 0.7;
     }
 
     private Cloudlet createCloudlet() {

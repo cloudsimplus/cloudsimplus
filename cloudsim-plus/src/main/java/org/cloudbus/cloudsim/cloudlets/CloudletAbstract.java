@@ -7,20 +7,20 @@
  */
 package org.cloudbus.cloudsim.cloudlets;
 
+import org.cloudbus.cloudsim.brokers.DatacenterBroker;
+import org.cloudbus.cloudsim.core.Simulation;
+import org.cloudbus.cloudsim.core.UniquelyIdentificable;
+import org.cloudbus.cloudsim.datacenters.Datacenter;
+import org.cloudbus.cloudsim.utilizationmodels.UtilizationModel;
+import org.cloudbus.cloudsim.vms.Vm;
+import org.cloudsimplus.listeners.CloudletVmEventInfo;
+import org.cloudsimplus.listeners.EventListener;
+
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Objects;
-
-import org.cloudbus.cloudsim.core.UniquelyIdentificable;
-import org.cloudbus.cloudsim.datacenters.Datacenter;
-import org.cloudbus.cloudsim.vms.Vm;
-import org.cloudbus.cloudsim.brokers.DatacenterBroker;
-import org.cloudbus.cloudsim.core.Simulation;
-import org.cloudbus.cloudsim.utilizationmodels.UtilizationModel;
-import org.cloudsimplus.listeners.EventListener;
-import org.cloudsimplus.listeners.CloudletVmEventInfo;
 
 /**
  * A base class for {@link Cloudlet} implementations.
@@ -273,13 +273,13 @@ public abstract class CloudletAbstract implements Cloudlet {
     }
 
     @Override
-    public void setPriority(final int priority) {
-        this.priority = priority;
+    public int getPriority() {
+        return priority;
     }
 
     @Override
-    public int getPriority() {
-        return priority;
+    public void setPriority(final int priority) {
+        this.priority = priority;
     }
 
     @Override
@@ -341,7 +341,7 @@ public abstract class CloudletAbstract implements Cloudlet {
      * if it in fact has finished.
      */
     private void notifyListenersIfCloudletIsFinished() {
-        if(isFinished()) {
+        if (isFinished()) {
             CloudletVmEventInfo info = CloudletVmEventInfo.of(this);
             onCloudletFinishListeners.forEach(l -> l.update(info));
         }
@@ -367,11 +367,11 @@ public abstract class CloudletAbstract implements Cloudlet {
     }
 
     private ExecutionInDatacenterInfo getLastExecutionInDatacenterInfo() {
-        if(executionInDatacenterInfoList.isEmpty()) {
+        if (executionInDatacenterInfoList.isEmpty()) {
             return ExecutionInDatacenterInfo.NULL;
         }
 
-        return executionInDatacenterInfoList.get(executionInDatacenterInfoList.size()-1);
+        return executionInDatacenterInfoList.get(executionInDatacenterInfoList.size() - 1);
     }
 
     @Override
@@ -385,14 +385,14 @@ public abstract class CloudletAbstract implements Cloudlet {
     }
 
     @Override
-    public void setExecStartTime(final double clockTime) {
-        this.execStartTime = clockTime;
-        write("Sets the execution start time to %s", num.format(clockTime));
+    public double getExecStartTime() {
+        return execStartTime;
     }
 
     @Override
-    public double getExecStartTime() {
-        return execStartTime;
+    public void setExecStartTime(final double clockTime) {
+        this.execStartTime = clockTime;
+        write("Sets the execution start time to %s", num.format(clockTime));
     }
 
     @Override
@@ -426,15 +426,6 @@ public abstract class CloudletAbstract implements Cloudlet {
 
         this.status = newStatus;
         return true;
-    }
-
-    /**
-     * Sets the {@link #getFinishTime() finish time} of this cloudlet in the latest Datacenter.
-     *
-     * @param finishTime the finish time
-     */
-    protected final void setFinishTime(final double finishTime) {
-        this.finishTime = finishTime;
     }
 
     @Override
@@ -516,6 +507,15 @@ public abstract class CloudletAbstract implements Cloudlet {
     }
 
     /**
+     * Sets the {@link #getFinishTime() finish time} of this cloudlet in the latest Datacenter.
+     *
+     * @param finishTime the finish time
+     */
+    protected final void setFinishTime(final double finishTime) {
+        this.finishTime = finishTime;
+    }
+
+    /**
      * Writes a particular history transaction of this Cloudlet into a log.
      *
      * @param str a history transaction of this Cloudlet
@@ -523,7 +523,7 @@ public abstract class CloudletAbstract implements Cloudlet {
      * @post $none
      */
     protected void write(final String str) {
-        if(Objects.isNull(str)){
+        if (Objects.isNull(str)) {
             return;
         }
 
@@ -713,18 +713,33 @@ public abstract class CloudletAbstract implements Cloudlet {
     }
 
     @Override
+    public double getUtilizationOfCpu() {
+        return getUtilizationOfCpu(getSimulation().clock());
+    }
+
+    @Override
     public double getUtilizationOfCpu(final double time) {
         return getUtilizationModelCpu().getUtilization(time);
     }
 
     @Override
-    public double getUtilizationOfRam(final double time) {
-        return getUtilizationModelRam().getUtilization(time);
+    public double getUtilizationOfBw() {
+        return getUtilizationOfBw(getSimulation().clock());
     }
 
     @Override
     public double getUtilizationOfBw(final double time) {
         return getUtilizationModelBw().getUtilization(time);
+    }
+
+    @Override
+    public double getUtilizationOfRam() {
+        return getUtilizationOfRam(getSimulation().clock());
+    }
+
+    @Override
+    public double getUtilizationOfRam(final double time) {
+        return getUtilizationModelRam().getUtilization(time);
     }
 
     @Override
@@ -872,6 +887,29 @@ public abstract class CloudletAbstract implements Cloudlet {
         return broker.getSimulation();
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof CloudletAbstract)) return false;
+
+        CloudletAbstract that = (CloudletAbstract) o;
+
+        if (id != that.id) return false;
+        return broker.equals(that.broker);
+    }
+
+    @Override
+    public int hashCode() {
+        int result = id;
+        result = 31 * result + broker.hashCode();
+        return result;
+    }
+
+    @Override
+    public double getResponseTime() {
+        return getFinishTime() - getLastDatacenterArrivalTime();
+    }
+
     /**
      * Internal class that keeps track of Cloudlet's movement in different
      * {@link Datacenter Datacenters}. Each time a cloudlet is run on a given Datacenter, the cloudlet's
@@ -913,32 +951,9 @@ public abstract class CloudletAbstract implements Cloudlet {
          */
         Datacenter dc;
 
-        ExecutionInDatacenterInfo(){
+        ExecutionInDatacenterInfo() {
             this.dc = Datacenter.NULL;
             this.arrivalTime = NOT_ASSIGNED;
         }
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (!(o instanceof CloudletAbstract)) return false;
-
-        CloudletAbstract that = (CloudletAbstract) o;
-
-        if (id != that.id) return false;
-        return broker.equals(that.broker);
-    }
-
-    @Override
-    public int hashCode() {
-        int result = id;
-        result = 31 * result + broker.hashCode();
-        return result;
-    }
-
-    @Override
-    public double getResponseTime(){
-        return getFinishTime() - getLastDatacenterArrivalTime();
     }
 }

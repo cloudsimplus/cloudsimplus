@@ -247,6 +247,31 @@ public class VmSimple implements Vm {
     }
 
     @Override
+    public double getCurrentCpuPercentUse() {
+        return getCpuPercentUse(getSimulation().clock());
+    }
+
+    @Override
+    public double getCpuPercentUse(double time) {
+        return getCloudletScheduler().getRequestedCpuPercentUtilization(time);
+    }
+
+    @Override
+    public double getTotalUtilizationOfCpuMips(double time) {
+        return getCpuPercentUse(time) * getTotalMipsCapacity();
+    }
+
+    @Override
+    public double getCurrentRequestedMaxMips() {
+        return getCurrentRequestedMips().stream().mapToDouble(m->m).max().orElse(0.0);
+    }
+
+    @Override
+    public double getCurrentRequestedTotalMips() {
+        return getCurrentRequestedMips().stream().mapToDouble(m->m).sum();
+    }
+
+    @Override
     public List<Double> getCurrentRequestedMips() {
         List<Double> currentRequestedMips = getCloudletScheduler().getCurrentRequestedMips();
         if (!isCreated()) {
@@ -260,22 +285,12 @@ public class VmSimple implements Vm {
     }
 
     @Override
-    public double getCurrentRequestedTotalMips() {
-        return getCurrentRequestedMips().stream().mapToDouble(m->m).sum();
-    }
-
-    @Override
-    public double getCurrentRequestedMaxMips() {
-        return getCurrentRequestedMips().stream().mapToDouble(m->m).max().orElse(0.0);
-    }
-
-    @Override
     public long getCurrentRequestedBw() {
         if (!isCreated()) {
             return getBw().getCapacity();
         }
 
-        return (long) (getCloudletScheduler().getCurrentRequestedUtilizationOfBw() * getBw().getCapacity());
+        return (long) (getCloudletScheduler().getCurrentRequestedBwPercentUtilization() * getBw().getCapacity());
     }
 
     @Override
@@ -284,45 +299,7 @@ public class VmSimple implements Vm {
             return getRam().getCapacity();
         }
 
-        return (long) (getCloudletScheduler().getCurrentRequestedUtilizationOfRam() * getRam().getCapacity());
-    }
-
-    @Override
-    public double getTotalUtilizationOfCpu() {
-        return getTotalUtilizationOfCpu(getSimulation().clock());
-    }
-
-    @Override
-    public double getTotalUtilizationOfRam() {
-        return ram.getUtilization();
-    }
-
-    @Override
-    public double getTotalUtilizationOfCpu(double time) {
-        return getCloudletScheduler().getTotalUtilizationOfCpu(time);
-    }
-
-    /**
-     * Gets the total CPU utilization of all cloudlets running on this VM at the
-     * given time (in MIPS).
-     *
-     * @param time the time
-     * @return total cpu utilization in MIPS
-     * @see #getTotalUtilizationOfCpu(double)
-     *
-     * @todo @author manoelcampos Lets consider the UtilizationModelFull for CPU
-     * which defines that a cloudlet will use the entire CPU allocated to it all
-     * the time, for all of its PEs. So, lets say that the Vm has 2 PEs of 1000
-     * MIPS, that represents a total of 2000 MIPS capacity, and there is a
-     * Cloudlet that is using all these 2 PEs capacity. I think this method is
-     * supposed to return 2000, indicating that the entire VM MIPS capacity is
-     * being used. However, it will return only 1000. It has to be included some
-     * test cases do try figure out if the method is returning what it is
-     * supposed to return or not.
-     */
-    @Override
-    public double getTotalUtilizationOfCpuMips(double time) {
-        return getTotalUtilizationOfCpu(time) * getMips();
+        return (long) (getCloudletScheduler().getCurrentRequestedRamPercentUtilization() * getRam().getCapacity());
     }
 
     @Override

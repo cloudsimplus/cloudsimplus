@@ -85,16 +85,16 @@ public interface Vm extends UniquelyIdentificable, Delayable, Resourceful, Compa
     long getCurrentRequestedBw();
 
     /**
-     * Gets the current requested max mips among all virtual PEs.
+     * Gets the current requested max MIPS among all virtual {@link Pe PEs}.
      *
-     * @return the current requested max mips
+     * @return the current requested max MIPS
      */
     double getCurrentRequestedMaxMips();
 
     /**
-     * Gets the current requested mips.
+     * Gets a list of current requested MIPS of each virtual {@link Pe}.
      *
-     * @return the current requested mips
+     * @return the current requested MIPS of each Pe
      */
     List<Double> getCurrentRequestedMips();
 
@@ -106,20 +106,20 @@ public interface Vm extends UniquelyIdentificable, Delayable, Resourceful, Compa
     long getCurrentRequestedRam();
 
     /**
-     * Gets the current requested total mips. It is the sum of MIPS capacity
-     * requested for every VM's Pe.
+     * Gets the current requested total MIPS. It is the sum of MIPS capacity
+     * requested for every virtual {@link Pe}.
      *
-     * @return the current requested total mips
+     * @return the current requested total MIPS
      * @see #getCurrentRequestedMips()
      */
     double getCurrentRequestedTotalMips();
 
     /**
-     * Gets the Host where the Vm is or will be placed.
+     * Gets the {@link Host} where the Vm is or will be placed.
      * To know if the Vm was already created inside this Host,
      * call the {@link #isCreated()} method.
      *
-     * @return the host
+     * @return the Host
      * @see #isCreated()
      */
     Host getHost();
@@ -128,7 +128,7 @@ public interface Vm extends UniquelyIdentificable, Delayable, Resourceful, Compa
      * Gets the individual MIPS capacity of any VM's PE, considering that all
      * PEs have the same capacity.
      *
-     * @return the mips
+     * @return the MIPS
      */
     double getMips();
 
@@ -297,37 +297,29 @@ public interface Vm extends UniquelyIdentificable, Delayable, Resourceful, Compa
     List<VmStateHistoryEntry> getStateHistory();
 
     /**
-     * Gets total RAM utilization percentage (in scale from 0 to 1) of all Cloudlets running on this
-     * VM at the current simulation time.
-     *
-     * @return total utilization percentage for the current time, in scale from 0 to 1
-     */
-    double getTotalUtilizationOfRam();
-
-    /**
-     * Gets total CPU utilization percentage of all Clouddlets running on this
+     * Gets the CPU utilization percentage of all Clouddlets running on this
      * VM at the given time.
      *
      * @param time the time
      * @return total utilization percentage
      */
-    double getTotalUtilizationOfCpu(double time);
+    double getCpuPercentUse(double time);
 
     /**
-     * Gets total CPU utilization percentage (in scale from 0 to 1) of all Cloudlets running on this
-     * VM at the current simulation time.
+     * Gets the current CPU utilization percentage (in scale from 0 to 1) of all Cloudlets running on this
+     * VM.
      *
      * @return total utilization percentage for the current time, in scale from 0 to 1
      */
-    double getTotalUtilizationOfCpu();
+    double getCurrentCpuPercentUse();
 
     /**
-     * Gets the total CPU utilization (in scale from 0 to 1) of all cloudlets running on this VM at the
-     * given time (in MIPS).
+     * Gets the total CPU MIPS utilization of all PEs from all cloudlets running on this VM at the
+     * given time.
      *
-     * @param time the time
-     * @return total cpu utilization in MIPS, in scale from 0 to 1
-     * @see #getTotalUtilizationOfCpu(double)
+     * @param time the time to get the utilization
+     * @return total CPU utilization in MIPS
+     * @see #getCpuPercentUse(double)
      *
      */
     double getTotalUtilizationOfCpuMips(double time);
@@ -579,9 +571,8 @@ public interface Vm extends UniquelyIdentificable, Delayable, Resourceful, Compa
         @Override public Resource getRam() { return Resource.NULL; }
         @Override public Resource getStorage(){ return Resource.NULL; }
         @Override public List<VmStateHistoryEntry> getStateHistory() { return Collections.emptyList(); }
-        @Override public double getTotalUtilizationOfRam() { return 0; }
-        @Override public double getTotalUtilizationOfCpu(double time) { return 0.0; }
-        @Override public double getTotalUtilizationOfCpu() { return 0; }
+        @Override public double getCpuPercentUse(double time) { return 0.0; }
+        @Override public double getCurrentCpuPercentUse() { return 0; }
         @Override public double getTotalUtilizationOfCpuMips(double time) { return 0.0; }
         @Override public String getUid(){ return ""; }
         @Override public DatacenterBroker getBroker() { return DatacenterBroker.NULL; }

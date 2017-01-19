@@ -147,8 +147,8 @@ public class CloudletSchedulerTimeShared extends CloudletSchedulerAbstract {
     }
 
     @Override
-    public double getTotalUtilizationOfCpu(double time) {
-        final double vmTotalCpuUsagePercent = super.getTotalUtilizationOfCpu(time);
+    public double getRequestedCpuPercentUtilization(double time) {
+        final double vmTotalCpuUsagePercent = super.getRequestedCpuPercentUtilization(time);
 
         /**
          * Due the the oversimplification performed by the
@@ -180,34 +180,6 @@ public class CloudletSchedulerTimeShared extends CloudletSchedulerAbstract {
     private double getTotalPesFromAllRunningCloudlets() {
         return getCloudletExecList().stream()
                 .mapToDouble(CloudletExecutionInfo::getNumberOfPes)
-                .sum();
-    }
-
-    @Override
-    public double getTotalCurrentAllocatedMipsForCloudlet(CloudletExecutionInfo rcl, double time) {
-        /* @todo @author manoelcampos The method is not implemented, in fact */
-        return 0.0;
-    }
-
-    @Override
-    public double getTotalCurrentRequestedMipsForCloudlet(CloudletExecutionInfo rcl, double time) {
-        /* @todo @author manoelcampos The method is not implemented, in fact */
-        return 0.0;
-    }
-
-    @Override
-    public double getCurrentRequestedUtilizationOfRam() {
-        final double time = getVm().getSimulation().clock();
-        return getCloudletExecList().stream()
-                .mapToDouble(rcl -> rcl.getCloudlet().getUtilizationOfRam(time))
-                .sum();
-    }
-
-    @Override
-    public double getCurrentRequestedUtilizationOfBw() {
-        final double time = getVm().getSimulation().clock();
-        return getCloudletExecList().stream()
-                .mapToDouble(rcl -> rcl.getCloudlet().getUtilizationOfBw(time))
                 .sum();
     }
 

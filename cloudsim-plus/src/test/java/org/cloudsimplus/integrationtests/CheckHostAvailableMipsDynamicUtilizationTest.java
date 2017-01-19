@@ -23,6 +23,7 @@
  */
 package org.cloudsimplus.integrationtests;
 
+import org.cloudbus.cloudsim.schedulers.cloudlet.CloudletSchedulerTimeShared;
 import org.cloudbus.cloudsim.util.Log;
 import org.cloudbus.cloudsim.hosts.Host;
 import org.cloudbus.cloudsim.brokers.DatacenterBroker;
@@ -32,7 +33,6 @@ import org.cloudsimplus.builders.SimulationScenarioBuilder;
 import org.cloudbus.cloudsim.core.CloudSim;
 import org.cloudsimplus.listeners.EventListener;
 import org.cloudsimplus.listeners.HostUpdatesVmsProcessingEventInfo;
-import org.cloudbus.cloudsim.schedulers.cloudlet.CloudletSchedulerDynamicWorkload;
 import org.cloudbus.cloudsim.schedulers.vm.VmSchedulerSpaceShared;
 import org.cloudsimplus.builders.tables.CloudletsTableBuilderHelper;
 import org.cloudbus.cloudsim.utilizationmodels.UtilizationModelArithmeticProgression;
@@ -103,7 +103,7 @@ public final class CheckHostAvailableMipsDynamicUtilizationTest {
         brokerBuilder.getVmBuilder()
                 .setRam(1000).setBw(100000)
                 .setPes(VM_PES).setMips(VM_MIPS).setSize(50000)
-                .setCloudletSchedulerSupplier(() -> new CloudletSchedulerDynamicWorkload(VM_MIPS,VM_PES))
+                .setCloudletSchedulerSupplier(() -> new CloudletSchedulerTimeShared())
                 .createAndSubmitVms(NUMBER_OF_VMS);
 
         utilizationModel = new UtilizationModelArithmeticProgression(0.0, 0.25);

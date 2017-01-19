@@ -105,30 +105,6 @@ public class CloudletSchedulerSpaceShared extends CloudletSchedulerAbstract {
         return Processor.fromMipsList(mipsShare).getCapacity();
     }
 
-    @Override
-    public double getTotalCurrentAllocatedMipsForCloudlet(CloudletExecutionInfo rcl, double time) {
-        //@todo the method isn't in fact implemented
-        return 0.0;
-    }
-
-    @Override
-    public double getTotalCurrentRequestedMipsForCloudlet(CloudletExecutionInfo rcl, double time) {
-        //@todo the method isn't in fact implemented
-        return 0.0;
-    }
-
-    @Override
-    public double getCurrentRequestedUtilizationOfRam() {
-        //@todo the method isn't in fact implemented
-        return 0;
-    }
-
-    @Override
-    public double getCurrentRequestedUtilizationOfBw() {
-        //@todo the method isn't in fact implemented
-        return 0;
-    }
-
     /**
      * The space-shared scheduler <b>does not</b> share the CPU time between
      * executing cloudlets. Each CPU ({@link Pe}) is used by another Cloudlet

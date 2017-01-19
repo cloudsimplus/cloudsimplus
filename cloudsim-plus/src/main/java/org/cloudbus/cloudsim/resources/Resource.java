@@ -61,7 +61,6 @@ public interface Resource extends ResourceCapacity {
         return isResourceAmountAvailable(resource.getCapacity());
     }
 
-
     /**
      * Checks if there is a specific amount of resource available (free),
      * where such amount is a double value that will be converted to long.
@@ -89,7 +88,7 @@ public interface Resource extends ResourceCapacity {
      * It is the percentage of the total resource capacity that is currently allocated.
      * @return current resource utilization (allocation) percentage in scale from 0 to 1
      */
-    default double getUtilization() {
+    default double getPercentUtilization() {
         return getCapacity() > 0 ? getAllocatedResource() / (double)getCapacity() : 0.0;
     }
 

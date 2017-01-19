@@ -41,6 +41,8 @@ public class CloudSim implements Simulation {
      * A constant to indicate that some entity was not found.
      */
     private static final int NOT_FOUND = -1;
+    private final Queue<Double> circularQueue;
+    private double lastNotification;
 
     /**
      * @see #getNetworkTopology()
@@ -169,6 +171,8 @@ public class CloudSim implements Simulation {
         this.onEventProcessingListeners = new ArrayList<>();
         this.onSimulationPausedListeners = new ArrayList<>();
         this.onClockTickListeners = new ArrayList<>();
+        this.circularQueue = new PriorityQueue<>(3);
+        this.lastNotification = 0;
 
         // NOTE: the order for the lines below is important
         this.calendar = (Objects.isNull(calendar) ? Calendar.getInstance() : calendar);

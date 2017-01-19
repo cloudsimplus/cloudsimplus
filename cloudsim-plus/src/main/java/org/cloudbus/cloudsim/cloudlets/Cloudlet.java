@@ -405,28 +405,67 @@ public interface Cloudlet extends UniquelyIdentificable, Delayable, Comparable<C
     UtilizationModel getUtilizationModelRam();
 
     /**
-     * Gets the utilization percentage of bw at a given time (in scale from [0 to 1])..
+     * Gets the utilization of Bandwidth at a given time, that is defined in
+     * percentage or absolute values, depending of the {@link UtilizationModel#getUnit()}
+     * defined for the {@link #getUtilizationModelBw()} ()}.
      *
-     * @param time the time
-     * @return the utilization percentage of bw, from [0 to 1]
+     * @param time the time to get the utilization
+     * @return the utilization value
+     * @see #getUtilizationModelBw() ()
      */
     double getUtilizationOfBw(final double time);
 
     /**
-     * Gets the utilization percentage of cpu at a given time (in scale from [0 to 1]).
+     * Gets the utilization of CPU at a given time, that is defined in
+     * percentage or absolute values, depending of the {@link UtilizationModel#getUnit()}
+     * defined for the {@link #getUtilizationModelCpu()}.
      *
-     * @param time the time
-     * @return the utilization percentage of cpu, from [0 to 1]
+     * @param time the time to get the utilization
+     * @return the utilization value
+     * @see #getUtilizationModelCpu()
      */
     double getUtilizationOfCpu(final double time);
 
     /**
-     * Gets the utilization percentage of memory at a given time (in scale from [0 to 1])..
+     * Gets the utilization of RAM at a given time, that is defined in
+     * percentage or absolute values, depending of the {@link UtilizationModel#getUnit()}
+     * defined for the {@link #getUtilizationModelRam()} ()}.
      *
-     * @param time the time
-     * @return the utilization percentage of memory, from [0 to 1]
+     * @param time the time to get the utilization
+     * @return the utilization value
+     * @see #getUtilizationModelRam() ()
      */
     double getUtilizationOfRam(final double time);
+
+    /**
+     * Gets the utilization of Bandwidth at the current simulation time, that is defined in
+     * percentage or absolute values, depending of the {@link UtilizationModel#getUnit()}
+     * set for the {@link #getUtilizationModelBw() BW utilizaton model}.
+     *
+     * @return the utilization value
+     * @see #getUtilizationModelCpu()
+     */
+    double getUtilizationOfBw();
+
+    /**
+     * Gets the utilization of CPU at the current simulation time, that is defined in
+     * percentage or absolute values, depending of the {@link UtilizationModel#getUnit()}
+     * set for the {@link #getUtilizationModelCpu() CPU utilizaton model}.
+     *
+     * @return the utilization value
+     * @see #getUtilizationModelCpu()
+     */
+    double getUtilizationOfCpu();
+
+    /**
+     * Gets the utilization of RAM at the current simulation time, that is defined in
+     * percentage or absolute values, depending of the {@link UtilizationModel#getUnit()}
+     * set for the {@link #getUtilizationModelRam() RAM utilizaton model}.
+     *
+     * @return the utilization value
+     * @see #getUtilizationModelRam()
+     */
+    double getUtilizationOfRam();
 
     /**
      * Gets the id of Vm that is planned to execute the cloudlet.
@@ -783,7 +822,6 @@ public interface Cloudlet extends UniquelyIdentificable, Delayable, Comparable<C
     /**
      * Gets the CloudSim instance that represents the simulation the Entity is related to.
      * @return
-     * @see #setSimulation(Simulation)
      */
     Simulation getSimulation();
 
@@ -829,6 +867,9 @@ public interface Cloudlet extends UniquelyIdentificable, Delayable, Comparable<C
         @Override public double getUtilizationOfBw(double time) { return 0.0; }
         @Override public double getUtilizationOfCpu(double time) { return 0.0; }
         @Override public double getUtilizationOfRam(double time) { return 0.0; }
+        @Override public double getUtilizationOfBw() { return 0; }
+        @Override public double getUtilizationOfCpu() { return 0; }
+        @Override public double getUtilizationOfRam() { return 0; }
         @Override public Vm getVm() { return Vm.NULL; }
         @Override public double getWaitingTime() { return 0.0; }
         @Override public double getWallClockTimeInLastExecutedDatacenter() { return 0.0; }

@@ -165,7 +165,7 @@ public class CloudletSchedulerTimeSharedTest {
         double time = 0.0;
         CloudletSchedulerTimeShared instance = new CloudletSchedulerTimeShared();
         double expResult = 0.0;
-        double result = instance.getTotalCurrentAllocatedMipsForCloudlet(rcl, time);
+        double result = instance.getAllocatedMipsForCloudlet(rcl, time);
         assertEquals(expResult, result, 0.0);
     }
 
@@ -175,7 +175,7 @@ public class CloudletSchedulerTimeSharedTest {
         double time = 0.0;
         CloudletSchedulerTimeShared instance = new CloudletSchedulerTimeShared();
         double expResult = 0.0;
-        double result = instance.getTotalCurrentRequestedMipsForCloudlet(rcl, time);
+        double result = instance.getRequestedMipsForCloudlet(rcl, time);
         assertEquals(expResult, result, 0.0);
     }
 
@@ -186,7 +186,7 @@ public class CloudletSchedulerTimeSharedTest {
                 createCloudletSchedulerWithListOfExecCloudlets(schedulerPes);
 
         double expResult = 1.0;
-        double result = instance.getCurrentRequestedUtilizationOfRam();
+        double result = instance.getCurrentRequestedRamPercentUtilization();
         assertEquals(expResult, result, 0.0);
     }
 
@@ -197,7 +197,7 @@ public class CloudletSchedulerTimeSharedTest {
                 createCloudletSchedulerWithListOfExecCloudlets(schedulerPes);
 
         double expResult = 1.0;
-        double result = instance.getCurrentRequestedUtilizationOfBw();
+        double result = instance.getCurrentRequestedBwPercentUtilization();
         assertEquals(expResult, result, 0.0);
     }
 
@@ -237,7 +237,7 @@ public class CloudletSchedulerTimeSharedTest {
         CloudletSchedulerTimeShared instance = newSchedulerWithSingleCoreRunningCloudlets(mips, numberOfPes, numberOfCloudlets);
 
         final double expected = 1;
-        assertEquals(expected, instance.getTotalUtilizationOfCpu(0), 0);
+        assertEquals(expected, instance.getRequestedCpuPercentUtilization(0), 0);
     }
 
     @Test
@@ -249,7 +249,7 @@ public class CloudletSchedulerTimeSharedTest {
         CloudletSchedulerTimeShared instance = newSchedulerWithSingleCoreRunningCloudlets(mips, numberOfPes, numberOfCloudlets);
 
         final double expected = 1;
-        assertEquals(expected, instance.getTotalUtilizationOfCpu(0), 0);
+        assertEquals(expected, instance.getRequestedCpuPercentUtilization(0), 0);
     }
 
     @Test
@@ -261,7 +261,7 @@ public class CloudletSchedulerTimeSharedTest {
         CloudletSchedulerTimeShared instance = newSchedulerWithSingleCoreRunningCloudlets(mips, numberOfPes, numberOfCloudlets);
 
         final double expected = 0.5;
-        assertEquals(expected, instance.getTotalUtilizationOfCpu(0), 0);
+        assertEquals(expected, instance.getRequestedCpuPercentUtilization(0), 0);
     }
 
     @Test
@@ -273,7 +273,7 @@ public class CloudletSchedulerTimeSharedTest {
         CloudletSchedulerTimeShared instance = newSchedulerWithSingleCoreRunningCloudlets(mips, numberOfPes, numberOfCloudlets);
 
         final double expected = 0.75;
-        assertEquals(expected, instance.getTotalUtilizationOfCpu(0), 0);
+        assertEquals(expected, instance.getRequestedCpuPercentUtilization(0), 0);
     }
 
     @Test
@@ -285,7 +285,7 @@ public class CloudletSchedulerTimeSharedTest {
         CloudletSchedulerTimeShared instance = newSchedulerWithSingleCoreRunningCloudlets(mips, numberOfPes, numberOfCloudlets);
 
         final double expected = 0.8;
-        assertEquals(expected, instance.getTotalUtilizationOfCpu(0), 0);
+        assertEquals(expected, instance.getRequestedCpuPercentUtilization(0), 0);
     }
 
     @Test
@@ -298,7 +298,7 @@ public class CloudletSchedulerTimeSharedTest {
         CloudletSchedulerTimeShared instance = newSchedulerWithRunningCloudlets(mips, numberOfVmPes, numberOfCloudlets, numberOfCloudletPes);
 
         final double expected = 1;
-        assertEquals(expected, instance.getTotalUtilizationOfCpu(0), 0);
+        assertEquals(expected, instance.getRequestedCpuPercentUtilization(0), 0);
     }
 
     @Test
@@ -311,7 +311,7 @@ public class CloudletSchedulerTimeSharedTest {
         CloudletSchedulerTimeShared instance = newSchedulerWithRunningCloudlets(mips, numberOfVmPes, numberOfCloudlets, numberOfCloudletPes);
 
         final double expected = 1;
-        assertEquals(expected, instance.getTotalUtilizationOfCpu(0), 0);
+        assertEquals(expected, instance.getRequestedCpuPercentUtilization(0), 0);
     }
 
     /**

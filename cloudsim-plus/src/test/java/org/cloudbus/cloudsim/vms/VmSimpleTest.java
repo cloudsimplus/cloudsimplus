@@ -10,8 +10,6 @@ import org.cloudbus.cloudsim.brokers.DatacenterBroker;
 import org.cloudbus.cloudsim.hosts.Host;
 import org.cloudbus.cloudsim.hosts.HostSimple;
 import org.cloudbus.cloudsim.hosts.HostSimpleTest;
-import org.cloudbus.cloudsim.schedulers.cloudlet.CloudletSchedulerAbstract;
-import org.cloudbus.cloudsim.schedulers.cloudlet.CloudletSchedulerDynamicWorkload;
 import static org.easymock.EasyMock.expect;
 import static org.easymock.EasyMock.replay;
 import static org.easymock.EasyMock.verify;
@@ -50,12 +48,12 @@ public class VmSimpleTest {
     private static final long BW = 10000;
     private static final long SIZE = 1000;
     private static final String VMM = "Xen";
-    private CloudletSchedulerDynamicWorkload vmScheduler;
+    private CloudletSchedulerTimeShared vmScheduler;
     private VmSimple vm;
 
     @Before
     public void setUp() throws Exception {
-        vmScheduler = new CloudletSchedulerDynamicWorkload(MIPS, PES_NUMBER);
+        vmScheduler = new CloudletSchedulerTimeShared();
         CloudSim cloudsim = CloudSimMocker.createMock(mocker -> mocker.clock(0));
         DatacenterBroker broker = Mocks.createMockBroker(cloudsim);
         vm = VmSimpleTest.createVm(vmScheduler);
@@ -307,7 +305,7 @@ public class VmSimpleTest {
 
     @Test
     public void testGetTotalUtilization() {
-        assertEquals(0, vm.getTotalUtilizationOfCpu(0), 0);
+        assertEquals(0, vm.getCpuPercentUse(0), 0);
     }
 
     @Test
@@ -363,7 +361,7 @@ public class VmSimpleTest {
         CloudletScheduler cloudletScheduler = createMock(CloudletScheduler.class);
         cloudletScheduler.setVm(EasyMock.anyObject());
         EasyMock.expectLastCall().once();
-        expect(cloudletScheduler.getCurrentRequestedUtilizationOfBw())
+        expect(cloudletScheduler.getCurrentRequestedBwPercentUtilization())
                 .andReturn(currentBwUtilizationPercentage);
         replay(cloudletScheduler);
 
@@ -391,7 +389,7 @@ public class VmSimpleTest {
         CloudletScheduler  cloudletScheduler = createMock(CloudletScheduler.class);
         cloudletScheduler.setVm(EasyMock.anyObject());
         EasyMock.expectLastCall().once();
-        expect(cloudletScheduler.getCurrentRequestedUtilizationOfRam())
+        expect(cloudletScheduler.getCurrentRequestedRamPercentUtilization())
                 .andReturn(currentRamUtilizationPercentage);
         replay(cloudletScheduler);
 
@@ -435,7 +433,7 @@ public class VmSimpleTest {
         currentMips.add(MIPS);
         currentMips.add(MIPS);
 
-        CloudletSchedulerAbstract cloudletScheduler = createMock(CloudletSchedulerAbstract.class);
+        CloudletSchedulerTimeShared cloudletScheduler = createMock(CloudletSchedulerTimeShared.class);
         cloudletScheduler.setVm(EasyMock.anyObject());
         EasyMock.expectLastCall().once();
         expect(cloudletScheduler.getCurrentRequestedMips()).andReturn(currentMips);

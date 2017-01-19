@@ -7,7 +7,9 @@
  */
 package org.cloudbus.cloudsim.utilizationmodels;
 
+import org.cloudbus.cloudsim.cloudlets.Cloudlet;
 import org.cloudbus.cloudsim.core.Simulation;
+import org.cloudbus.cloudsim.vms.Vm;
 
 /**
  * The UtilizationModel interface needs to be implemented in order to provide a
@@ -18,14 +20,36 @@ import org.cloudbus.cloudsim.core.Simulation;
  * of attributing {@code null} to {@link UtilizationModel} variables.
  *
  * @author Anton Beloglazov
+ * @author Manoel Campos da Silva Filho
  * @since CloudSim Toolkit 2.0
  */
 public interface UtilizationModel {
+    /**
+     * Defines the unit of the resource utilization.
+     */
+    enum Unit {
+        /**
+         * Indicate that the resource utilization is defined in percentage values
+         * in scale from 0 to 1 (where 1 is 100%).
+         */
+        PERCENTAGE,
+        /**
+         * Indicate that the resource utilization is defined in absolute values.
+         */
+        ABSOLUTE
+    }
+
     /**
      * Gets the simulation that this UtilizationModel belongs to.
      * @return
      */
     Simulation getSimulation();
+
+    /**
+     * Gets the {@link Unit} in which the resource utilization is defined.
+     * @return
+     */
+    Unit getUnit();
 
     /**
      * Sets the simulation that this UtilizationModel belongs to.
@@ -35,18 +59,29 @@ public interface UtilizationModel {
     UtilizationModel setSimulation(Simulation simulation);
 
     /**
-     * Gets the utilization percentage of a given resource (in scale from [0 to 1]).
+     * Gets the <b>expected</b> utilization of resource at a given simulation time.
+     * Such a value can be a percentage in scale from [0 to 1] or an absolute value,
+     * depending on the {@link #getUnit()}.
+     *
+     * <p><b>It is an expected usage value because the actual {@link Cloudlet} resource usage
+     * depends on the available {@link Vm} resource.</b></p>
      *
      * @param time the time to get the resource usage.
-     * @return utilization percentage, from [0 to 1]
+     * @return the resource utilization at the given time
+     * @see #getUnit()
      */
     double getUtilization(double time);
 
     /**
-     * Gets the utilization percentage of a given resource (in scale from [0 to 1])
-     * at the current simulation time.
+     * Gets the <b>expected</b> utilization of resource at the current simulation time.
+     * Such a value can be a percentage in scale from [0 to 1] or an absolute value,
+     * depending on the {@link #getUnit()}.
      *
-     * @return utilization percentage, from [0 to 1]
+     * <p><b>It is an expected usage value because the actual {@link Cloudlet} resource usage
+     * depends on the available {@link Vm} resource.</b></p>
+     *
+     * @return the current resource utilization
+     * @see #getUnit()
      */
     double getUtilization();
 
@@ -56,6 +91,7 @@ public interface UtilizationModel {
      */
     UtilizationModel NULL = new UtilizationModel() {
         @Override public Simulation getSimulation() { return Simulation.NULL; }
+        @Override public Unit getUnit() { return Unit.PERCENTAGE; }
         @Override public UtilizationModel setSimulation(Simulation simulation) { return this; }
         @Override public double getUtilization(double time) { return 0; }
         @Override public double getUtilization() { return 0; }

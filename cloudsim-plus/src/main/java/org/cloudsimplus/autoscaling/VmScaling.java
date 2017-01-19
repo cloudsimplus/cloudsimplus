@@ -88,7 +88,7 @@ public interface VmScaling {
      *                  The predicate receives the Vm to allow the predicate
      *                  to define the over utilization condition.
      *                  Such a condition can be defined, for instance,
-     *                  based on Vm's {@link Vm#getTotalUtilizationOfCpu(double)} CPU usage}.
+     *                  based on Vm's {@link Vm#getCpuPercentUse(double)} CPU usage}.
      * @return
      */
     VmScaling setOverloadPredicate(Predicate<Vm> predicate);

@@ -24,12 +24,12 @@
 package org.cloudsimplus.examples.migration;
 
 import org.cloudbus.cloudsim.allocationpolicies.power.PowerVmAllocationPolicyMigrationWorstFitStaticThreshold;
+import org.cloudbus.cloudsim.schedulers.cloudlet.CloudletSchedulerTimeShared;
 import org.cloudbus.cloudsim.utilizationmodels.UtilizationModelArithmeticProgression;
 import java.util.ArrayList;
 import java.util.List;
 
 import org.cloudbus.cloudsim.cloudlets.Cloudlet;
-import org.cloudbus.cloudsim.schedulers.cloudlet.CloudletSchedulerDynamicWorkload;
 import org.cloudbus.cloudsim.cloudlets.CloudletSimple;
 import org.cloudbus.cloudsim.datacenters.Datacenter;
 import org.cloudbus.cloudsim.brokers.DatacenterBroker;
@@ -192,7 +192,7 @@ public class MigrationExample1 {
      * @return
      *
      * @todo @author manoelcampos The use of other CloudletScheduler instead
-     * of {@link CloudletSchedulerDynamicWorkload} makes the Host CPU usage
+     * of CloudletSchedulerDynamicWorkload makes the Host CPU usage
      * not be updated (and maybe VM CPU usage too).
      */
     public static PowerVm createVm(DatacenterBroker broker) {
@@ -200,7 +200,7 @@ public class MigrationExample1 {
         vm.setSchedulingInterval(1)
           .setRam(VM_RAM).setBw(VM_BW).setSize(VM_SIZE)
           .setBroker(broker)
-          .setCloudletScheduler(new CloudletSchedulerDynamicWorkload(VM_MIPS, VM_PES_NUM));
+          .setCloudletScheduler(new CloudletSchedulerTimeShared());
 
         Log.printConcatLine(
                 "#Requested creation of VM ", vm.getId(), " with ", VM_MIPS, " MIPS x ", VM_PES_NUM);
@@ -229,7 +229,7 @@ public class MigrationExample1 {
                         new UtilizationModelArithmeticProgression(0,
                                 cloudletInitialCpuUtilizationPercentage);
             }
-            cpuUtilizationModel.setMaxResourceUsagePercentage(maxCloudletCpuUtilizationPercentage);
+            cpuUtilizationModel.setMaxResourceUtilization(maxCloudletCpuUtilizationPercentage);
 
             Cloudlet c =
                 new CloudletSimple(

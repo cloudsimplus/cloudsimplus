@@ -38,125 +38,160 @@ public class UtilizationModelArithmeticProgression extends UtilizationModelAbstr
      */
     public static final double ONE_PERCENT = 0.1;
 
-    /**@see #getUtilizationPercentageIncrementPerSecond() */
-    private double utilizationPercentageIncrementPerSecond;
+    /**@see #getUtilizationIncrementPerSecond() */
+    private double utilizationIncrementPerSecond;
 
     /** @see #getInitialUtilization()  */
     private double initialUtilization = 0;
 
-    /** @see #getMaxResourceUsagePercentage() */
-    private double maxResourceUsagePercentage;
+    /** @see #getMaxResourceUtilization() */
+    private double maxResourceUtilization;
 
+    /**
+     * Creates a UtilizationModelArithmeticProgression that the resource utilization
+     * will be defined in {@link Unit#PERCENTAGE} values.
+     */
     public UtilizationModelArithmeticProgression() {
         super();
     }
 
-    public UtilizationModelArithmeticProgression(final double utilizationPercentageIncrementPerSecond) {
+    /**
+     * Creates a UtilizationModelArithmeticProgression that the resource utilization
+     * will be defined according to the given parameter.
+     *
+     * @param unit the {@link Unit} that determines how the resource is used (for instance, if
+     *             resource usage is defined in percentage of the Vm resource or in absolute values)
+     */
+    public UtilizationModelArithmeticProgression(Unit unit) {
+        super();
+        setUnit(unit);
+    }
+
+    public UtilizationModelArithmeticProgression(final double utilizationIncrementPerSecond) {
         this();
-        maxResourceUsagePercentage = Conversion.HUNDRED_PERCENT;
-        this.utilizationPercentageIncrementPerSecond = ONE_PERCENT;
-        setUtilizationPercentageIncrementPerSecond(utilizationPercentageIncrementPerSecond);
+        maxResourceUtilization = Conversion.HUNDRED_PERCENT;
+        this.utilizationIncrementPerSecond = ONE_PERCENT;
+        setUtilizationIncrementPerSecond(utilizationIncrementPerSecond);
     }
 
     /**
-     * Instantiates a UtilizationModelProgressive
-     * that sets the {@link #setUtilizationPercentageIncrementPerSecond(double) utilization increment}
+     * Instantiates a UtilizationModelProgressive,
+     * setting the {@link #setUtilizationIncrementPerSecond(double) utilization increment}
      * and the {@link #setInitialUtilization(double) initial utilization}
      *
-     * @param utilizationPercentageIncrementPerSecond
+     * @param utilizationIncrementPerSecond
      * @param initialUtilization
      */
     public UtilizationModelArithmeticProgression(
-            final double utilizationPercentageIncrementPerSecond,
-            final double initialUtilization) {
-        this(utilizationPercentageIncrementPerSecond);
+        final double utilizationIncrementPerSecond,
+        final double initialUtilization)
+    {
+        this(utilizationIncrementPerSecond);
         setInitialUtilization(initialUtilization);
     }
 
     @Override
     public double getUtilization(double time) {
-        double utilization = initialUtilization + (utilizationPercentageIncrementPerSecond * time);
+        final double utilization = initialUtilization + (utilizationIncrementPerSecond * time);
 
-        if(utilization <= 0)
+        if(utilization <= 0) {
             return 0;
+        }
 
-        if(utilization > maxResourceUsagePercentage)
-            return maxResourceUsagePercentage;
+        if(utilization > maxResourceUtilization) {
+            return maxResourceUtilization;
+        }
 
         return utilization;
     }
     /**
-     * Gets the utilization percentage to be incremented
+     * Gets the utilization to be incremented
      * at the total utilization returned by {@link #getUtilization(double)}
      * at every simulation second.
      *
-     * @return the utilization percentage increment
-     * @see #setUtilizationPercentageIncrementPerSecond(double)
+     * <p>Such a value can be a percentage in scale from [0 to 1] or an absolute value,
+     * depending on the {@link #getUnit()}.</p>
+     *
+     * @return the utilization increment
+     * @see #setUtilizationIncrementPerSecond(double)
      */
-    public double getUtilizationPercentageIncrementPerSecond() {
-        return utilizationPercentageIncrementPerSecond;
+    public double getUtilizationIncrementPerSecond() {
+        return utilizationIncrementPerSecond;
     }
 
     /**
-     * Sets the utilization percentage to be incremented
+     * Sets the utilization to be incremented
      * at the total utilization returned by {@link #getUtilization(double)}
      * at every simulation second.
      *
-     * @param utilizationPercentageIncrementPerSecond the utilization percentage increment
-     * to be set. For instance, if given the value 0.1, it means that every
+     * @param utilizationIncrementPerSecond the utilization increment to be set.
+     * Such a value can be a percentage in scale from [0 to 1] or an absolute value,
+     * depending on the {@link #getUnit()}. For instance, if the {@link #getUnit()} is set
+     * as {@link Unit#PERCENTAGE} and it is given the value 0.1, it means that every
      * simulation second, the total utilization will be incremented by 1%.
      * If set a negative value, the utilization will be decreased every second
-     * by the given percentage. If the value is set as 0, it means
-     * the utilization will be equals o the {@link #getInitialUtilization() initial utilization}
-     * all the time.
+     * by the given value. If the value is set as 0, it means
+     * the utilization will not change along the time.
      */
-    private void setUtilizationPercentageIncrementPerSecond(double utilizationPercentageIncrementPerSecond) {
-        if(utilizationPercentageIncrementPerSecond > 1)
-           throw new IllegalArgumentException("utilizationPercentageIncrementPerSecond cannot be greater than 1 (100%)");
-        if(utilizationPercentageIncrementPerSecond < -1)
-           throw new IllegalArgumentException("utilizationPercentageIncrementPerSecond cannot be lower than -1 (-100%)");
-        this.utilizationPercentageIncrementPerSecond = utilizationPercentageIncrementPerSecond;
+    public UtilizationModelArithmeticProgression setUtilizationIncrementPerSecond(double utilizationIncrementPerSecond) {
+        validateUtilizationField("utilizationIncrementPerSecond", utilizationIncrementPerSecond, Double.MIN_VALUE);
+        this.utilizationIncrementPerSecond = utilizationIncrementPerSecond;
+        return this;
     }
 
     /**
-     * Gets the initial percentage of resource
+     * Gets the initial utilization of resource
      * that cloudlets using this UtilizationModel will require
      * when they start to execute.
-     * @return the initial utilization percentage (in scale is from 0 to 1, where 1 is 100%)
+     *
+     * <p>Such a value can be a percentage in scale from [0 to 1] or an absolute value,
+     * depending on the {@link #getUnit()}.</p>
+     *
+     * @return the initial utilization
      */
     public double getInitialUtilization() {
         return initialUtilization;
     }
 
     /**
-     * Sets the initial percentage of resource
+     * Sets the initial utilization of resource
      * that cloudlets using this UtilizationModel will require
      * when they start to execute.
-     * @param initialUtilization initial utilization percentage (in scale is from 0 to 1, where 1 is 100%)
+     *
+     * <p>Such a value can be a percentage in scale from [0 to 1] or an absolute value,
+     * depending on the {@link #getUnit()}.</p>
+     *
+     * @param initialUtilization initial resource utilization
      */
-    private void setInitialUtilization(double initialUtilization) {
-        if(initialUtilization < 0 || initialUtilization > 1)
-           throw new IllegalArgumentException("initialUtilization must to be a percentage value between [0 and 1] (0 to 100%)");
-
+    public UtilizationModelArithmeticProgression setInitialUtilization(double initialUtilization) {
+        validateUtilizationField("initialUtilization", initialUtilization);
         this.initialUtilization = initialUtilization;
+        return this;
     }
 
     /**
-     * Gets the maximum percentage of resource of resource that will be used.
-     * @return the maximum resource usage percentage (in scale from [0 to 1], where 1 is equals 100%)
+     * Gets the maximum amount of resource that will be used.
+     *
+     * <p>Such a value can be a percentage in scale from [0 to 1] or an absolute value,
+     * depending on the {@link #getUnit()}.</p>
+     *
+     * @return the maximum resource utilization
      */
-    public double getMaxResourceUsagePercentage() {
-        return maxResourceUsagePercentage;
+    public double getMaxResourceUtilization() {
+        return maxResourceUtilization;
     }
 
     /**
-     * Sets the maximum percentage of resource of resource that will be used.
-     * @param maxResourceUsagePercentage the maximum resource usage percentage (in scale from ]0 to 1], where 1 is equals 100%)
+     * Sets the maximum amount of resource of resource that will be used.
+     *
+     * <p>Such a value can be a percentage in scale from [0 to 1] or an absolute value,
+     * depending on the {@link #getUnit()}.</p>
+     *
+     * @param maxResourceUsagePercentage the maximum resource usage
      */
-    public UtilizationModelArithmeticProgression setMaxResourceUsagePercentage(double maxResourceUsagePercentage) {
-        if(maxResourceUsagePercentage <= 0 || maxResourceUsagePercentage > 1)
-           throw new IllegalArgumentException("maxResourceUsagePercentagen must to be a percentage value between ]0 and 1]");
-        this.maxResourceUsagePercentage = maxResourceUsagePercentage;
+    public UtilizationModelArithmeticProgression setMaxResourceUtilization(double maxResourceUsagePercentage) {
+        validateUtilizationField("maxResourceUtilization", maxResourceUsagePercentage, ALMOST_ZERO);
+        this.maxResourceUtilization = maxResourceUsagePercentage;
         return this;
     }
 }

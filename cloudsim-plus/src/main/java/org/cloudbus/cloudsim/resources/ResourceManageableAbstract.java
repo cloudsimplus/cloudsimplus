@@ -107,7 +107,7 @@ public abstract class ResourceManageableAbstract implements ResourceManageable {
             return false;
         }
 
-        final Long newAvailableResource = getAvailableResource() - amountToAllocate;
+        final long newAvailableResource = getAvailableResource() - amountToAllocate;
 
         return setAvailableResource(newAvailableResource);
     }
@@ -167,5 +167,10 @@ public abstract class ResourceManageableAbstract implements ResourceManageable {
     @Override
     public boolean isFull() {
         return availableResource == 0;
+    }
+
+    @Override
+    public String toString() {
+        return String.format("%s: used %d of %d", getClass().getSimpleName(), getAllocatedResource(), getCapacity());
     }
 }

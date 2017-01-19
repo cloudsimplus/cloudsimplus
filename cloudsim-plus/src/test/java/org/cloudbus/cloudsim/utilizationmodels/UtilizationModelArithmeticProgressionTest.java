@@ -70,7 +70,7 @@ public class UtilizationModelArithmeticProgressionTest {
             final double utilizationPercentageIncrement,
             final double maxUtilizationPercentage,
             UtilizationModelArithmeticProgression instance) {
-        instance.setMaxResourceUsagePercentage(maxUtilizationPercentage);
+        instance.setMaxResourceUtilization(maxUtilizationPercentage);
         IntStream.rangeClosed(0, 400).forEach(time -> {
             double expResult =
                     computeExpectedUtilization(
@@ -96,11 +96,11 @@ public class UtilizationModelArithmeticProgressionTest {
 
     @Test
     public void testGetSetUtilizationPercentageIncrementPerSecond() {
-        System.out.println("getUtilizationPercentageIncrementPerSecond");
+        System.out.println("getUtilizationIncrementPerSecond");
         double expResult = 0.1;
         UtilizationModelArithmeticProgression instance =
                 new UtilizationModelArithmeticProgression(expResult);
-        assertEquals(expResult, instance.getUtilizationPercentageIncrementPerSecond(), 0.0);
+        assertEquals(expResult, instance.getUtilizationIncrementPerSecond(), 0.0);
     }
 
     @Test
@@ -108,7 +108,7 @@ public class UtilizationModelArithmeticProgressionTest {
         UtilizationModelArithmeticProgression instance =
                 new UtilizationModelArithmeticProgression();
         assertEquals(UtilizationModelArithmeticProgression.ONE_PERCENT,
-                instance.getUtilizationPercentageIncrementPerSecond(), 0.0);
+                instance.getUtilizationIncrementPerSecond(), 0.0);
     }
 
     @Test
@@ -116,7 +116,7 @@ public class UtilizationModelArithmeticProgressionTest {
         double expResult = -0.1;
         UtilizationModelArithmeticProgression instance =
                 new UtilizationModelArithmeticProgression(expResult);
-        assertEquals(expResult, instance.getUtilizationPercentageIncrementPerSecond(), 0.0);
+        assertEquals(expResult, instance.getUtilizationIncrementPerSecond(), 0.0);
     }
 
     @Test
@@ -124,7 +124,7 @@ public class UtilizationModelArithmeticProgressionTest {
         double zero = 0;
         UtilizationModelArithmeticProgression instance =
                 new UtilizationModelArithmeticProgression(zero);
-        assertEquals(zero, instance.getUtilizationPercentageIncrementPerSecond(), 0.0);
+        assertEquals(zero, instance.getUtilizationIncrementPerSecond(), 0.0);
     }
 
     @Test(expected = IllegalArgumentException.class)
@@ -172,31 +172,31 @@ public class UtilizationModelArithmeticProgressionTest {
         UtilizationModelArithmeticProgression instance = new UtilizationModelArithmeticProgression();
         assertEquals(
                 Conversion.HUNDRED_PERCENT,
-                instance.getMaxResourceUsagePercentage(), 0);
+                instance.getMaxResourceUtilization(), 0);
 
         final double maxResourceUsagePercentage = 0.9;
-        instance.setMaxResourceUsagePercentage(maxResourceUsagePercentage);
-        assertEquals(maxResourceUsagePercentage, instance.getMaxResourceUsagePercentage(), 0);
+        instance.setMaxResourceUtilization(maxResourceUsagePercentage);
+        assertEquals(maxResourceUsagePercentage, instance.getMaxResourceUtilization(), 0);
 
     }
 
     @Test(expected = IllegalArgumentException.class)
     public void testSetMaxResourceUsagePercentage_valueGreaterThanOne() {
         UtilizationModelArithmeticProgression instance = new UtilizationModelArithmeticProgression();
-        instance.setMaxResourceUsagePercentage(1.1);
+        instance.setMaxResourceUtilization(1.1);
     }
 
     @Test(expected = IllegalArgumentException.class)
     public void testSetMaxResourceUsagePercentage_negativeValue() {
         UtilizationModelArithmeticProgression instance = new UtilizationModelArithmeticProgression();
-        instance.setMaxResourceUsagePercentage(-1);
-        instance.setMaxResourceUsagePercentage(-0.1);
+        instance.setMaxResourceUtilization(-1);
+        instance.setMaxResourceUtilization(-0.1);
     }
 
     @Test(expected = IllegalArgumentException.class)
     public void testSetMaxResourceUsagePercentage_zeroValue() {
         UtilizationModelArithmeticProgression instance = new UtilizationModelArithmeticProgression();
-        instance.setMaxResourceUsagePercentage(0);
+        instance.setMaxResourceUtilization(0);
     }
 
 }
