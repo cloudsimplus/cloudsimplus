@@ -155,14 +155,14 @@ public class VerticalVmScalingExample {
     }
 
     private void onClockTickListener(EventInfo eventInfo) {
-        vmList.stream().forEach(vm -> {
+        vmList.forEach(vm -> {
             Log.printFormatted("\t\tTime %6.1f: Vm %d Ram Usage: %6.2f%% (%4d of %4d MB)",
                 eventInfo.getTime(), vm.getId(), vm.getRam().getPercentUtilization()*100.0,
                 vm.getRam().getAllocatedResource(), vm.getRam().getCapacity());
-            Log.printFormattedLine(" | Host Ram Allocation: %6.2f%% (%5d of %5d MB)",
+            Log.printFormattedLine(" | Host Ram Allocation: %6.2f%% (%5d of %5d MB). Running Cloudlets: %d",
                 vm.getHost().getRam().getPercentUtilization()*100,
                 vm.getHost().getRam().getAllocatedResource(),
-                vm.getHost().getRam().getCapacity());
+                vm.getHost().getRam().getCapacity(), vm.getCloudletScheduler().getCloudletExecList().size());
         });
     }
 
@@ -178,15 +178,15 @@ public class VerticalVmScalingExample {
     private void createCloudletList() {
         UtilizationModelArithmeticProgression ramModel =
             new UtilizationModelArithmeticProgression(UtilizationModel.Unit.ABSOLUTE);
-        ramModel.setInitialUtilization(200)
+        ramModel.setInitialUtilization(100)
                 .setUtilizationIncrementPerSecond(0);
         for (int i = 0; i < CLOUDLETS; i++) {
             cloudletList.add(createCloudlet(ramModel));
         }
 
         ramModel = new UtilizationModelArithmeticProgression(UtilizationModel.Unit.ABSOLUTE);
-        ramModel.setInitialUtilization(200)
-                .setUtilizationIncrementPerSecond(20)
+        ramModel.setInitialUtilization(100)
+                .setUtilizationIncrementPerSecond(10)
                 .setMaxResourceUtilization(2000);
         cloudletList.get(0).setUtilizationModelRam(ramModel);
     }

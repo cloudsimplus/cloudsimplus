@@ -24,6 +24,7 @@
 package org.cloudbus.cloudsim.utilizationmodels;
 
 import org.cloudbus.cloudsim.util.Conversion;
+import org.cloudbus.cloudsim.util.Log;
 
 /**
  * An Cloudlet {@link UtilizationModel} that uses Arithmetic Progression
@@ -48,6 +49,11 @@ public class UtilizationModelArithmeticProgression extends UtilizationModelAbstr
     private double maxResourceUtilization;
 
     /**
+     * The time the utilization model was used for the first time.
+     */
+    private double startTime;
+
+    /**
      * Creates a UtilizationModelArithmeticProgression that the resource utilization
      * will be defined in {@link Unit#PERCENTAGE} values.
      */
@@ -69,8 +75,9 @@ public class UtilizationModelArithmeticProgression extends UtilizationModelAbstr
 
     public UtilizationModelArithmeticProgression(final double utilizationIncrementPerSecond) {
         this();
-        maxResourceUtilization = Conversion.HUNDRED_PERCENT;
+        this.maxResourceUtilization = Conversion.HUNDRED_PERCENT;
         this.utilizationIncrementPerSecond = ONE_PERCENT;
+        this.startTime = -1;
         setUtilizationIncrementPerSecond(utilizationIncrementPerSecond);
     }
 
@@ -92,18 +99,25 @@ public class UtilizationModelArithmeticProgression extends UtilizationModelAbstr
 
     @Override
     public double getUtilization(double time) {
-        final double utilization = initialUtilization + (utilizationIncrementPerSecond * time);
-
-        if(utilization <= 0) {
+        final double utilization = initialUtilization + (utilizationIncrementPerSecond * timeSpan(time));
+        if (utilization <= 0) {
             return 0;
         }
 
-        if(utilization > maxResourceUtilization) {
+        if (utilization > maxResourceUtilization && maxResourceUtilization > 0) {
             return maxResourceUtilization;
         }
 
         return utilization;
     }
+
+    private double timeSpan(double time) {
+        if(startTime <= -1){
+            startTime = time;
+        }
+        return time - startTime;
+    }
+
     /**
      * Gets the utilization to be incremented
      * at the total utilization returned by {@link #getUtilization(double)}
@@ -189,7 +203,7 @@ public class UtilizationModelArithmeticProgression extends UtilizationModelAbstr
      *
      * @param maxResourceUsagePercentage the maximum resource usage
      */
-    public UtilizationModelArithmeticProgression setMaxResourceUtilization(double maxResourceUsagePercentage) {
+    public final UtilizationModelArithmeticProgression setMaxResourceUtilization(double maxResourceUsagePercentage) {
         validateUtilizationField("maxResourceUtilization", maxResourceUsagePercentage, ALMOST_ZERO);
         this.maxResourceUtilization = maxResourceUsagePercentage;
         return this;
