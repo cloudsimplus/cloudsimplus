@@ -52,7 +52,7 @@ import org.cloudbus.cloudsim.selectionpolicies.power.PowerVmSelectionPolicyMinim
 import org.cloudbus.cloudsim.util.Log;
 import org.cloudbus.cloudsim.util.ResourceLoader;
 import org.cloudbus.cloudsim.utilizationmodels.UtilizationModel;
-import org.cloudbus.cloudsim.utilizationmodels.UtilizationModelArithmeticProgression;
+import org.cloudbus.cloudsim.utilizationmodels.UtilizationModelDynamic;
 import org.cloudbus.cloudsim.utilizationmodels.UtilizationModelFull;
 import org.cloudbus.cloudsim.vms.Vm;
 import org.cloudbus.cloudsim.vms.power.PowerVm;
@@ -190,7 +190,7 @@ public final class VmMigrationWhenCpuMetricIsViolatedExample {
     }
 
     public List<Cloudlet> createAndSubmitCloudlets(
-            double cloudletInitialCpuUtilizationPercentage,
+            double cloudletInitialCpuUsagePercent,
             double maxCloudletCpuUtilizationPercentage,
             Vm hostingVm,
             DatacenterBroker broker,
@@ -200,16 +200,13 @@ public final class VmMigrationWhenCpuMetricIsViolatedExample {
         int cloudletId;
         for (int i = 0; i < NUMBER_OF_CLOUDLETS_TO_CREATE_BY_VM; i++) {
             cloudletId = hostingVm.getId() + i;
-            UtilizationModelArithmeticProgression cpuUtilizationModel;
+            UtilizationModelDynamic cpuUtilizationModel;
             if (progressiveCpuUsage) {
                 cpuUtilizationModel
-                        = new UtilizationModelArithmeticProgression(
-                                CLOUDLET_CPU_USAGE_INCREMENT_PER_SECOND,
-                                cloudletInitialCpuUtilizationPercentage);
+                        = new UtilizationModelDynamic(cloudletInitialCpuUsagePercent)
+                            .setUtilizationIncrementFunction(this::getCpuUtilizationIncrement);
             } else {
-                cpuUtilizationModel
-                        = new UtilizationModelArithmeticProgression(0,
-                                cloudletInitialCpuUtilizationPercentage);
+                cpuUtilizationModel = new UtilizationModelDynamic(cloudletInitialCpuUsagePercent);
             }
             cpuUtilizationModel.setMaxResourceUtilization(maxCloudletCpuUtilizationPercentage);
 
@@ -231,6 +228,14 @@ public final class VmMigrationWhenCpuMetricIsViolatedExample {
         }
 
         return list;
+    }
+
+    /**
+     * Increments the CPU resource utilization, that is defined in percentage values.
+     * @return the new resource utilization after the increment
+     */
+    private double getCpuUtilizationIncrement(double timeSpan, double initialUtilization){
+        return  initialUtilization + CLOUDLET_CPU_USAGE_INCREMENT_PER_SECOND*timeSpan;
     }
 
     public List<Cloudlet> createAndSubmitCloudletsWithDynamicCpuUtilization(

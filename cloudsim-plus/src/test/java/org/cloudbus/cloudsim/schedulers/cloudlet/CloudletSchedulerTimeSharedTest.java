@@ -8,7 +8,7 @@ import org.cloudbus.cloudsim.cloudlets.CloudletSimple;
 import org.cloudbus.cloudsim.cloudlets.CloudletSimpleTest;
 import org.cloudbus.cloudsim.datacenters.Datacenter;
 import org.cloudbus.cloudsim.utilizationmodels.UtilizationModel;
-import org.cloudbus.cloudsim.utilizationmodels.UtilizationModelArithmeticProgression;
+import org.cloudbus.cloudsim.utilizationmodels.UtilizationModelDynamic;
 import org.cloudbus.cloudsim.vms.VmSimple;
 import org.easymock.EasyMock;
 import org.junit.Test;
@@ -21,14 +21,14 @@ import org.junit.Ignore;
  * @author Manoel Campos da Silva Filho
  */
 public class CloudletSchedulerTimeSharedTest {
-    private static final double CPU_UTILIZATION_INCREMENT = 0;
     private static final double CPU_INITIAL_UTILIZATION = 0.5;
     private UtilizationModel um;
 
     @Before
     public void setUp(){
-        um = new UtilizationModelArithmeticProgression(
-                CPU_UTILIZATION_INCREMENT, CPU_INITIAL_UTILIZATION);
+        //creates an utilization model that doesn't increment the usage along the time
+        um = new UtilizationModelDynamic(CPU_INITIAL_UTILIZATION)
+                 .setUtilizationIncrementFunction((timeSpan, initialUsage) -> initialUsage);
     }
 
     /**

@@ -4,19 +4,20 @@ import java.util.stream.IntStream;
 
 import org.cloudbus.cloudsim.util.Conversion;
 import org.junit.Test;
+import static org.cloudbus.cloudsim.utilizationmodels.UtilizationModel.Unit;
 import static org.junit.Assert.*;
 
 /**
  *
  * @author Manoel Campos da Silva Filho
  */
-public class UtilizationModelArithmeticProgressionTest {
+public class UtilizationModelDynamicTest {
 
     @Test
     public void testGetUtilization_defaultConstructor() {
         System.out.println("getUtilization");
         final double utilizationPercentageIncrement = 0.1, initialUtilization = 0;
-        UtilizationModelArithmeticProgression instance = new UtilizationModelArithmeticProgression();
+        UtilizationModelDynamic instance = new UtilizationModelDynamic();
         checkUtilization(initialUtilization, utilizationPercentageIncrement, instance);
     }
 
@@ -24,17 +25,21 @@ public class UtilizationModelArithmeticProgressionTest {
     public void testGetUtilization_twoParamConstructorDecreasingUtilization() {
         System.out.println("getUtilization");
         final double utilizationPercentageIncrement = -0.1, initialUtilization = 0.5;
-        UtilizationModelArithmeticProgression instance =
-                new UtilizationModelArithmeticProgression(utilizationPercentageIncrement, initialUtilization);
+        UtilizationModelDynamic instance = createUtilizationModel(utilizationPercentageIncrement, initialUtilization);
         checkUtilization(initialUtilization, utilizationPercentageIncrement, instance);
+    }
+
+    private UtilizationModelDynamic createUtilizationModel(double utilizationPercentageIncrement, double initialUtilization) {
+        return new UtilizationModelDynamic(initialUtilization)
+            .setUtilizationIncrementFunction((timeSpan, initialUsage) -> initialUsage + timeSpan*utilizationPercentageIncrement);
     }
 
     @Test
     public void testGetUtilization_oneParamConstructor() {
         System.out.println("getUtilization");
         final double utilizationPercentageIncrement = 0.2, initialUtilization = 0;
-        UtilizationModelArithmeticProgression instance =
-                new UtilizationModelArithmeticProgression(utilizationPercentageIncrement);
+        UtilizationModelDynamic instance =
+                new UtilizationModelDynamic(utilizationPercentageIncrement);
         checkUtilization(initialUtilization, utilizationPercentageIncrement, instance);
     }
 
@@ -42,8 +47,7 @@ public class UtilizationModelArithmeticProgressionTest {
     public void testGetUtilization_twoParamConstructor() {
         System.out.println("getUtilization");
         final double utilizationPercentageIncrement = 0.2, initialUtilization = 0.5;
-        UtilizationModelArithmeticProgression instance =
-                new UtilizationModelArithmeticProgression(utilizationPercentageIncrement, initialUtilization);
+        UtilizationModelDynamic instance = createUtilizationModel(utilizationPercentageIncrement, initialUtilization);
        checkUtilization(initialUtilization, utilizationPercentageIncrement, instance);
     }
 
@@ -52,16 +56,14 @@ public class UtilizationModelArithmeticProgressionTest {
         System.out.println("getUtilization");
         final double utilizationPercentageIncrement = 0.2, initialUtilization = 0.5;
         final double maxUtilizationPercentage = 0.7;
-        UtilizationModelArithmeticProgression instance =
-                new UtilizationModelArithmeticProgression(
-                        utilizationPercentageIncrement, initialUtilization);
+        UtilizationModelDynamic instance = createUtilizationModel(utilizationPercentageIncrement, initialUtilization);
        checkUtilization(
                initialUtilization, utilizationPercentageIncrement,
                maxUtilizationPercentage, instance);
     }
 
 
-    private void checkUtilization(final double initialUtilization, final double utilizationPercentageIncrement, UtilizationModelArithmeticProgression instance) {
+    private void checkUtilization(final double initialUtilization, final double utilizationPercentageIncrement, UtilizationModelDynamic instance) {
         checkUtilization(initialUtilization, utilizationPercentageIncrement,
                 Conversion.HUNDRED_PERCENT, instance);
     }
@@ -69,7 +71,7 @@ public class UtilizationModelArithmeticProgressionTest {
     private void checkUtilization(final double initialUtilization,
             final double utilizationPercentageIncrement,
             final double maxUtilizationPercentage,
-            UtilizationModelArithmeticProgression instance) {
+            UtilizationModelDynamic instance) {
         instance.setMaxResourceUtilization(maxUtilizationPercentage);
         IntStream.rangeClosed(0, 400).forEach(time -> {
             double expResult =
@@ -95,73 +97,53 @@ public class UtilizationModelArithmeticProgressionTest {
     }
 
     @Test
-    public void testGetSetUtilizationPercentageIncrementPerSecond() {
+    public void testGetUtilization1() {
         System.out.println("getUtilizationIncrementPerSecond");
-        double expResult = 0.1;
-        UtilizationModelArithmeticProgression instance =
-                new UtilizationModelArithmeticProgression(expResult);
-        assertEquals(expResult, instance.getUtilizationIncrementPerSecond(), 0.0);
+        double increment = 0.1;
+        UtilizationModelDynamic instance = createUtilizationModel(increment, 0);
+        assertEquals(increment, instance.getUtilization(1), 0.0);
     }
 
     @Test
-    public void testGetSetUtilizationPercentageIncrementPerSecond_defaultValue() {
-        UtilizationModelArithmeticProgression instance =
-                new UtilizationModelArithmeticProgression();
-        assertEquals(UtilizationModelArithmeticProgression.ONE_PERCENT,
-                instance.getUtilizationIncrementPerSecond(), 0.0);
-    }
-
-    @Test
-    public void testConstructor_negativeUtilizationPercentageIncrementPerSecond() {
-        double expResult = -0.1;
-        UtilizationModelArithmeticProgression instance =
-                new UtilizationModelArithmeticProgression(expResult);
-        assertEquals(expResult, instance.getUtilizationIncrementPerSecond(), 0.0);
+    public void testGetUtilization_NegativeIncrement() {
+        double increment = -0.1, initialUsage = 1;
+        double expResult = 0.9;
+        UtilizationModelDynamic instance = createUtilizationModel(increment, initialUsage);
+        assertEquals(expResult, instance.getUtilization(1), 0.0);
     }
 
     @Test
     public void testConstructor_zeroUtilizationPercentageIncrementPerSecond() {
-        double zero = 0;
-        UtilizationModelArithmeticProgression instance =
-                new UtilizationModelArithmeticProgression(zero);
-        assertEquals(zero, instance.getUtilizationIncrementPerSecond(), 0.0);
+        double increment = 0, initialUsage = 0.1;
+        UtilizationModelDynamic instance = createUtilizationModel(increment, initialUsage);
+        assertEquals(initialUsage, instance.getUtilization(1), 0.0);
     }
 
     @Test(expected = IllegalArgumentException.class)
     public void testConstructor_utilizationPercentageIncrementPerSecondLowerThanMinusOne() {
-        new UtilizationModelArithmeticProgression(-1.1);
+        new UtilizationModelDynamic(-1.1);
     }
 
     @Test(expected = IllegalArgumentException.class)
     public void testConstructor_UtilizationPercentageIncrementGreaterThan1() {
-        new UtilizationModelArithmeticProgression(1.1);
+        new UtilizationModelDynamic(1.1);
     }
 
     @Test(expected = IllegalArgumentException.class)
-    public void testGetInitialUtilization() {
-        System.out.println("getInitialUtilization");
-        UtilizationModelArithmeticProgression instance = new UtilizationModelArithmeticProgression();
-        assertEquals(0, instance.getInitialUtilization(), 0.0);
-
-        new UtilizationModelArithmeticProgression(0, -1.1);
-        new UtilizationModelArithmeticProgression(0, -1.0);
-        new UtilizationModelArithmeticProgression(0, -0.1);
-        new UtilizationModelArithmeticProgression(0, 1.1);
+    public void constructor_NegativeInitialValue() {
+        new UtilizationModelDynamic(Unit.PERCENTAGE,-1.1);
     }
 
-    @Test
-    public void testTwoParamsConstructor_positiveInitialUtilization() {
-        UtilizationModelArithmeticProgression instance;
-        double expResult = 0.1;
-        instance = new UtilizationModelArithmeticProgression(0, expResult);
-        assertEquals(expResult, instance.getInitialUtilization(), 0.0);
+    @Test(expected = IllegalArgumentException.class)
+    public void constructor_InitialValueGreaterThan1() {
+        new UtilizationModelDynamic(Unit.PERCENTAGE,2);
     }
 
     @Test
     public void testTwoParamsConstructor_zeroInitialUtilization() {
-        UtilizationModelArithmeticProgression instance;
+        UtilizationModelDynamic instance;
         double expResult = 0;
-        instance = new UtilizationModelArithmeticProgression(0, expResult);
+        instance = new UtilizationModelDynamic(0);
         assertEquals(expResult, instance.getInitialUtilization(), 0.0);
     }
 
@@ -169,7 +151,7 @@ public class UtilizationModelArithmeticProgressionTest {
     public void testSetMaxResourceUsagePercentage() {
         System.out.println("setMaxResourceUsagePercentage");
 
-        UtilizationModelArithmeticProgression instance = new UtilizationModelArithmeticProgression();
+        UtilizationModelDynamic instance = new UtilizationModelDynamic();
         assertEquals(
                 Conversion.HUNDRED_PERCENT,
                 instance.getMaxResourceUtilization(), 0);
@@ -182,20 +164,20 @@ public class UtilizationModelArithmeticProgressionTest {
 
     @Test(expected = IllegalArgumentException.class)
     public void testSetMaxResourceUsagePercentage_valueGreaterThanOne() {
-        UtilizationModelArithmeticProgression instance = new UtilizationModelArithmeticProgression();
+        UtilizationModelDynamic instance = new UtilizationModelDynamic();
         instance.setMaxResourceUtilization(1.1);
     }
 
     @Test(expected = IllegalArgumentException.class)
     public void testSetMaxResourceUsagePercentage_negativeValue() {
-        UtilizationModelArithmeticProgression instance = new UtilizationModelArithmeticProgression();
+        UtilizationModelDynamic instance = new UtilizationModelDynamic();
         instance.setMaxResourceUtilization(-1);
         instance.setMaxResourceUtilization(-0.1);
     }
 
     @Test(expected = IllegalArgumentException.class)
     public void testSetMaxResourceUsagePercentage_zeroValue() {
-        UtilizationModelArithmeticProgression instance = new UtilizationModelArithmeticProgression();
+        UtilizationModelDynamic instance = new UtilizationModelDynamic();
         instance.setMaxResourceUtilization(0);
     }
 

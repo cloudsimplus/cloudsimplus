@@ -35,7 +35,7 @@ import org.cloudsimplus.listeners.EventListener;
 import org.cloudsimplus.listeners.HostUpdatesVmsProcessingEventInfo;
 import org.cloudbus.cloudsim.schedulers.vm.VmSchedulerSpaceShared;
 import org.cloudsimplus.builders.tables.CloudletsTableBuilderHelper;
-import org.cloudbus.cloudsim.utilizationmodels.UtilizationModelArithmeticProgression;
+import org.cloudbus.cloudsim.utilizationmodels.UtilizationModelDynamic;
 import org.junit.Test;
 import static org.junit.Assert.*;
 import org.junit.Before;
@@ -60,7 +60,7 @@ public final class CheckHostAvailableMipsDynamicUtilizationTest {
     private static final int NUMBER_OF_CLOUDLETS = 2;
 
     private SimulationScenarioBuilder scenario;
-    private UtilizationModelArithmeticProgression utilizationModel;
+    private UtilizationModelDynamic utilizationModel;
     private CloudSim simulation;
 
     /**
@@ -106,7 +106,8 @@ public final class CheckHostAvailableMipsDynamicUtilizationTest {
                 .setCloudletSchedulerSupplier(() -> new CloudletSchedulerTimeShared())
                 .createAndSubmitVms(NUMBER_OF_VMS);
 
-        utilizationModel = new UtilizationModelArithmeticProgression(0.0, 0.25);
+        utilizationModel = new UtilizationModelDynamic()
+                            .setUtilizationIncrementFunction((timeSpan, initialUsage) -> initialUsage + (timeSpan * 0.25));
         brokerBuilder.getCloudletBuilder()
                 .setLength(CLOUDLET_LENGTH)
                 .setUtilizationModelCpu(utilizationModel)

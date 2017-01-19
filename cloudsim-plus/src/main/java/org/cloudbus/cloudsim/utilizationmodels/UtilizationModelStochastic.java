@@ -21,6 +21,7 @@ import java.util.Random;
  * random resource utilization every time frame.
  *
  * @author Anton Beloglazov
+ * @author Manoel Campos da Silva Filho
  * @since CloudSim Toolkit 2.0
  */
 public class UtilizationModelStochastic extends UtilizationModelAbstract {
@@ -31,13 +32,13 @@ public class UtilizationModelStochastic extends UtilizationModelAbstract {
     private Random randomGenerator;
 
     /**
-     * The utilization history map, where each key is a time and
-     * each value is the utilization percentage in that time.
+     * @see #getHistory()
      */
     private Map<Double, Double> history;
 
     /**
-     * Instantiates a new utilization model stochastic.
+     * Instantiates a new utilization model stochastic
+     * that defines the resource utilization in percentage.
      */
     public UtilizationModelStochastic() {
         super();
@@ -46,9 +47,34 @@ public class UtilizationModelStochastic extends UtilizationModelAbstract {
     }
 
     /**
+     * Instantiates a new utilization model stochastic
+     * where the resource utilization is defined in the given unit.
+     *
+     * @param unit the {@link Unit} that determines how the resource is used (for instance, if
+     *             resource usage is defined in percentage of the Vm resource or in absolute values)
+     */
+    public UtilizationModelStochastic(Unit unit) {
+        this();
+        setUnit(unit);
+    }
+
+    /**
+     * Instantiates a new utilization model stochastic using
+     * a given seed and where the resource utilization is defined in the given unit.
+     *
+     * @param unit the {@link Unit} that determines how the resource is used (for instance, if
+     *             resource usage is defined in percentage of the Vm resource or in absolute values)
+     * @param seed the seed to generate the pseudo random utilization values
+     */
+    public UtilizationModelStochastic(Unit unit, long seed) {
+        this(seed);
+        setUnit(unit);
+    }
+
+    /**
      * Instantiates a new utilization model stochastic.
      *
-     * @param seed the seed
+     * @param seed the seed to generate the pseudo random utilization values
      */
     public UtilizationModelStochastic(long seed) {
         super();
@@ -68,18 +94,21 @@ public class UtilizationModelStochastic extends UtilizationModelAbstract {
     }
 
     /**
-     * Gets the utilization history.
+     * Gets the utilization history map, where each key is a time and
+     * each value is the resource utilization in that time.
      *
-     * @return the history
+     * @return the utilization history
      */
     protected Map<Double, Double> getHistory() {
         return history;
     }
 
     /**
-     * Sets the utilization history.
+     * Sets the utilization history map, where each key is a time and
+     * each value is the resource utilization in that time.
      *
-     * @param history the history
+     *
+     * @param history the history to set
      */
     protected final void setHistory(Map<Double, Double> history) {
         this.history = history;
@@ -113,18 +142,18 @@ public class UtilizationModelStochastic extends UtilizationModelAbstract {
     }
 
     /**
-     * Gets the random generator.
+     * Gets the random number generator.
      *
-     * @return the random generator
+     * @return the random number generator
      */
     public Random getRandomGenerator() {
         return randomGenerator;
     }
 
     /**
-     * Sets the random generator.
+     * Sets the random number generator.
      *
-     * @param randomGenerator the new random generator
+     * @param randomGenerator the new random number generator
      */
     public final void setRandomGenerator(Random randomGenerator) {
         this.randomGenerator = randomGenerator;

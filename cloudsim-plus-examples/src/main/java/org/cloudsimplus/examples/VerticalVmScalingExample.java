@@ -48,7 +48,8 @@ import org.cloudbus.cloudsim.schedulers.vm.VmScheduler;
 import org.cloudbus.cloudsim.schedulers.vm.VmSchedulerTimeShared;
 import org.cloudbus.cloudsim.util.Log;
 import org.cloudbus.cloudsim.utilizationmodels.UtilizationModel;
-import org.cloudbus.cloudsim.utilizationmodels.UtilizationModelArithmeticProgression;
+import static org.cloudbus.cloudsim.utilizationmodels.UtilizationModel.Unit;
+import org.cloudbus.cloudsim.utilizationmodels.UtilizationModelDynamic;
 import org.cloudbus.cloudsim.utilizationmodels.UtilizationModelFull;
 import org.cloudbus.cloudsim.vms.Vm;
 import org.cloudbus.cloudsim.vms.VmSimple;
@@ -68,7 +69,7 @@ import static java.util.Comparator.comparingDouble;
 
 /**
  * An example that scale VM RAM up, according to the arrival of Cloudlets.
- * It is used a {@link UtilizationModelArithmeticProgression} object to
+ * It is used a {@link UtilizationModelDynamic} object to
  * define Vm RAM usage that will increment along the time.
  * A {@link VerticalVmScaling}
  * is set to each {@link #createListOfScalableVms(int) initially created VM},
@@ -176,19 +177,25 @@ public class VerticalVmScalingExample {
     }
 
     private void createCloudletList() {
-        UtilizationModelArithmeticProgression ramModel =
-            new UtilizationModelArithmeticProgression(UtilizationModel.Unit.ABSOLUTE);
-        ramModel.setInitialUtilization(100)
-                .setUtilizationIncrementPerSecond(0);
+        UtilizationModelDynamic ramModel = new UtilizationModelDynamic(Unit.ABSOLUTE, 100);
         for (int i = 0; i < CLOUDLETS; i++) {
             cloudletList.add(createCloudlet(ramModel));
         }
 
-        ramModel = new UtilizationModelArithmeticProgression(UtilizationModel.Unit.ABSOLUTE);
+        ramModel = new UtilizationModelDynamic(Unit.ABSOLUTE);
         ramModel.setInitialUtilization(100)
-                .setUtilizationIncrementPerSecond(10)
-                .setMaxResourceUtilization(2000);
+                .setMaxResourceUtilization(2000)
+                .setUtilizationIncrementFunction(this::getUtilizationIncrement);
         cloudletList.get(0).setUtilizationModelRam(ramModel);
+    }
+
+    /**
+     * Increments the RAM resource utilization, that is defined in absolute values,
+     * in 10MB every second.
+     * @return the new resource utilization after the increment
+     */
+    private double getUtilizationIncrement(double timeSpan, double currentUtilization) {
+        return currentUtilization + (timeSpan*10);
     }
 
     /**
