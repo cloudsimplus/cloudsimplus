@@ -43,9 +43,11 @@ public class PowerVmSelectionPolicyMinimumUtilization extends PowerVmSelectionPo
         }
 
         final Predicate<Vm> inMigration = Vm::isInMigration;
+        final Comparator<? super Vm> totalCpuUsageComparator =
+            Comparator.comparingDouble(vm -> vm.getCpuPercentUse(vm.getSimulation().clock()));
         Optional<? extends Vm> optional = migratableVms.stream()
             .filter(inMigration.negate())
-            .min(Comparator.comparingDouble(vm -> vm.getTotalUtilizationOfCpuMips(host.getSimulation().clock()) / vm.getTotalMipsCapacity()));
+            .min(totalCpuUsageComparator);
         return (optional.isPresent() ? optional.get() : Vm.NULL);
     }
 

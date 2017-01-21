@@ -16,7 +16,11 @@ Lists the main changes in the project.
   will be used. The enum values can be PERCENTAGE or ABSOLUTE, that respectivelly defines that the Cloudlet resource usage
   will be in percentage or absolute values. The existing UtilizationModels continue to define the value in percentage,
   as describe in their documentation. The UtilizationModelArithmeticProgression allows setting a diferent unit
-  for such an UtilizationModel.
+  for such an UtilizationModel (see issue #62).
+- UtilizationModelDynamic (that were previously named UtilizationModelArithmeticProgression) now allows
+  defining the resource usage increment behaviour using a Lambda Expression, enabling the developer
+  to give a function that performs the increment in an arithmetic, geometric, exponential or any other
+  kind of progression he/she needs (see issue #64). 
 
 
 ### Changed
