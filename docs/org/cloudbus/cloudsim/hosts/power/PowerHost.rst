@@ -12,6 +12,10 @@
 
 .. java:import:: org.cloudbus.cloudsim.hosts HostStateHistoryEntry
 
+.. java:import:: org.cloudbus.cloudsim.resources Resource
+
+.. java:import:: org.cloudbus.cloudsim.resources ResourceManageable
+
 .. java:import:: org.cloudbus.cloudsim.vms Vm
 
 .. java:import:: org.cloudsimplus.listeners EventListener
@@ -36,7 +40,7 @@ PowerHost
 
    An interface to be implemented by power-aware Host classes. The interface implements the Null Object Design Pattern in order to start avoiding \ :java:ref:`NullPointerException`\  when using the \ :java:ref:`PowerHost.NULL`\  object instead of attributing \ ``null``\  to \ :java:ref:`PowerHost`\  variables.
 
-   :author: Manoel Campos da Silva Filho
+   :author: Anton Beloglazov, Manoel Campos da Silva Filho
 
 Fields
 ------

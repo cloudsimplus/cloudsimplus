@@ -333,17 +333,17 @@ public class HostSimpleTest {
 
     @Test
     public void testGetBwCapacity() {
-        assertEquals(BW, createHostSimple(0, 1).getBw());
+        assertEquals(BW, createHostSimple(0, 1).getBw().getCapacity());
     }
 
     @Test
     public void testGetRamCapacity() {
-        assertEquals(RAM, createHostSimple(0, 1).getRam());
+        assertEquals(RAM, createHostSimple(0, 1).getRam().getCapacity());
     }
 
     @Test
     public void testGetStorageCapacity() {
-        assertEquals(STORAGE, createHostSimple(0, 1).getStorage());
+        assertEquals(STORAGE, createHostSimple(0, 1).getStorage().getCapacity());
     }
 
     @Test

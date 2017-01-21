@@ -56,23 +56,22 @@ public class UtilizationModelDynamic extends UtilizationModelAbstract {
     private BiFunction<Double, Double, Double> utilizationIncrementFunction;
 
     /**
-     * Creates a UtilizationModelArithmeticProgression that the resource utilization
-     * unit will be defined in {@link Unit#PERCENTAGE} values.
+     * Creates a UtilizationModelDynamic with no initial utilization and resource utilization
+     * unit defined in {@link Unit#PERCENTAGE}.
      */
     public UtilizationModelDynamic() {
-        super();
+        this(Unit.PERCENTAGE, 0);
     }
 
     /**
-     * Creates a UtilizationModelDynamic that the resource utilization
-     * {@link Unit} will be defined according to the given parameter.
+     * Creates a UtilizationModelDynamic with no initial utilization and resource utilization
+     * {@link Unit} be defined according to the given parameter.
      *
      * @param unit the {@link Unit} that determines how the resource is used (for instance, if
      *             resource usage is defined in percentage of the Vm resource or in absolute values)
      */
     public UtilizationModelDynamic(Unit unit) {
-        super();
-        setUnit(unit);
+        this(unit, 0);
     }
 
     /**
@@ -96,9 +95,8 @@ public class UtilizationModelDynamic extends UtilizationModelAbstract {
      *                           on the {@code unit} parameter
      */
     public UtilizationModelDynamic(Unit unit, final double initialUtilization) {
-        this();
         this.maxResourceUtilization = Conversion.HUNDRED_PERCENT;
-        this.startTime = -1;
+        this.startTime = 0;
         this.setInitialUtilization(initialUtilization);
         /**
          * Creates a default lambda function that doesn't increment the utilization along the time.

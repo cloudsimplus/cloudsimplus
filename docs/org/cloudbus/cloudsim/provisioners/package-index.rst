@@ -8,9 +8,9 @@ Provides \ :java:ref:`org.cloudbus.cloudsim.provisioners.ResourceProvisioner`\  
 .. toctree::
    :maxdepth: 1
 
-   AbstractResourceProvisioner
    PeProvisioner
    PeProvisionerSimple
    ResourceProvisioner
+   ResourceProvisionerAbstract
    ResourceProvisionerSimple
 

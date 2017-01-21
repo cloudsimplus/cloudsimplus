@@ -32,7 +32,7 @@ Cloudlet
 
    An interface to be implemented by each class that provides basic cloudlet features. The interface implements the Null Object Design Pattern in order to start avoiding \ :java:ref:`NullPointerException`\  when using the \ :java:ref:`Cloudlet.NULL`\  object instead of attributing \ ``null``\  to \ :java:ref:`Cloudlet`\  variables.
 
-   :author: Manoel Campos da Silva Filho
+   :author: Rodrigo N. Calheiros, Anton Beloglazov, Manoel Campos da Silva Filho
 
 Fields
 ------
@@ -369,8 +369,6 @@ getSimulation
 
    Gets the CloudSim instance that represents the simulation the Entity is related to.
 
-   **See also:** :java:ref:`.setSimulation(Simulation)`
-
 getStatus
 ^^^^^^^^^
 
@@ -441,10 +439,24 @@ getUtilizationOfBw
 .. java:method::  double getUtilizationOfBw(double time)
    :outertype: Cloudlet
 
-   Gets the utilization percentage of bw at a given time (in scale from [0 to 1])..
+   Gets the utilization of Bandwidth at a given time, that is defined in percentage or absolute values, depending of the \ :java:ref:`UtilizationModel.getUnit()`\  defined for the \ :java:ref:`getUtilizationModelBw()`\  ()}.
 
-   :param time: the time
-   :return: the utilization percentage of bw, from [0 to 1]
+   :param time: the time to get the utilization
+   :return: the utilization value
+
+   **See also:** :java:ref:`.getUtilizationModelBw()()`
+
+getUtilizationOfBw
+^^^^^^^^^^^^^^^^^^
+
+.. java:method::  double getUtilizationOfBw()
+   :outertype: Cloudlet
+
+   Gets the utilization of Bandwidth at the current simulation time, that is defined in percentage or absolute values, depending of the \ :java:ref:`UtilizationModel.getUnit()`\  set for the \ :java:ref:`BW utilizaton model <getUtilizationModelBw()>`\ .
+
+   :return: the utilization value
+
+   **See also:** :java:ref:`.getUtilizationModelCpu()`
 
 getUtilizationOfCpu
 ^^^^^^^^^^^^^^^^^^^
@@ -452,10 +464,24 @@ getUtilizationOfCpu
 .. java:method::  double getUtilizationOfCpu(double time)
    :outertype: Cloudlet
 
-   Gets the utilization percentage of cpu at a given time (in scale from [0 to 1]).
+   Gets the utilization of CPU at a given time, that is defined in percentage or absolute values, depending of the \ :java:ref:`UtilizationModel.getUnit()`\  defined for the \ :java:ref:`getUtilizationModelCpu()`\ .
 
-   :param time: the time
-   :return: the utilization percentage of cpu, from [0 to 1]
+   :param time: the time to get the utilization
+   :return: the utilization value
+
+   **See also:** :java:ref:`.getUtilizationModelCpu()`
+
+getUtilizationOfCpu
+^^^^^^^^^^^^^^^^^^^
+
+.. java:method::  double getUtilizationOfCpu()
+   :outertype: Cloudlet
+
+   Gets the utilization of CPU at the current simulation time, that is defined in percentage or absolute values, depending of the \ :java:ref:`UtilizationModel.getUnit()`\  set for the \ :java:ref:`CPU utilizaton model <getUtilizationModelCpu()>`\ .
+
+   :return: the utilization value
+
+   **See also:** :java:ref:`.getUtilizationModelCpu()`
 
 getUtilizationOfRam
 ^^^^^^^^^^^^^^^^^^^
@@ -463,10 +489,24 @@ getUtilizationOfRam
 .. java:method::  double getUtilizationOfRam(double time)
    :outertype: Cloudlet
 
-   Gets the utilization percentage of memory at a given time (in scale from [0 to 1])..
+   Gets the utilization of RAM at a given time, that is defined in percentage or absolute values, depending of the \ :java:ref:`UtilizationModel.getUnit()`\  defined for the \ :java:ref:`getUtilizationModelRam()`\  ()}.
 
-   :param time: the time
-   :return: the utilization percentage of memory, from [0 to 1]
+   :param time: the time to get the utilization
+   :return: the utilization value
+
+   **See also:** :java:ref:`.getUtilizationModelRam()()`
+
+getUtilizationOfRam
+^^^^^^^^^^^^^^^^^^^
+
+.. java:method::  double getUtilizationOfRam()
+   :outertype: Cloudlet
+
+   Gets the utilization of RAM at the current simulation time, that is defined in percentage or absolute values, depending of the \ :java:ref:`UtilizationModel.getUnit()`\  set for the \ :java:ref:`RAM utilizaton model <getUtilizationModelRam()>`\ .
+
+   :return: the utilization value
+
+   **See also:** :java:ref:`.getUtilizationModelRam()`
 
 getVm
 ^^^^^

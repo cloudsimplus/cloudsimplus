@@ -196,6 +196,12 @@ isResourceAmountAvailable
 .. java:method:: @Override public boolean isResourceAmountAvailable(long amountToCheck)
    :outertype: HarddriveStorage
 
+isResourceAmountAvailable
+^^^^^^^^^^^^^^^^^^^^^^^^^
+
+.. java:method:: @Override public boolean isResourceAmountAvailable(double amountToCheck)
+   :outertype: HarddriveStorage
+
 renameFile
 ^^^^^^^^^^
 

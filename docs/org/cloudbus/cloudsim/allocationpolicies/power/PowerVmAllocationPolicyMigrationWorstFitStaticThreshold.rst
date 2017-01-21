@@ -28,7 +28,7 @@ PowerVmAllocationPolicyMigrationWorstFitStaticThreshold
 
    A \ :java:ref:`VmAllocationPolicy`\  that uses a Static CPU utilization Threshold (THR) to detect host \ :java:ref:`under <getUnderUtilizationThreshold()>`\  and \ :java:ref:`getOverUtilizationThreshold(PowerHost)`\  over} utilization. It selects as the host to place a VM, that one having the least used amount of CPU MIPS (Worst Fit policy), \ **disregarding energy consumption**\ .
 
-   :author: Manoel Campos da Silva Filho
+   :author: Anton Beloglazov, Manoel Campos da Silva Filho
 
 Constructors
 ------------

@@ -596,7 +596,7 @@ public class HostSimple implements Host {
         }
 
         return provisioners.stream()
-            .filter(r -> Resourceful.isObjectSubClassOf(r.getResource(), resourceClass))
+            .filter(r -> r.getResource().isObjectSubClassOf(resourceClass))
             .findFirst()
             .orElse(ResourceProvisioner.NULL);
     }

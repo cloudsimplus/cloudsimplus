@@ -2,8 +2,6 @@
 
 .. java:import:: org.cloudbus.cloudsim.datacenters Datacenter
 
-.. java:import:: org.cloudbus.cloudsim.provisioners PeProvisioner
-
 .. java:import:: org.cloudbus.cloudsim.util Log
 
 .. java:import:: org.cloudbus.cloudsim.brokers DatacenterBroker
@@ -13,6 +11,10 @@
 .. java:import:: org.cloudbus.cloudsim.core Simulation
 
 .. java:import:: org.cloudbus.cloudsim.hosts Host
+
+.. java:import:: org.cloudsimplus.autoscaling HorizontalVmScaling
+
+.. java:import:: org.cloudsimplus.autoscaling VerticalVmScaling
 
 .. java:import:: org.cloudsimplus.autoscaling VmScaling
 
@@ -152,13 +154,25 @@ getBroker
 getBw
 ^^^^^
 
-.. java:method:: @Override public long getBw()
+.. java:method:: @Override public Resource getBw()
+   :outertype: VmSimple
+
+getBwVerticalScaling
+^^^^^^^^^^^^^^^^^^^^
+
+.. java:method:: @Override public VerticalVmScaling getBwVerticalScaling()
    :outertype: VmSimple
 
 getCloudletScheduler
 ^^^^^^^^^^^^^^^^^^^^
 
 .. java:method:: @Override public CloudletScheduler getCloudletScheduler()
+   :outertype: VmSimple
+
+getCpuPercentUse
+^^^^^^^^^^^^^^^^
+
+.. java:method:: @Override public double getCpuPercentUse(double time)
    :outertype: VmSimple
 
 getCurrentAllocatedBw
@@ -183,7 +197,13 @@ getCurrentAllocatedSize
 
    :return: the current allocated size
 
-   **See also:** :java:ref:`.getSize()`
+   **See also:** :java:ref:`Vm.getStorage()`
+
+getCurrentCpuPercentUse
+^^^^^^^^^^^^^^^^^^^^^^^
+
+.. java:method:: @Override public double getCurrentCpuPercentUse()
+   :outertype: VmSimple
 
 getCurrentRequestedBw
 ^^^^^^^^^^^^^^^^^^^^^
@@ -218,7 +238,7 @@ getCurrentRequestedTotalMips
 getHorizontalScaling
 ^^^^^^^^^^^^^^^^^^^^
 
-.. java:method:: @Override public VmScaling getHorizontalScaling()
+.. java:method:: @Override public HorizontalVmScaling getHorizontalScaling()
    :outertype: VmSimple
 
 getHost
@@ -248,19 +268,25 @@ getNumberOfPes
 getRam
 ^^^^^^
 
-.. java:method:: @Override public long getRam()
+.. java:method:: @Override public Resource getRam()
+   :outertype: VmSimple
+
+getRamVerticalScaling
+^^^^^^^^^^^^^^^^^^^^^
+
+.. java:method:: @Override public VerticalVmScaling getRamVerticalScaling()
+   :outertype: VmSimple
+
+getResources
+^^^^^^^^^^^^
+
+.. java:method:: @Override public List<ResourceManageable> getResources()
    :outertype: VmSimple
 
 getSimulation
 ^^^^^^^^^^^^^
 
 .. java:method:: @Override public Simulation getSimulation()
-   :outertype: VmSimple
-
-getSize
-^^^^^^^
-
-.. java:method:: @Override public long getSize()
    :outertype: VmSimple
 
 getStateHistory
@@ -272,6 +298,12 @@ getStateHistory
    Gets the history of MIPS capacity allocated to the VM.
 
    :return: the state history
+
+getStorage
+^^^^^^^^^^
+
+.. java:method:: @Override public Resource getStorage()
+   :outertype: VmSimple
 
 getSubmissionDelay
 ^^^^^^^^^^^^^^^^^^
@@ -285,30 +317,11 @@ getTotalMipsCapacity
 .. java:method:: @Override public double getTotalMipsCapacity()
    :outertype: VmSimple
 
-getTotalUtilizationOfCpu
-^^^^^^^^^^^^^^^^^^^^^^^^
-
-.. java:method:: @Override public double getTotalUtilizationOfCpu()
-   :outertype: VmSimple
-
-getTotalUtilizationOfCpu
-^^^^^^^^^^^^^^^^^^^^^^^^
-
-.. java:method:: @Override public double getTotalUtilizationOfCpu(double time)
-   :outertype: VmSimple
-
 getTotalUtilizationOfCpuMips
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 .. java:method:: @Override public double getTotalUtilizationOfCpuMips(double time)
    :outertype: VmSimple
-
-   Gets the total CPU utilization of all cloudlets running on this VM at the given time (in MIPS).
-
-   :param time: the time
-   :return: total cpu utilization in MIPS
-
-   **See also:** :java:ref:`.getTotalUtilizationOfCpu(double)`
 
 getUid
 ^^^^^^
@@ -408,6 +421,12 @@ setBw
 .. java:method:: @Override public final Vm setBw(long bwCapacity)
    :outertype: VmSimple
 
+setBwVerticalScaling
+^^^^^^^^^^^^^^^^^^^^
+
+.. java:method:: @Override public final Vm setBwVerticalScaling(VerticalVmScaling bwVerticalScaling) throws IllegalArgumentException
+   :outertype: VmSimple
+
 setCloudletScheduler
 ^^^^^^^^^^^^^^^^^^^^
 
@@ -429,7 +448,7 @@ setFailed
 setHorizontalScaling
 ^^^^^^^^^^^^^^^^^^^^
 
-.. java:method:: @Override public Vm setHorizontalScaling(VmScaling horizontalScaling) throws IllegalArgumentException
+.. java:method:: @Override public final Vm setHorizontalScaling(HorizontalVmScaling horizontalScaling) throws IllegalArgumentException
    :outertype: VmSimple
 
 setHost
@@ -478,6 +497,12 @@ setRam
 ^^^^^^
 
 .. java:method:: @Override public final Vm setRam(long ramCapacity)
+   :outertype: VmSimple
+
+setRamVerticalScaling
+^^^^^^^^^^^^^^^^^^^^^
+
+.. java:method:: @Override public final Vm setRamVerticalScaling(VerticalVmScaling ramVerticalScaling) throws IllegalArgumentException
    :outertype: VmSimple
 
 setSize

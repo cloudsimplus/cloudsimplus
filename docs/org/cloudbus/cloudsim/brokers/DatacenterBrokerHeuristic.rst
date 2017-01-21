@@ -59,7 +59,7 @@ requestDatacentersToCreateWaitingCloudlets
 selectVmForWaitingCloudlet
 ^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-.. java:method:: @Override public Vm selectVmForWaitingCloudlet(Cloudlet cloudlet)
+.. java:method:: @Override protected Vm selectVmForWaitingCloudlet(Cloudlet cloudlet)
    :outertype: DatacenterBrokerHeuristic
 
 setHeuristic

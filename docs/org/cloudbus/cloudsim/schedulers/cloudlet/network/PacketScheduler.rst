@@ -34,7 +34,7 @@ PacketScheduler
 
    A researcher creating its own simulations using CloudSim Plus usually doesn't have to care about this class, since even creating network-enabled simulations using objects such as \ :java:ref:`NetworkDatacenter`\ , \ :java:ref:`NetworkHost`\ , \ :java:ref:`NetworkVm`\  and \ :java:ref:`NetworkCloudlet`\ , the \ :java:ref:`NetworkHost`\  will automatically create and instance of the current interface and attach them to the \ :java:ref:`CloudletScheduler`\  that every Vm is using, doesn't matter what kind of scheduler it is.
 
-   :author: Manoel Campos da Silva Filho
+   :author: Saurabh Kumar Garg, Manoel Campos da Silva Filho
 
 Fields
 ------

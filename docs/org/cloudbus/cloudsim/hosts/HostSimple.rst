@@ -4,17 +4,7 @@
 
 .. java:import:: org.cloudbus.cloudsim.datacenters Datacenter
 
-.. java:import:: org.cloudbus.cloudsim.resources Pe
-
 .. java:import:: org.cloudbus.cloudsim.schedulers.vm VmScheduler
-
-.. java:import:: java.util ArrayList
-
-.. java:import:: java.util List
-
-.. java:import:: java.util Objects
-
-.. java:import:: org.cloudbus.cloudsim.core CloudSimTags
 
 .. java:import:: org.cloudbus.cloudsim.core Simulation
 
@@ -25,8 +15,6 @@
 .. java:import:: org.cloudbus.cloudsim.lists PeList
 
 .. java:import:: org.cloudbus.cloudsim.provisioners ResourceProvisioner
-
-.. java:import:: org.cloudbus.cloudsim.resources RawStorage
 
 HostSimple
 ==========
@@ -154,10 +142,10 @@ getAvailableStorage
 .. java:method:: @Override public long getAvailableStorage()
    :outertype: HostSimple
 
-getBwCapacity
-^^^^^^^^^^^^^
+getBw
+^^^^^
 
-.. java:method:: @Override public long getBwCapacity()
+.. java:method:: @Override public Resource getBw()
    :outertype: HostSimple
 
 getBwProvisioner
@@ -214,16 +202,28 @@ getPeList
 .. java:method:: @Override public List<Pe> getPeList()
    :outertype: HostSimple
 
-getRamCapacity
+getProvisioner
 ^^^^^^^^^^^^^^
 
-.. java:method:: @Override public long getRamCapacity()
+.. java:method:: @Override public ResourceProvisioner getProvisioner(Class<? extends ResourceManageable> resourceClass)
+   :outertype: HostSimple
+
+getRam
+^^^^^^
+
+.. java:method:: @Override public Resource getRam()
    :outertype: HostSimple
 
 getRamProvisioner
 ^^^^^^^^^^^^^^^^^
 
 .. java:method:: @Override public ResourceProvisioner getRamProvisioner()
+   :outertype: HostSimple
+
+getResources
+^^^^^^^^^^^^
+
+.. java:method:: @Override public List<ResourceManageable> getResources()
    :outertype: HostSimple
 
 getSimulation
@@ -235,17 +235,7 @@ getSimulation
 getStorage
 ^^^^^^^^^^
 
-.. java:method:: protected RawStorage getStorage()
-   :outertype: HostSimple
-
-   Gets the storage device of the host with capacity in Megabytes.
-
-   :return: the storage device
-
-getStorageCapacity
-^^^^^^^^^^^^^^^^^^
-
-.. java:method:: @Override public long getStorageCapacity()
+.. java:method:: @Override public Resource getStorage()
    :outertype: HostSimple
 
 getTotalAllocatedMipsForVm
@@ -373,7 +363,7 @@ setRamProvisioner
 setSimulation
 ^^^^^^^^^^^^^
 
-.. java:method:: @Override public Host setSimulation(Simulation simulation)
+.. java:method:: @Override public final Host setSimulation(Simulation simulation)
    :outertype: HostSimple
 
 setVmScheduler
@@ -381,14 +371,6 @@ setVmScheduler
 
 .. java:method:: @Override public final Host setVmScheduler(VmScheduler vmScheduler)
    :outertype: HostSimple
-
-setVmsToFailedWhenHostIsFailed
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-
-.. java:method:: public void setVmsToFailedWhenHostIsFailed()
-   :outertype: HostSimple
-
-   Checks if the the host is failed and sets all its Vm' to failed.
 
 toString
 ^^^^^^^^

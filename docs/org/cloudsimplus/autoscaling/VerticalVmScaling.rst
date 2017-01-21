@@ -2,6 +2,18 @@
 
 .. java:import:: org.cloudbus.cloudsim.datacenters Datacenter
 
+.. java:import:: org.cloudbus.cloudsim.resources Bandwidth
+
+.. java:import:: org.cloudbus.cloudsim.resources Pe
+
+.. java:import:: org.cloudbus.cloudsim.resources Ram
+
+.. java:import:: org.cloudbus.cloudsim.resources ResourceManageable
+
+.. java:import:: org.cloudbus.cloudsim.vms Vm
+
+.. java:import:: java.util.function Predicate
+
 VerticalVmScaling
 =================
 
@@ -14,8 +26,26 @@ VerticalVmScaling
 
    :author: Manoel Campos da Silva Filho
 
+Fields
+------
+NULL
+^^^^
+
+.. java:field::  VerticalVmScaling NULL
+   :outertype: VerticalVmScaling
+
+   An attribute that implements the Null Object Design Pattern for \ :java:ref:`VerticalVmScaling`\  objects.
+
 Methods
 -------
+getResourceClassToScale
+^^^^^^^^^^^^^^^^^^^^^^^
+
+.. java:method::  Class<? extends ResourceManageable> getResourceClassToScale()
+   :outertype: VerticalVmScaling
+
+   Gets the class of Vm resource that this scaling object will request up or down scaling. Such a class can be \ :java:ref:`Ram`\ .class, \ :java:ref:`Bandwidth`\ .class or \ :java:ref:`Pe`\ .class.
+
 getScalingFactor
 ^^^^^^^^^^^^^^^^
 
@@ -30,10 +60,10 @@ getScalingFactor
 
    **See also:** :java:ref:`.getOverloadPredicate()`
 
-scaleIfOverloaded
-^^^^^^^^^^^^^^^^^
+requestUpScalingIfOverloaded
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-.. java:method:: @Override  void scaleIfOverloaded(double time)
+.. java:method:: @Override  boolean requestUpScalingIfOverloaded(double time)
    :outertype: VerticalVmScaling
 
    Performs the vertical scale if the Vm is overloaded, according to the \ :java:ref:`getOverloadPredicate()`\  predicate, increasing the Vm resource to which the scaling object is linked to (that may be RAM, CPU, BW, etc), by the factor defined a scaling factor.
@@ -43,6 +73,16 @@ scaleIfOverloaded
    :param time: current simulation time
 
    **See also:** :java:ref:`.getScalingFactor()`
+
+setResourceClassToScale
+^^^^^^^^^^^^^^^^^^^^^^^
+
+.. java:method::  VerticalVmScaling setResourceClassToScale(Class<? extends ResourceManageable> resourceClassToScale)
+   :outertype: VerticalVmScaling
+
+   Sets the class of Vm resource that this scaling object will request up or down scaling. Such a class can be \ :java:ref:`Ram`\ .class, \ :java:ref:`Bandwidth`\ .class or \ :java:ref:`Pe`\ .class.
+
+   :param resourceClassToScale: the resource class to set
 
 setScalingFactor
 ^^^^^^^^^^^^^^^^

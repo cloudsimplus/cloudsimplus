@@ -1,3 +1,7 @@
+.. java:import:: java.util.function Function
+
+.. java:import:: java.util.function Supplier
+
 .. java:import:: org.cloudbus.cloudsim.cloudlets Cloudlet
 
 .. java:import:: org.cloudbus.cloudsim.core.events SimEvent
@@ -6,7 +10,11 @@
 
 .. java:import:: org.cloudbus.cloudsim.util Log
 
+.. java:import:: org.cloudbus.cloudsim.utilizationmodels UtilizationModel
+
 .. java:import:: org.cloudbus.cloudsim.vms Vm
+
+.. java:import:: org.cloudsimplus.autoscaling VerticalVmScaling
 
 DatacenterBrokerAbstract
 ========================
@@ -252,10 +260,10 @@ processVmCreateResponseFromDatacenter
    :param ev: a CloudSimEvent object
    :return: true if the VM was created successfully, false otherwise
 
-requestCreationOfWaitingVmsToNextDatacenter
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+requestCreationOfWaitingVmsToFallbackDatacenter
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-.. java:method:: protected void requestCreationOfWaitingVmsToNextDatacenter()
+.. java:method:: protected void requestCreationOfWaitingVmsToFallbackDatacenter()
    :outertype: DatacenterBrokerAbstract
 
    After the response (ack) of all VM creation request were received but not all VMs could be created (what means some acks informed about Vm creation failures), try to find another Datacenter to request the creation of the VMs in the waiting list.
@@ -266,7 +274,7 @@ requestDatacenterToCreateWaitingVms
 .. java:method:: protected void requestDatacenterToCreateWaitingVms()
    :outertype: DatacenterBrokerAbstract
 
-   Request the \ :java:ref:`next Datacenter in the list <selectDatacenterForWaitingVms()>`\  to create the VM in the \ :java:ref:`VM waiting list <getVmsWaitingList()>`\ .
+   Request the creation of VMs in the \ :java:ref:`VM waiting list <getVmsWaitingList()>`\  inside some Datacenter.
 
    **See also:** :java:ref:`.submitVmList(java.util.List)`
 
@@ -303,6 +311,24 @@ setDatacenterList
    Sets the list of available datacenters.
 
    :param datacenterList: the new dc list
+
+setDatacenterSupplier
+^^^^^^^^^^^^^^^^^^^^^
+
+.. java:method:: @Override public final void setDatacenterSupplier(Supplier<Datacenter> datacenterSupplier)
+   :outertype: DatacenterBrokerAbstract
+
+setFallbackDatacenterSupplier
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+.. java:method:: @Override public final void setFallbackDatacenterSupplier(Supplier<Datacenter> fallbackDatacenterSupplier)
+   :outertype: DatacenterBrokerAbstract
+
+setVmMapper
+^^^^^^^^^^^
+
+.. java:method:: @Override public final void setVmMapper(Function<Cloudlet, Vm> vmMapper)
+   :outertype: DatacenterBrokerAbstract
 
 shutdownEntity
 ^^^^^^^^^^^^^^
@@ -364,5 +390,5 @@ submitVmList
 
    If the entity already started (the simulation is running), the creation of previously submitted VMs already was requested by the \ :java:ref:`start()`\  method that is called just once. By this way, this method will immediately request the creation of these just submitted VMs in order to allow VM creation after the simulation has started. This avoid the developer to dynamically create brokers just to create VMs or Cloudlets during simulation execution.
 
-   :param {@inheritDoc}:
+   :param list: {@inheritDoc}
 

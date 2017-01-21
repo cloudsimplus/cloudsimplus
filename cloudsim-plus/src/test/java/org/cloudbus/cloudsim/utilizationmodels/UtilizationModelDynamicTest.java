@@ -17,7 +17,8 @@ public class UtilizationModelDynamicTest {
     public void testGetUtilization_defaultConstructor() {
         System.out.println("getUtilization");
         final double utilizationPercentageIncrement = 0.1, initialUtilization = 0;
-        UtilizationModelDynamic instance = new UtilizationModelDynamic();
+        UtilizationModelDynamic instance = new UtilizationModelDynamic(initialUtilization);
+        instance.setUtilizationIncrementFunction((timeSpan, initialUsage) -> initialUsage + timeSpan*utilizationPercentageIncrement);
         checkUtilization(initialUtilization, utilizationPercentageIncrement, instance);
     }
 
@@ -39,7 +40,8 @@ public class UtilizationModelDynamicTest {
         System.out.println("getUtilization");
         final double utilizationPercentageIncrement = 0.2, initialUtilization = 0;
         UtilizationModelDynamic instance =
-                new UtilizationModelDynamic(utilizationPercentageIncrement);
+                new UtilizationModelDynamic(initialUtilization);
+        instance.setUtilizationIncrementFunction((timeSpan, initialUsage) -> initialUsage + timeSpan*utilizationPercentageIncrement);
         checkUtilization(initialUtilization, utilizationPercentageIncrement, instance);
     }
 
@@ -62,7 +64,6 @@ public class UtilizationModelDynamicTest {
                maxUtilizationPercentage, instance);
     }
 
-
     private void checkUtilization(final double initialUtilization, final double utilizationPercentageIncrement, UtilizationModelDynamic instance) {
         checkUtilization(initialUtilization, utilizationPercentageIncrement,
                 Conversion.HUNDRED_PERCENT, instance);
@@ -71,7 +72,8 @@ public class UtilizationModelDynamicTest {
     private void checkUtilization(final double initialUtilization,
             final double utilizationPercentageIncrement,
             final double maxUtilizationPercentage,
-            UtilizationModelDynamic instance) {
+            UtilizationModelDynamic instance)
+    {
         instance.setMaxResourceUtilization(maxUtilizationPercentage);
         IntStream.rangeClosed(0, 400).forEach(time -> {
             double expResult =
@@ -173,12 +175,6 @@ public class UtilizationModelDynamicTest {
         UtilizationModelDynamic instance = new UtilizationModelDynamic();
         instance.setMaxResourceUtilization(-1);
         instance.setMaxResourceUtilization(-0.1);
-    }
-
-    @Test(expected = IllegalArgumentException.class)
-    public void testSetMaxResourceUsagePercentage_zeroValue() {
-        UtilizationModelDynamic instance = new UtilizationModelDynamic();
-        instance.setMaxResourceUtilization(0);
     }
 
 }

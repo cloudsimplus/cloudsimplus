@@ -15,7 +15,6 @@ For more general information, see the package \ :java:ref:`org.cloudbus.cloudsim
    CloudletScheduler
    CloudletSchedulerAbstract
    CloudletSchedulerCompletelyFair
-   CloudletSchedulerDynamicWorkload
    CloudletSchedulerSpaceShared
    CloudletSchedulerTimeShared
 

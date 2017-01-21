@@ -34,46 +34,36 @@ DatacenterBrokerSimple
 
 Methods
 -------
-getNextVmIndex
-^^^^^^^^^^^^^^
-
-.. java:method:: protected int getNextVmIndex()
-   :outertype: DatacenterBrokerSimple
-
-   Gets the index of next VM in the broker's created VM list. If not VM was selected yet, selects the first one, otherwise, cyclically selects the next VM.
-
-   :return: the index of the next VM to bind a cloudlet to
-
 selectDatacenterForWaitingVms
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-.. java:method:: @Override public Datacenter selectDatacenterForWaitingVms()
+.. java:method:: protected Datacenter selectDatacenterForWaitingVms()
    :outertype: DatacenterBrokerSimple
 
-   {@inheritDoc} It always selects the first Datacenter from the Datacenter list.
+   Defines the policy to select a Datacenter to Host a VM. It always selects the first Datacenter from the Datacenter list.
 
-   :return: {@inheritDoc}
+   :return: the Datacenter selected to request the creating of waiting VMs or \ :java:ref:`Datacenter.NULL`\  if no suitable Datacenter was found
 
 selectFallbackDatacenterForWaitingVms
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-.. java:method:: @Override public Datacenter selectFallbackDatacenterForWaitingVms()
+.. java:method:: protected Datacenter selectFallbackDatacenterForWaitingVms()
    :outertype: DatacenterBrokerSimple
 
-   {@inheritDoc}
+   Defines the policy to select a fallback Datacenter to Host a VM when a previous selected Datacenter failed to create the requested VMs.
 
    It gets the first Datacenter that has not been tried yet.
 
-   :return: {@inheritDoc}
+   :return: the Datacenter selected to try creating the remaining VMs or \ :java:ref:`Datacenter.NULL`\  if no suitable Datacenter was found
 
 selectVmForWaitingCloudlet
 ^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-.. java:method:: @Override public Vm selectVmForWaitingCloudlet(Cloudlet cloudlet)
+.. java:method:: protected Vm selectVmForWaitingCloudlet(Cloudlet cloudlet)
    :outertype: DatacenterBrokerSimple
 
-   {@inheritDoc} It applies a Round-Robin policy to cyclically select the next Vm from the list of waiting VMs.
+   Defines the policy used to select a Vm to host a Cloudlet that is waiting to be created. It applies a Round-Robin policy to cyclically select the next Vm from the list of waiting VMs.
 
-   :param cloudlet: {@inheritDoc}
-   :return: {@inheritDoc}
+   :param cloudlet: the cloudlet that needs a VM to be placed into
+   :return: the selected Vm for the cloudlet or \ :java:ref:`Vm.NULL`\  if no suitable VM was found
 

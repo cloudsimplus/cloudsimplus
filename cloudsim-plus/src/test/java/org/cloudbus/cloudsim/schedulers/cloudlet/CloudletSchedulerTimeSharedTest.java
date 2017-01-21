@@ -181,22 +181,23 @@ public class CloudletSchedulerTimeSharedTest {
 
     @Test
     public void testGetCurrentRequestedUtilizationOfRam() {
-        final int schedulerPes = 2;
-        CloudletSchedulerTimeShared instance =
-                createCloudletSchedulerWithListOfExecCloudlets(schedulerPes);
+        final int cloudlets = 2;
+        CloudletSchedulerTimeShared instance = newSchedulerWithRunningCloudlets(1000, 2, cloudlets, 1);
 
-        double expResult = 1.0;
+        double expResult = 2.0; //200% of RAM usage
         double result = instance.getCurrentRequestedRamPercentUtilization();
         assertEquals(expResult, result, 0.0);
     }
 
     @Test
     public void testGetCurrentRequestedUtilizationOfBw() {
-        final int schedulerPes = 2;
-        CloudletSchedulerTimeShared instance =
-                createCloudletSchedulerWithListOfExecCloudlets(schedulerPes);
+        final long mips = 1000;
+        final int numberOfVmPes = 1;
+        final int numberOfCloudlets = numberOfVmPes;
+        final int numberOfCloudletPes = 1;
+        CloudletSchedulerTimeShared instance = newSchedulerWithRunningCloudlets(mips, numberOfVmPes, numberOfCloudlets, numberOfCloudletPes);
 
-        double expResult = 1.0;
+        final double expResult = 1.0;
         double result = instance.getCurrentRequestedBwPercentUtilization();
         assertEquals(expResult, result, 0.0);
     }
@@ -236,7 +237,7 @@ public class CloudletSchedulerTimeSharedTest {
 
         CloudletSchedulerTimeShared instance = newSchedulerWithSingleCoreRunningCloudlets(mips, numberOfPes, numberOfCloudlets);
 
-        final double expected = 1;
+        final double expected = 1.0;
         assertEquals(expected, instance.getRequestedCpuPercentUtilization(0), 0);
     }
 
@@ -305,7 +306,7 @@ public class CloudletSchedulerTimeSharedTest {
     public void testGetTotalUtilizationOfCpu_DualPesCloudlets() {
         final long mips = 1000;
         final int numberOfVmPes = 4;
-        final int numberOfCloudlets = 3;
+        final int numberOfCloudlets = 2;
         final int numberOfCloudletPes = 2;
 
         CloudletSchedulerTimeShared instance = newSchedulerWithRunningCloudlets(mips, numberOfVmPes, numberOfCloudlets, numberOfCloudletPes);
@@ -342,6 +343,7 @@ public class CloudletSchedulerTimeSharedTest {
             c.assignToDatacenter(Datacenter.NULL);
             instance.cloudletSubmit(c);
         }
+
         return instance;
     }
 

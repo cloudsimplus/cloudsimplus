@@ -81,24 +81,6 @@ getCurrentRequestedMips
 .. java:method:: @Override public List<Double> getCurrentRequestedMips()
    :outertype: CloudletSchedulerTimeShared
 
-getCurrentRequestedUtilizationOfBw
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-
-.. java:method:: @Override public double getCurrentRequestedUtilizationOfBw()
-   :outertype: CloudletSchedulerTimeShared
-
-getCurrentRequestedUtilizationOfRam
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-
-.. java:method:: @Override public double getCurrentRequestedUtilizationOfRam()
-   :outertype: CloudletSchedulerTimeShared
-
-getTotalCurrentAllocatedMipsForCloudlet
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-
-.. java:method:: @Override public double getTotalCurrentAllocatedMipsForCloudlet(CloudletExecutionInfo rcl, double time)
-   :outertype: CloudletSchedulerTimeShared
-
 getTotalCurrentAvailableMipsForCloudlet
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
@@ -110,16 +92,4 @@ getTotalCurrentAvailableMipsForCloudlet
    :param rcl: {@inheritDoc}
    :param mipsShare: {@inheritDoc}
    :return: {@inheritDoc}
-
-getTotalCurrentRequestedMipsForCloudlet
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-
-.. java:method:: @Override public double getTotalCurrentRequestedMipsForCloudlet(CloudletExecutionInfo rcl, double time)
-   :outertype: CloudletSchedulerTimeShared
-
-getTotalUtilizationOfCpu
-^^^^^^^^^^^^^^^^^^^^^^^^
-
-.. java:method:: @Override public double getTotalUtilizationOfCpu(double time)
-   :outertype: CloudletSchedulerTimeShared
 

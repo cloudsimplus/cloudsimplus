@@ -28,7 +28,6 @@ import static org.junit.Assert.assertTrue;
  * @since		CloudSim Toolkit 2.0
  */
 public class PeListTest {
-
     private static final double MIPS = 1000;
     private static final long ONE_THIRD_MIPS = (long)(MIPS / 3.0);
     private static final long ONE_FIFTH_MIPS = (long)(MIPS / 5.0);
@@ -37,8 +36,7 @@ public class PeListTest {
     @Before
     public void setUp() throws Exception {
         peList = new ArrayList<>();
-
-    peList.add(new PeSimple(0, MIPS, new PeProvisionerSimple()));
+        peList.add(new PeSimple(0, MIPS, new PeProvisionerSimple()));
         peList.add(new PeSimple(1, MIPS, new PeProvisionerSimple()));
     }
 

@@ -1,5 +1,7 @@
 .. java:import:: org.cloudbus.cloudsim.resources Pe
 
+.. java:import:: org.cloudbus.cloudsim.resources ResourceManageable
+
 .. java:import:: org.cloudbus.cloudsim.vms Vm
 
 PeProvisioner
@@ -29,13 +31,13 @@ Methods
 allocateResourceForVm
 ^^^^^^^^^^^^^^^^^^^^^
 
-.. java:method:: @Override  boolean allocateResourceForVm(Vm vm, long mips)
+.. java:method:: @Override  boolean allocateResourceForVm(Vm vm, long mipsCapacity)
    :outertype: PeProvisioner
 
    Allocates an amount of MIPS from the physical Pe to a new virtual PE for a given VM. The virtual PE to be added will use the total or partial MIPS capacity of the physical PE.
 
    :param vm: the virtual machine for which the new virtual PE is being allocated
-   :param mips: the MIPS to be allocated to the virtual PE of the given VM
+   :param mipsCapacity: the MIPS to be allocated to the virtual PE of the given VM
    :return: $true if the virtual PE could be allocated; $false otherwise
 
 deallocateResourceForAllVms

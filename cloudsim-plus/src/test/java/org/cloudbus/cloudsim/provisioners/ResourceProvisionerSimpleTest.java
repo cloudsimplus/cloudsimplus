@@ -9,6 +9,8 @@
 package org.cloudbus.cloudsim.provisioners;
 
 import org.cloudbus.cloudsim.resources.Ram;
+
+import static org.cloudbus.cloudsim.vms.VmSimpleTest.createVm;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
@@ -72,19 +74,6 @@ public class ResourceProvisionerSimpleTest {
         final long allocatedResource = HALF_CAPACITY;
         p.allocateResourceForVm(vm, allocatedResource);
         assertEquals(allocatedResource, p.getTotalAllocatedResource());
-    }
-
-    /**
-     * Creates a VM with 1 PE.
-     *
-     * @param vmId id of the VM
-     * @param capacity a capacity that will be set to all resources, such as CPU, HOST_RAM, HOST_BW, etc.
-     * @return
-     */
-    private static VmSimple createVm(final int vmId, long capacity) {
-        VmSimple vm =  new VmSimple(vmId, capacity, 1);
-        vm.setRam(capacity).setBw(capacity).setSize(capacity);
-        return vm;
     }
 
     @Test

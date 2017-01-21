@@ -18,7 +18,7 @@ VmSchedulerAbstract
 
 .. java:type:: public abstract class VmSchedulerAbstract implements VmScheduler
 
-   VmSchedulerAbstract is an abstract class that represents the policy used by a Virtual Machine Monitor (VMM) to share processing power of a PM among VMs running in a host. Each host has to use is own instance of a class that extends VmSchedulerAbstract that will so schedule the allocation of host's PEs for VMs running on it.
+   An abstract class for implementation of \ :java:ref:`VmScheduler`\ s.
 
    :author: Rodrigo N. Calheiros, Anton Beloglazov
 

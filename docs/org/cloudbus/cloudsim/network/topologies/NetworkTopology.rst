@@ -8,7 +8,7 @@ NetworkTopology
 
    * Implements a network layer by reading the topology from a file in a specific format that is defined by each implementing class.
 
-   :author: Manoel Campos da Silva Filho
+   :author: Rodrigo N. Calheiros, Anton Beloglazov, Manoel Campos da Silva Filho
 
    **See also:** :java:ref:`BriteNetworkTopology`
 

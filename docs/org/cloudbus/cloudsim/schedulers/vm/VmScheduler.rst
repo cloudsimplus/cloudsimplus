@@ -22,9 +22,11 @@ VmScheduler
 
 .. java:type:: public interface VmScheduler
 
-   An interface to be implemented by VmScheduler objects in order to provide scheduling algorithms that allocate host's PEs for VMs running on it. It also implements the Null Object Design Pattern in order to start avoiding \ :java:ref:`NullPointerException`\  when using the \ :java:ref:`VmScheduler.NULL`\  object instead of attributing \ ``null``\  to \ :java:ref:`VmScheduler`\  variables.
+   An interface that represents the policy used by a Virtual Machine Monitor (VMM) to share processing power of a PM among VMs running in a host. Each host has to use is own instance of a VmScheduler that will so schedule the allocation of host's PEs for VMs running on it.
 
-   :author: Manoel Campos da Silva Filho
+   It also implements the Null Object Design Pattern in order to start avoiding \ :java:ref:`NullPointerException`\  when using the \ :java:ref:`VmScheduler.NULL`\  object instead of attributing \ ``null``\  to \ :java:ref:`VmScheduler`\  variables.
+
+   :author: Rodrigo N. Calheiros, Anton Beloglazov, Manoel Campos da Silva Filho
 
 Fields
 ------
@@ -236,6 +238,6 @@ setHost
    Sets the host that the VmScheduler get the list of PEs to allocate to VMs. A host for the VmScheduler is set when the VmScheduler is set to a given host. Thus, the host is in charge to set itself to a VmScheduler.
 
    :param host: the host to be set
-   :throws IllegalArgumentException: when the scheduler already is assigned to another Host, since each Host must have its own scheduler
    :throws NullPointerException: when the host parameter is null
+   :throws IllegalArgumentException: when the scheduler already is assigned to another Host, since each Host must have its own scheduler
 

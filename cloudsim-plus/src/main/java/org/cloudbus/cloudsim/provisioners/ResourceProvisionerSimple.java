@@ -8,6 +8,8 @@
 
 package org.cloudbus.cloudsim.provisioners;
 
+import org.cloudbus.cloudsim.resources.Pe;
+import org.cloudbus.cloudsim.resources.Resource;
 import org.cloudbus.cloudsim.vms.Vm;
 import org.cloudbus.cloudsim.resources.ResourceManageable;
 
@@ -45,9 +47,15 @@ public class ResourceProvisionerSimple extends ResourceProvisionerAbstract {
                 deallocateResourceForVm(vm);
             }
 
-            if(!vm.getResource(getResourceClass()).setCapacity(newTotalVmResourceCapacity)){
+            /*
+            Pe resources are not stored in the VM resource List. Only the provisioner that keeps track
+            of Pe allocation for VM. By this way, if the resource is not found inside the VM
+            and it is a Pe, it's OK (as it is expected)
+            */
+            if(!getResource().isObjectSubClassOf(Pe.class) && !vm.getResource(getResourceClass()).setCapacity(newTotalVmResourceCapacity)){
                 return false;
             }
+
             //Allocates the requested resource from the physical resource
             getResource().allocateResource(newTotalVmResourceCapacity);
             getResourceAllocationMap().put(vm, newTotalVmResourceCapacity);

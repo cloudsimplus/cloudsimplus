@@ -21,6 +21,25 @@ package org.cloudbus.cloudsim.resources;
  */
 public interface Resource extends ResourceCapacity {
     /**
+     * Checks if a given object is instance of a given class.
+     * @param object the object to check
+     * @param classWanted the class to verify if the object is instance of
+     * @return true if the object is instance of the given class, false otherwise
+     */
+    static boolean isObjectSubClassOf(Object object, Class classWanted) {
+        return classWanted.isAssignableFrom(object.getClass());
+    }
+
+    /**
+     * Checks if this object is instance of a given class.
+     * @param classWanted the class to verify if the object is instance of
+     * @return true if the object is instance of the given class, false otherwise
+     */
+    default boolean isObjectSubClassOf(Class classWanted) {
+        return isObjectSubClassOf(this, classWanted);
+    }
+
+    /**
      * Gets the amount of the resource that is available (free).
      *
      * @return the amount of available resource

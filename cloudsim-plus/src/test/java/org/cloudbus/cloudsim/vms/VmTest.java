@@ -37,7 +37,7 @@ public class VmTest {
         assertFalse(instance.isCreated());
 
         instance.setBw(1000);
-        assertEquals(0, instance.getBw());
+        assertEquals(0, instance.getBw().getCapacity());
 
         assertEquals(0, instance.getCurrentAllocatedBw());
         assertEquals(0, instance.getCurrentRequestedBw());
@@ -62,10 +62,10 @@ public class VmTest {
         assertFalse(instance.removeOnUpdateVmProcessingListener(null));
 
         instance.setRam(1000);
-        assertEquals(0, instance.getRam());
+        assertEquals(0, instance.getRam().getCapacity());
 
         instance.setSize(1000);
-        assertEquals(0, instance.getStorage());
+        assertEquals(0, instance.getStorage().getCapacity());
 
         assertEquals("", instance.getUid());
         assertEquals(-1, instance.getId());

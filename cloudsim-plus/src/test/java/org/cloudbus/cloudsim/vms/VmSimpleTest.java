@@ -82,7 +82,6 @@ public class VmSimpleTest {
         return createVm(vmId, MIPS, 1, RAM, BW, SIZE, CloudletScheduler.NULL);
     }
 
-
     /**
      * Creates a VM with the given numberOfPes and default configuration for
      * HOST_MIPS, HOST_RAM, HOST_BW and Storage.
@@ -93,6 +92,17 @@ public class VmSimpleTest {
      */
     public static VmSimple createVm(final int vmId, final int numberOfPes) {
         return createVm(vmId, MIPS, numberOfPes);
+    }
+
+    /**
+     * Creates a VM with the default configuration defined in the Test Class'
+     * constants.
+     *
+     * @param cloudletScheduler
+     * @return
+     */
+    public static VmSimple createVm(CloudletScheduler cloudletScheduler) {
+        return createVm(ID, MIPS, PES_NUMBER, RAM, BW, SIZE, cloudletScheduler);
     }
 
     /**
@@ -107,6 +117,18 @@ public class VmSimpleTest {
     public static VmSimple createVm(final int vmId, final double mips, final int numberOfPes) {
         return createVm(vmId, mips, numberOfPes, RAM, BW, SIZE, CloudletScheduler.NULL);
     }
+
+    /**
+     * Creates a VM with 1 PE.
+     *
+     * @param vmId id of the VM
+     * @param capacity a capacity that will be set to all resources, such as CPU, HOST_RAM, HOST_BW, etc.
+     * @return
+     */
+    public static VmSimple createVm(final int vmId, long capacity) {
+        return createVm(vmId, capacity, 1, capacity, capacity, capacity, CloudletScheduler.NULL);
+    }
+
     /**
      * Creates a VM with the given configuration
      *
@@ -270,17 +292,17 @@ public class VmSimpleTest {
 
     @Test
     public void testGetRam() {
-        assertEquals(RAM, vm.getRam());
+        assertEquals(RAM, vm.getRam().getCapacity());
     }
 
     @Test
     public void testGetBw() {
-        assertEquals(BW, vm.getBw());
+        assertEquals(BW, vm.getBw().getCapacity());
     }
 
     @Test
     public void testGetSize() {
-        assertEquals(SIZE, vm.getStorage());
+        assertEquals(SIZE, vm.getStorage().getCapacity());
     }
 
     @Test
@@ -415,18 +437,6 @@ public class VmSimpleTest {
 
         assertTrue(vm.getCurrentRequestedMips().isEmpty());
     }
-
-    /**
-     * Creates a VM with the default configuration defined in the Test Class'
-     * constants.
-     *
-     * @param cloudletScheduler
-     * @return
-     */
-    public static VmSimple createVm(CloudletScheduler cloudletScheduler) {
-        return createVm(ID, MIPS, PES_NUMBER, RAM, BW, SIZE, cloudletScheduler);
-    }
-
     @Test
     public void testGetCurrentRequestedTotalMips() {
         List<Double> currentMips = new ArrayList<>();

@@ -8,7 +8,7 @@ Lists the main changes in the project.
 
 - [Vertical VM Scaling Mechanism](/cloudsim-plus-examples/src/main/java/org/cloudsimplus/examples/VerticalVmScalingExample.java) 
   for VM resources such as Ram, Bandwidth and PEs (CPUs).
-- double getUtilization() method in the UtilizationModel class to get the utilization percentage of a given resource
+- `double getUtilization()` method in the UtilizationModel class to get the utilization percentage of a given resource
   at the current simulation time.
 - Methods getUtilizationOfRam(), getUtilizationOfBW(), getUtilizationOfCpu() added to Cloudlet in order
   to get utilization percentage of RAM, BW and CPU, respectivelly, for the current simulation time.

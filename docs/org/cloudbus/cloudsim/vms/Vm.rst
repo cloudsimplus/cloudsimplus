@@ -20,7 +20,7 @@
 
 .. java:import:: org.cloudbus.cloudsim.core Simulation
 
-.. java:import:: org.cloudsimplus.autoscaling VmScaling
+.. java:import:: org.cloudsimplus.autoscaling VerticalVmScaling
 
 .. java:import:: org.cloudsimplus.listeners VmHostEventInfo
 
@@ -34,11 +34,11 @@ Vm
 .. java:package:: org.cloudbus.cloudsim.vms
    :noindex:
 
-.. java:type:: public interface Vm extends UniquelyIdentificable, Delayable, Comparable<Vm>
+.. java:type:: public interface Vm extends UniquelyIdentificable, Delayable, Resourceful, Comparable<Vm>
 
    An interface to be implemented by each class that provides basic features of Virtual Machines (VMs). The interface implements the Null Object Design Pattern in order to start avoiding \ :java:ref:`NullPointerException`\  when using the \ :java:ref:`Vm.NULL`\  object instead of attributing \ ``null``\  to \ :java:ref:`Vm`\  variables.
 
-   :author: Manoel Campos da Silva Filho
+   :author: Rodrigo N. Calheiros, Anton Beloglazov, Manoel Campos da Silva Filho
 
 Fields
 ------
@@ -140,12 +140,20 @@ getBroker
 getBw
 ^^^^^
 
-.. java:method::  long getBw()
+.. java:method::  Resource getBw()
    :outertype: Vm
 
-   Gets bandwidth capacity.
+   Gets bandwidth resource assigned to the Vm, allowing to check its capacity (in Megabits/s) and usage.
 
-   :return: bandwidth capacity.
+   :return: bandwidth resource.
+
+getBwVerticalScaling
+^^^^^^^^^^^^^^^^^^^^
+
+.. java:method::  VerticalVmScaling getBwVerticalScaling()
+   :outertype: Vm
+
+   Gets a \ :java:ref:`VerticalVmScaling`\  that will check if the Vm's Bandwidth is overloaded, based on some conditions defined by a \ :java:ref:`Predicate`\  given to the VerticalVmScaling, and then request the BW up scaling.
 
 getCloudletScheduler
 ^^^^^^^^^^^^^^^^^^^^
@@ -156,6 +164,17 @@ getCloudletScheduler
    Gets the the Cloudlet scheduler the VM uses to schedule cloudlets execution.
 
    :return: the cloudlet scheduler
+
+getCpuPercentUse
+^^^^^^^^^^^^^^^^
+
+.. java:method::  double getCpuPercentUse(double time)
+   :outertype: Vm
+
+   Gets the CPU utilization percentage of all Clouddlets running on this VM at the given time.
+
+   :param time: the time
+   :return: total utilization percentage
 
 getCurrentAllocatedBw
 ^^^^^^^^^^^^^^^^^^^^^
@@ -187,7 +206,17 @@ getCurrentAllocatedSize
 
    :return: the current allocated size
 
-   **See also:** :java:ref:`.getSize()`
+   **See also:** :java:ref:`.getStorage()`
+
+getCurrentCpuPercentUse
+^^^^^^^^^^^^^^^^^^^^^^^
+
+.. java:method::  double getCurrentCpuPercentUse()
+   :outertype: Vm
+
+   Gets the current CPU utilization percentage (in scale from 0 to 1) of all Cloudlets running on this VM.
+
+   :return: total utilization percentage for the current time, in scale from 0 to 1
 
 getCurrentRequestedBw
 ^^^^^^^^^^^^^^^^^^^^^
@@ -205,9 +234,9 @@ getCurrentRequestedMaxMips
 .. java:method::  double getCurrentRequestedMaxMips()
    :outertype: Vm
 
-   Gets the current requested max mips among all virtual PEs.
+   Gets the current requested max MIPS among all virtual \ :java:ref:`PEs <Pe>`\ .
 
-   :return: the current requested max mips
+   :return: the current requested max MIPS
 
 getCurrentRequestedMips
 ^^^^^^^^^^^^^^^^^^^^^^^
@@ -215,9 +244,9 @@ getCurrentRequestedMips
 .. java:method::  List<Double> getCurrentRequestedMips()
    :outertype: Vm
 
-   Gets the current requested mips.
+   Gets a list of current requested MIPS of each virtual \ :java:ref:`Pe`\ .
 
-   :return: the current requested mips
+   :return: the current requested MIPS of each Pe
 
 getCurrentRequestedRam
 ^^^^^^^^^^^^^^^^^^^^^^
@@ -235,19 +264,19 @@ getCurrentRequestedTotalMips
 .. java:method::  double getCurrentRequestedTotalMips()
    :outertype: Vm
 
-   Gets the current requested total mips. It is the sum of MIPS capacity requested for every VM's Pe.
+   Gets the current requested total MIPS. It is the sum of MIPS capacity requested for every virtual \ :java:ref:`Pe`\ .
 
-   :return: the current requested total mips
+   :return: the current requested total MIPS
 
    **See also:** :java:ref:`.getCurrentRequestedMips()`
 
 getHorizontalScaling
 ^^^^^^^^^^^^^^^^^^^^
 
-.. java:method::  VmScaling getHorizontalScaling()
+.. java:method::  HorizontalVmScaling getHorizontalScaling()
    :outertype: Vm
 
-   Gets the \ :java:ref:`HorizontalVmScaling`\  that will check if the Vm is overloaded, based on some conditions defined by a \ :java:ref:`Predicate`\  given to the HorizontalVmScaling.
+   Gets a \ :java:ref:`HorizontalVmScaling`\  that will check if the Vm is overloaded, based on some conditions defined by a \ :java:ref:`Predicate`\  given to the HorizontalVmScaling, and then request the creation of new VMs to horizontally scale the Vm.
 
    If no HorizontalVmScaling is set, the Broker will not dynamically
    create VMs to balance arrived Cloudlets.
@@ -258,9 +287,9 @@ getHost
 .. java:method::  Host getHost()
    :outertype: Vm
 
-   Gets the Host where the Vm is or will be placed. To know if the Vm was already created inside this Host, call the \ :java:ref:`isCreated()`\  method.
+   Gets the \ :java:ref:`Host`\  where the Vm is or will be placed. To know if the Vm was already created inside this Host, call the \ :java:ref:`isCreated()`\  method.
 
-   :return: the host
+   :return: the Host
 
    **See also:** :java:ref:`.isCreated()`
 
@@ -272,7 +301,7 @@ getMips
 
    Gets the individual MIPS capacity of any VM's PE, considering that all PEs have the same capacity.
 
-   :return: the mips
+   :return: the MIPS
 
 getNumberOfPes
 ^^^^^^^^^^^^^^
@@ -289,12 +318,30 @@ getNumberOfPes
 getRam
 ^^^^^^
 
-.. java:method::  long getRam()
+.. java:method::  Resource getRam()
    :outertype: Vm
 
-   Gets the RAM capacity in Megabytes.
+   Gets the RAM resource assigned to the Vm, allowing to check its capacity (in Megabytes) and usage.
 
-   :return: the RAM capacity
+   :return: the RAM resource
+
+getRamVerticalScaling
+^^^^^^^^^^^^^^^^^^^^^
+
+.. java:method::  VerticalVmScaling getRamVerticalScaling()
+   :outertype: Vm
+
+   Gets a \ :java:ref:`VerticalVmScaling`\  that will check if the Vm's RAM is overloaded, based on some conditions defined by a \ :java:ref:`Predicate`\  given to the VerticalVmScaling, and then request the RAM up scaling.
+
+getResources
+^^^^^^^^^^^^
+
+.. java:method:: @Override  List<ResourceManageable> getResources()
+   :outertype: Vm
+
+   {@inheritDoc} Such resources represent virtual resources corresponding to physical resources from the Host where the VM is placed.
+
+   :return: {@inheritDoc}
 
 getSimulation
 ^^^^^^^^^^^^^
@@ -303,16 +350,6 @@ getSimulation
    :outertype: Vm
 
    Gets the CloudSim instance that represents the simulation the Entity is related to.
-
-getSize
-^^^^^^^
-
-.. java:method::  long getSize()
-   :outertype: Vm
-
-   Gets the storage size (capacity) of the VM image in Megabytes (the amount of storage it will use, at least initially).
-
-   :return: amount of storage
 
 getStateHistory
 ^^^^^^^^^^^^^^^
@@ -323,6 +360,16 @@ getStateHistory
    Gets the history of MIPS capacity allocated to the VM.
 
    :return: the state history
+
+getStorage
+^^^^^^^^^^
+
+.. java:method::  Resource getStorage()
+   :outertype: Vm
+
+   Gets the storage device of the VM, that represents the VM image, allowing to check its capacity (in Megabytes) and usage.
+
+   :return: the storage resource
 
 getTotalMipsCapacity
 ^^^^^^^^^^^^^^^^^^^^
@@ -336,39 +383,18 @@ getTotalMipsCapacity
 
    **See also:** :java:ref:`.getMips()`, :java:ref:`.getNumberOfPes()`
 
-getTotalUtilizationOfCpu
-^^^^^^^^^^^^^^^^^^^^^^^^
-
-.. java:method::  double getTotalUtilizationOfCpu(double time)
-   :outertype: Vm
-
-   Gets total CPU utilization percentage of all Clouddlets running on this VM at the given time.
-
-   :param time: the time
-   :return: total utilization percentage
-
-getTotalUtilizationOfCpu
-^^^^^^^^^^^^^^^^^^^^^^^^
-
-.. java:method::  double getTotalUtilizationOfCpu()
-   :outertype: Vm
-
-   Gets total CPU utilization percentage (in scale from 0 to 1) of all Clouddlets running on this VM at the current simulation time.
-
-   :return: total utilization percentage for the current time, in scale from 0 to 1
-
 getTotalUtilizationOfCpuMips
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 .. java:method::  double getTotalUtilizationOfCpuMips(double time)
    :outertype: Vm
 
-   Gets the total CPU utilization (in scale from 0 to 1) of all cloudlets running on this VM at the given time (in MIPS).
+   Gets the total CPU MIPS utilization of all PEs from all cloudlets running on this VM at the given time.
 
-   :param time: the time
-   :return: total cpu utilization in MIPS, in scale from 0 to 1
+   :param time: the time to get the utilization
+   :return: total CPU utilization in MIPS
 
-   **See also:** :java:ref:`.getTotalUtilizationOfCpu(double)`
+   **See also:** :java:ref:`.getCpuPercentUse(double)`
 
 getVmm
 ^^^^^^
@@ -504,6 +530,17 @@ setBw
 
    :param bwCapacity: new BW capacity
 
+setBwVerticalScaling
+^^^^^^^^^^^^^^^^^^^^
+
+.. java:method::  Vm setBwVerticalScaling(VerticalVmScaling bwVerticalScaling) throws IllegalArgumentException
+   :outertype: Vm
+
+   Sets a \ :java:ref:`VerticalVmScaling`\  that will check if the Vm's Bandwidth is overloaded, based on some conditions defined by a \ :java:ref:`Predicate`\  given to the VerticalVmScaling, and then request the BW up scaling.
+
+   :param bwVerticalScaling: the VerticalVmScaling to set
+   :throws IllegalArgumentException: if the given VmScaling is already linked to a Vm. Each VM must have its own VerticalVmScaling objects or none at all.
+
 setCloudletScheduler
 ^^^^^^^^^^^^^^^^^^^^
 
@@ -539,16 +576,13 @@ setFailed
 setHorizontalScaling
 ^^^^^^^^^^^^^^^^^^^^
 
-.. java:method::  Vm setHorizontalScaling(VmScaling horizontalScaling) throws IllegalArgumentException
+.. java:method::  Vm setHorizontalScaling(HorizontalVmScaling horizontalScaling) throws IllegalArgumentException
    :outertype: Vm
 
-   Sets the \ :java:ref:`HorizontalVmScaling`\  that will check if the Vm is overloaded, based on some conditions defined by a \ :java:ref:`Predicate`\  given to the HorizontalVmScaling.
-
-   If no HorizontalVmScaling is set, the Broker will not dynamically
-   create VMs to balance arrived Cloudlets.
+   Sets a \ :java:ref:`HorizontalVmScaling`\  that will check if the Vm is overloaded, based on some conditions defined by a \ :java:ref:`Predicate`\  given to the HorizontalVmScaling, and then request the creation of new VMs to horizontally scale the Vm.
 
    :param horizontalScaling: the HorizontalVmScaling to set
-   :throws IllegalArgumentException: if the given Vm Scaling already is linked to a Vm. Each VM must have its own scaling object.
+   :throws IllegalArgumentException: if the given VmScaling is already linked to a Vm. Each VM must have its own HorizontalVmScaling object or none at all.
 
 setHost
 ^^^^^^^
@@ -579,6 +613,17 @@ setRam
    Sets RAM capacity in Megabytes.
 
    :param ramCapacity: new RAM capacity
+
+setRamVerticalScaling
+^^^^^^^^^^^^^^^^^^^^^
+
+.. java:method::  Vm setRamVerticalScaling(VerticalVmScaling ramVerticalScaling) throws IllegalArgumentException
+   :outertype: Vm
+
+   Sets a \ :java:ref:`VerticalVmScaling`\  that will check if the Vm's RAM is overloaded, based on some conditions defined by a \ :java:ref:`Predicate`\  given to the VerticalVmScaling, and then request the RAM up scaling.
+
+   :param ramVerticalScaling: the VerticalVmScaling to set
+   :throws IllegalArgumentException: if the given VmScaling is already linked to a Vm. Each VM must have its own VerticalVmScaling objects or none at all.
 
 setSize
 ^^^^^^^

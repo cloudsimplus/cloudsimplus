@@ -24,7 +24,7 @@ Simulation
 
    An interface to be implemented by a class that manages simulation execution, controlling all the simulation lifecycle.
 
-   :author: Manoel Campos da Silva Filho
+   :author: Rodrigo N. Calheiros, Anton Beloglazov, Manoel Campos da Silva Filho
 
    **See also:** :java:ref:`CloudSim`
 

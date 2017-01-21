@@ -146,37 +146,6 @@ public class CloudletSchedulerTimeShared extends CloudletSchedulerAbstract {
         return Processor.fromMipsList(mipsShare).getCapacity();
     }
 
-    @Override
-    public double getRequestedCpuPercentUtilization(double time) {
-        final double vmTotalCpuUsagePercent = super.getRequestedCpuPercentUtilization(time);
-
-        /**
-         * Due the the oversimplification performed by the
-         * {@link CloudletSchedulerTimeShared}, making all Cloudlets inside a Vm
-         * to be executed at the same time without performing process
-         * preemption, while such a scheduler implementation is not improved, we
-         * have to check if the number of currently running Cloudlets is greater
-         * than the number of VM's PEs to ensure a correct VM CPU usage
-         * computation. Consider the following example: We have 4 VM PEs and it
-         * is being used a CloudletSchedulerTimeShared. The number of running
-         * Cloudlets is 8 and the usage of each Cloudlet CPU is 100%.
-         *
-         * If we just sum all Cloudlets usage and divide by the number of VM's
-         * PEs we get 200% of usage (800% of all Cloudlets usage / 4 VM PEs).
-         * But since the mentioned scheduler will consider that these 8 VMs will
-         * run simultaneously in the 4 PEs but just using 50% of each PE
-         * capacity (because we will have 2 Cloudlets running at the same PE at
-         * a given time, thus the PE capacity is split between them), we have to
-         * divide the Cloudlets usage sum by the actual capacity of each PE that
-         * is allocated to each Cloudlet (0.5 that means 50% in this example),
-         * getting the correct 100% VM's CPU usage (200% * 0.5).
-         */
-        final double cloudletsPesNumber = getTotalPesFromAllRunningCloudlets();
-        final double peCapacityPercentForEachCloudlet
-                = cloudletsPesNumber > getVm().getNumberOfPes() ? getVm().getNumberOfPes() / cloudletsPesNumber : Conversion.HUNDRED_PERCENT;
-        return vmTotalCpuUsagePercent * peCapacityPercentForEachCloudlet;
-    }
-
     private double getTotalPesFromAllRunningCloudlets() {
         return getCloudletExecList().stream()
                 .mapToDouble(CloudletExecutionInfo::getNumberOfPes)

@@ -24,7 +24,7 @@ public interface Resourceful {
      */
     default ResourceManageable getResource(Class<? extends ResourceManageable> resourceClass){
         return getResources().stream()
-            .filter(r -> isObjectSubClassOf(r, resourceClass))
+            .filter(r -> r.isObjectSubClassOf(resourceClass))
             .findFirst()
             .orElse(ResourceManageable.NULL);
     }
@@ -36,14 +36,4 @@ public interface Resourceful {
      * @return a read-only list of resources
      */
     List<ResourceManageable> getResources();
-
-    /**
-     * Checks if a given object is instance of a given class.
-     * @param object the object to check
-     * @param classWanted the class to verify if the object is instance of
-     * @return true if the object is instance of the given class, false otherwise
-     */
-    static boolean isObjectSubClassOf(Object object, Class classWanted) {
-        return classWanted.isAssignableFrom(object.getClass());
-    }
 }
