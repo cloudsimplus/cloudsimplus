@@ -101,11 +101,7 @@ public class DatacenterBrokerSimple extends DatacenterBrokerAbstract {
      * @return the index of the next VM to bind a cloudlet to
      */
     private int getNextVmIndex() {
-<<<<<<< HEAD
-        if(getVmsCreatedList().isEmpty()) {
-=======
         if (getVmsCreatedList().isEmpty()) {
->>>>>>> upstream/master
             return -1;
         }
 

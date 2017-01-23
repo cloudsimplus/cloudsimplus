@@ -20,10 +20,6 @@ import org.cloudbus.cloudsim.vms.Vm;
 import org.cloudbus.cloudsim.core.*;
 import org.cloudsimplus.autoscaling.VerticalVmScaling;
 
-<<<<<<< HEAD
-=======
-
->>>>>>> upstream/master
 /**
  * An abstract class to be used as base for implementing a {@link DatacenterBroker}.
  *
@@ -67,13 +63,7 @@ public abstract class DatacenterBrokerAbstract extends CloudSimEntity implements
      * If the value is null or the Cloudlet isn't in the map,
      * it wasn't requested to be created yet.
      */
-<<<<<<< HEAD
-    private Map<Cloudlet,Datacenter> cloudletCreationRequestsMap;
-    
-=======
     private Map<Cloudlet, Datacenter> cloudletCreationRequestsMap;
-
->>>>>>> upstream/master
     private Supplier<Datacenter> datacenterSupplier;
     private Supplier<Datacenter> fallbackDatacenterSupplier;
     private Function<Cloudlet, Vm> vmMapper;
@@ -351,11 +341,7 @@ public abstract class DatacenterBrokerAbstract extends CloudSimEntity implements
      * another Datacenter to request the creation of the VMs
      * in the waiting list.
      */
-<<<<<<< HEAD
-    protected void requestCreationOfWaitingVmsToNextDatacenter() {
-=======
     protected void requestCreationOfWaitingVmsToFallbackDatacenter() {
->>>>>>> upstream/master
         final Datacenter nextDatacenter = fallbackDatacenterSupplier.get();
         if (nextDatacenter != Datacenter.NULL) {
             clearVmCreationRequestsMapToTryNextDatacenter();
