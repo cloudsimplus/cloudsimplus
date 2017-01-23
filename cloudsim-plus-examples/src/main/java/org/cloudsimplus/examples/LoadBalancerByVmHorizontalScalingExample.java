@@ -55,7 +55,6 @@ import org.cloudbus.cloudsim.utilizationmodels.UtilizationModel;
 import org.cloudbus.cloudsim.utilizationmodels.UtilizationModelFull;
 import org.cloudbus.cloudsim.vms.Vm;
 import org.cloudbus.cloudsim.vms.VmSimple;
-import org.cloudsimplus.autoscaling.VmScaling;
 import org.cloudsimplus.listeners.EventInfo;
 import org.cloudsimplus.listeners.EventListener;
 import org.cloudsimplus.builders.tables.CloudletsTableBuilderHelper;
@@ -70,17 +69,16 @@ import static java.util.Comparator.comparingDouble;
 /**
  * An example that balances load by dynamically creating VMs according
  * to the arrival of Cloudlets.
- * {@link #createNewCloudlets(EventInfo) Cloudlets are dynamically created and submitted to the broker
+ *  Cloudlets are {@link #createNewCloudlets(EventInfo) dynamically created and submitted to the broker
  * at specific time intervals}.
  * A {@link HorizontalVmScalingSimple}
  * is set to each {@link #createListOfScalableVms(int) initially created VM},
  * that will check at {@link #SCHEDULING_INTERVAL specific time intervals}
  * if the VM {@link #isVmOverloaded(Vm) is overloaded or not} to then
  * request the creation of a new VM to attend the arriving Cloudlets.
- * <p>
+ *
  * <p>The example uses the CloudSim Plus {@link EventListener} feature
- * to enable monitoring the simulation and dynamically creating objects such as
- * Cloudlets and VMs.
+ * to enable monitoring the simulation and dynamically creating objects such as Cloudlets and VMs.
  * It relies on
  * <a href="http://www.oracle.com/webfolder/technetwork/tutorials/obe/java/Lambda-QuickStart/index.html">Java 8 Lambda Expressions</a>
  * to create an Listener for the {@link Simulation#addOnClockTickListener(EventListener) onClockTick event}
@@ -265,6 +263,7 @@ public class LoadBalancerByVmHorizontalScalingExample {
              .setVmSupplier(this::createVm)
              .setOverloadPredicate(this::isVmOverloaded);
         vm.setHorizontalScaling(horizontalScaling);
+
     }
 
     /**
@@ -290,7 +289,7 @@ public class LoadBalancerByVmHorizontalScalingExample {
      * @see #createHorizontalVmScaling(Vm)
      */
     private boolean isVmOverloaded(Vm vm) {
-        return vm.getTotalUtilizationOfCpu() > 0.7;
+        return vm.getCurrentCpuPercentUse() > 0.7;
     }
 
     private Cloudlet createCloudlet() {

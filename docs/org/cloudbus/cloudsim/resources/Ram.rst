@@ -4,9 +4,9 @@ Ram
 .. java:package:: org.cloudbus.cloudsim.resources
    :noindex:
 
-.. java:type:: public final class Ram extends ResourceAbstract
+.. java:type:: public final class Ram extends ResourceManageableAbstract
 
-   Represents the RAM capacity of a PM or VM in Mebabytes.
+   Represents the RAM resource of a PM or VM in Mebabytes. Such a class allows managing the RAM capacity and allocation.
 
    :author: Manoel Campos da Silva Filho
 

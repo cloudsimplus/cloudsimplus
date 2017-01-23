@@ -132,6 +132,7 @@ public interface Pe extends Identificable, ResourceManageable {
         @Override public long getAvailableResource() { return 0; }
         @Override public long getAllocatedResource() { return 0; }
         @Override public boolean isResourceAmountAvailable(long amountToCheck) { return false; }
+        @Override public boolean isResourceAmountAvailable(double amountToCheck) { return false; }
         @Override public boolean isFull() { return false; }
         @Override public int getId(){ return -1; }
         @Override public long getCapacity() { return 0; }

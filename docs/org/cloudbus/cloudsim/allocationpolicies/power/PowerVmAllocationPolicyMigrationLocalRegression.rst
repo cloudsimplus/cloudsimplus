@@ -2,6 +2,8 @@
 
 .. java:import:: org.cloudbus.cloudsim.hosts.power PowerHostUtilizationHistory
 
+.. java:import:: org.cloudbus.cloudsim.resources Resource
+
 .. java:import:: org.cloudbus.cloudsim.selectionpolicies.power PowerVmSelectionPolicy
 
 .. java:import:: org.cloudbus.cloudsim.vms Vm

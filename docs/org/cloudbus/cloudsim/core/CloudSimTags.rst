@@ -6,6 +6,8 @@
 
 .. java:import:: org.cloudbus.cloudsim.vms Vm
 
+.. java:import:: org.cloudsimplus.autoscaling VerticalVmScaling
+
 CloudSimTags
 ============
 
@@ -313,4 +315,12 @@ VM_UPDATE_CLOUDLET_PROCESSING_EVENT
    :outertype: CloudSimTags
 
    Denotes an internal event generated in a \ :java:ref:`Datacenter`\  to notify it to update the processing of VM's cloudlets.
+
+VM_VERTICAL_SCALING
+^^^^^^^^^^^^^^^^^^^
+
+.. java:field:: public static final int VM_VERTICAL_SCALING
+   :outertype: CloudSimTags
+
+   Defines the tag to be used for vertical scaling of VM resources such as Ram, Bandwidth or Pe. When an event of this type is sent, the \ :java:ref:`SimEvent.getData()`\  must be a \ :java:ref:`VerticalVmScaling`\  object.
 

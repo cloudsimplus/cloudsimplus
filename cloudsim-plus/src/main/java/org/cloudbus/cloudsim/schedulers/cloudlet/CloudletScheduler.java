@@ -14,6 +14,7 @@ import org.cloudbus.cloudsim.cloudlets.Cloudlet;
 import org.cloudbus.cloudsim.cloudlets.CloudletExecutionInfo;
 import org.cloudbus.cloudsim.network.VmPacket;
 import org.cloudbus.cloudsim.schedulers.cloudlet.network.PacketScheduler;
+import org.cloudbus.cloudsim.utilizationmodels.UtilizationModel;
 import org.cloudbus.cloudsim.vms.Vm;
 import org.cloudbus.cloudsim.core.CloudSimTags;
 import org.cloudbus.cloudsim.datacenters.DatacenterSimple;
@@ -142,27 +143,26 @@ public interface CloudletScheduler extends Serializable {
     List<Double> getCurrentMipsShare();
 
     /**
-     * Gets the current requested mips.
+     * Gets the current requested MIPS.
      *
-     * @return the current mips
+     * @return the current requested MIPS
      */
     List<Double> getCurrentRequestedMips();
 
     /**
-     * Gets the current requested percentage of bw
-     * (in scale from 0 to 1, where 1 is 100%).
+     /**
+     * Gets the current utilization percentage of Bandwidth that the running Cloudlets are requesting (in scale from 0 to 1).
      *
-     * @return the current requested bw percentage.
+     * @return the BW utilization percentage from 0 to 1 (where 1 is 100%)
      */
-    double getCurrentRequestedUtilizationOfBw();
+    double getCurrentRequestedBwPercentUtilization();
 
     /**
-     * Gets the current requested percentage of ram
-     * (in scale from 0 to 1, where 1 is 100%).
+     * Gets the current utilization percentage of RAM that the running Cloudlets are requesting (in scale from 0 to 1).
      *
-     * @return the current requested ram percentage.
+     * @return the RAM utilization percentage from 0 to 1 (where 1 is 100%)
      */
-    double getCurrentRequestedUtilizationOfRam();
+    double getCurrentRequestedRamPercentUtilization();
 
     /**
      * Removes the next cloudlet in the finished list and returns it.
@@ -182,13 +182,13 @@ public interface CloudletScheduler extends Serializable {
     double getPreviousTime();
 
     /**
-     * Gets the total current allocated mips for cloudlet.
+     * Gets the current allocated MIPS for cloudlet.
      *
      * @param rcl the rcl
      * @param time the time
-     * @return the total current allocated mips for cloudlet
+     * @return the current allocated mips for cloudlet
      */
-    double getTotalCurrentAllocatedMipsForCloudlet(CloudletExecutionInfo rcl, double time);
+    double getAllocatedMipsForCloudlet(CloudletExecutionInfo rcl, double time);
 
     /**
      * Gets the total current mips that a Cloudlet can use for each PE
@@ -202,13 +202,13 @@ public interface CloudletScheduler extends Serializable {
     double getTotalCurrentAvailableMipsForCloudlet(CloudletExecutionInfo rcl, List<Double> mipsShare);
 
     /**
-     * Gets the total current requested mips for a given cloudlet.
+     * Gets the current requested MIPS for a given cloudlet.
      *
      * @param rcl the rcl
      * @param time the time
-     * @return the total current requested mips for the given cloudlet
+     * @return the current requested mips for the given cloudlet
      */
-    double getTotalCurrentRequestedMipsForCloudlet(CloudletExecutionInfo rcl, double time);
+    double getRequestedMipsForCloudlet(CloudletExecutionInfo rcl, double time);
 
     /**
      * Gets total CPU utilization percentage of all cloudlets,
@@ -218,7 +218,7 @@ public interface CloudletScheduler extends Serializable {
      * @param time the time to get the current CPU utilization
      * @return the total CPU utilization percentage
      */
-    double getTotalUtilizationOfCpu(double time);
+    double getRequestedCpuPercentUtilization(double time);
 
     /**
      * Informs if there is any cloudlet that finished to execute in the VM managed by this scheduler.
@@ -376,14 +376,14 @@ public interface CloudletScheduler extends Serializable {
         @Override public int getCloudletStatus(int cloudletId) { return 0; }
         @Override public List<Double> getCurrentMipsShare() { return Collections.emptyList(); }
         @Override public List<Double> getCurrentRequestedMips() { return Collections.emptyList(); }
-        @Override public double getCurrentRequestedUtilizationOfBw() { return 0.0; }
-        @Override public double getCurrentRequestedUtilizationOfRam() { return 0.0; }
+        @Override public double getCurrentRequestedBwPercentUtilization() { return 0.0; }
+        @Override public double getCurrentRequestedRamPercentUtilization() { return 0.0; }
         @Override public Cloudlet removeNextFinishedCloudlet() { return Cloudlet.NULL; }
         @Override public double getPreviousTime() { return 0.0; }
-        @Override public double getTotalCurrentAllocatedMipsForCloudlet(CloudletExecutionInfo rcl, double time) { return 0.0; }
+        @Override public double getAllocatedMipsForCloudlet(CloudletExecutionInfo rcl, double time) { return 0.0; }
         @Override public double getTotalCurrentAvailableMipsForCloudlet(CloudletExecutionInfo rcl, List<Double> mipsShare) { return 0.0; }
-        @Override public double getTotalCurrentRequestedMipsForCloudlet(CloudletExecutionInfo rcl, double time) { return 0.0; }
-        @Override public double getTotalUtilizationOfCpu(double time) { return 0.0; }
+        @Override public double getRequestedMipsForCloudlet(CloudletExecutionInfo rcl, double time) { return 0.0; }
+        @Override public double getRequestedCpuPercentUtilization(double time) { return 0.0; }
         @Override public boolean hasFinishedCloudlets() { return false; }
         @Override public PacketScheduler getPacketScheduler() { return PacketScheduler.NULL; }
         @Override public void setPacketScheduler(PacketScheduler packetScheduler) {}

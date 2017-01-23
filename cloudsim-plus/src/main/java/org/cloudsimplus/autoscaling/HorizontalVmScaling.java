@@ -27,6 +27,7 @@ import org.cloudbus.cloudsim.brokers.DatacenterBroker;
 import org.cloudbus.cloudsim.datacenters.Datacenter;
 import org.cloudbus.cloudsim.vms.Vm;
 
+import java.util.function.Predicate;
 import java.util.function.Supplier;
 
 /**
@@ -39,6 +40,10 @@ import java.util.function.Supplier;
  * requiring the creation of new VMs to balance the load.
  * Accordingly, as Cloudlets terminates, some created VMs may not
  * be required anymore and should be destroyed.</p>
+ *
+ * <p>A HorizontalVmScaling implementation performs
+ * such up or down scaling by creating or destroying VMs
+ * are needed.</p>
  *
  * @author Manoel Campos da Silva Filho
  * @since CloudSim Plus 1.0
@@ -66,7 +71,7 @@ public interface HorizontalVmScaling extends VmScaling {
     HorizontalVmScaling setVmSupplier(Supplier<Vm> supplier);
 
     /**
-     * Performs the horizontal scale if the Vm is overloaded, according to the {@link #getOverloadPredicate()} predicate.
+     * Requests a horizontal scale if the Vm is overloaded, according to the {@link #getOverloadPredicate()} predicate.
      * The scaling is performed by creating a new Vm using the {@link #getVmSupplier()} method
      * and submitting it to the broker.
      *
@@ -74,7 +79,29 @@ public interface HorizontalVmScaling extends VmScaling {
      * depends on the {@link Datacenter#getSchedulingInterval()} value.
      * Make sure to set such a value to enable the periodic overload verification.</p>
      *
+     * <p><b>The method will check the need to create a new
+     * VM at the time interval defined by the {@link Datacenter#getSchedulingInterval()}.
+     * A VM creation request is only sent when the VM is overloaded and
+     * new Cloudlets were submitted to the broker.
+     * </b></p>
+     *
      * @param time current simulation time
+     * @return {@inheritDoc}
      */
-    @Override void scaleIfOverloaded(double time);
+    @Override
+    boolean requestUpScalingIfOverloaded(double time);
+
+    /**
+     * An attribute that implements the Null Object Design Pattern for {@link HorizontalVmScaling}
+     * objects.
+     */
+    HorizontalVmScaling NULL = new HorizontalVmScaling() {
+        @Override public Supplier<Vm> getVmSupplier() { return () -> Vm.NULL; }
+        @Override public HorizontalVmScaling setVmSupplier(Supplier<Vm> supplier) { return this; }
+        @Override public boolean requestUpScalingIfOverloaded(double time) { return false; }
+        @Override public Vm getVm() { return Vm.NULL; }
+        @Override public VmScaling setVm(Vm vm) { return this; }
+        @Override public Predicate<Vm> getOverloadPredicate() { return vm -> false; }
+        @Override public VmScaling setOverloadPredicate(Predicate<Vm> predicate) { return this; }
+    };
 }

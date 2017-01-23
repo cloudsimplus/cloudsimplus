@@ -45,14 +45,14 @@ import org.cloudbus.cloudsim.resources.Bandwidth;
 import org.cloudbus.cloudsim.resources.Pe;
 import org.cloudbus.cloudsim.resources.PeSimple;
 import org.cloudbus.cloudsim.resources.Ram;
-import org.cloudbus.cloudsim.schedulers.cloudlet.CloudletSchedulerDynamicWorkload;
+import org.cloudbus.cloudsim.schedulers.cloudlet.CloudletSchedulerTimeShared;
 import org.cloudbus.cloudsim.schedulers.vm.VmSchedulerSpaceShared;
 import org.cloudbus.cloudsim.schedulers.vm.VmSchedulerTimeShared;
 import org.cloudbus.cloudsim.selectionpolicies.power.PowerVmSelectionPolicyMinimumUtilization;
 import org.cloudbus.cloudsim.util.Log;
 import org.cloudbus.cloudsim.util.ResourceLoader;
 import org.cloudbus.cloudsim.utilizationmodels.UtilizationModel;
-import org.cloudbus.cloudsim.utilizationmodels.UtilizationModelArithmeticProgression;
+import org.cloudbus.cloudsim.utilizationmodels.UtilizationModelDynamic;
 import org.cloudbus.cloudsim.utilizationmodels.UtilizationModelFull;
 import org.cloudbus.cloudsim.vms.Vm;
 import org.cloudbus.cloudsim.vms.power.PowerVm;
@@ -117,7 +117,7 @@ public final class VmMigrationWhenCpuMetricIsViolatedExample {
      * The file containing the SLA Contract in JSON format.
      */
     public static final String METRICS_FILE = ResourceLoader.getResourcePath(VmMigrationWhenCpuMetricIsViolatedExample.class, "SlaMetrics.json");
-    
+
     /**
      * Attributes with minimum and maximum values of the CPU Utilization metric
      * to be set for allocation policy.
@@ -176,17 +176,13 @@ public final class VmMigrationWhenCpuMetricIsViolatedExample {
      *
      * @param broker
      * @return
-     *
-     * @todo @author manoelcampos The use of other CloudletScheduler instead of
-     * {@link CloudletSchedulerDynamicWorkload} makes the Host CPU usage not be
-     * updated (and maybe VM CPU usage too).
      */
     public PowerVm createVm(DatacenterBroker broker) {
         PowerVm vm = new PowerVm(vmlist.size(), VM_MIPS, VM_PES_NUM);
         vm.setSchedulingInterval(1)
                 .setRam(VM_RAM).setBw(VM_BW).setSize(VM_SIZE)
                 .setBroker(broker)
-                .setCloudletScheduler(new CloudletSchedulerDynamicWorkload(VM_MIPS, VM_PES_NUM));
+                .setCloudletScheduler(new CloudletSchedulerTimeShared());
 
         Log.printConcatLine(
                 "#Requested creation of VM ", vm.getId(), " with ", VM_MIPS, " MIPS x ", VM_PES_NUM);
@@ -194,7 +190,7 @@ public final class VmMigrationWhenCpuMetricIsViolatedExample {
     }
 
     public List<Cloudlet> createAndSubmitCloudlets(
-            double cloudletInitialCpuUtilizationPercentage,
+            double cloudletInitialCpuUsagePercent,
             double maxCloudletCpuUtilizationPercentage,
             Vm hostingVm,
             DatacenterBroker broker,
@@ -204,18 +200,15 @@ public final class VmMigrationWhenCpuMetricIsViolatedExample {
         int cloudletId;
         for (int i = 0; i < NUMBER_OF_CLOUDLETS_TO_CREATE_BY_VM; i++) {
             cloudletId = hostingVm.getId() + i;
-            UtilizationModelArithmeticProgression cpuUtilizationModel;
+            UtilizationModelDynamic cpuUtilizationModel;
             if (progressiveCpuUsage) {
                 cpuUtilizationModel
-                        = new UtilizationModelArithmeticProgression(
-                                CLOUDLET_CPU_USAGE_INCREMENT_PER_SECOND,
-                                cloudletInitialCpuUtilizationPercentage);
+                        = new UtilizationModelDynamic(cloudletInitialCpuUsagePercent)
+                            .setUtilizationIncrementFunction(this::getCpuUtilizationIncrement);
             } else {
-                cpuUtilizationModel
-                        = new UtilizationModelArithmeticProgression(0,
-                                cloudletInitialCpuUtilizationPercentage);
+                cpuUtilizationModel = new UtilizationModelDynamic(cloudletInitialCpuUsagePercent);
             }
-            cpuUtilizationModel.setMaxResourceUsagePercentage(maxCloudletCpuUtilizationPercentage);
+            cpuUtilizationModel.setMaxResourceUtilization(maxCloudletCpuUtilizationPercentage);
 
             Cloudlet c
                     = new CloudletSimple(
@@ -235,6 +228,14 @@ public final class VmMigrationWhenCpuMetricIsViolatedExample {
         }
 
         return list;
+    }
+
+    /**
+     * Increments the CPU resource utilization, that is defined in percentage values.
+     * @return the new resource utilization after the increment
+     */
+    private double getCpuUtilizationIncrement(double timeSpan, double initialUtilization){
+        return  initialUtilization + CLOUDLET_CPU_USAGE_INCREMENT_PER_SECOND*timeSpan;
     }
 
     public List<Cloudlet> createAndSubmitCloudletsWithDynamicCpuUtilization(
@@ -323,19 +324,19 @@ public final class VmMigrationWhenCpuMetricIsViolatedExample {
 
     }
 
-    private void getCpuUtilizationThreshold(SlaMetric metric) {   
+    private void getCpuUtilizationThreshold(SlaMetric metric) {
         double minValue
                 = metric.getDimensions().stream()
                 .filter(d -> d.isValueMin())
                 .map(d -> d.getValue())
                 .findFirst().orElse(Double.MIN_VALUE);
-        
+
         double maxValue
                 = metric.getDimensions().stream()
                 .filter(d -> d.isValueMax())
                 .map(d -> d.getValue())
                 .findFirst().orElse(Double.MAX_VALUE);
-        
+
         underCpuUtilizationThreshold = minValue / 100;
         overCpuUtilizationThreshold = maxValue / 100;
 

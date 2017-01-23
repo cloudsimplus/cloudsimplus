@@ -21,107 +21,142 @@ import java.util.Random;
  * random resource utilization every time frame.
  *
  * @author Anton Beloglazov
+ * @author Manoel Campos da Silva Filho
  * @since CloudSim Toolkit 2.0
  */
-public class UtilizationModelStochastic implements UtilizationModel {
+public class UtilizationModelStochastic extends UtilizationModelAbstract {
 
-	/** The random generator. */
-	private Random randomGenerator;
+    /**
+     * The random generator.
+     */
+    private Random randomGenerator;
 
-	/** The utilization history map, where each key is a time and
-         * each value is the utilization percentage in that time. */
-	private Map<Double, Double> history;
+    /**
+     * @see #getHistory()
+     */
+    private Map<Double, Double> history;
 
-	/**
-	 * Instantiates a new utilization model stochastic.
-	 */
-	public UtilizationModelStochastic() {
-		setHistory(new HashMap<>());
-		setRandomGenerator(new Random());
-	}
+    /**
+     * Instantiates a new utilization model stochastic
+     * that defines the resource utilization in percentage.
+     */
+    public UtilizationModelStochastic() {
+        super();
+        setHistory(new HashMap<>());
+        setRandomGenerator(new Random());
+    }
 
-	/**
-	 * Instantiates a new utilization model stochastic.
-	 *
-	 * @param seed the seed
-	 */
-	public UtilizationModelStochastic(long seed) {
-		setHistory(new HashMap<>());
-		setRandomGenerator(new Random(seed));
-	}
+    /**
+     * Instantiates a new utilization model stochastic
+     * where the resource utilization is defined in the given unit.
+     *
+     * @param unit the {@link Unit} that determines how the resource is used (for instance, if
+     *             resource usage is defined in percentage of the Vm resource or in absolute values)
+     */
+    public UtilizationModelStochastic(Unit unit) {
+        this();
+        setUnit(unit);
+    }
 
-	@Override
-	public double getUtilization(double time) {
-		if (getHistory().containsKey(time)) {
-			return getHistory().get(time);
-		}
+    /**
+     * Instantiates a new utilization model stochastic using
+     * a given seed and where the resource utilization is defined in the given unit.
+     *
+     * @param unit the {@link Unit} that determines how the resource is used (for instance, if
+     *             resource usage is defined in percentage of the Vm resource or in absolute values)
+     * @param seed the seed to generate the pseudo random utilization values
+     */
+    public UtilizationModelStochastic(Unit unit, long seed) {
+        this(seed);
+        setUnit(unit);
+    }
 
-		double utilization = getRandomGenerator().nextDouble();
-		getHistory().put(time, utilization);
-		return utilization;
-	}
+    /**
+     * Instantiates a new utilization model stochastic.
+     *
+     * @param seed the seed to generate the pseudo random utilization values
+     */
+    public UtilizationModelStochastic(long seed) {
+        super();
+        setHistory(new HashMap<>());
+        setRandomGenerator(new Random(seed));
+    }
 
-	/**
-	 * Gets the utilization history.
-	 *
-	 * @return the history
-	 */
-	protected Map<Double, Double> getHistory() {
-		return history;
-	}
+    @Override
+    public double getUtilization(double time) {
+        if (getHistory().containsKey(time)) {
+            return getHistory().get(time);
+        }
 
-	/**
-	 * Sets the utilization history.
-	 *
-	 * @param history the history
-	 */
-	protected final void setHistory(Map<Double, Double> history) {
-		this.history = history;
-	}
+        double utilization = getRandomGenerator().nextDouble();
+        getHistory().put(time, utilization);
+        return utilization;
+    }
 
-	/**
-	 * Save the utilization history to a file.
-	 *
-	 * @param filename the filename
-	 * @throws Exception the exception
-	 */
-	public void saveHistory(String filename) throws Exception {
-		FileOutputStream fos = new FileOutputStream(filename);
-		ObjectOutputStream oos = new ObjectOutputStream(fos);
-		oos.writeObject(getHistory());
-		oos.close();
-	}
+    /**
+     * Gets the utilization history map, where each key is a time and
+     * each value is the resource utilization in that time.
+     *
+     * @return the utilization history
+     */
+    protected Map<Double, Double> getHistory() {
+        return history;
+    }
 
-	/**
-	 * Load an utilization history from a file.
-	 *
-	 * @param filename the filename
-	 * @throws Exception the exception
-	 */
-	@SuppressWarnings("unchecked")
-	public void loadHistory(String filename) throws Exception {
-            FileInputStream fis = new FileInputStream(filename);
-            try (ObjectInputStream ois = new ObjectInputStream(fis)) {
-                setHistory((Map<Double, Double>) ois.readObject());
-            }
-	}
+    /**
+     * Sets the utilization history map, where each key is a time and
+     * each value is the resource utilization in that time.
+     *
+     *
+     * @param history the history to set
+     */
+    protected final void setHistory(Map<Double, Double> history) {
+        this.history = history;
+    }
 
-	/**
-	 * Sets the random generator.
-	 *
-	 * @param randomGenerator the new random generator
-	 */
-	public final void setRandomGenerator(Random randomGenerator) {
-		this.randomGenerator = randomGenerator;
-	}
+    /**
+     * Save the utilization history to a file.
+     *
+     * @param filename the filename
+     * @throws Exception the exception
+     */
+    public void saveHistory(String filename) throws Exception {
+        FileOutputStream fos = new FileOutputStream(filename);
+        ObjectOutputStream oos = new ObjectOutputStream(fos);
+        oos.writeObject(getHistory());
+        oos.close();
+    }
 
-	/**
-	 * Gets the random generator.
-	 *
-	 * @return the random generator
-	 */
-	public Random getRandomGenerator() {
-		return randomGenerator;
-	}
+    /**
+     * Load an utilization history from a file.
+     *
+     * @param filename the filename
+     * @throws Exception the exception
+     */
+    @SuppressWarnings("unchecked")
+    public void loadHistory(String filename) throws Exception {
+        FileInputStream fis = new FileInputStream(filename);
+        try (ObjectInputStream ois = new ObjectInputStream(fis)) {
+            setHistory((Map<Double, Double>) ois.readObject());
+        }
+    }
+
+    /**
+     * Gets the random number generator.
+     *
+     * @return the random number generator
+     */
+    public Random getRandomGenerator() {
+        return randomGenerator;
+    }
+
+    /**
+     * Sets the random number generator.
+     *
+     * @param randomGenerator the new random number generator
+     */
+    public final void setRandomGenerator(Random randomGenerator) {
+        this.randomGenerator = randomGenerator;
+    }
 
 }

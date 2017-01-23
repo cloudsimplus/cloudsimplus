@@ -10,7 +10,7 @@ UtilizationModelPlanetLabInMemory
 .. java:package:: org.cloudbus.cloudsim.utilizationmodels
    :noindex:
 
-.. java:type:: public class UtilizationModelPlanetLabInMemory implements UtilizationModel
+.. java:type:: public class UtilizationModelPlanetLabInMemory extends UtilizationModelAbstract
 
    Defines the resource utilization model based on a \ `PlanetLab <https://www.planet-lab.org>`_\  Datacenter trace file.
 

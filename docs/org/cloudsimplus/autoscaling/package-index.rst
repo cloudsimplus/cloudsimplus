@@ -9,5 +9,7 @@ org.cloudsimplus.autoscaling
    HorizontalVmScaling
    HorizontalVmScalingSimple
    VerticalVmScaling
+   VerticalVmScalingSimple
    VmScaling
+   VmScalingAbstract
 

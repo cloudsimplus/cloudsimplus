@@ -10,12 +10,13 @@ import java.util.*;
 
 import org.cloudbus.cloudsim.core.UniquelyIdentificable;
 import org.cloudbus.cloudsim.datacenters.Datacenter;
-import org.cloudbus.cloudsim.provisioners.PeProvisioner;
 import org.cloudbus.cloudsim.util.Log;
 import org.cloudbus.cloudsim.brokers.DatacenterBroker;
 import org.cloudbus.cloudsim.cloudlets.Cloudlet;
 import org.cloudbus.cloudsim.core.Simulation;
 import org.cloudbus.cloudsim.hosts.Host;
+import org.cloudsimplus.autoscaling.HorizontalVmScaling;
+import org.cloudsimplus.autoscaling.VerticalVmScaling;
 import org.cloudsimplus.autoscaling.VmScaling;
 import org.cloudsimplus.listeners.VmHostEventInfo;
 import org.cloudsimplus.listeners.VmDatacenterEventInfo;
@@ -41,7 +42,7 @@ import org.cloudbus.cloudsim.schedulers.cloudlet.CloudletScheduler;
  * without defining a specific method for each one.
  */
 public class VmSimple implements Vm {
-    private VmScaling horizontalScaling;
+    private HorizontalVmScaling horizontalScaling;
     private boolean failed;
 
     /**
@@ -86,13 +87,7 @@ public class VmSimple implements Vm {
      */
     private boolean created;
 
-    /**
-     * A list of resources the VM has, that represent virtual resources corresponding to physical resources
-     * from the Host where the VM is placed.
-     *
-     * @see #getResource(Class)
-     */
-    private final List<ResourceManageable> resources;
+    private List<ResourceManageable> resources;
 
     /**
      * @see #getStateHistory()
@@ -126,6 +121,8 @@ public class VmSimple implements Vm {
     private List<EventListener<VmHostEventInfo>> onHostDeallocationListeners;
     private List<EventListener<VmHostEventInfo>> onUpdateVmProcessingListeners;
     private List<EventListener<VmDatacenterEventInfo>> onVmCreationFailureListeners;
+    private VerticalVmScaling ramVerticalScaling;
+    private VerticalVmScaling bwVerticalScaling;
 
     /**
      * Creates a Vm with 1024 MEGABYTE of RAM, 1000 Megabits/s of Bandwidth and 1024 MEGABYTE of Storage Size.
@@ -164,7 +161,9 @@ public class VmSimple implements Vm {
         this.onHostDeallocationListeners = new ArrayList<>();
         this.onVmCreationFailureListeners = new ArrayList<>();
         this.onUpdateVmProcessingListeners = new ArrayList<>();
-        this.horizontalScaling = VmScaling.NULL;
+        this.setHorizontalScaling(HorizontalVmScaling.NULL);
+        this.setRamVerticalScaling(VerticalVmScaling.NULL);
+        this.setBwVerticalScaling(VerticalVmScaling.NULL);
     }
 
     /**
@@ -248,6 +247,31 @@ public class VmSimple implements Vm {
     }
 
     @Override
+    public double getCurrentCpuPercentUse() {
+        return getCpuPercentUse(getSimulation().clock());
+    }
+
+    @Override
+    public double getCpuPercentUse(double time) {
+        return getCloudletScheduler().getRequestedCpuPercentUtilization(time);
+    }
+
+    @Override
+    public double getTotalUtilizationOfCpuMips(double time) {
+        return getCpuPercentUse(time) * getTotalMipsCapacity();
+    }
+
+    @Override
+    public double getCurrentRequestedMaxMips() {
+        return getCurrentRequestedMips().stream().mapToDouble(m->m).max().orElse(0.0);
+    }
+
+    @Override
+    public double getCurrentRequestedTotalMips() {
+        return getCurrentRequestedMips().stream().mapToDouble(m->m).sum();
+    }
+
+    @Override
     public List<Double> getCurrentRequestedMips() {
         List<Double> currentRequestedMips = getCloudletScheduler().getCurrentRequestedMips();
         if (!isCreated()) {
@@ -261,64 +285,21 @@ public class VmSimple implements Vm {
     }
 
     @Override
-    public double getCurrentRequestedTotalMips() {
-        return getCurrentRequestedMips().stream().mapToDouble(m->m).sum();
-    }
-
-    @Override
-    public double getCurrentRequestedMaxMips() {
-        return getCurrentRequestedMips().stream().mapToDouble(m->m).max().orElse(0.0);
-    }
-
-    @Override
     public long getCurrentRequestedBw() {
         if (!isCreated()) {
-            return getBw();
+            return getBw().getCapacity();
         }
 
-        return (long) (getCloudletScheduler().getCurrentRequestedUtilizationOfBw() * getBw());
+        return (long) (getCloudletScheduler().getCurrentRequestedBwPercentUtilization() * getBw().getCapacity());
     }
 
     @Override
     public long getCurrentRequestedRam() {
         if (!isCreated()) {
-            return getRam();
+            return getRam().getCapacity();
         }
 
-        return (int) (getCloudletScheduler().getCurrentRequestedUtilizationOfRam() * getRam());
-    }
-
-    @Override
-    public double getTotalUtilizationOfCpu() {
-        return getTotalUtilizationOfCpu(getSimulation().clock());
-    }
-
-    @Override
-    public double getTotalUtilizationOfCpu(double time) {
-        return getCloudletScheduler().getTotalUtilizationOfCpu(time);
-    }
-
-    /**
-     * Gets the total CPU utilization of all cloudlets running on this VM at the
-     * given time (in MIPS).
-     *
-     * @param time the time
-     * @return total cpu utilization in MIPS
-     * @see #getTotalUtilizationOfCpu(double)
-     *
-     * @todo @author manoelcampos Lets consider the UtilizationModelFull for CPU
-     * which defines that a cloudlet will use the entire CPU allocated to it all
-     * the time, for all of its PEs. So, lets say that the Vm has 2 PEs of 1000
-     * MIPS, that represents a total of 2000 MIPS capacity, and there is a
-     * Cloudlet that is using all these 2 PEs capacity. I think this method is
-     * supposed to return 2000, indicating that the entire VM MIPS capacity is
-     * being used. However, it will return only 1000. It has to be included some
-     * test cases do try figure out if the method is returning what it is
-     * supposed to return or not.
-     */
-    @Override
-    public double getTotalUtilizationOfCpuMips(double time) {
-        return getTotalUtilizationOfCpu(time) * getMips();
+        return (long) (getCloudletScheduler().getCurrentRequestedRamPercentUtilization() * getRam().getCapacity());
     }
 
     @Override
@@ -385,8 +366,8 @@ public class VmSimple implements Vm {
     }
 
     @Override
-    public long getRam() {
-        return ram.getCapacity();
+    public Resource getRam() {
+        return ram;
     }
 
     /**
@@ -396,7 +377,6 @@ public class VmSimple implements Vm {
     private void setRam(Ram ram) {
         Objects.requireNonNull(ram);
         this.ram = ram;
-        resources.add(ram);
     }
 
     @Override
@@ -410,8 +390,8 @@ public class VmSimple implements Vm {
     }
 
     @Override
-    public long getBw() {
-        return bw.getCapacity();
+    public Resource getBw() {
+        return bw;
     }
 
     /**
@@ -421,7 +401,6 @@ public class VmSimple implements Vm {
     private void setBw(Bandwidth bw){
         Objects.requireNonNull(bw);
         this.bw = bw;
-        resources.add(bw);
     }
 
     @Override
@@ -434,8 +413,8 @@ public class VmSimple implements Vm {
     }
 
     @Override
-    public long getSize() {
-        return storage.getCapacity();
+    public Resource getStorage() {
+        return storage;
     }
 
     /**
@@ -445,7 +424,6 @@ public class VmSimple implements Vm {
     private void setStorage(RawStorage storage){
         Objects.requireNonNull(storage);
         this.storage = storage;
-        resources.add(storage);
     }
 
     @Override
@@ -518,7 +496,7 @@ public class VmSimple implements Vm {
      * Gets the current allocated storage size.
      *
      * @return the current allocated size
-     * @see #getSize()
+     * @see Vm#getStorage()
      */
     @Override
     public long getCurrentAllocatedSize() {
@@ -582,33 +560,13 @@ public class VmSimple implements Vm {
         getResource(resourceClass).deallocateAllResources();
     }
 
-    /**
-     * Gets a given Vm {@link Resource}, such as {@link Ram} or {@link Bandwidth},
-     * from a corresponding physical resource from the Host that the VM is placed into.
-     *
-     * <p>The allocation of Host {@link Pe}s for a VM is performed by the
-     * {@link PeProvisioner} assigned to each Pe. The VM doesn't store
-     * any data about processor allocation.</p>
-     *
-     * @param resourceClass the class of VM resource to get
-     * @return the Vm {@link Resource} corresponding to the given class
-     */
-    private ResourceManageable getResource(Class<? extends ResourceManageable> resourceClass) {
-        return resources.stream()
-            .filter(r -> isObjectSubClassOf(r, resourceClass))
-            .findFirst()
-            .orElse(ResourceManageable.NULL);
-    }
+    @Override
+    public List<ResourceManageable> getResources() {
+        if(getSimulation().isRunning() && resources.isEmpty()){
+            resources = Arrays.asList(ram, bw, storage);
+        }
 
-
-    /**
-     * Checks if a given object is instance of a given class.
-     * @param object the object to check
-     * @param classWanted the class to verify if the object is instance of
-     * @return true if the object is instance of the given class, false otherwise
-     */
-    private boolean isObjectSubClassOf(Object object, Class classWanted) {
-        return classWanted.isAssignableFrom(object.getClass());
+        return Collections.unmodifiableList(resources);
     }
 
     @Override
@@ -774,22 +732,52 @@ public class VmSimple implements Vm {
 
 
     @Override
-    public VmScaling getHorizontalScaling() {
+    public HorizontalVmScaling getHorizontalScaling() {
         return horizontalScaling;
     }
 
     @Override
-    public Vm setHorizontalScaling(VmScaling horizontalScaling) throws IllegalArgumentException {
-        if(horizontalScaling.getVm() != null && horizontalScaling.getVm() != Vm.NULL && horizontalScaling.getVm() != this){
-            throw new IllegalArgumentException(
-                "The horizontalScaling given already is linked to a Vm. " +
-                "Each Vm must have its own scaling object or no scaling at all. " +
-                "A new scaling has to be provided to this Vm.");
-        }
-
-        this.horizontalScaling = (Objects.isNull(horizontalScaling) ? VmScaling.NULL : horizontalScaling);
-        this.horizontalScaling.setVm(this);
-        this.addOnUpdateVmProcessingListener(listener -> this.horizontalScaling.scaleIfOverloaded(listener.getTime()));
+    public final Vm setHorizontalScaling(HorizontalVmScaling horizontalScaling) throws IllegalArgumentException {
+        this.horizontalScaling = validateAndConfigureVmScaling(horizontalScaling, HorizontalVmScaling.NULL);
         return this;
     }
+
+    @Override
+    public final Vm setRamVerticalScaling(VerticalVmScaling ramVerticalScaling) throws IllegalArgumentException {
+        this.ramVerticalScaling = validateAndConfigureVmScaling(ramVerticalScaling, VerticalVmScaling.NULL);
+        return this;
+    }
+
+    @Override
+    public final Vm setBwVerticalScaling(VerticalVmScaling bwVerticalScaling) throws IllegalArgumentException {
+        this.bwVerticalScaling = validateAndConfigureVmScaling(bwVerticalScaling, VerticalVmScaling.NULL);
+        return this;
+    }
+
+    @Override
+    public VerticalVmScaling getRamVerticalScaling() {
+        return ramVerticalScaling;
+    }
+
+    @Override
+    public VerticalVmScaling getBwVerticalScaling() {
+        return bwVerticalScaling;
+    }
+
+    private <T extends VmScaling> T validateAndConfigureVmScaling(T vmScaling, T defaultValue) {
+        final T result = Objects.isNull(vmScaling) ? defaultValue : vmScaling;
+
+        if(vmScaling.getVm() != null && vmScaling.getVm() != Vm.NULL && vmScaling.getVm() != this){
+            String name = defaultValue.getClass().getSimpleName();
+            throw new IllegalArgumentException(
+                "The "+name+" given already is linked to a Vm. " +
+                    "Each Vm must have its own "+name+" objects or none at all. " +
+                    "A new scaling has to be provided to this Vm.");
+        }
+
+        result.setVm(this);
+        this.addOnUpdateVmProcessingListener(listener -> result.requestUpScalingIfOverloaded(listener.getTime()));
+        return result;
+    }
+
 }

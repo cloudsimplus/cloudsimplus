@@ -8,29 +8,29 @@
 
 package org.cloudbus.cloudsim.provisioners;
 
+import org.cloudbus.cloudsim.hosts.Host;
+import org.cloudbus.cloudsim.resources.*;
 import org.cloudbus.cloudsim.vms.Vm;
 
 /**
- * An interface that represents the provisioning policy used by a host
- * to allocate a given resource to virtual machines inside it.
+ * An interface that represents the provisioning policy used by a {@link Host}
+ * to allocate a given physical resource to {@link Vm}s inside it.
  *
  * Each host has to have its own instance of a ResourceProvisioner for each
- * resource it owns, such as RAM, Bandwidth (BW) and CPU.
+ * {@link Resource} it owns, such as {@link Ram}, {@link Bandwidth} (BW) and {@link Pe} (CPU).
  *
  * @author Rodrigo N. Calheiros
  * @author Anton Beloglazov
  * @author Manoel Campos da Silva Filho
- * @since 3.0.4
+ * @since CloudSim Plus 1.0
  */
 public interface ResourceProvisioner {
     /**
-     * Allocates an amount of resource for a given VM (if the resource
-     * was never been allocated before) or change the current allocation.
-     * If the VM already has any amount of the resource allocated, deallocate
-     * if first and allocate the newTotalVmResource amount.
+     * Allocates an amount of the physical resource for a given VM, changing the current capacity
+     * of the virtual resource to the given amount.
      *
      * @param vm the virtual machine for which the resource is being allocated
-     * @param newTotalVmResource the new total amount of resource to allocate to the VM,
+     * @param newTotalVmResourceCapacity the new total amount of resource to allocate to the VM,
      * changing the allocate resource to this new amount. It doesn't increase
      * the current allocated VM resource by the given amount, instead,
      * it changes the VM allocated resource to that specific amount
@@ -40,10 +40,29 @@ public interface ResourceProvisioner {
      * @pre $none
      * @post $none
      */
-    boolean allocateResourceForVm(Vm vm, long newTotalVmResource);
+    boolean allocateResourceForVm(Vm vm, long newTotalVmResourceCapacity);
 
     /**
-     * Gets the amount of allocated resource for a given VM
+     * Allocates an amount of the physical resource for a given VM, changing the current capacity
+     * of the virtual resource to the given amount.
+     *
+     * <p>This method is just a shorthand to avoid explicitly converting
+     * a double to long.</p>
+     *
+     * @param vm the virtual machine for which the resource is being allocated
+     * @param newTotalVmResource the new total amount of resource to allocate to the VM,
+     * changing the allocate resource to this new amount. It doesn't increase
+     * the current allocated VM resource by the given amount, instead,
+     * it changes the VM allocated resource to that specific amount
+     * @return $true if the resource could be allocated; $false otherwise
+     * @see #allocateResourceForVm(Vm, long)
+     */
+    default boolean allocateResourceForVm(Vm vm, double newTotalVmResource){
+        return allocateResourceForVm(vm, (long)newTotalVmResource);
+    }
+
+    /**
+     * Gets the amount of resource allocated to a given VM from the physical resource
      *
      * @param vm the VM
      *
@@ -52,7 +71,7 @@ public interface ResourceProvisioner {
     long getAllocatedResourceForVm(Vm vm);
 
     /**
-     * Gets the total allocated resource among all VMs
+     * Gets the total amount of resource allocated to all VMs from the physical resource
      *
      * @return the total allocated resource among all VMs
      */
@@ -80,7 +99,7 @@ public interface ResourceProvisioner {
 
     /**
      * Checks if it is possible to change the current allocated resource for a given VM
-     * to a new amount, depending on the available resource remaining.
+     * to a new amount, depending on the available physical resource remaining.
      *
      * @param vm the vm to check if there is enough available resource on the host to
      * change the allocated amount for the VM
@@ -91,16 +110,22 @@ public interface ResourceProvisioner {
     boolean isSuitableForVm(Vm vm, long newVmTotalAllocatedResource);
 
     /**
-     * Gets the total capacity of the resource from the host that the provisioner manages.
+     * Gets the resource being managed for the provisioner, such as {@link Ram}, {@link Pe}, {@link Bandwidth}, etc.
+     * @return the resource managed by this provisioner
+     */
+    ResourceManageable getResource();
+
+    /**
+     * Gets the total capacity of the physical resource from the Host that the provisioner manages.
      *
-     * @return the total resource capacity
+     * @return the total physical resource capacity
      */
     long getCapacity();
 
     /**
-     * Gets the amount of free available resource from the host that the provisioner can allocate to VMs.
+     * Gets the amount of free available physical resource from the host that the provisioner can allocate to VMs.
      *
-     * @return the amount of free available resource
+     * @return the amount of free available physical resource
      */
     long getAvailableResource();
 
@@ -110,12 +135,13 @@ public interface ResourceProvisioner {
      * ResourceProvisioner objects.
      */
     ResourceProvisioner NULL = new ResourceProvisioner(){
-        @Override public boolean allocateResourceForVm(Vm vm, long newTotalVmResource) { return false; }
+        @Override public boolean allocateResourceForVm(Vm vm, long newTotalVmResourceCapacity) { return false; }
         @Override public long getAllocatedResourceForVm(Vm vm) { return 0; }
         @Override public long getTotalAllocatedResource() { return 0; }
         @Override public boolean deallocateResourceForVm(Vm vm) { return false; }
         @Override public void deallocateResourceForAllVms() {}
         @Override public boolean isSuitableForVm(Vm vm, long newVmTotalAllocatedResource) { return false; }
+        @Override public ResourceManageable getResource() { return ResourceManageable.NULL; }
         @Override public long getCapacity() { return 0; }
         @Override public long getAvailableResource() { return 0; }
     };

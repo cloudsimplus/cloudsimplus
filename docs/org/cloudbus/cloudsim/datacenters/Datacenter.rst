@@ -30,7 +30,7 @@ Datacenter
 
    An interface to be implemented by each class that provides Datacenter features. The interface implements the Null Object Design Pattern in order to start avoiding \ :java:ref:`NullPointerException`\  when using the \ :java:ref:`Datacenter.NULL`\  object instead of attributing \ ``null``\  to \ :java:ref:`Datacenter`\  variables.
 
-   :author: Manoel Campos da Silva Filho
+   :author: Rodrigo N. Calheiros, Anton Beloglazov, Manoel Campos da Silva Filho
 
 Fields
 ------

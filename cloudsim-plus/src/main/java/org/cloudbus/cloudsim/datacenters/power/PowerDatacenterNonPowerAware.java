@@ -171,10 +171,10 @@ public class PowerDatacenterNonPowerAware extends PowerDatacenter {
                     targetHost.addMigratingInVm(entry.getKey());
                     incrementMigrationCount();
 
-                    /* VM migration delay = RAM / bandwidth + C (C = 10 sec) */
+                    //VM migration delay = RAM / bandwidth + C (C = 10 sec)
                     send(
                         getId(),
-                        entry.getKey().getRam() / ((double) entry.getKey().getBw() / 8000) + 10,
+                        entry.getKey().getRam().getCapacity() / ((double) entry.getKey().getBw().getCapacity() / 8000) + 10,
                         CloudSimTags.VM_MIGRATE, entry);
                 }
             }

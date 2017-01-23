@@ -19,7 +19,7 @@ package org.cloudbus.cloudsim.resources;
 public interface ResourceManageable extends Resource {
 
     /**
-     * Sets the {@link #getCapacity() resource capacity}.
+     * Try to set the {@link #getCapacity() resource capacity}.
      *
      * @param newCapacity the new resource capacity
      * @return true if capacity > 0 and capacity >= current allocated resource,
@@ -29,7 +29,7 @@ public interface ResourceManageable extends Resource {
     boolean setCapacity(long newCapacity);
 
     /**
-     * Allocates a given amount of the resource, reducing that amount from the
+     * Try to allocate a given amount of the resource, reducing that amount from the
      * total available resource.
      *
      * @param amountToAllocate the amount of resource to be allocated
@@ -39,7 +39,22 @@ public interface ResourceManageable extends Resource {
     boolean allocateResource(long amountToAllocate);
 
     /**
-     * Sets the current total amount of allocated resource, changing it to the
+     * Try to allocate in this resource, the amount of resource specified by the capacity of the given resource.
+     * This method is commonly used to allocate a specific
+     * amount from a physical resource (this Resource instance)
+     * to a virtualized resource (the given Resource).
+     *
+     * @param resource the resource to try to allocate its capacity from the current resource
+     * @return true if required capacity from the given resource > 0 and there is enough resource to
+     * allocate, false otherwise
+     * @see #allocateResource(long)
+     */
+    default boolean allocateResource(Resource resource){
+        return allocateResource(resource.getCapacity());
+    }
+
+    /**
+     * Try to set the current total amount of allocated resource, changing it to the
      * given value. It doesn't increase the current allocated resource by the
      * given amount, instead, it changes the allocated resource to that
      * specified amount.
@@ -52,14 +67,46 @@ public interface ResourceManageable extends Resource {
     boolean setAllocatedResource(long newTotalAllocatedResource);
 
     /**
-     * Deallocates a given amount of the resource, adding up that amount to the
-     * total available resource.
+     * Try to set the current total amount of allocated resource, changing it to the
+     * given value. It doesn't increase the current allocated resource by the
+     * given amount, instead, it changes the allocated resource to that
+     * specified amount.
+     *
+     * <p>This method is just a shorthand to avoid explicitly converting
+     * a double to long.</p>
+     *
+     * @param newTotalAllocatedResource the new total amount of resource to
+     * allocate, changing the allocate resource to this new amount.
+     * @return true if newTotalAllocatedResource is not negative and there is
+     * enough resource to allocate, false otherwise
+     */
+    default boolean setAllocatedResource(double newTotalAllocatedResource){
+        return setAllocatedResource((long)newTotalAllocatedResource);
+    }
+
+    /**
+     * Try to deallocate a given amount of the resource.
      *
      * @param amountToDeallocate the amount of resource to be deallocated
      * @return true if amountToDeallocate > 0 and there is enough resource to
      * deallocate, false otherwise
      */
     boolean deallocateResource(long amountToDeallocate);
+
+    /**
+     * Try to deallocate all the capacity of the given resource from this resource.
+     * This method is commonly used to deallocate a specific
+     * amount of a physical resource (this Resource instance)
+     * that was being used by a virtualized resource (the given Resource).
+     *
+     * @param resource the resource that its capacity will be deallocated
+     * @return true if capacity of the given resource > 0 and there is enough resource to
+     * deallocate, false otherwise
+     * @see #deallocateResource(long)
+     */
+    default boolean deallocateResource(Resource resource){
+        return deallocateResource(resource.getCapacity());
+    }
 
     /**
      * Deallocates all allocated resources, restoring the total available
@@ -89,69 +136,45 @@ public interface ResourceManageable extends Resource {
      */
     boolean isSuitable(long newTotalAllocatedResource);
 
-
     /**
      * A property that implements the Null Object Design Pattern for
      * ResourceManageable&lt;long&gt; objects.
      */
     ResourceManageable NULL = new ResourceManageable() {
-        @Override
-        public boolean setCapacity(long newCapacity) {
+        @Override public boolean setCapacity(long newCapacity) {
             return false;
         }
-
-        @Override
-        public boolean allocateResource(long amountToAllocate) {
+        @Override public boolean allocateResource(long amountToAllocate) {
             return false;
         }
-
-        @Override
-        public boolean setAllocatedResource(long newTotalAllocatedResource) {
+        @Override public boolean setAllocatedResource(long newTotalAllocatedResource) {
             return false;
         }
-
-        @Override
-        public boolean deallocateResource(long amountToDeallocate) {
+        @Override public boolean deallocateResource(long amountToDeallocate) {
             return false;
         }
-
-        @Override
-        public long deallocateAllResources() {
+        @Override public long deallocateAllResources() {
             return 0L;
         }
-
-        @Override
-        public boolean isResourceAmountBeingUsed(long amountToCheck) {
+        @Override public boolean isResourceAmountBeingUsed(long amountToCheck) {
             return false;
         }
-
-        @Override
-        public boolean isSuitable(long newTotalAllocatedResource) {
+        @Override public boolean isSuitable(long newTotalAllocatedResource) {
             return false;
         }
-
-        @Override
-        public long getCapacity() {
+        @Override public long getCapacity() {
             return 0L;
         }
-
-        @Override
-        public long getAvailableResource() {
+        @Override public long getAvailableResource() {
             return 0L;
         }
-
-        @Override
-        public long getAllocatedResource() {
+        @Override public long getAllocatedResource() {
             return 0L;
         }
-
-        @Override
-        public boolean isResourceAmountAvailable(long amountToCheck) { return false; }
-
-        @Override
-        public boolean isFull() {
+        @Override public boolean isResourceAmountAvailable(long amountToCheck) { return false; }
+        @Override public boolean isResourceAmountAvailable(double amountToCheck) { return false; }
+        @Override public boolean isFull() {
             return false;
         }
     };
-
 }

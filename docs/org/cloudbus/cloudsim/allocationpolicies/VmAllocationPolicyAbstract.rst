@@ -10,9 +10,15 @@
 
 .. java:import:: org.cloudbus.cloudsim.hosts Host
 
+.. java:import:: org.cloudbus.cloudsim.provisioners ResourceProvisioner
+
+.. java:import:: org.cloudbus.cloudsim.resources ResourceManageable
+
+.. java:import:: org.cloudbus.cloudsim.util Log
+
 .. java:import:: org.cloudbus.cloudsim.vms Vm
 
-.. java:import:: org.cloudsimplus.listeners VmHostEventInfo
+.. java:import:: org.cloudsimplus.autoscaling VerticalVmScaling
 
 VmAllocationPolicyAbstract
 ==========================
@@ -112,6 +118,12 @@ removeUsedPes
    Removes the used PEs for a Vm from the map between each VM and the number of PEs used.
 
    :return: the used PEs number
+
+scaleVmVertically
+^^^^^^^^^^^^^^^^^
+
+.. java:method:: @Override public boolean scaleVmVertically(VerticalVmScaling scaling)
+   :outertype: VmAllocationPolicyAbstract
 
 setDatacenter
 ^^^^^^^^^^^^^

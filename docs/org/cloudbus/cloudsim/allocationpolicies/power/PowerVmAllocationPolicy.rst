@@ -18,7 +18,7 @@ PowerVmAllocationPolicy
 
    An interface to be implemented by each class that represents a policy used by a \ :java:ref:`PowerDatacenter`\  to choose a \ :java:ref:`PowerHost`\  to place or migrate a given \ :java:ref:`PowerVm`\  considering the Host power consumption.
 
-   :author: Manoel Campos da Silva Filho
+   :author: Anton Beloglazov, Manoel Campos da Silva Filho
 
 Methods
 -------

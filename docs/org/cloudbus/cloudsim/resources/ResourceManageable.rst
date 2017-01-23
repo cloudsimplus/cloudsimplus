@@ -8,7 +8,7 @@ ResourceManageable
 
    An interface to represent a physical or virtual resource (like RAM, CPU or Bandwidth) with features to manage resource capacity and allocation.
 
-   :author: Manoel Campos da Silva Filho
+   :author: Uros Cibej, Anthony Sulistio, Manoel Campos da Silva Filho
 
 Fields
 ------
@@ -28,10 +28,23 @@ allocateResource
 .. java:method::  boolean allocateResource(long amountToAllocate)
    :outertype: ResourceManageable
 
-   Allocates a given amount of the resource, reducing that amount from the total available resource.
+   Try to allocate a given amount of the resource, reducing that amount from the total available resource.
 
    :param amountToAllocate: the amount of resource to be allocated
    :return: true if amountToAllocate > 0 and there is enough resource to allocate, false otherwise
+
+allocateResource
+^^^^^^^^^^^^^^^^
+
+.. java:method::  boolean allocateResource(Resource resource)
+   :outertype: ResourceManageable
+
+   Try to allocate in this resource, the amount of resource specified by the capacity of the given resource. This method is commonly used to allocate a specific amount from a physical resource (this Resource instance) to a virtualized resource (the given Resource).
+
+   :param resource: the resource to try to allocate its capacity from the current resource
+   :return: true if required capacity from the given resource > 0 and there is enough resource to allocate, false otherwise
+
+   **See also:** :java:ref:`.allocateResource(long)`
 
 deallocateAllResources
 ^^^^^^^^^^^^^^^^^^^^^^
@@ -49,10 +62,23 @@ deallocateResource
 .. java:method::  boolean deallocateResource(long amountToDeallocate)
    :outertype: ResourceManageable
 
-   Deallocates a given amount of the resource, adding up that amount to the total available resource.
+   Try to deallocate a given amount of the resource.
 
    :param amountToDeallocate: the amount of resource to be deallocated
    :return: true if amountToDeallocate > 0 and there is enough resource to deallocate, false otherwise
+
+deallocateResource
+^^^^^^^^^^^^^^^^^^
+
+.. java:method::  boolean deallocateResource(Resource resource)
+   :outertype: ResourceManageable
+
+   Try to deallocate all the capacity of the given resource from this resource. This method is commonly used to deallocate a specific amount of a physical resource (this Resource instance) that was being used by a virtualized resource (the given Resource).
+
+   :param resource: the resource that its capacity will be deallocated
+   :return: true if capacity of the given resource > 0 and there is enough resource to deallocate, false otherwise
+
+   **See also:** :java:ref:`.deallocateResource(long)`
 
 isResourceAmountBeingUsed
 ^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -82,7 +108,20 @@ setAllocatedResource
 .. java:method::  boolean setAllocatedResource(long newTotalAllocatedResource)
    :outertype: ResourceManageable
 
-   Sets the current total amount of allocated resource, changing it to the given value. It doesn't increase the current allocated resource by the given amount, instead, it changes the allocated resource to that specified amount.
+   Try to set the current total amount of allocated resource, changing it to the given value. It doesn't increase the current allocated resource by the given amount, instead, it changes the allocated resource to that specified amount.
+
+   :param newTotalAllocatedResource: the new total amount of resource to allocate, changing the allocate resource to this new amount.
+   :return: true if newTotalAllocatedResource is not negative and there is enough resource to allocate, false otherwise
+
+setAllocatedResource
+^^^^^^^^^^^^^^^^^^^^
+
+.. java:method::  boolean setAllocatedResource(double newTotalAllocatedResource)
+   :outertype: ResourceManageable
+
+   Try to set the current total amount of allocated resource, changing it to the given value. It doesn't increase the current allocated resource by the given amount, instead, it changes the allocated resource to that specified amount.
+
+   This method is just a shorthand to avoid explicitly converting a double to long.
 
    :param newTotalAllocatedResource: the new total amount of resource to allocate, changing the allocate resource to this new amount.
    :return: true if newTotalAllocatedResource is not negative and there is enough resource to allocate, false otherwise
@@ -93,7 +132,7 @@ setCapacity
 .. java:method::  boolean setCapacity(long newCapacity)
    :outertype: ResourceManageable
 
-   Sets the \ :java:ref:`resource capacity <getCapacity()>`\ .
+   Try to set the \ :java:ref:`resource capacity <getCapacity()>`\ .
 
    :param newCapacity: the new resource capacity
    :return: true if capacity > 0 and capacity >= current allocated resource, false otherwise

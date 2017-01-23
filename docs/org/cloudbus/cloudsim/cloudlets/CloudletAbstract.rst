@@ -1,3 +1,19 @@
+.. java:import:: org.cloudbus.cloudsim.brokers DatacenterBroker
+
+.. java:import:: org.cloudbus.cloudsim.core Simulation
+
+.. java:import:: org.cloudbus.cloudsim.core UniquelyIdentificable
+
+.. java:import:: org.cloudbus.cloudsim.datacenters Datacenter
+
+.. java:import:: org.cloudbus.cloudsim.utilizationmodels UtilizationModel
+
+.. java:import:: org.cloudbus.cloudsim.vms Vm
+
+.. java:import:: org.cloudsimplus.listeners CloudletVmEventInfo
+
+.. java:import:: org.cloudsimplus.listeners EventListener
+
 .. java:import:: java.text DecimalFormat
 
 .. java:import:: java.util ArrayList
@@ -7,22 +23,6 @@
 .. java:import:: java.util List
 
 .. java:import:: java.util Objects
-
-.. java:import:: org.cloudbus.cloudsim.core UniquelyIdentificable
-
-.. java:import:: org.cloudbus.cloudsim.datacenters Datacenter
-
-.. java:import:: org.cloudbus.cloudsim.vms Vm
-
-.. java:import:: org.cloudbus.cloudsim.brokers DatacenterBroker
-
-.. java:import:: org.cloudbus.cloudsim.core Simulation
-
-.. java:import:: org.cloudbus.cloudsim.utilizationmodels UtilizationModel
-
-.. java:import:: org.cloudsimplus.listeners EventListener
-
-.. java:import:: org.cloudsimplus.listeners CloudletVmEventInfo
 
 CloudletAbstract
 ================
@@ -301,13 +301,31 @@ getUtilizationModelRam
 getUtilizationOfBw
 ^^^^^^^^^^^^^^^^^^
 
+.. java:method:: @Override public double getUtilizationOfBw()
+   :outertype: CloudletAbstract
+
+getUtilizationOfBw
+^^^^^^^^^^^^^^^^^^
+
 .. java:method:: @Override public double getUtilizationOfBw(double time)
    :outertype: CloudletAbstract
 
 getUtilizationOfCpu
 ^^^^^^^^^^^^^^^^^^^
 
+.. java:method:: @Override public double getUtilizationOfCpu()
+   :outertype: CloudletAbstract
+
+getUtilizationOfCpu
+^^^^^^^^^^^^^^^^^^^
+
 .. java:method:: @Override public double getUtilizationOfCpu(double time)
+   :outertype: CloudletAbstract
+
+getUtilizationOfRam
+^^^^^^^^^^^^^^^^^^^
+
+.. java:method:: @Override public double getUtilizationOfRam()
    :outertype: CloudletAbstract
 
 getUtilizationOfRam

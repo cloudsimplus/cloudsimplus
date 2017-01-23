@@ -14,7 +14,7 @@ EventQueue
 
    An interface to be implemented by event queues.
 
-   :author: Manoel Campos da Silva Filho
+   :author: Marcos Dias de Assuncao, Manoel Campos da Silva Filho
 
 Methods
 -------

@@ -20,7 +20,7 @@ import java.util.List;
 import java.util.function.Predicate;
 
 import org.cloudbus.cloudsim.core.Simulation;
-import org.cloudsimplus.autoscaling.VmScaling;
+import org.cloudsimplus.autoscaling.VerticalVmScaling;
 import org.cloudsimplus.listeners.VmHostEventInfo;
 import org.cloudsimplus.listeners.VmDatacenterEventInfo;
 import org.cloudsimplus.listeners.EventListener;
@@ -38,7 +38,7 @@ import org.cloudsimplus.listeners.EventListener;
  * @author Manoel Campos da Silva Filho
  * @since CloudSim Plus 1.0
  */
-public interface Vm extends UniquelyIdentificable, Delayable, Comparable<Vm> {
+public interface Vm extends UniquelyIdentificable, Delayable, Resourceful, Comparable<Vm> {
 
     /**
      * Adds a VM state history entry.
@@ -46,15 +46,6 @@ public interface Vm extends UniquelyIdentificable, Delayable, Comparable<Vm> {
      * @param entry the data about the state of the VM at given time
      */
     void addStateHistoryEntry(VmStateHistoryEntry entry);
-
-    /**
-     * Gets bandwidth capacity.
-     *
-     * @return bandwidth capacity.
-     * @pre $none
-     * @post $none
-     */
-    long getBw();
 
     /**
      * Gets the the Cloudlet scheduler the VM uses to schedule cloudlets
@@ -82,7 +73,7 @@ public interface Vm extends UniquelyIdentificable, Delayable, Comparable<Vm> {
      * Gets the current allocated storage size.
      *
      * @return the current allocated size
-     * @see #getSize()
+     * @see #getStorage()
      */
     long getCurrentAllocatedSize();
 
@@ -94,16 +85,16 @@ public interface Vm extends UniquelyIdentificable, Delayable, Comparable<Vm> {
     long getCurrentRequestedBw();
 
     /**
-     * Gets the current requested max mips among all virtual PEs.
+     * Gets the current requested max MIPS among all virtual {@link Pe PEs}.
      *
-     * @return the current requested max mips
+     * @return the current requested max MIPS
      */
     double getCurrentRequestedMaxMips();
 
     /**
-     * Gets the current requested mips.
+     * Gets a list of current requested MIPS of each virtual {@link Pe}.
      *
-     * @return the current requested mips
+     * @return the current requested MIPS of each Pe
      */
     List<Double> getCurrentRequestedMips();
 
@@ -115,20 +106,20 @@ public interface Vm extends UniquelyIdentificable, Delayable, Comparable<Vm> {
     long getCurrentRequestedRam();
 
     /**
-     * Gets the current requested total mips. It is the sum of MIPS capacity
-     * requested for every VM's Pe.
+     * Gets the current requested total MIPS. It is the sum of MIPS capacity
+     * requested for every virtual {@link Pe}.
      *
-     * @return the current requested total mips
+     * @return the current requested total MIPS
      * @see #getCurrentRequestedMips()
      */
     double getCurrentRequestedTotalMips();
 
     /**
-     * Gets the Host where the Vm is or will be placed.
+     * Gets the {@link Host} where the Vm is or will be placed.
      * To know if the Vm was already created inside this Host,
      * call the {@link #isCreated()} method.
      *
-     * @return the host
+     * @return the Host
      * @see #isCreated()
      */
     Host getHost();
@@ -137,7 +128,7 @@ public interface Vm extends UniquelyIdentificable, Delayable, Comparable<Vm> {
      * Gets the individual MIPS capacity of any VM's PE, considering that all
      * PEs have the same capacity.
      *
-     * @return the mips
+     * @return the MIPS
      */
     double getMips();
 
@@ -269,23 +260,34 @@ public interface Vm extends UniquelyIdentificable, Delayable, Comparable<Vm> {
     boolean removeOnVmCreationFailureListener(EventListener<VmDatacenterEventInfo> listener);
 
     /**
-     * Gets the RAM capacity in Megabytes.
+     * Gets bandwidth resource assigned to the Vm,
+     * allowing to check its capacity (in Megabits/s) and usage.
      *
-     * @return the RAM capacity
+     * @return bandwidth resource.
      * @pre $none
      * @post $none
      */
-    long getRam();
+    Resource getBw();
 
     /**
-     * Gets the storage size (capacity) of the VM image in Megabytes (the amount of storage
-     * it will use, at least initially).
+     * Gets the RAM resource assigned to the Vm,
+     * allowing to check its capacity (in Megabytes) and usage.
      *
-     * @return amount of storage
+     * @return the RAM resource
      * @pre $none
      * @post $none
      */
-    long getSize();
+    Resource getRam();
+
+    /**
+     * Gets the storage device of the VM, that represents the VM image,
+     * allowing to check its capacity (in Megabytes) and usage.
+     *
+     * @return the storage resource
+     * @pre $none
+     * @post $none
+     */
+    Resource getStorage();
 
     /**
      * Gets the history of MIPS capacity allocated to the VM.
@@ -295,29 +297,29 @@ public interface Vm extends UniquelyIdentificable, Delayable, Comparable<Vm> {
     List<VmStateHistoryEntry> getStateHistory();
 
     /**
-     * Gets total CPU utilization percentage of all Clouddlets running on this
+     * Gets the CPU utilization percentage of all Clouddlets running on this
      * VM at the given time.
      *
      * @param time the time
      * @return total utilization percentage
      */
-    double getTotalUtilizationOfCpu(double time);
+    double getCpuPercentUse(double time);
 
     /**
-     * Gets total CPU utilization percentage (in scale from 0 to 1) of all Clouddlets running on this
-     * VM at the current simulation time.
+     * Gets the current CPU utilization percentage (in scale from 0 to 1) of all Cloudlets running on this
+     * VM.
      *
      * @return total utilization percentage for the current time, in scale from 0 to 1
      */
-    double getTotalUtilizationOfCpu();
+    double getCurrentCpuPercentUse();
 
     /**
-     * Gets the total CPU utilization (in scale from 0 to 1) of all cloudlets running on this VM at the
-     * given time (in MIPS).
+     * Gets the total CPU MIPS utilization of all PEs from all cloudlets running on this VM at the
+     * given time.
      *
-     * @param time the time
-     * @return total cpu utilization in MIPS, in scale from 0 to 1
-     * @see #getTotalUtilizationOfCpu(double)
+     * @param time the time to get the utilization
+     * @return total CPU utilization in MIPS
+     * @see #getCpuPercentUse(double)
      *
      */
     double getTotalUtilizationOfCpuMips(double time);
@@ -363,7 +365,6 @@ public interface Vm extends UniquelyIdentificable, Delayable, Comparable<Vm> {
      * @see #isCreated()
      */
     void setCreated(boolean created);
-
 
     /**
      * Checks if the VM is in migration process or not.
@@ -462,31 +463,77 @@ public interface Vm extends UniquelyIdentificable, Delayable, Comparable<Vm> {
     Simulation getSimulation();
 
     /**
-     * Gets the {@link HorizontalVmScaling} that will check if the Vm is overloaded,
+     * {@inheritDoc}
+     * Such resources represent virtual resources corresponding to physical resources
+     * from the Host where the VM is placed.
+     * @return {@inheritDoc}
+     */
+    @Override
+    List<ResourceManageable> getResources();
+
+    /**
+     * Gets a {@link HorizontalVmScaling} that will check if the Vm is overloaded,
      * based on some conditions defined by a {@link Predicate} given
-     * to the HorizontalVmScaling.
+     * to the HorizontalVmScaling, and then request the creation of new VMs
+     * to horizontally scale the Vm.
      *
      * <p><b>If no HorizontalVmScaling is set, the {@link #getBroker() Broker} will not dynamically
      * create VMs to balance arrived Cloudlets.</b></p>
      *
      * @return
      */
-    VmScaling getHorizontalScaling();
+    HorizontalVmScaling getHorizontalScaling();
 
     /**
-     * Sets the {@link HorizontalVmScaling} that will check if the Vm is overloaded,
+     * Sets a {@link HorizontalVmScaling} that will check if the Vm is overloaded,
      * based on some conditions defined by a {@link Predicate} given
-     * to the HorizontalVmScaling.
-     *
-     * <p><b>If no HorizontalVmScaling is set, the {@link #getBroker() Broker} will not dynamically
-     * create VMs to balance arrived Cloudlets.</b></p>
+     * to the HorizontalVmScaling, and then request the creation of new VMs
+     * to horizontally scale the Vm.
      *
      * @param horizontalScaling the HorizontalVmScaling to set
      * @return
-     * @throws IllegalArgumentException if the given Vm Scaling already is linked to a Vm. Each VM must have
-     * its own scaling object.
+     * @throws IllegalArgumentException if the given VmScaling is already linked to a Vm. Each VM must have
+     * its own HorizontalVmScaling object or none at all.
      */
-    Vm setHorizontalScaling(VmScaling horizontalScaling) throws IllegalArgumentException;
+    Vm setHorizontalScaling(HorizontalVmScaling horizontalScaling) throws IllegalArgumentException;
+
+    /**
+     * Sets a {@link VerticalVmScaling} that will check if the Vm's RAM is overloaded,
+     * based on some conditions defined by a {@link Predicate} given
+     * to the VerticalVmScaling, and then request the RAM up scaling.
+     *
+     * @param ramVerticalScaling the VerticalVmScaling to set
+     * @return
+     * @throws IllegalArgumentException if the given VmScaling is already linked to a Vm. Each VM must have
+     * its own VerticalVmScaling objects or none at all.
+     */
+    Vm setRamVerticalScaling(VerticalVmScaling ramVerticalScaling) throws IllegalArgumentException;
+
+    /**
+     * Sets a {@link VerticalVmScaling} that will check if the Vm's Bandwidth is overloaded,
+     * based on some conditions defined by a {@link Predicate} given
+     * to the VerticalVmScaling, and then request the BW up scaling.
+     *
+     * @param bwVerticalScaling the VerticalVmScaling to set
+     * @return
+     * @throws IllegalArgumentException if the given VmScaling is already linked to a Vm. Each VM must have
+     * its own VerticalVmScaling objects or none at all.
+     */
+    Vm setBwVerticalScaling(VerticalVmScaling bwVerticalScaling) throws IllegalArgumentException;
+
+    /**
+     * Gets a {@link VerticalVmScaling} that will check if the Vm's RAM is overloaded,
+     * based on some conditions defined by a {@link Predicate} given
+     * to the VerticalVmScaling, and then request the RAM up scaling.
+     */
+    VerticalVmScaling getRamVerticalScaling();
+
+    /**
+     * Gets a {@link VerticalVmScaling} that will check if the Vm's Bandwidth is overloaded,
+     * based on some conditions defined by a {@link Predicate} given
+     * to the VerticalVmScaling, and then request the BW up scaling.
+     */
+    VerticalVmScaling getBwVerticalScaling();
 
     /**
      * An attribute that implements the Null Object Design Pattern for {@link Vm}
@@ -497,7 +544,7 @@ public interface Vm extends UniquelyIdentificable, Delayable, Comparable<Vm> {
         @Override public double getSubmissionDelay() { return 0; }
         @Override public void setSubmissionDelay(double submissionDelay) {}
         @Override public void addStateHistoryEntry(VmStateHistoryEntry entry) {}
-        @Override public long getBw(){ return 0; }
+        @Override public Resource getBw(){ return Resource.NULL; }
         @Override public CloudletScheduler getCloudletScheduler() { return CloudletScheduler.NULL; }
         @Override public long getCurrentAllocatedBw() { return 0; }
         @Override public long getCurrentAllocatedRam(){ return 0; }
@@ -510,10 +557,10 @@ public interface Vm extends UniquelyIdentificable, Delayable, Comparable<Vm> {
         @Override public Host getHost() { return Host.NULL; }
         @Override public double getMips() { return 0; }
         @Override public int getNumberOfPes() { return 0; }
-        @Override public Vm addOnHostAllocationListener(EventListener<VmHostEventInfo> listener) { return Vm.NULL; }
-        @Override public Vm addOnHostDeallocationListener(EventListener<VmHostEventInfo> listener) { return Vm.NULL; }
-        @Override public Vm addOnVmCreationFailureListener(EventListener<VmDatacenterEventInfo> listener) { return Vm.NULL; }
-        @Override public Vm addOnUpdateVmProcessingListener(EventListener<VmHostEventInfo> listener) { return Vm.NULL; }
+        @Override public Vm addOnHostAllocationListener(EventListener<VmHostEventInfo> listener) { return this; }
+        @Override public Vm addOnHostDeallocationListener(EventListener<VmHostEventInfo> listener) { return this; }
+        @Override public Vm addOnVmCreationFailureListener(EventListener<VmDatacenterEventInfo> listener) { return this; }
+        @Override public Vm addOnUpdateVmProcessingListener(EventListener<VmHostEventInfo> listener) { return this; }
         @Override public void notifyOnHostAllocationListeners() {}
         @Override public void notifyOnHostDeallocationListeners(Host deallocatedHost) {}
         @Override public void notifyOnVmCreationFailureListeners(Datacenter failedDatacenter) {}
@@ -521,26 +568,26 @@ public interface Vm extends UniquelyIdentificable, Delayable, Comparable<Vm> {
         @Override public boolean removeOnHostAllocationListener(EventListener<VmHostEventInfo> listener) { return false; }
         @Override public boolean removeOnHostDeallocationListener(EventListener<VmHostEventInfo> listener) { return false; }
         @Override public boolean removeOnVmCreationFailureListener(EventListener<VmDatacenterEventInfo> listener) { return false; }
-        @Override public long getRam() { return 0; }
-        @Override public long getSize(){ return 0; }
+        @Override public Resource getRam() { return Resource.NULL; }
+        @Override public Resource getStorage(){ return Resource.NULL; }
         @Override public List<VmStateHistoryEntry> getStateHistory() { return Collections.emptyList(); }
-        @Override public double getTotalUtilizationOfCpu(double time) { return 0.0; }
-        @Override public double getTotalUtilizationOfCpu() { return 0; }
+        @Override public double getCpuPercentUse(double time) { return 0.0; }
+        @Override public double getCurrentCpuPercentUse() { return 0; }
         @Override public double getTotalUtilizationOfCpuMips(double time) { return 0.0; }
         @Override public String getUid(){ return ""; }
         @Override public DatacenterBroker getBroker() { return DatacenterBroker.NULL; }
-        @Override public Vm setBroker(DatacenterBroker broker) { return Vm.NULL; }
+        @Override public Vm setBroker(DatacenterBroker broker) { return this; }
         @Override public String getVmm() { return ""; }
         @Override public boolean isCreated() { return false; }
         @Override public boolean isInMigration() { return false; }
         @Override public void setCreated(boolean created){}
-        @Override public Vm setBw(long bwCapacity) { return Vm.NULL; }
+        @Override public Vm setBw(long bwCapacity) { return this; }
         @Override public void setHost(Host host) {}
         @Override public void setInMigration(boolean inMigration) {}
-        @Override public Vm setRam(long ramCapacity) { return Vm.NULL; }
-        @Override public Vm setSize(long size) { return Vm.NULL; }
+        @Override public Vm setRam(long ramCapacity) { return this; }
+        @Override public Vm setSize(long size) { return this; }
         @Override public double updateVmProcessing(double currentTime, List<Double> mipsShare){ return 0.0; }
-        @Override public Vm setCloudletScheduler(CloudletScheduler cloudletScheduler) { return Vm.NULL; }
+        @Override public Vm setCloudletScheduler(CloudletScheduler cloudletScheduler) { return this; }
         @Override public int compareTo(Vm o) { return 0; }
         @Override public double getTotalMipsCapacity() { return 0.0; }
         @Override public void allocateResource(Class<? extends ResourceManageable> resourceClass, long newTotalResourceAmount) {}
@@ -548,8 +595,13 @@ public interface Vm extends UniquelyIdentificable, Delayable, Comparable<Vm> {
         @Override public void setFailed(boolean failed){}
         @Override public boolean isFailed() { return false; }
         @Override public Simulation getSimulation() { return Simulation.NULL; }
+        @Override public List<ResourceManageable> getResources() { return Collections.emptyList(); }
         @Override public String toString() { return "Vm.NULL"; }
-        @Override public VmScaling getHorizontalScaling(){ return VmScaling.NULL; }
-        @Override public Vm setHorizontalScaling(VmScaling horizontalScaling) throws IllegalArgumentException { return this; }
+        @Override public HorizontalVmScaling getHorizontalScaling(){ return HorizontalVmScaling.NULL; }
+        @Override public Vm setHorizontalScaling(HorizontalVmScaling horizontalScaling) throws IllegalArgumentException { return this; }
+        @Override public Vm setRamVerticalScaling(VerticalVmScaling ramVerticalScaling) throws IllegalArgumentException { return this; }
+        @Override public Vm setBwVerticalScaling(VerticalVmScaling bwVerticalScaling) throws IllegalArgumentException { return this; }
+        @Override public VerticalVmScaling getRamVerticalScaling() { return VerticalVmScaling.NULL; }
+        @Override public VerticalVmScaling getBwVerticalScaling() { return VerticalVmScaling.NULL; }
     };
 }

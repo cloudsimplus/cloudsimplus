@@ -12,6 +12,8 @@
 
 .. java:import:: org.cloudbus.cloudsim.schedulers.cloudlet.network PacketScheduler
 
+.. java:import:: org.cloudbus.cloudsim.utilizationmodels UtilizationModel
+
 .. java:import:: org.cloudbus.cloudsim.vms Vm
 
 .. java:import:: org.cloudbus.cloudsim.core CloudSimTags
@@ -32,7 +34,7 @@ CloudletScheduler
 
    It also implements the Null Object Design Pattern in order to start avoiding \ :java:ref:`NullPointerException`\  when using the \ :java:ref:`CloudletScheduler.NULL`\  object instead of attributing \ ``null``\  to \ :java:ref:`CloudletScheduler`\  variables.
 
-   :author: Manoel Campos da Silva Filho
+   :author: Rodrigo N. Calheiros, Anton Beloglazov, Manoel Campos da Silva Filho
 
 Fields
 ------
@@ -127,6 +129,18 @@ cloudletSubmit
    :param cl: the submited cloudlet
    :return: expected finish time of this cloudlet (considering the time to transfer required files from the Datacenter to the Vm), or 0 if it is in a waiting queue
 
+getAllocatedMipsForCloudlet
+^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+.. java:method::  double getAllocatedMipsForCloudlet(CloudletExecutionInfo rcl, double time)
+   :outertype: CloudletScheduler
+
+   Gets the current allocated MIPS for cloudlet.
+
+   :param rcl: the rcl
+   :param time: the time
+   :return: the current allocated mips for cloudlet
+
 getCloudletExecList
 ^^^^^^^^^^^^^^^^^^^
 
@@ -178,35 +192,35 @@ getCurrentMipsShare
 
    :return: the current mips share list, where each item represents the MIPS capacity of a \ :java:ref:`Pe`\ . that is available to the scheduler.
 
+getCurrentRequestedBwPercentUtilization
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+.. java:method::  double getCurrentRequestedBwPercentUtilization()
+   :outertype: CloudletScheduler
+
+   /** Gets the current utilization percentage of Bandwidth that the running Cloudlets are requesting (in scale from 0 to 1).
+
+   :return: the BW utilization percentage from 0 to 1 (where 1 is 100%)
+
 getCurrentRequestedMips
 ^^^^^^^^^^^^^^^^^^^^^^^
 
 .. java:method::  List<Double> getCurrentRequestedMips()
    :outertype: CloudletScheduler
 
-   Gets the current requested mips.
+   Gets the current requested MIPS.
 
-   :return: the current mips
+   :return: the current requested MIPS
 
-getCurrentRequestedUtilizationOfBw
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+getCurrentRequestedRamPercentUtilization
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-.. java:method::  double getCurrentRequestedUtilizationOfBw()
+.. java:method::  double getCurrentRequestedRamPercentUtilization()
    :outertype: CloudletScheduler
 
-   Gets the current requested percentage of bw (in scale from 0 to 1, where 1 is 100%).
+   Gets the current utilization percentage of RAM that the running Cloudlets are requesting (in scale from 0 to 1).
 
-   :return: the current requested bw percentage.
-
-getCurrentRequestedUtilizationOfRam
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-
-.. java:method::  double getCurrentRequestedUtilizationOfRam()
-   :outertype: CloudletScheduler
-
-   Gets the current requested percentage of ram (in scale from 0 to 1, where 1 is 100%).
-
-   :return: the current requested ram percentage.
+   :return: the RAM utilization percentage from 0 to 1 (where 1 is 100%)
 
 getFreePes
 ^^^^^^^^^^
@@ -236,17 +250,28 @@ getPreviousTime
 
    :return: the previous time
 
-getTotalCurrentAllocatedMipsForCloudlet
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+getRequestedCpuPercentUtilization
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-.. java:method::  double getTotalCurrentAllocatedMipsForCloudlet(CloudletExecutionInfo rcl, double time)
+.. java:method::  double getRequestedCpuPercentUtilization(double time)
    :outertype: CloudletScheduler
 
-   Gets the total current allocated mips for cloudlet.
+   Gets total CPU utilization percentage of all cloudlets, according to CPU UtilizationModel of each one (in scale from 0 to 1, where 1 is 100%).
+
+   :param time: the time to get the current CPU utilization
+   :return: the total CPU utilization percentage
+
+getRequestedMipsForCloudlet
+^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+.. java:method::  double getRequestedMipsForCloudlet(CloudletExecutionInfo rcl, double time)
+   :outertype: CloudletScheduler
+
+   Gets the current requested MIPS for a given cloudlet.
 
    :param rcl: the rcl
    :param time: the time
-   :return: the total current allocated mips for cloudlet
+   :return: the current requested mips for the given cloudlet
 
 getTotalCurrentAvailableMipsForCloudlet
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -259,29 +284,6 @@ getTotalCurrentAvailableMipsForCloudlet
    :param rcl: the rcl
    :param mipsShare: the mips share
    :return: the total current mips available for each Cloudlet PE
-
-getTotalCurrentRequestedMipsForCloudlet
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-
-.. java:method::  double getTotalCurrentRequestedMipsForCloudlet(CloudletExecutionInfo rcl, double time)
-   :outertype: CloudletScheduler
-
-   Gets the total current requested mips for a given cloudlet.
-
-   :param rcl: the rcl
-   :param time: the time
-   :return: the total current requested mips for the given cloudlet
-
-getTotalUtilizationOfCpu
-^^^^^^^^^^^^^^^^^^^^^^^^
-
-.. java:method::  double getTotalUtilizationOfCpu(double time)
-   :outertype: CloudletScheduler
-
-   Gets total CPU utilization percentage of all cloudlets, according to CPU UtilizationModel of each one (in scale from 0 to 1, where 1 is 100%).
-
-   :param time: the time to get the current CPU utilization
-   :return: the total CPU utilization percentage
 
 getUsedPes
 ^^^^^^^^^^
@@ -358,8 +360,8 @@ setVm
    Sets the Vm that will use the scheduler. It is not required to manually set a Vm for the scheduler, since a \ :java:ref:`Vm`\  sets itself to the scheduler when the scheduler is assigned to the Vm.
 
    :param vm: the Vm to set
-   :throws IllegalArgumentException: when the scheduler already is assigned to another Vm, since each Vm must have its own scheduler
    :throws NullPointerException: when the vm parameter is null
+   :throws IllegalArgumentException: when the scheduler already is assigned to another Vm, since each Vm must have its own scheduler
 
 updateVmProcessing
 ^^^^^^^^^^^^^^^^^^

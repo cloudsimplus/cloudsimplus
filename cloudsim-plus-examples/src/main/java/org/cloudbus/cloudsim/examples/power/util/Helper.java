@@ -15,12 +15,12 @@ import java.util.Scanner;
 
 import org.cloudbus.cloudsim.cloudlets.CloudletSimple;
 import org.cloudbus.cloudsim.core.CloudSim;
-import org.cloudbus.cloudsim.schedulers.cloudlet.CloudletSchedulerDynamicWorkload;
 import org.cloudbus.cloudsim.brokers.DatacenterBroker;
 import org.cloudbus.cloudsim.datacenters.DatacenterCharacteristics;
 import org.cloudbus.cloudsim.hosts.HostSimple;
 import org.cloudbus.cloudsim.hosts.HostDynamicWorkloadSimple;
 import org.cloudbus.cloudsim.hosts.HostStateHistoryEntry;
+import org.cloudbus.cloudsim.schedulers.cloudlet.CloudletSchedulerTimeShared;
 import org.cloudbus.cloudsim.util.Log;
 import org.cloudbus.cloudsim.resources.PeSimple;
 import org.cloudbus.cloudsim.datacenters.Datacenter;
@@ -72,9 +72,7 @@ public final class Helper {
 		List<Vm> vms = new ArrayList<>(vmsNumber);
 		for (int i = 0; i < vmsNumber; i++) {
 			int vmType = i / (int) Math.ceil((double) vmsNumber / Constants.VM_TYPES);
-            CloudletScheduler scheduler =
-                    new CloudletSchedulerDynamicWorkload(
-                            Constants.VM_MIPS[vmType], Constants.VM_PES[vmType]);
+            CloudletScheduler scheduler = new CloudletSchedulerTimeShared(); //Constants.VM_MIPS[vmType], Constants.VM_PES[vmType]
 
             PowerVm vm = new PowerVm(i, Constants.VM_MIPS[vmType], Constants.VM_PES[vmType]);
             vm.setSchedulingInterval(Constants.SCHEDULING_INTERVAL);

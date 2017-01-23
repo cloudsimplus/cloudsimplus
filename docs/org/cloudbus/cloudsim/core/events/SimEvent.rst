@@ -14,7 +14,7 @@ SimEvent
 
    Represents a simulation event which is passed between the entities in a specific \ :java:ref:`Simulation`\  instance.
 
-   :author: Manoel Campos da Silva Filho
+   :author: Costas Simatos, Manoel Campos da Silva Filho
 
    **See also:** :java:ref:`CloudSimEvent`
 

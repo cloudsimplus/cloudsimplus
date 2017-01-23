@@ -22,21 +22,21 @@ package org.cloudbus.cloudsim.resources;
  * @author Manoel Campos da Silva Filho
  * @since CloudSim Plus 1.0
  */
-public abstract class ResourceAbstract implements ResourceManageable {
+public abstract class ResourceManageableAbstract implements ResourceManageable {
     /** @see #getCapacity() */
     private long capacity;
 
     /** @see #getAvailableResource() */
     private long availableResource;
 
-    public ResourceAbstract(final long capacity) {
+    public ResourceManageableAbstract(final long capacity) {
         if(!isCapacityValid(capacity))
             throw new IllegalArgumentException("Capacity cannot be negative");
 
         initCapacityAndAvailableResource(capacity);
     }
 
-    private boolean isCapacityValid(final long capacity) throws IllegalArgumentException {
+    private boolean isCapacityValid(final long capacity) {
         return capacity >= 0;
     }
 
@@ -107,7 +107,7 @@ public abstract class ResourceAbstract implements ResourceManageable {
             return false;
         }
 
-        final Long newAvailableResource = getAvailableResource() - amountToAllocate;
+        final long newAvailableResource = getAvailableResource() - amountToAllocate;
 
         return setAvailableResource(newAvailableResource);
     }
@@ -145,6 +145,11 @@ public abstract class ResourceAbstract implements ResourceManageable {
     }
 
     @Override
+    public boolean isResourceAmountAvailable(double amountToCheck) {
+        return isResourceAmountAvailable((long)amountToCheck);
+    }
+
+    @Override
     public boolean isResourceAmountBeingUsed(final long amountToCheck) {
         return getAllocatedResource() >= amountToCheck;
     }
@@ -162,5 +167,10 @@ public abstract class ResourceAbstract implements ResourceManageable {
     @Override
     public boolean isFull() {
         return availableResource == 0;
+    }
+
+    @Override
+    public String toString() {
+        return String.format("%s: used %d of %d", getClass().getSimpleName(), getAllocatedResource(), getCapacity());
     }
 }

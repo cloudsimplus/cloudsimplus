@@ -2,8 +2,6 @@
 
 .. java:import:: java.util.function Predicate
 
-.. java:import:: java.util.function Supplier
-
 VmScaling
 =========
 
@@ -32,7 +30,7 @@ NULL
 .. java:field::  VmScaling NULL
    :outertype: VmScaling
 
-   An attribute that implements the Null Object Design Pattern for \ :java:ref:`HorizontalVmScaling`\  objects.
+   An attribute that implements the Null Object Design Pattern for \ :java:ref:`VmScaling`\  objects.
 
 Methods
 -------
@@ -54,15 +52,16 @@ getVm
 
    Gets the \ :java:ref:`Vm`\  that this Load Balancer is linked to.
 
-scaleIfOverloaded
-^^^^^^^^^^^^^^^^^
+requestUpScalingIfOverloaded
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-.. java:method::  void scaleIfOverloaded(double time)
+.. java:method::  boolean requestUpScalingIfOverloaded(double time)
    :outertype: VmScaling
 
-   Performs the \ :java:ref:`horizontal <HorizontalVmScaling>`\  or \ :java:ref:`vertical <VerticalVmScaling>`\  scale if the Vm is overloaded. The type of scale depends on implementing classes.
+   Requests a \ :java:ref:`horizontal <HorizontalVmScaling>`\  or \ :java:ref:`vertical <VerticalVmScaling>`\  scale if the Vm is overloaded. The type of scale depends on implementing classes. The scaling request will be sent to the broker only if the \ :java:ref:`getOverloadPredicate()`\  returns true.
 
    :param time: current simulation time
+   :return: true if the Vm is overloaded and and up scaling request was sent to the broker, false otherwise
 
 setOverloadPredicate
 ^^^^^^^^^^^^^^^^^^^^
@@ -72,7 +71,7 @@ setOverloadPredicate
 
    Sets a \ :java:ref:`Predicate`\  that defines when \ :java:ref:`Vm <getVm()>`\  is overloaded or not, that will make the Vm's broker to dynamically create a new Vm to balance the load of new arrived Cloudlets.
 
-   :param predicate: a predicate that checks certain conditions to define that the Load Balancer's \ :java:ref:`Vm <getVm()>`\  is over utilized. The predicate receives the Vm to allow the predicate to define the over utilization condition. Such a condition can be defined, for instance, based on Vm's \ :java:ref:`Vm.getTotalUtilizationOfCpu(double)`\  CPU usage}.
+   :param predicate: a predicate that checks certain conditions to define that the Load Balancer's \ :java:ref:`Vm <getVm()>`\  is over utilized. The predicate receives the Vm to allow the predicate to define the over utilization condition. Such a condition can be defined, for instance, based on Vm's \ :java:ref:`Vm.getCpuPercentUse(double)`\  CPU usage}.
 
 setVm
 ^^^^^
@@ -81,6 +80,8 @@ setVm
    :outertype: VmScaling
 
    Sets a \ :java:ref:`Vm`\  to this Load Balancer. The broker will call this Load Balancer in order to balance load when its Vm is over utilized.
+
+   When the VmScaling is assigned to a Vm, the Vm sets itself to the VmScaling object, creating an association between the two objects.
 
    :param vm: the Vm to set
 

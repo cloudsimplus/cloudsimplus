@@ -8,6 +8,8 @@
 
 .. java:import:: org.cloudbus.cloudsim.vms Vm
 
+.. java:import:: org.cloudsimplus.autoscaling VerticalVmScaling
+
 PowerVmAllocationPolicySimple
 =============================
 

@@ -4,9 +4,9 @@ UtilizationModelFull
 .. java:package:: org.cloudbus.cloudsim.utilizationmodels
    :noindex:
 
-.. java:type:: public class UtilizationModelFull implements UtilizationModel
+.. java:type:: public class UtilizationModelFull extends UtilizationModelAbstract
 
-   The UtilizationModelFull class is a simple model, according to which a Cloudlet always utilizes a given allocated resource at 100%, all the time.
+   A \ :java:ref:`UtilizationModel`\  that according to which, a Cloudlet always utilizes a given allocated resource from its Vm at 100%, all the time.
 
    :author: Anton Beloglazov
 
@@ -18,8 +18,18 @@ getUtilization
 .. java:method:: @Override public double getUtilization(double time)
    :outertype: UtilizationModelFull
 
-   Gets the utilization percentage of a given resource in relation to the total capacity of that resource allocated to the cloudlet.
+   Gets the utilization percentage (in scale from [0 to 1]) of resource at a given simulation time.
 
-   :param time: the time to get the resource usage, that isn't considered for this UtilizationModel.
+   :param time: the time to get the resource usage.
+   :return: Always return 1 (100% of utilization), independent of the time.
+
+getUtilization
+^^^^^^^^^^^^^^
+
+.. java:method:: @Override public double getUtilization()
+   :outertype: UtilizationModelFull
+
+   Gets the utilization percentage (in scale from [0 to 1]) of resource at the current simulation time.
+
    :return: Always return 1 (100% of utilization), independent of the time.
 

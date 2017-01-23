@@ -1,6 +1,7 @@
 package org.cloudbus.cloudsim.provisioners;
 
 import org.cloudbus.cloudsim.resources.Pe;
+import org.cloudbus.cloudsim.resources.ResourceManageable;
 import org.cloudbus.cloudsim.vms.Vm;
 
 /**
@@ -27,14 +28,14 @@ public interface PeProvisioner extends ResourceProvisioner {
      * physical PE.
      *
      * @param vm the virtual machine for which the new virtual PE is being allocated
-     * @param mips the MIPS to be allocated to the virtual PE of the given VM
+     * @param mipsCapacity the MIPS to be allocated to the virtual PE of the given VM
      * @return $true if the virtual PE could be allocated; $false otherwise
      *
      * @pre $none
      * @post $none
      */
     @Override
-    boolean allocateResourceForVm(Vm vm, long mips);
+    boolean allocateResourceForVm(Vm vm, long mipsCapacity);
 
     /**
      * Gets the amount of allocated MIPS from the physical Pe to a virtual PE of a VM.
@@ -89,13 +90,15 @@ public interface PeProvisioner extends ResourceProvisioner {
      */
     PeProvisioner NULL = new PeProvisioner(){
         @Override public void setPe(Pe pe) {}
-        @Override public boolean allocateResourceForVm(Vm vm, long newTotalVmResource) { return false; }
+        @Override public boolean allocateResourceForVm(Vm vm, long newTotalVmResourceCapacity) { return false; }
+        @Override public boolean allocateResourceForVm(Vm vm, double newTotalVmResource) { return false; }
         @Override public long getAllocatedResourceForVm(Vm vm) { return 0; }
         @Override public long getTotalAllocatedResource() { return 0; }
         @Override public double getUtilization() { return 0; }
         @Override public boolean deallocateResourceForVm(Vm vm) { return false; }
         @Override public void deallocateResourceForAllVms() {}
         @Override public boolean isSuitableForVm(Vm vm, long newVmTotalAllocatedResource) { return false; }
+        @Override public ResourceManageable getResource() { return ResourceManageable.NULL; }
         @Override public long getCapacity() { return 0; }
         @Override public long getAvailableResource() { return 0; }
     };

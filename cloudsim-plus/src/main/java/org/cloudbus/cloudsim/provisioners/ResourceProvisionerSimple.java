@@ -8,13 +8,15 @@
 
 package org.cloudbus.cloudsim.provisioners;
 
+import org.cloudbus.cloudsim.resources.Pe;
+import org.cloudbus.cloudsim.resources.Resource;
 import org.cloudbus.cloudsim.vms.Vm;
 import org.cloudbus.cloudsim.resources.ResourceManageable;
 
 import java.util.Objects;
 
 /**
- * ResourceProvisionerSimple is an extension of {@link AbstractResourceProvisioner}
+ * ResourceProvisionerSimple is a {@link ResourceProvisioner} implementation
  * which uses a best-effort policy to allocate a resource to VMs:
  * if there is available amount of the resource on the host, it allocates;
  * otherwise, it fails.
@@ -24,7 +26,7 @@ import java.util.Objects;
  * @author Manoel Campos da Silva Filho
  * @since 3.0.4
  */
-public class ResourceProvisionerSimple extends AbstractResourceProvisioner {
+public class ResourceProvisionerSimple extends ResourceProvisionerAbstract {
     /**
      * Creates a new ResourceProvisionerSimple.
      *
@@ -36,17 +38,37 @@ public class ResourceProvisionerSimple extends AbstractResourceProvisioner {
     }
 
     @Override
-    public boolean allocateResourceForVm(Vm vm, long newTotalVmResource) {
+    public boolean allocateResourceForVm(Vm vm, long newTotalVmResourceCapacity) {
         Objects.requireNonNull(vm);
-        if (isSuitableForVm(vm, newTotalVmResource)) {
-            deallocateResourceForVm(vm);
-            getResource().allocateResource(newTotalVmResource);
-            getResourceAllocationMap().put(vm, newTotalVmResource);
-            vm.allocateResource(getResourceClass(), newTotalVmResource);
+        if (isSuitableForVm(vm, newTotalVmResourceCapacity)) {
+            final long previousVmResourceAllocation = vm.getResource(getResourceClass()).getAllocatedResource();
+            if (getResourceAllocationMap().containsKey(vm)) {
+                //Deallocates any amount of the resource assigned to the Vm in order to allocate a new capacity
+                deallocateResourceForVm(vm);
+            }
+
+            /*
+            Pe resources are not stored in the VM resource List. Only the provisioner that keeps track
+            of Pe allocation for VM. By this way, if the resource is not found inside the VM
+            and it is a Pe, it's OK (as it is expected)
+            */
+            if(!getResource().isObjectSubClassOf(Pe.class) && !vm.getResource(getResourceClass()).setCapacity(newTotalVmResourceCapacity)){
+                return false;
+            }
+
+            //Allocates the requested resource from the physical resource
+            getResource().allocateResource(newTotalVmResourceCapacity);
+            getResourceAllocationMap().put(vm, newTotalVmResourceCapacity);
+            vm.getResource(getResourceClass()).setAllocatedResource(previousVmResourceAllocation);
             return true;
         }
 
         return false;
+    }
+
+    @Override
+    public boolean allocateResourceForVm(Vm vm, double newTotalVmResource) {
+        return allocateResourceForVm(vm, (long)newTotalVmResource);
     }
 
     @Override
@@ -61,8 +83,11 @@ public class ResourceProvisionerSimple extends AbstractResourceProvisioner {
         if (getResourceAllocationMap().containsKey(vm)) {
             final long vmAllocatedResource = getResourceAllocationMap().get(vm);
             getResourceAllocationMap().put(vm, 0L);
-            getResource().deallocateResource(vmAllocatedResource);
+            //Deallocates the virtual resource the VM was using
             vm.deallocateResource(getResourceClass());
+
+            //Deallocates the virtual resource from the physical resource
+            getResource().deallocateResource(vmAllocatedResource);
             return vmAllocatedResource;
         }
 

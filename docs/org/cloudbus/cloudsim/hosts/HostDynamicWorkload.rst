@@ -12,7 +12,7 @@ HostDynamicWorkload
 
    An interface to be implemented by Host classes that provide dynamic workloads.
 
-   :author: Manoel Campos da Silva Filho
+   :author: Anton Beloglazov, Manoel Campos da Silva Filho
 
 Methods
 -------

@@ -8,11 +8,11 @@ PeSimple
 .. java:package:: org.cloudbus.cloudsim.resources
    :noindex:
 
-.. java:type:: public class PeSimple extends ResourceAbstract implements Pe
+.. java:type:: public class PeSimple extends ResourceManageableAbstract implements Pe
 
    Pe (Processing Element) class represents a CPU core of a physical machine (PM), defined in terms of Millions Instructions Per Second (MIPS) rating.
 
-   \ **ASSUMPTION:**\  All PEs under the same Machine have the same MIPS rating.
+   Such a class allows managing the Pe capacity and allocation. \ **ASSUMPTION:**\  All PEs under the same Machine have the same MIPS rating.
 
    :author: Manzur Murshed, Rajkumar Buyya
 

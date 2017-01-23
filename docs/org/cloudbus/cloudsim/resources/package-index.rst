@@ -26,8 +26,9 @@ The most basic resources are \ :java:ref:`org.cloudbus.cloudsim.resources.Harddr
    Ram
    RawStorage
    Resource
-   ResourceAbstract
    ResourceCapacity
    ResourceManageable
+   ResourceManageableAbstract
+   Resourceful
    SanStorage
 

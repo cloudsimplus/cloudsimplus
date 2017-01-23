@@ -16,7 +16,6 @@ import org.cloudbus.cloudsim.vms.VmSimpleTest;
 import org.cloudbus.cloudsim.resources.Pe;
 import org.cloudbus.cloudsim.resources.PeSimple;
 import org.cloudbus.cloudsim.schedulers.vm.VmSchedulerTimeShared;
-import org.cloudbus.cloudsim.schedulers.cloudlet.CloudletSchedulerDynamicWorkload;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -227,8 +226,8 @@ public class HostSimpleTest {
 
     @Test
     public void testIsSuitableForVm() {
-        VmSimple vm0 = VmSimpleTest.createVm(0, MIPS, 2, RAM, BW, HALF_STORAGE, new CloudletSchedulerDynamicWorkload(MIPS, 2));
-        VmSimple vm1 = VmSimpleTest.createVm(1, MIPS * 2, 1, RAM * 2, BW * 2, HALF_STORAGE, new CloudletSchedulerDynamicWorkload(MIPS * 2, 2));
+        VmSimple vm0 = VmSimpleTest.createVm(0, MIPS, 2, RAM, BW, HALF_STORAGE, new CloudletSchedulerTimeShared());
+        VmSimple vm1 = VmSimpleTest.createVm(1, MIPS * 2, 1, RAM * 2, BW * 2, HALF_STORAGE, new CloudletSchedulerTimeShared());
 
         assertTrue(host.isSuitableForVm(vm0));
         assertFalse(host.isSuitableForVm(vm1));
@@ -291,13 +290,13 @@ public class HostSimpleTest {
     @Test
     public void testVmCreate() {
         VmSimple vm0 = VmSimpleTest.createVm(0, MIPS / 2, 1, RAM / 2, BW / 2,
-                A_QUARTER_STORAGE, new CloudletSchedulerDynamicWorkload(MIPS / 2, 1));
+                A_QUARTER_STORAGE, new CloudletSchedulerTimeShared());
         VmSimple vm1 = VmSimpleTest.createVm(1, MIPS, 1, RAM, BW,
-                A_QUARTER_STORAGE, new CloudletSchedulerDynamicWorkload(MIPS, 1));
+                A_QUARTER_STORAGE, new CloudletSchedulerTimeShared());
         VmSimple vm2 = VmSimpleTest.createVm(2, MIPS * 2, 1, RAM, BW,
-                A_QUARTER_STORAGE, new CloudletSchedulerDynamicWorkload(MIPS * 2, 1));
+                A_QUARTER_STORAGE, new CloudletSchedulerTimeShared());
         VmSimple vm3 = VmSimpleTest.createVm(3, MIPS / 2, 2, RAM / 2, BW / 2,
-                A_QUARTER_STORAGE, new CloudletSchedulerDynamicWorkload(MIPS / 2, 2));
+                A_QUARTER_STORAGE, new CloudletSchedulerTimeShared());
 
         assertTrue(host.vmCreate(vm0));
         assertFalse(host.vmCreate(vm1));
@@ -334,17 +333,17 @@ public class HostSimpleTest {
 
     @Test
     public void testGetBwCapacity() {
-        assertEquals(BW, createHostSimple(0, 1).getBwCapacity());
+        assertEquals(BW, createHostSimple(0, 1).getBw().getCapacity());
     }
 
     @Test
     public void testGetRamCapacity() {
-        assertEquals(RAM, createHostSimple(0, 1).getRamCapacity());
+        assertEquals(RAM, createHostSimple(0, 1).getRam().getCapacity());
     }
 
     @Test
     public void testGetStorageCapacity() {
-        assertEquals(STORAGE, createHostSimple(0, 1).getStorageCapacity());
+        assertEquals(STORAGE, createHostSimple(0, 1).getStorage().getCapacity());
     }
 
     @Test
@@ -434,7 +433,7 @@ public class HostSimpleTest {
         DatacenterBroker broker = Mocks.createMockBroker(cloudsim);
         VmSimple vm = VmSimpleTest.createVm(
                 0, MIPS, 1, RAM / 2, BW / 2, STORAGE,
-                new CloudletSchedulerDynamicWorkload(MIPS, 1));
+                new CloudletSchedulerTimeShared());
         vm.setBroker(broker);
 
         assertTrue(host.vmCreate(vm));
@@ -453,11 +452,11 @@ public class HostSimpleTest {
         DatacenterBroker broker = Mocks.createMockBroker(cloudsim);
         VmSimple vm0 = VmSimpleTest.createVm(
                 0, MIPS, 1, RAM / 2, BW / 2, HALF_STORAGE,
-                new CloudletSchedulerDynamicWorkload(MIPS, 1));
+                new CloudletSchedulerTimeShared());
         vm0.setBroker(broker);
         VmSimple vm1 = VmSimpleTest.createVm(
                 1, MIPS, 1, RAM / 2, BW / 2, HALF_STORAGE,
-                new CloudletSchedulerDynamicWorkload(MIPS, 1));
+                new CloudletSchedulerTimeShared());
         vm1.setBroker(broker);
 
         assertTrue(host.vmCreate(vm0));

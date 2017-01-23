@@ -229,7 +229,7 @@ public class DynamicVmCreationByResponseTimeExample {
                 vm.getCloudletScheduler().getCloudletExecList().size());
 
         return totalVmFreePes;
-    }
+    }    
 
     /**
      * Creates new Cloudlets at every 10 seconds up to the 50th simulation

@@ -10,6 +10,8 @@
 
 .. java:import:: org.cloudbus.cloudsim.vms Vm
 
+.. java:import:: org.cloudsimplus.autoscaling VerticalVmScaling
+
 VmAllocationPolicy
 ==================
 
@@ -20,7 +22,7 @@ VmAllocationPolicy
 
    An interface to be implemented by each class that represents a policy used by a \ :java:ref:`Datacenter`\  to choose a \ :java:ref:`Host`\  to place or migrate a given \ :java:ref:`Vm`\ .
 
-   :author: Manoel Campos da Silva Filho
+   :author: Rodrigo N. Calheiros, Anton Beloglazov, Manoel Campos da Silva Filho
 
 Fields
 ------
@@ -96,6 +98,17 @@ optimizeAllocation
 
    :param vmList: the vm list
    :return: the new vm placement map, where each key is a VM and each value is the host where such a Vm has to be placed
+
+scaleVmVertically
+^^^^^^^^^^^^^^^^^
+
+.. java:method::  boolean scaleVmVertically(VerticalVmScaling scaling)
+   :outertype: VmAllocationPolicy
+
+   Try to scale soome Vm's resource vertically if the Host where the Vm is placed has enough capacity. The resource to be scaled is defined by the given \ :java:ref:`VerticalVmScaling`\  object.
+
+   :param scaling: the \ :java:ref:`VerticalVmScaling`\  object with information of which resource is being requested to be scaled
+   :return: true if the requested resource was scaled, false otherwise
 
 setDatacenter
 ^^^^^^^^^^^^^

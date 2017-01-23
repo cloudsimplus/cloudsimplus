@@ -194,7 +194,7 @@ CloudSim cloudsim = new CloudSim();
 /*Creates a Broker that will act on behalf of a cloud user (customer).*/
 DatacenterBroker broker0 = new DatacenterBrokerSimple(cloudsim);
 
-//Creates a list of Hosts, each host with a specific list of CPU cors (PEs).
+//Creates a list of Hosts, each host with a specific list of CPU cores (PEs).
 List<Host> hostList = new ArrayList<>(1);
 List<Pe> hostPes = new ArrayList<>(1);
 hostPes.add(new PeSimple(20000, new PeProvisionerSimple()));

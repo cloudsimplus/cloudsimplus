@@ -53,6 +53,7 @@ public final class CloudSimMocker {
     public static CloudSim createMock(Consumer<CloudSimMocker> consumer) {
         CloudSimMocker mocker = new CloudSimMocker();
         consumer.accept(mocker);
+        EasyMock.expect(mocker.mock.isRunning()).andReturn(true).anyTimes();
         CloudSimMocker.replay(mocker.mock);
         return mocker.mock;
     }

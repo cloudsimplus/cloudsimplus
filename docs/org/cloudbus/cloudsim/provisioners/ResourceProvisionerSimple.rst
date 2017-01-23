@@ -1,3 +1,7 @@
+.. java:import:: org.cloudbus.cloudsim.resources Pe
+
+.. java:import:: org.cloudbus.cloudsim.resources Resource
+
 .. java:import:: org.cloudbus.cloudsim.vms Vm
 
 .. java:import:: org.cloudbus.cloudsim.resources ResourceManageable
@@ -10,9 +14,9 @@ ResourceProvisionerSimple
 .. java:package:: org.cloudbus.cloudsim.provisioners
    :noindex:
 
-.. java:type:: public class ResourceProvisionerSimple extends AbstractResourceProvisioner
+.. java:type:: public class ResourceProvisionerSimple extends ResourceProvisionerAbstract
 
-   ResourceProvisionerSimple is an extension of \ :java:ref:`AbstractResourceProvisioner`\  which uses a best-effort policy to allocate a resource to VMs: if there is available amount of the resource on the host, it allocates; otherwise, it fails.
+   ResourceProvisionerSimple is a \ :java:ref:`ResourceProvisioner`\  implementation which uses a best-effort policy to allocate a resource to VMs: if there is available amount of the resource on the host, it allocates; otherwise, it fails.
 
    :author: Rodrigo N. Calheiros, Anton Beloglazov, Manoel Campos da Silva Filho
 
@@ -33,7 +37,13 @@ Methods
 allocateResourceForVm
 ^^^^^^^^^^^^^^^^^^^^^
 
-.. java:method:: @Override public boolean allocateResourceForVm(Vm vm, long newTotalVmResource)
+.. java:method:: @Override public boolean allocateResourceForVm(Vm vm, long newTotalVmResourceCapacity)
+   :outertype: ResourceProvisionerSimple
+
+allocateResourceForVm
+^^^^^^^^^^^^^^^^^^^^^
+
+.. java:method:: @Override public boolean allocateResourceForVm(Vm vm, double newTotalVmResource)
    :outertype: ResourceProvisionerSimple
 
 deallocateResourceForVm

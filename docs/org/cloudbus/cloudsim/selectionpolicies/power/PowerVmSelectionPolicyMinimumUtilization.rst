@@ -1,10 +1,16 @@
-.. java:import:: java.util List
-
 .. java:import:: org.cloudbus.cloudsim.hosts.power PowerHost
+
+.. java:import:: org.cloudbus.cloudsim.vms Vm
 
 .. java:import:: org.cloudbus.cloudsim.vms.power PowerVm
 
-.. java:import:: org.cloudbus.cloudsim.vms Vm
+.. java:import:: java.util Comparator
+
+.. java:import:: java.util List
+
+.. java:import:: java.util Optional
+
+.. java:import:: java.util.function Predicate
 
 PowerVmSelectionPolicyMinimumUtilization
 ========================================
@@ -14,7 +20,9 @@ PowerVmSelectionPolicyMinimumUtilization
 
 .. java:type:: public class PowerVmSelectionPolicyMinimumUtilization extends PowerVmSelectionPolicy
 
-   A VM selection policy that selects for migration the VM with Minimum Utilization (MU) of CPU. If you are using any algorithms, policies or workload included in the power package please cite the following paper:
+   A VM selection policy that selects for migration the VM with Minimum Utilization (MU) of CPU.
+
+   If you are using any algorithms, policies or workload included in the power package please cite the following paper:
 
    ..
 

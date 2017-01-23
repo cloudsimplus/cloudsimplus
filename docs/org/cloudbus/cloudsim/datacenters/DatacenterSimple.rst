@@ -20,6 +20,8 @@
 
 .. java:import:: org.cloudbus.cloudsim.resources FileStorage
 
+.. java:import:: org.cloudsimplus.autoscaling VerticalVmScaling
+
 DatacenterSimple
 ================
 

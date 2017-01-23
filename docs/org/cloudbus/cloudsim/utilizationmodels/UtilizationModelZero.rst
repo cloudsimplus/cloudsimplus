@@ -4,7 +4,7 @@ UtilizationModelZero
 .. java:package:: org.cloudbus.cloudsim.utilizationmodels
    :noindex:
 
-.. java:type:: public class UtilizationModelZero implements UtilizationModel
+.. java:type:: public class UtilizationModelZero extends UtilizationModelAbstract
 
    The UtilizationModelZero class is a simple model, according to which a Cloudlet always require zero capacity for a given resource all the time.
 

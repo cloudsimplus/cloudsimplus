@@ -13,7 +13,9 @@ The most basic utilization model that can be used for any of the mentioned resou
    :maxdepth: 1
 
    UtilizationModel
-   UtilizationModelArithmeticProgression
+   UtilizationModel-Unit
+   UtilizationModelAbstract
+   UtilizationModelDynamic
    UtilizationModelFull
    UtilizationModelPlanetLabInMemory
    UtilizationModelStochastic

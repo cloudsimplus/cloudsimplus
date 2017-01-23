@@ -18,7 +18,7 @@ DatacenterCharacteristics
 
    An interface to be implemented by each class that represents the physical characteristics of a Datacenter.
 
-   :author: Manoel Campos da Silva Filho
+   :author: Manzur Murshed, Rajkumar Buyya, Rodrigo N. Calheiros, Anton Beloglazov, Manoel Campos da Silva Filho
 
 Fields
 ------

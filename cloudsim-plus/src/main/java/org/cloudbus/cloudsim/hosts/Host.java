@@ -7,10 +7,10 @@
  */
 package org.cloudbus.cloudsim.hosts;
 
+import org.cloudbus.cloudsim.resources.*;
 import org.cloudbus.cloudsim.vms.Vm;
 import org.cloudbus.cloudsim.core.Identificable;
 import org.cloudbus.cloudsim.datacenters.Datacenter;
-import org.cloudbus.cloudsim.resources.Pe;
 import org.cloudbus.cloudsim.schedulers.vm.VmScheduler;
 import java.util.Collections;
 import java.util.List;
@@ -32,7 +32,7 @@ import org.cloudbus.cloudsim.provisioners.ResourceProvisioner;
  * @author Manoel Campos da Silva Filho
  * @since CloudSim Plus 1.0
  */
-public interface Host extends Identificable, Comparable<Host> {
+public interface Host extends Identificable, Resourceful, Comparable<Host> {
 
     /**
      * Adds a VM migrating into the current host.
@@ -92,7 +92,7 @@ public interface Host extends Identificable, Comparable<Host> {
      * @pre $none
      * @post $result > 0
      */
-    long getBwCapacity();
+    Resource getBw();
 
     /**
      * Gets the bandwidth (BW) provisioner with capacity in Megabits/s.
@@ -153,13 +153,13 @@ public interface Host extends Identificable, Comparable<Host> {
     List<Pe> getPeList();
 
     /**
-     * Gets the host memory capacity in Megabytes.
+     * Gets the host memory resource in Megabytes.
      *
-     * @return the host memory capacity
+     * @return the host memory
      * @pre $none
      * @post $result > 0
      */
-    long getRamCapacity();
+    Resource getRam();
 
     /**
      * Gets the ram provisioner with capacity in Megabytes.
@@ -176,13 +176,13 @@ public interface Host extends Identificable, Comparable<Host> {
     Host setRamProvisioner(ResourceProvisioner ramProvisioner);
 
     /**
-     * Gets the host storage capacity in Megabytes.
+     * Gets the storage device of the host with capacity in Megabytes.
      *
-     * @return the host storage capacity
+     * @return the host storage device
      * @pre $none
      * @post $result >= 0
      */
-    long getStorageCapacity();
+    Resource getStorage();
 
     /**
      * Gets the total allocated MIPS for a VM along all its PEs.
@@ -369,17 +369,26 @@ public interface Host extends Identificable, Comparable<Host> {
 
 
     /**
+     * Gets the {@link ResourceProvisioner}s that manages a Host resource
+     * such as {@link Ram}, {@link Bandwidth} and {@link Pe}.
+     * @param resourceClass the class of the resource to get its provisioner
+     * @return the {@link ResourceProvisioner} for the given resource class
+     */
+    ResourceProvisioner getProvisioner(Class<? extends ResourceManageable> resourceClass);
+
+    /**
      * A property that implements the Null Object Design Pattern for {@link Host}
      * objects.
      */
     Host NULL = new Host(){
+        @Override public List<ResourceManageable> getResources() { return Collections.emptyList(); }
         @Override public int compareTo(Host o) { return 0; }
         @Override public void addMigratingInVm(Vm vm) {}
         @Override public boolean allocatePesForVm(Vm vm, List<Double> mipsShare) { return false;}
         @Override public void deallocatePesForVm(Vm vm) {}
         @Override public List<Double> getAllocatedMipsForVm(Vm vm) { return Collections.emptyList(); }
         @Override public double getAvailableMips() { return 0; }
-        @Override public long getBwCapacity() { return 0; }
+        @Override public Resource getBw() { return Resource.NULL; }
         @Override public ResourceProvisioner getBwProvisioner() { return ResourceProvisioner.NULL; }
         @Override public Host setBwProvisioner(ResourceProvisioner bwProvisioner) { return Host.NULL; }
         @Override public Datacenter getDatacenter() { return Datacenter.NULL; }
@@ -388,10 +397,10 @@ public interface Host extends Identificable, Comparable<Host> {
         @Override public int getNumberOfFreePes() { return 0; }
         @Override public int getNumberOfPes() { return 0; }
         @Override public List<Pe> getPeList() { return Collections.emptyList(); }
-        @Override public long getRamCapacity() { return 0; }
+        @Override public Resource getRam() { return Resource.NULL; }
         @Override public ResourceProvisioner getRamProvisioner() { return ResourceProvisioner.NULL; }
         @Override public Host setRamProvisioner(ResourceProvisioner ramProvisioner) { return Host.NULL; }
-        @Override public long getStorageCapacity() { return 0L; }
+        @Override public Resource getStorage() { return Resource.NULL; }
         @Override public double getTotalAllocatedMipsForVm(Vm vm) { return 0.0; }
         @Override public long getTotalMips() { return 0; }
         @Override public Vm getVm(int vmId, int brokerId) { return Vm.NULL; }
@@ -415,6 +424,7 @@ public interface Host extends Identificable, Comparable<Host> {
         @Override public boolean setFailed(boolean failed){return false;}
         @Override public Simulation getSimulation() { return Simulation.NULL; }
         @Override public Host setSimulation(Simulation simulation) { return this; }
+        @Override public ResourceProvisioner getProvisioner(Class<? extends ResourceManageable> resourceClass) { return ResourceProvisioner.NULL; }
         @Override public long getNumberOfWorkingPes() { return 0; }
         @Override public String toString() { return "Host.NULL"; }
     };

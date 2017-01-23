@@ -33,7 +33,6 @@ import org.cloudsimplus.builders.SimulationScenarioBuilder;
 import org.cloudbus.cloudsim.core.CloudSim;
 import org.cloudsimplus.listeners.EventListener;
 import org.cloudsimplus.listeners.HostUpdatesVmsProcessingEventInfo;
-import org.cloudbus.cloudsim.schedulers.cloudlet.CloudletSchedulerDynamicWorkload;
 import org.cloudbus.cloudsim.schedulers.vm.VmSchedulerSpaceShared;
 import org.cloudsimplus.builders.tables.CloudletsTableBuilderHelper;
 import org.cloudsimplus.builders.tables.TextTableBuilder;

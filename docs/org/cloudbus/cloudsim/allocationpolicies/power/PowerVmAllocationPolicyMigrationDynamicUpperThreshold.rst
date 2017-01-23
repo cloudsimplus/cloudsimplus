@@ -12,7 +12,7 @@ PowerVmAllocationPolicyMigrationDynamicUpperThreshold
 
    An interface to be implemented by Power-aware VM allocation policies that use a dynamic over utilization threshold computed using some statistical method such as Median absolute deviation (MAD), InterQuartileRange (IRQ), Local Regression, etc, depending on the implementing class.
 
-   :author: Manoel Campos da Silva Filho
+   :author: Anton Beloglazov, Manoel Campos da Silva Filho
 
 Methods
 -------

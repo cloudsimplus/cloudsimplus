@@ -12,6 +12,7 @@ import java.util.*;
 import org.cloudbus.cloudsim.hosts.Host;
 import org.cloudbus.cloudsim.util.Log;
 import org.cloudbus.cloudsim.vms.Vm;
+import org.cloudsimplus.autoscaling.VerticalVmScaling;
 
 /**
  * A VmAllocationPolicy implementation that chooses, as

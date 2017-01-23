@@ -1,9 +1,12 @@
 language: java
-install: mvn install -B -V -pl cloudsim-plus,cloudsim-plus-examples
+install: mvn clean install -B -V -Dintegration-tests=true -pl cloudsim-plus,cloudsim-plus-examples
 script: mvn clean package
 after_success:
   - mvn clean test -Dintegration-tests=true jacoco:report
   - mvn versioneye:update 
+cache:
+  directories:
+  - $HOME/.m2
 jdk:
   - oraclejdk8 
 

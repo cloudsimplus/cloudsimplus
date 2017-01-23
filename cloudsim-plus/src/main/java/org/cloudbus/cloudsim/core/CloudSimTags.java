@@ -11,6 +11,7 @@ import org.cloudbus.cloudsim.cloudlets.Cloudlet;
 import org.cloudbus.cloudsim.core.events.SimEvent;
 import org.cloudbus.cloudsim.datacenters.Datacenter;
 import org.cloudbus.cloudsim.vms.Vm;
+import org.cloudsimplus.autoscaling.VerticalVmScaling;
 
 /**
  * Contains various static command tags that indicate a type of action that
@@ -246,6 +247,14 @@ public final class CloudSimTags {
      * to notify it to update the processing of VM's cloudlets.
      */
     public static final int VM_UPDATE_CLOUDLET_PROCESSING_EVENT = BASE + 41;
+
+    /**
+     * Defines the tag to be used for vertical scaling of VM resources
+     * such as Ram, Bandwidth or Pe.
+     * When an event of this type is sent, the {@link SimEvent#getData()}
+     * must be a {@link VerticalVmScaling} object.
+     */
+    public static final int VM_VERTICAL_SCALING = BASE + 42;
 
     public static final int NETWORK_EVENT_UP = BASE + 43;
 

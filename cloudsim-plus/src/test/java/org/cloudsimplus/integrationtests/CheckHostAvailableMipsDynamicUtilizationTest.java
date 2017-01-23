@@ -23,6 +23,7 @@
  */
 package org.cloudsimplus.integrationtests;
 
+import org.cloudbus.cloudsim.schedulers.cloudlet.CloudletSchedulerTimeShared;
 import org.cloudbus.cloudsim.util.Log;
 import org.cloudbus.cloudsim.hosts.Host;
 import org.cloudbus.cloudsim.brokers.DatacenterBroker;
@@ -32,10 +33,9 @@ import org.cloudsimplus.builders.SimulationScenarioBuilder;
 import org.cloudbus.cloudsim.core.CloudSim;
 import org.cloudsimplus.listeners.EventListener;
 import org.cloudsimplus.listeners.HostUpdatesVmsProcessingEventInfo;
-import org.cloudbus.cloudsim.schedulers.cloudlet.CloudletSchedulerDynamicWorkload;
 import org.cloudbus.cloudsim.schedulers.vm.VmSchedulerSpaceShared;
 import org.cloudsimplus.builders.tables.CloudletsTableBuilderHelper;
-import org.cloudbus.cloudsim.utilizationmodels.UtilizationModelArithmeticProgression;
+import org.cloudbus.cloudsim.utilizationmodels.UtilizationModelDynamic;
 import org.junit.Test;
 import static org.junit.Assert.*;
 import org.junit.Before;
@@ -60,7 +60,7 @@ public final class CheckHostAvailableMipsDynamicUtilizationTest {
     private static final int NUMBER_OF_CLOUDLETS = 2;
 
     private SimulationScenarioBuilder scenario;
-    private UtilizationModelArithmeticProgression utilizationModel;
+    private UtilizationModelDynamic utilizationModel;
     private CloudSim simulation;
 
     /**
@@ -103,10 +103,11 @@ public final class CheckHostAvailableMipsDynamicUtilizationTest {
         brokerBuilder.getVmBuilder()
                 .setRam(1000).setBw(100000)
                 .setPes(VM_PES).setMips(VM_MIPS).setSize(50000)
-                .setCloudletSchedulerSupplier(() -> new CloudletSchedulerDynamicWorkload(VM_MIPS,VM_PES))
+                .setCloudletSchedulerSupplier(() -> new CloudletSchedulerTimeShared())
                 .createAndSubmitVms(NUMBER_OF_VMS);
 
-        utilizationModel = new UtilizationModelArithmeticProgression(0.0, 0.25);
+        utilizationModel = new UtilizationModelDynamic()
+                            .setUtilizationIncrementFunction((timeSpan, initialUsage) -> initialUsage + (timeSpan * 0.25));
         brokerBuilder.getCloudletBuilder()
                 .setLength(CLOUDLET_LENGTH)
                 .setUtilizationModelCpu(utilizationModel)

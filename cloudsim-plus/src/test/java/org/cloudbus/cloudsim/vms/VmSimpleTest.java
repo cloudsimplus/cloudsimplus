@@ -10,8 +10,6 @@ import org.cloudbus.cloudsim.brokers.DatacenterBroker;
 import org.cloudbus.cloudsim.hosts.Host;
 import org.cloudbus.cloudsim.hosts.HostSimple;
 import org.cloudbus.cloudsim.hosts.HostSimpleTest;
-import org.cloudbus.cloudsim.schedulers.cloudlet.CloudletSchedulerAbstract;
-import org.cloudbus.cloudsim.schedulers.cloudlet.CloudletSchedulerDynamicWorkload;
 import static org.easymock.EasyMock.expect;
 import static org.easymock.EasyMock.replay;
 import static org.easymock.EasyMock.verify;
@@ -50,12 +48,12 @@ public class VmSimpleTest {
     private static final long BW = 10000;
     private static final long SIZE = 1000;
     private static final String VMM = "Xen";
-    private CloudletSchedulerDynamicWorkload vmScheduler;
+    private CloudletSchedulerTimeShared vmScheduler;
     private VmSimple vm;
 
     @Before
     public void setUp() throws Exception {
-        vmScheduler = new CloudletSchedulerDynamicWorkload(MIPS, PES_NUMBER);
+        vmScheduler = new CloudletSchedulerTimeShared();
         CloudSim cloudsim = CloudSimMocker.createMock(mocker -> mocker.clock(0));
         DatacenterBroker broker = Mocks.createMockBroker(cloudsim);
         vm = VmSimpleTest.createVm(vmScheduler);
@@ -84,7 +82,6 @@ public class VmSimpleTest {
         return createVm(vmId, MIPS, 1, RAM, BW, SIZE, CloudletScheduler.NULL);
     }
 
-
     /**
      * Creates a VM with the given numberOfPes and default configuration for
      * HOST_MIPS, HOST_RAM, HOST_BW and Storage.
@@ -95,6 +92,17 @@ public class VmSimpleTest {
      */
     public static VmSimple createVm(final int vmId, final int numberOfPes) {
         return createVm(vmId, MIPS, numberOfPes);
+    }
+
+    /**
+     * Creates a VM with the default configuration defined in the Test Class'
+     * constants.
+     *
+     * @param cloudletScheduler
+     * @return
+     */
+    public static VmSimple createVm(CloudletScheduler cloudletScheduler) {
+        return createVm(ID, MIPS, PES_NUMBER, RAM, BW, SIZE, cloudletScheduler);
     }
 
     /**
@@ -109,6 +117,18 @@ public class VmSimpleTest {
     public static VmSimple createVm(final int vmId, final double mips, final int numberOfPes) {
         return createVm(vmId, mips, numberOfPes, RAM, BW, SIZE, CloudletScheduler.NULL);
     }
+
+    /**
+     * Creates a VM with 1 PE.
+     *
+     * @param vmId id of the VM
+     * @param capacity a capacity that will be set to all resources, such as CPU, HOST_RAM, HOST_BW, etc.
+     * @return
+     */
+    public static VmSimple createVm(final int vmId, long capacity) {
+        return createVm(vmId, capacity, 1, capacity, capacity, capacity, CloudletScheduler.NULL);
+    }
+
     /**
      * Creates a VM with the given configuration
      *
@@ -171,7 +191,7 @@ public class VmSimpleTest {
     @Test
     public void testSetRam() {
         vm.setRam(RAM / 2);
-        assertEquals(RAM / 2, vm.getRam(), 0);
+        assertEquals(RAM / 2, vm.getRam().getCapacity(), 0);
     }
 
     @Test
@@ -213,7 +233,7 @@ public class VmSimpleTest {
     @Test
     public void testSetBw() {
         vm.setBw(BW / 2);
-        assertEquals(BW / 2, vm.getBw(), 0);
+        assertEquals(BW / 2, vm.getBw().getCapacity(), 0);
     }
 
     @Test
@@ -272,17 +292,17 @@ public class VmSimpleTest {
 
     @Test
     public void testGetRam() {
-        assertEquals(RAM, vm.getRam());
+        assertEquals(RAM, vm.getRam().getCapacity());
     }
 
     @Test
     public void testGetBw() {
-        assertEquals(BW, vm.getBw());
+        assertEquals(BW, vm.getBw().getCapacity());
     }
 
     @Test
     public void testGetSize() {
-        assertEquals(SIZE, vm.getSize());
+        assertEquals(SIZE, vm.getStorage().getCapacity());
     }
 
     @Test
@@ -307,7 +327,7 @@ public class VmSimpleTest {
 
     @Test
     public void testGetTotalUtilization() {
-        assertEquals(0, vm.getTotalUtilizationOfCpu(0), 0);
+        assertEquals(0, vm.getCpuPercentUse(0), 0);
     }
 
     @Test
@@ -363,7 +383,7 @@ public class VmSimpleTest {
         CloudletScheduler cloudletScheduler = createMock(CloudletScheduler.class);
         cloudletScheduler.setVm(EasyMock.anyObject());
         EasyMock.expectLastCall().once();
-        expect(cloudletScheduler.getCurrentRequestedUtilizationOfBw())
+        expect(cloudletScheduler.getCurrentRequestedBwPercentUtilization())
                 .andReturn(currentBwUtilizationPercentage);
         replay(cloudletScheduler);
 
@@ -391,7 +411,7 @@ public class VmSimpleTest {
         CloudletScheduler  cloudletScheduler = createMock(CloudletScheduler.class);
         cloudletScheduler.setVm(EasyMock.anyObject());
         EasyMock.expectLastCall().once();
-        expect(cloudletScheduler.getCurrentRequestedUtilizationOfRam())
+        expect(cloudletScheduler.getCurrentRequestedRamPercentUtilization())
                 .andReturn(currentRamUtilizationPercentage);
         replay(cloudletScheduler);
 
@@ -417,25 +437,13 @@ public class VmSimpleTest {
 
         assertTrue(vm.getCurrentRequestedMips().isEmpty());
     }
-
-    /**
-     * Creates a VM with the default configuration defined in the Test Class'
-     * constants.
-     *
-     * @param cloudletScheduler
-     * @return
-     */
-    public static VmSimple createVm(CloudletScheduler cloudletScheduler) {
-        return createVm(ID, MIPS, PES_NUMBER, RAM, BW, SIZE, cloudletScheduler);
-    }
-
     @Test
     public void testGetCurrentRequestedTotalMips() {
         List<Double> currentMips = new ArrayList<>();
         currentMips.add(MIPS);
         currentMips.add(MIPS);
 
-        CloudletSchedulerAbstract cloudletScheduler = createMock(CloudletSchedulerAbstract.class);
+        CloudletSchedulerTimeShared cloudletScheduler = createMock(CloudletSchedulerTimeShared.class);
         cloudletScheduler.setVm(EasyMock.anyObject());
         EasyMock.expectLastCall().once();
         expect(cloudletScheduler.getCurrentRequestedMips()).andReturn(currentMips);

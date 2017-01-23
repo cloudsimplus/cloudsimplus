@@ -16,7 +16,7 @@ Pe
 
    It also implements the Null Object Design Pattern in order to start avoiding \ :java:ref:`NullPointerException`\  when using the \ :java:ref:`Pe.NULL`\  object instead of attributing \ ``null``\  to \ :java:ref:`Pe`\  variables.
 
-   :author: Manoel Campos da Silva Filho
+   :author: Manzur Murshed, Rajkumar Buyya, Manoel Campos da Silva Filho
 
 Fields
 ------

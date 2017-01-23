@@ -1,3 +1,5 @@
+.. java:import:: org.cloudbus.cloudsim.hosts Host
+
 .. java:import:: org.cloudbus.cloudsim.vms Vm
 
 ResourceProvisioner
@@ -8,7 +10,7 @@ ResourceProvisioner
 
 .. java:type:: public interface ResourceProvisioner
 
-   An interface that represents the provisioning policy used by a host to allocate a given resource to virtual machines inside it. Each host has to have its own instance of a ResourceProvisioner for each resource it owns, such as RAM, Bandwidth (BW) and CPU.
+   An interface that represents the provisioning policy used by a \ :java:ref:`Host`\  to allocate a given physical resource to \ :java:ref:`Vm`\ s inside it. Each host has to have its own instance of a ResourceProvisioner for each \ :java:ref:`Resource`\  it owns, such as \ :java:ref:`Ram`\ , \ :java:ref:`Bandwidth`\  (BW) and \ :java:ref:`Pe`\  (CPU).
 
    :author: Rodrigo N. Calheiros, Anton Beloglazov, Manoel Campos da Silva Filho
 
@@ -27,14 +29,30 @@ Methods
 allocateResourceForVm
 ^^^^^^^^^^^^^^^^^^^^^
 
-.. java:method::  boolean allocateResourceForVm(Vm vm, long newTotalVmResource)
+.. java:method::  boolean allocateResourceForVm(Vm vm, long newTotalVmResourceCapacity)
    :outertype: ResourceProvisioner
 
-   Allocates an amount of resource for a given VM (if the resource was never been allocated before) or change the current allocation. If the VM already has any amount of the resource allocated, deallocate if first and allocate the newTotalVmResource amount.
+   Allocates an amount of the physical resource for a given VM, changing the current capacity of the virtual resource to the given amount.
+
+   :param vm: the virtual machine for which the resource is being allocated
+   :param newTotalVmResourceCapacity: the new total amount of resource to allocate to the VM, changing the allocate resource to this new amount. It doesn't increase the current allocated VM resource by the given amount, instead, it changes the VM allocated resource to that specific amount
+   :return: $true if the resource could be allocated; $false otherwise
+
+allocateResourceForVm
+^^^^^^^^^^^^^^^^^^^^^
+
+.. java:method::  boolean allocateResourceForVm(Vm vm, double newTotalVmResource)
+   :outertype: ResourceProvisioner
+
+   Allocates an amount of the physical resource for a given VM, changing the current capacity of the virtual resource to the given amount.
+
+   This method is just a shorthand to avoid explicitly converting a double to long.
 
    :param vm: the virtual machine for which the resource is being allocated
    :param newTotalVmResource: the new total amount of resource to allocate to the VM, changing the allocate resource to this new amount. It doesn't increase the current allocated VM resource by the given amount, instead, it changes the VM allocated resource to that specific amount
    :return: $true if the resource could be allocated; $false otherwise
+
+   **See also:** :java:ref:`.allocateResourceForVm(Vm,long)`
 
 deallocateResourceForAllVms
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -61,7 +79,7 @@ getAllocatedResourceForVm
 .. java:method::  long getAllocatedResourceForVm(Vm vm)
    :outertype: ResourceProvisioner
 
-   Gets the amount of allocated resource for a given VM
+   Gets the amount of resource allocated to a given VM from the physical resource
 
    :param vm: the VM
    :return: the allocated resource for the VM
@@ -72,9 +90,9 @@ getAvailableResource
 .. java:method::  long getAvailableResource()
    :outertype: ResourceProvisioner
 
-   Gets the amount of free available resource from the host that the provisioner can allocate to VMs.
+   Gets the amount of free available physical resource from the host that the provisioner can allocate to VMs.
 
-   :return: the amount of free available resource
+   :return: the amount of free available physical resource
 
 getCapacity
 ^^^^^^^^^^^
@@ -82,9 +100,19 @@ getCapacity
 .. java:method::  long getCapacity()
    :outertype: ResourceProvisioner
 
-   Gets the total capacity of the resource from the host that the provisioner manages.
+   Gets the total capacity of the physical resource from the Host that the provisioner manages.
 
-   :return: the total resource capacity
+   :return: the total physical resource capacity
+
+getResource
+^^^^^^^^^^^
+
+.. java:method::  ResourceManageable getResource()
+   :outertype: ResourceProvisioner
+
+   Gets the resource being managed for the provisioner, such as \ :java:ref:`Ram`\ , \ :java:ref:`Pe`\ , \ :java:ref:`Bandwidth`\ , etc.
+
+   :return: the resource managed by this provisioner
 
 getTotalAllocatedResource
 ^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -92,7 +120,7 @@ getTotalAllocatedResource
 .. java:method::  long getTotalAllocatedResource()
    :outertype: ResourceProvisioner
 
-   Gets the total allocated resource among all VMs
+   Gets the total amount of resource allocated to all VMs from the physical resource
 
    :return: the total allocated resource among all VMs
 
@@ -102,7 +130,7 @@ isSuitableForVm
 .. java:method::  boolean isSuitableForVm(Vm vm, long newVmTotalAllocatedResource)
    :outertype: ResourceProvisioner
 
-   Checks if it is possible to change the current allocated resource for a given VM to a new amount, depending on the available resource remaining.
+   Checks if it is possible to change the current allocated resource for a given VM to a new amount, depending on the available physical resource remaining.
 
    :param vm: the vm to check if there is enough available resource on the host to change the allocated amount for the VM
    :param newVmTotalAllocatedResource: the new total amount of resource to allocate for the VM.

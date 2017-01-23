@@ -4,11 +4,9 @@ import java.util.Collections;
 
 import org.cloudbus.cloudsim.brokers.DatacenterBroker;
 import org.cloudbus.cloudsim.hosts.Host;
-import org.cloudsimplus.listeners.EventListener;
 import org.cloudbus.cloudsim.schedulers.cloudlet.CloudletScheduler;
 import org.junit.Test;
 import static org.junit.Assert.*;
-import org.cloudbus.cloudsim.resources.ResourceManageable;
 
 /**
  *
@@ -30,7 +28,7 @@ public class VmTest {
         assertEquals(0, instance.getMips(), 0);
         assertEquals(0, instance.getNumberOfPes());
 
-        assertEquals(0, instance.getTotalUtilizationOfCpu(0), 0);
+        assertEquals(0, instance.getCpuPercentUse(0), 0);
         assertEquals(0, instance.getTotalUtilizationOfCpuMips(0), 0);
 
         instance.setInMigration(true);
@@ -39,7 +37,7 @@ public class VmTest {
         assertFalse(instance.isCreated());
 
         instance.setBw(1000);
-        assertEquals(0, instance.getBw());
+        assertEquals(0, instance.getBw().getCapacity());
 
         assertEquals(0, instance.getCurrentAllocatedBw());
         assertEquals(0, instance.getCurrentRequestedBw());
@@ -64,10 +62,10 @@ public class VmTest {
         assertFalse(instance.removeOnUpdateVmProcessingListener(null));
 
         instance.setRam(1000);
-        assertEquals(0, instance.getRam());
+        assertEquals(0, instance.getRam().getCapacity());
 
         instance.setSize(1000);
-        assertEquals(0, instance.getSize());
+        assertEquals(0, instance.getStorage().getCapacity());
 
         assertEquals("", instance.getUid());
         assertEquals(-1, instance.getId());

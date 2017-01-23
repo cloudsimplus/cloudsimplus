@@ -4,8 +4,6 @@
 
 .. java:import:: org.cloudbus.cloudsim.datacenters Datacenter
 
-.. java:import:: org.cloudbus.cloudsim.resources Pe
-
 .. java:import:: org.cloudbus.cloudsim.schedulers.vm VmScheduler
 
 .. java:import:: java.util Collections
@@ -26,11 +24,11 @@ Host
 .. java:package:: org.cloudbus.cloudsim.hosts
    :noindex:
 
-.. java:type:: public interface Host extends Identificable, Comparable<Host>
+.. java:type:: public interface Host extends Identificable, Resourceful, Comparable<Host>
 
    An interface to be implemented by each class that provides Physical Machines (Hosts) features. The interface implements the Null Object Design Pattern in order to start avoiding \ :java:ref:`NullPointerException`\  when using the \ :java:ref:`Host.NULL`\  object instead of attributing \ ``null``\  to \ :java:ref:`Host`\  variables.
 
-   :author: Manoel Campos da Silva Filho
+   :author: Rodrigo N. Calheiros, Anton Beloglazov, Manoel Campos da Silva Filho
 
 Fields
 ------
@@ -125,10 +123,10 @@ getAvailableStorage
 
    :return: the free storage
 
-getBwCapacity
-^^^^^^^^^^^^^
+getBw
+^^^^^
 
-.. java:method::  long getBwCapacity()
+.. java:method::  Resource getBw()
    :outertype: Host
 
    Gets the host bw capacity in Megabits/s.
@@ -217,15 +215,26 @@ getPeList
 
    :return: the pe list
 
-getRamCapacity
+getProvisioner
 ^^^^^^^^^^^^^^
 
-.. java:method::  long getRamCapacity()
+.. java:method::  ResourceProvisioner getProvisioner(Class<? extends ResourceManageable> resourceClass)
    :outertype: Host
 
-   Gets the host memory capacity in Megabytes.
+   Gets the \ :java:ref:`ResourceProvisioner`\ s that manages a Host resource such as \ :java:ref:`Ram`\ , \ :java:ref:`Bandwidth`\  and \ :java:ref:`Pe`\ .
 
-   :return: the host memory capacity
+   :param resourceClass: the class of the resource to get its provisioner
+   :return: the \ :java:ref:`ResourceProvisioner`\  for the given resource class
+
+getRam
+^^^^^^
+
+.. java:method::  Resource getRam()
+   :outertype: Host
+
+   Gets the host memory resource in Megabytes.
+
+   :return: the host memory
 
 getRamProvisioner
 ^^^^^^^^^^^^^^^^^
@@ -247,15 +256,15 @@ getSimulation
 
    **See also:** :java:ref:`.setSimulation(Simulation)`
 
-getStorageCapacity
-^^^^^^^^^^^^^^^^^^
+getStorage
+^^^^^^^^^^
 
-.. java:method::  long getStorageCapacity()
+.. java:method::  Resource getStorage()
    :outertype: Host
 
-   Gets the host storage capacity in Megabytes.
+   Gets the storage device of the host with capacity in Megabytes.
 
-   :return: the host storage capacity
+   :return: the host storage device
 
 getTotalAllocatedMipsForVm
 ^^^^^^^^^^^^^^^^^^^^^^^^^^

@@ -10,7 +10,7 @@ SimEntity
 
    An interface that represents a simulation entity. An entity handles events and can send events to other entities.
 
-   :author: Manoel Campos da Silva Filho
+   :author: Marcos Dias de Assuncao, Manoel Campos da Silva Filho
 
    **See also:** :java:ref:`CloudSimEntity`
 

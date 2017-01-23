@@ -14,7 +14,7 @@ package org.cloudbus.cloudsim.utilizationmodels;
  * @author Anton Beloglazov
  * @since CloudSim Toolkit 2.0
  */
-public class UtilizationModelZero implements UtilizationModel {
+public class UtilizationModelZero extends UtilizationModelAbstract {
 
     @Override
     public double getUtilization(double time) {

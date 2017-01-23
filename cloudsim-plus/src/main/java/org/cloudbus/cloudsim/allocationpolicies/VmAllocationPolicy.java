@@ -13,6 +13,7 @@ import java.util.Map;
 import org.cloudbus.cloudsim.datacenters.Datacenter;
 import org.cloudbus.cloudsim.hosts.Host;
 import org.cloudbus.cloudsim.vms.Vm;
+import org.cloudsimplus.autoscaling.VerticalVmScaling;
 
 /**
  * An interface to be implemented by each class that represents a policy used by
@@ -47,6 +48,17 @@ public interface VmAllocationPolicy {
      * @post $none
      */
     boolean allocateHostForVm(Vm vm);
+
+    /**
+     * Try to scale soome Vm's resource vertically if the Host where the Vm is placed
+     * has enough capacity. The resource to be scaled is defined by the
+     * given {@link VerticalVmScaling} object.
+     *
+     * @param scaling the {@link VerticalVmScaling} object with information of which resource
+     *                is being requested to be scaled
+     * @return true if the requested resource was scaled, false otherwise
+     */
+    boolean scaleVmVertically(VerticalVmScaling scaling);
 
     /**
      * Allocates a specified host for a given VM.
@@ -94,6 +106,7 @@ public interface VmAllocationPolicy {
         @Override public Datacenter getDatacenter() { return Datacenter.NULL; }
         @Override public void setDatacenter(Datacenter datacenter) {}
         @Override public boolean allocateHostForVm(Vm vm){ return false; }
+        @Override public boolean scaleVmVertically(VerticalVmScaling scaling) { return false; }
         @Override public boolean allocateHostForVm(Vm vm, Host host) { return false; }
         @Override public void deallocateHostForVm(Vm vm){}
         @Override public List<Host> getHostList(){ return Collections.emptyList(); }

@@ -12,9 +12,17 @@
 
 .. java:import:: org.cloudbus.cloudsim.cloudlets CloudletExecutionInfo
 
+.. java:import:: org.cloudbus.cloudsim.resources Ram
+
+.. java:import:: org.cloudbus.cloudsim.resources ResourceManageable
+
 .. java:import:: org.cloudbus.cloudsim.schedulers.cloudlet.network PacketScheduler
 
 .. java:import:: org.cloudbus.cloudsim.util Conversion
+
+.. java:import:: org.cloudbus.cloudsim.util Log
+
+.. java:import:: org.cloudbus.cloudsim.utilizationmodels UtilizationModel
 
 .. java:import:: org.cloudbus.cloudsim.vms Vm
 
@@ -147,6 +155,12 @@ findSuitableWaitingCloudletToStartExecutingAndRemoveIt
 
    :return: an \ :java:ref:`Optional`\  containing the found Cloudlet or an empty Optional otherwise
 
+getAllocatedMipsForCloudlet
+^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+.. java:method:: @Override public double getAllocatedMipsForCloudlet(CloudletExecutionInfo rcl, double time)
+   :outertype: CloudletSchedulerAbstract
+
 getCloudletExecList
 ^^^^^^^^^^^^^^^^^^^
 
@@ -211,6 +225,18 @@ getCurrentMipsShare
 .. java:method:: @Override public List<Double> getCurrentMipsShare()
    :outertype: CloudletSchedulerAbstract
 
+getCurrentRequestedBwPercentUtilization
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+.. java:method:: @Override public double getCurrentRequestedBwPercentUtilization()
+   :outertype: CloudletSchedulerAbstract
+
+getCurrentRequestedRamPercentUtilization
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+.. java:method:: @Override public double getCurrentRequestedRamPercentUtilization()
+   :outertype: CloudletSchedulerAbstract
+
 getEstimatedFinishTimeOfCloudlet
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
@@ -268,10 +294,16 @@ getProcessor
 
    **See also:** :java:ref:`CloudletScheduler.updateVmProcessing(double,List)`
 
-getTotalUtilizationOfCpu
-^^^^^^^^^^^^^^^^^^^^^^^^
+getRequestedCpuPercentUtilization
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-.. java:method:: @Override public double getTotalUtilizationOfCpu(double time)
+.. java:method:: @Override public double getRequestedCpuPercentUtilization(double time)
+   :outertype: CloudletSchedulerAbstract
+
+getRequestedMipsForCloudlet
+^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+.. java:method:: @Override public double getRequestedMipsForCloudlet(CloudletExecutionInfo rcl, double time)
    :outertype: CloudletSchedulerAbstract
 
 getUsedPes
@@ -315,7 +347,9 @@ moveNextCloudletsFromWaitingToExecList
 .. java:method:: protected void moveNextCloudletsFromWaitingToExecList()
    :outertype: CloudletSchedulerAbstract
 
-   /** Selects the next Cloudlets in the waiting list to move to the execution list in order to start executing them. While there is enough free PEs, the method try to find a suitable Cloudlet in the list, until it reaches the end of such a list. The method might also exchange some cloudlets in the execution list with some in the waiting list. Thus, some running cloudlets may be preempted to give opportunity to previously waiting cloudlets to run. This is a process called \ `context switch <https://en.wikipedia.org/wiki/Context_switch>`_\ . However, each CloudletScheduler implementation decides how such a process is implemented. For instance, Space-Shared schedulers may just perform context switch just after currently running Cloudlets completely finish executing.
+   /** Selects the next Cloudlets in the waiting list to move to the execution list in order to start executing them. While there is enough free PEs, the method try to find a suitable Cloudlet in the list, until it reaches the end of such a list.
+
+   The method might also exchange some cloudlets in the execution list with some in the waiting list. Thus, some running cloudlets may be preempted to give opportunity to previously waiting cloudlets to run. This is a process called \ `context switch <https://en.wikipedia.org/wiki/Context_switch>`_\ . However, each CloudletScheduler implementation decides how such a process is implemented. For instance, Space-Shared schedulers may just perform context switch just after currently running Cloudlets completely finish executing.
 
    This method is called internally by the \ :java:ref:`CloudletScheduler.updateVmProcessing(double,List)`\  one.
 

@@ -2,6 +2,10 @@
 
 .. java:import:: java.util List
 
+.. java:import:: java.util.function Function
+
+.. java:import:: java.util.function Supplier
+
 .. java:import:: org.cloudbus.cloudsim.cloudlets Cloudlet
 
 .. java:import:: org.cloudbus.cloudsim.datacenters Datacenter
@@ -22,9 +26,11 @@ DatacenterBroker
 
 .. java:type:: public interface DatacenterBroker extends SimEntity
 
-   Represents a broker acting on behalf of a cloud customer. It hides VM management such as vm creation, submission of cloudlets to VMs and destruction of VMs. A broker implements the policies for selecting a VM to run a Cloudlet and a Datacenter to run the submitted VMs.
+   Represents a broker acting on behalf of a cloud customer. It hides VM management such as vm creation, submission of cloudlets to VMs and destruction of VMs.
 
-   :author: Manoel Campos da Silva Filho
+   A broker implements the policies for selecting a VM to run a Cloudlet and a Datacenter to run the submitted VMs.
+
+   :author: Rodrigo N. Calheiros, Anton Beloglazov, Manoel Campos da Silva Filho
 
 Fields
 ------
@@ -118,38 +124,39 @@ hasMoreCloudletsToBeExecuted
 
    :return: true if there are waiting cloudlets, false otherwise
 
-selectDatacenterForWaitingVms
+setDatacenterSupplier
+^^^^^^^^^^^^^^^^^^^^^
+
+.. java:method::  void setDatacenterSupplier(Supplier<Datacenter> datacenterSupplier)
+   :outertype: DatacenterBroker
+
+   Sets the \ :java:ref:`Supplier`\  that selects and returns a Datacenter to place submitted VMs.
+
+   The supplier defines the policy to select a Datacenter to host a VM that is waiting to be created.
+
+   :param datacenterSupplier: the datacenterSupplier to set
+
+setFallbackDatacenterSupplier
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-.. java:method::  Datacenter selectDatacenterForWaitingVms()
+.. java:method::  void setFallbackDatacenterSupplier(Supplier<Datacenter> fallbackDatacenterSupplier)
    :outertype: DatacenterBroker
 
-   Defines the policy to select a Datacenter to host a VM that is waiting to be created.
+   Sets the \ :java:ref:`Supplier`\  that selects and returns a fallback Datacenter to place submitted VMs when the Datacenter selected by the \ :java:ref:`Datacenter Supplier <setDatacenterSupplier(java.util.function.Supplier)>`\  failed to create all requested VMs.
 
-   :return: the Datacenter selected to request the creating of waiting VMs or \ :java:ref:`Datacenter.NULL`\  if no suitable Datacenter was found
+   The supplier defines the policy to select a Datacenter to host a VM when all VM creation requests were received but not all VMs could be created. In this case, a different Datacenter has to be selected to request the creation of the remaining VMs in the waiting list.
 
-selectFallbackDatacenterForWaitingVms
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+   :param fallbackDatacenterSupplier: the fallbackDatacenterSupplier to set
 
-.. java:method::  Datacenter selectFallbackDatacenterForWaitingVms()
+setVmMapper
+^^^^^^^^^^^
+
+.. java:method::  void setVmMapper(Function<Cloudlet, Vm> vmMapper)
    :outertype: DatacenterBroker
 
-   Defines the policy to select a Datacenter to host a VM when all VM creation requests were received but not all VMs could be created. In this case, a different Datacenter has to be selected to request the creation of the remaining VMs in the waiting list.
+   Sets a \ :java:ref:`Function`\  that maps a given Cloudlet to a Vm. It defines the policy used to select a Vm to host a Cloudlet that is waiting to be created.
 
-   :return: the Datacenter selected to try creating the remaining VMs or \ :java:ref:`Datacenter.NULL`\  if no suitable Datacenter was found
-
-   **See also:** :java:ref:`.selectDatacenterForWaitingVms()`
-
-selectVmForWaitingCloudlet
-^^^^^^^^^^^^^^^^^^^^^^^^^^
-
-.. java:method::  Vm selectVmForWaitingCloudlet(Cloudlet cloudlet)
-   :outertype: DatacenterBroker
-
-   Defines the policy to select a VM to host a given cloudlet that is waiting to be created.
-
-   :param cloudlet: the cloudlet that needs a VM to be placed into
-   :return: the selected Vm for the cloudlet or \ :java:ref:`Vm.NULL`\  if no suitable VM was found
+   :param vmMapper: the Vm mapper function to set
 
 submitCloudlet
 ^^^^^^^^^^^^^^
@@ -202,7 +209,7 @@ submitVmList
 .. java:method::  void submitVmList(List<? extends Vm> list)
    :outertype: DatacenterBroker
 
-   Sends to the broker a list with VMs that their creation inside a Host will be requested to some \ :java:ref:`Datacenter`\ . The Datacenter that will be chosen to place a VM is determined by the \ :java:ref:`selectDatacenterForWaitingVms()`\ .
+   Sends to the broker a list with VMs that their creation inside a Host will be requested to some \ :java:ref:`Datacenter`\ . The Datacenter that will be chosen to place a VM is determined by the \ :java:ref:`setDatacenterSupplier(Supplier)`\ .
 
    :param list: the list of VMs to request the creation
 

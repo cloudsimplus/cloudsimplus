@@ -43,6 +43,26 @@ public class CloudSim implements Simulation {
     private static final int NOT_FOUND = -1;
 
     /**
+     * An array that works as a circular queue with capacity to just 2 elements
+     * (defined in the constructor). When a new element is added to the queue,
+     * the first element is removed to open space for that new one.
+     * This queue stores the last 2 simulation clock values.
+     * It is used to now when it is time to notify listeners that
+     * the simulation clock has incremented.
+     *
+     * Such a structure is required because multiple events
+     * can be received consecutively for the same simulation time.
+     * @see #notifyOnClockTickListenersIfClockChanged()
+     */
+    private final double[] circularClockTimesQueue;
+
+    /**
+     * The last time the OnClockTickListeners were updated.
+     * @see #addOnClockTickListener(EventListener)
+     */
+    private double lastTimeClockTickListenersWereUpdated;
+
+    /**
      * @see #getNetworkTopology()
      */
     private NetworkTopology networkTopology;
@@ -169,6 +189,8 @@ public class CloudSim implements Simulation {
         this.onEventProcessingListeners = new ArrayList<>();
         this.onSimulationPausedListeners = new ArrayList<>();
         this.onClockTickListeners = new ArrayList<>();
+        this.circularClockTimesQueue = new double[]{0, -1};
+        this.lastTimeClockTickListenersWereUpdated = 0;
 
         // NOTE: the order for the lines below is important
         this.calendar = (Objects.isNull(calendar) ? Calendar.getInstance() : calendar);
@@ -256,22 +278,43 @@ public class CloudSim implements Simulation {
         return clock;
     }
 
-    private void setClock(final double newTime){
+    /**
+     * Updates the simulation clock
+     * @param newTime simulation time to set
+     * @return the old simulation time
+     */
+    private double setClock(final double newTime){
         final double oldTime = clock;
         this.clock = newTime;
-        notifyOnClockTickListenersIfClockChanged(oldTime, newTime);
+        return oldTime;
     }
 
     /**
      * Notifies all Listeners of onClockTick event when the simulation clock changes.
-     * @param oldClock the previous simulation clock time
-     * @param newClock the new simulation clock time (that can be equals to the old time)
+     * If multiples events are receive consecutively but for the same simulation time,
+     * it will only notify the Listeners when the last event for that time is received.
+     * This ensure that, when the Listeners receive the notification, all the events
+     * for that simulation time already were processed and then, such Listeners
+     * will have access to the most updated simulation state.
      */
-    private void notifyOnClockTickListenersIfClockChanged(double oldClock, double newClock) {
-        if((long)newClock > (long)oldClock || (oldClock == 0 && newClock > 0) ){
-            EventInfo info = EventInfo.of(newClock);
-            onClockTickListeners.forEach(l -> l.update(info));
+    private void notifyOnClockTickListenersIfClockChanged() {
+        if(clock != circularClockTimesQueue[0] || clock != circularClockTimesQueue[1]) {
+            if (lastTimeClockTickListenersWereUpdated != circularClockTimesQueue[0] && lastTimeClockTickListenersWereUpdated != circularClockTimesQueue[1]) {
+                lastTimeClockTickListenersWereUpdated = circularClockTimesQueue[0];
+                EventInfo info = EventInfo.of(lastTimeClockTickListenersWereUpdated);
+                onClockTickListeners.forEach(l -> l.update(info));
+            }
+            addCurrentTimeToCircularQueue();
         }
+    }
+
+    /**
+     * Makes the circular queue to rotate, removing the first time to add
+     * the current clock time.
+     */
+    private void addCurrentTimeToCircularQueue() {
+        circularClockTimesQueue[0] = circularClockTimesQueue[1];
+        circularClockTimesQueue[1] = clock;
     }
 
     @Override
@@ -506,8 +549,7 @@ public class CloudSim implements Simulation {
         if (e.eventTime() < clock) {
             throw new IllegalArgumentException("Past event detected.");
         }
-        setClock(e.eventTime());
-        notifyOnEventProcessingListeners(e);
+        final double oldClock = setClock(e.eventTime());
 
         // Ok now process it
         switch (e.getType()) {
@@ -553,6 +595,9 @@ public class CloudSim implements Simulation {
             default:
                 break;
         }
+
+        notifyOnClockTickListenersIfClockChanged();
+        notifyOnEventProcessingListeners(e);
     }
 
     /**

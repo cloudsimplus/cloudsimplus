@@ -56,7 +56,7 @@ public class VmCost {
      * @return getMemoryCost
      */
     public double getMemoryCost() {
-        return (getDatacenter().getCharacteristics().getCostPerMem() * vm.getRam());
+        return (getDatacenter().getCharacteristics().getCostPerMem() * vm.getRam().getCapacity());
     }
 
     private Datacenter getDatacenter() {
@@ -69,7 +69,7 @@ public class VmCost {
      * @return getBwCost
      */
     public double getBwCost() {
-        return getDatacenter().getCharacteristics().getCostPerBw() * vm.getBw();
+        return getDatacenter().getCharacteristics().getCostPerBw() * vm.getBw().getCapacity();
     }
 
     /**
@@ -82,8 +82,8 @@ public class VmCost {
                 .findFirst()
                 .map(pe -> pe.getCapacity())
                 .orElse(0L);
-        double costPerMI = (hostMips > 0 ? 
-                getDatacenter().getCharacteristics().getCostPerSecond()/hostMips : 
+        double costPerMI = (hostMips > 0 ?
+                getDatacenter().getCharacteristics().getCostPerSecond()/hostMips :
                 0.0);
 
         return costPerMI * getVm().getMips() * getVm().getNumberOfPes();
@@ -95,7 +95,7 @@ public class VmCost {
      * @return getStorageCost
      */
     public double getStorageCost() {
-        return getDatacenter().getCharacteristics().getCostPerStorage() * vm.getSize();
+        return getDatacenter().getCharacteristics().getCostPerStorage() * vm.getStorage().getCapacity();
     }
 
     /**

@@ -52,7 +52,7 @@ import org.cloudbus.cloudsim.provisioners.PeProvisionerSimple;
 import org.cloudbus.cloudsim.resources.Bandwidth;
 import org.cloudbus.cloudsim.provisioners.ResourceProvisionerSimple;
 import org.cloudbus.cloudsim.resources.Ram;
-import org.cloudbus.cloudsim.utilizationmodels.UtilizationModelArithmeticProgression;
+import org.cloudbus.cloudsim.utilizationmodels.UtilizationModelDynamic;
 
 /**
  * An example that uses a UtilizationModel to define how a Cloudlet
@@ -190,8 +190,7 @@ public class CustomUtilizationModelExample {
         //Defines how RAM and Bandwidth resources are used
         UtilizationModel utilizationFull = new UtilizationModelFull();
         /*Defines that the Cloudlet will use just 50% of VM CPU capacity all the time.*/
-        UtilizationModel utilizationHalfCapacity = new UtilizationModelArithmeticProgression(0, 0.5);
-
+        UtilizationModel utilizationHalfCapacity = new UtilizationModelDynamic( 0.5);
         Cloudlet cloudlet
                 = new CloudletSimple(
                         cloudletList.size(), length, numberOfCpuCores)

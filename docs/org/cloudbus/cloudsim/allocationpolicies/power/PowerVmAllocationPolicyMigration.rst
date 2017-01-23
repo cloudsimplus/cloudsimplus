@@ -6,6 +6,8 @@
 
 .. java:import:: org.cloudbus.cloudsim.vms Vm
 
+.. java:import:: org.cloudsimplus.autoscaling VerticalVmScaling
+
 .. java:import:: java.util Collections
 
 .. java:import:: java.util List
@@ -22,7 +24,7 @@ PowerVmAllocationPolicyMigration
 
    An interface to be implemented by VM allocation policy for power-aware VMs that detects \ :java:ref:`PowerHost`\  under and over CPU utilization.
 
-   :author: Manoel Campos da Silva Filho
+   :author: Anton Beloglazov, Manoel Campos da Silva Filho
 
 Fields
 ------
