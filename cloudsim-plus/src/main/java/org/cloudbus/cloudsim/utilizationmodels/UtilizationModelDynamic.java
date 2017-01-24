@@ -23,6 +23,7 @@
  */
 package org.cloudbus.cloudsim.utilizationmodels;
 
+import org.cloudbus.cloudsim.core.Simulation;
 import org.cloudbus.cloudsim.util.Conversion;
 
 import java.util.Objects;
@@ -97,7 +98,7 @@ public class UtilizationModelDynamic extends UtilizationModelAbstract {
     public UtilizationModelDynamic(Unit unit, final double initialUtilization) {
         super(unit);
         this.maxResourceUtilization = (unit == Unit.PERCENTAGE ? Conversion.HUNDRED_PERCENT : 0);
-        this.startTime = -1;
+        this.startTime = 0;
         this.setInitialUtilization(initialUtilization);
         /**
          * Creates a default lambda function that doesn't increment the utilization along the time.
@@ -122,10 +123,14 @@ public class UtilizationModelDynamic extends UtilizationModelAbstract {
         return utilization;
     }
 
+    @Override
+    public UtilizationModel setSimulation(Simulation simulation) {
+        super.setSimulation(simulation);
+        this.startTime = (simulation.isRunning() ? simulation.clock() : 0);
+        return this;
+    }
+
     private double timeSpan(double time) {
-        if(startTime <= -1){
-            startTime = time;
-        }
         return time - startTime;
     }
 

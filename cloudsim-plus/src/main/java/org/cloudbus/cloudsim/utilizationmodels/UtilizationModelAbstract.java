@@ -32,7 +32,7 @@ public abstract class UtilizationModelAbstract implements UtilizationModel {
     }
 
     public UtilizationModelAbstract(Unit unit){
-        this.setSimulation(Simulation.NULL);
+        this.simulation = Simulation.NULL;
         this.setUnit(unit);
     }
 
@@ -58,7 +58,7 @@ public abstract class UtilizationModelAbstract implements UtilizationModel {
     }
 
     @Override
-    public final UtilizationModel setSimulation(Simulation simulation) {
+    public UtilizationModel setSimulation(Simulation simulation) {
         Objects.requireNonNull(simulation);
         this.simulation = simulation;
         return this;
