@@ -18,9 +18,11 @@ public abstract class VmScalingAbstract implements VmScaling {
     protected double lastProcessingTime;
     private Vm vm;
     private Predicate<Vm> overloadPredicate;
+    private Predicate<Vm> underloadPredicate;
 
     protected VmScalingAbstract() {
-        this.setOverloadPredicate(VmScaling.FALSE_PREDICATE);
+        this.setOverloadPredicate(FALSE_PREDICATE);
+        this.setUnderloadPredicate(FALSE_PREDICATE);
         this.setVm(Vm.NULL);
     }
 
@@ -43,39 +45,54 @@ public abstract class VmScalingAbstract implements VmScaling {
 
     @Override
     public final VmScaling setOverloadPredicate(Predicate<Vm> predicate) {
-        this.overloadPredicate = Objects.isNull(predicate) ? VmScaling.FALSE_PREDICATE : predicate;
+        this.overloadPredicate = Objects.isNull(predicate) ? FALSE_PREDICATE : predicate;
         return this;
     }
 
+    @Override
+    public Predicate<Vm> getUnderloadPredicate() {
+        return underloadPredicate;
+    }
+
+    @Override
+    public final VmScaling setUnderloadPredicate(Predicate<Vm> predicate) {
+        this.underloadPredicate = Objects.isNull(predicate) ? FALSE_PREDICATE : predicate;
+        return this;
+    }
     /**
-     * Checks if it is time to evaluate the {@link #getOverloadPredicate()} to check
-     * if the Vm is overloaded or not.
+     * Checks if it is time to evaluate the {@link #getOverloadPredicate()}
+     * and {@link #getUnderloadPredicate()} to check
+     * if the Vm is over or underloaded, respectively.
      *
      * @param time current simulation time
-     * @return true if the overload predicate has to be checked, false otherwise
+     * @return true if the over and underload predicate has to be checked, false otherwise
      */
-    protected boolean isTimeToCheckOverload(double time) {
+    protected boolean isTimeToCheckPredicate(double time) {
         return time > lastProcessingTime && (long) time % getVm().getHost().getDatacenter().getSchedulingInterval() == 0;
     }
 
     @Override
-    public final boolean requestUpScalingIfOverloaded(double time) {
-        if(!isTimeToCheckOverload(time)) {
+    public final boolean requestScalingIfPredicateMatch(double time) {
+        if(!isTimeToCheckPredicate(time)) {
             return false;
         }
 
-        final boolean requested = getOverloadPredicate().test(getVm()) && requestUpScaling(time);
+        final boolean requestedScaling =
+            (getOverloadPredicate().test(getVm()) || getUnderloadPredicate().test(getVm())) && requestScaling(time);
         lastProcessingTime = time;
-        return requested;
+        return requestedScaling;
     }
 
     /**
-     * Performs the actual request to up scale the Vm.
-     * This method is automatically called by {@link #requestUpScalingIfOverloaded(double)}
-     * when it is verified that the Vm is overloaded.
+     * Performs the actual request to scale the Vm up or down,
+     * depending if it is over or underloaded, respectively.
+     * This method is automatically called by {@link #requestScalingIfPredicateMatch(double)}
+     * when it is verified that the Vm is over or underloaded.
      *
      * @param time current simulation time
      * @return true if the request was actually sent, false otherwise
      */
-    protected abstract boolean requestUpScaling(double time);
+    protected abstract boolean requestScaling(double time);
+
+
 }

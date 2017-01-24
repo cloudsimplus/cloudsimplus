@@ -37,7 +37,7 @@ public interface VmScaling {
     /**
      * A {@link Predicate} that always returns false independently of any condition.
      */
-    Predicate<Vm> FALSE_PREDICATE = (vm) -> false;
+    Predicate<Vm> FALSE_PREDICATE = vm -> false;
 
     /**
      * An attribute that implements the Null Object Design Pattern for {@link VmScaling}
@@ -48,7 +48,9 @@ public interface VmScaling {
         @Override public VmScaling setVm(Vm vm) { return this; }
         @Override public Predicate<Vm> getOverloadPredicate() { return FALSE_PREDICATE; }
         @Override public VmScaling setOverloadPredicate(Predicate<Vm> predicate) { return this; }
-        @Override public boolean requestUpScalingIfOverloaded(double time) { return false; }
+        @Override public Predicate<Vm> getUnderloadPredicate() { return FALSE_PREDICATE; }
+        @Override public VmScaling setUnderloadPredicate(Predicate<Vm> predicate) { return this; }
+        @Override public boolean requestScalingIfPredicateMatch(double time) { return false; }
     };
 
     /**
@@ -70,8 +72,7 @@ public interface VmScaling {
 
     /**
      * Gets a {@link Predicate} that defines when {@link #getVm() Vm} is overloaded or not,
-     * that will make the Vm's broker to dynamically create a new Vm to balance the load
-     * of new arrived Cloudlets.
+     * that will make the Vm's broker to dynamically scale the VM up.
      *
      * @return
      * @see #setOverloadPredicate(Predicate)
@@ -80,26 +81,50 @@ public interface VmScaling {
 
     /**
      * Sets a {@link Predicate} that defines when {@link #getVm() Vm} is overloaded or not,
-     * that will make the Vm's broker to dynamically create a new Vm to balance the load
-     * of new arrived Cloudlets.
+     * that will make the Vm's broker to dynamically scale the VM up.
      *
      * @param predicate a predicate that checks certain conditions
-     *                  to define that the Load Balancer's {@link #getVm() Vm} is over utilized.
-     *                  The predicate receives the Vm to allow the predicate
+     *                  to define that the {@link #getVm() Vm} is over utilized.
+     *                  The predicate receives the Vm to allow the it
      *                  to define the over utilization condition.
      *                  Such a condition can be defined, for instance,
-     *                  based on Vm's {@link Vm#getCpuPercentUse(double)} CPU usage}.
+     *                  based on Vm's {@link Vm#getCpuPercentUse(double)} CPU usage}
+     *                  and/or any other VM resource usage.
      * @return
      */
     VmScaling setOverloadPredicate(Predicate<Vm> predicate);
 
     /**
-     * Requests a {@link HorizontalVmScaling horizontal} or {@link VerticalVmScaling vertical} scale if the Vm is overloaded.
-     * The type of scale depends on implementing classes. The scaling request will be sent to the broker only
-     * if the {@link #getOverloadPredicate()} returns true.
+     * Gets a {@link Predicate} that defines when {@link #getVm() Vm} is underloaded or not,
+     * that will make the Vm's broker to dynamically scale Vm down.
+     *
+     * @return
+     * @see #setUnderloadPredicate(Predicate)
+     */
+    Predicate<Vm> getUnderloadPredicate();
+
+    /**
+     * Sets a {@link Predicate} that defines when {@link #getVm() Vm} is underloaded or not,
+     * that will make the Vm's broker to dynamically scale Vm down.
+     *
+     * @param predicate a predicate that checks certain conditions
+     *                  to define that the {@link #getVm() Vm} is under utilized.
+     *                  The predicate receives the Vm to allow the it
+     *                  to define the over utilization condition.
+     *                  Such a condition can be defined, for instance,
+     *                  based on Vm's {@link Vm#getCpuPercentUse(double)} CPU usage}
+     *                  and/or any other VM resource usage.
+     * @return
+     */
+    VmScaling setUnderloadPredicate(Predicate<Vm> predicate);
+
+    /**
+     * Requests VM to be scaled up or down if it is over or underloaded, respectively.
+     * The scaling request will be sent to the broker only
+     * if the {@link #getOverloadPredicate() over} or {@link #getUnderloadPredicate() underload} condition meets.
      *
      * @param time current simulation time
-     * @return true if the Vm is overloaded and and up scaling request was sent to the broker, false otherwise
+     * @return true if the Vm is over or underloaded and up or down scaling request was sent to the broker, false otherwise
      */
-    boolean requestUpScalingIfOverloaded(double time);
+    boolean requestScalingIfPredicateMatch(double time);
 }

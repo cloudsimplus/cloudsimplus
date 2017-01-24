@@ -95,8 +95,9 @@ public class UtilizationModelDynamic extends UtilizationModelAbstract {
      *                           on the {@code unit} parameter
      */
     public UtilizationModelDynamic(Unit unit, final double initialUtilization) {
-        this.maxResourceUtilization = Conversion.HUNDRED_PERCENT;
-        this.startTime = 0;
+        super(unit);
+        this.maxResourceUtilization = (unit == Unit.PERCENTAGE ? Conversion.HUNDRED_PERCENT : 0);
+        this.startTime = -1;
         this.setInitialUtilization(initialUtilization);
         /**
          * Creates a default lambda function that doesn't increment the utilization along the time.

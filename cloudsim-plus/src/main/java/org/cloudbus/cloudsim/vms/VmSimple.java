@@ -776,7 +776,7 @@ public class VmSimple implements Vm {
         }
 
         result.setVm(this);
-        this.addOnUpdateVmProcessingListener(listener -> result.requestUpScalingIfOverloaded(listener.getTime()));
+        this.addOnUpdateVmProcessingListener(listener -> result.requestScalingIfPredicateMatch(listener.getTime()));
         return result;
     }
 

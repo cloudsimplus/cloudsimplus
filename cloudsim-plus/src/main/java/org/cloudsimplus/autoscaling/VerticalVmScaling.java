@@ -60,7 +60,7 @@ public interface VerticalVmScaling extends VmScaling {
 
     /**
      * Gets the factor that will be used to scale a Vm resource up or down,
-     * whether if such a resource is over or underloaded, according to the
+     * whether such a resource is over or underloaded, according to the
      * defined predicates.
      *
      * <p>This is a percentage value in scale from 0 to 1. Every time the
@@ -73,8 +73,16 @@ public interface VerticalVmScaling extends VmScaling {
     double getScalingFactor();
 
     /**
+     * Gets the absolute amount of the Vm resource, defined
+     * by {@link #getResourceClassToScale()}, that has to be
+     * scaled up or down, based on the {@link #getScalingFactor() scaling factor}.
+     * @return the absolute amount of the Vm resource to scale
+     */
+    double getResourceAmountToScale();
+
+    /**
      * Sets the factor that will be used to scale a Vm resource up or down,
-     * whether if such a resource is over or underloaded, according to the
+     * whether such a resource is over or underloaded, according to the
      * defined predicates.
      *
      * <p>This is a percentage value in scale from 0 to 1. Every time the
@@ -99,7 +107,49 @@ public interface VerticalVmScaling extends VmScaling {
      * @see #getScalingFactor()
      */
     @Override
-    boolean requestUpScalingIfOverloaded(double time);
+    boolean requestScalingIfPredicateMatch(double time);
+
+    /**
+     * {@inheritDoc}
+     *
+     * <p>The up scaling is performed by increasing the amount of the {@link #getResourceClassToScale() resource}
+     * the scaling is associated to.</p>
+     * @return {@inheritDoc}
+     */
+    @Override
+    Predicate<Vm> getOverloadPredicate();
+
+    /**
+     * {@inheritDoc}
+     *
+     * <p>The up scaling is performed by increasing the amount of the {@link #getResourceClassToScale() resource}
+     * the scaling is associated to.</p>
+     * @param predicate {@inheritDoc}
+     * @return {@inheritDoc}
+     */
+    @Override
+    VmScaling setOverloadPredicate(Predicate<Vm> predicate);
+
+    /**
+     * {@inheritDoc}
+     *
+     * <p>The down scaling is performed by decreasing the amount of the {@link #getResourceClassToScale() resource}
+     * the scaling is associated to.</p>
+     * @return {@inheritDoc}
+     */
+    @Override
+    Predicate<Vm> getUnderloadPredicate();
+
+    /**
+     * {@inheritDoc}
+     *
+     * <p>The down scaling is performed by decreasing the amount of the {@link #getResourceClassToScale() resource}
+     * the scaling is associated to.</p>
+     * @param predicate {@inheritDoc}
+     * @return {@inheritDoc}
+     */
+    @Override
+    VmScaling setUnderloadPredicate(Predicate<Vm> predicate);
 
     /**
      * An attribute that implements the Null Object Design Pattern for {@link VerticalVmScaling}
@@ -109,12 +159,15 @@ public interface VerticalVmScaling extends VmScaling {
         @Override public Class<? extends ResourceManageable> getResourceClassToScale() { return ResourceManageable.class; }
         @Override public VerticalVmScaling setResourceClassToScale(Class<? extends ResourceManageable> resourceClassToScale) { return this; }
         @Override public double getScalingFactor() { return 0; }
+        @Override public double getResourceAmountToScale() { return 0; }
         @Override public VerticalVmScaling setScalingFactor(double scalingFactor) { return this; }
-        @Override public boolean requestUpScalingIfOverloaded(double time) { return false; }
+        @Override public boolean requestScalingIfPredicateMatch(double time) { return false; }
         @Override public Vm getVm() { return Vm.NULL; }
         @Override public VmScaling setVm(Vm vm) { return this; }
-        @Override public Predicate<Vm> getOverloadPredicate() { return vm -> false; }
+        @Override public Predicate<Vm> getOverloadPredicate() { return FALSE_PREDICATE; }
         @Override public VmScaling setOverloadPredicate(Predicate<Vm> predicate) { return this; }
+        @Override public Predicate<Vm> getUnderloadPredicate() { return FALSE_PREDICATE; }
+        @Override public VmScaling setUnderloadPredicate(Predicate<Vm> predicate) { return this; }
     };
 
 }
