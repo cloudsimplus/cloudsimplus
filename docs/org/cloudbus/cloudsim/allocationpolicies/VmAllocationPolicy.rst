@@ -105,7 +105,14 @@ scaleVmVertically
 .. java:method::  boolean scaleVmVertically(VerticalVmScaling scaling)
    :outertype: VmAllocationPolicy
 
-   Try to scale soome Vm's resource vertically if the Host where the Vm is placed has enough capacity. The resource to be scaled is defined by the given \ :java:ref:`VerticalVmScaling`\  object.
+   Try to scale some Vm's resource vertically up or down, respectively if:
+
+   ..
+
+   * the Vm is overloaded and the Host where the Vm is placed has enough capacity
+   * the Vm is underloaded
+
+   The resource to be scaled is defined by the given \ :java:ref:`VerticalVmScaling`\  object.
 
    :param scaling: the \ :java:ref:`VerticalVmScaling`\  object with information of which resource is being requested to be scaled
    :return: true if the requested resource was scaled, false otherwise

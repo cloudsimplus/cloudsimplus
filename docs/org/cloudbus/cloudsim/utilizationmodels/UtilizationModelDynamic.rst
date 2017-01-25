@@ -1,3 +1,5 @@
+.. java:import:: org.cloudbus.cloudsim.core Simulation
+
 .. java:import:: org.cloudbus.cloudsim.util Conversion
 
 .. java:import:: java.util Objects
@@ -126,6 +128,12 @@ setMaxResourceUtilization
    Such a value can be a percentage in scale from [0 to 1] or an absolute value, depending on the \ :java:ref:`getUnit()`\ .
 
    :param maxResourceUsagePercentage: the maximum resource usage
+
+setSimulation
+^^^^^^^^^^^^^
+
+.. java:method:: @Override public UtilizationModel setSimulation(Simulation simulation)
+   :outertype: UtilizationModelDynamic
 
 setUtilizationIncrementFunction
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^

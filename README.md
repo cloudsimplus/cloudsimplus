@@ -33,7 +33,7 @@
 
 # Overview
 
-CloudSim Plus is a highly extensible simulation framework that enables modeling, simulation, and experimentation of emerging Cloud computing 
+CloudSim Plus is a full-featured, highly extensible simulation framework that enables modeling, simulation, and experimentation of emerging Cloud computing 
 infrastructures and application services, allowing its users to focus on specific system design issues that they want to investigate, 
 without getting concerned about the low level details related to Cloud-based infrastructures and services.
  
@@ -71,46 +71,47 @@ at [the Computer Science and Software Engineering Department](http://www.csse.un
 
 CloudSim Plus provides a lot of exclusive features, ranging from the most basic ones that are missing in CloudSim to advanced features that enable implementation of more realistic simulation scenarios. 
 
-- It is far easier to use. A complete and easy-to-understand simulation scenario can be built in some few lines. Check the [Examples section](#a-minimal-and-complete-simulation-example).
-- [Horizontal VM scaling](cloudsim-plus-examples/src/main/java/org/cloudsimplus/examples/LoadBalancerByVmHorizontalScalingExample.java), allowing dynamic creation of VMs according to an overload condition. Such a condition is defined by a predicate that can check different VM resources usage such as CPU, RAM or BW.
-- [Parallel execution of simulations](cloudsim-plus-examples/src/main/java/org/cloudsimplus/examples/ParallelSimulationsExample.java), allowing several simulations to be run simultaneously, in a isolated way, inside a multi-core computer.
-- [Listeners](/cloudsim-plus-examples/src/main/java/org/cloudsimplus/examples/listeners/) objects to enable simulation monitoring.
-- [Builders](/cloudsim-plus/src/main/java/org/cloudsimplus/builders/) to enable creating multiple simulation objects with same configuration.
-- TableBuilder objects that are used in all examples and enable printing simulation results in different formats such as ASCII Table, CSV or HTML. It shows simulation results in perfectly aligned tables, including data units and additional data. See the last line of the [BasicFirstExample](/cloudsim-plus-examples/src/main/java/org/cloudsimplus/examples/BasicFirstExample.java) constructor to see how it is easy to print results.
-- It is a strongly object-oriented framework that creates relationships among classes and allows chained calls such as `cloudlet.getVm().getHost().getDatacenter()`.
+1. It is far easier to use. A complete and easy-to-understand simulation scenario can be built in some few lines. Check the [Examples Section](#a-minimal-and-complete-simulation-example).
+1. [Vertical VM Scaling](/cloudsim-plus-examples/src/main/java/org/cloudsimplus/examples/VerticalVmScalingExample.java) 
+  that performs on-demand up and down allocation of VM resources such as Ram, Bandwidth and PEs (CPUs).
+1. [Horizontal VM scaling](/cloudsim-plus-examples/src/main/java/org/cloudsimplus/examples/LoadBalancerByHorizontalVmScalingExample.java), allowing dynamic creation of VMs according to an overload condition. Such a condition is defined by a predicate that can check different VM resources usage such as CPU, RAM or BW.
+1. [Parallel execution of simulations](/cloudsim-plus-examples/src/main/java/org/cloudsimplus/examples/ParallelSimulationsExample.java), allowing several simulations to be run simultaneously, in a isolated way, inside a multi-core computer.
+1. [Listeners](/cloudsim-plus-examples/src/main/java/org/cloudsimplus/examples/listeners/) objects to enable simulation monitoring.
+1. [Builders](/cloudsim-plus/src/main/java/org/cloudsimplus/builders/) to enable creating multiple simulation objects with same configuration.
+1. TableBuilder objects that are used in all examples and enable printing simulation results in different formats such as ASCII Table, CSV or HTML. It shows simulation results in perfectly aligned tables, including data units and additional data. See the last line of the [BasicFirstExample](/cloudsim-plus-examples/src/main/java/org/cloudsimplus/examples/BasicFirstExample.java) constructor to see how it is easy to print results.
+1. It is a strongly object-oriented framework that creates relationships among classes and allows chained calls such as `cloudlet.getVm().getHost().getDatacenter()`.
   And guess what? You don't even have to worry about `NullPointerException` when making such a chained call because CloudSim Plus uses the [Null Object Design Pattern](https://en.wikipedia.org/wiki/Null_Object_pattern) to avoid that.
-- [Delay creation of submitted Cloudlets](/cloudsim-plus-examples/src/main/java/org/cloudsimplus/examples/DynamicCloudletsArrival1.java), enabling simulation of dynamic arrival of tasks (see issue #11 for more details).
-- [Allow dynamic creation of VMs and Cloudlets without requiring creation of Datacenter Brokers at runtime](/cloudsim-plus-examples/src/main/java/org/cloudsimplus/examples/DynamicCreationOfVmsAndCloudlets.java), enabling VMs to be created on-demand according to arrived cloudlets (see issue #43 for more details).
-- Classes and interfaces to allow implementation of [heuristics](http://en.wikipedia.org/wiki/Heuristic) such as 
+1. [Delay creation of submitted Cloudlets](/cloudsim-plus-examples/src/main/java/org/cloudsimplus/examples/DynamicCloudletsArrival1.java), enabling simulation of dynamic arrival of tasks (see issue #11 for more details).
+1. [Allow dynamic creation of VMs and Cloudlets without requiring creation of Datacenter Brokers at runtime](/cloudsim-plus-examples/src/main/java/org/cloudsimplus/examples/DynamicCreationOfVmsAndCloudlets.java), enabling VMs to be created on-demand according to arrived cloudlets (see issue #43 for more details).
+1. Classes and interfaces to allow implementation of [heuristics](http://en.wikipedia.org/wiki/Heuristic) such as 
   [Tabu Search](http://en.wikipedia.org/wiki/Tabu_search), [Simulated Annealing](http://en.wikipedia.org/wiki/Simulated_annealing), 
   [Ant Colony Systems](http://en.wikipedia.org/wiki/Ant_colony_optimization_algorithms) and so on. See an [example using Simulated Annealing here](/cloudsim-plus-examples/src/main/java/org/cloudsimplus/examples/DatacenterBrokerHeuristicExample.java).
-- [Implementation of the Completely Fair Scheduler](/cloudsim-plus-examples/src/main/java/org/cloudsimplus/examples/LinuxCompletelyFairSchedulerExample.java) used in recent version of the Linux Kernel.
-- Completely re-designed and reusable Network module. Totally refactored network examples to make them clear and easy to change (see issue #49).
-- Simpler constructors to instantiate simulation objects, making it less confusing to use the framework. It applies the Convention over Configuration principle (CoC) to ask just mandatory parameters when instantiating objects (see issue #30 for more details).
-- Throughout documentation update, improvement and extension.
-- Improved class hierarchy, modules and package structure that is easier to understand and follows the Separation of Concerns principle (SoC).
-- As it is usual to extend framework classes to provide some specific behaviours for your simulations, you will find a totally refactored code that follows clean code programming, [SOLID](https://en.wikipedia.org/wiki/SOLID_(object-oriented_design)), [Design Patterns](https://en.wikipedia.org/wiki/Software_design_pattern) and several other software engineering principles and practices. By this way, it will be far easier to understand the code and implement the feature you want.
-- Integration Tests to increase framework accuracy by testing entire simulation scenarios.
-- Updated to Java 8, making extensive use of [Lambda Expressions](http://www.oracle.com/webfolder/technetwork/tutorials/obe/java/Lambda-QuickStart/index.html) and [Streams API](http://www.oracle.com/technetwork/articles/java/ma14-java-se-8-streams-2177646.html) to improve efficiency and provide a cleaner and easier-to-maintain code.
-
+1. [Implementation of the Completely Fair Scheduler](/cloudsim-plus-examples/src/main/java/org/cloudsimplus/examples/LinuxCompletelyFairSchedulerExample.java) used in recent version of the Linux Kernel.
+1. Completely re-designed and reusable Network module. Totally refactored network examples to make them clear and easy to change (see issue #49).
+1. Simpler constructors to instantiate simulation objects, making it less confusing to use the framework. It applies the Convention over Configuration principle (CoC) to ask just mandatory parameters when instantiating objects (see issue #30 for more details).
+1. Throughout documentation update, improvement and extension.
+1. Improved class hierarchy, modules and package structure that is easier to understand and follows the Separation of Concerns principle (SoC).
+1. As it is usual to extend framework classes to provide some specific behaviours for your simulations, you will find a totally refactored code that follows clean code programming, [SOLID](https://en.wikipedia.org/wiki/SOLID_(object-oriented_design)), [Design Patterns](https://en.wikipedia.org/wiki/Software_design_pattern) and several other software engineering principles and practices. By this way, it will be far easier to understand the code and implement the feature you want.
+1. Integration Tests to increase framework accuracy by testing entire simulation scenarios.
+1. Updated to Java 8, making extensive use of [Lambda Expressions](http://www.oracle.com/webfolder/technetwork/tutorials/obe/java/Lambda-QuickStart/index.html) and [Streams API](http://www.oracle.com/technetwork/articles/java/ma14-java-se-8-streams-2177646.html) to improve efficiency and provide a cleaner and easier-to-maintain code.
 
 # Project's Modules
 
 CloudSim Plus has a simpler structure that can be understood right away. It consists of 4 modules, 2 of which are new, as presented below.
 
-- [cloudsim-plus](cloudsim-plus): the CloudSim Plus cloud simulation framework API that is used by all other modules. 
+- [cloudsim-plus](/cloudsim-plus): the CloudSim Plus cloud simulation framework API that is used by all other modules. 
   It is the main module that contains the simulation framework implementation and is the only
   one you need to write your cloud simulations. 
-- [cloudsim-plus-examples](cloudsim-plus-examples): includes a series of different examples, since minimal simulation scenarios using basic 
+- [cloudsim-plus-examples](/cloudsim-plus-examples): includes a series of different examples, since minimal simulation scenarios using basic 
   CloudSim Plus features, to complex scenarios using workloads from trace files or Vm migration examples. This is an excelent start point 
   for learning how to build cloud simulations using CloudSim Plus.
-- [cloudsim-plus-testbeds](cloudsim-plus-testbeds): a new module that implements some simulation testbeds in a repeatable manner, 
+- [cloudsim-plus-testbeds](/cloudsim-plus-testbeds): a new module that implements some simulation testbeds in a repeatable manner, 
   allowing a researcher to execute several simulation runs for a given experiment and collect statistical data using a scientific approach. 
   It represents real testbeds implemented to assess CloudSim Plus features, providing relevant results. The module provides a set of class which 
   can be used by other researchers to implement their own comprehensive testbeds. Different from the examples module that aims just
   to show how to use CloudSim Plus features, this module includes more complex simulation scenarios concerned in providing
   scientifically valid results. 
-- [cloudsim-plus-benchmarks](cloudsim-plus-benchmarks): a new module used just internally to implement micro benchmarks using the 
+- [cloudsim-plus-benchmarks](/cloudsim-plus-benchmarks): a new module used just internally to implement micro benchmarks using the 
   [Java Microbenchmark Harness framework (JMH)](http://openjdk.java.net/projects/code-tools/jmh/) to enable measuring critical methods of the 
   CloudSim Plus API that have a high impact in the simulation framework performance.
 
@@ -170,7 +171,6 @@ as presened below (check if the informed version is the latest one). By this way
 </dependency>
 ```
 
-
 <p align="right"><a href="#top">:arrow_up:</a></p>
 
 # A minimal and complete simulation example
@@ -184,8 +184,8 @@ In order to build a simulation scenario you have to create, at least:
 Due to the simplificy provided by CloudSim Plus, all the code to create a minmal simulation scenario can be as simple as presented below.
 A more adequate and reusable example is available
 [here](/cloudsim-plus-examples/src/main/java/org/cloudsimplus/examples/BasicFirstExample.java),
-together with [other examples](cloudsim-plus-examples). Specific examples of CloudSim Plus, showing several
-new exclusive features and advanced scenarios, can be found [here](cloudsim-plus-examples/src/main/java/org/cloudsimplus/examples/). 
+together with [other examples](/cloudsim-plus-examples). Specific examples of CloudSim Plus, showing several
+new exclusive features and advanced scenarios, can be found [here](/cloudsim-plus-examples/src/main/java/org/cloudsimplus/examples/). 
 
 ```java
 //Creates a CloudSim object to initialize the simulation.
@@ -373,6 +373,6 @@ This project is licensed under [GNU GPLv3](http://www.gnu.org/licenses/gpl-3.0),
 # Contributing
 
 If you desire to contribute to the project, you are welcome. However, make sure to read the [contribution guide](CONTRIBUTING.md) before you start.
-If you just want to request a feature or report an issue, feel free to use the [create a ticket here](https://github.com/manoelcampos/cloudsim-plus/issues).
+If you just want to request a feature or report an issue, feel free to [create a ticket here](https://github.com/manoelcampos/cloudsim-plus/issues).
 
 <p align="right"><a href="#top">:arrow_up:</a></p>

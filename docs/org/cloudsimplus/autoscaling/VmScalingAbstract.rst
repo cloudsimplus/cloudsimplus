@@ -42,44 +42,56 @@ getOverloadPredicate
 .. java:method:: @Override public Predicate<Vm> getOverloadPredicate()
    :outertype: VmScalingAbstract
 
+getUnderloadPredicate
+^^^^^^^^^^^^^^^^^^^^^
+
+.. java:method:: @Override public Predicate<Vm> getUnderloadPredicate()
+   :outertype: VmScalingAbstract
+
 getVm
 ^^^^^
 
 .. java:method:: @Override public Vm getVm()
    :outertype: VmScalingAbstract
 
-isTimeToCheckOverload
-^^^^^^^^^^^^^^^^^^^^^
+isTimeToCheckPredicate
+^^^^^^^^^^^^^^^^^^^^^^
 
-.. java:method:: protected boolean isTimeToCheckOverload(double time)
+.. java:method:: protected boolean isTimeToCheckPredicate(double time)
    :outertype: VmScalingAbstract
 
-   Checks if it is time to evaluate the \ :java:ref:`getOverloadPredicate()`\  to check if the Vm is overloaded or not.
+   Checks if it is time to evaluate the \ :java:ref:`getOverloadPredicate()`\  and \ :java:ref:`getUnderloadPredicate()`\  to check if the Vm is over or underloaded, respectively.
 
    :param time: current simulation time
-   :return: true if the overload predicate has to be checked, false otherwise
+   :return: true if the over and underload predicate has to be checked, false otherwise
 
-requestUpScaling
-^^^^^^^^^^^^^^^^
+requestScaling
+^^^^^^^^^^^^^^
 
-.. java:method:: protected abstract boolean requestUpScaling(double time)
+.. java:method:: protected abstract boolean requestScaling(double time)
    :outertype: VmScalingAbstract
 
-   Performs the actual request to up scale the Vm. This method is automatically called by \ :java:ref:`requestUpScalingIfOverloaded(double)`\  when it is verified that the Vm is overloaded.
+   Performs the actual request to scale the Vm up or down, depending if it is over or underloaded, respectively. This method is automatically called by \ :java:ref:`requestScalingIfPredicateMatch(double)`\  when it is verified that the Vm is over or underloaded.
 
    :param time: current simulation time
    :return: true if the request was actually sent, false otherwise
 
-requestUpScalingIfOverloaded
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+requestScalingIfPredicateMatch
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-.. java:method:: @Override public final boolean requestUpScalingIfOverloaded(double time)
+.. java:method:: @Override public final boolean requestScalingIfPredicateMatch(double time)
    :outertype: VmScalingAbstract
 
 setOverloadPredicate
 ^^^^^^^^^^^^^^^^^^^^
 
 .. java:method:: @Override public final VmScaling setOverloadPredicate(Predicate<Vm> predicate)
+   :outertype: VmScalingAbstract
+
+setUnderloadPredicate
+^^^^^^^^^^^^^^^^^^^^^
+
+.. java:method:: @Override public final VmScaling setUnderloadPredicate(Predicate<Vm> predicate)
    :outertype: VmScalingAbstract
 
 setVm

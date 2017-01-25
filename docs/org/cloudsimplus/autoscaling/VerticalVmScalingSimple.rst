@@ -43,6 +43,12 @@ VerticalVmScalingSimple
 
 Methods
 -------
+getResourceAmountToScale
+^^^^^^^^^^^^^^^^^^^^^^^^
+
+.. java:method:: @Override public double getResourceAmountToScale()
+   :outertype: VerticalVmScalingSimple
+
 getResourceClassToScale
 ^^^^^^^^^^^^^^^^^^^^^^^
 
@@ -55,10 +61,10 @@ getScalingFactor
 .. java:method:: @Override public double getScalingFactor()
    :outertype: VerticalVmScalingSimple
 
-requestUpScaling
-^^^^^^^^^^^^^^^^
+requestScaling
+^^^^^^^^^^^^^^
 
-.. java:method:: @Override protected boolean requestUpScaling(double time)
+.. java:method:: @Override protected boolean requestScaling(double time)
    :outertype: VerticalVmScalingSimple
 
 setResourceClassToScale

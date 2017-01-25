@@ -24,6 +24,7 @@ repository and execute the following commands:
    project and install the new updated CloudSim Plus jars into your
    local maven repository. This procedure is useful to avoid errors when
    trying to use a new version.
+6. Push the changes to your fork at github: ``git push origin master``
 
 More information of syncing forks can be found
 `here <https://help.github.com/articles/syncing-a-fork/>`__.

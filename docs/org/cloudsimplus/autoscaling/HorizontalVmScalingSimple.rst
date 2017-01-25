@@ -40,10 +40,10 @@ getVmSupplier
 .. java:method:: @Override public Supplier<Vm> getVmSupplier()
    :outertype: HorizontalVmScalingSimple
 
-requestUpScaling
-^^^^^^^^^^^^^^^^
+requestScaling
+^^^^^^^^^^^^^^
 
-.. java:method:: @Override protected boolean requestUpScaling(double time)
+.. java:method:: @Override protected boolean requestScaling(double time)
    :outertype: HorizontalVmScalingSimple
 
 setVmSupplier

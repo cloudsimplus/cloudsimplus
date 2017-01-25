@@ -36,6 +36,30 @@ NULL
 
 Methods
 -------
+getOverloadPredicate
+^^^^^^^^^^^^^^^^^^^^
+
+.. java:method:: @Override  Predicate<Vm> getOverloadPredicate()
+   :outertype: HorizontalVmScaling
+
+   {@inheritDoc}
+
+   The up scaling is performed by creating new VMs to attend new arrived Cloudlets and then balance the load.
+
+   :return: {@inheritDoc}
+
+getUnderloadPredicate
+^^^^^^^^^^^^^^^^^^^^^
+
+.. java:method:: @Override  Predicate<Vm> getUnderloadPredicate()
+   :outertype: HorizontalVmScaling
+
+   {@inheritDoc}
+
+   The down scaling is performed by destroying idle VMs.
+
+   :return: {@inheritDoc}
+
 getVmSupplier
 ^^^^^^^^^^^^^
 
@@ -44,10 +68,10 @@ getVmSupplier
 
    Gets a \ :java:ref:`Supplier`\  that will be used to create VMs when the Load Balancer detects that the current Broker's VMs are overloaded.
 
-requestUpScalingIfOverloaded
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+requestScalingIfPredicateMatch
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-.. java:method:: @Override  boolean requestUpScalingIfOverloaded(double time)
+.. java:method:: @Override  boolean requestScalingIfPredicateMatch(double time)
    :outertype: HorizontalVmScaling
 
    Requests a horizontal scale if the Vm is overloaded, according to the \ :java:ref:`getOverloadPredicate()`\  predicate. The scaling is performed by creating a new Vm using the \ :java:ref:`getVmSupplier()`\  method and submitting it to the broker.
@@ -60,6 +84,32 @@ requestUpScalingIfOverloaded
    new Cloudlets were submitted to the broker.
 
    :param time: current simulation time
+   :return: {@inheritDoc}
+
+setOverloadPredicate
+^^^^^^^^^^^^^^^^^^^^
+
+.. java:method:: @Override  VmScaling setOverloadPredicate(Predicate<Vm> predicate)
+   :outertype: HorizontalVmScaling
+
+   {@inheritDoc}
+
+   The up scaling is performed by creating new VMs to attend new arrived Cloudlets and then balance the load.
+
+   :param predicate: {@inheritDoc}
+   :return: {@inheritDoc}
+
+setUnderloadPredicate
+^^^^^^^^^^^^^^^^^^^^^
+
+.. java:method:: @Override  VmScaling setUnderloadPredicate(Predicate<Vm> predicate)
+   :outertype: HorizontalVmScaling
+
+   {@inheritDoc}
+
+   The down scaling is performed by destroying idle VMs.
+
+   :param predicate: {@inheritDoc}
    :return: {@inheritDoc}
 
 setVmSupplier

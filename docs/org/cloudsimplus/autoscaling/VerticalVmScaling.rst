@@ -38,6 +38,28 @@ NULL
 
 Methods
 -------
+getOverloadPredicate
+^^^^^^^^^^^^^^^^^^^^
+
+.. java:method:: @Override  Predicate<Vm> getOverloadPredicate()
+   :outertype: VerticalVmScaling
+
+   {@inheritDoc}
+
+   The up scaling is performed by increasing the amount of the \ :java:ref:`resource <getResourceClassToScale()>`\  the scaling is associated to.
+
+   :return: {@inheritDoc}
+
+getResourceAmountToScale
+^^^^^^^^^^^^^^^^^^^^^^^^
+
+.. java:method::  double getResourceAmountToScale()
+   :outertype: VerticalVmScaling
+
+   Gets the absolute amount of the Vm resource, defined by \ :java:ref:`getResourceClassToScale()`\ , that has to be scaled up or down, based on the \ :java:ref:`scaling factor <getScalingFactor()>`\ .
+
+   :return: the absolute amount of the Vm resource to scale
+
 getResourceClassToScale
 ^^^^^^^^^^^^^^^^^^^^^^^
 
@@ -52,7 +74,7 @@ getScalingFactor
 .. java:method::  double getScalingFactor()
    :outertype: VerticalVmScaling
 
-   Gets the factor that will be used to scale a Vm resource up or down, whether if such a resource is over or underloaded, according to the defined predicates.
+   Gets the factor that will be used to scale a Vm resource up or down, whether such a resource is over or underloaded, according to the defined predicates.
 
    This is a percentage value in scale from 0 to 1. Every time the VM needs to be scaled up or down, this factor will be applied to increase or reduce a specific VM allocated resource.
 
@@ -60,10 +82,22 @@ getScalingFactor
 
    **See also:** :java:ref:`.getOverloadPredicate()`
 
-requestUpScalingIfOverloaded
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+getUnderloadPredicate
+^^^^^^^^^^^^^^^^^^^^^
 
-.. java:method:: @Override  boolean requestUpScalingIfOverloaded(double time)
+.. java:method:: @Override  Predicate<Vm> getUnderloadPredicate()
+   :outertype: VerticalVmScaling
+
+   {@inheritDoc}
+
+   The down scaling is performed by decreasing the amount of the \ :java:ref:`resource <getResourceClassToScale()>`\  the scaling is associated to.
+
+   :return: {@inheritDoc}
+
+requestScalingIfPredicateMatch
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+.. java:method:: @Override  boolean requestScalingIfPredicateMatch(double time)
    :outertype: VerticalVmScaling
 
    Performs the vertical scale if the Vm is overloaded, according to the \ :java:ref:`getOverloadPredicate()`\  predicate, increasing the Vm resource to which the scaling object is linked to (that may be RAM, CPU, BW, etc), by the factor defined a scaling factor.
@@ -73,6 +107,19 @@ requestUpScalingIfOverloaded
    :param time: current simulation time
 
    **See also:** :java:ref:`.getScalingFactor()`
+
+setOverloadPredicate
+^^^^^^^^^^^^^^^^^^^^
+
+.. java:method:: @Override  VmScaling setOverloadPredicate(Predicate<Vm> predicate)
+   :outertype: VerticalVmScaling
+
+   {@inheritDoc}
+
+   The up scaling is performed by increasing the amount of the \ :java:ref:`resource <getResourceClassToScale()>`\  the scaling is associated to.
+
+   :param predicate: {@inheritDoc}
+   :return: {@inheritDoc}
 
 setResourceClassToScale
 ^^^^^^^^^^^^^^^^^^^^^^^
@@ -90,11 +137,24 @@ setScalingFactor
 .. java:method::  VerticalVmScaling setScalingFactor(double scalingFactor)
    :outertype: VerticalVmScaling
 
-   Sets the factor that will be used to scale a Vm resource up or down, whether if such a resource is over or underloaded, according to the defined predicates.
+   Sets the factor that will be used to scale a Vm resource up or down, whether such a resource is over or underloaded, according to the defined predicates.
 
    This is a percentage value in scale from 0 to 1. Every time the VM needs to be scaled up or down, this factor will be applied to increase or reduce a specific VM allocated resource.
 
    :param scalingFactor: the scaling factor to set
 
    **See also:** :java:ref:`.getOverloadPredicate()`
+
+setUnderloadPredicate
+^^^^^^^^^^^^^^^^^^^^^
+
+.. java:method:: @Override  VmScaling setUnderloadPredicate(Predicate<Vm> predicate)
+   :outertype: VerticalVmScaling
+
+   {@inheritDoc}
+
+   The down scaling is performed by decreasing the amount of the \ :java:ref:`resource <getResourceClassToScale()>`\  the scaling is associated to.
+
+   :param predicate: {@inheritDoc}
+   :return: {@inheritDoc}
 

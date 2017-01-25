@@ -10,9 +10,9 @@ Welcome to CloudSim Plus's documentation!
    :maxdepth: 1
    :caption: Contents:
 
+   packages.rst
    FAQ.rst
    syncing-you-fork.rst
-   packages.rst
 
 
 
