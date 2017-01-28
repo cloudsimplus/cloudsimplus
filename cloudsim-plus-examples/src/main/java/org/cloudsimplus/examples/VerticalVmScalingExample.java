@@ -237,11 +237,10 @@ public class VerticalVmScalingExample {
      */
     private Vm createVm() {
         final int id = createsVms++;
-        Vm vm = new VmSimple(id, 1000, VM_PES)
+
+        return new VmSimple(id, 1000, VM_PES)
             .setRam(VM_RAM).setBw(1000).setSize(10000).setBroker(broker0)
             .setCloudletScheduler(new CloudletSchedulerTimeShared());
-
-        return vm;
     }
 
     /**
@@ -287,10 +286,10 @@ public class VerticalVmScalingExample {
             cloudletList.add(createCloudlet(ramModel, length));
         }
 
-        ramModel = new UtilizationModelDynamic(Unit.ABSOLUTE);
-        ramModel.setInitialUtilization(10)
+        ramModel = new UtilizationModelDynamic(Unit.ABSOLUTE, 10);
+        ramModel
             .setMaxResourceUtilization(500)
-            .setUtilizationIncrementFunction(this::getUtilizationIncrement);
+            .setUtilizationUpdateFunction(this::getUtilizationIncrement);
         cloudletList.get(0).setUtilizationModelRam(ramModel);
     }
 
@@ -310,9 +309,11 @@ public class VerticalVmScalingExample {
     /**
      * Increments the RAM resource utilization, that is defined in absolute values,
      * in 10MB every second.
+     *
+     * @param um the Utilization Model that called this function
      * @return the new resource utilization after the increment
      */
-    private double getUtilizationIncrement(double timeSpan, double currentUtilization) {
-        return currentUtilization + (timeSpan*10);
+    private double getUtilizationIncrement(UtilizationModelDynamic um) {
+        return um.getUtilization() + um.getTimeSpan()*10;
     }
 }

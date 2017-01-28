@@ -27,8 +27,7 @@ public class CloudletSchedulerTimeSharedTest {
     @Before
     public void setUp(){
         //creates an utilization model that doesn't increment the usage along the time
-        um = new UtilizationModelDynamic(CPU_INITIAL_UTILIZATION)
-                 .setUtilizationIncrementFunction((timeSpan, initialUsage) -> initialUsage);
+        um = new UtilizationModelDynamic(CPU_INITIAL_UTILIZATION);
     }
 
     /**
@@ -62,8 +61,7 @@ public class CloudletSchedulerTimeSharedTest {
     @Test
     public void testGetCloudletWaitingList_EmptyAfterResumingCloudlet() {
         final long cloudletLength = 1000;
-        final long mips = cloudletLength;
-        CloudletSchedulerTimeShared instance = createCloudletSchedulerWithMipsList(1, mips);
+        CloudletSchedulerTimeShared instance = createCloudletSchedulerWithMipsList(1, cloudletLength);
         final int cloudletId = 0;
         createCloudletAndAddItToPausedList(instance, cloudletId, cloudletLength);
         instance.cloudletResume(cloudletId);
@@ -144,19 +142,17 @@ public class CloudletSchedulerTimeSharedTest {
     @Test
     public void testGetTotalCurrentAvailableMipsForCloudlet_OneCloudlet() {
         final long mips = 1000;
-        final long cloudletLen = mips;
         final int cloudletPes = 2;
         final int schedulerPes = 4;
         CloudletExecutionInfo cloudlet =
                 new CloudletExecutionInfo(
-                        CloudletSimpleTest.createCloudlet0(cloudletLen, cloudletPes));
+                        CloudletSimpleTest.createCloudlet0(mips, cloudletPes));
         CloudletSchedulerTimeShared instance =
                 createCloudletSchedulerWithMipsList(schedulerPes, mips);
         List<Double> mipsList = instance.getCurrentMipsShare();
 
-        double expResult = mips;
         double result = instance.getTotalCurrentAvailableMipsForCloudlet(cloudlet, mipsList);
-        assertEquals(expResult, result, 0.0);
+        assertEquals((double) mips, result, 0.0);
     }
 
     @Test @Ignore("The test is being ignored because the tested method in fact is always returning zero. It doesn't have an actual implementation.")

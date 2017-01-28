@@ -1,5 +1,7 @@
 package org.cloudbus.cloudsim.mocks;
 
+import java.util.Arrays;
+import java.util.List;
 import java.util.function.Consumer;
 import org.cloudbus.cloudsim.core.CloudSim;
 import org.easymock.EasyMock;
@@ -47,7 +49,9 @@ public final class CloudSimMocker {
      * to the createMock method, defining which method calls are expected in the
      * mocked CloudSim class.</p>
      *
-     * @param consumer
+     * @param consumer a {@link Consumer} that will receive the CloudSimMocker instance
+     *                 to allow the developer to call some of its methods to mock
+     *                 methods from CloudSim class
      * @return the created CloudSim mock object
      */
     public static CloudSim createMock(Consumer<CloudSimMocker> consumer) {
@@ -80,6 +84,18 @@ public final class CloudSimMocker {
         return EasyMock
                 .expect(mock.clock())
                 .andReturn(clockTimeToReturn);
+    }
+
+    /**
+     * Makes the {@link CloudSim#clock()} method from the mocked CloudSim class
+     * to return each one of the values inside the given List for each
+     * time it is called.
+     *
+     * @param clockTimesToReturn the values that the {@link CloudSim#clock()}
+     * method will return in each call
+     */
+    public void clock(final List<Integer> clockTimesToReturn) {
+        clockTimesToReturn.stream().mapToDouble(t -> t).forEach(t -> EasyMock.expect(mock.clock()).andReturn(t).once());
     }
 
     /**

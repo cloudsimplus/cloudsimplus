@@ -23,11 +23,10 @@
  */
 package org.cloudbus.cloudsim.utilizationmodels;
 
-import org.cloudbus.cloudsim.core.Simulation;
 import org.cloudbus.cloudsim.util.Conversion;
 
 import java.util.Objects;
-import java.util.function.BiFunction;
+import java.util.function.Function;
 
 /**
  * A Cloudlet {@link UtilizationModel} that allows to increases the utilization of the related resource along
@@ -37,28 +36,38 @@ import java.util.function.BiFunction;
  *
  * <p>For instance, it is possible to use the class to arithmetically or geometrically increment resource usage,
  * but any kind of increment as logarithmic or exponential is possible.
- * For more details, see the {@link #setUtilizationIncrementFunction(BiFunction)}.</p>
+ * For more details, see the {@link #setUtilizationUpdateFunction(Function)}.</p>
  *
  * @author Manoel Campos da Silva Filho
  * @since CloudSim Plus 1.0
  */
 public class UtilizationModelDynamic extends UtilizationModelAbstract {
-    /** @see #getInitialUtilization()  */
-    private double initialUtilization = 0;
+    private double currentUtilization = 0;
 
     /** @see #getMaxResourceUtilization() */
     private double maxResourceUtilization;
 
     /**
-     * The time the utilization model was used for the first time.
+     * @see #setUtilizationUpdateFunction(Function)
      */
-    private double startTime;
+    private Function<UtilizationModelDynamic, Double> utilizationUpdateFunction;
 
-    private BiFunction<Double, Double, Double> utilizationIncrementFunction;
+    /**
+     * The last time the utilization was updated.
+     */
+    private double previousUtilizationTime;
+
+    /**
+     * The time that the utilization is being currently requested.
+     */
+    private double currentUtilizationTime;
 
     /**
      * Creates a UtilizationModelDynamic with no initial utilization and resource utilization
      * unit defined in {@link Unit#PERCENTAGE}.
+     *
+     * <p><b>The utilization will not be dynamically incremented
+     * until that an increment function is defined by the {@link #setUtilizationUpdateFunction(Function)}.</b></p>
      */
     public UtilizationModelDynamic() {
         this(Unit.PERCENTAGE, 0);
@@ -68,6 +77,8 @@ public class UtilizationModelDynamic extends UtilizationModelAbstract {
      * Creates a UtilizationModelDynamic with no initial utilization and resource utilization
      * {@link Unit} be defined according to the given parameter.
      *
+     * <p><b>The utilization will not be dynamically incremented
+     * until that an increment function is defined by the {@link #setUtilizationUpdateFunction(Function)}.</b></p>
      * @param unit the {@link Unit} that determines how the resource is used (for instance, if
      *             resource usage is defined in percentage of the Vm resource or in absolute values)
      */
@@ -80,6 +91,8 @@ public class UtilizationModelDynamic extends UtilizationModelAbstract {
      * will be defined according to the given parameter and the {@link Unit}
      * will be set as {@link Unit#PERCENTAGE}.
      *
+     * <p><b>The utilization will not be dynamically incremented
+     * until that an increment function is defined by the {@link #setUtilizationUpdateFunction(Function)}.</b></p>
      * @param initialUtilization the initial percentage of resource utilization
      */
     public UtilizationModelDynamic(final double initialUtilization) {
@@ -90,6 +103,8 @@ public class UtilizationModelDynamic extends UtilizationModelAbstract {
      * Creates a UtilizationModelDynamic that the initial resource utilization
      * and the {@link Unit} will be defined according to the given parameters.
      *
+     * <p><b>The utilization will not be dynamically incremented
+     * until that an increment function is defined by the {@link #setUtilizationUpdateFunction(Function)}.</b></p>
      * @param unit the {@link Unit} that determines how the resource is used (for instance, if
      *             resource usage is defined in percentage of the Vm resource or in absolute values)
      * @param initialUtilization the initial of resource utilization, that the unit depends
@@ -98,70 +113,69 @@ public class UtilizationModelDynamic extends UtilizationModelAbstract {
     public UtilizationModelDynamic(Unit unit, final double initialUtilization) {
         super(unit);
         this.maxResourceUtilization = (unit == Unit.PERCENTAGE ? Conversion.HUNDRED_PERCENT : 0);
-        this.startTime = 0;
-        this.setInitialUtilization(initialUtilization);
+        this.previousUtilizationTime = 0;
+        this.currentUtilizationTime = 0;
+        this.setCurrentUtilization(initialUtilization);
+
         /**
          * Creates a default lambda function that doesn't increment the utilization along the time.
-         * The {@link #setUtilizationIncrementFunction(BiFunction)} should be used to defined
+         * The {@link #setUtilizationUpdateFunction(Function)} should be used to defined
          * a different increment function.
-         * */
-        utilizationIncrementFunction = (timeSpan, initialUsage) -> initialUsage;
+         */
+        utilizationUpdateFunction = (um) -> um.getUtilization();
     }
 
-
+    /**
+     * {@inheritDoc}
+     *
+     * <p>It will automatically increment the {@link #getUtilization()}
+     * by applying the {@link #setUtilizationUpdateFunction(Function) increment function}.</p>
+     * @param time {@inheritDoc}
+     * @return {@inheritDoc}
+     */
     @Override
     public double getUtilization(double time) {
-        final double utilization = utilizationIncrementFunction.apply(timeSpan(time), initialUtilization);
-        if (utilization <= 0) {
-            return 0;
+        currentUtilizationTime = time;
+        if(previousUtilizationTime != time) {
+            currentUtilization = utilizationUpdateFunction.apply(this);
+            previousUtilizationTime = time;
+            if (currentUtilization <= 0) {
+                currentUtilization = 0;
+            }
+
+            if (currentUtilization > maxResourceUtilization && maxResourceUtilization > 0) {
+                currentUtilization = maxResourceUtilization;
+            }
         }
 
-        if (utilization > maxResourceUtilization && maxResourceUtilization > 0) {
-            return maxResourceUtilization;
-        }
+        return currentUtilization;
+    }
 
-        return utilization;
+    /**
+     * Gets the time difference from the current simulation time to the
+     * last time the resource utilization was updated.
+     * @return
+     */
+    public double getTimeSpan(){
+        return currentUtilizationTime - previousUtilizationTime;
     }
 
     @Override
-    public UtilizationModel setSimulation(Simulation simulation) {
-        super.setSimulation(simulation);
-        this.startTime = (simulation.isRunning() ? simulation.clock() : 0);
-        return this;
-    }
-
-    private double timeSpan(double time) {
-        return time - startTime;
+    public double getUtilization() {
+        return currentUtilization;
     }
 
     /**
-     * Gets the initial utilization of resource
-     * that cloudlets using this UtilizationModel will require
-     * when they start to execute.
+     * Sets the current resource utilization.
      *
      * <p>Such a value can be a percentage in scale from [0 to 1] or an absolute value,
      * depending on the {@link #getUnit()}.</p>
      *
-     * @return the initial utilization
+     * @param currentUtilization current resource utilization
      */
-    public double getInitialUtilization() {
-        return initialUtilization;
-    }
-
-    /**
-     * Sets the initial utilization of resource
-     * that cloudlets using this UtilizationModel will require
-     * when they start to execute.
-     *
-     * <p>Such a value can be a percentage in scale from [0 to 1] or an absolute value,
-     * depending on the {@link #getUnit()}.</p>
-     *
-     * @param initialUtilization initial resource utilization
-     */
-    public final UtilizationModelDynamic setInitialUtilization(double initialUtilization) {
-        validateUtilizationField("initialUtilization", initialUtilization);
-        this.initialUtilization = initialUtilization;
-        return this;
+    private void setCurrentUtilization(double currentUtilization) {
+        validateUtilizationField("currentUtilization", currentUtilization);
+        this.currentUtilization = currentUtilization;
     }
 
     /**
@@ -191,50 +205,36 @@ public class UtilizationModelDynamic extends UtilizationModelAbstract {
     }
 
     /**
-     * Gets the function that defines how the resource utilization will be incremented along the time.
+     * Sets the function that defines how the resource utilization will be incremented or decremented along the time.
      *
-     * @return the utilization increment function
-     * @see #setUtilizationIncrementFunction(BiFunction)
-     */
-    public BiFunction<Double, Double, Double> getUtilizationIncrementFunction() {
-        return utilizationIncrementFunction;
-    }
-
-    /**
-     * Sets the function that defines how the resource utilization will be incremented along the time.
-     *
-     * <p>Such a function must be one with two {@code Double} parameters, that when called internally by this UtilizationModel
-     * will receive the {@code timeSpan} and the {@code initialUtilization}, that respectively represents the time interval
-     * that has passed since the last time the {@link #getUtilization(double)} method was called and
-     * the {@link #getInitialUtilization() initial resource utilization}
-     * (that may be a percentage or absolute value, depending on the {@link #getUnit()}).
+     * <p>Such a function must be one with 1 {@link UtilizationModelDynamic} parameter, that when called internally by this UtilizationModel
+     * will receive the UtilizationModelDynamic instance and allow the developer using this UtilizationModel to
+     * define how the utilization must be updated. For instance, to define an arithmetic increment, a Lambda function
+     * to be given to this setter could be defined as below:
      * </p>
      *
-     * <p>Such parameters that will be passed to the Lambda function given to this setter
-     * must be used by the developer to define how the utilization will be incremented.
-     * For instance, to define an arithmetic increment, a Lambda function
-     * to be given to this setter could be as below:
-     * </p>
-     *
-     * <p>{@code (timeSpan, initialUtilization) -> initialUtilization + (0.1 * timeSpan)}</p>
+     * <p>{@code (um) -> um.getUtilization() + um.getTimeSpan()*0.1}</p>
      *
      * <p>Considering that the UtilizationModel {@link Unit} was defined in {@link Unit#PERCENTAGE},
-     * such an Lambda Expression will increment the usage in 10% for each second that has passed
+     * such a Lambda Expression will increment the usage in 10% for each second that has passed
      * since the last time the {@link #getUtilization(double)} was called.</p>
      *
      * <p>The value returned by the given Lambda Expression will be automatically validated
      * to avoid negative utilization or utilization over 100% (when the UtilizationModel {@link #getUnit() unit}
-     * is defined in percentage).</p>
+     * is defined in percentage). The function would be defined to decrement the utilization along the time,
+     * by just changing the plus to a minus signal.</p>
      *
      * <p>Defining a geometric progression for the resource utilization is as simple as changing the plus signal
      * to a multiplication signal.</p>
      *
-     * @param utilizationIncrementFunction the utilization increment function to set
+     * @param utilizationUpdateFunction the utilization increment function to set, that will receive the
+     *                                     UtilizationModel instance and must return the new utilization value
+     *                                     based on the previous utilization.
      * @return
      */
-    public final UtilizationModelDynamic setUtilizationIncrementFunction(BiFunction<Double, Double, Double> utilizationIncrementFunction) {
-        Objects.requireNonNull(utilizationIncrementFunction);
-        this.utilizationIncrementFunction = utilizationIncrementFunction;
+    public final UtilizationModelDynamic setUtilizationUpdateFunction(Function<UtilizationModelDynamic, Double> utilizationUpdateFunction) {
+        Objects.requireNonNull(utilizationUpdateFunction);
+        this.utilizationUpdateFunction = utilizationUpdateFunction;
         return this;
     }
 }
