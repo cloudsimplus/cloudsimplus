@@ -45,18 +45,12 @@ public class UtilizationModelDynamicTest {
         List<Integer> times = IntStream.rangeClosed(initialSimulationTime, NUMBER_TIMES_TO_TEST_UTILIZATION).mapToObj(i -> i).collect(toList());
         CloudSim simulation = CloudSimMocker.createMock(mocker -> mocker.clock(times));
 
-        Function<UtilizationModelDynamic, Double> incrementFunction =
-            um -> {
-                return um.getUtilization() + um.getTimeSpan() * utilizationPercentageIncrement;
-            };
-
-        UtilizationModelDynamic um = new UtilizationModelDynamic(initialUtilization);
-
-        um
-          .setUtilizationUpdateFunction(incrementFunction)
+        UtilizationModelDynamic utilizationModel = new UtilizationModelDynamic(initialUtilization);
+        utilizationModel
+          .setUtilizationUpdateFunction(um -> um.getUtilization() + um.getTimeSpan() * utilizationPercentageIncrement)
           .setSimulation(simulation);
 
-        return um;
+        return utilizationModel;
     }
 
     private UtilizationModelDynamic createUtilizationModel(double utilizationPercentageIncrement, double initialUtilization) {

@@ -42,6 +42,7 @@ import java.util.function.Function;
  * @since CloudSim Plus 1.0
  */
 public class UtilizationModelDynamic extends UtilizationModelAbstract {
+    private boolean readOnly;
     private double currentUtilization = 0;
 
     /** @see #getMaxResourceUtilization() */
@@ -112,6 +113,7 @@ public class UtilizationModelDynamic extends UtilizationModelAbstract {
      */
     public UtilizationModelDynamic(Unit unit, final double initialUtilization) {
         super(unit);
+        this.readOnly = false;
         this.maxResourceUtilization = (unit == Unit.PERCENTAGE ? Conversion.HUNDRED_PERCENT : 0);
         this.previousUtilizationTime = 0;
         this.currentUtilizationTime = 0;
@@ -122,7 +124,19 @@ public class UtilizationModelDynamic extends UtilizationModelAbstract {
          * The {@link #setUtilizationUpdateFunction(Function)} should be used to defined
          * a different increment function.
          */
-        utilizationUpdateFunction = (um) -> um.getUtilization();
+        utilizationUpdateFunction = um -> um.currentUtilization;
+    }
+
+    /**
+     * A copy constructor that creates a read-only UtilizationModelDynamic based on a source object
+     * @param source the source UtilizationModelDynamic to create an instance from
+     */
+    protected UtilizationModelDynamic(UtilizationModelDynamic source){
+        this(source.getUnit(), source.currentUtilization);
+        this.currentUtilizationTime = source.currentUtilizationTime;
+        this.previousUtilizationTime = source.previousUtilizationTime;
+        this.maxResourceUtilization = source.maxResourceUtilization;
+        this.readOnly = true;
     }
 
     /**
@@ -137,7 +151,14 @@ public class UtilizationModelDynamic extends UtilizationModelAbstract {
     public double getUtilization(double time) {
         currentUtilizationTime = time;
         if(previousUtilizationTime != time) {
-            currentUtilization = utilizationUpdateFunction.apply(this);
+            /*Pass a copy of this current UtilizationModel to avoid it to be changed
+            and also to enable the developer to call the getUtilization() method from
+            his/her given utilizationUpdateFunction on such an instance,
+            without causing infinity loop. Without passing a UtilizationModel clone,
+            since the utilizationUpdateFunction function usually will call this current one, that in turns
+            calls the utilizationUpdateFunction to update the utilization progress, the infinity
+            loop condition would be set.*/
+            currentUtilization = utilizationUpdateFunction.apply(new UtilizationModelDynamic(this));
             previousUtilizationTime = time;
             if (currentUtilization <= 0) {
                 currentUtilization = 0;
@@ -151,6 +172,11 @@ public class UtilizationModelDynamic extends UtilizationModelAbstract {
         return currentUtilization;
     }
 
+    @Override
+    public double getUtilization() {
+        return (readOnly ? currentUtilization : super.getUtilization());
+    }
+
     /**
      * Gets the time difference from the current simulation time to the
      * last time the resource utilization was updated.
@@ -158,11 +184,6 @@ public class UtilizationModelDynamic extends UtilizationModelAbstract {
      */
     public double getTimeSpan(){
         return currentUtilizationTime - previousUtilizationTime;
-    }
-
-    @Override
-    public double getUtilization() {
-        return currentUtilization;
     }
 
     /**
@@ -208,16 +229,17 @@ public class UtilizationModelDynamic extends UtilizationModelAbstract {
      * Sets the function that defines how the resource utilization will be incremented or decremented along the time.
      *
      * <p>Such a function must be one with 1 {@link UtilizationModelDynamic} parameter, that when called internally by this UtilizationModel
-     * will receive the UtilizationModelDynamic instance and allow the developer using this UtilizationModel to
+     * will receive a read-only UtilizationModelDynamic instance and allow the developer using this UtilizationModel to
      * define how the utilization must be updated. For instance, to define an arithmetic increment, a Lambda function
      * to be given to this setter could be defined as below:
      * </p>
      *
-     * <p>{@code (um) -> um.getUtilization() + um.getTimeSpan()*0.1}</p>
+     * <p>{@code (um) -> um.getUtilization() + um.getTimeSpan()*0.1}
+     * </p>
      *
      * <p>Considering that the UtilizationModel {@link Unit} was defined in {@link Unit#PERCENTAGE},
      * such a Lambda Expression will increment the usage in 10% for each second that has passed
-     * since the last time the {@link #getUtilization(double)} was called.</p>
+     * since the last time the utilization was computed.</p>
      *
      * <p>The value returned by the given Lambda Expression will be automatically validated
      * to avoid negative utilization or utilization over 100% (when the UtilizationModel {@link #getUnit() unit}
@@ -228,8 +250,8 @@ public class UtilizationModelDynamic extends UtilizationModelAbstract {
      * to a multiplication signal.</p>
      *
      * @param utilizationUpdateFunction the utilization increment function to set, that will receive the
-     *                                     UtilizationModel instance and must return the new utilization value
-     *                                     based on the previous utilization.
+     *                                  UtilizationModel instance and must return the new utilization value
+     *                                  based on the previous utilization.
      * @return
      */
     public final UtilizationModelDynamic setUtilizationUpdateFunction(Function<UtilizationModelDynamic, Double> utilizationUpdateFunction) {

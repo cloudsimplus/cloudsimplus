@@ -250,7 +250,7 @@ public class VerticalVmScalingExample {
      * @see #createListOfScalableVms(int)
      */
     private void createVerticalVmScaling(Vm vm) {
-        VerticalVmScaling verticalScaling = new VerticalVmScalingSimple(Ram.class, 0.5);
+        VerticalVmScaling verticalScaling = new VerticalVmScalingSimple(Ram.class, 0.3);
         verticalScaling.setOverloadPredicate(this::isVmRamOverloaded);
         verticalScaling.setUnderloadPredicate(this::isVmRamUnderloaded);
         vm.setRamVerticalScaling(verticalScaling);
@@ -289,7 +289,7 @@ public class VerticalVmScalingExample {
         ramModel = new UtilizationModelDynamic(Unit.ABSOLUTE, 10);
         ramModel
             .setMaxResourceUtilization(500)
-            .setUtilizationUpdateFunction(this::getUtilizationIncrement);
+            .setUtilizationUpdateFunction(this::utilizationIncrement);
         cloudletList.get(0).setUtilizationModelRam(ramModel);
     }
 
@@ -313,7 +313,7 @@ public class VerticalVmScalingExample {
      * @param um the Utilization Model that called this function
      * @return the new resource utilization after the increment
      */
-    private double getUtilizationIncrement(UtilizationModelDynamic um) {
+    private double utilizationIncrement(UtilizationModelDynamic um) {
         return um.getUtilization() + um.getTimeSpan()*10;
     }
 }
