@@ -108,17 +108,23 @@ public class VerticalVmScalingExample {
     private static final int SCHEDULING_INTERVAL = 10;
 
     private static final int HOSTS = 1;
-    private static final int HOST_PES = 4;
+    private static final int HOST_PES = 8;
     private static final int VMS = 1;
-    private static final int CLOUDLETS = 2;
-    public static final int VM_RAM = 1000;
+    public static final int VM_PES = 5;
+    public static final int VM_RAM = 1200;
     private final CloudSim simulation;
     private DatacenterBroker broker0;
     private List<Host> hostList;
     private List<Vm> vmList;
     private List<Cloudlet> cloudletList;
 
-    private static final long CLOUDLET_LENGTH = 200_000;
+    /**
+     * Different lengths to be used when creating Cloudlets.
+     * For each VM, one Cloudlet with each one these lengths will be created.
+     * Creating Cloudlets with different lengths, since some Cloudlets will finish prior to others along the time,
+     * the VM resource usage will reduce when a Cloudlet finishes.
+     */
+    private static final long CLOUDLET_LENGTHS[] = {400_000, 500_000, 600_000, 700_000, 800_000};
 
     private int createdCloudlets;
     private int createsVms;
@@ -136,7 +142,7 @@ public class VerticalVmScalingExample {
         final long seed = 1;
         hostList = new ArrayList<>(HOSTS);
         vmList = new ArrayList<>(VMS);
-        cloudletList = new ArrayList<>(CLOUDLETS);
+        cloudletList = new ArrayList<>(CLOUDLET_LENGTHS.length);
 
         simulation = new CloudSim();
         simulation.addOnClockTickListener(this::onClockTickListener);
@@ -174,28 +180,6 @@ public class VerticalVmScalingExample {
         finishedCloudlets.sort(sortByVmId.thenComparing(sortByStartTime));
 
         new CloudletsTableBuilderHelper(finishedCloudlets).build();
-    }
-
-    private void createCloudletList() {
-        UtilizationModelDynamic ramModel = new UtilizationModelDynamic(Unit.ABSOLUTE, 100);
-        for (int i = 0; i < CLOUDLETS; i++) {
-            cloudletList.add(createCloudlet(ramModel));
-        }
-
-        ramModel = new UtilizationModelDynamic(Unit.ABSOLUTE);
-        ramModel.setInitialUtilization(100)
-                .setMaxResourceUtilization(2000)
-                .setUtilizationIncrementFunction(this::getUtilizationIncrement);
-        cloudletList.get(0).setUtilizationModelRam(ramModel);
-    }
-
-    /**
-     * Increments the RAM resource utilization, that is defined in absolute values,
-     * in 10MB every second.
-     * @return the new resource utilization after the increment
-     */
-    private double getUtilizationIncrement(double timeSpan, double currentUtilization) {
-        return currentUtilization + (timeSpan*10);
     }
 
     /**
@@ -247,23 +231,37 @@ public class VerticalVmScalingExample {
     }
 
     /**
-     * Creates a {@link VerticalVmScaling} object for a given VM.
+     * Creates a Vm object.
+     *
+     * @return the created Vm
+     */
+    private Vm createVm() {
+        final int id = createsVms++;
+
+        return new VmSimple(id, 1000, VM_PES)
+            .setRam(VM_RAM).setBw(1000).setSize(10000).setBroker(broker0)
+            .setCloudletScheduler(new CloudletSchedulerTimeShared());
+    }
+
+    /**
+     * Creates a {@link VerticalVmScaling} for the RAM of a given VM.
      *
      * @param vm the VM in which the VerticalVmScaling will be created
      * @see #createListOfScalableVms(int)
      */
     private void createVerticalVmScaling(Vm vm) {
-        VerticalVmScaling verticalScaling = new VerticalVmScalingSimple(Ram.class, 0.5);
+        VerticalVmScaling verticalScaling = new VerticalVmScalingSimple(Ram.class, 0.3);
         verticalScaling.setOverloadPredicate(this::isVmRamOverloaded);
+        verticalScaling.setUnderloadPredicate(this::isVmRamUnderloaded);
         vm.setRamVerticalScaling(verticalScaling);
     }
 
     /**
-     * A {@link Predicate} that checks if a given VM is overloaded or not based on upper CPU utilization threshold.
-     * A reference to this method is assigned to each Horizontal VM Scaling created.
+     * A {@link Predicate} that checks if a given VM is overloaded, based on an upper RAM utilization threshold.
+     * A reference to this method is assigned to each Vertical VM Scaling created.
      *
-     * @param vm the VM to check if it is overloaded
-     * @return true if the VM is overloaded, false otherwise
+     * @param vm the VM to check if its RAM is overloaded
+     * @return true if the VM RAM is overloaded, false otherwise
      * @see #createVerticalVmScaling(Vm)
      */
     private boolean isVmRamOverloaded(Vm vm) {
@@ -271,29 +269,51 @@ public class VerticalVmScalingExample {
     }
 
     /**
-     * Creates a Vm object.
+     * A {@link Predicate} that checks if a given VM is underloaded, based on an lower RAM utilization threshold.
+     * A reference to this method is assigned to each Vertical VM Scaling created.
      *
-     * @return the created Vm
+     * @param vm the VM to check if its RAM is underloaded
+     * @return true if the VM RAM is underloaded, false otherwise
+     * @see #createVerticalVmScaling(Vm)
      */
-    private Vm createVm() {
-        final int id = createsVms++;
-        Vm vm = new VmSimple(id, 1000, 2)
-            .setRam(VM_RAM).setBw(1000).setSize(10000).setBroker(broker0)
-            .setCloudletScheduler(new CloudletSchedulerTimeShared());
-
-        return vm;
+    private boolean isVmRamUnderloaded(Vm vm) {
+        return vm.getRam().getPercentUtilization() < 0.5;
     }
 
-    private Cloudlet createCloudlet(UtilizationModel ramUtilizationModel) {
+    private void createCloudletList() {
+        UtilizationModelDynamic ramModel = new UtilizationModelDynamic(Unit.ABSOLUTE, 200);
+        for (long length: CLOUDLET_LENGTHS) {
+            cloudletList.add(createCloudlet(ramModel, length));
+        }
+
+        ramModel = new UtilizationModelDynamic(Unit.ABSOLUTE, 10);
+        ramModel
+            .setMaxResourceUtilization(500)
+            .setUtilizationUpdateFunction(this::utilizationIncrement);
+        cloudletList.get(0).setUtilizationModelRam(ramModel);
+    }
+
+    private Cloudlet createCloudlet(UtilizationModel ramUtilizationModel, long length) {
         final int id = createdCloudlets++;
         //randomly selects a length for the cloudlet
         UtilizationModel utilizationFull = new UtilizationModelFull();
-        return new CloudletSimple(id, CLOUDLET_LENGTH, 1)
+        return new CloudletSimple(id, length, 1)
             .setFileSize(1024)
             .setOutputSize(1024)
             .setUtilizationModelBw(utilizationFull)
             .setUtilizationModelCpu(utilizationFull)
             .setUtilizationModelRam(ramUtilizationModel)
             .setBroker(broker0);
+    }
+
+    /**
+     * Increments the RAM resource utilization, that is defined in absolute values,
+     * in 10MB every second.
+     *
+     * @param um the Utilization Model that called this function
+     * @return the new resource utilization after the increment
+     */
+    private double utilizationIncrement(UtilizationModelDynamic um) {
+        return um.getUtilization() + um.getTimeSpan()*10;
     }
 }

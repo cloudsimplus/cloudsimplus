@@ -1,3 +1,5 @@
+.. java:import:: org.cloudbus.cloudsim.core Simulation
+
 .. java:import:: org.cloudbus.cloudsim.util Conversion
 
 .. java:import:: java.util Objects
@@ -41,23 +43,23 @@ UtilizationModelDynamic
 UtilizationModelDynamic
 ^^^^^^^^^^^^^^^^^^^^^^^
 
-.. java:constructor:: public UtilizationModelDynamic(double initialUtilization)
+.. java:constructor:: public UtilizationModelDynamic(double currentUtilization)
    :outertype: UtilizationModelDynamic
 
    Creates a UtilizationModelDynamic that the initial resource utilization will be defined according to the given parameter and the \ :java:ref:`Unit`\  will be set as \ :java:ref:`Unit.PERCENTAGE`\ .
 
-   :param initialUtilization: the initial percentage of resource utilization
+   :param currentUtilization: the initial percentage of resource utilization
 
 UtilizationModelDynamic
 ^^^^^^^^^^^^^^^^^^^^^^^
 
-.. java:constructor:: public UtilizationModelDynamic(Unit unit, double initialUtilization)
+.. java:constructor:: public UtilizationModelDynamic(Unit unit, double currentUtilization)
    :outertype: UtilizationModelDynamic
 
    Creates a UtilizationModelDynamic that the initial resource utilization and the \ :java:ref:`Unit`\  will be defined according to the given parameters.
 
    :param unit: the \ :java:ref:`Unit`\  that determines how the resource is used (for instance, if resource usage is defined in percentage of the Vm resource or in absolute values)
-   :param initialUtilization: the initial of resource utilization, that the unit depends on the \ ``unit``\  parameter
+   :param currentUtilization: the initial of resource utilization, that the unit depends on the \ ``unit``\  parameter
 
 Methods
 -------
@@ -106,14 +108,14 @@ getUtilizationIncrementFunction
 setInitialUtilization
 ^^^^^^^^^^^^^^^^^^^^^
 
-.. java:method:: public final UtilizationModelDynamic setInitialUtilization(double initialUtilization)
+.. java:method:: public final UtilizationModelDynamic setInitialUtilization(double currentUtilization)
    :outertype: UtilizationModelDynamic
 
    Sets the initial utilization of resource that cloudlets using this UtilizationModel will require when they start to execute.
 
    Such a value can be a percentage in scale from [0 to 1] or an absolute value, depending on the \ :java:ref:`getUnit()`\ .
 
-   :param initialUtilization: initial resource utilization
+   :param currentUtilization: initial resource utilization
 
 setMaxResourceUtilization
 ^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -127,19 +129,25 @@ setMaxResourceUtilization
 
    :param maxResourceUsagePercentage: the maximum resource usage
 
+setSimulation
+^^^^^^^^^^^^^
+
+.. java:method:: @Override public UtilizationModel setSimulation(Simulation simulation)
+   :outertype: UtilizationModelDynamic
+
 setUtilizationIncrementFunction
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-.. java:method:: public final UtilizationModelDynamic setUtilizationIncrementFunction(BiFunction<Double, Double, Double> utilizationIncrementFunction)
+.. java:method:: public final UtilizationModelDynamic setUtilizationIncrementFunction(BiFunction<Double, Double, Double> utilizationUpdateFunction)
    :outertype: UtilizationModelDynamic
 
    Sets the function that defines how the resource utilization will be incremented along the time.
 
-   Such a function must be one with two \ ``Double``\  parameters, that when called internally by this UtilizationModel will receive the \ ``timeSpan``\  and the \ ``initialUtilization``\ , that respectively represents the time interval that has passed since the last time the \ :java:ref:`getUtilization(double)`\  method was called and the \ :java:ref:`initial resource utilization <getInitialUtilization()>`\  (that may be a percentage or absolute value, depending on the \ :java:ref:`getUnit()`\ ).
+   Such a function must be one with two \ ``Double``\  parameters, that when called internally by this UtilizationModel will receive the \ ``timeSpan``\  and the \ ``currentUtilization``\ , that respectively represents the time interval that has passed since the last time the \ :java:ref:`getUtilization(double)`\  method was called and the \ :java:ref:`initial resource utilization <getInitialUtilization()>`\  (that may be a percentage or absolute value, depending on the \ :java:ref:`getUnit()`\ ).
 
    Such parameters that will be passed to the Lambda function given to this setter must be used by the developer to define how the utilization will be incremented. For instance, to define an arithmetic increment, a Lambda function to be given to this setter could be as below:
 
-   \ ``(timeSpan, initialUtilization) -> initialUtilization + (0.1 * timeSpan)``\
+   \ ``(timeSpan, currentUtilization) -> currentUtilization + (0.1 * timeSpan)``\
 
    Considering that the UtilizationModel \ :java:ref:`Unit`\  was defined in \ :java:ref:`Unit.PERCENTAGE`\ , such an Lambda Expression will increment the usage in 10% for each second that has passed since the last time the \ :java:ref:`getUtilization(double)`\  was called.
 
@@ -147,5 +155,5 @@ setUtilizationIncrementFunction
 
    Defining a geometric progression for the resource utilization is as simple as changing the plus signal to a multiplication signal.
 
-   :param utilizationIncrementFunction: the utilization increment function to set
+   :param utilizationUpdateFunction: the utilization increment function to set
 

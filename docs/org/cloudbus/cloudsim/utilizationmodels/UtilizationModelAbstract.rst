@@ -32,6 +32,12 @@ UtilizationModelAbstract
 .. java:constructor:: public UtilizationModelAbstract()
    :outertype: UtilizationModelAbstract
 
+UtilizationModelAbstract
+^^^^^^^^^^^^^^^^^^^^^^^^
+
+.. java:constructor:: public UtilizationModelAbstract(Unit unit)
+   :outertype: UtilizationModelAbstract
+
 Methods
 -------
 getSimulation
@@ -55,7 +61,7 @@ getUtilization
 setSimulation
 ^^^^^^^^^^^^^
 
-.. java:method:: @Override public final UtilizationModel setSimulation(Simulation simulation)
+.. java:method:: @Override public UtilizationModel setSimulation(Simulation simulation)
    :outertype: UtilizationModelAbstract
 
 setUnit

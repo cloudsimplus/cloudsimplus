@@ -50,9 +50,13 @@ public interface VmAllocationPolicy {
     boolean allocateHostForVm(Vm vm);
 
     /**
-     * Try to scale soome Vm's resource vertically if the Host where the Vm is placed
-     * has enough capacity. The resource to be scaled is defined by the
-     * given {@link VerticalVmScaling} object.
+     * Try to scale some Vm's resource vertically up or down, respectively if:
+     * <ul>
+     *     <li>the Vm is overloaded and the Host where the Vm is placed has enough capacity</li>
+     *     <li>the Vm is underloaded</li>
+     * </ul>
+     *
+     * The resource to be scaled is defined by the given {@link VerticalVmScaling} object.
      *
      * @param scaling the {@link VerticalVmScaling} object with information of which resource
      *                is being requested to be scaled

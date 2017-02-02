@@ -72,7 +72,11 @@ public class HorizontalVmScalingSimple extends VmScalingAbstract implements Hori
     }
 
     @Override
-    protected boolean requestUpScaling(double time) {
+    protected boolean requestScaling(double time) {
+        return requestUpScaling(time);
+    }
+
+    private boolean requestUpScaling(double time) {
         if(!isNewCloudletsArrived()){
             return false;
         }

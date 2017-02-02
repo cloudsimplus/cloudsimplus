@@ -45,13 +45,13 @@ UtilizationModelArithmeticProgression
 UtilizationModelArithmeticProgression
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-.. java:constructor:: public UtilizationModelArithmeticProgression(double utilizationPercentageIncrementPerSecond, double initialUtilization)
+.. java:constructor:: public UtilizationModelArithmeticProgression(double utilizationPercentageIncrementPerSecond, double currentUtilization)
    :outertype: UtilizationModelArithmeticProgression
 
    Instantiates a UtilizationModelProgressive that sets the \ :java:ref:`utilization increment <setUtilizationPercentageIncrementPerSecond(double)>`\  and the \ :java:ref:`initial utilization <setInitialUtilization(double)>`\
 
    :param utilizationPercentageIncrementPerSecond:
-   :param initialUtilization:
+   :param currentUtilization:
 
 Methods
 -------

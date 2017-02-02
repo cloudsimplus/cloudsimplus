@@ -4,8 +4,7 @@
  * Different policies can follow approaches such as best-fit, worst-fit and so on.
  *
  * <p>
- *     <b>Each Datacenter must have its own instance of a
- *     {@link org.cloudbus.cloudsim.allocationpolicies.VmAllocationPolicy}.</b>
+ *     <b>Each Datacenter must have its own instance of a {@link org.cloudbus.cloudsim.allocationpolicies.VmAllocationPolicy}.</b>
  *     The most basic implementation is provided by the class {@link org.cloudbus.cloudsim.allocationpolicies.VmAllocationPolicySimple}.
  *     Only classes that implement the {@link org.cloudbus.cloudsim.allocationpolicies.power.PowerVmAllocationPolicyMigration}
  *     interface are able to perform VM migration.

@@ -216,25 +216,43 @@ public abstract class VmAllocationPolicyAbstract implements VmAllocationPolicy {
 
     @Override
     public boolean scaleVmVertically(VerticalVmScaling scaling) {
+        if(scaling.getOverloadPredicate().test(scaling.getVm())){
+            return upScaleVmVertically(scaling);
+        }
+
+        if(scaling.getUnderloadPredicate().test(scaling.getVm())){
+            return downScaleVmVertically(scaling);
+        }
+
+        return false;
+    }
+
+    /**
+     * Performs the up scaling of Vm resource associated to a given scaling object
+     * if the Vm is overloaded.
+     *
+     * @param scaling the Vm's scaling object
+     * @return true if the Vm was overloaded and the up scaling was performed, false otherwise
+     */
+    private boolean upScaleVmVertically(VerticalVmScaling scaling) {
         final Class<? extends ResourceManageable> resourceClass = scaling.getResourceClassToScale();
         final ResourceManageable hostResource = scaling.getVm().getHost().getResource(resourceClass);
         final ResourceManageable vmResource = scaling.getVm().getResource(resourceClass);
-        final double extraAmountToAllocate = vmResource.getCapacity() * scaling.getScalingFactor();
+        final double extraAmountToAllocate = scaling.getResourceAmountToScale();
         if(!hostResource.isResourceAmountAvailable(extraAmountToAllocate)) {
             return false;
         }
 
         final ResourceProvisioner provisioner = scaling.getVm().getHost().getProvisioner(resourceClass);
-        final double previousVmResourceCapacity = vmResource.getCapacity();
-        final double newTotalVmResource = previousVmResourceCapacity + extraAmountToAllocate;
+        final double newTotalVmResource = (double) vmResource.getCapacity() + extraAmountToAllocate;
         if(!provisioner.allocateResourceForVm(scaling.getVm(), newTotalVmResource)){
             Log.printFormattedLine(
                 "%.2f: %s: Vm %d requested more %d of %s capacity but the Host %d has just %d of available %s",
                 scaling.getVm().getSimulation().clock(),
                 scaling.getClass().getSimpleName(),
-                scaling.getVm().getId(), scaling.getVm().getResource(resourceClass).getCapacity(),
+                scaling.getVm().getId(), extraAmountToAllocate,
                 resourceClass.getSimpleName(), scaling.getVm().getHost().getId(),
-                hostResource.getAvailableResource());
+                hostResource.getAvailableResource(), resourceClass.getSimpleName());
             return false;
         }
 
@@ -247,5 +265,39 @@ public abstract class VmAllocationPolicyAbstract implements VmAllocationPolicy {
             vmResource.getPercentUtilization()*100);
         return true;
     }
+
+    /**
+     * Performs the down scaling of Vm resource associated to a given scaling object
+     * if the Vm is underloaded.
+     *
+     * @param scaling the Vm's scaling object
+     * @return true if the Vm was unerloaded and the down scaling was performed, false otherwise
+     */
+    private boolean downScaleVmVertically(VerticalVmScaling scaling) {
+        final Class<? extends ResourceManageable> resourceClass = scaling.getResourceClassToScale();
+        final ResourceManageable vmResource = scaling.getVm().getResource(resourceClass);
+        final double amountToDeallocate = scaling.getResourceAmountToScale();
+        final ResourceProvisioner provisioner = scaling.getVm().getHost().getProvisioner(resourceClass);
+        final double newTotalVmResource = (double) vmResource.getCapacity() - amountToDeallocate;
+        if(!provisioner.allocateResourceForVm(scaling.getVm(), newTotalVmResource)){
+            Log.printFormattedLine(
+                "%.2f: %s: Vm %d requested to reduce %s capacity by %d but an unexpected error occurred and the resource was not resized",
+                scaling.getVm().getSimulation().clock(),
+                scaling.getClass().getSimpleName(),
+                scaling.getVm().getId(),
+                resourceClass.getSimpleName(), amountToDeallocate);
+            return false;
+        }
+
+        Log.printFormattedLine(
+            "%.2f: %s: %.0f %s dallocated from Vm %d: new capacity is %d. Current resource usage is %.2f%%",
+            scaling.getVm().getSimulation().clock(),
+            scaling.getClass().getSimpleName(),
+            amountToDeallocate, resourceClass.getSimpleName(),
+            scaling.getVm().getId(), vmResource.getCapacity(),
+            vmResource.getPercentUtilization()*100);
+        return true;
+    }
+
 
 }

@@ -89,7 +89,47 @@ public interface HorizontalVmScaling extends VmScaling {
      * @return {@inheritDoc}
      */
     @Override
-    boolean requestUpScalingIfOverloaded(double time);
+    boolean requestScalingIfPredicateMatch(double time);
+
+    /**
+     * {@inheritDoc}
+     *
+     * <p>The up scaling is performed by creating new VMs to attend new arrived Cloudlets
+     * and then balance the load.</p>
+     * @return {@inheritDoc}
+     */
+    @Override
+    Predicate<Vm> getOverloadPredicate();
+
+    /**
+     * {@inheritDoc}
+     *
+     * <p>The up scaling is performed by creating new VMs to attend new arrived Cloudlets
+     * and then balance the load.</p>
+     * @param predicate {@inheritDoc}
+     * @return {@inheritDoc}
+     */
+    @Override
+    VmScaling setOverloadPredicate(Predicate<Vm> predicate);
+
+    /**
+     * {@inheritDoc}
+     *
+     * <p>The down scaling is performed by destroying idle VMs.</p>
+     * @return {@inheritDoc}
+     */
+    @Override
+    Predicate<Vm> getUnderloadPredicate();
+
+    /**
+     * {@inheritDoc}
+     *
+     * <p>The down scaling is performed by destroying idle VMs.</p>
+     * @param predicate {@inheritDoc}
+     * @return {@inheritDoc}
+     */
+    @Override
+    VmScaling setUnderloadPredicate(Predicate<Vm> predicate);
 
     /**
      * An attribute that implements the Null Object Design Pattern for {@link HorizontalVmScaling}
@@ -98,10 +138,12 @@ public interface HorizontalVmScaling extends VmScaling {
     HorizontalVmScaling NULL = new HorizontalVmScaling() {
         @Override public Supplier<Vm> getVmSupplier() { return () -> Vm.NULL; }
         @Override public HorizontalVmScaling setVmSupplier(Supplier<Vm> supplier) { return this; }
-        @Override public boolean requestUpScalingIfOverloaded(double time) { return false; }
+        @Override public boolean requestScalingIfPredicateMatch(double time) { return false; }
         @Override public Vm getVm() { return Vm.NULL; }
         @Override public VmScaling setVm(Vm vm) { return this; }
         @Override public Predicate<Vm> getOverloadPredicate() { return vm -> false; }
         @Override public VmScaling setOverloadPredicate(Predicate<Vm> predicate) { return this; }
+        @Override public Predicate<Vm> getUnderloadPredicate() { return FALSE_PREDICATE; }
+        @Override public VmScaling setUnderloadPredicate(Predicate<Vm> predicate) { return this; }
     };
 }

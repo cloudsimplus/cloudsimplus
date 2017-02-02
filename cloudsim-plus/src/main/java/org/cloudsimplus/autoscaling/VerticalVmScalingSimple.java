@@ -58,15 +58,22 @@ public class VerticalVmScalingSimple extends VmScalingAbstract implements Vertic
     }
 
     @Override
+    public double getResourceAmountToScale() {
+        final ResourceManageable vmResource = getVm().getResource(resourceClassToScale);
+        return vmResource.getCapacity() * scalingFactor;
+    }
+
+    @Override
     public final VerticalVmScaling setScalingFactor(double scalingFactor) {
         this.scalingFactor = (scalingFactor >= 0 ? scalingFactor : 0);
         return this;
     }
 
     @Override
-    protected boolean requestUpScaling(double time) {
+    protected boolean requestScaling(double time) {
         final Vm vm = this.getVm();
         vm.getSimulation().sendNow(vm.getId(), vm.getBroker().getId(), CloudSimTags.VM_VERTICAL_SCALING, this);
         return true;
     }
+
 }

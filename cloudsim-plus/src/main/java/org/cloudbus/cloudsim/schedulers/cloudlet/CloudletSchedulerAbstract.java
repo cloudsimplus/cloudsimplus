@@ -446,8 +446,8 @@ public abstract class CloudletSchedulerAbstract implements CloudletScheduler {
         }
 
         updateCloudletsProcessing(currentTime);
-        removeFinishedCloudletsFromExecutionListAndAddToFinishedList();
         updateVmRamAbsoluteUtilization();
+        removeFinishedCloudletsFromExecutionListAndAddToFinishedList();
         moveNextCloudletsFromWaitingToExecList();
 
         double nextSimulationTime = getEstimatedFinishTimeOfSoonerFinishingCloudlet(currentTime);
@@ -489,9 +489,10 @@ public abstract class CloudletSchedulerAbstract implements CloudletScheduler {
     private double getCloudletRamAbsoluteUtilization(Cloudlet cloudlet) {
         ResourceManageable ram = vm.getResource(Ram.class);
         UtilizationModel u = cloudlet.getUtilizationModelRam();
-        return u.getUnit() == Unit.ABSOLUTE ?
+        final double utilization = u.getUnit() == Unit.ABSOLUTE ?
             Math.min(u.getUtilization(), vm.getRam().getCapacity()) :
             u.getUtilization() * ram.getCapacity();
+        return utilization;
     }
 
     /**
@@ -902,6 +903,19 @@ public abstract class CloudletSchedulerAbstract implements CloudletScheduler {
 
     /**
      * Computes the absolute amount of a resource used by a given Cloudlet
+     * for the current simulation time, based on the maximum amount of resource that the Cloudlet can use
+     * this time.
+     *
+     * @param um                      the {@link UtilizationModel} to get the absolute amount of resource used by the Cloudlet
+     * @param maxResourceAllowedToUse the maximum absolute resource that the Cloudlet will be allowed to use
+     * @return the absolute amount of resource that the Cloudlet will use
+     */
+    private double getAbsoluteCloudletResourceUtilization(UtilizationModel um, double maxResourceAllowedToUse) {
+        return getAbsoluteCloudletResourceUtilization(um, vm.getSimulation().clock(), maxResourceAllowedToUse);
+    }
+
+    /**
+     * Computes the absolute amount of a resource used by a given Cloudlet
      * for a given time, based on the maximum amount of resource that the Cloudlet can use
      * this time.
      *
@@ -914,19 +928,6 @@ public abstract class CloudletSchedulerAbstract implements CloudletScheduler {
         return um.getUnit() == Unit.ABSOLUTE ?
             Math.min(um.getUtilization(time), maxResourceAllowedToUse) :
             um.getUtilization() * maxResourceAllowedToUse;
-    }
-
-    /**
-     * Computes the absolute amount of a resource used by a given Cloudlet
-     * for the current simulation time, based on the maximum amount of resource that the Cloudlet can use
-     * this time.
-     *
-     * @param um                      the {@link UtilizationModel} to get the absolute amount of resource used by the Cloudlet
-     * @param maxResourceAllowedToUse the maximum absolute resource that the Cloudlet will be allowed to use
-     * @return the absolute amount of resource that the Cloudlet will use
-     */
-    private double getAbsoluteCloudletResourceUtilization(UtilizationModel um, double maxResourceAllowedToUse) {
-        return getAbsoluteCloudletResourceUtilization(um, vm.getSimulation().clock(), maxResourceAllowedToUse);
     }
 
 }

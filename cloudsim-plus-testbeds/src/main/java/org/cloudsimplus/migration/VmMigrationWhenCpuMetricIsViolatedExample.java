@@ -204,7 +204,7 @@ public final class VmMigrationWhenCpuMetricIsViolatedExample {
             if (progressiveCpuUsage) {
                 cpuUtilizationModel
                         = new UtilizationModelDynamic(cloudletInitialCpuUsagePercent)
-                            .setUtilizationIncrementFunction(this::getCpuUtilizationIncrement);
+                            .setUtilizationUpdateFunction(this::getCpuUtilizationIncrement);
             } else {
                 cpuUtilizationModel = new UtilizationModelDynamic(cloudletInitialCpuUsagePercent);
             }
@@ -234,8 +234,8 @@ public final class VmMigrationWhenCpuMetricIsViolatedExample {
      * Increments the CPU resource utilization, that is defined in percentage values.
      * @return the new resource utilization after the increment
      */
-    private double getCpuUtilizationIncrement(double timeSpan, double initialUtilization){
-        return  initialUtilization + CLOUDLET_CPU_USAGE_INCREMENT_PER_SECOND*timeSpan;
+    private double getCpuUtilizationIncrement(UtilizationModelDynamic um){
+        return  um.getUtilization() + um.getTimeSpan()*CLOUDLET_CPU_USAGE_INCREMENT_PER_SECOND;
     }
 
     public List<Cloudlet> createAndSubmitCloudletsWithDynamicCpuUtilization(

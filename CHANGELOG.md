@@ -73,7 +73,7 @@ a `NetworkHost` does this job automatically (closes #57.)
   inside the [autoscaling package](/cloudsim-plus/src/main/java/org/cloudsimplus/autoscaling), that provides a horizontal scaling mechanism
   for VMs, allowing dynamic creation of VMs according to an overload condition. Such a condition is defined
   by a predicate that can check different VM resources usage such as CPU, RAM or BW.
-  See the new [LoadBalancerByVmHorizontalScalingExample](/cloudsim-plus-examples/src/main/java/org/cloudsimplus/examples/LoadBalancerByVmHorizontalScalingExample.java) for a usage example.
+  See the new [LoadBalancerByHorizontalVmScalingExample](/cloudsim-plus-examples/src/main/java/org/cloudsimplus/examples/LoadBalancerByHorizontalVmScalingExample.java) for a usage example.
 - Added the methods `addOnClockTickListener` and `removeOnClockTickListener` to `Simulation` interface to allow defining a Listener to be notified every time the simulation clock advances.
 - Added methods `addOnClockTickListener()` and `removeOnClockTickListener()` in Simulation interface in order to add
   and remove listeners for the new OnClockTick event, that is fired every time that the simulation clock advances.
@@ -122,11 +122,11 @@ a `NetworkHost` does this job automatically (closes #57.)
 
 ### Added
 - Enabled dynamic creation of VMs and Cloudlets without requiring creation of Datacenter Brokers at runtime, enabling VMs to be created on-demand according to arrived cloudlets.
-  During simulation execution, new VMs and Cloudlets can be submitted using the methods `submitVmList` and `submitCloudletList` that they will be dynamically created. See the [DynamicCreationOfVmsAndCloudlets.java](cloudsim-plus-examples/src/main/java/org/cloudsimplus/examples/DynamicCreationOfVmsAndCloudlets.java) example for more details.
+  During simulation execution, new VMs and Cloudlets can be submitted using the methods `submitVmList` and `submitCloudletList` that they will be dynamically created. See the [DynamicCreationOfVmsAndCloudlets.java](/cloudsim-plus-examples/src/main/java/org/cloudsimplus/examples/DynamicCreationOfVmsAndCloudlets.java) example for more details.
 - Enabled the complete navigation from Cloudlet up to the Datacenter. Now it is possible to call `cloudlet.getVm().getHost().getDatacenter()` and navigate between all the relationships that were introduced in CloudSim Plus for such classes. And it is totally safe to make such a call, even before starting the simulation, that you will not get a `NullPointerException`. In case you make such a call before the simulation starts, as any allocation of Cloudlet or VMs was made, you will get default objects that follow the Null - Included the example [/cloudsim-plus-examples/src/main/java/org/cloudsimplus/examples/ParallelSimulationsExample.java]
   that shows how to use Java 8 Parallel Streams to execute mutiple simulations scenarios in parallel.
 Object Design Pattern, namely `Vm.NULL` for `getVm()`, `Host.NULL` for `getHost()` and `Datacenter.NULL` for `getDatacenter()`.
-- Included examples that show how to [schedule the simulation termination at a given time](cloudsim-plus-examples/src/main/java/org/cloudsimplus/examples/TerminateSimulationAtGivenTime.java), how to terminate it [when a specific condition is met](cloudsim-plus-examples/src/main/java/org/cloudsimplus/examples/TerminateSimulationAtGivenCondition.java) and how to [schedule a simulation pause at an specific time, before the simulation has started, and collect partial results](cloudsim-plus-examples/src/main/java/org/cloudsimplus/examples/PauseSimulationAtGivenTime1.java) and [at a given time, after the simulation has started](cloudsim-plus-examples/src/main/java/org/cloudsimplus/examples/PauseSimulationAtGivenTime2.java).
+- Included examples that show how to [schedule the simulation termination at a given time](/cloudsim-plus-examples/src/main/java/org/cloudsimplus/examples/TerminateSimulationAtGivenTime.java), how to terminate it [when a specific condition is met](/cloudsim-plus-examples/src/main/java/org/cloudsimplus/examples/TerminateSimulationAtGivenCondition.java) and how to [schedule a simulation pause at an specific time, before the simulation has started, and collect partial results](/cloudsim-plus-examples/src/main/java/org/cloudsimplus/examples/PauseSimulationAtGivenTime1.java) and [at a given time, after the simulation has started](/cloudsim-plus-examples/src/main/java/org/cloudsimplus/examples/PauseSimulationAtGivenTime2.java).
 
 ### Changed
 - Changed requirement of cloudsim-plus-examples to Java 8 in order to start providing more advanced examples using Java 8 Lambda Expressions and Streams API.
@@ -356,18 +356,18 @@ Such a scheduler assumes that if two Cloudlets are concurring for the same PE, t
 ## [v0.6-beta] - 2016-06-10 
 
 ### Added
-- [Examples](cloudsim-plus-examples/src/main/java/org/cloudsimplus/examples/listeners/) using the new listener features of Vm and Cloudlet classes. 
+- [Examples](/cloudsim-plus-examples/src/main/java/org/cloudsimplus/examples/listeners/) using the new listener features of Vm and Cloudlet classes. 
 - Examples showing how to create listeners objects to be notified when: a host is allocated to a VM; a host is desallocated for a VM
   (that can mean the VM finished executing or was migrated); the placement of a VM fails due to lack of a suitable host.
 - Examples showing how to reuse the same listener objects to several VMs. 
-- [Example showing](cloudsim-plus-examples/src/main/java/org/cloudsimplus/examples/listeners/VmListenersExample3_DynamicVmCreation.java) how to dynamically create a VM when another one finishes executing, simulating dynamic VM arrival.
+- [Example showing](/cloudsim-plus-examples/src/main/java/org/cloudsimplus/examples/listeners/VmListenersExample3_DynamicVmCreation.java) how to dynamically create a VM when another one finishes executing, simulating dynamic VM arrival.
   It allows the sequential execution of VMs into a host that just have resources for a VM a time. 
   The use of listeners simplify the dynamic creation of VMs and allows the code to be clear
   and direct, without recurring to threads and sleep tricks. 
 - Converted the relationship between Vm and CloudletScheduler to a bi-directional one (now CloudletScheduler has access to Vm).
 - Included new listener `onUpdateCloudletProcessingListener` for Cloudlet, that gets notified when 
   the execution of the Cloudlet inside a Vm is updated. A new example of this feature was introduced in the  
-  [listeners](cloudsim-plus-examples/src/main/java/org/cloudsimplus/examples/listeners/) example package.
+  [listeners](/cloudsim-plus-examples/src/main/java/org/cloudsimplus/examples/listeners/) example package.
 - Allowed to delay the submission of cloudlets by a `DatacenterBroker`, simulating the dynamic arrival of Cloudlets (closes the feature request #11)
 
 ## [v0.5-beta] - 2016-04-28 

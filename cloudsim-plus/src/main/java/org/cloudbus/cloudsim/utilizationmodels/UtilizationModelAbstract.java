@@ -28,8 +28,12 @@ public abstract class UtilizationModelAbstract implements UtilizationModel {
     private Unit unit;
 
     public UtilizationModelAbstract(){
-        this.setSimulation(Simulation.NULL);
-        this.setUnit(Unit.PERCENTAGE);
+        this(Unit.PERCENTAGE);
+    }
+
+    public UtilizationModelAbstract(Unit unit){
+        this.simulation = Simulation.NULL;
+        this.setUnit(unit);
     }
 
     @Override
@@ -54,7 +58,7 @@ public abstract class UtilizationModelAbstract implements UtilizationModel {
     }
 
     @Override
-    public final UtilizationModel setSimulation(Simulation simulation) {
+    public UtilizationModel setSimulation(Simulation simulation) {
         Objects.requireNonNull(simulation);
         this.simulation = simulation;
         return this;
@@ -82,8 +86,8 @@ public abstract class UtilizationModelAbstract implements UtilizationModel {
 
         if(unit == Unit.PERCENTAGE && fieldValue > 1) {
             final String msg = (minValue == Double.MIN_VALUE ?
-                String.format("%s must to be a percentage value lower or equal to 1.0, where 1.0 is 100%.", fieldName) :
-                String.format("%s must to be a percentage value between [%.1f and 1.0], where 1.0 is 100%.", fieldName, minValue)
+                String.format("%s must to be a percentage value lower or equal to 1.0, where 1.0 is 100%%.", fieldName) :
+                String.format("%s must to be a percentage value between [%.1f and 1.0], where 1.0 is 100%%.", fieldName, minValue)
             );
             throw new IllegalArgumentException(msg);
         }

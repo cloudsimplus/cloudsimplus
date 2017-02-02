@@ -88,7 +88,7 @@ import static java.util.Comparator.comparingDouble;
  * @author Manoel Campos da Silva Filho
  * @since CloudSim Plus 1.0
  */
-public class LoadBalancerByVmHorizontalScalingExample {
+public class LoadBalancerByHorizontalVmScalingExample {
     /**
      * The interval in which the Datacenter will schedule events.
      * As lower is this interval, sooner the processing of VMs and Cloudlets
@@ -132,13 +132,13 @@ public class LoadBalancerByVmHorizontalScalingExample {
     private int createsVms;
 
     public static void main(String[] args) {
-        new LoadBalancerByVmHorizontalScalingExample();
+        new LoadBalancerByHorizontalVmScalingExample();
     }
 
     /**
      * Default constructor that builds the simulation scenario and starts the simulation.
      */
-    public LoadBalancerByVmHorizontalScalingExample() {
+    public LoadBalancerByHorizontalVmScalingExample() {
         /*You can remove the seed to get a dynamic one, based on current computer time.
         * With a dynamic seed you will get different results at each simulation run.*/
         final long seed = 1;

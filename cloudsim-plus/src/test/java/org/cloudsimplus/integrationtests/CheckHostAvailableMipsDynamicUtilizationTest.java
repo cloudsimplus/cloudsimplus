@@ -107,7 +107,7 @@ public final class CheckHostAvailableMipsDynamicUtilizationTest {
                 .createAndSubmitVms(NUMBER_OF_VMS);
 
         utilizationModel = new UtilizationModelDynamic()
-                            .setUtilizationIncrementFunction((timeSpan, initialUsage) -> initialUsage + (timeSpan * 0.25));
+                            .setUtilizationUpdateFunction(um -> um.getUtilization() + um.getTimeSpan()*0.25);
         brokerBuilder.getCloudletBuilder()
                 .setLength(CLOUDLET_LENGTH)
                 .setUtilizationModelCpu(utilizationModel)

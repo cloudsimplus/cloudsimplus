@@ -40,9 +40,19 @@ getOverloadPredicate
 .. java:method::  Predicate<Vm> getOverloadPredicate()
    :outertype: VmScaling
 
-   Gets a \ :java:ref:`Predicate`\  that defines when \ :java:ref:`Vm <getVm()>`\  is overloaded or not, that will make the Vm's broker to dynamically create a new Vm to balance the load of new arrived Cloudlets.
+   Gets a \ :java:ref:`Predicate`\  that defines when \ :java:ref:`Vm <getVm()>`\  is overloaded or not, that will make the Vm's broker to dynamically scale the VM up.
 
    **See also:** :java:ref:`.setOverloadPredicate(Predicate)`
+
+getUnderloadPredicate
+^^^^^^^^^^^^^^^^^^^^^
+
+.. java:method::  Predicate<Vm> getUnderloadPredicate()
+   :outertype: VmScaling
+
+   Gets a \ :java:ref:`Predicate`\  that defines when \ :java:ref:`Vm <getVm()>`\  is underloaded or not, that will make the Vm's broker to dynamically scale Vm down.
+
+   **See also:** :java:ref:`.setUnderloadPredicate(Predicate)`
 
 getVm
 ^^^^^
@@ -52,16 +62,16 @@ getVm
 
    Gets the \ :java:ref:`Vm`\  that this Load Balancer is linked to.
 
-requestUpScalingIfOverloaded
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+requestScalingIfPredicateMatch
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-.. java:method::  boolean requestUpScalingIfOverloaded(double time)
+.. java:method::  boolean requestScalingIfPredicateMatch(double time)
    :outertype: VmScaling
 
-   Requests a \ :java:ref:`horizontal <HorizontalVmScaling>`\  or \ :java:ref:`vertical <VerticalVmScaling>`\  scale if the Vm is overloaded. The type of scale depends on implementing classes. The scaling request will be sent to the broker only if the \ :java:ref:`getOverloadPredicate()`\  returns true.
+   Requests VM to be scaled up or down if it is over or underloaded, respectively. The scaling request will be sent to the broker only if the \ :java:ref:`over <getOverloadPredicate()>`\  or \ :java:ref:`underload <getUnderloadPredicate()>`\  condition meets.
 
    :param time: current simulation time
-   :return: true if the Vm is overloaded and and up scaling request was sent to the broker, false otherwise
+   :return: true if the Vm is over or underloaded and up or down scaling request was sent to the broker, false otherwise
 
 setOverloadPredicate
 ^^^^^^^^^^^^^^^^^^^^
@@ -69,9 +79,19 @@ setOverloadPredicate
 .. java:method::  VmScaling setOverloadPredicate(Predicate<Vm> predicate)
    :outertype: VmScaling
 
-   Sets a \ :java:ref:`Predicate`\  that defines when \ :java:ref:`Vm <getVm()>`\  is overloaded or not, that will make the Vm's broker to dynamically create a new Vm to balance the load of new arrived Cloudlets.
+   Sets a \ :java:ref:`Predicate`\  that defines when \ :java:ref:`Vm <getVm()>`\  is overloaded or not, that will make the Vm's broker to dynamically scale the VM up.
 
-   :param predicate: a predicate that checks certain conditions to define that the Load Balancer's \ :java:ref:`Vm <getVm()>`\  is over utilized. The predicate receives the Vm to allow the predicate to define the over utilization condition. Such a condition can be defined, for instance, based on Vm's \ :java:ref:`Vm.getCpuPercentUse(double)`\  CPU usage}.
+   :param predicate: a predicate that checks certain conditions to define that the \ :java:ref:`Vm <getVm()>`\  is over utilized. The predicate receives the Vm to allow the it to define the over utilization condition. Such a condition can be defined, for instance, based on Vm's \ :java:ref:`Vm.getCpuPercentUse(double)`\  CPU usage} and/or any other VM resource usage.
+
+setUnderloadPredicate
+^^^^^^^^^^^^^^^^^^^^^
+
+.. java:method::  VmScaling setUnderloadPredicate(Predicate<Vm> predicate)
+   :outertype: VmScaling
+
+   Sets a \ :java:ref:`Predicate`\  that defines when \ :java:ref:`Vm <getVm()>`\  is underloaded or not, that will make the Vm's broker to dynamically scale Vm down.
+
+   :param predicate: a predicate that checks certain conditions to define that the \ :java:ref:`Vm <getVm()>`\  is under utilized. The predicate receives the Vm to allow the it to define the over utilization condition. Such a condition can be defined, for instance, based on Vm's \ :java:ref:`Vm.getCpuPercentUse(double)`\  CPU usage} and/or any other VM resource usage.
 
 setVm
 ^^^^^
