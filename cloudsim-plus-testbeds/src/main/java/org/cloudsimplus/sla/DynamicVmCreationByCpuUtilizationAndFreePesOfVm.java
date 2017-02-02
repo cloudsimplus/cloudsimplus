@@ -74,8 +74,10 @@ import org.cloudsimplus.sla.readJsonFile.ResponseTime;
 import org.cloudsimplus.sla.readJsonFile.SlaReader;
 
 /**
- * An example that creates VMs dinamically in runtime, respecting the cpu
- * utilization limit and the number of free pes of each VM.
+ * Example of dynamic creation of vm at runtime, respecting the
+ * cpu usage limit and the free number of each VM, thus 
+ * selecting an "ideal" VM for a given cloudlet, which will 
+ * then minimize Cloudlet response time.
  *
  * @author raysaoliveira
  */
@@ -143,7 +145,7 @@ public class DynamicVmCreationByCpuUtilizationAndFreePesOfVm {
 
         simulation.addOnClockTickListener(this::createNewCloudlets);
         simulation.addOnClockTickListener(this::printVmsCpuUsage);
-       
+
         createDatacenter();
         broker0 = new DatacenterBrokerSimple(simulation);
         broker0.setVmMapper(this::selectVmForCloudlet);
@@ -155,9 +157,9 @@ public class DynamicVmCreationByCpuUtilizationAndFreePesOfVm {
         broker0.submitCloudletList(cloudletList);
 
         simulation.start();
-        
+
         responseTimeCloudletSimulation(cloudletList);
-        
+
         printSimulationResults();
     }
 
@@ -386,8 +388,8 @@ public class DynamicVmCreationByCpuUtilizationAndFreePesOfVm {
             soma += rt;
         }
 
-        System.out.printf("\t\t\n Response Time simulation: %.2f \n Response Time contrato SLA: %.2f"
-                , soma / quantCloudlets , getResponseTimeSlaContract());
+        System.out.printf("\t\t\n Response Time simulation: %.2f \n Response Time contrato SLA: %.2f",
+                 soma / quantCloudlets, getResponseTimeSlaContract());
     }
 
     /**
