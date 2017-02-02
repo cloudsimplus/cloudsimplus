@@ -186,12 +186,7 @@ public abstract class DatacenterBrokerAbstract extends CloudSimEntity implements
      * the simulation has started. This avoid the developer to
      * dynamically create brokers just to create VMs or Cloudlets during
      * simulation execution.</p>
-<<<<<<< HEAD
      * @param list {@inheritDoc}
-=======
-     *
-     * @param {@inheritDoc}
->>>>>>> upstream/master
      * @see #submitCloudletList(List, double)
      */
     @Override
@@ -688,16 +683,9 @@ public abstract class DatacenterBrokerAbstract extends CloudSimEntity implements
         return lastSelectedVm;
     }
 
-    /**
-     * Gets the total number of cloudlets created inside some Vm.
-     */
-    protected int getCloudletsCreated() {
-        return cloudletsCreated;
-    }
-
     @Override
-    public long getNumberOfCloudletCreationRequests() {
-        return cloudletCreationRequestsMap.size();
+    public Set<Cloudlet> getCloudletsCreatedList() {
+        return cloudletCreationRequestsMap.keySet();
     }
 
     @Override

@@ -825,8 +825,6 @@ public interface Cloudlet extends UniquelyIdentificable, Delayable, Comparable<C
      */
     Simulation getSimulation();
 
-    double getResponseTime();
-
     /**
      * An attribute that implements the Null Object Design Pattern for {@link Cloudlet}
      * objects.
@@ -907,6 +905,5 @@ public interface Cloudlet extends UniquelyIdentificable, Delayable, Comparable<C
         @Override public boolean setWallClockTime(double wallTime, double actualCpuTime) { return false; }
         @Override public void setExecStartTime(double clockTime) {}
         @Override public double registerArrivalInDatacenter() { return -1; }
-        @Override public double getResponseTime() { return -1; }
     };
 }

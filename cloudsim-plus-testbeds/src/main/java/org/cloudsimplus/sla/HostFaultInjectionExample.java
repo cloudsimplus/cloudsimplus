@@ -159,7 +159,6 @@ public class HostFaultInjectionExample {
 
     public HostFaultInjectionExample() {
         //  Initialize the CloudSim package.
-        int num_user = 1; // number of cloud users
         this.cloudsim = new CloudSim();
         Log.disable();
 

@@ -8,6 +8,7 @@ package org.cloudbus.cloudsim.brokers;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.Set;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
@@ -192,7 +193,12 @@ public interface DatacenterBroker extends SimEntity {
      * @param vmMapper the Vm mapper function to set
      */
     void setVmMapper(Function<Cloudlet, Vm> vmMapper);
-
+    
+    /**
+     * Gets a <b>read-only</b> list of cloudlets created inside some Vm.
+     * @return the list of created Cloudlets
+     */
+    public Set<Cloudlet> getCloudletsCreatedList();
 
     /**
      * An attribute that implements the Null Object Design Pattern for {@link DatacenterBroker}
@@ -305,11 +311,6 @@ public interface DatacenterBroker extends SimEntity {
         }
 
         @Override
-        public long getNumberOfCloudletCreationRequests() {
-            return 0;
-        }
-
-        @Override
         public void shutdownEntity() {
         }
 
@@ -329,12 +330,10 @@ public interface DatacenterBroker extends SimEntity {
         @Override
         public void setVmMapper(Function<Cloudlet, Vm> vmMapper) {
         }
-    };
 
-    /**
-     * Gets the total number of Cloudlet creation requests received up to now.
-     *
-     * @return
-     */
-    long getNumberOfCloudletCreationRequests();
+        @Override
+        public Set<Cloudlet> getCloudletsCreatedList() {
+            return Collections.EMPTY_SET;
+        }
+    };
 }

@@ -136,6 +136,9 @@ public class HostFaultInjection extends CloudSimEntity {
                         pesSumOfWorkingVms, vm.getId(), vm.getNumberOfPes());
                 System.out.println("Vm failed -> " + vm.getId());
             } else {
+                System.out.println("Vm not failed -> " + vm.getId() +
+                        " with " + vm.getNumberOfPes() + "PEs" + 
+                                " executed in host: " + vm.getHost());
                 break;
             }
         }
