@@ -159,7 +159,7 @@ at a terminal.
 
 <a id="maven"></a>
 
-## Adding it as as maven dependency into your own project
+## Adding it as a maven dependency into your own project
 
 You can add CloudSim Plus API module, that is the only one required to build simulations, as a dependency inside the pom.xml file or your own maven project,
 as presened below (check if the informed version is the latest one). By this way you can start building your simulations from the scratch.
@@ -201,7 +201,7 @@ List<Pe> hostPes = new ArrayList<>(1);
 hostPes.add(new PeSimple(20000, new PeProvisionerSimple()));
 Host host0 = new HostSimple(0, 100000, hostPes);
 host0.setRamProvisioner(new ResourceProvisionerSimple(new Ram(10000)))
-     .setBwProvisioner(new ResourceProvisionerSimple(new Bandwidth(100000)));
+     .setBwProvisioner(new ResourceProvisionerSimple(new Bandwidth(100000)))
      .setVmScheduler(new VmSchedulerSpaceShared());
 hostList.add(host0);
 

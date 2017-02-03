@@ -41,7 +41,7 @@ public class HostSimple implements Host {
      */
     private int id;
 
-    private RawStorage storage;
+    private Storage storage;
 
     /**
      * @see #getRamProvisioner()
@@ -537,7 +537,7 @@ public class HostSimple implements Host {
 
     private Host setStorage(long size) {
         checkSimulationIsRunningAndAttemptedToChangeHost("Storage");
-        this.storage = new RawStorage(size);
+        this.storage = new Storage(size);
         return this;
     }
 

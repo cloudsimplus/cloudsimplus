@@ -98,7 +98,7 @@ public class VmSimple implements Vm {
      * The VM's storage resource that represents the Vm size in disk.
      * This object contains information about capacity and allocation.
      */
-    private RawStorage storage;
+    private Storage storage;
 
     /**
      * The VM's RAM resource, containing information about capacity and
@@ -150,7 +150,7 @@ public class VmSimple implements Vm {
 
         setRam(new Ram(1024));
         setBw(new Bandwidth(1000));
-        setStorage(new RawStorage(1024));
+        setStorage(new Storage(1024));
 
         setSubmissionDelay(0);
         setVmm("Xen");
@@ -418,10 +418,10 @@ public class VmSimple implements Vm {
     }
 
     /**
-     * Sets a new {@link RawStorage} resource for the Vm.
+     * Sets a new {@link Storage} resource for the Vm.
      * @param storage the RawStorage resource to set
      */
-    private void setStorage(RawStorage storage){
+    private void setStorage(Storage storage){
         Objects.requireNonNull(storage);
         this.storage = storage;
     }
@@ -431,7 +431,7 @@ public class VmSimple implements Vm {
         if(this.isCreated()){
             throw new UnsupportedOperationException("Storage size can just be changed when the Vm was not created inside a Host yet.");
         }
-        setStorage(new RawStorage(size));
+        setStorage(new Storage(size));
         return this;
     }
 
