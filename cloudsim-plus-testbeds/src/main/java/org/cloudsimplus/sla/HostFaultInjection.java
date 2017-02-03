@@ -116,7 +116,7 @@ public class HostFaultInjection extends CloudSimEntity {
         this.failed = numberOfFailedPes > 0;
         for (int i = 0; i < numberOfFailedPes; i++) {
             host.getPeList().get(i).setStatus(Pe.Status.FAILED);
-            //  Log.printLine(CloudSim.clock() + " ---> Host " + host.getId() + " FAILURE...\n");
+            // Log.printLine(CloudSim.clock() + " ---> Host " + host.getId() + " FAILURE...\n");
         }
 
         Comparator<Vm> sortVmsDescendinglyByPesNumber

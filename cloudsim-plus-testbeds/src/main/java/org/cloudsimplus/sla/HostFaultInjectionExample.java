@@ -172,7 +172,7 @@ public class HostFaultInjectionExample {
         DatacenterBroker broker = new DatacenterBrokerSimple(cloudsim);
 
         vmlist = new ArrayList<>();
-        vmlist.addAll(createVM(broker, VM_PES1, 2));
+        vmlist.addAll(createVM(broker, VM_PES1, 4));
         vmlist.addAll(createVM(broker, VM_PES2, 2));
 
         // submit vm list to the broker
