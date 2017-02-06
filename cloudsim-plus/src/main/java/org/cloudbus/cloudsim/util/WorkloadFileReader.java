@@ -31,9 +31,8 @@ import org.cloudbus.cloudsim.utilizationmodels.UtilizationModelFull;
 /**
  * This class is responsible for reading resource traces from a file and
  * creating a list of ({@link Cloudlet Cloudlets}) (jobs). By default, it follows
- * the Standard Workload Format (*.swf files) from
- * <a href="http://www.cs.huji.ac.il/labs/parallel/workload/">
- * The Hebrew University of Jerusalem</a>. However, you can use other formats by
+ * the <a href="http://www.cs.huji.ac.il/labs/parallel/workload/">Standard Workload Format (*.swf files)</a>
+ * from <a href="new.huji.ac.il/en">The Hebrew University of Jerusalem</a>. However, you can use other formats by
  * calling the methods below before running the simulation:
  * <ul>
  * <li> {@link #setComment(String)}
