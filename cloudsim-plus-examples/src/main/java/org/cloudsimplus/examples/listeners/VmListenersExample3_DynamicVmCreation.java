@@ -54,6 +54,7 @@ import org.cloudbus.cloudsim.vms.Vm;
 import org.cloudbus.cloudsim.vms.VmSimple;
 import org.cloudbus.cloudsim.allocationpolicies.VmAllocationPolicySimple;
 import org.cloudbus.cloudsim.core.CloudSim;
+import org.cloudsimplus.listeners.EventInfo;
 import org.cloudsimplus.listeners.EventListener;
 import org.cloudsimplus.listeners.VmHostEventInfo;
 import org.cloudbus.cloudsim.provisioners.PeProvisionerSimple;
@@ -113,13 +114,6 @@ public class VmListenersExample3_DynamicVmCreation {
     private int numberOfFinishedVms = 0;
 
     /**
-     * The listener object that will be created in order to be notified when
-     * a host is deallocated for a VM. The same listener is used for all created VMs.
-     * @see #createVmListener()
-     */
-    private final EventListener<VmHostEventInfo> onHostDeallocationListener;
-
-    /**
      * Starts the example execution, calling the class constructor\
      * to build and run the simulation.
      *
@@ -143,8 +137,6 @@ public class VmListenersExample3_DynamicVmCreation {
         this.cloudletList = new ArrayList<>();
         this.datacenter = createDatacenter();
 
-        this.onHostDeallocationListener = createVmListener();
-
         //Creates the first VM and its cloudlets
         createAndSubmitVmForNewBroker();
 
@@ -159,25 +151,22 @@ public class VmListenersExample3_DynamicVmCreation {
     }
 
     /**
-     * Creates the listener object that will be notified when a VM
+     * A handler method that will be called when a VM
      * is removed from a host (in this case meaning that it has finished executing
      * its cloudlets). All VMs will use this same listener.
      *
-     * <p>The Listener is created using Java 8 Lambda Expressions.</p>
+     * @param eventInfo information about the happened event
      *
-     * @return the created Listener
      * @see #createVm(int, DatacenterBroker)
      */
-    private EventListener<VmHostEventInfo> createVmListener() {
-        return eventInfo -> {
-            numberOfFinishedVms++;
-            Log.printFormatted(
-                    "\t#EventListener: Vm %d finished running all its cloudlets at time %.0f. ",
-                    eventInfo.getVm().getId(), eventInfo.getTime());
-            Log.printFormattedLine("VMs finished so far: %d", numberOfFinishedVms);
+    private void onHostDeallocationListener(VmHostEventInfo eventInfo) {
+        numberOfFinishedVms++;
+        Log.printFormatted(
+                "\t#EventListener: Vm %d finished running all its cloudlets at time %.0f. ",
+                eventInfo.getVm().getId(), eventInfo.getTime());
+        Log.printFormattedLine("VMs finished so far: %d", numberOfFinishedVms);
 
-            createNextVmIfNotReachedMaxNumberOfVms();
-        };
+        createNextVmIfNotReachedMaxNumberOfVms();
     }
 
     /**
@@ -253,7 +242,7 @@ public class VmListenersExample3_DynamicVmCreation {
      * @param broker the broker that will be submit the VM
      * @return the created VM
      *
-     * @see #createVmListener()
+     * @see #onHostDeallocationListener(VmHostEventInfo)
      */
     private Vm createVm(int id, DatacenterBroker broker) {
         int mips = 1000;
@@ -264,7 +253,7 @@ public class VmListenersExample3_DynamicVmCreation {
             .setRam(ram).setBw(bw).setSize(size)
             .setCloudletScheduler(new CloudletSchedulerSpaceShared())
             .setBroker(broker)
-            .addOnHostDeallocationListener(this.onHostDeallocationListener);
+            .addOnHostDeallocationListener(this::onHostDeallocationListener);
     }
 
     /**

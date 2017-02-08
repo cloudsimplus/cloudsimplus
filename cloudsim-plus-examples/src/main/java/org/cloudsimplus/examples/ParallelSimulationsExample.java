@@ -116,9 +116,11 @@ public class ParallelSimulationsExample implements Runnable {
 
         final long startTimeMilliSec = System.currentTimeMillis();
         //Uses Java 8 Streams to execute the simulation scenarios in parallel.
+        // tag::parallelExecution[]
         simulationList.parallelStream().forEach(ParallelSimulationsExample::run);
+        // end::parallelExecution[]
 
-        long finishTimeMilliSec = (System.currentTimeMillis() - startTimeMilliSec);
+        final long finishTimeMilliSec = System.currentTimeMillis() - startTimeMilliSec;
 
         Log.enable();
         Log.printFormattedLine("Time to run %d simulations: %d milliseconds", simulationList.size(), finishTimeMilliSec);
