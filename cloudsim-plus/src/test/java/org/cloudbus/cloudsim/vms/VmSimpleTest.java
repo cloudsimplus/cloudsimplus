@@ -245,7 +245,6 @@ public class VmSimpleTest {
 
     @Test
     public void testRemoveOnHostAllocationListener_Null() {
-        vm.addOnHostAllocationListener(null);
         assertFalse(vm.removeOnHostAllocationListener(null));
     }
 
@@ -263,26 +262,26 @@ public class VmSimpleTest {
 
     @Test
     public void testRemoveOnVmCreationFailureListener_Null() {
-        assertFalse(vm.removeOnVmCreationFailureListener(null));
+        assertFalse(vm.removeOnCreationFailureListener(null));
     }
 
     @Test
     public void testRemoveOnVmCreationFailureListener() {
         EventListener<VmDatacenterEventInfo> listener = (info) -> {};
-        vm.addOnVmCreationFailureListener(listener);
-        assertTrue(vm.removeOnVmCreationFailureListener(listener));
+        vm.addOnCreationFailureListener(listener);
+        assertTrue(vm.removeOnCreationFailureListener(listener));
     }
 
     @Test
     public void testRemoveOnUpdateVmProcessingListener_Null() {
-        assertFalse(vm.removeOnUpdateVmProcessingListener(null));
+        assertFalse(vm.removeOnUpdateProcessingListener(null));
     }
 
     @Test
     public void testRemoveOnUpdateVmProcessingListener() {
         EventListener<VmHostEventInfo> listener = (info) -> {};
-        vm.addOnUpdateVmProcessingListener(listener);
-        assertTrue(vm.removeOnUpdateVmProcessingListener(listener));
+        vm.addOnUpdateProcessingListener(listener);
+        assertTrue(vm.removeOnUpdateProcessingListener(listener));
     }
 
     @Test

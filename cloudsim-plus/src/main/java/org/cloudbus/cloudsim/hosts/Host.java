@@ -332,23 +332,24 @@ public interface Host extends Identificable, Resourceful, Comparable<Host> {
     void destroyAllVms();
 
     /**
-     * Gets the listener object that will be notified every time when
+     * Adds a listener object that will be notified every time when
      * the host updates the processing of all its {@link Vm VMs}.
      *
-     * @return the onUpdateVmsProcessingListener
-     * @see #updateVmsProcessing(double)
-     */
-    EventListener<HostUpdatesVmsProcessingEventInfo> getOnUpdateVmsProcessingListener();
-
-    /**
-     * Sets the listener object that will be notified every time when
-     * the host updates the processing of all its {@link Vm VMs}.
-     *
-     * @param onUpdateVmsProcessingListener the onUpdateVmsProcessingListener to set
+     * @param listener the onUpdateVmsProcessingListener to add
      * @return
      * @see #updateVmsProcessing(double)
      */
-    Host setOnUpdateVmsProcessingListener(EventListener<HostUpdatesVmsProcessingEventInfo> onUpdateVmsProcessingListener);
+    Host addOnUpdateVmsProcessingListener(EventListener<HostUpdatesVmsProcessingEventInfo> listener);
+
+    /**
+     * Removes a listener object from the OnUpdateVmsProcessingListener List.
+     *
+     * @param listener the listener to remove
+     * @return true if the listener was found and removed, false otherwise
+     * @see #updateVmsProcessing(double)
+     * @param listener
+     */
+    boolean removeOnUpdateVmsProcessingListener(EventListener<HostUpdatesVmsProcessingEventInfo> listener);
 
     boolean setFailed(boolean failed);
 
@@ -418,8 +419,8 @@ public interface Host extends Identificable, Resourceful, Comparable<Host> {
         @Override public boolean vmCreate(Vm vm) { return false; }
         @Override public void destroyVm(Vm vm) {}
         @Override public void destroyAllVms() {}
-        @Override public EventListener<HostUpdatesVmsProcessingEventInfo> getOnUpdateVmsProcessingListener() { return EventListener.NULL; }
-        @Override public Host setOnUpdateVmsProcessingListener(EventListener<HostUpdatesVmsProcessingEventInfo> onUpdateVmsProcessingListener) { return Host.NULL; }
+        @Override public boolean removeOnUpdateVmsProcessingListener(EventListener<HostUpdatesVmsProcessingEventInfo> listener) { return false; }
+        @Override public Host addOnUpdateVmsProcessingListener(EventListener<HostUpdatesVmsProcessingEventInfo> listener) { return Host.NULL; }
         @Override public long getAvailableStorage() { return 0L; }
         @Override public boolean setFailed(boolean failed){return false;}
         @Override public Simulation getSimulation() { return Simulation.NULL; }

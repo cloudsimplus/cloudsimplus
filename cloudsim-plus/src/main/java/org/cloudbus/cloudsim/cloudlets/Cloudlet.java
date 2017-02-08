@@ -783,7 +783,7 @@ public interface Cloudlet extends UniquelyIdentificable, Delayable, Comparable<C
      * @param listener the listener to add
      * @see #getFinishedLengthSoFar()
      */
-    Cloudlet addOnUpdateCloudletProcessingListener(EventListener<CloudletVmEventInfo> listener);
+    Cloudlet addOnUpdateProcessingListener(EventListener<CloudletVmEventInfo> listener);
 
     /**
      * Removes a listener from the onUpdateCloudletProcessingListener List.
@@ -791,7 +791,7 @@ public interface Cloudlet extends UniquelyIdentificable, Delayable, Comparable<C
      * @param listener the listener to remove
      * @return true if the listener was found and removed, false otherwise
      */
-    boolean removeOnUpdateCloudletProcessingListener(EventListener<CloudletVmEventInfo> listener);
+    boolean removeOnUpdateProcessingListener(EventListener<CloudletVmEventInfo> listener);
 
     /**
      * Adds an OnCloudletFinishEventListener object that will be notified when a cloudlet finishes
@@ -800,16 +800,16 @@ public interface Cloudlet extends UniquelyIdentificable, Delayable, Comparable<C
      * @param listener the listener to add
      * @return
      */
-    Cloudlet addOnCloudletFinishListener(EventListener<CloudletVmEventInfo> listener);
+    Cloudlet addOnFinishListener(EventListener<CloudletVmEventInfo> listener);
 
     /**
      * Removes a listener from the onCloudletFinishEventListener List
      *
      * @param listener the listener to remove
      * @return true if the listener was found and removed, false otherwise
-     * @see #addOnCloudletFinishListener(EventListener)
+     * @see #addOnFinishListener(EventListener)
      */
-    boolean removeOnCloudletFinishListener(EventListener<CloudletVmEventInfo> listener);
+    boolean removeOnFinishListener(EventListener<CloudletVmEventInfo> listener);
 
     /**
      * Notifies all registered listeners about the update on Cloudlet processing.
@@ -817,7 +817,7 @@ public interface Cloudlet extends UniquelyIdentificable, Delayable, Comparable<C
      * <p><b>This method is used just internally and must not be called directly.</b></p>
      * @param time the time the event happened
      */
-    void notifyOnCloudletProcessingListeners(double time);
+    void notifyOnUpdateProcessingListeners(double time);
 
     /**
      * Gets the CloudSim instance that represents the simulation the Entity is related to.
@@ -891,12 +891,12 @@ public interface Cloudlet extends UniquelyIdentificable, Delayable, Comparable<C
         @Override public Cloudlet setUtilizationModelCpu(UtilizationModel utilizationModelCpu) { return Cloudlet.NULL; }
         @Override public Cloudlet setUtilizationModelRam(UtilizationModel utilizationModelRam) { return Cloudlet.NULL; }
         @Override public Cloudlet setVm(Vm vm) { return Cloudlet.NULL; }
-        @Override public boolean removeOnCloudletFinishListener(EventListener<CloudletVmEventInfo> listener) { return false;}
-        @Override public Cloudlet addOnCloudletFinishListener(EventListener<CloudletVmEventInfo> listener) { return Cloudlet.NULL; }
-        @Override public void notifyOnCloudletProcessingListeners(double time) {}
+        @Override public boolean removeOnFinishListener(EventListener<CloudletVmEventInfo> listener) { return false;}
+        @Override public Cloudlet addOnFinishListener(EventListener<CloudletVmEventInfo> listener) { return Cloudlet.NULL; }
+        @Override public void notifyOnUpdateProcessingListeners(double time) {}
         @Override public Simulation getSimulation() { return Simulation.NULL; }
-        @Override public boolean removeOnUpdateCloudletProcessingListener(EventListener<CloudletVmEventInfo> listener) { return false; }
-        @Override public Cloudlet addOnUpdateCloudletProcessingListener(EventListener<CloudletVmEventInfo> listener) { return Cloudlet.NULL; }
+        @Override public boolean removeOnUpdateProcessingListener(EventListener<CloudletVmEventInfo> listener) { return false; }
+        @Override public Cloudlet addOnUpdateProcessingListener(EventListener<CloudletVmEventInfo> listener) { return Cloudlet.NULL; }
         @Override public double getSubmissionDelay() { return 0; }
         @Override public void setSubmissionDelay(double submissionDelay) {}
         @Override public boolean isBindToVm() { return false; }

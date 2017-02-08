@@ -35,8 +35,8 @@ import org.cloudbus.cloudsim.vms.Vm;
  * @author Manoel Campos da Silva Filho
  * @since CloudSim Plus 1.0
  *
- * @see Cloudlet#addOnUpdateCloudletProcessingListener(EventListener)
- * @see Cloudlet#addOnCloudletFinishListener(EventListener)
+ * @see Cloudlet#addOnUpdateProcessingListener(EventListener)
+ * @see Cloudlet#addOnFinishListener(EventListener)
  */
 public interface CloudletVmEventInfo extends CloudletEventInfo, VmEventInfo {
     /**
@@ -46,8 +46,8 @@ public interface CloudletVmEventInfo extends CloudletEventInfo, VmEventInfo {
      * @param cloudlet the {@link Cloudlet} that fired the event
      * @param vm the {@link Vm} where the Cloudlet is or was running into,
      *            depending on the fired event, such as the
-     *            {@link Cloudlet#addOnUpdateCloudletProcessingListener(EventListener) OnUpdateCloudletProcessing}
-     *           or {@link Cloudlet#addOnCloudletFinishListener(EventListener) OnCloudletFinish}
+     *            {@link Cloudlet#addOnUpdateProcessingListener(EventListener) OnUpdateCloudletProcessing}
+     *           or {@link Cloudlet#addOnFinishListener(EventListener) OnCloudletFinish}
      */
     static CloudletVmEventInfo of(double time, Cloudlet cloudlet, Vm vm){
         return new CloudletVmEventInfo() {
@@ -64,8 +64,8 @@ public interface CloudletVmEventInfo extends CloudletEventInfo, VmEventInfo {
      * @param cloudlet the {@link Cloudlet} that fired the event
      * @param vm the {@link Vm} where the Cloudlet is or was running into,
      *            depending on the fired event, such as the
-     *            {@link Cloudlet#addOnUpdateCloudletProcessingListener(EventListener) OnUpdateCloudletProcessing}
-     *           or {@link Cloudlet#addOnCloudletFinishListener(EventListener) OnCloudletFinish}
+     *            {@link Cloudlet#addOnUpdateProcessingListener(EventListener) OnUpdateCloudletProcessing}
+     *           or {@link Cloudlet#addOnFinishListener(EventListener) OnCloudletFinish}
      */
     static CloudletVmEventInfo of(Cloudlet cloudlet, Vm vm){
         return of(cloudlet.getSimulation().clock(), cloudlet, vm);

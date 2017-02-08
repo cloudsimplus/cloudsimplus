@@ -72,9 +72,9 @@ import org.junit.Before;
  *
  * @see Vm#addOnHostAllocationListener(EventListener)
  * @see Vm#addOnHostDeallocationListener(EventListener)
- * @see Vm#addOnVmCreationFailureListener(EventListener)
+ * @see Vm#addOnCreationFailureListener(EventListener)
  * @see CloudSim#addOnEventProcessingListener(EventListener)
- * @see Cloudlet#addOnCloudletFinishListener(EventListener)
+ * @see Cloudlet#addOnFinishListener(EventListener)
  *
  * @author Manoel Campos da Silva Filho
  */
@@ -133,7 +133,7 @@ public final class VmCreationFailureIntegrationTest {
     }
 
     /**
-     * A lambda function used by an {@link Vm#addOnVmCreationFailureListener(EventListener)}  }
+     * A lambda function used by an {@link Vm#addOnCreationFailureListener(EventListener)}  }
      * that will be called every time a Vm failed to be created
      * due to lack of host resources.
      *
@@ -170,7 +170,7 @@ public final class VmCreationFailureIntegrationTest {
 
 
     /**
-     * A lambda function used by an {@link Vm#addOnUpdateVmProcessingListener(EventListener)}  }
+     * A lambda function used by an {@link Vm#addOnUpdateProcessingListener(EventListener)}  }
      * that will be called every time the processing of a Vm is updated inside its host.
      * Considering there is only one Host and only 1 VM where its cloudlets use a
      * {@link UtilizationModelFull} for CPU utilization model,

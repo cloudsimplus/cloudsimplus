@@ -84,9 +84,9 @@ public class HostSimple implements Host {
     private Datacenter datacenter;
 
     /**
-     * @see #getOnUpdateVmsProcessingListener()
+     * @see Host#removeOnUpdateVmsProcessingListener(EventListener)
      */
-    private EventListener<HostUpdatesVmsProcessingEventInfo> onUpdateVmsProcessingListener;
+    private Set<EventListener<HostUpdatesVmsProcessingEventInfo>> onUpdateVmsProcessingListeners;
 
     /**
      * @see #getSimulation()
@@ -119,7 +119,7 @@ public class HostSimple implements Host {
         setPeList(peList);
         setFailed(false);
         setDatacenter(Datacenter.NULL);
-        this.onUpdateVmsProcessingListener = EventListener.NULL;
+        this.onUpdateVmsProcessingListeners = new HashSet<>();
         this.resources = new ArrayList();
         this.provisioners = new ArrayList();
     }
@@ -162,9 +162,13 @@ public class HostSimple implements Host {
             nextSimulationTime = Math.min(time, nextSimulationTime);
         }
 
-        onUpdateVmsProcessingListener.update(
-            HostUpdatesVmsProcessingEventInfo.of(this, nextSimulationTime));
+        notifyOnUpdateVmsProcessingListeners(nextSimulationTime);
         return nextSimulationTime;
+    }
+
+    private void notifyOnUpdateVmsProcessingListeners(double nextSimulationTime) {
+        final HostUpdatesVmsProcessingEventInfo info = HostUpdatesVmsProcessingEventInfo.of(this, nextSimulationTime);
+        onUpdateVmsProcessingListeners.forEach(l -> l.update(info));
     }
 
     @Override
@@ -513,13 +517,14 @@ public class HostSimple implements Host {
     }
 
     @Override
-    public EventListener<HostUpdatesVmsProcessingEventInfo> getOnUpdateVmsProcessingListener() {
-        return onUpdateVmsProcessingListener;
+    public boolean removeOnUpdateVmsProcessingListener(EventListener<HostUpdatesVmsProcessingEventInfo> listener) {
+        return onUpdateVmsProcessingListeners.remove(listener);
     }
 
     @Override
-    public Host setOnUpdateVmsProcessingListener(EventListener<HostUpdatesVmsProcessingEventInfo> onUpdateVmsProcessingListener) {
-        this.onUpdateVmsProcessingListener = Objects.isNull(onUpdateVmsProcessingListener) ? EventListener.NULL : onUpdateVmsProcessingListener;
+    public Host addOnUpdateVmsProcessingListener(EventListener<HostUpdatesVmsProcessingEventInfo> listener) {
+        Objects.requireNonNull(listener);
+        this.onUpdateVmsProcessingListeners.add(listener);
         return this;
     }
 

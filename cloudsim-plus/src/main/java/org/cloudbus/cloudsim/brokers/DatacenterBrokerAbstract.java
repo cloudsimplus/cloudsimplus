@@ -395,7 +395,7 @@ public abstract class DatacenterBrokerAbstract extends CloudSimEntity implements
      * @param datacenter id of the Datacenter where the request to create
      */
     protected void processFailedVmCreationInDatacenter(Vm vm, Datacenter datacenter) {
-        vm.notifyOnVmCreationFailureListeners(datacenter);
+        vm.notifyOnCreationFailureListeners(datacenter);
         Log.printFormattedLine(
             "%.2f: %s: Creation of VM #%s failed in Datacenter #%s",
             getSimulation().clock(), getName(), vm.getId(), datacenter.getId());

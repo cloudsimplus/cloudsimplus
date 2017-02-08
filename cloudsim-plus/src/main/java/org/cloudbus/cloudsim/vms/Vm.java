@@ -191,7 +191,7 @@ public interface Vm extends UniquelyIdentificable, Delayable, Resourceful, Compa
      * @return
      * @see #updateVmProcessing(double, java.util.List)
      */
-    Vm addOnVmCreationFailureListener(EventListener<VmDatacenterEventInfo> listener);
+    Vm addOnCreationFailureListener(EventListener<VmDatacenterEventInfo> listener);
 
     /**
      * Adds a listener object that will be notified every time when
@@ -201,7 +201,7 @@ public interface Vm extends UniquelyIdentificable, Delayable, Resourceful, Compa
      * @return
      * @see #updateVmProcessing(double, java.util.List)
      */
-    Vm addOnUpdateVmProcessingListener(EventListener<VmHostEventInfo> listener);
+    Vm addOnUpdateProcessingListener(EventListener<VmHostEventInfo> listener);
 
     /**
      * Notifies all registered listeners when a {@link Host} is allocated to the {@link Vm}.
@@ -225,7 +225,7 @@ public interface Vm extends UniquelyIdentificable, Delayable, Resourceful, Compa
      * <p><b>This method is used just internally and must not be called directly.</b></p>
      * @param failedDatacenter the Datacenter where the VM creation failed
      */
-    void notifyOnVmCreationFailureListeners(Datacenter failedDatacenter);
+    void notifyOnCreationFailureListeners(Datacenter failedDatacenter);
 
     /**
      * Removes a listener from the onUpdateVmProcessingListener List.
@@ -233,7 +233,7 @@ public interface Vm extends UniquelyIdentificable, Delayable, Resourceful, Compa
      * @param listener the listener to remove
      * @return true if the listener was found and removed, false otherwise
      */
-    boolean removeOnUpdateVmProcessingListener(EventListener<VmHostEventInfo> listener);
+    boolean removeOnUpdateProcessingListener(EventListener<VmHostEventInfo> listener);
 
     /**
      * Removes a listener from the onHostAllocationListener List.
@@ -257,7 +257,7 @@ public interface Vm extends UniquelyIdentificable, Delayable, Resourceful, Compa
      * @param listener the listener to remove
      * @return true if the listener was found and removed, false otherwise
      */
-    boolean removeOnVmCreationFailureListener(EventListener<VmDatacenterEventInfo> listener);
+    boolean removeOnCreationFailureListener(EventListener<VmDatacenterEventInfo> listener);
 
     /**
      * Gets bandwidth resource assigned to the Vm,
@@ -559,15 +559,15 @@ public interface Vm extends UniquelyIdentificable, Delayable, Resourceful, Compa
         @Override public int getNumberOfPes() { return 0; }
         @Override public Vm addOnHostAllocationListener(EventListener<VmHostEventInfo> listener) { return this; }
         @Override public Vm addOnHostDeallocationListener(EventListener<VmHostEventInfo> listener) { return this; }
-        @Override public Vm addOnVmCreationFailureListener(EventListener<VmDatacenterEventInfo> listener) { return this; }
-        @Override public Vm addOnUpdateVmProcessingListener(EventListener<VmHostEventInfo> listener) { return this; }
+        @Override public Vm addOnCreationFailureListener(EventListener<VmDatacenterEventInfo> listener) { return this; }
+        @Override public Vm addOnUpdateProcessingListener(EventListener<VmHostEventInfo> listener) { return this; }
         @Override public void notifyOnHostAllocationListeners() {}
         @Override public void notifyOnHostDeallocationListeners(Host deallocatedHost) {}
-        @Override public void notifyOnVmCreationFailureListeners(Datacenter failedDatacenter) {}
-        @Override public boolean removeOnUpdateVmProcessingListener(EventListener<VmHostEventInfo> listener) { return false; }
+        @Override public void notifyOnCreationFailureListeners(Datacenter failedDatacenter) {}
+        @Override public boolean removeOnUpdateProcessingListener(EventListener<VmHostEventInfo> listener) { return false; }
         @Override public boolean removeOnHostAllocationListener(EventListener<VmHostEventInfo> listener) { return false; }
         @Override public boolean removeOnHostDeallocationListener(EventListener<VmHostEventInfo> listener) { return false; }
-        @Override public boolean removeOnVmCreationFailureListener(EventListener<VmDatacenterEventInfo> listener) { return false; }
+        @Override public boolean removeOnCreationFailureListener(EventListener<VmDatacenterEventInfo> listener) { return false; }
         @Override public Resource getRam() { return Resource.NULL; }
         @Override public Resource getStorage(){ return Resource.NULL; }
         @Override public List<VmStateHistoryEntry> getStateHistory() { return Collections.emptyList(); }

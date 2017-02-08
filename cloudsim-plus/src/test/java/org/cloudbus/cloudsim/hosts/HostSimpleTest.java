@@ -280,11 +280,13 @@ public class HostSimpleTest {
     @Test
     public void testSetOnUpdateVmsProcessingListener() {
         Host host = createHostSimple(0, 1);
-        host.setOnUpdateVmsProcessingListener(null);
-        assertEquals(EventListener.NULL, host.getOnUpdateVmsProcessingListener());
-        EventListener<HostUpdatesVmsProcessingEventInfo> listener = (evt)->{};
-        host.setOnUpdateVmsProcessingListener(listener);
-        assertEquals(listener, host.getOnUpdateVmsProcessingListener());
+
+        EventListener<HostUpdatesVmsProcessingEventInfo> updateVmsProcessing = e -> {};
+        host.addOnUpdateVmsProcessingListener(updateVmsProcessing);
+        assertEquals(true, host.removeOnUpdateVmsProcessingListener(updateVmsProcessing));
+
+        host.addOnUpdateVmsProcessingListener(e -> {});
+        assertEquals(false, host.removeOnUpdateVmsProcessingListener(null));
     }
 
     @Test

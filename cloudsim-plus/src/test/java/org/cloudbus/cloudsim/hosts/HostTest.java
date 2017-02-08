@@ -72,8 +72,8 @@ public class HostTest {
         instance.destroyAllVms();
         assertTrue(instance.getVmList().isEmpty());
 
-        instance.setOnUpdateVmsProcessingListener(createMockListener());
-        assertSame(EventListener.NULL, instance.getOnUpdateVmsProcessingListener());
+        instance.addOnUpdateVmsProcessingListener(createMockListener());
+        assertSame(false, instance.removeOnUpdateVmsProcessingListener(null));
     }
 
     private Datacenter createMockDatacenter() {

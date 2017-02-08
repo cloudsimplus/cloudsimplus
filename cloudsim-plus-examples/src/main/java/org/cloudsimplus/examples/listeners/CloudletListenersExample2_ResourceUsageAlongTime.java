@@ -70,7 +70,7 @@ import org.cloudbus.cloudsim.utilizationmodels.UtilizationModelStochastic;
  * The example uses the {@link UtilizationModelStochastic}
  * to define that the usage of CPU, RAM and Bandwidth is random.
  *
- * @see Cloudlet#addOnUpdateCloudletProcessingListener(EventListener)
+ * @see Cloudlet#addOnUpdateProcessingListener(EventListener)
  * @see EventListener
  *
  * @author Manoel Campos da Silva Filho
@@ -242,7 +242,7 @@ public class CloudletListenersExample2_ResourceUsageAlongTime {
                 .setUtilizationModelBw(bwUtilizationModel)
                 .setBroker(broker)
                 .setVm(vm)
-                .addOnUpdateCloudletProcessingListener(this.onUpdateCloudletProcessingListener);
+                .addOnUpdateProcessingListener(this.onUpdateCloudletProcessingListener);
 
         return cloudlet;
     }

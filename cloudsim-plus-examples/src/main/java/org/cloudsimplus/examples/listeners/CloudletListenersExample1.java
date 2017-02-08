@@ -70,7 +70,7 @@ import org.cloudbus.cloudsim.schedulers.cloudlet.CloudletSchedulerSpaceShared;
  * The example uses the new Cloudlet listeners to get these
  * notifications while the simulation is running.
  *
- * @see Cloudlet#addOnCloudletFinishListener(EventListener)
+ * @see Cloudlet#addOnFinishListener(EventListener)
  * @see EventListener
  *
  * @author Manoel Campos da Silva Filho
@@ -223,7 +223,7 @@ public class CloudletListenersExample1 {
                     .setUtilizationModel(utilizationModel)
                     .setBroker(broker)
                     .setVm(vm)
-                    .addOnCloudletFinishListener(this.onCloudletFinishListener);
+                    .addOnFinishListener(this.onCloudletFinishListener);
 
         return cloudlet;
     }

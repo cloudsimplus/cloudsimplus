@@ -55,11 +55,11 @@ public class VmTest {
         instance.addOnHostDeallocationListener(null);
         assertFalse(instance.removeOnHostDeallocationListener(null));
 
-        instance.addOnVmCreationFailureListener(null);
-        assertFalse(instance.removeOnVmCreationFailureListener(null));
+        instance.addOnCreationFailureListener(null);
+        assertFalse(instance.removeOnCreationFailureListener(null));
 
-        instance.addOnUpdateVmProcessingListener(null);
-        assertFalse(instance.removeOnUpdateVmProcessingListener(null));
+        instance.addOnUpdateProcessingListener(null);
+        assertFalse(instance.removeOnUpdateProcessingListener(null));
 
         instance.setRam(1000);
         assertEquals(0, instance.getRam().getCapacity());

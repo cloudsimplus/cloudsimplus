@@ -117,10 +117,11 @@ public class VmSimple implements Vm {
      */
     private double submissionDelay;
 
-    private List<EventListener<VmHostEventInfo>> onHostAllocationListeners;
-    private List<EventListener<VmHostEventInfo>> onHostDeallocationListeners;
-    private List<EventListener<VmHostEventInfo>> onUpdateVmProcessingListeners;
-    private List<EventListener<VmDatacenterEventInfo>> onVmCreationFailureListeners;
+    private Set<EventListener<VmHostEventInfo>> onHostAllocationListeners;
+    private Set<EventListener<VmHostEventInfo>> onHostDeallocationListeners;
+    private Set<EventListener<VmHostEventInfo>> onUpdateProcessingListeners;
+    private Set<EventListener<VmDatacenterEventInfo>> onCreationFailureListeners;
+
     private VerticalVmScaling ramVerticalScaling;
     private VerticalVmScaling bwVerticalScaling;
 
@@ -157,10 +158,10 @@ public class VmSimple implements Vm {
         setCloudletScheduler(CloudletScheduler.NULL);
         stateHistory = new LinkedList<>();
 
-        this.onHostAllocationListeners = new ArrayList<>();
-        this.onHostDeallocationListeners = new ArrayList<>();
-        this.onVmCreationFailureListeners = new ArrayList<>();
-        this.onUpdateVmProcessingListeners = new ArrayList<>();
+        this.onHostAllocationListeners = new HashSet<>();
+        this.onHostDeallocationListeners = new HashSet<>();
+        this.onCreationFailureListeners = new HashSet<>();
+        this.onUpdateProcessingListeners = new HashSet<>();
         this.setHorizontalScaling(HorizontalVmScaling.NULL);
         this.setRamVerticalScaling(VerticalVmScaling.NULL);
         this.setBwVerticalScaling(VerticalVmScaling.NULL);
@@ -242,7 +243,7 @@ public class VmSimple implements Vm {
         }
 
         final double nextSimulationTime = getCloudletScheduler().updateVmProcessing(currentTime, mipsShare);
-        notifyOnUpdateVmProcessing();
+        notifyOnUpdateProcessingListeners();
         return nextSimulationTime;
     }
 
@@ -571,19 +572,15 @@ public class VmSimple implements Vm {
 
     @Override
     public Vm addOnHostAllocationListener(EventListener<VmHostEventInfo> listener) {
-        if (!Objects.isNull(listener)) {
-            this.onHostAllocationListeners.add(listener);
-        }
-
+        Objects.requireNonNull(listener);
+        this.onHostAllocationListeners.add(listener);
         return this;
     }
 
     @Override
     public Vm addOnHostDeallocationListener(EventListener<VmHostEventInfo> listener) {
-        if (!Objects.isNull(listener)) {
-            this.onHostDeallocationListeners.add(listener);
-        }
-
+        Objects.requireNonNull(listener);
+        this.onHostDeallocationListeners.add(listener);
         return this;
     }
 
@@ -603,31 +600,27 @@ public class VmSimple implements Vm {
     }
 
     @Override
-    public boolean removeOnVmCreationFailureListener(EventListener<VmDatacenterEventInfo> listener) {
-        return onVmCreationFailureListeners.remove(listener);
-    }
-
-    @Override
-    public Vm addOnVmCreationFailureListener(EventListener<VmDatacenterEventInfo> listener) {
-        if (!Objects.isNull(listener)) {
-            this.onVmCreationFailureListeners.add(listener);
-        }
-
+    public Vm addOnCreationFailureListener(EventListener<VmDatacenterEventInfo> listener) {
+        Objects.requireNonNull(listener);
+        this.onCreationFailureListeners.add(listener);
         return this;
     }
 
     @Override
-    public boolean removeOnUpdateVmProcessingListener(EventListener<VmHostEventInfo> listener) {
-        return onUpdateVmProcessingListeners.remove(listener);
+    public boolean removeOnCreationFailureListener(EventListener<VmDatacenterEventInfo> listener) {
+        return onCreationFailureListeners.remove(listener);
     }
 
     @Override
-    public Vm addOnUpdateVmProcessingListener(EventListener<VmHostEventInfo> listener) {
-        if (!Objects.isNull(listener)) {
-            this.onUpdateVmProcessingListeners.add(listener);
-        }
-
+    public Vm addOnUpdateProcessingListener(EventListener<VmHostEventInfo> listener) {
+        Objects.requireNonNull(listener);
+        this.onUpdateProcessingListeners.add(listener);
         return this;
+    }
+
+    @Override
+    public boolean removeOnUpdateProcessingListener(EventListener<VmHostEventInfo> listener) {
+        return onUpdateProcessingListeners.remove(listener);
     }
 
     /**
@@ -698,7 +691,7 @@ public class VmSimple implements Vm {
 
     @Override
     public void notifyOnHostAllocationListeners() {
-        VmHostEventInfo info = VmHostEventInfo.of(this);
+        final VmHostEventInfo info = VmHostEventInfo.of(this);
         onHostAllocationListeners.forEach(l -> l.update(info));
     }
 
@@ -715,19 +708,19 @@ public class VmSimple implements Vm {
     /**
          * Notifies all registered listeners when the processing of the Vm is updated in its {@link Host}.
          */
-    public void notifyOnUpdateVmProcessing() {
-        VmHostEventInfo info = VmHostEventInfo.of(this);
-        onUpdateVmProcessingListeners.forEach(l -> l.update(info));
+    public void notifyOnUpdateProcessingListeners() {
+        final VmHostEventInfo info = VmHostEventInfo.of(this);
+        onUpdateProcessingListeners.forEach(l -> l.update(info));
     }
 
     @Override
-    public void notifyOnVmCreationFailureListeners(Datacenter failedDatacenter) {
+    public void notifyOnCreationFailureListeners(Datacenter failedDatacenter) {
         if(Objects.isNull(failedDatacenter)){
             return;
         }
 
-        VmDatacenterEventInfo info = VmDatacenterEventInfo.of(this, failedDatacenter);
-        onVmCreationFailureListeners.forEach(l -> l.update(info));
+        final VmDatacenterEventInfo info = VmDatacenterEventInfo.of(this, failedDatacenter);
+        onCreationFailureListeners.forEach(l -> l.update(info));
     }
 
 
@@ -776,7 +769,7 @@ public class VmSimple implements Vm {
         }
 
         result.setVm(this);
-        this.addOnUpdateVmProcessingListener(listener -> result.requestScalingIfPredicateMatch(listener.getTime()));
+        this.addOnUpdateProcessingListener(listener -> result.requestScalingIfPredicateMatch(listener.getTime()));
         return result;
     }
 

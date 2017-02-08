@@ -374,7 +374,7 @@ public class CloudletExecutionInfo {
 	 */
 	public void setLastProcessingTime(double lastProcessingTime) {
 		this.lastProcessingTime = lastProcessingTime;
-        cloudlet.notifyOnCloudletProcessingListeners(lastProcessingTime);
+        cloudlet.notifyOnUpdateProcessingListeners(lastProcessingTime);
 	}
 
     /**

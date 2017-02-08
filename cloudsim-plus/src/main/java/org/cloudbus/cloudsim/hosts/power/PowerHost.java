@@ -139,8 +139,8 @@ public interface PowerHost extends HostDynamicWorkload {
         @Override public boolean vmCreate(Vm vm) { return false; }
         @Override public void destroyVm(Vm vm) {}
         @Override public void destroyAllVms() {}
-        @Override public EventListener<HostUpdatesVmsProcessingEventInfo> getOnUpdateVmsProcessingListener() { return EventListener.NULL; }
-        @Override public Host setOnUpdateVmsProcessingListener(EventListener<HostUpdatesVmsProcessingEventInfo> onUpdateVmsProcessingListener) { return Host.NULL; }
+        @Override public boolean removeOnUpdateVmsProcessingListener(EventListener<HostUpdatesVmsProcessingEventInfo> listener) { return false; }
+        @Override public Host addOnUpdateVmsProcessingListener(EventListener<HostUpdatesVmsProcessingEventInfo> listener) { return Host.NULL; }
         @Override public int getId() { return 0; }
         @Override public long getNumberOfWorkingPes(){return 0L;}
     };

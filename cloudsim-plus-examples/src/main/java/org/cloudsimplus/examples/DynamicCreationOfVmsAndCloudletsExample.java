@@ -65,14 +65,14 @@ import java.util.List;
  * the first Cloudlet finishes its execution to then request
  * the creation of new VMs and Cloudlets. This example uses the Java 8 Lambda Functions features
  * to pass a listener to the mentioned Cloudlet, by means of the
- * {@link Cloudlet#addOnCloudletFinishListener(EventListener)} method.
+ * {@link Cloudlet#addOnFinishListener(EventListener)} method.
  * However, the same feature can be used for Java 7 passing an anonymous class
  * that implements {@code EventListener<CloudletVmEventInfo>}.</p>
  *
  * @author Manoel Campos da Silva Filho
  * @since CloudSim Plus 1.0
  *
- * @see Cloudlet#addOnCloudletFinishListener(EventListener)
+ * @see Cloudlet#addOnFinishListener(EventListener)
  * @see EventListener
  */
 public class DynamicCreationOfVmsAndCloudletsExample {
@@ -114,7 +114,7 @@ public class DynamicCreationOfVmsAndCloudletsExample {
         /* Assigns an EventListener to be notified when the first Cloudlets finishes executing
         * and then dynamically create a new list of VMs and Cloudlets to submit to the broker.*/
         Cloudlet cloudlet0 = this.cloudletList.get(0);
-        cloudlet0.addOnCloudletFinishListener(eventInfo -> submitNewVmsAndCloudletsToBroker(eventInfo));
+        cloudlet0.addOnFinishListener(eventInfo -> submitNewVmsAndCloudletsToBroker(eventInfo));
 
         /* Starts the simulation and waits all cloudlets to be executed. */
         simulation.start();

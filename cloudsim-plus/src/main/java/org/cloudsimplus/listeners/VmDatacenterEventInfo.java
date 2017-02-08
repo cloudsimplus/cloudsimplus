@@ -35,7 +35,7 @@ import org.cloudbus.cloudsim.vms.Vm;
  * @author Manoel Campos da Silva Filho
  * @since CloudSim Plus 1.0
  *
- * @see Vm#addOnVmCreationFailureListener(EventListener)
+ * @see Vm#addOnCreationFailureListener(EventListener)
  */
 public interface VmDatacenterEventInfo extends VmEventInfo, DatacenterEventInfo {
     /**
@@ -47,7 +47,7 @@ public interface VmDatacenterEventInfo extends VmEventInfo, DatacenterEventInfo 
      *                   Such a Datacenter can be that one where the Vm is or was placed,
      *                   or where the Vm was tried to be be created,
      *                   depending on the fired event, such as the
-     *                   {@link Vm#addOnVmCreationFailureListener(EventListener)}  OnVmCreationFailure}
+     *                   {@link Vm#addOnCreationFailureListener(EventListener)}  OnVmCreationFailure}
      */
     static VmDatacenterEventInfo of(Vm vm, Datacenter datacenter) {
         final double time = vm.getSimulation().clock();
