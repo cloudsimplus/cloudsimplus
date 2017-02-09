@@ -101,14 +101,6 @@ public class CloudletListenersExample2_ResourceUsageAlongTime {
     private final CloudSim simulation;
 
     /**
-     * The listener object that will be created in order to be notified when
-     * the processing of a cloudlet inside a Vm is updated.
-     *
-     * @see #createCloudletListener()
-     */
-    private final EventListener<CloudletVmEventInfo> onUpdateCloudletProcessingListener;
-
-    /**
      * Starts the example execution, calling the class constructor\
      * to build and run the simulation.
      *
@@ -132,7 +124,6 @@ public class CloudletListenersExample2_ResourceUsageAlongTime {
         this.datacenter = createDatacenter();
         this.broker = new DatacenterBrokerSimple(simulation);
 
-        this.onUpdateCloudletProcessingListener = createCloudletListener();
         createAndSubmitVms();
         createAndSubmitCloudlets(this.vmList.get(0));
 
@@ -140,26 +131,23 @@ public class CloudletListenersExample2_ResourceUsageAlongTime {
     }
 
     /**
-     * Creates the listener object, using Java 8 Lambda Expressions, that will be notified when a cloudlet
-     * finishes running into a VM. All cloudlet will use this same listener.
+     * A Listener function that will be called everytime when a the processing of a cloudlet
+     * is updated into a VM. All cloudlets will use this same listener.
      *
-     * @return the created Listener
+     * @param eventInfo information about the happened event
      * @see #createCloudlet(int, Vm, long)
      */
-    private EventListener<CloudletVmEventInfo> createCloudletListener() {
-        return eventInfo -> {
-            Cloudlet c = eventInfo.getCloudlet();
-            double cpuUsage = c.getUtilizationModelCpu().getUtilization(eventInfo.getTime())*100;
-            double ramUsage = c.getUtilizationModelRam().getUtilization(eventInfo.getTime())*100;
-            double bwUsage  = c.getUtilizationModelBw().getUtilization(eventInfo.getTime())*100;
-            Log.printFormattedLine(
-                    "\t#EventListener: Time %.0f: Updated Cloudlet %d execution inside Vm %d",
-                    eventInfo.getTime(), c.getId(), eventInfo.getVm().getId());
-            Log.printFormattedLine(
-                    "\tCurrent Cloudlet resource usage: CPU %3.0f%%, RAM %3.0f%%, BW %3.0f%%\n",
-                    cpuUsage,  ramUsage, bwUsage);
-
-        };
+    private void onUpdateCloudletProcessingListener(CloudletVmEventInfo eventInfo) {
+        Cloudlet c = eventInfo.getCloudlet();
+        double cpuUsage = c.getUtilizationModelCpu().getUtilization(eventInfo.getTime())*100;
+        double ramUsage = c.getUtilizationModelRam().getUtilization(eventInfo.getTime())*100;
+        double bwUsage  = c.getUtilizationModelBw().getUtilization(eventInfo.getTime())*100;
+        Log.printFormattedLine(
+                "\t#EventListener: Time %.0f: Updated Cloudlet %d execution inside Vm %d",
+                eventInfo.getTime(), c.getId(), eventInfo.getVm().getId());
+        Log.printFormattedLine(
+                "\tCurrent Cloudlet resource usage: CPU %3.0f%%, RAM %3.0f%%, BW %3.0f%%\n",
+                cpuUsage,  ramUsage, bwUsage);
     }
 
     private void runSimulationAndPrintResults() {
@@ -242,7 +230,7 @@ public class CloudletListenersExample2_ResourceUsageAlongTime {
                 .setUtilizationModelBw(bwUtilizationModel)
                 .setBroker(broker)
                 .setVm(vm)
-                .addOnUpdateProcessingListener(this.onUpdateCloudletProcessingListener);
+                .addOnUpdateProcessingListener(this::onUpdateCloudletProcessingListener);
 
         return cloudlet;
     }
