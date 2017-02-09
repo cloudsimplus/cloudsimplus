@@ -150,6 +150,10 @@ public abstract class CloudletSchedulerAbstract implements CloudletScheduler {
     }
 
     protected void addCloudletToWaitingList(CloudletExecutionInfo cloudlet) {
+        if(cloudlet == null){
+            return;
+        }
+
         cloudlet.setCloudletStatus(Cloudlet.Status.QUEUED);
         cloudletWaitingList.add(cloudlet);
     }
@@ -630,12 +634,11 @@ public abstract class CloudletSchedulerAbstract implements CloudletScheduler {
      * Removes a Cloudlet from the list of cloudlets in execution.
      *
      * @param cloudlet the Cloudlet to be removed
-     * @return true if the Cloudlet was found and remove from the execution
-     * list.
+     * @return the removed Cloudlet or null if not found
      */
-    protected boolean removeCloudletFromExecList(CloudletExecutionInfo cloudlet) {
+    protected CloudletExecutionInfo removeCloudletFromExecList(CloudletExecutionInfo cloudlet) {
         removeUsedPes(cloudlet.getNumberOfPes());
-        return cloudletExecList.remove(cloudlet);
+        return cloudletExecList.remove(cloudlet) ? cloudlet : null;
     }
 
     /**

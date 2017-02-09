@@ -108,12 +108,12 @@ public final class CloudletSchedulerCompletelyFair extends CloudletSchedulerTime
 	/**
 	 * @see #getMininumGranularity()
 	 */
-	private int mininumGranularity = 2; //The default value for linux schedueler is 0.001 s
+	private int mininumGranularity = 2;
 
 	/**
 	 * @see #getLatency()
 	 */
-	private int latency = 3; //The default value for linux schedueler is 0.02 s
+	private int latency = 3;
 
 	public CloudletSchedulerCompletelyFair(){
 		super();
@@ -158,6 +158,8 @@ public final class CloudletSchedulerCompletelyFair extends CloudletSchedulerTime
 	 * frequent CPU context Datacenter (that reduces CPU throughput).
 	 * <b>However, CPU context switch overhead is not being considered.</b>
 	 * </p>
+     *
+     * <p>The default value for linux scheduler is 0.02s.</p>
 	 * @return
 	 */
 	public int getLatency() {
@@ -292,6 +294,8 @@ public final class CloudletSchedulerCompletelyFair extends CloudletSchedulerTime
 	 * <b>However, CPU context switch overhead is not being considered.</b>
 	 * By this way, it just ensures that each Cloudlet will not use the CPU
 	 * for less than the minimum granularity.</p>
+     *
+     * <p>The default value for linux scheduler is 0.001s</p>
 	 *
 	 * @return
 	 * @see #getLatency()
@@ -331,19 +335,6 @@ public final class CloudletSchedulerCompletelyFair extends CloudletSchedulerTime
     public double processCloudletSubmit(CloudletExecutionInfo rcl, double fileTransferTime) {
         rcl.setVirtualRuntime(computeCloudletInitialVirtualRuntime(rcl));
         rcl.setTimeSlice(computeCloudletTimeSlice(rcl));
-
-        /*
-        //Code just for debug purposes (can be deleted)
-        if(rcl.getCloudletId() == 5) {
-            System.out.println("\tCloudlets submitted:");
-            Stream.concat(getCloudletExecList().stream(), getCloudletWaitingList().stream())
-                .forEach(c-> System.out.printf("\t\t%d vruntime: %16.2f timeslice: %.2f\n",
-                    c.getCloudletId(), c.getVirtualRuntime(), c.getTimeSlice()));
-
-        }
-        //----------------------------------------------
-        */
-
         return super.processCloudletSubmit(rcl, fileTransferTime);
     }
 
@@ -394,7 +385,7 @@ public final class CloudletSchedulerCompletelyFair extends CloudletSchedulerTime
         This math was used just to ensure that the first added cloudlets
         will have the lower vruntime, depending of their priorites.
         If all cloudlets have the same priority, the first
-        addedd will start executing first.
+        added will start executing first.
         */
 
         /*
@@ -402,7 +393,7 @@ public final class CloudletSchedulerCompletelyFair extends CloudletSchedulerTime
         because the ID is in fact int. This will make that the lower
         ID return higher values. It ensures that as lower is the ID,
         lower is the negative value returned.
-        Inversing the cloudlet ID to get a higher value for lower IDs
+        Inverting the cloudlet ID to get a higher value for lower IDs
         can be understood as resulting in "higher negative" values, that is,
         extreme negative values.
         */
@@ -501,33 +492,9 @@ public final class CloudletSchedulerCompletelyFair extends CloudletSchedulerTime
                 .filter(cloudletThatVirtualRuntimeHasReachedItsTimeSlice)
                 .collect(toList());
 
-        /*
-        //Code just for debug purposes (can be erased)--------------------------------------
-        Consumer<CloudletExecutionInfo> printCloudlet =
-            c->System.out.printf("\t\tid %d priority %d vruntime %.2f timeslice: %.2f finished so far %d\n",
-                c.getCloudletId(), c.getCloudlet().getPriority(), c.getVirtualRuntime(), c.getTimeSlice(), c.getCloudlet().getCloudletFinishedSoFar());
-        if(!getCloudletExecList().isEmpty()){
-            System.out.printf("\tTime %.2f - Running cloudlets: \n", CloudSim.clock());
-            getCloudletExecList().stream().forEach(printCloudlet);
-            System.out.println();
-        }
-
-        if(!expiredVRuntimeCloudlets.isEmpty()){
-            System.out.println("\tExpired cloudlets: ");
-            expiredVRuntimeCloudlets.stream().forEach(printCloudlet);
-            System.out.println();
-        }
-        //----------------------------------------------------------------------------------
-        */
-
-        for(CloudletExecutionInfo c: expiredVRuntimeCloudlets) {
-            removeCloudletFromExecList(c);
-            addCloudletToWaitingList(c);
-        }
-
+        expiredVRuntimeCloudlets.forEach(c -> addCloudletToWaitingList(removeCloudletFromExecList(c)));
         return expiredVRuntimeCloudlets;
     }
-
 
 }
 

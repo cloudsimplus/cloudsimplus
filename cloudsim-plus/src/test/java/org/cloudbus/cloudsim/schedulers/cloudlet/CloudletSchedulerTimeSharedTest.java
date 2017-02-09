@@ -394,7 +394,7 @@ public class CloudletSchedulerTimeSharedTest {
         CloudletExecutionInfo c = new CloudletExecutionInfo(Cloudlet.NULL);
         CloudletSchedulerTimeShared instance = new CloudletSchedulerTimeShared();
         instance.addCloudletToExecList(c);
-        assertTrue(instance.removeCloudletFromExecList(c));
+        assertSame(c, instance.removeCloudletFromExecList(c));
         assertTrue(instance.getCloudletExecList().isEmpty());
     }
 
@@ -406,7 +406,7 @@ public class CloudletSchedulerTimeSharedTest {
         List<CloudletExecutionInfo> list = new ArrayList<>();
         list.add(cloudletAdded);
         instance.addCloudletToExecList(cloudletAdded);
-        assertFalse(instance.removeCloudletFromExecList(cloudletNotAdded));
+        assertNull(instance.removeCloudletFromExecList(cloudletNotAdded));
         assertEquals(list.size(), instance.getCloudletExecList().size());
     }
 
