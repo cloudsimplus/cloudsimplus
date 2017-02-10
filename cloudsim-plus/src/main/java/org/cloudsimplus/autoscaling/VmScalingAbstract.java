@@ -45,7 +45,9 @@ public abstract class VmScalingAbstract implements VmScaling {
 
     @Override
     public final VmScaling setOverloadPredicate(Predicate<Vm> predicate) {
-        this.overloadPredicate = Objects.isNull(predicate) ? FALSE_PREDICATE : predicate;
+        Objects.requireNonNull(predicate);
+        ensureThatOverAndUnderloadPredicatesArentEqual(underloadPredicate, predicate);
+        this.overloadPredicate = predicate;
         return this;
     }
 
@@ -56,9 +58,26 @@ public abstract class VmScalingAbstract implements VmScaling {
 
     @Override
     public final VmScaling setUnderloadPredicate(Predicate<Vm> predicate) {
-        this.underloadPredicate = Objects.isNull(predicate) ? FALSE_PREDICATE : predicate;
+        Objects.requireNonNull(predicate);
+        ensureThatOverAndUnderloadPredicatesArentEqual(predicate, overloadPredicate);
+        this.underloadPredicate = predicate;
         return this;
     }
+
+    /**
+     * Throws an exception if the under and overload predicates are equal, to make clear
+     * that over and underload situations must be defined by different conditions.
+     *
+     * @param underloadPredicate the underload predicate to check
+     * @param overloadPredicate the overload predicate to check
+     * @throws IllegalArgumentException if the two predicates are equal
+     */
+    private void ensureThatOverAndUnderloadPredicatesArentEqual(Predicate<Vm> underloadPredicate, Predicate<Vm> overloadPredicate) {
+        if(overloadPredicate.equals(underloadPredicate)){
+            throw new IllegalArgumentException("Underload and overload predicate cannot be equal");
+        }
+    }
+
     /**
      * Checks if it is time to evaluate the {@link #getOverloadPredicate()}
      * and {@link #getUnderloadPredicate()} to check
