@@ -731,19 +731,19 @@ public class VmSimple implements Vm {
 
     @Override
     public final Vm setHorizontalScaling(HorizontalVmScaling horizontalScaling) throws IllegalArgumentException {
-        this.horizontalScaling = validateAndConfigureVmScaling(horizontalScaling, HorizontalVmScaling.NULL);
+        this.horizontalScaling = validateAndConfigureVmScaling(horizontalScaling);
         return this;
     }
 
     @Override
     public final Vm setRamVerticalScaling(VerticalVmScaling ramVerticalScaling) throws IllegalArgumentException {
-        this.ramVerticalScaling = validateAndConfigureVmScaling(ramVerticalScaling, VerticalVmScaling.NULL);
+        this.ramVerticalScaling = validateAndConfigureVmScaling(ramVerticalScaling);
         return this;
     }
 
     @Override
     public final Vm setBwVerticalScaling(VerticalVmScaling bwVerticalScaling) throws IllegalArgumentException {
-        this.bwVerticalScaling = validateAndConfigureVmScaling(bwVerticalScaling, VerticalVmScaling.NULL);
+        this.bwVerticalScaling = validateAndConfigureVmScaling(bwVerticalScaling);
         return this;
     }
 
@@ -757,20 +757,19 @@ public class VmSimple implements Vm {
         return bwVerticalScaling;
     }
 
-    private <T extends VmScaling> T validateAndConfigureVmScaling(T vmScaling, T defaultValue) {
-        final T result = Objects.isNull(vmScaling) ? defaultValue : vmScaling;
-
+    private <T extends VmScaling> T validateAndConfigureVmScaling(T vmScaling) {
+        Objects.requireNonNull(vmScaling);
         if(vmScaling.getVm() != null && vmScaling.getVm() != Vm.NULL && vmScaling.getVm() != this){
-            String name = defaultValue.getClass().getSimpleName();
+            String name = vmScaling.getClass().getSimpleName();
             throw new IllegalArgumentException(
                 "The "+name+" given already is linked to a Vm. " +
                     "Each Vm must have its own "+name+" objects or none at all. " +
                     "A new scaling has to be provided to this Vm.");
         }
 
-        result.setVm(this);
-        this.addOnUpdateProcessingListener(listener -> result.requestScalingIfPredicateMatch(listener.getTime()));
-        return result;
+        vmScaling.setVm(this);
+        this.addOnUpdateProcessingListener(listener -> vmScaling.requestScalingIfPredicateMatch(listener.getTime()));
+        return vmScaling;
     }
 
 }

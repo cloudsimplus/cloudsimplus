@@ -112,6 +112,4 @@ public abstract class VmScalingAbstract implements VmScaling {
      * @return true if the request was actually sent, false otherwise
      */
     protected abstract boolean requestScaling(double time);
-
-
 }
