@@ -23,7 +23,6 @@ import org.cloudbus.cloudsim.util.Conversion;
 
 import static org.cloudbus.cloudsim.utilizationmodels.UtilizationModel.Unit;
 
-import org.cloudbus.cloudsim.util.Log;
 import org.cloudbus.cloudsim.utilizationmodels.UtilizationModel;
 import org.cloudbus.cloudsim.vms.Vm;
 import org.cloudbus.cloudsim.resources.Processor;
@@ -528,7 +527,7 @@ public abstract class CloudletSchedulerAbstract implements CloudletScheduler {
      */
     protected void updateCloudletProcessing(CloudletExecutionInfo rcl, double currentTime) {
         long executedInstructions = cloudletExecutedInstructionsForElapsedTime(rcl, currentTime);
-        rcl.updateCloudletFinishedSoFar(executedInstructions);
+        rcl.updateProcessing(executedInstructions);
         if (executedInstructions > 0) {
             rcl.setLastProcessingTime(currentTime);
         }

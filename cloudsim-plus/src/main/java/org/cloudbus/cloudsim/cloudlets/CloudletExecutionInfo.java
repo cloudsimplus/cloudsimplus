@@ -264,7 +264,7 @@ public class CloudletExecutionInfo {
      * @pre length >= 0.0
      * @post $none
      */
-    public void updateCloudletFinishedSoFar(long numberOfExecutedInstructions) {
+    public void updateProcessing(long numberOfExecutedInstructions) {
         if(numberOfExecutedInstructions <= 0)
             return;
 
