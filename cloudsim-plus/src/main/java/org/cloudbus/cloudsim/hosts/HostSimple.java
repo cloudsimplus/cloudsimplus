@@ -84,9 +84,9 @@ public class HostSimple implements Host {
     private Datacenter datacenter;
 
     /**
-     * @see Host#removeOnUpdateVmsProcessingListener(EventListener)
+     * @see Host#removeOnUpdateProcessingListener(EventListener)
      */
-    private Set<EventListener<HostUpdatesVmsProcessingEventInfo>> onUpdateVmsProcessingListeners;
+    private Set<EventListener<HostUpdatesVmsProcessingEventInfo>> onUpdateProcessingListeners;
 
     /**
      * @see #getSimulation()
@@ -119,7 +119,7 @@ public class HostSimple implements Host {
         setPeList(peList);
         setFailed(false);
         setDatacenter(Datacenter.NULL);
-        this.onUpdateVmsProcessingListeners = new HashSet<>();
+        this.onUpdateProcessingListeners = new HashSet<>();
         this.resources = new ArrayList();
         this.provisioners = new ArrayList();
     }
@@ -155,20 +155,20 @@ public class HostSimple implements Host {
     }
 
     @Override
-    public double updateVmsProcessing(double currentTime) {
+    public double updateProcessing(double currentTime) {
         double nextSimulationTime = Double.MAX_VALUE;
         for (Vm vm : getVmList()) {
-            double time = vm.updateVmProcessing(currentTime, getVmScheduler().getAllocatedMipsForVm(vm));
+            double time = vm.updateProcessing(currentTime, getVmScheduler().getAllocatedMipsForVm(vm));
             nextSimulationTime = Math.min(time, nextSimulationTime);
         }
 
-        notifyOnUpdateVmsProcessingListeners(nextSimulationTime);
+        notifyOnUpdateProcessingListeners(nextSimulationTime);
         return nextSimulationTime;
     }
 
-    private void notifyOnUpdateVmsProcessingListeners(double nextSimulationTime) {
+    private void notifyOnUpdateProcessingListeners(double nextSimulationTime) {
         final HostUpdatesVmsProcessingEventInfo info = HostUpdatesVmsProcessingEventInfo.of(this, nextSimulationTime);
-        onUpdateVmsProcessingListeners.forEach(l -> l.update(info));
+        onUpdateProcessingListeners.forEach(l -> l.update(info));
     }
 
     @Override
@@ -209,8 +209,8 @@ public class HostSimple implements Host {
             storage.allocateResource(vm.getStorage());
 
             getVmsMigratingIn().add(vm);
-            updateVmsProcessing(simulation.clock());
-            vm.getHost().updateVmsProcessing(simulation.clock());
+            updateProcessing(simulation.clock());
+            vm.getHost().updateProcessing(simulation.clock());
         }
     }
 
@@ -517,14 +517,14 @@ public class HostSimple implements Host {
     }
 
     @Override
-    public boolean removeOnUpdateVmsProcessingListener(EventListener<HostUpdatesVmsProcessingEventInfo> listener) {
-        return onUpdateVmsProcessingListeners.remove(listener);
+    public boolean removeOnUpdateProcessingListener(EventListener<HostUpdatesVmsProcessingEventInfo> listener) {
+        return onUpdateProcessingListeners.remove(listener);
     }
 
     @Override
-    public Host addOnUpdateVmsProcessingListener(EventListener<HostUpdatesVmsProcessingEventInfo> listener) {
+    public Host addOnUpdateProcessingListener(EventListener<HostUpdatesVmsProcessingEventInfo> listener) {
         Objects.requireNonNull(listener);
-        this.onUpdateVmsProcessingListeners.add(listener);
+        this.onUpdateProcessingListeners.add(listener);
         return this;
     }
 

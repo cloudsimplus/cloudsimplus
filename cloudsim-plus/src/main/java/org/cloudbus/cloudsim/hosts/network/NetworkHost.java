@@ -127,8 +127,8 @@ public class NetworkHost extends HostSimple {
     }
 
     @Override
-    public double updateVmsProcessing(double currentTime) {
-        double completionTimeOfNextFinishingCloudlet = super.updateVmsProcessing(currentTime);
+    public double updateProcessing(double currentTime) {
+        double completionTimeOfNextFinishingCloudlet = super.updateProcessing(currentTime);
         receivePackets();
         sendAllPacketListsOfAllVms();
 
@@ -197,7 +197,7 @@ public class NetworkHost extends HostSimple {
 
         if (!packetsToSendForLocalVms.isEmpty()) {
             for (Vm vm : getVmList()) {
-                vm.updateVmProcessing(
+                vm.updateProcessing(
                     getSimulation().clock(), getVmScheduler().getAllocatedMipsForVm(vm));
             }
         }

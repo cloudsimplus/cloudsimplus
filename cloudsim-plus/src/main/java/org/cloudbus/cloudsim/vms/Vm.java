@@ -189,7 +189,7 @@ public interface Vm extends UniquelyIdentificable, Delayable, Resourceful, Compa
      *
      * @param listener the listener to add
      * @return
-     * @see #updateVmProcessing(double, java.util.List)
+     * @see #updateProcessing(double, List)
      */
     Vm addOnCreationFailureListener(EventListener<VmDatacenterEventInfo> listener);
 
@@ -199,7 +199,7 @@ public interface Vm extends UniquelyIdentificable, Delayable, Resourceful, Compa
      *
      * @param listener the listener to seaddt
      * @return
-     * @see #updateVmProcessing(double, java.util.List)
+     * @see #updateProcessing(double, List)
      */
     Vm addOnUpdateProcessingListener(EventListener<VmHostEventInfo> listener);
 
@@ -432,7 +432,7 @@ public interface Vm extends UniquelyIdentificable, Delayable, Resourceful, Compa
      * @pre currentTime >= 0
      * @post $none
      */
-    double updateVmProcessing(double currentTime, List<Double> mipsShare);
+    double updateProcessing(double currentTime, List<Double> mipsShare);
 
     /**
      * Sets the Cloudlet scheduler the Vm uses to schedule cloudlets execution.
@@ -586,7 +586,7 @@ public interface Vm extends UniquelyIdentificable, Delayable, Resourceful, Compa
         @Override public void setInMigration(boolean inMigration) {}
         @Override public Vm setRam(long ramCapacity) { return this; }
         @Override public Vm setSize(long size) { return this; }
-        @Override public double updateVmProcessing(double currentTime, List<Double> mipsShare){ return 0.0; }
+        @Override public double updateProcessing(double currentTime, List<Double> mipsShare){ return 0.0; }
         @Override public Vm setCloudletScheduler(CloudletScheduler cloudletScheduler) { return this; }
         @Override public int compareTo(Vm o) { return 0; }
         @Override public double getTotalMipsCapacity() { return 0.0; }

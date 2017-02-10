@@ -100,7 +100,7 @@ public interface PowerHost extends HostDynamicWorkload {
         @Override public double getUtilizationOfCpu() { return 0; }
         @Override public double getUtilizationOfCpuMips() { return 0; }
         @Override public long getUtilizationOfRam() { return 0; }
-        @Override public double updateVmsProcessing(double currentTime) { return 0; }
+        @Override public double updateProcessing(double currentTime) { return 0; }
         @Override public void addMigratingInVm(Vm vm) {}
         @Override public boolean allocatePesForVm(Vm vm, List<Double> mipsShare) { return false; }
         @Override public void deallocatePesForVm(Vm vm) {}
@@ -139,8 +139,8 @@ public interface PowerHost extends HostDynamicWorkload {
         @Override public boolean vmCreate(Vm vm) { return false; }
         @Override public void destroyVm(Vm vm) {}
         @Override public void destroyAllVms() {}
-        @Override public boolean removeOnUpdateVmsProcessingListener(EventListener<HostUpdatesVmsProcessingEventInfo> listener) { return false; }
-        @Override public Host addOnUpdateVmsProcessingListener(EventListener<HostUpdatesVmsProcessingEventInfo> listener) { return Host.NULL; }
+        @Override public boolean removeOnUpdateProcessingListener(EventListener<HostUpdatesVmsProcessingEventInfo> listener) { return false; }
+        @Override public Host addOnUpdateProcessingListener(EventListener<HostUpdatesVmsProcessingEventInfo> listener) { return Host.NULL; }
         @Override public int getId() { return 0; }
         @Override public long getNumberOfWorkingPes(){return 0L;}
     };

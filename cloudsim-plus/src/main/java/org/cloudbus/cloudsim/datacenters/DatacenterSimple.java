@@ -417,7 +417,7 @@ public class DatacenterSimple extends CloudSimEntity implements Datacenter {
             }
 
             List<Double> mipsList = vm.getHost().getVmScheduler().getAllocatedMipsForVm(vm);
-            vm.updateVmProcessing(getSimulation().clock(), mipsList);
+            vm.updateProcessing(getSimulation().clock(), mipsList);
         }
 
         return hostAllocatedForVm;
@@ -842,7 +842,7 @@ public class DatacenterSimple extends CloudSimEntity implements Datacenter {
         List<? extends Host> list = getVmAllocationPolicy().getHostList();
         double nextSimulationTime = Double.MAX_VALUE;
         for (Host host : list) {
-            double time = host.updateVmsProcessing(getSimulation().clock());
+            double time = host.updateProcessing(getSimulation().clock());
             nextSimulationTime = Math.min(time, nextSimulationTime);
         }
 

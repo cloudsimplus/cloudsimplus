@@ -72,7 +72,7 @@ public class VmTest {
         assertSame(DatacenterBroker.NULL, instance.getBroker());
         assertEquals("", instance.getVmm());
 
-        assertEquals(0, instance.updateVmProcessing(0, Collections.EMPTY_LIST), 0);
+        assertEquals(0, instance.updateProcessing(0, Collections.EMPTY_LIST), 0);
     }
 
 }

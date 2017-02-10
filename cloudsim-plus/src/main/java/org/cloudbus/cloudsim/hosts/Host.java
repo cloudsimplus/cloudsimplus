@@ -302,7 +302,7 @@ public interface Host extends Identificable, Resourceful, Comparable<Host> {
      * @pre currentTime >= 0.0
      * @post $none
      */
-    double updateVmsProcessing(double currentTime);
+    double updateProcessing(double currentTime);
 
     /**
      * Try to allocate resources to a new VM in the Host.
@@ -335,21 +335,20 @@ public interface Host extends Identificable, Resourceful, Comparable<Host> {
      * Adds a listener object that will be notified every time when
      * the host updates the processing of all its {@link Vm VMs}.
      *
-     * @param listener the onUpdateVmsProcessingListener to add
+     * @param listener the OnUpdateProcessingListener to add
      * @return
-     * @see #updateVmsProcessing(double)
+     * @see #updateProcessing(double)
      */
-    Host addOnUpdateVmsProcessingListener(EventListener<HostUpdatesVmsProcessingEventInfo> listener);
+    Host addOnUpdateProcessingListener(EventListener<HostUpdatesVmsProcessingEventInfo> listener);
 
     /**
-     * Removes a listener object from the OnUpdateVmsProcessingListener List.
+     * Removes a listener object from the OnUpdateProcessingListener List.
      *
      * @param listener the listener to remove
      * @return true if the listener was found and removed, false otherwise
-     * @see #updateVmsProcessing(double)
-     * @param listener
+     * @see #updateProcessing(double)
      */
-    boolean removeOnUpdateVmsProcessingListener(EventListener<HostUpdatesVmsProcessingEventInfo> listener);
+    boolean removeOnUpdateProcessingListener(EventListener<HostUpdatesVmsProcessingEventInfo> listener);
 
     boolean setFailed(boolean failed);
 
@@ -415,12 +414,12 @@ public interface Host extends Identificable, Resourceful, Comparable<Host> {
         @Override public void removeMigratingInVm(Vm vm) {}
         @Override public void setDatacenter(Datacenter datacenter) {}
         @Override public boolean setPeStatus(int peId, Pe.Status status) { return false; }
-        @Override public double updateVmsProcessing(double currentTime) { return 0.0; }
+        @Override public double updateProcessing(double currentTime) { return 0.0; }
         @Override public boolean vmCreate(Vm vm) { return false; }
         @Override public void destroyVm(Vm vm) {}
         @Override public void destroyAllVms() {}
-        @Override public boolean removeOnUpdateVmsProcessingListener(EventListener<HostUpdatesVmsProcessingEventInfo> listener) { return false; }
-        @Override public Host addOnUpdateVmsProcessingListener(EventListener<HostUpdatesVmsProcessingEventInfo> listener) { return Host.NULL; }
+        @Override public boolean removeOnUpdateProcessingListener(EventListener<HostUpdatesVmsProcessingEventInfo> listener) { return false; }
+        @Override public Host addOnUpdateProcessingListener(EventListener<HostUpdatesVmsProcessingEventInfo> listener) { return Host.NULL; }
         @Override public long getAvailableStorage() { return 0L; }
         @Override public boolean setFailed(boolean failed){return false;}
         @Override public Simulation getSimulation() { return Simulation.NULL; }

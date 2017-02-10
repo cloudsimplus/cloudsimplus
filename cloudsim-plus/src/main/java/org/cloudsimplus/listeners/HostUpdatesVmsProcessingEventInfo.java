@@ -34,7 +34,7 @@ import org.cloudbus.cloudsim.hosts.Host;
  * @author Manoel Campos da Silva Filho
  * @since CloudSim Plus 1.0
  *
- * @see Host#removeOnUpdateVmsProcessingListener(EventListener)
+ * @see Host#removeOnUpdateProcessingListener(EventListener)
  */
 public interface HostUpdatesVmsProcessingEventInfo extends HostEventInfo  {
     /**

@@ -208,7 +208,7 @@ public class PowerDatacenter extends DatacenterSimple {
         for (PowerHostSimple host : this.<PowerHostSimple>getHostList()) {
             Log.printLine();
 
-            double time = host.updateVmsProcessing(currentTime); // inform VMs to update processing
+            double time = host.updateProcessing(currentTime); // inform VMs to update processing
             if (time < minTime) {
                 minTime = time;
             }

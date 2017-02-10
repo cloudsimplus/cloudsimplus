@@ -237,7 +237,7 @@ public class VmSimple implements Vm {
     }
 
     @Override
-    public double updateVmProcessing(double currentTime, List<Double> mipsShare) {
+    public double updateProcessing(double currentTime, List<Double> mipsShare) {
         if (Objects.isNull(mipsShare)) {
             return Double.MAX_VALUE;
         }

@@ -341,12 +341,12 @@ public class VmSimpleTest {
 
     @Test
     public void testUpdateVmProcessing() {
-        assertEquals(Double.MAX_VALUE, vm.updateVmProcessing(0, null), 0);
+        assertEquals(Double.MAX_VALUE, vm.updateProcessing(0, null), 0);
         List<Double> mipsShare1 = new ArrayList<>();
         mipsShare1.add(1.0);
         List<Double> mipsShare2 = new ArrayList<>();
         mipsShare2.add(1.0);
-        assertEquals(vmScheduler.updateVmProcessing(0, mipsShare1), vm.updateVmProcessing(0, mipsShare2), 0);
+        assertEquals(vmScheduler.updateVmProcessing(0, mipsShare1), vm.updateProcessing(0, mipsShare2), 0);
     }
 
     @Test
