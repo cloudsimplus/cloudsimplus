@@ -8,6 +8,7 @@
 package org.cloudbus.cloudsim.vms;
 
 import org.cloudbus.cloudsim.brokers.DatacenterBroker;
+import org.cloudbus.cloudsim.core.ChangeableId;
 import org.cloudsimplus.autoscaling.HorizontalVmScaling;
 import org.cloudbus.cloudsim.core.Delayable;
 import org.cloudbus.cloudsim.core.UniquelyIdentificable;
@@ -38,7 +39,7 @@ import org.cloudsimplus.listeners.EventListener;
  * @author Manoel Campos da Silva Filho
  * @since CloudSim Plus 1.0
  */
-public interface Vm extends UniquelyIdentificable, Delayable, Resourceful, Comparable<Vm> {
+public interface Vm extends UniquelyIdentificable, ChangeableId, Delayable, Resourceful, Comparable<Vm> {
 
     /**
      * Adds a VM state history entry.
@@ -540,6 +541,7 @@ public interface Vm extends UniquelyIdentificable, Delayable, Resourceful, Compa
      * objects.
      */
     Vm NULL = new Vm() {
+        @Override public void setId(int id) {}
         @Override public int getId() { return -1; }
         @Override public double getSubmissionDelay() { return 0; }
         @Override public void setSubmissionDelay(double submissionDelay) {}

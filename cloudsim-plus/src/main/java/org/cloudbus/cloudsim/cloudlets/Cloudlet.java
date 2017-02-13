@@ -6,6 +6,7 @@
  */
 package org.cloudbus.cloudsim.cloudlets;
 
+import org.cloudbus.cloudsim.core.ChangeableId;
 import org.cloudbus.cloudsim.core.Delayable;
 import org.cloudbus.cloudsim.core.UniquelyIdentificable;
 import org.cloudbus.cloudsim.datacenters.Datacenter;
@@ -31,7 +32,7 @@ import org.cloudsimplus.listeners.EventListener;
  * @author Manoel Campos da Silva Filho
  * @since CloudSim Plus 1.0
  */
-public interface Cloudlet extends UniquelyIdentificable, Delayable, Comparable<Cloudlet> {
+public interface Cloudlet extends UniquelyIdentificable, ChangeableId, Delayable, Comparable<Cloudlet> {
   String NO_HISTORY_IS_RECORDED_FOR_CLOUDLET = "No history is recorded for Cloudlet #%d";
 
   /**
@@ -832,6 +833,7 @@ public interface Cloudlet extends UniquelyIdentificable, Delayable, Comparable<C
      * objects.
      */
     Cloudlet NULL = new Cloudlet() {
+        @Override public void setId(int id) {}
         @Override public int getId() { return -1; }
         @Override public String getUid() { return ""; }
         @Override public boolean addRequiredFile(String fileName) { return false; }

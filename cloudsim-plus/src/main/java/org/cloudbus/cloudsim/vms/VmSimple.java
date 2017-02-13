@@ -169,6 +169,25 @@ public class VmSimple implements Vm {
 
     /**
      * Creates a Vm with 1024 MEGABYTE of RAM, 1000 Megabits/s of Bandwidth and 1024 MEGABYTE of Storage Size.
+     * It is not defined an id for the Vm. The id is defined when the Vm is submitted to
+     * a {@link DatacenterBroker}.
+     *
+     * To change these values, use the respective setters. While the Vm {@link #isCreated()
+     * is being instantiated}, such values can be changed freely.
+     *
+     * @param mipsCapacity the mips capacity of each Vm {@link Pe}
+     * @param numberOfPes amount of {@link Pe} (CPU cores)
+     *
+     * @pre numberOfPes > 0
+     * @post $none
+     */
+    public VmSimple(long mipsCapacity, int numberOfPes) {
+        this(-1, mipsCapacity, numberOfPes);
+    }
+
+
+    /**
+     * Creates a Vm with 1024 MEGABYTE of RAM, 1000 Megabits/s of Bandwidth and 1024 MEGABYTE of Storage Size.
      *
      * To change these values, use the respective setters. While the Vm {@link #isCreated()
      * is being instantiated}, such values can be changed freely.
@@ -319,7 +338,8 @@ public class VmSimple implements Vm {
      * @param id the new VM id, that has to be unique for the current {@link #getBroker() broker}
      * @todo The uniqueness of VM id for a given user is not being ensured
      */
-    protected final void setId(int id) {
+    @Override
+    public final void setId(int id) {
         this.id = id;
     }
 

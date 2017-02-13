@@ -30,7 +30,7 @@ public abstract class CloudletAbstract implements Cloudlet {
     /**
      * @see #getId()
      */
-    private final int id;
+    private int id;
     /**
      * Stores the operating system line separator.
      */
@@ -131,6 +131,7 @@ public abstract class CloudletAbstract implements Cloudlet {
 
     private Set<EventListener<CloudletVmEventInfo>> onFinishListeners;
     private Set<EventListener<CloudletVmEventInfo>> onUpdateProcessingListeners;
+
     /**
      * @see #getSubmissionDelay()
      */
@@ -143,7 +144,7 @@ public abstract class CloudletAbstract implements Cloudlet {
      * @param cloudletLength the length or size (in MI) of this cloudlet to be executed in a VM
      * @param pesNumber      number of PEs that Cloudlet will require
      */
-    protected CloudletAbstract(final int cloudletId, final long cloudletLength, final int pesNumber) {
+    public CloudletAbstract(final int cloudletId, final long cloudletLength, final int pesNumber) {
         /*
         Normally, a Cloudlet is only executed on a Datacenter without being
         migrated to others. Hence, to reduce memory consumption, set the
@@ -181,6 +182,17 @@ public abstract class CloudletAbstract implements Cloudlet {
         setUtilizationModelBw(UtilizationModel.NULL);
         onFinishListeners = new HashSet<>();
         onUpdateProcessingListeners = new HashSet<>();
+    }
+
+    /**
+     * Creates a Cloudlet with no priority or id. The id is defined when the Cloudlet is submitted to
+     * a {@link DatacenterBroker}. The file size and output size is defined as 1.
+     *
+     * @param cloudletLength the length or size (in MI) of this cloudlet to be executed in a VM
+     * @param pesNumber      number of PEs that Cloudlet will require
+     */
+    public CloudletAbstract(final long cloudletLength, final int pesNumber) {
+        this(-1, cloudletLength, pesNumber);
     }
 
     protected int getLastExecutedDatacenterIndex() {
@@ -565,6 +577,11 @@ public abstract class CloudletAbstract implements Cloudlet {
     @Override
     public int getId() {
         return id;
+    }
+
+    @Override
+    public void setId(int id) {
+        this.id = id;
     }
 
     @Override
