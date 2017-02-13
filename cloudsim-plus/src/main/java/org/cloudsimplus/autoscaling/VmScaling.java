@@ -24,6 +24,7 @@
 package org.cloudsimplus.autoscaling;
 
 import org.cloudbus.cloudsim.vms.Vm;
+import org.cloudsimplus.listeners.EventListener;
 
 import java.util.function.Predicate;
 
@@ -119,9 +120,13 @@ public interface VmScaling {
     VmScaling setUnderloadPredicate(Predicate<Vm> predicate);
 
     /**
-     * Requests VM to be scaled up or down if it is over or underloaded, respectively.
+     * Requests the Vm to be scaled up or down if it is over or underloaded, respectively.
      * The scaling request will be sent to the broker only
      * if the {@link #getOverloadPredicate() over} or {@link #getUnderloadPredicate() underload} condition meets.
+     *
+     * <p>The Vm to which this scaling object is related to, creates an {@link Vm#addOnUpdateProcessingListener(EventListener) UpdateProcessingListener}
+     * that will call this method to check if it time to perform an down or up scaling, every time
+     * the Vm processing is updated.</p>
      *
      * @param time current simulation time
      * @return true if the Vm is over or underloaded and up or down scaling request was sent to the broker, false otherwise

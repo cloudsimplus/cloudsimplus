@@ -78,7 +78,7 @@ public class HostBuilder extends Builder {
                 .setRamProvisioner(new ResourceProvisionerSimple(new Ram(ram)))
                 .setBwProvisioner(new ResourceProvisionerSimple(new Bandwidth(bw)))
                 .setVmScheduler((VmScheduler) cons.newInstance())
-                .setOnUpdateVmsProcessingListener(onUpdateVmsProcessingListener);
+                .addOnUpdateProcessingListener(onUpdateVmsProcessingListener);
             hosts.add(host);
             return host;
         } catch (NoSuchMethodException | SecurityException | InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException ex) {

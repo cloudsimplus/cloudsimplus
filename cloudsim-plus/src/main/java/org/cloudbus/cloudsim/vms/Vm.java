@@ -8,6 +8,7 @@
 package org.cloudbus.cloudsim.vms;
 
 import org.cloudbus.cloudsim.brokers.DatacenterBroker;
+import org.cloudbus.cloudsim.core.ChangeableId;
 import org.cloudsimplus.autoscaling.HorizontalVmScaling;
 import org.cloudbus.cloudsim.core.Delayable;
 import org.cloudbus.cloudsim.core.UniquelyIdentificable;
@@ -38,7 +39,7 @@ import org.cloudsimplus.listeners.EventListener;
  * @author Manoel Campos da Silva Filho
  * @since CloudSim Plus 1.0
  */
-public interface Vm extends UniquelyIdentificable, Delayable, Resourceful, Comparable<Vm> {
+public interface Vm extends UniquelyIdentificable, ChangeableId, Delayable, Resourceful, Comparable<Vm> {
 
     /**
      * Adds a VM state history entry.
@@ -189,9 +190,9 @@ public interface Vm extends UniquelyIdentificable, Delayable, Resourceful, Compa
      *
      * @param listener the listener to add
      * @return
-     * @see #updateVmProcessing(double, java.util.List)
+     * @see #updateProcessing(double, List)
      */
-    Vm addOnVmCreationFailureListener(EventListener<VmDatacenterEventInfo> listener);
+    Vm addOnCreationFailureListener(EventListener<VmDatacenterEventInfo> listener);
 
     /**
      * Adds a listener object that will be notified every time when
@@ -199,9 +200,9 @@ public interface Vm extends UniquelyIdentificable, Delayable, Resourceful, Compa
      *
      * @param listener the listener to seaddt
      * @return
-     * @see #updateVmProcessing(double, java.util.List)
+     * @see #updateProcessing(double, List)
      */
-    Vm addOnUpdateVmProcessingListener(EventListener<VmHostEventInfo> listener);
+    Vm addOnUpdateProcessingListener(EventListener<VmHostEventInfo> listener);
 
     /**
      * Notifies all registered listeners when a {@link Host} is allocated to the {@link Vm}.
@@ -225,7 +226,7 @@ public interface Vm extends UniquelyIdentificable, Delayable, Resourceful, Compa
      * <p><b>This method is used just internally and must not be called directly.</b></p>
      * @param failedDatacenter the Datacenter where the VM creation failed
      */
-    void notifyOnVmCreationFailureListeners(Datacenter failedDatacenter);
+    void notifyOnCreationFailureListeners(Datacenter failedDatacenter);
 
     /**
      * Removes a listener from the onUpdateVmProcessingListener List.
@@ -233,7 +234,7 @@ public interface Vm extends UniquelyIdentificable, Delayable, Resourceful, Compa
      * @param listener the listener to remove
      * @return true if the listener was found and removed, false otherwise
      */
-    boolean removeOnUpdateVmProcessingListener(EventListener<VmHostEventInfo> listener);
+    boolean removeOnUpdateProcessingListener(EventListener<VmHostEventInfo> listener);
 
     /**
      * Removes a listener from the onHostAllocationListener List.
@@ -257,7 +258,7 @@ public interface Vm extends UniquelyIdentificable, Delayable, Resourceful, Compa
      * @param listener the listener to remove
      * @return true if the listener was found and removed, false otherwise
      */
-    boolean removeOnVmCreationFailureListener(EventListener<VmDatacenterEventInfo> listener);
+    boolean removeOnCreationFailureListener(EventListener<VmDatacenterEventInfo> listener);
 
     /**
      * Gets bandwidth resource assigned to the Vm,
@@ -432,7 +433,7 @@ public interface Vm extends UniquelyIdentificable, Delayable, Resourceful, Compa
      * @pre currentTime >= 0
      * @post $none
      */
-    double updateVmProcessing(double currentTime, List<Double> mipsShare);
+    double updateProcessing(double currentTime, List<Double> mipsShare);
 
     /**
      * Sets the Cloudlet scheduler the Vm uses to schedule cloudlets execution.
@@ -540,6 +541,7 @@ public interface Vm extends UniquelyIdentificable, Delayable, Resourceful, Compa
      * objects.
      */
     Vm NULL = new Vm() {
+        @Override public void setId(int id) {}
         @Override public int getId() { return -1; }
         @Override public double getSubmissionDelay() { return 0; }
         @Override public void setSubmissionDelay(double submissionDelay) {}
@@ -559,15 +561,15 @@ public interface Vm extends UniquelyIdentificable, Delayable, Resourceful, Compa
         @Override public int getNumberOfPes() { return 0; }
         @Override public Vm addOnHostAllocationListener(EventListener<VmHostEventInfo> listener) { return this; }
         @Override public Vm addOnHostDeallocationListener(EventListener<VmHostEventInfo> listener) { return this; }
-        @Override public Vm addOnVmCreationFailureListener(EventListener<VmDatacenterEventInfo> listener) { return this; }
-        @Override public Vm addOnUpdateVmProcessingListener(EventListener<VmHostEventInfo> listener) { return this; }
+        @Override public Vm addOnCreationFailureListener(EventListener<VmDatacenterEventInfo> listener) { return this; }
+        @Override public Vm addOnUpdateProcessingListener(EventListener<VmHostEventInfo> listener) { return this; }
         @Override public void notifyOnHostAllocationListeners() {}
         @Override public void notifyOnHostDeallocationListeners(Host deallocatedHost) {}
-        @Override public void notifyOnVmCreationFailureListeners(Datacenter failedDatacenter) {}
-        @Override public boolean removeOnUpdateVmProcessingListener(EventListener<VmHostEventInfo> listener) { return false; }
+        @Override public void notifyOnCreationFailureListeners(Datacenter failedDatacenter) {}
+        @Override public boolean removeOnUpdateProcessingListener(EventListener<VmHostEventInfo> listener) { return false; }
         @Override public boolean removeOnHostAllocationListener(EventListener<VmHostEventInfo> listener) { return false; }
         @Override public boolean removeOnHostDeallocationListener(EventListener<VmHostEventInfo> listener) { return false; }
-        @Override public boolean removeOnVmCreationFailureListener(EventListener<VmDatacenterEventInfo> listener) { return false; }
+        @Override public boolean removeOnCreationFailureListener(EventListener<VmDatacenterEventInfo> listener) { return false; }
         @Override public Resource getRam() { return Resource.NULL; }
         @Override public Resource getStorage(){ return Resource.NULL; }
         @Override public List<VmStateHistoryEntry> getStateHistory() { return Collections.emptyList(); }
@@ -586,7 +588,7 @@ public interface Vm extends UniquelyIdentificable, Delayable, Resourceful, Compa
         @Override public void setInMigration(boolean inMigration) {}
         @Override public Vm setRam(long ramCapacity) { return this; }
         @Override public Vm setSize(long size) { return this; }
-        @Override public double updateVmProcessing(double currentTime, List<Double> mipsShare){ return 0.0; }
+        @Override public double updateProcessing(double currentTime, List<Double> mipsShare){ return 0.0; }
         @Override public Vm setCloudletScheduler(CloudletScheduler cloudletScheduler) { return this; }
         @Override public int compareTo(Vm o) { return 0; }
         @Override public double getTotalMipsCapacity() { return 0.0; }

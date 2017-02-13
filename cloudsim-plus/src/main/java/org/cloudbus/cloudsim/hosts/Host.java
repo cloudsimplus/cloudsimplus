@@ -302,7 +302,7 @@ public interface Host extends Identificable, Resourceful, Comparable<Host> {
      * @pre currentTime >= 0.0
      * @post $none
      */
-    double updateVmsProcessing(double currentTime);
+    double updateProcessing(double currentTime);
 
     /**
      * Try to allocate resources to a new VM in the Host.
@@ -332,23 +332,23 @@ public interface Host extends Identificable, Resourceful, Comparable<Host> {
     void destroyAllVms();
 
     /**
-     * Gets the listener object that will be notified every time when
+     * Adds a listener object that will be notified every time when
      * the host updates the processing of all its {@link Vm VMs}.
      *
-     * @return the onUpdateVmsProcessingListener
-     * @see #updateVmsProcessing(double)
+     * @param listener the OnUpdateProcessingListener to add
+     * @return
+     * @see #updateProcessing(double)
      */
-    EventListener<HostUpdatesVmsProcessingEventInfo> getOnUpdateVmsProcessingListener();
+    Host addOnUpdateProcessingListener(EventListener<HostUpdatesVmsProcessingEventInfo> listener);
 
     /**
-     * Sets the listener object that will be notified every time when
-     * the host updates the processing of all its {@link Vm VMs}.
+     * Removes a listener object from the OnUpdateProcessingListener List.
      *
-     * @param onUpdateVmsProcessingListener the onUpdateVmsProcessingListener to set
-     * @return
-     * @see #updateVmsProcessing(double)
+     * @param listener the listener to remove
+     * @return true if the listener was found and removed, false otherwise
+     * @see #updateProcessing(double)
      */
-    Host setOnUpdateVmsProcessingListener(EventListener<HostUpdatesVmsProcessingEventInfo> onUpdateVmsProcessingListener);
+    boolean removeOnUpdateProcessingListener(EventListener<HostUpdatesVmsProcessingEventInfo> listener);
 
     boolean setFailed(boolean failed);
 
@@ -414,12 +414,12 @@ public interface Host extends Identificable, Resourceful, Comparable<Host> {
         @Override public void removeMigratingInVm(Vm vm) {}
         @Override public void setDatacenter(Datacenter datacenter) {}
         @Override public boolean setPeStatus(int peId, Pe.Status status) { return false; }
-        @Override public double updateVmsProcessing(double currentTime) { return 0.0; }
+        @Override public double updateProcessing(double currentTime) { return 0.0; }
         @Override public boolean vmCreate(Vm vm) { return false; }
         @Override public void destroyVm(Vm vm) {}
         @Override public void destroyAllVms() {}
-        @Override public EventListener<HostUpdatesVmsProcessingEventInfo> getOnUpdateVmsProcessingListener() { return EventListener.NULL; }
-        @Override public Host setOnUpdateVmsProcessingListener(EventListener<HostUpdatesVmsProcessingEventInfo> onUpdateVmsProcessingListener) { return Host.NULL; }
+        @Override public boolean removeOnUpdateProcessingListener(EventListener<HostUpdatesVmsProcessingEventInfo> listener) { return false; }
+        @Override public Host addOnUpdateProcessingListener(EventListener<HostUpdatesVmsProcessingEventInfo> listener) { return Host.NULL; }
         @Override public long getAvailableStorage() { return 0L; }
         @Override public boolean setFailed(boolean failed){return false;}
         @Override public Simulation getSimulation() { return Simulation.NULL; }

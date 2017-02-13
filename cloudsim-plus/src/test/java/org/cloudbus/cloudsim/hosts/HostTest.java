@@ -63,7 +63,7 @@ public class HostTest {
         assertFalse(instance.setFailed(false));
         assertFalse(instance.setPeStatus(0, Pe.Status.FREE));
         assertEquals(-1, instance.getId());
-        assertEquals(0, instance.updateVmsProcessing(0), 0);
+        assertEquals(0, instance.updateProcessing(0), 0);
         assertFalse(instance.vmCreate(vm));
         assertTrue(instance.getVmList().isEmpty());
 
@@ -72,8 +72,8 @@ public class HostTest {
         instance.destroyAllVms();
         assertTrue(instance.getVmList().isEmpty());
 
-        instance.setOnUpdateVmsProcessingListener(createMockListener());
-        assertSame(EventListener.NULL, instance.getOnUpdateVmsProcessingListener());
+        instance.addOnUpdateProcessingListener(createMockListener());
+        assertSame(false, instance.removeOnUpdateProcessingListener(null));
     }
 
     private Datacenter createMockDatacenter() {

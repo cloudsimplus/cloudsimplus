@@ -122,8 +122,8 @@ public class PowerVm extends VmSimple {
     }
 
     @Override
-    public double updateVmProcessing(final double currentTime, final List<Double> mipsShare) {
-        double time = super.updateVmProcessing(currentTime, mipsShare);
+    public double updateProcessing(final double currentTime, final List<Double> mipsShare) {
+        double time = super.updateProcessing(currentTime, mipsShare);
         if (currentTime > getPreviousTime() && (currentTime - 0.1) % getSchedulingInterval() == 0) {
             double utilization = getCpuPercentUse(getCloudletScheduler().getPreviousTime());
             if (getSimulation().clock() != 0 || utilization != 0) {

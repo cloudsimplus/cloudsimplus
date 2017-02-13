@@ -118,8 +118,8 @@ public class VmBuilder {
                     .setBroker(broker)
                     .addOnHostAllocationListener(onHostAllocationListener)
                     .addOnHostDeallocationListener(onHostDeallocationListener)
-                    .addOnVmCreationFailureListener(onVmCreationFailureListener)
-                    .addOnUpdateVmProcessingListener(onUpdateVmProcessingListener);
+                    .addOnCreationFailureListener(onVmCreationFailureListener)
+                    .addOnUpdateProcessingListener(onUpdateVmProcessingListener);
             vms.add(vm);
         }
         broker.submitVmList(vms);

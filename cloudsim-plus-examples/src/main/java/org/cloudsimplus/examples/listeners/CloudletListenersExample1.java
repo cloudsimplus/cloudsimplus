@@ -70,7 +70,7 @@ import org.cloudbus.cloudsim.schedulers.cloudlet.CloudletSchedulerSpaceShared;
  * The example uses the new Cloudlet listeners to get these
  * notifications while the simulation is running.
  *
- * @see Cloudlet#addOnCloudletFinishListener(EventListener)
+ * @see Cloudlet#addOnFinishListener(EventListener)
  * @see EventListener
  *
  * @author Manoel Campos da Silva Filho
@@ -99,14 +99,6 @@ public class CloudletListenersExample1 {
     private final CloudSim simulation;
 
     /**
-     * The listener object that will be created in order to be notified when
-     * a cloudlet finishes executing. The same listener is used for all created cloudlets.
-     *
-     * @see #createCloudletListener()
-     */
-    private final EventListener<CloudletVmEventInfo> onCloudletFinishListener;
-
-    /**
      * Starts the example execution, calling the class constructor\
      * to build and run the simulation.
      *
@@ -130,7 +122,6 @@ public class CloudletListenersExample1 {
         this.datacenter = createDatacenter();
         this.broker = new DatacenterBrokerSimple(simulation);
 
-        this.onCloudletFinishListener = createCloudletListener();
         createAndSubmitVms();
         createAndSubmitCloudlets(this.vmList.get(0));
 
@@ -138,14 +129,14 @@ public class CloudletListenersExample1 {
     }
 
     /**
-     * Creates the listener object, using Java 8 Lambda Expressions, that will be notified when a cloudlet
-     * finishes running into a VM. All cloudlet will use this same listener.
+     * A Listener function that will be called everytime when a cloudlet
+     * finishes running into a VM. All cloudlets will use this same listener.
      *
-     * @return the created Listener
+     * @param eventInfo information about the happened event
      * @see #createCloudlet(int, Vm, long)
      */
-    private EventListener<CloudletVmEventInfo> createCloudletListener() {
-        return eventInfo -> Log.printFormattedLine(
+    private void onCloudletFinishListener(CloudletVmEventInfo eventInfo) {
+        Log.printFormattedLine(
                 "\n\t#EventListener: Cloudlet %d finished running at Vm %d at time %.2f\n",
                 eventInfo.getCloudlet().getId(), eventInfo.getVm().getId(), eventInfo.getTime());
     }
@@ -223,7 +214,7 @@ public class CloudletListenersExample1 {
                     .setUtilizationModel(utilizationModel)
                     .setBroker(broker)
                     .setVm(vm)
-                    .addOnCloudletFinishListener(this.onCloudletFinishListener);
+                    .addOnFinishListener(this::onCloudletFinishListener);
 
         return cloudlet;
     }

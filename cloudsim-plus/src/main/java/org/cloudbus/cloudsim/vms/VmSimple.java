@@ -98,7 +98,7 @@ public class VmSimple implements Vm {
      * The VM's storage resource that represents the Vm size in disk.
      * This object contains information about capacity and allocation.
      */
-    private RawStorage storage;
+    private Storage storage;
 
     /**
      * The VM's RAM resource, containing information about capacity and
@@ -117,10 +117,11 @@ public class VmSimple implements Vm {
      */
     private double submissionDelay;
 
-    private List<EventListener<VmHostEventInfo>> onHostAllocationListeners;
-    private List<EventListener<VmHostEventInfo>> onHostDeallocationListeners;
-    private List<EventListener<VmHostEventInfo>> onUpdateVmProcessingListeners;
-    private List<EventListener<VmDatacenterEventInfo>> onVmCreationFailureListeners;
+    private Set<EventListener<VmHostEventInfo>> onHostAllocationListeners;
+    private Set<EventListener<VmHostEventInfo>> onHostDeallocationListeners;
+    private Set<EventListener<VmHostEventInfo>> onUpdateProcessingListeners;
+    private Set<EventListener<VmDatacenterEventInfo>> onCreationFailureListeners;
+
     private VerticalVmScaling ramVerticalScaling;
     private VerticalVmScaling bwVerticalScaling;
 
@@ -150,21 +151,40 @@ public class VmSimple implements Vm {
 
         setRam(new Ram(1024));
         setBw(new Bandwidth(1000));
-        setStorage(new RawStorage(1024));
+        setStorage(new Storage(1024));
 
         setSubmissionDelay(0);
         setVmm("Xen");
         setCloudletScheduler(CloudletScheduler.NULL);
         stateHistory = new LinkedList<>();
 
-        this.onHostAllocationListeners = new ArrayList<>();
-        this.onHostDeallocationListeners = new ArrayList<>();
-        this.onVmCreationFailureListeners = new ArrayList<>();
-        this.onUpdateVmProcessingListeners = new ArrayList<>();
+        this.onHostAllocationListeners = new HashSet<>();
+        this.onHostDeallocationListeners = new HashSet<>();
+        this.onCreationFailureListeners = new HashSet<>();
+        this.onUpdateProcessingListeners = new HashSet<>();
         this.setHorizontalScaling(HorizontalVmScaling.NULL);
         this.setRamVerticalScaling(VerticalVmScaling.NULL);
         this.setBwVerticalScaling(VerticalVmScaling.NULL);
     }
+
+    /**
+     * Creates a Vm with 1024 MEGABYTE of RAM, 1000 Megabits/s of Bandwidth and 1024 MEGABYTE of Storage Size.
+     * It is not defined an id for the Vm. The id is defined when the Vm is submitted to
+     * a {@link DatacenterBroker}.
+     *
+     * To change these values, use the respective setters. While the Vm {@link #isCreated()
+     * is being instantiated}, such values can be changed freely.
+     *
+     * @param mipsCapacity the mips capacity of each Vm {@link Pe}
+     * @param numberOfPes amount of {@link Pe} (CPU cores)
+     *
+     * @pre numberOfPes > 0
+     * @post $none
+     */
+    public VmSimple(long mipsCapacity, int numberOfPes) {
+        this(-1, mipsCapacity, numberOfPes);
+    }
+
 
     /**
      * Creates a Vm with 1024 MEGABYTE of RAM, 1000 Megabits/s of Bandwidth and 1024 MEGABYTE of Storage Size.
@@ -236,13 +256,13 @@ public class VmSimple implements Vm {
     }
 
     @Override
-    public double updateVmProcessing(double currentTime, List<Double> mipsShare) {
+    public double updateProcessing(double currentTime, List<Double> mipsShare) {
         if (Objects.isNull(mipsShare)) {
             return Double.MAX_VALUE;
         }
 
         final double nextSimulationTime = getCloudletScheduler().updateVmProcessing(currentTime, mipsShare);
-        notifyOnUpdateVmProcessing();
+        notifyOnUpdateProcessingListeners();
         return nextSimulationTime;
     }
 
@@ -318,7 +338,8 @@ public class VmSimple implements Vm {
      * @param id the new VM id, that has to be unique for the current {@link #getBroker() broker}
      * @todo The uniqueness of VM id for a given user is not being ensured
      */
-    protected final void setId(int id) {
+    @Override
+    public final void setId(int id) {
         this.id = id;
     }
 
@@ -418,10 +439,10 @@ public class VmSimple implements Vm {
     }
 
     /**
-     * Sets a new {@link RawStorage} resource for the Vm.
+     * Sets a new {@link Storage} resource for the Vm.
      * @param storage the RawStorage resource to set
      */
-    private void setStorage(RawStorage storage){
+    private void setStorage(Storage storage){
         Objects.requireNonNull(storage);
         this.storage = storage;
     }
@@ -431,7 +452,7 @@ public class VmSimple implements Vm {
         if(this.isCreated()){
             throw new UnsupportedOperationException("Storage size can just be changed when the Vm was not created inside a Host yet.");
         }
-        setStorage(new RawStorage(size));
+        setStorage(new Storage(size));
         return this;
     }
 
@@ -571,19 +592,15 @@ public class VmSimple implements Vm {
 
     @Override
     public Vm addOnHostAllocationListener(EventListener<VmHostEventInfo> listener) {
-        if (!Objects.isNull(listener)) {
-            this.onHostAllocationListeners.add(listener);
-        }
-
+        Objects.requireNonNull(listener);
+        this.onHostAllocationListeners.add(listener);
         return this;
     }
 
     @Override
     public Vm addOnHostDeallocationListener(EventListener<VmHostEventInfo> listener) {
-        if (!Objects.isNull(listener)) {
-            this.onHostDeallocationListeners.add(listener);
-        }
-
+        Objects.requireNonNull(listener);
+        this.onHostDeallocationListeners.add(listener);
         return this;
     }
 
@@ -603,31 +620,27 @@ public class VmSimple implements Vm {
     }
 
     @Override
-    public boolean removeOnVmCreationFailureListener(EventListener<VmDatacenterEventInfo> listener) {
-        return onVmCreationFailureListeners.remove(listener);
-    }
-
-    @Override
-    public Vm addOnVmCreationFailureListener(EventListener<VmDatacenterEventInfo> listener) {
-        if (!Objects.isNull(listener)) {
-            this.onVmCreationFailureListeners.add(listener);
-        }
-
+    public Vm addOnCreationFailureListener(EventListener<VmDatacenterEventInfo> listener) {
+        Objects.requireNonNull(listener);
+        this.onCreationFailureListeners.add(listener);
         return this;
     }
 
     @Override
-    public boolean removeOnUpdateVmProcessingListener(EventListener<VmHostEventInfo> listener) {
-        return onUpdateVmProcessingListeners.remove(listener);
+    public boolean removeOnCreationFailureListener(EventListener<VmDatacenterEventInfo> listener) {
+        return onCreationFailureListeners.remove(listener);
     }
 
     @Override
-    public Vm addOnUpdateVmProcessingListener(EventListener<VmHostEventInfo> listener) {
-        if (!Objects.isNull(listener)) {
-            this.onUpdateVmProcessingListeners.add(listener);
-        }
-
+    public Vm addOnUpdateProcessingListener(EventListener<VmHostEventInfo> listener) {
+        Objects.requireNonNull(listener);
+        this.onUpdateProcessingListeners.add(listener);
         return this;
+    }
+
+    @Override
+    public boolean removeOnUpdateProcessingListener(EventListener<VmHostEventInfo> listener) {
+        return onUpdateProcessingListeners.remove(listener);
     }
 
     /**
@@ -698,7 +711,7 @@ public class VmSimple implements Vm {
 
     @Override
     public void notifyOnHostAllocationListeners() {
-        VmHostEventInfo info = VmHostEventInfo.of(this);
+        final VmHostEventInfo info = VmHostEventInfo.of(this);
         onHostAllocationListeners.forEach(l -> l.update(info));
     }
 
@@ -715,19 +728,19 @@ public class VmSimple implements Vm {
     /**
          * Notifies all registered listeners when the processing of the Vm is updated in its {@link Host}.
          */
-    public void notifyOnUpdateVmProcessing() {
-        VmHostEventInfo info = VmHostEventInfo.of(this);
-        onUpdateVmProcessingListeners.forEach(l -> l.update(info));
+    public void notifyOnUpdateProcessingListeners() {
+        final VmHostEventInfo info = VmHostEventInfo.of(this);
+        onUpdateProcessingListeners.forEach(l -> l.update(info));
     }
 
     @Override
-    public void notifyOnVmCreationFailureListeners(Datacenter failedDatacenter) {
+    public void notifyOnCreationFailureListeners(Datacenter failedDatacenter) {
         if(Objects.isNull(failedDatacenter)){
             return;
         }
 
-        VmDatacenterEventInfo info = VmDatacenterEventInfo.of(this, failedDatacenter);
-        onVmCreationFailureListeners.forEach(l -> l.update(info));
+        final VmDatacenterEventInfo info = VmDatacenterEventInfo.of(this, failedDatacenter);
+        onCreationFailureListeners.forEach(l -> l.update(info));
     }
 
 
@@ -738,19 +751,19 @@ public class VmSimple implements Vm {
 
     @Override
     public final Vm setHorizontalScaling(HorizontalVmScaling horizontalScaling) throws IllegalArgumentException {
-        this.horizontalScaling = validateAndConfigureVmScaling(horizontalScaling, HorizontalVmScaling.NULL);
+        this.horizontalScaling = validateAndConfigureVmScaling(horizontalScaling);
         return this;
     }
 
     @Override
     public final Vm setRamVerticalScaling(VerticalVmScaling ramVerticalScaling) throws IllegalArgumentException {
-        this.ramVerticalScaling = validateAndConfigureVmScaling(ramVerticalScaling, VerticalVmScaling.NULL);
+        this.ramVerticalScaling = validateAndConfigureVmScaling(ramVerticalScaling);
         return this;
     }
 
     @Override
     public final Vm setBwVerticalScaling(VerticalVmScaling bwVerticalScaling) throws IllegalArgumentException {
-        this.bwVerticalScaling = validateAndConfigureVmScaling(bwVerticalScaling, VerticalVmScaling.NULL);
+        this.bwVerticalScaling = validateAndConfigureVmScaling(bwVerticalScaling);
         return this;
     }
 
@@ -764,20 +777,19 @@ public class VmSimple implements Vm {
         return bwVerticalScaling;
     }
 
-    private <T extends VmScaling> T validateAndConfigureVmScaling(T vmScaling, T defaultValue) {
-        final T result = Objects.isNull(vmScaling) ? defaultValue : vmScaling;
-
+    private <T extends VmScaling> T validateAndConfigureVmScaling(T vmScaling) {
+        Objects.requireNonNull(vmScaling);
         if(vmScaling.getVm() != null && vmScaling.getVm() != Vm.NULL && vmScaling.getVm() != this){
-            String name = defaultValue.getClass().getSimpleName();
+            String name = vmScaling.getClass().getSimpleName();
             throw new IllegalArgumentException(
                 "The "+name+" given already is linked to a Vm. " +
                     "Each Vm must have its own "+name+" objects or none at all. " +
                     "A new scaling has to be provided to this Vm.");
         }
 
-        result.setVm(this);
-        this.addOnUpdateVmProcessingListener(listener -> result.requestScalingIfPredicateMatch(listener.getTime()));
-        return result;
+        vmScaling.setVm(this);
+        this.addOnUpdateProcessingListener(listener -> vmScaling.requestScalingIfPredicateMatch(listener.getTime()));
+        return vmScaling;
     }
 
 }

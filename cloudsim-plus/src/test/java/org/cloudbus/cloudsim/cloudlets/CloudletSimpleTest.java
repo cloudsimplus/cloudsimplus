@@ -12,9 +12,7 @@ package org.cloudbus.cloudsim.cloudlets;
 
 import java.util.ArrayList;
 
-import org.cloudbus.cloudsim.brokers.DatacenterBrokerSimple;
 import org.cloudbus.cloudsim.datacenters.Datacenter;
-import org.cloudbus.cloudsim.datacenters.DatacenterCharacteristics;
 import org.cloudbus.cloudsim.datacenters.DatacenterMocker;
 import org.cloudbus.cloudsim.mocks.CloudSimMocker;
 import org.cloudbus.cloudsim.mocks.Mocks;
@@ -79,27 +77,26 @@ public class CloudletSimpleTest {
     @Test
     public void testAddOnCloudletFinishEventListener() {
         EventListener<CloudletVmEventInfo> listener = (info) -> {};
-        cloudlet.addOnCloudletFinishListener(listener);
-        assertTrue(cloudlet.removeOnCloudletFinishListener(listener));
+        cloudlet.addOnFinishListener(listener);
+        assertTrue(cloudlet.removeOnFinishListener(listener));
     }
 
-    @Test
+    @Test(expected = NullPointerException.class)
     public void testAddOnCloudletFinishEventListener_Null() {
-        cloudlet.addOnCloudletFinishListener(null);
-        assertFalse(cloudlet.removeOnCloudletFinishListener(null));
+        cloudlet.addOnFinishListener(null);
     }
 
     @Test
     public void testRemoveOnCloudletFinishEventListener() {
         EventListener<CloudletVmEventInfo> listener = (info) -> {};
-        cloudlet.addOnCloudletFinishListener(listener);
-        assertTrue(cloudlet.removeOnCloudletFinishListener(listener));
+        cloudlet.addOnFinishListener(listener);
+        assertTrue(cloudlet.removeOnFinishListener(listener));
     }
 
     @Test
     public void testRemoveOnCloudletFinishEventListener_Null() {
-        cloudlet.addOnCloudletFinishListener(null);
-        assertFalse(cloudlet.removeOnCloudletFinishListener(null));
+        cloudlet.addOnFinishListener(e->{});
+        assertFalse(cloudlet.removeOnFinishListener(null));
     }
 
     @Test

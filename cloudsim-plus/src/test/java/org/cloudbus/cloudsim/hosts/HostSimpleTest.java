@@ -246,7 +246,7 @@ public class HostSimpleTest {
             double nextCloudletCompletionTimeOfCurrentVm = i+1;
 
             Vm vm = EasyMock.createMock(Vm.class);
-            EasyMock.expect(vm.updateVmProcessing(time, mipsShare))
+            EasyMock.expect(vm.updateProcessing(time, mipsShare))
                     .andReturn(nextCloudletCompletionTimeOfCurrentVm)
                     .times(1);
             EasyMock.replay(vm);
@@ -271,7 +271,7 @@ public class HostSimpleTest {
         final double nextCloudletCompletionTimeOfCurrentVm = i+1;
         assertEquals(
                 nextCloudletCompletionTimeOfCurrentVm,
-                host.updateVmsProcessing(time), 0);
+                host.updateProcessing(time), 0);
         EasyMock.verify(vm);
 
         EasyMock.verify(vmScheduler);
@@ -280,11 +280,13 @@ public class HostSimpleTest {
     @Test
     public void testSetOnUpdateVmsProcessingListener() {
         Host host = createHostSimple(0, 1);
-        host.setOnUpdateVmsProcessingListener(null);
-        assertEquals(EventListener.NULL, host.getOnUpdateVmsProcessingListener());
-        EventListener<HostUpdatesVmsProcessingEventInfo> listener = (evt)->{};
-        host.setOnUpdateVmsProcessingListener(listener);
-        assertEquals(listener, host.getOnUpdateVmsProcessingListener());
+
+        EventListener<HostUpdatesVmsProcessingEventInfo> updateVmsProcessing = e -> {};
+        host.addOnUpdateProcessingListener(updateVmsProcessing);
+        assertEquals(true, host.removeOnUpdateProcessingListener(updateVmsProcessing));
+
+        host.addOnUpdateProcessingListener(e -> {});
+        assertEquals(false, host.removeOnUpdateProcessingListener(null));
     }
 
     @Test

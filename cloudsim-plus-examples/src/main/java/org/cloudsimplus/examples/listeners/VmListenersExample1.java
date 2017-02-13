@@ -72,7 +72,7 @@ import org.cloudbus.cloudsim.resources.Ram;
  *
  * @see Vm#addOnHostAllocationListener(EventListener)
  * @see Vm#addOnHostDeallocationListener(EventListener)
- * @see Vm#addOnVmCreationFailureListener(EventListener)
+ * @see Vm#addOnCreationFailureListener(EventListener)
  * @see EventListener
  *
  * @author Manoel Campos da Silva Filho
@@ -171,7 +171,7 @@ public class VmListenersExample1 {
          * The Listener is created using Java 8 Lambda Expressions.
          */
         Vm vm1 = createVm(1);
-        vm1.addOnVmCreationFailureListener(eventInfo -> Log.printFormattedLine(
+        vm1.addOnCreationFailureListener(eventInfo -> Log.printFormattedLine(
                 "\n\t#EventListener: Vm %d could not be placed into any host of Datacenter %d at time %.2f due to lack of a host with enough resources.\n",
                 eventInfo.getVm().getId(), eventInfo.getDatacenter().getId(), eventInfo.getTime()));
 

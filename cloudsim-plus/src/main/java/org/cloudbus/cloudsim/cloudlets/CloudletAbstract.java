@@ -17,10 +17,7 @@ import org.cloudsimplus.listeners.CloudletVmEventInfo;
 import org.cloudsimplus.listeners.EventListener;
 
 import java.text.DecimalFormat;
-import java.util.ArrayList;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 
 /**
  * A base class for {@link Cloudlet} implementations.
@@ -33,7 +30,7 @@ public abstract class CloudletAbstract implements Cloudlet {
     /**
      * @see #getId()
      */
-    private final int id;
+    private int id;
     /**
      * Stores the operating system line separator.
      */
@@ -132,8 +129,9 @@ public abstract class CloudletAbstract implements Cloudlet {
      */
     private UtilizationModel utilizationModelBw;
 
-    private List<EventListener<CloudletVmEventInfo>> onCloudletFinishListeners;
-    private List<EventListener<CloudletVmEventInfo>> onUpdateCloudletProcessingListeners;
+    private Set<EventListener<CloudletVmEventInfo>> onFinishListeners;
+    private Set<EventListener<CloudletVmEventInfo>> onUpdateProcessingListeners;
+
     /**
      * @see #getSubmissionDelay()
      */
@@ -146,7 +144,7 @@ public abstract class CloudletAbstract implements Cloudlet {
      * @param cloudletLength the length or size (in MI) of this cloudlet to be executed in a VM
      * @param pesNumber      number of PEs that Cloudlet will require
      */
-    protected CloudletAbstract(final int cloudletId, final long cloudletLength, final int pesNumber) {
+    public CloudletAbstract(final int cloudletId, final long cloudletLength, final int pesNumber) {
         /*
         Normally, a Cloudlet is only executed on a Datacenter without being
         migrated to others. Hence, to reduce memory consumption, set the
@@ -182,8 +180,19 @@ public abstract class CloudletAbstract implements Cloudlet {
         setUtilizationModelCpu(UtilizationModel.NULL);
         setUtilizationModelRam(UtilizationModel.NULL);
         setUtilizationModelBw(UtilizationModel.NULL);
-        onCloudletFinishListeners = new ArrayList<>();
-        onUpdateCloudletProcessingListeners = new ArrayList<>();
+        onFinishListeners = new HashSet<>();
+        onUpdateProcessingListeners = new HashSet<>();
+    }
+
+    /**
+     * Creates a Cloudlet with no priority or id. The id is defined when the Cloudlet is submitted to
+     * a {@link DatacenterBroker}. The file size and output size is defined as 1.
+     *
+     * @param cloudletLength the length or size (in MI) of this cloudlet to be executed in a VM
+     * @param pesNumber      number of PEs that Cloudlet will require
+     */
+    public CloudletAbstract(final long cloudletLength, final int pesNumber) {
+        this(-1, cloudletLength, pesNumber);
     }
 
     protected int getLastExecutedDatacenterIndex() {
@@ -203,37 +212,33 @@ public abstract class CloudletAbstract implements Cloudlet {
     }
 
     @Override
-    public boolean removeOnUpdateCloudletProcessingListener(EventListener<CloudletVmEventInfo> listener) {
-        return this.onUpdateCloudletProcessingListeners.remove(listener);
-    }
-
-    @Override
-    public Cloudlet addOnUpdateCloudletProcessingListener(EventListener<CloudletVmEventInfo> listener) {
-        if (!Objects.isNull(listener)) {
-            this.onUpdateCloudletProcessingListeners.add(listener);
-        }
-
+    public Cloudlet addOnUpdateProcessingListener(EventListener<CloudletVmEventInfo> listener) {
+        Objects.requireNonNull(listener);
+        this.onUpdateProcessingListeners.add(listener);
         return this;
     }
 
     @Override
-    public boolean removeOnCloudletFinishListener(EventListener<CloudletVmEventInfo> listener) {
-        return onCloudletFinishListeners.remove(listener);
+    public boolean removeOnUpdateProcessingListener(EventListener<CloudletVmEventInfo> listener) {
+        return this.onUpdateProcessingListeners.remove(listener);
     }
 
     @Override
-    public Cloudlet addOnCloudletFinishListener(EventListener<CloudletVmEventInfo> listener) {
-        if (!Objects.isNull(listener)) {
-            this.onCloudletFinishListeners.add(listener);
-        }
-
+    public Cloudlet addOnFinishListener(EventListener<CloudletVmEventInfo> listener) {
+        Objects.requireNonNull(listener);
+        this.onFinishListeners.add(listener);
         return this;
     }
 
     @Override
-    public void notifyOnCloudletProcessingListeners(double time) {
+    public boolean removeOnFinishListener(EventListener<CloudletVmEventInfo> listener) {
+        return onFinishListeners.remove(listener);
+    }
+
+    @Override
+    public void notifyOnUpdateProcessingListeners(double time) {
         CloudletVmEventInfo info = CloudletVmEventInfo.of(time, this);
-        onUpdateCloudletProcessingListeners.forEach(l -> l.update(info));
+        onUpdateProcessingListeners.forEach(l -> l.update(info));
     }
 
     @Override
@@ -343,7 +348,7 @@ public abstract class CloudletAbstract implements Cloudlet {
     private void notifyListenersIfCloudletIsFinished() {
         if (isFinished()) {
             CloudletVmEventInfo info = CloudletVmEventInfo.of(this);
-            onCloudletFinishListeners.forEach(l -> l.update(info));
+            onFinishListeners.forEach(l -> l.update(info));
         }
     }
 
@@ -572,6 +577,11 @@ public abstract class CloudletAbstract implements Cloudlet {
     @Override
     public int getId() {
         return id;
+    }
+
+    @Override
+    public void setId(int id) {
+        this.id = id;
     }
 
     @Override

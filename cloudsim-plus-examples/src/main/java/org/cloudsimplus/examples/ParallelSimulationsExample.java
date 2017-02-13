@@ -65,10 +65,17 @@ import java.util.List;
  * in the different simulations. There will be just a difference in the number of created
  * objects.</p>
  *
+ * <p>To enable such a parallel simulations execution, the {@link Log} must be
+ * disable (as shown in the first line of the main method) and any console
+ * output should be avoided during simulation execution.
+ * Further, usage of static mutable attributes must be avoided.
+ * All simulation attributes must be instance attributes and one
+ * simulation run (a simulation instance) should not share data with other ones.</p>
+ *
  * @author Manoel Campos da Silva Filho
  * @since CloudSim Plus 1.0
  */
-public class ParallelSimulationsExample {
+public class ParallelSimulationsExample implements Runnable {
     private final String title;
     private CloudSim simulation;
     private DatacenterBroker broker;
@@ -86,11 +93,13 @@ public class ParallelSimulationsExample {
      * @param args
      */
     public static void main(String[] args) {
-        Log.disable();  //It is mandatory to disable the Log when executing parallel simulations
-        List<ParallelSimulationsExample> examples = new ArrayList<>(2);
+        //IT IS MANDATORY TO DISABLE THE LOG WHEN EXECUTING PARALLEL SIMULATIONS.
+        Log.disable();
+
+        List<ParallelSimulationsExample> simulationList = new ArrayList<>(2);
 
         //Creates the first simulation scenario
-        examples.add(
+        simulationList.add(
             new ParallelSimulationsExample("Simulation 1")
                 .setHostsToCreate(4)
                 .setVmsToCreate(4)
@@ -98,50 +107,26 @@ public class ParallelSimulationsExample {
         );
 
         //Creates the second simulation scenario
-       examples.add(
+       simulationList.add(
             new ParallelSimulationsExample("Simulation 2")
                 .setHostsToCreate(4)
                 .setVmsToCreate(4)
                 .setCloudletsToCreate(16)
         );
 
-        /*
-        Uses Java 8 Streams to execute the simulation scenarios in parallel.
-        The map method executes the scenario by calling the run() method and gets the number of executed cloudlets
-        for each scenario (that is returned by run()).
-        After all scenarios are executed and each number of executed cloudlet
-        obtained, the sum() method will get such numbers from the result of the map method
-        and sum it to get the total number of executed cloudlets.
+        final long startTimeMilliSec = System.currentTimeMillis();
+        //Uses Java 8 Streams to execute the simulation scenarios in parallel.
+        // tag::parallelExecution[]
+        simulationList.parallelStream().forEach(ParallelSimulationsExample::run);
+        // end::parallelExecution[]
 
-        The sum is an terminal operation that just returns when all the scenarios
-        have finished. As the Parallel Stream will create one thread for each
-        scenarios (that is a fork operation), each simulation may finish in different times.
-        Using a terminal operation such as sum() will ensure that the stream
-        will wait for all threads to finish (that is a join operation) and get a final result.
-        Any terminal operation can be used here just to make the stream to wait
-        for all threads to finish.
-
-        This was used because after that, we want to print results just after
-        all simulations have finished.
-        */
-        long startTimeMilliSec = System.currentTimeMillis();
-        int totalExecutedCloudlets =
-            examples.parallelStream()
-                .mapToInt(example -> example.run())
-                .sum();
-
-        long finishTimeMilliSec = (System.currentTimeMillis() - startTimeMilliSec);
+        final long finishTimeMilliSec = System.currentTimeMillis() - startTimeMilliSec;
 
         Log.enable();
-        Log.printFormattedLine("Time to run %d simulations: %d milliseconds", examples.size(), finishTimeMilliSec);
-        Log.printFormattedLine(
-            "Total number of executed cloudlets in all the %d simulation scenarios: %d",
-            examples.size(), totalExecutedCloudlets);
+        Log.printFormattedLine("Time to run %d simulations: %d milliseconds", simulationList.size(), finishTimeMilliSec);
 
-        //With the cloudlet list of all scenarios executed, print such lists
-        for (ParallelSimulationsExample example : examples) {
-            example.printResults();
-        }
+        //Prints the cloudlet list of all executed simulations
+        simulationList.forEach(ParallelSimulationsExample::printResults);
     }
 
     public void printResults(){
@@ -262,9 +247,9 @@ public class ParallelSimulationsExample {
 
     /**
      * Builds the simulation scenario and starts the simulation.
-     * @return the number of executed cloudlets
      */
-    public int run() {
+    @Override
+    public void run() {
         Datacenter datacenter0 = createDatacenter();
 
         /*Creates a Broker accountable for submission of VMs and Cloudlets
@@ -279,7 +264,6 @@ public class ParallelSimulationsExample {
         simulation.start();
 
         this.finishedCloudletList = broker.getCloudletsFinishedList();
-        return this.finishedCloudletList.size();
     }
 
     public int getCloudletsToCreate() {

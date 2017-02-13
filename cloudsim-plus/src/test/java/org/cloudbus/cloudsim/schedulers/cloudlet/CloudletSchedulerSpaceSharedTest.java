@@ -82,7 +82,7 @@ public class CloudletSchedulerSpaceSharedTest {
     public void testRemoveCloudletFromExecList_NotInExecList() {
         CloudletExecutionInfo cloudlet = new CloudletExecutionInfo(CloudletSimpleTest.createCloudletWithOnePe(0));
         CloudletSchedulerSpaceShared instance = new CloudletSchedulerSpaceShared();
-        assertFalse(instance.removeCloudletFromExecList(cloudlet));
+        assertNull(instance.removeCloudletFromExecList(cloudlet));
     }
 
     @Test
@@ -90,7 +90,7 @@ public class CloudletSchedulerSpaceSharedTest {
         CloudletExecutionInfo cloudlet = new CloudletExecutionInfo(CloudletSimpleTest.createCloudletWithOnePe(0));
         CloudletSchedulerSpaceShared instance = new CloudletSchedulerSpaceShared();
         instance.addCloudletToExecList(cloudlet);
-        assertTrue(instance.removeCloudletFromExecList(cloudlet));
+        assertSame(cloudlet, instance.removeCloudletFromExecList(cloudlet));
     }
 
     @Test

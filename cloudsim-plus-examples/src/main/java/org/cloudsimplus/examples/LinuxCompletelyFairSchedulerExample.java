@@ -57,6 +57,9 @@ import org.cloudsimplus.builders.tables.PriorityCloudletsTableBuilderHelper;
  * An example that uses an implementation of the {@link CloudletSchedulerCompletelyFair Completely Fair Scheduler}
  * used in the Linux Kernel for scheduling of Cloudlets execution inside a Vm.
  *
+ * <p>It is strongly recommended to read the {@link CloudletSchedulerCompletelyFair} class documentation
+ * to understand how this scheduler works.</p>
+ *
  * @author Manoel Campos da Silva Filho
  * @see <a href="https://en.wikipedia.org/wiki/Completely_Fair_Scheduler">Completely Fair Scheduler (CFS)</a>
  * @since CloudSim Plus 1.0
@@ -132,25 +135,13 @@ public class LinuxCompletelyFairSchedulerExample {
         broker0.submitVmList(vmList);
     }
 
-    private DatacenterSimple createDatacenter() {
+    private Datacenter createDatacenter() {
         List<Host> hostList = new ArrayList<>(HOSTS_NUMBER);
         for(int i = 0; i < HOSTS_NUMBER; i++){
             hostList.add(createHost());
         }
 
-        //Defines the characteristics of the data center
-        final double cost = 3.0; // the cost of using processing in this Datacenter
-        final double costPerMem = 0.05; // the cost of using memory in this Datacenter
-        final double costPerStorage = 0.001; // the cost of using storage in this Datacenter
-        final double costPerBw = 0.0; // the cost of using bw in this Datacenter
-
-        DatacenterCharacteristics characteristics =
-            new DatacenterCharacteristicsSimple(hostList)
-                .setCostPerSecond(cost)
-                .setCostPerMem(costPerMem)
-                .setCostPerStorage(costPerStorage)
-                .setCostPerBw(costPerBw);
-
+        DatacenterCharacteristics characteristics = new DatacenterCharacteristicsSimple(hostList);
         return new DatacenterSimple(simulation, characteristics, new VmAllocationPolicySimple());
     }
 

@@ -34,7 +34,7 @@ import org.cloudbus.cloudsim.vms.Vm;
  *
  * <p>It can be used to notify Listeners when a Host is {@link Vm#addOnHostAllocationListener(EventListener)}  allocated} to or
  * {@link Vm#addOnHostDeallocationListener(EventListener)}  deallocated} from a given Vm,
- * when a Vm has its {@link Vm#addOnUpdateVmProcessingListener(EventListener)}  processing updated by its Host},
+ * when a Vm has its {@link Vm#addOnUpdateProcessingListener(EventListener)}  processing updated by its Host},
  * etc.
  * </p>
  **
@@ -43,7 +43,7 @@ import org.cloudbus.cloudsim.vms.Vm;
  *
  * @see Vm#addOnHostAllocationListener(EventListener)
  * @see Vm#addOnHostDeallocationListener(EventListener)
- * @see Vm#addOnUpdateVmProcessingListener(EventListener)
+ * @see Vm#addOnUpdateProcessingListener(EventListener)
  */
 public interface VmHostEventInfo extends VmEventInfo, HostEventInfo {
     /**

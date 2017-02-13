@@ -40,7 +40,7 @@ public class HarddriveStorage implements FileStorage {
      * The available space is update according to files added or removed
      * from the HD.
      */
-    private RawStorage storage;
+    private Storage storage;
 
     /**
      * An storage just to control the amount of space previously allocated
@@ -52,7 +52,7 @@ public class HarddriveStorage implements FileStorage {
      * @see #reserveSpace(int)
      * @see #addReservedFile(File)
      */
-    private RawStorage reservedStorage;
+    private Storage reservedStorage;
 
     /** @see #getFileNameList()   */
     private List<String> fileNameList;
@@ -83,8 +83,8 @@ public class HarddriveStorage implements FileStorage {
      * @throws IllegalArgumentException when the name and the capacity are not valid
      */
     public HarddriveStorage(final String name, final long capacity) throws IllegalArgumentException {
-        this.storage = new RawStorage(capacity);
-        this.reservedStorage = new RawStorage(capacity);
+        this.storage = new Storage(capacity);
+        this.reservedStorage = new Storage(capacity);
         if (Objects.isNull(name) || name.trim().isEmpty()) {
             throw new IllegalArgumentException("HarddriveStorage(): Error - invalid storage name.");
         }

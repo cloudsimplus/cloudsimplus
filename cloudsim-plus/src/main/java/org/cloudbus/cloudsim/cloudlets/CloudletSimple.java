@@ -23,6 +23,17 @@ import org.cloudbus.cloudsim.utilizationmodels.UtilizationModel;
  */
 public class CloudletSimple extends CloudletAbstract {
     /**
+     * Creates a Cloudlet with no priority or id. The id is defined when the Cloudlet is submitted to
+     * a {@link DatacenterBroker}. The file size and output size is defined as 1.
+     *
+     * @param cloudletLength the length or size (in MI) of this cloudlet to be executed in a VM
+     * @param pesNumber      number of PEs that Cloudlet will require
+     */
+    public CloudletSimple(final long cloudletLength, final int pesNumber) {
+        super(cloudletLength, pesNumber);
+    }
+
+    /**
      * Creates a Cloudlet with no priority and file size and output size equal to 1.
      * To change these values, use the respective setters.
      *

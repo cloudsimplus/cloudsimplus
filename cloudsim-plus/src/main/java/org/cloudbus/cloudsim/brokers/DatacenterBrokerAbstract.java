@@ -10,6 +10,7 @@ package org.cloudbus.cloudsim.brokers;
 import java.util.*;
 import java.util.function.Function;
 import java.util.function.Supplier;
+import static java.util.stream.Collectors.toList;
 
 import org.cloudbus.cloudsim.cloudlets.Cloudlet;
 import org.cloudbus.cloudsim.core.events.SimEvent;
@@ -97,6 +98,8 @@ public abstract class DatacenterBrokerAbstract extends CloudSimEntity implements
      * @see #getVmsToDatacentersMap()
      */
     private Map<Vm, Datacenter> vmsToDatacentersMap;
+    private Cloudlet lastSubmittedCloudlet;
+    private Vm lastSubmittedVm;
 
     /**
      * Creates a new DatacenterBroker object.
@@ -111,6 +114,8 @@ public abstract class DatacenterBrokerAbstract extends CloudSimEntity implements
         this.vmsCreatedList = new ArrayList<>();
         this.cloudletsWaitingList = new ArrayList<>();
         this.cloudletsFinishedList = new ArrayList<>();
+        this.lastSubmittedCloudlet = Cloudlet.NULL;
+        this.lastSubmittedVm = Vm.NULL;
 
         cloudletsCreated = 0;
         vmCreationRequests = 0;
@@ -148,9 +153,10 @@ public abstract class DatacenterBrokerAbstract extends CloudSimEntity implements
      */
     @Override
     public void submitVmList(List<? extends Vm> list) {
+        lastSubmittedVm = setIdForEntitiesWithNoDelay(list, lastSubmittedVm);
         vmsWaitingList.addAll(list);
 
-        if (isStarted()) {
+        if (isStarted() && !list.isEmpty()) {
             Log.printFormattedLine(
                 "%.2f: %s: List of %d VMs submitted to the broker during simulation execution. VMs creation request sent to Datacenter.",
                 getSimulation().clock(), getName(), list.size());
@@ -188,7 +194,12 @@ public abstract class DatacenterBrokerAbstract extends CloudSimEntity implements
      */
     @Override
     public void submitCloudletList(List<? extends Cloudlet> list) {
+        lastSubmittedCloudlet = setIdForEntitiesWithNoDelay(list, lastSubmittedCloudlet);
+        if(list.isEmpty()) {
+            return;
+        }
         setSimulationForCloudletUtilizationModels(list);
+
         getCloudletsWaitingList().addAll(list);
         Log.printFormattedLine(
             "%.2f: %s: List of %d Cloudlets submitted to the broker during simulation execution.",
@@ -231,6 +242,33 @@ public abstract class DatacenterBrokerAbstract extends CloudSimEntity implements
         list.stream()
             .filter(e -> e.getSubmissionDelay() <= 0)
             .forEach(e -> e.setSubmissionDelay(submissionDelay));
+    }
+
+    /**
+     * Defines IDs for a list of {@link Identificable} entities that don't
+     * have an ID already assigned. Such entities can be a {@link Cloudlet},
+     * {@link Vm} or any object that implements {@link Identificable}.
+     *
+     * @param list list of objects to define an  ID
+     * @param lastSubmittedEntity the last entity of the type of objects in the list that was submitted to the broker
+     */
+    private <T extends ChangeableId> T setIdForEntitiesWithNoDelay(List<? extends T> list, T lastSubmittedEntity) {
+        Objects.requireNonNull(list);
+        if(list.isEmpty()){
+            return lastSubmittedEntity;
+        }
+
+        List<ChangeableId> entities = list.stream()
+            .filter(e -> e.getId() < 0)
+            .collect(toList());
+
+        int id = lastSubmittedEntity.getId();
+        for (ChangeableId e : list) {
+            e.setId(++id);
+        }
+
+        return list.get(list.size()-1);
+
     }
 
     @Override
@@ -392,7 +430,7 @@ public abstract class DatacenterBrokerAbstract extends CloudSimEntity implements
      * @param datacenter id of the Datacenter where the request to create
      */
     protected void processFailedVmCreationInDatacenter(Vm vm, Datacenter datacenter) {
-        vm.notifyOnVmCreationFailureListeners(datacenter);
+        vm.notifyOnCreationFailureListeners(datacenter);
         Log.printFormattedLine(
             "%.2f: %s: Creation of VM #%s failed in Datacenter #%s",
             getSimulation().clock(), getName(), vm.getId(), datacenter.getId());

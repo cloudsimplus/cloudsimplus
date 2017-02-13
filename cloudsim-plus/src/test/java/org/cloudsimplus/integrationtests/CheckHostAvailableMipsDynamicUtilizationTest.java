@@ -64,7 +64,7 @@ public final class CheckHostAvailableMipsDynamicUtilizationTest {
     private CloudSim simulation;
 
     /**
-     * A lambda function used by the {@link Host#setOnUpdateVmsProcessingListener(EventListener)}
+     * A lambda function used by the {@link Host#addOnUpdateProcessingListener(EventListener)}
      * that will be called every time a host updates the processing of its VMs.
      * It checks if the amount of available Host CPU is as expected,
      * every time a host updates the processing of all its VMs.
