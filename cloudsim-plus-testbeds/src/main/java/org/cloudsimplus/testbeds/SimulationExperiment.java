@@ -36,9 +36,9 @@ import org.cloudbus.cloudsim.resources.*;
 import org.cloudbus.cloudsim.vms.Vm;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.function.Consumer;
-import java.util.function.Supplier;
 
 /**
  * A base class to implement simulation experiments.
@@ -54,9 +54,6 @@ public abstract class SimulationExperiment implements Runnable {
     private List<DatacenterBroker> brokerList;
 
     private final int index;
-    private int numberOfCreatedHosts;
-    private int numberOfCreatedCloudlets;
-    private int numberOfCreatedVms;
     private boolean verbose;
 
     private CloudSim cloudsim;
@@ -78,20 +75,17 @@ public abstract class SimulationExperiment implements Runnable {
         this.brokerList = new ArrayList<>();
         this.hostList = new ArrayList<>();
         this.runner = runner;
-        this.numberOfCreatedHosts = 0;
-        this.numberOfCreatedCloudlets = 0;
-        this.numberOfCreatedVms = 0;
 
         //Defines an empty Consumer to avoid NullPointerException if an actual one is not set
         afterExperimentFinish = exp -> {};
     }
 
     public List<Cloudlet> getCloudletList() {
-        return cloudletList;
+        return Collections.unmodifiableList(cloudletList);
     }
 
     public List<Vm> getVmList() {
-        return vmList;
+        return Collections.unmodifiableList(vmList);
     }
 
     protected void setVmList(List<Vm> vmList) {
@@ -107,14 +101,6 @@ public abstract class SimulationExperiment implements Runnable {
     public SimulationExperiment setVerbose(boolean verbose) {
         this.verbose = verbose;
         return this;
-    }
-
-    /**
-     * Number of hosts created so far.
-     * @return 
-     */
-    public int getNumberOfCreatedHosts() {
-        return numberOfCreatedHosts;
     }
 
     /**
@@ -140,20 +126,6 @@ public abstract class SimulationExperiment implements Runnable {
      */
     public boolean isVerbose() {
         return verbose;
-    }
-
-    /**
-     * Adds a Vm created by a {@link Supplier} function to the list of created
-     * Vms.
-     *
-     * @param vmSupplier a {@link Supplier} function that is able to create a Vm
-     * @return the created Vm
-     */
-    protected Vm addNewVmToList(Supplier<Vm> vmSupplier) {
-        Vm vm = vmSupplier.get();
-        getVmList().add(vm);
-        numberOfCreatedVms++;
-        return vm;
     }
 
     /**
@@ -199,7 +171,6 @@ public abstract class SimulationExperiment implements Runnable {
      * Creates the simulation scenario to run the experiment.
      */
     protected void buildScenario() {
-        int numberOfCloudUsers = 1;
         this.cloudsim = new CloudSim();
 
         Datacenter datacenter0 = createDatacenter();
@@ -228,8 +199,9 @@ public abstract class SimulationExperiment implements Runnable {
      * Creates the Vms to be used by the experiment.
      *
      * @param broker broker that the Vms belong to
+     * @return the List of created VMs
      */
-    protected abstract void createVms(DatacenterBroker broker);
+    protected abstract List<Vm> createVms(DatacenterBroker broker);
 
     /**
      * Creates a DatacenterBroker and adds it to the
@@ -250,12 +222,9 @@ public abstract class SimulationExperiment implements Runnable {
      * @param broker broker to submit Cloudlets to
      */
     protected void createAndSubmitCloudletsInternal(DatacenterBroker broker) {
-        List<Cloudlet> list = createCloudlets(broker);
-        for(Cloudlet cloudlet: list){
-            getCloudletList().add(cloudlet);
-            numberOfCreatedCloudlets++;  
-        }
-        broker.submitCloudletList(getCloudletList());
+        final List<Cloudlet> list = createCloudlets(broker);
+        getCloudletList().addAll(list);
+        broker.submitCloudletList(list);
     }
 
     /**
@@ -265,44 +234,23 @@ public abstract class SimulationExperiment implements Runnable {
      * @param broker broker to submit VMs to
      */
     private void createAndSubmitVmsInternal(DatacenterBroker broker) {
-        createVms(broker);
-        broker.submitVmList(getVmList());
+        List<Vm> list = createVms(broker);
+        getVmList().addAll(list);
+        broker.submitVmList(list);
     }
 
     private DatacenterSimple createDatacenter() {
-        createHosts();
-        //Defines the characteristics of the data center
-        double cost = 3.0; // the cost of using processing in this Datacenter
-        double costPerMem = 0.05; // the cost of using memory in this Datacenter
-        double costPerStorage = 0.001; // the cost of using storage in this Datacenter
-        double costPerBw = 0.0; // the cost of using bw in this Datacenter
-        List<FileStorage> storageList = new ArrayList<>(); // we are not adding SAN devices by now
+        List<Host> hosts = createHosts();
+        hostList.addAll(hosts);
         DatacenterCharacteristics characteristics
-                = new DatacenterCharacteristicsSimple(hostList)
-                        .setCostPerSecond(cost)
-                        .setCostPerMem(costPerMem)
-                        .setCostPerStorage(costPerStorage)
-                        .setCostPerBw(costPerBw);
+                = new DatacenterCharacteristicsSimple(hosts);
 
-        return new DatacenterSimple(cloudsim, characteristics, new VmAllocationPolicySimple());
+        return new DatacenterSimple(cloudsim, 
+                characteristics, 
+                new VmAllocationPolicySimple());
     }
 
-    protected abstract void createHosts();
-
-    /**
-     * Adds a Host created by a {@link Supplier} function to the list of created
-     * Hosts.
-     *
-     * @param hostSupplier a {@link Supplier} function that is able to create a
-     * Host
-     * @return the created Host
-     */
-    protected Host addNewHostToList(Supplier<Host> hostSupplier) {
-        Host host = hostSupplier.get();
-        hostList.add(host);
-        numberOfCreatedHosts++;
-        return host;
-    }
+    protected abstract List<Host> createHosts();
 
     /**
      * Gets the object that is in charge to run the experiment.
@@ -323,14 +271,12 @@ public abstract class SimulationExperiment implements Runnable {
     }
 
     /**
-     * <p>
      * Sets a {@link Consumer} object that will receive the experiment instance
      * after the experiment finishes executing and performs some post-processing
      * tasks. These tasks are defined by the developer using the current class
-     * and can include collecting data for statistical analysis.</p>
+     * and can include collecting data for statistical analysis.
      *
-     * <p>
-     * Setting a Consumer object is optional.</p>
+     * <p>Setting a Consumer object is optional.</p>
      *
      * @param afterExperimentFinishConsumer a {@link Consumer} instance to set.
      * @param <T> a generic class that defines the type of experiment the
@@ -357,15 +303,14 @@ public abstract class SimulationExperiment implements Runnable {
         return (Consumer<T>) afterExperimentFinish;
     }
 
-    public int getNumberOfCreatedCloudlets() {
-        return numberOfCreatedCloudlets;
-    }
-
-    public int getNumberOfCreatedVms() {
-        return numberOfCreatedVms;
-    }
-
     public CloudSim getCloudsim() {
         return cloudsim;
+    }
+
+    /**
+     * @return the hostList
+     */
+    public List<Host> getHostList() {
+        return Collections.unmodifiableList(hostList);
     }
 }

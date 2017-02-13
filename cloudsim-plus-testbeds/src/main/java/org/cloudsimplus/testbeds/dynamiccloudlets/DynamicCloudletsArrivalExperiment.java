@@ -32,39 +32,42 @@ import org.cloudsimplus.testbeds.SimulationExperiment;
 import org.cloudsimplus.builders.tables.CloudletsTableBuilderHelper;
 
 import java.util.List;
+import org.cloudbus.cloudsim.hosts.Host;
+import org.cloudbus.cloudsim.vms.Vm;
 
 /**
- * An experiment that shows how the dynamic arrival of Cloudlets
- * and the policy used to map Cloudlets to VMs impact the number of required VMs.
+ * An experiment that shows how the dynamic arrival of Cloudlets and the policy
+ * used to map Cloudlets to VMs impact the number of required VMs.
  *
  * @author Manoel Campos da Silva Filho
  */
 final class DynamicCloudletsArrivalExperiment extends SimulationExperiment {
-	public static final int HOSTS_TO_CREATE = 100;
 
-	/**
-	 * Creates a simulation experiment.
-	 *
-	 * @param index  the index that identifies the current experiment run.
-	 * @param runner The {@link ExperimentRunner} that is in charge
-	 * of executing this experiment a defined number of times and to collect
-	 * data for statistical analysis.
-	 */
-	DynamicCloudletsArrivalExperiment(int index, DynamicCloudletsArrivalRunner runner) {
-		super(index, runner);
-	}
+    public static final int HOSTS_TO_CREATE = 100;
 
-	@Override
-	public void printResults() {
-		DatacenterBroker broker = getBrokerList().stream().findFirst().orElse(DatacenterBroker.NULL);
-		List<Cloudlet> newList = broker.getCloudletsFinishedList();
-		new CloudletsTableBuilderHelper(newList).build();
-	}
+    /**
+     * Creates a simulation experiment.
+     *
+     * @param index the index that identifies the current experiment run.
+     * @param runner The {@link ExperimentRunner} that is in charge of executing
+     * this experiment a defined number of times and to collect data for
+     * statistical analysis.
+     */
+    DynamicCloudletsArrivalExperiment(int index, DynamicCloudletsArrivalRunner runner) {
+        super(index, runner);
+    }
 
-	@Override
-	protected DatacenterBroker createBroker() {
-		return new DatacenterBrokerSimple(getCloudsim());
-	}
+    @Override
+    public void printResults() {
+        DatacenterBroker broker = getBrokerList().stream().findFirst().orElse(DatacenterBroker.NULL);
+        List<Cloudlet> newList = broker.getCloudletsFinishedList();
+        new CloudletsTableBuilderHelper(newList).build();
+    }
+
+    @Override
+    protected DatacenterBroker createBroker() {
+        return new DatacenterBrokerSimple(getCloudsim());
+    }
 
     @Override
     protected List<Cloudlet> createCloudlets(DatacenterBroker broker) {
@@ -73,23 +76,25 @@ final class DynamicCloudletsArrivalExperiment extends SimulationExperiment {
     }
 
     @Override
-    protected void createVms(DatacenterBroker broker) {
-
+    protected List<Vm> createVms(DatacenterBroker broker) {
+        List<Vm> list = new ArrayList<>();
+        return list;
     }
 
     @Override
-    protected void createHosts() {
-
+    protected List<Host> createHosts() {
+        List<Host> list = new ArrayList<>();
+        return list;
     }
 
     /**
-	 * Just a method to try a single run of the experiment.
-	 *
-	 * @param args
-	 */
-	public static void main(String[] args) {
-		DynamicCloudletsArrivalExperiment exp = new DynamicCloudletsArrivalExperiment(0, null);
-		exp.run();
-	}
+     * Just a method to try a single run of the experiment.
+     *
+     * @param args
+     */
+    public static void main(String[] args) {
+        DynamicCloudletsArrivalExperiment exp = new DynamicCloudletsArrivalExperiment(0, null);
+        exp.run();
+    }
 
 }

@@ -116,13 +116,15 @@ abstract class CloudletSchedulerExperiment extends SimulationExperiment {
     }
 
     @Override
-    protected void createHosts()  {
+    protected List<Host> createHosts()  {
+        List<Host> list = new ArrayList<>(HOSTS_TO_CREATE);
         for (int i = 0; i < HOSTS_TO_CREATE; i++) {
-            addNewHostToList(this::getHostSupplier);
+            list.add(createHost(getHostList().size()+i));
         }
+        return list;  
     }
 
-    private Host getHostSupplier() {
+    private Host createHost(int id) {
         long mips = 1000; // capacity of each CPU core (in Million Instructions per Second)
         long ram = 2048; // host memory (MEGABYTE)
         long storage = 1000000; // host storage (MEGABYTE)
@@ -132,17 +134,19 @@ abstract class CloudletSchedulerExperiment extends SimulationExperiment {
             peList.add(new PeSimple(mips, new PeProvisionerSimple()));
         }
 
-        return new HostSimple(getNumberOfCreatedHosts(), storage, peList)
+        return new HostSimple(id, storage, peList)
             .setRamProvisioner(new ResourceProvisionerSimple(new Ram(ram)))
             .setBwProvisioner(new ResourceProvisionerSimple(new Bandwidth(bw)))
             .setVmScheduler(new VmSchedulerTimeShared());
     }
 
     @Override
-    protected void createVms(DatacenterBroker broker) {
+    protected List<Vm> createVms(DatacenterBroker broker) {
+        final List<Vm> list = new ArrayList<>(VMS_TO_CREATE);
         for(int i = 0; i < VMS_TO_CREATE; i++) {
-            addNewVmToList(getVmSupplier(broker));
+            list.add(createVm(broker));
         }
+        return list;
     }
 
     /**
@@ -151,7 +155,7 @@ abstract class CloudletSchedulerExperiment extends SimulationExperiment {
      * @param broker broker that the Vm to be created by the Supplier function will belong to
      * @return the Supplier function that can create a Vm when requested
      */
-    protected abstract Supplier<Vm> getVmSupplier(DatacenterBroker broker);
+    protected abstract Vm createVm(DatacenterBroker broker);
 
     @Override
     protected List<Cloudlet> createCloudlets(DatacenterBroker broker) {
@@ -177,7 +181,7 @@ abstract class CloudletSchedulerExperiment extends SimulationExperiment {
         //Defines how CPU, RAM and Bandwidth resources are used
         //Sets the same utilization model for all these resources.
         UtilizationModel utilization = new UtilizationModelFull();
-        return new CloudletSimple(getNumberOfCreatedCloudlets(), CLOUDLET_LENGHT_MI, cloudletPes)
+        return new CloudletSimple(CLOUDLET_LENGHT_MI, cloudletPes)
             .setFileSize(fileSize)
             .setOutputSize(outputSize)
             .setUtilizationModel(utilization)
