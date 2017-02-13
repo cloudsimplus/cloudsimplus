@@ -154,32 +154,34 @@ abstract class CloudletSchedulerExperiment extends SimulationExperiment {
     protected abstract Supplier<Vm> getVmSupplier(DatacenterBroker broker);
 
     @Override
-    protected void createCloudlets(DatacenterBroker broker) {
+    protected List<Cloudlet> createCloudlets(DatacenterBroker broker) {
+        List<Cloudlet> list = new ArrayList<>(numberOfCloudletsToCreate);
         for(int i = 0; i < numberOfCloudletsToCreate; i++) {
-            addNewCloudletToList(getCloudletSupplier(broker));
+            list.add(createCloudlet(broker));
         }
+        
+        return list;
     }
 
     /**
-     * Gets a {@link Supplier} function that is able to create a Cloudlet.
+     * Creates a Cloudlet with the given parameters.
      *
      * @param broker broker that the Cloudlet to be created by the Supplier function will belong to
-     * @return the Supplier function that can create a Cloudlet when requested
+     * @param cloudletPes number of PEs for the Cloudlet to be created by the Supplier function
+     * @return the created Cloudlet 
      */
-    private Supplier<Cloudlet> getCloudletSupplier(DatacenterBroker broker) {
-        return () -> {
-            long fileSize = 300; //Size (in bytes) before execution
-            long outputSize = 300; //Size (in bytes) after execution
-            final int cloudletPes = (int)cloudletPesPrng.sample();
-            //Defines how CPU, RAM and Bandwidth resources are used
-            //Sets the same utilization model for all these resources.
-            UtilizationModel utilization = new UtilizationModelFull();
-            return new CloudletSimple(getNumberOfCreatedCloudlets(), CLOUDLET_LENGHT_MI, cloudletPes)
-                .setFileSize(fileSize)
-                .setOutputSize(outputSize)
-                .setUtilizationModel(utilization)
-                .setBroker(broker);
-        };
+    private Cloudlet createCloudlet(DatacenterBroker broker) {
+        long fileSize = 300; //Size (in bytes) before execution
+        long outputSize = 300; //Size (in bytes) after execution
+        final int cloudletPes = (int)cloudletPesPrng.sample();
+        //Defines how CPU, RAM and Bandwidth resources are used
+        //Sets the same utilization model for all these resources.
+        UtilizationModel utilization = new UtilizationModelFull();
+        return new CloudletSimple(getNumberOfCreatedCloudlets(), CLOUDLET_LENGHT_MI, cloudletPes)
+            .setFileSize(fileSize)
+            .setOutputSize(outputSize)
+            .setUtilizationModel(utilization)
+            .setBroker(broker);
     }
 
     public ContinuousDistribution getCloudletPesPrng() {

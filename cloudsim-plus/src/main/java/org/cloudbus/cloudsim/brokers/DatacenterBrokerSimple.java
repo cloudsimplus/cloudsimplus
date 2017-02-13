@@ -55,14 +55,9 @@ public class DatacenterBrokerSimple extends DatacenterBrokerAbstract {
     /**
      * Defines the policy to select a fallback Datacenter to Host a VM
      * when a previous selected Datacenter failed to create the requested VMs.
-<<<<<<< HEAD
-     *
-     * <p>It gets the first Datacenter that has not been tried yet.</p>
-=======
      * <p>
      * <p>It gets the first Datacenter that has not been tried yet.</p>
      *
->>>>>>> upstream/master
      * @return the Datacenter selected to try creating
      * the remaining VMs or {@link Datacenter#NULL} if no suitable Datacenter was found
      */

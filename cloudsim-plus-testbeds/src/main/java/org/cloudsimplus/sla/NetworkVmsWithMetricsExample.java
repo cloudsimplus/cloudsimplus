@@ -111,6 +111,10 @@ public class NetworkVmsWithMetricsExample {
         System.out.println("\n-------------------------------------------");
         System.out.println("\t Throughput : " + throughput);
 
+        double bw = bwVmAverage(vmlist);
+        System.out.println("\t Bw average : " + bw);
+
+        
         List<Cloudlet> newList = broker.getCloudletsFinishedList();
         new CloudletsTableBuilderHelper(newList).build();
 
@@ -130,6 +134,20 @@ public class NetworkVmsWithMetricsExample {
         }
 
         return downlinkBw;
+    }
+    
+    /**
+     * Gets the bandwidht total utilization of VMs.
+     * @param vmlist
+     * @return the totalBwUtilization
+     */
+    private double bwVmAverage(List<NetworkVm> vmlist){
+        double totalBwUtilization = 0;
+        int quantVm = vmlist.size();
+        for(NetworkVm vms: vmlist){
+            totalBwUtilization += vms.getBw().getAllocatedResource();
+        }
+        return totalBwUtilization/quantVm;
     }
 
     /**
@@ -156,6 +174,7 @@ public class NetworkVmsWithMetricsExample {
                     .setBroker(broker)
                     .setCloudletScheduler(new CloudletSchedulerTimeShared());
             list.add(vm);
+            System.out.println("\n\n ->> "+ vm.getBw());
         }
         return list;
     }

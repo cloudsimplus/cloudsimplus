@@ -23,6 +23,7 @@
  */
 package org.cloudsimplus.testbeds.dynamiccloudlets;
 
+import java.util.ArrayList;
 import org.cloudbus.cloudsim.cloudlets.Cloudlet;
 import org.cloudbus.cloudsim.brokers.DatacenterBroker;
 import org.cloudbus.cloudsim.brokers.DatacenterBrokerSimple;
@@ -66,8 +67,9 @@ final class DynamicCloudletsArrivalExperiment extends SimulationExperiment {
 	}
 
     @Override
-    protected void createCloudlets(DatacenterBroker broker) {
-
+    protected List<Cloudlet> createCloudlets(DatacenterBroker broker) {
+        List<Cloudlet> list = new ArrayList<>();
+        return list;
     }
 
     @Override

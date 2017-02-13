@@ -143,10 +143,7 @@ public abstract class DatacenterBrokerAbstract extends CloudSimEntity implements
      * the simulation has started. This avoid the developer to
      * dynamically create brokers just to create VMs or Cloudlets during
      * simulation execution.</p>
-<<<<<<< HEAD
-=======
      *
->>>>>>> upstream/master
      * @param list {@inheritDoc}
      */
     @Override

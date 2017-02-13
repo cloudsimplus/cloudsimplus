@@ -84,6 +84,9 @@ import org.cloudsimplus.sla.readJsonFile.SlaReader;
 public class DynamicVmCreationByCpuUtilizationAndFreePesOfVm {
 
     private static final int SCHEDULING_INTERVAL = 5;
+    private static int NUMBER_OF_SIMULATIONS = 5;
+    private final CloudSim simulation;
+   
 
     /**
      * The interval to request the creation of new Cloudlets.
@@ -94,7 +97,6 @@ public class DynamicVmCreationByCpuUtilizationAndFreePesOfVm {
     private static final int HOST_PES = 32;
     private static final int VMS = 3;
     private static final int CLOUDLETS = 6;
-    private final CloudSim simulation;
     private DatacenterBroker broker0;
     private List<Host> hostList;
     private List<Vm> vmList;
@@ -109,7 +111,7 @@ public class DynamicVmCreationByCpuUtilizationAndFreePesOfVm {
 
     private int createdCloudlets;
     private int createsVms;
-
+   
     /**
      * The file containing the SLA Contract in JSON format.
      */
@@ -119,7 +121,9 @@ public class DynamicVmCreationByCpuUtilizationAndFreePesOfVm {
 
     public static void main(String[] args) throws FileNotFoundException, IOException {
         Log.printFormattedLine(" Starting... ");
-        new DynamicVmCreationByCpuUtilizationAndFreePesOfVm();
+        for (int i = 0; i < NUMBER_OF_SIMULATIONS; i++) {
+            new DynamicVmCreationByCpuUtilizationAndFreePesOfVm();
+        }    
     }
 
     public DynamicVmCreationByCpuUtilizationAndFreePesOfVm() throws FileNotFoundException, IOException {
@@ -159,7 +163,7 @@ public class DynamicVmCreationByCpuUtilizationAndFreePesOfVm {
         simulation.start();
 
         responseTimeCloudletSimulation(cloudletList);
-
+        
         printSimulationResults();
     }
 
@@ -379,17 +383,19 @@ public class DynamicVmCreationByCpuUtilizationAndFreePesOfVm {
         new CloudletsTableBuilderHelper(finishedCloudlets).build();
     }
 
-    private void responseTimeCloudletSimulation(List<Cloudlet> cloudlets) {
+    private void responseTimeCloudletSimulation(List<Cloudlet> cloudlets) throws IOException {
         int quantCloudlets = 0;
-        double soma = 0.0, rt = 0.0;
+        double soma = 0.0, rtSum = 0.0;
         quantCloudlets = cloudlets.size();
         for (Cloudlet c : cloudlets) {
-            rt = c.getFinishTime() - c.getLastDatacenterArrivalTime();
-            soma += rt;
+            rtSum = c.getFinishTime() - c.getLastDatacenterArrivalTime();
+            soma += rtSum;
         }
-
+        double rtAverage = soma / quantCloudlets;
+        
         System.out.printf("\t\t\n Response Time simulation: %.2f \n Response Time contrato SLA: %.2f",
-                 soma / quantCloudlets, getResponseTimeSlaContract());
+                 rtAverage, getResponseTimeSlaContract());
+        
     }
 
     /**

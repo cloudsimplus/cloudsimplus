@@ -201,17 +201,15 @@ public final class SlaMetricsWithoutNetworkExample {
      * Shows the utilization resources (BW, CPU, RAM) in percentage
      *
      * @param cloudlet to calculate the utilization resources
-     * @param time calculates in given time
      * @return utilizationResources
      */
-    public double utilizationResources(List<Cloudlet> cloudlet, double time) {
+    public double utilizationResources(List<Cloudlet> cloudlet) {
         double utilizationResources = 0, bw, cpu, ram;
         for (Cloudlet cloudlets : cloudlet) {
-            bw = cloudlets.getUtilizationOfBw(time);
-            cpu = cloudlets.getUtilizationOfCpu(time);
-            ram = cloudlets.getUtilizationOfRam(time);
+            bw = cloudlets.getUtilizationOfBw();
+            cpu = cloudlets.getUtilizationOfCpu();
+            ram = cloudlets.getUtilizationOfRam();
             utilizationResources += bw + cpu + ram;
-
         }
         return (utilizationResources * 100) / 100;
     }
@@ -230,6 +228,21 @@ public final class SlaMetricsWithoutNetworkExample {
         }
         return waitTime/quant;
     }
+    
+    /**
+     * Gets the bandwidht total utilization of VMs.
+     * @param vmlist
+     * @return the totalBwUtilization
+     */
+    private double bwVmAverage(List<Vm> vmlist){
+        double totalBwUtilization = 0;
+        int quantVm = vmlist.size();
+        for(Vm vms: vmlist){
+            totalBwUtilization += vms.getBw().getAllocatedResource();
+        }
+        return totalBwUtilization/quantVm;
+    }
+
 
     public static void main(String[] args) throws FileNotFoundException {
         Log.printFormattedLine(" Starting... ");
@@ -273,7 +286,7 @@ public final class SlaMetricsWithoutNetworkExample {
 
         //utilization resource
         double time = cloudsim.clock();
-        double utilizationresources = utilizationResources(cloudletList, time);
+        double utilizationresources = utilizationResources(cloudletList);
         System.out.printf("\t** Utilization Resources %%  (Bw-CPU-Ram) - %.2f %n", utilizationresources);
 
         //wait time
@@ -283,8 +296,7 @@ public final class SlaMetricsWithoutNetworkExample {
         // total cost
         double totalCost = totalCostPrice(vmlist);
         System.out.println("\t** Total cost (memory, bw, processing, storage) - " + totalCost);
-        System.out.println("________________________________________________________________");
-
+        
         System.out.println("________________________________________________________________");
 
         //Final step: Print results when simulation is over
