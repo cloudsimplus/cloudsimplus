@@ -10,7 +10,7 @@ package org.cloudbus.cloudsim.brokers;
 import java.util.*;
 import java.util.function.Function;
 import java.util.function.Supplier;
-import static java.util.stream.Collectors.toList;
+import java.util.stream.Collectors;
 
 import org.cloudbus.cloudsim.cloudlets.Cloudlet;
 import org.cloudbus.cloudsim.core.events.SimEvent;
@@ -154,10 +154,14 @@ public abstract class DatacenterBrokerAbstract extends CloudSimEntity implements
      */
     @Override
     public void submitVmList(List<? extends Vm> list) {
-        lastSubmittedVm = setIdForEntitiesWithNoDelay(list, lastSubmittedVm);
+        setIdForEntitiesWithNoDelay(list, lastSubmittedVm);
+        if(list.isEmpty()){
+            return;
+        }
         vmsWaitingList.addAll(list);
+        lastSubmittedVm = list.get(list.size()-1);
 
-        if (isStarted() && !list.isEmpty()) {
+        if (isStarted()) {
             Log.printFormattedLine(
                 "%.2f: %s: List of %d VMs submitted to the broker during simulation execution. VMs creation request sent to Datacenter.",
                 getSimulation().clock(), getName(), list.size());
@@ -196,10 +200,11 @@ public abstract class DatacenterBrokerAbstract extends CloudSimEntity implements
      */
     @Override
     public void submitCloudletList(List<? extends Cloudlet> list) {
-        lastSubmittedCloudlet = setIdForEntitiesWithNoDelay(list, lastSubmittedCloudlet);
+        setIdForEntitiesWithNoDelay(list, lastSubmittedCloudlet);
         if(list.isEmpty()) {
             return;
         }
+        lastSubmittedCloudlet = list.get(list.size()-1);
         setSimulationForCloudletUtilizationModels(list);
 
         getCloudletsWaitingList().addAll(list);
@@ -252,25 +257,21 @@ public abstract class DatacenterBrokerAbstract extends CloudSimEntity implements
      * {@link Vm} or any object that implements {@link ChangeableId}.
      *
      * @param list list of objects to define an ID
-     * @param lastSubmittedEntity the last entity of the type of objects in the list that was submitted to the broker
      */
-    private <T extends ChangeableId> T setIdForEntitiesWithNoDelay(List<? extends T> list, T lastSubmittedEntity) {
+    private void setIdForEntitiesWithNoDelay(List<? extends ChangeableId> list, ChangeableId lastSubmittedEntity) {
         Objects.requireNonNull(list);
         if(list.isEmpty()){
-            return lastSubmittedEntity;
+            return;
         }
 
-        List<T> entities = list.stream()
-            .filter((T e) -> e.getId() < 0)
-            .collect(toList());
+        List<? extends ChangeableId> entities = list.stream()
+            .filter(e -> e.getId() < 0)
+            .collect(Collectors.toList());
 
         int id = lastSubmittedEntity.getId();
         for (ChangeableId e : list) {
             e.setId(++id);
         }
-
-        return list.get(list.size()-1);
-
     }
 
     @Override
