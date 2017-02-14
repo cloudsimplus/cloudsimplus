@@ -347,7 +347,7 @@
                 <version>1.10.b1</version>
                 <inherited>true</inherited>
                 <configuration>
-                    <header>${license.dir}/source-header.txt</header>
+                    <header>${license.dir}/COPYRIGHT</header>
                     <aggregate>true</aggregate>
                     <properties>
                         <project>${project.name}</project>

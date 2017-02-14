@@ -170,7 +170,7 @@ THE POSSIBILITY OF SUCH DAMAGE.
                 <artifactId>maven-license-plugin</artifactId>
                 <version>1.10.b1</version>
                 <configuration>
-                    <header>${license.dir}/source-header.txt</header>
+                    <header>${license.dir}/COPYRIGHT</header>
                     <strictCheck>true</strictCheck>
                     <failIfMissing>false</failIfMissing>
                 </configuration>
