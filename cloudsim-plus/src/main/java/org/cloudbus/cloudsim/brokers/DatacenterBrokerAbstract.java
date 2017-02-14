@@ -247,11 +247,11 @@ public abstract class DatacenterBrokerAbstract extends CloudSimEntity implements
     }
 
     /**
-     * Defines IDs for a list of {@link Identificable} entities that don't
+     * Defines IDs for a list of {@link ChangeableId} entities that don't
      * have an ID already assigned. Such entities can be a {@link Cloudlet},
-     * {@link Vm} or any object that implements {@link Identificable}.
+     * {@link Vm} or any object that implements {@link ChangeableId}.
      *
-     * @param list list of objects to define an  ID
+     * @param list list of objects to define an ID
      * @param lastSubmittedEntity the last entity of the type of objects in the list that was submitted to the broker
      */
     private <T extends ChangeableId> T setIdForEntitiesWithNoDelay(List<? extends T> list, T lastSubmittedEntity) {
@@ -261,7 +261,7 @@ public abstract class DatacenterBrokerAbstract extends CloudSimEntity implements
         }
 
         List<T> entities = list.stream()
-            .filter(e -> e.getId() < 0)
+            .filter((T e) -> e.getId() < 0)
             .collect(toList());
 
         int id = lastSubmittedEntity.getId();
