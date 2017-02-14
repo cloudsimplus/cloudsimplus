@@ -260,7 +260,7 @@ public abstract class DatacenterBrokerAbstract extends CloudSimEntity implements
             return lastSubmittedEntity;
         }
 
-        List<ChangeableId> entities = list.stream()
+        List<? extends T> entities = list.stream()
             .filter(e -> e.getId() < 0)
             .collect(toList());
 
