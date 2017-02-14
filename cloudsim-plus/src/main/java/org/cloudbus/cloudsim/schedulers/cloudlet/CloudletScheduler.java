@@ -106,6 +106,13 @@ public interface CloudletScheduler extends Serializable {
      * @return the cloudlet execution list
      */
     List<CloudletExecutionInfo> getCloudletExecList();
+    
+    /**
+     * Gets a <b>read-only</b> List of cloudlet waiting to be executed on the VM.
+     *
+     * @return the cloudlet waiting list
+     */
+    List<CloudletExecutionInfo> getCloudletWaitingList();    
 
     /**
      * Gets a list of finished cloudlets.
@@ -390,5 +397,6 @@ public interface CloudletScheduler extends Serializable {
         @Override public int getFreePes() { return 0; }
         @Override public boolean canAddCloudletToExecutionList(CloudletExecutionInfo cloudlet) { return false; }
         @Override public List<CloudletExecutionInfo> getCloudletFinishedList() { return Collections.emptyList(); }
+        @Override public List<CloudletExecutionInfo> getCloudletWaitingList() { return Collections.EMPTY_LIST; }
     };
 }

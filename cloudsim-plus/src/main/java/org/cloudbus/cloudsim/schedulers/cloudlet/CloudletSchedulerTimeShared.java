@@ -96,7 +96,7 @@ public class CloudletSchedulerTimeShared extends CloudletSchedulerAbstract {
      * @return {@inheritDoc}
      */
     @Override
-    protected List<CloudletExecutionInfo> getCloudletWaitingList() {
+    public List<CloudletExecutionInfo> getCloudletWaitingList() {
         return super.getCloudletWaitingList();
     }
 

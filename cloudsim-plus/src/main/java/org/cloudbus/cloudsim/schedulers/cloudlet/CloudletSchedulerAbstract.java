@@ -188,13 +188,9 @@ public abstract class CloudletSchedulerAbstract implements CloudletScheduler {
         return cloudletFailedList;
     }
 
-    /**
-     * Gets a List of cloudlet waiting to be executed on the VM.
-     *
-     * @return the cloudlet waiting list
-     */
-    protected List<CloudletExecutionInfo> getCloudletWaitingList() {
-        return cloudletWaitingList;
+    @Override
+    public List<CloudletExecutionInfo> getCloudletWaitingList() {
+        return Collections.unmodifiableList(cloudletWaitingList);
     }
 
     protected final void setCloudletWaitingList(List<CloudletExecutionInfo> cloudletWaitingList) {

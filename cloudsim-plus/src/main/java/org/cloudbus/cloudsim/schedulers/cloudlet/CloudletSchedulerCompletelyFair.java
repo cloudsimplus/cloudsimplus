@@ -220,8 +220,8 @@ public final class CloudletSchedulerCompletelyFair extends CloudletSchedulerTime
      *
      * @return
      */
-	@Override
-    protected List<CloudletExecutionInfo> getCloudletWaitingList() {
+    @Override
+    public List<CloudletExecutionInfo> getCloudletWaitingList() {
         return super.getCloudletWaitingList();
     }
 

@@ -915,11 +915,6 @@ public abstract class CloudletAbstract implements Cloudlet {
         return result;
     }
 
-    @Override
-    public double getResponseTime() {
-        return getFinishTime() - getLastDatacenterArrivalTime();
-    }
-
     /**
      * Internal class that keeps track of Cloudlet's movement in different
      * {@link Datacenter Datacenters}. Each time a cloudlet is run on a given Datacenter, the cloudlet's

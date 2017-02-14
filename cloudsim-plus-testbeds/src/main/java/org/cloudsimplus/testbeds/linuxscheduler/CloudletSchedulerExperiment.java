@@ -116,13 +116,15 @@ abstract class CloudletSchedulerExperiment extends SimulationExperiment {
     }
 
     @Override
-    protected void createHosts()  {
+    protected List<Host> createHosts()  {
+        List<Host> list = new ArrayList<>(HOSTS_TO_CREATE);
         for (int i = 0; i < HOSTS_TO_CREATE; i++) {
-            addNewHostToList(this::getHostSupplier);
+            list.add(createHost(getHostList().size()+i));
         }
+        return list;  
     }
 
-    private Host getHostSupplier() {
+    private Host createHost(int id) {
         long mips = 1000; // capacity of each CPU core (in Million Instructions per Second)
         long ram = 2048; // host memory (MEGABYTE)
         long storage = 1000000; // host storage (MEGABYTE)
@@ -132,17 +134,19 @@ abstract class CloudletSchedulerExperiment extends SimulationExperiment {
             peList.add(new PeSimple(mips, new PeProvisionerSimple()));
         }
 
-        return new HostSimple(getNumberOfCreatedHosts(), storage, peList)
+        return new HostSimple(id, storage, peList)
             .setRamProvisioner(new ResourceProvisionerSimple(new Ram(ram)))
             .setBwProvisioner(new ResourceProvisionerSimple(new Bandwidth(bw)))
             .setVmScheduler(new VmSchedulerTimeShared());
     }
 
     @Override
-    protected void createVms(DatacenterBroker broker) {
+    protected List<Vm> createVms(DatacenterBroker broker) {
+        final List<Vm> list = new ArrayList<>(VMS_TO_CREATE);
         for(int i = 0; i < VMS_TO_CREATE; i++) {
-            addNewVmToList(getVmSupplier(broker));
+            list.add(createVm(broker));
         }
+        return list;
     }
 
     /**
@@ -151,35 +155,37 @@ abstract class CloudletSchedulerExperiment extends SimulationExperiment {
      * @param broker broker that the Vm to be created by the Supplier function will belong to
      * @return the Supplier function that can create a Vm when requested
      */
-    protected abstract Supplier<Vm> getVmSupplier(DatacenterBroker broker);
+    protected abstract Vm createVm(DatacenterBroker broker);
 
     @Override
-    protected void createCloudlets(DatacenterBroker broker) {
+    protected List<Cloudlet> createCloudlets(DatacenterBroker broker) {
+        List<Cloudlet> list = new ArrayList<>(numberOfCloudletsToCreate);
         for(int i = 0; i < numberOfCloudletsToCreate; i++) {
-            addNewCloudletToList(getCloudletSupplier(broker));
+            list.add(createCloudlet(broker));
         }
+        
+        return list;
     }
 
     /**
-     * Gets a {@link Supplier} function that is able to create a Cloudlet.
+     * Creates a Cloudlet with the given parameters.
      *
      * @param broker broker that the Cloudlet to be created by the Supplier function will belong to
-     * @return the Supplier function that can create a Cloudlet when requested
+     * @param cloudletPes number of PEs for the Cloudlet to be created by the Supplier function
+     * @return the created Cloudlet 
      */
-    private Supplier<Cloudlet> getCloudletSupplier(DatacenterBroker broker) {
-        return () -> {
-            long fileSize = 300; //Size (in bytes) before execution
-            long outputSize = 300; //Size (in bytes) after execution
-            final int cloudletPes = (int)cloudletPesPrng.sample();
-            //Defines how CPU, RAM and Bandwidth resources are used
-            //Sets the same utilization model for all these resources.
-            UtilizationModel utilization = new UtilizationModelFull();
-            return new CloudletSimple(getNumberOfCreatedCloudlets(), CLOUDLET_LENGHT_MI, cloudletPes)
-                .setFileSize(fileSize)
-                .setOutputSize(outputSize)
-                .setUtilizationModel(utilization)
-                .setBroker(broker);
-        };
+    private Cloudlet createCloudlet(DatacenterBroker broker) {
+        long fileSize = 300; //Size (in bytes) before execution
+        long outputSize = 300; //Size (in bytes) after execution
+        final int cloudletPes = (int)cloudletPesPrng.sample();
+        //Defines how CPU, RAM and Bandwidth resources are used
+        //Sets the same utilization model for all these resources.
+        UtilizationModel utilization = new UtilizationModelFull();
+        return new CloudletSimple(CLOUDLET_LENGHT_MI, cloudletPes)
+            .setFileSize(fileSize)
+            .setOutputSize(outputSize)
+            .setUtilizationModel(utilization)
+            .setBroker(broker);
     }
 
     public ContinuousDistribution getCloudletPesPrng() {

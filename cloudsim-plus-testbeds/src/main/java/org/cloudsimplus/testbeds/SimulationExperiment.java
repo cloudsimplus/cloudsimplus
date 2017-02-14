@@ -36,9 +36,9 @@ import org.cloudbus.cloudsim.resources.*;
 import org.cloudbus.cloudsim.vms.Vm;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.function.Consumer;
-import java.util.function.Supplier;
 
 /**
  * A base class to implement simulation experiments.
@@ -46,310 +46,271 @@ import java.util.function.Supplier;
  * @author Manoel Campos da Silva Filho
  */
 public abstract class SimulationExperiment implements Runnable {
-	protected final ExperimentRunner runner;
-	private final List<Cloudlet> cloudletList;
+
+    protected final ExperimentRunner runner;
+    private final List<Cloudlet> cloudletList;
     private List<Vm> vmList;
     private List<Host> hostList;
     private List<DatacenterBroker> brokerList;
 
-	private final int index;
-    private int numberOfCreatedHosts;
-    private int numberOfCreatedCloudlets;
-    private int numberOfCreatedVms;
+    private final int index;
     private boolean verbose;
 
     private CloudSim cloudsim;
     private Consumer<? extends SimulationExperiment> afterExperimentFinish;
 
     /**
-	 * Creates a simulation experiment.
-	 *
-	 * @param index the index that identifies the current experiment run.
-	 * @param runner The {@link ExperimentRunner} that is in charge
-	 * of executing this experiment a defined number of times and to collect
-	 * data for statistical analysis.
-	 */
-	public SimulationExperiment(int index, ExperimentRunner runner) {
-		this.verbose = false;
-		this.vmList = new ArrayList<>();
-		this.index = index;
-		this.cloudletList = new ArrayList<>();
-		this.brokerList = new ArrayList<>();
+     * Creates a simulation experiment.
+     *
+     * @param index the index that identifies the current experiment run.
+     * @param runner The {@link ExperimentRunner} that is in charge of executing
+     * this experiment a defined number of times and to collect data for
+     * statistical analysis.
+     */
+    public SimulationExperiment(int index, ExperimentRunner runner) {
+        this.verbose = false;
+        this.vmList = new ArrayList<>();
+        this.index = index;
+        this.cloudletList = new ArrayList<>();
+        this.brokerList = new ArrayList<>();
         this.hostList = new ArrayList<>();
-		this.runner = runner;
-        this.numberOfCreatedHosts = 0;
-        this.numberOfCreatedCloudlets = 0;
-        this.numberOfCreatedVms = 0;
+        this.runner = runner;
 
         //Defines an empty Consumer to avoid NullPointerException if an actual one is not set
-		afterExperimentFinish = exp -> {};
-	}
+        afterExperimentFinish = exp -> {};
+    }
 
-	public List<Cloudlet> getCloudletList() {
-	    return cloudletList;
-	}
+    public List<Cloudlet> getCloudletList() {
+        return Collections.unmodifiableList(cloudletList);
+    }
 
-	public List<Vm> getVmList() {
-	    return vmList;
-	}
+    public List<Vm> getVmList() {
+        return Collections.unmodifiableList(vmList);
+    }
 
-	protected void setVmList(List<Vm> vmList) {
-		this.vmList = vmList;
-	}
+    protected void setVmList(List<Vm> vmList) {
+        this.vmList = vmList;
+    }
 
     /**
      * Defines if simulation results of the experiment have to be output or not.
+     *
      * @param verbose true if the results have to be output, falser otherwise
+     * @return 
      */
-	public SimulationExperiment setVerbose(boolean verbose) {
-	    this.verbose = verbose;
+    public SimulationExperiment setVerbose(boolean verbose) {
+        this.verbose = verbose;
         return this;
-	}
+    }
 
-	/**
-	 * Number of hosts created so far.
-	 */
-	public int getNumberOfCreatedHosts() {
-		return numberOfCreatedHosts;
-	}
+    /**
+     * The index that identifies the current experiment run.
+     * @return 
+     */
+    public int getIndex() {
+        return index;
+    }
 
-	/**
-	 * The index that identifies the current experiment run.
-	 */
-	public int getIndex() {
-		return index;
-	}
-
-	/**
-	 * Indicates if simulation results of the experiment don't have to be output.
-	 */
-	public boolean isNotVerbose() {
-		return !verbose;
-	}
+    /**
+     * Indicates if simulation results of the experiment don't have to be
+     * output.
+     * @return 
+     */
+    public boolean isNotVerbose() {
+        return !verbose;
+    }
 
     /**
      * Indicates if simulation results of the experiment have to be output.
+     * @return 
      */
     public boolean isVerbose() {
         return verbose;
     }
 
     /**
-     * Adds a Vm created by a {@link Supplier} function to the list of created Vms.
+     * Builds the simulation scenario and starts execution.
      *
-     * @param vmSupplier a {@link Supplier} function that is able to create a Vm
-     * @return the created Vm
+     * @throws RuntimeException
      */
-	protected Vm addNewVmToList(Supplier<Vm> vmSupplier) {
-        Vm vm = vmSupplier.get();
-        getVmList().add(vm);
-        numberOfCreatedVms++;
-        return vm;
-	}
+    @Override
+    public void run() {
+        buildScenario();
+
+        cloudsim.start();
+        getAfterExperimentFinish().accept(this);
+
+        printResultsInternal();
+    }
 
     /**
-     * Adds a Cloudlet created by a {@link Supplier} function to the list of created Cloudlets.
+     * Checks if {@link #isVerbose()} in order to call {@link #printResults()}
+     * to print the experiment results.
      *
-     * @param cloudletSupplier a {@link Supplier} function that is able to create a Cloudlet
-     * @return the created Cloudlet
+     * @see #printResults()
      */
-    protected Cloudlet addNewCloudletToList(Supplier<Cloudlet> cloudletSupplier) {
-        Cloudlet cloudlet = cloudletSupplier.get();
-        getCloudletList().add(cloudlet);
-        numberOfCreatedCloudlets++;
-        return cloudlet;
-	}
+    private void printResultsInternal() {
+        if (isNotVerbose()) {
+            return;
+        }
 
-	/**
-	 * Builds the simulation scenario and starts execution.
-	 *
-	 * @throws RuntimeException
-	 */
-	@Override
-	public void run() {
-		buildScenario();
+        printResults();
+    }
 
-		cloudsim.start();
-		getAfterExperimentFinish().accept(this);
-
-		printResultsInternal();
-	}
-
-
-	/**
-	 * Checks if {@link #isVerbose()}
-	 * in order to call {@link #printResults()}
-	 * to print the experiment results.
-	 *
-	 * @see #printResults()
-	 */
-	private void printResultsInternal(){
-		if(isNotVerbose()){
-			return;
-		}
-
-		printResults();
-	}
-
-	/**
-	 * Prints the results for the experiment.
-	 *
-	 * The method has to be implemented by subclasses in order to output
-	 * the experiment results.
-	 *
-	 * @see #printResultsInternal()
-	 */
-	public abstract void printResults();
+    /**
+     * Prints the results for the experiment.
+     *
+     * The method has to be implemented by subclasses in order to output the
+     * experiment results.
+     *
+     * @see #printResultsInternal()
+     */
+    public abstract void printResults();
 
     /**
      * Creates the simulation scenario to run the experiment.
      */
-	protected void buildScenario() {
-		int numberOfCloudUsers = 1;
-		this.cloudsim = new CloudSim();
+    protected void buildScenario() {
+        this.cloudsim = new CloudSim();
 
-		Datacenter datacenter0 = createDatacenter();
-		DatacenterBroker broker0 = createBrokerAndAddToList();
-		createAndSubmitVmsInternal(broker0);
-		createAndSubmitCloudletsInternal(broker0);
-	}
-
-	/**
-	 * Creates a DatacenterBroker.
-	 * @return the created DatacenterBroker
-	 */
-	protected abstract DatacenterBroker createBroker();
+        Datacenter datacenter0 = createDatacenter();
+        DatacenterBroker broker0 = createBrokerAndAddToList();
+        createAndSubmitVmsInternal(broker0);
+        createAndSubmitCloudletsInternal(broker0);
+    }
 
     /**
-     * Creates the Cloudlets to be used by the experiment.
-     * @param broker broker that the Cloudlets belong to
+     * Creates a DatacenterBroker.
+     *
+     * @return the created DatacenterBroker
      */
-    protected abstract void createCloudlets(DatacenterBroker broker);
+    protected abstract DatacenterBroker createBroker();
+
+    /**
+     * Creates a list of Cloudlets to be used by the experiment
+     * and adds them to the {@link #getCloudletList()}.
+     *
+     * @param broker broker that the Cloudlets belong to
+     * @return the list of created cloudlets
+     */
+    protected abstract List<Cloudlet> createCloudlets(DatacenterBroker broker);
 
     /**
      * Creates the Vms to be used by the experiment.
+     *
      * @param broker broker that the Vms belong to
+     * @return the List of created VMs
      */
-    protected abstract void createVms(DatacenterBroker broker);
-
-	/**
-	 * Creates a DatacenterBroker and adds it to the {@link #getBrokerList() DatacenterBroker list}.
-	 * @return the created DatacenterBroker.
-	 */
-	private DatacenterBroker createBrokerAndAddToList(){
-		DatacenterBroker broker = createBroker();
-		brokerList.add(broker);
-		return broker;
-	}
+    protected abstract List<Vm> createVms(DatacenterBroker broker);
 
     /**
-     * Creates all the Cloudlets required by the experiment and submits them to a Broker.
-     * @param broker broker to submit Cloudlets to
+     * Creates a DatacenterBroker and adds it to the
+     * {@link #getBrokerList() DatacenterBroker list}.
+     *
+     * @return the created DatacenterBroker.
      */
-	protected void createAndSubmitCloudletsInternal(DatacenterBroker broker) {
-        createCloudlets(broker);
-        broker.submitCloudletList(getCloudletList());
+    private DatacenterBroker createBrokerAndAddToList() {
+        DatacenterBroker broker = createBroker();
+        brokerList.add(broker);
+        return broker;
     }
 
     /**
-     * Creates all the VMs required by the experiment and submits them to a Broker.
+     * Creates all the Cloudlets required by the experiment and submits them to
+     * a Broker.
+     *
+     * @param broker broker to submit Cloudlets to
+     */
+    protected void createAndSubmitCloudletsInternal(DatacenterBroker broker) {
+        final List<Cloudlet> list = createCloudlets(broker);
+        getCloudletList().addAll(list);
+        broker.submitCloudletList(list);
+    }
+
+    /**
+     * Creates all the VMs required by the experiment and submits them to a
+     * Broker.
+     *
      * @param broker broker to submit VMs to
      */
-	private void createAndSubmitVmsInternal(DatacenterBroker broker){
-        createVms(broker);
-        broker.submitVmList(getVmList());
+    private void createAndSubmitVmsInternal(DatacenterBroker broker) {
+        List<Vm> list = createVms(broker);
+        getVmList().addAll(list);
+        broker.submitVmList(list);
     }
 
     private DatacenterSimple createDatacenter() {
-        createHosts();
-		//Defines the characteristics of the data center
-		double cost = 3.0; // the cost of using processing in this Datacenter
-		double costPerMem = 0.05; // the cost of using memory in this Datacenter
-		double costPerStorage = 0.001; // the cost of using storage in this Datacenter
-		double costPerBw = 0.0; // the cost of using bw in this Datacenter
-        List<FileStorage> storageList = new ArrayList<>(); // we are not adding SAN devices by now
-        DatacenterCharacteristics characteristics =
-            new DatacenterCharacteristicsSimple(hostList)
-                .setCostPerSecond(cost)
-                .setCostPerMem(costPerMem)
-                .setCostPerStorage(costPerStorage)
-                .setCostPerBw(costPerBw);
+        List<Host> hosts = createHosts();
+        hostList.addAll(hosts);
+        DatacenterCharacteristics characteristics
+                = new DatacenterCharacteristicsSimple(hosts);
 
-		return new DatacenterSimple(cloudsim, characteristics, new VmAllocationPolicySimple());
-	}
-
-    protected abstract void createHosts();
-
-    /**
-     * Adds a Host created by a {@link Supplier} function to the list of created Hosts.
-     *
-     * @param hostSupplier a {@link Supplier} function that is able to create a Host
-     * @return the created Host
-     */
-    protected Host addNewHostToList(Supplier<Host> hostSupplier) {
-        Host host = hostSupplier.get();
-        hostList.add(host);
-        numberOfCreatedHosts++;
-        return host;
+        return new DatacenterSimple(cloudsim, 
+                characteristics, 
+                new VmAllocationPolicySimple());
     }
 
+    protected abstract List<Host> createHosts();
 
     /**
      * Gets the object that is in charge to run the experiment.
+     *
      * @return
      */
-	public ExperimentRunner getRunner() {
-		return runner;
-	}
-
-	/**
-     * Gets the list of created DatacenterBrokers.
-	 * @return
-	 */
-	public List<DatacenterBroker> getBrokerList() {
-		return brokerList;
-	}
-
-	/**
-	 * <p>Sets a {@link Consumer} object that will receive the experiment instance after the experiment
-	 * finishes executing and performs some post-processing tasks.
-	 * These tasks are defined by the developer using the current class
-	 * and can include collecting data for statistical analysis.</p>
-	 *
-	 * <p>Setting a Consumer object is optional.</p>
-	 *
-	 * @param afterExperimentFinishConsumer a {@link Consumer} instance to set.
-	 * @param <T> a generic class that defines the type of experiment the {@link Consumer}
-	 *           will deal with. It is used to ensure that when the {@link Consumer} is called,
-	 *           it will receive an object of the exact type of the {@link SimulationExperiment}
-	 *           instance that the Consumer is being associated to.
-	 */
-	public <T extends SimulationExperiment> SimulationExperiment setAfterExperimentFinish(Consumer<T> afterExperimentFinishConsumer){
-		this.afterExperimentFinish = afterExperimentFinishConsumer;
-        return this;
-	}
-
-	/**
-	 * Gets a {@link Consumer} object that will receive the experiment instance after the experiment
-	 * finishes executing and performs some post-processing tasks.
-	 * These tasks are defined by the developer using the current class
-	 * and can include collecting data for statistical analysis.
-     * @return
-	 *
-	 */
-	private <T extends SimulationExperiment> Consumer<T> getAfterExperimentFinish() {
-		return (Consumer<T>) afterExperimentFinish;
-	}
-
-    public int getNumberOfCreatedCloudlets() {
-        return numberOfCreatedCloudlets;
+    public ExperimentRunner getRunner() {
+        return runner;
     }
 
-    public int getNumberOfCreatedVms() {
-        return numberOfCreatedVms;
+    /**
+     * Gets the list of created DatacenterBrokers.
+     *
+     * @return
+     */
+    public List<DatacenterBroker> getBrokerList() {
+        return brokerList;
+    }
+
+    /**
+     * Sets a {@link Consumer} object that will receive the experiment instance
+     * after the experiment finishes executing and performs some post-processing
+     * tasks. These tasks are defined by the developer using the current class
+     * and can include collecting data for statistical analysis.
+     *
+     * <p>Setting a Consumer object is optional.</p>
+     *
+     * @param afterExperimentFinishConsumer a {@link Consumer} instance to set.
+     * @param <T> a generic class that defines the type of experiment the
+     * {@link Consumer} will deal with. It is used to ensure that when the
+     * {@link Consumer} is called, it will receive an object of the exact type
+     * of the {@link SimulationExperiment} instance that the Consumer is being
+     * associated to.
+     * @return 
+     */
+    public <T extends SimulationExperiment> SimulationExperiment setAfterExperimentFinish(Consumer<T> afterExperimentFinishConsumer) {
+        this.afterExperimentFinish = afterExperimentFinishConsumer;
+        return this;
+    }
+
+    /**
+     * Gets a {@link Consumer} object that will receive the experiment instance
+     * after the experiment finishes executing and performs some post-processing
+     * tasks. These tasks are defined by the developer using the current class
+     * and can include collecting data for statistical analysis.
+     *
+     * @return
+     */
+    private <T extends SimulationExperiment> Consumer<T> getAfterExperimentFinish() {
+        return (Consumer<T>) afterExperimentFinish;
     }
 
     public CloudSim getCloudsim() {
         return cloudsim;
+    }
+
+    /**
+     * @return the hostList
+     */
+    public List<Host> getHostList() {
+        return Collections.unmodifiableList(hostList);
     }
 }

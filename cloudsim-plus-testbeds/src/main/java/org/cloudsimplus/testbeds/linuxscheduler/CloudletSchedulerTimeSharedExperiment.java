@@ -57,8 +57,8 @@ final class CloudletSchedulerTimeSharedExperiment extends CloudletSchedulerExper
     }
 
     @Override
-    protected Supplier<Vm> getVmSupplier(DatacenterBroker broker) {
-        return () -> new VmSimple(getNumberOfCreatedVms(), VM_MIPS, VM_PES)
+    protected Vm createVm(DatacenterBroker broker) {
+        return new VmSimple(VM_MIPS, VM_PES)
             .setRam(VM_RAM).setBw(VM_BW).setSize(VM_STORAGE)
             .setCloudletScheduler(new CloudletSchedulerTimeShared())
             .setBroker(broker);

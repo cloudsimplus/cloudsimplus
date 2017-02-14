@@ -88,7 +88,7 @@ public class HorizontalVmScalingSimple extends VmScalingAbstract implements Hori
             time, getClass().getSimpleName(), getVm().getId(), newVm.getId(), getVm().getId(), getVm().getId(), vmCpuUsagerPercent);
         getVm().getBroker().submitVm(newVm);
 
-        cloudletCreationRequests = getVm().getBroker().getNumberOfCloudletCreationRequests();
+        cloudletCreationRequests = getVm().getBroker().getCloudletsCreatedList().size();
         return true;
     }
 
@@ -98,6 +98,6 @@ public class HorizontalVmScalingSimple extends VmScalingAbstract implements Hori
      * @return
      */
     private boolean isNewCloudletsArrived(){
-        return getVm().getBroker().getNumberOfCloudletCreationRequests() > cloudletCreationRequests;
+        return getVm().getBroker().getCloudletsCreatedList().size() > cloudletCreationRequests;
     }
 }
