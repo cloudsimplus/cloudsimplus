@@ -154,14 +154,10 @@ public abstract class DatacenterBrokerAbstract extends CloudSimEntity implements
      */
     @Override
     public void submitVmList(List<? extends Vm> list) {
-        setIdForEntitiesWithNoDelay(list, lastSubmittedVm);
-        if(list.isEmpty()){
-            return;
-        }
+        lastSubmittedVm = setIdForEntitiesWithNoDelay(list, lastSubmittedVm);
         vmsWaitingList.addAll(list);
-        lastSubmittedVm = list.get(list.size()-1);
 
-        if (isStarted()) {
+        if (isStarted() && !list.isEmpty()) {
             Log.printFormattedLine(
                 "%.2f: %s: List of %d VMs submitted to the broker during simulation execution. VMs creation request sent to Datacenter.",
                 getSimulation().clock(), getName(), list.size());
@@ -200,14 +196,13 @@ public abstract class DatacenterBrokerAbstract extends CloudSimEntity implements
      */
     @Override
     public void submitCloudletList(List<? extends Cloudlet> list) {
-        setIdForEntitiesWithNoDelay(list, lastSubmittedCloudlet);
+        lastSubmittedCloudlet = setIdForEntitiesWithNoDelay(list, lastSubmittedCloudlet);
         if(list.isEmpty()) {
             return;
         }
-        lastSubmittedCloudlet = list.get(list.size()-1);
         setSimulationForCloudletUtilizationModels(list);
-
         getCloudletsWaitingList().addAll(list);
+
         Log.printFormattedLine(
             "%.2f: %s: List of %d Cloudlets submitted to the broker during simulation execution.",
             getSimulation().clock(), getName(), list.size());
@@ -258,20 +253,20 @@ public abstract class DatacenterBrokerAbstract extends CloudSimEntity implements
      *
      * @param list list of objects to define an ID
      */
-    private void setIdForEntitiesWithNoDelay(List<? extends ChangeableId> list, ChangeableId lastSubmittedEntity) {
+    private <T extends ChangeableId> T setIdForEntitiesWithNoDelay(List<? extends T> list, T lastSubmittedEntity) {
         Objects.requireNonNull(list);
         if(list.isEmpty()){
-            return;
+            return lastSubmittedEntity;
         }
-
-        List<? extends ChangeableId> entities = list.stream()
-            .filter(e -> e.getId() < 0)
-            .collect(Collectors.toList());
 
         int id = lastSubmittedEntity.getId();
         for (ChangeableId e : list) {
-            e.setId(++id);
+            if(e.getId() < 0) {
+                e.setId(++id);
+            }
         }
+
+        return list.get(list.size()-1);
     }
 
     @Override
