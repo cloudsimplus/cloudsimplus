@@ -261,7 +261,7 @@ public abstract class DatacenterBrokerAbstract extends CloudSimEntity implements
         }
 
         List<? extends T> entities = list.stream()
-            .filter(e -> e.getId() < 0)
+            .filter((T e) -> e.getId() < 0)
             .collect(toList());
 
         int id = lastSubmittedEntity.getId();
