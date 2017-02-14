@@ -10,7 +10,7 @@ package org.cloudbus.cloudsim.brokers;
 import java.util.*;
 import java.util.function.Function;
 import java.util.function.Supplier;
-import static java.util.stream.Collectors.toList;
+import java.util.stream.Collectors;
 
 import org.cloudbus.cloudsim.cloudlets.Cloudlet;
 import org.cloudbus.cloudsim.core.events.SimEvent;
@@ -199,8 +199,8 @@ public abstract class DatacenterBrokerAbstract extends CloudSimEntity implements
             return;
         }
         setSimulationForCloudletUtilizationModels(list);
-
         getCloudletsWaitingList().addAll(list);
+
         Log.printFormattedLine(
             "%.2f: %s: List of %d Cloudlets submitted to the broker during simulation execution.",
             getSimulation().clock(), getName(), list.size());
@@ -245,12 +245,11 @@ public abstract class DatacenterBrokerAbstract extends CloudSimEntity implements
     }
 
     /**
-     * Defines IDs for a list of {@link Identificable} entities that don't
+     * Defines IDs for a list of {@link ChangeableId} entities that don't
      * have an ID already assigned. Such entities can be a {@link Cloudlet},
-     * {@link Vm} or any object that implements {@link Identificable}.
+     * {@link Vm} or any object that implements {@link ChangeableId}.
      *
-     * @param list list of objects to define an  ID
-     * @param lastSubmittedEntity the last entity of the type of objects in the list that was submitted to the broker
+     * @param list list of objects to define an ID
      */
     private <T extends ChangeableId> T setIdForEntitiesWithNoDelay(List<? extends T> list, T lastSubmittedEntity) {
         Objects.requireNonNull(list);
@@ -258,17 +257,14 @@ public abstract class DatacenterBrokerAbstract extends CloudSimEntity implements
             return lastSubmittedEntity;
         }
 
-        List<ChangeableId> entities = list.stream()
-            .filter(e -> e.getId() < 0)
-            .collect(toList());
-
         int id = lastSubmittedEntity.getId();
         for (ChangeableId e : list) {
-            e.setId(++id);
+            if(e.getId() < 0) {
+                e.setId(++id);
+            }
         }
 
         return list.get(list.size()-1);
-
     }
 
     @Override

@@ -187,6 +187,8 @@ public interface Vm extends UniquelyIdentificable, ChangeableId, Delayable, Reso
     /**
      * Adds a listener object that will be notified when the Vm fail in
      * being placed for lack of a {@link Host} with enough resources in a specific {@link Datacenter}.
+     * <p>The {@link DatacenterBroker} is accountable for receiving the notification from the
+     * Datacenter and notifying the Listeners.</p>
      *
      * @param listener the listener to add
      * @return
