@@ -1,22 +1,21 @@
 package org.cloudbus.cloudsim.utilizationmodels;
 
-import org.cloudbus.cloudsim.utilizationmodels.UtilizationModelPlanetLabInMemory;
 import static org.junit.Assert.assertEquals;
 
 import org.junit.Before;
 import org.junit.Test;
 
-public class UtilizationModelPlanetLabInMemoryTest {
+public class UtilizationModelPlanetLabTest {
 
     public static final double SCHEDULING_INTERVAL = 300;
 
     public static final String FILE = "146-179_surfsnel_dsl_internl_net_colostate_557.dat";
 
-    private UtilizationModelPlanetLabInMemory utilizationModel;
+    private UtilizationModelPlanetLab utilizationModel;
 
     @Before
     public void setUp() throws Exception {
-        utilizationModel = new UtilizationModelPlanetLabInMemory(getClass().getClassLoader()
+        utilizationModel = new UtilizationModelPlanetLab(getClass().getClassLoader()
                 .getResource(FILE).getPath(), SCHEDULING_INTERVAL);
     }
 
