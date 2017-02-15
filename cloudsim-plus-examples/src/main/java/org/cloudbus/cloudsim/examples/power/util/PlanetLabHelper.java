@@ -11,8 +11,7 @@ import org.cloudbus.cloudsim.cloudlets.CloudletSimple;
 import org.cloudbus.cloudsim.brokers.DatacenterBroker;
 import org.cloudbus.cloudsim.utilizationmodels.UtilizationModel;
 import org.cloudbus.cloudsim.utilizationmodels.UtilizationModelZero;
-import org.cloudbus.cloudsim.utilizationmodels.UtilizationModelPlanetLabInMemory;
-import org.cloudbus.cloudsim.examples.power.util.Constants;
+import org.cloudbus.cloudsim.utilizationmodels.UtilizationModelPlanetLab;
 
 /**
  * A helper class for the running examples for the PlanetLab workload.
@@ -53,7 +52,7 @@ public final class PlanetLabHelper {
 		for (int i = 0; i < files.length; i++) {
 			try {
                 UtilizationModel utilizationModelCPU =
-                        new UtilizationModelPlanetLabInMemory(
+                        new UtilizationModelPlanetLab(
 								files[i].getAbsolutePath(),
 								Constants.SCHEDULING_INTERVAL);
 				CloudletSimple cloudlet = new CloudletSimple(

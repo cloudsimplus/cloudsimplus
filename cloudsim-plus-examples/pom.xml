@@ -119,7 +119,7 @@
                 <artifactId>maven-license-plugin</artifactId>
                 <version>1.10.b1</version>
                 <configuration>
-                    <header>${license.dir}/source-header.txt</header>
+                    <header>${license.dir}/COPYRIGHT</header>
                     <mapping>
                         <java>SLASHSTAR_STYLE</java>
                     </mapping>

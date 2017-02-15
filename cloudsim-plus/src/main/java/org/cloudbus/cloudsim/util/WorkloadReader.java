@@ -26,7 +26,7 @@ import org.cloudbus.cloudsim.cloudlets.Cloudlet;
  *
  * @see WorkloadFileReader
  */
-public interface WorkloadModel {
+public interface WorkloadReader {
 
     /**
      * Generates a list of jobs ({@link Cloudlet Cloudlets}) to be executed.

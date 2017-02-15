@@ -68,8 +68,7 @@ public abstract class VmScalingAbstract implements VmScaling {
 
     @Override
     public final VmScaling setOverloadPredicate(Predicate<Vm> predicate) {
-        Objects.requireNonNull(predicate);
-        ensureThatOverAndUnderloadPredicatesArentEqual(underloadPredicate, predicate);
+        validatePredicates(underloadPredicate, predicate);
         this.overloadPredicate = predicate;
         return this;
     }
@@ -81,21 +80,24 @@ public abstract class VmScalingAbstract implements VmScaling {
 
     @Override
     public final VmScaling setUnderloadPredicate(Predicate<Vm> predicate) {
-        Objects.requireNonNull(predicate);
-        ensureThatOverAndUnderloadPredicatesArentEqual(predicate, overloadPredicate);
+        validatePredicates(predicate, overloadPredicate);
         this.underloadPredicate = predicate;
         return this;
     }
 
     /**
-     * Throws an exception if the under and overload predicates are equal, to make clear
-     * that over and underload situations must be defined by different conditions.
+     * Throws an exception if the under and overload predicates are equal (to make clear
+     * that over and underload situations must be defined by different conditions)
+     * or if any of them are null.
      *
      * @param underloadPredicate the underload predicate to check
      * @param overloadPredicate the overload predicate to check
      * @throws IllegalArgumentException if the two predicates are equal
+     * @throws NullPointerException if any of the predicates are null
      */
-    private void ensureThatOverAndUnderloadPredicatesArentEqual(Predicate<Vm> underloadPredicate, Predicate<Vm> overloadPredicate) {
+    private void validatePredicates(Predicate<Vm> underloadPredicate, Predicate<Vm> overloadPredicate) {
+        Objects.requireNonNull(underloadPredicate);
+        Objects.requireNonNull(overloadPredicate);
         if(overloadPredicate.equals(underloadPredicate)){
             throw new IllegalArgumentException("Underload and overload predicate cannot be equal");
         }

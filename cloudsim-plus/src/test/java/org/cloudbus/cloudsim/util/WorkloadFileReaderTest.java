@@ -35,7 +35,7 @@ public class WorkloadFileReaderTest {
     }
 
     private void readFile(String fileNameWithoutPath, int numberOfJobs) throws IOException {
-        WorkloadModel r = new WorkloadFileReader("src"
+        WorkloadReader r = new WorkloadFileReader("src"
                 + File.separator
                 + "test"
                 + File.separator

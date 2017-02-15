@@ -360,14 +360,14 @@ host.setRamProvisioner(new ResourceProvisionerSimple(new Ram(ram)))
 
 # CloudSim Plus Publications
 
-  * A paper was approved in a top conference and we are just waiting publication to provide a link to the paper.
+  * A paper was approved in a top conference and we are just waiting publication to provide a link to it.
   * Other papers are in writing process.
   
 <p align="right"><a href="#top">:arrow_up:</a></p>
   
 # License
 
-This project is licensed under [GNU GPLv3](http://www.gnu.org/licenses/gpl-3.0), as defined in CloudSim 3 source codes.
+This project is licensed under [GNU GPLv3](http://www.gnu.org/licenses/gpl-3.0), as defined inside CloudSim 3 source files.
 
 <p align="right"><a href="#top">:arrow_up:</a></p>
 
