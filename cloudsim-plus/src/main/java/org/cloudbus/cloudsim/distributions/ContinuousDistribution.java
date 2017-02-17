@@ -8,7 +8,8 @@
 package org.cloudbus.cloudsim.distributions;
 
 /**
- * Interface to be implemented by a pseudo random number generator.
+ * Interface to be implemented by a pseudo random number generator (PRNG)
+ * that follows a defined statistical continuous distribution.
  *
  * @author Marcos Dias de Assuncao
  * @since CloudSim Toolkit 1.0
