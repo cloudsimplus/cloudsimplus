@@ -332,6 +332,6 @@ This project is licensed under [GNU GPLv3](http://www.gnu.org/licenses/gpl-3.0),
 # Contributing
 
 You are welcome to contribute to the project. However, make sure to read the [contribution guide](CONTRIBUTING.md) before you start.
-If you just want to request a feature or report an issue, feel free to [create a ticket here](https://github.com/manoelcampos/cloudsim-plus/issues). You may just look if the issue/feature you want to report/request hasn't been reported/requested yet. Try checking the existing issues/features and search using some keywords before creating a new ticket. 
+If you just want to request a feature or report an issue, feel free to [create a ticket here](https://github.com/manoelcampos/cloudsim-plus/issues). You should just look if the issue/feature you want to report/request hasn't been reported/requested yet. Try checking the existing issues/features and search using some keywords before creating a new ticket. 
 
 <p align="right"><a href="#top">:arrow_up:</a></p>
