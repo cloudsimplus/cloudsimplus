@@ -92,7 +92,7 @@ CloudSim Plus has a simple structure to ease usage and comprehension. It consist
 <p align="right"><a href="#top">:arrow_up:</a></p>
 
 
-# How to use CloudSim Plus 
+# How to Use CloudSim Plus 
 There are 3 ways to use CloudSim Plus. It can be downloaded and executed directly from some IDE or from the command line. Since it is a Maven project available at [Maven Central](https://maven-badges.herokuapp.com/maven-central/org.cloudsimplus/cloudsim-plus), you can also include it as a dependency inside your own project.
 
 You can watch the video below ([high quality version here](https://youtu.be/hvFJtvrkCNI)) or follow the instructions in one of the next subsections.
@@ -114,7 +114,7 @@ The script checks if it is required to build the project, using maven in this ca
 To see what examples are available, just navigate through the [examples directory](/cloudsim-plus-examples/src/main/java/).
 To see more script options, run it without any parameter.  
  
-## By means of an IDE
+## By Means of an IDE
 The easiest way to use the project is relying on some IDE such as [NetBeans](http://netbeans.org), [Eclipse](http://eclipse.org) 
 or [IntelliJ IDEA](http://jetbrains.com/idea/).
 Below are the steps to start using the project:
@@ -134,7 +134,7 @@ at a terminal.
 
 <a id="maven"></a>
 
-## Adding it as a maven dependency into your own project
+## Adding it as a Maven Dependency into Your Own Project
 
 You can add CloudSim Plus API module, that is the only one required to build simulations, as a dependency inside the pom.xml file or your own maven project,
 as presened below (check if the informed version is the latest one). By this way you can start building your simulations from scratch.
@@ -149,7 +149,7 @@ as presened below (check if the informed version is the latest one). By this way
 
 <p align="right"><a href="#top">:arrow_up:</a></p>
 
-# A minimal and complete simulation example
+# A Minimal and Complete Simulation Example
 
 In order to build a simulation scenario you have to create, at least: 
 - a datacenter with a list of physical machines (Hosts); 
@@ -302,7 +302,7 @@ host.setRamProvisioner(new ResourceProvisionerSimple(new Ram(ram)))
 
 <p align="right"><a href="#top">:arrow_up:</a></p>
 
-# General features of the simulator
+# General Features of the Simulator
 
   * Support for modeling and simulation of large scale Cloud computing data centers.
   * Support for modeling and simulation of virtualized server hosts, with customizable policies for provisioning host resources to virtual machines.
