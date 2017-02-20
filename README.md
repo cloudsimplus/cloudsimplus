@@ -46,7 +46,7 @@ The original [CloudSim](http://github.com/Cloudslab/cloudsim) project is develop
 
 # Exclusive Features
 
-CloudSim Plus provides a lot of exclusive features, ranging from the most basic ones that enable building simple simulations to advanced features that enable implementation of more realistic simulation scenarios: 
+CloudSim Plus provides a lot of exclusive features, ranging from the most basic ones that enable building simple simulations, to advanced features for implementing more realistic simulation scenarios: 
 
 1. It is easier to use. A complete and easy-to-understand simulation scenario can be built in some few lines. Check the [Examples Section](#a-minimal-and-complete-simulation-example);
 1. [Vertical VM Scaling](/cloudsim-plus-examples/src/main/java/org/cloudsimplus/examples/VerticalVmScalingExample.java) 
