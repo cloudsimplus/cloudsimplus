@@ -270,6 +270,13 @@ And unfortunately, there are several months of hard work that would need to be r
 To update your simulations to use the CloudSim Plus you have to change the way that some objects are instantiated, because some new interfaces were introduced to follow the "program to an interface, not an implementation" recommendation and also to increase [abstraction](https://en.wikipedia.org/wiki/Abstraction_(software_engineering)). 
 These new interfaces were also crucial to implement the [Null Object Pattern](https://en.wikipedia.org/wiki/Null_Object_pattern) to try avoiding `NullPointerException`s.
 
+The initialization of the simulation is not performed by the static `CloudSim.startSimulation` method anymore, which required a lot of parameters.
+Now you have just to instantiate a `CloudSim` object using the default, no-arguments constructor, as shown below. This instance is used in the constructor of `DatacenterBroker` and `Datacenter` objects. 
+
+```java
+CloudSim cloudsim = new CloudSim();
+```
+
 The classes `Datacenter`, `DatacenterCharacteristics`, `Host`, `Pe`, `Vm` and `Cloudlet` were renamed due to 
 the introduction of interfaces with these same names. Now all these classes have a suffix *Simple* 
 (as already defined for some previous classes such as `PeProvisionerSimple` and `VmAllocationPolicySimple`). 
@@ -279,16 +286,28 @@ For instance, to instantiate a `Cloudlet` you have to execute a code such as:
 CloudletSimple cloudlet = new CloudletSimple(required, parameters, here);
 ```   
 
-However, once these interfaces were introduced in order to also enable the creation of different cloudlet classes, 
+However, since these interfaces were introduced in order to also enable the creation of different cloudlet classes, 
 the recommendation is to declare your object using the interface, not the class: 
  
  ```java
 Cloudlet cloudlet = new CloudletSimple(required, parameters, here);
 ```   
 
-Once the packages were reorganized, you have to adjust them. However, use your IDE to correct the imports for you.
+The method `setBrokerId(int userId)` from `Vm` and `Cloudlet` were refactored to `setBroker(DatacenterBroker broker)`,
+now requiring a `DatacenterBroker` instead of just an int ID which may be even nonexistent.
 
-Additionally, the interface `Storage` was renamed to `FileStorage` and its implementations are `SanStorage` and `HarddriveStorage`, that can be used as before. Finally, the way you instantiate a host has changed too. The classes `RamProvisionerSimple` and `BwProvisionerSimple` don't exist anymore. Now you just have the generic class `ResourceProvisionerSimple`. And this class doesn't require a primitive value to define the resource capacity. Instead, it requires an object that implements the new `Resource` interface (such as the `Ram` and `Bandwidth` classes). Instantiating a host should be now similar to:
+A `DatacenterCharacteristics` now requires just the list of hosts. All the other parameters (such as costs) are optional.
+A `VmAllocationPolicy` doesn't require any parameter anymore. A `Datacenter` doesn't require a name, storage list and scheduling interval too.
+The name will be automatically defined. It and all the other parameter can be set further using the respective setter methods.
+Now it is just required a `CloudSim`, a `DatacenterCharacteristics` and a `VmAllocationPolicy` instance.
+
+```java
+DatacenterCharacteristics characts = new DatacenterCharacteristicsSimple(hostList);
+VmAllocationPolicy vmAllocationPolicy = new VmAllocationPolicySimple();
+Datacenter datacenter0 = new DatacenterSimple(cloudsim, characts, vmAllocationPolicy);
+```
+
+Additionally, the interface `Storage` was renamed to `FileStorage` and its implementations are `SanStorage` and `HarddriveStorage`, that can be used as before. The way you instantiate a host has changed too. The classes `RamProvisionerSimple` and `BwProvisionerSimple` don't exist anymore. Now you just have the generic class `ResourceProvisionerSimple`. And this class doesn't require a primitive value to define the resource capacity. Instead, it requires an object that implements the new `Resource` interface (such as the `Ram` and `Bandwidth` classes). Instantiating a host should be now similar to:
 
 ```java
 long ram = 20480; //in MB
@@ -299,6 +318,8 @@ host.setRamProvisioner(new ResourceProvisionerSimple(new Ram(ram)))
     .setBwProvisioner(new ResourceProvisionerSimple(new Bandwidth(bw)))
     .setVmScheduler(new VmSchedulerTimeShared());
 ``` 
+
+Finally, since the packages were reorganized, you have to adjust them. However, use your IDE to correct the imports for you. A complete and clear example was presented in the <a href="#a-minimal-and-complete-simulation-example">Examples</a> section above.
 
 <p align="right"><a href="#top">:arrow_up:</a></p>
 
