@@ -271,7 +271,7 @@ To update your simulations to use the CloudSim Plus you have to change the way t
 These new interfaces were also crucial to implement the [Null Object Pattern](https://en.wikipedia.org/wiki/Null_Object_pattern) to try avoiding `NullPointerException`s.
 
 The initialization of the simulation is not performed by the static `CloudSim.startSimulation` method anymore, which required a lot of parameters.
-Now you have just to instantiate a `CloudSim` object using the default, no-arguments constructor, as shown below. This instance is used in the constructor of `DatacenterBroker` and `Datacenter` objects. 
+Now you have just to instantiate a `CloudSim` object using the default, no-arguments constructor, as shown below. This instance is used in the constructor of `DatacenterBroker` and `Datacenter` objects: 
 
 ```java
 CloudSim cloudsim = new CloudSim();
@@ -307,7 +307,7 @@ VmAllocationPolicy vmAllocationPolicy = new VmAllocationPolicySimple();
 Datacenter datacenter0 = new DatacenterSimple(cloudsim, characts, vmAllocationPolicy);
 ```
 
-Additionally, the interface `Storage` was renamed to `FileStorage` and its implementations are `SanStorage` and `HarddriveStorage`, that can be used as before. The way you instantiate a host has changed too. The classes `RamProvisionerSimple` and `BwProvisionerSimple` don't exist anymore. Now you just have the generic class `ResourceProvisionerSimple`. And this class doesn't require a primitive value to define the resource capacity. Instead, it requires an object that implements the new `Resource` interface (such as the `Ram` and `Bandwidth` classes). Instantiating a host should be now similar to:
+The way you instantiate a host has changed too. The classes `RamProvisionerSimple` and `BwProvisionerSimple` don't exist anymore. Now you just have the generic class `ResourceProvisionerSimple`. And this class doesn't require a primitive value to define the resource capacity. Instead, it requires an object that implements the new `Resource` interface (such as the `Ram` and `Bandwidth` classes). A `VmScheduler` constructor doesn't require any parameter. Instantiating a host should be now similar to:
 
 ```java
 long ram = 20480; //in MB
@@ -319,7 +319,7 @@ host.setRamProvisioner(new ResourceProvisionerSimple(new Ram(ram)))
     .setVmScheduler(new VmSchedulerTimeShared());
 ``` 
 
-Finally, since the packages were reorganized, you have to adjust them. However, use your IDE to correct the imports for you. A complete and clear example was presented in the <a href="#a-minimal-and-complete-simulation-example">Examples</a> section above.
+Additionally, the interface `Storage` was renamed to `FileStorage` and its implementations are `SanStorage` and `HarddriveStorage`, that can be used as before. Finally, since the packages were reorganized, you have to adjust them. However, use your IDE to correct the imports for you. A complete and clear example was presented in the <a href="#a-minimal-and-complete-simulation-example">Examples</a> section above.
 
 <p align="right"><a href="#top">:arrow_up:</a></p>
 
