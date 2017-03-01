@@ -8,6 +8,9 @@
 
 package org.cloudbus.cloudsim.utilizationmodels;
 
+import org.cloudbus.cloudsim.distributions.ContinuousDistribution;
+import org.cloudbus.cloudsim.distributions.UniformDistr;
+
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.ObjectInputStream;
@@ -29,7 +32,7 @@ public class UtilizationModelStochastic extends UtilizationModelAbstract {
     /**
      * The random generator.
      */
-    private Random randomGenerator;
+    private ContinuousDistribution randomGenerator;
 
     /**
      * @see #getHistory()
@@ -43,7 +46,7 @@ public class UtilizationModelStochastic extends UtilizationModelAbstract {
     public UtilizationModelStochastic() {
         super();
         setHistory(new HashMap<>());
-        setRandomGenerator(new Random());
+        setRandomGenerator(new UniformDistr());
     }
 
     /**
@@ -79,7 +82,7 @@ public class UtilizationModelStochastic extends UtilizationModelAbstract {
     public UtilizationModelStochastic(long seed) {
         super();
         setHistory(new HashMap<>());
-        setRandomGenerator(new Random(seed));
+        setRandomGenerator(new UniformDistr(seed));
     }
 
     @Override
@@ -88,7 +91,7 @@ public class UtilizationModelStochastic extends UtilizationModelAbstract {
             return getHistory().get(time);
         }
 
-        double utilization = getRandomGenerator().nextDouble();
+        double utilization = getRandomGenerator().sample();
         getHistory().put(time, utilization);
         return utilization;
     }
@@ -146,7 +149,7 @@ public class UtilizationModelStochastic extends UtilizationModelAbstract {
      *
      * @return the random number generator
      */
-    public Random getRandomGenerator() {
+    public ContinuousDistribution getRandomGenerator() {
         return randomGenerator;
     }
 
@@ -155,7 +158,7 @@ public class UtilizationModelStochastic extends UtilizationModelAbstract {
      *
      * @param randomGenerator the new random number generator
      */
-    public final void setRandomGenerator(Random randomGenerator) {
+    public final void setRandomGenerator(ContinuousDistribution randomGenerator) {
         this.randomGenerator = randomGenerator;
     }
 
