@@ -31,6 +31,7 @@ import org.cloudbus.cloudsim.distributions.UniformDistr;
 
 import java.util.ArrayList;
 import java.util.List;
+import org.cloudbus.cloudsim.distributions.ContinuousDistribution;
 
 /**
  * A base class to run a given experiment a defined number of times and collect
@@ -388,13 +389,13 @@ public abstract class ExperimentRunner<T extends SimulationExperiment> implement
      * seeds from the first half.
      *
      * @param experimentIndex
-     * @param minValue the minimum value that generator will return (inclusive)
-     * @param maxValue the minimum value that generator will return (exclusive)
+     * @param minValue the minimum value the generator will return (inclusive)
+     * @param maxValue the maximum value the generator will return (exclusive)
      * @return the created PRNG
      *
      * @see UniformDistr#isApplyAntitheticVariatesTechnique()
      */
-    protected UniformDistr createRandomGenAndAddSeedToList(int experimentIndex, double minValue, double maxValue) {
+    public ContinuousDistribution createRandomGenAndAddSeedToList(int experimentIndex, double minValue, double maxValue) {
         UniformDistr prng;
         if (isApplyAntitheticVariatesTechnique()
                 && numberOfSimulationRuns > 1 && experimentIndex >= halfSimulationRuns()) {
@@ -406,9 +407,27 @@ public abstract class ExperimentRunner<T extends SimulationExperiment> implement
             final long experimentSeed = getBaseSeed() + experimentIndex + 1;
             prng = new UniformDistr(minValue, maxValue, experimentSeed);
         }
+        
         addSeed(prng.getSeed());
         return prng;
     }
+    
+     /**
+     * Creates a pseudo random number generator (PRNG) for a experiment run that
+     * generates uniform values between [0 and 1[. Adds the PRNG seed to the
+     * {@link #getSeeds()} list. If it is to apply the
+     * {@link #isApplyAntitheticVariatesTechnique() "Antithetic Variates Technique"}
+     * to reduce results variance, the second half of experiments will used the
+     * seeds from the first half.
+     *
+     * @param experimentIndex
+     * @return the created PRNG
+     *
+     * @see UniformDistr#isApplyAntitheticVariatesTechnique()
+     */
+    public ContinuousDistribution createRandomGenAndAddSeedToList(int experimentIndex) {
+        return createRandomGenAndAddSeedToList(experimentIndex, 0, 1);
+    } 
 
     /**
      * Adds a seed to the list of seeds used for each experiment.
@@ -416,7 +435,9 @@ public abstract class ExperimentRunner<T extends SimulationExperiment> implement
      * @param seed seed of the current experiment to add to the list
      */
     protected void addSeed(long seed) {
-        seeds.add(seed);
+        if(!seeds.contains(seed)){
+            seeds.add(seed);
+        }
     }
 
     /**

@@ -50,6 +50,7 @@ import org.cloudsimplus.testbeds.SimulationExperiment;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Supplier;
+import org.cloudbus.cloudsim.distributions.ContinuousDistribution;
 
 /**
  * <p>
@@ -98,7 +99,7 @@ final class DatacenterBrokerHeuristicExperiment extends SimulationExperiment {
     /**
      * Pseudo random number generator used in the experiment.
      */
-    private UniformDistr randomGen;
+    private ContinuousDistribution randomGen;
 
     private CloudletToVmMappingSimulatedAnnealing heuristic;
 
@@ -112,12 +113,7 @@ final class DatacenterBrokerHeuristicExperiment extends SimulationExperiment {
     public DatacenterBrokerHeuristicExperiment(DatacenterBrokerHeuristicRunner runner, int index) {
         super(index, runner);
         this.randomGen = new UniformDistr(0, 1);
-    }
-
-    @Override
-    protected void buildScenario() {
         createSimulatedAnnealingHeuristic();
-        super.buildScenario();
     }
 
     private void createSimulatedAnnealingHeuristic() {
@@ -233,7 +229,7 @@ final class DatacenterBrokerHeuristicExperiment extends SimulationExperiment {
      *
      * @param randomGen the PRNG to set
      */
-    public DatacenterBrokerHeuristicExperiment setRandomGen(UniformDistr randomGen) {
+    public DatacenterBrokerHeuristicExperiment setRandomGen(ContinuousDistribution randomGen) {
         this.randomGen = randomGen;
         return this;
     }
