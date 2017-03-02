@@ -32,7 +32,6 @@ import org.cloudbus.cloudsim.datacenters.DatacenterCharacteristics;
 import org.cloudbus.cloudsim.datacenters.DatacenterCharacteristicsSimple;
 import org.cloudbus.cloudsim.datacenters.DatacenterSimple;
 import org.cloudbus.cloudsim.hosts.Host;
-import org.cloudbus.cloudsim.resources.*;
 import org.cloudbus.cloudsim.vms.Vm;
 
 import java.util.ArrayList;
@@ -60,6 +59,16 @@ public abstract class SimulationExperiment implements Runnable {
     private Consumer<? extends SimulationExperiment> afterExperimentFinish;
 
     /**
+     * Creates a simulation experiment that is not attached to 
+     * a {@link ExperimentRunner}. By this way, the experiment
+     * must be started manually by calling the {@link #run()} method.
+     *
+     */
+    public SimulationExperiment() {
+        this(-1, null);
+    }
+    
+    /**
      * Creates a simulation experiment.
      *
      * @param index the index that identifies the current experiment run.
@@ -69,6 +78,7 @@ public abstract class SimulationExperiment implements Runnable {
      */
     public SimulationExperiment(int index, ExperimentRunner runner) {
         this.verbose = false;
+        this.cloudsim = new CloudSim();
         this.vmList = new ArrayList<>();
         this.index = index;
         this.cloudletList = new ArrayList<>();
@@ -80,7 +90,7 @@ public abstract class SimulationExperiment implements Runnable {
         afterExperimentFinish = exp -> {};
     }
 
-    public List<Cloudlet> getCloudletList() {
+    public final List<Cloudlet> getCloudletList() {
         return Collections.unmodifiableList(cloudletList);
     }
 
@@ -134,9 +144,8 @@ public abstract class SimulationExperiment implements Runnable {
      * @throws RuntimeException
      */
     @Override
-    public void run() {
+    public final void run() {
         buildScenario();
-
         cloudsim.start();
         getAfterExperimentFinish().accept(this);
 
@@ -170,9 +179,7 @@ public abstract class SimulationExperiment implements Runnable {
     /**
      * Creates the simulation scenario to run the experiment.
      */
-    protected void buildScenario() {
-        this.cloudsim = new CloudSim();
-
+    protected final void buildScenario() {
         Datacenter datacenter0 = createDatacenter();
         DatacenterBroker broker0 = createBrokerAndAddToList();
         createAndSubmitVmsInternal(broker0);
@@ -223,7 +230,7 @@ public abstract class SimulationExperiment implements Runnable {
      */
     protected void createAndSubmitCloudletsInternal(DatacenterBroker broker) {
         final List<Cloudlet> list = createCloudlets(broker);
-        getCloudletList().addAll(list);
+        cloudletList.addAll(list);
         broker.submitCloudletList(list);
     }
 
@@ -235,11 +242,11 @@ public abstract class SimulationExperiment implements Runnable {
      */
     private void createAndSubmitVmsInternal(DatacenterBroker broker) {
         List<Vm> list = createVms(broker);
-        getVmList().addAll(list);
+        vmList.addAll(list);
         broker.submitVmList(list);
     }
 
-    private DatacenterSimple createDatacenter() {
+    protected DatacenterSimple createDatacenter() {
         List<Host> hosts = createHosts();
         hostList.addAll(hosts);
         DatacenterCharacteristics characteristics
@@ -303,7 +310,7 @@ public abstract class SimulationExperiment implements Runnable {
         return (Consumer<T>) afterExperimentFinish;
     }
 
-    public CloudSim getCloudsim() {
+    public final CloudSim getCloudsim() {
         return cloudsim;
     }
 

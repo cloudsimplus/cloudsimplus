@@ -81,7 +81,7 @@ public class HostFaultInjection extends CloudSimEntity {
     protected void startEntity() {
         double delay = delayForFailureOfHostRandom.sample() + 1;
         Log.printLine(getName() + " is starting...");
-        schedule(getId(), 2, CloudSimTags.HOST_FAILURE);
+        schedule(getId(), delay, CloudSimTags.HOST_FAILURE);//was 2 seconds fo delay
     }
 
     @Override

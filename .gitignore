@@ -24,3 +24,4 @@ bin/
 
 #NetBeans project files
 nbproject/
+**/nb-configuration.xml

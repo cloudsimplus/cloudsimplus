@@ -68,35 +68,33 @@ import org.cloudsimplus.autoscaling.HorizontalVmScalingSimple;
 import org.cloudsimplus.builders.tables.CloudletsTableBuilder;
 import org.cloudsimplus.listeners.EventInfo;
 import org.cloudsimplus.listeners.EventListener;
-import org.cloudsimplus.migration.VmMigrationWhenCpuMetricIsViolatedExample;
 import org.cloudsimplus.sla.readJsonFile.CpuUtilization;
 import org.cloudsimplus.sla.readJsonFile.ResponseTime;
 import org.cloudsimplus.sla.readJsonFile.SlaReader;
 
 /**
- * Example of dynamic creation of vm at runtime, respecting the
- * cpu usage limit and the free number of each VM, thus
- * selecting an "ideal" VM for a given cloudlet, which will
- * then minimize Cloudlet response time.
+ * Example of dynamic creation of VMS at runtime, respecting the CPU usage limit
+ * and the free number of each VM, thus selecting an "ideal" VM for a given
+ * cloudlet, which will then minimize Cloudlet response time.
  *
  * @author raysaoliveira
  */
 public class DynamicVmCreationByCpuUtilizationAndFreePesOfVm {
 
     private static final int SCHEDULING_INTERVAL = 5;
-    private static int NUMBER_OF_SIMULATIONS = 5;
     private final CloudSim simulation;
-
-
+    
     /**
      * The interval to request the creation of new Cloudlets.
      */
-    private static final int CLOUDLETS_CREATION_INTERVAL = SCHEDULING_INTERVAL * 5;
+    private static final int CLOUDLETS_CREATION_INTERVAL = SCHEDULING_INTERVAL * 3;
 
     private static final int HOSTS = 50;
     private static final int HOST_PES = 32;
     private static final int VMS = 3;
-    private static final int CLOUDLETS = 6;
+    private static final int CLOUDLETS = 8;
+    private static final long VM_MIPS = 1000;
+    
     private DatacenterBroker broker0;
     private List<Host> hostList;
     private List<Vm> vmList;
@@ -106,7 +104,7 @@ public class DynamicVmCreationByCpuUtilizationAndFreePesOfVm {
      * Different lengths that will be randomly assigned to created Cloudlets.
      */
     private static final long[] CLOUDLET_LENGTHS = {20000, 40000, 14000, 10000, 10000};
-    private static final int[] VM_PES = {2, 4, 8};
+    private static final int[] VM_PES = {2, 4};
     private ContinuousDistribution randCloudlet, randVm;
 
     private int createdCloudlets;
@@ -115,17 +113,18 @@ public class DynamicVmCreationByCpuUtilizationAndFreePesOfVm {
     /**
      * The file containing the SLA Contract in JSON format.
      */
-    public static final String METRICS_FILE = ResourceLoader.getResourcePath(VmMigrationWhenCpuMetricIsViolatedExample.class, "SlaMetrics.json");
+    public static final String METRICS_FILE = ResourceLoader.getResourcePath(DynamicVmCreationByCpuUtilizationAndFreePesOfVm.class, "SlaMetrics.json");
     private final double cpuUtilizationSlaContract;
     private double responseTimeSlaContract;
+    
+    private int totalOfcloudletSlaSatisfied;
+    private List<Double> responseTimes;
 
     public static void main(String[] args) throws FileNotFoundException, IOException {
         Log.printFormattedLine(" Starting... ");
-        for (int i = 0; i < NUMBER_OF_SIMULATIONS; i++) {
-            new DynamicVmCreationByCpuUtilizationAndFreePesOfVm();
-        }
+        new DynamicVmCreationByCpuUtilizationAndFreePesOfVm();
     }
-
+   
     public DynamicVmCreationByCpuUtilizationAndFreePesOfVm() throws FileNotFoundException, IOException {
 
         final long seed = 1;
@@ -157,13 +156,25 @@ public class DynamicVmCreationByCpuUtilizationAndFreePesOfVm {
         vmList.addAll(createListOfScalableVms(VMS));
 
         createCloudletList();
+        //sort the cloudlet list by expected response time
+        Comparator<Cloudlet> sortByExpectedCloudletResponseTime = null;
+        for(Vm vm: vmList){
+        sortByExpectedCloudletResponseTime
+                = Comparator.comparingDouble(cloudlet -> getExpectedCloudletResponseTime(cloudlet, vm));
+
+        }
+        cloudletList.sort(sortByExpectedCloudletResponseTime.reversed());
+        System.out.println("\t\tCreated Cloudlets: " + cloudletList);
+
         broker0.submitVmList(vmList);
         broker0.submitCloudletList(cloudletList);
 
         simulation.start();
 
-        responseTimeCloudletSimulation(cloudletList);
-
+        responseTimeCloudletSimulation(broker0);
+        double percentage = (totalOfcloudletSlaSatisfied * 100) / cloudletList.size();
+        System.out.println("\n ** Percentage of cloudlets that complied"
+                + " with the SLA Agreement: " + percentage + " %");
         printSimulationResults();
     }
 
@@ -174,7 +185,7 @@ public class DynamicVmCreationByCpuUtilizationAndFreePesOfVm {
         broker0.getVmsCreatedList().forEach(vm
                 -> System.out.printf("####Time %.0f: Vm %d CPU usage: %.2f. SLA: %.2f.\n",
                         eventInfo.getTime(), vm.getId(),
-                        vm.getCurrentCpuPercentUse(), getCpuUtilizationSlaContract())
+                        vm.getCurrentCpuPercentUse(), cpuUtilizationSlaContract)
         );
         System.out.println();
     }
@@ -184,7 +195,7 @@ public class DynamicVmCreationByCpuUtilizationAndFreePesOfVm {
      * time.
      *
      * @param cloudlet the Cloudlet to select a VM to
-     * @return the selected Vm
+     * @return the selected VM
      */
     private Vm selectVmForCloudlet(Cloudlet cloudlet) {
         List<Vm> createdVms = cloudlet.getBroker().getVmsCreatedList();
@@ -201,16 +212,14 @@ public class DynamicVmCreationByCpuUtilizationAndFreePesOfVm {
 
         Vm selectedVm = createdVms.stream()
                 .filter(vm -> getExpectedNumberOfFreeVmPes(vm, true) >= cloudlet.getNumberOfPes())
-                .filter(vm -> getExpectedCloudletResponseTime(cloudlet, vm) <= getResponseTimeSlaContract())
+                .filter(vm -> getExpectedCloudletResponseTime(cloudlet, vm) <= responseTimeSlaContract)
                 .findFirst().orElse(mostFreePesVm);
 
         return selectedVm;
     }
 
     private double getExpectedCloudletResponseTime(Cloudlet cloudlet, Vm vm) {
-        final double expectedResponseTime = cloudlet.getLength() / vm.getMips();
-        System.out.println("\t\t expected rt: " + expectedResponseTime);
-
+        double expectedResponseTime = cloudlet.getLength() / vm.getMips();
         return expectedResponseTime;
     }
 
@@ -302,10 +311,10 @@ public class DynamicVmCreationByCpuUtilizationAndFreePesOfVm {
         }
 
         ResourceProvisioner ramProvisioner = new ResourceProvisionerSimple(new Ram(20480));
-        ResourceProvisioner bwProvisioner = new ResourceProvisionerSimple(new Bandwidth(100000));
+        ResourceProvisioner bwProvisioner = new ResourceProvisionerSimple(new Bandwidth(10000));
         VmScheduler vmScheduler = new VmSchedulerTimeShared();
         final int id = hostList.size();
-        return new HostSimple(id, 10000000, pesList)
+        return new HostSimple(id, 10000, pesList)
                 .setRamProvisioner(ramProvisioner)
                 .setBwProvisioner(bwProvisioner)
                 .setVmScheduler(vmScheduler);
@@ -331,17 +340,18 @@ public class DynamicVmCreationByCpuUtilizationAndFreePesOfVm {
     }
 
     /**
-     * Creates a Vm object.
+     * Creates a VM object.
      *
-     * @return the created Vm
+     * @return the created VM
      */
     private Vm createVm() {
         final int id = createsVms++;
         final int pes = VM_PES[(int) randVm.sample()];
 
-        Vm vm = new VmSimple(id, 1000, pes)
+        Vm vm = new VmSimple(id, VM_MIPS, pes)
                 .setRam(512).setBw(1000).setSize(10000).setBroker(broker0)
                 .setCloudletScheduler(new CloudletSchedulerTimeShared());
+        System.out.println("\n\t\t\t Vm: " + vm + " pes: " + pes);
 
         return vm;
     }
@@ -357,7 +367,6 @@ public class DynamicVmCreationByCpuUtilizationAndFreePesOfVm {
         horizontalScaling
                 .setVmSupplier(this::createVm)
                 .setOverloadPredicate(this::isVmOverloaded);
-
         vm.setHorizontalScaling(horizontalScaling);
     }
 
@@ -383,39 +392,30 @@ public class DynamicVmCreationByCpuUtilizationAndFreePesOfVm {
         new CloudletsTableBuilder(finishedCloudlets).build();
     }
 
-    private void responseTimeCloudletSimulation(List<Cloudlet> cloudlets) throws IOException {
-        int quantCloudlets = 0;
-        double soma = 0.0, rtSum = 0.0;
-        quantCloudlets = cloudlets.size();
-        for (Cloudlet c : cloudlets) {
-            rtSum = c.getFinishTime() - c.getLastDatacenterArrivalTime();
-            soma += rtSum;
+    private void responseTimeCloudletSimulation(DatacenterBroker broker) throws IOException {
+        double average = 0;
+        responseTimes = new ArrayList<>();
+        for (Cloudlet c : broker.getCloudletsFinishedList()) {
+            double responseTime = c.getFinishTime() - c.getLastDatacenterArrivalTime();
+            responseTimes.add(responseTime);
+            average = responseTimeCloudletAverage(broker, responseTimes);
+            
+            if (responseTime <= responseTimeSlaContract) {
+                totalOfcloudletSlaSatisfied++;
+            }      
         }
-        double rtAverage = soma / quantCloudlets;
 
-        System.out.printf("\t\t\n Response Time simulation: %.2f \n Response Time contrato SLA: %.2f",
-                 rtAverage, getResponseTimeSlaContract());
-
+        System.out.printf("\t\t\n Response Time simulation (average) : %.2f \n Response Time contrato SLA: %.2f "
+                + "\n Total of cloudlets SLA satisfied: %d",
+                average, responseTimeSlaContract, totalOfcloudletSlaSatisfied);
     }
 
-    /**
-     * @return the responseTimeSlaContract
-     */
-    public double getResponseTimeSlaContract() {
-        return responseTimeSlaContract;
+    private double responseTimeCloudletAverage(DatacenterBroker broker, List<Double> responseTimes) {
+        int totalCloudlets = broker.getCloudletsFinishedList().size();
+        double sum = 0;
+        sum = responseTimes.stream()
+                .map((responseTime) -> responseTime)
+                .reduce(sum, (accumulator, _item) -> accumulator + _item);
+        return sum / totalCloudlets;
     }
-
-    /**
-     * @param responseTimeSlaContract the responseTimeSlaContract to set
-     */
-    public void setResponseTimeSlaContract(double responseTimeSlaContract) {
-        this.responseTimeSlaContract = responseTimeSlaContract;
-    }
-
-    /**
-     * @return the cpuUtilizationSlaContract
-     */
-    public double getCpuUtilizationSlaContract() {
-        return cpuUtilizationSlaContract;
-    }
-}
+}    

@@ -44,8 +44,8 @@ public abstract class VmScalingAbstract implements VmScaling {
     private Predicate<Vm> underloadPredicate;
 
     protected VmScalingAbstract() {
-        this.setOverloadPredicate(FALSE_PREDICATE);
-        this.setUnderloadPredicate(FALSE_PREDICATE);
+        this.overloadPredicate = FALSE_PREDICATE;
+        this.underloadPredicate = FALSE_PREDICATE;
         this.setVm(Vm.NULL);
     }
 
