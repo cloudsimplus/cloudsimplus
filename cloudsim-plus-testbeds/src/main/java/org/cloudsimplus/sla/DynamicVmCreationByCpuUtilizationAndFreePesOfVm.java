@@ -167,7 +167,6 @@ public class DynamicVmCreationByCpuUtilizationAndFreePesOfVm {
         double percentage = (totalOfcloudletSlaSatisfied * 100) / cloudletList.size();
         System.out.println("\n ** Percentage of cloudlets that complied"
                 + " with the SLA Agreement: " + percentage + " %");
-
         printSimulationResults();
     }
 

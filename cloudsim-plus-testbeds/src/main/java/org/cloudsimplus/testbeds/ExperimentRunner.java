@@ -423,7 +423,11 @@ public abstract class ExperimentRunner<T extends SimulationExperiment> implement
      * generates uniform values between [0 and 1[. Adds the PRNG seed to the
      * {@link #getSeeds()} list. If it is to apply the
      * {@link #isApplyAntitheticVariatesTechnique() "Antithetic Variates Technique"}
+<<<<<<< HEAD
      * to reduce metricsMap variance, the second half of experiments will used the
+=======
+     * to reduce results variance, the second half of experiments will used the
+>>>>>>> 68a6bb33... DynamicVmCreationByCpuUtilizationAndFreePesOfVm.java was updated (#68)
      * seeds from the first half.
      *
      * @param experimentIndex

@@ -105,7 +105,6 @@ public final class CloudletResponseTimeMinimizationExperiment extends Simulation
             
             getCloudsim().addOnClockTickListener(this::createNewCloudlets);
             getCloudsim().addOnClockTickListener(this::printVmsCpuUsage); 
-          
         } catch (IOException ex) {
             Logger.getLogger(CloudletResponseTimeMinimizationExperiment.class.getName()).log(Level.SEVERE, null, ex);
             throw new RuntimeException(ex);
