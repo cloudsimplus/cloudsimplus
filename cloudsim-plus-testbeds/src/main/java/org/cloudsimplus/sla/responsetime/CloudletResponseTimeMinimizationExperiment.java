@@ -41,7 +41,7 @@ import org.cloudbus.cloudsim.vms.Vm;
 import org.cloudbus.cloudsim.vms.VmSimple;
 import org.cloudsimplus.autoscaling.HorizontalVmScaling;
 import org.cloudsimplus.autoscaling.HorizontalVmScalingSimple;
-import org.cloudsimplus.builders.tables.CloudletsTableBuilderHelper;
+import org.cloudsimplus.builders.tables.CloudletsTableBuilder;
 import org.cloudsimplus.listeners.EventInfo;
 import org.cloudsimplus.sla.readJsonFile.CpuUtilization;
 import org.cloudsimplus.sla.readJsonFile.ResponseTime;
@@ -135,7 +135,7 @@ public final class CloudletResponseTimeMinimizationExperiment extends Simulation
         Comparator<Cloudlet> sortByStartTime = comparingDouble(c -> c.getExecStartTime());
         finishedCloudlets.sort(sortByVmId.thenComparing(sortByStartTime));
 
-        new CloudletsTableBuilderHelper(finishedCloudlets).build();
+        new CloudletsTableBuilder(finishedCloudlets).build();
     }
 
     @Override
