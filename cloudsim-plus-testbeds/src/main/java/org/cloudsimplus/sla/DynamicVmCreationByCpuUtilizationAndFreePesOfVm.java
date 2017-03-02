@@ -65,7 +65,7 @@ import org.cloudbus.cloudsim.vms.Vm;
 import org.cloudbus.cloudsim.vms.VmSimple;
 import org.cloudsimplus.autoscaling.HorizontalVmScaling;
 import org.cloudsimplus.autoscaling.HorizontalVmScalingSimple;
-import org.cloudsimplus.builders.tables.CloudletsTableBuilderHelper;
+import org.cloudsimplus.builders.tables.CloudletsTableBuilder;
 import org.cloudsimplus.listeners.EventInfo;
 import org.cloudsimplus.listeners.EventListener;
 import org.cloudsimplus.migration.VmMigrationWhenCpuMetricIsViolatedExample;
@@ -75,8 +75,8 @@ import org.cloudsimplus.sla.readJsonFile.SlaReader;
 
 /**
  * Example of dynamic creation of vm at runtime, respecting the
- * cpu usage limit and the free number of each VM, thus 
- * selecting an "ideal" VM for a given cloudlet, which will 
+ * cpu usage limit and the free number of each VM, thus
+ * selecting an "ideal" VM for a given cloudlet, which will
  * then minimize Cloudlet response time.
  *
  * @author raysaoliveira
@@ -86,7 +86,7 @@ public class DynamicVmCreationByCpuUtilizationAndFreePesOfVm {
     private static final int SCHEDULING_INTERVAL = 5;
     private static int NUMBER_OF_SIMULATIONS = 5;
     private final CloudSim simulation;
-   
+
 
     /**
      * The interval to request the creation of new Cloudlets.
@@ -111,7 +111,7 @@ public class DynamicVmCreationByCpuUtilizationAndFreePesOfVm {
 
     private int createdCloudlets;
     private int createsVms;
-   
+
     /**
      * The file containing the SLA Contract in JSON format.
      */
@@ -123,7 +123,7 @@ public class DynamicVmCreationByCpuUtilizationAndFreePesOfVm {
         Log.printFormattedLine(" Starting... ");
         for (int i = 0; i < NUMBER_OF_SIMULATIONS; i++) {
             new DynamicVmCreationByCpuUtilizationAndFreePesOfVm();
-        }    
+        }
     }
 
     public DynamicVmCreationByCpuUtilizationAndFreePesOfVm() throws FileNotFoundException, IOException {
@@ -163,7 +163,7 @@ public class DynamicVmCreationByCpuUtilizationAndFreePesOfVm {
         simulation.start();
 
         responseTimeCloudletSimulation(cloudletList);
-        
+
         printSimulationResults();
     }
 
@@ -380,7 +380,7 @@ public class DynamicVmCreationByCpuUtilizationAndFreePesOfVm {
         Comparator<Cloudlet> sortByStartTime = comparingDouble(c -> c.getExecStartTime());
         finishedCloudlets.sort(sortByVmId.thenComparing(sortByStartTime));
 
-        new CloudletsTableBuilderHelper(finishedCloudlets).build();
+        new CloudletsTableBuilder(finishedCloudlets).build();
     }
 
     private void responseTimeCloudletSimulation(List<Cloudlet> cloudlets) throws IOException {
@@ -392,10 +392,10 @@ public class DynamicVmCreationByCpuUtilizationAndFreePesOfVm {
             soma += rtSum;
         }
         double rtAverage = soma / quantCloudlets;
-        
+
         System.out.printf("\t\t\n Response Time simulation: %.2f \n Response Time contrato SLA: %.2f",
                  rtAverage, getResponseTimeSlaContract());
-        
+
     }
 
     /**

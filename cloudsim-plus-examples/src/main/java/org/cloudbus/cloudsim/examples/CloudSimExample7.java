@@ -36,7 +36,7 @@ import org.cloudbus.cloudsim.core.CloudSimEntity;
 import org.cloudsimplus.examples.DynamicCloudletsArrival1;
 import org.cloudsimplus.examples.DynamicCloudletsArrival2;
 import org.cloudsimplus.examples.DynamicCreationOfVmsAndCloudletsExample;
-import org.cloudsimplus.builders.tables.CloudletsTableBuilderHelper;
+import org.cloudsimplus.builders.tables.CloudletsTableBuilder;
 import org.cloudbus.cloudsim.provisioners.PeProvisionerSimple;
 import org.cloudbus.cloudsim.provisioners.ResourceProvisionerSimple;
 import org.cloudbus.cloudsim.resources.Bandwidth;
@@ -103,10 +103,10 @@ public class CloudSimExample7 {
         simulation.start();
 
         // Final step: Print results when simulation is over
-        new CloudletsTableBuilderHelper(staticBroker.getCloudletsFinishedList())
+        new CloudletsTableBuilder(staticBroker.getCloudletsFinishedList())
             .setTitle(staticBroker.getName())
             .build();
-        new CloudletsTableBuilderHelper(entityManager.getDynamicBroker()
+        new CloudletsTableBuilder(entityManager.getDynamicBroker()
             .getCloudletsFinishedList())
             .setTitle(entityManager.getDynamicBroker().getName())
             .build();

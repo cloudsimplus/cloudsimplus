@@ -49,7 +49,7 @@ import org.cloudbus.cloudsim.provisioners.ResourceProvisionerSimple;
 import org.cloudbus.cloudsim.resources.Bandwidth;
 import org.cloudbus.cloudsim.resources.PeSimple;
 import org.cloudbus.cloudsim.resources.Ram;
-import org.cloudsimplus.builders.tables.CloudletsTableBuilderHelper;
+import org.cloudsimplus.builders.tables.CloudletsTableBuilder;
 import org.cloudbus.cloudsim.utilizationmodels.UtilizationModel;
 import org.cloudbus.cloudsim.utilizationmodels.UtilizationModelFull;
 
@@ -228,7 +228,7 @@ public final class SlaMetricsWithoutNetworkExample {
         }
         return waitTime/quant;
     }
-    
+
     /**
      * Gets the bandwidht total utilization of VMs.
      * @param vmlist
@@ -296,12 +296,12 @@ public final class SlaMetricsWithoutNetworkExample {
         // total cost
         double totalCost = totalCostPrice(vmlist);
         System.out.println("\t** Total cost (memory, bw, processing, storage) - " + totalCost);
-        
+
         System.out.println("________________________________________________________________");
 
         //Final step: Print results when simulation is over
         List<Cloudlet> newList = broker.getCloudletsFinishedList();
-        new CloudletsTableBuilderHelper(newList).build();
+        new CloudletsTableBuilder(newList).build();
 
         Log.printFormattedLine("... finished!");
     }

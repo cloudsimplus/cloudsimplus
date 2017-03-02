@@ -46,7 +46,7 @@ import org.cloudbus.cloudsim.utilizationmodels.UtilizationModelFull;
 import org.cloudbus.cloudsim.vms.Vm;
 import org.cloudsimplus.testbeds.ExperimentRunner;
 import org.cloudsimplus.testbeds.SimulationExperiment;
-import org.cloudsimplus.builders.tables.PriorityCloudletsTableBuilderHelper;
+import org.cloudsimplus.builders.tables.PriorityCloudletsTableBuilder;
 import org.cloudbus.cloudsim.schedulers.cloudlet.CloudletSchedulerCompletelyFair;
 
 import java.util.ArrayList;
@@ -104,7 +104,7 @@ abstract class CloudletSchedulerExperiment extends SimulationExperiment {
         try {
             System.out.printf("\nCloudlets: %d\n", numberOfCloudletsToCreate);
             DatacenterBroker broker = getBrokerList().stream().findFirst().orElse(DatacenterBroker.NULL);
-            new PriorityCloudletsTableBuilderHelper(broker.getCloudletsFinishedList()).build();
+            new PriorityCloudletsTableBuilder(broker.getCloudletsFinishedList()).build();
         } finally {
             Log.disable();
         }
@@ -121,7 +121,7 @@ abstract class CloudletSchedulerExperiment extends SimulationExperiment {
         for (int i = 0; i < HOSTS_TO_CREATE; i++) {
             list.add(createHost(getHostList().size()+i));
         }
-        return list;  
+        return list;
     }
 
     private Host createHost(int id) {
@@ -163,7 +163,7 @@ abstract class CloudletSchedulerExperiment extends SimulationExperiment {
         for(int i = 0; i < numberOfCloudletsToCreate; i++) {
             list.add(createCloudlet(broker));
         }
-        
+
         return list;
     }
 
@@ -172,7 +172,7 @@ abstract class CloudletSchedulerExperiment extends SimulationExperiment {
      *
      * @param broker broker that the Cloudlet to be created by the Supplier function will belong to
      * @param cloudletPes number of PEs for the Cloudlet to be created by the Supplier function
-     * @return the created Cloudlet 
+     * @return the created Cloudlet
      */
     private Cloudlet createCloudlet(DatacenterBroker broker) {
         long fileSize = 300; //Size (in bytes) before execution

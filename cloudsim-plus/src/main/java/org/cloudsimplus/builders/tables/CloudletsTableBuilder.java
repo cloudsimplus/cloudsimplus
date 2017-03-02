@@ -30,12 +30,12 @@ import org.cloudbus.cloudsim.hosts.Host;
 import org.cloudbus.cloudsim.vms.Vm;
 
 /**
- * A class to help printing simulation results for a list of cloudlets.
+ * A class to build a table for printing simulation results from a list of cloudlets.
  *
  * @author Manoel Campos da Silva Filho
  * @since CloudSim Plus 1.0
  */
-public class CloudletsTableBuilderHelper {
+public class CloudletsTableBuilder {
     private TableBuilder printer;
     private List<? extends Cloudlet> cloudletList;
 
@@ -47,11 +47,11 @@ public class CloudletsTableBuilderHelper {
      *
      * @param list the list of Cloudlets that the data will be included into the table to be printed
      */
-    public CloudletsTableBuilderHelper(final List<? extends Cloudlet> list){
+    public CloudletsTableBuilder(final List<? extends Cloudlet> list){
         this.setPrinter(new TextTableBuilder()).setCloudletList(list);
     }
 
-    public CloudletsTableBuilderHelper setTitle(String title){
+    public CloudletsTableBuilder setTitle(String title){
         printer.setTitle(title);
         return this;
     }
@@ -105,12 +105,12 @@ public class CloudletsTableBuilderHelper {
         row.add(cloudlet.getActualCpuTime());
     }
 
-    public final CloudletsTableBuilderHelper setPrinter(TableBuilder printer) {
+    public final CloudletsTableBuilder setPrinter(TableBuilder printer) {
         this.printer = printer;
         return this;
     }
 
-    protected CloudletsTableBuilderHelper setCloudletList(List<? extends Cloudlet> cloudletList) {
+    protected CloudletsTableBuilder setCloudletList(List<? extends Cloudlet> cloudletList) {
         this.cloudletList = cloudletList;
         return this;
     }

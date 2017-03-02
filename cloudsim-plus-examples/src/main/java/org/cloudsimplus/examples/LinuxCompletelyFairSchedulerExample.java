@@ -51,7 +51,7 @@ import org.cloudbus.cloudsim.resources.Bandwidth;
 import org.cloudbus.cloudsim.provisioners.ResourceProvisionerSimple;
 import org.cloudbus.cloudsim.resources.Ram;
 import org.cloudbus.cloudsim.schedulers.cloudlet.CloudletSchedulerCompletelyFair;
-import org.cloudsimplus.builders.tables.PriorityCloudletsTableBuilderHelper;
+import org.cloudsimplus.builders.tables.PriorityCloudletsTableBuilder;
 
 /**
  * An example that uses an implementation of the {@link CloudletSchedulerCompletelyFair Completely Fair Scheduler}
@@ -115,7 +115,7 @@ public class LinuxCompletelyFairSchedulerExample {
         simulation.start();
 
         List<Cloudlet> finishedCloudlets = broker0.getCloudletsFinishedList();
-        new PriorityCloudletsTableBuilderHelper(finishedCloudlets).build();
+        new PriorityCloudletsTableBuilder(finishedCloudlets).build();
         Log.printFormattedLine("%s finished!", getClass().getSimpleName());
     }
 
