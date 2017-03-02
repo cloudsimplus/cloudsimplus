@@ -33,8 +33,8 @@ import java.util.List;
  * @author Manoel Campos da Silva Filho
  * @since CloudSim Plus 1.0
  */
-public class PriorityCloudletsTableBuilderHelper extends CloudletsTableBuilderHelper {
-    public PriorityCloudletsTableBuilderHelper(List<? extends Cloudlet> list) {
+public class PriorityCloudletsTableBuilder extends CloudletsTableBuilder {
+    public PriorityCloudletsTableBuilder(List<? extends Cloudlet> list) {
         super(list);
     }
 

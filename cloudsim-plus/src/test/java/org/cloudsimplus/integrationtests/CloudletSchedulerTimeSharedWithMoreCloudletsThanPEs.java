@@ -31,7 +31,7 @@ import org.cloudsimplus.builders.SimulationScenarioBuilder;
 import org.cloudbus.cloudsim.core.CloudSim;
 import org.cloudbus.cloudsim.schedulers.cloudlet.CloudletSchedulerTimeShared;
 import org.cloudbus.cloudsim.schedulers.vm.VmSchedulerSpaceShared;
-import org.cloudsimplus.builders.tables.CloudletsTableBuilderHelper;
+import org.cloudsimplus.builders.tables.CloudletsTableBuilder;
 import org.cloudsimplus.builders.tables.TextTableBuilder;
 import org.cloudbus.cloudsim.utilizationmodels.UtilizationModel;
 import org.cloudbus.cloudsim.utilizationmodels.UtilizationModelFull;
@@ -114,7 +114,7 @@ public final class CloudletSchedulerTimeSharedWithMoreCloudletsThanPEs {
     }
 
     public void printCloudletsExecutionResults(DatacenterBroker broker) {
-        new CloudletsTableBuilderHelper(broker.getCloudletsFinishedList())
+        new CloudletsTableBuilder(broker.getCloudletsFinishedList())
                 .setPrinter(new TextTableBuilder(broker.getName()))
                 .build();
     }

@@ -65,7 +65,7 @@ import org.cloudbus.cloudsim.vms.Vm;
 import org.cloudbus.cloudsim.vms.VmSimple;
 import org.cloudsimplus.autoscaling.HorizontalVmScaling;
 import org.cloudsimplus.autoscaling.HorizontalVmScalingSimple;
-import org.cloudsimplus.builders.tables.CloudletsTableBuilderHelper;
+import org.cloudsimplus.builders.tables.CloudletsTableBuilder;
 import org.cloudsimplus.listeners.EventInfo;
 import org.cloudsimplus.listeners.EventListener;
 import org.cloudsimplus.sla.readJsonFile.CpuUtilization;
@@ -83,7 +83,7 @@ public class DynamicVmCreationByCpuUtilizationAndFreePesOfVm {
 
     private static final int SCHEDULING_INTERVAL = 5;
     private final CloudSim simulation;
-
+    
     /**
      * The interval to request the creation of new Cloudlets.
      */
@@ -175,7 +175,6 @@ public class DynamicVmCreationByCpuUtilizationAndFreePesOfVm {
         double percentage = (totalOfcloudletSlaSatisfied * 100) / cloudletList.size();
         System.out.println("\n ** Percentage of cloudlets that complied"
                 + " with the SLA Agreement: " + percentage + " %");
-
         printSimulationResults();
     }
 
@@ -390,7 +389,7 @@ public class DynamicVmCreationByCpuUtilizationAndFreePesOfVm {
         Comparator<Cloudlet> sortByStartTime = comparingDouble(c -> c.getExecStartTime());
         finishedCloudlets.sort(sortByVmId.thenComparing(sortByStartTime));
 
-        new CloudletsTableBuilderHelper(finishedCloudlets).build();
+        new CloudletsTableBuilder(finishedCloudlets).build();
     }
 
     private void responseTimeCloudletSimulation(DatacenterBroker broker) throws IOException {
@@ -405,6 +404,7 @@ public class DynamicVmCreationByCpuUtilizationAndFreePesOfVm {
                 totalOfcloudletSlaSatisfied++;
             }      
         }
+
         System.out.printf("\t\t\n Response Time simulation (average) : %.2f \n Response Time contrato SLA: %.2f "
                 + "\n Total of cloudlets SLA satisfied: %d",
                 average, responseTimeSlaContract, totalOfcloudletSlaSatisfied);

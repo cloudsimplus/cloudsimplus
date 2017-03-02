@@ -57,7 +57,7 @@ import org.cloudbus.cloudsim.vms.Vm;
 import org.cloudbus.cloudsim.vms.VmSimple;
 import org.cloudsimplus.listeners.EventInfo;
 import org.cloudsimplus.listeners.EventListener;
-import org.cloudsimplus.builders.tables.CloudletsTableBuilderHelper;
+import org.cloudsimplus.builders.tables.CloudletsTableBuilder;
 
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -170,7 +170,7 @@ public class LoadBalancerByHorizontalVmScalingExample {
         Comparator<Cloudlet> sortByStartTime = comparingDouble(c -> c.getExecStartTime());
         finishedCloudlets.sort(sortByVmId.thenComparing(sortByStartTime));
 
-        new CloudletsTableBuilderHelper(finishedCloudlets).build();
+        new CloudletsTableBuilder(finishedCloudlets).build();
     }
 
     private void createCloudletList() {

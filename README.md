@@ -236,20 +236,20 @@ A Google Group forum is also available at <https://groups.google.com/group/cloud
 
 # Why should I care about this CloudSim fork? I just want to build my simulations. :neutral_face:
 Well, the design of the tool has a direct impact when you need to extend it to include some feature required for your simulations. 
-The simulator provides a set of classes such as `VmSchedulers`s, `CloudletScheduler`s, `VmAllocationPolicy`s, `ResourceProvisioner`s, 
-`UtilizationModel`s, `PowerModel`s and `DatacenterBroker`s that implement basic algorithms for different goals. 
+The simulator has a set of classes that implement interfaces such as `VmScheduler`, `CloudletScheduler`, `VmAllocationPolicy`, `ResourceProvisioner`, 
+`UtilizationModel`, `PowerModel` and `DatacenterBroker` and provide basic algorithms for different goals. 
 For instance, the `VmAllocationPolicySimple` class implements a Worst Fit
 policy that selects the PM which less processor cores in use to host a VM and, in fact, it is the only policy available. 
 
 Usually you have to write your own implementations of these classes, such as a Best Fit `VmAllocationPolicy`, 
 a resource `UtilizationModel` with an upper threshold or a `DatacenterBroker` that selects the best `Datacenter` to submit a VM.
 
-Considering that, several software engineering principles aim to ease the task of creating new classes to implement those features. 
+Several software engineering principles aim to ease the task of creating new classes to implement those features. 
 They also try to avoid forcing you to change core classes of the simulator in order to introduce a feature you need to implement.
-Changing these core classes is a bad practice, once you will not be able to automatically update your project to new versions 
+Changing these core classes is a bad practice, since you will not be able to automatically update your project to new versions 
 of the simulator, without losing your changes or struggling to fix merge conflicts.  
 
-And as we have seen in forums that we've attended, many times users have to perform these changes in core classes 
+As we have seen in forums that we've attended, many times users have to perform these changes in core classes 
 just to implement some specific features they need. We think those problems are enough reasons that show the need of a new re-engineered version of the simulator.  
 
 <p align="right"><a href="#top">:arrow_up:</a></p>

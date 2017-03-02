@@ -31,7 +31,7 @@ import org.cloudbus.cloudsim.vms.VmSimple;
 import org.cloudbus.cloudsim.allocationpolicies.VmAllocationPolicySimple;
 import org.cloudbus.cloudsim.schedulers.vm.VmSchedulerSpaceShared;
 import org.cloudbus.cloudsim.core.CloudSim;
-import org.cloudsimplus.builders.tables.CloudletsTableBuilderHelper;
+import org.cloudsimplus.builders.tables.CloudletsTableBuilder;
 import org.cloudbus.cloudsim.provisioners.PeProvisionerSimple;
 import org.cloudbus.cloudsim.provisioners.ResourceProvisionerSimple;
 import org.cloudbus.cloudsim.resources.Bandwidth;
@@ -150,10 +150,10 @@ public class CloudSimExample5 {
         List<Cloudlet> newList1 = broker1.getCloudletsFinishedList();
         List<Cloudlet> newList2 = broker2.getCloudletsFinishedList();
 
-        new CloudletsTableBuilderHelper(newList1)
+        new CloudletsTableBuilder(newList1)
                 .setPrinter(new TextTableBuilder(broker1.getName()))
                 .build();
-        new CloudletsTableBuilderHelper(newList2)
+        new CloudletsTableBuilder(newList2)
                 .setPrinter(new TextTableBuilder(broker2.getName()))
                 .build();
         Log.printFormattedLine("%s finished!", getClass().getSimpleName());

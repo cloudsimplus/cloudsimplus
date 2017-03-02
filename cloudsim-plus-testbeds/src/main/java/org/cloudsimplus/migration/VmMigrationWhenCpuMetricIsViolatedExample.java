@@ -58,7 +58,7 @@ import org.cloudbus.cloudsim.vms.Vm;
 import org.cloudbus.cloudsim.vms.power.PowerVm;
 import org.cloudsimplus.sla.readJsonFile.SlaMetric;
 import org.cloudsimplus.sla.readJsonFile.SlaReader;
-import org.cloudsimplus.builders.tables.CloudletsTableBuilderHelper;
+import org.cloudsimplus.builders.tables.CloudletsTableBuilder;
 
 /**
  * This example shows how to do a migration using CpuUtilization threshold
@@ -146,7 +146,7 @@ public final class VmMigrationWhenCpuMetricIsViolatedExample {
 
         simulation.start();
 
-        new CloudletsTableBuilderHelper(broker.getCloudletsFinishedList()).build();
+        new CloudletsTableBuilder(broker.getCloudletsFinishedList()).build();
 
         Log.printConcatLine(VmMigrationWhenCpuMetricIsViolatedExample.class.getSimpleName(), " finished!");
     }

@@ -50,7 +50,7 @@ import org.cloudbus.cloudsim.vms.VmSimple;
 import org.cloudsimplus.listeners.EventInfo;
 import org.cloudsimplus.listeners.EventListener;
 import org.cloudsimplus.listeners.CloudletVmEventInfo;
-import org.cloudsimplus.builders.tables.CloudletsTableBuilderHelper;
+import org.cloudsimplus.builders.tables.CloudletsTableBuilder;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -179,7 +179,7 @@ public class PauseSimulationAtGivenTimeExample1 {
 
     private void printsListOfFinishedCloudlets(String title) {
         //Gets the list of cloudlets finished so far a prints
-        new CloudletsTableBuilderHelper(broker.getCloudletsFinishedList())
+        new CloudletsTableBuilder(broker.getCloudletsFinishedList())
             .setTitle(title)
             .build();
     }

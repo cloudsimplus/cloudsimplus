@@ -23,7 +23,7 @@
  */
 package org.cloudsimplus.examples;
 
-import org.cloudsimplus.builders.tables.CloudletsTableBuilderHelper;
+import org.cloudsimplus.builders.tables.CloudletsTableBuilder;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -136,7 +136,7 @@ public class DatacenterBrokerHeuristicExample {
         simulation.start();
 
         List<Cloudlet> finishedCloudlets = broker0.getCloudletsFinishedList();
-        new CloudletsTableBuilderHelper(finishedCloudlets).build();
+        new CloudletsTableBuilder(finishedCloudlets).build();
 
         print(broker0);
     }
