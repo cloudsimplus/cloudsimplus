@@ -51,7 +51,7 @@ import org.cloudbus.cloudsim.resources.PeSimple;
 import org.cloudbus.cloudsim.resources.Ram;
 import org.cloudbus.cloudsim.schedulers.cloudlet.CloudletSchedulerTimeShared;
 import org.cloudbus.cloudsim.schedulers.vm.VmSchedulerTimeShared;
-import org.cloudsimplus.builders.tables.CloudletsTableBuilderHelper;
+import org.cloudsimplus.builders.tables.CloudletsTableBuilder;
 import org.cloudbus.cloudsim.utilizationmodels.UtilizationModel;
 import org.cloudbus.cloudsim.utilizationmodels.UtilizationModelFull;
 
@@ -114,9 +114,9 @@ public class NetworkVmsWithMetricsExample {
         double bw = bwVmAverage(vmlist);
         System.out.println("\t Bw average : " + bw);
 
-        
+
         List<Cloudlet> newList = broker.getCloudletsFinishedList();
-        new CloudletsTableBuilderHelper(newList).build();
+        new CloudletsTableBuilder(newList).build();
 
         Log.printFormattedLine("... finished!");
     }
@@ -135,7 +135,7 @@ public class NetworkVmsWithMetricsExample {
 
         return downlinkBw;
     }
-    
+
     /**
      * Gets the bandwidht total utilization of VMs.
      * @param vmlist

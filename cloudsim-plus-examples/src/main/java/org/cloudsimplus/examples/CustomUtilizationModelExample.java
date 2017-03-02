@@ -24,7 +24,7 @@
 package org.cloudsimplus.examples;
 
 import org.cloudbus.cloudsim.schedulers.cloudlet.CloudletSchedulerTimeShared;
-import org.cloudsimplus.builders.tables.CloudletsTableBuilderHelper;
+import org.cloudsimplus.builders.tables.CloudletsTableBuilder;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -119,7 +119,7 @@ public class CustomUtilizationModelExample {
         /*Prints results when the simulation is over
         (you can use your own code here to print what you want from this cloudlet list)*/
         List<Cloudlet> finishedCloudlets = broker0.getCloudletsFinishedList();
-        new CloudletsTableBuilderHelper(finishedCloudlets).build();
+        new CloudletsTableBuilder(finishedCloudlets).build();
         Log.printFormattedLine("%s finished!", getClass().getSimpleName());
     }
 

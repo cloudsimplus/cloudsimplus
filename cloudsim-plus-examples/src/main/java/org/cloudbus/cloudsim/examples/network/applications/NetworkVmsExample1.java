@@ -30,7 +30,7 @@ import org.cloudbus.cloudsim.resources.Pe;
 import org.cloudbus.cloudsim.resources.PeSimple;
 import org.cloudbus.cloudsim.resources.Ram;
 import org.cloudbus.cloudsim.schedulers.vm.VmSchedulerTimeShared;
-import org.cloudsimplus.builders.tables.CloudletsTableBuilderHelper;
+import org.cloudsimplus.builders.tables.CloudletsTableBuilder;
 import org.cloudbus.cloudsim.utilizationmodels.UtilizationModel;
 import org.cloudbus.cloudsim.utilizationmodels.UtilizationModelFull;
 
@@ -99,7 +99,7 @@ public class NetworkVmsExample1 {
 
     private void showSimulationResults() {
         List<Cloudlet> newList = broker.getCloudletsFinishedList();
-        new CloudletsTableBuilderHelper(newList).build();
+        new CloudletsTableBuilder(newList).build();
 
         for(NetworkHost host: datacenter.<NetworkHost>getHostList()){
             Log.printFormatted("\nHost %d data transferred: %d bytes",

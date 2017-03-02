@@ -31,7 +31,7 @@ package org.cloudsimplus.examples.listeners;
  *
  * Copyright (c) 2009, The University of Melbourne, Australia
  */
-import org.cloudsimplus.builders.tables.CloudletsTableBuilderHelper;
+import org.cloudsimplus.builders.tables.CloudletsTableBuilder;
 import org.cloudsimplus.builders.tables.TextTableBuilder;
 import java.util.ArrayList;
 import java.util.List;
@@ -54,7 +54,6 @@ import org.cloudbus.cloudsim.vms.Vm;
 import org.cloudbus.cloudsim.vms.VmSimple;
 import org.cloudbus.cloudsim.allocationpolicies.VmAllocationPolicySimple;
 import org.cloudbus.cloudsim.core.CloudSim;
-import org.cloudsimplus.listeners.EventInfo;
 import org.cloudsimplus.listeners.EventListener;
 import org.cloudsimplus.listeners.VmHostEventInfo;
 import org.cloudbus.cloudsim.provisioners.PeProvisionerSimple;
@@ -190,7 +189,7 @@ public class VmListenersExample3_DynamicVmCreation {
         for(DatacenterBroker broker: brokerList){
             cloudlets = broker.getCloudletsFinishedList();
             title = broker.getName() + (cloudlets.size() > 0 ? "" : " (for the failed VM)");
-            new CloudletsTableBuilderHelper(cloudlets)
+            new CloudletsTableBuilder(cloudlets)
                     .setPrinter(new TextTableBuilder(title))
                     .build();
         }

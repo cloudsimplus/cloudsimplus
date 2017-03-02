@@ -23,7 +23,7 @@
  */
 package org.cloudsimplus.examples;
 
-import org.cloudsimplus.builders.tables.CloudletsTableBuilderHelper;
+import org.cloudsimplus.builders.tables.CloudletsTableBuilder;
 import java.util.ArrayList;
 import java.util.List;
 import org.cloudbus.cloudsim.cloudlets.Cloudlet;
@@ -149,7 +149,7 @@ public class TwoCloudletsAndOneTimeSharedVmExample {
 
         //Final step: Print results when simulation is over
         List<Cloudlet> newList = broker.getCloudletsFinishedList();
-        new CloudletsTableBuilderHelper(newList).build();
+        new CloudletsTableBuilder(newList).build();
         Log.printFormattedLine("%s finished!", getClass().getSimpleName());
     }
 

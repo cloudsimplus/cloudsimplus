@@ -32,7 +32,7 @@ package org.cloudsimplus.examples.listeners;
  * Copyright (c) 2009, The University of Melbourne, Australia
  */
 import org.cloudsimplus.listeners.CloudletVmEventInfo;
-import org.cloudsimplus.builders.tables.CloudletsTableBuilderHelper;
+import org.cloudsimplus.builders.tables.CloudletsTableBuilder;
 import java.util.ArrayList;
 import java.util.List;
 import org.cloudbus.cloudsim.cloudlets.Cloudlet;
@@ -154,7 +154,7 @@ public class CloudletListenersExample2_ResourceUsageAlongTime {
         simulation.start();
 
         List<Cloudlet> finishedCloudlets = broker.getCloudletsFinishedList();
-        new CloudletsTableBuilderHelper(finishedCloudlets).build();
+        new CloudletsTableBuilder(finishedCloudlets).build();
     }
 
     /**

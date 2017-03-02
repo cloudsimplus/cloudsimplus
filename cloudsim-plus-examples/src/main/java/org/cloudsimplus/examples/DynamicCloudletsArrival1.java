@@ -23,7 +23,7 @@
  */
 package org.cloudsimplus.examples;
 
-import org.cloudsimplus.builders.tables.CloudletsTableBuilderHelper;
+import org.cloudsimplus.builders.tables.CloudletsTableBuilder;
 import java.util.ArrayList;
 import java.util.List;
 import org.cloudbus.cloudsim.cloudlets.Cloudlet;
@@ -125,7 +125,7 @@ public class DynamicCloudletsArrival1 {
     private void runSimulationAndPrintResults() {
         simulation.start();
         List<Cloudlet> cloudlets = broker.getCloudletsFinishedList();
-        new CloudletsTableBuilderHelper(cloudlets).build();
+        new CloudletsTableBuilder(cloudlets).build();
     }
 
     /**

@@ -35,7 +35,7 @@ import org.cloudbus.cloudsim.resources.SanStorage;
 import org.cloudbus.cloudsim.schedulers.cloudlet.CloudletSchedulerSpaceShared;
 import org.cloudbus.cloudsim.schedulers.cloudlet.CloudletSchedulerTimeShared;
 import org.cloudbus.cloudsim.schedulers.vm.VmSchedulerSpaceShared;
-import org.cloudsimplus.builders.tables.CloudletsTableBuilderHelper;
+import org.cloudsimplus.builders.tables.CloudletsTableBuilder;
 import org.cloudsimplus.builders.tables.TextTableBuilder;
 import org.cloudbus.cloudsim.utilizationmodels.UtilizationModel;
 import org.cloudbus.cloudsim.utilizationmodels.UtilizationModelFull;
@@ -170,7 +170,7 @@ public final class CheckCloudletStartDelayForTransferRequiredFilesTest {
     }
 
     public void printCloudletsExecutionResults() {
-        new CloudletsTableBuilderHelper(broker.getCloudletsFinishedList())
+        new CloudletsTableBuilder(broker.getCloudletsFinishedList())
                 .setPrinter(new TextTableBuilder(broker.getName()))
                 .build();
     }

@@ -49,7 +49,7 @@ import org.cloudbus.cloudsim.utilizationmodels.UtilizationModelFull;
 import org.cloudbus.cloudsim.vms.Vm;
 import org.cloudbus.cloudsim.vms.VmSimple;
 import org.cloudbus.cloudsim.vms.VmStateHistoryEntry;
-import org.cloudsimplus.builders.tables.CloudletsTableBuilderHelper;
+import org.cloudsimplus.builders.tables.CloudletsTableBuilder;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -111,7 +111,7 @@ public class VmsCpuUsageExample {
         final double finishTime = simulation.start();
 
         List<Cloudlet> newList = broker.getCloudletsFinishedList();
-        new CloudletsTableBuilderHelper(broker.getCloudletsFinishedList()).build();
+        new CloudletsTableBuilder(broker.getCloudletsFinishedList()).build();
 
         showCpuUtilizationForAllVms(finishTime);
 

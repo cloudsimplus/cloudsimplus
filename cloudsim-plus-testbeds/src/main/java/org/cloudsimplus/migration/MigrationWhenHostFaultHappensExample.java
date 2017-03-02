@@ -58,7 +58,7 @@ import org.cloudbus.cloudsim.vms.Vm;
 import org.cloudbus.cloudsim.vms.power.PowerVm;
 import org.cloudsimplus.sla.HostFaultInjection;
 import org.cloudsimplus.sla.PoissonProcess;
-import org.cloudsimplus.builders.tables.CloudletsTableBuilderHelper;
+import org.cloudsimplus.builders.tables.CloudletsTableBuilder;
 
 /**
  * This example migrates the vm when a fault happens.
@@ -134,7 +134,7 @@ public final class MigrationWhenHostFaultHappensExample {
 
         simulation.start();
 
-        new CloudletsTableBuilderHelper(broker.getCloudletsFinishedList()).build();
+        new CloudletsTableBuilder(broker.getCloudletsFinishedList()).build();
 
         Log.printConcatLine(VmMigrationWhenCpuMetricIsViolatedExample.class.getSimpleName(), " finished!");
 

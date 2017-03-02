@@ -47,7 +47,7 @@ import org.cloudbus.cloudsim.schedulers.vm.VmSchedulerSpaceShared;
 import org.cloudbus.cloudsim.utilizationmodels.UtilizationModelFull;
 import org.cloudbus.cloudsim.vms.Vm;
 import org.cloudbus.cloudsim.vms.VmSimple;
-import org.cloudsimplus.builders.tables.CloudletsTableBuilderHelper;
+import org.cloudsimplus.builders.tables.CloudletsTableBuilder;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -75,41 +75,43 @@ class ReducedExample {
         //Creates a CloudSim object to initialize the simulation.
         CloudSim cloudsim = new CloudSim();
 
-        /*Creates a Broker that will act on behalf of a cloud user (customer).*/
+        //Creates a Broker that will act on behalf of a cloud user (customer).
         DatacenterBroker broker0 = new DatacenterBrokerSimple(cloudsim);
 
-        //Creates a list of Hosts, each host with a specific list of CPU cores (PEs).
+        //Creates one Hosts with a specific list of CPU cores (PEs).
         List<Host> hostList = new ArrayList<>(1);
         List<Pe> hostPes = new ArrayList<>(1);
         hostPes.add(new PeSimple(20000, new PeProvisionerSimple()));
         Host host0 = new HostSimple(0, 100000, hostPes);
         host0.setRamProvisioner(new ResourceProvisionerSimple(new Ram(10000)))
-            .setBwProvisioner(new ResourceProvisionerSimple(new Bandwidth(100000)))
-            .setVmScheduler(new VmSchedulerSpaceShared());
+             .setBwProvisioner(new ResourceProvisionerSimple(new Bandwidth(100000)))
+             .setVmScheduler(new VmSchedulerSpaceShared());
         hostList.add(host0);
 
-        //Creates a Datacenter with a list of Hosts
+        //Creates one Datacenter with a list of Hosts.
         DatacenterCharacteristics characts = new DatacenterCharacteristicsSimple(hostList);
         VmAllocationPolicy vmAllocationPolicy = new VmAllocationPolicySimple();
         Datacenter dc0 = new DatacenterSimple(cloudsim, characts, vmAllocationPolicy);
 
-        //Creates VMs to run applications.
+        //Creates one Vm to run applications (Cloudlets).
         List<Vm> vmList = new ArrayList<>(1);
         Vm vm0 = new VmSimple(0, 1000, 1);
         vm0.setRam(1000).setBw(1000).setSize(1000)
-            .setBroker(broker0)
-            .setCloudletScheduler(new CloudletSchedulerSpaceShared());
+           .setBroker(broker0)
+           .setCloudletScheduler(new CloudletSchedulerSpaceShared());
         vmList.add(vm0);
 
-        //Creates Cloudlets that represent applications to be run inside a VM.
+        //Creates two Cloudlets that represent applications to be run inside a Vm.
         List<Cloudlet> cloudlets = new ArrayList<>(1);
         Cloudlet cloudlet0 = new CloudletSimple(0, 10000, 1);
         cloudlet0.setBroker(broker0).setUtilizationModel(new UtilizationModelFull());
-        cloudlets.add(cloudlet0);
         Cloudlet cloudlet1 = new CloudletSimple(1, 10000, 1);
         cloudlet1.setBroker(broker0).setUtilizationModel(new UtilizationModelFull());
+        cloudlets.add(cloudlet0);
         cloudlets.add(cloudlet1);
 
+        /*Requests the broker to create the Vms and Cloudlets.
+        It selects the Host to place each Vm and a Vm to run each Cloudlet.*/
         broker0.submitVmList(vmList);
         broker0.submitCloudletList(cloudlets);
 
@@ -117,9 +119,9 @@ class ReducedExample {
         stopping when there is no more events to process.*/
         cloudsim.start();
 
-        /*Prints results when the simulation is over (you can use your own code
-        here to print what you want from this cloudlet list)*/
-        new CloudletsTableBuilderHelper(broker0.getCloudletsFinishedList()).build();
+        /*Prints results when the simulation is over (one can use his/her own code
+        here to print what he/she wants from this cloudlet list)*/
+        new CloudletsTableBuilder(broker0.getCloudletsFinishedList()).build();
         //end::cloudsim-plus-reduced-example[]
     }
 }

@@ -55,7 +55,7 @@ import org.cloudbus.cloudsim.provisioners.PeProvisionerSimple;
 import org.cloudbus.cloudsim.provisioners.ResourceProvisionerSimple;
 import org.cloudbus.cloudsim.resources.Bandwidth;
 import org.cloudbus.cloudsim.resources.Ram;
-import org.cloudsimplus.builders.tables.CloudletsTableBuilderHelper;
+import org.cloudsimplus.builders.tables.CloudletsTableBuilder;
 
 /**
  * <p>An example showing how to create 1 Datacenter with 3 hosts,
@@ -164,7 +164,7 @@ public class MigrationExample1 {
 
         simulation.start();
 
-        new CloudletsTableBuilderHelper(broker.getCloudletsFinishedList()).build();
+        new CloudletsTableBuilder(broker.getCloudletsFinishedList()).build();
 
         Log.printConcatLine(MigrationExample1.class.getSimpleName(), " finished!");
     }

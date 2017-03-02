@@ -8,7 +8,7 @@ package org.cloudbus.cloudsim.examples;
  *
  * Copyright (c) 2009, The University of Melbourne, Australia
  */
-import org.cloudsimplus.builders.tables.CloudletsTableBuilderHelper;
+import org.cloudsimplus.builders.tables.CloudletsTableBuilder;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -125,7 +125,7 @@ public class CloudSimExample1 {
 
             //Final step: Print results when simulation is over
             List<Cloudlet> newList = broker.getCloudletsFinishedList();
-            new CloudletsTableBuilderHelper(newList).build();
+            new CloudletsTableBuilder(newList).build();
             Log.printFormattedLine("%s finished!", getClass().getSimpleName());
         } catch (RuntimeException e) {
             Log.printFormattedLine("Simulation finished due to unexpected error: %s", e);

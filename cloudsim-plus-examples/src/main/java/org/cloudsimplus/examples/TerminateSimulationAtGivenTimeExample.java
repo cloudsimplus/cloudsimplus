@@ -48,7 +48,7 @@ import org.cloudbus.cloudsim.utilizationmodels.UtilizationModel;
 import org.cloudbus.cloudsim.utilizationmodels.UtilizationModelFull;
 import org.cloudbus.cloudsim.vms.Vm;
 import org.cloudbus.cloudsim.vms.VmSimple;
-import org.cloudsimplus.builders.tables.CloudletsTableBuilderHelper;
+import org.cloudsimplus.builders.tables.CloudletsTableBuilder;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -119,7 +119,7 @@ public class TerminateSimulationAtGivenTimeExample {
         /*Prints results when the simulation is over
         (you can use your own code here to print what you want from this cloudlet list)*/
         List<Cloudlet> finishedCloudlets = broker0.getCloudletsFinishedList();
-        new CloudletsTableBuilderHelper(finishedCloudlets).build();
+        new CloudletsTableBuilder(finishedCloudlets).build();
         Log.printConcatLine(getClass().getSimpleName(), " finished!");
     }
 

@@ -29,7 +29,7 @@ import org.cloudbus.cloudsim.resources.Pe;
 import org.cloudbus.cloudsim.resources.PeSimple;
 import org.cloudbus.cloudsim.resources.Ram;
 import org.cloudbus.cloudsim.schedulers.vm.VmSchedulerTimeShared;
-import org.cloudsimplus.builders.tables.CloudletsTableBuilderHelper;
+import org.cloudsimplus.builders.tables.CloudletsTableBuilder;
 import org.cloudsimplus.builders.tables.TextTableBuilder;
 
 /**
@@ -122,7 +122,7 @@ public abstract class NetworkVmExampleAbstract {
             broker = brokerList.get(i);
             List<Cloudlet> newList = broker.getCloudletsFinishedList();
             String caption = broker.getName() + " - Application " + broker.getId();
-            new CloudletsTableBuilderHelper(newList)
+            new CloudletsTableBuilder(newList)
                     .setPrinter(new TextTableBuilder(caption))
                     .build();
             Log.printFormattedLine(
