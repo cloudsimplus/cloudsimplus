@@ -103,7 +103,7 @@ public final class CloudletResponseTimeMinimizationExperiment extends Simulation
             cpu.checkCpuUtilizationSlaContract();
             cpuUtilizationSlaContract = cpu.getMaxValueCpuUtilization();
             
-      //      getCloudsim().addOnClockTickListener(this::createNewCloudlets);
+            getCloudsim().addOnClockTickListener(this::createNewCloudlets);
             getCloudsim().addOnClockTickListener(this::printVmsCpuUsage); 
 
         } catch (IOException ex) {
@@ -154,7 +154,7 @@ public final class CloudletResponseTimeMinimizationExperiment extends Simulation
         final long length = CLOUDLET_LENGTHS[i];
       
         UtilizationModel utilization = new UtilizationModelFull();
-        return new CloudletSimple(id, 10000, 2)
+        return new CloudletSimple(id, length, 2)
                 .setFileSize(1024)
                 .setOutputSize(1024)
                 .setUtilizationModel(utilization)
@@ -348,10 +348,9 @@ public final class CloudletResponseTimeMinimizationExperiment extends Simulation
      */
     double getCloudletsResponseTimeAverage() {
         SummaryStatistics cloudletResponseTime = new SummaryStatistics();
-        DatacenterBroker broker = 
-                getBrokerList().stream()
-                        .findFirst()
-                        .orElse(DatacenterBroker.NULL);
+        DatacenterBroker broker = getBrokerList().stream()
+                .findFirst()
+                .orElse(DatacenterBroker.NULL);
         broker.getCloudletsFinishedList().stream()
                 .map(c -> c.getFinishTime() - c.getLastDatacenterArrivalTime())
                 .forEach(cloudletResponseTime::addValue);

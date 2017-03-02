@@ -93,6 +93,8 @@ public class DynamicVmCreationByCpuUtilizationAndFreePesOfVm {
     private static final int HOST_PES = 32;
     private static final int VMS = 3;
     private static final int CLOUDLETS = 8;
+    private static final long VM_MIPS = 1000;
+    
     private DatacenterBroker broker0;
     private List<Host> hostList;
     private List<Vm> vmList;
@@ -115,7 +117,6 @@ public class DynamicVmCreationByCpuUtilizationAndFreePesOfVm {
     private final double cpuUtilizationSlaContract;
     private double responseTimeSlaContract;
     
-    private long vmMips = 1000;
     private int totalOfcloudletSlaSatisfied;
     private List<Double> responseTimes;
 
@@ -155,10 +156,13 @@ public class DynamicVmCreationByCpuUtilizationAndFreePesOfVm {
         vmList.addAll(createListOfScalableVms(VMS));
 
         createCloudletList();
+        //sort the cloudlet list by expected response time
+        Comparator<Cloudlet> sortByExpectedCloudletResponseTime = null;
+        for(Vm vm: vmList){
+        sortByExpectedCloudletResponseTime
+                = Comparator.comparingDouble(cloudlet -> getExpectedCloudletResponseTime(cloudlet, vm));
 
-        Comparator<Cloudlet> sortByExpectedCloudletResponseTime
-                = Comparator.comparingDouble(cloudlet -> getExpectedCloudletResponseTime(cloudlet));
-
+        }
         cloudletList.sort(sortByExpectedCloudletResponseTime.reversed());
         System.out.println("\t\tCreated Cloudlets: " + cloudletList);
 
@@ -200,7 +204,7 @@ public class DynamicVmCreationByCpuUtilizationAndFreePesOfVm {
         Comparator<Vm> sortByNumberOfFreePes
                 = Comparator.comparingInt(vm -> getExpectedNumberOfFreeVmPes(vm, false));
         Comparator<Vm> sortByExpectedCloudletResponseTime
-                = Comparator.comparingDouble(vm -> getExpectedCloudletResponseTime(cloudlet));
+                = Comparator.comparingDouble(vm -> getExpectedCloudletResponseTime(cloudlet, vm));
         createdVms.sort(
                 sortByNumberOfFreePes
                         .thenComparing(sortByExpectedCloudletResponseTime)
@@ -209,14 +213,14 @@ public class DynamicVmCreationByCpuUtilizationAndFreePesOfVm {
 
         Vm selectedVm = createdVms.stream()
                 .filter(vm -> getExpectedNumberOfFreeVmPes(vm, true) >= cloudlet.getNumberOfPes())
-                .filter(vm -> getExpectedCloudletResponseTime(cloudlet) <= responseTimeSlaContract)
+                .filter(vm -> getExpectedCloudletResponseTime(cloudlet, vm) <= responseTimeSlaContract)
                 .findFirst().orElse(mostFreePesVm);
 
         return selectedVm;
     }
 
-    private double getExpectedCloudletResponseTime(Cloudlet cloudlet) {
-        double expectedResponseTime = cloudlet.getLength() / vmMips;
+    private double getExpectedCloudletResponseTime(Cloudlet cloudlet, Vm vm) {
+        double expectedResponseTime = cloudlet.getLength() / vm.getMips();
         return expectedResponseTime;
     }
 
@@ -345,7 +349,7 @@ public class DynamicVmCreationByCpuUtilizationAndFreePesOfVm {
         final int id = createsVms++;
         final int pes = VM_PES[(int) randVm.sample()];
 
-        Vm vm = new VmSimple(id, vmMips, pes)
+        Vm vm = new VmSimple(id, VM_MIPS, pes)
                 .setRam(512).setBw(1000).setSize(10000).setBroker(broker0)
                 .setCloudletScheduler(new CloudletSchedulerTimeShared());
         System.out.println("\n\t\t\t Vm: " + vm + " pes: " + pes);
