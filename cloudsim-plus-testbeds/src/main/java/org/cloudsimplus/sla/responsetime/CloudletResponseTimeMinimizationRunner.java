@@ -24,11 +24,13 @@
 package org.cloudsimplus.sla.responsetime;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import org.apache.commons.math3.stat.descriptive.SummaryStatistics;
 
 import org.cloudsimplus.testbeds.ExperimentRunner;
 
 import java.util.List;
+import java.util.Map;
 import org.cloudbus.cloudsim.distributions.ContinuousDistribution;
 
 /**
@@ -44,12 +46,17 @@ final class CloudletResponseTimeMinimizationRunner extends ExperimentRunner<Clou
     static final long[] CLOUDLET_LENGTHS = {20000, 40000, 14000, 10000, 10000};
     static final int[] VM_PES = {2, 4};
     static final int VMS = 3;
-    static final int CLOUDLETS = 26;
+    static final int CLOUDLETS = 6;
     
     /**
      * The response time average for all the experiments.
      */
     private List<Double> cloudletResponseTimes;
+
+     /**
+     * The percentage of cloudlets meeting response time average for all the experiments.
+     */
+    private List<Double> percentageOfCloudletsMeetingResponseTimes;
 
     /**
      * Indicates if each experiment will output execution logs or not.
@@ -75,6 +82,7 @@ final class CloudletResponseTimeMinimizationRunner extends ExperimentRunner<Clou
     CloudletResponseTimeMinimizationRunner() {
         super();
         cloudletResponseTimes = new ArrayList<>();
+        percentageOfCloudletsMeetingResponseTimes = new ArrayList<>();
     }
 
     @Override
@@ -99,6 +107,16 @@ final class CloudletResponseTimeMinimizationRunner extends ExperimentRunner<Clou
      */
     private void afterExperimentFinish(CloudletResponseTimeMinimizationExperiment experiment) {
         cloudletResponseTimes.add(experiment.getCloudletsResponseTimeAverage());
+        percentageOfCloudletsMeetingResponseTimes.add(
+                experiment.getPercentageOfCloudletsMeetingResponseTime());
+    }
+
+    @Override
+    protected Map<String, List<Double>> createMetricsMap() {
+        Map<String, List<Double>>  map = new HashMap<>();
+        map.put("Cloudlet Response Time", cloudletResponseTimes);
+        map.put("Percentage Of Cloudlets Meeting Response Times", percentageOfCloudletsMeetingResponseTimes);
+        return map;
     }
 
     @Override
@@ -116,42 +134,14 @@ final class CloudletResponseTimeMinimizationRunner extends ExperimentRunner<Clou
     }
 
     @Override
-    protected void printFinalResults(SummaryStatistics stats) {
-        System.out.printf("\n# Results for %d simulation runs\n", getNumberOfSimulationRuns());
+    protected void printFinalResults(String metricName, SummaryStatistics stats) {
+        System.out.printf("\n# %s for %d simulation runs\n", metricName, getNumberOfSimulationRuns());
         if (!simulationRunsAndNumberOfBatchesAreCompatible()) {
             System.out.println("\tBatch means method was not be applied because the number of simulation runs is not greater than the number of batches.");
         }
         if (getNumberOfSimulationRuns() > 1) {
             showConfidenceInterval(stats);       
         }
-        System.out.printf("\nExperiments finished in %d seconds!\n", getExperimentsFinishTime());
-    }
-
-    /**
-     * Creates a {@link SummaryStatistics} object with the cost of each
-     * experiment. Using such a object, a general mean and standard deviation
-     * can be obtained.
-     *
-     * If the {@link #isApplyAntitheticVariatesTechnique()} is true, applies the
-     * "Antithetic Variates Technique" in order to reduce variance of simulation
-     * results. In this case, just half of the results are returned,
-     * representing the means between each value from the first half with each
-     * value from the second half.
-     *
-     * If the {@link #isApplyBatchMeansMethod()} is true, applies the "Batch
-     * Means Method" to reduce simulation results correlation.
-     *
-     * @return a {@link SummaryStatistics} object with the cost of each
-     * experiment to allow get mean, standard deviation and confidence interval
-     */
-    @Override
-    protected SummaryStatistics computeFinalStatistics() {
-        SummaryStatistics costsStats = new SummaryStatistics();
-        cloudletResponseTimes = computeBatchMeans(cloudletResponseTimes);
-        cloudletResponseTimes = computeAntitheticMeans(cloudletResponseTimes);
-        cloudletResponseTimes.forEach(costsStats::addValue);
-
-        return costsStats;
     }
 
     private void showConfidenceInterval(SummaryStatistics stats) {

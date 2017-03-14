@@ -156,15 +156,7 @@ public class DynamicVmCreationByCpuUtilizationAndFreePesOfVm {
         vmList.addAll(createListOfScalableVms(VMS));
 
         createCloudletList();
-        //sort the cloudlet list by expected response time
-        Comparator<Cloudlet> sortByExpectedCloudletResponseTime = null;
-        for(Vm vm: vmList){
-        sortByExpectedCloudletResponseTime
-                = Comparator.comparingDouble(cloudlet -> getExpectedCloudletResponseTime(cloudlet, vm));
-
-        }
-        cloudletList.sort(sortByExpectedCloudletResponseTime.reversed());
-        System.out.println("\t\tCreated Cloudlets: " + cloudletList);
+        sortCloudletListByExpectedResponseTime();
 
         broker0.submitVmList(vmList);
         broker0.submitCloudletList(cloudletList);
@@ -176,6 +168,18 @@ public class DynamicVmCreationByCpuUtilizationAndFreePesOfVm {
         System.out.println("\n ** Percentage of cloudlets that complied"
                 + " with the SLA Agreement: " + percentage + " %");
         printSimulationResults();
+    }
+
+    private void sortCloudletListByExpectedResponseTime() {
+        //sort the cloudlet list by expected response time
+        Comparator<Cloudlet> sortByExpectedCloudletResponseTime = null;
+        for(Vm vm: vmList){
+            sortByExpectedCloudletResponseTime
+                    = Comparator.comparingDouble(cloudlet -> getExpectedCloudletResponseTime(cloudlet, vm));
+            
+        }
+        cloudletList.sort(sortByExpectedCloudletResponseTime.reversed());
+        System.out.println("\t\tCreated Cloudlets: " + cloudletList);
     }
 
     private void printVmsCpuUsage(EventInfo eventInfo) {
@@ -404,7 +408,6 @@ public class DynamicVmCreationByCpuUtilizationAndFreePesOfVm {
                 totalOfcloudletSlaSatisfied++;
             }      
         }
-
         System.out.printf("\t\t\n Response Time simulation (average) : %.2f \n Response Time contrato SLA: %.2f "
                 + "\n Total of cloudlets SLA satisfied: %d",
                 average, responseTimeSlaContract, totalOfcloudletSlaSatisfied);

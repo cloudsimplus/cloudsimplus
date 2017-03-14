@@ -30,7 +30,10 @@ import org.cloudbus.cloudsim.util.Log;
 import org.cloudbus.cloudsim.distributions.UniformDistr;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import org.cloudbus.cloudsim.distributions.ContinuousDistribution;
 
 /**
@@ -77,6 +80,8 @@ public abstract class ExperimentRunner<T extends SimulationExperiment> implement
      * @see #getNumberOfBatches()
      */
     private int numberOfBatches;
+    
+    private Map<String, List<Double>> metricsMap;
 
     /**
      * Creates an experiment runner, setting the
@@ -86,6 +91,7 @@ public abstract class ExperimentRunner<T extends SimulationExperiment> implement
         seeds = new ArrayList<>();
         setBaseSeed(System.currentTimeMillis());
         setNumberOfBatches(0);
+        metricsMap = new HashMap<>();
     }
 
     /**
@@ -188,7 +194,7 @@ public abstract class ExperimentRunner<T extends SimulationExperiment> implement
     /**
      *
      * Checks if the "Batch Means Method" is to be applied to reduce correlation
-     * between the results for different experiment runs.
+     * between the metricsMap for different experiment runs.
      * @return 
      */
     public boolean isApplyBatchMeansMethod() {
@@ -301,7 +307,7 @@ public abstract class ExperimentRunner<T extends SimulationExperiment> implement
 
     /**
      * Checks if the "Antithetic Variates Technique" is to be applied to reduce
-     * results variance.
+     * metricsMap variance.
      *
      * @return 
      * @see
@@ -385,7 +391,7 @@ public abstract class ExperimentRunner<T extends SimulationExperiment> implement
      * generates uniform values between [min and max[. Adds the PRNG seed to the
      * {@link #getSeeds()} list. If it is to apply the
      * {@link #isApplyAntitheticVariatesTechnique() "Antithetic Variates Technique"}
-     * to reduce results variance, the second half of experiments will used the
+     * to reduce metricsMap variance, the second half of experiments will used the
      * seeds from the first half.
      *
      * @param experimentIndex
@@ -417,7 +423,7 @@ public abstract class ExperimentRunner<T extends SimulationExperiment> implement
      * generates uniform values between [0 and 1[. Adds the PRNG seed to the
      * {@link #getSeeds()} list. If it is to apply the
      * {@link #isApplyAntitheticVariatesTechnique() "Antithetic Variates Technique"}
-     * to reduce results variance, the second half of experiments will used the
+     * to reduce metricsMap variance, the second half of experiments will used the
      * seeds from the first half.
      *
      * @param experimentIndex
@@ -464,7 +470,7 @@ public abstract class ExperimentRunner<T extends SimulationExperiment> implement
     }
 
     /**
-     * Setup and starts the execution of the experiments.
+     * Setups and starts the execution of all experiments.
      */
     @Override
     public void run() {
@@ -487,8 +493,19 @@ public abstract class ExperimentRunner<T extends SimulationExperiment> implement
             Log.enable();
         }
 
-        printFinalResults(computeFinalStatistics());
+        metricsMap = createMetricsMap();
+        System.out.println("\n------------------------------------------------------------------");
+        metricsMap.entrySet().stream().forEach(this::computesAndPrintFinalResults);
+        Log.enable();
+        System.out.printf("\nExperiments finished in %d seconds!\n", getExperimentsFinishTime());        
     }
+    
+    /**
+     * Creates a Map adding a 
+     * List of values for each metric to be computed.
+     * @return the populated metricsMap
+     */
+    protected abstract Map<String, List<Double>> createMetricsMap();
 
     /**
      * Creates an experiment to be run for the i'th time.
@@ -538,23 +555,55 @@ public abstract class ExperimentRunner<T extends SimulationExperiment> implement
     }
 
     protected abstract void printSimulationParameters();
-
+    
     /**
-     * Computes the final statistics for all experiment runs.
+     * Creates a SummaryStatistics object from a list of 
+     * Double values, allowing computation of statistics 
+     * such as mean over these values.
+     * The method also checks if the 
+     * {@link #isApplyAntitheticVariatesTechnique() Antithetic Variates}
+     * and the {@link #isApplyBatchMeansMethod() Batch Means} techniques
+     * are enabled and then apply them over the given list of Doubles.
+     * These techniques are used for variance reduction.
      *
-     * @return
+     * @param values the List of values to add to the {@link SummaryStatistics} object
+     * @return the {@link SummaryStatistics} object containing
+     * the double values, after applying the the techniques for
+     * variance reduction.
      */
-    protected abstract SummaryStatistics computeFinalStatistics();
-
+    protected SummaryStatistics computeFinalStatistics(List<Double> values) {
+        SummaryStatistics stats = new SummaryStatistics();
+        values = computeBatchMeans(values);
+        values = computeAntitheticMeans(values);
+        values.forEach(stats::addValue);
+        return stats;
+    }
+    
     /**
-     * Prints final simulation results such as means, standard deviations and
+     * Computes and prints final simulation metricsMap such as means, standard deviations and
      * confidence intervals.
      *
+     * @param metricEntry an entry in the {@link #metricsMap}
+     * where the key is the name of the metric to print results
+     * and the value is a {@link SummaryStatistics} object containing means of each
+     * experiment run that will be used to computed an overall mean and other
+     * statistics
+     * @see #printFinalResults(java.lang.String, org.apache.commons.math3.stat.descriptive.SummaryStatistics) 
+     */
+    private void computesAndPrintFinalResults(Map.Entry<String, List<Double>> metricEntry){
+        printFinalResults(metricEntry.getKey(), computeFinalStatistics(metricEntry.getValue()));
+    }
+
+    /**
+     * Prints final simulation metricsMap such as means, standard deviations and
+     * confidence intervals.
+     *
+     * @param metricName the name of the metric to be printed
      * @param stats the {@link SummaryStatistics} containing means of each
      * experiment run that will be used to computed an overall mean and other
      * statistics
      */
-    protected abstract void printFinalResults(SummaryStatistics stats);
+    protected abstract void printFinalResults(String metricName, SummaryStatistics stats);
 
     public final ExperimentRunner setBaseSeed(long baseSeed) {
         this.baseSeed = baseSeed;
@@ -576,11 +625,59 @@ public abstract class ExperimentRunner<T extends SimulationExperiment> implement
      * affect the verbosity of individual experiments executed. Each
      * {@link SimulationExperiment} has its own verbose attribute.
      *
-     * @param verbose true if the results have to be output, falser otherwise
+     * @param verbose true if the metricsMap have to be output, falser otherwise
      * @return 
      */
     public ExperimentRunner setVerbose(boolean verbose) {
         this.verbose = verbose;
         return this;
+    }
+
+    /**
+     * Gets a <b>read-only</b> map containing Lists of double values
+     * to be used to compute the final simulation metricsMap.
+     * Each List contains double values for a collected metric
+     * and each String key is the name of such a metric.
+     * For instance, a key can be the String "Costs", representing
+     * that the List of values associated with that key are the
+     * cost of each simulation run. 
+     * Any metric collect metric can be added to this map, remembering
+     * that each value inside a List is the metric for a single simulation
+     * run.
+     * @return the map of metricsMap for all simulation runs
+     */
+    public Map<String, List<Double>> getMetricsMap() {
+        return Collections.unmodifiableMap(metricsMap);
+    }
+    
+    /**
+     * Gets the List of values for a given collected metric, where
+     * each value is related to a different simulation run.
+     * @param metricName the name of the metric to get its values
+     * for all simulation runs
+     * @return the List of values for a given metric for all simulation runs
+     * @see #getMetricsMap() 
+     */
+    public List<Double> getMetricValues(String metricName){
+        List<Double> list = metricsMap.get(metricName);
+        if(list == null){
+            list = new ArrayList<>();
+            metricsMap.put(metricName, list);
+        }
+        
+        return list;
+    }
+    
+    /**
+     * Adds a value to a List of values for a given collected metric.
+     * @param metricName the name of the metric to add list of values to, 
+     * where this List represents the values of this metric
+     * for all simulation runs
+     * @param values the list of values to be associated to the metric
+     * @see #getMetricValues(java.lang.String) 
+     * @see #getMetricsMap() 
+     */
+    public void addMetricValues(String metricName, List<Double> values){
+        metricsMap.put(metricName, values);
     }
 }
