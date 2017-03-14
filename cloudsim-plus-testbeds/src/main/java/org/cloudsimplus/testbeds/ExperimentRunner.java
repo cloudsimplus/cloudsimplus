@@ -423,7 +423,11 @@ public abstract class ExperimentRunner<T extends SimulationExperiment> implement
      * generates uniform values between [0 and 1[. Adds the PRNG seed to the
      * {@link #getSeeds()} list. If it is to apply the
      * {@link #isApplyAntitheticVariatesTechnique() "Antithetic Variates Technique"}
+<<<<<<< HEAD
      * to reduce metricsMap variance, the second half of experiments will used the
+=======
+     * to reduce results variance, the second half of experiments will used the
+>>>>>>> upstream/master
      * seeds from the first half.
      *
      * @param experimentIndex
@@ -495,7 +499,7 @@ public abstract class ExperimentRunner<T extends SimulationExperiment> implement
 
         metricsMap = createMetricsMap();
         System.out.println("\n------------------------------------------------------------------");
-        metricsMap.entrySet().stream().forEach(this::computesAndPrintFinalResults);
+        metricsMap.entrySet().stream().forEach(this::computeAndPrintFinalResults);
         Log.enable();
         System.out.printf("\nExperiments finished in %d seconds!\n", getExperimentsFinishTime());        
     }
@@ -590,7 +594,7 @@ public abstract class ExperimentRunner<T extends SimulationExperiment> implement
      * statistics
      * @see #printFinalResults(java.lang.String, org.apache.commons.math3.stat.descriptive.SummaryStatistics) 
      */
-    private void computesAndPrintFinalResults(Map.Entry<String, List<Double>> metricEntry){
+    private void computeAndPrintFinalResults(Map.Entry<String, List<Double>> metricEntry){
         printFinalResults(metricEntry.getKey(), computeFinalStatistics(metricEntry.getValue()));
     }
 

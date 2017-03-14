@@ -408,6 +408,7 @@ public class DynamicVmCreationByCpuUtilizationAndFreePesOfVm {
                 totalOfcloudletSlaSatisfied++;
             }      
         }
+
         System.out.printf("\t\t\n Response Time simulation (average) : %.2f \n Response Time contrato SLA: %.2f "
                 + "\n Total of cloudlets SLA satisfied: %d",
                 average, responseTimeSlaContract, totalOfcloudletSlaSatisfied);

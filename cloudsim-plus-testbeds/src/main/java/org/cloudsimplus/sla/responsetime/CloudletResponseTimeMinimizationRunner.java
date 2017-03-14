@@ -136,6 +136,7 @@ final class CloudletResponseTimeMinimizationRunner extends ExperimentRunner<Clou
     @Override
     protected void printFinalResults(String metricName, SummaryStatistics stats) {
         System.out.printf("\n# %s for %d simulation runs\n", metricName, getNumberOfSimulationRuns());
+
         if (!simulationRunsAndNumberOfBatchesAreCompatible()) {
             System.out.println("\tBatch means method was not be applied because the number of simulation runs is not greater than the number of batches.");
         }
@@ -154,5 +155,4 @@ final class CloudletResponseTimeMinimizationRunner extends ExperimentRunner<Clou
                 stats.getMean(), intervalSize, lower, upper);
         System.out.printf("\tStandard Deviation: %.2f \n", stats.getStandardDeviation());
     }
-
 }
