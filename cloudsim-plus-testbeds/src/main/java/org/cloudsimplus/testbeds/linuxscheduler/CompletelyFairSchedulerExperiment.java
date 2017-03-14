@@ -30,8 +30,6 @@ import org.cloudbus.cloudsim.vms.Vm;
 import org.cloudbus.cloudsim.vms.VmSimple;
 import org.cloudsimplus.testbeds.ExperimentRunner;
 
-import java.util.function.Supplier;
-
 /**
  * An experiment that shows how the oversimplied time-shared CloudletScheduler implementation provided by
  * the {@link CloudletSchedulerTimeShared} CloudSim class increases task completion time
@@ -47,7 +45,7 @@ import java.util.function.Supplier;
  *
  * @author Manoel Campos da Silva Filho
  */
-final class CompletelyFairSchedulerExperiment extends CloudletSchedulerExperiment {
+public final class CompletelyFairSchedulerExperiment extends CloudletSchedulerExperiment {
 
     /**
      * Creates a simulation experiment.

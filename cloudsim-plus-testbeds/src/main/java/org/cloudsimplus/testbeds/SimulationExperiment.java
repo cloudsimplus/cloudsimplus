@@ -148,10 +148,9 @@ public abstract class SimulationExperiment implements Runnable {
         buildScenario();
         cloudsim.start();
         getAfterExperimentFinish().accept(this);
-
         printResultsInternal();
     }
-
+    
     /**
      * Checks if {@link #isVerbose()} in order to call {@link #printResults()}
      * to print the experiment results.
