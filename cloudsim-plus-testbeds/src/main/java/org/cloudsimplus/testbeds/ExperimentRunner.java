@@ -30,8 +30,6 @@ import org.cloudbus.cloudsim.util.Log;
 import org.cloudbus.cloudsim.distributions.UniformDistr;
 
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import org.cloudbus.cloudsim.distributions.ContinuousDistribution;
@@ -81,8 +79,6 @@ public abstract class ExperimentRunner<T extends SimulationExperiment> implement
      */
     private int numberOfBatches;
     
-    private Map<String, List<Double>> metricsMap;
-
     /**
      * Creates an experiment runner, setting the
      * {@link #getBaseSeed() base seed} as the current time.
@@ -91,7 +87,6 @@ public abstract class ExperimentRunner<T extends SimulationExperiment> implement
         seeds = new ArrayList<>();
         setBaseSeed(System.currentTimeMillis());
         setNumberOfBatches(0);
-        metricsMap = new HashMap<>();
     }
 
     /**
@@ -391,7 +386,7 @@ public abstract class ExperimentRunner<T extends SimulationExperiment> implement
      * generates uniform values between [min and max[. Adds the PRNG seed to the
      * {@link #getSeeds()} list. If it is to apply the
      * {@link #isApplyAntitheticVariatesTechnique() "Antithetic Variates Technique"}
-     * to reduce metricsMap variance, the second half of experiments will used the
+     * to reduce results variance, the second half of experiments will used the
      * seeds from the first half.
      *
      * @param experimentIndex
@@ -423,11 +418,7 @@ public abstract class ExperimentRunner<T extends SimulationExperiment> implement
      * generates uniform values between [0 and 1[. Adds the PRNG seed to the
      * {@link #getSeeds()} list. If it is to apply the
      * {@link #isApplyAntitheticVariatesTechnique() "Antithetic Variates Technique"}
-<<<<<<< HEAD
-     * to reduce metricsMap variance, the second half of experiments will used the
-=======
      * to reduce results variance, the second half of experiments will used the
->>>>>>> 68a6bb33... DynamicVmCreationByCpuUtilizationAndFreePesOfVm.java was updated (#68)
      * seeds from the first half.
      *
      * @param experimentIndex
@@ -497,7 +488,7 @@ public abstract class ExperimentRunner<T extends SimulationExperiment> implement
             Log.enable();
         }
 
-        metricsMap = createMetricsMap();
+        Map<String, List<Double>> metricsMap = createMetricsMap();
         System.out.println("\n------------------------------------------------------------------");
         metricsMap.entrySet().stream().forEach(this::computesAndPrintFinalResults);
         Log.enable();
@@ -505,8 +496,12 @@ public abstract class ExperimentRunner<T extends SimulationExperiment> implement
     }
     
     /**
-     * Creates a Map adding a 
-     * List of values for each metric to be computed.
+     * Creates a Map adding a List of values for each metric to be computed.
+     * The computation of final experiments results are performed on this map.
+     * Each key is the name of metric and each value is a List of Double
+     * containing the values collected for that metric, for each experiment run.
+     * These values will be then summarized to compute the final value
+     * for each metric.
      * @return the populated metricsMap
      */
     protected abstract Map<String, List<Double>> createMetricsMap();
@@ -584,7 +579,7 @@ public abstract class ExperimentRunner<T extends SimulationExperiment> implement
     }
     
     /**
-     * Computes and prints final simulation metricsMap such as means, standard deviations and
+     * Computes and prints final simulation results such as means, standard deviations and
      * confidence intervals.
      *
      * @param metricEntry an entry in the {@link #metricsMap}
@@ -629,59 +624,11 @@ public abstract class ExperimentRunner<T extends SimulationExperiment> implement
      * affect the verbosity of individual experiments executed. Each
      * {@link SimulationExperiment} has its own verbose attribute.
      *
-     * @param verbose true if the metricsMap have to be output, falser otherwise
+     * @param verbose true if results have to be output, false otherwise
      * @return 
      */
     public ExperimentRunner setVerbose(boolean verbose) {
         this.verbose = verbose;
         return this;
-    }
-
-    /**
-     * Gets a <b>read-only</b> map containing Lists of double values
-     * to be used to compute the final simulation metricsMap.
-     * Each List contains double values for a collected metric
-     * and each String key is the name of such a metric.
-     * For instance, a key can be the String "Costs", representing
-     * that the List of values associated with that key are the
-     * cost of each simulation run. 
-     * Any metric collect metric can be added to this map, remembering
-     * that each value inside a List is the metric for a single simulation
-     * run.
-     * @return the map of metricsMap for all simulation runs
-     */
-    public Map<String, List<Double>> getMetricsMap() {
-        return Collections.unmodifiableMap(metricsMap);
-    }
-    
-    /**
-     * Gets the List of values for a given collected metric, where
-     * each value is related to a different simulation run.
-     * @param metricName the name of the metric to get its values
-     * for all simulation runs
-     * @return the List of values for a given metric for all simulation runs
-     * @see #getMetricsMap() 
-     */
-    public List<Double> getMetricValues(String metricName){
-        List<Double> list = metricsMap.get(metricName);
-        if(list == null){
-            list = new ArrayList<>();
-            metricsMap.put(metricName, list);
-        }
-        
-        return list;
-    }
-    
-    /**
-     * Adds a value to a List of values for a given collected metric.
-     * @param metricName the name of the metric to add list of values to, 
-     * where this List represents the values of this metric
-     * for all simulation runs
-     * @param values the list of values to be associated to the metric
-     * @see #getMetricValues(java.lang.String) 
-     * @see #getMetricsMap() 
-     */
-    public void addMetricValues(String metricName, List<Double> values){
-        metricsMap.put(metricName, values);
     }
 }
