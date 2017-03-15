@@ -302,7 +302,7 @@ public abstract class ExperimentRunner<T extends SimulationExperiment> implement
 
     /**
      * Checks if the "Antithetic Variates Technique" is to be applied to reduce
-     * metricsMap variance.
+     * results variance.
      *
      * @return 
      * @see
@@ -594,7 +594,7 @@ public abstract class ExperimentRunner<T extends SimulationExperiment> implement
     }
 
     /**
-     * Prints final simulation metricsMap such as means, standard deviations and
+     * Prints final simulation results such as means, standard deviations and
      * confidence intervals.
      *
      * @param metricName the name of the metric to be printed
