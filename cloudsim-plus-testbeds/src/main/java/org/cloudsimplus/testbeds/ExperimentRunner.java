@@ -189,7 +189,7 @@ public abstract class ExperimentRunner<T extends SimulationExperiment> implement
     /**
      *
      * Checks if the "Batch Means Method" is to be applied to reduce correlation
-     * between the metricsMap for different experiment runs.
+     * between the results for different experiment runs.
      * @return 
      */
     public boolean isApplyBatchMeansMethod() {
