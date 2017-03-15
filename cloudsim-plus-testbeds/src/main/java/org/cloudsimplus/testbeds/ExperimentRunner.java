@@ -302,7 +302,7 @@ public abstract class ExperimentRunner<T extends SimulationExperiment> implement
 
     /**
      * Checks if the "Antithetic Variates Technique" is to be applied to reduce
-     * metricsMap variance.
+     * results variance.
      *
      * @return 
      * @see
@@ -418,7 +418,7 @@ public abstract class ExperimentRunner<T extends SimulationExperiment> implement
      * generates uniform values between [0 and 1[. Adds the PRNG seed to the
      * {@link #getSeeds()} list. If it is to apply the
      * {@link #isApplyAntitheticVariatesTechnique() "Antithetic Variates Technique"}
-     * to reduce metricsMap variance, the second half of experiments will used the
+     * to reduce results variance, the second half of experiments will used the
      * seeds from the first half.
      *
      * @param experimentIndex
@@ -594,7 +594,7 @@ public abstract class ExperimentRunner<T extends SimulationExperiment> implement
     }
 
     /**
-     * Prints final simulation metricsMap such as means, standard deviations and
+     * Prints final simulation results such as means, standard deviations and
      * confidence intervals.
      *
      * @param metricName the name of the metric to be printed
