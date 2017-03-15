@@ -105,7 +105,6 @@ public final class CloudletResponseTimeMinimizationExperiment extends Simulation
             
             getCloudsim().addOnClockTickListener(this::createNewCloudlets);
             getCloudsim().addOnClockTickListener(this::printVmsCpuUsage); 
-
         } catch (IOException ex) {
             Logger.getLogger(CloudletResponseTimeMinimizationExperiment.class.getName()).log(Level.SEVERE, null, ex);
             throw new RuntimeException(ex);
@@ -145,7 +144,20 @@ public final class CloudletResponseTimeMinimizationExperiment extends Simulation
         for(int i =0; i < CLOUDLETS; i++){
             cloudletList.add(createCloudlet(broker0));
         }
+        sortCloudletListByExpectedResponseTime();
+
         return cloudletList;     
+    }
+
+    private void sortCloudletListByExpectedResponseTime() {
+        //sort the cloudlet list by expected response time
+        Comparator<Cloudlet> sortByExpectedCloudletResponseTime = null;
+        for(Vm vm: getVmList()){
+            sortByExpectedCloudletResponseTime
+                    = Comparator.comparingDouble(cloudlet -> getExpectedCloudletResponseTime(cloudlet, vm));
+        }
+        cloudletList.sort(sortByExpectedCloudletResponseTime.reversed());
+        System.out.println("\t\tCreated Cloudlets: " + getCloudletList());
     }
     
     private Cloudlet createCloudlet(DatacenterBroker broker) {
@@ -273,7 +285,6 @@ public final class CloudletResponseTimeMinimizationExperiment extends Simulation
         final int id = createsVms++;
         final int i = (int) (randVm.sample()*VM_PES.length);
         final int pes = VM_PES[i];
-      
 
         Vm vm = new VmSimple(id, 1000, pes)
                 .setRam(512).setBw(1000).setSize(10000).setBroker(broker0)
@@ -361,6 +372,23 @@ public final class CloudletResponseTimeMinimizationExperiment extends Simulation
         return cloudletResponseTime.getMean();
     }
    
+    double getPercentageOfCloudletsMeetingResponseTime() {
+        DatacenterBroker broker = getBrokerList().stream()
+                .findFirst()
+                .orElse(DatacenterBroker.NULL);
+        
+        double totalOfcloudletSlaSatisfied = broker.getCloudletsFinishedList().stream()
+                .map(c -> c.getFinishTime() - c.getLastDatacenterArrivalTime())
+                .filter(rt -> rt <= responseTimeSlaContract)
+                .count();
+        
+        System.out.printf("\n ** Percentage of cloudlets that complied with "
+                + "the SLA Agreement:  %.2f %%", 
+                ((totalOfcloudletSlaSatisfied * 100) /broker.getCloudletsFinishedList().size()));
+        System.out.printf("\nTotal of cloudlets SLA satisfied: %.0f de %d", totalOfcloudletSlaSatisfied, broker.getCloudletsFinishedList().size());
+        return (totalOfcloudletSlaSatisfied * 100 )/broker.getCloudletsFinishedList().size();     
+    }
+
     /**
      * A main method just for test purposes.
      * @param args
@@ -376,5 +404,6 @@ public final class CloudletResponseTimeMinimizationExperiment extends Simulation
         exp.setVerbose(true);
         exp.run();
         exp.getCloudletsResponseTimeAverage();
+        exp.getPercentageOfCloudletsMeetingResponseTime();
     }  
 }

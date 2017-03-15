@@ -30,9 +30,6 @@ import org.cloudbus.cloudsim.schedulers.cloudlet.CloudletSchedulerCompletelyFair
 import org.cloudbus.cloudsim.schedulers.cloudlet.CloudletSchedulerTimeShared;
 import org.cloudsimplus.testbeds.ExperimentRunner;
 
-import java.util.function.Supplier;
-
-
 /**
  * An experiment runs Cloudlets using a {@link CloudletSchedulerTimeShared} to get results
  * to compare to the {@link CloudletSchedulerCompletelyFair} scheduler experiment
@@ -44,7 +41,7 @@ import java.util.function.Supplier;
  * @author Manoel Campos da Silva Filho
  * @see CloudletSchedulerExperiment
  */
-final class CloudletSchedulerTimeSharedExperiment extends CloudletSchedulerExperiment {
+public final class CloudletSchedulerTimeSharedExperiment extends CloudletSchedulerExperiment {
     /**
      * Creates a simulation experiment.
      *

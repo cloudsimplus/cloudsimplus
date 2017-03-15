@@ -36,7 +36,9 @@ import org.cloudsimplus.testbeds.ExperimentRunner;
 import org.cloudsimplus.testbeds.SimulationExperiment;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import org.cloudbus.cloudsim.distributions.ContinuousDistribution;
 
 /**
@@ -226,6 +228,13 @@ final class DatacenterBrokerHeuristicRunner extends ExperimentRunner<DatacenterB
     }
 
     @Override
+    protected Map<String, List<Double>> createMetricsMap() {
+        Map<String, List<Double>>  map = new HashMap<>();
+        map.put("Experiments Cost", experimentCosts);
+        return map;
+    }
+
+    @Override
     protected void printSimulationParameters() {
         System.out.printf("Executing %d experiments. Please wait ... It may take a while.\n", getNumberOfSimulationRuns());
         System.out.println("Experiments configurations:");
@@ -246,8 +255,9 @@ final class DatacenterBrokerHeuristicRunner extends ExperimentRunner<DatacenterB
     }
 
     @Override
-    protected void printFinalResults(SummaryStatistics stats) {
-        System.out.printf("\n# Results for %d simulation runs\n", getNumberOfSimulationRuns());
+    protected void printFinalResults(String metricName, SummaryStatistics stats) {
+        System.out.printf("\n# %s for %d simulation runs\n", metricName, getNumberOfSimulationRuns());
+
         if (!simulationRunsAndNumberOfBatchesAreCompatible()) {
             System.out.println("\tBatch means method was not be applied because the number of simulation runs is not greater than the number of batches.");
         }
@@ -265,9 +275,6 @@ final class DatacenterBrokerHeuristicRunner extends ExperimentRunner<DatacenterB
                     heuristicSolutionCostPercentageOfRoundRobinSolution(stats.getMean()));
             System.out.printf("Experiment execution mean time: %.2f seconds\n", runtimeStats.getMean());
         }
-
-        Log.enable();
-        Log.printFormattedLine("\nExperiments finished in %d seconds!", getExperimentsFinishTime());
     }
 
     /**
@@ -280,36 +287,6 @@ final class DatacenterBrokerHeuristicRunner extends ExperimentRunner<DatacenterB
      */
     private double heuristicSolutionCostPercentageOfRoundRobinSolution(double heuristicSolutionCost) {
         return heuristicSolutionCost * 100.0 / roundRobinSolution.getCost();
-    }
-
-    /**
-     * Creates a {@link SummaryStatistics} object with the cost of each
-     * experiment. Using such a object, a general mean and standard deviation
-     * can be obtained.
-     *
-     * If the {@link #isApplyAntitheticVariatesTechnique()} is true, applies the
-     * "Antithetic Variates Technique" in order to reduce variance of simulation
-     * results. In this case, just half of the results are returned,
-     * representing the means between each value from the first half with each
-     * value from the second half.
-     *
-     * If the {@link #isApplyBatchMeansMethod()} is true, applies the "Batch
-     * Means Method" to reduce simulation results correlation.
-     *
-     * @return a {@link SummaryStatistics} object with the cost of each
-     * experiment to allow get mean, standard deviation and confidence interval
-     */
-    @Override
-    protected SummaryStatistics computeFinalStatistics() {
-        SummaryStatistics costsStats = new SummaryStatistics();
-        List<Double> costs = experimentCosts;
-
-        costs = computeBatchMeans(costs);
-        costs = computeAntitheticMeans(costs);
-
-        costs.forEach(costsStats::addValue);
-
-        return costsStats;
     }
 
     private void showConfidenceInterval(SummaryStatistics stats) {

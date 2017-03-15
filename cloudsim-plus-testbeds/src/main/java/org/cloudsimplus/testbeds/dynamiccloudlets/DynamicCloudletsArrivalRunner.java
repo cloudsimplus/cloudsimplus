@@ -23,6 +23,8 @@
  */
 package org.cloudsimplus.testbeds.dynamiccloudlets;
 
+import java.util.List;
+import java.util.Map;
 import org.apache.commons.math3.stat.descriptive.SummaryStatistics;
 import org.cloudsimplus.testbeds.ExperimentRunner;
 
@@ -39,6 +41,11 @@ final class DynamicCloudletsArrivalRunner extends ExperimentRunner<DynamicCloudl
 
 	}
 
+    @Override
+    protected Map<String, List<Double>> createMetricsMap() {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+    
 	@Override
 	protected DynamicCloudletsArrivalExperiment createExperiment(int i) {
 		return null;
@@ -50,12 +57,12 @@ final class DynamicCloudletsArrivalRunner extends ExperimentRunner<DynamicCloudl
 	}
 
 	@Override
-	protected SummaryStatistics computeFinalStatistics() {
+	protected SummaryStatistics computeFinalStatistics(List<Double> value) {
 		return null;
 	}
 
 	@Override
-	protected void printFinalResults(SummaryStatistics stats) {
+	protected void printFinalResults(String metricName, SummaryStatistics stats) {
 
 	}
 }

@@ -31,6 +31,7 @@ import org.cloudbus.cloudsim.distributions.UniformDistr;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import org.cloudbus.cloudsim.distributions.ContinuousDistribution;
 
 /**
@@ -77,7 +78,7 @@ public abstract class ExperimentRunner<T extends SimulationExperiment> implement
      * @see #getNumberOfBatches()
      */
     private int numberOfBatches;
-
+    
     /**
      * Creates an experiment runner, setting the
      * {@link #getBaseSeed() base seed} as the current time.
@@ -385,7 +386,7 @@ public abstract class ExperimentRunner<T extends SimulationExperiment> implement
      * generates uniform values between [min and max[. Adds the PRNG seed to the
      * {@link #getSeeds()} list. If it is to apply the
      * {@link #isApplyAntitheticVariatesTechnique() "Antithetic Variates Technique"}
-     * to reduce results variance, the second half of experiments will used the
+     * to reduce results variance, the second half of experiments will use the
      * seeds from the first half.
      *
      * @param experimentIndex
@@ -464,7 +465,7 @@ public abstract class ExperimentRunner<T extends SimulationExperiment> implement
     }
 
     /**
-     * Setup and starts the execution of the experiments.
+     * Setups and starts the execution of all experiments.
      */
     @Override
     public void run() {
@@ -487,8 +488,23 @@ public abstract class ExperimentRunner<T extends SimulationExperiment> implement
             Log.enable();
         }
 
-        printFinalResults(computeFinalStatistics());
+        Map<String, List<Double>> metricsMap = createMetricsMap();
+        System.out.println("\n------------------------------------------------------------------");
+        metricsMap.entrySet().stream().forEach(this::computeAndPrintFinalResults);
+        Log.enable();
+        System.out.printf("\nExperiments finished in %d seconds!\n", getExperimentsFinishTime());        
     }
+    
+    /**
+     * Creates a Map adding a List of values for each metric to be computed.
+     * The computation of final experiments results are performed on this map.
+     * Each key is the name of metric and each value is a List of Double
+     * containing the values collected for that metric, for each experiment run.
+     * These values will be then summarized to compute the final value
+     * for each metric.
+     * @return the populated metricsMap
+     */
+    protected abstract Map<String, List<Double>> createMetricsMap();
 
     /**
      * Creates an experiment to be run for the i'th time.
@@ -538,23 +554,55 @@ public abstract class ExperimentRunner<T extends SimulationExperiment> implement
     }
 
     protected abstract void printSimulationParameters();
-
+    
     /**
-     * Computes the final statistics for all experiment runs.
+     * Creates a SummaryStatistics object from a list of 
+     * Double values, allowing computation of statistics 
+     * such as mean over these values.
+     * The method also checks if the 
+     * {@link #isApplyAntitheticVariatesTechnique() Antithetic Variates}
+     * and the {@link #isApplyBatchMeansMethod() Batch Means} techniques
+     * are enabled and then apply them over the given list of Doubles.
+     * These techniques are used for variance reduction.
      *
-     * @return
+     * @param values the List of values to add to the {@link SummaryStatistics} object
+     * @return the {@link SummaryStatistics} object containing
+     * the double values, after applying the the techniques for
+     * variance reduction.
      */
-    protected abstract SummaryStatistics computeFinalStatistics();
+    protected SummaryStatistics computeFinalStatistics(List<Double> values) {
+        SummaryStatistics stats = new SummaryStatistics();
+        values = computeBatchMeans(values);
+        values = computeAntitheticMeans(values);
+        values.forEach(stats::addValue);
+        return stats;
+    }
+    
+    /**
+     * Computes and prints final simulation results such as means, standard deviations and
+     * confidence intervals.
+     *
+     * @param metricEntry an entry in the {@link #metricsMap}
+     * where the key is the name of the metric to print results
+     * and the value is a {@link SummaryStatistics} object containing means of each
+     * experiment run that will be used to computed an overall mean and other
+     * statistics
+     * @see #printFinalResults(java.lang.String, org.apache.commons.math3.stat.descriptive.SummaryStatistics) 
+     */
+    private void computeAndPrintFinalResults(Map.Entry<String, List<Double>> metricEntry){
+        printFinalResults(metricEntry.getKey(), computeFinalStatistics(metricEntry.getValue()));
+    }
 
     /**
      * Prints final simulation results such as means, standard deviations and
      * confidence intervals.
      *
+     * @param metricName the name of the metric to be printed
      * @param stats the {@link SummaryStatistics} containing means of each
      * experiment run that will be used to computed an overall mean and other
      * statistics
      */
-    protected abstract void printFinalResults(SummaryStatistics stats);
+    protected abstract void printFinalResults(String metricName, SummaryStatistics stats);
 
     public final ExperimentRunner setBaseSeed(long baseSeed) {
         this.baseSeed = baseSeed;
@@ -576,7 +624,7 @@ public abstract class ExperimentRunner<T extends SimulationExperiment> implement
      * affect the verbosity of individual experiments executed. Each
      * {@link SimulationExperiment} has its own verbose attribute.
      *
-     * @param verbose true if the results have to be output, falser otherwise
+     * @param verbose true if results have to be output, false otherwise
      * @return 
      */
     public ExperimentRunner setVerbose(boolean verbose) {
