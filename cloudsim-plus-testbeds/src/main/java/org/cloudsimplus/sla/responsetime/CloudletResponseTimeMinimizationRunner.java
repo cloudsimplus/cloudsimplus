@@ -46,9 +46,8 @@ final class CloudletResponseTimeMinimizationRunner extends ExperimentRunner<Clou
      */
     static final long[] CLOUDLET_LENGTHS = {20000, 40000, 14000, 10000, 10000};
     static final int[] VM_PES = {2, 4};
-    static final int VMS = 15;
-    static final int CLOUDLETS = 45;
-
+    static final int VMS = 3;
+    static final int CLOUDLETS = 6;
     /**
      * The response time average for all the experiments.
      */
@@ -157,5 +156,4 @@ final class CloudletResponseTimeMinimizationRunner extends ExperimentRunner<Clou
                 stats.getMean(), intervalSize, lower, upper);
         System.out.printf("\tStandard Deviation: %.2f \n", stats.getStandardDeviation());
     }
-
 }

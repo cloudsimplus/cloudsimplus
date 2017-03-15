@@ -154,10 +154,22 @@ public final class CloudletResponseTimeMinimizationExperiment extends Simulation
         for (int i = 0; i < CLOUDLETS; i++) {
             cloudletList.add(createCloudlet(broker0));
         }
+        sortCloudletListByExpectedResponseTime();
 
-        return cloudletList;
+        return cloudletList;     
     }
 
+    private void sortCloudletListByExpectedResponseTime() {
+        //sort the cloudlet list by expected response time
+        Comparator<Cloudlet> sortByExpectedCloudletResponseTime = null;
+        for(Vm vm: getVmList()){
+            sortByExpectedCloudletResponseTime
+                    = Comparator.comparingDouble(cloudlet -> getExpectedCloudletResponseTime(cloudlet, vm));
+        }
+        cloudletList.sort(sortByExpectedCloudletResponseTime.reversed());
+        System.out.println("\t\tCreated Cloudlets: " + getCloudletList());
+    }
+    
     private Cloudlet createCloudlet(DatacenterBroker broker) {
         final int id = createdCloudlets++;
         final int i = (int) (randCloudlet.sample() * CLOUDLET_LENGTHS.length);
@@ -376,7 +388,6 @@ public final class CloudletResponseTimeMinimizationExperiment extends Simulation
         DatacenterBroker broker = getBrokerList().stream()
                 .findFirst()
                 .orElse(DatacenterBroker.NULL);
-
         double totalOfcloudletSlaSatisfied = broker.getCloudletsFinishedList().stream()
                 .map(c -> c.getFinishTime() - c.getLastDatacenterArrivalTime())
                 .filter(rt -> rt <= responseTimeSlaContract)
@@ -406,9 +417,5 @@ public final class CloudletResponseTimeMinimizationExperiment extends Simulation
         exp.run();
         exp.getCloudletsResponseTimeAverage();
         exp.getPercentageOfCloudletsMeetingResponseTime();
-        System.out.println("\n \n------------------------- Settings ----------------------- \n"
-                + " Seed: " + seed + " | Cloudlets: " + exp.getFirstBroker().getCloudletsFinishedList().size()
-                + " | Vms: " + exp.vmList.size() + " | Hosts: " + exp.hostList.size()
-                + " | Scheduling Interval: " + SCHEDULING_INTERVAL);
-    }
+    }  
 }

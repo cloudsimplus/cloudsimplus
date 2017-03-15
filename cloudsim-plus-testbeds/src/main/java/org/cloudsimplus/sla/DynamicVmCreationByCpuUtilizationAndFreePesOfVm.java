@@ -163,6 +163,7 @@ public class DynamicVmCreationByCpuUtilizationAndFreePesOfVm {
         vmList.addAll(createListOfScalableVms(VMS));
 
         createCloudletList();
+        sortCloudletListByExpectedResponseTime();
 
         broker0.setCloudletComparator(sortCloudletsByLengthReversed);
         broker0.submitVmList(vmList);
@@ -177,6 +178,18 @@ public class DynamicVmCreationByCpuUtilizationAndFreePesOfVm {
         double totalCost = totalCostPrice(vmList);
         System.out.println("\t** Total cost (memory, bw, processing, storage) - " + totalCost);
         printSimulationResults();
+    }
+
+    private void sortCloudletListByExpectedResponseTime() {
+        //sort the cloudlet list by expected response time
+        Comparator<Cloudlet> sortByExpectedCloudletResponseTime = null;
+        for(Vm vm: vmList){
+            sortByExpectedCloudletResponseTime
+                    = Comparator.comparingDouble(cloudlet -> getExpectedCloudletResponseTime(cloudlet, vm));
+            
+        }
+        cloudletList.sort(sortByExpectedCloudletResponseTime.reversed());
+        System.out.println("\t\tCreated Cloudlets: " + cloudletList);
     }
 
     private void printVmsCpuUsage(EventInfo eventInfo) {
