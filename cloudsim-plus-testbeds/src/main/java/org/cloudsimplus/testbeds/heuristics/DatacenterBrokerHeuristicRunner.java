@@ -257,10 +257,6 @@ final class DatacenterBrokerHeuristicRunner extends ExperimentRunner<DatacenterB
     @Override
     protected void printFinalResults(String metricName, SummaryStatistics stats) {
         System.out.printf("\n# %s for %d simulation runs\n", metricName, getNumberOfSimulationRuns());
-<<<<<<< HEAD
-=======
-
->>>>>>> b8d5d4bb... Refactored testbeds (#69)
         if (!simulationRunsAndNumberOfBatchesAreCompatible()) {
             System.out.println("\tBatch means method was not be applied because the number of simulation runs is not greater than the number of batches.");
         }
