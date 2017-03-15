@@ -386,7 +386,7 @@ public abstract class ExperimentRunner<T extends SimulationExperiment> implement
      * generates uniform values between [min and max[. Adds the PRNG seed to the
      * {@link #getSeeds()} list. If it is to apply the
      * {@link #isApplyAntitheticVariatesTechnique() "Antithetic Variates Technique"}
-     * to reduce results variance, the second half of experiments will used the
+     * to reduce results variance, the second half of experiments will use the
      * seeds from the first half.
      *
      * @param experimentIndex
