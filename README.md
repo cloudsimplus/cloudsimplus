@@ -60,7 +60,7 @@ CloudSim Plus provides a lot of exclusive features, ranging from the most basic 
 1. [Builders](/cloudsim-plus/src/main/java/org/cloudsimplus/builders/) to enable creating multiple simulation objects with same configuration;
 1. It is a strongly object-oriented framework that creates relationships among classes and allows chained calls such as `cloudlet.getVm().getHost().getDatacenter()`. And guess what? You don't even have to worry about `NullPointerException` when making such a chained call because CloudSim Plus uses the [Null Object Design Pattern](https://en.wikipedia.org/wiki/Null_Object_pattern) to avoid that;
 1. Classes and interfaces to allow implementation of [heuristics](http://en.wikipedia.org/wiki/Heuristic) such as [Tabu Search](http://en.wikipedia.org/wiki/Tabu_search), [Simulated Annealing](http://en.wikipedia.org/wiki/Simulated_annealing), [Ant Colony Systems](http://en.wikipedia.org/wiki/Ant_colony_optimization_algorithms) and so on. See an [example using Simulated Annealing here](/cloudsim-plus-examples/src/main/java/org/cloudsimplus/examples/DatacenterBrokerHeuristicExample.java).
-1. [Implementation of the Completely Fair Scheduler](/cloudsim-plus-examples/src/main/java/org/cloudsimplus/examples/LinuxCompletelyFairSchedulerExample.java) used in recent versions of the Linux Kernel;
+1. [Implementation of the Completely Fair Scheduler](https://en.wikipedia.org/wiki/Completely_Fair_Scheduler) used in recent versions of the Linux Kernel. See an example [here](/cloudsim-plus-examples/src/main/java/org/cloudsimplus/examples/LinuxCompletelyFairSchedulerExample.java);
 1. Completely re-designed and reusable Network module. Totally refactored network examples to make them clear and easy to change (see issue [#49](https://github.com/manoelcampos/cloudsim-plus/issues/49));
 1. Simpler constructors to instantiate simulation objects, making it less confusing to use the framework. It applies the Convention over Configuration principle (CoC) to ask just mandatory parameters when instantiating objects (see issue [#30](https://github.com/manoelcampos/cloudsim-plus/issues/30));
 1. TableBuilder objects that are used in all examples and enable printing simulation results in different formats such as ASCII Table, CSV or HTML. It shows simulation results in perfectly aligned tables, including data units and additional data. See the last line of the [BasicFirstExample](/cloudsim-plus-examples/src/main/java/org/cloudsimplus/examples/BasicFirstExample.java) constructor to see how it is easy to print results;
@@ -339,8 +339,9 @@ Additionally, the interface `Storage` was renamed to `FileStorage` and its imple
 
 # CloudSim Plus Publications
 
-  * A paper was approved in a top conference and we are just waiting publication to provide a link to it.
-  * Other papers are in writing process.
+The following paper was accepted for publication and will be available at IEEE Explore soon. If you are using CloudSim Plus in your research, please make sure you cite this paper.
+
+  * M. C. Silva Filho, R. L. Oliveira, C. C. Monteiro, P. R. M. Inácio, and M. M. Freire, “CloudSim Plus: a Cloud Computing Simulation Framework Pursuing Software Engineering Principles for Improved Modularity, Extensibility and Correctness,” in IFIP/IEEE International Symposium on Integrated Network Management, 2017, p. 7.
   
 <p align="right"><a href="#top">:arrow_up:</a></p>
   
