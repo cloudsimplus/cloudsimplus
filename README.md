@@ -17,7 +17,7 @@
 |
 <b><a href="#why-care">Why should I care?</a></b>
 |
-<b><a href="#why-another-fork">Why another fork?</a></b>
+<b><a href="#why-another-fork">Why an independent fork?</a></b>
 |
 <b><a href="#differences">Differences from CloudSim</a></b>
 |
@@ -40,13 +40,13 @@ CloudSim Plus is a fork of [CloudSim 3](https://github.com/Cloudslab/cloudsim/tr
 
 CloudSim Plus is developed through a partnership among the Systems, Security and Image Communication Lab of [Instituto de Telecomunicações (IT, Portugal)](http://www.it.pt), the [Universidade da Beira Interior (UBI, Portugal)](http://www.ubi.pt) and the [Instituto Federal de Educação Ciência e Tecnologia do Tocantins (IFTO, Brazil)](http://www.ifto.edu.br). It is supported by the Portuguese [Fundação para a Ciência e a Tecnologia (FCT)](https://www.fct.pt) and by the [Brazilian foundation Coordenação de Aperfeiçoamento de Pessoal de Nível Superior (CAPES)](http://www.capes.gov.br).
 
-The original [CloudSim](http://github.com/Cloudslab/cloudsim) project is developed in [the Cloud Computing and Distributed Systems (CLOUDS) Laboratory](http://cloudbus.org/), at [the Computer Science and Software Engineering Department](http://www.csse.unimelb.edu.au/) of [the University of Melbourne](http://www.unimelb.edu.au/).
+The original [CloudSim](http://github.com/Cloudslab/cloudsim) project is developed in the [Cloud Computing and Distributed Systems (CLOUDS) Laboratory](http://cloudbus.org/), at the [Computer Science and Software Engineering Department](http://www.csse.unimelb.edu.au/) of the [University of Melbourne](http://www.unimelb.edu.au/).
 
 <p align="right"><a href="#top">:arrow_up:</a></p>
 
 # Exclusive Features
 
-CloudSim Plus provides a lot of exclusive features, ranging from the most basic ones that enable building simple simulations, to advanced features for implementing more realistic simulation scenarios: 
+CloudSim Plus provides a lot of exclusive features, ranging from the most basic ones that enable building simple simulations, to advanced features for simulating more realistic cloud scenarios: 
 
 1. It is easier to use. A complete and easy-to-understand simulation scenario can be built in some few lines. Check the [Examples Section](#a-minimal-and-complete-simulation-example);
 1. [Vertical VM Scaling](/cloudsim-plus-examples/src/main/java/org/cloudsimplus/examples/VerticalVmScalingExample.java) 
@@ -66,9 +66,9 @@ CloudSim Plus provides a lot of exclusive features, ranging from the most basic 
 1. TableBuilder objects that are used in all examples and enable printing simulation results in different formats such as ASCII Table, CSV or HTML. It shows simulation results in perfectly aligned tables, including data units and additional data. See the last line of the [BasicFirstExample](/cloudsim-plus-examples/src/main/java/org/cloudsimplus/examples/BasicFirstExample.java) constructor to see how it is easy to print results;
 1. Throughout documentation update, improvement and extension;
 1. Improved class hierarchy, modules and package structure that is easier to understand and follows the Separation of Concerns principle (SoC);
-1. As it is usual to extend framework classes to provide some specific behaviors for your simulations, you will find a totally refactored code that follows clean code programming, [SOLID](https://en.wikipedia.org/wiki/SOLID_(object-oriented_design)), [Design Patterns](https://en.wikipedia.org/wiki/Software_design_pattern) and several other software engineering principles and practices. By this way, it will be easier to understand the code and implement the feature you want;
+1. As it is usual to extend framework classes to provide some specific behaviors for your simulations, you will find a totally refactored code that follows clean code programming, [SOLID](https://en.wikipedia.org/wiki/SOLID_(object-oriented_design)), [Design Patterns](https://en.wikipedia.org/wiki/Software_design_pattern) and several other software engineering principles and practices. This way, it will be easier to understand the code and implement the feature you want;
 1. Integration Tests to increase framework accuracy by testing entire simulation scenarios;
-1. Updated to Java 8, making extensive use of [Lambda Expressions](http://www.oracle.com/webfolder/technetwork/tutorials/obe/java/Lambda-QuickStart/index.html) and [Streams API](http://www.oracle.com/technetwork/articles/java/ma14-java-se-8-streams-2177646.html) to improve efficiency and provide a cleaner and easier-to-maintain code.
+1. Updated to Java 8, making extensive use of [Lambda Expressions](http://www.oracle.com/webfolder/technetwork/tutorials/obe/java/Lambda-QuickStart/index.html) and [Streams API](http://www.oracle.com/technetwork/articles/java/ma14-java-se-8-streams-2177646.html) to improve efficiency and provide a code that is cleaner and easier to maintain.
 
 # Project's Modules
 
@@ -137,7 +137,7 @@ at a terminal.
 ## Adding it as a Maven Dependency into Your Own Project
 
 You can add CloudSim Plus API module, that is the only one required to build simulations, as a dependency inside the pom.xml file or your own maven project,
-as presened below (check if the informed version is the latest one). By this way you can start building your simulations from scratch.
+as presened below (check if the informed version is the latest one). This way you can start building your simulations from scratch.
 
 ```xml
 <dependency>
@@ -180,7 +180,7 @@ host0.setRamProvisioner(new ResourceProvisionerSimple(new Ram(10000)))
      .setVmScheduler(new VmSchedulerSpaceShared());
 hostList.add(host0);
 
-//Creates a Datacenter with a list of Hosts 
+//Creates a Datacenter with a list of Hosts.
 DatacenterCharacteristics characts = new DatacenterCharacteristicsSimple(hostList);
 VmAllocationPolicy vmAllocationPolicy = new VmAllocationPolicySimple();
 Datacenter dc0 = new DatacenterSimple(cloudsim, characts, vmAllocationPolicy);
@@ -210,7 +210,7 @@ stopping when there is no more events to process.*/
 cloudsim.start();
 
 /*Prints results when the simulation is over
-(you can use your own code here to print what you want from this cloudlet list)*/
+(you can use your own code here to print what you want from this cloudlet list).*/
 new CloudletsTableBuilderHelper(broker0.getCloudletsFinishedList()).build();
 ```
 
@@ -256,10 +256,9 @@ just to implement some specific features they need. We think those problems are 
 
 <a id="why-another-fork"></a>
 
-# But why another CloudSim fork? :unamused:
+# But why an independent CloudSim fork? :unamused:
 The original CloudSim moved on to a new major release, introducing a completely new set of classes to provide Container as a Service (CaaS) simulations, 
-before the changes proposed here being merged to the official repository. This way, all the work performed here was not incorporated to allow this new CaaS module to be developed using this redesigned version.
-And unfortunately, there are several months of hard work that would need to be replicated to merge both projects.
+before the changes proposed here being merged to the official repository. This way, all the work performed here was not incorporated to allow this new CaaS module to be developed using this redesigned version. Unfortunately, there are several months of hard work that would need to be replicated to merge both projects. In reason of that, CloudSim Plus was born as an independent fork, following its own way and philosophies.
 
 <p align="right"><a href="#top">:arrow_up:</a></p>
 
@@ -341,7 +340,7 @@ Additionally, the interface `Storage` was renamed to `FileStorage` and its imple
 
 The following paper was accepted for publication and will be available at IEEExplore soon. If you are using CloudSim Plus in your research, please make sure you cite this paper.
 
-  * M. C. Silva Filho, R. L. Oliveira, C. C. Monteiro, P. R. M. Inácio, and M. M. Freire, “CloudSim Plus: a Cloud Computing Simulation Framework Pursuing Software Engineering Principles for Improved Modularity, Extensibility and Correctness,” in IFIP/IEEE International Symposium on Integrated Network Management, 2017, p. 7.
+  * [M. C. Silva Filho, R. L. Oliveira, C. C. Monteiro, P. R. M. Inácio, and M. M. Freire, “CloudSim Plus: a Cloud Computing Simulation Framework Pursuing Software Engineering Principles for Improved Modularity, Extensibility and Correctness,” in IFIP/IEEE International Symposium on Integrated Network Management, 2017, p. 7](http://im2017.ieee-im.org/mini-conference).
   
 <p align="right"><a href="#top">:arrow_up:</a></p>
   
