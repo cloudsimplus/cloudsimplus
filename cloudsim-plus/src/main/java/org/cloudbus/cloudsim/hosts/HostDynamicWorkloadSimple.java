@@ -120,7 +120,7 @@ public class HostDynamicWorkloadSimple extends HostSimple implements HostDynamic
                 List<Pe> pes = getVmScheduler().getPesAllocatedForVM(vm);
                 StringBuilder pesString = new StringBuilder();
                 for (Pe pe : pes) {
-                    pesString.append(String.format(" PE #" + pe.getId() + ": %.2f.", pe.getPeProvisioner()
+                    pesString.append(String.format(" PE #%d: %d.", pe.getId(), pe.getPeProvisioner()
                             .getAllocatedResourceForVm(vm)));
                 }
                 Log.printFormattedLine(
