@@ -65,7 +65,7 @@ import org.cloudbus.cloudsim.utilizationmodels.UtilizationModelFull;
  */
 public class HostFaultInjectionExample {
 
-    private static final int HOSTS_NUMBER = 3;
+    private static final int HOSTS_NUMBER = 7;
     private static final int HOST_PES = 5;
     private static final int VM_PES1 = 2;
     private static final int VM_PES2 = 4;
@@ -172,7 +172,7 @@ public class HostFaultInjectionExample {
         DatacenterBroker broker = new DatacenterBrokerSimple(cloudsim);
 
         vmlist = new ArrayList<>();
-        vmlist.addAll(createVM(broker, VM_PES1, 4));
+        vmlist.addAll(createVM(broker, VM_PES1, 6));
         vmlist.addAll(createVM(broker, VM_PES2, 2));
 
         // submit vm list to the broker
@@ -182,7 +182,7 @@ public class HostFaultInjectionExample {
 
         // submit cloudlet list to the broker
         broker.submitCloudletList(cloudletList);
-
+        
         // Sixth step: Starts the simulation
         cloudsim.start();
 
@@ -211,8 +211,9 @@ public class HostFaultInjectionExample {
         PoissonProcess poisson = new PoissonProcess(0.2, seed);
 
         UniformDistr failurePesRand = new UniformDistr(seed);
-        for (int i = 0; i < datacenter0.getHostList().size(); i++) {
+        for (int i = 0; i < datacenter0.getHostList().size(); i++) {        
             for (Host host : datacenter0.getHostList()) {
+                System.out.println(" hosts: " + host);
                 if (poisson.haveKEventsHappened()) {
                     UniformDistr delayForFailureOfHostRandom = new UniformDistr(1, 10, seed + i);
 
@@ -221,8 +222,10 @@ public class HostFaultInjectionExample {
                     fault.setNumberOfFailedPesRandom(failurePesRand);
                     fault.setDelayForFailureOfHostRandom(delayForFailureOfHostRandom);
                     fault.setHost(host);
+                   
                 } else {
                     System.out.println("\t *** Host not failed. -> Id: " + host.getId() + "\n");
+                             
                 }
                 i++;
             }
@@ -250,7 +253,7 @@ public class HostFaultInjectionExample {
                     .setBwProvisioner(new ResourceProvisionerSimple(new Bandwidth(bw)))
                     .setVmScheduler(new VmSchedulerTimeShared());
 
-            getHostList().add(host);
+            hostList.add(host);
         }// This is our machine
 
         double cost = 3.0; // the cost of using processing in this resource

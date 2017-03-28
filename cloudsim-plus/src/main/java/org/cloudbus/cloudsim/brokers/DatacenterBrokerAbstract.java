@@ -10,7 +10,6 @@ package org.cloudbus.cloudsim.brokers;
 import java.util.*;
 import java.util.function.Function;
 import java.util.function.Supplier;
-import java.util.stream.Collectors;
 
 import org.cloudbus.cloudsim.cloudlets.Cloudlet;
 import org.cloudbus.cloudsim.core.events.SimEvent;
@@ -68,6 +67,9 @@ public abstract class DatacenterBrokerAbstract extends CloudSimEntity implements
     private Supplier<Datacenter> datacenterSupplier;
     private Supplier<Datacenter> fallbackDatacenterSupplier;
     private Function<Cloudlet, Vm> vmMapper;
+    
+    private Comparator<Vm> vmComparator;
+    private Comparator<Cloudlet> cloudletComparator;
 
     /**
      * @see #getCloudletsFinishedList()
@@ -110,23 +112,35 @@ public abstract class DatacenterBrokerAbstract extends CloudSimEntity implements
     public DatacenterBrokerAbstract(CloudSim simulation) {
         super(simulation);
 
-        this.vmsWaitingList = new ArrayList<>();
-        this.vmsCreatedList = new ArrayList<>();
-        this.cloudletsWaitingList = new ArrayList<>();
-        this.cloudletsFinishedList = new ArrayList<>();
         this.lastSubmittedCloudlet = Cloudlet.NULL;
         this.lastSubmittedVm = Vm.NULL;
+        this.lastSelectedVm = Vm.NULL;
 
         cloudletsCreated = 0;
         vmCreationRequests = 0;
         vmCreationAcks = 0;
+
+        this.vmsWaitingList = new ArrayList<>();
+        this.vmsCreatedList = new ArrayList<>();
+        this.cloudletsWaitingList = new ArrayList<>();
+        this.cloudletsFinishedList = new ArrayList<>();
 
         setDatacenterList(new TreeSet<>());
         datacenterRequestedList = new TreeSet<>();
         vmCreationRequestsMap = new HashMap<>();
         cloudletCreationRequestsMap = new HashMap<>();
         vmsToDatacentersMap = new HashMap<>();
-        lastSelectedVm = Vm.NULL;
+        
+        setDefaultPolicies();
+    }
+
+    /**
+     * Sets the default dummy policies for {@link #datacenterSupplier},
+     * {@link #fallbackDatacenterSupplier} and
+     * {@link #vmMapper}. The actual policies must be set by
+     * concrete DatacenterBroker classes.
+     */
+    private void setDefaultPolicies() {
         datacenterSupplier = () -> Datacenter.NULL;
         fallbackDatacenterSupplier = datacenterSupplier;
         vmMapper = (cloudlet) -> Vm.NULL;
@@ -153,6 +167,7 @@ public abstract class DatacenterBrokerAbstract extends CloudSimEntity implements
      */
     @Override
     public void submitVmList(List<? extends Vm> list) {
+        sortVmsIfComparatorIsSet(list);        
         lastSubmittedVm = setIdForEntitiesWithNoDelay(list, lastSubmittedVm);
         vmsWaitingList.addAll(list);
 
@@ -161,6 +176,12 @@ public abstract class DatacenterBrokerAbstract extends CloudSimEntity implements
                 "%.2f: %s: List of %d VMs submitted to the broker during simulation execution. VMs creation request sent to Datacenter.",
                 getSimulation().clock(), getName(), list.size());
             requestDatacenterToCreateWaitingVms();
+        }
+    }
+
+    private void sortVmsIfComparatorIsSet(List<? extends Vm> list) {
+        if(!Objects.isNull(vmComparator)) {
+            list.sort(vmComparator);
         }
     }
 
@@ -194,6 +215,7 @@ public abstract class DatacenterBrokerAbstract extends CloudSimEntity implements
      */
     @Override
     public void submitCloudletList(List<? extends Cloudlet> list) {
+        sortCloudletsIfComparatorIsSet(list);
         lastSubmittedCloudlet = setIdForEntitiesWithNoDelay(list, lastSubmittedCloudlet);
         if(list.isEmpty()) {
             return;
@@ -208,6 +230,12 @@ public abstract class DatacenterBrokerAbstract extends CloudSimEntity implements
             Log.printLine(" Cloudlets creation request sent to Datacenter.");
             requestDatacentersToCreateWaitingCloudlets();
         } else Log.printLine(" Waiting VMs creation to send Cloudlets creation request to Datacenter.");
+    }
+
+    private void sortCloudletsIfComparatorIsSet(List<? extends Cloudlet> list) {
+        if(!Objects.isNull(cloudletComparator)) {
+            list.sort(cloudletComparator);
+        }
     }
 
     private void setSimulationForCloudletUtilizationModels(List<? extends Cloudlet> list) {
@@ -736,4 +764,15 @@ public abstract class DatacenterBrokerAbstract extends CloudSimEntity implements
         Objects.requireNonNull(vmMapper);
         this.vmMapper = vmMapper;
     }
+
+    @Override
+    public void setVmComparator(Comparator<Vm> comparator) {
+        this.vmComparator = comparator;
+    }
+
+    @Override
+    public void setCloudletComparator(Comparator<Cloudlet> comparator) {
+        this.cloudletComparator = comparator;
+    }
+    
 }

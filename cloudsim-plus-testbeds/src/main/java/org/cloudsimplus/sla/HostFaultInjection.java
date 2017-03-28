@@ -59,16 +59,19 @@ public class HostFaultInjection extends CloudSimEntity {
     private ContinuousDistribution numberOfFailedPesRandom;
     private boolean failed;
     private ContinuousDistribution delayForFailureOfHostRandom;
+    private int fault;
 
     /**
      * Creates a fault injection mechanism for a host that will generate
      * failures with a delay and number of failed PEs generated using a Uniform
      * Pseudo Random Number Generator (PRNG) for each one.
      *
-     * @param simulation The CloudSim instance that represents the
-     * simulation the Entity is related to
-     * @see #setDelayForFailureOfHostRandom(org.cloudbus.cloudsim.distributions.ContinuousDistribution)
-     * @see #setNumberOfFailedPesRandom(org.cloudbus.cloudsim.distributions.ContinuousDistribution)
+     * @param simulation The CloudSim instance that represents the simulation
+     * the Entity is related to
+     * @see
+     * #setDelayForFailureOfHostRandom(org.cloudbus.cloudsim.distributions.ContinuousDistribution)
+     * @see
+     * #setNumberOfFailedPesRandom(org.cloudbus.cloudsim.distributions.ContinuousDistribution)
      */
     public HostFaultInjection(CloudSim simulation) {
         super(simulation);
@@ -99,6 +102,7 @@ public class HostFaultInjection extends CloudSimEntity {
 
     @Override
     public void shutdownEntity() {
+
         Log.printLine(getName() + ": is shutting down...");
     }
 
@@ -129,20 +133,37 @@ public class HostFaultInjection extends CloudSimEntity {
             final long numberOfWorkingPes = host.getNumberOfWorkingPes();
             final long pesSumOfWorkingVms = getPesSumOfWorkingVms(sortedHostVmList);
             if (pesSumOfWorkingVms > numberOfWorkingPes) {
+
                 setVmToFailedWhenHostIsFailed(vm);
                 System.out.printf(
                         "** Host %d working pes: %d Quant working PEs of all VMs of the Host: %d. Failed VM %d with %d PEs\n",
                         host.getId(), host.getNumberOfWorkingPes(),
                         pesSumOfWorkingVms, vm.getId(), vm.getNumberOfPes());
+
                 System.out.println("Vm failed -> " + vm.getId());
+                System.out.println("\nHost:: " + host + " vms [ " + host.getVmList() + "]");
+
             } else {
-                System.out.println("Vm not failed -> " + vm.getId() +
-                        " with " + vm.getNumberOfPes() + "PEs" + 
-                                " executed in host: " + vm.getHost());
+                System.out.println("Vm not failed -> " + vm.getId()
+                        + " with " + vm.getNumberOfPes() + "PEs"
+                        + " executed in host: " + vm.getHost());
+                System.out.println("\nHost:: " + host + " vms [ " + host.getVmList() + "]");
+
                 break;
             }
+
         }
         return this.failed;
+    }
+
+    public void countVmsFaileds() {
+
+        for (Vm vms : host.getVmList()) {
+            if (vms.isFailed()) {
+                fault++;
+            }
+        }
+        System.out.println("\n\t Faults: " + fault);
     }
 
     public int getPesSumOfWorkingVms(List<Vm> sortedHostVmList) {

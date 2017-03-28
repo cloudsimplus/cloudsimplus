@@ -7,6 +7,7 @@
 package org.cloudbus.cloudsim.brokers;
 
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Set;
 import java.util.function.Function;
@@ -150,7 +151,6 @@ public interface DatacenterBroker extends SimEntity {
      */
     void submitVmList(List<? extends Vm> list, double submissionDelay);
 
-
     /**
      * Indicates if there are more cloudlets waiting to
      * be executed yet.
@@ -184,13 +184,32 @@ public interface DatacenterBroker extends SimEntity {
      * @param fallbackDatacenterSupplier the fallbackDatacenterSupplier to set
      */
     void setFallbackDatacenterSupplier(Supplier<Datacenter> fallbackDatacenterSupplier);
+    
+    /**
+     * Sets a {@link Comparator} that will be used to sort every list
+     * of submitted VMs before requesting the creation of such VMs in
+     * some Datacenter. After sorting, the VM creation requests will be sent
+     * in the order of the sorted VM list.
+     * @param comparator the VM Comparator to set
+     */
+    void setVmComparator(Comparator<Vm> comparator);
+    
+    /**
+     * Sets a {@link Comparator} that will be used to sort every list
+     * of submitted Cloudlets before mapping each Cloudlet to a Vm. 
+     * After sorting, the Cloudlet mapping will follow
+     * the order of the sorted Cloudlet list.
+     * @param comparator the Cloudlet Comparator to set
+     */
+    void setCloudletComparator(Comparator<Cloudlet> comparator);
 
     /**
      * Sets a {@link Function} that maps a given Cloudlet to a Vm.
      * It defines the policy used to select a Vm to host a Cloudlet
      * that is waiting to be created.
      *
-     * @param vmMapper the Vm mapper function to set
+     * @param vmMapper the Vm mapper function to set. Such a function
+     * must receive a Cloudlet and return the Vm where it will be placed into.
      */
     void setVmMapper(Function<Cloudlet, Vm> vmMapper);
 
@@ -262,5 +281,8 @@ public interface DatacenterBroker extends SimEntity {
         @Override public Set<Cloudlet> getCloudletsCreatedList() {
             return Collections.EMPTY_SET;
         }
+
+        @Override public void setVmComparator(Comparator<Vm> comparator) {}
+        @Override public void setCloudletComparator(Comparator<Cloudlet> comparator) {}
     };
 }
