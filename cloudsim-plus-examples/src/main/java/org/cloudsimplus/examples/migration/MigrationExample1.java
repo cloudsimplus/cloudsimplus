@@ -1,3 +1,4 @@
+
 /*
  * CloudSim Plus: A modern, highly-extensible and easier-to-use Framework for
  * Modeling and Simulation of Cloud Computing Infrastructures and Services.
@@ -87,7 +88,7 @@ import org.cloudsimplus.builders.tables.CloudletsTableBuilder;
  *
  * @author Manoel Campos da Silva Filho
  */
-public class MigrationExample1 {
+public final class MigrationExample1 {
     private static final int SCHEDULE_TIME_TO_PROCESS_DATACENTER_EVENTS = 5;
     private static final double DATACENTER_COST_PER_CPU = 3.0;
     private static final double DATACENTER_COST_PER_RAM = 0.05;
@@ -134,7 +135,7 @@ public class MigrationExample1 {
     public static final double CLOUDLET_CPU_USAGE_INCREMENT_PER_SECOND = 0.05;
 
     private static final int   NUMBER_OF_HOSTS_TO_CREATE = 3;
-    private static final int   NUMBER_OF_VMS_TO_CREATE = NUMBER_OF_HOSTS_TO_CREATE + 1;
+    private static final int   NUMBER_OF_VMS_TO_CREATE = NUMBER_OF_HOSTS_TO_CREATE + 3;
     private static final int   NUMBER_OF_CLOUDLETS_TO_CREATE_BY_VM = 1;
 
     private final List<Vm> vmlist = new ArrayList<>();
@@ -211,12 +212,31 @@ public class MigrationExample1 {
         return vm;
     }
 
+    /**
+     * Creates the number of Cloudlets defined in {@link #NUMBER_OF_CLOUDLETS_TO_CREATE_BY_VM}
+     * and submits them to the given broker.
+     * 
+     * @param cloudletInitialCpuUsagePercent the percentage of CPU utilization
+     * that created Cloudlets will use when they start to execute.
+     * If this value is greater than 1 (100%), it will be changed to 1.
+     * @param maxCloudletCpuUtilizationPercentage the maximum percentage of
+     * CPU utilization that created Cloudlets are allowed to use.
+     * If this value is greater than 1 (100%), it will be changed to 1.
+     * @param hostingVm the VM that will run the Cloudlets
+     * @param broker the broker that the created Cloudlets belong to
+     * @param progressiveCpuUsage if the CPU usage of created Cloudlets
+     * have to change along the execution time or not,
+     * according to the {@link #getCpuUtilizationIncrement(org.cloudbus.cloudsim.utilizationmodels.UtilizationModelDynamic)}
+     * @return the List of created Cloudlets
+     */
     public List<Cloudlet> createAndSubmitCloudlets(
             double cloudletInitialCpuUsagePercent,
             double maxCloudletCpuUtilizationPercentage,
             Vm hostingVm,
             DatacenterBroker broker,
             boolean progressiveCpuUsage) {
+        cloudletInitialCpuUsagePercent = Math.min(cloudletInitialCpuUsagePercent, 1);
+        maxCloudletCpuUtilizationPercentage = Math.min(maxCloudletCpuUtilizationPercentage, 1);
         final List<Cloudlet> list = new ArrayList<>(NUMBER_OF_CLOUDLETS_TO_CREATE_BY_VM);
         UtilizationModel utilizationModelFull = new UtilizationModelFull();
         int cloudletId;

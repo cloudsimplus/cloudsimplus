@@ -218,6 +218,7 @@ public class UtilizationModelDynamic extends UtilizationModelAbstract {
      * depending on the {@link #getUnit()}.</p>
      *
      * @param maxResourceUsagePercentage the maximum resource usage
+     * @return 
      */
     public final UtilizationModelDynamic setMaxResourceUtilization(double maxResourceUsagePercentage) {
         validateUtilizationField("maxResourceUtilization", maxResourceUsagePercentage, ALMOST_ZERO);
