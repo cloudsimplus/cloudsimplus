@@ -25,3 +25,6 @@ bin/
 #NetBeans project files
 nbproject/
 **/nb-configuration.xml
+
+#Documentation
+docs/presentation/node_modules/

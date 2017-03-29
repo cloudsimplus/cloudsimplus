@@ -38,6 +38,8 @@ Cloud computing is the leading technology for delivery of reliable, secure, faul
 
 CloudSim Plus is a fork of [CloudSim 3](https://github.com/Cloudslab/cloudsim/tree/20a7a55e537181489fcb9a2d42a3e539db6c0318) that was re-engineered primarily to avoid code duplication. It provides [code reusability](https://en.wikipedia.org/wiki/Code_reuse) and ensures compliance with software engineering principles and recommendations for extensibility improvements. It focuses on usage of software engineering standards and recommendations such as [Design Patterns](https://en.wikipedia.org/wiki/Software_design_pattern), [SOLID principles](https://en.wikipedia.org/wiki/SOLID_(object-oriented_design)) and other ones such as [KISS](https://en.wikipedia.org/wiki/KISS_principle) and [DRY](https://pt.wikipedia.org/wiki/Don't_repeat_yourself).
 
+The efforts dedicated to this project have been recognized by the [EU/Brasil Cloud FORUM](https://eubrasilcloudforum.eu). A post about CloudSim Plus is available at [this page of the Forum](https://eubrasilcloudforum.eu/en/instituto-federal-de-educação-do-tocantins-brazil-instituto-de-telecomunicações-portugal-and), including a White Paper that is also available [here](#white-paper).
+
 CloudSim Plus is developed through a partnership among the Systems, Security and Image Communication Lab of [Instituto de Telecomunicações (IT, Portugal)](http://www.it.pt), the [Universidade da Beira Interior (UBI, Portugal)](http://www.ubi.pt) and the [Instituto Federal de Educação Ciência e Tecnologia do Tocantins (IFTO, Brazil)](http://www.ifto.edu.br). It is supported by the Portuguese [Fundação para a Ciência e a Tecnologia (FCT)](https://www.fct.pt) and by the [Brazilian foundation Coordenação de Aperfeiçoamento de Pessoal de Nível Superior (CAPES)](http://www.capes.gov.br).
 
 The original [CloudSim](http://github.com/Cloudslab/cloudsim) project is developed in the [Cloud Computing and Distributed Systems (CLOUDS) Laboratory](http://cloudbus.org/), at the [Computer Science and Software Engineering Department](http://www.csse.unimelb.edu.au/) of the [University of Melbourne](http://www.unimelb.edu.au/).
@@ -97,7 +99,7 @@ There are 3 ways to use CloudSim Plus. It can be downloaded and executed directl
 
 You can watch the video below ([high quality version here](https://youtu.be/hvFJtvrkCNI)) or follow the instructions in one of the next subsections.
 
-![Downloading CloudSim Plus and running Examples using NetBeans](https://github.com/manoelcampos/cloudsim-plus/raw/master/cloudsim-plus-netbeans.gif)
+![Downloading CloudSim Plus and running Examples using NetBeans](https://github.com/manoelcampos/cloudsim-plus/raw/master/docs/cloudsim-plus-netbeans.gif)
 
 ## Via Command Line
 Considering that you have [git](https://git-scm.com) and [maven](http://maven.apache.org) installed on your operating system, 
@@ -215,7 +217,7 @@ new CloudletsTableBuilderHelper(broker0.getCloudletsFinishedList()).build();
 ```
 
 The presented results are structured and clear to allow better understanding. For example, the image below shows the output for a simulation with two cloudlets (applications).
-![Simulation Results](https://github.com/manoelcampos/cloudsim-plus/raw/master/simulation-results.png)
+![Simulation Results](https://github.com/manoelcampos/cloudsim-plus/raw/master/docs/simulation-results.png)
 
 <p align="right"><a href="#top">:arrow_up:</a></p>
 
@@ -228,7 +230,8 @@ CloudSim Plus has extended documentation of classes and interfaces and also incl
 package documentation that can be viewed directly on your IDE or at the link provided above.
 Such a package documentation gives a general overview of the classes used to build a cloud simulation.
 
-A Google Group forum is also available at <https://groups.google.com/group/cloudsim-plus>
+A Google Group forum is also available at <https://groups.google.com/group/cloudsim-plus>.
+See the [publications](#publications) section to access published CloudSim Plus papers.
 
 <p align="right"><a href="#top">:arrow_up:</a></p>
 
@@ -341,6 +344,7 @@ Additionally, the interface `Storage` was renamed to `FileStorage` and its imple
 The following paper was accepted for publication and will be available at IEEExplore soon. If you are using CloudSim Plus in your research, please make sure you cite this paper.
 
   * [M. C. Silva Filho, R. L. Oliveira, C. C. Monteiro, P. R. M. Inácio, and M. M. Freire, “CloudSim Plus: a Cloud Computing Simulation Framework Pursuing Software Engineering Principles for Improved Modularity, Extensibility and Correctness,” in IFIP/IEEE International Symposium on Integrated Network Management, 2017, p. 7](http://im2017.ieee-im.org/mini-conference).
+  * White Paper ["CloudSim Plus: A Modern Java 8 Framework for Modeling and Simulation of Cloud Computing Infrastructures and Services"](/docs/cloudsim-plus-white-paper.pdf)
   
 <p align="right"><a href="#top">:arrow_up:</a></p>
   
