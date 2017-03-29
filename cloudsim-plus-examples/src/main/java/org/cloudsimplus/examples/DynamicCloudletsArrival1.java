@@ -54,7 +54,7 @@ import org.cloudbus.cloudsim.schedulers.vm.VmSchedulerSpaceShared;
 
 /**
  * An example showing how to delay the submission of cloudlets.
- * Even there is enough resources to run all cloudlets simultaneously,
+ * Although there is enough resources to run all cloudlets simultaneously,
  * the example delays the creation and execution of some cloudlets inside a VM,
  * simulating the dynamic arrival of cloudlets.
  * It first creates a set of cloudlets without delay and
