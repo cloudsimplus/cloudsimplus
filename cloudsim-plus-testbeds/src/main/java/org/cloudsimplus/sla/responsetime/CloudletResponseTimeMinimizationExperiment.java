@@ -11,6 +11,7 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import static java.util.Comparator.comparingDouble;
 import java.util.List;
+import java.util.function.Predicate;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.apache.commons.math3.stat.descriptive.SummaryStatistics;
@@ -18,6 +19,7 @@ import org.cloudbus.cloudsim.brokers.DatacenterBroker;
 import org.cloudbus.cloudsim.brokers.DatacenterBrokerSimple;
 import org.cloudbus.cloudsim.cloudlets.Cloudlet;
 import org.cloudbus.cloudsim.cloudlets.CloudletSimple;
+import org.cloudbus.cloudsim.core.Simulation;
 import org.cloudbus.cloudsim.datacenters.DatacenterSimple;
 import org.cloudbus.cloudsim.distributions.ContinuousDistribution;
 import org.cloudbus.cloudsim.distributions.UniformDistr;
@@ -43,6 +45,7 @@ import org.cloudsimplus.autoscaling.HorizontalVmScaling;
 import org.cloudsimplus.autoscaling.HorizontalVmScalingSimple;
 import org.cloudsimplus.builders.tables.CloudletsTableBuilder;
 import org.cloudsimplus.listeners.EventInfo;
+import org.cloudsimplus.listeners.EventListener;
 import org.cloudsimplus.sla.readJsonFile.CpuUtilization;
 import org.cloudsimplus.sla.readJsonFile.ResponseTime;
 import org.cloudsimplus.sla.readJsonFile.SlaReader;
@@ -98,12 +101,12 @@ public final class CloudletResponseTimeMinimizationExperiment extends Simulation
      */
     private final Comparator<Cloudlet> sortCloudletsByLengthReversed = Comparator.comparingDouble((Cloudlet c) -> c.getLength()).reversed();
 
+
     public CloudletResponseTimeMinimizationExperiment(ContinuousDistribution randCloudlet, ContinuousDistribution randVm) {
         super();
         this.randCloudlet = randCloudlet;
         this.randVm = randVm;
         try {
-
             SlaReader slaReader = new SlaReader(METRICS_FILE);
             ResponseTime rt = new ResponseTime(slaReader);
             rt.checkResponseTimeSlaContract();
@@ -115,6 +118,7 @@ public final class CloudletResponseTimeMinimizationExperiment extends Simulation
 
             // getCloudsim().addOnClockTickListener(this::createNewCloudlets);
             getCloudsim().addOnClockTickListener(this::printVmsCpuUsage);
+
         } catch (IOException ex) {
             Logger.getLogger(CloudletResponseTimeMinimizationExperiment.class.getName()).log(Level.SEVERE, null, ex);
             throw new RuntimeException(ex);
@@ -156,12 +160,15 @@ public final class CloudletResponseTimeMinimizationExperiment extends Simulation
         }
         sortCloudletListByExpectedResponseTime();
 
-        return cloudletList;     
+        return cloudletList;
     }
 
     private void sortCloudletListByExpectedResponseTime() {
         //sort the cloudlet list by expected response time
         Comparator<Cloudlet> sortByExpectedCloudletResponseTime = null;
+        /*@TODO: This loop doesn't make sense. It had been changed before but after the rebase, the change was lost.
+        * After the loop, the comparator will sort the cloudlets list based on
+        * the last VM, what doesn't have any reason to be.*/
         for(Vm vm: getVmList()){
             sortByExpectedCloudletResponseTime
                     = Comparator.comparingDouble(cloudlet -> getExpectedCloudletResponseTime(cloudlet, vm));
@@ -169,12 +176,11 @@ public final class CloudletResponseTimeMinimizationExperiment extends Simulation
         cloudletList.sort(sortByExpectedCloudletResponseTime.reversed());
         System.out.println("\t\tCreated Cloudlets: " + getCloudletList());
     }
-    
+
     private Cloudlet createCloudlet(DatacenterBroker broker) {
         final int id = createdCloudlets++;
         final int i = (int) (randCloudlet.sample() * CLOUDLET_LENGTHS.length);
         final long length = CLOUDLET_LENGTHS[i];
-
         UtilizationModel utilization = new UtilizationModelFull();
         return new CloudletSimple(id, length, 2)
                 .setFileSize(1024)
@@ -306,7 +312,6 @@ public final class CloudletResponseTimeMinimizationExperiment extends Simulation
      * Creates a {@link HorizontalVmScaling} object for a given VM.
      *
      * @param vm the VM in which the Horizontal Scaling will be created
-     * @see #createListOfScalableVms(int)
      */
     private void createHorizontalVmScaling(Vm vm) {
         HorizontalVmScaling horizontalScaling = new HorizontalVmScalingSimple();
@@ -388,11 +393,11 @@ public final class CloudletResponseTimeMinimizationExperiment extends Simulation
         DatacenterBroker broker = getBrokerList().stream()
                 .findFirst()
                 .orElse(DatacenterBroker.NULL);
+
         double totalOfcloudletSlaSatisfied = broker.getCloudletsFinishedList().stream()
                 .map(c -> c.getFinishTime() - c.getLastDatacenterArrivalTime())
                 .filter(rt -> rt <= responseTimeSlaContract)
                 .count();
-
         System.out.printf("\n ** Percentage of cloudlets that complied with "
                 + "the SLA Agreement:  %.2f %%",
                 ((totalOfcloudletSlaSatisfied * 100) / broker.getCloudletsFinishedList().size()));
@@ -417,5 +422,5 @@ public final class CloudletResponseTimeMinimizationExperiment extends Simulation
         exp.run();
         exp.getCloudletsResponseTimeAverage();
         exp.getPercentageOfCloudletsMeetingResponseTime();
-    }  
+    }
 }

@@ -40,7 +40,6 @@ import org.cloudbus.cloudsim.distributions.ContinuousDistribution;
  * @author raysaoliveira
  */
 final class CloudletResponseTimeMinimizationRunner extends ExperimentRunner<CloudletResponseTimeMinimizationExperiment> {
-
     /**
      * Different lengths that will be randomly assigned to created Cloudlets.
      */
@@ -48,14 +47,14 @@ final class CloudletResponseTimeMinimizationRunner extends ExperimentRunner<Clou
     static final int[] VM_PES = {2, 4};
     static final int VMS = 3;
     static final int CLOUDLETS = 6;
+
     /**
      * The response time average for all the experiments.
      */
     private List<Double> cloudletResponseTimes;
 
-    /**
-     * The percentage of cloudlets meeting response time average for all the
-     * experiments.
+     /**
+     * The percentage of cloudlets meeting response time average for all the experiments.
      */
     private List<Double> percentageOfCloudletsMeetingResponseTimes;
 
@@ -97,8 +96,7 @@ final class CloudletResponseTimeMinimizationRunner extends ExperimentRunner<Clou
     }
 
     @Override
-    protected void setup() {
-    }
+    protected void setup() {}
 
     /**
      * Method automatically called after every experiment finishes running. It

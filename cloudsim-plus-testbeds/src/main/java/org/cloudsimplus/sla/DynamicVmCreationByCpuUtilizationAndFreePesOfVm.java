@@ -92,7 +92,7 @@ public class DynamicVmCreationByCpuUtilizationAndFreePesOfVm {
     private static final int HOSTS = 50;
     private static final int HOST_PES = 32;
     private static final int VMS = 3;
-    private static final int CLOUDLETS = 4;
+    private static final int CLOUDLETS = 8;
     private static final long VM_MIPS = 1000;
 
     private DatacenterBroker broker0;
@@ -166,6 +166,7 @@ public class DynamicVmCreationByCpuUtilizationAndFreePesOfVm {
         sortCloudletListByExpectedResponseTime();
 
         broker0.setCloudletComparator(sortCloudletsByLengthReversed);
+
         broker0.submitVmList(vmList);
         broker0.submitCloudletList(cloudletList);
 
@@ -186,7 +187,7 @@ public class DynamicVmCreationByCpuUtilizationAndFreePesOfVm {
         for(Vm vm: vmList){
             sortByExpectedCloudletResponseTime
                     = Comparator.comparingDouble(cloudlet -> getExpectedCloudletResponseTime(cloudlet, vm));
-            
+
         }
         cloudletList.sort(sortByExpectedCloudletResponseTime.reversed());
         System.out.println("\t\tCreated Cloudlets: " + cloudletList);
@@ -460,7 +461,7 @@ public class DynamicVmCreationByCpuUtilizationAndFreePesOfVm {
             if(vm.getBroker().getCloudletsFinishedList().size() > 0) {
                 vmCost = new VmCost(vm);
                 totalCost = vmCost.getTotalCost();
-            }    
+            }
         }
         return totalCost;
     }
