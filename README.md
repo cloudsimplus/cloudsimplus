@@ -213,7 +213,7 @@ cloudsim.start();
 
 /*Prints results when the simulation is over
 (you can use your own code here to print what you want from this cloudlet list).*/
-new CloudletsTableBuilderHelper(broker0.getCloudletsFinishedList()).build();
+new CloudletsTableBuilder(broker0.getCloudletsFinishedList()).build();
 ```
 
 The presented results are structured and clear to allow better understanding. For example, the image below shows the output for a simulation with two cloudlets (applications).
