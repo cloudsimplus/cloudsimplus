@@ -165,14 +165,9 @@ public final class CloudletResponseTimeMinimizationExperiment extends Simulation
 
     private void sortCloudletListByExpectedResponseTime() {
         //sort the cloudlet list by expected response time
-        Comparator<Cloudlet> sortByExpectedCloudletResponseTime = null;
-        /*@TODO: This loop doesn't make sense. It had been changed before but after the rebase, the change was lost.
-        * After the loop, the comparator will sort the cloudlets list based on
-        * the last VM, what doesn't have any reason to be.*/
-        for(Vm vm: getVmList()){
-            sortByExpectedCloudletResponseTime
-                    = Comparator.comparingDouble(cloudlet -> getExpectedCloudletResponseTime(cloudlet, vm));
-        }
+        Comparator<Cloudlet> sortByExpectedCloudletResponseTime 
+                    = Comparator.comparingDouble(cloudlet -> cloudlet.getLength());
+        
         cloudletList.sort(sortByExpectedCloudletResponseTime.reversed());
         System.out.println("\t\tCreated Cloudlets: " + getCloudletList());
     }
