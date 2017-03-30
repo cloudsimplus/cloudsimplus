@@ -21,8 +21,9 @@ Lists the main changes in the project.
   defining the resource usage increment behaviour using a Lambda Expression, enabling the developer
   to give a function that performs the increment in an arithmetic, geometric, exponential or any other
   kind of progression he/she needs (see issue #64). 
-
-
+- Updated the `DatacenterBroker` interface and implementing classes, including the methods `setVmComparator` and `setCloudletComparator` to enable
+  a developer to set a `Comparator` object (which can be given as a Lambda Expression).
+  
 ### Changed
 
 - Changed the methods `getRam()`, `getBw()` and `getSize()` from Vm interface to instead of returning a long value that represents the resource capacity,
