@@ -94,10 +94,10 @@ public class UtilizationModelDynamic extends UtilizationModelAbstract {
      *
      * <p><b>The utilization will not be dynamically incremented
      * until that an increment function is defined by the {@link #setUtilizationUpdateFunction(Function)}.</b></p>
-     * @param initialUtilization the initial percentage of resource utilization
+     * @param initialUtilizationPercent the initial percentage of resource utilization
      */
-    public UtilizationModelDynamic(final double initialUtilization) {
-        this(Unit.PERCENTAGE, initialUtilization);
+    public UtilizationModelDynamic(final double initialUtilizationPercent) {
+        this(Unit.PERCENTAGE, initialUtilizationPercent);
     }
 
     /**
@@ -218,7 +218,7 @@ public class UtilizationModelDynamic extends UtilizationModelAbstract {
      * depending on the {@link #getUnit()}.</p>
      *
      * @param maxResourceUsagePercentage the maximum resource usage
-     * @return 
+     * @return
      */
     public final UtilizationModelDynamic setMaxResourceUtilization(double maxResourceUsagePercentage) {
         validateUtilizationField("maxResourceUtilization", maxResourceUsagePercentage, ALMOST_ZERO);
