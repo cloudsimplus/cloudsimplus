@@ -103,10 +103,16 @@ public class HostListTest {
     private void checkNumberOfPesByStatus(List<HostSimple> list,
             final int expectedNumberOfPesByStatus, Pe.Status statusToCheck) {
         int result = 0;
+
         switch(statusToCheck){
-            case FREE: result = HostList.getNumberOfFreePes(list); break;
-            case BUSY: result = HostList.getNumberOfBusyPes(list); break;
+            case FREE:
+                result = HostList.getNumberOfFreePes(list);
+            break;
+            case BUSY:
+                result = HostList.getNumberOfBusyPes(list);
+            break;
         }
+
         assertEquals(expectedNumberOfPesByStatus, result);
     }
 

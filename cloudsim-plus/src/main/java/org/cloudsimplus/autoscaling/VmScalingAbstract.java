@@ -38,7 +38,7 @@ public abstract class VmScalingAbstract implements VmScaling {
     /**
      * Last time the scheduler checked for VM overload.
      */
-    protected double lastProcessingTime;
+    private double lastProcessingTime;
     private Vm vm;
     private Predicate<Vm> overloadPredicate;
     private Predicate<Vm> underloadPredicate;

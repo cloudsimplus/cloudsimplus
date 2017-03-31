@@ -18,6 +18,10 @@ import org.cloudbus.cloudsim.resources.Pe;
  * @since CloudSim Toolkit 2.0
  */
 public final class HostList {
+    /**
+     * A private constructor to avoid instantiating the class.
+     */
+    private HostList(){}
 
     /**
      * Gets a {@link Host} with a given id.
@@ -120,10 +124,4 @@ public final class HostList {
         Host host = getById(hostList, hostId);
         return host.setPeStatus(peId, status);
     }
-
-    /**
-     * A private constructor to avoid instantiating the class.
-     */
-    private HostList(){}
-
 }

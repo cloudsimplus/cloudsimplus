@@ -67,7 +67,7 @@ public abstract class DatacenterBrokerAbstract extends CloudSimEntity implements
     private Supplier<Datacenter> datacenterSupplier;
     private Supplier<Datacenter> fallbackDatacenterSupplier;
     private Function<Cloudlet, Vm> vmMapper;
-    
+
     private Comparator<Vm> vmComparator;
     private Comparator<Cloudlet> cloudletComparator;
 
@@ -130,7 +130,7 @@ public abstract class DatacenterBrokerAbstract extends CloudSimEntity implements
         vmCreationRequestsMap = new HashMap<>();
         cloudletCreationRequestsMap = new HashMap<>();
         vmsToDatacentersMap = new HashMap<>();
-        
+
         setDefaultPolicies();
     }
 
@@ -167,7 +167,7 @@ public abstract class DatacenterBrokerAbstract extends CloudSimEntity implements
      */
     @Override
     public void submitVmList(List<? extends Vm> list) {
-        sortVmsIfComparatorIsSet(list);        
+        sortVmsIfComparatorIsSet(list);
         lastSubmittedVm = setIdForEntitiesWithNoDelay(list, lastSubmittedVm);
         vmsWaitingList.addAll(list);
 
@@ -197,6 +197,12 @@ public abstract class DatacenterBrokerAbstract extends CloudSimEntity implements
         List<Cloudlet> newList = new ArrayList<>(1);
         newList.add(cloudlet);
         submitCloudletList(newList);
+    }
+
+    @Override
+    public void submitCloudletList(List<? extends Cloudlet> list, double submissionDelay) {
+        setDelayForEntitiesWithNoDelay(list, submissionDelay);
+        submitCloudletList(list);
     }
 
     /**
@@ -250,12 +256,6 @@ public abstract class DatacenterBrokerAbstract extends CloudSimEntity implements
         if(Objects.isNull(cloudletUtilizationModel.getSimulation()) || cloudletUtilizationModel.getSimulation() == Simulation.NULL){
             cloudletUtilizationModel.setSimulation(getSimulation());
         }
-    }
-
-    @Override
-    public void submitCloudletList(List<? extends Cloudlet> list, double submissionDelay) {
-        setDelayForEntitiesWithNoDelay(list, submissionDelay);
-        submitCloudletList(list);
     }
 
     /**
@@ -774,5 +774,5 @@ public abstract class DatacenterBrokerAbstract extends CloudSimEntity implements
     public void setCloudletComparator(Comparator<Cloudlet> comparator) {
         this.cloudletComparator = comparator;
     }
-    
+
 }

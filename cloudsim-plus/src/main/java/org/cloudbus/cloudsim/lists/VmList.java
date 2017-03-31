@@ -20,6 +20,11 @@ import org.cloudbus.cloudsim.vms.Vm;
 public final class VmList {
 
     /**
+     * A private constructor to avoid instantiating the class.
+     */
+    private VmList(){}
+
+    /**
      * Gets a {@link Vm} with a given id.
      *
      * @param <T> the class of VMs inside the list
@@ -74,9 +79,5 @@ public final class VmList {
         vmList.sort(comparator.reversed());
     }
 
-    /**
-     * A private constructor to avoid instantiating the class.
-     */
-    private VmList(){}
 
 }

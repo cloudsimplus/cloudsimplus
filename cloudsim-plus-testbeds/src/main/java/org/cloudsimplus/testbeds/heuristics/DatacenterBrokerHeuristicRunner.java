@@ -103,6 +103,14 @@ final class DatacenterBrokerHeuristicRunner extends ExperimentRunner<DatacenterB
      */
     private final boolean experimentVerbose = false;
 
+    DatacenterBrokerHeuristicRunner() {
+        super();
+        experimentCosts = new ArrayList<>();
+        runtimeStats = new SummaryStatistics();
+        vmPesArray = new int[0];
+        cloudletPesArray = new int[0];
+    }
+
     /**
      * Starts the execution of the experiments the number of times defines in
      * {@link #numberOfSimulationRuns}.
@@ -124,14 +132,6 @@ final class DatacenterBrokerHeuristicRunner extends ExperimentRunner<DatacenterB
                 .setBaseSeed(1475098589732L) //Comment this to use the current time as base seed
                 .setVerbose(true)
                 .run();
-    }
-
-    DatacenterBrokerHeuristicRunner() {
-        super();
-        experimentCosts = new ArrayList<>();
-        runtimeStats = new SummaryStatistics();
-        vmPesArray = new int[0];
-        cloudletPesArray = new int[0];
     }
 
     /**

@@ -69,7 +69,6 @@ public class PowerVmListTest {
 
     @Test
     public void testSortByCpuUtilizationWithVmsInIncreasingUtilizationOrder() {
-        System.out.println("sortByCpuUtilization");
         final List<PowerVm> list = createPowerVmList(true);
 
         VmList.sortByCpuUtilization(list, 0);
@@ -88,7 +87,6 @@ public class PowerVmListTest {
 
     @Test
     public void testSortByCpuUtilizationWithVmsInDecreasingUtilizationOrder() {
-        System.out.println("sortByCpuUtilization");
         final List<PowerVm> list = createPowerVmList(false);
         VmList.sortByCpuUtilization(list, 0);
 

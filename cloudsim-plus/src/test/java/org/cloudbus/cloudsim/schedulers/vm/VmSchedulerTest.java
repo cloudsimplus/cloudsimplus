@@ -1,7 +1,7 @@
 package org.cloudbus.cloudsim.schedulers.vm;
 
-import org.cloudbus.cloudsim.schedulers.vm.VmScheduler;
 import org.junit.Test;
+
 import static org.junit.Assert.*;
 
 /**

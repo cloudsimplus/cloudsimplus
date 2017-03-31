@@ -43,6 +43,10 @@ public class CloudletSimpleTest {
     private static final int CLOUDLET_OUTPUT_SIZE = 1000;
 
     private static final int PES_NUMBER = 2;
+    public static final String FILE2 = "file2.txt";
+    public static final String FILE3 = "file3.txt";
+    public static final String FILE1 = "file1.txt";
+    public static final String FILE_INEXISTENT = "file-inexistent.txt";
 
     private CloudletSimple cloudlet;
     private UtilizationModel utilizationModelCpu;
@@ -332,7 +336,7 @@ public class CloudletSimpleTest {
         Assert.assertNotNull(cloudlet.getRequiredFiles());
 
         List<String> files = new ArrayList<>();
-        files.add("file1.txt");
+        files.add(FILE1);
         cloudlet.setRequiredFiles(files);
         assertEquals(files, cloudlet.getRequiredFiles());
     }
@@ -509,7 +513,7 @@ public class CloudletSimpleTest {
     @Test
     public void testAddRequiredFile() {
         CloudletSimple c = createCloudlet();
-        final String files[] = {"file1.txt", "file2.txt"};
+        final String files[] = {FILE1, FILE2};
         for (String file : files) {
             assertTrue("Method file should be added",
                     c.addRequiredFile(file));  //file doesn't previously added
@@ -521,12 +525,12 @@ public class CloudletSimpleTest {
     @Test
     public void testDeleteRequiredFile() {
         CloudletSimple c = createCloudlet();
-        final String files[] = {"file1.txt", "file2.txt", "file3.txt"};
+        final String files[] = {FILE1, FILE2, FILE3};
         for (String file : files) {
             c.addRequiredFile(file);
         }
 
-        assertFalse(c.deleteRequiredFile("file-inexistent.txt"));
+        assertFalse(c.deleteRequiredFile(FILE_INEXISTENT));
         for (String file : files) {
             assertTrue(c.deleteRequiredFile(file));
             assertFalse(c.deleteRequiredFile(file)); //already deleted
@@ -536,7 +540,7 @@ public class CloudletSimpleTest {
     @Test
     public void testRequiredFiles() {
         CloudletSimple c = createCloudlet();
-        final String files[] = {"file1.txt", "file2.txt", "file3.txt"};
+        final String files[] = {FILE1, FILE2, FILE3};
         c.setRequiredFiles(null); //internally it has to creates a new instance
         Assert.assertNotNull(c.getRequiredFiles());
 

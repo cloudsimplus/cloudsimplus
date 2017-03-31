@@ -120,7 +120,6 @@ public class RamTest {
 
     @Test
     public void testAllocateResourceMultipleAllocations1() {
-        System.out.println("testAllocateResourceMultipleAllocations1");
         final Ram instance = createResource();
         long allocation = 0, totalAllocation = 0;
         assertEquals(allocation, instance.getAllocatedResource());
@@ -157,7 +156,6 @@ public class RamTest {
 
     @Test
     public void testAllocateResourceMultipleAllocations2() {
-        System.out.println("testAllocateResourceMultipleAllocations2");
         final Ram instance = createResource();
         long totalAllocation = 0, totalAvailable = CAPACITY;
         assertEquals(CAPACITY, instance.getCapacity());
@@ -169,11 +167,7 @@ public class RamTest {
             //checks the available and allocated amount before allocation
             assertEquals(totalAvailable, instance.getAvailableResource());
             assertEquals(totalAllocation, instance.getAllocatedResource());
-
-            //allocate
-            boolean result = instance.allocateResource(allocation);
-            assertTrue(result);
-
+            assertTrue(instance.allocateResource(allocation));
             //checks the available and allocated amount after allocation
             totalAvailable -= allocation;
             totalAllocation += allocation;
@@ -183,23 +177,20 @@ public class RamTest {
         assertEquals(0, instance.getAvailableResource());
         assertEquals(instance.getCapacity(), instance.getAllocatedResource());
 
-        boolean result = instance.allocateResource(allocation);
-        assertEquals(false, result);
+        assertEquals(false, instance.allocateResource(allocation));
         //available and allocated amount has to be unchanged
         assertEquals(0, instance.getAvailableResource());
         assertEquals(instance.getCapacity(), instance.getAllocatedResource());
 
         //increase the capacity
         final long oldCapacity = CAPACITY, newCapacity = oldCapacity + allocation;
-        result = instance.setCapacity(newCapacity);
-        assertEquals(true, result);
+        assertEquals(true, instance.setCapacity(newCapacity));
         assertEquals(newCapacity, instance.getCapacity());
         assertEquals(allocation, instance.getAvailableResource());
         assertEquals(oldCapacity, instance.getAllocatedResource());
 
         //try a new allocation
-        result = instance.allocateResource(allocation);
-        assertEquals(true, result);
+        assertEquals(true, instance.allocateResource(allocation));
         assertEquals(0, instance.getAvailableResource());
         assertEquals(newCapacity, instance.getAllocatedResource());
     }

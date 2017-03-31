@@ -406,15 +406,14 @@ public interface Cloudlet extends UniquelyIdentificable, ChangeableId, Delayable
     UtilizationModel getUtilizationModelRam();
 
     /**
-     * Gets the utilization of Bandwidth at a given time, that is defined in
+     * Gets the utilization of CPU at the current simulation time, that is defined in
      * percentage or absolute values, depending of the {@link UtilizationModel#getUnit()}
-     * defined for the {@link #getUtilizationModelBw()} ()}.
+     * set for the {@link #getUtilizationModelCpu() CPU utilizaton model}.
      *
-     * @param time the time to get the utilization
      * @return the utilization value
-     * @see #getUtilizationModelBw() ()
+     * @see #getUtilizationModelCpu()
      */
-    double getUtilizationOfBw(final double time);
+    double getUtilizationOfCpu();
 
     /**
      * Gets the utilization of CPU at a given time, that is defined in
@@ -426,6 +425,16 @@ public interface Cloudlet extends UniquelyIdentificable, ChangeableId, Delayable
      * @see #getUtilizationModelCpu()
      */
     double getUtilizationOfCpu(final double time);
+
+    /**
+     * Gets the utilization of RAM at the current simulation time, that is defined in
+     * percentage or absolute values, depending of the {@link UtilizationModel#getUnit()}
+     * set for the {@link #getUtilizationModelRam() RAM utilizaton model}.
+     *
+     * @return the utilization value
+     * @see #getUtilizationModelRam()
+     */
+    double getUtilizationOfRam();
 
     /**
      * Gets the utilization of RAM at a given time, that is defined in
@@ -449,24 +458,15 @@ public interface Cloudlet extends UniquelyIdentificable, ChangeableId, Delayable
     double getUtilizationOfBw();
 
     /**
-     * Gets the utilization of CPU at the current simulation time, that is defined in
+     * Gets the utilization of Bandwidth at a given time, that is defined in
      * percentage or absolute values, depending of the {@link UtilizationModel#getUnit()}
-     * set for the {@link #getUtilizationModelCpu() CPU utilizaton model}.
+     * defined for the {@link #getUtilizationModelBw()} ()}.
      *
+     * @param time the time to get the utilization
      * @return the utilization value
-     * @see #getUtilizationModelCpu()
+     * @see #getUtilizationModelBw() ()
      */
-    double getUtilizationOfCpu();
-
-    /**
-     * Gets the utilization of RAM at the current simulation time, that is defined in
-     * percentage or absolute values, depending of the {@link UtilizationModel#getUnit()}
-     * set for the {@link #getUtilizationModelRam() RAM utilizaton model}.
-     *
-     * @return the utilization value
-     * @see #getUtilizationModelRam()
-     */
-    double getUtilizationOfRam();
+    double getUtilizationOfBw(final double time);
 
     /**
      * Gets the id of Vm that is planned to execute the cloudlet.

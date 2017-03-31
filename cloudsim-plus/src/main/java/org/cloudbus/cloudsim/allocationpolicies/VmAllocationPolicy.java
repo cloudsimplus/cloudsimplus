@@ -50,6 +50,17 @@ public interface VmAllocationPolicy {
     boolean allocateHostForVm(Vm vm);
 
     /**
+     * Allocates a specified host for a given VM.
+     *
+     * @param vm the VM to allocate a host to
+     * @param host the host to allocate to the given VM
+     * @return $true if the host could be allocated; $false otherwise
+     * @pre $none
+     * @post $none
+     */
+    boolean allocateHostForVm(Vm vm, Host host);
+
+    /**
      * Try to scale some Vm's resource vertically up or down, respectively if:
      * <ul>
      *     <li>the Vm is overloaded and the Host where the Vm is placed has enough capacity</li>
@@ -63,17 +74,6 @@ public interface VmAllocationPolicy {
      * @return true if the requested resource was scaled, false otherwise
      */
     boolean scaleVmVertically(VerticalVmScaling scaling);
-
-    /**
-     * Allocates a specified host for a given VM.
-     *
-     * @param vm the VM to allocate a host to
-     * @param host the host to allocate to the given VM
-     * @return $true if the host could be allocated; $false otherwise
-     * @pre $none
-     * @post $none
-     */
-    boolean allocateHostForVm(Vm vm, Host host);
 
     /**
      * Releases the host used by a VM.

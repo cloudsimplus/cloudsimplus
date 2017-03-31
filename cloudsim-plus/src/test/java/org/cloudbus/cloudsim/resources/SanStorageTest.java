@@ -15,12 +15,13 @@ public class SanStorageTest {
     private static final double BW = 1000;
     private static final int FILE_SIZE = 5000;
     private static final double INDIVIDUAL_FILE_TRANSFER_TIME = (FILE_SIZE/BW) + NETWORK_LATENCY;
+    public static final String FILE1 = "file1.txt";
 
     @Test
     public void testAddReservedFile() {
         System.out.println("addReservedFile");
         SanStorage instance = createSanStorage(BW);
-        File file = new File("file1.txt", FILE_SIZE);
+        File file = new File(FILE1, FILE_SIZE);
         assertTrue(instance.reserveSpace(file.getSize()));
         assertTrue(instance.addReservedFile(file) > INDIVIDUAL_FILE_TRANSFER_TIME);
     }
@@ -66,7 +67,6 @@ public class SanStorageTest {
 
     @Test
     public void testAddFile_File() {
-        System.out.println("addFile");
         SanStorage instance = createSanStorage(BW);
 
         //try invalid file
@@ -74,13 +74,12 @@ public class SanStorageTest {
         assertTrue(instance.addFile(file) == 0);
 
         //add a valid file
-        file = new File("file1.txt", FILE_SIZE);
+        file = new File(FILE1, FILE_SIZE);
         assertTrue(instance.addFile(file) > INDIVIDUAL_FILE_TRANSFER_TIME);
     }
 
     @Test
     public void testAddFile_List() {
-        System.out.println("addFile");
         SanStorage instance = createSanStorage(BW);
         List<File> list = HarddriveStorageTest.createFileList(TOTAL_FILES, FILE_SIZE);
         final double transferTimeOfAllFiles = INDIVIDUAL_FILE_TRANSFER_TIME * TOTAL_FILES;
@@ -91,7 +90,7 @@ public class SanStorageTest {
     public void testDeleteFile_File() {
         System.out.println("deleteFile");
         SanStorage instance = createSanStorage(BW);
-        File file = new File("file1.txt", FILE_SIZE);
+        File file = new File(FILE1, FILE_SIZE);
         instance.addFile(file);
         assertTrue(instance.deleteFile(file) > INDIVIDUAL_FILE_TRANSFER_TIME);
     }

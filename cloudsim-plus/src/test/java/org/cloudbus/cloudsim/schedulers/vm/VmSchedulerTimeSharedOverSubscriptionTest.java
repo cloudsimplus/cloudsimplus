@@ -138,11 +138,11 @@ public class VmSchedulerTimeSharedOverSubscriptionTest {
 
     @Test
     public void testAllocatePesForVmShortageEqualsToAllocatedMips() {
-        VmSchedulerAbstract vmScheduler = createVmScheduler(3500, 1);
-        Vm vm1 = VmSimpleTest.createVm(0, 170, 1);
-        Vm vm2 = VmSimpleTest.createVm(1, 2000, 1);
-        Vm vm3 = VmSimpleTest.createVm(2, 10, 1);
-        Vm vm4 = VmSimpleTest.createVm(3, 2000, 1);
+        final VmSchedulerAbstract vmScheduler = createVmScheduler(3500, 1);
+        final Vm vm1 = VmSimpleTest.createVm(0, 170, 1);
+        final Vm vm2 = VmSimpleTest.createVm(1, 2000, 1);
+        final Vm vm3 = VmSimpleTest.createVm(2, 10, 1);
+        final Vm vm4 = VmSimpleTest.createVm(3, 2000, 1);
 
         List<Double> mipsShare1 = new ArrayList<>();
         mipsShare1.add(170.0);
@@ -180,11 +180,10 @@ public class VmSchedulerTimeSharedOverSubscriptionTest {
 
     @Test
     public void testAllocatePesForSameSizedVmsOversubscribed() {
-        VmSchedulerAbstract vmScheduler = createVmScheduler(MIPS, 1);
-
-        VmSimple vm1 = VmSimpleTest.createVm(0, 1500, 1);
-        VmSimple vm2 = VmSimpleTest.createVm(1, 1000, 1);
-        VmSimple vm3 = VmSimpleTest.createVm(2, 1000, 1);
+        final VmSchedulerAbstract vmScheduler = createVmScheduler(MIPS, 1);
+        final VmSimple vm1 = VmSimpleTest.createVm(0, 1500, 1);
+        final VmSimple vm2 = VmSimpleTest.createVm(1, 1000, 1);
+        final VmSimple vm3 = VmSimpleTest.createVm(2, 1000, 1);
 
         List<Double> mipsShare1 = new ArrayList<>();
         mipsShare1.add(1500.0);

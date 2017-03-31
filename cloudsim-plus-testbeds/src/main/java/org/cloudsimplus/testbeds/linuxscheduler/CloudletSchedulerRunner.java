@@ -46,11 +46,7 @@ import static org.cloudsimplus.testbeds.linuxscheduler.CloudletSchedulerExperime
  */
 abstract class CloudletSchedulerRunner<T extends CloudletSchedulerExperiment> extends ExperimentRunner<T> {
 
-    /**
-     * A Pseudo Random Number Generator (PRNG) used to generate the number of
-     * Cloudlets to be created for each experiment run.
-     */
-    protected ContinuousDistribution numberOfCloudletsPRNG;
+    private ContinuousDistribution numberOfCloudletsPRNG;
 
     /**
      * A list of Cloudlets' completion time mean for each experiment run.
@@ -144,4 +140,11 @@ abstract class CloudletSchedulerRunner<T extends CloudletSchedulerExperiment> ex
         return map;
     }
 
+    /**
+     * A Pseudo Random Number Generator (PRNG) used to generate the number of
+     * Cloudlets to be created for each experiment run.
+     */
+    public ContinuousDistribution getNumberOfCloudletsPRNG() {
+        return numberOfCloudletsPRNG;
+    }
 }

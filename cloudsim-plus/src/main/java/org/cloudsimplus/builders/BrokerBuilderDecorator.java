@@ -74,7 +74,7 @@ public class BrokerBuilderDecorator implements BrokerBuilderInterface {
     }
 
     @Override
-    public DatacenterBroker findBroker(int id) throws RuntimeException {
+    public DatacenterBroker findBroker(int id) {
         return builder.findBroker(id);
     }
 

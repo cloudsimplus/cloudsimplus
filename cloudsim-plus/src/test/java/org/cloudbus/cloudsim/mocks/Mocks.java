@@ -9,7 +9,7 @@ import org.easymock.EasyMock;
  *
  * @author Manoel Campos da Silva Filho
  */
-public class Mocks {
+final public class Mocks {
     /**
      * A private constructor to avoid the class to be instantiated.
      */

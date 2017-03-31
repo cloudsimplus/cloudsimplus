@@ -36,7 +36,7 @@ Finally, when submitting a ticket, please read carefully the information at the 
 
 Before fixing a bug of implementing a new feature, you have to first fork the repository on GitHub. You can fix a bug or implement a feature already reported by other user or by yourself at the issues page, as mentioned in the previous section. 
 
-### Create a Topic Branch for You to Work on
+### 1. Create a Topic Branch for You to Work on
 
 Create a topic branch from where you want to base your work.
   * This is usually the master branch.
@@ -44,7 +44,7 @@ Create a topic branch from where you want to base your work.
   * To quickly create a topic branch based on master: `git checkout -b fix/master/my_contribution master`. 
     Please avoid working directly on the `master` branch.
 
-### Follow These Code Quality Guidelines
+### 2. Follow These Code Quality Guidelines
 
 The last step before you start coding is to follow the guidelines below, so that your contribution is likely to be merged in the CloudSim Plus code:
 
@@ -74,7 +74,7 @@ The last step before you start coding is to follow the guidelines below, so that
   by means of [EditorConfig project](http://editorconfig.org). 
   You are not required to use it, but at least, use the "auto format" option of your IDE to tidy the code after you finish working.  
 
-### Committing Your Changes
+### 3. Commit Your Changes
 
 * Check for unnecessary whitespace with `git diff --check` before committing.
 * Spend a little time to write good, informative and structured commit messages, describing clearly what you have done. Take the template below as an example:
@@ -93,7 +93,7 @@ The last step before you start coding is to follow the guidelines below, so that
 * Run _all_ the tests to assure nothing else was accidentally broken.
 * Changes that don't have a set of unit tests or that break existing tests **will not** be accepted.
 
-### Submitting Your Changes
+### 4. Submit Your Changes
 
 * [Rebase your changes on top of CloudSim Plus master branch at the official repository](https://robots.thoughtbot.com/git-interactive-rebase-squash-amend-rewriting-history#rebase-on-top-of-master) so that you wil get the most recent development version and perform any merge conflicts that may happen.
 * [Commit the final changes including something such as "Closes #NUMBER_OF_THE_ISSUE" or "Fixes #NUMBER_OF_THE_ISSUE"](https://help.github.com/articles/closing-issues-via-commit-messages/) in order to reference the issue in which you were working on.

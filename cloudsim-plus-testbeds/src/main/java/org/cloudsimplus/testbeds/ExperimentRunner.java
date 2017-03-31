@@ -44,7 +44,8 @@ import org.cloudbus.cloudsim.distributions.ContinuousDistribution;
  */
 public abstract class ExperimentRunner<T extends SimulationExperiment> implements Runnable {
 
-    protected boolean verbose = false;
+    private boolean verbose = false;
+
     /**
      * @see #getBaseSeed()
      */
@@ -78,7 +79,7 @@ public abstract class ExperimentRunner<T extends SimulationExperiment> implement
      * @see #getNumberOfBatches()
      */
     private int numberOfBatches;
-    
+
     /**
      * Creates an experiment runner, setting the
      * {@link #getBaseSeed() base seed} as the current time.
@@ -190,7 +191,7 @@ public abstract class ExperimentRunner<T extends SimulationExperiment> implement
      *
      * Checks if the "Batch Means Method" is to be applied to reduce correlation
      * between the results for different experiment runs.
-     * @return 
+     * @return
      */
     public boolean isApplyBatchMeansMethod() {
         return simulationRunsAndNumberOfBatchesAreCompatible();
@@ -304,7 +305,7 @@ public abstract class ExperimentRunner<T extends SimulationExperiment> implement
      * Checks if the "Antithetic Variates Technique" is to be applied to reduce
      * results variance.
      *
-     * @return 
+     * @return
      * @see
      * <a href="https://en.wikipedia.org/wiki/Antithetic_variates">Antithetic
      * variates</a>
@@ -319,7 +320,7 @@ public abstract class ExperimentRunner<T extends SimulationExperiment> implement
      * if the
      * {@link #isApplyAntitheticVariatesTechnique() "Antithetic Variates Technique"}
      * is to be used.
-     * @return 
+     * @return
      */
     public int getNumberOfSimulationRuns() {
         return numberOfSimulationRuns;
@@ -340,7 +341,7 @@ public abstract class ExperimentRunner<T extends SimulationExperiment> implement
      *
      * If this number is greater than 1, the "Batch Means Method" is used to
      * reduce the correlation between experiment runs.
-     * @return 
+     * @return
      */
     public int getNumberOfBatches() {
         return numberOfBatches;
@@ -350,7 +351,7 @@ public abstract class ExperimentRunner<T extends SimulationExperiment> implement
      * Sets the number of batches in which the simulation runs will be divided.
      *
      * @param numberOfBatches number of simulation run batches
-     * @return 
+     * @return
      * @see #getNumberOfBatches()
      */
     public final ExperimentRunner setNumberOfBatches(int numberOfBatches) {
@@ -364,7 +365,7 @@ public abstract class ExperimentRunner<T extends SimulationExperiment> implement
      * each different experiment run, a different seed based on this one is
      * used.
      *
-     * @return 
+     * @return
      * @see #getSeeds()
      */
     public long getBaseSeed() {
@@ -374,7 +375,7 @@ public abstract class ExperimentRunner<T extends SimulationExperiment> implement
     /**
      * Gets the seeds used to run each experiment.
      *
-     * @return 
+     * @return
      * @see #createRandomGenAndAddSeedToList(int, double, double)
      */
     public List<Long> getSeeds() {
@@ -408,11 +409,11 @@ public abstract class ExperimentRunner<T extends SimulationExperiment> implement
             final long experimentSeed = getBaseSeed() + experimentIndex + 1;
             prng = new UniformDistr(minValue, maxValue, experimentSeed);
         }
-        
+
         addSeed(prng.getSeed());
         return prng;
     }
-    
+
      /**
      * Creates a pseudo random number generator (PRNG) for a experiment run that
      * generates uniform values between [0 and 1[. Adds the PRNG seed to the
@@ -428,7 +429,7 @@ public abstract class ExperimentRunner<T extends SimulationExperiment> implement
      */
     public ContinuousDistribution createRandomGenAndAddSeedToList(int experimentIndex) {
         return createRandomGenAndAddSeedToList(experimentIndex, 0, 1);
-    } 
+    }
 
     /**
      * Adds a seed to the list of seeds used for each experiment.
@@ -450,7 +451,7 @@ public abstract class ExperimentRunner<T extends SimulationExperiment> implement
 
     /**
      * Time in seconds the experiments finished.
-     * @return 
+     * @return
      */
     public long getExperimentsFinishTime() {
         return experimentsFinishTime;
@@ -458,7 +459,7 @@ public abstract class ExperimentRunner<T extends SimulationExperiment> implement
 
     /**
      * Time in seconds the experiments started.
-     * @return 
+     * @return
      */
     public long getExperimentsStartTime() {
         return experimentsStartTime;
@@ -492,9 +493,9 @@ public abstract class ExperimentRunner<T extends SimulationExperiment> implement
         System.out.println("\n------------------------------------------------------------------");
         metricsMap.entrySet().stream().forEach(this::computeAndPrintFinalResults);
         Log.enable();
-        System.out.printf("\nExperiments finished in %d seconds!\n", getExperimentsFinishTime());        
+        System.out.printf("\nExperiments finished in %d seconds!\n", getExperimentsFinishTime());
     }
-    
+
     /**
      * Creates a Map adding a List of values for each metric to be computed.
      * The computation of final experiments results are performed on this map.
@@ -554,12 +555,12 @@ public abstract class ExperimentRunner<T extends SimulationExperiment> implement
     }
 
     protected abstract void printSimulationParameters();
-    
+
     /**
-     * Creates a SummaryStatistics object from a list of 
-     * Double values, allowing computation of statistics 
+     * Creates a SummaryStatistics object from a list of
+     * Double values, allowing computation of statistics
      * such as mean over these values.
-     * The method also checks if the 
+     * The method also checks if the
      * {@link #isApplyAntitheticVariatesTechnique() Antithetic Variates}
      * and the {@link #isApplyBatchMeansMethod() Batch Means} techniques
      * are enabled and then apply them over the given list of Doubles.
@@ -577,7 +578,7 @@ public abstract class ExperimentRunner<T extends SimulationExperiment> implement
         values.forEach(stats::addValue);
         return stats;
     }
-    
+
     /**
      * Computes and prints final simulation results such as means, standard deviations and
      * confidence intervals.
@@ -587,7 +588,7 @@ public abstract class ExperimentRunner<T extends SimulationExperiment> implement
      * and the value is a {@link SummaryStatistics} object containing means of each
      * experiment run that will be used to computed an overall mean and other
      * statistics
-     * @see #printFinalResults(java.lang.String, org.apache.commons.math3.stat.descriptive.SummaryStatistics) 
+     * @see #printFinalResults(java.lang.String, org.apache.commons.math3.stat.descriptive.SummaryStatistics)
      */
     private void computeAndPrintFinalResults(Map.Entry<String, List<Double>> metricEntry){
         printFinalResults(metricEntry.getKey(), computeFinalStatistics(metricEntry.getValue()));
@@ -613,7 +614,7 @@ public abstract class ExperimentRunner<T extends SimulationExperiment> implement
      * Indicates if the runner will output execution logs or not. This doesn't
      * affect the verbosity of individual experiments executed. Each
      * {@link SimulationExperiment} has its own verbose attribute.
-     * @return 
+     * @return
      */
     public boolean isVerbose() {
         return verbose;
@@ -625,7 +626,7 @@ public abstract class ExperimentRunner<T extends SimulationExperiment> implement
      * {@link SimulationExperiment} has its own verbose attribute.
      *
      * @param verbose true if results have to be output, false otherwise
-     * @return 
+     * @return
      */
     public ExperimentRunner setVerbose(boolean verbose) {
         this.verbose = verbose;

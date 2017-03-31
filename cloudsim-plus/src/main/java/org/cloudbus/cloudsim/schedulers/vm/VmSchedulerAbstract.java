@@ -90,8 +90,7 @@ public abstract class VmSchedulerAbstract implements VmScheduler {
 
     @Override
     public double getMaxAvailableMips() {
-        if (getPeList().isEmpty()) {
-            Log.printLine("Pe list is empty");
+        if (isPeListEmpty()) {
             return 0;
         }
 
@@ -103,12 +102,20 @@ public abstract class VmSchedulerAbstract implements VmScheduler {
 
     @Override
     public long getPeCapacity() {
-        if (getPeList().isEmpty()) {
-            Log.printLine("Pe list is empty");
+        if (isPeListEmpty()) {
             return 0;
         }
 
         return getPeList().get(0).getCapacity();
+    }
+
+    private boolean isPeListEmpty() {
+        if (getPeList().isEmpty()) {
+            Log.printLine("Pe list is empty");
+            return true;
+        }
+
+        return false;
     }
 
     @Override

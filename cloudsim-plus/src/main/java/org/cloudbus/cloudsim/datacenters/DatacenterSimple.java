@@ -55,6 +55,38 @@ public class DatacenterSimple extends CloudSimEntity implements Datacenter {
     private double schedulingInterval;
 
     /**
+     * Creates a Datacenter with the given parameters.
+     *
+     * @param simulation The CloudSim instance that represents the simulation the Entity is related to
+     * @param characteristics the characteristics of the Datacenter to be created
+     * @param storageList a List of storage elements, for data simulation
+     * @param vmAllocationPolicy the policy to be used to allocate VMs into hosts
+     * @param schedulingInterval the scheduling interval to process each
+     * Datacenter received event (in seconds)
+     * @throws IllegalArgumentException when this entity has <tt>zero</tt> number of PEs (Processing Elements).
+     * No PEs mean the Cloudlets can't be processed. A CloudResource must
+     * contain one or more Machines. A Machine must contain one or more PEs.
+     *
+     * @post $none
+     *
+     * @deprecated Use the other available constructors with less parameters
+     * and set the remaining ones using the respective setters.
+     * This constructor will be removed in future versions.
+     */
+    @Deprecated
+    public DatacenterSimple(
+        Simulation simulation,
+        DatacenterCharacteristics characteristics,
+        VmAllocationPolicy vmAllocationPolicy,
+        List<FileStorage> storageList,
+        double schedulingInterval)
+    {
+        this(simulation, characteristics, vmAllocationPolicy);
+        setStorageList(storageList);
+        setSchedulingInterval(schedulingInterval);
+    }
+
+    /**
      * Creates a Datacenter.
      *
      * @param simulation The CloudSim instance that represents the simulation the Entity is related to
@@ -93,38 +125,6 @@ public class DatacenterSimple extends CloudSimEntity implements Datacenter {
 
     private void setSimulationInstanceForHosts(DatacenterCharacteristics characteristics) {
         characteristics.getHostList().forEach(host -> host.setSimulation(getSimulation()));
-    }
-
-    /**
-     * Creates a Datacenter with the given parameters.
-     *
-     * @param simulation The CloudSim instance that represents the simulation the Entity is related to
-     * @param characteristics the characteristics of the Datacenter to be created
-     * @param storageList a List of storage elements, for data simulation
-     * @param vmAllocationPolicy the policy to be used to allocate VMs into hosts
-     * @param schedulingInterval the scheduling interval to process each
-     * Datacenter received event (in seconds)
-     * @throws IllegalArgumentException when this entity has <tt>zero</tt> number of PEs (Processing Elements).
-     * No PEs mean the Cloudlets can't be processed. A CloudResource must
-     * contain one or more Machines. A Machine must contain one or more PEs.
-     *
-     * @post $none
-     *
-     * @deprecated Use the other available constructors with less parameters
-     * and set the remaining ones using the respective setters.
-     * This constructor will be removed in future versions.
-     */
-    @Deprecated
-    public DatacenterSimple(
-        Simulation simulation,
-        DatacenterCharacteristics characteristics,
-        VmAllocationPolicy vmAllocationPolicy,
-        List<FileStorage> storageList,
-        double schedulingInterval)
-    {
-        this(simulation, characteristics, vmAllocationPolicy);
-        setStorageList(storageList);
-        setSchedulingInterval(schedulingInterval);
     }
 
     private void assignHostsToCurrentDatacenter() {
@@ -609,11 +609,8 @@ public class DatacenterSimple extends CloudSimEntity implements Datacenter {
             cl.assignToDatacenter(this);
 
             submitCloudletToVm(cl, ack);
-        } catch (ClassCastException c) {
-            Log.printLine(getName() + ".processCloudletSubmit(): " + "ClassCastException error.");
-            c.printStackTrace();
         } catch (Exception e) {
-            Log.printLine(getName() + ".processCloudletSubmit(): " + "Exception error.");
+            Log.printLine(getName() + ".processCloudletSubmit() exception.");
             e.printStackTrace();
         }
 

@@ -7,29 +7,27 @@
  */
 package org.cloudbus.cloudsim;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import org.cloudbus.cloudsim.util.Log;
+import org.junit.Before;
+import org.junit.Test;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.text.DecimalFormatSymbols;
 import java.util.Locale;
 
-import org.cloudbus.cloudsim.util.Log;
-import org.junit.Before;
-import org.junit.Test;
+import static org.junit.Assert.*;
 
 /**
- * @author	Anton Beloglazov
- * @since	CloudSim Toolkit 2.0
+ * @author Anton Beloglazov
+ * @since CloudSim Toolkit 2.0
  */
 public class LogTest {
 
     private static final ByteArrayOutputStream OUTPUT = new ByteArrayOutputStream();
     private static final String LINE_SEPARATOR = System.getProperty("line.separator");
     private static final DecimalFormatSymbols dfs
-            = DecimalFormatSymbols.getInstance(Locale.getDefault(Locale.Category.FORMAT));
+        = DecimalFormatSymbols.getInstance(Locale.getDefault(Locale.Category.FORMAT));
 
     @Before
     public void setUp() throws Exception {
@@ -114,12 +112,16 @@ public class LogTest {
     }
 
     @Test
-    public void testDisable() throws IOException {
+    public void testDisable1() throws IOException {
         OUTPUT.reset();
         assertFalse(Log.isDisabled());
 
         Log.print("test test");
         assertEquals("test test", OUTPUT.toString());
+    }
+
+    @Test
+    public void testDisable2() throws IOException {
         OUTPUT.reset();
 
         Log.printLine("test test");
@@ -133,7 +135,10 @@ public class LogTest {
         Log.printFormattedLine("test %s test", "test");
         assertEquals("test test test" + LINE_SEPARATOR, OUTPUT.toString());
         OUTPUT.reset();
+    }
 
+    @Test
+    public void testDisable3() throws IOException {
         Log.disable();
 
         assertTrue(Log.isDisabled());
@@ -153,7 +158,10 @@ public class LogTest {
         Log.printFormattedLine("test %s test", "test");
         assertEquals("", OUTPUT.toString());
         OUTPUT.reset();
+    }
 
+    @Test
+    public void testReEnabled() throws IOException {
         Log.enable();
 
         assertFalse(Log.isDisabled());
@@ -174,5 +182,4 @@ public class LogTest {
         assertEquals("test test test" + LINE_SEPARATOR, OUTPUT.toString());
         OUTPUT.reset();
     }
-
 }

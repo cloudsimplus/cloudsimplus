@@ -101,7 +101,7 @@ public interface PowerHost extends HostDynamicWorkload {
         @Override public double getUtilizationOfCpuMips() { return 0; }
         @Override public long getUtilizationOfRam() { return 0; }
         @Override public double updateProcessing(double currentTime) { return 0; }
-        @Override public void addMigratingInVm(Vm vm) {}
+        @Override public boolean addMigratingInVm(Vm vm) { return false; }
         @Override public boolean allocatePesForVm(Vm vm, List<Double> mipsShare) { return false; }
         @Override public void deallocatePesForVm(Vm vm) {}
         @Override public List<Double> getAllocatedMipsForVm(Vm vm) { return Collections.EMPTY_LIST; }

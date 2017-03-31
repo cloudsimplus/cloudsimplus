@@ -78,7 +78,7 @@ public class ResourceProvisionerSimpleTest {
 
     @Test
     public void testIsSuitableForVm() {
-        VmSimple vm0 = createVm(0, HALF_CAPACITY);
+        final VmSimple vm0 = createVm(0, HALF_CAPACITY);
         assertTrue(provisioner.isSuitableForVm(vm0, QUARTER_OF_CAPACITY));
         assertTrue(provisioner.isSuitableForVm(vm0, HALF_CAPACITY));
         assertTrue(provisioner.isSuitableForVm(vm0, CAPACITY));
@@ -90,8 +90,8 @@ public class ResourceProvisionerSimpleTest {
 
     @Test
     public void testAllocateResourceForVm() {
-        VmSimple vm0 = createVm(0, HALF_CAPACITY);
-        VmSimple vm1 = createVm(1, CAPACITY);
+        final VmSimple vm0 = createVm(0, HALF_CAPACITY);
+        final VmSimple vm1 = createVm(1, CAPACITY);
 
         assertTrue(provisioner.isSuitableForVm(vm0, HALF_CAPACITY));
         assertTrue(provisioner.allocateResourceForVm(vm0, HALF_CAPACITY));
@@ -112,8 +112,8 @@ public class ResourceProvisionerSimpleTest {
 
     @Test
     public void testGetAllocatedResourceForVm() {
-        VmSimple vm1 = createVm(0, HALF_CAPACITY);
-        VmSimple vm2 = createVm(1, CAPACITY);
+        final VmSimple vm1 = createVm(0, HALF_CAPACITY);
+        final VmSimple vm2 = createVm(1, CAPACITY);
 
         assertTrue(provisioner.isSuitableForVm(vm1, HALF_CAPACITY));
         assertTrue(provisioner.allocateResourceForVm(vm1, HALF_CAPACITY));

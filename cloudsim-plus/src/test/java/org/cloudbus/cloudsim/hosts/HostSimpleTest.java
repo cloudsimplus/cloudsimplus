@@ -165,51 +165,46 @@ public class HostSimpleTest {
     public void testAddMigratingInVm_checkAvailableMipsAndStorage() {
         final int numberOfPes = 1;
         Host host = createHostSimple(0, numberOfPes);
+        final double VM_MIPS = MIPS/2;
         VmSimple vm = VmSimpleTest.createVm(
-            0, MIPS, numberOfPes, RAM, BW, STORAGE,
+            0, VM_MIPS, numberOfPes, RAM, BW, STORAGE,
             new CloudletSchedulerTimeShared());
         vm.setHost(Host.NULL);
         assertEquals(MIPS, host.getAvailableMips(), 0);
-        host.addMigratingInVm(vm);
-        final double availableMips = MIPS
-                - (MIPS * host.getVmScheduler().getCpuOverheadDueToVmMigration());
+        assertTrue(host.addMigratingInVm(vm));
+        final double availableMips = VM_MIPS;
         assertEquals(availableMips, host.getAvailableMips(), 0);
         assertEquals(0, host.getAvailableStorage(), 0);
     }
 
-    @Test(expected = RuntimeException.class)
     public void testAddMigratingInVm_lackOfRam() {
         final int numberOfPes = 2;
         Host host = createHostSimple(0, numberOfPes);
         Vm vm = VmSimpleTest.createVm(
             0, MIPS, numberOfPes, RAM * 2,
             BW, STORAGE, new CloudletSchedulerTimeShared());
-        host.addMigratingInVm(vm);
+        assertFalse(host.addMigratingInVm(vm));
     }
 
-    @Test(expected = RuntimeException.class)
     public void testAddMigratingInVm_lackOfStorage() {
         final int numberOfPes = 2;
         Host host = createHostSimple(0, numberOfPes);
         Vm vm = VmSimpleTest.createVm(0, MIPS, numberOfPes, RAM, BW, STORAGE * 2, new CloudletSchedulerTimeShared());
-        host.addMigratingInVm(vm);
+        assertFalse(host.addMigratingInVm(vm));
     }
 
-    @Test(expected = RuntimeException.class)
     public void testAddMigratingInVm_lackOfBw() {
         final int numberOfPes = 2;
         Host host = createHostSimple(0, numberOfPes);
         Vm vm = VmSimpleTest.createVm(0, MIPS, numberOfPes, RAM, BW * 2, STORAGE, new CloudletSchedulerTimeShared());
-        host.addMigratingInVm(vm);
-        assertFalse(vm.isInMigration());
+        assertFalse(host.addMigratingInVm(vm));
     }
 
-    @Test(expected = RuntimeException.class)
     public void testAddMigratingInVm_lackOfMips() {
         final int numberOfPes = 2;
         Host host = createHostSimple(0, numberOfPes);
         Vm vm = VmSimpleTest.createVm(0, MIPS * 2, numberOfPes, RAM, BW, STORAGE, new CloudletSchedulerTimeShared());
-        host.addMigratingInVm(vm);
+        assertFalse(host.addMigratingInVm(vm));
     }
 
     @Test
@@ -293,16 +288,18 @@ public class HostSimpleTest {
     public void testVmCreate() {
         VmSimple vm0 = VmSimpleTest.createVm(0, MIPS / 2, 1, RAM / 2, BW / 2,
                 A_QUARTER_STORAGE, new CloudletSchedulerTimeShared());
+        assertTrue(host.vmCreate(vm0));
+
         VmSimple vm1 = VmSimpleTest.createVm(1, MIPS, 1, RAM, BW,
                 A_QUARTER_STORAGE, new CloudletSchedulerTimeShared());
+        assertFalse(host.vmCreate(vm1));
+
         VmSimple vm2 = VmSimpleTest.createVm(2, MIPS * 2, 1, RAM, BW,
                 A_QUARTER_STORAGE, new CloudletSchedulerTimeShared());
+        assertFalse(host.vmCreate(vm2));
+
         VmSimple vm3 = VmSimpleTest.createVm(3, MIPS / 2, 2, RAM / 2, BW / 2,
                 A_QUARTER_STORAGE, new CloudletSchedulerTimeShared());
-
-        assertTrue(host.vmCreate(vm0));
-        assertFalse(host.vmCreate(vm1));
-        assertFalse(host.vmCreate(vm2));
         assertTrue(host.vmCreate(vm3));
     }
 

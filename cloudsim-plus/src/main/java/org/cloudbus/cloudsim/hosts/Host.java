@@ -38,8 +38,9 @@ public interface Host extends Identificable, Resourceful, Comparable<Host> {
      * Adds a VM migrating into the current host.
      *
      * @param vm the vm
+     * @return true if the Vm was migrated in, false if the Host doesn't have enough resources to place the Vm
      */
-    void addMigratingInVm(Vm vm);
+    boolean addMigratingInVm(Vm vm);
 
     /**
      * Allocates PEs for a VM.
@@ -383,7 +384,7 @@ public interface Host extends Identificable, Resourceful, Comparable<Host> {
     Host NULL = new Host(){
         @Override public List<ResourceManageable> getResources() { return Collections.emptyList(); }
         @Override public int compareTo(Host o) { return 0; }
-        @Override public void addMigratingInVm(Vm vm) {}
+        @Override public boolean addMigratingInVm(Vm vm) { return false; }
         @Override public boolean allocatePesForVm(Vm vm, List<Double> mipsShare) { return false;}
         @Override public void deallocatePesForVm(Vm vm) {}
         @Override public List<Double> getAllocatedMipsForVm(Vm vm) { return Collections.emptyList(); }

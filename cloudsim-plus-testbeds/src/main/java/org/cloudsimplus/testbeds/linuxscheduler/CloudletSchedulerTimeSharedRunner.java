@@ -47,7 +47,7 @@ public class CloudletSchedulerTimeSharedRunner extends CloudletSchedulerRunner<C
 
         exp
             .setCloudletPesPrng(cloudletPesPrng)
-            .setNumberOfCloudletsToCreate((int) numberOfCloudletsPRNG.sample())
+            .setNumberOfCloudletsToCreate((int) getNumberOfCloudletsPRNG().sample())
             .setAfterExperimentFinish(this::afterExperimentFinish)
             .setVerbose(false);
 

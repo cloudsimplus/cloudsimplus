@@ -83,7 +83,7 @@ public abstract class SimulatedAnnealing<S extends HeuristicSolution<?>> extends
 	 * @param random a pseudo random number generator
      * @param solutionClass reference to the generic class that will be used to instantiate heuristic solutions
      */
-    public SimulatedAnnealing(ContinuousDistribution random, Class<S> solutionClass){
+    SimulatedAnnealing(ContinuousDistribution random, Class<S> solutionClass){
         super(random, solutionClass);
     }
 

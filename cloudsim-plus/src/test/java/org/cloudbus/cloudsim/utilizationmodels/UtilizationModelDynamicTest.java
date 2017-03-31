@@ -27,7 +27,6 @@ public class UtilizationModelDynamicTest {
 
     @Test
     public void testGetUtilization_defaultConstructor() {
-        System.out.println("getUtilization");
         final double utilizationPercentageIncrement = 0.1, initialUtilization = 0;
         UtilizationModelDynamic instance = createUtilizationModel(utilizationPercentageIncrement, initialUtilization);
         checkUtilization(initialUtilization, utilizationPercentageIncrement, instance);
@@ -35,7 +34,6 @@ public class UtilizationModelDynamicTest {
 
     @Test
     public void testGetUtilization_twoParamConstructorDecreasingUtilization() {
-        System.out.println("getUtilization");
         final double utilizationPercentageIncrement = -0.1, initialUtilization = 0.5;
         UtilizationModelDynamic instance = createUtilizationModel(utilizationPercentageIncrement, initialUtilization);
         checkUtilization(initialUtilization, utilizationPercentageIncrement, instance);
@@ -59,7 +57,6 @@ public class UtilizationModelDynamicTest {
 
     @Test
     public void testGetUtilization_oneParamConstructor() {
-        System.out.println("getUtilization");
         final double utilizationPercentageIncrement = 0.2, initialUtilization = 0;
         UtilizationModelDynamic instance = createUtilizationModel(utilizationPercentageIncrement, initialUtilization);
         checkUtilization(initialUtilization, utilizationPercentageIncrement, instance);
@@ -67,7 +64,6 @@ public class UtilizationModelDynamicTest {
 
     @Test
     public void testGetUtilization_twoParamConstructor() {
-        System.out.println("getUtilization");
         final double utilizationPercentageIncrement = 0.2, initialUtilization = 0.5;
         UtilizationModelDynamic instance = createUtilizationModel(utilizationPercentageIncrement, initialUtilization);
         checkUtilization(initialUtilization, utilizationPercentageIncrement, instance);
@@ -75,7 +71,6 @@ public class UtilizationModelDynamicTest {
 
     @Test
     public void testGetUtilization_twoParamConstructorAndMaxUtilization() {
-        System.out.println("getUtilization");
         final double utilizationPercentageIncrement = 0.2, initialUtilization = 0.5;
         final double maxUtilizationPercentage = 0.7;
         UtilizationModelDynamic instance = createUtilizationModel(utilizationPercentageIncrement, initialUtilization);

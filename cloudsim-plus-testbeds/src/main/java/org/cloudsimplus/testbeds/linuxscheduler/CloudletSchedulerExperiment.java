@@ -79,21 +79,21 @@ import java.util.function.Supplier;
  * @see CompletelyFairSchedulerExperiment
  */
 abstract class CloudletSchedulerExperiment extends SimulationExperiment {
-    public static final int HOST_PES = 32;
-    public static final int VM_PES = HOST_PES;
-    public static final long VM_MIPS = 1000;
-    public static final long VM_STORAGE = 10000; // vm image size (MEGABYTE)
-    public static final long VM_RAM = 512; // vm memory (MEGABYTE)
-    public static final long VM_BW = 1000; // vm bandwidth
-    public static final int MAX_CLOUDLET_PES = VM_PES/8 + 1;
-    public static final int HOSTS_TO_CREATE = 1;
-    public static final int VMS_TO_CREATE = 1;
-    public static final long CLOUDLET_LENGHT_MI = 10000; //in Million Instructions (MI)
+    static final int HOST_PES = 32;
+    static final int VM_PES = HOST_PES;
+    static final long VM_MIPS = 1000;
+    static final long VM_STORAGE = 10000; // vm image size (MEGABYTE)
+    static final long VM_RAM = 512; // vm memory (MEGABYTE)
+    static final long VM_BW = 1000; // vm bandwidth
+    static final int MAX_CLOUDLET_PES = VM_PES/8 + 1;
+    static final int HOSTS_TO_CREATE = 1;
+    static final int VMS_TO_CREATE = 1;
+    static final long CLOUDLET_LENGHT_MI = 10000; //in Million Instructions (MI)
 
     private ContinuousDistribution cloudletPesPrng;
     private int numberOfCloudletsToCreate;
 
-    public CloudletSchedulerExperiment(int index, ExperimentRunner runner) {
+    CloudletSchedulerExperiment(int index, ExperimentRunner runner) {
         super(index, runner);
         this.cloudletPesPrng = new UniformDistr(0, 1);
     }

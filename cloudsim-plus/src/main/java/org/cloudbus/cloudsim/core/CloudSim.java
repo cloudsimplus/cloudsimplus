@@ -440,22 +440,22 @@ public class CloudSim implements Simulation {
 
     @Override
     public void send(int src, int dest, double delay, int tag, Object data) {
-        if (delay < 0) {
-            throw new IllegalArgumentException("Send delay can't be negative.");
-        }
-
+        validateDelay(delay);
         SimEvent e = new CloudSimEvent(this, SimEvent.Type.SEND, clock + delay, src, dest, tag, data);
         future.addEvent(e);
     }
 
     @Override
     public void sendFirst(int src, int dest, double delay, int tag, Object data) {
+        validateDelay(delay);
+        SimEvent e = new CloudSimEvent(this, SimEvent.Type.SEND, clock + delay, src, dest, tag, data);
+        future.addEventFirst(e);
+    }
+
+    private void validateDelay(double delay) {
         if (delay < 0) {
             throw new IllegalArgumentException("Send delay can't be negative.");
         }
-
-        SimEvent e = new CloudSimEvent(this, SimEvent.Type.SEND, clock + delay, src, dest, tag, data);
-        future.addEventFirst(e);
     }
 
     @Override

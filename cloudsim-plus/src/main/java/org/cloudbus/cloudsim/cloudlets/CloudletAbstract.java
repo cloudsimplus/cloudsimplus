@@ -310,6 +310,11 @@ public abstract class CloudletAbstract implements Cloudlet {
     }
 
     @Override
+    public long getFinishedLengthSoFar(final Datacenter datacenter) {
+        return getDatacenterInfo(datacenter).finishedSoFar;
+    }
+
+    @Override
     public long getFinishedLengthSoFar() {
         if (executionInDatacenterInfoList.isEmpty()) {
             return 0;
@@ -461,11 +466,6 @@ public abstract class CloudletAbstract implements Cloudlet {
     @Override
     public double getActualCpuTime(final Datacenter datacenter) {
         return getDatacenterInfo(datacenter).actualCpuTime;
-    }
-
-    @Override
-    public long getFinishedLengthSoFar(final Datacenter datacenter) {
-        return getDatacenterInfo(datacenter).finishedSoFar;
     }
 
     @Override

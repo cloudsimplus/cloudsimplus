@@ -36,7 +36,7 @@ public abstract class CloudSimEntity implements SimEntity {
     /**
      * The entity id.
      */
-    public int id;
+    private int id;
 
     /**
      * The buffer for selected incoming events.
@@ -381,6 +381,16 @@ public abstract class CloudSimEntity implements SimEntity {
     }
 
     /**
+     * Gets the first event waiting in the entity's deferred queue, or if there
+     * are none, wait for an event to arrive.
+     *
+     * @return the simulation event
+     */
+    public SimEvent getNextEvent() {
+        return getNextEvent(Simulation.SIM_ANY);
+    }
+
+    /**
      * Waits for an event matching a specific predicate. This method does not
      * check the entity's deferred queue.
      *
@@ -393,16 +403,6 @@ public abstract class CloudSimEntity implements SimEntity {
 
         simulation.wait(this, p);
         state = State.WAITING;
-    }
-
-    /**
-     * Gets the first event waiting in the entity's deferred queue, or if there
-     * are none, wait for an event to arrive.
-     *
-     * @return the simulation event
-     */
-    public SimEvent getNextEvent() {
-        return getNextEvent(Simulation.SIM_ANY);
     }
 
     @Override

@@ -89,7 +89,7 @@ public class HostDynamicWorkloadSimple extends HostSimple implements HostDynamic
 
     @Override
     public double updateProcessing(double currentTime) {
-        double smallerTime = super.updateProcessing(currentTime);
+        final double smallerTime = super.updateProcessing(currentTime);
         setPreviousUtilizationMips(getUtilizationOfCpuMips());
         setUtilizationMips(0);
         double hostTotalRequestedMips = 0;

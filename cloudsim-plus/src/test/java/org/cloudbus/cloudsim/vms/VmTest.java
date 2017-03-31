@@ -19,7 +19,6 @@ public class VmTest {
 
         instance.addStateHistoryEntry(null);
         assertTrue(instance.getStateHistory().isEmpty());
-
         assertEquals(CloudletScheduler.NULL, instance.getCloudletScheduler());
 
         assertEquals(0, instance.getCurrentAllocatedSize());
@@ -27,28 +26,19 @@ public class VmTest {
         assertEquals(0, instance.getCurrentRequestedTotalMips(), 0);
         assertEquals(0, instance.getMips(), 0);
         assertEquals(0, instance.getNumberOfPes());
-
         assertEquals(0, instance.getCpuPercentUse(0), 0);
         assertEquals(0, instance.getTotalUtilizationOfCpuMips(0), 0);
 
-        instance.setInMigration(true);
         assertFalse(instance.isInMigration());
-
         assertFalse(instance.isCreated());
 
-        instance.setBw(1000);
         assertEquals(0, instance.getBw().getCapacity());
-
         assertEquals(0, instance.getCurrentAllocatedBw());
         assertEquals(0, instance.getCurrentRequestedBw());
-
         assertTrue(instance.getCurrentRequestedMips().isEmpty());
-
         assertEquals(0, instance.getCurrentAllocatedRam());
         assertEquals(0, instance.getCurrentRequestedRam());
-
         assertEquals(Host.NULL, instance.getHost());
-
         instance.addOnHostAllocationListener(null);
         assertFalse(instance.removeOnHostAllocationListener(null));
 
@@ -61,10 +51,7 @@ public class VmTest {
         instance.addOnUpdateProcessingListener(null);
         assertFalse(instance.removeOnUpdateProcessingListener(null));
 
-        instance.setRam(1000);
         assertEquals(0, instance.getRam().getCapacity());
-
-        instance.setSize(1000);
         assertEquals(0, instance.getStorage().getCapacity());
 
         assertEquals("", instance.getUid());

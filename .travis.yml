@@ -12,7 +12,7 @@ jdk:
 
 test:
   post:
-    - mvn jacoco:report
+    - cd cloudsim-plus && mvn jacoco:report; cd ..
     - curl http://www.jpm4j.org/install/script -k > jpmInstall.sh
     - sudo sh jpmInstall.sh
     - sudo jpm install com.codacy:codacy-coverage-reporter:assembly

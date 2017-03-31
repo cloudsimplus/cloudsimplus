@@ -24,6 +24,11 @@ import org.apache.commons.math3.stat.regression.SimpleRegression;
 public final class MathUtil {
 
     /**
+     * A private constructor to avoid class instantiation.
+     */
+    private MathUtil(){}
+
+    /**
      * Sums a list of numbers.
      *
      * @param list the list of numbers
@@ -349,10 +354,4 @@ public final class MathUtil {
         }
         return result;
     }
-
-    /**
-     * A private constructor to avoid class instantiation.
-     */
-    private MathUtil(){}
-
 }

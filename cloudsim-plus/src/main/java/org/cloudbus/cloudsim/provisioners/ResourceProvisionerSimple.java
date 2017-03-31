@@ -97,10 +97,6 @@ public class ResourceProvisionerSimple extends ResourceProvisionerAbstract {
     @Override
     public boolean isSuitableForVm(Vm vm, long newVmTotalAllocatedResource) {
         final long currentAllocatedResource = getAllocatedResourceForVm(vm);
-        if(newVmTotalAllocatedResource  <= currentAllocatedResource) {
-            return true;
-        }
-
         final long allocationDifference = newVmTotalAllocatedResource - currentAllocatedResource;
         return getResource().getAvailableResource() >=  allocationDifference;
     }

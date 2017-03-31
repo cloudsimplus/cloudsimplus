@@ -47,7 +47,7 @@ public abstract class PowerVmAllocationPolicyMigrationAbstract extends PowerVmAl
 
     /**@see #getUnderUtilizationThreshold() */
     private double underUtilizationThreshold = 0.35;
-  
+
     /**
      * The vm selection policy.
      */
@@ -123,29 +123,34 @@ public abstract class PowerVmAllocationPolicyMigrationAbstract extends PowerVmAl
 
     @Override
     public Map<Vm, Host> optimizeAllocation(List<? extends Vm> vmList) {
-        ExecutionTimeMeasurer.start("optimizeAllocationTotal");
+        final String allocationTotalStr = "optimizeAllocationTotal";
+        ExecutionTimeMeasurer.start(allocationTotalStr);
 
-        ExecutionTimeMeasurer.start("optimizeAllocationHostSelection");
+
+        final String hostSelectionStr = "optimizeAllocationHostSelection";
+        ExecutionTimeMeasurer.start(hostSelectionStr);
         List<PowerHostUtilizationHistory> overUtilizedHosts = getOverUtilizedHosts();
         getExecutionTimeHistoryHostSelection().add(
-                ExecutionTimeMeasurer.end("optimizeAllocationHostSelection"));
+                ExecutionTimeMeasurer.end(hostSelectionStr));
 
         printOverUtilizedHosts(overUtilizedHosts);
 
         saveAllocation();
 
-        ExecutionTimeMeasurer.start("optimizeAllocationVmSelection");
+        final String vmSelectionStr = "optimizeAllocationVmSelection";
+        ExecutionTimeMeasurer.start(vmSelectionStr);
         List<Vm> vmsToMigrate = getVmsToMigrateFromHosts(overUtilizedHosts);
-        getExecutionTimeHistoryVmSelection().add(ExecutionTimeMeasurer.end("optimizeAllocationVmSelection"));
+        getExecutionTimeHistoryVmSelection().add(ExecutionTimeMeasurer.end(vmSelectionStr));
 
         Map<Vm, Host> migrationMap = new HashMap<>();
         if(!overUtilizedHosts.isEmpty()){
             Log.printLine("Reallocation of VMs from the over-utilized hosts: ");
-            ExecutionTimeMeasurer.start("optimizeAllocationVmReallocation");
+            final String vmReallocationStr = "optimizeAllocationVmReallocation";
+            ExecutionTimeMeasurer.start(vmReallocationStr);
             migrationMap =
                     getNewVmPlacement(vmsToMigrate, new HashSet<>(overUtilizedHosts));
             getExecutionTimeHistoryVmReallocation().add(
-                    ExecutionTimeMeasurer.end("optimizeAllocationVmReallocation"));
+                    ExecutionTimeMeasurer.end(vmReallocationStr));
             Log.printLine();
         }
 
@@ -153,7 +158,7 @@ public abstract class PowerVmAllocationPolicyMigrationAbstract extends PowerVmAl
 
         restoreAllocation();
 
-        getExecutionTimeHistoryTotal().add(ExecutionTimeMeasurer.end("optimizeAllocationTotal"));
+        getExecutionTimeHistoryTotal().add(ExecutionTimeMeasurer.end(allocationTotalStr));
 
         return migrationMap;
     }

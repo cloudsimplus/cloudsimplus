@@ -14,9 +14,11 @@ import static org.junit.Assert.*;
  * @author Manoel Campos da Silva Filho
  */
 public class HarddriveStorageTest {
+    public static final String RESERVED_FILE_ADDED_WITHOUT_PREVIOUS_SPACE = "The reserved file was added but its space was not previously reserved.";
     private static final int CAPACITY = 1000;
     private static final int FILE_SIZE = 100;
     private static final int TOTAL_FILES_TO_CREATE = 5;
+    public static final String INEXISTENT_FILE = "inexistent-file.txt";
 
     @Test(expected = IllegalArgumentException.class)
     public void testNewHarddriveStorage_onlyWhiteSpacesName() {
@@ -47,7 +49,6 @@ public class HarddriveStorageTest {
 
     @Test
     public void testGetNumStoredFile1() {
-        System.out.println("getNumStoredFile");
         HarddriveStorage instance = createHardDrive();
         assertEquals(0, instance.getNumStoredFile());
 
@@ -75,7 +76,6 @@ public class HarddriveStorageTest {
     @Test
     public void testGetNumStoredFile2() {
         HarddriveStorage instance = createHardDrive();
-        System.out.println("getNumStoredFile");
         assertEquals(0, instance.getNumStoredFile());
 
         final int totalFiles = 4;
@@ -186,7 +186,7 @@ public class HarddriveStorageTest {
         HarddriveStorage instance = createHardDrive(CAPACITY);
         try{
             instance.addReservedFile(new File("file1.txt", 100));
-            fail("The reserved file was added but its space was not previously reserved.");
+            fail(RESERVED_FILE_ADDED_WITHOUT_PREVIOUS_SPACE);
         } catch(Exception e){
             /*if the exception was thrown, indicates that the file
             was accordingly not added.
@@ -221,7 +221,7 @@ public class HarddriveStorageTest {
         File file = createNumberedFile(1, fileSize);
         try{
             instance.addReservedFile(file);
-            fail("The reserved file was added but its space was not previously reserved.");
+            fail(RESERVED_FILE_ADDED_WITHOUT_PREVIOUS_SPACE);
         } catch(Exception e){
             /*if the exception was thrown, indicates that the file
             was accordingly not added.
@@ -336,13 +336,11 @@ public class HarddriveStorageTest {
 
     @Test
     public void testSetAvgSeekTime_double() {
-        System.out.println("setAvgSeekTime");
         testSetAvgSeekTime(null);
     }
 
     @Test
     public void testSetAvgSeekTime_double_ContinuousDistribution() {
-        System.out.println("setAvgSeekTime");
         final double anyValue = 2.4;
         testSetAvgSeekTime(new ExponentialDistr(anyValue));
     }
@@ -392,7 +390,7 @@ public class HarddriveStorageTest {
 
         fileList.forEach(f -> assertEquals(f, instance.getFile(f.getName())));
 
-        assertEquals(null, instance.getFile("inexistent-file.txt"));
+        assertEquals(null, instance.getFile(INEXISTENT_FILE));
     }
 
     @Test
@@ -442,7 +440,7 @@ public class HarddriveStorageTest {
         fileList.forEach(f ->  assertEquals(f, instance.deleteFile(f.getName())));
 
         assertEquals(null, instance.deleteFile(""));
-        assertEquals(null, instance.deleteFile("inexistent-file.txt"));
+        assertEquals(null, instance.deleteFile(INEXISTENT_FILE));
     }
 
     @Test
@@ -465,7 +463,7 @@ public class HarddriveStorageTest {
 
         fileList.forEach(f -> assertTrue(instance.contains(f.getName())));
 
-        assertFalse(instance.contains("inexistent-file.txt"));
+        assertFalse(instance.contains(INEXISTENT_FILE));
         final String nullStr = null;
         assertFalse(instance.contains(nullStr));
         assertFalse(instance.contains(""));
@@ -479,7 +477,7 @@ public class HarddriveStorageTest {
 
         fileList.forEach(f -> assertTrue(instance.contains(f)));
 
-        assertFalse(instance.contains(new File("inexistent-file.txt", FILE_SIZE)));
+        assertFalse(instance.contains(new File(INEXISTENT_FILE, FILE_SIZE)));
         final File nullFile = null;
         assertFalse(instance.contains(nullFile));
     }
