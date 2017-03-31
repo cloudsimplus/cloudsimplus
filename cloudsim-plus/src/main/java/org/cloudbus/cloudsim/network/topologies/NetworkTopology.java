@@ -20,6 +20,13 @@ package org.cloudbus.cloudsim.network.topologies;
  * @since CloudSim Plus 1.0
  */
 public interface NetworkTopology {
+
+    /**
+     * An attribute that implements the Null Object Design Pattern for {@link NetworkTopology}
+     * objects.
+     */
+    NetworkTopology NULL = new NetworkTopologyNull();
+
     /**
      * Adds a new link in the network topology. The CloudSim entities that
      * represent the source and destination of the link will be mapped to BRITE
@@ -88,11 +95,4 @@ public interface NetworkTopology {
      * @return the graph
      */
     TopologicalGraph getTopologycalGraph();
-
-    /**
-     * An attribute that implements the Null Object Design Pattern for {@link NetworkTopology}
-     * objects.
-     */
-    NetworkTopology NULL = new NetworkTopologyNull();
-
 }

@@ -23,6 +23,12 @@ import org.cloudbus.cloudsim.power.models.PowerModel;
  */
 public interface PowerHost extends HostDynamicWorkload {
     /**
+     * An attribute that implements the Null Object Design Pattern for {@link PowerHost}
+     * objects.
+     */
+    PowerHost NULL = new PowerHostNull();
+
+    /**
      * Gets the energy consumption using linear interpolation of the utilization change.
      *
      * @param fromUtilization the initial utilization percentage
@@ -60,12 +66,4 @@ public interface PowerHost extends HostDynamicWorkload {
      * @return
      */
     PowerHost setPowerModel(PowerModel powerModel);
-
-
-    /**
-     * An attribute that implements the Null Object Design Pattern for {@link PowerHost}
-     * objects.
-     */
-    PowerHost NULL = new PowerHostNull();
-
 }

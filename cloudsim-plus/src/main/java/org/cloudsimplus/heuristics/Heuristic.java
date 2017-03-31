@@ -48,6 +48,13 @@ package org.cloudsimplus.heuristics;
  * @since CloudSim Plus 1.0
  */
 public interface Heuristic<S extends HeuristicSolution<?>> {
+
+    /**
+     * A property that implements the Null Object Design Pattern for {@link Heuristic}
+     * objects.
+     */
+    Heuristic NULL = new HeuristicNull();
+
     /**
      * Computes the acceptance probability to define if a neighbor solution
      * has to be accepted or not, compared to the {@link #getBestSolutionSoFar()}.
@@ -142,9 +149,4 @@ public interface Heuristic<S extends HeuristicSolution<?>> {
 	 */
 	double getSolveTime();
 
-    /**
-     * A property that implements the Null Object Design Pattern for {@link Heuristic}
-     * objects.
-     */
-    Heuristic NULL = new HeuristicNull();
 }

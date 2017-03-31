@@ -16,6 +16,12 @@ import java.util.Map;
 public interface Switch extends Identificable {
 
     /**
+     * An attribute that implements the Null Object Design Pattern for {@link Switch}
+     * objects.
+     */
+    Switch NULL = new SwitchNull();
+
+    /**
      *
      * @return Bandwitdh of uplink (in Megabits/s).
      */
@@ -137,11 +143,4 @@ public interface Switch extends Identificable {
      * @return the switch network level
      */
     int getLevel();
-
-    /**
-     * An attribute that implements the Null Object Design Pattern for {@link Switch}
-     * objects.
-     */
-    Switch NULL = new SwitchNull();
-
 }

@@ -70,6 +70,13 @@ import java.util.function.Predicate;
  * @since CloudSim Plus 1.1
  */
 public interface VerticalVmScaling extends VmScaling {
+
+    /**
+     * An attribute that implements the Null Object Design Pattern for {@link VerticalVmScaling}
+     * objects.
+     */
+    VerticalVmScaling NULL = new VerticalVmScalingNull();
+
     /**
      * Gets the class of Vm resource that this scaling object will request up or down scaling.
      * Such a class can be {@link Ram}.class, {@link Bandwidth}.class or {@link Pe}.class.
@@ -177,11 +184,4 @@ public interface VerticalVmScaling extends VmScaling {
      */
     @Override
     VmScaling setUnderloadPredicate(Predicate<Vm> predicate);
-
-    /**
-     * An attribute that implements the Null Object Design Pattern for {@link VerticalVmScaling}
-     * objects.
-     */
-    VerticalVmScaling NULL = new VerticalVmScalingNull();
-
 }

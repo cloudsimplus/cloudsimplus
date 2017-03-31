@@ -42,6 +42,12 @@ import org.cloudsimplus.listeners.EventListener;
 public interface Vm extends UniquelyIdentificable, ChangeableId, Delayable, Resourceful, Comparable<Vm> {
 
     /**
+     * An attribute that implements the Null Object Design Pattern for {@link Vm}
+     * objects.
+     */
+    Vm NULL = new VmNull();
+
+    /**
      * Adds a VM state history entry.
      *
      * @param entry the data about the state of the VM at given time
@@ -537,11 +543,4 @@ public interface Vm extends UniquelyIdentificable, ChangeableId, Delayable, Reso
      * to the VerticalVmScaling, and then request the BW up scaling.
      */
     VerticalVmScaling getBwVerticalScaling();
-
-    /**
-     * An attribute that implements the Null Object Design Pattern for {@link Vm}
-     * objects.
-     */
-    Vm NULL = new VmNull();
-
 }

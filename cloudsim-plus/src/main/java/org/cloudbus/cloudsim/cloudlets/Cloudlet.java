@@ -97,6 +97,12 @@ public interface Cloudlet extends UniquelyIdentificable, ChangeableId, Delayable
     int NOT_ASSIGNED = -1;
 
     /**
+     * An attribute that implements the Null Object Design Pattern for {@link Cloudlet}
+     * objects.
+     */
+    Cloudlet NULL = new CloudletNull();
+
+    /**
      * Adds a file to the list or required files.
      *
      * @param fileName the name of the required file
@@ -825,11 +831,4 @@ public interface Cloudlet extends UniquelyIdentificable, ChangeableId, Delayable
      * @return
      */
     Simulation getSimulation();
-
-    /**
-     * An attribute that implements the Null Object Design Pattern for {@link Cloudlet}
-     * objects.
-     */
-    Cloudlet NULL = new CloudletNull();
-
 }

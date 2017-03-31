@@ -54,6 +54,12 @@ import java.util.function.Supplier;
 public interface HorizontalVmScaling extends VmScaling {
 
     /**
+     * An attribute that implements the Null Object Design Pattern for {@link HorizontalVmScaling}
+     * objects.
+     */
+    HorizontalVmScaling NULL = new HorizontalVmScalingNull();
+
+    /**
      * Gets a {@link Supplier} that will be used to create VMs when
      * the Load Balancer detects that the current Broker's VMs are overloaded.
      *
@@ -130,11 +136,4 @@ public interface HorizontalVmScaling extends VmScaling {
      */
     @Override
     VmScaling setUnderloadPredicate(Predicate<Vm> predicate);
-
-    /**
-     * An attribute that implements the Null Object Design Pattern for {@link HorizontalVmScaling}
-     * objects.
-     */
-    HorizontalVmScaling NULL = new HorizontalVmScalingNull();
-
 }

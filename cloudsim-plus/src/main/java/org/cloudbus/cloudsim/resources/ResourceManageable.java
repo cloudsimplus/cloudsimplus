@@ -19,6 +19,12 @@ package org.cloudbus.cloudsim.resources;
 public interface ResourceManageable extends Resource {
 
     /**
+     * An attribute that implements the Null Object Design Pattern for
+     * {@link ResourceManageable} objects.
+     */
+    ResourceManageable NULL = new ResourceManageableNull();
+
+    /**
      * Try to set the {@link #getCapacity() resource capacity}.
      *
      * @param newCapacity the new resource capacity
@@ -135,11 +141,4 @@ public interface ResourceManageable extends Resource {
      * otherwise
      */
     boolean isSuitable(long newTotalAllocatedResource);
-
-    /**
-     * An attribute that implements the Null Object Design Pattern for
-     * {@link ResourceManageable} objects.
-     */
-    ResourceManageable NULL = new ResourceManageableNull();
-
 }

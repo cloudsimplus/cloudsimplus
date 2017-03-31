@@ -38,6 +38,13 @@ import java.util.List;
  * @since CloudSim Plus 1.0
  */
 public interface PacketScheduler {
+
+    /**
+     * An attribute that implements the Null Object Design Pattern for {@link PacketScheduler}
+     * objects.
+     */
+    PacketScheduler NULL = new PacketSchedulerNull();
+
     /**
      * Gets the Vm that the PacketScheduler will sent packets from or receive packets to.
      * @return
@@ -95,11 +102,4 @@ public interface PacketScheduler {
      * @return true if its timie to update Cloudlet execution, false otherwise.
      */
     boolean isTimeToUpdateCloudletProcessing(Cloudlet cloudlet);
-
-    /**
-     * An attribute that implements the Null Object Design Pattern for {@link PacketScheduler}
-     * objects.
-     */
-    PacketScheduler NULL = new PacketSchedulerNull();
-
 }
