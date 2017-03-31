@@ -44,15 +44,7 @@ public interface VmScaling {
      * An attribute that implements the Null Object Design Pattern for {@link VmScaling}
      * objects.
      */
-    VmScaling NULL = new VmScaling() {
-        @Override public Vm getVm() { return Vm.NULL; }
-        @Override public VmScaling setVm(Vm vm) { return this; }
-        @Override public Predicate<Vm> getOverloadPredicate() { return FALSE_PREDICATE; }
-        @Override public VmScaling setOverloadPredicate(Predicate<Vm> predicate) { return this; }
-        @Override public Predicate<Vm> getUnderloadPredicate() { return FALSE_PREDICATE; }
-        @Override public VmScaling setUnderloadPredicate(Predicate<Vm> predicate) { return this; }
-        @Override public boolean requestScalingIfPredicateMatch(double time) { return false; }
-    };
+    VmScaling NULL = new VmScalingNull();
 
     /**
      * Gets the {@link Vm} that this Load Balancer is linked to.
@@ -132,4 +124,5 @@ public interface VmScaling {
      * @return true if the Vm is over or underloaded and up or down scaling request was sent to the broker, false otherwise
      */
     boolean requestScalingIfPredicateMatch(double time);
+
 }

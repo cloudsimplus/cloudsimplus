@@ -135,15 +135,6 @@ public interface HorizontalVmScaling extends VmScaling {
      * An attribute that implements the Null Object Design Pattern for {@link HorizontalVmScaling}
      * objects.
      */
-    HorizontalVmScaling NULL = new HorizontalVmScaling() {
-        @Override public Supplier<Vm> getVmSupplier() { return () -> Vm.NULL; }
-        @Override public HorizontalVmScaling setVmSupplier(Supplier<Vm> supplier) { return this; }
-        @Override public boolean requestScalingIfPredicateMatch(double time) { return false; }
-        @Override public Vm getVm() { return Vm.NULL; }
-        @Override public VmScaling setVm(Vm vm) { return this; }
-        @Override public Predicate<Vm> getOverloadPredicate() { return vm -> false; }
-        @Override public VmScaling setOverloadPredicate(Predicate<Vm> predicate) { return this; }
-        @Override public Predicate<Vm> getUnderloadPredicate() { return FALSE_PREDICATE; }
-        @Override public VmScaling setUnderloadPredicate(Predicate<Vm> predicate) { return this; }
-    };
+    HorizontalVmScaling NULL = new HorizontalVmScalingNull();
+
 }

@@ -8,7 +8,6 @@
 package org.cloudbus.cloudsim.schedulers.cloudlet.network;
 
 import org.cloudbus.cloudsim.cloudlets.Cloudlet;
-import org.cloudbus.cloudsim.cloudlets.network.CloudletExecutionTask;
 import org.cloudbus.cloudsim.cloudlets.network.CloudletTask;
 import org.cloudbus.cloudsim.cloudlets.network.NetworkCloudlet;
 import org.cloudbus.cloudsim.datacenters.network.NetworkDatacenter;
@@ -18,7 +17,6 @@ import org.cloudbus.cloudsim.schedulers.cloudlet.CloudletScheduler;
 import org.cloudbus.cloudsim.vms.Vm;
 import org.cloudbus.cloudsim.vms.network.NetworkVm;
 
-import java.util.Collections;
 import java.util.List;
 
 /**
@@ -102,22 +100,6 @@ public interface PacketScheduler {
      * An attribute that implements the Null Object Design Pattern for {@link PacketScheduler}
      * objects.
      */
-    PacketScheduler NULL = new PacketScheduler() {
-        @Override public Vm getVm() { return Vm.NULL; }
-        @Override public void setVm(Vm vm) {}
-        @Override public void clearVmPacketsToSend() {}
-        @Override public List<VmPacket> getVmPacketsToSend() { return Collections.emptyList(); }
-        @Override public boolean addPacketToListOfPacketsSentFromVm(VmPacket pkt) { return false; }
-        @Override public void processCloudletPackets(Cloudlet cloudlet, double currentTime) {}
+    PacketScheduler NULL = new PacketSchedulerNull();
 
-        /**
-         * {@inheritDoc}
-         * @param cloudlet {@inheritDoc}
-         * @return always return true to indicate that if this NULL Object is being used,
-         * no network packets will be processed by the {@link CloudletScheduler} that this
-         * object is assigned to. By this way, the processing of Cloudlets must be always updated
-         * because the Cloudlet doesn't have to wait for packets dispatch or reception.
-         */
-        @Override public boolean isTimeToUpdateCloudletProcessing(Cloudlet cloudlet) { return true; }
-    };
 }

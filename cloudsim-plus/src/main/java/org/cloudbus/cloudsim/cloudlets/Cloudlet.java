@@ -14,7 +14,7 @@ import org.cloudbus.cloudsim.vms.Vm;
 import org.cloudbus.cloudsim.brokers.DatacenterBroker;
 import org.cloudbus.cloudsim.schedulers.cloudlet.CloudletScheduler;
 import org.cloudbus.cloudsim.utilizationmodels.UtilizationModel;
-import java.util.Collections;
+
 import java.util.List;
 import org.cloudbus.cloudsim.core.Simulation;
 import org.cloudsimplus.listeners.CloudletVmEventInfo;
@@ -103,7 +103,7 @@ public interface Cloudlet extends UniquelyIdentificable, ChangeableId, Delayable
      * @return <tt>true</tt> if the file was added (it didn't exist in the
      * list of required files), <tt>false</tt> otherwise (it did already exist)
      */
-    boolean addRequiredFile(final String fileName);
+    boolean addRequiredFile(String fileName);
 
     /**
      * Adds a list of files to the required files list.
@@ -115,7 +115,7 @@ public interface Cloudlet extends UniquelyIdentificable, ChangeableId, Delayable
      * false if no file was added (in the case that all given files
      * already exist in the current required list)
      */
-    boolean addRequiredFiles(final List<String> fileNames);
+    boolean addRequiredFiles(List<String> fileNames);
 
     /**
      * Deletes the given filename from the list.
@@ -124,7 +124,7 @@ public interface Cloudlet extends UniquelyIdentificable, ChangeableId, Delayable
      * @return <tt>true</tt> if the file was found and removed, <tt>false</tt>
      * if not found
      */
-    boolean deleteRequiredFile(final String filename);
+    boolean deleteRequiredFile(String filename);
 
     /**
      * Checks whether this cloudlet requires any files or not.
@@ -159,7 +159,7 @@ public interface Cloudlet extends UniquelyIdentificable, ChangeableId, Delayable
      * or 0 if the Cloudlet was not executed there
      * @post $result >= 0.0
      */
-    double getActualCpuTime(final Datacenter datacenter);
+    double getActualCpuTime(Datacenter datacenter);
 
     /**
      * Returns the total execution time of the Cloudlet in seconds.
@@ -269,7 +269,7 @@ public interface Cloudlet extends UniquelyIdentificable, ChangeableId, Delayable
      * not found
      * @post $result >= 0.0
      */
-    double getCostPerSec(final Datacenter datacenter);
+    double getCostPerSec(Datacenter datacenter);
 
 
     /**
@@ -323,7 +323,7 @@ public interface Cloudlet extends UniquelyIdentificable, ChangeableId, Delayable
      * the cloudlet has never been assigned to a Datacenter
      * @post $result >= 0.0
      */
-    double getArrivalTime(final Datacenter datacenter);
+    double getArrivalTime(Datacenter datacenter);
 
     /**
      * Gets the priority of this Cloudlet for scheduling inside a Vm.
@@ -349,7 +349,7 @@ public interface Cloudlet extends UniquelyIdentificable, ChangeableId, Delayable
      *
      * @post $none
      */
-    void setPriority(final int priority);
+    void setPriority(int priority);
 
     /**
      * Gets the Type of Service (ToS) of IPv4 for sending Cloudlet over the network.
@@ -424,7 +424,7 @@ public interface Cloudlet extends UniquelyIdentificable, ChangeableId, Delayable
      * @return the utilization value
      * @see #getUtilizationModelCpu()
      */
-    double getUtilizationOfCpu(final double time);
+    double getUtilizationOfCpu(double time);
 
     /**
      * Gets the utilization of RAM at the current simulation time, that is defined in
@@ -445,7 +445,7 @@ public interface Cloudlet extends UniquelyIdentificable, ChangeableId, Delayable
      * @return the utilization value
      * @see #getUtilizationModelRam() ()
      */
-    double getUtilizationOfRam(final double time);
+    double getUtilizationOfRam(double time);
 
     /**
      * Gets the utilization of Bandwidth at the current simulation time, that is defined in
@@ -466,7 +466,7 @@ public interface Cloudlet extends UniquelyIdentificable, ChangeableId, Delayable
      * @return the utilization value
      * @see #getUtilizationModelBw() ()
      */
-    double getUtilizationOfBw(final double time);
+    double getUtilizationOfBw(double time);
 
     /**
      * Gets the id of Vm that is planned to execute the cloudlet.
@@ -565,7 +565,7 @@ public interface Cloudlet extends UniquelyIdentificable, ChangeableId, Delayable
      * i.e, if the newStatus is different from the current status; false otherwise
      * @post $none
      */
-    boolean setStatus(final Status newStatus);
+    boolean setStatus(Status newStatus);
 
     /**
      * Sets the Type of Service (ToS) for sending this cloudlet over a
@@ -576,7 +576,7 @@ public interface Cloudlet extends UniquelyIdentificable, ChangeableId, Delayable
      * @pre netServiceLevel >= 0
      * @post $none
      */
-    boolean setNetServiceLevel(final int netServiceLevel);
+    boolean setNetServiceLevel(int netServiceLevel);
 
     /**
      * Sets the number of PEs required to run this Cloudlet. <br>
@@ -591,7 +591,7 @@ public interface Cloudlet extends UniquelyIdentificable, ChangeableId, Delayable
      * @pre numPE > 0
      * @post $none
      */
-    Cloudlet setNumberOfPes(final int numberOfPes);
+    Cloudlet setNumberOfPes(int numberOfPes);
 
     /**
      * Sets a {@link DatacenterBroker} that represents the owner of the Cloudlet.
@@ -618,35 +618,35 @@ public interface Cloudlet extends UniquelyIdentificable, ChangeableId, Delayable
      * @see #setUtilizationModelCpu(UtilizationModel)
      * @see #setUtilizationModelRam(UtilizationModel)
      */
-    Cloudlet setUtilizationModel(final UtilizationModel utilizationModel);
+    Cloudlet setUtilizationModel(UtilizationModel utilizationModel);
 
     /**
      * Sets the {@link #getUtilizationModelBw() utilization model of bw}.
      *
      * @param utilizationModelBw the new utilization model of bw
      */
-    Cloudlet setUtilizationModelBw(final UtilizationModel utilizationModelBw);
+    Cloudlet setUtilizationModelBw(UtilizationModel utilizationModelBw);
 
     /**
      * Sets the {@link #getUtilizationModelCpu() utilization model of cpu}.
      *
      * @param utilizationModelCpu the new utilization model of cpu
      */
-    Cloudlet setUtilizationModelCpu(final UtilizationModel utilizationModelCpu);
+    Cloudlet setUtilizationModelCpu(UtilizationModel utilizationModelCpu);
 
     /**
      * Sets the {@link #getUtilizationModelRam() utilization model of ram}.
      *
      * @param utilizationModelRam the new utilization model of ram
      */
-    Cloudlet setUtilizationModelRam(final UtilizationModel utilizationModelRam);
+    Cloudlet setUtilizationModelRam(UtilizationModel utilizationModelRam);
 
     /**
      * Sets the id of {@link Vm} that is planned to execute the cloudlet.
      *
      * @param vm the id of vm to run the cloudlet
      */
-    Cloudlet setVm(final Vm vm);
+    Cloudlet setVm(Vm vm);
 
     /**
      * Gets the execution length of this Cloudlet (in Million Instructions (MI))
@@ -682,7 +682,7 @@ public interface Cloudlet extends UniquelyIdentificable, ChangeableId, Delayable
      * @pre length > 0
      * @post $none
      */
-    Cloudlet setLength(final long length);
+    Cloudlet setLength(long length);
 
     /**
      * Gets the total length (across all PEs) of this Cloudlet (in MI). It considers the
@@ -741,7 +741,7 @@ public interface Cloudlet extends UniquelyIdentificable, ChangeableId, Delayable
      * @pre length >= 0.0
      * @post $none
      */
-    boolean setFinishedLengthSoFar(final long length);
+    boolean setFinishedLengthSoFar(long length);
 
     /**
      * Sets the wall clock time the cloudlet spent
@@ -762,7 +762,7 @@ public interface Cloudlet extends UniquelyIdentificable, ChangeableId, Delayable
      * @pre actualTime >= 0.0
      * @post $none
      */
-    boolean setWallClockTime(final double wallTime, final double actualCpuTime);
+    boolean setWallClockTime(double wallTime, double actualCpuTime);
 
     /**
      * Sets the {@link #getExecStartTime() latest execution start time} of this Cloudlet.
@@ -775,7 +775,7 @@ public interface Cloudlet extends UniquelyIdentificable, ChangeableId, Delayable
      * @pre clockTime >= 0.0
      * @post $none
      */
-    void setExecStartTime(final double clockTime);
+    void setExecStartTime(double clockTime);
 
     /**
      * Adds a listener object that will be notified every time when
@@ -830,82 +830,6 @@ public interface Cloudlet extends UniquelyIdentificable, ChangeableId, Delayable
      * An attribute that implements the Null Object Design Pattern for {@link Cloudlet}
      * objects.
      */
-    Cloudlet NULL = new Cloudlet() {
-        @Override public void setId(int id) {}
-        @Override public int getId() { return -1; }
-        @Override public String getUid() { return ""; }
-        @Override public boolean addRequiredFile(String fileName) { return false; }
-        @Override public boolean addRequiredFiles(List<String> fileNames) { return false; }
-        @Override public boolean deleteRequiredFile(String filename) { return false; }
-        @Override public double getAccumulatedBwCost() { return 0.0; }
-        @Override public double getActualCpuTime(Datacenter datacenter) { return 0.0; }
-        @Override public double getActualCpuTime() { return 0.0; }
-        @Override public int getPriority() { return 0; }
-        @Override public long getFileSize() { return 0L; }
-        @Override public long getFinishedLengthSoFar() { return 0L; }
-        @Override public long getFinishedLengthSoFar(Datacenter datacenter) { return 0L; }
-        @Override public String getHistory() { return ""; }
-        @Override public long getLength() { return 0L; }
-        @Override public long getOutputSize() { return 0L; }
-        @Override public long getTotalLength() { return 0L; }
-        @Override public double getCostPerBw(){ return 0.0; }
-        @Override public double getCostPerSec(){ return 0.0; }
-        @Override public double getCostPerSec(Datacenter datacenter) { return 0.0; }
-        @Override public double getExecStartTime(){ return 0.0; }
-        @Override public double getFinishTime(){ return 0.0; }
-        @Override public int getNetServiceLevel(){ return 0; }
-        @Override public int getNumberOfPes(){ return 0; }
-        @Override public double getTotalCost(){ return 0.0; }
-        @Override public List<String> getRequiredFiles() { return Collections.emptyList();}
-        @Override public Datacenter getLastDatacenter() { return Datacenter.NULL; }
-        @Override public Status getStatus() { return Status.FAILED; }
-        @Override public double getLastDatacenterArrivalTime() { return 0.0; }
-        @Override public double getArrivalTime(Datacenter datacenter) { return 0.0; }
-        @Override public UtilizationModel getUtilizationModelBw() { return UtilizationModel.NULL; }
-        @Override public UtilizationModel getUtilizationModelCpu() { return UtilizationModel.NULL; }
-        @Override public UtilizationModel getUtilizationModelRam() { return UtilizationModel.NULL; }
-        @Override public double getUtilizationOfBw(double time) { return 0.0; }
-        @Override public double getUtilizationOfCpu(double time) { return 0.0; }
-        @Override public double getUtilizationOfRam(double time) { return 0.0; }
-        @Override public double getUtilizationOfBw() { return 0; }
-        @Override public double getUtilizationOfCpu() { return 0; }
-        @Override public double getUtilizationOfRam() { return 0; }
-        @Override public Vm getVm() { return Vm.NULL; }
-        @Override public double getWaitingTime() { return 0.0; }
-        @Override public double getWallClockTimeInLastExecutedDatacenter() { return 0.0; }
-        @Override public double getWallClockTime(Datacenter datacenter) { return 0.0; }
-        @Override public boolean isFinished() { return false; }
-        @Override public boolean requiresFiles() { return false; }
-        @Override public void setPriority(int priority) {}
-        @Override public Cloudlet setLength(long length) { return Cloudlet.NULL; }
-        @Override public Cloudlet setFileSize(long fileSize) { return Cloudlet.NULL; }
-        @Override public Cloudlet setOutputSize(long outputSize) { return Cloudlet.NULL; }
-        @Override public boolean setStatus(Status newStatus) { return false; }
-        @Override public boolean setNetServiceLevel(int netServiceLevel) { return false; }
-        @Override public Cloudlet setNumberOfPes(int numberOfPes) { return Cloudlet.NULL; }
-        @Override public void assignToDatacenter(Datacenter datacenter) {}
-        @Override public Cloudlet setBroker(DatacenterBroker broker) { return Cloudlet.NULL; }
-        @Override public DatacenterBroker getBroker() { return DatacenterBroker.NULL; }
-        @Override public Cloudlet setUtilizationModel(UtilizationModel utilizationModel) { return Cloudlet.NULL; }
-        @Override public Cloudlet setUtilizationModelBw(UtilizationModel utilizationModelBw) { return Cloudlet.NULL; }
-        @Override public Cloudlet setUtilizationModelCpu(UtilizationModel utilizationModelCpu) { return Cloudlet.NULL; }
-        @Override public Cloudlet setUtilizationModelRam(UtilizationModel utilizationModelRam) { return Cloudlet.NULL; }
-        @Override public Cloudlet setVm(Vm vm) { return Cloudlet.NULL; }
-        @Override public boolean removeOnFinishListener(EventListener<CloudletVmEventInfo> listener) { return false;}
-        @Override public Cloudlet addOnFinishListener(EventListener<CloudletVmEventInfo> listener) { return Cloudlet.NULL; }
-        @Override public void notifyOnUpdateProcessingListeners(double time) {}
-        @Override public Simulation getSimulation() { return Simulation.NULL; }
-        @Override public boolean removeOnUpdateProcessingListener(EventListener<CloudletVmEventInfo> listener) { return false; }
-        @Override public Cloudlet addOnUpdateProcessingListener(EventListener<CloudletVmEventInfo> listener) { return Cloudlet.NULL; }
-        @Override public double getSubmissionDelay() { return 0; }
-        @Override public void setSubmissionDelay(double submissionDelay) {}
-        @Override public boolean isBindToVm() { return false; }
-        @Override public int compareTo(Cloudlet o) { return 0; }
-        @Override public boolean isAssignedToDatacenter() { return false; }
-        @Override public String toString() { return "Cloudlet.NULL"; }
-        @Override public boolean setFinishedLengthSoFar(long length) { return false; }
-        @Override public boolean setWallClockTime(double wallTime, double actualCpuTime) { return false; }
-        @Override public void setExecStartTime(double clockTime) {}
-        @Override public double registerArrivalInDatacenter() { return -1; }
-    };
+    Cloudlet NULL = new CloudletNull();
+
 }

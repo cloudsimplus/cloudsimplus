@@ -3,8 +3,10 @@ package org.cloudsimplus.heuristics;
 /**
  * A class to allow the implementation of Null Object Design Pattern
  * for the {@link Heuristic} interface and extensions of it.
+ *
+ * @author Manoel Campos da Silva Filho
  */
-class HeuristicNull<S extends HeuristicSolution<?>> implements Heuristic<S> {
+final class HeuristicNull<S extends HeuristicSolution<?>> implements Heuristic<S> {
     @Override public double getAcceptanceProbability() { return 0.0; }
 	@Override public int getRandomValue(int maxValue) { return 0; }
 	@Override public boolean isToStopSearch() { return false; }

@@ -131,18 +131,9 @@ public interface ResourceProvisioner {
 
 
     /**
-     * A property that implements the Null Object Design Pattern for
+     * An attribute that implements the Null Object Design Pattern for
      * ResourceProvisioner objects.
      */
-    ResourceProvisioner NULL = new ResourceProvisioner(){
-        @Override public boolean allocateResourceForVm(Vm vm, long newTotalVmResourceCapacity) { return false; }
-        @Override public long getAllocatedResourceForVm(Vm vm) { return 0; }
-        @Override public long getTotalAllocatedResource() { return 0; }
-        @Override public boolean deallocateResourceForVm(Vm vm) { return false; }
-        @Override public void deallocateResourceForAllVms() {}
-        @Override public boolean isSuitableForVm(Vm vm, long newVmTotalAllocatedResource) { return false; }
-        @Override public ResourceManageable getResource() { return ResourceManageable.NULL; }
-        @Override public long getCapacity() { return 0; }
-        @Override public long getAvailableResource() { return 0; }
-    };
+    ResourceProvisioner NULL = new ResourceProvisionerNull();
+
 }
