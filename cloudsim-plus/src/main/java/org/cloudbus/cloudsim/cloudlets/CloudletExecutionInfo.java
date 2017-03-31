@@ -32,7 +32,7 @@ import org.cloudbus.cloudsim.util.Conversion;
  * @author Rajkumar Buyya
  * @since CloudSim Toolkit 1.0
  */
-public final class CloudletExecutionInfo {
+public class CloudletExecutionInfo {
     /**
      * A property that implements the Null Object Design Pattern for {@link CloudletExecutionInfo}
      * objects.
