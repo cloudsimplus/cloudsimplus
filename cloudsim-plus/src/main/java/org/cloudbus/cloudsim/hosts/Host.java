@@ -35,6 +35,12 @@ import org.cloudbus.cloudsim.provisioners.ResourceProvisioner;
 public interface Host extends Identificable, Resourceful, Comparable<Host> {
 
     /**
+     * An attribute that implements the Null Object Design Pattern for {@link Host}
+     * objects.
+     */
+    Host NULL = new HostNull();
+
+    /**
      * Adds a VM migrating into the current host.
      *
      * @param vm the vm
@@ -376,11 +382,4 @@ public interface Host extends Identificable, Resourceful, Comparable<Host> {
      * @return the {@link ResourceProvisioner} for the given resource class
      */
     ResourceProvisioner getProvisioner(Class<? extends ResourceManageable> resourceClass);
-
-    /**
-     * An attribute that implements the Null Object Design Pattern for {@link Host}
-     * objects.
-     */
-    Host NULL = new HostNull();
-
 }

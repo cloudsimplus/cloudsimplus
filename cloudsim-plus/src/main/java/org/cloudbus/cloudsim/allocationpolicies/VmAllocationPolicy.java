@@ -26,6 +26,12 @@ import org.cloudsimplus.autoscaling.VerticalVmScaling;
  */
 public interface VmAllocationPolicy {
     /**
+     * A property that implements the Null Object Design Pattern for {@link VmAllocationPolicy}
+     * objects.
+     */
+    VmAllocationPolicy NULL = new VmAllocationPolicyNull();
+
+    /**
      * Gets the {@link Datacenter} associated to the Allocation Policy.
      * @return
      */
@@ -101,9 +107,4 @@ public interface VmAllocationPolicy {
      */
     Map<Vm, Host> optimizeAllocation(List<? extends Vm> vmList);
 
-    /**
-     * A property that implements the Null Object Design Pattern for {@link VmAllocationPolicy}
-     * objects.
-     */
-    VmAllocationPolicy NULL = new VmAllocationPolicyNull();
 }

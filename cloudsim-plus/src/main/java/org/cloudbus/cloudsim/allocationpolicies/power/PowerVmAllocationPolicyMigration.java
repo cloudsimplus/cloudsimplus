@@ -19,6 +19,12 @@ import org.cloudbus.cloudsim.hosts.power.PowerHost;
  */
 public interface PowerVmAllocationPolicyMigration extends PowerVmAllocationPolicy {
     /**
+     * An attribute that implements the Null Object Design Pattern for {@link PowerVmAllocationPolicyMigration}
+     * objects.
+     */
+    PowerVmAllocationPolicyMigration NULL = new PowerVmAllocationPolicyMigrationNull();
+
+    /**
      * Checks if host is over utilized.
      *
      * @param host the host
@@ -59,11 +65,5 @@ public interface PowerVmAllocationPolicyMigration extends PowerVmAllocationPolic
      * @param underUtilizationThreshold the under utilization threshold (in scale is from 0 to 1, where 1 is 100%)
      */
     void setUnderUtilizationThreshold(double underUtilizationThreshold);
-
-    /**
-     * An attribute that implements the Null Object Design Pattern for {@link PowerVmAllocationPolicyMigration}
-     * objects.
-     */
-    PowerVmAllocationPolicyMigration NULL = new PowerVmAllocationPolicyMigrationNull();
 
 }

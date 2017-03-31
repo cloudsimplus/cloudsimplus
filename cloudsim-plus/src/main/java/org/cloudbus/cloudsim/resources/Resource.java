@@ -20,6 +20,13 @@ package org.cloudbus.cloudsim.resources;
  * @since CloudSim Plus 1.0
  */
 public interface Resource extends ResourceCapacity {
+
+    /**
+     * An attribute that implements the Null Object Design Pattern for {@link Resource}
+     * objects.
+     */
+    Resource NULL = new ResourceNull();
+
     /**
      * Checks if a given object is instance of a given class.
      * @param object the object to check
@@ -110,11 +117,5 @@ public interface Resource extends ResourceCapacity {
     default double getPercentUtilization() {
         return getCapacity() > 0 ? getAllocatedResource() / (double)getCapacity() : 0.0;
     }
-
-    /**
-     * An attribute that implements the Null Object Design Pattern for {@link Resource}
-     * objects.
-     */
-    Resource NULL = new ResourceNull();
 
 }

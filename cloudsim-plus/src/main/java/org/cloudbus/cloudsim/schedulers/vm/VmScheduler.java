@@ -34,6 +34,13 @@ import org.cloudbus.cloudsim.resources.Resource;
  * @since CloudSim Plus 1.0
  */
 public interface VmScheduler {
+
+    /**
+     * An attribute that implements the Null Object Design Pattern for {@link VmScheduler}
+     * objects.
+     */
+    VmScheduler NULL = new VmSchedulerNull();
+
     /**
      * Requests the allocation of PEs for a VM.
      *
@@ -222,11 +229,4 @@ public interface VmScheduler {
      * @throws NullPointerException when the host parameter is null
      */
     VmScheduler setHost(Host host);
-
-    /**
-     * An attribute that implements the Null Object Design Pattern for {@link VmScheduler}
-     * objects.
-     */
-    VmScheduler NULL = new VmSchedulerNull();
-
 }

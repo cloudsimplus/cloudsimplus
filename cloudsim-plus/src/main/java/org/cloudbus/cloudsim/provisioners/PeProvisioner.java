@@ -15,6 +15,12 @@ import org.cloudbus.cloudsim.vms.Vm;
 public interface PeProvisioner extends ResourceProvisioner {
 
     /**
+     * An attribute that implements the Null Object Design Pattern for
+     * PeProvisioner objects.
+     */
+    PeProvisioner NULL = new PeProvisionerNull();
+
+    /**
      * Sets the {@link Pe} that this provisioner will manage.
      *
      * @param pe the Pe to set
@@ -82,11 +88,5 @@ public interface PeProvisioner extends ResourceProvisioner {
      * @return the utilization percentage from 0 to 1
      */
     double getUtilization();
-
-    /**
-     * An attribute that implements the Null Object Design Pattern for
-     * PeProvisioner objects.
-     */
-    PeProvisioner NULL = new PeProvisionerNull();
 
 }

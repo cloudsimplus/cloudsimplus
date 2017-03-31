@@ -26,6 +26,12 @@ public interface SimEvent extends Comparable<SimEvent>, EventInfo {
     enum Type {NULL, SEND, HOLD_DONE, CREATE}
 
     /**
+     * An attribute that implements the Null Object Design Pattern for {@link SimEvent}
+     * objects.
+     */
+    SimEvent NULL = new SimEventNull();
+
+    /**
      * Gets the internal type
      *
      * @return
@@ -132,11 +138,4 @@ public interface SimEvent extends Comparable<SimEvent>, EventInfo {
     Simulation getSimulation();
 
     @Override int compareTo(SimEvent o);
-
-    /**
-     * An attribute that implements the Null Object Design Pattern for {@link SimEvent}
-     * objects.
-     */
-    SimEvent NULL = new SimEventNull();
-
 }

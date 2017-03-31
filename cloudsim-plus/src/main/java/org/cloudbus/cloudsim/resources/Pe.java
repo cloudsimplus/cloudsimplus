@@ -44,6 +44,12 @@ public interface Pe extends Identificable, ResourceManageable {
     }
 
     /**
+     * An attribute that implements the Null Object Design Pattern for {@link Pe}
+     * objects.
+     */
+    Pe NULL = new PeNull();
+
+    /**
      * Gets the capacity of this Pe in MIPS (Million Instructions Per Second).
      *
      * @return the MIPS capacity
@@ -122,11 +128,4 @@ public interface Pe extends Identificable, ResourceManageable {
      * @post $none
      */
     boolean setStatus(Status status);
-
-    /**
-     * An attribute that implements the Null Object Design Pattern for {@link Pe}
-     * objects.
-     */
-    Pe NULL = new PeNull();
-
 }

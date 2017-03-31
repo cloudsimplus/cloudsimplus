@@ -30,6 +30,11 @@ import java.util.List;
  * @since CloudSim Plus 1.0
  */
 public interface Datacenter extends SimEntity {
+    /**
+     * A property that implements the Null Object Design Pattern for
+     * {@link Datacenter} objects.
+     */
+    Datacenter NULL = new DatacenterNull();
 
     /**
      * Adds a file into the resource's storage before the experiment starts. If
@@ -50,7 +55,6 @@ public interface Datacenter extends SimEntity {
     <T extends Host> List<T> getHostList();
 
     Host getHost(final int index);
-
 
     /**
      * Gets the policy to be used by the Datacenter to allocate VMs into hosts.
@@ -94,7 +98,6 @@ public interface Datacenter extends SimEntity {
      */
     Datacenter setSchedulingInterval(double schedulingInterval);
 
-
     /**
      * Gets the Datacenter characteristics.
      *
@@ -116,11 +119,4 @@ public interface Datacenter extends SimEntity {
      * @return
      */
     Datacenter setStorageList(List<FileStorage> storageList);
-
-    /**
-     * A property that implements the Null Object Design Pattern for
-     * {@link Datacenter} objects.
-     */
-    Datacenter NULL = new DatacenterNull();
-
 }

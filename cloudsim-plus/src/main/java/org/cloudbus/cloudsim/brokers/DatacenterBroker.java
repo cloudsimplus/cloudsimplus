@@ -32,6 +32,12 @@ import org.cloudbus.cloudsim.core.SimEntity;
  */
 public interface DatacenterBroker extends SimEntity {
     /**
+     * An attribute that implements the Null Object Design Pattern for {@link DatacenterBroker}
+     * objects.
+     */
+    DatacenterBroker NULL = new DatacenterBrokerNull();
+
+    /**
      * Specifies that an already submitted cloudlet, that is in the {@link #getCloudletsWaitingList() waiting list},
      * must run in a specific virtual machine.
      *
@@ -215,10 +221,4 @@ public interface DatacenterBroker extends SimEntity {
      * @return the list of created Cloudlets
      */
     Set<Cloudlet> getCloudletsCreatedList();
-
-    /**
-     * An attribute that implements the Null Object Design Pattern for {@link DatacenterBroker}
-     * objects.
-     */
-    DatacenterBroker NULL = new DatacenterBrokerNull();
 }

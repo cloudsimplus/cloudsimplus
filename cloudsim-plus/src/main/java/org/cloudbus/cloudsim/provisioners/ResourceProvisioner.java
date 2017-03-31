@@ -26,6 +26,12 @@ import org.cloudbus.cloudsim.vms.Vm;
  */
 public interface ResourceProvisioner {
     /**
+     * An attribute that implements the Null Object Design Pattern for
+     * ResourceProvisioner objects.
+     */
+    ResourceProvisioner NULL = new ResourceProvisionerNull();
+
+    /**
      * Allocates an amount of the physical resource for a given VM, changing the current capacity
      * of the virtual resource to the given amount.
      *
@@ -128,12 +134,4 @@ public interface ResourceProvisioner {
      * @return the amount of free available physical resource
      */
     long getAvailableResource();
-
-
-    /**
-     * An attribute that implements the Null Object Design Pattern for
-     * ResourceProvisioner objects.
-     */
-    ResourceProvisioner NULL = new ResourceProvisionerNull();
-
 }

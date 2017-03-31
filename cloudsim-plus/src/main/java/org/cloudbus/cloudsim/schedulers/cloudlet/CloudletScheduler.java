@@ -36,6 +36,12 @@ import org.cloudbus.cloudsim.resources.Pe;
 public interface CloudletScheduler extends Serializable {
 
     /**
+     * An attribute that implements the Null Object Design Pattern for {@link CloudletScheduler}
+     * objects.
+     */
+    CloudletScheduler NULL = new CloudletSchedulerNull();
+
+    /**
      * Cancels execution of a cloudlet.
      *
      * @param cloudletId ID of the cloudlet being canceled
@@ -358,11 +364,4 @@ public interface CloudletScheduler extends Serializable {
 	 * @return true if the Cloudlet can be added to the execution list, false otherwise
 	 */
 	boolean canAddCloudletToExecutionList(CloudletExecutionInfo cloudlet);
-
-    /**
-     * An attribute that implements the Null Object Design Pattern for {@link CloudletScheduler}
-     * objects.
-     */
-    CloudletScheduler NULL = new CloudletSchedulerNull();
-
 }

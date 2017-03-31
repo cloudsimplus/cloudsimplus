@@ -44,6 +44,12 @@ public interface DatacenterCharacteristics extends Identificable {
     double DEFAULT_TIMEZONE = 0;
 
     /**
+     * An attribute that implements the Null Object Design Pattern for {@link Datacenter}
+     * objects.
+     */
+    DatacenterCharacteristics NULL = new DatacenterCharacteristicsNull();
+
+    /**
      * Gets the time zone, a value between  [-12 and 13].
      *
      * @return the time zone
@@ -302,11 +308,4 @@ public interface DatacenterCharacteristics extends Identificable {
      * @post $none
      */
     boolean setPeStatus(Pe.Status status, int hostId, int peId);
-
-    /**
-     * An attribute that implements the Null Object Design Pattern for {@link Datacenter}
-     * objects.
-     */
-    DatacenterCharacteristics NULL = new DatacenterCharacteristicsNull();
-
 }
