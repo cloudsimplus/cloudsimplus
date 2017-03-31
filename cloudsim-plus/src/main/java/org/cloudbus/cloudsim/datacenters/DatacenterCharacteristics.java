@@ -7,7 +7,6 @@
  */
 package org.cloudbus.cloudsim.datacenters;
 
-import java.util.Collections;
 import java.util.List;
 
 import org.cloudbus.cloudsim.hosts.Host;
@@ -305,42 +304,9 @@ public interface DatacenterCharacteristics extends Identificable {
     boolean setPeStatus(Pe.Status status, int hostId, int peId);
 
     /**
-     * A property that implements the Null Object Design Pattern for {@link Datacenter}
+     * An attribute that implements the Null Object Design Pattern for {@link Datacenter}
      * objects.
      */
-    DatacenterCharacteristics NULL = new DatacenterCharacteristics() {
-        @Override public double getCostPerBw() { return 0; }
-        @Override public double getCostPerMem() { return 0; }
-        @Override public double getTimeZone() { return 0; }
-        @Override public DatacenterCharacteristics setTimeZone(double timeZone) { return DatacenterCharacteristics.NULL; }
-        @Override public double getCostPerSecond() { return 0; }
-        @Override public double getCostPerStorage() { return 0; }
-        @Override public DatacenterCharacteristics setCostPerSecond(double costPerSecond) { return DatacenterCharacteristics.NULL; }
-        @Override public DatacenterCharacteristics setVmm(String vmm) { return DatacenterCharacteristics.NULL; }
-        @Override public Datacenter getDatacenter() { return Datacenter.NULL; }
-        @Override public String getArchitecture() { return ""; }
-        @Override public DatacenterCharacteristics setArchitecture(String architecture) { return DatacenterCharacteristics.NULL; }
-        @Override public String getOs() { return ""; }
-        @Override public DatacenterCharacteristics setOs(String os) { return DatacenterCharacteristics.NULL; }
-        @Override public <T extends Host> List<T> getHostList() { return Collections.EMPTY_LIST; }
-        @Override public Host getHostWithFreePe() { return Host.NULL; }
-        @Override public Host getHostWithFreePe(int peNumber) { return Host.NULL; }
-        @Override public int getId() { return 0; }
-        @Override public long getMips() { return 0; }
-        @Override public long getMipsOfOnePe(int hostId, int peId) { return 0; }
-        @Override public int getNumberOfBusyPes() { return 0; }
-        @Override public long getNumberOfFailedHosts() { return 0; }
-        @Override public int getNumberOfFreePes() { return 0; }
-        @Override public int getNumberOfHosts() { return 0; }
-        @Override public int getNumberOfPes() { return 0; }
-        @Override public String getResourceName() { return ""; }
-        @Override public String getVmm() { return ""; }
-        @Override public boolean isWorking() { return false; }
-        @Override public DatacenterCharacteristics setCostPerBw(double costPerBw) { return DatacenterCharacteristics.NULL; }
-        @Override public DatacenterCharacteristics setCostPerMem(double costPerMem) { return DatacenterCharacteristics.NULL; }
-        @Override public DatacenterCharacteristics setCostPerStorage(double costPerStorage) { return DatacenterCharacteristics.NULL; }
-        @Override public DatacenterCharacteristics setDatacenter(Datacenter datacenter) { return DatacenterCharacteristics.NULL; }
-        @Override public boolean setPeStatus(Pe.Status status, int hostId, int peId) { return false; }
-    };
+    DatacenterCharacteristics NULL = new DatacenterCharacteristicsNull();
 
 }

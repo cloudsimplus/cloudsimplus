@@ -86,7 +86,7 @@ public interface UtilizationModel {
     double getUtilization();
 
     /**
-     * A property that implements the Null Object Design Pattern for {@link UtilizationModel}
+     * An attribute that implements the Null Object Design Pattern for {@link UtilizationModel}
      * objects using a Lambda Expression.
      */
     UtilizationModel NULL = new UtilizationModel() {

@@ -115,12 +115,6 @@ public interface Resource extends ResourceCapacity {
      * An attribute that implements the Null Object Design Pattern for {@link Resource}
      * objects.
      */
-    Resource NULL = new Resource() {
-        @Override public long getAvailableResource() { return 0; }
-        @Override public long getAllocatedResource() { return 0; }
-        @Override public boolean isResourceAmountAvailable(long amountToCheck) { return false; }
-        @Override public boolean isFull() { return false; }
-        @Override public long getCapacity() { return 0; }
-    };
+    Resource NULL = new ResourceNull();
 
 }

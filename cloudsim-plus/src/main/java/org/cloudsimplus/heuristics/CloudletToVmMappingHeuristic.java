@@ -69,13 +69,3 @@ public interface CloudletToVmMappingHeuristic extends Heuristic<CloudletToVmMapp
     CloudletToVmMappingHeuristic NULL = new CloudletToVmMappingHeuristicNull();
 }
 
-/**
- * A class to allow the implementation of Null Object Design Pattern
- * for this interface and extensions of it.
- */
-class CloudletToVmMappingHeuristicNull extends HeuristicNull<CloudletToVmMappingSolution> implements CloudletToVmMappingHeuristic {
-    @Override public List<Cloudlet> getCloudletList() { return Collections.EMPTY_LIST; }
-    @Override public List<Vm> getVmList() { return Collections.EMPTY_LIST; }
-    @Override public void setCloudletList(List<Cloudlet> cloudletList) {}
-    @Override public void setVmList(List<Vm> vmList) {}
-}

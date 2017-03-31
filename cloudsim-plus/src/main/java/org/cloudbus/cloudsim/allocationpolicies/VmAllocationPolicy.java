@@ -7,7 +7,6 @@
  */
 package org.cloudbus.cloudsim.allocationpolicies;
 
-import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import org.cloudbus.cloudsim.datacenters.Datacenter;
@@ -106,14 +105,5 @@ public interface VmAllocationPolicy {
      * A property that implements the Null Object Design Pattern for {@link VmAllocationPolicy}
      * objects.
      */
-    VmAllocationPolicy NULL = new VmAllocationPolicy() {
-        @Override public Datacenter getDatacenter() { return Datacenter.NULL; }
-        @Override public void setDatacenter(Datacenter datacenter) {}
-        @Override public boolean allocateHostForVm(Vm vm){ return false; }
-        @Override public boolean scaleVmVertically(VerticalVmScaling scaling) { return false; }
-        @Override public boolean allocateHostForVm(Vm vm, Host host) { return false; }
-        @Override public void deallocateHostForVm(Vm vm){}
-        @Override public List<Host> getHostList(){ return Collections.emptyList(); }
-        @Override public Map<Vm, Host> optimizeAllocation(List<? extends Vm> vmList) { return Collections.emptyMap(); }
-    };
+    VmAllocationPolicy NULL = new VmAllocationPolicyNull();
 }

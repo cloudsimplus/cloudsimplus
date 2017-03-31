@@ -70,16 +70,9 @@ public interface HeuristicSolution<T> extends Comparable<HeuristicSolution<T>> {
     T getResult();
 
     /**
-     * A property that implements the Null Object Design Pattern for {@link HeuristicSolution}
+     * An attribute that implements the Null Object Design Pattern for {@link HeuristicSolution}
      * objects.
      */
-    HeuristicSolution NULL = new HeuristicSolution() {
-        private final Object object = new Object();
-        @Override public double getFitness() { return 0.0; }
-        @Override public double getCost() { return 0.0; }
-        @Override public int compareTo(Object o) { return 0; }
-        @Override public Object getResult() { return object; }
-        @Override public Heuristic getHeuristic() { return Heuristic.NULL; }
-    };
+    HeuristicSolution NULL = new HeuristicSolutionNull();
 
 }
