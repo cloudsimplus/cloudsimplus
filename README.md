@@ -27,7 +27,7 @@
 |
 <b><a href="#license">License</a></b>
 |
-<b><a href="#contributing">Contribution Guide</a></b>
+<b><a href="#contributing">Contributing</a></b>
 </p>
 
 # Overview
@@ -41,6 +41,8 @@ CloudSim Plus is a fork of [CloudSim 3](https://github.com/Cloudslab/cloudsim/tr
 The efforts dedicated to this project have been recognized by the [EU/Brasil Cloud FORUM](https://eubrasilcloudforum.eu). A post about CloudSim Plus is available at [this page of the Forum](https://eubrasilcloudforum.eu/en/instituto-federal-de-educação-do-tocantins-brazil-instituto-de-telecomunicações-portugal-and), including a White Paper available in the [Publications Section](#publications).
 
 CloudSim Plus is developed through a partnership among the Systems, Security and Image Communication Lab of [Instituto de Telecomunicações (IT, Portugal)](http://www.it.pt), the [Universidade da Beira Interior (UBI, Portugal)](http://www.ubi.pt) and the [Instituto Federal de Educação Ciência e Tecnologia do Tocantins (IFTO, Brazil)](http://www.ifto.edu.br). It is supported by the Portuguese [Fundação para a Ciência e a Tecnologia (FCT)](https://www.fct.pt) and by the [Brazilian foundation Coordenação de Aperfeiçoamento de Pessoal de Nível Superior (CAPES)](http://www.capes.gov.br).
+
+There are different ways you can contribute to CloudSim Plus, as it is shown in the [contribution guide](CONTRIBUTING.md). One easy way is to click on the "Star" button at the top of the project's GitHub page, so that we can get more visibility.
 
 The original [CloudSim](http://github.com/Cloudslab/cloudsim) project is developed in the [Cloud Computing and Distributed Systems (CLOUDS) Laboratory](http://cloudbus.org/), at the [Computer Science and Software Engineering Department](http://www.csse.unimelb.edu.au/) of the [University of Melbourne](http://www.unimelb.edu.au/).
 
@@ -356,7 +358,6 @@ This project is licensed under [GNU GPLv3](http://www.gnu.org/licenses/gpl-3.0),
 
 # Contributing
 
-You are welcome to contribute to the project. However, make sure to read the [contribution guide](CONTRIBUTING.md) before you start.
-If you just want to request a feature or report an issue, feel free to [create a ticket here](https://github.com/manoelcampos/cloudsim-plus/issues). You should just look if the issue/feature you want to report/request hasn't been reported/requested yet. Try checking the existing issues/features and search using some keywords before creating a new ticket. 
+You are welcome to contribute to the project. However, make sure you read the [contribution guide](CONTRIBUTING.md) before starting. The guide provides information on the different ways you can contribute, such as requesting a feature, reporting an issue, fixing a bug or providing some new feature.
 
 <p align="right"><a href="#top">:arrow_up:</a></p>

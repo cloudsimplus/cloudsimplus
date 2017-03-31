@@ -4,7 +4,7 @@ Frequent Asked Questions (FAQ)
 Here, you find answer to the most recurrent questions in the CloudSim
 Plus mailing list. This FAQ was adapted from CloudSim, under the terms
 of the GPL license. Copyright (c) 2009-2012, The University of
-Melbourne, Australia
+Melbourne, Australia.
 
 Getting started
 --------------------------------
@@ -293,7 +293,7 @@ VmAllocationPolicy.
 
 The datacenter sends the migration request message using a call such as:
 
-::
+.. code:: java
 
     send(this.getId(), delay, CloudSimTags.VM_MIGRATE, vm);
 
@@ -330,7 +330,7 @@ appropriate English and show that you have tried by yourself to fix the
 issue. Such recommendations are likely to speed up the answer. If you
 are not getting meaningful answers or any answer at all, maybe it's time
 to read the `How To Ask Questions The Smart
-Way <http://www.catb.org/~esr/faqs/smart-questions.html>`__
+Way <http://www.catb.org/~esr/faqs/smart-questions.html>`__.
 
 2. How do I report bugs, desirable features, unexpected behavior and other issues?
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

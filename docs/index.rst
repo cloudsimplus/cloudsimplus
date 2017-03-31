@@ -12,7 +12,7 @@ Welcome to CloudSim Plus's documentation!
 
    packages.rst
    FAQ.rst
-   syncing-you-fork.rst
+   syncing-you-fork-or-clone.rst
    publications.rst
 
 
