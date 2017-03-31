@@ -74,6 +74,7 @@ public class LogTest {
 
     @Test
     public void testFormat() throws IOException {
+        Log.enable();
         Log.printFormatted("test %s test", "test");
         assertEquals("test test test", OUTPUT.toString());
         OUTPUT.reset();
@@ -112,8 +113,9 @@ public class LogTest {
     }
 
     @Test
-    public void testDisable1() throws IOException {
+    public void testNotDisable1() throws IOException {
         OUTPUT.reset();
+        Log.enable();
         assertFalse(Log.isDisabled());
 
         Log.print("test test");
@@ -121,7 +123,8 @@ public class LogTest {
     }
 
     @Test
-    public void testDisable2() throws IOException {
+    public void testNotDisable2() throws IOException {
+        Log.enable();
         OUTPUT.reset();
 
         Log.printLine("test test");
@@ -138,7 +141,7 @@ public class LogTest {
     }
 
     @Test
-    public void testDisable3() throws IOException {
+    public void testDisable1() throws IOException {
         Log.disable();
 
         assertTrue(Log.isDisabled());
