@@ -9,58 +9,28 @@ import org.cloudbus.cloudsim.core.events.SimEvent;
  * @see SimEntity#NULL
  */
 final class SimEntityNull implements SimEntity {
-    @Override
-    public int compareTo(SimEntity o) {
+    @Override public int compareTo(SimEntity o) {
         return 0;
     }
-
-    @Override
-    public boolean isStarted() {
+    @Override public boolean isStarted() {
         return false;
     }
-
-    @Override
-    public Simulation getSimulation() {
+    @Override public Simulation getSimulation() {
         return Simulation.NULL;
     }
-
-    @Override
-    public SimEntity setSimulation(Simulation simulation) {
+    @Override public SimEntity setSimulation(Simulation simulation) {
         return this;
     }
-
-    @Override
-    public void processEvent(SimEvent ev) {
-    }
-
-    @Override
-    public void schedule(int dest, double delay, int tag) {
-    }
-
-    @Override
-    public void run() {
-    }
-
-    @Override
-    public void start() {
-    }
-
-    @Override
-    public void shutdownEntity() {
-    }
-
-    @Override
-    public SimEntity setName(String newName) throws IllegalArgumentException {
-        return this;
-    }
-
-    @Override
-    public String getName() {
+    @Override public void processEvent(SimEvent ev) {/**/}
+    @Override public void schedule(int dest, double delay, int tag) {/**/}
+    @Override public void run() {/**/}
+    @Override public void start() {/**/}
+    @Override public void shutdownEntity() {/**/}
+    @Override public SimEntity setName(String newName) throws IllegalArgumentException { return this; }
+    @Override public String getName() {
         return "";
     }
-
-    @Override
-    public int getId() {
+    @Override public int getId() {
         return 0;
     }
 }

@@ -46,11 +46,11 @@ public class CloudletToVmMappingSolutionTest {
     public void testGetFitness() {
         final int PES = 2;
         final int NUMBER_OF_CLOUDLETS = 3;
-        CloudletToVmMappingSolution instance =
+        final CloudletToVmMappingSolution instance =
                 createSolutionWithOneVmForEachCloudlet(NUMBER_OF_CLOUDLETS, PES, PES+1);
 
-        double expResult = 1.0/3.0;
-        double result = instance.getFitness();
+        final double expResult = 1.0/3.0;
+        final double result = instance.getFitness();
         assertEquals(
             String.format("Fitness is not as expected for the cost %.2f", instance.getCost()),
             expResult, result, 0.01);
@@ -66,13 +66,13 @@ public class CloudletToVmMappingSolutionTest {
             int numberOfCloudlets, int cloudletPes, int vmPes) {
         final int VM_MIPS = 1000;
         final int CLOUDLET_LEN = 10000;
-        CloudletToVmMappingSolution instance = new CloudletToVmMappingSolution(Heuristic.NULL);
+        final CloudletToVmMappingSolution instance = new CloudletToVmMappingSolution(Heuristic.NULL);
 
         IntStream.range(0, numberOfCloudlets).forEach(i -> {
-            Vm vm = VmSimpleTest.createVm(i, VM_MIPS, vmPes);
+            final Vm vm = VmSimpleTest.createVm(i, VM_MIPS, vmPes);
 
-            long len = (long)(CLOUDLET_LEN*(i+1));
-            Cloudlet cloudlet = CloudletSimpleTest.createCloudlet(i, len, cloudletPes);
+            final long len = (long)(CLOUDLET_LEN*(i+1));
+            final Cloudlet cloudlet = CloudletSimpleTest.createCloudlet(i, len, cloudletPes);
             instance.bindCloudletToVm(cloudlet, vm);
         });
 
@@ -80,24 +80,9 @@ public class CloudletToVmMappingSolutionTest {
     }
 
     private Cloudlet createCloudlet(int id, int numberOfPes){
-        Cloudlet cloudlet =
-            new CloudletSimple(id, 10000, numberOfPes)
-              .setFileSize(100)
-              .setOutputSize(100);
-        return cloudlet;
-    }
-
-    /**
-     * Creates a set of cloudlets
-     * @param numberOfCloudlets the number of cloudlets to create
-     * @param initialId the id of the first cloudlet to be created, that will
-     * be incremented for each next created cloudlet
-     * @return the cloudlet list
-     */
-    private Set<Cloudlet> createCloudlets(int numberOfCloudlets, int initialId){
-        Set<Cloudlet> set = new TreeSet<>();
-        IntStream.range(0, numberOfCloudlets).forEach(i->set.add(createCloudlet(initialId+i, 1)));
-        return set;
+        return new CloudletSimple(id, 10000, numberOfPes)
+          .setFileSize(100)
+          .setOutputSize(100);
     }
 
     private Vm[] createVms(int numberOfVms){
@@ -132,10 +117,10 @@ public class CloudletToVmMappingSolutionTest {
         final int PES = 2;
         CloudletToVmMappingSolution instance =
                 createSolutionWithOneVmForEachCloudlet(NUMBER_OF_CLOUDLETS, PES, PES+1);
-        HeuristicSolution o =
+        final HeuristicSolution o =
                 createSolutionWithOneVmForEachCloudlet(NUMBER_OF_CLOUDLETS, PES, PES+1);
-        int expResult = 0;
-        int result = instance.compareTo(o);
+        final int expResult = 0;
+        final int result = instance.compareTo(o);
         assertEquals(
             String.format(
                 "The instances should be equals. Instance fitness: %f Compared object fitness: %f",
@@ -151,8 +136,8 @@ public class CloudletToVmMappingSolutionTest {
                 createSolutionWithOneVmForEachCloudlet(NUMBER_OF_CLOUDLETS, PES, PES/2);
         HeuristicSolution o =
                 createSolutionWithOneVmForEachCloudlet(NUMBER_OF_CLOUDLETS, PES);
-        int expResult = -1;
-        int result = instance.compareTo(o);
+        final int expResult = -1;
+        final int result = instance.compareTo(o);
         assertEquals(
             String.format(
                 "The instance was expected to be lower than the compared object. Instance fitness: %.2f Compared object fitness: %.2f",
@@ -162,28 +147,28 @@ public class CloudletToVmMappingSolutionTest {
 
     @Test(expected = UnsupportedOperationException.class)
     public void testGetCloudletVmMap_TryToModifyReadonlyMap() {
-        CloudletToVmMappingSolution instance = new CloudletToVmMappingSolution(Heuristic.NULL);
-        Map<Cloudlet, Vm> result = instance.getResult();
+        final CloudletToVmMappingSolution instance = new CloudletToVmMappingSolution(Heuristic.NULL);
+        final Map<Cloudlet, Vm> result = instance.getResult();
         result.put(Cloudlet.NULL, Vm.NULL);
     }
 
     @Test
     public void testGetCloudletVmMap_NotNullMap() {
-        CloudletToVmMappingSolution instance = new CloudletToVmMappingSolution(Heuristic.NULL);
+        final CloudletToVmMappingSolution instance = new CloudletToVmMappingSolution(Heuristic.NULL);
         assertNotNull(instance.getResult());
     }
 
     @Test
     public void testSwapVmsOfTwoMapEntries() {
         final int numberOfEntries = 2;
-        Map.Entry<Cloudlet, Vm> originalEntries[] = new Map.Entry[numberOfEntries];
-        Map.Entry<Cloudlet, Vm> swapedVmsEntries[] = new Map.Entry[numberOfEntries];
-        Cloudlet[] cloudlets = new Cloudlet[numberOfEntries];
+        final Map.Entry<Cloudlet, Vm> originalEntries[] = new Map.Entry[numberOfEntries];
+        final Map.Entry<Cloudlet, Vm> swapedVmsEntries[] = new Map.Entry[numberOfEntries];
+        final Cloudlet[] cloudlets = new Cloudlet[numberOfEntries];
         for(int i = 1; i <= numberOfEntries; i++){
             cloudlets[i-1] = CloudletSimpleTest.createCloudlet(i, i*1000, i);
         }
 
-        Vm[] vms = createVms(numberOfEntries);
+        final Vm[] vms = createVms(numberOfEntries);
 
         IntStream.range(0, numberOfEntries).forEach(i->{
             originalEntries[i] = new HashMap.SimpleEntry(cloudlets[i], vms[i]);
@@ -196,10 +181,10 @@ public class CloudletToVmMappingSolutionTest {
             swapedVmsEntries[i] = new HashMap.SimpleEntry(cloudlets[i], vms[swapedVmIndex]);
         });
 
-        CloudletToVmMappingSolution instance = new CloudletToVmMappingSolution(Heuristic.NULL);
+        final CloudletToVmMappingSolution instance = new CloudletToVmMappingSolution(Heuristic.NULL);
         instance.swapVmsOfTwoMapEntries(originalEntries);
 
-        Assert.assertArrayEquals(
+        assertArrayEquals(
             String.format(
                 "The VMs of the given cloudlets were not swapped. It was expected the cloudlet %d to move to VM %d and cloudlet %d to move to VM %d.",
                 swapedVmsEntries[0].getKey().getId(),
@@ -208,5 +193,4 @@ public class CloudletToVmMappingSolutionTest {
                 swapedVmsEntries[1].getValue().getId()),
             swapedVmsEntries, originalEntries);
     }
-
 }

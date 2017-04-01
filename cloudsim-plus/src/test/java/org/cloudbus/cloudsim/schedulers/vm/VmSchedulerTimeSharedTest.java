@@ -48,22 +48,30 @@ public class VmSchedulerTimeSharedTest {
     }
 
     private VmScheduler createVmScheduler(double mips, int pesNumber) {
-        List<Pe> peList = new ArrayList<>(pesNumber);
+        final List<Pe> peList = new ArrayList<>(pesNumber);
         LongStream.range(0, pesNumber).forEach(i -> peList.add(new PeSimple(mips, new PeProvisionerSimple())));
-        Host host = new HostSimple(1, 1000, peList);
+        final Host host = new HostSimple(1, 1000, peList);
         return new VmSchedulerTimeShared().setHost(host);
     }
 
     @Test
-    public void testIsSuitableForVm() {
+    public void testIsSuitableForVm0() {
         Vm vm0 = VmSimpleTest.createVm(0, MIPS / 4, 2);
         vm0.setCreated(false);
+        assertTrue(vmScheduler.isSuitableForVm(vm0));
+    }
+
+    @Test
+    public void testIsSuitableForVm1() {
         Vm vm1 = VmSimpleTest.createVm(1, MIPS / 2, 2);
         vm1.setCreated(false);
+        assertTrue(vmScheduler.isSuitableForVm(vm1));
+    }
+
+    @Test
+    public void testIsSuitableForVm2() {
         Vm vm2 = VmSimpleTest.createVm(2, MIPS * 2, 2);
         vm2.setCreated(false);
-        assertTrue(vmScheduler.isSuitableForVm(vm0));
-        assertTrue(vmScheduler.isSuitableForVm(vm1));
         assertFalse(vmScheduler.isSuitableForVm(vm2));
     }
 

@@ -45,11 +45,20 @@ public class PowerModelCubicTest {
     }
 
     @Test
-    public void testGetPower() {
+    public void testGetPowerZeroUsage() {
         assertEquals(0, powerModel.getPower(0.0), 0);
+    }
+
+    @Test
+    public void testGetPowerHundredPercentUsage() {
         assertEquals(MAX_POWER, powerModel.getPower(1.0), 0);
+    }
+
+    @Test
+    public void testGetPowerCustomUsage() {
         assertEquals(MAX_POWER * STATIC_POWER_PERCENT + (MAX_POWER - MAX_POWER * STATIC_POWER_PERCENT) / Math.pow(100, 3) * Math.pow(0.5 * 100, 3), powerModel.getPower(0.5), 0);
     }
+
 
     public void testPrintPower() {
         for (int i = 0; i <= 100; i++) {

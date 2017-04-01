@@ -349,7 +349,7 @@ public class DatacenterSimple extends CloudSimEntity implements Datacenter {
         if (ack) {
             data[1] = -1; // no sender id
             data[2] = msg; // the result of adding a master file
-            sendNow(sentFrom, DataCloudTags.FILE_ADD_MASTER_RESULT, data);
+            sendNow(sentFrom, DataCloudTags.MASTERFILE_ADD_RESULT, data);
         }
     }
 

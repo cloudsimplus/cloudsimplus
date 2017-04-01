@@ -47,6 +47,6 @@ import org.cloudbus.cloudsim.vms.Vm;
 public abstract class Builder {
     public void validateAmount(final double amount){
         if(amount <= 0)
-            throw new RuntimeException("The amount has to be greater than 0.");
+            throw new IllegalArgumentException("The amount has to be greater than 0.");
     }
 }

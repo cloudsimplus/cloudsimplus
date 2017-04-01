@@ -106,8 +106,8 @@ public class TopologicalGraph {
 
         for (TopologicalNode node : nodeList) {
             buffer.append(
-                String.format("%d | x is: %d y is: %d\n",
-                node.getNodeID(), node.getCoordinateX(), node.getCoordinateY()));
+                String.format("%d | %s\n",
+                node.getNodeId(), node.getWorldCoordinates()));
         }
 
         buffer.append("\n\n node-link-information:\n");

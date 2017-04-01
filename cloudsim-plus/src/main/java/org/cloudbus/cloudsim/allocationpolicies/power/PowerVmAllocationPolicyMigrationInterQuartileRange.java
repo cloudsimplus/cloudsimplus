@@ -31,7 +31,7 @@ import org.cloudbus.cloudsim.util.MathUtil;
  */
 public class PowerVmAllocationPolicyMigrationInterQuartileRange extends PowerVmAllocationPolicyMigrationDynamicUpperThresholdAbstract {
     // 12 has been suggested as a safe value
-    public static final int MIN_NUMBER_OF_HISTORY_ENTRIES_TO_COMPUTE_IRQ = 12;
+    private static final int MIN_NUM_OF_HISTORY_ENTRIES_TO_COMPUTE_IRQ = 12;
 
     /**
      * Creates a PowerVmAllocationPolicyMigrationInterQuartileRange
@@ -65,7 +65,7 @@ public class PowerVmAllocationPolicyMigrationInterQuartileRange extends PowerVmA
     @Override
     public double computeHostUtilizationMeasure(PowerHostUtilizationHistory host) throws IllegalArgumentException {
         final double[] data = host.getUtilizationHistory();
-        if (MathUtil.countNonZeroBeginning(data) >= MIN_NUMBER_OF_HISTORY_ENTRIES_TO_COMPUTE_IRQ) {
+        if (MathUtil.countNonZeroBeginning(data) >= MIN_NUM_OF_HISTORY_ENTRIES_TO_COMPUTE_IRQ) {
             return MathUtil.iqr(data);
         }
 

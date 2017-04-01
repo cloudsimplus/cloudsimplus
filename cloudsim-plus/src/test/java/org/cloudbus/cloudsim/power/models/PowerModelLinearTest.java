@@ -45,9 +45,17 @@ public class PowerModelLinearTest {
     }
 
     @Test
-    public void testGetPower() {
+    public void testGetPowerForZeroUsage() {
         assertEquals(0, powerModel.getPower(0.0), 0);
+    }
+
+    @Test
+    public void testGetPowerForHundredPercentUsage() {
         assertEquals(MAX_POWER, powerModel.getPower(1.0), 0);
+    }
+
+    @Test
+    public void testGetPowerForCustomUsage() {
         assertEquals(MAX_POWER * STATIC_POWER_PERCENT + ((MAX_POWER - MAX_POWER * STATIC_POWER_PERCENT) / 100) * 0.5 * 100, powerModel.getPower(0.5), 0);
     }
 
