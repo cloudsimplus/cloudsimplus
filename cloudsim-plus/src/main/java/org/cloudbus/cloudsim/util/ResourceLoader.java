@@ -8,6 +8,12 @@ import java.net.URL;
  * @author Manoel Campos da Silva Filho
  */
 public final class ResourceLoader {
+
+    /**
+     * A private constructor to avoid class instantiation.
+     */
+    private ResourceLoader(){}
+
     /**
      * Gets the absolute path of a resource (a file or sub-directory) inside the resources directory.
      *
@@ -22,8 +28,4 @@ public final class ResourceLoader {
         return (folder == null ? "" : folder);
     }
 
-    /**
-     * A private constructor to avoid class instantiation.
-     */
-    private ResourceLoader(){}
 }

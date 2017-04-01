@@ -39,6 +39,13 @@ public interface UtilizationModel {
         ABSOLUTE
     }
 
+
+    /**
+     * An attribute that implements the Null Object Design Pattern for {@link UtilizationModel}
+     * objects using a Lambda Expression.
+     */
+    UtilizationModel NULL = new UtilizationModelNull();
+
     /**
      * Gets the simulation that this UtilizationModel belongs to.
      * @return
@@ -85,15 +92,4 @@ public interface UtilizationModel {
      */
     double getUtilization();
 
-    /**
-     * An attribute that implements the Null Object Design Pattern for {@link UtilizationModel}
-     * objects using a Lambda Expression.
-     */
-    UtilizationModel NULL = new UtilizationModel() {
-        @Override public Simulation getSimulation() { return Simulation.NULL; }
-        @Override public Unit getUnit() { return Unit.PERCENTAGE; }
-        @Override public UtilizationModel setSimulation(Simulation simulation) { return this; }
-        @Override public double getUtilization(double time) { return 0; }
-        @Override public double getUtilization() { return 0; }
-    };
 }

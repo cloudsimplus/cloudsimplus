@@ -236,9 +236,7 @@ public abstract class PowerVmAllocationPolicyMigrationAbstract extends PowerVmAl
     protected void printOverUtilizedHosts(List<PowerHostUtilizationHistory> overUtilizedHosts) {
         if (!Log.isDisabled() && !overUtilizedHosts.isEmpty()) {
             Log.printLine("Over-utilized hosts:");
-            for (PowerHostUtilizationHistory host : overUtilizedHosts) {
-                Log.printConcatLine("Host #", host.getId());
-            }
+            overUtilizedHosts.forEach(host -> Log.printConcatLine("Host #", host.getId()));
             Log.printLine();
         }
     }
@@ -548,8 +546,8 @@ public abstract class PowerVmAllocationPolicyMigrationAbstract extends PowerVmAl
     protected double getMaxUtilizationAfterAllocation(PowerHost host, Vm vm) {
         final double requestedTotalMips = vm.getCurrentRequestedTotalMips();
         final double hostUtilizationMips = getUtilizationOfCpuMips(host);
-        final double hostPotentialUtilizationMips = hostUtilizationMips + requestedTotalMips;
-        return hostPotentialUtilizationMips / host.getTotalMips();
+        final double hostPotentialMipsUse = hostUtilizationMips + requestedTotalMips;
+        return hostPotentialMipsUse / host.getTotalMips();
     }
 
     /**

@@ -14,11 +14,12 @@ import static org.junit.Assert.*;
  * @author Manoel Campos da Silva Filho
  */
 public class HarddriveStorageTest {
-    public static final String RESERVED_FILE_ADDED_WITHOUT_PREVIOUS_SPACE = "The reserved file was added but its space was not previously reserved.";
+    private static final String RESERVED_FILE_ADDED_WITHOUT_PREVIOUS_SPACE = "The reserved file was added but its space was not previously reserved.";
     private static final int CAPACITY = 1000;
     private static final int FILE_SIZE = 100;
     private static final int TOTAL_FILES_TO_CREATE = 5;
-    public static final String INEXISTENT_FILE = "inexistent-file.txt";
+    private static final String INEXISTENT_FILE = "inexistent-file.txt";
+    private static final String FILE1 = "file1.txt";
 
     @Test(expected = IllegalArgumentException.class)
     public void testNewHarddriveStorage_onlyWhiteSpacesName() {
@@ -185,7 +186,7 @@ public class HarddriveStorageTest {
     public void testAddReservedFile_spaceNotPreReserved() {
         HarddriveStorage instance = createHardDrive(CAPACITY);
         try{
-            instance.addReservedFile(new File("file1.txt", 100));
+            instance.addReservedFile(new File(FILE1, 100));
             fail(RESERVED_FILE_ADDED_WITHOUT_PREVIOUS_SPACE);
         } catch(Exception e){
             /*if the exception was thrown, indicates that the file
@@ -198,7 +199,7 @@ public class HarddriveStorageTest {
     @Test
     public void testAddReservedFile_tryToAddAlreadAddedReservedFile() {
         HarddriveStorage instance = createHardDrive(CAPACITY);
-        final File file = new File("file1.txt", 100);
+        final File file = new File(FILE1, 100);
         instance.reserveSpace(file.getSize());
         instance.addReservedFile(file);
         instance.reserveSpace(file.getSize());
@@ -211,7 +212,6 @@ public class HarddriveStorageTest {
      */
     @Test
     public void testReserveSpaceNotReservedFile2() {
-        System.out.println("testReserveSpaceNotReservedFile2");
         final int fileSize = FILE_SIZE;
         final long capacity = fileSize * 2L;
         long available = capacity;
@@ -245,7 +245,6 @@ public class HarddriveStorageTest {
      */
     @Test
     public void testReserveSpaceNotReservedFile3() {
-        System.out.println("testReserveSpaceNotReservedFile2");
         final int fileSize = FILE_SIZE;
         final int halfFileSize = fileSize/2;
         final long capacity = (long)fileSize;
@@ -457,7 +456,6 @@ public class HarddriveStorageTest {
 
     @Test
     public void testContains_String() {
-        System.out.println("contains");
         HarddriveStorage instance = createHardDrive();
         List<File> fileList = createListOfFilesAndAddToHardDrive(instance);
 
@@ -471,7 +469,6 @@ public class HarddriveStorageTest {
 
     @Test
     public void testContains_File() {
-        System.out.println("contains");
         HarddriveStorage instance = createHardDrive();
         List<File> fileList = createListOfFilesAndAddToHardDrive(instance);
 
@@ -498,7 +495,7 @@ public class HarddriveStorageTest {
             assertEquals(file.getName(), result.getName());
         }
 
-        File file1 = new File("file1.txt", 100), file2 = new File("file2.txt", 100);
+        File file1 = new File(FILE1, 100), file2 = new File("file2.txt", 100);
         instance.addFile(file1);
         instance.addFile(file2);
         assertFalse(instance.renameFile(file1, file2.getName()));
@@ -514,7 +511,7 @@ public class HarddriveStorageTest {
         final int capacity = CAPACITY;
 
         assertTrue(instance.isResourceAmountAvailable(capacity));
-        final File file = new File("file1.txt", capacity);
+        final File file = new File(FILE1, capacity);
         assertTrue(instance.addFile(file)>0);
         assertFalse(instance.isResourceAmountAvailable(capacity));
         assertTrue(instance.deleteFile(file)>0);

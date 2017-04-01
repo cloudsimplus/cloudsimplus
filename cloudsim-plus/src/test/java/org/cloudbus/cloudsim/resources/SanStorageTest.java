@@ -15,7 +15,7 @@ public class SanStorageTest {
     private static final double BW = 1000;
     private static final int FILE_SIZE = 5000;
     private static final double INDIVIDUAL_FILE_TRANSFER_TIME = (FILE_SIZE/BW) + NETWORK_LATENCY;
-    public static final String FILE1 = "file1.txt";
+    private static final String FILE1 = "file1.txt";
 
     @Test
     public void testAddReservedFile() {

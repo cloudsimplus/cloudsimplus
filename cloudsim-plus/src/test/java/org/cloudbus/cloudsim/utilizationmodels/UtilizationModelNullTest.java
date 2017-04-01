@@ -8,22 +8,22 @@ import static org.junit.Assert.*;
  *
  * @author Manoel Campos da Silva Filho
  */
-public class UtilizationModelZeroTest {
-    
+public class UtilizationModelNullTest {
+
     private static final int EXPECTED_UTILIZATION = 0;
-    
+
     @Test
     public void testGetUtilizationForDifferentTimes() {
         System.out.println("getUtilization");
-        UtilizationModelZero instance = new UtilizationModelZero();
-        String msg = 
+        UtilizationModel instance = UtilizationModel.NULL;
+        String msg =
             String.format(
-                "For any time (even a randomly defined one), the utilization has to be equals to %d", 
+                "For any time (even a randomly defined one), the utilization has to be equals to %d",
                 EXPECTED_UTILIZATION);
         IntStream.range(0, 10000).forEach(time -> {
-            assertEquals(msg, 
+            assertEquals(msg,
                     EXPECTED_UTILIZATION, instance.getUtilization(time), 0.0);
         });
     }
-    
+
 }

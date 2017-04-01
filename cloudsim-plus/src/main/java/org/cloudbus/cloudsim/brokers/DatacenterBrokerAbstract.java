@@ -63,7 +63,7 @@ public abstract class DatacenterBrokerAbstract extends CloudSimEntity implements
      * If the value is null or the Cloudlet isn't in the map,
      * it wasn't requested to be created yet.
      */
-    private Map<Cloudlet, Datacenter> cloudletCreationRequestsMap;
+    private final Map<Cloudlet, Datacenter> cloudletCreationRequestsMap;
     private Supplier<Datacenter> datacenterSupplier;
     private Supplier<Datacenter> fallbackDatacenterSupplier;
     private Function<Cloudlet, Vm> vmMapper;
@@ -535,7 +535,7 @@ public abstract class DatacenterBrokerAbstract extends CloudSimEntity implements
      */
     protected void requestDatacenterToCreateWaitingVms(Datacenter datacenter) {
         int requestedVms = 0;
-        for (Vm vm : getVmsWaitingList()) {
+        for (final Vm vm : getVmsWaitingList()) {
             if (!vmsToDatacentersMap.containsKey(vm) && !vmCreationRequestsMap.containsKey(vm)) {
                 Log.printFormattedLine(
                     "%.2f: %s: Trying to Create VM #%d in %s",

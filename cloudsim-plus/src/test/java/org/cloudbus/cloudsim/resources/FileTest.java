@@ -10,6 +10,7 @@ import static org.junit.Assert.*;
  * @author Manoel Campos da Silva Filho
  */
 public class FileTest {
+    private static final String OWNER = "Manoel Campos";
     private final String NAME = "file1.txt";
     private final int SIZE = 100;
 
@@ -33,7 +34,7 @@ public class FileTest {
 
     @Test()
     public void testCreateFile_FileParameter() {
-        File originalFile = new File("test1.txt", 100);
+        File originalFile = new File(NAME, 100);
         File copyFile = new File(originalFile);
         assertFalse(copyFile.isMasterCopy());
     }
@@ -45,12 +46,12 @@ public class FileTest {
 
     @Test(expected = IllegalArgumentException.class)
     public void testCreate_zeroSize() {
-        new File("file1", 0);
+        new File(NAME, 0);
     }
 
     @Test(expected = IllegalArgumentException.class)
     public void testCreate_negativeSize() {
-        new File("file1", -1);
+        new File(NAME, -1);
     }
 
     @Test(expected = IllegalArgumentException.class)
@@ -87,7 +88,7 @@ public class FileTest {
         int attributeSize =  DataCloudTags.PKT_SIZE + NAME.length();
         assertEquals(attributeSize, instance.getAttributeSize());
 
-        final String owner = "Manoel Campos";
+        final String owner = OWNER;
         instance.setOwnerName(owner);
         attributeSize += owner.length();
         assertEquals(attributeSize, instance.getAttributeSize());
@@ -112,9 +113,8 @@ public class FileTest {
 
     @Test
     public void testIsValid_String() {
-        System.out.println("isValid");
         assertTrue(File.isValid("new-file.txt"));
-        assertTrue(File.isValid("file1.txt"));
+        assertTrue(File.isValid(NAME));
         assertFalse(File.isValid(""));
 
         final String nullStr = null;
@@ -125,7 +125,6 @@ public class FileTest {
 
     @Test
     public void testIsValid_File() {
-        System.out.println("isValid");
         final File nullFile = null;
         assertFalse(File.isValid(nullFile));
     }
@@ -133,7 +132,7 @@ public class FileTest {
     @Test
     public void testSetOwnerName() {
         System.out.println("setOwnerName");
-        String owner = "Manoel Campos";
+        String owner = OWNER;
         File instance = createFile();
         assertTrue(instance.setOwnerName(owner));
         assertEquals(owner, instance.getOwnerName());

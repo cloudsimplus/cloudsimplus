@@ -10,7 +10,6 @@ import org.cloudbus.cloudsim.cloudlets.Cloudlet;
 import org.cloudbus.cloudsim.cloudlets.CloudletSimple;
 import org.cloudbus.cloudsim.brokers.DatacenterBroker;
 import org.cloudbus.cloudsim.utilizationmodels.UtilizationModel;
-import org.cloudbus.cloudsim.utilizationmodels.UtilizationModelZero;
 import org.cloudbus.cloudsim.utilizationmodels.UtilizationModelPlanetLab;
 
 /**
@@ -41,7 +40,7 @@ public final class PlanetLabHelper {
 
 		long fileSize = 300;
 		long outputSize = 300;
-		UtilizationModel utilizationModelNull = new UtilizationModelZero();
+		UtilizationModel utilizationModelNull = UtilizationModel.NULL;
 
 		File inputFolder = new File(inputFolderName);
 		File[] files = inputFolder.listFiles();

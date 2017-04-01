@@ -375,11 +375,7 @@ public class HarddriveStorage implements FileStorage {
             return 0.0;
         }
 
-        double result = 0.0;
-        for (File file: list) {
-            result += addFile(file);
-        }
-        return result;
+        return list.stream().mapToDouble(this::addFile).sum();
     }
 
     @Override

@@ -68,7 +68,7 @@ public interface DatacenterBroker extends SimEntity {
      */
     <T extends Cloudlet> List<T> getCloudletsFinishedList();
 
-    Vm getWaitingVm(final int index);
+    Vm getWaitingVm(int index);
 
     /**
      * Gets a List of VMs submitted to the broker that are waiting to be created inside

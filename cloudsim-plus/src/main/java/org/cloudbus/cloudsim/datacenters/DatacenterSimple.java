@@ -362,11 +362,11 @@ public class DatacenterSimple extends CloudSimEntity implements Datacenter {
      * @post $none
      */
     protected void processPingRequest(SimEvent ev) {
-        IcmpPacket pkt = (IcmpPacket) ev.getData();
+        final IcmpPacket pkt = (IcmpPacket) ev.getData();
         pkt.setTag(CloudSimTags.ICMP_PKT_RETURN);
         pkt.setDestination(pkt.getSource());
 
-        // sends back to the sender
+        // returns the packet to the sender
         sendNow(pkt.getSource().getId(), CloudSimTags.ICMP_PKT_RETURN, pkt);
     }
 
@@ -598,22 +598,14 @@ public class DatacenterSimple extends CloudSimEntity implements Datacenter {
     protected void processCloudletSubmit(SimEvent ev, boolean ack) {
         updateCloudletProcessing();
 
-        try {
-            // gets the Cloudlet object
-            Cloudlet cl = (Cloudlet) ev.getData();
-            if (checksIfSubmittedCloudletIsAlreadyFinishedAndNotifyBroker(cl, ack)) {
-                return;
-            }
-
-            // process this Cloudlet to this Datacenter
-            cl.assignToDatacenter(this);
-
-            submitCloudletToVm(cl, ack);
-        } catch (Exception e) {
-            Log.printLine(getName() + ".processCloudletSubmit() exception.");
-            e.printStackTrace();
+        Cloudlet cl = (Cloudlet) ev.getData();
+        if (checksIfSubmittedCloudletIsAlreadyFinishedAndNotifyBroker(cl, ack)) {
+            return;
         }
 
+        // process this Cloudlet to this Datacenter
+        cl.assignToDatacenter(this);
+        submitCloudletToVm(cl, ack);
         checkCloudletsCompletionForAllHosts();
     }
 
@@ -644,7 +636,7 @@ public class DatacenterSimple extends CloudSimEntity implements Datacenter {
     /**
      * Gets the time when the next update of cloudlets has to be performed.
      *
-     * @param completionTimeNextFinishingCloudlet the predicted completion time of the earliest finishing cloudlet
+     * @param nextFinishingCloudletTime the predicted completion time of the earliest finishing cloudlet
      * (that is a future simulation time), or {@link Double#MAX_VALUE} if there is no next Cloudlet to execute
      * @return the minimum value between the {@link #getSchedulingInterval()} and the given time (if the scheduling interval
      * is enable, that is, is greate than 0), that represents when the next update of Cloudlets processing
@@ -652,10 +644,10 @@ public class DatacenterSimple extends CloudSimEntity implements Datacenter {
      *
      * @see #updateCloudletProcessing()
      */
-    protected double getCloudletProcessingUpdateInterval(double completionTimeNextFinishingCloudlet){
+    protected double getCloudletProcessingUpdateInterval(double nextFinishingCloudletTime){
         return (schedulingInterval == 0 ?
-            completionTimeNextFinishingCloudlet :
-            Math.min(completionTimeNextFinishingCloudlet, schedulingInterval));
+            nextFinishingCloudletTime :
+            Math.min(nextFinishingCloudletTime, schedulingInterval));
     }
 
     /**

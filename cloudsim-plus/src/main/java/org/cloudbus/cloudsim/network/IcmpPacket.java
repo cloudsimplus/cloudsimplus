@@ -175,14 +175,13 @@ public class IcmpPacket implements NetworkPacket<SimEntity> {
 
         String tab = "    ";  // 4 spaces
         for (int i = 0; i < entities.size(); i++) {
-            int resID = entities.get(i).getId();
-            sb.append("Entity ").append(resID).append("\t\t");
+            final int resID = entities.get(i).getId();
+            final String entry = getData(entryTimes, i);
+            final String exit = getData(exitTimes, i);
+            final String bw = getData(baudRates, i);
 
-            String entry = getData(entryTimes, i);
-            String exit = getData(exitTimes, i);
-            String bw = getData(baudRates, i);
-
-            sb.append(String.format("%s%s%s%s%s%s%s\n", entry, tab, tab, exit, tab, tab, bw));
+            sb.append("Entity ").append(resID).append("\t\t")
+              .append(String.format("%s%s%s%s%s%s%s\n", entry, tab, tab, exit, tab, tab, bw));
         }
 
         sb.append("\nRound Trip Time : ")
@@ -192,6 +191,7 @@ public class IcmpPacket implements NetworkPacket<SimEntity> {
             .append(getNumberOfHops())
             .append("\nBottleneck Bandwidth : ")
             .append(bandwidth).append(" bits/s");
+
         return sb.toString();
     }
 
@@ -346,11 +346,7 @@ public class IcmpPacket implements NetworkPacket<SimEntity> {
      * @post $none
      */
     public void addEntryTime(double time) {
-        if (time < 0) {
-            time = 0.0;
-        }
-
-        entryTimes.add(time);
+        entryTimes.add(Math.min(time, 0));
     }
 
     /**

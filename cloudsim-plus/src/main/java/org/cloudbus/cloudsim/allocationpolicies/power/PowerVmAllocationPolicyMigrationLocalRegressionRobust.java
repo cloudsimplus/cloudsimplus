@@ -56,12 +56,12 @@ public class PowerVmAllocationPolicyMigrationLocalRegressionRobust extends Power
     /**
 	 * Gets the utilization estimates.
 	 *
-	 * @param utilizationHistoryReversed the utilization history reversed
+	 * @param reversedUsageHistory the utilization history in reverse order
 	 * @return the utilization estimates
 	 */
 	@Override
-	protected double[] getParameterEstimates(double[] utilizationHistoryReversed) {
-		return MathUtil.getRobustLoessParameterEstimates(utilizationHistoryReversed);
+	protected double[] getParameterEstimates(double[] reversedUsageHistory) {
+		return MathUtil.getRobustLoessParameterEstimates(reversedUsageHistory);
 	}
 
 }

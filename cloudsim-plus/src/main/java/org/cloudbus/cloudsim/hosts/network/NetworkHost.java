@@ -153,8 +153,8 @@ public class NetworkHost extends HostSimple {
                     return;
                 }
 
-                PacketScheduler packetScheduler = getVmPacketScheduler(destinationVm);
-                packetScheduler.addPacketToListOfPacketsSentFromVm(hostPkt.getVmPacket());
+                final PacketScheduler pktScheduler = getVmPacketScheduler(destinationVm);
+                pktScheduler.addPacketToListOfPacketsSentFromVm(hostPkt.getVmPacket());
                 Log.println(
                     Log.Level.DEBUG, getClass(), getSimulation().clock(),
                     "Host %d received pkt with %d bytes from Cloudlet %d in VM %d and forwarded it to Cloudlet %d in VM %d",

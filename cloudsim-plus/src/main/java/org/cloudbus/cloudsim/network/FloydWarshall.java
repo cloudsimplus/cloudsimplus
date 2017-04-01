@@ -7,9 +7,16 @@
  */
 package org.cloudbus.cloudsim.network;
 
+import java.util.Iterator;
+import java.util.List;
+import java.util.function.BiConsumer;
+import java.util.stream.IntStream;
+
+import static java.util.stream.Collectors.toList;
+
 /**
- * FloydWarshall algorithm to calculate the predecessor matrix and the delay
- * between all pairs of nodes.
+ * <a href="https://en.wikipedia.org/wiki/Floyd–Warshall_algorithm">Floyd-Warshall algorithm</a> to calculate the predecessor matrix and the delay
+ * between all pairs of nodes. The delay represents the distance between the two vertices and it works as the weight for the Floyd-Warshall algorithm.
  *
  * @author Rahul Simha
  * @author Weishuai Yang
@@ -21,20 +28,26 @@ public class FloydWarshall {
     /**
      * Number of vertices (network nodes).
      */
-    private int numVertices;
+    private final int numVertices;
 
     /**
-     * Matrices used in dynamic programming.
+     * List with the indexes of all vertices, from 0 to {@link #numVertices}-1.
      */
-    private double[][] dk, dk_minus_one;
+    private final List<Integer> vertices;
 
     /**
-     * The predecessor matrix. Matrix used by dynamic programming.
+     * Weights when k is equal to -1.
+     * (used for dynamic programming).
+     */
+    private double[][] dk_minus_one;
+
+    /**
+     * The predecessor matrix (used for dynamic programming).
      */
     private int[][] pk;
 
     /**
-     * Matrix used by dynamic programming.
+     * (used for dynamic programming).
      */
     private int[][] pk_minus_one;
 
@@ -43,77 +56,121 @@ public class FloydWarshall {
      *
      * @param numVertices number of network nodes
      */
-    public FloydWarshall(int numVertices) {
+    public FloydWarshall(final int numVertices) {
         this.numVertices = numVertices;
+        this.vertices = IntStream.range(0, numVertices).mapToObj(i -> i).collect(toList());
+        dk_minus_one = new double[numVertices][numVertices];
+        pk = new int[numVertices][numVertices];
+        pk_minus_one = new int[numVertices][numVertices];
+    }
 
-        // Initialize dk matrices.
-        dk = new double[numVertices][];
-        dk_minus_one = new double[numVertices][];
-        for (int i = 0; i < numVertices; i++) {
-            dk[i] = new double[numVertices];
-            dk_minus_one[i] = new double[numVertices];
+    /**
+     * Computes the shortest path between a vertex to all the other ones,
+     * for all existing vertices.
+     * This is represented by the delay between all pairs vertices.
+     *
+     * @param originalDelayMatrix original delay matrix
+     * @return the new delay matrix (dk)
+     */
+    public double[][] computeShortestPaths(double[][] originalDelayMatrix) {
+        savePreviousDelays(originalDelayMatrix);
+        return computeShortestPaths();
+    }
+
+    /**
+     * Computes the shortest path between a vertex to all the other ones,
+     * for all existing vertices.
+     * This is represented by the delay between all pairs vertices.
+     *
+     * @return the new delay matrix (dk)
+     */
+    private double[][] computeShortestPaths() {
+        double[][] dk = new double[numVertices][numVertices];
+
+        for(int k: vertices) {
+            computeShortestPathForSpecificNumberOfHops(dk, k);
         }
 
-        // Initialize pk matrices.
-        pk = new int[numVertices][];
-        pk_minus_one = new int[numVertices][];
-        for (int i = 0; i < numVertices; i++) {
-            pk[i] = new int[numVertices];
-            pk_minus_one[i] = new int[numVertices];
+        return dk;
+    }
+
+    /**
+     * Computes the shortest path between a vertex to all the other ones,
+     * for all existing vertices, limited to a maximum number of hops.
+     * This is represented by the delay between all pairs vertices.
+     *
+     * @param dk the delay matrix to be updated
+     * @param k maximum number of hops to try finding the shortest path between each vertex i and j
+     */
+    private void computeShortestPathForSpecificNumberOfHops(double[][] dk, int k) {
+        for(int i: vertices) {
+            computeShortestPathFromVertexToAllVertices(dk, k, i);
+        }
+
+        updateMatrices((i,j) -> {
+            dk_minus_one[i][j] = dk[i][j];
+            pk_minus_one[i][j] = pk[i][j];
+        });
+    }
+
+    /**
+     * Iterates over the path from one vertex to all the other ones, for all existing vertices,
+     * updating some matrices as defined by a  {@link BiConsumer}.
+     *
+     * @param updater a {@link BiConsumer} that updates all elements of any matrices, where the parameters
+     *                that this BiConsumer receives are the index i and j representing the path
+     *                between two vertices, for all existing vertices
+     */
+    private void updateMatrices(BiConsumer<Integer, Integer> updater){
+        for(int i: vertices) {
+            for(int j: vertices) {
+                updater.accept(i, j);
+            }
         }
     }
 
     /**
-     * Calculates the delay between all pairs of nodes.
+     * Computes the shortest path between only a specific vertex to all the other ones,
+     * limited to a maximum number of hops, and then updating the delay matrix.
+     * This is represented by the delay between all pairs vertices.
      *
-     * @param adjMatrix original delay matrix
-     * @return the delay matrix
+     * @param dk the delay matrix to be updated
+     * @param k maximum number of hops to try finding the shortest path between each vertex i and j
+     * @param i the index of the vertex to compute its distance to all the other vertices
      */
-    public double[][] allPairsShortestPaths(double[][] adjMatrix) {
-        // dk_minus_one = weights when k = -1
-        for (int i = 0; i < numVertices; i++) {
-            for (int j = 0; j < numVertices; j++) {
-                if (adjMatrix[i][j] != 0) {
-                    dk_minus_one[i][j] = adjMatrix[i][j];
-                    pk_minus_one[i][j] = i;
+    private void computeShortestPathFromVertexToAllVertices(double[][] dk, int k, int i) {
+        for(int j: vertices) {
+            pk[i][j] = -1;
+            if (i != j) {
+                // D_k[i][j] = min ( D_k-1[i][j], D_k-1[i][k] + D_k-1[k][j].
+                if (dk_minus_one[i][j] <= dk_minus_one[i][k] + dk_minus_one[k][j]) {
+                    dk[i][j] = dk_minus_one[i][j];
+                    pk[i][j] = pk_minus_one[i][j];
                 } else {
-                    dk_minus_one[i][j] = Double.MAX_VALUE;
-                    pk_minus_one[i][j] = -1;
+                    dk[i][j] = dk_minus_one[i][k] + dk_minus_one[k][j];
+                    pk[i][j] = pk_minus_one[k][j];
                 }
-                // NOTE: we have set the value to infinity and will exploit
-                // this to avoid a comparison.
             }
         }
+    }
 
-        for (int k = 0; k < numVertices; k++) {
-            for (int i = 0; i < numVertices; i++) {
-                for (int j = 0; j < numVertices; j++) {
-                    if (i != j) {
-                        // D_k[i][j] = min ( D_k-1[i][j], D_k-1[i][k] + D_k-1[k][j].
-                        if (dk_minus_one[i][j] <= dk_minus_one[i][k] + dk_minus_one[k][j]) {
-                            dk[i][j] = dk_minus_one[i][j];
-                            pk[i][j] = pk_minus_one[i][j];
-                        } else {
-                            dk[i][j] = dk_minus_one[i][k] + dk_minus_one[k][j];
-                            pk[i][j] = pk_minus_one[k][j];
-                        }
-                    } else {
-                        pk[i][j] = -1;
-                    }
+    /**
+     * Saves the delay matrix before updating.
+     *
+     * @param originalDelayMatrix the original delay matrix
+     */
+    private void savePreviousDelays(double[][] originalDelayMatrix) {
+        for(int i: vertices) {
+            for(int j: vertices) {
+                dk_minus_one[i][j] = Double.MAX_VALUE;
+                pk_minus_one[i][j] = -1;
+                if (originalDelayMatrix[i][j] != 0) {
+                    dk_minus_one[i][j] = originalDelayMatrix[i][j];
+                    pk_minus_one[i][j] = i;
                 }
+                // NOTE: we have set the value to infinity and will exploit this to avoid a comparison.
             }
-
-            for (int i = 0; i < numVertices; i++) {
-                for (int j = 0; j < numVertices; j++) {
-                    dk_minus_one[i][j] = dk[i][j];
-                    pk_minus_one[i][j] = pk[i][j];
-                }
-            }
-
         }
-
-        return dk;
-
     }
 
     /**
@@ -123,5 +180,9 @@ public class FloydWarshall {
      */
     public int[][] getPk() {
         return pk;
+    }
+
+    public int getNumVertices(){
+        return numVertices;
     }
 }

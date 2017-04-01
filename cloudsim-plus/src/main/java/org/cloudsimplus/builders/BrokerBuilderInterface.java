@@ -36,7 +36,7 @@ import org.cloudbus.cloudsim.brokers.DatacenterBrokerSimple;
  */
 public interface BrokerBuilderInterface {
     BrokerBuilderDecorator createBroker();
-    DatacenterBroker findBroker(final int id);
+    DatacenterBroker findBroker(int id);
     List<DatacenterBroker> getBrokers();
-    DatacenterBroker get(final int index);
+    DatacenterBroker get(int index);
 }

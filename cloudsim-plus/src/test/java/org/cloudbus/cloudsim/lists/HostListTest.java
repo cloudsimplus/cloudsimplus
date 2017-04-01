@@ -42,7 +42,6 @@ public class HostListTest {
 
     @Test
     public void testGetByIdHostSimple() {
-        System.out.println("getById");
         final int id = 0;
         HostSimple expResult = hostSimpleList.get(id);
         assertEquals(expResult, HostList.getById(hostSimpleList, id));
@@ -52,7 +51,6 @@ public class HostListTest {
 
     @Test
     public void testGetByIdNetworkHost() {
-        System.out.println("getById");
         final int id = 0;
         NetworkHost expResult = networkHostList.get(id);
         assertEquals(expResult, HostList.getById(networkHostList, id));
@@ -62,7 +60,6 @@ public class HostListTest {
 
     @Test
     public void testGetNumberOfPesHostSimple() {
-        System.out.println("getNumberOfPes");
         int expResult = PES*NUMBER_OF_HOSTS;
         int result = HostList.getNumberOfPes(hostSimpleList);
         assertEquals(expResult, result);
@@ -70,7 +67,6 @@ public class HostListTest {
 
     @Test
     public void testGetNumberOfPesNetworkHost() {
-        System.out.println("getNumberOfPes");
         int expResult = PES*NUMBER_OF_HOSTS;
         int result = HostList.getNumberOfPes(networkHostList);
         assertEquals(expResult, result);
@@ -78,7 +74,6 @@ public class HostListTest {
 
     @Test
     public void testGetNumberOfFreePes() {
-        System.out.println("getNumberOfFreePes");
         createHostsAndCheckNumberOfPesByStatus(NUMBER_OF_HOSTS, 1, Status.FREE);
         createHostsAndCheckNumberOfPesByStatus(NUMBER_OF_HOSTS, 2, Status.FREE);
 
@@ -118,8 +113,6 @@ public class HostListTest {
 
     @Test
     public void testGetNumberOfBusyPes() {
-        System.out.println("getNumberOfBusyPes");
-
         List<HostSimple> list = createHostSimpleList(NUMBER_OF_HOSTS, 2);
         checkNumberOfPesByStatus(list, 0, Status.BUSY);
 
@@ -132,7 +125,6 @@ public class HostListTest {
 
     @Test
     public void testGetHostWithFreePe_List() {
-        System.out.println("getHostWithFreePe");
         HostSimple host0 = hostSimpleList.get(0);
         assertEquals(host0, HostList.getHostWithFreePe(hostSimpleList));
 
@@ -148,7 +140,6 @@ public class HostListTest {
 
     @Test
     public void testGetHostWithFreePe_List_int() {
-        System.out.println("getHostWithFreePe");
         final int numberOfFreePes = 4;
         List<HostSimple> list = createHostSimpleList(NUMBER_OF_HOSTS, numberOfFreePes);
         HostSimple host0 = list.get(0);
@@ -161,7 +152,6 @@ public class HostListTest {
 
     @Test
     public void testSetPeStatus() {
-        System.out.println("setPeStatus");
         assertTrue(HostList.setPeStatus(hostSimpleList, Pe.Status.FREE, 0, 0));
 
         //PE doesn't exist

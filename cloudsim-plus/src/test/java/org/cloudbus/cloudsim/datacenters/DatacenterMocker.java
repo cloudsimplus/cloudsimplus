@@ -19,17 +19,17 @@ public final class DatacenterMocker {
     private final Datacenter dc;
     private final DatacenterCharacteristics c;
 
+    private DatacenterMocker() {
+        this.dc = EasyMock.createMock(Datacenter.class);
+        this.c = EasyMock.createMock(DatacenterCharacteristics.class);
+    }
+
     public static Datacenter createMock(Consumer<DatacenterMocker> consumer) {
         DatacenterMocker mocker = new DatacenterMocker();
         consumer.accept(mocker);
         DatacenterMocker.replay(mocker.c);
         DatacenterMocker.replay(mocker.dc);
         return mocker.dc;
-    }
-
-    private DatacenterMocker() {
-        this.dc = EasyMock.createMock(Datacenter.class);
-        this.c = EasyMock.createMock(DatacenterCharacteristics.class);
     }
 
     public IExpectationSetters<DatacenterCharacteristics> getCharacteristics() {

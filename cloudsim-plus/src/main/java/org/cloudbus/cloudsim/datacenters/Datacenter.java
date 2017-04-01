@@ -54,7 +54,7 @@ public interface Datacenter extends SimEntity {
      */
     <T extends Host> List<T> getHostList();
 
-    Host getHost(final int index);
+    Host getHost(int index);
 
     /**
      * Gets the policy to be used by the Datacenter to allocate VMs into hosts.

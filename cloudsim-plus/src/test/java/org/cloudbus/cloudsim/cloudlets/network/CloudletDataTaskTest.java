@@ -1,9 +1,9 @@
 package org.cloudbus.cloudsim.cloudlets.network;
 
-import org.cloudbus.cloudsim.cloudlets.network.CloudletSendTask;
-import org.junit.Test;
-import static org.junit.Assert.*;
 import org.junit.Before;
+import org.junit.Test;
+
+import static org.junit.Assert.assertEquals;
 
 /**
  *

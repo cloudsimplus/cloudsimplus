@@ -99,7 +99,7 @@ public abstract class HeuristicAbstract<S extends HeuristicSolution<?>>  impleme
 		return random;
 	}
 
-	private S newSolutionInstance() throws RuntimeException {
+	private S newSolutionInstance() {
 	    try {
 	        Constructor<S> c = solutionClass.getConstructor(Heuristic.class);
 	        return c.newInstance(this);

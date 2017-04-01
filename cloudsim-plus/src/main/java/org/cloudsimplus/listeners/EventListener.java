@@ -56,6 +56,14 @@ import org.cloudbus.cloudsim.vms.Vm;
 public interface EventListener<T extends EventInfo> {
 
     /**
+     * A implementation of Null Object pattern that makes nothing (it doesn't
+     * perform any operation on each existing method). The pattern is used to
+     * avoid NullPointerException's and checking everywhere if a listener object
+     * is not null in order to call its methods.
+     */
+    EventListener NULL = (EventListener<EventInfo>) (EventInfo info) -> {};
+
+    /**
      * Gets notified when the observed object (also called subject of
      * observation) has changed. This method has to be called by the observed
      * objects to notify its state change to the listener.
@@ -64,11 +72,4 @@ public interface EventListener<T extends EventInfo> {
      */
     void update(T info);
 
-    /**
-     * A implementation of Null Object pattern that makes nothing (it doesn't
-     * perform any operation on each existing method). The pattern is used to
-     * avoid NullPointerException's and checking everywhere if a listener object
-     * is not null in order to call its methods.
-     */
-    EventListener NULL = (EventListener<EventInfo>) (EventInfo info) -> {};
 }

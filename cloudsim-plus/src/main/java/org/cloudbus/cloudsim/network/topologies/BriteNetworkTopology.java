@@ -40,7 +40,7 @@ public class BriteNetworkTopology implements NetworkTopology {
     /**
      * The BRITE id to use for the next node to be created in the network.
      */
-    private int nextIdx = 0;
+    private int nextIdx;
 
     private boolean networkEnabled = false;
 
@@ -181,21 +181,16 @@ public class BriteNetworkTopology implements NetworkTopology {
     @Override
     public void mapNode(int cloudSimEntityID, int briteID) {
         if (networkEnabled) {
-            try {
-                // this CloudSim entity was already mapped?
-                if (!map.containsKey(cloudSimEntityID)) {
-                    if (!map.containsValue(briteID)) { // this BRITE node was already mapped?
-                        map.put(cloudSimEntityID, briteID);
-                    } else {
-                        Log.printConcatLine("Error in network mapping. BRITE node ", briteID, " already in use.");
-                    }
+            // this CloudSim entity was already mapped?
+            if (!map.containsKey(cloudSimEntityID)) {
+                if (!map.containsValue(briteID)) { // this BRITE node was already mapped?
+                    map.put(cloudSimEntityID, briteID);
                 } else {
-                    Log.printConcatLine("Error in network mapping. CloudSim entity ", cloudSimEntityID,
-                        " already mapped.");
+                    Log.printConcatLine("Error in network mapping. BRITE node ", briteID, " already in use.");
                 }
-            } catch (Exception e) {
-                Log.printConcatLine("Error in network mapping. CloudSim node ", cloudSimEntityID,
-                    " not mapped to BRITE node ", briteID, ".");
+            } else {
+                Log.printConcatLine("Error in network mapping. CloudSim entity ", cloudSimEntityID,
+                    " already mapped.");
             }
         }
     }

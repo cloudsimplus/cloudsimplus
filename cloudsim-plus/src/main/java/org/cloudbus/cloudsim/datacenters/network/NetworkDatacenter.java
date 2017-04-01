@@ -154,7 +154,7 @@ public class NetworkDatacenter extends DatacenterSimple {
 
             // checks whether this Cloudlet has finished or not
             if (cl.isFinished()) {
-                String name = getSimulation().getEntityName(cl.getBroker().getId());
+                final String name = getSimulation().getEntityName(cl.getBroker().getId());
                 Log.printConcatLine(
                         getName(), ": Warning - Cloudlet #",
                         cl.getId(), " owned by ", name,

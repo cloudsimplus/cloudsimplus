@@ -94,11 +94,10 @@ public class PowerDatacenterNonPowerAware extends PowerDatacenter {
         }
 
         final double currentTime = getSimulation().clock();
-        double datacenterPowerUsageForTimeSpan = 0.0;
 
         if (currentTime > getLastProcessTime()) {
             Log.printLine("\n");
-            datacenterPowerUsageForTimeSpan = getDatacenterPowerUsageForTimeSpan();
+            double datacenterPowerUsageForTimeSpan = getDatacenterPowerUsageForTimeSpan();
             Log.printFormattedLine("\n%.2f: Consumed energy is %.2f W*sec\n", getSimulation().clock(), datacenterPowerUsageForTimeSpan);
 
             Log.printLine("\n\n--------------------------------------------------------------\n\n");
@@ -175,12 +174,12 @@ public class PowerDatacenterNonPowerAware extends PowerDatacenter {
      * Gets the expected finish time of the next Cloudlet to finish in any of the existing Hosts.
      *
      * @param currentTime the current simulation time
-     * @returnthe expected finish time of the next finishing Cloudlet or {@link Double#MAX_VALUE} if not
+     * @return the expected finish time of the next finishing Cloudlet or {@link Double#MAX_VALUE} if not
      * Cloudlet is running.
      */
     private double getNextCloudletFinishTime(double currentTime) {
         double minTime = Double.MAX_VALUE;
-        for (PowerHostSimple host : this.<PowerHostSimple>getHostList()) {
+        for (final PowerHostSimple host : this.<PowerHostSimple>getHostList()) {
             Log.printFormattedLine("\n%.2f: Host #%d", getSimulation().clock(), host.getId());
             final double nextCloudletFinishTime = host.updateProcessing(currentTime);
             minTime = Math.min(nextCloudletFinishTime, minTime);
@@ -201,14 +200,8 @@ public class PowerDatacenterNonPowerAware extends PowerDatacenter {
         for (PowerHostSimple host : this.<PowerHostSimple>getHostList()) {
             Log.printFormattedLine("%.2f: Host #%d", getSimulation().clock(), host.getId());
 
-            double hostPower = 0.0;
-
-            try {
-                hostPower = host.getMaxPower() * timeSpan;
-                datacenterPowerUsageForTimeSpan += hostPower;
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
+            final double hostPower = getHostConsumedPowerForTimeSpan(host);
+            datacenterPowerUsageForTimeSpan += hostPower;
 
             Log.printFormattedLine(
                     "%.2f: Host #%d utilization is %.2f%%",
@@ -223,6 +216,18 @@ public class PowerDatacenterNonPowerAware extends PowerDatacenter {
         }
 
         return datacenterPowerUsageForTimeSpan;
+    }
+
+    private double getHostConsumedPowerForTimeSpan(PowerHostSimple host) {
+        final double timeSpan = getSimulation().clock() - getLastProcessTime();
+        double hostPower;
+
+        try {
+            hostPower = host.getMaxPower() * timeSpan;
+        } catch (Exception e) {
+            hostPower = 0;
+        }
+        return hostPower;
     }
 
 }

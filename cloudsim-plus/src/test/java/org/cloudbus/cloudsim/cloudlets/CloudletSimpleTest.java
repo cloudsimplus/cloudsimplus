@@ -37,16 +37,16 @@ import static org.junit.Assert.*;
  * @since	CloudSim Toolkit 2.0
  */
 public class CloudletSimpleTest {
+    private static final String FILE2 = "file2.txt";
+    private static final String FILE3 = "file3.txt";
+    private static final String FILE1 = "file1.txt";
+    private static final String FILE_INEXISTENT = "file-inexistent.txt";
 
     private static final long CLOUDLET_LENGTH = 1000;
     private static final long CLOUDLET_FILE_SIZE = 1000;
     private static final int CLOUDLET_OUTPUT_SIZE = 1000;
 
     private static final int PES_NUMBER = 2;
-    public static final String FILE2 = "file2.txt";
-    public static final String FILE3 = "file3.txt";
-    public static final String FILE1 = "file1.txt";
-    public static final String FILE_INEXISTENT = "file-inexistent.txt";
 
     private CloudletSimple cloudlet;
     private UtilizationModel utilizationModelCpu;
@@ -384,6 +384,12 @@ public class CloudletSimpleTest {
                 cpuRamAndBwUtilizationModel);
     }
 
+    public static CloudletSimple createCloudlet(
+        final int id, long length, int numberOfPes) {
+        final UtilizationModel utilizationModel = new UtilizationModelFull();
+        return createCloudlet(id, utilizationModel, utilizationModel, utilizationModel, length, numberOfPes);
+    }
+
     private static CloudletSimple createCloudlet(final int id,
             UtilizationModel utilizationModelCPU,
             UtilizationModel utilizationModelRAM,
@@ -421,12 +427,6 @@ public class CloudletSimpleTest {
     public static CloudletSimple createCloudletWithOnePe(
             final int id, long length) {
         return createCloudlet(id, length, 1);
-    }
-
-    public static CloudletSimple createCloudlet(
-            final int id, long length, int numberOfPes) {
-        final UtilizationModel utilizationModel = new UtilizationModelFull();
-        return createCloudlet(id, utilizationModel, utilizationModel, utilizationModel, length, numberOfPes);
     }
 
     public static CloudletSimple createCloudlet(

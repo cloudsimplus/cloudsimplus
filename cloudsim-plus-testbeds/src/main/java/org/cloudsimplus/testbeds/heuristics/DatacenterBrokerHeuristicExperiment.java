@@ -49,7 +49,7 @@ import org.cloudsimplus.testbeds.SimulationExperiment;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.function.Supplier;
+
 import org.cloudbus.cloudsim.distributions.ContinuousDistribution;
 
 /**
@@ -84,7 +84,7 @@ final class DatacenterBrokerHeuristicExperiment extends SimulationExperiment {
     static final double SA_INITIAL_TEMPERATURE = 1.0;
     static final double SA_COLD_TEMPERATURE = 0.0001;
     static final double SA_COOLING_RATE = 0.003;
-    static final int SA_NUMBER_OF_NEIGHBORHOOD_SEARCHES = 50;
+    static final int SA_NEIGHBORHOOD_SEARCHES = 50;
 
     /**
      * @see #setVmPesArray(int[])
@@ -120,7 +120,7 @@ final class DatacenterBrokerHeuristicExperiment extends SimulationExperiment {
         heuristic = new CloudletToVmMappingSimulatedAnnealing(SA_INITIAL_TEMPERATURE, randomGen);
         heuristic.setColdTemperature(SA_COLD_TEMPERATURE);
         heuristic.setCoolingRate(SA_COOLING_RATE);
-        heuristic.setNumberOfNeighborhoodSearchesByIteration(SA_NUMBER_OF_NEIGHBORHOOD_SEARCHES);
+        heuristic.setNumberOfNeighborhoodSearchesByIteration(SA_NEIGHBORHOOD_SEARCHES);
     }
 
     @Override

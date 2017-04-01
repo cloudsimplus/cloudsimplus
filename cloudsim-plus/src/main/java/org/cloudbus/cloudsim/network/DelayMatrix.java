@@ -110,7 +110,7 @@ public class DelayMatrix {
 	 */
 	private void calculateShortestPath() {
 		FloydWarshall floyd = new FloydWarshall(mTotalNodeNum);
-		mDelayMatrix = floyd.allPairsShortestPaths(mDelayMatrix);
+		mDelayMatrix = floyd.computeShortestPaths(mDelayMatrix);
 	}
 
 	@Override

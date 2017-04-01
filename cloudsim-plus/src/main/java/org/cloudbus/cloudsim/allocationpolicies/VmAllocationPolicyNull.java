@@ -27,12 +27,12 @@ final class VmAllocationPolicyNull implements VmAllocationPolicy {
     }
 
     @Override
-    public boolean allocateHostForVm(Vm vm) {
+    public boolean scaleVmVertically(VerticalVmScaling scaling) {
         return false;
     }
 
     @Override
-    public boolean scaleVmVertically(VerticalVmScaling scaling) {
+    public boolean allocateHostForVm(Vm vm) {
         return false;
     }
 

@@ -353,7 +353,7 @@ public abstract class CloudletAbstract implements Cloudlet {
      */
     private void notifyListenersIfCloudletIsFinished() {
         if (isFinished()) {
-            CloudletVmEventInfo info = CloudletVmEventInfo.of(this);
+            final CloudletVmEventInfo info = CloudletVmEventInfo.of(this);
             onFinishListeners.forEach(l -> l.update(info));
         }
     }
@@ -467,6 +467,15 @@ public abstract class CloudletAbstract implements Cloudlet {
     @Override
     public double getActualCpuTime(final Datacenter datacenter) {
         return getDatacenterInfo(datacenter).actualCpuTime;
+    }
+
+    @Override
+    public double getActualCpuTime() {
+        if (getFinishTime() == NOT_ASSIGNED) {
+            return NOT_ASSIGNED;
+        }
+
+        return getFinishTime() - getExecStartTime();
     }
 
     @Override
@@ -594,15 +603,6 @@ public abstract class CloudletAbstract implements Cloudlet {
     public final Cloudlet setVm(final Vm vm) {
         this.vm = vm;
         return this;
-    }
-
-    @Override
-    public double getActualCpuTime() {
-        if (getFinishTime() == NOT_ASSIGNED) {
-            return NOT_ASSIGNED;
-        }
-
-        return getFinishTime() - getExecStartTime();
     }
 
     @Override
@@ -850,7 +850,7 @@ public abstract class CloudletAbstract implements Cloudlet {
 
         if (isRecordTransactionHistory()) {
             if (isAssignedToDatacenter()) {
-                Datacenter oldDc = getLastExecutionInDatacenterInfo().dc;
+                final Datacenter oldDc = getLastExecutionInDatacenterInfo().dc;
                 write("Moves Cloudlet from %s (ID #%d) to %s (ID #%d) with cost = $%.2f/sec",
                     oldDc.getName(), oldDc.getId(), dcInfo.dc.getName(), dcInfo.dc.getId(), dcInfo.costPerSec);
 

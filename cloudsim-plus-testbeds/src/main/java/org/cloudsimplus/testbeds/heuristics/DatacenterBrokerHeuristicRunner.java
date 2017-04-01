@@ -27,7 +27,6 @@ import org.apache.commons.math3.stat.descriptive.SummaryStatistics;
 
 import org.cloudbus.cloudsim.cloudlets.Cloudlet;
 import org.cloudbus.cloudsim.brokers.DatacenterBrokerSimple;
-import org.cloudbus.cloudsim.util.Log;
 import org.cloudbus.cloudsim.distributions.NormalDistr;
 import org.cloudbus.cloudsim.distributions.UniformDistr;
 import org.cloudsimplus.heuristics.CloudletToVmMappingSolution;
@@ -251,7 +250,7 @@ final class DatacenterBrokerHeuristicRunner extends ExperimentRunner<DatacenterB
                 DatacenterBrokerHeuristicExperiment.SA_INITIAL_TEMPERATURE,
                 DatacenterBrokerHeuristicExperiment.SA_COLD_TEMPERATURE,
                 DatacenterBrokerHeuristicExperiment.SA_COOLING_RATE,
-                DatacenterBrokerHeuristicExperiment.SA_NUMBER_OF_NEIGHBORHOOD_SEARCHES);
+                DatacenterBrokerHeuristicExperiment.SA_NEIGHBORHOOD_SEARCHES);
     }
 
     @Override

@@ -40,6 +40,11 @@ public interface Simulation {
      */
     PredicateNone SIM_NONE = new PredicateNone();
 
+    /**
+     * An attribute that implements the Null Object Design Pattern for {@link Simulation}
+     * objects.
+     */
+    Simulation NULL = new SimulationNull();
 
     /**
      * Aborts the simulation without finishing the processing
@@ -386,7 +391,7 @@ public interface Simulation {
      * @param oldName the name the entity had before
      * @return true if the entity was found and changed into the list, false otherwise
      */
-    boolean updateEntityName(final String oldName);
+    boolean updateEntityName(String oldName);
 
     /**
      * Gets the number of events in the deferred event queue that are targeted to a given entity and
@@ -417,11 +422,5 @@ public interface Simulation {
      * is the actual {@link SimEntity}.
      */
     Map<String, SimEntity> getEntitiesByName();
-
-    /**
-     * An attribute that implements the Null Object Design Pattern for {@link Simulation}
-     * objects.
-     */
-    Simulation NULL = new SimulationNull();
 
 }
