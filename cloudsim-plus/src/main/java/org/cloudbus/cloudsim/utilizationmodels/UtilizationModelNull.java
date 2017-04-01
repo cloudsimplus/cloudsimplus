@@ -10,28 +10,19 @@ import org.cloudbus.cloudsim.core.Simulation;
  * @see UtilizationModel#NULL
  */
 final class UtilizationModelNull implements UtilizationModel {
-    @Override
-    public Simulation getSimulation() {
+    @Override public Simulation getSimulation() {
         return Simulation.NULL;
     }
-
-    @Override
-    public Unit getUnit() {
+    @Override public Unit getUnit() {
         return Unit.PERCENTAGE;
     }
-
-    @Override
-    public UtilizationModel setSimulation(Simulation simulation) {
+    @Override public UtilizationModel setSimulation(Simulation simulation) {
         return this;
     }
-
-    @Override
-    public double getUtilization(double time) {
+    @Override public double getUtilization(double time) {
         return 0;
     }
-
-    @Override
-    public double getUtilization() {
+    @Override public double getUtilization() {
         return 0;
     }
 }

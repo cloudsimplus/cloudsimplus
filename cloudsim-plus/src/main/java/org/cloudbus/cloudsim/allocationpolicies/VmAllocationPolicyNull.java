@@ -17,41 +17,24 @@ import java.util.Map;
  * @see VmAllocationPolicy#NULL
  */
 final class VmAllocationPolicyNull implements VmAllocationPolicy {
-    @Override
-    public Datacenter getDatacenter() {
+    @Override public Datacenter getDatacenter() {
         return Datacenter.NULL;
     }
-
-    @Override
-    public void setDatacenter(Datacenter datacenter) {
-    }
-
-    @Override
-    public boolean scaleVmVertically(VerticalVmScaling scaling) {
+    @Override public void setDatacenter(Datacenter datacenter) {/**/}
+    @Override public boolean scaleVmVertically(VerticalVmScaling scaling) {
         return false;
     }
-
-    @Override
-    public boolean allocateHostForVm(Vm vm) {
+    @Override public boolean allocateHostForVm(Vm vm) {
         return false;
     }
-
-    @Override
-    public boolean allocateHostForVm(Vm vm, Host host) {
+    @Override public boolean allocateHostForVm(Vm vm, Host host) {
         return false;
     }
-
-    @Override
-    public void deallocateHostForVm(Vm vm) {
-    }
-
-    @Override
-    public List<Host> getHostList() {
+    @Override public void deallocateHostForVm(Vm vm) {/**/}
+    @Override public List<Host> getHostList() {
         return Collections.emptyList();
     }
-
-    @Override
-    public Map<Vm, Host> optimizeAllocation(List<? extends Vm> vmList) {
+    @Override public Map<Vm, Host> optimizeAllocation(List<? extends Vm> vmList) {
         return Collections.emptyMap();
     }
 }

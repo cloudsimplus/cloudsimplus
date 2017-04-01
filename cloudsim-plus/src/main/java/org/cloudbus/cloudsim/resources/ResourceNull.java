@@ -8,28 +8,17 @@ package org.cloudbus.cloudsim.resources;
  * @see Resource#NULL
  */
 final class ResourceNull implements Resource {
-    @Override
-    public long getAvailableResource() {
+    @Override public long getAvailableResource() { return 0; }
+    @Override public long getAllocatedResource() {
         return 0;
     }
-
-    @Override
-    public long getAllocatedResource() {
-        return 0;
-    }
-
-    @Override
-    public boolean isResourceAmountAvailable(long amountToCheck) {
+    @Override public boolean isResourceAmountAvailable(long amountToCheck) {
         return false;
     }
-
-    @Override
-    public boolean isFull() {
+    @Override public boolean isFull() {
         return false;
     }
-
-    @Override
-    public long getCapacity() {
+    @Override public long getCapacity() {
         return 0;
     }
 }

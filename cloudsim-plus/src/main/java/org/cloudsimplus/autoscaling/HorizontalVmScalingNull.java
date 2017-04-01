@@ -13,48 +13,31 @@ import java.util.function.Supplier;
  * @see HorizontalVmScaling#NULL
  */
 final class HorizontalVmScalingNull implements HorizontalVmScaling {
-    @Override
-    public Supplier<Vm> getVmSupplier() {
+    @Override public Supplier<Vm> getVmSupplier() {
         return () -> Vm.NULL;
     }
-
-    @Override
-    public HorizontalVmScaling setVmSupplier(Supplier<Vm> supplier) {
+    @Override public HorizontalVmScaling setVmSupplier(Supplier<Vm> supplier) {
         return this;
     }
-
-    @Override
-    public boolean requestScalingIfPredicateMatch(double time) {
+    @Override public boolean requestScalingIfPredicateMatch(double time) {
         return false;
     }
-
-    @Override
-    public Vm getVm() {
+    @Override public Vm getVm() {
         return Vm.NULL;
     }
-
-    @Override
-    public VmScaling setVm(Vm vm) {
+    @Override public VmScaling setVm(Vm vm) {
         return this;
     }
-
-    @Override
-    public Predicate<Vm> getOverloadPredicate() {
+    @Override public Predicate<Vm> getOverloadPredicate() {
         return vm -> false;
     }
-
-    @Override
-    public VmScaling setOverloadPredicate(Predicate<Vm> predicate) {
+    @Override public VmScaling setOverloadPredicate(Predicate<Vm> predicate) {
         return this;
     }
-
-    @Override
-    public Predicate<Vm> getUnderloadPredicate() {
+    @Override public Predicate<Vm> getUnderloadPredicate() {
         return FALSE_PREDICATE;
     }
-
-    @Override
-    public VmScaling setUnderloadPredicate(Predicate<Vm> predicate) {
+    @Override public VmScaling setUnderloadPredicate(Predicate<Vm> predicate) {
         return this;
     }
 }

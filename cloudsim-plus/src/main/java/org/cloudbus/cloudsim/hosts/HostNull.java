@@ -22,227 +22,124 @@ import java.util.List;
  * @see Host#NULL
  */
 final class HostNull implements Host {
-    @Override
-    public List<ResourceManageable> getResources() {
+    @Override public List<ResourceManageable> getResources() {
         return Collections.emptyList();
     }
-
-    @Override
-    public int compareTo(Host o) {
+    @Override public int compareTo(Host o) {
         return 0;
     }
-
-    @Override
-    public boolean addMigratingInVm(Vm vm) {
+    @Override public boolean addMigratingInVm(Vm vm) {
         return false;
     }
-
-    @Override
-    public boolean allocatePesForVm(Vm vm, List<Double> mipsShare) {
+    @Override public boolean allocatePesForVm(Vm vm, List<Double> mipsShare) {
         return false;
     }
-
-    @Override
-    public void deallocatePesForVm(Vm vm) {
-    }
-
-    @Override
-    public List<Double> getAllocatedMipsForVm(Vm vm) {
+    @Override public void deallocatePesForVm(Vm vm) {/**/}
+    @Override public List<Double> getAllocatedMipsForVm(Vm vm) {
         return Collections.emptyList();
     }
-
-    @Override
-    public double getAvailableMips() {
+    @Override public double getAvailableMips() {
         return 0;
     }
-
-    @Override
-    public Resource getBw() {
+    @Override public Resource getBw() {
         return Resource.NULL;
     }
-
-    @Override
-    public ResourceProvisioner getBwProvisioner() {
+    @Override public ResourceProvisioner getBwProvisioner() {
         return ResourceProvisioner.NULL;
     }
-
-    @Override
-    public Host setBwProvisioner(ResourceProvisioner bwProvisioner) {
+    @Override public Host setBwProvisioner(ResourceProvisioner bwProvisioner) {
         return Host.NULL;
     }
-
-    @Override
-    public Datacenter getDatacenter() {
+    @Override public Datacenter getDatacenter() {
         return Datacenter.NULL;
     }
-
-    @Override
-    public int getId() {
+    @Override public int getId() {
         return -1;
     }
-
-    @Override
-    public double getMaxAvailableMips() {
+    @Override public double getMaxAvailableMips() {
         return 0.0;
     }
-
-    @Override
-    public int getNumberOfFreePes() {
+    @Override public int getNumberOfFreePes() {
         return 0;
     }
-
-    @Override
-    public int getNumberOfPes() {
+    @Override public int getNumberOfPes() {
         return 0;
     }
-
-    @Override
-    public List<Pe> getPeList() {
+    @Override public List<Pe> getPeList() {
         return Collections.emptyList();
     }
-
-    @Override
-    public Resource getRam() {
+    @Override public Resource getRam() {
         return Resource.NULL;
     }
-
-    @Override
-    public ResourceProvisioner getRamProvisioner() {
+    @Override public ResourceProvisioner getRamProvisioner() {
         return ResourceProvisioner.NULL;
     }
-
-    @Override
-    public Host setRamProvisioner(ResourceProvisioner ramProvisioner) {
+    @Override public Host setRamProvisioner(ResourceProvisioner ramProvisioner) {
         return Host.NULL;
     }
-
-    @Override
-    public Resource getStorage() {
+    @Override public Resource getStorage() {
         return Resource.NULL;
     }
-
-    @Override
-    public double getTotalAllocatedMipsForVm(Vm vm) {
+    @Override public double getTotalAllocatedMipsForVm(Vm vm) {
         return 0.0;
     }
-
-    @Override
-    public long getTotalMips() {
+    @Override public long getTotalMips() {
         return 0;
     }
-
-    @Override
-    public Vm getVm(int vmId, int brokerId) {
+    @Override public Vm getVm(int vmId, int brokerId) {
         return Vm.NULL;
     }
-
-    @Override
-    public List<Vm> getVmList() {
+    @Override public List<Vm> getVmList() {
         return Collections.emptyList();
     }
-
-    @Override
-    public VmScheduler getVmScheduler() {
+    @Override public VmScheduler getVmScheduler() {
         return VmScheduler.NULL;
     }
-
-    @Override
-    public Host setVmScheduler(VmScheduler vmScheduler) {
+    @Override public Host setVmScheduler(VmScheduler vmScheduler) {
         return Host.NULL;
     }
-
-    @Override
-    public List<Vm> getVmsMigratingIn() {
+    @Override public List<Vm> getVmsMigratingIn() {
         return Collections.EMPTY_LIST;
     }
-
-    @Override
-    public boolean isFailed() {
+    @Override public boolean isFailed() {
         return false;
     }
-
-    @Override
-    public boolean isSuitableForVm(Vm vm) {
+    @Override public boolean isSuitableForVm(Vm vm) {
         return false;
     }
-
-    @Override
-    public void reallocateMigratingInVms() {
-    }
-
-    @Override
-    public void removeMigratingInVm(Vm vm) {
-    }
-
-    @Override
-    public void setDatacenter(Datacenter datacenter) {
-    }
-
-    @Override
-    public boolean setPeStatus(int peId, Pe.Status status) {
+    @Override public void reallocateMigratingInVms() {/**/}
+    @Override public void removeMigratingInVm(Vm vm) {/**/}
+    @Override public void setDatacenter(Datacenter datacenter) {/**/}
+    @Override public boolean setPeStatus(int peId, Pe.Status status) {
         return false;
     }
-
-    @Override
-    public double updateProcessing(double currentTime) {
+    @Override public double updateProcessing(double currentTime) {
         return 0.0;
     }
-
-    @Override
-    public boolean vmCreate(Vm vm) {
+    @Override public boolean vmCreate(Vm vm) {
         return false;
     }
-
-    @Override
-    public void destroyVm(Vm vm) {
-    }
-
-    @Override
-    public void destroyAllVms() {
-    }
-
-    @Override
-    public boolean removeOnUpdateProcessingListener(EventListener<HostUpdatesVmsProcessingEventInfo> listener) {
-        return false;
-    }
-
-    @Override
-    public Host addOnUpdateProcessingListener(EventListener<HostUpdatesVmsProcessingEventInfo> listener) {
-        return Host.NULL;
-    }
-
-    @Override
-    public long getAvailableStorage() {
+    @Override public void destroyVm(Vm vm) {/**/}
+    @Override public void destroyAllVms() {/**/}
+    @Override public boolean removeOnUpdateProcessingListener(EventListener<HostUpdatesVmsProcessingEventInfo> l) { return false; }
+    @Override public Host addOnUpdateProcessingListener(EventListener<HostUpdatesVmsProcessingEventInfo> l) { return Host.NULL; }
+    @Override public long getAvailableStorage() {
         return 0L;
     }
-
-    @Override
-    public boolean setFailed(boolean failed) {
+    @Override public boolean setFailed(boolean failed) {
         return false;
     }
-
-    @Override
-    public Simulation getSimulation() {
+    @Override public Simulation getSimulation() {
         return Simulation.NULL;
     }
-
-    @Override
-    public Host setSimulation(Simulation simulation) {
+    @Override public Host setSimulation(Simulation simulation) {
         return this;
     }
-
-    @Override
-    public ResourceProvisioner getProvisioner(Class<? extends ResourceManageable> resourceClass) {
-        return ResourceProvisioner.NULL;
-    }
-
-    @Override
-    public long getNumberOfWorkingPes() {
+    @Override public ResourceProvisioner getProvisioner(Class<? extends ResourceManageable> c) { return ResourceProvisioner.NULL; }
+    @Override public long getNumberOfWorkingPes() {
         return 0;
     }
-
-    @Override
-    public String toString() {
+    @Override public String toString() {
         return "Host.NULL";
     }
 }

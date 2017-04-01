@@ -18,70 +18,40 @@ import java.util.Map;
  * @see PowerVmAllocationPolicyMigration#NULL
  */
 final class PowerVmAllocationPolicyMigrationNull implements PowerVmAllocationPolicyMigration {
-    @Override
-    public PowerHost findHostForVm(Vm vm) {
+    @Override public PowerHost findHostForVm(Vm vm) {
         return PowerHost.NULL;
     }
-
-    @Override
-    public Datacenter getDatacenter() {
+    @Override public Datacenter getDatacenter() {
         return Datacenter.NULL;
     }
-
-    @Override
-    public void setDatacenter(Datacenter datacenter) {
-    }
-
-    @Override
-    public boolean allocateHostForVm(Vm vm) {
+    @Override public void setDatacenter(Datacenter datacenter) {/**/}
+    @Override public boolean allocateHostForVm(Vm vm) {
         return false;
     }
-
-    @Override
-    public boolean allocateHostForVm(Vm vm, Host host) {
+    @Override public boolean allocateHostForVm(Vm vm, Host host) {
         return false;
     }
-
-    @Override
-    public boolean scaleVmVertically(VerticalVmScaling scaling) {
+    @Override public boolean scaleVmVertically(VerticalVmScaling scaling) {
         return false;
     }
-
-    @Override
-    public void deallocateHostForVm(Vm vm) {
-    }
-
-    @Override
-    public <T extends Host> List<T> getHostList() {
+    @Override public void deallocateHostForVm(Vm vm) {/**/}
+    @Override public <T extends Host> List<T> getHostList() {
         return Collections.emptyList();
     }
-
-    @Override
-    public Map<Vm, Host> optimizeAllocation(List<? extends Vm> vmList) {
+    @Override public Map<Vm, Host> optimizeAllocation(List<? extends Vm> vmList) {
         return Collections.emptyMap();
     }
-
-    @Override
-    public boolean isHostOverUtilized(PowerHost host) {
+    @Override public boolean isHostOverUtilized(PowerHost host) {
         return false;
     }
-
-    @Override
-    public boolean isHostUnderUtilized(PowerHost host) {
+    @Override public boolean isHostUnderUtilized(PowerHost host) {
         return false;
     }
-
-    @Override
-    public double getOverUtilizationThreshold(PowerHost host) {
+    @Override public double getOverUtilizationThreshold(PowerHost host) {
         return 0;
     }
-
-    @Override
-    public double getUnderUtilizationThreshold() {
+    @Override public double getUnderUtilizationThreshold() {
         return 0;
     }
-
-    @Override
-    public void setUnderUtilizationThreshold(double underUtilizationThreshold) {
-    }
+    @Override public void setUnderUtilizationThreshold(double underUtilizationThreshold) {/**/}
 }

@@ -19,377 +19,216 @@ import java.util.List;
  * @see Cloudlet#NULL
  */
 final class CloudletNull implements Cloudlet {
-    @Override
-    public void setId(int id) {
-    }
-
-    @Override
-    public int getId() {
+    @Override public void setId(int id) {/**/}
+    @Override public int getId() {
         return -1;
     }
-
-    @Override
-    public String getUid() {
+    @Override public String getUid() {
         return "";
     }
-
-    @Override
-    public boolean addRequiredFile(String fileName) {
+    @Override public boolean addRequiredFile(String fileName) {
         return false;
     }
-
-    @Override
-    public boolean addRequiredFiles(List<String> fileNames) {
+    @Override public boolean addRequiredFiles(List<String> fileNames) {
         return false;
     }
-
-    @Override
-    public boolean deleteRequiredFile(String filename) {
+    @Override public boolean deleteRequiredFile(String filename) {
         return false;
     }
-
-    @Override
-    public double getAccumulatedBwCost() {
+    @Override public double getAccumulatedBwCost() {
         return 0.0;
     }
-
-    @Override
-    public double getActualCpuTime(Datacenter datacenter) {
+    @Override public double getActualCpuTime(Datacenter datacenter) {
         return 0.0;
     }
-
-    @Override
-    public double getActualCpuTime() {
+    @Override public double getActualCpuTime() {
         return 0.0;
     }
-
-    @Override
-    public int getPriority() {
+    @Override public int getPriority() {
         return 0;
     }
-
-    @Override
-    public long getFileSize() {
+    @Override public long getFileSize() {
         return 0L;
     }
-
-    @Override
-    public long getFinishedLengthSoFar() {
+    @Override public long getFinishedLengthSoFar() {
         return 0L;
     }
-
-    @Override
-    public long getFinishedLengthSoFar(Datacenter datacenter) {
+    @Override public long getFinishedLengthSoFar(Datacenter datacenter) {
         return 0L;
     }
-
-    @Override
-    public String getHistory() {
+    @Override public String getHistory() {
         return "";
     }
-
-    @Override
-    public long getLength() {
+    @Override public long getLength() {
         return 0L;
     }
-
-    @Override
-    public long getOutputSize() {
+    @Override public long getOutputSize() {
         return 0L;
     }
-
-    @Override
-    public long getTotalLength() {
+    @Override public long getTotalLength() {
         return 0L;
     }
-
-    @Override
-    public double getCostPerBw() {
+    @Override public double getCostPerBw() {
         return 0.0;
     }
-
-    @Override
-    public double getCostPerSec() {
+    @Override public double getCostPerSec() {
         return 0.0;
     }
-
-    @Override
-    public double getCostPerSec(Datacenter datacenter) {
+    @Override public double getCostPerSec(Datacenter datacenter) {
         return 0.0;
     }
-
-    @Override
-    public double getExecStartTime() {
+    @Override public double getExecStartTime() {
         return 0.0;
     }
-
-    @Override
-    public double getFinishTime() {
+    @Override public double getFinishTime() {
         return 0.0;
     }
-
-    @Override
-    public int getNetServiceLevel() {
+    @Override public int getNetServiceLevel() {
         return 0;
     }
-
-    @Override
-    public int getNumberOfPes() {
+    @Override public int getNumberOfPes() {
         return 0;
     }
-
-    @Override
-    public double getTotalCost() {
+    @Override public double getTotalCost() {
         return 0.0;
     }
-
-    @Override
-    public List<String> getRequiredFiles() {
+    @Override public List<String> getRequiredFiles() {
         return Collections.emptyList();
     }
-
-    @Override
-    public Datacenter getLastDatacenter() {
+    @Override public Datacenter getLastDatacenter() {
         return Datacenter.NULL;
     }
-
-    @Override
-    public Status getStatus() {
+    @Override public Status getStatus() {
         return Status.FAILED;
     }
-
-    @Override
-    public double getLastDatacenterArrivalTime() {
+    @Override public double getLastDatacenterArrivalTime() {
         return 0.0;
     }
-
-    @Override
-    public double getArrivalTime(Datacenter datacenter) {
+    @Override public double getArrivalTime(Datacenter datacenter) {
         return 0.0;
     }
-
-    @Override
-    public UtilizationModel getUtilizationModelBw() {
+    @Override public UtilizationModel getUtilizationModelBw() {
         return UtilizationModel.NULL;
     }
-
-    @Override
-    public UtilizationModel getUtilizationModelCpu() {
+    @Override public UtilizationModel getUtilizationModelCpu() {
         return UtilizationModel.NULL;
     }
-
-    @Override
-    public UtilizationModel getUtilizationModelRam() {
+    @Override public UtilizationModel getUtilizationModelRam() {
         return UtilizationModel.NULL;
     }
-
-    @Override
-    public double getUtilizationOfBw() {
+    @Override public double getUtilizationOfBw() {
         return 0;
     }
-
-    @Override
-    public double getUtilizationOfBw(double time) {
+    @Override public double getUtilizationOfBw(double time) {
         return 0.0;
     }
-
-    @Override
-    public double getUtilizationOfCpu() {
+    @Override public double getUtilizationOfCpu() {
         return 0;
     }
-
-    @Override
-    public double getUtilizationOfCpu(double time) {
+    @Override public double getUtilizationOfCpu(double time) {
         return 0.0;
     }
-
-    @Override
-    public double getUtilizationOfRam() {
+    @Override public double getUtilizationOfRam() {
         return 0;
     }
-
-    @Override
-    public double getUtilizationOfRam(double time) {
+    @Override public double getUtilizationOfRam(double time) {
         return 0.0;
     }
-
-    @Override
-    public Vm getVm() {
+    @Override public Vm getVm() {
         return Vm.NULL;
     }
-
-    @Override
-    public double getWaitingTime() {
+    @Override public double getWaitingTime() {
         return 0.0;
     }
-
-    @Override
-    public double getWallClockTimeInLastExecutedDatacenter() {
+    @Override public double getWallClockTimeInLastExecutedDatacenter() {
         return 0.0;
     }
-
-    @Override
-    public double getWallClockTime(Datacenter datacenter) {
+    @Override public double getWallClockTime(Datacenter datacenter) {
         return 0.0;
     }
-
-    @Override
-    public boolean isFinished() {
+    @Override public boolean isFinished() {
         return false;
     }
-
-    @Override
-    public boolean requiresFiles() {
+    @Override public boolean requiresFiles() {
         return false;
     }
-
-    @Override
-    public void setPriority(int priority) {
-    }
-
-    @Override
-    public Cloudlet setLength(long length) {
+    @Override public void setPriority(int priority) {/**/}
+    @Override public Cloudlet setLength(long length) {
         return Cloudlet.NULL;
     }
-
-    @Override
-    public Cloudlet setFileSize(long fileSize) {
+    @Override public Cloudlet setFileSize(long fileSize) {
         return Cloudlet.NULL;
     }
-
-    @Override
-    public Cloudlet setOutputSize(long outputSize) {
+    @Override public Cloudlet setOutputSize(long outputSize) {
         return Cloudlet.NULL;
     }
-
-    @Override
-    public boolean setStatus(Status newStatus) {
+    @Override public boolean setStatus(Status newStatus) {
         return false;
     }
-
-    @Override
-    public boolean setNetServiceLevel(int netServiceLevel) {
+    @Override public boolean setNetServiceLevel(int netServiceLevel) {
         return false;
     }
-
-    @Override
-    public Cloudlet setNumberOfPes(int numberOfPes) {
+    @Override public Cloudlet setNumberOfPes(int numberOfPes) {
         return Cloudlet.NULL;
     }
-
-    @Override
-    public void assignToDatacenter(Datacenter datacenter) {
-    }
-
-    @Override
-    public Cloudlet setBroker(DatacenterBroker broker) {
+    @Override public void assignToDatacenter(Datacenter datacenter) {/**/}
+    @Override public Cloudlet setBroker(DatacenterBroker broker) {
         return Cloudlet.NULL;
     }
-
-    @Override
-    public DatacenterBroker getBroker() {
+    @Override public DatacenterBroker getBroker() {
         return DatacenterBroker.NULL;
     }
-
-    @Override
-    public Cloudlet setUtilizationModel(UtilizationModel utilizationModel) {
+    @Override public Cloudlet setUtilizationModel(UtilizationModel utilizationModel) {
         return Cloudlet.NULL;
     }
-
-    @Override
-    public Cloudlet setUtilizationModelBw(UtilizationModel utilizationModelBw) {
+    @Override public Cloudlet setUtilizationModelBw(UtilizationModel utilizationModelBw) {
         return Cloudlet.NULL;
     }
-
-    @Override
-    public Cloudlet setUtilizationModelCpu(UtilizationModel utilizationModelCpu) {
+    @Override public Cloudlet setUtilizationModelCpu(UtilizationModel utilizationModelCpu) {
         return Cloudlet.NULL;
     }
-
-    @Override
-    public Cloudlet setUtilizationModelRam(UtilizationModel utilizationModelRam) {
+    @Override public Cloudlet setUtilizationModelRam(UtilizationModel utilizationModelRam) {
         return Cloudlet.NULL;
     }
-
-    @Override
-    public Cloudlet setVm(Vm vm) {
+    @Override public Cloudlet setVm(Vm vm) {
         return Cloudlet.NULL;
     }
-
-    @Override
-    public boolean removeOnFinishListener(EventListener<CloudletVmEventInfo> listener) {
+    @Override public boolean removeOnFinishListener(EventListener<CloudletVmEventInfo> l) {
         return false;
     }
-
-    @Override
-    public Cloudlet addOnFinishListener(EventListener<CloudletVmEventInfo> listener) {
+    @Override public Cloudlet addOnFinishListener(EventListener<CloudletVmEventInfo> l) {
         return Cloudlet.NULL;
     }
-
-    @Override
-    public void notifyOnUpdateProcessingListeners(double time) {
-    }
-
-    @Override
-    public Simulation getSimulation() {
+    @Override public void notifyOnUpdateProcessingListeners(double time) {/**/}
+    @Override public Simulation getSimulation() {
         return Simulation.NULL;
     }
-
-    @Override
-    public boolean removeOnUpdateProcessingListener(EventListener<CloudletVmEventInfo> listener) {
-        return false;
-    }
-
-    @Override
-    public Cloudlet addOnUpdateProcessingListener(EventListener<CloudletVmEventInfo> listener) {
-        return Cloudlet.NULL;
-    }
-
-    @Override
-    public double getSubmissionDelay() {
+    @Override public boolean removeOnUpdateProcessingListener(EventListener<CloudletVmEventInfo> l) { return false; }
+    @Override public Cloudlet addOnUpdateProcessingListener(EventListener<CloudletVmEventInfo> l) { return Cloudlet.NULL; }
+    @Override public double getSubmissionDelay() {
         return 0;
     }
-
-    @Override
-    public void setSubmissionDelay(double submissionDelay) {
-    }
-
-    @Override
-    public boolean isBindToVm() {
+    @Override public void setSubmissionDelay(double submissionDelay) {/**/}
+    @Override public boolean isBindToVm() {
         return false;
     }
-
-    @Override
-    public int compareTo(Cloudlet o) {
+    @Override public int compareTo(Cloudlet o) {
         return 0;
     }
-
-    @Override
-    public boolean isAssignedToDatacenter() {
+    @Override public boolean isAssignedToDatacenter() {
         return false;
     }
-
-    @Override
-    public String toString() {
+    @Override public String toString() {
         return "Cloudlet.NULL";
     }
-
-    @Override
-    public boolean setFinishedLengthSoFar(long length) {
+    @Override public boolean setFinishedLengthSoFar(long length) {
         return false;
     }
-
-    @Override
-    public boolean setWallClockTime(double wallTime, double actualCpuTime) {
+    @Override public boolean setWallClockTime(double wallTime, double actualCpuTime) {
         return false;
     }
-
-    @Override
-    public void setExecStartTime(double clockTime) {
-    }
-
-    @Override
-    public double registerArrivalInDatacenter() {
+    @Override public void setExecStartTime(double clockTime) {/**/}
+    @Override public double registerArrivalInDatacenter() {
         return -1;
     }
 }

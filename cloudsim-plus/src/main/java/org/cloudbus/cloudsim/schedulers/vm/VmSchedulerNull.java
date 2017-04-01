@@ -17,106 +17,63 @@ import java.util.Set;
  * @see VmScheduler#NULL
  */
 final class VmSchedulerNull implements VmScheduler {
-    @Override
-    public boolean allocatePesForVm(Vm vm, List<Double> mipsShare) {
+    @Override public boolean allocatePesForVm(Vm vm, List<Double> mipsShare) {
         return false;
     }
-
-    @Override
-    public void deallocatePesForAllVms() {
-    }
-
-    @Override
-    public void deallocatePesForVm(Vm vm) {
-    }
-
-    @Override
-    public List<Double> getAllocatedMipsForVm(Vm vm) {
+    @Override public void deallocatePesForAllVms() {/**/}
+    @Override public void deallocatePesForVm(Vm vm) {/**/}
+    @Override public List<Double> getAllocatedMipsForVm(Vm vm) {
         return Collections.emptyList();
     }
-
-    @Override
-    public double getAvailableMips() {
+    @Override public double getAvailableMips() {
         return 0.0;
     }
-
-    @Override
-    public double getMaxAvailableMips() {
+    @Override public double getMaxAvailableMips() {
         return 0.0;
     }
-
-    @Override
-    public long getPeCapacity() {
+    @Override public long getPeCapacity() {
         return 0;
     }
-
-    @Override
-    public <T extends Pe> List<T> getPeList() {
+    @Override public <T extends Pe> List<T> getPeList() {
         return Collections.emptyList();
     }
-
-    @Override
-    public Map<Vm, List<Pe>> getPeMap() {
+    @Override public Map<Vm, List<Pe>> getPeMap() {
         return Collections.emptyMap();
     }
-
-    @Override
-    public List<Pe> getPesAllocatedForVM(Vm vm) {
+    @Override public List<Pe> getPesAllocatedForVM(Vm vm) {
         return Collections.emptyList();
     }
-
-    @Override
-    public double getTotalAllocatedMipsForVm(Vm vm) {
+    @Override public double getTotalAllocatedMipsForVm(Vm vm) {
         return 0.0;
     }
-
-    @Override
-    public Set<Vm> getVmsMigratingIn() {
+    @Override public Set<Vm> getVmsMigratingIn() {
         return Collections.emptySet();
     }
-
-    @Override
-    public Set<Vm> getVmsMigratingOut() {
+    @Override public Set<Vm> getVmsMigratingOut() {
         return Collections.emptySet();
     }
-
-    @Override
-    public boolean addVmMigratingIn(Vm vm) {
+    @Override public boolean addVmMigratingIn(Vm vm) {
         return false;
     }
-
-    @Override
-    public boolean addVmMigratingOut(Vm vm) {
+    @Override public boolean addVmMigratingOut(Vm vm) {
         return false;
     }
-
-    @Override
-    public boolean removeVmMigratingIn(Vm vm) {
+    @Override public boolean removeVmMigratingIn(Vm vm) {
         return false;
     }
-
-    @Override
-    public boolean removeVmMigratingOut(Vm vm) {
+    @Override public boolean removeVmMigratingOut(Vm vm) {
         return false;
     }
-
-    @Override
-    public boolean isSuitableForVm(Vm vm) {
+    @Override public boolean isSuitableForVm(Vm vm) {
         return false;
     }
-
-    @Override
-    public double getCpuOverheadDueToVmMigration() {
+    @Override public double getCpuOverheadDueToVmMigration() {
         return 0.0;
     }
-
-    @Override
-    public Host getHost() {
+    @Override public Host getHost() {
         return Host.NULL;
     }
-
-    @Override
-    public VmScheduler setHost(Host host) {
+    @Override public VmScheduler setHost(Host host) {
         return this;
     }
 }

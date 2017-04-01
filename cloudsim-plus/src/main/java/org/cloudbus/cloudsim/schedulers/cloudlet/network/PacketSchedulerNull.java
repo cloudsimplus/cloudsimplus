@@ -16,38 +16,23 @@ import java.util.List;
  * @see PacketScheduler#NULL
  */
 final class PacketSchedulerNull implements PacketScheduler {
-    @Override
-    public Vm getVm() {
+    @Override public Vm getVm() {
         return Vm.NULL;
     }
-
-    @Override
-    public void setVm(Vm vm) {
-    }
-
-    @Override
-    public void clearVmPacketsToSend() {
-    }
-
-    @Override
-    public List<VmPacket> getVmPacketsToSend() {
+    @Override public void setVm(Vm vm) {/**/}
+    @Override public void clearVmPacketsToSend() {/**/}
+    @Override public List<VmPacket> getVmPacketsToSend() {
         return Collections.emptyList();
     }
-
-    @Override
-    public boolean addPacketToListOfPacketsSentFromVm(VmPacket pkt) {
+    @Override public boolean addPacketToListOfPacketsSentFromVm(VmPacket pkt) {
         return false;
     }
-
-    @Override
-    public void processCloudletPackets(Cloudlet cloudlet, double currentTime) {
-    }
-
+    @Override public void processCloudletPackets(Cloudlet cloudlet, double currentTime) {/**/}
     /**
      * {@inheritDoc}
      *
      * @param cloudlet {@inheritDoc}
-     * @return always return true to indicate that if this NULL Object is being used,
+     * @return always returns true to indicate that if this NULL Object is being used,
      * no network packets will be processed by the {@link CloudletScheduler} that this
      * object is assigned to. By this way, the processing of Cloudlets must be always updated
      * because the Cloudlet doesn't have to wait for packets dispatch or reception.

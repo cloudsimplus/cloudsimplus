@@ -11,47 +11,29 @@ import org.cloudbus.cloudsim.vms.Vm;
  * @see ResourceProvisioner#NULL
  */
 final class ResourceProvisionerNull implements ResourceProvisioner {
-    @Override
-    public boolean allocateResourceForVm(Vm vm, long newTotalVmResourceCapacity) {
+    @Override public boolean allocateResourceForVm(Vm vm, long newTotalVmResourceCapacity) {
         return false;
     }
-
-    @Override
-    public long getAllocatedResourceForVm(Vm vm) {
+    @Override public long getAllocatedResourceForVm(Vm vm) {
         return 0;
     }
-
-    @Override
-    public long getTotalAllocatedResource() {
+    @Override public long getTotalAllocatedResource() {
         return 0;
     }
-
-    @Override
-    public boolean deallocateResourceForVm(Vm vm) {
+    @Override public boolean deallocateResourceForVm(Vm vm) {
         return false;
     }
-
-    @Override
-    public void deallocateResourceForAllVms() {
-    }
-
-    @Override
-    public boolean isSuitableForVm(Vm vm, long newVmTotalAllocatedResource) {
+    @Override public void deallocateResourceForAllVms() {/**/}
+    @Override public boolean isSuitableForVm(Vm vm, long newVmTotalAllocatedResource) {
         return false;
     }
-
-    @Override
-    public ResourceManageable getResource() {
+    @Override public ResourceManageable getResource() {
         return ResourceManageable.NULL;
     }
-
-    @Override
-    public long getCapacity() {
+    @Override public long getCapacity() {
         return 0;
     }
-
-    @Override
-    public long getAvailableResource() {
+    @Override public long getAvailableResource() {
         return 0;
     }
 }

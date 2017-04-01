@@ -13,63 +13,38 @@ import java.util.function.Predicate;
  * @see VerticalVmScaling#NULL
  */
 final class VerticalVmScalingNull implements VerticalVmScaling {
-    @Override
-    public Class<? extends ResourceManageable> getResourceClassToScale() {
+    @Override public Class<? extends ResourceManageable> getResourceClassToScale() {
         return ResourceManageable.class;
     }
-
-    @Override
-    public VerticalVmScaling setResourceClassToScale(Class<? extends ResourceManageable> resourceClassToScale) {
-        return this;
-    }
-
-    @Override
-    public double getScalingFactor() {
+    @Override public VerticalVmScaling setResourceClassToScale(Class<? extends ResourceManageable> c) { return this; }
+    @Override public double getScalingFactor() {
         return 0;
     }
-
-    @Override
-    public double getResourceAmountToScale() {
+    @Override public double getResourceAmountToScale() {
         return 0;
     }
-
-    @Override
-    public VerticalVmScaling setScalingFactor(double scalingFactor) {
+    @Override public VerticalVmScaling setScalingFactor(double scalingFactor) {
         return this;
     }
-
-    @Override
-    public boolean requestScalingIfPredicateMatch(double time) {
+    @Override public boolean requestScalingIfPredicateMatch(double time) {
         return false;
     }
-
-    @Override
-    public Vm getVm() {
+    @Override public Vm getVm() {
         return Vm.NULL;
     }
-
-    @Override
-    public VmScaling setVm(Vm vm) {
+    @Override public VmScaling setVm(Vm vm) {
         return this;
     }
-
-    @Override
-    public Predicate<Vm> getOverloadPredicate() {
+    @Override public Predicate<Vm> getOverloadPredicate() {
         return FALSE_PREDICATE;
     }
-
-    @Override
-    public VmScaling setOverloadPredicate(Predicate<Vm> predicate) {
+    @Override public VmScaling setOverloadPredicate(Predicate<Vm> predicate) {
         return this;
     }
-
-    @Override
-    public Predicate<Vm> getUnderloadPredicate() {
+    @Override public Predicate<Vm> getUnderloadPredicate() {
         return FALSE_PREDICATE;
     }
-
-    @Override
-    public VmScaling setUnderloadPredicate(Predicate<Vm> predicate) {
+    @Override public VmScaling setUnderloadPredicate(Predicate<Vm> predicate) {
         return this;
     }
 }

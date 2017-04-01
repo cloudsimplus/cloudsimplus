@@ -22,142 +22,63 @@ import java.util.function.Supplier;
  * @see DatacenterBroker#NULL
  */
 final class DatacenterBrokerNull implements DatacenterBroker {
-    @Override
-    public int compareTo(SimEntity o) {
+    @Override public int compareTo(SimEntity o) {
         return 0;
     }
-
-    @Override
-    public boolean isStarted() {
+    @Override public boolean isStarted() {
         return false;
     }
-
-    @Override
-    public Simulation getSimulation() {
+    @Override public Simulation getSimulation() {
         return Simulation.NULL;
     }
-
-    @Override
-    public SimEntity setSimulation(Simulation simulation) {
+    @Override public SimEntity setSimulation(Simulation simulation) {
         return this;
     }
-
-    @Override
-    public void processEvent(SimEvent ev) {
-    }
-
-    @Override
-    public void schedule(int dest, double delay, int tag) {
-    }
-
-    @Override
-    public void run() {
-    }
-
-    @Override
-    public void start() {
-    }
-
-    @Override
-    public int getId() {
+    @Override public void processEvent(SimEvent ev) {/**/}
+    @Override public void schedule(int dest, double delay, int tag) {/**/}
+    @Override public void run() {/**/}
+    @Override public void start() {/**/}
+    @Override public int getId() {
         return -1;
     }
-
-    @Override
-    public String getName() {
+    @Override public String getName() {
         return "";
     }
-
-    @Override
-    public boolean bindCloudletToVm(Cloudlet cloudlet, Vm vm) {
+    @Override public boolean bindCloudletToVm(Cloudlet cloudlet, Vm vm) {
         return false;
     }
-
-    @Override
-    public <T extends Cloudlet> List<T> getCloudletsWaitingList() {
+    @Override public <T extends Cloudlet> List<T> getCloudletsWaitingList() {
         return Collections.emptyList();
     }
-
-    @Override
-    public <T extends Cloudlet> List<T> getCloudletsFinishedList() {
+    @Override public <T extends Cloudlet> List<T> getCloudletsFinishedList() {
         return Collections.emptyList();
     }
-
-    @Override
-    public Vm getWaitingVm(int index) {
+    @Override public Vm getWaitingVm(int index) {
         return Vm.NULL;
     }
-
-    @Override
-    public <T extends Vm> List<T> getVmsWaitingList() {
+    @Override public <T extends Vm> List<T> getVmsWaitingList() {
         return Collections.emptyList();
     }
-
-    @Override
-    public <T extends Vm> List<T> getVmsCreatedList() {
+    @Override public <T extends Vm> List<T> getVmsCreatedList() {
         return Collections.emptyList();
     }
-
-    @Override
-    public void submitVm(Vm vm) {
-    }
-
-    @Override
-    public void submitCloudlet(Cloudlet cloudlet) {
-    }
-
-    @Override
-    public void submitCloudletList(List<? extends Cloudlet> list) {
-    }
-
-    @Override
-    public void submitCloudletList(List<? extends Cloudlet> list, double submissionDelay) {
-    }
-
-    @Override
-    public void submitVmList(List<? extends Vm> list) {
-    }
-
-    @Override
-    public void submitVmList(List<? extends Vm> list, double submissionDelay) {
-    }
-
-    @Override
-    public boolean hasMoreCloudletsToBeExecuted() {
+    @Override public void submitVm(Vm vm) {/**/}
+    @Override public void submitCloudlet(Cloudlet cloudlet) {/**/}
+    @Override public void submitCloudletList(List<? extends Cloudlet> list) {/**/}
+    @Override public void submitCloudletList(List<? extends Cloudlet> list, double submissionDelay) {/**/}
+    @Override public void submitVmList(List<? extends Vm> list) {/**/}
+    @Override public void submitVmList(List<? extends Vm> list, double submissionDelay) {/**/}
+    @Override public boolean hasMoreCloudletsToBeExecuted() {
         return false;
     }
-
-    @Override
-    public void shutdownEntity() {
-    }
-
-    @Override
-    public SimEntity setName(String newName) throws IllegalArgumentException {
-        return this;
-    }
-
-    @Override
-    public void setDatacenterSupplier(Supplier<Datacenter> datacenterSupplier) {
-    }
-
-    @Override
-    public void setFallbackDatacenterSupplier(Supplier<Datacenter> fallbackDatacenterSupplier) {
-    }
-
-    @Override
-    public void setVmMapper(Function<Cloudlet, Vm> vmMapper) {
-    }
-
-    @Override
-    public Set<Cloudlet> getCloudletsCreatedList() {
+    @Override public void shutdownEntity() {/**/}
+    @Override public SimEntity setName(String newName) throws IllegalArgumentException { return this; }
+    @Override public void setDatacenterSupplier(Supplier<Datacenter> datacenterSupplier) {/**/}
+    @Override public void setFallbackDatacenterSupplier(Supplier<Datacenter> fallbackDatacenterSupplier) {/**/}
+    @Override public void setVmMapper(Function<Cloudlet, Vm> vmMapper) {/**/}
+    @Override public Set<Cloudlet> getCloudletsCreatedList() {
         return Collections.EMPTY_SET;
     }
-
-    @Override
-    public void setVmComparator(Comparator<Vm> comparator) {
-    }
-
-    @Override
-    public void setCloudletComparator(Comparator<Cloudlet> comparator) {
-    }
+    @Override public void setVmComparator(Comparator<Vm> comparator) {/**/}
+    @Override public void setCloudletComparator(Comparator<Cloudlet> comparator) {/**/}
 }

@@ -20,113 +20,61 @@ import java.util.List;
  * @see Datacenter#NULL
  */
 final class DatacenterNull implements Datacenter {
-    @Override
-    public int getId() {
+    @Override public int getId() {
         return -1;
     }
-
-    @Override
-    public int compareTo(SimEntity o) {
+    @Override public int compareTo(SimEntity o) {
         return 0;
     }
-
-    @Override
-    public String getName() {
+    @Override public String getName() {
         return "";
     }
-
-    @Override
-    public int addFile(File file) {
+    @Override public int addFile(File file) {
         return 0;
     }
-
-    @Override
-    public List<Host> getHostList() {
+    @Override public List<Host> getHostList() {
         return Collections.emptyList();
     }
-
-    @Override
-    public VmAllocationPolicy getVmAllocationPolicy() {
+    @Override public VmAllocationPolicy getVmAllocationPolicy() {
         return VmAllocationPolicy.NULL;
     }
-
-    @Override
-    public List<Vm> getVmList() {
+    @Override public List<Vm> getVmList() {
         return Collections.emptyList();
     }
-
-    @Override
-    public Host getHost(final int index) {
+    @Override public Host getHost(final int index) {
         return Host.NULL;
     }
-
-    @Override
-    public double getSchedulingInterval() {
+    @Override public double getSchedulingInterval() {
         return 0;
     }
-
-    @Override
-    public Datacenter setSchedulingInterval(double schedulingInterval) {
+    @Override public Datacenter setSchedulingInterval(double schedulingInterval) {
         return Datacenter.NULL;
     }
-
-    @Override
-    public DatacenterCharacteristics getCharacteristics() {
+    @Override public DatacenterCharacteristics getCharacteristics() {
         return DatacenterCharacteristics.NULL;
     }
-
-    @Override
-    public List<FileStorage> getStorageList() {
+    @Override public List<FileStorage> getStorageList() {
         return Collections.emptyList();
     }
-
-    @Override
-    public Datacenter setStorageList(List<FileStorage> storageList) {
+    @Override public Datacenter setStorageList(List<FileStorage> storageList) {
         return Datacenter.NULL;
     }
-
-    @Override
-    public boolean isStarted() {
+    @Override public boolean isStarted() {
         return false;
     }
-
-    @Override
-    public Simulation getSimulation() {
+    @Override public Simulation getSimulation() {
         return Simulation.NULL;
     }
-
-    @Override
-    public SimEntity setSimulation(Simulation simulation) {
+    @Override public SimEntity setSimulation(Simulation simulation) {
         return this;
     }
-
-    @Override
-    public void processEvent(SimEvent ev) {
-    }
-
-    @Override
-    public void schedule(int dest, double delay, int tag) {
-    }
-
-    @Override
-    public void run() {
-    }
-
-    @Override
-    public void start() {
-    }
-
-    @Override
-    public void shutdownEntity() {
-    }
-
-    @Override
-    public SimEntity setName(String newName) throws IllegalArgumentException {
-        return this;
-    }
-
-    @Override
-    public String toString() {
+    @Override public void processEvent(SimEvent ev) {/**/}
+    @Override public void schedule(int dest, double delay, int tag) {/**/}
+    @Override public void run() {/**/}
+    @Override public void start() {/**/}
+    @Override public void shutdownEntity() {/**/}
+    @Override public SimEntity setName(String newName) throws IllegalArgumentException { return this; }
+    @Override public String toString() {
         return "Datacenter.NULL";
     }
 }

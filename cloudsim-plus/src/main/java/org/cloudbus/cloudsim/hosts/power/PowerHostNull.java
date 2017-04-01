@@ -25,301 +25,165 @@ import java.util.List;
  * @see PowerHost#NULL
  */
 final class PowerHostNull implements PowerHost {
-    @Override
-    public List<ResourceManageable> getResources() {
+    @Override public List<ResourceManageable> getResources() {
         return Collections.emptyList();
     }
-
-    @Override
-    public int compareTo(Host o) {
+    @Override public int compareTo(Host o) {
         return 0;
     }
-
-    @Override
-    public double getEnergyLinearInterpolation(double fromUtilization, double toUtilization, double time) {
+    @Override public double getEnergyLinearInterpolation(double from, double to, double time) { return 0; }
+    @Override public double getMaxPower() {
         return 0;
     }
-
-    @Override
-    public double getMaxPower() {
+    @Override public double getPower() {
         return 0;
     }
-
-    @Override
-    public double getPower() {
-        return 0;
-    }
-
-    @Override
-    public PowerModel getPowerModel() {
+    @Override public PowerModel getPowerModel() {
         return PowerModel.NULL;
     }
-
-    @Override
-    public PowerHost setPowerModel(PowerModel powerModel) {
+    @Override public PowerHost setPowerModel(PowerModel powerModel) {
         return PowerHost.NULL;
     }
-
-    @Override
-    public void addStateHistoryEntry(double time, double allocatedMips, double requestedMips, boolean isActive) {
-    }
-
-    @Override
-    public List<Vm> getFinishedVms() {
+    @Override public void addStateHistoryEntry(double time, double amips, double rmips, boolean active) {/**/}
+    @Override public List<Vm> getFinishedVms() {
         return Collections.EMPTY_LIST;
     }
-
-    @Override
-    public double getMaxUtilization() {
+    @Override public double getMaxUtilization() {
         return 0;
     }
-
-    @Override
-    public double getMaxUtilizationAmongVmsPes(Vm vm) {
+    @Override public double getMaxUtilizationAmongVmsPes(Vm vm) {
         return 0;
     }
-
-    @Override
-    public double getPreviousUtilizationMips() {
+    @Override public double getPreviousUtilizationMips() {
         return 0;
     }
-
-    @Override
-    public double getPreviousUtilizationOfCpu() {
+    @Override public double getPreviousUtilizationOfCpu() {
         return 0;
     }
-
-    @Override
-    public List<HostStateHistoryEntry> getStateHistory() {
+    @Override public List<HostStateHistoryEntry> getStateHistory() {
         return Collections.EMPTY_LIST;
     }
-
-    @Override
-    public long getUtilizationOfBw() {
+    @Override public long getUtilizationOfBw() {
         return 0;
     }
-
-    @Override
-    public double getUtilizationOfCpu() {
+    @Override public double getUtilizationOfCpu() {
         return 0;
     }
-
-    @Override
-    public double getUtilizationOfCpuMips() {
+    @Override public double getUtilizationOfCpuMips() {
         return 0;
     }
-
-    @Override
-    public long getUtilizationOfRam() {
+    @Override public long getUtilizationOfRam() {
         return 0;
     }
-
-    @Override
-    public double updateProcessing(double currentTime) {
+    @Override public double updateProcessing(double currentTime) {
         return 0;
     }
-
-    @Override
-    public boolean addMigratingInVm(Vm vm) {
+    @Override public boolean addMigratingInVm(Vm vm) {
         return false;
     }
-
-    @Override
-    public boolean allocatePesForVm(Vm vm, List<Double> mipsShare) {
+    @Override public boolean allocatePesForVm(Vm vm, List<Double> mipsShare) {
         return false;
     }
-
-    @Override
-    public void deallocatePesForVm(Vm vm) {
-    }
-
-    @Override
-    public List<Double> getAllocatedMipsForVm(Vm vm) {
+    @Override public void deallocatePesForVm(Vm vm) {/**/}
+    @Override public List<Double> getAllocatedMipsForVm(Vm vm) {
         return Collections.EMPTY_LIST;
     }
-
-    @Override
-    public double getAvailableMips() {
+    @Override public double getAvailableMips() {
         return 0;
     }
-
-    @Override
-    public long getAvailableStorage() {
+    @Override public long getAvailableStorage() {
         return 0;
     }
-
-    @Override
-    public Resource getBw() {
+    @Override public Resource getBw() {
         return Resource.NULL;
     }
-
-    @Override
-    public ResourceProvisioner getBwProvisioner() {
+    @Override public ResourceProvisioner getBwProvisioner() {
         return ResourceProvisioner.NULL;
     }
-
-    @Override
-    public Host setBwProvisioner(ResourceProvisioner bwProvisioner) {
+    @Override public Host setBwProvisioner(ResourceProvisioner bwProvisioner) {
         return Host.NULL;
     }
-
-    @Override
-    public Datacenter getDatacenter() {
+    @Override public Datacenter getDatacenter() {
         return Datacenter.NULL;
     }
-
-    @Override
-    public double getMaxAvailableMips() {
+    @Override public double getMaxAvailableMips() {
         return 0;
     }
-
-    @Override
-    public int getNumberOfFreePes() {
+    @Override public int getNumberOfFreePes() {
         return 0;
     }
-
-    @Override
-    public int getNumberOfPes() {
+    @Override public int getNumberOfPes() {
         return 0;
     }
-
-    @Override
-    public List<Pe> getPeList() {
+    @Override public List<Pe> getPeList() {
         return Collections.EMPTY_LIST;
     }
-
-    @Override
-    public Resource getRam() {
+    @Override public Resource getRam() {
         return Resource.NULL;
     }
-
-    @Override
-    public ResourceProvisioner getRamProvisioner() {
+    @Override public ResourceProvisioner getRamProvisioner() {
         return ResourceProvisioner.NULL;
     }
-
-    @Override
-    public Host setRamProvisioner(ResourceProvisioner ramProvisioner) {
+    @Override public Host setRamProvisioner(ResourceProvisioner ramProvisioner) {
         return Host.NULL;
     }
-
-    @Override
-    public Resource getStorage() {
+    @Override public Resource getStorage() {
         return Resource.NULL;
     }
-
-    @Override
-    public double getTotalAllocatedMipsForVm(Vm vm) {
+    @Override public double getTotalAllocatedMipsForVm(Vm vm) {
         return 0;
     }
-
-    @Override
-    public long getTotalMips() {
+    @Override public long getTotalMips() {
         return 0;
     }
-
-    @Override
-    public Vm getVm(int vmId, int brokerId) {
+    @Override public Vm getVm(int vmId, int brokerId) {
         return Vm.NULL;
     }
-
-    @Override
-    public <T extends Vm> List<T> getVmList() {
+    @Override public <T extends Vm> List<T> getVmList() {
         return Collections.EMPTY_LIST;
     }
-
-    @Override
-    public VmScheduler getVmScheduler() {
+    @Override public VmScheduler getVmScheduler() {
         return VmScheduler.NULL;
     }
-
-    @Override
-    public Host setVmScheduler(VmScheduler vmScheduler) {
+    @Override public Host setVmScheduler(VmScheduler vmScheduler) {
         return Host.NULL;
     }
-
-    @Override
-    public <T extends Vm> List<T> getVmsMigratingIn() {
+    @Override public <T extends Vm> List<T> getVmsMigratingIn() {
         return Collections.EMPTY_LIST;
     }
-
-    @Override
-    public boolean isFailed() {
+    @Override public boolean isFailed() {
         return false;
     }
-
-    @Override
-    public boolean isSuitableForVm(Vm vm) {
+    @Override public boolean isSuitableForVm(Vm vm) {
         return false;
     }
-
-    @Override
-    public void reallocateMigratingInVms() {
-    }
-
-    @Override
-    public void removeMigratingInVm(Vm vm) {
-    }
-
-    @Override
-    public void setDatacenter(Datacenter datacenter) {
-    }
-
-    @Override
-    public boolean setFailed(boolean failed) {
+    @Override public void reallocateMigratingInVms() {/**/}
+    @Override public void removeMigratingInVm(Vm vm) {/**/}
+    @Override public void setDatacenter(Datacenter datacenter) {/**/}
+    @Override public boolean setFailed(boolean failed) {
         return false;
     }
-
-    @Override
-    public Simulation getSimulation() {
+    @Override public Simulation getSimulation() {
         return Simulation.NULL;
     }
-
-    @Override
-    public Host setSimulation(Simulation simulation) {
+    @Override public Host setSimulation(Simulation simulation) {
         return this;
     }
-
-    @Override
-    public ResourceProvisioner getProvisioner(Class<? extends ResourceManageable> resourceClass) {
-        return ResourceProvisioner.NULL;
-    }
-
-    @Override
-    public boolean setPeStatus(int peId, Pe.Status status) {
+    @Override public ResourceProvisioner getProvisioner(Class<? extends ResourceManageable> c) { return ResourceProvisioner.NULL; }
+    @Override public boolean setPeStatus(int peId, Pe.Status status) {
         return false;
     }
-
-    @Override
-    public boolean vmCreate(Vm vm) {
+    @Override public boolean vmCreate(Vm vm) {
         return false;
     }
-
-    @Override
-    public void destroyVm(Vm vm) {
-    }
-
-    @Override
-    public void destroyAllVms() {
-    }
-
-    @Override
-    public boolean removeOnUpdateProcessingListener(EventListener<HostUpdatesVmsProcessingEventInfo> listener) {
-        return false;
-    }
-
-    @Override
-    public Host addOnUpdateProcessingListener(EventListener<HostUpdatesVmsProcessingEventInfo> listener) {
-        return Host.NULL;
-    }
-
-    @Override
-    public int getId() {
+    @Override public void destroyVm(Vm vm) {/**/}
+    @Override public void destroyAllVms() {/**/}
+    @Override public boolean removeOnUpdateProcessingListener(EventListener<HostUpdatesVmsProcessingEventInfo> l) { return false; }
+    @Override public Host addOnUpdateProcessingListener(EventListener<HostUpdatesVmsProcessingEventInfo> l) { return Host.NULL; }
+    @Override public int getId() {
         return 0;
     }
-
-    @Override
-    public long getNumberOfWorkingPes() {
+    @Override public long getNumberOfWorkingPes() {
         return 0L;
     }
 }

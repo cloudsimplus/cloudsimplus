@@ -17,204 +17,110 @@ import java.util.function.Predicate;
  * @see Simulation#NULL
  */
 final class SimulationNull implements Simulation {
-    @Override
-    public void abort() {
-    }
-
-    @Override
-    public void addEntity(CloudSimEntity e) {
-    }
-
-    @Override
-    public SimEvent cancel(int src, Predicate<SimEvent> p) {
+    @Override public void abort() {/**/}
+    @Override public void addEntity(CloudSimEntity e) {/**/}
+    @Override public SimEvent cancel(int src, Predicate<SimEvent> p) {
         return SimEvent.NULL;
     }
-
-    @Override
-    public boolean cancelAll(int src, Predicate<SimEvent> p) {
+    @Override public boolean cancelAll(int src, Predicate<SimEvent> p) {
         return false;
     }
-
-    @Override
-    public double clock() {
+    @Override public double clock() {
         return 0;
     }
-
-    @Override
-    public SimEvent findFirstDeferred(int dest, Predicate<SimEvent> p) {
+    @Override public SimEvent findFirstDeferred(int dest, Predicate<SimEvent> p) {
         return SimEvent.NULL;
     }
-
-    @Override
-    public Calendar getCalendar() {
+    @Override public Calendar getCalendar() {
         return Calendar.getInstance();
     }
-
-    @Override
-    public int getCloudInfoServiceEntityId() {
+    @Override public int getCloudInfoServiceEntityId() {
         return 0;
     }
-
-    @Override
-    public Set<Datacenter> getDatacenterList() {
+    @Override public Set<Datacenter> getDatacenterList() {
         return Collections.EMPTY_SET;
     }
-
-    @Override
-    public SimEntity getEntity(int id) {
+    @Override public SimEntity getEntity(int id) {
         return SimEntity.NULL;
     }
-
-    @Override
-    public SimEntity getEntity(String name) {
+    @Override public SimEntity getEntity(String name) {
         return SimEntity.NULL;
     }
-
-    @Override
-    public int getEntityId(String name) {
+    @Override public int getEntityId(String name) {
         return 0;
     }
-
-    @Override
-    public List<SimEntity> getEntityList() {
+    @Override public List<SimEntity> getEntityList() {
         return Collections.EMPTY_LIST;
     }
-
-    @Override
-    public String getEntityName(int entityId) {
+    @Override public String getEntityName(int entityId) {
         return "";
     }
-
-    @Override
-    public double getMinTimeBetweenEvents() {
+    @Override public double getMinTimeBetweenEvents() {
         return 0;
     }
-
-    @Override
-    public int getNumEntities() {
+    @Override public int getNumEntities() {
         return 0;
     }
-
-    @Override
-    public boolean removeOnEventProcessingListener(EventListener<SimEvent> listener) {
+    @Override public boolean removeOnEventProcessingListener(EventListener<SimEvent> listener) {
         return false;
     }
-
-    @Override
-    public Simulation addOnSimulationPausedListener(EventListener<EventInfo> listener) {
+    @Override public Simulation addOnSimulationPausedListener(EventListener<EventInfo> listener) {
         return this;
     }
-
-    @Override
-    public boolean removeOnSimulationPausedListener(EventListener<EventInfo> listener) {
+    @Override public boolean removeOnSimulationPausedListener(EventListener<EventInfo> listener) {
         return false;
     }
-
-    @Override
-    public void holdEntity(int src, long delay) {
-    }
-
-    @Override
-    public boolean isPaused() {
+    @Override public void holdEntity(int src, long delay) {/**/}
+    @Override public boolean isPaused() {
         return false;
     }
-
-    @Override
-    public void pauseEntity(int src, double delay) {
-    }
-
-    @Override
-    public boolean pause() {
+    @Override public void pauseEntity(int src, double delay) {/**/}
+    @Override public boolean pause() {
         return false;
     }
-
-    @Override
-    public boolean pause(double time) {
+    @Override public boolean pause(double time) {
         return false;
     }
-
-    @Override
-    public boolean resume() {
+    @Override public boolean resume() {
         return false;
     }
-
-    @Override
-    public boolean isRunning() {
+    @Override public boolean isRunning() {
         return false;
     }
-
-    @Override
-    public SimEvent select(int dest, Predicate<SimEvent> p) {
+    @Override public SimEvent select(int dest, Predicate<SimEvent> p) {
         return SimEvent.NULL;
     }
-
-    @Override
-    public void send(int src, int dest, double delay, int tag, Object data) {
-    }
-
-    @Override
-    public void sendFirst(int src, int dest, double delay, int tag, Object data) {
-    }
-
-    @Override
-    public void sendNow(int src, int dest, int tag, Object data) {
-    }
-
-    @Override
-    public Simulation addOnEventProcessingListener(EventListener<SimEvent> listener) {
+    @Override public void send(int src, int dest, double delay, int tag, Object data) {/**/}
+    @Override public void sendFirst(int src, int dest, double delay, int tag, Object data) {/**/}
+    @Override public void sendNow(int src, int dest, int tag, Object data) {/**/}
+    @Override public Simulation addOnEventProcessingListener(EventListener<SimEvent> listener) {
         return this;
     }
-
-    @Override
-    public Simulation addOnClockTickListener(EventListener<EventInfo> listener) {
+    @Override public Simulation addOnClockTickListener(EventListener<EventInfo> listener) {
         return this;
     }
-
-    @Override
-    public boolean removeOnClockTickListener(EventListener<EventInfo> listener) {
+    @Override public boolean removeOnClockTickListener(EventListener<EventInfo> listener) {
         return false;
     }
-
-    @Override
-    public double start() throws RuntimeException {
+    @Override public double start() throws RuntimeException { return 0; }
+    @Override public boolean terminate() {
+        return false;
+    }
+    @Override public boolean terminateAt(double time) {
+        return false;
+    }
+    @Override public void wait(CloudSimEntity src, Predicate<SimEvent> p) {/**/}
+    @Override public long waiting(int dest, Predicate<SimEvent> p) {
         return 0;
     }
-
-    @Override
-    public boolean terminate() {
-        return false;
-    }
-
-    @Override
-    public boolean terminateAt(double time) {
-        return false;
-    }
-
-    @Override
-    public void wait(CloudSimEntity src, Predicate<SimEvent> p) {
-    }
-
-    @Override
-    public long waiting(int dest, Predicate<SimEvent> p) {
-        return 0;
-    }
-
-    @Override
-    public NetworkTopology getNetworkTopology() {
+    @Override public NetworkTopology getNetworkTopology() {
         return NetworkTopology.NULL;
     }
-
-    @Override
-    public void setNetworkTopology(NetworkTopology networkTopology) {
-    }
-
-    @Override
-    public Map<String, SimEntity> getEntitiesByName() {
+    @Override public void setNetworkTopology(NetworkTopology networkTopology) {/**/}
+    @Override public Map<String, SimEntity> getEntitiesByName() {
         return Collections.emptyMap();
     }
-
-    @Override
-    public boolean updateEntityName(String oldName) {
+    @Override public boolean updateEntityName(String oldName) {
         return false;
     }
 }

@@ -8,13 +8,8 @@ package org.cloudbus.cloudsim.distributions;
  * @see ContinuousDistribution#NULL
  */
 final class ContinuousDistributionNull implements ContinuousDistribution {
-    @Override
-    public double sample() {
-        return 0.0;
-    }
-
-    @Override
-    public long getSeed() {
+    @Override public double sample() { return 0.0; }
+    @Override public long getSeed() {
         return 0;
     }
 }

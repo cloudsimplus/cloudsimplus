@@ -12,38 +12,25 @@ import java.util.function.Predicate;
  * @see VmScaling#NULL
  */
 final class VmScalingNull implements VmScaling {
-    @Override
-    public Vm getVm() {
+    @Override public Vm getVm() {
         return Vm.NULL;
     }
-
-    @Override
-    public VmScaling setVm(Vm vm) {
+    @Override public VmScaling setVm(Vm vm) {
         return this;
     }
-
-    @Override
-    public Predicate<Vm> getOverloadPredicate() {
+    @Override public Predicate<Vm> getOverloadPredicate() {
         return FALSE_PREDICATE;
     }
-
-    @Override
-    public VmScaling setOverloadPredicate(Predicate<Vm> predicate) {
+    @Override public VmScaling setOverloadPredicate(Predicate<Vm> predicate) {
         return this;
     }
-
-    @Override
-    public Predicate<Vm> getUnderloadPredicate() {
+    @Override public Predicate<Vm> getUnderloadPredicate() {
         return FALSE_PREDICATE;
     }
-
-    @Override
-    public VmScaling setUnderloadPredicate(Predicate<Vm> predicate) {
+    @Override public VmScaling setUnderloadPredicate(Predicate<Vm> predicate) {
         return this;
     }
-
-    @Override
-    public boolean requestScalingIfPredicateMatch(double time) {
+    @Override public boolean requestScalingIfPredicateMatch(double time) {
         return false;
     }
 }

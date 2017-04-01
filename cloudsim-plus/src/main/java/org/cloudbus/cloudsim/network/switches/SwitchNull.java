@@ -19,127 +19,67 @@ import java.util.Map;
  * @see Switch#NULL
  */
 final class SwitchNull implements Switch {
-    private final NetworkDatacenter dc =
-        new NetworkDatacenter(Simulation.NULL, DatacenterCharacteristics.NULL, VmAllocationPolicy.NULL);
+    private static final Simulation s = Simulation.NULL;
+    private static final DatacenterCharacteristics c = DatacenterCharacteristics.NULL;
+    private static final VmAllocationPolicy p = VmAllocationPolicy.NULL;
+    private final NetworkDatacenter dc = new NetworkDatacenter(s, c, p);
 
-    @Override
-    public int getId() {
+    @Override public int getId() {
         return 0;
     }
-
-    @Override
-    public double getUplinkBandwidth() {
+    @Override public double getUplinkBandwidth() {
         return 0;
     }
-
-    @Override
-    public void setUplinkBandwidth(double uplinkBandwidth) {
-    }
-
-    @Override
-    public double getDownlinkBandwidth() {
+    @Override public void setUplinkBandwidth(double uplinkBandwidth) {/**/}
+    @Override public double getDownlinkBandwidth() {
         return 0;
     }
-
-    @Override
-    public void setDownlinkBandwidth(double downlinkBandwidth) {
-    }
-
-    @Override
-    public int getPorts() {
+    @Override public void setDownlinkBandwidth(double downlinkBandwidth) {/**/}
+    @Override public int getPorts() {
         return 0;
     }
-
-    @Override
-    public void setPorts(int ports) {
-    }
-
-    @Override
-    public double getSwitchingDelay() {
+    @Override public void setPorts(int ports) {/**/}
+    @Override public double getSwitchingDelay() {
         return 0;
     }
-
-    @Override
-    public void setSwitchingDelay(double switchingDelay) {
-    }
-
-    @Override
-    public List<Switch> getUplinkSwitches() {
+    @Override public void setSwitchingDelay(double switchingDelay) {/**/}
+    @Override public List<Switch> getUplinkSwitches() {
         return Collections.EMPTY_LIST;
     }
-
-    @Override
-    public List<NetworkHost> getHostList() {
+    @Override public List<NetworkHost> getHostList() {
         return Collections.EMPTY_LIST;
     }
-
-    @Override
-    public void connectHost(NetworkHost host) {
-    }
-
-    @Override
-    public boolean disconnectHost(NetworkHost host) {
+    @Override public void connectHost(NetworkHost host) {/**/}
+    @Override public boolean disconnectHost(NetworkHost host) {
         return false;
     }
-
-    @Override
-    public Map<NetworkHost, List<HostPacket>> getPacketToHostMap() {
+    @Override public Map<NetworkHost, List<HostPacket>> getPacketToHostMap() {
         return Collections.emptyMap();
     }
-
-    @Override
-    public List<Switch> getDownlinkSwitches() {
+    @Override public List<Switch> getDownlinkSwitches() {
         return Collections.emptyList();
     }
-
-    @Override
-    public List<HostPacket> getDownlinkSwitchPacketList(Switch downlinkSwitch) {
+    @Override public List<HostPacket> getDownlinkSwitchPacketList(Switch s) { return Collections.emptyList(); }
+    @Override public List<HostPacket> getUplinkSwitchPacketList(Switch s) {
         return Collections.emptyList();
     }
-
-    @Override
-    public List<HostPacket> getUplinkSwitchPacketList(Switch uplinkSwitch) {
+    @Override public List<HostPacket> getHostPacketList(NetworkHost host) {
         return Collections.emptyList();
     }
-
-    @Override
-    public List<HostPacket> getHostPacketList(NetworkHost host) {
-        return Collections.emptyList();
-    }
-
-    @Override
-    public Map<Switch, List<HostPacket>> getUplinkSwitchPacketMap() {
+    @Override public Map<Switch, List<HostPacket>> getUplinkSwitchPacketMap() {
         return Collections.emptyMap();
     }
-
-    @Override
-    public void addPacketToBeSentToDownlinkSwitch(Switch downlinkSwitch, HostPacket packet) {
-    }
-
-    @Override
-    public void addPacketToBeSentToUplinkSwitch(Switch uplinkSwitch, HostPacket packet) {
-    }
-
-    @Override
-    public void addPacketToBeSentToHost(NetworkHost host, HostPacket packet) {
-    }
-
-    @Override
-    public NetworkDatacenter getDatacenter() {
+    @Override public void addPacketToBeSentToDownlinkSwitch(Switch downlinkSwitch, HostPacket packet) {/**/}
+    @Override public void addPacketToBeSentToUplinkSwitch(Switch uplinkSwitch, HostPacket packet) {/**/}
+    @Override public void addPacketToBeSentToHost(NetworkHost host, HostPacket packet) {/**/}
+    @Override public NetworkDatacenter getDatacenter() {
         return dc;
     }
-
-    @Override
-    public void setDatacenter(NetworkDatacenter datacenter) {
-    }
-
-    @Override
-    public List<HostPacket> getPacketList() {
+    @Override public void setDatacenter(NetworkDatacenter datacenter) {/**/}
+    @Override public List<HostPacket> getPacketList() {
         return Collections.emptyList();
     }
-
-    @Override
-    public int getLevel() {
+    @Override public int getLevel() {
         return 0;
     }
 }

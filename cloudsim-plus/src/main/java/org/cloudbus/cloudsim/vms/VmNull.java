@@ -24,311 +24,166 @@ import java.util.List;
  * @see Vm#NULL
  */
 final class VmNull implements Vm {
-    @Override
-    public void setId(int id) {
-    }
-
-    @Override
-    public int getId() {
+    @Override public void setId(int id) {/**/}
+    @Override public int getId() {
         return -1;
     }
-
-    @Override
-    public double getSubmissionDelay() {
+    @Override public double getSubmissionDelay() {
         return 0;
     }
-
-    @Override
-    public void setSubmissionDelay(double submissionDelay) {
-    }
-
-    @Override
-    public void addStateHistoryEntry(VmStateHistoryEntry entry) {
-    }
-
-    @Override
-    public Resource getBw() {
+    @Override public void setSubmissionDelay(double submissionDelay) {/**/}
+    @Override public void addStateHistoryEntry(VmStateHistoryEntry entry) {/**/}
+    @Override public Resource getBw() {
         return Resource.NULL;
     }
-
-    @Override
-    public CloudletScheduler getCloudletScheduler() {
+    @Override public CloudletScheduler getCloudletScheduler() {
         return CloudletScheduler.NULL;
     }
-
-    @Override
-    public long getCurrentAllocatedBw() {
+    @Override public long getCurrentAllocatedBw() {
         return 0;
     }
-
-    @Override
-    public long getCurrentAllocatedRam() {
+    @Override public long getCurrentAllocatedRam() {
         return 0;
     }
-
-    @Override
-    public long getCurrentAllocatedSize() {
+    @Override public long getCurrentAllocatedSize() {
         return 0;
     }
-
-    @Override
-    public long getCurrentRequestedBw() {
+    @Override public long getCurrentRequestedBw() {
         return 0;
     }
-
-    @Override
-    public double getCurrentRequestedMaxMips() {
+    @Override public double getCurrentRequestedMaxMips() {
         return 0.0;
     }
-
-    @Override
-    public List<Double> getCurrentRequestedMips() {
+    @Override public List<Double> getCurrentRequestedMips() {
         return Collections.emptyList();
     }
-
-    @Override
-    public long getCurrentRequestedRam() {
+    @Override public long getCurrentRequestedRam() {
         return 0;
     }
-
-    @Override
-    public double getCurrentRequestedTotalMips() {
+    @Override public double getCurrentRequestedTotalMips() {
         return 0.0;
     }
-
-    @Override
-    public Host getHost() {
+    @Override public Host getHost() {
         return Host.NULL;
     }
-
-    @Override
-    public double getMips() {
+    @Override public double getMips() {
         return 0;
     }
-
-    @Override
-    public int getNumberOfPes() {
+    @Override public int getNumberOfPes() {
         return 0;
     }
-
-    @Override
-    public Vm addOnHostAllocationListener(EventListener<VmHostEventInfo> listener) {
+    @Override public Vm addOnHostAllocationListener(EventListener<VmHostEventInfo> listener) {
         return this;
     }
-
-    @Override
-    public Vm addOnHostDeallocationListener(EventListener<VmHostEventInfo> listener) {
+    @Override public Vm addOnHostDeallocationListener(EventListener<VmHostEventInfo> listener) {
         return this;
     }
-
-    @Override
-    public Vm addOnCreationFailureListener(EventListener<VmDatacenterEventInfo> listener) {
+    @Override public Vm addOnCreationFailureListener(EventListener<VmDatacenterEventInfo> listener) {
         return this;
     }
-
-    @Override
-    public Vm addOnUpdateProcessingListener(EventListener<VmHostEventInfo> listener) {
+    @Override public Vm addOnUpdateProcessingListener(EventListener<VmHostEventInfo> listener) {
         return this;
     }
-
-    @Override
-    public void notifyOnHostAllocationListeners() {
-    }
-
-    @Override
-    public void notifyOnHostDeallocationListeners(Host deallocatedHost) {
-    }
-
-    @Override
-    public void notifyOnCreationFailureListeners(Datacenter failedDatacenter) {
-    }
-
-    @Override
-    public boolean removeOnUpdateProcessingListener(EventListener<VmHostEventInfo> listener) {
+    @Override public void notifyOnHostAllocationListeners() {/**/}
+    @Override public void notifyOnHostDeallocationListeners(Host deallocatedHost) {/**/}
+    @Override public void notifyOnCreationFailureListeners(Datacenter failedDatacenter) {/**/}
+    @Override public boolean removeOnUpdateProcessingListener(EventListener<VmHostEventInfo> listener) {
         return false;
     }
-
-    @Override
-    public boolean removeOnHostAllocationListener(EventListener<VmHostEventInfo> listener) {
+    @Override public boolean removeOnHostAllocationListener(EventListener<VmHostEventInfo> listener) {
         return false;
     }
-
-    @Override
-    public boolean removeOnHostDeallocationListener(EventListener<VmHostEventInfo> listener) {
+    @Override public boolean removeOnHostDeallocationListener(EventListener<VmHostEventInfo> listener) {
         return false;
     }
-
-    @Override
-    public boolean removeOnCreationFailureListener(EventListener<VmDatacenterEventInfo> listener) {
+    @Override public boolean removeOnCreationFailureListener(EventListener<VmDatacenterEventInfo> listener) {
         return false;
     }
-
-    @Override
-    public Resource getRam() {
+    @Override public Resource getRam() {
         return Resource.NULL;
     }
-
-    @Override
-    public Resource getStorage() {
+    @Override public Resource getStorage() {
         return Resource.NULL;
     }
-
-    @Override
-    public List<VmStateHistoryEntry> getStateHistory() {
+    @Override public List<VmStateHistoryEntry> getStateHistory() {
         return Collections.emptyList();
     }
-
-    @Override
-    public double getCpuPercentUse(double time) {
+    @Override public double getCpuPercentUse(double time) {
         return 0.0;
     }
-
-    @Override
-    public double getCurrentCpuPercentUse() {
+    @Override public double getCurrentCpuPercentUse() {
         return 0;
     }
-
-    @Override
-    public double getTotalUtilizationOfCpuMips(double time) {
+    @Override public double getTotalUtilizationOfCpuMips(double time) {
         return 0.0;
     }
-
-    @Override
-    public String getUid() {
+    @Override public String getUid() {
         return "";
     }
-
-    @Override
-    public DatacenterBroker getBroker() {
+    @Override public DatacenterBroker getBroker() {
         return DatacenterBroker.NULL;
     }
-
-    @Override
-    public Vm setBroker(DatacenterBroker broker) {
+    @Override public Vm setBroker(DatacenterBroker broker) {
         return this;
     }
-
-    @Override
-    public String getVmm() {
+    @Override public String getVmm() {
         return "";
     }
-
-    @Override
-    public boolean isCreated() {
+    @Override public boolean isCreated() {
         return false;
     }
-
-    @Override
-    public boolean isInMigration() {
+    @Override public boolean isInMigration() {
         return false;
     }
-
-    @Override
-    public void setCreated(boolean created) {
-    }
-
-    @Override
-    public Vm setBw(long bwCapacity) {
+    @Override public void setCreated(boolean created) {/**/}
+    @Override public Vm setBw(long bwCapacity) {
         return this;
     }
-
-    @Override
-    public void setHost(Host host) {
-    }
-
-    @Override
-    public void setInMigration(boolean inMigration) {
-    }
-
-    @Override
-    public Vm setRam(long ramCapacity) {
+    @Override public void setHost(Host host) {/**/}
+    @Override public void setInMigration(boolean inMigration) {/**/}
+    @Override public Vm setRam(long ramCapacity) {
         return this;
     }
-
-    @Override
-    public Vm setSize(long size) {
+    @Override public Vm setSize(long size) {
         return this;
     }
-
-    @Override
-    public double updateProcessing(double currentTime, List<Double> mipsShare) {
+    @Override public double updateProcessing(double currentTime, List<Double> mipsShare) {
         return 0.0;
     }
-
-    @Override
-    public Vm setCloudletScheduler(CloudletScheduler cloudletScheduler) {
+    @Override public Vm setCloudletScheduler(CloudletScheduler cloudletScheduler) {
         return this;
     }
-
-    @Override
-    public int compareTo(Vm o) {
+    @Override public int compareTo(Vm o) {
         return 0;
     }
-
-    @Override
-    public double getTotalMipsCapacity() {
+    @Override public double getTotalMipsCapacity() {
         return 0.0;
     }
-
-    @Override
-    public void allocateResource(Class<? extends ResourceManageable> resourceClass, long newTotalResourceAmount) {
-    }
-
-    @Override
-    public void deallocateResource(Class<? extends ResourceManageable> resourceClass) {
-    }
-
-    @Override
-    public void setFailed(boolean failed) {
-    }
-
-    @Override
-    public boolean isFailed() {
+    @Override public void allocateResource(Class<? extends ResourceManageable> c, long amount) {/**/}
+    @Override public void deallocateResource(Class<? extends ResourceManageable> c) {/**/}
+    @Override public void setFailed(boolean failed) {/**/}
+    @Override public boolean isFailed() {
         return false;
     }
-
-    @Override
-    public Simulation getSimulation() {
+    @Override public Simulation getSimulation() {
         return Simulation.NULL;
     }
-
-    @Override
-    public List<ResourceManageable> getResources() {
+    @Override public List<ResourceManageable> getResources() {
         return Collections.emptyList();
     }
-
-    @Override
-    public String toString() {
+    @Override public String toString() {
         return "Vm.NULL";
     }
-
-    @Override
-    public HorizontalVmScaling getHorizontalScaling() {
+    @Override public HorizontalVmScaling getHorizontalScaling() {
         return HorizontalVmScaling.NULL;
     }
-
-    @Override
-    public Vm setHorizontalScaling(HorizontalVmScaling horizontalScaling) throws IllegalArgumentException {
-        return this;
-    }
-
-    @Override
-    public Vm setRamVerticalScaling(VerticalVmScaling ramVerticalScaling) throws IllegalArgumentException {
-        return this;
-    }
-
-    @Override
-    public Vm setBwVerticalScaling(VerticalVmScaling bwVerticalScaling) throws IllegalArgumentException {
-        return this;
-    }
-
-    @Override
-    public VerticalVmScaling getRamVerticalScaling() {
+    @Override public Vm setHorizontalScaling(HorizontalVmScaling h) throws IllegalArgumentException { return this; }
+    @Override public Vm setRamVerticalScaling(VerticalVmScaling v) throws IllegalArgumentException { return this; }
+    @Override public Vm setBwVerticalScaling(VerticalVmScaling v) throws IllegalArgumentException { return this; }
+    @Override public VerticalVmScaling getRamVerticalScaling() {
         return VerticalVmScaling.NULL;
     }
-
-    @Override
-    public VerticalVmScaling getBwVerticalScaling() {
+    @Override public VerticalVmScaling getBwVerticalScaling() {
         return VerticalVmScaling.NULL;
     }
 }
