@@ -46,7 +46,7 @@ import static org.cloudsimplus.testbeds.linuxscheduler.CloudletSchedulerExperime
  */
 abstract class CloudletSchedulerRunner<T extends CloudletSchedulerExperiment> extends ExperimentRunner<T> {
 
-    private ContinuousDistribution numberOfCloudletsPRNG;
+    private ContinuousDistribution cloudletsNumberPrng;
 
     /**
      * A list of Cloudlets' completion time mean for each experiment run.
@@ -64,6 +64,8 @@ abstract class CloudletSchedulerRunner<T extends CloudletSchedulerExperiment> ex
      * this class.
      */
     CloudletSchedulerRunner() {
+        super();
+
         /*
 	    Values used for CloudSim Plus Paper:
 	        NumberOfSimulationRuns: 1200
@@ -82,7 +84,7 @@ abstract class CloudletSchedulerRunner<T extends CloudletSchedulerExperiment> ex
     protected void setup() {
         cloudletsCompletionTimeMeans = new ArrayList<>(getNumberOfSimulationRuns());
         cloudletsNumber = new ArrayList<>(getNumberOfSimulationRuns());
-        numberOfCloudletsPRNG = new UniformDistr(VM_PES / 2, VM_PES + 1, getBaseSeed());
+        cloudletsNumberPrng = new UniformDistr(VM_PES / 2, VM_PES + 1, getBaseSeed());
     }
 
     @Override
@@ -105,8 +107,8 @@ abstract class CloudletSchedulerRunner<T extends CloudletSchedulerExperiment> ex
 
     @Override
     protected SummaryStatistics computeFinalStatistics(List<Double> values) {
-        SummaryStatistics stats = new SummaryStatistics();
-        for (double cloudletExecutionTimeMean : cloudletsCompletionTimeMeans) {
+        final SummaryStatistics stats = new SummaryStatistics();
+        for (final double cloudletExecutionTimeMean : cloudletsCompletionTimeMeans) {
             stats.addValue(cloudletExecutionTimeMean);
         }
         return stats;
@@ -120,7 +122,7 @@ abstract class CloudletSchedulerRunner<T extends CloudletSchedulerExperiment> ex
      * @param experiment the finished experiment
      */
     protected void afterExperimentFinish(T experiment) {
-        Consumer<DatacenterBroker> addExperimentStatisticsToLists = broker -> {
+        final Consumer<DatacenterBroker> addExperimentStatsToLists = broker -> {
             Double average = broker.getCloudletsFinishedList().stream()
                     .mapToDouble(Cloudlet::getActualCpuTime)
                     .average()
@@ -129,12 +131,12 @@ abstract class CloudletSchedulerRunner<T extends CloudletSchedulerExperiment> ex
             cloudletsNumber.add((double)broker.getCloudletsFinishedList().size());
         };
 
-        experiment.getBrokerList().stream().findFirst().ifPresent(addExperimentStatisticsToLists);
+        experiment.getBrokerList().stream().findFirst().ifPresent(addExperimentStatsToLists);
     }
 
     @Override
     protected Map<String, List<Double>> createMetricsMap() {
-        Map<String, List<Double>> map = new HashMap<>();
+        final Map<String, List<Double>> map = new HashMap<>();
         map.put("Cloudlets Completion Time Means", cloudletsCompletionTimeMeans);
         map.put("Cloudlets Number", cloudletsNumber);
         return map;
@@ -144,7 +146,7 @@ abstract class CloudletSchedulerRunner<T extends CloudletSchedulerExperiment> ex
      * A Pseudo Random Number Generator (PRNG) used to generate the number of
      * Cloudlets to be created for each experiment run.
      */
-    public ContinuousDistribution getNumberOfCloudletsPRNG() {
-        return numberOfCloudletsPRNG;
+    public ContinuousDistribution getCloudletsNumberPrng() {
+        return cloudletsNumberPrng;
     }
 }

@@ -133,12 +133,8 @@ public class BriteNetworkTopology implements NetworkTopology {
             }
         }
 
-        Iterator<TopologicalLink> iter = graph.getLinkIterator();
-        while (iter.hasNext()) {
-            TopologicalLink edge = iter.next();
-
+        for (final TopologicalLink edge : graph.getLinksList()) {
             mtx[edge.getSrcNodeID()][edge.getDestNodeID()] = edge.getLinkBw();
-
             if (!directed) {
                 mtx[edge.getDestNodeID()][edge.getSrcNodeID()] = edge.getLinkBw();
             }

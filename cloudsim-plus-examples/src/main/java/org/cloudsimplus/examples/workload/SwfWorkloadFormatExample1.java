@@ -186,7 +186,7 @@ public class SwfWorkloadFormatExample1 {
         String fileName = String.format("%s/%s", path, WORKLOAD_FILENAME);
         WorkloadFileReader reader =
                 new WorkloadFileReader(fileName, CLOUDLETS_MIPS);
-        reader.setMaxNumberOfLinesToRead(maximumNumberOfCloudletsToCreateFromTheWorkloadFile);
+        reader.setMaxLinesToRead(maximumNumberOfCloudletsToCreateFromTheWorkloadFile);
         this.cloudletList = reader.generateWorkload();
 
         for (Cloudlet c : this.cloudletList) {

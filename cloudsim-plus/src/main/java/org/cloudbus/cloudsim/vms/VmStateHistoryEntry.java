@@ -33,7 +33,7 @@ public class VmStateHistoryEntry {
     /**
      * The is in migration.
      */
-    private boolean isInMigration;
+    private boolean inMigration;
 
     /**
      * Instantiates a new VmStateHistoryEntry
@@ -41,13 +41,13 @@ public class VmStateHistoryEntry {
      * @param time the time
      * @param allocatedMips the allocated mips
      * @param requestedMips the requested mips
-     * @param isInMigration the is in migration
+     * @param inMigration the is in migration
      */
-    public VmStateHistoryEntry(double time, double allocatedMips, double requestedMips, boolean isInMigration) {
+    public VmStateHistoryEntry(double time, double allocatedMips, double requestedMips, boolean inMigration) {
         setTime(time);
         setAllocatedMips(allocatedMips);
         setRequestedMips(requestedMips);
-        setInMigration(isInMigration);
+        setInMigration(inMigration);
     }
 
     /**
@@ -105,33 +105,35 @@ public class VmStateHistoryEntry {
     }
 
     /**
-     * Sets the in migration.
+     * Defines if the Vm is in migration for the current history.
      *
-     * @param isInMigration the new in migration
+     * @param inMigration true if the Vm is in migration, false otherwise
      */
-    protected final void setInMigration(boolean isInMigration) {
-        this.isInMigration = isInMigration;
+    protected final void setInMigration(boolean inMigration) {
+        this.inMigration = inMigration;
     }
 
     /**
-     * Checks if is in migration.
+     * Checks if the Vm is in migration for the current history.
      *
-     * @return true, if is in migration
+     * @return true if the Vm is in migration, false otherwise
      */
     public boolean isInMigration() {
-        return isInMigration;
+        return inMigration;
     }
 
     @Override
     public boolean equals(Object obj) {
-        if(!(obj instanceof VmStateHistoryEntry))
+        if(!(obj instanceof VmStateHistoryEntry)) {
             return false;
-        VmStateHistoryEntry entry = (VmStateHistoryEntry)obj;
+        }
 
-        return (entry.time == this.time) &&
-               (entry.isInMigration == this.isInMigration) &&
-               (entry.allocatedMips == this.allocatedMips) &&
-               (entry.requestedMips == this.requestedMips);
+        final VmStateHistoryEntry entry = (VmStateHistoryEntry)obj;
+
+        return entry.time == this.time &&
+               entry.inMigration == this.inMigration &&
+               entry.allocatedMips == this.allocatedMips &&
+               entry.requestedMips == this.requestedMips;
     }
 
     @Override
@@ -140,7 +142,7 @@ public class VmStateHistoryEntry {
         hash = 89 * hash + (int) (Double.doubleToLongBits(this.time) ^ (Double.doubleToLongBits(this.time) >>> 32));
         hash = 89 * hash + (int) (Double.doubleToLongBits(this.allocatedMips) ^ (Double.doubleToLongBits(this.allocatedMips) >>> 32));
         hash = 89 * hash + (int) (Double.doubleToLongBits(this.requestedMips) ^ (Double.doubleToLongBits(this.requestedMips) >>> 32));
-        hash = 89 * hash + (this.isInMigration ? 1 : 0);
+        hash = 89 * hash + (this.inMigration ? 1 : 0);
         return hash;
     }
 }

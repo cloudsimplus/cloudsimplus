@@ -44,25 +44,25 @@ public class CsvTableBuilder extends AbstractTableBuilder {
      * CSV files doesn't have a title.
      */
     @Override
-    public void printTitle() {}
+    public void printTitle() {/**/}
 
     /**
      * CSV files doesn't have a table opening line.
      */
     @Override
-    public void printTableOpening(){}
+    public void printTableOpening() {/**/}
 
     /**
      * CSV files doesn't have a table closing line.
      */
     @Override
-    public void printTableClosing(){}
+    public void printTableClosing() {/**/}
 
     /**
      * CSV files doesn't have a row opening line.
      */
     @Override
-    protected void printRowOpening() {}
+    protected void printRowOpening() {/**/}
 
     @Override
     protected void printRowClosing() {

@@ -26,9 +26,9 @@ public interface PowerVmAllocationPolicyMigrationDynamicUpperThreshold extends P
      * the over utilization host detection doesn't have
      * data to be computed.
      *
-     * @param fallbackVmAllocationPolicy the new fallback vm allocation policy
+     * @param fallbackPolicy the new fallback vm allocation policy
      */
-    void setFallbackVmAllocationPolicy(PowerVmAllocationPolicyMigration fallbackVmAllocationPolicy);
+    void setFallbackVmAllocationPolicy(PowerVmAllocationPolicyMigration fallbackPolicy);
 
     /**
      * Gets the fallback VM allocation policy to be used when

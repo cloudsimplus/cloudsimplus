@@ -64,7 +64,7 @@ public final class MathUtil {
      * @param list the array of numbers
      * @return the median
      */
-    public static double median(final double[] list) {
+    public static double median(final double... list) {
         return getStatistics(list).getPercentile(50);
     }
 
@@ -75,13 +75,8 @@ public final class MathUtil {
      * @return descriptive statistics for the list of numbers.
      */
     public static DescriptiveStatistics getStatistics(final List<Double> list) {
-        // Get a DescriptiveStatistics instance
-        DescriptiveStatistics stats = new DescriptiveStatistics();
-
-        // Add the data from the array
-        for (Double d : list) {
-            stats.addValue(d);
-        }
+        final DescriptiveStatistics stats = new DescriptiveStatistics();
+        list.forEach(stats::addValue);
         return stats;
     }
 
@@ -91,10 +86,8 @@ public final class MathUtil {
      * @param list the array of numbers. Must not be null.
      * @return descriptive statistics for the array of numbers.
      */
-    public static DescriptiveStatistics getStatistics(final double[] list) {
-        // Get a DescriptiveStatistics instance
-        DescriptiveStatistics stats = new DescriptiveStatistics(list);
-        return stats;
+    public static DescriptiveStatistics getStatistics(final double... list) {
+        return new DescriptiveStatistics(list);
     }
 
     /**
@@ -119,9 +112,9 @@ public final class MathUtil {
         double mean = mean(list);
         double s = 0.0;
 
-        for (double x : list) {
+        for(final double x : list) {
             n++;
-            double delta = x - mean;
+            final double delta = x - mean;
             mean += delta / n;
             s += delta * (x - mean);
         }
@@ -146,17 +139,18 @@ public final class MathUtil {
      * @param data the array of numbers
      * @return the mad
      */
-    public static double mad(final double[] data) {
-        double mad = 0;
-        if (data.length > 0) {
-            double median = median(data);
-            double[] deviationSum = new double[data.length];
-            for (int i = 0; i < data.length; i++) {
-                deviationSum[i] = Math.abs(median - data[i]);
-            }
-            mad = median(deviationSum);
+    public static double mad(final double... data) {
+        if (data.length == 0) {
+            return 0;
         }
-        return mad;
+
+        final double median = median(data);
+        final double[] deviationSum = new double[data.length];
+        for (int i = 0; i < data.length; i++) {
+            deviationSum[i] = Math.abs(median - data[i]);
+        }
+
+        return median(deviationSum);
     }
 
     /**
@@ -165,10 +159,10 @@ public final class MathUtil {
      * @param data the array of numbers
      * @return the IQR
      */
-    public static double iqr(final double[] data) {
+    public static double iqr(final double... data) {
         Arrays.sort(data);
-        int q1 = (int) Math.round(0.25 * (data.length + 1)) - 1;
-        int q3 = (int) Math.round(0.75 * (data.length + 1)) - 1;
+        final int q1 = (int) Math.round(0.25 * (data.length + 1)) - 1;
+        final int q3 = (int) Math.round(0.75 * (data.length + 1)) - 1;
         return data[q3] - data[q1];
     }
 
@@ -179,7 +173,7 @@ public final class MathUtil {
      * @param data the array of numbers
      * @return the number of values different of zero at the beginning of the array
      */
-    public static int countNonZeroBeginning(final double[] data) {
+    public static int countNonZeroBeginning(final double... data) {
         int i = data.length - 1;
         while (i >= 0) {
             if (data[i--] != 0) {
@@ -197,10 +191,8 @@ public final class MathUtil {
      */
     public static int countShortestRow(final double[][] data) {
         int minLength = 0;
-        for (double[] row : data) {
-            if (row.length < minLength) {
-                minLength = row.length;
-            }
+        for (final double[] row : data) {
+            minLength = Math.min(row.length, minLength);
         }
         return minLength;
     }
@@ -211,7 +203,7 @@ public final class MathUtil {
      * @param data the data array
      * @return the trimmed array
      */
-    public static double[] trimZeroTail(final double[] data) {
+    public static double[] trimZeroTail(final double... data) {
         return Arrays.copyOfRange(data, 0, countNonZeroBeginning(data));
     }
 
@@ -221,7 +213,7 @@ public final class MathUtil {
      * @param y the y array
      * @return the Loess parameter estimates
      */
-    public static double[] getLoessParameterEstimates(final double[] y) {
+    public static double[] getLoessParameterEstimates(final double... y) {
         int n = y.length;
         double[] x = new double[n];
         for (int i = 0; i < n; i++) {
@@ -231,9 +223,8 @@ public final class MathUtil {
             .regress().getParameterEstimates();
     }
 
-    public static SimpleRegression createLinearRegression(final double[] x,
-                                                          final double[] y) {
-        SimpleRegression regression = new SimpleRegression();
+    public static SimpleRegression createLinearRegression(final double[] x, final double[] y) {
+        final SimpleRegression regression = new SimpleRegression();
         for (int i = 0; i < x.length; i++) {
             regression.addData(x[i], y[i]);
         }
@@ -241,18 +232,20 @@ public final class MathUtil {
     }
 
     public static OLSMultipleLinearRegression createLinearRegression(
-        final double[][] x, final double[] y) {
-        OLSMultipleLinearRegression regression = new OLSMultipleLinearRegression();
+        final double[][] x, final double[] y)
+    {
+        final OLSMultipleLinearRegression regression = new OLSMultipleLinearRegression();
         regression.newSampleData(y, x);
         return regression;
     }
 
     public static SimpleRegression createWeigthedLinearRegression(
-        final double[] x, final double[] y, final double[] weigths) {
+        final double[] x, final double[] y, final double[] weigths)
+    {
         double[] xW = new double[x.length];
         double[] yW = new double[y.length];
 
-        long numZeroWeigths = Arrays.stream(weigths).filter(weigth -> weigth <= 0).count();
+        final long numZeroWeigths = Arrays.stream(weigths).filter(weigth -> weigth <= 0).count();
 
         for (int i = 0; i < x.length; i++) {
             if (numZeroWeigths >= 0.4 * weigths.length) {
@@ -274,22 +267,22 @@ public final class MathUtil {
      * @param y the y array
      * @return the robust loess parameter estimates
      */
-    public static double[] getRobustLoessParameterEstimates(final double[] y) {
-        int n = y.length;
-        double[] x = new double[n];
+    public static double[] getRobustLoessParameterEstimates(final double... y) {
+        final int n = y.length;
+        final double[] x = new double[n];
         for (int i = 0; i < n; i++) {
             x[i] = i + 1;
         }
-        SimpleRegression tricubeRegression = createWeigthedLinearRegression(x,
+        final SimpleRegression tricubeRegression = createWeigthedLinearRegression(x,
             y, getTricubeWeights(n));
-        double[] residuals = new double[n];
+        final double[] residuals = new double[n];
         for (int i = 0; i < n; i++) {
             residuals[i] = y[i] - tricubeRegression.predict(x[i]);
         }
-        SimpleRegression tricubeBySquareRegression = createWeigthedLinearRegression(
+        final SimpleRegression tricubeBySqrRegression = createWeigthedLinearRegression(
             x, y, getTricubeBisquareWeights(residuals));
 
-        double[] estimates = tricubeBySquareRegression.regress()
+        final double[] estimates = tricubeBySqrRegression.regress()
             .getParameterEstimates();
         if (Double.isNaN(estimates[0]) || Double.isNaN(estimates[1])) {
             return tricubeRegression.regress().getParameterEstimates();
@@ -304,16 +297,13 @@ public final class MathUtil {
      * @return an array of tricube weigths with n elements
      */
     public static double[] getTricubeWeights(final int n) {
-        double[] weights = new double[n];
-        double top = n - 1; //spread
+        final double[] weights = new double[n];
+        final double top = n - 1; //spread
         for (int i = 2; i < n; i++) {
-            double k = Math.pow(1 - Math.pow((top - i) / top, 3), 3);
-            if (k > 0) {
-                weights[i] = 1 / k;
-            } else {
-                weights[i] = Double.MAX_VALUE;
-            }
+            final double k = Math.pow(1 - Math.pow((top - i) / top, 3), 3);
+            weights[i] = k > 0 ? 1 / k : Double.MAX_VALUE;
         }
+
         weights[0] = weights[1] = weights[2];
         return weights;
     }
@@ -324,19 +314,16 @@ public final class MathUtil {
      * @param residuals the residuals array
      * @return the tricube bisquare weigths
      */
-    public static double[] getTricubeBisquareWeights(final double[] residuals) {
-        int n = residuals.length;
-        double[] weights = getTricubeWeights(n);
-        double[] weights2 = new double[n];
-        double s6 = median(abs(residuals)) * 6;
+    public static double[] getTricubeBisquareWeights(final double... residuals) {
+        final int n = residuals.length;
+        final double[] weights = getTricubeWeights(n);
+        final double[] weights2 = new double[n];
+        final double s6 = median(abs(residuals)) * 6;
         for (int i = 2; i < n; i++) {
-            double k = Math.pow(1 - Math.pow(residuals[i] / s6, 2), 2);
-            if (k > 0) {
-                weights2[i] = (1 / k) * weights[i];
-            } else {
-                weights2[i] = Double.MAX_VALUE;
-            }
+            final double k = Math.pow(1 - Math.pow(residuals[i] / s6, 2), 2);
+            weights2[i] = k > 0 ? (1 / k) * weights[i] : Double.MAX_VALUE;
         }
+
         weights2[0] = weights2[1] = weights2[2];
         return weights2;
     }
@@ -347,8 +334,8 @@ public final class MathUtil {
      * @param data the array of values
      * @return a new array with the absolute value of each element in the given array.
      */
-    public static double[] abs(final double[] data) {
-        double[] result = new double[data.length];
+    public static double[] abs(final double... data) {
+        final double[] result = new double[data.length];
         for (int i = 0; i < result.length; i++) {
             result[i] = Math.abs(data[i]);
         }

@@ -51,7 +51,7 @@ class CompletelyFairSchedulerRunner extends CloudletSchedulerRunner<CompletelyFa
 
         exp
             .setCloudletPesPrng(cloudletPesPrng)
-            .setNumberOfCloudletsToCreate((int) getNumberOfCloudletsPRNG().sample())
+            .setNumberOfCloudletsToCreate((int) getCloudletsNumberPrng().sample())
             .setAfterExperimentFinish(this::afterExperimentFinish)
             .setVerbose(false);
 

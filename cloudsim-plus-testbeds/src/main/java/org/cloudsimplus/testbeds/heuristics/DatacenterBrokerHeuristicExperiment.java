@@ -48,6 +48,7 @@ import org.cloudsimplus.heuristics.HeuristicSolution;
 import org.cloudsimplus.testbeds.SimulationExperiment;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import org.cloudbus.cloudsim.distributions.ContinuousDistribution;
@@ -81,7 +82,7 @@ final class DatacenterBrokerHeuristicExperiment extends SimulationExperiment {
     /**
      * Simulated Annealing (SA) parameters.
      */
-    static final double SA_INITIAL_TEMPERATURE = 1.0;
+    static final double SA_INIT_TEMPERATURE = 1.0;
     static final double SA_COLD_TEMPERATURE = 0.0001;
     static final double SA_COOLING_RATE = 0.003;
     static final int SA_NEIGHBORHOOD_SEARCHES = 50;
@@ -117,7 +118,7 @@ final class DatacenterBrokerHeuristicExperiment extends SimulationExperiment {
     }
 
     private void createSimulatedAnnealingHeuristic() {
-        heuristic = new CloudletToVmMappingSimulatedAnnealing(SA_INITIAL_TEMPERATURE, randomGen);
+        heuristic = new CloudletToVmMappingSimulatedAnnealing(SA_INIT_TEMPERATURE, randomGen);
         heuristic.setColdTemperature(SA_COLD_TEMPERATURE);
         heuristic.setCoolingRate(SA_COOLING_RATE);
         heuristic.setNumberOfNeighborhoodSearchesByIteration(SA_NEIGHBORHOOD_SEARCHES);
@@ -130,7 +131,7 @@ final class DatacenterBrokerHeuristicExperiment extends SimulationExperiment {
 
     @Override
     protected List<Cloudlet> createCloudlets(DatacenterBroker broker) {
-        List<Cloudlet> list = new ArrayList<>(cloudletPesArray.length);
+        final List<Cloudlet> list = new ArrayList<>(cloudletPesArray.length);
         for (int pes : cloudletPesArray) {
             list.add(createCloudlet(broker, pes));
         }
@@ -148,12 +149,12 @@ final class DatacenterBrokerHeuristicExperiment extends SimulationExperiment {
      * @return the created Cloudlet
      */
     private Cloudlet createCloudlet(DatacenterBroker broker, int cloudletPes) {
-        long length = 400000; //in Million Instructions (MI)
-        long fileSize = 300; //Size (in bytes) before execution
-        long outputSize = 300; //Size (in bytes) after execution
+        final long length = 400000; //in Million Instructions (MI)
+        final long fileSize = 300; //Size (in bytes) before execution
+        final long outputSize = 300; //Size (in bytes) after execution
         //Defines how CPU, RAM and Bandwidth resources are used
         //Sets the same utilization model for all these resources.
-        UtilizationModel utilization = new UtilizationModelFull();
+        final UtilizationModel utilization = new UtilizationModelFull();
         return new CloudletSimple(length, cloudletPes)
                 .setFileSize(fileSize)
                 .setOutputSize(outputSize)
@@ -163,8 +164,8 @@ final class DatacenterBrokerHeuristicExperiment extends SimulationExperiment {
 
     @Override
     protected List<Vm> createVms(DatacenterBroker broker) {
-        List<Vm> list = new ArrayList<>(vmPesArray.length);
-        for (int pes : vmPesArray) {
+        final List<Vm> list = new ArrayList<>(vmPesArray.length);
+        for (final int pes : vmPesArray) {
             list.add(createVm(broker, pes));
         }
         return list;
@@ -254,7 +255,7 @@ final class DatacenterBrokerHeuristicExperiment extends SimulationExperiment {
      * @return
      */
     public DatacenterBrokerHeuristicExperiment setCloudletPesArray(int[] cloudletPesArray) {
-        this.cloudletPesArray = cloudletPesArray;
+        this.cloudletPesArray = Arrays.copyOf(cloudletPesArray, cloudletPesArray.length);
         return this;
     }
 }

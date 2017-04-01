@@ -95,7 +95,7 @@ final class DatacenterBrokerHeuristicRunner extends ExperimentRunner<DatacenterB
      * cyclically select a Vm from the Vm list to host a Cloudlet. This is the
      * implementation used by the {@link DatacenterBrokerSimple} class.
      */
-    private CloudletToVmMappingSolution roundRobinSolution = null;
+    private CloudletToVmMappingSolution roundRobinSolution;
 
     /**
      * Indicates if each experiment will output execution logs or not.
@@ -143,7 +143,7 @@ final class DatacenterBrokerHeuristicRunner extends ExperimentRunner<DatacenterB
     private int[] createCloudletPesArray() {
         int[] pesArray = new int[CLOUDLETS_TO_CREATE];
         int totalNumberOfPes = 0;
-        NormalDistr random = new NormalDistr(getBaseSeed(), 2, 0.6);
+        final ContinuousDistribution random = new NormalDistr(getBaseSeed(), 2, 0.6);
         for (int i = 0; i < CLOUDLETS_TO_CREATE; i++) {
             pesArray[i] = (int) random.sample() + 1;
             totalNumberOfPes += pesArray[i];
@@ -194,8 +194,8 @@ final class DatacenterBrokerHeuristicRunner extends ExperimentRunner<DatacenterB
 
     @Override
     protected DatacenterBrokerHeuristicExperiment createExperiment(int i) {
-        ContinuousDistribution prng = createRandomGenAndAddSeedToList(i, 0, 1);
-        DatacenterBrokerHeuristicExperiment exp
+        final ContinuousDistribution prng = createRandomGenAndAddSeedToList(i, 0, 1);
+        final DatacenterBrokerHeuristicExperiment exp
                 = new DatacenterBrokerHeuristicExperiment(this, i)
                         .setRandomGen(prng)
                         .setCloudletPesArray(cloudletPesArray)
@@ -220,7 +220,7 @@ final class DatacenterBrokerHeuristicRunner extends ExperimentRunner<DatacenterB
      * @param experiment the finished experiment
      */
     private void afterExperimentFinish(DatacenterBrokerHeuristicExperiment experiment) {
-        CloudletToVmMappingSolution solution = experiment.getHeuristic().getBestSolutionSoFar();
+        final CloudletToVmMappingSolution solution = experiment.getHeuristic().getBestSolutionSoFar();
         addExperimentCost(solution.getCost());
         addSimulatedAnnealingRuntime(solution.getHeuristic().getSolveTime());
         createRoundRobinSolutionIfNotCreatedYet(experiment);
@@ -228,7 +228,7 @@ final class DatacenterBrokerHeuristicRunner extends ExperimentRunner<DatacenterB
 
     @Override
     protected Map<String, List<Double>> createMetricsMap() {
-        Map<String, List<Double>>  map = new HashMap<>();
+        final Map<String, List<Double>> map = new HashMap<>();
         map.put("Experiments Cost", experimentCosts);
         return map;
     }
@@ -247,7 +247,7 @@ final class DatacenterBrokerHeuristicRunner extends ExperimentRunner<DatacenterB
         System.out.printf("\nSimulated Annealing Parameters\n");
         System.out.printf(
                 "\tInitial Temperature: %.2f | Cold Temperature: %.4f | Cooling Rate: %.3f | Neighborhood searches by iteration: %d\n",
-                DatacenterBrokerHeuristicExperiment.SA_INITIAL_TEMPERATURE,
+                DatacenterBrokerHeuristicExperiment.SA_INIT_TEMPERATURE,
                 DatacenterBrokerHeuristicExperiment.SA_COLD_TEMPERATURE,
                 DatacenterBrokerHeuristicExperiment.SA_COOLING_RATE,
                 DatacenterBrokerHeuristicExperiment.SA_NEIGHBORHOOD_SEARCHES);
@@ -280,19 +280,19 @@ final class DatacenterBrokerHeuristicRunner extends ExperimentRunner<DatacenterB
      * Computes the percentage of the Round-robin solution cost that the
      * heuristic solution cost represents.
      *
-     * @param heuristicSolutionCost the cost of the heuristic solution
+     * @param heuristicCost the cost of the heuristic solution
      * @return the percentage of the Round-robin solution cost that the
      * heuristic solution represents
      */
-    private double heuristicSolutionCostPercentageOfRoundRobinSolution(double heuristicSolutionCost) {
-        return heuristicSolutionCost * 100.0 / roundRobinSolution.getCost();
+    private double heuristicSolutionCostPercentageOfRoundRobinSolution(double heuristicCost) {
+        return heuristicCost * 100.0 / roundRobinSolution.getCost();
     }
 
     private void showConfidenceInterval(SummaryStatistics stats) {
         // Calculate 95% confidence interval
-        double intervalSize = computeConfidenceErrorMargin(stats, 0.95);
-        double lower = stats.getMean() - intervalSize;
-        double upper = stats.getMean() + intervalSize;
+        final double intervalSize = computeConfidenceErrorMargin(stats, 0.95);
+        final double lower = stats.getMean() - intervalSize;
+        final double upper = stats.getMean() + intervalSize;
         System.out.printf(
                 "\tSolution cost mean 95%% Confidence Interval: %.2f ∓ %.2f, that is [%.2f to %.2f]\n",
                 stats.getMean(), intervalSize, lower, upper);
@@ -312,7 +312,7 @@ final class DatacenterBrokerHeuristicRunner extends ExperimentRunner<DatacenterB
 
         roundRobinSolution = new CloudletToVmMappingSolution(Heuristic.NULL);
         int i = 0;
-        for (Cloudlet c : exp.getCloudletList()) {
+        for (final Cloudlet c : exp.getCloudletList()) {
             //cyclically selects a Vm (as in a circular queue)
             roundRobinSolution.bindCloudletToVm(c, exp.getVmList().get(i));
             i = (i + 1) % exp.getVmList().size();

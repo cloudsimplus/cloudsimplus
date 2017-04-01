@@ -89,19 +89,13 @@ public class DelayMatrix {
 			}
 		}
 
-		Iterator<TopologicalLink> itr = graph.getLinkIterator();
 
-		TopologicalLink edge;
-		while (itr.hasNext()) {
-			edge = itr.next();
-
+        for (TopologicalLink edge : graph.getLinksList()) {
 			mDelayMatrix[edge.getSrcNodeID()][edge.getDestNodeID()] = edge.getLinkDelay();
-
 			if (!directed) {
-				// according to aproximity of symmetry to all communication-paths
+				// according to symmetry to all communication-paths
 				mDelayMatrix[edge.getDestNodeID()][edge.getSrcNodeID()] = edge.getLinkDelay();
 			}
-
 		}
 	}
 
@@ -109,33 +103,33 @@ public class DelayMatrix {
 	 * Calculates the shortest path between all pairs of nodes.
 	 */
 	private void calculateShortestPath() {
-		FloydWarshall floyd = new FloydWarshall(mTotalNodeNum);
+		final FloydWarshall floyd = new FloydWarshall(mTotalNodeNum);
 		mDelayMatrix = floyd.computeShortestPaths(mDelayMatrix);
 	}
 
 	@Override
 	public String toString() {
-		StringBuilder buffer = new StringBuilder();
+		StringBuilder builder = new StringBuilder(100);
 
-		buffer.append("just a simple printout of the distance-aware-topology-class\n");
-		buffer.append("delay-matrix is:\n");
+		builder.append(
+		    "just a simple printout of the distance-aware-topology-class\ndelay-matrix is:\n");
 
 		for (int column = 0; column < mTotalNodeNum; ++column) {
-			buffer.append("\t").append(column);
+			builder.append('\t').append(column);
 		}
 
 		for (int row = 0; row < mTotalNodeNum; ++row) {
-			buffer.append("\n").append(row);
+			builder.append('\n').append(row);
 
 			for (int col = 0; col < mTotalNodeNum; ++col) {
 				if (mDelayMatrix[row][col] == Double.MAX_VALUE) {
-					buffer.append("\t-");
+					builder.append("\t-");
 				} else {
-					buffer.append("\t").append(mDelayMatrix[row][col]);
+					builder.append('\t').append(mDelayMatrix[row][col]);
 				}
 			}
 		}
 
-		return buffer.toString();
+		return builder.toString();
 	}
 }
