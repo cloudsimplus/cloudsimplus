@@ -77,12 +77,12 @@ public class AggregateSwitch extends AbstractSwitch {
     protected void processPacketDown(SimEvent ev) {
         super.processPacketDown(ev);
 
-        HostPacket netPkt = (HostPacket) ev.getData();
-        Vm receiverVm = netPkt.getVmPacket().getDestination();
+        final HostPacket netPkt = (HostPacket) ev.getData();
+        final Vm receiverVm = netPkt.getVmPacket().getDestination();
 
         // packet is coming from root so need to be sent to edgelevel swich
         // find the id for edgelevel switch
-        Switch netSwitch = getVmEdgeSwitch(receiverVm);
+        final Switch netSwitch = getVmEdgeSwitch(receiverVm);
         addPacketToBeSentToDownlinkSwitch(netSwitch, netPkt);
     }
 
@@ -90,17 +90,17 @@ public class AggregateSwitch extends AbstractSwitch {
     protected void processPacketUp(SimEvent ev) {
         super.processPacketUp(ev);
 
-        HostPacket netPkt = (HostPacket) ev.getData();
-        Vm receiverVm = netPkt.getVmPacket().getDestination();
+        final HostPacket netPkt = (HostPacket) ev.getData();
+        final Vm receiverVm = netPkt.getVmPacket().getDestination();
 
         // packet is coming from edge level router so need to be sent to
         // either root or another edge level swich
         // find the id for edge level switch
-        Switch edgeSwitch = getVmEdgeSwitch(receiverVm);
+        final Switch edgeSwitch = getVmEdgeSwitch(receiverVm);
         if (findConnectedEdgeSwitch(edgeSwitch)) {
             addPacketToBeSentToDownlinkSwitch(edgeSwitch, netPkt);
         } else { // send to up
-            Switch sw = getUplinkSwitches().get(0);
+            final Switch sw = getUplinkSwitches().get(0);
             addPacketToBeSentToUplinkSwitch(sw, netPkt);
         }
     }

@@ -26,7 +26,7 @@ public class CloudletSchedulerSpaceSharedTest {
     @Test
     public void testCloudletFinish_CheckCloudletWasSetToFinished() {
         final double clockMethodReturnValue = 0;
-        final int expectedClockCalls = 3;
+        final int expectedClockCalls = 4;
         CloudSim cloudsim = CloudSimMocker.createMock(
                 mocker -> mocker.clock(clockMethodReturnValue).times(expectedClockCalls));
         Cloudlet c = CloudletSimpleTest.createCloudlet(0, 1000, 1);
@@ -66,7 +66,7 @@ public class CloudletSchedulerSpaceSharedTest {
     @Test
     public void testCloudletFinish_CloudletMovedToFinishList() {
         final double clockMethodReturnValue = 0;
-        final int expectedClockCalls = 3;
+        final int expectedClockCalls = 4;
         CloudSim cloudsim = CloudSimMocker.createMock(
                 mocker -> mocker.clock(clockMethodReturnValue).times(expectedClockCalls));
         Cloudlet cloudlet = CloudletSimpleTest.createCloudlet(0, 1000, 1);
