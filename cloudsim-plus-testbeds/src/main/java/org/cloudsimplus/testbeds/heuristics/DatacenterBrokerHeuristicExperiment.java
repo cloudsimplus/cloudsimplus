@@ -76,15 +76,15 @@ import org.cloudbus.cloudsim.distributions.ContinuousDistribution;
  */
 final class DatacenterBrokerHeuristicExperiment extends SimulationExperiment {
 
-    public static final int HOSTS_TO_CREATE = 100;
+    static final int HOSTS_TO_CREATE = 100;
 
     /**
      * Simulated Annealing (SA) parameters.
      */
-    public static final double SA_INITIAL_TEMPERATURE = 1.0;
-    public static final double SA_COLD_TEMPERATURE = 0.0001;
-    public static final double SA_COOLING_RATE = 0.003;
-    public static final int SA_NUMBER_OF_NEIGHBORHOOD_SEARCHES = 50;
+    static final double SA_INITIAL_TEMPERATURE = 1.0;
+    static final double SA_COLD_TEMPERATURE = 0.0001;
+    static final double SA_COOLING_RATE = 0.003;
+    static final int SA_NUMBER_OF_NEIGHBORHOOD_SEARCHES = 50;
 
     /**
      * @see #setVmPesArray(int[])
@@ -171,10 +171,10 @@ final class DatacenterBrokerHeuristicExperiment extends SimulationExperiment {
     }
 
     private Vm createVm(DatacenterBroker broker, int vmPes) {
-        long mips = 1000;
-        long storage = 10000; // vm image size (MEGABYTE)
-        int ram = 512; // vm memory (MEGABYTE)
-        long bw = 1000; // vm bandwidth
+        final long mips = 1000;
+        final long storage = 10000; // vm image size (MEGABYTE)
+        final int ram = 512; // vm memory (MEGABYTE)
+        final long bw = 1000; // vm bandwidth
         return new VmSimple(mips, vmPes)
                 .setRam(ram).setBw(bw).setSize(storage)
                 .setCloudletScheduler(new CloudletSchedulerTimeShared())
@@ -191,11 +191,11 @@ final class DatacenterBrokerHeuristicExperiment extends SimulationExperiment {
     }
 
     private Host createHost(int id) {
-        long mips = 1000;
-        long ram = 2048; // MEGABYTE
-        long storage = 1000000;
-        long bw = 10000;
-        List<Pe> peList = new ArrayList<>();
+        final long mips = 1000;
+        final long ram = 2048; // MEGABYTE
+        final long storage = 1000000;
+        final long bw = 10000;
+        final List<Pe> peList = new ArrayList<>();
         for (int i = 0; i < 8; i++) {
             peList.add(new PeSimple(mips, new PeProvisionerSimple()));
         }
@@ -241,7 +241,7 @@ final class DatacenterBrokerHeuristicExperiment extends SimulationExperiment {
      * @param vmPesArray VMs PEs array to set
      * @return
      */
-    public DatacenterBrokerHeuristicExperiment setVmPesArray(int[] vmPesArray) {
+    public DatacenterBrokerHeuristicExperiment setVmPesArray(int... vmPesArray) {
         this.vmPesArray = vmPesArray;
         return this;
     }

@@ -194,7 +194,7 @@ public abstract class DatacenterBrokerAbstract extends CloudSimEntity implements
 
     @Override
     public void submitCloudlet(Cloudlet cloudlet) {
-        List<Cloudlet> newList = new ArrayList<>(1);
+        final List<Cloudlet> newList = new ArrayList<>(1);
         newList.add(cloudlet);
         submitCloudletList(newList);
     }
@@ -403,15 +403,16 @@ public abstract class DatacenterBrokerAbstract extends CloudSimEntity implements
             return;
         }
 
-        /*If it gets here, it means that all datacenters were already queried
-        * and not all VMs could be created, but some of them could.*/
-        if (!getVmsCreatedList().isEmpty()) {
-            requestDatacentersToCreateWaitingCloudlets();
-        } else {
+        /* If it gets here, it means that all datacenters were already queried
+         * and not all VMs could be created, but some of them could. */
+        if (getVmsCreatedList().isEmpty()) {
             Log.printFormattedLine("%.2f: %s: %s", getSimulation().clock(), getName(),
                 "none of the required VMs could be created. Aborting");
             finishExecution();
+            return;
         }
+
+        requestDatacentersToCreateWaitingCloudlets();
     }
 
     /**

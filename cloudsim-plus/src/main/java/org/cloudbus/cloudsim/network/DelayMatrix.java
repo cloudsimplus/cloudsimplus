@@ -30,7 +30,7 @@ public class DelayMatrix {
 	/**
 	 * Number of nodes in the distance-aware-topology.
 	 */
-    private int mTotalNodeNum = 0;
+    private int mTotalNodeNum;
 
 	public DelayMatrix() {
         mDelayMatrix = new double[0][0];

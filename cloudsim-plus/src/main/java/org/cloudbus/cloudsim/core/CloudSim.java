@@ -79,7 +79,7 @@ public class CloudSim implements Simulation {
     /**
      * The termination time.
      */
-    private double terminateAt = -1;
+    private double terminationTime = -1;
 
     /**
      * @see #getMinTimeBetweenEvents()
@@ -246,7 +246,7 @@ public class CloudSim implements Simulation {
         if (time <= clock) {
             return false;
         } else {
-            terminateAt = time;
+            terminationTime = time;
         }
 
         return true;
@@ -300,7 +300,7 @@ public class CloudSim implements Simulation {
         if(clock != circularClockTimesQueue[0] || clock != circularClockTimesQueue[1]) {
             if (lastTimeClockTickListenersWereUpdated != circularClockTimesQueue[0] && lastTimeClockTickListenersWereUpdated != circularClockTimesQueue[1]) {
                 lastTimeClockTickListenersWereUpdated = circularClockTimesQueue[0];
-                EventInfo info = EventInfo.of(lastTimeClockTickListenersWereUpdated);
+                final EventInfo info = EventInfo.of(lastTimeClockTickListenersWereUpdated);
                 onClockTickListeners.forEach(l -> l.update(info));
             }
             addCurrentTimeToCircularQueue();
@@ -542,7 +542,6 @@ public class CloudSim implements Simulation {
      * @param e the event to be processed
      */
     private void processEvent(SimEvent e) {
-        int dest, src;
         CloudSimEntity destEnt;
         // Update the system's clock
         if (e.eventTime() < clock) {
@@ -550,53 +549,61 @@ public class CloudSim implements Simulation {
         }
         final double oldClock = setClock(e.eventTime());
 
-        // Ok now process it
+        processEventByType(e);
+        notifyOnClockTickListenersIfClockChanged();
+        notifyOnEventProcessingListeners(e);
+    }
+
+    private void processEventByType(SimEvent e) {
         switch (e.getType()) {
             case NULL:
                 throw new IllegalArgumentException("Event has a null type.");
-
             case CREATE:
-                SimEntity newEvent = (SimEntity) e.getData();
-                addEntityDynamically(newEvent);
-                break;
-
+                processCreateEvent(e);
+            break;
             case SEND:
-                // Check for matching wait
-                dest = e.getDestination();
-                if (dest < 0) {
-                    throw new IllegalArgumentException("Attempt to send to a null entity detected.");
-                } else {
-                    destEnt = entities.get(dest);
-                    if (destEnt.getState() == SimEntity.State.WAITING) {
-                        Predicate<SimEvent> p = waitPredicates.get(destEnt);
-                        if ((Objects.isNull(p)) || (e.getTag() == 9999) || p.test(e)) {
-                            destEnt.setEventBuffer(new CloudSimEvent(e));
-                            destEnt.setState(SimEntity.State.RUNNABLE);
-                            waitPredicates.remove(destEnt);
-                        } else {
-                            deferred.addEvent(e);
-                        }
-                    } else {
-                        deferred.addEvent(e);
-                    }
-                }
-                break;
-
+                processSendEvent(e);
+            break;
             case HOLD_DONE:
-                src = e.getSource();
-                if (src < 0) {
-                    throw new IllegalArgumentException("Null entity holding.");
-                } else {
-                    entities.get(src).setState(SimEntity.State.RUNNABLE);
-                }
-                break;
-
-            default:
-                break;
+                processHoldEvent(e);
+            break;
         }
+    }
 
-        notifyOnClockTickListenersIfClockChanged();
-        notifyOnEventProcessingListeners(e);
+    private void processCreateEvent(SimEvent e) {
+        SimEntity newEvent = (SimEntity) e.getData();
+        addEntityDynamically(newEvent);
+    }
+
+    private void processHoldEvent(SimEvent e) {
+        int src = e.getSource();
+        if (src < 0) {
+            throw new IllegalArgumentException("Null entity holding.");
+        } else {
+            entities.get(src).setState(SimEntity.State.RUNNABLE);
+        }
+    }
+
+    private void processSendEvent(SimEvent e) {
+        CloudSimEntity destEnt;// Check for matching wait
+        int dest = e.getDestination();
+        if (dest < 0) {
+            throw new IllegalArgumentException("Attempt to send to a null entity detected.");
+        } else {
+            destEnt = entities.get(dest);
+            if (destEnt.getState() == SimEntity.State.WAITING) {
+                Predicate<SimEvent> p = waitPredicates.get(destEnt);
+                if ((Objects.isNull(p)) || (e.getTag() == 9999) || p.test(e)) {
+                    destEnt.setEventBuffer(new CloudSimEvent(e));
+                    destEnt.setState(SimEntity.State.RUNNABLE);
+                    waitPredicates.remove(destEnt);
+                } else {
+                    deferred.addEvent(e);
+                }
+            } else {
+                deferred.addEvent(e);
+            }
+        }
     }
 
     /**
@@ -709,9 +716,9 @@ public class CloudSim implements Simulation {
         }
 
         // this block allows termination of simulation at a specific time
-        if (isTerminationRequested() && clock >= terminateAt) {
+        if (isTerminationRequested() && clock >= terminationTime) {
             terminate();
-            setClock(terminateAt);
+            setClock(terminationTime);
             return true;
         }
 
@@ -773,7 +780,7 @@ public class CloudSim implements Simulation {
     }
 
     private boolean isTerminationRequested() {
-        return terminateAt > 0.0;
+        return terminationTime > 0.0;
     }
 
     private boolean isNextFutureEventHappeningAfterTimeToPause() {

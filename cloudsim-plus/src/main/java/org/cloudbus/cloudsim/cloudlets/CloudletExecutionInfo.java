@@ -311,7 +311,7 @@ public class CloudletExecutionInfo {
      * @post $none
      */
     public void setFinishTime(double time) {
-        if (time < 0.0) {
+        if (time < 0) {
             return;
         }
 

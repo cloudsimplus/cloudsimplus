@@ -122,7 +122,7 @@ public class BriteNetworkTopology implements NetworkTopology {
      * @return the bandwidth graph
      */
     private double[][] createBwMatrix(TopologicalGraph graph, boolean directed) {
-        int nodes = graph.getNumberOfNodes();
+        final int nodes = graph.getNumberOfNodes();
 
         double[][] mtx = new double[nodes][nodes];
 

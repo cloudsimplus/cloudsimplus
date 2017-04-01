@@ -118,7 +118,7 @@ public final class CloudSimEvent implements SimEvent {
      *
      * @param endWaitingTime the end of waiting time to set
      */
-    protected void setEndWaitingTime(double endWaitingTime) {
+    private void setEndWaitingTime(double endWaitingTime) {
         this.endWaitingTime = endWaitingTime;
     }
 

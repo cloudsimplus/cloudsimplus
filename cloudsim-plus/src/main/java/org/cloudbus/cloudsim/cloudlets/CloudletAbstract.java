@@ -91,7 +91,8 @@ public abstract class CloudletAbstract implements Cloudlet {
      * cloudlet is migrated during its execution, this index is updated. The
      * value {@link #NOT_ASSIGNED} indicates the cloudlet has not been executed yet.
      */
-    private int lastExecutedDatacenterIndex;
+    private int lastExecutedDatacenterIdx;
+
     /**
      * @see #getFileSize()
      */
@@ -164,7 +165,7 @@ public abstract class CloudletAbstract implements Cloudlet {
         this.setNumberOfPes(pesNumber);
         this.recordTransactionHistory = false;
 
-        this.lastExecutedDatacenterIndex = NOT_ASSIGNED;
+        this.lastExecutedDatacenterIdx = NOT_ASSIGNED;
         setBroker(DatacenterBroker.NULL);
         setFinishTime(NOT_ASSIGNED);    // meaning this Cloudlet hasn't finished yet
         setVm(Vm.NULL);
@@ -195,12 +196,12 @@ public abstract class CloudletAbstract implements Cloudlet {
         this(-1, cloudletLength, pesNumber);
     }
 
-    protected int getLastExecutedDatacenterIndex() {
-        return lastExecutedDatacenterIndex;
+    protected int getLastExecutedDatacenterIdx() {
+        return lastExecutedDatacenterIdx;
     }
 
-    protected void setLastExecutedDatacenterIndex(int lastExecutedDatacenterIndex) {
-        this.lastExecutedDatacenterIndex = lastExecutedDatacenterIndex;
+    protected void setLastExecutedDatacenterIdx(int lastExecutedDatacenterIdx) {
+        this.lastExecutedDatacenterIdx = lastExecutedDatacenterIdx;
     }
 
     @Override
@@ -859,7 +860,7 @@ public abstract class CloudletAbstract implements Cloudlet {
             }
         }
 
-        setLastExecutedDatacenterIndex(getLastExecutedDatacenterIndex() + 1);
+        setLastExecutedDatacenterIdx(getLastExecutedDatacenterIdx() + 1);
 
         this.setCostPerBw(datacenter.getCharacteristics().getCostPerBw());
         setAccumulatedBwCost(this.costPerBw * getFileSize());
@@ -871,7 +872,7 @@ public abstract class CloudletAbstract implements Cloudlet {
             return NOT_ASSIGNED;
         }
 
-        final ExecutionInDatacenterInfo dcInfo = executionInDatacenterInfoList.get(lastExecutedDatacenterIndex);
+        final ExecutionInDatacenterInfo dcInfo = executionInDatacenterInfoList.get(lastExecutedDatacenterIdx);
         dcInfo.arrivalTime = getSimulation().clock();
 
         return dcInfo.arrivalTime;

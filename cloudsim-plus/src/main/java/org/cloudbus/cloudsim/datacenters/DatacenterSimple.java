@@ -470,7 +470,7 @@ public class DatacenterSimple extends CloudSimEntity implements Datacenter {
 
         getVmAllocationPolicy().deallocateHostForVm(vm);
         host.removeMigratingInVm(vm);
-        boolean result = getVmAllocationPolicy().allocateHostForVm(vm, host);
+        final boolean result = getVmAllocationPolicy().allocateHostForVm(vm, host);
         if (!result) {
             Log.printFormattedLine("[Datacenter.processVmMigrate] VM %d allocation to the destination host failed", vm.getId());
         }
@@ -629,7 +629,7 @@ public class DatacenterSimple extends CloudSimEntity implements Datacenter {
         double fileTransferTime = predictFileTransferTime(cl.getRequiredFiles());
 
         CloudletScheduler scheduler = cl.getVm().getCloudletScheduler();
-        double estimatedFinishTime = scheduler.cloudletSubmit(cl, fileTransferTime);
+        final double estimatedFinishTime = scheduler.cloudletSubmit(cl, fileTransferTime);
 
         // if this cloudlet is in the exec queue
         if (estimatedFinishTime > 0.0 && !Double.isInfinite(estimatedFinishTime)) {
@@ -838,7 +838,7 @@ public class DatacenterSimple extends CloudSimEntity implements Datacenter {
     protected double updateVmsProcessingOfAllHosts() {
         List<? extends Host> list = getVmAllocationPolicy().getHostList();
         double nextSimulationTime = Double.MAX_VALUE;
-        for (Host host : list) {
+        for (final Host host : list) {
             double time = host.updateProcessing(getSimulation().clock());
             nextSimulationTime = Math.min(time, nextSimulationTime);
         }

@@ -315,9 +315,7 @@ public class DatacenterCharacteristicsSimple implements DatacenterCharacteristic
      * @param hostList the new host list
      */
     protected final void setHostList(List<? extends Host> hostList) {
-        if(Objects.isNull(hostList)) {
-            hostList = new ArrayList<>();
-        }
+        Objects.requireNonNull(hostList);
         this.hostList = hostList;
     }
 

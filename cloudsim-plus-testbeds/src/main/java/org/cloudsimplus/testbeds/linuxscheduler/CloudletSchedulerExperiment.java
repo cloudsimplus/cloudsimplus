@@ -125,11 +125,11 @@ abstract class CloudletSchedulerExperiment extends SimulationExperiment {
     }
 
     private Host createHost(int id) {
-        long mips = 1000; // capacity of each CPU core (in Million Instructions per Second)
-        long ram = 2048; // host memory (MEGABYTE)
-        long storage = 1000000; // host storage (MEGABYTE)
-        long bw = 10000; //Megabits/s
-        List<Pe> peList = new ArrayList<>();
+        final long mips = 1000; // capacity of each CPU core (in Million Instructions per Second)
+        final long ram = 2048; // host memory (MEGABYTE)
+        final long storage = 1000000; // host storage (MEGABYTE)
+        final long bw = 10000; //Megabits/s
+        final List<Pe> peList = new ArrayList<>();
         for (int i = 0; i < HOST_PES; i++) {
             peList.add(new PeSimple(mips, new PeProvisionerSimple()));
         }
@@ -171,12 +171,11 @@ abstract class CloudletSchedulerExperiment extends SimulationExperiment {
      * Creates a Cloudlet with the given parameters.
      *
      * @param broker broker that the Cloudlet to be created by the Supplier function will belong to
-     * @param cloudletPes number of PEs for the Cloudlet to be created by the Supplier function
      * @return the created Cloudlet
      */
     private Cloudlet createCloudlet(DatacenterBroker broker) {
-        long fileSize = 300; //Size (in bytes) before execution
-        long outputSize = 300; //Size (in bytes) after execution
+        final long fileSize = 300; //Size (in bytes) before execution
+        final long outputSize = 300; //Size (in bytes) after execution
         final int cloudletPes = (int)cloudletPesPrng.sample();
         //Defines how CPU, RAM and Bandwidth resources are used
         //Sets the same utilization model for all these resources.
