@@ -21,13 +21,13 @@ import org.junit.Ignore;
  * @author Manoel Campos da Silva Filho
  */
 public class CloudletSchedulerTimeSharedTest {
-    private static final double CPU_INITIAL_UTILIZATION = 0.5;
+    private static final double CPU_INIT_USAGE = 0.5;
     private UtilizationModel um;
 
     @Before
     public void setUp(){
         //creates an utilization model that doesn't increment the usage along the time
-        um = new UtilizationModelDynamic(CPU_INITIAL_UTILIZATION);
+        um = new UtilizationModelDynamic(CPU_INIT_USAGE);
     }
 
     /**
@@ -36,7 +36,7 @@ public class CloudletSchedulerTimeSharedTest {
      * @return the created mock Cloudlet
      */
     private CloudletExecutionInfo createCloudletExecInfo(int id){
-        CloudletExecutionInfo cloudlet = EasyMock.createMock(CloudletExecutionInfo.class);
+        final CloudletExecutionInfo cloudlet = EasyMock.createMock(CloudletExecutionInfo.class);
         EasyMock.expect(cloudlet.getCloudletId()).andReturn(id).anyTimes();
         EasyMock.replay(cloudlet);
         return cloudlet;
@@ -44,39 +44,39 @@ public class CloudletSchedulerTimeSharedTest {
 
     @Test
     public void testGetCloudletWaitingList_Empty() {
-        CloudletSchedulerTimeShared instance = new CloudletSchedulerTimeShared();
-        List<CloudletExecutionInfo> result = instance.getCloudletWaitingList();
+        final CloudletSchedulerTimeShared instance = new CloudletSchedulerTimeShared();
+        final List<CloudletExecutionInfo> result = instance.getCloudletWaitingList();
         assertTrue(result.isEmpty());
     }
 
     @Test
     public void testCloudletResume_EmptyPausedList() {
-        int cloudletId = 0;
-        CloudletSchedulerTimeShared instance = new CloudletSchedulerTimeShared();
-        double expResult = 0.0;
-        double result = instance.cloudletResume(cloudletId);
+        final int cloudletId = 0;
+        final CloudletSchedulerTimeShared instance = new CloudletSchedulerTimeShared();
+        final double expResult = 0.0;
+        final double result = instance.cloudletResume(cloudletId);
         assertEquals(expResult, result, 0.0);
     }
 
     @Test
     public void testGetCloudletWaitingList_EmptyAfterResumingCloudlet() {
         final long cloudletLength = 1000;
-        CloudletSchedulerTimeShared instance = createCloudletSchedulerWithMipsList(1, cloudletLength);
+        final CloudletSchedulerTimeShared instance = createCloudletSchedulerWithMipsList(1, cloudletLength);
         final int cloudletId = 0;
         createCloudletAndAddItToPausedList(instance, cloudletId, cloudletLength);
         instance.cloudletResume(cloudletId);
-        List<CloudletExecutionInfo> result = instance.getCloudletWaitingList();
+        final List<CloudletExecutionInfo> result = instance.getCloudletWaitingList();
         assertTrue(result.isEmpty());
     }
 
     @Test
     public void testCloudletResume_CloudletNotInPausedList() {
-        int cloudletIdInTheList = 1;
-        CloudletSchedulerTimeShared instance = new CloudletSchedulerTimeShared();
+        final int cloudletIdInTheList = 1;
+        final CloudletSchedulerTimeShared instance = new CloudletSchedulerTimeShared();
         instance.getCloudletPausedList().add(createCloudletExecInfo(cloudletIdInTheList));
-        double expResult = 0.0;
-        int cloudletIdSearched = 2;
-        double result = instance.cloudletResume(cloudletIdSearched);
+        final double expResult = 0.0;
+        final int cloudletIdSearched = 2;
+        final double result = instance.cloudletResume(cloudletIdSearched);
         assertEquals(expResult, result, 0.0);
     }
 
@@ -86,26 +86,26 @@ public class CloudletSchedulerTimeSharedTest {
         final int schedulerPes = 1;
         final long mips = 1000;
         final long cloudletLength = 10000;
-        CloudletSchedulerTimeShared instance =
+        final CloudletSchedulerTimeShared instance =
                 createCloudletSchedulerWithMipsList(schedulerPes, mips);
 
         createCloudletAndAddItToPausedList(instance, cloudletId, cloudletLength);
-        double expResult = 10;
-        double result = instance.cloudletResume(cloudletId);
+        final double expResult = 10;
+        final double result = instance.cloudletResume(cloudletId);
 
         assertEquals(expResult, result, 0.0);
     }
 
     private CloudletSchedulerTimeShared createCloudletSchedulerWithMipsList(int numberOfPes, long mipsOfEachPe) {
-        CloudletSchedulerTimeShared instance = new CloudletSchedulerTimeShared();
-        List<Double> mipsList = CloudletSchedulerUtil.createMipsList(numberOfPes, mipsOfEachPe);
+        final CloudletSchedulerTimeShared instance = new CloudletSchedulerTimeShared();
+        final List<Double> mipsList = CloudletSchedulerUtil.createMipsList(numberOfPes, mipsOfEachPe);
         instance.setCurrentMipsShare(mipsList);
         instance.setVm(new VmSimple(0, mipsOfEachPe, numberOfPes));
         return instance;
     }
 
     private void createCloudletAndAddItToPausedList(CloudletSchedulerTimeShared instance, int cloudletId, long cloudletLength) {
-        CloudletSimple cloudlet = CloudletSimpleTest.createCloudlet(cloudletId, cloudletLength, 1);
+        final CloudletSimple cloudlet = CloudletSimpleTest.createCloudlet(cloudletId, cloudletLength, 1);
         cloudlet.setStatus(Cloudlet.Status.PAUSED);
         instance.getCloudletPausedList().add(new CloudletExecutionInfo(cloudlet));
     }
@@ -113,8 +113,8 @@ public class CloudletSchedulerTimeSharedTest {
     @Test
     public void testIsThereEnoughFreePesForCloudlet_EmptyList() {
         final int cloudletPes = 1;
-        Cloudlet cloudlet0 = CloudletSimpleTest.createCloudlet(0, cloudletPes);
-        CloudletSchedulerTimeShared instance = new CloudletSchedulerTimeShared();
+        final Cloudlet cloudlet0 = CloudletSimpleTest.createCloudlet(0, cloudletPes);
+        final CloudletSchedulerTimeShared instance = new CloudletSchedulerTimeShared();
         //Vm processing was never updated, so the processing capacity is unknow yet
         assertFalse(instance.isThereEnoughFreePesForCloudlet(new CloudletExecutionInfo(cloudlet0)));
     }
@@ -124,8 +124,8 @@ public class CloudletSchedulerTimeSharedTest {
         final int cloudletPes = 1;
         final int schedulerPes = 2;
         final long schedulerMips = 1000;
-        Cloudlet cloudlet0 = CloudletSimpleTest.createCloudlet(0, cloudletPes);
-        CloudletSchedulerTimeShared instance = createCloudletSchedulerWithMipsList(schedulerPes, schedulerMips);
+        final Cloudlet cloudlet0 = CloudletSimpleTest.createCloudlet(0, cloudletPes);
+        final CloudletSchedulerTimeShared instance = createCloudletSchedulerWithMipsList(schedulerPes, schedulerMips);
         instance.cloudletSubmit(cloudlet0);
         final double time0 = 0;
         instance.updateVmProcessing(time0, instance.getCurrentMipsShare());
@@ -134,8 +134,8 @@ public class CloudletSchedulerTimeSharedTest {
 
     @Test @Ignore("The test is being ignored because the tested method, in fact, is always returning an empty list. It doesn't have an actual implementation.")
     public void testGetCurrentRequestedMips() {
-        CloudletSchedulerTimeShared instance = new CloudletSchedulerTimeShared();
-        List<Double> result = instance.getCurrentRequestedMips();
+        final CloudletSchedulerTimeShared instance = new CloudletSchedulerTimeShared();
+        final List<Double> result = instance.getCurrentRequestedMips();
         assertTrue(result.isEmpty());
     }
 
@@ -144,44 +144,44 @@ public class CloudletSchedulerTimeSharedTest {
         final long mips = 1000;
         final int cloudletPes = 2;
         final int schedulerPes = 4;
-        CloudletExecutionInfo cloudlet =
+        final CloudletExecutionInfo cloudlet =
                 new CloudletExecutionInfo(
                         CloudletSimpleTest.createCloudlet0(mips, cloudletPes));
-        CloudletSchedulerTimeShared instance =
+        final CloudletSchedulerTimeShared instance =
                 createCloudletSchedulerWithMipsList(schedulerPes, mips);
-        List<Double> mipsList = instance.getCurrentMipsShare();
+        final List<Double> mipsList = instance.getCurrentMipsShare();
 
-        double result = instance.getTotalCurrentAvailableMipsForCloudlet(cloudlet, mipsList);
+        final double result = instance.getTotalCurrentAvailableMipsForCloudlet(cloudlet, mipsList);
         assertEquals((double) mips, result, 0.0);
     }
 
     @Test @Ignore("The test is being ignored because the tested method in fact is always returning zero. It doesn't have an actual implementation.")
     public void testGetTotalCurrentAllocatedMipsForCloudlet() {
-        CloudletExecutionInfo rcl = new CloudletExecutionInfo(Cloudlet.NULL);
-        double time = 0.0;
-        CloudletSchedulerTimeShared instance = new CloudletSchedulerTimeShared();
-        double expResult = 0.0;
-        double result = instance.getAllocatedMipsForCloudlet(rcl, time);
+        final CloudletExecutionInfo rcl = new CloudletExecutionInfo(Cloudlet.NULL);
+        final double time = 0.0;
+        final CloudletSchedulerTimeShared instance = new CloudletSchedulerTimeShared();
+        final double expResult = 0.0;
+        final double result = instance.getAllocatedMipsForCloudlet(rcl, time);
         assertEquals(expResult, result, 0.0);
     }
 
     @Test @Ignore("The test is being ignored because the tested method in fact is always returning zero. It doesn't have an actual implementation.")
     public void testGetTotalCurrentRequestedMipsForCloudlet() {
-        CloudletExecutionInfo rcl = new CloudletExecutionInfo(Cloudlet.NULL);
-        double time = 0.0;
-        CloudletSchedulerTimeShared instance = new CloudletSchedulerTimeShared();
-        double expResult = 0.0;
-        double result = instance.getRequestedMipsForCloudlet(rcl, time);
+        final CloudletExecutionInfo rcl = new CloudletExecutionInfo(Cloudlet.NULL);
+        final double time = 0.0;
+        final CloudletSchedulerTimeShared instance = new CloudletSchedulerTimeShared();
+        final double expResult = 0.0;
+        final double result = instance.getRequestedMipsForCloudlet(rcl, time);
         assertEquals(expResult, result, 0.0);
     }
 
     @Test
     public void testGetCurrentRequestedUtilizationOfRam() {
         final int cloudlets = 2;
-        CloudletSchedulerTimeShared instance = newSchedulerWithRunningCloudlets(1000, 2, cloudlets, 1);
+        final CloudletSchedulerTimeShared instance = newSchedulerWithRunningCloudlets(1000, 2, cloudlets, 1);
 
-        double expResult = 2.0; //200% of RAM usage
-        double result = instance.getCurrentRequestedRamPercentUtilization();
+        final double expResult = 2.0; //200% of RAM usage
+        final double result = instance.getCurrentRequestedRamPercentUtilization();
         assertEquals(expResult, result, 0.0);
     }
 
@@ -191,37 +191,17 @@ public class CloudletSchedulerTimeSharedTest {
         final int numberOfVmPes = 1;
         final int numberOfCloudlets = numberOfVmPes;
         final int numberOfCloudletPes = 1;
-        CloudletSchedulerTimeShared instance = newSchedulerWithRunningCloudlets(mips, numberOfVmPes, numberOfCloudlets, numberOfCloudletPes);
+        final CloudletSchedulerTimeShared instance = newSchedulerWithRunningCloudlets(mips, numberOfVmPes, numberOfCloudlets, numberOfCloudletPes);
 
         final double expResult = 1.0;
-        double result = instance.getCurrentRequestedBwPercentUtilization();
+        final double result = instance.getCurrentRequestedBwPercentUtilization();
         assertEquals(expResult, result, 0.0);
-    }
-
-    /**
-     * Creates a CloudletScheduler and a given number of cloudlets,
-     * adding them to the executing list.
-     * All created Cloudlets will use the UtilizationModel
-     * {@link #um}.
-     *
-     * @param numbeOfCloudlets number of cloudlets to create
-     * @return the created CloudletScheduler with the given number of Cloudlets to execute
-     */
-    private CloudletSchedulerTimeShared createCloudletSchedulerWithListOfExecCloudlets(int numbeOfCloudlets) {
-        CloudletSchedulerTimeShared instance = new CloudletSchedulerTimeShared();
-        for(int i = 0; i < numbeOfCloudlets; i++){
-            instance.addCloudletToExecList(
-                    new CloudletExecutionInfo(
-                            CloudletSimpleTest.createCloudlet(i, um)));
-        }
-
-        return instance;
     }
 
     @Test
     public void testGetCloudletExecList_Empty() {
-        CloudletSchedulerTimeShared instance = new CloudletSchedulerTimeShared();
-        List<CloudletExecutionInfo> result = instance.getCloudletExecList();
+        final CloudletSchedulerTimeShared instance = new CloudletSchedulerTimeShared();
+        final List<CloudletExecutionInfo> result = instance.getCloudletExecList();
         assertTrue(result.isEmpty());
     }
 
@@ -231,7 +211,7 @@ public class CloudletSchedulerTimeSharedTest {
         final int numberOfPes = 2;
         final int numberOfCloudlets = 4;
 
-        CloudletSchedulerTimeShared instance = newSchedulerWithSingleCoreRunningCloudlets(mips, numberOfPes, numberOfCloudlets);
+        final CloudletSchedulerTimeShared instance = newSchedulerWithSingleCoreRunningCloudlets(mips, numberOfPes, numberOfCloudlets);
 
         final double expected = 1.0;
         assertEquals(expected, instance.getRequestedCpuPercentUtilization(0), 0);
@@ -243,7 +223,7 @@ public class CloudletSchedulerTimeSharedTest {
         final int numberOfPes = 2;
         final int numberOfCloudlets = numberOfPes;
 
-        CloudletSchedulerTimeShared instance = newSchedulerWithSingleCoreRunningCloudlets(mips, numberOfPes, numberOfCloudlets);
+        final CloudletSchedulerTimeShared instance = newSchedulerWithSingleCoreRunningCloudlets(mips, numberOfPes, numberOfCloudlets);
 
         final double expected = 1;
         assertEquals(expected, instance.getRequestedCpuPercentUtilization(0), 0);
@@ -255,7 +235,7 @@ public class CloudletSchedulerTimeSharedTest {
         final int numberOfPes = 4;
         final int numberOfCloudlets = 2;
 
-        CloudletSchedulerTimeShared instance = newSchedulerWithSingleCoreRunningCloudlets(mips, numberOfPes, numberOfCloudlets);
+        final CloudletSchedulerTimeShared instance = newSchedulerWithSingleCoreRunningCloudlets(mips, numberOfPes, numberOfCloudlets);
 
         final double expected = 0.5;
         assertEquals(expected, instance.getRequestedCpuPercentUtilization(0), 0);
@@ -267,7 +247,7 @@ public class CloudletSchedulerTimeSharedTest {
         final int numberOfPes = 4;
         final int numberOfCloudlets = 3;
 
-        CloudletSchedulerTimeShared instance = newSchedulerWithSingleCoreRunningCloudlets(mips, numberOfPes, numberOfCloudlets);
+        final CloudletSchedulerTimeShared instance = newSchedulerWithSingleCoreRunningCloudlets(mips, numberOfPes, numberOfCloudlets);
 
         final double expected = 0.75;
         assertEquals(expected, instance.getRequestedCpuPercentUtilization(0), 0);
@@ -279,7 +259,7 @@ public class CloudletSchedulerTimeSharedTest {
         final int numberOfPes = 5;
         final int numberOfCloudlets = 4;
 
-        CloudletSchedulerTimeShared instance = newSchedulerWithSingleCoreRunningCloudlets(mips, numberOfPes, numberOfCloudlets);
+        final CloudletSchedulerTimeShared instance = newSchedulerWithSingleCoreRunningCloudlets(mips, numberOfPes, numberOfCloudlets);
 
         final double expected = 0.8;
         assertEquals(expected, instance.getRequestedCpuPercentUtilization(0), 0);
@@ -292,7 +272,7 @@ public class CloudletSchedulerTimeSharedTest {
         final int numberOfCloudletPes = 2;
         final int numberOfCloudlets = 2;
 
-        CloudletSchedulerTimeShared instance = newSchedulerWithRunningCloudlets(mips, numberOfVmPes, numberOfCloudlets, numberOfCloudletPes);
+        final CloudletSchedulerTimeShared instance = newSchedulerWithRunningCloudlets(mips, numberOfVmPes, numberOfCloudlets, numberOfCloudletPes);
 
         final double expected = 1;
         assertEquals(expected, instance.getRequestedCpuPercentUtilization(0), 0);
@@ -305,7 +285,7 @@ public class CloudletSchedulerTimeSharedTest {
         final int numberOfCloudlets = 2;
         final int numberOfCloudletPes = 2;
 
-        CloudletSchedulerTimeShared instance = newSchedulerWithRunningCloudlets(mips, numberOfVmPes, numberOfCloudlets, numberOfCloudletPes);
+        final CloudletSchedulerTimeShared instance = newSchedulerWithRunningCloudlets(mips, numberOfVmPes, numberOfCloudlets, numberOfCloudletPes);
 
         final double expected = 1;
         assertEquals(expected, instance.getRequestedCpuPercentUtilization(0), 0);
@@ -332,10 +312,10 @@ public class CloudletSchedulerTimeSharedTest {
      * @return the new scheduler
      */
     private CloudletSchedulerTimeShared newSchedulerWithRunningCloudlets(long mips, int numberOfVmPes, int numberOfCloudlets, int numberOfCloudletPes) {
-        CloudletSchedulerTimeShared instance = createCloudletSchedulerWithMipsList(numberOfVmPes, mips);
+        final CloudletSchedulerTimeShared instance = createCloudletSchedulerWithMipsList(numberOfVmPes, mips);
 
         for(int i = 0; i < numberOfCloudlets; i++) {
-            Cloudlet c = CloudletSimpleTest.createCloudlet(i, mips, numberOfCloudletPes);
+            final Cloudlet c = CloudletSimpleTest.createCloudlet(i, mips, numberOfCloudletPes);
             c.assignToDatacenter(Datacenter.NULL);
             instance.cloudletSubmit(c);
         }
@@ -354,7 +334,7 @@ public class CloudletSchedulerTimeSharedTest {
         final long mips = 1000;
         final int numberOfCloudlets = 2;
 
-        CloudletSchedulerTimeShared instance = newSchedulerWithSingleCoreRunningCloudlets(mips, numberOfCloudlets, numberOfCloudlets);
+        final CloudletSchedulerTimeShared instance = newSchedulerWithSingleCoreRunningCloudlets(mips, numberOfCloudlets, numberOfCloudlets);
 
         final double time0 = 0.5;
         instance.updateVmProcessing(time0, instance.getCurrentMipsShare());
@@ -378,7 +358,7 @@ public class CloudletSchedulerTimeSharedTest {
         final long mips = 1000;
         final int numberOfCloudlets = 2;
 
-        CloudletSchedulerTimeShared instance = newSchedulerWithSingleCoreRunningCloudlets(mips, 1, numberOfCloudlets);
+        final CloudletSchedulerTimeShared instance = newSchedulerWithSingleCoreRunningCloudlets(mips, 1, numberOfCloudlets);
 
         final double time1 = 1;
         instance.updateVmProcessing(time1, instance.getCurrentMipsShare());
@@ -391,8 +371,8 @@ public class CloudletSchedulerTimeSharedTest {
 
     @Test
     public void testRemoveCloudletFromExecList() {
-        CloudletExecutionInfo c = new CloudletExecutionInfo(Cloudlet.NULL);
-        CloudletSchedulerTimeShared instance = new CloudletSchedulerTimeShared();
+        final CloudletExecutionInfo c = new CloudletExecutionInfo(Cloudlet.NULL);
+        final CloudletSchedulerTimeShared instance = new CloudletSchedulerTimeShared();
         instance.addCloudletToExecList(c);
         assertSame(c, instance.removeCloudletFromExecList(c));
         assertTrue(instance.getCloudletExecList().isEmpty());
@@ -403,7 +383,7 @@ public class CloudletSchedulerTimeSharedTest {
         CloudletExecutionInfo cloudletNotAdded = new CloudletExecutionInfo(CloudletSimpleTest.createCloudletWithOnePe(0));
         CloudletExecutionInfo cloudletAdded = new CloudletExecutionInfo(CloudletSimpleTest.createCloudletWithOnePe(1));
         CloudletSchedulerTimeShared instance = new CloudletSchedulerTimeShared();
-        List<CloudletExecutionInfo> list = new ArrayList<>();
+        final List<CloudletExecutionInfo> list = new ArrayList<>();
         list.add(cloudletAdded);
         instance.addCloudletToExecList(cloudletAdded);
         assertNull(instance.removeCloudletFromExecList(cloudletNotAdded));
@@ -412,12 +392,11 @@ public class CloudletSchedulerTimeSharedTest {
 
     @Test
     public void testAddCloudletToExecList() {
-        CloudletExecutionInfo cloudlet = new CloudletExecutionInfo(Cloudlet.NULL);
-        List<CloudletExecutionInfo> list = new ArrayList<>();
+        final CloudletExecutionInfo cloudlet = new CloudletExecutionInfo(Cloudlet.NULL);
+        final List<CloudletExecutionInfo> list = new ArrayList<>();
         list.add(cloudlet);
-        CloudletSchedulerTimeShared instance = new CloudletSchedulerTimeShared();
+        final CloudletSchedulerTimeShared instance = new CloudletSchedulerTimeShared();
         instance.addCloudletToExecList(cloudlet);
         assertEquals(list.size(), instance.getCloudletExecList().size());
     }
-
 }

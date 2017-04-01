@@ -9,6 +9,7 @@ import org.cloudbus.cloudsim.cloudlets.CloudletExecutionInfo;
 import org.easymock.EasyMock;
 import org.junit.Test;
 
+import static java.util.stream.Collectors.toList;
 import static org.junit.Assert.*;
 
 /**
@@ -21,17 +22,17 @@ public class ProcessorTest {
 
     @Test
     public void testFromMipsList_CheckCloudletList() {
-        List<Double> mipsList = createMipsList(1);
-        List<CloudletExecutionInfo> cloudletExecList = createCloudletExecList(1);
+        final List<Double> mipsList = createMipsList(1);
+        final List<CloudletExecutionInfo> cloudletExecList = createCloudletExecList(1);
 
-        Processor processor = Processor.fromMipsList(mipsList, cloudletExecList);
+        final Processor processor = Processor.fromMipsList(mipsList, cloudletExecList);
         assertEquals("The cloudlet exec list is the same size as expected",
                 cloudletExecList.size(), processor.getCloudletExecList().size());
     }
 
     private List<CloudletExecutionInfo> createCloudletExecList(int numberOfCloudlets) {
-        List<CloudletExecutionInfo> cloudletExecList = new ArrayList<>();
-        Cloudlet cloudlet = createMockCloudlet(numberOfCloudlets);
+        final List<CloudletExecutionInfo> cloudletExecList = new ArrayList<>();
+        final Cloudlet cloudlet = createMockCloudlet(numberOfCloudlets);
 
         IntStream.range(0, numberOfCloudlets).forEach(i ->
                 cloudletExecList.add(new CloudletExecutionInfo(cloudlet)));
@@ -39,7 +40,7 @@ public class ProcessorTest {
     }
 
     private Cloudlet createMockCloudlet(int numberOfCloudlets) {
-        Cloudlet cloudlet = EasyMock.createMock(Cloudlet.class);
+        final Cloudlet cloudlet = EasyMock.createMock(Cloudlet.class);
         EasyMock.expect(cloudlet.getNumberOfPes()).andReturn(1).times(numberOfCloudlets*2);
         EasyMock.expect(cloudlet.registerArrivalInDatacenter()).andReturn(0.0).times(numberOfCloudlets);
         EasyMock.expect(cloudlet.getFinishedLengthSoFar()).andReturn(0L).times(numberOfCloudlets);
@@ -50,23 +51,19 @@ public class ProcessorTest {
 
     @Test
     public void testFromMips_EmptyCloudletExecList() {
-        List<Double> mipsList = createMipsList(1);
-        Processor result = Processor.fromMipsList(mipsList);
+        final List<Double> mipsList = createMipsList(1);
+        final Processor result = Processor.fromMipsList(mipsList);
         assertTrue("The processor cloudlet exec list should be empty", result.getCloudletExecList().isEmpty());
     }
 
     private List<Double> createMipsList(int numberOfPes) {
-        List<Double> mipsList = new ArrayList<>();
-        for(int i = 0; i < numberOfPes; i++) {
-            mipsList.add(PE_MIPS);
-        }
-        return mipsList;
+        return IntStream.range(0, numberOfPes).mapToObj(i -> PE_MIPS).collect(toList());
     }
 
     @Test
     public void testGetTotalMipsCapacity() {
-        Processor instance = createDefaultProcessor();
-        double expResult = PE_MIPS * NUMBER_OF_PES;
+        final Processor instance = createDefaultProcessor();
+        final double expResult = PE_MIPS * NUMBER_OF_PES;
         assertEquals(expResult, instance.getTotalMipsCapacity(), 0);
     }
 
@@ -80,59 +77,58 @@ public class ProcessorTest {
 
     @Test
     public void testGetCapacity() {
-        Processor instance = createDefaultProcessor();
-        long expResult = (long)PE_MIPS;
+        final Processor instance = createDefaultProcessor();
+        final long expResult = (long)PE_MIPS;
         assertEquals(expResult, instance.getCapacity());
     }
 
     @Test
     public void testGetAvailableMipsByPe() {
-        List<Double> mipsList = createMipsList(NUMBER_OF_PES);
-        List<CloudletExecutionInfo> cloudletExecList = createCloudletExecList(NUMBER_OF_PES*2);
-        Processor instance = Processor.fromMipsList(mipsList, cloudletExecList);
-        double expResult = (PE_MIPS*NUMBER_OF_PES) / cloudletExecList.size();
+        final List<Double> mipsList = createMipsList(NUMBER_OF_PES);
+        final List<CloudletExecutionInfo> cloudletExecList = createCloudletExecList(NUMBER_OF_PES*2);
+        final Processor instance = Processor.fromMipsList(mipsList, cloudletExecList);
+        final double expResult = (PE_MIPS*NUMBER_OF_PES) / cloudletExecList.size();
         assertEquals(expResult, instance.getAvailableMipsByPe(), 0.0);
     }
 
     @Test
     public void testGetNumberOfPes_FromDefaultConstructor() {
-        Processor instance = createDefaultProcessor();
-        int expResult = NUMBER_OF_PES;
+        final Processor instance = createDefaultProcessor();
+        final int expResult = NUMBER_OF_PES;
         assertEquals(expResult, instance.getNumberOfPes());
     }
 
     @Test
     public void testSetNumberOfPes() {
-        int expResult = NUMBER_OF_PES*2;
-        Processor instance = createDefaultProcessor();
+        final int expResult = NUMBER_OF_PES*2;
+        final Processor instance = createDefaultProcessor();
         instance.setNumberOfPes(expResult);
         assertEquals(expResult, instance.getNumberOfPes());
     }
 
     @Test
     public void testSetCapacity() {
-        long expResult = (long)PE_MIPS*2;
-        Processor instance = createDefaultProcessor();
+        final long expResult = (long)PE_MIPS*2;
+        final Processor instance = createDefaultProcessor();
         instance.setCapacity(expResult);
         assertEquals(expResult, instance.getCapacity(), 0.0);
     }
 
     @Test
     public void testGetCloudletExecList() {
-        List<CloudletExecutionInfo> cloudletExecList = createCloudletExecList(2);
-        List<Double> mipsList = createMipsList(NUMBER_OF_PES);
-        Processor instance = Processor.fromMipsList(mipsList, cloudletExecList);
-        Collection<CloudletExecutionInfo> result = instance.getCloudletExecList();
+        final List<CloudletExecutionInfo> cloudletExecList = createCloudletExecList(2);
+        final List<Double> mipsList = createMipsList(NUMBER_OF_PES);
+        final Processor instance = Processor.fromMipsList(mipsList, cloudletExecList);
+        final Collection<CloudletExecutionInfo> result = instance.getCloudletExecList();
         assertEquals("The number of cloudlets in the exec list is not as expected",
                 cloudletExecList.size(), result.size());
     }
 
     @Test(expected = UnsupportedOperationException.class)
     public void testGetCloudletExecList_ReadOnlyList() {
-        List<CloudletExecutionInfo> cloudletExecList = createCloudletExecList(2);
-        List<Double> mipsList = createMipsList(NUMBER_OF_PES);
-        Processor instance = Processor.fromMipsList(mipsList, cloudletExecList);
+        final List<CloudletExecutionInfo> cloudletExecList = createCloudletExecList(2);
+        final List<Double> mipsList = createMipsList(NUMBER_OF_PES);
+        final Processor instance = Processor.fromMipsList(mipsList, cloudletExecList);
         instance.getCloudletExecList().add(null);
     }
-
 }

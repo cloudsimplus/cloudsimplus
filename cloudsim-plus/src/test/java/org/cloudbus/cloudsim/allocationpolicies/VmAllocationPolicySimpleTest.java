@@ -26,7 +26,7 @@ public class VmAllocationPolicySimpleTest {
 
     @Before
     public void setUp(){
-        policy = createVmAllocationPolicy(new Integer[]{4, 2, 6, 5});
+        policy = createVmAllocationPolicy(new int[]{4, 2, 6, 5});
     }
 
     /**
@@ -37,20 +37,20 @@ public class VmAllocationPolicySimpleTest {
      *                      This array will define the number of Hosts and its PEs.
      * @return
      */
-    private VmAllocationPolicySimple createVmAllocationPolicy(Integer[] freePesByHost) {
-        Map<Host, Integer> hostFreePesMap = new HashMap<>(freePesByHost.length);
-        List<Host> hosts = new ArrayList<>(freePesByHost.length);
+    private VmAllocationPolicySimple createVmAllocationPolicy(int[] freePesByHost) {
+        final Map<Host, Integer> hostFreePesMap = new HashMap<>(freePesByHost.length);
+        final List<Host> hosts = new ArrayList<>(freePesByHost.length);
         for(int i = 1; i <= freePesByHost.length; i++) {
-            Host host = HostSimpleTest.createHostSimple(
+            final Host host = HostSimpleTest.createHostSimple(
                 i, freePesByHost[i-1], HOST_MIPS, HOST_RAM, HOST_BW, i* HOST_BASE_STORAGE);
             hostFreePesMap.put(host, host.getNumberOfPes());
             hosts.add(host);
         }
 
-        VmAllocationPolicySimple policy = new VmAllocationPolicySimple();
+        final VmAllocationPolicySimple policy = new VmAllocationPolicySimple();
         policy.setHostFreePesMap(hostFreePesMap);
 
-        Datacenter datacenter = EasyMock.createMock(Datacenter.class);
+        final Datacenter datacenter = EasyMock.createMock(Datacenter.class);
         EasyMock.expect(datacenter.getHostList()).andReturn(hosts).anyTimes();
         EasyMock.replay(datacenter);
         policy.setDatacenter(datacenter);
@@ -60,32 +60,30 @@ public class VmAllocationPolicySimpleTest {
 
     @Test
     public void allocateHostForVm_WhenOneVmIsGiven_AllocateHostWithLessUsedPesToIt() {
-        Vm vm = VmSimpleTest.createVm(0, 1000, 2);
+        final Vm vm = VmSimpleTest.createVm(0, 1000, 2);
         assertTrue(policy.allocateHostForVm(vm));
 
-        Host allocatedHostForVm = policy.getVmHostMap().get(vm);
-        Host hostWithLessPes = policy.getDatacenter().getHostList().get(2);
+        final Host allocatedHostForVm = policy.getVmHostMap().get(vm);
+        final Host hostWithLessPes = policy.getDatacenter().getHostList().get(2);
         assertEquals(hostWithLessPes, allocatedHostForVm);
     }
 
     @Test
     public void allocateHostForVm_WhenOneVmIsGivenAndSelectedHostDoesntHaveStorage_AllocateOtherHost() {
-        Host secondHostWithLessPes = policy.getDatacenter().getHostList().get(3);
-        Vm vm = VmSimpleTest.createVm(
+        final Host secondHostWithLessPes = policy.getDatacenter().getHostList().get(3);
+        final Vm vm = VmSimpleTest.createVm(
             0, 1000, 2, 1, 1,
             secondHostWithLessPes.getStorage().getCapacity(), CloudletScheduler.NULL);
         assertTrue(policy.allocateHostForVm(vm));
 
-        Host allocatedHostForVm = policy.getVmHostMap().get(vm);
+        final Host allocatedHostForVm = policy.getVmHostMap().get(vm);
         assertEquals(secondHostWithLessPes, allocatedHostForVm);
     }
 
     @Test
     public void allocateHostForVm_WhenOneVmIsGivenAndNoHostHasResourcesToRunIt() {
-        Host secondHostWithLessPes = policy.getDatacenter().getHostList().get(3);
-        Vm vm = VmSimpleTest.createVm(0, 1000, 10);
+        final Host secondHostWithLessPes = policy.getDatacenter().getHostList().get(3);
+        final Vm vm = VmSimpleTest.createVm(0, 1000, 10);
         assertFalse(policy.allocateHostForVm(vm));
     }
-
-
 }
