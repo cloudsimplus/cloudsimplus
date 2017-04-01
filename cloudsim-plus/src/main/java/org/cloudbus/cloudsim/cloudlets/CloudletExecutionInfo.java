@@ -155,52 +155,55 @@ public class CloudletExecutionInfo {
     /**
      * Sets the Cloudlet status.
      *
-     * @param status the Cloudlet status
+     * @param newStatus the Cloudlet status
      * @return <tt>true</tt> if the new status has been set, <tt>false</tt>
      * otherwise
      * @pre status >= 0
      * @post $none
      */
-    public boolean setCloudletStatus(Cloudlet.Status status) {
+    public boolean setCloudletStatus(Cloudlet.Status newStatus) {
         // gets Cloudlet's previous status
-        Cloudlet.Status prevStatus = cloudlet.getStatus();
+        final Cloudlet.Status prevStatus = cloudlet.getStatus();
 
         // if the status of a Cloudlet is the same as last time, then ignore
-        if (prevStatus == status) {
+        if (prevStatus == newStatus) {
             return false;
         }
 
         boolean success = true;
-        try {
-            double clock = cloudlet.getSimulation().clock();   // gets the current clock
+        final double clock = cloudlet.getSimulation().clock();
 
-            // sets Cloudlet's current status
-            cloudlet.setStatus(status);
+        cloudlet.setStatus(newStatus);
 
-            if (prevStatus == Cloudlet.Status.INEXEC && isNotRunning(status)) {
-                // then update the Cloudlet completion time
-                totalCompletionTime += (clock - startExecTime);
-                return true;
-            }
-
-            if (prevStatus == Cloudlet.Status.RESUMED && status == Cloudlet.Status.SUCCESS) {
-                // then update the Cloudlet completion time
-                totalCompletionTime += (clock - startExecTime);
-                return true;
-            }
-
-            // if a Cloudlet is now in execution
-            if (status == Cloudlet.Status.INEXEC || (prevStatus == Cloudlet.Status.PAUSED && status == Cloudlet.Status.RESUMED)) {
-                startExecTime = clock;
-                if(cloudlet.getExecStartTime() == 0) {
-                    cloudlet.setExecStartTime(startExecTime);
-                }
-            }
-        } catch (Exception e) {
-            success = false;
+        if (prevStatus == Cloudlet.Status.INEXEC && isNotRunning(newStatus)) {
+            totalCompletionTime += (clock - startExecTime);
+            return true;
         }
 
+        if (prevStatus == Cloudlet.Status.RESUMED && newStatus == Cloudlet.Status.SUCCESS) {
+            totalCompletionTime += (clock - startExecTime);
+            return true;
+        }
+
+        startOrResumeCloudlet(newStatus, prevStatus);
+
         return success;
+    }
+
+    /**
+     * Starts or resumes the Cloudlet if the new status is requesting that.
+     *
+     * @param newStatus the new status that will be checked to start or resume the Cloudlet
+     * @param oldStatus the old Cloudlet status
+     */
+    private void startOrResumeCloudlet(Cloudlet.Status newStatus, Cloudlet.Status oldStatus) {
+        final double clock = cloudlet.getSimulation().clock();
+        if (newStatus == Cloudlet.Status.INEXEC || (oldStatus == Cloudlet.Status.PAUSED && newStatus == Cloudlet.Status.RESUMED)) {
+            startExecTime = clock;
+            if(cloudlet.getExecStartTime() == 0) {
+                cloudlet.setExecStartTime(startExecTime);
+            }
+        }
     }
 
     /**
@@ -242,33 +245,33 @@ public class CloudletExecutionInfo {
      */
     public void finalizeCloudlet() {
         // Sets the wall clock time and actual CPU time
-        double wallClockTime = cloudlet.getSimulation().clock() - arrivalTime;
+        final double wallClockTime = cloudlet.getSimulation().clock() - arrivalTime;
         cloudlet.setWallClockTime(wallClockTime, totalCompletionTime);
 
-        long finishedLengthAcrossAllPes;
+        long finishedLenAcrossAllPes;
         //if (cloudlet.getCloudletTotalLength() * Consts.MILLION < instructionsFinishedSoFar) {
         if (cloudlet.getStatus() == Cloudlet.Status.SUCCESS) {
-            finishedLengthAcrossAllPes = cloudlet.getLength();
+            finishedLenAcrossAllPes = cloudlet.getLength();
         } else {
-            finishedLengthAcrossAllPes = instructionsFinishedSoFar / Conversion.MILLION;
+            finishedLenAcrossAllPes = instructionsFinishedSoFar / Conversion.MILLION;
         }
 
-        cloudlet.setFinishedLengthSoFar(finishedLengthAcrossAllPes);
+        cloudlet.setFinishedLengthSoFar(finishedLenAcrossAllPes);
     }
 
     /**
      * Updates the length of cloudlet that has already been completed.
      *
-     * @param numberOfExecutedInstructions amount of instructions just executed, to be
-     * added to the {@link #instructionsFinishedSoFar}, in number of Instructions (I)
-     * @pre length >= 0.0
+     * @param instructionsExecuted amount of instructions just executed, to be
+     * added to the {@link #instructionsFinishedSoFar}, in Instructions (instead of Million Instructions)
+     * @pre instructionsExecuted >= 0.0
      * @post $none
      */
-    public void updateProcessing(long numberOfExecutedInstructions) {
-        if(numberOfExecutedInstructions <= 0)
+    public void updateProcessing(long instructionsExecuted) {
+        if(instructionsExecuted <= 0)
             return;
 
-        this.instructionsFinishedSoFar += numberOfExecutedInstructions;
+        this.instructionsFinishedSoFar += instructionsExecuted;
         this.instructionsFinishedSoFar =
                 Math.min(this.instructionsFinishedSoFar, cloudlet.getLength()*Conversion.MILLION);
 

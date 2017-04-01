@@ -97,13 +97,13 @@ public class PowerDatacenterNonPowerAware extends PowerDatacenter {
 
         if (currentTime > getLastProcessTime()) {
             Log.printLine("\n");
-            double datacenterPowerUsageForTimeSpan = getDatacenterPowerUsageForTimeSpan();
-            Log.printFormattedLine("\n%.2f: Consumed energy is %.2f W*sec\n", getSimulation().clock(), datacenterPowerUsageForTimeSpan);
+            final double dcPowerUsageForTimeSpan = getDatacenterPowerUsageForTimeSpan();
+            Log.printFormattedLine("\n%.2f: Consumed energy is %.2f W*sec\n", getSimulation().clock(), dcPowerUsageForTimeSpan);
 
             Log.printLine("\n\n--------------------------------------------------------------\n\n");
             final double nextCloudletFinishTime = getNextCloudletFinishTime(currentTime);
 
-            setPower(getPower() + datacenterPowerUsageForTimeSpan);
+            setPower(getPower() + dcPowerUsageForTimeSpan);
 
             checkCloudletsCompletionForAllHosts();
 
@@ -136,14 +136,14 @@ public class PowerDatacenterNonPowerAware extends PowerDatacenter {
      */
     private void migrateVmsOutIfMigrationIsEnabled() {
         if (isMigrationsEnabled()) {
-            Map<Vm, Host> migrationMap
+            final Map<Vm, Host> migrationMap
                     = getVmAllocationPolicy().optimizeAllocation(getVmList());
 
-            for (Entry<Vm, Host> entry : migrationMap.entrySet()) {
-                Host targetHost = entry.getValue();
-                Host oldHost = entry.getKey().getHost();
+            for (final Entry<Vm, Host> entry : migrationMap.entrySet()) {
+                final Host targetHost = entry.getValue();
+                final Host oldHost = entry.getKey().getHost();
 
-                if (oldHost == Host.NULL) {
+                if (oldHost.equals(Host.NULL)) {
                     Log.printFormattedLine(
                         "%.2f: Migration of VM #%d to Host #%d is started",
                         getSimulation().clock(),
@@ -197,10 +197,10 @@ public class PowerDatacenterNonPowerAware extends PowerDatacenter {
     private double getDatacenterPowerUsageForTimeSpan() {
         final double timeSpan = getSimulation().clock() - getLastProcessTime();
         double datacenterPowerUsageForTimeSpan = 0;
-        for (PowerHostSimple host : this.<PowerHostSimple>getHostList()) {
+        for(PowerHostSimple host : this.<PowerHostSimple>getHostList()) {
             Log.printFormattedLine("%.2f: Host #%d", getSimulation().clock(), host.getId());
 
-            final double hostPower = getHostConsumedPowerForTimeSpan(host);
+            final double hostPower = getHostConsumedPowerForTimeSpan(host, timeSpan);
             datacenterPowerUsageForTimeSpan += hostPower;
 
             Log.printFormattedLine(
@@ -218,13 +218,19 @@ public class PowerDatacenterNonPowerAware extends PowerDatacenter {
         return datacenterPowerUsageForTimeSpan;
     }
 
-    private double getHostConsumedPowerForTimeSpan(PowerHostSimple host) {
-        final double timeSpan = getSimulation().clock() - getLastProcessTime();
+    /**
+     * Gets the power consumed by a given Host for a specific time span.
+     *
+     * @param host the Host to get the consumed power for the time span
+     * @param timeSpan the time elapsed since the last update of cloudlets processing
+     * @return
+     */
+    private double getHostConsumedPowerForTimeSpan(PowerHostSimple host, final double timeSpan) {
         double hostPower;
 
         try {
             hostPower = host.getMaxPower() * timeSpan;
-        } catch (Exception e) {
+        } catch (RuntimeException e) {
             hostPower = 0;
         }
         return hostPower;
