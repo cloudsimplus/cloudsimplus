@@ -129,7 +129,7 @@ public abstract class PowerVmAllocationPolicyMigrationAbstract extends PowerVmAl
 
         final String hostSelectionStr = "optimizeAllocationHostSelection";
         ExecutionTimeMeasurer.start(hostSelectionStr);
-        List<PowerHostUtilizationHistory> overUtilizedHosts = getOverUtilizedHosts();
+        final List<PowerHostUtilizationHistory> overUtilizedHosts = getOverUtilizedHosts();
         getExecutionTimeHistoryHostSelection().add(
                 ExecutionTimeMeasurer.end(hostSelectionStr));
 
@@ -280,7 +280,7 @@ public abstract class PowerVmAllocationPolicyMigrationAbstract extends PowerVmAl
 
     @Override
     public PowerHost findHostForVm(Vm vm) {
-        Set<Host> excludedHosts = new HashSet<>();
+        final Set<Host> excludedHosts = new HashSet<>();
         excludedHosts.add(vm.getHost());
         return findHostForVm(vm, excludedHosts);
     }
@@ -546,9 +546,9 @@ public abstract class PowerVmAllocationPolicyMigrationAbstract extends PowerVmAl
      * @return the power after allocation
      */
     protected double getMaxUtilizationAfterAllocation(PowerHost host, Vm vm) {
-        double requestedTotalMips = vm.getCurrentRequestedTotalMips();
-        double hostUtilizationMips = getUtilizationOfCpuMips(host);
-        double hostPotentialUtilizationMips = hostUtilizationMips + requestedTotalMips;
+        final double requestedTotalMips = vm.getCurrentRequestedTotalMips();
+        final double hostUtilizationMips = getUtilizationOfCpuMips(host);
+        final double hostPotentialUtilizationMips = hostUtilizationMips + requestedTotalMips;
         return hostPotentialUtilizationMips / host.getTotalMips();
     }
 

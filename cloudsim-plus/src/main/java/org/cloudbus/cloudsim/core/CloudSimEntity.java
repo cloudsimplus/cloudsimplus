@@ -558,7 +558,7 @@ public abstract class CloudSimEntity implements SimEntity {
             return;
         }
 
-        int srcId = getId();
+        final int srcId = getId();
         if (entityId != srcId) {// only delay messages between different entities
             delay += getNetworkDelay(srcId, entityId);
         }
@@ -724,7 +724,7 @@ public abstract class CloudSimEntity implements SimEntity {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
 
-        CloudSimEntity that = (CloudSimEntity) o;
+        final CloudSimEntity that = (CloudSimEntity) o;
 
         if (id != that.id) return false;
         return simulation.equals(that.simulation);

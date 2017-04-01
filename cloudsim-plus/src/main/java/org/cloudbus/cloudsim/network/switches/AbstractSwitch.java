@@ -302,8 +302,8 @@ public abstract class AbstractSwitch extends CloudSimEntity implements Switch {
      * @return the host of the VM
      */
     protected NetworkHost getHostOfVm(int vmId) {
-        for (NetworkHost host : hostList) {
-            Vm vm = VmList.getById(host.getVmList(), vmId);
+        for (final NetworkHost host : hostList) {
+            final Vm vm = VmList.getById(host.getVmList(), vmId);
             if (vm != Vm.NULL) {
                 return host;
             }

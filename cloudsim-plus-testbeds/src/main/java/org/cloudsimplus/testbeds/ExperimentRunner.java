@@ -489,9 +489,9 @@ public abstract class ExperimentRunner<T extends SimulationExperiment> implement
             Log.enable();
         }
 
-        Map<String, List<Double>> metricsMap = createMetricsMap();
+        final Map<String, List<Double>> metricsMap = createMetricsMap();
         System.out.println("\n------------------------------------------------------------------");
-        metricsMap.entrySet().stream().forEach(this::computeAndPrintFinalResults);
+        metricsMap.entrySet().forEach(this::computeAndPrintFinalResults);
         Log.enable();
         System.out.printf("\nExperiments finished in %d seconds!\n", getExperimentsFinishTime());
     }

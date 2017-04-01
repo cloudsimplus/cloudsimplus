@@ -40,6 +40,7 @@ import org.cloudbus.cloudsim.resources.FileStorage;
  *
  * @author Anton Beloglazov
  * @since CloudSim Toolkit 2.0
+ * @todo There are lots of duplicated code from PowerDatacenter
  */
 public class PowerDatacenterNonPowerAware extends PowerDatacenter {
     /**
@@ -93,17 +94,17 @@ public class PowerDatacenterNonPowerAware extends PowerDatacenter {
         }
 
         final double currentTime = getSimulation().clock();
-        double hostsTotalPowerForTimeFrame = 0.0;
+        double datacenterPowerUsageForTimeSpan = 0.0;
 
         if (currentTime > getLastProcessTime()) {
             Log.printLine("\n");
-            hostsTotalPowerForTimeFrame = getHostsTotalPowerForTimeSpan();
-            Log.printFormattedLine("\n%.2f: Consumed energy is %.2f W*sec\n", getSimulation().clock(), hostsTotalPowerForTimeFrame);
+            datacenterPowerUsageForTimeSpan = getDatacenterPowerUsageForTimeSpan();
+            Log.printFormattedLine("\n%.2f: Consumed energy is %.2f W*sec\n", getSimulation().clock(), datacenterPowerUsageForTimeSpan);
 
             Log.printLine("\n\n--------------------------------------------------------------\n\n");
             final double nextCloudletFinishTime = getNextCloudletFinishTime(currentTime);
 
-            setPower(getPower() + hostsTotalPowerForTimeFrame);
+            setPower(getPower() + datacenterPowerUsageForTimeSpan);
 
             checkCloudletsCompletionForAllHosts();
 
@@ -181,8 +182,7 @@ public class PowerDatacenterNonPowerAware extends PowerDatacenter {
         double minTime = Double.MAX_VALUE;
         for (PowerHostSimple host : this.<PowerHostSimple>getHostList()) {
             Log.printFormattedLine("\n%.2f: Host #%d", getSimulation().clock(), host.getId());
-            // inform VMs to update processing
-            double nextCloudletFinishTime = host.updateProcessing(currentTime);
+            final double nextCloudletFinishTime = host.updateProcessing(currentTime);
             minTime = Math.min(nextCloudletFinishTime, minTime);
         }
 
@@ -190,14 +190,14 @@ public class PowerDatacenterNonPowerAware extends PowerDatacenter {
     }
 
     /**
-     * Gets the total power consumed by all Hosts since the last time the processing
+     * Gets the total power consumed by all Hosts of the Datacenter since the last time the processing
      * of Cloudlets in this Host was updated.
      *
      * @return the total power consumed by all Hosts in the elapsed time span
      */
-    private double getHostsTotalPowerForTimeSpan() {
+    private double getDatacenterPowerUsageForTimeSpan() {
         final double timeSpan = getSimulation().clock() - getLastProcessTime();
-        double hostsTotalPowerForTimeSpan = 0;
+        double datacenterPowerUsageForTimeSpan = 0;
         for (PowerHostSimple host : this.<PowerHostSimple>getHostList()) {
             Log.printFormattedLine("%.2f: Host #%d", getSimulation().clock(), host.getId());
 
@@ -205,7 +205,7 @@ public class PowerDatacenterNonPowerAware extends PowerDatacenter {
 
             try {
                 hostPower = host.getMaxPower() * timeSpan;
-                hostsTotalPowerForTimeSpan += hostPower;
+                datacenterPowerUsageForTimeSpan += hostPower;
             } catch (Exception e) {
                 e.printStackTrace();
             }
@@ -222,7 +222,7 @@ public class PowerDatacenterNonPowerAware extends PowerDatacenter {
                     hostPower);
         }
 
-        return hostsTotalPowerForTimeSpan;
+        return datacenterPowerUsageForTimeSpan;
     }
 
 }

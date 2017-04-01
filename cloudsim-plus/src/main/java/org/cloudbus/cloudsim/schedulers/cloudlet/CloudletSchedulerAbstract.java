@@ -290,7 +290,7 @@ public abstract class CloudletSchedulerAbstract implements CloudletScheduler {
 
     @Override
     public int getCloudletStatus(int cloudletId) {
-        Optional<CloudletExecutionInfo> optional = findCloudletInAllLists(cloudletId);
+        final Optional<CloudletExecutionInfo> optional = findCloudletInAllLists(cloudletId);
         return optional
             .map(CloudletExecutionInfo::getCloudlet)
             .map(Cloudlet::getStatus)

@@ -161,7 +161,7 @@ final class DatacenterBrokerHeuristicRunner extends ExperimentRunner<DatacenterB
      * @return the created VMs PEs array
      */
     private int[] createVmPesArray() {
-        UniformDistr random = new UniformDistr(0, VM_PES_NUMBERS.length, getBaseSeed());
+        final UniformDistr random = new UniformDistr(0, VM_PES_NUMBERS.length, getBaseSeed());
         int[] pesArray = new int[VMS_TO_CREATE];
         int totalNumberOfPes = 0;
         for (int i = 0; i < VMS_TO_CREATE; i++) {

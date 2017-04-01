@@ -158,7 +158,7 @@ public class HostSimple implements Host {
     public double updateProcessing(double currentTime) {
         double nextSimulationTime = Double.MAX_VALUE;
         for (Vm vm : getVmList()) {
-            double time = vm.updateProcessing(currentTime, getVmScheduler().getAllocatedMipsForVm(vm));
+            final double time = vm.updateProcessing(currentTime, getVmScheduler().getAllocatedMipsForVm(vm));
             nextSimulationTime = Math.min(time, nextSimulationTime);
         }
 

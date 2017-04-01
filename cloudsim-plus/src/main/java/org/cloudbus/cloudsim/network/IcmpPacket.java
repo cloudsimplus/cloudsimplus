@@ -167,7 +167,7 @@ public class IcmpPacket implements NetworkPacket<SimEntity> {
             return "Empty IcmpPacket that contains no ping information.";
         }
 
-        int SIZE = 1000;   // number of chars
+        final int SIZE = 1000;   // number of chars
         StringBuilder sb = new StringBuilder(SIZE);
         sb.append("Ping information for ").append(name).append("\n");
         sb.append("Entity Name\tEntry Time\tExit Time\t Bandwidth\n");
@@ -185,10 +185,13 @@ public class IcmpPacket implements NetworkPacket<SimEntity> {
             sb.append(String.format("%s%s%s%s%s%s%s\n", entry, tab, tab, exit, tab, tab, bw));
         }
 
-        sb.append("\nRound Trip Time : ").append(num.format(getTotalResponseTime()));
-        sb.append(" seconds");
-        sb.append("\nNumber of Hops  : ").append(getNumberOfHops());
-        sb.append("\nBottleneck Bandwidth : ").append(bandwidth).append(" bits/s");
+        sb.append("\nRound Trip Time : ")
+            .append(num.format(getTotalResponseTime()))
+            .append(" seconds")
+            .append("\nNumber of Hops  : ")
+            .append(getNumberOfHops())
+            .append("\nBottleneck Bandwidth : ")
+            .append(bandwidth).append(" bits/s");
         return sb.toString();
     }
 
@@ -301,8 +304,8 @@ public class IcmpPacket implements NetworkPacket<SimEntity> {
      */
     public double getTotalResponseTime() {
         try {
-            double startTime = exitTimes.stream().findFirst().orElse(0.0);
-            double receiveTime = entryTimes.stream().findFirst().orElse(0.0);
+            final double startTime = exitTimes.stream().findFirst().orElse(0.0);
+            final double receiveTime = entryTimes.stream().findFirst().orElse(0.0);
             return receiveTime - startTime;
         } catch (Exception e) {
             return 0;
