@@ -6,7 +6,6 @@ import org.cloudbus.cloudsim.util.Conversion;
 import org.junit.Test;
 
 import java.util.List;
-import java.util.function.Function;
 import java.util.stream.IntStream;
 
 import static java.util.stream.Collectors.toList;
@@ -23,102 +22,102 @@ public class UtilizationModelDynamicTest {
      * For each second from 0 to this number, a {@link UtilizationModelDynamic#getUtilization(double)}
      * will be called to test the expected value.
      */
-    public static final int NUMBER_TIMES_TO_TEST_UTILIZATION = 10;
+    public static final int NUM_TIMES_TEST_USAGE = 10;
 
     @Test
     public void testGetUtilization_defaultConstructor() {
-        final double utilizationPercentageIncrement = 0.1, initialUtilization = 0;
-        UtilizationModelDynamic instance = createUtilizationModel(utilizationPercentageIncrement, initialUtilization);
-        checkUtilization(initialUtilization, utilizationPercentageIncrement, instance);
+        final double usagePercentInc = 0.1, initialUtilization = 0;
+        final UtilizationModelDynamic instance = createUtilizationModel(usagePercentInc, initialUtilization);
+        checkUtilization(initialUtilization, usagePercentInc, instance);
     }
 
     @Test
     public void testGetUtilization_twoParamConstructorDecreasingUtilization() {
-        final double utilizationPercentageIncrement = -0.1, initialUtilization = 0.5;
-        UtilizationModelDynamic instance = createUtilizationModel(utilizationPercentageIncrement, initialUtilization);
-        checkUtilization(initialUtilization, utilizationPercentageIncrement, instance);
+        final double usagePercentInc = -0.1, initialUtilization = 0.5;
+        final UtilizationModelDynamic instance = createUtilizationModel(usagePercentInc, initialUtilization);
+        checkUtilization(initialUtilization, usagePercentInc, instance);
     }
 
-    private UtilizationModelDynamic createUtilizationModel(double utilizationPercentageIncrement, double initialUtilization, int initialSimulationTime) {
-        List<Integer> times = IntStream.rangeClosed(initialSimulationTime, NUMBER_TIMES_TO_TEST_UTILIZATION).mapToObj(i -> i).collect(toList());
-        CloudSim simulation = CloudSimMocker.createMock(mocker -> mocker.clock(times));
+    private UtilizationModelDynamic createUtilizationModel(double usagePercentInc, double initUsage, int initSimulationTime) {
+        final List<Integer> times = IntStream.rangeClosed(initSimulationTime, NUM_TIMES_TEST_USAGE).mapToObj(i -> i).collect(toList());
+        final CloudSim simulation = CloudSimMocker.createMock(mocker -> mocker.clock(times));
 
-        UtilizationModelDynamic utilizationModel = new UtilizationModelDynamic(initialUtilization);
+        final UtilizationModelDynamic utilizationModel = new UtilizationModelDynamic(initUsage);
         utilizationModel
-          .setUtilizationUpdateFunction(um -> um.getUtilization() + um.getTimeSpan() * utilizationPercentageIncrement)
+          .setUtilizationUpdateFunction(um -> um.getUtilization() + um.getTimeSpan() * usagePercentInc)
           .setSimulation(simulation);
 
         return utilizationModel;
     }
 
-    private UtilizationModelDynamic createUtilizationModel(double utilizationPercentageIncrement, double initialUtilization) {
-        return createUtilizationModel(utilizationPercentageIncrement, initialUtilization, 0);
+    private UtilizationModelDynamic createUtilizationModel(double usagePercentInc, double initUsage) {
+        return createUtilizationModel(usagePercentInc, initUsage, 0);
     }
 
     @Test
     public void testGetUtilization_oneParamConstructor() {
-        final double utilizationPercentageIncrement = 0.2, initialUtilization = 0;
-        UtilizationModelDynamic instance = createUtilizationModel(utilizationPercentageIncrement, initialUtilization);
-        checkUtilization(initialUtilization, utilizationPercentageIncrement, instance);
+        final double usagePercentInc = 0.2, initUsage = 0;
+        final UtilizationModelDynamic instance = createUtilizationModel(usagePercentInc, initUsage);
+        checkUtilization(initUsage, usagePercentInc, instance);
     }
 
     @Test
     public void testGetUtilization_twoParamConstructor() {
-        final double utilizationPercentageIncrement = 0.2, initialUtilization = 0.5;
-        UtilizationModelDynamic instance = createUtilizationModel(utilizationPercentageIncrement, initialUtilization);
-        checkUtilization(initialUtilization, utilizationPercentageIncrement, instance);
+        final double usagePercentInc = 0.2, initUsage = 0.5;
+        final UtilizationModelDynamic instance = createUtilizationModel(usagePercentInc, initUsage);
+        checkUtilization(initUsage, usagePercentInc, instance);
     }
 
     @Test
     public void testGetUtilization_twoParamConstructorAndMaxUtilization() {
-        final double utilizationPercentageIncrement = 0.2, initialUtilization = 0.5;
-        final double maxUtilizationPercentage = 0.7;
-        UtilizationModelDynamic instance = createUtilizationModel(utilizationPercentageIncrement, initialUtilization);
+        final double usagePercentInc = 0.2, initUsage = 0.5;
+        final double maxUsagePercent = 0.7;
+        final UtilizationModelDynamic instance = createUtilizationModel(usagePercentInc, initUsage);
         checkUtilization(
-            initialUtilization, utilizationPercentageIncrement,
-            maxUtilizationPercentage, instance);
+            initUsage, usagePercentInc,
+            maxUsagePercent, instance);
     }
 
-    private void checkUtilization(final double initialUtilization, final double utilizationPercentageIncrement, UtilizationModelDynamic instance) {
-        checkUtilization(initialUtilization, utilizationPercentageIncrement,
+    private void checkUtilization(final double initUsage, final double usagePercentInc, UtilizationModelDynamic instance) {
+        checkUtilization(initUsage, usagePercentInc,
             Conversion.HUNDRED_PERCENT, instance);
     }
 
-    private void checkUtilization(final double initialUtilization,
-                                  final double utilizationPercentageIncrement,
-                                  final double maxUtilizationPercentage,
+    private void checkUtilization(final double initUsage,
+                                  final double usagePercentInc,
+                                  final double maxUsagePercent,
                                   UtilizationModelDynamic instance)
     {
-        instance.setMaxResourceUtilization(maxUtilizationPercentage);
-        IntStream.rangeClosed(0, NUMBER_TIMES_TO_TEST_UTILIZATION).forEach(time -> {
-            double expResult =
+        instance.setMaxResourceUtilization(maxUsagePercent);
+        IntStream.rangeClosed(0, NUM_TIMES_TEST_USAGE).forEach(time -> {
+            final double expResult =
                 computeExpectedUtilization(
-                    time, initialUtilization,
-                    utilizationPercentageIncrement,
-                    maxUtilizationPercentage);
-            double result = instance.getUtilization(time);
-            String msg = String.format("The utilization at time %d", time);
+                    time, initUsage,
+                    usagePercentInc,
+                    maxUsagePercent);
+            final double result = instance.getUtilization(time);
+            final String msg = String.format("The utilization at time %d", time);
             assertEquals(msg, expResult, result, 0.001);
         });
     }
 
     private double computeExpectedUtilization(double time, double initialUtilizationPercentage,
-                                              double utilizationPercentageIncrement, double maxUtilizationPercentage) {
+                                              double usagePercentInc, double maxUsagePercent) {
         final double utilizationPercentage =
-            initialUtilizationPercentage + (time * utilizationPercentageIncrement);
+            initialUtilizationPercentage + (time * usagePercentInc);
 
-        if (utilizationPercentageIncrement >= 0)
-            return Math.min(utilizationPercentage, maxUtilizationPercentage);
+        if (usagePercentInc >= 0) {
+            return Math.min(utilizationPercentage, maxUsagePercent);
+        }
 
         return Math.max(0, utilizationPercentage);
     }
 
     @Test
     public void testGetUtilization1() {
-        System.out.println("getUtilizationIncrementPerSecond");
         final double increment = 0.1;
         final int initialTime = 1;
-        UtilizationModelDynamic instance = createUtilizationModel(increment, 0, initialTime);
+        final UtilizationModelDynamic instance = createUtilizationModel(increment, 0, initialTime);
         assertEquals(increment, instance.getUtilization(initialTime), 0.0);
     }
 
@@ -127,7 +126,7 @@ public class UtilizationModelDynamicTest {
         final double increment = -0.1, initialUsage = 1;
         final double expResult = 0.9;
         final int initialTime = 1;
-        UtilizationModelDynamic instance = createUtilizationModel(increment, initialUsage, initialTime);
+        final UtilizationModelDynamic instance = createUtilizationModel(increment, initialUsage, initialTime);
         assertEquals(expResult, instance.getUtilization(initialTime), 0.0);
     }
 
@@ -135,7 +134,7 @@ public class UtilizationModelDynamicTest {
     public void testConstructor_zeroUtilizationPercentageIncrementPerSecond() {
         final double increment = 0, initialUsage = 0.1;
         final int initialTime = 1;
-        UtilizationModelDynamic instance = createUtilizationModel(increment, initialUsage, initialTime);
+        final UtilizationModelDynamic instance = createUtilizationModel(increment, initialUsage, initialTime);
         assertEquals(initialUsage, instance.getUtilization(initialTime), 0.0);
     }
 
@@ -161,17 +160,14 @@ public class UtilizationModelDynamicTest {
 
     @Test
     public void testTwoParamsConstructor_zeroInitialUtilization() {
-        UtilizationModelDynamic instance;
-        double expResult = 0;
-        instance = new UtilizationModelDynamic(0);
+        final double expResult = 0;
+        final UtilizationModelDynamic instance = new UtilizationModelDynamic(0);
         assertEquals(expResult, instance.getUtilization(), 0.0);
     }
 
     @Test
     public void testSetMaxResourceUsagePercentage() {
-        System.out.println("setMaxResourceUsagePercentage");
-
-        UtilizationModelDynamic instance = new UtilizationModelDynamic();
+        final UtilizationModelDynamic instance = new UtilizationModelDynamic();
         assertEquals(
             Conversion.HUNDRED_PERCENT,
             instance.getMaxResourceUtilization(), 0);
@@ -184,15 +180,14 @@ public class UtilizationModelDynamicTest {
 
     @Test(expected = IllegalArgumentException.class)
     public void testSetMaxResourceUsagePercentage_valueGreaterThanOne() {
-        UtilizationModelDynamic instance = new UtilizationModelDynamic();
+        final UtilizationModelDynamic instance = new UtilizationModelDynamic();
         instance.setMaxResourceUtilization(1.1);
     }
 
     @Test(expected = IllegalArgumentException.class)
     public void testSetMaxResourceUsagePercentage_negativeValue() {
-        UtilizationModelDynamic instance = new UtilizationModelDynamic();
+        final UtilizationModelDynamic instance = new UtilizationModelDynamic();
         instance.setMaxResourceUtilization(-1);
         instance.setMaxResourceUtilization(-0.1);
     }
-
 }

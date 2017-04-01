@@ -37,15 +37,13 @@ import org.cloudsimplus.testbeds.ExperimentRunner;
  */
 final class DynamicCloudletsArrivalRunner extends ExperimentRunner<DynamicCloudletsArrivalExperiment> {
 	@Override
-	protected void setup() {
-
-	}
+	protected void setup() {}
 
     @Override
     protected Map<String, List<Double>> createMetricsMap() {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
-    
+
 	@Override
 	protected DynamicCloudletsArrivalExperiment createExperiment(int i) {
 		return null;

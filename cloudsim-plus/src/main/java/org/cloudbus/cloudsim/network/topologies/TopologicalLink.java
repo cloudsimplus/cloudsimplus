@@ -21,22 +21,22 @@ public class TopologicalLink {
     /**
      * The BRITE id of the source node of the link.
      */
-    private int srcNodeID;
+    private final int srcNodeID;
 
     /**
      * The BRITE id of the destination node of the link.
      */
-    private int destNodeID;
+    private final int destNodeID;
 
     /**
      * The link delay of the connection.
      */
-    private double linkDelay;
+    private final double linkDelay;
 
     /**
      * The link bandwidth (bw).
      */
-    private double linkBw;
+    private final double linkBw;
 
     /**
      * Creates a new Topological Link.

@@ -91,7 +91,7 @@ abstract class CloudletSchedulerExperiment extends SimulationExperiment {
     static final long CLOUDLET_LENGHT_MI = 10000; //in Million Instructions (MI)
 
     private ContinuousDistribution cloudletPesPrng;
-    private int numberOfCloudletsToCreate;
+    private int numCloudletsToCreate;
 
     CloudletSchedulerExperiment(int index, ExperimentRunner runner) {
         super(index, runner);
@@ -102,8 +102,8 @@ abstract class CloudletSchedulerExperiment extends SimulationExperiment {
     public void printResults() {
         Log.enable();
         try {
-            System.out.printf("\nCloudlets: %d\n", numberOfCloudletsToCreate);
-            DatacenterBroker broker = getBrokerList().stream().findFirst().orElse(DatacenterBroker.NULL);
+            System.out.printf("\nCloudlets: %d\n", numCloudletsToCreate);
+            final DatacenterBroker broker = getBrokerList().stream().findFirst().orElse(DatacenterBroker.NULL);
             new PriorityCloudletsTableBuilder(broker.getCloudletsFinishedList()).build();
         } finally {
             Log.disable();
@@ -117,7 +117,7 @@ abstract class CloudletSchedulerExperiment extends SimulationExperiment {
 
     @Override
     protected List<Host> createHosts()  {
-        List<Host> list = new ArrayList<>(HOSTS_TO_CREATE);
+        final List<Host> list = new ArrayList<>(HOSTS_TO_CREATE);
         for (int i = 0; i < HOSTS_TO_CREATE; i++) {
             list.add(createHost(getHostList().size()+i));
         }
@@ -159,8 +159,8 @@ abstract class CloudletSchedulerExperiment extends SimulationExperiment {
 
     @Override
     protected List<Cloudlet> createCloudlets(DatacenterBroker broker) {
-        List<Cloudlet> list = new ArrayList<>(numberOfCloudletsToCreate);
-        for(int i = 0; i < numberOfCloudletsToCreate; i++) {
+        final List<Cloudlet> list = new ArrayList<>(numCloudletsToCreate);
+        for(int i = 0; i < numCloudletsToCreate; i++) {
             list.add(createCloudlet(broker));
         }
 
@@ -179,7 +179,7 @@ abstract class CloudletSchedulerExperiment extends SimulationExperiment {
         final int cloudletPes = (int)cloudletPesPrng.sample();
         //Defines how CPU, RAM and Bandwidth resources are used
         //Sets the same utilization model for all these resources.
-        UtilizationModel utilization = new UtilizationModelFull();
+        final UtilizationModel utilization = new UtilizationModelFull();
         return new CloudletSimple(CLOUDLET_LENGHT_MI, cloudletPes)
             .setFileSize(fileSize)
             .setOutputSize(outputSize)
@@ -196,12 +196,12 @@ abstract class CloudletSchedulerExperiment extends SimulationExperiment {
         return this;
     }
 
-    public CloudletSchedulerExperiment setNumberOfCloudletsToCreate(int numberOfCloudletsToCreate) {
-        this.numberOfCloudletsToCreate = numberOfCloudletsToCreate;
+    public CloudletSchedulerExperiment setNumCloudletsToCreate(int numCloudletsToCreate) {
+        this.numCloudletsToCreate = numCloudletsToCreate;
         return this;
     }
 
-    public int getNumberOfCloudletsToCreate() {
-        return numberOfCloudletsToCreate;
+    public int getNumCloudletsToCreate() {
+        return numCloudletsToCreate;
     }
 }
