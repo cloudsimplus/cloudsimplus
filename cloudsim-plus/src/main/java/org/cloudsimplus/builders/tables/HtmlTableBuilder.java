@@ -45,7 +45,7 @@ public class HtmlTableBuilder extends AbstractTableBuilder {
     }
 
     @Override
-    protected void printTableOpenning() {
+    protected void printTableOpening() {
         Log.printLine("\n<table>");
     }
 
@@ -55,7 +55,7 @@ public class HtmlTableBuilder extends AbstractTableBuilder {
     }
 
     @Override
-    protected void printRowOpenning() {
+    protected void printRowOpening() {
         Log.printLine("  <tr>");
     }
 

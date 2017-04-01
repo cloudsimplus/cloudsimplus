@@ -52,7 +52,7 @@ public class TextTableBuilder extends CsvTableBuilder {
     }
 
     @Override
-    public void printTableOpenning() {
+    public void printTableOpening() {
         Log.printLine();
     }
 

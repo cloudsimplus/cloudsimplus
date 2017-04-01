@@ -10,7 +10,6 @@ package org.cloudbus.cloudsim.selectionpolicies.power;
 
 import org.cloudbus.cloudsim.hosts.power.PowerHost;
 import org.cloudbus.cloudsim.vms.Vm;
-import org.cloudbus.cloudsim.vms.power.PowerVm;
 
 import java.util.Comparator;
 import java.util.List;
@@ -37,17 +36,17 @@ import java.util.function.Predicate;
 public class PowerVmSelectionPolicyMinimumUtilization extends PowerVmSelectionPolicy {
     @Override
     public Vm getVmToMigrate(PowerHost host) {
-        List<? extends Vm> migratableVms = getMigratableVms(host);
+        final List<? extends Vm> migratableVms = getMigratableVms(host);
         if (migratableVms.isEmpty()) {
             return Vm.NULL;
         }
 
         final Predicate<Vm> inMigration = Vm::isInMigration;
-        final Comparator<? super Vm> totalCpuUsageComparator =
+        final Comparator<? super Vm> cpuUsageComparator =
             Comparator.comparingDouble(vm -> vm.getCpuPercentUse(vm.getSimulation().clock()));
-        Optional<? extends Vm> optional = migratableVms.stream()
+        final Optional<? extends Vm> optional = migratableVms.stream()
             .filter(inMigration.negate())
-            .min(totalCpuUsageComparator);
+            .min(cpuUsageComparator);
         return (optional.isPresent() ? optional.get() : Vm.NULL);
     }
 

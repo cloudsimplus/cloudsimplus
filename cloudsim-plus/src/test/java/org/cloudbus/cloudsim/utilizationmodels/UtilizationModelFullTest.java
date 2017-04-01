@@ -10,19 +10,18 @@ import static org.junit.Assert.*;
  */
 public class UtilizationModelFullTest {
     private static final int EXPECTED_UTILIZATION = 1;
-    
+
     @Test
     public void testGetUtilizationForDifferentTimes() {
-        System.out.println("getUtilization");
         UtilizationModelFull instance = new UtilizationModelFull();
-        String msg = 
+        String msg =
             String.format(
-                "For any time (even a randomly defined one), the utilization has to be equals to %d", 
+                "For any time (even a randomly defined one), the utilization has to be equals to %d",
                 EXPECTED_UTILIZATION);
         IntStream.range(0, 10000).forEach(time -> {
-            assertEquals(msg, 
+            assertEquals(msg,
                     EXPECTED_UTILIZATION, instance.getUtilization(time), 0.0);
         });
     }
-    
+
 }

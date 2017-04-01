@@ -100,7 +100,7 @@ public abstract class AbstractTableBuilder implements TableBuilder {
     }
 
     private void printRow(final List<Object> row) {
-        printRowOpenning();
+        printRowOpening();
         for(int i = 0; i < Math.min(getColumns().size(), row.size()); i++){
             Log.print(getColumns().get(i).generateData(row.get(i)));
         }
@@ -109,7 +109,7 @@ public abstract class AbstractTableBuilder implements TableBuilder {
 
     @Override
     public void print() {
-        printTableOpenning();
+        printTableOpening();
         printTitle();
         printColumnHeaders();
         getRows().forEach(this::printRow);
@@ -117,11 +117,11 @@ public abstract class AbstractTableBuilder implements TableBuilder {
     }
 
     protected void printColumnHeaders(){
-        printRowOpenning();
+        printRowOpening();
         getColumns().forEach(col -> Log.print(col.generateTitleHeader()));
         printRowClosing();
         if(isThereAnySubtitledColumn()){
-            printRowOpenning();
+            printRowOpening();
             getColumns().forEach(col -> Log.print(col.generateSubtitleHeader()));
             printRowClosing();
         }
@@ -130,7 +130,7 @@ public abstract class AbstractTableBuilder implements TableBuilder {
     /**
      * Prints the string to open the table.
      */
-    protected abstract void printTableOpenning();
+    protected abstract void printTableOpening();
 
     /**
      * Prints the table title.
@@ -140,7 +140,7 @@ public abstract class AbstractTableBuilder implements TableBuilder {
     /**
      * Prints the string that has to precede each printed row.
      */
-    protected abstract void printRowOpenning();
+    protected abstract void printRowOpening();
 
     /**
      * Prints the string to close a row.
