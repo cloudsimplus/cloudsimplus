@@ -11,7 +11,6 @@ public class ResourceTest {
 
     @Test
     public void testNullObject() {
-        System.out.println("testNullObject");
         checkNullObject(ResourceManageable.NULL);
     }
 

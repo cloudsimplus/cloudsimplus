@@ -23,8 +23,8 @@ public final class ResourceLoader {
      * @return the absolute path of the resource
      */
     public static String getResourcePath(Class klass, String name) {
-        URL resource = klass.getClassLoader().getResource(name);
-        String folder = (resource == null ? "" : resource.getPath());
+        final URL resource = klass.getClassLoader().getResource(name);
+        final String folder = (resource == null ? "" : resource.getPath());
         return (folder == null ? "" : folder);
     }
 

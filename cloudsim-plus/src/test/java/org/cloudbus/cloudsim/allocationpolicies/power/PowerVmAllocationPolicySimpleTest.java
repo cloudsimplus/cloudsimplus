@@ -16,7 +16,6 @@ public class PowerVmAllocationPolicySimpleTest {
 
     @Test
     public void testOptimizeAllocation() {
-        System.out.println("optimizeAllocation");
         final List<PowerHost> hosts = new ArrayList<>();
         hosts.add(PowerHost.NULL);
         final PowerVmAllocationPolicySimple instance = new PowerVmAllocationPolicySimple();

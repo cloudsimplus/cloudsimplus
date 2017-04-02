@@ -8,43 +8,85 @@ import org.cloudbus.cloudsim.datacenters.Datacenter;
  * execution history on each Datacenter is registered at {@link CloudletAbstract#getLastExecutionInDatacenterInfo()}
  */
 final class ExecutionInDatacenterInfo {
-    static final ExecutionInDatacenterInfo NULL = new ExecutionInDatacenterInfo();
+    protected static final ExecutionInDatacenterInfo NULL = new ExecutionInDatacenterInfo();
+
+    private double arrivalTime;
+    private double wallClockTime;
+    private double actualCpuTime;
+    private double costPerSec;
+    private long finishedSoFar;
+    private Datacenter datacenter;
+
+    ExecutionInDatacenterInfo() {
+        this.datacenter = Datacenter.NULL;
+        this.arrivalTime = Cloudlet.NOT_ASSIGNED;
+    }
 
     /**
      * Cloudlet's submission (arrival) time to a Datacenter
      * or {@link Cloudlet#NOT_ASSIGNED} if the Cloudlet was not assigned to a Datacenter yet.
      */
-    double arrivalTime;
+    double getArrivalTime() {
+        return arrivalTime;
+    }
+
+    void setArrivalTime(double arrivalTime) {
+        this.arrivalTime = arrivalTime;
+    }
 
     /**
      * The time this Cloudlet resides in a Datacenter (from arrival time
      * until departure time, that may include waiting time).
      */
-    double wallClockTime;
+    double getWallClockTime() {
+        return wallClockTime;
+    }
+
+    void setWallClockTime(double wallClockTime) {
+        this.wallClockTime = wallClockTime;
+    }
 
     /**
      * The total time the Cloudlet spent being executed in a Datacenter.
      */
-    double actualCpuTime;
+    double getActualCpuTime() {
+        return actualCpuTime;
+    }
+
+    void setActualCpuTime(double actualCpuTime) {
+        this.actualCpuTime = actualCpuTime;
+    }
 
     /**
      * Cost per second a Datacenter charge to execute this Cloudlet.
      */
-    double costPerSec;
+    double getCostPerSec() {
+        return costPerSec;
+    }
+
+    void setCostPerSec(double costPerSec) {
+        this.costPerSec = costPerSec;
+    }
 
     /**
      * Cloudlet's length finished so far (in MI).
      */
-    long finishedSoFar;
+    long getFinishedSoFar() {
+        return finishedSoFar;
+    }
 
+    void setFinishedSoFar(long finishedSoFar) {
+        this.finishedSoFar = finishedSoFar;
+    }
 
     /**
      * a Datacenter where the Cloudlet will be executed
      */
-    Datacenter dc;
+    Datacenter getDatacenter() {
+        return datacenter;
+    }
 
-    ExecutionInDatacenterInfo() {
-        this.dc = Datacenter.NULL;
-        this.arrivalTime = Cloudlet.NOT_ASSIGNED;
+    void setDatacenter(Datacenter datacenter) {
+        this.datacenter = datacenter;
     }
 }

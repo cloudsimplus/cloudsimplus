@@ -18,17 +18,16 @@ public class RamTest {
     private static final long DOUBLE_CAPACITY = CAPACITY*2;
 
     private static final long HALF_CAPACITY = CAPACITY/2;
-    private static final long QUARTER_OF_CAPACITY = CAPACITY/4;
-    private static final long THREE_QUARTERS_OF_CAPACITY = QUARTER_OF_CAPACITY * 3;
+    private static final long QUARTER_CAPACITY = CAPACITY/4;
+    private static final long THREE_QUARTERS_CAPACITY = QUARTER_CAPACITY * 3;
 
     private Ram createResource() {
-        Ram instance = new Ram(CAPACITY);
-        return instance;
+        return new Ram(CAPACITY);
     }
 
     @Test
     public void testIsFull() {
-        Ram ram = createResource();
+        final Ram ram = createResource();
         assertFalse(ram.isFull());
         ram.allocateResource(HALF_CAPACITY);
         assertFalse(ram.isFull());
@@ -38,7 +37,6 @@ public class RamTest {
 
     @Test
     public void testGetAndSetCapacityPriorToAllocateResource() {
-        System.out.println("testGetAndSetCapacityPriorToAllocateResource");
         long expResult = CAPACITY;
         final Ram instance = createResource();
         long result = instance.getCapacity();
@@ -57,7 +55,6 @@ public class RamTest {
 
     @Test
     public void testGetAndSetCapacityAfterToAllocateResource() {
-        System.out.println("testGetAndSetCapacityAfterToAllocateResource");
         final Ram instance = createResource();
         assertEquals(CAPACITY, instance.getCapacity());
 
@@ -85,7 +82,7 @@ public class RamTest {
         final long allocated = HALF_CAPACITY;
         instance.allocateResource(allocated);
         assertEquals(allocated, instance.getAllocatedResource());
-        newCapacity = QUARTER_OF_CAPACITY;
+        newCapacity = QUARTER_CAPACITY;
         result = instance.setCapacity(newCapacity);
         assertFalse(result);
 
@@ -97,10 +94,9 @@ public class RamTest {
 
     @Test
     public void testAllocateResourceInvalidAllocations() {
-        System.out.println("testAllocateResourceInvalidAllocations");
         final Ram instance = createResource();
         assertEquals(CAPACITY, instance.getCapacity());
-        long allocation = 0;
+        final long allocation = 0;
 
         //try allocated an invalid amount
         boolean result = instance.allocateResource(0);
@@ -121,11 +117,12 @@ public class RamTest {
     @Test
     public void testAllocateResourceMultipleAllocations1() {
         final Ram instance = createResource();
-        long allocation = 0, totalAllocation = 0;
+        long allocation = 0;
+        long totalAllocation = 0;
         assertEquals(allocation, instance.getAllocatedResource());
 
         //allocate a valid amount
-        allocation = THREE_QUARTERS_OF_CAPACITY;
+        allocation = THREE_QUARTERS_CAPACITY;
         totalAllocation += allocation;
         boolean result = instance.allocateResource(allocation);
         assertTrue(result);
@@ -133,21 +130,21 @@ public class RamTest {
         assertEquals(CAPACITY, instance.getCapacity());
 
         //try to allocate an amount not available anymore
-        allocation = THREE_QUARTERS_OF_CAPACITY;
+        allocation = THREE_QUARTERS_CAPACITY;
         result = instance.allocateResource(allocation);
         assertFalse(result);
         //the allocated amount has keep unchanged, with the same value of the first allocation
         assertEquals(totalAllocation, instance.getAllocatedResource());
 
         //try to allocate an available amount
-        allocation = QUARTER_OF_CAPACITY;
+        allocation = QUARTER_CAPACITY;
         totalAllocation += allocation;
         result = instance.allocateResource(allocation);
         assertTrue(result);
         assertEquals(totalAllocation, instance.getAllocatedResource());
 
         //try to allocate an amount not available anymore
-        allocation = QUARTER_OF_CAPACITY;
+        allocation = QUARTER_CAPACITY;
         result = instance.allocateResource(allocation);
         assertFalse(result);
         //the allocated amount has keep unchanged, with the same value of the first allocation
@@ -157,12 +154,13 @@ public class RamTest {
     @Test
     public void testAllocateResourceMultipleAllocations2() {
         final Ram instance = createResource();
-        long totalAllocation = 0, totalAvailable = CAPACITY;
+        long totalAllocation = 0;
+        long totalAvailable = CAPACITY;
         assertEquals(CAPACITY, instance.getCapacity());
         assertEquals(totalAvailable, instance.getAvailableResource());
         assertEquals(0, instance.getAllocatedResource());
 
-        final long allocation = QUARTER_OF_CAPACITY;
+        final long allocation = QUARTER_CAPACITY;
         for(int i = 1; i <= 4; i++){
             //checks the available and allocated amount before allocation
             assertEquals(totalAvailable, instance.getAvailableResource());
@@ -197,7 +195,6 @@ public class RamTest {
 
     @Test
     public void testSetAvailableResource() {
-        System.out.println("setAvailableResource");
         final Ram instance = createResource();
         assertEquals(CAPACITY, instance.getCapacity());
         assertEquals(CAPACITY, instance.getAvailableResource());
@@ -233,7 +230,6 @@ public class RamTest {
 
     @Test
     public void testGetAllocatedResource() {
-        System.out.println("getAllocatedResource");
         final Ram instance = createResource();
         long expResult = 0;
         long result = instance.getAllocatedResource();
@@ -259,7 +255,6 @@ public class RamTest {
 
     @Test
     public void testSetAllocatedResource() {
-        System.out.println("setAllocatedResource");
         final Ram instance = createResource();
         assertEquals(0, instance.getAllocatedResource());
 
@@ -267,11 +262,11 @@ public class RamTest {
         assertTrue(instance.setAllocatedResource(newTotalAllocatedResource));
         assertEquals(newTotalAllocatedResource, instance.getAllocatedResource());
 
-        newTotalAllocatedResource = QUARTER_OF_CAPACITY;
+        newTotalAllocatedResource = QUARTER_CAPACITY;
         assertTrue(instance.setAllocatedResource(newTotalAllocatedResource));
         assertEquals(newTotalAllocatedResource, instance.getAllocatedResource());
 
-        newTotalAllocatedResource = THREE_QUARTERS_OF_CAPACITY;
+        newTotalAllocatedResource = THREE_QUARTERS_CAPACITY;
         assertTrue(instance.setAllocatedResource(newTotalAllocatedResource));
         assertEquals(newTotalAllocatedResource, instance.getAllocatedResource());
 
@@ -289,7 +284,6 @@ public class RamTest {
 
     @Test
     public void testDeallocateResource() {
-        System.out.println("deallocateResource");
         final Ram instance = createResource();
         assertEquals(0, instance.getAllocatedResource());
 
@@ -316,7 +310,6 @@ public class RamTest {
 
     @Test
     public void testSumAvailableResource() {
-        System.out.println("sumAvailableResource");
         final Ram instance = createResource();
         assertEquals(CAPACITY, instance.getAvailableResource());
 
@@ -325,8 +318,8 @@ public class RamTest {
         assertEquals(CAPACITY, instance.getAvailableResource());
 
         //decrease available resource (use of a negative value)
-        long amountToSum = -QUARTER_OF_CAPACITY;
-        long expResult = THREE_QUARTERS_OF_CAPACITY;
+        long amountToSum = -QUARTER_CAPACITY;
+        long expResult = THREE_QUARTERS_CAPACITY;
         assertTrue(instance.sumAvailableResource(amountToSum));
         assertEquals(expResult, instance.getAvailableResource());
 
@@ -340,7 +333,7 @@ public class RamTest {
         assertTrue(instance.allocateResource(CAPACITY));
 
         //increase available resource
-        amountToSum = QUARTER_OF_CAPACITY;
+        amountToSum = QUARTER_CAPACITY;
         long totalAvailable = 0;
         for(int i = 1; i <= 4; i++) {
             totalAvailable += amountToSum;
@@ -354,7 +347,6 @@ public class RamTest {
 
     @Test
     public void testDeallocateAllResources() {
-        System.out.println("deallocateAllResources");
         final Ram instance = createResource();
         long deallocated = 0;
         assertEquals(deallocated, instance.getAllocatedResource());
@@ -369,7 +361,6 @@ public class RamTest {
 
     @Test
     public void testIsResourceAmountAvailable() {
-        System.out.println("isResourceAmountAvailable");
         final Ram instance = createResource();
         assertTrue(instance.isResourceAmountAvailable(HALF_CAPACITY));
         assertTrue(instance.isResourceAmountAvailable(CAPACITY));
@@ -378,7 +369,7 @@ public class RamTest {
         assertTrue(instance.allocateResource(allocated));
         assertTrue(instance.isResourceAmountAvailable(allocated));
 
-        allocated = QUARTER_OF_CAPACITY;
+        allocated = QUARTER_CAPACITY;
         assertTrue(instance.allocateResource(allocated));
         assertTrue(instance.isResourceAmountAvailable(allocated));
         assertFalse(instance.isResourceAmountAvailable(HALF_CAPACITY));
@@ -386,18 +377,16 @@ public class RamTest {
 
     @Test
     public void testIsResourceAmountBeingUsed() {
-        System.out.println("isResourceAmountBeingUsed");
         final Ram instance = createResource();
         assertEquals(0, instance.getAllocatedResource());
         assertTrue(instance.allocateResource(HALF_CAPACITY));
-        assertTrue(instance.isResourceAmountBeingUsed(QUARTER_OF_CAPACITY));
+        assertTrue(instance.isResourceAmountBeingUsed(QUARTER_CAPACITY));
         assertTrue(instance.isResourceAmountBeingUsed(HALF_CAPACITY));
-        assertFalse(instance.isResourceAmountBeingUsed(THREE_QUARTERS_OF_CAPACITY));
+        assertFalse(instance.isResourceAmountBeingUsed(THREE_QUARTERS_CAPACITY));
         assertFalse(instance.isResourceAmountBeingUsed(CAPACITY));
     }
 
     public void testIsSuitable() {
-        System.out.println("isSuitable");
         final Ram instance = createResource();
         assertEquals(0, instance.getAllocatedResource());
         final long allocated = HALF_CAPACITY;
@@ -412,11 +401,11 @@ public class RamTest {
         assertTrue(instance.isSuitable(HALF_CAPACITY));
         assertTrue(instance.isSuitable(HALF_CAPACITY));
 
-        assertTrue(instance.isSuitable(THREE_QUARTERS_OF_CAPACITY));
+        assertTrue(instance.isSuitable(THREE_QUARTERS_CAPACITY));
 
         //allocate more resources
-        assertTrue(instance.allocateResource(QUARTER_OF_CAPACITY));
+        assertTrue(instance.allocateResource(QUARTER_CAPACITY));
         assertFalse(instance.isSuitable(HALF_CAPACITY));
-        assertTrue(instance.isSuitable(QUARTER_OF_CAPACITY));
+        assertTrue(instance.isSuitable(QUARTER_CAPACITY));
     }
 }

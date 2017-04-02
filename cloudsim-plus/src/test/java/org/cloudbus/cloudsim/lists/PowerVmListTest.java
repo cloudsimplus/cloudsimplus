@@ -74,7 +74,7 @@ public class PowerVmListTest {
         VmList.sortByCpuUtilization(list, 0);
 
         int i = NUMBER_OF_VMS;
-        for(PowerVm vm: list) {
+        for(final PowerVm vm: list) {
             i--;
             System.out.println("Vm "+vm.getId());
             String msg = String.format(

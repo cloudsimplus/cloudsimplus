@@ -20,11 +20,6 @@ import java.util.Map;
 public final class ExecutionTimeMeasurer {
 
     /**
-     * A private constructor to avoid class instantiation.
-     */
-    private ExecutionTimeMeasurer(){}
-
-    /**
      * A map of execution start times where each key
      * represents the name of the method/process and each key is the
      * time the method/process started (in milliseconds).
@@ -32,6 +27,11 @@ public final class ExecutionTimeMeasurer {
      * it easy to identify the execution start times into the map.
      */
     private static final Map<String, Long> executionStartTimes = new HashMap<>();
+
+    /**
+     * A private constructor to avoid class instantiation.
+     */
+    private ExecutionTimeMeasurer(){}
 
     /**
      * Starts measuring the execution time of a method/process.
@@ -53,7 +53,7 @@ public final class ExecutionTimeMeasurer {
      * @see #getExecutionStartTimes()
      */
     public static double end(String name) {
-        double executionTime = (System.currentTimeMillis() - getExecutionStartTimes().get(name)) / 1000.0;
+        final double executionTime = (System.currentTimeMillis() - getExecutionStartTimes().get(name)) / 1000.0;
         getExecutionStartTimes().remove(name);
         return executionTime;
     }

@@ -274,7 +274,7 @@ public abstract class CloudletAbstract implements Cloudlet {
         }
 
         // use the latest resource submission time
-        final double subTime = getLastExecutionInDatacenterInfo().arrivalTime;
+        final double subTime = getLastExecutionInDatacenterInfo().getArrivalTime();
         return execStartTime - subTime;
     }
 
@@ -312,7 +312,7 @@ public abstract class CloudletAbstract implements Cloudlet {
 
     @Override
     public long getFinishedLengthSoFar(final Datacenter datacenter) {
-        return getDatacenterInfo(datacenter).finishedSoFar;
+        return getDatacenterInfo(datacenter).getFinishedSoFar();
     }
 
     @Override
@@ -321,7 +321,7 @@ public abstract class CloudletAbstract implements Cloudlet {
             return 0;
         }
 
-        return Math.min(getLastExecutionInDatacenterInfo().finishedSoFar, getLength());
+        return Math.min(getLastExecutionInDatacenterInfo().getFinishedSoFar(), getLength());
     }
 
     @Override
@@ -330,7 +330,7 @@ public abstract class CloudletAbstract implements Cloudlet {
             return false;
         }
 
-        return getLastExecutionInDatacenterInfo().finishedSoFar >= getLength();
+        return getLastExecutionInDatacenterInfo().getFinishedSoFar() >= getLength();
     }
 
     @Override
@@ -339,7 +339,7 @@ public abstract class CloudletAbstract implements Cloudlet {
             return false;
         }
 
-        getLastExecutionInDatacenterInfo().finishedSoFar = Math.min(length, this.getLength());
+        getLastExecutionInDatacenterInfo().setFinishedSoFar(Math.min(length, this.getLength()));
 
         write("Set the length's finished so far to %d", length);
 
@@ -374,7 +374,7 @@ public abstract class CloudletAbstract implements Cloudlet {
 
     @Override
     public Datacenter getLastDatacenter() {
-        return getLastExecutionInDatacenterInfo().dc;
+        return getLastExecutionInDatacenterInfo().getDatacenter();
     }
 
     private ExecutionInDatacenterInfo getLastExecutionInDatacenterInfo() {
@@ -413,8 +413,8 @@ public abstract class CloudletAbstract implements Cloudlet {
         }
 
         final ExecutionInDatacenterInfo datacenter = getLastExecutionInDatacenterInfo();
-        datacenter.wallClockTime = wallTime;
-        datacenter.actualCpuTime = actualCpuTime;
+        datacenter.setWallClockTime(wallTime);
+        datacenter.setActualCpuTime(actualCpuTime);
 
         write("Sets the wall clock time to %s and the actual CPU time to %s",
             num.format(wallTime), num.format(actualCpuTime));
@@ -451,22 +451,22 @@ public abstract class CloudletAbstract implements Cloudlet {
 
     @Override
     public double getCostPerSec() {
-        return getLastExecutionInDatacenterInfo().costPerSec;
+        return getLastExecutionInDatacenterInfo().getCostPerSec();
     }
 
     @Override
     public double getCostPerSec(final Datacenter datacenter) {
-        return getDatacenterInfo(datacenter).costPerSec;
+        return getDatacenterInfo(datacenter).getCostPerSec();
     }
 
     @Override
     public double getWallClockTimeInLastExecutedDatacenter() {
-        return getLastExecutionInDatacenterInfo().wallClockTime;
+        return getLastExecutionInDatacenterInfo().getWallClockTime();
     }
 
     @Override
     public double getActualCpuTime(final Datacenter datacenter) {
-        return getDatacenterInfo(datacenter).actualCpuTime;
+        return getDatacenterInfo(datacenter).getActualCpuTime();
     }
 
     @Override
@@ -480,12 +480,12 @@ public abstract class CloudletAbstract implements Cloudlet {
 
     @Override
     public double getArrivalTime(final Datacenter datacenter) {
-        return getDatacenterInfo(datacenter).arrivalTime;
+        return getDatacenterInfo(datacenter).getArrivalTime();
     }
 
     @Override
     public double getWallClockTime(final Datacenter datacenter) {
-        return getDatacenterInfo(datacenter).wallClockTime;
+        return getDatacenterInfo(datacenter).getWallClockTime();
     }
 
     /**
@@ -499,7 +499,7 @@ public abstract class CloudletAbstract implements Cloudlet {
      */
     private ExecutionInDatacenterInfo getDatacenterInfo(final int datacenterId) {
         return executionInDatacenterInfoList.stream()
-            .filter(info -> info.dc.getId() == datacenterId)
+            .filter(info -> info.getDatacenter().getId() == datacenterId)
             .findFirst().orElse(ExecutionInDatacenterInfo.NULL);
     }
 
@@ -625,7 +625,7 @@ public abstract class CloudletAbstract implements Cloudlet {
      */
     private double getTotalCpuCostForAllDatacenters() {
         return executionInDatacenterInfoList.stream()
-            .mapToDouble(dcInfo -> dcInfo.actualCpuTime * dcInfo.costPerSec)
+            .mapToDouble(dcInfo -> dcInfo.getActualCpuTime() * dcInfo.getCostPerSec())
             .sum();
     }
 
@@ -842,21 +842,21 @@ public abstract class CloudletAbstract implements Cloudlet {
     @Override
     public void assignToDatacenter(final Datacenter datacenter) {
         final ExecutionInDatacenterInfo dcInfo = new ExecutionInDatacenterInfo();
-        dcInfo.dc = datacenter;
-        dcInfo.costPerSec = datacenter.getCharacteristics().getCostPerSecond();
+        dcInfo.setDatacenter(datacenter);
+        dcInfo.setCostPerSec(datacenter.getCharacteristics().getCostPerSecond());
 
         // add into a list if moving to a new cloud Datacenter
         executionInDatacenterInfoList.add(dcInfo);
 
         if (isRecordTransactionHistory()) {
             if (isAssignedToDatacenter()) {
-                final Datacenter oldDc = getLastExecutionInDatacenterInfo().dc;
+                final Datacenter oldDc = getLastExecutionInDatacenterInfo().getDatacenter();
                 write("Moves Cloudlet from %s (ID #%d) to %s (ID #%d) with cost = $%.2f/sec",
-                    oldDc.getName(), oldDc.getId(), dcInfo.dc.getName(), dcInfo.dc.getId(), dcInfo.costPerSec);
+                    oldDc.getName(), oldDc.getId(), dcInfo.getDatacenter().getName(), dcInfo.getDatacenter().getId(), dcInfo.getCostPerSec());
 
             } else {
                 write("Allocates this Cloudlet to %s (ID #%d) with cost = $%.2f/sec",
-                    dcInfo.dc.getName(), dcInfo.dc.getId(), dcInfo.costPerSec);
+                    dcInfo.getDatacenter().getName(), dcInfo.getDatacenter().getId(), dcInfo.getCostPerSec());
             }
         }
 
@@ -873,9 +873,9 @@ public abstract class CloudletAbstract implements Cloudlet {
         }
 
         final ExecutionInDatacenterInfo dcInfo = executionInDatacenterInfoList.get(lastExecutedDatacenterIdx);
-        dcInfo.arrivalTime = getSimulation().clock();
+        dcInfo.setArrivalTime(getSimulation().clock());
 
-        return dcInfo.arrivalTime;
+        return dcInfo.getArrivalTime();
     }
 
     @Override
@@ -885,7 +885,7 @@ public abstract class CloudletAbstract implements Cloudlet {
 
     @Override
     public double getLastDatacenterArrivalTime() {
-        return getLastExecutionInDatacenterInfo().arrivalTime;
+        return getLastExecutionInDatacenterInfo().getArrivalTime();
     }
 
     @Override

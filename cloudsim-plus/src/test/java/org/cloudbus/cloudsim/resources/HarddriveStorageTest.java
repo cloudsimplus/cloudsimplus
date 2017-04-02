@@ -317,9 +317,8 @@ public class HarddriveStorageTest {
 
     @Test
     public void testSetMaxTransferRate() {
-        System.out.println("setMaxTransferRate");
         final HarddriveStorage instance = createHardDrive();
-        int rate = 1;
+        final int rate = 1;
         assertTrue(instance.setMaxTransferRate(rate));
         assertEquals(rate, instance.getMaxTransferRate(), 0);
 

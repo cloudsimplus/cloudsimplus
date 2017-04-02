@@ -14,9 +14,8 @@ public class UtilizationModelNullTest {
 
     @Test
     public void testGetUtilizationForDifferentTimes() {
-        System.out.println("getUtilization");
-        UtilizationModel instance = UtilizationModel.NULL;
-        String msg =
+        final UtilizationModel instance = UtilizationModel.NULL;
+        final String msg =
             String.format(
                 "For any time (even a randomly defined one), the utilization has to be equals to %d",
                 EXPECTED_UTILIZATION);

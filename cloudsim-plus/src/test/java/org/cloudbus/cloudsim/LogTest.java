@@ -23,11 +23,19 @@ import static org.junit.Assert.*;
  * @since CloudSim Toolkit 2.0
  */
 public class LogTest {
-
     private static final ByteArrayOutputStream OUTPUT = new ByteArrayOutputStream();
     private static final String LINE_SEPARATOR = System.getProperty("line.separator");
     private static final DecimalFormatSymbols dfs
         = DecimalFormatSymbols.getInstance(Locale.getDefault(Locale.Category.FORMAT));
+
+    private static final String S123 = "123.0";
+    private static final String TEST_S_TEST = "test %s test";
+    private static final String TEST_TEST = "test test";
+    private static final String NUMBERS = "123";
+    public static final String TEST = "test";
+    public static final String TEST_TEST_TEST = "test test test";
+    public static final String FORMAT_D = "%d";
+    public static final String FORMAT_F = "%.2f";
 
     @Before
     public void setUp() throws Exception {
@@ -36,79 +44,79 @@ public class LogTest {
 
     @Test
     public void testPrint() throws IOException {
-        Log.print("test test");
-        assertEquals("test test", OUTPUT.toString());
+        Log.print(TEST_TEST);
+        assertEquals(TEST_TEST, OUTPUT.toString());
         OUTPUT.reset();
 
         Log.print(123);
-        assertEquals("123", OUTPUT.toString());
+        assertEquals(NUMBERS, OUTPUT.toString());
         OUTPUT.reset();
 
         Log.print(123L);
-        assertEquals("123", OUTPUT.toString());
+        assertEquals(NUMBERS, OUTPUT.toString());
         OUTPUT.reset();
 
         Log.print(123.0);
-        assertEquals("123.0", OUTPUT.toString());
+        assertEquals(S123, OUTPUT.toString());
         OUTPUT.reset();
     }
 
     @Test
     public void testPrintLine() throws IOException {
-        Log.printLine("test test");
-        assertEquals("test test" + LINE_SEPARATOR, OUTPUT.toString());
+        Log.printLine(TEST_TEST);
+        assertEquals(TEST_TEST + LINE_SEPARATOR, OUTPUT.toString());
         OUTPUT.reset();
 
         Log.printLine(123);
-        assertEquals("123" + LINE_SEPARATOR, OUTPUT.toString());
+        assertEquals(NUMBERS + LINE_SEPARATOR, OUTPUT.toString());
         OUTPUT.reset();
 
         Log.printLine(123L);
-        assertEquals("123" + LINE_SEPARATOR, OUTPUT.toString());
+        assertEquals(NUMBERS + LINE_SEPARATOR, OUTPUT.toString());
         OUTPUT.reset();
 
         Log.printLine(123.0);
-        assertEquals("123.0" + LINE_SEPARATOR, OUTPUT.toString());
+        assertEquals(S123 + LINE_SEPARATOR, OUTPUT.toString());
         OUTPUT.reset();
     }
 
     @Test
     public void testFormat() throws IOException {
         Log.enable();
-        Log.printFormatted("test %s test", "test");
-        assertEquals("test test test", OUTPUT.toString());
+        Log.printFormatted(TEST_S_TEST, TEST);
+        assertEquals(TEST_TEST_TEST, OUTPUT.toString());
         OUTPUT.reset();
 
-        Log.printFormatted("%d", 123);
-        assertEquals("123", OUTPUT.toString());
+        Log.printFormatted(FORMAT_D, 123);
+        assertEquals(NUMBERS, OUTPUT.toString());
         OUTPUT.reset();
 
-        Log.printFormatted("%d", 123L);
-        assertEquals("123", OUTPUT.toString());
+        Log.printFormatted(FORMAT_D, 123L);
+        assertEquals(NUMBERS, OUTPUT.toString());
         OUTPUT.reset();
 
-        Log.printFormatted("%.2f", 123.01);
-        assertEquals("123" + dfs.getDecimalSeparator() + "01", OUTPUT.toString());
+        Log.printFormatted(FORMAT_F, 123.01);
+        assertEquals(NUMBERS + dfs.getDecimalSeparator() + "01", OUTPUT.toString());
         OUTPUT.reset();
     }
 
     @Test
     public void testFormatLine() throws IOException {
         OUTPUT.reset();
-        Log.printFormattedLine("test %s test", "test");
-        assertEquals("test test test" + LINE_SEPARATOR, OUTPUT.toString());
+        Log.printFormattedLine(TEST_S_TEST, TEST);
+        assertEquals(TEST_TEST_TEST + LINE_SEPARATOR, OUTPUT.toString());
         OUTPUT.reset();
 
-        Log.printFormattedLine("%d", 123);
-        assertEquals("123" + LINE_SEPARATOR, OUTPUT.toString());
+        Log.printFormattedLine(FORMAT_D, 123);
+        assertEquals(NUMBERS + LINE_SEPARATOR, OUTPUT.toString());
         OUTPUT.reset();
 
-        Log.printFormattedLine("%d", 123L);
-        assertEquals("123" + LINE_SEPARATOR, OUTPUT.toString());
+        Log.printFormattedLine(FORMAT_D, 123L);
+        assertEquals(NUMBERS + LINE_SEPARATOR, OUTPUT.toString());
         OUTPUT.reset();
 
-        Log.printFormattedLine("%.2f", 123.01);
-        assertEquals("123" + dfs.getDecimalSeparator() + "01" + LINE_SEPARATOR, OUTPUT.toString());
+        Log.printFormattedLine(FORMAT_F, 123.01);
+        assertEquals(NUMBERS + dfs.getDecimalSeparator() + "01" + LINE_SEPARATOR, OUTPUT.toString());
         OUTPUT.reset();
     }
 
@@ -118,8 +126,8 @@ public class LogTest {
         Log.enable();
         assertFalse(Log.isDisabled());
 
-        Log.print("test test");
-        assertEquals("test test", OUTPUT.toString());
+        Log.print(TEST_TEST);
+        assertEquals(TEST_TEST, OUTPUT.toString());
     }
 
     @Test
@@ -127,16 +135,16 @@ public class LogTest {
         Log.enable();
         OUTPUT.reset();
 
-        Log.printLine("test test");
-        assertEquals("test test" + LINE_SEPARATOR, OUTPUT.toString());
+        Log.printLine(TEST_TEST);
+        assertEquals(TEST_TEST + LINE_SEPARATOR, OUTPUT.toString());
         OUTPUT.reset();
 
-        Log.printFormatted("test %s test", "test");
-        assertEquals("test test test", OUTPUT.toString());
+        Log.printFormatted(TEST_S_TEST, TEST);
+        assertEquals(TEST_TEST_TEST, OUTPUT.toString());
         OUTPUT.reset();
 
-        Log.printFormattedLine("test %s test", "test");
-        assertEquals("test test test" + LINE_SEPARATOR, OUTPUT.toString());
+        Log.printFormattedLine(TEST_S_TEST, TEST);
+        assertEquals(TEST_TEST_TEST + LINE_SEPARATOR, OUTPUT.toString());
         OUTPUT.reset();
     }
 
@@ -146,19 +154,19 @@ public class LogTest {
 
         assertTrue(Log.isDisabled());
 
-        Log.print("test test");
+        Log.print(TEST_TEST);
         assertEquals("", OUTPUT.toString());
         OUTPUT.reset();
 
-        Log.printLine("test test");
+        Log.printLine(TEST_TEST);
         assertEquals("", OUTPUT.toString());
         OUTPUT.reset();
 
-        Log.printFormatted("test %s test", "test");
+        Log.printFormatted(TEST_S_TEST, TEST);
         assertEquals("", OUTPUT.toString());
         OUTPUT.reset();
 
-        Log.printFormattedLine("test %s test", "test");
+        Log.printFormattedLine(TEST_S_TEST, TEST);
         assertEquals("", OUTPUT.toString());
         OUTPUT.reset();
     }
@@ -169,20 +177,20 @@ public class LogTest {
 
         assertFalse(Log.isDisabled());
 
-        Log.print("test test");
-        assertEquals("test test", OUTPUT.toString());
+        Log.print(TEST_TEST);
+        assertEquals(TEST_TEST, OUTPUT.toString());
         OUTPUT.reset();
 
-        Log.printLine("test test");
-        assertEquals("test test" + LINE_SEPARATOR, OUTPUT.toString());
+        Log.printLine(TEST_TEST);
+        assertEquals(TEST_TEST + LINE_SEPARATOR, OUTPUT.toString());
         OUTPUT.reset();
 
-        Log.printFormatted("test %s test", "test");
-        assertEquals("test test test", OUTPUT.toString());
+        Log.printFormatted(TEST_S_TEST, TEST);
+        assertEquals(TEST_TEST_TEST, OUTPUT.toString());
         OUTPUT.reset();
 
-        Log.printFormattedLine("test %s test", "test");
-        assertEquals("test test test" + LINE_SEPARATOR, OUTPUT.toString());
+        Log.printFormattedLine(TEST_S_TEST, TEST);
+        assertEquals(TEST_TEST_TEST + LINE_SEPARATOR, OUTPUT.toString());
         OUTPUT.reset();
     }
 }

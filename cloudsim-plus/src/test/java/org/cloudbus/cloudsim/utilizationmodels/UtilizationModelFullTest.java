@@ -13,8 +13,8 @@ public class UtilizationModelFullTest {
 
     @Test
     public void testGetUtilizationForDifferentTimes() {
-        UtilizationModelFull instance = new UtilizationModelFull();
-        String msg =
+        final UtilizationModelFull instance = new UtilizationModelFull();
+        final String msg =
             String.format(
                 "For any time (even a randomly defined one), the utilization has to be equals to %d",
                 EXPECTED_UTILIZATION);
