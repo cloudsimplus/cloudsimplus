@@ -7,7 +7,7 @@
  */
 package org.cloudbus.cloudsim.network;
 
-import java.util.Iterator;
+import java.util.Arrays;
 import java.util.List;
 import java.util.function.BiConsumer;
 import java.util.stream.IntStream;
@@ -85,9 +85,9 @@ public class FloydWarshall {
      * @return the new delay matrix (dk)
      */
     private double[][] computeShortestPaths() {
-        double[][] dk = new double[numVertices][numVertices];
+        final double[][] dk = new double[numVertices][numVertices];
 
-        for(int k: vertices) {
+        for(final int k: vertices) {
             computeShortestPathForSpecificNumberOfHops(dk, k);
         }
 
@@ -103,7 +103,7 @@ public class FloydWarshall {
      * @param k maximum number of hops to try finding the shortest path between each vertex i and j
      */
     private void computeShortestPathForSpecificNumberOfHops(double[][] dk, int k) {
-        for(int i: vertices) {
+        for(final int i: vertices) {
             computeShortestPathFromVertexToAllVertices(dk, k, i);
         }
 
@@ -122,8 +122,8 @@ public class FloydWarshall {
      *                between two vertices, for all existing vertices
      */
     private void updateMatrices(BiConsumer<Integer, Integer> updater){
-        for(int i: vertices) {
-            for(int j: vertices) {
+        for(final int i: vertices) {
+            for(final int j: vertices) {
                 updater.accept(i, j);
             }
         }
@@ -139,7 +139,7 @@ public class FloydWarshall {
      * @param i the index of the vertex to compute its distance to all the other vertices
      */
     private void computeShortestPathFromVertexToAllVertices(double[][] dk, int k, int i) {
-        for(int j: vertices) {
+        for(final int j: vertices) {
             pk[i][j] = -1;
             if (i != j) {
                 // D_k[i][j] = min ( D_k-1[i][j], D_k-1[i][k] + D_k-1[k][j].
@@ -160,8 +160,8 @@ public class FloydWarshall {
      * @param originalDelayMatrix the original delay matrix
      */
     private void savePreviousDelays(double[][] originalDelayMatrix) {
-        for(int i: vertices) {
-            for(int j: vertices) {
+        for(final int i: vertices) {
+            for(final int j: vertices) {
                 dk_minus_one[i][j] = Double.MAX_VALUE;
                 pk_minus_one[i][j] = -1;
                 if (originalDelayMatrix[i][j] != 0) {
@@ -174,12 +174,12 @@ public class FloydWarshall {
     }
 
     /**
-     * Gets predecessor matrix.
+     * Gets a <b>copy</b> of the predecessor matrix.
      *
-     * @return predecessor matrix
+     * @return the predecessor matrix copy
      */
     public int[][] getPk() {
-        return pk;
+        return Arrays.copyOf(pk, pk.length);
     }
 
     public int getNumVertices(){

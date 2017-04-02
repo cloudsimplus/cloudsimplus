@@ -42,10 +42,10 @@ import org.cloudbus.cloudsim.resources.FileStorage;
  * @since CloudSim Plus 1.0
  */
 public class DatacenterBuilder extends Builder {
-    public static final String DATACENTER_NAME_FORMAT = "Datacenter%d";
+    public static final String DC_NAME_FORMAT = "Datacenter%d";
     private final SimulationScenarioBuilder scenario;
 
-    private double costPerBwMegabit = 0.0;
+    private double costPerBwMegabit;
     private double costPerCpuSecond = 3.0;
     private double costPerStorage = 0.001;
     private double costPerMem = 0.05;
@@ -53,14 +53,15 @@ public class DatacenterBuilder extends Builder {
     private double timezone = 10;
 
     private final List<Datacenter> datacenters;
-    private int numberOfCreatedDatacenters;
+    private int createdDatacenters;
 	private List<FileStorage> storageList;
 
 	public DatacenterBuilder(SimulationScenarioBuilder scenario) {
+	    super();
 	    this.scenario = scenario;
         this.datacenters = new ArrayList<>();
 		this.storageList = new ArrayList<>();
-        this.numberOfCreatedDatacenters = 0;
+        this.createdDatacenters = 0;
     }
 
     public List<Datacenter> getDatacenters() {
@@ -83,19 +84,20 @@ public class DatacenterBuilder extends Builder {
     }
 
     public DatacenterBuilder createDatacenter(final List<Host> hosts) {
-        if (Objects.isNull(hosts) || hosts.isEmpty()) {
-            throw new RuntimeException("The hosts parameter has to have at least 1 host.");
+        Objects.requireNonNull(hosts);
+        if (hosts.isEmpty()) {
+            throw new IllegalArgumentException("The hosts parameter has to have at least 1 host.");
         }
 
-        DatacenterCharacteristics characteristics =
+        final DatacenterCharacteristics characteristics =
                 new DatacenterCharacteristicsSimple (hosts)
                       .setTimeZone(timezone)
                       .setCostPerSecond(costPerCpuSecond)
                       .setCostPerMem(costPerMem)
                       .setCostPerStorage(costPerStorage)
                       .setCostPerBw(costPerBwMegabit);
-        String name = String.format(DATACENTER_NAME_FORMAT, numberOfCreatedDatacenters++);
-        Datacenter datacenter =
+        final String name = String.format(DC_NAME_FORMAT, createdDatacenters++);
+        final Datacenter datacenter =
                 new DatacenterSimple(scenario.getSimulation(), characteristics, new VmAllocationPolicySimple())
                     .setStorageList(storageList)
                     .setSchedulingInterval(schedulingInterval);

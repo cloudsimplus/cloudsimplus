@@ -79,16 +79,16 @@ import java.util.function.Supplier;
  * @see CompletelyFairSchedulerExperiment
  */
 abstract class CloudletSchedulerExperiment extends SimulationExperiment {
-    static final int HOST_PES = 32;
-    static final int VM_PES = HOST_PES;
-    static final long VM_MIPS = 1000;
-    static final long VM_STORAGE = 10000; // vm image size (MEGABYTE)
-    static final long VM_RAM = 512; // vm memory (MEGABYTE)
-    static final long VM_BW = 1000; // vm bandwidth
-    static final int MAX_CLOUDLET_PES = VM_PES/8 + 1;
-    static final int HOSTS_TO_CREATE = 1;
-    static final int VMS_TO_CREATE = 1;
-    static final long CLOUDLET_LENGHT_MI = 10000; //in Million Instructions (MI)
+    protected static final int HOST_PES = 32;
+    protected static final int VM_PES = HOST_PES;
+    protected static final long VM_MIPS = 1000;
+    protected static final long VM_STORAGE = 10000; // vm image size (MEGABYTE)
+    protected static final long VM_RAM = 512; // vm memory (MEGABYTE)
+    protected static final long VM_BW = 1000; // vm bandwidth
+    protected static final int MAX_CLOUDLET_PES = VM_PES/8 + 1;
+    protected static final int HOSTS_TO_CREATE = 1;
+    protected static final int VMS_TO_CREATE = 1;
+    protected static final long CLOUDLET_LENGHT_MI = 10000; //in Million Instructions (MI)
 
     private ContinuousDistribution cloudletPesPrng;
     private int numCloudletsToCreate;

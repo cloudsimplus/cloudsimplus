@@ -51,7 +51,7 @@ public class CloudletResponseTimeWithoutMinimizationRunner extends ExperimentRun
      */
     public static void main(String[] args) {
         new CloudletResponseTimeWithoutMinimizationRunner()
-                .setNumberOfSimulationRuns(2000)
+                .setSimulationRuns(2000)
                 .setApplyAntitheticVariatesTechnique(true)
                 .setNumberOfBatches(5) //Comment this or set to 0 to disable the "Batch Means Method"
                 .setBaseSeed(1475098589732L) //Comment this to use the current time as base seed 1475098589732L
@@ -102,7 +102,7 @@ public class CloudletResponseTimeWithoutMinimizationRunner extends ExperimentRun
 
     @Override
     protected void printSimulationParameters() {
-        System.out.printf("Executing %d experiments. Please wait ... It may take a while.\n", getNumberOfSimulationRuns());
+        System.out.printf("Executing %d experiments. Please wait ... It may take a while.\n", getSimulationRuns());
         System.out.println("Experiments configurations:");
         System.out.printf("\tBase seed: %d | Number of VMs: %d | Number of Cloudlets: %d\n", getBaseSeed(), VMS, CLOUDLETS);
         System.out.printf("\tApply Antithetic Variates Technique: %b\n", isApplyAntitheticVariatesTechnique());
@@ -116,12 +116,12 @@ public class CloudletResponseTimeWithoutMinimizationRunner extends ExperimentRun
 
     @Override
     protected void printFinalResults(String metricName, SummaryStatistics stats) {
-        System.out.printf("\n# %s for %d simulation runs\n", metricName, getNumberOfSimulationRuns());
+        System.out.printf("\n# %s for %d simulation runs\n", metricName, getSimulationRuns());
 
         if (!simulationRunsAndNumberOfBatchesAreCompatible()) {
             System.out.println("\tBatch means method was not be applied because the number of simulation runs is not greater than the number of batches.");
         }
-        if (getNumberOfSimulationRuns() > 1) {
+        if (getSimulationRuns() > 1) {
             showConfidenceInterval(stats);
         }
     }

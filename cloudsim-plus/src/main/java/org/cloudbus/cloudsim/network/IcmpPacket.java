@@ -108,7 +108,7 @@ public class IcmpPacket implements NetworkPacket<SimEntity> {
      */
     private final List<Double> baudRates;
 
-    private DecimalFormat num;
+    private final DecimalFormat num;
 
     private double sendTime;
     private double receiveTime;
@@ -168,12 +168,12 @@ public class IcmpPacket implements NetworkPacket<SimEntity> {
         }
 
         final int SIZE = 1000;   // number of chars
-        StringBuilder sb = new StringBuilder(SIZE);
-        sb.append("Ping information for ").append(name).append("\n");
-        sb.append("Entity Name\tEntry Time\tExit Time\t Bandwidth\n");
-        sb.append("----------------------------------------------------------\n");
+        final StringBuilder sb = new StringBuilder(SIZE);
+        sb.append("Ping information for ").append(name).append("\n")
+          .append("Entity Name\tEntry Time\tExit Time\t Bandwidth\n")
+          .append("----------------------------------------------------------\n");
 
-        String tab = "    ";  // 4 spaces
+        final String tab = "    ";  // 4 spaces
         for (int i = 0; i < entities.size(); i++) {
             final int resID = entities.get(i).getId();
             final String entry = getData(entryTimes, i);
@@ -205,15 +205,12 @@ public class IcmpPacket implements NetworkPacket<SimEntity> {
      * @post index > 0
      */
     private String getData(List<Double> v, int index) {
-        String result;
         try {
-            double id = v.get(index);
-            result = num.format(id);
+            final double id = v.get(index);
+            return num.format(id);
         } catch (Exception e) {
-            result = "    N/A";
+            return "    N/A";
         }
-
-        return result;
     }
 
     @Override
@@ -287,7 +284,7 @@ public class IcmpPacket implements NetworkPacket<SimEntity> {
      * @post $none
      */
     public int getNumberOfHops() {
-        int PAIR = 2;
+        final int PAIR = 2;
         return ((entities.size() - PAIR) + 1) / PAIR;
     }
 
@@ -361,11 +358,7 @@ public class IcmpPacket implements NetworkPacket<SimEntity> {
      * @post $none
      */
     public void addExitTime(double time) {
-        if (time < 0) {
-            time = 0.0;
-        }
-
-        exitTimes.add(time);
+        exitTimes.add(Math.min(time, 0));
     }
 
     /**

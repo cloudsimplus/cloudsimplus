@@ -75,17 +75,17 @@ import org.cloudbus.cloudsim.distributions.ContinuousDistribution;
  *
  * @author Manoel Campos da Silva Filho
  */
-final class DatacenterBrokerHeuristicExperiment extends SimulationExperiment {
+public final class DatacenterBrokerHeuristicExperiment extends SimulationExperiment {
 
-    static final int HOSTS_TO_CREATE = 100;
+    protected static final int HOSTS_TO_CREATE = 100;
 
     /**
      * Simulated Annealing (SA) parameters.
      */
-    static final double SA_INIT_TEMPERATURE = 1.0;
-    static final double SA_COLD_TEMPERATURE = 0.0001;
-    static final double SA_COOLING_RATE = 0.003;
-    static final int SA_NEIGHBORHOOD_SEARCHES = 50;
+    protected static final double SA_INIT_TEMPERATURE = 1.0;
+    protected static final double SA_COLD_TEMPERATURE = 0.0001;
+    protected static final double SA_COOLING_RATE = 0.003;
+    protected static final int SA_NEIGHBORHOOD_SEARCHES = 50;
 
     /**
      * @see #setVmPesArray(int[])
@@ -132,7 +132,7 @@ final class DatacenterBrokerHeuristicExperiment extends SimulationExperiment {
     @Override
     protected List<Cloudlet> createCloudlets(DatacenterBroker broker) {
         final List<Cloudlet> list = new ArrayList<>(cloudletPesArray.length);
-        for (int pes : cloudletPesArray) {
+        for (final int pes : cloudletPesArray) {
             list.add(createCloudlet(broker, pes));
         }
 

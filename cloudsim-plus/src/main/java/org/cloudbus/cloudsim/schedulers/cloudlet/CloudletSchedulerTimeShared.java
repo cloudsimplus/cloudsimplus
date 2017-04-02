@@ -6,14 +6,13 @@
  */
 package org.cloudbus.cloudsim.schedulers.cloudlet;
 
-import java.util.*;
-
 import org.cloudbus.cloudsim.cloudlets.Cloudlet;
 import org.cloudbus.cloudsim.cloudlets.CloudletExecutionInfo;
-
 import org.cloudbus.cloudsim.resources.Processor;
 import org.cloudbus.cloudsim.schedulers.vm.VmScheduler;
-import org.cloudbus.cloudsim.util.Conversion;
+
+import java.util.Collections;
+import java.util.List;
 
 /**
  * CloudletSchedulerTimeShared implements a policy of scheduling performed by a
@@ -75,17 +74,6 @@ import org.cloudbus.cloudsim.util.Conversion;
 public class CloudletSchedulerTimeShared extends CloudletSchedulerAbstract {
 
     /**
-     * Creates a new CloudletSchedulerTimeShared object. This method must be
-     * invoked before starting the actual simulation.
-     *
-     * @pre $none
-     * @post $none
-     */
-    public CloudletSchedulerTimeShared() {
-        super();
-    }
-
-    /**
      * {@inheritDoc}
      *
      * <p>
@@ -144,12 +132,6 @@ public class CloudletSchedulerTimeShared extends CloudletSchedulerAbstract {
     @Override
     public double getTotalCurrentAvailableMipsForCloudlet(CloudletExecutionInfo rcl, List<Double> mipsShare) {
         return Processor.fromMipsList(mipsShare).getCapacity();
-    }
-
-    private double getTotalPesFromAllRunningCloudlets() {
-        return getCloudletExecList().stream()
-                .mapToDouble(CloudletExecutionInfo::getNumberOfPes)
-                .sum();
     }
 
     /**

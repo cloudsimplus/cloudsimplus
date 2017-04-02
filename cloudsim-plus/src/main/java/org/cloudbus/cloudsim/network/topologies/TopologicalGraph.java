@@ -102,23 +102,23 @@ public class TopologicalGraph {
 
     @Override
     public String toString() {
-        StringBuilder buffer = new StringBuilder();
-        buffer.append("topological-node-information: \n");
+        final StringBuilder builder = new StringBuilder(60);
+        builder.append("topological-node-information: \n");
 
-        for (TopologicalNode node : nodeList) {
-            buffer.append(
+        for (final TopologicalNode node : nodeList) {
+            builder.append(
                 String.format("%d | %s\n",
                 node.getNodeId(), node.getWorldCoordinates()));
         }
 
-        buffer.append("\n\n node-link-information:\n");
+        builder.append("\n\n node-link-information:\n");
 
-        for (TopologicalLink link : linksList) {
-            buffer.append(
+        for (final TopologicalLink link : linksList) {
+            builder.append(
                 String.format("from: %d to: %d delay: %.2f\n",
                 link.getSrcNodeID(), link.getDestNodeID(), link.getLinkDelay()));
         }
-        return buffer.toString();
-    }
 
+        return builder.toString();
+    }
 }

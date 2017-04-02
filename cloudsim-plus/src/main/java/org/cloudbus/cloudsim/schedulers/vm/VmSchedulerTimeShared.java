@@ -86,7 +86,7 @@ public class VmSchedulerTimeShared extends VmSchedulerAbstract {
         } else if (getVmsMigratingOut().contains(vm)) {
             removeVmMigratingOut(vm);
         }
-        boolean result = updateMapOfRequestedMipsForVm(vm, mipsShareRequested);
+        final boolean result = updateMapOfRequestedMipsForVm(vm, mipsShareRequested);
 
         updatePesAllocationForAllVms();
         return result;
@@ -111,7 +111,7 @@ public class VmSchedulerTimeShared extends VmSchedulerAbstract {
         getPeMap().clear();
         getPeList().forEach(pe -> pe.getPeProvisioner().deallocateResourceForAllVms());
 
-        for (Map.Entry<Vm, List<Double>> entry : getMipsMapAllocated().entrySet()) {
+        for (final Map.Entry<Vm, List<Double>> entry : getMipsMapAllocated().entrySet()) {
             final Vm vm = entry.getKey();
             getPeMap().put(vm, new ArrayList<>(entry.getValue().size()));
         }
@@ -123,11 +123,11 @@ public class VmSchedulerTimeShared extends VmSchedulerAbstract {
      *              the list of MIPS to be allocated for each of its PEs
      */
     private void allocatePesListForVm(Map.Entry<Vm, List<Double>> entry) {
-        Vm vm = entry.getKey();
-        Iterator<Pe> hostPesIterator = getPeList().iterator();
+        final Vm vm = entry.getKey();
+        final Iterator<Pe> hostPesIterator = getPeList().iterator();
         //Iterate over the list of MIPS requested by each VM PE
-        for (double requestedMipsForVmPe : entry.getValue()) {
-            double allocatedMipsForVmPe = allocateMipsFromHostPesToGivenVirtualPe(vm, requestedMipsForVmPe, hostPesIterator);
+        for (final double requestedMipsForVmPe : entry.getValue()) {
+            final double allocatedMipsForVmPe = allocateMipsFromHostPesToGivenVirtualPe(vm, requestedMipsForVmPe, hostPesIterator);
             if(requestedMipsForVmPe > 0.1 && allocatedMipsForVmPe <= 0.1){
                 Log.printFormattedLine(
                     "Vm %s is requiring a total of %d MIPS  but the Host PEs currently don't have such an available MIPS amount. Only %d MIPS were allocated.",
@@ -233,9 +233,9 @@ public class VmSchedulerTimeShared extends VmSchedulerAbstract {
      * allocated to the VM, 0 otherwise.
      */
     protected double getTotalCapacityToBeAllocatedToVm(List<Double> vmRequestedMipsShare) {
-        double peMips = getPeCapacity();
+        final double peMips = getPeCapacity();
         double totalRequestedMips = 0;
-        for (double mips : vmRequestedMipsShare) {
+        for (final double mips : vmRequestedMipsShare) {
             // each virtual PE of a VM must require not more than the capacity of a physical PE
             if (mips > peMips) {
                 return 0.0;
@@ -273,16 +273,16 @@ public class VmSchedulerTimeShared extends VmSchedulerAbstract {
             totalRequestedMips *= getCpuOverheadDueToVmMigration();
         }
 
-        List<Double> mipsShareAllocated = new ArrayList<>();
+        final List<Double> mipsShareAllocated = new ArrayList<>();
         for (double mipsRequested : mipsShareRequested) {
             if (getVmsMigratingOut().contains(vm)) {
                 // performance degradation due to migration = 10% MIPS
-                mipsRequested *= (1 - getCpuOverheadDueToVmMigration());
+                mipsShareAllocated.add(mipsRequested * (1-getCpuOverheadDueToVmMigration()));
             } else if (getVmsMigratingIn().contains(vm)) {
                 // the destination host only experience 10% of the migrating VM's MIPS
-                mipsRequested *= getCpuOverheadDueToVmMigration();
+                mipsShareAllocated.add(mipsRequested * getCpuOverheadDueToVmMigration());
             }
-            mipsShareAllocated.add(mipsRequested);
+            else mipsShareAllocated.add(mipsRequested);
         }
 
         getMipsMapAllocated().put(vm, mipsShareAllocated);
@@ -298,11 +298,11 @@ public class VmSchedulerTimeShared extends VmSchedulerAbstract {
         getMipsMapAllocated().clear();
         setAvailableMips(PeList.getTotalMips(getPeList()));
 
-        for (Pe pe : getPeList()) {
+        for (final Pe pe : getPeList()) {
             pe.getPeProvisioner().deallocateResourceForVm(vm);
         }
 
-        for (Map.Entry<Vm, List<Double>> entry : getMipsMapRequested().entrySet()) {
+        for (final Map.Entry<Vm, List<Double>> entry : getMipsMapRequested().entrySet()) {
             updateMapOfRequestedMipsForVm(entry.getKey(), entry.getValue());
         }
 

@@ -35,26 +35,20 @@ import org.cloudbus.cloudsim.resources.Processor;
  */
 public class CloudletSchedulerSpaceShared extends CloudletSchedulerAbstract {
 
-    /**
-     * Creates a new CloudletSchedulerSpaceShared object. This method must be
-     * invoked before starting the actual simulation.
-     *
-     * @pre $none
-     * @post $none
-     */
-    public CloudletSchedulerSpaceShared() {
-        super();
-    }
-
     @Override
     public double cloudletResume(int cloudletId) {
-        Optional<CloudletExecutionInfo> optional = findCloudletInList(cloudletId, getCloudletPausedList());
-        if (!optional.isPresent()) {
-            // not found in the paused list: either it is in in the queue, executing or not exist
-            return 0.0;
-        }
+        return findCloudletInList(cloudletId, getCloudletPausedList())
+            .map(this::movePausedCloudletToExecListOrWaitingList)
+            .orElse(0.0);
+    }
 
-        CloudletExecutionInfo c = optional.get();
+    /**
+     * Moves a Cloudlet that is being resumed to the exec or waiting List.
+     *
+     * @param c the resumed Cloudlet to move
+     * @return the time the cloudlet is expected to finish or zero if it was moved to the waiting list
+     */
+    private double movePausedCloudletToExecListOrWaitingList(CloudletExecutionInfo c) {
         getCloudletPausedList().remove(c);
 
         // it can go to the exec list

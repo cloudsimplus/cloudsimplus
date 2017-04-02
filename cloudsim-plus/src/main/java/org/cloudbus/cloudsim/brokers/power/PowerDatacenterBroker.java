@@ -42,7 +42,7 @@ public class PowerDatacenterBroker extends DatacenterBrokerSimple {
 
 	@Override
 	protected boolean processVmCreateResponseFromDatacenter(SimEvent ev) {
-        Vm vm = (Vm) ev.getData();
+        final Vm vm = (Vm) ev.getData();
 
 		if (!vm.isCreated()) {
 			throw new RuntimeException(getSimulation().clock() + ": " + getName() + ": Creation of VM #" + vm.getId()

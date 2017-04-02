@@ -131,7 +131,7 @@ public class NetworkDatacenter extends DatacenterSimple {
         if(!super.processVmCreate(ev, ackRequested))
             return false;
 
-        Vm vm = (Vm) ev.getData();
+        final Vm vm = (Vm) ev.getData();
         Log.printLine(vm.getId() + " VM is created on " + vm.getHost().getId());
         return true;
     }
@@ -148,65 +148,57 @@ public class NetworkDatacenter extends DatacenterSimple {
     protected void processCloudletSubmit(SimEvent ev, boolean ack) {
         updateCloudletProcessing();
 
-        try {
-            // gets the Cloudlet object
-            Cloudlet cl = (Cloudlet) ev.getData();
+        // gets the Cloudlet object
+        final Cloudlet cl = (Cloudlet) ev.getData();
 
-            // checks whether this Cloudlet has finished or not
-            if (cl.isFinished()) {
-                final String name = getSimulation().getEntityName(cl.getBroker().getId());
-                Log.printConcatLine(
-                        getName(), ": Warning - Cloudlet #",
-                        cl.getId(), " owned by ", name,
-                        " is already completed/finished.");
-                Log.printLine("Therefore, it is not being executed again\n");
+        // checks whether this Cloudlet has finished or not
+        if (cl.isFinished()) {
+            final String name = getSimulation().getEntityName(cl.getBroker().getId());
+            Log.printConcatLine(
+                    getName(), ": Warning - Cloudlet #",
+                    cl.getId(), " owned by ", name,
+                    " is already completed/finished.");
+            Log.printLine("Therefore, it is not being executed again\n");
 
-                // NOTE: If a Cloudlet has finished, then it won't be processed.
-                // So, if ack is required, this method sends back a result.
-                // If ack is not required, this method don't send back a result.
-                // Hence, this might cause CloudSim to be hanged since waiting
-                // for this Cloudlet back.
-                if (ack) {
-                    // unique tag = operation tag
-                    int tag = CloudSimTags.CLOUDLET_SUBMIT_ACK;
-                    sendNow(cl.getBroker().getId(), tag, cl);
-                }
-
-                sendNow(cl.getBroker().getId(), CloudSimTags.CLOUDLET_RETURN, cl);
-
-                return;
-            }
-
-            // process this Cloudlet to this Datacenter
-            cl.assignToDatacenter(this);
-
-            // time to transfer the files
-            double fileTransferTime = predictFileTransferTime(cl.getRequiredFiles());
-
-            CloudletScheduler scheduler = cl.getVm().getCloudletScheduler();
-            double estimatedFinishTime = scheduler.cloudletSubmit(cl, fileTransferTime);
-
-            if (estimatedFinishTime > 0.0) { // if this cloudlet is in the exec
-                // time to process the cloudlet
-                estimatedFinishTime += fileTransferTime;
-                send(getId(),
-                    getCloudletProcessingUpdateInterval(estimatedFinishTime),
-                    CloudSimTags.VM_UPDATE_CLOUDLET_PROCESSING_EVENT);
-
-                // event to update the stages
-                send(getId(), 0.0001, CloudSimTags.VM_UPDATE_CLOUDLET_PROCESSING_EVENT);
-            }
-
+            // NOTE: If a Cloudlet has finished, then it won't be processed.
+            // So, if ack is required, this method sends back a result.
+            // If ack is not required, this method don't send back a result.
+            // Hence, this might cause CloudSim to be hanged since waiting
+            // for this Cloudlet back.
             if (ack) {
                 // unique tag = operation tag
-                sendNow(cl.getBroker().getId(), CloudSimTags.CLOUDLET_SUBMIT_ACK, cl);
+                final int tag = CloudSimTags.CLOUDLET_SUBMIT_ACK;
+                sendNow(cl.getBroker().getId(), tag, cl);
             }
-        } catch (ClassCastException c) {
-            Log.printLine(getName() + ".processCloudletSubmit(): " + "ClassCastException error.");
-            c.printStackTrace();
-        } catch (Exception e) {
-            Log.printLine(getName() + ".processCloudletSubmit(): " + "Exception error.");
-            e.printStackTrace();
+
+            sendNow(cl.getBroker().getId(), CloudSimTags.CLOUDLET_RETURN, cl);
+
+            return;
+        }
+
+        // process this Cloudlet to this Datacenter
+        cl.assignToDatacenter(this);
+
+        // time to transfer the files
+        final double fileTransferTime = predictFileTransferTime(cl.getRequiredFiles());
+
+        final CloudletScheduler scheduler = cl.getVm().getCloudletScheduler();
+        double estimatedFinishTime = scheduler.cloudletSubmit(cl, fileTransferTime);
+
+        if (estimatedFinishTime > 0.0) { // if this cloudlet is in the exec
+            // time to process the cloudlet
+            estimatedFinishTime += fileTransferTime;
+            send(getId(),
+                getCloudletProcessingUpdateInterval(estimatedFinishTime),
+                CloudSimTags.VM_UPDATE_CLOUDLET_PROCESSING_EVENT);
+
+            // event to update the stages
+            send(getId(), 0.0001, CloudSimTags.VM_UPDATE_CLOUDLET_PROCESSING_EVENT);
+        }
+
+        if (ack) {
+            // unique tag = operation tag
+            sendNow(cl.getBroker().getId(), CloudSimTags.CLOUDLET_SUBMIT_ACK, cl);
         }
 
         checkCloudletsCompletionForAllHosts();

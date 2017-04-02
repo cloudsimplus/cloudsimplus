@@ -11,13 +11,9 @@ package org.cloudbus.cloudsim.utilizationmodels;
 import org.cloudbus.cloudsim.distributions.ContinuousDistribution;
 import org.cloudbus.cloudsim.distributions.UniformDistr;
 
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
+import java.io.*;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Random;
 
 /**
  * Implements a model, according to which a Cloudlet generates
@@ -91,7 +87,7 @@ public class UtilizationModelStochastic extends UtilizationModelAbstract {
             return getHistory().get(time);
         }
 
-        double utilization = getRandomGenerator().sample();
+        final double utilization = getRandomGenerator().sample();
         getHistory().put(time, utilization);
         return utilization;
     }
@@ -123,11 +119,12 @@ public class UtilizationModelStochastic extends UtilizationModelAbstract {
      * @param filename the filename
      * @throws Exception the exception
      */
-    public void saveHistory(String filename) throws Exception {
-        FileOutputStream fos = new FileOutputStream(filename);
-        ObjectOutputStream oos = new ObjectOutputStream(fos);
-        oos.writeObject(getHistory());
-        oos.close();
+    public void saveHistory(String filename) {
+        try (final ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(filename))){
+            oos.writeObject(getHistory());
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     /**
@@ -137,10 +134,11 @@ public class UtilizationModelStochastic extends UtilizationModelAbstract {
      * @throws Exception the exception
      */
     @SuppressWarnings("unchecked")
-    public void loadHistory(String filename) throws Exception {
-        FileInputStream fis = new FileInputStream(filename);
-        try (ObjectInputStream ois = new ObjectInputStream(fis)) {
+    public void loadHistory(String filename) {
+        try (ObjectInputStream ois = new ObjectInputStream(new FileInputStream(filename))) {
             setHistory((Map<Double, Double>) ois.readObject());
+        } catch (ClassNotFoundException|IOException e) {
+            throw new RuntimeException(e);
         }
     }
 

@@ -125,7 +125,7 @@ final class DatacenterBrokerHeuristicRunner extends ExperimentRunner<DatacenterB
             BaseSeed: 1475098589732L
          */
         new DatacenterBrokerHeuristicRunner()
-                .setNumberOfSimulationRuns(1200)
+                .setSimulationRuns(1200)
                 .setApplyAntitheticVariatesTechnique(true)
                 .setNumberOfBatches(6) //Comment this or set to 0 to disable the "Batch Means Method"
                 .setBaseSeed(1475098589732L) //Comment this to use the current time as base seed
@@ -207,7 +207,7 @@ final class DatacenterBrokerHeuristicRunner extends ExperimentRunner<DatacenterB
 
     @Override
     protected void setup() {
-        experimentCosts = new ArrayList<>(getNumberOfSimulationRuns());
+        experimentCosts = new ArrayList<>(getSimulationRuns());
         vmPesArray = createVmPesArray();
         cloudletPesArray = createCloudletPesArray();
     }
@@ -235,7 +235,7 @@ final class DatacenterBrokerHeuristicRunner extends ExperimentRunner<DatacenterB
 
     @Override
     protected void printSimulationParameters() {
-        System.out.printf("Executing %d experiments. Please wait ... It may take a while.\n", getNumberOfSimulationRuns());
+        System.out.printf("Executing %d experiments. Please wait ... It may take a while.\n", getSimulationRuns());
         System.out.println("Experiments configurations:");
         System.out.printf("\tBase seed: %d | Number of VMs: %d | Number of Cloudlets: %d\n", getBaseSeed(), VMS_TO_CREATE, CLOUDLETS_TO_CREATE);
         System.out.printf("\tApply Antithetic Variates Technique: %b\n", isApplyAntitheticVariatesTechnique());
@@ -255,7 +255,7 @@ final class DatacenterBrokerHeuristicRunner extends ExperimentRunner<DatacenterB
 
     @Override
     protected void printFinalResults(String metricName, SummaryStatistics stats) {
-        System.out.printf("\n# %s for %d simulation runs\n", metricName, getNumberOfSimulationRuns());
+        System.out.printf("\n# %s for %d simulation runs\n", metricName, getSimulationRuns());
         if (!simulationRunsAndNumberOfBatchesAreCompatible()) {
             System.out.println("\tBatch means method was not be applied because the number of simulation runs is not greater than the number of batches.");
         }
@@ -263,7 +263,7 @@ final class DatacenterBrokerHeuristicRunner extends ExperimentRunner<DatacenterB
                 "\tRound-robin solution used by DatacenterBrokerSimple - Cost: %.2f\n",
                 roundRobinSolution.getCost());
 
-        if (getNumberOfSimulationRuns() > 1) {
+        if (getSimulationRuns() > 1) {
             System.out.printf(
                     "\tHeuristic solutions - Mean cost: %.2f Std. Dev.: %.2f\n",
                     stats.getMean(), stats.getStandardDeviation());

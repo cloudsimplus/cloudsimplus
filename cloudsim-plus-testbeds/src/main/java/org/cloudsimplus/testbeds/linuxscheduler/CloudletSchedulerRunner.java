@@ -73,7 +73,7 @@ abstract class CloudletSchedulerRunner<T extends CloudletSchedulerExperiment> ex
 	        NumberOfBatches: 6
 	        BaseSeed: 1475098589732L
          */
-        this.setNumberOfSimulationRuns(1200)
+        this.setSimulationRuns(1200)
                 .setApplyAntitheticVariatesTechnique(false)
                 //.setNumberOfBatches(6) //Comment this or set to 0 to disable the "Batch Means Method"
                 .setBaseSeed(1475098589732L) //Comment this to use the current time as base seed
@@ -82,8 +82,8 @@ abstract class CloudletSchedulerRunner<T extends CloudletSchedulerExperiment> ex
 
     @Override
     protected void setup() {
-        cloudletsCompletionTimeMeans = new ArrayList<>(getNumberOfSimulationRuns());
-        cloudletsNumber = new ArrayList<>(getNumberOfSimulationRuns());
+        cloudletsCompletionTimeMeans = new ArrayList<>(getSimulationRuns());
+        cloudletsNumber = new ArrayList<>(getSimulationRuns());
         cloudletsNumberPrng = new UniformDistr(VM_PES / 2, VM_PES + 1, getBaseSeed());
     }
 
@@ -92,7 +92,7 @@ abstract class CloudletSchedulerRunner<T extends CloudletSchedulerExperiment> ex
         System.out.printf("\n----------------------------------%s----------------------------------\n", getClass().getSimpleName());
         System.out.printf("Hosts:           %5d | PEs:               %2d | VMs: %d | PEs: %d\n", HOSTS_TO_CREATE, HOST_PES, VMS_TO_CREATE, VM_PES);
         System.out.printf("Experiment Runs: %5d | Max Cloudlets PES: %2d\n",
-                getNumberOfSimulationRuns(), (MAX_CLOUDLET_PES - 1));
+                getSimulationRuns(), (MAX_CLOUDLET_PES - 1));
 
     }
 

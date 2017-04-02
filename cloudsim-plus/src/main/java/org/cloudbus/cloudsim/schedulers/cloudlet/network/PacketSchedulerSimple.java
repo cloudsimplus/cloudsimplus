@@ -72,7 +72,7 @@ public class PacketSchedulerSimple implements PacketScheduler {
             return;
         }
 
-        NetworkCloudlet netcl = (NetworkCloudlet) cloudlet;
+        final NetworkCloudlet netcl = (NetworkCloudlet) cloudlet;
         if (!netcl.isTasksStarted()) {
             scheduleNextTaskIfCurrentIsFinished(netcl);
             return;
@@ -84,7 +84,7 @@ public class PacketSchedulerSimple implements PacketScheduler {
          * including these if's for each type of task.
          */
         if (isTimeToUpdateCloudletProcessing(netcl)) {
-            updateExecutionTask(netcl, currentTime);
+            updateExecutionTask(netcl);
         }
         else if (netcl.getCurrentTask() instanceof CloudletSendTask) {
             addPacketsToBeSentFromVm(netcl);
@@ -104,7 +104,7 @@ public class PacketSchedulerSimple implements PacketScheduler {
             return true;
         }
 
-        NetworkCloudlet nc = (NetworkCloudlet)cloudlet;
+        final NetworkCloudlet nc = (NetworkCloudlet)cloudlet;
         return nc.isTasksStarted() && nc.getCurrentTask() instanceof CloudletExecutionTask;
     }
 
@@ -120,7 +120,7 @@ public class PacketSchedulerSimple implements PacketScheduler {
      * @param sourceCloudlet cloudlet to get the list of packets to send
      */
     private void addPacketsToBeSentFromVm(NetworkCloudlet sourceCloudlet) {
-        CloudletSendTask dataTask = (CloudletSendTask)sourceCloudlet.getCurrentTask();
+        final CloudletSendTask dataTask = (CloudletSendTask)sourceCloudlet.getCurrentTask();
         Log.println(Log.Level.DEBUG, getClass(), sourceCloudlet.getSimulation().clock(),
                 "%d pkts added to be sent from cloudlet %d in VM %d",
                 dataTask.getPacketsToSend().size(), sourceCloudlet.getId(),
@@ -137,8 +137,7 @@ public class PacketSchedulerSimple implements PacketScheduler {
      * @param sourceCloudlet cloudlet to check if there are packets to be received from.
      */
     private void receivePackets(NetworkCloudlet sourceCloudlet) {
-        CloudletReceiveTask task = (CloudletReceiveTask)sourceCloudlet.getCurrentTask();
-
+        final CloudletReceiveTask task = (CloudletReceiveTask)sourceCloudlet.getCurrentTask();
         final List<VmPacket> receivedPkts = getPacketsSentToGivenTask(task);
         // Asumption: packet will not arrive in the same cycle
         receivedPkts.forEach(task::receivePacket);
@@ -172,22 +171,22 @@ public class PacketSchedulerSimple implements PacketScheduler {
      * @return
      */
     private List<VmPacket> getPacketsSentToGivenTask(CloudletReceiveTask destinationTask) {
-        List<VmPacket> packetsFromExpectedSenderVm =
+        final List<VmPacket> pktsFromExpectedSenderVm =
                 getListOfPacketsSentFromVm(destinationTask.getSourceVm());
 
-        return packetsFromExpectedSenderVm
+        return pktsFromExpectedSenderVm
                 .stream()
                 .filter(pkt -> pkt.getDestination().getId() == destinationTask.getCloudlet().getVm().getId())
                 .collect(Collectors.toList());
     }
 
-    private void updateExecutionTask(NetworkCloudlet cloudlet, double currentTime) {
+    private void updateExecutionTask(NetworkCloudlet cloudlet) {
         /**
          * @todo @author manoelcampos It has to be checked if the task execution
          * is considering only one cloudlet PE our all PEs.
          * Each execution task is supposed to use just one PE.
          */
-        CloudletExecutionTask task = (CloudletExecutionTask)cloudlet.getCurrentTask();
+        final CloudletExecutionTask task = (CloudletExecutionTask)cloudlet.getCurrentTask();
         task.process(cloudlet.getFinishedLengthSoFar());
 
         scheduleNextTaskIfCurrentIsFinished(cloudlet);
@@ -201,7 +200,7 @@ public class PacketSchedulerSimple implements PacketScheduler {
             return;
         }
 
-        Datacenter dc = getVm().getHost().getDatacenter();
+        final Datacenter dc = getVm().getHost().getDatacenter();
         dc.schedule(dc.getId(), dc.getSimulation().getMinTimeBetweenEvents(), CloudSimTags.VM_UPDATE_CLOUDLET_PROCESSING_EVENT);
     }
 
