@@ -345,10 +345,7 @@ public class VmSimple implements Vm {
 
     @Override
     public final Vm setBroker(DatacenterBroker broker) {
-        if(Objects.isNull(broker)) {
-            broker = DatacenterBroker.NULL;
-        }
-        this.broker = broker;
+        this.broker = Objects.isNull(broker) ? DatacenterBroker.NULL : broker;
         return this;
     }
 
@@ -471,7 +468,7 @@ public class VmSimple implements Vm {
     }
 
     @Override
-    public void setHost(Host host) {
+    public final void setHost(Host host) {
         if(host == Host.NULL){
             setCreated(false);
         }
@@ -494,12 +491,8 @@ public class VmSimple implements Vm {
             throw new UnsupportedOperationException("CloudletScheduler can just be changed when the Vm was not created inside a Host yet.");
         }
 
-        if (Objects.isNull(cloudletScheduler)) {
-            cloudletScheduler = CloudletScheduler.NULL;
-        }
-
-        cloudletScheduler.setVm(this);
-        this.cloudletScheduler = cloudletScheduler;
+        this.cloudletScheduler = Objects.isNull(cloudletScheduler) ? CloudletScheduler.NULL : cloudletScheduler;
+        this.cloudletScheduler.setVm(this);
         return this;
     }
 
@@ -535,7 +528,7 @@ public class VmSimple implements Vm {
     }
 
     @Override
-    public boolean isCreated() {
+    public final boolean isCreated() {
         return created;
     }
 
@@ -562,7 +555,7 @@ public class VmSimple implements Vm {
     @Override
     public void addStateHistoryEntry(VmStateHistoryEntry entry) {
         if (!getStateHistory().isEmpty()) {
-            VmStateHistoryEntry previousState = getStateHistory().get(getStateHistory().size() - 1);
+            final VmStateHistoryEntry previousState = getStateHistory().get(getStateHistory().size() - 1);
             if (previousState.getTime() == entry.getTime()) {
                 getStateHistory().set(getStateHistory().size() - 1, entry);
                 return;
@@ -659,7 +652,7 @@ public class VmSimple implements Vm {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
 
-        VmSimple vmSimple = (VmSimple) o;
+        final VmSimple vmSimple = (VmSimple) o;
 
         if (id != vmSimple.id) return false;
         return broker.equals(vmSimple.broker);
@@ -721,7 +714,7 @@ public class VmSimple implements Vm {
             return;
         }
 
-        VmHostEventInfo info = VmHostEventInfo.of(this, deallocatedHost);
+        final VmHostEventInfo info = VmHostEventInfo.of(this, deallocatedHost);
         onHostDeallocationListeners.forEach(l -> l.update(info));
     }
 
@@ -780,7 +773,7 @@ public class VmSimple implements Vm {
     private <T extends VmScaling> T validateAndConfigureVmScaling(T vmScaling) {
         Objects.requireNonNull(vmScaling);
         if(vmScaling.getVm() != null && vmScaling.getVm() != Vm.NULL && vmScaling.getVm() != this){
-            String name = vmScaling.getClass().getSimpleName();
+            final String name = vmScaling.getClass().getSimpleName();
             throw new IllegalArgumentException(
                 "The "+name+" given already is linked to a Vm. " +
                     "Each Vm must have its own "+name+" objects or none at all. " +
