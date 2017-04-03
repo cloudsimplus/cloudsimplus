@@ -47,7 +47,7 @@ final class CloudletResponseTimeMinimizationRunner extends ExperimentRunner<Clou
     static final long[] CLOUDLET_LENGTHS = {10000, 14000, 20000, 40000};
     static final int[] VM_PES = {2, 4};
     static final int VMS = 30;
-    static final int CLOUDLETS = 110;
+    static final int CLOUDLETS = 40;
 
     /**
      * The response time average for all the experiments.
@@ -63,7 +63,7 @@ final class CloudletResponseTimeMinimizationRunner extends ExperimentRunner<Clou
     /**
      * Amount of cloudlet per foot of vm.
      */
-    private List<Double> divPesVmsByPesCloudlets;
+    private List<Double> ratioOfVmPesToRequiredCloudletPesList;
 
     
     /**
@@ -86,12 +86,12 @@ final class CloudletResponseTimeMinimizationRunner extends ExperimentRunner<Clou
                 .setVerbose(true)
                 .run();
     }
-
+    
     CloudletResponseTimeMinimizationRunner() {
         super();
         cloudletResponseTimes = new ArrayList<>();
         percentageOfCloudletsMeetingResponseTimes = new ArrayList<>();
-        divPesVmsByPesCloudlets = new ArrayList<>();
+        ratioOfVmPesToRequiredCloudletPesList = new ArrayList<>();
     }
 
     @Override
@@ -100,34 +100,33 @@ final class CloudletResponseTimeMinimizationRunner extends ExperimentRunner<Clou
         ContinuousDistribution randVm = createRandomGenAndAddSeedToList(i);
         CloudletResponseTimeMinimizationExperiment exp
                 = new CloudletResponseTimeMinimizationExperiment(randCloudlet, randVm);
-        exp.setVerbose(experimentVerbose).setAfterExperimentFinish(this::afterExperimentFinish);
+        exp.setVerbose(experimentVerbose)
+           .setAfterExperimentFinish(this::afterExperimentFinish);
         return exp;
     }
-
-    @Override
-    protected void setup() {
-    }
-
+    
     /**
      * Method automatically called after every experiment finishes running. It
      * performs some post-processing such as collection of data for statistic
      * analysis.
      *
-     * @param experiment the finished experiment
+     * @param exp the finished experiment
      */
-    private void afterExperimentFinish(CloudletResponseTimeMinimizationExperiment experiment) {
-        cloudletResponseTimes.add(experiment.getCloudletsResponseTimeAverage());
+    private void afterExperimentFinish(CloudletResponseTimeMinimizationExperiment exp) {
+        cloudletResponseTimes.add(exp.getCloudletsResponseTimeAverage());
         percentageOfCloudletsMeetingResponseTimes.add(
-                experiment.getPercentageOfCloudletsMeetingResponseTime());
-        divPesVmsByPesCloudlets.add(experiment.getDivPesVmsByPesCloudlets());
+                exp.getPercentageOfCloudletsMeetingResponseTime());
+        ratioOfVmPesToRequiredCloudletPesList.add(exp.getRatioOfExistingVmPesToRequiredCloudletPes());
     }
 
+    @Override protected void setup() {/**/}
+    
     @Override
     protected Map<String, List<Double>> createMetricsMap() {
         Map<String, List<Double>> map = new HashMap<>();
         map.put("Cloudlet Response Time", cloudletResponseTimes);
         map.put("Percentage Of Cloudlets Meeting Response Times", percentageOfCloudletsMeetingResponseTimes);
-        map.put("Amount of cloudlet per PE of vm ", divPesVmsByPesCloudlets);
+        map.put("Average of vPEs/CloudletsPEs", ratioOfVmPesToRequiredCloudletPesList);
         return map;
     }
 

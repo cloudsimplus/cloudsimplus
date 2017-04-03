@@ -29,18 +29,18 @@ import org.cloudbus.cloudsim.hosts.Host;
 import org.cloudbus.cloudsim.vms.Vm;
 
 /**
- * A general interface that represents data to be passed
- * to {@link EventListener} objects that are registered to be notified
- * when some events happen for a given simulation entity such as
- * a {@link Datacenter}, {@link Host}, {@link Vm}, {@link Cloudlet} and so on.
+ * A general interface that represents data to be passed to
+ * {@link EventListener} objects that are registered to be notified when some
+ * events happen for a given simulation entity such as a
+ * {@link Datacenter}, {@link Host}, {@link Vm}, {@link Cloudlet} and so on.
  *
- * <p>There is not implementing class for such interfaces because
- * instances of them are just Data Type Objects (DTO) that just store
- * data and do not have business rules.
- * Each interface that extends this one has a {@code getInstance()} method
- * to create an object from that interface.
- * Such method uses the JDK8 static methods for interfaces to provide such
- * a feature e reduce the number of classes, providing a simpler design.
+ * <p>
+ * There is not implementing class for such interfaces because instances of them
+ * are just Data Type Objects (DTO) that just store data and do not have
+ * business rules. Each interface that extends this one has a
+ * {@code getInstance()} method to create an object from that interface. Such
+ * method uses the JDK8 static methods for interfaces to provide such a feature
+ * e reduce the number of classes, providing a simpler design.
  * </p>
  *
  * @author Manoel Campos da Silva Filho
@@ -52,21 +52,21 @@ import org.cloudbus.cloudsim.vms.Vm;
  * @see CloudletEventInfo
  */
 public interface EventInfo {
+
     /**
      * Gets the time the event happened.
      *
      * @return
      */
-   double getTime();
+    double getTime();
 
     /**
      * Gets a EventInfo instance from the given parameters.
      *
      * @param time the time the event happened
+     * @return
      */
-   static EventInfo of(double time){
-       return new EventInfo() {
-           @Override public double getTime() { return time; }
-       };
-   }
+    static EventInfo of(double time) {
+        return () -> time;
+    }
 }
