@@ -1,28 +1,12 @@
-/**
- * CloudSim Plus: A modern, highly-extensible and easier-to-use Framework for
- * Modeling and Simulation of Cloud Computing Infrastructures and Services.
- * http://cloudsimplus.org
- *
- *     Copyright (C) 2015-2016  Universidade da Beira Interior (UBI, Portugal) and
- *     the Instituto Federal de Educação Ciência e Tecnologia do Tocantins (IFTO, Brazil).
- *
- *     This file is part of CloudSim Plus.
- *
- *     CloudSim Plus is free software: you can redistribute it and/or modify
- *     it under the terms of the GNU General Public License as published by
- *     the Free Software Foundation, either version 3 of the License, or
- *     (at your option) any later version.
- *
- *     CloudSim Plus is distributed in the hope that it will be useful,
- *     but WITHOUT ANY WARRANTY; without even the implied warranty of
- *     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *     GNU General Public License for more details.
- *
- *     You should have received a copy of the GNU General Public License
- *     along with CloudSim Plus. If not, see <http://www.gnu.org/licenses/>.
+/*
+ * To change this license header, choose License Headers in Project Properties.
+ * To change this template file, choose Tools | Templates
+ * and open the template in the editor.
  */
 package org.cloudsimplus.migration;
 
+import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import org.cloudbus.cloudsim.allocationpolicies.power.PowerVmAllocationPolicyMigrationWorstFitStaticThreshold;
@@ -35,8 +19,6 @@ import org.cloudbus.cloudsim.datacenters.Datacenter;
 import org.cloudbus.cloudsim.datacenters.DatacenterCharacteristics;
 import org.cloudbus.cloudsim.datacenters.DatacenterCharacteristicsSimple;
 import org.cloudbus.cloudsim.datacenters.power.PowerDatacenter;
-import org.cloudbus.cloudsim.distributions.UniformDistr;
-import org.cloudbus.cloudsim.hosts.Host;
 import org.cloudbus.cloudsim.hosts.power.PowerHost;
 import org.cloudbus.cloudsim.hosts.power.PowerHostUtilizationHistory;
 import org.cloudbus.cloudsim.power.models.PowerModelLinear;
@@ -47,25 +29,24 @@ import org.cloudbus.cloudsim.resources.Pe;
 import org.cloudbus.cloudsim.resources.PeSimple;
 import org.cloudbus.cloudsim.resources.Ram;
 import org.cloudbus.cloudsim.schedulers.cloudlet.CloudletSchedulerTimeShared;
-import org.cloudbus.cloudsim.schedulers.vm.VmSchedulerSpaceShared;
 import org.cloudbus.cloudsim.schedulers.vm.VmSchedulerTimeShared;
 import org.cloudbus.cloudsim.selectionpolicies.power.PowerVmSelectionPolicyMinimumUtilization;
 import org.cloudbus.cloudsim.util.Log;
+import org.cloudbus.cloudsim.util.ResourceLoader;
 import org.cloudbus.cloudsim.utilizationmodels.UtilizationModel;
 import org.cloudbus.cloudsim.utilizationmodels.UtilizationModelDynamic;
 import org.cloudbus.cloudsim.utilizationmodels.UtilizationModelFull;
 import org.cloudbus.cloudsim.vms.Vm;
 import org.cloudbus.cloudsim.vms.power.PowerVm;
-import org.cloudsimplus.sla.HostFaultInjection;
-import org.cloudsimplus.sla.PoissonProcess;
 import org.cloudsimplus.builders.tables.CloudletsTableBuilder;
+import org.cloudsimplus.sla.readJsonFile.SlaMetric;
+import org.cloudsimplus.sla.readJsonFile.SlaReader;
 
 /**
- * This example migrates the vm when a fault happens.
  *
  * @author raysaoliveira
  */
-public final class MigrationWhenHostFaultHappensExample {
+public final class VmMigrationWhenCpuMetricIsViolatedExampleWithSelectedVm {
 
     private static final int SCHEDULE_TIME_TO_PROCESS_DATACENTER_EVENTS = 5;
 
@@ -74,12 +55,6 @@ public final class MigrationWhenHostFaultHappensExample {
     private static final long HOST_RAM = 500000; //host memory (MB)
     private static final long HOST_STORAGE = 1000000; //host storage
     private static final long HOST_BW = 100000000L;
-    private ArrayList<PowerHost> hostList;
-    /**
-     * The percentage of host CPU usage that trigger VM migration due to over
-     * utilization (in scale from 0 to 1, where 1 is 100%).
-     */
-    private static final double HOST_UTILIZATION_THRESHOLD_FOR_VM_MIGRATION = 0.7;
 
     private static final int VM_MIPS = 1000;
     private static final long VM_SIZE = 1000; //image size (MB)
@@ -102,7 +77,7 @@ public final class MigrationWhenHostFaultHappensExample {
 
     /**
      * Defines the speed (in percentage) that CPU usage of a cloudlet will
-     * increase during the simulation tie. (in scale from 0 to 1, where 1 is
+     * increase during the simulation time. (in scale from 0 to 1, where 1 is
      * 100%).
      *
      * @see #createAndSubmitCloudletsWithDynamicCpuUtilization(double, double,
@@ -114,18 +89,33 @@ public final class MigrationWhenHostFaultHappensExample {
     private static final int NUMBER_OF_VMS_TO_CREATE = NUMBER_OF_HOSTS_TO_CREATE + 1;
     private static final int NUMBER_OF_CLOUDLETS_TO_CREATE_BY_VM = 1;
 
-    private List<Vm> vmlist = new ArrayList<>();
+    private final List<Vm> vmlist = new ArrayList<>();
     private CloudSim simulation;
 
-    public MigrationWhenHostFaultHappensExample() {
-        Log.printConcatLine("Starting ", VmMigrationWhenCpuMetricIsViolatedExample.class.getSimpleName(), "...");
+    /**
+     * The file containing the SLA Contract in JSON format.
+     */
+    public static final String METRICS_FILE = ResourceLoader.getResourcePath(VmMigrationWhenCpuMetricIsViolatedExample.class, "SlaMetrics.json");
 
+    /**
+     * Attributes with minimum and maximum values of the CPU Utilization metric
+     * to be set for allocation policy.
+     */
+    private double underCpuUtilizationThreshold;
+    private double overCpuUtilizationThreshold;
+
+    public static void main(String[] args) throws FileNotFoundException, IOException {
+        new VmMigrationWhenCpuMetricIsViolatedExample();
+    }
+
+    public VmMigrationWhenCpuMetricIsViolatedExampleWithSelectedVm() throws FileNotFoundException, IOException {
+        Log.printConcatLine("Starting ", VmMigrationWhenCpuMetricIsViolatedExample.class.getSimpleName(), "...");
         simulation = new CloudSim();
+
+        searchCpuUtilizationMetricInSlaContract();
 
         @SuppressWarnings("unused")
         Datacenter datacenter0 = createDatacenter();
-
-        createFaultInjectionForHosts(datacenter0);
 
         DatacenterBroker broker = new DatacenterBrokerSimple(simulation);
         createAndSubmitVms(broker);
@@ -133,49 +123,11 @@ public final class MigrationWhenHostFaultHappensExample {
         createAndSubmitCloudlets(broker);
 
         simulation.start();
+        responseTimeCloudletSimulation(broker);
 
         new CloudletsTableBuilder(broker.getCloudletsFinishedList()).build();
 
         Log.printConcatLine(VmMigrationWhenCpuMetricIsViolatedExample.class.getSimpleName(), " finished!");
-
-    }
-
-    /**
-     * Starts the example.
-     *
-     * @param args
-     */
-    public static void main(String[] args) {
-        new MigrationWhenHostFaultHappensExample();
-    }
-
-    /**
-     * Creates the fault injection for host
-     *
-     * @param datacenter0
-     */
-    private void createFaultInjectionForHosts(Datacenter datacenter0) {
-        //Inject Fault
-        long seed = System.currentTimeMillis();
-        PoissonProcess poisson = new PoissonProcess(0.2, seed);
-
-        UniformDistr failurePesRand = new UniformDistr(seed);
-        for (int i = 0; i < datacenter0.getHostList().size(); i++) {
-            for (Host host : datacenter0.getHostList()) {
-                if (poisson.haveKEventsHappened()) {
-                    UniformDistr delayForFailureOfHostRandom = new UniformDistr(1, 10, seed++);
-
-                    //create a new intance of fault and start it.
-                    HostFaultInjection fault = new HostFaultInjection(simulation);
-                    fault.setNumberOfFailedPesRandom(failurePesRand);
-                    fault.setDelayForFailureOfHostRandom(delayForFailureOfHostRandom);
-                    fault.setHost(host);
-                } else {
-                    System.out.println("\t *** Host not failed. -> Id: " + host.getId() + "\n");
-                }
-                i++;
-            }
-        }
     }
 
     public void createAndSubmitCloudlets(DatacenterBroker broker) {
@@ -203,10 +155,6 @@ public final class MigrationWhenHostFaultHappensExample {
      *
      * @param broker
      * @return
-     *
-     * @todo @author manoelcampos The use of other CloudletScheduler instead of
-     * CloudletSchedulerDynamicWorkload makes the Host CPU usage not be
-     * updated (and maybe VM CPU usage too).
      */
     public PowerVm createVm(DatacenterBroker broker) {
         PowerVm vm = new PowerVm(vmlist.size(), VM_MIPS, VM_PES_NUM);
@@ -234,8 +182,8 @@ public final class MigrationWhenHostFaultHappensExample {
             UtilizationModelDynamic cpuUtilizationModel;
             if (progressiveCpuUsage) {
                 cpuUtilizationModel
-                    = new UtilizationModelDynamic(cloudletInitialCpuUsagePercent)
-                          .setUtilizationUpdateFunction(this::getCpuUtilizationIncrement);
+                        = new UtilizationModelDynamic(cloudletInitialCpuUsagePercent)
+                                .setUtilizationUpdateFunction(this::getCpuUtilizationIncrement);
             } else {
                 cpuUtilizationModel = new UtilizationModelDynamic(cloudletInitialCpuUsagePercent);
             }
@@ -244,11 +192,11 @@ public final class MigrationWhenHostFaultHappensExample {
             Cloudlet c
                     = new CloudletSimple(
                             cloudletId, CLOUDLET_LENGHT, VM_PES_NUM)
-                    .setFileSize(CLOUDLET_FILESIZE)
-                    .setOutputSize(CLOUDLET_OUTPUTSIZE)
-                    .setUtilizationModelCpu(cpuUtilizationModel)
-                    .setUtilizationModelRam(utilizationModelFull)
-                    .setUtilizationModelBw(utilizationModelFull);
+                            .setFileSize(CLOUDLET_FILESIZE)
+                            .setOutputSize(CLOUDLET_OUTPUTSIZE)
+                            .setUtilizationModelCpu(cpuUtilizationModel)
+                            .setUtilizationModelRam(utilizationModelFull)
+                            .setUtilizationModelBw(utilizationModelFull);
             c.setBroker(broker);
             list.add(c);
         }
@@ -262,11 +210,13 @@ public final class MigrationWhenHostFaultHappensExample {
     }
 
     /**
-     * Increments the CPU resource utilization, that is defined in percentage values.
+     * Increments the CPU resource utilization, that is defined in percentage
+     * values.
+     *
      * @return the new resource utilization after the increment
      */
-    private double getCpuUtilizationIncrement(UtilizationModelDynamic um){
-        return  um.getUtilization() + um.getTimeSpan()*CLOUDLET_CPU_USAGE_INCREMENT_PER_SECOND;
+    private double getCpuUtilizationIncrement(UtilizationModelDynamic um) {
+        return um.getUtilization() + um.getTimeSpan() * CLOUDLET_CPU_USAGE_INCREMENT_PER_SECOND;
     }
 
     public List<Cloudlet> createAndSubmitCloudletsWithDynamicCpuUtilization(
@@ -290,7 +240,7 @@ public final class MigrationWhenHostFaultHappensExample {
     }
 
     private Datacenter createDatacenter() {
-        hostList = new ArrayList<>();
+        ArrayList<PowerHost> hostList = new ArrayList<>();
         for (int i = 0; i < NUMBER_OF_HOSTS_TO_CREATE; i++) {
             hostList.add(createHost(i, HOST_NUMBER_OF_PES, HOST_MIPS_BY_PE));
             Log.printConcatLine("#Created host ", i, " with ", HOST_MIPS_BY_PE, " mips x ", HOST_NUMBER_OF_PES);
@@ -303,7 +253,8 @@ public final class MigrationWhenHostFaultHappensExample {
         PowerVmAllocationPolicyMigrationWorstFitStaticThreshold allocationPolicy
                 = new PowerVmAllocationPolicyMigrationWorstFitStaticThreshold(
                         new PowerVmSelectionPolicyMinimumUtilization(),
-                        HOST_UTILIZATION_THRESHOLD_FOR_VM_MIGRATION);
+                        overCpuUtilizationThreshold);
+        allocationPolicy.setUnderUtilizationThreshold(underCpuUtilizationThreshold);
 
         PowerDatacenter dc = new PowerDatacenter(simulation, characteristics, allocationPolicy);
         dc.setMigrationsEnabled(true).setSchedulingInterval(SCHEDULE_TIME_TO_PROCESS_DATACENTER_EVENTS);
@@ -323,10 +274,10 @@ public final class MigrationWhenHostFaultHappensExample {
      *
      * @todo @author manoelcampos The method
      * {@link DatacenterBroker#getCloudletsFinishedList()} returns an empty list
-     * when using null     {@link PowerDatacenter},
+     * when using null null null     {@link PowerDatacenter},
      * {@link PowerHost} and {@link PowerVm}.
      */
-    public PowerHostUtilizationHistory createHost(int id, int numberOfPes, long mipsByPe) {
+    public static PowerHostUtilizationHistory createHost(int id, int numberOfPes, long mipsByPe) {
         List<Pe> peList = createPeList(numberOfPes, mipsByPe);
         PowerHostUtilizationHistory host = new PowerHostUtilizationHistory(id, HOST_STORAGE, peList);
         host.setPowerModel(new PowerModelLinear(1000, 0.7))
@@ -336,11 +287,60 @@ public final class MigrationWhenHostFaultHappensExample {
         return host;
     }
 
-    public List<Pe> createPeList(int numberOfPEs, long mips) {
+    public static List<Pe> createPeList(int numberOfPEs, long mips) {
         List<Pe> list = new ArrayList<>(numberOfPEs);
         for (int i = 0; i < numberOfPEs; i++) {
             list.add(new PeSimple(mips, new PeProvisionerSimple()));
         }
         return list;
+    }
+
+    private void searchCpuUtilizationMetricInSlaContract() throws FileNotFoundException {
+        SlaReader reader = new SlaReader(METRICS_FILE);
+        List<SlaMetric> metrics = reader.getContract().getMetrics();
+        metrics.stream()
+                .filter(m -> m.isCpuUtilization())
+                .findFirst()
+                .ifPresent(this::getCpuUtilizationThreshold);
+
+    }
+
+    private void getCpuUtilizationThreshold(SlaMetric metric) {
+        double minValue
+                = metric.getDimensions().stream()
+                        .filter(d -> d.isValueMin())
+                        .map(d -> d.getValue())
+                        .findFirst().orElse(Double.MIN_VALUE);
+
+        double maxValue
+                = metric.getDimensions().stream()
+                        .filter(d -> d.isValueMax())
+                        .map(d -> d.getValue())
+                        .findFirst().orElse(Double.MAX_VALUE);
+
+        underCpuUtilizationThreshold = minValue / 100;
+        overCpuUtilizationThreshold = maxValue / 100;
+
+    }
+
+    private void responseTimeCloudletSimulation(DatacenterBroker broker) throws IOException {
+        double average = 0;
+        List<Double> responseTimes = new ArrayList<>();
+        for (Cloudlet c : broker.getCloudletsFinishedList()) {
+            double responseTime = c.getFinishTime() - c.getLastDatacenterArrivalTime();
+            responseTimes.add(responseTime);
+            average = responseTimeCloudletAverage(broker, responseTimes);
+
+        }
+        System.out.printf("\t\t\n Response Time simulation (average) : %.2f \n", average);
+    }
+
+    private double responseTimeCloudletAverage(DatacenterBroker broker, List<Double> responseTimes) {
+        int totalCloudlets = broker.getCloudletsFinishedList().size();
+        double sum = 0;
+        sum = responseTimes.stream()
+                .map((responseTime) -> responseTime)
+                .reduce(sum, (accumulator, _item) -> accumulator + _item);
+        return sum / totalCloudlets;
     }
 }

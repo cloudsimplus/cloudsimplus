@@ -1,71 +1,42 @@
-/**
- * CloudSim Plus: A modern, highly-extensible and easier-to-use Framework for
- * Modeling and Simulation of Cloud Computing Infrastructures and Services.
- * http://cloudsimplus.org
- *
- *     Copyright (C) 2015-2016  Universidade da Beira Interior (UBI, Portugal) and
- *     the Instituto Federal de Educação Ciência e Tecnologia do Tocantins (IFTO, Brazil).
- *
- *     This file is part of CloudSim Plus.
- *
- *     CloudSim Plus is free software: you can redistribute it and/or modify
- *     it under the terms of the GNU General Public License as published by
- *     the Free Software Foundation, either version 3 of the License, or
- *     (at your option) any later version.
- *
- *     CloudSim Plus is distributed in the hope that it will be useful,
- *     but WITHOUT ANY WARRANTY; without even the implied warranty of
- *     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *     GNU General Public License for more details.
- *
- *     You should have received a copy of the GNU General Public License
- *     along with CloudSim Plus. If not, see <http://www.gnu.org/licenses/>.
+/*
+ * To change this license header, choose License Headers in Project Properties.
+ * To change this template file, choose Tools | Templates
+ * and open the template in the editor.
  */
 package org.cloudsimplus.sla.responsetime;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import org.apache.commons.math3.stat.descriptive.SummaryStatistics;
-
-import org.cloudsimplus.testbeds.ExperimentRunner;
-
 import java.util.List;
 import java.util.Map;
+import org.apache.commons.math3.stat.descriptive.SummaryStatistics;
 import org.cloudbus.cloudsim.distributions.ContinuousDistribution;
+import org.cloudsimplus.testbeds.ExperimentRunner;
 
 /**
- * Runs the {@link CloudletResponseTimeMinimizationExperiment} the number of
- * times defines by {@link #numberOfSimulationRuns} and compute statistics.
  *
  * @author raysaoliveira
  */
-final class CloudletResponseTimeMinimizationRunner extends ExperimentRunner<CloudletResponseTimeMinimizationExperiment> {
-
+public class CloudletResponseTimeWorkLoadRunner extends ExperimentRunner<CloudletResponseTimeWorkLoadExperimet> {
+    
     /**
      * Different lengths that will be randomly assigned to created Cloudlets.
      */
-    static final long[] CLOUDLET_LENGTHS = {10000, 14000, 20000, 40000};
+    static final long[] CLOUDLET_LENGTHS = {20000, 40000, 14000, 10000, 10000};
     static final int[] VM_PES = {2, 4};
-    static final int VMS = 30;
-    static final int CLOUDLETS = 110;
+    static final int VMS = 100;
+    static final int CLOUDLETS = 100;
 
     /**
      * The response time average for all the experiments.
      */
     private List<Double> cloudletResponseTimes;
 
-    /**
-     * The percentage of cloudlets meeting response time average for all the
-     * experiments.
+     /**
+     * The percentage of cloudlets meeting response time average for all the experiments.
      */
     private List<Double> percentageOfCloudletsMeetingResponseTimes;
 
-    /**
-     * Amount of cloudlet per foot of vm.
-     */
-    private List<Double> divPesVmsByPesCloudlets;
-
-    
     /**
      * Indicates if each experiment will output execution logs or not.
      */
@@ -78,7 +49,7 @@ final class CloudletResponseTimeMinimizationRunner extends ExperimentRunner<Clou
      * @param args command line arguments
      */
     public static void main(String[] args) {
-        new CloudletResponseTimeMinimizationRunner()
+        new CloudletResponseTimeWorkLoadRunner()
                 .setNumberOfSimulationRuns(2000)
                 .setApplyAntitheticVariatesTechnique(true)
                 .setNumberOfBatches(5) //Comment this or set to 0 to disable the "Batch Means Method"
@@ -87,26 +58,24 @@ final class CloudletResponseTimeMinimizationRunner extends ExperimentRunner<Clou
                 .run();
     }
 
-    CloudletResponseTimeMinimizationRunner() {
+    CloudletResponseTimeWorkLoadRunner() {
         super();
         cloudletResponseTimes = new ArrayList<>();
         percentageOfCloudletsMeetingResponseTimes = new ArrayList<>();
-        divPesVmsByPesCloudlets = new ArrayList<>();
     }
 
     @Override
-    protected CloudletResponseTimeMinimizationExperiment createExperiment(int i) {
+    protected CloudletResponseTimeWorkLoadExperimet createExperiment(int i) {
         ContinuousDistribution randCloudlet = createRandomGenAndAddSeedToList(i);
         ContinuousDistribution randVm = createRandomGenAndAddSeedToList(i);
-        CloudletResponseTimeMinimizationExperiment exp
-                = new CloudletResponseTimeMinimizationExperiment(randCloudlet, randVm);
+        CloudletResponseTimeWorkLoadExperimet exp
+                = new CloudletResponseTimeWorkLoadExperimet(randCloudlet, randVm);
         exp.setVerbose(experimentVerbose).setAfterExperimentFinish(this::afterExperimentFinish);
         return exp;
     }
 
     @Override
-    protected void setup() {
-    }
+    protected void setup() {}
 
     /**
      * Method automatically called after every experiment finishes running. It
@@ -115,11 +84,10 @@ final class CloudletResponseTimeMinimizationRunner extends ExperimentRunner<Clou
      *
      * @param experiment the finished experiment
      */
-    private void afterExperimentFinish(CloudletResponseTimeMinimizationExperiment experiment) {
+    private void afterExperimentFinish(CloudletResponseTimeWorkLoadExperimet experiment) {
         cloudletResponseTimes.add(experiment.getCloudletsResponseTimeAverage());
         percentageOfCloudletsMeetingResponseTimes.add(
                 experiment.getPercentageOfCloudletsMeetingResponseTime());
-        divPesVmsByPesCloudlets.add(experiment.getDivPesVmsByPesCloudlets());
     }
 
     @Override
@@ -127,7 +95,6 @@ final class CloudletResponseTimeMinimizationRunner extends ExperimentRunner<Clou
         Map<String, List<Double>> map = new HashMap<>();
         map.put("Cloudlet Response Time", cloudletResponseTimes);
         map.put("Percentage Of Cloudlets Meeting Response Times", percentageOfCloudletsMeetingResponseTimes);
-        map.put("Amount of cloudlet per PE of vm ", divPesVmsByPesCloudlets);
         return map;
     }
 
@@ -166,4 +133,5 @@ final class CloudletResponseTimeMinimizationRunner extends ExperimentRunner<Clou
                 stats.getMean(), intervalSize, lower, upper);
         System.out.printf("\tStandard Deviation: %.2f \n", stats.getStandardDeviation());
     }
+    
 }

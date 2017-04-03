@@ -92,7 +92,7 @@ public class DynamicVmCreationByCpuUtilizationAndFreePesOfVm {
     private static final int HOSTS = 50;
     private static final int HOST_PES = 32;
     private static final int VMS = 3;
-    private static final int CLOUDLETS = 8;
+    private static final int CLOUDLETS = 4;
     private static final long VM_MIPS = 1000;
 
     private DatacenterBroker broker0;
@@ -163,7 +163,7 @@ public class DynamicVmCreationByCpuUtilizationAndFreePesOfVm {
         vmList.addAll(createListOfScalableVms(VMS));
 
         createCloudletList();
-        sortCloudletListByExpectedResponseTime();
+        sortCloudletListByLength();
 
         broker0.setCloudletComparator(sortCloudletsByLengthReversed);
 
@@ -181,16 +181,12 @@ public class DynamicVmCreationByCpuUtilizationAndFreePesOfVm {
         printSimulationResults();
     }
 
-    private void sortCloudletListByExpectedResponseTime() {
+     private void sortCloudletListByLength() {
         //sort the cloudlet list by expected response time
-        Comparator<Cloudlet> sortByExpectedCloudletResponseTime = null;
-        for(Vm vm: vmList){
-            sortByExpectedCloudletResponseTime
-                    = Comparator.comparingDouble(cloudlet -> getExpectedCloudletResponseTime(cloudlet, vm));
-
-        }
-        cloudletList.sort(sortByExpectedCloudletResponseTime.reversed());
-        System.out.println("\t\tCreated Cloudlets: " + cloudletList);
+        Comparator<Cloudlet> sortByExpectedCloudletByLength 
+                    = Comparator.comparingDouble(cloudlet -> cloudlet.getLength());
+        
+        cloudletList.sort(sortByExpectedCloudletByLength.reversed());
     }
 
     private void printVmsCpuUsage(EventInfo eventInfo) {
@@ -457,10 +453,10 @@ public class DynamicVmCreationByCpuUtilizationAndFreePesOfVm {
 
         VmCost vmCost;
         double totalCost = 0.0;
-        for (Vm vm : vmlist) {
-            if(vm.getBroker().getCloudletsFinishedList().size() > 0) {
-                vmCost = new VmCost(vm);
-                totalCost = vmCost.getTotalCost();
+        for (int i = 0; i < vmlist.size(); i++) {
+            if(vmList.get(i).getCloudletScheduler().getCloudletFinishedList().size() > 0) {
+                vmCost = new VmCost(vmlist.get(i));
+                totalCost += vmCost.getTotalCost();
             }
         }
         return totalCost;

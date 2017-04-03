@@ -11,14 +11,12 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import static java.util.Comparator.comparingDouble;
 import java.util.List;
-import java.util.function.Predicate;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.apache.commons.math3.stat.descriptive.SummaryStatistics;
 import org.cloudbus.cloudsim.brokers.DatacenterBroker;
 import org.cloudbus.cloudsim.brokers.DatacenterBrokerSimple;
 import org.cloudbus.cloudsim.cloudlets.Cloudlet;
-import org.cloudbus.cloudsim.cloudlets.CloudletSimple;
 import org.cloudbus.cloudsim.datacenters.DatacenterSimple;
 import org.cloudbus.cloudsim.distributions.ContinuousDistribution;
 import org.cloudbus.cloudsim.distributions.UniformDistr;
@@ -36,8 +34,7 @@ import org.cloudbus.cloudsim.schedulers.vm.VmScheduler;
 import org.cloudbus.cloudsim.schedulers.vm.VmSchedulerTimeShared;
 import org.cloudbus.cloudsim.util.Log;
 import org.cloudbus.cloudsim.util.ResourceLoader;
-import org.cloudbus.cloudsim.utilizationmodels.UtilizationModel;
-import org.cloudbus.cloudsim.utilizationmodels.UtilizationModelFull;
+import org.cloudbus.cloudsim.util.WorkloadFileReader;
 import org.cloudbus.cloudsim.vms.Vm;
 import org.cloudbus.cloudsim.vms.VmSimple;
 import org.cloudsimplus.autoscaling.HorizontalVmScaling;
@@ -47,19 +44,15 @@ import org.cloudsimplus.listeners.EventInfo;
 import org.cloudsimplus.sla.readJsonFile.CpuUtilization;
 import org.cloudsimplus.sla.readJsonFile.ResponseTime;
 import org.cloudsimplus.sla.readJsonFile.SlaReader;
-import static org.cloudsimplus.sla.responsetime.CloudletResponseTimeMinimizationRunner.CLOUDLETS;
-import static org.cloudsimplus.sla.responsetime.CloudletResponseTimeMinimizationRunner.VMS;
+import static org.cloudsimplus.sla.responsetime.CloudletResponseTimeWorkLoadRunner.VMS;
 import org.cloudsimplus.testbeds.SimulationExperiment;
 
 /**
- * An experiment of dynamic creation of vm at runtime, respecting the cpu usage
- * limit and the free number of each VM, thus selecting an "ideal" VM for a
- * given cloudlet, which will then minimize Cloudlet response time.
  *
  * @author raysaoliveira
  */
-public final class CloudletResponseTimeMinimizationExperiment extends SimulationExperiment {
-
+public class CloudletResponseTimeWorkLoadExperimet extends SimulationExperiment {
+ 
     private static final int SCHEDULING_INTERVAL = 5;
 
     /**
@@ -82,7 +75,7 @@ public final class CloudletResponseTimeMinimizationExperiment extends Simulation
     /**
      * The file containing the SLA Contract in JSON format.
      */
-    public static final String METRICS_FILE = ResourceLoader.getResourcePath(CloudletResponseTimeMinimizationExperiment.class, "SlaMetrics.json");
+    public static final String METRICS_FILE = ResourceLoader.getResourcePath(CloudletResponseTimeWorkLoadExperimet.class, "SlaMetrics.json");
     private double cpuUtilizationSlaContract;
     private double responseTimeSlaContract;
 
@@ -99,7 +92,8 @@ public final class CloudletResponseTimeMinimizationExperiment extends Simulation
      */
     private final Comparator<Cloudlet> sortCloudletsByLengthReversed = Comparator.comparingDouble((Cloudlet c) -> c.getLength()).reversed();
 
-    public CloudletResponseTimeMinimizationExperiment(ContinuousDistribution randCloudlet, ContinuousDistribution randVm) {
+
+    public CloudletResponseTimeWorkLoadExperimet(ContinuousDistribution randCloudlet, ContinuousDistribution randVm) {
         super();
         this.randCloudlet = randCloudlet;
         this.randVm = randVm;
@@ -117,7 +111,7 @@ public final class CloudletResponseTimeMinimizationExperiment extends Simulation
             getCloudsim().addOnClockTickListener(this::printVmsCpuUsage);
 
         } catch (IOException ex) {
-            Logger.getLogger(CloudletResponseTimeMinimizationExperiment.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(CloudletResponseTimeWorkLoadExperimet.class.getName()).log(Level.SEVERE, null, ex);
             throw new RuntimeException(ex);
         }
     }
@@ -150,25 +144,22 @@ public final class CloudletResponseTimeMinimizationExperiment extends Simulation
 
     @Override
     protected List<Cloudlet> createCloudlets(DatacenterBroker broker) {
-        cloudletList = new ArrayList<>(CLOUDLETS);
-        DatacenterBroker broker0 = getFirstBroker();
-        for (int i = 0; i < CLOUDLETS; i++) {
-            cloudletList.add(createCloudlet(broker0));
+       WorkloadFileReader workloadFileReader;
+       cloudletList = new ArrayList<>();
+        try {
+            workloadFileReader = new WorkloadFileReader("/Users/raysaoliveira/Desktop/Mestrado/cloudsim-plus/cloudsim-plus-testbeds/src/main/resources/UniLu-Gaia-2014-2.swf", 1);
+            cloudletList = workloadFileReader.generateWorkload().subList(0, 1000);
+        } catch (FileNotFoundException ex) {
+            Logger.getLogger(CloudletResponseTimeWorkLoadExperimet.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (IOException ex) {
+            Logger.getLogger(CloudletResponseTimeWorkLoadExperimet.class.getName()).log(Level.SEVERE, null, ex);
         }
-
+       
+        cloudletList.forEach((cloudlet) -> {
+            cloudlet.setBroker(broker);
+        });
+     
         return cloudletList;
-    }
-
-    private Cloudlet createCloudlet(DatacenterBroker broker) {
-        final int id = createdCloudlets++;
-        final int i = (int) (randCloudlet.sample() * CLOUDLET_LENGTHS.length);
-        final long length = CLOUDLET_LENGTHS[i];
-        UtilizationModel utilization = new UtilizationModelFull();
-        return new CloudletSimple(id, length, 2)
-                .setFileSize(1024)
-                .setOutputSize(1024)
-                .setUtilizationModel(utilization)
-                .setBroker(broker);
     }
 
     /**
@@ -361,38 +352,6 @@ public final class CloudletResponseTimeMinimizationExperiment extends Simulation
         return (totalOfcloudletSlaSatisfied * 100) / broker.getCloudletsFinishedList().size();
     }
 
-    double getSumPesVms() {
-        DatacenterBroker broker = getBrokerList().stream()
-                .findFirst()
-                .orElse(DatacenterBroker.NULL);
-        
-        double sumPesVms = broker.getVmsCreatedList().stream()
-                .mapToDouble(vm -> vm.getNumberOfPes())
-                .sum();
-        
-        System.out.println(" \n\n\n Sum Pes Vms: " + sumPesVms);      
-        return sumPesVms;
-    }
-
-    double getSumPesCloudlets() {
-        DatacenterBroker broker = getBrokerList().stream()
-                .findFirst()
-                .orElse(DatacenterBroker.NULL);
-        
-        double sumPesCloudlet = broker.getCloudletsCreatedList().stream()
-                .mapToDouble(c -> c.getNumberOfPes())
-                .sum();
-        System.out.println(" \n\n\n Sum Pes Cloudltes: " + sumPesCloudlet);
-        return sumPesCloudlet;
-    }
-
-    double getDivPesVmsByPesCloudlets() {
-        double sumPesVms = getSumPesVms();
-        double sumPesCloudlets = getSumPesCloudlets();
-
-        return sumPesVms / sumPesCloudlets;
-    }
-
     /**
      * A main method just for test purposes.
      *
@@ -404,13 +363,11 @@ public final class CloudletResponseTimeMinimizationExperiment extends Simulation
         final long seed = System.currentTimeMillis();
         ContinuousDistribution randCloudlet = new UniformDistr(seed);
         ContinuousDistribution randVm = new UniformDistr(seed);
-        CloudletResponseTimeMinimizationExperiment exp
-                = new CloudletResponseTimeMinimizationExperiment(randCloudlet, randVm);
+        CloudletResponseTimeWorkLoadExperimet exp
+                = new CloudletResponseTimeWorkLoadExperimet(randCloudlet, randVm);
         exp.setVerbose(true);
         exp.run();
         exp.getCloudletsResponseTimeAverage();
         exp.getPercentageOfCloudletsMeetingResponseTime();
-        exp.getDivPesVmsByPesCloudlets();
-        System.out.println(" Quantidade de cloudlets por Pe da Vm: " + exp.getDivPesVmsByPesCloudlets());
     }
 }

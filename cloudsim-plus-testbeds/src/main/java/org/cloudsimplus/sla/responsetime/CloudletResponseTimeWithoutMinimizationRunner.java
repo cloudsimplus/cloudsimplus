@@ -22,10 +22,10 @@ public class CloudletResponseTimeWithoutMinimizationRunner extends ExperimentRun
     /**
      * Different lengths that will be randomly assigned to created Cloudlets.
      */
-    static final long[] CLOUDLET_LENGTHS = {20000, 40000, 14000, 10000, 10000};
+    static final long[] CLOUDLET_LENGTHS = {10000, 14000, 20000, 40000};
     static final int[] VM_PES = {2, 4};
-    static final int VMS = 15;
-    static final int CLOUDLETS = 45;
+    static final int VMS = 30;
+    static final int CLOUDLETS = 110;
 
     /**
      * The response time average for all the experiments.
@@ -37,6 +37,11 @@ public class CloudletResponseTimeWithoutMinimizationRunner extends ExperimentRun
      * experiments.
      */
     private List<Double> percentageOfCloudletsMeetingResponseTimes;
+    
+     /**
+     * Amount of cloudlet per foot of vm.
+     */
+    private List<Double> divPesVmsByPesCloudlets;
 
     /**
      * Indicates if each experiment will output execution logs or not.
@@ -63,6 +68,7 @@ public class CloudletResponseTimeWithoutMinimizationRunner extends ExperimentRun
         super();
         cloudletResponseTimes = new ArrayList<>();
         percentageOfCloudletsMeetingResponseTimes = new ArrayList<>();
+        divPesVmsByPesCloudlets = new ArrayList<>();
     }
 
     @Override
@@ -90,6 +96,7 @@ public class CloudletResponseTimeWithoutMinimizationRunner extends ExperimentRun
         cloudletResponseTimes.add(experiment.getCloudletsResponseTimeAverage());
         percentageOfCloudletsMeetingResponseTimes.add(
                 experiment.getPercentageOfCloudletsMeetingResponseTime());
+        divPesVmsByPesCloudlets.add(experiment.getDivPesVmsByPesCloudlets());
     }
 
     @Override
@@ -97,6 +104,7 @@ public class CloudletResponseTimeWithoutMinimizationRunner extends ExperimentRun
         Map<String, List<Double>> map = new HashMap<>();
         map.put("Cloudlet Response Time", cloudletResponseTimes);
         map.put("Percentage Of Cloudlets Meeting Response Times", percentageOfCloudletsMeetingResponseTimes);
+        map.put("Amount of cloudlet per foot of vm: ", divPesVmsByPesCloudlets);
         return map;
     }
 

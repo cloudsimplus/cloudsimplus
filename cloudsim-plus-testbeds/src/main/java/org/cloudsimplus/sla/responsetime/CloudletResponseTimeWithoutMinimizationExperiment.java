@@ -236,10 +236,10 @@ public class CloudletResponseTimeWithoutMinimizationExperiment extends Simulatio
         }
 
         ResourceProvisioner ramProvisioner = new ResourceProvisionerSimple(new Ram(20480));
-        ResourceProvisioner bwProvisioner = new ResourceProvisionerSimple(new Bandwidth(10000));
+        ResourceProvisioner bwProvisioner = new ResourceProvisionerSimple(new Bandwidth(100000));
         VmScheduler vmScheduler = new VmSchedulerTimeShared();
         final int id = hostList.size();
-        return new HostSimple(id, 10000, pesList)
+        return new HostSimple(id, 100000, pesList)
                 .setRamProvisioner(ramProvisioner)
                 .setBwProvisioner(bwProvisioner)
                 .setVmScheduler(vmScheduler);
@@ -288,6 +288,38 @@ public class CloudletResponseTimeWithoutMinimizationExperiment extends Simulatio
         System.out.printf("\nTotal of cloudlets SLA satisfied: %.0f de %d", totalOfcloudletSlaSatisfied, broker.getCloudletsFinishedList().size());
         return (totalOfcloudletSlaSatisfied * 100 )/broker.getCloudletsFinishedList().size();     
     }
+    
+    double getSumPesVms() {
+        DatacenterBroker broker = getBrokerList().stream()
+                .findFirst()
+                .orElse(DatacenterBroker.NULL);
+        
+        double sumPesVms = broker.getVmsCreatedList().stream()
+                .mapToInt(vm -> vm.getNumberOfPes())
+                .sum();
+              
+        return sumPesVms;
+    }
+
+    double getSumPesCloudlets() {
+        DatacenterBroker broker = getBrokerList().stream()
+                .findFirst()
+                .orElse(DatacenterBroker.NULL);
+        
+        double sumPesCloudlet = broker.getCloudletsCreatedList().stream()
+                .mapToInt(c -> c.getNumberOfPes())
+                .sum();
+
+        return sumPesCloudlet;
+    }
+
+    double getDivPesVmsByPesCloudlets() {
+        double sumPesVms = getSumPesVms();
+        double sumPesCloudlets = getSumPesCloudlets();
+
+        return sumPesVms / sumPesCloudlets;
+    }
+
 
     /**
      * A main method just for test purposes.
@@ -305,9 +337,6 @@ public class CloudletResponseTimeWithoutMinimizationExperiment extends Simulatio
         exp.run();
         exp.getCloudletsResponseTimeAverage();
         exp.getPercentageOfCloudletsMeetingResponseTime();
-        System.out.println("\n \n------------------------- Settings ----------------------- \n"
-                + " Seed: " + seed + " | Cloudlets: " + exp.getFirstBroker().getCloudletsFinishedList().size()
-        + " | Vms: " + exp.vmList.size() + " | Hosts: " + exp.hostList.size()
-              +  " | Scheduling Interval: " + SCHEDULING_INTERVAL);
-    }
+        exp.getDivPesVmsByPesCloudlets();
+    }    
 }

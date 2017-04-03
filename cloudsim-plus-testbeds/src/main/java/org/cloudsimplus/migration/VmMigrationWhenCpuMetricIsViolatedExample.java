@@ -24,7 +24,9 @@
 package org.cloudsimplus.migration;
 
 import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import org.cloudbus.cloudsim.allocationpolicies.power.PowerVmAllocationPolicyMigrationWorstFitStaticThreshold;
 import org.cloudbus.cloudsim.brokers.DatacenterBroker;
@@ -125,26 +127,33 @@ public final class VmMigrationWhenCpuMetricIsViolatedExample {
     private double underCpuUtilizationThreshold;
     private double overCpuUtilizationThreshold;
 
+    private double responseTimeSlaContract;
 
-    public static void main(String[] args) throws FileNotFoundException {
+    public static void main(String[] args) throws FileNotFoundException, IOException {
         new VmMigrationWhenCpuMetricIsViolatedExample();
     }
+    private  List<Cloudlet> cloudletList;
 
-    public VmMigrationWhenCpuMetricIsViolatedExample() throws FileNotFoundException {
+    public VmMigrationWhenCpuMetricIsViolatedExample() throws FileNotFoundException, IOException {
         Log.printConcatLine("Starting ", VmMigrationWhenCpuMetricIsViolatedExample.class.getSimpleName(), "...");
         simulation = new CloudSim();
 
         searchCpuUtilizationMetricInSlaContract();
+        cloudletList = new ArrayList<>(NUMBER_OF_CLOUDLETS_TO_CREATE_BY_VM);
 
         @SuppressWarnings("unused")
         Datacenter datacenter0 = createDatacenter();
 
         DatacenterBroker broker = new DatacenterBrokerSimple(simulation);
+        broker.setVmMapper(this::selectVmForCloudlet);
+
         createAndSubmitVms(broker);
 
         createAndSubmitCloudlets(broker);
 
         simulation.start();
+
+        responseTimeCloudletSimulation(broker);
 
         new CloudletsTableBuilder(broker.getCloudletsFinishedList()).build();
 
@@ -161,6 +170,7 @@ public final class VmMigrationWhenCpuMetricIsViolatedExample {
         }
         //Create one last cloudlet which CPU usage increases dynamically
         Vm lastVm = vmlist.get(vmlist.size() - 1);
+        sortCloudletListByLength(broker);
         createAndSubmitCloudletsWithDynamicCpuUtilization(0.2, 1, lastVm, broker);
     }
 
@@ -195,7 +205,6 @@ public final class VmMigrationWhenCpuMetricIsViolatedExample {
             Vm hostingVm,
             DatacenterBroker broker,
             boolean progressiveCpuUsage) {
-        final List<Cloudlet> list = new ArrayList<>(NUMBER_OF_CLOUDLETS_TO_CREATE_BY_VM);
         UtilizationModel utilizationModelFull = new UtilizationModelFull();
         int cloudletId;
         for (int i = 0; i < NUMBER_OF_CLOUDLETS_TO_CREATE_BY_VM; i++) {
@@ -204,7 +213,7 @@ public final class VmMigrationWhenCpuMetricIsViolatedExample {
             if (progressiveCpuUsage) {
                 cpuUtilizationModel
                         = new UtilizationModelDynamic(cloudletInitialCpuUsagePercent)
-                            .setUtilizationUpdateFunction(this::getCpuUtilizationIncrement);
+                                .setUtilizationUpdateFunction(this::getCpuUtilizationIncrement);
             } else {
                 cpuUtilizationModel = new UtilizationModelDynamic(cloudletInitialCpuUsagePercent);
             }
@@ -213,29 +222,33 @@ public final class VmMigrationWhenCpuMetricIsViolatedExample {
             Cloudlet c
                     = new CloudletSimple(
                             cloudletId, CLOUDLET_LENGHT, VM_PES_NUM)
-                    .setFileSize(CLOUDLET_FILESIZE)
-                    .setOutputSize(CLOUDLET_OUTPUTSIZE)
-                    .setUtilizationModelCpu(cpuUtilizationModel)
-                    .setUtilizationModelRam(utilizationModelFull)
-                    .setUtilizationModelBw(utilizationModelFull);
+                            .setFileSize(CLOUDLET_FILESIZE)
+                            .setOutputSize(CLOUDLET_OUTPUTSIZE)
+                            .setUtilizationModelCpu(cpuUtilizationModel)
+                            .setUtilizationModelRam(utilizationModelFull)
+                            .setUtilizationModelBw(utilizationModelFull);
             c.setBroker(broker);
-            list.add(c);
+            cloudletList.add(c);
         }
-
-        broker.submitCloudletList(list);
-        for (Cloudlet c : list) {
+     
+        
+        
+        broker.submitCloudletList(cloudletList);
+        for (Cloudlet c : cloudletList) {
             broker.bindCloudletToVm(c, hostingVm);
         }
 
-        return list;
+        return cloudletList;
     }
 
     /**
-     * Increments the CPU resource utilization, that is defined in percentage values.
+     * Increments the CPU resource utilization, that is defined in percentage
+     * values.
+     *
      * @return the new resource utilization after the increment
      */
-    private double getCpuUtilizationIncrement(UtilizationModelDynamic um){
-        return  um.getUtilization() + um.getTimeSpan()*CLOUDLET_CPU_USAGE_INCREMENT_PER_SECOND;
+    private double getCpuUtilizationIncrement(UtilizationModelDynamic um) {
+        return um.getUtilization() + um.getTimeSpan() * CLOUDLET_CPU_USAGE_INCREMENT_PER_SECOND;
     }
 
     public List<Cloudlet> createAndSubmitCloudletsWithDynamicCpuUtilization(
@@ -293,7 +306,7 @@ public final class VmMigrationWhenCpuMetricIsViolatedExample {
      *
      * @todo @author manoelcampos The method
      * {@link DatacenterBroker#getCloudletsFinishedList()} returns an empty list
-     * when using null null     {@link PowerDatacenter},
+     * when using null null null null     {@link PowerDatacenter},
      * {@link PowerHost} and {@link PowerVm}.
      */
     public static PowerHostUtilizationHistory createHost(int id, int numberOfPes, long mipsByPe) {
@@ -327,19 +340,106 @@ public final class VmMigrationWhenCpuMetricIsViolatedExample {
     private void getCpuUtilizationThreshold(SlaMetric metric) {
         double minValue
                 = metric.getDimensions().stream()
-                .filter(d -> d.isValueMin())
-                .map(d -> d.getValue())
-                .findFirst().orElse(Double.MIN_VALUE);
+                        .filter(d -> d.isValueMin())
+                        .map(d -> d.getValue())
+                        .findFirst().orElse(Double.MIN_VALUE);
 
         double maxValue
                 = metric.getDimensions().stream()
-                .filter(d -> d.isValueMax())
-                .map(d -> d.getValue())
-                .findFirst().orElse(Double.MAX_VALUE);
+                        .filter(d -> d.isValueMax())
+                        .map(d -> d.getValue())
+                        .findFirst().orElse(Double.MAX_VALUE);
 
         underCpuUtilizationThreshold = minValue / 100;
         overCpuUtilizationThreshold = maxValue / 100;
 
     }
 
+    private void responseTimeCloudletSimulation(DatacenterBroker broker) throws IOException {
+        double average = 0;
+        List<Double> responseTimes = new ArrayList<>();
+        for (Cloudlet c : broker.getCloudletsFinishedList()) {
+            double responseTime = c.getFinishTime() - c.getLastDatacenterArrivalTime();
+            responseTimes.add(responseTime);
+            average = responseTimeCloudletAverage(broker, responseTimes);
+
+        }
+        System.out.printf("\t\t\n Response Time simulation (average) : %.2f \n", average);
+    }
+
+    private double responseTimeCloudletAverage(DatacenterBroker broker, List<Double> responseTimes) {
+        int totalCloudlets = broker.getCloudletsFinishedList().size();
+        double sum = 0;
+        sum = responseTimes.stream()
+                .map((responseTime) -> responseTime)
+                .reduce(sum, (accumulator, _item) -> accumulator + _item);
+        return sum / totalCloudlets;
+    }
+
+    /**
+     * Selects a VM to run a Cloudlet that will minimize the Cloudlet response
+     * time.
+     *
+     * @param cloudlet the Cloudlet to select a VM to
+     * @return the selected VM
+     */
+    private Vm selectVmForCloudlet(Cloudlet cloudlet) {
+        List<Vm> createdVms = cloudlet.getBroker().getVmsCreatedList();
+        System.out.println("\t\tCreated VMs: " + createdVms);
+        Comparator<Vm> sortByNumberOfFreePes
+                = Comparator.comparingInt(vm -> getExpectedNumberOfFreeVmPes(vm, false));
+        Comparator<Vm> sortByExpectedCloudletResponseTime
+                = Comparator.comparingDouble(vm -> getExpectedCloudletResponseTime(cloudlet, vm));
+        createdVms.sort(
+                sortByNumberOfFreePes
+                        .thenComparing(sortByExpectedCloudletResponseTime)
+                        .reversed());
+        Vm mostFreePesVm = createdVms.stream().findFirst().orElse(Vm.NULL);
+
+        Vm selectedVm = createdVms.stream()
+                .filter(vm -> getExpectedNumberOfFreeVmPes(vm, true) >= cloudlet.getNumberOfPes())
+                .filter(vm -> getExpectedCloudletResponseTime(cloudlet, vm) <= responseTimeSlaContract)
+                .findFirst()
+                .orElse(mostFreePesVm);
+
+        return selectedVm;
+    }
+
+    private double getExpectedCloudletResponseTime(Cloudlet cloudlet, Vm vm) {
+        double expectedResponseTime = cloudlet.getLength() / vm.getMips();
+        return expectedResponseTime;
+    }
+
+    /**
+     * Gets the expected amount of free PEs for a VM
+     *
+     * @param vm the VM to get the amount of free PEs
+     * @return the number of PEs that are free or a negative value that indicate
+     * there aren't free PEs (this negative number indicates the amount of
+     * overloaded PEs)
+     */
+    private int getExpectedNumberOfFreeVmPes(Vm vm, boolean printLog) {
+        final int totalPesNumberForCloudletsOfVm
+                = vm.getBroker().getCloudletsCreatedList().stream()
+                        .filter(c -> c.getVm().equals(vm))
+                        .mapToInt(Cloudlet::getNumberOfPes)
+                        .sum();
+
+        final int numberOfVmFreePes
+                = vm.getNumberOfPes() - totalPesNumberForCloudletsOfVm;
+
+        if (printLog) {
+            System.out.println("\t\tTotal pes of cloudlets in VM " + vm.getId() + ": " + totalPesNumberForCloudletsOfVm + " -> vm pes: " + vm.getNumberOfPes() + " -> vm free pes: " + numberOfVmFreePes);
+        }
+        return numberOfVmFreePes;
+    }
+
+    private void sortCloudletListByLength(DatacenterBroker broker) {
+        //sort the cloudlet list by expected response time
+        Comparator<Cloudlet> sortByExpectedCloudletByLength
+                = Comparator.comparingDouble(cloudlet -> cloudlet.getLength());
+
+        cloudletList.sort(sortByExpectedCloudletByLength.reversed());
+        System.out.println("\n\n\n ->>>> CLOUDLET SORTED: " + cloudletList);
+    }
 }
