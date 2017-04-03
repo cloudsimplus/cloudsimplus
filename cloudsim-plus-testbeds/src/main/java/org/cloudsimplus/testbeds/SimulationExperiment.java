@@ -57,6 +57,7 @@ public abstract class SimulationExperiment implements Runnable {
 
     private CloudSim cloudsim;
     private Consumer<? extends SimulationExperiment> afterExperimentFinish;
+    private Consumer<? extends SimulationExperiment> afterScenarioBuild;
 
     /**
      * Creates a simulation experiment that is not attached to
@@ -88,6 +89,7 @@ public abstract class SimulationExperiment implements Runnable {
 
         //Defines an empty Consumer to avoid NullPointerException if an actual one is not set
         afterExperimentFinish = exp -> {};
+        afterScenarioBuild = exp -> {};
     }
 
     public final List<Cloudlet> getCloudletList() {
@@ -183,6 +185,7 @@ public abstract class SimulationExperiment implements Runnable {
         DatacenterBroker broker0 = createBrokerAndAddToList();
         createAndSubmitVmsInternal(broker0);
         createAndSubmitCloudletsInternal(broker0);
+        getAfterScenarioBuild().accept(this);
     }
 
     /**
@@ -280,29 +283,35 @@ public abstract class SimulationExperiment implements Runnable {
      *
      * <p>Setting a Consumer object is optional.</p>
      *
+     * @param <T>
      * @param afterExperimentFinishConsumer a {@link Consumer} instance to set.
-     * @param <T> a generic class that defines the type of experiment the
-     * {@link Consumer} will deal with. It is used to ensure that when the
-     * {@link Consumer} is called, it will receive an object of the exact type
-     * of the {@link SimulationExperiment} instance that the Consumer is being
-     * associated to.
-     * @return
+     * @return 
      */
     public <T extends SimulationExperiment> SimulationExperiment setAfterExperimentFinish(Consumer<T> afterExperimentFinishConsumer) {
         this.afterExperimentFinish = afterExperimentFinishConsumer;
         return this;
     }
 
+    public <T extends SimulationExperiment> Consumer<T> getAfterExperimentFinish() {
+        return (Consumer<T>) this.afterExperimentFinish;
+    }
+
     /**
-     * Gets a {@link Consumer} object that will receive the experiment instance
-     * after the experiment finishes executing and performs some post-processing
-     * tasks. These tasks are defined by the developer using the current class
-     * and can include collecting data for statistical analysis.
-     *
-     * @return
+     * Sets a {@link Consumer} that will be called after the simulation scenario is built,
+     * which is before starting the simulation.
+     * 
+     * <p>Setting a Consumer object is optional.</p>
+     * @param <T>
+     * @param afterScenarioBuild the afterScenarioBuild to set
+     * @return 
      */
-    private <T extends SimulationExperiment> Consumer<T> getAfterExperimentFinish() {
-        return (Consumer<T>) afterExperimentFinish;
+    public <T extends SimulationExperiment> SimulationExperiment setAfterScenarioBuild(Consumer<T> afterScenarioBuild) {
+        this.afterScenarioBuild = afterScenarioBuild;
+        return this;
+    }
+    
+    public <T extends SimulationExperiment> Consumer<T> getAfterScenarioBuild() {
+        return (Consumer<T>)this.afterScenarioBuild;
     }
 
     public final CloudSim getCloudsim() {
@@ -315,4 +324,5 @@ public abstract class SimulationExperiment implements Runnable {
     public List<Host> getHostList() {
         return Collections.unmodifiableList(hostList);
     }
+    
 }

@@ -362,31 +362,27 @@ public final class CloudletResponseTimeMinimizationExperiment extends Simulation
     }
 
     double getSumPesVms() {
-        DatacenterBroker broker = getBrokerList().stream()
-                .findFirst()
-                .orElse(DatacenterBroker.NULL);
-        
-        double sumPesVms = broker.getVmsCreatedList().stream()
+        return vmList.stream()
                 .mapToDouble(vm -> vm.getNumberOfPes())
                 .sum();
-        
-        System.out.println(" \n\n\n Sum Pes Vms: " + sumPesVms);      
-        return sumPesVms;
     }
 
     double getSumPesCloudlets() {
-        DatacenterBroker broker = getBrokerList().stream()
-                .findFirst()
-                .orElse(DatacenterBroker.NULL);
-        
-        double sumPesCloudlet = broker.getCloudletsCreatedList().stream()
+        return cloudletList.stream()
                 .mapToDouble(c -> c.getNumberOfPes())
                 .sum();
-        System.out.println(" \n\n\n Sum Pes Cloudltes: " + sumPesCloudlet);
-        return sumPesCloudlet;
     }
 
-    double getDivPesVmsByPesCloudlets() {
+    /**
+     * Gets the ratio of existing vPEs (VM PEs) divided by the number
+     * of required PEs of all Cloudlets, which indicates
+     * the mean number of vPEs that are available for each PE required 
+     * by a Cloudlet, considering all the existing Cloudlets.
+     * For instance, if the ratio is 0.5, in average, two Cloudlets
+     * requiring one vPE will share that same vPE.
+     * @return the average of vPEs/CloudletsPEs ratio
+     */
+    double getRatioOfExistingVmPesToRequiredCloudletPes() {
         double sumPesVms = getSumPesVms();
         double sumPesCloudlets = getSumPesCloudlets();
 
@@ -410,7 +406,5 @@ public final class CloudletResponseTimeMinimizationExperiment extends Simulation
         exp.run();
         exp.getCloudletsResponseTimeAverage();
         exp.getPercentageOfCloudletsMeetingResponseTime();
-        exp.getDivPesVmsByPesCloudlets();
-        System.out.println(" Quantidade de cloudlets por Pe da Vm: " + exp.getDivPesVmsByPesCloudlets());
     }
 }
