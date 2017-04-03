@@ -46,7 +46,18 @@ public class UniformDistr extends ContinuousDistributionAbstract {
     }
 
     /**
-     * Creates new uniform pseudo random number generator.
+     * Creates new uniform pseudo random number generator
+     * that produces values between a 0 (inclusive) and max (exclusive).
+     *
+     * @param max maximum value (exclusive)
+     */
+    public UniformDistr(double max) {
+        this(0, max, -1);
+    }
+
+    /**
+     * Creates new uniform pseudo random number generator
+     * that produces values between a min (inclusive) and max (exclusive).
      *
      * @param min minimum value (inclusive)
      * @param max maximum value (exclusive)

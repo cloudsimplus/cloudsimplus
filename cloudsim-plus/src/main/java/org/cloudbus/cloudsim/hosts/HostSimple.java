@@ -158,7 +158,7 @@ public class HostSimple implements Host {
     public double updateProcessing(double currentTime) {
         double nextSimulationTime = Double.MAX_VALUE;
         for (Vm vm : getVmList()) {
-            double time = vm.updateProcessing(currentTime, getVmScheduler().getAllocatedMipsForVm(vm));
+            final double time = vm.updateProcessing(currentTime, getVmScheduler().getAllocatedMipsForVm(vm));
             nextSimulationTime = Math.min(time, nextSimulationTime);
         }
 
@@ -172,46 +172,71 @@ public class HostSimple implements Host {
     }
 
     @Override
-    public void addMigratingInVm(Vm vm) {
-        if (!getVmsMigratingIn().contains(vm)) {
-            if (!storage.isResourceAmountAvailable(vm.getStorage())) {
-                throw new RuntimeException(
-                    String.format(
-                        "[VmScheduler.addMigratingInVm] Allocation of VM #%d to Host #%d" +
-                    " failed by storage", vm.getId(), getId()));
-            }
-
-            if (!getRamProvisioner().allocateResourceForVm(vm, vm.getCurrentRequestedRam())) {
-                throw new RuntimeException(
-                    String.format(
-                        "[VmScheduler.addMigratingInVm] Allocation of VM #%d to Host #%d" +
-                        " failed by RAM", vm.getId(), getId()));
-            }
-
-            if (!getBwProvisioner().allocateResourceForVm(vm, vm.getCurrentRequestedBw())) {
-                throw new RuntimeException(
-                    String.format(
-                        "[VmScheduler.addMigratingInVm] Allocation of VM #%d to Host #%d" +
-                        " failed by BW", vm.getId(), getId()));
-            }
-
-            getVmScheduler().addVmMigratingIn(vm);
-            vm.setInMigration(true);
-            if (!getVmScheduler().allocatePesForVm(vm, vm.getCurrentRequestedMips())) {
-                getVmScheduler().removeVmMigratingIn(vm);
-                vm.setInMigration(false);
-                throw new RuntimeException(
-                    String.format(
-                        "[VmScheduler.addMigratingInVm] Allocation of VM #%d to Host #%d" +
-                        " failed by MIPS", vm.getId(),  getId()));
-            }
-
-            storage.allocateResource(vm.getStorage());
-
-            getVmsMigratingIn().add(vm);
-            updateProcessing(simulation.clock());
-            vm.getHost().updateProcessing(simulation.clock());
+    public boolean addMigratingInVm(Vm vm) {
+        if (getVmsMigratingIn().contains(vm)) {
+            return false;
         }
+
+        if(!allocateResourcesForVm(vm, true)){
+            return false;
+        }
+
+        getVmScheduler().addVmMigratingIn(vm);
+        getVmsMigratingIn().add(vm);
+        updateProcessing(simulation.clock());
+        vm.getHost().updateProcessing(simulation.clock());
+
+        return true;
+    }
+
+    @Override
+    public boolean vmCreate(Vm vm) {
+        if(!allocateResourcesForVm(vm, false)){
+            return false;
+        }
+
+        getVmList().add(vm);
+        vm.setHost(this);
+        vm.notifyOnHostAllocationListeners();
+        return true;
+    }
+
+    /**
+     * Try to allocate all resources that a VM requires (Storage, RAM, BW and MIPS) to be placed at this Host.
+     *
+     * @param vm the VM to try allocating resources to
+     * @param inMigration If the VM is migrating into the Host or it is being just created for the first time
+     * @return true if the Vm was placed into the host, false if the Host doesn't have enough resources to allocate the Vm
+     */
+    private boolean allocateResourcesForVm(Vm vm, boolean inMigration){
+        final String msg = (inMigration ? "VM Migration" : "VM Creation");
+        if (!storage.isResourceAmountAvailable(vm.getStorage())) {
+            Log.printFormattedLine("[%s] Allocation of VM #%d to Host #%d failed due to lack of storage", msg, vm.getId(), getId());
+            return false;
+        }
+
+        if (!getRamProvisioner().isSuitableForVm(vm, vm.getCurrentRequestedRam())) {
+            Log.printFormattedLine("[%s] Allocation of VM #%d to Host #%d failed due to lack of RAM", msg, vm.getId(), getId());
+            return false;
+        }
+
+        if (!getBwProvisioner().isSuitableForVm(vm, vm.getCurrentRequestedBw())) {
+            Log.printFormattedLine("[%s] Allocation of VM #%d to Host #%d failed due to lack of BW", msg, vm.getId(), getId());
+            return false;
+        }
+
+        if (!getVmScheduler().isSuitableForVm(vm)) {
+            Log.printFormattedLine("[%s] Allocation of VM #%d to Host #%d failed due to lack of PEs", msg, vm.getId(), getId());
+            return false;
+        }
+
+        vm.setInMigration(inMigration);
+        storage.allocateResource(vm.getStorage());
+        getRamProvisioner().allocateResourceForVm(vm, vm.getCurrentRequestedRam());
+        getBwProvisioner().allocateResourceForVm(vm, vm.getCurrentRequestedBw());
+        getVmScheduler().allocatePesForVm(vm, vm.getCurrentRequestedMips());
+
+        return true;
     }
 
     @Override
@@ -243,42 +268,6 @@ public class HostSimple implements Host {
                 && getVmScheduler().getAvailableMips() >= vm.getCurrentRequestedTotalMips()
                 && getRamProvisioner().isSuitableForVm(vm, vm.getCurrentRequestedRam())
                 && getBwProvisioner().isSuitableForVm(vm, vm.getCurrentRequestedBw()));
-    }
-
-    @Override
-    public boolean vmCreate(Vm vm) {
-        if (!storage.isResourceAmountAvailable(vm.getStorage())) {
-            Log.printConcatLine("[VmAllocationPolicy] Allocation of VM #", vm.getId(), " to Host #", getId(),
-                    " failed by storage");
-            return false;
-        }
-
-        if (!getRamProvisioner().allocateResourceForVm(vm, vm.getCurrentRequestedRam())) {
-            Log.printConcatLine("[VmAllocationPolicy] Allocation of VM #", vm.getId(), " to Host #", getId(),
-                    " failed by RAM");
-            return false;
-        }
-
-        if (!getBwProvisioner().allocateResourceForVm(vm, vm.getCurrentRequestedBw())) {
-            Log.printConcatLine("[VmAllocationPolicy] Allocation of VM #", vm.getId(), " to Host #", getId(),
-                    " failed by BW");
-            getRamProvisioner().deallocateResourceForVm(vm);
-            return false;
-        }
-
-        if (!getVmScheduler().allocatePesForVm(vm, vm.getCurrentRequestedMips())) {
-            Log.printConcatLine("[VmAllocationPolicy] Allocation of VM #", vm.getId(), " to Host #", getId(),
-                    " failed by PEs");
-            getRamProvisioner().deallocateResourceForVm(vm);
-            getBwProvisioner().deallocateResourceForVm(vm);
-            return false;
-        }
-
-        storage.allocateResource(vm.getStorage());
-        getVmList().add(vm);
-        vm.setHost(this);
-        vm.notifyOnHostAllocationListeners();
-        return true;
     }
 
     @Override

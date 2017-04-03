@@ -7,15 +7,7 @@
  */
 package org.cloudbus.cloudsim.allocationpolicies.power;
 
-import org.cloudbus.cloudsim.datacenters.Datacenter;
-import org.cloudbus.cloudsim.hosts.Host;
 import org.cloudbus.cloudsim.hosts.power.PowerHost;
-import org.cloudbus.cloudsim.vms.Vm;
-import org.cloudsimplus.autoscaling.VerticalVmScaling;
-
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
 
 /**
  * An interface to be implemented by VM allocation policy for power-aware VMs
@@ -26,6 +18,12 @@ import java.util.Map;
  * @since CloudSim Plus 1.0
  */
 public interface PowerVmAllocationPolicyMigration extends PowerVmAllocationPolicy {
+    /**
+     * An attribute that implements the Null Object Design Pattern for {@link PowerVmAllocationPolicyMigration}
+     * objects.
+     */
+    PowerVmAllocationPolicyMigration NULL = new PowerVmAllocationPolicyMigrationNull();
+
     /**
      * Checks if host is over utilized.
      *
@@ -67,26 +65,5 @@ public interface PowerVmAllocationPolicyMigration extends PowerVmAllocationPolic
      * @param underUtilizationThreshold the under utilization threshold (in scale is from 0 to 1, where 1 is 100%)
      */
     void setUnderUtilizationThreshold(double underUtilizationThreshold);
-
-    /**
-     * An attribute that implements the Null Object Design Pattern for {@link PowerVmAllocationPolicyMigration}
-     * objects.
-     */
-    PowerVmAllocationPolicyMigration NULL = new PowerVmAllocationPolicyMigration(){
-        @Override public PowerHost findHostForVm(Vm vm) { return PowerHost.NULL; }
-        @Override public Datacenter getDatacenter() { return Datacenter.NULL; }
-        @Override public void setDatacenter(Datacenter datacenter) {}
-        @Override public boolean allocateHostForVm(Vm vm) { return false; }
-        @Override public boolean scaleVmVertically(VerticalVmScaling scaling) { return false; }
-        @Override public boolean allocateHostForVm(Vm vm, Host host) { return false; }
-        @Override public void deallocateHostForVm(Vm vm) {}
-        @Override public <T extends Host> List<T> getHostList() { return Collections.emptyList(); }
-        @Override public Map<Vm, Host> optimizeAllocation(List<? extends Vm> vmList) { return Collections.emptyMap(); }
-        @Override public boolean isHostOverUtilized(PowerHost host) { return false;}
-        @Override public boolean isHostUnderUtilized(PowerHost host) { return false;}
-        @Override public double getOverUtilizationThreshold(PowerHost host) { return 0; }
-        @Override public double getUnderUtilizationThreshold() { return 0; }
-        @Override public void setUnderUtilizationThreshold(double underUtilizationThreshold) {}
-    };
 
 }

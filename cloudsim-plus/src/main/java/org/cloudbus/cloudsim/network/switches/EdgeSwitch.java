@@ -98,12 +98,12 @@ public class EdgeSwitch extends AbstractSwitch {
     protected void processPacketUp(SimEvent ev) {
         super.processPacketUp(ev);
 
-        HostPacket hostPkt = (HostPacket) ev.getData();
-        Vm receiverVm = hostPkt.getVmPacket().getDestination();
+        final HostPacket hostPkt = (HostPacket) ev.getData();
+        final Vm receiverVm = hostPkt.getVmPacket().getDestination();
 
         // packet is received from host
         // packet is to be sent to aggregate level or to another host in the same level
-        NetworkHost host = getVmHost(receiverVm);
+        final NetworkHost host = getVmHost(receiverVm);
         hostPkt.setDestination(host);
 
         // packet needs to go to a host which is connected directly to switch
@@ -117,7 +117,7 @@ public class EdgeSwitch extends AbstractSwitch {
          * ASSUMPTION: Each Edge is connected to one Aggregate Switch.
          * If there are more than one Aggregate Switch, the following code has to be modified.
         */
-        Switch aggregateSwitch = getUplinkSwitches().get(0);
+        final Switch aggregateSwitch = getUplinkSwitches().get(0);
         addPacketToBeSentToUplinkSwitch(aggregateSwitch, hostPkt);
     }
 

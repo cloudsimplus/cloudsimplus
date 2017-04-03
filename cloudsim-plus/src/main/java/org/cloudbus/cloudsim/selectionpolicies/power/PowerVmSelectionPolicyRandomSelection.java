@@ -11,6 +11,8 @@ package org.cloudbus.cloudsim.selectionpolicies.power;
 import java.util.List;
 import java.util.Random;
 
+import org.cloudbus.cloudsim.distributions.ContinuousDistribution;
+import org.cloudbus.cloudsim.distributions.UniformDistr;
 import org.cloudbus.cloudsim.hosts.power.PowerHost;
 import org.cloudbus.cloudsim.vms.power.PowerVm;
 import org.cloudbus.cloudsim.vms.Vm;
@@ -32,13 +34,20 @@ import org.cloudbus.cloudsim.vms.Vm;
  * @since CloudSim Toolkit 3.0
  */
 public class PowerVmSelectionPolicyRandomSelection extends PowerVmSelectionPolicy {
+    private final ContinuousDistribution rand;
+
+    public PowerVmSelectionPolicyRandomSelection(){
+        rand = new UniformDistr();
+    }
+
 	@Override
 	public Vm getVmToMigrate(PowerHost host) {
-		List<PowerVm> migratableVms = getMigratableVms(host);
+		final List<PowerVm> migratableVms = getMigratableVms(host);
 		if (migratableVms.isEmpty()) {
 			return Vm.NULL;
 		}
-		int index = (new Random()).nextInt(migratableVms.size());
+
+		final int index = (int)rand.sample()*migratableVms.size();
 		return migratableVms.get(index);
 	}
 

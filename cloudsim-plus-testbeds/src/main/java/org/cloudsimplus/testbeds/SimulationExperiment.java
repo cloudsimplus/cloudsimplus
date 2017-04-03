@@ -46,7 +46,7 @@ import java.util.function.Consumer;
  */
 public abstract class SimulationExperiment implements Runnable {
 
-    protected final ExperimentRunner runner;
+    private final ExperimentRunner runner;
     private final List<Cloudlet> cloudletList;
     private List<Vm> vmList;
     private List<Host> hostList;
@@ -59,7 +59,7 @@ public abstract class SimulationExperiment implements Runnable {
     private Consumer<? extends SimulationExperiment> afterExperimentFinish;
 
     /**
-     * Creates a simulation experiment that is not attached to 
+     * Creates a simulation experiment that is not attached to
      * a {@link ExperimentRunner}. By this way, the experiment
      * must be started manually by calling the {@link #run()} method.
      *
@@ -67,7 +67,7 @@ public abstract class SimulationExperiment implements Runnable {
     public SimulationExperiment() {
         this(-1, null);
     }
-    
+
     /**
      * Creates a simulation experiment.
      *
@@ -106,7 +106,7 @@ public abstract class SimulationExperiment implements Runnable {
      * Defines if simulation results of the experiment have to be output or not.
      *
      * @param verbose true if the results have to be output, falser otherwise
-     * @return 
+     * @return
      */
     public SimulationExperiment setVerbose(boolean verbose) {
         this.verbose = verbose;
@@ -115,7 +115,7 @@ public abstract class SimulationExperiment implements Runnable {
 
     /**
      * The index that identifies the current experiment run.
-     * @return 
+     * @return
      */
     public int getIndex() {
         return index;
@@ -124,7 +124,7 @@ public abstract class SimulationExperiment implements Runnable {
     /**
      * Indicates if simulation results of the experiment don't have to be
      * output.
-     * @return 
+     * @return
      */
     public boolean isNotVerbose() {
         return !verbose;
@@ -132,7 +132,7 @@ public abstract class SimulationExperiment implements Runnable {
 
     /**
      * Indicates if simulation results of the experiment have to be output.
-     * @return 
+     * @return
      */
     public boolean isVerbose() {
         return verbose;
@@ -150,7 +150,7 @@ public abstract class SimulationExperiment implements Runnable {
         getAfterExperimentFinish().accept(this);
         printResultsInternal();
     }
-    
+
     /**
      * Checks if {@link #isVerbose()} in order to call {@link #printResults()}
      * to print the experiment results.
@@ -246,14 +246,10 @@ public abstract class SimulationExperiment implements Runnable {
     }
 
     protected DatacenterSimple createDatacenter() {
-        List<Host> hosts = createHosts();
+        final List<Host> hosts = createHosts();
         hostList.addAll(hosts);
-        DatacenterCharacteristics characteristics
-                = new DatacenterCharacteristicsSimple(hosts);
-
-        return new DatacenterSimple(cloudsim, 
-                characteristics, 
-                new VmAllocationPolicySimple());
+        final DatacenterCharacteristics characteristics = new DatacenterCharacteristicsSimple(hosts);
+        return new DatacenterSimple(cloudsim, characteristics, new VmAllocationPolicySimple());
     }
 
     protected abstract List<Host> createHosts();
@@ -290,7 +286,7 @@ public abstract class SimulationExperiment implements Runnable {
      * {@link Consumer} is called, it will receive an object of the exact type
      * of the {@link SimulationExperiment} instance that the Consumer is being
      * associated to.
-     * @return 
+     * @return
      */
     public <T extends SimulationExperiment> SimulationExperiment setAfterExperimentFinish(Consumer<T> afterExperimentFinishConsumer) {
         this.afterExperimentFinish = afterExperimentFinishConsumer;

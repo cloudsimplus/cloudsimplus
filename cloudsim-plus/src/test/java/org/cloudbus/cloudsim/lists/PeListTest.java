@@ -41,9 +41,17 @@ public class PeListTest {
     }
 
     @Test
-    public void testGetMips() {
+    public void testGetMips1() {
         assertEquals(MIPS, PeList.getMips(peList, 0), 0);
+    }
+
+    @Test
+    public void testGetMips2() {
         assertEquals(MIPS, PeList.getMips(peList, 1), 0);
+    }
+
+    @Test
+    public void testGetMips3() {
         assertEquals(-1, PeList.getMips(peList, 2));
     }
 

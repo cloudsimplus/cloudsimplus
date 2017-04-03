@@ -8,6 +8,7 @@
 
 package org.cloudbus.cloudsim.network.topologies.readers;
 
+import org.cloudbus.cloudsim.network.topologies.Point2D;
 import org.cloudbus.cloudsim.network.topologies.TopologicalGraph;
 import org.cloudbus.cloudsim.network.topologies.TopologicalLink;
 import org.cloudbus.cloudsim.network.topologies.TopologicalNode;
@@ -16,6 +17,7 @@ import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.StringTokenizer;
+import java.util.function.Function;
 
 /**
  * A network graph (topology) readers that creates a network topology from
@@ -41,33 +43,26 @@ public class TopologyReaderBrite implements TopologyReader {
      */
     private TopologicalGraph graph;
 
+
     @Override
     public TopologicalGraph readGraphFile(String filename) throws IOException {
         graph = new TopologicalGraph();
+        final BufferedReader br = new BufferedReader(new FileReader(filename));
 
-        // lets read the file
-        FileReader fr = new FileReader(filename);
-        BufferedReader br = new BufferedReader(fr);
-
-        String lineSep = System.getProperty("line.separator");
         String nextLine;
-
         while ((nextLine = br.readLine()) != null) {
             // functionality to diferentiate between all the parsing-states
             // state that should just find the start of node-declaration
             if (state == PARSE_NOTHING) {
                 if (nextLine.contains("Nodes:")) {
-                    // Log.printLine("found start of Nodes... switch to parse nodes!");
                     state = PARSE_NODES;
                 }
             }
-
             // the state to retrieve all node-information
             else if (state == PARSE_NODES) {
                 // perform the parsing of this node-line
                 parseNodeString(nextLine);
             }
-
             // the state to retrieve all edges-information
             else if (state == PARSE_EDGES) {
                 parseEdgesString(nextLine);
@@ -86,56 +81,22 @@ public class TopologyReaderBrite implements TopologyReader {
      * @param nodeLine A line read from the file
      */
     private void parseNodeString(String nodeLine) {
-        StringTokenizer tokenizer = new StringTokenizer(nodeLine);
-
-        // number of node parameters to parse (counts at linestart)
-        int parameters = 3;
-
         // first test to step to the next parsing-state (edges)
         if (nodeLine.contains("Edges:")) {
-            // Log.printLine("found start of Edges... switch to parse edges!");
             state = PARSE_EDGES;
-
             return;
         }
 
-        // test against an empty line
-        if (!tokenizer.hasMoreElements()) {
-            // Log.printLine("this line contains no tokens...");
+        // List of fields in the line to parse
+        // NodeID, xpos, ypos, inDegree, outDegree, AS_id, type(router/AS)
+        final Integer[] parsedFields = {0, 0, 0};
+        if(!parseLine(nodeLine, parsedFields, Integer::valueOf)){
             return;
         }
 
-        // parse this string-line to read all node-parameters
-        // NodeID, xpos, ypos, indegree, outdegree, ASid, type(router/AS)
-
-        int nodeID = 0;
-        String nodeLabel = "";
-        int xPos = 0;
-        int yPos = 0;
-
-        for (int actualParam = 0; tokenizer.hasMoreElements() && actualParam < parameters; actualParam++) {
-            String token = tokenizer.nextToken();
-            switch (actualParam) {
-                case 0:    // Log.printLine("nodeID: "+token);
-                    // Log.printLine("nodeLabel: "+token);
-                    nodeID = Integer.valueOf(token);
-                    nodeLabel = Integer.toString(nodeID);
-                    break;
-
-                case 1:    // Log.printLine("x-Pos: "+token);
-                    xPos = Integer.valueOf(token);
-                    break;
-
-                case 2:    // Log.printLine("y-Pos: "+token);
-                    yPos = Integer.valueOf(token);
-                    break;
-            }
-        }
-
-        // instanciate an new node-object with previous parsed parameters
-        TopologicalNode topoNode = new TopologicalNode(nodeID, nodeLabel, xPos, yPos);
+        final Point2D coordinates = new Point2D(parsedFields[1], parsedFields[2]);
+        final TopologicalNode topoNode = new TopologicalNode(parsedFields[0], coordinates);
         graph.addNode(topoNode);
-
     }
 
     /**
@@ -144,57 +105,45 @@ public class TopologyReaderBrite implements TopologyReader {
      * @param nodeLine A line read from the file
      */
     private void parseEdgesString(String nodeLine) {
-        StringTokenizer tokenizer = new StringTokenizer(nodeLine);
 
-        // number of node parameters to parse (counts at linestart)
-        int parameters = 6;
-
-        // test against an empty line
-        if (!tokenizer.hasMoreElements()) {
-            // Log.printLine("this line contains no tokens...");
+        // List of fields in the line to parse
+        // EdgeID, fromNode, toNode, euclideanLength, linkDelay, linkBandwidth, AS_from, AS_to, type
+        final Double[] parsedFields = {0.0, 0.0, 0.0, 0.0, 0.0, 0.0};
+        if(!parseLine(nodeLine, parsedFields, Double::valueOf)){
             return;
         }
 
-        // parse this string-line to read all node-parameters
-        // EdgeID, fromNode, toNode, euclideanLength, linkDelay, linkBandwith, AS_from, AS_to, type
+        final int fromNode = parsedFields[1].intValue();
+        final int toNode = parsedFields[2].intValue();
+        final double linkDelay = parsedFields[4];
+        final double linkBandwidth = parsedFields[5];
 
-        //int edgeID = 0;
-        int fromNode = 0;
-        int toNode = 0;
-        // float euclideanLength = 0;
-        float linkDelay = 0;
-        int linkBandwith = 0;
-
-        for (int actualParam = 0; tokenizer.hasMoreElements() && actualParam < parameters; actualParam++) {
-            String token = tokenizer.nextToken();
-            switch (actualParam) {
-                case 0:    // Log.printLine("edgeID: "+token);
-                    //edgeID = Integer.valueOf(token);
-                    break;
-
-                case 1:    // Log.printLine("fromNode: "+token);
-                    fromNode = Integer.valueOf(token);
-                    break;
-
-                case 2:    // Log.printLine("toNode: "+token);
-                    toNode = Integer.valueOf(token);
-                    break;
-
-                case 3:    // Log.printLine("euclideanLength: "+token);
-                    // euclideanLength = Float.valueOf(token);
-                    break;
-
-                case 4:    // Log.printLine("linkDelay: "+token);
-                    linkDelay = Float.valueOf(token);
-                    break;
-
-                case 5:    // Log.printLine("linkBandwith: "+token);
-                    linkBandwith = Float.valueOf(token).intValue();
-                    break;
-            }// switch-END
-        }// for-END
-
-        graph.addLink(new TopologicalLink(fromNode, toNode, linkDelay, linkBandwith));
+        graph.addLink(new TopologicalLink(fromNode, toNode, linkDelay, linkBandwidth));
     }
 
+
+    /**
+     * Gets a line from a file and parses its fields, considering that all fields have the same type.
+     *
+     * @param nodeLine the line to be parsed
+     * @param parsedFields an output array that will be filled with the values of the parsed fields.
+     *                     The array is given empty and returned with the parsed values.
+     *                     The number of elements in the array defines the number of fields to be parsed.
+     * @param castFunction a function that will convert the String value from each parsed field to
+     *                     the value of the elements of the output array.
+     * @param <T>          the type of the values of the output array
+     * @return true if any field was parsed, false otherwise
+     */
+    private <T extends Number> boolean parseLine(String nodeLine, T[] parsedFields, Function<String, T> castFunction){
+        final StringTokenizer tokenizer = new StringTokenizer(nodeLine);
+        if (!tokenizer.hasMoreElements()) {
+            return false;
+        }
+
+        for (int i = 0; tokenizer.hasMoreElements() && i < parsedFields.length; i++) {
+            parsedFields[i] = castFunction.apply(tokenizer.nextToken());
+        }
+
+        return true;
+    }
 }

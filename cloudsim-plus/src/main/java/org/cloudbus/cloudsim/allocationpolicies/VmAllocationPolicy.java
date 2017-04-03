@@ -7,7 +7,6 @@
  */
 package org.cloudbus.cloudsim.allocationpolicies;
 
-import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import org.cloudbus.cloudsim.datacenters.Datacenter;
@@ -26,6 +25,12 @@ import org.cloudsimplus.autoscaling.VerticalVmScaling;
  * @since CloudSim Plus 1.0
  */
 public interface VmAllocationPolicy {
+    /**
+     * A property that implements the Null Object Design Pattern for {@link VmAllocationPolicy}
+     * objects.
+     */
+    VmAllocationPolicy NULL = new VmAllocationPolicyNull();
+
     /**
      * Gets the {@link Datacenter} associated to the Allocation Policy.
      * @return
@@ -50,6 +55,17 @@ public interface VmAllocationPolicy {
     boolean allocateHostForVm(Vm vm);
 
     /**
+     * Allocates a specified host for a given VM.
+     *
+     * @param vm the VM to allocate a host to
+     * @param host the host to allocate to the given VM
+     * @return $true if the host could be allocated; $false otherwise
+     * @pre $none
+     * @post $none
+     */
+    boolean allocateHostForVm(Vm vm, Host host);
+
+    /**
      * Try to scale some Vm's resource vertically up or down, respectively if:
      * <ul>
      *     <li>the Vm is overloaded and the Host where the Vm is placed has enough capacity</li>
@@ -63,17 +79,6 @@ public interface VmAllocationPolicy {
      * @return true if the requested resource was scaled, false otherwise
      */
     boolean scaleVmVertically(VerticalVmScaling scaling);
-
-    /**
-     * Allocates a specified host for a given VM.
-     *
-     * @param vm the VM to allocate a host to
-     * @param host the host to allocate to the given VM
-     * @return $true if the host could be allocated; $false otherwise
-     * @pre $none
-     * @post $none
-     */
-    boolean allocateHostForVm(Vm vm, Host host);
 
     /**
      * Releases the host used by a VM.
@@ -102,18 +107,4 @@ public interface VmAllocationPolicy {
      */
     Map<Vm, Host> optimizeAllocation(List<? extends Vm> vmList);
 
-    /**
-     * A property that implements the Null Object Design Pattern for {@link VmAllocationPolicy}
-     * objects.
-     */
-    VmAllocationPolicy NULL = new VmAllocationPolicy() {
-        @Override public Datacenter getDatacenter() { return Datacenter.NULL; }
-        @Override public void setDatacenter(Datacenter datacenter) {}
-        @Override public boolean allocateHostForVm(Vm vm){ return false; }
-        @Override public boolean scaleVmVertically(VerticalVmScaling scaling) { return false; }
-        @Override public boolean allocateHostForVm(Vm vm, Host host) { return false; }
-        @Override public void deallocateHostForVm(Vm vm){}
-        @Override public List<Host> getHostList(){ return Collections.emptyList(); }
-        @Override public Map<Vm, Host> optimizeAllocation(List<? extends Vm> vmList) { return Collections.emptyMap(); }
-    };
 }

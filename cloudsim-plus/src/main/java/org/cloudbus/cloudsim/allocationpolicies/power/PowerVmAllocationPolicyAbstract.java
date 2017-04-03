@@ -42,13 +42,6 @@ public abstract class PowerVmAllocationPolicyAbstract extends VmAllocationPolicy
      */
     private final Map<Vm, Host> vmHostMap = new HashMap<>();
 
-    /**
-     * Creates a PowerVmAllocationPolicy.
-     */
-    public PowerVmAllocationPolicyAbstract() {
-        super();
-    }
-
     @Override
     public boolean allocateHostForVm(Vm vm) {
         return allocateHostForVm(vm, findHostForVm(vm));

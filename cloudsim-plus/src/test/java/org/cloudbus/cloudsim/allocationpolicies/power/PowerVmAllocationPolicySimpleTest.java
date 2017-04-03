@@ -16,14 +16,13 @@ public class PowerVmAllocationPolicySimpleTest {
 
     @Test
     public void testOptimizeAllocation() {
-        System.out.println("optimizeAllocation");
-        List<PowerHost> hosts = new ArrayList<>();
+        final List<PowerHost> hosts = new ArrayList<>();
         hosts.add(PowerHost.NULL);
-        PowerVmAllocationPolicySimple instance = new PowerVmAllocationPolicySimple();
+        final PowerVmAllocationPolicySimple instance = new PowerVmAllocationPolicySimple();
 
         assertNotNull(instance.optimizeAllocation(null));
 
-        List<Vm> vmList = new ArrayList<>();
+        final List<Vm> vmList = new ArrayList<>();
         assertNotNull(instance.optimizeAllocation(vmList));
         assertTrue(instance.optimizeAllocation(vmList).isEmpty());
         vmList.add(Vm.NULL);

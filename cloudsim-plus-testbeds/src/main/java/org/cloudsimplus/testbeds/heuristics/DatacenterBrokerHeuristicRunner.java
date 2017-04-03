@@ -27,7 +27,6 @@ import org.apache.commons.math3.stat.descriptive.SummaryStatistics;
 
 import org.cloudbus.cloudsim.cloudlets.Cloudlet;
 import org.cloudbus.cloudsim.brokers.DatacenterBrokerSimple;
-import org.cloudbus.cloudsim.util.Log;
 import org.cloudbus.cloudsim.distributions.NormalDistr;
 import org.cloudbus.cloudsim.distributions.UniformDistr;
 import org.cloudsimplus.heuristics.CloudletToVmMappingSolution;
@@ -96,12 +95,20 @@ final class DatacenterBrokerHeuristicRunner extends ExperimentRunner<DatacenterB
      * cyclically select a Vm from the Vm list to host a Cloudlet. This is the
      * implementation used by the {@link DatacenterBrokerSimple} class.
      */
-    private CloudletToVmMappingSolution roundRobinSolution = null;
+    private CloudletToVmMappingSolution roundRobinSolution;
 
     /**
      * Indicates if each experiment will output execution logs or not.
      */
     private final boolean experimentVerbose = false;
+
+    DatacenterBrokerHeuristicRunner() {
+        super();
+        experimentCosts = new ArrayList<>();
+        runtimeStats = new SummaryStatistics();
+        vmPesArray = new int[0];
+        cloudletPesArray = new int[0];
+    }
 
     /**
      * Starts the execution of the experiments the number of times defines in
@@ -118,20 +125,12 @@ final class DatacenterBrokerHeuristicRunner extends ExperimentRunner<DatacenterB
             BaseSeed: 1475098589732L
          */
         new DatacenterBrokerHeuristicRunner()
-                .setNumberOfSimulationRuns(1200)
+                .setSimulationRuns(1200)
                 .setApplyAntitheticVariatesTechnique(true)
                 .setNumberOfBatches(6) //Comment this or set to 0 to disable the "Batch Means Method"
                 .setBaseSeed(1475098589732L) //Comment this to use the current time as base seed
                 .setVerbose(true)
                 .run();
-    }
-
-    DatacenterBrokerHeuristicRunner() {
-        super();
-        experimentCosts = new ArrayList<>();
-        runtimeStats = new SummaryStatistics();
-        vmPesArray = new int[0];
-        cloudletPesArray = new int[0];
     }
 
     /**
@@ -144,7 +143,7 @@ final class DatacenterBrokerHeuristicRunner extends ExperimentRunner<DatacenterB
     private int[] createCloudletPesArray() {
         int[] pesArray = new int[CLOUDLETS_TO_CREATE];
         int totalNumberOfPes = 0;
-        NormalDistr random = new NormalDistr(getBaseSeed(), 2, 0.6);
+        final ContinuousDistribution random = new NormalDistr(getBaseSeed(), 2, 0.6);
         for (int i = 0; i < CLOUDLETS_TO_CREATE; i++) {
             pesArray[i] = (int) random.sample() + 1;
             totalNumberOfPes += pesArray[i];
@@ -161,7 +160,7 @@ final class DatacenterBrokerHeuristicRunner extends ExperimentRunner<DatacenterB
      * @return the created VMs PEs array
      */
     private int[] createVmPesArray() {
-        UniformDistr random = new UniformDistr(0, VM_PES_NUMBERS.length, getBaseSeed());
+        final UniformDistr random = new UniformDistr(0, VM_PES_NUMBERS.length, getBaseSeed());
         int[] pesArray = new int[VMS_TO_CREATE];
         int totalNumberOfPes = 0;
         for (int i = 0; i < VMS_TO_CREATE; i++) {
@@ -195,8 +194,8 @@ final class DatacenterBrokerHeuristicRunner extends ExperimentRunner<DatacenterB
 
     @Override
     protected DatacenterBrokerHeuristicExperiment createExperiment(int i) {
-        ContinuousDistribution prng = createRandomGenAndAddSeedToList(i, 0, 1);
-        DatacenterBrokerHeuristicExperiment exp
+        final ContinuousDistribution prng = createRandomGenAndAddSeedToList(i, 0, 1);
+        final DatacenterBrokerHeuristicExperiment exp
                 = new DatacenterBrokerHeuristicExperiment(this, i)
                         .setRandomGen(prng)
                         .setCloudletPesArray(cloudletPesArray)
@@ -208,7 +207,7 @@ final class DatacenterBrokerHeuristicRunner extends ExperimentRunner<DatacenterB
 
     @Override
     protected void setup() {
-        experimentCosts = new ArrayList<>(getNumberOfSimulationRuns());
+        experimentCosts = new ArrayList<>(getSimulationRuns());
         vmPesArray = createVmPesArray();
         cloudletPesArray = createCloudletPesArray();
     }
@@ -221,7 +220,7 @@ final class DatacenterBrokerHeuristicRunner extends ExperimentRunner<DatacenterB
      * @param experiment the finished experiment
      */
     private void afterExperimentFinish(DatacenterBrokerHeuristicExperiment experiment) {
-        CloudletToVmMappingSolution solution = experiment.getHeuristic().getBestSolutionSoFar();
+        final CloudletToVmMappingSolution solution = experiment.getHeuristic().getBestSolutionSoFar();
         addExperimentCost(solution.getCost());
         addSimulatedAnnealingRuntime(solution.getHeuristic().getSolveTime());
         createRoundRobinSolutionIfNotCreatedYet(experiment);
@@ -229,14 +228,14 @@ final class DatacenterBrokerHeuristicRunner extends ExperimentRunner<DatacenterB
 
     @Override
     protected Map<String, List<Double>> createMetricsMap() {
-        Map<String, List<Double>>  map = new HashMap<>();
+        final Map<String, List<Double>> map = new HashMap<>();
         map.put("Experiments Cost", experimentCosts);
         return map;
     }
 
     @Override
     protected void printSimulationParameters() {
-        System.out.printf("Executing %d experiments. Please wait ... It may take a while.\n", getNumberOfSimulationRuns());
+        System.out.printf("Executing %d experiments. Please wait ... It may take a while.\n", getSimulationRuns());
         System.out.println("Experiments configurations:");
         System.out.printf("\tBase seed: %d | Number of VMs: %d | Number of Cloudlets: %d\n", getBaseSeed(), VMS_TO_CREATE, CLOUDLETS_TO_CREATE);
         System.out.printf("\tApply Antithetic Variates Technique: %b\n", isApplyAntitheticVariatesTechnique());
@@ -248,15 +247,15 @@ final class DatacenterBrokerHeuristicRunner extends ExperimentRunner<DatacenterB
         System.out.printf("\nSimulated Annealing Parameters\n");
         System.out.printf(
                 "\tInitial Temperature: %.2f | Cold Temperature: %.4f | Cooling Rate: %.3f | Neighborhood searches by iteration: %d\n",
-                DatacenterBrokerHeuristicExperiment.SA_INITIAL_TEMPERATURE,
+                DatacenterBrokerHeuristicExperiment.SA_INIT_TEMPERATURE,
                 DatacenterBrokerHeuristicExperiment.SA_COLD_TEMPERATURE,
                 DatacenterBrokerHeuristicExperiment.SA_COOLING_RATE,
-                DatacenterBrokerHeuristicExperiment.SA_NUMBER_OF_NEIGHBORHOOD_SEARCHES);
+                DatacenterBrokerHeuristicExperiment.SA_NEIGHBORHOOD_SEARCHES);
     }
 
     @Override
     protected void printFinalResults(String metricName, SummaryStatistics stats) {
-        System.out.printf("\n# %s for %d simulation runs\n", metricName, getNumberOfSimulationRuns());
+        System.out.printf("\n# %s for %d simulation runs\n", metricName, getSimulationRuns());
         if (!simulationRunsAndNumberOfBatchesAreCompatible()) {
             System.out.println("\tBatch means method was not be applied because the number of simulation runs is not greater than the number of batches.");
         }
@@ -264,7 +263,7 @@ final class DatacenterBrokerHeuristicRunner extends ExperimentRunner<DatacenterB
                 "\tRound-robin solution used by DatacenterBrokerSimple - Cost: %.2f\n",
                 roundRobinSolution.getCost());
 
-        if (getNumberOfSimulationRuns() > 1) {
+        if (getSimulationRuns() > 1) {
             System.out.printf(
                     "\tHeuristic solutions - Mean cost: %.2f Std. Dev.: %.2f\n",
                     stats.getMean(), stats.getStandardDeviation());
@@ -281,19 +280,19 @@ final class DatacenterBrokerHeuristicRunner extends ExperimentRunner<DatacenterB
      * Computes the percentage of the Round-robin solution cost that the
      * heuristic solution cost represents.
      *
-     * @param heuristicSolutionCost the cost of the heuristic solution
+     * @param heuristicCost the cost of the heuristic solution
      * @return the percentage of the Round-robin solution cost that the
      * heuristic solution represents
      */
-    private double heuristicSolutionCostPercentageOfRoundRobinSolution(double heuristicSolutionCost) {
-        return heuristicSolutionCost * 100.0 / roundRobinSolution.getCost();
+    private double heuristicSolutionCostPercentageOfRoundRobinSolution(double heuristicCost) {
+        return heuristicCost * 100.0 / roundRobinSolution.getCost();
     }
 
     private void showConfidenceInterval(SummaryStatistics stats) {
         // Calculate 95% confidence interval
-        double intervalSize = computeConfidenceErrorMargin(stats, 0.95);
-        double lower = stats.getMean() - intervalSize;
-        double upper = stats.getMean() + intervalSize;
+        final double intervalSize = computeConfidenceErrorMargin(stats, 0.95);
+        final double lower = stats.getMean() - intervalSize;
+        final double upper = stats.getMean() + intervalSize;
         System.out.printf(
                 "\tSolution cost mean 95%% Confidence Interval: %.2f ∓ %.2f, that is [%.2f to %.2f]\n",
                 stats.getMean(), intervalSize, lower, upper);
@@ -313,7 +312,7 @@ final class DatacenterBrokerHeuristicRunner extends ExperimentRunner<DatacenterB
 
         roundRobinSolution = new CloudletToVmMappingSolution(Heuristic.NULL);
         int i = 0;
-        for (Cloudlet c : exp.getCloudletList()) {
+        for (final Cloudlet c : exp.getCloudletList()) {
             //cyclically selects a Vm (as in a circular queue)
             roundRobinSolution.bindCloudletToVm(c, exp.getVmList().get(i));
             i = (i + 1) % exp.getVmList().size();

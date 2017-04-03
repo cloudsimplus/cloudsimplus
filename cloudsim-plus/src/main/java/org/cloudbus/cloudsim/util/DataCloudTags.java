@@ -45,7 +45,7 @@ public final class DataCloudTags {
      * NOTE: The result id is in the form of FILE_ADD_XXXX where XXXX means the
      * error/success message.
      */
-    public static final int FILE_ADD_MASTER_RESULT = RM_BASE + 11;
+    public static final int MASTERFILE_ADD_RESULT = RM_BASE + 11;
 
     /**
      * Denotes that file addition is successful.

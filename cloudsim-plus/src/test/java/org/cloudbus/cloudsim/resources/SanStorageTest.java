@@ -14,15 +14,15 @@ public class SanStorageTest {
     private static final double NETWORK_LATENCY = 2;
     private static final double BW = 1000;
     private static final int FILE_SIZE = 5000;
-    private static final double INDIVIDUAL_FILE_TRANSFER_TIME = (FILE_SIZE/BW) + NETWORK_LATENCY;
+    private static final double FILE_TRANSFER_TIME = FILE_SIZE/BW + NETWORK_LATENCY;
+    private static final String FILE1 = "file1.txt";
 
     @Test
     public void testAddReservedFile() {
-        System.out.println("addReservedFile");
-        SanStorage instance = createSanStorage(BW);
-        File file = new File("file1.txt", FILE_SIZE);
+        final SanStorage instance = createSanStorage(BW);
+        final File file = new File(FILE1, FILE_SIZE);
         assertTrue(instance.reserveSpace(file.getSize()));
-        assertTrue(instance.addReservedFile(file) > INDIVIDUAL_FILE_TRANSFER_TIME);
+        assertTrue(instance.addReservedFile(file) > FILE_TRANSFER_TIME);
     }
 
     private static SanStorage createSanStorage(final double bandwidth, final double networkLatency){
@@ -43,7 +43,6 @@ public class SanStorageTest {
      */
     @Test
     public void testGetMaxTransferRate() {
-        System.out.println("getMaxTransferRate");
         final HarddriveStorage hd = new HarddriveStorage(CAPACITY);
         //creates a SAN with bw greater than the disk rate of the super class HarddriveStorage
         double bandwidth = hd.getMaxTransferRate() * 100;
@@ -66,49 +65,44 @@ public class SanStorageTest {
 
     @Test
     public void testAddFile_File() {
-        System.out.println("addFile");
-        SanStorage instance = createSanStorage(BW);
+        final SanStorage instance = createSanStorage(BW);
 
         //try invalid file
         File file = null;
-        assertTrue(instance.addFile(file) == 0);
+        assertEquals(0, instance.addFile(file), 0);
 
         //add a valid file
-        file = new File("file1.txt", FILE_SIZE);
-        assertTrue(instance.addFile(file) > INDIVIDUAL_FILE_TRANSFER_TIME);
+        file = new File(FILE1, FILE_SIZE);
+        assertTrue(instance.addFile(file) > FILE_TRANSFER_TIME);
     }
 
     @Test
     public void testAddFile_List() {
-        System.out.println("addFile");
-        SanStorage instance = createSanStorage(BW);
-        List<File> list = HarddriveStorageTest.createFileList(TOTAL_FILES, FILE_SIZE);
-        final double transferTimeOfAllFiles = INDIVIDUAL_FILE_TRANSFER_TIME * TOTAL_FILES;
+        final SanStorage instance = createSanStorage(BW);
+        final List<File> list = HarddriveStorageTest.createFileList(TOTAL_FILES, FILE_SIZE);
+        final double transferTimeOfAllFiles = FILE_TRANSFER_TIME * TOTAL_FILES;
         assertTrue(instance.addFile(list) > transferTimeOfAllFiles);
     }
 
     @Test
     public void testDeleteFile_File() {
-        System.out.println("deleteFile");
-        SanStorage instance = createSanStorage(BW);
-        File file = new File("file1.txt", FILE_SIZE);
+        final SanStorage instance = createSanStorage(BW);
+        final File file = new File(FILE1, FILE_SIZE);
         instance.addFile(file);
-        assertTrue(instance.deleteFile(file) > INDIVIDUAL_FILE_TRANSFER_TIME);
+        assertTrue(instance.deleteFile(file) > FILE_TRANSFER_TIME);
     }
 
     @Test
     public void testGetBandwidth() {
-        System.out.println("getBandwidth");
         final double bandwidth = BW;
-        SanStorage instance = createSanStorage(bandwidth);
+        final SanStorage instance = createSanStorage(bandwidth);
         assertEquals(bandwidth, instance.getBandwidth(), 0.0);
     }
 
     @Test
     public void testGetNetworkLatency() {
-        System.out.println("getNetworkLatency");
         final double networkLatency = NETWORK_LATENCY;
-        SanStorage instance = createSanStorage(BW, networkLatency);
+        final SanStorage instance = createSanStorage(BW, networkLatency);
         assertEquals(networkLatency, instance.getNetworkLatency(), 0.0);
     }
 }

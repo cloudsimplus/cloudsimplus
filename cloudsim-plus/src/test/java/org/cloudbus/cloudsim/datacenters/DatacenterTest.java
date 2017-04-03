@@ -14,7 +14,6 @@ public class DatacenterTest {
 
     @Test
     public void testNullObject() {
-        System.out.println("addFile");
         final Datacenter instance = Datacenter.NULL;
         assertEquals(0, instance.addFile(null));
         assertEquals(-1, instance.getId());

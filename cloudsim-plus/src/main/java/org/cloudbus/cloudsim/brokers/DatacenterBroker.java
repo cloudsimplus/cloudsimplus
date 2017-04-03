@@ -6,7 +6,6 @@
  */
 package org.cloudbus.cloudsim.brokers;
 
-import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Set;
@@ -17,8 +16,6 @@ import org.cloudbus.cloudsim.cloudlets.Cloudlet;
 import org.cloudbus.cloudsim.datacenters.Datacenter;
 import org.cloudbus.cloudsim.vms.Vm;
 import org.cloudbus.cloudsim.core.SimEntity;
-import org.cloudbus.cloudsim.core.events.SimEvent;
-import org.cloudbus.cloudsim.core.Simulation;
 
 /**
  * Represents a broker acting on behalf of a cloud customer.
@@ -34,6 +31,12 @@ import org.cloudbus.cloudsim.core.Simulation;
  * @since CloudSim Plus 1.0
  */
 public interface DatacenterBroker extends SimEntity {
+    /**
+     * An attribute that implements the Null Object Design Pattern for {@link DatacenterBroker}
+     * objects.
+     */
+    DatacenterBroker NULL = new DatacenterBrokerNull();
+
     /**
      * Specifies that an already submitted cloudlet, that is in the {@link #getCloudletsWaitingList() waiting list},
      * must run in a specific virtual machine.
@@ -65,7 +68,7 @@ public interface DatacenterBroker extends SimEntity {
      */
     <T extends Cloudlet> List<T> getCloudletsFinishedList();
 
-    Vm getWaitingVm(final int index);
+    Vm getWaitingVm(int index);
 
     /**
      * Gets a List of VMs submitted to the broker that are waiting to be created inside
@@ -184,7 +187,7 @@ public interface DatacenterBroker extends SimEntity {
      * @param fallbackDatacenterSupplier the fallbackDatacenterSupplier to set
      */
     void setFallbackDatacenterSupplier(Supplier<Datacenter> fallbackDatacenterSupplier);
-    
+
     /**
      * Sets a {@link Comparator} that will be used to sort every list
      * of submitted VMs before requesting the creation of such VMs in
@@ -193,10 +196,10 @@ public interface DatacenterBroker extends SimEntity {
      * @param comparator the VM Comparator to set
      */
     void setVmComparator(Comparator<Vm> comparator);
-    
+
     /**
      * Sets a {@link Comparator} that will be used to sort every list
-     * of submitted Cloudlets before mapping each Cloudlet to a Vm. 
+     * of submitted Cloudlets before mapping each Cloudlet to a Vm.
      * After sorting, the Cloudlet mapping will follow
      * the order of the sorted Cloudlet list.
      * @param comparator the Cloudlet Comparator to set
@@ -218,71 +221,4 @@ public interface DatacenterBroker extends SimEntity {
      * @return the list of created Cloudlets
      */
     Set<Cloudlet> getCloudletsCreatedList();
-
-    /**
-     * An attribute that implements the Null Object Design Pattern for {@link DatacenterBroker}
-     * objects.
-     */
-    DatacenterBroker NULL = new DatacenterBroker() {
-        @Override public int compareTo(SimEntity o) {
-            return 0;
-        }
-        @Override public boolean isStarted() {
-            return false;
-        }
-        @Override public Simulation getSimulation() {
-            return Simulation.NULL;
-        }
-        @Override public SimEntity setSimulation(Simulation simulation) {
-            return this;
-        }
-        @Override public void processEvent(SimEvent ev) {}
-        @Override public void schedule(int dest, double delay, int tag) {}
-        @Override public void run() {}
-        @Override public void start() {}
-        @Override public int getId() {
-            return -1;
-        }
-        @Override public String getName() {
-            return "";
-        }
-        @Override public boolean bindCloudletToVm(Cloudlet cloudlet, Vm vm) {
-            return false;
-        }
-        @Override public <T extends Cloudlet> List<T> getCloudletsWaitingList() {
-            return Collections.emptyList();
-        }
-        @Override public <T extends Cloudlet> List<T> getCloudletsFinishedList() {
-            return Collections.emptyList();
-        }
-        @Override public Vm getWaitingVm(int index) {
-            return Vm.NULL;
-        }
-        @Override public <T extends Vm> List<T> getVmsWaitingList() {
-            return Collections.emptyList();
-        }
-        @Override public <T extends Vm> List<T> getVmsCreatedList() {
-            return Collections.emptyList();
-        }
-        @Override public void submitVm(Vm vm) {}
-        @Override public void submitCloudlet(Cloudlet cloudlet) {}
-        @Override public void submitCloudletList(List<? extends Cloudlet> list) {}
-        @Override public void submitCloudletList(List<? extends Cloudlet> list, double submissionDelay) {}
-        @Override public void submitVmList(List<? extends Vm> list) {}
-        @Override public void submitVmList(List<? extends Vm> list, double submissionDelay) {}
-        @Override public boolean hasMoreCloudletsToBeExecuted() {
-            return false;
-        }
-        @Override public void shutdownEntity() {}
-        @Override public SimEntity setName(String newName) throws IllegalArgumentException { return this; }
-        @Override public void setDatacenterSupplier(Supplier<Datacenter> datacenterSupplier) {}
-        @Override public void setFallbackDatacenterSupplier(Supplier<Datacenter> fallbackDatacenterSupplier) {}
-        @Override public void setVmMapper(Function<Cloudlet, Vm> vmMapper) {}
-        @Override public Set<Cloudlet> getCloudletsCreatedList() {
-            return Collections.EMPTY_SET;
-        }
-
-        @Override public void setVmComparator(Comparator<Vm> comparator) {}
-        @Override public void setCloudletComparator(Comparator<Cloudlet> comparator) {}
-    };
 }

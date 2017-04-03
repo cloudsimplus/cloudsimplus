@@ -29,6 +29,11 @@ public final class ExecutionTimeMeasurer {
     private static final Map<String, Long> executionStartTimes = new HashMap<>();
 
     /**
+     * A private constructor to avoid class instantiation.
+     */
+    private ExecutionTimeMeasurer(){}
+
+    /**
      * Starts measuring the execution time of a method/process.
      * Usually this method has to be called at the first line of the method
      * that has to be its execution time measured.
@@ -48,7 +53,7 @@ public final class ExecutionTimeMeasurer {
      * @see #getExecutionStartTimes()
      */
     public static double end(String name) {
-        double executionTime = (System.currentTimeMillis() - getExecutionStartTimes().get(name)) / 1000.0;
+        final double executionTime = (System.currentTimeMillis() - getExecutionStartTimes().get(name)) / 1000.0;
         getExecutionStartTimes().remove(name);
         return executionTime;
     }
@@ -62,10 +67,5 @@ public final class ExecutionTimeMeasurer {
     public static Map<String, Long> getExecutionStartTimes() {
         return executionStartTimes;
     }
-
-    /**
-     * A private constructor to avoid class instantiation.
-     */
-    private ExecutionTimeMeasurer(){}
 
 }

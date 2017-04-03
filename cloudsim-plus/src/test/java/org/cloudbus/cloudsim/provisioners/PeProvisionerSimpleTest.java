@@ -54,9 +54,9 @@ public class PeProvisionerSimpleTest {
 
     @Test
     public void testAllocateMipsForVm() {
-        Vm vm1 = VmSimpleTest.createVm(0, HALF_MIPS, 1);
-        Vm vm2 = VmSimpleTest.createVm(1, HALF_MIPS, 1);
-        Vm vm3 = VmSimpleTest.createVm(2, HALF_MIPS, 2);
+        final Vm vm1 = VmSimpleTest.createVm(0, HALF_MIPS, 1);
+        final Vm vm2 = VmSimpleTest.createVm(1, HALF_MIPS, 1);
+        final Vm vm3 = VmSimpleTest.createVm(2, HALF_MIPS, 2);
 
         assertTrue(peProvisioner.allocateResourceForVm(vm1, HALF_MIPS));
         assertEquals(HALF_MIPS, peProvisioner.getAvailableResource(), 0);

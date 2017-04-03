@@ -68,6 +68,11 @@ public final class Log {
                     .toString().indexOf("jdwp") > 0;
 
     /**
+     * A private constructor to avoid class instantiation.
+     */
+    private Log(){}
+
+    /**
      * Prints a message.
      *
      * @param message the message
@@ -211,10 +216,10 @@ public final class Log {
     /**
      * Sets the disable output flag.
      *
-     * @param _disabled the new disabled
+     * @param disable the new disabled
      */
-    public static void setDisabled(boolean _disabled) {
-        disabled = _disabled;
+    public static void setDisabled(boolean disable) {
+        disabled = disable;
     }
 
     /**
@@ -253,9 +258,4 @@ public final class Log {
         return debug;
     }
 
-
-    /**
-     * A private constructor to avoid class instantiation.
-     */
-    private Log(){}
 }

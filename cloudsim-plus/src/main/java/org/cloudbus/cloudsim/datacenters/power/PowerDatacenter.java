@@ -197,21 +197,37 @@ public class PowerDatacenter extends DatacenterSimple {
      * expected in this host
      */
     protected double updateCloudetProcessingWithoutSchedulingFutureEvents() {
-        double minTime = Double.MAX_VALUE;
         final double currentTime = getSimulation().clock();
-        final double timeDiff = currentTime - getLastProcessTime();
-        double timeFrameDatacenterEnergy = 0.0;
 
         Log.printLine("\n\n--------------------------------------------------------------\n\n");
         Log.printFormattedLine("New resource usage for the time frame starting at %.2f:", currentTime);
 
+        final double nextCloudletFinishTime = getNextCloudletFinishTime(currentTime);
+        final double datacenterPowerUsageForTimeSpan = getDatacenterPowerUsageForTimeSpan();
+
+        setPower(getPower() + datacenterPowerUsageForTimeSpan);
+        checkCloudletsCompletionForAllHosts();
+        removeFinishedVmsFromEveryHost();
+
+        Log.printLine();
+        setLastProcessTime(currentTime);
+        return nextCloudletFinishTime;
+    }
+
+    /**
+     * Gets the expected finish time of the next Cloudlet to finish in any of the existing Hosts.
+     *
+     * @param currentTime the current simulation time
+     * @returnthe expected finish time of the next finishing Cloudlet or {@link Double#MAX_VALUE} if not
+     * Cloudlet is running.
+     */
+    private double getNextCloudletFinishTime(double currentTime) {
+        double minTime = Double.MAX_VALUE;
         for (PowerHostSimple host : this.<PowerHostSimple>getHostList()) {
             Log.printLine();
 
-            double time = host.updateProcessing(currentTime); // inform VMs to update processing
-            if (time < minTime) {
-                minTime = time;
-            }
+            final double nextCloudletFinishTime = host.updateProcessing(currentTime);
+            minTime = Math.min(nextCloudletFinishTime, minTime);
 
             Log.printFormattedLine(
                     "%.2f: [Host #%d] utilization is %.2f%%",
@@ -220,20 +236,31 @@ public class PowerDatacenter extends DatacenterSimple {
                     host.getUtilizationOfCpu() * 100);
         }
 
-        if (timeDiff > 0) {
+        return minTime;
+    }
+
+    /**
+     * Gets the total power consumed by all Hosts of the Datacenter since the last time the processing
+     * of Cloudlets in this Host was updated.
+     *
+     * @return the total power consumed by all Hosts in the elapsed time span
+     */
+    private double getDatacenterPowerUsageForTimeSpan() {
+        double datacenterPowerUsageForTimeSpan = 0;
+        final double currentTime = getSimulation().clock();
+        final double timeSpan = currentTime - getLastProcessTime();
+        if (timeSpan > 0) {
             Log.printFormattedLine(
                     "\nEnergy consumption for the last time frame from %.2f to %.2f:",
                     getLastProcessTime(),
                     currentTime);
 
             for (PowerHostSimple host : this.<PowerHostSimple>getHostList()) {
-                double previousUtilizationOfCpu = host.getPreviousUtilizationOfCpu();
-                double utilizationOfCpu = host.getUtilizationOfCpu();
-                double timeFrameHostEnergy = host.getEnergyLinearInterpolation(
-                        previousUtilizationOfCpu,
-                        utilizationOfCpu,
-                        timeDiff);
-                timeFrameDatacenterEnergy += timeFrameHostEnergy;
+                final double previousUseOfCpu = host.getPreviousUtilizationOfCpu();
+                final double utilizationOfCpu = host.getUtilizationOfCpu();
+                final double timeFrameHostEnergy = host.getEnergyLinearInterpolation(
+                        previousUseOfCpu, utilizationOfCpu, timeSpan);
+                datacenterPowerUsageForTimeSpan += timeFrameHostEnergy;
 
                 Log.printLine();
                 Log.printFormattedLine(
@@ -241,7 +268,7 @@ public class PowerDatacenter extends DatacenterSimple {
                         currentTime,
                         host.getId(),
                         getLastProcessTime(),
-                        previousUtilizationOfCpu * 100,
+                        previousUseOfCpu * 100,
                         utilizationOfCpu * 100);
                 Log.printFormattedLine(
                         "%.2f: [Host #%d] energy is %.2f W*sec",
@@ -253,19 +280,10 @@ public class PowerDatacenter extends DatacenterSimple {
             Log.printFormattedLine(
                     "\n%.2f: Data center's energy is %.2f W*sec\n",
                     currentTime,
-                    timeFrameDatacenterEnergy);
+                    datacenterPowerUsageForTimeSpan);
         }
 
-        setPower(getPower() + timeFrameDatacenterEnergy);
-
-        checkCloudletsCompletionForAllHosts();
-
-        removeFinishedVmsFromEveryHost();
-
-        Log.printLine();
-
-        setLastProcessTime(currentTime);
-        return minTime;
+        return datacenterPowerUsageForTimeSpan;
     }
 
     protected void removeFinishedVmsFromEveryHost() {

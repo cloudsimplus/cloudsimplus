@@ -162,7 +162,7 @@ public class NetworkCloudlet extends CloudletSimple {
          * @todo @author manoelcampos CloudletTask should implement
          * Null Object Pattern to avoid these null checks.
          */
-        CloudletTask nextTask = getNextTaskIfCurrentIfFinished();
+        final CloudletTask nextTask = getNextTaskIfCurrentIfFinished();
         if(nextTask == null){
             return false;
         }

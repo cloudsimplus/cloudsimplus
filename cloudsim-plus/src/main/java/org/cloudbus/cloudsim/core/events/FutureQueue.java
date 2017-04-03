@@ -35,7 +35,7 @@ public class FutureQueue implements EventQueue {
     /**
      * A incremental number used for {@link SimEvent#getSerial()} event attribute.
      */
-    private long serial = 0;
+    private long serial;
 
     @Override
     public void addEvent(SimEvent newEvent) {

@@ -123,15 +123,15 @@ public class CloudletExecutionTask extends CloudletTask {
     /**
      * Sets a given number of MI to the {@link #getTotalExecutedLenght() total
      * MI executed so far} by the cloudlet.
-     * @param totalExecutedLenghtSoFar the number of MI executed so far
+     * @param executedLenghtSoFar the total number of MI executed so far
      * @return {@inheritDoc}
      */
-    public boolean process(long totalExecutedLenghtSoFar) {
-        if(totalExecutedLenghtSoFar <= 0) {
+    public boolean process(long executedLenghtSoFar) {
+        if(executedLenghtSoFar <= 0) {
             return false;
         }
 
-        this.totalExecutedLenght = Math.min(totalExecutedLenghtSoFar, length);
+        this.totalExecutedLenght = Math.min(executedLenghtSoFar, length);
         setFinished(this.totalExecutedLenght == length);
         return true;
     }

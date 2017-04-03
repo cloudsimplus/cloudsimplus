@@ -20,22 +20,34 @@ import java.util.Objects;
  * @since CloudSim Toolkit 1.0
  */
 public class File {
-    /** Denotes that this file has not been registered to a Replica Catalogue. */
+    /**
+     * Denotes that this file has not been registered to a Replica Catalogue.
+     */
     public static final int NOT_REGISTERED = -1;
 
-    /** Denotes that the type of this file is unknown. */
+    /**
+     * Denotes that the type of this file is unknown.
+     */
     public static final int TYPE_UNKOWN = 0;
 
-    /** Denotes that the type of this file is a raw data. */
+    /**
+     * Denotes that the type of this file is a raw data.
+     */
     public static final int TYPE_RAW_DATA = 1;
 
-    /** Denotes that the type of this file is a reconstructed data. */
+    /**
+     * Denotes that the type of this file is a reconstructed data.
+     */
     public static final int TYPE_RECONSTRUCTED_DATA = 2;
 
-    /** Denotes that the type of this file is a tag data. */
+    /**
+     * Denotes that the type of this file is a tag data.
+     */
     public static final int TYPE_TAG_DATA = 3;
 
-    /** Logical file name. */
+    /**
+     * Logical file name.
+     */
     private String name;
 
     /**
@@ -48,7 +60,9 @@ public class File {
      */
     private FileAttribute attribute;
 
-    /** A transaction time for adding, deleting or getting the file.
+    /**
+     * A transaction time for adding, deleting or getting the file.
+     *
      * @see #setTransactionTime(double)
      */
     private double transactionTime;
@@ -65,10 +79,10 @@ public class File {
      * @param fileName file name
      * @param fileSize file size in MBytes
      * @throws IllegalArgumentException This happens when one of the following scenarios occur:
-     *             <ul>
-     *             <li>the file name is empty or <tt>null</tt>
-     *             <li>the file size is zero or negative numbers
-     *             </ul>
+     *                                  <ul>
+     *                                  <li>the file name is empty or <tt>null</tt>
+     *                                  <li>the file size is zero or negative numbers
+     *                                  </ul>
      */
     public File(final String fileName, final int fileSize) {
         init(fileName, fileSize);
@@ -91,6 +105,27 @@ public class File {
 
         file.getFileAttribute().copyValue(this.attribute);
         this.attribute.setMasterCopy(false);   // set this file as a replica
+    }
+
+    /**
+     * Check if the name of a file is valid or not.
+     *
+     * @param fileName the file name to be checked for validity
+     * @return <tt>true</tt> if the file name is valid, <tt>false</tt> otherwise
+     */
+    public static boolean isValid(final String fileName) {
+        return FileAttribute.isValid(fileName);
+    }
+
+    /**
+     * Check if a file object is valid or not. This method checks whether the given file object
+     * itself and its file name are valid.
+     *
+     * @param file the file to be checked for validity
+     * @return <tt>true</tt> if the file is valid, <tt>false</tt> otherwise
+     */
+    public static boolean isValid(final File file) {
+        return !Objects.isNull(file) && isValid(file.getName());
     }
 
     private void init(final String fileName, final int fileSize) throws IllegalArgumentException {
@@ -122,12 +157,12 @@ public class File {
      * @return a clone of the current file (as a master copy) or <tt>null</tt> if an error occurs
      */
     public File makeMasterCopy() {
-            File file = makeCopy();
-            if (!Objects.isNull(file)) {
-                file.setMasterCopy(true);
-            }
+        final File file = makeCopy();
+        if (!Objects.isNull(file)) {
+            file.setMasterCopy(true);
+        }
 
-            return file;
+        return file;
     }
 
     /**
@@ -150,7 +185,7 @@ public class File {
      * @return a file attribute
      */
     public FileAttribute getFileAttribute() {
-            return attribute;
+        return attribute;
     }
 
     /**
@@ -161,9 +196,8 @@ public class File {
      * @return the object size (in byte)
      */
     public int getAttributeSize() {
-            return attribute.getAttributeSize();
+        return attribute.getAttributeSize();
     }
-
 
     /**
      * Gets the file name.
@@ -180,31 +214,9 @@ public class File {
      * @param name the file name
      */
     public final void setName(String name) {
-        if(!isValid(name))
+        if (!isValid(name))
             throw new IllegalArgumentException("File name cannot be null or empty");
         this.name = name;
-    }
-
-
-    /**
-     * Check if the name of a file is valid or not.
-     *
-     * @param fileName the file name to be checked for validity
-     * @return <tt>true</tt> if the file name is valid, <tt>false</tt> otherwise
-     */
-    public static boolean isValid(final String fileName) {
-        return FileAttribute.isValid(fileName);
-    }
-
-    /**
-     * Check if a file object is valid or not. This method checks whether the given file object
-     * itself and its file name are valid.
-     *
-     * @param file the file to be checked for validity
-     * @return <tt>true</tt> if the file is valid, <tt>false</tt> otherwise
-     */
-    public static boolean isValid(final File file) {
-        return (!Objects.isNull(file)) && isValid(file.getName());
     }
 
     /**
@@ -214,7 +226,7 @@ public class File {
      * @return <tt>true</tt> if successful, <tt>false</tt> otherwise
      */
     public boolean setOwnerName(String name) {
-            return attribute.setOwnerName(name);
+        return attribute.setOwnerName(name);
     }
 
     /**
@@ -223,7 +235,7 @@ public class File {
      * @return the owner name or <tt>null</tt> if empty
      */
     public String getOwnerName() {
-            return attribute.getOwnerName();
+        return attribute.getOwnerName();
     }
 
     /**
@@ -263,7 +275,7 @@ public class File {
      * @return <tt>true</tt> if successful, <tt>false</tt> otherwise
      */
     public boolean setUpdateTime(double time) {
-            return attribute.setUpdateTime(time);
+        return attribute.setUpdateTime(time);
     }
 
     /**
@@ -272,7 +284,7 @@ public class File {
      * @return the last update time (in seconds)
      */
     public double getLastUpdateTime() {
-            return attribute.getLastUpdateTime();
+        return attribute.getLastUpdateTime();
     }
 
     /**
@@ -282,7 +294,7 @@ public class File {
      * @return <tt>true</tt> if successful, <tt>false</tt> otherwise
      */
     public boolean setRegistrationID(int id) {
-            return attribute.setRegistrationId(id);
+        return attribute.setRegistrationId(id);
     }
 
     /**
@@ -291,7 +303,7 @@ public class File {
      * @return registration ID
      */
     public int getRegistrationID() {
-            return attribute.getRegistrationID();
+        return attribute.getRegistrationID();
     }
 
     /**
@@ -301,7 +313,7 @@ public class File {
      * @return <tt>true</tt> if successful, <tt>false</tt> otherwise
      */
     public boolean setType(int type) {
-            return attribute.setType(type);
+        return attribute.setType(type);
     }
 
     /**
@@ -310,7 +322,7 @@ public class File {
      * @return file type
      */
     public int getType() {
-            return attribute.getType();
+        return attribute.getType();
     }
 
     /**
@@ -320,7 +332,7 @@ public class File {
      * @return <tt>true</tt> if successful, <tt>false</tt> otherwise
      */
     public boolean setChecksum(int checksum) {
-            return attribute.setChecksum(checksum);
+        return attribute.setChecksum(checksum);
     }
 
     /**
@@ -329,7 +341,7 @@ public class File {
      * @return file checksum
      */
     public int getChecksum() {
-            return attribute.getChecksum();
+        return attribute.getChecksum();
     }
 
     /**
@@ -339,7 +351,7 @@ public class File {
      * @return <tt>true</tt> if successful, <tt>false</tt> otherwise
      */
     public boolean setCost(double cost) {
-            return attribute.setCost(cost);
+        return attribute.setCost(cost);
     }
 
     /**
@@ -348,7 +360,7 @@ public class File {
      * @return the cost of this file
      */
     public double getCost() {
-            return attribute.getCost();
+        return attribute.getCost();
     }
 
     /**
@@ -357,7 +369,7 @@ public class File {
      * @return the file creation time (in millisecond)
      */
     public long getCreationTime() {
-            return attribute.getCreationTime();
+        return attribute.getCreationTime();
     }
 
     /**
@@ -366,17 +378,7 @@ public class File {
      * @return <tt>true</tt> if it is registered, <tt>false</tt> otherwise
      */
     public boolean isRegistered() {
-            return attribute.isRegistered();
-    }
-
-    /**
-     * Marks the file as a master copy or replica.
-     *
-     * @param masterCopy a flag denotes <tt>true</tt> for master copy or <tt>false</tt> for a
-     *            replica
-     */
-    public void setMasterCopy(boolean masterCopy) {
-            attribute.setMasterCopy(masterCopy);
+        return attribute.isRegistered();
     }
 
     /**
@@ -385,16 +387,17 @@ public class File {
      * @return <tt>true</tt> if it is a master copy or <tt>false</tt> otherwise
      */
     public boolean isMasterCopy() {
-            return attribute.isMasterCopy();
+        return attribute.isMasterCopy();
     }
 
     /**
-     * Sets the file as deleted or not.
+     * Marks the file as a master copy or replica.
      *
-     * @param deleted <tt>true</tt> if it was deleted, false otherwise
+     * @param masterCopy a flag denotes <tt>true</tt> for master copy or <tt>false</tt> for a
+     *                   replica
      */
-    public void setDeleted(boolean deleted) {
-            this.deleted = deleted;
+    public void setMasterCopy(boolean masterCopy) {
+        attribute.setMasterCopy(masterCopy);
     }
 
     /**
@@ -403,7 +406,16 @@ public class File {
      * @return <tt>true</tt> if it was deleted, false otherwise
      */
     public boolean isDeleted() {
-            return deleted;
+        return deleted;
+    }
+
+    /**
+     * Sets the file as deleted or not.
+     *
+     * @param deleted <tt>true</tt> if it was deleted, false otherwise
+     */
+    public void setDeleted(boolean deleted) {
+        this.deleted = deleted;
     }
 
     /**
@@ -414,12 +426,12 @@ public class File {
      * @return <tt>true</tt> if successful, <tt>false</tt> otherwise
      */
     public boolean setTransactionTime(double time) {
-            if (time < 0) {
-                    return false;
-            }
+        if (time < 0) {
+            return false;
+        }
 
-            transactionTime = time;
-            return true;
+        transactionTime = time;
+        return true;
     }
 
     /**
@@ -428,13 +440,23 @@ public class File {
      * @return the transaction time (in second)
      */
     public double getTransactionTime() {
-            return transactionTime;
+        return transactionTime;
     }
 
     @Override
     public String toString() {
         return getName();
     }
+
+    /**
+     * Gets the Datacenter that stores the file.
+     *
+     * @return
+     */
+    public Datacenter getDatacenter() {
+        return datacenter;
+    }
+
     /**
      * Sets the Datacenter that will store the file.
      * When the file is added to a {@link FileStorage}
@@ -451,14 +473,6 @@ public class File {
 
         this.datacenter = datacenter;
         return this;
-    }
-
-    /**
-     * Gets the Datacenter that stores the file.
-     * @return
-     */
-    public Datacenter getDatacenter() {
-        return datacenter;
     }
 
 

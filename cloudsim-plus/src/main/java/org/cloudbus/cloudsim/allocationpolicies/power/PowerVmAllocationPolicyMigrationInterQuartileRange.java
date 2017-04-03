@@ -30,6 +30,8 @@ import org.cloudbus.cloudsim.util.MathUtil;
  * @since CloudSim Toolkit 3.0
  */
 public class PowerVmAllocationPolicyMigrationInterQuartileRange extends PowerVmAllocationPolicyMigrationDynamicUpperThresholdAbstract {
+    // 12 has been suggested as a safe value
+    private static final int MIN_NUM_OF_HISTORY_ENTRIES_TO_COMPUTE_IRQ = 12;
 
     /**
      * Creates a PowerVmAllocationPolicyMigrationInterQuartileRange
@@ -47,11 +49,11 @@ public class PowerVmAllocationPolicyMigrationInterQuartileRange extends PowerVmA
      *
      * @param vmSelectionPolicy          the policy that defines how VMs are selected for migration
      * @param safetyParameter            the safety parameter
-     * @param fallbackVmAllocationPolicy the fallback VM allocation policy to be used when
+     * @param fallbackPolicy the fallback VM allocation policy to be used when
      * the over utilization host detection doesn't have data to be computed
      */
-    public PowerVmAllocationPolicyMigrationInterQuartileRange(PowerVmSelectionPolicy vmSelectionPolicy, double safetyParameter, PowerVmAllocationPolicyMigration fallbackVmAllocationPolicy) {
-        super(vmSelectionPolicy, safetyParameter, fallbackVmAllocationPolicy);
+    public PowerVmAllocationPolicyMigrationInterQuartileRange(PowerVmSelectionPolicy vmSelectionPolicy, double safetyParameter, PowerVmAllocationPolicyMigration fallbackPolicy) {
+        super(vmSelectionPolicy, safetyParameter, fallbackPolicy);
     }
 
     /**
@@ -62,8 +64,8 @@ public class PowerVmAllocationPolicyMigrationInterQuartileRange extends PowerVmA
      */
     @Override
     public double computeHostUtilizationMeasure(PowerHostUtilizationHistory host) throws IllegalArgumentException {
-        double[] data = host.getUtilizationHistory();
-        if (MathUtil.countNonZeroBeginning(data) >= 12) { // 12 has been suggested as a safe value
+        final double[] data = host.getUtilizationHistory();
+        if (MathUtil.countNonZeroBeginning(data) >= MIN_NUM_OF_HISTORY_ENTRIES_TO_COMPUTE_IRQ) {
             return MathUtil.iqr(data);
         }
 

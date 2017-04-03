@@ -79,21 +79,21 @@ import java.util.function.Supplier;
  * @see CompletelyFairSchedulerExperiment
  */
 abstract class CloudletSchedulerExperiment extends SimulationExperiment {
-    public static final int HOST_PES = 32;
-    public static final int VM_PES = HOST_PES;
-    public static final long VM_MIPS = 1000;
-    public static final long VM_STORAGE = 10000; // vm image size (MEGABYTE)
-    public static final long VM_RAM = 512; // vm memory (MEGABYTE)
-    public static final long VM_BW = 1000; // vm bandwidth
-    public static final int MAX_CLOUDLET_PES = VM_PES/8 + 1;
-    public static final int HOSTS_TO_CREATE = 1;
-    public static final int VMS_TO_CREATE = 1;
-    public static final long CLOUDLET_LENGHT_MI = 10000; //in Million Instructions (MI)
+    protected static final int HOST_PES = 32;
+    protected static final int VM_PES = HOST_PES;
+    protected static final long VM_MIPS = 1000;
+    protected static final long VM_STORAGE = 10000; // vm image size (MEGABYTE)
+    protected static final long VM_RAM = 512; // vm memory (MEGABYTE)
+    protected static final long VM_BW = 1000; // vm bandwidth
+    protected static final int MAX_CLOUDLET_PES = VM_PES/8 + 1;
+    protected static final int HOSTS_TO_CREATE = 1;
+    protected static final int VMS_TO_CREATE = 1;
+    protected static final long CLOUDLET_LENGHT_MI = 10000; //in Million Instructions (MI)
 
     private ContinuousDistribution cloudletPesPrng;
-    private int numberOfCloudletsToCreate;
+    private int numCloudletsToCreate;
 
-    public CloudletSchedulerExperiment(int index, ExperimentRunner runner) {
+    CloudletSchedulerExperiment(int index, ExperimentRunner runner) {
         super(index, runner);
         this.cloudletPesPrng = new UniformDistr(0, 1);
     }
@@ -102,8 +102,8 @@ abstract class CloudletSchedulerExperiment extends SimulationExperiment {
     public void printResults() {
         Log.enable();
         try {
-            System.out.printf("\nCloudlets: %d\n", numberOfCloudletsToCreate);
-            DatacenterBroker broker = getBrokerList().stream().findFirst().orElse(DatacenterBroker.NULL);
+            System.out.printf("\nCloudlets: %d\n", numCloudletsToCreate);
+            final DatacenterBroker broker = getBrokerList().stream().findFirst().orElse(DatacenterBroker.NULL);
             new PriorityCloudletsTableBuilder(broker.getCloudletsFinishedList()).build();
         } finally {
             Log.disable();
@@ -117,7 +117,7 @@ abstract class CloudletSchedulerExperiment extends SimulationExperiment {
 
     @Override
     protected List<Host> createHosts()  {
-        List<Host> list = new ArrayList<>(HOSTS_TO_CREATE);
+        final List<Host> list = new ArrayList<>(HOSTS_TO_CREATE);
         for (int i = 0; i < HOSTS_TO_CREATE; i++) {
             list.add(createHost(getHostList().size()+i));
         }
@@ -125,11 +125,11 @@ abstract class CloudletSchedulerExperiment extends SimulationExperiment {
     }
 
     private Host createHost(int id) {
-        long mips = 1000; // capacity of each CPU core (in Million Instructions per Second)
-        long ram = 2048; // host memory (MEGABYTE)
-        long storage = 1000000; // host storage (MEGABYTE)
-        long bw = 10000; //Megabits/s
-        List<Pe> peList = new ArrayList<>();
+        final long mips = 1000; // capacity of each CPU core (in Million Instructions per Second)
+        final long ram = 2048; // host memory (MEGABYTE)
+        final long storage = 1000000; // host storage (MEGABYTE)
+        final long bw = 10000; //Megabits/s
+        final List<Pe> peList = new ArrayList<>();
         for (int i = 0; i < HOST_PES; i++) {
             peList.add(new PeSimple(mips, new PeProvisionerSimple()));
         }
@@ -159,8 +159,8 @@ abstract class CloudletSchedulerExperiment extends SimulationExperiment {
 
     @Override
     protected List<Cloudlet> createCloudlets(DatacenterBroker broker) {
-        List<Cloudlet> list = new ArrayList<>(numberOfCloudletsToCreate);
-        for(int i = 0; i < numberOfCloudletsToCreate; i++) {
+        final List<Cloudlet> list = new ArrayList<>(numCloudletsToCreate);
+        for(int i = 0; i < numCloudletsToCreate; i++) {
             list.add(createCloudlet(broker));
         }
 
@@ -171,16 +171,15 @@ abstract class CloudletSchedulerExperiment extends SimulationExperiment {
      * Creates a Cloudlet with the given parameters.
      *
      * @param broker broker that the Cloudlet to be created by the Supplier function will belong to
-     * @param cloudletPes number of PEs for the Cloudlet to be created by the Supplier function
      * @return the created Cloudlet
      */
     private Cloudlet createCloudlet(DatacenterBroker broker) {
-        long fileSize = 300; //Size (in bytes) before execution
-        long outputSize = 300; //Size (in bytes) after execution
+        final long fileSize = 300; //Size (in bytes) before execution
+        final long outputSize = 300; //Size (in bytes) after execution
         final int cloudletPes = (int)cloudletPesPrng.sample();
         //Defines how CPU, RAM and Bandwidth resources are used
         //Sets the same utilization model for all these resources.
-        UtilizationModel utilization = new UtilizationModelFull();
+        final UtilizationModel utilization = new UtilizationModelFull();
         return new CloudletSimple(CLOUDLET_LENGHT_MI, cloudletPes)
             .setFileSize(fileSize)
             .setOutputSize(outputSize)
@@ -197,12 +196,12 @@ abstract class CloudletSchedulerExperiment extends SimulationExperiment {
         return this;
     }
 
-    public CloudletSchedulerExperiment setNumberOfCloudletsToCreate(int numberOfCloudletsToCreate) {
-        this.numberOfCloudletsToCreate = numberOfCloudletsToCreate;
+    public CloudletSchedulerExperiment setNumCloudletsToCreate(int numCloudletsToCreate) {
+        this.numCloudletsToCreate = numCloudletsToCreate;
         return this;
     }
 
-    public int getNumberOfCloudletsToCreate() {
-        return numberOfCloudletsToCreate;
+    public int getNumCloudletsToCreate() {
+        return numCloudletsToCreate;
     }
 }

@@ -39,6 +39,12 @@ import org.cloudbus.cloudsim.vms.Vm;
 public interface CloudletToVmMappingHeuristic extends Heuristic<CloudletToVmMappingSolution> {
 
     /**
+     * A property that implements the Null Object Design Pattern for {@link Heuristic}
+     * objects.
+     */
+    CloudletToVmMappingHeuristic NULL = new CloudletToVmMappingHeuristicNull();
+
+    /**
      *
      * @return the list of cloudlets to be mapped to {@link #getVmList() available Vm's}.
      */
@@ -61,21 +67,5 @@ public interface CloudletToVmMappingHeuristic extends Heuristic<CloudletToVmMapp
      * @param vmList the list of VMs to set
      */
     void setVmList(List<Vm> vmList);
-
-    /**
-     * A property that implements the Null Object Design Pattern for {@link Heuristic}
-     * objects.
-     */
-    CloudletToVmMappingHeuristic NULL = new CloudletToVmMappingHeuristicNull();
 }
 
-/**
- * A class to allow the implementation of Null Object Design Pattern
- * for this interface and extensions of it.
- */
-class CloudletToVmMappingHeuristicNull extends HeuristicNull<CloudletToVmMappingSolution> implements CloudletToVmMappingHeuristic {
-    @Override public List<Cloudlet> getCloudletList() { return Collections.EMPTY_LIST; }
-    @Override public List<Vm> getVmList() { return Collections.EMPTY_LIST; }
-    @Override public void setCloudletList(List<Cloudlet> cloudletList) {}
-    @Override public void setVmList(List<Vm> vmList) {}
-}

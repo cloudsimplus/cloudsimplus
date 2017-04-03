@@ -62,7 +62,7 @@ public class CloudletToVmMappingSimulatedAnnealing
         initialSolution = new CloudletToVmMappingSolution(this);
     }
 
-    public CloudletToVmMappingSolution generateRandomSolution() {
+    private CloudletToVmMappingSolution generateRandomSolution() {
         CloudletToVmMappingSolution solution = new CloudletToVmMappingSolution(this);
         cloudletList.forEach(c -> solution.bindCloudletToVm(c, getRandomVm()));
         return solution;

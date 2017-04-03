@@ -19,15 +19,21 @@ import org.cloudbus.cloudsim.core.events.SimEvent;
  */
 public interface SimEntity extends Nameable, Cloneable, Runnable, Comparable<SimEntity> {
     /**
+     * Defines the event state.
+     */
+    enum State {RUNNABLE, WAITING, HOLDING, FINISHED}
+
+    /**
+     * An attribute that implements the Null Object Design Pattern for {@link SimEntity}
+     * objects.
+     */
+    SimEntity NULL = new SimEntityNull();
+
+    /**
      * Checks if the entity already was started or not.
      * @return
      */
     boolean isStarted();
-
-    /**
-     * Defines the event state.
-     */
-    enum State {RUNNABLE, WAITING, HOLDING, FINISHED}
 
     /**
      * Gets the CloudSim instance that represents the simulation the Entity is related to.
@@ -94,23 +100,4 @@ public interface SimEntity extends Nameable, Cloneable, Runnable, Comparable<Sim
      * @throws IllegalArgumentException when the entity name is <tt>null</tt> or empty
      */
     SimEntity setName(String newName) throws IllegalArgumentException;
-
-    /**
-     * An attribute that implements the Null Object Design Pattern for {@link SimEntity}
-     * objects.
-     */
-    SimEntity NULL = new SimEntity() {
-        @Override public int compareTo(SimEntity o) { return 0; }
-        @Override public boolean isStarted() { return false; }
-        @Override public Simulation getSimulation() { return Simulation.NULL; }
-        @Override public SimEntity setSimulation(Simulation simulation) { return this; }
-        @Override public void processEvent(SimEvent ev) {}
-        @Override public void schedule(int dest, double delay, int tag) {}
-        @Override public void run() {}
-        @Override public void start() {}
-        @Override public void shutdownEntity() {}
-        @Override public SimEntity setName(String newName) throws IllegalArgumentException { return this; }
-        @Override public String getName() { return ""; }
-        @Override public int getId() { return 0; }
-    };
 }

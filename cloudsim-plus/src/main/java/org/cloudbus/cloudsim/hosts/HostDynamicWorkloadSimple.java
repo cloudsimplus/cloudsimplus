@@ -89,78 +89,93 @@ public class HostDynamicWorkloadSimple extends HostSimple implements HostDynamic
 
     @Override
     public double updateProcessing(double currentTime) {
-        double smallerTime = super.updateProcessing(currentTime);
+        final double smallerTime = super.updateProcessing(currentTime);
         setPreviousUtilizationMips(getUtilizationOfCpuMips());
         setUtilizationMips(0);
         double hostTotalRequestedMips = 0;
 
-        for (Vm vm : getVmList()) {
+        for (final Vm vm : getVmList()) {
             getVmScheduler().deallocatePesForVm(vm);
         }
 
-        for (Vm vm : getVmList()) {
+        for (final Vm vm : getVmList()) {
             getVmScheduler().allocatePesForVm(vm, vm.getCurrentRequestedMips());
         }
 
-        for (Vm vm : getVmList()) {
-            double totalRequestedMips = vm.getCurrentRequestedTotalMips();
-            double totalAllocatedMips = getVmScheduler().getTotalAllocatedMipsForVm(vm);
+        for (final Vm vm : getVmList()) {
+            final double totalRequestedMips = vm.getCurrentRequestedTotalMips();
 
-            if (!Log.isDisabled() && vm.getHost() != Host.NULL) {
-                Log.printFormattedLine(
-                        "%.2f: [Host #" + getId() + "] Total allocated MIPS for VM #" + vm.getId()
-                        + " (Host #" + vm.getHost().getId()
-                        + ") is %.2f, was requested %.2f out of total %.2f (%.2f%%)",
-                        getSimulation().clock(),
-                        totalAllocatedMips,
-                        totalRequestedMips,
-                        vm.getMips(),
-                        totalRequestedMips / vm.getMips() * 100);
-
-                List<Pe> pes = getVmScheduler().getPesAllocatedForVM(vm);
-                StringBuilder pesString = new StringBuilder();
-                for (Pe pe : pes) {
-                    pesString.append(String.format(" PE #%d: %d.", pe.getId(), pe.getPeProvisioner()
-                            .getAllocatedResourceForVm(vm)));
-                }
-                Log.printFormattedLine(
-                        "%.2f: [Host #" + getId() + "] MIPS for VM #" + vm.getId() + " by PEs ("
-                        + getNumberOfPes() + " * " + getVmScheduler().getPeCapacity() + ")."
-                        + pesString,
-                        getSimulation().clock());
-            }
-
-            if (getVmsMigratingIn().contains(vm)) {
-                Log.printFormattedLine("%.2f: [Host #" + getId() + "] VM #" + vm.getId()
-                        + " is being migrated to Host #" + getId(), getSimulation().clock());
-            } else {
-                if (totalAllocatedMips + 0.1 < totalRequestedMips) {
-                    Log.printFormattedLine("%.2f: [Host #" + getId() + "] Under allocated MIPS for VM #" + vm.getId()
-                            + ": %.2f", getSimulation().clock(), totalRequestedMips - totalAllocatedMips);
-                }
-
-                VmStateHistoryEntry entry = new VmStateHistoryEntry(
-                        currentTime,
-                        totalAllocatedMips,
-                        totalRequestedMips,
-                        (vm.isInMigration() && !getVmsMigratingIn().contains(vm)));
-                vm.addStateHistoryEntry(entry);
-
-                if (vm.isInMigration()) {
-                    Log.printFormattedLine(
-                            "%.2f: [Host #" + getId() + "] VM #" + vm.getId() + " is in migration",
-                            getSimulation().clock());
-                    totalAllocatedMips /= 0.9; // performance degradation due to migration - 10%
-                }
-            }
+            showVmResourceUsageOnHost(vm);
+            final double totalAllocatedMips = addVmResourceUsageToHistoryIfNotInMigration(currentTime, vm);
 
             setUtilizationMips(getUtilizationOfCpuMips() + totalAllocatedMips);
             hostTotalRequestedMips += totalRequestedMips;
         }
 
-        addStateHistoryEntry(currentTime, getUtilizationOfCpuMips(), hostTotalRequestedMips, (getUtilizationOfCpuMips() > 0));
+        addStateHistoryEntry(currentTime, getUtilizationOfCpuMips(), hostTotalRequestedMips, getUtilizationOfCpuMips() > 0);
 
         return smallerTime;
+    }
+
+    private double addVmResourceUsageToHistoryIfNotInMigration(double currentTime, Vm vm) {
+        double totalAllocatedMips = getVmScheduler().getTotalAllocatedMipsForVm(vm);
+        if (getVmsMigratingIn().contains(vm)) {
+            Log.printFormattedLine("%.2f: [Host #" + getId() + "] VM #" + vm.getId()
+                    + " is being migrated to Host #" + getId(), getSimulation().clock());
+            return totalAllocatedMips;
+        }
+
+        final double totalRequestedMips = vm.getCurrentRequestedTotalMips();
+        if (totalAllocatedMips + 0.1 < totalRequestedMips) {
+            Log.printFormattedLine("%.2f: [Host #" + getId() + "] Under allocated MIPS for VM #" + vm.getId()
+                    + ": %.2f", getSimulation().clock(), totalRequestedMips - totalAllocatedMips);
+        }
+
+        final VmStateHistoryEntry entry = new VmStateHistoryEntry(
+                currentTime,
+                totalAllocatedMips,
+                totalRequestedMips,
+                (vm.isInMigration() && !getVmsMigratingIn().contains(vm)));
+        vm.addStateHistoryEntry(entry);
+
+        if (vm.isInMigration()) {
+            Log.printFormattedLine(
+                    "%.2f: [Host #" + getId() + "] VM #" + vm.getId() + " is in migration",
+                    getSimulation().clock());
+            totalAllocatedMips /= 0.9; // performance degradation due to migration - 10%
+        }
+
+        return totalAllocatedMips;
+    }
+
+    private void showVmResourceUsageOnHost(Vm vm) {
+        final double totalRequestedMips = vm.getCurrentRequestedTotalMips();
+        final double totalAllocatedMips = getVmScheduler().getTotalAllocatedMipsForVm(vm);
+        if (!Log.isDisabled() && vm.getHost() != Host.NULL) {
+            Log.printFormattedLine(
+                    "%.2f: [Host #" + getId() + "] Total allocated MIPS for VM #" + vm.getId()
+                    + " (Host #" + vm.getHost().getId()
+                    + ") is %.2f, was requested %.2f out of total %.2f (%.2f%%)",
+                    getSimulation().clock(),
+                    totalAllocatedMips,
+                    totalRequestedMips,
+                    vm.getMips(),
+                    totalRequestedMips / vm.getMips() * 100);
+
+            final List<Pe> pes = getVmScheduler().getPesAllocatedForVM(vm);
+            final StringBuilder pesString = new StringBuilder();
+            for (final Pe pe : pes) {
+                pesString.append(
+                    String.format(" PE #%d: %d.",
+                        pe.getId(),
+                        pe.getPeProvisioner().getAllocatedResourceForVm(vm)));
+            }
+            Log.printFormattedLine(
+                    "%.2f: [Host #" + getId() + "] MIPS for VM #" + vm.getId() + " by PEs ("
+                    + getNumberOfPes() + " * " + getVmScheduler().getPeCapacity() + ")."
+                    + pesString,
+                    getSimulation().clock());
+        }
     }
 
     @Override
@@ -296,9 +311,9 @@ public class HostDynamicWorkloadSimple extends HostSimple implements HostDynamic
      */
     @Override
     public void addStateHistoryEntry(double time, double allocatedMips, double requestedMips, boolean isActive) {
-        HostStateHistoryEntry newState = new HostStateHistoryEntry(time, allocatedMips, requestedMips, isActive);
+        final HostStateHistoryEntry newState = new HostStateHistoryEntry(time, allocatedMips, requestedMips, isActive);
         if (!stateHistory.isEmpty()) {
-            HostStateHistoryEntry previousState = stateHistory.get(stateHistory.size() - 1);
+            final HostStateHistoryEntry previousState = stateHistory.get(stateHistory.size() - 1);
             if (previousState.getTime() == time) {
                 stateHistory.set(stateHistory.size() - 1, newState);
                 return;

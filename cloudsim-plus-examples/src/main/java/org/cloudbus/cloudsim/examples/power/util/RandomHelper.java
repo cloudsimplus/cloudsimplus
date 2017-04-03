@@ -10,7 +10,6 @@ import org.cloudbus.cloudsim.cloudlets.Cloudlet;
 import org.cloudbus.cloudsim.cloudlets.CloudletSimple;
 import org.cloudbus.cloudsim.brokers.DatacenterBroker;
 import org.cloudbus.cloudsim.utilizationmodels.UtilizationModel;
-import org.cloudbus.cloudsim.utilizationmodels.UtilizationModelZero;
 import org.cloudbus.cloudsim.utilizationmodels.UtilizationModelStochastic;
 
 /**
@@ -43,7 +42,7 @@ public final class RandomHelper {
 		long fileSize = 300;
 		long outputSize = 300;
 		long seed = RandomConstants.CLOUDLET_UTILIZATION_SEED;
-		UtilizationModel utilizationModelNull = new UtilizationModelZero();
+		UtilizationModel utilizationModelNull = UtilizationModel.NULL;
 
 		for (int i = 0; i < cloudletsNumber; i++) {
 			CloudletSimple cloudlet;

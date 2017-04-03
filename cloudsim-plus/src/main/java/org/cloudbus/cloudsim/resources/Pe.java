@@ -9,7 +9,6 @@ package org.cloudbus.cloudsim.resources;
 
 import org.cloudbus.cloudsim.core.Identificable;
 import org.cloudbus.cloudsim.provisioners.PeProvisioner;
-import org.cloudbus.cloudsim.provisioners.PeProvisionerSimple;
 
 /**
  * A interface to be implemented by each class that provides
@@ -43,6 +42,12 @@ public interface Pe extends Identificable, ResourceManageable {
          */
         FAILED
     }
+
+    /**
+     * An attribute that implements the Null Object Design Pattern for {@link Pe}
+     * objects.
+     */
+    Pe NULL = new PeNull();
 
     /**
      * Gets the capacity of this Pe in MIPS (Million Instructions Per Second).
@@ -123,31 +128,4 @@ public interface Pe extends Identificable, ResourceManageable {
      * @post $none
      */
     boolean setStatus(Status status);
-
-    /**
-     * An attribute that implements the Null Object Design Pattern for {@link Pe}
-     * objects.
-     */
-    Pe NULL = new Pe(){
-        @Override public long getAvailableResource() { return 0; }
-        @Override public long getAllocatedResource() { return 0; }
-        @Override public boolean isResourceAmountAvailable(long amountToCheck) { return false; }
-        @Override public boolean isResourceAmountAvailable(double amountToCheck) { return false; }
-        @Override public boolean isFull() { return false; }
-        @Override public int getId(){ return -1; }
-        @Override public long getCapacity() { return 0; }
-        @Override public PeProvisioner getPeProvisioner() { return new PeProvisionerSimple(); }
-        @Override public Status getStatus() { return Status.FAILED; }
-        @Override public void setId(int id) {}
-        @Override public boolean setCapacity(long mipsCapacity){ return false; }
-        @Override public boolean setCapacity(double mipsCapacity) { return false; }
-        @Override public Pe setPeProvisioner(PeProvisioner peProvisioner) { return Pe.NULL; }
-        @Override public boolean allocateResource(long amountToAllocate) { return false; }
-        @Override public boolean setAllocatedResource(long newTotalAllocatedResource) { return false; }
-        @Override public boolean deallocateResource(long amountToDeallocate) { return false; }
-        @Override public long deallocateAllResources() { return 0; }
-        @Override public boolean isResourceAmountBeingUsed(long amountToCheck) { return false; }
-        @Override public boolean isSuitable(long newTotalAllocatedResource) { return false; }
-        @Override public boolean setStatus(Status status) { return false; }
-    };
 }

@@ -44,7 +44,8 @@ import org.cloudbus.cloudsim.distributions.ContinuousDistribution;
  */
 public abstract class ExperimentRunner<T extends SimulationExperiment> implements Runnable {
 
-    protected boolean verbose = false;
+    private boolean verbose;
+
     /**
      * @see #getBaseSeed()
      */
@@ -55,19 +56,19 @@ public abstract class ExperimentRunner<T extends SimulationExperiment> implement
      */
     private List<Long> seeds;
     /**
-     * @see #getNumberOfSimulationRuns()
+     * @see #getSimulationRuns()
      */
-    private int numberOfSimulationRuns;
+    private int simulationRuns;
 
     /**
      * @see #getExperimentsStartTime()
      */
-    private long experimentsStartTime = 0;
+    private long experimentsStartTime;
 
     /**
      * @see #getExperimentsFinishTime()
      */
-    private long experimentsFinishTime = 0;
+    private long experimentsFinishTime;
 
     /**
      * @see #isApplyAntitheticVariatesTechnique()
@@ -78,7 +79,7 @@ public abstract class ExperimentRunner<T extends SimulationExperiment> implement
      * @see #getNumberOfBatches()
      */
     private int numberOfBatches;
-    
+
     /**
      * Creates an experiment runner, setting the
      * {@link #getBaseSeed() base seed} as the current time.
@@ -128,7 +129,7 @@ public abstract class ExperimentRunner<T extends SimulationExperiment> implement
         }
 
         setup();
-        seeds = new ArrayList<>(getNumberOfSimulationRuns());
+        seeds = new ArrayList<>(getSimulationRuns());
     }
 
     /**
@@ -139,8 +140,8 @@ public abstract class ExperimentRunner<T extends SimulationExperiment> implement
      * used simultaneously, the number of batches has to be even.
      */
     private void setSimulationRunsAndBatchesToEvenNumber() {
-        if (getNumberOfSimulationRuns() % 2 != 0) {
-            setNumberOfSimulationRuns(getNumberOfSimulationRuns() + 1);
+        if (getSimulationRuns() % 2 != 0) {
+            setSimulationRuns(getSimulationRuns() + 1);
         }
 
         if (getNumberOfBatches() % 2 != 0) {
@@ -156,7 +157,7 @@ public abstract class ExperimentRunner<T extends SimulationExperiment> implement
      * will be even too.
      */
     private void setNumberOfSimulationRunsAsMultipleOfNumberOfBatches() {
-        setNumberOfSimulationRuns(batchSizeCeil() * getNumberOfBatches());
+        setSimulationRuns(batchSizeCeil() * getNumberOfBatches());
     }
 
     /**
@@ -164,14 +165,14 @@ public abstract class ExperimentRunner<T extends SimulationExperiment> implement
      * simulation runs is not multiple of the number of batches.
      */
     private boolean isApplyBatchMeansAndSimulationRunsIsNotMultipleOfBatches() {
-        return isApplyBatchMeansMethod() && getNumberOfSimulationRuns() % getNumberOfBatches() != 0;
+        return isApplyBatchMeansMethod() && getSimulationRuns() % getNumberOfBatches() != 0;
     }
 
     /**
      * @return the batch size rounded by the {@link Math#ceil(double)} method.
      */
     public int batchSizeCeil() {
-        return (int) Math.ceil(getNumberOfSimulationRuns() / (double) getNumberOfBatches());
+        return (int) Math.ceil(getSimulationRuns() / (double) getNumberOfBatches());
     }
 
     /**
@@ -182,7 +183,7 @@ public abstract class ExperimentRunner<T extends SimulationExperiment> implement
      */
     public boolean simulationRunsAndNumberOfBatchesAreCompatible() {
         final boolean batchesGreaterThan1 = getNumberOfBatches() > 1;
-        final boolean numSimulationRunsGraterThanBatches = getNumberOfSimulationRuns() > getNumberOfBatches();
+        final boolean numSimulationRunsGraterThanBatches = getSimulationRuns() > getNumberOfBatches();
         return batchesGreaterThan1 && numSimulationRunsGraterThanBatches;
     }
 
@@ -190,7 +191,7 @@ public abstract class ExperimentRunner<T extends SimulationExperiment> implement
      *
      * Checks if the "Batch Means Method" is to be applied to reduce correlation
      * between the results for different experiment runs.
-     * @return 
+     * @return
      */
     public boolean isApplyBatchMeansMethod() {
         return simulationRunsAndNumberOfBatchesAreCompatible();
@@ -213,8 +214,8 @@ public abstract class ExperimentRunner<T extends SimulationExperiment> implement
             return samples;
         }
 
-        List<Double> batchMeans = new ArrayList<>(getNumberOfBatches());
-        int k = batchSizeCeil();
+        final List<Double> batchMeans = new ArrayList<>(getNumberOfBatches());
+        final int k = batchSizeCeil();
         for (int i = 0; i < getNumberOfBatches(); i++) {
             double sum = 0.0;
             for (int j = 0; j < k; j++) {
@@ -288,7 +289,7 @@ public abstract class ExperimentRunner<T extends SimulationExperiment> implement
 		    The t-Distribution is used to determine the probability that
 		    the real population mean lies in a given interval.
              */
-            TDistribution tDist = new TDistribution(degreesOfFreedom);
+            final TDistribution tDist = new TDistribution(degreesOfFreedom);
             final double significance = 1.0 - confidenceLevel;
             final double criticalValue = tDist.inverseCumulativeProbability(1.0 - significance / 2.0);
             System.out.printf("\n\tt-Distribution critical value for %d samples: %f\n", stats.getN(), criticalValue);
@@ -304,7 +305,7 @@ public abstract class ExperimentRunner<T extends SimulationExperiment> implement
      * Checks if the "Antithetic Variates Technique" is to be applied to reduce
      * results variance.
      *
-     * @return 
+     * @return
      * @see
      * <a href="https://en.wikipedia.org/wiki/Antithetic_variates">Antithetic
      * variates</a>
@@ -319,14 +320,14 @@ public abstract class ExperimentRunner<T extends SimulationExperiment> implement
      * if the
      * {@link #isApplyAntitheticVariatesTechnique() "Antithetic Variates Technique"}
      * is to be used.
-     * @return 
+     * @return
      */
-    public int getNumberOfSimulationRuns() {
-        return numberOfSimulationRuns;
+    public int getSimulationRuns() {
+        return simulationRuns;
     }
 
-    protected ExperimentRunner setNumberOfSimulationRuns(int numberOfSimulationRuns) {
-        this.numberOfSimulationRuns = numberOfSimulationRuns;
+    protected ExperimentRunner setSimulationRuns(int simulationRuns) {
+        this.simulationRuns = simulationRuns;
         return this;
     }
 
@@ -340,7 +341,7 @@ public abstract class ExperimentRunner<T extends SimulationExperiment> implement
      *
      * If this number is greater than 1, the "Batch Means Method" is used to
      * reduce the correlation between experiment runs.
-     * @return 
+     * @return
      */
     public int getNumberOfBatches() {
         return numberOfBatches;
@@ -350,7 +351,7 @@ public abstract class ExperimentRunner<T extends SimulationExperiment> implement
      * Sets the number of batches in which the simulation runs will be divided.
      *
      * @param numberOfBatches number of simulation run batches
-     * @return 
+     * @return
      * @see #getNumberOfBatches()
      */
     public final ExperimentRunner setNumberOfBatches(int numberOfBatches) {
@@ -364,7 +365,7 @@ public abstract class ExperimentRunner<T extends SimulationExperiment> implement
      * each different experiment run, a different seed based on this one is
      * used.
      *
-     * @return 
+     * @return
      * @see #getSeeds()
      */
     public long getBaseSeed() {
@@ -374,7 +375,7 @@ public abstract class ExperimentRunner<T extends SimulationExperiment> implement
     /**
      * Gets the seeds used to run each experiment.
      *
-     * @return 
+     * @return
      * @see #createRandomGenAndAddSeedToList(int, double, double)
      */
     public List<Long> getSeeds() {
@@ -399,8 +400,8 @@ public abstract class ExperimentRunner<T extends SimulationExperiment> implement
     public ContinuousDistribution createRandomGenAndAddSeedToList(int experimentIndex, double minValue, double maxValue) {
         UniformDistr prng;
         if (isApplyAntitheticVariatesTechnique()
-                && numberOfSimulationRuns > 1 && experimentIndex >= halfSimulationRuns()) {
-            int previousExperiment = experimentIndex - halfSimulationRuns();
+                && simulationRuns > 1 && experimentIndex >= halfSimulationRuns()) {
+            final int previousExperiment = experimentIndex - halfSimulationRuns();
 
             prng = new UniformDistr(minValue, maxValue, seeds.get(previousExperiment))
                     .setApplyAntitheticVariatesTechnique(true);
@@ -408,11 +409,11 @@ public abstract class ExperimentRunner<T extends SimulationExperiment> implement
             final long experimentSeed = getBaseSeed() + experimentIndex + 1;
             prng = new UniformDistr(minValue, maxValue, experimentSeed);
         }
-        
+
         addSeed(prng.getSeed());
         return prng;
     }
-    
+
      /**
      * Creates a pseudo random number generator (PRNG) for a experiment run that
      * generates uniform values between [0 and 1[. Adds the PRNG seed to the
@@ -428,7 +429,7 @@ public abstract class ExperimentRunner<T extends SimulationExperiment> implement
      */
     public ContinuousDistribution createRandomGenAndAddSeedToList(int experimentIndex) {
         return createRandomGenAndAddSeedToList(experimentIndex, 0, 1);
-    } 
+    }
 
     /**
      * Adds a seed to the list of seeds used for each experiment.
@@ -442,15 +443,15 @@ public abstract class ExperimentRunner<T extends SimulationExperiment> implement
     }
 
     /**
-     * @return the half of {@link #getNumberOfSimulationRuns()}
+     * @return the half of {@link #getSimulationRuns()}
      */
     private int halfSimulationRuns() {
-        return numberOfSimulationRuns / 2;
+        return simulationRuns / 2;
     }
 
     /**
      * Time in seconds the experiments finished.
-     * @return 
+     * @return
      */
     public long getExperimentsFinishTime() {
         return experimentsFinishTime;
@@ -458,7 +459,7 @@ public abstract class ExperimentRunner<T extends SimulationExperiment> implement
 
     /**
      * Time in seconds the experiments started.
-     * @return 
+     * @return
      */
     public long getExperimentsStartTime() {
         return experimentsStartTime;
@@ -476,7 +477,7 @@ public abstract class ExperimentRunner<T extends SimulationExperiment> implement
         Log.disable();
         try {
             experimentsStartTime = System.currentTimeMillis();
-            for (int i = 0; i < getNumberOfSimulationRuns(); i++) {
+            for (int i = 0; i < getSimulationRuns(); i++) {
                 if (isVerbose()) {
                     System.out.print(((i + 1) % 100 == 0 ? String.format(". Run #%d\n", i + 1) : "."));
                 }
@@ -488,13 +489,13 @@ public abstract class ExperimentRunner<T extends SimulationExperiment> implement
             Log.enable();
         }
 
-        Map<String, List<Double>> metricsMap = createMetricsMap();
+        final Map<String, List<Double>> metricsMap = createMetricsMap();
         System.out.println("\n------------------------------------------------------------------");
-        metricsMap.entrySet().stream().forEach(this::computeAndPrintFinalResults);
+        metricsMap.entrySet().forEach(this::computeAndPrintFinalResults);
         Log.enable();
-        System.out.printf("\nExperiments finished in %d seconds!\n", getExperimentsFinishTime());        
+        System.out.printf("\nExperiments finished in %d seconds!\n", getExperimentsFinishTime());
     }
-    
+
     /**
      * Creates a Map adding a List of values for each metric to be computed.
      * The computation of final experiments results are performed on this map.
@@ -541,7 +542,7 @@ public abstract class ExperimentRunner<T extends SimulationExperiment> implement
         }
 
         final int half = samples.size() / 2;
-        List<Double> antitheticMeans = new ArrayList<>(half);
+        final List<Double> antitheticMeans = new ArrayList<>(half);
         //applies the "Antithetic Variates Technique" to reduce variance
         for (int i = 0; i < half; i++) {
             antitheticMeans.add((samples.get(i) + samples.get(half + i)) / 2.0);
@@ -554,12 +555,12 @@ public abstract class ExperimentRunner<T extends SimulationExperiment> implement
     }
 
     protected abstract void printSimulationParameters();
-    
+
     /**
-     * Creates a SummaryStatistics object from a list of 
-     * Double values, allowing computation of statistics 
+     * Creates a SummaryStatistics object from a list of
+     * Double values, allowing computation of statistics
      * such as mean over these values.
-     * The method also checks if the 
+     * The method also checks if the
      * {@link #isApplyAntitheticVariatesTechnique() Antithetic Variates}
      * and the {@link #isApplyBatchMeansMethod() Batch Means} techniques
      * are enabled and then apply them over the given list of Doubles.
@@ -571,23 +572,22 @@ public abstract class ExperimentRunner<T extends SimulationExperiment> implement
      * variance reduction.
      */
     protected SummaryStatistics computeFinalStatistics(List<Double> values) {
-        SummaryStatistics stats = new SummaryStatistics();
+        final SummaryStatistics stats = new SummaryStatistics();
         values = computeBatchMeans(values);
         values = computeAntitheticMeans(values);
         values.forEach(stats::addValue);
         return stats;
     }
-    
+
     /**
      * Computes and prints final simulation results such as means, standard deviations and
      * confidence intervals.
      *
-     * @param metricEntry an entry in the {@link #metricsMap}
-     * where the key is the name of the metric to print results
+     * @param metricEntry a Map Entry where the key is the name of the metric to print results
      * and the value is a {@link SummaryStatistics} object containing means of each
      * experiment run that will be used to computed an overall mean and other
      * statistics
-     * @see #printFinalResults(java.lang.String, org.apache.commons.math3.stat.descriptive.SummaryStatistics) 
+     * @see #printFinalResults(java.lang.String, org.apache.commons.math3.stat.descriptive.SummaryStatistics)
      */
     private void computeAndPrintFinalResults(Map.Entry<String, List<Double>> metricEntry){
         printFinalResults(metricEntry.getKey(), computeFinalStatistics(metricEntry.getValue()));
@@ -613,7 +613,7 @@ public abstract class ExperimentRunner<T extends SimulationExperiment> implement
      * Indicates if the runner will output execution logs or not. This doesn't
      * affect the verbosity of individual experiments executed. Each
      * {@link SimulationExperiment} has its own verbose attribute.
-     * @return 
+     * @return
      */
     public boolean isVerbose() {
         return verbose;
@@ -625,7 +625,7 @@ public abstract class ExperimentRunner<T extends SimulationExperiment> implement
      * {@link SimulationExperiment} has its own verbose attribute.
      *
      * @param verbose true if results have to be output, false otherwise
-     * @return 
+     * @return
      */
     public ExperimentRunner setVerbose(boolean verbose) {
         this.verbose = verbose;

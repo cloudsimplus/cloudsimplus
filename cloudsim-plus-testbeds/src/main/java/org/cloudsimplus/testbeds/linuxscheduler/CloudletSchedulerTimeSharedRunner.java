@@ -42,12 +42,12 @@ public class CloudletSchedulerTimeSharedRunner extends CloudletSchedulerRunner<C
 
     @Override
     protected CloudletSchedulerTimeSharedExperiment createExperiment(int i) {
-        ContinuousDistribution cloudletPesPrng = createRandomGenAndAddSeedToList(i, 1, MAX_CLOUDLET_PES);
-        CloudletSchedulerTimeSharedExperiment exp = new CloudletSchedulerTimeSharedExperiment(i, this);
+        final ContinuousDistribution cloudletPesPrng = createRandomGenAndAddSeedToList(i, 1, MAX_CLOUDLET_PES);
+        final CloudletSchedulerTimeSharedExperiment exp = new CloudletSchedulerTimeSharedExperiment(i, this);
 
         exp
             .setCloudletPesPrng(cloudletPesPrng)
-            .setNumberOfCloudletsToCreate((int) numberOfCloudletsPRNG.sample())
+            .setNumCloudletsToCreate((int) getCloudletsNumberPrng().sample())
             .setAfterExperimentFinish(this::afterExperimentFinish)
             .setVerbose(false);
 

@@ -1,17 +1,19 @@
 package org.cloudbus.cloudsim.schedulers.cloudlet;
 
-import org.cloudbus.cloudsim.schedulers.cloudlet.CloudletScheduler;
-
 import java.util.ArrayList;
 import java.util.List;
 
 /**
- * A class used to help setting up {@link CloudletScheduler} objects to be used
+ * A class to help setting up {@link CloudletScheduler} objects to be used
  * by tests.
  *
  * @author Manoel Campos da Silva Filho
  */
 public final class CloudletSchedulerUtil {
+    /**
+     * A private constructor to avoid class instantiation.
+     */
+    private CloudletSchedulerUtil(){}
 
     public static List<Double> createMipsList(int pesNumber, double mips) {
         List<Double> mipsList = new ArrayList<>();

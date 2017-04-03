@@ -11,14 +11,11 @@ import org.cloudbus.cloudsim.hosts.Host;
 import org.cloudbus.cloudsim.vms.Vm;
 import org.cloudbus.cloudsim.cloudlets.Cloudlet;
 import org.cloudbus.cloudsim.core.SimEntity;
-import org.cloudbus.cloudsim.core.events.SimEvent;
 import org.cloudbus.cloudsim.resources.File;
 import org.cloudbus.cloudsim.allocationpolicies.VmAllocationPolicy;
 import org.cloudbus.cloudsim.resources.FileStorage;
 
-import java.util.Collections;
 import java.util.List;
-import org.cloudbus.cloudsim.core.Simulation;
 
 /**
  * An interface to be implemented by each class that provides Datacenter
@@ -33,6 +30,11 @@ import org.cloudbus.cloudsim.core.Simulation;
  * @since CloudSim Plus 1.0
  */
 public interface Datacenter extends SimEntity {
+    /**
+     * A property that implements the Null Object Design Pattern for
+     * {@link Datacenter} objects.
+     */
+    Datacenter NULL = new DatacenterNull();
 
     /**
      * Adds a file into the resource's storage before the experiment starts. If
@@ -52,8 +54,7 @@ public interface Datacenter extends SimEntity {
      */
     <T extends Host> List<T> getHostList();
 
-    Host getHost(final int index);
-
+    Host getHost(int index);
 
     /**
      * Gets the policy to be used by the Datacenter to allocate VMs into hosts.
@@ -97,7 +98,6 @@ public interface Datacenter extends SimEntity {
      */
     Datacenter setSchedulingInterval(double schedulingInterval);
 
-
     /**
      * Gets the Datacenter characteristics.
      *
@@ -116,55 +116,7 @@ public interface Datacenter extends SimEntity {
      * Sets the list of storage devices of the Datacenter.
      *
      * @param storageList the new storage list
-<<<<<<< HEAD
      * @return
-=======
-     * @return
->>>>>>> upstream/master
      */
     Datacenter setStorageList(List<FileStorage> storageList);
-
-    /**
-     * A property that implements the Null Object Design Pattern for
-     * {@link Datacenter} objects.
-     */
-    Datacenter NULL = new Datacenter() {
-        @Override public int getId() { return -1; }
-        @Override public int compareTo(SimEntity o) { return 0; }
-        @Override public String getName() { return ""; }
-        @Override public int addFile(File file) {
-            return 0;
-        }
-        @Override public List<Host> getHostList() {
-            return Collections.emptyList();
-        }
-        @Override public VmAllocationPolicy getVmAllocationPolicy() {
-            return VmAllocationPolicy.NULL;
-        }
-        @Override public List<Vm> getVmList() {
-            return Collections.emptyList();
-        }
-        @Override public Host getHost(final int index) {
-            return Host.NULL;
-        }
-        @Override public double getSchedulingInterval() {
-            return 0;
-        }
-        @Override public Datacenter setSchedulingInterval(double schedulingInterval) { return Datacenter.NULL; }
-        @Override public DatacenterCharacteristics getCharacteristics() {
-            return DatacenterCharacteristics.NULL;
-        }
-        @Override public List<FileStorage> getStorageList() { return Collections.emptyList(); }
-        @Override public Datacenter setStorageList(List<FileStorage> storageList) { return Datacenter.NULL; }
-        @Override public boolean isStarted() { return false; }
-        @Override public Simulation getSimulation() { return Simulation.NULL; }
-        @Override public SimEntity setSimulation(Simulation simulation) { return this; }
-        @Override public void processEvent(SimEvent ev) {}
-        @Override public void schedule(int dest, double delay, int tag) {}
-        @Override public void run() {}
-        @Override public void start() {}
-        @Override public void shutdownEntity() {}
-        @Override public SimEntity setName(String newName) throws IllegalArgumentException { return this; }
-        @Override public String toString() { return "Datacenter.NULL"; }
-    };
 }

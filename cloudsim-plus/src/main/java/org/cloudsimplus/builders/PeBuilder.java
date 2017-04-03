@@ -45,8 +45,8 @@ public class PeBuilder extends Builder {
     public List<Pe> create(final double amount, final double mipsOfEachPe) {
         try {
             validateAmount(amount);
-            List<Pe> peList = new ArrayList<>();
-            Constructor cons =
+            final List<Pe> peList = new ArrayList<>();
+            final Constructor cons =
                     provisionerClass.getConstructor();
             for (int i = 0; i < amount; i++) {
                 peList.add(new PeSimple(mipsOfEachPe, (PeProvisioner) cons.newInstance()));

@@ -10,8 +10,9 @@ import static org.junit.Assert.*;
  * @author Manoel Campos da Silva Filho
  */
 public class FileTest {
-    private final String NAME = "file1.txt";
-    private final int SIZE = 100;
+    private static final String OWNER = "Manoel Campos";
+    private static final String NAME = "file1.txt";
+    private static final int SIZE = 100;
 
     private File createFile(){
         return createFile(NAME);
@@ -27,14 +28,14 @@ public class FileTest {
 
     @Test(expected = IllegalArgumentException.class)
     public void testCreateFile_nullFileParameter() {
-        File nullFile = null;
+        final File nullFile = null;
         new File(nullFile);
     }
 
     @Test()
     public void testCreateFile_FileParameter() {
-        File originalFile = new File("test1.txt", 100);
-        File copyFile = new File(originalFile);
+        final File originalFile = new File(NAME, 100);
+        final File copyFile = new File(originalFile);
         assertFalse(copyFile.isMasterCopy());
     }
 
@@ -45,12 +46,12 @@ public class FileTest {
 
     @Test(expected = IllegalArgumentException.class)
     public void testCreate_zeroSize() {
-        new File("file1", 0);
+        new File(NAME, 0);
     }
 
     @Test(expected = IllegalArgumentException.class)
     public void testCreate_negativeSize() {
-        new File("file1", -1);
+        new File(NAME, -1);
     }
 
     @Test(expected = IllegalArgumentException.class)
@@ -60,9 +61,8 @@ public class FileTest {
 
     @Test
     public void testMakeReplica() {
-        System.out.println("makeReplica");
-        File instance = createFile();
-        File replica = instance.makeReplica();
+        final File instance = createFile();
+        final File replica = instance.makeReplica();
         assertEquals(instance.getName(), replica.getName());
         assertEquals(instance.getSize(), replica.getSize());
         assertTrue(instance.isMasterCopy());
@@ -71,9 +71,8 @@ public class FileTest {
 
     @Test
     public void testMakeMasterCopy() {
-        System.out.println("makeMasterCopy");
-        File instance = createFile();
-        File replica = instance.makeMasterCopy();
+        final File instance = createFile();
+        final File replica = instance.makeMasterCopy();
         assertEquals(instance.getName(), replica.getName());
         assertEquals(instance.getSize(), replica.getSize());
         assertTrue(instance.isMasterCopy());
@@ -82,12 +81,11 @@ public class FileTest {
 
     @Test
     public void testGetAttributeSize() {
-        System.out.println("getAttributeSize");
-        File instance = createFile(SIZE);
+        final File instance = createFile(SIZE);
         int attributeSize =  DataCloudTags.PKT_SIZE + NAME.length();
         assertEquals(attributeSize, instance.getAttributeSize());
 
-        final String owner = "Manoel Campos";
+        final String owner = OWNER;
         instance.setOwnerName(owner);
         attributeSize += owner.length();
         assertEquals(attributeSize, instance.getAttributeSize());
@@ -95,26 +93,23 @@ public class FileTest {
 
     @Test
     public void testSetDatacenterToNull() {
-        System.out.println("setDatacenter");
-        File instance = createFile();
+        final File instance = createFile();
         instance.setDatacenter(null);
         assertEquals(Datacenter.NULL, instance.getDatacenter());
     }
 
     @Test
     public void testSetName() {
-        System.out.println("setName");
-        String name = "a-randomly-chosen-file-name.txt";
-        File instance = createFile();
+        final String name = "a-randomly-chosen-file-name.txt";
+        final File instance = createFile();
         instance.setName(name);
         assertEquals(name, instance.getName());
     }
 
     @Test
     public void testIsValid_String() {
-        System.out.println("isValid");
         assertTrue(File.isValid("new-file.txt"));
-        assertTrue(File.isValid("file1.txt"));
+        assertTrue(File.isValid(NAME));
         assertFalse(File.isValid(""));
 
         final String nullStr = null;
@@ -125,25 +120,22 @@ public class FileTest {
 
     @Test
     public void testIsValid_File() {
-        System.out.println("isValid");
         final File nullFile = null;
         assertFalse(File.isValid(nullFile));
     }
 
     @Test
     public void testSetOwnerName() {
-        System.out.println("setOwnerName");
-        String owner = "Manoel Campos";
-        File instance = createFile();
+        final String owner = OWNER;
+        final File instance = createFile();
         assertTrue(instance.setOwnerName(owner));
         assertEquals(owner, instance.getOwnerName());
     }
 
     @Test
     public void testSetSize() {
-        System.out.println("setSize");
         final int fileSize = 512;
-        File instance = createFile(SIZE);
+        final File instance = createFile(SIZE);
         assertEquals(SIZE, instance.getSize());
         assertTrue(instance.setSize(fileSize));
         assertEquals(fileSize, instance.getSize());
@@ -158,9 +150,8 @@ public class FileTest {
 
     @Test
     public void testSetUpdateTime() {
-        System.out.println("setUpdateTime");
         final double time = 10;
-        File instance = createFile();
+        final File instance = createFile();
         assertEquals(0, instance.getLastUpdateTime(), 0.0);
 
         assertTrue(instance.setUpdateTime(time));
@@ -169,8 +160,7 @@ public class FileTest {
 
     @Test
     public void testSetRegistrationID() {
-        System.out.println("setRegistrationID");
-        File instance = createFile();
+        final File instance = createFile();
         assertFalse(instance.isRegistered());
 
         final int id0 = 0;
@@ -190,8 +180,7 @@ public class FileTest {
 
     @Test
     public void testSetType() {
-        System.out.println("setType");
-        File instance = createFile();
+        final File instance = createFile();
 
         final int type1 = 1;
         assertTrue(instance.setType(type1));
@@ -211,8 +200,7 @@ public class FileTest {
 
     @Test
     public void testSetChecksum() {
-        System.out.println("setChecksum");
-        File instance = createFile();
+        final File instance = createFile();
 
         final int checksum1 = 1;
         assertTrue(instance.setChecksum(checksum1));
@@ -232,9 +220,8 @@ public class FileTest {
 
     @Test
     public void testSetCost() {
-        System.out.println("setCost");
         final double cost = 10;
-        File instance = createFile();
+        final File instance = createFile();
 
         assertTrue(instance.setCost(cost));
         assertEquals(cost, instance.getCost(), 0.0);
@@ -251,8 +238,7 @@ public class FileTest {
 
     @Test
     public void testSetMasterCopy() {
-        System.out.println("setMasterCopy");
-        File instance = createFile();
+        final File instance = createFile();
         assertTrue(instance.isMasterCopy());
 
         instance.setMasterCopy(false);
@@ -265,8 +251,7 @@ public class FileTest {
 
     @Test
     public void testSetReadOnly() {
-        System.out.println("setDeleted");
-        File instance = createFile();
+        final File instance = createFile();
         assertFalse(instance.isDeleted());
 
         instance.setDeleted(true);
@@ -278,9 +263,8 @@ public class FileTest {
 
     @Test
     public void testSetTransactionTime() {
-        System.out.println("setTransactionTime");
         final double time1 = 1, zero = 0;
-        File instance = createFile();
+        final File instance = createFile();
         assertEquals(zero, instance.getTransactionTime(), zero);
 
         assertTrue(instance.setTransactionTime(time1));
@@ -299,9 +283,7 @@ public class FileTest {
 
     @Test
     public void testToString() {
-        System.out.println("toString");
-        File instance = createFile(NAME);
+        final File instance = createFile(NAME);
         assertEquals(NAME, instance.toString());
     }
-
 }

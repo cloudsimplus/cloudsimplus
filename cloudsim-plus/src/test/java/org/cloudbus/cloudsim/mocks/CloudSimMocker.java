@@ -21,6 +21,16 @@ public final class CloudSimMocker {
     private final CloudSim mock;
 
     /**
+     * Instantiates a CloudSimMocker that creates a {@link CloudSim} mock
+     * object. The constructor is used just internally by the
+     * {@link #createMock(java.util.function.Consumer)} method to create a
+     * Mocker object.
+     */
+    private CloudSimMocker() {
+        this.mock = EasyMock.createMock(CloudSim.class);
+    }
+
+    /**
      * Creates a CloudSim mock object. It requires a {@link Consumer} object as
      * parameter (that can be a lambda expression) where the developer defines
      * what methods of the Mocker class will be called. Each CloudSimMocker's
@@ -60,16 +70,6 @@ public final class CloudSimMocker {
         EasyMock.expect(mocker.mock.isRunning()).andReturn(true).anyTimes();
         CloudSimMocker.replay(mocker.mock);
         return mocker.mock;
-    }
-
-    /**
-     * Instantiates a CloudSimMocker that creates a {@link CloudSim} mock
-     * object. The constructor is used just internally by the
-     * {@link #createMock(java.util.function.Consumer)} method to create a
-     * Mocker object.
-     */
-    private CloudSimMocker() {
-        this.mock = EasyMock.createMock(CloudSim.class);
     }
 
     /**

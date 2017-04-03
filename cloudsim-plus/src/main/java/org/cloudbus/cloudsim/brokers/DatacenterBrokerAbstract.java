@@ -36,7 +36,7 @@ public abstract class DatacenterBrokerAbstract extends CloudSimEntity implements
     /**
      * @see #getVmsWaitingList()
      */
-    private List<Vm> vmsWaitingList;
+    private final List<Vm> vmsWaitingList;
 
     /**
      * A map of requests for VM creation sent to Datacenters.
@@ -45,16 +45,16 @@ public abstract class DatacenterBrokerAbstract extends CloudSimEntity implements
      * If the value is null or the VM isn't in the map,
      * it wasn't requested to be created yet.
      */
-    private Map<Vm, Datacenter> vmCreationRequestsMap;
+    private final Map<Vm, Datacenter> vmCreationRequestsMap;
 
     /**
      * @see #getVmsCreatedList()
      */
-    private List<Vm> vmsCreatedList;
+    private final List<Vm> vmsCreatedList;
     /**
      * @see #getCloudletsWaitingList()
      */
-    private List<Cloudlet> cloudletsWaitingList;
+    private final List<Cloudlet> cloudletsWaitingList;
 
     /**
      * A map of requests for Cloudlet creation sent to Datacenters.
@@ -63,18 +63,18 @@ public abstract class DatacenterBrokerAbstract extends CloudSimEntity implements
      * If the value is null or the Cloudlet isn't in the map,
      * it wasn't requested to be created yet.
      */
-    private Map<Cloudlet, Datacenter> cloudletCreationRequestsMap;
+    private final Map<Cloudlet, Datacenter> cloudletCreationRequestsMap;
     private Supplier<Datacenter> datacenterSupplier;
     private Supplier<Datacenter> fallbackDatacenterSupplier;
     private Function<Cloudlet, Vm> vmMapper;
-    
+
     private Comparator<Vm> vmComparator;
     private Comparator<Cloudlet> cloudletComparator;
 
     /**
      * @see #getCloudletsFinishedList()
      */
-    private List<Cloudlet> cloudletsFinishedList;
+    private final List<Cloudlet> cloudletsFinishedList;
 
     /**
      * @see #getCloudletsCreatedList()
@@ -95,11 +95,11 @@ public abstract class DatacenterBrokerAbstract extends CloudSimEntity implements
     /**
      * @see #getDatacenterRequestedList()
      */
-    private Set<Datacenter> datacenterRequestedList;
+    private final Set<Datacenter> datacenterRequestedList;
     /**
      * @see #getVmsToDatacentersMap()
      */
-    private Map<Vm, Datacenter> vmsToDatacentersMap;
+    private final Map<Vm, Datacenter> vmsToDatacentersMap;
     private Cloudlet lastSubmittedCloudlet;
     private Vm lastSubmittedVm;
 
@@ -130,7 +130,7 @@ public abstract class DatacenterBrokerAbstract extends CloudSimEntity implements
         vmCreationRequestsMap = new HashMap<>();
         cloudletCreationRequestsMap = new HashMap<>();
         vmsToDatacentersMap = new HashMap<>();
-        
+
         setDefaultPolicies();
     }
 
@@ -167,7 +167,7 @@ public abstract class DatacenterBrokerAbstract extends CloudSimEntity implements
      */
     @Override
     public void submitVmList(List<? extends Vm> list) {
-        sortVmsIfComparatorIsSet(list);        
+        sortVmsIfComparatorIsSet(list);
         lastSubmittedVm = setIdForEntitiesWithNoDelay(list, lastSubmittedVm);
         vmsWaitingList.addAll(list);
 
@@ -187,16 +187,22 @@ public abstract class DatacenterBrokerAbstract extends CloudSimEntity implements
 
     @Override
     public void submitVm(Vm vm) {
-        List<Vm> newList = new ArrayList<>(1);
+        final List<Vm> newList = new ArrayList<>(1);
         newList.add(vm);
         submitVmList(newList);
     }
 
     @Override
     public void submitCloudlet(Cloudlet cloudlet) {
-        List<Cloudlet> newList = new ArrayList<>(1);
+        final List<Cloudlet> newList = new ArrayList<>(1);
         newList.add(cloudlet);
         submitCloudletList(newList);
+    }
+
+    @Override
+    public void submitCloudletList(List<? extends Cloudlet> list, double submissionDelay) {
+        setDelayForEntitiesWithNoDelay(list, submissionDelay);
+        submitCloudletList(list);
     }
 
     /**
@@ -239,7 +245,7 @@ public abstract class DatacenterBrokerAbstract extends CloudSimEntity implements
     }
 
     private void setSimulationForCloudletUtilizationModels(List<? extends Cloudlet> list) {
-        for(Cloudlet c: list){
+        for(final Cloudlet c: list){
             setSimulationForUtilizationModelIfNotSet(c.getUtilizationModelCpu());
             setSimulationForUtilizationModelIfNotSet(c.getUtilizationModelBw());
             setSimulationForUtilizationModelIfNotSet(c.getUtilizationModelRam());
@@ -250,12 +256,6 @@ public abstract class DatacenterBrokerAbstract extends CloudSimEntity implements
         if(Objects.isNull(cloudletUtilizationModel.getSimulation()) || cloudletUtilizationModel.getSimulation() == Simulation.NULL){
             cloudletUtilizationModel.setSimulation(getSimulation());
         }
-    }
-
-    @Override
-    public void submitCloudletList(List<? extends Cloudlet> list, double submissionDelay) {
-        setDelayForEntitiesWithNoDelay(list, submissionDelay);
-        submitCloudletList(list);
     }
 
     /**
@@ -286,7 +286,7 @@ public abstract class DatacenterBrokerAbstract extends CloudSimEntity implements
         }
 
         int id = lastSubmittedEntity.getId();
-        for (ChangeableId e : list) {
+        for (final ChangeableId e : list) {
             if(e.getId() < 0) {
                 e.setId(++id);
             }
@@ -334,7 +334,7 @@ public abstract class DatacenterBrokerAbstract extends CloudSimEntity implements
             return;
         }
 
-        VerticalVmScaling scaling = (VerticalVmScaling) ev.getData();
+        final VerticalVmScaling scaling = (VerticalVmScaling) ev.getData();
         getSimulation().sendNow(
             ev.getSource(), scaling.getVm().getHost().getDatacenter().getId(),
             CloudSimTags.VM_VERTICAL_SCALING, scaling);
@@ -366,7 +366,7 @@ public abstract class DatacenterBrokerAbstract extends CloudSimEntity implements
      * @post $none
      */
     protected boolean processVmCreateResponseFromDatacenter(SimEvent ev) {
-        Vm vm = (Vm) ev.getData();
+        final Vm vm = (Vm) ev.getData();
         boolean vmCreated = false;
         vmCreationAcks++;
 
@@ -403,15 +403,16 @@ public abstract class DatacenterBrokerAbstract extends CloudSimEntity implements
             return;
         }
 
-        /*If it gets here, it means that all datacenters were already queried
-        * and not all VMs could be created, but some of them could.*/
-        if (!getVmsCreatedList().isEmpty()) {
-            requestDatacentersToCreateWaitingCloudlets();
-        } else {
+        /* If it gets here, it means that all datacenters were already queried
+         * and not all VMs could be created, but some of them could. */
+        if (getVmsCreatedList().isEmpty()) {
             Log.printFormattedLine("%.2f: %s: %s", getSimulation().clock(), getName(),
                 "none of the required VMs could be created. Aborting");
             finishExecution();
+            return;
         }
+
+        requestDatacentersToCreateWaitingCloudlets();
     }
 
     /**
@@ -424,7 +425,7 @@ public abstract class DatacenterBrokerAbstract extends CloudSimEntity implements
      * to trying creating the VM at another Datacenter.
      */
     private void clearVmCreationRequestsMapToTryNextDatacenter() {
-        for (Vm vm : vmsWaitingList) {
+        for (final Vm vm : vmsWaitingList) {
             vmCreationRequestsMap.remove(vm);
         }
     }
@@ -468,7 +469,7 @@ public abstract class DatacenterBrokerAbstract extends CloudSimEntity implements
      * @post $none
      */
     protected void processCloudletReturn(SimEvent ev) {
-        Cloudlet cloudlet = (Cloudlet) ev.getData();
+        final Cloudlet cloudlet = (Cloudlet) ev.getData();
         getCloudletsFinishedList().add(cloudlet);
         Log.printFormattedLine("%.2f: %s: %s %d received",
             getSimulation().clock(), getName(), cloudlet.getClass().getSimpleName(), cloudlet.getId());
@@ -490,7 +491,7 @@ public abstract class DatacenterBrokerAbstract extends CloudSimEntity implements
 
     @Override
     public boolean hasMoreCloudletsToBeExecuted() {
-        return getCloudletsWaitingList().size() > 0 && cloudletsCreated == 0;
+        return !getCloudletsWaitingList().isEmpty() && cloudletsCreated == 0;
     }
 
     /**
@@ -534,7 +535,7 @@ public abstract class DatacenterBrokerAbstract extends CloudSimEntity implements
      */
     protected void requestDatacenterToCreateWaitingVms(Datacenter datacenter) {
         int requestedVms = 0;
-        for (Vm vm : getVmsWaitingList()) {
+        for (final Vm vm : getVmsWaitingList()) {
             if (!vmsToDatacentersMap.containsKey(vm) && !vmCreationRequestsMap.containsKey(vm)) {
                 Log.printFormattedLine(
                     "%.2f: %s: Trying to Create VM #%d in %s",
@@ -564,8 +565,8 @@ public abstract class DatacenterBrokerAbstract extends CloudSimEntity implements
      * @see #submitCloudletList(java.util.List)
      */
     protected void requestDatacentersToCreateWaitingCloudlets() {
-        List<Cloudlet> successfullySubmitted = new ArrayList<>();
-        for (Cloudlet cloudlet : getCloudletsWaitingList()) {
+        final List<Cloudlet> successfullySubmitted = new ArrayList<>();
+        for (final Cloudlet cloudlet : getCloudletsWaitingList()) {
             if (cloudletCreationRequestsMap.containsKey(cloudlet)) {
                 continue;
             }
@@ -601,7 +602,7 @@ public abstract class DatacenterBrokerAbstract extends CloudSimEntity implements
      * @post $none
      */
     protected void destroyVms() {
-        for (Vm vm : getVmsCreatedList()) {
+        for (final Vm vm : getVmsCreatedList()) {
             Log.printFormattedLine("%.2f: %s: Destroying VM #%d", getSimulation().clock(), getName(), vm.getId());
             sendNow(getVmDatacenter(vm).getId(), CloudSimTags.VM_DESTROY, vm);
         }
@@ -774,5 +775,5 @@ public abstract class DatacenterBrokerAbstract extends CloudSimEntity implements
     public void setCloudletComparator(Comparator<Cloudlet> comparator) {
         this.cloudletComparator = comparator;
     }
-    
+
 }

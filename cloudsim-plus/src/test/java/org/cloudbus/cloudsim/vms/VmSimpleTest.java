@@ -54,8 +54,8 @@ public class VmSimpleTest {
     @Before
     public void setUp() throws Exception {
         vmScheduler = new CloudletSchedulerTimeShared();
-        CloudSim cloudsim = CloudSimMocker.createMock(mocker -> mocker.clock(0));
-        DatacenterBroker broker = Mocks.createMockBroker(cloudsim);
+        final CloudSim cloudsim = CloudSimMocker.createMock(mocker -> mocker.clock(0));
+        final DatacenterBroker broker = Mocks.createMockBroker(cloudsim);
         vm = VmSimpleTest.createVm(vmScheduler);
         vm.setBroker(broker);
     }
@@ -146,9 +146,9 @@ public class VmSimpleTest {
             final long ram, final long bw, final long storage,
             final CloudletScheduler scheduler)
     {
-        CloudSim cloudsim = CloudSimMocker.createMock(mocker -> mocker.clock(0).anyTimes());
-        DatacenterBroker broker = Mocks.createMockBroker(cloudsim);
-        VmSimple vm = new VmSimple(vmId, mips, numberOfPes);
+        final CloudSim cloudsim = CloudSimMocker.createMock(mocker -> mocker.clock(0).anyTimes());
+        final DatacenterBroker broker = Mocks.createMockBroker(cloudsim);
+        final VmSimple vm = new VmSimple(vmId, mips, numberOfPes);
         vm.setRam(ram).setBw(bw)
                 .setSize(storage)
                 .setCloudletScheduler(scheduler)
@@ -167,7 +167,7 @@ public class VmSimpleTest {
      */
     public static VmSimple createVmWithSpecificNumberOfPEsForSpecificUser(
         final int vmId, final DatacenterBroker broker, final int numberOfPes) {
-        VmSimple vm = createVm(vmId, MIPS, numberOfPes, RAM, BW, SIZE, CloudletScheduler.NULL);
+        final VmSimple vm = createVm(vmId, MIPS, numberOfPes, RAM, BW, SIZE, CloudletScheduler.NULL);
         vm.setBroker(broker);
         return vm;
     }
@@ -196,9 +196,8 @@ public class VmSimpleTest {
 
     @Test
     public void testAddStateHistoryEntry_addEntryToEmptyList(){
-        double time=0, allocatedMips=1000, requestedMips=100;
-        boolean inMigration = false;
-        assertTrue(vm.getStateHistory().isEmpty());
+        final double time=0, allocatedMips=1000, requestedMips=100;
+        final boolean inMigration = false;
         VmStateHistoryEntry entry =
                 new VmStateHistoryEntry(time, allocatedMips, requestedMips, inMigration);
         vm.addStateHistoryEntry(entry);
@@ -207,16 +206,15 @@ public class VmSimpleTest {
 
     @Test
     public void testAddStateHistoryEntry_checkAddedEntryValues(){
-        VmStateHistoryEntry entry = new VmStateHistoryEntry(0, 1000, 100, false);
+        final VmStateHistoryEntry entry = new VmStateHistoryEntry(0, 1000, 100, false);
         vm.addStateHistoryEntry(entry);
         assertEquals(entry, vm.getStateHistory().get(vm.getStateHistory().size()-1));
     }
 
     @Test
     public void testAddStateHistoryEntry_tryToAddEntryWithSameTime(){
-        VmStateHistoryEntry entry = new VmStateHistoryEntry(0, 1000, 100, false);
+        final VmStateHistoryEntry entry = new VmStateHistoryEntry(0, 1000, 100, false);
         vm.addStateHistoryEntry(entry);
-        assertEquals(1, vm.getStateHistory().size());
         vm.addStateHistoryEntry(entry);
         assertEquals(1, vm.getStateHistory().size());
     }
@@ -255,7 +253,7 @@ public class VmSimpleTest {
 
     @Test
     public void testRemoveOnHostDeallocationListener() {
-        EventListener<VmHostEventInfo> listener = (info) -> {};
+        final EventListener<VmHostEventInfo> listener = (info) -> {};
         vm.addOnHostDeallocationListener(listener);
         assertTrue(vm.removeOnHostDeallocationListener(listener));
     }
@@ -267,7 +265,7 @@ public class VmSimpleTest {
 
     @Test
     public void testRemoveOnVmCreationFailureListener() {
-        EventListener<VmDatacenterEventInfo> listener = (info) -> {};
+        final EventListener<VmDatacenterEventInfo> listener = (info) -> {};
         vm.addOnCreationFailureListener(listener);
         assertTrue(vm.removeOnCreationFailureListener(listener));
     }
@@ -279,7 +277,7 @@ public class VmSimpleTest {
 
     @Test
     public void testRemoveOnUpdateVmProcessingListener() {
-        EventListener<VmHostEventInfo> listener = (info) -> {};
+        final EventListener<VmHostEventInfo> listener = (info) -> {};
         vm.addOnUpdateProcessingListener(listener);
         assertTrue(vm.removeOnUpdateProcessingListener(listener));
     }
@@ -311,15 +309,13 @@ public class VmSimpleTest {
 
     @Test
     public void testGetHost() {
-        assertEquals(Host.NULL, vm.getHost());
-        HostSimple host = HostSimpleTest.createHostSimple(0, 1);
+        final HostSimple host = HostSimpleTest.createHostSimple(0, 1);
         vm.setHost(host);
         assertEquals(host, vm.getHost());
     }
 
     @Test
     public void testIsInMigration() {
-        assertFalse(vm.isInMigration());
         vm.setInMigration(true);
         assertTrue(vm.isInMigration());
     }
@@ -341,34 +337,32 @@ public class VmSimpleTest {
 
     @Test
     public void testUpdateVmProcessing() {
-        assertEquals(Double.MAX_VALUE, vm.updateProcessing(0, null), 0);
-        List<Double> mipsShare1 = new ArrayList<>();
+        final List<Double> mipsShare1 = new ArrayList<>(1);
+        final List<Double> mipsShare2 = new ArrayList<>(1);
         mipsShare1.add(1.0);
-        List<Double> mipsShare2 = new ArrayList<>();
         mipsShare2.add(1.0);
         assertEquals(vmScheduler.updateVmProcessing(0, mipsShare1), vm.updateProcessing(0, mipsShare2), 0);
     }
 
     @Test
     public void testIsCreated() {
-        assertFalse(vm.isCreated());
         vm.setCreated(true);
         assertTrue(vm.isCreated());
     }
 
     @Test
     public void testGetCurrentRequestedMips_WhenVmWasCreatedInsideHost() {
-        List<Double> expectedCurrentMips = new ArrayList<>();
+        final List<Double> expectedCurrentMips = new ArrayList<>();
         expectedCurrentMips.add(MIPS / 2);
         expectedCurrentMips.add(MIPS / 2);
 
-        CloudletScheduler  cloudletScheduler = createMock(CloudletScheduler.class);
+        final CloudletScheduler  cloudletScheduler = createMock(CloudletScheduler.class);
         cloudletScheduler.setVm(EasyMock.anyObject());
         EasyMock.expectLastCall().once();
         expect(cloudletScheduler.getCurrentRequestedMips()).andReturn(expectedCurrentMips);
         replay(cloudletScheduler);
 
-        Vm vm = VmSimpleTest.createVm(cloudletScheduler);
+        final Vm vm = VmSimpleTest.createVm(cloudletScheduler);
         vm.setCreated(true);
         assertEquals(expectedCurrentMips, vm.getCurrentRequestedMips());
 
@@ -377,80 +371,79 @@ public class VmSimpleTest {
 
     @Test
     public void testGetCurrentRequestedBw_WhenVmWasCreatedInsideHost() {
-        final double currentBwUtilizationPercentage = 0.5;
+        final double currentBwUsagePercent = 0.5;
 
-        CloudletScheduler cloudletScheduler = createMock(CloudletScheduler.class);
+        final CloudletScheduler cloudletScheduler = createMock(CloudletScheduler.class);
         cloudletScheduler.setVm(EasyMock.anyObject());
         EasyMock.expectLastCall().once();
         expect(cloudletScheduler.getCurrentRequestedBwPercentUtilization())
-                .andReturn(currentBwUtilizationPercentage);
+                .andReturn(currentBwUsagePercent);
         replay(cloudletScheduler);
 
-        Vm vm0 = VmSimpleTest.createVm(cloudletScheduler);
+        final Vm vm0 = VmSimpleTest.createVm(cloudletScheduler);
         vm0.setCreated(true);
 
-        final long expectedCurrentBwUtilization = (long)(currentBwUtilizationPercentage*BW);
+        final long expectedCurrentBwUtilization = (long)(currentBwUsagePercent*BW);
         assertEquals(expectedCurrentBwUtilization, vm0.getCurrentRequestedBw());
         verify(cloudletScheduler);
     }
 
     @Test
     public void testGetCurrentRequestedBw_WhenVmWasNotCreatedInsideHost() {
-        Vm vm0 = VmSimpleTest.createVm(CloudletScheduler.NULL);
+        final Vm vm0 = VmSimpleTest.createVm(CloudletScheduler.NULL);
         vm0.setCreated(false);
-        final long expectedCurrentBwUtilization = BW;
-        assertEquals(expectedCurrentBwUtilization, vm0.getCurrentRequestedBw());
+        final long expectedCurrentBwUsage = BW;
+        assertEquals(expectedCurrentBwUsage, vm0.getCurrentRequestedBw());
     }
 
     @Test
     public void testGetCurrentRequestedRam_WhenVmWasCreatedInsideHost() {
-        final double currentRamUtilizationPercentage = 0.5;
-        final long expectedCurrentRamUtilization = (long)(currentRamUtilizationPercentage*RAM);
+        final double currentRamUsagePercent = 0.5;
+        final long expectedCurrentRamUsage = (long)(currentRamUsagePercent*RAM);
 
-        CloudletScheduler  cloudletScheduler = createMock(CloudletScheduler.class);
+        final CloudletScheduler  cloudletScheduler = createMock(CloudletScheduler.class);
         cloudletScheduler.setVm(EasyMock.anyObject());
         EasyMock.expectLastCall().once();
         expect(cloudletScheduler.getCurrentRequestedRamPercentUtilization())
-                .andReturn(currentRamUtilizationPercentage);
+                .andReturn(currentRamUsagePercent);
         replay(cloudletScheduler);
 
-        Vm vm0 = VmSimpleTest.createVm(cloudletScheduler);
+        final Vm vm0 = VmSimpleTest.createVm(cloudletScheduler);
         vm0.setCreated(true);
-        assertEquals(expectedCurrentRamUtilization, vm0.getCurrentRequestedRam());
+        assertEquals(expectedCurrentRamUsage, vm0.getCurrentRequestedRam());
         verify(cloudletScheduler);
     }
 
     @Test
     public void testGetCurrentRequestedRam_WhenVmWasNotCreatedInsideHost() {
-        Vm vm0 = VmSimpleTest.createVm(CloudletScheduler.NULL);
+        final Vm vm0 = VmSimpleTest.createVm(CloudletScheduler.NULL);
         vm0.setCreated(false);
-        final long expectedCurrentRamUtilization = RAM;
-        assertEquals(expectedCurrentRamUtilization, vm0.getCurrentRequestedRam());
+        final long expectedCurrentRamUsage = RAM;
+        assertEquals(expectedCurrentRamUsage, vm0.getCurrentRequestedRam());
     }
 
     @Test
     public void testGetCurrentRequestedMips_ForTimeSharedScheduler_WhenVmWasCreatedInsideHost() {
-        CloudletScheduler cloudletScheduler = new CloudletSchedulerTimeShared();
-        Vm vm = VmSimpleTest.createVm(cloudletScheduler);
+        final CloudletScheduler cloudletScheduler = new CloudletSchedulerTimeShared();
+        final Vm vm = VmSimpleTest.createVm(cloudletScheduler);
         vm.setCreated(true);
 
         assertTrue(vm.getCurrentRequestedMips().isEmpty());
     }
     @Test
     public void testGetCurrentRequestedTotalMips() {
-        List<Double> currentMips = new ArrayList<>();
+        final List<Double> currentMips = new ArrayList<>();
         currentMips.add(MIPS);
         currentMips.add(MIPS);
 
-        CloudletSchedulerTimeShared cloudletScheduler = createMock(CloudletSchedulerTimeShared.class);
+        final CloudletSchedulerTimeShared cloudletScheduler = createMock(CloudletSchedulerTimeShared.class);
         cloudletScheduler.setVm(EasyMock.anyObject());
         EasyMock.expectLastCall().once();
         expect(cloudletScheduler.getCurrentRequestedMips()).andReturn(currentMips);
         replay(cloudletScheduler);
 
-        Vm vm = VmSimpleTest.createVm(cloudletScheduler);
+        final Vm vm = VmSimpleTest.createVm(cloudletScheduler);
         assertEquals(MIPS * 2, vm.getCurrentRequestedTotalMips(), 0);
         verify(cloudletScheduler);
     }
-
 }

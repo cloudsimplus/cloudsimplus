@@ -1,9 +1,9 @@
 package org.cloudbus.cloudsim.cloudlets.network;
 
-import org.cloudbus.cloudsim.cloudlets.network.CloudletSendTask;
-import org.junit.Test;
-import static org.junit.Assert.*;
 import org.junit.Before;
+import org.junit.Test;
+
+import static org.junit.Assert.assertEquals;
 
 /**
  *
@@ -11,7 +11,6 @@ import org.junit.Before;
  */
 public class CloudletDataTaskTest {
     private static final int ID = 1;
-    private static final int MEMORY = 5;
     private CloudletSendTask instance;
 
     @Before
@@ -21,15 +20,14 @@ public class CloudletDataTaskTest {
 
     @Test
     public void testSetId() {
-        int id = 90;
-        assertEquals(ID, instance.getId());
+        final int id = 90;
         instance.setId(id);
         assertEquals(id, instance.getId());
     }
 
     @Test
     public void testSetMemory() {
-        long memory = 105L;
+        final long memory = 105L;
         instance.setMemory(memory);
         assertEquals(memory, instance.getMemory());
     }

@@ -40,6 +40,7 @@ import org.cloudbus.cloudsim.resources.FileStorage;
  *
  * @author Anton Beloglazov
  * @since CloudSim Toolkit 2.0
+ * @todo There are lots of duplicated code from PowerDatacenter
  */
 public class PowerDatacenterNonPowerAware extends PowerDatacenter {
     /**
@@ -91,103 +92,148 @@ public class PowerDatacenterNonPowerAware extends PowerDatacenter {
             schedule(getId(), getSchedulingInterval(), CloudSimTags.VM_UPDATE_CLOUDLET_PROCESSING_EVENT);
             return;
         }
-        double currentTime = getSimulation().clock();
-        double timeframePower = 0.0;
+
+        final double currentTime = getSimulation().clock();
 
         if (currentTime > getLastProcessTime()) {
-            double timeDiff = currentTime - getLastProcessTime();
-            double minTime = Double.MAX_VALUE;
-
             Log.printLine("\n");
-
-            for (PowerHostSimple host : this.<PowerHostSimple>getHostList()) {
-                Log.printFormattedLine("%.2f: Host #%d", getSimulation().clock(), host.getId());
-
-                double hostPower = 0.0;
-
-                try {
-                    hostPower = host.getMaxPower() * timeDiff;
-                    timeframePower += hostPower;
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-
-                Log.printFormattedLine(
-                        "%.2f: Host #%d utilization is %.2f%%",
-                        getSimulation().clock(),
-                        host.getId(),
-                        host.getUtilizationOfCpu() * 100);
-                Log.printFormattedLine(
-                        "%.2f: Host #%d energy is %.2f W*sec",
-                        getSimulation().clock(),
-                        host.getId(),
-                        hostPower);
-            }
-
-            Log.printFormattedLine("\n%.2f: Consumed energy is %.2f W*sec\n", getSimulation().clock(), timeframePower);
+            final double dcPowerUsageForTimeSpan = getDatacenterPowerUsageForTimeSpan();
+            Log.printFormattedLine("\n%.2f: Consumed energy is %.2f W*sec\n", getSimulation().clock(), dcPowerUsageForTimeSpan);
 
             Log.printLine("\n\n--------------------------------------------------------------\n\n");
+            final double nextCloudletFinishTime = getNextCloudletFinishTime(currentTime);
 
-            for (PowerHostSimple host : this.<PowerHostSimple>getHostList()) {
-                Log.printFormattedLine("\n%.2f: Host #%d", getSimulation().clock(), host.getId());
-
-                double time = host.updateProcessing(currentTime); // inform VMs to update
-                // processing
-                if (time < minTime) {
-                    minTime = time;
-                }
-            }
-
-            setPower(getPower() + timeframePower);
+            setPower(getPower() + dcPowerUsageForTimeSpan);
 
             checkCloudletsCompletionForAllHosts();
 
             removeFinishedVmsFromEveryHost();
             Log.printLine();
 
-            if (isMigrationsEnabled()) {
-                Map<Vm, Host> migrationMap
-                        = getVmAllocationPolicy().optimizeAllocation(getVmList());
-
-                for (Entry<Vm, Host> entry : migrationMap.entrySet()) {
-                    Host targetHost = entry.getValue();
-                    Host oldHost = entry.getKey().getHost();
-
-                    if (oldHost == Host.NULL) {
-                        Log.printFormattedLine(
-                            "%.2f: Migration of VM #%d to Host #%d is started",
-                            getSimulation().clock(),
-                            entry.getKey().getId(),
-                            targetHost.getId());
-                    } else {
-                        Log.printFormattedLine(
-                            "%.2f: Migration of VM #%d from Host #%d to Host #%d is started",
-                            getSimulation().clock(),
-                            entry.getKey().getId(),
-                            oldHost.getId(),
-                            targetHost.getId());
-                    }
-
-                    targetHost.addMigratingInVm(entry.getKey());
-                    incrementMigrationCount();
-
-                    //VM migration delay = RAM / bandwidth + C (C = 10 sec)
-                    send(
-                        getId(),
-                        entry.getKey().getRam().getCapacity() / ((double) entry.getKey().getBw().getCapacity() / 8000) + 10,
-                        CloudSimTags.VM_MIGRATE, entry);
-                }
-            }
-
-            // schedules an event to the next time
-            if (minTime != Double.MAX_VALUE) {
-                getSimulation().cancelAll(getId(), new PredicateType(CloudSimTags.VM_UPDATE_CLOUDLET_PROCESSING_EVENT));
-                // getSimulation().cancelAll(getId(), CloudSim.SIM_ANY);
-                send(getId(), getSchedulingInterval(), CloudSimTags.VM_UPDATE_CLOUDLET_PROCESSING_EVENT);
-            }
-
+            migrateVmsOutIfMigrationIsEnabled();
+            scheduleUpdateOfCloudletsProcessingForFutureTime(nextCloudletFinishTime);
             setLastProcessTime(currentTime);
         }
+    }
+
+    /**
+     * Schedules the next update of Cloudlets in this Host for a future time.
+     *
+     * @param nextCloudletFinishTime the time to schedule the update of Cloudlets in this Host, that is the expected
+     *                               time of the next finishing Cloudlet among all existing Hosts.
+     * @see #getNextCloudletFinishTime(double)
+     */
+    private void scheduleUpdateOfCloudletsProcessingForFutureTime(double nextCloudletFinishTime) {
+        if (nextCloudletFinishTime != Double.MAX_VALUE) {
+            getSimulation().cancelAll(getId(), new PredicateType(CloudSimTags.VM_UPDATE_CLOUDLET_PROCESSING_EVENT));
+            // getSimulation().cancelAll(getId(), CloudSim.SIM_ANY);
+            send(getId(), getSchedulingInterval(), CloudSimTags.VM_UPDATE_CLOUDLET_PROCESSING_EVENT);
+        }
+    }
+
+    /**
+     * Performs requested migration of VMs to another Hosts if migration from this Host is enabled.
+     */
+    private void migrateVmsOutIfMigrationIsEnabled() {
+        if (isMigrationsEnabled()) {
+            final Map<Vm, Host> migrationMap
+                    = getVmAllocationPolicy().optimizeAllocation(getVmList());
+
+            for (final Entry<Vm, Host> entry : migrationMap.entrySet()) {
+                final Host targetHost = entry.getValue();
+                final Host oldHost = entry.getKey().getHost();
+
+                if (oldHost.equals(Host.NULL)) {
+                    Log.printFormattedLine(
+                        "%.2f: Migration of VM #%d to Host #%d is started",
+                        getSimulation().clock(),
+                        entry.getKey().getId(),
+                        targetHost.getId());
+                } else {
+                    Log.printFormattedLine(
+                        "%.2f: Migration of VM #%d from Host #%d to Host #%d is started",
+                        getSimulation().clock(),
+                        entry.getKey().getId(),
+                        oldHost.getId(),
+                        targetHost.getId());
+                }
+
+                targetHost.addMigratingInVm(entry.getKey());
+                incrementMigrationCount();
+
+                //VM migration delay = RAM / bandwidth + C (C = 10 sec)
+                send(
+                    getId(),
+                    entry.getKey().getRam().getCapacity() / ((double) entry.getKey().getBw().getCapacity() / 8000) + 10,
+                    CloudSimTags.VM_MIGRATE, entry);
+            }
+        }
+    }
+
+    /**
+     * Gets the expected finish time of the next Cloudlet to finish in any of the existing Hosts.
+     *
+     * @param currentTime the current simulation time
+     * @return the expected finish time of the next finishing Cloudlet or {@link Double#MAX_VALUE} if not
+     * Cloudlet is running.
+     */
+    private double getNextCloudletFinishTime(double currentTime) {
+        double minTime = Double.MAX_VALUE;
+        for (final PowerHostSimple host : this.<PowerHostSimple>getHostList()) {
+            Log.printFormattedLine("\n%.2f: Host #%d", getSimulation().clock(), host.getId());
+            final double nextCloudletFinishTime = host.updateProcessing(currentTime);
+            minTime = Math.min(nextCloudletFinishTime, minTime);
+        }
+
+        return minTime;
+    }
+
+    /**
+     * Gets the total power consumed by all Hosts of the Datacenter since the last time the processing
+     * of Cloudlets in this Host was updated.
+     *
+     * @return the total power consumed by all Hosts in the elapsed time span
+     */
+    private double getDatacenterPowerUsageForTimeSpan() {
+        final double timeSpan = getSimulation().clock() - getLastProcessTime();
+        double datacenterPowerUsageForTimeSpan = 0;
+        for(PowerHostSimple host : this.<PowerHostSimple>getHostList()) {
+            Log.printFormattedLine("%.2f: Host #%d", getSimulation().clock(), host.getId());
+
+            final double hostPower = getHostConsumedPowerForTimeSpan(host, timeSpan);
+            datacenterPowerUsageForTimeSpan += hostPower;
+
+            Log.printFormattedLine(
+                    "%.2f: Host #%d utilization is %.2f%%",
+                    getSimulation().clock(),
+                    host.getId(),
+                    host.getUtilizationOfCpu() * 100);
+            Log.printFormattedLine(
+                    "%.2f: Host #%d energy is %.2f W*sec",
+                    getSimulation().clock(),
+                    host.getId(),
+                    hostPower);
+        }
+
+        return datacenterPowerUsageForTimeSpan;
+    }
+
+    /**
+     * Gets the power consumed by a given Host for a specific time span.
+     *
+     * @param host the Host to get the consumed power for the time span
+     * @param timeSpan the time elapsed since the last update of cloudlets processing
+     * @return
+     */
+    private double getHostConsumedPowerForTimeSpan(PowerHostSimple host, final double timeSpan) {
+        double hostPower;
+
+        try {
+            hostPower = host.getMaxPower() * timeSpan;
+        } catch (RuntimeException e) {
+            hostPower = 0;
+        }
+        return hostPower;
     }
 
 }

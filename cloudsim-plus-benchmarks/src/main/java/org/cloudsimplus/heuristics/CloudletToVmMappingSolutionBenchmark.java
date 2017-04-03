@@ -61,7 +61,7 @@ public class CloudletToVmMappingSolutionBenchmark {
     }
 
     private CloudletToVmMappingSolution createInstance() {
-        CloudletToVmMappingSolution result = new CloudletToVmMappingSolution(heuristic);
+        final CloudletToVmMappingSolution result = new CloudletToVmMappingSolution(heuristic);
         UtilizationModel um = UtilizationModel.NULL;
         IntStream.range(0, 100).forEach(i
                 -> result.bindCloudletToVm(
@@ -78,7 +78,7 @@ public class CloudletToVmMappingSolutionBenchmark {
     }
 
     @Benchmark
-    public double testGetCost_FirstCall() {
+    public double testGetCostWhenFirstCall() {
         return instance1.getCost(true);
     }
 
@@ -92,7 +92,7 @@ public class CloudletToVmMappingSolutionBenchmark {
      * @return the cost value
      */
     @Benchmark
-    public double testGetCost_SecondCall() {
+    public double testGetCostWhenSecondCall() {
         return instance2.getCost();
     }
 }

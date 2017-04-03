@@ -54,6 +54,12 @@ import java.util.function.Supplier;
 public interface HorizontalVmScaling extends VmScaling {
 
     /**
+     * An attribute that implements the Null Object Design Pattern for {@link HorizontalVmScaling}
+     * objects.
+     */
+    HorizontalVmScaling NULL = new HorizontalVmScalingNull();
+
+    /**
      * Gets a {@link Supplier} that will be used to create VMs when
      * the Load Balancer detects that the current Broker's VMs are overloaded.
      *
@@ -130,20 +136,4 @@ public interface HorizontalVmScaling extends VmScaling {
      */
     @Override
     VmScaling setUnderloadPredicate(Predicate<Vm> predicate);
-
-    /**
-     * An attribute that implements the Null Object Design Pattern for {@link HorizontalVmScaling}
-     * objects.
-     */
-    HorizontalVmScaling NULL = new HorizontalVmScaling() {
-        @Override public Supplier<Vm> getVmSupplier() { return () -> Vm.NULL; }
-        @Override public HorizontalVmScaling setVmSupplier(Supplier<Vm> supplier) { return this; }
-        @Override public boolean requestScalingIfPredicateMatch(double time) { return false; }
-        @Override public Vm getVm() { return Vm.NULL; }
-        @Override public VmScaling setVm(Vm vm) { return this; }
-        @Override public Predicate<Vm> getOverloadPredicate() { return vm -> false; }
-        @Override public VmScaling setOverloadPredicate(Predicate<Vm> predicate) { return this; }
-        @Override public Predicate<Vm> getUnderloadPredicate() { return FALSE_PREDICATE; }
-        @Override public VmScaling setUnderloadPredicate(Predicate<Vm> predicate) { return this; }
-    };
 }

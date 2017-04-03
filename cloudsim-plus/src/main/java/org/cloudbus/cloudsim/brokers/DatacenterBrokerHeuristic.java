@@ -76,7 +76,7 @@ public class DatacenterBrokerHeuristic extends DatacenterBrokerSimple {
          * Defines a fallback vm in the case the heuristic solution
          * didn't assign a Vm to the given cloudlet.
          */
-        Vm fallbackVm = super.selectVmForWaitingCloudlet(cloudlet);
+        final Vm fallbackVm = super.selectVmForWaitingCloudlet(cloudlet);
 
         //If user didn't bind this cloudlet and it has not been executed yet,
         //gets the Vm for the Cloudlet from the heuristic solution.

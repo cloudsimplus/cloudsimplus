@@ -7,13 +7,12 @@
  */
 package org.cloudbus.cloudsim.allocationpolicies.power;
 
+import org.cloudbus.cloudsim.hosts.Host;
+import org.cloudbus.cloudsim.vms.Vm;
+
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
-import org.cloudbus.cloudsim.hosts.Host;
-
-import org.cloudbus.cloudsim.vms.Vm;
-import org.cloudsimplus.autoscaling.VerticalVmScaling;
 
 /**
  * A simple VM allocation policy that does <b>not</b> perform any optimization

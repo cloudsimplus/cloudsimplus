@@ -38,6 +38,11 @@ public final class Conversion {
     public static final double GIBABYTE = MEGABYTE * MEGABYTE;
 
     /**
+     * A private constructor to avoid class instantiation.
+     */
+    private Conversion(){}
+
+    /**
      * Converts a value in bytes to MegaBytes (MB)
      * @param bytes the value in bytes
      * @return the value in MegaBytes (MB)
@@ -66,8 +71,4 @@ public final class Conversion {
         return bytes * 8;
     }
 
-    /**
-     * A private constructor to avoid class instantiation.
-     */
-    private Conversion(){}
 }

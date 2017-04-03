@@ -8,17 +8,17 @@
 
 package org.cloudbus.cloudsim.lists;
 
-import java.util.ArrayList;
-import java.util.List;
-import org.cloudbus.cloudsim.vms.Vm;
-
-import org.cloudbus.cloudsim.vms.VmSimple;
-import org.cloudbus.cloudsim.vms.VmSimpleTest;
 import org.cloudbus.cloudsim.brokers.DatacenterBroker;
 import org.cloudbus.cloudsim.mocks.Mocks;
+import org.cloudbus.cloudsim.vms.Vm;
+import org.cloudbus.cloudsim.vms.VmSimple;
+import org.cloudbus.cloudsim.vms.VmSimpleTest;
 import org.junit.Before;
 import org.junit.Test;
-import static org.junit.Assert.assertNull;
+
+import java.util.ArrayList;
+import java.util.List;
+
 import static org.junit.Assert.assertSame;
 
 /**
@@ -36,9 +36,9 @@ public class VmListTest {
 
     @Test
     public void testGetById() {
-        Vm vm0 = VmSimpleTest.createVm(0, 1);
-        Vm vm1 = VmSimpleTest.createVm(1, 2);
-        Vm vm2 = VmSimpleTest.createVm(2, 2);
+        final Vm vm0 = VmSimpleTest.createVm(0, 1);
+        final Vm vm1 = VmSimpleTest.createVm(1, 2);
+        final Vm vm2 = VmSimpleTest.createVm(2, 2);
 
         vmList.add(vm0);
         vmList.add(vm1);
@@ -58,9 +58,9 @@ public class VmListTest {
 
     @Test
     public void testGetById_NotFoundVm() {
-        Vm vm0 = VmSimpleTest.createVm(0, 1);
-        Vm vm1 = VmSimpleTest.createVm(1, 2);
-        Vm vm2 = VmSimpleTest.createVm(2, 2);
+        final Vm vm0 = VmSimpleTest.createVm(0, 1);
+        final Vm vm1 = VmSimpleTest.createVm(1, 2);
+        final Vm vm2 = VmSimpleTest.createVm(2, 2);
 
         vmList.add(vm0);
         vmList.add(vm1);
@@ -79,12 +79,12 @@ public class VmListTest {
         assertSame(Vm.NULL, VmList.getByIdAndUserId(vmList, 1, 1));
 
         final DatacenterBroker broker0 = Mocks.createMockBroker(0, 4);
-        VmSimple vm1 = VmSimpleTest.createVmWithSpecificNumberOfPEsForSpecificUser(0, broker0, 1);
-        VmSimple vm2 = VmSimpleTest.createVmWithSpecificNumberOfPEsForSpecificUser(1, broker0, 1);
+        final VmSimple vm1 = VmSimpleTest.createVmWithSpecificNumberOfPEsForSpecificUser(0, broker0, 1);
+        final VmSimple vm2 = VmSimpleTest.createVmWithSpecificNumberOfPEsForSpecificUser(1, broker0, 1);
 
         final DatacenterBroker broker1 = Mocks.createMockBroker(1, 4);
-        VmSimple vm3 = VmSimpleTest.createVmWithSpecificNumberOfPEsForSpecificUser(0, broker1, 1);
-        VmSimple vm4 = VmSimpleTest.createVmWithSpecificNumberOfPEsForSpecificUser(1, broker1, 2);
+        final VmSimple vm3 = VmSimpleTest.createVmWithSpecificNumberOfPEsForSpecificUser(0, broker1, 1);
+        final VmSimple vm4 = VmSimpleTest.createVmWithSpecificNumberOfPEsForSpecificUser(1, broker1, 2);
 
         vmList.add(vm1);
         vmList.add(vm2);
@@ -96,5 +96,4 @@ public class VmListTest {
         assertSame(vm3, VmList.getByIdAndUserId(vmList, 0, 1));
         assertSame(vm4, VmList.getByIdAndUserId(vmList, 1, 1));
     }
-
 }

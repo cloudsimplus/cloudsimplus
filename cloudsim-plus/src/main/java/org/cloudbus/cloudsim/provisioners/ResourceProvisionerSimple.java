@@ -41,7 +41,7 @@ public class ResourceProvisionerSimple extends ResourceProvisionerAbstract {
     public boolean allocateResourceForVm(Vm vm, long newTotalVmResourceCapacity) {
         Objects.requireNonNull(vm);
         if (isSuitableForVm(vm, newTotalVmResourceCapacity)) {
-            final long previousVmResourceAllocation = vm.getResource(getResourceClass()).getAllocatedResource();
+            final long prevVmResourceAllocation = vm.getResource(getResourceClass()).getAllocatedResource();
             if (getResourceAllocationMap().containsKey(vm)) {
                 //Deallocates any amount of the resource assigned to the Vm in order to allocate a new capacity
                 deallocateResourceForVm(vm);
@@ -59,7 +59,7 @@ public class ResourceProvisionerSimple extends ResourceProvisionerAbstract {
             //Allocates the requested resource from the physical resource
             getResource().allocateResource(newTotalVmResourceCapacity);
             getResourceAllocationMap().put(vm, newTotalVmResourceCapacity);
-            vm.getResource(getResourceClass()).setAllocatedResource(previousVmResourceAllocation);
+            vm.getResource(getResourceClass()).setAllocatedResource(prevVmResourceAllocation);
             return true;
         }
 
@@ -97,10 +97,6 @@ public class ResourceProvisionerSimple extends ResourceProvisionerAbstract {
     @Override
     public boolean isSuitableForVm(Vm vm, long newVmTotalAllocatedResource) {
         final long currentAllocatedResource = getAllocatedResourceForVm(vm);
-        if(newVmTotalAllocatedResource  <= currentAllocatedResource) {
-            return true;
-        }
-
         final long allocationDifference = newVmTotalAllocatedResource - currentAllocatedResource;
         return getResource().getAvailableResource() >=  allocationDifference;
     }

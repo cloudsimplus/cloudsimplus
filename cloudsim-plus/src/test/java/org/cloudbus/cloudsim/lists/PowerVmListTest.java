@@ -69,13 +69,12 @@ public class PowerVmListTest {
 
     @Test
     public void testSortByCpuUtilizationWithVmsInIncreasingUtilizationOrder() {
-        System.out.println("sortByCpuUtilization");
         final List<PowerVm> list = createPowerVmList(true);
 
         VmList.sortByCpuUtilization(list, 0);
 
         int i = NUMBER_OF_VMS;
-        for(PowerVm vm: list) {
+        for(final PowerVm vm: list) {
             i--;
             System.out.println("Vm "+vm.getId());
             String msg = String.format(
@@ -88,7 +87,6 @@ public class PowerVmListTest {
 
     @Test
     public void testSortByCpuUtilizationWithVmsInDecreasingUtilizationOrder() {
-        System.out.println("sortByCpuUtilization");
         final List<PowerVm> list = createPowerVmList(false);
         VmList.sortByCpuUtilization(list, 0);
 

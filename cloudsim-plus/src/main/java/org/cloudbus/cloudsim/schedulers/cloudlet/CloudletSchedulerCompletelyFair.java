@@ -83,7 +83,7 @@ import static java.util.stream.Collectors.toList;
  *     </li>
  *	   </li>
  *	   <li>It doesn't use a Red-Black tree (such as the TreeSet), as in real implementations of CFS, to accendingly sort
- *	   Cloudlets in the waiting list (runqueue) based on their virtual runtime
+ *	   Cloudlets in the waiting list (runqueue) based on their virtual runtime (vruntime or VRT)
  *	   (placing the Cloudlets that have run the least at the top of the tree) because
  *	   the use of such a data structure added some complexity to the implementation. And once different Cloudlets
  *	   may have the same virtual runtime, this introduced some issues when adding or
@@ -126,13 +126,9 @@ public final class CloudletSchedulerCompletelyFair extends CloudletSchedulerTime
 	 */
 	private int latency = 3;
 
-	public CloudletSchedulerCompletelyFair(){
-		super();
-	}
-
     /**
      * A comparator used to ascendingly sort Cloudlets into the waiting list
-     * based on their virtual runtime. By this way, the Cloudlets in the beginning
+     * based on their virtual runtime (vruntime or VRT). By this way, the Cloudlets in the beginning
      * of such a list will be that ones which have run the least and have to be
      * prioritized when getting Cloudlets from this list to add to the execution
      * list.
@@ -147,7 +143,11 @@ public final class CloudletSchedulerCompletelyFair extends CloudletSchedulerTime
         final double priorityDiff = c1.getCloudlet().getPriority() - c2.getCloudlet().getPriority();
         final double idDiff = c1.getCloudletId() - c2.getCloudletId();
 
-        return (int)(vRuntimeDiff != 0 ? vRuntimeDiff : (priorityDiff != 0 ? priorityDiff : idDiff));
+        if (vRuntimeDiff != 0) {
+            return (int) vRuntimeDiff;
+        }
+
+        return (int) (priorityDiff != 0 ? priorityDiff : idDiff);
     }
 
 	/**
@@ -227,7 +227,7 @@ public final class CloudletSchedulerCompletelyFair extends CloudletSchedulerTime
 
     /**
      * {@inheritDoc}
-     * The cloudlet waiting list (runqueue) is sorted according to the virtual runtime (vruntime),
+     * The cloudlet waiting list (runqueue) is sorted according to the virtual runtime (vruntime or VRT),
      * which indicates the amount of time the Cloudlet has run.
      * This runtime increases as the Cloudlet executes.
      *
@@ -373,7 +373,7 @@ public final class CloudletSchedulerCompletelyFair extends CloudletSchedulerTime
             rcl.setVirtualRuntime(0);
         }
 
-        double cloudletTimeSpan = currentTime - rcl.getLastProcessingTime();
+        final double cloudletTimeSpan = currentTime - rcl.getLastProcessingTime();
         super.updateCloudletProcessing(rcl, currentTime);
 
         rcl.addVirtualRuntime(cloudletTimeSpan);
@@ -407,7 +407,7 @@ public final class CloudletSchedulerCompletelyFair extends CloudletSchedulerTime
         can be understood as resulting in "higher negative" values, that is,
         extreme negative values.
         */
-        double inverseOfCloudletId = Integer.MAX_VALUE/(rcl.getCloudletId()+1.0);
+        final double inverseOfCloudletId = Integer.MAX_VALUE/(rcl.getCloudletId()+1.0);
 
         return -Math.abs(rcl.getCloudlet().getPriority() + inverseOfCloudletId);
     }
@@ -470,7 +470,7 @@ public final class CloudletSchedulerCompletelyFair extends CloudletSchedulerTime
      */
     @Override
     protected void moveNextCloudletsFromWaitingToExecList() {
-        List<CloudletExecutionInfo> preemptedCloudlets = preemptExecCloudletsWithExpiredVRuntimeAndMoveToWaitingList();
+        final List<CloudletExecutionInfo> preemptedCloudlets = preemptExecCloudletsWithExpiredVRuntimeAndMoveToWaitingList();
         super.moveNextCloudletsFromWaitingToExecList();
 
         /*After preempted Cloudlets are moved to the waiting list
@@ -478,7 +478,7 @@ public final class CloudletSchedulerCompletelyFair extends CloudletSchedulerTime
         to the execution list, the virtual runtime of these preempted Cloudlets
         is reseted so that they can compete with other waiting Cloudlets to use
         the processor again.*/
-        for(CloudletExecutionInfo c: preemptedCloudlets) {
+        for(final CloudletExecutionInfo c: preemptedCloudlets) {
             c.setVirtualRuntime(computeCloudletInitialVirtualRuntime(c));
         }
     }
@@ -489,18 +489,18 @@ public final class CloudletSchedulerCompletelyFair extends CloudletSchedulerTime
      * preempts its execution, moving them to the waiting list.
      *
      * @return The list of preempted Cloudlets, that were removed from the execution list
-     * and must have their virtual runtime reseted after the next cloudlets are put into
+     * and must have their virtual runtime (VRT) reset after the next cloudlets are put into
      * the execution list.
      *
      */
     private List<CloudletExecutionInfo> preemptExecCloudletsWithExpiredVRuntimeAndMoveToWaitingList() {
-        Predicate<CloudletExecutionInfo> vRuntimeHasReachedTimeSlice = c -> c.getVirtualRuntime() >= c.getTimeSlice();
-        List<CloudletExecutionInfo> expiredVRuntimeCloudlets = getCloudletExecList().stream()
-                .filter(vRuntimeHasReachedTimeSlice)
+        final Predicate<CloudletExecutionInfo> vrtReachedTimeSlice = c -> c.getVirtualRuntime() >= c.getTimeSlice();
+        final List<CloudletExecutionInfo> expiredVrtCloudlets = getCloudletExecList().stream()
+                .filter(vrtReachedTimeSlice)
                 .collect(toList());
 
-        expiredVRuntimeCloudlets.forEach(c -> addCloudletToWaitingList(removeCloudletFromExecList(c)));
-        return expiredVRuntimeCloudlets;
+        expiredVrtCloudlets.forEach(c -> addCloudletToWaitingList(removeCloudletFromExecList(c)));
+        return expiredVrtCloudlets;
     }
 
 }

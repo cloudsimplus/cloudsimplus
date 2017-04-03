@@ -48,6 +48,13 @@ package org.cloudsimplus.heuristics;
  * @since CloudSim Plus 1.0
  */
 public interface Heuristic<S extends HeuristicSolution<?>> {
+
+    /**
+     * A property that implements the Null Object Design Pattern for {@link Heuristic}
+     * objects.
+     */
+    Heuristic NULL = new HeuristicNull();
+
     /**
      * Computes the acceptance probability to define if a neighbor solution
      * has to be accepted or not, compared to the {@link #getBestSolutionSoFar()}.
@@ -142,27 +149,4 @@ public interface Heuristic<S extends HeuristicSolution<?>> {
 	 */
 	double getSolveTime();
 
-    /**
-     * A property that implements the Null Object Design Pattern for {@link Heuristic}
-     * objects.
-     */
-    Heuristic NULL = new HeuristicNull();
-}
-
-/**
- * A class to allow the implementation of Null Object Design Pattern
- * for this interface and extensions of it.
- */
-class HeuristicNull<S extends HeuristicSolution<?>> implements Heuristic<S> {
-    @Override public double getAcceptanceProbability() { return 0.0; }
-	@Override public int getRandomValue(int maxValue) { return 0; }
-	@Override public boolean isToStopSearch() { return false; }
-    @Override public S getInitialSolution() { return (S)HeuristicSolution.NULL; }
-    @Override public S getNeighborSolution() { return (S)HeuristicSolution.NULL; }
-    @Override public S createNeighbor(S source) { return (S)HeuristicSolution.NULL; }
-    @Override public S solve() { return (S)HeuristicSolution.NULL; }
-	@Override public S getBestSolutionSoFar() { return (S)HeuristicSolution.NULL; }
-	@Override public int getNumberOfNeighborhoodSearchesByIteration() { return 0; }
-	@Override public void setNumberOfNeighborhoodSearchesByIteration(int numberOfNeighborhoodSearches) {}
-	@Override public double getSolveTime() { return 0; }
 }

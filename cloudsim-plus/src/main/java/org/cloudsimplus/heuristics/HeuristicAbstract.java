@@ -43,21 +43,21 @@ public abstract class HeuristicAbstract<S extends HeuristicSolution<?>>  impleme
 	/**
 	 * Reference to the generic class that will be used to instantiate objects.
 	 */
-	protected final Class<S> solutionClass;
+    private final Class<S> solutionClass;
 
 	private final ContinuousDistribution random;
 	/**
 	 * @see #getNumberOfNeighborhoodSearchesByIteration()
 	 */
-	protected int numberOfNeighborhoodSearchesByIteration;
+    private int numberOfNeighborhoodSearchesByIteration;
 	/**
 	 * @see #getBestSolutionSoFar()
 	 */
-	protected S bestSolutionSoFar;
+    private S bestSolutionSoFar;
 	/**
 	 * @see #getNeighborSolution()
 	 */
-	protected S neighborSolution;
+    private S neighborSolution;
 
 	/**
 	 * @see #getSolveTime()
@@ -70,7 +70,7 @@ public abstract class HeuristicAbstract<S extends HeuristicSolution<?>>  impleme
 	 * @param random a random number generator
 	 * @param solutionClass reference to the generic class that will be used to instantiate heuristic solutions
 	 */
-	public HeuristicAbstract(ContinuousDistribution random, Class<S> solutionClass){
+	HeuristicAbstract(ContinuousDistribution random, Class<S> solutionClass){
 		this.solutionClass = solutionClass;
 		this.random = random;
 		this.numberOfNeighborhoodSearchesByIteration = 1;
@@ -99,7 +99,7 @@ public abstract class HeuristicAbstract<S extends HeuristicSolution<?>>  impleme
 		return random;
 	}
 
-	private S newSolutionInstance() throws RuntimeException {
+	private S newSolutionInstance() {
 	    try {
 	        Constructor<S> c = solutionClass.getConstructor(Heuristic.class);
 	        return c.newInstance(this);

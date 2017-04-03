@@ -108,7 +108,7 @@ public class IcmpPacket implements NetworkPacket<SimEntity> {
      */
     private final List<Double> baudRates;
 
-    private DecimalFormat num;
+    private final DecimalFormat num;
 
     private double sendTime;
     private double receiveTime;
@@ -167,28 +167,31 @@ public class IcmpPacket implements NetworkPacket<SimEntity> {
             return "Empty IcmpPacket that contains no ping information.";
         }
 
-        int SIZE = 1000;   // number of chars
-        StringBuilder sb = new StringBuilder(SIZE);
-        sb.append("Ping information for ").append(name).append("\n");
-        sb.append("Entity Name\tEntry Time\tExit Time\t Bandwidth\n");
-        sb.append("----------------------------------------------------------\n");
+        final int SIZE = 1000;   // number of chars
+        final StringBuilder sb = new StringBuilder(SIZE);
+        sb.append("Ping information for ").append(name).append("\n")
+          .append("Entity Name\tEntry Time\tExit Time\t Bandwidth\n")
+          .append("----------------------------------------------------------\n");
 
-        String tab = "    ";  // 4 spaces
+        final String tab = "    ";  // 4 spaces
         for (int i = 0; i < entities.size(); i++) {
-            int resID = entities.get(i).getId();
-            sb.append("Entity ").append(resID).append("\t\t");
+            final int resID = entities.get(i).getId();
+            final String entry = getData(entryTimes, i);
+            final String exit = getData(exitTimes, i);
+            final String bw = getData(baudRates, i);
 
-            String entry = getData(entryTimes, i);
-            String exit = getData(exitTimes, i);
-            String bw = getData(baudRates, i);
-
-            sb.append(String.format("%s%s%s%s%s%s%s\n", entry, tab, tab, exit, tab, tab, bw));
+            sb.append("Entity ").append(resID).append("\t\t")
+              .append(String.format("%s%s%s%s%s%s%s\n", entry, tab, tab, exit, tab, tab, bw));
         }
 
-        sb.append("\nRound Trip Time : ").append(num.format(getTotalResponseTime()));
-        sb.append(" seconds");
-        sb.append("\nNumber of Hops  : ").append(getNumberOfHops());
-        sb.append("\nBottleneck Bandwidth : ").append(bandwidth).append(" bits/s");
+        sb.append("\nRound Trip Time : ")
+            .append(num.format(getTotalResponseTime()))
+            .append(" seconds")
+            .append("\nNumber of Hops  : ")
+            .append(getNumberOfHops())
+            .append("\nBottleneck Bandwidth : ")
+            .append(bandwidth).append(" bits/s");
+
         return sb.toString();
     }
 
@@ -202,15 +205,12 @@ public class IcmpPacket implements NetworkPacket<SimEntity> {
      * @post index > 0
      */
     private String getData(List<Double> v, int index) {
-        String result;
         try {
-            double id = v.get(index);
-            result = num.format(id);
+            final double id = v.get(index);
+            return num.format(id);
         } catch (Exception e) {
-            result = "    N/A";
+            return "    N/A";
         }
-
-        return result;
     }
 
     @Override
@@ -284,7 +284,7 @@ public class IcmpPacket implements NetworkPacket<SimEntity> {
      * @post $none
      */
     public int getNumberOfHops() {
-        int PAIR = 2;
+        final int PAIR = 2;
         return ((entities.size() - PAIR) + 1) / PAIR;
     }
 
@@ -301,8 +301,8 @@ public class IcmpPacket implements NetworkPacket<SimEntity> {
      */
     public double getTotalResponseTime() {
         try {
-            double startTime = exitTimes.stream().findFirst().orElse(0.0);
-            double receiveTime = entryTimes.stream().findFirst().orElse(0.0);
+            final double startTime = exitTimes.stream().findFirst().orElse(0.0);
+            final double receiveTime = entryTimes.stream().findFirst().orElse(0.0);
             return receiveTime - startTime;
         } catch (Exception e) {
             return 0;
@@ -343,11 +343,7 @@ public class IcmpPacket implements NetworkPacket<SimEntity> {
      * @post $none
      */
     public void addEntryTime(double time) {
-        if (time < 0) {
-            time = 0.0;
-        }
-
-        entryTimes.add(time);
+        entryTimes.add(Math.min(time, 0));
     }
 
     /**
@@ -362,11 +358,7 @@ public class IcmpPacket implements NetworkPacket<SimEntity> {
      * @post $none
      */
     public void addExitTime(double time) {
-        if (time < 0) {
-            time = 0.0;
-        }
-
-        exitTimes.add(time);
+        exitTimes.add(Math.min(time, 0));
     }
 
     /**

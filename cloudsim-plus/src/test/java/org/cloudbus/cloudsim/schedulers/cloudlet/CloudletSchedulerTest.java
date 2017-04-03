@@ -12,7 +12,6 @@ public class CloudletSchedulerTest {
 
     @Test
     public void testNullObject() {
-        System.out.println("cloudletCancel");
         final CloudletScheduler instance = CloudletScheduler.NULL;
         assertEquals(Cloudlet.NULL, instance.cloudletCancel(0));
 

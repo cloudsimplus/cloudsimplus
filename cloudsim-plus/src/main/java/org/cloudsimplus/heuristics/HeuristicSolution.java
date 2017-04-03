@@ -35,6 +35,13 @@ package org.cloudsimplus.heuristics;
  * @since CloudSim Plus 1.0
  */
 public interface HeuristicSolution<T> extends Comparable<HeuristicSolution<T>> {
+
+    /**
+     * An attribute that implements the Null Object Design Pattern for {@link HeuristicSolution}
+     * objects.
+     */
+    HeuristicSolution NULL = new HeuristicSolutionNull();
+
 	/**
 	 * @return the heuristic associated to this solution.
 	 */
@@ -68,18 +75,5 @@ public interface HeuristicSolution<T> extends Comparable<HeuristicSolution<T>> {
      * @return the object containing the result of the generated solution.
      */
     T getResult();
-
-    /**
-     * A property that implements the Null Object Design Pattern for {@link HeuristicSolution}
-     * objects.
-     */
-    HeuristicSolution NULL = new HeuristicSolution() {
-        private final Object object = new Object();
-        @Override public double getFitness() { return 0.0; }
-        @Override public double getCost() { return 0.0; }
-        @Override public int compareTo(Object o) { return 0; }
-        @Override public Object getResult() { return object; }
-        @Override public Heuristic getHeuristic() { return Heuristic.NULL; }
-    };
 
 }

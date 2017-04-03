@@ -8,6 +8,7 @@
 
 package org.cloudbus.cloudsim.network.topologies;
 
+import java.util.Collections;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
@@ -30,7 +31,7 @@ public class TopologicalGraph {
     /**
      * The list of links of the network graph.
      */
-    private final List<TopologicalLink> linkList;
+    private final List<TopologicalLink> linksList;
 
     /**
      * The list of nodes of the network graph.
@@ -41,7 +42,7 @@ public class TopologicalGraph {
      * Creates an empty graph-object.
      */
     public TopologicalGraph() {
-        linkList = new LinkedList<>();
+        linksList = new LinkedList<>();
         nodeList = new LinkedList<>();
     }
 
@@ -51,7 +52,7 @@ public class TopologicalGraph {
      * @param edge the topological link
      */
     public void addLink(TopologicalLink edge) {
-        linkList.add(edge);
+        linksList.add(edge);
     }
 
     /**
@@ -78,16 +79,16 @@ public class TopologicalGraph {
      * @return number of links
      */
     public int getNumberOfLinks() {
-        return linkList.size();
+        return linksList.size();
     }
 
     /**
-     * Gets an iterator through all network-graph links.
+     * Gets a <b>read-only</b> List of all network-graph links.
      *
-     * @return the iterator throug all links
+     * @return the List of network-graph links
      */
-    public Iterator<TopologicalLink> getLinkIterator() {
-        return linkList.iterator();
+    public List<TopologicalLink> getLinksList() {
+        return Collections.unmodifiableList(linksList);
     }
 
     /**
@@ -101,23 +102,23 @@ public class TopologicalGraph {
 
     @Override
     public String toString() {
-        StringBuilder buffer = new StringBuilder();
-        buffer.append("topological-node-information: \n");
+        final StringBuilder builder = new StringBuilder(60);
+        builder.append("topological-node-information: \n");
 
-        for (TopologicalNode node : nodeList) {
-            buffer.append(
-                String.format("%d | x is: %d y is: %d\n",
-                node.getNodeID(), node.getCoordinateX(), node.getCoordinateY()));
+        for (final TopologicalNode node : nodeList) {
+            builder.append(
+                String.format("%d | %s\n",
+                node.getNodeId(), node.getWorldCoordinates()));
         }
 
-        buffer.append("\n\n node-link-information:\n");
+        builder.append("\n\n node-link-information:\n");
 
-        for (TopologicalLink link : linkList) {
-            buffer.append(
+        for (final TopologicalLink link : linksList) {
+            builder.append(
                 String.format("from: %d to: %d delay: %.2f\n",
                 link.getSrcNodeID(), link.getDestNodeID(), link.getLinkDelay()));
         }
-        return buffer.toString();
-    }
 
+        return builder.toString();
+    }
 }

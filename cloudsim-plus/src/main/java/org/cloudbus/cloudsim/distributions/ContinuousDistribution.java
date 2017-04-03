@@ -15,6 +15,11 @@ package org.cloudbus.cloudsim.distributions;
  * @since CloudSim Toolkit 1.0
  */
 public interface ContinuousDistribution {
+    /**
+     * An attribute that implements the Null Object Design Pattern for {@link ContinuousDistribution}
+     * objects.
+     */
+    ContinuousDistribution NULL = new ContinuousDistributionNull();
 
     /**
      * Generate a new pseudo random number.
@@ -28,13 +33,4 @@ public interface ContinuousDistribution {
      * @return the seed used to initialize the generator
      */
     long getSeed();
-
-    /**
-     * A property that implements the Null Object Design Pattern for {@link ContinuousDistribution}
-     * objects.
-     */
-    ContinuousDistribution NULL = new ContinuousDistribution() {
-        @Override public double sample() { return 0.0; }
-        @Override public long getSeed() { return 0; }
-    };
 }

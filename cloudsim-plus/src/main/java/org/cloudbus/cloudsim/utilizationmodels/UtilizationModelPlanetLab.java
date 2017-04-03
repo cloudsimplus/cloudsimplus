@@ -39,7 +39,7 @@ public class UtilizationModelPlanetLab extends UtilizationModelAbstract {
         data = new double[289];
         setSchedulingInterval(schedulingInterval);
         try (BufferedReader input = new BufferedReader(new FileReader(inputPath))) {
-            int n = data.length;
+            final int n = data.length;
             for (int i = 0; i < n - 1; i++) {
                 data[i] = Integer.valueOf(input.readLine()) / 100.0;
             }
@@ -65,7 +65,7 @@ public class UtilizationModelPlanetLab extends UtilizationModelAbstract {
         setSchedulingInterval(schedulingInterval);
         data = new double[dataSamples];
         try (BufferedReader input = new BufferedReader(new FileReader(inputPath))) {
-            int n = data.length;
+            final int n = data.length;
             for (int i = 0; i < n - 1; i++) {
                 data[i] = Integer.valueOf(input.readLine()) / 100.0;
             }
@@ -78,11 +78,11 @@ public class UtilizationModelPlanetLab extends UtilizationModelAbstract {
         if (time % getSchedulingInterval() == 0) {
             return data[(int) time / (int) getSchedulingInterval()];
         }
-        int time1 = (int) Math.floor(time / getSchedulingInterval());
-        int time2 = (int) Math.ceil(time / getSchedulingInterval());
-        double utilization1 = data[time1];
-        double utilization2 = data[time2];
-        double delta = (utilization2 - utilization1) / ((time2 - time1) * getSchedulingInterval());
+        final int time1 = (int) Math.floor(time / getSchedulingInterval());
+        final int time2 = (int) Math.ceil(time / getSchedulingInterval());
+        final double utilization1 = data[time1];
+        final double utilization2 = data[time2];
+        final double delta = (utilization2 - utilization1) / ((time2 - time1) * getSchedulingInterval());
         return utilization1 + delta * (time - time1 * getSchedulingInterval());
 
     }

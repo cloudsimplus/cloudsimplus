@@ -40,17 +40,29 @@ public class CsvTableBuilder extends AbstractTableBuilder {
         super(title);
     }
 
+    /**
+     * CSV files doesn't have a title.
+     */
     @Override
-    public void printTitle() {}
+    public void printTitle() {/**/}
 
+    /**
+     * CSV files doesn't have a table opening line.
+     */
     @Override
-    public void printTableOpenning(){}
+    public void printTableOpening() {/**/}
 
+    /**
+     * CSV files doesn't have a table closing line.
+     */
     @Override
-    public void printTableClosing(){}
+    public void printTableClosing() {/**/}
 
+    /**
+     * CSV files doesn't have a row opening line.
+     */
     @Override
-    protected void printRowOpenning() {}
+    protected void printRowOpening() {/**/}
 
     @Override
     protected void printRowClosing() {
@@ -63,7 +75,7 @@ public class CsvTableBuilder extends AbstractTableBuilder {
 
     @Override
     public TableColumn addColumn(String columnTitle) {
-        TableColumn col = new CsvTableColumn(this, columnTitle);
+        final TableColumn col = new CsvTableColumn(this, columnTitle);
         getColumns().add(col);
         return col;
     }

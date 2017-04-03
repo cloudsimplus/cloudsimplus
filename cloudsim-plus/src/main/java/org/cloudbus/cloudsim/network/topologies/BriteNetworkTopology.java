@@ -8,10 +8,7 @@
 package org.cloudbus.cloudsim.network.topologies;
 
 import java.io.IOException;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.Map;
-import java.util.Objects;
+import java.util.*;
 
 import org.cloudbus.cloudsim.util.Log;
 import org.cloudbus.cloudsim.network.DelayMatrix;
@@ -40,19 +37,15 @@ public class BriteNetworkTopology implements NetworkTopology {
     /**
      * The BRITE id to use for the next node to be created in the network.
      */
-    private int nextIdx = 0;
+    private int nextIdx;
 
-    private boolean networkEnabled = false;
+    private boolean networkEnabled;
 
     /**
      * A matrix containing the delay between every pair of nodes in the network.
      */
     private DelayMatrix delayMatrix;
 
-    /**
-     * A matrix containing the bandwidth between every pair of nodes in the
-     * network.
-     */
     private double[][] bwMatrix;
 
     /**
@@ -90,7 +83,7 @@ public class BriteNetworkTopology implements NetworkTopology {
         this();
         Log.printConcatLine("Topology file: ", fileName);
         // try to find the file
-        TopologyReaderBrite reader = new TopologyReaderBrite();
+        final TopologyReaderBrite reader = new TopologyReaderBrite();
         try {
             graph = reader.readGraphFile(fileName);
             generateMatrices();
@@ -122,7 +115,7 @@ public class BriteNetworkTopology implements NetworkTopology {
      * @return the bandwidth graph
      */
     private double[][] createBwMatrix(TopologicalGraph graph, boolean directed) {
-        int nodes = graph.getNumberOfNodes();
+        final int nodes = graph.getNumberOfNodes();
 
         double[][] mtx = new double[nodes][nodes];
 
@@ -133,12 +126,8 @@ public class BriteNetworkTopology implements NetworkTopology {
             }
         }
 
-        Iterator<TopologicalLink> iter = graph.getLinkIterator();
-        while (iter.hasNext()) {
-            TopologicalLink edge = iter.next();
-
+        for (final TopologicalLink edge : graph.getLinksList()) {
             mtx[edge.getSrcNodeID()][edge.getDestNodeID()] = edge.getLinkBw();
-
             if (!directed) {
                 mtx[edge.getDestNodeID()][edge.getSrcNodeID()] = edge.getLinkBw();
             }
@@ -180,49 +169,44 @@ public class BriteNetworkTopology implements NetworkTopology {
 
     @Override
     public void mapNode(int cloudSimEntityID, int briteID) {
-        if (networkEnabled) {
-            try {
-                // this CloudSim entity was already mapped?
-                if (!map.containsKey(cloudSimEntityID)) {
-                    if (!map.containsValue(briteID)) { // this BRITE node was already mapped?
-                        map.put(cloudSimEntityID, briteID);
-                    } else {
-                        Log.printConcatLine("Error in network mapping. BRITE node ", briteID, " already in use.");
-                    }
-                } else {
-                    Log.printConcatLine("Error in network mapping. CloudSim entity ", cloudSimEntityID,
-                        " already mapped.");
-                }
-            } catch (Exception e) {
-                Log.printConcatLine("Error in network mapping. CloudSim node ", cloudSimEntityID,
-                    " not mapped to BRITE node ", briteID, ".");
-            }
+        if (!networkEnabled) {
+            return;
         }
+
+        if (map.containsKey(cloudSimEntityID)) {
+            Log.printConcatLine("Warning: Network mapping. CloudSim entity ", cloudSimEntityID,
+                " already mapped.");
+            return;
+        }
+
+        if (map.containsValue(briteID)) {
+            Log.printConcatLine("Warning: BRITE node ", briteID, " already in use.");
+            return;
+        }
+
+        map.put(cloudSimEntityID, briteID);
     }
 
     @Override
     public void unmapNode(int cloudSimEntityID) {
-        if (networkEnabled) {
-            try {
-                map.remove(cloudSimEntityID);
-            } catch (Exception e) {
-                Log.printConcatLine("Error in network unmapping. CloudSim node: ", cloudSimEntityID);
-            }
+        if (!networkEnabled) {
+            return;
         }
+
+        map.remove(cloudSimEntityID);
     }
 
     @Override
     public double getDelay(int srcID, int destID) {
-        if (networkEnabled) {
-            try {
-                // add the network latency
-                return delayMatrix.getDelay(map.get(srcID), map.get(destID));
-            } catch (Exception e) {
-                // in case of error, just keep running and return 0.0
-            }
+        if (!networkEnabled) {
+            return 0.0;
         }
 
-        return 0.0;
+        try {
+            return delayMatrix.getDelay(map.get(srcID), map.get(destID));
+        } catch (Exception e) {
+            return 0.0;
+        }
     }
 
     @Override
@@ -233,5 +217,13 @@ public class BriteNetworkTopology implements NetworkTopology {
     @Override
     public TopologicalGraph getTopologycalGraph() {
         return graph;
+    }
+
+    /**
+     * Gets a<b>copy</b> of the matrix containing the bandwidth between every pair of nodes in the
+     * network.
+     */
+    public double[][] getBwMatrix() {
+        return Arrays.copyOf(bwMatrix, bwMatrix.length);
     }
 }

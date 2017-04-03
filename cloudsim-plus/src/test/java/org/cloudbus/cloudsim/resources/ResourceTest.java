@@ -11,11 +11,7 @@ public class ResourceTest {
 
     @Test
     public void testNullObject() {
-        System.out.println("testNullObject");
-        checkNullObject(ResourceManageable.NULL);
-    }
-
-    private void checkNullObject(ResourceManageable instance) {
+        final ResourceManageable instance = ResourceManageable.NULL;
         assertFalse(instance.setCapacity(0));
         assertFalse(instance.allocateResource(0));
         assertFalse(instance.setAllocatedResource(0));

@@ -54,29 +54,27 @@ public class PowerVmSelectionPolicyMaximumCorrelation extends PowerVmSelectionPo
 
     @Override
     public Vm getVmToMigrate(final PowerHost host) {
-        List<PowerVm> migratableVms = getMigratableVms(host);
+        final List<PowerVm> migratableVms = getMigratableVms(host);
         if (migratableVms.isEmpty()) {
             return Vm.NULL;
         }
 
-        List<Double> metrics;
         try {
-            metrics = getCorrelationCoefficients(getUtilizationMatrix(migratableVms));
+            final List<Double> metrics = getCorrelationCoefficients(getUtilizationMatrix(migratableVms));
+            double maxMetric = Double.MIN_VALUE;
+            int maxIndex = 0;
+            for (int i = 0; i < metrics.size(); i++) {
+                final double metric = metrics.get(i);
+                if (metric > maxMetric) {
+                    maxMetric = metric;
+                    maxIndex = i;
+                }
+            }
+
+            return migratableVms.get(maxIndex);
         } catch (IllegalArgumentException e) { // the degrees of freedom must be greater than zero
             return getFallbackPolicy().getVmToMigrate(host);
         }
-
-        double maxMetric = Double.MIN_VALUE;
-        int maxIndex = 0;
-        for (int i = 0; i < metrics.size(); i++) {
-            double metric = metrics.get(i);
-            if (metric > maxMetric) {
-                maxMetric = metric;
-                maxIndex = i;
-            }
-        }
-
-        return migratableVms.get(maxIndex);
     }
 
     /**
@@ -89,10 +87,10 @@ public class PowerVmSelectionPolicyMaximumCorrelation extends PowerVmSelectionPo
     protected double[][] getUtilizationMatrix(final List<PowerVm> vmList) {
         final int numberVms = vmList.size();
         final int minHistorySize = getMinUtilizationHistorySize(vmList);
-        double[][] utilization = new double[numberVms][minHistorySize];
+        final double[][] utilization = new double[numberVms][minHistorySize];
 
         for (int i = 0; i < numberVms; i++) {
-            List<Double> vmUtilization = vmList.get(i).getUtilizationHistory();
+            final List<Double> vmUtilization = vmList.get(i).getUtilizationHistory();
             for (int j = 0; j < minHistorySize; j++) {
                 utilization[i][j] = vmUtilization.get(j);
             }
@@ -120,11 +118,11 @@ public class PowerVmSelectionPolicyMaximumCorrelation extends PowerVmSelectionPo
      * @return the correlation coefficients
      */
     protected List<Double> getCorrelationCoefficients(final double[][] data) {
-        int n = data.length;
-        int m = data[0].length;
-        List<Double> correlationCoefficients = new LinkedList<>();
+        final int n = data.length;
+        final int m = data[0].length;
+        final List<Double> correlationCoefficients = new LinkedList<>();
         for (int i = 0; i < n; i++) {
-            double[][] x = new double[n - 1][m];
+            final double[][] x = new double[n - 1][m];
             int k = 0;
             for (int j = 0; j < n; j++) {
                 if (j != i) {
@@ -133,11 +131,11 @@ public class PowerVmSelectionPolicyMaximumCorrelation extends PowerVmSelectionPo
             }
 
             // Transpose the matrix so that it fits the linear model
-            double[][] xT = new Array2DRowRealMatrix(x).transpose().getData();
+            final double[][] xT = new Array2DRowRealMatrix(x).transpose().getData();
 
             // RSquare is the "coefficient of determination"
-            correlationCoefficients.add(MathUtil.createLinearRegression(xT,
-                data[i]).calculateRSquared());
+            correlationCoefficients.add(
+                MathUtil.createLinearRegression(xT, data[i]).calculateRSquared());
         }
         return correlationCoefficients;
     }

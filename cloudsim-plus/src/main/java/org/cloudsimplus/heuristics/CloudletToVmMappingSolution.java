@@ -39,6 +39,14 @@ import org.cloudbus.cloudsim.vms.Vm;
  */
 public class CloudletToVmMappingSolution implements HeuristicSolution<Map<Cloudlet, Vm>> {
     /**
+     * When two double values are subtracted to check if they are equal zero,
+     * there may be some precision issues. This value is used to check the absolute difference between the two values
+     * to avoid that solutions with little decimal difference be
+     * considered different one of the other.
+     */
+    public static final double MIN_DIFF = 0.0001;
+
+    /**
      * @see #getResult()
      */
     private final Map<Cloudlet, Vm> cloudletVmMap;
@@ -58,7 +66,7 @@ public class CloudletToVmMappingSolution implements HeuristicSolution<Map<Cloudl
      * @see #getCost()
      * @see #recomputeCost
      */
-    private double lastCost = 0;
+    private double lastCost;
 
     private final Heuristic heuristic;
 
@@ -113,7 +121,7 @@ public class CloudletToVmMappingSolution implements HeuristicSolution<Map<Cloudl
     @Override
     public double getCost() {
         if(recomputeCost){
-	        Map<Vm, List<Map.Entry<Cloudlet, Vm>>> cloudletsByVm =
+	        final Map<Vm, List<Map.Entry<Cloudlet, Vm>>> cloudletsByVm =
 		        cloudletVmMap.entrySet().stream()
 			        .collect(Collectors.groupingBy(Map.Entry::getValue));
 
@@ -168,12 +176,10 @@ public class CloudletToVmMappingSolution implements HeuristicSolution<Map<Cloudl
      */
     @Override
     public int compareTo(HeuristicSolution o) {
-        double diff = this.getCost() - o.getCost();
-        /*
-        Precision Issue: checks the absolute difference between the two values
-        in order to avoid that solutions with little decimal difference be
-        considered different one of the other.*/
-        if(Math.abs(diff) <= 0.0001)
+        final double diff = this.getCost() - o.getCost();
+
+
+        if(Math.abs(diff) <= MIN_DIFF)
             return 0;
 
         return (diff > 0 ? -1 : 1);
@@ -203,12 +209,12 @@ public class CloudletToVmMappingSolution implements HeuristicSolution<Map<Cloudl
      * return without performing any change in the entries.
      * @return true if the Cloudlet's VMs where swapped, false otherwise
      */
-    protected boolean swapVmsOfTwoMapEntries(Map.Entry<Cloudlet, Vm> entries[]) {
+    protected boolean swapVmsOfTwoMapEntries(Map.Entry<Cloudlet, Vm>... entries) {
         if(Objects.isNull(entries) || entries.length != 2 || Objects.isNull(entries[0]) || Objects.isNull(entries[1]))
             return false;
 
-        Vm vm1 = entries[0].getValue();
-        Vm vm2 = entries[1].getValue();
+        final Vm vm1 = entries[0].getValue();
+        final Vm vm2 = entries[1].getValue();
         entries[0].setValue(vm2);
         entries[1].setValue(vm1);
 
@@ -245,18 +251,18 @@ public class CloudletToVmMappingSolution implements HeuristicSolution<Map<Cloudl
             return new Map.Entry[0];
 
         if(cloudletVmMap.size() == 1) {
-            Optional<Map.Entry<Cloudlet, Vm>> opt =
+            final Optional<Map.Entry<Cloudlet, Vm>> opt =
                     cloudletVmMap.entrySet().stream().findFirst();
 
             return opt.map(entry -> new Map.Entry[]{entry}).orElse(new Map.Entry[0]);
         }
 
         final int size = cloudletVmMap.entrySet().size();
-        Map.Entry<Cloudlet, Vm>[] selectedEntries = new Map.Entry[2];
-        Map.Entry<Cloudlet, Vm>[] allEntries = new Map.Entry[size];
+        final Map.Entry<Cloudlet, Vm>[] selectedEntries = new Map.Entry[2];
+        final Map.Entry<Cloudlet, Vm>[] allEntries = new Map.Entry[size];
 
-        int i = heuristic.getRandomValue(size);
-        int j = heuristic.getRandomValue(size);
+        final int i = heuristic.getRandomValue(size);
+        final int j = heuristic.getRandomValue(size);
         cloudletVmMap.entrySet().toArray(allEntries);
         selectedEntries[0] = allEntries[i];
         selectedEntries[1] = allEntries[j];

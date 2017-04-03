@@ -36,6 +36,7 @@ import org.cloudbus.cloudsim.vms.Vm;
  * @since CloudSim Plus 1.0
  */
 public class CloudletsTableBuilder {
+    private static final String SECONDS = "Seconds";
     private TableBuilder printer;
     private List<? extends Cloudlet> cloudletList;
 
@@ -71,16 +72,17 @@ public class CloudletsTableBuilder {
 
 
     protected void createTableColumns() {
-        printer.addColumn("Cloudlet").setSubTitle("ID");
+        final String ID = "ID";
+        printer.addColumn("Cloudlet").setSubTitle(ID);
         printer.addColumn("Status ");
-        printer.addColumn("DC").setSubTitle("ID");
-        printer.addColumn("Host").setSubTitle("ID");
-        printer.addColumn("VM").setSubTitle("ID");
+        printer.addColumn("DC").setSubTitle(ID);
+        printer.addColumn("Host").setSubTitle(ID);
+        printer.addColumn("VM").setSubTitle(ID);
         printer.addColumn("CloudletLen").setSubTitle("MI");
         printer.addColumn("CloudletPEs").setSubTitle("CPU cores");
-        printer.addColumn("StartTime").setFormat("%d").setSubTitle("Seconds");
-        printer.addColumn("FinishTime").setFormat("%d").setSubTitle("Seconds");
-        printer.addColumn("ExecTime").setFormat("%.0f").setSubTitle("Seconds");
+        printer.addColumn("StartTime").setFormat("%d").setSubTitle(SECONDS);
+        printer.addColumn("FinishTime").setFormat("%d").setSubTitle(SECONDS);
+        printer.addColumn("ExecTime").setFormat("%.0f").setSubTitle(SECONDS);
     }
 
     /**

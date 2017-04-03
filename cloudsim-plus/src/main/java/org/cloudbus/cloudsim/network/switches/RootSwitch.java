@@ -7,14 +7,12 @@
  */
 package org.cloudbus.cloudsim.network.switches;
 
-import org.cloudbus.cloudsim.hosts.network.NetworkHost;
-import org.cloudbus.cloudsim.network.HostPacket;
-import org.cloudbus.cloudsim.util.Conversion;
-import org.cloudbus.cloudsim.util.Log;
-
 import org.cloudbus.cloudsim.core.CloudSim;
 import org.cloudbus.cloudsim.core.events.SimEvent;
 import org.cloudbus.cloudsim.datacenters.network.NetworkDatacenter;
+import org.cloudbus.cloudsim.network.HostPacket;
+import org.cloudbus.cloudsim.util.Conversion;
+import org.cloudbus.cloudsim.util.Log;
 import org.cloudbus.cloudsim.vms.Vm;
 
 /**
@@ -80,16 +78,17 @@ public class RootSwitch extends AbstractSwitch {
     protected void processPacketUp(SimEvent ev) {
         super.processPacketUp(ev);
 
-        HostPacket netPkt = (HostPacket) ev.getData();
-        Vm receiverVm = netPkt.getVmPacket().getDestination();
-        Switch edgeSwitch = getVmEdgeSwitch(receiverVm);
-        Switch aggSwitch = findAggregateSwitchConnectedToGivenEdgeSwitch(edgeSwitch);
+        final HostPacket netPkt = (HostPacket) ev.getData();
+        final Vm receiverVm = netPkt.getVmPacket().getDestination();
+        final Switch edgeSwitch = getVmEdgeSwitch(receiverVm);
+        final Switch aggSwitch = findAggregateSwitchConnectedToGivenEdgeSwitch(edgeSwitch);
 
         if (aggSwitch == Switch.NULL) {
             Log.printLine("No destination switch for this packet");
-        } else {
-            addPacketToBeSentToDownlinkSwitch(aggSwitch, netPkt);
+            return;
         }
+
+        addPacketToBeSentToDownlinkSwitch(aggSwitch, netPkt);
     }
 
     /**
