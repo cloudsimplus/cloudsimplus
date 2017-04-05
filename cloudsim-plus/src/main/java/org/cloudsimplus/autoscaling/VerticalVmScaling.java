@@ -23,6 +23,7 @@
  */
 package org.cloudsimplus.autoscaling;
 
+import org.cloudbus.cloudsim.allocationpolicies.VmAllocationPolicy;
 import org.cloudbus.cloudsim.brokers.DatacenterBroker;
 import org.cloudbus.cloudsim.cloudlets.Cloudlet;
 import org.cloudbus.cloudsim.datacenters.Datacenter;
@@ -34,19 +35,32 @@ import static org.cloudbus.cloudsim.utilizationmodels.UtilizationModel.Unit;
 
 import org.cloudbus.cloudsim.utilizationmodels.UtilizationModel;
 import org.cloudbus.cloudsim.vms.Vm;
+import org.cloudsimplus.listeners.EventListener;
 
 import java.util.function.Predicate;
 
 /**
  * A Vm <a href="https://en.wikipedia.org/wiki/Scalability#Horizontal_and_vertical_scaling">Vertical Scaling</a> mechanism
- * used by a {@link DatacenterBroker} to dynamically scale VM resources up or down, according to the current resource usage.
- * For each resource that is supposed to be scaled, a different {@code VerticalVmScaling} instance should be provided.
+ * used by a {@link DatacenterBroker} to request the dynamic scale of VM resources up or down, according to the current resource usage.
+ * For each resource supposed to be scaled, a different {@code VerticalVmScaling} instance should be provided.
  *
- * <p>A {@link Vm} runs a set of {@link Cloudlet}s. When you attach a {@code VerticalVmScaling} object to a {@link Vm},
- *    you have to define which {@link #getResourceClassToScale() resource will be scaled} ({@link Ram}, {@link Bandwidth}, etc)
+ * <p>A {@link Vm} runs a set of {@link Cloudlet}s. When a {@code VerticalVmScaling} object is attached to a {@link Vm},
+ *    it's required to define which {@link #getResourceClassToScale() resource will be scaled} ({@link Ram}, {@link Bandwidth}, etc)
  *    when it's {@link #getUnderloadPredicate() under} or {@link #getOverloadPredicate() overloaded}.
  * </p>
  *
+ * <p>
+ *     The scaling request follows this path:
+ *     <ul>
+ *         <li>a {@link Vm} that has a {@link VerticalVmScaling} object set monitors its own resource usage
+ *         using an {@link EventListener}, to check if an {@link #getUnderloadPredicate() under} or
+ *         {@link #getOverloadPredicate() overload} condition is met;</li>
+ *         <li>if any of these conditions is met, the Vm uses the VerticalVmScaling to send a scaling request to its {@link DatacenterBroker};</li>
+ *         <li>the DatacenterBroker fowards the request to the {@link Datacenter} where the Vm is hosted;</li>
+ *         <li>the Datacenter delegates the task to its {@link VmAllocationPolicy};</li>
+ *         <li>the VmAllocationPolicy checks if there is resource availability and then finally scale the Vm.</li>
+ *     </ul>
+ * </p>
  *
  * <h1>WARNING</h1>
  * <hr>

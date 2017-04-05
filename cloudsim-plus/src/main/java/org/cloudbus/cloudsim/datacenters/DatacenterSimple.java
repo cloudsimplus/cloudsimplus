@@ -6,6 +6,7 @@
  */
 package org.cloudbus.cloudsim.datacenters;
 
+import org.apache.commons.lang3.BooleanUtils;
 import org.cloudbus.cloudsim.core.events.SimEvent;
 import org.cloudbus.cloudsim.network.IcmpPacket;
 import org.cloudbus.cloudsim.util.DataCloudTags;
@@ -176,6 +177,11 @@ public class DatacenterSimple extends CloudSimEntity implements Datacenter {
         return 0;
     }
 
+    /**
+     * Process a received event.
+     * @param ev the event to be processed
+     * @return 1 if the event was processed, 0 otherwise
+     */
     private int processVmEvents(SimEvent ev) {
         switch (ev.getTag()) {
             case CloudSimTags.VM_CREATE:
@@ -185,8 +191,7 @@ public class DatacenterSimple extends CloudSimEntity implements Datacenter {
                 processVmCreate(ev, true);
                 return 1;
             case CloudSimTags.VM_VERTICAL_SCALING:
-                requestVmVerticalScaling(ev);
-                return 1;
+                return BooleanUtils.toInteger(requestVmVerticalScaling(ev));
             case CloudSimTags.VM_DESTROY:
                 processVmDestroy(ev, false);
                 return 1;
@@ -220,12 +225,19 @@ public class DatacenterSimple extends CloudSimEntity implements Datacenter {
         return 0;
     }
 
-    private void requestVmVerticalScaling(SimEvent ev) {
+    /**
+     * Process a {@link CloudSimTags#VM_VERTICAL_SCALING} request, trying to scale
+     * a Vm resource.
+     *
+     * @param ev the received  {@link CloudSimTags#VM_VERTICAL_SCALING} event
+     * @return true if the Vm was scaled, false otherwise
+     */
+    private boolean requestVmVerticalScaling(SimEvent ev) {
         if(!(ev.getData() instanceof VerticalVmScaling)){
-            return;
+            return false;
         }
 
-        getVmAllocationPolicy().scaleVmVertically((VerticalVmScaling)ev.getData());
+        return getVmAllocationPolicy().scaleVmVertically((VerticalVmScaling)ev.getData());
     }
 
     private int processCloudletEvents(SimEvent ev) {

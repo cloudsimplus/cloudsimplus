@@ -93,7 +93,7 @@ public class SanStorage extends HarddriveStorage {
     }
 
     private double getFileTransferTimePlusNetworkLatency(final File file) {
-        return (file.getSize() * getBandwidth()) + getNetworkLatency();
+        return file.getSize()*getBandwidth() + getNetworkLatency();
     }
 
     @Override
