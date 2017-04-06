@@ -666,11 +666,6 @@ public class VmSimple implements Vm {
     }
 
     @Override
-    public double getTotalMipsCapacity() {
-        return getMips() * getNumberOfPes();
-    }
-
-    @Override
     public void setFailed(boolean failed) {
         // all the PEs are failed (or recovered, depending on fail parameter)
         this.failed = failed;

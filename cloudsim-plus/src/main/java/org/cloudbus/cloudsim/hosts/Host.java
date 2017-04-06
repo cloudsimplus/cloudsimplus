@@ -7,6 +7,7 @@
  */
 package org.cloudbus.cloudsim.hosts;
 
+import org.cloudbus.cloudsim.core.Machine;
 import org.cloudbus.cloudsim.resources.*;
 import org.cloudbus.cloudsim.vms.Vm;
 import org.cloudbus.cloudsim.core.Identificable;
@@ -32,7 +33,7 @@ import org.cloudbus.cloudsim.provisioners.ResourceProvisioner;
  * @author Manoel Campos da Silva Filho
  * @since CloudSim Plus 1.0
  */
-public interface Host extends Identificable, Resourceful, Comparable<Host> {
+public interface Host extends Machine, Identificable, Comparable<Host> {
 
     /**
      * An attribute that implements the Null Object Design Pattern for {@link Host}
@@ -41,12 +42,56 @@ public interface Host extends Identificable, Resourceful, Comparable<Host> {
     Host NULL = new HostNull();
 
     /**
+     * Gets the Datacenter where the host is placed.
+     *
+     * @return the data center of the host
+     */
+    Datacenter getDatacenter();
+
+    /**
+     * Sets the Datacenter where the host is placed.
+     *
+     * @param datacenter the new data center to move the host
+     */
+    void setDatacenter(Datacenter datacenter);
+
+    /**
+     * Checks if the host is suitable for vm. If it has enough resources
+     * to attend the VM.
+     *
+     * @param vm the vm
+     * @return true, if is suitable for vm
+     */
+    boolean isSuitableForVm(Vm vm);
+
+    /**
+     * Gets the list of VMs migrating into this host.
+     *
+     * @param <T> the generic type
+     * @return the vms migrating in
+     */
+    <T extends Vm> List<T> getVmsMigratingIn();
+
+    /**
      * Adds a VM migrating into the current host.
      *
      * @param vm the vm
      * @return true if the Vm was migrated in, false if the Host doesn't have enough resources to place the Vm
      */
     boolean addMigratingInVm(Vm vm);
+
+    /**
+     * Reallocate VMs migrating into the host. Gets the VM in the migrating in queue
+     * and allocate them on the host.
+     */
+    void reallocateMigratingInVms();
+
+    /**
+     * Removes a migrating in vm.
+     *
+     * @param vm the vm
+     */
+    void removeMigratingInVm(Vm vm);
 
     /**
      * Allocates PEs for a VM.
@@ -79,11 +124,61 @@ public interface Host extends Identificable, Resourceful, Comparable<Host> {
     List<Double> getAllocatedMipsForVm(Vm vm);
 
     /**
-     * Gets the total free MIPS available at the host.
+     * Gets the total allocated MIPS for a VM along all its PEs.
      *
-     * @return the free mips
+     * @param vm the vm
+     * @return the allocated mips for vm
+     */
+    double getTotalAllocatedMipsForVm(Vm vm);
+
+    /**
+     * Gets the Processing Elements (PEs) of the host, that
+     * represent its CPU cores and thus, its processing capacity.
+     *
+     * @return the pe list
+     */
+    List<Pe> getPeList();
+
+    /**
+     * Gets the free pes number.
+     *
+     * @return the free pes number
+     */
+    int getNumberOfFreePes();
+
+    /**
+     * Sets the particular Pe status on the host.
+     *
+     * @param peId the pe id
+     * @param status the new Pe status
+     * @return <tt>true</tt> if the Pe status has set, <tt>false</tt> otherwise (Pe id might not
+     *         be exist)
+     * @pre peID >= 0
+     * @post $none
+     */
+    boolean setPeStatus(int peId, Pe.Status status);
+
+    /**
+     * Gets the number of PEs that are working.
+     * That is, the number of PEs that aren't FAIL.
+     *
+     * @return the number of working pes
+     */
+    long getNumberOfWorkingPes();
+
+    /**
+     * Gets the current amount of available MIPS at the host.
+     *
+     * @return the available amount of MIPS
      */
     double getAvailableMips();
+
+    /**
+     * Returns the maximum available MIPS among all the PEs of the host.
+     *
+     * @return max mips
+     */
+    double getMaxAvailableMips();
 
     /**
      * Gets the total free storage available at the host in Megabytes.
@@ -91,15 +186,6 @@ public interface Host extends Identificable, Resourceful, Comparable<Host> {
      * @return the free storage
      */
     long getAvailableStorage();
-
-    /**
-     * Gets the host bw capacity in Megabits/s.
-     *
-     * @return the host bw capacity
-     * @pre $none
-     * @post $result > 0
-     */
-    Resource getBw();
 
     /**
      * Gets the bandwidth (BW) provisioner with capacity in Megabits/s.
@@ -116,59 +202,6 @@ public interface Host extends Identificable, Resourceful, Comparable<Host> {
     Host setBwProvisioner(ResourceProvisioner bwProvisioner);
 
     /**
-     * Gets the Datacenter where the host is placed.
-     *
-     * @return the data center of the host
-     */
-    Datacenter getDatacenter();
-
-    /**
-     * Returns the maximum available MIPS among all the PEs of the host.
-     *
-     * @return max mips
-     */
-    double getMaxAvailableMips();
-
-    /**
-     * Gets the free pes number.
-     *
-     * @return the free pes number
-     */
-    int getNumberOfFreePes();
-
-    /**
-     * Gets the number of PEs that are working.
-     * That is, the number of PEs that aren't FAIL.
-     *
-     * @return the number of working pes
-     */
-    long getNumberOfWorkingPes();
-
-    /**
-     * Gets the PEs number.
-     *
-     * @return the pes number
-     */
-    int getNumberOfPes();
-
-    /**
-     * Gets the Processing Elements (PEs) of the host, that
-     * represent its CPU cores and thus, its processing capacity.
-     *
-     * @return the pe list
-     */
-    List<Pe> getPeList();
-
-    /**
-     * Gets the host memory resource in Megabytes.
-     *
-     * @return the host memory
-     * @pre $none
-     * @post $result > 0
-     */
-    Resource getRam();
-
-    /**
      * Gets the ram provisioner with capacity in Megabytes.
      *
      * @return the ram provisioner
@@ -181,30 +214,6 @@ public interface Host extends Identificable, Resourceful, Comparable<Host> {
      * @param ramProvisioner the new ram provisioner
      */
     Host setRamProvisioner(ResourceProvisioner ramProvisioner);
-
-    /**
-     * Gets the storage device of the host with capacity in Megabytes.
-     *
-     * @return the host storage device
-     * @pre $none
-     * @post $result >= 0
-     */
-    Resource getStorage();
-
-    /**
-     * Gets the total allocated MIPS for a VM along all its PEs.
-     *
-     * @param vm the vm
-     * @return the allocated mips for vm
-     */
-    double getTotalAllocatedMipsForVm(Vm vm);
-
-    /**
-     * Gets the total mips.
-     *
-     * @return the total mips
-     */
-    long getTotalMips();
 
     /**
      * Gets a VM by its id and user.
@@ -241,15 +250,6 @@ public interface Host extends Identificable, Resourceful, Comparable<Host> {
      */
     Host setVmScheduler(VmScheduler vmScheduler);
 
-
-    /**
-     * Gets the list of VMs migrating into this host.
-     *
-     * @param <T> the generic type
-     * @return the vms migrating in
-     */
-    <T extends Vm> List<T> getVmsMigratingIn();
-
     /**
      * Checks if the host is working properly or has failed.
      *
@@ -258,45 +258,12 @@ public interface Host extends Identificable, Resourceful, Comparable<Host> {
     boolean isFailed();
 
     /**
-     * Checks if the host is suitable for vm. If it has enough resources
-     * to attend the VM.
+     * Sets the Host state to "failed" or "working".
      *
-     * @param vm the vm
-     * @return true, if is suitable for vm
+     * @param failed true to set the Host to "failed", false to set to "working"
+     * @return true if the Host status was changed, false otherwise
      */
-    boolean isSuitableForVm(Vm vm);
-
-    /**
-     * Reallocate VMs migrating into the host. Gets the VM in the migrating in queue
-     * and allocate them on the host.
-     */
-    void reallocateMigratingInVms();
-
-    /**
-     * Removes a migrating in vm.
-     *
-     * @param vm the vm
-     */
-    void removeMigratingInVm(Vm vm);
-
-    /**
-     * Sets the Datacenter where the host is placed.
-     *
-     * @param datacenter the new data center to move the host
-     */
-    void setDatacenter(Datacenter datacenter);
-
-    /**
-     * Sets the particular Pe status on the host.
-     *
-     * @param peId the pe id
-     * @param status the new Pe status
-     * @return <tt>true</tt> if the Pe status has set, <tt>false</tt> otherwise (Pe id might not
-     *         be exist)
-     * @pre peID >= 0
-     * @post $none
-     */
-    boolean setPeStatus(int peId, Pe.Status status);
+    boolean setFailed(boolean failed);
 
     /**
      * Updates the processing of VMs running on this Host,
@@ -357,15 +324,6 @@ public interface Host extends Identificable, Resourceful, Comparable<Host> {
      */
     boolean removeOnUpdateProcessingListener(EventListener<HostUpdatesVmsProcessingEventInfo> listener);
 
-    boolean setFailed(boolean failed);
-
-    /**
-     * Gets the CloudSim instance that represents the simulation the Entity is related to.
-     * @return
-     * @see #setSimulation(Simulation)
-     */
-    Simulation getSimulation();
-
     /**
      * Sets the CloudSim instance that represents the simulation the Entity is related to.
      * Such attribute has to be set by the {@link Datacenter} that the host belongs to.
@@ -373,7 +331,6 @@ public interface Host extends Identificable, Resourceful, Comparable<Host> {
      * @return
      */
     Host setSimulation(Simulation simulation);
-
 
     /**
      * Gets the {@link ResourceProvisioner}s that manages a Host resource

@@ -147,7 +147,7 @@ public interface DatacenterCharacteristics extends Identificable {
      * @pre $none
      * @post $result >= 0
      */
-    long getMips();
+    double getMips();
 
     /**
      * Gets Millions Instructions Per Second (MIPS) Rating of a Processing

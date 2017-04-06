@@ -156,7 +156,7 @@ public class HostsCpuUsageExample {
         int numberOfUsageHistoryEntries = 0;
         final double interval = 1;
         for (HostDynamicWorkloadSimple host : hostList) {
-            double mipsByPe = host.getTotalMips() / (double)host.getNumberOfPes();
+            double mipsByPe = host.getTotalMipsCapacity() / (double)host.getNumberOfPes();
             Log.printFormattedLine("Host %d: Number of PEs %2d, MIPS by PE %.0f", host.getId(), host.getNumberOfPes(), mipsByPe);
             for(HostStateHistoryEntry history: host.getStateHistory()){
                     numberOfUsageHistoryEntries++;

@@ -115,6 +115,7 @@ final class PowerHostNull implements PowerHost {
     @Override public int getNumberOfPes() {
         return 0;
     }
+    @Override public double getMips() { return 0; }
     @Override public List<Pe> getPeList() {
         return Collections.EMPTY_LIST;
     }
@@ -131,9 +132,6 @@ final class PowerHostNull implements PowerHost {
         return Resource.NULL;
     }
     @Override public double getTotalAllocatedMipsForVm(Vm vm) {
-        return 0;
-    }
-    @Override public long getTotalMips() {
         return 0;
     }
     @Override public Vm getVm(int vmId, int brokerId) {

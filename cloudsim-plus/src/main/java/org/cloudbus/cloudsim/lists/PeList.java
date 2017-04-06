@@ -53,10 +53,10 @@ public final class PeList {
     }
 
     /**
-     * Gets total MIPS Rating for all PEs.
+     * Gets total MIPS capacity for a list of PEs.
      *
      * @param peList the pe list
-     * @return the total MIPS Rating
+     * @return the total MIPS capacity
      * @pre $none
      * @post $none
      */

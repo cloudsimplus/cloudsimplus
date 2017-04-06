@@ -7,6 +7,7 @@
  */
 package org.cloudbus.cloudsim.vms;
 
+import org.cloudbus.cloudsim.core.Machine;
 import org.cloudbus.cloudsim.brokers.DatacenterBroker;
 import org.cloudbus.cloudsim.core.ChangeableId;
 import org.cloudsimplus.autoscaling.HorizontalVmScaling;
@@ -20,7 +21,6 @@ import org.cloudbus.cloudsim.schedulers.cloudlet.CloudletScheduler;
 import java.util.List;
 import java.util.function.Predicate;
 
-import org.cloudbus.cloudsim.core.Simulation;
 import org.cloudsimplus.autoscaling.VerticalVmScaling;
 import org.cloudsimplus.listeners.VmHostEventInfo;
 import org.cloudsimplus.listeners.VmDatacenterEventInfo;
@@ -39,7 +39,7 @@ import org.cloudsimplus.listeners.EventListener;
  * @author Manoel Campos da Silva Filho
  * @since CloudSim Plus 1.0
  */
-public interface Vm extends UniquelyIdentificable, ChangeableId, Delayable, Resourceful, Comparable<Vm> {
+public interface Vm extends Machine, UniquelyIdentificable, ChangeableId, Delayable, Comparable<Vm> {
 
     /**
      * An attribute that implements the Null Object Design Pattern for {@link Vm}
@@ -130,33 +130,6 @@ public interface Vm extends UniquelyIdentificable, ChangeableId, Delayable, Reso
      * @see #isCreated()
      */
     Host getHost();
-
-    /**
-     * Gets the individual MIPS capacity of any VM's PE, considering that all
-     * PEs have the same capacity.
-     *
-     * @return the MIPS
-     */
-    double getMips();
-
-    /**
-     * Gets the number of PEs required by the VM. Each PE has the capacity
-     * defined in {@link #getMips()}
-     *
-     * @return the number of PEs
-     * @see #getMips()
-     */
-    int getNumberOfPes();
-
-    /**
-     * Gets the total MIPS capacity (across all PEs) of this VM.
-     *
-     * @return MIPS capacity sum of all PEs
-     *
-     * @see #getMips()
-     * @see #getNumberOfPes()
-     */
-    double getTotalMipsCapacity();
 
     /**
      * Changes the allocation of a given resource for a VM.
@@ -465,11 +438,6 @@ public interface Vm extends UniquelyIdentificable, ChangeableId, Delayable, Reso
      */
     boolean isFailed();
 
-    /**
-     * Gets the CloudSim instance that represents the simulation the Entity is related to.
-     * @return
-     */
-    Simulation getSimulation();
 
     /**
      * {@inheritDoc}

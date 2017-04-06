@@ -10,7 +10,6 @@ package org.cloudbus.cloudsim.datacenters;
 import org.cloudbus.cloudsim.hosts.Host;
 import org.cloudbus.cloudsim.resources.Pe;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
@@ -186,8 +185,8 @@ public class DatacenterCharacteristicsSimple implements DatacenterCharacteristic
     }
 
     @Override
-    public long getMips() {
-        return getHostList().stream().mapToLong(Host::getTotalMips).sum();
+    public double getMips() {
+        return getHostList().stream().mapToDouble(Host::getTotalMipsCapacity).sum();
     }
 
     @Override

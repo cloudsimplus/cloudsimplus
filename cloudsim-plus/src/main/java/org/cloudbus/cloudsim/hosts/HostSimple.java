@@ -330,11 +330,6 @@ public class HostSimple implements Host {
     }
 
     @Override
-    public long getTotalMips() {
-        return PeList.getTotalMips(getPeList());
-    }
-
-    @Override
     public boolean allocatePesForVm(Vm vm, List<Double> mipsShare) {
         return getVmScheduler().allocatePesForVm(vm, mipsShare);
     }
@@ -357,6 +352,11 @@ public class HostSimple implements Host {
     @Override
     public double getMaxAvailableMips() {
         return getVmScheduler().getMaxAvailableMips();
+    }
+
+    @Override
+    public double getMips() {
+        return peList.stream().mapToDouble(Pe::getCapacity).findFirst().orElse(0);
     }
 
     @Override
@@ -547,14 +547,14 @@ public class HostSimple implements Host {
     }
 
     /**
-     * Compare this Host with another one based on {@link #getTotalMips()}.
+     * Compare this Host with another one based on {@link #getTotalMipsCapacity()}.
      *
      * @param o the Host to compare to
      * @return {@inheritDoc}
      */
     @Override
     public int compareTo(Host o) {
-        return Double.compare(getTotalMips(), o.getTotalMips());
+        return Double.compare(getTotalMipsCapacity(), o.getTotalMipsCapacity());
     }
 
     @Override

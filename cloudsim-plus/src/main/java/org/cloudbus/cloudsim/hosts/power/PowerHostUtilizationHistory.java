@@ -85,7 +85,7 @@ public class PowerHostUtilizationHistory extends PowerHostSimple {
 	 */
 	public double[] getUtilizationHistory() {
 		double[] utilizationHistory = new double[PowerVm.MAX_HISTORY_ENTRIES];
-		double hostMips = getTotalMips();
+		double hostMips = getTotalMipsCapacity();
 		for (final PowerVm vm : this.<PowerVm>getVmList()) {
 			for (int i = 0; i < vm.getUtilizationHistory().size(); i++) {
 				utilizationHistory[i] += vm.getUtilizationHistory().get(i) * vm.getMips() / hostMips;

@@ -48,7 +48,7 @@ public class VerticalVmScalingSimple extends VmScalingAbstract implements Vertic
     private Class<? extends ResourceManageable> resourceClassToScale;
 
     /**
-     * Creates a VerticalVmScaling.
+     * Creates a VerticalVmScalingSimple.
      *
      * @param resourceClassToScale the class of Vm resource that this scaling object will request up or down scaling
      *  (such as {@link Ram}.class, {@link Bandwidth}.class or {@link Pe}.class).

@@ -545,7 +545,7 @@ public abstract class PowerVmAllocationPolicyMigrationAbstract extends PowerVmAl
         final double requestedTotalMips = vm.getCurrentRequestedTotalMips();
         final double hostUtilizationMips = getUtilizationOfCpuMips(host);
         final double hostPotentialMipsUse = hostUtilizationMips + requestedTotalMips;
-        return hostPotentialMipsUse / host.getTotalMips();
+        return hostPotentialMipsUse / host.getTotalMipsCapacity();
     }
 
     /**
@@ -693,7 +693,7 @@ public abstract class PowerVmAllocationPolicyMigrationAbstract extends PowerVmAl
     }
 
     private double getHostCpuUtilizationPercentage(PowerHost host) {
-        return getHostTotalRequestedMips(host) / host.getTotalMips();
+        return getHostTotalRequestedMips(host) / host.getTotalMipsCapacity();
     }
 
     /**
