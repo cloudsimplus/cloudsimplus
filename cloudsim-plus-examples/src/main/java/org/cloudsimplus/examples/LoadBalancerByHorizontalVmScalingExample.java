@@ -217,18 +217,19 @@ public class LoadBalancerByHorizontalVmScalingExample {
     }
 
     private Host createHost() {
-        List<Pe> pesList = new ArrayList<>(HOST_PES);
+        List<Pe> peList = new ArrayList<>(HOST_PES);
         for (int i = 0; i < HOST_PES; i++) {
-            pesList.add(new PeSimple(1000, new PeProvisionerSimple()));
+            peList.add(new PeSimple(1000, new PeProvisionerSimple()));
         }
 
-        ResourceProvisioner ramProvisioner = new ResourceProvisionerSimple(new Ram(20480));
-        ResourceProvisioner bwProvisioner = new ResourceProvisionerSimple(new Bandwidth(100000));
+        final long ram = 2048; // in Megabytes
+        final long storage = 1000000; // in Megabytes
+        final long bw = 10000; //in Megabits/s
         VmScheduler vmScheduler = new VmSchedulerTimeShared();
         final int id = hostList.size();
-        return new HostSimple(id, 10000000, pesList)
-            .setRamProvisioner(ramProvisioner)
-            .setBwProvisioner(bwProvisioner)
+        return new HostSimple(ram, bw, storage, peList)
+            .setRamProvisioner(new ResourceProvisionerSimple())
+            .setBwProvisioner(new ResourceProvisionerSimple())
             .setVmScheduler(vmScheduler);
     }
 

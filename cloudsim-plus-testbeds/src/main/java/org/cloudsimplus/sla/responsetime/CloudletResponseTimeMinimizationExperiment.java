@@ -305,11 +305,11 @@ public final class CloudletResponseTimeMinimizationExperiment extends Simulation
             pesList.add(new PeSimple(1000, new PeProvisionerSimple()));
         }
 
-        ResourceProvisioner ramProvisioner = new ResourceProvisionerSimple(new Ram(20480));
-        ResourceProvisioner bwProvisioner = new ResourceProvisionerSimple(new Bandwidth(100000));
+        ResourceProvisioner ramProvisioner = new ResourceProvisionerSimple();
+        ResourceProvisioner bwProvisioner = new ResourceProvisionerSimple();
         VmScheduler vmScheduler = new VmSchedulerTimeShared();
         final int id = hostList.size();
-        return new HostSimple(id, 100000, pesList)
+        return new HostSimple(20480, 100000, 100000, pesList)
                 .setRamProvisioner(ramProvisioner)
                 .setBwProvisioner(bwProvisioner)
                 .setVmScheduler(vmScheduler);
@@ -376,7 +376,7 @@ public final class CloudletResponseTimeMinimizationExperiment extends Simulation
     /**
      * Gets the ratio of existing vPEs (VM PEs) divided by the number
      * of required PEs of all Cloudlets, which indicates
-     * the mean number of vPEs that are available for each PE required 
+     * the mean number of vPEs that are available for each PE required
      * by a Cloudlet, considering all the existing Cloudlets.
      * For instance, if the ratio is 0.5, in average, two Cloudlets
      * requiring one vPE will share that same vPE.

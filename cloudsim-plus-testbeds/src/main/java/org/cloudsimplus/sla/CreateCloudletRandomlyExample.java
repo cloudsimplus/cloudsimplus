@@ -213,9 +213,9 @@ public class CreateCloudletRandomlyExample {
         long storage = 100000000; // host storage
         long bw = 3000000;
 
-        Host host = new HostSimple(hostId++, storage, peList)
-                .setRamProvisioner(new ResourceProvisionerSimple(new Ram(ram)))
-                .setBwProvisioner(new ResourceProvisionerSimple(new Bandwidth(bw)))
+        Host host = new HostSimple(ram, bw, storage, peList)
+                .setRamProvisioner(new ResourceProvisionerSimple())
+                .setBwProvisioner(new ResourceProvisionerSimple())
                 .setVmScheduler(new VmSchedulerTimeShared());
 
         hostList.add(host);

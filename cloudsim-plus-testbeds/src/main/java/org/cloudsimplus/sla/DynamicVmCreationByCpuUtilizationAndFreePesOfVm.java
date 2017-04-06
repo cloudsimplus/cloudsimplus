@@ -183,9 +183,9 @@ public class DynamicVmCreationByCpuUtilizationAndFreePesOfVm {
 
      private void sortCloudletListByLength() {
         //sort the cloudlet list by expected response time
-        Comparator<Cloudlet> sortByExpectedCloudletByLength 
+        Comparator<Cloudlet> sortByExpectedCloudletByLength
                     = Comparator.comparingDouble(cloudlet -> cloudlet.getLength());
-        
+
         cloudletList.sort(sortByExpectedCloudletByLength.reversed());
     }
 
@@ -335,11 +335,11 @@ public class DynamicVmCreationByCpuUtilizationAndFreePesOfVm {
             pesList.add(new PeSimple(4000, new PeProvisionerSimple()));
         }
 
-        ResourceProvisioner ramProvisioner = new ResourceProvisionerSimple(new Ram(20480));
-        ResourceProvisioner bwProvisioner = new ResourceProvisionerSimple(new Bandwidth(10000));
+        ResourceProvisioner ramProvisioner = new ResourceProvisionerSimple();
+        ResourceProvisioner bwProvisioner = new ResourceProvisionerSimple();
         VmScheduler vmScheduler = new VmSchedulerTimeShared();
         final int id = hostList.size();
-        return new HostSimple(id, 10000, pesList)
+        return new HostSimple(20480, 10000, 10000, pesList)
                 .setRamProvisioner(ramProvisioner)
                 .setBwProvisioner(bwProvisioner)
                 .setVmScheduler(vmScheduler);

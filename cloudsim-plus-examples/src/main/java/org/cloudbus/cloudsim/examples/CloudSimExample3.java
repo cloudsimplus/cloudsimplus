@@ -171,9 +171,9 @@ public class CloudSimExample3 {
         long storage = 1000000; //host storage
         long bw = 10000;
 
-        Host host0 = new HostSimple(++hostId, storage, peList0)
-            .setRamProvisioner(new ResourceProvisionerSimple(new Ram(ram)))
-            .setBwProvisioner(new ResourceProvisionerSimple(new Bandwidth(bw)))
+        Host host0 = new HostSimple(ram, bw, storage, peList0)
+            .setRamProvisioner(new ResourceProvisionerSimple())
+            .setBwProvisioner(new ResourceProvisionerSimple())
             .setVmScheduler(new VmSchedulerTimeShared());
         hostList.add(host0);
 
@@ -181,9 +181,9 @@ public class CloudSimExample3 {
         List<Pe> peList1 = new ArrayList<>();
         peList1.add(new PeSimple(mips, new PeProvisionerSimple()));
 
-        Host host1 = new HostSimple(++hostId, storage, peList1)
-            .setRamProvisioner(new ResourceProvisionerSimple(new Ram(ram)))
-            .setBwProvisioner(new ResourceProvisionerSimple(new Bandwidth(bw)))
+        Host host1 = new HostSimple(ram, bw, storage, peList1)
+            .setRamProvisioner(new ResourceProvisionerSimple())
+            .setBwProvisioner(new ResourceProvisionerSimple())
             .setVmScheduler(new VmSchedulerTimeShared());
         hostList.add(host1);
 

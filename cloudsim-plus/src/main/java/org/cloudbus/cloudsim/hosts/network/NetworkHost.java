@@ -85,13 +85,14 @@ public class NetworkHost extends HostSimple {
     /**
      * Creates a NetworkHost.
      *
-     * @param id the id
-     * @param storage the storage capacity
-     * @param peList the host's PEs list
+     * @param ram the RAM capacity in Megabytes
+     * @param bw the Bandwidth (BW) capacity in Megabits/s
+     * @param storage the storage capacity in Megabytes
+     * @param peList the host's {@link Pe} list
      *
      */
-    public NetworkHost(int id, long storage, List<Pe> peList) {
-        super(id, storage, peList);
+    public NetworkHost(long ram, long bw, long storage, List<Pe> peList) {
+        super(ram, bw, storage, peList);
         hostPktsReceived = new ArrayList<>();
         pktsToSendForExternalVms = new ArrayList<>();
         pktsToSendForLocalVms = new ArrayList<>();
@@ -120,7 +121,7 @@ public class NetworkHost extends HostSimple {
             List<Pe> peList,
             VmScheduler vmScheduler)
     {
-        this(id, storage, peList);
+        this(ramProvisioner.getCapacity(), bwProvisioner.getCapacity(), storage, peList);
         setRamProvisioner(ramProvisioner);
         setBwProvisioner(bwProvisioner);
         setVmScheduler(vmScheduler);

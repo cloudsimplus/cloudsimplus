@@ -988,6 +988,7 @@ public class DatacenterSimple extends CloudSimEntity implements Datacenter {
     protected final void setCharacteristics(DatacenterCharacteristics characteristics) {
         characteristics.setDatacenter(this);
         this.characteristics = characteristics;
+        Simulation.setIdForEntitiesWithoutOne(characteristics.getHostList());
     }
 
     /**

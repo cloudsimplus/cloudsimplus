@@ -184,4 +184,5 @@ final class PowerHostNull implements PowerHost {
     @Override public long getNumberOfWorkingPes() {
         return 0L;
     }
+    @Override public void setId(int id) {}
 }

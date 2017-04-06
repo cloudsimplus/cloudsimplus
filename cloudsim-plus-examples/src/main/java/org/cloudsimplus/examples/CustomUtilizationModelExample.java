@@ -152,17 +152,17 @@ public class CustomUtilizationModelExample {
         long storage = 1000000; // host storage (MEGABYTE)
         long bw = 10000; //in Megabits/s
 
-        List<Pe> pesList = new ArrayList<>(); //List of CPU cores
+        List<Pe> peList = new ArrayList<>(); //List of CPU cores
 
         /*Creates the Host's CPU cores and defines the provisioner
         used to allocate each core for requesting VMs.*/
         for (int i = 0; i < 2; i++) {
-            pesList.add(new PeSimple(mips, new PeProvisionerSimple()));
+            peList.add(new PeSimple(mips, new PeProvisionerSimple()));
         }
 
-        return new HostSimple(numberOfCreatedHosts++, storage, pesList)
-                .setRamProvisioner(new ResourceProvisionerSimple(new Ram(ram)))
-                .setBwProvisioner(new ResourceProvisionerSimple(new Bandwidth(bw)))
+        return new HostSimple(ram, bw, storage, peList)
+            .setRamProvisioner(new ResourceProvisionerSimple())
+            .setBwProvisioner(new ResourceProvisionerSimple())
                 .setVmScheduler(new VmSchedulerTimeShared());
     }
 

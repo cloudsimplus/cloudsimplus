@@ -29,6 +29,7 @@ import org.cloudbus.cloudsim.resources.Pe;
 import org.cloudbus.cloudsim.resources.PeSimple;
 import org.cloudbus.cloudsim.resources.Ram;
 import org.cloudbus.cloudsim.schedulers.cloudlet.CloudletSchedulerTimeShared;
+import org.cloudbus.cloudsim.schedulers.vm.VmSchedulerSpaceShared;
 import org.cloudbus.cloudsim.schedulers.vm.VmSchedulerTimeShared;
 import org.cloudbus.cloudsim.selectionpolicies.power.PowerVmSelectionPolicyMinimumUtilization;
 import org.cloudbus.cloudsim.util.Log;
@@ -279,10 +280,10 @@ public final class VmMigrationWhenCpuMetricIsViolatedExampleWithSelectedVm {
      */
     public static PowerHostUtilizationHistory createHost(int id, int numberOfPes, long mipsByPe) {
         List<Pe> peList = createPeList(numberOfPes, mipsByPe);
-        PowerHostUtilizationHistory host = new PowerHostUtilizationHistory(id, HOST_STORAGE, peList);
+        PowerHostUtilizationHistory host = new PowerHostUtilizationHistory(HOST_RAM, HOST_BW, HOST_STORAGE, peList);
         host.setPowerModel(new PowerModelLinear(1000, 0.7))
-                .setRamProvisioner(new ResourceProvisionerSimple(new Ram(HOST_RAM)))
-                .setBwProvisioner(new ResourceProvisionerSimple(new Bandwidth(HOST_BW)))
+                .setRamProvisioner(new ResourceProvisionerSimple())
+                .setBwProvisioner(new ResourceProvisionerSimple())
                 .setVmScheduler(new VmSchedulerTimeShared());
         return host;
     }

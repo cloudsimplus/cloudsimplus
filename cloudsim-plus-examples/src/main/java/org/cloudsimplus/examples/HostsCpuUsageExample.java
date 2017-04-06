@@ -194,10 +194,10 @@ public class HostsCpuUsageExample {
         long storage = 1000000; //host storage (MEGABYTE)
         long bw = 10000; //Megabits/s
 
-        HostDynamicWorkloadSimple host = new HostDynamicWorkloadSimple(++hostId, storage, peList);
+        HostDynamicWorkloadSimple host = new HostDynamicWorkloadSimple(ram, bw, storage, peList);
         host
-            .setRamProvisioner(new ResourceProvisionerSimple(new Ram(ram)))
-            .setBwProvisioner(new ResourceProvisionerSimple(new Bandwidth(bw)))
+            .setRamProvisioner(new ResourceProvisionerSimple())
+            .setBwProvisioner(new ResourceProvisionerSimple())
             .setVmScheduler(new VmSchedulerTimeShared());
         return host;
     }

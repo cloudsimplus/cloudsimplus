@@ -180,9 +180,10 @@ public class SharingHostPEsUsingVmSchedulerTimeSharedExample {
     }
 
     private Host createHost() {
-        long ram = 2048; // host memory (MEGABYTE)
-        long storage = 1000000; // host storage (MEGABYTE)
-        long bw = 10000; //Megabits/s
+        final long mips = 1000; // capacity of each CPU core (in Million Instructions per Second)
+        final long ram = 2048; // in Megabytes
+        final long storage = 1000000; // in Megabytes
+        final long bw = 10000; //in Megabits/s
 
         List<Pe> peList = new ArrayList<>();
         /*Creates the Host's CPU cores and defines the provisioner
@@ -191,9 +192,9 @@ public class SharingHostPEsUsingVmSchedulerTimeSharedExample {
             peList.add(new PeSimple(HOST_MIPS, new PeProvisionerSimple()));
         }
 
-        return new HostSimple(numberOfCreatedHosts++, storage, peList)
-            .setRamProvisioner(new ResourceProvisionerSimple(new Ram(ram)))
-            .setBwProvisioner(new ResourceProvisionerSimple(new Bandwidth(bw)))
+        return new HostSimple(ram, bw, storage, peList)
+            .setRamProvisioner(new ResourceProvisionerSimple())
+            .setBwProvisioner(new ResourceProvisionerSimple())
             .setVmScheduler(new VmSchedulerTimeShared());
     }
 

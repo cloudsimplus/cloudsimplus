@@ -1,4 +1,4 @@
-/**
+/*
  * CloudSim Plus: A modern, highly-extensible and easier-to-use Framework for
  * Modeling and Simulation of Cloud Computing Infrastructures and Services.
  * http://cloudsimplus.org
@@ -182,7 +182,7 @@ public class HostFaultInjectionExample {
 
         // submit cloudlet list to the broker
         broker.submitCloudletList(cloudletList);
-        
+
         // Sixth step: Starts the simulation
         cloudsim.start();
 
@@ -211,7 +211,7 @@ public class HostFaultInjectionExample {
         PoissonProcess poisson = new PoissonProcess(0.2, seed);
 
         UniformDistr failurePesRand = new UniformDistr(seed);
-        for (int i = 0; i < datacenter0.getHostList().size(); i++) {        
+        for (int i = 0; i < datacenter0.getHostList().size(); i++) {
             for (Host host : datacenter0.getHostList()) {
                 System.out.println(" hosts: " + host);
                 if (poisson.haveKEventsHappened()) {
@@ -222,10 +222,10 @@ public class HostFaultInjectionExample {
                     fault.setNumberOfFailedPesRandom(failurePesRand);
                     fault.setDelayForFailureOfHostRandom(delayForFailureOfHostRandom);
                     fault.setHost(host);
-                   
+
                 } else {
                     System.out.println("\t *** Host not failed. -> Id: " + host.getId() + "\n");
-                             
+
                 }
                 i++;
             }
@@ -248,9 +248,9 @@ public class HostFaultInjectionExample {
 
         for (int i = 0; i < HOSTS_NUMBER; i++) {
             List<Pe> peList = createHostPesList(HOST_PES, mips);
-            Host host = new HostSimple(hostId++, storage, peList)
-                    .setRamProvisioner(new ResourceProvisionerSimple(new Ram(ram)))
-                    .setBwProvisioner(new ResourceProvisionerSimple(new Bandwidth(bw)))
+            Host host = new HostSimple(ram, bw, storage, peList)
+                    .setRamProvisioner(new ResourceProvisionerSimple())
+                    .setBwProvisioner(new ResourceProvisionerSimple())
                     .setVmScheduler(new VmSchedulerTimeShared());
 
             hostList.add(host);

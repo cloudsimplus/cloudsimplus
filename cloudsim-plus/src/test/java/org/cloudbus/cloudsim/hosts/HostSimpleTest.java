@@ -60,10 +60,11 @@ public class HostSimpleTest {
             final long bw, final long storage) {
         final List<Pe> peList = createPes(numberOfPes, mips);
 
-        final HostSimple host = new HostSimple(hostId, storage, peList);
-        host.setRamProvisioner(new ResourceProvisionerSimple(new Ram(ram)))
-            .setBwProvisioner(new ResourceProvisionerSimple(new Bandwidth(bw)))
-            .setVmScheduler(new VmSchedulerTimeShared());
+        final HostSimple host = new HostSimple(ram, bw, storage, peList);
+        host.setRamProvisioner(new ResourceProvisionerSimple())
+            .setBwProvisioner(new ResourceProvisionerSimple())
+            .setVmScheduler(new VmSchedulerTimeShared())
+            .setId(hostId);
         return host;
     }
 
@@ -71,9 +72,9 @@ public class HostSimpleTest {
             final int numberOfPes, VmScheduler vmScheduler) {
         final List<Pe> peList = createPes(numberOfPes, MIPS);
 
-        final HostSimple host = new HostSimple(hostId, STORAGE, peList);
-        host.setRamProvisioner(new ResourceProvisionerSimple(new Ram(RAM)))
-            .setBwProvisioner(new ResourceProvisionerSimple(new Bandwidth(RAM)))
+        final HostSimple host = new HostSimple(RAM, BW, STORAGE, peList);
+        host.setRamProvisioner(new ResourceProvisionerSimple())
+            .setBwProvisioner(new ResourceProvisionerSimple())
             .setVmScheduler(vmScheduler);
         return host;
 

@@ -209,9 +209,9 @@ public class VmsCpuUsageExample {
         long storage = 1000000; //host storage
         int bw = 10000;
 
-        return new HostDynamicWorkloadSimple(hostId, storage, peList)
-            .setRamProvisioner(new ResourceProvisionerSimple(new Ram(ram)))
-            .setBwProvisioner(new ResourceProvisionerSimple(new Bandwidth(bw)))
+        return new HostDynamicWorkloadSimple(ram, bw, storage, peList)
+            .setRamProvisioner(new ResourceProvisionerSimple())
+            .setBwProvisioner(new ResourceProvisionerSimple())
             .setVmScheduler(new VmSchedulerTimeShared());
     }
 }

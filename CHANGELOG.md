@@ -29,7 +29,10 @@ Lists the main changes in the project.
 - Changed the methods `getRam()`, `getBw()` and `getSize()` from Vm interface to instead of returning a long value that represents the resource capacity,
   to return an actual Resource object that provides information about the capacity and usage. The method getSize() was renamed to getStorage().
 - Changed the methods `getRamCapacity()`, `getBwCapacity()` and `getStorageCapacity()` from Host interface to instead of returning a long value that represents the resource capacity, to return an actual Resource object that provides information about the capacity and usage. The methods were renamed, removing the "Capacity" suffix.
-
+- Removed the ID parameter from the Host constructor, enabling automatic ID generation when a List of Hosts is 
+  attached to a Datacenter.
+- Hosts constructors require the RAM and bandwidth capacity, since storage already was required.
+- Instantiating a `ResourceProvisionerSimple` requires just a default no-args constructor.
 - The `DatacenterBroker` interfaces now allows using Java 8 Lambda Expressions to define selection policies.
   - It provides a functional way of defining the policies to select a Datacenter to host a Vm, a fallback Datacenter when the creation of requested VMs failed in the previous   selected Datacenter and to select a VM to run a Cloudlet.
   - The DatacenterBrokerSimple is yet selecting the first Datacenter to place VMs and uses a round-robin policy to select a VM to run the Cloudlets. If such behaviours needs to be changed, it is not required to create a new DatacenterBroker class. 

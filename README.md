@@ -178,10 +178,13 @@ DatacenterBroker broker0 = new DatacenterBrokerSimple(cloudsim);
 List<Host> hostList = new ArrayList<>(1);
 List<Pe> hostPes = new ArrayList<>(1);
 hostPes.add(new PeSimple(20000, new PeProvisionerSimple()));
-Host host0 = new HostSimple(0, 100000, hostPes);
-host0.setRamProvisioner(new ResourceProvisionerSimple(new Ram(10000)))
-     .setBwProvisioner(new ResourceProvisionerSimple(new Bandwidth(100000)))
-     .setVmScheduler(new VmSchedulerSpaceShared());
+long ram = 10000; //in Megabytes
+long storage = 100000; //in Megabytes
+long bw = 100000; //in Megabits/s
+Host host0 = new HostSimple(ram, bw, storage, hostPes);
+host0.setRamProvisioner(new ResourceProvisionerSimple())
+      .setBwProvisioner(new ResourceProvisionerSimple())
+      .setVmScheduler(new VmSchedulerSpaceShared());
 hostList.add(host0);
 
 //Creates a Datacenter with a list of Hosts.
@@ -311,15 +314,16 @@ VmAllocationPolicy vmAllocationPolicy = new VmAllocationPolicySimple();
 Datacenter datacenter0 = new DatacenterSimple(cloudsim, characts, vmAllocationPolicy);
 ```
 
-The way you instantiate a host has changed too. The classes `RamProvisionerSimple` and `BwProvisionerSimple` don't exist anymore. Now you just have the generic class `ResourceProvisionerSimple`. And this class doesn't require a primitive value to define the resource capacity. Instead, it requires an object that implements the new `Resource` interface (such as the `Ram` and `Bandwidth` classes). A `VmScheduler` constructor doesn't require any parameter. Instantiating a host should be now similar to:
+The way you instantiate a host has changed too. The classes `RamProvisionerSimple` and `BwProvisionerSimple` don't exist anymore. Now you just have the generic class `ResourceProvisionerSimple` and you can just use its default no-args constructor. RAM and bandwidth capacity of the host now are given in the constructor, as it already was for storage. A `VmScheduler` constructor doesn't require any parameter. You don't need to set an ID for each Host, since
+if one is not given, when the List of hosts is attached to a Datacenter, it will generate an ID for those hosts. Instantiating a host should be now similar to:
 
 ```java
 long ram = 20480; //in MB
 long bw = 1000000; //in Megabits/s
 long storage = 1000000; //in MB
-Host host = new HostSimple(id, storage, pesList);
-host.setRamProvisioner(new ResourceProvisionerSimple(new Ram(ram)))
-    .setBwProvisioner(new ResourceProvisionerSimple(new Bandwidth(bw)))
+Host host = new HostSimple(ram, bw, storage, pesList);
+host.setRamProvisioner(new ResourceProvisionerSimple())
+    .setBwProvisioner(new ResourceProvisionerSimple())
     .setVmScheduler(new VmSchedulerTimeShared());
 ``` 
 

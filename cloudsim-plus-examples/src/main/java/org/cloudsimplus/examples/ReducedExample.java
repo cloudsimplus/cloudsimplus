@@ -82,9 +82,12 @@ class ReducedExample {
         List<Host> hostList = new ArrayList<>(1);
         List<Pe> hostPes = new ArrayList<>(1);
         hostPes.add(new PeSimple(20000, new PeProvisionerSimple()));
-        Host host0 = new HostSimple(0, 100000, hostPes);
-        host0.setRamProvisioner(new ResourceProvisionerSimple(new Ram(10000)))
-             .setBwProvisioner(new ResourceProvisionerSimple(new Bandwidth(100000)))
+        final long ram = 10000; //in Megabytes
+        final long storage = 100000; //in Megabytes
+        final long bw = 100000; //in Megabits/s
+        Host host0 = new HostSimple(ram, bw, storage, hostPes);
+        host0.setRamProvisioner(new ResourceProvisionerSimple())
+             .setBwProvisioner(new ResourceProvisionerSimple())
              .setVmScheduler(new VmSchedulerSpaceShared());
         hostList.add(host0);
 

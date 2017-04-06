@@ -191,14 +191,14 @@ public class DynamicCreationOfVmsAndCloudletsExample {
         long bw = 10000; //in Megabits/s
 
         final int numberOfPes = 8;
-        List<Pe> pesList = new ArrayList<>(numberOfPes); //List of CPU cores
+        List<Pe> peList = new ArrayList<>(numberOfPes); //List of CPU cores
         for (int i = 0; i < numberOfPes; i++) {
-            pesList.add(new PeSimple(mips, new PeProvisionerSimple()));
+            peList.add(new PeSimple(mips, new PeProvisionerSimple()));
         }
 
-        return new HostSimple(numberOfCreatedHosts++, storage, pesList)
-                .setRamProvisioner(new ResourceProvisionerSimple(new Ram(ram)))
-                .setBwProvisioner(new ResourceProvisionerSimple(new Bandwidth(bw)))
+        return new HostSimple(ram, bw, storage, peList)
+            .setRamProvisioner(new ResourceProvisionerSimple())
+            .setBwProvisioner(new ResourceProvisionerSimple())
                 .setVmScheduler(new VmSchedulerTimeShared());
     }
 

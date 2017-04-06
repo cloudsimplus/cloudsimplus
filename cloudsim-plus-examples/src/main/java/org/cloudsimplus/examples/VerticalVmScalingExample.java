@@ -196,19 +196,19 @@ public class VerticalVmScalingExample {
     }
 
     private Host createHost() {
-        List<Pe> pesList = new ArrayList<>(HOST_PES);
+        List<Pe> peList = new ArrayList<>(HOST_PES);
         for (int i = 0; i < HOST_PES; i++) {
-            pesList.add(new PeSimple(1000, new PeProvisionerSimple()));
+            peList.add(new PeSimple(1000, new PeProvisionerSimple()));
         }
 
-        ResourceProvisioner ramProvisioner = new ResourceProvisionerSimple(new Ram(20000));
-        ResourceProvisioner bwProvisioner = new ResourceProvisionerSimple(new Bandwidth(100000));
-        VmScheduler vmScheduler = new VmSchedulerTimeShared();
+        final long ram = 20000; //in Megabytes
+        final long bw = 100000; //in Megabytes
+        final long storage = 10000000; //in Megabites/s
         final int id = hostList.size();
-        return new HostSimple(id, 10000000, pesList)
-            .setRamProvisioner(ramProvisioner)
-            .setBwProvisioner(bwProvisioner)
-            .setVmScheduler(vmScheduler);
+        return new HostSimple(ram, bw, storage, peList)
+            .setRamProvisioner(new ResourceProvisionerSimple())
+            .setBwProvisioner(new ResourceProvisionerSimple())
+            .setVmScheduler(new VmSchedulerTimeShared());
     }
 
     /**

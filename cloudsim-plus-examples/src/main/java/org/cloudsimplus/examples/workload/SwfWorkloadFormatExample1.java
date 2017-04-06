@@ -273,9 +273,9 @@ public class SwfWorkloadFormatExample1 {
             List<Pe> peList = createPeList(numberOfPes, VM_MIPS);
 
             Host host =
-                new HostSimple(lastCreatedHostId++, storage, peList)
-                    .setRamProvisioner(new ResourceProvisionerSimple(new Ram(ram)))
-                    .setBwProvisioner(new ResourceProvisionerSimple(new Bandwidth(bw)))
+                new HostSimple(ram, bw, storage, peList)
+                    .setRamProvisioner(new ResourceProvisionerSimple())
+                    .setBwProvisioner(new ResourceProvisionerSimple())
                     .setVmScheduler(new VmSchedulerTimeShared());
 
             list.add(host);

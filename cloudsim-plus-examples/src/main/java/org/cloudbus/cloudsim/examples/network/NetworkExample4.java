@@ -156,9 +156,9 @@ public class NetworkExample4 {
         long storage = 1000000; //host storage (MEGABYTE)
         long bw = 10000; //Megabits/s
 
-        Host host = new HostSimple(hostId, storage, peList)
-            .setRamProvisioner(new ResourceProvisionerSimple(new Ram(ram)))
-            .setBwProvisioner(new ResourceProvisionerSimple(new Bandwidth(bw)))
+        Host host = new HostSimple(ram, bw, storage, peList)
+            .setRamProvisioner(new ResourceProvisionerSimple())
+            .setBwProvisioner(new ResourceProvisionerSimple())
             .setVmScheduler(new VmSchedulerTimeShared());
         hostList.add(host);
 

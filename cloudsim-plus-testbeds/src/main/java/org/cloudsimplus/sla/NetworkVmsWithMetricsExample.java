@@ -1,4 +1,4 @@
-/**
+/*
  * CloudSim Plus: A modern, highly-extensible and easier-to-use Framework for
  * Modeling and Simulation of Cloud Computing Infrastructures and Services.
  * http://cloudsimplus.org
@@ -236,9 +236,9 @@ public class NetworkVmsWithMetricsExample {
         long storage = 1000000; // host storage
         long bw = 10000;
 
-        Host host = new NetworkHost(hostId, storage, peList);
-        host.setRamProvisioner(new ResourceProvisionerSimple(new Ram(ram)))
-                .setBwProvisioner(new ResourceProvisionerSimple(new Bandwidth(bw)))
+        Host host = new NetworkHost(ram, bw, storage, peList);
+        host.setRamProvisioner(new ResourceProvisionerSimple())
+                .setBwProvisioner(new ResourceProvisionerSimple())
                 .setVmScheduler(new VmSchedulerTimeShared());
 
         hostList.add(host);

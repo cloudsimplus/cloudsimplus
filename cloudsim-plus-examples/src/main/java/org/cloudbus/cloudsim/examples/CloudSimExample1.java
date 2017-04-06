@@ -155,14 +155,13 @@ public class CloudSimExample1 {
 
         // 4. Create Host with its id and list of PEs and add them to the list
         // of machines
-        int hostId = 0;
-        long ram = 2048; // host memory (MEGABYTE)
-        long storage = 1000000; // host storage
-        long bw = 10000;
+        long ram = 2048; // in Megabytes
+        long storage = 1000000; // in Megabytes
+        long bw = 10000; //in Megabits/s
 
-        Host host = new HostSimple(hostId, storage, peList)
-            .setRamProvisioner(new ResourceProvisionerSimple(new Ram(ram)))
-            .setBwProvisioner(new ResourceProvisionerSimple(new Bandwidth(bw)))
+        Host host = new HostSimple(ram, bw, storage, peList)
+            .setRamProvisioner(new ResourceProvisionerSimple())
+            .setBwProvisioner(new ResourceProvisionerSimple())
             .setVmScheduler(new VmSchedulerTimeShared());
 
         hostList.add(host);

@@ -49,9 +49,9 @@ public class HostDynamicWorkloadTest {
         peList.add(new PeSimple(MIPS, new PeProvisionerSimple()));
         peList.add(new PeSimple(MIPS, new PeProvisionerSimple()));
 
-        host = new HostDynamicWorkloadSimple(ID, STORAGE, peList);
-        host.setRamProvisioner(new ResourceProvisionerSimple(new Ram(RAM)))
-            .setBwProvisioner(new ResourceProvisionerSimple(new Bandwidth(BW)))
+        host = new HostDynamicWorkloadSimple(RAM, BW, STORAGE, peList);
+        host.setRamProvisioner(new ResourceProvisionerSimple())
+            .setBwProvisioner(new ResourceProvisionerSimple())
             .setVmScheduler(new VmSchedulerTimeShared());
     }
 

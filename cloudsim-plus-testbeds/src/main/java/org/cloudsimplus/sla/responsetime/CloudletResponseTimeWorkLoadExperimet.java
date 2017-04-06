@@ -11,6 +11,7 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import static java.util.Comparator.comparingDouble;
 import java.util.List;
+import java.util.function.Predicate;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.apache.commons.math3.stat.descriptive.SummaryStatistics;
@@ -52,7 +53,7 @@ import org.cloudsimplus.testbeds.SimulationExperiment;
  * @author raysaoliveira
  */
 public class CloudletResponseTimeWorkLoadExperimet extends SimulationExperiment {
- 
+
     private static final int SCHEDULING_INTERVAL = 5;
 
     /**
@@ -154,11 +155,11 @@ public class CloudletResponseTimeWorkLoadExperimet extends SimulationExperiment 
         } catch (IOException ex) {
             Logger.getLogger(CloudletResponseTimeWorkLoadExperimet.class.getName()).log(Level.SEVERE, null, ex);
         }
-       
+
         cloudletList.forEach((cloudlet) -> {
             cloudlet.setBroker(broker);
         });
-     
+
         return cloudletList;
     }
 
@@ -296,11 +297,11 @@ public class CloudletResponseTimeWorkLoadExperimet extends SimulationExperiment 
             pesList.add(new PeSimple(1000, new PeProvisionerSimple()));
         }
 
-        ResourceProvisioner ramProvisioner = new ResourceProvisionerSimple(new Ram(20480));
-        ResourceProvisioner bwProvisioner = new ResourceProvisionerSimple(new Bandwidth(100000));
+        ResourceProvisioner ramProvisioner = new ResourceProvisionerSimple();
+        ResourceProvisioner bwProvisioner = new ResourceProvisionerSimple();
         VmScheduler vmScheduler = new VmSchedulerTimeShared();
         final int id = hostList.size();
-        return new HostSimple(id, 100000, pesList)
+        return new HostSimple(20480, 100000, 100000, pesList)
                 .setRamProvisioner(ramProvisioner)
                 .setBwProvisioner(bwProvisioner)
                 .setVmScheduler(vmScheduler);

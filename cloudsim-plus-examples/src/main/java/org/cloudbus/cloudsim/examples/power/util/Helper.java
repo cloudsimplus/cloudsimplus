@@ -103,10 +103,11 @@ public final class Helper {
                         peList.add(new PeSimple(Constants.HOST_MIPS[hostType], new PeProvisionerSimple()));
                 }
 
-                PowerHost host = new PowerHostUtilizationHistory(i, Constants.HOST_STORAGE, peList);
+                PowerHost host = new PowerHostUtilizationHistory(
+                    Constants.HOST_RAM[hostType], Constants.HOST_BW, Constants.HOST_STORAGE, peList);
                 host.setPowerModel(Constants.HOST_POWER[hostType])
-                    .setRamProvisioner(new ResourceProvisionerSimple(new Ram(Constants.HOST_RAM[hostType])))
-                    .setBwProvisioner(new ResourceProvisionerSimple(new Bandwidth(Constants.HOST_BW)))
+                    .setRamProvisioner(new ResourceProvisionerSimple())
+                    .setBwProvisioner(new ResourceProvisionerSimple())
                     .setVmScheduler(new VmSchedulerTimeSharedOverSubscription());
                 hostList.add(host);
             }

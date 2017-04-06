@@ -123,9 +123,9 @@ public class CloudSimExample0 {
             pesList.add(new PeSimple(mips, new PeProvisionerSimple()));
         }
 
-        return new HostSimple(numberOfCreatedHosts++, storage, pesList)
-                .setRamProvisioner(new ResourceProvisionerSimple(new Ram(ram)))
-                .setBwProvisioner(new ResourceProvisionerSimple(new Bandwidth(bw)))
+        return new HostSimple(ram, bw, storage, pesList)
+                .setRamProvisioner(new ResourceProvisionerSimple())
+                .setBwProvisioner(new ResourceProvisionerSimple())
                 .setVmScheduler(new VmSchedulerTimeShared());
     }
 

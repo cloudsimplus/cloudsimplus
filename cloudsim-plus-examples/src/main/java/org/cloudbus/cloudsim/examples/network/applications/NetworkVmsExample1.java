@@ -139,9 +139,9 @@ public class NetworkVmsExample1 {
 
     private Host createHost(int id) {
         List<Pe> peList = createPEs(HOST_PES, HOST_MIPS);
-        return new NetworkHost(id, HOST_STORAGE, peList)
-            .setRamProvisioner(new ResourceProvisionerSimple(new Ram(HOST_RAM)))
-            .setBwProvisioner(new ResourceProvisionerSimple(new Bandwidth(HOST_BW)))
+        return new NetworkHost(HOST_RAM, HOST_BW, HOST_STORAGE, peList)
+            .setRamProvisioner(new ResourceProvisionerSimple())
+            .setBwProvisioner(new ResourceProvisionerSimple())
             .setVmScheduler(new VmSchedulerTimeShared());
     }
 

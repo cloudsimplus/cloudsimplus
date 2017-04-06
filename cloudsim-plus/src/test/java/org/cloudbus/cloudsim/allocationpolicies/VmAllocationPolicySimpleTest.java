@@ -42,7 +42,7 @@ public class VmAllocationPolicySimpleTest {
         final List<Host> hosts = new ArrayList<>(freePesByHost.length);
         for(int i = 1; i <= freePesByHost.length; i++) {
             final Host host = HostSimpleTest.createHostSimple(
-                i, freePesByHost[i-1], HOST_MIPS, HOST_RAM, HOST_BW, i* HOST_BASE_STORAGE);
+                i, freePesByHost[i-1], HOST_MIPS, HOST_RAM, HOST_BW, i*HOST_BASE_STORAGE);
             hostFreePesMap.put(host, host.getNumberOfPes());
             hosts.add(host);
         }

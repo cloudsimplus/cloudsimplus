@@ -38,13 +38,13 @@ import org.cloudbus.cloudsim.util.MathUtil;
 public class PowerHostUtilizationHistory extends PowerHostSimple {
     /**
      * Creates a PowerHostUtilizationHistory.
-     *
-     * @param id the host id
-     * @param storage the storage capacity in MEGABYTE
-     * @param peList the host's PEs list
+     * @param ram the RAM capacity in Megabytes
+     * @param bw the Bandwidth (BW) capacity in Megabits/s
+     * @param storage the storage capacity in Megabytes
+     * @param peList the host's {@link Pe} list
      */
-    public PowerHostUtilizationHistory(int id, long storage, List<Pe> peList) {
-        super(id, storage, peList);
+    public PowerHostUtilizationHistory(long ram, long bw, long storage, List<Pe> peList) {
+        super(ram, bw, storage, peList);
     }
 
 	/**
@@ -72,7 +72,7 @@ public class PowerHostUtilizationHistory extends PowerHostSimple {
 			VmScheduler vmScheduler,
 			PowerModel powerModel)
     {
-		this(id, storage, peList);
+		this(ramProvisioner.getCapacity(), bwProvisioner.getCapacity(), storage, peList);
         setRamProvisioner(ramProvisioner);
         setBwProvisioner(bwProvisioner);
         setVmScheduler(vmScheduler);

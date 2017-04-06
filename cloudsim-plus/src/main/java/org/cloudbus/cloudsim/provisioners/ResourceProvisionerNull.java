@@ -30,6 +30,7 @@ final class ResourceProvisionerNull implements ResourceProvisioner {
     @Override public ResourceManageable getResource() {
         return ResourceManageable.NULL;
     }
+    @Override public void setResource(ResourceManageable resource) {}
     @Override public long getCapacity() {
         return 0;
     }

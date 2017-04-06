@@ -140,4 +140,5 @@ final class HostNull implements Host {
     @Override public String toString() {
         return "Host.NULL";
     }
+    @Override public void setId(int id) {}
 }

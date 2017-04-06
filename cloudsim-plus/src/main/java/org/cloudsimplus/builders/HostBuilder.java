@@ -74,9 +74,9 @@ public class HostBuilder extends Builder {
             Constructor cons = vmSchedulerClass.getConstructor();
 
             final Host host =
-             new HostSimple(id, storage, peList)
-                .setRamProvisioner(new ResourceProvisionerSimple(new Ram(ram)))
-                .setBwProvisioner(new ResourceProvisionerSimple(new Bandwidth(bw)))
+             new HostSimple(ram, bw, storage, peList)
+                .setRamProvisioner(new ResourceProvisionerSimple())
+                .setBwProvisioner(new ResourceProvisionerSimple())
                 .setVmScheduler((VmScheduler) cons.newInstance())
                 .addOnUpdateProcessingListener(onUpdateVmsProcessingListener);
             hosts.add(host);

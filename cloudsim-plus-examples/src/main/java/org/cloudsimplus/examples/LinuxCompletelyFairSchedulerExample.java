@@ -152,10 +152,10 @@ public class LinuxCompletelyFairSchedulerExample {
 
         List<Pe> peList = createHostPesList(HOST_MIPS);
 
-       return new HostSimple(numberOfCreatedHosts++, storage, peList)
-            .setRamProvisioner(new ResourceProvisionerSimple(new Ram(ram)))
-            .setBwProvisioner(new ResourceProvisionerSimple(new Bandwidth(bw)))
-            .setVmScheduler(new VmSchedulerTimeShared());
+       return new HostSimple(ram, bw, storage, peList)
+           .setRamProvisioner(new ResourceProvisionerSimple())
+           .setBwProvisioner(new ResourceProvisionerSimple())
+           .setVmScheduler(new VmSchedulerTimeShared());
 
     }
 

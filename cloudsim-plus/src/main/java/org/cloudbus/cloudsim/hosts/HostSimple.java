@@ -41,6 +41,13 @@ public class HostSimple implements Host {
      */
     private int id;
 
+    private Ram ram;
+
+    private Bandwidth bw;
+
+    /**
+     * @see #getStorage()
+     */
     private Storage storage;
 
     /**
@@ -103,22 +110,30 @@ public class HostSimple implements Host {
     private List<ResourceProvisioner> provisioners;
 
     /**
-     * Creates a Host.
+     * Creates a Host without a pre-defined ID.
+     * The ID is automatically set when a List of Hosts is attached
+     * to a {@link Datacenter}.
      *
-     * @param id the host id
-     * @param storageCapacity the storage capacity in Megabytes
-     * @param peList the host's PEs list
+     * @param ram the RAM capacity in Megabytes
+     * @param bw the Bandwidth (BW) capacity in Megabits/s
+     * @param storage the storage capacity in Megabytes
+     * @param peList the host's {@link Pe} list
+     * @see #setId(int)
      */
-    public HostSimple(int id, long storageCapacity,  List<Pe> peList) {
-        setId(id);
+    public HostSimple(long ram, long bw, long storage, List<Pe> peList) {
+        this.setId(-1);
         this.setSimulation(Simulation.NULL);
-        setRamProvisioner(ResourceProvisioner.NULL);
-        setBwProvisioner(ResourceProvisioner.NULL);
-        setVmScheduler(VmScheduler.NULL);
-        this.setStorage(storageCapacity);
-        setPeList(peList);
-        setFailed(false);
-        setDatacenter(Datacenter.NULL);
+
+        this.ram = new Ram(ram);
+        this.bw = new Bandwidth(bw);
+        this.setStorage(storage);
+        this.setRamProvisioner(ResourceProvisioner.NULL);
+        this.setBwProvisioner(ResourceProvisioner.NULL);
+
+        this.setVmScheduler(VmScheduler.NULL);
+        this.setPeList(peList);
+        this.setFailed(false);
+        this.setDatacenter(Datacenter.NULL);
         this.onUpdateProcessingListeners = new HashSet<>();
         this.resources = new ArrayList();
         this.provisioners = new ArrayList();
@@ -130,7 +145,7 @@ public class HostSimple implements Host {
      * @param id the host id
      * @param ramProvisioner the ram provisioner with capacity in Megabytes
      * @param bwProvisioner the bw provisioner with capacity in Megabits/s
-     * @param storageCapacity the storage capacity in Megabytes
+     * @param storage the storage capacity in Megabytes
      * @param peList the host's PEs list
      * @param vmScheduler the vm scheduler
      *
@@ -143,11 +158,11 @@ public class HostSimple implements Host {
             int id,
             ResourceProvisioner ramProvisioner,
             ResourceProvisioner bwProvisioner,
-            long storageCapacity,
+            long storage,
             List<Pe> peList,
             VmScheduler vmScheduler)
     {
-        this(id, storageCapacity, peList);
+        this(ramProvisioner.getCapacity(), bwProvisioner.getCapacity(), storage, peList);
         setRamProvisioner(ramProvisioner);
         setBwProvisioner(bwProvisioner);
         setPeList(peList);
@@ -398,6 +413,7 @@ public class HostSimple implements Host {
     public final Host setRamProvisioner(ResourceProvisioner ramProvisioner) {
         checkSimulationIsRunningAndAttemptedToChangeHost("RAM");
         this.ramProvisioner = ramProvisioner;
+        this.ramProvisioner.setResource(ram);
         return this;
     }
 
@@ -416,6 +432,7 @@ public class HostSimple implements Host {
     public final Host setBwProvisioner(ResourceProvisioner bwProvisioner) {
         checkSimulationIsRunningAndAttemptedToChangeHost("BW");
         this.bwProvisioner = bwProvisioner;
+        this.bwProvisioner.setResource(bw);
         return this;
     }
 
@@ -526,7 +543,6 @@ public class HostSimple implements Host {
     }
 
     private Host setStorage(long size) {
-        checkSimulationIsRunningAndAttemptedToChangeHost("Storage");
         this.storage = new Storage(size);
         return this;
     }

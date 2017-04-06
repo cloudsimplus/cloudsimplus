@@ -50,7 +50,7 @@ public class VmSchedulerTimeSharedOverSubscriptionTest {
     private VmSchedulerTimeSharedOverSubscription createVmScheduler(double mips, int pesNumber) {
         final List<Pe> peList = new ArrayList<>(pesNumber);
         LongStream.range(0, pesNumber).forEach(i -> peList.add(new PeSimple(mips, new PeProvisionerSimple())));
-        final Host host = new HostSimple(1, 1000, peList);
+        final Host host = new HostSimple(1000, 1000, 1000, peList);
         final VmSchedulerTimeSharedOverSubscription scheduler = new VmSchedulerTimeSharedOverSubscription();
         scheduler.setHost(host);
         return scheduler;

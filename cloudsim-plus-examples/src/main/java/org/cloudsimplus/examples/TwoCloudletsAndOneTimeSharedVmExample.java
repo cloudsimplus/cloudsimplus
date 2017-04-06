@@ -173,16 +173,14 @@ public class TwoCloudletsAndOneTimeSharedVmExample {
         // 3. Create PEs and add these into a list.
         peList.add(new PeSimple(mips, new PeProvisionerSimple()));
 
-        // 4. Create HostSimple with its id and list of PEs and add them to the list
-        // of machines
-        int hostId = 0;
-        long ram = 2048; // host memory (MEGABYTE)
-        long storage = 1000000; // host storage (MEGABYTE)
-        long bw = 10000; //Megabits/s
-
-        Host host = new HostSimple(hostId, storage, peList)
-            .setRamProvisioner(new ResourceProvisionerSimple(new Ram(ram)))
-            .setBwProvisioner(new ResourceProvisionerSimple(new Bandwidth(bw)))
+        // 4. Create HostSimple with its id and list of PEs and add them to the list of machines
+        final long ram = 20000; //in Megabytes
+        final long bw = 100000; //in Megabytes
+        final long storage = 10000000; //in Megabites/s
+        final int id = hostList.size();
+        Host host = new HostSimple(ram, bw, storage, peList)
+            .setRamProvisioner(new ResourceProvisionerSimple())
+            .setBwProvisioner(new ResourceProvisionerSimple())
             .setVmScheduler(new VmSchedulerTimeShared());
 
         hostList.add(host);
