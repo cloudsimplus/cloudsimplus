@@ -33,7 +33,7 @@ import org.cloudbus.cloudsim.provisioners.ResourceProvisioner;
  * @author Manoel Campos da Silva Filho
  * @since CloudSim Plus 1.0
  */
-public interface Host extends Machine, Identificable, Comparable<Host> {
+public interface Host extends Machine, Comparable<Host> {
 
     /**
      * An attribute that implements the Null Object Design Pattern for {@link Host}

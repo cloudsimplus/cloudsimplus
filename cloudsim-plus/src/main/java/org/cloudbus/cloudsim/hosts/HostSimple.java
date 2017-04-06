@@ -384,12 +384,8 @@ public class HostSimple implements Host {
         return id;
     }
 
-    /**
-     * Sets the host id.
-     *
-     * @param id the new host id
-     */
-    protected final void setId(int id) {
+    @Override
+    public final void setId(int id) {
         this.id = id;
     }
 

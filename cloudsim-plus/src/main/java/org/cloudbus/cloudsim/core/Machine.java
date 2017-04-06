@@ -15,7 +15,7 @@ import org.cloudbus.cloudsim.vms.Vm;
  * @author Manoel Campos da Silva Filho
  * @since CloudSim Plus 1.2.0
  */
-public interface Machine extends Resourceful {
+public interface Machine extends ChangeableId, Resourceful {
     /**
      * Gets the machine bandwidth (bw) capacity in Megabits/s.
      *

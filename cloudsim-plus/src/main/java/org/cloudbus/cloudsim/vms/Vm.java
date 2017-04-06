@@ -39,7 +39,7 @@ import org.cloudsimplus.listeners.EventListener;
  * @author Manoel Campos da Silva Filho
  * @since CloudSim Plus 1.0
  */
-public interface Vm extends Machine, UniquelyIdentificable, ChangeableId, Delayable, Comparable<Vm> {
+public interface Vm extends Machine, UniquelyIdentificable, Delayable, Comparable<Vm> {
 
     /**
      * An attribute that implements the Null Object Design Pattern for {@link Vm}
