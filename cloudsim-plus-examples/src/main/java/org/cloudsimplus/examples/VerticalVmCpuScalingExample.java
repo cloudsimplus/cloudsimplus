@@ -112,7 +112,7 @@ public class VerticalVmCpuScalingExample {
     private List<Vm> vmList;
     private List<Cloudlet> cloudletList;
 
-    private static final int CLOUDLETS = 6;
+    private static final int CLOUDLETS = 10;
     private static final int CLOUDLETS_INITIAL_LENGTH = 20_000;
 
     private int createdCloudlets;
@@ -275,11 +275,11 @@ public class VerticalVmCpuScalingExample {
      * Adds all created Cloudlets to the {@link #cloudletList}.
      */
     private void createCloudletListsWithDifferentDelays() {
-        final int initialCloudletsNumber = CLOUDLETS-2;
+        final int initialCloudletsNumber = (int)(CLOUDLETS/2.5);
         final int remainingCloudletsNumber = CLOUDLETS-initialCloudletsNumber;
         //Creates a List of Cloudlets that will start running immediately when the simulation starts
         for (int i = 0; i < initialCloudletsNumber; i++) {
-            cloudletList.add(createCloudlet(CLOUDLETS_INITIAL_LENGTH+(i*1000)));
+            cloudletList.add(createCloudlet(CLOUDLETS_INITIAL_LENGTH+(i*1000), 2));
         }
 
         /* Create several Cloudlets, increasing the arrival delay and decreasing
@@ -290,24 +290,23 @@ public class VerticalVmCpuScalingExample {
         * to gradually reduce CPU usage (triggering CPU down scaling at some point in time).
         * Check the logs to understand how the scaling is working.*/
         for (int i = 1; i <= remainingCloudletsNumber; i++) {
-            cloudletList.add(createCloudlet(CLOUDLETS_INITIAL_LENGTH*2/i, i*2));
+            cloudletList.add(createCloudlet(CLOUDLETS_INITIAL_LENGTH*2/i, 1,i*2));
         }
     }
-
-
 
     /**
      * Creates a single Cloudlet.
      *
      * @param length the length of the cloudlet to create.
+     * @param numberOfPes the number of PEs the Cloudlets requires.
      * @param delay the delay that defines the arrival time of the Cloudlet at the Cloud infrastructure.
      * @return the created Cloudlet
      */
-    private Cloudlet createCloudlet(long length, double delay) {
+    private Cloudlet createCloudlet(long length, int numberOfPes, double delay) {
         final int id = createdCloudlets++;
         //randomly selects a length for the cloudlet
         UtilizationModel utilizationFull = new UtilizationModelFull();
-        Cloudlet cl = new CloudletSimple(id, length, 2);
+        Cloudlet cl = new CloudletSimple(id, length, numberOfPes);
         cl.setFileSize(1024)
           .setOutputSize(1024)
           .setUtilizationModel(utilizationFull)
@@ -319,10 +318,13 @@ public class VerticalVmCpuScalingExample {
     /**
      * Creates a single Cloudlet with no delay, which means the Cloudlet arrival time will
      * be zero (exactly when the simulation starts).
+     *
+     * @param length the Cloudlet length
+     * @param numberOfPes the number of PEs the Cloudlets requires
      * @return the created Cloudlet
      */
-    private Cloudlet createCloudlet(long length) {
-        return createCloudlet(length, 0);
+    private Cloudlet createCloudlet(long length, int numberOfPes) {
+        return createCloudlet(length, numberOfPes, 0);
     }
 
     /**

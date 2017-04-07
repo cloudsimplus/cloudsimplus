@@ -438,8 +438,8 @@ public class VmSimpleTest {
 
         final CloudletSchedulerTimeShared cloudletScheduler = createMock(CloudletSchedulerTimeShared.class);
         cloudletScheduler.setVm(EasyMock.anyObject());
-        EasyMock.expectLastCall().once();
-        expect(cloudletScheduler.getCurrentRequestedMips()).andReturn(currentMips);
+        EasyMock.expectLastCall().anyTimes();
+        expect(cloudletScheduler.getCurrentRequestedMips()).andReturn(currentMips).anyTimes();
         replay(cloudletScheduler);
 
         final Vm vm = VmSimpleTest.createVm(cloudletScheduler);
