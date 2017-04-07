@@ -36,6 +36,7 @@ final class VmNull implements Vm {
     @Override public Resource getBw() {
         return Resource.NULL;
     }
+    @Override public void setNumberOfPes(int numberOfPes) {}
     @Override public CloudletScheduler getCloudletScheduler() {
         return CloudletScheduler.NULL;
     }
@@ -96,9 +97,7 @@ final class VmNull implements Vm {
     @Override public boolean removeOnHostDeallocationListener(EventListener<VmHostEventInfo> listener) {
         return false;
     }
-    @Override public boolean removeOnCreationFailureListener(EventListener<VmDatacenterEventInfo> listener) {
-        return false;
-    }
+    @Override public boolean removeOnCreationFailureListener(EventListener<VmDatacenterEventInfo> listener) { return false; }
     @Override public Resource getRam() {
         return Resource.NULL;
     }
@@ -180,6 +179,7 @@ final class VmNull implements Vm {
     @Override public Vm setHorizontalScaling(HorizontalVmScaling h) throws IllegalArgumentException { return this; }
     @Override public Vm setRamVerticalScaling(VerticalVmScaling v) throws IllegalArgumentException { return this; }
     @Override public Vm setBwVerticalScaling(VerticalVmScaling v) throws IllegalArgumentException { return this; }
+    @Override public Vm setPeVerticalScaling(VerticalVmScaling peVerticalScaling) throws IllegalArgumentException { return this; }
     @Override public VerticalVmScaling getRamVerticalScaling() {
         return VerticalVmScaling.NULL;
     }

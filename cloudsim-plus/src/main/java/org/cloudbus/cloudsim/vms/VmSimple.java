@@ -7,6 +7,7 @@
 package org.cloudbus.cloudsim.vms;
 
 import java.util.*;
+import java.util.stream.IntStream;
 
 import org.cloudbus.cloudsim.core.UniquelyIdentificable;
 import org.cloudbus.cloudsim.datacenters.Datacenter;
@@ -23,6 +24,8 @@ import org.cloudsimplus.listeners.VmDatacenterEventInfo;
 import org.cloudsimplus.listeners.EventListener;
 import org.cloudbus.cloudsim.resources.*;
 import org.cloudbus.cloudsim.schedulers.cloudlet.CloudletScheduler;
+
+import static java.util.stream.Collectors.toList;
 
 /**
  * Implements the basic features of a Virtual Machine (VM) that runs inside a
@@ -124,6 +127,7 @@ public class VmSimple implements Vm {
 
     private VerticalVmScaling ramVerticalScaling;
     private VerticalVmScaling bwVerticalScaling;
+    private VerticalVmScaling peVerticalScaling;
 
     /**
      * Creates a Vm with 1024 MEGABYTE of RAM, 1000 Megabits/s of Bandwidth and 1024 MEGABYTE of Storage Size.
@@ -165,6 +169,7 @@ public class VmSimple implements Vm {
         this.setHorizontalScaling(HorizontalVmScaling.NULL);
         this.setRamVerticalScaling(VerticalVmScaling.NULL);
         this.setBwVerticalScaling(VerticalVmScaling.NULL);
+        this.setPeVerticalScaling(VerticalVmScaling.NULL);
     }
 
     /**
@@ -293,15 +298,11 @@ public class VmSimple implements Vm {
 
     @Override
     public List<Double> getCurrentRequestedMips() {
-        List<Double> currentRequestedMips = getCloudletScheduler().getCurrentRequestedMips();
-        if (!isCreated()) {
-            currentRequestedMips = new ArrayList<>(getNumberOfPes());
-            for (int i = 0; i < getNumberOfPes(); i++) {
-                currentRequestedMips.add(getMips());
-            }
+        if (isCreated()) {
+            return getCloudletScheduler().getCurrentRequestedMips();
         }
 
-        return currentRequestedMips;
+        return IntStream.range(0, getNumberOfPes()).mapToObj(i->getMips()).collect(toList());
     }
 
     @Override
@@ -374,12 +375,8 @@ public class VmSimple implements Vm {
         return numberOfPes;
     }
 
-    /**
-     * Sets the number of PEs required by the VM.
-     *
-     * @param numberOfPes the new number of PEs
-     */
-    protected final void setNumberOfPes(int numberOfPes) {
+    @Override
+    public final void setNumberOfPes(int numberOfPes) {
         this.numberOfPes = numberOfPes;
     }
 
@@ -752,6 +749,12 @@ public class VmSimple implements Vm {
     @Override
     public final Vm setBwVerticalScaling(VerticalVmScaling bwVerticalScaling) throws IllegalArgumentException {
         this.bwVerticalScaling = validateAndConfigureVmScaling(bwVerticalScaling);
+        return this;
+    }
+
+    @Override
+    public final Vm setPeVerticalScaling(VerticalVmScaling peVerticalScaling) throws IllegalArgumentException {
+        this.peVerticalScaling = validateAndConfigureVmScaling(peVerticalScaling);
         return this;
     }
 

@@ -20,6 +20,7 @@ final class VmSchedulerNull implements VmScheduler {
     @Override public boolean allocatePesForVm(Vm vm, List<Double> mipsShare) {
         return false;
     }
+    @Override public boolean allocatePesForVm(Vm vm) { return false; }
     @Override public void deallocatePesForAllVms() {/**/}
     @Override public void deallocatePesForVm(Vm vm) {/**/}
     @Override public List<Double> getAllocatedMipsForVm(Vm vm) {
@@ -67,6 +68,7 @@ final class VmSchedulerNull implements VmScheduler {
     @Override public boolean isSuitableForVm(Vm vm) {
         return false;
     }
+    @Override public boolean isSuitableForVm(List<Double> vmMipsList) { return false; }
     @Override public double getCpuOverheadDueToVmMigration() {
         return 0.0;
     }

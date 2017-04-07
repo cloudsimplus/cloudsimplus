@@ -224,7 +224,7 @@ public class HostSimple implements Host {
      * @return true if the Vm was placed into the host, false if the Host doesn't have enough resources to allocate the Vm
      */
     private boolean allocateResourcesForVm(Vm vm, boolean inMigration){
-        final String msg = (inMigration ? "VM Migration" : "VM Creation");
+        final String msg = inMigration ? "VM Migration" : "VM Creation";
         if (!storage.isResourceAmountAvailable(vm.getStorage())) {
             Log.printFormattedLine("[%s] Allocation of VM #%d to Host #%d failed due to lack of storage", msg, vm.getId(), getId());
             return false;

@@ -62,8 +62,8 @@ public class VmSchedulerSpaceShared extends VmSchedulerAbstract {
     }
 
     @Override
-    public boolean isSuitableForVm(Vm vm) {
-        return !getTotalCapacityToBeAllocatedToVm(vm.getCurrentRequestedMips()).isEmpty();
+    public boolean isSuitableForVm(List<Double> vmMipsList) {
+        return !getTotalCapacityToBeAllocatedToVm(vmMipsList).isEmpty();
     }
 
     /**

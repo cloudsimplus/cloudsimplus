@@ -572,9 +572,9 @@ public abstract class DatacenterBrokerAbstract extends CloudSimEntity implements
                 continue;
             }
             Log.printFormattedLine(
-                "%.2f: %s: Sending %s %d to VM #%d. %d VMs created.",
+                "%.2f: %s: Sending %s %d to VM #%d.",
                 getSimulation().clock(), getName(), cloudlet.getClass().getSimpleName(), cloudlet.getId(),
-                lastSelectedVm.getId(), getVmsCreatedList().size());
+                lastSelectedVm.getId());
             cloudlet.setVm(lastSelectedVm);
             send(getVmDatacenter(lastSelectedVm).getId(),
                 cloudlet.getSubmissionDelay(), CloudSimTags.CLOUDLET_SUBMIT, cloudlet);

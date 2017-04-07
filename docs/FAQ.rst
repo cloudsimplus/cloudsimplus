@@ -95,6 +95,19 @@ No, CloudSim Plus is a simulator -- it does not run real applications.
 It is intended to be used for simulating and experimenting with various
 scheduling and VM allocation algorithms.
 
+6. I don't know anything about Java 8. How can I use CloudSim Plus?
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+You aren't required to know Java 8 to use CloudSim Plus. Despite there are some examples using Java 8 features such as 
+`Lambda Expressions <http://www.oracle.com/webfolder/technetwork/tutorials/obe/java/Lambda-QuickStart/index.html`__ and 
+`Streams API <http://www.oracle.com/technetwork/articles/java/ma14-java-se-8-streams-2177646.html>`__, you can 
+perfectly write Java 7 code to build your simulations. It's just needed to use Java 8 to build and run the examples.
+
+Anyway, if you don't know Java 8 yet, it's a good time to start learning. There are lots of free and awesome content
+online. You can start by checking the links above or subscribing for the `JDK 8 Massive Open and Online Course: Lambdas and Streams Introduction <https://apexapps.oracle.com/pls/apex/f?p=44785:145:10040796816707::NO:RP,145:P145_EVENT_ID,P145_PREV_PAGE:5067,2>`__ at the Oracle Learning Library. 
+If new classes aren't scheduled yet, the videos are available at `YouTube <https://www.youtube.com/playlist?list=PLMod1hYiIvSZL1xclvHcsV2dMiminf19x>`__.
+But if you can attend the course, you'll have more resources such as a exercises and a discussion forum.
+
 --------------
 
 CloudSim Plus components, communication, and events

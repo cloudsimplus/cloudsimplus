@@ -111,14 +111,34 @@ public interface VerticalVmScaling extends VmScaling {
      * whether such a resource is over or underloaded, according to the
      * defined predicates.
      *
-     * <p>This is a percentage value in scale from 0 to 1. Every time the
+     * <p>If the resource to scale is a {@link Pe}, this is the number of PEs
+     * to request adding or removing when the VM is over or underloaded, respectively.
+     * For any other kind of resource, this is a percentage value in scale from 0 to 1. Every time the
      * VM needs to be scaled up or down, this factor will be applied
      * to increase or reduce a specific VM allocated resource.</p>
      *
-     * @return the scaling factor
+     * @return the scaling factor to set which may be an absolute value (for {@link Pe} scaling)
+     *         or percentage (for scaling other resources)
      * @see #getOverloadPredicate()
      */
     double getScalingFactor();
+
+    /**
+     * Sets the factor that will be used to scale a Vm resource up or down,
+     * whether such a resource is over or underloaded, according to the
+     * defined predicates.
+     *
+     * <p>If the resource to scale is a {@link Pe}, this is the number of PEs
+     * to request adding or removing when the VM is over or underloaded, respectively.
+     * For any other kind of resource, this is a percentage value in scale from 0 to 1. Every time the
+     * VM needs to be scaled up or down, this factor will be applied
+     * to increase or reduce a specific VM allocated resource.</p>
+     *
+     * @param scalingFactor the scaling factor to set which may be an absolute value (for {@link Pe} scaling)
+     *                      or percentage (for scaling other resources)
+     * @see #getOverloadPredicate()
+     */
+    VerticalVmScaling setScalingFactor(double scalingFactor);
 
     /**
      * Gets the absolute amount of the Vm resource, defined
@@ -127,20 +147,6 @@ public interface VerticalVmScaling extends VmScaling {
      * @return the absolute amount of the Vm resource to scale
      */
     double getResourceAmountToScale();
-
-    /**
-     * Sets the factor that will be used to scale a Vm resource up or down,
-     * whether such a resource is over or underloaded, according to the
-     * defined predicates.
-     *
-     * <p>This is a percentage value in scale from 0 to 1. Every time the
-     * VM needs to be scaled up or down, this factor will be applied
-     * to increase or reduce a specific VM allocated resource.</p>
-     *
-     * @param scalingFactor the scaling factor to set
-     * @see #getOverloadPredicate()
-     */
-    VerticalVmScaling setScalingFactor(double scalingFactor);
 
     /**
      * Performs the vertical scale if the Vm is overloaded, according to the {@link #getOverloadPredicate()} predicate,

@@ -1,5 +1,6 @@
 package org.cloudbus.cloudsim.schedulers.vm;
 
+import org.cloudbus.cloudsim.vms.Vm;
 import org.junit.Test;
 
 import static org.junit.Assert.*;
@@ -18,7 +19,7 @@ public class VmSchedulerTest {
         assertFalse(instance.allocatePesForVm(null, null));
         assertTrue(instance.getAllocatedMipsForVm(null).isEmpty());
         assertEquals(0, instance.getAvailableMips(), 0);
-        assertFalse(instance.isSuitableForVm(null));
+        assertFalse(instance.isSuitableForVm(Vm.NULL));
         assertEquals(0, instance.getMaxAvailableMips(), 0);
         assertEquals(0, instance.getPeCapacity(), 0);
         assertTrue(instance.getPeList().isEmpty());

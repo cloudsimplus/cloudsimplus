@@ -252,6 +252,17 @@ public interface Vm extends Machine, UniquelyIdentificable, Delayable, Comparabl
     Resource getBw();
 
     /**
+     * Sets the number of PEs required by the VM.
+     *
+     * <p>
+     * <b>WARNING:</b> this method must not be called directly. It is used just internally.
+     * </p>
+     *
+     * @param numberOfPes the new number of PEs
+     */
+    void setNumberOfPes(int numberOfPes);
+
+    /**
      * Gets the RAM resource assigned to the Vm,
      * allowing to check its capacity (in Megabytes) and usage.
      *
@@ -475,9 +486,9 @@ public interface Vm extends Machine, UniquelyIdentificable, Delayable, Comparabl
     Vm setHorizontalScaling(HorizontalVmScaling horizontalScaling) throws IllegalArgumentException;
 
     /**
-     * Sets a {@link VerticalVmScaling} that will check if the Vm's RAM is overloaded,
-     * based on some conditions defined by a {@link Predicate} given
-     * to the VerticalVmScaling, and then request the RAM up scaling.
+     * Sets a {@link VerticalVmScaling} that will check if the Vm's {@link Ram} is under or overloaded,
+     * based on some conditions defined by {@link Predicate}s given to the VerticalVmScaling,
+     * and then request the RAM up or down scaling.
      *
      * @param ramVerticalScaling the VerticalVmScaling to set
      * @return
@@ -487,9 +498,9 @@ public interface Vm extends Machine, UniquelyIdentificable, Delayable, Comparabl
     Vm setRamVerticalScaling(VerticalVmScaling ramVerticalScaling) throws IllegalArgumentException;
 
     /**
-     * Sets a {@link VerticalVmScaling} that will check if the Vm's Bandwidth is overloaded,
-     * based on some conditions defined by a {@link Predicate} given
-     * to the VerticalVmScaling, and then request the BW up scaling.
+     * Sets a {@link VerticalVmScaling} that will check if the Vm's {@link Bandwidth} is under or overloaded,
+     * based on some conditions defined by {@link Predicate}s given to the VerticalVmScaling,
+     * and then request the Bandwidth up or down scaling.
      *
      * @param bwVerticalScaling the VerticalVmScaling to set
      * @return
@@ -497,6 +508,21 @@ public interface Vm extends Machine, UniquelyIdentificable, Delayable, Comparabl
      * its own VerticalVmScaling objects or none at all.
      */
     Vm setBwVerticalScaling(VerticalVmScaling bwVerticalScaling) throws IllegalArgumentException;
+
+    /**
+     * Sets a {@link VerticalVmScaling} that will check if the Vm's {@link Pe} is under or overloaded,
+     * based on some conditions defined by {@link Predicate}s given to the VerticalVmScaling,
+     * and then request the Pe up or down scaling.
+     *
+     * <p>The Pe scaling is performed by adding or removing PEs to/from the VM.
+     * Added PEs will have the same MIPS than the already existing ones.</p>
+     *
+     * @param peVerticalScaling the VerticalVmScaling to set
+     * @return
+     * @throws IllegalArgumentException if the given VmScaling is already linked to a Vm. Each VM must have
+     * its own VerticalVmScaling objects or none at all.
+     */
+    Vm setPeVerticalScaling(VerticalVmScaling peVerticalScaling) throws IllegalArgumentException;
 
     /**
      * Gets a {@link VerticalVmScaling} that will check if the Vm's RAM is overloaded,
