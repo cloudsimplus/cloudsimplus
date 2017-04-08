@@ -86,7 +86,7 @@ final class CloudletNull implements Cloudlet {
     @Override public int getNetServiceLevel() {
         return 0;
     }
-    @Override public int getNumberOfPes() {
+    @Override public long getNumberOfPes() {
         return 0;
     }
     @Override public double getTotalCost() {
@@ -168,7 +168,7 @@ final class CloudletNull implements Cloudlet {
     @Override public boolean setNetServiceLevel(int netServiceLevel) {
         return false;
     }
-    @Override public Cloudlet setNumberOfPes(int numberOfPes) {
+    @Override public Cloudlet setNumberOfPes(long numberOfPes) {
         return Cloudlet.NULL;
     }
     @Override public void assignToDatacenter(Datacenter datacenter) {/**/}

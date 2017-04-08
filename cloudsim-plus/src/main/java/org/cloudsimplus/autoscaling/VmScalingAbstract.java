@@ -26,26 +26,20 @@ package org.cloudsimplus.autoscaling;
 import org.cloudbus.cloudsim.vms.Vm;
 
 import java.util.Objects;
-import java.util.function.Predicate;
+import java.util.function.Function;
 
 /**
  * A base class for implementing {@link HorizontalVmScaling} and
  * {@link VerticalVmScaling}.
  *
  * @author Manoel Campos da Silva Filho
+ * @since CloudSim Plus 1.1.0
  */
 public abstract class VmScalingAbstract implements VmScaling {
-    /**
-     * Last time the scheduler checked for VM overload.
-     */
     private double lastProcessingTime;
     private Vm vm;
-    private Predicate<Vm> overloadPredicate;
-    private Predicate<Vm> underloadPredicate;
 
     protected VmScalingAbstract() {
-        this.overloadPredicate = FALSE_PREDICATE;
-        this.underloadPredicate = FALSE_PREDICATE;
         this.setVm(Vm.NULL);
     }
 
@@ -61,70 +55,14 @@ public abstract class VmScalingAbstract implements VmScaling {
         return this;
     }
 
-    @Override
-    public Predicate<Vm> getOverloadPredicate() {
-        return overloadPredicate;
-    }
-
-    @Override
-    public final VmScaling setOverloadPredicate(Predicate<Vm> predicate) {
-        validatePredicates(underloadPredicate, predicate);
-        this.overloadPredicate = predicate;
-        return this;
-    }
-
-    @Override
-    public Predicate<Vm> getUnderloadPredicate() {
-        return underloadPredicate;
-    }
-
-    @Override
-    public final VmScaling setUnderloadPredicate(Predicate<Vm> predicate) {
-        validatePredicates(predicate, overloadPredicate);
-        this.underloadPredicate = predicate;
-        return this;
-    }
-
     /**
-     * Throws an exception if the under and overload predicates are equal (to make clear
-     * that over and underload situations must be defined by different conditions)
-     * or if any of them are null.
-     *
-     * @param underloadPredicate the underload predicate to check
-     * @param overloadPredicate the overload predicate to check
-     * @throws IllegalArgumentException if the two predicates are equal
-     * @throws NullPointerException if any of the predicates are null
-     */
-    private void validatePredicates(Predicate<Vm> underloadPredicate, Predicate<Vm> overloadPredicate) {
-        Objects.requireNonNull(underloadPredicate);
-        Objects.requireNonNull(overloadPredicate);
-        if(overloadPredicate.equals(underloadPredicate)){
-            throw new IllegalArgumentException("Underload and overload predicate cannot be equal");
-        }
-    }
-
-    /**
-     * Checks if it is time to evaluate the {@link #getOverloadPredicate()}
-     * and {@link #getUnderloadPredicate()} to check
-     * if the Vm is over or underloaded, respectively.
+     * Checks if it is time to evaluate weather the Vm is under or overloaded.
      *
      * @param time current simulation time
-     * @return true if the over and underload predicate has to be checked, false otherwise
+     * @return true if it's time to check weather the Vm is over and underloaded, false otherwise
      */
     protected boolean isTimeToCheckPredicate(double time) {
         return time > lastProcessingTime && (long) time % getVm().getHost().getDatacenter().getSchedulingInterval() == 0;
-    }
-
-    @Override
-    public final boolean requestScalingIfPredicateMatch(double time) {
-        if(!isTimeToCheckPredicate(time)) {
-            return false;
-        }
-
-        final boolean requestedScaling =
-            (getOverloadPredicate().test(getVm()) || getUnderloadPredicate().test(getVm())) && requestScaling(time);
-        lastProcessingTime = time;
-        return requestedScaling;
     }
 
     /**
@@ -137,4 +75,19 @@ public abstract class VmScalingAbstract implements VmScaling {
      * @return true if the request was actually sent, false otherwise
      */
     protected abstract boolean requestScaling(double time);
+
+    /**
+     * Gets the last time the scheduler checked for VM overload.
+     */
+    public double getLastProcessingTime() {
+        return lastProcessingTime;
+    }
+
+    /**
+     * Sets the last time the scheduler checked for VM overload.
+     * @param lastProcessingTime the processing time to set
+     */
+    protected void setLastProcessingTime(double lastProcessingTime) {
+        this.lastProcessingTime = lastProcessingTime;
+    }
 }

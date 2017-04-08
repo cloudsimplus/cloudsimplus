@@ -22,45 +22,46 @@ package org.cloudbus.cloudsim.resources;
  * @author Manoel Campos da Silva Filho
  * @since CloudSim Plus 1.0
  */
-public abstract class ResourceManageableAbstract implements ResourceManageable {
-    /** @see #getCapacity() */
-    private long capacity;
+public abstract class ResourceManageableAbstract extends ResourceAbstract implements ResourceManageable {
 
     /** @see #getAvailableResource() */
     private long availableResource;
 
     public ResourceManageableAbstract(final long capacity) {
-        if(!isCapacityValid(capacity))
-            throw new IllegalArgumentException("Capacity cannot be negative");
-
-        initCapacityAndAvailableResource(capacity);
-    }
-
-    private boolean isCapacityValid(final long capacity) {
-        return capacity >= 0;
-    }
-
-    private void initCapacityAndAvailableResource(final long capacity){
-        this.capacity = capacity;
+        super(capacity);
         this.availableResource = capacity;
     }
 
     @Override
-    public long getCapacity() {
-        return capacity;
-    }
-
-    @Override
-    public final boolean setCapacity(long newCapacity){
+    public boolean setCapacity(long newCapacity){
         if(newCapacity <= 0 || getAllocatedResource() > newCapacity) {
             return false;
         }
 
-        final long capacityDifference = newCapacity - this.capacity;
+        final long oldCapacity = this.capacity;
         this.capacity = newCapacity;
-        sumAvailableResource(capacityDifference);
-
+        sumAvailableResource(newCapacity - oldCapacity);
         return true;
+    }
+
+    @Override
+    public boolean addCapacity(long capacityToAdd) {
+        if(capacityToAdd < 0){
+            throw new IllegalArgumentException("The number of PEs to add cannot be negative.");
+        }
+
+        return setCapacity(getCapacity()+capacityToAdd);
+    }
+
+    @Override
+    public boolean removeCapacity(long capacityToRemove) {
+        if(capacityToRemove < 0){
+            throw new IllegalArgumentException("The number of PEs to remove cannot be negative.");
+        }
+        if(capacityToRemove > this.getCapacity()){
+            throw new IllegalArgumentException("The number of PEs to remove cannot be higher than the number of existing PEs.");
+        }
+        return setCapacity(getCapacity()-capacityToRemove);
     }
 
     /**
@@ -83,7 +84,7 @@ public abstract class ResourceManageableAbstract implements ResourceManageable {
      * @return true if {@code availableResource > 0 and availableResource <= capacity}, false otherwise
      */
     protected final boolean setAvailableResource(final long newAvailableResource) {
-        if(newAvailableResource < 0 || newAvailableResource > capacity) {
+        if(newAvailableResource < 0 || newAvailableResource > getCapacity()) {
             return false;
         }
 
@@ -94,11 +95,6 @@ public abstract class ResourceManageableAbstract implements ResourceManageable {
     @Override
     public long getAvailableResource() {
         return availableResource;
-    }
-
-    @Override
-    public long getAllocatedResource() {
-        return getCapacity() - getAvailableResource();
     }
 
     @Override
@@ -137,36 +133,6 @@ public abstract class ResourceManageableAbstract implements ResourceManageable {
         final Long previousAllocated = getAllocatedResource();
         setAvailableResource(getCapacity());
         return previousAllocated;
-    }
-
-    @Override
-    public boolean isResourceAmountAvailable(final long amountToCheck) {
-        return getAvailableResource() >= amountToCheck;
-    }
-
-    @Override
-    public boolean isResourceAmountAvailable(double amountToCheck) {
-        return isResourceAmountAvailable((long)amountToCheck);
-    }
-
-    @Override
-    public boolean isResourceAmountBeingUsed(final long amountToCheck) {
-        return getAllocatedResource() >= amountToCheck;
-    }
-
-    @Override
-    public boolean isSuitable(final long newTotalAllocatedResource) {
-        if(newTotalAllocatedResource <= getAllocatedResource()) {
-            return true;
-        }
-
-        final long allocationDifference = newTotalAllocatedResource - getAllocatedResource();
-        return getAvailableResource() >= allocationDifference;
-    }
-
-    @Override
-    public boolean isFull() {
-        return availableResource == 0;
     }
 
     @Override

@@ -26,10 +26,8 @@ import org.cloudbus.cloudsim.hosts.HostSimple;
 import org.cloudbus.cloudsim.provisioners.PeProvisionerSimple;
 import org.cloudbus.cloudsim.provisioners.ResourceProvisioner;
 import org.cloudbus.cloudsim.provisioners.ResourceProvisionerSimple;
-import org.cloudbus.cloudsim.resources.Bandwidth;
 import org.cloudbus.cloudsim.resources.Pe;
 import org.cloudbus.cloudsim.resources.PeSimple;
-import org.cloudbus.cloudsim.resources.Ram;
 import org.cloudbus.cloudsim.schedulers.cloudlet.CloudletSchedulerTimeShared;
 import org.cloudbus.cloudsim.schedulers.vm.VmScheduler;
 import org.cloudbus.cloudsim.schedulers.vm.VmSchedulerTimeShared;
@@ -174,7 +172,7 @@ public class CloudletResponseTimeWorkLoadExperimet extends SimulationExperiment 
         List<Vm> createdVms = cloudlet.getBroker().getVmsCreatedList();
         Log.printLine("\t\tCreated VMs: " + createdVms);
         Comparator<Vm> sortByNumberOfFreePes
-                = Comparator.comparingInt(vm -> getExpectedNumberOfFreeVmPes(vm));
+                = Comparator.comparingLong(vm -> getExpectedNumberOfFreeVmPes(vm));
         Comparator<Vm> sortByExpectedCloudletResponseTime
                 = Comparator.comparingDouble(vm -> getExpectedCloudletResponseTime(cloudlet, vm));
         createdVms.sort(
@@ -204,14 +202,14 @@ public class CloudletResponseTimeWorkLoadExperimet extends SimulationExperiment 
      * there aren't free PEs (this negative number indicates the amount of
      * overloaded PEs)
      */
-    private int getExpectedNumberOfFreeVmPes(Vm vm) {
-        final int totalPesNumberForCloudletsOfVm
+    private long getExpectedNumberOfFreeVmPes(Vm vm) {
+        final long totalPesNumberForCloudletsOfVm
                 = vm.getBroker().getCloudletsCreatedList().stream()
                         .filter(c -> c.getVm().equals(vm))
-                        .mapToInt(Cloudlet::getNumberOfPes)
+                        .mapToLong(Cloudlet::getNumberOfPes)
                         .sum();
 
-        final int numberOfVmFreePes
+        final long numberOfVmFreePes
                 = vm.getNumberOfPes() - totalPesNumberForCloudletsOfVm;
 
         Log.printFormattedLine(
@@ -271,7 +269,7 @@ public class CloudletResponseTimeWorkLoadExperimet extends SimulationExperiment 
 
     /**
      * A {@link Predicate} that checks if a given VM is overloaded or not based
-     * on response time max value. A reference to this method is assigned to
+     * on CPU usage. A reference to this method is assigned to
      * each Horizontal VM Scaling created.
      *
      * @param vm the VM to check if it is overloaded

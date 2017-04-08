@@ -8,6 +8,7 @@ package org.cloudbus.cloudsim.schedulers.vm;
 
 import java.util.*;
 import java.util.stream.IntStream;
+import java.util.stream.LongStream;
 
 import org.cloudbus.cloudsim.hosts.Host;
 import org.cloudbus.cloudsim.provisioners.PeProvisioner;
@@ -75,7 +76,7 @@ public abstract class VmSchedulerAbstract implements VmScheduler {
 
     @Override
     public boolean allocatePesForVm(Vm vm) {
-        final List<Double> mipsList = IntStream.range(0, vm.getNumberOfPes()).mapToObj(i -> vm.getMips()).collect(toList());
+        final List<Double> mipsList = LongStream.range(0, vm.getNumberOfPes()).mapToObj(i -> vm.getMips()).collect(toList());
         return allocatePesForVm(vm, mipsList);
     }
 

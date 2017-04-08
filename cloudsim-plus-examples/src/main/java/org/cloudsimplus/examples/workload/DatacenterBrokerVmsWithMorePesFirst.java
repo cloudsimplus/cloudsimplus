@@ -50,7 +50,7 @@ public class DatacenterBrokerVmsWithMorePesFirst extends DatacenterBrokerSimple 
      */
     @Override
     public <T extends Vm> List<T> getVmsWaitingList() {
-        Comparator<Vm> comparator = Comparator.comparingInt(Vm::getNumberOfPes);
+        Comparator<Vm> comparator = Comparator.comparingLong(Vm::getNumberOfPes);
         super.getVmsWaitingList().sort(comparator.reversed());
 
         return super.getVmsWaitingList();

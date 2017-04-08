@@ -252,17 +252,6 @@ public interface Vm extends Machine, UniquelyIdentificable, Delayable, Comparabl
     Resource getBw();
 
     /**
-     * Sets the number of PEs required by the VM.
-     *
-     * <p>
-     * <b>WARNING:</b> this method must not be called directly. It is used just internally.
-     * </p>
-     *
-     * @param numberOfPes the new number of PEs
-     */
-    void setNumberOfPes(int numberOfPes);
-
-    /**
      * Gets the RAM resource assigned to the Vm,
      * allowing to check its capacity (in Megabytes) and usage.
      *
@@ -537,4 +526,18 @@ public interface Vm extends Machine, UniquelyIdentificable, Delayable, Comparabl
      * to the VerticalVmScaling, and then request the BW up scaling.
      */
     VerticalVmScaling getBwVerticalScaling();
+
+    /**
+     * Gets a {@link VerticalVmScaling} that will check if the Vm's {@link Pe} is overloaded,
+     * based on some conditions defined by a {@link Predicate} given
+     * to the VerticalVmScaling, and then request the RAM up scaling.
+     */
+    VerticalVmScaling getPeVerticalScaling();
+
+    /**
+     * Gets the {@link Processor} of this VM. It is its Virtual CPU
+     * which may be compounded of multiple {@link Pe}s.
+     * @return
+     */
+    Processor getProcessor();
 }

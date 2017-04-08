@@ -44,7 +44,7 @@ public class CloudletSimple extends CloudletAbstract {
      * @pre cloudletLength >= 0.0
      * @post $none
      */
-    public CloudletSimple(final int id,  final long cloudletLength,  final int pesNumber) {
+    public CloudletSimple(final int id,  final long cloudletLength,  final long pesNumber) {
         super(id, cloudletLength, pesNumber);
     }
 

@@ -226,17 +226,23 @@ public class HostSimple implements Host {
     private boolean allocateResourcesForVm(Vm vm, boolean inMigration){
         final String msg = inMigration ? "VM Migration" : "VM Creation";
         if (!storage.isResourceAmountAvailable(vm.getStorage())) {
-            Log.printFormattedLine("[%s] Allocation of VM #%d to Host #%d failed due to lack of storage", msg, vm.getId(), getId());
+            Log.printFormattedLine(
+                "[%s] Allocation of VM #%d to Host #%d failed due to lack of storage. Required %d but there is just %d MB available.",
+                msg, vm.getId(), getId(), vm.getStorage().getCapacity(), storage.getAvailableResource());
             return false;
         }
 
         if (!getRamProvisioner().isSuitableForVm(vm, vm.getCurrentRequestedRam())) {
-            Log.printFormattedLine("[%s] Allocation of VM #%d to Host #%d failed due to lack of RAM", msg, vm.getId(), getId());
+            Log.printFormattedLine(
+                "[%s] Allocation of VM #%d to Host #%d failed due to lack of RAM. Required %d but there is just %d MB available.",
+                msg, vm.getId(), getId(), vm.getRam().getCapacity(), ram.getAvailableResource());
             return false;
         }
 
         if (!getBwProvisioner().isSuitableForVm(vm, vm.getCurrentRequestedBw())) {
-            Log.printFormattedLine("[%s] Allocation of VM #%d to Host #%d failed due to lack of BW", msg, vm.getId(), getId());
+            Log.printFormattedLine(
+                "[%s] Allocation of VM #%d to Host #%d failed due to lack of BW. Required %d but there is just %d Mbps available.",
+                msg, vm.getId(), getId(), vm.getBw().getCapacity(), bw.getAvailableResource());
             return false;
         }
 
@@ -335,7 +341,7 @@ public class HostSimple implements Host {
     }
 
     @Override
-    public int getNumberOfPes() {
+    public long getNumberOfPes() {
         return getPeList().size();
     }
 
@@ -419,7 +425,7 @@ public class HostSimple implements Host {
 
     private void checkSimulationIsRunningAndAttemptedToChangeHost(String resourceName) {
         if(simulation.isRunning()){
-            throw new UnsupportedOperationException("It is not allowed to change a Host "+resourceName+" after the simulation started.");
+            throw new UnsupportedOperationException("It is not allowed to change a Host's "+resourceName+" after the simulation started.");
         }
     }
 

@@ -21,3 +21,6 @@ help:
 
 javadoc:
 	javasphinx-apidoc -f -t "Javadocs" -o . ../cloudsim-plus/src/main/java/
+
+clean:
+	rm -rf $(BUILDDIR)/*

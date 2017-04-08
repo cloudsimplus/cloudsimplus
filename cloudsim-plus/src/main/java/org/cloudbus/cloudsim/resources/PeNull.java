@@ -42,6 +42,8 @@ final class PeNull implements Pe {
     @Override public boolean setCapacity(long mipsCapacity) {
         return false;
     }
+    @Override public boolean addCapacity(long capacityToAdd) { return false; }
+    @Override public boolean removeCapacity(long capacityToRemove) { return false; }
     @Override public boolean setCapacity(double mipsCapacity) {
         return false;
     }

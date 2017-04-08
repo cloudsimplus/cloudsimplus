@@ -332,14 +332,13 @@ public interface CloudletScheduler extends Serializable {
      * Gets the number of currently used {@link Pe}'s.
      * @return
      */
-    int getUsedPes();
+    long getUsedPes();
 
     /**
      * Gets the number of PEs currently not being used.
      * @return
      */
-    int getFreePes();
-
+    long getFreePes();
 
     /**
 	 * Checks if a Cloudlet can be added to the execution list or not.

@@ -63,9 +63,7 @@ final class CloudletSchedulerNull implements CloudletScheduler {
     @Override public double getRequestedMipsForCloudlet(CloudletExecutionInfo rcl, double time) {
         return 0.0;
     }
-    @Override public double getRequestedCpuPercentUtilization(double time) {
-        return 0.0;
-    }
+    @Override public double getRequestedCpuPercentUtilization(double time) { return 0.0; }
     @Override public boolean hasFinishedCloudlets() {
         return false;
     }
@@ -89,10 +87,10 @@ final class CloudletSchedulerNull implements CloudletScheduler {
         return Vm.NULL;
     }
     @Override public void setVm(Vm vm) {/**/}
-    @Override public int getUsedPes() {
+    @Override public long getUsedPes() {
         return 0;
     }
-    @Override public int getFreePes() {
+    @Override public long getFreePes() {
         return 0;
     }
     @Override public boolean canAddCloudletToExecutionList(CloudletExecutionInfo cloudlet) {

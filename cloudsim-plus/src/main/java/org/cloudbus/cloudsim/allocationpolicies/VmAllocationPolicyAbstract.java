@@ -11,15 +11,12 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
-import java.util.stream.IntStream;
+import java.util.stream.LongStream;
 
 import org.cloudbus.cloudsim.datacenters.Datacenter;
 import org.cloudbus.cloudsim.hosts.Host;
 import org.cloudbus.cloudsim.provisioners.ResourceProvisioner;
-import org.cloudbus.cloudsim.resources.Bandwidth;
-import org.cloudbus.cloudsim.resources.Pe;
-import org.cloudbus.cloudsim.resources.Ram;
-import org.cloudbus.cloudsim.resources.ResourceManageable;
+import org.cloudbus.cloudsim.resources.*;
 import org.cloudbus.cloudsim.util.Log;
 import org.cloudbus.cloudsim.vms.Vm;
 import org.cloudsimplus.autoscaling.VerticalVmScaling;
@@ -54,11 +51,11 @@ public abstract class VmAllocationPolicyAbstract implements VmAllocationPolicy {
     /**
      * @see #getHostFreePesMap()
      */
-    private Map<Host, Integer> hostFreePesMap;
+    private Map<Host, Long> hostFreePesMap;
     /**
      * @see #getUsedPes()
      */
-    private Map<Vm, Integer> usedPes;
+    private Map<Vm, Long> usedPes;
 
     /**
      * Creates a new VmAllocationPolicy object.
@@ -168,7 +165,7 @@ public abstract class VmAllocationPolicyAbstract implements VmAllocationPolicy {
      *
      * @return a Map where each key is a host and each value is the number of free PEs of that host.
      */
-    protected final Map<Host, Integer> getHostFreePesMap() {
+    protected final Map<Host, Long> getHostFreePesMap() {
         return hostFreePesMap;
     }
 
@@ -178,7 +175,7 @@ public abstract class VmAllocationPolicyAbstract implements VmAllocationPolicy {
      * @param hostFreePesMap the new Host free PEs map
      * @return
      */
-    protected final VmAllocationPolicy setHostFreePesMap(Map<Host, Integer> hostFreePesMap) {
+    protected final VmAllocationPolicy setHostFreePesMap(Map<Host, Long> hostFreePesMap) {
         this.hostFreePesMap = hostFreePesMap;
         return this;
     }
@@ -189,7 +186,7 @@ public abstract class VmAllocationPolicyAbstract implements VmAllocationPolicy {
      *
      * @return the used PEs map
      */
-    protected Map<Vm, Integer> getUsedPes() {
+    protected Map<Vm, Long> getUsedPes() {
         return usedPes;
     }
 
@@ -205,8 +202,8 @@ public abstract class VmAllocationPolicyAbstract implements VmAllocationPolicy {
      * Removes the used PEs for a Vm from the map between each VM and the number of PEs used.
      * @return the used PEs number
      */
-    protected int removeUsedPes(Vm vm) {
-        final Integer pes = usedPes.remove(vm);
+    protected long removeUsedPes(Vm vm) {
+        final Long pes = usedPes.remove(vm);
         return (pes == null ? 0 : pes);
     }
 
@@ -215,7 +212,7 @@ public abstract class VmAllocationPolicyAbstract implements VmAllocationPolicy {
      *
      * @param usedPes the used pes
      */
-    protected final void setUsedPes(Map<Vm, Integer> usedPes) {
+    protected final void setUsedPes(Map<Vm, Long> usedPes) {
         Objects.requireNonNull(usedPes);
         this.usedPes = usedPes;
     }
@@ -223,15 +220,15 @@ public abstract class VmAllocationPolicyAbstract implements VmAllocationPolicy {
     @Override
     public boolean scaleVmVertically(VerticalVmScaling scaling) {
         /* @TODO Scaling of VM PEs is not being implemented in a polymorphic way.
-        *  More details: https://github.com/manoelcampos/cloudsim-plus/issues/75
+        *  More details in https://github.com/manoelcampos/cloudsim-plus/issues/75
         */
 
-        if(scaling.getOverloadPredicate().test(scaling.getVm())){
-            return upScaleVmVertically(scaling);
+        if(scaling.isVmUnderloaded()){
+            return downScaleVmVertically(scaling);
         }
 
-        if(scaling.getUnderloadPredicate().test(scaling.getVm())){
-            return downScaleVmVertically(scaling);
+        if(scaling.isVmOverloaded()){
+            return upScaleVmVertically(scaling);
         }
 
         return false;
@@ -244,7 +241,7 @@ public abstract class VmAllocationPolicyAbstract implements VmAllocationPolicy {
      * @return true if the Vm was overloaded and the up scaling was performed, false otherwise
      */
     private boolean upScaleVmVertically(VerticalVmScaling scaling) {
-        return isRequestingPeScaling(scaling) ? scaleVmPesUpOrDown(scaling) : upScaleVmNonPeResource(scaling);
+        return isRequestingCpuScaling(scaling) ? scaleVmPesUpOrDown(scaling) : upScaleVmNonCpuResource(scaling);
     }
 
     /**
@@ -254,7 +251,7 @@ public abstract class VmAllocationPolicyAbstract implements VmAllocationPolicy {
      * @return true if the down scaling was performed, false otherwise
      */
     private boolean downScaleVmVertically(VerticalVmScaling scaling) {
-        return isRequestingPeScaling(scaling) ? scaleVmPesUpOrDown(scaling) : downScaleVmNonPeResource(scaling);
+        return isRequestingCpuScaling(scaling) ? scaleVmPesUpOrDown(scaling) : downScaleVmNonCpuResource(scaling);
     }
 
     /**
@@ -266,70 +263,58 @@ public abstract class VmAllocationPolicyAbstract implements VmAllocationPolicy {
      * @see #upScaleVmVertically(VerticalVmScaling)
      */
     private boolean scaleVmPesUpOrDown(VerticalVmScaling scaling) {
-        final int numberOfPesForScaling = getNumberOfVmPesForScaling(scaling);
+        final long numberOfPesForScaling = scaling.getResourceAmountToScale();
         if(numberOfPesForScaling == 0){
             return false;
         }
 
         final Vm vm = scaling.getVm();
-        if (scaling.getOverloadPredicate().test(vm)) {
-            final List<Double> additionalVmMips =
-                IntStream.range(0, numberOfPesForScaling).mapToObj(i -> vm.getMips()).collect(toList());
-            if (!vm.getHost().getVmScheduler().isSuitableForVm(additionalVmMips)) {
-                return false;
-            }
+        if (scaling.isVmOverloaded() && isNotHostPesSuitableToUpScaleVm(scaling)) {
+            showResourceIsUnavailable(scaling);
+            return false;
         }
 
         vm.getHost().getVmScheduler().deallocatePesForVm(vm);
-        if(scaling.getUnderloadPredicate().test(vm)) {
-            vm.setNumberOfPes(vm.getNumberOfPes()-numberOfPesForScaling);
+        if(scaling.isVmUnderloaded()) {
+            vm.getProcessor().removeCapacity(numberOfPesForScaling);
         }
         else {
-            vm.setNumberOfPes(vm.getNumberOfPes()+numberOfPesForScaling);
+            vm.getProcessor().addCapacity(numberOfPesForScaling);
         }
 
         vm.getHost().getVmScheduler().allocatePesForVm(vm);
         return true;
     }
 
-    /**
-     * Gets the number of PEs that are being required to add to or remove from the VM,
-     * depending if it is underloaded, overloaded or in none of these situations.
-     *
-     * @param sc the Vm's scaling object
-     * @return  the number of PEs that are being required to add to or remove from the VM,
-     * or zero if the VM is neither under or overloaded.
-     */
-    private int getNumberOfVmPesForScaling(VerticalVmScaling sc) {
-        if(sc.getUnderloadPredicate().or(sc.getOverloadPredicate()).test(sc.getVm())){
-            return (int)sc.getScalingFactor();
-        }
+    private boolean isNotHostPesSuitableToUpScaleVm(VerticalVmScaling scaling) {
+        final Vm vm = scaling.getVm();
+        final long numberOfPesForScaling = scaling.getResourceAmountToScale();
+        final List<Double> additionalVmMips =
+            LongStream.range(0, numberOfPesForScaling).mapToObj(i -> vm.getMips()).collect(toList());
 
-        return 0;
+        return !vm.getHost().getVmScheduler().isSuitableForVm(additionalVmMips);
     }
 
     /**
-     * Checks if the scaling object is in charge of scaling {@link Pe}s or
-     * any other kind of resource (such as {@link Ram} or {@link Bandwidth}).
+     * Checks if the scaling object is in charge of scaling CPU resource.
      *
      * @param scaling the Vm scaling object
-     * @return true if the scaling is for {@link Pe}s, false if it is
+     * @return true if the scaling is for CPU, false if it is
      * for any other kind of resource
      */
-    private boolean isRequestingPeScaling(VerticalVmScaling scaling) {
-        final Class<? extends ResourceManageable> resourceClass = scaling.getResourceClassToScale();
-        return Pe.class.equals(resourceClass);
+    private boolean isRequestingCpuScaling(VerticalVmScaling scaling) {
+        return Processor.class.equals(scaling.getResourceClassToScale());
     }
 
     /**
-     * Performs the up scaling of a Vm resource that is anything other than a {@link Pe}.
+     * Performs the up scaling of a Vm resource that is anything other than CPU.
      *
      * @param scaling the Vm's scaling object
      * @return true if the up scaling was performed, false otherwise
      * @see #scaleVmPesUpOrDown(VerticalVmScaling)
      * @see #upScaleVmVertically(VerticalVmScaling)
      */
-    private boolean upScaleVmNonPeResource(VerticalVmScaling scaling) {
+    private boolean upScaleVmNonCpuResource(VerticalVmScaling scaling) {
         final Class<? extends ResourceManageable> resourceClass = scaling.getResourceClassToScale();
         final ResourceManageable hostResource = scaling.getVm().getHost().getResource(resourceClass);
         final ResourceManageable vmResource = scaling.getVm().getResource(resourceClass);
@@ -341,13 +326,7 @@ public abstract class VmAllocationPolicyAbstract implements VmAllocationPolicy {
         final ResourceProvisioner provisioner = scaling.getVm().getHost().getProvisioner(resourceClass);
         final double newTotalVmResource = (double) vmResource.getCapacity() + extraAmountToAllocate;
         if(!provisioner.allocateResourceForVm(scaling.getVm(), newTotalVmResource)){
-            Log.printFormattedLine(
-                "%.2f: %s: Vm %d requested more %d of %s capacity but the Host %d has just %d of available %s",
-                scaling.getVm().getSimulation().clock(),
-                scaling.getClass().getSimpleName(),
-                scaling.getVm().getId(), extraAmountToAllocate,
-                resourceClass.getSimpleName(), scaling.getVm().getHost().getId(),
-                hostResource.getAvailableResource(), resourceClass.getSimpleName());
+            showResourceIsUnavailable(scaling);
             return false;
         }
 
@@ -361,19 +340,33 @@ public abstract class VmAllocationPolicyAbstract implements VmAllocationPolicy {
         return true;
     }
 
+    private void showResourceIsUnavailable(VerticalVmScaling scaling) {
+        final Class<? extends ResourceManageable> resourceClass = scaling.getResourceClassToScale();
+        final ResourceManageable hostResource = scaling.getVm().getHost().getResource(resourceClass);
+        final ResourceManageable vmResource = scaling.getVm().getResource(resourceClass);
+        final double extraAmountToAllocate = scaling.getResourceAmountToScale();
+        Log.printFormattedLine(
+            "%.2f: %s: Vm %d requested more %d of %s capacity but the Host %d has just %d of available %s",
+            scaling.getVm().getSimulation().clock(),
+            scaling.getClass().getSimpleName(),
+            scaling.getVm().getId(), extraAmountToAllocate,
+            resourceClass.getSimpleName(), scaling.getVm().getHost().getId(),
+            hostResource.getAvailableResource(), resourceClass.getSimpleName());
+    }
+
     /**
-     * Performs the down scaling of a Vm resource that is anything other than a {@link Pe}.
+     * Performs the down scaling of a Vm resource that is anything other than CPU.
      *
      * @param scaling the Vm's scaling object
      * @return true if the down scaling was performed, false otherwise
      * @see #downScaleVmVertically(VerticalVmScaling)
      */
-    private boolean downScaleVmNonPeResource(VerticalVmScaling scaling) {
+    private boolean downScaleVmNonCpuResource(VerticalVmScaling scaling) {
         final Class<? extends ResourceManageable> resourceClass = scaling.getResourceClassToScale();
         final ResourceManageable vmResource = scaling.getVm().getResource(resourceClass);
-        final double amountToDeallocate = scaling.getResourceAmountToScale();
+        final long amountToDeallocate = scaling.getResourceAmountToScale();
         final ResourceProvisioner provisioner = scaling.getVm().getHost().getProvisioner(resourceClass);
-        final double newTotalVmResource = (double) vmResource.getCapacity() - amountToDeallocate;
+        final long newTotalVmResource = vmResource.getCapacity() - amountToDeallocate;
         if(!provisioner.allocateResourceForVm(scaling.getVm(), newTotalVmResource)){
             Log.printFormattedLine(
                 "%.2f: %s: Vm %d requested to reduce %s capacity by %d but an unexpected error occurred and the resource was not resized",
@@ -385,7 +378,7 @@ public abstract class VmAllocationPolicyAbstract implements VmAllocationPolicy {
         }
 
         Log.printFormattedLine(
-            "%.2f: %s: %.0f %s dallocated from Vm %d: new capacity is %d. Current resource usage is %.2f%%",
+            "%.2f: %s: %d %s deallocated from Vm %d: new capacity is %d. Current resource usage is %.2f%%",
             scaling.getVm().getSimulation().clock(),
             scaling.getClass().getSimpleName(),
             amountToDeallocate, resourceClass.getSimpleName(),
