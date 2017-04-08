@@ -60,36 +60,30 @@ public class RamTest {
 
         //reduce the capacity
         long newCapacity = HALF_CAPACITY;
-        boolean result = instance.setCapacity(newCapacity);
-        assertTrue(result);
+        assertTrue(instance.setCapacity(newCapacity));
 
         //try an invalid capacity
         newCapacity = -1;
-        result = instance.setCapacity(newCapacity);
-        assertFalse(result);
+        assertFalse(instance.setCapacity(newCapacity));
 
         //try an invalid capacity
         newCapacity = 0;
-        result = instance.setCapacity(newCapacity);
-        assertFalse(result);
+        assertFalse(instance.setCapacity(newCapacity));
 
         //restore the original capacity
         newCapacity = CAPACITY;
-        result = instance.setCapacity(newCapacity);
-        assertTrue(result);
+        assertTrue(instance.setCapacity(newCapacity));
 
         //allocate resource and try to reduce the capacity below to the amount allocated
         final long allocated = HALF_CAPACITY;
         instance.allocateResource(allocated);
         assertEquals(allocated, instance.getAllocatedResource());
         newCapacity = QUARTER_CAPACITY;
-        result = instance.setCapacity(newCapacity);
-        assertFalse(result);
+        assertFalse(instance.setCapacity(newCapacity));
 
         //try to increase the resource capacity
         newCapacity = DOUBLE_CAPACITY;
-        result = instance.setCapacity(newCapacity);
-        assertTrue(result);
+        assertTrue(instance.setCapacity(newCapacity));
     }
 
     @Test
@@ -169,8 +163,6 @@ public class RamTest {
             //checks the available and allocated amount after allocation
             totalAvailable -= allocation;
             totalAllocation += allocation;
-            assertEquals(totalAvailable, instance.getAvailableResource());
-            assertEquals(totalAllocation, instance.getAllocatedResource());
         }
         assertEquals(0, instance.getAvailableResource());
         assertEquals(instance.getCapacity(), instance.getAllocatedResource());

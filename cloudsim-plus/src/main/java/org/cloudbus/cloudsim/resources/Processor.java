@@ -31,54 +31,60 @@ import java.util.stream.Collectors;
 
 import org.cloudbus.cloudsim.cloudlets.Cloudlet;
 import org.cloudbus.cloudsim.cloudlets.CloudletExecutionInfo;
+import org.cloudbus.cloudsim.vms.Vm;
 
 /**
- * A Central Unit Processing (CPU) that can have multiple
- * cores ({@link Pe Processing Elements}).
+ * A Central Unit Processing (CPU) attached to a {@link Vm} and which can have multiple
+ * cores ({@link Pe}s). It's a also called a Virtual CPU (vCPU).
  *
  * @author Manoel Campos da Silva Filho
  * @since CloudSim Plus 1.0
  */
-public class Processor implements ResourceCapacity {
-    private long capacity;
+public final class Processor extends ResourceManageableAbstract {
+    public static final Processor NULL = new Processor();
 
-    /** @see #getNumberOfPes() */
-    private int numberOfPes;
+    private Vm vm;
+
+    /** @see #getMips() */
+    private double mips;
 
     /** @see #getCloudletExecList() */
     private List<CloudletExecutionInfo> cloudletExecList;
 
     /**
-     * Instantiates a Processor with zero capacity (zero PEs and MIPS).
+     * Instantiates a Processor with zero capacity (zero PEs).
      */
     public Processor(){
-        this(0, 0);
+        this(Vm.NULL, 0, 0);
     }
 
     /**
      * Instantiates a Processor.
      *
-     * @param individualPeCapacity capacity of each {@link Pe Processing Elements (cores)}
-     * @param numberOfPes number of {@link Pe Processing Elements (cores)}
+     * @param vm the {@link Vm} the processor will belong to
+     * @param pesMips MIPS of each {@link Pe}
+     * @param numberOfPes number of {@link Pe}s
      */
-    public Processor(double individualPeCapacity, int numberOfPes) {
+    public Processor(Vm vm, double pesMips, long numberOfPes) {
+        super(numberOfPes);
+        this.vm = vm;
         cloudletExecList = new ArrayList<>();
-        setCapacity(individualPeCapacity);
-        setNumberOfPes(numberOfPes);
+        setMips(pesMips);
     }
 
     /**
      * Instantiates a new Processor from a given MIPS list,
      * ignoring all elements having zero capacity.
      *
+     * @param vm the {@link Vm} the processor will belong to
      * @param mipsList a list of {@link Pe Processing Elements (cores)} capacity
      * where all elements have the same capacity. This list represents
      * the capacity of each processor core.
      * @param cloudletExecList list of cloudlets currently executing in this processor.
      *
-     * @return the new processor
+     * @return the new Processor
      */
-    public static Processor fromMipsList(List<Double> mipsList,
+    public static Processor fromMipsList(Vm vm, List<Double> mipsList,
                                          List<CloudletExecutionInfo> cloudletExecList) {
         if(Objects.isNull(mipsList)){
             throw new IllegalArgumentException("The mipsList cannot be null.");
@@ -98,7 +104,7 @@ public class Processor implements ResourceCapacity {
             }
         }
 
-        Processor p = new Processor(peMips, mipsList.size());
+        Processor p = new Processor(vm, peMips, mipsList.size());
         p.cloudletExecList = cloudletExecList;
         return p;
     }
@@ -107,14 +113,15 @@ public class Processor implements ResourceCapacity {
      * Instantiates a new Processor from a given MIPS list,
      * ignoring all elements having zero capacity.
      *
+     * @param vm the {@link Vm} the processor will belong to
      * @param mipsList a list of {@link Pe Processing Elements (cores)} capacity
      * where all elements have the same capacity. This list represents
      * the capacity of each processor core.
      *
-     * @return the new processor
+     * @return the new Processor
      */
-    public static Processor fromMipsList(List<Double> mipsList) {
-        return Processor.fromMipsList(mipsList, Collections.EMPTY_LIST);
+    public static Processor fromMipsList(Vm vm, List<Double> mipsList) {
+        return Processor.fromMipsList(vm, mipsList, Collections.EMPTY_LIST);
     }
 
     private static List<Double> getNonZeroMipsElements(List<Double> mipsList) {
@@ -122,21 +129,76 @@ public class Processor implements ResourceCapacity {
     }
 
     /**
-     * Gets the total MIPS capacity of the Processor,
-     * that is the sum of all its {@link Pe Processing Elements (cores)} capacity.
+     * Gets the sum of MIPS from all {@link Pe}s.
      * @return
      */
-    public double getTotalMipsCapacity(){
-        return getCapacity()*getNumberOfPes();
+    public double getTotalMips(){
+        return getMips()* getCapacity();
     }
 
     /**
-     * Gets the individual MIPS capacity of each {@link Pe Processing Elements (cores)}.
+     * Gets the individual MIPS of each {@link Pe}.
+     * @return
+     */
+    public double getMips() {
+        return mips;
+    }
+
+    /**
+     * Sets the individual MIPS of each {@link Pe}.
+     * @param newMips the new MIPS of each PE
+     * @pre newMips >= 0
+     */
+    public final void setMips(double newMips) {
+        if(newMips < 0) {
+            throw new IllegalArgumentException("MIPS cannot be negative");
+        }
+
+        this.mips = newMips;
+    }
+
+    /**
+     * Gets the number of {@link Pe}s of the Processor
      * @return
      */
     @Override
     public long getCapacity() {
-        return capacity;
+        return super.getCapacity();
+    }
+
+    /**
+     * Gets the number of free PEs.
+     * @return
+     */
+    @Override
+    public long getAvailableResource() {
+        return vm.getCloudletScheduler().getFreePes();
+    }
+
+    /**
+     * Gets the number of used PEs.
+     * @return
+     */
+    @Override
+    public long getAllocatedResource() {
+        return vm.getCloudletScheduler().getUsedPes();
+    }
+
+    @Override
+    public double getPercentUtilization() {
+        return vm.getCloudletScheduler().getRequestedCpuPercentUtilization(vm.getSimulation().clock());
+    }
+
+    /**
+     * Sets the number of {@link Pe}s of the Processor
+     * @param numberOfPes the number of PEs to set
+     */
+    @Override
+    public final boolean setCapacity(long numberOfPes) {
+        if(numberOfPes < 0){
+            throw new IllegalArgumentException("The Processsor's number of PEs cannot be negative.");
+        }
+        return super.setCapacity(numberOfPes);
     }
 
     /**
@@ -160,55 +222,22 @@ public class Processor implements ResourceCapacity {
      * that in fact performs tasks preemption.
      */
     public double getAvailableMipsByPe(){
-        final int totalPesOfAllExecCloudlets = totalPesOfAllExecCloudlets();
-        if(totalPesOfAllExecCloudlets > getNumberOfPes()) {
-            return getTotalMipsCapacity() / totalPesOfAllExecCloudlets;
+        final long totalPesOfAllExecCloudlets = totalPesOfAllExecCloudlets();
+        if(totalPesOfAllExecCloudlets > getCapacity()) {
+            return getTotalMips() / totalPesOfAllExecCloudlets;
         }
-        else {
-            return getCapacity();
-        }
+
+        return getMips();
     }
 
     /**
-     *
-     * @return the total number of PEs of all cloudlets currently executing in this processor.
-     */
-    private int totalPesOfAllExecCloudlets() {
-        return cloudletExecList.stream()
-            .map(CloudletExecutionInfo::getCloudlet)
-            .mapToInt(Cloudlet::getNumberOfPes).sum();
-    }
-
-    /**
-     * Gets the number of {@link Pe Processing Elements (cores)} of the Processor
+     * Gets the total number of PEs of all cloudlets currently executing in this processor.
      * @return
      */
-    public int getNumberOfPes() {
-        return numberOfPes;
-    }
-
-    /**
-     * Sets the number of {@link Pe Processing Elements (cores)} of the Processor
-     * @param numberOfPes the number of PEs to set
-     */
-    public final void setNumberOfPes(int numberOfPes) {
-        if(numberOfPes < 0){
-            throw new IllegalArgumentException("The numberOfPes cannot be negative.");
-        }
-        this.numberOfPes = numberOfPes;
-    }
-
-    /**
-     * Sets the individual MIPS capacity of each {@link Pe Processing Elements (cores)}.
-     * @param newCapacity the new MIPS capacity of each PE
-     * @pre newCapacity != null && newCapacity >= 0
-     */
-    public final void setCapacity(double newCapacity) {
-        if(newCapacity < 0) {
-            throw new IllegalArgumentException("Capacity cannot be negative");
-        }
-
-        this.capacity = (long)newCapacity;
+    private long totalPesOfAllExecCloudlets() {
+        return cloudletExecList.stream()
+            .map(CloudletExecutionInfo::getCloudlet)
+            .mapToLong(Cloudlet::getNumberOfPes).sum();
     }
 
     /**
@@ -219,4 +248,26 @@ public class Processor implements ResourceCapacity {
         return Collections.unmodifiableList(cloudletExecList);
     }
 
+    /**
+     * Gets the {@link Vm} the processor belongs to.
+     * @return
+     */
+    public Vm getVm() {
+        return vm;
+    }
+
+    @Override
+    public boolean allocateResource(long amountToAllocate) {
+        throw new UnsupportedOperationException("The allocateResource method is not supported for the Processor because this is controlled by the CloudletScheduler.");
+    }
+
+    @Override
+    public boolean deallocateResource(long amountToDeallocate) {
+        throw new UnsupportedOperationException("The deallocateResource method is not supported for the Processor because this is controlled by the CloudletScheduler.");
+    }
+
+    @Override
+    public long deallocateAllResources() {
+        throw new UnsupportedOperationException("The deallocateAllResources method is not supported for the Processor  because this is controlled by the CloudletScheduler.");
+    }
 }

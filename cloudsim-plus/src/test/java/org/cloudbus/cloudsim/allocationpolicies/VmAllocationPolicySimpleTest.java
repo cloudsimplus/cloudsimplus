@@ -38,7 +38,7 @@ public class VmAllocationPolicySimpleTest {
      * @return
      */
     private VmAllocationPolicySimple createVmAllocationPolicy(int[] freePesByHost) {
-        final Map<Host, Integer> hostFreePesMap = new HashMap<>(freePesByHost.length);
+        final Map<Host, Long> hostFreePesMap = new HashMap<>(freePesByHost.length);
         final List<Host> hosts = new ArrayList<>(freePesByHost.length);
         for(int i = 1; i <= freePesByHost.length; i++) {
             final Host host = HostSimpleTest.createHostSimple(

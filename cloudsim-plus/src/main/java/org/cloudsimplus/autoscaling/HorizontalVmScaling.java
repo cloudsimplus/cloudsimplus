@@ -27,6 +27,7 @@ import org.cloudbus.cloudsim.brokers.DatacenterBroker;
 import org.cloudbus.cloudsim.datacenters.Datacenter;
 import org.cloudbus.cloudsim.vms.Vm;
 
+import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
 
@@ -46,12 +47,13 @@ import java.util.function.Supplier;
  * are needed.</p>
  *
  * @author Manoel Campos da Silva Filho
- * @since CloudSim Plus 1.0
+ * @since CloudSim Plus 1.0.0
  * @todo The mechanism to destroy created VMs that are not required anymore is not implemented yet.
  * To implement the down scaling, a new underload predicate and a scaleIfUnderloaded method should
  * be introduced.
  */
 public interface HorizontalVmScaling extends VmScaling {
+    Predicate<Vm> FALSE_PREDICATE = vm -> false;
 
     /**
      * An attribute that implements the Null Object Design Pattern for {@link HorizontalVmScaling}
@@ -98,42 +100,56 @@ public interface HorizontalVmScaling extends VmScaling {
     boolean requestScalingIfPredicateMatch(double time);
 
     /**
-     * {@inheritDoc}
+     * Gets a {@link Predicate} that defines when {@link #getVm() Vm} is overloaded or not,
+     * that will make the Vm's {@link DatacenterBroker} to up scale the VM.
+     * The up scaling is performed by creating new VMs to attend new arrived Cloudlets
+     * and then balance the load.
      *
-     * <p>The up scaling is performed by creating new VMs to attend new arrived Cloudlets
-     * and then balance the load.</p>
-     * @return {@inheritDoc}
+     * @return
+     * @see #setOverloadPredicate(Predicate)
      */
-    @Override
     Predicate<Vm> getOverloadPredicate();
 
     /**
-     * {@inheritDoc}
+     * Sets a {@link Predicate} that defines when {@link #getVm() Vm} is overloaded or not,
+     * that will make the Vm's {@link DatacenterBroker} to up scale the VM.
+     * The up scaling is performed by creating new VMs to attend new arrived Cloudlets
+     * and then balance the load.
      *
-     * <p>The up scaling is performed by creating new VMs to attend new arrived Cloudlets
-     * and then balance the load.</p>
-     * @param predicate {@inheritDoc}
-     * @return {@inheritDoc}
+     * @param predicate a predicate that checks certain conditions
+     *                  to define that the {@link #getVm() Vm} is over utilized.
+     *                  The predicate receives the Vm to allow the it
+     *                  to define the over utilization condition.
+     *                  Such a condition can be defined, for instance,
+     *                  based on Vm's {@link Vm#getCpuPercentUse(double)} CPU usage}
+     *                  and/or any other VM resource usage.
+     * @return
      */
-    @Override
     VmScaling setOverloadPredicate(Predicate<Vm> predicate);
 
     /**
-     * {@inheritDoc}
+     * Gets a {@link Predicate} that defines when {@link #getVm() Vm} is underloaded or not,
+     * that will make the Vm's {@link DatacenterBroker} to down scale Vm.
+     * The down scaling is performed by destroying idle VMs.
      *
-     * <p>The down scaling is performed by destroying idle VMs.</p>
-     * @return {@inheritDoc}
+     * @return
+     * @see #setUnderloadPredicate(Predicate)
      */
-    @Override
     Predicate<Vm> getUnderloadPredicate();
 
     /**
-     * {@inheritDoc}
+     * Sets a {@link Predicate} that defines when {@link #getVm() Vm} is underloaded or not,
+     * that will make the Vm's {@link DatacenterBroker} to down scale Vm.
+     * The down scaling is performed by destroying idle VMs.
      *
-     * <p>The down scaling is performed by destroying idle VMs.</p>
-     * @param predicate {@inheritDoc}
-     * @return {@inheritDoc}
+     * @param predicate a predicate that checks certain conditions
+     *                  to define that the {@link #getVm() Vm} is under utilized.
+     *                  The predicate receives the Vm to allow the it
+     *                  to define the over utilization condition.
+     *                  Such a condition can be defined, for instance,
+     *                  based on Vm's {@link Vm#getCpuPercentUse(double)} CPU usage}
+     *                  and/or any other VM resource usage.
+     * @return
      */
-    @Override
     VmScaling setUnderloadPredicate(Predicate<Vm> predicate);
 }

@@ -2,11 +2,10 @@ package org.cloudsimplus.autoscaling;
 
 import org.cloudbus.cloudsim.vms.Vm;
 
-import java.util.function.Predicate;
+import java.util.function.Function;
 
 /**
- * A class that implements the Null Object Design Pattern for {@link VmScaling}
- * class.
+ * A class that implements the Null Object Design Pattern for {@link VmScaling} class.
  *
  * @author Manoel Campos da Silva Filho
  * @see VmScaling#NULL
@@ -16,18 +15,6 @@ final class VmScalingNull implements VmScaling {
         return Vm.NULL;
     }
     @Override public VmScaling setVm(Vm vm) {
-        return this;
-    }
-    @Override public Predicate<Vm> getOverloadPredicate() {
-        return FALSE_PREDICATE;
-    }
-    @Override public VmScaling setOverloadPredicate(Predicate<Vm> predicate) {
-        return this;
-    }
-    @Override public Predicate<Vm> getUnderloadPredicate() {
-        return FALSE_PREDICATE;
-    }
-    @Override public VmScaling setUnderloadPredicate(Predicate<Vm> predicate) {
         return this;
     }
     @Override public boolean requestScalingIfPredicateMatch(double time) {

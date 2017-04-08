@@ -23,23 +23,21 @@
  */
 package org.cloudsimplus.autoscaling;
 
+import org.cloudbus.cloudsim.brokers.DatacenterBroker;
+import org.cloudbus.cloudsim.resources.Resource;
 import org.cloudbus.cloudsim.vms.Vm;
 import org.cloudsimplus.listeners.EventListener;
 
-import java.util.function.Predicate;
+import java.util.function.Function;
 
 /**
- * An interface to allow implementing <a href="https://en.wikipedia.org/wiki/Scalability#Horizontal_and_vertical_scaling">horizontal and vertical scaling</a> of VMs.
+ * An interface to allow implementing <a href="https://en.wikipedia.org/wiki/Scalability#Horizontal_and_vertical_scaling">horizontal and vertical scaling</a>
+ * for {@link Vm}s.
  *
  * @author Manoel Campos da Silva Filho
- * @since CloudSim Plus 1.0
+ * @since CloudSim Plus 1.0.0
  */
 public interface VmScaling {
-    /**
-     * A {@link Predicate} that always returns false independently of any condition.
-     */
-    Predicate<Vm> FALSE_PREDICATE = vm -> false;
-
     /**
      * An attribute that implements the Null Object Design Pattern for {@link VmScaling}
      * objects.
@@ -64,57 +62,10 @@ public interface VmScaling {
     VmScaling setVm(Vm vm);
 
     /**
-     * Gets a {@link Predicate} that defines when {@link #getVm() Vm} is overloaded or not,
-     * that will make the Vm's broker to dynamically scale the VM up.
-     *
-     * @return
-     * @see #setOverloadPredicate(Predicate)
-     */
-    Predicate<Vm> getOverloadPredicate();
-
-    /**
-     * Sets a {@link Predicate} that defines when {@link #getVm() Vm} is overloaded or not,
-     * that will make the Vm's broker to dynamically scale the VM up.
-     *
-     * @param predicate a predicate that checks certain conditions
-     *                  to define that the {@link #getVm() Vm} is over utilized.
-     *                  The predicate receives the Vm to allow the it
-     *                  to define the over utilization condition.
-     *                  Such a condition can be defined, for instance,
-     *                  based on Vm's {@link Vm#getCpuPercentUse(double)} CPU usage}
-     *                  and/or any other VM resource usage.
-     * @return
-     */
-    VmScaling setOverloadPredicate(Predicate<Vm> predicate);
-
-    /**
-     * Gets a {@link Predicate} that defines when {@link #getVm() Vm} is underloaded or not,
-     * that will make the Vm's broker to dynamically scale Vm down.
-     *
-     * @return
-     * @see #setUnderloadPredicate(Predicate)
-     */
-    Predicate<Vm> getUnderloadPredicate();
-
-    /**
-     * Sets a {@link Predicate} that defines when {@link #getVm() Vm} is underloaded or not,
-     * that will make the Vm's broker to dynamically scale Vm down.
-     *
-     * @param predicate a predicate that checks certain conditions
-     *                  to define that the {@link #getVm() Vm} is under utilized.
-     *                  The predicate receives the Vm to allow the it
-     *                  to define the over utilization condition.
-     *                  Such a condition can be defined, for instance,
-     *                  based on Vm's {@link Vm#getCpuPercentUse(double)} CPU usage}
-     *                  and/or any other VM resource usage.
-     * @return
-     */
-    VmScaling setUnderloadPredicate(Predicate<Vm> predicate);
-
-    /**
      * Requests the Vm to be scaled up or down if it is over or underloaded, respectively.
-     * The scaling request will be sent to the broker only
-     * if the {@link #getOverloadPredicate() over} or {@link #getUnderloadPredicate() underload} condition meets.
+     * The scaling request will be sent to the {@link DatacenterBroker} only
+     * if the under or overload condition is met, that depends of the implementation
+     * of the scaling mechanisms.
      *
      * <p>The Vm to which this scaling object is related to, creates an {@link Vm#addOnUpdateProcessingListener(EventListener) UpdateProcessingListener}
      * that will call this method to check if it time to perform an down or up scaling, every time
@@ -124,5 +75,4 @@ public interface VmScaling {
      * @return true if the Vm is over or underloaded and up or down scaling request was sent to the broker, false otherwise
      */
     boolean requestScalingIfPredicateMatch(double time);
-
 }

@@ -7,7 +7,7 @@
 package org.cloudbus.cloudsim.vms;
 
 import java.util.*;
-import java.util.stream.IntStream;
+import java.util.stream.LongStream;
 
 import org.cloudbus.cloudsim.core.UniquelyIdentificable;
 import org.cloudbus.cloudsim.datacenters.Datacenter;
@@ -55,15 +55,7 @@ public class VmSimple implements Vm {
 
     private DatacenterBroker broker;
 
-    /**
-     * @see #getMips()
-     */
-    private double mips;
-
-    /**
-     * @see #getNumberOfPes()
-     */
-    private int numberOfPes;
+    private Processor processor;
 
     /**
      * @see #getVmm()
@@ -143,10 +135,12 @@ public class VmSimple implements Vm {
      * @pre numberOfPes > 0
      * @post $none
      */
-    public VmSimple(int id, long mipsCapacity, int numberOfPes) {
+    public VmSimple(int id, long mipsCapacity, long numberOfPes) {
         this.resources = new ArrayList<>(4);
         setInMigration(false);
         setHost(Host.NULL);
+        setCloudletScheduler(CloudletScheduler.NULL);
+        this.processor = new Processor(this, mipsCapacity, numberOfPes);
 
         setId(id);
         setBroker(DatacenterBroker.NULL);
@@ -159,7 +153,6 @@ public class VmSimple implements Vm {
 
         setSubmissionDelay(0);
         setVmm("Xen");
-        setCloudletScheduler(CloudletScheduler.NULL);
         stateHistory = new LinkedList<>();
 
         this.onHostAllocationListeners = new HashSet<>();
@@ -186,7 +179,7 @@ public class VmSimple implements Vm {
      * @pre numberOfPes > 0
      * @post $none
      */
-    public VmSimple(long mipsCapacity, int numberOfPes) {
+    public VmSimple(long mipsCapacity, long numberOfPes) {
         this(-1, mipsCapacity, numberOfPes);
     }
 
@@ -209,7 +202,7 @@ public class VmSimple implements Vm {
      * @pre numberOfPes > 0
      * @post $none
      */
-    public VmSimple(int id, double mipsCapacity, int numberOfPes) {
+    public VmSimple(int id, double mipsCapacity, long numberOfPes) {
         this(id, (long)mipsCapacity, numberOfPes);
     }
 
@@ -302,7 +295,7 @@ public class VmSimple implements Vm {
             return getCloudletScheduler().getCurrentRequestedMips();
         }
 
-        return IntStream.range(0, getNumberOfPes()).mapToObj(i->getMips()).collect(toList());
+        return LongStream.range(0, getNumberOfPes()).mapToObj(i->getMips()).collect(toList());
     }
 
     @Override
@@ -357,7 +350,7 @@ public class VmSimple implements Vm {
 
     @Override
     public double getMips() {
-        return mips;
+        return processor.getMips();
     }
 
     /**
@@ -367,17 +360,21 @@ public class VmSimple implements Vm {
      * @param mips the new mips for every VM's PE
      */
     protected final void setMips(double mips) {
-        this.mips = mips;
+        processor.setMips(mips);
     }
 
     @Override
-    public int getNumberOfPes() {
-        return numberOfPes;
+    public long getNumberOfPes() {
+        return processor.getCapacity();
+    }
+
+    private void setNumberOfPes(long numberOfPes) {
+        processor.setCapacity(numberOfPes);
     }
 
     @Override
-    public final void setNumberOfPes(int numberOfPes) {
-        this.numberOfPes = numberOfPes;
+    public Processor getProcessor() {
+        return processor;
     }
 
     @Override
@@ -574,7 +571,7 @@ public class VmSimple implements Vm {
     @Override
     public List<ResourceManageable> getResources() {
         if(getSimulation().isRunning() && resources.isEmpty()){
-            resources = Arrays.asList(ram, bw, storage);
+            resources = Arrays.asList(ram, bw, storage, processor);
         }
 
         return Collections.unmodifiableList(resources);
@@ -766,6 +763,11 @@ public class VmSimple implements Vm {
     @Override
     public VerticalVmScaling getBwVerticalScaling() {
         return bwVerticalScaling;
+    }
+
+    @Override
+    public VerticalVmScaling getPeVerticalScaling() {
+        return peVerticalScaling;
     }
 
     private <T extends VmScaling> T validateAndConfigureVmScaling(T vmScaling) {

@@ -99,7 +99,7 @@ scheduling and VM allocation algorithms.
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 You aren't required to know Java 8 to use CloudSim Plus. Despite there are some examples using Java 8 features such as 
-`Lambda Expressions <http://www.oracle.com/webfolder/technetwork/tutorials/obe/java/Lambda-QuickStart/index.html`__ and 
+`Lambda Expressions <http://www.oracle.com/webfolder/technetwork/tutorials/obe/java/Lambda-QuickStart/index.html>`__ and 
 `Streams API <http://www.oracle.com/technetwork/articles/java/ma14-java-se-8-streams-2177646.html>`__, you can 
 perfectly write Java 7 code to build your simulations. It's just needed to use Java 8 to build and run the examples.
 

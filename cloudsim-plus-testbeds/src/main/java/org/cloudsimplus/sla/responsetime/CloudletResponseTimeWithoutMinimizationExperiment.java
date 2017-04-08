@@ -27,10 +27,8 @@ import org.cloudbus.cloudsim.hosts.HostSimple;
 import org.cloudbus.cloudsim.provisioners.PeProvisionerSimple;
 import org.cloudbus.cloudsim.provisioners.ResourceProvisioner;
 import org.cloudbus.cloudsim.provisioners.ResourceProvisionerSimple;
-import org.cloudbus.cloudsim.resources.Bandwidth;
 import org.cloudbus.cloudsim.resources.Pe;
 import org.cloudbus.cloudsim.resources.PeSimple;
-import org.cloudbus.cloudsim.resources.Ram;
 import org.cloudbus.cloudsim.schedulers.cloudlet.CloudletSchedulerTimeShared;
 import org.cloudbus.cloudsim.schedulers.vm.VmScheduler;
 import org.cloudbus.cloudsim.schedulers.vm.VmSchedulerTimeShared;
@@ -209,7 +207,7 @@ public class CloudletResponseTimeWithoutMinimizationExperiment extends Simulatio
 
      /**
      * A {@link Predicate} that checks if a given VM is overloaded or not based
-     * on response time max value. A reference to this method is assigned to
+     * on CPU usage. A reference to this method is assigned to
      * each Horizontal VM Scaling created.
      *
      * @param vm the VM to check if it is overloaded
@@ -295,7 +293,7 @@ public class CloudletResponseTimeWithoutMinimizationExperiment extends Simulatio
                 .orElse(DatacenterBroker.NULL);
 
         double sumPesVms = broker.getVmsCreatedList().stream()
-                .mapToInt(vm -> vm.getNumberOfPes())
+                .mapToLong(vm -> vm.getNumberOfPes())
                 .sum();
 
         return sumPesVms;
@@ -307,7 +305,7 @@ public class CloudletResponseTimeWithoutMinimizationExperiment extends Simulatio
                 .orElse(DatacenterBroker.NULL);
 
         double sumPesCloudlet = broker.getCloudletsCreatedList().stream()
-                .mapToInt(c -> c.getNumberOfPes())
+                .mapToLong(c -> c.getNumberOfPes())
                 .sum();
 
         return sumPesCloudlet;

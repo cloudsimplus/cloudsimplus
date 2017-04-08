@@ -134,7 +134,7 @@ public class CloudSimExample0 {
         final long   storage = 10000; // vm image size (MEGABYTE)
         final int    ram = 512; // vm memory (MEGABYTE)
         final long   bw = 1000; // vm bandwidth (Megabits/s)
-        final int    pesNumber = 2; // number of CPU cores
+        final long   pesNumber = 2; // number of CPU cores
 
         return new VmSimple(vmList.size(), mips, pesNumber)
                 .setBroker(broker)

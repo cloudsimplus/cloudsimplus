@@ -387,7 +387,7 @@ public final class VmMigrationWhenCpuMetricIsViolatedExample {
         List<Vm> createdVms = cloudlet.getBroker().getVmsCreatedList();
         System.out.println("\t\tCreated VMs: " + createdVms);
         Comparator<Vm> sortByNumberOfFreePes
-                = Comparator.comparingInt(vm -> getExpectedNumberOfFreeVmPes(vm, false));
+                = Comparator.comparingLong(vm -> getExpectedNumberOfFreeVmPes(vm, false));
         Comparator<Vm> sortByExpectedCloudletResponseTime
                 = Comparator.comparingDouble(vm -> getExpectedCloudletResponseTime(cloudlet, vm));
         createdVms.sort(
@@ -418,15 +418,14 @@ public final class VmMigrationWhenCpuMetricIsViolatedExample {
      * there aren't free PEs (this negative number indicates the amount of
      * overloaded PEs)
      */
-    private int getExpectedNumberOfFreeVmPes(Vm vm, boolean printLog) {
-        final int totalPesNumberForCloudletsOfVm
+    private long getExpectedNumberOfFreeVmPes(Vm vm, boolean printLog) {
+        final long totalPesNumberForCloudletsOfVm
                 = vm.getBroker().getCloudletsCreatedList().stream()
                         .filter(c -> c.getVm().equals(vm))
-                        .mapToInt(Cloudlet::getNumberOfPes)
+                        .mapToLong(Cloudlet::getNumberOfPes)
                         .sum();
 
-        final int numberOfVmFreePes
-                = vm.getNumberOfPes() - totalPesNumberForCloudletsOfVm;
+        final long numberOfVmFreePes = vm.getNumberOfPes() - totalPesNumberForCloudletsOfVm;
 
         if (printLog) {
             System.out.println("\t\tTotal pes of cloudlets in VM " + vm.getId() + ": " + totalPesNumberForCloudletsOfVm + " -> vm pes: " + vm.getNumberOfPes() + " -> vm free pes: " + numberOfVmFreePes);

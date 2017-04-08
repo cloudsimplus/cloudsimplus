@@ -40,6 +40,7 @@ import org.cloudbus.cloudsim.provisioners.PeProvisionerSimple;
 import org.cloudbus.cloudsim.provisioners.ResourceProvisionerSimple;
 import org.cloudbus.cloudsim.resources.Pe;
 import org.cloudbus.cloudsim.resources.PeSimple;
+import org.cloudbus.cloudsim.resources.Processor;
 import org.cloudbus.cloudsim.schedulers.cloudlet.CloudletSchedulerTimeShared;
 import org.cloudbus.cloudsim.schedulers.vm.VmSchedulerTimeShared;
 import org.cloudbus.cloudsim.util.Log;
@@ -51,6 +52,7 @@ import org.cloudbus.cloudsim.vms.VmSimple;
 import org.cloudsimplus.autoscaling.HorizontalVmScaling;
 import org.cloudsimplus.autoscaling.VerticalVmScaling;
 import org.cloudsimplus.autoscaling.VerticalVmScalingSimple;
+import org.cloudsimplus.autoscaling.resources.ResourceScalingInstantaneous;
 import org.cloudsimplus.builders.tables.CloudletsTableBuilder;
 import org.cloudsimplus.listeners.EventInfo;
 import org.cloudsimplus.listeners.EventListener;
@@ -58,8 +60,6 @@ import org.cloudsimplus.listeners.EventListener;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
-import java.util.function.Predicate;
-import java.util.stream.IntStream;
 
 import static java.util.Comparator.comparingDouble;
 
@@ -68,7 +68,7 @@ import static java.util.Comparator.comparingDouble;
  * A {@link VerticalVmScaling}
  * is set to each {@link #createListOfScalableVms(int) initially created VM},
  * that will check at {@link #SCHEDULING_INTERVAL specific time intervals}
- * if a VM PEs {@link #isVmPesOverloaded(Vm) are overloaded or not} to then
+ * if a VM PEs {@link #upperCpuUtilizationThreshold(Vm) are overloaded or not} to then
  * request the PEs to be scaled up.
  *
  * <p>The example uses the CloudSim Plus {@link EventListener} feature
@@ -80,7 +80,7 @@ import static java.util.Comparator.comparingDouble;
  * </p>
  *
  * @author Manoel Campos da Silva Filho
- * @since CloudSim Plus 1.2
+ * @since CloudSim Plus 1.2.0
  */
 public class VerticalVmCpuScalingExample {
     /**
@@ -99,7 +99,7 @@ public class VerticalVmCpuScalingExample {
      * has to be trade-off.
      * For more details, see {@link Datacenter#getSchedulingInterval()}.</p>
     */
-    private static final int SCHEDULING_INTERVAL = 2;
+    private static final int SCHEDULING_INTERVAL = 1;
     private static final int HOSTS = 1;
 
     private static final int HOST_PES = 32;
@@ -229,44 +229,58 @@ public class VerticalVmCpuScalingExample {
     }
 
     /**
-     * Creates a {@link VerticalVmScaling} for the CPU ({@link Pe}) of a given VM.
+     * Creates a {@link VerticalVmScaling} for the CPU of a given VM.
      *
      * @param vm the VM in which the VerticalVmScaling will be created
      * @see #createListOfScalableVms(int)
      */
     private void createVerticalPeScalingForVm(Vm vm) {
-        //Realize that different from Ram and Bandwidth scaling, this is an absolute number instead of a percentage.
-        final int numberOfPesToAddOrRemove = 1;
-        VerticalVmScaling verticalPeScaling = new VerticalVmScalingSimple(Pe.class, numberOfPesToAddOrRemove);
-        verticalPeScaling.setOverloadPredicate(this::isVmPesOverloaded);
-        verticalPeScaling.setUnderloadPredicate(this::isVmPesUnderloaded);
-        vm.setPeVerticalScaling(verticalPeScaling);
+        //The percentage in which the number of PEs has to be scaled
+        final double scalingFactor = 0.1;
+        VerticalVmScaling verticalCpuScaling = new VerticalVmScalingSimple(Processor.class, scalingFactor);
+        /* By uncommenting the line below, you will see that instead of gradually
+         * increasing or decreasing the number of PEs, when the scaling object detect
+         * the CPU usage is above or below the defined thresholds,
+         * it will automatically calculate the number of PEs to add/remove to
+         * move the VM from the over or underload condition.
+        */
+        //verticalCpuScaling.setResourceScalingType(new ResourceScalingInstantaneous());
+
+        verticalCpuScaling.setLowerThresholdFunction(this::lowerCpuUtilizationThreshold);
+        verticalCpuScaling.setUpperThresholdFunction(this::upperCpuUtilizationThreshold);
+        vm.setPeVerticalScaling(verticalCpuScaling);
     }
 
     /**
-     * A {@link Predicate} that checks if the {@link Pe}s of a given VM are overloaded,
-     * based on an upper PEs utilization threshold.
+     * Defines the minimum CPU utilization percentage that defines a Vm as underloaded.
+     * This function is using a statically defined threshold, but it would be defined
+     * a dynamic threshold based on any condition you want.
      * A reference to this method is assigned to each Vertical VM Scaling created.
      *
-     * @param vm the VM to check if its PEs are overloaded
-     * @return true if the VM PEs are overloaded, false otherwise
+     * @param vm the VM to check if its CPU is underloaded.
+     *        The parameter is not being used internally, that means the same
+     *        threshold is used for any Vm.
+     * @return the lower CPU utilization threshold
      * @see #createVerticalPeScalingForVm(Vm)
      */
-    private boolean isVmPesOverloaded(Vm vm) {
-        return vm.getCurrentCpuPercentUse() >= 0.8;
+    private double lowerCpuUtilizationThreshold(Vm vm) {
+        return 0.4;
     }
 
     /**
-     * A {@link Predicate} that checks if the {@link Pe}s of a given VM is underloaded,
-     * based on an lower PEs utilization threshold.
+     * Defines the maximum CPU utilization percentage that defines a Vm as overloaded.
+     * This function is using a statically defined threshold, but it would be defined
+     * a dynamic threshold based on any condition you want.
      * A reference to this method is assigned to each Vertical VM Scaling created.
      *
-     * @param vm the VM to check if its PES are underloaded
-     * @return true if the VM PEs are underloaded, false otherwise
+     * @param vm the VM to check if its CPU is overloaded.
+     *        The parameter is not being used internally, that means the same
+     *        threshold is used for any Vm.
+     * @return the upper CPU utilization threshold
      * @see #createVerticalPeScalingForVm(Vm)
      */
-    private boolean isVmPesUnderloaded(Vm vm) {
-        return vm.getCurrentCpuPercentUse() < 0.4;
+    private double upperCpuUtilizationThreshold(Vm vm) {
+        return 0.8;
     }
 
     /**

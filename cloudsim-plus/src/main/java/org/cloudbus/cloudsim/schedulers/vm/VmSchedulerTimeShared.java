@@ -63,7 +63,7 @@ public class VmSchedulerTimeShared extends VmSchedulerAbstract {
     /**
      * The number of host's PEs in use.
      */
-    private int pesInUse;
+    private long pesInUse;
 
     /**
      * Creates a vm time-shared scheduler.
@@ -338,7 +338,7 @@ public class VmSchedulerTimeShared extends VmSchedulerAbstract {
      *
      * @param pesInUse the new pes in use
      */
-    protected void setPesInUse(int pesInUse) {
+    protected void setPesInUse(long pesInUse) {
         this.pesInUse = pesInUse;
     }
 
@@ -347,7 +347,7 @@ public class VmSchedulerTimeShared extends VmSchedulerAbstract {
      *
      * @return the pes in use
      */
-    protected int getPesInUse() {
+    protected long getPesInUse() {
         return pesInUse;
     }
 

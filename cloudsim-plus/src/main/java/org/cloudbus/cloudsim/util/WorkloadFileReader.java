@@ -65,7 +65,7 @@ import org.cloudbus.cloudsim.utilizationmodels.UtilizationModelFull;
  * @todo The last item in the list above is not true. The cloudlet length is not
  * divided by the number of PEs. If there is more than 1 PE, all PEs run the
  * same number of MI as specified in the {@link Cloudlet#getLength()}
- * attribute. See {@link Cloudlet#setNumberOfPes(int)} method documentation.
+ * attribute. See {@link Cloudlet#setNumberOfPes(long)} method documentation.
  * @see WorkloadReader
  */
 public class WorkloadFileReader implements WorkloadReader {

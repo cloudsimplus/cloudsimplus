@@ -1,8 +1,6 @@
 package org.cloudbus.cloudsim.core;
 
-import org.cloudbus.cloudsim.core.Simulation;
 import org.cloudbus.cloudsim.hosts.Host;
-import org.cloudbus.cloudsim.lists.PeList;
 import org.cloudbus.cloudsim.resources.Pe;
 import org.cloudbus.cloudsim.resources.Resource;
 import org.cloudbus.cloudsim.resources.Resourceful;
@@ -16,6 +14,12 @@ import org.cloudbus.cloudsim.vms.Vm;
  * @since CloudSim Plus 1.2.0
  */
 public interface Machine extends ChangeableId, Resourceful {
+    /**
+     * An attribute that implements the Null Object Design Pattern for {@link Machine}
+     * objects.
+     */
+    Machine NULL = new MachineNull();
+
     /**
      * Gets the machine bandwidth (bw) capacity in Megabits/s.
      *
@@ -48,7 +52,7 @@ public interface Machine extends ChangeableId, Resourceful {
      *
      * @return the machine's number of PEs
      */
-    int getNumberOfPes();
+    long getNumberOfPes();
 
     /**
      * Gets the individual MIPS capacity of any machine's {@link Pe}, considering that all

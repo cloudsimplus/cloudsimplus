@@ -182,7 +182,7 @@ public class TerminateSimulationAtGivenTimeExample {
         long length = 10000; //in Million Structions (MI)
         long fileSize = 300; //Size (in bytes) before execution
         long outputSize = 300; //Size (in bytes) after execution
-        int  numberOfCpuCores = vm.getNumberOfPes(); //cloudlet will use all the VM's CPU cores
+        long  numberOfCpuCores = vm.getNumberOfPes(); //cloudlet will use all the VM's CPU cores
 
         //Defines how CPU, RAM and Bandwidth resources are used
         //Sets the same utilization model for all these resources.
