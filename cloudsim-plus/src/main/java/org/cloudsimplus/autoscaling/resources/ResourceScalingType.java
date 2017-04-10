@@ -44,7 +44,7 @@ public interface ResourceScalingType {
      * An attribute that implements the Null Object Design Pattern for {@link ResourceScalingType}
      * objects.
      */
-    ResourceScalingType NULL = new ResourceScalingNull();
+    ResourceScalingType NULL = s -> 0;
 
     /**
      * Computes the amount of resource to scale up or down,
