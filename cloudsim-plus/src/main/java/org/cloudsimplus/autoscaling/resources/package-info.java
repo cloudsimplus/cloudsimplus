@@ -1,5 +1,5 @@
 /**
- * Provides {@link org.cloudsimplus.autoscaling.resources.ResourceScalingType} classes
+ * Provides {@link org.cloudsimplus.autoscaling.resources.ResourceScaling} classes
  * that are used by a {@link org.cloudsimplus.autoscaling.VerticalVmScaling}
  * to define how the scaling of a {@link org.cloudbus.cloudsim.resources.Resource} it is in charge
  * will be performed.

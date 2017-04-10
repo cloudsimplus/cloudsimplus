@@ -33,7 +33,7 @@ import static org.cloudbus.cloudsim.utilizationmodels.UtilizationModel.Unit;
 
 import org.cloudbus.cloudsim.utilizationmodels.UtilizationModel;
 import org.cloudbus.cloudsim.vms.Vm;
-import org.cloudsimplus.autoscaling.resources.ResourceScalingType;
+import org.cloudsimplus.autoscaling.resources.ResourceScaling;
 import org.cloudsimplus.listeners.EventListener;
 
 import java.util.function.Function;
@@ -282,15 +282,15 @@ public interface VerticalVmScaling extends VmScaling {
     VerticalVmScaling setLowerThresholdFunction(Function<Vm, Double> lowerThresholdFunction);
 
     /**
-     * Gets the {@link ResourceScalingType}.
+     * Gets the {@link ResourceScaling}.
      * @return
      */
-    ResourceScalingType getResourceScalingType();
+    ResourceScaling getResourceScaling();
 
     /**
-     * Sets the {@link ResourceScalingType}.
-     * @param resourceScalingType the {@link ResourceScalingType} to set
+     * Sets the {@link ResourceScaling}.
+     * @param resourceScaling the {@link ResourceScaling} to set
      * @return
      */
-    VerticalVmScaling setResourceScalingType(ResourceScalingType resourceScalingType);
+    VerticalVmScaling setResourceScaling(ResourceScaling resourceScaling);
 }

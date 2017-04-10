@@ -244,7 +244,7 @@ public class VerticalVmCpuScalingExample {
          * it will automatically calculate the number of PEs to add/remove to
          * move the VM from the over or underload condition.
         */
-        //verticalCpuScaling.setResourceScalingType(new ResourceScalingInstantaneous());
+        //verticalCpuScaling.setResourceScaling(new ResourceScalingInstantaneous());
 
         verticalCpuScaling.setLowerThresholdFunction(this::lowerCpuUtilizationThreshold);
         verticalCpuScaling.setUpperThresholdFunction(this::upperCpuUtilizationThreshold);

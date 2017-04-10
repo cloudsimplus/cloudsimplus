@@ -254,7 +254,7 @@ public class VerticalVmRamScalingExample {
          * it will automatically calculate the amount of RAM to add/remove to
          * move the VM from the over or underload condition.
         */
-        //verticalRamScaling.setResourceScalingType(new ResourceScalingInstantaneous());
+        //verticalRamScaling.setResourceScaling(new ResourceScalingInstantaneous());
         verticalRamScaling.setLowerThresholdFunction(this::lowerRamUtilizationThreshold);
         verticalRamScaling.setUpperThresholdFunction(this::upperRamUtilizationThreshold);
         vm.setRamVerticalScaling(verticalRamScaling);

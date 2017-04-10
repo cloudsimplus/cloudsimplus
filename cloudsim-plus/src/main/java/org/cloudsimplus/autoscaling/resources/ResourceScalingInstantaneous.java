@@ -30,7 +30,7 @@ import org.cloudsimplus.autoscaling.VerticalVmScaling;
 import java.util.function.Function;
 
 /**
- * A {@link ResourceScalingType} for which the capacity of the resource to be scaled will be instantaneously
+ * A {@link ResourceScaling} for which the capacity of the resource to be scaled will be instantaneously
  * resized to move the Vm from the under or overload state.
  * This way, the SLA violation time will be reduced.
  *
@@ -54,8 +54,8 @@ import java.util.function.Function;
  * @author Manoel Campos da Silva Filho
  * @since CloudSim Plus 1.2.0
  */
-public class ResourceScalingInstantaneous implements ResourceScalingType {
-    private static final ResourceScalingType gradual = new ResourceScalingGradual();
+public class ResourceScalingInstantaneous implements ResourceScaling {
+    private static final ResourceScaling gradual = new ResourceScalingGradual();
 
     @Override
     public long getResourceAmountToScale(VerticalVmScaling vmScaling) {

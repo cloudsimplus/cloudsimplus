@@ -26,7 +26,7 @@ package org.cloudsimplus.autoscaling.resources;
 import org.cloudsimplus.autoscaling.VerticalVmScaling;
 
 /**
- * A {@link ResourceScalingType} for which the capacity of the resource to be scaled will be gradually
+ * A {@link ResourceScaling} for which the capacity of the resource to be scaled will be gradually
  * resized according to the defined {@link VerticalVmScaling#getScalingFactor() scaling factor}.
  * This scaling type may not automatically move a Vm from an under or overload state,
  * since it will increase or decrease the resource capacity the specified fraction
@@ -41,7 +41,7 @@ import org.cloudsimplus.autoscaling.VerticalVmScaling;
  * @author Manoel Campos da Silva Filho
  * @since CloudSim Plus 1.2.0
  */
-public class ResourceScalingGradual implements ResourceScalingType  {
+public class ResourceScalingGradual implements ResourceScaling {
     @Override
     public long getResourceAmountToScale(VerticalVmScaling vmScaling) {
         return (long)(vmScaling.getVmResourceToScale().getCapacity() * vmScaling.getScalingFactor());

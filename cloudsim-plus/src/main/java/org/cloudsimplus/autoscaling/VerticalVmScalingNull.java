@@ -26,7 +26,7 @@ package org.cloudsimplus.autoscaling;
 import org.cloudbus.cloudsim.resources.Resource;
 import org.cloudbus.cloudsim.resources.ResourceManageable;
 import org.cloudbus.cloudsim.vms.Vm;
-import org.cloudsimplus.autoscaling.resources.ResourceScalingType;
+import org.cloudsimplus.autoscaling.resources.ResourceScaling;
 
 import java.util.function.Function;
 
@@ -69,6 +69,6 @@ final class VerticalVmScalingNull implements VerticalVmScaling {
     @Override public VerticalVmScaling setUpperThresholdFunction(Function<Vm, Double> upperThresholdFunction) { return this; }
     @Override public Function<Vm, Double> getLowerThresholdFunction() { return vm -> Double.MIN_NORMAL; }
     @Override public VerticalVmScaling setLowerThresholdFunction(Function<Vm, Double> lowerThresholdFunction) { return this; }
-    @Override public ResourceScalingType getResourceScalingType() { return ResourceScalingType.NULL; }
-    @Override public VerticalVmScaling setResourceScalingType(ResourceScalingType resourceScalingType) { return this; }
+    @Override public ResourceScaling getResourceScaling() { return ResourceScaling.NULL; }
+    @Override public VerticalVmScaling setResourceScaling(ResourceScaling resourceScaling) { return this; }
 }

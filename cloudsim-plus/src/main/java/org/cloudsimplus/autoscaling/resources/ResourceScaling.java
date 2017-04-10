@@ -39,12 +39,12 @@ import org.cloudsimplus.autoscaling.VerticalVmScaling;
  * @since CloudSim 1.2.0
  */
 @FunctionalInterface
-public interface ResourceScalingType {
+public interface ResourceScaling {
     /**
-     * An attribute that implements the Null Object Design Pattern for {@link ResourceScalingType}
+     * An attribute that implements the Null Object Design Pattern for {@link ResourceScaling}
      * objects.
      */
-    ResourceScalingType NULL = s -> 0;
+    ResourceScaling NULL = s -> 0;
 
     /**
      * Computes the amount of resource to scale up or down,

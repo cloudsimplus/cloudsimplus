@@ -28,7 +28,7 @@ import org.cloudbus.cloudsim.core.CloudSimTags;
 import org.cloudbus.cloudsim.resources.*;
 import org.cloudbus.cloudsim.vms.Vm;
 import org.cloudsimplus.autoscaling.resources.ResourceScalingGradual;
-import org.cloudsimplus.autoscaling.resources.ResourceScalingType;
+import org.cloudsimplus.autoscaling.resources.ResourceScaling;
 
 import java.util.Objects;
 import java.util.function.Function;
@@ -44,14 +44,14 @@ import java.util.function.Function;
  * @since CloudSim Plus 1.1.0
  */
 public class VerticalVmScalingSimple extends VmScalingAbstract implements VerticalVmScaling {
-    private ResourceScalingType resourceScalingType;
+    private ResourceScaling resourceScaling;
     private double scalingFactor;
     private Class<? extends ResourceManageable> resourceClassToScale;
     private Function<Vm, Double> upperUtilizationThresholdFunction;
     private Function<Vm, Double> lowerUtilizationThresholdFunction;
 
     /**
-     * Creates a VerticalVmScalingSimple with a {@link ResourceScalingType} scaling type.
+     * Creates a VerticalVmScalingSimple with a {@link ResourceScaling} scaling type.
      *
      * @param resourceClassToScale the class of Vm resource that this scaling object will request up or down scaling
      *  (such as {@link Ram}.class, {@link Bandwidth}.class or {@link Processor}.class).
@@ -59,11 +59,11 @@ public class VerticalVmScalingSimple extends VmScalingAbstract implements Vertic
      * whether if such a resource is over or underloaded, according to the
      * defined predicates (a percentage value in scale from 0 to 1).
      * In the case of up scaling, the value 1 will scale the resource in 100%, doubling its capacity.
-     * @see VerticalVmScaling#setResourceScalingType(ResourceScalingType)
+     * @see VerticalVmScaling#setResourceScaling(ResourceScaling)
      */
     public VerticalVmScalingSimple(Class<? extends ResourceManageable> resourceClassToScale, double scalingFactor){
         super();
-        this.setResourceScalingType(new ResourceScalingGradual());
+        this.setResourceScaling(new ResourceScalingGradual());
         this.lowerUtilizationThresholdFunction = VerticalVmScaling.NULL.getLowerThresholdFunction();
         this.upperUtilizationThresholdFunction = VerticalVmScaling.NULL.getUpperThresholdFunction();
         this.setResourceClassToScale(resourceClassToScale);
@@ -95,14 +95,14 @@ public class VerticalVmScalingSimple extends VmScalingAbstract implements Vertic
     }
 
     @Override
-    public ResourceScalingType getResourceScalingType() {
-        return resourceScalingType;
+    public ResourceScaling getResourceScaling() {
+        return resourceScaling;
     }
 
     @Override
-    public final VerticalVmScaling setResourceScalingType(ResourceScalingType resourceScalingType) {
-        Objects.requireNonNull(resourceScalingType);
-        this.resourceScalingType = resourceScalingType;
+    public final VerticalVmScaling setResourceScaling(ResourceScaling resourceScaling) {
+        Objects.requireNonNull(resourceScaling);
+        this.resourceScaling = resourceScaling;
         return this;
     }
 
@@ -172,7 +172,7 @@ public class VerticalVmScalingSimple extends VmScalingAbstract implements Vertic
 
     @Override
     public long getResourceAmountToScale() {
-        return resourceScalingType.getResourceAmountToScale(this);
+        return resourceScaling.getResourceAmountToScale(this);
     }
 
     @Override
