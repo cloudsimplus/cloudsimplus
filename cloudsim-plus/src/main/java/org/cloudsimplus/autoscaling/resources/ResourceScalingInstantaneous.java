@@ -54,21 +54,23 @@ import java.util.function.Function;
  * @author Manoel Campos da Silva Filho
  * @since CloudSim Plus 1.2.0
  */
-public class ResourceScalingInstantaneous extends ResourceScalingGradual {
+public class ResourceScalingInstantaneous implements ResourceScalingType {
+    private static final ResourceScalingType gradual = new ResourceScalingGradual();
+
     @Override
-    public long getResourceAmountToScale() {
-        Function<Vm, Double> thresholdFunction = getVmScaling().getResourceUsageThresholdFunction();
+    public long getResourceAmountToScale(VerticalVmScaling vmScaling) {
+        Function<Vm, Double> thresholdFunction = vmScaling.getResourceUsageThresholdFunction();
         /* Computes the size to which the resource has to be scaled to move it from the under or overload
         * state.*/
         final long newResourceSize =
-            (long)Math.ceil(getVmScaling().getVmResourceToScale().getAllocatedResource() *
-                MathUtil.HUNDRED_PERCENT / thresholdFunction.apply(getVmScaling().getVm()));
+            (long)Math.ceil(vmScaling.getVmResourceToScale().getAllocatedResource() *
+                MathUtil.HUNDRED_PERCENT / thresholdFunction.apply(vmScaling.getVm()));
 
         /*Includes and additional resource amount for safety, according to the scaling factor.
         * This way, if the resource usage increases again up to this extra amount,
         * there is no need to re-scale the resource.
         * If the scale factor is zero, no extra safety amount is included.*/
-        final long extraSafetyCapacity = super.getResourceAmountToScale();
+        final long extraSafetyCapacity = gradual.getResourceAmountToScale(vmScaling);
         return newResourceSize + extraSafetyCapacity;
     }
 }

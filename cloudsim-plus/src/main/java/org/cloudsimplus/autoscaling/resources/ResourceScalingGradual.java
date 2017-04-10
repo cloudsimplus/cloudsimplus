@@ -41,9 +41,9 @@ import org.cloudsimplus.autoscaling.VerticalVmScaling;
  * @author Manoel Campos da Silva Filho
  * @since CloudSim Plus 1.2.0
  */
-public class ResourceScalingGradual extends ResourceScalingTypeAbstract {
+public class ResourceScalingGradual implements ResourceScalingType  {
     @Override
-    public long getResourceAmountToScale() {
-        return (long)(getVmScaling().getVmResourceToScale().getCapacity() * getVmScaling().getScalingFactor());
+    public long getResourceAmountToScale(VerticalVmScaling vmScaling) {
+        return (long)(vmScaling.getVmResourceToScale().getCapacity() * vmScaling.getScalingFactor());
     }
 }

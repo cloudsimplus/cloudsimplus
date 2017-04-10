@@ -33,7 +33,5 @@ import org.cloudsimplus.autoscaling.VerticalVmScaling;
  * @since CloudSim Plus 1.2.0
  */
 final class ResourceScalingNull implements ResourceScalingType {
-    @Override public long getResourceAmountToScale() { return 0; }
-    @Override public VerticalVmScaling getVmScaling() { return VerticalVmScaling.NULL; }
-    @Override public ResourceScalingType setVmScaling(VerticalVmScaling vmScaling) { return this; }
+    @Override public long getResourceAmountToScale(VerticalVmScaling vmScaling) { return 0; }
 }

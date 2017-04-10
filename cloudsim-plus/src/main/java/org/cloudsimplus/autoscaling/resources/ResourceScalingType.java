@@ -27,7 +27,7 @@ import org.cloudbus.cloudsim.datacenters.Datacenter;
 import org.cloudsimplus.autoscaling.VerticalVmScaling;
 
 /**
- * Defines how the capacity of the resource to be scaled by a {@link VerticalVmScaling}
+ * A {@link FunctionalInterface} to define how the capacity of the resource to be scaled by a {@link VerticalVmScaling}
  * will be resized, according to the defined {@link VerticalVmScaling#getScalingFactor() scaling factor}.
  *
  * <p>The interval in which the under and overload conditions are checked
@@ -38,6 +38,7 @@ import org.cloudsimplus.autoscaling.VerticalVmScaling;
  * @author Manoel Campos da Silva Filho
  * @since CloudSim 1.2.0
  */
+@FunctionalInterface
 public interface ResourceScalingType {
     /**
      * An attribute that implements the Null Object Design Pattern for {@link ResourceScalingType}
@@ -49,21 +50,9 @@ public interface ResourceScalingType {
      * Computes the amount of resource to scale up or down,
      * depending if the resource is over or underloaded, respectively.
      *
+     * @param vmScaling the {@link VerticalVmScaling} object that is in charge to scale a resource.
      * @return
      */
-    long getResourceAmountToScale();
-
-    /**
-     * Gets the {@link VerticalVmScaling} object that is in charge to scale a resource.
-     * @return
-     */
-    VerticalVmScaling getVmScaling();
-
-    /**
-     * Sets the {@link VerticalVmScaling} object that is in charge to scale a resource.
-     * @param vmScaling the scaling object to set
-     * @return
-     */
-    ResourceScalingType setVmScaling(VerticalVmScaling vmScaling);
+    long getResourceAmountToScale(VerticalVmScaling vmScaling);
 
 }
