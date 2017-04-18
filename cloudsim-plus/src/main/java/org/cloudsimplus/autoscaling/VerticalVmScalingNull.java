@@ -69,6 +69,5 @@ final class VerticalVmScalingNull implements VerticalVmScaling {
     @Override public VerticalVmScaling setUpperThresholdFunction(Function<Vm, Double> upperThresholdFunction) { return this; }
     @Override public Function<Vm, Double> getLowerThresholdFunction() { return vm -> Double.MIN_NORMAL; }
     @Override public VerticalVmScaling setLowerThresholdFunction(Function<Vm, Double> lowerThresholdFunction) { return this; }
-    @Override public ResourceScaling getResourceScaling() { return ResourceScaling.NULL; }
     @Override public VerticalVmScaling setResourceScaling(ResourceScaling resourceScaling) { return this; }
 }

@@ -125,18 +125,6 @@ public interface VerticalVmScaling extends VmScaling {
     double getScalingFactor();
 
     /**
-     * Gets the lower or upper resource utilization threshold {@link Function},
-     * depending if the Vm resource is under or overloaded, respectively.
-     *
-     * @return the lower resource utilization threshold function if the Vm resource
-     * is underloaded, upper resource utilization threshold function if the Vm resource
-     * is overloaded, or a function that always returns 0 if the Vm is is not in these conditions.
-     * @see #getLowerThresholdFunction()
-     * @see #getUpperThresholdFunction()
-     */
-    Function<Vm, Double> getResourceUsageThresholdFunction();
-
-    /**
      * Sets the factor that will be used to scale a Vm resource up or down,
      * whether such a resource is over or underloaded, according to the
      * defined predicates.
@@ -152,6 +140,18 @@ public interface VerticalVmScaling extends VmScaling {
      * @see #getUpperThresholdFunction()
      */
     VerticalVmScaling setScalingFactor(double scalingFactor);
+
+    /**
+     * Gets the lower or upper resource utilization threshold {@link Function},
+     * depending if the Vm resource is under or overloaded, respectively.
+     *
+     * @return the lower resource utilization threshold function if the Vm resource
+     * is underloaded, upper resource utilization threshold function if the Vm resource
+     * is overloaded, or a function that always returns 0 if the Vm is is not in these conditions.
+     * @see #getLowerThresholdFunction()
+     * @see #getUpperThresholdFunction()
+     */
+    Function<Vm, Double> getResourceUsageThresholdFunction();
 
     /**
      * Checks if the Vm is underloaded or not, based on the
@@ -280,12 +280,6 @@ public interface VerticalVmScaling extends VmScaling {
      * @return
      */
     VerticalVmScaling setLowerThresholdFunction(Function<Vm, Double> lowerThresholdFunction);
-
-    /**
-     * Gets the {@link ResourceScaling}.
-     * @return
-     */
-    ResourceScaling getResourceScaling();
 
     /**
      * Sets the {@link ResourceScaling}.

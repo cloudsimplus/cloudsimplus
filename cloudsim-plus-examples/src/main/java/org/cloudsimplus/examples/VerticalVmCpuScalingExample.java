@@ -247,7 +247,7 @@ public class VerticalVmCpuScalingExample {
         //verticalCpuScaling.setResourceScaling(new ResourceScalingInstantaneous());
         /*Implementations of a ResourceScaling can also be defined using a Lambda Expression as below.
         * It is just an example the scale the resource twice the amount defined by the scaling factor.*/
-        //verticalCpuScaling.setResourceScaling(s -> (long)(s.getScalingFactor()*2*s.getVmResourceToScale().getAllocatedResource()));
+        verticalCpuScaling.setResourceScaling(s -> (long)(s.getScalingFactor()*2*s.getVmResourceToScale().getAllocatedResource()));
 
         verticalCpuScaling.setLowerThresholdFunction(this::lowerCpuUtilizationThreshold);
         verticalCpuScaling.setUpperThresholdFunction(this::upperCpuUtilizationThreshold);

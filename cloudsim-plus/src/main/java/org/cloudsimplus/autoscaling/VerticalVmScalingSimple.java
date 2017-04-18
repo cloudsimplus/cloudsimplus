@@ -95,11 +95,6 @@ public class VerticalVmScalingSimple extends VmScalingAbstract implements Vertic
     }
 
     @Override
-    public ResourceScaling getResourceScaling() {
-        return resourceScaling;
-    }
-
-    @Override
     public final VerticalVmScaling setResourceScaling(ResourceScaling resourceScaling) {
         Objects.requireNonNull(resourceScaling);
         this.resourceScaling = resourceScaling;

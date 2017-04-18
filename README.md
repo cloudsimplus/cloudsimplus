@@ -7,7 +7,7 @@
 |
 <b><a href="#exclusive-features">Exclusive Features</a></b>
 |
-<b><a href="#projects-modules">Modules</a></b>
+<b><a href="#projects-modules">Structure</a></b>
 |
 <b><a href="#how-to-use-cloudsim-plus">How to use</a></b>
 |
@@ -73,9 +73,11 @@ CloudSim Plus provides a lot of exclusive features, ranging from the most basic 
 1. [Integration Tests](https://github.com/manoelcampos/cloudsim-plus/tree/master/cloudsim-plus/src/test/java/org/cloudsimplus/integrationtests) to increase framework accuracy by testing entire simulation scenarios;
 1. Updated to Java 8, making extensive use of [Lambda Expressions](http://www.oracle.com/webfolder/technetwork/tutorials/obe/java/Lambda-QuickStart/index.html) and [Streams API](http://www.oracle.com/technetwork/articles/java/ma14-java-se-8-streams-2177646.html) to improve efficiency and provide a code that is cleaner and easier to maintain.
 
-# Project's Modules
+# Project's Structure
 
-CloudSim Plus has a simple structure to ease usage and comprehension. It consists of 4 modules, 2 of which are new, as presented below.
+CloudSim Plus has a simpler structure to make it ease to use and understand. It consists of 4 modules, 2 of which are new, as presented below.
+
+![CloudSim Plus Modules](https://github.com/manoelcampos/cloudsim-plus/raw/master/docs/modules.png)
 
 - [cloudsim-plus](/cloudsim-plus): the CloudSim Plus cloud simulation framework API that is used by all other modules. 
   It is the main module that contains the simulation framework implementation and is the only
@@ -92,8 +94,12 @@ CloudSim Plus has a simple structure to ease usage and comprehension. It consist
   [Java Microbenchmark Harness framework (JMH)](http://openjdk.java.net/projects/code-tools/jmh/) to enable measuring critical methods of the 
   CloudSim Plus API that have a high impact in the simulation framework performance.
 
-<p align="right"><a href="#top">:arrow_up:</a></p>
+It also has a better package organization, improving [Separation of Concerns (SoC)](https://en.wikipedia.org/wiki/Separation_of_concerns) and making it easy to know where a desired class is and what is inside each package. The figure below presents the new package organization. The dark yellow packages are new in CloudSim Plus and include its exclusive interfaces and classes. The light yellow ones were introduced just to better organize existing CloudSim classes and interfaces. 
 
+![CloudSim Plus Packages](https://github.com/manoelcampos/cloudsim-plus/raw/master/docs/package-structure-reduced.png)
+
+
+<p align="right"><a href="#top">:arrow_up:</a></p>
 
 # How to Use CloudSim Plus 
 There are 3 ways to use CloudSim Plus. It can be downloaded and executed directly from some IDE or from the command line. Since it is a Maven project available at [Maven Central](https://maven-badges.herokuapp.com/maven-central/org.cloudsimplus/cloudsim-plus), you can also include it as a dependency inside your own project.
@@ -253,8 +259,7 @@ a resource `UtilizationModel` with an upper threshold or a `DatacenterBroker` th
 
 Several software engineering principles aim to ease the task of creating new classes to implement those features. 
 They also try to avoid forcing you to change core classes of the simulator in order to introduce a feature you need to implement.
-Changing these core classes is a bad practice, since you will not be able to automatically update your project to new versions 
-of the simulator, without losing your changes or struggling to fix merge conflicts.  
+**Changing these core classes just to implement a particular feature which will be used only in your simulations is a bad practice, since you will not be able to automatically update your project to new versions of the simulator, without losing your changes or struggling to fix merge conflicts.**
 
 As we have seen in forums that we've attended, many times users have to perform these changes in core classes 
 just to implement some specific features they need. We think those problems are enough reasons that show the need of a new re-engineered version of the simulator.  
@@ -271,7 +276,7 @@ before the changes proposed here being merged to the official repository. This w
 
 <a id="differences"></a>
 
-# What are the practical differences of using CloudSim Plus instead of CloudSim? How can I update my simulations in order to use CloudSim Plus?
+# What are the practical differences of using CloudSim Plus instead of CloudSim? How can I update my simulations to use CloudSim Plus?
 
 To update your simulations to use the CloudSim Plus you have to change the way that some objects are instantiated, because some new interfaces were introduced to follow the "program to an interface, not an implementation" recommendation and also to increase [abstraction](https://en.wikipedia.org/wiki/Abstraction_(software_engineering)). 
 These new interfaces were also crucial to implement the [Null Object Pattern](https://en.wikipedia.org/wiki/Null_Object_pattern) to try avoiding `NullPointerException`s.
@@ -330,7 +335,7 @@ Additionally, the interface `Storage` was renamed to `FileStorage` and its imple
 
 <p align="right"><a href="#top">:arrow_up:</a></p>
 
-# General Features of the Simulator
+# General Features of the Framework
 
   * Support for modeling and simulation of large scale Cloud computing data centers.
   * Support for modeling and simulation of virtualized server hosts, with customizable policies for provisioning host resources to virtual machines.
@@ -359,6 +364,6 @@ This project is licensed under [GNU GPLv3](http://www.gnu.org/licenses/gpl-3.0),
 
 # Contributing
 
-You are welcome to contribute to the project. However, make sure you read the [contribution guide](CONTRIBUTING.md) before starting. The guide provides information on the different ways you can contribute, such as requesting a feature, reporting an issue, fixing a bug or providing some new feature.
+You are welcome to contribute to the project. However, make sure you read the [contribution guide](CONTRIBUTING.md) before starting. The guide provides information on the different ways you can contribute, such as by requesting a feature, reporting an issue, fixing a bug or providing some new feature.
 
 <p align="right"><a href="#top">:arrow_up:</a></p>
