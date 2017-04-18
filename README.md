@@ -7,7 +7,7 @@
 |
 <b><a href="#exclusive-features">Exclusive Features</a></b>
 |
-<b><a href="#projects-modules">Structure</a></b>
+<b><a href="#projects-structure">Structure</a></b>
 |
 <b><a href="#how-to-use-cloudsim-plus">How to use</a></b>
 |
@@ -102,7 +102,7 @@ It also has a better package organization, improving [Separation of Concerns (So
 <p align="right"><a href="#top">:arrow_up:</a></p>
 
 # How to Use CloudSim Plus 
-There are 3 ways to use CloudSim Plus. It can be downloaded and executed directly from some IDE or from the command line. Since it is a Maven project available at [Maven Central](https://maven-badges.herokuapp.com/maven-central/org.cloudsimplus/cloudsim-plus), you can also include it as a dependency inside your own project.
+There are 3 ways to use CloudSim Plus. It can be downloaded and executed: (i) directly from some IDE; (ii) from the command line; or (iii) from [Maven Central](https://maven-badges.herokuapp.com/maven-central/org.cloudsimplus/cloudsim-plus) once you include it as a dependency inside your own project.
 
 You can watch the video below ([high quality version here](https://youtu.be/hvFJtvrkCNI)) or follow the instructions in one of the next subsections.
 
