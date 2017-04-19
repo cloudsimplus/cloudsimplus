@@ -277,7 +277,7 @@ before the changes proposed here being merged to the official repository. This w
 
 # What are the practical differences of using CloudSim Plus instead of CloudSim? How can I update my simulations to use CloudSim Plus?
 
-It's much easier to use CloudSim Plus. A complete, side-by-side [comparison between CloudSim and CloudSim Plus Java simulation scenarios is available here](https://github.com/manoelcampos/cloudsim-plus/raw/master/docs/CloudSim-and-CloudSimPlus-Comparison.html).
+It's much easier to use CloudSim Plus. A complete, side-by-side [comparison between CloudSim and CloudSim Plus Java simulation scenarios is available here](http://cloudsimplus.org/CloudSim-and-CloudSimPlus-Comparison.html).
 
 To update your simulations to use the CloudSim Plus you have to change the way that some objects are instantiated, because some new interfaces were introduced to follow the "program to an interface, not an implementation" recommendation and also to increase [abstraction](https://en.wikipedia.org/wiki/Abstraction_(software_engineering)). 
 These new interfaces were also crucial to implement the [Null Object Pattern](https://en.wikipedia.org/wiki/Null_Object_pattern) to try avoiding `NullPointerException`s.
