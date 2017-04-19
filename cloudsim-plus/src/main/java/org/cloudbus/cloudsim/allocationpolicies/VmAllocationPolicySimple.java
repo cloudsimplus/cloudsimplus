@@ -15,7 +15,7 @@ import java.util.*;
 
 /**
  * A VmAllocationPolicy implementation that chooses, as
- * the host for a VM, that one with less PEs in use. It is therefore a Worst Fit
+ * the host for a VM, that one with fewer PEs in use. It is therefore a Worst Fit
  * policy, allocating VMs into the host with most available PEs.
  *
  * <p><b>NOTE: This policy doesn't perform optimization of VM allocation (placement)

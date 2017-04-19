@@ -72,7 +72,7 @@ import static java.util.Comparator.comparingDouble;
  * request the PEs to be scaled up.
  *
  * <p>The example uses the CloudSim Plus {@link EventListener} feature
- * to enable monitoring the simulation and dynamically creating objects such as Cloudlets and VMs.
+ * to enable monitoring the simulation and dynamically creating objects such as Cloudlets and VMs at runtime.
  * It relies on
  * <a href="http://www.oracle.com/webfolder/technetwork/tutorials/obe/java/Lambda-QuickStart/index.html">Java 8 Lambda Expressions</a>
  * to create a Listener for the {@link Simulation#addOnClockTickListener(EventListener) onClockTick event}

@@ -114,22 +114,21 @@ download the project source by cloning the repository issuing the command `git c
 at a terminal. 
 
 The project has a [bash script](script/bootstrap.sh) you can use to build and run CloudSim Plus examples. 
-This is a script for Unix-like system such as Linux, FreeBDS and Mac OSX.
+This is a script for Unix-like systems such as Linux, FreeBDS and Mac OSX.
 
 To run some example type the command: `sh script/bootstrap.sh package.ExampleClassName`.
 For instance, to run the CloudSimExample0 you can type: `sh script/bootstrap.sh org.cloudbus.cloudsim.examples.CloudSimExample0`. 
 
 The script checks if it is required to build the project, using maven in this case, making sure to download all dependencies. 
-To see what examples are available, just navigate through the [examples directory](/cloudsim-plus-examples/src/main/java/).
-To see more script options, run it without any parameter.  
+To see which examples are available, just navigate through the [examples directory](/cloudsim-plus-examples/src/main/java/).
+To check more script options, run it without any parameter.  
  
 ## By Means of an IDE
 The easiest way to use the project is relying on some IDE such as [NetBeans](http://netbeans.org), [Eclipse](http://eclipse.org) 
 or [IntelliJ IDEA](http://jetbrains.com/idea/).
 Below are the steps to start using the project:
 
-- Download the project sources using the download button on top of this page or clone it using `git clone https://github.com/manoelcampos/cloudsim-plus.git` 
-at a terminal.
+- Download the project sources by using: the download button on top of this page; your own IDE for it; or the command line as described above.
 - Open/import the project in your IDE:
     - For NetBeans, just use the "Open project" menu and select the directory where the project was downloaded/cloned.
     - For Eclipse or IntelliJ IDEA, 
@@ -235,7 +234,7 @@ The presented results are structured and clear to allow better understanding. Fo
 The project documentation originated from CloudSim was entirely updated and extended. 
 You can see the javadoc documentation for classes and their elements directly on your IDE.
 
-The documentation is available online at [ReadTheDocs](http://cloudsimplus.rtfd.io/en/latest/?badge=latest), that includes a FAQ and guides.
+The documentation is available online at [ReadTheDocs](http://cloudsimplus.rtfd.io/en/latest/?badge=latest), which includes a FAQ and guides.
 CloudSim Plus has extended documentation of classes and interfaces and also includes extremely helpful
 package documentation that can be viewed directly on your IDE or at the link provided above.
 Such a package documentation gives a general overview of the classes used to build a cloud simulation.
@@ -277,6 +276,8 @@ before the changes proposed here being merged to the official repository. This w
 <a id="differences"></a>
 
 # What are the practical differences of using CloudSim Plus instead of CloudSim? How can I update my simulations to use CloudSim Plus?
+
+It's much easier to use CloudSim Plus. A complete, side-by-side [comparison between CloudSim and CloudSim Plus Java simulation scenarios is available here](https://github.com/manoelcampos/cloudsim-plus/raw/master/docs/CloudSim-and-CloudSimPlus-Comparison.html).
 
 To update your simulations to use the CloudSim Plus you have to change the way that some objects are instantiated, because some new interfaces were introduced to follow the "program to an interface, not an implementation" recommendation and also to increase [abstraction](https://en.wikipedia.org/wiki/Abstraction_(software_engineering)). 
 These new interfaces were also crucial to implement the [Null Object Pattern](https://en.wikipedia.org/wiki/Null_Object_pattern) to try avoiding `NullPointerException`s.
@@ -352,7 +353,7 @@ Additionally, the interface `Storage` was renamed to `FileStorage` and its imple
 # CloudSim Plus Publications
 
   1. This paper was accepted for publication and will be available at IEEExplore soon. If you are using CloudSim Plus in your research, please make sure you cite it: [M. C. Silva Filho, R. L. Oliveira, C. C. Monteiro, P. R. M. Inácio, and M. M. Freire, “CloudSim Plus: a Cloud Computing Simulation Framework Pursuing Software Engineering Principles for Improved Modularity, Extensibility and Correctness,” in IFIP/IEEE International Symposium on Integrated Network Management, 2017, p. 7](http://im2017.ieee-im.org/mini-conference).
-  2. White Paper ["CloudSim Plus: A Modern Java 8 Framework for Modeling and Simulation of Cloud Computing Infrastructures and Services"](/docs/cloudsim-plus-white-paper.pdf)
+  2. White Paper ["CloudSim Plus: A Modern Java 8 Framework for Modeling and Simulation of Cloud Computing Infrastructures and Services"](https://github.com/manoelcampos/cloudsim-plus/raw/master/docs/cloudsim-plus-white-paper.pdf)
   
 <p align="right"><a href="#top">:arrow_up:</a></p>
   
