@@ -249,6 +249,7 @@ public interface Vm extends Machine, UniquelyIdentificable, Delayable, Comparabl
      * @pre $none
      * @post $none
      */
+    @Override
     Resource getBw();
 
     /**
@@ -517,6 +518,7 @@ public interface Vm extends Machine, UniquelyIdentificable, Delayable, Comparabl
      * Gets a {@link VerticalVmScaling} that will check if the Vm's RAM is overloaded,
      * based on some conditions defined by a {@link Predicate} given
      * to the VerticalVmScaling, and then request the RAM up scaling.
+     * @return 
      */
     VerticalVmScaling getRamVerticalScaling();
 
@@ -524,6 +526,7 @@ public interface Vm extends Machine, UniquelyIdentificable, Delayable, Comparabl
      * Gets a {@link VerticalVmScaling} that will check if the Vm's Bandwidth is overloaded,
      * based on some conditions defined by a {@link Predicate} given
      * to the VerticalVmScaling, and then request the BW up scaling.
+     * @return 
      */
     VerticalVmScaling getBwVerticalScaling();
 
@@ -531,6 +534,7 @@ public interface Vm extends Machine, UniquelyIdentificable, Delayable, Comparabl
      * Gets a {@link VerticalVmScaling} that will check if the Vm's {@link Pe} is overloaded,
      * based on some conditions defined by a {@link Predicate} given
      * to the VerticalVmScaling, and then request the RAM up scaling.
+     * @return 
      */
     VerticalVmScaling getPeVerticalScaling();
 

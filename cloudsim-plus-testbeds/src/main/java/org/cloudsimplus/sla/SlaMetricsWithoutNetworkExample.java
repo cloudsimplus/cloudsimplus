@@ -46,9 +46,7 @@ import org.cloudbus.cloudsim.schedulers.vm.VmSchedulerTimeShared;
 import org.cloudbus.cloudsim.core.CloudSim;
 import org.cloudbus.cloudsim.provisioners.PeProvisionerSimple;
 import org.cloudbus.cloudsim.provisioners.ResourceProvisionerSimple;
-import org.cloudbus.cloudsim.resources.Bandwidth;
 import org.cloudbus.cloudsim.resources.PeSimple;
-import org.cloudbus.cloudsim.resources.Ram;
 import org.cloudsimplus.builders.tables.CloudletsTableBuilder;
 import org.cloudbus.cloudsim.utilizationmodels.UtilizationModel;
 import org.cloudbus.cloudsim.utilizationmodels.UtilizationModelFull;
@@ -237,8 +235,9 @@ public final class SlaMetricsWithoutNetworkExample {
     private double bwVmAverage(List<Vm> vmlist){
         double totalBwUtilization = 0;
         int quantVm = vmlist.size();
-        for(Vm vms: vmlist){
-            totalBwUtilization += vms.getBw().getAllocatedResource();
+        for(Vm vm: vmlist){
+            totalBwUtilization += vm.getBw().getAllocatedResource();
+            System.out.println("\n\n -> " + totalBwUtilization);
         }
         return totalBwUtilization/quantVm;
     }
@@ -296,6 +295,10 @@ public final class SlaMetricsWithoutNetworkExample {
         // total cost
         double totalCost = totalCostPrice(vmlist);
         System.out.println("\t** Total cost (memory, bw, processing, storage) - " + totalCost);
+
+        // bw cost
+        double bw = bwVmAverage(vmlist);
+        System.out.println("\t** BW  " + bw);
 
         System.out.println("________________________________________________________________");
 

@@ -154,6 +154,7 @@ public class PowerVmAllocationPolicyMigrationLocalRegression extends PowerVmAllo
      * Sets the scheduling interval that defines the periodicity of VM migrations.
      *
      * @param schedulingInterval the new scheduling interval
+     * @return 
      */
     public final PowerVmAllocationPolicyMigrationLocalRegression setSchedulingInterval(double schedulingInterval) {
         this.schedulingInterval = schedulingInterval;
