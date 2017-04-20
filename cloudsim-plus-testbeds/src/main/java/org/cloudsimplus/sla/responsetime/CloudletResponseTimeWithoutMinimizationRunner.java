@@ -38,10 +38,11 @@ public class CloudletResponseTimeWithoutMinimizationRunner extends ExperimentRun
      */
     private List<Double> percentageOfCloudletsMeetingResponseTimes;
     
-     /**
-     * Amount of cloudlet per foot of vm.
+    /**
+     * Amount of cloudlet PE per PE of vm.
      */
-    private List<Double> divPesVmsByPesCloudlets;
+    private List<Double> ratioOfVmPesToRequiredCloudletPesList;
+
 
     /**
      * Indicates if each experiment will output execution logs or not.
@@ -68,7 +69,7 @@ public class CloudletResponseTimeWithoutMinimizationRunner extends ExperimentRun
         super();
         cloudletResponseTimes = new ArrayList<>();
         percentageOfCloudletsMeetingResponseTimes = new ArrayList<>();
-        divPesVmsByPesCloudlets = new ArrayList<>();
+        ratioOfVmPesToRequiredCloudletPesList = new ArrayList<>();
     }
 
     @Override
@@ -96,7 +97,7 @@ public class CloudletResponseTimeWithoutMinimizationRunner extends ExperimentRun
         cloudletResponseTimes.add(experiment.getCloudletsResponseTimeAverage());
         percentageOfCloudletsMeetingResponseTimes.add(
                 experiment.getPercentageOfCloudletsMeetingResponseTime());
-        divPesVmsByPesCloudlets.add(experiment.getDivPesVmsByPesCloudlets());
+        ratioOfVmPesToRequiredCloudletPesList.add(experiment.getRatioOfExistingVmPesToRequiredCloudletPes());
     }
 
     @Override
@@ -104,7 +105,7 @@ public class CloudletResponseTimeWithoutMinimizationRunner extends ExperimentRun
         Map<String, List<Double>> map = new HashMap<>();
         map.put("Cloudlet Response Time", cloudletResponseTimes);
         map.put("Percentage Of Cloudlets Meeting Response Times", percentageOfCloudletsMeetingResponseTimes);
-        map.put("Amount of cloudlet per foot of vm: ", divPesVmsByPesCloudlets);
+        map.put("Average of vPEs/CloudletsPEs", ratioOfVmPesToRequiredCloudletPesList);
         return map;
     }
 

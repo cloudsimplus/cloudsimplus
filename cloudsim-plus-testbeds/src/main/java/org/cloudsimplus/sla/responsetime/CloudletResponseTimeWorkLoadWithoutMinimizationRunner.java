@@ -17,7 +17,7 @@ import org.cloudsimplus.testbeds.ExperimentRunner;
  *
  * @author raysaoliveira
  */
-public class CloudletResponseTimeWorkLoadRunner extends ExperimentRunner<CloudletResponseTimeWorkLoadExperimet> {
+public class CloudletResponseTimeWorkLoadWithoutMinimizationRunner extends ExperimentRunner<CloudletResponseTimeWorkLoadWithoutMinimizationExperiment> {
     
     /**
      * Different lengths that will be randomly assigned to created Cloudlets.
@@ -54,7 +54,7 @@ public class CloudletResponseTimeWorkLoadRunner extends ExperimentRunner<Cloudle
      * @param args command line arguments
      */
     public static void main(String[] args) {
-        new CloudletResponseTimeWorkLoadRunner()
+        new CloudletResponseTimeWorkLoadWithoutMinimizationRunner()
                 .setSimulationRuns(200)
                 .setApplyAntitheticVariatesTechnique(true)
                 .setNumberOfBatches(5) //Comment this or set to 0 to disable the "Batch Means Method"
@@ -63,7 +63,7 @@ public class CloudletResponseTimeWorkLoadRunner extends ExperimentRunner<Cloudle
                 .run();
     }
 
-    CloudletResponseTimeWorkLoadRunner() {
+    CloudletResponseTimeWorkLoadWithoutMinimizationRunner() {
         super();
         cloudletResponseTimes = new ArrayList<>();
         percentageOfCloudletsMeetingResponseTimes = new ArrayList<>();
@@ -71,11 +71,11 @@ public class CloudletResponseTimeWorkLoadRunner extends ExperimentRunner<Cloudle
     }
 
     @Override
-    protected CloudletResponseTimeWorkLoadExperimet createExperiment(int i) {
+    protected CloudletResponseTimeWorkLoadWithoutMinimizationExperiment createExperiment(int i) {
         ContinuousDistribution randCloudlet = createRandomGenAndAddSeedToList(i);
         ContinuousDistribution randVm = createRandomGenAndAddSeedToList(i);
-        CloudletResponseTimeWorkLoadExperimet exp
-                = new CloudletResponseTimeWorkLoadExperimet(randCloudlet, randVm);
+        CloudletResponseTimeWorkLoadWithoutMinimizationExperiment exp
+                = new CloudletResponseTimeWorkLoadWithoutMinimizationExperiment(randCloudlet, randVm);
         exp.setVerbose(experimentVerbose).setAfterExperimentFinish(this::afterExperimentFinish);
         return exp;
     }
@@ -90,7 +90,7 @@ public class CloudletResponseTimeWorkLoadRunner extends ExperimentRunner<Cloudle
      *
      * @param experiment the finished experiment
      */
-    private void afterExperimentFinish(CloudletResponseTimeWorkLoadExperimet experiment) {
+    private void afterExperimentFinish(CloudletResponseTimeWorkLoadWithoutMinimizationExperiment experiment) {
         cloudletResponseTimes.add(experiment.getCloudletsResponseTimeAverage());
         percentageOfCloudletsMeetingResponseTimes.add(
                 experiment.getPercentageOfCloudletsMeetingResponseTime());
@@ -141,5 +141,4 @@ public class CloudletResponseTimeWorkLoadRunner extends ExperimentRunner<Cloudle
                 stats.getMean(), intervalSize, lower, upper);
         System.out.printf("\tStandard Deviation: %.2f \n", stats.getStandardDeviation());
     }
-    
 }

@@ -60,8 +60,8 @@ public class CloudletResponseTimeWorkLoadExperimet extends SimulationExperiment 
      */
     private static final int CLOUDLETS_CREATION_INTERVAL = SCHEDULING_INTERVAL * 3;
 
-    private static final int HOSTS = 50;
-    private static final int HOST_PES = 32;
+    private static final int HOSTS = 100;
+    private static final int HOST_PES = 70;
 
     private List<Host> hostList;
     private List<Vm> vmList;
@@ -108,7 +108,7 @@ public class CloudletResponseTimeWorkLoadExperimet extends SimulationExperiment 
             cpuUtilizationSlaContract = cpu.getMaxValueCpuUtilization();
 
             // getCloudsim().addOnClockTickListener(this::createNewCloudlets);
-            getCloudsim().addOnClockTickListener(this::printVmsCpuUsage);
+            //getCloudsim().addOnClockTickListener(this::printVmsCpuUsage);
 
         } catch (IOException ex) {
             Logger.getLogger(CloudletResponseTimeWorkLoadExperimet.class.getName()).log(Level.SEVERE, null, ex);
@@ -147,8 +147,8 @@ public class CloudletResponseTimeWorkLoadExperimet extends SimulationExperiment 
        WorkloadFileReader workloadFileReader;
        cloudletList = new ArrayList<>();
         try {
-            workloadFileReader = new WorkloadFileReader("/Users/raysaoliveira/Desktop/Mestrado/cloudsim-plus/cloudsim-plus-testbeds/src/main/resources/UniLu-Gaia-2014-2.swf", 1);
-            cloudletList = workloadFileReader.generateWorkload().subList(0, 1000);
+            workloadFileReader = new WorkloadFileReader("/Users/raysaoliveira/Desktop/Mestrado/cloudsim-plus/cloudsim-plus-testbeds/src/main/resources/METACENTRUM-2009-2.swf", 1);
+            cloudletList = workloadFileReader.generateWorkload().subList(0, 800);
         } catch (FileNotFoundException ex) {
             Logger.getLogger(CloudletResponseTimeWorkLoadExperimet.class.getName()).log(Level.SEVERE, null, ex);
         } catch (IOException ex) {
@@ -171,7 +171,7 @@ public class CloudletResponseTimeWorkLoadExperimet extends SimulationExperiment 
      */
     private Vm selectVmForCloudlet(Cloudlet cloudlet) {
         List<Vm> createdVms = cloudlet.getBroker().getVmsCreatedList();
-        Log.printLine("\t\tCreated VMs: " + createdVms);
+    //    Log.printLine("\t\tCreated VMs: " + createdVms);
         Comparator<Vm> sortByNumberOfFreePes
                 = Comparator.comparingInt(vm -> getExpectedNumberOfFreeVmPes(vm));
         Comparator<Vm> sortByExpectedCloudletResponseTime
@@ -213,10 +213,10 @@ public class CloudletResponseTimeWorkLoadExperimet extends SimulationExperiment 
         final int numberOfVmFreePes
                 = vm.getNumberOfPes() - totalPesNumberForCloudletsOfVm;
 
-        Log.printFormattedLine(
+  /*      Log.printFormattedLine(
                 "\t\tTotal pes of cloudlets in VM " + vm.getId() + ": "
                 + totalPesNumberForCloudletsOfVm + " -> vm pes: "
-                + vm.getNumberOfPes() + " -> vm free pes: " + numberOfVmFreePes);
+                + vm.getNumberOfPes() + " -> vm free pes: " + numberOfVmFreePes);*/
         return numberOfVmFreePes;
     }
 
@@ -232,7 +232,7 @@ public class CloudletResponseTimeWorkLoadExperimet extends SimulationExperiment 
         vmList = new ArrayList<>(VMS);
         for (int i = 0; i < VMS; i++) {
             Vm vm = createVm();
-            createHorizontalVmScaling(vm);
+           // createHorizontalVmScaling(vm);
             vmList.add(vm);
         }
         return vmList;
@@ -297,10 +297,10 @@ public class CloudletResponseTimeWorkLoadExperimet extends SimulationExperiment 
         }
 
         ResourceProvisioner ramProvisioner = new ResourceProvisionerSimple(new Ram(20480));
-        ResourceProvisioner bwProvisioner = new ResourceProvisionerSimple(new Bandwidth(100000));
+        ResourceProvisioner bwProvisioner = new ResourceProvisionerSimple(new Bandwidth(1000000));
         VmScheduler vmScheduler = new VmSchedulerTimeShared();
         final int id = hostList.size();
-        return new HostSimple(id, 100000, pesList)
+        return new HostSimple(id, 1000000, pesList)
                 .setRamProvisioner(ramProvisioner)
                 .setBwProvisioner(bwProvisioner)
                 .setVmScheduler(vmScheduler);
@@ -330,9 +330,9 @@ public class CloudletResponseTimeWorkLoadExperimet extends SimulationExperiment 
                 .map(c -> c.getFinishTime() - c.getLastDatacenterArrivalTime())
                 .forEach(cloudletResponseTime::addValue);
 
-        Log.printFormattedLine(
+       /* Log.printFormattedLine(
                 "\t\t\n Response Time simulation: %.2f \n Response Time contrato SLA: %.2f \n",
-                cloudletResponseTime.getMean(), responseTimeSlaContract);
+                cloudletResponseTime.getMean(), responseTimeSlaContract);*/
         return cloudletResponseTime.getMean();
     }
 
@@ -345,11 +345,40 @@ public class CloudletResponseTimeWorkLoadExperimet extends SimulationExperiment 
                 .map(c -> c.getFinishTime() - c.getLastDatacenterArrivalTime())
                 .filter(rt -> rt <= responseTimeSlaContract)
                 .count();
-        System.out.printf("\n ** Percentage of cloudlets that complied with "
+    /*    System.out.printf("\n ** Percentage of cloudlets that complied with "
                 + "the SLA Agreement:  %.2f %%",
                 ((totalOfcloudletSlaSatisfied * 100) / broker.getCloudletsFinishedList().size()));
-        System.out.printf("\nTotal of cloudlets SLA satisfied: %.0f de %d", totalOfcloudletSlaSatisfied, broker.getCloudletsFinishedList().size());
+        System.out.printf("\nTotal of cloudlets SLA satisfied: %.0f de %d", totalOfcloudletSlaSatisfied, broker.getCloudletsFinishedList().size());*/
         return (totalOfcloudletSlaSatisfied * 100) / broker.getCloudletsFinishedList().size();
+    }
+    
+      double getSumPesVms() {
+        return vmList.stream()
+                .mapToDouble(vm -> vm.getNumberOfPes())
+                .sum();
+    }
+
+    double getSumPesCloudlets() {
+        return cloudletList.stream()
+                .mapToDouble(c -> c.getNumberOfPes())
+                .sum();
+    }
+
+    /**
+     * Gets the ratio of existing vPEs (VM PEs) divided by the number
+     * of required PEs of all Cloudlets, which indicates
+     * the mean number of vPEs that are available for each PE required 
+     * by a Cloudlet, considering all the existing Cloudlets.
+     * For instance, if the ratio is 0.5, in average, two Cloudlets
+     * requiring one vPE will share that same vPE.
+     * @return the average of vPEs/CloudletsPEs ratio
+     */
+    double getRatioOfExistingVmPesToRequiredCloudletPes() {
+        double sumPesVms = getSumPesVms();
+        double sumPesCloudlets = getSumPesCloudlets();
+    //    System.out.println("\n\t -> Pe cloudlets / PE vm: " + sumPesVms/sumPesCloudlets);
+
+        return sumPesVms / sumPesCloudlets;
     }
 
     /**
@@ -369,5 +398,6 @@ public class CloudletResponseTimeWorkLoadExperimet extends SimulationExperiment 
         exp.run();
         exp.getCloudletsResponseTimeAverage();
         exp.getPercentageOfCloudletsMeetingResponseTime();
+        exp.getRatioOfExistingVmPesToRequiredCloudletPes();
     }
 }

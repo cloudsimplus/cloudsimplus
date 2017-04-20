@@ -47,7 +47,7 @@ final class CloudletResponseTimeMinimizationRunner extends ExperimentRunner<Clou
     static final long[] CLOUDLET_LENGTHS = {10000, 14000, 20000, 40000};
     static final int[] VM_PES = {2, 4};
     static final int VMS = 30;
-    static final int CLOUDLETS = 40;
+    static final int CLOUDLETS = 110;
 
     /**
      * The response time average for all the experiments.
@@ -61,7 +61,7 @@ final class CloudletResponseTimeMinimizationRunner extends ExperimentRunner<Clou
     private List<Double> percentageOfCloudletsMeetingResponseTimes;
 
     /**
-     * Amount of cloudlet per foot of vm.
+     * Amount of cloudlet PE per PE of vm.
      */
     private List<Double> ratioOfVmPesToRequiredCloudletPesList;
 

@@ -170,7 +170,7 @@ public class CloudletResponseTimeWithoutMinimizationExperiment extends Simulatio
         vmList = new ArrayList<>(VMS);
         for (int i = 0; i < VMS; i++) {
             Vm vm = createVm();
-            createHorizontalVmScaling(vm);
+           // createHorizontalVmScaling(vm);
             vmList.add(vm);
         }
         return vmList;
@@ -289,37 +289,33 @@ public class CloudletResponseTimeWithoutMinimizationExperiment extends Simulatio
         return (totalOfcloudletSlaSatisfied * 100 )/broker.getCloudletsFinishedList().size();     
     }
     
-    double getSumPesVms() {
-        DatacenterBroker broker = getBrokerList().stream()
-                .findFirst()
-                .orElse(DatacenterBroker.NULL);
-        
-        double sumPesVms = broker.getVmsCreatedList().stream()
-                .mapToInt(vm -> vm.getNumberOfPes())
+       double getSumPesVms() {
+        return vmList.stream()
+                .mapToDouble(vm -> vm.getNumberOfPes())
                 .sum();
-              
-        return sumPesVms;
     }
 
     double getSumPesCloudlets() {
-        DatacenterBroker broker = getBrokerList().stream()
-                .findFirst()
-                .orElse(DatacenterBroker.NULL);
-        
-        double sumPesCloudlet = broker.getCloudletsCreatedList().stream()
-                .mapToInt(c -> c.getNumberOfPes())
+        return cloudletList.stream()
+                .mapToDouble(c -> c.getNumberOfPes())
                 .sum();
-
-        return sumPesCloudlet;
     }
 
-    double getDivPesVmsByPesCloudlets() {
+    /**
+     * Gets the ratio of existing vPEs (VM PEs) divided by the number
+     * of required PEs of all Cloudlets, which indicates
+     * the mean number of vPEs that are available for each PE required 
+     * by a Cloudlet, considering all the existing Cloudlets.
+     * For instance, if the ratio is 0.5, in average, two Cloudlets
+     * requiring one vPE will share that same vPE.
+     * @return the average of vPEs/CloudletsPEs ratio
+     */
+    double getRatioOfExistingVmPesToRequiredCloudletPes() {
         double sumPesVms = getSumPesVms();
         double sumPesCloudlets = getSumPesCloudlets();
 
         return sumPesVms / sumPesCloudlets;
     }
-
 
     /**
      * A main method just for test purposes.
@@ -337,6 +333,6 @@ public class CloudletResponseTimeWithoutMinimizationExperiment extends Simulatio
         exp.run();
         exp.getCloudletsResponseTimeAverage();
         exp.getPercentageOfCloudletsMeetingResponseTime();
-        exp.getDivPesVmsByPesCloudlets();
+        
     }    
 }

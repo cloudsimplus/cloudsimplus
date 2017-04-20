@@ -8,7 +8,11 @@ package org.cloudsimplus.migration;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import org.apache.commons.math3.stat.descriptive.SummaryStatistics;
 import org.cloudbus.cloudsim.allocationpolicies.power.PowerVmAllocationPolicyMigrationWorstFitStaticThreshold;
 import org.cloudbus.cloudsim.brokers.DatacenterBroker;
 import org.cloudbus.cloudsim.brokers.DatacenterBrokerSimple;
@@ -39,8 +43,10 @@ import org.cloudbus.cloudsim.utilizationmodels.UtilizationModelFull;
 import org.cloudbus.cloudsim.vms.Vm;
 import org.cloudbus.cloudsim.vms.power.PowerVm;
 import org.cloudsimplus.builders.tables.CloudletsTableBuilder;
-import org.cloudsimplus.sla.readJsonFile.SlaMetric;
+import org.cloudsimplus.sla.readJsonFile.CpuUtilization;
+import org.cloudsimplus.sla.readJsonFile.ResponseTime;
 import org.cloudsimplus.sla.readJsonFile.SlaReader;
+import org.cloudsimplus.sla.responsetime.CloudletResponseTimeMinimizationExperiment;
 
 /**
  *
@@ -87,7 +93,7 @@ public final class VmMigrationWhenCpuMetricIsViolatedExampleWithSelectedVm {
 
     private static final int NUMBER_OF_HOSTS_TO_CREATE = 3;
     private static final int NUMBER_OF_VMS_TO_CREATE = NUMBER_OF_HOSTS_TO_CREATE + 1;
-    private static final int NUMBER_OF_CLOUDLETS_TO_CREATE_BY_VM = 1;
+    private static final int NUMBER_OF_CLOUDLETS_TO_CREATE_BY_VM = 4;
 
     private final List<Vm> vmlist = new ArrayList<>();
     private CloudSim simulation;
@@ -95,39 +101,54 @@ public final class VmMigrationWhenCpuMetricIsViolatedExampleWithSelectedVm {
     /**
      * The file containing the SLA Contract in JSON format.
      */
-    public static final String METRICS_FILE = ResourceLoader.getResourcePath(VmMigrationWhenCpuMetricIsViolatedExample.class, "SlaMetrics.json");
+    public static final String METRICS_FILE = ResourceLoader.getResourcePath(VmMigrationWhenCpuMetricIsViolatedExampleWithSelectedVm.class, "SlaMetrics.json");
+
+    private double responseTimeSlaContract;
+    private double cpuUtilizationMaxSlaContract;
+    private double cpuUtilizationMinSlaContract;
+    private final DatacenterBrokerSimple broker;
 
     /**
-     * Attributes with minimum and maximum values of the CPU Utilization metric
-     * to be set for allocation policy.
+     * Sorts the Cloudlets before submitting them to the Broker, so that
+     * Cloudlets with larger length will be mapped for a VM first than lower
+     * ones.
      */
-    private double underCpuUtilizationThreshold;
-    private double overCpuUtilizationThreshold;
+    private final Comparator<Cloudlet> sortCloudletsByLengthReversed = Comparator.comparingDouble((Cloudlet c) -> c.getLength()).reversed();
 
     public static void main(String[] args) throws FileNotFoundException, IOException {
-        new VmMigrationWhenCpuMetricIsViolatedExample();
+        new VmMigrationWhenCpuMetricIsViolatedExampleWithSelectedVm();
     }
 
     public VmMigrationWhenCpuMetricIsViolatedExampleWithSelectedVm() throws FileNotFoundException, IOException {
-        Log.printConcatLine("Starting ", VmMigrationWhenCpuMetricIsViolatedExample.class.getSimpleName(), "...");
+        Log.printConcatLine("Starting ", VmMigrationWhenCpuMetricIsViolatedExampleWithSelectedVm.class.getSimpleName(), "...");
         simulation = new CloudSim();
 
-        searchCpuUtilizationMetricInSlaContract();
+        SlaReader slaReader = new SlaReader(METRICS_FILE);
+        ResponseTime rt = new ResponseTime(slaReader);
+        rt.checkResponseTimeSlaContract();
+        responseTimeSlaContract = rt.getMaxValueResponseTime();
 
-        @SuppressWarnings("unused")
+        CpuUtilization cpu = new CpuUtilization(slaReader);
+        cpu.checkCpuUtilizationSlaContract();
+        cpuUtilizationMaxSlaContract = cpu.getMaxValueCpuUtilization();
+        cpuUtilizationMinSlaContract = cpu.getMinValueCpuUtilization();
+
         Datacenter datacenter0 = createDatacenter();
+        broker = new DatacenterBrokerSimple(simulation);
 
-        DatacenterBroker broker = new DatacenterBrokerSimple(simulation);
+        broker.setVmMapper(this::selectVmForCloudlet);
+        broker.setCloudletComparator(sortCloudletsByLengthReversed);
+
         createAndSubmitVms(broker);
-
         createAndSubmitCloudlets(broker);
 
         simulation.start();
-        responseTimeCloudletSimulation(broker);
+        getCloudletsResponseTimeAverage(broker);
+        getPercentageOfCloudletsMeetingResponseTime(broker);
 
         new CloudletsTableBuilder(broker.getCloudletsFinishedList()).build();
 
-        Log.printConcatLine(VmMigrationWhenCpuMetricIsViolatedExample.class.getSimpleName(), " finished!");
+        Log.printConcatLine(VmMigrationWhenCpuMetricIsViolatedExampleWithSelectedVm.class.getSimpleName(), " finished!");
     }
 
     public void createAndSubmitCloudlets(DatacenterBroker broker) {
@@ -174,6 +195,9 @@ public final class VmMigrationWhenCpuMetricIsViolatedExampleWithSelectedVm {
             Vm hostingVm,
             DatacenterBroker broker,
             boolean progressiveCpuUsage) {
+        cloudletInitialCpuUsagePercent = Math.min(cloudletInitialCpuUsagePercent, 1);
+        maxCloudletCpuUtilizationPercentage = Math.min(maxCloudletCpuUtilizationPercentage, 1);
+
         final List<Cloudlet> list = new ArrayList<>(NUMBER_OF_CLOUDLETS_TO_CREATE_BY_VM);
         UtilizationModel utilizationModelFull = new UtilizationModelFull();
         int cloudletId;
@@ -253,8 +277,8 @@ public final class VmMigrationWhenCpuMetricIsViolatedExampleWithSelectedVm {
         PowerVmAllocationPolicyMigrationWorstFitStaticThreshold allocationPolicy
                 = new PowerVmAllocationPolicyMigrationWorstFitStaticThreshold(
                         new PowerVmSelectionPolicyMinimumUtilization(),
-                        overCpuUtilizationThreshold);
-        allocationPolicy.setUnderUtilizationThreshold(underCpuUtilizationThreshold);
+                        cpuUtilizationMaxSlaContract);
+        allocationPolicy.setUnderUtilizationThreshold(cpuUtilizationMinSlaContract);
 
         PowerDatacenter dc = new PowerDatacenter(simulation, characteristics, allocationPolicy);
         dc.setMigrationsEnabled(true).setSchedulingInterval(SCHEDULE_TIME_TO_PROCESS_DATACENTER_EVENTS);
@@ -274,7 +298,7 @@ public final class VmMigrationWhenCpuMetricIsViolatedExampleWithSelectedVm {
      *
      * @todo @author manoelcampos The method
      * {@link DatacenterBroker#getCloudletsFinishedList()} returns an empty list
-     * when using null null null     {@link PowerDatacenter},
+     * when using null null null null null     {@link PowerDatacenter},
      * {@link PowerHost} and {@link PowerVm}.
      */
     public static PowerHostUtilizationHistory createHost(int id, int numberOfPes, long mipsByPe) {
@@ -295,52 +319,94 @@ public final class VmMigrationWhenCpuMetricIsViolatedExampleWithSelectedVm {
         return list;
     }
 
-    private void searchCpuUtilizationMetricInSlaContract() throws FileNotFoundException {
-        SlaReader reader = new SlaReader(METRICS_FILE);
-        List<SlaMetric> metrics = reader.getContract().getMetrics();
-        metrics.stream()
-                .filter(m -> m.isCpuUtilization())
-                .findFirst()
-                .ifPresent(this::getCpuUtilizationThreshold);
+    /**
+     * Selects a VM to run a Cloudlet that will minimize the Cloudlet response
+     * time.
+     *
+     * @param cloudlet the Cloudlet to select a VM to
+     * @return the selected Vm
+     */
+    private Vm selectVmForCloudlet(Cloudlet cloudlet) {
+        List<Vm> createdVms = cloudlet.getBroker().getVmsCreatedList();
+        Log.printLine("\t\tCreated VMs: " + createdVms);
+        Comparator<Vm> sortByNumberOfFreePes
+                = Comparator.comparingInt(vm -> getExpectedNumberOfFreeVmPes(vm));
+        Comparator<Vm> sortByExpectedCloudletResponseTime
+                = Comparator.comparingDouble(vm -> getExpectedCloudletResponseTime(cloudlet, vm));
+        createdVms.sort(
+                sortByNumberOfFreePes
+                        .thenComparing(sortByExpectedCloudletResponseTime)
+                        .reversed());
+        Vm mostFreePesVm = createdVms.stream().findFirst().orElse(Vm.NULL);
 
+        Vm selectedVm = createdVms.stream()
+                .filter(vm -> getExpectedNumberOfFreeVmPes(vm) >= cloudlet.getNumberOfPes())
+                .filter(vm -> getExpectedCloudletResponseTime(cloudlet, vm) <= responseTimeSlaContract)
+                .findFirst().orElse(mostFreePesVm);
+
+        return selectedVm;
     }
 
-    private void getCpuUtilizationThreshold(SlaMetric metric) {
-        double minValue
-                = metric.getDimensions().stream()
-                        .filter(d -> d.isValueMin())
-                        .map(d -> d.getValue())
-                        .findFirst().orElse(Double.MIN_VALUE);
-
-        double maxValue
-                = metric.getDimensions().stream()
-                        .filter(d -> d.isValueMax())
-                        .map(d -> d.getValue())
-                        .findFirst().orElse(Double.MAX_VALUE);
-
-        underCpuUtilizationThreshold = minValue / 100;
-        overCpuUtilizationThreshold = maxValue / 100;
-
+    private double getExpectedCloudletResponseTime(Cloudlet cloudlet, Vm vm) {
+        final double expectedResponseTime = cloudlet.getLength() / vm.getMips();
+        return expectedResponseTime;
     }
 
-    private void responseTimeCloudletSimulation(DatacenterBroker broker) throws IOException {
-        double average = 0;
-        List<Double> responseTimes = new ArrayList<>();
-        for (Cloudlet c : broker.getCloudletsFinishedList()) {
-            double responseTime = c.getFinishTime() - c.getLastDatacenterArrivalTime();
-            responseTimes.add(responseTime);
-            average = responseTimeCloudletAverage(broker, responseTimes);
+    /**
+     * Gets the expected amount of free PEs for a VM
+     *
+     * @param vm the VM to get the amount of free PEs
+     * @return the number of PEs that are free or a negative value that indicate
+     * there aren't free PEs (this negative number indicates the amount of
+     * overloaded PEs)
+     */
+    private int getExpectedNumberOfFreeVmPes(Vm vm) {
+        final int totalPesNumberForCloudletsOfVm
+                = vm.getBroker().getCloudletsCreatedList().stream()
+                        .filter(c -> c.getVm().equals(vm))
+                        .mapToInt(Cloudlet::getNumberOfPes)
+                        .sum();
 
-        }
-        System.out.printf("\t\t\n Response Time simulation (average) : %.2f \n", average);
+        final int numberOfVmFreePes
+                = vm.getNumberOfPes() - totalPesNumberForCloudletsOfVm;
+
+        Log.printFormattedLine(
+                "\t\tTotal pes of cloudlets in VM " + vm.getId() + ": "
+                + totalPesNumberForCloudletsOfVm + " -> vm pes: "
+                + vm.getNumberOfPes() + " -> vm free pes: " + numberOfVmFreePes);
+        return numberOfVmFreePes;
     }
 
-    private double responseTimeCloudletAverage(DatacenterBroker broker, List<Double> responseTimes) {
-        int totalCloudlets = broker.getCloudletsFinishedList().size();
-        double sum = 0;
-        sum = responseTimes.stream()
-                .map((responseTime) -> responseTime)
-                .reduce(sum, (accumulator, _item) -> accumulator + _item);
-        return sum / totalCloudlets;
+    /**
+     * Computes the response time average for all finished Cloudlets on this
+     * experiment.
+     *
+     * @return the response time average
+     */
+    double getCloudletsResponseTimeAverage(DatacenterBroker broker) {
+        SummaryStatistics cloudletResponseTime = new SummaryStatistics();
+
+        broker.getCloudletsFinishedList().stream()
+                .map(c -> c.getFinishTime() - c.getLastDatacenterArrivalTime())
+                .forEach(cloudletResponseTime::addValue);
+
+        Log.printFormattedLine(
+                "\t\t\n Response Time simulation: %.2f \n Response Time contrato SLA: %.2f \n",
+                cloudletResponseTime.getMean(), responseTimeSlaContract);
+        return cloudletResponseTime.getMean();
     }
+
+    double getPercentageOfCloudletsMeetingResponseTime(DatacenterBroker broker) {
+
+        double totalOfcloudletSlaSatisfied = broker.getCloudletsFinishedList().stream()
+                .map(c -> c.getFinishTime() - c.getLastDatacenterArrivalTime())
+                .filter(rt -> rt <= responseTimeSlaContract)
+                .count();
+        System.out.printf("\n ** Percentage of cloudlets that complied with "
+                + "the SLA Agreement:  %.2f %%",
+                ((totalOfcloudletSlaSatisfied * 100) / broker.getCloudletsFinishedList().size()));
+        System.out.printf("\nTotal of cloudlets SLA satisfied: %.0f de %d", totalOfcloudletSlaSatisfied, broker.getCloudletsFinishedList().size());
+        return (totalOfcloudletSlaSatisfied * 100) / broker.getCloudletsFinishedList().size();
+    }
+
 }
