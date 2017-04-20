@@ -62,9 +62,10 @@ final class HostNull implements Host {
     @Override public int getNumberOfFreePes() {
         return 0;
     }
-    @Override public int getNumberOfPes() {
+    @Override public long getNumberOfPes() {
         return 0;
     }
+    @Override public double getMips() { return 0; }
     @Override public List<Pe> getPeList() {
         return Collections.emptyList();
     }
@@ -82,9 +83,6 @@ final class HostNull implements Host {
     }
     @Override public double getTotalAllocatedMipsForVm(Vm vm) {
         return 0.0;
-    }
-    @Override public long getTotalMips() {
-        return 0;
     }
     @Override public Vm getVm(int vmId, int brokerId) {
         return Vm.NULL;
@@ -142,4 +140,5 @@ final class HostNull implements Host {
     @Override public String toString() {
         return "Host.NULL";
     }
+    @Override public void setId(int id) {}
 }

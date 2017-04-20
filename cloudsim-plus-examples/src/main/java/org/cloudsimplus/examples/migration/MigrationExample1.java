@@ -215,7 +215,7 @@ public final class MigrationExample1 {
     /**
      * Creates the number of Cloudlets defined in {@link #NUMBER_OF_CLOUDLETS_TO_CREATE_BY_VM}
      * and submits them to the given broker.
-     * 
+     *
      * @param cloudletInitialCpuUsagePercent the percentage of CPU utilization
      * that created Cloudlets will use when they start to execute.
      * If this value is greater than 1 (100%), it will be changed to 1.
@@ -342,10 +342,11 @@ public final class MigrationExample1 {
      */
     public PowerHostUtilizationHistory createHost(int id, int numberOfPes, long mipsByPe) {
             List<Pe> peList = createPeList(numberOfPes, mipsByPe);
-            PowerHostUtilizationHistory host = new PowerHostUtilizationHistory(id, HOST_STORAGE, peList);
+            PowerHostUtilizationHistory host =
+                new PowerHostUtilizationHistory(HOST_RAM, HOST_BW, HOST_STORAGE, peList);
             host.setPowerModel(new PowerModelLinear(1000, 0.7))
-                .setRamProvisioner(new ResourceProvisionerSimple(new Ram(HOST_RAM)))
-                .setBwProvisioner(new ResourceProvisionerSimple(new Bandwidth(HOST_BW)))
+                .setRamProvisioner(new ResourceProvisionerSimple())
+                .setBwProvisioner(new ResourceProvisionerSimple())
                 .setVmScheduler(new VmSchedulerTimeShared());
             return host;
     }

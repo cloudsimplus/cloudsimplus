@@ -8,6 +8,7 @@ package org.cloudbus.cloudsim.core;
 
 import java.util.*;
 
+import org.cloudbus.cloudsim.cloudlets.Cloudlet;
 import org.cloudbus.cloudsim.core.events.SimEvent;
 
 import java.util.function.Predicate;
@@ -16,6 +17,7 @@ import org.cloudbus.cloudsim.core.predicates.PredicateAny;
 import org.cloudbus.cloudsim.core.predicates.PredicateNone;
 import org.cloudbus.cloudsim.datacenters.Datacenter;
 import org.cloudbus.cloudsim.network.topologies.NetworkTopology;
+import org.cloudbus.cloudsim.vms.Vm;
 import org.cloudsimplus.listeners.EventInfo;
 import org.cloudsimplus.listeners.EventListener;
 
@@ -423,4 +425,27 @@ public interface Simulation {
      */
     Map<String, SimEntity> getEntitiesByName();
 
+    /**
+     * Defines IDs for a list of {@link ChangeableId} entities that don't
+     * have one already assigned. Such entities can be a {@link Cloudlet},
+     * {@link Vm} or any object that implements {@link ChangeableId}.
+     *
+     * @param list list of objects to define an ID
+     * @return true if the List has any Entity, false if it's empty
+     */
+    static boolean setIdForEntitiesWithoutOne(List<? extends ChangeableId> list){
+        Objects.requireNonNull(list);
+        if(list.isEmpty()){
+            return false;
+        }
+
+        int id = list.get(list.size()-1).getId();
+        for (final ChangeableId e : list) {
+            if(e.getId() < 0) {
+                e.setId(++id);
+            }
+        }
+
+        return list.isEmpty();
+    }
 }

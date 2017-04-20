@@ -24,7 +24,7 @@ import org.cloudsimplus.autoscaling.VerticalVmScaling;
  * @author Manoel Campos da Silva Filho
  * @since CloudSim Plus 1.0
  */
-public interface VmAllocationPolicy {
+    public interface VmAllocationPolicy {
     /**
      * A property that implements the Null Object Design Pattern for {@link VmAllocationPolicy}
      * objects.

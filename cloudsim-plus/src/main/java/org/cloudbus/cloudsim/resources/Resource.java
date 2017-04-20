@@ -67,13 +67,6 @@ public interface Resource extends ResourceCapacity {
     long getAllocatedResource();
 
     /**
-     * Checks if there is a specific amount of resource available (free).
-     * @param amountToCheck the amount of resource to check if is free.
-     * @return true if the specified amount is free; false otherwise
-     */
-    boolean isResourceAmountAvailable(long amountToCheck);
-
-    /**
      * Checks if there the capacity required for the given resource is available (free)
      * at this resource. This method is commonly used to check if there is a specific
      * amount of resource free at a physical resource (this Resource instance)
@@ -86,6 +79,13 @@ public interface Resource extends ResourceCapacity {
     default boolean isResourceAmountAvailable(Resource resource){
         return isResourceAmountAvailable(resource.getCapacity());
     }
+
+    /**
+     * Checks if there is a specific amount of resource available (free).
+     * @param amountToCheck the amount of resource to check if is free.
+     * @return true if the specified amount is free; false otherwise
+     */
+    boolean isResourceAmountAvailable(long amountToCheck);
 
     /**
      * Checks if there is a specific amount of resource available (free),
@@ -107,7 +107,9 @@ public interface Resource extends ResourceCapacity {
      *
      * @return <tt>true</tt> if the storage is full, <tt>false</tt> otherwise
      */
-    boolean isFull();
+    default boolean isFull() {
+        return getAvailableResource() <= 0;
+    }
 
     /**
      * Gets the current percentage of resource utilization in scale from 0 to 1.

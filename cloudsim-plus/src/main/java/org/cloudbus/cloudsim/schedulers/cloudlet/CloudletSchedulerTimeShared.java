@@ -131,7 +131,7 @@ public class CloudletSchedulerTimeShared extends CloudletSchedulerAbstract {
      */
     @Override
     public double getTotalCurrentAvailableMipsForCloudlet(CloudletExecutionInfo rcl, List<Double> mipsShare) {
-        return Processor.fromMipsList(mipsShare).getCapacity();
+        return Processor.fromMipsList(getVm(), mipsShare).getMips();
     }
 
     /**

@@ -45,14 +45,14 @@ public class HostDynamicWorkloadSimple extends HostSimple implements HostDynamic
 
     /**
      * Creates a host.
-     *
-     * @param id the id
-     * @param storage the storage capacity
-     * @param peList the host's PEs list
+     * @param ram the RAM capacity in Megabytes
+     * @param bw the Bandwidth (BW) capacity in Megabits/s
+     * @param storage the storage capacity in Megabytes
+     * @param peList the host's {@link Pe} list
      *
      */
-    public HostDynamicWorkloadSimple(int id, long storage, List<Pe> peList) {
-        super(id, storage, peList);
+    public HostDynamicWorkloadSimple(long ram, long bw, long storage, List<Pe> peList) {
+        super(ram, bw, storage, peList);
         setUtilizationMips(0);
         setPreviousUtilizationMips(0);
         stateHistory = new LinkedList<>();
@@ -81,7 +81,7 @@ public class HostDynamicWorkloadSimple extends HostSimple implements HostDynamic
             List<Pe> peList,
             VmScheduler vmScheduler)
     {
-        this(id, storage, peList);
+        this(ramProvisioner.getCapacity(), bwProvisioner.getCapacity(), storage, peList);
         setRamProvisioner(ramProvisioner);
         setBwProvisioner(bwProvisioner);
         setVmScheduler(vmScheduler);
@@ -234,7 +234,7 @@ public class HostDynamicWorkloadSimple extends HostSimple implements HostDynamic
      */
     @Override
     public double getUtilizationOfCpu() {
-        final double utilization = getUtilizationOfCpuMips() / getTotalMips();
+        final double utilization = getUtilizationOfCpuMips() / getTotalMipsCapacity();
         return (utilization > 1 && utilization < 1.01 ? 1 : utilization);
     }
 
@@ -245,7 +245,7 @@ public class HostDynamicWorkloadSimple extends HostSimple implements HostDynamic
      */
     @Override
     public double getPreviousUtilizationOfCpu() {
-        double utilization = getPreviousUtilizationMips() / getTotalMips();
+        double utilization = getPreviousUtilizationMips() / getTotalMipsCapacity();
         if (utilization > 1 && utilization < 1.01) {
             utilization = 1;
         }

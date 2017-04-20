@@ -87,7 +87,8 @@ public abstract class ResourceProvisionerAbstract implements ResourceProvisioner
         return resource;
     }
 
-    protected final void setResource(ResourceManageable resource) {
+    @Override
+    public final void setResource(ResourceManageable resource) {
         Objects.requireNonNull(resource);
         this.resource = resource;
         this.resourceClass = resource.getClass();

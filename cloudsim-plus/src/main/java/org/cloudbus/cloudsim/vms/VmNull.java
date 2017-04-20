@@ -4,6 +4,7 @@ import org.cloudbus.cloudsim.brokers.DatacenterBroker;
 import org.cloudbus.cloudsim.core.Simulation;
 import org.cloudbus.cloudsim.datacenters.Datacenter;
 import org.cloudbus.cloudsim.hosts.Host;
+import org.cloudbus.cloudsim.resources.Processor;
 import org.cloudbus.cloudsim.resources.Resource;
 import org.cloudbus.cloudsim.resources.ResourceManageable;
 import org.cloudbus.cloudsim.schedulers.cloudlet.CloudletScheduler;
@@ -36,9 +37,7 @@ final class VmNull implements Vm {
     @Override public Resource getBw() {
         return Resource.NULL;
     }
-    @Override public CloudletScheduler getCloudletScheduler() {
-        return CloudletScheduler.NULL;
-    }
+    @Override public CloudletScheduler getCloudletScheduler() { return CloudletScheduler.NULL; }
     @Override public long getCurrentAllocatedBw() {
         return 0;
     }
@@ -69,7 +68,7 @@ final class VmNull implements Vm {
     @Override public double getMips() {
         return 0;
     }
-    @Override public int getNumberOfPes() {
+    @Override public long getNumberOfPes() {
         return 0;
     }
     @Override public Vm addOnHostAllocationListener(EventListener<VmHostEventInfo> listener) {
@@ -96,9 +95,7 @@ final class VmNull implements Vm {
     @Override public boolean removeOnHostDeallocationListener(EventListener<VmHostEventInfo> listener) {
         return false;
     }
-    @Override public boolean removeOnCreationFailureListener(EventListener<VmDatacenterEventInfo> listener) {
-        return false;
-    }
+    @Override public boolean removeOnCreationFailureListener(EventListener<VmDatacenterEventInfo> listener) { return false; }
     @Override public Resource getRam() {
         return Resource.NULL;
     }
@@ -180,10 +177,13 @@ final class VmNull implements Vm {
     @Override public Vm setHorizontalScaling(HorizontalVmScaling h) throws IllegalArgumentException { return this; }
     @Override public Vm setRamVerticalScaling(VerticalVmScaling v) throws IllegalArgumentException { return this; }
     @Override public Vm setBwVerticalScaling(VerticalVmScaling v) throws IllegalArgumentException { return this; }
+    @Override public Vm setPeVerticalScaling(VerticalVmScaling peVerticalScaling) throws IllegalArgumentException { return this; }
     @Override public VerticalVmScaling getRamVerticalScaling() {
         return VerticalVmScaling.NULL;
     }
     @Override public VerticalVmScaling getBwVerticalScaling() {
         return VerticalVmScaling.NULL;
     }
+    @Override public VerticalVmScaling getPeVerticalScaling() { return VerticalVmScaling.NULL; }
+    @Override public Processor getProcessor() { return Processor.NULL; }
 }

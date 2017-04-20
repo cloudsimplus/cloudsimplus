@@ -123,9 +123,9 @@ public class CloudSimExample0 {
             pesList.add(new PeSimple(mips, new PeProvisionerSimple()));
         }
 
-        return new HostSimple(numberOfCreatedHosts++, storage, pesList)
-                .setRamProvisioner(new ResourceProvisionerSimple(new Ram(ram)))
-                .setBwProvisioner(new ResourceProvisionerSimple(new Bandwidth(bw)))
+        return new HostSimple(ram, bw, storage, pesList)
+                .setRamProvisioner(new ResourceProvisionerSimple())
+                .setBwProvisioner(new ResourceProvisionerSimple())
                 .setVmScheduler(new VmSchedulerTimeShared());
     }
 
@@ -134,7 +134,7 @@ public class CloudSimExample0 {
         final long   storage = 10000; // vm image size (MEGABYTE)
         final int    ram = 512; // vm memory (MEGABYTE)
         final long   bw = 1000; // vm bandwidth (Megabits/s)
-        final int    pesNumber = 2; // number of CPU cores
+        final long   pesNumber = 2; // number of CPU cores
 
         return new VmSimple(vmList.size(), mips, pesNumber)
                 .setBroker(broker)

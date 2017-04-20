@@ -1,6 +1,9 @@
 /**
- * Provides network-enabled {@link org.cloudbus.cloudsim.schedulers.cloudlet.CloudletScheduler} implementations.
- * For more general information, see the package {@link org.cloudbus.cloudsim.schedulers.cloudlet} at the upper level.
+ * Provides {@link org.cloudbus.cloudsim.schedulers.cloudlet.network.PacketScheduler} implementations
+ * to perform network packet dispatching by a regular
+ * {@link org.cloudbus.cloudsim.schedulers.cloudlet.CloudletScheduler}.
+ * Such PacketSchedulers are attached to a CloudletScheduler to receive/send
+ * packets from/to a Cloudlet.
  *
  * @author Manoel Campos da Silva Filho
  */

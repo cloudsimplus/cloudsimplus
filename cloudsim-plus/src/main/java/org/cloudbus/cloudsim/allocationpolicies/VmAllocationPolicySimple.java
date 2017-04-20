@@ -15,7 +15,7 @@ import java.util.*;
 
 /**
  * A VmAllocationPolicy implementation that chooses, as
- * the host for a VM, that one with less PEs in use. It is therefore a Worst Fit
+ * the host for a VM, that one with fewer PEs in use. It is therefore a Worst Fit
  * policy, allocating VMs into the host with most available PEs.
  *
  * <p><b>NOTE: This policy doesn't perform optimization of VM allocation (placement)
@@ -62,9 +62,9 @@ public class VmAllocationPolicySimple extends VmAllocationPolicyAbstract {
         List<Host> hostsWhereVmCreationFailed = new ArrayList<>();
         //We still trying until we find a host or until we try all of them
         for(int tries = 0; tries < getHostFreePesMap().size(); tries++) {
-            Map.Entry<Host, Integer> entry = getHostWithLessUsedPes(hostsWhereVmCreationFailed);
+            Map.Entry<Host, Long> entry = getHostWithLessUsedPes(hostsWhereVmCreationFailed);
             Host host = entry.getKey();
-            final int hostFreePes = entry.getValue();
+            final long hostFreePes = entry.getValue();
             if (host.vmCreate(vm)) {
                 mapVmToPm(vm, host);
                 addUsedPes(vm);
@@ -88,7 +88,7 @@ public class VmAllocationPolicySimple extends VmAllocationPolicyAbstract {
         }
 
         mapVmToPm(vm, host);
-        final int requiredPes = vm.getNumberOfPes();
+        final long requiredPes = vm.getNumberOfPes();
         addUsedPes(vm);
         getHostFreePesMap().put(host, getHostFreePesMap().get(host) - requiredPes);
 
@@ -111,17 +111,17 @@ public class VmAllocationPolicySimple extends VmAllocationPolicyAbstract {
      * the number of used PEs if a Host is found, or an Entry with a {@link Host#NULL}
      * key if not found
      */
-    private Map.Entry<Host, Integer> getHostWithLessUsedPes(List<Host> ignoredHosts) {
+    private Map.Entry<Host, Long> getHostWithLessUsedPes(List<Host> ignoredHosts) {
         return getHostFreePesMap().entrySet().stream()
             .filter(entry -> !ignoredHosts.contains(entry.getKey()))
             .max(Comparator.comparing(Map.Entry::getValue))
-            .orElseGet(() -> new TreeMap.SimpleEntry<>(Host.NULL, 0));
+            .orElseGet(() -> new TreeMap.SimpleEntry<>(Host.NULL, 0L));
     }
 
     @Override
     public void deallocateHostForVm(Vm vm) {
-        Host host = unmapVmFromPm(vm);
-        int pes = removeUsedPes(vm);
+        final Host host = unmapVmFromPm(vm);
+        final long pes = removeUsedPes(vm);
         if (host != Host.NULL) {
             host.destroyVm(vm);
             getHostFreePesMap().put(host, getHostFreePesMap().get(host) + pes);

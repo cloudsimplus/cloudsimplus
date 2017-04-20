@@ -56,7 +56,7 @@ public abstract class CloudletAbstract implements Cloudlet {
     /**
      * @see #getNumberOfPes()
      */
-    private int numberOfPes;
+    private long numberOfPes;
     /**
      * @see #getStatus()
      */
@@ -140,12 +140,11 @@ public abstract class CloudletAbstract implements Cloudlet {
 
     /**
      * Creates a Cloudlet with no priority and file size and output size equal to 1.
-     *
-     * @param cloudletId     id of the Cloudlet
+     *  @param cloudletId     id of the Cloudlet
      * @param cloudletLength the length or size (in MI) of this cloudlet to be executed in a VM
      * @param pesNumber      number of PEs that Cloudlet will require
      */
-    public CloudletAbstract(final int cloudletId, final long cloudletLength, final int pesNumber) {
+    public CloudletAbstract(final int cloudletId, final long cloudletLength, final long pesNumber) {
         /*
         Normally, a Cloudlet is only executed on a Datacenter without being
         migrated to others. Hence, to reduce memory consumption, set the
@@ -289,7 +288,7 @@ public abstract class CloudletAbstract implements Cloudlet {
     }
 
     @Override
-    public final Cloudlet setNumberOfPes(final int numberOfPes) {
+    public final Cloudlet setNumberOfPes(final long numberOfPes) {
         if (numberOfPes <= 0) {
             throw new IllegalArgumentException("Cloudlet number of PEs has to be greater than zero.");
         }
@@ -298,7 +297,7 @@ public abstract class CloudletAbstract implements Cloudlet {
     }
 
     @Override
-    public int getNumberOfPes() {
+    public long getNumberOfPes() {
         return numberOfPes;
     }
 

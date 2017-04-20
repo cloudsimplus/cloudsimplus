@@ -168,7 +168,7 @@ public abstract class DatacenterBrokerAbstract extends CloudSimEntity implements
     @Override
     public void submitVmList(List<? extends Vm> list) {
         sortVmsIfComparatorIsSet(list);
-        lastSubmittedVm = setIdForEntitiesWithNoDelay(list, lastSubmittedVm);
+        lastSubmittedVm = setIdForEntitiesWithoutOne(list, lastSubmittedVm);
         vmsWaitingList.addAll(list);
 
         if (isStarted() && !list.isEmpty()) {
@@ -177,6 +177,20 @@ public abstract class DatacenterBrokerAbstract extends CloudSimEntity implements
                 getSimulation().clock(), getName(), list.size());
             requestDatacenterToCreateWaitingVms();
         }
+    }
+
+
+    /**
+     * Defines IDs for a list of {@link ChangeableId} entities that don't
+     * have one already assigned. Such entities can be a {@link Cloudlet},
+     * {@link Vm} or any object that implements {@link ChangeableId}.
+     *
+     * @param list list of objects to define an ID
+     * @param lastSubmittedEntity the last Entity that was submitted to the broker
+     * @return the last Entity in the given List of the lastSubmittedEntity if the List is empty
+     */
+    private <T extends ChangeableId> T setIdForEntitiesWithoutOne(List<? extends T> list, T lastSubmittedEntity){
+        return Simulation.setIdForEntitiesWithoutOne(list) ? list.get(list.size()-1) : lastSubmittedEntity;
     }
 
     private void sortVmsIfComparatorIsSet(List<? extends Vm> list) {
@@ -222,7 +236,7 @@ public abstract class DatacenterBrokerAbstract extends CloudSimEntity implements
     @Override
     public void submitCloudletList(List<? extends Cloudlet> list) {
         sortCloudletsIfComparatorIsSet(list);
-        lastSubmittedCloudlet = setIdForEntitiesWithNoDelay(list, lastSubmittedCloudlet);
+        lastSubmittedCloudlet =  setIdForEntitiesWithoutOne(list, lastSubmittedCloudlet);
         if(list.isEmpty()) {
             return;
         }
@@ -270,29 +284,6 @@ public abstract class DatacenterBrokerAbstract extends CloudSimEntity implements
         list.stream()
             .filter(e -> e.getSubmissionDelay() <= 0)
             .forEach(e -> e.setSubmissionDelay(submissionDelay));
-    }
-
-    /**
-     * Defines IDs for a list of {@link ChangeableId} entities that don't
-     * have an ID already assigned. Such entities can be a {@link Cloudlet},
-     * {@link Vm} or any object that implements {@link ChangeableId}.
-     *
-     * @param list list of objects to define an ID
-     */
-    private <T extends ChangeableId> T setIdForEntitiesWithNoDelay(List<? extends T> list, T lastSubmittedEntity) {
-        Objects.requireNonNull(list);
-        if(list.isEmpty()){
-            return lastSubmittedEntity;
-        }
-
-        int id = lastSubmittedEntity.getId();
-        for (final ChangeableId e : list) {
-            if(e.getId() < 0) {
-                e.setId(++id);
-            }
-        }
-
-        return list.get(list.size()-1);
     }
 
     @Override
@@ -581,9 +572,9 @@ public abstract class DatacenterBrokerAbstract extends CloudSimEntity implements
                 continue;
             }
             Log.printFormattedLine(
-                "%.2f: %s: Sending %s %d to VM #%d. %d VMs created.",
+                "%.2f: %s: Sending %s %d to VM #%d.",
                 getSimulation().clock(), getName(), cloudlet.getClass().getSimpleName(), cloudlet.getId(),
-                lastSelectedVm.getId(), getVmsCreatedList().size());
+                lastSelectedVm.getId());
             cloudlet.setVm(lastSelectedVm);
             send(getVmDatacenter(lastSelectedVm).getId(),
                 cloudlet.getSubmissionDelay(), CloudSimTags.CLOUDLET_SUBMIT, cloudlet);

@@ -3,56 +3,62 @@
 Lists the main changes in the project.
 
 ## [Current Development Version]
+- xxxxxx
+
+## [1.2.0] - 2017-04-09
 
 ### Added
 
-- [Vertical VM Scaling Mechanism](/cloudsim-plus-examples/src/main/java/org/cloudsimplus/examples/VerticalVmScalingExample.java) 
-  for VM resources such as Ram, Bandwidth and PEs (CPUs).
-- `double getUtilization()` method in the UtilizationModel class to get the utilization percentage of a given resource
+- Vertical VM Scaling Mechanisms ([#7](https://github.com/manoelcampos/cloudsim-plus/issues/7)) 
+  for up and down scaling of VM resources such as Ram, Bandwidth and PEs (CPUs).
+- `double getUtilization()` method in the `UtilizationModel` class to get the utilization percentage of a given resource
   at the current simulation time.
-- Methods getUtilizationOfRam(), getUtilizationOfBW(), getUtilizationOfCpu() added to Cloudlet in order
-  to get utilization percentage of RAM, BW and CPU, respectivelly, for the current simulation time.
-- UtilizationModel.Unit enum to define the measure unit in which a Cloudlet resource, to which a UtilizationModel is associated to,
-  will be used. The enum values can be PERCENTAGE or ABSOLUTE, that respectivelly defines that the Cloudlet resource usage
+- Methods `getUtilizationOfRam()`, `getUtilizationOfBw()`, `getUtilizationOfCpu()` added to Cloudlet in order
+  to get utilization percentage of RAM, BW and CPU, respectively, for the current simulation time.
+- `UtilizationModel.Unit` enum to define the measure unit in which a Cloudlet resource, to which a `UtilizationModel` is associated to,
+  will be used. The enum values can be `PERCENTAGE` or `ABSOLUTE`, that respectively defines that the Cloudlet resource usage
   will be in percentage or absolute values. The existing UtilizationModels continue to define the value in percentage,
-  as describe in their documentation. The UtilizationModelArithmeticProgression allows setting a diferent unit
-  for such an UtilizationModel (see issue #62).
-- UtilizationModelDynamic (that were previously named UtilizationModelArithmeticProgression) now allows
-  defining the resource usage increment behaviour using a Lambda Expression, enabling the developer
+  as describe in their documentation. The `UtilizationModelDynamic` (previously called `UtilizationModelArithmeticProgression`) allows setting a different unit
+  for such an `UtilizationModel` (see issue #62).
+- `UtilizationModelDynamic` now allows
+  defining the resource usage increment behavior using a Lambda Expression, enabling the developer
   to give a function that performs the increment in an arithmetic, geometric, exponential or any other
   kind of progression he/she needs (see issue #64). 
 - Updated the `DatacenterBroker` interface and implementing classes, including the methods `setVmComparator` and `setCloudletComparator` to enable
   a developer to set a `Comparator` object (which can be given as a Lambda Expression).
+  If no `Comparator` is defined, the objects creation request follows the order in which they were submitted.
   
 ### Changed
 
 - Changed the methods `getRam()`, `getBw()` and `getSize()` from Vm interface to instead of returning a long value that represents the resource capacity,
   to return an actual Resource object that provides information about the capacity and usage. The method getSize() was renamed to getStorage().
 - Changed the methods `getRamCapacity()`, `getBwCapacity()` and `getStorageCapacity()` from Host interface to instead of returning a long value that represents the resource capacity, to return an actual Resource object that provides information about the capacity and usage. The methods were renamed, removing the "Capacity" suffix.
-
+- Automatic generation of IDs for Hosts, VMs and Cloudlets. The IDs can be manually defined using the setId method, but the constructor parameter was removed.
+  Hosts IDs are generated when a List of Hosts is attached to a Datacenter. Cloudlets and VMs IDs are generated when they are submitted to a Broker.
+- Hosts constructors require the RAM and bandwidth capacity, since storage already was required.
+- Instantiating a `ResourceProvisionerSimple` requires just a default no-args constructor.
 - The `DatacenterBroker` interfaces now allows using Java 8 Lambda Expressions to define selection policies.
   - It provides a functional way of defining the policies to select a Datacenter to host a Vm, a fallback Datacenter when the creation of requested VMs failed in the previous   selected Datacenter and to select a VM to run a Cloudlet.
-  - The DatacenterBrokerSimple is yet selecting the first Datacenter to place VMs and uses a round-robin policy to select a VM to run the Cloudlets. If such behaviours needs to be changed, it is not required to create a new DatacenterBroker class. 
+  - The DatacenterBrokerSimple is yet selecting the first Datacenter to place VMs and uses a round-robin policy to select a VM to run the Cloudlets. If such behaviors needs to be changed, it is not required to create a new DatacenterBroker class. 
   - Since there are 3 selection policies to override (the selection of default datacenter, fallback datacenter and VM), the combination of different implementations for these 3 policies will require creation of several DatacenterBroker implementations that will be impossible to maintain.
-  - As an example, consider that you have 3 different implementations for these 3 policies and you want to make all the possible combinations of these policies. That will require you to create 27 different implementations of a DatacenterBroker (3 policies ^ 3 implementations for each one).
   - Using the new functional implementation there is no need to create a new DatacenterBroker class and the implementations can be exchanged just using the new `setDatacenterSupplier`, `setFallbackDatacenterSupplier` and `setVmMapper` methods, passing a Lambda Expression to them.
 
 ## [v1.1.0] - 2017-01-14
 
 ### Fixed
 
-- Closed Isssue #60
-- Fixed the issue of allocating the same physical PE for multiple Virtual PEs inside the VmSchedulerTimeShared class.
+- Removed all the duplicated code from `PeProvioner` implementations ([#60](https://github.com/manoelcampos/cloudsim-plus/issues/60))
+- Fixed the issue of allocating the same physical PE for multiple Virtual PEs inside the `VmSchedulerTimeShared` class.
 
 ### Changed
 
-- Changed the signature of the PeSimple constructor that now requires the PE MIPS capacity instead of an ID,
+- Changed the signature of the `PeSimple` constructor that now requires the PE MIPS capacity instead of an ID,
   because it is in fact an attribute that must belong to a PE. The PE is the one that has a MIPS capacity.
   If a PE ID is not defined, when a PE list is assigned to a Host, the host automatically defines the IDs.
-- The PeProvisionerSimple constructor doesn't require any parameter anymore. It internally creates
-  an association with the PE that receives the PeProvisioner instance when a Pe is created.
-- All the duplicated code inside the PeProvisioner and PeProvisionerSimple were removed.
-  The PeProvisionerSimple class now extends the ResourceProvisionerSimple and the PeProvisioner is now an interface.
+- The `PeProvisionerSimple` constructor doesn't require any parameter anymore. It internally creates
+  an association with the PE that receives the `PeProvisioner` instance when a Pe is created.
+- All the duplicated code inside the `PeProvisioner` and `PeProvisionerSimple` were removed.
+  The `PeProvisionerSimple` class now extends the `ResourceProvisionerSimple` and the `PeProvisioner` is now an interface.
 
 ## [v1.0.0] - 2017-01-06
 
@@ -65,15 +71,13 @@ and using a different one caused runtime errors. With the new `PacketSchedulerSi
 need to use a specific scheduler such as the `NetworkCloudletSchedulerSpaceShared`. Just
 a regular one like the `CloudletSchedulerSpaceShared` or any other works accordingly.
 The developer doesn't even have to create instances of the new `PacketSchedulerSimple`, since
-a `NetworkHost` does this job automatically (closes #57.)
+a `NetworkHost` does this job automatically ([#57](https://github.com/manoelcampos/cloudsim-plus/issues/57).)
 
 ## [v0.9-beta.2] - 2017-01-04
 
 ### Added
-- Introduced a `VmScaling` interface and a `HorizontalVmScalingSimple` class,
-  inside the [autoscaling package](/cloudsim-plus/src/main/java/org/cloudsimplus/autoscaling), that provides a horizontal scaling mechanism
-  for VMs, allowing dynamic creation of VMs according to an overload condition. Such a condition is defined
-  by a predicate that can check different VM resources usage such as CPU, RAM or BW.
+- Introduced Horizontal Vm Scaling, allowing dynamic creation of VMs according to an overload condition. Such a condition is defined
+  by a predicate that can check different VM resources usage such as CPU, RAM or BW ([#41](https://github.com/manoelcampos/cloudsim-plus/issues/41)).
   See the new [LoadBalancerByHorizontalVmScalingExample](/cloudsim-plus-examples/src/main/java/org/cloudsimplus/examples/LoadBalancerByHorizontalVmScalingExample.java) for a usage example.
 - Added the methods `addOnClockTickListener` and `removeOnClockTickListener` to `Simulation` interface to allow defining a Listener to be notified every time the simulation clock advances.
 - Added methods `addOnClockTickListener()` and `removeOnClockTickListener()` in Simulation interface in order to add

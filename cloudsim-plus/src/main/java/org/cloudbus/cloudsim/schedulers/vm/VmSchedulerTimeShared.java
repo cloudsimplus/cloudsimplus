@@ -63,7 +63,7 @@ public class VmSchedulerTimeShared extends VmSchedulerAbstract {
     /**
      * The number of host's PEs in use.
      */
-    private int pesInUse;
+    private long pesInUse;
 
     /**
      * Creates a vm time-shared scheduler.
@@ -220,27 +220,27 @@ public class VmSchedulerTimeShared extends VmSchedulerAbstract {
     }
 
     @Override
-    public boolean isSuitableForVm(Vm vm) {
-        return getTotalCapacityToBeAllocatedToVm(vm.getCurrentRequestedMips()) > 0.0;
+    public boolean isSuitableForVm(List<Double> vmMipsList) {
+        return getTotalCapacityToBeAllocatedToVm(vmMipsList) > 0.0;
     }
 
     /**
      * Checks if the requested amount of MIPS is available to be allocated to a
-     * VM
+     * VM.
      *
      * @param vmRequestedMipsShare a VM's list of requested MIPS
      * @return the sum of total requested mips if there is enough capacity to be
      * allocated to the VM, 0 otherwise.
      */
     protected double getTotalCapacityToBeAllocatedToVm(List<Double> vmRequestedMipsShare) {
-        final double peMips = getPeCapacity();
+        final double pmMips = getPeCapacity();
         double totalRequestedMips = 0;
-        for (final double mips : vmRequestedMipsShare) {
+        for (final double vmMips : vmRequestedMipsShare) {
             // each virtual PE of a VM must require not more than the capacity of a physical PE
-            if (mips > peMips) {
-                return 0.0;
+            if (vmMips > pmMips) {
+                return 0;
             }
-            totalRequestedMips += mips;
+            totalRequestedMips += vmMips;
         }
 
         // This scheduler does not allow over-subscription
@@ -294,8 +294,8 @@ public class VmSchedulerTimeShared extends VmSchedulerAbstract {
     @Override
     public void deallocatePesForVm(Vm vm) {
         getMipsMapRequested().remove(vm);
-        setPesInUse(0);
-        getMipsMapAllocated().clear();
+        setPesInUse(pesInUse - vm.getNumberOfPes());
+        getMipsMapAllocated().remove(vm);
         setAvailableMips(PeList.getTotalMips(getPeList()));
 
         for (final Pe pe : getPeList()) {
@@ -338,7 +338,7 @@ public class VmSchedulerTimeShared extends VmSchedulerAbstract {
      *
      * @param pesInUse the new pes in use
      */
-    protected void setPesInUse(int pesInUse) {
+    protected void setPesInUse(long pesInUse) {
         this.pesInUse = pesInUse;
     }
 
@@ -347,7 +347,7 @@ public class VmSchedulerTimeShared extends VmSchedulerAbstract {
      *
      * @return the pes in use
      */
-    protected int getPesInUse() {
+    protected long getPesInUse() {
         return pesInUse;
     }
 

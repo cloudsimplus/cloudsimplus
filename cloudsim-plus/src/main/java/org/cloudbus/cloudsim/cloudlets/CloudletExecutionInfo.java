@@ -148,7 +148,7 @@ public class CloudletExecutionInfo {
         return cloudlet.getLength();
     }
 
-    public int getNumberOfPes(){
+    public long getNumberOfPes(){
         return cloudlet.getNumberOfPes();
     }
 

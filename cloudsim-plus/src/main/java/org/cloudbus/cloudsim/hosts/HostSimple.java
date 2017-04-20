@@ -41,6 +41,13 @@ public class HostSimple implements Host {
      */
     private int id;
 
+    private Ram ram;
+
+    private Bandwidth bw;
+
+    /**
+     * @see #getStorage()
+     */
     private Storage storage;
 
     /**
@@ -103,22 +110,30 @@ public class HostSimple implements Host {
     private List<ResourceProvisioner> provisioners;
 
     /**
-     * Creates a Host.
+     * Creates a Host without a pre-defined ID.
+     * The ID is automatically set when a List of Hosts is attached
+     * to a {@link Datacenter}.
      *
-     * @param id the host id
-     * @param storageCapacity the storage capacity in Megabytes
-     * @param peList the host's PEs list
+     * @param ram the RAM capacity in Megabytes
+     * @param bw the Bandwidth (BW) capacity in Megabits/s
+     * @param storage the storage capacity in Megabytes
+     * @param peList the host's {@link Pe} list
+     * @see #setId(int)
      */
-    public HostSimple(int id, long storageCapacity,  List<Pe> peList) {
-        setId(id);
+    public HostSimple(long ram, long bw, long storage, List<Pe> peList) {
+        this.setId(-1);
         this.setSimulation(Simulation.NULL);
-        setRamProvisioner(ResourceProvisioner.NULL);
-        setBwProvisioner(ResourceProvisioner.NULL);
-        setVmScheduler(VmScheduler.NULL);
-        this.setStorage(storageCapacity);
-        setPeList(peList);
-        setFailed(false);
-        setDatacenter(Datacenter.NULL);
+
+        this.ram = new Ram(ram);
+        this.bw = new Bandwidth(bw);
+        this.setStorage(storage);
+        this.setRamProvisioner(ResourceProvisioner.NULL);
+        this.setBwProvisioner(ResourceProvisioner.NULL);
+
+        this.setVmScheduler(VmScheduler.NULL);
+        this.setPeList(peList);
+        this.setFailed(false);
+        this.setDatacenter(Datacenter.NULL);
         this.onUpdateProcessingListeners = new HashSet<>();
         this.resources = new ArrayList();
         this.provisioners = new ArrayList();
@@ -130,7 +145,7 @@ public class HostSimple implements Host {
      * @param id the host id
      * @param ramProvisioner the ram provisioner with capacity in Megabytes
      * @param bwProvisioner the bw provisioner with capacity in Megabits/s
-     * @param storageCapacity the storage capacity in Megabytes
+     * @param storage the storage capacity in Megabytes
      * @param peList the host's PEs list
      * @param vmScheduler the vm scheduler
      *
@@ -143,11 +158,11 @@ public class HostSimple implements Host {
             int id,
             ResourceProvisioner ramProvisioner,
             ResourceProvisioner bwProvisioner,
-            long storageCapacity,
+            long storage,
             List<Pe> peList,
             VmScheduler vmScheduler)
     {
-        this(id, storageCapacity, peList);
+        this(ramProvisioner.getCapacity(), bwProvisioner.getCapacity(), storage, peList);
         setRamProvisioner(ramProvisioner);
         setBwProvisioner(bwProvisioner);
         setPeList(peList);
@@ -209,19 +224,25 @@ public class HostSimple implements Host {
      * @return true if the Vm was placed into the host, false if the Host doesn't have enough resources to allocate the Vm
      */
     private boolean allocateResourcesForVm(Vm vm, boolean inMigration){
-        final String msg = (inMigration ? "VM Migration" : "VM Creation");
+        final String msg = inMigration ? "VM Migration" : "VM Creation";
         if (!storage.isResourceAmountAvailable(vm.getStorage())) {
-            Log.printFormattedLine("[%s] Allocation of VM #%d to Host #%d failed due to lack of storage", msg, vm.getId(), getId());
+            Log.printFormattedLine(
+                "[%s] Allocation of VM #%d to Host #%d failed due to lack of storage. Required %d but there is just %d MB available.",
+                msg, vm.getId(), getId(), vm.getStorage().getCapacity(), storage.getAvailableResource());
             return false;
         }
 
         if (!getRamProvisioner().isSuitableForVm(vm, vm.getCurrentRequestedRam())) {
-            Log.printFormattedLine("[%s] Allocation of VM #%d to Host #%d failed due to lack of RAM", msg, vm.getId(), getId());
+            Log.printFormattedLine(
+                "[%s] Allocation of VM #%d to Host #%d failed due to lack of RAM. Required %d but there is just %d MB available.",
+                msg, vm.getId(), getId(), vm.getRam().getCapacity(), ram.getAvailableResource());
             return false;
         }
 
         if (!getBwProvisioner().isSuitableForVm(vm, vm.getCurrentRequestedBw())) {
-            Log.printFormattedLine("[%s] Allocation of VM #%d to Host #%d failed due to lack of BW", msg, vm.getId(), getId());
+            Log.printFormattedLine(
+                "[%s] Allocation of VM #%d to Host #%d failed due to lack of BW. Required %d but there is just %d Mbps available.",
+                msg, vm.getId(), getId(), vm.getBw().getCapacity(), bw.getAvailableResource());
             return false;
         }
 
@@ -320,18 +341,13 @@ public class HostSimple implements Host {
     }
 
     @Override
-    public int getNumberOfPes() {
+    public long getNumberOfPes() {
         return getPeList().size();
     }
 
     @Override
     public int getNumberOfFreePes() {
         return PeList.getNumberOfFreePes(getPeList());
-    }
-
-    @Override
-    public long getTotalMips() {
-        return PeList.getTotalMips(getPeList());
     }
 
     @Override
@@ -360,6 +376,11 @@ public class HostSimple implements Host {
     }
 
     @Override
+    public double getMips() {
+        return peList.stream().mapToDouble(Pe::getCapacity).findFirst().orElse(0);
+    }
+
+    @Override
     public double getAvailableMips() {
         return getVmScheduler().getAvailableMips();
     }
@@ -384,12 +405,8 @@ public class HostSimple implements Host {
         return id;
     }
 
-    /**
-     * Sets the host id.
-     *
-     * @param id the new host id
-     */
-    protected final void setId(int id) {
+    @Override
+    public final void setId(int id) {
         this.id = id;
     }
 
@@ -402,12 +419,13 @@ public class HostSimple implements Host {
     public final Host setRamProvisioner(ResourceProvisioner ramProvisioner) {
         checkSimulationIsRunningAndAttemptedToChangeHost("RAM");
         this.ramProvisioner = ramProvisioner;
+        this.ramProvisioner.setResource(ram);
         return this;
     }
 
     private void checkSimulationIsRunningAndAttemptedToChangeHost(String resourceName) {
         if(simulation.isRunning()){
-            throw new UnsupportedOperationException("It is not allowed to change a Host "+resourceName+" after the simulation started.");
+            throw new UnsupportedOperationException("It is not allowed to change a Host's "+resourceName+" after the simulation started.");
         }
     }
 
@@ -420,6 +438,7 @@ public class HostSimple implements Host {
     public final Host setBwProvisioner(ResourceProvisioner bwProvisioner) {
         checkSimulationIsRunningAndAttemptedToChangeHost("BW");
         this.bwProvisioner = bwProvisioner;
+        this.bwProvisioner.setResource(bw);
         return this;
     }
 
@@ -530,7 +549,6 @@ public class HostSimple implements Host {
     }
 
     private Host setStorage(long size) {
-        checkSimulationIsRunningAndAttemptedToChangeHost("Storage");
         this.storage = new Storage(size);
         return this;
     }
@@ -547,14 +565,14 @@ public class HostSimple implements Host {
     }
 
     /**
-     * Compare this Host with another one based on {@link #getTotalMips()}.
+     * Compare this Host with another one based on {@link #getTotalMipsCapacity()}.
      *
      * @param o the Host to compare to
      * @return {@inheritDoc}
      */
     @Override
     public int compareTo(Host o) {
-        return Double.compare(getTotalMips(), o.getTotalMips());
+        return Double.compare(getTotalMipsCapacity(), o.getTotalMipsCapacity());
     }
 
     @Override

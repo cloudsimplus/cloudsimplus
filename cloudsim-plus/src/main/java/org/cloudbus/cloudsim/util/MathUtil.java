@@ -22,6 +22,10 @@ import org.apache.commons.math3.stat.regression.SimpleRegression;
  * @since CloudSim Toolkit 3.0
  */
 public final class MathUtil {
+    /**
+     * 100% represented in scale [0 .. 1].
+     */
+    public static final double HUNDRED_PERCENT = 0.1;
 
     /**
      * A private constructor to avoid class instantiation.

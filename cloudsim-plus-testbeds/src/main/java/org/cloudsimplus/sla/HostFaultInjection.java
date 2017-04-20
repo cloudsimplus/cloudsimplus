@@ -123,8 +123,7 @@ public class HostFaultInjection extends CloudSimEntity {
             // Log.printLine(CloudSim.clock() + " ---> Host " + host.getId() + " FAILURE...\n");
         }
 
-        Comparator<Vm> sortVmsDescendinglyByPesNumber
-                = (vm1, vm2) -> Integer.compare(vm2.getNumberOfPes(), vm1.getNumberOfPes());
+        Comparator<Vm> sortVmsDescendinglyByPesNumber = Comparator.comparingLong(vm -> vm.getNumberOfPes());
 
         final List<Vm> sortedHostVmList = new ArrayList<>(host.getVmList());
         sortedHostVmList.sort(sortVmsDescendinglyByPesNumber);
@@ -166,10 +165,10 @@ public class HostFaultInjection extends CloudSimEntity {
         System.out.println("\n\t Faults: " + fault);
     }
 
-    public int getPesSumOfWorkingVms(List<Vm> sortedHostVmList) {
+    public long getPesSumOfWorkingVms(List<Vm> sortedHostVmList) {
         return sortedHostVmList.stream()
                 .filter(vm -> !vm.isFailed())
-                .mapToInt(vm -> vm.getNumberOfPes())
+                .mapToLong(vm -> vm.getNumberOfPes())
                 .sum();
     }
 
@@ -254,9 +253,8 @@ public class HostFaultInjection extends CloudSimEntity {
     }
 
     /**
-     * Sets the pseudo delayForFailureOfHostRandom number generator returning
-     * values between [min - max] setted in the
-     * class{@link ExampleUsingFaultInjector}. This value will be used to sets
+     * Sets the delayForFailureOfHostRandom number generator returning
+     * values between [min - max]. This value will be used to set
      * the delay time the host will fail.
      *
      * @param delayForFailureOfHostRandom the delayForFailureOfHostRandom to set
@@ -267,8 +265,7 @@ public class HostFaultInjection extends CloudSimEntity {
 
     /**
      * Gets the pseudo delayForFailureOfHostRandom number generator returning
-     * values between [min - max] setted in the
-     * class{@link ExampleUsingFaultInjector}. This value will be used to sets
+     * values between [min - max]. This value will be used to set
      * the delay time the host will fail.
      *
      * @return the delayForFailureOfHostRandom

@@ -32,15 +32,15 @@ import java.util.function.Predicate;
 import java.util.function.Supplier;
 
 /**
- * A {@link HorizontalVmScaling} implementation that allows defining the condition
- * to identify an overloaded VM based on any desired criteria, such as
+ * A {@link HorizontalVmScaling} implementation that allows defining the conditions
+ * to identify an under or overloaded VM, based on any desired criteria, such as
  * current RAM, CPU and/or Bandwidth utilization.
  * A {@link DatacenterBroker} thus monitors the VMs that have
- * an HorizontalVmScaling object in order to create or destroy VMs
- * on demand..
+ * an HorizontalVmScaling object in order to create or destroy VMs on demand.
  *
- * <p>The condition in fact has to be defined by the user of this class,
- * by providing a {@link Predicate} using the {@link #setOverloadPredicate(Predicate)} method.</p>
+ * <p>Thes conditions in fact have to be defined by the user of this class,
+ * by providing {@link Predicate}s using the {@link #setUnderloadPredicate(Predicate)}
+ * and {@link #setOverloadPredicate(Predicate)} methods.</p>
  *
  * @author Manoel Campos da Silva Filho
  * @since CloudSim Plus 1.0
@@ -55,8 +55,13 @@ public class HorizontalVmScalingSimple extends VmScalingAbstract implements Hori
      */
     private long cloudletCreationRequests;
 
+    private Predicate<Vm> underloadPredicate;
+    private Predicate<Vm> overloadPredicate;
+
     public HorizontalVmScalingSimple(){
         super();
+        this.underloadPredicate = FALSE_PREDICATE;
+        this.overloadPredicate = FALSE_PREDICATE;
         this.vmSupplier = () -> Vm.NULL;
     }
 
@@ -68,6 +73,48 @@ public class HorizontalVmScalingSimple extends VmScalingAbstract implements Hori
     @Override
     public final HorizontalVmScaling setVmSupplier(Supplier<Vm> supplier) {
         this.vmSupplier = (Objects.isNull(supplier) ? () -> Vm.NULL : supplier);
+        return this;
+    }
+
+    @Override
+    public Predicate<Vm> getOverloadPredicate() {
+        return overloadPredicate;
+    }
+
+    @Override
+    public VmScaling setOverloadPredicate(Predicate<Vm> predicate) {
+        validateFunctions(underloadPredicate, predicate);
+        this.overloadPredicate = predicate;
+        return this;
+    }
+
+    /**
+     * Throws an exception if the under and overload predicates are equal (to make clear
+     * that over and underload situations must be defined by different conditions)
+     * or if any of them are null.
+     *
+     * @param underloadPredicate the underload predicate
+     * @param overloadPredicate the overload predicate
+     * @throws IllegalArgumentException if the two predicates are equal
+     * @throws NullPointerException if any of the predicates is null
+     */
+    private void validateFunctions(Predicate<Vm> underloadPredicate, Predicate<Vm> overloadPredicate) {
+        Objects.requireNonNull(underloadPredicate);
+        Objects.requireNonNull(overloadPredicate);
+        if(overloadPredicate.equals(underloadPredicate)){
+            throw new IllegalArgumentException("Under and overload predicates cannot be equal.");
+        }
+    }
+
+    @Override
+    public Predicate<Vm> getUnderloadPredicate() {
+        return underloadPredicate;
+    }
+
+    @Override
+    public VmScaling setUnderloadPredicate(Predicate<Vm> predicate) {
+        validateFunctions(predicate, overloadPredicate);
+        this.underloadPredicate = predicate;
         return this;
     }
 
@@ -99,5 +146,17 @@ public class HorizontalVmScalingSimple extends VmScalingAbstract implements Hori
      */
     private boolean isNewCloudletsArrived(){
         return getVm().getBroker().getCloudletsCreatedList().size() > cloudletCreationRequests;
+    }
+
+    @Override
+    public final boolean requestScalingIfPredicateMatch(double time) {
+        if(!isTimeToCheckPredicate(time)) {
+            return false;
+        }
+
+        final boolean requestedScaling =
+            ( getUnderloadPredicate().test(getVm()) || getOverloadPredicate().test(getVm())) && requestScaling(time);
+        setLastProcessingTime(time);
+        return requestedScaling;
     }
 }

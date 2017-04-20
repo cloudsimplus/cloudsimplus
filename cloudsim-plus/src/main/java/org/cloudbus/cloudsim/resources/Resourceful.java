@@ -23,6 +23,7 @@
  */
 package org.cloudbus.cloudsim.resources;
 
+import org.cloudbus.cloudsim.core.Machine;
 import org.cloudbus.cloudsim.hosts.Host;
 import org.cloudbus.cloudsim.vms.Vm;
 
@@ -39,7 +40,7 @@ import java.util.List;
  */
 public interface Resourceful {
     /**
-     * Gets a given machine {@link Resource}, such as {@link Ram} or {@link Bandwidth},
+     * Gets a given {@link Machine} {@link Resource}, such as {@link Ram} or {@link Bandwidth},
      * from the List of machine resources.
      *
      * @param resourceClass the class of resource to get

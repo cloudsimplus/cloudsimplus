@@ -1,26 +1,25 @@
-/*
+/**
  * CloudSim Plus: A modern, highly-extensible and easier-to-use Framework for
  * Modeling and Simulation of Cloud Computing Infrastructures and Services.
  * http://cloudsimplus.org
  *
- * Copyright (C) 2015-2016 Universidade da Beira Interior (UBI, Portugal) and
- * the Instituto Federal de Educação Ciência e Tecnologia do Tocantins (IFTO,
- * Brazil).
+ *     Copyright (C) 2015-2016  Universidade da Beira Interior (UBI, Portugal) and
+ *     the Instituto Federal de Educação Ciência e Tecnologia do Tocantins (IFTO, Brazil).
  *
- * This file is part of CloudSim Plus.
+ *     This file is part of CloudSim Plus.
  *
- * CloudSim Plus is free software: you can redistribute it and/or modify it
- * under the terms of the GNU General Public License as published by the Free
- * Software Foundation, either version 3 of the License, or (at your option) any
- * later version.
+ *     CloudSim Plus is free software: you can redistribute it and/or modify
+ *     it under the terms of the GNU General Public License as published by
+ *     the Free Software Foundation, either version 3 of the License, or
+ *     (at your option) any later version.
  *
- * CloudSim Plus is distributed in the hope that it will be useful, but WITHOUT
- * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
- * FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
- * details.
+ *     CloudSim Plus is distributed in the hope that it will be useful,
+ *     but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *     GNU General Public License for more details.
  *
- * You should have received a copy of the GNU General Public License along with
- * CloudSim Plus. If not, see <http://www.gnu.org/licenses/>.
+ *     You should have received a copy of the GNU General Public License
+ *     along with CloudSim Plus. If not, see <http://www.gnu.org/licenses/>.
  */
 package org.cloudsimplus.sla;
 
@@ -48,10 +47,8 @@ import org.cloudbus.cloudsim.hosts.HostSimple;
 import org.cloudbus.cloudsim.provisioners.PeProvisionerSimple;
 import org.cloudbus.cloudsim.provisioners.ResourceProvisioner;
 import org.cloudbus.cloudsim.provisioners.ResourceProvisionerSimple;
-import org.cloudbus.cloudsim.resources.Bandwidth;
 import org.cloudbus.cloudsim.resources.Pe;
 import org.cloudbus.cloudsim.resources.PeSimple;
-import org.cloudbus.cloudsim.resources.Ram;
 import org.cloudbus.cloudsim.schedulers.cloudlet.CloudletSchedulerTimeShared;
 import org.cloudbus.cloudsim.schedulers.vm.VmScheduler;
 import org.cloudbus.cloudsim.schedulers.vm.VmSchedulerTimeShared;
@@ -159,7 +156,6 @@ public class DynamicVmCreationByCpuUtilizationAndFreePesOfVm {
         vmList.addAll(createListOfScalableVms(VMS));
 
         createCloudletList();
-        sortCloudletListByLength();
 
         broker0.submitVmList(vmList);
         broker0.submitCloudletList(cloudletList);
@@ -173,14 +169,6 @@ public class DynamicVmCreationByCpuUtilizationAndFreePesOfVm {
         double totalCost = totalCostPrice(vmList);
         System.out.println("\t** Total cost (memory, bw, processing, storage) - " + totalCost);
         printSimulationResults();
-    }
-
-    private void sortCloudletListByLength() {
-        //sort the cloudlet list by expected response time
-        Comparator<Cloudlet> sortByExpectedCloudletByLength
-                = Comparator.comparingDouble(cloudlet -> cloudlet.getLength());
-
-        cloudletList.sort(sortByExpectedCloudletByLength.reversed());
     }
 
     private void printVmsCpuUsage(EventInfo eventInfo) {
@@ -206,7 +194,7 @@ public class DynamicVmCreationByCpuUtilizationAndFreePesOfVm {
         List<Vm> createdVms = cloudlet.getBroker().getVmsCreatedList();
         System.out.println("\t\tCreated VMs: " + createdVms);
         Comparator<Vm> sortByNumberOfFreePes
-                = Comparator.comparingInt(vm -> getExpectedNumberOfFreeVmPes(vm, false));
+                = Comparator.comparingLong(vm -> getExpectedNumberOfFreeVmPes(vm, false));
         Comparator<Vm> sortByExpectedCloudletResponseTime
                 = Comparator.comparingDouble(vm -> getExpectedCloudletResponseTime(cloudlet, vm));
         createdVms.sort(
@@ -237,14 +225,14 @@ public class DynamicVmCreationByCpuUtilizationAndFreePesOfVm {
      * there aren't free PEs (this negative number indicates the amount of
      * overloaded PEs)
      */
-    private int getExpectedNumberOfFreeVmPes(Vm vm, boolean printLog) {
-        final int totalPesNumberForCloudletsOfVm
+    private long getExpectedNumberOfFreeVmPes(Vm vm, boolean printLog) {
+        final long totalPesNumberForCloudletsOfVm
                 = vm.getBroker().getCloudletsCreatedList().stream()
                         .filter(c -> c.getVm().equals(vm))
-                        .mapToInt(Cloudlet::getNumberOfPes)
+                        .mapToLong(Cloudlet::getNumberOfPes)
                         .sum();
 
-        final int numberOfVmFreePes
+        final long numberOfVmFreePes
                 = vm.getNumberOfPes() - totalPesNumberForCloudletsOfVm;
 
         if (printLog) {
@@ -341,11 +329,11 @@ public class DynamicVmCreationByCpuUtilizationAndFreePesOfVm {
             pesList.add(new PeSimple(4000, new PeProvisionerSimple()));
         }
 
-        ResourceProvisioner ramProvisioner = new ResourceProvisionerSimple(new Ram(20480));
-        ResourceProvisioner bwProvisioner = new ResourceProvisionerSimple(new Bandwidth(10000));
+        ResourceProvisioner ramProvisioner = new ResourceProvisionerSimple();
+        ResourceProvisioner bwProvisioner = new ResourceProvisionerSimple();
         VmScheduler vmScheduler = new VmSchedulerTimeShared();
         final int id = hostList.size();
-        return new HostSimple(id, 10000, pesList)
+        return new HostSimple(20480, 10000, 10000, pesList)
                 .setRamProvisioner(ramProvisioner)
                 .setBwProvisioner(bwProvisioner)
                 .setVmScheduler(vmScheduler);

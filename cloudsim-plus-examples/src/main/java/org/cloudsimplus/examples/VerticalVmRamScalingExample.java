@@ -37,14 +37,11 @@ import org.cloudbus.cloudsim.datacenters.DatacenterSimple;
 import org.cloudbus.cloudsim.hosts.Host;
 import org.cloudbus.cloudsim.hosts.HostSimple;
 import org.cloudbus.cloudsim.provisioners.PeProvisionerSimple;
-import org.cloudbus.cloudsim.provisioners.ResourceProvisioner;
 import org.cloudbus.cloudsim.provisioners.ResourceProvisionerSimple;
-import org.cloudbus.cloudsim.resources.Bandwidth;
 import org.cloudbus.cloudsim.resources.Pe;
 import org.cloudbus.cloudsim.resources.PeSimple;
 import org.cloudbus.cloudsim.resources.Ram;
 import org.cloudbus.cloudsim.schedulers.cloudlet.CloudletSchedulerTimeShared;
-import org.cloudbus.cloudsim.schedulers.vm.VmScheduler;
 import org.cloudbus.cloudsim.schedulers.vm.VmSchedulerTimeShared;
 import org.cloudbus.cloudsim.util.Log;
 import org.cloudbus.cloudsim.utilizationmodels.UtilizationModel;
@@ -56,6 +53,7 @@ import org.cloudbus.cloudsim.vms.VmSimple;
 import org.cloudsimplus.autoscaling.HorizontalVmScaling;
 import org.cloudsimplus.autoscaling.VerticalVmScaling;
 import org.cloudsimplus.autoscaling.VerticalVmScalingSimple;
+import org.cloudsimplus.autoscaling.resources.ResourceScalingInstantaneous;
 import org.cloudsimplus.builders.tables.CloudletsTableBuilder;
 import org.cloudsimplus.listeners.EventInfo;
 import org.cloudsimplus.listeners.EventListener;
@@ -63,7 +61,6 @@ import org.cloudsimplus.listeners.EventListener;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
-import java.util.function.Predicate;
 
 import static java.util.Comparator.comparingDouble;
 
@@ -74,21 +71,21 @@ import static java.util.Comparator.comparingDouble;
  * A {@link VerticalVmScaling}
  * is set to each {@link #createListOfScalableVms(int) initially created VM},
  * that will check at {@link #SCHEDULING_INTERVAL specific time intervals}
- * if a VM RAM {@link #isVmRamOverloaded(Vm) is overloaded or not} to then
+ * if a VM RAM {@link #upperRamUtilizationThreshold(Vm) is overloaded or not} to then
  * request the RAM to be scaled up.
  *
  * <p>The example uses the CloudSim Plus {@link EventListener} feature
  * to enable monitoring the simulation and dynamically creating objects such as Cloudlets and VMs.
  * It relies on
  * <a href="http://www.oracle.com/webfolder/technetwork/tutorials/obe/java/Lambda-QuickStart/index.html">Java 8 Lambda Expressions</a>
- * to create an Listener for the {@link Simulation#addOnClockTickListener(EventListener) onClockTick event}
- * in order to get notified when the simulation clock advances and then create and submit new cloudlets.
+ * to create a Listener for the {@link Simulation#addOnClockTickListener(EventListener) onClockTick event}
+ * to get notifications when the simulation clock advances, then creating and submitting new cloudlets.
  * </p>
  *
  * @author Manoel Campos da Silva Filho
- * @since CloudSim Plus 1.2
+ * @since CloudSim Plus 1.2.0
  */
-public class VerticalVmScalingExample {
+public class VerticalVmRamScalingExample {
     /**
      * The interval in which the Datacenter will schedule events.
      * As lower is this interval, sooner the processing of VMs and Cloudlets
@@ -105,13 +102,13 @@ public class VerticalVmScalingExample {
      * has to be trade-off.
      * For more details, see {@link Datacenter#getSchedulingInterval()}.</p>
     */
-    private static final int SCHEDULING_INTERVAL = 10;
+    private static final int SCHEDULING_INTERVAL = 1;
 
     private static final int HOSTS = 1;
     private static final int HOST_PES = 8;
     private static final int VMS = 1;
-    public static final int VM_PES = 5;
-    public static final int VM_RAM = 1200;
+    private static final int VM_PES = 5;
+    private static final int VM_RAM = 800;
     private final CloudSim simulation;
     private DatacenterBroker broker0;
     private List<Host> hostList;
@@ -124,19 +121,19 @@ public class VerticalVmScalingExample {
      * Creating Cloudlets with different lengths, since some Cloudlets will finish prior to others along the time,
      * the VM resource usage will reduce when a Cloudlet finishes.
      */
-    private static final long CLOUDLET_LENGTHS[] = {400_000, 500_000, 600_000, 700_000, 800_000};
+    private static final long CLOUDLET_LENGTHS[] = {40_000, 50_000, 60_000, 70_000, 80_000};
 
     private int createdCloudlets;
     private int createsVms;
 
     public static void main(String[] args) {
-        new VerticalVmScalingExample();
+        new VerticalVmRamScalingExample();
     }
 
     /**
      * Default constructor that builds the simulation scenario and starts the simulation.
      */
-    public VerticalVmScalingExample() {
+    private VerticalVmRamScalingExample() {
         /*You can remove the seed to get a dynamic one, based on current computer time.
         * With a dynamic seed you will get different results at each simulation run.*/
         final long seed = 1;
@@ -196,19 +193,19 @@ public class VerticalVmScalingExample {
     }
 
     private Host createHost() {
-        List<Pe> pesList = new ArrayList<>(HOST_PES);
+        List<Pe> peList = new ArrayList<>(HOST_PES);
         for (int i = 0; i < HOST_PES; i++) {
-            pesList.add(new PeSimple(1000, new PeProvisionerSimple()));
+            peList.add(new PeSimple(1000, new PeProvisionerSimple()));
         }
 
-        ResourceProvisioner ramProvisioner = new ResourceProvisionerSimple(new Ram(20000));
-        ResourceProvisioner bwProvisioner = new ResourceProvisionerSimple(new Bandwidth(100000));
-        VmScheduler vmScheduler = new VmSchedulerTimeShared();
+        final long ram = 20000; //in Megabytes
+        final long bw = 100000; //in Megabytes
+        final long storage = 10000000; //in Megabites/s
         final int id = hostList.size();
-        return new HostSimple(id, 10000000, pesList)
-            .setRamProvisioner(ramProvisioner)
-            .setBwProvisioner(bwProvisioner)
-            .setVmScheduler(vmScheduler);
+        return new HostSimple(ram, bw, storage, peList)
+            .setRamProvisioner(new ResourceProvisionerSimple())
+            .setBwProvisioner(new ResourceProvisionerSimple())
+            .setVmScheduler(new VmSchedulerTimeShared());
     }
 
     /**
@@ -217,13 +214,13 @@ public class VerticalVmScalingExample {
      *
      * @param numberOfVms number of VMs to create
      * @return the list of scalable VMs
-     * @see #createVerticalVmScaling(Vm)
+     * @see #createVerticalRamScalingForVm(Vm)
      */
     private List<Vm> createListOfScalableVms(final int numberOfVms) {
         List<Vm> newList = new ArrayList<>(numberOfVms);
         for (int i = 0; i < numberOfVms; i++) {
             Vm vm = createVm();
-            createVerticalVmScaling(vm);
+            createVerticalRamScalingForVm(vm);
             newList.add(vm);
         }
 
@@ -249,35 +246,48 @@ public class VerticalVmScalingExample {
      * @param vm the VM in which the VerticalVmScaling will be created
      * @see #createListOfScalableVms(int)
      */
-    private void createVerticalVmScaling(Vm vm) {
-        VerticalVmScaling verticalScaling = new VerticalVmScalingSimple(Ram.class, 0.3);
-        verticalScaling.setOverloadPredicate(this::isVmRamOverloaded);
-        verticalScaling.setUnderloadPredicate(this::isVmRamUnderloaded);
-        vm.setRamVerticalScaling(verticalScaling);
+    private void createVerticalRamScalingForVm(Vm vm) {
+        VerticalVmScaling verticalRamScaling = new VerticalVmScalingSimple(Ram.class, 0.1);
+        /* By uncommenting the line below, you will see that instead of gradually
+         * increasing or decreasing the RAM, when the scaling object detect
+         * the RAM usage is above or below the defined thresholds,
+         * it will automatically calculate the amount of RAM to add/remove to
+         * move the VM from the over or underload condition.
+        */
+        //verticalRamScaling.setResourceScaling(new ResourceScalingInstantaneous());
+        verticalRamScaling.setLowerThresholdFunction(this::lowerRamUtilizationThreshold);
+        verticalRamScaling.setUpperThresholdFunction(this::upperRamUtilizationThreshold);
+        vm.setRamVerticalScaling(verticalRamScaling);
     }
 
     /**
-     * A {@link Predicate} that checks if a given VM is overloaded, based on an upper RAM utilization threshold.
+     * Defines the minimum RAM utilization percentage that defines a Vm as underloaded.
+     * This function is using a statically defined threshold, but it would be defined
+     * a dynamic threshold based on any condition you want.
      * A reference to this method is assigned to each Vertical VM Scaling created.
      *
-     * @param vm the VM to check if its RAM is overloaded
-     * @return true if the VM RAM is overloaded, false otherwise
-     * @see #createVerticalVmScaling(Vm)
+     * @param vm the VM to check if its RAM underloaded.
+     *        The parameter is not being used internally, that means the same
+     *        threshold is used for any Vm.
+     * @return the lower RAM utilization threshold
      */
-    private boolean isVmRamOverloaded(Vm vm) {
-        return vm.getRam().getPercentUtilization() > 0.7;
+    private double lowerRamUtilizationThreshold(Vm vm) {
+        return 0.5;
     }
 
     /**
-     * A {@link Predicate} that checks if a given VM is underloaded, based on an lower RAM utilization threshold.
+     * Defines the maximum RAM utilization percentage that defines a Vm as overloaded.
+     * This function is using a statically defined threshold, but it would be defined
+     * a dynamic threshold based on any condition you want.
      * A reference to this method is assigned to each Vertical VM Scaling created.
      *
-     * @param vm the VM to check if its RAM is underloaded
-     * @return true if the VM RAM is underloaded, false otherwise
-     * @see #createVerticalVmScaling(Vm)
+     * @param vm the VM to check if its RAM is overloaded.
+     *        The parameter is not being used internally, that means the same
+     *        threshold is used for any Vm.
+     * @return the upper RAM utilization threshold
      */
-    private boolean isVmRamUnderloaded(Vm vm) {
-        return vm.getRam().getPercentUtilization() < 0.5;
+    private double upperRamUtilizationThreshold(Vm vm) {
+        return 0.7;
     }
 
     private void createCloudletList() {

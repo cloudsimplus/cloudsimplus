@@ -35,6 +35,26 @@ public interface ResourceManageable extends Resource {
     boolean setCapacity(long newCapacity);
 
     /**
+     * Try to add a given amount to the {@link #getCapacity() resource capacity}.
+     *
+     * @param capacityToAdd the amount to add
+     * @return true if capacityToAdd > 0, false otherwise
+     * @see #getAllocatedResource()
+     */
+    boolean addCapacity(long capacityToAdd);
+
+    /**
+     * Try to remove a given amount to the {@link #getCapacity() resource capacity}.
+     *
+     * @param capacityToRemove the amount to remove
+     * @return true if capacityToRemove > 0, the current allocated resource is less or equal
+     *         to the expected new capacity and the capacity to remove is not higher than
+     *         the current capacity; false otherwise
+     * @see #getAllocatedResource()
+     */
+    boolean removeCapacity(long capacityToRemove);
+
+    /**
      * Try to allocate a given amount of the resource, reducing that amount from the
      * total available resource.
      *

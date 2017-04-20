@@ -233,9 +233,9 @@ public class DatacenterBrokerHeuristicExample {
         for(int i = 0; i < 8; i++)
             peList.add(new PeSimple(mips, new PeProvisionerSimple()));
 
-       return new HostSimple(numberOfCreatedHosts++, storage, peList)
-            .setRamProvisioner(new ResourceProvisionerSimple(new Ram(ram)))
-            .setBwProvisioner(new ResourceProvisionerSimple(new Bandwidth(bw)))
+       return new HostSimple(ram, bw, storage, peList)
+           .setRamProvisioner(new ResourceProvisionerSimple())
+           .setBwProvisioner(new ResourceProvisionerSimple())
             .setVmScheduler(new VmSchedulerTimeShared());
     }
 

@@ -28,12 +28,23 @@ import java.util.Objects;
  */
 public class ResourceProvisionerSimple extends ResourceProvisionerAbstract {
     /**
+     * Creates a new ResourceProvisionerSimple which the {@link ResourceManageable} it will manage
+     * have to be set further.
+     *
+     * @post $none
+     * @see #setResource(ResourceManageable)
+     */
+    public ResourceProvisionerSimple() {
+        super(ResourceManageable.NULL);
+    }
+
+    /**
      * Creates a new ResourceProvisionerSimple.
      *
      * @param resource the resource to be managed by the provisioner
      * @post $none
      */
-    public ResourceProvisionerSimple(ResourceManageable resource) {
+    protected ResourceProvisionerSimple(ResourceManageable resource) {
         super(resource);
     }
 

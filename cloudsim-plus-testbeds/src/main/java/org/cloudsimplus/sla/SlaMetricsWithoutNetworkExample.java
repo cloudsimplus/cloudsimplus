@@ -322,9 +322,9 @@ public final class SlaMetricsWithoutNetworkExample {
 
         for (int i = 0; i < HOSTS_NUMBER; i++) {
             List<Pe> peList = createHostPesList(HOST_PES, mips);
-            Host host = new HostSimple(hostId++, storage, peList)
-                    .setRamProvisioner(new ResourceProvisionerSimple(new Ram(ram)))
-                    .setBwProvisioner(new ResourceProvisionerSimple(new Bandwidth(bw)))
+            Host host = new HostSimple(ram, bw, storage, peList)
+                    .setRamProvisioner(new ResourceProvisionerSimple())
+                    .setBwProvisioner(new ResourceProvisionerSimple())
                     .setVmScheduler(new VmSchedulerTimeShared());
 
             getHostList().add(host);

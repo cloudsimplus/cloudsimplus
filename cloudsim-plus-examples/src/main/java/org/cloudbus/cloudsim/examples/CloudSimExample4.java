@@ -171,9 +171,9 @@ public class CloudSimExample4 {
 
         //in this example, the VMAllocatonPolicy in use is SpaceShared. It means that only one VM
         //is allowed to run on each Pe. As each Host has only one Pe, only one VM can run on each HostSimple.
-        Host host = new HostSimple(++hostId, storage, peList)
-            .setRamProvisioner(new ResourceProvisionerSimple(new Ram(ram)))
-            .setBwProvisioner(new ResourceProvisionerSimple(new Bandwidth(bw)))
+        Host host = new HostSimple(ram, bw, storage, peList)
+            .setRamProvisioner(new ResourceProvisionerSimple())
+            .setBwProvisioner(new ResourceProvisionerSimple())
             .setVmScheduler(new VmSchedulerSpaceShared());
         hostList.add(host);
 

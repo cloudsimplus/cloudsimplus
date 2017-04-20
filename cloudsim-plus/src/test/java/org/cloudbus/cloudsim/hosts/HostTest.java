@@ -1,13 +1,10 @@
 package org.cloudbus.cloudsim.hosts;
 
-import java.util.Collections;
-
 import org.cloudbus.cloudsim.vms.Vm;
 import org.cloudbus.cloudsim.datacenters.Datacenter;
 import org.cloudsimplus.listeners.EventListener;
 import org.cloudsimplus.listeners.HostUpdatesVmsProcessingEventInfo;
 import org.cloudbus.cloudsim.provisioners.ResourceProvisioner;
-import org.cloudbus.cloudsim.resources.Pe;
 import org.cloudbus.cloudsim.schedulers.vm.VmScheduler;
 import org.easymock.EasyMock;
 import org.junit.Test;
@@ -37,7 +34,7 @@ public class HostTest {
         assertEquals(ResourceProvisioner.NULL, instance.getRamProvisioner());
         assertEquals(0, instance.getStorage().getCapacity(), 0);
         assertEquals(0, instance.getTotalAllocatedMipsForVm(vm), 0);
-        assertEquals(0, instance.getTotalMips(), 0);
+        assertEquals(0, instance.getTotalMipsCapacity(), 0);
         assertSame(Vm.NULL, instance.getVm(0,0));
         assertSame(VmScheduler.NULL, instance.getVmScheduler());
         assertFalse(instance.isFailed());

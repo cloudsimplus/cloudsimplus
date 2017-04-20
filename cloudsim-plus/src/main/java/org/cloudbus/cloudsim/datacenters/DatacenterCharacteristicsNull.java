@@ -61,9 +61,7 @@ final class DatacenterCharacteristicsNull implements DatacenterCharacteristics {
     @Override public int getId() {
         return 0;
     }
-    @Override public long getMips() {
-        return 0;
-    }
+    @Override public double getMips() { return 0; }
     @Override public long getMipsOfOnePe(int hostId, int peId) {
         return 0;
     }

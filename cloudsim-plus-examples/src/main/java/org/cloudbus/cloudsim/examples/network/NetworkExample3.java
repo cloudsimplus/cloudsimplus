@@ -198,16 +198,13 @@ public class NetworkExample3 {
         peList.add(new PeSimple(mips, new PeProvisionerSimple())); // need to store Pe id and MIPS Rating
 
         //4. Create HostSimple with its id and list of PEs and add them to the list of machines
-        int hostId = 0;
-        int ram = 2048; //host memory (MEGABYTE)
-        long storage = 1000000; //host storage
-        long bw = 10000;
+        long ram = 2048; // in Megabytes
+        long storage = 1000000; // in Megabytes
+        long bw = 10000; //in Megabits/s
 
-        //in this example, the VMAllocatonPolicy in use is SpaceShared. It means that only one VM
-        //is allowed to run on each Pe. As each HostSimple has only one Pe, only one VM can run on each HostSimple.
-        Host host = new HostSimple(hostId, storage, peList)
-            .setRamProvisioner(new ResourceProvisionerSimple(new Ram(ram)))
-            .setBwProvisioner(new ResourceProvisionerSimple(new Bandwidth(bw)))
+        Host host = new HostSimple(ram, bw, storage, peList)
+            .setRamProvisioner(new ResourceProvisionerSimple())
+            .setBwProvisioner(new ResourceProvisionerSimple())
             .setVmScheduler(new VmSchedulerSpaceShared());
         hostList.add(host);
 

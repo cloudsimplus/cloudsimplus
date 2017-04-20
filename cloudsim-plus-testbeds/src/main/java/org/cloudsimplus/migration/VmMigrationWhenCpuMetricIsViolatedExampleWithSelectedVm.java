@@ -1,3 +1,26 @@
+/**
+ * CloudSim Plus: A modern, highly-extensible and easier-to-use Framework for
+ * Modeling and Simulation of Cloud Computing Infrastructures and Services.
+ * http://cloudsimplus.org
+ *
+ *     Copyright (C) 2015-2016  Universidade da Beira Interior (UBI, Portugal) and
+ *     the Instituto Federal de Educação Ciência e Tecnologia do Tocantins (IFTO, Brazil).
+ *
+ *     This file is part of CloudSim Plus.
+ *
+ *     CloudSim Plus is free software: you can redistribute it and/or modify
+ *     it under the terms of the GNU General Public License as published by
+ *     the Free Software Foundation, either version 3 of the License, or
+ *     (at your option) any later version.
+ *
+ *     CloudSim Plus is distributed in the hope that it will be useful,
+ *     but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *     GNU General Public License for more details.
+ *
+ *     You should have received a copy of the GNU General Public License
+ *     along with CloudSim Plus. If not, see <http://www.gnu.org/licenses/>.
+ */
 /*
  * To change this license header, choose License Headers in Project Properties.
  * To change this template file, choose Tools | Templates
@@ -10,8 +33,6 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import org.apache.commons.math3.stat.descriptive.SummaryStatistics;
 import org.cloudbus.cloudsim.allocationpolicies.power.PowerVmAllocationPolicyMigrationWorstFitStaticThreshold;
 import org.cloudbus.cloudsim.brokers.DatacenterBroker;
@@ -28,11 +49,10 @@ import org.cloudbus.cloudsim.hosts.power.PowerHostUtilizationHistory;
 import org.cloudbus.cloudsim.power.models.PowerModelLinear;
 import org.cloudbus.cloudsim.provisioners.PeProvisionerSimple;
 import org.cloudbus.cloudsim.provisioners.ResourceProvisionerSimple;
-import org.cloudbus.cloudsim.resources.Bandwidth;
 import org.cloudbus.cloudsim.resources.Pe;
 import org.cloudbus.cloudsim.resources.PeSimple;
-import org.cloudbus.cloudsim.resources.Ram;
 import org.cloudbus.cloudsim.schedulers.cloudlet.CloudletSchedulerTimeShared;
+import org.cloudbus.cloudsim.schedulers.vm.VmSchedulerSpaceShared;
 import org.cloudbus.cloudsim.schedulers.vm.VmSchedulerTimeShared;
 import org.cloudbus.cloudsim.selectionpolicies.power.PowerVmSelectionPolicyMinimumUtilization;
 import org.cloudbus.cloudsim.util.Log;
@@ -46,7 +66,6 @@ import org.cloudsimplus.builders.tables.CloudletsTableBuilder;
 import org.cloudsimplus.sla.readJsonFile.CpuUtilization;
 import org.cloudsimplus.sla.readJsonFile.ResponseTime;
 import org.cloudsimplus.sla.readJsonFile.SlaReader;
-import org.cloudsimplus.sla.responsetime.CloudletResponseTimeMinimizationExperiment;
 
 /**
  *
@@ -225,11 +244,8 @@ public final class VmMigrationWhenCpuMetricIsViolatedExampleWithSelectedVm {
             list.add(c);
         }
 
+        list.forEach(c -> broker.bindCloudletToVm(c, hostingVm));
         broker.submitCloudletList(list);
-        for (Cloudlet c : list) {
-            broker.bindCloudletToVm(c, hostingVm);
-        }
-
         return list;
     }
 
@@ -303,10 +319,10 @@ public final class VmMigrationWhenCpuMetricIsViolatedExampleWithSelectedVm {
      */
     public static PowerHostUtilizationHistory createHost(int id, int numberOfPes, long mipsByPe) {
         List<Pe> peList = createPeList(numberOfPes, mipsByPe);
-        PowerHostUtilizationHistory host = new PowerHostUtilizationHistory(id, HOST_STORAGE, peList);
+        PowerHostUtilizationHistory host = new PowerHostUtilizationHistory(HOST_RAM, HOST_BW, HOST_STORAGE, peList);
         host.setPowerModel(new PowerModelLinear(1000, 0.7))
-                .setRamProvisioner(new ResourceProvisionerSimple(new Ram(HOST_RAM)))
-                .setBwProvisioner(new ResourceProvisionerSimple(new Bandwidth(HOST_BW)))
+                .setRamProvisioner(new ResourceProvisionerSimple())
+                .setBwProvisioner(new ResourceProvisionerSimple())
                 .setVmScheduler(new VmSchedulerTimeShared());
         return host;
     }
@@ -330,7 +346,7 @@ public final class VmMigrationWhenCpuMetricIsViolatedExampleWithSelectedVm {
         List<Vm> createdVms = cloudlet.getBroker().getVmsCreatedList();
         Log.printLine("\t\tCreated VMs: " + createdVms);
         Comparator<Vm> sortByNumberOfFreePes
-                = Comparator.comparingInt(vm -> getExpectedNumberOfFreeVmPes(vm));
+                = Comparator.comparingLong(vm -> getExpectedNumberOfFreeVmPes(vm));
         Comparator<Vm> sortByExpectedCloudletResponseTime
                 = Comparator.comparingDouble(vm -> getExpectedCloudletResponseTime(cloudlet, vm));
         createdVms.sort(
@@ -360,14 +376,14 @@ public final class VmMigrationWhenCpuMetricIsViolatedExampleWithSelectedVm {
      * there aren't free PEs (this negative number indicates the amount of
      * overloaded PEs)
      */
-    private int getExpectedNumberOfFreeVmPes(Vm vm) {
-        final int totalPesNumberForCloudletsOfVm
+    private long getExpectedNumberOfFreeVmPes(Vm vm) {
+        final long totalPesNumberForCloudletsOfVm
                 = vm.getBroker().getCloudletsCreatedList().stream()
                         .filter(c -> c.getVm().equals(vm))
-                        .mapToInt(Cloudlet::getNumberOfPes)
+                        .mapToLong(Cloudlet::getNumberOfPes)
                         .sum();
 
-        final int numberOfVmFreePes
+        final long numberOfVmFreePes
                 = vm.getNumberOfPes() - totalPesNumberForCloudletsOfVm;
 
         Log.printFormattedLine(
@@ -408,5 +424,4 @@ public final class VmMigrationWhenCpuMetricIsViolatedExampleWithSelectedVm {
         System.out.printf("\nTotal of cloudlets SLA satisfied: %.0f de %d", totalOfcloudletSlaSatisfied, broker.getCloudletsFinishedList().size());
         return (totalOfcloudletSlaSatisfied * 100) / broker.getCloudletsFinishedList().size();
     }
-
 }

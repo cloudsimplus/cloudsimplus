@@ -156,7 +156,7 @@ public class HostsCpuUsageExample {
         int numberOfUsageHistoryEntries = 0;
         final double interval = 1;
         for (HostDynamicWorkloadSimple host : hostList) {
-            double mipsByPe = host.getTotalMips() / (double)host.getNumberOfPes();
+            double mipsByPe = host.getTotalMipsCapacity() / (double)host.getNumberOfPes();
             Log.printFormattedLine("Host %d: Number of PEs %2d, MIPS by PE %.0f", host.getId(), host.getNumberOfPes(), mipsByPe);
             for(HostStateHistoryEntry history: host.getStateHistory()){
                     numberOfUsageHistoryEntries++;
@@ -194,10 +194,10 @@ public class HostsCpuUsageExample {
         long storage = 1000000; //host storage (MEGABYTE)
         long bw = 10000; //Megabits/s
 
-        HostDynamicWorkloadSimple host = new HostDynamicWorkloadSimple(++hostId, storage, peList);
+        HostDynamicWorkloadSimple host = new HostDynamicWorkloadSimple(ram, bw, storage, peList);
         host
-            .setRamProvisioner(new ResourceProvisionerSimple(new Ram(ram)))
-            .setBwProvisioner(new ResourceProvisionerSimple(new Bandwidth(bw)))
+            .setRamProvisioner(new ResourceProvisionerSimple())
+            .setBwProvisioner(new ResourceProvisionerSimple())
             .setVmScheduler(new VmSchedulerTimeShared());
         return host;
     }

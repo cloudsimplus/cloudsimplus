@@ -7,6 +7,7 @@
  */
 package org.cloudbus.cloudsim.vms;
 
+import org.cloudbus.cloudsim.core.Machine;
 import org.cloudbus.cloudsim.brokers.DatacenterBroker;
 import org.cloudbus.cloudsim.core.ChangeableId;
 import org.cloudsimplus.autoscaling.HorizontalVmScaling;
@@ -20,7 +21,6 @@ import org.cloudbus.cloudsim.schedulers.cloudlet.CloudletScheduler;
 import java.util.List;
 import java.util.function.Predicate;
 
-import org.cloudbus.cloudsim.core.Simulation;
 import org.cloudsimplus.autoscaling.VerticalVmScaling;
 import org.cloudsimplus.listeners.VmHostEventInfo;
 import org.cloudsimplus.listeners.VmDatacenterEventInfo;
@@ -39,7 +39,7 @@ import org.cloudsimplus.listeners.EventListener;
  * @author Manoel Campos da Silva Filho
  * @since CloudSim Plus 1.0
  */
-public interface Vm extends UniquelyIdentificable, ChangeableId, Delayable, Resourceful, Comparable<Vm> {
+public interface Vm extends Machine, UniquelyIdentificable, Delayable, Comparable<Vm> {
 
     /**
      * An attribute that implements the Null Object Design Pattern for {@link Vm}
@@ -130,33 +130,6 @@ public interface Vm extends UniquelyIdentificable, ChangeableId, Delayable, Reso
      * @see #isCreated()
      */
     Host getHost();
-
-    /**
-     * Gets the individual MIPS capacity of any VM's PE, considering that all
-     * PEs have the same capacity.
-     *
-     * @return the MIPS
-     */
-    double getMips();
-
-    /**
-     * Gets the number of PEs required by the VM. Each PE has the capacity
-     * defined in {@link #getMips()}
-     *
-     * @return the number of PEs
-     * @see #getMips()
-     */
-    int getNumberOfPes();
-
-    /**
-     * Gets the total MIPS capacity (across all PEs) of this VM.
-     *
-     * @return MIPS capacity sum of all PEs
-     *
-     * @see #getMips()
-     * @see #getNumberOfPes()
-     */
-    double getTotalMipsCapacity();
 
     /**
      * Changes the allocation of a given resource for a VM.
@@ -465,11 +438,6 @@ public interface Vm extends UniquelyIdentificable, ChangeableId, Delayable, Reso
      */
     boolean isFailed();
 
-    /**
-     * Gets the CloudSim instance that represents the simulation the Entity is related to.
-     * @return
-     */
-    Simulation getSimulation();
 
     /**
      * {@inheritDoc}
@@ -507,9 +475,9 @@ public interface Vm extends UniquelyIdentificable, ChangeableId, Delayable, Reso
     Vm setHorizontalScaling(HorizontalVmScaling horizontalScaling) throws IllegalArgumentException;
 
     /**
-     * Sets a {@link VerticalVmScaling} that will check if the Vm's RAM is overloaded,
-     * based on some conditions defined by a {@link Predicate} given
-     * to the VerticalVmScaling, and then request the RAM up scaling.
+     * Sets a {@link VerticalVmScaling} that will check if the Vm's {@link Ram} is under or overloaded,
+     * based on some conditions defined by {@link Predicate}s given to the VerticalVmScaling,
+     * and then request the RAM up or down scaling.
      *
      * @param ramVerticalScaling the VerticalVmScaling to set
      * @return
@@ -519,9 +487,9 @@ public interface Vm extends UniquelyIdentificable, ChangeableId, Delayable, Reso
     Vm setRamVerticalScaling(VerticalVmScaling ramVerticalScaling) throws IllegalArgumentException;
 
     /**
-     * Sets a {@link VerticalVmScaling} that will check if the Vm's Bandwidth is overloaded,
-     * based on some conditions defined by a {@link Predicate} given
-     * to the VerticalVmScaling, and then request the BW up scaling.
+     * Sets a {@link VerticalVmScaling} that will check if the Vm's {@link Bandwidth} is under or overloaded,
+     * based on some conditions defined by {@link Predicate}s given to the VerticalVmScaling,
+     * and then request the Bandwidth up or down scaling.
      *
      * @param bwVerticalScaling the VerticalVmScaling to set
      * @return
@@ -529,6 +497,21 @@ public interface Vm extends UniquelyIdentificable, ChangeableId, Delayable, Reso
      * its own VerticalVmScaling objects or none at all.
      */
     Vm setBwVerticalScaling(VerticalVmScaling bwVerticalScaling) throws IllegalArgumentException;
+
+    /**
+     * Sets a {@link VerticalVmScaling} that will check if the Vm's {@link Pe} is under or overloaded,
+     * based on some conditions defined by {@link Predicate}s given to the VerticalVmScaling,
+     * and then request the Pe up or down scaling.
+     *
+     * <p>The Pe scaling is performed by adding or removing PEs to/from the VM.
+     * Added PEs will have the same MIPS than the already existing ones.</p>
+     *
+     * @param peVerticalScaling the VerticalVmScaling to set
+     * @return
+     * @throws IllegalArgumentException if the given VmScaling is already linked to a Vm. Each VM must have
+     * its own VerticalVmScaling objects or none at all.
+     */
+    Vm setPeVerticalScaling(VerticalVmScaling peVerticalScaling) throws IllegalArgumentException;
 
     /**
      * Gets a {@link VerticalVmScaling} that will check if the Vm's RAM is overloaded,
@@ -543,4 +526,18 @@ public interface Vm extends UniquelyIdentificable, ChangeableId, Delayable, Reso
      * to the VerticalVmScaling, and then request the BW up scaling.
      */
     VerticalVmScaling getBwVerticalScaling();
+
+    /**
+     * Gets a {@link VerticalVmScaling} that will check if the Vm's {@link Pe} is overloaded,
+     * based on some conditions defined by a {@link Predicate} given
+     * to the VerticalVmScaling, and then request the RAM up scaling.
+     */
+    VerticalVmScaling getPeVerticalScaling();
+
+    /**
+     * Gets the {@link Processor} of this VM. It is its Virtual CPU
+     * which may be compounded of multiple {@link Pe}s.
+     * @return
+     */
+    Processor getProcessor();
 }

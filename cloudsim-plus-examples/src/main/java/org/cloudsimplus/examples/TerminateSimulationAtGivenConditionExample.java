@@ -168,21 +168,21 @@ public class TerminateSimulationAtGivenConditionExample {
     }
 
     private Host createHost() {
-        long  mips = 1000; // capacity of each CPU core (in Million Instructions per Second)
-        long  ram = 2048; // host memory (MEGABYTE)
-        long storage = 1000000; // host storage (MEGABYTE)
-        long bw = 10000; //in Megabits/s
+        final long  mips = 1000; // capacity of each CPU core (in Million Instructions per Second)
+        final long  ram = 2048; // in Megabytes
+        final long storage = 1000000; // in Megabytes
+        final long bw = 10000; //in Megabits/s
 
-        List<Pe> pesList = new ArrayList<>(); //List of CPU cores
+        List<Pe> peList = new ArrayList<>(); //List of CPU cores
 
         /*Creates the Host's CPU cores and defines the provisioner
         used to allocate each core for requesting VMs.*/
-        pesList.add(new PeSimple(mips, new PeProvisionerSimple()));
+        peList.add(new PeSimple(mips, new PeProvisionerSimple()));
 
-        return new HostSimple(numberOfCreatedHosts++, storage, pesList)
-                .setRamProvisioner(new ResourceProvisionerSimple(new Ram(ram)))
-                .setBwProvisioner(new ResourceProvisionerSimple(new Bandwidth(bw)))
-                .setVmScheduler(new VmSchedulerTimeShared());
+        return new HostSimple(ram, bw, storage, peList)
+            .setRamProvisioner(new ResourceProvisionerSimple())
+            .setBwProvisioner(new ResourceProvisionerSimple())
+            .setVmScheduler(new VmSchedulerTimeShared());
     }
 
     private Vm createVm(DatacenterBroker broker) {
@@ -204,7 +204,7 @@ public class TerminateSimulationAtGivenConditionExample {
         long length = 10000; //in Million Structions (MI)
         long fileSize = 300; //Size (in bytes) before execution
         long outputSize = 300; //Size (in bytes) after execution
-        int  numberOfCpuCores = vm.getNumberOfPes(); //cloudlet will use all the VM's CPU cores
+        long  numberOfCpuCores = vm.getNumberOfPes(); //cloudlet will use all the VM's CPU cores
 
         //Defines how CPU, RAM and Bandwidth resources are used
         //Sets the same utilization model for all these resources.

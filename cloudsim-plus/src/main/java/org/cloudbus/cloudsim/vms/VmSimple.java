@@ -7,6 +7,7 @@
 package org.cloudbus.cloudsim.vms;
 
 import java.util.*;
+import java.util.stream.LongStream;
 
 import org.cloudbus.cloudsim.core.UniquelyIdentificable;
 import org.cloudbus.cloudsim.datacenters.Datacenter;
@@ -23,6 +24,8 @@ import org.cloudsimplus.listeners.VmDatacenterEventInfo;
 import org.cloudsimplus.listeners.EventListener;
 import org.cloudbus.cloudsim.resources.*;
 import org.cloudbus.cloudsim.schedulers.cloudlet.CloudletScheduler;
+
+import static java.util.stream.Collectors.toList;
 
 /**
  * Implements the basic features of a Virtual Machine (VM) that runs inside a
@@ -52,15 +55,7 @@ public class VmSimple implements Vm {
 
     private DatacenterBroker broker;
 
-    /**
-     * @see #getMips()
-     */
-    private double mips;
-
-    /**
-     * @see #getNumberOfPes()
-     */
-    private int numberOfPes;
+    private Processor processor;
 
     /**
      * @see #getVmm()
@@ -124,6 +119,7 @@ public class VmSimple implements Vm {
 
     private VerticalVmScaling ramVerticalScaling;
     private VerticalVmScaling bwVerticalScaling;
+    private VerticalVmScaling peVerticalScaling;
 
     /**
      * Creates a Vm with 1024 MEGABYTE of RAM, 1000 Megabits/s of Bandwidth and 1024 MEGABYTE of Storage Size.
@@ -139,10 +135,12 @@ public class VmSimple implements Vm {
      * @pre numberOfPes > 0
      * @post $none
      */
-    public VmSimple(int id, long mipsCapacity, int numberOfPes) {
+    public VmSimple(int id, long mipsCapacity, long numberOfPes) {
         this.resources = new ArrayList<>(4);
         setInMigration(false);
         setHost(Host.NULL);
+        setCloudletScheduler(CloudletScheduler.NULL);
+        this.processor = new Processor(this, mipsCapacity, numberOfPes);
 
         setId(id);
         setBroker(DatacenterBroker.NULL);
@@ -155,7 +153,6 @@ public class VmSimple implements Vm {
 
         setSubmissionDelay(0);
         setVmm("Xen");
-        setCloudletScheduler(CloudletScheduler.NULL);
         stateHistory = new LinkedList<>();
 
         this.onHostAllocationListeners = new HashSet<>();
@@ -165,6 +162,7 @@ public class VmSimple implements Vm {
         this.setHorizontalScaling(HorizontalVmScaling.NULL);
         this.setRamVerticalScaling(VerticalVmScaling.NULL);
         this.setBwVerticalScaling(VerticalVmScaling.NULL);
+        this.setPeVerticalScaling(VerticalVmScaling.NULL);
     }
 
     /**
@@ -181,7 +179,7 @@ public class VmSimple implements Vm {
      * @pre numberOfPes > 0
      * @post $none
      */
-    public VmSimple(long mipsCapacity, int numberOfPes) {
+    public VmSimple(long mipsCapacity, long numberOfPes) {
         this(-1, mipsCapacity, numberOfPes);
     }
 
@@ -204,7 +202,7 @@ public class VmSimple implements Vm {
      * @pre numberOfPes > 0
      * @post $none
      */
-    public VmSimple(int id, double mipsCapacity, int numberOfPes) {
+    public VmSimple(int id, double mipsCapacity, long numberOfPes) {
         this(id, (long)mipsCapacity, numberOfPes);
     }
 
@@ -293,15 +291,11 @@ public class VmSimple implements Vm {
 
     @Override
     public List<Double> getCurrentRequestedMips() {
-        List<Double> currentRequestedMips = getCloudletScheduler().getCurrentRequestedMips();
-        if (!isCreated()) {
-            currentRequestedMips = new ArrayList<>(getNumberOfPes());
-            for (int i = 0; i < getNumberOfPes(); i++) {
-                currentRequestedMips.add(getMips());
-            }
+        if (isCreated()) {
+            return getCloudletScheduler().getCurrentRequestedMips();
         }
 
-        return currentRequestedMips;
+        return LongStream.range(0, getNumberOfPes()).mapToObj(i->getMips()).collect(toList());
     }
 
     @Override
@@ -356,7 +350,7 @@ public class VmSimple implements Vm {
 
     @Override
     public double getMips() {
-        return mips;
+        return processor.getMips();
     }
 
     /**
@@ -366,21 +360,21 @@ public class VmSimple implements Vm {
      * @param mips the new mips for every VM's PE
      */
     protected final void setMips(double mips) {
-        this.mips = mips;
+        processor.setMips(mips);
     }
 
     @Override
-    public int getNumberOfPes() {
-        return numberOfPes;
+    public long getNumberOfPes() {
+        return processor.getCapacity();
     }
 
-    /**
-     * Sets the number of PEs required by the VM.
-     *
-     * @param numberOfPes the new number of PEs
-     */
-    protected final void setNumberOfPes(int numberOfPes) {
-        this.numberOfPes = numberOfPes;
+    private void setNumberOfPes(long numberOfPes) {
+        processor.setCapacity(numberOfPes);
+    }
+
+    @Override
+    public Processor getProcessor() {
+        return processor;
     }
 
     @Override
@@ -577,7 +571,7 @@ public class VmSimple implements Vm {
     @Override
     public List<ResourceManageable> getResources() {
         if(getSimulation().isRunning() && resources.isEmpty()){
-            resources = Arrays.asList(ram, bw, storage);
+            resources = Arrays.asList(ram, bw, storage, processor);
         }
 
         return Collections.unmodifiableList(resources);
@@ -663,11 +657,6 @@ public class VmSimple implements Vm {
         int result = id;
         result = 31 * result + broker.hashCode();
         return result;
-    }
-
-    @Override
-    public double getTotalMipsCapacity() {
-        return getMips() * getNumberOfPes();
     }
 
     @Override
@@ -761,6 +750,12 @@ public class VmSimple implements Vm {
     }
 
     @Override
+    public final Vm setPeVerticalScaling(VerticalVmScaling peVerticalScaling) throws IllegalArgumentException {
+        this.peVerticalScaling = validateAndConfigureVmScaling(peVerticalScaling);
+        return this;
+    }
+
+    @Override
     public VerticalVmScaling getRamVerticalScaling() {
         return ramVerticalScaling;
     }
@@ -768,6 +763,11 @@ public class VmSimple implements Vm {
     @Override
     public VerticalVmScaling getBwVerticalScaling() {
         return bwVerticalScaling;
+    }
+
+    @Override
+    public VerticalVmScaling getPeVerticalScaling() {
+        return peVerticalScaling;
     }
 
     private <T extends VmScaling> T validateAndConfigureVmScaling(T vmScaling) {

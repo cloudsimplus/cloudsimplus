@@ -44,10 +44,9 @@ public interface VmScheduler {
     /**
      * Requests the allocation of PEs for a VM.
      *
-     * @param vm the vm
+     * @param vm the vm to allocate PEs to
      * @param mipsShareRequested the list of MIPS share to be allocated to a VM
-     * @return $true if this policy allows a new VM in the host, $false
-     * otherwise
+     * @return true if the PEs were allocated to the VM, false otherwise
      *
      * @pre $none
      * @post $none
@@ -65,6 +64,18 @@ public interface VmScheduler {
      * to be checked. It has to be added some tests to check this issue.
      */
     boolean allocatePesForVm(Vm vm, List<Double> mipsShareRequested);
+
+    /**
+     * Requests the allocation of PEs for a VM, according
+     * to the number of PEs and MIPS defined by VM attributes.
+     *
+     * @param vm the vm to allocate PEs to
+     * @return true if the PEs were allocated to the VM, false otherwise
+     *
+     * @pre $none
+     * @post $none
+     */
+    boolean allocatePesForVm(Vm vm);
 
     /**
      * Releases PEs allocated to all the VMs of the host the VmScheduler
@@ -112,6 +123,16 @@ public interface VmScheduler {
      * @return true, if it is possible to allocate the the VM into the host; false otherwise
      */
     boolean isSuitableForVm(Vm vm);
+
+    /**
+     * Checks if the PM using this scheduler has enough MIPS capacity
+     * to host a given VM.
+     *
+     * @param vmMipsList a List with the MIPS capacity required by each VM PE
+     *
+     * @return true, if it is possible to allocate the the VM into the host; false otherwise
+     */
+    boolean isSuitableForVm(List<Double> vmMipsList);
 
     /**
      * Gets the maximum available MIPS among all the host's PEs.

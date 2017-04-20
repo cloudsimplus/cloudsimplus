@@ -47,10 +47,10 @@ public class PowerHostTest {
         for(int i = 0; i < numberOfPes; i++)
             peList.add(new PeSimple(MIPS, new PeProvisionerSimple()));
 
-        PowerHostSimple host = new PowerHostSimple(hostId, STORAGE, peList);
+        PowerHostSimple host = new PowerHostSimple(RAM, BW, STORAGE, peList);
         host.setPowerModel(new PowerModelLinear(MAX_POWER, STATIC_POWER_PERCENT))
-            .setRamProvisioner(new ResourceProvisionerSimple(new Ram(RAM)))
-            .setBwProvisioner(new ResourceProvisionerSimple(new Bandwidth(BW)))
+            .setRamProvisioner(new ResourceProvisionerSimple())
+            .setBwProvisioner(new ResourceProvisionerSimple())
             .setVmScheduler(new VmSchedulerTimeShared());
 
         return host;

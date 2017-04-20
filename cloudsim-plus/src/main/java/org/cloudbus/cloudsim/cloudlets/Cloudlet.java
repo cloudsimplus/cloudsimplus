@@ -378,7 +378,7 @@ public interface Cloudlet extends UniquelyIdentificable, ChangeableId, Delayable
      * @post $none
      * @see #getTotalLength()
      */
-    int getNumberOfPes();
+    long getNumberOfPes();
 
     /**
      * Gets the latest {@link Datacenter} where the Cloudlet was processed.
@@ -597,7 +597,7 @@ public interface Cloudlet extends UniquelyIdentificable, ChangeableId, Delayable
      * @pre numPE > 0
      * @post $none
      */
-    Cloudlet setNumberOfPes(int numberOfPes);
+    Cloudlet setNumberOfPes(long numberOfPes);
 
     /**
      * Sets a {@link DatacenterBroker} that represents the owner of the Cloudlet.

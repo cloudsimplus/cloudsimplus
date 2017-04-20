@@ -162,7 +162,7 @@ public class CloudSimExample7 {
     private Datacenter createDatacenter() {
         List<Host> hostList = new ArrayList<>();
 
-        long mips = 1000;
+        double mips = 1000;
         List<Pe> peList1 = new ArrayList<>();
 
 
@@ -177,20 +177,19 @@ public class CloudSimExample7 {
             peList2.add(new PeSimple(mips, new PeProvisionerSimple()));
 
         //4. Create Hosts with its id and list of PEs and add them to the list of machines
-        int hostId = -1;
         long ram = 16384; //host memory (MEGABYTE)
         long storage = 1000000; //host storage (MEGABYTE)
         long bw = 10000; //Megabits/s
 
-        Host host1 = new HostSimple(++hostId, storage, peList1)
-            .setRamProvisioner(new ResourceProvisionerSimple(new Ram(ram)))
-            .setBwProvisioner(new ResourceProvisionerSimple(new Bandwidth(bw)))
+        Host host1 = new HostSimple(ram, bw, storage, peList1)
+            .setRamProvisioner(new ResourceProvisionerSimple())
+            .setBwProvisioner(new ResourceProvisionerSimple())
             .setVmScheduler(new VmSchedulerTimeShared());
         hostList.add(host1);
 
-        Host host2 = new HostSimple(++hostId, storage, peList2)
-            .setRamProvisioner(new ResourceProvisionerSimple(new Ram(ram)))
-            .setBwProvisioner(new ResourceProvisionerSimple(new Bandwidth(bw)))
+        Host host2 = new HostSimple(ram, bw, storage, peList2)
+            .setRamProvisioner(new ResourceProvisionerSimple())
+            .setBwProvisioner(new ResourceProvisionerSimple())
             .setVmScheduler(new VmSchedulerTimeShared());
         hostList.add(host2);
 

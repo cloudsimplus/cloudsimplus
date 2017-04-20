@@ -185,10 +185,11 @@ public class HostListTest {
     private NetworkHost createNetworkHost(final int hostId) {
         final List<Pe> peList = HostSimpleTest.createPes(PES, MIPS);
 
-        final NetworkHost host = new NetworkHost(hostId, STORAGE, peList);
-        host.setRamProvisioner(new ResourceProvisionerSimple(new Ram(RAM)))
-            .setBwProvisioner(new ResourceProvisionerSimple(new Bandwidth(BW)))
-            .setVmScheduler(new VmSchedulerTimeShared());
+        final NetworkHost host = new NetworkHost(RAM, BW, STORAGE, peList);
+        host.setRamProvisioner(new ResourceProvisionerSimple())
+            .setBwProvisioner(new ResourceProvisionerSimple())
+            .setVmScheduler(new VmSchedulerTimeShared())
+            .setId(hostId);
         return host;
     }
 }

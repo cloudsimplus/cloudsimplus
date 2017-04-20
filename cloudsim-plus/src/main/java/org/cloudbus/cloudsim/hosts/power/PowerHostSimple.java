@@ -42,14 +42,14 @@ public class PowerHostSimple extends HostDynamicWorkloadSimple implements PowerH
 
     /**
      * Creates a PowerHost with the given parameters.
-     *
-     * @param id the id of the host
-     * @param storage the storage capacity in MEGABYTE
-     * @param peList the host's PEs list
+     * @param ram the RAM capacity in Megabytes
+     * @param bw the Bandwidth (BW) capacity in Megabits/s
+     * @param storage the storage capacity in Megabytes
+     * @param peList the host's {@link Pe} list
      *
      */
-    public PowerHostSimple(int id, long storage, List<Pe> peList) {
-        super(id, storage, peList);
+    public PowerHostSimple(long ram, long bw, long storage, List<Pe> peList) {
+        super(ram, bw, storage, peList);
         setPowerModel(PowerModel.NULL);
     }
 
@@ -78,7 +78,7 @@ public class PowerHostSimple extends HostDynamicWorkloadSimple implements PowerH
             VmScheduler vmScheduler,
             PowerModel powerModel)
     {
-        this(id, storage, peList);
+        this(ramProvisioner.getCapacity(), bwProvisioner.getCapacity(), storage, peList);
         setRamProvisioner(ramProvisioner);
         setBwProvisioner(bwProvisioner);
         setVmScheduler(vmScheduler);

@@ -157,8 +157,8 @@ public class CloudletToVmMappingSolution implements HeuristicSolution<Map<Cloudl
      * @return the VM cost to host the Cloudlets
      */
     public double getVmCost(Vm vm, List<Map.Entry<Cloudlet, Vm>> listOfCloudletsForVm) {
-	    final int totalCloudletsPes = listOfCloudletsForVm.stream()
-		    .mapToInt(e->e.getKey().getNumberOfPes())
+	    final long totalCloudletsPes = listOfCloudletsForVm.stream()
+		    .mapToLong(e->e.getKey().getNumberOfPes())
 		    .sum();
 
         return Math.abs(vm.getNumberOfPes() - totalCloudletsPes);

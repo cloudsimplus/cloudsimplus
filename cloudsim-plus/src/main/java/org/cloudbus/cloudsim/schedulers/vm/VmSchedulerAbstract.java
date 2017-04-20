@@ -7,6 +7,8 @@
 package org.cloudbus.cloudsim.schedulers.vm;
 
 import java.util.*;
+import java.util.stream.IntStream;
+import java.util.stream.LongStream;
 
 import org.cloudbus.cloudsim.hosts.Host;
 import org.cloudbus.cloudsim.provisioners.PeProvisioner;
@@ -15,6 +17,8 @@ import org.cloudbus.cloudsim.resources.Pe;
 import org.cloudbus.cloudsim.vms.Vm;
 
 import org.cloudbus.cloudsim.lists.PeList;
+
+import static java.util.stream.Collectors.toList;
 
 /**
  * An abstract class for implementation of {@link VmScheduler}s.
@@ -63,6 +67,17 @@ public abstract class VmSchedulerAbstract implements VmScheduler {
         setHost(Host.NULL);
         setVmsMigratingIn(new HashSet<>());
         setVmsMigratingOut(new HashSet<>());
+    }
+
+    @Override
+    public final boolean isSuitableForVm(Vm vm) {
+        return isSuitableForVm(vm.getCurrentRequestedMips());
+    }
+
+    @Override
+    public boolean allocatePesForVm(Vm vm) {
+        final List<Double> mipsList = LongStream.range(0, vm.getNumberOfPes()).mapToObj(i -> vm.getMips()).collect(toList());
+        return allocatePesForVm(vm, mipsList);
     }
 
     @Override

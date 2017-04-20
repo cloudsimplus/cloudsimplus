@@ -38,13 +38,13 @@ import org.cloudbus.cloudsim.util.MathUtil;
 public class PowerHostUtilizationHistory extends PowerHostSimple {
     /**
      * Creates a PowerHostUtilizationHistory.
-     *
-     * @param id the host id
-     * @param storage the storage capacity in MEGABYTE
-     * @param peList the host's PEs list
+     * @param ram the RAM capacity in Megabytes
+     * @param bw the Bandwidth (BW) capacity in Megabits/s
+     * @param storage the storage capacity in Megabytes
+     * @param peList the host's {@link Pe} list
      */
-    public PowerHostUtilizationHistory(int id, long storage, List<Pe> peList) {
-        super(id, storage, peList);
+    public PowerHostUtilizationHistory(long ram, long bw, long storage, List<Pe> peList) {
+        super(ram, bw, storage, peList);
     }
 
 	/**
@@ -72,7 +72,7 @@ public class PowerHostUtilizationHistory extends PowerHostSimple {
 			VmScheduler vmScheduler,
 			PowerModel powerModel)
     {
-		this(id, storage, peList);
+		this(ramProvisioner.getCapacity(), bwProvisioner.getCapacity(), storage, peList);
         setRamProvisioner(ramProvisioner);
         setBwProvisioner(bwProvisioner);
         setVmScheduler(vmScheduler);
@@ -85,7 +85,7 @@ public class PowerHostUtilizationHistory extends PowerHostSimple {
 	 */
 	public double[] getUtilizationHistory() {
 		double[] utilizationHistory = new double[PowerVm.MAX_HISTORY_ENTRIES];
-		double hostMips = getTotalMips();
+		double hostMips = getTotalMipsCapacity();
 		for (final PowerVm vm : this.<PowerVm>getVmList()) {
 			for (int i = 0; i < vm.getUtilizationHistory().size(); i++) {
 				utilizationHistory[i] += vm.getUtilizationHistory().get(i) * vm.getMips() / hostMips;

@@ -222,10 +222,10 @@ public class SwfWorkloadFormatExample1 {
      */
     private List<Host> createHostsAccordingToVmRequirements() {
         List<Host> hostList = new ArrayList<>();
-        Map<Integer, Integer> vmsPesCountMap = getMapWithNumberOfVmsGroupedByRequiredPesNumber();
-        int numberOfPesRequiredByVms, numberOfVms, numberOfVmsRequiringUpToTheMinimumPesNumber = 0;
-        int totalOfHosts = 0, totalOfPesOfAllHosts = 0;
-        for (Entry<Integer, Integer> entry: vmsPesCountMap.entrySet()) {
+        Map<Long, Long> vmsPesCountMap = getMapWithNumberOfVmsGroupedByRequiredPesNumber();
+        long numberOfPesRequiredByVms, numberOfVms, numberOfVmsRequiringUpToTheMinimumPesNumber = 0;
+        long totalOfHosts = 0, totalOfPesOfAllHosts = 0;
+        for (Entry<Long, Long> entry: vmsPesCountMap.entrySet()) {
             numberOfPesRequiredByVms = entry.getKey();
             numberOfVms = entry.getValue();
             /*For VMs requiring MINIMUM_NUM_OF_PES_BY_HOST or less PEs,
@@ -263,7 +263,7 @@ public class SwfWorkloadFormatExample1 {
      * @param numberOfPes number of PEs of the host
      * @return the created host
      */
-    private List<Host> createHostsOfSameCapacity(int numberOfHosts, int numberOfPes) {
+    private List<Host> createHostsOfSameCapacity(long numberOfHosts, long numberOfPes) {
         final long ram = VM_RAM * NUMBER_OF_VMS_PER_HOST;
         final long storage = VM_SIZE * NUMBER_OF_VMS_PER_HOST;
         final long bw = VM_BW * NUMBER_OF_VMS_PER_HOST;
@@ -273,9 +273,9 @@ public class SwfWorkloadFormatExample1 {
             List<Pe> peList = createPeList(numberOfPes, VM_MIPS);
 
             Host host =
-                new HostSimple(lastCreatedHostId++, storage, peList)
-                    .setRamProvisioner(new ResourceProvisionerSimple(new Ram(ram)))
-                    .setBwProvisioner(new ResourceProvisionerSimple(new Bandwidth(bw)))
+                new HostSimple(ram, bw, storage, peList)
+                    .setRamProvisioner(new ResourceProvisionerSimple())
+                    .setBwProvisioner(new ResourceProvisionerSimple())
                     .setVmScheduler(new VmSchedulerTimeShared());
 
             list.add(host);
@@ -286,7 +286,7 @@ public class SwfWorkloadFormatExample1 {
         return list;
     }
 
-    private List<Pe> createPeList(int numberOfPes, long mips) {
+    private List<Pe> createPeList(long numberOfPes, long mips) {
         List<Pe> peList = new ArrayList<>();
         for (int i = 0; i < numberOfPes; i++) {
             peList.add(new PeSimple(mips, new PeProvisionerSimple()));
@@ -305,14 +305,14 @@ public class SwfWorkloadFormatExample1 {
      * that require that number of PEs. For instance, a key = 8 and a value = 5
      * means there is 5 VMs that require 8 PEs.
      */
-    private Map<Integer, Integer> getMapWithNumberOfVmsGroupedByRequiredPesNumber() {
-        Map<Integer, Integer> vmsPesCountMap = new HashMap<>();
+    private Map<Long, Long> getMapWithNumberOfVmsGroupedByRequiredPesNumber() {
+        Map<Long, Long> vmsPesCountMap = new HashMap<>();
         for (Vm vm : vmlist) {
-            final int pesNumber = vm.getNumberOfPes();
+            final long pesNumber = vm.getNumberOfPes();
             //checks if the map already has an entry to the given pesNumber
-            Integer numberOfVmsWithGivenPesNumber = vmsPesCountMap.get(pesNumber);
+            Long numberOfVmsWithGivenPesNumber = vmsPesCountMap.get(pesNumber);
             if (numberOfVmsWithGivenPesNumber == null) {
-                numberOfVmsWithGivenPesNumber = 0;
+                numberOfVmsWithGivenPesNumber = 0L;
             }
             //updates the number of VMs that have the given pesNumber
             vmsPesCountMap.put(pesNumber, ++numberOfVmsWithGivenPesNumber);
@@ -321,7 +321,7 @@ public class SwfWorkloadFormatExample1 {
 
         Log.printLine();
         long totalOfVms = 0, totalOfPes = 0;
-        for(Entry<Integer, Integer> entry: vmsPesCountMap.entrySet()){
+        for(Entry<Long, Long> entry: vmsPesCountMap.entrySet()){
             totalOfVms += entry.getValue();
             totalOfPes += entry.getKey() * entry.getValue();
             Log.printConcatLine(

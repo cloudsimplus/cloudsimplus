@@ -122,6 +122,12 @@ public interface ResourceProvisioner {
     ResourceManageable getResource();
 
     /**
+     * Sets the resource to be managed for the provisioner, such as {@link Ram}, {@link Pe}, {@link Bandwidth}, etc.
+     * @param resource the resource managed by this provisioner
+     */
+    void setResource(ResourceManageable resource);
+
+    /**
      * Gets the total capacity of the physical resource from the Host that the provisioner manages.
      *
      * @return the total physical resource capacity

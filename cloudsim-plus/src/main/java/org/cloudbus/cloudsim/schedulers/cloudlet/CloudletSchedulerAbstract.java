@@ -136,7 +136,7 @@ public abstract class CloudletSchedulerAbstract implements CloudletScheduler {
      */
     protected void setCurrentMipsShare(List<Double> currentMipsShare) {
         this.currentMipsShare = currentMipsShare;
-        processor = Processor.fromMipsList(currentMipsShare, getCloudletExecList());
+        processor = Processor.fromMipsList(vm, currentMipsShare, getCloudletExecList());
     }
 
     @Override
@@ -226,7 +226,7 @@ public abstract class CloudletSchedulerAbstract implements CloudletScheduler {
             rcl.setCloudletStatus(Status.INEXEC);
             rcl.setFileTransferTime(fileTransferTime);
             addCloudletToExecList(rcl);
-            return fileTransferTime + (rcl.getCloudletLength() / getProcessor().getCapacity());
+            return fileTransferTime + (rcl.getCloudletLength() / getProcessor().getMips());
         }
 
         // No enough free PEs, then add Cloudlet to the waiting queue
@@ -727,7 +727,7 @@ public abstract class CloudletSchedulerAbstract implements CloudletScheduler {
      * @return true if there is the amount of free PEs, false otherwise
      */
     protected boolean isThereEnoughFreePesForCloudlet(CloudletExecutionInfo c) {
-        return processor.getNumberOfPes() - usedPes >= c.getNumberOfPes();
+        return processor.getCapacity() - usedPes >= c.getNumberOfPes();
     }
 
     /**
@@ -791,7 +791,7 @@ public abstract class CloudletSchedulerAbstract implements CloudletScheduler {
     }
 
     @Override
-    public int getUsedPes() {
+    public long getUsedPes() {
         /**
          *
          * @todo The number of free and used PEs should be inside the Processor
@@ -808,8 +808,8 @@ public abstract class CloudletSchedulerAbstract implements CloudletScheduler {
      * @return
      */
     @Override
-    public int getFreePes() {
-        return getProcessor().getNumberOfPes() - getUsedPes();
+    public long getFreePes() {
+        return getProcessor().getCapacity() - getUsedPes();
     }
 
     /**
@@ -817,7 +817,7 @@ public abstract class CloudletSchedulerAbstract implements CloudletScheduler {
      *
      * @param usedPesToAdd number of PEs to add to the amount of used PEs
      */
-    private void addUsedPes(int usedPesToAdd) {
+    private void addUsedPes(long usedPesToAdd) {
         this.usedPes += usedPesToAdd;
     }
 
@@ -827,7 +827,7 @@ public abstract class CloudletSchedulerAbstract implements CloudletScheduler {
      * @param usedPesToRemove number of PEs to subtract from the amount of used
      *                        PEs
      */
-    private void removeUsedPes(int usedPesToRemove) {
+    private void removeUsedPes(long usedPesToRemove) {
         this.usedPes -= usedPesToRemove;
     }
 

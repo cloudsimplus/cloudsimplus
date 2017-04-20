@@ -1,3 +1,26 @@
+/**
+ * CloudSim Plus: A modern, highly-extensible and easier-to-use Framework for
+ * Modeling and Simulation of Cloud Computing Infrastructures and Services.
+ * http://cloudsimplus.org
+ *
+ *     Copyright (C) 2015-2016  Universidade da Beira Interior (UBI, Portugal) and
+ *     the Instituto Federal de Educação Ciência e Tecnologia do Tocantins (IFTO, Brazil).
+ *
+ *     This file is part of CloudSim Plus.
+ *
+ *     CloudSim Plus is free software: you can redistribute it and/or modify
+ *     it under the terms of the GNU General Public License as published by
+ *     the Free Software Foundation, either version 3 of the License, or
+ *     (at your option) any later version.
+ *
+ *     CloudSim Plus is distributed in the hope that it will be useful,
+ *     but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *     GNU General Public License for more details.
+ *
+ *     You should have received a copy of the GNU General Public License
+ *     along with CloudSim Plus. If not, see <http://www.gnu.org/licenses/>.
+ */
 /*
  * To change this license header, choose License Headers in Project Properties.
  * To change this template file, choose Tools | Templates
@@ -11,6 +34,7 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import static java.util.Comparator.comparingDouble;
 import java.util.List;
+import java.util.function.Predicate;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.apache.commons.math3.stat.descriptive.SummaryStatistics;
@@ -25,10 +49,8 @@ import org.cloudbus.cloudsim.hosts.HostSimple;
 import org.cloudbus.cloudsim.provisioners.PeProvisionerSimple;
 import org.cloudbus.cloudsim.provisioners.ResourceProvisioner;
 import org.cloudbus.cloudsim.provisioners.ResourceProvisionerSimple;
-import org.cloudbus.cloudsim.resources.Bandwidth;
 import org.cloudbus.cloudsim.resources.Pe;
 import org.cloudbus.cloudsim.resources.PeSimple;
-import org.cloudbus.cloudsim.resources.Ram;
 import org.cloudbus.cloudsim.schedulers.cloudlet.CloudletSchedulerTimeShared;
 import org.cloudbus.cloudsim.schedulers.vm.VmScheduler;
 import org.cloudbus.cloudsim.schedulers.vm.VmSchedulerTimeShared;
@@ -52,7 +74,7 @@ import org.cloudsimplus.testbeds.SimulationExperiment;
  * @author raysaoliveira
  */
 public class CloudletResponseTimeWorkLoadExperimet extends SimulationExperiment {
- 
+
     private static final int SCHEDULING_INTERVAL = 5;
 
     /**
@@ -154,11 +176,11 @@ public class CloudletResponseTimeWorkLoadExperimet extends SimulationExperiment 
         } catch (IOException ex) {
             Logger.getLogger(CloudletResponseTimeWorkLoadExperimet.class.getName()).log(Level.SEVERE, null, ex);
         }
-       
+
         cloudletList.forEach((cloudlet) -> {
             cloudlet.setBroker(broker);
         });
-     
+
         return cloudletList;
     }
 
@@ -173,7 +195,7 @@ public class CloudletResponseTimeWorkLoadExperimet extends SimulationExperiment 
         List<Vm> createdVms = cloudlet.getBroker().getVmsCreatedList();
     //    Log.printLine("\t\tCreated VMs: " + createdVms);
         Comparator<Vm> sortByNumberOfFreePes
-                = Comparator.comparingInt(vm -> getExpectedNumberOfFreeVmPes(vm));
+                = Comparator.comparingLong(vm -> getExpectedNumberOfFreeVmPes(vm));
         Comparator<Vm> sortByExpectedCloudletResponseTime
                 = Comparator.comparingDouble(vm -> getExpectedCloudletResponseTime(cloudlet, vm));
         createdVms.sort(
@@ -203,14 +225,14 @@ public class CloudletResponseTimeWorkLoadExperimet extends SimulationExperiment 
      * there aren't free PEs (this negative number indicates the amount of
      * overloaded PEs)
      */
-    private int getExpectedNumberOfFreeVmPes(Vm vm) {
-        final int totalPesNumberForCloudletsOfVm
+    private long getExpectedNumberOfFreeVmPes(Vm vm) {
+        final long totalPesNumberForCloudletsOfVm
                 = vm.getBroker().getCloudletsCreatedList().stream()
                         .filter(c -> c.getVm().equals(vm))
-                        .mapToInt(Cloudlet::getNumberOfPes)
+                        .mapToLong(Cloudlet::getNumberOfPes)
                         .sum();
 
-        final int numberOfVmFreePes
+        final long numberOfVmFreePes
                 = vm.getNumberOfPes() - totalPesNumberForCloudletsOfVm;
 
   /*      Log.printFormattedLine(
@@ -270,7 +292,7 @@ public class CloudletResponseTimeWorkLoadExperimet extends SimulationExperiment 
 
     /**
      * A {@link Predicate} that checks if a given VM is overloaded or not based
-     * on response time max value. A reference to this method is assigned to
+     * on CPU usage. A reference to this method is assigned to
      * each Horizontal VM Scaling created.
      *
      * @param vm the VM to check if it is overloaded
@@ -296,14 +318,16 @@ public class CloudletResponseTimeWorkLoadExperimet extends SimulationExperiment 
             pesList.add(new PeSimple(1000, new PeProvisionerSimple()));
         }
 
-        ResourceProvisioner ramProvisioner = new ResourceProvisionerSimple(new Ram(20480));
-        ResourceProvisioner bwProvisioner = new ResourceProvisionerSimple(new Bandwidth(1000000));
+        ResourceProvisioner ramProvisioner = new ResourceProvisionerSimple();
+        ResourceProvisioner bwProvisioner = new ResourceProvisionerSimple();
         VmScheduler vmScheduler = new VmSchedulerTimeShared();
         final int id = hostList.size();
-        return new HostSimple(id, 1000000, pesList)
+        Host h = new HostSimple(20480, 1000000, 1000000, pesList)
                 .setRamProvisioner(ramProvisioner)
                 .setBwProvisioner(bwProvisioner)
                 .setVmScheduler(vmScheduler);
+        h.setId(id);
+        return h;
     }
 
     @Override

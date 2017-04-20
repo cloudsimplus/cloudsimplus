@@ -190,9 +190,9 @@ public class SharingHostPEsUsingVmSchedulerSpaceSharedExample {
     }
 
     private Host createHost() {
-        long ram = 2048; // host memory (MEGABYTE)
-        long storage = 1000000; // host storage (MEGABYTE)
-        long bw = 10000; //Megabits/s
+        long ram = 2048; // in Megabytes
+        long storage = 1000000; // in Megabytes
+        long bw = 10000; //in Megabits/s
 
         List<Pe> peList = new ArrayList<>();
         /*Creates the Host's CPU cores and defines the provisioner
@@ -201,9 +201,9 @@ public class SharingHostPEsUsingVmSchedulerSpaceSharedExample {
             peList.add(new PeSimple(HOST_MIPS, new PeProvisionerSimple()));
         }
 
-       return new HostSimple(numberOfCreatedHosts++, storage, peList)
-            .setRamProvisioner(new ResourceProvisionerSimple(new Ram(ram)))
-            .setBwProvisioner(new ResourceProvisionerSimple(new Bandwidth(bw)))
+        return new HostSimple(ram, bw, storage, peList)
+            .setRamProvisioner(new ResourceProvisionerSimple())
+            .setBwProvisioner(new ResourceProvisionerSimple())
             .setVmScheduler(new VmSchedulerSpaceShared());
 
     }
@@ -222,7 +222,7 @@ public class SharingHostPEsUsingVmSchedulerSpaceSharedExample {
     private Cloudlet createCloudlet(DatacenterBroker broker, Vm vm) {
         long fileSize = 300; //Size (in bytes) before execution
         long outputSize = 300; //Size (in bytes) after execution
-        int  numberOfCpuCores = vm.getNumberOfPes(); //cloudlet will use all the VM's CPU cores
+        long  numberOfCpuCores = vm.getNumberOfPes(); //cloudlet will use all the VM's CPU cores
 
         //Defines how CPU, RAM and Bandwidth resources are used
         //Sets the same utilization model for all these resources.

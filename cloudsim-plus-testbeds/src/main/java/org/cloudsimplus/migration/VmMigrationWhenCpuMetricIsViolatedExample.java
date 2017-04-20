@@ -228,9 +228,9 @@ public final class VmMigrationWhenCpuMetricIsViolatedExample {
             c.setBroker(broker);
             cloudletList.add(c);
         }
-     
-        
-        
+
+
+
         broker.submitCloudletList(cloudletList);
         for (Cloudlet c : cloudletList) {
             broker.bindCloudletToVm(c, hostingVm);
@@ -309,10 +309,10 @@ public final class VmMigrationWhenCpuMetricIsViolatedExample {
      */
     public static PowerHostUtilizationHistory createHost(int id, int numberOfPes, long mipsByPe) {
         List<Pe> peList = createPeList(numberOfPes, mipsByPe);
-        PowerHostUtilizationHistory host = new PowerHostUtilizationHistory(id, HOST_STORAGE, peList);
+        PowerHostUtilizationHistory host = new PowerHostUtilizationHistory(HOST_RAM, HOST_BW, HOST_STORAGE, peList);
         host.setPowerModel(new PowerModelLinear(1000, 0.7))
-                .setRamProvisioner(new ResourceProvisionerSimple(new Ram(HOST_RAM)))
-                .setBwProvisioner(new ResourceProvisionerSimple(new Bandwidth(HOST_BW)))
+                .setRamProvisioner(new ResourceProvisionerSimple())
+                .setBwProvisioner(new ResourceProvisionerSimple())
                 .setVmScheduler(new VmSchedulerTimeShared());
         return host;
     }

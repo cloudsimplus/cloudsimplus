@@ -162,9 +162,9 @@ public abstract class NetworkVmExampleAbstract {
         List<Host> hostList = new ArrayList<>(numberOfHosts);
         for (int i = 0; i < numberOfHosts; i++) {
             List<Pe> peList = createPEs(HOST_PES, HOST_MIPS);
-            Host host = new NetworkHost(i, HOST_STORAGE, peList)
-                    .setRamProvisioner(new ResourceProvisionerSimple(new Ram(HOST_RAM)))
-                    .setBwProvisioner(new ResourceProvisionerSimple(new Bandwidth(HOST_BW)))
+            Host host = new NetworkHost(HOST_RAM, HOST_BW, HOST_STORAGE, peList)
+                    .setRamProvisioner(new ResourceProvisionerSimple())
+                    .setBwProvisioner(new ResourceProvisionerSimple())
                     .setVmScheduler(new VmSchedulerTimeShared());
             hostList.add(host);
         }
