@@ -87,6 +87,11 @@ public abstract class CloudletSchedulerAbstract implements CloudletScheduler {
     private Vm vm;
 
     /**
+     * @see #getCloudletReturnedList()
+     */
+    private Set<Cloudlet> cloudletReturnedList;
+
+    /**
      * Creates a new CloudletScheduler object. A CloudletScheduler must be
      * created before starting the actual simulation.
      *
@@ -103,6 +108,7 @@ public abstract class CloudletSchedulerAbstract implements CloudletScheduler {
         cloudletFinishedList = new ArrayList<>();
         cloudletFailedList = new ArrayList<>();
         cloudletWaitingList = new ArrayList<>();
+        cloudletReturnedList = new HashSet<>();
         currentMipsShare = new ArrayList<>();
         packetScheduler = PacketScheduler.NULL;
     }
@@ -254,15 +260,6 @@ public abstract class CloudletSchedulerAbstract implements CloudletScheduler {
     @Override
     public int runningCloudletsNumber() {
         return getCloudletExecList().size();
-    }
-
-    @Override
-    public Cloudlet removeNextFinishedCloudlet() {
-        if (getCloudletFinishedList().isEmpty()) {
-            return Cloudlet.NULL;
-        }
-
-        return getCloudletFinishedList().remove(0).getCloudlet();
     }
 
     /**
@@ -928,4 +925,18 @@ public abstract class CloudletSchedulerAbstract implements CloudletScheduler {
             um.getUtilization() * maxResourceAllowedToUse;
     }
 
+    @Override
+    public Set<Cloudlet> getCloudletReturnedList() {
+        return Collections.unmodifiableSet(cloudletReturnedList);
+    }
+
+    @Override
+    public boolean isCloudletReturned(Cloudlet cloudlet) {
+        return cloudletReturnedList.contains(cloudlet);
+    }
+
+    @Override
+    public void addCloudletToReturnedList(Cloudlet cloudlet) {
+        this.cloudletReturnedList.add(cloudlet);
+    }
 }

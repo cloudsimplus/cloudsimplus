@@ -9,6 +9,9 @@ package org.cloudbus.cloudsim.schedulers.cloudlet;
 
 import java.io.Serializable;
 import java.util.List;
+import java.util.Set;
+
+import org.cloudbus.cloudsim.brokers.DatacenterBroker;
 import org.cloudbus.cloudsim.cloudlets.Cloudlet;
 import org.cloudbus.cloudsim.cloudlets.CloudletExecutionInfo;
 import org.cloudbus.cloudsim.network.VmPacket;
@@ -167,15 +170,6 @@ public interface CloudletScheduler extends Serializable {
      * @return the RAM utilization percentage from 0 to 1 (where 1 is 100%)
      */
     double getCurrentRequestedRamPercentUtilization();
-
-    /**
-     * Removes the next cloudlet in the finished list and returns it.
-     *
-     * @return a finished cloudlet or {@link Cloudlet#NULL} if the respective list is empty
-     * @pre $none
-     * @post $none
-     */
-    Cloudlet removeNextFinishedCloudlet();
 
     /**
      * Gets the previous time when the scheduler updated the processing of
@@ -363,4 +357,26 @@ public interface CloudletScheduler extends Serializable {
 	 * @return true if the Cloudlet can be added to the execution list, false otherwise
 	 */
 	boolean canAddCloudletToExecutionList(CloudletExecutionInfo cloudlet);
+
+    /**
+     * Gets a <b>read-only</b> list of Cloudlets that finished executing and were returned the their broker.
+     * A Cloudlet is returned to to notify the broker about the end of its execution.
+     * @return
+     */
+	Set<Cloudlet> getCloudletReturnedList();
+
+    /**
+     * Checks if a Cloudlet has finished and was returned to its {@link DatacenterBroker}.
+     *
+     * @param cloudlet the Cloudlet to be checked
+     * @return true if the Cloudlet has finished and was returned to the broker, falser otherwise
+     */
+	boolean isCloudletReturned(Cloudlet cloudlet);
+
+    /**
+     * Adds a Cloudlet to the list of finished Cloudlets that have been returned to its
+     * {@link DatacenterBroker}.
+     * @param cloudlet the Cloudlet to be added
+     */
+	void addCloudletToReturnedList(Cloudlet cloudlet);
 }

@@ -7,6 +7,7 @@ import org.cloudbus.cloudsim.vms.Vm;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.Set;
 
 /**
  * A class that implements the Null Object Design Pattern for {@link CloudletScheduler}
@@ -49,9 +50,6 @@ final class CloudletSchedulerNull implements CloudletScheduler {
     }
     @Override public double getCurrentRequestedRamPercentUtilization() {
         return 0.0;
-    }
-    @Override public Cloudlet removeNextFinishedCloudlet() {
-        return Cloudlet.NULL;
     }
     @Override public double getPreviousTime() {
         return 0.0;
@@ -96,6 +94,9 @@ final class CloudletSchedulerNull implements CloudletScheduler {
     @Override public boolean canAddCloudletToExecutionList(CloudletExecutionInfo cloudlet) {
         return false;
     }
+    @Override public Set<Cloudlet> getCloudletReturnedList() { return Collections.EMPTY_SET; }
+    @Override public boolean isCloudletReturned(Cloudlet cloudlet) { return false; }
+    @Override public void addCloudletToReturnedList(Cloudlet cloudlet) {}
     @Override public List<CloudletExecutionInfo> getCloudletFinishedList() {
         return Collections.emptyList();
     }
