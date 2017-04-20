@@ -7,6 +7,7 @@
 package org.cloudbus.cloudsim.datacenters;
 
 import org.apache.commons.lang3.BooleanUtils;
+import org.cloudbus.cloudsim.cloudlets.CloudletExecutionInfo;
 import org.cloudbus.cloudsim.core.events.SimEvent;
 import org.cloudbus.cloudsim.network.IcmpPacket;
 import org.cloudbus.cloudsim.util.DataCloudTags;
@@ -23,6 +24,8 @@ import java.util.*;
 
 import org.cloudbus.cloudsim.resources.FileStorage;
 import org.cloudsimplus.autoscaling.VerticalVmScaling;
+
+import static java.util.stream.Collectors.toList;
 
 /**
  * Implements the basic features of a Virtualized Cloud Datacenter. It deals
@@ -870,12 +873,24 @@ public class DatacenterSimple extends CloudSimEntity implements Datacenter {
     }
 
     public void checkCloudletsCompletionForGivenVm(Vm vm) {
-        while (vm.getCloudletScheduler().hasFinishedCloudlets()) {
-            final Cloudlet cl = vm.getCloudletScheduler().removeNextFinishedCloudlet();
-            if (cl != Cloudlet.NULL) {
-                sendNow(cl.getBroker().getId(), CloudSimTags.CLOUDLET_RETURN, cl);
-            }
-        }
+        final List<Cloudlet> nonReturnedCloudlets =
+            vm.getCloudletScheduler().getCloudletFinishedList().stream()
+                .map(CloudletExecutionInfo::getCloudlet)
+                .filter(c -> !vm.getCloudletScheduler().isCloudletReturned(c))
+                .collect(toList());
+
+        nonReturnedCloudlets.stream().forEach(this::returnFinishedCloudletToBroker);
+    }
+
+    /**
+     * Notifies the broker about the end of execution of a given Cloudlet,
+     * by returning the Cloudlet to it.
+     *
+     * @param cloudlet the Cloudlet to return to broker in order to notify it about the Cloudlet execution end
+     */
+    private void returnFinishedCloudletToBroker(Cloudlet cloudlet) {
+        sendNow(cloudlet.getBroker().getId(), CloudSimTags.CLOUDLET_RETURN, cloudlet);
+        cloudlet.getVm().getCloudletScheduler().addCloudletToReturnedList(cloudlet);
     }
 
     @Override

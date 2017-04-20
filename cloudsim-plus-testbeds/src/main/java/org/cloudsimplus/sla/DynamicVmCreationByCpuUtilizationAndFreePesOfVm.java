@@ -74,6 +74,20 @@ import org.cloudsimplus.sla.readJsonFile.SlaReader;
 public class DynamicVmCreationByCpuUtilizationAndFreePesOfVm {
 
     private static final int SCHEDULING_INTERVAL = 5;
+
+    /**
+     * List of PEs for each VM to be created.
+     * The number of elements in this array represents the number of VMs to create.
+     */
+    private static final int[] VMS_PES_LIST = {2, 4, 4};
+
+    /**
+     * List of Length for each Cloudlet to be created.
+     * The number of elements in this array represents the number of Cloudlets to create.
+     */
+    private static final long[] CLOUDLETS_LENGTHS = {40000, 10000, 14000, 50000};
+
+
     private final CloudSim simulation;
 
     /**
@@ -84,7 +98,6 @@ public class DynamicVmCreationByCpuUtilizationAndFreePesOfVm {
     private static final int HOSTS = 50;
     private static final int HOST_PES = 32;
     private static final int VMS = 3;
-    private static final int CLOUDLETS = 4;
     private static final long VM_MIPS = 1000;
 
     private DatacenterBroker broker0;
@@ -131,7 +144,7 @@ public class DynamicVmCreationByCpuUtilizationAndFreePesOfVm {
         randVm = new UniformDistr(0, VM_PES.length, seed);
         hostList = new ArrayList<>(HOSTS);
         vmList = new ArrayList<>(VMS);
-        cloudletList = new ArrayList<>(CLOUDLETS);
+        cloudletList = new ArrayList<>(CLOUDLETS_LENGTHS.length);
 
         simulation = new CloudSim();
 
@@ -153,7 +166,7 @@ public class DynamicVmCreationByCpuUtilizationAndFreePesOfVm {
         broker0.setCloudletComparator(sortCloudletsByLengthReversed);
         broker0.setVmMapper(this::selectVmForCloudlet);
 
-        vmList.addAll(createListOfScalableVms(VMS));
+        vmList.addAll(createListOfScalableVms());
 
         createCloudletList();
 
@@ -203,18 +216,15 @@ public class DynamicVmCreationByCpuUtilizationAndFreePesOfVm {
                         .reversed());
         Vm mostFreePesVm = createdVms.stream().findFirst().orElse(Vm.NULL);
 
-        Vm selectedVm = createdVms.stream()
+        return createdVms.stream()
                 .filter(vm -> getExpectedNumberOfFreeVmPes(vm, true) >= cloudlet.getNumberOfPes())
                 .filter(vm -> getExpectedCloudletResponseTime(cloudlet, vm) <= responseTimeSlaContract)
                 .findFirst()
                 .orElse(mostFreePesVm);
-
-        return selectedVm;
     }
 
     private double getExpectedCloudletResponseTime(Cloudlet cloudlet, Vm vm) {
-        double expectedResponseTime = cloudlet.getLength() / vm.getMips();
-        return expectedResponseTime;
+        return cloudlet.getLength() / vm.getMips();
     }
 
     /**
@@ -236,52 +246,19 @@ public class DynamicVmCreationByCpuUtilizationAndFreePesOfVm {
                 = vm.getNumberOfPes() - totalPesNumberForCloudletsOfVm;
 
         if (printLog) {
-            System.out.println("\t\tTotal pes of cloudlets in VM " + vm.getId() + ": " + totalPesNumberForCloudletsOfVm + " -> vm pes: " + vm.getNumberOfPes() + " -> vm free pes: " + numberOfVmFreePes);
+            System.out.println(
+                "\t\tTotal pes of cloudlets in VM " + vm.getId() + ": " +
+                totalPesNumberForCloudletsOfVm + " -> vm pes: " +
+                vm.getNumberOfPes() + " -> vm free pes: " + numberOfVmFreePes);
         }
         return numberOfVmFreePes;
     }
 
-    private Cloudlet createCloudlet1() {
+    private Cloudlet createCloudlet(long length, int numberOfPes) {
         UtilizationModel utilization = new UtilizationModelFull();
         Cloudlet cloudlet
                 = new CloudletSimple(
-                        cloudletList.size(), 40000, 2)
-                        .setFileSize(1024)
-                        .setOutputSize(1024)
-                        .setUtilizationModel(utilization)
-                        .setBroker(broker0);
-        return cloudlet;
-    }
-
-    private Cloudlet createCloudlet2() {
-        UtilizationModel utilization = new UtilizationModelFull();
-        Cloudlet cloudlet
-                = new CloudletSimple(
-                        cloudletList.size(), 10000, 2)
-                        .setFileSize(1024)
-                        .setOutputSize(1024)
-                        .setUtilizationModel(utilization)
-                        .setBroker(broker0);
-        return cloudlet;
-    }
-
-    private Cloudlet createCloudlet3() {
-        UtilizationModel utilization = new UtilizationModelFull();
-        Cloudlet cloudlet
-                = new CloudletSimple(
-                        cloudletList.size(), 14000, 2)
-                        .setFileSize(1024)
-                        .setOutputSize(1024)
-                        .setUtilizationModel(utilization)
-                        .setBroker(broker0);
-        return cloudlet;
-    }
-
-    private Cloudlet createCloudlet4() {
-        UtilizationModel utilization = new UtilizationModelFull();
-        Cloudlet cloudlet
-                = new CloudletSimple(
-                        cloudletList.size(), 50000, 2)
+                        cloudletList.size(), length, numberOfPes)
                         .setFileSize(1024)
                         .setOutputSize(1024)
                         .setUtilizationModel(utilization)
@@ -290,12 +267,9 @@ public class DynamicVmCreationByCpuUtilizationAndFreePesOfVm {
     }
 
     private void createCloudletList() {
-        // for (int i = 0; i < CLOUDLETS; i++) {
-        cloudletList.add(createCloudlet1());
-        cloudletList.add(createCloudlet2());
-        cloudletList.add(createCloudlet3());
-        cloudletList.add(createCloudlet4());
-        //   }
+        for (long length : CLOUDLETS_LENGTHS) {
+            cloudletList.add(createCloudlet(length, 2));
+        }
     }
 
     /**
@@ -343,17 +317,14 @@ public class DynamicVmCreationByCpuUtilizationAndFreePesOfVm {
      * Creates a list of initial VMs in which each VM is able to scale
      * horizontally when it is overloaded.
      *
-     * @param numberOfVms number of VMs to create
      * @return the list of scalable VMs
-     * @see #createHorizontalVmScaling(Vm)
+     * @see #VMS_PES_LIST
      */
-    private List<Vm> createListOfScalableVms(final int numberOfVms) {
-        List<Vm> newList = new ArrayList<>(numberOfVms);
-        //   for (int i = 0; i < numberOfVms; i++) {
-        newList.add(createVm1());
-        newList.add(createVm2());
-        newList.add(createVm3());
-        //   }
+    private List<Vm> createListOfScalableVms() {
+        List<Vm> newList = new ArrayList<>(VMS_PES_LIST.length);
+        for (final int pes: VMS_PES_LIST) {
+            newList.add(createVm(pes));
+        }
 
         return newList;
     }
@@ -363,35 +334,11 @@ public class DynamicVmCreationByCpuUtilizationAndFreePesOfVm {
      *
      * @return the created VM
      */
-    private Vm createVm1() {
+    private Vm createVm(int numberOfPes) {
         final int id = createsVms++;
         final int pes = VM_PES[(int) randVm.sample()];
 
-        Vm vm = new VmSimple(id, VM_MIPS, 2)
-                .setRam(512).setBw(1000).setSize(10000).setBroker(broker0)
-                .setCloudletScheduler(new CloudletSchedulerTimeShared());
-        System.out.println("\n\t\t\t Vm: " + vm + " pes: " + pes);
-
-        return vm;
-    }
-
-    private Vm createVm2() {
-        final int id = createsVms++;
-        final int pes = VM_PES[(int) randVm.sample()];
-
-        Vm vm = new VmSimple(id, VM_MIPS, 4)
-                .setRam(512).setBw(1000).setSize(10000).setBroker(broker0)
-                .setCloudletScheduler(new CloudletSchedulerTimeShared());
-        System.out.println("\n\t\t\t Vm: " + vm + " pes: " + pes);
-
-        return vm;
-    }
-
-    private Vm createVm3() {
-        final int id = createsVms++;
-        final int pes = VM_PES[(int) randVm.sample()];
-
-        Vm vm = new VmSimple(id, VM_MIPS, 4)
+        Vm vm = new VmSimple(id, VM_MIPS, numberOfPes)
                 .setRam(512).setBw(1000).setSize(10000).setBroker(broker0)
                 .setCloudletScheduler(new CloudletSchedulerTimeShared());
         System.out.println("\n\t\t\t Vm: " + vm + " pes: " + pes);
@@ -402,7 +349,7 @@ public class DynamicVmCreationByCpuUtilizationAndFreePesOfVm {
     private void printSimulationResults() {
         List<Cloudlet> finishedCloudlets = broker0.getCloudletsFinishedList();
         Comparator<Cloudlet> sortByVmId = comparingDouble(c -> c.getVm().getId());
-        Comparator<Cloudlet> sortByStartTime = comparingDouble(c -> c.getExecStartTime());
+        Comparator<Cloudlet> sortByStartTime = comparingDouble(Cloudlet::getExecStartTime);
         finishedCloudlets.sort(sortByVmId.thenComparing(sortByStartTime));
 
         new CloudletsTableBuilder(finishedCloudlets).build();
@@ -438,18 +385,18 @@ public class DynamicVmCreationByCpuUtilizationAndFreePesOfVm {
      * Calculates the cost price of resources (processing, bw, memory, storage)
      * of each or all of the Datacenter VMs()
      *
-     * @param vmlist
+     * @param vmList
      */
     private double totalCostPrice(List<Vm> vmList) {
         VmCost vmCost;
         double totalCost = 0.0;
         for (Vm vm: vmList) {
-            if (vm.getCloudletScheduler().getCloudletFinishedList().isEmpty()) 
-                Log.printFormattedLine(
-                    "\t#Vm %d didn't execute any Cloudlet", vm.getId()); 
-            else {
+            if (vm.getCloudletScheduler().hasFinishedCloudlets()) {
                 vmCost = new VmCost(vm);
                 totalCost += vmCost.getTotalCost();
+            } else {
+                Log.printFormattedLine(
+                    "\tVm %d didn't execute any Cloudlet.", vm.getId());
             }
         }
         return totalCost;
