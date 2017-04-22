@@ -48,18 +48,20 @@ body {
 .reveal h4,
 .reveal h5,
 .reveal h6 {
-  margin: 0 0 20px 0;
+  margin: 0 0 5px 0;
   color: #333;
   font-family: "League Gothic", Impact, sans-serif;
   font-weight: normal;
-  line-height: 1.2;
+  line-height: 1.0;
   letter-spacing: normal;
   text-transform: normal;
   text-shadow: none;
   word-wrap: break-word; }
 
 .reveal h1 {
-  font-size: 3.77em; }
+  font-size: 3.77em; 
+  margin: 0 0 10px 0;  
+}
 
 .reveal h2 {
   font-size: 2.11em; }
@@ -235,7 +237,7 @@ body {
 .reveal section img {
   margin: 15px 0px;
   background: rgba(255, 255, 255, 0.12);
-  border: 4px solid #333;
+  border: 1px solid #333;
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.15); }
 
 .reveal section img.plain {

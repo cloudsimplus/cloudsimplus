@@ -44,24 +44,28 @@ body {
 .reveal h4,
 .reveal h5,
 .reveal h6 {
-  margin: 0 0 20px 0;
+  margin: 0 0 5px 0;
   color: #222;
   font-family: "Source Sans Pro", Helvetica, sans-serif;
   font-weight: 600;
-  line-height: 1.2;
+  line-height: 1.0;
   letter-spacing: normal;
   text-transform: uppercase;
   text-shadow: none;
   word-wrap: break-word; }
 
 .reveal h1 {
-  font-size: 2.5em; }
+  font-size: 2.5em; 
+  margin: 0 0 10px 0;  
+}
 
 .reveal h2 {
   font-size: 1.6em; }
 
 .reveal h3 {
-  font-size: 1.3em; }
+  font-size: 1.3em; 
+  text-transform: capitalize;
+}
 
 .reveal h4 {
   font-size: 1em; }

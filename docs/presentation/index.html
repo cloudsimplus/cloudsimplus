@@ -14,7 +14,7 @@
 		<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 
 		<link rel="stylesheet" href="css/reveal.css">
-		<link rel="stylesheet" href="css/theme/blood.css" id="theme">
+		<link rel="stylesheet" href="css/theme/league.css" id="theme"> <!-- blood, league-->
 
 		<!-- Theme used for syntax highlighting of code -->
 		<link rel="stylesheet" href="lib/css/zenburn.css">
@@ -41,10 +41,9 @@
 					## CloudSim Plus
 					http://cloudsimplus.org
 					### A Cloud Computing Simulation Framework Pursuing Software Engineering Principles for Improved Modularity, Extensibility and Correctness
-					<small>
 					[IFIP/IEEE International Symposium on Integrated Network Management, 2017](http://im2017.ieee-im.org)
-					### [Manoel Campos](http://twitter.com/manoelcampos)¹ ²; [Raysa Oliveira](https://twitter.com/raysaloliveira)²; [Claudio Monteiro](https://www.linkedin.com/in/claudio-monteiro-4637411a)¹; [Pedro Inácio](http://www.di.ubi.pt/~inacio)²; [Mário Freire](http://di.ubi.pt/~mario/)²
-
+					#### [Manoel Campos](http://twitter.com/manoelcampos)¹ ²; [Raysa Oliveira](https://twitter.com/raysaloliveira)²; [Claudio Monteiro](https://www.linkedin.com/in/claudio-monteiro-4637411a)¹; [Pedro Inácio](http://www.di.ubi.pt/~inacio)²; [Mário Freire](http://di.ubi.pt/~mario/)²
+					<small>
 					¹Depto. Informática, [Instituto Federal de Educação do Tocantins](http://www.ifto.edu.br)<br/>
 					²[Instituto de Telecomunicações](http://www.it.pt) and [Depto. Informática](http://di.ubi.pt), [Universidade da Beira Interior](http://www.ubi.pt)
 					###### This presentation is licensed under a [Creative Commons Attribution-ShareAlike 4.0 International License](http://creativecommons.org/licenses/by-sa/4.0/).
@@ -58,7 +57,7 @@
 					- Architecture
 					- Modules
 					- Packages
-					- Exclusive Characteristics and Features
+					- Main Exclusive Features
 					- Conclusions and Future Work
 				</script></section>
 
@@ -85,7 +84,7 @@
 
 				<section data-markdown><script type="text/template">
 					## Modules
-					![Re-structured Modules](../images/modules.png)
+					![Re-structured Modules](https://github.com/manoelcampos/cloudsim-plus/raw/master/docs/images/modules.png)
 
 					- **API**: independent and single-required module for building simulations.
 						- **Examples**: exclusive examples, refactored previous ones.
@@ -96,7 +95,7 @@
 
 				<section data-markdown><script type="text/template">
 					## Packages
-					![Re-structured Packages](../images/package-structure-reduced.png)
+					![Re-structured Packages](https://github.com/manoelcampos/cloudsim-plus/raw/master/docs/images/package-structure-reduced.png)
 					- **Dark yellow**: CloudSim Plus packages with exclusive features.
 					- **Light yellow**: new packages to better organize existing CloudSim classes.
 					- **White**: CloudSim existing packages.
@@ -104,56 +103,117 @@
 				</script></section>
 
 				<section data-markdown><script type="text/template">
-					## Interfaces
-					![Class Diagram](../images/main-classes-reduced.png)
+					## Interfaces and Some Classes to Build Simulations
+					![Class Diagram](https://github.com/manoelcampos/cloudsim-plus/raw/master/docs/images/main-classes-reduced.png)
 
 				</script></section>
 
 				<section data-markdown><script type="text/template">
-					## Exclusive Characteristics and Features
+					## Main Exclusive Features
+
+					1. Vertical and Horizontal VM Scaling;
+					2. Parallel execution of simulations;
+					4. Delay creation of submitted Cloudlets;
+					3. Dynamic creation of VMs and Cloudlets;
+					5. Event Listeners
+					6. Strongly Object-oriented Framework; 
+					7. Classes and Interfaces for Implementation of [Heuristics](http://en.wikipedia.org/wiki/Heuristic); 
+					8. [Implementation of the Linux Completely Fair Scheduler](https://en.wikipedia.org/wiki/Completely_Fair_Scheduler);
+					9. Updated to Java 8 ([Functional Programming](https://en.wikipedia.org/wiki/Functional_programming), [Lambda](http://www.oracle.com/webfolder/technetwork/tutorials/obe/java/Lambda-QuickStart/index.html) and [Streams](http://www.oracle.com/technetwork/articles/java/ma14-java-se-8-streams-2177646.html));
+					10. Provides a [Functional](https://en.wikipedia.org/wiki/Functional_programming) `DatacenterBrokerSimple`;
+					
+					Much more at [http://cloudsimplus.org](http://cloudsimplus.org/#exclusive-features)
 				</script></section>
 
 				<section data-markdown><script type="text/template">
-					## Dynamic Creation of Vms and Applications (Cloudlets)
-
-				</script></section>
-
-				<section data-markdown><script type="text/template">
-					## Vm Scaling
+					## 1. Vm Scaling
 					- Vertical Vm Scaling
 					- Horizontal Vm Scaling
 				</script></section>
 
 				<section data-markdown><script type="text/template">
-					## Parallel Execution of Simulations
+					## 2. Parallel Execution of Simulations
+
+					- Execution in parallel of:
+						- different simulations
+						- multiples runs of the same simulation (usually applying distinct seeds)
+					- Implemented by changing all abstract methods in the CloudSim class to instance methods
+					- Relies on Java 8 Parallel Streams mechanism
+					- As simple as calling a single line like `simulations.parallelStream().forEach(MySimulation::run);`
+				</script></section>
+
+				<section data-markdown><script type="text/template">
+					## 3. Delay creation of submitted Cloudlets
+
+					- Enables requesting the creation of Cloudlets at a given time, before starting the simulation
+					- It's a different way to simulate the dynamic creation of Cloudlets
+					- Can be used when one knows when all Cloudlets have to be created (such as from a trace file)
 
 				</script></section>
 
 				<section data-markdown><script type="text/template">
-					## Event Listeners for Simulation Monitoring
+					## 4. Dynamic Creation of VMs and Cloudlets
+
+					- Enables creating objects after the simulation has started
+					- Doesn't require new DatacenterBrokers to be created at runtime
+					- Enables simulation of dynamic arrival of:
+						- tasks (Cloudlets)
+						- customers requests to create VMs
+					- Objects just have to be submitted to an existing broker at simulation runtime
 
 				</script></section>
 
 				<section data-markdown><script type="text/template">
-					## Strongly Object-oriented Framework
+					## 5. Event Listeners
+
+					- Enables simulation monitoring to:
+						- collect of resource utilization data; 
+						- assess fulfillment of customer SLA; 
+						- optimize resource allocation to avoid under and over resource provisioning. 
+						- granular simulation execution feedback. 
+					- Listeners for events from Hosts, VMs and Cloudlets 
+					- Listeners for general simulation events
+				</script></section>
+
+				<section data-markdown><script type="text/template">
+					## 6. Strongly Object-oriented Framework
+
+					- Doesn't rely on integer IDs to create relationships between classes
+					- IDs for that purpose is error prone, difficult to be validated and confusing
+					- Object-oriented design where objects are passed as method parameters
+					- Allows chained calls such as `cloudlet.getVm().getHost().getDatacenter()`
+					- Uses [Null Object Pattern](https://en.wikipedia.org/wiki/Null_Object_pattern) to avoid NullPointerException.
+				</script></section>
+
+				<section data-markdown><script type="text/template">
+					## 7. Classes and Interfaces for Implementation of Heuristics
+
+					- Specifies a contract to implement heuristics, which enable defining:
+						- how the initial solution is generated;
+						- the generation of neighbor solutions;
+						- the definition of a utility function to be maximized or minimized;
+						- and then the solution finding stop criteria.
+					- Examples of heuristics that can be implemented include [Tabu Search](http://en.wikipedia.org/wiki/Tabu_search), [Simulated Annealing](http://en.wikipedia.org/wiki/Simulated_annealing), [Ant Colony Systems](http://en.wikipedia.org/wiki/Ant_colony_optimization_algorithms), etc.
+					- Includes a Simulated Annealing heuristic for mapping Cloudlets to VMs
 
 				</script></section>
 
 				<section data-markdown><script type="text/template">
-					## Classes and Interfaces for Implementation of Heuristics
+					## 8. Implementation of the Linux Completely Fair Scheduler
 
 				</script></section>
 
 				<section data-markdown><script type="text/template">
-					## Implementation of the Linux Completely Fair Scheduler
+					## 9. Updated to Java 8
 
 				</script></section>
 
 				<section data-markdown><script type="text/template">
-					## Additional Characteristics
+					## 10. Functional DatacenterBrokerSimple
 
 				</script></section>
 
+				<!-- END -->
 				<section data-markdown><script type="text/template">
 					## Conclusions and Future Work
 				</script></section>

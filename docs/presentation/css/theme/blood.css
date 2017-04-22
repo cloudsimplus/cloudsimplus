@@ -47,7 +47,7 @@ body {
 .reveal h4,
 .reveal h5,
 .reveal h6 {
-  margin: 0 0 5px 0;
+  margin: 0 0 8px 0;
   color: #eee;
   font-family: Ubuntu, "sans-serif";
   font-weight: normal;
@@ -58,16 +58,16 @@ body {
   word-wrap: break-word; }
 
 .reveal h1 {
-  font-size: 3.77em; 
+  font-size: 2.8em; 
   margin: 0 0 10px 0;  
 }
 
 .reveal h2 {
-  font-size: 2.11em; 
+  font-size: 2.0em; 
 }
 
 .reveal h3 {
-  font-size: 1.2em; }
+  font-size: 1.0em; }
 
 .reveal h4 {
   font-size: 1em; 
@@ -247,7 +247,7 @@ body {
  *********************************************/
 .reveal section img {
   margin: 5px 0px;
-  background: rgba(255, 255, 255, 0.12);
+  background: rgba(255, 255, 255, 1);
   border: 1px solid #eee;
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.15); }
 
