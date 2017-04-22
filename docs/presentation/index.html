@@ -54,29 +54,58 @@
 
 				<section data-markdown><script type="text/template">
 					## Agenda
-					- Introduction
+					- CloudSim Plus Introduction
 					- Architecture
 					- Modules
+					- Packages
 					- Exclusive Characteristics and Features
 					- Conclusions and Future Work
 				</script></section>
 
 				<section data-markdown><script type="text/template">
-					## Introduction
+					## CloudSim Plus Introduction
+					##### Independent CloudSim fork for Cloud Computing simulation
 
-
+					- Highly extensible, completely redesigned and refactored.
+					- Full-featured: more than 20 [exclusive features](http://cloudsimplus.org/#exclusive-features).
+					- [Design Patterns](https://en.wikipedia.org/wiki/Software_design_pattern), [SOLID principles](https://en.wikipedia.org/wiki/SOLID_(object-oriented_design%29), [KISS](https://en.wikipedia.org/wiki/KISS_principle), [DRY](https://pt.wikipedia.org/wiki/Don't_repeat_yourself) and Clean Code practices.
+					- Reduced duplication, removed redundancy, simplified design ([comparison](http://cloudsimplus.org/CloudSim-and-CloudSimPlus-Comparison.html)).
+					- Less 30% code duplication, more 83% test coverage.
 				</script></section>
 
 
 				<section data-markdown><script type="text/template">
 					## Architecture
-
+					
+					- Simplified Modules' structure, new modules introduced.
+					- Totally re-organized and documented Packages.
+					- New interfaces: increased abstraction, contracts for implementations.
 
 				</script></section>
 
 				<section data-markdown><script type="text/template">
 					## Modules
+					![Re-structured Modules](../images/modules.png)
 
+					- **API**: independent and single-required module for building simulations.
+						- **Examples**: exclusive examples, refactored previous ones.
+						- **Testbeds**: multiple-run simulations for  scientifically valid data collection. 
+						- **Benchmarks**: performance assessment of features such as heuristics.
+
+				</script></section>
+
+				<section data-markdown><script type="text/template">
+					## Packages
+					![Re-structured Packages](../images/package-structure-reduced.png)
+					- **Dark yellow**: CloudSim Plus packages with exclusive features.
+					- **Light yellow**: new packages to better organize existing CloudSim classes.
+					- **White**: CloudSim existing packages.
+
+				</script></section>
+
+				<section data-markdown><script type="text/template">
+					## Interfaces
+					![Class Diagram](../images/main-classes-reduced.png)
 
 				</script></section>
 

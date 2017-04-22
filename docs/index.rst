@@ -10,12 +10,11 @@ Welcome to CloudSim Plus's documentation!
    :maxdepth: 1
    :caption: Contents:
 
-   packages.rst
+   javadocs/packages.rst
    FAQ.rst
-   syncing-you-fork-or-clone.rst
    publications.rst
-
-
+   syncing-you-fork-or-clone.rst
+   http://cloudsimplus.org/CloudSim-and-CloudSimPlus-Comparison.html
 
 Indices and tables
 ==================

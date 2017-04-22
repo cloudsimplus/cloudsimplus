@@ -37,7 +37,7 @@
 
 CloudSim Plus is a full-featured, highly extensible simulation framework that enables modeling, simulation, and experimentation of emerging Cloud computing infrastructures and application services. It allows users to focus on specific system design issues to be investigated, without the concern of the low level details related to Cloud-based infrastructures and services.
  
-Cloud computing is the leading technology for delivery of reliable, secure, fault-tolerant, sustainable, and scalable computational services. For assurance of such characteristics in cloud systems under development, it is required timely, repeatable, and controllable methodologies for evaluation of new cloud applications and policies, before actual development of cloud products. Because utilization of real testbeds limits the experiments to the scale of the testbed and makes the reproduction of results cumbersome, computer-base simulation may constitute an interesting tool. This project is suitable to rapidly develop such simulation scenarios and run them quickly, in a typical PC. 
+Cloud computing is the leading technology for delivery of reliable, secure, fault-tolerant, sustainable, and scalable computational services. For assurance of such characteristics in cloud systems under development, it is required timely, repeatable, and controllable methodologies for evaluation of new cloud applications and policies, before actual development of cloud products. Because utilization of real testbeds limits the experiments to the scale of the testbed and makes the reproduction of results cumbersome, computer-base simulation may constitute an interesting tool. This project is suitable to quickly develop such simulation scenarios and run them quickly, in a typical PC. 
 
 CloudSim Plus is a fork of [CloudSim 3](https://github.com/Cloudslab/cloudsim/tree/20a7a55e537181489fcb9a2d42a3e539db6c0318), re-engineered primarily to avoid code duplication. It provides [code reusability](https://en.wikipedia.org/wiki/Code_reuse) and ensures compliance with software engineering principles and recommendations for extensibility improvements. It focuses on usage of software engineering standards and recommendations such as [Design Patterns](https://en.wikipedia.org/wiki/Software_design_pattern), [SOLID principles](https://en.wikipedia.org/wiki/SOLID_(object-oriented_design)) and other ones such as [KISS](https://en.wikipedia.org/wiki/KISS_principle) and [DRY](https://pt.wikipedia.org/wiki/Don't_repeat_yourself).
 
@@ -80,7 +80,7 @@ CloudSim Plus provides a lot of exclusive features, ranging from the most basic 
 
 CloudSim Plus has a simpler structure to make it ease to use and understand. It consists of 4 modules, 2 of which are new, as presented below.
 
-![CloudSim Plus Modules](https://github.com/manoelcampos/cloudsim-plus/raw/master/docs/modules.png)
+![CloudSim Plus Modules](https://github.com/manoelcampos/cloudsim-plus/raw/master/docs/images/modules.png)
 
 - [cloudsim-plus](/cloudsim-plus): the CloudSim Plus cloud simulation framework API that is used by all other modules. 
   It is the main module that contains the simulation framework implementation and is the only
@@ -99,7 +99,7 @@ CloudSim Plus has a simpler structure to make it ease to use and understand. It 
 
 It also has a better package organization, improving [Separation of Concerns (SoC)](https://en.wikipedia.org/wiki/Separation_of_concerns) and making it easy to know where a desired class is and what is inside each package. The figure below presents the new package organization. The dark yellow packages are new in CloudSim Plus and include its exclusive interfaces and classes. The light yellow ones were introduced just to better organize existing CloudSim classes and interfaces. 
 
-![CloudSim Plus Packages](https://github.com/manoelcampos/cloudsim-plus/raw/master/docs/package-structure-reduced.png)
+![CloudSim Plus Packages](https://github.com/manoelcampos/cloudsim-plus/raw/master/docs/images/package-structure-reduced.png)
 
 
 <p align="right"><a href="#top">:arrow_up:</a></p>
@@ -109,7 +109,7 @@ There are 3 ways to use CloudSim Plus. It can be downloaded and executed: (i) di
 
 You can watch the video below ([high quality version here](https://youtu.be/hvFJtvrkCNI)) or follow the instructions in one of the next subsections.
 
-![Downloading CloudSim Plus and running Examples using NetBeans](https://github.com/manoelcampos/cloudsim-plus/raw/master/docs/cloudsim-plus-netbeans.gif)
+![Downloading CloudSim Plus and running Examples using NetBeans](https://github.com/manoelcampos/cloudsim-plus/raw/master/docs/images/cloudsim-plus-netbeans.gif)
 
 ## Via Command Line
 Considering that you have [git](https://git-scm.com) and [maven](http://maven.apache.org) installed on your operating system, 
@@ -229,7 +229,7 @@ new CloudletsTableBuilder(broker0.getCloudletsFinishedList()).build();
 ```
 
 The presented results are structured and clear to allow better understanding. For example, the image below shows the output for a simulation with two cloudlets (applications).
-![Simulation Results](https://github.com/manoelcampos/cloudsim-plus/raw/master/docs/simulation-results.png)
+![Simulation Results](https://github.com/manoelcampos/cloudsim-plus/raw/master/docs/images/simulation-results.png)
 
 <p align="right"><a href="#top">:arrow_up:</a></p>
 
