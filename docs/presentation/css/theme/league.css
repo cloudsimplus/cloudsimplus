@@ -235,8 +235,24 @@ body {
 /*********************************************
  * IMAGES
  *********************************************/
+#logo {
+  background: rgba(255, 255, 255, 0);
+  border: 0;
+  position: absolute;
+  top: 20px;
+  right: 30px;
+}
+
+#logo-bottom {
+  background: rgba(255, 255, 255, 0);
+  border: 0;
+  position: absolute;
+  bottom: -150px;
+  right: 30px;
+}
+
 .reveal section img {
-  margin: 15px 0px;
+  margin: 5px 0px;
   background: rgba(255, 255, 255, 1);
   border: 1px solid #eee;
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.15); }
