@@ -58,7 +58,7 @@
 					- [CloudSim Plus Introduction](#/2)
 					- [Architecture](#/3)
 					- [Modules](#/4)
-					- [Packages](#/5)
+					- [Main Packages](#/5)
 					- [Interfaces and Some Classes](#/6)
 					- [Main Exclusive Features](#/7)
 					- [Conclusions and Future Work](#/18)
@@ -99,7 +99,7 @@
 				</script></section>
 
 				<section data-markdown><script type="text/template">
-					## Packages
+					## Main Packages
 					![Re-structured Packages](https://github.com/manoelcampos/cloudsim-plus/raw/master/docs/images/package-structure-reduced.png)
 					- **Dark yellow**: CloudSim Plus packages with exclusive features.
 					- **Light yellow**: new packages to better organize existing CloudSim classes.
@@ -153,10 +153,10 @@
 
 					- Execution in parallel of:
 						- different simulations
-						- multiples runs of the same simulation (usually applying distinct seeds)
-					- Implemented by changing all abstract methods in the CloudSim class to instance methods
+						- multiple runs of the same simulation (usually applying distinct seeds)
+					- Changed all abstract methods in the CloudSim class to instance methods
 					- Relies on Java 8 Parallel Streams mechanism
-					- As simple as calling a single line like `simulations.parallelStream().forEach(MySimulation::run);`
+					- As simple as calling a single line of code like `simulations.parallelStream().forEach(MySimulation::run);`
 				</script></section>
 
 				<section data-markdown data-separator-notes="^# Notes"><script type="text/template">
@@ -165,13 +165,10 @@
 
 					- Creation of Cloudlets at a given time, before starting the simulation
 					- A different way to simulate the dynamic creation of Cloudlets
-					- Used when all Cloudlets' arrival times are known (e.g. from a trace file)
-
-					# Notes
-
-					- . 
-					- .
-					- or even defined by a PRNG before starting the simulation
+					- Used when all Cloudlets' arrival times are known 
+						- from a trace file
+						- defined by a pseudo random number generator (PRNG)
+						- statically defined
 				</script></section>
 
 				<section data-markdown><script type="text/template">
@@ -205,22 +202,22 @@
 
 					- Doesn't rely on integer IDs to create relationships between classes
 					- IDs for that purpose is error prone, require validation and may be confusing
-					- Object-oriented design where objects are passed as method parameters
-					- Allows chained calls such as `cloudlet.getVm().getHost().getDatacenter()`
+					- Object-oriented design where objects are passed as parameters to methods
+					- Fluent API, allowing chained calls such as `cloudlet.getVm().getHost().getDatacenter()`
 					- Uses [Null Object Pattern](https://en.wikipedia.org/wiki/Null_Object_pattern) to avoid NullPointerException.
 				</script></section>
 
 				<section data-markdown><script type="text/template">
 					## 7. Classes/Interfaces for Heuristics
-					<img id="logo" title="Source: https://commons.wikimedia.org/wiki/File:Knapsack.svg" src="images/277px-Knapsack.png"/></a>
+					<a href="https://commons.wikimedia.org/wiki/File:Knapsack.svg" id="logo"><img id="transparent" title="Source: https://commons.wikimedia.org/wiki/File:Knapsack.svg" src="images/277px-Knapsack.png"/></a>
 
 					- Specifies a contract to implement heuristics, defining:
 						- how the initial solution is generated;
 						- the generation of neighbor solutions;
 						- the definition of an utility function to be minimized or maximized;
 						- and then the solution finding stop criteria.
-					- Examples of heuristics which can be implemented include [Tabu Search](http://en.wikipedia.org/wiki/Tabu_search), [Simulated Annealing](http://en.wikipedia.org/wiki/Simulated_annealing), [Ant Colony Systems](http://en.wikipedia.org/wiki/Ant_colony_optimization_algorithms), etc.
-					- Includes a Simulated Annealing heuristic for mapping Cloudlets to VMs
+					- Examples of heuristics: [Tabu Search](http://en.wikipedia.org/wiki/Tabu_search), [Simulated Annealing](http://en.wikipedia.org/wiki/Simulated_annealing), [Ant Colony Systems](http://en.wikipedia.org/wiki/Ant_colony_optimization_algorithms), etc;
+					- Includes a Simulated Annealing heuristic for mapping Cloudlets to VMs.
 
 				</script></section>
 
@@ -228,8 +225,8 @@
 					## 8. Implementation of the Linux Completely Fair Scheduler
 					<img id="logo-bottom" title="Source: http://www.mimastech.com/2016/11/13/how-to-setup-ntp-server-on-centos-765-linux-systems/" src="images/linux-clock.png"/></a>
 
-					- `CloudletScheduler`: how a Vm schedules the execution of Cloudlets.
-					- Scheduling impacts some metrics such as wait time and task completion time
+					- `CloudletScheduler`: how a Vm schedules the execution of Cloudlets
+					- Scheduling impacts some metrics such as wait and task completion time
 					- Bad scheduling: starvation, wastage of CPU cicles, SLA violations
 					- [Completely Fair Scheduler](https://en.wikipedia.org/wiki/Completely_Fair_Scheduler) reduces these issues ([but needs improvements](https://doi.org/10.1145/2901318.2901326))
 					- Considers tasks priorities to define CPU time slices
