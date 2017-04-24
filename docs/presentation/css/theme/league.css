@@ -247,6 +247,11 @@ body {
   right: 15px;
 }
 
+#transparent {
+  background: rgba(255, 255, 255, 0);
+  border: 0;
+}
+
 #logo-bottom {
   background: rgba(255, 255, 255, 0);
   border: 0;

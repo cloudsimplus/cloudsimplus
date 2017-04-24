@@ -116,7 +116,11 @@
 
 				<section data-markdown><script type="text/template">
 					## Main Exclusive Features
-					<img src="images/Jquery-swiss-army-knife.png" id="logo" />
+					<div style="width: 256px" id="logo" >
+						<img src="images/exclusive.png" id="transparent" />
+						<img src="images/Jquery-swiss-army-knife.png" id="transparent" />
+					</div>
+					
 
 					1. Vertical and Horizontal VM Scaling;
 					2. Parallel execution of simulations;
@@ -317,7 +321,7 @@
 				previewLinks: false, // Opens links in an iframe preview overlay
 				viewDistance: 2, // Number of slides away from the current that are visible
 				width: "100%",
-				height: "100%",				
+				height: "100%",		
 
 				transition: 'slide', // none/fade/slide/convex/concave/zoom
 
@@ -331,6 +335,8 @@
 					{ src: 'plugin/notes/notes.js', async: true }
 				]
 			});
+
+			Reveal.configure({ pdfMaxPagesPerSlide: 1 });
 		</script>
 	</body>
 </html>
