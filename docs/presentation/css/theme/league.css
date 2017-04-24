@@ -237,27 +237,24 @@ body {
  *********************************************/
  img {
     z-index: -1;
- }
- 
-#logo {
+}
+
+#logo, #logo-bottom, #logo img {
   background: rgba(255, 255, 255, 0);
   border: 0;
+}
+
+#logo, #logo-bottom {
   position: absolute;
-  top: 20px;
   right: 15px;
 }
 
-#transparent {
-  background: rgba(255, 255, 255, 0);
-  border: 0;
+#logo {
+  top: 20px;
 }
 
 #logo-bottom {
-  background: rgba(255, 255, 255, 0);
-  border: 0;
-  position: absolute;
   bottom: -150px;
-  right: 30px;
 }
 
 .reveal section img {
