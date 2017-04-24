@@ -59,6 +59,7 @@
 					- Architecture
 					- Modules
 					- Packages
+					- Interfaces and Some Classes
 					- Main Exclusive Features
 					- Conclusions and Future Work
 				</script></section>
@@ -154,14 +155,19 @@
 					- As simple as calling a single line like `simulations.parallelStream().forEach(MySimulation::run);`
 				</script></section>
 
-				<section data-markdown><script type="text/template">
+				<section data-markdown data-separator-notes="^# Notes"><script type="text/template">
 					## 3. Delay creation of submitted Cloudlets
 					<img src="images/clock-png-25766.png" id="logo-bottom" />
 
-					- Enables creation of Cloudlets at a given time, before starting the simulation
-					- It's a different way to simulate the dynamic creation of Cloudlets
-					- Can be used when one knows when all Cloudlets have to be created (such as from a trace file)
+					- Creation of Cloudlets at a given time, before starting the simulation
+					- A different way to simulate the dynamic creation of Cloudlets
+					- Used when all Cloudlets' arrival times are known (e.g. from a trace file)
 
+					# Notes
+
+					- . 
+					- .
+					- or even defined by a PRNG before starting the simulation
 				</script></section>
 
 				<section data-markdown><script type="text/template">
@@ -182,10 +188,10 @@
 					<img src="images/man-listening-music.png" id="logo" />
 
 					- Enables simulation monitoring to:
-						- collect of resource utilization data; 
-						- assess fulfillment of customer SLA; 
-						- optimize resource allocation to avoid under and over resource provisioning. 
-						- granular simulation execution feedback. 
+						- collect resource utilization data
+						- assess fulfillment of customer SLA 
+						- optimize resource allocation to avoid under/over resource provisioning
+						- granular simulation execution feedback
 					- Listeners for events from Hosts, VMs and Cloudlets 
 					- Listeners for general simulation events
 				</script></section>
@@ -194,45 +200,82 @@
 					## 6. Strongly Object-oriented Framework
 
 					- Doesn't rely on integer IDs to create relationships between classes
-					- IDs for that purpose is error prone, difficult to be validated and confusing
+					- IDs for that purpose is error prone, require validation and may be confusing
 					- Object-oriented design where objects are passed as method parameters
 					- Allows chained calls such as `cloudlet.getVm().getHost().getDatacenter()`
 					- Uses [Null Object Pattern](https://en.wikipedia.org/wiki/Null_Object_pattern) to avoid NullPointerException.
 				</script></section>
 
 				<section data-markdown><script type="text/template">
-					## 7. Classes and Interfaces for Implementation of Heuristics
+					## 7. Classes/Interfaces for Heuristics
+					<img id="logo" title="Source: https://commons.wikimedia.org/wiki/File:Knapsack.svg" src="images/277px-Knapsack.png"/></a>
 
-					- Specifies a contract to implement heuristics, which enable defining:
+					- Specifies a contract to implement heuristics, defining:
 						- how the initial solution is generated;
 						- the generation of neighbor solutions;
-						- the definition of a utility function to be maximized or minimized;
+						- the definition of an utility function to be minimized or maximized;
 						- and then the solution finding stop criteria.
-					- Examples of heuristics that can be implemented include [Tabu Search](http://en.wikipedia.org/wiki/Tabu_search), [Simulated Annealing](http://en.wikipedia.org/wiki/Simulated_annealing), [Ant Colony Systems](http://en.wikipedia.org/wiki/Ant_colony_optimization_algorithms), etc.
+					- Examples of heuristics which can be implemented include [Tabu Search](http://en.wikipedia.org/wiki/Tabu_search), [Simulated Annealing](http://en.wikipedia.org/wiki/Simulated_annealing), [Ant Colony Systems](http://en.wikipedia.org/wiki/Ant_colony_optimization_algorithms), etc.
 					- Includes a Simulated Annealing heuristic for mapping Cloudlets to VMs
 
 				</script></section>
 
-				<section data-markdown><script type="text/template">
+				<section data-markdown data-separator-notes="^# Notes"><script type="text/template">
 					## 8. Implementation of the Linux Completely Fair Scheduler
 					<img id="logo-bottom" title="Source: http://www.mimastech.com/2016/11/13/how-to-setup-ntp-server-on-centos-765-linux-systems/" src="images/linux-clock.png"/></a>
 
+					- `CloudletScheduler`: how a Vm schedules the execution of Cloudlets.
+					- Scheduling impacts some metrics such as wait time and task completion time
+					- Bad scheduling: starvation, wastage of CPU cicles, SLA violations
+					- [Completely Fair Scheduler](https://en.wikipedia.org/wiki/Completely_Fair_Scheduler) reduces these issues ([but needs improvements](https://doi.org/10.1145/2901318.2901326))
+					- Considers tasks priorities to define CPU time slices
+					- Try to be fair with low priority tasks to avoid starvation
+					- `CloudletSchedulerTimeShared`: [simplistic; ignores task's priority; no actual preemption](https://github.com/manoelcampos/cloudsim-plus/issues/33)
+					- [CloudletSchedulerCompletelyFair](https://github.com/manoelcampos/cloudsim-plus/issues/58): more realistic implementation
+
+					# Notes
+					- CloudletSchedulerTimeShared: 3 CPU cores and 12 processes; make all processes to be executed simultaneously; 25% of each CPU core by process; 4 processes run in each core
+					- A bad scheduling may cause SLA violations
+					- If there are 2 Hyper-Threading CPU cores allocated to 4 processes that are not 
+					using the entire cores capacity, a fourth process cannot use this remaining capacity
+					- CloudletSchedulerTimeShared may achieve better but inaccurate results
 				</script></section>
 
-				<section data-markdown><script type="text/template">
+				<section data-markdown data-separator-notes="^# Notes"><script type="text/template">
 					## 9. Updated to Java 8
 
+					- [Functional Programming](https://en.wikipedia.org/wiki/Functional_programming)
+					- [Lambda Expressions](http://www.oracle.com/webfolder/technetwork/tutorials/obe/java/Lambda-QuickStart/index.html)
+					- [Streams API](http://www.oracle.com/technetwork/articles/java/ma14-java-se-8-streams-2177646.html)
+
+					# Notes
+					- Functional Programming: enables passing behaviour around, by passing functions as parameters to other functions
+					- Lambda Expressions: enables defining "anomymous functions" in a succinct, boilerplate-free way
+					- Streams: enables manipulation and processing of collections (such as lists) in a direct and efficient way, in a map-reduce way
 				</script></section>
 
 				<section data-markdown><script type="text/template">
 					## 10. Functional DatacenterBrokerSimple
 					<a href="https://en.wikipedia.org/wiki/Functional_programming" id="logo" title="Functional Programming"><img src="images/lambda-39473_640.png" /></a>
 
+					-  Enables changing, at runtime, the policies to select: 
+						- a DC to place waiting VMs; 
+						- a fallback DC when a previous one doesn't have a suitable Host for a VM; 
+						- and a VM to run each Cloudlet. 
+					- Allows implementing new policies, without requiring new `DatacenterBroker` classes. 
+					- P=num. policies, I=implementations/policy. For P=3 and I=2, all possible combinations of P and I ⇒ 12 different `DatacenterBrokers` (P * I^(P-1)).
+
 				</script></section>
 
 				<!-- END -->
 				<section data-markdown><script type="text/template">
 					## Conclusions and Future Work
+
+					- It is difficult to replicate a real system in simulation, mainly concerned in modelling the arrival of stochastic events such as workload bursts. 
+					- To contribute for valid results, a simulation framework has to (i) be well-designed (ii) get away from code duplication to avoid code degeneration (iii) be extensively tested and (iv) provide classes following software engineering principles. 
+					- CloudSim Plus is aligned with these requirements. 
+					- It was totally refactored to apply several of these principles to provide a state-of-the-art cloud simulation framework. 
+					- Proposed future work is available at the [issues page](https://github.com/manoelcampos/cloudsim-plus/issues).
 				</script></section>
 
 				<section data-markdown><script type="text/template">
@@ -242,11 +285,12 @@
 					[Instituto Federal de Educação Ciência e Tecnologia do Tocantins (IFTO, Brazil)](http://www.ifto.edu.br). 
 					It is supported by the Brazilian [CAPES](http://www.capes.gov.br) (Proc. no 13585/13-4) and the Portuguese [FCT](https://www.fct.pt) (under the UID/EEA/50008/2013 Project) agencies.	
 
-					### Official Site
+					### Official Site/Presentation
 					http://cloudsimplus.org
 
-					### Presentation
-					http://cloudsimplus.org/presentation/
+					http://cloudsimplus.org/presentation
+
+					<small><a href="https://github.com/hakimel/reveal.js">Presentation powered by reveal.js</a></small>
 				</script></section>
 			</div>
 		</div>
@@ -262,7 +306,7 @@
 				center: true,
 				overview: true,
 				keyboard: true,
-				slideNumber: true,
+				slideNumber: "c/t",
 				touch: true,
 				loop: false,
 				fragments: true,

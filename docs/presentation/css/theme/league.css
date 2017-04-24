@@ -235,12 +235,16 @@ body {
 /*********************************************
  * IMAGES
  *********************************************/
+ img {
+    z-index: -1;
+ }
+ 
 #logo {
   background: rgba(255, 255, 255, 0);
   border: 0;
   position: absolute;
   top: 20px;
-  right: 30px;
+  right: 15px;
 }
 
 #logo-bottom {
