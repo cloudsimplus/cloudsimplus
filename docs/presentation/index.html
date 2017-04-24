@@ -57,23 +57,22 @@
 
 					- [CloudSim Plus Introduction](#/2)
 					- [Architecture](#/3)
-					- [Modules](#/4)
-					- [Main Packages](#/5)
-					- [Main Interfaces and Some Classes](#/6)
-					- [Main Exclusive Features](#/7)
-					- [Conclusions and Future Work](#/18)
+						- [Modules](#/4)
+						- [Main Packages](#/5)
+					- [Main Exclusive Features](#/6)
+					- [Conclusions and Future Work](#/17)
 				</script></section>
 
 				<section data-markdown><script type="text/template">
 					## CloudSim Plus Introduction
-					##### Java 8 Independent CloudSim fork for Cloud Computing simulation
+					##### Java 8 independent CloudSim fork for Cloud Computing simulation
 					<img src="images/amazon-157609_640.png" id="logo" />
 
 					- Highly extensible, completely redesigned and refactored.
 					- Full-featured: more than 20 [exclusive features](http://cloudsimplus.org/#exclusive-features).
 					- [Design Patterns](https://en.wikipedia.org/wiki/Software_design_pattern), [SOLID principles](https://en.wikipedia.org/wiki/SOLID_(object-oriented_design%29), [KISS](https://en.wikipedia.org/wiki/KISS_principle), [DRY](https://pt.wikipedia.org/wiki/Don't_repeat_yourself) and Clean Code practices.
 					- Reduced duplication, removed redundancy, simplified design ([comparison](http://cloudsimplus.org/CloudSim-and-CloudSimPlus-Comparison.html)).
-					- Less 30% code duplication, more 83% test coverage.
+					- Less 30% code duplication, more 80% test coverage.
 				</script></section>
 
 
@@ -109,20 +108,12 @@
 				</script></section>
 
 				<section data-markdown><script type="text/template">
-					## Main Interfaces and Some Classes to Build Simulations
-					![Class Diagram](https://github.com/manoelcampos/cloudsim-plus/raw/master/docs/images/main-classes-reduced.png)
-
-					- Main objects required for building a simulation scenario
-				</script></section>
-
-				<section data-markdown><script type="text/template">
 					## Main Exclusive Features
 					<div style="width: 256px" id="logo" >
 						<img src="images/exclusive.png" />
 						<img src="images/Jquery-swiss-army-knife.png"/>
 					</div>
 					
-
 					1. Vertical and Horizontal VM Scaling;
 					2. Parallel execution of simulations;
 					4. Delay creation of submitted Cloudlets;
@@ -132,7 +123,7 @@
 					7. Classes and Interfaces for Implementation of [Heuristics](http://en.wikipedia.org/wiki/Heuristic); 
 					8. [Implementation of the Linux Completely Fair Scheduler](https://en.wikipedia.org/wiki/Completely_Fair_Scheduler);
 					9. Updated to Java 8 ([Functional Programming](https://en.wikipedia.org/wiki/Functional_programming), [Lambda](http://www.oracle.com/webfolder/technetwork/tutorials/obe/java/Lambda-QuickStart/index.html) and [Streams](http://www.oracle.com/technetwork/articles/java/ma14-java-se-8-streams-2177646.html));
-					10. Provides a [Functional](https://en.wikipedia.org/wiki/Functional_programming) `DatacenterBrokerSimple`;
+					10. [Functional](https://en.wikipedia.org/wiki/Functional_programming) `DatacenterBroker`;
 					
 					Many more at [http://cloudsimplus.org](http://cloudsimplus.org/#exclusive-features)
 				</script></section>
@@ -152,10 +143,7 @@
 					## 2. Parallel Execution of Simulations
 					<img src="images/gears.gif" id="logo" />
 
-					- Execution in parallel of:
-						- different simulations
-						- multiple runs of the same simulation (usually applying distinct seeds)
-					- Changed all abstract methods in the CloudSim class to instance methods
+					- Parallel execution of multiple simulation runs
 					- Relies on Java 8 Parallel Streams mechanism
 					- As simple as calling a single line of code like `simulations.parallelStream().forEach(MySimulation::run);`
 				</script></section>
@@ -178,11 +166,10 @@
 
 					- Enables creating objects after the simulation has started
 					- Doesn't require new DatacenterBrokers to be created at runtime
+					- Objects just have to be submitted to an existing broker at simulation runtime
 					- Enables simulation of dynamic arrival of:
 						- tasks (Cloudlets)
 						- customers requests to create VMs
-					- Objects just have to be submitted to an existing broker at simulation runtime
-
 				</script></section>
 
 				<section data-markdown><script type="text/template">
@@ -201,10 +188,9 @@
 				<section data-markdown><script type="text/template">
 					## 6. Strongly Object-oriented Framework
 
-					- Doesn't rely on integer IDs to create relationships between classes
-					- IDs for that purpose is error prone, require validation and may be confusing
-					- Object-oriented design where objects are passed as parameters to methods
-					- Fluent API, allowing chained calls such as `cloudlet.getVm().getHost().getDatacenter()`
+					- Objects are used to create actual relationships, instead of using integer IDs
+					- Fluent API, allowing direct chained calls such as `cloudlet.getVm().getHost().getDatacenter()`
+					- Getting the DC where a Cloudlet was executed wasn't so easy
 					- Uses [Null Object Pattern](https://en.wikipedia.org/wiki/Null_Object_pattern) to avoid NullPointerException.
 				</script></section>
 
@@ -228,10 +214,9 @@
 
 					- `CloudletScheduler`: how a Vm schedules the execution of Cloudlets
 					- Scheduling impacts some metrics such as wait and task completion time
-					- Bad scheduling: starvation, wastage of CPU cicles, SLA violations
+					- Bad scheduling: starvation, wastage of CPU cycles, SLA violations
 					- [Completely Fair Scheduler](https://en.wikipedia.org/wiki/Completely_Fair_Scheduler) reduces these issues ([but needs improvements](https://doi.org/10.1145/2901318.2901326))
 					- Considers tasks priorities to define CPU time slices
-					- Try to be fair with low priority tasks to avoid starvation
 					- `CloudletSchedulerTimeShared`: [simplistic; ignores task's priority; no actual preemption](https://github.com/manoelcampos/cloudsim-plus/issues/33)
 					- [CloudletSchedulerCompletelyFair](https://github.com/manoelcampos/cloudsim-plus/issues/58): more realistic implementation
 
@@ -243,21 +228,8 @@
 					- CloudletSchedulerTimeShared may achieve better but inaccurate results
 				</script></section>
 
-				<section data-markdown data-separator-notes="^# Notes"><script type="text/template">
-					## 9. Updated to Java 8
-
-					- [Functional Programming](https://en.wikipedia.org/wiki/Functional_programming)
-					- [Lambda Expressions](http://www.oracle.com/webfolder/technetwork/tutorials/obe/java/Lambda-QuickStart/index.html)
-					- [Streams API](http://www.oracle.com/technetwork/articles/java/ma14-java-se-8-streams-2177646.html)
-
-					# Notes
-					- Functional Programming: enables passing behaviour around, by passing functions as parameters to other functions
-					- Lambda Expressions: enables defining "anomymous functions" in a succinct, boilerplate-free way
-					- Streams: enables manipulation and processing of collections (such as lists) in a direct and efficient way, in a map-reduce way
-				</script></section>
-
 				<section data-markdown><script type="text/template">
-					## 10. Functional DatacenterBrokerSimple
+					## 10. Functional DatacenterBroker
 					<a href="https://en.wikipedia.org/wiki/Functional_programming" id="logo" title="Functional Programming"><img src="images/lambda-39473_640.png" /></a>
 
 					-  Enables changing, at runtime, the policies to select: 
@@ -265,7 +237,6 @@
 						- a fallback DC when a previous one doesn't have a suitable Host for a VM; 
 						- and a VM to run each Cloudlet. 
 					- Allows implementing new policies, without requiring new `DatacenterBroker` classes. 
-					- P=num. policies, I=implementations/policy. For P=3 and I=2, all possible combinations of P and I ⇒ 12 different `DatacenterBrokers` (P * I^(P-1)).
 
 				</script></section>
 
@@ -275,8 +246,7 @@
 
 					- It is difficult to replicate a real system in simulation, mainly concerned in modelling the arrival of stochastic events such as workload bursts. 
 					- To contribute for valid results, a simulation framework has to (i) be well-designed (ii) get away from code duplication to avoid code degeneration (iii) be extensively tested and (iv) provide classes following software engineering principles. 
-					- CloudSim Plus is aligned with these requirements. 
-					- It was totally refactored to apply several of these principles to provide a state-of-the-art cloud simulation framework. 
+					- CloudSim Plus is aligned with all these requirements. 
 					- Proposed future work is available at the [issues page](https://github.com/manoelcampos/cloudsim-plus/issues).
 				</script></section>
 
