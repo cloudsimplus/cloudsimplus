@@ -75,7 +75,6 @@
 					- Less 30% code duplication, more 80% test coverage.
 				</script></section>
 
-
 				<section data-markdown><script type="text/template">
 					## Architecture
 					<img src="images/rubiks-cube-145422_1280.png" id="logo" />
@@ -116,8 +115,8 @@
 					
 					1. Vertical and Horizontal VM Scaling;
 					2. Parallel execution of simulations;
-					4. Delay creation of submitted Cloudlets;
 					3. Dynamic creation of VMs and Cloudlets;
+					4. Delay creation of submitted VMs and Cloudlets;
 					5. Event Listeners
 					6. Strongly Object-oriented Framework; 
 					7. Classes and Interfaces for Implementation of [Heuristics](http://en.wikipedia.org/wiki/Heuristic); 
@@ -136,7 +135,10 @@
 					</div>
 
 					- Vertical Vm Scaling
+						- resize of VM resources to fit workload
+						- RAM, CPU, Bandwidth and Storage
 					- Horizontal Vm Scaling
+						- creation and destruction of VMs for load balancing
 				</script></section>
 
 				<section data-markdown><script type="text/template">
@@ -148,28 +150,22 @@
 					- As simple as calling a single line of code like `simulations.parallelStream().forEach(MySimulation::run);`
 				</script></section>
 
-				<section data-markdown data-separator-notes="^# Notes"><script type="text/template">
-					## 3. Delay creation of submitted Cloudlets
-					<img src="images/clock-png-25766.png" id="logo-bottom" />
-
-					- Creation of Cloudlets at a given time, before starting the simulation
-					- A different way to simulate the dynamic creation of Cloudlets
-					- Used when all Cloudlets' arrival times are known 
-						- from a trace file
-						- defined by a pseudo random number generator (PRNG)
-						- statically defined
-				</script></section>
-
 				<section data-markdown><script type="text/template">
-					## 4. Dynamic Creation of VMs and Cloudlets
+					## 3. Dynamic Creation of VMs and Cloudlets
 					<img src="images/dynamic-vm-creation.gif" id="logo-bottom" />
 
 					- Enables creating objects after the simulation has started
 					- Doesn't require new DatacenterBrokers to be created at runtime
 					- Objects just have to be submitted to an existing broker at simulation runtime
-					- Enables simulation of dynamic arrival of:
-						- tasks (Cloudlets)
-						- customers requests to create VMs
+				</script></section>
+
+				<section data-markdown data-separator-notes="^# Notes"><script type="text/template">
+					## 4. Delay creation of submitted VMs and Cloudlets
+					<img src="images/clock-png-25766.png" id="logo-bottom" />
+
+					- Creation of objects at a given time, before starting the simulation
+					- Used when the arrival times of objects to be create are known in advance
+					- A different way to simulate the dynamic creation of such objects
 				</script></section>
 
 				<section data-markdown><script type="text/template">
@@ -181,8 +177,7 @@
 						- assess fulfillment of customer SLA 
 						- optimize resource allocation to avoid under/over resource provisioning
 						- granular simulation execution feedback
-					- Listeners for events from Hosts, VMs and Cloudlets 
-					- Listeners for general simulation events
+					- Listeners for events from Hosts, VMs, Cloudlets and more general ones.
 				</script></section>
 
 				<section data-markdown><script type="text/template">
@@ -190,7 +185,6 @@
 
 					- Objects are used to create actual relationships, instead of using integer IDs
 					- Fluent API, allowing direct chained calls such as `cloudlet.getVm().getHost().getDatacenter()`
-					- Getting the DC where a Cloudlet was executed wasn't so easy
 					- Uses [Null Object Pattern](https://en.wikipedia.org/wiki/Null_Object_pattern) to avoid NullPointerException.
 				</script></section>
 
@@ -198,24 +192,23 @@
 					## 7. Classes/Interfaces for Heuristics
 					<a href="https://commons.wikimedia.org/wiki/File:Knapsack.svg" id="logo"><img id="transparent" title="Source: https://commons.wikimedia.org/wiki/File:Knapsack.svg" src="images/277px-Knapsack.png"/></a>
 
-					- Specifies a contract to implement heuristics, defining:
-						- how the initial solution is generated;
-						- the generation of neighbor solutions;
-						- the definition of an utility function to be minimized or maximized;
+					- Specifies a contract to implement heuristics in some steps:
+						- initial solution generation;
+						- generation of neighbor solutions;
+						- definition of an utility function to be minimized or maximized;
 						- and then the solution finding stop criteria.
-					- Examples of heuristics: [Tabu Search](http://en.wikipedia.org/wiki/Tabu_search), [Simulated Annealing](http://en.wikipedia.org/wiki/Simulated_annealing), [Ant Colony Systems](http://en.wikipedia.org/wiki/Ant_colony_optimization_algorithms), etc;
+					- Examples: [Tabu Search](http://en.wikipedia.org/wiki/Tabu_search), [Simulated Annealing](http://en.wikipedia.org/wiki/Simulated_annealing), [Ant Colony Systems](http://en.wikipedia.org/wiki/Ant_colony_optimization_algorithms), etc;
 					- Includes a Simulated Annealing heuristic for mapping Cloudlets to VMs.
 
 				</script></section>
 
 				<section data-markdown data-separator-notes="^# Notes"><script type="text/template">
 					## 8. Implementation of the Linux Completely Fair Scheduler
-					<img id="logo-bottom" title="Source: http://www.mimastech.com/2016/11/13/how-to-setup-ntp-server-on-centos-765-linux-systems/" src="images/linux-clock.png"/></a>
+					<img id="logo-bottom" title="Source: http://www.mimastech.com/2016/11/13/how-to-setup-ntp-server-on-centos-765-linux-systems/" src="images/linux-clock.png"/>
 
 					- `CloudletScheduler`: how a Vm schedules the execution of Cloudlets
-					- Scheduling impacts some metrics such as wait and task completion time
 					- Bad scheduling: starvation, wastage of CPU cycles, SLA violations
-					- [Completely Fair Scheduler](https://en.wikipedia.org/wiki/Completely_Fair_Scheduler) reduces these issues ([but needs improvements](https://doi.org/10.1145/2901318.2901326))
+					- [Completely Fair Scheduler](https://en.wikipedia.org/wiki/Completely_Fair_Scheduler) reduces these issues ([needs improvements](https://doi.org/10.1145/2901318.2901326) [Lozi et. al. 2016])
 					- Considers tasks priorities to define CPU time slices
 					- `CloudletSchedulerTimeShared`: [simplistic; ignores task's priority; no actual preemption](https://github.com/manoelcampos/cloudsim-plus/issues/33)
 					- [CloudletSchedulerCompletelyFair](https://github.com/manoelcampos/cloudsim-plus/issues/58): more realistic implementation
@@ -232,7 +225,7 @@
 					## 10. Functional DatacenterBroker
 					<a href="https://en.wikipedia.org/wiki/Functional_programming" id="logo" title="Functional Programming"><img src="images/lambda-39473_640.png" /></a>
 
-					-  Enables changing, at runtime, the policies to select: 
+					-  Enables changing, in runtime, the policies to select: 
 						- a DC to place waiting VMs; 
 						- a fallback DC when a previous one doesn't have a suitable Host for a VM; 
 						- and a VM to run each Cloudlet. 
