@@ -323,8 +323,8 @@ public class VmSchedulerTimeShared extends VmSchedulerAbstract {
      * @return the number of removed PEs
      */
     private int removePesFromMipsMap(Vm vm, Map<Vm, List<Double>> mipsMap, int pesToRemove) {
-        List<Double> mipsList = mipsMap.get(vm);
-        if(mipsList == null){
+        List<Double> mipsList = mipsMap.getOrDefault(vm, new ArrayList<>());
+        if(mipsList.isEmpty()){
             return 0;
         }
         

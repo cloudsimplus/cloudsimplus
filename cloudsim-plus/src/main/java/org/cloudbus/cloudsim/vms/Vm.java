@@ -429,7 +429,7 @@ public interface Vm extends Machine, UniquelyIdentificable, Delayable, Comparabl
     /**
      * Sets the status of VM to FAILED.
      *
-     * @param failed the failed
+     * @param failed true to indicate that the VM is failed, false to indicate it is working
      */
     void setFailed(boolean failed);
 

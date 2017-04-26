@@ -57,7 +57,7 @@ public class DatacenterSimple extends CloudSimEntity implements Datacenter {
 
     /** @see #getSchedulingInterval() */
     private double schedulingInterval;
-
+    
     /**
      * Creates a Datacenter with the given parameters.
      *
@@ -457,7 +457,8 @@ public class DatacenterSimple extends CloudSimEntity implements Datacenter {
         if (ack) {
             sendNow(vm.getBroker().getId(), CloudSimTags.VM_DESTROY_ACK, vm);
         }
-        Log.printFormatted("Time %.2f: Vm %d destroyed\n", getSimulation().clock(), vm.getId());
+        Log.printFormatted("Time %.2f: Vm %d destroyed on Host %d\n", 
+                getSimulation().clock(), vm.getId(), vm.getHost().getId());
 
         getVmList().remove(vm);
     }

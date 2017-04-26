@@ -111,20 +111,22 @@ public class VmSchedulerSpaceShared extends VmSchedulerAbstract {
 
         getPeAllocationMap().put(vm, selectedPes);
         getMipsMapAllocated().put(vm, mipsShareRequested);
-        setAvailableMips(getAvailableMips() - totalMips);
         return true;
     }
 
     @Override
     public void deallocatePesForVm(Vm vm) {
+        deallocatePesForVm(vm, (int)vm.getNumberOfPes());
+    }
+
+    @Override
+    public void deallocatePesForVm(Vm vm, int pesToRemove) {
+        //@todo it needs to be made the same things as in the time shared scheduler
         getFreePesList().addAll(getPeAllocationMap().get(vm));
         getPeAllocationMap().remove(vm);
 
-        final double totalMips = getMipsMapAllocated().get(vm).stream().mapToDouble(mips -> mips).sum();
-        setAvailableMips(getAvailableMips() + totalMips);
-
         getMipsMapAllocated().remove(vm);
-    }
+    }    
 
     /**
      * Sets the pe allocation map.
@@ -166,5 +168,6 @@ public class VmSchedulerSpaceShared extends VmSchedulerAbstract {
     public double getCpuOverheadDueToVmMigration() {
         return 0;
     }
+
 
 }

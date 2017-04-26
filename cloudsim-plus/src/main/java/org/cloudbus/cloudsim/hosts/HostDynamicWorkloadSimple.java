@@ -27,7 +27,6 @@ import java.util.stream.Collectors;
  * @since CloudSim Toolkit 2.0
  */
 public class HostDynamicWorkloadSimple extends HostSimple implements HostDynamicWorkload {
-
     /**
      * The utilization mips.
      */
@@ -152,7 +151,7 @@ public class HostDynamicWorkloadSimple extends HostSimple implements HostDynamic
         final double totalRequestedMips = vm.getCurrentRequestedTotalMips();
         final double totalAllocatedMips = getVmScheduler().getTotalAllocatedMipsForVm(vm);
         if (!Log.isDisabled() && vm.getHost() != Host.NULL) {
-            Log.printFormattedLine(
+            getDatacenter().println(String.format(
                     "%.2f: [Host #" + getId() + "] Total allocated MIPS for VM #" + vm.getId()
                     + " (Host #" + vm.getHost().getId()
                     + ") is %.2f, was requested %.2f out of total %.2f (%.2f%%)",
@@ -160,7 +159,7 @@ public class HostDynamicWorkloadSimple extends HostSimple implements HostDynamic
                     totalAllocatedMips,
                     totalRequestedMips,
                     vm.getMips(),
-                    totalRequestedMips / vm.getMips() * 100);
+                    totalRequestedMips / vm.getMips() * 100));
 
             final List<Pe> pes = getVmScheduler().getPesAllocatedForVM(vm);
             final StringBuilder pesString = new StringBuilder();
@@ -171,11 +170,11 @@ public class HostDynamicWorkloadSimple extends HostSimple implements HostDynamic
                                 pe.getPeProvisioner().getAllocatedResourceForVm(vm)))
             );
             
-            Log.printFormattedLine(
-                    "%.2f: [Host #" + getId() + "] MIPS for VM #" + vm.getId() + " by PEs ("
-                    + getNumberOfPes() + " * " + getVmScheduler().getPeCapacity() + ")."
+            getDatacenter().println(String.format(
+                    "%.2f: [Host #" + getId() + "] MIPS for VM #" + vm.getId() + " by working PEs ("
+                    + getNumberOfWorkingPes()+ " * " + getVmScheduler().getPeCapacity() + ")."
                     + pesString,
-                    getSimulation().clock());
+                    getSimulation().clock()));
         }
     }
 

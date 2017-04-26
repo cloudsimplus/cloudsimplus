@@ -11,7 +11,6 @@ import java.util.stream.LongStream;
 
 import org.cloudbus.cloudsim.core.UniquelyIdentificable;
 import org.cloudbus.cloudsim.datacenters.Datacenter;
-import org.cloudbus.cloudsim.util.Log;
 import org.cloudbus.cloudsim.brokers.DatacenterBroker;
 import org.cloudbus.cloudsim.cloudlets.Cloudlet;
 import org.cloudbus.cloudsim.core.Simulation;
@@ -666,11 +665,7 @@ public class VmSimple implements Vm {
 
     @Override
     public void setFailed(boolean failed) {
-        // all the PEs are failed (or recovered, depending on fail parameter)
         this.failed = failed;
-        if(failed) {
-            Log.printLine(getSimulation().clock() + " ---> VM " + getUid() + " FAILURE...\n");
-        }
     }
 
     @Override

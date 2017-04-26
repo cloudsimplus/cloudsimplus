@@ -80,13 +80,12 @@ public abstract class VmSchedulerAbstract implements VmScheduler {
 
     @Override
     public List<Pe> getPesAllocatedForVM(Vm vm) {
-        return getPeMap().get(vm);
+        return getPeMap().getOrDefault(vm, new ArrayList<>());
     }
 
     @Override
     public List<Double> getAllocatedMipsForVm(Vm vm) {
-        getMipsMapAllocated().putIfAbsent(vm, new ArrayList<>());
-        return getMipsMapAllocated().get(vm);
+        return getMipsMapAllocated().getOrDefault(vm, new ArrayList<>());
     }
 
     @Override
@@ -176,10 +175,7 @@ public abstract class VmSchedulerAbstract implements VmScheduler {
      * @param vmsMigratingOut the new vms migrating out
      */
     protected final void setVmsMigratingOut(Set<Vm> vmsMigratingOut) {
-        if(Objects.isNull(vmsMigratingOut)){
-            vmsMigratingOut = new HashSet<>();
-        }
-        this.vmsMigratingOut = vmsMigratingOut;
+        this.vmsMigratingOut = Objects.isNull(vmsMigratingOut) ? new HashSet<>() : vmsMigratingOut;
     }
 
     /**
@@ -188,10 +184,7 @@ public abstract class VmSchedulerAbstract implements VmScheduler {
      * @param vmsMigratingIn the new vms migrating in
      */
     protected final void setVmsMigratingIn(Set<Vm> vmsMigratingIn) {
-        if(Objects.isNull(vmsMigratingIn)){
-            vmsMigratingIn = new HashSet<>();
-        }
-        this.vmsMigratingIn = vmsMigratingIn;
+        this.vmsMigratingIn = Objects.isNull(vmsMigratingIn) ? new HashSet<>() : vmsMigratingIn;
     }
 
     @Override
@@ -215,7 +208,7 @@ public abstract class VmSchedulerAbstract implements VmScheduler {
     }
 
     @Override
-    public final VmScheduler setHost(Host host) {
+    public VmScheduler setHost(Host host) {
         Objects.requireNonNull(host);
 
         if(isOtherHostAssigned(host)){

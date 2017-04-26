@@ -243,13 +243,19 @@ public abstract class DatacenterBrokerAbstract extends CloudSimEntity implements
         setSimulationForCloudletUtilizationModels(list);
         getCloudletsWaitingList().addAll(list);
 
+        if (!isStarted()) {
+            return;
+        } 
+        
         Log.printFormattedLine(
             "%.2f: %s: List of %d Cloudlets submitted to the broker during simulation execution.",
             getSimulation().clock(), getName(), list.size());
-        if (isStarted() && getVmsWaitingList().isEmpty()) {
+        
+        //If there aren't more VMs to be created, then request Cloudlets creation
+        if(getVmsWaitingList().isEmpty()){
             Log.printLine(" Cloudlets creation request sent to Datacenter.");
             requestDatacentersToCreateWaitingCloudlets();
-        } else Log.printLine(" Waiting VMs creation to send Cloudlets creation request to Datacenter.");
+        } else Log.printLine(" Waiting creation of VMs to send Cloudlets creation request to Datacenter."); 
     }
 
     private void sortCloudletsIfComparatorIsSet(List<? extends Cloudlet> list) {

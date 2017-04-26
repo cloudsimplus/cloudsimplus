@@ -28,10 +28,6 @@
  */
 package org.cloudsimplus.sla;
 
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.List;
-
 import org.cloudbus.cloudsim.core.events.SimEvent;
 import org.cloudbus.cloudsim.hosts.Host;
 import org.cloudbus.cloudsim.util.Log;
@@ -82,7 +78,6 @@ public class HostFaultInjection extends CloudSimEntity {
     @Override
     protected void startEntity() {
         double delay = delayForFailureOfHostRandom.sample() + 1;
-        Log.printLine(getName() + " is starting...");
         schedule(getId(), delay, CloudSimTags.HOST_FAILURE);
     }
 
@@ -113,50 +108,17 @@ public class HostFaultInjection extends CloudSimEntity {
     public final boolean generateFailure() {
         final int numberOfFailedPes = setFailedHostPes();
         final long hostWorkingPes = host.getNumberOfWorkingPes();
-        final long vmsRequiredPes = getPesSumOfWorkingVms(host.getVmList());
+        final long vmsRequiredPes = getPesSumOfWorkingVms();
                 
         if(hostWorkingPes == 0){
             setAllVmsToFailed();  
         } else if (hostWorkingPes >= vmsRequiredPes) {
             logNoVmFailure();  
         } else {
-            setVmPesToFailed();
+            deallocateFailedHostPesFromVms();
         } 
         
         return numberOfFailedPes > 0;
-    }
-
-    private void setVmPesToFailed() {
-        final int hostWorkingPes = (int)host.getNumberOfWorkingPes();
-        final int vmsRequiredPes = (int)getPesSumOfWorkingVms(host.getVmList());
-        
-        int i = 0;
-        int failedPesToRemoveFromVms = vmsRequiredPes-hostWorkingPes;
-        final int affectedVms = Math.min(host.getVmList().size(), failedPesToRemoveFromVms);
-        Log.printFormattedLine(
-                "** %d PEs of Host %d has failed, from a total of %d PEs. There are %d PEs working\n",
-                host.getNumberOfFailedPes(), host.getId(), host.getNumberOfPes(),
-                host.getNumberOfWorkingPes());
-        Log.printFormattedLine("VMs affected by this failure: %d", affectedVms);
-        while(failedPesToRemoveFromVms-- > 0){
-            i = i % affectedVms;
-            Vm vm = host.getVmList().get(i);
-            host.getVmScheduler().deallocatePesForVm(vm);
-            i++;
-        }
-    }
-    
-    /**
-     * Shows that the failure of Host PEs hasn't affected any VM,
-     * because there is more working PEs than required by all VMs.
-     */
-    private void logNoVmFailure() {
-        final int vmsRequiredPes = (int)getPesSumOfWorkingVms(host.getVmList());
-        Log.printLine(
-                "** Number of Host failed PEs is less than the number of PEs required by all VMs, thus it doesn't affect any VM");
-        Log.printFormattedLine("Host %d PEs: %d Host Failed PEs: %d Host Working PEs: %d Total PEs required by VMs: %d",
-                host.getId(), host.getNumberOfPes(), generateNumberOfFailedPes(), host.getNumberOfWorkingPes(),
-                vmsRequiredPes);
     }
 
     /**
@@ -164,43 +126,56 @@ public class HostFaultInjection extends CloudSimEntity {
      */
     private void setAllVmsToFailed() {
         host.getVmList().stream().forEach(this::setVmToFailedWhenHostIsFailed);
-        Log.printFormattedLine("All the %d PEs of Host %d failed",
-                host.getNumberOfPes(), host.getId());
+        Log.printFormattedLine("\t%.2f: Host %d -> All the %d PEs failed, affecting all its %d VMs.\n",
+                getSimulation().clock(), host.getId(), host.getNumberOfPes(), host.getVmList().size());
     }
-
-    private int setFailedHostPes() {
-        final int numberOfFailedPes = generateNumberOfFailedPes();
-        for (int i = 0; i < numberOfFailedPes; i++) {
-            host.getPeList().get(i).setStatus(Pe.Status.FAILED);
+    
+    /**
+     * Shows that the failure of Host PEs hasn't affected any VM,
+     * because there is more working PEs than required by all VMs.
+     */
+    private void logNoVmFailure() {
+        final int vmsRequiredPes = (int)getPesSumOfWorkingVms();
+        Log.printFormattedLine(
+                "\t%.2f: Host %d -> Number of failed PEs is less than the number of PEs required by all its %d VMs, thus it doesn't affect any VM.",
+                getSimulation().clock(), host.getId(), host.getVmList().size());
+        Log.printFormattedLine("\t      Host %d -> Total PEs: %d | Failed PEs: %d | Working PEs: %d | Current PEs required by VMs: %d.\n",
+                host.getId(), host.getNumberOfPes(), host.getNumberOfFailedPes(), host.getNumberOfWorkingPes(),
+                vmsRequiredPes);
+    }
+    
+    private void deallocateFailedHostPesFromVms() {
+        final int hostWorkingPes = (int)host.getNumberOfWorkingPes();
+        final int vmsRequiredPes = (int)getPesSumOfWorkingVms();
+        
+        int i = 0;
+        int failedPesToRemoveFromVms = vmsRequiredPes-hostWorkingPes;
+        final int affectedVms = Math.min(host.getVmList().size(), failedPesToRemoveFromVms);
+        Log.printFormattedLine(
+                "\t%.2f: Host %d -> %d PEs failed, from a total of %d PEs. There are %d PEs working.",
+                getSimulation().clock(), host.getId(), host.getNumberOfFailedPes(), 
+                host.getNumberOfPes(), host.getNumberOfWorkingPes());
+        Log.printFormattedLine(
+                "\t      %d VMs affected from a total of %d\n", 
+                affectedVms, host.getVmList().size());
+        while(failedPesToRemoveFromVms-- > 0){
+            i = i % affectedVms;
+            Vm vm = host.getVmList().get(i);
+            //@todo needs to check if the VM pesNumber is being reduced
+            host.getVmScheduler().deallocatePesForVm(vm, 1);
+            i++;
         }
-        return numberOfFailedPes;
-    }
-
-    public long getFailedVmsCount() {
-        return host.getVmList()
-                .stream()
-                .filter(Vm::isFailed)
-                .count();
-    }
-
-    public long getPesSumOfWorkingVms(List<Vm> sortedHostVmList) {
-        return sortedHostVmList.stream()
-                .filter(vm -> !vm.isFailed())
-                .mapToLong(vm -> vm.getNumberOfPes())
-                .sum();
+        
+        setVmsToFailed();
     }
 
     /**
-     * Generates a number of PEs that will fail for the host using the
-     * {@link #numberOfFailedPesRandom},
-     *
-     * @return the generated number of failed PEs for the host
+     * Sets to failed all VMs which all their PEs were removed due to Host PEs failures.
      */
-    public int generateNumberOfFailedPes() {
-        /*the random generator return values from [0 to 1]
-         and multiplying by the number of PEs we get a number between
-         0 and numbero of PEs*/
-        return (int) (numberOfFailedPesRandom.sample() * host.getPeList().size() + 1);
+    private void setVmsToFailed() {
+        host.getVmList().stream()
+                .filter(vm -> vm.getNumberOfPes() == 0)
+                .forEach(this::setVmToFailedWhenHostIsFailed);
     }
 
     /**
@@ -221,6 +196,41 @@ public class HostFaultInjection extends CloudSimEntity {
         getSimulation().sendNow(
                 vm.getBroker().getId(), host.getDatacenter().getId(),
                 CloudSimTags.VM_DESTROY, vm);
+    }
+    
+    private int setFailedHostPes() {
+        final int numberOfFailedPes = generateNumberOfFailedPes();
+        for (int i = 0; i < numberOfFailedPes; i++) {
+            host.getPeList().get(i).setStatus(Pe.Status.FAILED);
+        }
+        return numberOfFailedPes;
+    }
+
+    public long getFailedVmsCount() {
+        return host.getVmList()
+                .stream()
+                .filter(Vm::isFailed)
+                .count();
+    }
+
+    public long getPesSumOfWorkingVms() {
+        return host.getVmList().stream()
+                .filter(vm -> !vm.isFailed())
+                .mapToLong(vm -> vm.getNumberOfPes())
+                .sum();
+    }
+
+    /**
+     * Generates a number of PEs that will fail for the host using the
+     * {@link #numberOfFailedPesRandom},
+     *
+     * @return the generated number of failed PEs for the host
+     */
+    public int generateNumberOfFailedPes() {
+        /*the random generator return values from [0 to 1]
+         and multiplying by the number of PEs we get a number between
+         0 and numbero of PEs*/
+        return (int) (numberOfFailedPesRandom.sample() * host.getPeList().size() + 1);
     }
 
     /**

@@ -100,4 +100,23 @@ public interface SimEntity extends Nameable, Cloneable, Runnable, Comparable<Sim
      * @throws IllegalArgumentException when the entity name is <tt>null</tt> or empty
      */
     SimEntity setName(String newName) throws IllegalArgumentException;
+    
+    /**
+     * Define if log is enabled for this particular entity or not.
+     * @param log true to enable logging, false to disable
+     */
+    void setLog(boolean log);    
+    
+    /**
+     * Prints a given message if the logging is enabled for this entity.
+     * @param msg the message to be printed.
+     */
+    void println(String msg);
+    
+    /**
+     * Prints an empty line if the logging is enabled for this entity.
+     */
+    default void println(){
+        println("");
+    }
 }

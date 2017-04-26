@@ -47,6 +47,8 @@ public abstract class CloudSimEntity implements SimEntity {
      * The entity's current state.
      */
     private State state;
+    
+    private boolean log;    
 
     /**
      * Creates a new entity.
@@ -736,4 +738,16 @@ public abstract class CloudSimEntity implements SimEntity {
         result = 31 * result + id;
         return result;
     }
+    
+    @Override
+    public void setLog(boolean log) {
+        this.log = log;
+    }    
+    
+    @Override
+    public void println(String msg){
+        if(log){
+            Log.printLine(msg);
+        }
+    }    
 }

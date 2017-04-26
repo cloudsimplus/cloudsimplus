@@ -15,7 +15,6 @@ import java.util.Objects;
 import org.cloudbus.cloudsim.datacenters.DatacenterCharacteristics;
 import org.cloudbus.cloudsim.datacenters.DatacenterSimple;
 import org.cloudbus.cloudsim.hosts.Host;
-import org.cloudbus.cloudsim.util.Log;
 import org.cloudbus.cloudsim.hosts.power.PowerHostSimple;
 import org.cloudbus.cloudsim.vms.Vm;
 import org.cloudbus.cloudsim.allocationpolicies.VmAllocationPolicy;
@@ -136,14 +135,14 @@ public class PowerDatacenter extends DatacenterSimple {
                     Host oldHost = migrate.getKey().getHost();
 
                     if (oldHost == Host.NULL) {
-                        Log.printFormattedLine(
+                        println(String.format(
                             "%.2f: Migration of VM #%d to Host #%d is started",
-                            currentTime, migrate.getKey().getId(), targetHost.getId());
+                            currentTime, migrate.getKey().getId(), targetHost.getId()));
                     } else {
-                        Log.printFormattedLine(
+                        println(String.format(
                             "%.2f: Migration of VM #%d from Host #%d to Host #%d is started",
                             currentTime, migrate.getKey().getId(),
-                            oldHost.getId(), targetHost.getId());
+                            oldHost.getId(), targetHost.getId()));
                     }
 
                     targetHost.addMigratingInVm(migrate.getKey());
@@ -199,8 +198,8 @@ public class PowerDatacenter extends DatacenterSimple {
     protected double updateCloudetProcessingWithoutSchedulingFutureEvents() {
         final double currentTime = getSimulation().clock();
 
-        Log.printLine("\n\n--------------------------------------------------------------\n\n");
-        Log.printFormattedLine("New resource usage for the time frame starting at %.2f:", currentTime);
+        println("\n\n--------------------------------------------------------------\n\n");
+        println(String.format("New resource usage for the time frame starting at %.2f:", currentTime));
 
         final double nextCloudletFinishTime = getNextCloudletFinishTime(currentTime);
         final double datacenterPowerUsageForTimeSpan = getDatacenterPowerUsageForTimeSpan();
@@ -209,7 +208,7 @@ public class PowerDatacenter extends DatacenterSimple {
         checkCloudletsCompletionForAllHosts();
         removeFinishedVmsFromEveryHost();
 
-        Log.printLine();
+        println();
         setLastProcessTime(currentTime);
         return nextCloudletFinishTime;
     }
@@ -224,21 +223,20 @@ public class PowerDatacenter extends DatacenterSimple {
     private double getNextCloudletFinishTime(double currentTime) {
         double minTime = Double.MAX_VALUE;
         for (PowerHostSimple host : this.<PowerHostSimple>getHostList()) {
-            Log.printLine();
-
+            println();
             final double nextCloudletFinishTime = host.updateProcessing(currentTime);
             minTime = Math.min(nextCloudletFinishTime, minTime);
 
-            Log.printFormattedLine(
+            println(String.format(
                     "%.2f: [Host #%d] utilization is %.2f%%",
                     currentTime,
                     host.getId(),
-                    host.getUtilizationOfCpu() * 100);
+                    host.getUtilizationOfCpu() * 100));
         }
 
         return minTime;
     }
-
+    
     /**
      * Gets the total power consumed by all Hosts of the Datacenter since the last time the processing
      * of Cloudlets in this Host was updated.
@@ -250,10 +248,10 @@ public class PowerDatacenter extends DatacenterSimple {
         final double currentTime = getSimulation().clock();
         final double timeSpan = currentTime - getLastProcessTime();
         if (timeSpan > 0) {
-            Log.printFormattedLine(
+            println(String.format(
                     "\nEnergy consumption for the last time frame from %.2f to %.2f:",
                     getLastProcessTime(),
-                    currentTime);
+                    currentTime));
 
             for (PowerHostSimple host : this.<PowerHostSimple>getHostList()) {
                 final double previousUseOfCpu = host.getPreviousUtilizationOfCpu();
@@ -262,25 +260,24 @@ public class PowerDatacenter extends DatacenterSimple {
                         previousUseOfCpu, utilizationOfCpu, timeSpan);
                 datacenterPowerUsageForTimeSpan += timeFrameHostEnergy;
 
-                Log.printLine();
-                Log.printFormattedLine(
-                        "%.2f: [Host #%d] utilization at %.2f was %.2f%%, now is %.2f%%",
+                println(String.format(
+                        "\n%.2f: [Host #%d] utilization at %.2f was %.2f%%, now is %.2f%%",
                         currentTime,
                         host.getId(),
                         getLastProcessTime(),
                         previousUseOfCpu * 100,
-                        utilizationOfCpu * 100);
-                Log.printFormattedLine(
-                        "%.2f: [Host #%d] energy is %.2f W*sec",
+                        utilizationOfCpu * 100));
+                println(String.format(
+                        "%.2f: [Host #%d] energy is %.2f Watts/sec",
                         currentTime,
                         host.getId(),
-                        timeFrameHostEnergy);
+                        timeFrameHostEnergy));
             }
 
-            Log.printFormattedLine(
-                    "\n%.2f: Data center's energy is %.2f W*sec\n",
+            println(String.format(
+                    "\n%.2f: Data center's energy is %.2f Watts/sec\n",
                     currentTime,
-                    datacenterPowerUsageForTimeSpan);
+                    datacenterPowerUsageForTimeSpan));
         }
 
         return datacenterPowerUsageForTimeSpan;
@@ -291,7 +288,7 @@ public class PowerDatacenter extends DatacenterSimple {
             for (Vm vm : host.getFinishedVms()) {
                 getVmAllocationPolicy().deallocateHostForVm(vm);
                 getVmList().remove(vm);
-                Log.printLine("VM #" + vm.getId() + " has been deallocated from host #" + host.getId());
+                println(String.format("VM #%d has been deallocated from host #%d", vm.getId(), host.getId()));
             }
         }
     }
@@ -352,6 +349,7 @@ public class PowerDatacenter extends DatacenterSimple {
      * Enable or disable migrations.
      *
      * @param enable true to enable migrations; false to disable
+     * @return 
      */
     public final PowerDatacenter setMigrationsEnabled(boolean enable) {
         this.migrationsEnabled = enable;

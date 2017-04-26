@@ -349,6 +349,13 @@ public class HostSimple implements Host {
             .findFirst().orElse(Vm.NULL);
     }
 
+    /**
+     * {@inheritDoc}
+     * @return {@inheritDoc}
+     * @see #getNumberOfWorkingPes() 
+     * @see #getNumberOfFreePes() 
+     * @see #getNumberOfFailedPes() 
+     */
     @Override
     public long getNumberOfPes() {
         return getPeList().size();

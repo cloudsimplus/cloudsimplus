@@ -29,7 +29,6 @@
 package org.cloudsimplus.sla;
 
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 import org.cloudbus.cloudsim.cloudlets.Cloudlet;
 import org.cloudbus.cloudsim.cloudlets.CloudletSimple;
@@ -38,7 +37,6 @@ import org.cloudbus.cloudsim.datacenters.Datacenter;
 import org.cloudbus.cloudsim.brokers.DatacenterBroker;
 import org.cloudbus.cloudsim.datacenters.DatacenterCharacteristics;
 import org.cloudbus.cloudsim.datacenters.DatacenterCharacteristicsSimple;
-import org.cloudbus.cloudsim.hosts.Host;
 import org.cloudbus.cloudsim.util.Log;
 import org.cloudbus.cloudsim.resources.Pe;
 import org.cloudbus.cloudsim.vms.Vm;
@@ -116,7 +114,7 @@ public final class HostFaultInjectionExample {
     public static final double CLOUDLET_CPU_USAGE_INCREMENT_PER_SECOND = 0.05;
 
     private static final int NUMBER_OF_HOSTS_TO_CREATE = 10;
-    private static final int NUMBER_OF_VMS_TO_CREATE = NUMBER_OF_HOSTS_TO_CREATE + 4;
+    private static final int NUMBER_OF_VMS_TO_CREATE = NUMBER_OF_HOSTS_TO_CREATE;
     private static final int NUMBER_OF_CLOUDLETS_TO_CREATE_BY_VM = 1;
 
     private final List<Vm> vmlist = new ArrayList<>();
@@ -306,7 +304,10 @@ public final class HostFaultInjectionExample {
                         HOST_UTILIZATION_THRESHOLD_FOR_VM_MIGRATION);
 
         PowerDatacenter dc = new PowerDatacenter(simulation, characteristics, allocationPolicy);
-        dc.setMigrationsEnabled(true).setSchedulingInterval(SCHEDULE_TIME_TO_PROCESS_DATACENTER_EVENTS);
+        dc
+          .setMigrationsEnabled(true)
+          .setSchedulingInterval(SCHEDULE_TIME_TO_PROCESS_DATACENTER_EVENTS)
+          .setLog(false);
         return dc;
     }
 
@@ -357,10 +358,7 @@ public final class HostFaultInjectionExample {
 
         UniformDistr failurePesRand = new UniformDistr(seed);
         for (int i = 0; i < datacenter0.getHostList().size(); i++) {
-            for (Iterator<Host> it = datacenter0.getHostList().iterator(); it.hasNext();) {
-                PowerHost host = (PowerHost) it.next();
-                // for (Host host : datacenter0.getHostList()) {
-                System.out.println(" hosts: " + host);
+            for (PowerHost host: datacenter0.<PowerHost>getHostList()) {
                 if (poisson.haveKEventsHappened()) {
                     UniformDistr delayForFailureOfHostRandom = new UniformDistr(1, 10, seed + i);
 
@@ -369,8 +367,7 @@ public final class HostFaultInjectionExample {
                     fault.setNumberOfFailedPesRandom(failurePesRand);
                     fault.setDelayForFailureOfHostRandom(delayForFailureOfHostRandom);
                     fault.setHost(host);
-                } else {
-                    System.out.println("\t *** Host not failed. -> Id: " + host.getId() + "\n");
+                    Log.printFormattedLine("\tFault Injection created for Host %d.", host.getId());
                 }
                 i++;
             }

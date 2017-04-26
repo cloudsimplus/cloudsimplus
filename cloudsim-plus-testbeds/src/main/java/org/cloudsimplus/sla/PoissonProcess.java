@@ -23,9 +23,9 @@
  */
 package org.cloudsimplus.sla;
 
-
-import java.util.Random;
 import org.apache.commons.math3.util.CombinatoricsUtils;
+import org.cloudbus.cloudsim.distributions.ContinuousDistribution;
+import org.cloudbus.cloudsim.distributions.UniformDistr;
 
 /**
  * Represents a Poisson Process that models the probability of an event
@@ -50,7 +50,7 @@ public class PoissonProcess {
     /**
      * Uniform random number generator.
      */
-    private final Random rand;
+    private final ContinuousDistribution rand;
 
     /**
      * Creates a new Poisson process that considers you want to check
@@ -63,7 +63,7 @@ public class PoissonProcess {
     public PoissonProcess(double lambda, long seed){
         this.k = 1;
         this.setLambda(lambda);
-        this.rand = new Random(seed);
+        this.rand = new UniformDistr(seed);
     }
 
     /**
@@ -93,7 +93,7 @@ public class PoissonProcess {
      */
     public double probabilityToArriveNextKEvents(){
         //computes the Probability Mass Function (PMF) of the Poisson distribution
-        return (Math.pow(getLambda(), k)*Math.exp(-getLambda()))/CombinatoricsUtils.factorial(k);
+        return (Math.pow(getLambda(), k) * Math.exp(-getLambda())) / CombinatoricsUtils.factorial(k);
     }
 
     /**
@@ -105,7 +105,7 @@ public class PoissonProcess {
      * @see #probabilityToArriveNextKEvents()
      */
     public boolean haveKEventsHappened(){
-        return rand.nextDouble() >= probabilityToArriveNextKEvents();
+        return rand.sample() >= probabilityToArriveNextKEvents();
     }
 
     /**
@@ -212,5 +212,4 @@ public class PoissonProcess {
 
         return totalArrivedCustomers;
     }
-
 }

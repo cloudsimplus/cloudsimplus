@@ -203,16 +203,16 @@ public class PowerDatacenterNonPowerAware extends PowerDatacenter {
             final double hostPower = getHostConsumedPowerForTimeSpan(host, timeSpan);
             datacenterPowerUsageForTimeSpan += hostPower;
 
-            Log.printFormattedLine(
+            println(String.format(
                     "%.2f: Host #%d utilization is %.2f%%",
                     getSimulation().clock(),
                     host.getId(),
-                    host.getUtilizationOfCpu() * 100);
-            Log.printFormattedLine(
+                    host.getUtilizationOfCpu() * 100));
+            println(String.format(
                     "%.2f: Host #%d energy is %.2f W*sec",
                     getSimulation().clock(),
                     host.getId(),
-                    hostPower);
+                    hostPower));
         }
 
         return datacenterPowerUsageForTimeSpan;
