@@ -65,6 +65,7 @@ import org.cloudsimplus.autoscaling.HorizontalVmScaling;
 import org.cloudsimplus.autoscaling.HorizontalVmScalingSimple;
 import org.cloudsimplus.builders.tables.CloudletsTableBuilder;
 import org.cloudsimplus.listeners.EventInfo;
+import org.cloudsimplus.sla.VmCost;
 import org.cloudsimplus.sla.readJsonFile.CpuUtilization;
 import org.cloudsimplus.sla.readJsonFile.ResponseTime;
 import org.cloudsimplus.sla.readJsonFile.SlaReader;
@@ -92,7 +93,7 @@ public final class CloudletResponseTimeMinimizationExperiment extends Simulation
     private static final int HOST_PES = 32;
 
     private List<Host> hostList;
-    private List<Vm> vmList;
+    private static List<Vm> vmList;
     private List<Cloudlet> cloudletList;
 
     private final ContinuousDistribution randCloudlet, randVm;
@@ -253,6 +254,16 @@ public final class CloudletResponseTimeMinimizationExperiment extends Simulation
     @Override
     protected DatacenterSimple createDatacenter() {
         DatacenterSimple dc = super.createDatacenter();
+        double cost = 3.0; // the cost of using processing in this resource
+        double costPerMem = 0.05; // the cost of using memory in this resource
+        double costPerStorage = 0.001; // the cost of using storage in this
+        // resource
+        double costPerBw = 0.0; // the cost of using bw in this resource
+        dc.getCharacteristics()
+                .setCostPerSecond(cost)
+                .setCostPerMem(costPerMem)
+                .setCostPerStorage(costPerStorage)
+                .setCostPerBw(costPerBw);
         dc.setSchedulingInterval(SCHEDULING_INTERVAL);
         return dc;
     }
@@ -262,7 +273,7 @@ public final class CloudletResponseTimeMinimizationExperiment extends Simulation
         vmList = new ArrayList<>(VMS);
         for (int i = 0; i < VMS; i++) {
             Vm vm = createVm();
-          //  createHorizontalVmScaling(vm);
+            //  createHorizontalVmScaling(vm);
             vmList.add(vm);
         }
         return vmList;
@@ -300,8 +311,8 @@ public final class CloudletResponseTimeMinimizationExperiment extends Simulation
 
     /**
      * A {@link Predicate} that checks if a given VM is overloaded or not based
-     * on CPU usage. A reference to this method is assigned to
-     * each Horizontal VM Scaling created.
+     * on CPU usage. A reference to this method is assigned to each Horizontal
+     * VM Scaling created.
      *
      * @param vm the VM to check if it is overloaded
      * @return true if the VM is overloaded, false otherwise
@@ -395,16 +406,12 @@ public final class CloudletResponseTimeMinimizationExperiment extends Simulation
     }
 
     /**
-     * Gets the ratio of existing vPEs (VM PEs) divided by the number
-     * of required PEs of all Cloudlets, which indicates
-<<<<<<< HEAD
-     * the mean number of vPEs that are available for each PE required 
-=======
-     * the mean number of vPEs that are available for each PE required
->>>>>>> upstream/master
-     * by a Cloudlet, considering all the existing Cloudlets.
-     * For instance, if the ratio is 0.5, in average, two Cloudlets
-     * requiring one vPE will share that same vPE.
+     * Gets the ratio of existing vPEs (VM PEs) divided by the number of
+     * required PEs of all Cloudlets, which indicates the mean number of vPEs
+     * that are available for each PE required by a Cloudlet, considering all
+     * the existing Cloudlets. For instance, if the ratio is 0.5, in average,
+     * two Cloudlets requiring one vPE will share that same vPE.
+     *
      * @return the average of vPEs/CloudletsPEs ratio
      */
     double getRatioOfExistingVmPesToRequiredCloudletPes() {
@@ -412,6 +419,27 @@ public final class CloudletResponseTimeMinimizationExperiment extends Simulation
         double sumPesCloudlets = getSumPesCloudlets();
 
         return sumPesVms / sumPesCloudlets;
+    }
+
+    /**
+     * Calculates the cost price of resources (processing, bw, memory, storage)
+     * of each or all of the Datacenter VMs()
+     *
+     * @param vmList
+     */
+    double getTotalCostPrice() {
+        VmCost vmCost;
+        double totalCost = 0;
+        for (Vm vm : vmList) {
+            if (vm.getCloudletScheduler().hasFinishedCloudlets()) {
+                vmCost = new VmCost(vm);
+                totalCost += vmCost.getTotalCost();
+            } else {
+                Log.printFormattedLine(
+                        "\tVm %d didn't execute any Cloudlet.", vm.getId());
+            }
+        }
+        return totalCost;
     }
 
     /**
@@ -431,5 +459,6 @@ public final class CloudletResponseTimeMinimizationExperiment extends Simulation
         exp.run();
         exp.getCloudletsResponseTimeAverage();
         exp.getPercentageOfCloudletsMeetingResponseTime();
+        double totalCost = exp.getTotalCostPrice();
     }
 }

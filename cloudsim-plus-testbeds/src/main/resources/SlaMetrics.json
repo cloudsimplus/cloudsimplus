@@ -11,7 +11,7 @@
             },
             {
                 "name": "valueMax",
-                "value": 100,
+                "value": 30,
                 "unit" : "Milliseconds"
             }]
     },

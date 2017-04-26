@@ -47,8 +47,8 @@ public class CloudletResponseTimeWithoutMinimizationRunner extends ExperimentRun
      */
     static final long[] CLOUDLET_LENGTHS = {10000, 14000, 20000, 40000};
     static final int[] VM_PES = {2, 4};
-    static final int VMS = 30;
-    static final int CLOUDLETS = 110;
+    static final int VMS = 4;
+    static final int CLOUDLETS = 8;
 
     /**
      * The response time average for all the experiments.
@@ -66,7 +66,11 @@ public class CloudletResponseTimeWithoutMinimizationRunner extends ExperimentRun
      */
     private List<Double> ratioOfVmPesToRequiredCloudletPesList;
 
-
+    /**
+     * Average of the cost total
+     */
+    private List<Double> averageTotalCostSimulation;
+    
     /**
      * Indicates if each experiment will output execution logs or not.
      */
@@ -80,7 +84,7 @@ public class CloudletResponseTimeWithoutMinimizationRunner extends ExperimentRun
      */
     public static void main(String[] args) {
         new CloudletResponseTimeWithoutMinimizationRunner()
-                .setSimulationRuns(2000)
+                .setSimulationRuns(500)
                 .setApplyAntitheticVariatesTechnique(true)
                 .setNumberOfBatches(5) //Comment this or set to 0 to disable the "Batch Means Method"
                 .setBaseSeed(1475098589732L) //Comment this to use the current time as base seed 1475098589732L
@@ -93,6 +97,7 @@ public class CloudletResponseTimeWithoutMinimizationRunner extends ExperimentRun
         cloudletResponseTimes = new ArrayList<>();
         percentageOfCloudletsMeetingResponseTimes = new ArrayList<>();
         ratioOfVmPesToRequiredCloudletPesList = new ArrayList<>();
+        averageTotalCostSimulation = new ArrayList<>();
     }
 
     @Override
@@ -121,6 +126,7 @@ public class CloudletResponseTimeWithoutMinimizationRunner extends ExperimentRun
         percentageOfCloudletsMeetingResponseTimes.add(
                 experiment.getPercentageOfCloudletsMeetingResponseTime());
         ratioOfVmPesToRequiredCloudletPesList.add(experiment.getRatioOfExistingVmPesToRequiredCloudletPes());
+        averageTotalCostSimulation.add(experiment.getTotalCostPrice());
     }
 
     @Override
@@ -129,6 +135,8 @@ public class CloudletResponseTimeWithoutMinimizationRunner extends ExperimentRun
         map.put("Cloudlet Response Time", cloudletResponseTimes);
         map.put("Percentage Of Cloudlets Meeting Response Times", percentageOfCloudletsMeetingResponseTimes);
         map.put("Average of vPEs/CloudletsPEs", ratioOfVmPesToRequiredCloudletPesList);
+        map.put("Average of Total Cost of simulation", averageTotalCostSimulation);
+       
         return map;
     }
 

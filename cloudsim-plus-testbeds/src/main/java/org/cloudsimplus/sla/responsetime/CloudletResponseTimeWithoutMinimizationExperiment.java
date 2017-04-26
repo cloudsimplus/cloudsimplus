@@ -65,6 +65,7 @@ import org.cloudsimplus.autoscaling.HorizontalVmScaling;
 import org.cloudsimplus.autoscaling.HorizontalVmScalingSimple;
 import org.cloudsimplus.builders.tables.CloudletsTableBuilder;
 import org.cloudsimplus.listeners.EventInfo;
+import org.cloudsimplus.sla.VmCost;
 import org.cloudsimplus.sla.readJsonFile.CpuUtilization;
 import org.cloudsimplus.sla.readJsonFile.ResponseTime;
 import org.cloudsimplus.sla.readJsonFile.SlaReader;
@@ -78,7 +79,7 @@ import org.cloudsimplus.testbeds.SimulationExperiment;
  *
  * @author raysaoliveira
  */
-public class CloudletResponseTimeWithoutMinimizationExperiment extends SimulationExperiment{
+public class CloudletResponseTimeWithoutMinimizationExperiment extends SimulationExperiment {
 
     private static final int SCHEDULING_INTERVAL = 5;
 
@@ -121,7 +122,7 @@ public class CloudletResponseTimeWithoutMinimizationExperiment extends Simulatio
             cpu.checkCpuUtilizationSlaContract();
             cpuUtilizationSlaContract = cpu.getMaxValueCpuUtilization();
 
-          //  getCloudsim().addOnClockTickListener(this::createNewCloudlets);
+            //  getCloudsim().addOnClockTickListener(this::createNewCloudlets);
             getCloudsim().addOnClockTickListener(this::printVmsCpuUsage);
         } catch (IOException ex) {
             Logger.getLogger(CloudletResponseTimeWithoutMinimizationExperiment.class.getName()).log(Level.SEVERE, null, ex);
@@ -155,7 +156,6 @@ public class CloudletResponseTimeWithoutMinimizationExperiment extends Simulatio
         new CloudletsTableBuilder(finishedCloudlets).build();
     }
 
-
     @Override
     protected List<Cloudlet> createCloudlets(DatacenterBroker broker) {
         cloudletList = new ArrayList<>(CLOUDLETS);
@@ -183,16 +183,26 @@ public class CloudletResponseTimeWithoutMinimizationExperiment extends Simulatio
     @Override
     protected DatacenterSimple createDatacenter() {
         DatacenterSimple dc = super.createDatacenter();
+        double cost = 3.0; // the cost of using processing in this resource
+        double costPerMem = 0.05; // the cost of using memory in this resource
+        double costPerStorage = 0.001; // the cost of using storage in this
+        // resource
+        double costPerBw = 0.0; // the cost of using bw in this resource
+        dc.getCharacteristics()
+                .setCostPerSecond(cost)
+                .setCostPerMem(costPerMem)
+                .setCostPerStorage(costPerStorage)
+                .setCostPerBw(costPerBw);
         dc.setSchedulingInterval(SCHEDULING_INTERVAL);
         return dc;
     }
 
-   @Override
+    @Override
     protected List<Vm> createVms(DatacenterBroker broker) {
         vmList = new ArrayList<>(VMS);
         for (int i = 0; i < VMS; i++) {
             Vm vm = createVm();
-           // createHorizontalVmScaling(vm);
+            // createHorizontalVmScaling(vm);
             vmList.add(vm);
         }
         return vmList;
@@ -228,10 +238,10 @@ public class CloudletResponseTimeWithoutMinimizationExperiment extends Simulatio
         vm.setHorizontalScaling(horizontalScaling);
     }
 
-     /**
+    /**
      * A {@link Predicate} that checks if a given VM is overloaded or not based
-     * on CPU usage. A reference to this method is assigned to
-     * each Horizontal VM Scaling created.
+     * on CPU usage. A reference to this method is assigned to each Horizontal
+     * VM Scaling created.
      *
      * @param vm the VM to check if it is overloaded
      * @return true if the VM is overloaded, false otherwise
@@ -244,7 +254,7 @@ public class CloudletResponseTimeWithoutMinimizationExperiment extends Simulatio
     @Override
     protected List<Host> createHosts() {
         hostList = new ArrayList<>(HOSTS);
-        for(int i =0; i < HOSTS; i++){
+        for (int i = 0; i < HOSTS; i++) {
             hostList.add(createHost());
         }
         return hostList;
@@ -274,8 +284,9 @@ public class CloudletResponseTimeWithoutMinimizationExperiment extends Simulatio
     }
 
     /**
-     * Computes the response time average for all finished Cloudlets
-     * on this experiment.
+     * Computes the response time average for all finished Cloudlets on this
+     * experiment.
+     *
      * @return the response time average
      */
     double getCloudletsResponseTimeAverage() {
@@ -289,7 +300,7 @@ public class CloudletResponseTimeWithoutMinimizationExperiment extends Simulatio
 
         Log.printFormattedLine(
                 "\t\t\n Response Time simulation: %.2f \n Response Time contrato SLA: %.2f \n",
-                 cloudletResponseTime.getMean(), responseTimeSlaContract);
+                cloudletResponseTime.getMean(), responseTimeSlaContract);
         return cloudletResponseTime.getMean();
     }
 
@@ -305,11 +316,11 @@ public class CloudletResponseTimeWithoutMinimizationExperiment extends Simulatio
 
         System.out.printf("\n ** Percentage of cloudlets that complied with "
                 + "the SLA Agreement:  %.2f %%",
-                ((totalOfcloudletSlaSatisfied * 100) /broker.getCloudletsFinishedList().size()));
+                ((totalOfcloudletSlaSatisfied * 100) / broker.getCloudletsFinishedList().size()));
         System.out.printf("\nTotal of cloudlets SLA satisfied: %.0f de %d", totalOfcloudletSlaSatisfied, broker.getCloudletsFinishedList().size());
-        return (totalOfcloudletSlaSatisfied * 100 )/broker.getCloudletsFinishedList().size();
+        return (totalOfcloudletSlaSatisfied * 100) / broker.getCloudletsFinishedList().size();
     }
-    
+
     double getSumPesVms() {
         return vmList.stream()
                 .mapToDouble(vm -> vm.getNumberOfPes())
@@ -323,12 +334,12 @@ public class CloudletResponseTimeWithoutMinimizationExperiment extends Simulatio
     }
 
     /**
-     * Gets the ratio of existing vPEs (VM PEs) divided by the number
-     * of required PEs of all Cloudlets, which indicates
-     * the mean number of vPEs that are available for each PE required 
-     * by a Cloudlet, considering all the existing Cloudlets.
-     * For instance, if the ratio is 0.5, in average, two Cloudlets
-     * requiring one vPE will share that same vPE.
+     * Gets the ratio of existing vPEs (VM PEs) divided by the number of
+     * required PEs of all Cloudlets, which indicates the mean number of vPEs
+     * that are available for each PE required by a Cloudlet, considering all
+     * the existing Cloudlets. For instance, if the ratio is 0.5, in average,
+     * two Cloudlets requiring one vPE will share that same vPE.
+     *
      * @return the average of vPEs/CloudletsPEs ratio
      */
     double getRatioOfExistingVmPesToRequiredCloudletPes() {
@@ -339,7 +350,29 @@ public class CloudletResponseTimeWithoutMinimizationExperiment extends Simulatio
     }
 
     /**
+     * Calculates the cost price of resources (processing, bw, memory, storage)
+     * of each or all of the Datacenter VMs()
+     *
+     * @param vmList
+     */
+    double getTotalCostPrice() {
+        VmCost vmCost;
+        double totalCost = 0.0;
+        for (Vm vm : vmList) {
+            if (vm.getCloudletScheduler().hasFinishedCloudlets()) {
+                vmCost = new VmCost(vm);
+                totalCost += vmCost.getTotalCost();
+            } else {
+                Log.printFormattedLine(
+                        "\tVm %d didn't execute any Cloudlet.", vm.getId());
+            }
+        }
+        return totalCost;
+    }
+
+    /**
      * A main method just for test purposes.
+     *
      * @param args
      * @throws FileNotFoundException
      * @throws IOException
@@ -348,11 +381,12 @@ public class CloudletResponseTimeWithoutMinimizationExperiment extends Simulatio
         final long seed = System.currentTimeMillis();
         ContinuousDistribution randCloudlet = new UniformDistr(seed);
         ContinuousDistribution randVm = new UniformDistr(seed);
-        CloudletResponseTimeWithoutMinimizationExperiment exp =
-                new CloudletResponseTimeWithoutMinimizationExperiment(randCloudlet, randVm);
+        CloudletResponseTimeWithoutMinimizationExperiment exp
+                = new CloudletResponseTimeWithoutMinimizationExperiment(randCloudlet, randVm);
         exp.setVerbose(true);
         exp.run();
         exp.getCloudletsResponseTimeAverage();
         exp.getPercentageOfCloudletsMeetingResponseTime();
-    }    
+        double totalCost = exp.getTotalCostPrice();
+    }
 }

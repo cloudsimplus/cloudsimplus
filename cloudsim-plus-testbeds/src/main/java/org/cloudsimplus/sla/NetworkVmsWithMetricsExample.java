@@ -272,7 +272,7 @@ public class NetworkVmsWithMetricsExample {
         }
         int ram = 4096; // host memory (MEGABYTE)
         long storage = 1000000; // host storage
-        long bw = 10000;
+        long bw = 1000;
 
         for (int i = 0; i < 4; i++) {
             Host host = new NetworkHost(ram, bw, storage, peList);

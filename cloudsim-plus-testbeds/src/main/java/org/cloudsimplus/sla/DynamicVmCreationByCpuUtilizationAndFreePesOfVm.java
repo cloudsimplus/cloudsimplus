@@ -112,7 +112,6 @@ public class DynamicVmCreationByCpuUtilizationAndFreePesOfVm {
     private static final int[] VM_PES = {2, 4};
     private ContinuousDistribution randCloudlet, randVm;
 
-    private int createdCloudlets;
     private int createsVms;
 
     /**
@@ -163,10 +162,10 @@ public class DynamicVmCreationByCpuUtilizationAndFreePesOfVm {
 
         createDatacenter();
         broker0 = new DatacenterBrokerSimple(simulation);
-        broker0.setCloudletComparator(sortCloudletsByLengthReversed);
-        broker0.setVmMapper(this::selectVmForCloudlet);
+       // broker0.setCloudletComparator(sortCloudletsByLengthReversed);
+        //broker0.setVmMapper(this::selectVmForCloudlet);
 
-        vmList.addAll(createListOfScalableVms());
+        vmList.addAll(createListOfVms());
 
         createCloudletList();
 
@@ -320,7 +319,7 @@ public class DynamicVmCreationByCpuUtilizationAndFreePesOfVm {
      * @return the list of scalable VMs
      * @see #VMS_PES_LIST
      */
-    private List<Vm> createListOfScalableVms() {
+    private List<Vm> createListOfVms() {
         List<Vm> newList = new ArrayList<>(VMS_PES_LIST.length);
         for (final int pes: VMS_PES_LIST) {
             newList.add(createVm(pes));
@@ -394,6 +393,8 @@ public class DynamicVmCreationByCpuUtilizationAndFreePesOfVm {
             if (vm.getCloudletScheduler().hasFinishedCloudlets()) {
                 vmCost = new VmCost(vm);
                 totalCost += vmCost.getTotalCost();
+                System.out.println("\t #price: " + totalCost);
+         
             } else {
                 Log.printFormattedLine(
                     "\tVm %d didn't execute any Cloudlet.", vm.getId());

@@ -46,8 +46,8 @@ final class CloudletResponseTimeMinimizationRunner extends ExperimentRunner<Clou
      */
     static final long[] CLOUDLET_LENGTHS = {10000, 14000, 20000, 40000};
     static final int[] VM_PES = {2, 4};
-    static final int VMS = 30;
-    static final int CLOUDLETS = 40;
+    static final int VMS = 4;
+    static final int CLOUDLETS = 8;
 
     /**
      * The response time average for all the experiments.
@@ -64,8 +64,12 @@ final class CloudletResponseTimeMinimizationRunner extends ExperimentRunner<Clou
      * Amount of cloudlet PE per PE of vm.
      */
     private List<Double> ratioOfVmPesToRequiredCloudletPesList;
-
     
+    /**
+     * Average of the cost total
+     */
+    private List<Double> averageTotalCostSimulation;
+
     /**
      * Indicates if each experiment will output execution logs or not.
      */
@@ -79,19 +83,21 @@ final class CloudletResponseTimeMinimizationRunner extends ExperimentRunner<Clou
      */
     public static void main(String[] args) {
         new CloudletResponseTimeMinimizationRunner()
-                .setSimulationRuns(2000)
+                .setSimulationRuns(500)
                 .setApplyAntitheticVariatesTechnique(true)
                 .setNumberOfBatches(5) //Comment this or set to 0 to disable the "Batch Means Method"
                 .setBaseSeed(1475098589732L) //Comment this to use the current time as base seed 1475098589732L
                 .setVerbose(true)
                 .run();
     }
-    
+
     CloudletResponseTimeMinimizationRunner() {
         super();
         cloudletResponseTimes = new ArrayList<>();
         percentageOfCloudletsMeetingResponseTimes = new ArrayList<>();
         ratioOfVmPesToRequiredCloudletPesList = new ArrayList<>();
+        averageTotalCostSimulation = new ArrayList<>();
+
     }
 
     @Override
@@ -101,10 +107,10 @@ final class CloudletResponseTimeMinimizationRunner extends ExperimentRunner<Clou
         CloudletResponseTimeMinimizationExperiment exp
                 = new CloudletResponseTimeMinimizationExperiment(randCloudlet, randVm);
         exp.setVerbose(experimentVerbose)
-           .setAfterExperimentFinish(this::afterExperimentFinish);
+                .setAfterExperimentFinish(this::afterExperimentFinish);
         return exp;
     }
-    
+
     /**
      * Method automatically called after every experiment finishes running. It
      * performs some post-processing such as collection of data for statistic
@@ -117,16 +123,20 @@ final class CloudletResponseTimeMinimizationRunner extends ExperimentRunner<Clou
         percentageOfCloudletsMeetingResponseTimes.add(
                 exp.getPercentageOfCloudletsMeetingResponseTime());
         ratioOfVmPesToRequiredCloudletPesList.add(exp.getRatioOfExistingVmPesToRequiredCloudletPes());
+        averageTotalCostSimulation.add(exp.getTotalCostPrice());
     }
 
-    @Override protected void setup() {/**/}
-    
+    @Override
+    protected void setup() {/**/
+    }
+
     @Override
     protected Map<String, List<Double>> createMetricsMap() {
         Map<String, List<Double>> map = new HashMap<>();
         map.put("Cloudlet Response Time", cloudletResponseTimes);
         map.put("Percentage Of Cloudlets Meeting Response Times", percentageOfCloudletsMeetingResponseTimes);
         map.put("Average of vPEs/CloudletsPEs", ratioOfVmPesToRequiredCloudletPesList);
+        map.put("Average of Total Cost of simulation", averageTotalCostSimulation);
         return map;
     }
 

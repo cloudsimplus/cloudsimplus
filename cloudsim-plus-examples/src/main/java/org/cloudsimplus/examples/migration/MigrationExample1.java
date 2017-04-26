@@ -54,8 +54,6 @@ import org.cloudbus.cloudsim.selectionpolicies.power.PowerVmSelectionPolicyMinim
 import org.cloudbus.cloudsim.power.models.PowerModelLinear;
 import org.cloudbus.cloudsim.provisioners.PeProvisionerSimple;
 import org.cloudbus.cloudsim.provisioners.ResourceProvisionerSimple;
-import org.cloudbus.cloudsim.resources.Bandwidth;
-import org.cloudbus.cloudsim.resources.Ram;
 import org.cloudsimplus.builders.tables.CloudletsTableBuilder;
 
 /**

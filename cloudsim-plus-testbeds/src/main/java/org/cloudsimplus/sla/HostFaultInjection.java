@@ -51,6 +51,8 @@ import org.cloudbus.cloudsim.resources.Pe;
  * fail, thus causing error in the simulator.
  *
  * @author raysaoliveira
+ * 
+ * see <link>https://blogs.sap.com/2014/07/21/equipment-availability-vs-reliability/
  *
  */
 public class HostFaultInjection extends CloudSimEntity {
