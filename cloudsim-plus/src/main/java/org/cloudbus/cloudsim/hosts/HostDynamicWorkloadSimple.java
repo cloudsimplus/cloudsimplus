@@ -94,14 +94,6 @@ public class HostDynamicWorkloadSimple extends HostSimple implements HostDynamic
         double hostTotalRequestedMips = 0;
 
         for (final Vm vm : getVmList()) {
-            getVmScheduler().deallocatePesForVm(vm);
-        }
-
-        for (final Vm vm : getVmList()) {
-            getVmScheduler().allocatePesForVm(vm, vm.getCurrentRequestedMips());
-        }
-
-        for (final Vm vm : getVmList()) {
             final double totalRequestedMips = vm.getCurrentRequestedTotalMips();
 
             showVmResourceUsageOnHost(vm);

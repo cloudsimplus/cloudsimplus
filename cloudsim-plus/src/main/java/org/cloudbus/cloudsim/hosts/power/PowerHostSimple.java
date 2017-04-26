@@ -148,5 +148,4 @@ public class PowerHostSimple extends HostDynamicWorkloadSimple implements PowerH
     public PowerModel getPowerModel() {
         return powerModel;
     }
-
 }

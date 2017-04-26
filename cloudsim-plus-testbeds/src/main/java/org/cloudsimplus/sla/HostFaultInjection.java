@@ -28,6 +28,7 @@
  */
 package org.cloudsimplus.sla;
 
+import java.util.Objects;
 import org.cloudbus.cloudsim.core.events.SimEvent;
 import org.cloudbus.cloudsim.hosts.Host;
 import org.cloudbus.cloudsim.util.Log;
@@ -62,15 +63,15 @@ public class HostFaultInjection extends CloudSimEntity {
      * failures with a delay and number of failed PEs generated using a Uniform
      * Pseudo Random Number Generator (PRNG) for each one.
      *
-     * @param simulation The CloudSim instance that represents the simulation
-     * the Entity is related to
+     * @param host the Host the faults will be generated on
      * @see
      * #setDelayForFailureOfHostRandom(org.cloudbus.cloudsim.distributions.ContinuousDistribution)
      * @see
      * #setNumberOfFailedPesRandom(org.cloudbus.cloudsim.distributions.ContinuousDistribution)
      */
-    public HostFaultInjection(CloudSim simulation) {
-        super(simulation);
+    public HostFaultInjection(Host host) {
+        super(host.getSimulation());
+        this.setHost(host);
         this.numberOfFailedPesRandom = new UniformDistr();
         this.delayForFailureOfHostRandom = new UniformDistr();
     }
@@ -86,11 +87,10 @@ public class HostFaultInjection extends CloudSimEntity {
         switch (ev.getTag()) {
             case CloudSimTags.HOST_FAILURE:
                 generateFailure();
-                break;
-
+            break;
             default:
                 Log.printLine(getName() + ": unknown event type");
-                break;
+            break;
         }
     }
 
@@ -106,10 +106,14 @@ public class HostFaultInjection extends CloudSimEntity {
      * otherwise
      */
     public final boolean generateFailure() {
+        Log.printFormattedLine("\t%.2f: Generated failure for Host %d", getSimulation().clock(), host.getId());
         final int numberOfFailedPes = setFailedHostPes();
         final long hostWorkingPes = host.getNumberOfWorkingPes();
         final long vmsRequiredPes = getPesSumOfWorkingVms();
-                
+        if(vmsRequiredPes == 0){
+            System.out.printf("\t#Host %d number of VMs: %d\n", host.getId(), host.getVmList().size());
+        }
+        System.out.printf("\t#Host %d working PEs: %d. VMs required PEs: %d\n", host.getId(), hostWorkingPes, vmsRequiredPes);
         if(hostWorkingPes == 0){
             setAllVmsToFailed();  
         } else if (hostWorkingPes >= vmsRequiredPes) {
@@ -137,7 +141,7 @@ public class HostFaultInjection extends CloudSimEntity {
     private void logNoVmFailure() {
         final int vmsRequiredPes = (int)getPesSumOfWorkingVms();
         Log.printFormattedLine(
-                "\t%.2f: Host %d -> Number of failed PEs is less than the number of PEs required by all its %d VMs, thus it doesn't affect any VM.",
+                "\t%.2f: Host %d -> Number of failed PEs is less than PEs required by all its %d VMs, thus it doesn't affect any VM.",
                 getSimulation().clock(), host.getId(), host.getVmList().size());
         Log.printFormattedLine("\t      Host %d -> Total PEs: %d | Failed PEs: %d | Working PEs: %d | Current PEs required by VMs: %d.\n",
                 host.getId(), host.getNumberOfPes(), host.getNumberOfFailedPes(), host.getNumberOfWorkingPes(),
@@ -156,13 +160,15 @@ public class HostFaultInjection extends CloudSimEntity {
                 getSimulation().clock(), host.getId(), host.getNumberOfFailedPes(), 
                 host.getNumberOfPes(), host.getNumberOfWorkingPes());
         Log.printFormattedLine(
-                "\t      %d VMs affected from a total of %d\n", 
-                affectedVms, host.getVmList().size());
+                "\t      %d VMs affected from a total of %d. %d PEs have to be removed from VMs\n", 
+                affectedVms, host.getVmList().size(), failedPesToRemoveFromVms);
         while(failedPesToRemoveFromVms-- > 0){
             i = i % affectedVms;
             Vm vm = host.getVmList().get(i);
+            System.out.printf("\t#VM %d PEs before deallocation of 1 PE", vm.getNumberOfPes());
             //@todo needs to check if the VM pesNumber is being reduced
             host.getVmScheduler().deallocatePesForVm(vm, 1);
+            System.out.printf("\t#VM %d PEs after deallocaton", vm.getNumberOfPes());
             i++;
         }
         
@@ -258,7 +264,8 @@ public class HostFaultInjection extends CloudSimEntity {
      *
      * @param host the host to set
      */
-    public void setHost(Host host) {
+    private void setHost(Host host) {
+        Objects.requireNonNull(host);
         this.host = host;
     }
 

@@ -23,6 +23,7 @@ import org.cloudbus.cloudsim.core.CloudSimTags;
 import org.cloudbus.cloudsim.core.events.SimEvent;
 import org.cloudbus.cloudsim.core.predicates.PredicateType;
 import org.cloudbus.cloudsim.resources.FileStorage;
+import org.cloudbus.cloudsim.util.Log;
 
 /**
  * PowerDatacenter is a class that enables simulation of power-aware data
@@ -118,7 +119,7 @@ public class PowerDatacenter extends DatacenterSimple {
             schedule(getId(), getSchedulingInterval(), CloudSimTags.VM_UPDATE_CLOUDLET_PROCESSING_EVENT);
             return;
         }
-        double currentTime = getSimulation().clock();
+        final double currentTime = getSimulation().clock();
 
         // if some time passed since last processing
         if (currentTime > getLastProcessTime()) {
@@ -201,7 +202,7 @@ public class PowerDatacenter extends DatacenterSimple {
         println("\n\n--------------------------------------------------------------\n\n");
         println(String.format("New resource usage for the time frame starting at %.2f:", currentTime));
 
-        final double nextCloudletFinishTime = getNextCloudletFinishTime(currentTime);
+        final double nextCloudletFinishTime = updateHostsProcessing(currentTime);
         final double datacenterPowerUsageForTimeSpan = getDatacenterPowerUsageForTimeSpan();
 
         setPower(getPower() + datacenterPowerUsageForTimeSpan);
@@ -214,13 +215,13 @@ public class PowerDatacenter extends DatacenterSimple {
     }
 
     /**
-     * Gets the expected finish time of the next Cloudlet to finish in any of the existing Hosts.
+     * Updates the processing of all existing Hosts.
      *
      * @param currentTime the current simulation time
-     * @returnthe expected finish time of the next finishing Cloudlet or {@link Double#MAX_VALUE} if not
+     * @return the expected finish time of the next finishing Cloudlet or {@link Double#MAX_VALUE} if not
      * Cloudlet is running.
      */
-    private double getNextCloudletFinishTime(double currentTime) {
+    private double updateHostsProcessing(double currentTime) {
         double minTime = Double.MAX_VALUE;
         for (PowerHostSimple host : this.<PowerHostSimple>getHostList()) {
             println();
@@ -288,7 +289,9 @@ public class PowerDatacenter extends DatacenterSimple {
             for (Vm vm : host.getFinishedVms()) {
                 getVmAllocationPolicy().deallocateHostForVm(vm);
                 getVmList().remove(vm);
-                println(String.format("VM #%d has been deallocated from host #%d", vm.getId(), host.getId()));
+                Log.printFormattedLine(
+                        String.format("%.2f: VM #%d has been deallocated from host #%d", 
+                               getSimulation().clock(), vm.getId(), host.getId()));
             }
         }
     }

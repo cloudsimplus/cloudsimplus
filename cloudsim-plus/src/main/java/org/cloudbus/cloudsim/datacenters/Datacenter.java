@@ -94,6 +94,7 @@ public interface Datacenter extends SimEntity {
      * Datacenter (in seconds).
      *
      * @param schedulingInterval the new scheduling interval
+     * @return 
      * @see #getSchedulingInterval()
      */
     Datacenter setSchedulingInterval(double schedulingInterval);
@@ -119,5 +120,4 @@ public interface Datacenter extends SimEntity {
      * @return
      */
     Datacenter setStorageList(List<FileStorage> storageList);
-
 }

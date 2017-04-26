@@ -30,6 +30,7 @@ package org.cloudsimplus.sla;
 
 import java.util.ArrayList;
 import java.util.List;
+import org.cloudbus.cloudsim.allocationpolicies.VmAllocationPolicySimple;
 import org.cloudbus.cloudsim.cloudlets.Cloudlet;
 import org.cloudbus.cloudsim.cloudlets.CloudletSimple;
 import org.cloudbus.cloudsim.schedulers.cloudlet.CloudletSchedulerTimeShared;
@@ -47,7 +48,7 @@ import org.cloudbus.cloudsim.core.CloudSim;
 import org.cloudbus.cloudsim.datacenters.power.PowerDatacenter;
 import org.cloudbus.cloudsim.distributions.UniformDistr;
 import org.cloudbus.cloudsim.hosts.power.PowerHost;
-import org.cloudbus.cloudsim.hosts.power.PowerHostUtilizationHistory;
+import org.cloudbus.cloudsim.hosts.power.PowerHostSimple;
 import org.cloudbus.cloudsim.power.models.PowerModelLinear;
 import org.cloudbus.cloudsim.provisioners.PeProvisionerSimple;
 import org.cloudbus.cloudsim.provisioners.ResourceProvisionerSimple;
@@ -88,8 +89,9 @@ public final class HostFaultInjectionExample {
     private static final long VM_SIZE = 1000; //image size (MEGABYTE)
     private static final int VM_RAM = 10000; //vm memory (MEGABYTE)
     private static final long VM_BW = 100000;
-    private static final int VM_PES_NUM = 2; //number of cpus
-
+    private static final int VM_PES = 2; //number of cpus
+    
+    private static final int CLOUDLET_PES = 1; 
     private static final long CLOUDLET_LENGHT = 20000;
     private static final long CLOUDLET_FILESIZE = 300;
     private static final long CLOUDLET_OUTPUTSIZE = 300;
@@ -113,9 +115,9 @@ public final class HostFaultInjectionExample {
      */
     public static final double CLOUDLET_CPU_USAGE_INCREMENT_PER_SECOND = 0.05;
 
-    private static final int NUMBER_OF_HOSTS_TO_CREATE = 10;
-    private static final int NUMBER_OF_VMS_TO_CREATE = NUMBER_OF_HOSTS_TO_CREATE;
-    private static final int NUMBER_OF_CLOUDLETS_TO_CREATE_BY_VM = 1;
+    private static final int HOSTS = 10;
+    private static final int VMS = HOSTS;
+    private static final int CLOUDLETS_BY_VM = 1;
 
     private final List<Vm> vmlist = new ArrayList<>();
     private CloudSim simulation;
@@ -152,7 +154,7 @@ public final class HostFaultInjectionExample {
 
     public void createAndSubmitCloudlets(DatacenterBroker broker) {
         double initialCloudletCpuUtilizationPercentage = CLOUDLET_INITIAL_CPU_UTILIZATION_PERCENTAGE;
-        final int numberOfCloudlets = NUMBER_OF_VMS_TO_CREATE - 1;
+        final int numberOfCloudlets = VMS - 1;
         for (int i = 0; i < numberOfCloudlets; i++) {
             createAndSubmitCloudletsWithStaticCpuUtilization(
                     initialCloudletCpuUtilizationPercentage, vmlist.get(i), broker);
@@ -164,7 +166,7 @@ public final class HostFaultInjectionExample {
     }
 
     public void createAndSubmitVms(DatacenterBroker broker) {
-        for (int i = 0; i < NUMBER_OF_VMS_TO_CREATE; i++) {
+        for (int i = 0; i < VMS; i++) {
             PowerVm vm = createVm(broker);
             vmlist.add(vm);
         }
@@ -181,20 +183,20 @@ public final class HostFaultInjectionExample {
      * (and maybe VM CPU usage too).
      */
     public PowerVm createVm(DatacenterBroker broker) {
-        PowerVm vm = new PowerVm(vmlist.size(), VM_MIPS, VM_PES_NUM);
+        PowerVm vm = new PowerVm(vmlist.size(), VM_MIPS, VM_PES);
         vm.setSchedulingInterval(1)
                 .setRam(VM_RAM).setBw(VM_BW).setSize(VM_SIZE)
                 .setBroker(broker)
                 .setCloudletScheduler(new CloudletSchedulerTimeShared());
 
         Log.printConcatLine(
-                "#Requested creation of VM ", vm.getId(), " with ", VM_MIPS, " MIPS x ", VM_PES_NUM);
+                "#Requested creation of VM ", vm.getId(), " with ", VM_MIPS, " MIPS x ", VM_PES);
         return vm;
     }
 
     /**
      * Creates the number of Cloudlets defined in
-     * {@link #NUMBER_OF_CLOUDLETS_TO_CREATE_BY_VM} and submits them to the
+     * {@link #CLOUDLETS_BY_VM} and submits them to the
      * given broker.
      *
      * @param cloudletInitialCpuUsagePercent the percentage of CPU utilization
@@ -218,10 +220,10 @@ public final class HostFaultInjectionExample {
             boolean progressiveCpuUsage) {
         cloudletInitialCpuUsagePercent = Math.min(cloudletInitialCpuUsagePercent, 1);
         maxCloudletCpuUtilizationPercentage = Math.min(maxCloudletCpuUtilizationPercentage, 1);
-        final List<Cloudlet> list = new ArrayList<>(NUMBER_OF_CLOUDLETS_TO_CREATE_BY_VM);
+        final List<Cloudlet> list = new ArrayList<>(CLOUDLETS_BY_VM);
         UtilizationModel utilizationModelFull = new UtilizationModelFull();
         int cloudletId;
-        for (int i = 0; i < NUMBER_OF_CLOUDLETS_TO_CREATE_BY_VM; i++) {
+        for (int i = 0; i < CLOUDLETS_BY_VM; i++) {
             cloudletId = hostingVm.getId() + i;
             UtilizationModelDynamic cpuUtilizationModel;
             if (progressiveCpuUsage) {
@@ -235,7 +237,7 @@ public final class HostFaultInjectionExample {
 
             Cloudlet c
                     = new CloudletSimple(
-                            cloudletId, CLOUDLET_LENGHT, VM_PES_NUM)
+                            cloudletId, CLOUDLET_LENGHT, CLOUDLET_PES)
                             .setFileSize(CLOUDLET_FILESIZE)
                             .setOutputSize(CLOUDLET_OUTPUTSIZE)
                             .setUtilizationModelCpu(cpuUtilizationModel)
@@ -285,7 +287,7 @@ public final class HostFaultInjectionExample {
 
     private Datacenter createDatacenter() {
         ArrayList<PowerHost> hostList = new ArrayList<>();
-        for (int i = 0; i < NUMBER_OF_HOSTS_TO_CREATE; i++) {
+        for (int i = 0; i < HOSTS; i++) {
             hostList.add(createHost(i, HOST_NUMBER_OF_PES, HOST_MIPS_BY_PE));
             Log.printConcatLine("#Created host ", i, " with ", HOST_MIPS_BY_PE, " mips x ", HOST_NUMBER_OF_PES);
         }
@@ -298,14 +300,15 @@ public final class HostFaultInjectionExample {
                         .setCostPerStorage(DATACENTER_COST_PER_STORAGE)
                         .setCostPerBw(DATACENTER_COST_PER_BW);
 
+        //@todo nao está sendo usado por enquanto, apenas para evitar migração
         PowerVmAllocationPolicyMigrationWorstFitStaticThreshold allocationPolicy
                 = new PowerVmAllocationPolicyMigrationWorstFitStaticThreshold(
                         new PowerVmSelectionPolicyMinimumUtilization(),
                         HOST_UTILIZATION_THRESHOLD_FOR_VM_MIGRATION);
 
-        PowerDatacenter dc = new PowerDatacenter(simulation, characteristics, allocationPolicy);
+        PowerDatacenter dc = new PowerDatacenter(simulation, characteristics, new VmAllocationPolicySimple());
         dc
-          .setMigrationsEnabled(true)
+          .setMigrationsEnabled(false)
           .setSchedulingInterval(SCHEDULE_TIME_TO_PROCESS_DATACENTER_EVENTS)
           .setLog(false);
         return dc;
@@ -327,10 +330,10 @@ public final class HostFaultInjectionExample {
      * when using null     {@link PowerDatacenter},
      * {@link PowerHost} and {@link PowerVm}.
      */
-    public PowerHostUtilizationHistory createHost(int id, int numberOfPes, long mipsByPe) {
+    public PowerHost createHost(int id, int numberOfPes, long mipsByPe) {
         List<Pe> peList = createPeList(numberOfPes, mipsByPe);
-        PowerHostUtilizationHistory host
-                = new PowerHostUtilizationHistory(HOST_RAM, HOST_BW, HOST_STORAGE, peList);
+        PowerHost host
+                = new PowerHostSimple(HOST_RAM, HOST_BW, HOST_STORAGE, peList);
         host.setPowerModel(new PowerModelLinear(1000, 0.7))
                 .setRamProvisioner(new ResourceProvisionerSimple())
                 .setBwProvisioner(new ResourceProvisionerSimple())
@@ -363,10 +366,9 @@ public final class HostFaultInjectionExample {
                     UniformDistr delayForFailureOfHostRandom = new UniformDistr(1, 10, seed + i);
 
                     //create a new intance of fault and start it.
-                    HostFaultInjection fault = new HostFaultInjection(simulation);
+                    HostFaultInjection fault = new HostFaultInjection(host);
                     fault.setNumberOfFailedPesRandom(failurePesRand);
                     fault.setDelayForFailureOfHostRandom(delayForFailureOfHostRandom);
-                    fault.setHost(host);
                     Log.printFormattedLine("\tFault Injection created for Host %d.", host.getId());
                 }
                 i++;
