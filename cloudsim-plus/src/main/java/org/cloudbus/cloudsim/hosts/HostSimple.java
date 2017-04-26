@@ -21,6 +21,7 @@ import org.cloudbus.cloudsim.lists.PeList;
 import org.cloudbus.cloudsim.provisioners.ResourceProvisioner;
 
 import static java.util.stream.Collectors.toList;
+import org.cloudbus.cloudsim.resources.Pe.Status;
 
 /**
  * A Host class that implements the most basic features of a Physical Machine
@@ -139,6 +140,14 @@ public class HostSimple implements Host {
         this.provisioners = new ArrayList();
     }
 
+    @Override
+    public double getTotalMipsCapacity() {
+        return peList.stream()
+                .filter(pe -> pe.getStatus() != Status.FAILED)
+                .mapToDouble(Pe::getCapacity)
+                .sum();
+    }
+    
     /**
      * Creates a Host with the given parameters.
      *
@@ -467,6 +476,7 @@ public class HostSimple implements Host {
      * Sets the pe list.
      *
      * @param peList the new pe list
+     * @return 
      */
     protected final Host setPeList(List<Pe> peList) {
         checkSimulationIsRunningAndAttemptedToChangeHost("List of PE");
@@ -514,7 +524,7 @@ public class HostSimple implements Host {
     }
 
     @Override
-    public void setDatacenter(Datacenter datacenter) {
+    public final void setDatacenter(Datacenter datacenter) {
         checkSimulationIsRunningAndAttemptedToChangeHost("Datacenter");
         this.datacenter = datacenter;
     }

@@ -10,7 +10,6 @@ package org.cloudbus.cloudsim.hosts;
 import org.cloudbus.cloudsim.core.Machine;
 import org.cloudbus.cloudsim.resources.*;
 import org.cloudbus.cloudsim.vms.Vm;
-import org.cloudbus.cloudsim.core.Identificable;
 import org.cloudbus.cloudsim.datacenters.Datacenter;
 import org.cloudbus.cloudsim.schedulers.vm.VmScheduler;
 
@@ -19,6 +18,7 @@ import org.cloudbus.cloudsim.core.Simulation;
 import org.cloudsimplus.listeners.EventListener;
 import org.cloudsimplus.listeners.HostUpdatesVmsProcessingEventInfo;
 import org.cloudbus.cloudsim.provisioners.ResourceProvisioner;
+import org.cloudbus.cloudsim.resources.Pe.Status;
 
 /**
  * An interface to be implemented by each class that provides
@@ -85,6 +85,13 @@ public interface Host extends Machine, Comparable<Host> {
      * and allocate them on the host.
      */
     void reallocateMigratingInVms();
+    
+    /**
+     * Gets total MIPS capacity of PEs which are not {@link Status#FAILED}.
+     * @return the total MIPS of working PEs
+     */
+    @Override
+    double getTotalMipsCapacity();
 
     /**
      * Removes a migrating in vm.

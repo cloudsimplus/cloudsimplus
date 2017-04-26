@@ -306,6 +306,11 @@ public class VmSimple implements Vm {
 
         return (long) (getCloudletScheduler().getCurrentRequestedBwPercentUtilization() * getBw().getCapacity());
     }
+    
+    @Override
+    public double getTotalMipsCapacity() {
+        return getMips()*getNumberOfPes();
+    }    
 
     @Override
     public long getCurrentRequestedRam() {

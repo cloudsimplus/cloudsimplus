@@ -100,7 +100,7 @@ public class PowerHostSimple extends HostDynamicWorkloadSimple implements PowerH
     protected double getPower(double utilization) {
         try {
             return getPowerModel().getPower(utilization);
-        } catch (Exception e) {
+        } catch (IllegalArgumentException e) {
             throw new RuntimeException(e);
         }
     }

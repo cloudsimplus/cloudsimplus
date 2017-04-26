@@ -67,9 +67,7 @@ public interface Machine extends ChangeableId, Resourceful {
      *
      * @return the total MIPS of all PEs
      */
-    default double getTotalMipsCapacity() {
-        return getMips()*getNumberOfPes();
-    }
+    double getTotalMipsCapacity();
 
     /**
      * Gets the CloudSim instance that represents the simulation the Entity is related to.

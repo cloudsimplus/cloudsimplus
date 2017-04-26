@@ -234,6 +234,9 @@ public class HostDynamicWorkloadSimple extends HostSimple implements HostDynamic
      */
     @Override
     public double getUtilizationOfCpu() {
+        if(getTotalMipsCapacity() == 0){
+            return 0;
+        }
         final double utilization = getUtilizationOfCpuMips() / getTotalMipsCapacity();
         return (utilization > 1 && utilization < 1.01 ? 1 : utilization);
     }
