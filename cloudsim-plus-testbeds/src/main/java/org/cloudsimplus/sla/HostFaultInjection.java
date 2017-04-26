@@ -40,6 +40,7 @@ import org.cloudbus.cloudsim.core.*;
 import org.cloudbus.cloudsim.distributions.ContinuousDistribution;
 import org.cloudbus.cloudsim.distributions.UniformDistr;
 import org.cloudbus.cloudsim.resources.Pe;
+import org.cloudbus.cloudsim.resources.Pe.Status;
 
 /**
  * This class shows how to generate a fault. In this case the fault is in the
@@ -56,12 +57,9 @@ import org.cloudbus.cloudsim.resources.Pe;
  *
  */
 public class HostFaultInjection extends CloudSimEntity {
-
     private Host host;
     private ContinuousDistribution numberOfFailedPesRandom;
-    private boolean failed;
     private ContinuousDistribution delayForFailureOfHostRandom;
-    private int fault;
 
     /**
      * Creates a fault injection mechanism for a host that will generate
@@ -79,14 +77,13 @@ public class HostFaultInjection extends CloudSimEntity {
         super(simulation);
         this.numberOfFailedPesRandom = new UniformDistr();
         this.delayForFailureOfHostRandom = new UniformDistr();
-        this.failed = false;
     }
 
     @Override
     protected void startEntity() {
         double delay = delayForFailureOfHostRandom.sample() + 1;
         Log.printLine(getName() + " is starting...");
-        schedule(getId(), delay, CloudSimTags.HOST_FAILURE);//was 2 seconds fo delay
+        schedule(getId(), delay, CloudSimTags.HOST_FAILURE);
     }
 
     @Override
@@ -103,13 +100,10 @@ public class HostFaultInjection extends CloudSimEntity {
     }
 
     @Override
-    public void shutdownEntity() {
-
-        Log.printLine(getName() + ": is shutting down...");
-    }
+    public void shutdownEntity() {/**/}
 
     /**
-     * Generates a failure on Host' PEs or not, according to the number of PEs
+     * Generates a failure on Host's PEs or not, according to the number of PEs
      * to be set to failed, returned by the {@link #numberOfFailedPesRandom}
      * PRNG.
      *
@@ -118,8 +112,6 @@ public class HostFaultInjection extends CloudSimEntity {
      */
     public final boolean generateFailure() {
         final int numberOfFailedPes = generateNumberOfFailedPes();
-
-        this.failed = numberOfFailedPes > 0;
         for (int i = 0; i < numberOfFailedPes; i++) {
             host.getPeList().get(i).setStatus(Pe.Status.FAILED);
             // Log.printLine(CloudSim.clock() + " ---> Host " + host.getId() + " FAILURE...\n");
@@ -134,7 +126,6 @@ public class HostFaultInjection extends CloudSimEntity {
             final long numberOfWorkingPes = host.getNumberOfWorkingPes();
             final long pesSumOfWorkingVms = getPesSumOfWorkingVms(sortedHostVmList);
             if (pesSumOfWorkingVms > numberOfWorkingPes) {
-
                 setVmToFailedWhenHostIsFailed(vm);
                 System.out.printf(
                         "** Host %d working pes: %d Quant working PEs of all VMs of the Host: %d. Failed VM %d with %d PEs\n",
@@ -143,28 +134,23 @@ public class HostFaultInjection extends CloudSimEntity {
 
                 System.out.println("Vm failed -> " + vm.getId());
                 System.out.println("\nHost:: " + host + " vms [ " + host.getVmList() + "]");
-
             } else {
                 System.out.println("Vm not failed -> " + vm.getId()
                         + " with " + vm.getNumberOfPes() + "PEs"
                         + " executed in host: " + vm.getHost());
                 System.out.println("\nHost:: " + host + " vms [ " + host.getVmList() + "]");
-
                 break;
             }
-
         }
-        return this.failed;
+        
+        return numberOfFailedPes > 0;
     }
 
-    public void countVmsFaileds() {
-
-        for (Vm vms : host.getVmList()) {
-            if (vms.isFailed()) {
-                fault++;
-            }
-        }
-        System.out.println("\n\t Faults: " + fault);
+    public long getFailedVmsCount() {
+        return host.getVmList()
+                .stream()
+                .filter(Vm::isFailed)
+                .count();
     }
 
     public long getPesSumOfWorkingVms(List<Vm> sortedHostVmList) {
@@ -196,6 +182,7 @@ public class HostFaultInjection extends CloudSimEntity {
         if (!this.isFailed()) {
             return;
         }
+        
         vm.setFailed(true);
         /*
          As the broker is expected to request vm creation and destruction,
@@ -204,14 +191,17 @@ public class HostFaultInjection extends CloudSimEntity {
         getSimulation().sendNow(
                 vm.getBroker().getId(), host.getDatacenter().getId(),
                 CloudSimTags.VM_DESTROY, vm);
-
     }
 
     /**
-     * @return the failed
+     * Checks if the Host has any failed PEs.
+     * @return true if any Host PEs has failed, false otherwise
      */
     public boolean isFailed() {
-        return failed;
+        return host.getPeList()
+                .stream()
+                .map(Pe::getStatus)
+                .anyMatch(Status.FAILED::equals);
     }
 
     /**

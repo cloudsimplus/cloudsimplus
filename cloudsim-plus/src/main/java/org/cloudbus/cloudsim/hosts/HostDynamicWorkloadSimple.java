@@ -164,12 +164,13 @@ public class HostDynamicWorkloadSimple extends HostSimple implements HostDynamic
 
             final List<Pe> pes = getVmScheduler().getPesAllocatedForVM(vm);
             final StringBuilder pesString = new StringBuilder();
-            for (final Pe pe : pes) {
+            pes.forEach(pe -> 
                 pesString.append(
-                    String.format(" PE #%d: %d.",
-                        pe.getId(),
-                        pe.getPeProvisioner().getAllocatedResourceForVm(vm)));
-            }
+                        String.format(" PE #%d: %d.",
+                                pe.getId(),
+                                pe.getPeProvisioner().getAllocatedResourceForVm(vm)))
+            );
+            
             Log.printFormattedLine(
                     "%.2f: [Host #" + getId() + "] MIPS for VM #" + vm.getId() + " by PEs ("
                     + getNumberOfPes() + " * " + getVmScheduler().getPeCapacity() + ")."
@@ -186,80 +187,46 @@ public class HostDynamicWorkloadSimple extends HostSimple implements HostDynamic
             .collect(Collectors.toList());
     }
 
-    /**
-     * Gets the max utilization percentage among by all PEs.
-     *
-     * @return the maximum utilization percentage
-     */
     @Override
     public double getMaxUtilization() {
         return PeList.getMaxUtilization(getPeList());
     }
 
-    /**
-     * Gets the max utilization percentage among by all PEs allocated to a VM.
-     *
-     * @param vm the vm
-     * @return the max utilization percentage of the VM
-     */
     @Override
     public double getMaxUtilizationAmongVmsPes(Vm vm) {
         return PeList.getMaxUtilizationAmongVmsPes(getPeList(), vm);
     }
 
-    /**
-     * Gets the utilization of memory (in absolute values).
-     *
-     * @return the utilization of memory
-     */
     @Override
     public long getUtilizationOfRam() {
         return getRamProvisioner().getTotalAllocatedResource();
     }
 
-    /**
-     * Gets the utilization of bw (in absolute values).
-     *
-     * @return the utilization of bw
-     */
     @Override
     public long getUtilizationOfBw() {
         return getBwProvisioner().getTotalAllocatedResource();
     }
 
-    /**
-     * Get current utilization of CPU in percentage.
-     *
-     * @return current utilization of CPU in percents
-     */
     @Override
     public double getUtilizationOfCpu() {
-        if(getTotalMipsCapacity() == 0){
-            return 0;
-        }
-        final double utilization = getUtilizationOfCpuMips() / getTotalMipsCapacity();
-        return (utilization > 1 && utilization < 1.01 ? 1 : utilization);
+        return computeCpuUtilizationPercent(getUtilizationOfCpuMips());
     }
 
-    /**
-     * Gets the previous utilization of CPU in percentage.
-     *
-     * @return the previous utilization of cpu in percents
-     */
     @Override
     public double getPreviousUtilizationOfCpu() {
-        double utilization = getPreviousUtilizationMips() / getTotalMipsCapacity();
-        if (utilization > 1 && utilization < 1.01) {
-            utilization = 1;
-        }
-        return utilization;
+        return computeCpuUtilizationPercent(getPreviousUtilizationMips());
     }
-
-    /**
-     * Get current utilization of CPU in MIPS.
-     *
-     * @return current utilization of CPU in MIPS
-     */
+    
+    private double computeCpuUtilizationPercent(double mipsUsage){
+        final double totalMips = getTotalMipsCapacity();
+        if(totalMips == 0){
+            return 0;
+        }
+        
+        final double utilization = mipsUsage / totalMips;
+        return (utilization > 1 && utilization < 1.01 ? 1 : utilization);
+    }
+    
     @Override
     public double getUtilizationOfCpuMips() {
         return utilizationMips;
@@ -274,11 +241,6 @@ public class HostDynamicWorkloadSimple extends HostSimple implements HostDynamic
         this.utilizationMips = utilizationMips;
     }
 
-    /**
-     * Gets the previous utilization of CPU in mips.
-     *
-     * @return the previous utilization of CPU in mips
-     */
     @Override
     public double getPreviousUtilizationMips() {
         return previousUtilizationMips;
@@ -294,24 +256,11 @@ public class HostDynamicWorkloadSimple extends HostSimple implements HostDynamic
         this.previousUtilizationMips = previousUtilizationMips;
     }
 
-    /**
-     * Gets the host state history.
-     *
-     * @return the state history
-     */
     @Override
     public List<HostStateHistoryEntry> getStateHistory() {
         return Collections.unmodifiableList(stateHistory);
     }
 
-    /**
-     * Adds a host state history entry.
-     *
-     * @param time the time
-     * @param allocatedMips the allocated mips
-     * @param requestedMips the requested mips
-     * @param isActive the is active
-     */
     @Override
     public void addStateHistoryEntry(double time, double allocatedMips, double requestedMips, boolean isActive) {
         final HostStateHistoryEntry newState = new HostStateHistoryEntry(time, allocatedMips, requestedMips, isActive);

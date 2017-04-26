@@ -22,6 +22,13 @@ import java.util.List;
 public interface HostDynamicWorkload extends Host {
 
     /**
+     * Gets a <b>read-only</b> host state history.
+     *
+     * @return the state history
+     */
+    List<HostStateHistoryEntry> getStateHistory();
+    
+    /**
      * Adds a host state history entry.
      *
      * @param time the time
@@ -39,54 +46,33 @@ public interface HostDynamicWorkload extends Host {
     List<Vm> getFinishedVms();
 
     /**
-     * Gets the max utilization percentage among by all PEs.
+     * Gets the max utilization percentage among (between [0 and 1]) by all PEs.
      *
-     * @return
+     * @return the max utilization percentage (between [0 and 1])
      */
     double getMaxUtilization();
 
     /**
-     * Gets the max utilization percentage among by all PEs allocated to a VM.
+     * Gets the max utilization percentage (between [0 and 1]) among by all PEs allocated to a VM.
      *
      * @param vm the vm
-     * @return
+     * @return the max utilization percentage (between [0 and 1])
      */
     double getMaxUtilizationAmongVmsPes(Vm vm);
 
     /**
-     * Gets the previous utilization of CPU in mips.
-     *
-     * @return
-     */
-    double getPreviousUtilizationMips();
-
-    /**
-     * Gets the previous utilization of CPU in percentage.
-     *
-     * @return
-     */
-    double getPreviousUtilizationOfCpu();
-
-    /**
-     * Gets a <b>read-only</b> host state history.
-     *
-     * @return the state history
-     */
-    List<HostStateHistoryEntry> getStateHistory();
-
-    /**
-     * Gets the current utilization of bw (in absolute values).
-     *
-     * @return
-     */
-    long getUtilizationOfBw();
-
-    /**
-     * Gets current utilization of CPU in percentage.
+     * Gets current utilization of CPU in percentage (between [0 and 1]).
      *
      * @return
      */
     double getUtilizationOfCpu();
+    
+    /**
+     * Gets the previous utilization of CPU in percentage (between [0 and 1]).
+     *
+     * @return
+     */
+    double getPreviousUtilizationOfCpu();    
 
     /**
      * Gets the current utilization of CPU in MIPS.
@@ -94,6 +80,20 @@ public interface HostDynamicWorkload extends Host {
      * @return
      */
     double getUtilizationOfCpuMips();
+    
+    /**
+     * Gets the previous utilization of CPU in MIPS.
+     *
+     * @return
+     */
+    double getPreviousUtilizationMips();
+
+    /**
+     * Gets the current utilization of bw (in absolute values).
+     *
+     * @return
+     */
+    long getUtilizationOfBw();
 
     /**
      * Gets the current utilization of memory (in absolute values).

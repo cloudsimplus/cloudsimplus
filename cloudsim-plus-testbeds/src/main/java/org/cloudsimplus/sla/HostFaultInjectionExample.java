@@ -75,7 +75,7 @@ public final class HostFaultInjectionExample {
     private static final double DATACENTER_COST_PER_BW = 0.0;
 
     private static final int HOST_MIPS_BY_PE = 1000;
-    private static final int HOST_NUMBER_OF_PES = 2;
+    private static final int HOST_NUMBER_OF_PES = 4;
     private static final long HOST_RAM = 500000; //host memory (MEGABYTE)
     private static final long HOST_STORAGE = 1000000; //host storage
     private static final long HOST_BW = 100000000L;
@@ -90,7 +90,7 @@ public final class HostFaultInjectionExample {
     private static final long VM_SIZE = 1000; //image size (MEGABYTE)
     private static final int VM_RAM = 10000; //vm memory (MEGABYTE)
     private static final long VM_BW = 100000;
-    private static final int VM_PES_NUM = 1; //number of cpus
+    private static final int VM_PES_NUM = 2; //number of cpus
 
     private static final long CLOUDLET_LENGHT = 20000;
     private static final long CLOUDLET_FILESIZE = 300;
@@ -115,7 +115,7 @@ public final class HostFaultInjectionExample {
      */
     public static final double CLOUDLET_CPU_USAGE_INCREMENT_PER_SECOND = 0.05;
 
-    private static final int NUMBER_OF_HOSTS_TO_CREATE = 3;
+    private static final int NUMBER_OF_HOSTS_TO_CREATE = 10;
     private static final int NUMBER_OF_VMS_TO_CREATE = NUMBER_OF_HOSTS_TO_CREATE + 4;
     private static final int NUMBER_OF_CLOUDLETS_TO_CREATE_BY_VM = 1;
 
@@ -132,7 +132,7 @@ public final class HostFaultInjectionExample {
     }
 
     public HostFaultInjectionExample() {
-        Log.printConcatLine("Starting ", HostFaultInjectionExample.class.getSimpleName(), "...");
+        Log.printConcatLine("Starting ", getClass().getSimpleName(), "...");
 
         simulation = new CloudSim();
 
@@ -149,7 +149,7 @@ public final class HostFaultInjectionExample {
 
         new CloudletsTableBuilder(broker.getCloudletsFinishedList()).build();
 
-        Log.printConcatLine(HostFaultInjectionExample.class.getSimpleName(), " finished!");
+        Log.printConcatLine(getClass().getSimpleName(), " finished!");
     }
 
     public void createAndSubmitCloudlets(DatacenterBroker broker) {

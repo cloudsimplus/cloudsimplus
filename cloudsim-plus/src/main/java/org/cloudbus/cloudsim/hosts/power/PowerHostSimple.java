@@ -114,7 +114,7 @@ public class PowerHostSimple extends HostDynamicWorkloadSimple implements PowerH
     public double getMaxPower() {
         try {
             return getPowerModel().getPower(1);
-        } catch (Exception e) {
+        } catch (IllegalArgumentException e) {
             throw new RuntimeException(e);
         }
     }

@@ -2,6 +2,7 @@ package org.cloudbus.cloudsim.power.models;
 
 /**
  * An abstract implementation of a {@link PowerModel}.
+ * 
  * @author raysaoliveira
  * @since CloudSim Plus 1.2.0
  */

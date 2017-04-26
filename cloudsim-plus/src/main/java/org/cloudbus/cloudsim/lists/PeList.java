@@ -65,10 +65,10 @@ public final class PeList {
     }
 
     /**
-     * Gets the max utilization percentage among all PEs.
+     * Gets the max utilization percentage (between [0 and 1]) among all PEs.
      *
      * @param peList the pe list
-     * @return the max utilization percentage
+     * @return the max utilization percentage (between [0 and 1])
      */
     public static double getMaxUtilization(List<? extends Pe> peList) {
         return peList.stream()
