@@ -1,0 +1,152 @@
+.. java:import:: org.cloudbus.cloudsim.provisioners PeProvisioner
+
+.. java:import:: org.cloudbus.cloudsim.provisioners PeProvisionerSimple
+
+PeNull
+======
+
+.. java:package:: org.cloudbus.cloudsim.resources
+   :noindex:
+
+.. java:type:: final class PeNull implements Pe
+
+   A class that implements the Null Object Design Pattern for \ :java:ref:`Pe`\  class.
+
+   :author: Manoel Campos da Silva Filho
+
+   **See also:** :java:ref:`Pe.NULL`
+
+Methods
+-------
+addCapacity
+^^^^^^^^^^^
+
+.. java:method:: @Override public boolean addCapacity(long capacityToAdd)
+   :outertype: PeNull
+
+allocateResource
+^^^^^^^^^^^^^^^^
+
+.. java:method:: @Override public boolean allocateResource(long amountToAllocate)
+   :outertype: PeNull
+
+deallocateAllResources
+^^^^^^^^^^^^^^^^^^^^^^
+
+.. java:method:: @Override public long deallocateAllResources()
+   :outertype: PeNull
+
+deallocateResource
+^^^^^^^^^^^^^^^^^^
+
+.. java:method:: @Override public boolean deallocateResource(long amountToDeallocate)
+   :outertype: PeNull
+
+getAllocatedResource
+^^^^^^^^^^^^^^^^^^^^
+
+.. java:method:: @Override public long getAllocatedResource()
+   :outertype: PeNull
+
+getAvailableResource
+^^^^^^^^^^^^^^^^^^^^
+
+.. java:method:: @Override public long getAvailableResource()
+   :outertype: PeNull
+
+getCapacity
+^^^^^^^^^^^
+
+.. java:method:: @Override public long getCapacity()
+   :outertype: PeNull
+
+getId
+^^^^^
+
+.. java:method:: @Override public int getId()
+   :outertype: PeNull
+
+getPeProvisioner
+^^^^^^^^^^^^^^^^
+
+.. java:method:: @Override public PeProvisioner getPeProvisioner()
+   :outertype: PeNull
+
+getStatus
+^^^^^^^^^
+
+.. java:method:: @Override public Status getStatus()
+   :outertype: PeNull
+
+isFull
+^^^^^^
+
+.. java:method:: @Override public boolean isFull()
+   :outertype: PeNull
+
+isResourceAmountAvailable
+^^^^^^^^^^^^^^^^^^^^^^^^^
+
+.. java:method:: @Override public boolean isResourceAmountAvailable(long amountToCheck)
+   :outertype: PeNull
+
+isResourceAmountAvailable
+^^^^^^^^^^^^^^^^^^^^^^^^^
+
+.. java:method:: @Override public boolean isResourceAmountAvailable(double amountToCheck)
+   :outertype: PeNull
+
+isResourceAmountBeingUsed
+^^^^^^^^^^^^^^^^^^^^^^^^^
+
+.. java:method:: @Override public boolean isResourceAmountBeingUsed(long amountToCheck)
+   :outertype: PeNull
+
+isSuitable
+^^^^^^^^^^
+
+.. java:method:: @Override public boolean isSuitable(long newTotalAllocatedResource)
+   :outertype: PeNull
+
+removeCapacity
+^^^^^^^^^^^^^^
+
+.. java:method:: @Override public boolean removeCapacity(long capacityToRemove)
+   :outertype: PeNull
+
+setAllocatedResource
+^^^^^^^^^^^^^^^^^^^^
+
+.. java:method:: @Override public boolean setAllocatedResource(long newTotalAllocatedResource)
+   :outertype: PeNull
+
+setCapacity
+^^^^^^^^^^^
+
+.. java:method:: @Override public boolean setCapacity(long mipsCapacity)
+   :outertype: PeNull
+
+setCapacity
+^^^^^^^^^^^
+
+.. java:method:: @Override public boolean setCapacity(double mipsCapacity)
+   :outertype: PeNull
+
+setId
+^^^^^
+
+.. java:method:: @Override public void setId(int id)
+   :outertype: PeNull
+
+setPeProvisioner
+^^^^^^^^^^^^^^^^
+
+.. java:method:: @Override public Pe setPeProvisioner(PeProvisioner peProvisioner)
+   :outertype: PeNull
+
+setStatus
+^^^^^^^^^
+
+.. java:method:: @Override public boolean setStatus(Status status)
+   :outertype: PeNull
+

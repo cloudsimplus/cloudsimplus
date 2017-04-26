@@ -14,7 +14,7 @@
 		<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 
 		<link rel="stylesheet" href="css/reveal.css">
-		<link rel="stylesheet" href="css/theme/blood.css" id="theme">
+		<link rel="stylesheet" href="css/theme/league.css" id="theme"> <!-- blood, league-->
 
 		<!-- Theme used for syntax highlighting of code -->
 		<link rel="stylesheet" href="lib/css/zenburn.css">
@@ -41,10 +41,9 @@
 					## CloudSim Plus
 					http://cloudsimplus.org
 					### A Cloud Computing Simulation Framework Pursuing Software Engineering Principles for Improved Modularity, Extensibility and Correctness
-					<small>
 					[IFIP/IEEE International Symposium on Integrated Network Management, 2017](http://im2017.ieee-im.org)
-					### [Manoel Campos](http://twitter.com/manoelcampos)¹ ²; [Raysa Oliveira](https://twitter.com/raysaloliveira)²; [Claudio Monteiro](https://www.linkedin.com/in/claudio-monteiro-4637411a)¹; [Pedro Inácio](http://www.di.ubi.pt/~inacio)²; [Mário Freire](http://di.ubi.pt/~mario/)²
-
+					#### [Manoel Campos](http://twitter.com/manoelcampos)¹ ²; [Raysa Oliveira](https://twitter.com/raysaloliveira)²; [Claudio Monteiro](https://www.linkedin.com/in/claudio-monteiro-4637411a)¹; [Pedro Inácio](http://www.di.ubi.pt/~inacio)²; [Mário Freire](http://di.ubi.pt/~mario/)²
+					<small>
 					¹Depto. Informática, [Instituto Federal de Educação do Tocantins](http://www.ifto.edu.br)<br/>
 					²[Instituto de Telecomunicações](http://www.it.pt) and [Depto. Informática](http://di.ubi.pt), [Universidade da Beira Interior](http://www.ubi.pt)
 					###### This presentation is licensed under a [Creative Commons Attribution-ShareAlike 4.0 International License](http://creativecommons.org/licenses/by-sa/4.0/).
@@ -54,79 +53,194 @@
 
 				<section data-markdown><script type="text/template">
 					## Agenda
-					- Introduction
-					- Architecture
-					- Modules
-					- Exclusive Characteristics and Features
-					- Conclusions and Future Work
+					<img src="images/notepad-117597_640.png" id="logo" />
+
+					- [CloudSim Plus Introduction](#/2)
+					- [Architecture](#/3)
+						- [Modules](#/4)
+						- [Main Packages](#/5)
+					- [Main Exclusive Features](#/6)
+					- [Conclusions and Future Work](#/17)
 				</script></section>
 
 				<section data-markdown><script type="text/template">
-					## Introduction
+					## CloudSim Plus Introduction
+					##### Java 8 independent CloudSim fork for Cloud Computing simulation
+					<img src="images/amazon-157609_640.png" id="logo" />
 
-
+					- Highly extensible, completely redesigned and refactored.
+					- Full-featured: more than 20 [exclusive features](http://cloudsimplus.org/#exclusive-features).
+					- [Design Patterns](https://en.wikipedia.org/wiki/Software_design_pattern), [SOLID principles](https://en.wikipedia.org/wiki/SOLID_(object-oriented_design%29), [KISS](https://en.wikipedia.org/wiki/KISS_principle), [DRY](https://pt.wikipedia.org/wiki/Don't_repeat_yourself) and Clean Code practices.
+					- Reduced duplication, removed redundancy, simplified design ([comparison](http://cloudsimplus.org/CloudSim-and-CloudSimPlus-Comparison.html)).
+					- Less 30% code duplication, more 80% test coverage.
 				</script></section>
-
 
 				<section data-markdown><script type="text/template">
 					## Architecture
-
+					<img src="images/rubiks-cube-145422_1280.png" id="logo" />
+					
+					- Maven project available at [Maven Central](http://cloudsimplus.org/maven.html).
+					- Simplified module structure, new modules introduced.
+					- Totally re-organized and documented packages.
+					- New interfaces: increased abstraction, contracts for implementations.
 
 				</script></section>
 
 				<section data-markdown><script type="text/template">
 					## Modules
+					![Re-structured Modules](https://github.com/manoelcampos/cloudsim-plus/raw/master/docs/images/modules.png)
 
-
-				</script></section>
-
-				<section data-markdown><script type="text/template">
-					## Exclusive Characteristics and Features
-				</script></section>
-
-				<section data-markdown><script type="text/template">
-					## Dynamic Creation of Vms and Applications (Cloudlets)
+					- **API**: independent and single-required module for building simulations.
+						- **Examples**: exclusive examples, refactored previous ones.
+						- **Testbeds**: multiple-run simulations for  scientifically valid data collection. 
+						- **Benchmarks**: performance assessment of features such as heuristics.
 
 				</script></section>
 
 				<section data-markdown><script type="text/template">
-					## Vm Scaling
+					## Main Packages
+					![Re-structured Packages](https://github.com/manoelcampos/cloudsim-plus/raw/master/docs/images/package-structure-reduced.png)
+					- **Dark yellow**: CloudSim Plus packages with exclusive features.
+					- **Light yellow**: new packages to better organize existing CloudSim classes.
+					- **White**: CloudSim existing packages.
+
+				</script></section>
+
+				<section data-markdown><script type="text/template">
+					## Main Exclusive Features
+					<div style="width: 256px" id="logo" >
+						<img src="images/exclusive.png" />
+						<img src="images/Jquery-swiss-army-knife.png"/>
+					</div>
+					
+					1. Vertical and Horizontal VM Scaling;
+					2. Parallel execution of simulations;
+					3. Dynamic creation of VMs and Cloudlets;
+					4. Delay creation of submitted VMs and Cloudlets;
+					5. Event Listeners
+					6. Strongly Object-oriented Framework; 
+					7. Classes and Interfaces for Implementation of [Heuristics](http://en.wikipedia.org/wiki/Heuristic); 
+					8. [Implementation of the Linux Completely Fair Scheduler](https://en.wikipedia.org/wiki/Completely_Fair_Scheduler);
+					9. Updated to Java 8 ([Functional Programming](https://en.wikipedia.org/wiki/Functional_programming), [Lambda](http://www.oracle.com/webfolder/technetwork/tutorials/obe/java/Lambda-QuickStart/index.html) and [Streams](http://www.oracle.com/technetwork/articles/java/ma14-java-se-8-streams-2177646.html));
+					10. [Functional](https://en.wikipedia.org/wiki/Functional_programming) `DatacenterBroker`;
+					
+					Many more at [http://cloudsimplus.org](http://cloudsimplus.org/#exclusive-features)
+				</script></section>
+
+				<section data-markdown><script type="text/template">
+					## 1. Vm Scaling
+					<div id="logo" style="width: 300px">
+						<a href="https://commons.wikimedia.org/wiki/File:Gnome-network-server.svg" title="Adapted from Gnome-network-server"><img src="images/vertical-scaling.gif"/></a>
+						<a href="https://commons.wikimedia.org/wiki/File:Gnome-network-server.svg" title="Adapted from Gnome-network-server"><img src="images/horizontal-scaling.gif"/></a>
+					</div>
+
 					- Vertical Vm Scaling
+						- resize of VM resources to fit workload
+						- RAM, CPU, Bandwidth and Storage
 					- Horizontal Vm Scaling
+						- creation and destruction of VMs for load balancing
 				</script></section>
 
 				<section data-markdown><script type="text/template">
-					## Parallel Execution of Simulations
+					## 2. Parallel Execution of Simulations
+					<img src="images/gears.gif" id="logo" />
 
+					- Parallel execution of multiple simulation runs
+					- Relies on Java 8 Parallel Streams mechanism
+					- As simple as calling a single line of code like `simulations.parallelStream().forEach(MySimulation::run);`
 				</script></section>
 
 				<section data-markdown><script type="text/template">
-					## Event Listeners for Simulation Monitoring
+					## 3. Dynamic Creation of VMs and Cloudlets
+					<img src="images/dynamic-vm-creation.gif" id="logo-bottom" />
 
+					- Enables creating objects after the simulation has started
+					- Doesn't require new DatacenterBrokers to be created at runtime
+					- Objects just have to be submitted to an existing broker at simulation runtime
+				</script></section>
+
+				<section data-markdown data-separator-notes="^# Notes"><script type="text/template">
+					## 4. Delay creation of submitted VMs and Cloudlets
+					<img src="images/clock-png-25766.png" id="logo-bottom" />
+
+					- Creation of objects at a given time, before starting the simulation
+					- Used when the arrival times of objects to be create are known in advance
+					- A different way to simulate the dynamic creation of such objects
 				</script></section>
 
 				<section data-markdown><script type="text/template">
-					## Strongly Object-oriented Framework
+					## 5. Event Listeners
+					<img src="images/man-listening-music.png" id="logo" />
 
+					- Enables simulation monitoring to:
+						- collect resource utilization data
+						- assess fulfillment of customer SLA 
+						- optimize resource allocation to avoid under/over resource provisioning
+						- granular simulation execution feedback
+					- Listeners for events from Hosts, VMs, Cloudlets and more general ones.
 				</script></section>
 
 				<section data-markdown><script type="text/template">
-					## Classes and Interfaces for Implementation of Heuristics
+					## 6. Strongly Object-oriented Framework
 
+					- Objects are used to create actual relationships, instead of using integer IDs
+					- Fluent API, allowing direct chained calls such as `cloudlet.getVm().getHost().getDatacenter()`
+					- Uses [Null Object Pattern](https://en.wikipedia.org/wiki/Null_Object_pattern) to avoid NullPointerException.
 				</script></section>
 
 				<section data-markdown><script type="text/template">
-					## Implementation of the Linux Completely Fair Scheduler
+					## 7. Classes/Interfaces for Heuristics
+					<a href="https://commons.wikimedia.org/wiki/File:Knapsack.svg" id="logo"><img id="transparent" title="Source: https://commons.wikimedia.org/wiki/File:Knapsack.svg" src="images/277px-Knapsack.png"/></a>
 
+					- Specifies a contract to implement heuristics in some steps:
+						- initial solution generation;
+						- generation of neighbor solutions;
+						- definition of an utility function to be minimized or maximized;
+						- and then the solution finding stop criteria.
+					- Examples: [Tabu Search](http://en.wikipedia.org/wiki/Tabu_search), [Simulated Annealing](http://en.wikipedia.org/wiki/Simulated_annealing), [Ant Colony Systems](http://en.wikipedia.org/wiki/Ant_colony_optimization_algorithms), etc;
+					- Includes a Simulated Annealing heuristic for mapping Cloudlets to VMs.
+
+				</script></section>
+
+				<section data-markdown data-separator-notes="^# Notes"><script type="text/template">
+					## 8. Implementation of the Linux Completely Fair Scheduler
+					<img id="logo-bottom" title="Source: http://www.mimastech.com/2016/11/13/how-to-setup-ntp-server-on-centos-765-linux-systems/" src="images/linux-clock.png"/>
+
+					- `CloudletScheduler`: how a Vm schedules the execution of Cloudlets
+					- Bad scheduling: starvation, wastage of CPU cycles, SLA violations
+					- [Completely Fair Scheduler](https://en.wikipedia.org/wiki/Completely_Fair_Scheduler) reduces these issues ([needs improvements](https://doi.org/10.1145/2901318.2901326) [Lozi et. al. 2016])
+					- Considers tasks priorities to define CPU time slices
+					- `CloudletSchedulerTimeShared`: [simplistic; ignores task's priority; no actual preemption](https://github.com/manoelcampos/cloudsim-plus/issues/33)
+					- [CloudletSchedulerCompletelyFair](https://github.com/manoelcampos/cloudsim-plus/issues/58): more realistic implementation
+
+					# Notes
+					- CloudletSchedulerTimeShared: 3 CPU cores and 12 processes; make all processes to be executed simultaneously; 25% of each CPU core by process; 4 processes run in each core
+					- A bad scheduling may cause SLA violations
+					- If there are 2 Hyper-Threading CPU cores allocated to 4 processes that are not 
+					using the entire cores capacity, a fourth process cannot use this remaining capacity
+					- CloudletSchedulerTimeShared may achieve better but inaccurate results
 				</script></section>
 
 				<section data-markdown><script type="text/template">
-					## Additional Characteristics
+					## 10. Functional DatacenterBroker
+					<a href="https://en.wikipedia.org/wiki/Functional_programming" id="logo" title="Functional Programming"><img src="images/lambda-39473_640.png" /></a>
+
+					-  Enables changing, in runtime, the policies to select: 
+						- a DC to place waiting VMs; 
+						- a fallback DC when a previous one doesn't have a suitable Host for a VM; 
+						- and a VM to run each Cloudlet. 
+					- Allows implementing new policies, without requiring new `DatacenterBroker` classes. 
 
 				</script></section>
 
+				<!-- END -->
 				<section data-markdown><script type="text/template">
 					## Conclusions and Future Work
+
+					- It is difficult to replicate a real system in simulation, mainly concerned in modelling the arrival of stochastic events such as workload bursts. 
+					- To contribute for valid results, a simulation framework has to (i) be well-designed (ii) get away from code duplication to avoid code degeneration (iii) be extensively tested and (iv) provide classes following software engineering principles. 
+					- CloudSim Plus is aligned with all these requirements. 
+					- Proposed future work is available at the [issues page](https://github.com/manoelcampos/cloudsim-plus/issues).
 				</script></section>
 
 				<section data-markdown><script type="text/template">
@@ -136,8 +250,12 @@
 					[Instituto Federal de Educação Ciência e Tecnologia do Tocantins (IFTO, Brazil)](http://www.ifto.edu.br). 
 					It is supported by the Brazilian [CAPES](http://www.capes.gov.br) (Proc. no 13585/13-4) and the Portuguese [FCT](https://www.fct.pt) (under the UID/EEA/50008/2013 Project) agencies.	
 
-					## Link to the Presentation
-					http://cloudsimplus.org/presentation/
+					### Official Site/Presentation
+					http://cloudsimplus.org
+
+					http://cloudsimplus.org/presentation
+
+					<small><a href="https://github.com/hakimel/reveal.js">Presentation powered by reveal.js</a></small>
 				</script></section>
 			</div>
 		</div>
@@ -153,7 +271,7 @@
 				center: true,
 				overview: true,
 				keyboard: true,
-				slideNumber: true,
+				slideNumber: "c/t",
 				touch: true,
 				loop: false,
 				fragments: true,
@@ -164,7 +282,7 @@
 				previewLinks: false, // Opens links in an iframe preview overlay
 				viewDistance: 2, // Number of slides away from the current that are visible
 				width: "100%",
-				height: "100%",				
+				height: "100%",		
 
 				transition: 'slide', // none/fade/slide/convex/concave/zoom
 
@@ -178,6 +296,8 @@
 					{ src: 'plugin/notes/notes.js', async: true }
 				]
 			});
+
+			Reveal.configure({ pdfMaxPagesPerSlide: 1 });
 		</script>
 	</body>
 </html>

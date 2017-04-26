@@ -6,8 +6,7 @@ If you cloned the repository at your computer, to launch the presentation you ha
 
 ## Changing the style sheets
 
-If you change some [scss](css) files ([SaaS files](http://sass-lang.com)), you have to re-generate the css files using [grunt](https://gruntjs.com)
-using: 
+If you change some [scss](css) files ([SaaS files](http://sass-lang.com)), you have to re-generate the css files using [grunt](https://gruntjs.com): 
 
 ```bash
 npm install -g grunt

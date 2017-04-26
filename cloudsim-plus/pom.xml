@@ -81,24 +81,16 @@
                     <plugin>
                         <groupId>org.apache.maven.plugins</groupId>
                         <artifactId>maven-surefire-plugin</artifactId>
-                        <!-- There is some problem with the version 2.19.1 or
-                        with Netbeans 8.0.2 that the JUnit GUI is not shown
-                        at the IDE-->
-                        <version>2.19.1</version>
                         <configuration>
                             <excludes>
                                 <exclude>**/integrationtests/*.java</exclude>
                             </excludes>
                         </configuration>
                     </plugin>
+
                     <plugin>
                         <groupId>org.apache.maven.plugins</groupId>
                         <artifactId>maven-javadoc-plugin</artifactId>
-                        <version>2.10.4</version>
-                        <configuration>
-                            <!-- Switch OFF the doclint in Java 8 -->
-                            <additionalparam>-Xdoclint:none</additionalparam>
-                        </configuration>
                     </plugin>
                 </plugins>
             </build>
@@ -109,8 +101,7 @@
             This is the profile that runs all the Unit and Integration/Functional Tests.
             At NetBeans, you can right click on the project root, select
             Custom >> integration-tests (that is configured in the nbactions.xml).
-            To run at other IDE's, you can see the maven parameters in the
-            nbactions.xml file.
+            To run at other IDE's, you can see the maven parameters in the nbactions.xml file.
             -->
             <id>integration-tests</id>
             <activation>
@@ -127,18 +118,11 @@
                     <plugin>
                         <groupId>org.apache.maven.plugins</groupId>
                         <artifactId>maven-surefire-plugin</artifactId>
-                        <!-- There is some problem with the version 2.19.1 or
-                        with Netbeans 8.0.2 that the JUnit GUI is not shown
-                        at the IDE-->
-                        <version>2.19.1</version>
                     </plugin>
+
                     <plugin>
                         <groupId>org.apache.maven.plugins</groupId>
                         <artifactId>maven-javadoc-plugin</artifactId>
-                        <configuration>
-                            <!-- AbstractSwitch OFF the doclint in Java 8 -->
-                            <additionalparam>-Xdoclint:none</additionalparam>
-                        </configuration>
                     </plugin>
                 </plugins>
             </build>
@@ -252,6 +236,29 @@
     </distributionManagement>
 
     <build>
+        <pluginManagement>
+            <!-- Plugins to be reused for different <profile>'s -->
+            <plugins>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-surefire-plugin</artifactId>
+                    <!-- There is some problem with the version 2.19.1 or with
+                    Netbeans 8.0.2 that the JUnit GUI is not shown at the IDE-->
+                    <version>2.20</version>
+                </plugin>
+
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-javadoc-plugin</artifactId>
+                    <version>2.10.4</version>
+                    <configuration>
+                        <!-- Switch OFF the doclint in Java 8 -->
+                        <additionalparam>-Xdoclint:none</additionalparam>
+                    </configuration>
+                </plugin>
+            </plugins>
+        </pluginManagement>
+
         <plugins>
             <plugin>
 				<groupId>org.apache.maven.plugins</groupId>
@@ -487,7 +494,7 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-surefire-report-plugin</artifactId>
-                <version>2.19.1</version>
+                <version>2.20</version>
             </plugin>
         </plugins>
     </reporting>
