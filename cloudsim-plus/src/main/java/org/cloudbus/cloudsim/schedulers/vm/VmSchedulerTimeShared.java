@@ -11,11 +11,10 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.IntStream;
 import org.cloudbus.cloudsim.util.Log;
 import org.cloudbus.cloudsim.resources.Pe;
 import org.cloudbus.cloudsim.vms.Vm;
-
-import org.cloudbus.cloudsim.lists.PeList;
 
 /**
  * VmSchedulerTimeShared is a Virtual Machine Monitor (VMM), also called Hypervisor,
@@ -293,14 +292,24 @@ public class VmSchedulerTimeShared extends VmSchedulerAbstract {
 
     @Override
     public void deallocatePesForVm(Vm vm) {
-        getMipsMapRequested().remove(vm);
-        setPesInUse(pesInUse - vm.getNumberOfPes());
-        getMipsMapAllocated().remove(vm);
-        setAvailableMips(PeList.getTotalMips(getPeList()));
+        deallocatePesForVm(vm, (int)vm.getNumberOfPes());
+    }
 
-        for (final Pe pe : getPeList()) {
-            pe.getPeProvisioner().deallocateResourceForVm(vm);
+    @Override
+    public void deallocatePesForVm(Vm vm, int pesToRemove) {
+        if(pesToRemove <= 0 || vm.getNumberOfPes() == 0){
+            return;
         }
+        
+        final int removedPes = removePesFromMipsMap(vm, getMipsMapRequested(), pesToRemove);
+        setPesInUse(pesInUse - removedPes);
+        removePesFromMipsMap(vm, getMipsMapAllocated(), pesToRemove);
+        //@todo tem que corrigir aqui
+        setAvailableMips(getHost().getTotalMipsCapacity());
+
+        IntStream.range(0, removedPes)
+                .mapToObj(i -> getPeList().get(i))
+                .forEach(pe -> pe.getPeProvisioner().deallocateResourceForVm(vm));
 
         for (final Map.Entry<Vm, List<Double>> entry : getMipsMapRequested().entrySet()) {
             updateMapOfRequestedMipsForVm(entry.getKey(), entry.getValue());
@@ -309,6 +318,30 @@ public class VmSchedulerTimeShared extends VmSchedulerAbstract {
         updatePesAllocationForAllVms();
     }
 
+    /**
+     * Remove a given number of PEs from a given VM/PEs Map.
+     * @param vm the VM to remove PEs from
+     * @param mipsMap the map where the PEs will be removed
+     * @param pesToRemove the number of PEs to remove from the List of PEs inside the Map
+     * @return the number of removed PEs
+     */
+    private int removePesFromMipsMap(Vm vm, Map<Vm, List<Double>> mipsMap, int pesToRemove) {
+        List<Double> mipsList = mipsMap.get(vm);
+        if(mipsList == null){
+            return 0;
+        }
+        
+        pesToRemove = Math.min((int)vm.getNumberOfPes(), pesToRemove);
+        pesToRemove = Math.min(pesToRemove, mipsList.size());
+        final List<Double> mipsToRemove = mipsList.subList(0, pesToRemove);
+        mipsList.removeAll(mipsToRemove);
+        if(mipsList.isEmpty()){
+            mipsMap.remove(vm);
+        }
+        
+        return pesToRemove;
+    }
+    
     /**
      * Releases PEs allocated to all the VMs.
      *
@@ -339,7 +372,7 @@ public class VmSchedulerTimeShared extends VmSchedulerAbstract {
      * @param pesInUse the new pes in use
      */
     protected void setPesInUse(long pesInUse) {
-        this.pesInUse = pesInUse;
+        this.pesInUse = Math.max(pesInUse, 0);
     }
 
     /**

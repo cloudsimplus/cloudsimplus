@@ -78,4 +78,7 @@ final class VmSchedulerNull implements VmScheduler {
     @Override public VmScheduler setHost(Host host) {
         return this;
     }
+
+    @Override
+    public void deallocatePesForVm(Vm vm, int pesToRemove) {}
 }

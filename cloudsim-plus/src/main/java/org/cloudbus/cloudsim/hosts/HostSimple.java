@@ -558,6 +558,13 @@ public class HostSimple implements Host {
                 .count();
     }
 
+    @Override
+    public long getNumberOfFailedPes() {
+        return getPeList().stream()
+                .filter(pe -> pe.getStatus() == Pe.Status.FAILED)
+                .count();
+    }
+
     private Host setStorage(long size) {
         this.storage = new Storage(size);
         return this;

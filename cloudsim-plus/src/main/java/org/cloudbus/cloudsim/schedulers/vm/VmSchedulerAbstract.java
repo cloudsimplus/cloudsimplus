@@ -7,7 +7,6 @@
 package org.cloudbus.cloudsim.schedulers.vm;
 
 import java.util.*;
-import java.util.stream.IntStream;
 import java.util.stream.LongStream;
 
 import org.cloudbus.cloudsim.hosts.Host;
@@ -15,8 +14,6 @@ import org.cloudbus.cloudsim.provisioners.PeProvisioner;
 import org.cloudbus.cloudsim.util.Log;
 import org.cloudbus.cloudsim.resources.Pe;
 import org.cloudbus.cloudsim.vms.Vm;
-
-import org.cloudbus.cloudsim.lists.PeList;
 
 import static java.util.stream.Collectors.toList;
 
@@ -83,7 +80,7 @@ public abstract class VmSchedulerAbstract implements VmScheduler {
     @Override
     public void deallocatePesForAllVms() {
         getMipsMapAllocated().clear();
-        setAvailableMips(PeList.getTotalMips(getPeList()));
+        setAvailableMips(host.getTotalMipsCapacity());
         getPeList().forEach(pe -> pe.getPeProvisioner().deallocateResourceForAllVms());
     }
 
@@ -229,7 +226,7 @@ public abstract class VmSchedulerAbstract implements VmScheduler {
     }
 
     @Override
-    public VmScheduler setHost(Host host) {
+    public final VmScheduler setHost(Host host) {
         Objects.requireNonNull(host);
 
         if(isOtherHostAssigned(host)){
@@ -240,7 +237,7 @@ public abstract class VmSchedulerAbstract implements VmScheduler {
 
         setPeMap(new HashMap<>());
         setMipsMapAllocated(new HashMap<>());
-        setAvailableMips(PeList.getTotalMips(getPeList()));
+        setAvailableMips(host.getTotalMipsCapacity());
 
         return this;
     }

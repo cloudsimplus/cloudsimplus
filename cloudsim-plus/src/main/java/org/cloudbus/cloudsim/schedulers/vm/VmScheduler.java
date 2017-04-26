@@ -88,14 +88,25 @@ public interface VmScheduler {
     void deallocatePesForAllVms();
 
     /**
-     * Releases PEs allocated to a VM. After that, the PEs may be used on demand
+     * Releases all PEs allocated to a VM. After that, the PEs may be used on demand
      * by other VMs.
      *
-     * @param vm the vm
+     * @param vm the vm to deallocate PEs from
      * @pre $none
      * @post $none
      */
     void deallocatePesForVm(Vm vm);
+    
+    /**
+     * Releases a given number of PEs from a VM. After that, the PEs may be used on demand
+     * by other VMs.
+     *
+     * @param vm the vm to deallocate PEs from
+     * @param pesToRemove number of PEs to deallocate
+     * @pre $none
+     * @post $none
+     */
+    void deallocatePesForVm(Vm vm, int pesToRemove);    
 
     /**
      * Gets the MIPS share of each host's Pe that is allocated to a given VM.
@@ -191,7 +202,6 @@ public interface VmScheduler {
      */
     Set<Vm> getVmsMigratingIn();
 
-
     /**
      * Gets a <b>read-only</b> list of VMs migrating out.
      *
@@ -216,12 +226,14 @@ public interface VmScheduler {
     /**
      * Adds a {@link Vm} to the list of VMs migrating in.
      * @param vm the vm to be added
+     * @return 
      */
     boolean removeVmMigratingIn(Vm vm);
 
     /**
      * Adds a {@link Vm} to the list of VMs migrating out.
      * @param vm the vm to be added
+     * @return 
      */
     boolean removeVmMigratingOut(Vm vm);
 
@@ -245,6 +257,7 @@ public interface VmScheduler {
      * A host for the VmScheduler is set when the VmScheduler is set to a given host.
      * Thus, the host is in charge to set itself to a VmScheduler.
      * @param host the host to be set
+     * @return 
      * @throws IllegalArgumentException when the scheduler already is assigned to another Host, since
      * each Host must have its own scheduler
      * @throws NullPointerException when the host parameter is null

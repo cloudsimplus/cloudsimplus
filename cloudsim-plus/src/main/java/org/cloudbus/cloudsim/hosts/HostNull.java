@@ -144,4 +144,7 @@ final class HostNull implements Host {
 
     @Override
     public double getTotalMipsCapacity() { return 0.0; }
+
+    @Override
+    public long getNumberOfFailedPes() { return 0; }
 }

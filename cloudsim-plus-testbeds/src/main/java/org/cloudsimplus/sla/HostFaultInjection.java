@@ -111,39 +111,70 @@ public class HostFaultInjection extends CloudSimEntity {
      * otherwise
      */
     public final boolean generateFailure() {
+        final int numberOfFailedPes = setFailedHostPes();
+        final long hostWorkingPes = host.getNumberOfWorkingPes();
+        final long vmsRequiredPes = getPesSumOfWorkingVms(host.getVmList());
+                
+        if(hostWorkingPes == 0){
+            setAllVmsToFailed();  
+        } else if (hostWorkingPes >= vmsRequiredPes) {
+            logNoVmFailure();  
+        } else {
+            setVmPesToFailed();
+        } 
+        
+        return numberOfFailedPes > 0;
+    }
+
+    private void setVmPesToFailed() {
+        final int hostWorkingPes = (int)host.getNumberOfWorkingPes();
+        final int vmsRequiredPes = (int)getPesSumOfWorkingVms(host.getVmList());
+        
+        int i = 0;
+        int failedPesToRemoveFromVms = vmsRequiredPes-hostWorkingPes;
+        final int affectedVms = Math.min(host.getVmList().size(), failedPesToRemoveFromVms);
+        Log.printFormattedLine(
+                "** %d PEs of Host %d has failed, from a total of %d PEs. There are %d PEs working\n",
+                host.getNumberOfFailedPes(), host.getId(), host.getNumberOfPes(),
+                host.getNumberOfWorkingPes());
+        Log.printFormattedLine("VMs affected by this failure: %d", affectedVms);
+        while(failedPesToRemoveFromVms-- > 0){
+            i = i % affectedVms;
+            Vm vm = host.getVmList().get(i);
+            
+            
+            i++;
+        }
+    }
+    
+    /**
+     * Shows that the failure of Host PEs hasn't affected any VM,
+     * because there is more working PEs than required by all VMs.
+     */
+    private void logNoVmFailure() {
+        final int vmsRequiredPes = (int)getPesSumOfWorkingVms(host.getVmList());
+        Log.printLine(
+                "** Number of Host failed PEs is less than the number of PEs required by all VMs, thus it doesn't affect any VM");
+        Log.printFormattedLine("Host %d PEs: %d Host Failed PEs: %d Host Working PEs: %d Total PEs required by VMs: %d",
+                host.getId(), host.getNumberOfPes(), generateNumberOfFailedPes(), host.getNumberOfWorkingPes(),
+                vmsRequiredPes);
+    }
+
+    /**
+     * Sets all VMs to failed when all Host PEs failed.
+     */
+    private void setAllVmsToFailed() {
+        host.getVmList().stream().forEach(this::setVmToFailedWhenHostIsFailed);
+        Log.printFormattedLine("All the %d PEs of Host %d failed",
+                host.getNumberOfPes(), host.getId());
+    }
+
+    private int setFailedHostPes() {
         final int numberOfFailedPes = generateNumberOfFailedPes();
         for (int i = 0; i < numberOfFailedPes; i++) {
             host.getPeList().get(i).setStatus(Pe.Status.FAILED);
-            // Log.printLine(CloudSim.clock() + " ---> Host " + host.getId() + " FAILURE...\n");
         }
-
-        Comparator<Vm> sortVmsDescendinglyByPesNumber = Comparator.comparingLong(vm -> vm.getNumberOfPes());
-
-        final List<Vm> sortedHostVmList = new ArrayList<>(host.getVmList());
-        sortedHostVmList.sort(sortVmsDescendinglyByPesNumber);
-
-        for (Vm vm : sortedHostVmList) {
-            final long numberOfWorkingPes = host.getNumberOfWorkingPes();
-            final long pesSumOfWorkingVms = getPesSumOfWorkingVms(sortedHostVmList);
-            if (pesSumOfWorkingVms > numberOfWorkingPes) {
-                setVmToFailedWhenHostIsFailed(vm);
-                System.out.printf(
-                        "** Host %d working pes: %d Quant working PEs of all VMs of the Host: %d. Failed VM %d with %d PEs\n",
-                        host.getId(), host.getNumberOfWorkingPes(),
-                        pesSumOfWorkingVms, vm.getId(), vm.getNumberOfPes());
-
-                System.out.println("Vm failed -> " + vm.getId());
-                System.out.println("\nHost:: " + host + " vms [ " + host.getVmList() + "]");
-            } else {
-                System.out.println("Vm not failed -> " + vm.getId()
-                        + " with " + vm.getNumberOfPes() + "PEs"
-                        + " executed in host: " + vm.getHost());
-                System.out.println("\nHost:: " + host + " vms [ " + host.getVmList() + "]");
-                break;
-            }
-        }
-        
-        return numberOfFailedPes > 0;
+        return numberOfFailedPes;
     }
 
     public long getFailedVmsCount() {

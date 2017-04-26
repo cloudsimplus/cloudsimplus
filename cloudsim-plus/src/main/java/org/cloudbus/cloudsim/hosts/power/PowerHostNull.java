@@ -188,4 +188,7 @@ final class PowerHostNull implements PowerHost {
 
     @Override
     public double getTotalMipsCapacity() { return 0.0; }
+
+    @Override
+    public long getNumberOfFailedPes() { return 0; }
 }
