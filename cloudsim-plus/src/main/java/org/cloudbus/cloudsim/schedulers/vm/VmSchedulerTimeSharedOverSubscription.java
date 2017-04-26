@@ -77,7 +77,6 @@ public class VmSchedulerTimeSharedOverSubscription extends VmSchedulerTimeShared
             }
 
             getMipsMapAllocated().put(vm, mipsShareAllocated);
-            setAvailableMips(getAvailableMips() - totalRequestedMips);
         } else {
             redistributeMipsDueToOverSubscription();
         }
@@ -94,13 +93,9 @@ public class VmSchedulerTimeSharedOverSubscription extends VmSchedulerTimeShared
         final Map<Vm, List<Double>> mipsMapCap = new HashMap<>();
         final double totalRequiredMipsByAllVms = getTotalRequiredMipsByAllVms(mipsMapCap);
 
-        final double totalAvailableMips = PeList.getTotalMips(getPeList());
-        final double scalingFactor = totalAvailableMips / totalRequiredMipsByAllVms;
+        final double scalingFactor = getHost().getTotalMipsCapacity() / totalRequiredMipsByAllVms;
 
         updateActualMipsAllocatedToVms(mipsMapCap, scalingFactor);
-
-        // As the host is oversubscribed, there is no more available MIPS
-        setAvailableMips(0);
     }
 
     private void updateActualMipsAllocatedToVms(Map<Vm, List<Double>> mipsMapCap, double scalingFactor) {

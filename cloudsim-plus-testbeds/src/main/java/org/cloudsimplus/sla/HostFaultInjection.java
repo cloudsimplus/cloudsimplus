@@ -141,8 +141,7 @@ public class HostFaultInjection extends CloudSimEntity {
         while(failedPesToRemoveFromVms-- > 0){
             i = i % affectedVms;
             Vm vm = host.getVmList().get(i);
-            
-            
+            host.getVmScheduler().deallocatePesForVm(vm);
             i++;
         }
     }

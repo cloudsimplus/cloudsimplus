@@ -285,7 +285,6 @@ public class VmSchedulerTimeShared extends VmSchedulerAbstract {
         }
 
         getMipsMapAllocated().put(vm, mipsShareAllocated);
-        setAvailableMips(getAvailableMips() - totalRequestedMips);
 
         return true;
     }
@@ -304,8 +303,6 @@ public class VmSchedulerTimeShared extends VmSchedulerAbstract {
         final int removedPes = removePesFromMipsMap(vm, getMipsMapRequested(), pesToRemove);
         setPesInUse(pesInUse - removedPes);
         removePesFromMipsMap(vm, getMipsMapAllocated(), pesToRemove);
-        //@todo tem que corrigir aqui
-        setAvailableMips(getHost().getTotalMipsCapacity());
 
         IntStream.range(0, removedPes)
                 .mapToObj(i -> getPeList().get(i))

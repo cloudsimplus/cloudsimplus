@@ -41,11 +41,6 @@ public abstract class VmSchedulerAbstract implements VmScheduler {
     private Map<Vm, List<Double>> mipsMapAllocated;
 
     /**
-     * The total available MIPS that can be allocated on demand for VMs.
-     */
-    private double availableMips;
-
-    /**
      * @see #getVmsMigratingIn()
      */
     private Set<Vm> vmsMigratingIn;
@@ -80,7 +75,6 @@ public abstract class VmSchedulerAbstract implements VmScheduler {
     @Override
     public void deallocatePesForAllVms() {
         getMipsMapAllocated().clear();
-        setAvailableMips(host.getTotalMipsCapacity());
         getPeList().forEach(pe -> pe.getPeProvisioner().deallocateResourceForAllVms());
     }
 
@@ -159,16 +153,11 @@ public abstract class VmSchedulerAbstract implements VmScheduler {
 
     @Override
     public double getAvailableMips() {
-        return availableMips;
-    }
-
-    /**
-     * Sets the amount of mips that is free.
-     *
-     * @param availableMips the new free mips amount
-     */
-    protected final void setAvailableMips(double availableMips) {
-        this.availableMips = availableMips;
+        final double totalAllocatedMips = 
+            getMipsMapAllocated().values().stream()
+                .flatMap(list -> list.stream())
+                .reduce(0.0, Double::sum);
+        return host.getTotalMipsCapacity() - totalAllocatedMips;
     }
 
     @Override
@@ -237,7 +226,6 @@ public abstract class VmSchedulerAbstract implements VmScheduler {
 
         setPeMap(new HashMap<>());
         setMipsMapAllocated(new HashMap<>());
-        setAvailableMips(host.getTotalMipsCapacity());
 
         return this;
     }
