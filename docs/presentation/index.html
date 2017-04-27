@@ -46,8 +46,10 @@
 					<small>
 					¹Depto. Informática, [Instituto Federal de Educação do Tocantins](http://www.ifto.edu.br)<br/>
 					²[Instituto de Telecomunicações](http://www.it.pt) and [Depto. Informática](http://di.ubi.pt), [Universidade da Beira Interior](http://www.ubi.pt)
+					<div height="40px">
 					###### This presentation is licensed under a [Creative Commons Attribution-ShareAlike 4.0 International License](http://creativecommons.org/licenses/by-sa/4.0/).
-					![](https://licensebuttons.net/l/by-sa/4.0/88x31.png)
+					<img src="https://licensebuttons.net/l/by-sa/4.0/88x31.png"/>
+					</div>
 					</small>
 				</script></section>
 
@@ -238,7 +240,10 @@
 					## Conclusions and Future Work
 
 					- It is difficult to replicate a real system in simulation, mainly concerned in modelling the arrival of stochastic events such as workload bursts. 
-					- To contribute for valid results, a simulation framework has to (i) be well-designed (ii) get away from code duplication to avoid code degeneration (iii) be extensively tested and (iv) provide classes following software engineering principles. 
+					- To contribute for valid results, a simulation framework has to:
+						- be well-designed and extensively test;
+						- get away from code duplication to avoid code degeneration;
+						- and provide classes following software engineering principles. 
 					- CloudSim Plus is aligned with all these requirements. 
 					- Proposed future work is available at the [issues page](https://github.com/manoelcampos/cloudsim-plus/issues).
 				</script></section>
@@ -281,8 +286,11 @@
 				hideAddressBar: true, // Hides the address bar on mobile devices
 				previewLinks: false, // Opens links in an iframe preview overlay
 				viewDistance: 2, // Number of slides away from the current that are visible
-				width: "100%",
+				width: "100%", //can be used %
 				height: "100%",		
+				margin: 0,
+				minScale: 1,
+				maxScale: 1,
 
 				transition: 'slide', // none/fade/slide/convex/concave/zoom
 

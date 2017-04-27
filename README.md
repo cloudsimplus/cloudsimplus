@@ -108,7 +108,7 @@ It also has a better package organization, improving [Separation of Concerns (So
 # How to Use CloudSim Plus 
 There are 3 ways to use CloudSim Plus. It can be downloaded and executed: (i) directly from some IDE; (ii) from the command line; or (iii) from [Maven Central](https://maven-badges.herokuapp.com/maven-central/org.cloudsimplus/cloudsim-plus) once you include it as a dependency inside your own project.
 
-You can watch the video below ([high quality version here](https://youtu.be/hvFJtvrkCNI)) or follow the instructions in one of the next subsections.
+You can watch the video below ([high quality version here](https://youtu.be/k2enNoxTYVw)) or follow the instructions in one of the next subsections.
 
 ![Downloading CloudSim Plus and running Examples using NetBeans](https://github.com/manoelcampos/cloudsim-plus/raw/master/docs/images/cloudsim-plus-netbeans.gif)
 
