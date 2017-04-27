@@ -29,16 +29,17 @@ import org.cloudbus.cloudsim.resources.*;
 import org.cloudbus.cloudsim.vms.Vm;
 import org.cloudsimplus.autoscaling.resources.ResourceScalingGradual;
 import org.cloudsimplus.autoscaling.resources.ResourceScaling;
+import org.cloudsimplus.autoscaling.resources.ResourceScalingInstantaneous;
 
 import java.util.Objects;
 import java.util.function.Function;
 
 /**
- * A {@link VerticalVmScaling} implementation that allows a {@link DatacenterBroker}
- * to perform on demand up or down scaling for some VM resource such as RAM, CPU or Bandwidth.
+ * A {@link VerticalVmScaling} implementation which allows a {@link DatacenterBroker}
+ * to perform on demand up or down scaling for some {@link Vm} resource, such as {@link Ram}, {@link Pe} or {@link Bandwidth}.
  *
- * <p>For each resource that is required to be scaled, a distinct VerticalVmScaling
- * instance must assigned to the VM to be scaled.</p>
+ * <p>For each resource that is required to be scaled, a distinct {@link VerticalVmScaling}
+ * instance must be assigned to the VM to be scaled.</p>
  *
  * @author Manoel Campos da Silva Filho
  * @since CloudSim Plus 1.1.0
@@ -51,7 +52,7 @@ public class VerticalVmScalingSimple extends VmScalingAbstract implements Vertic
     private Function<Vm, Double> lowerUtilizationThresholdFunction;
 
     /**
-     * Creates a VerticalVmScalingSimple with a {@link ResourceScaling} scaling type.
+     * Creates a VerticalVmScalingSimple with a {@link ResourceScalingGradual} scaling type.
      *
      * @param resourceClassToScale the class of Vm resource that this scaling object will request up or down scaling
      *  (such as {@link Ram}.class, {@link Bandwidth}.class or {@link Processor}.class).
@@ -66,7 +67,7 @@ public class VerticalVmScalingSimple extends VmScalingAbstract implements Vertic
         this.setResourceScaling(new ResourceScalingGradual());
         this.lowerUtilizationThresholdFunction = VerticalVmScaling.NULL.getLowerThresholdFunction();
         this.upperUtilizationThresholdFunction = VerticalVmScaling.NULL.getUpperThresholdFunction();
-        this.setResourceClassToScale(resourceClassToScale);
+        this.setResourceClass(resourceClassToScale);
         this.setScalingFactor(scalingFactor);
     }
 
@@ -101,6 +102,11 @@ public class VerticalVmScalingSimple extends VmScalingAbstract implements Vertic
         return this;
     }
 
+    @Override
+    public long getAllocatedResource() {
+        return getResource().getAllocatedResource();
+    }
+
     /**
      * Throws an exception if the under and overload predicates are equal (to make clear
      * that over and underload situations must be defined by different conditions)
@@ -120,14 +126,14 @@ public class VerticalVmScalingSimple extends VmScalingAbstract implements Vertic
     }
 
     @Override
-    public Class<? extends ResourceManageable> getResourceClassToScale() {
+    public Class<? extends ResourceManageable> getResourceClass() {
         return this.resourceClassToScale;
     }
 
     @Override
-    public final VerticalVmScaling setResourceClassToScale(Class<? extends ResourceManageable> resourceClassToScale) {
-        Objects.requireNonNull(resourceClassToScale);
-        this.resourceClassToScale = resourceClassToScale;
+    public final VerticalVmScaling setResourceClass(Class<? extends ResourceManageable> resourceClass) {
+        Objects.requireNonNull(resourceClass);
+        this.resourceClassToScale = resourceClass;
         if(Pe.class.equals(this.resourceClassToScale)){
             this.resourceClassToScale = Processor.class;
         }
@@ -152,22 +158,41 @@ public class VerticalVmScalingSimple extends VmScalingAbstract implements Vertic
 
     @Override
     public boolean isVmUnderloaded() {
-        return getVmResourceToScale().getPercentUtilization() < lowerUtilizationThresholdFunction.apply(getVm());
+        return getResource().getPercentUtilization() < lowerUtilizationThresholdFunction.apply(getVm());
     }
 
     @Override
     public boolean isVmOverloaded() {
-        return getVmResourceToScale().getPercentUtilization() > upperUtilizationThresholdFunction.apply(getVm());
+        return getResource().getPercentUtilization() > upperUtilizationThresholdFunction.apply(getVm());
     }
 
     @Override
-    public Resource getVmResourceToScale() {
+    public Resource getResource() {
         return getVm().getResource(resourceClassToScale);
     }
 
+    /**
+     * {@inheritDoc}
+     *
+     * <p>If a {@link ResourceScaling} implementation such as
+     * {@link ResourceScalingGradual} or {@link ResourceScalingInstantaneous} are used,
+     * it will rely on the {@link #getScalingFactor()} to compute the amount of resource to scale.
+     * Other implementations may use the scaling factor by it is up to them.
+     * </p>
+     *
+     * <h3>NOTE:</h3>
+     * <b>The return of this method is rounded up to avoid
+     * values between ]0 and 1[</b>. For instance, up scaling the number of CPUs in 0.5
+     * means that half of a CPU should be added to the VM. Since number of CPUs is
+     * an integer value, this 0.5 will be converted to zero, causing no effect.
+     * For other resources such as RAM, adding 0.5 MB has not practical advantages either.
+     * This way, the value is always rounded up.
+     *
+     * @return {@inheritDoc}
+     */
     @Override
-    public long getResourceAmountToScale() {
-        return resourceScaling.getResourceAmountToScale(this);
+    public double getResourceAmountToScale() {
+        return Math.ceil(resourceScaling.getResourceAmountToScale(this));
     }
 
     @Override

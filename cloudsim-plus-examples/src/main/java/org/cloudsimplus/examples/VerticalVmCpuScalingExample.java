@@ -45,14 +45,12 @@ import org.cloudbus.cloudsim.schedulers.cloudlet.CloudletSchedulerTimeShared;
 import org.cloudbus.cloudsim.schedulers.vm.VmSchedulerTimeShared;
 import org.cloudbus.cloudsim.util.Log;
 import org.cloudbus.cloudsim.utilizationmodels.UtilizationModel;
-import org.cloudbus.cloudsim.utilizationmodels.UtilizationModelDynamic;
 import org.cloudbus.cloudsim.utilizationmodels.UtilizationModelFull;
 import org.cloudbus.cloudsim.vms.Vm;
 import org.cloudbus.cloudsim.vms.VmSimple;
 import org.cloudsimplus.autoscaling.HorizontalVmScaling;
 import org.cloudsimplus.autoscaling.VerticalVmScaling;
 import org.cloudsimplus.autoscaling.VerticalVmScalingSimple;
-import org.cloudsimplus.autoscaling.resources.ResourceScalingInstantaneous;
 import org.cloudsimplus.builders.tables.CloudletsTableBuilder;
 import org.cloudsimplus.listeners.EventInfo;
 import org.cloudsimplus.listeners.EventListener;
@@ -64,19 +62,19 @@ import java.util.List;
 import static java.util.Comparator.comparingDouble;
 
 /**
- * An example that scale VM PEs up, according to the arrival of Cloudlets.
+ * An example that scales VM PEs up or down, according to the arrival of Cloudlets.
  * A {@link VerticalVmScaling}
  * is set to each {@link #createListOfScalableVms(int) initially created VM},
- * that will check at {@link #SCHEDULING_INTERVAL specific time intervals}
- * if a VM PEs {@link #upperCpuUtilizationThreshold(Vm) are overloaded or not} to then
- * request the PEs to be scaled up.
+ * which will check at {@link #SCHEDULING_INTERVAL specific time intervals}
+ * if VM PEs {@link #upperCpuUtilizationThreshold(Vm) are over or underloaded} to then
+ * request such PEs to be scaled up or down.
  *
  * <p>The example uses the CloudSim Plus {@link EventListener} feature
- * to enable monitoring the simulation and dynamically creating objects such as Cloudlets and VMs at runtime.
+ * to enable monitoring the simulation and dynamically create objects such as Cloudlets and VMs at runtime.
  * It relies on
- * <a href="http://www.oracle.com/webfolder/technetwork/tutorials/obe/java/Lambda-QuickStart/index.html">Java 8 Lambda Expressions</a>
- * to create a Listener for the {@link Simulation#addOnClockTickListener(EventListener) onClockTick event}
- * to get notifications when the simulation clock advances, then creating and submitting new cloudlets.
+ * <a href="https://docs.oracle.com/javase/tutorial/java/javaOO/methodreferences.html">Java 8 Method References</a>
+ * to set a method to be called for {@link Simulation#addOnClockTickListener(EventListener) onClockTick events}.
+ * It enables getting notifications when the simulation clock advances, then creating and submitting new cloudlets.
  * </p>
  *
  * @author Manoel Campos da Silva Filho
@@ -150,10 +148,14 @@ public class VerticalVmCpuScalingExample {
         printSimulationResults();
     }
 
-    private void onClockTickListener(EventInfo eventInfo) {
+    /**
+     * Shows updates every time the simulation clock advances.
+     * @param evt information about the event happened (that for this Listener is just the simulation time)
+     */
+    private void onClockTickListener(EventInfo evt) {
         vmList.forEach(vm -> {
             Log.printFormatted("\t\tTime %6.1f: Vm %d CPU Usage: %6.2f%% (%2d vCPUs. Running Cloudlets: #%d)\n",
-                eventInfo.getTime(), vm.getId(), vm.getCurrentCpuPercentUse()*100.0,
+                evt.getTime(), vm.getId(), vm.getCurrentCpuPercentUse()*100.0,
                 vm.getNumberOfPes(), vm.getCloudletScheduler().getCloudletExecList().size());
         });
     }
@@ -197,18 +199,18 @@ public class VerticalVmCpuScalingExample {
     }
 
     /**
-     * Creates a list of initial VMs in which each VM is able to scale horizontally
-     * when it is overloaded.
+     * Creates a list of initial VMs in which each VM is able to scale vertically
+     * when it is over or underloaded.
      *
      * @param numberOfVms number of VMs to create
      * @return the list of scalable VMs
-     * @see #createVerticalPeScalingForVm(Vm)
+     * @see #createVerticalPeScaling()
      */
     private List<Vm> createListOfScalableVms(final int numberOfVms) {
         List<Vm> newList = new ArrayList<>(numberOfVms);
         for (int i = 0; i < numberOfVms; i++) {
             Vm vm = createVm();
-            createVerticalPeScalingForVm(vm);
+            vm.setPeVerticalScaling(createVerticalPeScaling());
             newList.add(vm);
         }
 
@@ -229,15 +231,30 @@ public class VerticalVmCpuScalingExample {
     }
 
     /**
-     * Creates a {@link VerticalVmScaling} for the CPU of a given VM.
+     * Creates a {@link VerticalVmScaling} for scaling VM's CPU when it's under or overloaded.
      *
-     * @param vm the VM in which the VerticalVmScaling will be created
+     * <p>Realize the lower and upper thresholds are defined inside this method by using
+     * references to the methods {@link #lowerCpuUtilizationThreshold(Vm)}
+     * and {@link #upperCpuUtilizationThreshold(Vm)}.
+     * These methods enable defining thresholds in a dynamic way
+     * and even different thresholds for distinct VMs.
+     * Therefore, it's a powerful mechanism.
+     * </p>
+     *
+     * <p>
+     * However, if you are defining thresholds in a static way,
+     * and they are the same for all VMs, you can use a Lambda Expression
+     * like below, for instance, instead of creating a new method that just returns a constant value:<br>
+     * {@code verticalCpuScaling.setLowerThresholdFunction(vm -> 0.4);}
+     * </p>
+     *
      * @see #createListOfScalableVms(int)
      */
-    private void createVerticalPeScalingForVm(Vm vm) {
+    private VerticalVmScaling createVerticalPeScaling() {
         //The percentage in which the number of PEs has to be scaled
         final double scalingFactor = 0.1;
         VerticalVmScaling verticalCpuScaling = new VerticalVmScalingSimple(Processor.class, scalingFactor);
+
         /* By uncommenting the line below, you will see that instead of gradually
          * increasing or decreasing the number of PEs, when the scaling object detect
          * the CPU usage is above or below the defined thresholds,
@@ -245,13 +262,21 @@ public class VerticalVmCpuScalingExample {
          * move the VM from the over or underload condition.
         */
         //verticalCpuScaling.setResourceScaling(new ResourceScalingInstantaneous());
-        /*Implementations of a ResourceScaling can also be defined using a Lambda Expression as below.
-        * It is just an example the scale the resource twice the amount defined by the scaling factor.*/
-        verticalCpuScaling.setResourceScaling(s -> (long)(s.getScalingFactor()*2*s.getVmResourceToScale().getAllocatedResource()));
+
+        /* Different from the commented line above, the line below implements a ResourceScaling using a Lambda Expression.
+         * It is just an example which scales the resource twice the amount defined by the scaling factor
+         * defined in the constructor.
+         *
+         * Realize that if the setResourceScaling method is not called, a ResourceScalingGradual will be used,
+         * which scales the resource according to the scaling factor.
+         * The lower and upper thresholds after this line can also be defined using a Lambda Expression.
+         */
+        verticalCpuScaling.setResourceScaling(vs -> 2*vs.getScalingFactor()*vs.getAllocatedResource());
 
         verticalCpuScaling.setLowerThresholdFunction(this::lowerCpuUtilizationThreshold);
         verticalCpuScaling.setUpperThresholdFunction(this::upperCpuUtilizationThreshold);
-        vm.setPeVerticalScaling(verticalCpuScaling);
+
+        return verticalCpuScaling;
     }
 
     /**
@@ -261,10 +286,10 @@ public class VerticalVmCpuScalingExample {
      * A reference to this method is assigned to each Vertical VM Scaling created.
      *
      * @param vm the VM to check if its CPU is underloaded.
-     *        The parameter is not being used internally, that means the same
-     *        threshold is used for any Vm.
+     *        <b>The parameter is not being used internally, which means the same
+     *        threshold is used for any Vm.</b>
      * @return the lower CPU utilization threshold
-     * @see #createVerticalPeScalingForVm(Vm)
+     * @see #createVerticalPeScaling()
      */
     private double lowerCpuUtilizationThreshold(Vm vm) {
         return 0.4;
@@ -280,7 +305,7 @@ public class VerticalVmCpuScalingExample {
      *        The parameter is not being used internally, that means the same
      *        threshold is used for any Vm.
      * @return the upper CPU utilization threshold
-     * @see #createVerticalPeScalingForVm(Vm)
+     * @see #createVerticalPeScaling()
      */
     private double upperCpuUtilizationThreshold(Vm vm) {
         return 0.8;
@@ -299,13 +324,17 @@ public class VerticalVmCpuScalingExample {
             cloudletList.add(createCloudlet(CLOUDLETS_INITIAL_LENGTH+(i*1000), 2));
         }
 
-        /* Create several Cloudlets, increasing the arrival delay and decreasing
-        * the length of each one.
-        * The increasing delay enables CPU usage to increase gradually along the arrival of
-        * new Cloudlets (triggering CPU up scaling at some point in time).
-        * The decreasing length enables to finish in different times,
-        * to gradually reduce CPU usage (triggering CPU down scaling at some point in time).
-        * Check the logs to understand how the scaling is working.*/
+        /*
+         * Creates several Cloudlets, increasing the arrival delay and decreasing
+         * the length of each one.
+         * The progressing delay enables CPU usage to increase gradually along the arrival of
+         * new Cloudlets (triggering CPU up scaling at some point in time).
+         *
+         * The decreasing length enables Cloudlets to finish in different times,
+         * to gradually reduce CPU usage (triggering CPU down scaling at some point in time).
+         *
+         * Check the logs to understand how the scaling is working.
+        */
         for (int i = 1; i <= remainingCloudletsNumber; i++) {
             cloudletList.add(createCloudlet(CLOUDLETS_INITIAL_LENGTH*2/i, 1,i*2));
         }
@@ -342,16 +371,5 @@ public class VerticalVmCpuScalingExample {
      */
     private Cloudlet createCloudlet(long length, int numberOfPes) {
         return createCloudlet(length, numberOfPes, 0);
-    }
-
-    /**
-     * Increments the RAM resource utilization, that is defined in absolute values,
-     * in 10MB every second.
-     *
-     * @param um the Utilization Model that called this function
-     * @return the new resource utilization after the increment
-     */
-    private double utilizationIncrement(UtilizationModelDynamic um) {
-        return um.getUtilization() + um.getTimeSpan()*10;
     }
 }

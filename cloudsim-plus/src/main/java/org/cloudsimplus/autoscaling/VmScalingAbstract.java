@@ -77,13 +77,6 @@ public abstract class VmScalingAbstract implements VmScaling {
     protected abstract boolean requestScaling(double time);
 
     /**
-     * Gets the last time the scheduler checked for VM overload.
-     */
-    public double getLastProcessingTime() {
-        return lastProcessingTime;
-    }
-
-    /**
      * Sets the last time the scheduler checked for VM overload.
      * @param lastProcessingTime the processing time to set
      */

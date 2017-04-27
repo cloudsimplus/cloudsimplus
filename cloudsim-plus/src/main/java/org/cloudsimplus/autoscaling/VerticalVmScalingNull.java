@@ -39,21 +39,21 @@ import java.util.function.Function;
  * @since CloudSim Plus 1.2.0
  */
 final class VerticalVmScalingNull implements VerticalVmScaling {
-    @Override public Class<? extends ResourceManageable> getResourceClassToScale() { return ResourceManageable.class; }
-    @Override public VerticalVmScaling setResourceClassToScale(Class<? extends ResourceManageable> c) { return this; }
+    @Override public Class<? extends ResourceManageable> getResourceClass() { return ResourceManageable.class; }
+    @Override public VerticalVmScaling setResourceClass(Class<? extends ResourceManageable> resourceClass) { return this; }
     @Override public double getScalingFactor() {
         return 0;
     }
     @Override public Function<Vm, Double> getResourceUsageThresholdFunction() { return vm -> 0.0; }
-    @Override public long getResourceAmountToScale() {
-        return 0;
+    @Override public double getResourceAmountToScale() {
+        return 0.0;
     }
     @Override public VerticalVmScaling setScalingFactor(double scalingFactor) {
         return this;
     }
     @Override public boolean isVmUnderloaded() { return false; }
     @Override public boolean isVmOverloaded() { return false; }
-    @Override public Resource getVmResourceToScale() { return Resource.NULL; }
+    @Override public Resource getResource() { return Resource.NULL; }
     @Override public boolean requestScalingIfPredicateMatch(double time) {
         return false;
     }
@@ -70,4 +70,5 @@ final class VerticalVmScalingNull implements VerticalVmScaling {
     @Override public Function<Vm, Double> getLowerThresholdFunction() { return vm -> Double.MIN_NORMAL; }
     @Override public VerticalVmScaling setLowerThresholdFunction(Function<Vm, Double> lowerThresholdFunction) { return this; }
     @Override public VerticalVmScaling setResourceScaling(ResourceScaling resourceScaling) { return this; }
+    @Override public long getAllocatedResource() { return 0; }
 }
