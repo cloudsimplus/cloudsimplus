@@ -59,7 +59,7 @@ public class VmSchedulerTimeSharedOverSubscriptionTest {
     @Test
     public void testInit() {
         final List<Pe> peList = vmScheduler.getHost().getPeList();
-        assertSame(peList, vmScheduler.getPeList());
+        assertSame(peList, vmScheduler.getWorkingPeList());
         assertEquals(PeList.getTotalMips(peList), vmScheduler.getAvailableMips(), 0);
         assertEquals(PeList.getTotalMips(peList), vmScheduler.getMaxAvailableMips(), 0);
         assertEquals(0, vmScheduler.getTotalAllocatedMipsForVm(vm1), 0);

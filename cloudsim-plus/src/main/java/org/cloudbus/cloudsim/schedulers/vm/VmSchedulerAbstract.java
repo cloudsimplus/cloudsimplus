@@ -11,7 +11,6 @@ import java.util.stream.LongStream;
 
 import org.cloudbus.cloudsim.hosts.Host;
 import org.cloudbus.cloudsim.provisioners.PeProvisioner;
-import org.cloudbus.cloudsim.util.Log;
 import org.cloudbus.cloudsim.resources.Pe;
 import org.cloudbus.cloudsim.vms.Vm;
 
@@ -75,7 +74,7 @@ public abstract class VmSchedulerAbstract implements VmScheduler {
     @Override
     public void deallocatePesForAllVms() {
         getMipsMapAllocated().clear();
-        getPeList().forEach(pe -> pe.getPeProvisioner().deallocateResourceForAllVms());
+        getWorkingPeList().forEach(pe -> pe.getPeProvisioner().deallocateResourceForAllVms());
     }
 
     @Override
@@ -95,37 +94,20 @@ public abstract class VmSchedulerAbstract implements VmScheduler {
 
     @Override
     public double getMaxAvailableMips() {
-        if (isPeListEmpty()) {
-            return 0;
-        }
-
-        return getPeList().stream()
-                    .map(Pe::getPeProvisioner)
-                    .mapToDouble(PeProvisioner::getAvailableResource)
-                    .max().orElse(0.0);
+        return getWorkingPeList().stream()
+                .map(Pe::getPeProvisioner)
+                .mapToDouble(PeProvisioner::getAvailableResource)
+                .max().orElse(0.0);
     }
 
     @Override
     public long getPeCapacity() {
-        if (isPeListEmpty()) {
-            return 0;
-        }
-
-        return getPeList().get(0).getCapacity();
-    }
-
-    private boolean isPeListEmpty() {
-        if (getPeList().isEmpty()) {
-            Log.printLine("Pe list is empty");
-            return true;
-        }
-
-        return false;
+        return getWorkingPeList().stream().map(Pe::getCapacity).findFirst().orElse(0L);
     }
 
     @Override
-    public final List<Pe> getPeList() {
-        return host.getPeList();
+    public final List<Pe> getWorkingPeList() {
+        return host.getWorkingPeList();
     }
 
     /**

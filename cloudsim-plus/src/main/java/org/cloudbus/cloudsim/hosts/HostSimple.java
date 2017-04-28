@@ -636,4 +636,11 @@ public class HostSimple implements Host {
             .findFirst()
             .orElse(ResourceProvisioner.NULL);
     }
+
+    @Override
+    public List<Pe> getWorkingPeList() {
+        return peList.stream()
+                .filter(pe -> !Pe.Status.FAILED.equals(pe.getStatus()))
+                .collect(toList());
+    }
 }

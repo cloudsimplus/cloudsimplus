@@ -108,7 +108,7 @@ public class VmSchedulerTimeShared extends VmSchedulerAbstract {
      */
     private void clearAllocationOfPesForAllVms() {
         getPeMap().clear();
-        getPeList().forEach(pe -> pe.getPeProvisioner().deallocateResourceForAllVms());
+        getWorkingPeList().forEach(pe -> pe.getPeProvisioner().deallocateResourceForAllVms());
 
         for (final Map.Entry<Vm, List<Double>> entry : getMipsMapAllocated().entrySet()) {
             final Vm vm = entry.getKey();
@@ -123,7 +123,7 @@ public class VmSchedulerTimeShared extends VmSchedulerAbstract {
      */
     private void allocatePesListForVm(Map.Entry<Vm, List<Double>> entry) {
         final Vm vm = entry.getKey();
-        final Iterator<Pe> hostPesIterator = getPeList().iterator();
+        final Iterator<Pe> hostPesIterator = getWorkingPeList().iterator();
         //Iterate over the list of MIPS requested by each VM PE
         for (final double requestedMipsForVmPe : entry.getValue()) {
             final double allocatedMipsForVmPe = allocateMipsFromHostPesToGivenVirtualPe(vm, requestedMipsForVmPe, hostPesIterator);
@@ -243,7 +243,7 @@ public class VmSchedulerTimeShared extends VmSchedulerAbstract {
         }
 
         // This scheduler does not allow over-subscription
-        if (getAvailableMips() < totalRequestedMips || getPeList().size() < vmRequestedMipsShare.size()) {
+        if (getAvailableMips() < totalRequestedMips || getWorkingPeList().size() < vmRequestedMipsShare.size()) {
             return 0.0;
         }
 
@@ -327,7 +327,7 @@ public class VmSchedulerTimeShared extends VmSchedulerAbstract {
      * @param vm the VM to deallocate a PE from
      */
     private void deallocateOnePeFromVm(Vm vm) {
-        getPeList().stream()
+        getWorkingPeList().stream()
             .filter(pe -> pe.getPeProvisioner().isResourceAllocatedToVm(vm))
             .findFirst()
             .ifPresent(pe -> {

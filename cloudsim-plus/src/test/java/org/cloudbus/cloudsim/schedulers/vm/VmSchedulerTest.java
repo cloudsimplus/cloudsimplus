@@ -22,7 +22,7 @@ public class VmSchedulerTest {
         assertFalse(instance.isSuitableForVm(Vm.NULL));
         assertEquals(0, instance.getMaxAvailableMips(), 0);
         assertEquals(0, instance.getPeCapacity(), 0);
-        assertTrue(instance.getPeList().isEmpty());
+        assertTrue(instance.getWorkingPeList().isEmpty());
         assertTrue(instance.getPeMap().isEmpty());
         assertTrue(instance.getPesAllocatedForVM(null).isEmpty());
         assertEquals(0, instance.getTotalAllocatedMipsForVm(null), 0);

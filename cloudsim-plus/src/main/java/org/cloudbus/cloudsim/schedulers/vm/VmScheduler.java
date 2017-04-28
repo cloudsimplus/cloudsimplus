@@ -163,13 +163,13 @@ public interface VmScheduler {
     long getPeCapacity();
 
     /**
-     * Gets the list of PEs from the Host.
+     * Gets the list of working PEs from the Host, <b>which excludes failed PEs</b>.
      *
      * @param <T> the generic type
      * @return
      *
      */
-    <T extends Pe> List<T> getPeList();
+    <T extends Pe> List<T> getWorkingPeList();
 
     /**
      * Gets the map of VMs to PEs, where each key is a VM UID and each value is a list

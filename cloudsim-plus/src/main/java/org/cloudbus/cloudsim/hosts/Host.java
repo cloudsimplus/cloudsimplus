@@ -139,12 +139,21 @@ public interface Host extends Machine, Comparable<Host> {
     double getTotalAllocatedMipsForVm(Vm vm);
 
     /**
-     * Gets the Processing Elements (PEs) of the host, that
-     * represent its CPU cores and thus, its processing capacity.
+     * Gets the list of all Processing Elements (PEs) of the host, 
+     * including failed PEs.
      *
-     * @return the pe list
+     * @return the list of all Host PEs
+     * @see #getWorkingPeList() 
      */
     List<Pe> getPeList();
+    
+    /**
+     * Gets the list of working Processing Elements (PEs) of the host,
+     * <b>which excludes failed PEs</b>.
+     *
+     * @return the list working (non-failed) Host PEs
+     */
+    List<Pe> getWorkingPeList();
 
     /**
      * Gets the free pes number.
@@ -173,7 +182,7 @@ public interface Host extends Machine, Comparable<Host> {
      */
     long getNumberOfWorkingPes();
     
-/**
+    /**
      * Gets the number of PEs that have failed.
      *
      * @return the number of failed pes
