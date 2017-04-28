@@ -22,7 +22,7 @@ final class VmSchedulerNull implements VmScheduler {
     }
     @Override public boolean allocatePesForVm(Vm vm) { return false; }
     @Override public void deallocatePesForAllVms() {/**/}
-    @Override public void deallocatePesForVm(Vm vm) {/**/}
+    @Override public void deallocatePesFromVm(Vm vm) {/**/}
     @Override public List<Double> getAllocatedMipsForVm(Vm vm) {
         return Collections.emptyList();
     }
@@ -80,5 +80,5 @@ final class VmSchedulerNull implements VmScheduler {
     }
 
     @Override
-    public void deallocatePesForVm(Vm vm, int pesToRemove) {}
+    public void deallocatePesFromVm(Vm vm, int pesToRemove) {}
 }

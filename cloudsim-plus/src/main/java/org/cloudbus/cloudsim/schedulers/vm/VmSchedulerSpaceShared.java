@@ -115,12 +115,12 @@ public class VmSchedulerSpaceShared extends VmSchedulerAbstract {
     }
 
     @Override
-    public void deallocatePesForVm(Vm vm) {
-        deallocatePesForVm(vm, (int)vm.getNumberOfPes());
+    public void deallocatePesFromVm(Vm vm) {
+        deallocatePesFromVm(vm, (int)vm.getNumberOfPes());
     }
 
     @Override
-    public void deallocatePesForVm(Vm vm, int pesToRemove) {
+    public void deallocatePesFromVm(Vm vm, int pesToRemove) {
         //@todo it needs to be made the same things as in the time shared scheduler
         getFreePesList().addAll(getPeAllocationMap().get(vm));
         getPeAllocationMap().remove(vm);

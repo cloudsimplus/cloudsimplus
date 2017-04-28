@@ -274,7 +274,7 @@ public abstract class VmAllocationPolicyAbstract implements VmAllocationPolicy {
             return false;
         }
 
-        vm.getHost().getVmScheduler().deallocatePesForVm(vm);
+        vm.getHost().getVmScheduler().deallocatePesFromVm(vm);
         if(scaling.isVmUnderloaded()) {
             vm.getProcessor().removeCapacity(numberOfPesForScaling);
         }

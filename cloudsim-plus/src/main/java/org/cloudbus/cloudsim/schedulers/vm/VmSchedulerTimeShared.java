@@ -290,12 +290,12 @@ public class VmSchedulerTimeShared extends VmSchedulerAbstract {
     }
 
     @Override
-    public void deallocatePesForVm(Vm vm) {
-        deallocatePesForVm(vm, (int)vm.getNumberOfPes());
+    public void deallocatePesFromVm(Vm vm) {
+        VmSchedulerTimeShared.this.deallocatePesFromVm(vm, (int)vm.getNumberOfPes());
     }
 
     @Override
-    public void deallocatePesForVm(Vm vm, int pesToRemove) {
+    public void deallocatePesFromVm(Vm vm, int pesToRemove) {
         if(pesToRemove <= 0 || vm.getNumberOfPes() == 0){
             return;
         }
@@ -304,9 +304,7 @@ public class VmSchedulerTimeShared extends VmSchedulerAbstract {
         setPesInUse(pesInUse - removedPes);
         removePesFromMipsMap(vm, getMipsMapAllocated(), pesToRemove);
 
-        IntStream.range(0, removedPes)
-                .mapToObj(i -> getPeList().get(i))
-                .forEach(pe -> pe.getPeProvisioner().deallocateResourceForVm(vm));
+        deallocatePesFromVmInternal(vm, removedPes);
 
         for (final Map.Entry<Vm, List<Double>> entry : getMipsMapRequested().entrySet()) {
             updateMapOfRequestedMipsForVm(entry.getKey(), entry.getValue());
@@ -314,6 +312,30 @@ public class VmSchedulerTimeShared extends VmSchedulerAbstract {
 
         updatePesAllocationForAllVms();
     }
+
+    /**
+     * Deallocate the first N found PEs which are allocated to a VM.
+     * @param vm the VM to deallocate a PE from
+     * @param n number of PEs to deallocate from the VM
+     */
+    private void deallocatePesFromVmInternal(Vm vm, final int n) {
+        IntStream.range(0, n).forEach(i -> deallocateOnePeFromVm(vm));
+    }
+    
+    /**
+     * Deallocate the first found PE which is allocated to a VM.
+     * @param vm the VM to deallocate a PE from
+     */
+    private void deallocateOnePeFromVm(Vm vm) {
+        getPeList().stream()
+            .filter(pe -> pe.getPeProvisioner().isResourceAllocatedToVm(vm))
+            .findFirst()
+            .ifPresent(pe -> {
+                pe.getPeProvisioner().deallocateResourceForVm(vm); 
+                getPeMap().computeIfAbsent(vm, k -> new ArrayList<>()).remove(pe);
+                Log.printLine("\t      Pe " + pe.getId() + " deallocated from VM "+vm.getId());
+            });
+    }    
 
     /**
      * Remove a given number of PEs from a given VM/PEs Map.
@@ -330,8 +352,7 @@ public class VmSchedulerTimeShared extends VmSchedulerAbstract {
         
         pesToRemove = Math.min((int)vm.getNumberOfPes(), pesToRemove);
         pesToRemove = Math.min(pesToRemove, mipsList.size());
-        final List<Double> mipsToRemove = mipsList.subList(0, pesToRemove);
-        mipsList.removeAll(mipsToRemove);
+        IntStream.range(0, pesToRemove).forEach(i -> mipsList.remove(0));
         if(mipsList.isEmpty()){
             mipsMap.remove(vm);
         }
@@ -404,5 +425,4 @@ public class VmSchedulerTimeShared extends VmSchedulerAbstract {
     public double getCpuOverheadDueToVmMigration() {
         return 0.1;
     }
-
 }

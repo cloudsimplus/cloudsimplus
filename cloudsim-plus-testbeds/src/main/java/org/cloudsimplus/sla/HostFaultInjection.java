@@ -106,14 +106,14 @@ public class HostFaultInjection extends CloudSimEntity {
      * otherwise
      */
     public final boolean generateFailure() {
-        Log.printFormattedLine("\t%.2f: Generated failure for Host %d", getSimulation().clock(), host.getId());
         final int numberOfFailedPes = setFailedHostPes();
         final long hostWorkingPes = host.getNumberOfWorkingPes();
         final long vmsRequiredPes = getPesSumOfWorkingVms();
+        Log.printFormattedLine("\t%.2f: Generated %d PEs failures for Host %d", getSimulation().clock(), numberOfFailedPes, host.getId());
         if(vmsRequiredPes == 0){
-            System.out.printf("\t#Host %d number of VMs: %d\n", host.getId(), host.getVmList().size());
+            System.out.printf("\t      Number of VMs: %d\n", host.getId(), host.getVmList().size());
         }
-        System.out.printf("\t#Host %d working PEs: %d. VMs required PEs: %d\n", host.getId(), hostWorkingPes, vmsRequiredPes);
+        System.out.printf("\t      Working PEs: %d | VMs required PEs: %d\n", hostWorkingPes, vmsRequiredPes);
         if(hostWorkingPes == 0){
             setAllVmsToFailed();  
         } else if (hostWorkingPes >= vmsRequiredPes) {
@@ -160,18 +160,23 @@ public class HostFaultInjection extends CloudSimEntity {
                 getSimulation().clock(), host.getId(), host.getNumberOfFailedPes(), 
                 host.getNumberOfPes(), host.getNumberOfWorkingPes());
         Log.printFormattedLine(
-                "\t      %d VMs affected from a total of %d. %d PEs have to be removed from VMs\n", 
+                "\t      %d VMs affected from a total of %d. %d PEs are going to be removed from VMs", 
                 affectedVms, host.getVmList().size(), failedPesToRemoveFromVms);
         while(failedPesToRemoveFromVms-- > 0){
             i = i % affectedVms;
             Vm vm = host.getVmList().get(i);
-            System.out.printf("\t#VM %d PEs before deallocation of 1 PE", vm.getNumberOfPes());
-            //@todo needs to check if the VM pesNumber is being reduced
-            host.getVmScheduler().deallocatePesForVm(vm, 1);
-            System.out.printf("\t#VM %d PEs after deallocaton", vm.getNumberOfPes());
+            
+            host.getVmScheduler().deallocatePesFromVm(vm, 1);
+            vm.getCloudletScheduler().deallocatePesFromVm(vm, 1);
+            //remove 1 failed PE from the VM
+            vm.getProcessor().removeCapacity(1); 
+            Log.printFormattedLine(
+                    "\t      Removing 1 PE from VM %d due to Host PE failure. New VM PEs Number: %d\n", 
+                    vm.getId(), vm.getNumberOfPes());
             i++;
         }
         
+        Log.printLine();
         setVmsToFailed();
     }
 

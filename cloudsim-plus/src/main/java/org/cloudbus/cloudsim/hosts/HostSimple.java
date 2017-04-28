@@ -318,7 +318,7 @@ public class HostSimple implements Host {
         vm.setCreated(false);
         getRamProvisioner().deallocateResourceForVm(vm);
         getBwProvisioner().deallocateResourceForVm(vm);
-        getVmScheduler().deallocatePesForVm(vm);
+        getVmScheduler().deallocatePesFromVm(vm);
         storage.deallocateResource(vm.getStorage());
     }
 
@@ -373,7 +373,7 @@ public class HostSimple implements Host {
 
     @Override
     public void deallocatePesForVm(Vm vm) {
-        getVmScheduler().deallocatePesForVm(vm);
+        getVmScheduler().deallocatePesFromVm(vm);
     }
 
     @Override

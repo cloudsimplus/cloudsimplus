@@ -73,8 +73,8 @@ public final class HostFaultInjectionExample {
     private static final double DATACENTER_COST_PER_STORAGE = 0.001;
     private static final double DATACENTER_COST_PER_BW = 0.0;
 
-    private static final int HOST_MIPS_BY_PE = 1000;
-    private static final int HOST_NUMBER_OF_PES = 4;
+    private static final int  HOST_MIPS_BY_PE = 1000;
+    private static final int  HOST_PES = 4;
     private static final long HOST_RAM = 500000; //host memory (MEGABYTE)
     private static final long HOST_STORAGE = 1000000; //host storage
     private static final long HOST_BW = 100000000L;
@@ -83,15 +83,15 @@ public final class HostFaultInjectionExample {
      * The percentage of host CPU usage that trigger VM migration due to over
      * utilization (in scale from 0 to 1, where 1 is 100%).
      */
-    private static final double HOST_UTILIZATION_THRESHOLD_FOR_VM_MIGRATION = 0.5;
+    private static final double HOST_USAGE_THRESHOLD_VM_MIGRATION = 0.5;
 
-    private static final int VM_MIPS = 1000;
+    private static final int  VM_MIPS = 1000;
     private static final long VM_SIZE = 1000; //image size (MEGABYTE)
-    private static final int VM_RAM = 10000; //vm memory (MEGABYTE)
+    private static final int  VM_RAM = 10000; //vm memory (MEGABYTE)
     private static final long VM_BW = 100000;
-    private static final int VM_PES = 2; //number of cpus
+    private static final int  VM_PES = 2; //number of cpus
     
-    private static final int CLOUDLET_PES = 1; 
+    private static final int  CLOUDLET_PES = 2; 
     private static final long CLOUDLET_LENGHT = 20000;
     private static final long CLOUDLET_FILESIZE = 300;
     private static final long CLOUDLET_OUTPUTSIZE = 300;
@@ -103,7 +103,7 @@ public final class HostFaultInjectionExample {
      *
      * @see #createAndSubmitCloudlets(DatacenterBroker)
      */
-    private static final double CLOUDLET_INITIAL_CPU_UTILIZATION_PERCENTAGE = 0.8;
+    private static final double CLOUDLET_INITIAL_CPU_USAGE_PERCENT = 0.8;
 
     /**
      * Defines the speed (in percentage) that CPU usage of a cloudlet will
@@ -115,7 +115,7 @@ public final class HostFaultInjectionExample {
      */
     public static final double CLOUDLET_CPU_USAGE_INCREMENT_PER_SECOND = 0.05;
 
-    private static final int HOSTS = 10;
+    private static final int HOSTS = 3;
     private static final int VMS = HOSTS;
     private static final int CLOUDLETS_BY_VM = 1;
 
@@ -153,7 +153,7 @@ public final class HostFaultInjectionExample {
     }
 
     public void createAndSubmitCloudlets(DatacenterBroker broker) {
-        double initialCloudletCpuUtilizationPercentage = CLOUDLET_INITIAL_CPU_UTILIZATION_PERCENTAGE;
+        double initialCloudletCpuUtilizationPercentage = CLOUDLET_INITIAL_CPU_USAGE_PERCENT;
         final int numberOfCloudlets = VMS - 1;
         for (int i = 0; i < numberOfCloudlets; i++) {
             createAndSubmitCloudletsWithStaticCpuUtilization(
@@ -288,8 +288,8 @@ public final class HostFaultInjectionExample {
     private Datacenter createDatacenter() {
         ArrayList<PowerHost> hostList = new ArrayList<>();
         for (int i = 0; i < HOSTS; i++) {
-            hostList.add(createHost(i, HOST_NUMBER_OF_PES, HOST_MIPS_BY_PE));
-            Log.printConcatLine("#Created host ", i, " with ", HOST_MIPS_BY_PE, " mips x ", HOST_NUMBER_OF_PES);
+            hostList.add(createHost(i, HOST_PES, HOST_MIPS_BY_PE));
+            Log.printConcatLine("#Created host ", i, " with ", HOST_MIPS_BY_PE, " mips x ", HOST_PES);
         }
         Log.printLine();
 
@@ -304,7 +304,7 @@ public final class HostFaultInjectionExample {
         PowerVmAllocationPolicyMigrationWorstFitStaticThreshold allocationPolicy
                 = new PowerVmAllocationPolicyMigrationWorstFitStaticThreshold(
                         new PowerVmSelectionPolicyMinimumUtilization(),
-                        HOST_UTILIZATION_THRESHOLD_FOR_VM_MIGRATION);
+                        HOST_USAGE_THRESHOLD_VM_MIGRATION);
 
         PowerDatacenter dc = new PowerDatacenter(simulation, characteristics, new VmAllocationPolicySimple());
         dc
@@ -335,9 +335,9 @@ public final class HostFaultInjectionExample {
         PowerHost host
                 = new PowerHostSimple(HOST_RAM, HOST_BW, HOST_STORAGE, peList);
         host.setPowerModel(new PowerModelLinear(1000, 0.7))
-                .setRamProvisioner(new ResourceProvisionerSimple())
-                .setBwProvisioner(new ResourceProvisionerSimple())
-                .setVmScheduler(new VmSchedulerTimeShared());
+            .setRamProvisioner(new ResourceProvisionerSimple())
+            .setBwProvisioner(new ResourceProvisionerSimple())
+            .setVmScheduler(new VmSchedulerTimeShared());
         return host;
     }
 
@@ -356,7 +356,8 @@ public final class HostFaultInjectionExample {
      */
     private void createFaultInjectionForHosts(Datacenter datacenter0) {
         //Inject Fault
-        long seed = System.currentTimeMillis();
+        //final long seed = System.currentTimeMillis();
+        final long seed = 11;
         PoissonProcess poisson = new PoissonProcess(0.2, seed);
 
         UniformDistr failurePesRand = new UniformDistr(seed);

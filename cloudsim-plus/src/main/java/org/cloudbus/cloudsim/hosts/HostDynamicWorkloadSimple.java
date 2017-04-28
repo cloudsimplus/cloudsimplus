@@ -27,10 +27,6 @@ import java.util.stream.Collectors;
  * @since CloudSim Toolkit 2.0
  */
 public class HostDynamicWorkloadSimple extends HostSimple implements HostDynamicWorkload {
-    /**
-     * The utilization mips.
-     */
-    private double utilizationMips;
 
     /**
      * The previous utilization mips.
@@ -52,7 +48,6 @@ public class HostDynamicWorkloadSimple extends HostSimple implements HostDynamic
      */
     public HostDynamicWorkloadSimple(long ram, long bw, long storage, List<Pe> peList) {
         super(ram, bw, storage, peList);
-        setUtilizationMips(0);
         setPreviousUtilizationMips(0);
         stateHistory = new LinkedList<>();
     }
@@ -88,9 +83,8 @@ public class HostDynamicWorkloadSimple extends HostSimple implements HostDynamic
 
     @Override
     public double updateProcessing(double currentTime) {
-        final double smallerTime = super.updateProcessing(currentTime);
         setPreviousUtilizationMips(getUtilizationOfCpuMips());
-        setUtilizationMips(0);
+        final double smallerTime = super.updateProcessing(currentTime);
         double hostTotalRequestedMips = 0;
 
         for (final Vm vm : getVmList()) {
@@ -99,7 +93,6 @@ public class HostDynamicWorkloadSimple extends HostSimple implements HostDynamic
             showVmResourceUsageOnHost(vm);
             final double totalAllocatedMips = addVmResourceUsageToHistoryIfNotInMigration(currentTime, vm);
 
-            setUtilizationMips(getUtilizationOfCpuMips() + totalAllocatedMips);
             hostTotalRequestedMips += totalRequestedMips;
         }
 
@@ -220,16 +213,9 @@ public class HostDynamicWorkloadSimple extends HostSimple implements HostDynamic
     
     @Override
     public double getUtilizationOfCpuMips() {
-        return utilizationMips;
-    }
-
-    /**
-     * Sets the utilization mips.
-     *
-     * @param utilizationMips the new utilization mips
-     */
-    protected final void setUtilizationMips(double utilizationMips) {
-        this.utilizationMips = utilizationMips;
+        return getVmList().stream()
+                .mapToDouble(vm -> getVmScheduler().getTotalAllocatedMipsForVm(vm))
+                .sum();
     }
 
     @Override

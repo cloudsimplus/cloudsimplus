@@ -95,7 +95,7 @@ public interface VmScheduler {
      * @pre $none
      * @post $none
      */
-    void deallocatePesForVm(Vm vm);
+    void deallocatePesFromVm(Vm vm);
     
     /**
      * Releases a given number of PEs from a VM. After that, the PEs may be used on demand
@@ -106,7 +106,7 @@ public interface VmScheduler {
      * @pre $none
      * @post $none
      */
-    void deallocatePesForVm(Vm vm, int pesToRemove);    
+    void deallocatePesFromVm(Vm vm, int pesToRemove);    
 
     /**
      * Gets the MIPS share of each host's Pe that is allocated to a given VM.

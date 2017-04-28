@@ -347,7 +347,6 @@ public abstract class CloudletSchedulerAbstract implements CloudletScheduler {
         return changeStatusOfCloudletIntoList(
             getCloudletWaitingList(), cloudletId,
             c -> changeStatusOfCloudlet(c, Status.READY, Status.PAUSED)) != Cloudlet.NULL;
-
     }
 
     @Override
@@ -515,7 +514,7 @@ public abstract class CloudletSchedulerAbstract implements CloudletScheduler {
      * Updates the processing of a specific cloudlet of the Vm using this
      * scheduler.
      *
-     * @param rcl         The cloudlet to be its processing updated
+     * @param rcl The cloudlet to be its processing updated
      * @param currentTime current simulation time
      */
     protected void updateCloudletProcessing(CloudletExecutionInfo rcl, double currentTime) {
@@ -528,15 +527,15 @@ public abstract class CloudletSchedulerAbstract implements CloudletScheduler {
 
     /**
      * Computes the length of a given cloudlet, in number
-     * of Instructions (I), that has been executed since the last time cloudlet
+     * of Instructions (I), which has been executed since the last time cloudlet
      * processing was updated.
-     * <p>
+     * 
      * <p>
      * This method considers the delay for actually starting the Cloudlet
      * execution due to the time to transfer
      * {@link Cloudlet#getRequiredFiles() required Cloudlet files} from the
      * Datacenter storage (such as a SAN) to the Vm running the Cloudlet.</p>
-     * <p>
+     * 
      * <p>
      * During this transfer time, the method will always return 0 to indicate
      * that the Cloudlet was not processed in fact, it is just waiting the
@@ -544,7 +543,7 @@ public abstract class CloudletSchedulerAbstract implements CloudletScheduler {
      * stored in the {@link CloudletExecutionInfo#getFileTransferTime()}
      * attribute and is set when the Cloudlet is submitted to the scheduler.</p>
      *
-     * @param rcl         the Cloudlet to compute the executed length
+     * @param rcl the Cloudlet to compute the executed length
      * @param currentTime current simulation time
      * @return the executed length, in number of Instructions (I), since the last time cloudlet was processed.
      * @TODO @author manoelcampos This method is being called 2 times more than
@@ -939,4 +938,11 @@ public abstract class CloudletSchedulerAbstract implements CloudletScheduler {
     public void addCloudletToReturnedList(Cloudlet cloudlet) {
         this.cloudletReturnedList.add(cloudlet);
     }
+
+    @Override
+    public void deallocatePesFromVm(Vm vm, int pesToRemove) {
+        processor.removeCapacity(pesToRemove);
+        removeUsedPes(pesToRemove);
+    }
+    
 }
