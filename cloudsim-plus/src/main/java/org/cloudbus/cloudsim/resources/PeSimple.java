@@ -14,10 +14,12 @@ import java.util.Objects;
 
 /**
  * Pe (Processing Element) class represents a CPU core of a physical machine (PM),
- * defined in terms of Millions Instructions Per Second (MIPS) rating.<p/>
+ * defined in terms of Millions Instructions Per Second (MIPS) rating.
  * Such a class allows managing the Pe capacity and allocation.
  *
+ * <p>
  * <b>ASSUMPTION:</b> All PEs under the same Machine have the same MIPS rating.
+ * </p>
  * @TODO This assumption is not being assured on different classes (where other TODOs were included)
  *
  * @author Manzur Murshed
@@ -115,5 +117,25 @@ public class PeSimple extends ResourceManageableAbstract implements Pe {
     @Override
     public String toString() {
         return String.valueOf(getId());
+    }
+
+    @Override
+    public boolean isWorking() {
+        return !isFailed();
+    }
+
+    @Override
+    public boolean isFailed() {
+        return Status.FAILED.equals(status);
+    }
+
+    @Override
+    public boolean isFree() {
+        return Status.FREE.equals(status);
+    }
+
+    @Override
+    public boolean isBuzy() {
+        return Status.BUSY.equals(status);
     }
 }

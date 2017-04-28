@@ -28,6 +28,7 @@ public final class PeList {
     /**
      * Gets a {@link Pe} with a given id.
      *
+     * @param <T>
      * @param peList the PE list where to get a given PE
      * @param id the id of the PE to be get
      * @return the PE with the given id or null if not found
@@ -102,7 +103,7 @@ public final class PeList {
      * @post $none
      */
     public static <T extends Pe> T getFreePe(List<T> peList) {
-        return peList.stream().filter(pe -> pe.getStatus() == Pe.Status.FREE).findFirst().orElse((T)Pe.NULL);
+        return peList.stream().filter(Pe::isFree).findFirst().orElse((T)Pe.NULL);
     }
 
     /**
@@ -131,8 +132,7 @@ public final class PeList {
      */
     public static int getNumberOfBusyPes(List<? extends Pe> peList) {
         return (int)peList.stream()
-            .map(Pe::getStatus)
-            .filter(Pe.Status.BUSY::equals)
+            .filter(Pe::isBuzy)
             .count();
     }
 
@@ -146,8 +146,7 @@ public final class PeList {
      */
     public static int getNumberOfFreePes(List<? extends Pe> peList) {
         return (int)peList.stream()
-            .map(Pe::getStatus)
-            .filter(Pe.Status.FREE::equals)
+            .filter(Pe::isFree)
             .count();
     }
 
@@ -178,9 +177,7 @@ public final class PeList {
      */
     public static <T extends Pe> void setStatusFailed(List<T> peList, boolean failed) {
         final Pe.Status status = (failed ? Pe.Status.FAILED : Pe.Status.FREE);
-        for (Pe pe : peList) {
-            pe.setStatus(status);
-        }
+        peList.forEach(pe -> pe.setStatus(status));
     }
 
 }

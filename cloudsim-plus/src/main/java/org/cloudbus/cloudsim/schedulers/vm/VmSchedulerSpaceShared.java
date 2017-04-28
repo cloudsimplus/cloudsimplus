@@ -132,7 +132,7 @@ public class VmSchedulerSpaceShared extends VmSchedulerAbstract {
         return peAllocationMap
                 .getOrDefault(vm, new ArrayList<>())
                 .stream()
-                .filter(pe -> !Pe.Status.FAILED.equals(pe.getStatus()))
+                .filter(Pe::isWorking)
                 .collect(toList());
     }
 

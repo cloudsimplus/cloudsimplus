@@ -143,7 +143,7 @@ public class HostSimple implements Host {
     @Override
     public double getTotalMipsCapacity() {
         return peList.stream()
-                .filter(pe -> pe.getStatus() != Status.FAILED)
+                .filter(Pe::isWorking)
                 .mapToDouble(Pe::getCapacity)
                 .sum();
     }
@@ -560,15 +560,13 @@ public class HostSimple implements Host {
 
     @Override
     public long getNumberOfWorkingPes() {
-        return getPeList().stream()
-                .filter(pe -> pe.getStatus() != Pe.Status.FAILED)
-                .count();
+        return getPeList().size() - getNumberOfFailedPes();
     }
 
     @Override
     public long getNumberOfFailedPes() {
         return getPeList().stream()
-                .filter(pe -> pe.getStatus() == Pe.Status.FAILED)
+                .filter(Pe::isFailed)
                 .count();
     }
 
@@ -640,7 +638,7 @@ public class HostSimple implements Host {
     @Override
     public List<Pe> getWorkingPeList() {
         return peList.stream()
-                .filter(pe -> !Pe.Status.FAILED.equals(pe.getStatus()))
+                .filter(Pe::isWorking)
                 .collect(toList());
     }
 }

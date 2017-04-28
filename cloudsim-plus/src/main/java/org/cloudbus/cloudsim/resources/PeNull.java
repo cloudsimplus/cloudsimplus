@@ -71,4 +71,9 @@ final class PeNull implements Pe {
     @Override public boolean setStatus(Status status) {
         return false;
     }
+
+    @Override public boolean isWorking() { return false; }
+    @Override public boolean isFailed() { return true; }
+    @Override public boolean isFree() { return false; }
+    @Override public boolean isBuzy() { return false; }
 }
