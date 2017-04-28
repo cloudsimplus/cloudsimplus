@@ -769,7 +769,8 @@ public abstract class CloudletSchedulerAbstract implements CloudletScheduler {
         Objects.requireNonNull(vm);
 
         if (isOtherVmAssigned(vm)) {
-            throw new IllegalArgumentException("CloudletScheduler already has a Vm assigned to it. Each Vm must have its own CloudletScheduler instance.");
+            throw new IllegalArgumentException(
+                "CloudletScheduler already has a Vm assigned to it. Each Vm must have its own CloudletScheduler instance.");
         }
 
         this.vm = vm;

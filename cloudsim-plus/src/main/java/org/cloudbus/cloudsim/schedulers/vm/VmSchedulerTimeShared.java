@@ -11,7 +11,6 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.IntStream;
 import org.cloudbus.cloudsim.util.Log;
 import org.cloudbus.cloudsim.resources.Pe;
 import org.cloudbus.cloudsim.vms.Vm;
@@ -290,76 +289,18 @@ public class VmSchedulerTimeShared extends VmSchedulerAbstract {
     }
 
     @Override
-    public void deallocatePesFromVm(Vm vm) {
-        VmSchedulerTimeShared.this.deallocatePesFromVm(vm, (int)vm.getNumberOfPes());
-    }
-
-    @Override
-    public void deallocatePesFromVm(Vm vm, int pesToRemove) {
-        if(pesToRemove <= 0 || vm.getNumberOfPes() == 0){
-            return;
-        }
-        
-        final int removedPes = removePesFromMipsMap(vm, getMipsMapRequested(), pesToRemove);
+    protected void deallocatePesFromVmInternal(Vm vm, int pesToRemove) {        
+        final int removedPes = removePesFromMap(vm, getMipsMapRequested(), pesToRemove);
         setPesInUse(pesInUse - removedPes);
-        removePesFromMipsMap(vm, getMipsMapAllocated(), pesToRemove);
-
-        deallocatePesFromVmInternal(vm, removedPes);
-
+        removePesFromMap(vm, getMipsMapAllocated(), pesToRemove);
+        
         for (final Map.Entry<Vm, List<Double>> entry : getMipsMapRequested().entrySet()) {
             updateMapOfRequestedMipsForVm(entry.getKey(), entry.getValue());
         }
 
         updatePesAllocationForAllVms();
-    }
+    }  
 
-    /**
-     * Deallocate the first N found PEs which are allocated to a VM.
-     * @param vm the VM to deallocate a PE from
-     * @param n number of PEs to deallocate from the VM
-     */
-    private void deallocatePesFromVmInternal(Vm vm, final int n) {
-        IntStream.range(0, n).forEach(i -> deallocateOnePeFromVm(vm));
-    }
-    
-    /**
-     * Deallocate the first found PE which is allocated to a VM.
-     * @param vm the VM to deallocate a PE from
-     */
-    private void deallocateOnePeFromVm(Vm vm) {
-        getWorkingPeList().stream()
-            .filter(pe -> pe.getPeProvisioner().isResourceAllocatedToVm(vm))
-            .findFirst()
-            .ifPresent(pe -> {
-                pe.getPeProvisioner().deallocateResourceForVm(vm); 
-                getPeMap().computeIfAbsent(vm, k -> new ArrayList<>()).remove(pe);
-                Log.printLine("\t      Pe " + pe.getId() + " deallocated from VM "+vm.getId());
-            });
-    }    
-
-    /**
-     * Remove a given number of PEs from a given VM/PEs Map.
-     * @param vm the VM to remove PEs from
-     * @param mipsMap the map where the PEs will be removed
-     * @param pesToRemove the number of PEs to remove from the List of PEs inside the Map
-     * @return the number of removed PEs
-     */
-    private int removePesFromMipsMap(Vm vm, Map<Vm, List<Double>> mipsMap, int pesToRemove) {
-        List<Double> mipsList = mipsMap.getOrDefault(vm, new ArrayList<>());
-        if(mipsList.isEmpty()){
-            return 0;
-        }
-        
-        pesToRemove = Math.min((int)vm.getNumberOfPes(), pesToRemove);
-        pesToRemove = Math.min(pesToRemove, mipsList.size());
-        IntStream.range(0, pesToRemove).forEach(i -> mipsList.remove(0));
-        if(mipsList.isEmpty()){
-            mipsMap.remove(vm);
-        }
-        
-        return pesToRemove;
-    }
-    
     /**
      * Releases PEs allocated to all the VMs.
      *

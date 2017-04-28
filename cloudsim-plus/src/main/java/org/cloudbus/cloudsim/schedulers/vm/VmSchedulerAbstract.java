@@ -15,6 +15,7 @@ import org.cloudbus.cloudsim.resources.Pe;
 import org.cloudbus.cloudsim.vms.Vm;
 
 import static java.util.stream.Collectors.toList;
+import java.util.stream.IntStream;
 
 /**
  * An abstract class for implementation of {@link VmScheduler}s.
@@ -71,6 +72,53 @@ public abstract class VmSchedulerAbstract implements VmScheduler {
         return allocatePesForVm(vm, mipsList);
     }
 
+    @Override
+    public void deallocatePesFromVm(Vm vm) {
+        deallocatePesFromVm(vm, (int)vm.getNumberOfPes());
+    }
+
+    @Override
+    public void deallocatePesFromVm(Vm vm, int pesToRemove) {
+        if(pesToRemove <= 0 || vm.getNumberOfPes() == 0){
+            return;
+        }
+        
+        deallocatePesFromVmInternal(vm, pesToRemove);
+    }
+
+    /**
+     * Remove a given number of PEs from a given {@code Vm -> List<PE>} Map,
+     * where each PE in the List associated to each Vm may be an actual 
+     * {@link Pe} object or just its capacity in MIPS (Double).
+     * 
+     * <p>In other words, the map can be {@code Map<Vm, List<Double>>}
+     * or {@code Map<Vm, List<Pe>>}.</p>
+     * 
+     * @param <T> the type of the elements into the List associated to each map key,
+     *            which can be a MIPS number (Double) or an actual {@link Pe} object.
+     * @param vm the VM to remove PEs from
+     * @param map the map where the PEs will be removed
+     * @param pesToRemove the number of PEs to remove from the List of PEs associated to the Vm
+     * @return the number of removed PEs
+     */
+    protected <T> int removePesFromMap(Vm vm, Map<Vm, List<T>> map, int pesToRemove) {
+        final List<T> values = map.getOrDefault(vm, new ArrayList<>());
+        if(values.isEmpty()){
+            return 0;
+        }
+        
+        pesToRemove = Math.min((int)vm.getNumberOfPes(), pesToRemove);
+        pesToRemove = Math.min(pesToRemove, values.size());
+        IntStream.range(0, pesToRemove).forEach(i -> values.remove(0));
+        if(values.isEmpty()){
+            map.remove(vm);
+        }
+        
+        return pesToRemove;
+    }    
+    
+    protected abstract void deallocatePesFromVmInternal(Vm vm, int pesToRemove);
+    
     @Override
     public void deallocatePesForAllVms() {
         getMipsMapAllocated().clear();
