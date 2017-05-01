@@ -182,10 +182,10 @@ public final class VmMigrationWhenCpuMetricIsViolatedExample {
      */
     public PowerVm createVm(DatacenterBroker broker) {
         PowerVm vm = new PowerVm(vmlist.size(), VM_MIPS, VM_PES_NUM);
-        vm.setSchedulingInterval(1)
-                .setRam(VM_RAM).setBw(VM_BW).setSize(VM_SIZE)
-                .setBroker(broker)
-                .setCloudletScheduler(new CloudletSchedulerTimeShared());
+        vm
+            .setRam(VM_RAM).setBw(VM_BW).setSize(VM_SIZE)
+            .setBroker(broker)
+            .setCloudletScheduler(new CloudletSchedulerTimeShared());
 
         Log.printConcatLine(
                 "#Requested creation of VM ", vm.getId(), " with ", VM_MIPS, " MIPS x ", VM_PES_NUM);

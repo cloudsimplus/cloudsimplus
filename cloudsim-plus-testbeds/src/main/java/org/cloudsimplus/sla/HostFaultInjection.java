@@ -28,7 +28,13 @@
  */
 package org.cloudsimplus.sla;
 
+import java.util.Collections;
+import java.util.List;
 import java.util.Objects;
+import java.util.function.Function;
+import java.util.function.UnaryOperator;
+import org.cloudbus.cloudsim.brokers.DatacenterBroker;
+import org.cloudbus.cloudsim.cloudlets.Cloudlet;
 import org.cloudbus.cloudsim.core.events.SimEvent;
 import org.cloudbus.cloudsim.hosts.Host;
 import org.cloudbus.cloudsim.util.Log;
@@ -38,7 +44,7 @@ import org.cloudbus.cloudsim.distributions.ContinuousDistribution;
 import org.cloudbus.cloudsim.distributions.UniformDistr;
 import org.cloudbus.cloudsim.resources.Pe;
 import org.cloudbus.cloudsim.resources.Pe.Status;
-
+import org.cloudbus.cloudsim.vms.power.PowerVm;
 
 /**
  * This class shows how to generate a fault. In this case the fault is in the
@@ -58,6 +64,9 @@ public class HostFaultInjection extends CloudSimEntity {
     private Host host;
     private ContinuousDistribution numberOfFailedPesRandom;
     private ContinuousDistribution delayForFailureOfHostRandom;
+    private PowerVm vmToMigrate;
+    private UnaryOperator<Vm> vmCloner;
+    private Function<Vm, List<Cloudlet>> cloudletsCloner;
 
     /**
      * Creates a fault injection mechanism for a host that will generate
@@ -75,6 +84,24 @@ public class HostFaultInjection extends CloudSimEntity {
         this.setHost(host);
         this.numberOfFailedPesRandom = new UniformDistr();
         this.delayForFailureOfHostRandom = new UniformDistr();
+        
+        /*Sets a default vmCloner which in fact doesn't
+        clone a VM, just returns the Vm.NULL object.
+        This is used just to ensure that if a vmClone
+        is not set, it wont be thrown a NullPointerException
+        and no VM will be cloned.
+        A similar thing is made to the cloudletsCloner below.*/
+        this.vmCloner = vm -> { 
+            Log.printFormattedLine(
+                "%s: You should define a VM Cloner Function to enable creating a new instance of a VM when it is destroyed due to a Host failure.", 
+                getClass().getSimpleName());
+            return Vm.NULL; 
+        };
+        this.cloudletsCloner = vm -> {
+            Log.printFormattedLine("%s: You should define a Cloudlets Cloner Function to re-create the List of running Cloudlets from a faulty VM into the Cloned VM when there is a Host failure", 
+                getClass().getSimpleName());
+            return Collections.EMPTY_LIST;
+        };
     }
 
     @Override
@@ -130,7 +157,7 @@ public class HostFaultInjection extends CloudSimEntity {
      * Sets all VMs to failed when all Host PEs failed.
      */
     private void setAllVmsToFailed() {
-        host.getVmList().stream().forEach(this::setVmToFailedWhenHostIsFailed);
+        host.getVmList().stream().forEach(this::setVmToFailedAndCreateClone);
         Log.printFormattedLine("\t%.2f: Host %d -> All the %d PEs failed, affecting all its %d VMs.\n",
                 getSimulation().clock(), host.getId(), host.getNumberOfPes(), host.getVmList().size());
     }
@@ -187,20 +214,28 @@ public class HostFaultInjection extends CloudSimEntity {
     private void setVmsToFailed() {
         host.getVmList().stream()
                 .filter(vm -> vm.getNumberOfPes() == 0)
-                .forEach(this::setVmToFailedWhenHostIsFailed);
+                .forEach(this::setVmToFailedAndCreateClone);
     }
 
     /**
-     * Checks if the the host is failed and sets all its Vm' to failed.
+     * Checks if the the host is failed and sets all a given VM to failed.
      *
      * @param vm vm to set to failed
      */
-    public void setVmToFailedWhenHostIsFailed(Vm vm) {
+    public void setVmToFailedAndCreateClone(Vm vm) {
         if (!this.isFailed()) {
             return;
         }
         
+        final Vm clone = vmCloner.apply(vm);
+        final DatacenterBroker broker = vm.getBroker();
+        broker.submitVm(clone);
+
+        List<Cloudlet> cloudlets = cloudletsCloner.apply(vm);
+        broker.submitCloudletList(cloudlets, clone);
+        
         vm.setFailed(true);
+        
         /*
          As the broker is expected to request vm creation and destruction,
          it is set here as the sender of the vm destroy request.
@@ -317,6 +352,47 @@ public class HostFaultInjection extends CloudSimEntity {
      */
     public ContinuousDistribution getDelayForFailureOfHostRandom() {
         return delayForFailureOfHostRandom;
+    }
+
+    /**
+     * Sets a {@link UnaryOperator} that creates a clone of a {@link Vm}
+     * when all Host PEs fail or all VM's PEs are deallocated
+     * because they have failed.
+     * 
+     * <p>The {@link UnaryOperator} is a {@link Function} that
+     * receives a {@link Vm} and returns a clone of it.
+     * When all PEs of the VM fail, this vmCloner {@link Function}
+     * is used to create a copy of the VM to be submitted to another Host.
+     * It is like a VM snapshot in a real cloud infrastructure,
+     * which will be started into another host in order to
+     * recovery from a failure.
+     * </p>
+     * 
+     * @param vmCloner the VM cloner {@link Function} to set
+     * @see #setCloudletsCloner(java.util.function.Function) 
+     */
+    public void setVmCloner(UnaryOperator<Vm> vmCloner) {
+        this.vmCloner = vmCloner;
+    }
+
+    /**
+     * Sets a {@link Function} that creates a clone of all Cloudlets 
+     * which were running inside a given failed {@link Vm}.
+     * 
+     * <p>Such a Function is used to re-create and re-submit those Cloudlets 
+     * to a clone of the failed VM. In this case, all the Cloudlets are 
+     * recreated from scratch into the cloned VM,
+     * re-starting their execution from the beginning.
+     * Since a snapshot (clone) of the failed VM will be started
+     * into another Host, the Cloudlets Cloner Function will recreated
+     * all Cloudlets, simulating the restart of applications
+     * into this new VM instance.</p>
+     * 
+     * @param cloudletsCloner the cloudlets cloner {@link Function} to set
+     * @see #setVmCloner(java.util.function.UnaryOperator) 
+     */
+    public void setCloudletsCloner(Function<Vm, List<Cloudlet>> cloudletsCloner) {
+        this.cloudletsCloner = cloudletsCloner;
     }
 
 }

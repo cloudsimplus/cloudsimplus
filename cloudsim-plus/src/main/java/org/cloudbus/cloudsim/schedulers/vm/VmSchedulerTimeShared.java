@@ -74,9 +74,6 @@ public class VmSchedulerTimeShared extends VmSchedulerAbstract {
 
     @Override
     public boolean allocatePesForVm(Vm vm, List<Double> mipsShareRequested) {
-        /*
-         * @todo add the same to RAM and BW provisioners
-         */
         if (vm.isInMigration()) {
             if (!getVmsMigratingIn().contains(vm) && !getVmsMigratingOut().contains(vm)) {
                 addVmMigratingOut(vm);
@@ -128,7 +125,7 @@ public class VmSchedulerTimeShared extends VmSchedulerAbstract {
             final double allocatedMipsForVmPe = allocateMipsFromHostPesToGivenVirtualPe(vm, requestedMipsForVmPe, hostPesIterator);
             if(requestedMipsForVmPe > 0.1 && allocatedMipsForVmPe <= 0.1){
                 Log.printFormattedLine(
-                    "Vm %s is requiring a total of %d MIPS  but the Host PEs currently don't have such an available MIPS amount. Only %d MIPS were allocated.",
+                    "Vm %s is requiring a total of %.0f MIPS but Host's PEs currently don't have such an available MIPS amount. Only %.0f MIPS were allocated.",
                     vm, requestedMipsForVmPe, allocatedMipsForVmPe);
             }
         }
@@ -267,26 +264,18 @@ public class VmSchedulerTimeShared extends VmSchedulerAbstract {
         setPesInUse(getPesInUse() + mipsShareRequested.size());
 
         if (getVmsMigratingIn().contains(vm)) {
-            // the destination host experience a percentage of CPU overhead due to migrating VM
-            totalRequestedMips *= getCpuOverheadDueToVmMigration();
+            //the destination host experience a percentage of CPU overhead due to migrating VM
+            totalRequestedMips *= getVmMigrationCpuOverhead();
         }
 
-        final List<Double> mipsShareAllocated = new ArrayList<>();
-        for (double mipsRequested : mipsShareRequested) {
-            if (getVmsMigratingOut().contains(vm)) {
-                // performance degradation due to migration = 10% MIPS
-                mipsShareAllocated.add(mipsRequested * (1-getCpuOverheadDueToVmMigration()));
-            } else if (getVmsMigratingIn().contains(vm)) {
-                // the destination host only experience 10% of the migrating VM's MIPS
-                mipsShareAllocated.add(mipsRequested * getCpuOverheadDueToVmMigration());
-            }
-            else mipsShareAllocated.add(mipsRequested);
-        }
+        final List<Double> mipsShareAllocated = new ArrayList<>(mipsShareRequested.size());
+        mipsShareRequested.forEach(mipsRequested -> mipsShareAllocated.add(mipsRequested * percentOfMipsToRequest(vm)));
 
         getMipsMapAllocated().put(vm, mipsShareAllocated);
 
         return true;
     }
+
 
     @Override
     protected void deallocatePesFromVmInternal(Vm vm, int pesToRemove) {        
@@ -363,7 +352,7 @@ public class VmSchedulerTimeShared extends VmSchedulerAbstract {
     }
 
     @Override
-    public double getCpuOverheadDueToVmMigration() {
+    public double getVmMigrationCpuOverhead() {
         return 0.1;
     }
 }

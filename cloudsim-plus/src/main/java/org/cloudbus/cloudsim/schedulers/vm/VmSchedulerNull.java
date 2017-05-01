@@ -69,7 +69,7 @@ final class VmSchedulerNull implements VmScheduler {
         return false;
     }
     @Override public boolean isSuitableForVm(List<Double> vmMipsList) { return false; }
-    @Override public double getCpuOverheadDueToVmMigration() {
+    @Override public double getVmMigrationCpuOverhead() {
         return 0.0;
     }
     @Override public Host getHost() {

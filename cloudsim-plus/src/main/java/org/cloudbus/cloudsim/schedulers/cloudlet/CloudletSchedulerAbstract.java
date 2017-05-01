@@ -11,6 +11,7 @@ import java.util.*;
 import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.stream.Collectors;
+import static java.util.stream.Collectors.toList;
 import java.util.stream.Stream;
 
 import org.cloudbus.cloudsim.cloudlets.Cloudlet;
@@ -945,5 +946,16 @@ public abstract class CloudletSchedulerAbstract implements CloudletScheduler {
         processor.removeCapacity(pesToRemove);
         removeUsedPes(pesToRemove);
     }
+
+    @Override
+    public List<Cloudlet> getCloudletList() {
+        return Collections.unmodifiableList(
+                Stream.concat(
+                        cloudletExecList.stream(), 
+                        cloudletWaitingList.stream())
+                      .map(CloudletExecutionInfo::getCloudlet)
+                      .collect(toList()));
+    }
+    
     
 }

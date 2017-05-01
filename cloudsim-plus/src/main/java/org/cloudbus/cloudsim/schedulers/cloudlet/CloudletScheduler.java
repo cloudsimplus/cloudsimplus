@@ -120,6 +120,13 @@ public interface CloudletScheduler extends Serializable {
      * @return the cloudlet waiting list
      */
     List<CloudletExecutionInfo> getCloudletWaitingList();
+    
+    /**
+     * Gets a <b>read-only</b> List of all cloudlets which are either <b>waiting</b> or <b>executing</b> on the VM.
+     *
+     * @return the list of waiting and executing cloudlets
+     */
+    List<Cloudlet> getCloudletList();    
 
     /**
      * Gets a list of finished cloudlets.

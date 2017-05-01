@@ -219,6 +219,14 @@ public abstract class DatacenterBrokerAbstract extends CloudSimEntity implements
         submitCloudletList(list);
     }
 
+    @Override
+    public void submitCloudletList(List<? extends Cloudlet> list, Vm vm) {
+        list.forEach(c -> c.setVm(vm));
+        submitCloudletList(list);
+    }
+    
+    
+
     /**
      * {@inheritDoc}
      * <p>If the entity already started (the simulation is running),

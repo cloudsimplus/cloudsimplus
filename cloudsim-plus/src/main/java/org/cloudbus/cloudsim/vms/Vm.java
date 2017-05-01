@@ -260,16 +260,18 @@ public interface Vm extends Machine, UniquelyIdentificable, Delayable, Comparabl
      * @pre $none
      * @post $none
      */
+    @Override
     Resource getRam();
 
     /**
-     * Gets the storage device of the VM, that represents the VM image,
+     * Gets the storage device of the VM, which represents the VM image,
      * allowing to check its capacity (in Megabytes) and usage.
      *
      * @return the storage resource
      * @pre $none
      * @post $none
      */
+    @Override
     Resource getStorage();
 
     /**
@@ -544,4 +546,5 @@ public interface Vm extends Machine, UniquelyIdentificable, Delayable, Comparabl
      * @return
      */
     Processor getProcessor();
-}
+    
+ }

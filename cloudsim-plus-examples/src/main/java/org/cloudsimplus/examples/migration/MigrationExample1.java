@@ -200,7 +200,7 @@ public final class MigrationExample1 {
      */
     public PowerVm createVm(DatacenterBroker broker) {
         PowerVm vm = new PowerVm(vmlist.size(), VM_MIPS, VM_PES_NUM);
-        vm.setSchedulingInterval(1)
+        vm
           .setRam(VM_RAM).setBw(VM_BW).setSize(VM_SIZE)
           .setBroker(broker)
           .setCloudletScheduler(new CloudletSchedulerTimeShared());

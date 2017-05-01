@@ -73,7 +73,6 @@ public final class Helper {
             CloudletScheduler scheduler = new CloudletSchedulerTimeShared(); //Constants.VM_MIPS[vmType], Constants.VM_PES[vmType]
 
             PowerVm vm = new PowerVm(i, Constants.VM_MIPS[vmType], Constants.VM_PES[vmType]);
-            vm.setSchedulingInterval(Constants.SCHEDULING_INTERVAL);
             vm.setRam(Constants.VM_RAM[vmType])
                .setBw(Constants.VM_BW)
                .setSize(Constants.VM_SIZE)

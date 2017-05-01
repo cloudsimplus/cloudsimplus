@@ -157,17 +157,30 @@ public class HostSimpleTest {
     @Test
     public void testAddMigratingInVm_checkAvailableMipsAndStorage() {
         final int numberOfPes = 1;
-        final Host host = createHostSimple(0, numberOfPes);
-        final double VM_MIPS = MIPS/2;
+        final Host targetHost = createHostSimple(0, numberOfPes);
+        final double VM_MIPS = 500;
         final VmSimple vm = VmSimpleTest.createVm(
             0, VM_MIPS, numberOfPes, RAM, BW, STORAGE,
             new CloudletSchedulerTimeShared());
-        vm.setHost(Host.NULL);
-        assertEquals(MIPS, host.getAvailableMips(), 0);
-        assertTrue(host.addMigratingInVm(vm));
-        final double availableMips = VM_MIPS;
-        assertEquals(availableMips, host.getAvailableMips(), 0);
-        assertEquals(0, host.getAvailableStorage(), 0);
+        assertEquals(MIPS, targetHost.getAvailableMips(), 0);
+        assertTrue(targetHost.addMigratingInVm(vm));
+        final double availableMips = VM_MIPS; 
+        assertEquals(availableMips, targetHost.getAvailableMips(), 0);
+        assertEquals(0, targetHost.getAvailableStorage(), 0);
+    }
+
+    @Test
+    public void testAddMigratingInVm_checkAllocatedMips() {
+        final int numberOfPes = 1;
+        final Host targetHost = createHostSimple(0, numberOfPes);
+        final double VM_MIPS = 500;
+        final VmSimple vm = VmSimpleTest.createVm(
+            0, VM_MIPS, numberOfPes, RAM, BW, STORAGE,
+            new CloudletSchedulerTimeShared());
+        targetHost.addMigratingInVm(vm);
+        //-10% due to VM migration CPU overhead
+        final double allocatedMips = 450; 
+        assertEquals(allocatedMips, targetHost.getTotalAllocatedMipsForVm(vm), 0);
     }
 
     public void testAddMigratingInVm_lackOfRam() {
@@ -344,7 +357,7 @@ public class HostSimpleTest {
         final Host host = createHostSimple(0, numberOfPes);
         final List<Double> mipsShare = new ArrayList<>(1);
         mipsShare.add(MIPS);
-        final Vm vm = Vm.NULL;
+        final Vm vm = new VmSimple(1000, 1);
         assertTrue(host.allocatePesForVm(vm, mipsShare));
         assertEquals(mipsShare, host.getAllocatedMipsForVm(vm));
         host.deallocatePesForVm(vm);

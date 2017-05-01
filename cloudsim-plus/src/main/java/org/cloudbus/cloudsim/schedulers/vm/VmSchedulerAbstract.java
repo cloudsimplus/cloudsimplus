@@ -183,11 +183,54 @@ public abstract class VmSchedulerAbstract implements VmScheduler {
     @Override
     public double getAvailableMips() {
         final double totalAllocatedMips = 
-            getMipsMapAllocated().values().stream()
-                .flatMap(list -> list.stream())
-                .reduce(0.0, Double::sum);
+            getMipsMapAllocated().keySet()
+                .stream()
+                .mapToDouble(this::actualVmRequestedMipsSum)
+                .sum();
+        
         return host.getTotalMipsCapacity() - totalAllocatedMips;
     }
+
+    /**
+     * Gets the sum of MIPS requested by each VM PE, including
+     * the CPU overhead if the VM is in migration to this Host.
+     * 
+     * <p>For instance, if the migration overhead is 10% and
+     * the total requested MIPS of a VM is 1000 MIPS,
+     * it will be allocated just 900 MIPS, but from this values, this method
+     * returns the 1000 MIPS, which is the actual MIPS being
+     * used by the Host (900 by the VM and 100 by migration overhead).</p>
+     * 
+     * @param vm the VM to get the actual requested MIPS across all PEs
+     * @return the actual requested MIPS sum across all VM PEs,
+     * including the CPU overhead of the VM is in migration to this Host
+     */
+    private double actualVmRequestedMipsSum(Vm vm) {
+        final double totalVmRequestedMips = 
+                getMipsMapAllocated()
+                    .getOrDefault(vm, new ArrayList<>())
+                    .stream()
+                    .reduce(0.0, Double::sum);
+        
+        if(getVmsMigratingIn().contains(vm)){
+            /*If the VM is migrating into this Host,
+            due to migration overhead, it is just allocated a fraction of the 
+            requested MIPS (such as 90%). The line below computes the original
+            requested MIPS (which correspond to 100%)*/
+            return totalVmRequestedMips / getMaxCpuUsagePercentDuringMigration();
+        }
+        
+        return totalVmRequestedMips;
+    }
+    
+    /**
+     * Gets the max percentage of CPU a VM migrating into this Host can use,
+     * considering the {@link #getVmMigrationCpuOverhead() CPU migration overhead}.
+     * @return the max percentage of CPU usage during migration (in scale from [0 to 1], where 1 is 100%)
+     */
+    private double getMaxCpuUsagePercentDuringMigration() {
+        return 1 - getVmMigrationCpuOverhead();
+    }    
 
     @Override
     public Set<Vm> getVmsMigratingIn() {
@@ -284,4 +327,46 @@ public abstract class VmSchedulerAbstract implements VmScheduler {
     public boolean removeVmMigratingOut(Vm vm) {
         return this.vmsMigratingOut.remove(vm);
     }
+
+    /**
+     * Gets the percentage of the MIPS requested by a VM
+     * that will be in fact requested to the Host, according to the VM migration
+     * status:
+     *
+     * <ul>
+     *  <li>VM is migrating out of this Host: the MIPS requested by VM will be reduced
+     *   according to the
+     *   {@link #getVmMigrationCpuOverhead() CPU migration overhead}.
+     *   The number of MIPS corresponding to the CPU overhead is used
+     *   by the Host to perform the migration;</li>
+     *  <li>VM is migrating into this Host: only a fraction of its requested MIPS will be
+     *   in fact requested to the Host. This amount is computed by reducing the
+     *   {@link #getVmMigrationCpuOverhead() CPU migration overhead};</li>
+     *  <li>VM is not in migration: 100% of its requested MIPS will be
+     *   in fact requested to the Host</li>
+     * </ul>
+     * @param vm the VM that is requesting MIPS from the Host
+     * @return the percentage of MIPS requested by the VM that will be in fact
+     * requested to the Host (in scale from [0 to 1], where  is 100%)
+     */
+    protected double percentOfMipsToRequest(Vm vm) {
+        if (getVmsMigratingOut().contains(vm)) {
+            /* While the VM is migrating out, the host where it's migrating from
+            experiences a performance degradation.
+            Thus, the allocated MIPS for that VM is reduced according to the CPU migration
+            overhead.*/
+            return getMaxCpuUsagePercentDuringMigration();
+        }
+        if (getVmsMigratingIn().contains(vm)) {
+            /* While the VM is migrating in,
+            the destination host only increases CPU usage according
+            to the CPU migration overhead.
+             */
+            return getVmMigrationCpuOverhead();
+        }
+        //VM is not migrating, thus 100% of its requested MIPS will be requested to the Host.
+        return 1;
+    }
+
+    
 }

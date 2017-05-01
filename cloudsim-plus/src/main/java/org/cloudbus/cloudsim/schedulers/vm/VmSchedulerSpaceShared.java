@@ -173,7 +173,7 @@ public class VmSchedulerSpaceShared extends VmSchedulerAbstract {
     }
 
     @Override
-    public double getCpuOverheadDueToVmMigration() {
+    public double getVmMigrationCpuOverhead() {
         return 0;
     }
 

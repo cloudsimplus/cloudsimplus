@@ -180,11 +180,11 @@ public class HostSimple implements Host {
 
     @Override
     public double updateProcessing(double currentTime) {
-        double nextSimulationTime = Double.MAX_VALUE;
-        for (Vm vm : getVmList()) {
-            final double time = vm.updateProcessing(currentTime, getVmScheduler().getAllocatedMipsForVm(vm));
-            nextSimulationTime = Math.min(time, nextSimulationTime);
-        }
+        final double nextSimulationTime = 
+            getVmList().stream()
+                .mapToDouble(vm -> vm.updateProcessing(currentTime, getVmScheduler().getAllocatedMipsForVm(vm)))
+                .min()
+                .orElse(Double.MAX_VALUE);
 
         notifyOnUpdateProcessingListeners(nextSimulationTime);
         return nextSimulationTime;

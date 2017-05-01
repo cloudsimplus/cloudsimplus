@@ -12,12 +12,11 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
-import org.cloudbus.cloudsim.lists.PeList;
 import org.cloudbus.cloudsim.vms.Vm;
 
 /**
  * This is a Time-Shared VM Scheduler, which allows over-subscription. In other
- * words, the scheduler still allows the allocation of VMs that require more CPU
+ * words, the scheduler still allows the allocation of VMs which require more CPU
  * capacity than is available. Oversubscription results in performance
  * degradation.
  *

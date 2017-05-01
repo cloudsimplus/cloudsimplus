@@ -53,6 +53,7 @@ import org.cloudbus.cloudsim.power.models.PowerModelLinear;
 import org.cloudbus.cloudsim.provisioners.PeProvisionerSimple;
 import org.cloudbus.cloudsim.provisioners.ResourceProvisionerSimple;
 import org.cloudbus.cloudsim.resources.PeSimple;
+import org.cloudbus.cloudsim.schedulers.cloudlet.CloudletScheduler;
 import org.cloudbus.cloudsim.selectionpolicies.power.PowerVmSelectionPolicyMinimumUtilization;
 import org.cloudsimplus.builders.tables.CloudletsTableBuilder;
 import org.cloudbus.cloudsim.utilizationmodels.UtilizationModel;
@@ -74,7 +75,7 @@ public final class HostFaultInjectionExample {
     private static final double DATACENTER_COST_PER_BW = 0.0;
 
     private static final int  HOST_MIPS_BY_PE = 1000;
-    private static final int  HOST_PES = 4;
+    private static final int  HOST_PES = 8;
     private static final long HOST_RAM = 500000; //host memory (MEGABYTE)
     private static final long HOST_STORAGE = 1000000; //host storage
     private static final long HOST_BW = 100000000L;
@@ -116,7 +117,7 @@ public final class HostFaultInjectionExample {
     public static final double CLOUDLET_CPU_USAGE_INCREMENT_PER_SECOND = 0.05;
 
     private static final int HOSTS = 3;
-    private static final int VMS = HOSTS;
+    private static final int VMS = HOSTS + 2;
     private static final int CLOUDLETS_BY_VM = 1;
 
     private final List<Vm> vmlist = new ArrayList<>();
@@ -142,7 +143,6 @@ public final class HostFaultInjectionExample {
 
         DatacenterBroker broker = new DatacenterBrokerSimple(simulation);
         createAndSubmitVms(broker);
-
         createAndSubmitCloudlets(broker);
 
         simulation.start();
@@ -184,13 +184,10 @@ public final class HostFaultInjectionExample {
      */
     public PowerVm createVm(DatacenterBroker broker) {
         PowerVm vm = new PowerVm(vmlist.size(), VM_MIPS, VM_PES);
-        vm.setSchedulingInterval(1)
-                .setRam(VM_RAM).setBw(VM_BW).setSize(VM_SIZE)
-                .setBroker(broker)
-                .setCloudletScheduler(new CloudletSchedulerTimeShared());
-
-        Log.printConcatLine(
-                "#Requested creation of VM ", vm.getId(), " with ", VM_MIPS, " MIPS x ", VM_PES);
+        vm
+            .setRam(VM_RAM).setBw(VM_BW).setSize(VM_SIZE)
+            .setBroker(broker)
+            .setCloudletScheduler(new CloudletSchedulerTimeShared());
         return vm;
     }
 
@@ -315,20 +312,11 @@ public final class HostFaultInjectionExample {
     }
 
     /**
-     *
+     * Creates a Host.
      * @param id
      * @param numberOfPes
      * @param mipsByPe
      * @return
-     *
-     * @todo @author manoelcampos Using the {@link VmSchedulerSpaceShared} its
-     * getting NullPointerException, probably due to lack of CPU for all VMs. It
-     * has to be created an IT test to check this problem.
-     *
-     * @todo @author manoelcampos The method
-     * {@link DatacenterBroker#getCloudletsFinishedList()} returns an empty list
-     * when using null     {@link PowerDatacenter},
-     * {@link PowerHost} and {@link PowerVm}.
      */
     public PowerHost createHost(int id, int numberOfPes, long mipsByPe) {
         List<Pe> peList = createPeList(numberOfPes, mipsByPe);
@@ -370,11 +358,69 @@ public final class HostFaultInjectionExample {
                     HostFaultInjection fault = new HostFaultInjection(host);
                     fault.setNumberOfFailedPesRandom(failurePesRand);
                     fault.setDelayForFailureOfHostRandom(delayForFailureOfHostRandom);
+                    fault.setVmCloner(this::cloneVm);
+                    fault.setCloudletsCloner(this::cloneCloudlets);
                     Log.printFormattedLine("\tFault Injection created for Host %d.", host.getId());
                 }
                 i++;
             }
         }
     }
+    
+    /**
+     * Clones a VM by creating another one with the same configurations of a given VM.
+     * @param vm the VM to be cloned
+     * @return the cloned (new) VM.
+     * 
+     * @see #createFaultInjectionForHosts(org.cloudbus.cloudsim.datacenters.Datacenter) 
+     */
+    private Vm cloneVm(Vm vm){
+        PowerVm clone = new PowerVm((long)vm.getMips(), (int)vm.getNumberOfPes());
+        clone.setBroker(vm.getBroker())
+            .setSize(vm.getStorage().getCapacity())
+            .setBw(vm.getBw().getCapacity())
+            .setRam(vm.getBw().getCapacity())
+            .setCloudletScheduler(new CloudletSchedulerTimeShared());
+        
+        return clone;
+    }
+    
+    /**
+     * Clones each Cloudlet associated to a given VM.
+     * The method is called when a VM is destroyed due to a
+     * Host failure and a snapshot from that VM (a clone)
+     * is started into another Host.
+     * In this case, all the Cloudlets which were running inside
+     * the destroyed VM will be recreated from scratch into the VM clone,
+     * re-starting their execution from the beginning.
+     * 
+     * @param sourceVm the VM to clone its Cloudlets
+     * @return the List of cloned Cloudlets.
+     * @see #createFaultInjectionForHosts(org.cloudbus.cloudsim.datacenters.Datacenter) 
+     */
+    private List<Cloudlet> cloneCloudlets(Vm sourceVm){
+        final List<Cloudlet> sourceVmCloudlets = sourceVm.getCloudletScheduler().getCloudletList();
+        final List<Cloudlet> clonedCloudlets = new ArrayList<>(sourceVmCloudlets.size());
+        for(Cloudlet cl: sourceVmCloudlets){
+            clonedCloudlets.add(cloneCloudlet(cl));
+        }
+        
+        return clonedCloudlets;
+    }
 
+    /**
+     * Creates a clone from a given Cloudlet.
+     * @param sourceCloudlet the Cloudlet to be cloned.
+     * @return the cloned (new) cloudlet
+     */
+    private Cloudlet cloneCloudlet(Cloudlet sourceCloudlet) {
+        Cloudlet clone = new CloudletSimple(sourceCloudlet.getLength(), (int)sourceCloudlet.getNumberOfPes());
+        clone
+                .setUtilizationModelBw(sourceCloudlet.getUtilizationModelBw())
+                .setUtilizationModelCpu(sourceCloudlet.getUtilizationModelCpu())
+                .setUtilizationModelRam(sourceCloudlet.getUtilizationModelRam());
+        return clone;
+        
+    }
+    
 }

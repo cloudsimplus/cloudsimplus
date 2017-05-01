@@ -607,7 +607,7 @@ public class VmSimple implements Vm {
 
     @Override
     public String toString() {
-        return String.format("Vm %d", getId());
+        return String.format("#Vm %d ", getId());
     }
 
     @Override
@@ -784,5 +784,4 @@ public class VmSimple implements Vm {
         this.addOnUpdateProcessingListener(evt -> vmScaling.requestScalingIfPredicateMatch(evt.getTime()));
         return vmScaling;
     }
-
 }

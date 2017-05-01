@@ -244,7 +244,7 @@ public interface VmScheduler {
      *
      * @return the Host's CPU migration overhead percentage.
      */
-    double getCpuOverheadDueToVmMigration();
+    double getVmMigrationCpuOverhead();
 
     /**
      * Gets the host that the VmScheduler get the list of PEs to allocate to VMs.

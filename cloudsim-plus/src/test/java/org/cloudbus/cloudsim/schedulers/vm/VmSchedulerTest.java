@@ -28,7 +28,7 @@ public class VmSchedulerTest {
         assertEquals(0, instance.getTotalAllocatedMipsForVm(null), 0);
         assertTrue(instance.getVmsMigratingIn().isEmpty());
         assertTrue(instance.getVmsMigratingOut().isEmpty());
-        assertEquals(0, instance.getCpuOverheadDueToVmMigration(), 0);
+        assertEquals(0, instance.getVmMigrationCpuOverhead(), 0);
     }
 
 }

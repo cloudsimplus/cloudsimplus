@@ -58,7 +58,7 @@ public class PowerVmListTest {
         final List<PowerVm> list = new ArrayList<>();
         for(int i = 0; i < cloudletSchedulerList.length; i++){
                 PowerVm vm = new PowerVm(i, MIPS, PES);
-                vm.setSchedulingInterval(1)
+                vm
                   .setRam(RAM).setBw(BW).setSize(STORAGE)
                   .setCloudletScheduler(cloudletSchedulerList[i])
                   .setBroker(Mocks.createMockBroker(USER_ID));
