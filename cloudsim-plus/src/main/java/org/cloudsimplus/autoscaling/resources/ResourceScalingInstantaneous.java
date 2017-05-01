@@ -58,19 +58,19 @@ public class ResourceScalingInstantaneous implements ResourceScaling {
     private static final ResourceScaling gradual = new ResourceScalingGradual();
 
     @Override
-    public long getResourceAmountToScale(VerticalVmScaling vmScaling) {
+    public double getResourceAmountToScale(VerticalVmScaling vmScaling) {
         Function<Vm, Double> thresholdFunction = vmScaling.getResourceUsageThresholdFunction();
-        /* Computes the size to which the resource has to be scaled to move it from the under or overload
-        * state.*/
-        final long newResourceSize =
-            (long)Math.ceil(vmScaling.getVmResourceToScale().getAllocatedResource() *
+        /* Computes the size to which the resource has to be scaled to move it from the
+        * under or overload state.*/
+        final double newResourceSize =
+            Math.ceil(vmScaling.getResource().getAllocatedResource() *
                 MathUtil.HUNDRED_PERCENT / thresholdFunction.apply(vmScaling.getVm()));
 
         /*Includes and additional resource amount for safety, according to the scaling factor.
         * This way, if the resource usage increases again up to this extra amount,
         * there is no need to re-scale the resource.
         * If the scale factor is zero, no extra safety amount is included.*/
-        final long extraSafetyCapacity = gradual.getResourceAmountToScale(vmScaling);
+        final double extraSafetyCapacity = gradual.getResourceAmountToScale(vmScaling);
         return newResourceSize + extraSafetyCapacity;
     }
 }

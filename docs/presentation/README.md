@@ -14,3 +14,8 @@ npm install -g grunt-cli
 npm install
 grunt
 ```
+
+# Exporting to PDF
+To generate a PDF file, just open the presentation in Google Chrome locally 
+(you don't need to run it with a local server) and include the parameter `?print-pdf` at the URL.
+Then print as usual.

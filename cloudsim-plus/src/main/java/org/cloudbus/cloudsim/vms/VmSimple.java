@@ -775,13 +775,13 @@ public class VmSimple implements Vm {
         if(vmScaling.getVm() != null && vmScaling.getVm() != Vm.NULL && vmScaling.getVm() != this){
             final String name = vmScaling.getClass().getSimpleName();
             throw new IllegalArgumentException(
-                "The "+name+" given already is linked to a Vm. " +
-                    "Each Vm must have its own "+name+" objects or none at all. " +
-                    "A new scaling has to be provided to this Vm.");
+                "The "+name+" given is already linked to a Vm. " +
+                "Each Vm must have its own "+name+" objects or none at all. " +
+                "A new scaling has to be provided for this Vm.");
         }
 
         vmScaling.setVm(this);
-        this.addOnUpdateProcessingListener(listener -> vmScaling.requestScalingIfPredicateMatch(listener.getTime()));
+        this.addOnUpdateProcessingListener(evt -> vmScaling.requestScalingIfPredicateMatch(evt.getTime()));
         return vmScaling;
     }
 

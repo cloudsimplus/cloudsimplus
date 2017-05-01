@@ -46,7 +46,7 @@ import java.util.function.Function;
  * Different Vms must have different instances of a scaling object.
  *
  * <p>A {@link Vm} runs a set of {@link Cloudlet}s. When a {@code VerticalVmScaling} object is attached to a {@link Vm},
- *    it's required to define which {@link #getResourceClassToScale() resource will be scaled} ({@link Ram}, {@link Bandwidth}, etc)
+ *    it's required to define which {@link #getResourceClass() resource will be scaled} ({@link Ram}, {@link Bandwidth}, etc)
  *    when it's {@link #getLowerThresholdFunction() under} or {@link #getUpperThresholdFunction() overloaded}.
  * </p>
  *
@@ -93,19 +93,20 @@ public interface VerticalVmScaling extends VmScaling {
     VerticalVmScaling NULL = new VerticalVmScalingNull();
 
     /**
-     * Gets the class of Vm resource that this scaling object will request up or down scaling.
+     * Gets the class of Vm resource this scaling object will request up or down scaling.
      * Such a class can be {@link Ram}.class, {@link Bandwidth}.class or {@link Pe}.class.
      * @return
+     * @see #getResource()
      */
-    Class<? extends ResourceManageable> getResourceClassToScale();
+    Class<? extends ResourceManageable> getResourceClass();
 
     /**
      * Sets the class of Vm resource that this scaling object will request up or down scaling.
      * Such a class can be {@link Ram}.class, {@link Bandwidth}.class or {@link Pe}.class.
-     * @param resourceClassToScale the resource class to set
+     * @param resourceClass the resource class to set
      * @return
      */
-    VerticalVmScaling setResourceClassToScale(Class<? extends ResourceManageable> resourceClassToScale);
+    VerticalVmScaling setResourceClass(Class<? extends ResourceManageable> resourceClass);
 
     /**
      * Gets the factor that will be used to scale a Vm resource up or down,
@@ -168,19 +169,20 @@ public interface VerticalVmScaling extends VmScaling {
     boolean isVmOverloaded();
 
     /**
-     * Gets the Vm {@link Resource} this scaling object is in charge of scaling.
+     * Gets the actual Vm {@link Resource} this scaling object is in charge of scaling.
+     * This resource is defined after calling the {@link #setResourceClass(Class)}.
      * @return
      */
-    Resource getVmResourceToScale();
+    Resource getResource();
 
     /**
-     * Gets the absolute amount of the Vm resource, defined
-     * by {@link #getResourceClassToScale()}, that has to be
+     * Gets the absolute amount of the Vm resource which has to be
      * scaled up or down, based on the {@link #getScalingFactor() scaling factor}.
      *
      * @return the absolute amount of the Vm resource to scale
+     * @see #getResourceClass()
      */
-    long getResourceAmountToScale();
+    double getResourceAmountToScale();
 
     /**
      * Performs the vertical scale if the Vm is overloaded, according to the {@link #getUpperThresholdFunction()} predicate,
@@ -201,7 +203,7 @@ public interface VerticalVmScaling extends VmScaling {
      * Gets a {@link Function} that defines the upper utilization threshold for a {@link #getVm() Vm}
      * which indicates if it is overloaded or not.
      * If it is overloaded, the Vm's {@link DatacenterBroker} will request to up scale the VM.
-     * The up scaling is performed by increasing the amount of the {@link #getResourceClassToScale() resource}
+     * The up scaling is performed by increasing the amount of the {@link #getResourceClass() resource}
      * the scaling is associated to.
      *
      * <p>This function must receive a {@link Vm} and return the upper utilization threshold
@@ -219,7 +221,7 @@ public interface VerticalVmScaling extends VmScaling {
      * Sets a {@link Function} that defines the upper utilization threshold for a {@link #getVm() Vm}
      * which indicates if it is overloaded or not.
      * If it is overloaded, the Vm's {@link DatacenterBroker} will request to up scale the VM.
-     * The up scaling is performed by increasing the amount of the {@link #getResourceClassToScale() resource}
+     * The up scaling is performed by increasing the amount of the {@link #getResourceClass() resource}
      * the scaling is associated to.
      *
      * <p>This function must receive a {@link Vm} and return the upper utilization threshold
@@ -242,7 +244,7 @@ public interface VerticalVmScaling extends VmScaling {
      * Gets a {@link Function} that defines the lower utilization threshold for a {@link #getVm() Vm}
      * which indicates if it is underloaded or not.
      * If it is underloaded, the Vm's {@link DatacenterBroker} will request to down scale the VM.
-     * The down scaling is performed by decreasing the amount of the {@link #getResourceClassToScale() resource}
+     * The down scaling is performed by decreasing the amount of the {@link #getResourceClass() resource}
      * the scaling is associated to.
      *
      *
@@ -262,7 +264,7 @@ public interface VerticalVmScaling extends VmScaling {
      * Sets a {@link Function} that defines the lower utilization threshold for a {@link #getVm() Vm}
      * which indicates if it is underloaded or not.
      * If it is underloaded, the Vm's {@link DatacenterBroker} will request to down scale the VM.
-     * The down scaling is performed by decreasing the amount of the {@link #getResourceClassToScale() resource}
+     * The down scaling is performed by decreasing the amount of the {@link #getResourceClass() resource}
      * the scaling is associated to.
      *
      * <p>This function must receive a {@link Vm} and return the lower utilization threshold
@@ -287,4 +289,11 @@ public interface VerticalVmScaling extends VmScaling {
      * @return
      */
     VerticalVmScaling setResourceScaling(ResourceScaling resourceScaling);
+
+    /**
+     * Gets the current amount allocated to the {@link #getResource() resource} managed by this scaling object.
+     * It is just a shortcut to {@code getVmResourceToScale.getAllocatedResource()}.
+     * @return the amount of allocated resource
+     */
+    long getAllocatedResource();
 }

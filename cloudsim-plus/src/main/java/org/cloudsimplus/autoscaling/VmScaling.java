@@ -32,7 +32,7 @@ import java.util.function.Function;
 
 /**
  * An interface to allow implementing <a href="https://en.wikipedia.org/wiki/Scalability#Horizontal_and_vertical_scaling">horizontal and vertical scaling</a>
- * for {@link Vm}s.
+ * of {@link Vm}s.
  *
  * @author Manoel Campos da Silva Filho
  * @since CloudSim Plus 1.0.0

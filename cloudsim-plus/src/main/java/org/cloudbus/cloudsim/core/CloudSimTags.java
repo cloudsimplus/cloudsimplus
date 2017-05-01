@@ -249,7 +249,7 @@ public final class CloudSimTags {
     public static final int VM_UPDATE_CLOUDLET_PROCESSING_EVENT = BASE + 41;
 
     /**
-     * Defines the tag to be used for vertical scaling of VM resources
+     * Defines the tag to be used to request vertical scaling of VM resources
      * such as Ram, Bandwidth or Pe.
      * When an event of this type is sent, the {@link SimEvent#getData()}
      * must be a {@link VerticalVmScaling} object.

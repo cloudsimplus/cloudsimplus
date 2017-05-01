@@ -53,6 +53,6 @@ public interface ResourceScaling {
      * @param vmScaling the {@link VerticalVmScaling} object that is in charge to scale a resource.
      * @return
      */
-    long getResourceAmountToScale(VerticalVmScaling vmScaling);
+    double getResourceAmountToScale(VerticalVmScaling vmScaling);
 
 }
