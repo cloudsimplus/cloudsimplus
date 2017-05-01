@@ -64,7 +64,7 @@ import org.cloudbus.cloudsim.vms.Vm;
 import org.cloudbus.cloudsim.vms.power.PowerVm;
 import org.cloudsimplus.builders.tables.CloudletsTableBuilder;
 import org.cloudsimplus.sla.readJsonFile.CpuUtilization;
-import org.cloudsimplus.sla.readJsonFile.ResponseTime;
+import org.cloudsimplus.sla.readJsonFile.TaskTimeCompletion;
 import org.cloudsimplus.sla.readJsonFile.SlaReader;
 
 /**
@@ -122,7 +122,7 @@ public final class VmMigrationWhenCpuMetricIsViolatedExampleWithSelectedVm {
      */
     public static final String METRICS_FILE = ResourceLoader.getResourcePath(VmMigrationWhenCpuMetricIsViolatedExampleWithSelectedVm.class, "SlaMetrics.json");
 
-    private double responseTimeSlaContract;
+    private double taskTimeCompletionSlaContract;
     private double cpuUtilizationMaxSlaContract;
     private double cpuUtilizationMinSlaContract;
     private final DatacenterBrokerSimple broker;
@@ -143,9 +143,9 @@ public final class VmMigrationWhenCpuMetricIsViolatedExampleWithSelectedVm {
         simulation = new CloudSim();
 
         SlaReader slaReader = new SlaReader(METRICS_FILE);
-        ResponseTime rt = new ResponseTime(slaReader);
-        rt.checkResponseTimeSlaContract();
-        responseTimeSlaContract = rt.getMaxValueResponseTime();
+        TaskTimeCompletion rt = new TaskTimeCompletion(slaReader);
+        rt.checkTaskTimeCompletionSlaContract();
+        taskTimeCompletionSlaContract = rt.getMaxValueTaskTimeCompletion();
 
         CpuUtilization cpu = new CpuUtilization(slaReader);
         cpu.checkCpuUtilizationSlaContract();
@@ -162,8 +162,8 @@ public final class VmMigrationWhenCpuMetricIsViolatedExampleWithSelectedVm {
         createAndSubmitCloudlets(broker);
 
         simulation.start();
-        getCloudletsResponseTimeAverage(broker);
-        getPercentageOfCloudletsMeetingResponseTime(broker);
+        getCloudletsTaskTimeCompletionAverage(broker);
+        getPercentageOfCloudletsMeetingTaskTimeCompletion(broker);
 
         new CloudletsTableBuilder(broker.getCloudletsFinishedList()).build();
 
@@ -347,25 +347,25 @@ public final class VmMigrationWhenCpuMetricIsViolatedExampleWithSelectedVm {
         Log.printLine("\t\tCreated VMs: " + createdVms);
         Comparator<Vm> sortByNumberOfFreePes
                 = Comparator.comparingLong(vm -> getExpectedNumberOfFreeVmPes(vm));
-        Comparator<Vm> sortByExpectedCloudletResponseTime
-                = Comparator.comparingDouble(vm -> getExpectedCloudletResponseTime(cloudlet, vm));
+        Comparator<Vm> sortByExpectedCloudletTaskTimeCompletion
+                = Comparator.comparingDouble(vm -> getExpectedCloudletTaskTimeCompletion(cloudlet, vm));
         createdVms.sort(
                 sortByNumberOfFreePes
-                        .thenComparing(sortByExpectedCloudletResponseTime)
+                        .thenComparing(sortByExpectedCloudletTaskTimeCompletion)
                         .reversed());
         Vm mostFreePesVm = createdVms.stream().findFirst().orElse(Vm.NULL);
 
         Vm selectedVm = createdVms.stream()
                 .filter(vm -> getExpectedNumberOfFreeVmPes(vm) >= cloudlet.getNumberOfPes())
-                .filter(vm -> getExpectedCloudletResponseTime(cloudlet, vm) <= responseTimeSlaContract)
+                .filter(vm -> getExpectedCloudletTaskTimeCompletion(cloudlet, vm) <= taskTimeCompletionSlaContract)
                 .findFirst().orElse(mostFreePesVm);
 
         return selectedVm;
     }
 
-    private double getExpectedCloudletResponseTime(Cloudlet cloudlet, Vm vm) {
-        final double expectedResponseTime = cloudlet.getLength() / vm.getMips();
-        return expectedResponseTime;
+    private double getExpectedCloudletTaskTimeCompletion(Cloudlet cloudlet, Vm vm) {
+        final double expectedTaskTimeCompletion = cloudlet.getLength() / vm.getMips();
+        return expectedTaskTimeCompletion;
     }
 
     /**
@@ -394,29 +394,29 @@ public final class VmMigrationWhenCpuMetricIsViolatedExampleWithSelectedVm {
     }
 
     /**
-     * Computes the response time average for all finished Cloudlets on this
+     * Computes the TaskTimeCompletion average for all finished Cloudlets on this
      * experiment.
      *
-     * @return the response time average
+     * @return the TaskTimeCompletion average
      */
-    double getCloudletsResponseTimeAverage(DatacenterBroker broker) {
-        SummaryStatistics cloudletResponseTime = new SummaryStatistics();
+    double getCloudletsTaskTimeCompletionAverage(DatacenterBroker broker) {
+        SummaryStatistics cloudletTaskTimeCompletion = new SummaryStatistics();
 
         broker.getCloudletsFinishedList().stream()
                 .map(c -> c.getFinishTime() - c.getLastDatacenterArrivalTime())
-                .forEach(cloudletResponseTime::addValue);
+                .forEach(cloudletTaskTimeCompletion::addValue);
 
         Log.printFormattedLine(
-                "\t\t\n Response Time simulation: %.2f \n Response Time contrato SLA: %.2f \n",
-                cloudletResponseTime.getMean(), responseTimeSlaContract);
-        return cloudletResponseTime.getMean();
+                "\t\t\n TaskTimeCompletion simulation: %.2f \n TaskTimeCompletion contrato SLA: %.2f \n",
+                cloudletTaskTimeCompletion.getMean(), taskTimeCompletionSlaContract);
+        return cloudletTaskTimeCompletion.getMean();
     }
 
-    double getPercentageOfCloudletsMeetingResponseTime(DatacenterBroker broker) {
+    double getPercentageOfCloudletsMeetingTaskTimeCompletion(DatacenterBroker broker) {
 
         double totalOfcloudletSlaSatisfied = broker.getCloudletsFinishedList().stream()
                 .map(c -> c.getFinishTime() - c.getLastDatacenterArrivalTime())
-                .filter(rt -> rt <= responseTimeSlaContract)
+                .filter(rt -> rt <= taskTimeCompletionSlaContract)
                 .count();
         System.out.printf("\n ** Percentage of cloudlets that complied with "
                 + "the SLA Agreement:  %.2f %%",

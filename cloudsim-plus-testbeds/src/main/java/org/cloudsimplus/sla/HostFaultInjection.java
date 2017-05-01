@@ -39,6 +39,7 @@ import org.cloudbus.cloudsim.distributions.UniformDistr;
 import org.cloudbus.cloudsim.resources.Pe;
 import org.cloudbus.cloudsim.resources.Pe.Status;
 
+
 /**
  * This class shows how to generate a fault. In this case the fault is in the
  * host.

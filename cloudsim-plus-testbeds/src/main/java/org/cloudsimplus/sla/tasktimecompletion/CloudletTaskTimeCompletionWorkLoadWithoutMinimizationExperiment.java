@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package org.cloudsimplus.sla.responsetime;
+package org.cloudsimplus.sla.tasktimecompletion;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -42,16 +42,16 @@ import org.cloudsimplus.autoscaling.HorizontalVmScalingSimple;
 import org.cloudsimplus.builders.tables.CloudletsTableBuilder;
 import org.cloudsimplus.listeners.EventInfo;
 import org.cloudsimplus.sla.readJsonFile.CpuUtilization;
-import org.cloudsimplus.sla.readJsonFile.ResponseTime;
+import org.cloudsimplus.sla.readJsonFile.TaskTimeCompletion;
 import org.cloudsimplus.sla.readJsonFile.SlaReader;
-import static org.cloudsimplus.sla.responsetime.CloudletResponseTimeWorkLoadWithoutMinimizationRunner.VMS;
+import static org.cloudsimplus.sla.tasktimecompletion.CloudletTaskTimeCompletionWorkLoadWithoutMinimizationRunner.VMS;
 import org.cloudsimplus.testbeds.SimulationExperiment;
 
 /**
  *
  * @author raysaoliveira
  */
-public class CloudletResponseTimeWorkLoadWithoutMinimizationExperiment extends SimulationExperiment {
+public class CloudletTaskTimeCompletionWorkLoadWithoutMinimizationExperiment extends SimulationExperiment {
     
     private static final int SCHEDULING_INTERVAL = 5;
 
@@ -75,9 +75,9 @@ public class CloudletResponseTimeWorkLoadWithoutMinimizationExperiment extends S
     /**
      * The file containing the SLA Contract in JSON format.
      */
-    public static final String METRICS_FILE = ResourceLoader.getResourcePath(CloudletResponseTimeWorkLoadWithoutMinimizationExperiment.class, "SlaMetrics.json");
+    public static final String METRICS_FILE = ResourceLoader.getResourcePath(CloudletTaskTimeCompletionWorkLoadWithoutMinimizationExperiment.class, "SlaMetrics.json");
     private double cpuUtilizationSlaContract;
-    private double responseTimeSlaContract;
+    private double taskTimeCompletionSlaContract;
 
     /**
      * Different lengths that will be randomly assigned to created Cloudlets.
@@ -86,15 +86,15 @@ public class CloudletResponseTimeWorkLoadWithoutMinimizationExperiment extends S
     private static final int[] VM_PES = {2, 4};
 
   
-    public CloudletResponseTimeWorkLoadWithoutMinimizationExperiment(ContinuousDistribution randCloudlet, ContinuousDistribution randVm) {
+    public CloudletTaskTimeCompletionWorkLoadWithoutMinimizationExperiment(ContinuousDistribution randCloudlet, ContinuousDistribution randVm) {
         super();
         this.randCloudlet = randCloudlet;
         this.randVm = randVm;
         try {
             SlaReader slaReader = new SlaReader(METRICS_FILE);
-            ResponseTime rt = new ResponseTime(slaReader);
-            rt.checkResponseTimeSlaContract();
-            responseTimeSlaContract = rt.getMaxValueResponseTime();
+            TaskTimeCompletion rt = new TaskTimeCompletion(slaReader);
+            rt.checkTaskTimeCompletionSlaContract();
+            taskTimeCompletionSlaContract = rt.getMaxValueTaskTimeCompletion();
 
             CpuUtilization cpu = new CpuUtilization(slaReader);
             cpu.checkCpuUtilizationSlaContract();
@@ -104,7 +104,7 @@ public class CloudletResponseTimeWorkLoadWithoutMinimizationExperiment extends S
             //getCloudsim().addOnClockTickListener(this::printVmsCpuUsage);
 
         } catch (IOException ex) {
-            Logger.getLogger(CloudletResponseTimeWorkLoadExperimet.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(CloudletTaskTimeCompletionWorkLoadExperimet.class.getName()).log(Level.SEVERE, null, ex);
             throw new RuntimeException(ex);
         }
     }
@@ -143,9 +143,9 @@ public class CloudletResponseTimeWorkLoadWithoutMinimizationExperiment extends S
             workloadFileReader = new WorkloadFileReader("/Users/raysaoliveira/Desktop/Mestrado/cloudsim-plus/cloudsim-plus-testbeds/src/main/resources/METACENTRUM-2009-2.swf", 1);
             cloudletList = workloadFileReader.generateWorkload().subList(0, 800);
         } catch (FileNotFoundException ex) {
-            Logger.getLogger(CloudletResponseTimeWorkLoadExperimet.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(CloudletTaskTimeCompletionWorkLoadExperimet.class.getName()).log(Level.SEVERE, null, ex);
         } catch (IOException ex) {
-            Logger.getLogger(CloudletResponseTimeWorkLoadExperimet.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(CloudletTaskTimeCompletionWorkLoadExperimet.class.getName()).log(Level.SEVERE, null, ex);
         }
        
         cloudletList.forEach((cloudlet) -> {
@@ -205,7 +205,7 @@ public class CloudletResponseTimeWorkLoadWithoutMinimizationExperiment extends S
 
     /**
      * A {@link Predicate} that checks if a given VM is overloaded or not based
-     * on response time max value. A reference to this method is assigned to
+     * on TaskTimeCompletion max value. A reference to this method is assigned to
      * each Horizontal VM Scaling created.
      *
      * @param vm the VM to check if it is overloaded
@@ -253,34 +253,34 @@ public class CloudletResponseTimeWorkLoadWithoutMinimizationExperiment extends S
     }
 
     /**
-     * Computes the response time average for all finished Cloudlets on this
+     * Computes the TaskTimeCompletion average for all finished Cloudlets on this
      * experiment.
      *
-     * @return the response time average
+     * @return the TaskTimeCompletion average
      */
-    double getCloudletsResponseTimeAverage() {
-        SummaryStatistics cloudletResponseTime = new SummaryStatistics();
+    double getCloudletsTaskTimeCompletionAverage() {
+        SummaryStatistics cloudletTaskTimeCompletion = new SummaryStatistics();
         DatacenterBroker broker = getBrokerList().stream()
                 .findFirst()
                 .orElse(DatacenterBroker.NULL);
         broker.getCloudletsFinishedList().stream()
                 .map(c -> c.getFinishTime() - c.getLastDatacenterArrivalTime())
-                .forEach(cloudletResponseTime::addValue);
+                .forEach(cloudletTaskTimeCompletion::addValue);
 
        /* Log.printFormattedLine(
-                "\t\t\n Response Time simulation: %.2f \n Response Time contrato SLA: %.2f \n",
-                cloudletResponseTime.getMean(), responseTimeSlaContract);*/
-        return cloudletResponseTime.getMean();
+                "\t\t\n TaskTimeCompletion simulation: %.2f \n TaskTimeCompletion contrato SLA: %.2f \n",
+                cloudletTaskTimeCompletion.getMean(), TaskTimeCompletionSlaContract);*/
+        return cloudletTaskTimeCompletion.getMean();
     }
 
-    double getPercentageOfCloudletsMeetingResponseTime() {
+    double getPercentageOfCloudletsMeetingTaskTimeCompletion() {
         DatacenterBroker broker = getBrokerList().stream()
                 .findFirst()
                 .orElse(DatacenterBroker.NULL);
 
         double totalOfcloudletSlaSatisfied = broker.getCloudletsFinishedList().stream()
                 .map(c -> c.getFinishTime() - c.getLastDatacenterArrivalTime())
-                .filter(rt -> rt <= responseTimeSlaContract)
+                .filter(rt -> rt <= taskTimeCompletionSlaContract)
                 .count();
     /*    System.out.printf("\n ** Percentage of cloudlets that complied with "
                 + "the SLA Agreement:  %.2f %%",
@@ -329,12 +329,12 @@ public class CloudletResponseTimeWorkLoadWithoutMinimizationExperiment extends S
         final long seed = System.currentTimeMillis();
         ContinuousDistribution randCloudlet = new UniformDistr(seed);
         ContinuousDistribution randVm = new UniformDistr(seed);
-        CloudletResponseTimeWorkLoadExperimet exp
-                = new CloudletResponseTimeWorkLoadExperimet(randCloudlet, randVm);
+        CloudletTaskTimeCompletionWorkLoadExperimet exp
+                = new CloudletTaskTimeCompletionWorkLoadExperimet(randCloudlet, randVm);
         exp.setVerbose(true);
         exp.run();
-        exp.getCloudletsResponseTimeAverage();
-        exp.getPercentageOfCloudletsMeetingResponseTime();
+        exp.getCloudletsTaskTimeCompletionAverage();
+        exp.getPercentageOfCloudletsMeetingTaskTimeCompletion();
         exp.getRatioOfExistingVmPesToRequiredCloudletPes();
     }
 }

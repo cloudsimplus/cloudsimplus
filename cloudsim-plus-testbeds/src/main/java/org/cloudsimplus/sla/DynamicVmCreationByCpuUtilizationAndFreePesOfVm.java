@@ -61,13 +61,13 @@ import org.cloudbus.cloudsim.vms.VmSimple;
 import org.cloudsimplus.builders.tables.CloudletsTableBuilder;
 import org.cloudsimplus.listeners.EventInfo;
 import org.cloudsimplus.sla.readJsonFile.CpuUtilization;
-import org.cloudsimplus.sla.readJsonFile.ResponseTime;
+import org.cloudsimplus.sla.readJsonFile.TaskTimeCompletion;
 import org.cloudsimplus.sla.readJsonFile.SlaReader;
 
 /**
  * Example of dynamic creation of VMS at runtime, respecting the CPU usage limit
  * and the free number of each VM, thus selecting an "ideal" VM for a given
- * cloudlet, which will then minimize Cloudlet response time.
+ * cloudlet, which will then minimize Cloudlet TaskTimeCompletion.
  *
  * @author raysaoliveira
  */
@@ -119,10 +119,10 @@ public class DynamicVmCreationByCpuUtilizationAndFreePesOfVm {
      */
     public static final String METRICS_FILE = ResourceLoader.getResourcePath(DynamicVmCreationByCpuUtilizationAndFreePesOfVm.class, "SlaMetrics.json");
     private final double cpuUtilizationSlaContract;
-    private double responseTimeSlaContract;
+    private double taskTimeCompletionSlaContract;
 
     private int totalOfcloudletSlaSatisfied;
-    private List<Double> responseTimes;
+    private List<Double> TaskTimesCompletion;
 
     /**
      * Sorts the Cloudlets before submitting them to the Broker, so that
@@ -149,9 +149,9 @@ public class DynamicVmCreationByCpuUtilizationAndFreePesOfVm {
 
         // Reading the sla contract and taking the metric values
         SlaReader slaReader = new SlaReader(METRICS_FILE);
-        ResponseTime rt = new ResponseTime(slaReader);
-        rt.checkResponseTimeSlaContract();
-        responseTimeSlaContract = rt.getMaxValueResponseTime();
+        TaskTimeCompletion rt = new TaskTimeCompletion(slaReader);
+        rt.checkTaskTimeCompletionSlaContract();
+        taskTimeCompletionSlaContract = rt.getMaxValueTaskTimeCompletion();
 
         CpuUtilization cpu = new CpuUtilization(slaReader);
         cpu.checkCpuUtilizationSlaContract();
@@ -174,7 +174,7 @@ public class DynamicVmCreationByCpuUtilizationAndFreePesOfVm {
 
         simulation.start();
 
-        responseTimeCloudletSimulation(broker0);
+        taskTimeCompletionCloudletSimulation(broker0);
         double percentage = (totalOfcloudletSlaSatisfied * 100) / cloudletList.size();
         System.out.println("\n ** Percentage of cloudlets that complied"
                 + " with the SLA Agreement: " + percentage + " %");
@@ -207,22 +207,22 @@ public class DynamicVmCreationByCpuUtilizationAndFreePesOfVm {
         System.out.println("\t\tCreated VMs: " + createdVms);
         Comparator<Vm> sortByNumberOfFreePes
                 = Comparator.comparingLong(vm -> getExpectedNumberOfFreeVmPes(vm, false));
-        Comparator<Vm> sortByExpectedCloudletResponseTime
-                = Comparator.comparingDouble(vm -> getExpectedCloudletResponseTime(cloudlet, vm));
+        Comparator<Vm> sortByExpectedCloudletTaskTimeCompletion
+                = Comparator.comparingDouble(vm -> getExpectedCloudletTaskTimeCompletion(cloudlet, vm));
         createdVms.sort(
                 sortByNumberOfFreePes
-                        .thenComparing(sortByExpectedCloudletResponseTime)
+                        .thenComparing(sortByExpectedCloudletTaskTimeCompletion)
                         .reversed());
         Vm mostFreePesVm = createdVms.stream().findFirst().orElse(Vm.NULL);
 
         return createdVms.stream()
                 .filter(vm -> getExpectedNumberOfFreeVmPes(vm, true) >= cloudlet.getNumberOfPes())
-                .filter(vm -> getExpectedCloudletResponseTime(cloudlet, vm) <= responseTimeSlaContract)
+                .filter(vm -> getExpectedCloudletTaskTimeCompletion(cloudlet, vm) <= taskTimeCompletionSlaContract)
                 .findFirst()
                 .orElse(mostFreePesVm);
     }
 
-    private double getExpectedCloudletResponseTime(Cloudlet cloudlet, Vm vm) {
+    private double getExpectedCloudletTaskTimeCompletion(Cloudlet cloudlet, Vm vm) {
         return cloudlet.getLength() / vm.getMips();
     }
 
@@ -354,28 +354,28 @@ public class DynamicVmCreationByCpuUtilizationAndFreePesOfVm {
         new CloudletsTableBuilder(finishedCloudlets).build();
     }
 
-    private void responseTimeCloudletSimulation(DatacenterBroker broker) throws IOException {
+    private void taskTimeCompletionCloudletSimulation(DatacenterBroker broker) throws IOException {
         double average = 0;
-        responseTimes = new ArrayList<>();
+        TaskTimesCompletion = new ArrayList<>();
         for (Cloudlet c : broker.getCloudletsFinishedList()) {
-            double responseTime = c.getFinishTime() - c.getLastDatacenterArrivalTime();
-            responseTimes.add(responseTime);
-            average = responseTimeCloudletAverage(broker, responseTimes);
+            double taskTimeCompletion = c.getFinishTime() - c.getLastDatacenterArrivalTime();
+            TaskTimesCompletion.add(taskTimeCompletion);
+            average = taskTimeCompletionCloudletAverage(broker, TaskTimesCompletion);
 
-            if (responseTime <= responseTimeSlaContract) {
+            if (taskTimeCompletion <= taskTimeCompletionSlaContract) {
                 totalOfcloudletSlaSatisfied++;
             }
         }
-        System.out.printf("\t\t\n Response Time simulation (average) : %.2f \n Response Time contrato SLA: %.2f "
+        System.out.printf("\t\t\n TaskTimeCompletion simulation (average) : %.2f \n TaskTimeCompletioncontrato SLA: %.2f "
                 + "\n Total of cloudlets SLA satisfied: %d de %d cloudlets",
-                average, responseTimeSlaContract, totalOfcloudletSlaSatisfied, broker.getCloudletsFinishedList().size());
+                average, taskTimeCompletionSlaContract, totalOfcloudletSlaSatisfied, broker.getCloudletsFinishedList().size());
     }
 
-    private double responseTimeCloudletAverage(DatacenterBroker broker, List<Double> responseTimes) {
+    private double taskTimeCompletionCloudletAverage(DatacenterBroker broker, List<Double> taskTimesCompletion) {
         int totalCloudlets = broker.getCloudletsFinishedList().size();
         double sum = 0;
-        sum = responseTimes.stream()
-                .map((responseTime) -> responseTime)
+        sum = taskTimesCompletion.stream()
+                .map((taskTimeCompletion) -> taskTimeCompletion)
                 .reduce(sum, (accumulator, _item) -> accumulator + _item);
         return sum / totalCloudlets;
     }

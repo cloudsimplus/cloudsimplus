@@ -80,7 +80,7 @@ public final class SlaMetricsWithoutNetworkExample {
      */
     private final List<Vm> vmlist;
 
-    private double responseTimeCloudlet;
+    private double taskTimeCompletionCloudlet;
     private double cpuUtilization;
     private double waitTimeCloudlet;
     private final CloudSim cloudsim;
@@ -165,19 +165,19 @@ public final class SlaMetricsWithoutNetworkExample {
     }
 
     /**
-     * Shows the response time of cloudlets
+     * Shows the TaskTimeCompletion of cloudlets
      *
-     * @param cloudlets to calculate the response time
-     * @return responseTimeCloudlet
+     * @param cloudlets to calculate the TaskTimeCompletion
+     * @return taskTimeCompletionCloudlet
      */
-    private double responseTimeCloudletAverage(List<Cloudlet> cloudlets) {
+    private double taskTimeCompletionCloudletAverage(List<Cloudlet> cloudlets) {
 
-        double responseTime = 0, quant =0;
+        double taskTimeCompletion = 0, quant =0;
         for (Cloudlet cloudlet : cloudlets) {
-            responseTime += cloudlet.getFinishTime() - cloudlet.getLastDatacenterArrivalTime();
+            taskTimeCompletion += cloudlet.getFinishTime() - cloudlet.getLastDatacenterArrivalTime();
             quant = cloudletList.size();
         }
-        return responseTime/quant;
+        return taskTimeCompletion/quant;
 
     }
 
@@ -275,9 +275,9 @@ public final class SlaMetricsWithoutNetworkExample {
         System.out.println("________________________________________________________________");
         System.out.println("\n\t\t - System Métrics - \n ");
 
-        //responseTime
-        responseTimeCloudlet = responseTimeCloudletAverage(cloudletList);
-        System.out.printf("\t** Response Time of Cloudlets (average) - %.2f %n", responseTimeCloudlet);
+        //TaskTimeCompletion
+        taskTimeCompletionCloudlet = taskTimeCompletionCloudletAverage(cloudletList);
+        System.out.printf("\t** TaskTimeCompletion of Cloudlets (average) - %.2f %n", taskTimeCompletionCloudlet);
 
         //cpu time
         cpuUtilization = cpuUtilization(cloudletList);

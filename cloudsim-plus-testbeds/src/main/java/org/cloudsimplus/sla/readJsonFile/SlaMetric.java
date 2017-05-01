@@ -40,7 +40,7 @@ import java.util.List;
  */
 public class SlaMetric {
 
-    public static final String RESPONSE_TIME_NAME = "ResponseTime";
+    public static final String TASK_TIME_COMPLETION_NAME = "TaskTimeCompletion";
     public static final String CPU_UTILIZATION_NAME = "CpuUtilization";
     public static final String WAIT_TIME_NAME = "WaitTime";
 
@@ -76,12 +76,12 @@ public class SlaMetric {
     }
 
     /**
-     * Checks if this is a response time metric.
+     * Checks if this is a TaskTimeCompletion metric.
      *
      * @return
      */
-    public boolean isReponseTime() {
-        return this.metricName.trim().equals(RESPONSE_TIME_NAME);
+    public boolean isTaskTimeCompletion() {
+        return this.metricName.trim().equals(TASK_TIME_COMPLETION_NAME);
     }
 
     /**

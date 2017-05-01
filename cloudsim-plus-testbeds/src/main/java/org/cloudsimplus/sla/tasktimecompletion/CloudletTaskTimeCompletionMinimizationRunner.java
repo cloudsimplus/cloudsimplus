@@ -21,7 +21,7 @@
  *     You should have received a copy of the GNU General Public License
  *     along with CloudSim Plus. If not, see <http://www.gnu.org/licenses/>.
  */
-package org.cloudsimplus.sla.responsetime;
+package org.cloudsimplus.sla.tasktimecompletion;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -34,12 +34,12 @@ import java.util.Map;
 import org.cloudbus.cloudsim.distributions.ContinuousDistribution;
 
 /**
- * Runs the {@link CloudletResponseTimeMinimizationExperiment} the number of
+ * Runs the {@link CloudletTaskTimeCompletionMinimizationExperiment} the number of
  * times defines by {@link #numberOfSimulationRuns} and compute statistics.
  *
  * @author raysaoliveira
  */
-final class CloudletResponseTimeMinimizationRunner extends ExperimentRunner<CloudletResponseTimeMinimizationExperiment> {
+final class CloudletTaskTimeCompletionMinimizationRunner extends ExperimentRunner<CloudletTaskTimeCompletionMinimizationExperiment> {
 
     /**
      * Different lengths that will be randomly assigned to created Cloudlets.
@@ -50,15 +50,15 @@ final class CloudletResponseTimeMinimizationRunner extends ExperimentRunner<Clou
     static final int CLOUDLETS = 8;
 
     /**
-     * The response time average for all the experiments.
+     * The TaskTimeCompletion average for all the experiments.
      */
-    private List<Double> cloudletResponseTimes;
+    private List<Double> cloudletTaskTimeCompletion;
 
     /**
-     * The percentage of cloudlets meeting response time average for all the
+     * The percentage of cloudlets meeting TaskTimeCompletion average for all the
      * experiments.
      */
-    private List<Double> percentageOfCloudletsMeetingResponseTimes;
+    private List<Double> percentageOfCloudletsMeetingTaskTimeCompletion;
 
     /**
      * Amount of cloudlet PE per PE of vm.
@@ -82,7 +82,7 @@ final class CloudletResponseTimeMinimizationRunner extends ExperimentRunner<Clou
      * @param args command line arguments
      */
     public static void main(String[] args) {
-        new CloudletResponseTimeMinimizationRunner()
+        new CloudletTaskTimeCompletionMinimizationRunner()
                 .setSimulationRuns(500)
                 .setApplyAntitheticVariatesTechnique(true)
                 .setNumberOfBatches(5) //Comment this or set to 0 to disable the "Batch Means Method"
@@ -91,21 +91,21 @@ final class CloudletResponseTimeMinimizationRunner extends ExperimentRunner<Clou
                 .run();
     }
 
-    CloudletResponseTimeMinimizationRunner() {
+    CloudletTaskTimeCompletionMinimizationRunner() {
         super();
-        cloudletResponseTimes = new ArrayList<>();
-        percentageOfCloudletsMeetingResponseTimes = new ArrayList<>();
+        cloudletTaskTimeCompletion = new ArrayList<>();
+        percentageOfCloudletsMeetingTaskTimeCompletion = new ArrayList<>();
         ratioOfVmPesToRequiredCloudletPesList = new ArrayList<>();
         averageTotalCostSimulation = new ArrayList<>();
 
     }
 
     @Override
-    protected CloudletResponseTimeMinimizationExperiment createExperiment(int i) {
+    protected CloudletTaskTimeCompletionMinimizationExperiment createExperiment(int i) {
         ContinuousDistribution randCloudlet = createRandomGenAndAddSeedToList(i);
         ContinuousDistribution randVm = createRandomGenAndAddSeedToList(i);
-        CloudletResponseTimeMinimizationExperiment exp
-                = new CloudletResponseTimeMinimizationExperiment(randCloudlet, randVm);
+        CloudletTaskTimeCompletionMinimizationExperiment exp
+                = new CloudletTaskTimeCompletionMinimizationExperiment(randCloudlet, randVm);
         exp.setVerbose(experimentVerbose)
                 .setAfterExperimentFinish(this::afterExperimentFinish);
         return exp;
@@ -118,10 +118,10 @@ final class CloudletResponseTimeMinimizationRunner extends ExperimentRunner<Clou
      *
      * @param exp the finished experiment
      */
-    private void afterExperimentFinish(CloudletResponseTimeMinimizationExperiment exp) {
-        cloudletResponseTimes.add(exp.getCloudletsResponseTimeAverage());
-        percentageOfCloudletsMeetingResponseTimes.add(
-                exp.getPercentageOfCloudletsMeetingResponseTime());
+    private void afterExperimentFinish(CloudletTaskTimeCompletionMinimizationExperiment exp) {
+        cloudletTaskTimeCompletion.add(exp.getCloudletsTaskTimeCompletionAverage());
+        percentageOfCloudletsMeetingTaskTimeCompletion.add(
+                exp.getPercentageOfCloudletsMeetingTaskTimeCompletion());
         ratioOfVmPesToRequiredCloudletPesList.add(exp.getRatioOfExistingVmPesToRequiredCloudletPes());
         averageTotalCostSimulation.add(exp.getTotalCostPrice());
     }
@@ -133,8 +133,8 @@ final class CloudletResponseTimeMinimizationRunner extends ExperimentRunner<Clou
     @Override
     protected Map<String, List<Double>> createMetricsMap() {
         Map<String, List<Double>> map = new HashMap<>();
-        map.put("Cloudlet Response Time", cloudletResponseTimes);
-        map.put("Percentage Of Cloudlets Meeting Response Times", percentageOfCloudletsMeetingResponseTimes);
+        map.put("Cloudlet Task Time Completion", cloudletTaskTimeCompletion);
+        map.put("Percentage Of Cloudlets Meeting the Task Time Completion", percentageOfCloudletsMeetingTaskTimeCompletion);
         map.put("Average of vPEs/CloudletsPEs", ratioOfVmPesToRequiredCloudletPesList);
         map.put("Average of Total Cost of simulation", averageTotalCostSimulation);
         return map;
@@ -171,7 +171,7 @@ final class CloudletResponseTimeMinimizationRunner extends ExperimentRunner<Clou
         double lower = stats.getMean() - intervalSize;
         double upper = stats.getMean() + intervalSize;
         System.out.printf(
-                "\tResponse time mean 95%% Confidence Interval: %.2f ∓ %.2f, that is [%.2f to %.2f]\n",
+                "\tTaskTimeCompletion mean 95%% Confidence Interval: %.2f ∓ %.2f, that is [%.2f to %.2f]\n",
                 stats.getMean(), intervalSize, lower, upper);
         System.out.printf("\tStandard Deviation: %.2f \n", stats.getStandardDeviation());
     }

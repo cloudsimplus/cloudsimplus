@@ -147,7 +147,7 @@ public final class VmMigrationWhenCpuMetricIsViolatedExample {
 
         simulation.start();
 
-        responseTimeCloudletSimulation(broker);
+        taskTimeCompletionCloudletSimulation(broker);
 
         new CloudletsTableBuilder(broker.getCloudletsFinishedList()).build();
 
@@ -351,23 +351,23 @@ public final class VmMigrationWhenCpuMetricIsViolatedExample {
 
     }
 
-    private void responseTimeCloudletSimulation(DatacenterBroker broker) throws IOException {
+    private void taskTimeCompletionCloudletSimulation(DatacenterBroker broker) throws IOException {
         double average = 0;
-        List<Double> responseTimes = new ArrayList<>();
+        List<Double> taskTimeCompletion = new ArrayList<>();
         for (Cloudlet c : broker.getCloudletsFinishedList()) {
-            double responseTime = c.getFinishTime() - c.getLastDatacenterArrivalTime();
-            responseTimes.add(responseTime);
-            average = responseTimeCloudletAverage(broker, responseTimes);
+            double taskTime = c.getFinishTime() - c.getLastDatacenterArrivalTime();
+            taskTimeCompletion.add(taskTime);
+            average = taskTimeCompletionCloudletAverage(broker, taskTimeCompletion);
 
         }
-        System.out.printf("\t\t\n Response Time simulation (average) : %.2f \n", average);
+        System.out.printf("\t\t\n TaskTimeCompletion simulation (average) : %.2f \n", average);
     }
 
-    private double responseTimeCloudletAverage(DatacenterBroker broker, List<Double> responseTimes) {
+    private double taskTimeCompletionCloudletAverage(DatacenterBroker broker, List<Double> taskTimes) {
         int totalCloudlets = broker.getCloudletsFinishedList().size();
         double sum = 0;
-        sum = responseTimes.stream()
-                .map((responseTime) -> responseTime)
+        sum = taskTimes.stream()
+                .map((taskTime) -> taskTime)
                 .reduce(sum, (accumulator, _item) -> accumulator + _item);
         return sum / totalCloudlets;
     }

@@ -2,7 +2,7 @@
     "metrics" : [
    
     {
-        "metricName": "ResponseTime",
+        "metricName": "TaskTimeCompletion",
         "dimensions": [
             {
                 "name": "valueMin",
