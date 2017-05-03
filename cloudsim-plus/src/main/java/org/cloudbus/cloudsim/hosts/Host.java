@@ -270,6 +270,7 @@ public interface Host extends Machine, Comparable<Host> {
      * It also sets the Host itself to the given scheduler.
      *
      * @param vmScheduler the vm scheduler to set
+     * @return 
      */
     Host setVmScheduler(VmScheduler vmScheduler);
 
@@ -362,4 +363,33 @@ public interface Host extends Machine, Comparable<Host> {
      * @return the {@link ResourceProvisioner} for the given resource class
      */
     ResourceProvisioner getProvisioner(Class<? extends ResourceManageable> resourceClass);
+
+    /**
+     * Gets current utilization of CPU in percentage (between [0 and 1]).
+     *
+     * @return
+     */
+    double getUtilizationOfCpu();    
+
+    /**
+     * Gets the current utilization of CPU in MIPS.
+     *
+     * @return
+     */
+    double getUtilizationOfCpuMips();
+
+    /**
+     * Gets the current utilization of bw (in absolute values).
+     *
+     * @return
+     */
+    long getUtilizationOfBw();
+
+    /**
+     * Gets the current utilization of memory (in absolute values).
+     *
+     * @return
+     */
+    long getUtilizationOfRam();    
+    
 }

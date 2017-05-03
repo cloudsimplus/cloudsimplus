@@ -488,10 +488,10 @@ public class HostSimple implements Host {
         checkSimulationIsRunningAndAttemptedToChangeHost("List of PE");
         this.peList = Objects.isNull(peList) ? new ArrayList<>() : peList;
 
-        int id = this.peList.stream().filter(pe -> pe.getId() > 0).mapToInt(Pe::getId).max().orElse(-1);
+        int peId = this.peList.stream().filter(pe -> pe.getId() > 0).mapToInt(Pe::getId).max().orElse(-1);
         List<Pe> pesWithoutIds = this.peList.stream().filter(pe -> pe.getId() < 0).collect(toList());
         for(Pe pe: pesWithoutIds){
-            pe.setId(++id);
+            pe.setId(++peId);
         }
 
         return this;
@@ -640,4 +640,36 @@ public class HostSimple implements Host {
                 .filter(Pe::isWorking)
                 .collect(toList());
     }
+    
+    @Override
+    public double getUtilizationOfCpu() {
+        return computeCpuUtilizationPercent(getUtilizationOfCpuMips());
+    }
+    
+    protected double computeCpuUtilizationPercent(double mipsUsage){
+        final double totalMips = getTotalMipsCapacity();
+        if(totalMips == 0){
+            return 0;
+        }
+        
+        final double utilization = mipsUsage / totalMips;
+        return (utilization > 1 && utilization < 1.01 ? 1 : utilization);
+    }
+    
+    @Override
+    public double getUtilizationOfCpuMips() {
+        return getVmList().stream()
+                .mapToDouble(vm -> getVmScheduler().getTotalAllocatedMipsForVm(vm))
+                .sum();
+    }
+
+    @Override
+    public long getUtilizationOfRam() {
+        return getRamProvisioner().getTotalAllocatedResource();
+    }
+
+    @Override
+    public long getUtilizationOfBw() {
+        return getBwProvisioner().getTotalAllocatedResource();
+    }    
 }

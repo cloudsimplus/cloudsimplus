@@ -199,7 +199,7 @@ public class PowerDatacenter extends DatacenterSimple {
         println("\n\n--------------------------------------------------------------\n\n");
         println(String.format("New resource usage of Datacenter %d for the time frame starting at %.2f:", getId(), currentTime));
 
-        final double nextCloudletFinishTime = updateHostsProcessing(currentTime);
+        final double nextCloudletFinishTime = updateVmsProcessingOfAllHosts();
         final double datacenterPowerUsageForTimeSpan = getDatacenterPowerUsageForTimeSpan();
 
         setPower(getPower() + datacenterPowerUsageForTimeSpan);
@@ -211,26 +211,17 @@ public class PowerDatacenter extends DatacenterSimple {
         return nextCloudletFinishTime;
     }
 
-    /**
-     * Updates the processing of all existing Hosts.
-     *
-     * @param currentTime the current simulation time
-     * @return the expected finish time of the next finishing Cloudlet or {@link Double#MAX_VALUE} if not
-     * Cloudlet is running.
-     */
-    private double updateHostsProcessing(double currentTime) {
-        double minTime = Double.MAX_VALUE;
-        for (PowerHostSimple host : this.<PowerHostSimple>getHostList()) {
-            println();
-            final double nextCloudletFinishTime = host.updateProcessing(currentTime);
-            minTime = Math.min(nextCloudletFinishTime, minTime);
-
+    @Override
+    protected double updateVmsProcessingOfAllHosts() {
+        final double minTime = super.updateVmsProcessingOfAllHosts();
+        final double currentTime = getSimulation().clock();
+        this.<PowerHost>getHostList().forEach(host ->
             println(String.format(
                     "%.2f: [%s] utilization is %.2f%%",
                     currentTime,
                     host,
-                    host.getUtilizationOfCpu() * 100));
-        }
+                    host.getUtilizationOfCpu() * 100))
+        );
 
         return minTime;
     }

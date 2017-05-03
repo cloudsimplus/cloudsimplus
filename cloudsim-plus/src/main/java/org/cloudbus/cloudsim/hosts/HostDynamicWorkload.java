@@ -59,13 +59,6 @@ public interface HostDynamicWorkload extends Host {
      * @return the max utilization percentage (between [0 and 1])
      */
     double getMaxUtilizationAmongVmsPes(Vm vm);
-
-    /**
-     * Gets current utilization of CPU in percentage (between [0 and 1]).
-     *
-     * @return
-     */
-    double getUtilizationOfCpu();
     
     /**
      * Gets the previous utilization of CPU in percentage (between [0 and 1]).
@@ -73,13 +66,6 @@ public interface HostDynamicWorkload extends Host {
      * @return
      */
     double getPreviousUtilizationOfCpu();    
-
-    /**
-     * Gets the current utilization of CPU in MIPS.
-     *
-     * @return
-     */
-    double getUtilizationOfCpuMips();
     
     /**
      * Gets the previous utilization of CPU in MIPS.
@@ -88,17 +74,4 @@ public interface HostDynamicWorkload extends Host {
      */
     double getPreviousUtilizationMips();
 
-    /**
-     * Gets the current utilization of bw (in absolute values).
-     *
-     * @return
-     */
-    long getUtilizationOfBw();
-
-    /**
-     * Gets the current utilization of memory (in absolute values).
-     *
-     * @return
-     */
-    long getUtilizationOfRam();
 }

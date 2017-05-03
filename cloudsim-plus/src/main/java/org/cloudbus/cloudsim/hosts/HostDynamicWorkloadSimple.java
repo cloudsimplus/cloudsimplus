@@ -192,32 +192,10 @@ public class HostDynamicWorkloadSimple extends HostSimple implements HostDynamic
     }
 
     @Override
-    public double getUtilizationOfCpu() {
-        return computeCpuUtilizationPercent(getUtilizationOfCpuMips());
-    }
-
-    @Override
     public double getPreviousUtilizationOfCpu() {
         return computeCpuUtilizationPercent(getPreviousUtilizationMips());
     }
     
-    private double computeCpuUtilizationPercent(double mipsUsage){
-        final double totalMips = getTotalMipsCapacity();
-        if(totalMips == 0){
-            return 0;
-        }
-        
-        final double utilization = mipsUsage / totalMips;
-        return (utilization > 1 && utilization < 1.01 ? 1 : utilization);
-    }
-    
-    @Override
-    public double getUtilizationOfCpuMips() {
-        return getVmList().stream()
-                .mapToDouble(vm -> getVmScheduler().getTotalAllocatedMipsForVm(vm))
-                .sum();
-    }
-
     @Override
     public double getPreviousUtilizationMips() {
         return previousUtilizationMips;
