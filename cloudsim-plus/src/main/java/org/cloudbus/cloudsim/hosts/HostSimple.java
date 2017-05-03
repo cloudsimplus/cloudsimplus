@@ -180,7 +180,7 @@ public class HostSimple implements Host {
     @Override
     public double updateProcessing(double currentTime) {
         final double nextSimulationTime = 
-            getVmList().stream()
+            vmList.stream()
                 .mapToDouble(vm -> vm.updateProcessing(currentTime, getVmScheduler().getAllocatedMipsForVm(vm)))
                 .min()
                 .orElse(Double.MAX_VALUE);
@@ -205,7 +205,7 @@ public class HostSimple implements Host {
         }
 
         getVmScheduler().addVmMigratingIn(vm);
-        getVmsMigratingIn().add(vm);
+        vmsMigratingIn.add(vm);
         updateProcessing(simulation.clock());
         vm.getHost().updateProcessing(simulation.clock());
 
@@ -218,7 +218,7 @@ public class HostSimple implements Host {
             return false;
         }
 
-        getVmList().add(vm);
+        vmList.add(vm);
         vm.setHost(this);
         vm.notifyOnHostAllocationListeners();
         return true;
@@ -235,27 +235,32 @@ public class HostSimple implements Host {
         final String msg = inMigration ? "VM Migration" : "VM Creation";
         if (!storage.isResourceAmountAvailable(vm.getStorage())) {
             Log.printFormattedLine(
-                "[%s] Allocation of VM #%d to %s failed due to lack of storage. Required %d but there is just %d MB available.",
-                msg, vm.getId(), this, vm.getStorage().getCapacity(), storage.getAvailableResource());
+                "%.2f: %s: [%s] Allocation of %s to %s failed due to lack of storage. Required %d but there is just %d MB available.",
+                getSimulation().clock(), getClass().getSimpleName(), 
+                msg, vm, this, vm.getStorage().getCapacity(), storage.getAvailableResource());
             return false;
         }
 
         if (!getRamProvisioner().isSuitableForVm(vm, vm.getCurrentRequestedRam())) {
             Log.printFormattedLine(
-                "[%s] Allocation of VM #%d to %s failed due to lack of RAM. Required %d but there is just %d MB available.",
-                msg, vm.getId(), this, vm.getRam().getCapacity(), ram.getAvailableResource());
+                "%.2f: %s: [%s] Allocation of %s to %s failed due to lack of RAM. Required %d but there is just %d MB available.",
+                getSimulation().clock(), getClass().getSimpleName(), 
+                msg, vm, this, vm.getRam().getCapacity(), ram.getAvailableResource());
             return false;
         }
 
         if (!getBwProvisioner().isSuitableForVm(vm, vm.getCurrentRequestedBw())) {
             Log.printFormattedLine(
-                "[%s] Allocation of VM #%d to %s failed due to lack of BW. Required %d but there is just %d Mbps available.",
-                msg, vm.getId(), this, vm.getBw().getCapacity(), bw.getAvailableResource());
+                "%.2f: %s: [%s] Allocation of %s to %s failed due to lack of BW. Required %d but there is just %d Mbps available.",
+                getSimulation().clock(), getClass().getSimpleName(), 
+                msg, vm, this, vm.getBw().getCapacity(), bw.getAvailableResource());
             return false;
         }
 
         if (!getVmScheduler().isSuitableForVm(vm)) {
-            Log.printFormattedLine("[%s] Allocation of VM #%d to %s failed due to lack of PEs", msg, vm.getId(), this);
+            Log.printFormattedLine(
+                    "%.2f: %s: [%s] Allocation of %s to %s failed due to lack of PEs", 
+                    getSimulation().clock(), getClass().getSimpleName(), msg, vm, this);
             return false;
         }
 
@@ -271,8 +276,8 @@ public class HostSimple implements Host {
     @Override
     public void removeMigratingInVm(Vm vm) {
         deallocateResourcesOfVm(vm);
-        getVmsMigratingIn().remove(vm);
-        getVmList().remove(vm);
+        vmsMigratingIn.remove(vm);
+        vmList.remove(vm);
         getVmScheduler().removeVmMigratingIn(vm);
         vm.setInMigration(false);
     }
@@ -280,8 +285,8 @@ public class HostSimple implements Host {
     @Override
     public void reallocateMigratingInVms() {
         for (Vm vm : getVmsMigratingIn()) {
-            if (!getVmList().contains(vm)) {
-                getVmList().add(vm);
+            if (!vmList.contains(vm)) {
+                vmList.add(vm);
             }
             getVmScheduler().addVmMigratingIn(vm);
             getRamProvisioner().allocateResourceForVm(vm, vm.getCurrentRequestedRam());
@@ -303,7 +308,7 @@ public class HostSimple implements Host {
     public void destroyVm(Vm vm) {
         if (!Objects.isNull(vm)) {
             deallocateResourcesOfVm(vm);
-            getVmList().remove(vm);
+            vmList.remove(vm);
             vm.notifyOnHostDeallocationListeners(this);
         }
     }
@@ -324,12 +329,12 @@ public class HostSimple implements Host {
     @Override
     public void destroyAllVms() {
         deallocateResourcesOfAllVms();
-        for (Vm vm : getVmList()) {
+        for (Vm vm : vmList) {
             vm.setCreated(false);
             storage.deallocateResource(vm.getStorage());
         }
 
-        getVmList().clear();
+        vmList.clear();
     }
 
     /**
@@ -343,7 +348,7 @@ public class HostSimple implements Host {
 
     @Override
     public Vm getVm(int vmId, int brokerId) {
-        return getVmList().stream()
+        return vmList.stream()
             .filter(vm -> vm.getId() == vmId && vm.getBroker().getId() == brokerId)
             .findFirst().orElse(Vm.NULL);
     }
@@ -499,7 +504,17 @@ public class HostSimple implements Host {
 
     @Override
     public <T extends Vm> List<T> getVmList() {
-        return (List<T>) vmList;
+        return (List<T>) Collections.unmodifiableList(vmList);
+    }
+    
+    protected void addVmToList(Vm vm){
+        Objects.requireNonNull(vm);
+        vmList.add(vm);
+    }
+
+    protected void removeVmFromList(Vm vm){
+        Objects.requireNonNull(vm);
+        vmList.remove(vm);
     }
 
     @Override
@@ -658,7 +673,7 @@ public class HostSimple implements Host {
     
     @Override
     public double getUtilizationOfCpuMips() {
-        return getVmList().stream()
+        return vmList.stream()
                 .mapToDouble(vm -> getVmScheduler().getTotalAllocatedMipsForVm(vm))
                 .sum();
     }

@@ -482,8 +482,8 @@ public abstract class DatacenterBrokerAbstract extends CloudSimEntity implements
         vmsWaitingList.remove(vm);
         getVmsCreatedList().add(vm);
         Log.printFormattedLine(
-            "%.2f: %s: %s has been created in Host #%d/DC #%d.",
-            getSimulation().clock(), getName(), vm, vm.getHost().getId(), datacenter.getId());
+            "%.2f: %s: %s has been created in %s.",
+            getSimulation().clock(), getName(), vm, vm.getHost());
     }
 
     /**

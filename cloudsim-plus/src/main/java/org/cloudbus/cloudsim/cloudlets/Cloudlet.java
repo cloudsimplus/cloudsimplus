@@ -16,6 +16,7 @@ import org.cloudbus.cloudsim.schedulers.cloudlet.CloudletScheduler;
 import org.cloudbus.cloudsim.utilizationmodels.UtilizationModel;
 
 import java.util.List;
+import org.cloudbus.cloudsim.core.CustomerEntity;
 import org.cloudbus.cloudsim.core.Simulation;
 import org.cloudsimplus.listeners.CloudletVmEventInfo;
 import org.cloudsimplus.listeners.EventListener;
@@ -32,7 +33,7 @@ import org.cloudsimplus.listeners.EventListener;
  * @author Manoel Campos da Silva Filho
  * @since CloudSim Plus 1.0
  */
-public interface Cloudlet extends UniquelyIdentificable, ChangeableId, Delayable, Comparable<Cloudlet> {
+public interface Cloudlet extends UniquelyIdentificable, ChangeableId, Delayable, Comparable<Cloudlet>, CustomerEntity {
   String NO_HISTORY_IS_RECORDED_FOR_CLOUDLET = "No history is recorded for Cloudlet #%d";
 
   /**
@@ -600,25 +601,12 @@ public interface Cloudlet extends UniquelyIdentificable, ChangeableId, Delayable
     Cloudlet setNumberOfPes(long numberOfPes);
 
     /**
-     * Sets a {@link DatacenterBroker} that represents the owner of the Cloudlet.
-     *
-     * @param broker the {@link DatacenterBroker} to set
-     */
-    Cloudlet setBroker(DatacenterBroker broker);
-
-    /**
-     * Gets the {@link DatacenterBroker} that represents the owner of the Cloudlet.
-     *
-     * @return
-     */
-    DatacenterBroker getBroker();
-
-    /**
      * Sets the <b>same utilization model</b> for defining the usage of Bandwidth, CPU and RAM.
      * To set different utilization models for each one of these resources, use the
      * respective setters.
      *
      * @param utilizationModel the new utilization model for BW, CPU and RAM
+     * @return 
      *
      * @see #setUtilizationModelBw(UtilizationModel)
      * @see #setUtilizationModelCpu(UtilizationModel)
@@ -831,4 +819,23 @@ public interface Cloudlet extends UniquelyIdentificable, ChangeableId, Delayable
      * @return
      */
     Simulation getSimulation();
+    
+   /**
+     * Gets the {@link DatacenterBroker} that represents the owner of this Cloudlet.
+     *
+     * @return the broker or <tt>{@link DatacenterBroker#NULL}</tt> if a broker has not been set yet
+     * @pre $none
+     * @post $none
+     */
+    @Override
+    DatacenterBroker getBroker();
+
+    /**
+     * Sets a {@link DatacenterBroker} that represents the owner of this Cloudlet.
+     *
+     * @param broker the {@link DatacenterBroker} to set
+     * @return 
+     */
+    @Override
+    Cloudlet setBroker(DatacenterBroker broker);        
 }

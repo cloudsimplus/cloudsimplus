@@ -86,11 +86,11 @@ public class PowerDatacenterNonPowerAware extends PowerDatacenter {
     }
 
     @Override
-    protected void updateCloudletProcessing() {
+    protected double updateCloudletProcessing() {
         if (getLastCloudletProcessingTime() == -1 || getLastCloudletProcessingTime() == getSimulation().clock()) {
             getSimulation().cancelAll(getId(), new PredicateType(CloudSimTags.VM_UPDATE_CLOUDLET_PROCESSING_EVENT));
             schedule(getId(), getSchedulingInterval(), CloudSimTags.VM_UPDATE_CLOUDLET_PROCESSING_EVENT);
-            return;
+            return Double.MAX_VALUE;
         }
 
         final double currentTime = getSimulation().clock();
@@ -113,7 +113,10 @@ public class PowerDatacenterNonPowerAware extends PowerDatacenter {
             migrateVmsOutIfMigrationIsEnabled();
             scheduleUpdateOfCloudletsProcessingForFutureTime(nextCloudletFinishTime);
             setLastProcessTime(currentTime);
+            return nextCloudletFinishTime;
         }
+        
+        return Double.MAX_VALUE;
     }
 
     /**

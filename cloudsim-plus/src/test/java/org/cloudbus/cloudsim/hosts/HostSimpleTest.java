@@ -115,7 +115,7 @@ public class HostSimpleTest {
     @Test
     public void testReallocateMigratingInVms_oneVmAlreadyAllocatedToTheHost() {
         final int numberOfVms = 4;
-        final Host host = createHostSimple(0, numberOfVms);
+        final HostSimple host = createHostSimple(0, numberOfVms);
 
         final List<Vm> vms = new ArrayList<>();
         IntStream.range(0, numberOfVms).forEach(i -> {
@@ -128,7 +128,7 @@ public class HostSimpleTest {
                 thus, it will not be added again to the host vm list.
                 By this way, the vms on the host list will be the same
                 added to migration list*/
-                host.getVmList().add(vm);
+                host.addVmToList(vm);
             }
             host.addMigratingInVm(vm);
             vms.add(vm);
@@ -264,8 +264,8 @@ public class HostSimpleTest {
             .once();
         EasyMock.replay(vmScheduler);
 
-        final Host host = createHostSimple(0, numberOfVms, vmScheduler);
-        host.getVmList().addAll(vmList);
+        final HostSimple host = createHostSimple(0, numberOfVms, vmScheduler);
+        vmList.stream().forEach(host::addVmToList);
 
         final int i = 0;
         final Vm vm = vmList.get(i);

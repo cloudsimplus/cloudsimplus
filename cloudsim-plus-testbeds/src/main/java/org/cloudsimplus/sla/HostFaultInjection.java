@@ -31,7 +31,6 @@ package org.cloudsimplus.sla;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
-import java.util.Optional;
 import java.util.function.Function;
 import java.util.function.UnaryOperator;
 import org.cloudbus.cloudsim.brokers.DatacenterBroker;
@@ -65,7 +64,7 @@ public class HostFaultInjection extends CloudSimEntity {
     private Host host;
     private ContinuousDistribution numberOfFailedPesRandom;
     private ContinuousDistribution delayForFailureOfHostRandom;
-    private PowerVm vmToMigrate;
+    
     /**
      * @todo The class has multiple responsibilities.
      * The fault injection mechanism must be separated from
@@ -151,7 +150,10 @@ public class HostFaultInjection extends CloudSimEntity {
         }
         System.out.printf("\t      Working PEs: %d | VMs required PEs: %d\n", hostWorkingPes, vmsRequiredPes);
         if(hostWorkingPes == 0){
-            setAllVmsToFailed();  
+            //double clockInicioFalha = getSimulation().clock(); 
+            //Log.printFormattedLine("\n#Inicio Falha no Host %d : %f", host.getId(),clockInicioFalha);
+            setAllVmsToFailed(); 
+            
         } else if (hostWorkingPes >= vmsRequiredPes) {
             logNoVmFailure();  
         } else {
@@ -165,9 +167,9 @@ public class HostFaultInjection extends CloudSimEntity {
      * Sets all VMs to failed when all Host PEs failed.
      */
     private void setAllVmsToFailed() {
-        host.getVmList().stream().forEach(this::setVmToFailedAndCreateClone);
         Log.printFormattedLine("\t%.2f: %s -> All the %d PEs failed, affecting all its %d VMs.\n",
                 getSimulation().clock(), host, host.getNumberOfPes(), host.getVmList().size());
+        host.getVmList().stream().forEach(this::setVmToFailedAndCreateClone);
     }
     
     /**
@@ -236,18 +238,21 @@ public class HostFaultInjection extends CloudSimEntity {
             return;
         }
         
-        final Vm clone = vmCloner.apply(vm);
         final DatacenterBroker broker = vm.getBroker();
-        broker.submitVm(clone); 
-        
+        final Vm clone = vmCloner.apply(vm);
+        setBrokerToEntity(clone, vm.getBroker());
+       
         List<Cloudlet> cloudlets = cloudletsCloner.apply(vm);
-        broker.submitCloudletList(cloudlets, clone);
+        cloudlets.stream().forEach(c -> setBrokerToEntity(c, broker));
+        /*if(clone.isCreated()){
+            double clockInicioReparacao = getSimulation().clock();
+            Log.printFormattedLine("\n#Reparacao da Vm %d : %f ",vm.getId(),clockInicioReparacao);
+        }*/
         
-        Log.printFormattedLine("\n\t #Vm %d is being destroying...", vm.getId());
         
         vm.setFailed(true);
-        Log.printFormattedLine("#Vm %d was destroyed. \n", vm.getId());
-        
+        Log.printFormattedLine("#Vm %d is being destroying...", vm.getId());
+       
         /*
          As the broker is expected to request vm creation and destruction,
          it is set here as the sender of the vm destroy request.
@@ -255,6 +260,23 @@ public class HostFaultInjection extends CloudSimEntity {
         getSimulation().sendNow(
                 vm.getBroker().getId(), host.getDatacenter().getId(),
                 CloudSimTags.VM_DESTROY, vm);
+      
+        broker.submitVm(clone); 
+        broker.submitCloudletList(cloudlets, clone);
+       
+        
+    }
+
+    /**
+     * Sets the {@link DatacenterBroker} to a object
+     * if it doesn't have one set.
+     * 
+     * @param entity the {@link CustomerEntity} to set a {@link DatacenterBroker}
+     */
+    private void setBrokerToEntity(CustomerEntity entity, DatacenterBroker broker) {
+        if(DatacenterBroker.NULL.equals(entity.getBroker())){
+            entity.setBroker(broker);
+        }
     }
     
     private int setFailedHostPes() {
@@ -384,6 +406,7 @@ public class HostFaultInjection extends CloudSimEntity {
      * @see #setCloudletsCloner(java.util.function.Function) 
      */
     public void setVmCloner(UnaryOperator<Vm> vmCloner) {
+        Objects.requireNonNull(vmCloner);
         this.vmCloner = vmCloner;
     }
 
@@ -404,6 +427,7 @@ public class HostFaultInjection extends CloudSimEntity {
      * @see #setVmCloner(java.util.function.UnaryOperator) 
      */
     public void setCloudletsCloner(Function<Vm, List<Cloudlet>> cloudletsCloner) {
+        Objects.requireNonNull(cloudletsCloner);
         this.cloudletsCloner = cloudletsCloner;
     }
 

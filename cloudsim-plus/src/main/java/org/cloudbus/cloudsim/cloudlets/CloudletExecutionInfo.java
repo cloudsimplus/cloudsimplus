@@ -268,8 +268,9 @@ public class CloudletExecutionInfo {
      * @post $none
      */
     public void updateProcessing(long instructionsExecuted) {
-        if(instructionsExecuted <= 0)
+        if(instructionsExecuted <= 0){
             return;
+        }
 
         this.instructionsFinishedSoFar += instructionsExecuted;
         this.instructionsFinishedSoFar =

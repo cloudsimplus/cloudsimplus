@@ -250,10 +250,10 @@ public interface Host extends Machine, Comparable<Host> {
     Vm getVm(int vmId, int brokerId);
 
     /**
-     * Gets the list of VMs assigned to the host.
+     * Gets a <b>read-only</b> list of VMs assigned to the host.
      *
      * @param <T> The generic type
-     * @return the vm list
+     * @return the read-only vm list
      */
     <T extends Vm> List<T> getVmList();
 
@@ -295,7 +295,7 @@ public interface Host extends Machine, Comparable<Host> {
      *
      * @param currentTime the current time
      * @return the predicted completion time of the earliest finishing cloudlet
-     * (that is a future simulation time),
+     * (which is a relative delay from the current simulation time),
      * or {@link Double#MAX_VALUE} if there is no next Cloudlet to execute
      * @pre currentTime >= 0.0
      * @post $none

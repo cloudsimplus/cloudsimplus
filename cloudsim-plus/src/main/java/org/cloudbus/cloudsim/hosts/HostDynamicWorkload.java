@@ -73,5 +73,4 @@ public interface HostDynamicWorkload extends Host {
      * @return
      */
     double getPreviousUtilizationMips();
-
 }

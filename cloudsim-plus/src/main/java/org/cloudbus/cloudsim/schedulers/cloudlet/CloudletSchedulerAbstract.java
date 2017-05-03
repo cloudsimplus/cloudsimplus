@@ -649,7 +649,8 @@ public abstract class CloudletSchedulerAbstract implements CloudletScheduler {
      * Gets the estimated time, considering the current time, that a next Cloudlet is expected to finish.
      *
      * @param currentTime current simulation time
-     * @return the estimated finish time of sooner finishing cloudlet, that represents a future simulation time
+     * @return the estimated finish time of sooner finishing cloudlet
+     * (which is a relative delay from the current simulation time)
      */
     protected double getEstimatedFinishTimeOfSoonerFinishingCloudlet(double currentTime) {
         return getCloudletExecList()
@@ -662,23 +663,17 @@ public abstract class CloudletSchedulerAbstract implements CloudletScheduler {
      * Gets the estimated time when a given cloudlet is supposed to finish
      * executing. It considers the amount of Vm PES and the sum of PEs required
      * by all VMs running inside the VM.
-     * <p>
-     * <p>The estimated time is not a future simulation time
-     * but a time interval that the Cloudlet is expected to finish.</p>
-     * <p>
-     * <p>The estimated time is not a future simulation time
-     * but a time interval that the Cloudlet is expected to finish.</p>
-     *
+     * 
      * @param rcl         cloudlet to get the estimated finish time
      * @param currentTime current simulation time
      * @return the estimated finish time of the given cloudlet
+     * (which is a relative delay from the current simulation time)
      */
     protected double getEstimatedFinishTimeOfCloudlet(CloudletExecutionInfo rcl, double currentTime) {
         final double cloudletUsedMips =
             getAbsoluteCloudletResourceUtilization(rcl.getCloudlet().getUtilizationModelCpu(),
                 currentTime, processor.getAvailableMipsByPe());
-        double estimatedFinishTime =
-            rcl.getRemainingCloudletLength() / cloudletUsedMips;
+        double estimatedFinishTime = rcl.getRemainingCloudletLength() / cloudletUsedMips;
 
         if (estimatedFinishTime < getVm().getSimulation().getMinTimeBetweenEvents()) {
             estimatedFinishTime = getVm().getSimulation().getMinTimeBetweenEvents();
@@ -688,18 +683,18 @@ public abstract class CloudletSchedulerAbstract implements CloudletScheduler {
     }
 
     /**
-     * /**
      * Selects the next Cloudlets in the waiting list to move to the execution
      * list in order to start executing them. While there is enough free PEs,
      * the method try to find a suitable Cloudlet in the list, until it reaches
      * the end of such a list.
+     * 
      * <p>
      * The method might also exchange some cloudlets in the execution list with
      * some in the waiting list. Thus, some running cloudlets may be preempted
      * to give opportunity to previously waiting cloudlets to run. This is a
      * process called
-     * <a href="https://en.wikipedia.org/wiki/Context_switch">context
-     * switch</a>. However, each CloudletScheduler implementation decides how
+     * <a href="https://en.wikipedia.org/wiki/Context_switch">context switch</a>. 
+     * However, each CloudletScheduler implementation decides how
      * such a process is implemented. For instance, Space-Shared schedulers may
      * just perform context switch just after currently running Cloudlets
      * completely finish executing.

@@ -113,117 +113,78 @@ public class PowerDatacenter extends DatacenterSimple {
     }
 
     @Override
-    protected void updateCloudletProcessing() {
-        if (!isTimeToUpdateCloudletsProcessing()){
+    protected double updateCloudletProcessing() {
+        final double nextSimulationTime = super.updateCloudletProcessing();
+        if (nextSimulationTime == Double.MAX_VALUE){
+            return nextSimulationTime;
+        }
+
+        executeVmMigrations();
+
+        return nextSimulationTime;
+    }
+
+    private void executeVmMigrations() {
+        if (!isMigrationsEnabled()) {
             return;
         }
+        
+        Map<Vm, Host> migrationMap =
+                getVmAllocationPolicy().optimizeAllocation(getVmList());
         final double currentTime = getSimulation().clock();
+        for (Entry<Vm, Host> migrate : migrationMap.entrySet()) {
+            Host targetHost = migrate.getValue();
+            Host oldHost = migrate.getKey().getHost();
 
-        // if some time passed since last processing
-        if (currentTime > getLastProcessTime()) {
-            double nextSimulationTime = updateCloudetProcessingWithoutSchedulingFutureEvents();
-
-            if (isMigrationsEnabled()) {
-                Map<Vm, Host> migrationMap =
-                        getVmAllocationPolicy().optimizeAllocation(getVmList());
-
-                for (Entry<Vm, Host> migrate : migrationMap.entrySet()) {
-                    Host targetHost = migrate.getValue();
-                    Host oldHost = migrate.getKey().getHost();
-
-                    if (oldHost == Host.NULL) {
-                        println(String.format(
-                            "%.2f: Migration of %s to %s is started",
-                            currentTime, migrate.getKey(), targetHost));
-                    } else {
-                        println(String.format(
-                            "%.2f: Migration of %s from %s to %s is started",
-                            currentTime, migrate.getKey(),
-                            oldHost, targetHost));
-                    }
-
-                    targetHost.addMigratingInVm(migrate.getKey());
-                    incrementMigrationCount();
-
-                    //VM migration delay = RAM / bandwidth
-                    /*
-                    We use BW / 2 to model BW available for migration purposes, the other
-                    half of BW is for VM communication
-                    around 16 seconds for 1024 MEGABYTE using 1 Gbit/s network
-                    */
-                    //@todo this computation is different from PowerDatacenterNonPowerAware and probably is duplicated with other Datacenters
-                    send(
-                        getId(),
-                        migrate.getKey().getRam().getCapacity() / ((double) targetHost.getBw().getCapacity() / (2 * 8000)),
-                        CloudSimTags.VM_MIGRATE, migrate);
-                }
+            if (oldHost == Host.NULL) {
+                println(String.format(
+                        "%.2f: Migration of %s to %s is started",
+                        currentTime, migrate.getKey(), targetHost));
+            } else {
+                println(String.format(
+                        "%.2f: Migration of %s from %s to %s is started",
+                        currentTime, migrate.getKey(),
+                        oldHost, targetHost));
             }
 
-            // schedules an event to the next time
-            if (nextSimulationTime != Double.MAX_VALUE) {
-                nextSimulationTime = getCloudletProcessingUpdateInterval(nextSimulationTime);
-                send(getId(), nextSimulationTime, CloudSimTags.VM_UPDATE_CLOUDLET_PROCESSING_EVENT);
-            }
+            targetHost.addMigratingInVm(migrate.getKey());
+            incrementMigrationCount();
 
-            setLastProcessTime(currentTime);
+            //VM migration delay = RAM / bandwidth
+            /*
+            We use BW / 2 to model BW available for migration purposes, the other
+            half of BW is for VM communication
+            around 16 seconds for 1024 MEGABYTE using 1 Gbit/s network
+            */
+            //@todo this computation is different from PowerDatacenterNonPowerAware and probably is duplicated with other Datacenters
+            send(
+                    getId(),
+                    migrate.getKey().getRam().getCapacity() / ((double) targetHost.getBw().getCapacity() / (2 * 8000)),
+                    CloudSimTags.VM_MIGRATE, migrate);
         }
-    }
-
-    /**
-     * Update cloudet processing without scheduling future events just when
-     * the simulation clock is ahead of the last time some event was processed.
-     *
-     * @return expected time of completion of the next cloudlet in all VMs of
-     * all hosts or {@link Double#MAX_VALUE} if there is no future events
-     * expected in this host
-     *
-     * @see #updateCloudetProcessingWithoutSchedulingFutureEvents()
-     */
-    protected double updateCloudetProcessingWithoutSchedulingFutureEventsIfClockWasUpdated() {
-        if (getSimulation().clock() > getLastProcessTime()) {
-            return updateCloudetProcessingWithoutSchedulingFutureEvents();
-        }
-        return 0;
-    }
-
-    /**
-     * Update cloudet processing without scheduling future events.
-     *
-     * @return expected time of completion of the next cloudlet in all VMs of
-     * all hosts or {@link Double#MAX_VALUE} if there is no future events
-     * expected in this host
-     */
-    protected double updateCloudetProcessingWithoutSchedulingFutureEvents() {
-        final double currentTime = getSimulation().clock();
-
-        println("\n\n--------------------------------------------------------------\n\n");
-        println(String.format("New resource usage of Datacenter %d for the time frame starting at %.2f:", getId(), currentTime));
-
-        final double nextCloudletFinishTime = updateVmsProcessingOfAllHosts();
-        final double datacenterPowerUsageForTimeSpan = getDatacenterPowerUsageForTimeSpan();
-
-        setPower(getPower() + datacenterPowerUsageForTimeSpan);
-        checkCloudletsCompletionForAllHosts();
-        removeFinishedVmsFromEveryHost();
-
-        println();
-        setLastProcessTime(currentTime);
-        return nextCloudletFinishTime;
     }
 
     @Override
     protected double updateVmsProcessingOfAllHosts() {
-        final double minTime = super.updateVmsProcessingOfAllHosts();
         final double currentTime = getSimulation().clock();
-        this.<PowerHost>getHostList().forEach(host ->
+
+        println("\n--------------------------------------------------------------\n");
+        println(String.format("New resource usage of Datacenter %d for the time frame starting at %.2f:", getId(), currentTime));
+
+        final double nextCloudletFinishTime = super.updateVmsProcessingOfAllHosts();
+        final double datacenterPowerUsageForTimeSpan = getDatacenterPowerUsageForTimeSpan();
+
+        setPower(getPower() + datacenterPowerUsageForTimeSpan);
+        this.getHostList().forEach(host ->
             println(String.format(
                     "%.2f: [%s] utilization is %.2f%%",
                     currentTime,
                     host,
                     host.getUtilizationOfCpu() * 100))
         );
+        println();
 
-        return minTime;
+        return nextCloudletFinishTime;
     }
     
     /**
@@ -277,7 +238,6 @@ public class PowerDatacenter extends DatacenterSimple {
         for (PowerHostSimple host : this.<PowerHostSimple>getHostList()) {
             for (Vm vm : host.getFinishedVms()) {
                 getVmAllocationPolicy().deallocateHostForVm(vm);
-                getVmList().remove(vm);
                 Log.printFormattedLine(
                         String.format("%.2f: %s has been deallocated from %s", 
                                getSimulation().clock(), vm, host));
@@ -287,11 +247,15 @@ public class PowerDatacenter extends DatacenterSimple {
 
     @Override
     protected void processVmMigrate(SimEvent ev, boolean ack) {
-        updateCloudetProcessingWithoutSchedulingFutureEventsIfClockWasUpdated();
+        if (getSimulation().clock() <= getLastProcessTime()) {
+            return;
+        }
+        
+        super.updateVmsProcessingOfAllHosts();
         super.processVmMigrate(ev, ack);
         SimEvent event = getSimulation().findFirstDeferred(getId(), new PredicateType(CloudSimTags.VM_MIGRATE));
         if (Objects.isNull(event) || event.eventTime() > getSimulation().clock()) {
-            updateCloudetProcessingWithoutSchedulingFutureEvents();
+            super.updateVmsProcessingOfAllHosts();
         }
     }
 

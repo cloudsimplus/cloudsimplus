@@ -19,6 +19,7 @@ import org.cloudbus.cloudsim.schedulers.cloudlet.CloudletScheduler;
 
 import java.util.List;
 import java.util.function.Predicate;
+import org.cloudbus.cloudsim.core.CustomerEntity;
 
 import org.cloudsimplus.autoscaling.VerticalVmScaling;
 import org.cloudsimplus.listeners.VmHostEventInfo;
@@ -38,7 +39,7 @@ import org.cloudsimplus.listeners.EventListener;
  * @author Manoel Campos da Silva Filho
  * @since CloudSim Plus 1.0
  */
-public interface Vm extends Machine, UniquelyIdentificable, Delayable, Comparable<Vm> {
+public interface Vm extends Machine, UniquelyIdentificable, Delayable, Comparable<Vm>, CustomerEntity {
 
     /**
      * An attribute that implements the Null Object Design Pattern for {@link Vm}
@@ -324,23 +325,6 @@ public interface Vm extends Machine, UniquelyIdentificable, Delayable, Comparabl
     double getTotalUtilizationOfCpuMips(double time);
 
     /**
-     * Gets the {@link DatacenterBroker} that represents the owner of the VM.
-     *
-     * @return the broker or <tt>{@link DatacenterBroker#NULL}</tt> if a broker has not been set yet
-     * @pre $none
-     * @post $none
-     */
-    DatacenterBroker getBroker();
-
-    /**
-     * Sets a {@link DatacenterBroker} that represents the owner of the VM.
-     *
-     * @param broker the {@link DatacenterBroker} to set
-     */
-    Vm setBroker(DatacenterBroker broker);
-
-
-    /**
      * Gets the Virtual Machine Monitor (VMM) that manages the VM.
      *
      * @return VMM
@@ -426,7 +410,7 @@ public interface Vm extends Machine, UniquelyIdentificable, Delayable, Comparabl
      * @param mipsShare list with MIPS share of each Pe available to the
      * scheduler
      * @return the predicted completion time of the earliest finishing cloudlet
-     * (that is a future simulation time),
+     * (which is a relative delay from the current simulation time),
      * or {@link Double#MAX_VALUE} if there is no next Cloudlet to execute
      * @pre currentTime >= 0
      * @post $none
@@ -560,5 +544,24 @@ public interface Vm extends Machine, UniquelyIdentificable, Delayable, Comparabl
      * @return
      */
     Processor getProcessor();
+    
+   /**
+     * Gets the {@link DatacenterBroker} that represents the owner of this Vm.
+     *
+     * @return the broker or <tt>{@link DatacenterBroker#NULL}</tt> if a broker has not been set yet
+     * @pre $none
+     * @post $none
+     */
+    @Override
+    DatacenterBroker getBroker();
+
+    /**
+     * Sets a {@link DatacenterBroker} that represents the owner of this Vm.
+     *
+     * @param broker the {@link DatacenterBroker} to set
+     * @return 
+     */
+    @Override
+    Vm setBroker(DatacenterBroker broker);       
     
  }

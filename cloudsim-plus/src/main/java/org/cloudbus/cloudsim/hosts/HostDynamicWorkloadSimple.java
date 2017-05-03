@@ -182,16 +182,6 @@ public class HostDynamicWorkloadSimple extends HostSimple implements HostDynamic
     }
 
     @Override
-    public long getUtilizationOfRam() {
-        return getRamProvisioner().getTotalAllocatedResource();
-    }
-
-    @Override
-    public long getUtilizationOfBw() {
-        return getBwProvisioner().getTotalAllocatedResource();
-    }
-
-    @Override
     public double getPreviousUtilizationOfCpu() {
         return computeCpuUtilizationPercent(getPreviousUtilizationMips());
     }

@@ -30,7 +30,7 @@ package org.cloudsimplus.sla;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.IntStream;
+import org.cloudbus.cloudsim.allocationpolicies.VmAllocationPolicy;
 import org.cloudbus.cloudsim.allocationpolicies.VmAllocationPolicySimple;
 import org.cloudbus.cloudsim.cloudlets.Cloudlet;
 import org.cloudbus.cloudsim.cloudlets.CloudletSimple;
@@ -42,43 +42,45 @@ import org.cloudbus.cloudsim.datacenters.DatacenterCharacteristicsSimple;
 import org.cloudbus.cloudsim.util.Log;
 import org.cloudbus.cloudsim.resources.Pe;
 import org.cloudbus.cloudsim.vms.Vm;
-import org.cloudbus.cloudsim.allocationpolicies.power.PowerVmAllocationPolicyMigrationWorstFitStaticThreshold;
 import org.cloudbus.cloudsim.brokers.DatacenterBrokerSimple;
 import org.cloudbus.cloudsim.schedulers.vm.VmSchedulerTimeShared;
 import org.cloudbus.cloudsim.core.CloudSim;
-import org.cloudbus.cloudsim.datacenters.power.PowerDatacenter;
+import org.cloudbus.cloudsim.datacenters.DatacenterSimple;
 import org.cloudbus.cloudsim.distributions.UniformDistr;
-import org.cloudbus.cloudsim.hosts.power.PowerHost;
-import org.cloudbus.cloudsim.hosts.power.PowerHostSimple;
-import org.cloudbus.cloudsim.power.models.PowerModelLinear;
+import org.cloudbus.cloudsim.hosts.Host;
+import org.cloudbus.cloudsim.hosts.HostSimple;
 import org.cloudbus.cloudsim.provisioners.PeProvisionerSimple;
+import org.cloudbus.cloudsim.provisioners.ResourceProvisioner;
 import org.cloudbus.cloudsim.provisioners.ResourceProvisionerSimple;
 import org.cloudbus.cloudsim.resources.PeSimple;
-import org.cloudbus.cloudsim.selectionpolicies.power.PowerVmSelectionPolicyMinimumUtilization;
+import org.cloudbus.cloudsim.schedulers.vm.VmScheduler;
 import org.cloudsimplus.builders.tables.CloudletsTableBuilder;
 import org.cloudbus.cloudsim.utilizationmodels.UtilizationModel;
 import org.cloudbus.cloudsim.utilizationmodels.UtilizationModelDynamic;
 import org.cloudbus.cloudsim.utilizationmodels.UtilizationModelFull;
-import org.cloudbus.cloudsim.vms.power.PowerVm;
+import org.cloudbus.cloudsim.vms.VmSimple;
 
 /**
- * This simple example shows how to use a fault injector in the host.
+ * Example which shows how to inject random {@link Pe} faults into Hosts
+ * using {@link HostFaultInjection} objects.
  *
  * @author raysaoliveira
  */
 public final class HostFaultInjectionExample {
 
-    private static final int SCHEDULE_TIME_TO_PROCESS_DATACENTER_EVENTS = 2;
+    private static final int SCHEDULE_TIME_TO_PROCESS_DATACENTER_EVENTS = 19;
     private static final double DATACENTER_COST_PER_CPU = 3.0;
     private static final double DATACENTER_COST_PER_RAM = 0.05;
     private static final double DATACENTER_COST_PER_STORAGE = 0.001;
     private static final double DATACENTER_COST_PER_BW = 0.0;
 
     private static final int  HOST_MIPS_BY_PE = 1000;
-    private static final int  HOST_PES = 4;
+    private static final int  HOST_PES = 2;
     private static final long HOST_RAM = 500000; //host memory (MEGABYTE)
     private static final long HOST_STORAGE = 1000000; //host storage
     private static final long HOST_BW = 100000000L;
+    private List<Host> hostList;
+    
 
     /**
      * The percentage of host CPU usage that trigger VM migration due to over
@@ -90,9 +92,9 @@ public final class HostFaultInjectionExample {
     private static final long VM_SIZE = 1000; //image size (MEGABYTE)
     private static final int  VM_RAM = 10000; //vm memory (MEGABYTE)
     private static final long VM_BW = 100000;
-    private static final int  VM_PES = 2; //number of cpus
+    private static final int  VM_PES = 1; //number of cpus
     
-    private static final int  CLOUDLET_PES = 2; 
+    private static final int  CLOUDLET_PES = 1; 
     private static final long CLOUDLET_LENGHT = 30000;
     private static final long CLOUDLET_FILESIZE = 300;
     private static final long CLOUDLET_OUTPUTSIZE = 300;
@@ -117,11 +119,11 @@ public final class HostFaultInjectionExample {
     public static final double CLOUDLET_CPU_USAGE_INCREMENT_PER_SECOND = 0.05;
 
     /**
-     * Number of Hosts for each Datacenter to create.
+     * Number of Hosts to create for each Datacenter.
      * The number of elements in this array defines the number of Datacenters to be created.
      */
-    private static final int []HOSTS_BY_DC = {5, 1};
-    private static final int VMS = 10;
+    private static final int HOSTS = 2;
+    private static final int VMS = 2;
             
     private static final int CLOUDLETS_BY_VM = 1;
 
@@ -142,12 +144,9 @@ public final class HostFaultInjectionExample {
 
         simulation = new CloudSim();
 
-        @SuppressWarnings("unused")
-        List<Datacenter> datacenterList = new ArrayList<>();
-        for(int hosts: HOSTS_BY_DC){
-            datacenterList.add(createDatacenter(hosts));
-        }
-        createFaultInjectionForHosts(datacenterList.get(0));
+        Datacenter datacenter = createDatacenter(HOSTS);
+     
+        createFaultInjectionForHosts(datacenter);
 
         DatacenterBroker broker = new DatacenterBrokerSimple(simulation);
         createAndSubmitVms(broker);
@@ -158,6 +157,8 @@ public final class HostFaultInjectionExample {
         new CloudletsTableBuilder(broker.getCloudletsFinishedList()).build();
 
         Log.printConcatLine(getClass().getSimpleName(), " finished!");
+        //@todo ver a mensagem abaixo
+        System.out.println("A cloudlet 2 deveria terminar no segundo 40, pois ela iniciou em 10, mas ela não termina");
     }
 
     public void createAndSubmitCloudlets(DatacenterBroker broker) {
@@ -175,7 +176,7 @@ public final class HostFaultInjectionExample {
 
     public void createAndSubmitVms(DatacenterBroker broker) {
         for (int i = 0; i < VMS; i++) {
-            PowerVm vm = createVm(broker);
+            Vm vm = createVm(broker);
             vmlist.add(vm);
         }
         broker.submitVmList(vmlist);
@@ -190,8 +191,8 @@ public final class HostFaultInjectionExample {
      * CloudletSchedulerDynamicWorkload makes the Host CPU usage not be updated
      * (and maybe VM CPU usage too).
      */
-    public PowerVm createVm(DatacenterBroker broker) {
-        PowerVm vm = new PowerVm(vmlist.size(), VM_MIPS, VM_PES);
+    public Vm createVm(DatacenterBroker broker) {
+        Vm vm = new VmSimple(vmlist.size(), VM_MIPS, VM_PES);
         vm
             .setRam(VM_RAM).setBw(VM_BW).setSize(VM_SIZE)
             .setBroker(broker)
@@ -291,9 +292,9 @@ public final class HostFaultInjectionExample {
     }
 
     private Datacenter createDatacenter(int numberOfHosts) {
-        List<PowerHost> hostList = new ArrayList<>();
+        hostList = new ArrayList<>();
         for (int i = 0; i < numberOfHosts; i++) {
-            hostList.add(createHost(HOST_PES, HOST_MIPS_BY_PE));
+            hostList.add(createHost());
             Log.printConcatLine("#Created host ", i, " with ", HOST_MIPS_BY_PE, " mips x ", HOST_PES);
         }
         Log.printLine();
@@ -305,15 +306,15 @@ public final class HostFaultInjectionExample {
                         .setCostPerStorage(DATACENTER_COST_PER_STORAGE)
                         .setCostPerBw(DATACENTER_COST_PER_BW);
 
-        //@todo nao está sendo usado por enquanto, apenas para evitar migração
+        /*@todo nao está sendo usado por enquanto, apenas para evitar migração
         PowerVmAllocationPolicyMigrationWorstFitStaticThreshold allocationPolicy
                 = new PowerVmAllocationPolicyMigrationWorstFitStaticThreshold(
                         new PowerVmSelectionPolicyMinimumUtilization(),
-                        HOST_USAGE_THRESHOLD_VM_MIGRATION);
+                        HOST_USAGE_THRESHOLD_VM_MIGRATION);*/
 
-        PowerDatacenter dc = new PowerDatacenter(simulation, characteristics, new VmAllocationPolicySimple());
+        Datacenter dc = new DatacenterSimple(simulation, characteristics, new VmAllocationPolicySimple());
         dc
-          .setMigrationsEnabled(false)
+          //.setMigrationsEnabled(false)
           .setSchedulingInterval(SCHEDULE_TIME_TO_PROCESS_DATACENTER_EVENTS)
           .setLog(false);
         return dc;
@@ -321,20 +322,23 @@ public final class HostFaultInjectionExample {
 
     /**
      * Creates a Host.
-     * @param numberOfPes
-     * @param mipsByPe
      * @return
      */
-    public PowerHost createHost(int numberOfPes, long mipsByPe) {
-        List<Pe> peList = createPeList(numberOfPes, mipsByPe);
-        PowerHost host
-                = new PowerHostSimple(HOST_RAM, HOST_BW, HOST_STORAGE, peList);
-        host.setPowerModel(new PowerModelLinear(1000, 0.7))
-            .setRamProvisioner(new ResourceProvisionerSimple())
-            .setBwProvisioner(new ResourceProvisionerSimple())
-            .setVmScheduler(new VmSchedulerTimeShared());
-        return host;
-    }
+    public Host createHost() {
+      List<Pe> pesList = new ArrayList<>(HOST_PES);
+        for (int i = 0; i < HOST_PES; i++) {
+            pesList.add(new PeSimple(HOST_MIPS_BY_PE, new PeProvisionerSimple()));
+        }
+
+        ResourceProvisioner ramProvisioner = new ResourceProvisionerSimple();
+        ResourceProvisioner bwProvisioner = new ResourceProvisionerSimple();
+        VmScheduler vmScheduler = new VmSchedulerTimeShared();
+        final int id = hostList.size();
+        return new HostSimple(HOST_RAM, HOST_BW, HOST_STORAGE, pesList)
+                .setRamProvisioner(ramProvisioner)
+                .setBwProvisioner(bwProvisioner)
+                .setVmScheduler(vmScheduler);
+    }    
 
     public List<Pe> createPeList(int numberOfPEs, long mips) {
         List<Pe> list = new ArrayList<>(numberOfPEs);
@@ -352,24 +356,23 @@ public final class HostFaultInjectionExample {
     private void createFaultInjectionForHosts(Datacenter datacenter) {
         //Inject Fault
         //final long seed = System.currentTimeMillis();
-        final long seed = 12356;
+        final long seed = 49998811;
         PoissonProcess poisson = new PoissonProcess(0.2, seed);
+        final int MAX_TIME_TO_GENERATE_FAILURE = 10;
 
+        int i = 0;
         UniformDistr failurePesRand = new UniformDistr(seed);
-        for (int i = 0; i < datacenter.getHostList().size(); i++) {
-            for (PowerHost host: datacenter.<PowerHost>getHostList()) {
-                if (poisson.haveKEventsHappened()) {
-                    UniformDistr delayForFailureOfHostRandom = new UniformDistr(1, 10, seed + i);
+        for (Host host: datacenter.getHostList()) {
+            if (poisson.haveKEventsHappened()) {
+                UniformDistr delayForFailureOfHostRandom = new UniformDistr(1, MAX_TIME_TO_GENERATE_FAILURE, seed + i++);
 
-                    //create a new intance of fault and start it.
-                    HostFaultInjection fault = new HostFaultInjection(host);
-                    fault.setNumberOfFailedPesRandom(failurePesRand);
-                    fault.setDelayForFailureOfHostRandom(delayForFailureOfHostRandom);
-                    fault.setVmCloner(this::cloneVm);
-                    fault.setCloudletsCloner(this::cloneCloudlets);
-                    Log.printFormattedLine("\tFault Injection created for Host %d.", host.getId());
-                }
-                i++;
+                //create a new intance of fault and start it.
+                HostFaultInjection fault = new HostFaultInjection(host);
+                fault.setNumberOfFailedPesRandom(failurePesRand);
+                fault.setDelayForFailureOfHostRandom(delayForFailureOfHostRandom);
+                fault.setVmCloner(this::cloneVm);
+                fault.setCloudletsCloner(this::cloneCloudlets);
+                Log.printFormattedLine("\tFault Injection created for Host %d.", host.getId());
             }
         }
     }
@@ -382,9 +385,9 @@ public final class HostFaultInjectionExample {
      * @see #createFaultInjectionForHosts(org.cloudbus.cloudsim.datacenters.Datacenter) 
      */
     private Vm cloneVm(Vm vm){
-        PowerVm clone = new PowerVm((long)vm.getMips(), (int)vm.getNumberOfPes());
+        Vm clone = new VmSimple((long)vm.getMips(), (int)vm.getNumberOfPes());
         clone.setDescription("Clone of VM " + vm.getId());
-        clone.setBroker(vm.getBroker())
+        clone
             .setSize(vm.getStorage().getCapacity())
             .setBw(vm.getBw().getCapacity())
             .setRam(vm.getBw().getCapacity())
