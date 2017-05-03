@@ -82,4 +82,9 @@ final class DatacenterBrokerNull implements DatacenterBroker {
     @Override public void setLog(boolean log) {}
     @Override public void println(String msg) {}
     @Override public void submitCloudletList(List<? extends Cloudlet> list, Vm vm) {}
+
+    @Override
+    public void submitCloudletList(List<? extends Cloudlet> list, Vm vm, double submissionDelay) {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
 }

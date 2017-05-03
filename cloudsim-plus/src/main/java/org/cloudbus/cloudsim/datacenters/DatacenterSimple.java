@@ -808,8 +808,9 @@ public class DatacenterSimple extends CloudSimEntity implements Datacenter {
      * @post $none
      */
     protected void updateCloudletProcessing() {
-        if (!isTimeToUpdateCloudletsProcessing())
+        if (!isTimeToUpdateCloudletsProcessing()){
             return;
+        }
 
         double nextSimulationTime = updateVmsProcessingOfAllHosts();
         if (nextSimulationTime != Double.MAX_VALUE) {

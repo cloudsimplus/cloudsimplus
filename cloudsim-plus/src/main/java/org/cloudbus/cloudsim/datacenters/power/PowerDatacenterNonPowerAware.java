@@ -87,7 +87,7 @@ public class PowerDatacenterNonPowerAware extends PowerDatacenter {
 
     @Override
     protected void updateCloudletProcessing() {
-        if (getCloudletSubmitted() == -1 || getCloudletSubmitted() == getSimulation().clock()) {
+        if (getLastCloudletProcessingTime() == -1 || getLastCloudletProcessingTime() == getSimulation().clock()) {
             getSimulation().cancelAll(getId(), new PredicateType(CloudSimTags.VM_UPDATE_CLOUDLET_PROCESSING_EVENT));
             schedule(getId(), getSchedulingInterval(), CloudSimTags.VM_UPDATE_CLOUDLET_PROCESSING_EVENT);
             return;

@@ -422,30 +422,49 @@ public interface Simulation {
     /**
      * Gets a <b>read-only</b> map where each key is the name of an {@link SimEntity} and each value
      * is the actual {@link SimEntity}.
+     * @return 
      */
     Map<String, SimEntity> getEntitiesByName();
+    
+    /**
+     * Defines IDs for a list of {@link ChangeableId} entities that don't
+     * have one already assigned. Such entities can be a {@link Cloudlet},
+     * {@link Vm} or any object that implements {@link ChangeableId}.
+     *
+     * @param <T> the type of entities to define an ID
+     * @param list list of objects to define an ID
+     * @return true if the List has any Entity, false if it's empty
+     */
+    static <T extends ChangeableId> boolean setIdForEntitiesWithoutOne(List<? extends T> list){
+        return setIdForEntitiesWithoutOne(list, null);
+    }
 
     /**
      * Defines IDs for a list of {@link ChangeableId} entities that don't
      * have one already assigned. Such entities can be a {@link Cloudlet},
      * {@link Vm} or any object that implements {@link ChangeableId}.
      *
+     * @param <T> the type of entities to define an ID
      * @param list list of objects to define an ID
+     * @param lastEntity the last created Entity which its ID will be used 
+     *        as the base for the next IDs
      * @return true if the List has any Entity, false if it's empty
      */
-    static boolean setIdForEntitiesWithoutOne(List<? extends ChangeableId> list){
+    static <T extends ChangeableId> boolean setIdForEntitiesWithoutOne(List<? extends T> list, T lastEntity){
         Objects.requireNonNull(list);
         if(list.isEmpty()){
             return false;
         }
 
-        int id = list.get(list.size()-1).getId();
+        int id = Objects.isNull(lastEntity) ? list.get(list.size()-1).getId() : lastEntity.getId();
+        //if the ID is a negative number lower than -1, it's set as -1 to start the first ID as 0
+        id = Math.max(id, -1);
         for (final ChangeableId e : list) {
             if(e.getId() < 0) {
                 e.setId(++id);
             }
         }
 
-        return list.isEmpty();
+        return true;
     }
 }

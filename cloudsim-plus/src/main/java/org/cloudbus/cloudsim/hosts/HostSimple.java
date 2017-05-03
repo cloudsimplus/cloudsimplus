@@ -21,7 +21,6 @@ import org.cloudbus.cloudsim.lists.PeList;
 import org.cloudbus.cloudsim.provisioners.ResourceProvisioner;
 
 import static java.util.stream.Collectors.toList;
-import org.cloudbus.cloudsim.resources.Pe.Status;
 
 /**
  * A Host class that implements the most basic features of a Physical Machine
@@ -236,27 +235,27 @@ public class HostSimple implements Host {
         final String msg = inMigration ? "VM Migration" : "VM Creation";
         if (!storage.isResourceAmountAvailable(vm.getStorage())) {
             Log.printFormattedLine(
-                "[%s] Allocation of VM #%d to Host #%d failed due to lack of storage. Required %d but there is just %d MB available.",
-                msg, vm.getId(), getId(), vm.getStorage().getCapacity(), storage.getAvailableResource());
+                "[%s] Allocation of VM #%d to %s failed due to lack of storage. Required %d but there is just %d MB available.",
+                msg, vm.getId(), this, vm.getStorage().getCapacity(), storage.getAvailableResource());
             return false;
         }
 
         if (!getRamProvisioner().isSuitableForVm(vm, vm.getCurrentRequestedRam())) {
             Log.printFormattedLine(
-                "[%s] Allocation of VM #%d to Host #%d failed due to lack of RAM. Required %d but there is just %d MB available.",
-                msg, vm.getId(), getId(), vm.getRam().getCapacity(), ram.getAvailableResource());
+                "[%s] Allocation of VM #%d to %s failed due to lack of RAM. Required %d but there is just %d MB available.",
+                msg, vm.getId(), this, vm.getRam().getCapacity(), ram.getAvailableResource());
             return false;
         }
 
         if (!getBwProvisioner().isSuitableForVm(vm, vm.getCurrentRequestedBw())) {
             Log.printFormattedLine(
-                "[%s] Allocation of VM #%d to Host #%d failed due to lack of BW. Required %d but there is just %d Mbps available.",
-                msg, vm.getId(), getId(), vm.getBw().getCapacity(), bw.getAvailableResource());
+                "[%s] Allocation of VM #%d to %s failed due to lack of BW. Required %d but there is just %d Mbps available.",
+                msg, vm.getId(), this, vm.getBw().getCapacity(), bw.getAvailableResource());
             return false;
         }
 
         if (!getVmScheduler().isSuitableForVm(vm)) {
-            Log.printFormattedLine("[%s] Allocation of VM #%d to Host #%d failed due to lack of PEs", msg, vm.getId(), getId());
+            Log.printFormattedLine("[%s] Allocation of VM #%d to %s failed due to lack of PEs", msg, vm.getId(), this);
             return false;
         }
 
@@ -538,7 +537,7 @@ public class HostSimple implements Host {
 
     @Override
     public String toString() {
-        return String.format("Host %d", getId());
+        return String.format("Host %d/DC %d", getId(), getDatacenter().getId());
     }
 
     @Override

@@ -119,6 +119,8 @@ public class VmSimple implements Vm {
     private VerticalVmScaling ramVerticalScaling;
     private VerticalVmScaling bwVerticalScaling;
     private VerticalVmScaling peVerticalScaling;
+    
+    private String description;
 
     /**
      * Creates a Vm with 1024 MEGABYTE of RAM, 1000 Megabits/s of Bandwidth and 1024 MEGABYTE of Storage Size.
@@ -140,6 +142,7 @@ public class VmSimple implements Vm {
         setHost(Host.NULL);
         setCloudletScheduler(CloudletScheduler.NULL);
         this.processor = new Processor(this, mipsCapacity, numberOfPes);
+        this.description = "";
 
         setId(id);
         setBroker(DatacenterBroker.NULL);
@@ -607,7 +610,8 @@ public class VmSimple implements Vm {
 
     @Override
     public String toString() {
-        return String.format("#Vm %d ", getId());
+        final String desc = description.trim().isEmpty() ? "" : String.format(" (%s)", description);
+        return String.format("#Vm %d%s", getId(), desc);
     }
 
     @Override
@@ -783,5 +787,16 @@ public class VmSimple implements Vm {
         vmScaling.setVm(this);
         this.addOnUpdateProcessingListener(evt -> vmScaling.requestScalingIfPredicateMatch(evt.getTime()));
         return vmScaling;
+    }
+
+    @Override
+    public String getDescription() {
+        return description;
+    }
+
+    @Override
+    public Vm setDescription(String description) {
+        this.description = Objects.isNull(description) ? "" : description;
+        return this;
     }
 }

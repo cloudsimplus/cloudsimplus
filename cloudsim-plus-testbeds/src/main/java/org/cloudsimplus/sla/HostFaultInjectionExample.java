@@ -30,6 +30,7 @@ package org.cloudsimplus.sla;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.IntStream;
 import org.cloudbus.cloudsim.allocationpolicies.VmAllocationPolicySimple;
 import org.cloudbus.cloudsim.cloudlets.Cloudlet;
 import org.cloudbus.cloudsim.cloudlets.CloudletSimple;
@@ -53,7 +54,6 @@ import org.cloudbus.cloudsim.power.models.PowerModelLinear;
 import org.cloudbus.cloudsim.provisioners.PeProvisionerSimple;
 import org.cloudbus.cloudsim.provisioners.ResourceProvisionerSimple;
 import org.cloudbus.cloudsim.resources.PeSimple;
-import org.cloudbus.cloudsim.schedulers.cloudlet.CloudletScheduler;
 import org.cloudbus.cloudsim.selectionpolicies.power.PowerVmSelectionPolicyMinimumUtilization;
 import org.cloudsimplus.builders.tables.CloudletsTableBuilder;
 import org.cloudbus.cloudsim.utilizationmodels.UtilizationModel;
@@ -68,14 +68,14 @@ import org.cloudbus.cloudsim.vms.power.PowerVm;
  */
 public final class HostFaultInjectionExample {
 
-    private static final int SCHEDULE_TIME_TO_PROCESS_DATACENTER_EVENTS = 5;
+    private static final int SCHEDULE_TIME_TO_PROCESS_DATACENTER_EVENTS = 2;
     private static final double DATACENTER_COST_PER_CPU = 3.0;
     private static final double DATACENTER_COST_PER_RAM = 0.05;
     private static final double DATACENTER_COST_PER_STORAGE = 0.001;
     private static final double DATACENTER_COST_PER_BW = 0.0;
 
     private static final int  HOST_MIPS_BY_PE = 1000;
-    private static final int  HOST_PES = 8;
+    private static final int  HOST_PES = 4;
     private static final long HOST_RAM = 500000; //host memory (MEGABYTE)
     private static final long HOST_STORAGE = 1000000; //host storage
     private static final long HOST_BW = 100000000L;
@@ -93,7 +93,7 @@ public final class HostFaultInjectionExample {
     private static final int  VM_PES = 2; //number of cpus
     
     private static final int  CLOUDLET_PES = 2; 
-    private static final long CLOUDLET_LENGHT = 20000;
+    private static final long CLOUDLET_LENGHT = 30000;
     private static final long CLOUDLET_FILESIZE = 300;
     private static final long CLOUDLET_OUTPUTSIZE = 300;
 
@@ -116,8 +116,13 @@ public final class HostFaultInjectionExample {
      */
     public static final double CLOUDLET_CPU_USAGE_INCREMENT_PER_SECOND = 0.05;
 
-    private static final int HOSTS = 3;
-    private static final int VMS = HOSTS + 2;
+    /**
+     * Number of Hosts for each Datacenter to create.
+     * The number of elements in this array defines the number of Datacenters to be created.
+     */
+    private static final int []HOSTS_BY_DC = {5, 1};
+    private static final int VMS = 10;
+            
     private static final int CLOUDLETS_BY_VM = 1;
 
     private final List<Vm> vmlist = new ArrayList<>();
@@ -138,8 +143,11 @@ public final class HostFaultInjectionExample {
         simulation = new CloudSim();
 
         @SuppressWarnings("unused")
-        Datacenter datacenter0 = createDatacenter();
-        createFaultInjectionForHosts(datacenter0);
+        List<Datacenter> datacenterList = new ArrayList<>();
+        for(int hosts: HOSTS_BY_DC){
+            datacenterList.add(createDatacenter(hosts));
+        }
+        createFaultInjectionForHosts(datacenterList.get(0));
 
         DatacenterBroker broker = new DatacenterBrokerSimple(simulation);
         createAndSubmitVms(broker);
@@ -282,10 +290,10 @@ public final class HostFaultInjectionExample {
                 hostingVm, broker, false);
     }
 
-    private Datacenter createDatacenter() {
-        ArrayList<PowerHost> hostList = new ArrayList<>();
-        for (int i = 0; i < HOSTS; i++) {
-            hostList.add(createHost(i, HOST_PES, HOST_MIPS_BY_PE));
+    private Datacenter createDatacenter(int numberOfHosts) {
+        List<PowerHost> hostList = new ArrayList<>();
+        for (int i = 0; i < numberOfHosts; i++) {
+            hostList.add(createHost(HOST_PES, HOST_MIPS_BY_PE));
             Log.printConcatLine("#Created host ", i, " with ", HOST_MIPS_BY_PE, " mips x ", HOST_PES);
         }
         Log.printLine();
@@ -313,12 +321,11 @@ public final class HostFaultInjectionExample {
 
     /**
      * Creates a Host.
-     * @param id
      * @param numberOfPes
      * @param mipsByPe
      * @return
      */
-    public PowerHost createHost(int id, int numberOfPes, long mipsByPe) {
+    public PowerHost createHost(int numberOfPes, long mipsByPe) {
         List<Pe> peList = createPeList(numberOfPes, mipsByPe);
         PowerHost host
                 = new PowerHostSimple(HOST_RAM, HOST_BW, HOST_STORAGE, peList);
@@ -340,17 +347,17 @@ public final class HostFaultInjectionExample {
     /**
      * Creates the fault injection for host
      *
-     * @param datacenter0
+     * @param datacenter
      */
-    private void createFaultInjectionForHosts(Datacenter datacenter0) {
+    private void createFaultInjectionForHosts(Datacenter datacenter) {
         //Inject Fault
         //final long seed = System.currentTimeMillis();
-        final long seed = 11;
+        final long seed = 12356;
         PoissonProcess poisson = new PoissonProcess(0.2, seed);
 
         UniformDistr failurePesRand = new UniformDistr(seed);
-        for (int i = 0; i < datacenter0.getHostList().size(); i++) {
-            for (PowerHost host: datacenter0.<PowerHost>getHostList()) {
+        for (int i = 0; i < datacenter.getHostList().size(); i++) {
+            for (PowerHost host: datacenter.<PowerHost>getHostList()) {
                 if (poisson.haveKEventsHappened()) {
                     UniformDistr delayForFailureOfHostRandom = new UniformDistr(1, 10, seed + i);
 
@@ -376,11 +383,13 @@ public final class HostFaultInjectionExample {
      */
     private Vm cloneVm(Vm vm){
         PowerVm clone = new PowerVm((long)vm.getMips(), (int)vm.getNumberOfPes());
+        clone.setDescription("Clone of VM " + vm.getId());
         clone.setBroker(vm.getBroker())
             .setSize(vm.getStorage().getCapacity())
             .setBw(vm.getBw().getCapacity())
             .setRam(vm.getBw().getCapacity())
             .setCloudletScheduler(new CloudletSchedulerTimeShared());
+        Log.printFormattedLine("\n\n#Cloning VM %d\n\tMips %.2f Number of Pes: %d ", vm.getId(), clone.getMips(), clone.getNumberOfPes());
         
         return clone;
     }

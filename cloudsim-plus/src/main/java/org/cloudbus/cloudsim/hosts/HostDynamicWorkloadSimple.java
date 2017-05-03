@@ -104,14 +104,14 @@ public class HostDynamicWorkloadSimple extends HostSimple implements HostDynamic
     private double addVmResourceUsageToHistoryIfNotInMigration(double currentTime, Vm vm) {
         double totalAllocatedMips = getVmScheduler().getTotalAllocatedMipsForVm(vm);
         if (getVmsMigratingIn().contains(vm)) {
-            Log.printFormattedLine("%.2f: [Host #" + getId() + "] VM #" + vm.getId()
-                    + " is being migrated to Host #" + getId(), getSimulation().clock());
+            Log.printFormattedLine("%.2f: [" + this + "] " + vm
+                    + " is being migrated to " + this, getSimulation().clock());
             return totalAllocatedMips;
         }
 
         final double totalRequestedMips = vm.getCurrentRequestedTotalMips();
         if (totalAllocatedMips + 0.1 < totalRequestedMips) {
-            Log.printFormattedLine("%.2f: [Host #" + getId() + "] Under allocated MIPS for VM #" + vm.getId()
+            Log.printFormattedLine("%.2f: [" + this + "] Under allocated MIPS for " + vm
                     + ": %.2f", getSimulation().clock(), totalRequestedMips - totalAllocatedMips);
         }
 
@@ -124,7 +124,7 @@ public class HostDynamicWorkloadSimple extends HostSimple implements HostDynamic
 
         if (vm.isInMigration()) {
             Log.printFormattedLine(
-                    "%.2f: [Host #" + getId() + "] VM #" + vm.getId() + " is in migration",
+                    "%.2f: [" + this + "] " + vm + " is in migration",
                     getSimulation().clock());
             totalAllocatedMips /= 0.9; // performance degradation due to migration - 10%
         }
@@ -137,8 +137,8 @@ public class HostDynamicWorkloadSimple extends HostSimple implements HostDynamic
         final double totalAllocatedMips = getVmScheduler().getTotalAllocatedMipsForVm(vm);
         if (!Log.isDisabled() && vm.getHost() != Host.NULL) {
             getDatacenter().println(String.format(
-                    "%.2f: [Host #" + getId() + "] Total allocated MIPS for VM #" + vm.getId()
-                    + " (Host #" + vm.getHost().getId()
+                    "%.2f: [" + this + "] Total allocated MIPS for " + vm
+                    + " (" + vm.getHost()
                     + ") is %.2f, was requested %.2f out of total %.2f (%.2f%%)",
                     getSimulation().clock(),
                     totalAllocatedMips,
@@ -156,7 +156,7 @@ public class HostDynamicWorkloadSimple extends HostSimple implements HostDynamic
             );
             
             getDatacenter().println(String.format(
-                    "%.2f: [Host #" + getId() + "] MIPS for VM #" + vm.getId() + " by working PEs ("
+                    "%.2f: [" + this + "] MIPS for " + vm + " by working PEs ("
                     + getNumberOfWorkingPes()+ " * " + getVmScheduler().getPeCapacity() + ")."
                     + pesString,
                     getSimulation().clock()));

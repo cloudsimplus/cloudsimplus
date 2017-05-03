@@ -31,6 +31,7 @@ package org.cloudsimplus.sla;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.function.Function;
 import java.util.function.UnaryOperator;
 import org.cloudbus.cloudsim.brokers.DatacenterBroker;
@@ -65,6 +66,13 @@ public class HostFaultInjection extends CloudSimEntity {
     private ContinuousDistribution numberOfFailedPesRandom;
     private ContinuousDistribution delayForFailureOfHostRandom;
     private PowerVm vmToMigrate;
+    /**
+     * @todo The class has multiple responsibilities.
+     * The fault injection mechanism must be separated from
+     * the fault recovery.
+     * The cloner methods are fault recovery.
+     * 
+     */
     private UnaryOperator<Vm> vmCloner;
     private Function<Vm, List<Cloudlet>> cloudletsCloner;
 
@@ -137,9 +145,9 @@ public class HostFaultInjection extends CloudSimEntity {
         final int numberOfFailedPes = setFailedHostPes();
         final long hostWorkingPes = host.getNumberOfWorkingPes();
         final long vmsRequiredPes = getPesSumOfWorkingVms();
-        Log.printFormattedLine("\t%.2f: Generated %d PEs failures for Host %d", getSimulation().clock(), numberOfFailedPes, host.getId());
+        Log.printFormattedLine("\t%.2f: Generated %d PEs failures for %s", getSimulation().clock(), numberOfFailedPes, host);
         if(vmsRequiredPes == 0){
-            System.out.printf("\t      Number of VMs: %d\n", host.getId(), host.getVmList().size());
+            System.out.printf("\t      Number of VMs: %d\n", host.getVmList().size());
         }
         System.out.printf("\t      Working PEs: %d | VMs required PEs: %d\n", hostWorkingPes, vmsRequiredPes);
         if(hostWorkingPes == 0){
@@ -158,8 +166,8 @@ public class HostFaultInjection extends CloudSimEntity {
      */
     private void setAllVmsToFailed() {
         host.getVmList().stream().forEach(this::setVmToFailedAndCreateClone);
-        Log.printFormattedLine("\t%.2f: Host %d -> All the %d PEs failed, affecting all its %d VMs.\n",
-                getSimulation().clock(), host.getId(), host.getNumberOfPes(), host.getVmList().size());
+        Log.printFormattedLine("\t%.2f: %s -> All the %d PEs failed, affecting all its %d VMs.\n",
+                getSimulation().clock(), host, host.getNumberOfPes(), host.getVmList().size());
     }
     
     /**
@@ -169,30 +177,31 @@ public class HostFaultInjection extends CloudSimEntity {
     private void logNoVmFailure() {
         final int vmsRequiredPes = (int)getPesSumOfWorkingVms();
         Log.printFormattedLine(
-                "\t%.2f: Host %d -> Number of failed PEs is less than PEs required by all its %d VMs, thus it doesn't affect any VM.",
-                getSimulation().clock(), host.getId(), host.getVmList().size());
-        Log.printFormattedLine("\t      Host %d -> Total PEs: %d | Failed PEs: %d | Working PEs: %d | Current PEs required by VMs: %d.\n",
-                host.getId(), host.getNumberOfPes(), host.getNumberOfFailedPes(), host.getNumberOfWorkingPes(),
+                "\t%.2f: %s -> Number of failed PEs is less than PEs required by all its %d VMs, thus it doesn't affect any VM.",
+                getSimulation().clock(), host, host.getVmList().size());
+        Log.printFormattedLine("\t      %s -> Total PEs: %d | Failed PEs: %d | Working PEs: %d | Current PEs required by VMs: %d.\n",
+                host, host.getNumberOfPes(), host.getNumberOfFailedPes(), host.getNumberOfWorkingPes(),
                 vmsRequiredPes);
     }
     
     private void deallocateFailedHostPesFromVms() {
         final int hostWorkingPes = (int)host.getNumberOfWorkingPes();
         final int vmsRequiredPes = (int)getPesSumOfWorkingVms();
+        Vm vm = null;
         
         int i = 0;
         int failedPesToRemoveFromVms = vmsRequiredPes-hostWorkingPes;
         final int affectedVms = Math.min(host.getVmList().size(), failedPesToRemoveFromVms);
         Log.printFormattedLine(
-                "\t%.2f: Host %d -> %d PEs failed, from a total of %d PEs. There are %d PEs working.",
-                getSimulation().clock(), host.getId(), host.getNumberOfFailedPes(), 
+                "\t%.2f: %s -> %d PEs failed, from a total of %d PEs. There are %d PEs working.",
+                getSimulation().clock(), host, host.getNumberOfFailedPes(), 
                 host.getNumberOfPes(), host.getNumberOfWorkingPes());
         Log.printFormattedLine(
                 "\t      %d VMs affected from a total of %d. %d PEs are going to be removed from VMs", 
                 affectedVms, host.getVmList().size(), failedPesToRemoveFromVms);
         while(failedPesToRemoveFromVms-- > 0){
             i = i % affectedVms;
-            Vm vm = host.getVmList().get(i);
+            vm = host.getVmList().get(i);
             
             host.getVmScheduler().deallocatePesFromVm(vm, 1);
             vm.getCloudletScheduler().deallocatePesFromVm(vm, 1);
@@ -229,12 +238,15 @@ public class HostFaultInjection extends CloudSimEntity {
         
         final Vm clone = vmCloner.apply(vm);
         final DatacenterBroker broker = vm.getBroker();
-        broker.submitVm(clone);
-
+        broker.submitVm(clone); 
+        
         List<Cloudlet> cloudlets = cloudletsCloner.apply(vm);
         broker.submitCloudletList(cloudlets, clone);
         
+        Log.printFormattedLine("\n\t #Vm %d is being destroying...", vm.getId());
+        
         vm.setFailed(true);
+        Log.printFormattedLine("#Vm %d was destroyed. \n", vm.getId());
         
         /*
          As the broker is expected to request vm creation and destruction,

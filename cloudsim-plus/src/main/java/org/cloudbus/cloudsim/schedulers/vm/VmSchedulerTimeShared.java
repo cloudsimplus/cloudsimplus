@@ -125,8 +125,8 @@ public class VmSchedulerTimeShared extends VmSchedulerAbstract {
             final double allocatedMipsForVmPe = allocateMipsFromHostPesToGivenVirtualPe(vm, requestedMipsForVmPe, hostPesIterator);
             if(requestedMipsForVmPe > 0.1 && allocatedMipsForVmPe <= 0.1){
                 Log.printFormattedLine(
-                    "Vm %s is requiring a total of %.0f MIPS but Host's PEs currently don't have such an available MIPS amount. Only %.0f MIPS were allocated.",
-                    vm, requestedMipsForVmPe, allocatedMipsForVmPe);
+                    "%s is requiring a total of %.0f MIPS but the PEs of %s currently don't have such an available MIPS amount. Only %.0f MIPS were allocated.",
+                    vm, requestedMipsForVmPe, getHost(), allocatedMipsForVmPe);
             }
         }
     }

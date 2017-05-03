@@ -9,7 +9,6 @@ package org.cloudbus.cloudsim.vms;
 
 import org.cloudbus.cloudsim.core.Machine;
 import org.cloudbus.cloudsim.brokers.DatacenterBroker;
-import org.cloudbus.cloudsim.core.ChangeableId;
 import org.cloudsimplus.autoscaling.HorizontalVmScaling;
 import org.cloudbus.cloudsim.core.Delayable;
 import org.cloudbus.cloudsim.core.UniquelyIdentificable;
@@ -46,6 +45,21 @@ public interface Vm extends Machine, UniquelyIdentificable, Delayable, Comparabl
      * objects.
      */
     Vm NULL = new VmNull();
+    
+    /**
+     * Gets the Vm description, which is an optional text
+     * which one can use to provide details about this of this VM.
+     * @return 
+     */
+    String getDescription();
+
+    /**
+     * Sets the VM description, which is an optional text
+     * which one can use to provide details about this of this VM.
+     * @param description the Vm description to set
+     * @return 
+     */
+    Vm setDescription(String description);
 
     /**
      * Adds a VM state history entry.
