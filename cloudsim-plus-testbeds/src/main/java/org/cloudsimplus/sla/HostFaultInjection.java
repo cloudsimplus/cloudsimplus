@@ -28,407 +28,410 @@
  */
 package org.cloudsimplus.sla;
 
-import java.util.Collections;
+import org.cloudsimplus.faultinjection.HostFaultInjection;
+import org.cloudbus.cloudsim.distributions.PoissonDistribution;
+import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
-import java.util.function.Function;
-import java.util.function.UnaryOperator;
-import org.cloudbus.cloudsim.brokers.DatacenterBroker;
+import org.cloudbus.cloudsim.allocationpolicies.VmAllocationPolicy;
+import org.cloudbus.cloudsim.allocationpolicies.VmAllocationPolicySimple;
 import org.cloudbus.cloudsim.cloudlets.Cloudlet;
-import org.cloudbus.cloudsim.core.events.SimEvent;
-import org.cloudbus.cloudsim.hosts.Host;
+import org.cloudbus.cloudsim.cloudlets.CloudletSimple;
+import org.cloudbus.cloudsim.schedulers.cloudlet.CloudletSchedulerTimeShared;
+import org.cloudbus.cloudsim.datacenters.Datacenter;
+import org.cloudbus.cloudsim.brokers.DatacenterBroker;
+import org.cloudbus.cloudsim.datacenters.DatacenterCharacteristics;
+import org.cloudbus.cloudsim.datacenters.DatacenterCharacteristicsSimple;
 import org.cloudbus.cloudsim.util.Log;
-import org.cloudbus.cloudsim.vms.Vm;
-import org.cloudbus.cloudsim.core.*;
-import org.cloudbus.cloudsim.distributions.ContinuousDistribution;
-import org.cloudbus.cloudsim.distributions.UniformDistr;
 import org.cloudbus.cloudsim.resources.Pe;
-import org.cloudbus.cloudsim.resources.Pe.Status;
-import org.cloudbus.cloudsim.vms.power.PowerVm;
+import org.cloudbus.cloudsim.vms.Vm;
+import org.cloudbus.cloudsim.brokers.DatacenterBrokerSimple;
+import org.cloudbus.cloudsim.schedulers.vm.VmSchedulerTimeShared;
+import org.cloudbus.cloudsim.core.CloudSim;
+import org.cloudbus.cloudsim.datacenters.DatacenterSimple;
+import org.cloudbus.cloudsim.distributions.UniformDistr;
+import org.cloudbus.cloudsim.hosts.Host;
+import org.cloudbus.cloudsim.hosts.HostSimple;
+import org.cloudbus.cloudsim.provisioners.PeProvisionerSimple;
+import org.cloudbus.cloudsim.provisioners.ResourceProvisioner;
+import org.cloudbus.cloudsim.provisioners.ResourceProvisionerSimple;
+import org.cloudbus.cloudsim.resources.PeSimple;
+import org.cloudbus.cloudsim.schedulers.vm.VmScheduler;
+import org.cloudsimplus.builders.tables.CloudletsTableBuilder;
+import org.cloudbus.cloudsim.utilizationmodels.UtilizationModel;
+import org.cloudbus.cloudsim.utilizationmodels.UtilizationModelDynamic;
+import org.cloudbus.cloudsim.utilizationmodels.UtilizationModelFull;
+import org.cloudbus.cloudsim.vms.VmSimple;
 
 /**
- * This class shows how to generate a fault. In this case the fault is in the
- * host.
- *
- * Notes: This class does not work with the injection fault in time 0. Only
- * works after the creation of cloudlets and VMs, because when destroying the
- * VM, the cloudlet is not returned to be chosen by another VM that did not
- * fail, thus causing error in the simulator.
+ * Example which shows how to inject random {@link Pe} faults into Hosts
+ * using {@link HostFaultInjection} objects.
  *
  * @author raysaoliveira
- * 
- * see <link>https://blogs.sap.com/2014/07/21/equipment-availability-vs-reliability/
- *
  */
-public class HostFaultInjection extends CloudSimEntity {
-    private Host host;
-    private ContinuousDistribution numberOfFailedPesRandom;
-    private ContinuousDistribution delayForFailureOfHostRandom;
+public final class HostFaultInjection {
+
+    private static final int SCHEDULE_TIME_TO_PROCESS_DATACENTER_EVENTS = 19;
+    private static final double DATACENTER_COST_PER_CPU = 3.0;
+    private static final double DATACENTER_COST_PER_RAM = 0.05;
+    private static final double DATACENTER_COST_PER_STORAGE = 0.001;
+    private static final double DATACENTER_COST_PER_BW = 0.0;
+
+    private static final int  HOST_MIPS_BY_PE = 1000;
+    private static final int  HOST_PES = 2;
+    private static final long HOST_RAM = 500000; //host memory (MEGABYTE)
+    private static final long HOST_STORAGE = 1000000; //host storage
+    private static final long HOST_BW = 100000000L;
+    private List<Host> hostList;
     
-    /**
-     * @todo The class has multiple responsibilities.
-     * The fault injection mechanism must be separated from
-     * the fault recovery.
-     * The cloner methods are fault recovery.
-     * 
-     */
-    private UnaryOperator<Vm> vmCloner;
-    private Function<Vm, List<Cloudlet>> cloudletsCloner;
 
     /**
-     * Creates a fault injection mechanism for a host that will generate
-     * failures with a delay and number of failed PEs generated using a Uniform
-     * Pseudo Random Number Generator (PRNG) for each one.
+     * The percentage of host CPU usage that trigger VM migration due to over
+     * utilization (in scale from 0 to 1, where 1 is 100%).
+     */
+    private static final double HOST_USAGE_THRESHOLD_VM_MIGRATION = 0.5;
+
+    private static final int  VM_MIPS = 1000;
+    private static final long VM_SIZE = 1000; //image size (MEGABYTE)
+    private static final int  VM_RAM = 10000; //vm memory (MEGABYTE)
+    private static final long VM_BW = 100000;
+    private static final int  VM_PES = 1; //number of cpus
+    
+    private static final int  CLOUDLET_PES = 1; 
+    private static final long CLOUDLET_LENGHT = 30000;
+    private static final long CLOUDLET_FILESIZE = 300;
+    private static final long CLOUDLET_OUTPUTSIZE = 300;
+
+    /**
+     * The percentage of CPU that a cloudlet will use when it starts executing
+     * (in scale from 0 to 1, where 1 is 100%). For each cloudlet create, this
+     * value is used as a base to define CPU usage.
      *
-     * @param host the Host the faults will be generated on
-     * @see
-     * #setDelayForFailureOfHostRandom(org.cloudbus.cloudsim.distributions.ContinuousDistribution)
-     * @see
-     * #setNumberOfFailedPesRandom(org.cloudbus.cloudsim.distributions.ContinuousDistribution)
+     * @see #createAndSubmitCloudlets(DatacenterBroker)
      */
-    public HostFaultInjection(Host host) {
-        super(host.getSimulation());
-        this.setHost(host);
-        this.numberOfFailedPesRandom = new UniformDistr();
-        this.delayForFailureOfHostRandom = new UniformDistr();
-        
-        /*Sets a default vmCloner which in fact doesn't
-        clone a VM, just returns the Vm.NULL object.
-        This is used just to ensure that if a vmClone
-        is not set, it wont be thrown a NullPointerException
-        and no VM will be cloned.
-        A similar thing is made to the cloudletsCloner below.*/
-        this.vmCloner = vm -> { 
-            Log.printFormattedLine(
-                "%s: You should define a VM Cloner Function to enable creating a new instance of a VM when it is destroyed due to a Host failure.", 
-                getClass().getSimpleName());
-            return Vm.NULL; 
-        };
-        this.cloudletsCloner = vm -> {
-            Log.printFormattedLine("%s: You should define a Cloudlets Cloner Function to re-create the List of running Cloudlets from a faulty VM into the Cloned VM when there is a Host failure", 
-                getClass().getSimpleName());
-            return Collections.EMPTY_LIST;
-        };
-    }
-
-    @Override
-    protected void startEntity() {
-        double delay = delayForFailureOfHostRandom.sample() + 1;
-        schedule(getId(), delay, CloudSimTags.HOST_FAILURE);
-    }
-
-    @Override
-    public void processEvent(SimEvent ev) {
-        switch (ev.getTag()) {
-            case CloudSimTags.HOST_FAILURE:
-                generateFailure();
-            break;
-            default:
-                Log.printLine(getName() + ": unknown event type");
-            break;
-        }
-    }
-
-    @Override
-    public void shutdownEntity() {/**/}
+    private static final double CLOUDLET_INITIAL_CPU_USAGE_PERCENT = 0.8;
 
     /**
-     * Generates a failure on Host's PEs or not, according to the number of PEs
-     * to be set to failed, returned by the {@link #numberOfFailedPesRandom}
-     * PRNG.
+     * Defines the speed (in percentage) that CPU usage of a cloudlet will
+     * increase during the simulation tie. (in scale from 0 to 1, where 1 is
+     * 100%).
      *
-     * @return <tt>true</tt> if the failure was generated, <tt>false</tt>
-     * otherwise
+     * @see #createAndSubmitCloudletsWithDynamicCpuUtilization(double, double,
+     * Vm, DatacenterBroker)
      */
-    public final boolean generateFailure() {
-        final int numberOfFailedPes = setFailedHostPes();
-        final long hostWorkingPes = host.getNumberOfWorkingPes();
-        final long vmsRequiredPes = getPesSumOfWorkingVms();
-        Log.printFormattedLine("\t%.2f: Generated %d PEs failures for %s", getSimulation().clock(), numberOfFailedPes, host);
-        if(vmsRequiredPes == 0){
-            System.out.printf("\t      Number of VMs: %d\n", host.getVmList().size());
-        }
-        System.out.printf("\t      Working PEs: %d | VMs required PEs: %d\n", hostWorkingPes, vmsRequiredPes);
-        if(hostWorkingPes == 0){
-            //double clockInicioFalha = getSimulation().clock(); 
-            //Log.printFormattedLine("\n#Inicio Falha no Host %d : %f", host.getId(),clockInicioFalha);
-            setAllVmsToFailed(); 
+    public static final double CLOUDLET_CPU_USAGE_INCREMENT_PER_SECOND = 0.05;
+
+    /**
+     * Number of Hosts to create for each Datacenter.
+     * The number of elements in this array defines the number of Datacenters to be created.
+     */
+    private static final int HOSTS = 2;
+    private static final int VMS = 2;
             
-        } else if (hostWorkingPes >= vmsRequiredPes) {
-            logNoVmFailure();  
-        } else {
-            deallocateFailedHostPesFromVms();
-        } 
-        
-        return numberOfFailedPes > 0;
+    private static final int CLOUDLETS_BY_VM = 1;
+
+    private final List<Vm> vmlist = new ArrayList<>();
+    private CloudSim simulation;
+
+    /**
+     * Starts the example.
+     *
+     * @param args
+     */
+    public static void main(String[] args) {
+        new HostFaultInjection();
+    }
+
+    public HostFaultInjection() {
+        Log.printConcatLine("Starting ", getClass().getSimpleName(), "...");
+
+        simulation = new CloudSim();
+
+        Datacenter datacenter = createDatacenter(HOSTS);
+        createFaultInjectionForHosts(datacenter);
+
+        DatacenterBroker broker = new DatacenterBrokerSimple(simulation);
+        createAndSubmitVms(broker);
+        createAndSubmitCloudlets(broker);
+
+        simulation.start();
+
+        new CloudletsTableBuilder(broker.getCloudletsFinishedList()).build();
+
+        Log.printConcatLine(getClass().getSimpleName(), " finished!");
+        //@todo ver a mensagem abaixo
+        System.out.println("A cloudlet 2 deveria terminar no segundo 40, pois ela iniciou em 10, mas ela não termina");
+    }
+
+    public void createAndSubmitCloudlets(DatacenterBroker broker) {
+        double initialCloudletCpuUtilizationPercentage = CLOUDLET_INITIAL_CPU_USAGE_PERCENT;
+        final int numberOfCloudlets = VMS - 1;
+        for (int i = 0; i < numberOfCloudlets; i++) {
+            createAndSubmitCloudletsWithStaticCpuUtilization(
+                    initialCloudletCpuUtilizationPercentage, vmlist.get(i), broker);
+            initialCloudletCpuUtilizationPercentage += 0.15;
+        }
+        //Create one last cloudlet which CPU usage increases dynamically
+        Vm lastVm = vmlist.get(vmlist.size() - 1);
+        createAndSubmitCloudletsWithDynamicCpuUtilization(0.2, 1, lastVm, broker);
+    }
+
+    public void createAndSubmitVms(DatacenterBroker broker) {
+        for (int i = 0; i < VMS; i++) {
+            Vm vm = createVm(broker);
+            vmlist.add(vm);
+        }
+        broker.submitVmList(vmlist);
     }
 
     /**
-     * Sets all VMs to failed when all Host PEs failed.
+     *
+     * @param broker
+     * @return
+     *
+     * @todo @author manoelcampos The use of other CloudletScheduler instead of
+     * CloudletSchedulerDynamicWorkload makes the Host CPU usage not be updated
+     * (and maybe VM CPU usage too).
      */
-    private void setAllVmsToFailed() {
-        Log.printFormattedLine("\t%.2f: %s -> All the %d PEs failed, affecting all its %d VMs.\n",
-                getSimulation().clock(), host, host.getNumberOfPes(), host.getVmList().size());
-        host.getVmList().stream().forEach(this::setVmToFailedAndCreateClone);
+    public Vm createVm(DatacenterBroker broker) {
+        Vm vm = new VmSimple(vmlist.size(), VM_MIPS, VM_PES);
+        vm
+            .setRam(VM_RAM).setBw(VM_BW).setSize(VM_SIZE)
+            .setBroker(broker)
+            .setCloudletScheduler(new CloudletSchedulerTimeShared());
+        return vm;
     }
-    
+
     /**
-     * Shows that the failure of Host PEs hasn't affected any VM,
-     * because there is more working PEs than required by all VMs.
+     * Creates the number of Cloudlets defined in
+     * {@link #CLOUDLETS_BY_VM} and submits them to the
+     * given broker.
+     *
+     * @param cloudletInitialCpuUsagePercent the percentage of CPU utilization
+     * that created Cloudlets will use when they start to execute. If this value
+     * is greater than 1 (100%), it will be changed to 1.
+     * @param maxCloudletCpuUtilizationPercentage the maximum percentage of CPU
+     * utilization that created Cloudlets are allowed to use. If this value is
+     * greater than 1 (100%), it will be changed to 1.
+     * @param hostingVm the VM that will run the Cloudlets
+     * @param broker the broker that the created Cloudlets belong to
+     * @param progressiveCpuUsage if the CPU usage of created Cloudlets have to
+     * change along the execution time or not, according to the
+     * {@link #getCpuUtilizationIncrement(org.cloudbus.cloudsim.utilizationmodels.UtilizationModelDynamic)}
+     * @return the List of created Cloudlets
      */
-    private void logNoVmFailure() {
-        final int vmsRequiredPes = (int)getPesSumOfWorkingVms();
-        Log.printFormattedLine(
-                "\t%.2f: %s -> Number of failed PEs is less than PEs required by all its %d VMs, thus it doesn't affect any VM.",
-                getSimulation().clock(), host, host.getVmList().size());
-        Log.printFormattedLine("\t      %s -> Total PEs: %d | Failed PEs: %d | Working PEs: %d | Current PEs required by VMs: %d.\n",
-                host, host.getNumberOfPes(), host.getNumberOfFailedPes(), host.getNumberOfWorkingPes(),
-                vmsRequiredPes);
-    }
-    
-    private void deallocateFailedHostPesFromVms() {
-        final int hostWorkingPes = (int)host.getNumberOfWorkingPes();
-        final int vmsRequiredPes = (int)getPesSumOfWorkingVms();
-        Vm vm = null;
-        
-        int i = 0;
-        int failedPesToRemoveFromVms = vmsRequiredPes-hostWorkingPes;
-        final int affectedVms = Math.min(host.getVmList().size(), failedPesToRemoveFromVms);
-        Log.printFormattedLine(
-                "\t%.2f: %s -> %d PEs failed, from a total of %d PEs. There are %d PEs working.",
-                getSimulation().clock(), host, host.getNumberOfFailedPes(), 
-                host.getNumberOfPes(), host.getNumberOfWorkingPes());
-        Log.printFormattedLine(
-                "\t      %d VMs affected from a total of %d. %d PEs are going to be removed from VMs", 
-                affectedVms, host.getVmList().size(), failedPesToRemoveFromVms);
-        while(failedPesToRemoveFromVms-- > 0){
-            i = i % affectedVms;
-            vm = host.getVmList().get(i);
-            
-            host.getVmScheduler().deallocatePesFromVm(vm, 1);
-            vm.getCloudletScheduler().deallocatePesFromVm(vm, 1);
-            //remove 1 failed PE from the VM
-            vm.getProcessor().removeCapacity(1); 
-            Log.printFormattedLine(
-                    "\t      Removing 1 PE from VM %d due to Host PE failure. New VM PEs Number: %d\n", 
-                    vm.getId(), vm.getNumberOfPes());
-            i++;
+    public List<Cloudlet> createAndSubmitCloudlets(
+            double cloudletInitialCpuUsagePercent,
+            double maxCloudletCpuUtilizationPercentage,
+            Vm hostingVm,
+            DatacenterBroker broker,
+            boolean progressiveCpuUsage) {
+        cloudletInitialCpuUsagePercent = Math.min(cloudletInitialCpuUsagePercent, 1);
+        maxCloudletCpuUtilizationPercentage = Math.min(maxCloudletCpuUtilizationPercentage, 1);
+        final List<Cloudlet> list = new ArrayList<>(CLOUDLETS_BY_VM);
+        UtilizationModel utilizationModelFull = new UtilizationModelFull();
+        int cloudletId;
+        for (int i = 0; i < CLOUDLETS_BY_VM; i++) {
+            cloudletId = hostingVm.getId() + i;
+            UtilizationModelDynamic cpuUtilizationModel;
+            if (progressiveCpuUsage) {
+                cpuUtilizationModel
+                        = new UtilizationModelDynamic(cloudletInitialCpuUsagePercent)
+                                .setUtilizationUpdateFunction(this::getCpuUtilizationIncrement);
+            } else {
+                cpuUtilizationModel = new UtilizationModelDynamic(cloudletInitialCpuUsagePercent);
+            }
+            cpuUtilizationModel.setMaxResourceUtilization(maxCloudletCpuUtilizationPercentage);
+
+            Cloudlet c
+                    = new CloudletSimple(
+                            cloudletId, CLOUDLET_LENGHT, CLOUDLET_PES)
+                            .setFileSize(CLOUDLET_FILESIZE)
+                            .setOutputSize(CLOUDLET_OUTPUTSIZE)
+                            .setUtilizationModelCpu(cpuUtilizationModel)
+                            .setUtilizationModelRam(utilizationModelFull)
+                            .setUtilizationModelBw(utilizationModelFull);
+            c.setBroker(broker);
+            list.add(c);
         }
-        
+
+        broker.submitCloudletList(list);
+        for (Cloudlet c : list) {
+            broker.bindCloudletToVm(c, hostingVm);
+        }
+
+        return list;
+    }
+
+    /**
+     * Increments the CPU resource utilization, that is defined in percentage
+     * values.
+     *
+     * @return the new resource utilization after the increment
+     */
+    private double getCpuUtilizationIncrement(UtilizationModelDynamic um) {
+        return um.getUtilization() + um.getTimeSpan() * CLOUDLET_CPU_USAGE_INCREMENT_PER_SECOND;
+    }
+
+    public List<Cloudlet> createAndSubmitCloudletsWithDynamicCpuUtilization(
+            double initialCloudletCpuUtilizationPercentage,
+            double maxCloudletCpuUtilizationPercentage,
+            Vm hostingVm,
+            DatacenterBroker broker) {
+        return createAndSubmitCloudlets(
+                initialCloudletCpuUtilizationPercentage,
+                maxCloudletCpuUtilizationPercentage, hostingVm, broker, true);
+    }
+
+    public List<Cloudlet> createAndSubmitCloudletsWithStaticCpuUtilization(
+            double initialCloudletCpuUtilizationPercentage,
+            Vm hostingVm,
+            DatacenterBroker broker) {
+        return createAndSubmitCloudlets(
+                initialCloudletCpuUtilizationPercentage,
+                initialCloudletCpuUtilizationPercentage,
+                hostingVm, broker, false);
+    }
+
+    private Datacenter createDatacenter(int numberOfHosts) {
+        hostList = new ArrayList<>();
+        for (int i = 0; i < numberOfHosts; i++) {
+            hostList.add(createHost());
+            Log.printConcatLine("#Created host ", i, " with ", HOST_MIPS_BY_PE, " mips x ", HOST_PES);
+        }
         Log.printLine();
-        setVmsToFailed();
+
+        DatacenterCharacteristics characteristics
+                = new DatacenterCharacteristicsSimple(hostList)
+                        .setCostPerSecond(DATACENTER_COST_PER_CPU)
+                        .setCostPerMem(DATACENTER_COST_PER_RAM)
+                        .setCostPerStorage(DATACENTER_COST_PER_STORAGE)
+                        .setCostPerBw(DATACENTER_COST_PER_BW);
+
+        /*@todo nao está sendo usado por enquanto, apenas para evitar migração
+        PowerVmAllocationPolicyMigrationWorstFitStaticThreshold allocationPolicy
+                = new PowerVmAllocationPolicyMigrationWorstFitStaticThreshold(
+                        new PowerVmSelectionPolicyMinimumUtilization(),
+                        HOST_USAGE_THRESHOLD_VM_MIGRATION);*/
+
+        Datacenter dc = new DatacenterSimple(simulation, characteristics, new VmAllocationPolicySimple());
+        dc
+          //.setMigrationsEnabled(false)
+          .setSchedulingInterval(SCHEDULE_TIME_TO_PROCESS_DATACENTER_EVENTS)
+          .setLog(false);
+        return dc;
     }
 
     /**
-     * Sets to failed all VMs which all their PEs were removed due to Host PEs failures.
+     * Creates a Host.
+     * @return
      */
-    private void setVmsToFailed() {
-        host.getVmList().stream()
-                .filter(vm -> vm.getNumberOfPes() == 0)
-                .forEach(this::setVmToFailedAndCreateClone);
-    }
-
-    /**
-     * Checks if the the host is failed and sets all a given VM to failed.
-     *
-     * @param vm vm to set to failed
-     */
-    public void setVmToFailedAndCreateClone(Vm vm) {
-        if (!this.isFailed()) {
-            return;
+    public Host createHost() {
+      List<Pe> pesList = new ArrayList<>(HOST_PES);
+        for (int i = 0; i < HOST_PES; i++) {
+            pesList.add(new PeSimple(HOST_MIPS_BY_PE, new PeProvisionerSimple()));
         }
-        
-        final DatacenterBroker broker = vm.getBroker();
-        final Vm clone = vmCloner.apply(vm);
-        setBrokerToEntity(clone, vm.getBroker());
-       
-        List<Cloudlet> cloudlets = cloudletsCloner.apply(vm);
-        cloudlets.stream().forEach(c -> setBrokerToEntity(c, broker));
-        /*if(clone.isCreated()){
-            double clockInicioReparacao = getSimulation().clock();
-            Log.printFormattedLine("\n#Reparacao da Vm %d : %f ",vm.getId(),clockInicioReparacao);
-        }*/
-        
-        
-        vm.setFailed(true);
-        Log.printFormattedLine("#Vm %d is being destroying...", vm.getId());
-       
-        /*
-         As the broker is expected to request vm creation and destruction,
-         it is set here as the sender of the vm destroy request.
-         */
-        getSimulation().sendNow(
-                vm.getBroker().getId(), host.getDatacenter().getId(),
-                CloudSimTags.VM_DESTROY, vm);
-      
-        broker.submitVm(clone); 
-        broker.submitCloudletList(cloudlets, clone);
-       
-        
+
+        ResourceProvisioner ramProvisioner = new ResourceProvisionerSimple();
+        ResourceProvisioner bwProvisioner = new ResourceProvisionerSimple();
+        VmScheduler vmScheduler = new VmSchedulerTimeShared();
+        final int id = hostList.size();
+        return new HostSimple(HOST_RAM, HOST_BW, HOST_STORAGE, pesList)
+                .setRamProvisioner(ramProvisioner)
+                .setBwProvisioner(bwProvisioner)
+                .setVmScheduler(vmScheduler);
+    }    
+
+    public List<Pe> createPeList(int numberOfPEs, long mips) {
+        List<Pe> list = new ArrayList<>(numberOfPEs);
+        for (int i = 0; i < numberOfPEs; i++) {
+            list.add(new PeSimple(mips, new PeProvisionerSimple()));
+        }
+        return list;
     }
 
     /**
-     * Sets the {@link DatacenterBroker} to a object
-     * if it doesn't have one set.
-     * 
-     * @param entity the {@link CustomerEntity} to set a {@link DatacenterBroker}
+     * Creates the fault injection for host
+     *
+     * @param datacenter
      */
-    private void setBrokerToEntity(CustomerEntity entity, DatacenterBroker broker) {
-        if(DatacenterBroker.NULL.equals(entity.getBroker())){
-            entity.setBroker(broker);
+    private void createFaultInjectionForHosts(Datacenter datacenter) {
+        final int MAX_TIME_TO_GENERATE_FAILURE = 10;
+        //final long seed = System.currentTimeMillis();
+        final long seed = 49998811;
+        
+        
+        UniformDistr failedPesGenerator = new UniformDistr(seed);
+        UniformDistr failureDelayGenerator = new UniformDistr(1, MAX_TIME_TO_GENERATE_FAILURE, seed);
+        int i = 0;
+        for (Host host: datacenter.getHostList()) {
+            PoissonDistribution poisson = new PoissonDistribution(0.2, seed + i++);
+            if (poisson.eventsHappened()) {
+                HostFaultInjection fault = new HostFaultInjection(host);
+                fault.setFailedPesGenerator(failedPesGenerator);
+                fault.setFailureDelayGenerator(failureDelayGenerator);
+                fault.setVmCloner(this::cloneVm);
+                fault.setCloudletsCloner(this::cloneCloudlets);
+                Log.printFormattedLine("\tFault Injection created for %s.", host);
+            }
         }
     }
     
-    private int setFailedHostPes() {
-        final int numberOfFailedPes = generateNumberOfFailedPes();
-        for (int i = 0; i < numberOfFailedPes; i++) {
-            host.getPeList().get(i).setStatus(Pe.Status.FAILED);
-        }
-        return numberOfFailedPes;
-    }
-
-    public long getFailedVmsCount() {
-        return host.getVmList()
-                .stream()
-                .filter(Vm::isFailed)
-                .count();
-    }
-
-    public long getPesSumOfWorkingVms() {
-        return host.getVmList().stream()
-                .filter(vm -> !vm.isFailed())
-                .mapToLong(vm -> vm.getNumberOfPes())
-                .sum();
-    }
-
     /**
-     * Generates a number of PEs that will fail for the host using the
-     * {@link #numberOfFailedPesRandom},
-     *
-     * @return the generated number of failed PEs for the host
-     */
-    public int generateNumberOfFailedPes() {
-        /*the random generator return values from [0 to 1]
-         and multiplying by the number of PEs we get a number between
-         0 and numbero of PEs*/
-        return (int) (numberOfFailedPesRandom.sample() * host.getPeList().size() + 1);
-    }
-
-    /**
-     * Checks if the Host has any failed PEs.
-     * @return true if any Host PEs has failed, false otherwise
-     */
-    public boolean isFailed() {
-        return host.getPeList()
-                .stream()
-                .map(Pe::getStatus)
-                .anyMatch(Status.FAILED::equals);
-    }
-
-    /**
-     * Gets the host in which a failure may happen.
-     *
-     * @return
-     */
-    public Host getHost() {
-        return host;
-    }
-
-    /**
-     * Sets the host in which failure may happen.
-     *
-     * @param host the host to set
-     */
-    private void setHost(Host host) {
-        Objects.requireNonNull(host);
-        this.host = host;
-    }
-
-    /**
-     * Gets the pseudo random number generator (PRNG) that is used to define the
-     * number of PEs to be set to failed for the related host. The PRNG returns
-     * values between [0 and 1[
-     *
-     * @return
-     */
-    public ContinuousDistribution getNumberOfFailedPesRandom() {
-        return numberOfFailedPesRandom;
-    }
-
-    /**
-     * Sets the pseudo random number generator (PRNG) that is used to define the
-     * number of PEs to be set to failed for the related host. The PRNG must
-     * return values between [0 and 1[
-     *
-     * @param numberOfFailedPesRandom the numberOfFailedPesRandom to set
-     */
-    public void setNumberOfFailedPesRandom(ContinuousDistribution numberOfFailedPesRandom) {
-        this.numberOfFailedPesRandom = numberOfFailedPesRandom;
-    }
-
-    /**
-     * Sets the delayForFailureOfHostRandom number generator returning
-     * values between [min - max]. This value will be used to set
-     * the delay time the host will fail.
-     *
-     * @param delayForFailureOfHostRandom the delayForFailureOfHostRandom to set
-     */
-    public void setDelayForFailureOfHostRandom(ContinuousDistribution delayForFailureOfHostRandom) {
-        this.delayForFailureOfHostRandom = delayForFailureOfHostRandom;
-    }
-
-    /**
-     * Gets the pseudo delayForFailureOfHostRandom number generator returning
-     * values between [min - max]. This value will be used to set
-     * the delay time the host will fail.
-     *
-     * @return the delayForFailureOfHostRandom
-     */
-    public ContinuousDistribution getDelayForFailureOfHostRandom() {
-        return delayForFailureOfHostRandom;
-    }
-
-    /**
-     * Sets a {@link UnaryOperator} that creates a clone of a {@link Vm}
-     * when all Host PEs fail or all VM's PEs are deallocated
-     * because they have failed.
+     * Clones a VM by creating another one with the same configurations of a given VM.
+     * @param vm the VM to be cloned
+     * @return the cloned (new) VM.
      * 
-     * <p>The {@link UnaryOperator} is a {@link Function} that
-     * receives a {@link Vm} and returns a clone of it.
-     * When all PEs of the VM fail, this vmCloner {@link Function}
-     * is used to create a copy of the VM to be submitted to another Host.
-     * It is like a VM snapshot in a real cloud infrastructure,
-     * which will be started into another host in order to
-     * recovery from a failure.
-     * </p>
-     * 
-     * @param vmCloner the VM cloner {@link Function} to set
-     * @see #setCloudletsCloner(java.util.function.Function) 
+     * @see #createFaultInjectionForHosts(org.cloudbus.cloudsim.datacenters.Datacenter) 
      */
-    public void setVmCloner(UnaryOperator<Vm> vmCloner) {
-        Objects.requireNonNull(vmCloner);
-        this.vmCloner = vmCloner;
+    private Vm cloneVm(Vm vm){
+        Vm clone = new VmSimple((long)vm.getMips(), (int)vm.getNumberOfPes());
+        clone.setDescription("Clone of VM " + vm.getId());
+        clone
+            .setSize(vm.getStorage().getCapacity())
+            .setBw(vm.getBw().getCapacity())
+            .setRam(vm.getBw().getCapacity())
+            .setCloudletScheduler(new CloudletSchedulerTimeShared());
+        Log.printFormattedLine("\n\n#Cloning VM %d\n\tMips %.2f Number of Pes: %d ", vm.getId(), clone.getMips(), clone.getNumberOfPes());
+        
+        return clone;
     }
-
+    
     /**
-     * Sets a {@link Function} that creates a clone of all Cloudlets 
-     * which were running inside a given failed {@link Vm}.
-     * 
-     * <p>Such a Function is used to re-create and re-submit those Cloudlets 
-     * to a clone of the failed VM. In this case, all the Cloudlets are 
-     * recreated from scratch into the cloned VM,
+     * Clones each Cloudlet associated to a given VM.
+     * The method is called when a VM is destroyed due to a
+     * Host failure and a snapshot from that VM (a clone)
+     * is started into another Host.
+     * In this case, all the Cloudlets which were running inside
+     * the destroyed VM will be recreated from scratch into the VM clone,
      * re-starting their execution from the beginning.
-     * Since a snapshot (clone) of the failed VM will be started
-     * into another Host, the Cloudlets Cloner Function will recreated
-     * all Cloudlets, simulating the restart of applications
-     * into this new VM instance.</p>
      * 
-     * @param cloudletsCloner the cloudlets cloner {@link Function} to set
-     * @see #setVmCloner(java.util.function.UnaryOperator) 
+     * @param sourceVm the VM to clone its Cloudlets
+     * @return the List of cloned Cloudlets.
+     * @see #createFaultInjectionForHosts(org.cloudbus.cloudsim.datacenters.Datacenter) 
      */
-    public void setCloudletsCloner(Function<Vm, List<Cloudlet>> cloudletsCloner) {
-        Objects.requireNonNull(cloudletsCloner);
-        this.cloudletsCloner = cloudletsCloner;
+    private List<Cloudlet> cloneCloudlets(Vm sourceVm){
+        final List<Cloudlet> sourceVmCloudlets = sourceVm.getCloudletScheduler().getCloudletList();
+        final List<Cloudlet> clonedCloudlets = new ArrayList<>(sourceVmCloudlets.size());
+        for(Cloudlet cl: sourceVmCloudlets){
+            clonedCloudlets.add(cloneCloudlet(cl));
+        }
+        
+        return clonedCloudlets;
     }
 
+    /**
+     * Creates a clone from a given Cloudlet.
+     * @param sourceCloudlet the Cloudlet to be cloned.
+     * @return the cloned (new) cloudlet
+     */
+    private Cloudlet cloneCloudlet(Cloudlet sourceCloudlet) {
+        Cloudlet clone = new CloudletSimple(sourceCloudlet.getLength(), (int)sourceCloudlet.getNumberOfPes());
+        clone
+                .setUtilizationModelBw(sourceCloudlet.getUtilizationModelBw())
+                .setUtilizationModelCpu(sourceCloudlet.getUtilizationModelCpu())
+                .setUtilizationModelRam(sourceCloudlet.getUtilizationModelRam());
+        return clone;
+        
+    }
+    
 }

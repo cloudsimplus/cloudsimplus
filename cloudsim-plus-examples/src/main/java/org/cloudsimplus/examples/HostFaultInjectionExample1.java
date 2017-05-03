@@ -26,8 +26,9 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package org.cloudsimplus.sla;
+package org.cloudsimplus.examples;
 
+import org.cloudbus.cloudsim.distributions.PoissonDistribution;
 import java.util.ArrayList;
 import java.util.List;
 import org.cloudbus.cloudsim.allocationpolicies.VmAllocationPolicy;
@@ -59,6 +60,7 @@ import org.cloudbus.cloudsim.utilizationmodels.UtilizationModel;
 import org.cloudbus.cloudsim.utilizationmodels.UtilizationModelDynamic;
 import org.cloudbus.cloudsim.utilizationmodels.UtilizationModelFull;
 import org.cloudbus.cloudsim.vms.VmSimple;
+import org.cloudsimplus.faultinjection.HostFaultInjection;
 
 /**
  * Example which shows how to inject random {@link Pe} faults into Hosts
@@ -66,7 +68,7 @@ import org.cloudbus.cloudsim.vms.VmSimple;
  *
  * @author raysaoliveira
  */
-public final class HostFaultInjectionExample {
+public final class HostFaultInjectionExample1 {
 
     private static final int SCHEDULE_TIME_TO_PROCESS_DATACENTER_EVENTS = 19;
     private static final double DATACENTER_COST_PER_CPU = 3.0;
@@ -136,16 +138,15 @@ public final class HostFaultInjectionExample {
      * @param args
      */
     public static void main(String[] args) {
-        new HostFaultInjectionExample();
+        new HostFaultInjectionExample1();
     }
 
-    public HostFaultInjectionExample() {
+    public HostFaultInjectionExample1() {
         Log.printConcatLine("Starting ", getClass().getSimpleName(), "...");
 
         simulation = new CloudSim();
 
         Datacenter datacenter = createDatacenter(HOSTS);
-     
         createFaultInjectionForHosts(datacenter);
 
         DatacenterBroker broker = new DatacenterBrokerSimple(simulation);
@@ -354,25 +355,23 @@ public final class HostFaultInjectionExample {
      * @param datacenter
      */
     private void createFaultInjectionForHosts(Datacenter datacenter) {
-        //Inject Fault
+        final int MAX_TIME_TO_GENERATE_FAILURE = 10;
         //final long seed = System.currentTimeMillis();
         final long seed = 49998811;
-        PoissonProcess poisson = new PoissonProcess(0.2, seed);
-        final int MAX_TIME_TO_GENERATE_FAILURE = 10;
-
+        final double lambda = 0.2;
+        
+        UniformDistr failedPesGenerator = new UniformDistr(seed);
+        UniformDistr failureDelayGenerator = new UniformDistr(1, MAX_TIME_TO_GENERATE_FAILURE, seed);
         int i = 0;
-        UniformDistr failurePesRand = new UniformDistr(seed);
         for (Host host: datacenter.getHostList()) {
-            if (poisson.haveKEventsHappened()) {
-                UniformDistr delayForFailureOfHostRandom = new UniformDistr(1, MAX_TIME_TO_GENERATE_FAILURE, seed + i++);
-
-                //create a new intance of fault and start it.
+            PoissonDistribution poisson = new PoissonDistribution(lambda, seed + i++);
+            if (poisson.eventsHappened()) {
                 HostFaultInjection fault = new HostFaultInjection(host);
-                fault.setNumberOfFailedPesRandom(failurePesRand);
-                fault.setDelayForFailureOfHostRandom(delayForFailureOfHostRandom);
+                fault.setFailedPesGenerator(failedPesGenerator);
+                fault.setFailureDelayGenerator(failureDelayGenerator);
                 fault.setVmCloner(this::cloneVm);
                 fault.setCloudletsCloner(this::cloneCloudlets);
-                Log.printFormattedLine("\tFault Injection created for Host %d.", host.getId());
+                Log.printFormattedLine("\tFault Injection created for %s.", host);
             }
         }
     }
