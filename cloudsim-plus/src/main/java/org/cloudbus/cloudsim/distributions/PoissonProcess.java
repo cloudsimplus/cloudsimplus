@@ -26,19 +26,24 @@ package org.cloudbus.cloudsim.distributions;
 import java.util.function.BiConsumer;
 import java.util.function.Function;
 import java.util.stream.IntStream;
-import org.apache.commons.math3.distribution.UniformRealDistribution;
 import org.apache.commons.math3.util.CombinatoricsUtils;
 
 /**
  * Represents a Poisson Process which models the probability of an event
- * happens a number of times in a given time interval.
+ * to happen a number of times in a given time interval.
  *
  * @see <a href="https://en.wikipedia.org/wiki/Poisson_distribution">Poisson Distribution</a>
  * @see <a href="https://en.wikipedia.org/wiki/Poisson_point_process">Poisson Point Process</a>
  *
  * @author Manoel Campos da Silva Filho
+ * @since CloudSim Plus 1.2.0
  */
-public class PoissonDistribution extends ContinuousDistributionAbstract {
+public class PoissonProcess {
+    /**
+     * A random number generator that returns values between [0 and 1[.
+     */
+    private ContinuousDistribution rand;
+    
     /**
      * @see #getLambda()
      */
@@ -50,33 +55,53 @@ public class PoissonDistribution extends ContinuousDistributionAbstract {
     private int k;
 
     /**
+     * Creates a new Poisson process to check
+     * the probability of 1 event ({@link #getK() k}) to happen at each time
+     * interval.
+     *
+     * @param lambda the average number of events that happen at each 1 time unit.
+     * @param seed the seed to initialize the uniform random number generator
+     * @see #setK(int)
+     * @see #setLambda(double) 
+     */
+    public PoissonProcess(double lambda, long seed){
+        this.rand = new UniformDistr(seed);
+        this.k = 1;
+        this.setLambda(lambda);
+    }
+    
+    /**
      * Creates a new Poisson process that considers you want to check
      * the probability of 1 event ({@link #getK() k}) to happen at each time.
      *
      * @param lambda average number of events by interval
-     * @param seed the seed to initialize the uniform random number generator
+     * 
      * @see #setK(int)
      */
-    public PoissonDistribution(double lambda, long seed){
-        super(new UniformRealDistribution(0, 1), seed);
-        this.k = 1;
-        this.setLambda(lambda);
-    }
+    public PoissonProcess(double lambda){
+        this(lambda, -1);
+    }    
 
     /**
+     * Gets the average number of events that are expected to happen at each 1 time unit.
+     * It is the expected number of events to happen each time, 
+     * also called the <b>event rate</b> or <b>rate parameter</b>.
      *
-     * @return the average number of events that happen at each single time unit.
-     * It is also called the event rate or rate parameter.
-     *
-     * If the unit is minute, it means the average number of arrivals
-     * at each minute.
+     * <p>If the unit is minute, this value means the average number of arrivals
+     * at each minute. It's the inverse of the {@link #getInterarrivalMeanTime()}.</p>
+     * @return 
      */
     public double getLambda(){
         return lambda;
     }
 
     /**
-     * Sets the average number of events that happen at each single time unit.
+     * Sets the average number of events that are expected to happen at each 1 time unit.
+     * It is the expected number of events to happen each time, 
+     * also called the <b>event rate</b> or <b>rate parameter</b>.
+     *
+     * <p>If the unit is minute, this value means the average number of arrivals
+     * at each minute. It's the inverse of the {@link #getInterarrivalMeanTime()}.</p>
      * @param lambda the value to set
      */
     private void setLambda(double lambda) {
@@ -84,7 +109,8 @@ public class PoissonDistribution extends ContinuousDistributionAbstract {
     }
 
     /**
-     * Gets the probability to arrive {@link #getK() K} events in the current time.
+     * Gets the probability to arrive {@link #getK() K} events in the current time,
+     * considering the expected average arrival time {@link #getLambda() lambda}.
      * @return 
      * @see <a href="https://en.wikipedia.org/wiki/Poisson_distribution">Poisson distribution</a>
      */
@@ -102,7 +128,7 @@ public class PoissonDistribution extends ContinuousDistributionAbstract {
      * @see #eventsArrivalProbability()
      */
     public boolean eventsHappened(){
-        return sample() >= eventsArrivalProbability();
+        return rand.sample() >= eventsArrivalProbability();
     }
 
     /**
@@ -124,8 +150,8 @@ public class PoissonDistribution extends ContinuousDistributionAbstract {
     }
 
     /**
-     *
-     * @return the mean time between arrival of two events.
+     * Gets the mean time between arrival of two events.
+     * @return 
      */
     public double getInterarrivalMeanTime(){
         final double oneMinute = 1.0;
@@ -153,14 +179,14 @@ public class PoissonDistribution extends ContinuousDistributionAbstract {
         final int SIMULATION_TIME_LENGHT = 25;
         
         //If the arrival of each customers must be shown.
-        final boolean showCustomerArrivals = false;
+        final boolean showCustomerArrivals = true;
 
         /*
          * Number of simulations to run.
          */
         int NUMBER_OF_SIMULATIONS = 100;
         
-        BiConsumer<PoissonDistribution, Integer> printArrivals = (poisson, minute) -> {
+        BiConsumer<PoissonProcess, Integer> printArrivals = (poisson, minute) -> {
             if(showCustomerArrivals)
                 System.out.printf("%d customers arrived at minute %d\n", poisson.getK(), minute);
         };
@@ -169,10 +195,10 @@ public class PoissonDistribution extends ContinuousDistributionAbstract {
          * A {@link Function} to simulate the arrival of customers for a given time period.
          * This is just a method to test the implementation.
          *
-         * @param poisson the PoissonDistribution object that will compute the customer arrivals probabilities
+         * @param poisson the PoissonProcess object that will compute the customer arrivals probabilities
          * @return the number of arrived customers
          */
-        Function<PoissonDistribution, Integer> runSimulation = poisson -> {
+        Function<PoissonProcess, Integer> runSimulation = poisson -> {
             /*We want to check the probability of 1 customer to arrive at each
             single minute. The default k value is 1, so we dont need to set it.*/
             final int totalArrivedCustomers = 
@@ -191,10 +217,10 @@ public class PoissonDistribution extends ContinuousDistributionAbstract {
         };      
 
         int customersArrivedInAllSimulations = 0;
-        PoissonDistribution poisson = null;
+        PoissonProcess poisson = null;
         for(int i = 0; i < NUMBER_OF_SIMULATIONS; i++){
             long seed=System.currentTimeMillis();
-            poisson = new PoissonDistribution(MEAN_CUSTOMERS_ARRIVAL_PER_MINUTE, seed);
+            poisson = new PoissonProcess(MEAN_CUSTOMERS_ARRIVAL_PER_MINUTE, seed);
             System.out.printf("Simulation number %d\n", i);
             customersArrivedInAllSimulations += runSimulation.apply(poisson);
         }

@@ -46,8 +46,8 @@ final class CloudletTaskTimeCompletionMinimizationRunner extends ExperimentRunne
      */
     static final long[] CLOUDLET_LENGTHS = {10000, 14000, 20000, 40000};
     static final int[] VM_PES = {2, 4};
-    static final int VMS = 4;
-    static final int CLOUDLETS = 8;
+    static final int VMS = 30;
+    static final int CLOUDLETS = 50;
 
     /**
      * The TaskTimeCompletion average for all the experiments.
@@ -83,7 +83,7 @@ final class CloudletTaskTimeCompletionMinimizationRunner extends ExperimentRunne
      */
     public static void main(String[] args) {
         new CloudletTaskTimeCompletionMinimizationRunner()
-                .setSimulationRuns(500)
+                .setSimulationRuns(300)
                 .setApplyAntitheticVariatesTechnique(true)
                 .setNumberOfBatches(5) //Comment this or set to 0 to disable the "Batch Means Method"
                 .setBaseSeed(1475098589732L) //Comment this to use the current time as base seed 1475098589732L

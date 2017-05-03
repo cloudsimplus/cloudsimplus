@@ -41,28 +41,27 @@ import org.cloudbus.cloudsim.util.Log;
 import org.cloudbus.cloudsim.vms.Vm;
 import org.cloudbus.cloudsim.core.*;
 import org.cloudbus.cloudsim.distributions.ContinuousDistribution;
+import org.cloudbus.cloudsim.distributions.PoissonProcess;
 import org.cloudbus.cloudsim.distributions.UniformDistr;
 import org.cloudbus.cloudsim.resources.Pe;
 import org.cloudbus.cloudsim.resources.Pe.Status;
 
 /**
- * This class shows how to generate a fault. In this case the fault is in the
- * host.
- *
- * Notes: This class does not work with the injection fault in time 0. Only
- * works after the creation of cloudlets and VMs, because when destroying the
- * VM, the cloudlet is not returned to be chosen by another VM that did not
- * fail, thus causing error in the simulator.
+ * Generates random failures for the {@link Pe}'s of a specific {@link Host}. 
+ * The events happens in the following order:
+ * <ol>
+ *  <li>a failure is injected randomly;</li>
+ *  <li>a delay is defined for the failure to actually happen;</li>
+ *  <li>the number of PEs to fail is randomly generated.</li>
+ * </ol>
  *
  * @author raysaoliveira
- * 
- * see <link>https://blogs.sap.com/2014/07/21/equipment-availability-vs-reliability/
- *
+ * @since CloudSim Plus 1.2.0
+ * @see https://blogs.sap.com/2014/07/21/equipment-availability-vs-reliability/
  */
 public class HostFaultInjection extends CloudSimEntity {
     private Host host;
-    private ContinuousDistribution failedPesGenerator;
-    private ContinuousDistribution failureDelayGenerator;
+    private ContinuousDistribution random;
     
     /**
      * @todo The class has multiple responsibilities.
@@ -73,23 +72,26 @@ public class HostFaultInjection extends CloudSimEntity {
      */
     private UnaryOperator<Vm> vmCloner;
     private Function<Vm, List<Cloudlet>> cloudletsCloner;
+    private PoissonProcess failureInjectionGenerator;
+    
+    private double maxFailureDelay;
 
     /**
-     * Creates a fault injection mechanism for a host that will generate
-     * failures with a delay and number of failed PEs generated using a Uniform
-     * Pseudo Random Number Generator (PRNG) for each one.
+     * Creates a fault injection mechanism for a host that will inject
+     * failures with a delay and number of failed PEs generated using a given
+     * Pseudo Random Number Generator (PRNG).
      *
-     * @param host the Host the faults will be generated on
-     * @see
-     * #setFailureDelayGenerator(org.cloudbus.cloudsim.distributions.ContinuousDistribution)
-     * @see
-     * #setFailedPesGenerator(org.cloudbus.cloudsim.distributions.ContinuousDistribution)
+     * @param host the Host to which failures may be randomly generated
+     * @param meanFailuresPerMinute the average number of failures expected to happen each minute.
+     * @param seed the seed to initialize the internal uniform random number generator
+     * @see #setMaxFailureDelay(double) 
      */
-    public HostFaultInjection(Host host) {
+    public HostFaultInjection(Host host, double meanFailuresPerMinute, long seed) {
         super(host.getSimulation());
         this.setHost(host);
-        this.failedPesGenerator = new UniformDistr();
-        this.failureDelayGenerator = new UniformDistr();
+        this.maxFailureDelay = 0;
+        this.failureInjectionGenerator = new PoissonProcess(meanFailuresPerMinute, seed);
+        this.random = new UniformDistr(seed);
         
         /*Sets a default vmCloner which in fact doesn't
         clone a VM, just returns the Vm.NULL object.
@@ -104,15 +106,31 @@ public class HostFaultInjection extends CloudSimEntity {
             return Vm.NULL; 
         };
         this.cloudletsCloner = vm -> {
-            Log.printFormattedLine("%s: You should define a Cloudlets Cloner Function to re-create the List of running Cloudlets from a faulty VM into the Cloned VM when there is a Host failure", 
+            Log.printFormattedLine(
+                "%s: You should define a Cloudlets Cloner Function to re-create the List of running Cloudlets from a faulty VM into the Cloned VM when there is a Host failure", 
                 getClass().getSimpleName());
             return Collections.EMPTY_LIST;
         };
-    }
+    }    
 
     @Override
     protected void startEntity() {
-        double delay = failureDelayGenerator.sample() + 1;
+        scheduleFailureCheck();
+    }
+
+    /**
+     * Schedules a message to be processed internally to check,
+     * at every 1 minute, if a failure must be injected or not.
+     */
+    private void scheduleFailureCheck() {
+        if( getSimulation().clock() > 400){
+            return;
+        }
+        
+        /*The number of failures is defined in minutes,
+        so at each 60 seconds it checks if a failure has to be generated
+        or not.*/
+        final double delay = 60; 
         schedule(getId(), delay, CloudSimTags.HOST_FAILURE);
     }
 
@@ -120,7 +138,7 @@ public class HostFaultInjection extends CloudSimEntity {
     public void processEvent(SimEvent ev) {
         switch (ev.getTag()) {
             case CloudSimTags.HOST_FAILURE:
-                generateFailure();
+                tryGenerateFailure();
             break;
             default:
                 Log.printLine(getName() + ": unknown event type");
@@ -132,42 +150,54 @@ public class HostFaultInjection extends CloudSimEntity {
     public void shutdownEntity() {/**/}
 
     /**
-     * Generates a failure on Host's PEs or not, according to the number of PEs
+     * Try to generates a failure on Host's PEs or not, according to the number of PEs
      * to be set to failed, returned by the {@link #failedPesGenerator}
      * PRNG.
      *
      * @return <tt>true</tt> if the failure was generated, <tt>false</tt>
      * otherwise
      */
-    private boolean generateFailure() {
-        final int numberOfFailedPes = generateHostPesFailures();
-        final long hostWorkingPes = host.getNumberOfWorkingPes();
-        final long vmsRequiredPes = getPesSumOfWorkingVms();
-        Log.printFormattedLine("\t%.2f: Generated %d PEs failures for %s", getSimulation().clock(), numberOfFailedPes, host);
-        if(vmsRequiredPes == 0){
-            System.out.printf("\t      Number of VMs: %d\n", host.getVmList().size());
+    private boolean tryGenerateFailure() {
+        try {
+            if(!failureInjectionGenerator.eventsHappened()){
+                return false;
+            }
+
+            final int numberOfFailedPes = generateHostPesFailures();
+            final long hostWorkingPes = host.getNumberOfWorkingPes();
+            final long vmsRequiredPes = getPesSumOfWorkingVms();
+            Log.printFormattedLine("%.2f: %s: Generated %d PEs failures for %s", 
+                    getSimulation().clock(), getClass().getSimpleName(),
+                    numberOfFailedPes, host);
+            if(vmsRequiredPes == 0){
+                Log.printFormattedLine("\tNumber of VMs: %d", host.getVmList().size());
+            }
+            Log.printFormattedLine("\tWorking PEs: %d | VMs required PEs: %d", hostWorkingPes, vmsRequiredPes);
+            if(hostWorkingPes == 0){
+                //double clockInicioFalha = getSimulation().clock(); 
+                //Log.printFormattedLine("\n#Inicio Falha no Host %d : %f", host.getId(),clockInicioFalha);
+                setAllVmsToFailed(); 
+
+            } else if (hostWorkingPes >= vmsRequiredPes) {
+                logNoVmFailure();  
+            } else {
+                deallocateFailedHostPesFromVms();
+            } 
+
+            return numberOfFailedPes > 0;
+        } finally {
+            /*schedules the failure check for the next minute
+            to see if a failure will be injected at that time.*/
+            scheduleFailureCheck();
         }
-        System.out.printf("\t      Working PEs: %d | VMs required PEs: %d\n", hostWorkingPes, vmsRequiredPes);
-        if(hostWorkingPes == 0){
-            //double clockInicioFalha = getSimulation().clock(); 
-            //Log.printFormattedLine("\n#Inicio Falha no Host %d : %f", host.getId(),clockInicioFalha);
-            setAllVmsToFailed(); 
-            
-        } else if (hostWorkingPes >= vmsRequiredPes) {
-            logNoVmFailure();  
-        } else {
-            deallocateFailedHostPesFromVms();
-        } 
-        
-        return numberOfFailedPes > 0;
     }
 
     /**
      * Sets all VMs to failed when all Host PEs failed.
      */
     private void setAllVmsToFailed() {
-        Log.printFormattedLine("\t%.2f: %s -> All the %d PEs failed, affecting all its %d VMs.\n",
-                getSimulation().clock(), host, host.getNumberOfPes(), host.getVmList().size());
+        Log.printFormattedLine("\tAll the %d PEs failed, affecting all its %d VMs.\n",
+                host.getNumberOfPes(), host.getVmList().size());
         host.getVmList().stream().forEach(this::setVmToFailedAndCreateClone);
     }
     
@@ -178,10 +208,10 @@ public class HostFaultInjection extends CloudSimEntity {
     private void logNoVmFailure() {
         final int vmsRequiredPes = (int)getPesSumOfWorkingVms();
         Log.printFormattedLine(
-                "\t%.2f: %s -> Number of failed PEs is less than PEs required by all its %d VMs, thus it doesn't affect any VM.",
-                getSimulation().clock(), host, host.getVmList().size());
-        Log.printFormattedLine("\t      %s -> Total PEs: %d | Failed PEs: %d | Working PEs: %d | Current PEs required by VMs: %d.\n",
-                host, host.getNumberOfPes(), host.getNumberOfFailedPes(), host.getNumberOfWorkingPes(),
+                "\tNumber of failed PEs is less than PEs required by all its %d VMs, thus it doesn't affect any VM.",
+                host.getVmList().size());
+        Log.printFormattedLine("\tTotal PEs: %d | Failed PEs: %d | Working PEs: %d | Current PEs required by VMs: %d.\n",
+                host.getNumberOfPes(), host.getNumberOfFailedPes(), host.getNumberOfWorkingPes(),
                 vmsRequiredPes);
     }
     
@@ -189,16 +219,32 @@ public class HostFaultInjection extends CloudSimEntity {
         final int hostWorkingPes = (int)host.getNumberOfWorkingPes();
         final int vmsRequiredPes = (int)getPesSumOfWorkingVms();
         
-        int i = 0;
         int failedPesToRemoveFromVms = vmsRequiredPes-hostWorkingPes;
         final int affectedVms = Math.min(host.getVmList().size(), failedPesToRemoveFromVms);
         Log.printFormattedLine(
-                "\t%.2f: %s -> %d PEs failed, from a total of %d PEs. There are %d PEs working.",
-                getSimulation().clock(), host, host.getNumberOfFailedPes(), 
+                "\t%d PEs failed, from a total of %d PEs. There are %d PEs working.",
+                host.getNumberOfFailedPes(), 
                 host.getNumberOfPes(), host.getNumberOfWorkingPes());
         Log.printFormattedLine(
-                "\t      %d VMs affected from a total of %d. %d PEs are going to be removed from VMs", 
+                "\t%d VMs affected from a total of %d. %d PEs are going to be removed from VMs", 
                 affectedVms, host.getVmList().size(), failedPesToRemoveFromVms);
+        cyclicallyRemoveFailedHostPesFromVms(failedPesToRemoveFromVms, affectedVms);
+        
+        Log.printLine();
+        setVmsToFailed();
+    }
+
+    /**
+     * Removes one physical failed PE from one affected VM at a time.
+     * The affected VMs are dealt as a circular list, visiting
+     * one VM at a time to remove 1 PE from it, 
+     * until all the failed PEs are removed.
+     * 
+     * @param failedPesToRemoveFromVms number of physical PEs to remove
+     * @param affectedVms number of VMs affected by PEs failures
+     */
+    private void cyclicallyRemoveFailedHostPesFromVms(int failedPesToRemoveFromVms, final int affectedVms) {
+        int i = 0;
         while(failedPesToRemoveFromVms-- > 0){
             i = i % affectedVms;
             Vm vm = host.getVmList().get(i);
@@ -208,13 +254,10 @@ public class HostFaultInjection extends CloudSimEntity {
             //remove 1 failed PE from the VM
             vm.getProcessor().removeCapacity(1); 
             Log.printFormattedLine(
-                    "\t      Removing 1 PE from VM %d due to Host PE failure. New VM PEs Number: %d\n", 
+                    "\tRemoving 1 PE from VM %d due to Host PE failure. New VM PEs Number: %d\n", 
                     vm.getId(), vm.getNumberOfPes());
             i++;
         }
-        
-        Log.printLine();
-        setVmsToFailed();
     }
 
     /**
@@ -256,9 +299,7 @@ public class HostFaultInjection extends CloudSimEntity {
         List<Cloudlet> cloudlets = cloudletsCloner.apply(vm);
         cloudlets.stream().forEach(c -> setBrokerToEntity(c, broker));
         
-        
         vm.setFailed(true);
-        Log.printFormattedLine("#Vm %d is being destroying...", vm.getId());
        
         /*
          As the broker is expected to request vm creation and destruction,
@@ -284,11 +325,16 @@ public class HostFaultInjection extends CloudSimEntity {
         }
     }
     
+    /**
+     * Generates random failures for the Host's PEs.
+     * @return 
+     */
     private int generateHostPesFailures() {
         final int numberOfFailedPes = generateNumberOfFailedPes();
         for (int i = 0; i < numberOfFailedPes; i++) {
             host.getPeList().get(i).setStatus(Pe.Status.FAILED);
         }
+        
         return numberOfFailedPes;
     }
 
@@ -304,8 +350,7 @@ public class HostFaultInjection extends CloudSimEntity {
     }
 
     /**
-     * Generates a number of PEs that will fail for the host using the
-     * {@link #failedPesGenerator},
+     * Randomly generates a number of PEs which will fail for the host.
      *
      * @return the generated number of failed PEs for the host
      */
@@ -313,7 +358,7 @@ public class HostFaultInjection extends CloudSimEntity {
         /*the random generator return values from [0 to 1]
          and multiplying by the number of PEs we get a number between
          0 and numbero of PEs*/
-        return (int) (failedPesGenerator.sample() * host.getPeList().size() + 1);
+        return (int) (random.sample() * host.getPeList().size() + 1);
     }
 
     /**
@@ -341,45 +386,49 @@ public class HostFaultInjection extends CloudSimEntity {
      *
      * @param host the host to set
      */
-    private void setHost(Host host) {
+    protected final void setHost(Host host) {
         Objects.requireNonNull(host);
         this.host = host;
     }
 
     /**
-     * Sets the pseudo random number generator (PRNG) that is used to define the
-     * number of PEs to be set as failed for the related host. 
+     * Sets the maximum delay after a fault be injected
+     * that it will in fact happen (default is 0).
      * 
-     * <p><b>The PRNG must return values between [0 and 1[.</b>
-     * The actual number of failed PEs depends on each Host,
-     * therefore it is computed internally.</p>
+     * <p>
+     * This is used to define, randomly
+     * the actual time, after the time the fault was
+     * injected, that it will happen.
+     * For instance, if a fault is generated
+     * and a value 5 is chosen between 0 and the maximum delay,
+     * the fault will actually happen just after 5 seconds
+     * it was generated.</p>
      *
-     * @param failedPesGenerator the failedPesGenerator to set
-     * @see #setFailureDelayGenerator(org.cloudbus.cloudsim.distributions.ContinuousDistribution) 
+     * @param maxFailureDelay the max delay to set (in seconds)
      */
-    public void setFailedPesGenerator(ContinuousDistribution failedPesGenerator) {
-        Objects.requireNonNull(failedPesGenerator);
-        this.failedPesGenerator = failedPesGenerator;
+    public void setMaxFailureDelay(double maxFailureDelay) {
+        this.maxFailureDelay = maxFailureDelay;
     }
 
     /**
-     * Sets the pseudo random number generator used to randomly define 
-     * the delay before the failure is injected.
+     * Gets the maximum delay after a fault be injected
+     * that it will in fact happen (in seconds).
      * 
      * <p>
-     * For instance, if the generator returns values between 1 and 10
-     * and the value 5 is generated,
-     * when a failure is injected, it will in fact happen just after 5
-     * seconds from the current simulation time. </p>
+     * This is used to define, randomly
+     * the actual time, after the time the fault was
+     * injected, that it will happen.
+     * For instance, if a fault is generated
+     * and a value 5 is chosen between 0 and the maximum delay,
+     * the fault will actually happen just after 5 seconds
+     * it was generated.</p>
      *
-     * @param failureDelayGenerator the pseudo random number generator to set
-     * @see #setFailedPesGenerator(org.cloudbus.cloudsim.distributions.ContinuousDistribution) 
+     * @return the maximum failure delay (in seconds)
      */
-    public void setFailureDelayGenerator(ContinuousDistribution failureDelayGenerator) {
-        Objects.requireNonNull(failureDelayGenerator);
-        this.failureDelayGenerator = failureDelayGenerator;
-    }
-
+    public double getMaxFailureDelay() {
+        return this.maxFailureDelay;
+    }    
+    
     /**
      * Sets a {@link UnaryOperator} that creates a clone of a {@link Vm}
      * when all Host PEs fail or all VM's PEs are deallocated
@@ -423,4 +472,11 @@ public class HostFaultInjection extends CloudSimEntity {
         this.cloudletsCloner = cloudletsCloner;
     }
 
+    /**
+     * Gets the average number of failures expected to happen each minute.
+     * @return
+     */
+    public double getMeanFailuresPerMinute() {
+        return failureInjectionGenerator.getLambda();
+    }
 }

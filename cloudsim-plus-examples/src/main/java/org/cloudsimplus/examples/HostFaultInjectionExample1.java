@@ -21,17 +21,10 @@
  *     You should have received a copy of the GNU General Public License
  *     along with CloudSim Plus. If not, see <http://www.gnu.org/licenses/>.
  */
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package org.cloudsimplus.examples;
 
-import org.cloudbus.cloudsim.distributions.PoissonDistribution;
 import java.util.ArrayList;
 import java.util.List;
-import org.cloudbus.cloudsim.allocationpolicies.VmAllocationPolicy;
 import org.cloudbus.cloudsim.allocationpolicies.VmAllocationPolicySimple;
 import org.cloudbus.cloudsim.cloudlets.Cloudlet;
 import org.cloudbus.cloudsim.cloudlets.CloudletSimple;
@@ -47,7 +40,6 @@ import org.cloudbus.cloudsim.brokers.DatacenterBrokerSimple;
 import org.cloudbus.cloudsim.schedulers.vm.VmSchedulerTimeShared;
 import org.cloudbus.cloudsim.core.CloudSim;
 import org.cloudbus.cloudsim.datacenters.DatacenterSimple;
-import org.cloudbus.cloudsim.distributions.UniformDistr;
 import org.cloudbus.cloudsim.hosts.Host;
 import org.cloudbus.cloudsim.hosts.HostSimple;
 import org.cloudbus.cloudsim.provisioners.PeProvisionerSimple;
@@ -57,7 +49,6 @@ import org.cloudbus.cloudsim.resources.PeSimple;
 import org.cloudbus.cloudsim.schedulers.vm.VmScheduler;
 import org.cloudsimplus.builders.tables.CloudletsTableBuilder;
 import org.cloudbus.cloudsim.utilizationmodels.UtilizationModel;
-import org.cloudbus.cloudsim.utilizationmodels.UtilizationModelDynamic;
 import org.cloudbus.cloudsim.utilizationmodels.UtilizationModelFull;
 import org.cloudbus.cloudsim.vms.VmSimple;
 import org.cloudsimplus.faultinjection.HostFaultInjection;
@@ -67,22 +58,22 @@ import org.cloudsimplus.faultinjection.HostFaultInjection;
  * using {@link HostFaultInjection} objects.
  *
  * @author raysaoliveira
+ * @since CloudSim Plus 1.2.0
  */
 public final class HostFaultInjectionExample1 {
 
-    private static final int SCHEDULE_TIME_TO_PROCESS_DATACENTER_EVENTS = 19;
+    private static final int SCHEDULE_TIME_TO_PROCESS_DATACENTER_EVENTS = 5;
     private static final double DATACENTER_COST_PER_CPU = 3.0;
     private static final double DATACENTER_COST_PER_RAM = 0.05;
     private static final double DATACENTER_COST_PER_STORAGE = 0.001;
     private static final double DATACENTER_COST_PER_BW = 0.0;
 
     private static final int  HOST_MIPS_BY_PE = 1000;
-    private static final int  HOST_PES = 2;
+    private static final int  HOST_PES = 6;
     private static final long HOST_RAM = 500000; //host memory (MEGABYTE)
     private static final long HOST_STORAGE = 1000000; //host storage
     private static final long HOST_BW = 100000000L;
     private List<Host> hostList;
-    
 
     /**
      * The percentage of host CPU usage that trigger VM migration due to over
@@ -94,40 +85,21 @@ public final class HostFaultInjectionExample1 {
     private static final long VM_SIZE = 1000; //image size (MEGABYTE)
     private static final int  VM_RAM = 10000; //vm memory (MEGABYTE)
     private static final long VM_BW = 100000;
-    private static final int  VM_PES = 1; //number of cpus
+    private static final int  VM_PES = 2; //number of cpus
     
-    private static final int  CLOUDLET_PES = 1; 
-    private static final long CLOUDLET_LENGHT = 30000;
+    private static final int  CLOUDLET_PES = 2; 
+    private static final long CLOUDLET_LENGHT = 200000;
     private static final long CLOUDLET_FILESIZE = 300;
     private static final long CLOUDLET_OUTPUTSIZE = 300;
-
-    /**
-     * The percentage of CPU that a cloudlet will use when it starts executing
-     * (in scale from 0 to 1, where 1 is 100%). For each cloudlet create, this
-     * value is used as a base to define CPU usage.
-     *
-     * @see #createAndSubmitCloudlets(DatacenterBroker)
-     */
-    private static final double CLOUDLET_INITIAL_CPU_USAGE_PERCENT = 0.8;
-
-    /**
-     * Defines the speed (in percentage) that CPU usage of a cloudlet will
-     * increase during the simulation tie. (in scale from 0 to 1, where 1 is
-     * 100%).
-     *
-     * @see #createAndSubmitCloudletsWithDynamicCpuUtilization(double, double,
-     * Vm, DatacenterBroker)
-     */
-    public static final double CLOUDLET_CPU_USAGE_INCREMENT_PER_SECOND = 0.05;
 
     /**
      * Number of Hosts to create for each Datacenter.
      * The number of elements in this array defines the number of Datacenters to be created.
      */
     private static final int HOSTS = 2;
-    private static final int VMS = 2;
+    private static final int VMS = 4;
             
-    private static final int CLOUDLETS_BY_VM = 1;
+    private static final int CLOUDLETS_BY_VM = 2;
 
     private final List<Vm> vmlist = new ArrayList<>();
     private CloudSim simulation;
@@ -162,19 +134,6 @@ public final class HostFaultInjectionExample1 {
         System.out.println("A cloudlet 2 deveria terminar no segundo 40, pois ela iniciou em 10, mas ela não termina");
     }
 
-    public void createAndSubmitCloudlets(DatacenterBroker broker) {
-        double initialCloudletCpuUtilizationPercentage = CLOUDLET_INITIAL_CPU_USAGE_PERCENT;
-        final int numberOfCloudlets = VMS - 1;
-        for (int i = 0; i < numberOfCloudlets; i++) {
-            createAndSubmitCloudletsWithStaticCpuUtilization(
-                    initialCloudletCpuUtilizationPercentage, vmlist.get(i), broker);
-            initialCloudletCpuUtilizationPercentage += 0.15;
-        }
-        //Create one last cloudlet which CPU usage increases dynamically
-        Vm lastVm = vmlist.get(vmlist.size() - 1);
-        createAndSubmitCloudletsWithDynamicCpuUtilization(0.2, 1, lastVm, broker);
-    }
-
     public void createAndSubmitVms(DatacenterBroker broker) {
         for (int i = 0; i < VMS; i++) {
             Vm vm = createVm(broker);
@@ -206,90 +165,26 @@ public final class HostFaultInjectionExample1 {
      * {@link #CLOUDLETS_BY_VM} and submits them to the
      * given broker.
      *
-     * @param cloudletInitialCpuUsagePercent the percentage of CPU utilization
-     * that created Cloudlets will use when they start to execute. If this value
-     * is greater than 1 (100%), it will be changed to 1.
-     * @param maxCloudletCpuUtilizationPercentage the maximum percentage of CPU
-     * utilization that created Cloudlets are allowed to use. If this value is
-     * greater than 1 (100%), it will be changed to 1.
-     * @param hostingVm the VM that will run the Cloudlets
      * @param broker the broker that the created Cloudlets belong to
-     * @param progressiveCpuUsage if the CPU usage of created Cloudlets have to
-     * change along the execution time or not, according to the
-     * {@link #getCpuUtilizationIncrement(org.cloudbus.cloudsim.utilizationmodels.UtilizationModelDynamic)}
      * @return the List of created Cloudlets
      */
     public List<Cloudlet> createAndSubmitCloudlets(
-            double cloudletInitialCpuUsagePercent,
-            double maxCloudletCpuUtilizationPercentage,
-            Vm hostingVm,
-            DatacenterBroker broker,
-            boolean progressiveCpuUsage) {
-        cloudletInitialCpuUsagePercent = Math.min(cloudletInitialCpuUsagePercent, 1);
-        maxCloudletCpuUtilizationPercentage = Math.min(maxCloudletCpuUtilizationPercentage, 1);
+            DatacenterBroker broker) {
         final List<Cloudlet> list = new ArrayList<>(CLOUDLETS_BY_VM);
-        UtilizationModel utilizationModelFull = new UtilizationModelFull();
-        int cloudletId;
+        UtilizationModel utilizationModel = new UtilizationModelFull();
         for (int i = 0; i < CLOUDLETS_BY_VM; i++) {
-            cloudletId = hostingVm.getId() + i;
-            UtilizationModelDynamic cpuUtilizationModel;
-            if (progressiveCpuUsage) {
-                cpuUtilizationModel
-                        = new UtilizationModelDynamic(cloudletInitialCpuUsagePercent)
-                                .setUtilizationUpdateFunction(this::getCpuUtilizationIncrement);
-            } else {
-                cpuUtilizationModel = new UtilizationModelDynamic(cloudletInitialCpuUsagePercent);
-            }
-            cpuUtilizationModel.setMaxResourceUtilization(maxCloudletCpuUtilizationPercentage);
-
             Cloudlet c
-                    = new CloudletSimple(
-                            cloudletId, CLOUDLET_LENGHT, CLOUDLET_PES)
+                    = new CloudletSimple(CLOUDLET_LENGHT, CLOUDLET_PES)
                             .setFileSize(CLOUDLET_FILESIZE)
                             .setOutputSize(CLOUDLET_OUTPUTSIZE)
-                            .setUtilizationModelCpu(cpuUtilizationModel)
-                            .setUtilizationModelRam(utilizationModelFull)
-                            .setUtilizationModelBw(utilizationModelFull);
+                            .setUtilizationModel(utilizationModel);
             c.setBroker(broker);
             list.add(c);
         }
 
         broker.submitCloudletList(list);
-        for (Cloudlet c : list) {
-            broker.bindCloudletToVm(c, hostingVm);
-        }
 
         return list;
-    }
-
-    /**
-     * Increments the CPU resource utilization, that is defined in percentage
-     * values.
-     *
-     * @return the new resource utilization after the increment
-     */
-    private double getCpuUtilizationIncrement(UtilizationModelDynamic um) {
-        return um.getUtilization() + um.getTimeSpan() * CLOUDLET_CPU_USAGE_INCREMENT_PER_SECOND;
-    }
-
-    public List<Cloudlet> createAndSubmitCloudletsWithDynamicCpuUtilization(
-            double initialCloudletCpuUtilizationPercentage,
-            double maxCloudletCpuUtilizationPercentage,
-            Vm hostingVm,
-            DatacenterBroker broker) {
-        return createAndSubmitCloudlets(
-                initialCloudletCpuUtilizationPercentage,
-                maxCloudletCpuUtilizationPercentage, hostingVm, broker, true);
-    }
-
-    public List<Cloudlet> createAndSubmitCloudletsWithStaticCpuUtilization(
-            double initialCloudletCpuUtilizationPercentage,
-            Vm hostingVm,
-            DatacenterBroker broker) {
-        return createAndSubmitCloudlets(
-                initialCloudletCpuUtilizationPercentage,
-                initialCloudletCpuUtilizationPercentage,
-                hostingVm, broker, false);
     }
 
     private Datacenter createDatacenter(int numberOfHosts) {
@@ -307,15 +202,8 @@ public final class HostFaultInjectionExample1 {
                         .setCostPerStorage(DATACENTER_COST_PER_STORAGE)
                         .setCostPerBw(DATACENTER_COST_PER_BW);
 
-        /*@todo nao está sendo usado por enquanto, apenas para evitar migração
-        PowerVmAllocationPolicyMigrationWorstFitStaticThreshold allocationPolicy
-                = new PowerVmAllocationPolicyMigrationWorstFitStaticThreshold(
-                        new PowerVmSelectionPolicyMinimumUtilization(),
-                        HOST_USAGE_THRESHOLD_VM_MIGRATION);*/
-
         Datacenter dc = new DatacenterSimple(simulation, characteristics, new VmAllocationPolicySimple());
         dc
-          //.setMigrationsEnabled(false)
           .setSchedulingInterval(SCHEDULE_TIME_TO_PROCESS_DATACENTER_EVENTS)
           .setLog(false);
         return dc;
@@ -355,24 +243,18 @@ public final class HostFaultInjectionExample1 {
      * @param datacenter
      */
     private void createFaultInjectionForHosts(Datacenter datacenter) {
-        final int MAX_TIME_TO_GENERATE_FAILURE = 10;
+        final int MAX_FAILURE_DELAY_SECONDS = 10;
         //final long seed = System.currentTimeMillis();
-        final long seed = 49998811;
-        final double lambda = 0.2;
+        long seed = 3412125;
+        final double meanFailureNumberPerMinute = 0.4;
         
-        UniformDistr failedPesGenerator = new UniformDistr(seed);
-        UniformDistr failureDelayGenerator = new UniformDistr(1, MAX_TIME_TO_GENERATE_FAILURE, seed);
-        int i = 0;
         for (Host host: datacenter.getHostList()) {
-            PoissonDistribution poisson = new PoissonDistribution(lambda, seed + i++);
-            if (poisson.eventsHappened()) {
-                HostFaultInjection fault = new HostFaultInjection(host);
-                fault.setFailedPesGenerator(failedPesGenerator);
-                fault.setFailureDelayGenerator(failureDelayGenerator);
-                fault.setVmCloner(this::cloneVm);
-                fault.setCloudletsCloner(this::cloneCloudlets);
-                Log.printFormattedLine("\tFault Injection created for %s.", host);
-            }
+            HostFaultInjection fault = new HostFaultInjection(host, meanFailureNumberPerMinute, seed++);
+            fault.setMaxFailureDelay(MAX_FAILURE_DELAY_SECONDS);
+            fault.setVmCloner(this::cloneVm);
+            fault.setCloudletsCloner(this::cloneCloudlets);
+            Log.printFormattedLine("\tFault Injection created for %s.", host);
+            break; //cria apenas para o primeiro host, so pra teste
         }
     }
     

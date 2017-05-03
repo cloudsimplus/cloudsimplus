@@ -105,7 +105,7 @@ public class CloudletTaskTimeCompletionWorkLoadExperimet extends SimulationExper
      * Different lengths that will be randomly assigned to created Cloudlets.
      */
     private static final long[] CLOUDLET_LENGTHS = {20000, 40000, 14000, 10000, 10000};
-    private static final int[] VM_PES = {2, 4};
+    private static final int[] VM_PES = {2};
 
     /**
      * Sorts the Cloudlets before submitting them to the Broker, so that
@@ -170,7 +170,7 @@ public class CloudletTaskTimeCompletionWorkLoadExperimet extends SimulationExper
        cloudletList = new ArrayList<>();
         try {
             workloadFileReader = new WorkloadFileReader("/Users/raysaoliveira/Desktop/Mestrado/cloudsim-plus/cloudsim-plus-testbeds/src/main/resources/METACENTRUM-2009-2.swf", 1);
-            cloudletList = workloadFileReader.generateWorkload().subList(0, 800);
+            cloudletList = workloadFileReader.generateWorkload().subList(0, 1000);
         } catch (FileNotFoundException ex) {
             Logger.getLogger(CloudletTaskTimeCompletionWorkLoadExperimet.class.getName()).log(Level.SEVERE, null, ex);
         } catch (IOException ex) {
@@ -277,32 +277,6 @@ public class CloudletTaskTimeCompletionWorkLoadExperimet extends SimulationExper
         return vm;
     }
 
-    /**
-     * Creates a {@link HorizontalVmScaling} object for a given VM.
-     *
-     * @param vm the VM in which the Horizontal Scaling will be created
-     */
-    private void createHorizontalVmScaling(Vm vm) {
-        HorizontalVmScaling horizontalScaling = new HorizontalVmScalingSimple();
-        horizontalScaling
-                .setVmSupplier(this::createVm)
-                .setOverloadPredicate(this::isVmOverloaded);
-        vm.setHorizontalScaling(horizontalScaling);
-    }
-
-    /**
-     * A {@link Predicate} that checks if a given VM is overloaded or not based
-     * on CPU usage. A reference to this method is assigned to
-     * each Horizontal VM Scaling created.
-     *
-     * @param vm the VM to check if it is overloaded
-     * @return true if the VM is overloaded, false otherwise
-     * @see #createHorizontalVmScaling(Vm)
-     */
-    private boolean isVmOverloaded(Vm vm) {
-        return vm.getCurrentCpuPercentUse() > cpuUtilizationSlaContract;
-    }
-
     @Override
     protected List<Host> createHosts() {
         hostList = new ArrayList<>(HOSTS);
@@ -404,6 +378,21 @@ public class CloudletTaskTimeCompletionWorkLoadExperimet extends SimulationExper
 
         return sumPesVms / sumPesCloudlets;
     }
+    
+     /**
+     * Shows the wait time of cloudlets
+     *
+     * @param cloudlet list of cloudlets
+     */
+    public void waitTimeAverage(List<Cloudlet> cloudlet) {
+        double waitTime = 0, quant = 0;
+        for (Cloudlet cloudlets : cloudlet) {
+            waitTime += cloudlets.getWaitingTime();
+            quant++;
+        }
+        System.out.println("\n# The wait time is: " + waitTime/quant);
+    }
+      
 
     /**
      * A main method just for test purposes.
@@ -423,5 +412,6 @@ public class CloudletTaskTimeCompletionWorkLoadExperimet extends SimulationExper
         exp.getCloudletsTaskTimeCompletionAverage();
         exp.getPercentageOfCloudletsMeetingTaskTimeCompletion();
         exp.getRatioOfExistingVmPesToRequiredCloudletPes();
+        exp.waitTimeAverage(exp.getCloudletList());
     }
 }
