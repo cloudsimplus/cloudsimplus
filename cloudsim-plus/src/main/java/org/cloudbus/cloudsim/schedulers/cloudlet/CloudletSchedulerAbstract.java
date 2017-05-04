@@ -199,6 +199,14 @@ public abstract class CloudletSchedulerAbstract implements CloudletScheduler {
     public List<CloudletExecutionInfo> getCloudletWaitingList() {
         return Collections.unmodifiableList(cloudletWaitingList);
     }
+    
+    /**
+     * Sorts the {@link #cloudletWaitingList} using a given {@link Comparator}.
+     * @param comparator the {@link Comparator} to sort the Waiting Cloudlets List
+     */
+    protected void sortCloudletWaitingList(Comparator<CloudletExecutionInfo> comparator){
+        cloudletWaitingList.sort(comparator);
+    }
 
     protected final void setCloudletWaitingList(List<CloudletExecutionInfo> cloudletWaitingList) {
         this.cloudletWaitingList = cloudletWaitingList;
