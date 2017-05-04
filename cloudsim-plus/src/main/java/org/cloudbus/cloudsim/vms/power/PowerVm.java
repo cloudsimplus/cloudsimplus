@@ -55,11 +55,6 @@ public class PowerVm extends VmSimple {
     private double previousTime;
 
     /**
-     * @see #getSchedulingInterval()
-     */
-    private double schedulingInterval;
-
-    /**
      * Creates a Vm with 1024 MEGABYTE of RAM, 1000 Megabits/s of Bandwidth and 1024 MEGABYTE of Storage Size.
      *
      * To change these values, use the respective setters. While the Vm {@link #isCreated()
@@ -75,8 +70,25 @@ public class PowerVm extends VmSimple {
      */
     public PowerVm(int id, long mipsCapacity, int numberOfPes) {
         super(id, mipsCapacity, numberOfPes);
-        setSchedulingInterval(0);
     }
+    
+    /**
+     * Creates a Vm with 1024 MEGABYTE of RAM, 1000 Megabits/s of Bandwidth and 
+     * 1024 MEGABYTE of Storage Size and no ID (which will be defined when the 
+     * VM is submitted to a {@link DatacenterBroker}).
+     *
+     * To change these values, use the respective setters. While the Vm {@link #isCreated()
+     * is not created inside a Host}, such values can be changed freely.
+     *
+     * @param mipsCapacity the mips capacity of each Vm {@link Pe}
+     * @param numberOfPes amount of {@link Pe} (CPU cores)
+     *
+     * @pre numberOfPes > 0
+     * @post $none
+     */
+    public PowerVm(long mipsCapacity, int numberOfPes) {
+        this(-1, mipsCapacity, numberOfPes);
+    }    
 
     /**
      * Instantiates a new PowerVm.
@@ -91,7 +103,7 @@ public class PowerVm extends VmSimple {
      * @param priority the priority
      * @param vmm Virtual Machine Monitor that manages the VM lifecycle
      * @param cloudletScheduler scheduler that defines the execution policy for Cloudlets inside this Vm
-     * @param schedulingInterval the scheduling interval
+     * @param schedulingInterval not used anymore
      *
      * @deprecated Use the other available constructors with less parameters
      * and set the remaining ones using the respective setters.
@@ -118,13 +130,12 @@ public class PowerVm extends VmSimple {
         setSize(size);
         setVmm(vmm);
         setCloudletScheduler(cloudletScheduler);
-        setSchedulingInterval(schedulingInterval);
     }
 
     @Override
     public double updateProcessing(final double currentTime, final List<Double> mipsShare) {
-        double time = super.updateProcessing(currentTime, mipsShare);
-        if (currentTime > getPreviousTime() && (currentTime - 0.1) % getSchedulingInterval() == 0) {
+        final double time = super.updateProcessing(currentTime, mipsShare);
+        if (currentTime > getPreviousTime() && (currentTime - 0.1) % getHost().getDatacenter().getSchedulingInterval() == 0) {
             double utilization = getCpuPercentUse(getCloudletScheduler().getPreviousTime());
             if (getSimulation().clock() != 0 || utilization != 0) {
                 addUtilizationHistoryValue(utilization);
@@ -136,6 +147,7 @@ public class PowerVm extends VmSimple {
 
     /**
      * Gets the utilization Median Absolute Deviation (MAD) in MIPS.
+     * @return 
      */
     public double getUtilizationMad() {
         if (!getUtilizationHistory().isEmpty()) {
@@ -153,6 +165,7 @@ public class PowerVm extends VmSimple {
 
     /**
      * Gets the utilization mean in MIPS.
+     * @return 
      */
     public double getUtilizationMean() {
         if (!getUtilizationHistory().isEmpty()) {
@@ -204,6 +217,7 @@ public class PowerVm extends VmSimple {
     /**
      * Gets a <b>read-only</b> CPU utilization percentage history.
      *
+     * @return 
      */
     public List<Double> getUtilizationHistory() {
 	    return Collections.unmodifiableList(utilizationHistory);
@@ -212,6 +226,7 @@ public class PowerVm extends VmSimple {
     /**
      * Gets the previous time that cloudlets were processed.
      *
+     * @return 
      */
     public double getPreviousTime() {
         return previousTime;
@@ -224,26 +239,6 @@ public class PowerVm extends VmSimple {
      */
     public void setPreviousTime(final double previousTime) {
         this.previousTime = previousTime;
-    }
-
-    /**
-     * Gets the scheduling interval to update the processing of cloudlets running in
-     * this VM.
-     *
-     * @return the schedulingInterval
-     */
-    public double getSchedulingInterval() {
-        return schedulingInterval;
-    }
-
-    /**
-     * Sets the scheduling interval.
-     *
-     * @param schedulingInterval the schedulingInterval to set
-     */
-    public final PowerVm setSchedulingInterval(final double schedulingInterval) {
-        this.schedulingInterval = schedulingInterval;
-        return this;
     }
 
 }

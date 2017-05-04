@@ -15,8 +15,6 @@ import org.cloudbus.cloudsim.util.Log;
 import org.cloudbus.cloudsim.resources.Pe;
 import org.cloudbus.cloudsim.vms.Vm;
 
-import org.cloudbus.cloudsim.lists.PeList;
-
 /**
  * VmSchedulerTimeShared is a Virtual Machine Monitor (VMM), also called Hypervisor,
  * that defines a policy to allocate one or more PEs from a PM to a VM, and allows sharing of PEs
@@ -76,9 +74,6 @@ public class VmSchedulerTimeShared extends VmSchedulerAbstract {
 
     @Override
     public boolean allocatePesForVm(Vm vm, List<Double> mipsShareRequested) {
-        /*
-         * @todo add the same to RAM and BW provisioners
-         */
         if (vm.isInMigration()) {
             if (!getVmsMigratingIn().contains(vm) && !getVmsMigratingOut().contains(vm)) {
                 addVmMigratingOut(vm);
@@ -109,7 +104,7 @@ public class VmSchedulerTimeShared extends VmSchedulerAbstract {
      */
     private void clearAllocationOfPesForAllVms() {
         getPeMap().clear();
-        getPeList().forEach(pe -> pe.getPeProvisioner().deallocateResourceForAllVms());
+        getWorkingPeList().forEach(pe -> pe.getPeProvisioner().deallocateResourceForAllVms());
 
         for (final Map.Entry<Vm, List<Double>> entry : getMipsMapAllocated().entrySet()) {
             final Vm vm = entry.getKey();
@@ -124,14 +119,14 @@ public class VmSchedulerTimeShared extends VmSchedulerAbstract {
      */
     private void allocatePesListForVm(Map.Entry<Vm, List<Double>> entry) {
         final Vm vm = entry.getKey();
-        final Iterator<Pe> hostPesIterator = getPeList().iterator();
+        final Iterator<Pe> hostPesIterator = getWorkingPeList().iterator();
         //Iterate over the list of MIPS requested by each VM PE
         for (final double requestedMipsForVmPe : entry.getValue()) {
             final double allocatedMipsForVmPe = allocateMipsFromHostPesToGivenVirtualPe(vm, requestedMipsForVmPe, hostPesIterator);
             if(requestedMipsForVmPe > 0.1 && allocatedMipsForVmPe <= 0.1){
                 Log.printFormattedLine(
-                    "Vm %s is requiring a total of %d MIPS  but the Host PEs currently don't have such an available MIPS amount. Only %d MIPS were allocated.",
-                    vm, requestedMipsForVmPe, allocatedMipsForVmPe);
+                    "%s is requiring a total of %.0f MIPS but the PEs of %s currently don't have such an available MIPS amount. Only %.0f MIPS were allocated.",
+                    vm, requestedMipsForVmPe, getHost(), allocatedMipsForVmPe);
             }
         }
     }
@@ -244,7 +239,7 @@ public class VmSchedulerTimeShared extends VmSchedulerAbstract {
         }
 
         // This scheduler does not allow over-subscription
-        if (getAvailableMips() < totalRequestedMips || getPeList().size() < vmRequestedMipsShare.size()) {
+        if (getAvailableMips() < totalRequestedMips || getWorkingPeList().size() < vmRequestedMipsShare.size()) {
             return 0.0;
         }
 
@@ -269,45 +264,31 @@ public class VmSchedulerTimeShared extends VmSchedulerAbstract {
         setPesInUse(getPesInUse() + mipsShareRequested.size());
 
         if (getVmsMigratingIn().contains(vm)) {
-            // the destination host experience a percentage of CPU overhead due to migrating VM
-            totalRequestedMips *= getCpuOverheadDueToVmMigration();
+            //the destination host experience a percentage of CPU overhead due to migrating VM
+            totalRequestedMips *= getVmMigrationCpuOverhead();
         }
 
-        final List<Double> mipsShareAllocated = new ArrayList<>();
-        for (double mipsRequested : mipsShareRequested) {
-            if (getVmsMigratingOut().contains(vm)) {
-                // performance degradation due to migration = 10% MIPS
-                mipsShareAllocated.add(mipsRequested * (1-getCpuOverheadDueToVmMigration()));
-            } else if (getVmsMigratingIn().contains(vm)) {
-                // the destination host only experience 10% of the migrating VM's MIPS
-                mipsShareAllocated.add(mipsRequested * getCpuOverheadDueToVmMigration());
-            }
-            else mipsShareAllocated.add(mipsRequested);
-        }
+        final List<Double> mipsShareAllocated = new ArrayList<>(mipsShareRequested.size());
+        mipsShareRequested.forEach(mipsRequested -> mipsShareAllocated.add(mipsRequested * percentOfMipsToRequest(vm)));
 
         getMipsMapAllocated().put(vm, mipsShareAllocated);
-        setAvailableMips(getAvailableMips() - totalRequestedMips);
 
         return true;
     }
 
+
     @Override
-    public void deallocatePesForVm(Vm vm) {
-        getMipsMapRequested().remove(vm);
-        setPesInUse(pesInUse - vm.getNumberOfPes());
-        getMipsMapAllocated().remove(vm);
-        setAvailableMips(PeList.getTotalMips(getPeList()));
-
-        for (final Pe pe : getPeList()) {
-            pe.getPeProvisioner().deallocateResourceForVm(vm);
-        }
-
+    protected void deallocatePesFromVmInternal(Vm vm, int pesToRemove) {        
+        final int removedPes = removePesFromMap(vm, getMipsMapRequested(), pesToRemove);
+        setPesInUse(pesInUse - removedPes);
+        removePesFromMap(vm, getMipsMapAllocated(), pesToRemove);
+        
         for (final Map.Entry<Vm, List<Double>> entry : getMipsMapRequested().entrySet()) {
             updateMapOfRequestedMipsForVm(entry.getKey(), entry.getValue());
         }
 
         updatePesAllocationForAllVms();
-    }
+    }  
 
     /**
      * Releases PEs allocated to all the VMs.
@@ -339,7 +320,7 @@ public class VmSchedulerTimeShared extends VmSchedulerAbstract {
      * @param pesInUse the new pes in use
      */
     protected void setPesInUse(long pesInUse) {
-        this.pesInUse = pesInUse;
+        this.pesInUse = Math.max(pesInUse, 0);
     }
 
     /**
@@ -371,8 +352,7 @@ public class VmSchedulerTimeShared extends VmSchedulerAbstract {
     }
 
     @Override
-    public double getCpuOverheadDueToVmMigration() {
+    public double getVmMigrationCpuOverhead() {
         return 0.1;
     }
-
 }

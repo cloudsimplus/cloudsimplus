@@ -42,10 +42,8 @@ import org.cloudbus.cloudsim.hosts.power.PowerHostUtilizationHistory;
 import org.cloudbus.cloudsim.power.models.PowerModelLinear;
 import org.cloudbus.cloudsim.provisioners.PeProvisionerSimple;
 import org.cloudbus.cloudsim.provisioners.ResourceProvisionerSimple;
-import org.cloudbus.cloudsim.resources.Bandwidth;
 import org.cloudbus.cloudsim.resources.Pe;
 import org.cloudbus.cloudsim.resources.PeSimple;
-import org.cloudbus.cloudsim.resources.Ram;
 import org.cloudbus.cloudsim.schedulers.cloudlet.CloudletSchedulerTimeShared;
 import org.cloudbus.cloudsim.schedulers.vm.VmSchedulerSpaceShared;
 import org.cloudbus.cloudsim.schedulers.vm.VmSchedulerTimeShared;
@@ -149,7 +147,7 @@ public final class VmMigrationWhenCpuMetricIsViolatedExample {
 
         simulation.start();
 
-        responseTimeCloudletSimulation(broker);
+        taskTimeCompletionCloudletSimulation(broker);
 
         new CloudletsTableBuilder(broker.getCloudletsFinishedList()).build();
 
@@ -184,10 +182,10 @@ public final class VmMigrationWhenCpuMetricIsViolatedExample {
      */
     public PowerVm createVm(DatacenterBroker broker) {
         PowerVm vm = new PowerVm(vmlist.size(), VM_MIPS, VM_PES_NUM);
-        vm.setSchedulingInterval(1)
-                .setRam(VM_RAM).setBw(VM_BW).setSize(VM_SIZE)
-                .setBroker(broker)
-                .setCloudletScheduler(new CloudletSchedulerTimeShared());
+        vm
+            .setRam(VM_RAM).setBw(VM_BW).setSize(VM_SIZE)
+            .setBroker(broker)
+            .setCloudletScheduler(new CloudletSchedulerTimeShared());
 
         Log.printConcatLine(
                 "#Requested creation of VM ", vm.getId(), " with ", VM_MIPS, " MIPS x ", VM_PES_NUM);
@@ -353,23 +351,23 @@ public final class VmMigrationWhenCpuMetricIsViolatedExample {
 
     }
 
-    private void responseTimeCloudletSimulation(DatacenterBroker broker) throws IOException {
+    private void taskTimeCompletionCloudletSimulation(DatacenterBroker broker) throws IOException {
         double average = 0;
-        List<Double> responseTimes = new ArrayList<>();
+        List<Double> taskTimeCompletion = new ArrayList<>();
         for (Cloudlet c : broker.getCloudletsFinishedList()) {
-            double responseTime = c.getFinishTime() - c.getLastDatacenterArrivalTime();
-            responseTimes.add(responseTime);
-            average = responseTimeCloudletAverage(broker, responseTimes);
+            double taskTime = c.getFinishTime() - c.getLastDatacenterArrivalTime();
+            taskTimeCompletion.add(taskTime);
+            average = taskTimeCompletionCloudletAverage(broker, taskTimeCompletion);
 
         }
-        System.out.printf("\t\t\n Response Time simulation (average) : %.2f \n", average);
+        System.out.printf("\t\t\n TaskTimeCompletion simulation (average) : %.2f \n", average);
     }
 
-    private double responseTimeCloudletAverage(DatacenterBroker broker, List<Double> responseTimes) {
+    private double taskTimeCompletionCloudletAverage(DatacenterBroker broker, List<Double> taskTimes) {
         int totalCloudlets = broker.getCloudletsFinishedList().size();
         double sum = 0;
-        sum = responseTimes.stream()
-                .map((responseTime) -> responseTime)
+        sum = taskTimes.stream()
+                .map((taskTime) -> taskTime)
                 .reduce(sum, (accumulator, _item) -> accumulator + _item);
         return sum / totalCloudlets;
     }

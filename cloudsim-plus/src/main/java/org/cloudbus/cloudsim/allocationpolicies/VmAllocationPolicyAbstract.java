@@ -200,6 +200,7 @@ public abstract class VmAllocationPolicyAbstract implements VmAllocationPolicy {
 
     /**
      * Removes the used PEs for a Vm from the map between each VM and the number of PEs used.
+     * @param vm
      * @return the used PEs number
      */
     protected long removeUsedPes(Vm vm) {
@@ -274,7 +275,7 @@ public abstract class VmAllocationPolicyAbstract implements VmAllocationPolicy {
             return false;
         }
 
-        vm.getHost().getVmScheduler().deallocatePesForVm(vm);
+        vm.getHost().getVmScheduler().deallocatePesFromVm(vm);
         if(scaling.isVmUnderloaded()) {
             vm.getProcessor().removeCapacity((long)numberOfPesForScaling);
         }

@@ -2,7 +2,7 @@
     "metrics" : [
    
     {
-        "metricName": "ResponseTime",
+        "metricName": "TaskTimeCompletion",
         "dimensions": [
             {
                 "name": "valueMin",
@@ -11,24 +11,9 @@
             },
             {
                 "name": "valueMax",
-                "value": 100,
+                "value": 30,
                 "unit" : "Milliseconds"
             }]
-    },
-    {
-        "metricName": "Availability",
-        "dimensions": [
-            {
-                "name": "valueMin",
-                "value": 95,
-                "unit" : "Percent"
-            },
-            {
-                "name": "valueMax",
-                "value": 100,
-                "unit" : "Percent"
-            }
-        ]
     },
     {
         "metricName": "CpuUtilization",
@@ -41,7 +26,7 @@
             },
             {
                 "name": "valueMax",
-                "value": 70,
+                "value": 90,
                 "unit" : "Percent"
             }
         ]
@@ -62,31 +47,16 @@
         ]
     },
     {
-        "metricName": "FaulTolerance",
-        "dimensions": [
-            {
-                "name": "valueMin",
-                "value": 90,
-                "unit" : "Percent"
-            },
-            {
-                "name": "valueMax",
-                "value": 100,
-                "unit" : "Percent"
-            }
-        ]
-    },
-    {
         "metricName": "Throughput",
         "dimensions": [
             {
                 "name": "valueMin",
-                "value": 195,
+                "value": 10,
                 "unit" : "Bits/Second"
             },
             {
                 "name": "valueMax",
-                "value": 250,
+                "value": 500,
                 "unit" : "Bits/Second"
             }
         ]

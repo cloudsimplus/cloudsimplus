@@ -12,12 +12,11 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
-import org.cloudbus.cloudsim.lists.PeList;
 import org.cloudbus.cloudsim.vms.Vm;
 
 /**
  * This is a Time-Shared VM Scheduler, which allows over-subscription. In other
- * words, the scheduler still allows the allocation of VMs that require more CPU
+ * words, the scheduler still allows the allocation of VMs which require more CPU
  * capacity than is available. Oversubscription results in performance
  * degradation.
  *
@@ -77,7 +76,6 @@ public class VmSchedulerTimeSharedOverSubscription extends VmSchedulerTimeShared
             }
 
             getMipsMapAllocated().put(vm, mipsShareAllocated);
-            setAvailableMips(getAvailableMips() - totalRequestedMips);
         } else {
             redistributeMipsDueToOverSubscription();
         }
@@ -94,13 +92,9 @@ public class VmSchedulerTimeSharedOverSubscription extends VmSchedulerTimeShared
         final Map<Vm, List<Double>> mipsMapCap = new HashMap<>();
         final double totalRequiredMipsByAllVms = getTotalRequiredMipsByAllVms(mipsMapCap);
 
-        final double totalAvailableMips = PeList.getTotalMips(getPeList());
-        final double scalingFactor = totalAvailableMips / totalRequiredMipsByAllVms;
+        final double scalingFactor = getHost().getTotalMipsCapacity() / totalRequiredMipsByAllVms;
 
         updateActualMipsAllocatedToVms(mipsMapCap, scalingFactor);
-
-        // As the host is oversubscribed, there is no more available MIPS
-        setAvailableMips(0);
     }
 
     private void updateActualMipsAllocatedToVms(Map<Vm, List<Double>> mipsMapCap, double scalingFactor) {

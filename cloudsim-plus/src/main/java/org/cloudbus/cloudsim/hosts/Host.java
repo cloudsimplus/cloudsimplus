@@ -10,7 +10,6 @@ package org.cloudbus.cloudsim.hosts;
 import org.cloudbus.cloudsim.core.Machine;
 import org.cloudbus.cloudsim.resources.*;
 import org.cloudbus.cloudsim.vms.Vm;
-import org.cloudbus.cloudsim.core.Identificable;
 import org.cloudbus.cloudsim.datacenters.Datacenter;
 import org.cloudbus.cloudsim.schedulers.vm.VmScheduler;
 
@@ -19,6 +18,7 @@ import org.cloudbus.cloudsim.core.Simulation;
 import org.cloudsimplus.listeners.EventListener;
 import org.cloudsimplus.listeners.HostUpdatesVmsProcessingEventInfo;
 import org.cloudbus.cloudsim.provisioners.ResourceProvisioner;
+import org.cloudbus.cloudsim.resources.Pe.Status;
 
 /**
  * An interface to be implemented by each class that provides
@@ -85,6 +85,13 @@ public interface Host extends Machine, Comparable<Host> {
      * and allocate them on the host.
      */
     void reallocateMigratingInVms();
+    
+    /**
+     * Gets total MIPS capacity of PEs which are not {@link Status#FAILED}.
+     * @return the total MIPS of working PEs
+     */
+    @Override
+    double getTotalMipsCapacity();
 
     /**
      * Removes a migrating in vm.
@@ -132,12 +139,21 @@ public interface Host extends Machine, Comparable<Host> {
     double getTotalAllocatedMipsForVm(Vm vm);
 
     /**
-     * Gets the Processing Elements (PEs) of the host, that
-     * represent its CPU cores and thus, its processing capacity.
+     * Gets the list of all Processing Elements (PEs) of the host, 
+     * including failed PEs.
      *
-     * @return the pe list
+     * @return the list of all Host PEs
+     * @see #getWorkingPeList() 
      */
     List<Pe> getPeList();
+    
+    /**
+     * Gets the list of working Processing Elements (PEs) of the host,
+     * <b>which excludes failed PEs</b>.
+     *
+     * @return the list working (non-failed) Host PEs
+     */
+    List<Pe> getWorkingPeList();
 
     /**
      * Gets the free pes number.
@@ -165,6 +181,13 @@ public interface Host extends Machine, Comparable<Host> {
      * @return the number of working pes
      */
     long getNumberOfWorkingPes();
+    
+    /**
+     * Gets the number of PEs that have failed.
+     *
+     * @return the number of failed pes
+     */
+    long getNumberOfFailedPes();    
 
     /**
      * Gets the current amount of available MIPS at the host.
@@ -227,10 +250,10 @@ public interface Host extends Machine, Comparable<Host> {
     Vm getVm(int vmId, int brokerId);
 
     /**
-     * Gets the list of VMs assigned to the host.
+     * Gets a <b>read-only</b> list of VMs assigned to the host.
      *
      * @param <T> The generic type
-     * @return the vm list
+     * @return the read-only vm list
      */
     <T extends Vm> List<T> getVmList();
 
@@ -247,6 +270,7 @@ public interface Host extends Machine, Comparable<Host> {
      * It also sets the Host itself to the given scheduler.
      *
      * @param vmScheduler the vm scheduler to set
+     * @return 
      */
     Host setVmScheduler(VmScheduler vmScheduler);
 
@@ -271,7 +295,7 @@ public interface Host extends Machine, Comparable<Host> {
      *
      * @param currentTime the current time
      * @return the predicted completion time of the earliest finishing cloudlet
-     * (that is a future simulation time),
+     * (which is a relative delay from the current simulation time),
      * or {@link Double#MAX_VALUE} if there is no next Cloudlet to execute
      * @pre currentTime >= 0.0
      * @post $none
@@ -339,4 +363,33 @@ public interface Host extends Machine, Comparable<Host> {
      * @return the {@link ResourceProvisioner} for the given resource class
      */
     ResourceProvisioner getProvisioner(Class<? extends ResourceManageable> resourceClass);
+
+    /**
+     * Gets current utilization of CPU in percentage (between [0 and 1]).
+     *
+     * @return
+     */
+    double getUtilizationOfCpu();    
+
+    /**
+     * Gets the current utilization of CPU in MIPS.
+     *
+     * @return
+     */
+    double getUtilizationOfCpuMips();
+
+    /**
+     * Gets the current utilization of bw (in absolute values).
+     *
+     * @return
+     */
+    long getUtilizationOfBw();
+
+    /**
+     * Gets the current utilization of memory (in absolute values).
+     *
+     * @return
+     */
+    long getUtilizationOfRam();    
+    
 }

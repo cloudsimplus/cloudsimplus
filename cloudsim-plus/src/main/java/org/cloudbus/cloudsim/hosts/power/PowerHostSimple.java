@@ -18,8 +18,8 @@ import org.cloudbus.cloudsim.provisioners.ResourceProvisioner;
 /**
  * PowerHost class enables simulation of power-aware hosts.
  *
- * <br/>If you are using any algorithms, policies or workload included in the
- * power package please cite the following paper:<br/>
+ * <p>If you are using any algorithms, policies or workload included in the
+ * power package please cite the following paper:</p>
  *
  * <ul>
  * <li><a href="http://dx.doi.org/10.1002/cpe.1867">Anton Beloglazov, and
@@ -100,7 +100,7 @@ public class PowerHostSimple extends HostDynamicWorkloadSimple implements PowerH
     protected double getPower(double utilization) {
         try {
             return getPowerModel().getPower(utilization);
-        } catch (Exception e) {
+        } catch (IllegalArgumentException e) {
             throw new RuntimeException(e);
         }
     }
@@ -114,7 +114,7 @@ public class PowerHostSimple extends HostDynamicWorkloadSimple implements PowerH
     public double getMaxPower() {
         try {
             return getPowerModel().getPower(1);
-        } catch (Exception e) {
+        } catch (IllegalArgumentException e) {
             throw new RuntimeException(e);
         }
     }
@@ -148,5 +148,5 @@ public class PowerHostSimple extends HostDynamicWorkloadSimple implements PowerH
     public PowerModel getPowerModel() {
         return powerModel;
     }
-
+   
 }

@@ -102,7 +102,8 @@ public interface DatacenterBroker extends SimEntity {
     void submitCloudlet(Cloudlet cloudlet);
 
     /**
-     * Sends a list of cloudlets for the broker to request its creation inside some VM, following the submission delay
+     * Sends a list of cloudlets to the broker so that it requests their 
+     * creation inside some VM, following the submission delay
      * specified in each cloudlet (if any).
      * All cloudlets will be added to the {@link #getCloudletsWaitingList()}.
      *
@@ -114,7 +115,8 @@ public interface DatacenterBroker extends SimEntity {
     void submitCloudletList(List<? extends Cloudlet> list);
 
     /**
-     * Sends a list of cloudlets for the broker that their creation inside some VM will be requested just after a given delay.
+     * Sends a list of cloudlets to the broker so that it requests their creation 
+     * inside some VM just after a given delay.
      * Just the Cloudlets that don't have a delay already assigned will have its submission delay changed.
      * All cloudlets will be added to the {@link #getCloudletsWaitingList()},
      * setting their submission delay to the specified value.
@@ -127,7 +129,38 @@ public interface DatacenterBroker extends SimEntity {
      * @see Cloudlet#getSubmissionDelay()
      */
     void submitCloudletList(List<? extends Cloudlet> list, double submissionDelay);
+    
+    /**
+     * Sends a list of cloudlets to the broker so that it requests their creation inside 
+     * a specific VM, following the submission delay
+     * specified in each cloudlet (if any).
+     * All cloudlets will be added to the {@link #getCloudletsWaitingList()}.
+     *
+     * @param list the list of Cloudlets to request the creation
+     * @param vm the VM to which all Cloudlets will be bound to
+     * @pre list !=null
+     * @post $none
+     * @see #submitCloudletList(java.util.List, double)
+     */
+    void submitCloudletList(List<? extends Cloudlet> list, Vm vm);    
 
+ /**
+     * Sends a list of cloudlets to the broker so that it requests their creation 
+     * inside a specific VM just after a given delay.
+     * Just the Cloudlets that don't have a delay already assigned will have its submission delay changed.
+     * All cloudlets will be added to the {@link #getCloudletsWaitingList()},
+     * setting their submission delay to the specified value.
+     *
+     * @param list the list of Cloudlets to request the creation
+     * @param vm the VM to which all Cloudlets will be bound to
+     * @param submissionDelay the delay the broker has to include when requesting the creation of Cloudlets
+     * @pre list !=null
+     * @post $none
+     * @see #submitCloudletList(java.util.List)
+     * @see Cloudlet#getSubmissionDelay()
+     */
+    void submitCloudletList(List<? extends Cloudlet> list, Vm vm, double submissionDelay);
+    
     /**
      * Sends to the broker a list with VMs that their creation inside a Host will be requested to some
      * {@link Datacenter}. The Datacenter that will be chosen to place a VM is

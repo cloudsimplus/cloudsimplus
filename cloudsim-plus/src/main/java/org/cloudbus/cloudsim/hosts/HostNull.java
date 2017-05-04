@@ -141,4 +141,11 @@ final class HostNull implements Host {
         return "Host.NULL";
     }
     @Override public void setId(int id) {}
+    @Override public double getTotalMipsCapacity() { return 0.0; }
+    @Override public long getNumberOfFailedPes() { return 0; }
+    @Override public List<Pe> getWorkingPeList() { return Collections.EMPTY_LIST; }
+    @Override public double getUtilizationOfCpu() { return 0.0; }
+    @Override public double getUtilizationOfCpuMips() { return 0.0; }
+    @Override public long getUtilizationOfBw() { return 0; }
+    @Override public long getUtilizationOfRam() { return 0; }
 }

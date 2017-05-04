@@ -71,7 +71,7 @@ import org.cloudsimplus.builders.tables.CloudletsTableBuilder;
 import org.cloudsimplus.listeners.EventInfo;
 import org.cloudsimplus.listeners.EventListener;
 import org.cloudsimplus.sla.readJsonFile.CpuUtilization;
-import org.cloudsimplus.sla.readJsonFile.ResponseTime;
+import org.cloudsimplus.sla.readJsonFile.TaskTimeCompletion;
 import org.cloudsimplus.sla.readJsonFile.SlaReader;
 
 /**
@@ -114,10 +114,10 @@ public class TestWithoutAlgorithmExample {
      */
     public static final String METRICS_FILE = ResourceLoader.getResourcePath(TestWithoutAlgorithmExample.class, "SlaMetrics.json");
     private final double cpuUtilizationSlaContract;
-    private double responseTimeSlaContract;
+    private double taskTimeCompletionSlaContract;
 
     private int totalOfcloudletSlaSatisfied;
-    private List<Double> responseTimes;
+    private List<Double> taskTimesCompletion;
 
     public static void main(String[] args) throws FileNotFoundException, IOException {
         Log.printFormattedLine(" Starting... ");
@@ -137,9 +137,9 @@ public class TestWithoutAlgorithmExample {
 
         // Reading the sla contract and taking the metric values
         SlaReader slaReader = new SlaReader(METRICS_FILE);
-        ResponseTime rt = new ResponseTime(slaReader);
-        rt.checkResponseTimeSlaContract();
-        responseTimeSlaContract = rt.getMaxValueResponseTime();
+        TaskTimeCompletion rt = new TaskTimeCompletion(slaReader);
+        rt.checkTaskTimeCompletionSlaContract();
+        taskTimeCompletionSlaContract = rt.getMaxValueTaskTimeCompletion();
 
         CpuUtilization cpu = new CpuUtilization(slaReader);
         cpu.checkCpuUtilizationSlaContract();
@@ -160,7 +160,7 @@ public class TestWithoutAlgorithmExample {
 
         simulation.start();
 
-        responseTimeCloudletSimulation(broker0);
+        taskTimeCompletionCloudletSimulation(broker0);
         double percentage = (totalOfcloudletSlaSatisfied * 100) / cloudletList.size();
         System.out.println("\n ** Percentage of cloudlets that complied"
                 + " with the SLA Agreement: " + percentage + " %");
@@ -338,29 +338,29 @@ public class TestWithoutAlgorithmExample {
         new CloudletsTableBuilder(finishedCloudlets).build();
     }
 
-    private void responseTimeCloudletSimulation(DatacenterBroker broker) throws IOException {
+    private void taskTimeCompletionCloudletSimulation(DatacenterBroker broker) throws IOException {
         double average = 0;
-        responseTimes = new ArrayList<>();
+        taskTimesCompletion = new ArrayList<>();
         for (Cloudlet c : broker.getCloudletsFinishedList()) {
-            double responseTime = c.getFinishTime() - c.getLastDatacenterArrivalTime();
-            responseTimes.add(responseTime);
-            average = responseTimeCloudletAverage(broker, responseTimes);
+            double taskTimeCompletion = c.getFinishTime() - c.getLastDatacenterArrivalTime();
+            taskTimesCompletion.add(taskTimeCompletion);
+            average = taskTimeCompletionCloudletAverage(broker, taskTimesCompletion);
 
-            if (responseTime <= responseTimeSlaContract) {
+            if (taskTimeCompletion <= taskTimeCompletionSlaContract) {
                 totalOfcloudletSlaSatisfied++;
             }
         }
 
-        System.out.printf("\t\t\n Response Time simulation (average) : %.2f \n Response Time contrato SLA: %.2f "
+        System.out.printf("\t\t\n TaskTimeCompletion simulation (average) : %.2f \n TaskTimeCompletion contrato SLA: %.2f "
                 + "\n Total of cloudlets SLA satisfied: %d",
-                average, responseTimeSlaContract, totalOfcloudletSlaSatisfied);
+                average, taskTimeCompletionSlaContract, totalOfcloudletSlaSatisfied);
     }
 
-    private double responseTimeCloudletAverage(DatacenterBroker broker, List<Double> responseTimes) {
+    private double taskTimeCompletionCloudletAverage(DatacenterBroker broker, List<Double> taskTimesCompletion) {
         int totalCloudlets = broker.getCloudletsFinishedList().size();
         double sum = 0;
-        sum = responseTimes.stream()
-                .map((responseTime) -> responseTime)
+        sum = taskTimesCompletion.stream()
+                .map((taskTimeCompletion) -> taskTimeCompletion)
                 .reduce(sum, (accumulator, _item) -> accumulator + _item);
         return sum / totalCloudlets;
     }

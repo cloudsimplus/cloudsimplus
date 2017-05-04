@@ -13,6 +13,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import static java.util.stream.Collectors.toList;
 
 import org.cloudbus.cloudsim.hosts.Host;
 import org.cloudbus.cloudsim.resources.Pe;
@@ -57,7 +58,7 @@ public class VmSchedulerSpaceShared extends VmSchedulerAbstract {
     public VmScheduler setHost(Host host) {
         super.setHost(host);
         setPeAllocationMap(new HashMap<>());
-        setFreePesList(new ArrayList<>(this.getHost().getPeList()));
+        setFreePesList(new ArrayList<>(this.getHost().getWorkingPeList()));
         return this;
     }
 
@@ -111,19 +112,28 @@ public class VmSchedulerSpaceShared extends VmSchedulerAbstract {
 
         getPeAllocationMap().put(vm, selectedPes);
         getMipsMapAllocated().put(vm, mipsShareRequested);
-        setAvailableMips(getAvailableMips() - totalMips);
         return true;
     }
 
     @Override
-    public void deallocatePesForVm(Vm vm) {
-        getFreePesList().addAll(getPeAllocationMap().get(vm));
-        getPeAllocationMap().remove(vm);
+    protected void deallocatePesFromVmInternal(Vm vm, int pesToRemove) {        
+        getFreePesList().addAll(getAllocatedWorkingPesForVm(vm));
+        removePesFromMap(vm, getPeAllocationMap(),  pesToRemove);
+        removePesFromMap(vm, getMipsMapAllocated(), pesToRemove);
+    }    
 
-        final double totalMips = getMipsMapAllocated().get(vm).stream().mapToDouble(mips -> mips).sum();
-        setAvailableMips(getAvailableMips() + totalMips);
-
-        getMipsMapAllocated().remove(vm);
+    /**
+     * Gets a list or working PEs (non-failed) which are allocated to a 
+     * given VM.
+     * @param vm the VM to get the list of allocated working PEs
+     * @return 
+     */
+    private List<Pe> getAllocatedWorkingPesForVm(Vm vm) {
+        return peAllocationMap
+                .getOrDefault(vm, new ArrayList<>())
+                .stream()
+                .filter(Pe::isWorking)
+                .collect(toList());
     }
 
     /**
@@ -163,8 +173,9 @@ public class VmSchedulerSpaceShared extends VmSchedulerAbstract {
     }
 
     @Override
-    public double getCpuOverheadDueToVmMigration() {
+    public double getVmMigrationCpuOverhead() {
         return 0;
     }
+
 
 }

@@ -7,18 +7,15 @@
 package org.cloudbus.cloudsim.schedulers.vm;
 
 import java.util.*;
-import java.util.stream.IntStream;
 import java.util.stream.LongStream;
 
 import org.cloudbus.cloudsim.hosts.Host;
 import org.cloudbus.cloudsim.provisioners.PeProvisioner;
-import org.cloudbus.cloudsim.util.Log;
 import org.cloudbus.cloudsim.resources.Pe;
 import org.cloudbus.cloudsim.vms.Vm;
 
-import org.cloudbus.cloudsim.lists.PeList;
-
 import static java.util.stream.Collectors.toList;
+import java.util.stream.IntStream;
 
 /**
  * An abstract class for implementation of {@link VmScheduler}s.
@@ -42,11 +39,6 @@ public abstract class VmSchedulerAbstract implements VmScheduler {
      * @see #getMipsMapAllocated()
      */
     private Map<Vm, List<Double>> mipsMapAllocated;
-
-    /**
-     * The total available MIPS that can be allocated on demand for VMs.
-     */
-    private double availableMips;
 
     /**
      * @see #getVmsMigratingIn()
@@ -81,21 +73,66 @@ public abstract class VmSchedulerAbstract implements VmScheduler {
     }
 
     @Override
+    public void deallocatePesFromVm(Vm vm) {
+        deallocatePesFromVm(vm, (int)vm.getNumberOfPes());
+    }
+
+    @Override
+    public void deallocatePesFromVm(Vm vm, int pesToRemove) {
+        if(pesToRemove <= 0 || vm.getNumberOfPes() == 0){
+            return;
+        }
+        
+        deallocatePesFromVmInternal(vm, pesToRemove);
+    }
+
+    /**
+     * Remove a given number of PEs from a given {@code Vm -> List<PE>} Map,
+     * where each PE in the List associated to each Vm may be an actual 
+     * {@link Pe} object or just its capacity in MIPS (Double).
+     * 
+     * <p>In other words, the map can be {@code Map<Vm, List<Double>>}
+     * or {@code Map<Vm, List<Pe>>}.</p>
+     * 
+     * @param <T> the type of the elements into the List associated to each map key,
+     *            which can be a MIPS number (Double) or an actual {@link Pe} object.
+     * @param vm the VM to remove PEs from
+     * @param map the map where the PEs will be removed
+     * @param pesToRemove the number of PEs to remove from the List of PEs associated to the Vm
+     * @return the number of removed PEs
+     */
+    protected <T> int removePesFromMap(Vm vm, Map<Vm, List<T>> map, int pesToRemove) {
+        final List<T> values = map.getOrDefault(vm, new ArrayList<>());
+        if(values.isEmpty()){
+            return 0;
+        }
+        
+        pesToRemove = Math.min((int)vm.getNumberOfPes(), pesToRemove);
+        pesToRemove = Math.min(pesToRemove, values.size());
+        IntStream.range(0, pesToRemove).forEach(i -> values.remove(0));
+        if(values.isEmpty()){
+            map.remove(vm);
+        }
+        
+        return pesToRemove;
+    }    
+    
+    protected abstract void deallocatePesFromVmInternal(Vm vm, int pesToRemove);
+    
+    @Override
     public void deallocatePesForAllVms() {
         getMipsMapAllocated().clear();
-        setAvailableMips(PeList.getTotalMips(getPeList()));
-        getPeList().forEach(pe -> pe.getPeProvisioner().deallocateResourceForAllVms());
+        getWorkingPeList().forEach(pe -> pe.getPeProvisioner().deallocateResourceForAllVms());
     }
 
     @Override
     public List<Pe> getPesAllocatedForVM(Vm vm) {
-        return getPeMap().get(vm);
+        return getPeMap().getOrDefault(vm, new ArrayList<>());
     }
 
     @Override
     public List<Double> getAllocatedMipsForVm(Vm vm) {
-        getMipsMapAllocated().putIfAbsent(vm, new ArrayList<>());
-        return getMipsMapAllocated().get(vm);
+        return getMipsMapAllocated().getOrDefault(vm, new ArrayList<>());
     }
 
     @Override
@@ -105,37 +142,20 @@ public abstract class VmSchedulerAbstract implements VmScheduler {
 
     @Override
     public double getMaxAvailableMips() {
-        if (isPeListEmpty()) {
-            return 0;
-        }
-
-        return getPeList().stream()
-                    .map(Pe::getPeProvisioner)
-                    .mapToDouble(PeProvisioner::getAvailableResource)
-                    .max().orElse(0.0);
+        return getWorkingPeList().stream()
+                .map(Pe::getPeProvisioner)
+                .mapToDouble(PeProvisioner::getAvailableResource)
+                .max().orElse(0.0);
     }
 
     @Override
     public long getPeCapacity() {
-        if (isPeListEmpty()) {
-            return 0;
-        }
-
-        return getPeList().get(0).getCapacity();
-    }
-
-    private boolean isPeListEmpty() {
-        if (getPeList().isEmpty()) {
-            Log.printLine("Pe list is empty");
-            return true;
-        }
-
-        return false;
+        return getWorkingPeList().stream().map(Pe::getCapacity).findFirst().orElse(0L);
     }
 
     @Override
-    public final List<Pe> getPeList() {
-        return host.getPeList();
+    public final List<Pe> getWorkingPeList() {
+        return host.getWorkingPeList();
     }
 
     /**
@@ -162,17 +182,55 @@ public abstract class VmSchedulerAbstract implements VmScheduler {
 
     @Override
     public double getAvailableMips() {
-        return availableMips;
+        final double totalAllocatedMips = 
+            getMipsMapAllocated().keySet()
+                .stream()
+                .mapToDouble(this::actualVmRequestedMipsSum)
+                .sum();
+        
+        return host.getTotalMipsCapacity() - totalAllocatedMips;
     }
 
     /**
-     * Sets the amount of mips that is free.
-     *
-     * @param availableMips the new free mips amount
+     * Gets the sum of MIPS requested by each VM PE, including
+     * the CPU overhead if the VM is in migration to this Host.
+     * 
+     * <p>For instance, if the migration overhead is 10% and
+     * the total requested MIPS of a VM is 1000 MIPS,
+     * it will be allocated just 900 MIPS, but from this values, this method
+     * returns the 1000 MIPS, which is the actual MIPS being
+     * used by the Host (900 by the VM and 100 by migration overhead).</p>
+     * 
+     * @param vm the VM to get the actual requested MIPS across all PEs
+     * @return the actual requested MIPS sum across all VM PEs,
+     * including the CPU overhead of the VM is in migration to this Host
      */
-    protected final void setAvailableMips(double availableMips) {
-        this.availableMips = availableMips;
+    private double actualVmRequestedMipsSum(Vm vm) {
+        final double totalVmRequestedMips = 
+                getMipsMapAllocated()
+                    .getOrDefault(vm, new ArrayList<>())
+                    .stream()
+                    .reduce(0.0, Double::sum);
+        
+        if(getVmsMigratingIn().contains(vm)){
+            /*If the VM is migrating into this Host,
+            due to migration overhead, it is just allocated a fraction of the 
+            requested MIPS (such as 90%). The line below computes the original
+            requested MIPS (which correspond to 100%)*/
+            return totalVmRequestedMips / getMaxCpuUsagePercentDuringMigration();
+        }
+        
+        return totalVmRequestedMips;
     }
+    
+    /**
+     * Gets the max percentage of CPU a VM migrating into this Host can use,
+     * considering the {@link #getVmMigrationCpuOverhead() CPU migration overhead}.
+     * @return the max percentage of CPU usage during migration (in scale from [0 to 1], where 1 is 100%)
+     */
+    private double getMaxCpuUsagePercentDuringMigration() {
+        return 1 - getVmMigrationCpuOverhead();
+    }    
 
     @Override
     public Set<Vm> getVmsMigratingIn() {
@@ -190,10 +248,7 @@ public abstract class VmSchedulerAbstract implements VmScheduler {
      * @param vmsMigratingOut the new vms migrating out
      */
     protected final void setVmsMigratingOut(Set<Vm> vmsMigratingOut) {
-        if(Objects.isNull(vmsMigratingOut)){
-            vmsMigratingOut = new HashSet<>();
-        }
-        this.vmsMigratingOut = vmsMigratingOut;
+        this.vmsMigratingOut = Objects.isNull(vmsMigratingOut) ? new HashSet<>() : vmsMigratingOut;
     }
 
     /**
@@ -202,10 +257,7 @@ public abstract class VmSchedulerAbstract implements VmScheduler {
      * @param vmsMigratingIn the new vms migrating in
      */
     protected final void setVmsMigratingIn(Set<Vm> vmsMigratingIn) {
-        if(Objects.isNull(vmsMigratingIn)){
-            vmsMigratingIn = new HashSet<>();
-        }
-        this.vmsMigratingIn = vmsMigratingIn;
+        this.vmsMigratingIn = Objects.isNull(vmsMigratingIn) ? new HashSet<>() : vmsMigratingIn;
     }
 
     @Override
@@ -240,7 +292,6 @@ public abstract class VmSchedulerAbstract implements VmScheduler {
 
         setPeMap(new HashMap<>());
         setMipsMapAllocated(new HashMap<>());
-        setAvailableMips(PeList.getTotalMips(getPeList()));
 
         return this;
     }
@@ -276,4 +327,46 @@ public abstract class VmSchedulerAbstract implements VmScheduler {
     public boolean removeVmMigratingOut(Vm vm) {
         return this.vmsMigratingOut.remove(vm);
     }
+
+    /**
+     * Gets the percentage of the MIPS requested by a VM
+     * that will be in fact requested to the Host, according to the VM migration
+     * status:
+     *
+     * <ul>
+     *  <li>VM is migrating out of this Host: the MIPS requested by VM will be reduced
+     *   according to the
+     *   {@link #getVmMigrationCpuOverhead() CPU migration overhead}.
+     *   The number of MIPS corresponding to the CPU overhead is used
+     *   by the Host to perform the migration;</li>
+     *  <li>VM is migrating into this Host: only a fraction of its requested MIPS will be
+     *   in fact requested to the Host. This amount is computed by reducing the
+     *   {@link #getVmMigrationCpuOverhead() CPU migration overhead};</li>
+     *  <li>VM is not in migration: 100% of its requested MIPS will be
+     *   in fact requested to the Host</li>
+     * </ul>
+     * @param vm the VM that is requesting MIPS from the Host
+     * @return the percentage of MIPS requested by the VM that will be in fact
+     * requested to the Host (in scale from [0 to 1], where  is 100%)
+     */
+    protected double percentOfMipsToRequest(Vm vm) {
+        if (getVmsMigratingOut().contains(vm)) {
+            /* While the VM is migrating out, the host where it's migrating from
+            experiences a performance degradation.
+            Thus, the allocated MIPS for that VM is reduced according to the CPU migration
+            overhead.*/
+            return getMaxCpuUsagePercentDuringMigration();
+        }
+        if (getVmsMigratingIn().contains(vm)) {
+            /* While the VM is migrating in,
+            the destination host only increases CPU usage according
+            to the CPU migration overhead.
+             */
+            return getVmMigrationCpuOverhead();
+        }
+        //VM is not migrating, thus 100% of its requested MIPS will be requested to the Host.
+        return 1;
+    }
+
+    
 }

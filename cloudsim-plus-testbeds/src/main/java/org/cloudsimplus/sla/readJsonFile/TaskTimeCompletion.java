@@ -32,29 +32,29 @@ import java.io.FileNotFoundException;
 import java.util.List;
 
 /**
- * This class takes the response time metric threshold in the sla contract
+ * This class takes the TaskTimeCompletion metric threshold in the sla contract
  * 
  * @author raysaoliveira
  */
-public class ResponseTime {
+public class TaskTimeCompletion {
     private SlaReader reader;
-    private double minValueResponseTime;
-    private double maxValueResponseTime;
+    private double minValueTaskTimeCompletion;
+    private double maxValueTaskTimeCompletion;
 
-    public ResponseTime(SlaReader reader) {
+    public TaskTimeCompletion(SlaReader reader) {
         this.reader = reader;
     }
 
-    public void checkResponseTimeSlaContract() throws FileNotFoundException {
+    public void checkTaskTimeCompletionSlaContract() throws FileNotFoundException {
         List<SlaMetric> metrics = reader.getContract().getMetrics();
         metrics.stream()
-                .filter(m -> m.isReponseTime())
+                .filter(m -> m.isTaskTimeCompletion())
                 .findFirst()
-                .ifPresent(this::responseTimeThreshold);
+                .ifPresent(this::taskTimeCompletionThreshold);
 
     }
     
-    private void responseTimeThreshold(SlaMetric metric) {
+    private void taskTimeCompletionThreshold(SlaMetric metric) {
         double minValue =
                 metric.getDimensions().stream()
                     .filter(d -> d.isValueMin())
@@ -66,36 +66,36 @@ public class ResponseTime {
                     .map(d -> d.getValue())
                     .findFirst().orElse(Double.MAX_VALUE);
         
-        minValueResponseTime = minValue;
-        maxValueResponseTime = maxValue;
+        minValueTaskTimeCompletion = minValue;
+        maxValueTaskTimeCompletion = maxValue;
     }
     
     /**
-     * @return the minValueResponseTime
+     * @return the minValueTaskTimeCompletion
      */
-    public double getMinValueResponseTime() {
-        return minValueResponseTime;
+    public double getMinValueTaskTimeCompletion() {
+        return minValueTaskTimeCompletion;
     }
 
     /**
-     * @param minValueResponseTime the minValueResponseTime to set
+     * @param minValueTaskTimeCompletion the minValueTaskTimeCompletion to set
      */
-    public void setMinValueResponseTime(double minValueResponseTime) {
-        this.minValueResponseTime = minValueResponseTime;
+    public void setMinValueTaskTimeCompletion(double minValueTaskTimeCompletion) {
+        this.minValueTaskTimeCompletion = minValueTaskTimeCompletion;
     }
 
     /**
-     * @return the maxValueResponseTime
+     * @return the maxValueTaskTimeCompletion
      */
-    public double getMaxValueResponseTime() {
-        return maxValueResponseTime;
+    public double getMaxValueTaskTimeCompletion() {
+        return maxValueTaskTimeCompletion;
     }
 
     /**
-     * @param maxValueResponseTime the maxValueResponseTime to set
+     * @param maxValueTaskTimeCompletion the maxValueTaskTimeCompletion to set
      */
-    public void setMaxValueResponseTime(double maxValueResponseTime) {
-        this.maxValueResponseTime = maxValueResponseTime;
+    public void setMaxValueTaskTimeCompletion(double maxValueTaskTimeCompletion) {
+        this.maxValueTaskTimeCompletion = maxValueTaskTimeCompletion;
     }
     
 }

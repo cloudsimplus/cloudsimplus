@@ -92,6 +92,7 @@ public interface Pe extends Identificable, ResourceManageable {
      * set manually.
      *
      * @param peProvisioner the new PE provisioner
+     * @return 
      */
     Pe setPeProvisioner(PeProvisioner peProvisioner);
 
@@ -128,4 +129,28 @@ public interface Pe extends Identificable, ResourceManageable {
      * @post $none
      */
     boolean setStatus(Status status);
+    
+    /**
+     * Checks if the PE is working (not failed).
+     * @return 
+     */
+    boolean isWorking();
+    
+    /**
+     * Checks if the PE is failed.
+     * @return 
+     */
+    boolean isFailed();
+    
+    /**
+     * Checks if the PE is free to be used (it's idle).
+     * @return 
+     */
+    boolean isFree();
+    
+    /**
+     * Checks if the PE is buzy to be used (it's being used).
+     * @return 
+     */
+    boolean isBuzy();
 }

@@ -26,7 +26,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package org.cloudsimplus.sla.responsetime;
+package org.cloudsimplus.sla.tasktimecompletion;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -40,31 +40,37 @@ import org.cloudsimplus.testbeds.ExperimentRunner;
  *
  * @author raysaoliveira
  */
-public class CloudletResponseTimeWorkLoadRunner extends ExperimentRunner<CloudletResponseTimeWorkLoadExperimet> {
-    
+public class CloudletTaskTimeCompletionWithoutMinimizationRunner extends ExperimentRunner<CloudletTaskTimeCompletionWithoutMinimizationExperiment> {
+
     /**
      * Different lengths that will be randomly assigned to created Cloudlets.
      */
     static final long[] CLOUDLET_LENGTHS = {10000, 14000, 20000, 40000};
-    static final int[] VM_PES = {2, 4, 6, 8};
-    static final int VMS = 400;
-    static final int CLOUDLETS = 100;
+    static final int[] VM_PES = {2, 4};
+    static final int VMS = 30;
+    static final int CLOUDLETS = 50;
 
     /**
-     * The response time average for all the experiments.
+     * The TaskTimeCompletion average for all the experiments.
      */
-    private List<Double> cloudletResponseTimes;
+    private List<Double> cloudletTaskTimesCompletion;
 
-     /**
-     * The percentage of cloudlets meeting response time average for all the experiments.
+    /**
+     * The percentage of cloudlets meeting TaskTimeCompletion average for all the
+     * experiments.
      */
-    private List<Double> percentageOfCloudletsMeetingResponseTimes;
+    private List<Double> percentageOfCloudletsMeetingTaskTimesCompletion;
     
     /**
      * Amount of cloudlet PE per PE of vm.
      */
     private List<Double> ratioOfVmPesToRequiredCloudletPesList;
 
+    /**
+     * Average of the cost total
+     */
+    private List<Double> averageTotalCostSimulation;
+    
     /**
      * Indicates if each experiment will output execution logs or not.
      */
@@ -77,8 +83,8 @@ public class CloudletResponseTimeWorkLoadRunner extends ExperimentRunner<Cloudle
      * @param args command line arguments
      */
     public static void main(String[] args) {
-        new CloudletResponseTimeWorkLoadRunner()
-                .setSimulationRuns(200)
+        new CloudletTaskTimeCompletionWithoutMinimizationRunner()
+                .setSimulationRuns(300)
                 .setApplyAntitheticVariatesTechnique(true)
                 .setNumberOfBatches(5) //Comment this or set to 0 to disable the "Batch Means Method"
                 .setBaseSeed(1475098589732L) //Comment this to use the current time as base seed 1475098589732L
@@ -86,25 +92,27 @@ public class CloudletResponseTimeWorkLoadRunner extends ExperimentRunner<Cloudle
                 .run();
     }
 
-    CloudletResponseTimeWorkLoadRunner() {
+    CloudletTaskTimeCompletionWithoutMinimizationRunner() {
         super();
-        cloudletResponseTimes = new ArrayList<>();
-        percentageOfCloudletsMeetingResponseTimes = new ArrayList<>();
+        cloudletTaskTimesCompletion = new ArrayList<>();
+        percentageOfCloudletsMeetingTaskTimesCompletion = new ArrayList<>();
         ratioOfVmPesToRequiredCloudletPesList = new ArrayList<>();
+        averageTotalCostSimulation = new ArrayList<>();
     }
 
     @Override
-    protected CloudletResponseTimeWorkLoadExperimet createExperiment(int i) {
+    protected CloudletTaskTimeCompletionWithoutMinimizationExperiment createExperiment(int i) {
         ContinuousDistribution randCloudlet = createRandomGenAndAddSeedToList(i);
         ContinuousDistribution randVm = createRandomGenAndAddSeedToList(i);
-        CloudletResponseTimeWorkLoadExperimet exp
-                = new CloudletResponseTimeWorkLoadExperimet(randCloudlet, randVm);
+        CloudletTaskTimeCompletionWithoutMinimizationExperiment exp
+                = new CloudletTaskTimeCompletionWithoutMinimizationExperiment(randCloudlet, randVm);
         exp.setVerbose(experimentVerbose).setAfterExperimentFinish(this::afterExperimentFinish);
         return exp;
     }
 
     @Override
-    protected void setup() {}
+    protected void setup() {
+    }
 
     /**
      * Method automatically called after every experiment finishes running. It
@@ -113,19 +121,22 @@ public class CloudletResponseTimeWorkLoadRunner extends ExperimentRunner<Cloudle
      *
      * @param experiment the finished experiment
      */
-    private void afterExperimentFinish(CloudletResponseTimeWorkLoadExperimet experiment) {
-        cloudletResponseTimes.add(experiment.getCloudletsResponseTimeAverage());
-        percentageOfCloudletsMeetingResponseTimes.add(
-                experiment.getPercentageOfCloudletsMeetingResponseTime());
+    private void afterExperimentFinish(CloudletTaskTimeCompletionWithoutMinimizationExperiment experiment) {
+        cloudletTaskTimesCompletion.add(experiment.getCloudletsTaskTimeCompletionAverage());
+        percentageOfCloudletsMeetingTaskTimesCompletion.add(
+                experiment.getPercentageOfCloudletsMeetingTaskTimeCompletion());
         ratioOfVmPesToRequiredCloudletPesList.add(experiment.getRatioOfExistingVmPesToRequiredCloudletPes());
+        averageTotalCostSimulation.add(experiment.getTotalCostPrice());
     }
 
     @Override
     protected Map<String, List<Double>> createMetricsMap() {
         Map<String, List<Double>> map = new HashMap<>();
-        map.put("Cloudlet Response Time", cloudletResponseTimes);
-        map.put("Percentage Of Cloudlets Meeting Response Times", percentageOfCloudletsMeetingResponseTimes);
+        map.put("Cloudlet TaskTimeCompletion", cloudletTaskTimesCompletion);
+        map.put("Percentage Of Cloudlets Meeting TaskTimesCompletion", percentageOfCloudletsMeetingTaskTimesCompletion);
         map.put("Average of vPEs/CloudletsPEs", ratioOfVmPesToRequiredCloudletPesList);
+        map.put("Average of Total Cost of simulation", averageTotalCostSimulation);
+       
         return map;
     }
 
@@ -146,6 +157,7 @@ public class CloudletResponseTimeWorkLoadRunner extends ExperimentRunner<Cloudle
     @Override
     protected void printFinalResults(String metricName, SummaryStatistics stats) {
         System.out.printf("\n# %s for %d simulation runs\n", metricName, getSimulationRuns());
+
         if (!simulationRunsAndNumberOfBatchesAreCompatible()) {
             System.out.println("\tBatch means method was not be applied because the number of simulation runs is not greater than the number of batches.");
         }
@@ -160,9 +172,8 @@ public class CloudletResponseTimeWorkLoadRunner extends ExperimentRunner<Cloudle
         double lower = stats.getMean() - intervalSize;
         double upper = stats.getMean() + intervalSize;
         System.out.printf(
-                "\tResponse time mean 95%% Confidence Interval: %.2f ∓ %.2f, that is [%.2f to %.2f]\n",
+                "\tTaskTimeCompletion mean 95%% Confidence Interval: %.2f ∓ %.2f, that is [%.2f to %.2f]\n",
                 stats.getMean(), intervalSize, lower, upper);
         System.out.printf("\tStandard Deviation: %.2f \n", stats.getStandardDeviation());
     }
-    
 }

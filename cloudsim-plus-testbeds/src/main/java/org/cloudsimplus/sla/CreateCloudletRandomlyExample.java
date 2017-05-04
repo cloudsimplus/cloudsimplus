@@ -28,6 +28,7 @@
  */
 package org.cloudsimplus.sla;
 
+import org.cloudbus.cloudsim.distributions.PoissonProcess;
 import java.util.ArrayList;
 import java.util.List;
 import org.cloudbus.cloudsim.cloudlets.Cloudlet;
@@ -151,7 +152,7 @@ public class CreateCloudletRandomlyExample {
         int totalArrivedCustomers = 0;
         int cloudletId = 0;
         for (int minute = 0; minute < MAX_TIME_FOR_CLOUDLET_ARRIVAL; minute++) {
-            if (poisson.haveKEventsHappened()) { //Have k Cloudlets arrived?
+            if (poisson.eventsHappened()) { //Have k Cloudlets arrived?
                 totalArrivedCustomers += poisson.getK();
                 Cloudlet cloudlet = createCloudlet(cloudletId++, broker);
                 cloudlet.setSubmissionDelay(minute);

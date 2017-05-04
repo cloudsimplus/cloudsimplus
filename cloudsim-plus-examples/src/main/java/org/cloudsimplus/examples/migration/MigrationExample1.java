@@ -54,8 +54,6 @@ import org.cloudbus.cloudsim.selectionpolicies.power.PowerVmSelectionPolicyMinim
 import org.cloudbus.cloudsim.power.models.PowerModelLinear;
 import org.cloudbus.cloudsim.provisioners.PeProvisionerSimple;
 import org.cloudbus.cloudsim.provisioners.ResourceProvisionerSimple;
-import org.cloudbus.cloudsim.resources.Bandwidth;
-import org.cloudbus.cloudsim.resources.Ram;
 import org.cloudsimplus.builders.tables.CloudletsTableBuilder;
 
 /**
@@ -202,7 +200,7 @@ public final class MigrationExample1 {
      */
     public PowerVm createVm(DatacenterBroker broker) {
         PowerVm vm = new PowerVm(vmlist.size(), VM_MIPS, VM_PES_NUM);
-        vm.setSchedulingInterval(1)
+        vm
           .setRam(VM_RAM).setBw(VM_BW).setSize(VM_SIZE)
           .setBroker(broker)
           .setCloudletScheduler(new CloudletSchedulerTimeShared());
