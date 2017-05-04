@@ -185,7 +185,7 @@ public abstract class VmSchedulerAbstract implements VmScheduler {
         final double totalAllocatedMips = 
             getMipsMapAllocated().keySet()
                 .stream()
-                .mapToDouble(this::actualVmRequestedMipsSum)
+                .mapToDouble(this::actualVmTotalRequestedMips)
                 .sum();
         
         return host.getTotalMipsCapacity() - totalAllocatedMips;
@@ -205,22 +205,25 @@ public abstract class VmSchedulerAbstract implements VmScheduler {
      * @return the actual requested MIPS sum across all VM PEs,
      * including the CPU overhead of the VM is in migration to this Host
      */
-    private double actualVmRequestedMipsSum(Vm vm) {
+    private double actualVmTotalRequestedMips(Vm vm) {
         final double totalVmRequestedMips = 
                 getMipsMapAllocated()
                     .getOrDefault(vm, new ArrayList<>())
                     .stream()
                     .reduce(0.0, Double::sum);
         
-        if(getVmsMigratingIn().contains(vm)){
-            /*If the VM is migrating into this Host,
-            due to migration overhead, it is just allocated a fraction of the 
-            requested MIPS (such as 90%). The line below computes the original
-            requested MIPS (which correspond to 100%)*/
-            return totalVmRequestedMips / getMaxCpuUsagePercentDuringMigration();
-        }
+        /*If the VM is migrating in or out this Host,
+        there is a migration overhead.
+        Considering the overhead is 10%, 
+        if it's migrating in, it's just allocated just this 10%
+        for the migration process.
+        If it's migrating out, it's allocated 90% for the VM,
+        and 10% for the migration process.
         
-        return totalVmRequestedMips;
+        The line below computes the original
+        requested MIPS (which correspond to 100%)
+        */
+        return totalVmRequestedMips / percentOfMipsToRequest(vm);
     }
     
     /**
@@ -350,13 +353,6 @@ public abstract class VmSchedulerAbstract implements VmScheduler {
      * requested to the Host (in scale from [0 to 1], where  is 100%)
      */
     protected double percentOfMipsToRequest(Vm vm) {
-        if (getVmsMigratingOut().contains(vm)) {
-            /* While the VM is migrating out, the host where it's migrating from
-            experiences a performance degradation.
-            Thus, the allocated MIPS for that VM is reduced according to the CPU migration
-            overhead.*/
-            return getMaxCpuUsagePercentDuringMigration();
-        }
         if (getVmsMigratingIn().contains(vm)) {
             /* While the VM is migrating in,
             the destination host only increases CPU usage according
@@ -364,6 +360,15 @@ public abstract class VmSchedulerAbstract implements VmScheduler {
              */
             return getVmMigrationCpuOverhead();
         }
+
+        if (getVmsMigratingOut().contains(vm)) {
+            /* While the VM is migrating out, the host where it's migrating from
+            experiences a performance degradation.
+            Thus, the allocated MIPS for that VM is reduced according to the CPU migration
+            overhead.*/
+            return getMaxCpuUsagePercentDuringMigration();
+        }
+        
         //VM is not migrating, thus 100% of its requested MIPS will be requested to the Host.
         return 1;
     }
