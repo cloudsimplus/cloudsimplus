@@ -102,11 +102,13 @@ public class VmSchedulerTimeSharedOverSubscriptionTest {
     public void testAllocatePesForVmInMigration() {
         vmScheduler.getHost().addMigratingInVm(vm1);
         vmScheduler.getHost().addMigratingInVm(vm2);
+        vm1.setInMigration(true);
+        vm2.setInMigration(true);
 
         final List<Double> mipsShare1 = new ArrayList<>();
         mipsShare1.add(250.0);
 
-       // assertTrue(vmScheduler.allocatePesForVm(vm1, mipsShare1));
+        assertTrue(vmScheduler.allocatePesForVm(vm1, mipsShare1));
         final List<Pe> peList = vmScheduler.getHost().getPeList();
         assertEquals(1750.0, vmScheduler.getAvailableMips(), 0);
         assertEquals(1750.0, vmScheduler.getMaxAvailableMips(), 0);

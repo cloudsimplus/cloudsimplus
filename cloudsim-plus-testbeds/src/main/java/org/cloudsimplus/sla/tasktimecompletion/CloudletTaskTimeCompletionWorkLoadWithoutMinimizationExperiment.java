@@ -29,6 +29,7 @@ import org.cloudbus.cloudsim.resources.Bandwidth;
 import org.cloudbus.cloudsim.resources.Pe;
 import org.cloudbus.cloudsim.resources.PeSimple;
 import org.cloudbus.cloudsim.resources.Ram;
+import org.cloudbus.cloudsim.schedulers.cloudlet.CloudletSchedulerCompletelyFair;
 import org.cloudbus.cloudsim.schedulers.cloudlet.CloudletSchedulerTimeShared;
 import org.cloudbus.cloudsim.schedulers.vm.VmScheduler;
 import org.cloudbus.cloudsim.schedulers.vm.VmSchedulerTimeShared;
@@ -186,34 +187,8 @@ public class CloudletTaskTimeCompletionWorkLoadWithoutMinimizationExperiment ext
 
         Vm vm = new VmSimple(id, 1000, pes)
                 .setRam(512).setBw(1000).setSize(10000).setBroker(broker0)
-                .setCloudletScheduler(new CloudletSchedulerTimeShared());
+                .setCloudletScheduler(new CloudletSchedulerCompletelyFair());
         return vm;
-    }
-
-    /**
-     * Creates a {@link HorizontalVmScaling} object for a given VM.
-     *
-     * @param vm the VM in which the Horizontal Scaling will be created
-     */
-    private void createHorizontalVmScaling(Vm vm) {
-        HorizontalVmScaling horizontalScaling = new HorizontalVmScalingSimple();
-        horizontalScaling
-                .setVmSupplier(this::createVm)
-                .setOverloadPredicate(this::isVmOverloaded);
-        vm.setHorizontalScaling(horizontalScaling);
-    }
-
-    /**
-     * A {@link Predicate} that checks if a given VM is overloaded or not based
-     * on TaskTimeCompletion max value. A reference to this method is assigned to
-     * each Horizontal VM Scaling created.
-     *
-     * @param vm the VM to check if it is overloaded
-     * @return true if the VM is overloaded, false otherwise
-     * @see #createHorizontalVmScaling(Vm)
-     */
-    private boolean isVmOverloaded(Vm vm) {
-        return vm.getCurrentCpuPercentUse() > cpuUtilizationSlaContract;
     }
 
     @Override
@@ -317,6 +292,20 @@ public class CloudletTaskTimeCompletionWorkLoadWithoutMinimizationExperiment ext
 
         return sumPesVms / sumPesCloudlets;
     }
+    
+     /**
+     * Shows the wait time of cloudlets
+     *
+     * @param cloudlet list of cloudlets
+     */
+    public void waitTimeAverage(List<Cloudlet> cloudlet) {
+        double waitTime = 0, quant = 0;
+        for (Cloudlet cloudlets : cloudlet) {
+            waitTime += cloudlets.getWaitingTime();
+            quant++;
+        }
+        System.out.println("\n# The wait time is: " + waitTime/quant);
+    }
 
     /**
      * A main method just for test purposes.
@@ -336,5 +325,6 @@ public class CloudletTaskTimeCompletionWorkLoadWithoutMinimizationExperiment ext
         exp.getCloudletsTaskTimeCompletionAverage();
         exp.getPercentageOfCloudletsMeetingTaskTimeCompletion();
         exp.getRatioOfExistingVmPesToRequiredCloudletPes();
+        exp.waitTimeAverage(exp.getCloudletList());
     }
 }

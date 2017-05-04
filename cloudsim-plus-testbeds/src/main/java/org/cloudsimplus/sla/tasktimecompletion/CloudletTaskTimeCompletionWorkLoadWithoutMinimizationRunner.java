@@ -24,7 +24,7 @@ public class CloudletTaskTimeCompletionWorkLoadWithoutMinimizationRunner extends
      */
     static final long[] CLOUDLET_LENGTHS = {10000, 14000, 20000, 40000};
     static final int[] VM_PES = {2, 4, 6, 8};
-    static final int VMS = 400;
+    static final int VMS = 100;
     static final int CLOUDLETS = 100;
 
     /**

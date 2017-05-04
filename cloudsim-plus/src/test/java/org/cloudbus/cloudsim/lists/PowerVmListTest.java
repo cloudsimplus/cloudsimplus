@@ -76,7 +76,6 @@ public class PowerVmListTest {
         int i = NUMBER_OF_VMS;
         for(final PowerVm vm: list) {
             i--;
-            System.out.println("Vm "+vm.getId());
             String msg = String.format(
                     "It was expected that the PowerVm %d at the position %d",
                     vm.getId(), i);
@@ -93,7 +92,6 @@ public class PowerVmListTest {
         int i = -1;
         for(PowerVm vm: list) {
             i++;
-            System.out.println("Vm "+vm.getId());
             String msg = String.format(
                     "It was expected that the PowerVm %d at the position %d",
                     vm.getId(), i);
