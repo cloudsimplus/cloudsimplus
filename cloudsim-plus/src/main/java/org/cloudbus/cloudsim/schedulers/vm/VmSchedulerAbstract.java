@@ -68,7 +68,10 @@ public abstract class VmSchedulerAbstract implements VmScheduler {
 
     @Override
     public boolean allocatePesForVm(Vm vm) {
-        final List<Double> mipsList = LongStream.range(0, vm.getNumberOfPes()).mapToObj(i -> vm.getMips()).collect(toList());
+        final List<Double> mipsList = 
+                LongStream.range(0, vm.getNumberOfPes())
+                        .mapToObj(i -> vm.getMips())
+                        .collect(toList());
         return allocatePesForVm(vm, mipsList);
     }
 
@@ -263,8 +266,13 @@ public abstract class VmSchedulerAbstract implements VmScheduler {
         this.vmsMigratingIn = Objects.isNull(vmsMigratingIn) ? new HashSet<>() : vmsMigratingIn;
     }
 
-    @Override
-    public Map<Vm, List<Pe>> getPeMap() {
+    /**
+     * Gets the map of VMs to PEs, where each key is a VM and each value is a list
+     * of PEs allocated to that VM.
+     *
+     * @return
+     */
+    protected Map<Vm, List<Pe>> getPeMap() {
         return peMap;
     }
 

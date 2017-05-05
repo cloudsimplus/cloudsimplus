@@ -23,7 +23,7 @@ public class CloudletTaskTimeCompletionWorkLoadWithoutMinimizationRunner extends
      * Different lengths that will be randomly assigned to created Cloudlets.
      */
     static final long[] CLOUDLET_LENGTHS = {10000, 14000, 20000, 40000};
-    static final int[] VM_PES = {2, 4, 6, 8};
+    static final int[] VM_PES = {2};
     static final int VMS = 100;
     static final int CLOUDLETS = 100;
 
@@ -55,7 +55,7 @@ public class CloudletTaskTimeCompletionWorkLoadWithoutMinimizationRunner extends
      */
     public static void main(String[] args) {
         new CloudletTaskTimeCompletionWorkLoadWithoutMinimizationRunner()
-                .setSimulationRuns(200)
+                .setSimulationRuns(100)
                 .setApplyAntitheticVariatesTechnique(true)
                 .setNumberOfBatches(5) //Comment this or set to 0 to disable the "Batch Means Method"
                 .setBaseSeed(1475098589732L) //Comment this to use the current time as base seed 1475098589732L

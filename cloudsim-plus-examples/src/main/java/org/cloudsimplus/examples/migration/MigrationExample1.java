@@ -133,7 +133,7 @@ public final class MigrationExample1 {
     public static final double CLOUDLET_CPU_USAGE_INCREMENT_PER_SECOND = 0.05;
 
     private static final int   NUMBER_OF_HOSTS_TO_CREATE = 3;
-    private static final int   NUMBER_OF_VMS_TO_CREATE = NUMBER_OF_HOSTS_TO_CREATE + 4;
+    private static final int   NUMBER_OF_VMS_TO_CREATE = NUMBER_OF_HOSTS_TO_CREATE+2;
     private static final int   NUMBER_OF_CLOUDLETS_TO_CREATE_BY_VM = 1;
 
     private final List<Vm> vmlist = new ArrayList<>();

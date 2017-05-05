@@ -38,9 +38,6 @@ final class VmSchedulerNull implements VmScheduler {
     @Override public <T extends Pe> List<T> getWorkingPeList() {
         return Collections.emptyList();
     }
-    @Override public Map<Vm, List<Pe>> getPeMap() {
-        return Collections.emptyMap();
-    }
     @Override public List<Pe> getPesAllocatedForVM(Vm vm) {
         return Collections.emptyList();
     }

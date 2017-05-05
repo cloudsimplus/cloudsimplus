@@ -117,12 +117,10 @@ public class HostSimpleTest {
         final int numberOfVms = 4;
         final HostSimple host = createHostSimple(0, numberOfVms);
 
-        final List<Vm> vms = new ArrayList<>();
+        final List<Vm> vms = new ArrayList<>(numberOfVms);
         IntStream.range(0, numberOfVms).forEach(i -> {
             Vm vm = VmSimpleTest.createVm(
-                    i, MIPS/numberOfVms, 1, RAM/numberOfVms, BW/numberOfVms, STORAGE/numberOfVms,
-                    CloudletScheduler.NULL);
-            vm.setHost(Host.NULL);
+                    i, MIPS/numberOfVms, 1, RAM/numberOfVms, BW/numberOfVms, STORAGE/numberOfVms);
             if(i == 0){
                 /*considers that one of the migrating in VMs already was placed at the host,
                 thus, it will not be added again to the host vm list.

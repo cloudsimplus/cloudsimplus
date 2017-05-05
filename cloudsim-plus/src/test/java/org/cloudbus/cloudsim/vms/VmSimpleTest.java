@@ -128,19 +128,21 @@ public class VmSimpleTest {
     public static VmSimple createVm(final int vmId, long capacity) {
         return createVm(vmId, capacity, 1, capacity, capacity, capacity, CloudletScheduler.NULL);
     }
+    
+    public static VmSimple createVm(final int vmId,
+            final double mips, final int numberOfPes,
+            final long ram, final long bw, final long storage)
+    {
+        final CloudSim cloudsim = CloudSimMocker.createMock(mocker -> mocker.clock(0).anyTimes());
+        final DatacenterBroker broker = Mocks.createMockBroker(cloudsim);
+        final VmSimple vm = new VmSimple(vmId, mips, numberOfPes);
+        vm.setRam(ram).setBw(bw)
+                .setSize(storage)
+                .setCloudletScheduler(CloudletScheduler.NULL)
+                .setBroker(broker);
+        return vm;
+    }    
 
-    /**
-     * Creates a VM with the given configuration
-     *
-     * @param vmId
-     * @param mips
-     * @param numberOfPes
-     * @param ram
-     * @param bw
-     * @param storage
-     * @param scheduler
-     * @return
-     */
     public static VmSimple createVm(final int vmId,
             final double mips, final int numberOfPes,
             final long ram, final long bw, final long storage,
@@ -155,6 +157,7 @@ public class VmSimpleTest {
                 .setBroker(broker);
         return vm;
     }
+    
 
     /**
      * Creates a VM with the given numberOfPes for a given user and default

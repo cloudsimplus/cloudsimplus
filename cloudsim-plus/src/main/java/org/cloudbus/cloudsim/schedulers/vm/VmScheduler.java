@@ -172,14 +172,6 @@ public interface VmScheduler {
     <T extends Pe> List<T> getWorkingPeList();
 
     /**
-     * Gets the map of VMs to PEs, where each key is a VM UID and each value is a list
-     * of PEs allocated to that VM.
-     *
-     * @return
-     */
-    Map<Vm, List<Pe>> getPeMap();
-
-    /**
      * Gets the list of PEs allocated for a VM.
      *
      * @param vm the VM to get the allocated PEs

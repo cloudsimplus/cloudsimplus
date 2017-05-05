@@ -259,8 +259,10 @@ public class HostSimple implements Host {
 
         if (!getVmScheduler().isSuitableForVm(vm)) {
             Log.printFormattedLine(
-                    "%.2f: %s: [%s] Allocation of %s to %s failed due to lack of PEs", 
-                    getSimulation().clock(), getClass().getSimpleName(), msg, vm, this);
+                    "%.2f: %s: [%s] Allocation of %s to %s failed due to lack of PEs. Required %.0f MIPS (%d PEs * %.0f MIPS) but there is just %.0f MIPS available.", 
+                    getSimulation().clock(), getClass().getSimpleName(), msg, vm, this,
+                    vm.getTotalMipsCapacity(), vm.getNumberOfPes(), vm.getMips(), 
+                    vmScheduler.getAvailableMips());
             return false;
         }
 
@@ -552,7 +554,10 @@ public class HostSimple implements Host {
 
     @Override
     public String toString() {
-        return String.format("Host %d/DC %d", getId(), getDatacenter().getId());
+        final String dc = 
+                Datacenter.NULL.equals(datacenter) ? "" : 
+                String.format("/DC %d", datacenter.getId());
+        return String.format("Host %d%s", getId(), dc);
     }
 
     @Override

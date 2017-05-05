@@ -40,13 +40,13 @@ import org.cloudsimplus.testbeds.ExperimentRunner;
  *
  * @author raysaoliveira
  */
-public class CloudletTaskTimeCompletionWorkLoadRunner extends ExperimentRunner<CloudletTaskTimeCompletionWorkLoadExperimet> {
+public class CloudletTaskTimeCompletionWorkLoadMinimizationRunner extends ExperimentRunner<CloudletTaskTimeCompletionWorkLoadMinimizationExperiment> {
     
     /**
      * Different lengths that will be randomly assigned to created Cloudlets.
      */
     static final long[] CLOUDLET_LENGTHS = {10000, 14000, 20000, 40000};
-    static final int[] VM_PES = {2, 4, 6, 8};
+    static final int[] VM_PES = {2};
     static final int VMS = 100;
     static final int CLOUDLETS = 100;
 
@@ -77,8 +77,8 @@ public class CloudletTaskTimeCompletionWorkLoadRunner extends ExperimentRunner<C
      * @param args command line arguments
      */
     public static void main(String[] args) {
-        new CloudletTaskTimeCompletionWorkLoadRunner()
-                .setSimulationRuns(200)
+        new CloudletTaskTimeCompletionWorkLoadMinimizationRunner()
+                .setSimulationRuns(100)
                 .setApplyAntitheticVariatesTechnique(true)
                 .setNumberOfBatches(5) //Comment this or set to 0 to disable the "Batch Means Method"
                 .setBaseSeed(1475098589732L) //Comment this to use the current time as base seed 1475098589732L
@@ -86,7 +86,7 @@ public class CloudletTaskTimeCompletionWorkLoadRunner extends ExperimentRunner<C
                 .run();
     }
 
-    CloudletTaskTimeCompletionWorkLoadRunner() {
+    CloudletTaskTimeCompletionWorkLoadMinimizationRunner() {
         super();
         cloudletTaskTimesCompletion = new ArrayList<>();
         percentageOfCloudletsMeetingTaskTimeCompletion = new ArrayList<>();
@@ -94,11 +94,11 @@ public class CloudletTaskTimeCompletionWorkLoadRunner extends ExperimentRunner<C
     }
 
     @Override
-    protected CloudletTaskTimeCompletionWorkLoadExperimet createExperiment(int i) {
+    protected CloudletTaskTimeCompletionWorkLoadMinimizationExperiment createExperiment(int i) {
         ContinuousDistribution randCloudlet = createRandomGenAndAddSeedToList(i);
         ContinuousDistribution randVm = createRandomGenAndAddSeedToList(i);
-        CloudletTaskTimeCompletionWorkLoadExperimet exp
-                = new CloudletTaskTimeCompletionWorkLoadExperimet(randCloudlet, randVm);
+        CloudletTaskTimeCompletionWorkLoadMinimizationExperiment exp
+                = new CloudletTaskTimeCompletionWorkLoadMinimizationExperiment(randCloudlet, randVm);
         exp.setVerbose(experimentVerbose).setAfterExperimentFinish(this::afterExperimentFinish);
         return exp;
     }
@@ -113,7 +113,7 @@ public class CloudletTaskTimeCompletionWorkLoadRunner extends ExperimentRunner<C
      *
      * @param experiment the finished experiment
      */
-    private void afterExperimentFinish(CloudletTaskTimeCompletionWorkLoadExperimet experiment) {
+    private void afterExperimentFinish(CloudletTaskTimeCompletionWorkLoadMinimizationExperiment experiment) {
         cloudletTaskTimesCompletion.add(experiment.getCloudletsTaskTimeCompletionAverage());
         percentageOfCloudletsMeetingTaskTimeCompletion.add(
                 experiment.getPercentageOfCloudletsMeetingTaskTimeCompletion());

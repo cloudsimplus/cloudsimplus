@@ -71,7 +71,9 @@ import org.cloudsimplus.sla.readJsonFile.CpuUtilization;
 import org.cloudsimplus.sla.readJsonFile.TaskTimeCompletion;
 import org.cloudsimplus.sla.readJsonFile.SlaReader;
 import static org.cloudsimplus.sla.tasktimecompletion.CloudletTaskTimeCompletionMinimizationRunner.CLOUDLETS;
+import static org.cloudsimplus.sla.tasktimecompletion.CloudletTaskTimeCompletionMinimizationRunner.CLOUDLET_LENGTHS;
 import static org.cloudsimplus.sla.tasktimecompletion.CloudletTaskTimeCompletionMinimizationRunner.VMS;
+import static org.cloudsimplus.sla.tasktimecompletion.CloudletTaskTimeCompletionMinimizationRunner.VM_PES;
 import org.cloudsimplus.testbeds.SimulationExperiment;
 
 /**
@@ -108,12 +110,6 @@ public final class CloudletTaskTimeCompletionMinimizationExperiment extends Simu
     public static final String METRICS_FILE = ResourceLoader.getResourcePath(CloudletTaskTimeCompletionMinimizationExperiment.class, "SlaMetrics.json");
     private double cpuUtilizationSlaContract;
     private double taskTimeCompletionSlaContract;
-
-    /**
-     * Different lengths that will be randomly assigned to created Cloudlets.
-     */
-    private static final long[] CLOUDLET_LENGTHS = {20000, 40000, 14000, 10000, 10000};
-    private static final int[] VM_PES = {2, 4};
 
     /**
      * Sorts the Cloudlets before submitting them to the Broker, so that

@@ -105,12 +105,7 @@ public class VmSchedulerTimeShared extends VmSchedulerAbstract {
      */
     private void clearAllocationOfPesForAllVms() {
         getPeMap().clear();
-        getWorkingPeList().forEach(pe -> pe.getPeProvisioner().deallocateResourceForAllVms());
-
-        for (final Map.Entry<Vm, List<Double>> entry : getMipsMapAllocated().entrySet()) {
-            final Vm vm = entry.getKey();
-            getPeMap().put(vm, new ArrayList<>(entry.getValue().size()));
-        }
+        getHost().getPeList().forEach(pe -> pe.getPeProvisioner().deallocateResourceForAllVms());
     }
 
     /**
@@ -143,7 +138,7 @@ public class VmSchedulerTimeShared extends VmSchedulerAbstract {
      *
      * @TODO @author manoelcampos The method implementation must to be checked. See the comments inside.
      * Probably there was performed an oversimplification when implementing this method,
-     * as it as made for CloudletSchedulerTimeShared class.
+     * as it is made for CloudletSchedulerTimeShared class.
      *
      */
     private double allocateMipsFromHostPesToGivenVirtualPe(Vm vm, final double requestedMipsForVmPe, Iterator<Pe> hostPesIterator) {
@@ -151,56 +146,83 @@ public class VmSchedulerTimeShared extends VmSchedulerAbstract {
             return 0;
         }
 
-        Pe selectedHostPe;
-
         double allocatedMipsForVmPe = 0;
         /*
         * While all the requested MIPS for the VM PE was not allocated, try to find a Host PE
         * with that MIPS amount available.
         */
         while (allocatedMipsForVmPe <= 0 && hostPesIterator.hasNext()) {
-            selectedHostPe = hostPesIterator.next();
-            if (getAvailableMipsForHostPe(selectedHostPe) >= requestedMipsForVmPe) {
-                /*
-                 * If the selected Host PE has enough available MIPS that is requested by the
-                 * current VM PE (Virtual PE, vPE or vCore), allocate that MIPS in that Host PE for that vPE.
-                 * For each next vPE, in case that the same previous selected Host PE yet
-                 * has available MIPS to allocate to it, that Host PE will be allocated
-                 * to that next vPE. However, for the best of my knowledge,
-                 * in real scheduling, it is not possible to allocate
-                 * more than one VM to the same CPU core.
-                 * The last picture in the following article makes it clear:
-                 * https://support.rackspace.com/how-to/numa-vnuma-and-cpu-scheduling/
-                 *
-                 */
-                allocateMipsFromHostPeForVm(vm, selectedHostPe, requestedMipsForVmPe);
+            Pe selectedHostPe = hostPesIterator.next();
+             if(allocateAllVmPeRequestedMipsFromHostPe(vm, selectedHostPe, requestedMipsForVmPe)){
                 allocatedMipsForVmPe = requestedMipsForVmPe;
-            } else if (getAvailableMipsForHostPe(selectedHostPe) > 0){
-                /*
-                 * If the selected Host PE doesn't have the available MIPS requested by the current
-                 * vPE, allocate the MIPS that is available in that PE for the vPE
-                 * and try to find another Host PE to allocate the remaining MIPS required by the
-                 * current vPE. However, for the best of my knowledge,
-                 * in real scheduling, it is not possible to allocate
-                 * more than one VM to the same CPU core. If the current Host PE doesn't have the
-                 * MIPS required by the vPE, another Host PE has to be found.
-                 * Using the current implementation, the same Host PE could be used
-                 * by different Hosts.
-                 */
-
-                //gets the available MIPS from Host PE before allocating it to the VM
-                allocatedMipsForVmPe += getAvailableMipsForHostPe(selectedHostPe);
-                allocateMipsFromHostPeForVm(vm, selectedHostPe, getAvailableMipsForHostPe(selectedHostPe));
-                if (requestedMipsForVmPe > 0 && !hostPesIterator.hasNext()) {
-                    break;
-                }
-            }
+             } else {
+                allocatedMipsForVmPe += allocatedAvailableMipsFromHostPeToVirtualPe(vm, selectedHostPe);
+             }
         }
 
         return allocatedMipsForVmPe;
     }
 
-    private long getAvailableMipsForHostPe(Pe hostPe) {
+    /**
+     * Try to allocate the MIPS available in a given Physical PE
+     * to a vPE. This method is used when the MIPS requested
+     * by a vPE is not entirely available at a Physical PE.
+     * This all, this method allocates the available capacity to the vPE.
+     * 
+     * @param vm the VM to allocate MIPS from one of its vPEs.
+     * @param hostPe the Physical PE to allocated MIPS from
+     * @param requestedMipsForVmPe the MIPS requested by the vPE
+     * @return true if all requested MIPS of the vPE is available at the physical PE
+     * and was allocated, false otherwise
+     * 
+     * @see #allocateAllVmPeRequestedMipsFromHostPe(org.cloudbus.cloudsim.vms.Vm, org.cloudbus.cloudsim.resources.Pe, double) 
+     */
+    private double allocatedAvailableMipsFromHostPeToVirtualPe(Vm vm, Pe hostPe) {
+        final double availableMips = getAvailableMipsFromHostPe(hostPe);
+        if (availableMips <= 0){
+           return 0;
+        }
+
+        /*
+        * If the selected Host PE doesn't have the available MIPS requested by the current
+        * vPE, allocate the MIPS that is available in that PE for the vPE
+        * and try to find another Host PE to allocate the remaining MIPS required by the
+        * current vPE.
+        */        
+        allocateMipsFromHostPeForVm(vm, hostPe, availableMips);   
+        return availableMips;
+    }
+
+    /**
+     * Try to allocate all the MIPS requested by a Virtual PE from a given Physical PE.
+     * 
+     * @param vm the VM to allocate MIPS from one of its vPEs.
+     * @param hostPe the Physical PE to allocated MIPS from
+     * @param requestedMipsForVmPe the MIPS requested by the vPE
+     * @return true if all requested MIPS of the vPE is available at the physical PE
+     * and was allocated, false otherwise
+     * 
+     * @todo If the selected Host PE has enough available MIPS that is requested by the
+     * current VM PE (Virtual PE, vPE or vCore), allocate that MIPS from that Host PE for that vPE.
+     * For each next vPE, in case the same previous selected Host PE yet
+     * has available MIPS to allocate to it, that Host PE will be allocated
+     * to that next vPE. However, for the best of my knowledge,
+     * in real scheduling, it is not possible to allocate
+     * more than one VM to the same CPU core,
+     * even in CPUs with Hyper-Threading technology.
+     * The last picture in the following article makes it clear:
+     * https://support.rackspace.com/how-to/numa-vnuma-and-cpu-scheduling/
+     */
+    private boolean allocateAllVmPeRequestedMipsFromHostPe(Vm vm, Pe hostPe, final double requestedMipsForVmPe) {
+        if (getAvailableMipsFromHostPe(hostPe) >= requestedMipsForVmPe) {
+            allocateMipsFromHostPeForVm(vm, hostPe, requestedMipsForVmPe);
+            return true;
+        }
+        
+        return false;
+    }
+
+    private long getAvailableMipsFromHostPe(Pe hostPe) {
         return hostPe.getPeProvisioner().getAvailableResource();
     }
 
@@ -212,39 +234,38 @@ public class VmSchedulerTimeShared extends VmSchedulerAbstract {
      */
     private void allocateMipsFromHostPeForVm(Vm vm, Pe pe, double mipsToAllocate) {
         pe.getPeProvisioner().allocateResourceForVm(vm, (long)mipsToAllocate);
-        getPeMap().get(vm).add(pe);
+        getPeMap().getOrDefault(vm, new ArrayList<>()).add(pe);
     }
 
     @Override
     public boolean isSuitableForVm(List<Double> vmMipsList) {
-        return getTotalCapacityToBeAllocatedToVm(vmMipsList) > 0.0;
+        return isMipsListAvailable(vmMipsList);
     }
 
     /**
      * Checks if the requested amount of MIPS is available to be allocated to a
      * VM.
      *
-     * @param vmRequestedMipsShare a VM's list of requested MIPS
-     * @return the sum of total requested mips if there is enough capacity to be
-     * allocated to the VM, 0 otherwise.
+     * @param vmRequestedMipsShare a list of MIPS requested by a VM
+     * @return true if the requested MIPS List is available, false otherwise
      */
-    protected double getTotalCapacityToBeAllocatedToVm(List<Double> vmRequestedMipsShare) {
+    protected boolean isMipsListAvailable(List<Double> vmRequestedMipsShare) {
         final double pmMips = getPeCapacity();
         double totalRequestedMips = 0;
         for (final double vmMips : vmRequestedMipsShare) {
             // each virtual PE of a VM must require not more than the capacity of a physical PE
             if (vmMips > pmMips) {
-                return 0;
+                return false;
             }
             totalRequestedMips += vmMips;
         }
 
         // This scheduler does not allow over-subscription
         if (getAvailableMips() < totalRequestedMips || getWorkingPeList().size() < vmRequestedMipsShare.size()) {
-            return 0.0;
+            return false;
         }
 
-        return totalRequestedMips;
+        return true;
     }
 
     /**
@@ -255,7 +276,7 @@ public class VmSchedulerTimeShared extends VmSchedulerAbstract {
      * @return true if successful, false otherwise
      */
     protected boolean updateMapOfRequestedMipsForVm(Vm vm, List<Double> mipsShareRequested) {
-        if (getTotalCapacityToBeAllocatedToVm(mipsShareRequested) == 0) {
+        if (!isMipsListAvailable(mipsShareRequested)) {
             return false;
         }
 
