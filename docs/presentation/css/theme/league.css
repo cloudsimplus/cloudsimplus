@@ -237,13 +237,12 @@ body {
 /*********************************************
  * IMAGES
  *********************************************/
- img {
-    z-index: -1;
-}
+
 
 #logo, #logo-bottom, #logo img {
   background: rgba(255, 255, 255, 0);
   border: 0;
+   z-index: -1;
 }
 
 #logo, #logo-bottom {

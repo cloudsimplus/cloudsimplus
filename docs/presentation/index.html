@@ -93,9 +93,9 @@
 					![Re-structured Modules](https://github.com/manoelcampos/cloudsim-plus/raw/master/docs/images/modules.png)
 
 					- **API**: independent and single-required module for building simulations.
-						- **Examples**: exclusive examples, refactored previous ones.
-						- **Testbeds**: multiple-run simulations for  scientifically valid data collection. 
-						- **Benchmarks**: performance assessment of features such as heuristics.
+					- **Examples**: exclusive examples, refactored previous ones.
+					- **Testbeds**: multiple-run simulations for  scientifically valid data collection. 
+					- **Benchmarks**: performance assessment of features such as heuristics.
 
 				</script></section>
 
@@ -161,7 +161,7 @@
 					- Objects just have to be submitted to an existing broker at simulation runtime
 				</script></section>
 
-				<section data-markdown data-separator-notes="^# Notes"><script type="text/template">
+				<section data-markdown><script type="text/template">
 					## 4. Delay creation of submitted VMs and Cloudlets
 					<img src="images/clock-png-25766.png" id="logo-bottom" />
 
@@ -211,14 +211,14 @@
 					- `CloudletScheduler`: how a Vm schedules the execution of Cloudlets
 					- Bad scheduling: starvation, wastage of CPU cycles, SLA violations
 					- [Completely Fair Scheduler](https://en.wikipedia.org/wiki/Completely_Fair_Scheduler) reduces these issues ([needs improvements](https://doi.org/10.1145/2901318.2901326) [Lozi et. al. 2016])
-					- Considers tasks priorities to define CPU time slices
+					- Considers task's priority to define CPU time slices
 					- `CloudletSchedulerTimeShared`: [simplistic; ignores task's priority; no actual preemption](https://github.com/manoelcampos/cloudsim-plus/issues/33)
 					- [CloudletSchedulerCompletelyFair](https://github.com/manoelcampos/cloudsim-plus/issues/58): more realistic implementation
 
 					# Notes
 					- CloudletSchedulerTimeShared: 3 CPU cores and 12 processes; make all processes to be executed simultaneously; 25% of each CPU core by process; 4 processes run in each core
 					- A bad scheduling may cause SLA violations
-					- If there are 2 Hyper-Threading CPU cores allocated to 4 processes that are not 
+					- If there are 2 Hyper-Threading CPU cores allocated to 4 processes which are not 
 					using the entire cores capacity, a fourth process cannot use this remaining capacity
 					- CloudletSchedulerTimeShared may achieve better but inaccurate results
 				</script></section>
@@ -239,7 +239,7 @@
 				<section data-markdown><script type="text/template">
 					## Conclusions and Future Work
 
-					- It is difficult to replicate a real system in simulation, mainly concerned in modelling the arrival of stochastic events such as workload bursts. 
+					- It's difficult to replicate a real system in simulation, mainly concerned in modelling the arrival of stochastic events such as workload bursts. 
 					- To contribute for valid results, a simulation framework has to:
 						- be well-designed and extensively test;
 						- get away from code duplication to avoid code degeneration;
