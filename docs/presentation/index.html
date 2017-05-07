@@ -44,8 +44,8 @@
 					[IFIP/IEEE International Symposium on Integrated Network Management, 2017](http://im2017.ieee-im.org)
 					#### [Manoel Campos](http://twitter.com/manoelcampos)¹ ²; [Raysa Oliveira](https://twitter.com/raysaloliveira)²; [Claudio Monteiro](https://www.linkedin.com/in/claudio-monteiro-4637411a)¹; [Pedro Inácio](http://www.di.ubi.pt/~inacio)²; [Mário Freire](http://di.ubi.pt/~mario/)²
 					<small>
-					¹Depto. Informática, [Instituto Federal de Educação do Tocantins](http://www.ifto.edu.br)<br/>
-					²[Instituto de Telecomunicações](http://www.it.pt) and [Depto. Informática](http://di.ubi.pt), [Universidade da Beira Interior](http://www.ubi.pt)
+					¹Depto. Informática, [Instituto Federal de Educação do Tocantins](http://www.ifto.edu.br), Brazil<br/>
+					²[Instituto de Telecomunicações](http://www.it.pt) and [Depto. Informática](http://di.ubi.pt), [Universidade da Beira Interior](http://www.ubi.pt), Portugal
 					<div height="40px">
 					###### This presentation is licensed under a [Creative Commons Attribution-ShareAlike 4.0 International License](http://creativecommons.org/licenses/by-sa/4.0/).
 					<img src="https://licensebuttons.net/l/by-sa/4.0/88x31.png"/>
@@ -77,12 +77,12 @@
 					- Less 30% code duplication, more 80% test coverage.
 
 					# Notes
-					- Java 8 independent CloudSim fork for Cloud Computing simulations
-					- easier to create simulations
-					- implementation of complex and more realistic scenarios
-					- stat-of-the-art cloud computing framework
-					- easier to maintain
-					- more accuracy and safety for changes
+					Java 8 independent CloudSim fork for Cloud Computing simulations.
+					- Easier to create simulations.
+					- Implementation of complex and more realistic scenarios.
+					- Stat-of-the-art cloud computing framework.
+					- Easier to maintain.
+					- More accuracy and safety for changes.
 				</script></section>
 
 				<section data-markdown data-separator-notes="^# Notes"><script type="text/template">
@@ -95,10 +95,10 @@
 					- New interfaces: increased abstraction, contracts for implementations.
 
 					# Notes
-					- new tools to be built on top of it
-					- easier to undersdant and maintain
-					- Separation of Concerns Principle
-					- Increase abstraction and define contract for implementations
+					- New tools to be built on top of it.
+					- Easier to undersdant and maintain.
+					- Separation of Concerns Principle.
+					- Increase abstraction and define contract for implementations.
 				</script></section>
 
 				<section data-markdown data-separator-notes="^# Notes"><script type="text/template">
@@ -106,14 +106,14 @@
 					![Re-structured Modules](https://github.com/manoelcampos/cloudsim-plus/raw/master/docs/images/modules.png)
 
 					- **API**: independent and single-required module for building simulations.
-						- **Examples**: exclusive examples, refactored previous ones.
-						- **Testbeds**: multiple-run simulations for  scientifically valid data collection. 
-						- **Benchmarks**: performance assessment of features such as heuristics.
+					- **Examples**: exclusive examples, refactored previous ones.
+					- **Testbeds**: multiple-run simulations for  scientifically valid data collection. 
+					- **Benchmarks**: performance assessment of features such as heuristics.
 
 					# Notes
-					- Compounded of 4 modules
-					- All other modules depend on it. Dark yellow are exclusive to CloudSim Plus
-					- Examples updated for removal of duplications. Exclusive examples
+					Compounded of 4 modules.
+					- API: All other modules depend on it. Dark yellow are exclusive to CloudSim Plus.
+					- Examples updated for removal of duplications. Exclusive examples.
 					- Execution of multiple-run simulations using pseudo random number generators.
 					- Assessment of heuristics and algorithms for tunning.
 				</script></section>
@@ -126,10 +126,10 @@
 					- **White**: CloudSim existing packages.
 
 					# Notes
-					- Easier to find a class
-					- Dark Yellow: exclusive
-					- Light Yellow: better organization
-					- White: already existing
+					Easier to find a class.
+					- Dark Yellow: exclusive.
+					- Light Yellow: better organization.
+					- White: already existing.
 				</script></section>
 
 				<section data-markdown data-separator-notes="^# Notes"><script type="text/template">
@@ -153,9 +153,9 @@
 					Many more at [http://cloudsimplus.org](http://cloudsimplus.org/#exclusive-features)
 
 					# Notes
-					- Extensive list of features
-					- Time limitation
-					- Official website
+					- Extensive list of features.
+					- Time limitation.
+					- Official website.
 				</script></section>
 
 				<section data-markdown data-separator-notes="^# Notes"><script type="text/template">
@@ -172,7 +172,7 @@
 						- creation and destruction of VMs for load balancing
 
 					# Notes
-					- Most interesting features. Under and overload, SLA violations
+					Most interesting features. Under and overload, SLA violations.
 					- Static or dynamic thresholds. 
 					- Load balance. Thresholds. Alternative for Vertical Scaling and VM migration.
 				</script></section>
@@ -187,8 +187,8 @@
 
 					# Notes
 					- Simulations take several minutes. Multiple simulations at the same time.
-					- Java 8 Parallel Streams
-					- Single line of code to run
+					- Java 8 Parallel Streams.
+					- Single line of code to run.
 				</script></section>
 
 				<section data-markdown data-separator-notes="^# Notes"><script type="text/template">
@@ -200,10 +200,10 @@
 					- Objects just have to be submitted to an existing broker at simulation runtime
 
 					# Notes
-					- Cloud: dynamic environment
-					- Simulation runtime
-					- No new DatacenterBrokers
-					- Just submit to broker
+					Cloud: dynamic environment.
+					- Simulation runtime.
+					- No new DatacenterBrokers.
+					- Just submit to broker.
 				</script></section>
 
 				<section data-markdown data-separator-notes="^# Notes"><script type="text/template">
@@ -215,9 +215,9 @@
 					- A different way to simulate the dynamic creation of such objects
 
 					# Notes
-					- Delay creation before start
-					- Arrivals are known in advance
-					- Different way from previous feature
+					- Delay creation before start.
+					- When arrivals are known in advance.
+					- Different way from previous feature.
 				</script></section>
 
 				<section data-markdown data-separator-notes="^# Notes"><script type="text/template">
@@ -232,9 +232,9 @@
 					- Listeners for events from Hosts, VMs, Cloudlets and more general ones.
 
 					# Notes
-					- Most general purpose
-					- Monitoring
-					- Hosts, VMs, Cloudlets and more
+					Most general purpose.
+					- Monitoring.
+					- Hosts, VMs, Cloudlets and more.
 				</script></section>
 
 				<section data-markdown data-separator-notes="^# Notes"><script type="text/template">
@@ -245,10 +245,10 @@
 					- Uses [Null Object Pattern](https://en.wikipedia.org/wiki/Null_Object_pattern) to avoid NullPointerException.
 
 					# Notes
-					- Strongly object-oriented
-					- Actual relationships instead of int IDs
-					- Fluent API, Chained calls. Easy to get information
-					- Null Object Pattern
+					Strongly object-oriented.
+					- Actual relationships instead of int IDs.
+					- Fluent API, Chained calls. Easy to get information.
+					- Null Object Pattern.
 				</script></section>
 
 				<section data-markdown data-separator-notes="^# Notes"><script type="text/template">
@@ -264,9 +264,9 @@
 					- Includes a Simulated Annealing heuristic for mapping Cloudlets to VMs.
 
 					# Notes
-					- Contract to implement Heuristics in steps
-					- Examples
-					- Mapping Cloudlets to VMs
+					- Classes and Interfaces: contract to implement Heuristics in steps.
+					- Examples.
+					- Mapping Cloudlets to VMs.
 				</script></section>
 
 				<section data-markdown data-separator-notes="^# Notes"><script type="text/template">
@@ -281,12 +281,13 @@
 					- [CloudletSchedulerCompletelyFair](https://github.com/manoelcampos/cloudsim-plus/issues/58): more realistic implementation
 
 					# Notes
-					- Cloudlet Scheduler used by a VM
-					- Bad scheduling consequences
-					- The Completely Fair Scheduler
-					- Task's priority
-					- CloudletSchedulerTimeShared simplistic
-					-  Completely Fair Scheduler: more realistic
+					Linux Completely Fair Scheduler.
+					- Cloudlet Scheduler used by a VM.
+					- Bad scheduling consequences.
+					- The Completely Fair Scheduler,
+					- Task's priority.
+					- CloudletSchedulerTimeShared simplistic.
+					-  Completely Fair Scheduler: more realistic.
 				</script></section>
 
 				<section data-markdown data-separator-notes="^# Notes"><script type="text/template">
@@ -302,10 +303,9 @@
 					More details about issues [here](http://cloudsimplus.org/#exclusive-features-broker).
 
 					# Notes
-					- Functional Programming
-					- Functional DatacenterBroker: decision making
-					- Runtime behaviour change
-					- New policies without creating new DatacenterBrokers
+					Functional Programming and Functional DatacenterBroker: decision making on behalf of customers
+					- Runtime behaviour change.
+					- New policies without creating new DatacenterBrokers.
 				</script></section>
 
 				<!-- END -->
@@ -322,7 +322,7 @@
 				</script></section>
 
 				<section data-markdown><script type="text/template">
-					## Thanks
+					## Acknowledgements
 
 					CloudSim Plus is developed through a partnership among the Systems, Security and Image Communication Lab of [Instituto de Telecomunicações (IT, Portugal)](http://www.it.pt), the [Universidade da Beira Interior (UBI, Portugal)](http://www.ubi.pt) and the 
 					[Instituto Federal de Educação Ciência e Tecnologia do Tocantins (IFTO, Brazil)](http://www.ifto.edu.br). 
