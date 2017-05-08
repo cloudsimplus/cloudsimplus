@@ -38,10 +38,10 @@
 			<!-- Any section element inside of this container is displayed as a slide -->
 			<div class="slides">
 				<section data-markdown><script type="text/template">
-					## CloudSim Plus
+					# CloudSim Plus
 					http://cloudsimplus.org
-					### A Cloud Computing Simulation Framework Pursuing Software Engineering Principles for Improved Modularity, Extensibility and Correctness
-					[IFIP/IEEE International Symposium on Integrated Network Management, 2017](http://im2017.ieee-im.org)
+					## A Cloud Computing Simulation Framework Pursuing Software Engineering Principles for Improved Modularity, Extensibility and Correctness
+					### [IFIP/IEEE International Symposium on Integrated Network Management, 2017](http://im2017.ieee-im.org)
 					#### [Manoel Campos](http://twitter.com/manoelcampos)¹ ²; [Raysa Oliveira](https://twitter.com/raysaloliveira)²; [Claudio Monteiro](https://www.linkedin.com/in/claudio-monteiro-4637411a)¹; [Pedro Inácio](http://www.di.ubi.pt/~inacio)²; [Mário Freire](http://di.ubi.pt/~mario/)²
 					<small>
 					¹Depto. Informática, [Instituto Federal de Educação do Tocantins](http://www.ifto.edu.br), Brazil<br/>
@@ -73,14 +73,14 @@
 					- Highly extensible, completely redesigned and refactored.
 					- Full-featured: more than 20 [exclusive features](http://cloudsimplus.org/#exclusive-features).
 					- [Design Patterns](https://en.wikipedia.org/wiki/Software_design_pattern), [SOLID principles](https://en.wikipedia.org/wiki/SOLID_(object-oriented_design%29), [KISS](https://en.wikipedia.org/wiki/KISS_principle), [DRY](https://pt.wikipedia.org/wiki/Don't_repeat_yourself) and Clean Code practices.
-					- Reduced duplication, removed redundancy, simplified design ([comparison](http://cloudsimplus.org/CloudSim-and-CloudSimPlus-Comparison.html)).
+					- Reduces duplication and redundancy. Simplified design ([comparison](http://cloudsimplus.org/CloudSim-and-CloudSimPlus-Comparison.html)).
 					- Less 30% code duplication, more 80% test coverage.
 
 					# Notes
-					Java 8 independent CloudSim fork for Cloud Computing simulations.
-					- Easier to create simulations.
+					Independent CloudSim fork: Java 8, Cloud Computing simulations, Modern.
+					- Intuitive and Easier.
 					- Implementation of complex and more realistic scenarios.
-					- Stat-of-the-art cloud computing framework.
+					- Stat-of-the-art framework.
 					- Easier to maintain.
 					- More accuracy and safety for changes.
 				</script></section>
@@ -97,13 +97,13 @@
 					# Notes
 					- New tools to be built on top of it.
 					- Easier to undersdant and maintain.
-					- Separation of Concerns Principle.
-					- Increase abstraction and define contract for implementations.
+					- An excellent starting point for learning.
+					- For Researchers: Increase abstraction and define contract for implementations.
 				</script></section>
 
 				<section data-markdown data-separator-notes="^# Notes"><script type="text/template">
 					## Modules
-					![Re-structured Modules](https://github.com/manoelcampos/cloudsim-plus/raw/master/docs/images/modules.png)
+					![Re-structured Modules](../images/modules.png)
 
 					- **API**: independent and single-required module for building simulations.
 					- **Examples**: exclusive examples, refactored previous ones.
@@ -113,16 +113,16 @@
 					# Notes
 					Compounded of 4 modules.
 					- API: All other modules depend on it. Dark yellow are exclusive to CloudSim Plus.
-					- Examples updated for removal of duplications. Exclusive examples.
+					- Examples updated. Exclusive examples.
 					- Execution of multiple-run simulations using pseudo random number generators.
 					- Assessment of heuristics and algorithms for tunning.
 				</script></section>
 
 				<section data-markdown data-separator-notes="^# Notes"><script type="text/template">
 					## Main Packages
-					![Re-structured Packages](https://github.com/manoelcampos/cloudsim-plus/raw/master/docs/images/package-structure-reduced.png)
+					![Re-structured Packages](../images/package-structure-reduced.png)
 					- **Dark yellow**: CloudSim Plus packages with exclusive features.
-					- **Light yellow**: new packages to better organize existing CloudSim classes.
+					- **Light yellow**: new packages to better organize CloudSim classes.
 					- **White**: CloudSim existing packages.
 
 					# Notes
@@ -147,7 +147,7 @@
 					6. Strongly Object-oriented Framework; 
 					7. Classes and Interfaces for Implementation of [Heuristics](http://en.wikipedia.org/wiki/Heuristic); 
 					8. [Implementation of the Linux Completely Fair Scheduler](https://en.wikipedia.org/wiki/Completely_Fair_Scheduler);
-					9. Updated to Java 8 ([Functional Programming](https://en.wikipedia.org/wiki/Functional_programming), [Lambda](http://www.oracle.com/webfolder/technetwork/tutorials/obe/java/Lambda-QuickStart/index.html) and [Streams](http://www.oracle.com/technetwork/articles/java/ma14-java-se-8-streams-2177646.html));
+					9. Java 8 ([Functional Programming](https://en.wikipedia.org/wiki/Functional_programming), [Lambda](http://www.oracle.com/webfolder/technetwork/tutorials/obe/java/Lambda-QuickStart/index.html), [Streams](http://www.oracle.com/technetwork/articles/java/ma14-java-se-8-streams-2177646.html));
 					10. [Functional](https://en.wikipedia.org/wiki/Functional_programming) `DatacenterBroker`;
 					
 					Many more at [http://cloudsimplus.org](http://cloudsimplus.org/#exclusive-features)
@@ -183,7 +183,9 @@
 
 					- Parallel execution of multiple simulation runs
 					- Relies on Java 8 Parallel Streams mechanism
-					- As simple as calling a single line of code like `simulations.parallelStream().forEach(MySimulation::run);`
+					- As simple as calling a single line of code: 
+
+					*simulations.parallelStream().forEach(MySimulation::run);* 
 
 					# Notes
 					- Simulations take several minutes. Multiple simulations at the same time.
@@ -192,16 +194,16 @@
 				</script></section>
 
 				<section data-markdown data-separator-notes="^# Notes"><script type="text/template">
-					## 3. Dynamic Creation of VMs and Cloudlets
+					## 3. Dynamic Creation of VMs and Cloudlets (Apps)
 					<img src="images/dynamic-vm-creation.gif" id="logo-bottom" />
 
 					- Enables creating objects after the simulation has started
 					- Doesn't require new DatacenterBrokers to be created at runtime
-					- Objects just have to be submitted to an existing broker at simulation runtime
+					- Objects just have to be submitted to an existing broker
 
 					# Notes
-					Cloud: dynamic environment.
-					- Simulation runtime.
+					Cloud: dynamic environment (requests for VMs and Apps execution).
+					- Created dynamically (desired conditions)
 					- No new DatacenterBrokers.
 					- Just submit to broker.
 				</script></section>
@@ -211,8 +213,8 @@
 					<img src="images/clock-png-25766.png" id="logo-bottom" />
 
 					- Creation of objects at a given time, before starting the simulation
-					- Used when the arrival times of objects to be create are known in advance
-					- A different way to simulate the dynamic creation of such objects
+					- Used when the arrival times of objects are known in advance
+					- Different way to simulate the dynamic creation of such objects
 
 					# Notes
 					- Delay creation before start.
@@ -224,23 +226,25 @@
 					## 5. Event Listeners
 					<img src="images/man-listening-music.png" id="logo" />
 
-					- Enables simulation monitoring to:
+					- Enables monitoring simulation to:
 						- collect resource utilization data
 						- assess fulfillment of customer SLA 
-						- optimize resource allocation to avoid under/over resource provisioning
+						- optimize resource allocation to avoid under/overload
 						- granular simulation execution feedback
-					- Listeners for events from Hosts, VMs, Cloudlets and more general ones.
+					- Type-safe message passing mechanism. Also used internally.
+					- Listeners for events from Hosts, VMs, Cloudlets and more.
 
 					# Notes
 					Most general purpose.
 					- Monitoring.
+					- Used by VM Scaling.
 					- Hosts, VMs, Cloudlets and more.
 				</script></section>
 
 				<section data-markdown data-separator-notes="^# Notes"><script type="text/template">
 					## 6. Strongly Object-oriented Framework
 
-					- Objects are used to create actual relationships, instead of using integer IDs
+					- Objects are used to create actual relationships, instead of IDs
 					- Fluent API, allowing direct chained calls such as `cloudlet.getVm().getHost().getDatacenter()`
 					- Uses [Null Object Pattern](https://en.wikipedia.org/wiki/Null_Object_pattern) to avoid NullPointerException.
 
@@ -260,7 +264,7 @@
 						- generation of neighbor solutions;
 						- definition of an utility function to be minimized or maximized;
 						- and then the solution finding stop criteria.
-					- Examples: [Tabu Search](http://en.wikipedia.org/wiki/Tabu_search), [Simulated Annealing](http://en.wikipedia.org/wiki/Simulated_annealing), [Ant Colony Systems](http://en.wikipedia.org/wiki/Ant_colony_optimization_algorithms), etc;
+					- Examples: [Tabu Search](http://en.wikipedia.org/wiki/Tabu_search), [Simulated Annealing](http://en.wikipedia.org/wiki/Simulated_annealing), [Ant Colony Systems](http://en.wikipedia.org/wiki/Ant_colony_optimization_algorithms);
 					- Includes a Simulated Annealing heuristic for mapping Cloudlets to VMs.
 
 					# Notes
@@ -314,7 +318,7 @@
 
 					- It is difficult to replicate a real system in simulation, mainly concerned in modelling the arrival of stochastic events such as workload bursts. 
 					- To contribute for valid results, a simulation framework has to:
-						- be well-designed and extensively test;
+						- be well-designed and extensively tested;
 						- get away from code duplication to avoid code degeneration;
 						- and provide classes following software engineering principles. 
 					- CloudSim Plus is aligned with all these requirements. 
@@ -328,11 +332,11 @@
 					[Instituto Federal de Educação Ciência e Tecnologia do Tocantins (IFTO, Brazil)](http://www.ifto.edu.br). 
 					It is supported by the Brazilian [CAPES](http://www.capes.gov.br) (Proc. no 13585/13-4) and the Portuguese [FCT](https://www.fct.pt) (under the UID/EEA/50008/2013 Project) agencies.	
 
-					### Official Site/Presentation
-					http://cloudsimplus.org
+					### Official Site & Presentation
+					[cloudsimplus.org](http://cloudsimplus.org) <br/>
+					[cloudsimplus.org/presentation](http://cloudsimplus.org/presentation)
 
-					http://cloudsimplus.org/presentation
-
+					<br/>
 					<small><a href="https://github.com/hakimel/reveal.js">Presentation powered by reveal.js</a></small>
 				</script></section>
 			</div>

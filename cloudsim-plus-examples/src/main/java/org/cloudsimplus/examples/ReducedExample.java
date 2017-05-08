@@ -57,13 +57,13 @@ import java.util.List;
  * a simulation scenario in CloudSim Plus.
  *
  * <p><b>NOTICE: This example is not intended to be reused and we strongly recommend
- * you not doing that, since all the code was put inside a single method, the main
- * method, that is completely unappropriated.</b></p>
+ * you not doing that. Since all the code was put inside a single method (the main
+ * method) that is completely unappropriated.</b></p>
  *
- * <p>This code has the only intention to show how it is simpler
+ * <p>This code has the <b>only intention</b> to show how it's simpler
  * and easier to create cloud computing simulations using CloudSim Plus.</p>
  *
- * <p>If you want a first basic, but yet organized and reusable example,
+ * <p>If you want a first basic, but organized and reusable example,
  * see the {@link BasicFirstExample}.</p>
  *
  * @author Manoel Campos da Silva Filho

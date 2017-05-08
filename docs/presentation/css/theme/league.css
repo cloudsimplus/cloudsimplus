@@ -22,7 +22,7 @@ body {
 
 .reveal {
   font-family: "Lato", sans-serif;
-  font-size: 40px;
+  font-size: 3vw;
   font-weight: normal;
   color: #eee; }
 
@@ -39,7 +39,8 @@ body {
 .reveal .slides > section,
 .reveal .slides > section > section {
   line-height: 1.3;
-  font-weight: inherit; }
+  font-weight: inherit; 
+}
 
 /*********************************************
  * HEADERS
@@ -52,7 +53,7 @@ body {
 .reveal h6 {
   margin: 0 0 8px 0;
   color: #eee;
-  font-family: "League Gothic", Impact, sans-serif;
+  font-family: "League Gothic", Impact, sans-serif; /*Ubuntu, "League Gothic", "Source Sans Pro", Helvetica*/
   font-weight: normal;
   line-height: 1.0;
   letter-spacing: normal;
@@ -60,21 +61,29 @@ body {
   text-shadow: 0px 0px 6px rgba(0, 0, 0, 0.2);
   word-wrap: break-word; }
 
+/*vw = view width*/
 .reveal h1 {
-  font-size: 3.77em; 
+  font-size: 8vw; /*3.77em; */
   text-shadow: 0 1px 0 #ccc, 0 2px 0 #c9c9c9, 0 3px 0 #bbb, 0 4px 0 #b9b9b9, 0 5px 0 #aaa, 0 6px 1px rgba(0, 0, 0, 0.1), 0 0 5px rgba(0, 0, 0, 0.1), 0 1px 3px rgba(0, 0, 0, 0.3), 0 3px 5px rgba(0, 0, 0, 0.2), 0 5px 10px rgba(0, 0, 0, 0.25), 0 20px 20px rgba(0, 0, 0, 0.15); 
+  line-height: 90%;
 }
 
 .reveal h2 {
-  font-size: 2.11em; }
+  font-size: 5.2vw; /*2.11em;*/ 
+  margin: 10px;
+} 
 
 .reveal h3 {
-  font-size: 1.55em; }
+  font-size: 4vw; /*1.55em;*/ }
 
 .reveal h4 {
-  font-size: 1em; }
+  font-size: 3vw; /*1em;*/ }
+
+.reveal h5 {
+  font-size: 2vw; }
 
 .reveal h6 {
+  font-size: 1.2vw; 
   margin: 0 0 0 0;
 }
 
