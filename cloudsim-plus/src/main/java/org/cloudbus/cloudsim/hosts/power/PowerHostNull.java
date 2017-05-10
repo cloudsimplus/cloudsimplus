@@ -16,6 +16,7 @@ import org.cloudsimplus.listeners.HostUpdatesVmsProcessingEventInfo;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.Set;
 
 /**
  * A class that implements the Null Object Design Pattern for {@link PowerHost}
@@ -81,6 +82,27 @@ final class PowerHostNull implements PowerHost {
     @Override public boolean addMigratingInVm(Vm vm) {
         return false;
     }
+
+    @Override
+    public boolean removeVmMigratingIn(Vm vm) {
+        return false;
+    }
+
+    @Override
+    public Set<Vm> getVmsMigratingOut() {
+        return Collections.EMPTY_SET;
+    }
+
+    @Override
+    public boolean addVmMigratingOut(Vm vm) {
+        return false;
+    }
+
+    @Override
+    public boolean removeVmMigratingOut(Vm vm) {
+        return false;
+    }
+
     @Override public boolean allocatePesForVm(Vm vm, List<Double> mipsShare) {
         return false;
     }

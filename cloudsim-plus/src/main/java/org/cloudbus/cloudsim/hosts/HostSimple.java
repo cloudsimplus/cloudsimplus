@@ -83,7 +83,13 @@ public class HostSimple implements Host {
     /**
      * @see #getVmsMigratingIn()
      */
-    private final List<Vm> vmsMigratingIn = new ArrayList<>();
+    private final Set<Vm> vmsMigratingIn;
+
+    /**
+     * @see #getVmsMigratingOut()
+     */
+    private final Set<Vm> vmsMigratingOut;
+
 
     /**
      * @see #getDatacenter()
@@ -137,6 +143,8 @@ public class HostSimple implements Host {
         this.onUpdateProcessingListeners = new HashSet<>();
         this.resources = new ArrayList();
         this.provisioners = new ArrayList();
+        this.vmsMigratingIn = new HashSet<>();
+        this.vmsMigratingOut = new HashSet<>();
     }
 
     @Override
@@ -146,7 +154,7 @@ public class HostSimple implements Host {
                 .mapToDouble(Pe::getCapacity)
                 .sum();
     }
-    
+
     /**
      * Creates a Host with the given parameters.
      *
@@ -179,7 +187,7 @@ public class HostSimple implements Host {
 
     @Override
     public double updateProcessing(double currentTime) {
-        final double nextSimulationTime = 
+        final double nextSimulationTime =
             vmList.stream()
                 .mapToDouble(vm -> vm.updateProcessing(currentTime, getVmScheduler().getAllocatedMipsForVm(vm)))
                 .min()
@@ -195,21 +203,8 @@ public class HostSimple implements Host {
     }
 
     @Override
-    public boolean addMigratingInVm(Vm vm) {
-        if (getVmsMigratingIn().contains(vm)) {
-            return false;
-        }
-
-        if(!allocateResourcesForVm(vm, true)){
-            return false;
-        }
-
-        getVmScheduler().addVmMigratingIn(vm);
-        vmsMigratingIn.add(vm);
-        updateProcessing(simulation.clock());
-        vm.getHost().updateProcessing(simulation.clock());
-
-        return true;
+    public boolean removeVmMigratingIn(Vm vm){
+        return vmsMigratingIn.remove(vm);
     }
 
     @Override
@@ -236,7 +231,7 @@ public class HostSimple implements Host {
         if (!storage.isResourceAmountAvailable(vm.getStorage())) {
             Log.printFormattedLine(
                 "%.2f: %s: [%s] Allocation of %s to %s failed due to lack of storage. Required %d but there is just %d MB available.",
-                getSimulation().clock(), getClass().getSimpleName(), 
+                getSimulation().clock(), getClass().getSimpleName(),
                 msg, vm, this, vm.getStorage().getCapacity(), storage.getAvailableResource());
             return false;
         }
@@ -244,7 +239,7 @@ public class HostSimple implements Host {
         if (!getRamProvisioner().isSuitableForVm(vm, vm.getCurrentRequestedRam())) {
             Log.printFormattedLine(
                 "%.2f: %s: [%s] Allocation of %s to %s failed due to lack of RAM. Required %d but there is just %d MB available.",
-                getSimulation().clock(), getClass().getSimpleName(), 
+                getSimulation().clock(), getClass().getSimpleName(),
                 msg, vm, this, vm.getRam().getCapacity(), ram.getAvailableResource());
             return false;
         }
@@ -252,16 +247,16 @@ public class HostSimple implements Host {
         if (!getBwProvisioner().isSuitableForVm(vm, vm.getCurrentRequestedBw())) {
             Log.printFormattedLine(
                 "%.2f: %s: [%s] Allocation of %s to %s failed due to lack of BW. Required %d but there is just %d Mbps available.",
-                getSimulation().clock(), getClass().getSimpleName(), 
+                getSimulation().clock(), getClass().getSimpleName(),
                 msg, vm, this, vm.getBw().getCapacity(), bw.getAvailableResource());
             return false;
         }
 
         if (!getVmScheduler().isSuitableForVm(vm)) {
             Log.printFormattedLine(
-                    "%.2f: %s: [%s] Allocation of %s to %s failed due to lack of PEs. Required %.0f MIPS (%d PEs * %.0f MIPS) but there is just %.0f MIPS available.", 
+                    "%.2f: %s: [%s] Allocation of %s to %s failed due to lack of PEs. Required %.0f MIPS (%d PEs * %.0f MIPS) but there is just %.0f MIPS available.",
                     getSimulation().clock(), getClass().getSimpleName(), msg, vm, this,
-                    vm.getTotalMipsCapacity(), vm.getNumberOfPes(), vm.getMips(), 
+                    vm.getTotalMipsCapacity(), vm.getNumberOfPes(), vm.getMips(),
                     vmScheduler.getAvailableMips());
             return false;
         }
@@ -276,21 +271,11 @@ public class HostSimple implements Host {
     }
 
     @Override
-    public void removeMigratingInVm(Vm vm) {
-        deallocateResourcesOfVm(vm);
-        vmsMigratingIn.remove(vm);
-        vmList.remove(vm);
-        getVmScheduler().removeVmMigratingIn(vm);
-        vm.setInMigration(false);
-    }
-
-    @Override
     public void reallocateMigratingInVms() {
         for (Vm vm : getVmsMigratingIn()) {
             if (!vmList.contains(vm)) {
                 vmList.add(vm);
             }
-            getVmScheduler().addVmMigratingIn(vm);
             getRamProvisioner().allocateResourceForVm(vm, vm.getCurrentRequestedRam());
             getBwProvisioner().allocateResourceForVm(vm, vm.getCurrentRequestedBw());
             getVmScheduler().allocatePesForVm(vm, vm.getCurrentRequestedMips());
@@ -358,9 +343,9 @@ public class HostSimple implements Host {
     /**
      * {@inheritDoc}
      * @return {@inheritDoc}
-     * @see #getNumberOfWorkingPes() 
-     * @see #getNumberOfFreePes() 
-     * @see #getNumberOfFailedPes() 
+     * @see #getNumberOfWorkingPes()
+     * @see #getNumberOfFreePes()
+     * @see #getNumberOfFailedPes()
      */
     @Override
     public long getNumberOfPes() {
@@ -489,7 +474,7 @@ public class HostSimple implements Host {
      * Sets the pe list.
      *
      * @param peList the new pe list
-     * @return 
+     * @return
      */
     protected final Host setPeList(List<Pe> peList) {
         checkSimulationIsRunningAndAttemptedToChangeHost("List of PE");
@@ -508,7 +493,7 @@ public class HostSimple implements Host {
     public <T extends Vm> List<T> getVmList() {
         return (List<T>) Collections.unmodifiableList(vmList);
     }
-    
+
     protected void addVmToList(Vm vm){
         Objects.requireNonNull(vm);
         vmList.add(vm);
@@ -542,6 +527,46 @@ public class HostSimple implements Host {
     }
 
     @Override
+    public boolean addMigratingInVm(Vm vm) {
+        if (getVmsMigratingIn().contains(vm)) {
+            return false;
+        }
+
+        if(!allocateResourcesForVm(vm, true)){
+            return false;
+        }
+
+        vmsMigratingIn.add(vm);
+        updateProcessing(simulation.clock());
+        vm.getHost().updateProcessing(simulation.clock());
+
+        return true;
+    }
+
+    @Override
+    public void removeMigratingInVm(Vm vm) {
+        deallocateResourcesOfVm(vm);
+        vmsMigratingIn.remove(vm);
+        vmList.remove(vm);
+        vm.setInMigration(false);
+    }
+
+    @Override
+    public Set<Vm> getVmsMigratingOut() {
+        return Collections.unmodifiableSet(vmsMigratingOut);
+    }
+
+    @Override
+    public boolean addVmMigratingOut(Vm vm) {
+        return this.vmsMigratingOut.add(vm);
+    }
+
+    @Override
+    public boolean removeVmMigratingOut(Vm vm) {
+        return this.vmsMigratingOut.remove(vm);
+    }
+
+    @Override
     public Datacenter getDatacenter() {
         return datacenter;
     }
@@ -554,8 +579,8 @@ public class HostSimple implements Host {
 
     @Override
     public String toString() {
-        final String dc = 
-                Datacenter.NULL.equals(datacenter) ? "" : 
+        final String dc =
+                Datacenter.NULL.equals(datacenter) ? "" :
                 String.format("/DC %d", datacenter.getId());
         return String.format("Host %d%s", getId(), dc);
     }
@@ -660,22 +685,22 @@ public class HostSimple implements Host {
                 .filter(Pe::isWorking)
                 .collect(toList());
     }
-    
+
     @Override
     public double getUtilizationOfCpu() {
         return computeCpuUtilizationPercent(getUtilizationOfCpuMips());
     }
-    
+
     protected double computeCpuUtilizationPercent(double mipsUsage){
         final double totalMips = getTotalMipsCapacity();
         if(totalMips == 0){
             return 0;
         }
-        
+
         final double utilization = mipsUsage / totalMips;
         return (utilization > 1 && utilization < 1.01 ? 1 : utilization);
     }
-    
+
     @Override
     public double getUtilizationOfCpuMips() {
         return vmList.stream()
@@ -691,5 +716,5 @@ public class HostSimple implements Host {
     @Override
     public long getUtilizationOfBw() {
         return getBwProvisioner().getTotalAllocatedResource();
-    }    
+    }
 }

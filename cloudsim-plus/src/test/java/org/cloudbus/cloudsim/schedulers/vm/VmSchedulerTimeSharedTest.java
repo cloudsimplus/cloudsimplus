@@ -160,12 +160,12 @@ public class VmSchedulerTimeSharedTest {
         vmScheduler = createVmScheduler(MIPS, 2);
         final double vmMips = MIPS / 4;
         final Vm vm0 = VmSimpleTest.createVm(0, vmMips, 2);
-        vmScheduler.addVmMigratingOut(vm0);
+        vmScheduler.getHost().addVmMigratingOut(vm0);
 
         final List<Double> mipsShare = new ArrayList<>(1);
         mipsShare.add(vmMips);
 
         vmScheduler.allocatePesForVm(vm0, mipsShare);
-        assertTrue(vmScheduler.getVmsMigratingOut().isEmpty());
+        assertTrue(vmScheduler.getHost().getVmsMigratingOut().isEmpty());
     }
 }

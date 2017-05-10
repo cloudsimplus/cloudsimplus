@@ -14,6 +14,8 @@ import org.cloudbus.cloudsim.datacenters.Datacenter;
 import org.cloudbus.cloudsim.schedulers.vm.VmScheduler;
 
 import java.util.List;
+import java.util.Set;
+
 import org.cloudbus.cloudsim.core.Simulation;
 import org.cloudsimplus.listeners.EventListener;
 import org.cloudsimplus.listeners.HostUpdatesVmsProcessingEventInfo;
@@ -81,11 +83,39 @@ public interface Host extends Machine, Comparable<Host> {
     boolean addMigratingInVm(Vm vm);
 
     /**
+     * Adds a {@link Vm} to the list of VMs migrating into the Host.
+     * @param vm the vm to be added
+     * @return
+     */
+    boolean removeVmMigratingIn(Vm vm);
+
+    /**
+     * Gets a <b>read-only</b> list of VMs migrating out from the Host.
+     *
+     * @return
+     */
+    Set<Vm> getVmsMigratingOut();
+
+    /**
+     * Adds a {@link Vm} to the list of VMs migrating out from the Host.
+     * @param vm the vm to be added
+     * @return true if the VM wasn't into the list and was added, false otherwise
+     */
+    boolean addVmMigratingOut(Vm vm);
+
+    /**
+     * Adds a {@link Vm} to the list of VMs migrating out from the Host.
+     * @param vm the vm to be added
+     * @return
+     */
+    boolean removeVmMigratingOut(Vm vm);
+
+    /**
      * Reallocate VMs migrating into the host. Gets the VM in the migrating in queue
      * and allocate them on the host.
      */
     void reallocateMigratingInVms();
-    
+
     /**
      * Gets total MIPS capacity of PEs which are not {@link Status#FAILED}.
      * @return the total MIPS of working PEs
@@ -139,14 +169,14 @@ public interface Host extends Machine, Comparable<Host> {
     double getTotalAllocatedMipsForVm(Vm vm);
 
     /**
-     * Gets the list of all Processing Elements (PEs) of the host, 
+     * Gets the list of all Processing Elements (PEs) of the host,
      * including failed PEs.
      *
      * @return the list of all Host PEs
-     * @see #getWorkingPeList() 
+     * @see #getWorkingPeList()
      */
     List<Pe> getPeList();
-    
+
     /**
      * Gets the list of working Processing Elements (PEs) of the host,
      * <b>which excludes failed PEs</b>.
@@ -181,13 +211,13 @@ public interface Host extends Machine, Comparable<Host> {
      * @return the number of working pes
      */
     long getNumberOfWorkingPes();
-    
+
     /**
      * Gets the number of PEs that have failed.
      *
      * @return the number of failed pes
      */
-    long getNumberOfFailedPes();    
+    long getNumberOfFailedPes();
 
     /**
      * Gets the current amount of available MIPS at the host.
@@ -270,7 +300,7 @@ public interface Host extends Machine, Comparable<Host> {
      * It also sets the Host itself to the given scheduler.
      *
      * @param vmScheduler the vm scheduler to set
-     * @return 
+     * @return
      */
     Host setVmScheduler(VmScheduler vmScheduler);
 
@@ -369,7 +399,7 @@ public interface Host extends Machine, Comparable<Host> {
      *
      * @return
      */
-    double getUtilizationOfCpu();    
+    double getUtilizationOfCpu();
 
     /**
      * Gets the current utilization of CPU in MIPS.
@@ -390,6 +420,6 @@ public interface Host extends Machine, Comparable<Host> {
      *
      * @return
      */
-    long getUtilizationOfRam();    
-    
+    long getUtilizationOfRam();
+
 }

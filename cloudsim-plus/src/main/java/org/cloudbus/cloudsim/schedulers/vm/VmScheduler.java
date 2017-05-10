@@ -96,7 +96,7 @@ public interface VmScheduler {
      * @post $none
      */
     void deallocatePesFromVm(Vm vm);
-    
+
     /**
      * Releases a given number of PEs from a VM. After that, the PEs may be used on demand
      * by other VMs.
@@ -106,7 +106,7 @@ public interface VmScheduler {
      * @pre $none
      * @post $none
      */
-    void deallocatePesFromVm(Vm vm, int pesToRemove);    
+    void deallocatePesFromVm(Vm vm, int pesToRemove);
 
     /**
      * Gets the MIPS share of each host's Pe that is allocated to a given VM.
@@ -188,48 +188,6 @@ public interface VmScheduler {
     double getTotalAllocatedMipsForVm(Vm vm);
 
     /**
-     * Gets a <b>read-only</b> list of VMs migrating in.
-     *
-     * @return
-     */
-    Set<Vm> getVmsMigratingIn();
-
-    /**
-     * Gets a <b>read-only</b> list of VMs migrating out.
-     *
-     * @return
-     */
-    Set<Vm> getVmsMigratingOut();
-
-    /**
-     * Adds a {@link Vm} to the list of VMs migrating in.
-     * @param vm the vm to be added
-     * @return true if the VM wasn't into the list and was added, false otherwise
-     */
-    boolean addVmMigratingIn(Vm vm);
-
-    /**
-     * Adds a {@link Vm} to the list of VMs migrating out.
-     * @param vm the vm to be added
-     * @return true if the VM wasn't into the list and was added, false otherwise
-     */
-    boolean addVmMigratingOut(Vm vm);
-
-    /**
-     * Adds a {@link Vm} to the list of VMs migrating in.
-     * @param vm the vm to be added
-     * @return 
-     */
-    boolean removeVmMigratingIn(Vm vm);
-
-    /**
-     * Adds a {@link Vm} to the list of VMs migrating out.
-     * @param vm the vm to be added
-     * @return 
-     */
-    boolean removeVmMigratingOut(Vm vm);
-
-    /**
      * Defines the percentage of Host's CPU usage increase when a
      * VM is migrating in or out of the Host.
      * The value is in scale from 0 to 1 (where 1 is 100%).
@@ -249,7 +207,7 @@ public interface VmScheduler {
      * A host for the VmScheduler is set when the VmScheduler is set to a given host.
      * Thus, the host is in charge to set itself to a VmScheduler.
      * @param host the host to be set
-     * @return 
+     * @return
      * @throws IllegalArgumentException when the scheduler already is assigned to another Host, since
      * each Host must have its own scheduler
      * @throws NullPointerException when the host parameter is null
