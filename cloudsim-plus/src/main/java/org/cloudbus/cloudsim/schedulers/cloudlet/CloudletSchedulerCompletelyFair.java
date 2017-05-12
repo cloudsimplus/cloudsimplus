@@ -209,7 +209,7 @@ public final class CloudletSchedulerCompletelyFair extends CloudletSchedulerTime
 	}
 
     /**
-     * Gets a list of Cloudlets that are waiting to run, the so called
+     * Gets a <b>read-only</b> list of Cloudlets which are waiting to run, the so called
      * <a href="https://en.wikipedia.org/wiki/Run_queue">run queue</a>.
      *
      * <p>
@@ -235,7 +235,7 @@ public final class CloudletSchedulerCompletelyFair extends CloudletSchedulerTime
      */
     @Override
     protected Optional<CloudletExecutionInfo> findSuitableWaitingCloudletToStartExecutingAndRemoveIt() {
-        getCloudletWaitingList().sort(this::waitingCloudletsComparator);
+        sortCloudletWaitingList(this::waitingCloudletsComparator);
         return super.findSuitableWaitingCloudletToStartExecutingAndRemoveIt();
     }
 

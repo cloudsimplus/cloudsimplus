@@ -9,7 +9,6 @@ package org.cloudbus.cloudsim.vms;
 
 import org.cloudbus.cloudsim.core.Machine;
 import org.cloudbus.cloudsim.brokers.DatacenterBroker;
-import org.cloudbus.cloudsim.core.ChangeableId;
 import org.cloudsimplus.autoscaling.HorizontalVmScaling;
 import org.cloudbus.cloudsim.core.Delayable;
 import org.cloudbus.cloudsim.core.UniquelyIdentificable;
@@ -20,6 +19,7 @@ import org.cloudbus.cloudsim.schedulers.cloudlet.CloudletScheduler;
 
 import java.util.List;
 import java.util.function.Predicate;
+import org.cloudbus.cloudsim.core.CustomerEntity;
 
 import org.cloudsimplus.autoscaling.VerticalVmScaling;
 import org.cloudsimplus.listeners.VmHostEventInfo;
@@ -39,13 +39,28 @@ import org.cloudsimplus.listeners.EventListener;
  * @author Manoel Campos da Silva Filho
  * @since CloudSim Plus 1.0
  */
-public interface Vm extends Machine, UniquelyIdentificable, Delayable, Comparable<Vm> {
+public interface Vm extends Machine, UniquelyIdentificable, Comparable<Vm>, CustomerEntity {
 
     /**
      * An attribute that implements the Null Object Design Pattern for {@link Vm}
      * objects.
      */
     Vm NULL = new VmNull();
+
+    /**
+     * Gets the Vm description, which is an optional text
+     * which one can use to provide details about this of this VM.
+     * @return
+     */
+    String getDescription();
+
+    /**
+     * Sets the VM description, which is an optional text
+     * which one can use to provide details about this of this VM.
+     * @param description the Vm description to set
+     * @return
+     */
+    Vm setDescription(String description);
 
     /**
      * Adds a VM state history entry.
@@ -249,6 +264,7 @@ public interface Vm extends Machine, UniquelyIdentificable, Delayable, Comparabl
      * @pre $none
      * @post $none
      */
+    @Override
     Resource getBw();
 
     /**
@@ -259,16 +275,18 @@ public interface Vm extends Machine, UniquelyIdentificable, Delayable, Comparabl
      * @pre $none
      * @post $none
      */
+    @Override
     Resource getRam();
 
     /**
-     * Gets the storage device of the VM, that represents the VM image,
+     * Gets the storage device of the VM, which represents the VM image,
      * allowing to check its capacity (in Megabytes) and usage.
      *
      * @return the storage resource
      * @pre $none
      * @post $none
      */
+    @Override
     Resource getStorage();
 
     /**
@@ -305,23 +323,6 @@ public interface Vm extends Machine, UniquelyIdentificable, Delayable, Comparabl
      *
      */
     double getTotalUtilizationOfCpuMips(double time);
-
-    /**
-     * Gets the {@link DatacenterBroker} that represents the owner of the VM.
-     *
-     * @return the broker or <tt>{@link DatacenterBroker#NULL}</tt> if a broker has not been set yet
-     * @pre $none
-     * @post $none
-     */
-    DatacenterBroker getBroker();
-
-    /**
-     * Sets a {@link DatacenterBroker} that represents the owner of the VM.
-     *
-     * @param broker the {@link DatacenterBroker} to set
-     */
-    Vm setBroker(DatacenterBroker broker);
-
 
     /**
      * Gets the Virtual Machine Monitor (VMM) that manages the VM.
@@ -409,7 +410,7 @@ public interface Vm extends Machine, UniquelyIdentificable, Delayable, Comparabl
      * @param mipsShare list with MIPS share of each Pe available to the
      * scheduler
      * @return the predicted completion time of the earliest finishing cloudlet
-     * (that is a future simulation time),
+     * (which is a relative delay from the current simulation time),
      * or {@link Double#MAX_VALUE} if there is no next Cloudlet to execute
      * @pre currentTime >= 0
      * @post $none
@@ -428,7 +429,7 @@ public interface Vm extends Machine, UniquelyIdentificable, Delayable, Comparabl
     /**
      * Sets the status of VM to FAILED.
      *
-     * @param failed the failed
+     * @param failed true to indicate that the VM is failed, false to indicate it is working
      */
     void setFailed(boolean failed);
 
@@ -517,6 +518,7 @@ public interface Vm extends Machine, UniquelyIdentificable, Delayable, Comparabl
      * Gets a {@link VerticalVmScaling} that will check if the Vm's RAM is overloaded,
      * based on some conditions defined by a {@link Predicate} given
      * to the VerticalVmScaling, and then request the RAM up scaling.
+     * @return
      */
     VerticalVmScaling getRamVerticalScaling();
 
@@ -524,6 +526,7 @@ public interface Vm extends Machine, UniquelyIdentificable, Delayable, Comparabl
      * Gets a {@link VerticalVmScaling} that will check if the Vm's Bandwidth is overloaded,
      * based on some conditions defined by a {@link Predicate} given
      * to the VerticalVmScaling, and then request the BW up scaling.
+     * @return
      */
     VerticalVmScaling getBwVerticalScaling();
 
@@ -531,6 +534,7 @@ public interface Vm extends Machine, UniquelyIdentificable, Delayable, Comparabl
      * Gets a {@link VerticalVmScaling} that will check if the Vm's {@link Pe} is overloaded,
      * based on some conditions defined by a {@link Predicate} given
      * to the VerticalVmScaling, and then request the RAM up scaling.
+     * @return
      */
     VerticalVmScaling getPeVerticalScaling();
 
@@ -540,4 +544,24 @@ public interface Vm extends Machine, UniquelyIdentificable, Delayable, Comparabl
      * @return
      */
     Processor getProcessor();
-}
+
+   /**
+     * Gets the {@link DatacenterBroker} that represents the owner of this Vm.
+     *
+     * @return the broker or <tt>{@link DatacenterBroker#NULL}</tt> if a broker has not been set yet
+     * @pre $none
+     * @post $none
+     */
+    @Override
+    DatacenterBroker getBroker();
+
+    /**
+     * Sets a {@link DatacenterBroker} that represents the owner of this Vm.
+     *
+     * @param broker the {@link DatacenterBroker} to set
+     * @return
+     */
+    @Override
+    Vm setBroker(DatacenterBroker broker);
+
+ }

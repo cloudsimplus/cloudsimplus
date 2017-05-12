@@ -22,8 +22,8 @@ import org.cloudbus.cloudsim.util.MathUtil;
  * A host that stores its CPU utilization percentage history. The history is used by VM allocation
  * and selection policies.
  *
- * <br/>If you are using any algorithms, policies or workload included in the power package please cite
- * the following paper:<br/>
+ * <p>If you are using any algorithms, policies or workload included in the power package please cite
+ * the following paper:</p>
  *
  * <ul>
  * <li><a href="http://dx.doi.org/10.1002/cpe.1867">Anton Beloglazov, and Rajkumar Buyya, "Optimal Online Deterministic Algorithms and Adaptive
@@ -82,6 +82,7 @@ public class PowerHostUtilizationHistory extends PowerHostSimple {
 
 	/**
 	 * Gets the host CPU utilization percentage history.
+     * @return 
 	 */
 	public double[] getUtilizationHistory() {
 		double[] utilizationHistory = new double[PowerVm.MAX_HISTORY_ENTRIES];

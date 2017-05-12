@@ -88,19 +88,13 @@ final class CloudletSchedulerNull implements CloudletScheduler {
     @Override public long getUsedPes() {
         return 0;
     }
-    @Override public long getFreePes() {
-        return 0;
-    }
-    @Override public boolean canAddCloudletToExecutionList(CloudletExecutionInfo cloudlet) {
-        return false;
-    }
+    @Override public long getFreePes() { return 0; }
+    @Override public boolean canAddCloudletToExecutionList(CloudletExecutionInfo cloudlet) { return false; }
     @Override public Set<Cloudlet> getCloudletReturnedList() { return Collections.EMPTY_SET; }
     @Override public boolean isCloudletReturned(Cloudlet cloudlet) { return false; }
     @Override public void addCloudletToReturnedList(Cloudlet cloudlet) {}
-    @Override public List<CloudletExecutionInfo> getCloudletFinishedList() {
-        return Collections.emptyList();
-    }
-    @Override public List<CloudletExecutionInfo> getCloudletWaitingList() {
-        return Collections.EMPTY_LIST;
-    }
+    @Override public List<CloudletExecutionInfo> getCloudletFinishedList() { return Collections.emptyList(); }
+    @Override public List<CloudletExecutionInfo> getCloudletWaitingList() { return Collections.EMPTY_LIST; }
+    @Override public void deallocatePesFromVm(Vm vm, int pesToRemove) {}
+    @Override public List<Cloudlet> getCloudletList() { return Collections.EMPTY_LIST; }
 }

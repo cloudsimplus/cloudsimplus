@@ -11,9 +11,9 @@ package org.cloudbus.cloudsim.power.models;
 /**
  * Implements a power model where the power consumption is the square of the resource usage.
  * <p>
- * <br/>If you are using any algorithms, policies or workload included in the power package please cite
- * the following paper:<br/>
- * <p>
+ * If you are using any algorithms, policies or workload included in the power package please cite
+ * the following paper:
+ * </p>
  * <ul>
  * <li><a href="http://dx.doi.org/10.1002/cpe.1867">Anton Beloglazov, and Rajkumar Buyya, "Optimal Online Deterministic Algorithms and Adaptive
  * Heuristics for Energy and Performance Efficient Dynamic Consolidation of Virtual Machines in
@@ -24,7 +24,7 @@ package org.cloudbus.cloudsim.power.models;
  * @author Anton Beloglazov
  * @since CloudSim Toolkit 2.0
  */
-public class PowerModelSquare implements PowerModel {
+public class PowerModelSquare extends PowerModelAbstract {
 
     /**
      * The max power that can be consumed.
@@ -56,10 +56,7 @@ public class PowerModelSquare implements PowerModel {
     }
 
     @Override
-    public double getPower(double utilization) throws IllegalArgumentException {
-        if (utilization < 0 || utilization > 1) {
-            throw new IllegalArgumentException("Utilization value must be between 0 and 1");
-        }
+    protected double getPowerInternal(double utilization) throws IllegalArgumentException {
         if (utilization == 0) {
             return 0;
         }
@@ -107,7 +104,7 @@ public class PowerModelSquare implements PowerModel {
      *
      * @return the static power
      */
-    protected double getStaticPower() {
+    protected final double getStaticPower() {
         return staticPower;
     }
 

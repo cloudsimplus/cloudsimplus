@@ -9,7 +9,6 @@
 package org.cloudbus.cloudsim.provisioners;
 
 import org.cloudbus.cloudsim.resources.Pe;
-import org.cloudbus.cloudsim.resources.Resource;
 import org.cloudbus.cloudsim.vms.Vm;
 import org.cloudbus.cloudsim.resources.ResourceManageable;
 

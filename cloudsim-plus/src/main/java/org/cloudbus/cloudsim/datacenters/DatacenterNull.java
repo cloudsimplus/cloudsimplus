@@ -77,4 +77,7 @@ final class DatacenterNull implements Datacenter {
     @Override public String toString() {
         return "Datacenter.NULL";
     }
+
+    @Override public void setLog(boolean log) {}
+    @Override public void println(String msg) {}
 }

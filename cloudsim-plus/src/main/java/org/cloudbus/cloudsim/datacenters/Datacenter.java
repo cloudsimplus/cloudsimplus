@@ -65,10 +65,10 @@ public interface Datacenter extends SimEntity {
     VmAllocationPolicy getVmAllocationPolicy();
 
     /**
-     * Gets the list of VMs submitted to be ran in some host of this Datacenter.
+     * Gets a <b>read-only</b> list all VMs from all Hosts of this Datacenter.
      *
      * @param <T> the class of VMs inside the list
-     * @return the vm list
+     * @return the list all VMs from all Hosts
      */
     <T extends Vm> List<T> getVmList();
 
@@ -94,6 +94,7 @@ public interface Datacenter extends SimEntity {
      * Datacenter (in seconds).
      *
      * @param schedulingInterval the new scheduling interval
+     * @return 
      * @see #getSchedulingInterval()
      */
     Datacenter setSchedulingInterval(double schedulingInterval);

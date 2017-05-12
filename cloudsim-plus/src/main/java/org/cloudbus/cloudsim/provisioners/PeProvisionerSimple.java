@@ -10,13 +10,11 @@ package org.cloudbus.cloudsim.provisioners;
 import java.util.*;
 
 import org.cloudbus.cloudsim.resources.Pe;
-import org.cloudbus.cloudsim.vms.Vm;
 
 /**
  * A {@link PeProvisioner} that uses a best-effort policy to allocate virtual PEs to VMs from a physical PE:
  * if there is available MIPS on the physical PE, it allocates to a virtual PE; otherwise, it fails. Each
  * host's PE has to have its own instance of a PeProvisioner.
- * </p>
  *
  * <p>Each host's PE must have its own instance of a PeProvisioner. When extending this class,
  * care must be taken to guarantee that the field availableMips will always
@@ -43,6 +41,7 @@ public class PeProvisionerSimple extends ResourceProvisionerSimple implements Pe
     /**
      * Instantiates a new PeProvisionerSimple for a given {@link Pe}.
      *
+     * @param pe
      * @pre $none
      * @post $none
      */

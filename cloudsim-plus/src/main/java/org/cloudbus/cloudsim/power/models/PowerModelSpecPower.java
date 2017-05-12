@@ -12,8 +12,8 @@ package org.cloudbus.cloudsim.power.models;
  * The abstract class of power models created based on data from
  * <a href="http://www.spec.org/power_ssj2008/">SPECpower benchmark</a>.
  *
- * <br/>If you are using any algorithms, policies or workload included in the power package please cite
- * the following paper:<br/>
+ * <p>If you are using any algorithms, policies or workload included in the power package please cite
+ * the following paper:</p>
  *
  * <ul>
  * <li><a href="http://dx.doi.org/10.1002/cpe.1867">Anton Beloglazov, and Rajkumar Buyya, "Optimal Online Deterministic Algorithms and Adaptive
@@ -25,12 +25,9 @@ package org.cloudbus.cloudsim.power.models;
  * @author Anton Beloglazov
  * @since CloudSim Toolkit 3.0
  */
-public abstract class PowerModelSpecPower implements PowerModel {
+public abstract class PowerModelSpecPower extends PowerModelAbstract {
 	@Override
-	public double getPower(double utilization) throws IllegalArgumentException {
-		if (utilization < 0 || utilization > 1) {
-			throw new IllegalArgumentException("Utilization value must be between 0 and 1");
-		}
+	protected double getPowerInternal(double utilization) throws IllegalArgumentException {
 		if (utilization % 0.1 == 0) {
 			return getPowerData((int) (utilization * 10));
 		}

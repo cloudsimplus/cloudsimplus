@@ -49,8 +49,8 @@ public class VmAllocationPolicySimple extends VmAllocationPolicyAbstract {
     public boolean allocateHostForVm(Vm vm) {
         if(getHostList().isEmpty()){
             Log.printFormattedLine(
-                "Vm %s could not be allocated because there isn't any Host for Datacenter %d",
-                vm.getId(), getDatacenter().getId());
+                "%.2f: %s: Vm %s could not be allocated because there isn't any Host for Datacenter %d",
+                vm.getSimulation().clock(), vm.getId(), getDatacenter().getId());
             return false;
         }
 
@@ -70,7 +70,9 @@ public class VmAllocationPolicySimple extends VmAllocationPolicyAbstract {
                 addUsedPes(vm);
                 getHostFreePesMap().put(host, hostFreePes - vm.getNumberOfPes());
                 if(!hostsWhereVmCreationFailed.isEmpty()){
-                    Log.printFormattedLine("[VmAllocationPolicy] VM #%d was successfully allocated to Host #%d", vm.getId(), host.getId());
+                    Log.printFormattedLine(
+                            "%.2f: %s: VM #%d was successfully allocated to Host #%d", 
+                             vm.getSimulation().clock(), getClass().getSimpleName(), vm.getId(), host.getId());
                 }
                 return true;
             } else {
@@ -93,8 +95,8 @@ public class VmAllocationPolicySimple extends VmAllocationPolicyAbstract {
         getHostFreePesMap().put(host, getHostFreePesMap().get(host) - requiredPes);
 
         Log.printFormattedLine(
-            "%.2f: VM #%d has been allocated to the host #%d",
-            vm.getSimulation().clock(), vm.getId(), host.getId());
+            "%.2f: %s: VM #%d has been allocated to the host #%d",
+            vm.getSimulation().clock(), getClass().getSimpleName(),  vm.getId(), host.getId());
         return true;
     }
 

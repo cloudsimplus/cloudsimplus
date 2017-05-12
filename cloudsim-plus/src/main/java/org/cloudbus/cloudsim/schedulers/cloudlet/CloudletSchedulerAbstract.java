@@ -11,6 +11,7 @@ import java.util.*;
 import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.stream.Collectors;
+import static java.util.stream.Collectors.toList;
 import java.util.stream.Stream;
 
 import org.cloudbus.cloudsim.cloudlets.Cloudlet;
@@ -198,6 +199,14 @@ public abstract class CloudletSchedulerAbstract implements CloudletScheduler {
     public List<CloudletExecutionInfo> getCloudletWaitingList() {
         return Collections.unmodifiableList(cloudletWaitingList);
     }
+    
+    /**
+     * Sorts the {@link #cloudletWaitingList} using a given {@link Comparator}.
+     * @param comparator the {@link Comparator} to sort the Waiting Cloudlets List
+     */
+    protected void sortCloudletWaitingList(Comparator<CloudletExecutionInfo> comparator){
+        cloudletWaitingList.sort(comparator);
+    }
 
     protected final void setCloudletWaitingList(List<CloudletExecutionInfo> cloudletWaitingList) {
         this.cloudletWaitingList = cloudletWaitingList;
@@ -347,7 +356,6 @@ public abstract class CloudletSchedulerAbstract implements CloudletScheduler {
         return changeStatusOfCloudletIntoList(
             getCloudletWaitingList(), cloudletId,
             c -> changeStatusOfCloudlet(c, Status.READY, Status.PAUSED)) != Cloudlet.NULL;
-
     }
 
     @Override
@@ -515,7 +523,7 @@ public abstract class CloudletSchedulerAbstract implements CloudletScheduler {
      * Updates the processing of a specific cloudlet of the Vm using this
      * scheduler.
      *
-     * @param rcl         The cloudlet to be its processing updated
+     * @param rcl The cloudlet to be its processing updated
      * @param currentTime current simulation time
      */
     protected void updateCloudletProcessing(CloudletExecutionInfo rcl, double currentTime) {
@@ -528,15 +536,15 @@ public abstract class CloudletSchedulerAbstract implements CloudletScheduler {
 
     /**
      * Computes the length of a given cloudlet, in number
-     * of Instructions (I), that has been executed since the last time cloudlet
+     * of Instructions (I), which has been executed since the last time cloudlet
      * processing was updated.
-     * <p>
+     * 
      * <p>
      * This method considers the delay for actually starting the Cloudlet
      * execution due to the time to transfer
      * {@link Cloudlet#getRequiredFiles() required Cloudlet files} from the
      * Datacenter storage (such as a SAN) to the Vm running the Cloudlet.</p>
-     * <p>
+     * 
      * <p>
      * During this transfer time, the method will always return 0 to indicate
      * that the Cloudlet was not processed in fact, it is just waiting the
@@ -544,7 +552,7 @@ public abstract class CloudletSchedulerAbstract implements CloudletScheduler {
      * stored in the {@link CloudletExecutionInfo#getFileTransferTime()}
      * attribute and is set when the Cloudlet is submitted to the scheduler.</p>
      *
-     * @param rcl         the Cloudlet to compute the executed length
+     * @param rcl the Cloudlet to compute the executed length
      * @param currentTime current simulation time
      * @return the executed length, in number of Instructions (I), since the last time cloudlet was processed.
      * @TODO @author manoelcampos This method is being called 2 times more than
@@ -649,7 +657,8 @@ public abstract class CloudletSchedulerAbstract implements CloudletScheduler {
      * Gets the estimated time, considering the current time, that a next Cloudlet is expected to finish.
      *
      * @param currentTime current simulation time
-     * @return the estimated finish time of sooner finishing cloudlet, that represents a future simulation time
+     * @return the estimated finish time of sooner finishing cloudlet
+     * (which is a relative delay from the current simulation time)
      */
     protected double getEstimatedFinishTimeOfSoonerFinishingCloudlet(double currentTime) {
         return getCloudletExecList()
@@ -662,23 +671,17 @@ public abstract class CloudletSchedulerAbstract implements CloudletScheduler {
      * Gets the estimated time when a given cloudlet is supposed to finish
      * executing. It considers the amount of Vm PES and the sum of PEs required
      * by all VMs running inside the VM.
-     * <p>
-     * <p>The estimated time is not a future simulation time
-     * but a time interval that the Cloudlet is expected to finish.</p>
-     * <p>
-     * <p>The estimated time is not a future simulation time
-     * but a time interval that the Cloudlet is expected to finish.</p>
-     *
+     * 
      * @param rcl         cloudlet to get the estimated finish time
      * @param currentTime current simulation time
      * @return the estimated finish time of the given cloudlet
+     * (which is a relative delay from the current simulation time)
      */
     protected double getEstimatedFinishTimeOfCloudlet(CloudletExecutionInfo rcl, double currentTime) {
         final double cloudletUsedMips =
             getAbsoluteCloudletResourceUtilization(rcl.getCloudlet().getUtilizationModelCpu(),
                 currentTime, processor.getAvailableMipsByPe());
-        double estimatedFinishTime =
-            rcl.getRemainingCloudletLength() / cloudletUsedMips;
+        double estimatedFinishTime = rcl.getRemainingCloudletLength() / cloudletUsedMips;
 
         if (estimatedFinishTime < getVm().getSimulation().getMinTimeBetweenEvents()) {
             estimatedFinishTime = getVm().getSimulation().getMinTimeBetweenEvents();
@@ -688,18 +691,18 @@ public abstract class CloudletSchedulerAbstract implements CloudletScheduler {
     }
 
     /**
-     * /**
      * Selects the next Cloudlets in the waiting list to move to the execution
      * list in order to start executing them. While there is enough free PEs,
      * the method try to find a suitable Cloudlet in the list, until it reaches
      * the end of such a list.
+     * 
      * <p>
      * The method might also exchange some cloudlets in the execution list with
      * some in the waiting list. Thus, some running cloudlets may be preempted
      * to give opportunity to previously waiting cloudlets to run. This is a
      * process called
-     * <a href="https://en.wikipedia.org/wiki/Context_switch">context
-     * switch</a>. However, each CloudletScheduler implementation decides how
+     * <a href="https://en.wikipedia.org/wiki/Context_switch">context switch</a>. 
+     * However, each CloudletScheduler implementation decides how
      * such a process is implemented. For instance, Space-Shared schedulers may
      * just perform context switch just after currently running Cloudlets
      * completely finish executing.
@@ -770,7 +773,8 @@ public abstract class CloudletSchedulerAbstract implements CloudletScheduler {
         Objects.requireNonNull(vm);
 
         if (isOtherVmAssigned(vm)) {
-            throw new IllegalArgumentException("CloudletScheduler already has a Vm assigned to it. Each Vm must have its own CloudletScheduler instance.");
+            throw new IllegalArgumentException(
+                "CloudletScheduler already has a Vm assigned to it. Each Vm must have its own CloudletScheduler instance.");
         }
 
         this.vm = vm;
@@ -939,4 +943,22 @@ public abstract class CloudletSchedulerAbstract implements CloudletScheduler {
     public void addCloudletToReturnedList(Cloudlet cloudlet) {
         this.cloudletReturnedList.add(cloudlet);
     }
+
+    @Override
+    public void deallocatePesFromVm(Vm vm, int pesToRemove) {
+        processor.removeCapacity(pesToRemove);
+        removeUsedPes(pesToRemove);
+    }
+
+    @Override
+    public List<Cloudlet> getCloudletList() {
+        return Collections.unmodifiableList(
+                Stream.concat(
+                        cloudletExecList.stream(), 
+                        cloudletWaitingList.stream())
+                      .map(CloudletExecutionInfo::getCloudlet)
+                      .collect(toList()));
+    }
+    
+    
 }

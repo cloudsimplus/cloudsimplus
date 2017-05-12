@@ -86,11 +86,11 @@ public class PowerDatacenterNonPowerAware extends PowerDatacenter {
     }
 
     @Override
-    protected void updateCloudletProcessing() {
-        if (getCloudletSubmitted() == -1 || getCloudletSubmitted() == getSimulation().clock()) {
+    protected double updateCloudletProcessing() {
+        if (getLastCloudletProcessingTime() == -1 || getLastCloudletProcessingTime() == getSimulation().clock()) {
             getSimulation().cancelAll(getId(), new PredicateType(CloudSimTags.VM_UPDATE_CLOUDLET_PROCESSING_EVENT));
             schedule(getId(), getSchedulingInterval(), CloudSimTags.VM_UPDATE_CLOUDLET_PROCESSING_EVENT);
-            return;
+            return Double.MAX_VALUE;
         }
 
         final double currentTime = getSimulation().clock();
@@ -113,7 +113,10 @@ public class PowerDatacenterNonPowerAware extends PowerDatacenter {
             migrateVmsOutIfMigrationIsEnabled();
             scheduleUpdateOfCloudletsProcessingForFutureTime(nextCloudletFinishTime);
             setLastProcessTime(currentTime);
+            return nextCloudletFinishTime;
         }
+        
+        return Double.MAX_VALUE;
     }
 
     /**
@@ -203,16 +206,16 @@ public class PowerDatacenterNonPowerAware extends PowerDatacenter {
             final double hostPower = getHostConsumedPowerForTimeSpan(host, timeSpan);
             datacenterPowerUsageForTimeSpan += hostPower;
 
-            Log.printFormattedLine(
+            println(String.format(
                     "%.2f: Host #%d utilization is %.2f%%",
                     getSimulation().clock(),
                     host.getId(),
-                    host.getUtilizationOfCpu() * 100);
-            Log.printFormattedLine(
+                    host.getUtilizationOfCpu() * 100));
+            println(String.format(
                     "%.2f: Host #%d energy is %.2f W*sec",
                     getSimulation().clock(),
                     host.getId(),
-                    hostPower);
+                    hostPower));
         }
 
         return datacenterPowerUsageForTimeSpan;

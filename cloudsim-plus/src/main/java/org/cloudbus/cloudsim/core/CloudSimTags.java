@@ -273,7 +273,8 @@ public final class CloudSimTags {
     public static final int FAILURE = BASE + 47;
 
     /**
-     * Defines the tag that represents a host failure.
+     * Defines the tag that represents a request to generate a host failure.
+     * If the failure will be actually injected is defined by a fault injection object.
      */
     public static final int HOST_FAILURE = FAILURE + 1;
 

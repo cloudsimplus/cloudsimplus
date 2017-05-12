@@ -77,7 +77,9 @@ public class CloudletsTableBuilder {
         printer.addColumn("Status ");
         printer.addColumn("DC").setSubTitle(ID);
         printer.addColumn("Host").setSubTitle(ID);
+        printer.addColumn("Host PEs ").setSubTitle("CPU cores");
         printer.addColumn("VM").setSubTitle(ID);
+        printer.addColumn("VM PEs   ").setSubTitle("CPU cores");
         printer.addColumn("CloudletLen").setSubTitle("MI");
         printer.addColumn("CloudletPEs").setSubTitle("CPU cores");
         printer.addColumn("StartTime").setFormat("%d").setSubTitle(SECONDS);
@@ -99,7 +101,9 @@ public class CloudletsTableBuilder {
         row.add(cloudlet.getStatus().name());
         row.add(datacenter.getId());
         row.add(host.getId());
+        row.add(host.getNumberOfWorkingPes());
         row.add(vm.getId());
+        row.add(vm.getNumberOfPes());
         row.add(cloudlet.getLength());
         row.add(cloudlet.getNumberOfPes());
         row.add((int)cloudlet.getExecStartTime());

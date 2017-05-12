@@ -11,7 +11,6 @@ import java.util.stream.LongStream;
 
 import org.cloudbus.cloudsim.core.UniquelyIdentificable;
 import org.cloudbus.cloudsim.datacenters.Datacenter;
-import org.cloudbus.cloudsim.util.Log;
 import org.cloudbus.cloudsim.brokers.DatacenterBroker;
 import org.cloudbus.cloudsim.cloudlets.Cloudlet;
 import org.cloudbus.cloudsim.core.Simulation;
@@ -121,6 +120,8 @@ public class VmSimple implements Vm {
     private VerticalVmScaling bwVerticalScaling;
     private VerticalVmScaling peVerticalScaling;
 
+    private String description;
+
     /**
      * Creates a Vm with 1024 MEGABYTE of RAM, 1000 Megabits/s of Bandwidth and 1024 MEGABYTE of Storage Size.
      *
@@ -141,6 +142,7 @@ public class VmSimple implements Vm {
         setHost(Host.NULL);
         setCloudletScheduler(CloudletScheduler.NULL);
         this.processor = new Processor(this, mipsCapacity, numberOfPes);
+        this.description = "";
 
         setId(id);
         setBroker(DatacenterBroker.NULL);
@@ -305,6 +307,11 @@ public class VmSimple implements Vm {
         }
 
         return (long) (getCloudletScheduler().getCurrentRequestedBwPercentUtilization() * getBw().getCapacity());
+    }
+
+    @Override
+    public double getTotalMipsCapacity() {
+        return getMips()*getNumberOfPes();
     }
 
     @Override
@@ -603,7 +610,8 @@ public class VmSimple implements Vm {
 
     @Override
     public String toString() {
-        return String.format("Vm %d", getId());
+        final String desc = description.trim().isEmpty() ? "" : String.format(" (%s)", description);
+        return String.format("Vm %d%s", getId(), desc);
     }
 
     @Override
@@ -661,11 +669,7 @@ public class VmSimple implements Vm {
 
     @Override
     public void setFailed(boolean failed) {
-        // all the PEs are failed (or recovered, depending on fail parameter)
         this.failed = failed;
-        if(failed) {
-            Log.printLine(getSimulation().clock() + " ---> VM " + getUid() + " FAILURE...\n");
-        }
     }
 
     @Override
@@ -785,4 +789,14 @@ public class VmSimple implements Vm {
         return vmScaling;
     }
 
+    @Override
+    public String getDescription() {
+        return description;
+    }
+
+    @Override
+    public Vm setDescription(String description) {
+        this.description = Objects.isNull(description) ? "" : description;
+        return this;
+    }
 }

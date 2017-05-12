@@ -29,9 +29,11 @@ import org.junit.Before;
 import org.junit.Test;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import java.util.stream.IntStream;
 
+import static java.util.Comparator.comparingInt;
 import static org.junit.Assert.*;
 
 /**
@@ -109,26 +111,25 @@ public class HostSimpleTest {
         });
 
         host.reallocateMigratingInVms();
-        assertEquals(vms, host.getVmList());
+        assertEquals(vms.size(), host.getVmList().size());
+        assertTrue(host.getVmList().containsAll(vms));
     }
 
     @Test
     public void testReallocateMigratingInVms_oneVmAlreadyAllocatedToTheHost() {
         final int numberOfVms = 4;
-        final Host host = createHostSimple(0, numberOfVms);
+        final HostSimple host = createHostSimple(0, numberOfVms);
 
-        final List<Vm> vms = new ArrayList<>();
+        final List<Vm> vms = new ArrayList<>(numberOfVms);
         IntStream.range(0, numberOfVms).forEach(i -> {
             Vm vm = VmSimpleTest.createVm(
-                    i, MIPS/numberOfVms, 1, RAM/numberOfVms, BW/numberOfVms, STORAGE/numberOfVms,
-                    CloudletScheduler.NULL);
-            vm.setHost(Host.NULL);
+                    i, MIPS/numberOfVms, 1, RAM/numberOfVms, BW/numberOfVms, STORAGE/numberOfVms);
             if(i == 0){
                 /*considers that one of the migrating in VMs already was placed at the host,
                 thus, it will not be added again to the host vm list.
                 By this way, the vms on the host list will be the same
                 added to migration list*/
-                host.getVmList().add(vm);
+                host.addVmToList(vm);
             }
             host.addMigratingInVm(vm);
             vms.add(vm);
@@ -136,7 +137,9 @@ public class HostSimpleTest {
 
 
         host.reallocateMigratingInVms();
-        assertEquals(vms, host.getVmList());
+        final List<Vm> result = host.getVmList();
+        assertEquals(vms.size(), result.size());
+        assertTrue(vms.containsAll(result));
     }
 
     @Test
@@ -157,17 +160,30 @@ public class HostSimpleTest {
     @Test
     public void testAddMigratingInVm_checkAvailableMipsAndStorage() {
         final int numberOfPes = 1;
-        final Host host = createHostSimple(0, numberOfPes);
-        final double VM_MIPS = MIPS/2;
+        final Host targetHost = createHostSimple(0, numberOfPes);
+        final double VM_MIPS = 500;
         final VmSimple vm = VmSimpleTest.createVm(
             0, VM_MIPS, numberOfPes, RAM, BW, STORAGE,
             new CloudletSchedulerTimeShared());
-        vm.setHost(Host.NULL);
-        assertEquals(MIPS, host.getAvailableMips(), 0);
-        assertTrue(host.addMigratingInVm(vm));
+        assertEquals(MIPS, targetHost.getAvailableMips(), 0);
+        assertTrue(targetHost.addMigratingInVm(vm));
         final double availableMips = VM_MIPS;
-        assertEquals(availableMips, host.getAvailableMips(), 0);
-        assertEquals(0, host.getAvailableStorage(), 0);
+        assertEquals(availableMips, targetHost.getAvailableMips(), 0);
+        assertEquals(0, targetHost.getAvailableStorage(), 0);
+    }
+
+    @Test
+    public void testAddMigratingInVm_checkAllocatedMips() {
+        final int numberOfPes = 1;
+        final Host targetHost = createHostSimple(0, numberOfPes);
+        final double VM_MIPS = 500;
+        final VmSimple vm = VmSimpleTest.createVm(
+            0, VM_MIPS, numberOfPes, RAM, BW, STORAGE,
+            new CloudletSchedulerTimeShared());
+        targetHost.addMigratingInVm(vm);
+        //During migration, just  10% of capacity is allocated (it's the migration overhead)
+        final double allocatedMips = 50;
+        assertEquals(allocatedMips, targetHost.getTotalAllocatedMipsForVm(vm), 0);
     }
 
     public void testAddMigratingInVm_lackOfRam() {
@@ -251,8 +267,8 @@ public class HostSimpleTest {
             .once();
         EasyMock.replay(vmScheduler);
 
-        final Host host = createHostSimple(0, numberOfVms, vmScheduler);
-        host.getVmList().addAll(vmList);
+        final HostSimple host = createHostSimple(0, numberOfVms, vmScheduler);
+        vmList.stream().forEach(host::addVmToList);
 
         final int i = 0;
         final Vm vm = vmList.get(i);
@@ -344,7 +360,7 @@ public class HostSimpleTest {
         final Host host = createHostSimple(0, numberOfPes);
         final List<Double> mipsShare = new ArrayList<>(1);
         mipsShare.add(MIPS);
-        final Vm vm = Vm.NULL;
+        final Vm vm = new VmSimple(1000, 1);
         assertTrue(host.allocatePesForVm(vm, mipsShare));
         assertEquals(mipsShare, host.getAllocatedMipsForVm(vm));
         host.deallocatePesForVm(vm);

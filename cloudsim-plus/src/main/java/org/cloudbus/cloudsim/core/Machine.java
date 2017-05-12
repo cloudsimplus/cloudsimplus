@@ -48,7 +48,8 @@ public interface Machine extends ChangeableId, Resourceful {
     Resource getStorage();
 
     /**
-     * Gets the number of {@link Pe}s the machine has.
+     * Gets the overall number of {@link Pe}s the machine has,
+     * that include PEs of all statuses, including failed PEs.
      *
      * @return the machine's number of PEs
      */
@@ -67,9 +68,7 @@ public interface Machine extends ChangeableId, Resourceful {
      *
      * @return the total MIPS of all PEs
      */
-    default double getTotalMipsCapacity() {
-        return getMips()*getNumberOfPes();
-    }
+    double getTotalMipsCapacity();
 
     /**
      * Gets the CloudSim instance that represents the simulation the Entity is related to.

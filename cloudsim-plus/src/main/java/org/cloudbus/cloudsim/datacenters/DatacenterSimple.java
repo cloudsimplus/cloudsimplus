@@ -52,12 +52,9 @@ public class DatacenterSimple extends CloudSimEntity implements Datacenter {
     /** @see #getStorageList() */
     private List<FileStorage> storageList;
 
-    /** @see #getVmList() */
-    private List<? extends Vm> vmList;
-
     /** @see #getSchedulingInterval() */
     private double schedulingInterval;
-
+    
     /**
      * Creates a Datacenter with the given parameters.
      *
@@ -122,7 +119,6 @@ public class DatacenterSimple extends CloudSimEntity implements Datacenter {
         setVmAllocationPolicy(vmAllocationPolicy);
         setLastProcessTime(0.0);
         setSchedulingInterval(0);
-        setVmList(new ArrayList<>());
         setStorageList(new ArrayList<>());
         assignHostsToCurrentDatacenter();
     }
@@ -425,8 +421,6 @@ public class DatacenterSimple extends CloudSimEntity implements Datacenter {
         }
 
         if (hostAllocatedForVm) {
-            getVmList().add(vm);
-
             if (!vm.isCreated()) {
                 vm.setCreated(true);
             }
@@ -439,9 +433,9 @@ public class DatacenterSimple extends CloudSimEntity implements Datacenter {
     }
 
     /**
-     * Process the event for an User/Broker who wants to destroy a VM previously
-     * created in this DatacenterSimple. This DatacenterSimple may send, upon
-     * request, the status back to the User/Broker.
+     * Process the event sent by a Broker, requesting the destruction of a given VM
+     * created in this Datacenter. This Datacenter may send, upon
+     * request, the status back to the Broker.
      *
      * @param ev information about the event just happened
      * @param ack indicates if the event's sender expects to receive an
@@ -457,9 +451,8 @@ public class DatacenterSimple extends CloudSimEntity implements Datacenter {
         if (ack) {
             sendNow(vm.getBroker().getId(), CloudSimTags.VM_DESTROY_ACK, vm);
         }
-        Log.printFormatted("Time %.2f: Vm %d destroyed\n", getSimulation().clock(), vm.getId());
-
-        getVmList().remove(vm);
+        Log.printFormatted("%.2f: %s: %s destroyed on %s\n", 
+                getSimulation().clock(), getClass().getSimpleName(), vm, vm.getHost());
     }
 
     /**
@@ -647,12 +640,15 @@ public class DatacenterSimple extends CloudSimEntity implements Datacenter {
 
     /**
      * Gets the time when the next update of cloudlets has to be performed.
+     * This is the minimum value between the {@link #getSchedulingInterval()} and the given time 
+     * (if the scheduling interval is enable, i.e. if it's greater than 0), 
+     * which represents when the next update of Cloudlets processing
+     * has to be performed.
      *
      * @param nextFinishingCloudletTime the predicted completion time of the earliest finishing cloudlet
-     * (that is a future simulation time), or {@link Double#MAX_VALUE} if there is no next Cloudlet to execute
-     * @return the minimum value between the {@link #getSchedulingInterval()} and the given time (if the scheduling interval
-     * is enable, that is, is greate than 0), that represents when the next update of Cloudlets processing
-     * has to be performed
+     * (which is a relative delay from the current simulation time), 
+     * or {@link Double#MAX_VALUE} if there is no next Cloudlet to execute
+     * @return next time cloudlets processing will be updated
      *
      * @see #updateCloudletProcessing()
      */
@@ -803,12 +799,17 @@ public class DatacenterSimple extends CloudSimEntity implements Datacenter {
      * entities. So, they don't receive events and updating cloudlets inside
      * them must be called from the outside.
      *
+     * @return the predicted completion time of the earliest finishing cloudlet
+     * (which is a relative delay from the current simulation time),
+     * or {@link Double#MAX_VALUE} if there is no next Cloudlet to execute
+     * or it isn't time to update the cloudlets
      * @pre $none
      * @post $none
      */
-    protected void updateCloudletProcessing() {
-        if (!isTimeToUpdateCloudletsProcessing())
-            return;
+    protected double updateCloudletProcessing() {
+        if (!isTimeToUpdateCloudletsProcessing()){
+            return Double.MAX_VALUE;
+        }
 
         double nextSimulationTime = updateVmsProcessingOfAllHosts();
         if (nextSimulationTime != Double.MAX_VALUE) {
@@ -818,6 +819,7 @@ public class DatacenterSimple extends CloudSimEntity implements Datacenter {
                 CloudSimTags.VM_UPDATE_CLOUDLET_PROCESSING_EVENT);
         }
         setLastProcessTime(getSimulation().clock());
+        return nextSimulationTime;
     }
 
     protected boolean isTimeToUpdateCloudletsProcessing() {
@@ -833,9 +835,8 @@ public class DatacenterSimple extends CloudSimEntity implements Datacenter {
      * that makes the processing of cloudlets inside such VMs to be updated.
      *
      * @return the predicted completion time of the earliest finishing cloudlet
-     * (that is a future simulation time),
+     * (which is a relative delay from the current simulation time),
      * or {@link Double#MAX_VALUE} if there is no next Cloudlet to execute
-     *
      */
     protected double updateVmsProcessingOfAllHosts() {
         final List<? extends Host> list = getVmAllocationPolicy().getHostList();
@@ -846,7 +847,7 @@ public class DatacenterSimple extends CloudSimEntity implements Datacenter {
         }
 
         // Guarantees a minimal interval before scheduling the event
-        final double minTimeBetweenEvents = getSimulation().clock()+getSimulation().getMinTimeBetweenEvents()+0.01;
+        final double minTimeBetweenEvents = getSimulation().getMinTimeBetweenEvents()+0.01;
         nextSimulationTime = Math.max(nextSimulationTime, minTimeBetweenEvents);
 
         if (nextSimulationTime == Double.MAX_VALUE) {
@@ -1095,17 +1096,10 @@ public class DatacenterSimple extends CloudSimEntity implements Datacenter {
 
     @Override
     public <T extends Vm> List<T> getVmList() {
-        return (List<T>) vmList;
-    }
-
-    /**
-     * Sets the list of VMs submitted to be ran in some host of this Datacenter.
-     *
-     * @param <T> the class of VMs inside the list
-     * @param vmList the new vm list
-     */
-    protected final <T extends Vm> void setVmList(List<T> vmList) {
-        this.vmList = vmList;
+        return (List<T>) Collections.unmodifiableList(
+                getHostList().stream()
+                    .flatMap(h -> h.getVmList().stream())
+                    .collect(toList()));
     }
 
     @Override
@@ -1141,15 +1135,13 @@ public class DatacenterSimple extends CloudSimEntity implements Datacenter {
 
         DatacenterSimple that = (DatacenterSimple) o;
 
-        if (!characteristics.equals(that.characteristics)) return false;
-        return vmList.equals(that.vmList);
+        return (!characteristics.equals(that.characteristics));
     }
 
     @Override
     public int hashCode() {
         int result = super.hashCode();
         result = 31 * result + characteristics.hashCode();
-        result = 31 * result + vmList.hashCode();
         return result;
     }
 }

@@ -125,4 +125,10 @@ public abstract class ResourceProvisionerAbstract implements ResourceProvisioner
     public long getAvailableResource() {
         return resource.getAvailableResource();
     }
+
+    @Override
+    public boolean isResourceAllocatedToVm(Vm vm) {
+        return resourceAllocationMap.keySet().contains(vm);
+    }
+    
 }

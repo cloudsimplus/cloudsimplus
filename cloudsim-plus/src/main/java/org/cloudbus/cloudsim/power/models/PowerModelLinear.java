@@ -11,8 +11,8 @@ package org.cloudbus.cloudsim.power.models;
 /**
  * Implements a power model where the power consumption is linear to resource usage.
  *
- * <br/>If you are using any algorithms, policies or workload included in the power package please cite
- * the following paper:<br/>
+ * <p>If you are using any algorithms, policies or workload included in the power package please cite
+ * the following paper:</p>
  *
  * <ul>
  * <li><a href="http://dx.doi.org/10.1002/cpe.1867">Anton Beloglazov, and Rajkumar Buyya, "Optimal Online Deterministic Algorithms and Adaptive
@@ -29,7 +29,7 @@ package org.cloudbus.cloudsim.power.models;
  * Thus, a better class hierarchy should be provided, such as an abstract class
  * implementing the PowerModel interface.
  */
-public class PowerModelLinear implements PowerModel {
+public class PowerModelLinear  extends PowerModelAbstract {
 
 	/** The max power that can be consumed. */
 	private double maxPower;
@@ -56,10 +56,7 @@ public class PowerModelLinear implements PowerModel {
 	}
 
 	@Override
-	public double getPower(double utilization) throws IllegalArgumentException {
-		if (utilization < 0 || utilization > 1) {
-			throw new IllegalArgumentException("Utilization value must be between 0 and 1");
-		}
+	protected double getPowerInternal(double utilization) throws IllegalArgumentException {
 		if (utilization == 0) {
 			return 0;
 		}
@@ -80,7 +77,7 @@ public class PowerModelLinear implements PowerModel {
 	 *
 	 * @param maxPower the new max power
 	 */
-	protected void setMaxPower(double maxPower) {
+	protected final void setMaxPower(double maxPower) {
 		this.maxPower = maxPower;
 	}
 
@@ -98,7 +95,7 @@ public class PowerModelLinear implements PowerModel {
 	 *
 	 * @param constant the new constant
 	 */
-	protected void setConstant(double constant) {
+	protected final void setConstant(double constant) {
 		this.constant = constant;
 	}
 
@@ -107,7 +104,7 @@ public class PowerModelLinear implements PowerModel {
 	 *
 	 * @return the static power
 	 */
-	protected double getStaticPower() {
+	protected final double getStaticPower() {
 		return staticPower;
 	}
 
@@ -116,7 +113,7 @@ public class PowerModelLinear implements PowerModel {
 	 *
 	 * @param staticPower the new static power
 	 */
-	protected void setStaticPower(double staticPower) {
+	protected final void setStaticPower(double staticPower) {
 		this.staticPower = staticPower;
 	}
 

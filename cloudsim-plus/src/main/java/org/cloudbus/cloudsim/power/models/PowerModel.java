@@ -18,9 +18,8 @@ import org.cloudbus.cloudsim.hosts.power.PowerHost;
  * using the {@link PowerModel#NULL} object instead of attributing {@code null} to
  * {@link PowerModel} variables.
  *
- *
- * <br>If you are using any algorithms, policies or workload included in the
- * power package please cite the following paper:<br/>
+ * <p>If you are using any algorithms, policies or workload included in the
+ * power package please cite the following paper:</p>
  *
  * <ul>
  * <li><a href="http://dx.doi.org/10.1002/cpe.1867">Anton Beloglazov, and

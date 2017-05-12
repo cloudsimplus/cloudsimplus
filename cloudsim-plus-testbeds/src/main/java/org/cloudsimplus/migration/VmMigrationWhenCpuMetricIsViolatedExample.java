@@ -42,10 +42,8 @@ import org.cloudbus.cloudsim.hosts.power.PowerHostUtilizationHistory;
 import org.cloudbus.cloudsim.power.models.PowerModelLinear;
 import org.cloudbus.cloudsim.provisioners.PeProvisionerSimple;
 import org.cloudbus.cloudsim.provisioners.ResourceProvisionerSimple;
-import org.cloudbus.cloudsim.resources.Bandwidth;
 import org.cloudbus.cloudsim.resources.Pe;
 import org.cloudbus.cloudsim.resources.PeSimple;
-import org.cloudbus.cloudsim.resources.Ram;
 import org.cloudbus.cloudsim.schedulers.cloudlet.CloudletSchedulerTimeShared;
 import org.cloudbus.cloudsim.schedulers.vm.VmSchedulerSpaceShared;
 import org.cloudbus.cloudsim.schedulers.vm.VmSchedulerTimeShared;
@@ -107,7 +105,7 @@ public final class VmMigrationWhenCpuMetricIsViolatedExample {
      */
     public static final double CLOUDLET_CPU_USAGE_INCREMENT_PER_SECOND = 0.05;
 
-    private static final int NUMBER_OF_HOSTS_TO_CREATE = 3;
+    private static final int NUMBER_OF_HOSTS_TO_CREATE = 20;
     private static final int NUMBER_OF_VMS_TO_CREATE = NUMBER_OF_HOSTS_TO_CREATE + 1;
     private static final int NUMBER_OF_CLOUDLETS_TO_CREATE_BY_VM = 4;
 
@@ -129,7 +127,7 @@ public final class VmMigrationWhenCpuMetricIsViolatedExample {
     public static void main(String[] args) throws FileNotFoundException, IOException {
         new VmMigrationWhenCpuMetricIsViolatedExample();
     }
-    private  List<Cloudlet> cloudletList;
+    private List<Cloudlet> cloudletList;
 
     public VmMigrationWhenCpuMetricIsViolatedExample() throws FileNotFoundException, IOException {
         Log.printConcatLine("Starting ", VmMigrationWhenCpuMetricIsViolatedExample.class.getSimpleName(), "...");
@@ -142,14 +140,13 @@ public final class VmMigrationWhenCpuMetricIsViolatedExample {
         Datacenter datacenter0 = createDatacenter();
 
         DatacenterBroker broker = new DatacenterBrokerSimple(simulation);
-       
+
         createAndSubmitVms(broker);
 
         createAndSubmitCloudlets(broker);
 
         simulation.start();
-
-        responseTimeCloudletSimulation(broker);
+        cpuUtilization(cloudletList);
 
         new CloudletsTableBuilder(broker.getCloudletsFinishedList()).build();
 
@@ -184,7 +181,7 @@ public final class VmMigrationWhenCpuMetricIsViolatedExample {
      */
     public PowerVm createVm(DatacenterBroker broker) {
         PowerVm vm = new PowerVm(vmlist.size(), VM_MIPS, VM_PES_NUM);
-        vm.setSchedulingInterval(1)
+        vm
                 .setRam(VM_RAM).setBw(VM_BW).setSize(VM_SIZE)
                 .setBroker(broker)
                 .setCloudletScheduler(new CloudletSchedulerTimeShared());
@@ -202,7 +199,7 @@ public final class VmMigrationWhenCpuMetricIsViolatedExample {
             boolean progressiveCpuUsage) {
         cloudletInitialCpuUsagePercent = Math.min(cloudletInitialCpuUsagePercent, 1);
         maxCloudletCpuUtilizationPercentage = Math.min(maxCloudletCpuUtilizationPercentage, 1);
-        
+
         UtilizationModel utilizationModelFull = new UtilizationModelFull();
         int cloudletId;
         for (int i = 0; i < NUMBER_OF_CLOUDLETS_TO_CREATE_BY_VM; i++) {
@@ -228,8 +225,6 @@ public final class VmMigrationWhenCpuMetricIsViolatedExample {
             c.setBroker(broker);
             cloudletList.add(c);
         }
-
-
 
         broker.submitCloudletList(cloudletList);
         for (Cloudlet c : cloudletList) {
@@ -304,7 +299,7 @@ public final class VmMigrationWhenCpuMetricIsViolatedExample {
      *
      * @todo @author manoelcampos The method
      * {@link DatacenterBroker#getCloudletsFinishedList()} returns an empty list
-     * when using null null null null     {@link PowerDatacenter},
+     * when using null null null null null     {@link PowerDatacenter},
      * {@link PowerHost} and {@link PowerVm}.
      */
     public static PowerHostUtilizationHistory createHost(int id, int numberOfPes, long mipsByPe) {
@@ -350,27 +345,19 @@ public final class VmMigrationWhenCpuMetricIsViolatedExample {
 
         underCpuUtilizationThreshold = minValue / 100;
         overCpuUtilizationThreshold = maxValue / 100;
-
     }
 
-    private void responseTimeCloudletSimulation(DatacenterBroker broker) throws IOException {
-        double average = 0;
-        List<Double> responseTimes = new ArrayList<>();
-        for (Cloudlet c : broker.getCloudletsFinishedList()) {
-            double responseTime = c.getFinishTime() - c.getLastDatacenterArrivalTime();
-            responseTimes.add(responseTime);
-            average = responseTimeCloudletAverage(broker, responseTimes);
-
+    /**
+     * Shows the cpu utilization
+     *
+     * @param cloudlet to calculate the utilization
+     * @return cpuUtilization
+     */
+    private void cpuUtilization(List<Cloudlet> cloudlet) {
+        double cpuTime = 0;
+        for (Cloudlet cloudlets : cloudlet) {
+            cpuTime += cloudlets.getActualCpuTime();
         }
-        System.out.printf("\t\t\n Response Time simulation (average) : %.2f \n", average);
-    }
-
-    private double responseTimeCloudletAverage(DatacenterBroker broker, List<Double> responseTimes) {
-        int totalCloudlets = broker.getCloudletsFinishedList().size();
-        double sum = 0;
-        sum = responseTimes.stream()
-                .map((responseTime) -> responseTime)
-                .reduce(sum, (accumulator, _item) -> accumulator + _item);
-        return sum / totalCloudlets;
+        Log.printFormattedLine("\n #Cpu utilization -> %f", (cpuTime * 100) / 100);
     }
 }

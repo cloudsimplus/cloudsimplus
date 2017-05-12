@@ -40,4 +40,7 @@ final class MachineNull implements Machine {
     @Override public List<ResourceManageable> getResources() {
         return Collections.emptyList();
     }
+
+    @Override
+    public double getTotalMipsCapacity() { return 0.0; }
 }

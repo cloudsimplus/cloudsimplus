@@ -140,4 +140,11 @@ public interface ResourceProvisioner {
      * @return the amount of free available physical resource
      */
     long getAvailableResource();
+    
+    /**
+     * Checks if the resource the provisioner manages is allocated to a given Vm.
+     * @param vm the VM to check if the resource is allocated to
+     * @return true if the resource is allocated to the VM, false otherwise
+     */
+    boolean isResourceAllocatedToVm(Vm vm);
 }
