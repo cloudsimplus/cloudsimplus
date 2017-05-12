@@ -114,15 +114,18 @@ final class HostNull implements Host {
     @Override public Host setVmScheduler(VmScheduler vmScheduler) {
         return Host.NULL;
     }
-    @Override public List<Vm> getVmsMigratingIn() {
-        return Collections.EMPTY_LIST;
-    }
     @Override public boolean isFailed() {
         return false;
     }
     @Override public boolean isSuitableForVm(Vm vm) {
         return false;
     }
+
+    @Override
+    public <T extends Vm> Set<T> getVmsMigratingIn() {
+        return Collections.EMPTY_SET;
+    }
+
     @Override public void reallocateMigratingInVms() {/**/}
     @Override public void removeMigratingInVm(Vm vm) {/**/}
     @Override public void setDatacenter(Datacenter datacenter) {/**/}

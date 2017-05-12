@@ -9,7 +9,7 @@ import org.cloudbus.cloudsim.cloudlets.Cloudlet;
  * namely {@link Vm} and {@link Cloudlet}.
  * @author raysaoliveira
  */
-public interface CustomerEntity {
+public interface CustomerEntity extends ChangeableId, Delayable {
     /**
      * Gets the {@link DatacenterBroker} that represents the owner of this object.
      *
@@ -23,7 +23,7 @@ public interface CustomerEntity {
      * Sets a {@link DatacenterBroker} that represents the owner of this object.
      *
      * @param broker the {@link DatacenterBroker} to set
-     * @return 
+     * @return
      */
-    CustomerEntity setBroker(DatacenterBroker broker);    
+    CustomerEntity setBroker(DatacenterBroker broker);
 }

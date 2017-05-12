@@ -168,8 +168,8 @@ final class PowerHostNull implements PowerHost {
     @Override public Host setVmScheduler(VmScheduler vmScheduler) {
         return Host.NULL;
     }
-    @Override public <T extends Vm> List<T> getVmsMigratingIn() {
-        return Collections.EMPTY_LIST;
+    @Override public <T extends Vm> Set<T> getVmsMigratingIn() {
+        return Collections.EMPTY_SET;
     }
     @Override public boolean isFailed() {
         return false;

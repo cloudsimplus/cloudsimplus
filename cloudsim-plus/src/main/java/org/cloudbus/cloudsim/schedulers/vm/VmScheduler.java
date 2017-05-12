@@ -119,7 +119,10 @@ public interface VmScheduler {
     List<Double> getAllocatedMipsForVm(Vm vm);
 
     /**
-     * Gets the amount of MIPS that is free.
+     * Gets the total amount of MIPS that is currently free.
+     * If there are VMs migrating into the Host,
+     * their requested MIPS will already be allocated,
+     * reducing the total available MIPS.
      *
      * @return
      */
@@ -180,10 +183,17 @@ public interface VmScheduler {
     List<Pe> getPesAllocatedForVM(Vm vm);
 
     /**
-     * Gets the total allocated MIPS for a VM along all its allocated PEs.
+     * Gets the actual total allocated MIPS for a VM along all its allocated PEs.
+     * If the VM is migrating into the Host, then just a fraction
+     * of the requested MIPS is actually allocated, representing
+     * the overhead of the migration process.
+     *
+     * <p>The MIPS requested by the VM are just actually allocated
+     * after the migration is completed.</p>
      *
      * @param vm the VM to get the total allocated MIPS
      * @return
+     * @see #getVmMigrationCpuOverhead()
      */
     double getTotalAllocatedMipsForVm(Vm vm);
 
@@ -213,4 +223,26 @@ public interface VmScheduler {
      * @throws NullPointerException when the host parameter is null
      */
     VmScheduler setHost(Host host);
+
+    /**
+     * Checks if a list of MIPS requested by a VM is allowed to be allocated or not.
+     * Depending on the {@code VmScheduler} implementation, the return value
+     * of this method may have different effects:
+     * <ul>
+     * <li>true: requested MIPS will be allocated, partial or totally, depending
+     * on the available MIPS and the {@code VmScheduler} implementation;</li>
+     * <li>false: requested MIPS will not be allocated because there is no availability at all
+     * or there is just a partial amount of the requested MIPS available and the
+     * {@code VmScheduler} implementation doesn't allow allocating less than the
+     * VM is requesting. If less than the required MIPS is allocated to a VM,
+     * it will cause performance degradation.
+     * Such situation defines an over-subscription situation
+     * which just specific {@code VmSchedulers} accept.
+     * </li>
+     * </ul>
+     *
+     * @param vmRequestedMipsShare a list of MIPS requested by a VM
+     * @return true if the requested MIPS List is allowed to be allocated to the VM, false otherwise
+     */
+    boolean isAllowedToAllocateMips(List<Double> vmRequestedMipsShare);
 }

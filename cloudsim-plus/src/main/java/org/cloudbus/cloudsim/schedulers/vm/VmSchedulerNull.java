@@ -57,7 +57,6 @@ final class VmSchedulerNull implements VmScheduler {
     @Override public VmScheduler setHost(Host host) {
         return this;
     }
-
-    @Override
-    public void deallocatePesFromVm(Vm vm, int pesToRemove) {}
+    @Override public boolean isAllowedToAllocateMips(List<Double> vmRequestedMipsShare) { return false; }
+    @Override public void deallocatePesFromVm(Vm vm, int pesToRemove) {/**/}
 }

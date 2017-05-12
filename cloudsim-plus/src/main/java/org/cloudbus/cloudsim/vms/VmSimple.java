@@ -119,7 +119,7 @@ public class VmSimple implements Vm {
     private VerticalVmScaling ramVerticalScaling;
     private VerticalVmScaling bwVerticalScaling;
     private VerticalVmScaling peVerticalScaling;
-    
+
     private String description;
 
     /**
@@ -308,11 +308,11 @@ public class VmSimple implements Vm {
 
         return (long) (getCloudletScheduler().getCurrentRequestedBwPercentUtilization() * getBw().getCapacity());
     }
-    
+
     @Override
     public double getTotalMipsCapacity() {
         return getMips()*getNumberOfPes();
-    }    
+    }
 
     @Override
     public long getCurrentRequestedRam() {

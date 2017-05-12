@@ -16,48 +16,70 @@ import org.cloudbus.cloudsim.vms.Vm;
 /**
  * A Time-Shared VM Scheduler, which allows over-subscription. In other
  * words, the scheduler still allows the allocation of VMs which require more CPU
- * capacity than is available. 
- * 
+ * capacity than is available.
+ *
  * <p>The scheduler doesn't in fact allocates more MIPS for Virtual PEs (vPEs)
  * than there is in the physical PEs. It just reduces the allocated
  * amount according to the available MIPS.
  * This is an oversubscription, resulting in performance degradation
  * because less MIPS may be allocated than the required by a VM.
  * </p>
- * 
+ *
  * @author Anton Beloglazov
  * @author Rodrigo N. Calheiros
  * @author Manoel Campos da Silva Filho
  * @since CloudSim Toolkit 3.0
  */
 public class VmSchedulerTimeSharedOverSubscription extends VmSchedulerTimeShared {
+    /**
+     * Checks if a list of MIPS requested by a VM is allowed to be allocated or not.
+     * When there isn't the amount of requested MIPS available, this {@code VmScheduler}
+     * allows to allocate what is available for the requesting VM,
+     * allocating less that is requested.
+     *
+     * <p>This way, the only situation when it will not allow
+     * the allocation of MIPS for a VM is when the number of PEs
+     * required is greater than the total number of physical PEs.
+     * Even when there is not available MIPS at all, it allows
+     * the allocation of MIPS for the VM by reducing the allocation
+     * of other VMs.</p>
+     *
+     * @param vmRequestedMipsShare a list of MIPS requested by a VM
+     * @return true if the requested MIPS List is allowed to be allocated to the VM, false otherwise
+     * @see #allocateMipsShareForVm(Vm, List)
+     */
     @Override
-    protected void allocateMipsShareForVm(List<Double> mipsShareRequestedReduced, Vm vm) {
+    public boolean isAllowedToAllocateMips(List<Double> vmRequestedMipsShare){
+        return getWorkingPeList().size() >= vmRequestedMipsShare.size();
+    }
+
+    @Override
+    protected void allocateMipsShareForVm(Vm vm, List<Double> mipsShareRequestedReduced) {
         final double totalRequestedMips = mipsShareRequestedReduced.stream().reduce(0.0, Double::sum);
         if (getAvailableMips() >= totalRequestedMips) {
-            super.allocateMipsShareForVm(mipsShareRequestedReduced, vm);
+            super.allocateMipsShareForVm(vm, mipsShareRequestedReduced);
         } else {
             redistributeMipsDueToOverSubscription();
         }
     }
-    
+
     /**
      * Redistribute the allocation of MIPs among all VMs when the total
      * MIPS requested by all of them is higher than the total available MIPS.
      * This way, it reduces the MIPS allocated to all VMs in order to
      * enable all MIPS requests to be fulfilled.
-     * 
+     *
      * <p>Updates the Map containing the list of allocated MIPS by all VMs,
      * reducing the amount requested according to a scaling factor.
      * This is performed when the amount of total requested MIPS by all VMs
      * is higher than the total available MIPS. The reduction
      * of the MIPS requested by all VMs enables all requests to be fulfilled.</p>
-     * @see #getMipsMapAllocated() 
+     * @see #getMipsMapAllocated()
      */
     protected void redistributeMipsDueToOverSubscription() {
         // First, we calculate the scaling factor - the MIPS allocation for all VMs will be scaled proportionally
         final Map<Vm, List<Double>> mipsMapRequestedReduced = newTotalRequiredMipsByAllVms();
-        final double totalRequiredMipsByAllVms = 
+        final double totalRequiredMipsByAllVms =
                 mipsMapRequestedReduced.values()
                     .stream()
                     .flatMap(list -> list.stream())
@@ -66,7 +88,7 @@ public class VmSchedulerTimeSharedOverSubscription extends VmSchedulerTimeShared
 
         //the factor that will be used to reduce the amount of MIPS allocated to each vPE
         final double scalingFactor = getHost().getTotalMipsCapacity() / totalRequiredMipsByAllVms;
-        
+
         getMipsMapAllocated().clear();
         for (final Entry<Vm, List<Double>> entry : mipsMapRequestedReduced.entrySet()) {
             final Vm vm = entry.getKey();
@@ -78,11 +100,11 @@ public class VmSchedulerTimeSharedOverSubscription extends VmSchedulerTimeShared
 
     /**
      * Generate a new Map containing the list of required MIPS by all VMs,
-     * ensuring the MIPS requested for each vPE doesn't exceeds 
+     * ensuring the MIPS requested for each vPE doesn't exceeds
      * the capacity of each Physical PE.
      *
      * @return the new map of requested MIPS for all VMs
-     * @see #getMipsMapRequested() 
+     * @see #getMipsMapRequested()
      */
     private Map<Vm, List<Double>> newTotalRequiredMipsByAllVms() {
         final Map<Vm, List<Double>> mipsMapRequestedReduced = new HashMap<>(getMipsMapRequested().entrySet().size());

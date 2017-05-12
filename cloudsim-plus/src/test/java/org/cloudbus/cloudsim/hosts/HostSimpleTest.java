@@ -29,9 +29,11 @@ import org.junit.Before;
 import org.junit.Test;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import java.util.stream.IntStream;
 
+import static java.util.Comparator.comparingInt;
 import static org.junit.Assert.*;
 
 /**
@@ -109,7 +111,8 @@ public class HostSimpleTest {
         });
 
         host.reallocateMigratingInVms();
-        assertEquals(vms, host.getVmList());
+        assertEquals(vms.size(), host.getVmList().size());
+        assertTrue(host.getVmList().containsAll(vms));
     }
 
     @Test
@@ -134,7 +137,9 @@ public class HostSimpleTest {
 
 
         host.reallocateMigratingInVms();
-        assertEquals(vms, host.getVmList());
+        final List<Vm> result = host.getVmList();
+        assertEquals(vms.size(), result.size());
+        assertTrue(vms.containsAll(result));
     }
 
     @Test
@@ -162,7 +167,7 @@ public class HostSimpleTest {
             new CloudletSchedulerTimeShared());
         assertEquals(MIPS, targetHost.getAvailableMips(), 0);
         assertTrue(targetHost.addMigratingInVm(vm));
-        final double availableMips = VM_MIPS; 
+        final double availableMips = VM_MIPS;
         assertEquals(availableMips, targetHost.getAvailableMips(), 0);
         assertEquals(0, targetHost.getAvailableStorage(), 0);
     }
@@ -176,8 +181,8 @@ public class HostSimpleTest {
             0, VM_MIPS, numberOfPes, RAM, BW, STORAGE,
             new CloudletSchedulerTimeShared());
         targetHost.addMigratingInVm(vm);
-        //-10% due to VM migration CPU overhead
-        final double allocatedMips = 450; 
+        //During migration, just  10% of capacity is allocated (it's the migration overhead)
+        final double allocatedMips = 50;
         assertEquals(allocatedMips, targetHost.getTotalAllocatedMipsForVm(vm), 0);
     }
 

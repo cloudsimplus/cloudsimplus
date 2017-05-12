@@ -522,8 +522,8 @@ public class HostSimple implements Host {
     }
 
     @Override
-    public <T extends Vm> List<T> getVmsMigratingIn() {
-        return (List<T>)vmsMigratingIn;
+    public <T extends Vm> Set<T> getVmsMigratingIn() {
+        return (Set<T>)vmsMigratingIn;
     }
 
     @Override
@@ -532,11 +532,12 @@ public class HostSimple implements Host {
             return false;
         }
 
+        vmsMigratingIn.add(vm);
         if(!allocateResourcesForVm(vm, true)){
+            vmsMigratingIn.remove(vm);
             return false;
         }
 
-        vmsMigratingIn.add(vm);
         updateProcessing(simulation.clock());
         vm.getHost().updateProcessing(simulation.clock());
 

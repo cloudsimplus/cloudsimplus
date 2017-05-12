@@ -321,5 +321,30 @@ public abstract class VmSchedulerAbstract implements VmScheduler {
         return 1;
     }
 
+    /**
+     * Checks if the requested amount of MIPS is available to be allocated to a
+     * VM.
+     *
+     * @param vmRequestedMipsShare a list of MIPS requested by a VM
+     * @return true if the requested MIPS List is available, false otherwise
+     */
+    @Override
+    public boolean isAllowedToAllocateMips(List<Double> vmRequestedMipsShare) {
+        final double pmMips = getPeCapacity();
+        double totalRequestedMips = 0;
+        for (final double vmMips : vmRequestedMipsShare) {
+            // each virtual PE of a VM must require not more than the capacity of a physical PE
+            if (vmMips > pmMips) {
+                return false;
+            }
+            totalRequestedMips += vmMips;
+        }
 
+        // This scheduler does not allow over-subscription
+        if (getAvailableMips() < totalRequestedMips || getWorkingPeList().size() < vmRequestedMipsShare.size()) {
+            return false;
+        }
+
+        return true;
+    }
 }

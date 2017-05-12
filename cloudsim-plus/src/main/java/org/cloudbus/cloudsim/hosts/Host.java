@@ -72,10 +72,14 @@ public interface Host extends Machine, Comparable<Host> {
      * @param <T> the generic type
      * @return the vms migrating in
      */
-    <T extends Vm> List<T> getVmsMigratingIn();
+    <T extends Vm> Set<T> getVmsMigratingIn();
 
     /**
-     * Adds a VM migrating into the current host.
+     * Try to add a VM migrating into the current host
+     * if there is enough resources for it.
+     * In this case, the resources are allocated
+     * and the VM added to the {@link #getVmsMigratingIn()} List.
+     * Otherwise, the VM is not added.
      *
      * @param vm the vm
      * @return true if the Vm was migrated in, false if the Host doesn't have enough resources to place the Vm
