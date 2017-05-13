@@ -104,8 +104,7 @@ public class CloudSimExample6 {
         for (int i = 0; i < vms; i++) {
             Vm vm = new VmSimple(i, mips, pesNumber)
                 .setRam(ram).setBw(bw).setSize(size)
-                .setCloudletScheduler(new CloudletSchedulerTimeShared())
-                .setBroker(broker);
+                .setCloudletScheduler(new CloudletSchedulerTimeShared());
 
             //for creating a VM with a space shared scheduling policy for cloudlets:
             //vm[i] = VmSimple(i, userId, mips, pesNumber, ram, bw, size, priority, vmm, new CloudletSchedulerSpaceShared());
@@ -131,8 +130,7 @@ public class CloudSimExample6 {
             Cloudlet cloudlet = new CloudletSimple(i, length, pesNumber)
                             .setFileSize(fileSize)
                             .setOutputSize(outputSize)
-                            .setUtilizationModel(utilizationModel)
-                            .setBroker(broker);
+                            .setUtilizationModel(utilizationModel);
             list.add(cloudlet);
         }
 

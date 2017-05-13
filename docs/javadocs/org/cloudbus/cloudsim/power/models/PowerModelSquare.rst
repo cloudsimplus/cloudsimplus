@@ -4,7 +4,7 @@ PowerModelSquare
 .. java:package:: org.cloudbus.cloudsim.power.models
    :noindex:
 
-.. java:type:: public class PowerModelSquare implements PowerModel
+.. java:type:: public class PowerModelSquare extends PowerModelAbstract
 
    Implements a power model where the power consumption is the square of the resource usage.
 
@@ -51,16 +51,16 @@ getMaxPower
 
    :return: the max power
 
-getPower
-^^^^^^^^
+getPowerInternal
+^^^^^^^^^^^^^^^^
 
-.. java:method:: @Override public double getPower(double utilization) throws IllegalArgumentException
+.. java:method:: @Override protected double getPowerInternal(double utilization) throws IllegalArgumentException
    :outertype: PowerModelSquare
 
 getStaticPower
 ^^^^^^^^^^^^^^
 
-.. java:method:: protected double getStaticPower()
+.. java:method:: protected final double getStaticPower()
    :outertype: PowerModelSquare
 
    Gets the static power.

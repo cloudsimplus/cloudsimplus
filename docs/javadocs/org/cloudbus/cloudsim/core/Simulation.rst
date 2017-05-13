@@ -437,12 +437,26 @@ sendNow
 setIdForEntitiesWithoutOne
 ^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-.. java:method:: static boolean setIdForEntitiesWithoutOne(List<? extends ChangeableId> list)
+.. java:method:: static <T extends ChangeableId> boolean setIdForEntitiesWithoutOne(List<? extends T> list)
    :outertype: Simulation
 
    Defines IDs for a list of \ :java:ref:`ChangeableId`\  entities that don't have one already assigned. Such entities can be a \ :java:ref:`Cloudlet`\ , \ :java:ref:`Vm`\  or any object that implements \ :java:ref:`ChangeableId`\ .
 
+   :param <T>: the type of entities to define an ID
    :param list: list of objects to define an ID
+   :return: true if the List has any Entity, false if it's empty
+
+setIdForEntitiesWithoutOne
+^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+.. java:method:: static <T extends ChangeableId> boolean setIdForEntitiesWithoutOne(List<? extends T> list, T lastEntity)
+   :outertype: Simulation
+
+   Defines IDs for a list of \ :java:ref:`ChangeableId`\  entities that don't have one already assigned. Such entities can be a \ :java:ref:`Cloudlet`\ , \ :java:ref:`Vm`\  or any object that implements \ :java:ref:`ChangeableId`\ .
+
+   :param <T>: the type of entities to define an ID
+   :param list: list of objects to define an ID
+   :param lastEntity: the last created Entity which its ID will be used as the base for the next IDs
    :return: true if the List has any Entity, false if it's empty
 
 setNetworkTopology

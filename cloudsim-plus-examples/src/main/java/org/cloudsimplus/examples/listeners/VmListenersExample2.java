@@ -206,8 +206,7 @@ public class VmListenersExample2 {
 
         Vm vm = new VmSimple(id, mips, VM_PES_NUMBER)
             .setRam(ram).setBw(bw).setSize(size)
-            .setCloudletScheduler(new CloudletSchedulerTimeShared())
-            .setBroker(broker);
+            .setCloudletScheduler(new CloudletSchedulerTimeShared());
 
         /*Adds the listener to intercept allocation of a Host to the Vm.*/
         vm.addOnHostAllocationListener(this.onHostAllocationListener);
@@ -234,7 +233,6 @@ public class VmListenersExample2 {
             .setFileSize(fileSize)
             .setOutputSize(outputSize)
             .setUtilizationModel(utilizationModel)
-            .setBroker(broker)
             .setVm(vm);
     }
 

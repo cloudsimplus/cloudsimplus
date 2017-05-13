@@ -61,7 +61,6 @@ public final class PlanetLabHelper {
 						.setUtilizationModelCpu(utilizationModelCPU)
                         .setUtilizationModelRam(utilizationModelNull)
                         .setUtilizationModelBw(utilizationModelNull);
-                cloudlet.setBroker(broker);
                 //cloudlet.setVm(i);
                 list.add(cloudlet);
 			} catch (Exception e) {

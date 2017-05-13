@@ -46,6 +46,12 @@ isStarted
 .. java:method:: @Override public boolean isStarted()
    :outertype: SimEntityNull
 
+println
+^^^^^^^
+
+.. java:method:: @Override public void println(String msg)
+   :outertype: SimEntityNull
+
 processEvent
 ^^^^^^^^^^^^
 
@@ -62,6 +68,12 @@ schedule
 ^^^^^^^^
 
 .. java:method:: @Override public void schedule(int dest, double delay, int tag)
+   :outertype: SimEntityNull
+
+setLog
+^^^^^^
+
+.. java:method:: @Override public void setLog(boolean log)
    :outertype: SimEntityNull
 
 setName

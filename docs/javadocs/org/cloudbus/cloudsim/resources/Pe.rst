@@ -58,6 +58,38 @@ getStatus
 
    :return: the PE status
 
+isBuzy
+^^^^^^
+
+.. java:method::  boolean isBuzy()
+   :outertype: Pe
+
+   Checks if the PE is buzy to be used (it's being used).
+
+isFailed
+^^^^^^^^
+
+.. java:method::  boolean isFailed()
+   :outertype: Pe
+
+   Checks if the PE is failed.
+
+isFree
+^^^^^^
+
+.. java:method::  boolean isFree()
+   :outertype: Pe
+
+   Checks if the PE is free to be used (it's idle).
+
+isWorking
+^^^^^^^^^
+
+.. java:method::  boolean isWorking()
+   :outertype: Pe
+
+   Checks if the PE is working (not failed).
+
 setCapacity
 ^^^^^^^^^^^
 

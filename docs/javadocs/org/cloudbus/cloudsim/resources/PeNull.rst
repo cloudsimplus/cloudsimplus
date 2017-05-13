@@ -78,6 +78,24 @@ getStatus
 .. java:method:: @Override public Status getStatus()
    :outertype: PeNull
 
+isBuzy
+^^^^^^
+
+.. java:method:: @Override public boolean isBuzy()
+   :outertype: PeNull
+
+isFailed
+^^^^^^^^
+
+.. java:method:: @Override public boolean isFailed()
+   :outertype: PeNull
+
+isFree
+^^^^^^
+
+.. java:method:: @Override public boolean isFree()
+   :outertype: PeNull
+
 isFull
 ^^^^^^
 
@@ -106,6 +124,12 @@ isSuitable
 ^^^^^^^^^^
 
 .. java:method:: @Override public boolean isSuitable(long newTotalAllocatedResource)
+   :outertype: PeNull
+
+isWorking
+^^^^^^^^^
+
+.. java:method:: @Override public boolean isWorking()
    :outertype: PeNull
 
 removeCapacity

@@ -199,18 +199,16 @@ public abstract class SimulationExperiment implements Runnable {
      * Creates a list of Cloudlets to be used by the experiment
      * and adds them to the {@link #getCloudletList()}.
      *
-     * @param broker broker that the Cloudlets belong to
      * @return the list of created cloudlets
      */
-    protected abstract List<Cloudlet> createCloudlets(DatacenterBroker broker);
+    protected abstract List<Cloudlet> createCloudlets();
 
     /**
      * Creates the Vms to be used by the experiment.
      *
-     * @param broker broker that the Vms belong to
      * @return the List of created VMs
      */
-    protected abstract List<Vm> createVms(DatacenterBroker broker);
+    protected abstract List<Vm> createVms();
 
     /**
      * Creates a DatacenterBroker and adds it to the
@@ -231,7 +229,7 @@ public abstract class SimulationExperiment implements Runnable {
      * @param broker broker to submit Cloudlets to
      */
     protected void createAndSubmitCloudletsInternal(DatacenterBroker broker) {
-        final List<Cloudlet> list = createCloudlets(broker);
+        final List<Cloudlet> list = createCloudlets();
         cloudletList.addAll(list);
         broker.submitCloudletList(list);
     }
@@ -243,7 +241,7 @@ public abstract class SimulationExperiment implements Runnable {
      * @param broker broker to submit VMs to
      */
     private void createAndSubmitVmsInternal(DatacenterBroker broker) {
-        List<Vm> list = createVms(broker);
+        List<Vm> list = createVms();
         vmList.addAll(list);
         broker.submitVmList(list);
     }
@@ -285,7 +283,7 @@ public abstract class SimulationExperiment implements Runnable {
      *
      * @param <T>
      * @param afterExperimentFinishConsumer a {@link Consumer} instance to set.
-     * @return 
+     * @return
      */
     public <T extends SimulationExperiment> SimulationExperiment setAfterExperimentFinish(Consumer<T> afterExperimentFinishConsumer) {
         this.afterExperimentFinish = afterExperimentFinishConsumer;
@@ -299,17 +297,17 @@ public abstract class SimulationExperiment implements Runnable {
     /**
      * Sets a {@link Consumer} that will be called after the simulation scenario is built,
      * which is before starting the simulation.
-     * 
+     *
      * <p>Setting a Consumer object is optional.</p>
      * @param <T>
      * @param afterScenarioBuild the afterScenarioBuild to set
-     * @return 
+     * @return
      */
     public <T extends SimulationExperiment> SimulationExperiment setAfterScenarioBuild(Consumer<T> afterScenarioBuild) {
         this.afterScenarioBuild = afterScenarioBuild;
         return this;
     }
-    
+
     public <T extends SimulationExperiment> Consumer<T> getAfterScenarioBuild() {
         return (Consumer<T>)this.afterScenarioBuild;
     }
@@ -324,5 +322,5 @@ public abstract class SimulationExperiment implements Runnable {
     public List<Host> getHostList() {
         return Collections.unmodifiableList(hostList);
     }
-    
+
 }

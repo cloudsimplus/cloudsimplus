@@ -42,6 +42,7 @@ JavaDocs
    org/cloudsimplus/autoscaling/resources/package-index
    org/cloudsimplus/builders/package-index
    org/cloudsimplus/builders/tables/package-index
+   org/cloudsimplus/faultinjection/package-index
    org/cloudsimplus/heuristics/package-index
    org/cloudsimplus/listeners/package-index
 

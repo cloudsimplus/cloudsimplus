@@ -168,8 +168,7 @@ public class SwfWorkloadFormatExample1 {
         for (Cloudlet cloudlet : this.cloudletList) {
             Vm vm = new VmSimple(++vmId, VM_MIPS, cloudlet.getNumberOfPes())
                 .setRam(VM_RAM).setBw(VM_BW).setSize(VM_SIZE)
-                .setCloudletScheduler(new CloudletSchedulerSpaceShared())
-                .setBroker(broker);
+                .setCloudletScheduler(new CloudletSchedulerSpaceShared());
             vmlist.add(vm);
             cloudlet.setVm(vm);
         }
@@ -188,10 +187,6 @@ public class SwfWorkloadFormatExample1 {
                 new WorkloadFileReader(fileName, CLOUDLETS_MIPS);
         reader.setMaxLinesToRead(maximumNumberOfCloudletsToCreateFromTheWorkloadFile);
         this.cloudletList = reader.generateWorkload();
-
-        for (Cloudlet c : this.cloudletList) {
-            c.setBroker(broker);
-        }
 
         Log.printConcatLine("#Created ", this.cloudletList.size(), " Cloudlets for broker ", broker.getName());
     }

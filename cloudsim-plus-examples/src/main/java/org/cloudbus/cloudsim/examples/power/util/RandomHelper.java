@@ -64,7 +64,6 @@ public final class RandomHelper {
 						.setUtilizationModelBw(utilizationModelNull);
 
 			}
-			cloudlet.setBroker(broker);
 			//cloudlet.setVm(i);
 			list.add(cloudlet);
 		}

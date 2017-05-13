@@ -13,6 +13,7 @@ The most basic PowerModel is the \ :java:ref:`org.cloudbus.cloudsim.power.models
    :maxdepth: 1
 
    PowerModel
+   PowerModelAbstract
    PowerModelCubic
    PowerModelLinear
    PowerModelSpecPower

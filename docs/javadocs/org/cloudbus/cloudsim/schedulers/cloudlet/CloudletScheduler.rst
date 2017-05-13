@@ -139,6 +139,17 @@ cloudletSubmit
    :param cl: the submited cloudlet
    :return: expected finish time of this cloudlet (considering the time to transfer required files from the Datacenter to the Vm), or 0 if it is in a waiting queue
 
+deallocatePesFromVm
+^^^^^^^^^^^^^^^^^^^
+
+.. java:method::  void deallocatePesFromVm(Vm vm, int pesToRemove)
+   :outertype: CloudletScheduler
+
+   Releases a given number of PEs from a VM.
+
+   :param vm: the vm to deallocate PEs from
+   :param pesToRemove: number of PEs to deallocate
+
 getAllocatedMipsForCloudlet
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
@@ -170,6 +181,16 @@ getCloudletFinishedList
    Gets a list of finished cloudlets.
 
    :return: the cloudlet finished list
+
+getCloudletList
+^^^^^^^^^^^^^^^
+
+.. java:method::  List<Cloudlet> getCloudletList()
+   :outertype: CloudletScheduler
+
+   Gets a \ **read-only**\  List of all cloudlets which are either \ **waiting**\  or \ **executing**\  on the VM.
+
+   :return: the list of waiting and executing cloudlets
 
 getCloudletReturnedList
 ^^^^^^^^^^^^^^^^^^^^^^^
@@ -389,8 +410,8 @@ setVm
    Sets the Vm that will use the scheduler. It is not required to manually set a Vm for the scheduler, since a \ :java:ref:`Vm`\  sets itself to the scheduler when the scheduler is assigned to the Vm.
 
    :param vm: the Vm to set
-   :throws IllegalArgumentException: when the scheduler already is assigned to another Vm, since each Vm must have its own scheduler
    :throws NullPointerException: when the vm parameter is null
+   :throws IllegalArgumentException: when the scheduler already is assigned to another Vm, since each Vm must have its own scheduler
 
 updateVmProcessing
 ^^^^^^^^^^^^^^^^^^
@@ -402,5 +423,5 @@ updateVmProcessing
 
    :param currentTime: current simulation time
    :param mipsShare: list with MIPS share of each Pe available to the scheduler
-   :return: the predicted completion time of the earliest finishing cloudlet (that is a future simulation time), or \ :java:ref:`Double.MAX_VALUE`\  if there is no next Cloudlet to execute
+   :return: the predicted completion time of the earliest finishing cloudlet (which is a relative delay from the current simulation time), or \ :java:ref:`Double.MAX_VALUE`\  if there is no next Cloudlet to execute
 

@@ -65,8 +65,7 @@ public class NetworkVmsExampleSimpleApp extends NetworkVmExampleAbstract {
             cloudlet.setMemory(memory)
                     .setFileSize(fileSize)
                     .setOutputSize(outputSize)
-                    .setUtilizationModel(utilizationModel)
-                    .setBroker(broker);
+                    .setUtilizationModel(utilizationModel);
 
             createNetworkCloudletExecutionTasks(cloudlet);
             networkCloudletList.add(cloudlet);

@@ -153,7 +153,7 @@ public class CloudletTaskTimeCompletionWithoutMinimizationExperiment extends Sim
     }
 
     @Override
-    protected List<Cloudlet> createCloudlets(DatacenterBroker broker) {
+    protected List<Cloudlet> createCloudlets() {
         cloudletList = new ArrayList<>(CLOUDLETS);
         DatacenterBroker broker0 = getFirstBroker();
         for (int i = 0; i < CLOUDLETS; i++) {
@@ -172,8 +172,7 @@ public class CloudletTaskTimeCompletionWithoutMinimizationExperiment extends Sim
         return new CloudletSimple(id, length, 2)
                 .setFileSize(1024)
                 .setOutputSize(1024)
-                .setUtilizationModel(utilization)
-                .setBroker(broker);
+                .setUtilizationModel(utilization);
     }
 
     @Override
@@ -194,7 +193,7 @@ public class CloudletTaskTimeCompletionWithoutMinimizationExperiment extends Sim
     }
 
     @Override
-    protected List<Vm> createVms(DatacenterBroker broker) {
+    protected List<Vm> createVms() {
         vmList = new ArrayList<>(VMS);
         for (int i = 0; i < VMS; i++) {
             Vm vm = createVm();
@@ -216,7 +215,7 @@ public class CloudletTaskTimeCompletionWithoutMinimizationExperiment extends Sim
         final int pes = VM_PES[i];
 
         Vm vm = new VmSimple(id, 1000, pes)
-                .setRam(512).setBw(1000).setSize(10000).setBroker(broker0)
+                .setRam(512).setBw(1000).setSize(10000)
                 .setCloudletScheduler(new CloudletSchedulerTimeShared());
         return vm;
     }

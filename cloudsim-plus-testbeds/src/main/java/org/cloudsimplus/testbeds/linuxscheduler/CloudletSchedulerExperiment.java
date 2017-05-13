@@ -33,10 +33,8 @@ import org.cloudbus.cloudsim.hosts.Host;
 import org.cloudbus.cloudsim.hosts.HostSimple;
 import org.cloudbus.cloudsim.provisioners.PeProvisionerSimple;
 import org.cloudbus.cloudsim.provisioners.ResourceProvisionerSimple;
-import org.cloudbus.cloudsim.resources.Bandwidth;
 import org.cloudbus.cloudsim.resources.Pe;
 import org.cloudbus.cloudsim.resources.PeSimple;
-import org.cloudbus.cloudsim.resources.Ram;
 import org.cloudbus.cloudsim.schedulers.cloudlet.CloudletScheduler;
 import org.cloudbus.cloudsim.schedulers.cloudlet.CloudletSchedulerTimeShared;
 import org.cloudbus.cloudsim.schedulers.vm.VmSchedulerTimeShared;
@@ -141,10 +139,10 @@ abstract class CloudletSchedulerExperiment extends SimulationExperiment {
     }
 
     @Override
-    protected List<Vm> createVms(DatacenterBroker broker) {
+    protected List<Vm> createVms() {
         final List<Vm> list = new ArrayList<>(VMS_TO_CREATE);
         for(int i = 0; i < VMS_TO_CREATE; i++) {
-            list.add(createVm(broker));
+            list.add(createVm());
         }
         return list;
     }
@@ -152,16 +150,15 @@ abstract class CloudletSchedulerExperiment extends SimulationExperiment {
     /**
      * Gets a {@link Supplier} function that is able to create a new Vm.
      *
-     * @param broker broker that the Vm to be created by the Supplier function will belong to
      * @return the Supplier function that can create a Vm when requested
      */
-    protected abstract Vm createVm(DatacenterBroker broker);
+    protected abstract Vm createVm();
 
     @Override
-    protected List<Cloudlet> createCloudlets(DatacenterBroker broker) {
+    protected List<Cloudlet> createCloudlets() {
         final List<Cloudlet> list = new ArrayList<>(numCloudletsToCreate);
         for(int i = 0; i < numCloudletsToCreate; i++) {
-            list.add(createCloudlet(broker));
+            list.add(createCloudlet());
         }
 
         return list;
@@ -170,10 +167,9 @@ abstract class CloudletSchedulerExperiment extends SimulationExperiment {
     /**
      * Creates a Cloudlet with the given parameters.
      *
-     * @param broker broker that the Cloudlet to be created by the Supplier function will belong to
      * @return the created Cloudlet
      */
-    private Cloudlet createCloudlet(DatacenterBroker broker) {
+    private Cloudlet createCloudlet() {
         final long fileSize = 300; //Size (in bytes) before execution
         final long outputSize = 300; //Size (in bytes) after execution
         final int cloudletPes = (int)cloudletPesPrng.sample();
@@ -183,8 +179,7 @@ abstract class CloudletSchedulerExperiment extends SimulationExperiment {
         return new CloudletSimple(CLOUDLET_LENGHT_MI, cloudletPes)
             .setFileSize(fileSize)
             .setOutputSize(outputSize)
-            .setUtilizationModel(utilization)
-            .setBroker(broker);
+            .setUtilizationModel(utilization);
     }
 
     public ContinuousDistribution getCloudletPesPrng() {

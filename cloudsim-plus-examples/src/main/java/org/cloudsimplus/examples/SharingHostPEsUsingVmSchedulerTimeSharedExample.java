@@ -205,8 +205,7 @@ public class SharingHostPEsUsingVmSchedulerTimeSharedExample {
 
         return new VmSimple(numberOfCreatedVms++, mips, pesNumber)
             .setRam(ram).setBw(bw).setSize(storage)
-            .setCloudletScheduler(new CloudletSchedulerTimeShared())
-            .setBroker(broker);
+            .setCloudletScheduler(new CloudletSchedulerTimeShared());
 
     }
 
@@ -223,7 +222,6 @@ public class SharingHostPEsUsingVmSchedulerTimeSharedExample {
             .setFileSize(fileSize)
             .setOutputSize(outputSize)
             .setUtilizationModel(utilization)
-            .setBroker(broker)
             .setVm(vm);
     }
 

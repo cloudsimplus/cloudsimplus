@@ -100,16 +100,15 @@ class ReducedExample {
         List<Vm> vmList = new ArrayList<>(1);
         Vm vm0 = new VmSimple(0, 1000, 1);
         vm0.setRam(1000).setBw(1000).setSize(1000)
-           .setBroker(broker0)
            .setCloudletScheduler(new CloudletSchedulerSpaceShared());
         vmList.add(vm0);
 
         //Creates two Cloudlets that represent applications to be run inside a Vm.
         List<Cloudlet> cloudlets = new ArrayList<>(1);
         Cloudlet cloudlet0 = new CloudletSimple(0, 10000, 1);
-        cloudlet0.setBroker(broker0).setUtilizationModel(new UtilizationModelFull());
+        cloudlet0.setUtilizationModel(new UtilizationModelFull());
         Cloudlet cloudlet1 = new CloudletSimple(1, 10000, 1);
-        cloudlet1.setBroker(broker0).setUtilizationModel(new UtilizationModelFull());
+        cloudlet1.setUtilizationModel(new UtilizationModelFull());
         cloudlets.add(cloudlet0);
         cloudlets.add(cloudlet1);
 

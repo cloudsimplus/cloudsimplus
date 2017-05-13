@@ -202,7 +202,6 @@ public final class MigrationExample1 {
         PowerVm vm = new PowerVm(vmlist.size(), VM_MIPS, VM_PES_NUM);
         vm
           .setRam(VM_RAM).setBw(VM_BW).setSize(VM_SIZE)
-          .setBroker(broker)
           .setCloudletScheduler(new CloudletSchedulerTimeShared());
 
         Log.printConcatLine(
@@ -258,7 +257,6 @@ public final class MigrationExample1 {
                     .setUtilizationModelCpu(cpuUtilizationModel)
                     .setUtilizationModelRam(utilizationModelFull)
                     .setUtilizationModelBw(utilizationModelFull);
-            c.setBroker(broker);
             list.add(c);
         }
 

@@ -117,6 +117,7 @@ removeUsedPes
 
    Removes the used PEs for a Vm from the map between each VM and the number of PEs used.
 
+   :param vm:
    :return: the used PEs number
 
 scaleVmVertically

@@ -140,7 +140,7 @@ HOST_FAILURE
 .. java:field:: public static final int HOST_FAILURE
    :outertype: CloudSimTags
 
-   Defines the tag that represents a host failure.
+   Defines the tag that represents a request to generate a host failure. If the failure will be actually injected is defined by a fault injection object.
 
 ICMP_PKT_RETURN
 ^^^^^^^^^^^^^^^
@@ -322,5 +322,5 @@ VM_VERTICAL_SCALING
 .. java:field:: public static final int VM_VERTICAL_SCALING
    :outertype: CloudSimTags
 
-   Defines the tag to be used for vertical scaling of VM resources such as Ram, Bandwidth or Pe. When an event of this type is sent, the \ :java:ref:`SimEvent.getData()`\  must be a \ :java:ref:`VerticalVmScaling`\  object.
+   Defines the tag to be used to request vertical scaling of VM resources such as Ram, Bandwidth or Pe. When an event of this type is sent, the \ :java:ref:`SimEvent.getData()`\  must be a \ :java:ref:`VerticalVmScaling`\  object.
 

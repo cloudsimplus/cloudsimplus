@@ -18,7 +18,9 @@ PowerHostSimple
 
 .. java:type:: public class PowerHostSimple extends HostDynamicWorkloadSimple implements PowerHost
 
-   PowerHost class enables simulation of power-aware hosts. If you are using any algorithms, policies or workload included in the power package please cite the following paper:
+   PowerHost class enables simulation of power-aware hosts.
+
+   If you are using any algorithms, policies or workload included in the power package please cite the following paper:
 
    ..
 

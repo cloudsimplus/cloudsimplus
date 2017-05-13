@@ -58,7 +58,7 @@ getNumberOfPes
 .. java:method::  long getNumberOfPes()
    :outertype: Machine
 
-   Gets the number of \ :java:ref:`Pe`\ s the machine has.
+   Gets the overall number of \ :java:ref:`Pe`\ s the machine has, that include PEs of all statuses, including failed PEs.
 
    :return: the machine's number of PEs
 

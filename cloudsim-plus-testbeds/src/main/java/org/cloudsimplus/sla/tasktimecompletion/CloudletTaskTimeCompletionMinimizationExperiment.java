@@ -34,7 +34,6 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import static java.util.Comparator.comparingDouble;
 import java.util.List;
-import java.util.function.Predicate;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.apache.commons.math3.stat.descriptive.SummaryStatistics;
@@ -53,7 +52,6 @@ import org.cloudbus.cloudsim.provisioners.ResourceProvisionerSimple;
 import org.cloudbus.cloudsim.resources.Pe;
 import org.cloudbus.cloudsim.resources.PeSimple;
 import org.cloudbus.cloudsim.schedulers.cloudlet.CloudletSchedulerCompletelyFair;
-import org.cloudbus.cloudsim.schedulers.cloudlet.CloudletSchedulerTimeShared;
 import org.cloudbus.cloudsim.schedulers.vm.VmScheduler;
 import org.cloudbus.cloudsim.schedulers.vm.VmSchedulerTimeShared;
 import org.cloudbus.cloudsim.util.Log;
@@ -62,8 +60,6 @@ import org.cloudbus.cloudsim.utilizationmodels.UtilizationModel;
 import org.cloudbus.cloudsim.utilizationmodels.UtilizationModelFull;
 import org.cloudbus.cloudsim.vms.Vm;
 import org.cloudbus.cloudsim.vms.VmSimple;
-import org.cloudsimplus.autoscaling.HorizontalVmScaling;
-import org.cloudsimplus.autoscaling.HorizontalVmScalingSimple;
 import org.cloudsimplus.builders.tables.CloudletsTableBuilder;
 import org.cloudsimplus.listeners.EventInfo;
 import org.cloudsimplus.sla.VmCost;
@@ -168,7 +164,7 @@ public final class CloudletTaskTimeCompletionMinimizationExperiment extends Simu
     }
 
     @Override
-    protected List<Cloudlet> createCloudlets(DatacenterBroker broker) {
+    protected List<Cloudlet> createCloudlets() {
         cloudletList = new ArrayList<>(CLOUDLETS);
         DatacenterBroker broker0 = getFirstBroker();
         for (int i = 0; i < CLOUDLETS; i++) {
@@ -186,8 +182,7 @@ public final class CloudletTaskTimeCompletionMinimizationExperiment extends Simu
         return new CloudletSimple(id, length, 2)
                 .setFileSize(1024)
                 .setOutputSize(1024)
-                .setUtilizationModel(utilization)
-                .setBroker(broker);
+                .setUtilizationModel(utilization);
     }
 
     /**
@@ -266,7 +261,7 @@ public final class CloudletTaskTimeCompletionMinimizationExperiment extends Simu
     }
 
     @Override
-    protected List<Vm> createVms(DatacenterBroker broker) {
+    protected List<Vm> createVms() {
         vmList = new ArrayList<>(VMS);
         for (int i = 0; i < VMS; i++) {
             Vm vm = createVm();
@@ -288,7 +283,7 @@ public final class CloudletTaskTimeCompletionMinimizationExperiment extends Simu
         final int pes = VM_PES[i];
 
         Vm vm = new VmSimple(id, 1000, pes)
-                .setRam(512).setBw(1000).setSize(10000).setBroker(broker0)
+                .setRam(512).setBw(1000).setSize(10000)
                 .setCloudletScheduler(new CloudletSchedulerCompletelyFair());
         return vm;
     }

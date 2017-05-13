@@ -181,7 +181,6 @@ public class DynamicCloudletsArrival2 {
         long bw = 1000;
 
         return new VmSimple(id, mips, VM_PES_NUMBER)
-                .setBroker(broker)
                 .setRam(ram).setBw(bw).setSize(size)
                 .setCloudletScheduler(new CloudletSchedulerTimeShared());
     }
@@ -205,7 +204,6 @@ public class DynamicCloudletsArrival2 {
             .setFileSize(fileSize)
             .setOutputSize(outputSize)
             .setUtilizationModel(utilizationModel)
-            .setBroker(broker)
             .setVm(vm);
     }
 

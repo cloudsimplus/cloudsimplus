@@ -4,9 +4,11 @@ PowerModelCubic
 .. java:package:: org.cloudbus.cloudsim.power.models
    :noindex:
 
-.. java:type:: public class PowerModelCubic implements PowerModel
+.. java:type:: public class PowerModelCubic extends PowerModelAbstract
 
-   Implements a power model where the power consumption is the cube of the resource usage. If you are using any algorithms, policies or workload included in the power package please cite the following paper:
+   Implements a power model where the power consumption is the cube of the resource usage.
+
+   If you are using any algorithms, policies or workload included in the power package please cite the following paper:
 
    ..
 
@@ -49,16 +51,16 @@ getMaxPower
 
    :return: the max power
 
-getPower
-^^^^^^^^
+getPowerInternal
+^^^^^^^^^^^^^^^^
 
-.. java:method:: @Override public double getPower(double utilization) throws IllegalArgumentException
+.. java:method:: @Override protected double getPowerInternal(double utilization) throws IllegalArgumentException
    :outertype: PowerModelCubic
 
 getStaticPower
 ^^^^^^^^^^^^^^
 
-.. java:method:: protected double getStaticPower()
+.. java:method:: protected final double getStaticPower()
    :outertype: PowerModelCubic
 
    Gets the static power.
@@ -68,7 +70,7 @@ getStaticPower
 setConstant
 ^^^^^^^^^^^
 
-.. java:method:: protected void setConstant(double constant)
+.. java:method:: protected final void setConstant(double constant)
    :outertype: PowerModelCubic
 
    Sets the constant.
@@ -78,7 +80,7 @@ setConstant
 setMaxPower
 ^^^^^^^^^^^
 
-.. java:method:: protected void setMaxPower(double maxPower)
+.. java:method:: protected final void setMaxPower(double maxPower)
    :outertype: PowerModelCubic
 
    Sets the max power.
@@ -88,7 +90,7 @@ setMaxPower
 setStaticPower
 ^^^^^^^^^^^^^^
 
-.. java:method:: protected void setStaticPower(double staticPower)
+.. java:method:: protected final void setStaticPower(double staticPower)
    :outertype: PowerModelCubic
 
    Sets the static power.

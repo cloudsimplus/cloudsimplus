@@ -140,7 +140,6 @@ public class NetworkVmsExampleWorkflowApp extends NetworkVmExampleAbstract {
                 .setFileSize(NETCLOUDLET_FILE_SIZE)
                 .setOutputSize(NETCLOUDLET_OUTPUT_SIZE)
                 .setUtilizationModel(utilizationModel)
-                .setBroker(broker)
                 .setVm(vm);
 
         return cloudlet;

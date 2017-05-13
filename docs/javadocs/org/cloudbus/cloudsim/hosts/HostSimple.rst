@@ -74,6 +74,18 @@ addOnUpdateProcessingListener
 .. java:method:: @Override public Host addOnUpdateProcessingListener(EventListener<HostUpdatesVmsProcessingEventInfo> listener)
    :outertype: HostSimple
 
+addVmMigratingOut
+^^^^^^^^^^^^^^^^^
+
+.. java:method:: @Override public boolean addVmMigratingOut(Vm vm)
+   :outertype: HostSimple
+
+addVmToList
+^^^^^^^^^^^
+
+.. java:method:: protected void addVmToList(Vm vm)
+   :outertype: HostSimple
+
 allocatePesForVm
 ^^^^^^^^^^^^^^^^
 
@@ -90,6 +102,12 @@ compareTo
 
    :param o: the Host to compare to
    :return: {@inheritDoc}
+
+computeCpuUtilizationPercent
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+.. java:method:: protected double computeCpuUtilizationPercent(double mipsUsage)
+   :outertype: HostSimple
 
 deallocatePesForVm
 ^^^^^^^^^^^^^^^^^^
@@ -187,6 +205,12 @@ getMips
 .. java:method:: @Override public double getMips()
    :outertype: HostSimple
 
+getNumberOfFailedPes
+^^^^^^^^^^^^^^^^^^^^
+
+.. java:method:: @Override public long getNumberOfFailedPes()
+   :outertype: HostSimple
+
 getNumberOfFreePes
 ^^^^^^^^^^^^^^^^^^
 
@@ -198,6 +222,12 @@ getNumberOfPes
 
 .. java:method:: @Override public long getNumberOfPes()
    :outertype: HostSimple
+
+   {@inheritDoc}
+
+   :return: {@inheritDoc}
+
+   **See also:** :java:ref:`.getNumberOfWorkingPes()`, :java:ref:`.getNumberOfFreePes()`, :java:ref:`.getNumberOfFailedPes()`
 
 getNumberOfWorkingPes
 ^^^^^^^^^^^^^^^^^^^^^
@@ -253,6 +283,36 @@ getTotalAllocatedMipsForVm
 .. java:method:: @Override public double getTotalAllocatedMipsForVm(Vm vm)
    :outertype: HostSimple
 
+getTotalMipsCapacity
+^^^^^^^^^^^^^^^^^^^^
+
+.. java:method:: @Override public double getTotalMipsCapacity()
+   :outertype: HostSimple
+
+getUtilizationOfBw
+^^^^^^^^^^^^^^^^^^
+
+.. java:method:: @Override public long getUtilizationOfBw()
+   :outertype: HostSimple
+
+getUtilizationOfCpu
+^^^^^^^^^^^^^^^^^^^
+
+.. java:method:: @Override public double getUtilizationOfCpu()
+   :outertype: HostSimple
+
+getUtilizationOfCpuMips
+^^^^^^^^^^^^^^^^^^^^^^^
+
+.. java:method:: @Override public double getUtilizationOfCpuMips()
+   :outertype: HostSimple
+
+getUtilizationOfRam
+^^^^^^^^^^^^^^^^^^^
+
+.. java:method:: @Override public long getUtilizationOfRam()
+   :outertype: HostSimple
+
 getVm
 ^^^^^
 
@@ -274,7 +334,19 @@ getVmScheduler
 getVmsMigratingIn
 ^^^^^^^^^^^^^^^^^
 
-.. java:method:: @Override public <T extends Vm> List<T> getVmsMigratingIn()
+.. java:method:: @Override public <T extends Vm> Set<T> getVmsMigratingIn()
+   :outertype: HostSimple
+
+getVmsMigratingOut
+^^^^^^^^^^^^^^^^^^
+
+.. java:method:: @Override public Set<Vm> getVmsMigratingOut()
+   :outertype: HostSimple
+
+getWorkingPeList
+^^^^^^^^^^^^^^^^
+
+.. java:method:: @Override public List<Pe> getWorkingPeList()
    :outertype: HostSimple
 
 hashCode
@@ -313,6 +385,24 @@ removeOnUpdateProcessingListener
 .. java:method:: @Override public boolean removeOnUpdateProcessingListener(EventListener<HostUpdatesVmsProcessingEventInfo> listener)
    :outertype: HostSimple
 
+removeVmFromList
+^^^^^^^^^^^^^^^^
+
+.. java:method:: protected void removeVmFromList(Vm vm)
+   :outertype: HostSimple
+
+removeVmMigratingIn
+^^^^^^^^^^^^^^^^^^^
+
+.. java:method:: @Override public boolean removeVmMigratingIn(Vm vm)
+   :outertype: HostSimple
+
+removeVmMigratingOut
+^^^^^^^^^^^^^^^^^^^^
+
+.. java:method:: @Override public boolean removeVmMigratingOut(Vm vm)
+   :outertype: HostSimple
+
 setBwProvisioner
 ^^^^^^^^^^^^^^^^
 
@@ -322,7 +412,7 @@ setBwProvisioner
 setDatacenter
 ^^^^^^^^^^^^^
 
-.. java:method:: @Override public void setDatacenter(Datacenter datacenter)
+.. java:method:: @Override public final void setDatacenter(Datacenter datacenter)
    :outertype: HostSimple
 
 setFailed

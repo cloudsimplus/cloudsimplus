@@ -227,7 +227,7 @@ public class VerticalVmCpuScalingExample {
         final int id = createsVms++;
 
         return new VmSimple(id, 1000, VM_PES)
-            .setRam(VM_RAM).setBw(1000).setSize(10000).setBroker(broker0)
+            .setRam(VM_RAM).setBw(1000).setSize(10000)
             .setCloudletScheduler(new CloudletSchedulerTimeShared());
     }
 
@@ -357,7 +357,6 @@ public class VerticalVmCpuScalingExample {
         cl.setFileSize(1024)
           .setOutputSize(1024)
           .setUtilizationModel(utilizationFull)
-          .setBroker(broker0)
           .setSubmissionDelay(delay);
         return cl;
     }

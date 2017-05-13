@@ -4,9 +4,11 @@ PowerModelSpecPower
 .. java:package:: org.cloudbus.cloudsim.power.models
    :noindex:
 
-.. java:type:: public abstract class PowerModelSpecPower implements PowerModel
+.. java:type:: public abstract class PowerModelSpecPower extends PowerModelAbstract
 
-   The abstract class of power models created based on data from \ `SPECpower benchmark <http://www.spec.org/power_ssj2008/>`_\ . If you are using any algorithms, policies or workload included in the power package please cite the following paper:
+   The abstract class of power models created based on data from \ `SPECpower benchmark <http://www.spec.org/power_ssj2008/>`_\ .
+
+   If you are using any algorithms, policies or workload included in the power package please cite the following paper:
 
    ..
 
@@ -16,12 +18,6 @@ PowerModelSpecPower
 
 Methods
 -------
-getPower
-^^^^^^^^
-
-.. java:method:: @Override public double getPower(double utilization) throws IllegalArgumentException
-   :outertype: PowerModelSpecPower
-
 getPowerData
 ^^^^^^^^^^^^
 
@@ -32,4 +28,10 @@ getPowerData
 
    :param index: the utilization percentage in the scale from [0 to 10], where 10 means 100% of utilization.
    :return: the power consumption for the given utilization percentage
+
+getPowerInternal
+^^^^^^^^^^^^^^^^
+
+.. java:method:: @Override protected double getPowerInternal(double utilization) throws IllegalArgumentException
+   :outertype: PowerModelSpecPower
 

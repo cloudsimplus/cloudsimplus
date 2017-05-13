@@ -16,6 +16,8 @@
 
 .. java:import:: java.util List
 
+.. java:import:: org.cloudbus.cloudsim.core CustomerEntity
+
 .. java:import:: org.cloudbus.cloudsim.core Simulation
 
 .. java:import:: org.cloudsimplus.listeners CloudletVmEventInfo

@@ -112,6 +112,12 @@ isStarted
 .. java:method:: @Override public boolean isStarted()
    :outertype: DatacenterNull
 
+println
+^^^^^^^
+
+.. java:method:: @Override public void println(String msg)
+   :outertype: DatacenterNull
+
 processEvent
 ^^^^^^^^^^^^
 
@@ -128,6 +134,12 @@ schedule
 ^^^^^^^^
 
 .. java:method:: @Override public void schedule(int dest, double delay, int tag)
+   :outertype: DatacenterNull
+
+setLog
+^^^^^^
+
+.. java:method:: @Override public void setLog(boolean log)
    :outertype: DatacenterNull
 
 setName

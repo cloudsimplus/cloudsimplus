@@ -21,6 +21,6 @@ Methods
 getResourceAmountToScale
 ^^^^^^^^^^^^^^^^^^^^^^^^
 
-.. java:method:: @Override public long getResourceAmountToScale(VerticalVmScaling vmScaling)
+.. java:method:: @Override public double getResourceAmountToScale(VerticalVmScaling vmScaling)
    :outertype: ResourceScalingGradual
 

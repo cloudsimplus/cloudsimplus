@@ -28,18 +28,6 @@ VmSchedulerNull
 
 Methods
 -------
-addVmMigratingIn
-^^^^^^^^^^^^^^^^
-
-.. java:method:: @Override public boolean addVmMigratingIn(Vm vm)
-   :outertype: VmSchedulerNull
-
-addVmMigratingOut
-^^^^^^^^^^^^^^^^^
-
-.. java:method:: @Override public boolean addVmMigratingOut(Vm vm)
-   :outertype: VmSchedulerNull
-
 allocatePesForVm
 ^^^^^^^^^^^^^^^^
 
@@ -58,10 +46,16 @@ deallocatePesForAllVms
 .. java:method:: @Override public void deallocatePesForAllVms()
    :outertype: VmSchedulerNull
 
-deallocatePesForVm
-^^^^^^^^^^^^^^^^^^
+deallocatePesFromVm
+^^^^^^^^^^^^^^^^^^^
 
-.. java:method:: @Override public void deallocatePesForVm(Vm vm)
+.. java:method:: @Override public void deallocatePesFromVm(Vm vm)
+   :outertype: VmSchedulerNull
+
+deallocatePesFromVm
+^^^^^^^^^^^^^^^^^^^
+
+.. java:method:: @Override public void deallocatePesFromVm(Vm vm, int pesToRemove)
    :outertype: VmSchedulerNull
 
 getAllocatedMipsForVm
@@ -74,12 +68,6 @@ getAvailableMips
 ^^^^^^^^^^^^^^^^
 
 .. java:method:: @Override public double getAvailableMips()
-   :outertype: VmSchedulerNull
-
-getCpuOverheadDueToVmMigration
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-
-.. java:method:: @Override public double getCpuOverheadDueToVmMigration()
    :outertype: VmSchedulerNull
 
 getHost
@@ -100,18 +88,6 @@ getPeCapacity
 .. java:method:: @Override public long getPeCapacity()
    :outertype: VmSchedulerNull
 
-getPeList
-^^^^^^^^^
-
-.. java:method:: @Override public <T extends Pe> List<T> getPeList()
-   :outertype: VmSchedulerNull
-
-getPeMap
-^^^^^^^^
-
-.. java:method:: @Override public Map<Vm, List<Pe>> getPeMap()
-   :outertype: VmSchedulerNull
-
 getPesAllocatedForVM
 ^^^^^^^^^^^^^^^^^^^^
 
@@ -124,16 +100,22 @@ getTotalAllocatedMipsForVm
 .. java:method:: @Override public double getTotalAllocatedMipsForVm(Vm vm)
    :outertype: VmSchedulerNull
 
-getVmsMigratingIn
-^^^^^^^^^^^^^^^^^
+getVmMigrationCpuOverhead
+^^^^^^^^^^^^^^^^^^^^^^^^^
 
-.. java:method:: @Override public Set<Vm> getVmsMigratingIn()
+.. java:method:: @Override public double getVmMigrationCpuOverhead()
    :outertype: VmSchedulerNull
 
-getVmsMigratingOut
-^^^^^^^^^^^^^^^^^^
+getWorkingPeList
+^^^^^^^^^^^^^^^^
 
-.. java:method:: @Override public Set<Vm> getVmsMigratingOut()
+.. java:method:: @Override public <T extends Pe> List<T> getWorkingPeList()
+   :outertype: VmSchedulerNull
+
+isAllowedToAllocateMips
+^^^^^^^^^^^^^^^^^^^^^^^
+
+.. java:method:: @Override public boolean isAllowedToAllocateMips(List<Double> vmRequestedMipsShare)
    :outertype: VmSchedulerNull
 
 isSuitableForVm
@@ -146,18 +128,6 @@ isSuitableForVm
 ^^^^^^^^^^^^^^^
 
 .. java:method:: @Override public boolean isSuitableForVm(List<Double> vmMipsList)
-   :outertype: VmSchedulerNull
-
-removeVmMigratingIn
-^^^^^^^^^^^^^^^^^^^
-
-.. java:method:: @Override public boolean removeVmMigratingIn(Vm vm)
-   :outertype: VmSchedulerNull
-
-removeVmMigratingOut
-^^^^^^^^^^^^^^^^^^^^
-
-.. java:method:: @Override public boolean removeVmMigratingOut(Vm vm)
    :outertype: VmSchedulerNull
 
 setHost

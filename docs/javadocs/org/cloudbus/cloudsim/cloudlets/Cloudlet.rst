@@ -16,6 +16,8 @@
 
 .. java:import:: java.util List
 
+.. java:import:: org.cloudbus.cloudsim.core CustomerEntity
+
 .. java:import:: org.cloudbus.cloudsim.core Simulation
 
 .. java:import:: org.cloudsimplus.listeners CloudletVmEventInfo
@@ -28,7 +30,7 @@ Cloudlet
 .. java:package:: org.cloudbus.cloudsim.cloudlets
    :noindex:
 
-.. java:type:: public interface Cloudlet extends UniquelyIdentificable, ChangeableId, Delayable, Comparable<Cloudlet>
+.. java:type:: public interface Cloudlet extends UniquelyIdentificable, Comparable<Cloudlet>, CustomerEntity
 
    An interface to be implemented by each class that provides basic cloudlet features. The interface implements the Null Object Design Pattern in order to start avoiding \ :java:ref:`NullPointerException`\  when using the \ :java:ref:`Cloudlet.NULL`\  object instead of attributing \ ``null``\  to \ :java:ref:`Cloudlet`\  variables.
 
@@ -172,10 +174,12 @@ getArrivalTime
 getBroker
 ^^^^^^^^^
 
-.. java:method::  DatacenterBroker getBroker()
+.. java:method:: @Override  DatacenterBroker getBroker()
    :outertype: Cloudlet
 
-   Gets the \ :java:ref:`DatacenterBroker`\  that represents the owner of the Cloudlet.
+   Gets the \ :java:ref:`DatacenterBroker`\  that represents the owner of this Cloudlet.
+
+   :return: the broker or  if a broker has not been set yet
 
 getCostPerBw
 ^^^^^^^^^^^^
@@ -630,10 +634,10 @@ requiresFiles
 setBroker
 ^^^^^^^^^
 
-.. java:method::  Cloudlet setBroker(DatacenterBroker broker)
+.. java:method:: @Override  Cloudlet setBroker(DatacenterBroker broker)
    :outertype: Cloudlet
 
-   Sets a \ :java:ref:`DatacenterBroker`\  that represents the owner of the Cloudlet.
+   Sets a \ :java:ref:`DatacenterBroker`\  that represents the owner of this Cloudlet.
 
    :param broker: the \ :java:ref:`DatacenterBroker`\  to set
 

@@ -108,8 +108,7 @@ public class TwoCloudletsAndOneSpaceSharedVmExample {
 
         Vm vm = new VmSimple(vmid, mips, pesNumber)
             .setRam(ram).setBw(bw).setSize(size)
-            .setCloudletScheduler(new CloudletSchedulerSpaceShared())
-            .setBroker(broker);
+            .setCloudletScheduler(new CloudletSchedulerSpaceShared());
         vmlist.add(vm);
 
         // submit vm list to the broker
@@ -129,7 +128,6 @@ public class TwoCloudletsAndOneSpaceSharedVmExample {
             .setFileSize(fileSize)
             .setOutputSize(outputSize)
             .setUtilizationModel(utilizationModel)
-            .setBroker(broker)
             .setVm(vm);
         cloudletList.add(cloudlet1);
 
@@ -137,7 +135,6 @@ public class TwoCloudletsAndOneSpaceSharedVmExample {
             .setFileSize(fileSize)
             .setOutputSize(outputSize)
             .setUtilizationModel(utilizationModel)
-            .setBroker(broker)
             .setVm(vm);
         cloudletList.add(cloudlet2);
 

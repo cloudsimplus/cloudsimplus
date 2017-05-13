@@ -2,8 +2,6 @@
 
 .. java:import:: org.cloudbus.cloudsim.brokers DatacenterBroker
 
-.. java:import:: org.cloudbus.cloudsim.core ChangeableId
-
 .. java:import:: org.cloudsimplus.autoscaling HorizontalVmScaling
 
 .. java:import:: org.cloudbus.cloudsim.core Delayable
@@ -20,6 +18,8 @@
 
 .. java:import:: java.util.function Predicate
 
+.. java:import:: org.cloudbus.cloudsim.core CustomerEntity
+
 .. java:import:: org.cloudsimplus.autoscaling VerticalVmScaling
 
 .. java:import:: org.cloudsimplus.listeners VmHostEventInfo
@@ -34,7 +34,7 @@ Vm
 .. java:package:: org.cloudbus.cloudsim.vms
    :noindex:
 
-.. java:type:: public interface Vm extends Machine, UniquelyIdentificable, Delayable, Comparable<Vm>
+.. java:type:: public interface Vm extends Machine, UniquelyIdentificable, Comparable<Vm>, CustomerEntity
 
    An interface to be implemented by each class that provides basic features of Virtual Machines (VMs). The interface implements the Null Object Design Pattern in order to start avoiding \ :java:ref:`NullPointerException`\  when using the \ :java:ref:`Vm.NULL`\  object instead of attributing \ ``null``\  to \ :java:ref:`Vm`\  variables.
 
@@ -132,17 +132,17 @@ deallocateResource
 getBroker
 ^^^^^^^^^
 
-.. java:method::  DatacenterBroker getBroker()
+.. java:method:: @Override  DatacenterBroker getBroker()
    :outertype: Vm
 
-   Gets the \ :java:ref:`DatacenterBroker`\  that represents the owner of the VM.
+   Gets the \ :java:ref:`DatacenterBroker`\  that represents the owner of this Vm.
 
    :return: the broker or  if a broker has not been set yet
 
 getBw
 ^^^^^
 
-.. java:method::  Resource getBw()
+.. java:method:: @Override  Resource getBw()
    :outertype: Vm
 
    Gets bandwidth resource assigned to the Vm, allowing to check its capacity (in Megabits/s) and usage.
@@ -272,6 +272,14 @@ getCurrentRequestedTotalMips
 
    **See also:** :java:ref:`.getCurrentRequestedMips()`
 
+getDescription
+^^^^^^^^^^^^^^
+
+.. java:method::  String getDescription()
+   :outertype: Vm
+
+   Gets the Vm description, which is an optional text which one can use to provide details about this of this VM.
+
 getHorizontalScaling
 ^^^^^^^^^^^^^^^^^^^^
 
@@ -314,7 +322,7 @@ getProcessor
 getRam
 ^^^^^^
 
-.. java:method::  Resource getRam()
+.. java:method:: @Override  Resource getRam()
    :outertype: Vm
 
    Gets the RAM resource assigned to the Vm, allowing to check its capacity (in Megabytes) and usage.
@@ -352,10 +360,10 @@ getStateHistory
 getStorage
 ^^^^^^^^^^
 
-.. java:method::  Resource getStorage()
+.. java:method:: @Override  Resource getStorage()
    :outertype: Vm
 
-   Gets the storage device of the VM, that represents the VM image, allowing to check its capacity (in Megabytes) and usage.
+   Gets the storage device of the VM, which represents the VM image, allowing to check its capacity (in Megabytes) and usage.
 
    :return: the storage resource
 
@@ -489,10 +497,10 @@ removeOnUpdateProcessingListener
 setBroker
 ^^^^^^^^^
 
-.. java:method::  Vm setBroker(DatacenterBroker broker)
+.. java:method:: @Override  Vm setBroker(DatacenterBroker broker)
    :outertype: Vm
 
-   Sets a \ :java:ref:`DatacenterBroker`\  that represents the owner of the VM.
+   Sets a \ :java:ref:`DatacenterBroker`\  that represents the owner of this Vm.
 
    :param broker: the \ :java:ref:`DatacenterBroker`\  to set
 
@@ -539,6 +547,16 @@ setCreated
 
    **See also:** :java:ref:`.isCreated()`
 
+setDescription
+^^^^^^^^^^^^^^
+
+.. java:method::  Vm setDescription(String description)
+   :outertype: Vm
+
+   Sets the VM description, which is an optional text which one can use to provide details about this of this VM.
+
+   :param description: the Vm description to set
+
 setFailed
 ^^^^^^^^^
 
@@ -547,7 +565,7 @@ setFailed
 
    Sets the status of VM to FAILED.
 
-   :param failed: the failed
+   :param failed: true to indicate that the VM is failed, false to indicate it is working
 
 setHorizontalScaling
 ^^^^^^^^^^^^^^^^^^^^
@@ -634,5 +652,5 @@ updateProcessing
 
    :param currentTime: current simulation time
    :param mipsShare: list with MIPS share of each Pe available to the scheduler
-   :return: the predicted completion time of the earliest finishing cloudlet (that is a future simulation time), or \ :java:ref:`Double.MAX_VALUE`\  if there is no next Cloudlet to execute
+   :return: the predicted completion time of the earliest finishing cloudlet (which is a relative delay from the current simulation time), or \ :java:ref:`Double.MAX_VALUE`\  if there is no next Cloudlet to execute
 

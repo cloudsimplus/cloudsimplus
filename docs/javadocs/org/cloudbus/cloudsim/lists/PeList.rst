@@ -28,6 +28,7 @@ getById
 
    Gets a \ :java:ref:`Pe`\  with a given id.
 
+   :param <T>:
    :param peList: the PE list where to get a given PE
    :param id: the id of the PE to be get
    :return: the PE with the given id or null if not found
@@ -50,10 +51,10 @@ getMaxUtilization
 .. java:method:: public static double getMaxUtilization(List<? extends Pe> peList)
    :outertype: PeList
 
-   Gets the max utilization percentage among all PEs.
+   Gets the max utilization percentage (between [0 and 1]) among all PEs.
 
    :param peList: the pe list
-   :return: the max utilization percentage
+   :return: the max utilization percentage (between [0 and 1])
 
 getMaxUtilizationAmongVmsPes
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^

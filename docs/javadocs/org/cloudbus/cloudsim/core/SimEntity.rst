@@ -42,6 +42,24 @@ isStarted
 
    Checks if the entity already was started or not.
 
+println
+^^^^^^^
+
+.. java:method::  void println(String msg)
+   :outertype: SimEntity
+
+   Prints a given message if the logging is enabled for this entity.
+
+   :param msg: the message to be printed.
+
+println
+^^^^^^^
+
+.. java:method::  void println()
+   :outertype: SimEntity
+
+   Prints an empty line if the logging is enabled for this entity.
+
 processEvent
 ^^^^^^^^^^^^
 
@@ -73,6 +91,16 @@ schedule
    :param dest: The unique id number of the destination entity
    :param delay: How many seconds after the current simulation time the event should be sent
    :param tag: An user-defined number representing the type of event.
+
+setLog
+^^^^^^
+
+.. java:method::  void setLog(boolean log)
+   :outertype: SimEntity
+
+   Define if log is enabled for this particular entity or not.
+
+   :param log: true to enable logging, false to disable
 
 setName
 ^^^^^^^

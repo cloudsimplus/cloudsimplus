@@ -197,7 +197,6 @@ public class CloudletListenersExample2_ResourceUsageAlongTime {
         long bw = 1000;
 
         Vm vm = new VmSimple(id, mips, VM_PES_NUMBER)
-                .setBroker(broker)
                 .setRam(ram).setBw(bw).setSize(size)
                 .setCloudletScheduler(new CloudletSchedulerSpaceShared());
         return vm;
@@ -228,7 +227,6 @@ public class CloudletListenersExample2_ResourceUsageAlongTime {
                 .setUtilizationModelCpu(cpuUtilizationModel)
                 .setUtilizationModelRam(ramUtilizationModel)
                 .setUtilizationModelBw(bwUtilizationModel)
-                .setBroker(broker)
                 .setVm(vm)
                 .addOnUpdateProcessingListener(this::onUpdateCloudletProcessingListener);
 

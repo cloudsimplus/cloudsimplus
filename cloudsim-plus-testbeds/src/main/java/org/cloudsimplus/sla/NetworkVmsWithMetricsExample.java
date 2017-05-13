@@ -71,7 +71,7 @@ public class NetworkVmsWithMetricsExample {
     private final NetworkDatacenter datacenter0;
     private final CloudSim cloudsim;
     private int currentNetworkCloudletId = -1;
-    
+
     private static final int CLOUDLET_EXECUTION_TASK_LENGTH = 4000;
     private static final long PACKET_DATA_LENGTH_IN_BYTES = 1000;
     private static final int NUMBER_OF_PACKETS_TO_SEND = 1;
@@ -106,7 +106,7 @@ public class NetworkVmsWithMetricsExample {
         cloudsim.start();
         List<Cloudlet> newList = broker0.getCloudletsFinishedList();
         new CloudletsTableBuilder(newList).build();
-        
+
         final double throughput = getThroughput(datacenter0);
         System.out.println("\n-------------------------------------------");
         System.out.println("\t Throughput : " + throughput);
@@ -151,7 +151,6 @@ public class NetworkVmsWithMetricsExample {
             vm.setRam(ram)
                     .setBw(bw)
                     .setSize(size)
-                    .setBroker(broker)
                     .setCloudletScheduler(new CloudletSchedulerTimeShared());
             list.add(vm);
         }
@@ -179,7 +178,6 @@ public class NetworkVmsWithMetricsExample {
                 .setFileSize(fileSize)
                 .setOutputSize(outputSize)
                 .setUtilizationModel(utilizationModel);
-        cloudlet.setBroker(broker);
         cloudlet.setVm(vm);
 
        return cloudlet;
@@ -210,7 +208,7 @@ public class NetworkVmsWithMetricsExample {
 
         return networkCloudletList;
     }
-    
+
     /**
      * Adds a send task to list of tasks of the given {@link NetworkCloudlet}.
      *
@@ -257,7 +255,7 @@ public class NetworkVmsWithMetricsExample {
         task.setMemory(TASK_RAM);
         netCloudlet.addTask(task);
     }
-    
+
     /**
      * Creates the NetworkDatacenter.
      *

@@ -12,8 +12,6 @@
 
 .. java:import:: org.cloudbus.cloudsim.hosts Host
 
-.. java:import:: org.cloudbus.cloudsim.util Log
-
 .. java:import:: org.cloudbus.cloudsim.hosts.power PowerHostSimple
 
 .. java:import:: org.cloudbus.cloudsim.vms Vm
@@ -29,6 +27,8 @@
 .. java:import:: org.cloudbus.cloudsim.core.predicates PredicateType
 
 .. java:import:: org.cloudbus.cloudsim.resources FileStorage
+
+.. java:import:: org.cloudbus.cloudsim.util Log
 
 PowerDatacenter
 ===============
@@ -76,15 +76,15 @@ PowerDatacenter
 
 Methods
 -------
-getCloudletSubmitted
-^^^^^^^^^^^^^^^^^^^^
+getLastCloudletProcessingTime
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-.. java:method:: protected double getCloudletSubmitted()
+.. java:method:: protected double getLastCloudletProcessingTime()
    :outertype: PowerDatacenter
 
-   Checks if is cloudlet submited.
+   Gets the last time submitted cloudlets were processed.
 
-   :return: true, if is cloudlet submited
+   :return: true, if is cloudlet submitted
 
 getMigrationCount
 ^^^^^^^^^^^^^^^^^
@@ -150,15 +150,15 @@ removeFinishedVmsFromEveryHost
 .. java:method:: protected void removeFinishedVmsFromEveryHost()
    :outertype: PowerDatacenter
 
-setCloudletSubmitted
-^^^^^^^^^^^^^^^^^^^^
+setLastCloudletProcessingTime
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-.. java:method:: protected final void setCloudletSubmitted(double cloudletSubmitted)
+.. java:method:: protected final void setLastCloudletProcessingTime(double lastCloudletProcessingTime)
    :outertype: PowerDatacenter
 
-   Sets the cloudlet submitted.
+   Sets the last time submitted cloudlets were processed.
 
-   :param cloudletSubmitted: the new cloudlet submited
+   :param lastCloudletProcessingTime: the new cloudlet submitted
 
 setMigrationCount
 ^^^^^^^^^^^^^^^^^
@@ -190,31 +190,15 @@ setPower
 
    :param power: the new power
 
-updateCloudetProcessingWithoutSchedulingFutureEvents
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-
-.. java:method:: protected double updateCloudetProcessingWithoutSchedulingFutureEvents()
-   :outertype: PowerDatacenter
-
-   Update cloudet processing without scheduling future events.
-
-   :return: expected time of completion of the next cloudlet in all VMs of all hosts or \ :java:ref:`Double.MAX_VALUE`\  if there is no future events expected in this host
-
-updateCloudetProcessingWithoutSchedulingFutureEventsIfClockWasUpdated
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-
-.. java:method:: protected double updateCloudetProcessingWithoutSchedulingFutureEventsIfClockWasUpdated()
-   :outertype: PowerDatacenter
-
-   Update cloudet processing without scheduling future events just when the simulation clock is ahead of the last time some event was processed.
-
-   :return: expected time of completion of the next cloudlet in all VMs of all hosts or \ :java:ref:`Double.MAX_VALUE`\  if there is no future events expected in this host
-
-   **See also:** :java:ref:`.updateCloudetProcessingWithoutSchedulingFutureEvents()`
-
 updateCloudletProcessing
 ^^^^^^^^^^^^^^^^^^^^^^^^
 
-.. java:method:: @Override protected void updateCloudletProcessing()
+.. java:method:: @Override protected double updateCloudletProcessing()
+   :outertype: PowerDatacenter
+
+updateVmsProcessingOfAllHosts
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+.. java:method:: @Override protected double updateVmsProcessingOfAllHosts()
    :outertype: PowerDatacenter
 

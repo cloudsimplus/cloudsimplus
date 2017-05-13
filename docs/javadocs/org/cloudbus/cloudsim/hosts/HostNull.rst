@@ -22,6 +22,8 @@
 
 .. java:import:: java.util List
 
+.. java:import:: java.util Set
+
 HostNull
 ========
 
@@ -48,6 +50,12 @@ addOnUpdateProcessingListener
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 .. java:method:: @Override public Host addOnUpdateProcessingListener(EventListener<HostUpdatesVmsProcessingEventInfo> l)
+   :outertype: HostNull
+
+addVmMigratingOut
+^^^^^^^^^^^^^^^^^
+
+.. java:method:: @Override public boolean addVmMigratingOut(Vm vm)
    :outertype: HostNull
 
 allocatePesForVm
@@ -134,6 +142,12 @@ getMips
 .. java:method:: @Override public double getMips()
    :outertype: HostNull
 
+getNumberOfFailedPes
+^^^^^^^^^^^^^^^^^^^^
+
+.. java:method:: @Override public long getNumberOfFailedPes()
+   :outertype: HostNull
+
 getNumberOfFreePes
 ^^^^^^^^^^^^^^^^^^
 
@@ -200,6 +214,36 @@ getTotalAllocatedMipsForVm
 .. java:method:: @Override public double getTotalAllocatedMipsForVm(Vm vm)
    :outertype: HostNull
 
+getTotalMipsCapacity
+^^^^^^^^^^^^^^^^^^^^
+
+.. java:method:: @Override public double getTotalMipsCapacity()
+   :outertype: HostNull
+
+getUtilizationOfBw
+^^^^^^^^^^^^^^^^^^
+
+.. java:method:: @Override public long getUtilizationOfBw()
+   :outertype: HostNull
+
+getUtilizationOfCpu
+^^^^^^^^^^^^^^^^^^^
+
+.. java:method:: @Override public double getUtilizationOfCpu()
+   :outertype: HostNull
+
+getUtilizationOfCpuMips
+^^^^^^^^^^^^^^^^^^^^^^^
+
+.. java:method:: @Override public double getUtilizationOfCpuMips()
+   :outertype: HostNull
+
+getUtilizationOfRam
+^^^^^^^^^^^^^^^^^^^
+
+.. java:method:: @Override public long getUtilizationOfRam()
+   :outertype: HostNull
+
 getVm
 ^^^^^
 
@@ -221,7 +265,19 @@ getVmScheduler
 getVmsMigratingIn
 ^^^^^^^^^^^^^^^^^
 
-.. java:method:: @Override public List<Vm> getVmsMigratingIn()
+.. java:method:: @Override public <T extends Vm> Set<T> getVmsMigratingIn()
+   :outertype: HostNull
+
+getVmsMigratingOut
+^^^^^^^^^^^^^^^^^^
+
+.. java:method:: @Override public Set<Vm> getVmsMigratingOut()
+   :outertype: HostNull
+
+getWorkingPeList
+^^^^^^^^^^^^^^^^
+
+.. java:method:: @Override public List<Pe> getWorkingPeList()
    :outertype: HostNull
 
 isFailed
@@ -252,6 +308,18 @@ removeOnUpdateProcessingListener
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 .. java:method:: @Override public boolean removeOnUpdateProcessingListener(EventListener<HostUpdatesVmsProcessingEventInfo> l)
+   :outertype: HostNull
+
+removeVmMigratingIn
+^^^^^^^^^^^^^^^^^^^
+
+.. java:method:: @Override public boolean removeVmMigratingIn(Vm vm)
+   :outertype: HostNull
+
+removeVmMigratingOut
+^^^^^^^^^^^^^^^^^^^^
+
+.. java:method:: @Override public boolean removeVmMigratingOut(Vm vm)
    :outertype: HostNull
 
 setBwProvisioner

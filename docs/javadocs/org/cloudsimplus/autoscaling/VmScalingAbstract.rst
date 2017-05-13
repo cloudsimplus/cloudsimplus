@@ -26,14 +26,6 @@ VmScalingAbstract
 
 Methods
 -------
-getLastProcessingTime
-^^^^^^^^^^^^^^^^^^^^^
-
-.. java:method:: public double getLastProcessingTime()
-   :outertype: VmScalingAbstract
-
-   Gets the last time the scheduler checked for VM overload.
-
 getVm
 ^^^^^
 

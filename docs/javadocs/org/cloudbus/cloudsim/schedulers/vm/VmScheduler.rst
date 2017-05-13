@@ -38,28 +38,6 @@ NULL
 
 Methods
 -------
-addVmMigratingIn
-^^^^^^^^^^^^^^^^
-
-.. java:method::  boolean addVmMigratingIn(Vm vm)
-   :outertype: VmScheduler
-
-   Adds a \ :java:ref:`Vm`\  to the list of VMs migrating in.
-
-   :param vm: the vm to be added
-   :return: true if the VM wasn't into the list and was added, false otherwise
-
-addVmMigratingOut
-^^^^^^^^^^^^^^^^^
-
-.. java:method::  boolean addVmMigratingOut(Vm vm)
-   :outertype: VmScheduler
-
-   Adds a \ :java:ref:`Vm`\  to the list of VMs migrating out.
-
-   :param vm: the vm to be added
-   :return: true if the VM wasn't into the list and was added, false otherwise
-
 allocatePesForVm
 ^^^^^^^^^^^^^^^^
 
@@ -91,15 +69,26 @@ deallocatePesForAllVms
 
    Releases PEs allocated to all the VMs of the host the VmScheduler is associated to. After that, all PEs will be available to be used on demand for requesting VMs.
 
-deallocatePesForVm
-^^^^^^^^^^^^^^^^^^
+deallocatePesFromVm
+^^^^^^^^^^^^^^^^^^^
 
-.. java:method::  void deallocatePesForVm(Vm vm)
+.. java:method::  void deallocatePesFromVm(Vm vm)
    :outertype: VmScheduler
 
-   Releases PEs allocated to a VM. After that, the PEs may be used on demand by other VMs.
+   Releases all PEs allocated to a VM. After that, the PEs may be used on demand by other VMs.
 
-   :param vm: the vm
+   :param vm: the vm to deallocate PEs from
+
+deallocatePesFromVm
+^^^^^^^^^^^^^^^^^^^
+
+.. java:method::  void deallocatePesFromVm(Vm vm, int pesToRemove)
+   :outertype: VmScheduler
+
+   Releases a given number of PEs from a VM. After that, the PEs may be used on demand by other VMs.
+
+   :param vm: the vm to deallocate PEs from
+   :param pesToRemove: number of PEs to deallocate
 
 getAllocatedMipsForVm
 ^^^^^^^^^^^^^^^^^^^^^
@@ -117,17 +106,7 @@ getAvailableMips
 .. java:method::  double getAvailableMips()
    :outertype: VmScheduler
 
-   Gets the amount of MIPS that is free.
-
-getCpuOverheadDueToVmMigration
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-
-.. java:method::  double getCpuOverheadDueToVmMigration()
-   :outertype: VmScheduler
-
-   Defines the percentage of Host's CPU usage increase when a VM is migrating in or out of the Host. The value is in scale from 0 to 1 (where 1 is 100%).
-
-   :return: the Host's CPU migration overhead percentage.
+   Gets the total amount of MIPS that is currently free. If there are VMs migrating into the Host, their requested MIPS will already be allocated, reducing the total available MIPS.
 
 getHost
 ^^^^^^^
@@ -153,24 +132,6 @@ getPeCapacity
 
    Gets PE capacity in MIPS.
 
-getPeList
-^^^^^^^^^
-
-.. java:method::  <T extends Pe> List<T> getPeList()
-   :outertype: VmScheduler
-
-   Gets the list of PEs from the Host.
-
-   :param <T>: the generic type
-
-getPeMap
-^^^^^^^^
-
-.. java:method::  Map<Vm, List<Pe>> getPeMap()
-   :outertype: VmScheduler
-
-   Gets the map of VMs to PEs, where each key is a VM UID and each value is a list of PEs allocated to that VM.
-
 getPesAllocatedForVM
 ^^^^^^^^^^^^^^^^^^^^
 
@@ -187,25 +148,49 @@ getTotalAllocatedMipsForVm
 .. java:method::  double getTotalAllocatedMipsForVm(Vm vm)
    :outertype: VmScheduler
 
-   Gets the total allocated MIPS for a VM along all its allocated PEs.
+   Gets the actual total allocated MIPS for a VM along all its allocated PEs. If the VM is migrating into the Host, then just a fraction of the requested MIPS is actually allocated, representing the overhead of the migration process.
+
+   The MIPS requested by the VM are just actually allocated after the migration is completed.
 
    :param vm: the VM to get the total allocated MIPS
 
-getVmsMigratingIn
-^^^^^^^^^^^^^^^^^
+   **See also:** :java:ref:`.getVmMigrationCpuOverhead()`
 
-.. java:method::  Set<Vm> getVmsMigratingIn()
+getVmMigrationCpuOverhead
+^^^^^^^^^^^^^^^^^^^^^^^^^
+
+.. java:method::  double getVmMigrationCpuOverhead()
    :outertype: VmScheduler
 
-   Gets a \ **read-only**\  list of VMs migrating in.
+   Defines the percentage of Host's CPU usage increase when a VM is migrating in or out of the Host. The value is in scale from 0 to 1 (where 1 is 100%).
 
-getVmsMigratingOut
-^^^^^^^^^^^^^^^^^^
+   :return: the Host's CPU migration overhead percentage.
 
-.. java:method::  Set<Vm> getVmsMigratingOut()
+getWorkingPeList
+^^^^^^^^^^^^^^^^
+
+.. java:method::  <T extends Pe> List<T> getWorkingPeList()
    :outertype: VmScheduler
 
-   Gets a \ **read-only**\  list of VMs migrating out.
+   Gets the list of working PEs from the Host, \ **which excludes failed PEs**\ .
+
+   :param <T>: the generic type
+
+isAllowedToAllocateMips
+^^^^^^^^^^^^^^^^^^^^^^^
+
+.. java:method::  boolean isAllowedToAllocateMips(List<Double> vmRequestedMipsShare)
+   :outertype: VmScheduler
+
+   Checks if a list of MIPS requested by a VM is allowed to be allocated or not. Depending on the \ ``VmScheduler``\  implementation, the return value of this method may have different effects:
+
+   ..
+
+   * true: requested MIPS will be allocated, partial or totally, depending on the available MIPS and the \ ``VmScheduler``\  implementation;
+   * false: requested MIPS will not be allocated because there is no availability at all or there is just a partial amount of the requested MIPS available and the \ ``VmScheduler``\  implementation doesn't allow allocating less than the VM is requesting. If less than the required MIPS is allocated to a VM, it will cause performance degradation. Such situation defines an over-subscription situation which just specific \ ``VmSchedulers``\  accept.
+
+   :param vmRequestedMipsShare: a list of MIPS requested by a VM
+   :return: true if the requested MIPS List is allowed to be allocated to the VM, false otherwise
 
 isSuitableForVm
 ^^^^^^^^^^^^^^^
@@ -229,26 +214,6 @@ isSuitableForVm
    :param vmMipsList: a List with the MIPS capacity required by each VM PE
    :return: true, if it is possible to allocate the the VM into the host; false otherwise
 
-removeVmMigratingIn
-^^^^^^^^^^^^^^^^^^^
-
-.. java:method::  boolean removeVmMigratingIn(Vm vm)
-   :outertype: VmScheduler
-
-   Adds a \ :java:ref:`Vm`\  to the list of VMs migrating in.
-
-   :param vm: the vm to be added
-
-removeVmMigratingOut
-^^^^^^^^^^^^^^^^^^^^
-
-.. java:method::  boolean removeVmMigratingOut(Vm vm)
-   :outertype: VmScheduler
-
-   Adds a \ :java:ref:`Vm`\  to the list of VMs migrating out.
-
-   :param vm: the vm to be added
-
 setHost
 ^^^^^^^
 
@@ -258,6 +223,6 @@ setHost
    Sets the host that the VmScheduler get the list of PEs to allocate to VMs. A host for the VmScheduler is set when the VmScheduler is set to a given host. Thus, the host is in charge to set itself to a VmScheduler.
 
    :param host: the host to be set
-   :throws IllegalArgumentException: when the scheduler already is assigned to another Host, since each Host must have its own scheduler
    :throws NullPointerException: when the host parameter is null
+   :throws IllegalArgumentException: when the scheduler already is assigned to another Host, since each Host must have its own scheduler
 

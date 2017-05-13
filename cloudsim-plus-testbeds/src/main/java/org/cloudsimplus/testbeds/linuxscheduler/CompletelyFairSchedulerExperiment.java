@@ -23,7 +23,6 @@
  */
 package org.cloudsimplus.testbeds.linuxscheduler;
 
-import org.cloudbus.cloudsim.brokers.DatacenterBroker;
 import org.cloudbus.cloudsim.schedulers.cloudlet.CloudletSchedulerCompletelyFair;
 import org.cloudbus.cloudsim.schedulers.cloudlet.CloudletSchedulerTimeShared;
 import org.cloudbus.cloudsim.vms.Vm;
@@ -59,11 +58,10 @@ public final class CompletelyFairSchedulerExperiment extends CloudletSchedulerEx
     }
 
     @Override
-    protected Vm createVm(DatacenterBroker broker) {
+    protected Vm createVm() {
         return new VmSimple(VM_MIPS, VM_PES)
                 .setRam(VM_RAM).setBw(VM_BW).setSize(VM_STORAGE)
-                .setCloudletScheduler(new CloudletSchedulerCompletelyFair())
-                .setBroker(broker);
+                .setCloudletScheduler(new CloudletSchedulerCompletelyFair());
     }
 
 }
