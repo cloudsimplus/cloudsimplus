@@ -52,11 +52,49 @@ import org.cloudbus.cloudsim.distributions.PoissonDistr;
  * 
  * The events happens in the following order:
  * <ol>
- *  <li>a is randomly selected to fail;</li>
- *  <li>the number of PEs to fail is randomly generated;</li>
+ *  <li>a time to inject a Host failure is randomly generated;</li>
+ *  <li>a Host is randomly selected to fail at that time;</li>
+ *  <li>the number of Host PEs to fail is randomly generated;</li>
  *  <li>failed physical PEs are removed from affected VMs;</li>
- *  <li>another failure is scheduled for a future time.</li>
+ *  <li>another failure is scheduled for a future time;</li>
+ *  <li>the process repeats until the end of the simulation.</li>
  * </ol>
+ *
+ * <p>
+ * When Host's PEs fail, if there are more available PEs
+ * than the required by its running VMs, no VM will be affected.
+ *
+ * Considering that X is the number of failed PEs and it is 
+ * lower than the total available PEs.
+ * In this case, the X PEs will be removed cyclically, 1 by 1,
+ * from running VMs. This way, some VMs may continue running
+ * with less PEs than they requested initially.
+ * On the other hand, if after the failure the number of Host working PEs
+ * is lower than the required to run all VMs, some VMs will be 
+ * destroyed.
+ *
+ * If all PEs are removed from a VM, it is automatically destroyed
+ * and a snapshot (clone) from it is taken and submitted
+ * to the broker, so that the clone can start executing
+ * into another host. In this case, all the cloudlets 
+ * which were running inside the VM yet, will be 
+ * cloned to and restart executing from the beguining.
+ *
+ * If a cloudlet running inside a VM which was affected by a PE failure
+ * requires Y PEs but the VMs doesn't have such PEs anymore,
+ * the Cloudlet will continue executing, but it will spend
+ * more time to finish.
+ * For instance, if a Cloudlet requires 2 PEs but after the failure
+ * the VM was left with just 1 PE, the Cloudlet will spend the double
+ * of the time to finish.
+ *
+ * Host PEs failures may happen after all its VMs have finished executing.
+ * This way, the presented simulation results may show that the 
+ * number of PEs into a Host is lower than the required by its VMs.
+ * In this case, the VMs shown in the results finished executing before
+ * some failures have happened. Analysing the logs is easy to 
+ * confirm that.
+ * </p>
  *
  * @author raysaoliveira
  * @since CloudSim Plus 1.2.0
