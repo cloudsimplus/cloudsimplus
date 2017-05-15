@@ -40,7 +40,7 @@ import org.apache.commons.math3.util.CombinatoricsUtils;
  */
 public class PoissonProcess {
     /**
-     * A random number generator that returns values between [0 and 1[.
+     * A random number generator which returns values between [0 and 1[.
      */
     private ContinuousDistribution rand;
     
@@ -111,28 +111,37 @@ public class PoissonProcess {
     /**
      * Gets the probability to arrive {@link #getK() K} events in the current time,
      * considering the expected average arrival time {@link #getLambda() lambda}.
+     * It computes the Probability Mass Function (PMF) of the Poisson distribution.
      * @return 
      * @see <a href="https://en.wikipedia.org/wiki/Poisson_distribution">Poisson distribution</a>
      */
     public double eventsArrivalProbability(){
-        //computes the Probability Mass Function (PMF) of the Poisson distribution
         return (Math.pow(getLambda(), k) * Math.exp(-getLambda())) / CombinatoricsUtils.factorial(k);
     }
 
     /**
      * Checks if at the current time, {@link #getK() K} events have happened,
-     * considering the probability of these K events to happen
-     * in a time interval.
+     * considering the {@link #eventsArrivalProbability() probability of these K events} 
+     * to happen in a time interval.
      *
      * @return true if the K events have happened at current time, false otherwise
-     * @see #eventsArrivalProbability()
      */
     public boolean eventsHappened(){
-        return rand.sample() >= eventsArrivalProbability();
+        final double r = rand.sample();
+        return r < eventsArrivalProbability();
+    }
+    
+    /**
+     * Gets the next time for an event to happen,
+     * considering the {@link #getLambda() events arrival rate (lambda)}.
+     * @return 
+     */
+    public double getNextArrivalTime(){
+        return Math.exp(1.0 - rand.sample()) / getLambda();
     }
 
     /**
-     * Gets the number of events to check the probability to happen
+     * Gets the number of events to check the probability for them to happen
      * in a time interval (default 1).
      * @return 
      */
@@ -150,12 +159,15 @@ public class PoissonProcess {
     }
 
     /**
-     * Gets the mean time between arrival of two events.
+     * Gets the mean time between arrival of two events,
+     * which is the inverse of lambda.
+     * What is the time unit (if seconds, minutes, hours, etc)
+     * doesn't matter for the Poisson Process computations.
+     * Therefore, it can be considered any time unit wanted.
      * @return 
      */
     public double getInterarrivalMeanTime(){
-        final double oneMinute = 1.0;
-        return oneMinute/lambda;
+        return 1.0/lambda;
     }
 
     /**
@@ -184,7 +196,7 @@ public class PoissonProcess {
         /*
          * Number of simulations to run.
          */
-        int NUMBER_OF_SIMULATIONS = 100;
+        final int NUMBER_OF_SIMULATIONS = 100;
         
         BiConsumer<PoissonProcess, Integer> printArrivals = (poisson, minute) -> {
             if(showCustomerArrivals)
@@ -216,16 +228,16 @@ public class PoissonProcess {
             return totalArrivedCustomers;
         };      
 
-        int customersArrivedInAllSimulations = 0;
+        double customersArrivedInAllSimulations = 0;
         PoissonProcess poisson = null;
+        final long seed=System.currentTimeMillis();
         for(int i = 0; i < NUMBER_OF_SIMULATIONS; i++){
-            long seed=System.currentTimeMillis();
-            poisson = new PoissonProcess(MEAN_CUSTOMERS_ARRIVAL_PER_MINUTE, seed);
+            poisson = new PoissonProcess(MEAN_CUSTOMERS_ARRIVAL_PER_MINUTE, seed+i);
             System.out.printf("Simulation number %d\n", i);
             customersArrivedInAllSimulations += runSimulation.apply(poisson);
         }
 
-        double mean = customersArrivedInAllSimulations/(double)NUMBER_OF_SIMULATIONS;
+        final double mean = customersArrivedInAllSimulations/NUMBER_OF_SIMULATIONS;
         System.out.printf("\nArrived customers average after %d simulations: %.2f\n",
                 NUMBER_OF_SIMULATIONS, mean);
         if(poisson != null){

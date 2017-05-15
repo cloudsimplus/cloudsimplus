@@ -241,19 +241,14 @@ public final class HostFaultInjectionExample1 {
      * @param datacenter
      */
     private void createFaultInjectionForHosts(Datacenter datacenter) {
-        final int MAX_FAILURE_DELAY_SECONDS = 10;
         //final long seed = System.currentTimeMillis();
         long seed = 3412125;
         final double meanFailureNumberPerMinute = 0.4;
 
-        for (Host host: datacenter.getHostList()) {
-            HostFaultInjection fault = new HostFaultInjection(host, meanFailureNumberPerMinute, seed++);
-            fault.setMaxFailureDelay(MAX_FAILURE_DELAY_SECONDS);
-            fault.setVmCloner(this::cloneVm);
-            fault.setCloudletsCloner(this::cloneCloudlets);
-            Log.printFormattedLine("\tFault Injection created for %s.", host);
-            break; //cria apenas para o primeiro host, so pra teste
-        }
+        HostFaultInjection fault = new HostFaultInjection(host, meanFailureNumberPerMinute, seed++);
+        fault.setVmCloner(this::cloneVm);
+        fault.setCloudletsCloner(this::cloneCloudlets);
+        Log.printFormattedLine("\tFault Injection created for %s.", datacenter);
     }
 
     /**
