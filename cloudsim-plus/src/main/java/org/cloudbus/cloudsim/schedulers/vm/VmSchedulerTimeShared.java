@@ -118,11 +118,28 @@ public class VmSchedulerTimeShared extends VmSchedulerAbstract {
         for (final double requestedMipsForVmPe : entry.getValue()) {
             final double allocatedMipsForVmPe = allocateMipsFromHostPesToGivenVirtualPe(vm, requestedMipsForVmPe, hostPesIterator);
             if(requestedMipsForVmPe > 0.1 && allocatedMipsForVmPe <= 0.1){
-                Log.printFormattedLine(
-                    "%s is requiring a total of %.0f MIPS but the PEs of %s currently don't have such an available MIPS amount. Only %.0f MIPS were allocated.",
-                    vm, requestedMipsForVmPe, getHost(), allocatedMipsForVmPe);
+                logMipsUnavailable(vm, requestedMipsForVmPe, allocatedMipsForVmPe);
             }
         }
+    }
+
+    /**
+     * Prints a log showing that the total requested MIPS is not available
+     * and that just a fraction or zero MIPS were allocated.
+     * 
+     * @param vm the VM requesting the MIPS
+     * @param requestedMipsForVmPe the the MIPS requested for a vPE
+     * @param allocatedMipsForVmPe the actually allocated MIPS for the vPE
+     */
+    private void logMipsUnavailable(final Vm vm, final double requestedMipsForVmPe, final double allocatedMipsForVmPe) {
+        final String msg = allocatedMipsForVmPe > 0 ?
+                String.format("Only %.0f MIPS were allocated.", allocatedMipsForVmPe)
+                : "No MIPS were allocated.";
+        Log.printFormattedLine(
+                "%.2f: %s: %s is requiring a total of %.0f MIPS but the PEs of %s\n\t currently don't have such an available MIPS amount. %s",
+                getHost().getSimulation().clock(),
+                getClass().getSimpleName(), vm, 
+                requestedMipsForVmPe, getHost(), msg);
     }
 
     /**

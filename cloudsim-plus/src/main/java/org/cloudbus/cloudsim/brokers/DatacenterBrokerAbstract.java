@@ -180,7 +180,7 @@ public abstract class DatacenterBrokerAbstract extends CloudSimEntity implements
 
         if (isStarted() && !list.isEmpty()) {
             Log.printFormattedLine(
-                "%.2f: %s: List of %d VMs submitted to the broker during simulation execution. VMs creation request sent to Datacenter.",
+                "%.2f: %s: List of %d VMs submitted to the broker during simulation execution.\n\t VMs creation request sent to Datacenter.",
                 getSimulation().clock(), getName(), list.size());
             requestDatacenterToCreateWaitingVms();
         }
