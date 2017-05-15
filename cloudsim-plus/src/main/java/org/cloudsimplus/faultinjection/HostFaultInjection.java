@@ -52,11 +52,11 @@ import org.cloudbus.cloudsim.distributions.PoissonDistr;
  * 
  * The events happens in the following order:
  * <ol>
- *  <li>a time to inject a Host failure is randomly generated;</li>
- *  <li>a Host is randomly selected to fail at that time;</li>
- *  <li>the number of Host PEs to fail is randomly generated;</li>
- *  <li>failed physical PEs are removed from affected VMs;</li>
- *  <li>another failure is scheduled for a future time;</li>
+ *  <li>a time to inject a Host failure is generated using a given Random Number Generator;</li>
+ *  <li>a Host is randomly selected to fail at that time using an internal Uniform Random Number Generator with the same seed of the given generator;</li>
+ *  <li>the number of Host PEs to fail is randomly generated using the internal generator;</li>
+ *  <li>failed physical PEs are removed from affected VMs, VMs with no remaining PEs and destroying and clones of them are submitted to the {@link DatacenterBroker} of the failed VMs;</li>
+ *  <li>another failure is scheduled for a future time using the given generator;</li>
  *  <li>the process repeats until the end of the simulation.</li>
  * </ol>
  *
