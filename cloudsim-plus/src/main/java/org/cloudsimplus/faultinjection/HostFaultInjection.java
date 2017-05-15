@@ -109,17 +109,21 @@ import org.cloudbus.cloudsim.distributions.PoissonDistr;
  * @see https://blogs.sap.com/2014/07/21/equipment-availability-vs-reliability/
  */
 public class HostFaultInjection extends CloudSimEntity {
+    /**
+     * @see #getLastFailedHost() 
+     */
+    private Host lastFailedHost;
+    
+    /**
+     * @see #getDatacenter()
+     */
     private Datacenter datacenter;
+    
     /**
      * A Pseudo Random Number Generator used to select a Host 
      * and the number of PEs to set as fail. 
      */
     private ContinuousDistribution random;
-    
-    /**
-     * @see #getLastFailedHost() 
-     */
-    private Host lastFailedHost;
     
     /**
      * @see #setVmCloner(java.util.function.UnaryOperator) 
