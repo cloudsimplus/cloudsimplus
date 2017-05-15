@@ -71,7 +71,7 @@ public final class VmMigrationWhenCpuMetricIsViolatedExample {
     private static final int SCHEDULE_TIME_TO_PROCESS_DATACENTER_EVENTS = 5;
 
     private static final int HOST_MIPS_BY_PE = 1000;
-    private static final int HOST_NUMBER_OF_PES = 2;
+    private static final int HOST_NUMBER_OF_PES = 12;
     private static final long HOST_RAM = 500000; //host memory (MB)
     private static final long HOST_STORAGE = 1000000; //host storage
     private static final long HOST_BW = 100000000L;
@@ -80,7 +80,7 @@ public final class VmMigrationWhenCpuMetricIsViolatedExample {
     private static final long VM_SIZE = 1000; //image size (MB)
     private static final int VM_RAM = 10000; //vm memory (MB)
     private static final long VM_BW = 100000;
-    private static final int VM_PES_NUM = 1; //number of cpus
+    private static final int VM_PES_NUM = 3; //number of cpus
 
     private static final long CLOUDLET_LENGHT = 20000;
     private static final long CLOUDLET_FILESIZE = 300;
@@ -106,7 +106,7 @@ public final class VmMigrationWhenCpuMetricIsViolatedExample {
     public static final double CLOUDLET_CPU_USAGE_INCREMENT_PER_SECOND = 0.05;
 
     private static final int NUMBER_OF_HOSTS_TO_CREATE = 20;
-    private static final int NUMBER_OF_VMS_TO_CREATE = NUMBER_OF_HOSTS_TO_CREATE + 1;
+    private static final int NUMBER_OF_VMS_TO_CREATE = NUMBER_OF_HOSTS_TO_CREATE;
     private static final int NUMBER_OF_CLOUDLETS_TO_CREATE_BY_VM = 4;
 
     private final List<Vm> vmlist = new ArrayList<>();
@@ -216,7 +216,7 @@ public final class VmMigrationWhenCpuMetricIsViolatedExample {
 
             Cloudlet c
                     = new CloudletSimple(
-                            cloudletId, CLOUDLET_LENGHT, VM_PES_NUM)
+                            cloudletId, CLOUDLET_LENGHT, 2)
                             .setFileSize(CLOUDLET_FILESIZE)
                             .setOutputSize(CLOUDLET_OUTPUTSIZE)
                             .setUtilizationModelCpu(cpuUtilizationModel)
