@@ -63,7 +63,9 @@ import org.cloudbus.cloudsim.distributions.PoissonDistr;
  * <p>
  * When Host's PEs fail, if there are more available PEs
  * than the required by its running VMs, no VM will be affected.
+ * </p>
  *
+ * <p>
  * Considering that X is the number of failed PEs and it is 
  * lower than the total available PEs.
  * In this case, the X PEs will be removed cyclically, 1 by 1,
@@ -72,14 +74,18 @@ import org.cloudbus.cloudsim.distributions.PoissonDistr;
  * On the other hand, if after the failure the number of Host working PEs
  * is lower than the required to run all VMs, some VMs will be 
  * destroyed.
+ * </p>
  *
+ * <p>
  * If all PEs are removed from a VM, it is automatically destroyed
  * and a snapshot (clone) from it is taken and submitted
  * to the broker, so that the clone can start executing
  * into another host. In this case, all the cloudlets 
  * which were running inside the VM yet, will be 
  * cloned to and restart executing from the beguining.
+ * </p>
  *
+ * <p>
  * If a cloudlet running inside a VM which was affected by a PE failure
  * requires Y PEs but the VMs doesn't have such PEs anymore,
  * the Cloudlet will continue executing, but it will spend
@@ -87,7 +93,9 @@ import org.cloudbus.cloudsim.distributions.PoissonDistr;
  * For instance, if a Cloudlet requires 2 PEs but after the failure
  * the VM was left with just 1 PE, the Cloudlet will spend the double
  * of the time to finish.
+ * </p>
  *
+ * <p>
  * Host PEs failures may happen after all its VMs have finished executing.
  * This way, the presented simulation results may show that the 
  * number of PEs into a Host is lower than the required by its VMs.
@@ -191,6 +199,8 @@ public class HostFaultInjection extends CloudSimEntity {
                 getSimulation()
                         .getNumberOfFutureEvents(
                             evt -> evt.getTag() != CloudSimTags.HOST_FAILURE);
+        //Just re-schedule more failures if there are other events to be processed.
+        //Otherwise, the simulation has finished and no more failures should be scheduled.
         if(numOfOtherEvents > 0){
             schedule(getId(), getTimeDelayForNextFailure(), CloudSimTags.HOST_FAILURE);
         }
