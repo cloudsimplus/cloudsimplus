@@ -119,7 +119,7 @@ getCloudletWaitingList
 .. java:method:: @Override public List<CloudletExecutionInfo> getCloudletWaitingList()
    :outertype: CloudletSchedulerCompletelyFair
 
-   Gets a list of Cloudlets that are waiting to run, the so called \ `run queue <https://en.wikipedia.org/wiki/Run_queue>`_\ .
+   Gets a \ **read-only**\  list of Cloudlets which are waiting to run, the so called \ `run queue <https://en.wikipedia.org/wiki/Run_queue>`_\ .
 
    \ **NOTE:**\  Different from real implementations, this scheduler uses just one run queue for all processor cores (PEs). Since CPU context switch is not concerned, there is no point in using different run queues.
 

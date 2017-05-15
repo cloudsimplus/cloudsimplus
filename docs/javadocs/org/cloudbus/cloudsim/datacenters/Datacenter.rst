@@ -114,10 +114,10 @@ getVmList
 .. java:method::  <T extends Vm> List<T> getVmList()
    :outertype: Datacenter
 
-   Gets the list of VMs submitted to be ran in some host of this Datacenter.
+   Gets a \ **read-only**\  list all VMs from all Hosts of this Datacenter.
 
    :param <T>: the class of VMs inside the list
-   :return: the vm list
+   :return: the list all VMs from all Hosts
 
 setSchedulingInterval
 ^^^^^^^^^^^^^^^^^^^^^

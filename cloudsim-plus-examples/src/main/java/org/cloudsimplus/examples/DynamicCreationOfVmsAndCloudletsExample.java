@@ -210,7 +210,6 @@ public class DynamicCreationOfVmsAndCloudletsExample {
         int    pesNumber = 1; // number of CPU cores
 
         return new VmSimple(numberOfCreatedVms++, mips, pesNumber)
-                .setBroker(broker)
                 .setRam(ram)
                 .setBw(bw)
                 .setSize(storage)
@@ -232,7 +231,6 @@ public class DynamicCreationOfVmsAndCloudletsExample {
                 .setFileSize(fileSize)
                 .setOutputSize(outputSize)
                 .setUtilizationModel(utilization)
-                .setBroker(broker)
                 .setVm(vm);
     }
 

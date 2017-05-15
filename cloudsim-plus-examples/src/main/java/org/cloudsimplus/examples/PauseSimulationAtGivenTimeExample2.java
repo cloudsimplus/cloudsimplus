@@ -258,7 +258,6 @@ public class PauseSimulationAtGivenTimeExample2 {
         int    pesNumber = 1; // number of CPU cores
 
         return new VmSimple(numberOfCreatedVms++, mips, pesNumber)
-                .setBroker(this.broker)
                 .setRam(ram)
                 .setBw(bw)
                 .setSize(storage)
@@ -280,7 +279,6 @@ public class PauseSimulationAtGivenTimeExample2 {
                 .setFileSize(fileSize)
                 .setOutputSize(outputSize)
                 .setUtilizationModel(utilization)
-                .setBroker(this.broker)
                 .setVm(vm);
     }
 

@@ -35,8 +35,14 @@ import org.cloudsimplus.autoscaling.VerticalVmScaling;
  * This way, during one interval and another, there may be some
  * SLA violation if the resource is overloaded between these intervals.</p>
  *
+ * <p>There are some implementations of this functional interface such as
+ * {@link ResourceScalingGradual} and {@link ResourceScalingInstantaneous}.
+ * New ones can be defined using Lambda Expressions.</p>
+ *
  * @author Manoel Campos da Silva Filho
  * @since CloudSim 1.2.0
+ * @see ResourceScalingGradual
+ * @see ResourceScalingInstantaneous
  */
 @FunctionalInterface
 public interface ResourceScaling {

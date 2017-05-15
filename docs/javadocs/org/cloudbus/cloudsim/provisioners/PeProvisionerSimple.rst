@@ -1,7 +1,5 @@
 .. java:import:: org.cloudbus.cloudsim.resources Pe
 
-.. java:import:: org.cloudbus.cloudsim.vms Vm
-
 PeProvisionerSimple
 ===================
 
@@ -33,6 +31,8 @@ PeProvisionerSimple
    :outertype: PeProvisionerSimple
 
    Instantiates a new PeProvisionerSimple for a given \ :java:ref:`Pe`\ .
+
+   :param pe:
 
 Methods
 -------

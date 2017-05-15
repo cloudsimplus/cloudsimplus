@@ -178,7 +178,7 @@ public class NetworkVmsExample1 {
     private List<NetworkVm> createAndSubmitVMs(DatacenterBroker broker) {
         final List<NetworkVm> list = new ArrayList<>();
         for (int i = 0; i < NUMBER_OF_HOSTS; i++) {
-            NetworkVm vm = createVm(i, broker);
+            NetworkVm vm = createVm(i);
             list.add(vm);
         }
 
@@ -186,14 +186,13 @@ public class NetworkVmsExample1 {
         return list;
     }
 
-    private NetworkVm createVm(int id, DatacenterBroker broker) {
+    private NetworkVm createVm(int id) {
         NetworkVm vm = new NetworkVm(id, HOST_MIPS, HOST_PES);
         vm
                 .setRam(HOST_RAM)
                 .setBw(HOST_BW)
                 .setSize(HOST_STORAGE)
-                .setCloudletScheduler(new CloudletSchedulerTimeShared())
-                .setBroker(broker);
+                .setCloudletScheduler(new CloudletSchedulerTimeShared());
         return vm;
     }
 
@@ -232,14 +231,13 @@ public class NetworkVmsExample1 {
      */
     private NetworkCloudlet createNetworkCloudlet(NetworkVm vm, DatacenterBroker broker) {
         UtilizationModel utilizationModel = new UtilizationModelFull();
-       
+
         NetworkCloudlet netCloudlet = new NetworkCloudlet(++currentNetworkCloudletId, 4000, HOST_PES);
         netCloudlet
                 .setMemory(TASK_RAM)
                 .setFileSize(CLOUDLET_FILE_SIZE)
                 .setOutputSize(CLOUDLET_OUTPUT_SIZE)
                 .setUtilizationModel(utilizationModel);
-        netCloudlet.setBroker(broker);
         netCloudlet.setVm(vm);
 
         return netCloudlet;

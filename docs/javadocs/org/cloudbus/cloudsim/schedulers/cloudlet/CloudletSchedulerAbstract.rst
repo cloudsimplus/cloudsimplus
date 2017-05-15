@@ -90,7 +90,7 @@ cloudletExecutedInstructionsForElapsedTime
 .. java:method:: protected long cloudletExecutedInstructionsForElapsedTime(CloudletExecutionInfo rcl, double currentTime)
    :outertype: CloudletSchedulerAbstract
 
-   Computes the length of a given cloudlet, in number of Instructions (I), that has been executed since the last time cloudlet processing was updated.
+   Computes the length of a given cloudlet, in number of Instructions (I), which has been executed since the last time cloudlet processing was updated.
 
    This method considers the delay for actually starting the Cloudlet execution due to the time to transfer \ :java:ref:`required Cloudlet files <Cloudlet.getRequiredFiles()>`\  from the Datacenter storage (such as a SAN) to the Vm running the Cloudlet.
 
@@ -124,6 +124,12 @@ cloudletSubmit
 ^^^^^^^^^^^^^^
 
 .. java:method:: @Override public double cloudletSubmit(Cloudlet cl, double fileTransferTime)
+   :outertype: CloudletSchedulerAbstract
+
+deallocatePesFromVm
+^^^^^^^^^^^^^^^^^^^
+
+.. java:method:: @Override public void deallocatePesFromVm(Vm vm, int pesToRemove)
    :outertype: CloudletSchedulerAbstract
 
 findCloudletInAllLists
@@ -185,6 +191,12 @@ getCloudletFinishedList
 ^^^^^^^^^^^^^^^^^^^^^^^
 
 .. java:method:: @Override public List<CloudletExecutionInfo> getCloudletFinishedList()
+   :outertype: CloudletSchedulerAbstract
+
+getCloudletList
+^^^^^^^^^^^^^^^
+
+.. java:method:: @Override public List<Cloudlet> getCloudletList()
    :outertype: CloudletSchedulerAbstract
 
 getCloudletPausedList
@@ -251,13 +263,9 @@ getEstimatedFinishTimeOfCloudlet
 
    Gets the estimated time when a given cloudlet is supposed to finish executing. It considers the amount of Vm PES and the sum of PEs required by all VMs running inside the VM.
 
-   The estimated time is not a future simulation time but a time interval that the Cloudlet is expected to finish.
-
-   The estimated time is not a future simulation time but a time interval that the Cloudlet is expected to finish.
-
    :param rcl: cloudlet to get the estimated finish time
    :param currentTime: current simulation time
-   :return: the estimated finish time of the given cloudlet
+   :return: the estimated finish time of the given cloudlet (which is a relative delay from the current simulation time)
 
 getEstimatedFinishTimeOfSoonerFinishingCloudlet
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -268,7 +276,7 @@ getEstimatedFinishTimeOfSoonerFinishingCloudlet
    Gets the estimated time, considering the current time, that a next Cloudlet is expected to finish.
 
    :param currentTime: current simulation time
-   :return: the estimated finish time of sooner finishing cloudlet, that represents a future simulation time
+   :return: the estimated finish time of sooner finishing cloudlet (which is a relative delay from the current simulation time)
 
 getFreePes
 ^^^^^^^^^^
@@ -359,7 +367,7 @@ moveNextCloudletsFromWaitingToExecList
 .. java:method:: protected void moveNextCloudletsFromWaitingToExecList()
    :outertype: CloudletSchedulerAbstract
 
-   /** Selects the next Cloudlets in the waiting list to move to the execution list in order to start executing them. While there is enough free PEs, the method try to find a suitable Cloudlet in the list, until it reaches the end of such a list.
+   Selects the next Cloudlets in the waiting list to move to the execution list in order to start executing them. While there is enough free PEs, the method try to find a suitable Cloudlet in the list, until it reaches the end of such a list.
 
    The method might also exchange some cloudlets in the execution list with some in the waiting list. Thus, some running cloudlets may be preempted to give opportunity to previously waiting cloudlets to run. This is a process called \ `context switch <https://en.wikipedia.org/wiki/Context_switch>`_\ . However, each CloudletScheduler implementation decides how such a process is implemented. For instance, Space-Shared schedulers may just perform context switch just after currently running Cloudlets completely finish executing.
 
@@ -445,6 +453,16 @@ setVm
 
 .. java:method:: @Override public void setVm(Vm vm)
    :outertype: CloudletSchedulerAbstract
+
+sortCloudletWaitingList
+^^^^^^^^^^^^^^^^^^^^^^^
+
+.. java:method:: protected void sortCloudletWaitingList(Comparator<CloudletExecutionInfo> comparator)
+   :outertype: CloudletSchedulerAbstract
+
+   Sorts the \ :java:ref:`cloudletWaitingList`\  using a given \ :java:ref:`Comparator`\ .
+
+   :param comparator: the \ :java:ref:`Comparator`\  to sort the Waiting Cloudlets List
 
 timeSpan
 ^^^^^^^^

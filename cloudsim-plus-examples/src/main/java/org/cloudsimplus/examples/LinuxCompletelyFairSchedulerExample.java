@@ -175,8 +175,7 @@ public class LinuxCompletelyFairSchedulerExample {
 
         return new VmSimple(numberOfCreatedVms++, VM_MIPS, VM_PES)
             .setRam(ram).setBw(bw).setSize(storage)
-            .setCloudletScheduler(new CloudletSchedulerCompletelyFair())
-            .setBroker(broker);
+            .setCloudletScheduler(new CloudletSchedulerCompletelyFair());
     }
 
     private Cloudlet createCloudlet(DatacenterBroker broker) {
@@ -190,8 +189,7 @@ public class LinuxCompletelyFairSchedulerExample {
         return new CloudletSimple(numberOfCreatedCloudlets++, CLOUDLET_LEN, CLOUDLET_PES)
             .setFileSize(fileSize)
             .setOutputSize(outputSize)
-            .setUtilizationModel(utilization)
-            .setBroker(broker);
+            .setUtilizationModel(utilization);
     }
 }
 

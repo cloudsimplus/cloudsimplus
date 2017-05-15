@@ -70,13 +70,13 @@ final class DynamicCloudletsArrivalExperiment extends SimulationExperiment {
     }
 
     @Override
-    protected List<Cloudlet> createCloudlets(DatacenterBroker broker) {
+    protected List<Cloudlet> createCloudlets() {
         List<Cloudlet> list = new ArrayList<>();
         return list;
     }
 
     @Override
-    protected List<Vm> createVms(DatacenterBroker broker) {
+    protected List<Vm> createVms() {
         List<Vm> list = new ArrayList<>();
         return list;
     }

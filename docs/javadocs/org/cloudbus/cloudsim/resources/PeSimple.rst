@@ -10,9 +10,9 @@ PeSimple
 
 .. java:type:: public class PeSimple extends ResourceManageableAbstract implements Pe
 
-   Pe (Processing Element) class represents a CPU core of a physical machine (PM), defined in terms of Millions Instructions Per Second (MIPS) rating.
+   Pe (Processing Element) class represents a CPU core of a physical machine (PM), defined in terms of Millions Instructions Per Second (MIPS) rating. Such a class allows managing the Pe capacity and allocation.
 
-   Such a class allows managing the Pe capacity and allocation. \ **ASSUMPTION:**\  All PEs under the same Machine have the same MIPS rating.
+   \ **ASSUMPTION:**\  All PEs under the same Machine have the same MIPS rating.
 
    :author: Manzur Murshed, Rajkumar Buyya
 
@@ -63,6 +63,30 @@ getStatus
 ^^^^^^^^^
 
 .. java:method:: @Override public Status getStatus()
+   :outertype: PeSimple
+
+isBuzy
+^^^^^^
+
+.. java:method:: @Override public boolean isBuzy()
+   :outertype: PeSimple
+
+isFailed
+^^^^^^^^
+
+.. java:method:: @Override public boolean isFailed()
+   :outertype: PeSimple
+
+isFree
+^^^^^^
+
+.. java:method:: @Override public boolean isFree()
+   :outertype: PeSimple
+
+isWorking
+^^^^^^^^^
+
+.. java:method:: @Override public boolean isWorking()
    :outertype: PeSimple
 
 setCapacity

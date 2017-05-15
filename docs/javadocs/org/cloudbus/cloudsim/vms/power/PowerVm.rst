@@ -59,6 +59,17 @@ PowerVm
 PowerVm
 ^^^^^^^
 
+.. java:constructor:: public PowerVm(long mipsCapacity, int numberOfPes)
+   :outertype: PowerVm
+
+   Creates a Vm with 1024 MEGABYTE of RAM, 1000 Megabits/s of Bandwidth and 1024 MEGABYTE of Storage Size and no ID (which will be defined when the VM is submitted to a \ :java:ref:`DatacenterBroker`\ ). To change these values, use the respective setters. While the Vm \ :java:ref:`is not created inside a Host <isCreated()>`\ , such values can be changed freely.
+
+   :param mipsCapacity: the mips capacity of each Vm \ :java:ref:`Pe`\
+   :param numberOfPes: amount of \ :java:ref:`Pe`\  (CPU cores)
+
+PowerVm
+^^^^^^^
+
 .. java:constructor:: @Deprecated public PowerVm(int id, DatacenterBroker broker, long mipsCapacity, int numberOfPes, int ramCapacity, long bwCapacity, long size, int priority, String vmm, CloudletScheduler cloudletScheduler, double schedulingInterval)
    :outertype: PowerVm
 
@@ -74,7 +85,7 @@ PowerVm
    :param priority: the priority
    :param vmm: Virtual Machine Monitor that manages the VM lifecycle
    :param cloudletScheduler: scheduler that defines the execution policy for Cloudlets inside this Vm
-   :param schedulingInterval: the scheduling interval
+   :param schedulingInterval: not used anymore
 
 Methods
 -------
@@ -95,16 +106,6 @@ getPreviousTime
    :outertype: PowerVm
 
    Gets the previous time that cloudlets were processed.
-
-getSchedulingInterval
-^^^^^^^^^^^^^^^^^^^^^
-
-.. java:method:: public double getSchedulingInterval()
-   :outertype: PowerVm
-
-   Gets the scheduling interval to update the processing of cloudlets running in this VM.
-
-   :return: the schedulingInterval
 
 getUtilizationHistory
 ^^^^^^^^^^^^^^^^^^^^^
@@ -149,16 +150,6 @@ setPreviousTime
    Sets the previous time that cloudlets were processed.
 
    :param previousTime: the new previous time
-
-setSchedulingInterval
-^^^^^^^^^^^^^^^^^^^^^
-
-.. java:method:: public final PowerVm setSchedulingInterval(double schedulingInterval)
-   :outertype: PowerVm
-
-   Sets the scheduling interval.
-
-   :param schedulingInterval: the schedulingInterval to set
 
 updateProcessing
 ^^^^^^^^^^^^^^^^

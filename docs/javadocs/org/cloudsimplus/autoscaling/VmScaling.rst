@@ -16,7 +16,7 @@ VmScaling
 
 .. java:type:: public interface VmScaling
 
-   An interface to allow implementing \ `horizontal and vertical scaling <https://en.wikipedia.org/wiki/Scalability#Horizontal_and_vertical_scaling>`_\  for \ :java:ref:`Vm`\ s.
+   An interface to allow implementing \ `horizontal and vertical scaling <https://en.wikipedia.org/wiki/Scalability#Horizontal_and_vertical_scaling>`_\  of \ :java:ref:`Vm`\ s.
 
    :author: Manoel Campos da Silva Filho
 

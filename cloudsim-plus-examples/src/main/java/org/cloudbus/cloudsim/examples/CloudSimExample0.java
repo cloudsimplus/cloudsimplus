@@ -137,7 +137,6 @@ public class CloudSimExample0 {
         final long   pesNumber = 2; // number of CPU cores
 
         return new VmSimple(vmList.size(), mips, pesNumber)
-                .setBroker(broker)
                 .setRam(ram)
                 .setBw(bw)
                 .setSize(storage)
@@ -160,7 +159,6 @@ public class CloudSimExample0 {
                         .setFileSize(fileSize)
                         .setOutputSize(outputSize)
                         .setUtilizationModel(utilization)
-                        .setBroker(broker)
                         .setVm(vm);
 
         return cloudlet;

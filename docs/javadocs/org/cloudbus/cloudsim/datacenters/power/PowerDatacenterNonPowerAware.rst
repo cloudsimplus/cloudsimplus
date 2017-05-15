@@ -73,6 +73,6 @@ Methods
 updateCloudletProcessing
 ^^^^^^^^^^^^^^^^^^^^^^^^
 
-.. java:method:: @Override protected void updateCloudletProcessing()
+.. java:method:: @Override protected double updateCloudletProcessing()
    :outertype: PowerDatacenterNonPowerAware
 

@@ -32,7 +32,7 @@ public abstract class DatacenterBrokerAbstract extends CloudSimEntity implements
      * @see #getLastSelectedVm()
      */
     private Vm lastSelectedVm;
-    
+
     /**
      * The last datacenter where a VM was created or tried to be created.
      */
@@ -174,6 +174,7 @@ public abstract class DatacenterBrokerAbstract extends CloudSimEntity implements
     @Override
     public void submitVmList(List<? extends Vm> list) {
         sortVmsIfComparatorIsSet(list);
+        setBrokerForEntities(list);
         lastSubmittedVm = setIdForEntitiesWithoutOne(list, lastSubmittedVm);
         vmsWaitingList.addAll(list);
 
@@ -183,6 +184,15 @@ public abstract class DatacenterBrokerAbstract extends CloudSimEntity implements
                 getSimulation().clock(), getName(), list.size());
             requestDatacenterToCreateWaitingVms();
         }
+    }
+
+    /**
+     * Sets the broker for each {@link CustomerEntity} into a given list.
+     *
+     * @param customerEntities the List of {@link CustomerEntity} to set the broker.
+     */
+    private void setBrokerForEntities(List<? extends CustomerEntity> customerEntities) {
+        customerEntities.forEach(e -> e.setBroker(this));
     }
 
     /**
@@ -234,11 +244,11 @@ public abstract class DatacenterBrokerAbstract extends CloudSimEntity implements
         bindCloudletsToVm(list, vm);
         submitCloudletList(list);
     }
-    
+
     /**
      * Binds a list of Cloudlets to a given {@link Vm}.
      * If the {@link Vm} is {@link Vm#NULL}, the Cloudlets will not be bound.
-     * 
+     *
      * @param cloudlets the List of Cloudlets to be bound to a VM
      * @param vm the VM to bind the Cloudlets to
      */
@@ -246,7 +256,7 @@ public abstract class DatacenterBrokerAbstract extends CloudSimEntity implements
         if(Vm.NULL.equals(vm)){
             return;
         }
-        
+
         cloudlets.forEach(c -> c.setVm(vm));
     }
 
@@ -267,6 +277,7 @@ public abstract class DatacenterBrokerAbstract extends CloudSimEntity implements
     @Override
     public void submitCloudletList(List<? extends Cloudlet> list) {
         sortCloudletsIfComparatorIsSet(list);
+        setBrokerForEntities(list);
         lastSubmittedCloudlet =  setIdForEntitiesWithoutOne(list, lastSubmittedCloudlet);
         if(list.isEmpty()) {
             return;
@@ -276,20 +287,20 @@ public abstract class DatacenterBrokerAbstract extends CloudSimEntity implements
 
         if (!isStarted()) {
             return;
-        } 
-        
+        }
+
         Log.printFormattedLine(
             "%.2f: %s: List of %d Cloudlets submitted to the broker during simulation execution.",
             getSimulation().clock(), getName(), list.size());
-        
+
         //If there aren't more VMs to be created, then request Cloudlets creation
         if(getVmsWaitingList().isEmpty()){
             Log.printLine(" Cloudlets creation request sent to Datacenter.");
             requestDatacentersToCreateWaitingCloudlets();
-        } else 
+        } else
             Log.printFormattedLine(
                     " Waiting creation of %d VMs to send Cloudlets creation request to Datacenter.",
-                    getVmsWaitingList().size()); 
+                    getVmsWaitingList().size());
     }
 
     private void sortCloudletsIfComparatorIsSet(List<? extends Cloudlet> list) {
@@ -316,7 +327,7 @@ public abstract class DatacenterBrokerAbstract extends CloudSimEntity implements
      * Sets the delay for a list of {@link Delayable} entities that don't
      * have a delay already assigned. Such entities can be a {@link Cloudlet},
      * {@link Vm} or any object that implements {@link Delayable}.
-     * 
+     *
      * <p>If the delay is defined as a negative number, objects' delay
      * won't be changed.</p>
      *
@@ -327,7 +338,7 @@ public abstract class DatacenterBrokerAbstract extends CloudSimEntity implements
         if(submissionDelay < 0){
             return;
         }
-        
+
         list.stream()
             .filter(e -> e.getSubmissionDelay() <= 0)
             .forEach(e -> e.setSubmissionDelay(submissionDelay));

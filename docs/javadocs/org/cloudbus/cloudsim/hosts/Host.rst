@@ -2,13 +2,13 @@
 
 .. java:import:: org.cloudbus.cloudsim.vms Vm
 
-.. java:import:: org.cloudbus.cloudsim.core Identificable
-
 .. java:import:: org.cloudbus.cloudsim.datacenters Datacenter
 
 .. java:import:: org.cloudbus.cloudsim.schedulers.vm VmScheduler
 
 .. java:import:: java.util List
+
+.. java:import:: java.util Set
 
 .. java:import:: org.cloudbus.cloudsim.core Simulation
 
@@ -17,6 +17,8 @@
 .. java:import:: org.cloudsimplus.listeners HostUpdatesVmsProcessingEventInfo
 
 .. java:import:: org.cloudbus.cloudsim.provisioners ResourceProvisioner
+
+.. java:import:: org.cloudbus.cloudsim.resources Pe.Status
 
 Host
 ====
@@ -48,7 +50,7 @@ addMigratingInVm
 .. java:method::  boolean addMigratingInVm(Vm vm)
    :outertype: Host
 
-   Adds a VM migrating into the current host.
+   Try to add a VM migrating into the current host if there is enough resources for it. In this case, the resources are allocated and the VM added to the \ :java:ref:`getVmsMigratingIn()`\  List. Otherwise, the VM is not added.
 
    :param vm: the vm
    :return: true if the Vm was migrated in, false if the Host doesn't have enough resources to place the Vm
@@ -64,6 +66,17 @@ addOnUpdateProcessingListener
    :param listener: the OnUpdateProcessingListener to add
 
    **See also:** :java:ref:`.updateProcessing(double)`
+
+addVmMigratingOut
+^^^^^^^^^^^^^^^^^
+
+.. java:method::  boolean addVmMigratingOut(Vm vm)
+   :outertype: Host
+
+   Adds a \ :java:ref:`Vm`\  to the list of VMs migrating out from the Host.
+
+   :param vm: the vm to be added
+   :return: true if the VM wasn't into the list and was added, false otherwise
 
 allocatePesForVm
 ^^^^^^^^^^^^^^^^
@@ -166,6 +179,16 @@ getMaxAvailableMips
 
    :return: max mips
 
+getNumberOfFailedPes
+^^^^^^^^^^^^^^^^^^^^
+
+.. java:method::  long getNumberOfFailedPes()
+   :outertype: Host
+
+   Gets the number of PEs that have failed.
+
+   :return: the number of failed pes
+
 getNumberOfFreePes
 ^^^^^^^^^^^^^^^^^^
 
@@ -192,9 +215,11 @@ getPeList
 .. java:method::  List<Pe> getPeList()
    :outertype: Host
 
-   Gets the Processing Elements (PEs) of the host, that represent its CPU cores and thus, its processing capacity.
+   Gets the list of all Processing Elements (PEs) of the host, including failed PEs.
 
-   :return: the pe list
+   :return: the list of all Host PEs
+
+   **See also:** :java:ref:`.getWorkingPeList()`
 
 getProvisioner
 ^^^^^^^^^^^^^^
@@ -228,6 +253,48 @@ getTotalAllocatedMipsForVm
    :param vm: the vm
    :return: the allocated mips for vm
 
+getTotalMipsCapacity
+^^^^^^^^^^^^^^^^^^^^
+
+.. java:method:: @Override  double getTotalMipsCapacity()
+   :outertype: Host
+
+   Gets total MIPS capacity of PEs which are not \ :java:ref:`Status.FAILED`\ .
+
+   :return: the total MIPS of working PEs
+
+getUtilizationOfBw
+^^^^^^^^^^^^^^^^^^
+
+.. java:method::  long getUtilizationOfBw()
+   :outertype: Host
+
+   Gets the current utilization of bw (in absolute values).
+
+getUtilizationOfCpu
+^^^^^^^^^^^^^^^^^^^
+
+.. java:method::  double getUtilizationOfCpu()
+   :outertype: Host
+
+   Gets current utilization of CPU in percentage (between [0 and 1]).
+
+getUtilizationOfCpuMips
+^^^^^^^^^^^^^^^^^^^^^^^
+
+.. java:method::  double getUtilizationOfCpuMips()
+   :outertype: Host
+
+   Gets the current utilization of CPU in MIPS.
+
+getUtilizationOfRam
+^^^^^^^^^^^^^^^^^^^
+
+.. java:method::  long getUtilizationOfRam()
+   :outertype: Host
+
+   Gets the current utilization of memory (in absolute values).
+
 getVm
 ^^^^^
 
@@ -246,10 +313,10 @@ getVmList
 .. java:method::  <T extends Vm> List<T> getVmList()
    :outertype: Host
 
-   Gets the list of VMs assigned to the host.
+   Gets a \ **read-only**\  list of VMs assigned to the host.
 
    :param <T>: The generic type
-   :return: the vm list
+   :return: the read-only vm list
 
 getVmScheduler
 ^^^^^^^^^^^^^^
@@ -264,13 +331,31 @@ getVmScheduler
 getVmsMigratingIn
 ^^^^^^^^^^^^^^^^^
 
-.. java:method::  <T extends Vm> List<T> getVmsMigratingIn()
+.. java:method::  <T extends Vm> Set<T> getVmsMigratingIn()
    :outertype: Host
 
    Gets the list of VMs migrating into this host.
 
    :param <T>: the generic type
    :return: the vms migrating in
+
+getVmsMigratingOut
+^^^^^^^^^^^^^^^^^^
+
+.. java:method::  Set<Vm> getVmsMigratingOut()
+   :outertype: Host
+
+   Gets a \ **read-only**\  list of VMs migrating out from the Host.
+
+getWorkingPeList
+^^^^^^^^^^^^^^^^
+
+.. java:method::  List<Pe> getWorkingPeList()
+   :outertype: Host
+
+   Gets the list of working Processing Elements (PEs) of the host, \ **which excludes failed PEs**\ .
+
+   :return: the list working (non-failed) Host PEs
 
 isFailed
 ^^^^^^^^
@@ -323,6 +408,26 @@ removeOnUpdateProcessingListener
    :return: true if the listener was found and removed, false otherwise
 
    **See also:** :java:ref:`.updateProcessing(double)`
+
+removeVmMigratingIn
+^^^^^^^^^^^^^^^^^^^
+
+.. java:method::  boolean removeVmMigratingIn(Vm vm)
+   :outertype: Host
+
+   Adds a \ :java:ref:`Vm`\  to the list of VMs migrating into the Host.
+
+   :param vm: the vm to be added
+
+removeVmMigratingOut
+^^^^^^^^^^^^^^^^^^^^
+
+.. java:method::  boolean removeVmMigratingOut(Vm vm)
+   :outertype: Host
+
+   Adds a \ :java:ref:`Vm`\  to the list of VMs migrating out from the Host.
+
+   :param vm: the vm to be added
 
 setBwProvisioner
 ^^^^^^^^^^^^^^^^
@@ -406,7 +511,7 @@ updateProcessing
    Updates the processing of VMs running on this Host, that makes the processing of cloudlets inside such VMs to be updated.
 
    :param currentTime: the current time
-   :return: the predicted completion time of the earliest finishing cloudlet (that is a future simulation time), or \ :java:ref:`Double.MAX_VALUE`\  if there is no next Cloudlet to execute
+   :return: the predicted completion time of the earliest finishing cloudlet (which is a relative delay from the current simulation time), or \ :java:ref:`Double.MAX_VALUE`\  if there is no next Cloudlet to execute
 
 vmCreate
 ^^^^^^^^

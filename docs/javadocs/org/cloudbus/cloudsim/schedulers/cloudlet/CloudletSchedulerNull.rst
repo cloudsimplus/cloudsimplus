@@ -76,6 +76,12 @@ cloudletSubmit
 .. java:method:: @Override public double cloudletSubmit(Cloudlet cl)
    :outertype: CloudletSchedulerNull
 
+deallocatePesFromVm
+^^^^^^^^^^^^^^^^^^^
+
+.. java:method:: @Override public void deallocatePesFromVm(Vm vm, int pesToRemove)
+   :outertype: CloudletSchedulerNull
+
 getAllocatedMipsForCloudlet
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
@@ -92,6 +98,12 @@ getCloudletFinishedList
 ^^^^^^^^^^^^^^^^^^^^^^^
 
 .. java:method:: @Override public List<CloudletExecutionInfo> getCloudletFinishedList()
+   :outertype: CloudletSchedulerNull
+
+getCloudletList
+^^^^^^^^^^^^^^^
+
+.. java:method:: @Override public List<Cloudlet> getCloudletList()
    :outertype: CloudletSchedulerNull
 
 getCloudletReturnedList

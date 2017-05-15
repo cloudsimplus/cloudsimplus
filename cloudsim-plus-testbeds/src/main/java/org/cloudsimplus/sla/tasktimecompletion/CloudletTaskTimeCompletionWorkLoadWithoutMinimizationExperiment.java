@@ -30,13 +30,11 @@ import org.cloudbus.cloudsim.resources.PeSimple;
 import org.cloudbus.cloudsim.schedulers.cloudlet.CloudletSchedulerCompletelyFair;
 import org.cloudbus.cloudsim.schedulers.vm.VmScheduler;
 import org.cloudbus.cloudsim.schedulers.vm.VmSchedulerTimeShared;
-import org.cloudbus.cloudsim.util.Log;
 import org.cloudbus.cloudsim.util.ResourceLoader;
 import org.cloudbus.cloudsim.util.WorkloadFileReader;
 import org.cloudbus.cloudsim.vms.Vm;
 import org.cloudbus.cloudsim.vms.VmSimple;
 import org.cloudsimplus.builders.tables.CloudletsTableBuilder;
-import org.cloudsimplus.listeners.EventInfo;
 import org.cloudsimplus.sla.readJsonFile.CpuUtilization;
 import org.cloudsimplus.sla.readJsonFile.TaskTimeCompletion;
 import org.cloudsimplus.sla.readJsonFile.SlaReader;
@@ -49,7 +47,7 @@ import org.cloudsimplus.testbeds.SimulationExperiment;
  * @author raysaoliveira
  */
 public class CloudletTaskTimeCompletionWorkLoadWithoutMinimizationExperiment extends SimulationExperiment {
-    
+
     private static final int SCHEDULING_INTERVAL = 5;
 
     /**
@@ -112,7 +110,7 @@ public class CloudletTaskTimeCompletionWorkLoadWithoutMinimizationExperiment ext
     }
 
     @Override
-    protected List<Cloudlet> createCloudlets(DatacenterBroker broker) {
+    protected List<Cloudlet> createCloudlets() {
        WorkloadFileReader workloadFileReader;
        cloudletList = new ArrayList<>();
         try {
@@ -123,14 +121,10 @@ public class CloudletTaskTimeCompletionWorkLoadWithoutMinimizationExperiment ext
         } catch (IOException ex) {
             Logger.getLogger(CloudletTaskTimeCompletionWorkLoadWithoutMinimizationExperiment.class.getName()).log(Level.SEVERE, null, ex);
         }
-       
-        cloudletList.forEach((cloudlet) -> {
-            cloudlet.setBroker(broker);
-        });
-     
+
         return cloudletList;
     }
-    
+
     @Override
     protected DatacenterSimple createDatacenter() {
         DatacenterSimple dc = super.createDatacenter();
@@ -139,7 +133,7 @@ public class CloudletTaskTimeCompletionWorkLoadWithoutMinimizationExperiment ext
     }
 
     @Override
-    protected List<Vm> createVms(DatacenterBroker broker) {
+    protected List<Vm> createVms() {
         vmList = new ArrayList<>(VMS);
         for (int i = 0; i < VMS; i++) {
             Vm vm = createVm();
@@ -160,7 +154,7 @@ public class CloudletTaskTimeCompletionWorkLoadWithoutMinimizationExperiment ext
         final int pes = VM_PES[i];
 
         Vm vm = new VmSimple(id, 1000, pes)
-                .setRam(512).setBw(1000).setSize(10000).setBroker(broker0)
+                .setRam(512).setBw(1000).setSize(10000)
                 .setCloudletScheduler(new CloudletSchedulerCompletelyFair());
         return vm;
     }
@@ -235,7 +229,7 @@ public class CloudletTaskTimeCompletionWorkLoadWithoutMinimizationExperiment ext
         System.out.printf("\nTotal of cloudlets SLA satisfied: %.0f de %d", totalOfcloudletSlaSatisfied, broker.getCloudletsFinishedList().size());*/
         return (totalOfcloudletSlaSatisfied * 100) / broker.getCloudletsFinishedList().size();
     }
-    
+
       double getSumPesVms() {
         return vmList.stream()
                 .mapToDouble(vm -> vm.getNumberOfPes())
@@ -251,7 +245,7 @@ public class CloudletTaskTimeCompletionWorkLoadWithoutMinimizationExperiment ext
     /**
      * Gets the ratio of existing vPEs (VM PEs) divided by the number
      * of required PEs of all Cloudlets, which indicates
-     * the mean number of vPEs that are available for each PE required 
+     * the mean number of vPEs that are available for each PE required
      * by a Cloudlet, considering all the existing Cloudlets.
      * For instance, if the ratio is 0.5, in average, two Cloudlets
      * requiring one vPE will share that same vPE.
@@ -264,7 +258,7 @@ public class CloudletTaskTimeCompletionWorkLoadWithoutMinimizationExperiment ext
 
         return sumPesVms / sumPesCloudlets;
     }
-    
+
      /**
      * Shows the wait time of cloudlets
      *

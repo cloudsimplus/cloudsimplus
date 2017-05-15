@@ -96,7 +96,7 @@ public interface VmScheduler {
      * @post $none
      */
     void deallocatePesFromVm(Vm vm);
-    
+
     /**
      * Releases a given number of PEs from a VM. After that, the PEs may be used on demand
      * by other VMs.
@@ -106,7 +106,7 @@ public interface VmScheduler {
      * @pre $none
      * @post $none
      */
-    void deallocatePesFromVm(Vm vm, int pesToRemove);    
+    void deallocatePesFromVm(Vm vm, int pesToRemove);
 
     /**
      * Gets the MIPS share of each host's Pe that is allocated to a given VM.
@@ -119,7 +119,10 @@ public interface VmScheduler {
     List<Double> getAllocatedMipsForVm(Vm vm);
 
     /**
-     * Gets the amount of MIPS that is free.
+     * Gets the total amount of MIPS that is currently free.
+     * If there are VMs migrating into the Host,
+     * their requested MIPS will already be allocated,
+     * reducing the total available MIPS.
      *
      * @return
      */
@@ -180,54 +183,19 @@ public interface VmScheduler {
     List<Pe> getPesAllocatedForVM(Vm vm);
 
     /**
-     * Gets the total allocated MIPS for a VM along all its allocated PEs.
+     * Gets the actual total allocated MIPS for a VM along all its allocated PEs.
+     * If the VM is migrating into the Host, then just a fraction
+     * of the requested MIPS is actually allocated, representing
+     * the overhead of the migration process.
+     *
+     * <p>The MIPS requested by the VM are just actually allocated
+     * after the migration is completed.</p>
      *
      * @param vm the VM to get the total allocated MIPS
      * @return
+     * @see #getVmMigrationCpuOverhead()
      */
     double getTotalAllocatedMipsForVm(Vm vm);
-
-    /**
-     * Gets a <b>read-only</b> list of VMs migrating in.
-     *
-     * @return
-     */
-    Set<Vm> getVmsMigratingIn();
-
-    /**
-     * Gets a <b>read-only</b> list of VMs migrating out.
-     *
-     * @return
-     */
-    Set<Vm> getVmsMigratingOut();
-
-    /**
-     * Adds a {@link Vm} to the list of VMs migrating in.
-     * @param vm the vm to be added
-     * @return true if the VM wasn't into the list and was added, false otherwise
-     */
-    boolean addVmMigratingIn(Vm vm);
-
-    /**
-     * Adds a {@link Vm} to the list of VMs migrating out.
-     * @param vm the vm to be added
-     * @return true if the VM wasn't into the list and was added, false otherwise
-     */
-    boolean addVmMigratingOut(Vm vm);
-
-    /**
-     * Adds a {@link Vm} to the list of VMs migrating in.
-     * @param vm the vm to be added
-     * @return 
-     */
-    boolean removeVmMigratingIn(Vm vm);
-
-    /**
-     * Adds a {@link Vm} to the list of VMs migrating out.
-     * @param vm the vm to be added
-     * @return 
-     */
-    boolean removeVmMigratingOut(Vm vm);
 
     /**
      * Defines the percentage of Host's CPU usage increase when a
@@ -249,10 +217,32 @@ public interface VmScheduler {
      * A host for the VmScheduler is set when the VmScheduler is set to a given host.
      * Thus, the host is in charge to set itself to a VmScheduler.
      * @param host the host to be set
-     * @return 
+     * @return
      * @throws IllegalArgumentException when the scheduler already is assigned to another Host, since
      * each Host must have its own scheduler
      * @throws NullPointerException when the host parameter is null
      */
     VmScheduler setHost(Host host);
+
+    /**
+     * Checks if a list of MIPS requested by a VM is allowed to be allocated or not.
+     * Depending on the {@code VmScheduler} implementation, the return value
+     * of this method may have different effects:
+     * <ul>
+     * <li>true: requested MIPS will be allocated, partial or totally, depending
+     * on the available MIPS and the {@code VmScheduler} implementation;</li>
+     * <li>false: requested MIPS will not be allocated because there is no availability at all
+     * or there is just a partial amount of the requested MIPS available and the
+     * {@code VmScheduler} implementation doesn't allow allocating less than the
+     * VM is requesting. If less than the required MIPS is allocated to a VM,
+     * it will cause performance degradation.
+     * Such situation defines an over-subscription situation
+     * which just specific {@code VmSchedulers} accept.
+     * </li>
+     * </ul>
+     *
+     * @param vmRequestedMipsShare a list of MIPS requested by a VM
+     * @return true if the requested MIPS List is allowed to be allocated to the VM, false otherwise
+     */
+    boolean isAllowedToAllocateMips(List<Double> vmRequestedMipsShare);
 }

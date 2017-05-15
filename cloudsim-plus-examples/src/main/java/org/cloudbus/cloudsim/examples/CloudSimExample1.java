@@ -88,8 +88,7 @@ public class CloudSimExample1 {
             // create VM
             Vm vm = new VmSimple(vmid, mips, pesNumber)
                 .setRam(ram).setBw(bw).setSize(size)
-                .setCloudletScheduler(new CloudletSchedulerTimeShared())
-                .setBroker(broker);
+                .setCloudletScheduler(new CloudletSchedulerTimeShared());
 
             // add the VM to the vmList
             vmlist.add(vm);
@@ -111,7 +110,6 @@ public class CloudSimExample1 {
                 .setFileSize(fileSize)
                 .setOutputSize(outputSize)
                 .setUtilizationModel(utilizationModel)
-                .setBroker(broker)
                 .setVm(vm);
 
             // add the cloudlet to the list

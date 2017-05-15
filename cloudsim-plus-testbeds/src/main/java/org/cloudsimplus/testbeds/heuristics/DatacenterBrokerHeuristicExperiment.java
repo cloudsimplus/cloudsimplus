@@ -23,7 +23,6 @@
  */
 package org.cloudsimplus.testbeds.heuristics;
 
-import org.cloudbus.cloudsim.brokers.DatacenterBroker;
 import org.cloudbus.cloudsim.brokers.DatacenterBrokerHeuristic;
 import org.cloudbus.cloudsim.cloudlets.Cloudlet;
 import org.cloudbus.cloudsim.cloudlets.CloudletSimple;
@@ -32,10 +31,8 @@ import org.cloudbus.cloudsim.hosts.Host;
 import org.cloudbus.cloudsim.hosts.HostSimple;
 import org.cloudbus.cloudsim.provisioners.PeProvisionerSimple;
 import org.cloudbus.cloudsim.provisioners.ResourceProvisionerSimple;
-import org.cloudbus.cloudsim.resources.Bandwidth;
 import org.cloudbus.cloudsim.resources.Pe;
 import org.cloudbus.cloudsim.resources.PeSimple;
-import org.cloudbus.cloudsim.resources.Ram;
 import org.cloudbus.cloudsim.schedulers.cloudlet.CloudletSchedulerTimeShared;
 import org.cloudbus.cloudsim.schedulers.vm.VmSchedulerTimeShared;
 import org.cloudbus.cloudsim.utilizationmodels.UtilizationModel;
@@ -130,10 +127,10 @@ public final class DatacenterBrokerHeuristicExperiment extends SimulationExperim
     }
 
     @Override
-    protected List<Cloudlet> createCloudlets(DatacenterBroker broker) {
+    protected List<Cloudlet> createCloudlets() {
         final List<Cloudlet> list = new ArrayList<>(cloudletPesArray.length);
         for (final int pes : cloudletPesArray) {
-            list.add(createCloudlet(broker, pes));
+            list.add(createCloudlet(pes));
         }
 
         return list;
@@ -142,13 +139,11 @@ public final class DatacenterBrokerHeuristicExperiment extends SimulationExperim
     /**
      * Creates a Cloudlet with the given parameters.
      *
-     * @param broker broker that the Cloudlet to be created by the Supplier
-     * function will belong to
      * @param cloudletPes number of PEs for the Cloudlet to be created by the
      * Supplier function
      * @return the created Cloudlet
      */
-    private Cloudlet createCloudlet(DatacenterBroker broker, int cloudletPes) {
+    private Cloudlet createCloudlet(int cloudletPes) {
         final long length = 400000; //in Million Instructions (MI)
         final long fileSize = 300; //Size (in bytes) before execution
         final long outputSize = 300; //Size (in bytes) after execution
@@ -158,28 +153,26 @@ public final class DatacenterBrokerHeuristicExperiment extends SimulationExperim
         return new CloudletSimple(length, cloudletPes)
                 .setFileSize(fileSize)
                 .setOutputSize(outputSize)
-                .setUtilizationModel(utilization)
-                .setBroker(broker);
+                .setUtilizationModel(utilization);
     }
 
     @Override
-    protected List<Vm> createVms(DatacenterBroker broker) {
+    protected List<Vm> createVms() {
         final List<Vm> list = new ArrayList<>(vmPesArray.length);
         for (final int pes : vmPesArray) {
-            list.add(createVm(broker, pes));
+            list.add(createVm(pes));
         }
         return list;
     }
 
-    private Vm createVm(DatacenterBroker broker, int vmPes) {
+    private Vm createVm(int vmPes) {
         final long mips = 1000;
         final long storage = 10000; // vm image size (MEGABYTE)
         final int ram = 512; // vm memory (MEGABYTE)
         final long bw = 1000; // vm bandwidth
         return new VmSimple(mips, vmPes)
                 .setRam(ram).setBw(bw).setSize(storage)
-                .setCloudletScheduler(new CloudletSchedulerTimeShared())
-                .setBroker(broker);
+                .setCloudletScheduler(new CloudletSchedulerTimeShared());
     }
 
     @Override

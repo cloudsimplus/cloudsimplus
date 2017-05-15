@@ -116,6 +116,12 @@ isStarted
 .. java:method:: @Override public boolean isStarted()
    :outertype: DatacenterBrokerNull
 
+println
+^^^^^^^
+
+.. java:method:: @Override public void println(String msg)
+   :outertype: DatacenterBrokerNull
+
 processEvent
 ^^^^^^^^^^^^
 
@@ -150,6 +156,12 @@ setFallbackDatacenterSupplier
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 .. java:method:: @Override public void setFallbackDatacenterSupplier(Supplier<Datacenter> fallbackDatacenterSupplier)
+   :outertype: DatacenterBrokerNull
+
+setLog
+^^^^^^
+
+.. java:method:: @Override public void setLog(boolean log)
    :outertype: DatacenterBrokerNull
 
 setName
@@ -204,6 +216,18 @@ submitCloudletList
 ^^^^^^^^^^^^^^^^^^
 
 .. java:method:: @Override public void submitCloudletList(List<? extends Cloudlet> list, double submissionDelay)
+   :outertype: DatacenterBrokerNull
+
+submitCloudletList
+^^^^^^^^^^^^^^^^^^
+
+.. java:method:: @Override public void submitCloudletList(List<? extends Cloudlet> list, Vm vm)
+   :outertype: DatacenterBrokerNull
+
+submitCloudletList
+^^^^^^^^^^^^^^^^^^
+
+.. java:method:: @Override public void submitCloudletList(List<? extends Cloudlet> list, Vm vm, double submissionDelay)
    :outertype: DatacenterBrokerNull
 
 submitVm

@@ -134,7 +134,7 @@ public class BasicFirstExample {
         for (int v = 0; v < VMS; v++) {
             Vm vm =
                 new VmSimple(v, 1000, 1)
-                    .setRam(512).setBw(1000).setSize(10000).setBroker(broker0)
+                    .setRam(512).setBw(1000).setSize(10000)
                     .setCloudletScheduler(new CloudletSchedulerTimeShared());
 
             vmList.add(vm);
@@ -151,8 +151,7 @@ public class BasicFirstExample {
                 new CloudletSimple(c, 10000, 2)
                     .setFileSize(1024)
                     .setOutputSize(1024)
-                    .setUtilizationModel(utilization)
-                    .setBroker(broker0);
+                    .setUtilizationModel(utilization);
             cloudletList.add(cloudlet);
         }
     }

@@ -126,8 +126,7 @@ public class CloudSimExample7 {
         for (int i = 0; i < vms; i++) {
             Vm vm = new VmSimple(idShift+i, mips, pesNumber)
                 .setRam(ram).setBw(bw).setSize(size)
-                .setCloudletScheduler(new CloudletSchedulerTimeShared())
-                .setBroker(broker);
+                .setCloudletScheduler(new CloudletSchedulerTimeShared());
             list.add(vm);
         }
 
@@ -149,8 +148,7 @@ public class CloudSimExample7 {
             Cloudlet cloudlet = new CloudletSimple(idShift + i, length, pesNumber)
                 .setFileSize(fileSize)
                 .setOutputSize(outputSize)
-                .setUtilizationModel(utilizationModel)
-                .setBroker(broker);
+                .setUtilizationModel(utilizationModel);
             list.add(cloudlet);
         }
 

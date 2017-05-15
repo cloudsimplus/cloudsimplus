@@ -76,10 +76,10 @@ public final class Helper {
             vm.setRam(Constants.VM_RAM[vmType])
                .setBw(Constants.VM_BW)
                .setSize(Constants.VM_SIZE)
-			   .setBroker(broker)
                .setCloudletScheduler(scheduler);
 			vms.add(vm);
 		}
+
 		return vms;
 	}
 

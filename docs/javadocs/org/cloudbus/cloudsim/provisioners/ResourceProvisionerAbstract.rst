@@ -111,6 +111,12 @@ getTotalAllocatedResource
 .. java:method:: @Override public long getTotalAllocatedResource()
    :outertype: ResourceProvisionerAbstract
 
+isResourceAllocatedToVm
+^^^^^^^^^^^^^^^^^^^^^^^
+
+.. java:method:: @Override public boolean isResourceAllocatedToVm(Vm vm)
+   :outertype: ResourceProvisionerAbstract
+
 setResource
 ^^^^^^^^^^^
 

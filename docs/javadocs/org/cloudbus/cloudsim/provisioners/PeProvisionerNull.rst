@@ -80,6 +80,12 @@ getUtilization
 .. java:method:: @Override public double getUtilization()
    :outertype: PeProvisionerNull
 
+isResourceAllocatedToVm
+^^^^^^^^^^^^^^^^^^^^^^^
+
+.. java:method:: @Override public boolean isResourceAllocatedToVm(Vm vm)
+   :outertype: PeProvisionerNull
+
 isSuitableForVm
 ^^^^^^^^^^^^^^^
 

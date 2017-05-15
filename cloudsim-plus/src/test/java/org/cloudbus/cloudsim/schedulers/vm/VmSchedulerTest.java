@@ -25,8 +25,6 @@ public class VmSchedulerTest {
         assertTrue(instance.getWorkingPeList().isEmpty());
         assertTrue(instance.getPesAllocatedForVM(null).isEmpty());
         assertEquals(0, instance.getTotalAllocatedMipsForVm(null), 0);
-        assertTrue(instance.getVmsMigratingIn().isEmpty());
-        assertTrue(instance.getVmsMigratingOut().isEmpty());
         assertEquals(0, instance.getVmMigrationCpuOverhead(), 0);
     }
 

@@ -233,7 +233,6 @@ public abstract class NetworkVmExampleAbstract {
             vm.setRam(VM_RAM)
               .setBw(VM_BW)
               .setSize(VM_SIZE)
-              .setBroker(broker)
               .setCloudletScheduler(new CloudletSchedulerTimeShared());
             list.add(vm);
         }

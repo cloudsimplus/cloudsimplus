@@ -214,8 +214,7 @@ public class TestWithoutAlgorithmExample {
         return new CloudletSimple(id, length, 2)
                 .setFileSize(1024)
                 .setOutputSize(1024)
-                .setUtilizationModel(utilization)
-                .setBroker(broker0);
+                .setUtilizationModel(utilization);
 
     }
 
@@ -295,7 +294,7 @@ public class TestWithoutAlgorithmExample {
         final int pes = VM_PES[(int) randVm.sample()];
 
         Vm vm = new VmSimple(id, VM_MIPS, pes)
-                .setRam(512).setBw(1000).setSize(10000).setBroker(broker0)
+                .setRam(512).setBw(1000).setSize(10000)
                 .setCloudletScheduler(new CloudletSchedulerTimeShared());
         System.out.println("\n\t\t\t Vm: " + vm + " pes: " + pes);
 

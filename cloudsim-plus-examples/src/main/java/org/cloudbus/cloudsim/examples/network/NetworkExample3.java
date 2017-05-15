@@ -92,13 +92,11 @@ public class NetworkExample3 {
 
         //create two VMs: the first one belongs to user1
         Vm vm1 = new VmSimple(++vmid, mips, pesNumber)
-                .setBroker(broker1)
                 .setRam(ram).setBw(bw).setSize(size)
                 .setCloudletScheduler(new CloudletSchedulerTimeShared());
 
         //the second VM: this one belongs to user2
         Vm vm2 = new VmSimple(++vmid, mips, pesNumber)
-                .setBroker(broker2)
                 .setRam(ram).setBw(bw).setSize(size)
                 .setCloudletScheduler(new CloudletSchedulerTimeShared());
 
@@ -125,15 +123,13 @@ public class NetworkExample3 {
             new CloudletSimple(++id, length, pesNumber)
                 .setFileSize(fileSize)
                 .setOutputSize(outputSize)
-                .setUtilizationModel(utilizationModel)
-                .setBroker(broker1);
+                .setUtilizationModel(utilizationModel);
 
         Cloudlet cloudlet2 =
             new CloudletSimple(++id, length, pesNumber)
                 .setFileSize(fileSize)
                 .setOutputSize(outputSize)
-                .setUtilizationModel(utilizationModel)
-                .setBroker(broker2);
+                .setUtilizationModel(utilizationModel);
 
         //add the cloudlets to the lists: each cloudlet belongs to one user
         cloudletList1.add(cloudlet1);

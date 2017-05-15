@@ -109,8 +109,7 @@ public final class SlaMetricsWithoutNetworkExample {
             Vm vm = new VmSimple(
                     this.lastCreatedVmId++, mips, numberOfPes)
                     .setRam(ram).setBw(bw).setSize(size)
-                    .setCloudletScheduler(new CloudletSchedulerTimeShared())
-                    .setBroker(broker);
+                    .setCloudletScheduler(new CloudletSchedulerTimeShared());
             list.add(vm);
         }
 
@@ -139,7 +138,6 @@ public final class SlaMetricsWithoutNetworkExample {
             Cloudlet cloudlet = new CloudletSimple(i, length, CLOUDLET_PES)
                     .setFileSize(fileSize)
                     .setOutputSize(outputSize)
-                    .setBroker(broker)
                     .setUtilizationModel(utilizationModel);
             list.add(cloudlet);
         }

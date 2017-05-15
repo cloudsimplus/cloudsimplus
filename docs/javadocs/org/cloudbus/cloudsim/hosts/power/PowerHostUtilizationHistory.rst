@@ -20,7 +20,9 @@ PowerHostUtilizationHistory
 
 .. java:type:: public class PowerHostUtilizationHistory extends PowerHostSimple
 
-   A host that stores its CPU utilization percentage history. The history is used by VM allocation and selection policies. If you are using any algorithms, policies or workload included in the power package please cite the following paper:
+   A host that stores its CPU utilization percentage history. The history is used by VM allocation and selection policies.
+
+   If you are using any algorithms, policies or workload included in the power package please cite the following paper:
 
    ..
 

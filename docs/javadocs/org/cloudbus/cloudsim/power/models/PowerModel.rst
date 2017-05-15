@@ -8,7 +8,9 @@ PowerModel
 
 .. java:type:: public interface PowerModel
 
-   The PowerModel interface needs to be implemented in order to provide a model of power consumption of hosts, depending on utilization of a critical system component, such as CPU. The interface implements the Null Object Design Pattern in order to start avoiding \ :java:ref:`NullPointerException`\  when using the \ :java:ref:`PowerModel.NULL`\  object instead of attributing \ ``null``\  to \ :java:ref:`PowerModel`\  variables. If you are using any algorithms, policies or workload included in the power package please cite the following paper:
+   The PowerModel interface needs to be implemented in order to provide a model of power consumption of hosts, depending on utilization of a critical system component, such as CPU. The interface implements the Null Object Design Pattern in order to start avoiding \ :java:ref:`NullPointerException`\  when using the \ :java:ref:`PowerModel.NULL`\  object instead of attributing \ ``null``\  to \ :java:ref:`PowerModel`\  variables.
+
+   If you are using any algorithms, policies or workload included in the power package please cite the following paper:
 
    ..
 

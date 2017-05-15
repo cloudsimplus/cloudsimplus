@@ -70,13 +70,6 @@ addStateHistoryEntry
 .. java:method:: @Override public void addStateHistoryEntry(double time, double allocatedMips, double requestedMips, boolean isActive)
    :outertype: HostDynamicWorkloadSimple
 
-   Adds a host state history entry.
-
-   :param time: the time
-   :param allocatedMips: the allocated mips
-   :param requestedMips: the requested mips
-   :param isActive: the is active
-
 getFinishedVms
 ^^^^^^^^^^^^^^
 
@@ -89,20 +82,11 @@ getMaxUtilization
 .. java:method:: @Override public double getMaxUtilization()
    :outertype: HostDynamicWorkloadSimple
 
-   Gets the max utilization percentage among by all PEs.
-
-   :return: the maximum utilization percentage
-
 getMaxUtilizationAmongVmsPes
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 .. java:method:: @Override public double getMaxUtilizationAmongVmsPes(Vm vm)
    :outertype: HostDynamicWorkloadSimple
-
-   Gets the max utilization percentage among by all PEs allocated to a VM.
-
-   :param vm: the vm
-   :return: the max utilization percentage of the VM
 
 getPreviousUtilizationMips
 ^^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -110,69 +94,17 @@ getPreviousUtilizationMips
 .. java:method:: @Override public double getPreviousUtilizationMips()
    :outertype: HostDynamicWorkloadSimple
 
-   Gets the previous utilization of CPU in mips.
-
-   :return: the previous utilization of CPU in mips
-
 getPreviousUtilizationOfCpu
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 .. java:method:: @Override public double getPreviousUtilizationOfCpu()
    :outertype: HostDynamicWorkloadSimple
 
-   Gets the previous utilization of CPU in percentage.
-
-   :return: the previous utilization of cpu in percents
-
 getStateHistory
 ^^^^^^^^^^^^^^^
 
 .. java:method:: @Override public List<HostStateHistoryEntry> getStateHistory()
    :outertype: HostDynamicWorkloadSimple
-
-   Gets the host state history.
-
-   :return: the state history
-
-getUtilizationOfBw
-^^^^^^^^^^^^^^^^^^
-
-.. java:method:: @Override public long getUtilizationOfBw()
-   :outertype: HostDynamicWorkloadSimple
-
-   Gets the utilization of bw (in absolute values).
-
-   :return: the utilization of bw
-
-getUtilizationOfCpu
-^^^^^^^^^^^^^^^^^^^
-
-.. java:method:: @Override public double getUtilizationOfCpu()
-   :outertype: HostDynamicWorkloadSimple
-
-   Get current utilization of CPU in percentage.
-
-   :return: current utilization of CPU in percents
-
-getUtilizationOfCpuMips
-^^^^^^^^^^^^^^^^^^^^^^^
-
-.. java:method:: @Override public double getUtilizationOfCpuMips()
-   :outertype: HostDynamicWorkloadSimple
-
-   Get current utilization of CPU in MIPS.
-
-   :return: current utilization of CPU in MIPS
-
-getUtilizationOfRam
-^^^^^^^^^^^^^^^^^^^
-
-.. java:method:: @Override public long getUtilizationOfRam()
-   :outertype: HostDynamicWorkloadSimple
-
-   Gets the utilization of memory (in absolute values).
-
-   :return: the utilization of memory
 
 setPreviousUtilizationMips
 ^^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -183,16 +115,6 @@ setPreviousUtilizationMips
    Sets the previous utilization of CPU in mips.
 
    :param previousUtilizationMips: the new previous utilization of CPU in mips
-
-setUtilizationMips
-^^^^^^^^^^^^^^^^^^
-
-.. java:method:: protected final void setUtilizationMips(double utilizationMips)
-   :outertype: HostDynamicWorkloadSimple
-
-   Sets the utilization mips.
-
-   :param utilizationMips: the new utilization mips
 
 updateProcessing
 ^^^^^^^^^^^^^^^^

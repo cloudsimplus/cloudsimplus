@@ -28,6 +28,8 @@
 
 .. java:import:: java.util List
 
+.. java:import:: java.util Set
+
 PowerHostNull
 =============
 
@@ -60,6 +62,12 @@ addStateHistoryEntry
 ^^^^^^^^^^^^^^^^^^^^
 
 .. java:method:: @Override public void addStateHistoryEntry(double time, double amips, double rmips, boolean active)
+   :outertype: PowerHostNull
+
+addVmMigratingOut
+^^^^^^^^^^^^^^^^^
+
+.. java:method:: @Override public boolean addVmMigratingOut(Vm vm)
    :outertype: PowerHostNull
 
 allocatePesForVm
@@ -176,6 +184,12 @@ getMips
 .. java:method:: @Override public double getMips()
    :outertype: PowerHostNull
 
+getNumberOfFailedPes
+^^^^^^^^^^^^^^^^^^^^
+
+.. java:method:: @Override public long getNumberOfFailedPes()
+   :outertype: PowerHostNull
+
 getNumberOfFreePes
 ^^^^^^^^^^^^^^^^^^
 
@@ -272,6 +286,12 @@ getTotalAllocatedMipsForVm
 .. java:method:: @Override public double getTotalAllocatedMipsForVm(Vm vm)
    :outertype: PowerHostNull
 
+getTotalMipsCapacity
+^^^^^^^^^^^^^^^^^^^^
+
+.. java:method:: @Override public double getTotalMipsCapacity()
+   :outertype: PowerHostNull
+
 getUtilizationOfBw
 ^^^^^^^^^^^^^^^^^^
 
@@ -317,7 +337,19 @@ getVmScheduler
 getVmsMigratingIn
 ^^^^^^^^^^^^^^^^^
 
-.. java:method:: @Override public <T extends Vm> List<T> getVmsMigratingIn()
+.. java:method:: @Override public <T extends Vm> Set<T> getVmsMigratingIn()
+   :outertype: PowerHostNull
+
+getVmsMigratingOut
+^^^^^^^^^^^^^^^^^^
+
+.. java:method:: @Override public Set<Vm> getVmsMigratingOut()
+   :outertype: PowerHostNull
+
+getWorkingPeList
+^^^^^^^^^^^^^^^^
+
+.. java:method:: @Override public List<Pe> getWorkingPeList()
    :outertype: PowerHostNull
 
 isFailed
@@ -348,6 +380,18 @@ removeOnUpdateProcessingListener
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 .. java:method:: @Override public boolean removeOnUpdateProcessingListener(EventListener<HostUpdatesVmsProcessingEventInfo> l)
+   :outertype: PowerHostNull
+
+removeVmMigratingIn
+^^^^^^^^^^^^^^^^^^^
+
+.. java:method:: @Override public boolean removeVmMigratingIn(Vm vm)
+   :outertype: PowerHostNull
+
+removeVmMigratingOut
+^^^^^^^^^^^^^^^^^^^^
+
+.. java:method:: @Override public boolean removeVmMigratingOut(Vm vm)
    :outertype: PowerHostNull
 
 setBwProvisioner

@@ -44,24 +44,6 @@ final class VmSchedulerNull implements VmScheduler {
     @Override public double getTotalAllocatedMipsForVm(Vm vm) {
         return 0.0;
     }
-    @Override public Set<Vm> getVmsMigratingIn() {
-        return Collections.emptySet();
-    }
-    @Override public Set<Vm> getVmsMigratingOut() {
-        return Collections.emptySet();
-    }
-    @Override public boolean addVmMigratingIn(Vm vm) {
-        return false;
-    }
-    @Override public boolean addVmMigratingOut(Vm vm) {
-        return false;
-    }
-    @Override public boolean removeVmMigratingIn(Vm vm) {
-        return false;
-    }
-    @Override public boolean removeVmMigratingOut(Vm vm) {
-        return false;
-    }
     @Override public boolean isSuitableForVm(Vm vm) {
         return false;
     }
@@ -75,7 +57,6 @@ final class VmSchedulerNull implements VmScheduler {
     @Override public VmScheduler setHost(Host host) {
         return this;
     }
-
-    @Override
-    public void deallocatePesFromVm(Vm vm, int pesToRemove) {}
+    @Override public boolean isAllowedToAllocateMips(List<Double> vmRequestedMipsShare) { return false; }
+    @Override public void deallocatePesFromVm(Vm vm, int pesToRemove) {/**/}
 }

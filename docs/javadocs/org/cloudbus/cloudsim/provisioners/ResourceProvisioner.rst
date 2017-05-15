@@ -124,6 +124,17 @@ getTotalAllocatedResource
 
    :return: the total allocated resource among all VMs
 
+isResourceAllocatedToVm
+^^^^^^^^^^^^^^^^^^^^^^^
+
+.. java:method::  boolean isResourceAllocatedToVm(Vm vm)
+   :outertype: ResourceProvisioner
+
+   Checks if the resource the provisioner manages is allocated to a given Vm.
+
+   :param vm: the VM to check if the resource is allocated to
+   :return: true if the resource is allocated to the VM, false otherwise
+
 isSuitableForVm
 ^^^^^^^^^^^^^^^
 

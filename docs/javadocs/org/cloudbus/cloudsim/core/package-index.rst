@@ -13,6 +13,7 @@ Provides core classes used just internally by CloudSim Plus, except the \ :java:
    CloudSim
    CloudSimEntity
    CloudSimTags
+   CustomerEntity
    Delayable
    Identificable
    Machine

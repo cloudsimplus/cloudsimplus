@@ -188,8 +188,7 @@ public class CloudletListenersExample1 {
         long bw = 1000;
         Vm vm = new VmSimple(id, mips, VM_PES_NUMBER)
             .setRam(ram).setBw(bw).setSize(size)
-            .setCloudletScheduler(new CloudletSchedulerSpaceShared())
-            .setBroker(broker);
+            .setCloudletScheduler(new CloudletSchedulerSpaceShared());
 
         return vm;
     }
@@ -212,7 +211,6 @@ public class CloudletListenersExample1 {
                     .setFileSize(fileSize)
                     .setOutputSize(outputSize)
                     .setUtilizationModel(utilizationModel)
-                    .setBroker(broker)
                     .setVm(vm)
                     .addOnFinishListener(this::onCloudletFinishListener);
 

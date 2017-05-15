@@ -176,6 +176,12 @@ getCurrentRequestedTotalMips
 .. java:method:: @Override public double getCurrentRequestedTotalMips()
    :outertype: VmNull
 
+getDescription
+^^^^^^^^^^^^^^
+
+.. java:method:: @Override public String getDescription()
+   :outertype: VmNull
+
 getHorizontalScaling
 ^^^^^^^^^^^^^^^^^^^^
 
@@ -372,6 +378,12 @@ setCreated
 ^^^^^^^^^^
 
 .. java:method:: @Override public void setCreated(boolean created)
+   :outertype: VmNull
+
+setDescription
+^^^^^^^^^^^^^^
+
+.. java:method:: @Override public Vm setDescription(String description)
    :outertype: VmNull
 
 setFailed

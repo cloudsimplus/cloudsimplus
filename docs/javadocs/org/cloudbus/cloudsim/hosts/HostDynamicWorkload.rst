@@ -43,7 +43,9 @@ getMaxUtilization
 .. java:method::  double getMaxUtilization()
    :outertype: HostDynamicWorkload
 
-   Gets the max utilization percentage among by all PEs.
+   Gets the max utilization percentage among (between [0 and 1]) by all PEs.
+
+   :return: the max utilization percentage (between [0 and 1])
 
 getMaxUtilizationAmongVmsPes
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -51,9 +53,10 @@ getMaxUtilizationAmongVmsPes
 .. java:method::  double getMaxUtilizationAmongVmsPes(Vm vm)
    :outertype: HostDynamicWorkload
 
-   Gets the max utilization percentage among by all PEs allocated to a VM.
+   Gets the max utilization percentage (between [0 and 1]) among by all PEs allocated to a VM.
 
    :param vm: the vm
+   :return: the max utilization percentage (between [0 and 1])
 
 getPreviousUtilizationMips
 ^^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -61,7 +64,7 @@ getPreviousUtilizationMips
 .. java:method::  double getPreviousUtilizationMips()
    :outertype: HostDynamicWorkload
 
-   Gets the previous utilization of CPU in mips.
+   Gets the previous utilization of CPU in MIPS.
 
 getPreviousUtilizationOfCpu
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -69,7 +72,7 @@ getPreviousUtilizationOfCpu
 .. java:method::  double getPreviousUtilizationOfCpu()
    :outertype: HostDynamicWorkload
 
-   Gets the previous utilization of CPU in percentage.
+   Gets the previous utilization of CPU in percentage (between [0 and 1]).
 
 getStateHistory
 ^^^^^^^^^^^^^^^
@@ -80,36 +83,4 @@ getStateHistory
    Gets a \ **read-only**\  host state history.
 
    :return: the state history
-
-getUtilizationOfBw
-^^^^^^^^^^^^^^^^^^
-
-.. java:method::  long getUtilizationOfBw()
-   :outertype: HostDynamicWorkload
-
-   Gets the current utilization of bw (in absolute values).
-
-getUtilizationOfCpu
-^^^^^^^^^^^^^^^^^^^
-
-.. java:method::  double getUtilizationOfCpu()
-   :outertype: HostDynamicWorkload
-
-   Gets current utilization of CPU in percentage.
-
-getUtilizationOfCpuMips
-^^^^^^^^^^^^^^^^^^^^^^^
-
-.. java:method::  double getUtilizationOfCpuMips()
-   :outertype: HostDynamicWorkload
-
-   Gets the current utilization of CPU in MIPS.
-
-getUtilizationOfRam
-^^^^^^^^^^^^^^^^^^^
-
-.. java:method::  long getUtilizationOfRam()
-   :outertype: HostDynamicWorkload
-
-   Gets the current utilization of memory (in absolute values).
 

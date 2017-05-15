@@ -33,7 +33,7 @@ import org.cloudsimplus.listeners.EventListener;
  * @author Manoel Campos da Silva Filho
  * @since CloudSim Plus 1.0
  */
-public interface Cloudlet extends UniquelyIdentificable, ChangeableId, Delayable, Comparable<Cloudlet>, CustomerEntity {
+public interface Cloudlet extends UniquelyIdentificable, Comparable<Cloudlet>, CustomerEntity {
   String NO_HISTORY_IS_RECORDED_FOR_CLOUDLET = "No history is recorded for Cloudlet #%d";
 
   /**
@@ -606,7 +606,7 @@ public interface Cloudlet extends UniquelyIdentificable, ChangeableId, Delayable
      * respective setters.
      *
      * @param utilizationModel the new utilization model for BW, CPU and RAM
-     * @return 
+     * @return
      *
      * @see #setUtilizationModelBw(UtilizationModel)
      * @see #setUtilizationModelCpu(UtilizationModel)
@@ -819,7 +819,7 @@ public interface Cloudlet extends UniquelyIdentificable, ChangeableId, Delayable
      * @return
      */
     Simulation getSimulation();
-    
+
    /**
      * Gets the {@link DatacenterBroker} that represents the owner of this Cloudlet.
      *
@@ -834,8 +834,8 @@ public interface Cloudlet extends UniquelyIdentificable, ChangeableId, Delayable
      * Sets a {@link DatacenterBroker} that represents the owner of this Cloudlet.
      *
      * @param broker the {@link DatacenterBroker} to set
-     * @return 
+     * @return
      */
     @Override
-    Cloudlet setBroker(DatacenterBroker broker);        
+    Cloudlet setBroker(DatacenterBroker broker);
 }

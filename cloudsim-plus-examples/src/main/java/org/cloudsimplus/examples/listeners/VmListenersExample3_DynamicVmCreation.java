@@ -251,7 +251,6 @@ public class VmListenersExample3_DynamicVmCreation {
         return new VmSimple(id, mips, VM_PES_NUMBER)
             .setRam(ram).setBw(bw).setSize(size)
             .setCloudletScheduler(new CloudletSchedulerSpaceShared())
-            .setBroker(broker)
             .addOnHostDeallocationListener(this::onHostDeallocationListener);
     }
 
@@ -274,7 +273,6 @@ public class VmListenersExample3_DynamicVmCreation {
               .setFileSize(fileSize)
               .setOutputSize(outputSize)
               .setUtilizationModel(utilizationModel)
-              .setBroker(broker)
               .setVm(vm);
     }
 

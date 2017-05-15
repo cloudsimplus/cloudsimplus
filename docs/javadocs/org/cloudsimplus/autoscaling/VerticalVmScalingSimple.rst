@@ -8,6 +8,8 @@
 
 .. java:import:: org.cloudsimplus.autoscaling.resources ResourceScaling
 
+.. java:import:: org.cloudsimplus.autoscaling.resources ResourceScalingInstantaneous
+
 .. java:import:: java.util Objects
 
 .. java:import:: java.util.function Function
@@ -20,9 +22,9 @@ VerticalVmScalingSimple
 
 .. java:type:: public class VerticalVmScalingSimple extends VmScalingAbstract implements VerticalVmScaling
 
-   A \ :java:ref:`VerticalVmScaling`\  implementation that allows a \ :java:ref:`DatacenterBroker`\  to perform on demand up or down scaling for some VM resource such as RAM, CPU or Bandwidth.
+   A \ :java:ref:`VerticalVmScaling`\  implementation which allows a \ :java:ref:`DatacenterBroker`\  to perform on demand up or down scaling for some \ :java:ref:`Vm`\  resource, such as \ :java:ref:`Ram`\ , \ :java:ref:`Pe`\  or \ :java:ref:`Bandwidth`\ .
 
-   For each resource that is required to be scaled, a distinct VerticalVmScaling instance must assigned to the VM to be scaled.
+   For each resource that is required to be scaled, a distinct \ :java:ref:`VerticalVmScaling`\  instance must be assigned to the VM to be scaled.
 
    :author: Manoel Campos da Silva Filho
 
@@ -34,7 +36,7 @@ VerticalVmScalingSimple
 .. java:constructor:: public VerticalVmScalingSimple(Class<? extends ResourceManageable> resourceClassToScale, double scalingFactor)
    :outertype: VerticalVmScalingSimple
 
-   Creates a VerticalVmScalingSimple with a \ :java:ref:`ResourceScaling`\  scaling type.
+   Creates a VerticalVmScalingSimple with a \ :java:ref:`ResourceScalingGradual`\  scaling type.
 
    :param resourceClassToScale: the class of Vm resource that this scaling object will request up or down scaling (such as \ :java:ref:`Ram`\ .class, \ :java:ref:`Bandwidth`\ .class or \ :java:ref:`Processor`\ .class).
    :param scalingFactor: the factor that will be used to scale a Vm resource up or down, whether if such a resource is over or underloaded, according to the defined predicates (a percentage value in scale from 0 to 1). In the case of up scaling, the value 1 will scale the resource in 100%, doubling its capacity.
@@ -43,22 +45,43 @@ VerticalVmScalingSimple
 
 Methods
 -------
+getAllocatedResource
+^^^^^^^^^^^^^^^^^^^^
+
+.. java:method:: @Override public long getAllocatedResource()
+   :outertype: VerticalVmScalingSimple
+
 getLowerThresholdFunction
 ^^^^^^^^^^^^^^^^^^^^^^^^^
 
 .. java:method:: @Override public Function<Vm, Double> getLowerThresholdFunction()
    :outertype: VerticalVmScalingSimple
 
+getResource
+^^^^^^^^^^^
+
+.. java:method:: @Override public Resource getResource()
+   :outertype: VerticalVmScalingSimple
+
 getResourceAmountToScale
 ^^^^^^^^^^^^^^^^^^^^^^^^
 
-.. java:method:: @Override public long getResourceAmountToScale()
+.. java:method:: @Override public double getResourceAmountToScale()
    :outertype: VerticalVmScalingSimple
 
-getResourceClassToScale
-^^^^^^^^^^^^^^^^^^^^^^^
+   {@inheritDoc}
 
-.. java:method:: @Override public Class<? extends ResourceManageable> getResourceClassToScale()
+   If a \ :java:ref:`ResourceScaling`\  implementation such as \ :java:ref:`ResourceScalingGradual`\  or \ :java:ref:`ResourceScalingInstantaneous`\  are used, it will rely on the \ :java:ref:`getScalingFactor()`\  to compute the amount of resource to scale. Other implementations may use the scaling factor by it is up to them.
+
+   \ **NOTE:**\  The return of this method is rounded up to avoid
+   values between ]0 and 1[. For instance, up scaling the number of CPUs in 0.5 means that half of a CPU should be added to the VM. Since number of CPUs is an integer value, this 0.5 will be converted to zero, causing no effect. For other resources such as RAM, adding 0.5 MB has not practical advantages either. This way, the value is always rounded up.
+
+   :return: {@inheritDoc}
+
+getResourceClass
+^^^^^^^^^^^^^^^^
+
+.. java:method:: @Override public Class<? extends ResourceManageable> getResourceClass()
    :outertype: VerticalVmScalingSimple
 
 getResourceUsageThresholdFunction
@@ -77,12 +100,6 @@ getUpperThresholdFunction
 ^^^^^^^^^^^^^^^^^^^^^^^^^
 
 .. java:method:: @Override public Function<Vm, Double> getUpperThresholdFunction()
-   :outertype: VerticalVmScalingSimple
-
-getVmResourceToScale
-^^^^^^^^^^^^^^^^^^^^
-
-.. java:method:: @Override public Resource getVmResourceToScale()
    :outertype: VerticalVmScalingSimple
 
 isVmOverloaded
@@ -115,10 +132,10 @@ setLowerThresholdFunction
 .. java:method:: @Override public final VerticalVmScaling setLowerThresholdFunction(Function<Vm, Double> lowerThresholdFunction)
    :outertype: VerticalVmScalingSimple
 
-setResourceClassToScale
-^^^^^^^^^^^^^^^^^^^^^^^
+setResourceClass
+^^^^^^^^^^^^^^^^
 
-.. java:method:: @Override public final VerticalVmScaling setResourceClassToScale(Class<? extends ResourceManageable> resourceClassToScale)
+.. java:method:: @Override public final VerticalVmScaling setResourceClass(Class<? extends ResourceManageable> resourceClass)
    :outertype: VerticalVmScalingSimple
 
 setResourceScaling

@@ -136,10 +136,10 @@ getCloudletProcessingUpdateInterval
 .. java:method:: protected double getCloudletProcessingUpdateInterval(double nextFinishingCloudletTime)
    :outertype: DatacenterSimple
 
-   Gets the time when the next update of cloudlets has to be performed.
+   Gets the time when the next update of cloudlets has to be performed. This is the minimum value between the \ :java:ref:`getSchedulingInterval()`\  and the given time (if the scheduling interval is enable, i.e. if it's greater than 0), which represents when the next update of Cloudlets processing has to be performed.
 
-   :param nextFinishingCloudletTime: the predicted completion time of the earliest finishing cloudlet (that is a future simulation time), or \ :java:ref:`Double.MAX_VALUE`\  if there is no next Cloudlet to execute
-   :return: the minimum value between the \ :java:ref:`getSchedulingInterval()`\  and the given time (if the scheduling interval is enable, that is, is greate than 0), that represents when the next update of Cloudlets processing has to be performed
+   :param nextFinishingCloudletTime: the predicted completion time of the earliest finishing cloudlet (which is a relative delay from the current simulation time), or \ :java:ref:`Double.MAX_VALUE`\  if there is no next Cloudlet to execute
+   :return: next time cloudlets processing will be updated
 
    **See also:** :java:ref:`.updateCloudletProcessing()`
 
@@ -355,7 +355,7 @@ processVmDestroy
 .. java:method:: protected void processVmDestroy(SimEvent ev, boolean ack)
    :outertype: DatacenterSimple
 
-   Process the event for an User/Broker who wants to destroy a VM previously created in this DatacenterSimple. This DatacenterSimple may send, upon request, the status back to the User/Broker.
+   Process the event sent by a Broker, requesting the destruction of a given VM created in this Datacenter. This Datacenter may send, upon request, the status back to the Broker.
 
    :param ev: information about the event just happened
    :param ack: indicates if the event's sender expects to receive an acknowledge message when the event finishes to be processed
@@ -427,17 +427,6 @@ setVmAllocationPolicy
 
    :param vmAllocationPolicy: the new vm allocation policy
 
-setVmList
-^^^^^^^^^
-
-.. java:method:: protected final <T extends Vm> void setVmList(List<T> vmList)
-   :outertype: DatacenterSimple
-
-   Sets the list of VMs submitted to be ran in some host of this Datacenter.
-
-   :param <T>: the class of VMs inside the list
-   :param vmList: the new vm list
-
 shutdownEntity
 ^^^^^^^^^^^^^^
 
@@ -459,10 +448,12 @@ toString
 updateCloudletProcessing
 ^^^^^^^^^^^^^^^^^^^^^^^^
 
-.. java:method:: protected void updateCloudletProcessing()
+.. java:method:: protected double updateCloudletProcessing()
    :outertype: DatacenterSimple
 
    Updates processing of each cloudlet running in this DatacenterSimple and schedules the next processing update. It is necessary because Hosts and VMs are simple objects, not entities. So, they don't receive events and updating cloudlets inside them must be called from the outside.
+
+   :return: the predicted completion time of the earliest finishing cloudlet (which is a relative delay from the current simulation time), or \ :java:ref:`Double.MAX_VALUE`\  if there is no next Cloudlet to execute or it isn't time to update the cloudlets
 
 updateVmsProcessingOfAllHosts
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -472,5 +463,5 @@ updateVmsProcessingOfAllHosts
 
    Updates the processing of VMs inside all active hosts, that makes the processing of cloudlets inside such VMs to be updated.
 
-   :return: the predicted completion time of the earliest finishing cloudlet (that is a future simulation time), or \ :java:ref:`Double.MAX_VALUE`\  if there is no next Cloudlet to execute
+   :return: the predicted completion time of the earliest finishing cloudlet (which is a relative delay from the current simulation time), or \ :java:ref:`Double.MAX_VALUE`\  if there is no next Cloudlet to execute
 

@@ -24,22 +24,34 @@ VerticalVmScalingNull
 
 Methods
 -------
+getAllocatedResource
+^^^^^^^^^^^^^^^^^^^^
+
+.. java:method:: @Override public long getAllocatedResource()
+   :outertype: VerticalVmScalingNull
+
 getLowerThresholdFunction
 ^^^^^^^^^^^^^^^^^^^^^^^^^
 
 .. java:method:: @Override public Function<Vm, Double> getLowerThresholdFunction()
    :outertype: VerticalVmScalingNull
 
+getResource
+^^^^^^^^^^^
+
+.. java:method:: @Override public Resource getResource()
+   :outertype: VerticalVmScalingNull
+
 getResourceAmountToScale
 ^^^^^^^^^^^^^^^^^^^^^^^^
 
-.. java:method:: @Override public long getResourceAmountToScale()
+.. java:method:: @Override public double getResourceAmountToScale()
    :outertype: VerticalVmScalingNull
 
-getResourceClassToScale
-^^^^^^^^^^^^^^^^^^^^^^^
+getResourceClass
+^^^^^^^^^^^^^^^^
 
-.. java:method:: @Override public Class<? extends ResourceManageable> getResourceClassToScale()
+.. java:method:: @Override public Class<? extends ResourceManageable> getResourceClass()
    :outertype: VerticalVmScalingNull
 
 getResourceUsageThresholdFunction
@@ -66,12 +78,6 @@ getVm
 .. java:method:: @Override public Vm getVm()
    :outertype: VerticalVmScalingNull
 
-getVmResourceToScale
-^^^^^^^^^^^^^^^^^^^^
-
-.. java:method:: @Override public Resource getVmResourceToScale()
-   :outertype: VerticalVmScalingNull
-
 isVmOverloaded
 ^^^^^^^^^^^^^^
 
@@ -96,10 +102,10 @@ setLowerThresholdFunction
 .. java:method:: @Override public VerticalVmScaling setLowerThresholdFunction(Function<Vm, Double> lowerThresholdFunction)
    :outertype: VerticalVmScalingNull
 
-setResourceClassToScale
-^^^^^^^^^^^^^^^^^^^^^^^
+setResourceClass
+^^^^^^^^^^^^^^^^
 
-.. java:method:: @Override public VerticalVmScaling setResourceClassToScale(Class<? extends ResourceManageable> c)
+.. java:method:: @Override public VerticalVmScaling setResourceClass(Class<? extends ResourceManageable> resourceClass)
    :outertype: VerticalVmScalingNull
 
 setResourceScaling

@@ -88,14 +88,12 @@ public class NetworkExample2 {
         //create two VMs
         Vm vm1 = new VmSimple(++vmid, mips, pesNumber)
             .setRam(ram).setBw(bw).setSize(size)
-            .setCloudletScheduler(new CloudletSchedulerTimeShared())
-            .setBroker(broker);
+            .setCloudletScheduler(new CloudletSchedulerTimeShared());
 
         //the second VM will have twice the priority of VM1 and so will receive twice CPU time
         Vm vm2 = new VmSimple(++vmid, mips, pesNumber)
             .setRam(ram).setBw(bw).setSize(size)
-            .setCloudletScheduler(new CloudletSchedulerTimeShared())
-            .setBroker(broker);
+            .setCloudletScheduler(new CloudletSchedulerTimeShared());
 
         //add the VMs to the vmList
         vmlist.add(vm1);
@@ -118,15 +116,13 @@ public class NetworkExample2 {
             new CloudletSimple(++id, length, pesNumber)
                 .setFileSize(fileSize)
                 .setOutputSize(outputSize)
-                .setUtilizationModel(utilizationModel)
-                .setBroker(broker);
+                .setUtilizationModel(utilizationModel);
 
         Cloudlet cloudlet2 =
             new CloudletSimple(++id, length, pesNumber)
                 .setFileSize(fileSize)
                 .setOutputSize(outputSize)
-                .setUtilizationModel(utilizationModel)
-                .setBroker(broker);
+                .setUtilizationModel(utilizationModel);
 
         //add the cloudlets to the list
         cloudletList.add(cloudlet1);

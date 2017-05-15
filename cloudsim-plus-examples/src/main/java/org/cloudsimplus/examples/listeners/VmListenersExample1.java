@@ -194,8 +194,7 @@ public class VmListenersExample1 {
 
         return new VmSimple(id, mips, VM_PES_NUMBER)
             .setRam(ram).setBw(bw).setSize(size)
-            .setCloudletScheduler(new CloudletSchedulerTimeShared())
-            .setBroker(broker);
+            .setCloudletScheduler(new CloudletSchedulerTimeShared());
     }
 
     /**
@@ -214,7 +213,6 @@ public class VmListenersExample1 {
             .setFileSize(fileSize)
             .setOutputSize(outputSize)
             .setUtilizationModel(utilizationModel)
-            .setBroker(broker)
             .setVm(vm);
     }
 

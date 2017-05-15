@@ -92,15 +92,13 @@ public class CloudSimExample5 {
         //create two VMs: the first one belongs to user1
         Vm vm1 = new VmSimple(++vmid, mips, pesNumber)
             .setRam(ram).setBw(bw).setSize(size)
-            .setCloudletScheduler(new CloudletSchedulerTimeShared())
-            .setBroker(broker1);
+            .setCloudletScheduler(new CloudletSchedulerTimeShared());
 
 
         //the second VM: this one belongs to user2
         Vm vm2 = new VmSimple(++vmid, mips, pesNumber)
             .setRam(ram).setBw(bw).setSize(size)
-            .setCloudletScheduler(new CloudletSchedulerTimeShared())
-            .setBroker(broker2);
+            .setCloudletScheduler(new CloudletSchedulerTimeShared());
 
         //add the VMs to the vmlists
         vmlist1.add(vm1);
@@ -125,15 +123,13 @@ public class CloudSimExample5 {
                 new CloudletSimple(++id, length, pesNumber)
                     .setFileSize(fileSize)
                     .setOutputSize(outputSize)
-                    .setUtilizationModel(utilizationModel)
-                    .setBroker(broker1);
+                    .setUtilizationModel(utilizationModel);
 
         Cloudlet cloudlet2 =
             new CloudletSimple(++id, length, pesNumber)
                 .setFileSize(fileSize)
                 .setOutputSize(outputSize)
-                .setUtilizationModel(utilizationModel)
-                .setBroker(broker2);
+                .setUtilizationModel(utilizationModel);
 
         //add the cloudlets to the lists: each cloudlet belongs to one user
         cloudletList1.add(cloudlet1);

@@ -70,6 +70,12 @@ getStorage
 .. java:method:: @Override public Resource getStorage()
    :outertype: MachineNull
 
+getTotalMipsCapacity
+^^^^^^^^^^^^^^^^^^^^
+
+.. java:method:: @Override public double getTotalMipsCapacity()
+   :outertype: MachineNull
+
 setId
 ^^^^^
 

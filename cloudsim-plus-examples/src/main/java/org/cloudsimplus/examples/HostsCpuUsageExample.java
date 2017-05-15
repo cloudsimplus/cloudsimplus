@@ -134,8 +134,7 @@ public class HostsCpuUsageExample {
         return new CloudletSimple(id, length, pesNumber)
             .setFileSize(fileSize)
             .setOutputSize(outputSize)
-            .setUtilizationModel(utilizationModel)
-            .setBroker(broker);
+            .setUtilizationModel(utilizationModel);
     }
 
     private Vm createVm(int pesNumber, long mips, int id) {
@@ -144,8 +143,7 @@ public class HostsCpuUsageExample {
         long bw = 1000;
         return new VmSimple(id, mips, pesNumber)
             .setRam(ram).setBw(bw).setSize(size)
-            .setCloudletScheduler(new CloudletSchedulerTimeShared())
-            .setBroker(broker);
+            .setCloudletScheduler(new CloudletSchedulerTimeShared());
     }
 
     /**

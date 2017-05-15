@@ -276,7 +276,7 @@ requestDatacenterToCreateWaitingVms
 .. java:method:: protected void requestDatacenterToCreateWaitingVms(Datacenter datacenter)
    :outertype: DatacenterBrokerAbstract
 
-   Request a Datacenter to create the VM in the \ :java:ref:`VM waiting list <getVmsWaitingList()>`\ .
+   Request a specific Datacenter to create the VM in the \ :java:ref:`VM waiting list <getVmsWaitingList()>`\ .
 
    :param datacenter: id of the Datacenter to request the VMs creation
 
@@ -356,6 +356,18 @@ submitCloudletList
 ^^^^^^^^^^^^^^^^^^
 
 .. java:method:: @Override public void submitCloudletList(List<? extends Cloudlet> list, double submissionDelay)
+   :outertype: DatacenterBrokerAbstract
+
+submitCloudletList
+^^^^^^^^^^^^^^^^^^
+
+.. java:method:: @Override public void submitCloudletList(List<? extends Cloudlet> list, Vm vm)
+   :outertype: DatacenterBrokerAbstract
+
+submitCloudletList
+^^^^^^^^^^^^^^^^^^
+
+.. java:method:: @Override public void submitCloudletList(List<? extends Cloudlet> list, Vm vm, double submissionDelay)
    :outertype: DatacenterBrokerAbstract
 
 submitCloudletList

@@ -26,7 +26,7 @@ VerticalVmScaling
 
    A Vm \ `Vertical Scaling <https://en.wikipedia.org/wiki/Scalability#Horizontal_and_vertical_scaling>`_\  mechanism used by a \ :java:ref:`DatacenterBroker`\  to request the dynamic scale of VM resources up or down, according to the current resource usage. For each resource supposed to be scaled, a different \ ``VerticalVmScaling``\  instance should be provided. If a scaling object is going to be set to a Vm, it has to be exclusive of that Vm. Different Vms must have different instances of a scaling object.
 
-   A \ :java:ref:`Vm`\  runs a set of \ :java:ref:`Cloudlet`\ s. When a \ ``VerticalVmScaling``\  object is attached to a \ :java:ref:`Vm`\ , it's required to define which \ :java:ref:`resource will be scaled <getResourceClassToScale()>`\  (\ :java:ref:`Ram`\ , \ :java:ref:`Bandwidth`\ , etc) when it's \ :java:ref:`under <getLowerThresholdFunction()>`\  or \ :java:ref:`overloaded <getUpperThresholdFunction()>`\ .
+   A \ :java:ref:`Vm`\  runs a set of \ :java:ref:`Cloudlet`\ s. When a \ ``VerticalVmScaling``\  object is attached to a \ :java:ref:`Vm`\ , it's required to define which \ :java:ref:`resource will be scaled <getResourceClass()>`\  (\ :java:ref:`Ram`\ , \ :java:ref:`Bandwidth`\ , etc) when it's \ :java:ref:`under <getLowerThresholdFunction()>`\  or \ :java:ref:`overloaded <getUpperThresholdFunction()>`\ .
 
    The scaling request follows this path:
 
@@ -58,35 +58,57 @@ NULL
 
 Methods
 -------
+getAllocatedResource
+^^^^^^^^^^^^^^^^^^^^
+
+.. java:method::  long getAllocatedResource()
+   :outertype: VerticalVmScaling
+
+   Gets the current amount allocated to the \ :java:ref:`resource <getResource()>`\  managed by this scaling object. It is just a shortcut to \ ``getVmResourceToScale.getAllocatedResource()``\ .
+
+   :return: the amount of allocated resource
+
 getLowerThresholdFunction
 ^^^^^^^^^^^^^^^^^^^^^^^^^
 
 .. java:method::  Function<Vm, Double> getLowerThresholdFunction()
    :outertype: VerticalVmScaling
 
-   Gets a \ :java:ref:`Function`\  that defines the lower utilization threshold for a \ :java:ref:`Vm <getVm()>`\  which indicates if it is underloaded or not. If it is underloaded, the Vm's \ :java:ref:`DatacenterBroker`\  will request to down scale the VM. The down scaling is performed by decreasing the amount of the \ :java:ref:`resource <getResourceClassToScale()>`\  the scaling is associated to.
+   Gets a \ :java:ref:`Function`\  that defines the lower utilization threshold for a \ :java:ref:`Vm <getVm()>`\  which indicates if it is underloaded or not. If it is underloaded, the Vm's \ :java:ref:`DatacenterBroker`\  will request to down scale the VM. The down scaling is performed by decreasing the amount of the \ :java:ref:`resource <getResourceClass()>`\  the scaling is associated to.
 
    This function must receive a \ :java:ref:`Vm`\  and return the lower utilization threshold for it as a percentage value between 0 and 1 (where 1 is 100%). The VM will be defined as underloaded if the utilization of the \ :java:ref:`Resource`\  this scaling object is related to is lower than the value returned by the \ :java:ref:`Function`\  returned by this method.
 
    **See also:** :java:ref:`.setLowerThresholdFunction(Function)`
 
+getResource
+^^^^^^^^^^^
+
+.. java:method::  Resource getResource()
+   :outertype: VerticalVmScaling
+
+   Gets the actual Vm \ :java:ref:`Resource`\  this scaling object is in charge of scaling. This resource is defined after calling the \ :java:ref:`setResourceClass(Class)`\ .
+
 getResourceAmountToScale
 ^^^^^^^^^^^^^^^^^^^^^^^^
 
-.. java:method::  long getResourceAmountToScale()
+.. java:method::  double getResourceAmountToScale()
    :outertype: VerticalVmScaling
 
-   Gets the absolute amount of the Vm resource, defined by \ :java:ref:`getResourceClassToScale()`\ , that has to be scaled up or down, based on the \ :java:ref:`scaling factor <getScalingFactor()>`\ .
+   Gets the absolute amount of the Vm resource which has to be scaled up or down, based on the \ :java:ref:`scaling factor <getScalingFactor()>`\ .
 
    :return: the absolute amount of the Vm resource to scale
 
-getResourceClassToScale
-^^^^^^^^^^^^^^^^^^^^^^^
+   **See also:** :java:ref:`.getResourceClass()`
 
-.. java:method::  Class<? extends ResourceManageable> getResourceClassToScale()
+getResourceClass
+^^^^^^^^^^^^^^^^
+
+.. java:method::  Class<? extends ResourceManageable> getResourceClass()
    :outertype: VerticalVmScaling
 
-   Gets the class of Vm resource that this scaling object will request up or down scaling. Such a class can be \ :java:ref:`Ram`\ .class, \ :java:ref:`Bandwidth`\ .class or \ :java:ref:`Pe`\ .class.
+   Gets the class of Vm resource this scaling object will request up or down scaling. Such a class can be \ :java:ref:`Ram`\ .class, \ :java:ref:`Bandwidth`\ .class or \ :java:ref:`Pe`\ .class.
+
+   **See also:** :java:ref:`.getResource()`
 
 getResourceUsageThresholdFunction
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -120,19 +142,11 @@ getUpperThresholdFunction
 .. java:method::  Function<Vm, Double> getUpperThresholdFunction()
    :outertype: VerticalVmScaling
 
-   Gets a \ :java:ref:`Function`\  that defines the upper utilization threshold for a \ :java:ref:`Vm <getVm()>`\  which indicates if it is overloaded or not. If it is overloaded, the Vm's \ :java:ref:`DatacenterBroker`\  will request to up scale the VM. The up scaling is performed by increasing the amount of the \ :java:ref:`resource <getResourceClassToScale()>`\  the scaling is associated to.
+   Gets a \ :java:ref:`Function`\  that defines the upper utilization threshold for a \ :java:ref:`Vm <getVm()>`\  which indicates if it is overloaded or not. If it is overloaded, the Vm's \ :java:ref:`DatacenterBroker`\  will request to up scale the VM. The up scaling is performed by increasing the amount of the \ :java:ref:`resource <getResourceClass()>`\  the scaling is associated to.
 
    This function must receive a \ :java:ref:`Vm`\  and return the upper utilization threshold for it as a percentage value between 0 and 1 (where 1 is 100%). The VM will be defined as overloaded if the utilization of the \ :java:ref:`Resource`\  this scaling object is related to is higher than the value returned by the \ :java:ref:`Function`\  returned by this method.
 
    **See also:** :java:ref:`.setUpperThresholdFunction(Function)`
-
-getVmResourceToScale
-^^^^^^^^^^^^^^^^^^^^
-
-.. java:method::  Resource getVmResourceToScale()
-   :outertype: VerticalVmScaling
-
-   Gets the Vm \ :java:ref:`Resource`\  this scaling object is in charge of scaling.
 
 isVmOverloaded
 ^^^^^^^^^^^^^^
@@ -174,7 +188,7 @@ setLowerThresholdFunction
 .. java:method::  VerticalVmScaling setLowerThresholdFunction(Function<Vm, Double> lowerThresholdFunction)
    :outertype: VerticalVmScaling
 
-   Sets a \ :java:ref:`Function`\  that defines the lower utilization threshold for a \ :java:ref:`Vm <getVm()>`\  which indicates if it is underloaded or not. If it is underloaded, the Vm's \ :java:ref:`DatacenterBroker`\  will request to down scale the VM. The down scaling is performed by decreasing the amount of the \ :java:ref:`resource <getResourceClassToScale()>`\  the scaling is associated to.
+   Sets a \ :java:ref:`Function`\  that defines the lower utilization threshold for a \ :java:ref:`Vm <getVm()>`\  which indicates if it is underloaded or not. If it is underloaded, the Vm's \ :java:ref:`DatacenterBroker`\  will request to down scale the VM. The down scaling is performed by decreasing the amount of the \ :java:ref:`resource <getResourceClass()>`\  the scaling is associated to.
 
    This function must receive a \ :java:ref:`Vm`\  and return the lower utilization threshold for it as a percentage value between 0 and 1 (where 1 is 100%).
 
@@ -182,15 +196,15 @@ setLowerThresholdFunction
 
    :param lowerThresholdFunction: the lower utilization threshold function to set. The VM will be defined as underloaded if the utilization of the \ :java:ref:`Resource`\  this scaling object is related to is lower than the value returned by this \ :java:ref:`Function`\ .
 
-setResourceClassToScale
-^^^^^^^^^^^^^^^^^^^^^^^
+setResourceClass
+^^^^^^^^^^^^^^^^
 
-.. java:method::  VerticalVmScaling setResourceClassToScale(Class<? extends ResourceManageable> resourceClassToScale)
+.. java:method::  VerticalVmScaling setResourceClass(Class<? extends ResourceManageable> resourceClass)
    :outertype: VerticalVmScaling
 
    Sets the class of Vm resource that this scaling object will request up or down scaling. Such a class can be \ :java:ref:`Ram`\ .class, \ :java:ref:`Bandwidth`\ .class or \ :java:ref:`Pe`\ .class.
 
-   :param resourceClassToScale: the resource class to set
+   :param resourceClass: the resource class to set
 
 setResourceScaling
 ^^^^^^^^^^^^^^^^^^
@@ -222,7 +236,7 @@ setUpperThresholdFunction
 .. java:method::  VerticalVmScaling setUpperThresholdFunction(Function<Vm, Double> upperThresholdFunction)
    :outertype: VerticalVmScaling
 
-   Sets a \ :java:ref:`Function`\  that defines the upper utilization threshold for a \ :java:ref:`Vm <getVm()>`\  which indicates if it is overloaded or not. If it is overloaded, the Vm's \ :java:ref:`DatacenterBroker`\  will request to up scale the VM. The up scaling is performed by increasing the amount of the \ :java:ref:`resource <getResourceClassToScale()>`\  the scaling is associated to.
+   Sets a \ :java:ref:`Function`\  that defines the upper utilization threshold for a \ :java:ref:`Vm <getVm()>`\  which indicates if it is overloaded or not. If it is overloaded, the Vm's \ :java:ref:`DatacenterBroker`\  will request to up scale the VM. The up scaling is performed by increasing the amount of the \ :java:ref:`resource <getResourceClass()>`\  the scaling is associated to.
 
    This function must receive a \ :java:ref:`Vm`\  and return the upper utilization threshold for it as a percentage value between 0 and 1 (where 1 is 100%).
 

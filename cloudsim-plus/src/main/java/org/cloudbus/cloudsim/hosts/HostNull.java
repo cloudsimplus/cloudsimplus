@@ -13,6 +13,7 @@ import org.cloudsimplus.listeners.HostUpdatesVmsProcessingEventInfo;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.Set;
 
 /**
  * A class that implements the Null Object Design Pattern for {@link Host}
@@ -31,6 +32,23 @@ final class HostNull implements Host {
     @Override public boolean addMigratingInVm(Vm vm) {
         return false;
     }
+    @Override public boolean removeVmMigratingIn(Vm vm) { return false; }
+
+    @Override
+    public Set<Vm> getVmsMigratingOut() {
+        return Collections.EMPTY_SET;
+    }
+
+    @Override
+    public boolean addVmMigratingOut(Vm vm) {
+        return false;
+    }
+
+    @Override
+    public boolean removeVmMigratingOut(Vm vm) {
+        return false;
+    }
+
     @Override public boolean allocatePesForVm(Vm vm, List<Double> mipsShare) {
         return false;
     }
@@ -96,15 +114,18 @@ final class HostNull implements Host {
     @Override public Host setVmScheduler(VmScheduler vmScheduler) {
         return Host.NULL;
     }
-    @Override public List<Vm> getVmsMigratingIn() {
-        return Collections.EMPTY_LIST;
-    }
     @Override public boolean isFailed() {
         return false;
     }
     @Override public boolean isSuitableForVm(Vm vm) {
         return false;
     }
+
+    @Override
+    public <T extends Vm> Set<T> getVmsMigratingIn() {
+        return Collections.EMPTY_SET;
+    }
+
     @Override public void reallocateMigratingInVms() {/**/}
     @Override public void removeMigratingInVm(Vm vm) {/**/}
     @Override public void setDatacenter(Datacenter datacenter) {/**/}

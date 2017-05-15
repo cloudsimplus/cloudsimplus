@@ -174,7 +174,6 @@ public class CustomUtilizationModelExample {
         int    pesNumber = 2; // number of CPU cores
 
         return new VmSimple(vmList.size(), mips, pesNumber)
-                .setBroker(broker)
                 .setRam(ram)
                 .setBw(bw)
                 .setSize(storage)
@@ -199,7 +198,6 @@ public class CustomUtilizationModelExample {
                         .setUtilizationModelBw(utilizationFull)
                         .setUtilizationModelRam(utilizationFull)
                         .setUtilizationModelCpu(utilizationHalfCapacity)
-                        .setBroker(broker)
                         .setVm(vm);
 
         return cloudlet;

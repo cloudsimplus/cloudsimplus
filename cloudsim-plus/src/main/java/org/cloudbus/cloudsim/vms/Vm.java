@@ -39,18 +39,18 @@ import org.cloudsimplus.listeners.EventListener;
  * @author Manoel Campos da Silva Filho
  * @since CloudSim Plus 1.0
  */
-public interface Vm extends Machine, UniquelyIdentificable, Delayable, Comparable<Vm>, CustomerEntity {
+public interface Vm extends Machine, UniquelyIdentificable, Comparable<Vm>, CustomerEntity {
 
     /**
      * An attribute that implements the Null Object Design Pattern for {@link Vm}
      * objects.
      */
     Vm NULL = new VmNull();
-    
+
     /**
      * Gets the Vm description, which is an optional text
      * which one can use to provide details about this of this VM.
-     * @return 
+     * @return
      */
     String getDescription();
 
@@ -58,7 +58,7 @@ public interface Vm extends Machine, UniquelyIdentificable, Delayable, Comparabl
      * Sets the VM description, which is an optional text
      * which one can use to provide details about this of this VM.
      * @param description the Vm description to set
-     * @return 
+     * @return
      */
     Vm setDescription(String description);
 
@@ -518,7 +518,7 @@ public interface Vm extends Machine, UniquelyIdentificable, Delayable, Comparabl
      * Gets a {@link VerticalVmScaling} that will check if the Vm's RAM is overloaded,
      * based on some conditions defined by a {@link Predicate} given
      * to the VerticalVmScaling, and then request the RAM up scaling.
-     * @return 
+     * @return
      */
     VerticalVmScaling getRamVerticalScaling();
 
@@ -526,7 +526,7 @@ public interface Vm extends Machine, UniquelyIdentificable, Delayable, Comparabl
      * Gets a {@link VerticalVmScaling} that will check if the Vm's Bandwidth is overloaded,
      * based on some conditions defined by a {@link Predicate} given
      * to the VerticalVmScaling, and then request the BW up scaling.
-     * @return 
+     * @return
      */
     VerticalVmScaling getBwVerticalScaling();
 
@@ -534,7 +534,7 @@ public interface Vm extends Machine, UniquelyIdentificable, Delayable, Comparabl
      * Gets a {@link VerticalVmScaling} that will check if the Vm's {@link Pe} is overloaded,
      * based on some conditions defined by a {@link Predicate} given
      * to the VerticalVmScaling, and then request the RAM up scaling.
-     * @return 
+     * @return
      */
     VerticalVmScaling getPeVerticalScaling();
 
@@ -544,7 +544,7 @@ public interface Vm extends Machine, UniquelyIdentificable, Delayable, Comparabl
      * @return
      */
     Processor getProcessor();
-    
+
    /**
      * Gets the {@link DatacenterBroker} that represents the owner of this Vm.
      *
@@ -559,9 +559,9 @@ public interface Vm extends Machine, UniquelyIdentificable, Delayable, Comparabl
      * Sets a {@link DatacenterBroker} that represents the owner of this Vm.
      *
      * @param broker the {@link DatacenterBroker} to set
-     * @return 
+     * @return
      */
     @Override
-    Vm setBroker(DatacenterBroker broker);       
-    
+    Vm setBroker(DatacenterBroker broker);
+
  }

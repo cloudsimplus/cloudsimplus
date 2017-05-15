@@ -86,8 +86,8 @@ public final class HostFaultInjectionExample1 {
     private static final int  VM_RAM = 10000; //vm memory (MEGABYTE)
     private static final long VM_BW = 100000;
     private static final int  VM_PES = 2; //number of cpus
-    
-    private static final int  CLOUDLET_PES = 2; 
+
+    private static final int  CLOUDLET_PES = 2;
     private static final long CLOUDLET_LENGHT = 200000;
     private static final long CLOUDLET_FILESIZE = 300;
     private static final long CLOUDLET_OUTPUTSIZE = 300;
@@ -98,7 +98,7 @@ public final class HostFaultInjectionExample1 {
      */
     private static final int HOSTS = 2;
     private static final int VMS = 4;
-            
+
     private static final int CLOUDLETS_BY_VM = 2;
 
     private final List<Vm> vmlist = new ArrayList<>();
@@ -155,7 +155,6 @@ public final class HostFaultInjectionExample1 {
         Vm vm = new VmSimple(vmlist.size(), VM_MIPS, VM_PES);
         vm
             .setRam(VM_RAM).setBw(VM_BW).setSize(VM_SIZE)
-            .setBroker(broker)
             .setCloudletScheduler(new CloudletSchedulerTimeShared());
         return vm;
     }
@@ -178,7 +177,6 @@ public final class HostFaultInjectionExample1 {
                             .setFileSize(CLOUDLET_FILESIZE)
                             .setOutputSize(CLOUDLET_OUTPUTSIZE)
                             .setUtilizationModel(utilizationModel);
-            c.setBroker(broker);
             list.add(c);
         }
 
@@ -227,7 +225,7 @@ public final class HostFaultInjectionExample1 {
                 .setRamProvisioner(ramProvisioner)
                 .setBwProvisioner(bwProvisioner)
                 .setVmScheduler(vmScheduler);
-    }    
+    }
 
     public List<Pe> createPeList(int numberOfPEs, long mips) {
         List<Pe> list = new ArrayList<>(numberOfPEs);
@@ -247,7 +245,7 @@ public final class HostFaultInjectionExample1 {
         //final long seed = System.currentTimeMillis();
         long seed = 3412125;
         final double meanFailureNumberPerMinute = 0.4;
-        
+
         for (Host host: datacenter.getHostList()) {
             HostFaultInjection fault = new HostFaultInjection(host, meanFailureNumberPerMinute, seed++);
             fault.setMaxFailureDelay(MAX_FAILURE_DELAY_SECONDS);
@@ -257,13 +255,13 @@ public final class HostFaultInjectionExample1 {
             break; //cria apenas para o primeiro host, so pra teste
         }
     }
-    
+
     /**
      * Clones a VM by creating another one with the same configurations of a given VM.
      * @param vm the VM to be cloned
      * @return the cloned (new) VM.
-     * 
-     * @see #createFaultInjectionForHosts(org.cloudbus.cloudsim.datacenters.Datacenter) 
+     *
+     * @see #createFaultInjectionForHosts(org.cloudbus.cloudsim.datacenters.Datacenter)
      */
     private Vm cloneVm(Vm vm){
         Vm clone = new VmSimple((long)vm.getMips(), (int)vm.getNumberOfPes());
@@ -274,10 +272,10 @@ public final class HostFaultInjectionExample1 {
             .setRam(vm.getBw().getCapacity())
             .setCloudletScheduler(new CloudletSchedulerTimeShared());
         Log.printFormattedLine("\n\n#Cloning VM %d\n\tMips %.2f Number of Pes: %d ", vm.getId(), clone.getMips(), clone.getNumberOfPes());
-        
+
         return clone;
     }
-    
+
     /**
      * Clones each Cloudlet associated to a given VM.
      * The method is called when a VM is destroyed due to a
@@ -286,10 +284,10 @@ public final class HostFaultInjectionExample1 {
      * In this case, all the Cloudlets which were running inside
      * the destroyed VM will be recreated from scratch into the VM clone,
      * re-starting their execution from the beginning.
-     * 
+     *
      * @param sourceVm the VM to clone its Cloudlets
      * @return the List of cloned Cloudlets.
-     * @see #createFaultInjectionForHosts(org.cloudbus.cloudsim.datacenters.Datacenter) 
+     * @see #createFaultInjectionForHosts(org.cloudbus.cloudsim.datacenters.Datacenter)
      */
     private List<Cloudlet> cloneCloudlets(Vm sourceVm){
         final List<Cloudlet> sourceVmCloudlets = sourceVm.getCloudletScheduler().getCloudletList();
@@ -297,7 +295,7 @@ public final class HostFaultInjectionExample1 {
         for(Cloudlet cl: sourceVmCloudlets){
             clonedCloudlets.add(cloneCloudlet(cl));
         }
-        
+
         return clonedCloudlets;
     }
 
@@ -313,7 +311,7 @@ public final class HostFaultInjectionExample1 {
                 .setUtilizationModelCpu(sourceCloudlet.getUtilizationModelCpu())
                 .setUtilizationModelRam(sourceCloudlet.getUtilizationModelRam());
         return clone;
-        
+
     }
-    
+
 }

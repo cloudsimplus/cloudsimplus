@@ -46,16 +46,10 @@ allocatePesForVm
 .. java:method:: @Override public boolean allocatePesForVm(Vm vm, List<Double> mipsShareRequested)
    :outertype: VmSchedulerSpaceShared
 
-deallocatePesForVm
-^^^^^^^^^^^^^^^^^^
+deallocatePesFromVmInternal
+^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-.. java:method:: @Override public void deallocatePesForVm(Vm vm)
-   :outertype: VmSchedulerSpaceShared
-
-getCpuOverheadDueToVmMigration
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-
-.. java:method:: @Override public double getCpuOverheadDueToVmMigration()
+.. java:method:: @Override protected void deallocatePesFromVmInternal(Vm vm, int pesToRemove)
    :outertype: VmSchedulerSpaceShared
 
 getFreePesList
@@ -88,6 +82,12 @@ getTotalCapacityToBeAllocatedToVm
 
    :param vmRequestedMipsShare: a VM's list of requested MIPS
    :return: the list of PEs that can be allocated to the VM or an empty list if there isn't enough capacity that can be allocated
+
+getVmMigrationCpuOverhead
+^^^^^^^^^^^^^^^^^^^^^^^^^
+
+.. java:method:: @Override public double getVmMigrationCpuOverhead()
+   :outertype: VmSchedulerSpaceShared
 
 isSuitableForVm
 ^^^^^^^^^^^^^^^

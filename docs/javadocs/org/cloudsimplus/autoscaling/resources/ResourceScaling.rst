@@ -14,7 +14,11 @@ ResourceScaling
 
    The interval in which the under and overload conditions are checked is defined by the \ :java:ref:`Datacenter.getSchedulingInterval()`\ . This way, during one interval and another, there may be some SLA violation if the resource is overloaded between these intervals.
 
+   There are some implementations of this functional interface such as \ :java:ref:`ResourceScalingGradual`\  and \ :java:ref:`ResourceScalingInstantaneous`\ . New ones can be defined using Lambda Expressions.
+
    :author: Manoel Campos da Silva Filho
+
+   **See also:** :java:ref:`ResourceScalingGradual`, :java:ref:`ResourceScalingInstantaneous`
 
 Fields
 ------
@@ -31,7 +35,7 @@ Methods
 getResourceAmountToScale
 ^^^^^^^^^^^^^^^^^^^^^^^^
 
-.. java:method::  long getResourceAmountToScale(VerticalVmScaling vmScaling)
+.. java:method::  double getResourceAmountToScale(VerticalVmScaling vmScaling)
    :outertype: ResourceScaling
 
    Computes the amount of resource to scale up or down, depending if the resource is over or underloaded, respectively.

@@ -213,7 +213,6 @@ public class ParallelSimulationsExample implements Runnable {
         int    pesNumber = 2; // number of CPU cores
 
         return new VmSimple(vmId, mips, pesNumber)
-            .setBroker(broker)
             .setRam(ram)
             .setBw(bw)
             .setSize(storage)
@@ -241,8 +240,7 @@ public class ParallelSimulationsExample implements Runnable {
         return new CloudletSimple(cloudletId, length, numberOfCpuCores)
                 .setFileSize(fileSize)
                 .setOutputSize(outputSize)
-                .setUtilizationModel(utilization)
-                .setBroker(broker);
+                .setUtilizationModel(utilization);
     }
 
     /**

@@ -183,7 +183,6 @@ public final class VmMigrationWhenCpuMetricIsViolatedExample {
         PowerVm vm = new PowerVm(vmlist.size(), VM_MIPS, VM_PES_NUM);
         vm
                 .setRam(VM_RAM).setBw(VM_BW).setSize(VM_SIZE)
-                .setBroker(broker)
                 .setCloudletScheduler(new CloudletSchedulerTimeShared());
 
         Log.printConcatLine(
@@ -222,7 +221,6 @@ public final class VmMigrationWhenCpuMetricIsViolatedExample {
                             .setUtilizationModelCpu(cpuUtilizationModel)
                             .setUtilizationModelRam(utilizationModelFull)
                             .setUtilizationModelBw(utilizationModelFull);
-            c.setBroker(broker);
             cloudletList.add(c);
         }
 

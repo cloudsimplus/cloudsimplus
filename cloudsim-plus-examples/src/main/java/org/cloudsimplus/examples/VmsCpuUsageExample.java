@@ -127,8 +127,7 @@ public class VmsCpuUsageExample {
         Cloudlet cloudlet = new CloudletSimple(id, length, pesNumber);
         cloudlet.setFileSize(fileSize)
             .setOutputSize(outputSize)
-            .setUtilizationModel(utilizationModel)
-            .setBroker(broker);
+            .setUtilizationModel(utilizationModel);
         return cloudlet;
     }
 
@@ -141,7 +140,6 @@ public class VmsCpuUsageExample {
         Vm vm = new VmSimple(id, mips, pesNumber);
         vm.setRam(ram).setBw(bw)
             .setSize(size)
-            .setBroker(broker)
             .setCloudletScheduler(new CloudletSchedulerTimeShared());
         return vm;
     }

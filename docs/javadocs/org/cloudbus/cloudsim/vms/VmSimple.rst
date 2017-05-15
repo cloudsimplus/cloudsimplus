@@ -4,8 +4,6 @@
 
 .. java:import:: org.cloudbus.cloudsim.datacenters Datacenter
 
-.. java:import:: org.cloudbus.cloudsim.util Log
-
 .. java:import:: org.cloudbus.cloudsim.brokers DatacenterBroker
 
 .. java:import:: org.cloudbus.cloudsim.cloudlets Cloudlet
@@ -248,6 +246,12 @@ getCurrentRequestedTotalMips
 .. java:method:: @Override public double getCurrentRequestedTotalMips()
    :outertype: VmSimple
 
+getDescription
+^^^^^^^^^^^^^^
+
+.. java:method:: @Override public String getDescription()
+   :outertype: VmSimple
+
 getHorizontalScaling
 ^^^^^^^^^^^^^^^^^^^^
 
@@ -334,6 +338,12 @@ getSubmissionDelay
 ^^^^^^^^^^^^^^^^^^
 
 .. java:method:: @Override public double getSubmissionDelay()
+   :outertype: VmSimple
+
+getTotalMipsCapacity
+^^^^^^^^^^^^^^^^^^^^
+
+.. java:method:: @Override public double getTotalMipsCapacity()
    :outertype: VmSimple
 
 getTotalUtilizationOfCpuMips
@@ -456,6 +466,12 @@ setCreated
 ^^^^^^^^^^
 
 .. java:method:: @Override public final void setCreated(boolean created)
+   :outertype: VmSimple
+
+setDescription
+^^^^^^^^^^^^^^
+
+.. java:method:: @Override public Vm setDescription(String description)
    :outertype: VmSimple
 
 setFailed

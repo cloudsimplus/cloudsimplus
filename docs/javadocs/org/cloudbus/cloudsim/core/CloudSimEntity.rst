@@ -177,6 +177,12 @@ pause
 
    :param delay: the time period for which the entity will be inactive
 
+println
+^^^^^^^
+
+.. java:method:: @Override public void println(String msg)
+   :outertype: CloudSimEntity
+
 run
 ^^^
 
@@ -495,6 +501,12 @@ setId
    Sets the entity id.
 
    :param id: the new id
+
+setLog
+^^^^^^
+
+.. java:method:: @Override public void setLog(boolean log)
+   :outertype: CloudSimEntity
 
 setName
 ^^^^^^^

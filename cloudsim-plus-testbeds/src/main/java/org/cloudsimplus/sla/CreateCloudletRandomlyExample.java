@@ -116,7 +116,6 @@ public class CreateCloudletRandomlyExample {
 
         for (int i = 0; i < vms; i++) {
             Vm vm = new VmSimple(i, mips, pesNumber)
-                    .setBroker(broker)
                     .setRam(ram).setBw(bw).setSize(size)
                     .setCloudletScheduler(new CloudletSchedulerTimeShared());
             list.add(vm);
@@ -188,7 +187,6 @@ public class CreateCloudletRandomlyExample {
         Cloudlet cloudlet = new CloudletSimple(cloudletId, length, pesNumber)
                 .setFileSize(fileSize)
                 .setOutputSize(outputSize)
-                .setBroker(broker)
                 .setUtilizationModel(utilizationModel);
         return cloudlet;
     }
