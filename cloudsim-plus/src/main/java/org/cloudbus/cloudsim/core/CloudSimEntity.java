@@ -14,7 +14,7 @@ import java.util.Objects;
 import java.util.function.Predicate;
 
 /**
- * This class represents a simulation entity. An entity handles events and can
+ * Represents a simulation entity. An entity handles events and can
  * send events to other entities.
  *
  * @author Marcos Dias de Assuncao
@@ -27,7 +27,7 @@ public abstract class CloudSimEntity implements SimEntity {
     private boolean started;
 
     /**
-     * The CloudSim instance that represents the simulation the Entity is related to.
+     * @see #getSimulation() 
      */
     private Simulation simulation;
 
@@ -65,9 +65,6 @@ public abstract class CloudSimEntity implements SimEntity {
         this.started = false;
     }
 
-    /**
-     * The entity name.
-     */
     /**
      * Gets the name of this entity.
      *
@@ -449,7 +446,7 @@ public abstract class CloudSimEntity implements SimEntity {
     }
 
     @Override
-    public SimEntity setSimulation(Simulation simulation) {
+    public final SimEntity setSimulation(Simulation simulation) {
         if(Objects.isNull(simulation)){
             simulation = Simulation.NULL;
         }

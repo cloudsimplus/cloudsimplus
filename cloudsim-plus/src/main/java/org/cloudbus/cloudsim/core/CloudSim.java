@@ -10,14 +10,12 @@ package org.cloudbus.cloudsim.core;
 import java.util.*;
 import java.util.stream.Stream;
 
-import org.cloudbus.cloudsim.cloudlets.Cloudlet;
 import org.cloudbus.cloudsim.core.events.*;
 import org.cloudbus.cloudsim.datacenters.Datacenter;
 import org.cloudbus.cloudsim.network.topologies.NetworkTopology;
 import org.cloudbus.cloudsim.util.Log;
 import java.util.function.Predicate;
 
-import org.cloudbus.cloudsim.vms.Vm;
 import org.cloudsimplus.listeners.EventInfo;
 import org.cloudsimplus.listeners.EventListener;
 
@@ -45,15 +43,17 @@ public class CloudSim implements Simulation {
     private static final int NOT_FOUND = -1;
 
     /**
-     * An array that works as a circular queue with capacity to just 2 elements
+     * An array that works as a circular queue with capacity for just 2 elements
      * (defined in the constructor). When a new element is added to the queue,
      * the first element is removed to open space for that new one.
      * This queue stores the last 2 simulation clock values.
-     * It is used to now when it is time to notify listeners that
+     * It is used to know when it is time to notify listeners that
      * the simulation clock has incremented.
      *
-     * Such a structure is required because multiple events
+     * <p>Such a structure is required because multiple events
      * can be received consecutively for the same simulation time.
+     * </p>
+     * 
      * @see #notifyOnClockTickListenersIfClockChanged()
      */
     private final double[] circularClockTimesQueue;
@@ -120,10 +120,11 @@ public class CloudSim implements Simulation {
     private Map<String, SimEntity> entitiesByName;
 
     /**
-     * A map of the predicate that defines the events that a given entity is waiting.
-     * Each key is the entity id and the value is the predicate.
+     * A map of entities and predicates that define the events a given entity is waiting for.
+     * Received events are filtered based on the predicate associated with each entity
+     * so that just the resulting events are sent to the entity.
      */
-    private Map<SimEntity, Predicate> waitPredicates;
+    private Map<SimEntity, Predicate<SimEvent>> waitPredicates;
 
     /**
      * @see #isPaused()
@@ -168,10 +169,10 @@ public class CloudSim implements Simulation {
 
     /**
      * Creates a CloudSim simulation with the given parameters.
-     * Internally it creates a CloudInformationService.
+     * Internally it creates a {@link CloudInformationService}.
      *
-     * @param cal starting time for this simulation. If it is <tt>null</tt>,
-     * then the time will be taken from <tt>Calendar.getInstance()</tt>
+     * @param cal starting time for this simulation. If it is <code>null</code>,
+     * then the time will be taken from <code>Calendar.getInstance()</code>
      * @throws RuntimeException
      *
      * @see CloudInformationService
@@ -201,7 +202,7 @@ public class CloudSim implements Simulation {
 
     /**
      * Creates a CloudSim simulation with the given parameters.
-     * Internally it creates a CloudInformationService.
+     * Internally it creates a {@link CloudInformationService}.
      *
      * @param numUser this parameter is not being used anymore
      * @param cal starting time for this simulation. If it is <tt>null</tt>,
@@ -768,6 +769,13 @@ public class CloudSim implements Simulation {
 
         pauseAt = -1;
     }
+    
+    @Override
+    public long getNumberOfFutureEvents(Predicate<SimEvent> predicate){
+        return future.stream()
+                .filter(predicate)
+                .count();
+    }   
 
     private boolean isThereFutureEvtsAndNextOneHappensAfterTimeToPause() {
         return !future.isEmpty() && clockTime <= pauseAt && isNextFutureEventHappeningAfterTimeToPause();

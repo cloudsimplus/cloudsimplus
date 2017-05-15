@@ -117,10 +117,7 @@ final class SimulationNull implements Simulation {
         return NetworkTopology.NULL;
     }
     @Override public void setNetworkTopology(NetworkTopology networkTopology) {/**/}
-    @Override public Map<String, SimEntity> getEntitiesByName() {
-        return Collections.emptyMap();
-    }
-    @Override public boolean updateEntityName(String oldName) {
-        return false;
-    }
+    @Override public Map<String, SimEntity> getEntitiesByName() { return Collections.EMPTY_MAP; }
+    @Override public boolean updateEntityName(String oldName) { return false; }
+    @Override public long getNumberOfFutureEvents(Predicate<SimEvent> predicate) { return 0; }
 }

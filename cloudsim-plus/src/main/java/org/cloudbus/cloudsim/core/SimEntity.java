@@ -36,7 +36,7 @@ public interface SimEntity extends Nameable, Cloneable, Runnable, Comparable<Sim
     boolean isStarted();
 
     /**
-     * Gets the CloudSim instance that represents the simulation the Entity is related to.
+     * Gets the CloudSim instance that represents the simulation to each the Entity is related to.
      * @return
      */
     Simulation getSimulation();
