@@ -8,6 +8,7 @@
 package org.cloudbus.cloudsim.schedulers.cloudlet;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 import org.cloudbus.cloudsim.cloudlets.Cloudlet;
 import org.cloudbus.cloudsim.cloudlets.CloudletExecutionInfo;
@@ -77,11 +78,6 @@ public class CloudletSchedulerSpaceShared extends CloudletSchedulerAbstract {
     private double movePausedCloudletToExecList(CloudletExecutionInfo c) {
         addCloudletToExecList(c);
         return getEstimatedFinishTimeOfCloudlet(c, getVm().getSimulation().clock());
-    }
-
-    @Override
-    public List<Double> getCurrentRequestedMips() {
-        return Collections.unmodifiableList(getCurrentMipsShare());
     }
 
     /**

@@ -24,6 +24,7 @@ import org.cloudsimplus.listeners.EventListener;
 import org.cloudbus.cloudsim.resources.*;
 import org.cloudbus.cloudsim.schedulers.cloudlet.CloudletScheduler;
 
+import static java.util.stream.Collectors.collectingAndThen;
 import static java.util.stream.Collectors.toList;
 
 /**
@@ -297,7 +298,9 @@ public class VmSimple implements Vm {
             return getCloudletScheduler().getCurrentRequestedMips();
         }
 
-        return LongStream.range(0, getNumberOfPes()).mapToObj(i->getMips()).collect(toList());
+        return LongStream.range(0, getNumberOfPes())
+                .mapToObj(i->getMips())
+                .collect(toList());
     }
 
     @Override

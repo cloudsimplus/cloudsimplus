@@ -312,13 +312,14 @@ public class CloudletSchedulerSpaceSharedTest {
         assertEquals(expResult, result);
     }
 
-    @Test(expected = UnsupportedOperationException.class)
-    public void testGetCurrentRequestedMips_TryToChangeReturnedListThrowsException() {
+    @Test
+    public void testGetCurrentRequestedMips_CheckItWasReturnedOneCopyOfTheList() {
         final int schedulerPes = 1;
         final CloudletSchedulerSpaceShared instance = new CloudletSchedulerSpaceShared();
         final List<Double> expResult = CloudletSchedulerUtil.createMipsList(schedulerPes, SCHEDULER_MIPS);
         instance.setCurrentMipsShare(expResult);
-        instance.getCurrentRequestedMips().add(0.0);
+        //if the lists are not same, it was returned a copy of the given list as expected
+        assertNotSame(expResult, instance.getCurrentRequestedMips());
     }
 
     @Test

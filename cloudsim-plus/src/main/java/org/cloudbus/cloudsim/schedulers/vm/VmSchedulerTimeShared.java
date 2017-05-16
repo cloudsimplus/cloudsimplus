@@ -126,7 +126,7 @@ public class VmSchedulerTimeShared extends VmSchedulerAbstract {
     /**
      * Prints a log showing that the total requested MIPS is not available
      * and that just a fraction or zero MIPS were allocated.
-     * 
+     *
      * @param vm the VM requesting the MIPS
      * @param requestedMipsForVmPe the the MIPS requested for a vPE
      * @param allocatedMipsForVmPe the actually allocated MIPS for the vPE
@@ -138,7 +138,7 @@ public class VmSchedulerTimeShared extends VmSchedulerAbstract {
         Log.printFormattedLine(
                 "%.2f: %s: %s is requiring a total of %.0f MIPS but the PEs of %s\n\t currently don't have such an available MIPS amount. %s",
                 getHost().getSimulation().clock(),
-                getClass().getSimpleName(), vm, 
+                getClass().getSimpleName(), vm,
                 requestedMipsForVmPe, getHost(), msg);
     }
 
@@ -186,7 +186,6 @@ public class VmSchedulerTimeShared extends VmSchedulerAbstract {
      *
      * @param vm the VM to allocate MIPS from one of its vPEs.
      * @param hostPe the Physical PE to allocated MIPS from
-     * @param requestedMipsForVmPe the MIPS requested by the vPE
      * @return true if all requested MIPS of the vPE is available at the physical PE
      * and was allocated, false otherwise
      *

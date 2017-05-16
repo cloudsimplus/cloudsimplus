@@ -11,6 +11,7 @@ package org.cloudbus.cloudsim.brokers.power;
 import org.cloudbus.cloudsim.brokers.DatacenterBrokerSimple;
 import org.cloudbus.cloudsim.core.CloudSim;
 import org.cloudbus.cloudsim.core.events.SimEvent;
+import org.cloudbus.cloudsim.util.Log;
 import org.cloudbus.cloudsim.vms.Vm;
 
 /**
@@ -45,8 +46,8 @@ public class PowerDatacenterBroker extends DatacenterBrokerSimple {
         final Vm vm = (Vm) ev.getData();
 
 		if (!vm.isCreated()) {
-			throw new RuntimeException(getSimulation().clock() + ": " + getName() + ": Creation of VM #" + vm.getId()
-					+ " failed in Datacenter #" + vm.getHost().getDatacenter().getId());
+            Log.printConcatLine(getSimulation().clock() + ": " + getName() + ": Creation of VM #" + vm.getId()
+                + " failed in Datacenter #" + vm.getHost().getDatacenter().getId());
 		}
 		return super.processVmCreateResponseFromDatacenter(ev);
 	}

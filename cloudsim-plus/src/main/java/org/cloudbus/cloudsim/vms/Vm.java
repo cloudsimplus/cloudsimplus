@@ -114,7 +114,8 @@ public interface Vm extends Machine, UniquelyIdentificable, Comparable<Vm>, Cust
     double getCurrentRequestedMaxMips();
 
     /**
-     * Gets a list of current requested MIPS of each virtual {@link Pe}.
+     * Gets a  <b>copy</b> list of current requested MIPS of each virtual {@link Pe},
+     * avoiding the original list to be changed.
      *
      * @return the current requested MIPS of each Pe
      */
