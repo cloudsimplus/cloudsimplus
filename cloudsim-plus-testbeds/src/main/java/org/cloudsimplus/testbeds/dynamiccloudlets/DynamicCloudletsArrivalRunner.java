@@ -30,7 +30,7 @@ import org.cloudsimplus.testbeds.ExperimentRunner;
 
 /**
  * Runs the {@link DynamicCloudletsArrivalExperiment}
- * the number of times defines by {@link #numberOfSimulationRuns}
+ * the number of times defines by {@link #getSimulationRuns()}
  * and compute statistics.
  *
  * @author Manoel Campos da Silva Filho
@@ -41,7 +41,7 @@ final class DynamicCloudletsArrivalRunner extends ExperimentRunner<DynamicCloudl
 
     @Override
     protected Map<String, List<Double>> createMetricsMap() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        throw new UnsupportedOperationException("Not supported yet.");
     }
 
 	@Override
