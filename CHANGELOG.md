@@ -15,34 +15,33 @@ Lists the main changes in the project.
   at the current simulation time.
 - Methods `getUtilizationOfRam()`, `getUtilizationOfBw()`, `getUtilizationOfCpu()` added to Cloudlet in order
   to get utilization percentage of RAM, BW and CPU, respectively, for the current simulation time.
-- `UtilizationModel.Unit` enum to define the measure unit in which a Cloudlet resource, to which a `UtilizationModel` is associated to,
+- `UtilizationModel.Unit` enum to define the measuring unit in which a Cloudlet resource, to which a `UtilizationModel` is associated to,
   will be used. The enum values can be `PERCENTAGE` or `ABSOLUTE`, that respectively defines that the Cloudlet resource usage
   will be in percentage or absolute values. The existing UtilizationModels continue to define the value in percentage,
   as describe in their documentation. The `UtilizationModelDynamic` (previously called `UtilizationModelArithmeticProgression`) allows setting a different unit
-  for such an `UtilizationModel` (see issue #62).
+  for such an `UtilizationModel` ([#62](https://github.com/manoelcampos/cloudsim-plus/issues/62)).
 - `UtilizationModelDynamic` now allows
   defining the resource usage increment behavior using a Lambda Expression, enabling the developer
   to give a function that performs the increment in an arithmetic, geometric, exponential or any other
-  kind of progression he/she needs (see issue #64). 
+  kind of progression he/she needs ([#64](https://github.com/manoelcampos/cloudsim-plus/issues/64)). 
 - Updated the `DatacenterBroker` interface and implementing classes, including the methods `setVmComparator` and `setCloudletComparator` to enable
   a developer to set a `Comparator` object (which can be given as a Lambda Expression) to sort VMs and Cloudlets before they are
-  actually requested to be created in some Datacenter. This enables defining priority to request the creation of such objects.
+  actually requested to be created in some Datacenter. This enables defining priorities to request the creation of such objects.
   If no `Comparator` is defined, the objects creation request follows the order in which they were submitted.
-- [Host Fault Injection Mechanism (under development)](https://github.com/manoelcampos/cloudsim-plus/blob/master/cloudsim-plus-examples/src/main/java/org/cloudsimplus/examples/HostFaultInjectionExample1.java) to enable injection of random failures into Hosts PEs: it injects failures into Host PEs and reallocates working PEs to running   VMs. When all PEs from a Host fail, it starts clones of failed VMs to recovery from failure. 
+- [Host Fault Injection Mechanism (under development)](https://github.com/manoelcampos/cloudsim-plus/blob/master/cloudsim-plus-examples/src/main/java/org/cloudsimplus/examples/HostFaultInjectionExample1.java) to enable injection of random failures into Hosts PEs: it injects failures into Host PEs and reallocates working PEs to running   VMs. When all PEs from a Host fail, it starts clones of failed VMs to recovery from failure. This way, it is simulated the instantiation of VM snapshots into different Hosts ([#81](https://github.com/manoelcampos/cloudsim-plus/issues/81)).
   - Added the method Host.getWorkingPesList().
-    This way, it is simulated the instantiation of VM snapshots into different Hosts ([#81](https://github.com/manoelcampos/cloudsim-plus/issues/81)).
   - Poisson Distribution implementation enabling the simulation of inter-arrival times of events such as Host failures.
-- Added the method void submitCloudletList(List<? extends Cloudlet> list, Vm vm) to the DatacenterBroker,
+- Added the method void `submitCloudletList(List<? extends Cloudlet> list, Vm vm)` to the `DatacenterBroker`,
   enabling submission of a list of cloudlets to run inside a specific VM.
-- Added the method void submitCloudletList(List<? extends Cloudlet> list, Vm vm, double submissionDelay) to the DatacenterBroker,
+- Added the method void `submitCloudletList(List<? extends Cloudlet> list, Vm vm, double submissionDelay)` to the `DatacenterBroker`,
   enabling submission of a list of cloudlets to run inside a specific VM, and at the same time,
   allowing delaying the creation of such cloudlets.
-- Added a getCloudletList method int the CloudletScheduler to get the list of all cloudlets which are executing
+- Added a `getCloudletList()` method int the `CloudletScheduler` to get the list of all cloudlets which are executing
   or waiting inside a given VM.
 - Includes new boolean methods to the Pe interface to make easier to check the PE status.
   New methods are `isFree()`, `isBuzy()`, `isFailed(`) and `isWorking()`.
 - Allowed disabling log on every `SimEntity` by calling the new method `SimEntity.setLog()`.
-  If `Log.disable(`) is called, it disable all simulation logs,
+  If `Log.disable(`) is called, it disables all simulation logs,
   independent of the configuration on each entity. 
   This new feature enables fine-grained control of entities log.
 
@@ -60,10 +59,10 @@ Lists the main changes in the project.
     - Cloudlets and VMs IDs are generated when they are submitted to a Broker.
 - Hosts constructors require the RAM and bandwidth capacity, since storage already was required.
 - Instantiating a `ResourceProvisionerSimple` now requires just a default no-args constructor.
-- The `DatacenterBroker` interfaces now allows using Java 8 Lambda Expressions to define selection policies.
+- The `DatacenterBroker` interfaces now allow using Java 8 Lambda Expressions to define selection policies.
   - It provides a functional way of defining the policies to select a Datacenter to host a Vm, a fallback Datacenter when the creation of requested VMs failed in the previous   selected Datacenter and to select a VM to run a Cloudlet.
-  - The DatacenterBrokerSimple is yet selecting the first Datacenter to place VMs and uses a round-robin policy to select a VM to run the Cloudlets. If such behaviors needs to be changed, it is not required to create a new DatacenterBroker class. 
-  - Since there are 3 selection policies to override (the selection of default datacenter, fallback datacenter and VM), the combination of different implementations for these 3 policies will require creation of several DatacenterBroker implementations that will be impossible to maintain.
+  - The DatacenterBrokerSimple is yet selecting the first Datacenter to place VMs and uses a round-robin policy to select a VM to run the Cloudlets. If such behaviors need to be changed, it is not required to create a new DatacenterBroker class. 
+  - Since there are 3 selection policies to override (the selection of default datacenter, fallback datacenter and VM), the combination of different implementations for these 3 policies will require the creation of several DatacenterBroker implementations that will be impossible to maintain.
   - Using the new functional implementation there is no need to create a new DatacenterBroker class and the implementations can be exchanged just using the new `setDatacenterSupplier`, `setFallbackDatacenterSupplier` and `setVmMapper` methods, passing a Lambda Expression to them.
   - Automatically set the DatacenterBroker when Cloudlets and VMS are submitted. ([#83](https://github.com/manoelcampos/cloudsim-plus/issues/83))
   - Refactored the method `CloudletScheduler.getCloudletFinishedList()` to keep the list of finished Cloudlets after the simulation
