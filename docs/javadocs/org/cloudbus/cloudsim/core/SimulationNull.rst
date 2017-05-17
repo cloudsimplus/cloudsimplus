@@ -152,6 +152,12 @@ getNumEntities
 .. java:method:: @Override public int getNumEntities()
    :outertype: SimulationNull
 
+getNumberOfFutureEvents
+^^^^^^^^^^^^^^^^^^^^^^^
+
+.. java:method:: @Override public long getNumberOfFutureEvents(Predicate<SimEvent> predicate)
+   :outertype: SimulationNull
+
 holdEntity
 ^^^^^^^^^^
 

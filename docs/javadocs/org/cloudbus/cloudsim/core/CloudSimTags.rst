@@ -4,6 +4,8 @@
 
 .. java:import:: org.cloudbus.cloudsim.datacenters Datacenter
 
+.. java:import:: org.cloudbus.cloudsim.hosts Host
+
 .. java:import:: org.cloudbus.cloudsim.vms Vm
 
 .. java:import:: org.cloudsimplus.autoscaling VerticalVmScaling
@@ -140,7 +142,7 @@ HOST_FAILURE
 .. java:field:: public static final int HOST_FAILURE
    :outertype: CloudSimTags
 
-   Defines the tag that represents a request to generate a host failure. If the failure will be actually injected is defined by a fault injection object.
+   Defines the tag that represents a request to generate a host failure.
 
 ICMP_PKT_RETURN
 ^^^^^^^^^^^^^^^
@@ -314,7 +316,7 @@ VM_UPDATE_CLOUDLET_PROCESSING_EVENT
 .. java:field:: public static final int VM_UPDATE_CLOUDLET_PROCESSING_EVENT
    :outertype: CloudSimTags
 
-   Denotes an internal event generated in a \ :java:ref:`Datacenter`\  to notify it to update the processing of VM's cloudlets.
+   Denotes an internal event generated in a \ :java:ref:`Datacenter`\  to notify itself to update the processing of cloudlets. When an event of this type is sent, the \ :java:ref:`SimEvent.getData()`\  can be a \ :java:ref:`Host`\  object to indicate that just the Cloudlets running in VMs inside such a Host must be updated. The Host is an optional parameter which if omitted, means that all Hosts from the Datacenter will have its cloudlets updated.
 
 VM_VERTICAL_SCALING
 ^^^^^^^^^^^^^^^^^^^

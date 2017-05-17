@@ -1,7 +1,5 @@
 .. java:import:: java.util.stream Stream
 
-.. java:import:: org.cloudbus.cloudsim.cloudlets Cloudlet
-
 .. java:import:: org.cloudbus.cloudsim.datacenters Datacenter
 
 .. java:import:: org.cloudbus.cloudsim.network.topologies NetworkTopology
@@ -9,8 +7,6 @@
 .. java:import:: org.cloudbus.cloudsim.util Log
 
 .. java:import:: java.util.function Predicate
-
-.. java:import:: org.cloudbus.cloudsim.vms Vm
 
 .. java:import:: org.cloudsimplus.listeners EventInfo
 
@@ -27,6 +23,16 @@ CloudSim
    The main class of the simulation API, that manages Cloud Computing simulations providing all methods to start, pause and stop them. It sends and processes all discrete events during the simulation time.
 
    :author: Rodrigo N. Calheiros, Anton Beloglazov, Manoel Campos da Silva Filho
+
+Fields
+------
+VERSION
+^^^^^^^
+
+.. java:field:: public static final String VERSION
+   :outertype: CloudSim
+
+   CloudSim Plus current version.
 
 Constructors
 ------------
@@ -46,7 +52,7 @@ CloudSim
 .. java:constructor:: public CloudSim(Calendar cal)
    :outertype: CloudSim
 
-   Creates a CloudSim simulation with the given parameters. Internally it creates a CloudInformationService.
+   Creates a CloudSim simulation with the given parameters. Internally it creates a \ :java:ref:`CloudInformationService`\ .
 
    :param cal: starting time for this simulation. If it is \ ``null``\ , then the time will be taken from \ ``Calendar.getInstance()``\
    :throws RuntimeException:
@@ -59,7 +65,7 @@ CloudSim
 .. java:constructor:: @Deprecated public CloudSim(int numUser, Calendar cal, boolean traceFlag, double periodBetweenEvents)
    :outertype: CloudSim
 
-   Creates a CloudSim simulation with the given parameters. Internally it creates a CloudInformationService.
+   Creates a CloudSim simulation with the given parameters. Internally it creates a \ :java:ref:`CloudInformationService`\ .
 
    :param numUser: this parameter is not being used anymore
    :param cal: starting time for this simulation. If it is \ ``null``\ , then the time will be taken from \ ``Calendar.getInstance()``\
@@ -216,6 +222,12 @@ getNumEntities
 ^^^^^^^^^^^^^^
 
 .. java:method:: @Override public int getNumEntities()
+   :outertype: CloudSim
+
+getNumberOfFutureEvents
+^^^^^^^^^^^^^^^^^^^^^^^
+
+.. java:method:: @Override public long getNumberOfFutureEvents(Predicate<SimEvent> predicate)
    :outertype: CloudSim
 
 holdEntity

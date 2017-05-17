@@ -249,6 +249,12 @@ getCurrentRequestedBwPercentUtilization
 .. java:method:: @Override public double getCurrentRequestedBwPercentUtilization()
    :outertype: CloudletSchedulerAbstract
 
+getCurrentRequestedMips
+^^^^^^^^^^^^^^^^^^^^^^^
+
+.. java:method:: @Override public List<Double> getCurrentRequestedMips()
+   :outertype: CloudletSchedulerAbstract
+
 getCurrentRequestedRamPercentUtilization
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 

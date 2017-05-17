@@ -4,6 +4,8 @@
 
 .. java:import:: org.cloudbus.cloudsim.core.events SimEvent
 
+.. java:import:: org.cloudbus.cloudsim.util Log
+
 .. java:import:: org.cloudbus.cloudsim.vms Vm
 
 PowerDatacenterBroker
